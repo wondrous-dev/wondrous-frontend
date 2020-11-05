@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "react-native",
     "lib": ["dom", "esnext"],
@@ -7,6 +10,9 @@
     "noEmit": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "strict": true
+    "strict": true,
+    "rootDirs": ["src", "stories"],
+    "noUnusedLocals": false,
+    "target": "es2017"
   }
 }
