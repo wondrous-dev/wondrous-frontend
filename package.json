@@ -1,4 +1,6 @@
 {
+  "name": "wondrous-app",
+  "version": "0.1.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
@@ -8,7 +10,8 @@
     "eject": "expo eject",
     "test": "jest --watchAll",
     "storybook": "start-storybook -p 7007",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "build-web": "NODE_ENV=development webpack-dev-server --mode development"
   },
   "jest": {
     "preset": "jest-expo",
@@ -22,10 +25,13 @@
   "dependencies": {
     "@apollo/client": "^3.2.5",
     "@expo/vector-icons": "^10.0.0",
+    "@expo/webpack-config": "^0.12.43",
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/bottom-tabs": "^5.8.0",
     "@react-navigation/native": "^5.7.3",
     "@react-navigation/stack": "^5.9.0",
+    "D": "^1.0.0",
+    "babel-plugin-inline-import": "^3.0.0",
     "expo": "~39.0.2",
     "expo-asset": "~8.2.0",
     "expo-constants": "~9.2.0",
@@ -41,6 +47,7 @@
     "react-native-gesture-handler": "~1.7.0",
     "react-native-safe-area-context": "3.1.4",
     "react-native-screens": "~2.10.1",
+    "react-native-svg": "12.1.0",
     "react-native-web": "~0.13.12",
     "subscriptions-transport-ws": "^0.9.18"
   },
@@ -57,8 +64,15 @@
     "@types/react-native": "~0.63.2",
     "@types/storybook__react": "^5.2.1",
     "babel-loader": "^8.1.0",
+    "babel-plugin-react-native-web": "^0.14.7",
     "jest-expo": "~39.0.0",
-    "typescript": "~3.9.5"
+    "metro-react-native-babel-preset": "^0.64.0",
+    "react-native-svg-transformer": "^0.14.3",
+    "typescript": "~3.9.5",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.4.0",
+    "webpack-cli": "3.3.12",
+    "webpack-dev-server": "^3.11.0"
   },
   "private": true
 }

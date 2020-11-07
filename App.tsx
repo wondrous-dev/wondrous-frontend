@@ -9,9 +9,9 @@ import Navigation from './navigation'
 import apollo from './services/apollo'
 import storybook from './storybook'
 
-const STORYBOOK_START = true
-
-export default STORYBOOK_START ? storybook : function App() {
+const STORYBOOK_START = false
+// Render story book if you want to look at development
+export default function App() {
   const isLoadingComplete = useCachedResources()
   const colorScheme = useColorScheme()
 
