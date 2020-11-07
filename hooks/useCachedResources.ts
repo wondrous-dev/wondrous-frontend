@@ -15,7 +15,10 @@ export default function useCachedResources() {
         // Load fonts
         await Font.loadAsync({
           ...Ionicons.font,
-          'Rubik': require('../assets/fonts/Rubik-VariableFont_wght.ttf'),
+          'Rubik Light': require('../assets/fonts/Rubik-Regular.ttf'),
+          'Rubik': require('../assets/fonts/Rubik-Medium.ttf'),
+          'Rubik Bold': require('../assets/fonts/Rubik-Bold.ttf'),
+          'Rubik SemiBold': require('../assets/fonts/Rubik-SemiBold.ttf'),
           'Pacifico': require('../assets/fonts/Pacifico-Regular.ttf'),
           'space-mono': require('../assets/fonts/SpaceMono-Regular.ttf'),
         })

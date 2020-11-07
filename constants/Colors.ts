@@ -22,3 +22,4 @@ export default {
 export const Blue400 = '#42A5F5'
 export const Orange = '#F0905A'
 export const White = '#FFFFFF'
+export const Black = '#2D333A'
