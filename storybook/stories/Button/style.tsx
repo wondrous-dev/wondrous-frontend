@@ -5,8 +5,8 @@ const baseStyle = {
   maxWidth: moderateScale(300),
   width: '100%',
   padding: 10,
-  textAlign: 'center',
-  borderRadius: 4
+  borderRadius: 4,
+  alignItems: 'center'
 }
 
 export default {

@@ -24,9 +24,12 @@ export const Paragraph = ({ style, children }) => (
   }}> {children} </Text>
 )
 
-export const ButtonText = ({ style, children }) => (
+export const ButtonText = ({ style, children, color }) => (
   <Text style={{
     ...baseStyle.buttonText,
-    ...style
+    ...style,
+    ...{
+      color
+    }
   }}> {children} </Text>
 )

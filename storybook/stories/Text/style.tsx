@@ -22,7 +22,6 @@ export default {
   buttonText: {
     fontFamily: 'Rubik',
     fontSize: 14,
-    color: White,
     lineHeight: 20
   }
 }

@@ -1,10 +1,9 @@
 import * as React from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { StyleSheet, View, SafeAreaView } from 'react-native'
-import { SvgXml } from "react-native-svg"
+import { StyleSheet, View, SafeAreaView, Platform } from 'react-native'
 
 import { RootStackParamList } from '../types'
-import { Orange, Black } from '../constants/Colors'
+import { Orange, Black, White } from '../constants/Colors'
 import { Title, Subheading, Paragraph, ButtonText } from '../storybook/stories/Text'
 import { SvgImage } from '../storybook/stories/Image'
 import { MyCarousel } from '../storybook/stories/Carousel'
@@ -36,37 +35,34 @@ export default function HomeScreen({
       </Title>
       <SvgImage width="196" height="200" style={styles.logo} srcElement={SuperHeroSvg} />
       <MyCarousel data={homeScreens} />
-      <PrimaryButton style={{
-        marginTop: 16
+      <PrimaryButton textStyle={{
+        color: White
+      }} textPressStyle = {{
+        color: White
       }}>
-        <ButtonText style={{
-          textAlign: 'center'
-        }}>
           Get started
-        </ButtonText>
       </PrimaryButton>
       <SecondaryButton style={{
         marginTop: 8
+      }} textStyle={{
+        color: Black
+      }} textPressStyle = {{
+        color: Black
       }}>
-        <ButtonText style={{
-          textAlign: 'center',
-          color: Black
-        }}>
           Log in
-        </ButtonText>
       </SecondaryButton>
     </View>
   )
 }
 
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Orange,
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: moderateScale(16),
+    padding: Platform.OS === 'web' ? moderateScale(16) : 16,
+    paddingTop: 72
   },
   logo: {
     marginTop: moderateScale(48),

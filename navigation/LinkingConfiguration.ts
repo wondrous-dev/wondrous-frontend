@@ -9,6 +9,11 @@ export default {
           Home: 'home'
         }
       },
+      Login: {
+          screens: {
+            Login: 'login'
+          }
+      },
       Root: {
         screens: {
           TabOne: {
