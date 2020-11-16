@@ -18,5 +18,12 @@ export default {
   secondary: {
     ...baseStyle,
     backgroundColor: White
+  },
+  google: {
+    height: 68,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 300
   }
 }

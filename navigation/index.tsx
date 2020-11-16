@@ -5,7 +5,7 @@ import { ColorSchemeName } from 'react-native'
 
 import NotFoundScreen from '../screens/NotFoundScreen'
 import HomeScreen from '../screens/HomeScreen'
-import LoginScreen from '../screens/LoginScreen'
+import SignupScreen from '../screens/SignupScreen'
 import WelcomeScreen from '../screens/SignupFlow/Welcome'
 import { RootStackParamList } from '../types'
 import BottomTabNavigator from './BottomTabNavigator'
@@ -31,7 +31,7 @@ function RootNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name='Home' component={HomeScreen} />
-      <Stack.Screen name='Login' component={LoginScreen} />
+      <Stack.Screen name='Signup' component={SignupScreen} />
       <Stack.Screen name='Welcome' component={WelcomeScreen} />
       <Stack.Screen name='Root' component={BottomTabNavigator} />
       <Stack.Screen name='NotFound' component={NotFoundScreen} options={{ title: 'Oops!' }} />

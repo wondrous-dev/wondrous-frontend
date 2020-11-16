@@ -19,9 +19,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "276263235787-drii7vkaaflaql1vr7hvgc343igtlfud.apps.googleusercontent.com"
+        }
+      },
+      "bundleIdentifier": "co.wonder.wonderapp"
     },
     "android": {
+      "package": "co.wonder.wonderapp",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

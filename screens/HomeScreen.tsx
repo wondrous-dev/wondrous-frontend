@@ -35,21 +35,21 @@ export default function HomeScreen({
       </Title>
       <SvgImage width="196" height="200" style={styles.logo} srcElement={SuperHeroSvg} />
       <MyCarousel data={homeScreens} />
-      <PrimaryButton textStyle={{
+      <PrimaryButton onPress={() => navigation.navigate('Signup')} textStyle={{
         color: White
       }} textPressStyle = {{
         color: White
       }}>
+          <ButtonText color={White}>
           Get started
+          </ButtonText>
       </PrimaryButton>
-      <SecondaryButton style={{
+      <SecondaryButton onPress={() => navigation.navigate('Signup')} style={{
         marginTop: 8
-      }} textStyle={{
-        color: Black
-      }} textPressStyle = {{
-        color: Black
       }}>
+        <ButtonText color={Black}>
           Log in
+        </ButtonText>
       </SecondaryButton>
     </View>
   )

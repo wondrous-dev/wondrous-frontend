@@ -6,7 +6,15 @@ import { Blue400, Blue500, White, Grey100, Black } from '../../../constants/Colo
 import baseStyle from './style'
 import { ButtonText } from '../Text'
 
-const BaseButton = ({ onPress, children, style, baseStyle, buttonPressStyle, color, textStyle, textPressStyle }) => {
+const BaseButton = ({
+  onPress,
+  children,
+  style,
+  baseStyle,
+  buttonPressStyle,
+  color,
+  textStyle,
+  textPressStyle }) => {
   const [pressStatus, setPressStatus] = useState(false)
   const finalStyle = pressStatus ? {
     ...baseStyle,
@@ -25,18 +33,16 @@ const BaseButton = ({ onPress, children, style, baseStyle, buttonPressStyle, col
       onShowUnderlay={() => setPressStatus(true)}
       underlayColor={pressStatus ? baseStyle.backgroundColor : buttonPressStyle.backgroundColor}
     >
-      <ButtonText style={finalTextStyle} color={finalTextStyle.color}>
         {children}
-      </ButtonText>
     </TouchableHighlight>
   )
 }
 
 export function PrimaryButton ({ onPress, children, style, textStyle, textPressStyle }) {
   return <BaseButton onPress={onPress} style={style} baseStyle={baseStyle.primary} buttonPressStyle={{
+    backgroundColor: Blue500,
     ...baseStyle.primary,
-    ...style,
-    backgroundColor: Blue500
+    ...style
   }} textStyle={textStyle} textPressStyle={textPressStyle}>
     
     {children}
@@ -45,10 +51,10 @@ export function PrimaryButton ({ onPress, children, style, textStyle, textPressS
 
 export function SecondaryButton ({ onPress, children, style, textStyle, textPressStyle }) {
   return <BaseButton onPress={onPress} style={style} baseStyle={baseStyle.secondary} buttonPressStyle={{
+    backgroundColor: Grey100,
+    color: Black,
   ...baseStyle.secondary,
   ...style,
-  backgroundColor: Grey100,
-  color: Black
 }} textStyle={textStyle} textPressStyle={textPressStyle}>
     {children}
   </BaseButton>
@@ -73,3 +79,5 @@ SecondaryButton.propTypes = {
   children: PropTypes.node,
   onPress: PropTypes.func
 }
+
+export * from './Google'
