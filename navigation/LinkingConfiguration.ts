@@ -9,9 +9,9 @@ export default {
           Home: 'home'
         }
       },
-      Login: {
+      Signup: {
           screens: {
-            Login: 'login'
+            Signup: 'signup'
           }
       },
       Root: {
