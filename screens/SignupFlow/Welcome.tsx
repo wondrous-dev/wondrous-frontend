@@ -5,6 +5,8 @@ import { StyleSheet, View, SafeAreaView } from 'react-native'
 import { RootStackParamList } from '../types'
 import { Orange, Black } from '../constants/Colors'
 import { styles } from '../HomeScreen'
+import { Title, Subheading, Paragraph, ButtonText } from '../../storybook/stories/Text'
+import { withAuth, useMe } from '../../components/withAuth'
 
 const loginStyles = StyleSheet.create({
   container: {
@@ -13,9 +15,11 @@ const loginStyles = StyleSheet.create({
 
 })
 
-export default function WelcomeScreen({
+function WelcomeScreen({
   navigation
 }: StackScreenProps<RootStackParamList, 'Welcome'>) {
+  const user = useMe()
+
   return (
     <View style={styles.container}>
       <Title>
@@ -24,3 +28,5 @@ export default function WelcomeScreen({
     </View>
   )
 }
+
+export default withAuth(WelcomeScreen)

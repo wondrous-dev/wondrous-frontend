@@ -14,6 +14,11 @@ export default {
             Signup: 'signup'
           }
       },
+      Welcome: {
+        screens: {
+          Welcome: 'welcome'
+        }
+      },
       Root: {
         screens: {
           TabOne: {

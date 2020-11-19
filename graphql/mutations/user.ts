@@ -7,6 +7,9 @@ export const SIGNUP = gql`
       user {
         id
         email
+        firstName
+        lastName
+        privacyLevel
       }
     }
   }

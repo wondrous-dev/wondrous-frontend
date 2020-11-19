@@ -26,6 +26,7 @@
     "@apollo/client": "^3.2.5",
     "@expo/vector-icons": "^10.0.0",
     "@expo/webpack-config": "^0.12.43",
+    "@react-native-async-storage/async-storage": "^1.13.2",
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/bottom-tabs": "^5.8.0",
     "@react-navigation/native": "^5.7.3",

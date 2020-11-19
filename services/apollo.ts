@@ -48,7 +48,20 @@ const link = split(
   httpLink
 )
 
-const cache = new InMemoryCache()
+const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        whoami(existingData, { args, toReference }) {
+          return existingData || toReference({ __typename: 'User', ...args })
+        },
+        users(existingData, { args, toReference }) {
+          return existingData || toReference({ __typename: 'User', ...args })
+        }
+      }
+    }
+  }
+})
 
 export default new ApolloClient({
   link,

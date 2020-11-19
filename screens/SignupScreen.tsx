@@ -1,6 +1,7 @@
 import React , { useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { StyleSheet, View, SafeAreaView } from 'react-native'
+import { StyleSheet, View, SafeAreaView, ActivityIndicator } from 'react-native'
+import { useMutation } from '@apollo/client'
 // import {
 //   GoogleSignin,
 //   GoogleSigninButton,
@@ -15,23 +16,40 @@ import { GoogleLogin } from '../storybook/stories/Button'
 import { scale, moderateScale, verticalScale } from '../utils/scale'
 import { styles } from './HomeScreen'
 import GoogleSvg from '../assets/images/social-auth/google.svg'
+import { SIGNUP } from '../graphql/mutations'
+import { withAuth, useMe } from '../components/withAuth'
 
 const loginStyles = StyleSheet.create({
   container: styles.container
 })
 
-export default function SignupScreen({
-  navigation
-}: StackScreenProps<RootStackParamList, 'Signup'>) {
+function SignupScreen({
+  navigation,
+}) {
+  const user = useMe()
   const [loginStatus, setLoginStatus] = useState(null)
+  const [signup] = useMutation(SIGNUP)
+  if (user) {
+    navigation.navigate('Welcome')
+  }
   return (
     <View style={styles.container}>
       <Title>
         Wonder
       </Title>
-      <GoogleLogin style={{
+      {
+        loginStatus === 'loading' ?
+        <ActivityIndicator />
+        :
+        <>
+                <GoogleLogin style={{
         marginTop: 48
-      }} loginStatus={loginStatus} setLoginStatus={setLoginStatus} />
+      }} callToAction={signup} loginStatus={loginStatus} setLoginStatus={setLoginStatus} navigation={navigation} />
+        </>
+      }
+
     </View>
   )
 }
+
+export default withAuth(SignupScreen)
