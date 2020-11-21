@@ -1,7 +1,6 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import * as Google from 'expo-google-app-auth'
-import { useMutation } from '@apollo/client'
 
 import { ButtonText } from '../Text'
 import { SecondaryButton } from './index'
@@ -9,7 +8,6 @@ import { SvgImage } from '../Image'
 import GoogleSvg from '../../../assets/images/social-auth/google.svg'
 import baseStyle from './style'
 import { Grey200 } from '../../../constants/Colors'
-import { SIGNUP } from '../../../graphql/mutations'
 import { storeAuthHeader } from '../../../components/withAuth'
 
 const buttonStyle = StyleSheet.create({
@@ -20,7 +18,7 @@ const buttonStyle = StyleSheet.create({
   }
 })
 
-const signInAsync = async ({ graphqlCall, setLoginStatus, navigation }) => {
+const signInAsync = async ({ graphqlCall, setLoginStatus, setLoginError, navigation }) => {
   try {
     const result = await Google.logInAsync({
       androidClientId: '276263235787-b3j16n95sv6c6u7tdfi6mhs9mjdgh55e.apps.googleusercontent.com',
@@ -53,17 +51,18 @@ const signInAsync = async ({ graphqlCall, setLoginStatus, navigation }) => {
       return { cancelled: true }
     }
   } catch (e) {
+    setLoginError(e.message)
     return { error: true }
   }
 }
 
-export const GoogleLogin = ({ style, callToAction, loginStatus, setLoginStatus, navigation }) => {
+export const GoogleLogin = ({ style, callToAction, loginStatus, setLoginStatus, setLoginError, navigation }) => {
   // TODO: set up separate procedure for web (awaiting issue clearance for https://github.com/expo/expo/issues/11061)
   return (
     <SecondaryButton style={{
       ...baseStyle.google,
       ...style
-      }} onPress={() => signInAsync({ graphqlCall: callToAction, setLoginStatus, navigation }) }>
+      }} onPress={() => signInAsync({ graphqlCall: callToAction, setLoginStatus, setLoginError, navigation }) }>
       <View style={{flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'center', width: '100%'}}>
         <SvgImage width="32" height="32" srcElement={GoogleSvg} />
         <ButtonText style={buttonStyle.googleButtonText} color={Grey200}>

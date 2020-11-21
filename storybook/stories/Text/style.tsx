@@ -1,5 +1,5 @@
 import { scale, moderateScale, verticalScale } from '../../../utils/scale'
-import { White } from '../../../constants/Colors'
+import { White, Red400 } from '../../../constants/Colors'
 
 export default {
   title: {
@@ -23,5 +23,11 @@ export default {
     fontFamily: 'Rubik',
     fontSize: 14,
     lineHeight: 20
+  },
+  errorText: {
+    fontFamily: 'Rubik',
+    fontSize: 12,
+    lineHeight: 20,
+    color: Red400
   }
 }

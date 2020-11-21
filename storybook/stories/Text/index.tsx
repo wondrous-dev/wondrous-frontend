@@ -33,3 +33,13 @@ export const ButtonText = ({ style, children, color }) => (
     }
   }}> {children} </Text>
 )
+
+export const ErrorText = ({ style, children, color }) => (
+  <Text style={{
+    ...baseStyle.errorText,
+    ...style,
+    ... {
+      color
+    }
+  }}> {children} </Text>
+)

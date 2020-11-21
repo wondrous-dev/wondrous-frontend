@@ -10,9 +10,9 @@ import { useMutation } from '@apollo/client'
 
 import { RootStackParamList } from '../types'
 import { Grey200} from '../constants/Colors'
-import { Title, Subheading, Paragraph, ButtonText } from '../storybook/stories/Text'
+import { Title, ErrorText } from '../storybook/stories/Text'
 import { SvgImage } from '../storybook/stories/Image'
-import { GoogleLogin } from '../storybook/stories/Button'
+import { GoogleLogin, FacebookLogin } from '../storybook/stories/Button'
 import { scale, moderateScale, verticalScale } from '../utils/scale'
 import { styles } from './HomeScreen'
 import GoogleSvg from '../assets/images/social-auth/google.svg'
@@ -28,6 +28,7 @@ function SignupScreen({
 }) {
   const user = useMe()
   const [loginStatus, setLoginStatus] = useState(null)
+  const [loginError, setLoginError] = useState('')
   const [signup] = useMutation(SIGNUP)
   if (user) {
     navigation.navigate('Welcome')
@@ -39,12 +40,25 @@ function SignupScreen({
       </Title>
       {
         loginStatus === 'loading' ?
-        <ActivityIndicator />
+        <View style={{
+          marginTop: 48
+        }}><ActivityIndicator /></View>
         :
         <>
-                <GoogleLogin style={{
-        marginTop: 48
-      }} callToAction={signup} loginStatus={loginStatus} setLoginStatus={setLoginStatus} navigation={navigation} />
+          <GoogleLogin style={{
+            marginTop: 48
+          }} callToAction={signup} loginStatus={loginStatus} setLoginStatus={setLoginStatus} navigation={navigation} setLoginError={setLoginError} />
+          <FacebookLogin style={{
+            marginTop: 16
+          }} callToAction={signup} loginStatus={loginStatus} setLoginStatus={setLoginStatus} navigation={navigation} setLoginError={setLoginError} />
+          {
+            loginError && 
+            <ErrorText style={{
+              marginTop: 8
+            }}>
+              {loginError}
+            </ErrorText>
+          }
         </>
       }
 

@@ -22,8 +22,14 @@ export default {
   google: {
     height: 68,
     display: 'flex',
-    alignItems: 'center',
     justifyContent: 'center',
     width: 300
+  },
+  facebook: {
+    height: 68,
+    display: 'flex',
+    justifyContent: 'center',
+    width: 300,
+    backgroundColor: '#1877f2'
   }
 }

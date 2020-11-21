@@ -81,3 +81,4 @@ SecondaryButton.propTypes = {
 }
 
 export * from './Google'
+export * from './Facebook'

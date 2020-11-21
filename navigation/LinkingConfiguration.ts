@@ -14,6 +14,11 @@ export default {
             Signup: 'signup'
           }
       },
+      Login: {
+        screens: {
+          Login: 'login'
+        }
+      },
       Welcome: {
         screens: {
           Welcome: 'welcome'
