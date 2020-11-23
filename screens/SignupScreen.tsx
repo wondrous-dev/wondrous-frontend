@@ -28,7 +28,7 @@ function SignupScreen({
 }) {
   const user = useMe()
   const [loginStatus, setLoginStatus] = useState(null)
-  const [loginError, setLoginError] = useState('')
+  const [loginError, setLoginError] = useState(null)
   const [signup] = useMutation(SIGNUP)
   if (user) {
     navigation.navigate('Welcome')
