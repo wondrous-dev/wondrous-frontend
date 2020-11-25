@@ -29,7 +29,7 @@ export default function HomeScreen({
     }
   ]
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Title>
         Wonder
       </Title>
@@ -51,7 +51,7 @@ export default function HomeScreen({
           Log in
         </ButtonText>
       </SecondaryButton>
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
     backgroundColor: Orange,
     alignItems: 'center',
     padding: Platform.OS === 'web' ? moderateScale(16) : 16,
-    paddingTop: 72
+    paddingTop: 48
   },
   logo: {
     marginTop: moderateScale(48),
