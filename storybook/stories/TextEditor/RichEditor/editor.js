@@ -258,9 +258,6 @@ function createHTML(options = {}) {
             addEventListener(content, 'focus', function () {
                 postAction({type: 'CONTENT_FOCUSED'});
             });
-            addEventListener(content, 'keydown', function(e) {
-                postAction({type: 'KEY_DOWN', data: e.key})
-            })
             var message = function (event){
                 var msgData = JSON.parse(event.data), action = Actions[msgData.type];
                 if (action ){

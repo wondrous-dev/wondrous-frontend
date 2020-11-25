@@ -36,41 +36,50 @@ export class DescriptionTextEditor extends React.Component {
     }
   }
 
+  callAutocomplete = async () => {
+    try {
+      console.log('state string', this.state.autocompleteString)
+      const result = await apollo.query({
+        query: GET_AUTOCOMPLETE_USERS,
+        variables: {
+          username: this.state.autocompleteString
+        },
+      })
+      console.log('results', result)
+    } catch (err) {
+      console.log('error getting autocomplete users', JSON.stringify(err, null, 2))
+    }
+  }
+
   handleKey = async (e) => {
     console.log('eve', e)
     if (e === '@') {
       // set state for tagging users and post request for searching users
+      console.log('the fucj', this.state.searchUsers)
       this.setState({
-        searchUsers: !this.state.searchUsers
-      })
-      try {
-        const result = await apollo.query({
-          query: GET_AUTOCOMPLETE_USERS,
-          variables: {
-            username: this.state.autocompleteString
-          },
-          fetchPolicy: 'network-only'
-        })
-        // observableQuery.subscribe({
-        //   next: ({ data }) => console.log
-        // })
-        console.log('results', result)
-      } catch (err) {
-        console.log('error getting autocomplete users', JSON.stringify(err, null, 2))
-      }
+        searchUsers: true
+      }, this.callAutocomplete)
     } else if (e === ' ') {
       if (this.state.searchUsers) {
         this.setState({
-          searchUsers: false
+          searchUsers: false,
+          autocompleteString: ''
         })
       }
     } else {
       if (e !== 'Enter') {
+        console.log('this', this.state.searchUsers)
         if (this.state.searchUsers) {
           this.setState({
             autocompleteString: this.state.autocompleteString + e
-          })
+          }, this.callAutocomplete)
         }
+      } else {
+        // Basically choosing dropdown menu
+        this.setState({
+          searchUsers: false,
+          autocompleteString: ''
+        })
       }
     }
   }
