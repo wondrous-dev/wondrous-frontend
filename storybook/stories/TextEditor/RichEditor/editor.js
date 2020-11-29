@@ -93,7 +93,6 @@ function createHTML(options = {}) {
                     selection.selectAllChildren(editor.content);
                     selection.collapseToEnd();
                 }
-                editor.content.focus();
             } catch(e){
                 console.log(e)
             }
@@ -155,7 +154,14 @@ function createHTML(options = {}) {
             },
             content: {
                 setDisable: function(dis){ this.blur(); editor.content.contentEditable = !dis},
-                setHtml: function(html) { editor.content.innerHTML = html; focusCurrent()},
+                setHtml: function(html) { editor.content.innerHTML = html; setTimeout(function() {
+                    range = document.createRange();//Create a range (a range is a like the selection but invisible)
+                    range.selectNodeContents(editor.content);//Select the entire contents of the element with the range
+                    range.collapse(false);//collapse the range to the end point. false means collapse to end rather than the start
+                    selection = window.getSelection();//get the selection object (allows you to change selection)
+                    selection.removeAllRanges();//remove any selections already made
+                    selection.addRange(range);//make the range you have just created the visible selection
+                }, 0)},
                 getHtml: function() { return editor.content.innerHTML; },
                 blur: function() { editor.content.blur(); },
                 focus: function() { focusCurrent(); },

@@ -239,7 +239,7 @@ export class DescriptionTextEditor extends React.Component {
   }
 
   replaceLink = ({ username, index, endIndex, newHtml}) => {
-    newHtml = newHtml.slice(0, index) + `<a href='/user/${username}'>@${username}</a>` + newHtml.slice(endIndex + 1)
+    newHtml = newHtml.slice(0, index) + `<a href='/user/${username}'>@${username}</a>` + newHtml.slice(endIndex)
     return newHtml
   }
 
@@ -266,9 +266,7 @@ export class DescriptionTextEditor extends React.Component {
       searchUsers: false,
       autocompleteString: ''
     })
-    console.log('this', this.richText)
     this.richText.current.setContentHTML(newHtml)
-    // this.richText.current.insertText('hello')
   }
 
   createContentStyle = (theme) => {
