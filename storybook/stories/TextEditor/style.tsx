@@ -7,7 +7,7 @@ export default StyleSheet.create({
     borderWidth: 1,
     borderColor: Grey300,
     width: '100%',
-    borderRadius: 8,
+    borderRadius: 8
   }
 })
 

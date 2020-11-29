@@ -15,7 +15,7 @@ function createHTML(options = {}) {
     <style>
         * {outline: 0px solid transparent;-webkit-tap-highlight-color: rgba(0,0,0,0);-webkit-touch-callout: none;}
         html, body { margin: 0; padding: 0;font-family: Arial, Helvetica, sans-serif; font-size:1em;}
-        body { overflow-y: hidden; -webkit-overflow-scrolling: touch;height: 100%;background-color: ${backgroundColor};}
+        body { overflow-y: scroll; -webkit-overflow-scrolling: touch;height: 100%;background-color: ${backgroundColor};}
         img {max-width: 98%;margin-left:auto;margin-right:auto;display: block;}
         video {max-width: 98%;margin-left:auto;margin-right:auto;display: block;}
         .content {font-family: Arial, Helvetica, sans-serif;color: ${color}; width: 100%;height: 100%;-webkit-overflow-scrolling: touch;padding-left: 0;padding-right: 0;}
@@ -93,6 +93,7 @@ function createHTML(options = {}) {
                     selection.selectAllChildren(editor.content);
                     selection.collapseToEnd();
                 }
+                editor.content.focus();
             } catch(e){
                 console.log(e)
             }
@@ -154,7 +155,7 @@ function createHTML(options = {}) {
             },
             content: {
                 setDisable: function(dis){ this.blur(); editor.content.contentEditable = !dis},
-                setHtml: function(html) { editor.content.innerHTML = html; },
+                setHtml: function(html) { editor.content.innerHTML = html; focusCurrent()},
                 getHtml: function() { return editor.content.innerHTML; },
                 blur: function() { editor.content.blur(); },
                 focus: function() { focusCurrent(); },

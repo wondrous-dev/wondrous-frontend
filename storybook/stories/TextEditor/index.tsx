@@ -12,15 +12,116 @@ import {
   Text,
   TextInput,
   View,
-  AppState
+  AppState,
+  Animated,
+  ActivityIndicator,
+  Image,
+  Pressable
 } from 'react-native'
 
 import { RichEditor, RichToolbar } from './RichEditor'
+import { SvgImage } from '../Image'
+import Placeholder from '../../../assets/images/placeholder.svg'
 import styles from './style'
-import { Black } from '../../../constants/Colors'
+import { Black, Grey100, Grey200, Grey300, White } from '../../../constants/Colors'
 import apollo from '../../../services/apollo'
 import { GET_AUTOCOMPLETE_USERS } from '../../../graphql/queries'
 
+function findIndexes(source, find) {
+  if (!source) {
+    return [];
+  }
+  if (!find) {
+      return source.split('').map(function(_, i) { return i; });
+  }
+  var result = [];
+  var i = 0;
+  while(i < source.length) {
+    if (source.substring(i, i + find.length) == find) {
+      result.push(i);
+      i += find.length;
+    } else {
+      i++;
+    }
+  }
+  return result;
+}
+
+function findEndIndex (source, index) {
+  let i = index
+  while(i < source.length && source.charAt(i) !== ' ' && source.substring(i, i+6) !== '&nbsp' && source.charAt(i) !== '<') {
+
+    i++
+  }
+  return i
+}
+
+const AutocompleteListItem = ({ user, autocompleteFill }) => {
+  return (
+    <Pressable onPress={() => autocompleteFill(user)}>
+      <View style={{
+        flexDirection: 'row',
+        padding: 10,
+        alignItems: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: Grey100,
+        
+      }}>
+        {
+          user.profilePicture && user.profilePicture !== 'None' ?
+          <Image
+          source={{uri: user.profilePicture}} style={{
+            width: 30,
+            height: 30,
+            borderRadius: 15,
+            marginRight: 8
+          }} />
+          :
+          <SvgImage width="30" height="30" srcElement={Placeholder} style={{
+            marginRight: 8
+          }} />
+        }
+        <View>
+          <Text style={{color: Black, marginBottom: 4, fontWeight: 'bold'}}>
+            {user.firstName} {user.lastName}
+          </Text>
+          <Text style={{ color: Grey200, fontSize: 14 }}>
+            @{user.username}
+          </Text>
+        </View>
+      </View>
+    </Pressable>
+  )
+}
+
+const AutocompleteList = ({ users, autocompleteLoading, autocompleteFill}) => {
+  const margin = users.length * -58
+  return (
+    <SafeAreaView style={{
+      flex: 1,
+      width: '100%',
+      backgroundColor: White,
+      borderWidth: 1,
+      borderColor: Grey300,
+      marginTop: margin,
+      zIndex: 10,
+      position: 'absolute',
+      justifyContent: 'center',
+      borderRadius: 4
+    }}>
+      {
+        autocompleteLoading ?
+        <ActivityIndicator />
+        :
+        <>
+          {users.map(user => (
+            <AutocompleteListItem key={user.id} user={user} autocompleteFill={autocompleteFill} />
+          ))}
+        </>
+      }
+    </SafeAreaView>
+  )
+}
 export class DescriptionTextEditor extends React.Component {
   richText = React.createRef()
 
@@ -28,36 +129,72 @@ export class DescriptionTextEditor extends React.Component {
     super(props)
     const theme = 'light'
     const contentStyle = this.createContentStyle(theme)
-    this.state = {
+    this.state = {  
       contentStyle,
       theme,
       searchUsers: false,
-      autocompleteString: ''
+      autocompleteString: '',
+      autocompleteLoading: false,
+      autocompleteUserList: [],
+      content: ''
     }
+    this.paddingInput = new Animated.Value(0)
   }
 
+  componentDidMount() {
+    this.keyboardWillShowSub = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow)
+    this.keyboardWillHideSub = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide)
+  }
+
+  componentWillUnmount() {
+    this.keyboardWillShowSub.remove()
+    this.keyboardWillHideSub.remove()
+  }
+
+  keyboardWillShow = (event) => {
+    Animated.timing(this.paddingInput, {
+        duration: event.duration,
+        toValue: 60,
+        useNativeDriver: false
+    }).start();
+  }
+
+  keyboardWillHide = (event) => {
+    Animated.timing(this.paddingInput, {
+        duration: event.duration,
+        toValue: 0,
+        useNativeDriver: false
+    }).start()
+  }
+
+
   callAutocomplete = async () => {
+    this.setState({
+      autocompleteLoading: true
+    })
     try {
-      console.log('state string', this.state.autocompleteString)
       const result = await apollo.query({
         query: GET_AUTOCOMPLETE_USERS,
         variables: {
           username: this.state.autocompleteString
         },
       })
-      console.log('results', result)
+      if (result.data) {
+        this.setState({
+          autocompleteUserList: result.data.getAutocompleteUsers,
+          autocompleteLoading: false
+        })
+      }
     } catch (err) {
       console.log('error getting autocomplete users', JSON.stringify(err, null, 2))
     }
   }
 
   handleKey = async (e) => {
-    console.log('eve', e)
     if (e === '@') {
       // set state for tagging users and post request for searching users
-      console.log('the fucj', this.state.searchUsers)
       this.setState({
-        searchUsers: true
+        searchUsers: !this.state.searchUsers
       }, this.callAutocomplete)
     } else if (e === ' ') {
       if (this.state.searchUsers) {
@@ -66,15 +203,25 @@ export class DescriptionTextEditor extends React.Component {
           autocompleteString: ''
         })
       }
+    } else if (e === 'Backspace') {
+      if (this.state.searchUsers && !this.state.autocompleteString) {
+        this.setState({
+          searchUsers: false
+        })
+      } else if (this.state.searchUsers && this.state.autocompleteString) {
+        this.setState({
+          autocompleteString: this.state.autocompleteString.slice(0, -1) 
+        }, this.callAutocomplete)
+      }
     } else {
-      if (e !== 'Enter') {
+      if (e !== 'Enter' && /^[A-Za-z0-9_]$/.test(e)) {
         console.log('this', this.state.searchUsers)
         if (this.state.searchUsers) {
           this.setState({
             autocompleteString: this.state.autocompleteString + e
           }, this.callAutocomplete)
         }
-      } else {
+      } else if (e === 'Enter') {
         // Basically choosing dropdown menu
         this.setState({
           searchUsers: false,
@@ -83,9 +230,47 @@ export class DescriptionTextEditor extends React.Component {
       }
     }
   }
+
   handleChange = (html) => {
     console.log('editor data:', html)
+    this.setState({
+      content: html
+    })
   }
+
+  replaceLink = ({ username, index, endIndex, newHtml}) => {
+    newHtml = newHtml.slice(0, index) + `<a href='/user/${username}'>@${username}</a>` + newHtml.slice(endIndex + 1)
+    return newHtml
+  }
+
+  replaceAutocompleteLink = (user) => {
+    const { username } = user
+    // Find the autocompletestring we're on right now.
+    const instances = findIndexes(this.state.content, '@' + this.state.autocompleteString)
+    let newHtml = this.state.content
+    console.log('old', newHtml)
+    instances.forEach(instance => {
+      // Find whether there's a </a> after it
+      const endIndex = findEndIndex(this.state.content, instance)
+      if (endIndex + '</a>'.length < newHtml.length) {
+        if (this.state.content.substring(endIndex, endIndex + '</a>'.length) !== '</a>') {
+          newHtml = this.replaceLink({ username, index: instance, endIndex, newHtml })
+        }
+      } else {
+          newHtml = this.replaceLink({ username, index: instance, endIndex, newHtml })
+      }
+    })
+
+    this.setState({
+      content: newHtml,
+      searchUsers: false,
+      autocompleteString: ''
+    })
+    console.log('this', this.richText)
+    this.richText.current.setContentHTML(newHtml)
+    // this.richText.current.insertText('hello')
+  }
+
   createContentStyle = (theme) => {
     // Can be selected for more situations (cssText or contentCSSText).
     const contentStyle = {
@@ -108,22 +293,44 @@ export class DescriptionTextEditor extends React.Component {
       contentStyle
     } = this.state
     const { backgroundColor, color, placeholderColor } = contentStyle
-    const themeBg = { backgroundColor, height: 80 }
+    const themeBg = { backgroundColor, height: 80, borderRadius: 8 }
     return (
-      <SafeAreaView style={[styles.descriptionContainer, themeBg]}>
-        <RichEditor
-          containerStyle={{
-            maxHeight: 80,
-            borderRadius: 8
-          }}
-          editorStyle={{
-            maxHeight: 80
-          }}
-          ref={this.richText}
-          placeholder='Add description...'
-          onChange={this.handleChange}
-          onKeyDown={this.handleKey}
-        />
+      <SafeAreaView style={{
+        position: 'absolute',
+        bottom: 0,
+        width: '100%'
+      }}>
+        <KeyboardAvoidingView style={[themeBg]} behavior='padding'>
+          <Animated.View style={{marginBottom: this.paddingInput}}>
+            {
+              this.state.searchUsers &&
+              <AutocompleteList users={this.state.autocompleteUserList} autocompleteLoading={this.state.autocompleteLoading} autocompleteFill={this.replaceAutocompleteLink} />
+            }
+            <ScrollView
+            nestedScrollEnabled={true}
+            
+            >
+            
+            <RichEditor
+              containerStyle={{
+                maxHeight: 80,
+                borderRadius: 8
+              }}
+              editorStyle={{
+                maxHeight: 80,
+                borderWidth: 1,
+                borderColor: Grey300,
+                
+              }}
+
+              ref={this.richText}
+              placeholder='Add description...'
+              onChange={this.handleChange}
+              onKeyDown={this.handleKey}
+            />
+            </ScrollView>
+          </Animated.View>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     )
   }
