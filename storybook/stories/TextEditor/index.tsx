@@ -22,7 +22,6 @@ import {
 import { RichEditor, RichToolbar } from './RichEditor'
 import { SvgImage } from '../Image'
 import Placeholder from '../../../assets/images/placeholder.svg'
-import styles from './style'
 import { Black, Grey100, Grey200, Grey300, White } from '../../../constants/Colors'
 import apollo from '../../../services/apollo'
 import { GET_AUTOCOMPLETE_USERS } from '../../../graphql/queries'
@@ -215,7 +214,6 @@ export class DescriptionTextEditor extends React.Component {
       }
     } else {
       if (e !== 'Enter' && /^[A-Za-z0-9_]$/.test(e)) {
-        console.log('this', this.state.searchUsers)
         if (this.state.searchUsers) {
           this.setState({
             autocompleteString: this.state.autocompleteString + e
@@ -248,7 +246,6 @@ export class DescriptionTextEditor extends React.Component {
     // Find the autocompletestring we're on right now.
     const instances = findIndexes(this.state.content, '@' + this.state.autocompleteString)
     let newHtml = this.state.content
-    console.log('old', newHtml)
     instances.forEach(instance => {
       // Find whether there's a </a> after it
       const endIndex = findEndIndex(this.state.content, instance)
@@ -266,6 +263,7 @@ export class DescriptionTextEditor extends React.Component {
       searchUsers: false,
       autocompleteString: ''
     })
+    //TODO set props for selected user to send to the backend
     this.richText.current.setContentHTML(newHtml)
   }
 

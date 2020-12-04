@@ -18,6 +18,7 @@ import { styles } from './HomeScreen'
 import GoogleSvg from '../assets/images/social-auth/google.svg'
 import { SIGNUP } from '../graphql/mutations'
 import { withAuth, useMe } from '../components/withAuth'
+import { CardList } from '../storybook/stories/CardList'
 
 const loginStyles = StyleSheet.create({
   container: styles.container
@@ -62,6 +63,7 @@ function SignupScreen({
         </>
       }
 
+      <CardList />
     </View>
   )
 }

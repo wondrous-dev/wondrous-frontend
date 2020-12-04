@@ -15,6 +15,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
+    "experiments": {
+      "turboModules": true
+    },
     "assetBundlePatterns": [
       "**/*"
     ],

@@ -7,6 +7,7 @@ import { Orange, Black } from '../constants/Colors'
 import { styles } from '../HomeScreen'
 import { Title, Subheading, Paragraph, ButtonText } from '../../storybook/stories/Text'
 import { DescriptionTextEditor  } from '../../storybook/stories/TextEditor'
+import { CardList } from '../../storybook/stories/CardList'
 import { withAuth, useMe } from '../../components/withAuth'
 
 const loginStyles = StyleSheet.create({
@@ -26,6 +27,7 @@ function WelcomeScreen({
       <Title>
         Welcome to Wonder! Successfully logged in
       </Title>
+      <CardList />
       <DescriptionTextEditor  />
     </View>
   )

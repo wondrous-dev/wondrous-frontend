@@ -50,7 +50,7 @@ const signInAsync = async ({ callToAction, setLoginStatus, setLoginError, naviga
       }
     }
   } catch (error) {
-    console.log('Facebook sign in error', error)
+    console.log('Facebook sign in error', JSON.stringify(error, null, 2))
     //TODO set error!
     setLoginError(error.message)
   }
