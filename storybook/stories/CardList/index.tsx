@@ -56,6 +56,7 @@ class CardList extends React.Component {
     layouts: this.props.layouts || { lg: [] },
     data: this.props.data || dummies,
     scrollEnabled: true,
+    onDragEnd: false
   }
 
   onMoveEnd = ({ data }: OnMoveEndInfo<Language>) => {
@@ -78,8 +79,16 @@ class CardList extends React.Component {
         width={width}
         height={50}
         itemRefs={this.itemRefs}
+        onDragEnd={this.state.onDragEnd}
       />
     )
+  }
+
+  onDragEnd = ({ data }) => {
+    this.setState({
+      data,
+      onDrag: true
+    })
   }
 
   render () {
@@ -93,7 +102,7 @@ class CardList extends React.Component {
           data={this.state.data}
           renderItem={this.renderItem}
           keyExtractor={(item) => item.id}
-          onDragEnd={({ data }) => this.setState({ data })}
+          onDragEnd={this.onDragEnd}
           activationDistance={15}
         />
           {/* <DragSortableView

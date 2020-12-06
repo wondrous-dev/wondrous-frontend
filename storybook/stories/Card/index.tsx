@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
       flex: 1,
   },
   flex: {
-    flex: 1
+    flex: 1,
   },
   row: {
     flexDirection: "row",
@@ -37,7 +37,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     padding: 15,
     marginBottom: 16,
-    width: '100%'
+    width: '100%',
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: Grey400,
+    elevation: 7,
+    shadowOpacity: 0.25,
+    shadowColor: Grey400,
+    shadowRadius: 2,
+    shadowOffset: { width: 2, height: 2 }
   },
   text: {
     fontWeight: "bold",
@@ -46,8 +54,8 @@ const styles = StyleSheet.create({
   },
   underlayRight: {
     flex: 1,
-    backgroundColor: "teal",
-    justifyContent: "flex-start"
+    justifyContent: "flex-start",
+    backgroundColor: Grey400
   },
   underlayLeft: {
     flex: 1,
@@ -104,21 +112,19 @@ class Card extends React.Component {
     const { detail } = item.item
     return (
       <View style={[styles.row, { backgroundColor: White }]}>
-        <View style={[{ flex: 0.1, alignItems: "flex-start" }]}>
             <PlatformTouchable
-              onPressOut={!!openDirection ? close : () => openRight(1)}
+
+              onLongPress={item.drag}
+              style={[{ flex: 0.1, alignItems: "flex-start" }]}
             >
               <Text style={styles.text}>{` `}</Text>
             </PlatformTouchable>
-        </View>
         <PlatformTouchable style={[styles.flex, { width: '100%'}]} onLongPress={item.drag}>
           <Text style={[styles.text, { width: '100%'}]}>{detail}</Text>
         </PlatformTouchable>
-        <View style={[{ flex: 0.1, alignItems: "flex-end" }]}>
-            <PlatformTouchable onPressOut={!!openDirection ? close : openLeft}>
-              <Text style={styles.text}>{` `}</Text>
-            </PlatformTouchable>
-        </View>
+          <PlatformTouchable  onLongPress={item.drag} style={[{ flex: 0.1, alignItems: "flex-end" }]}>
+            <Text style={styles.text}>{` `}</Text>
+          </PlatformTouchable>
       </View>
     );
   }
