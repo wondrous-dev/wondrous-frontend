@@ -77,7 +77,7 @@ class CardList extends React.Component {
         moveEnd={moveEnd}
         isActive={isActive}
         width={width}
-        height={50}
+        height={64}
         itemRefs={this.itemRefs}
         onDragEnd={this.state.onDragEnd}
       />

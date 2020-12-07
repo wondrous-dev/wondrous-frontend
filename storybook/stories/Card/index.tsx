@@ -6,12 +6,16 @@ import {
   StyleSheet,
   Platform,
   UIManager,
-  TouchableOpacity
+  TouchableOpacity,
+  Dimensions
 } from 'react-native'
-
-import { Grey400, Black, Orange, White } from '../../../constants/Colors'
 import { TouchableOpacity as RNGHTouchableOpacity } from "react-native-gesture-handler"
 import Animated from "react-native-reanimated"
+
+import { Grey400, Black, Green400, White } from '../../../constants/Colors'
+import CompleteSvg from '../../../assets/images/complete.svg'
+import ArchiveSvg from '../../../assets/images/archive.svg'
+import { SvgImage } from '../Image'
 
 const { multiply, sub } = Animated
 const isAndroid = Platform.OS === "android"
@@ -39,7 +43,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     width: '100%',
     borderRadius: 4,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: Grey400,
     elevation: 7,
     shadowOpacity: 0.25,
@@ -55,11 +59,12 @@ const styles = StyleSheet.create({
   underlayRight: {
     flex: 1,
     justifyContent: "flex-start",
-    backgroundColor: Grey400
+    backgroundColor: Green400,
+    color: White
   },
   underlayLeft: {
     flex: 1,
-    backgroundColor: "tomato",
+    backgroundColor: Grey400,
     justifyContent: "flex-end"
   }
 })
@@ -74,20 +79,13 @@ class Card extends React.Component {
     super(props)
   }
 
-  onRowDidOpen = () => {
-    console.log('Hi')
-  }
-
-  onRowDidClose = () => {
-    console.log('bye')
-  }
-
   renderUnderlayLeft = ({ item, percentOpen }) => (
     <Animated.View
-      style={[styles.row, styles.underlayLeft, { opacity: percentOpen }]} // Fade in on open
+      style={[styles.row, styles.underlayLeft, { opacity: percentOpen, borderWidth: 0 }]} // Fade in on open
     >
-      <PlatformTouchable onPressOut={() => console.log('hi')}>
-        <Text style={styles.text}>{`[x]`}</Text>
+      <PlatformTouchable style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 4 }}>
+        <Text style={[styles.text, { marginRight: 8 }]}>Archive</Text>
+        <SvgImage width="16" height="16" srcElement={ArchiveSvg} />
       </PlatformTouchable>
     </Animated.View>
   )
@@ -98,12 +96,15 @@ class Card extends React.Component {
         styles.row,
         styles.underlayRight,
         {
-          transform: [{ translateX: multiply(sub(1, percentOpen), -100) }] // Translate from left on open
+          transform: [{ translateX: multiply(sub(1, percentOpen), -100) }], // Translate from left on open,
+          borderWidth: 0,
+          backgroundColor: this.props.isActive ? Grey400 : Green400
         }
       ]}
     >
-      <PlatformTouchable onPressOut={close}>
-        <Text style={styles.text}>CLOSE</Text>
+      <PlatformTouchable style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Text style={[styles.text, { color: White, marginRight: 4 }]}>Done</Text>
+        <SvgImage width="20" height="20" srcElement={CompleteSvg} />
       </PlatformTouchable>
     </Animated.View>
   )
@@ -113,16 +114,15 @@ class Card extends React.Component {
     return (
       <View style={[styles.row, { backgroundColor: White }]}>
             <PlatformTouchable
-
               onLongPress={item.drag}
-              style={[{ flex: 0.1, alignItems: "flex-start" }]}
+              style={[{ width: 5, alignItems: "flex-start" }]}
             >
               <Text style={styles.text}>{` `}</Text>
             </PlatformTouchable>
         <PlatformTouchable style={[styles.flex, { width: '100%'}]} onLongPress={item.drag}>
           <Text style={[styles.text, { width: '100%'}]}>{detail}</Text>
         </PlatformTouchable>
-          <PlatformTouchable  onLongPress={item.drag} style={[{ flex: 0.1, alignItems: "flex-end" }]}>
+          <PlatformTouchable  onLongPress={item.drag} style={[{ width: 5, alignItems: "flex-end" }]}>
             <Text style={styles.text}>{` `}</Text>
           </PlatformTouchable>
       </View>
@@ -130,8 +130,8 @@ class Card extends React.Component {
   }
 
   render () {
-    const { cardInfo, setCardList, width, height, item, drag, moveEnd, isActive, itemRefs } = this.props
-    console.log('move', drag, moveEnd)
+    const { item, drag, isActive, itemRefs } = this.props
+    console.log('Active?', isActive)
     return (
       <SwipeableItem
         key={item.key}
@@ -141,7 +141,13 @@ class Card extends React.Component {
             itemRefs.set(item.key, ref);
           }
         }}
-        onChange={({ open }) => {
+        onChange={({ open, snapPoint }) => {
+          if (snapPoint > 90 && snapPoint !== 0 && open === 'left') {
+            //TODO: Implement archive card functionality
+          }
+          if (snapPoint > 90 && snapPoint !== 0 && open === 'right') {
+            //TODO: Implement goal/task complete functionality
+          }
           if (open) {
             // Close all other open items
             [...itemRefs.entries()].forEach(([key, ref]) => {
@@ -151,11 +157,10 @@ class Card extends React.Component {
         }}
         overSwipe={50}
         renderUnderlayLeft={this.renderUnderlayLeft}
-        snapPointsLeft={[100, 300]}
+        snapPointsLeft={[0, 100]}
         renderUnderlayRight={this.renderUnderlayRight}
-        snapPointsRight={[100, 300]}
+        snapPointsRight={[0, 100]}
         renderOverlay={this.renderOverlay}
-        activationThreshold={30}
       />
 
     )
