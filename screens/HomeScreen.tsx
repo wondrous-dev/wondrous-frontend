@@ -8,6 +8,7 @@ import { Title, Subheading, Paragraph, ButtonText } from '../storybook/stories/T
 import { SvgImage } from '../storybook/stories/Image'
 import { MyCarousel } from '../storybook/stories/Carousel'
 import { PrimaryButton, SecondaryButton } from '../storybook/stories/Button'
+import { NotificationTester } from '../components/Notifications/RegisterNotification'
 import { scale, moderateScale, verticalScale } from '../utils/scale'
 import SuperHeroSvg from '../assets/images/superhero.svg'
 
@@ -51,6 +52,7 @@ export default function HomeScreen({
           Log in
         </ButtonText>
       </SecondaryButton>
+      <NotificationTester />
     </SafeAreaView>
   )
 }

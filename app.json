@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "wondrous-app",
-    "slug": "wondrous-app",
+    "name": "Wonder",
+    "slug": "Wonder",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -28,18 +28,25 @@
           "reservedClientId": "276263235787-drii7vkaaflaql1vr7hvgc343igtlfud.apps.googleusercontent.com"
         }
       },
-      "bundleIdentifier": "co.wonder.wonderapp"
+      "bundleIdentifier": "co.wonder.wonderapp",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "package": "co.wonder.wonderapp",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "useNextNotificationsApi": true,
+      "versionCode": 1,
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
     },
+    "facebookScheme": "fb692135684870439",
+    "facebookAppId": "692135684870439",
+    "facebookDisplayName": "Wonder",
     "packagerOpts": {
       "config": "metro.config.js",
       "sourceExts": [
