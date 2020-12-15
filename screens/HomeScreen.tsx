@@ -52,7 +52,7 @@ export default function HomeScreen({
           Log in
         </ButtonText>
       </SecondaryButton>
-      <NotificationTester />
+      {/* <NotificationTester /> */}
     </SafeAreaView>
   )
 }

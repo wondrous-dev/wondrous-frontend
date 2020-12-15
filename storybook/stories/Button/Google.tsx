@@ -46,6 +46,7 @@ const signInAsync = async ({ graphqlCall, setLoginStatus, setLoginError, navigat
         }
       } catch (error) {
         console.log('Error calling login mutations', JSON.stringify(error, null, 2))
+        throw Error('Failed to login to Google')
       }
     } else {
       return { cancelled: true }

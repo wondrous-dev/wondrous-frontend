@@ -2,8 +2,9 @@ import { ApolloClient, InMemoryCache, HttpLink, split } from '@apollo/client'
 import { WebSocketLink } from '@apollo/client/link/ws'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { SubscriptionClient } from 'subscriptions-transport-ws'
+import Constants from 'expo-constants'
 
-const httpUri = process.env.REACT_APP_SERVER_URL || 'http://localhost:4000/graphql'
+const httpUri = Constants.manifest.extra.httpUri
 const wsBaseUrl = httpUri
 const wsUri = wsBaseUrl.replace(/^https?/, process.env.REACT_APP_ENV === 'dev' ? 'ws' : 'wss')
 

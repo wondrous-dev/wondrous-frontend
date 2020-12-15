@@ -4,7 +4,10 @@ import * as Permissions from 'expo-permissions'
 import React, { useState, useEffect, useRef } from 'react'
 import { Text, View, Button, Platform } from 'react-native'
 
-export const registerForPushNotificationsAsync = async ({ setExpoPushToken }) => {
+import { CREATE_NOTIFICATION_TOKEN } from '../../graphql/mutations'
+import apollo from '../../services/apollo'
+
+export const registerForPushNotificationsAsync = async (userId) => {
   if (Constants.isDevice) {
     const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS)
     let finalStatus = existingStatus
@@ -17,8 +20,18 @@ export const registerForPushNotificationsAsync = async ({ setExpoPushToken }) =>
       return
     }
     const token = (await Notifications.getExpoPushTokenAsync()).data
-    console.log(token)
-    setExpoPushToken(token)
+    try {
+      const result = await apollo.mutate({
+        mutation: CREATE_NOTIFICATION_TOKEN,
+        variables:{
+          userId,
+          token
+        }
+      })
+      console.log('result', result)
+    } catch (error) {
+      console.log(JSON.stringify(error, null, 2))
+    }
   } else {
     alert('Must use physical device for Push Notifications')
   }
@@ -34,7 +47,6 @@ export const registerForPushNotificationsAsync = async ({ setExpoPushToken }) =>
 }
 
 async function sendPushNotification(expoPushToken) {
-  console.log('push token', expoPushToken)
   const message = {
     to: expoPushToken,
     sound: 'default',
@@ -67,7 +79,7 @@ export const NotificationTester = () => {
   const responseListener = useRef()
 
   useEffect(() => {
-    registerForPushNotificationsAsync({ setExpoPushToken })
+    registerForPushNotificationsAsync()
 
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {

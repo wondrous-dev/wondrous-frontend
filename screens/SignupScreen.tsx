@@ -9,7 +9,7 @@ import { useMutation } from '@apollo/client'
 // } from '@react-native-community/google-signin'
 
 import { RootStackParamList } from '../types'
-import { Grey200} from '../constants/Colors'
+import { Red400 } from '../constants/Colors'
 import { Title, ErrorText } from '../storybook/stories/Text'
 import { SvgImage } from '../storybook/stories/Image'
 import { GoogleLogin, FacebookLogin } from '../storybook/stories/Button'
@@ -34,13 +34,14 @@ function SignupScreen({
   if (user) {
     navigation.navigate('Welcome')
   }
+
   return (
     <View style={styles.container}>
       <Title>
         Wonder
       </Title>
       {
-        loginStatus === 'loading' ?
+        loginStatus === 'loading' && !loginError ?
         <View style={{
           marginTop: 48
         }}><ActivityIndicator /></View>
@@ -56,14 +57,14 @@ function SignupScreen({
             loginError && 
             <ErrorText style={{
               marginTop: 8
-            }}>
+            }} color={Red400}>
               {loginError}
             </ErrorText>
           }
         </>
       }
 
-      <CardList />
+      {/* <CardList /> */}
     </View>
   )
 }
