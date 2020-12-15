@@ -1,8 +1,11 @@
 import { ApolloClient, InMemoryCache, HttpLink, split } from '@apollo/client'
 import { WebSocketLink } from '@apollo/client/link/ws'
+import { setContext } from '@apollo/client/link/context'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { SubscriptionClient } from 'subscriptions-transport-ws'
 import Constants from 'expo-constants'
+
+import { getAuthHeader } from '../components/withAuth'
 
 const httpUri = Constants.manifest.extra.httpUri
 const wsBaseUrl = httpUri
@@ -13,8 +16,8 @@ const httpLink = new HttpLink({
   credentials: 'include'
 })
 
-const getAuth = () => {
-  const token = localStorage.getItem('token')
+const getAuth = async () => {
+  const token = await getAuthHeader()
   return token ? `Bearer ${token}` : ''
 }
 
@@ -29,15 +32,15 @@ const wsClient = new SubscriptionClient(
 )
 const wsLink = new WebSocketLink(wsClient)
 
-// const authLink = setContext((_, { headers }) => {
-//   const auth = getAuth()
-//   return {
-//     headers: {
-//       ...headers,
-//       Authorization: auth
-//     }
-//   }
-// })
+const authLink = setContext(async (_, { headers }) => {
+  const auth = await getAuth()
+  return {
+    headers: {
+      ...headers,
+      Authorization: auth
+    }
+  }
+})
 
 
 const link = split(
@@ -65,6 +68,6 @@ const cache = new InMemoryCache({
 })
 
 export default new ApolloClient({
-  link,
+  link: authLink.concat(link),
   cache
 })
