@@ -7,6 +7,7 @@ import NotFoundScreen from '../screens/NotFoundScreen'
 import HomeScreen from '../screens/HomeScreen'
 import SignupScreen from '../screens/SignupScreen'
 import WelcomeScreen from '../screens/SignupFlow/Welcome'
+import DashboardScreen from '../screens/Dashboard'
 import { RootStackParamList } from '../types'
 import BottomTabNavigator from './BottomTabNavigator'
 import LinkingConfiguration from './LinkingConfiguration'
@@ -34,6 +35,7 @@ function RootNavigator() {
       <Stack.Screen name='Signup' component={SignupScreen} />
       <Stack.Screen name='Login' component={SignupScreen} />
       <Stack.Screen name='Welcome' component={WelcomeScreen} />
+      <Stack.Screen name='Dashboard' component={DashboardScreen} />
       <Stack.Screen name='Root' component={BottomTabNavigator} />
       <Stack.Screen name='NotFound' component={NotFoundScreen} options={{ title: 'Oops!' }} />
     </Stack.Navigator>

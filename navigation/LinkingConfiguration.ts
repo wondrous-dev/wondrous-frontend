@@ -24,6 +24,11 @@ export default {
           Welcome: 'welcome'
         }
       },
+      Dashboard: {
+        screens: {
+          Dashboard: 'dashboard'
+        }
+      },
       Root: {
         screens: {
           TabOne: {

@@ -36,7 +36,7 @@ function SignupScreen({
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Title>
         Wonder
       </Title>
@@ -65,7 +65,7 @@ function SignupScreen({
       }
 
       {/* <CardList /> */}
-    </View>
+    </SafeAreaView>
   )
 }
 

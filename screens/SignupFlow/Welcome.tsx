@@ -2,22 +2,54 @@ import * as React from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native'
 
-import { RootStackParamList } from '../types'
-import { Orange, Black } from '../constants/Colors'
+import { RootStackParamList } from '../../types'
+import { Orange, Black, White, Grey500 } from '../../constants/Colors'
 import { styles } from '../HomeScreen'
-import { Title, Subheading, Paragraph, ButtonText } from '../../storybook/stories/Text'
+import {  Subheading, Paragraph, ButtonText } from '../../storybook/stories/Text'
 import { registerForPushNotificationsAsync } from '../../components/Notifications/RegisterNotification'
-import Snapper from '../../components/Camera'
-import { DescriptionTextEditor  } from '../../storybook/stories/TextEditor'
-import { CardList } from '../../storybook/stories/CardList'
+import { Header } from '../../components/Header/'
 import { withAuth, useMe } from '../../components/withAuth'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { spacingUnit } from '../../utils/common'
+import Celebration from '../../assets/images/celebrations/signupConfetti.svg'
+import { SvgImage } from '../../storybook/stories/Image'
+import { PrimaryButton } from '../../storybook/stories/Button'
 
 const loginStyles = StyleSheet.create({
   container: {
     ...styles.container
   },
-
+  welcomeBody: {
+    marginTop: spacingUnit * 8,
+    textAlign: 'center',
+    justifyContent: 'center',
+    width: '100%'
+  },
+  subheading: {
+    color: Black,
+    textAlign: 'center',
+    marginBottom: spacingUnit * 2,
+  },
+  paragraph: {
+    color: Grey500,
+    textAlign: 'center',
+    maxWidth: spacingUnit * 43,
+    alignSelf: 'center',
+    marginBottom: spacingUnit * 3
+  },
+  image: {
+    alignSelf: 'center',
+    marginBottom: spacingUnit * 14
+  },
+  button: {
+    alignSelf: 'center',
+    marginBottom: spacingUnit * 2
+  },
+  goToHome: {
+    textDecorationLine: 'underline',
+    fontFamily: 'Rubik Light',
+    alignSelf: 'center'
+  }
 })
 
 function WelcomeScreen({
@@ -31,31 +63,31 @@ function WelcomeScreen({
   }, [])
 
   return (
-    <SafeAreaView style={styles.container}>
-    <View style={{ flex: 1, width: '100%' }}>
-      <Title>
-        Welcome to Wonder! Successfully logged in
-      </Title>
-      <TouchableOpacity onPress={() => setSnapperOpen(true)}>
-        <Text style={{
-          marginTop: 16
-        }}>Turn on camera</Text>
-      </TouchableOpacity>
-      {
-        snapperOpen && <Snapper setSnapperOpen={setSnapperOpen} snapperOpen={snapperOpen} setImage={setImage} image={image} />
-      }
-      {
-        !!(image) && <Image source={{
-          uri: image
-        }} style={{
-          resizeMode: 'contain',
-        width: '100%',
-        aspectRatio: 1 // Your aspect ratio
-        }} />
-      }
-      <CardList />
-      <DescriptionTextEditor  />
-    </View>
+    <SafeAreaView style={[styles.container, {
+      backgroundColor: White
+    }]}>
+      <Header />
+      <View style={loginStyles.welcomeBody}>
+        <Subheading style={loginStyles.subheading}>
+          Welcome to Wonder
+        </Subheading>
+        <Paragraph style={loginStyles.paragraph}>
+          We love action! Let's get started on your first project. Sound good?
+        </Paragraph>
+        <SvgImage width="80" height="80" srcElement={Celebration} style={loginStyles.image} />
+        <PrimaryButton textStyle={{
+          color: White
+        }} style={loginStyles.button}>
+          <ButtonText color={White}>
+            I'm ready!
+          </ButtonText>
+        </PrimaryButton>
+        <TouchableOpacity onPress={() => navigation.navigate('Dashboard')}>
+          <ButtonText color={Grey500} style={loginStyles.goToHome}>
+            I like a challenge - let me figure it out
+          </ButtonText>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   )
 }

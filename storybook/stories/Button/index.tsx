@@ -41,6 +41,7 @@ const BaseButton = ({
 export function PrimaryButton ({ onPress, children, style, textStyle, textPressStyle }) {
   return <BaseButton onPress={onPress} style={style} baseStyle={baseStyle.primary} buttonPressStyle={{
     backgroundColor: Blue500,
+    
     ...baseStyle.primary,
     ...style
   }} textStyle={textStyle} textPressStyle={textPressStyle}>

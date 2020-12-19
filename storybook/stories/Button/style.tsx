@@ -2,7 +2,7 @@ import { scale, moderateScale, verticalScale } from '../../../utils/scale'
 import { White, Blue400, Black } from '../../../constants/Colors'
 
 const baseStyle = {
-  maxWidth: moderateScale(300),
+  maxWidth: moderateScale(344),
   width: '100%',
   padding: 10,
   borderRadius: 4,

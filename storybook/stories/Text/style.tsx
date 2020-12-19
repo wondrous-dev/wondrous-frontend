@@ -17,12 +17,12 @@ export default {
     fontFamily: 'Rubik Light',
     fontSize: 16,
     color: White,
-    lineHeight: 22
+    lineHeight: 24
   },
   buttonText: {
     fontFamily: 'Rubik',
     fontSize: 14,
-    lineHeight: 20
+    lineHeight: 22
   },
   errorText: {
     fontFamily: 'Rubik',

@@ -32,21 +32,26 @@ const signInAsync = async ({ callToAction, setLoginStatus, setLoginError, naviga
     } = result
     if (result.type === 'success') {
       setLoginStatus('loading')
-      const resp = await callToAction({
-        variables: {
-          input: {
-            facebookAccessToken: token,
-            facebookExpirationDate: expirationDate,
-            facebookId: userId
+      try {
+        const resp = await callToAction({
+          variables: {
+            input: {
+              facebookAccessToken: token,
+              facebookExpirationDate: expirationDate,
+              facebookId: userId
+            }
           }
+        })
+  
+        if (resp.data) {
+          const { signup } = resp.data
+          console.log('signup', signup)
+          await storeAuthHeader(signup.token, signup.user)
+          navigation.navigate('Welcome')
         }
-      })
-
-      if (resp.data) {
-        const { signup } = resp.data
-        console.log('signup', signup)
-        await storeAuthHeader(signup.token, signup.user)
-        navigation.navigate('Welcome')
+      } catch(error) {
+        console.log('Error calling login mutations', JSON.stringify(error, null, 2))
+        throw Error('Failed to login to Facebook')
       }
     }
   } catch (error) {

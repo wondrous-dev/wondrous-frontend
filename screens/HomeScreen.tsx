@@ -63,8 +63,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Orange,
     alignItems: 'center',
-    padding: Platform.OS === 'web' ? moderateScale(16) : 16,
-    paddingTop: 48
+    paddingTop: 8
   },
   logo: {
     marginTop: moderateScale(48),
