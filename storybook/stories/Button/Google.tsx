@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native'
 import * as Google from 'expo-google-app-auth'
 
 import { ButtonText } from '../Text'
-import { SecondaryButton } from './index'
+import { SecondaryButton } from './Buttons'
 import { SvgImage } from '../Image'
 import GoogleSvg from '../../../assets/images/social-auth/google.svg'
 import baseStyle from './style'

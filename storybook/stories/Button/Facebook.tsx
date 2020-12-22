@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native'
 import * as Facebook from 'expo-facebook'
 
 import { ButtonText } from '../Text'
-import { PrimaryButton } from './index'
+import { PrimaryButton } from './Buttons'
 import { SvgImage } from '../Image'
 import FacebookSvg from '../../../assets/images/social-auth/facebook.svg'
 import baseStyle from './style'

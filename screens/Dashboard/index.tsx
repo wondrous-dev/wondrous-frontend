@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native'
 import { withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
+import { HomeFeed } from '../../components/Feed'
 
 function DashboardScreen({
   navigation
@@ -12,6 +13,7 @@ function DashboardScreen({
   return (
     <SafeAreaView>
       <Header />
+      <HomeFeed />
     </SafeAreaView>
   )
 }

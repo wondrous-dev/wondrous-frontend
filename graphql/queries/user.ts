@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client'
 
 import { PublicUserFragment } from '../fragments/user'
+import { ActivityFeedItem } from '../fragments/feed'
 
 export const WHOAMI = gql`
   query whoami {
@@ -18,4 +19,13 @@ export const GET_AUTOCOMPLETE_USERS = gql`
     }
   }
   ${PublicUserFragment}
+`
+
+export const GET_HOME_FEED = gql`
+  query GetHomeFeed($limit: Int, $offset: Int) {
+    getHomeFeed(limit: $limit, offset: $offset) {
+      ...ActivityFeedItem
+    }
+  }
+  ${ActivityFeedItem}
 `
