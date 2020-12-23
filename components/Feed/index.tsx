@@ -69,7 +69,8 @@ const FeedString = ({ item }) => {
           flexWrap: 'wrap'
         }}>
           {capitalizeFirstLetter(item.verb)} {item.objectType} - <RegularText style={{
-            fontFamily: 'Rubik SemiBold'
+            fontFamily: 'Rubik SemiBold',
+            textDecorationLine: 'underline'
           }}> {item.projectName} </RegularText>
         </RegularText>
       </View>
@@ -112,9 +113,9 @@ export const renderItem = ({ item }) => {
         }} color={Grey200}>{item.actorUsername}</RegularText>
       </View>
       <View style={feedStyles.feedItemContent}>
-        <SvgImage width="24" height="24" srcElement={getCorrectSrc(item.objectType)} style={{
+        {/* <SvgImage width="24" height="24" srcElement={getCorrectSrc(item.objectType)} style={{
           marginRight: spacingUnit
-        }}/>
+        }}/> */}
         <FeedString item={item} />
       </View>
       <View style={feedStyles.reactions}>
