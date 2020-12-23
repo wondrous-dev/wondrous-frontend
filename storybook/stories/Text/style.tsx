@@ -19,10 +19,20 @@ export default {
     color: White,
     lineHeight: 24
   },
+  regular: {
+    fontFamily: 'Rubik Light',
+    fontSize: 14,
+    lineHeight: 22
+  },
   buttonText: {
     fontFamily: 'Rubik',
     fontSize: 14,
     lineHeight: 22
+  },
+  tinyText: {
+    fontFamily: 'Rubik Light',
+    fontSize: 12,
+    lineHeight: 20
   },
   errorText: {
     fontFamily: 'Rubik',

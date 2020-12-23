@@ -24,6 +24,15 @@ export const Paragraph = ({ style, children }) => (
   }}> {children} </Text>
 )
 
+export const RegularText = ({ style, children, color }) => (
+  <Text style={{
+    ...baseStyle.regular,
+    ...style,
+    ...{
+      color
+    }
+  }}>{children}</Text>
+)
 export const ButtonText = ({ style, children, color }) => (
   <Text style={{
     ...baseStyle.buttonText,
@@ -32,6 +41,16 @@ export const ButtonText = ({ style, children, color }) => (
       color
     }
   }}> {children} </Text>
+)
+
+export const TinyText = ({ style, children, color }) => (
+  <Text style={{
+    ...baseStyle.tinyText,
+    ...style,
+    ...{
+      color
+    }
+  }}>{children}</Text>
 )
 
 export const ErrorText = ({ style, children, color }) => (

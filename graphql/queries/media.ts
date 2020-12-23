@@ -7,3 +7,11 @@ export const GET_PRESIGNED_IMAGE_URL = gql`
     }
   }
 `
+
+export const GET_PREVIEW_IMAGE = gql`
+  query GetPreviewImage($path: String!) {
+    getPreviewImage(path: $path) {
+      url
+    }
+  }
+`

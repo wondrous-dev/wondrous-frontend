@@ -1,6 +1,10 @@
-import React from 'react'
-import { Platform, View } from 'react-native'
+import { useLazyQuery } from '@apollo/client'
+import React, { useEffect } from 'react'
+import { Platform, Image } from 'react-native'
 import { SvgXml } from "react-native-svg"
+
+import { GET_PREVIEW_IMAGE } from '../../../graphql/queries'
+import apollo from '../../../services/apollo'
 
 interface ImageProps {
   width?: String
@@ -18,5 +22,40 @@ export function SvgImage ({ width, height, webStyle, srcElement, style }) {
   return (
     <SvgXml width={width} height={height} style={style} xml={`${srcElement}`} />
   )
-  
 }
+
+export const SafeImage = ({ src, style, defaultImage }) => {
+  const [getImage, { data, loading, error }] = useLazyQuery(GET_PREVIEW_IMAGE, {
+    fetchPolicy: 'network-only'
+  })
+  if (!src && defaultImage) {
+    return <Image style={style} source={defaultImage} />
+  }
+
+  if (!src) {
+    return null
+  }
+
+  useEffect(() => {
+    getImage({
+      variables: {
+        path: src
+      }
+    })
+  }, [])
+  
+  if (src.startsWith('https')) {
+    return <Image style={style} source={{
+      uri: src
+    }} />
+  }
+  if (data && data.getPreviewImage) {
+    console.log('data url', data.getPreviewImage.url)
+    return <Image style={style} source={{
+      uri: data.getPreviewImage.url
+    }} />
+  }
+
+  return null
+}
+
