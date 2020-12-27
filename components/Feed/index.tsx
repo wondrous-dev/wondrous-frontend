@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useLazyQuery, useMutation } from '@apollo/client'
-import { Text, View, FlatList, StyleSheet, ActivityIndicator, RefreshControl } from 'react-native'
+import { Text, View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pressable } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import TimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en'
 
 import { Grey300, Black, Grey200, Grey600, Grey700 } from '../../constants/Colors'
 import { GET_HOME_FEED } from '../../graphql/queries'
@@ -15,6 +18,10 @@ import CompletedIcon from '../../assets/images/actions/completed.svg'
 import { LikeOutline } from '../../assets/images/reactions/like'
 import CommentIcon from '../../assets/images/reactions/comment'
 import ShareIcon from '../../assets/images/share/feed'
+import { TextEditor } from '../../storybook/stories/TextEditor'
+
+TimeAgo.locale(en)
+const timeAgo = new TimeAgo('en-US')
 
 const feedStyles = StyleSheet.create({
   feedItemContainer: {
@@ -100,7 +107,7 @@ const FeedString = ({ item }) => {
   return null
 }
 
-export const renderItem = ({ item }) => {
+export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePress }) => {
   return (
     <View style={feedStyles.feedItemContainer}>
       <View style={feedStyles.feedItemName}>
@@ -109,31 +116,86 @@ export const renderItem = ({ item }) => {
           marginRight: spacingUnit
         }} color={Black}>{item.actorFirstName} {item.actorLastName}</RegularText>
         <RegularText style={{
-          marginRight: spacingUnit
+          marginRight: spacingUnit * 0.5
         }} color={Grey200}>{item.actorUsername}</RegularText>
+        <RegularText style={{
+          marginRight: spacingUnit * 0.5,
+          marginTop: -spacingUnit
+        }} color={Grey200}>.</RegularText>
+        <RegularText style={{
+          marginRight: spacingUnit
+        }} color={Grey200}>{timeAgo.format(new Date(item.timestamp))}</RegularText>
       </View>
       <View style={feedStyles.feedItemContent}>
         {/* <SvgImage width="24" height="24" srcElement={getCorrectSrc(item.objectType)} style={{
           marginRight: spacingUnit
         }}/> */}
-        <FeedString item={item} />
+        {comment ?
+          <TextEditor type='comment' content={item.itemContent} readOnly={true} />
+          :
+          <FeedString item={item} />
+        }
       </View>
-      <View style={feedStyles.reactions}>
-        <LikeOutline color={Grey700} style={{
-          marginRight: spacingUnit
-        }} />
-        <RegularText color={Grey600} style={{
-          marginRight: spacingUnit * 3
-        }}>{item.likeCount}</RegularText>
-        <CommentIcon color={Grey700} style={{
-          marginRight: spacingUnit
-        }}/>
-        <RegularText color={Grey600} style={{
-          marginRight: spacingUnit * 3
-        }}>{item.commentCount}</RegularText>
-        <ShareIcon color={Grey700} />
-      </View>
+      {
+        standAlone ?
+        <View style={[feedStyles.reactions, {
+          justifyContent: 'space-between',
+          flexDirection: 'row',
+          alignItems: 'center',
+        }]}>
+          <View style={{
+            flexDirection: 'row',
+            alignItems: 'center'
+          }}>
+          <LikeOutline color={Grey700} style={{
+            marginRight: spacingUnit,
+            width: spacingUnit * 3.5,
+            height: spacingUnit * 3.5
+          }} />
+          {/* <RegularText color={Grey600} style={{
+            marginRight: spacingUnit * 3,
+          }}>{item.reactionCount}</RegularText> */}
+          </View>
+          <CommentIcon color={Grey700} style={{
+            marginRight: spacingUnit,
+            width: spacingUnit * 3.5,
+            height: spacingUnit * 3.5
+          }}/>
+          <ShareIcon color={Grey700} style={{
+            width: spacingUnit * 3.5,
+            height: spacingUnit * 3.5
+          }} />
+        </View>
+      :
+        <View style={feedStyles.reactions}>
+          <LikeOutline color={Grey700} style={{
+            marginRight: spacingUnit
+          }} />
+          <RegularText color={Grey600} style={{
+            marginRight: spacingUnit * 3
+          }}>{item.reactionCount}</RegularText>
+          <CommentIcon color={Grey700} style={{
+            marginRight: spacingUnit
+          }}/>
+          <RegularText color={Grey600} style={{
+            marginRight: spacingUnit * 3
+          }}>{item.commentCount}</RegularText>
+          <ShareIcon color={Grey700} />
+        </View>
+      }
+
     </View>
+  )
+}
+
+export const renderItem = ({ item, navigation }) => {
+  return (
+    <Pressable onPress={() => navigation.navigate('FeedItem', {
+      item,
+      liked: false
+    })}>
+      <FeedItem item={item} />
+    </Pressable>
   )
 }
 
@@ -145,6 +207,7 @@ const wait = (timeout) => {
 
 export const HomeFeed = () => {
   const [refreshing, setRefreshing] = useState(false)
+  const navigation = useNavigation()
   const [getItems, {loading, data, error, refetch, fetchMore}] = useLazyQuery(GET_HOME_FEED, {
     fetchPolicy: 'network-only'
   })
@@ -161,7 +224,6 @@ export const HomeFeed = () => {
   useEffect(() => {
     getItems()
   }, [])
-  console.log('data', data && data.getHomeFeed)
 
   if (loading) {
     return <ActivityIndicator />
@@ -173,7 +235,7 @@ export const HomeFeed = () => {
         paddingBottom: spacingUnit * 10
       }}
       data={data && data.getHomeFeed}
-      renderItem={renderItem}
+      renderItem={({ item }) => renderItem({ item, navigation })}
       keyExtractor={item => item.id}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

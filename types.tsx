@@ -6,6 +6,7 @@ export type RootStackParamList = {
   Root: undefined
   Dashboard: undefined
   NotFound: undefined
+  FeedItem: undefined
 }
 
 export type BottomTabParamList = {

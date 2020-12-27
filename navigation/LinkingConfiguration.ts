@@ -29,6 +29,11 @@ export default {
           Dashboard: 'dashboard'
         }
       },
+      FeedItem: {
+        screens: {
+          FeedItem: 'feeditem'
+        }
+      },
       Root: {
         screens: {
           TabOne: {

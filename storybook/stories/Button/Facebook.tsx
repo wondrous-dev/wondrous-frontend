@@ -51,7 +51,7 @@ const signInAsync = async ({ callToAction, setLoginStatus, setLoginError, naviga
         }
       } catch(error) {
         console.log('Error calling login mutations', JSON.stringify(error, null, 2))
-        throw Error('Failed to login to Facebook')
+        throw Error('Failed to login to Facebook: ' + error)
       }
     }
   } catch (error) {

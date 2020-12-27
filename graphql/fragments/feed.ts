@@ -15,10 +15,11 @@ export const ActivityFeedItem = gql`
     actorLastName
     actorUsername
     actorProfilePicture
+    parentCommentId
     itemName
     itemContent
     commentCount
-    likeCount
+    reactionCount
     media
   }
 `

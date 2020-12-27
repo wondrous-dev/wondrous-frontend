@@ -12,13 +12,15 @@ function createHTML(options = {}) {
 <html>
 <head>
     <meta name="viewport" content="user-scalable=1.0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;1,900&display=swap" rel="stylesheet">  
     <style>
         * {outline: 0px solid transparent;-webkit-tap-highlight-color: rgba(0,0,0,0);-webkit-touch-callout: none;}
         html, body { margin: 0; padding: 0;font-family: Arial, Helvetica, sans-serif; font-size:1em;}
         body { overflow-y: scroll; -webkit-overflow-scrolling: touch;height: 100%;background-color: ${backgroundColor};}
         img {max-width: 98%;margin-left:auto;margin-right:auto;display: block;}
         video {max-width: 98%;margin-left:auto;margin-right:auto;display: block;}
-        .content {font-family: Arial, Helvetica, sans-serif;color: ${color}; width: 100%;height: 100%;-webkit-overflow-scrolling: touch;padding-left: 0;padding-right: 0;}
+        .content {font-family: Rubik, Rubik Light, Arial, Helvetica, sans-serif;color: ${color}; width: 100%;height: 100%;-webkit-overflow-scrolling: touch;padding-left: 0;padding-right: 0;font-size: 14px}
         .pell { height: 100%;} .pell-content { outline: 0; overflow-y: auto;padding: 10px;height: 100%;${contentCSSText}}
         table {width: 100% !important;}
         table td {width: inherit;}

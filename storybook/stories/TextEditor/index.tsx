@@ -25,6 +25,7 @@ import Placeholder from '../../../assets/images/placeholder.svg'
 import { Black, Grey100, Grey200, Grey300, White } from '../../../constants/Colors'
 import apollo from '../../../services/apollo'
 import { GET_AUTOCOMPLETE_USERS } from '../../../graphql/queries'
+import { spacingUnit } from '../../../utils/common'
 
 function findIndexes(source, find) {
   if (!source) {
@@ -49,7 +50,6 @@ function findIndexes(source, find) {
 function findEndIndex (source, index) {
   let i = index
   while(i < source.length && source.charAt(i) !== ' ' && source.substring(i, i+6) !== '&nbsp' && source.charAt(i) !== '<') {
-
     i++
   }
   return i
@@ -121,7 +121,9 @@ const AutocompleteList = ({ users, autocompleteLoading, autocompleteFill}) => {
     </SafeAreaView>
   )
 }
-export class DescriptionTextEditor extends React.Component {
+
+
+export class TextEditor extends React.Component {
   richText = React.createRef()
 
   constructor(props) {
@@ -135,7 +137,7 @@ export class DescriptionTextEditor extends React.Component {
       autocompleteString: '',
       autocompleteLoading: false,
       autocompleteUserList: [],
-      content: ''
+      content: this.props.content
     }
     this.paddingInput = new Animated.Value(0)
   }
@@ -270,7 +272,7 @@ export class DescriptionTextEditor extends React.Component {
   createContentStyle = (theme) => {
     // Can be selected for more situations (cssText or contentCSSText).
     const contentStyle = {
-        backgroundColor: '#000033',
+        backgroundColor: White,
         color: Black,
         placeholderColor: 'gray',
         // cssText: '#editor {background-color: #f3f3f3}', // initial valid
@@ -284,18 +286,43 @@ export class DescriptionTextEditor extends React.Component {
     return contentStyle;
   }
 
+  getCorrectTypeParams = (type) => {
+    switch(type) {
+      case 'description':
+        return {
+          height: 80,
+          placeholder: 'Add description...',
+          backgroundColor: White,
+          style: {
+            position: 'absolute',
+            bottom: 0,
+            width: '100%'
+          }
+        }
+      case 'comment':
+        return {
+          height: 30,
+          placeholder: 'Add comment...',
+          backgroundColor: White,
+          paddingLeft: 0,
+          style: {
+            width: '100%',
+            marginLeft: -spacingUnit,
+          }
+        }
+    }
+  }
+
   render() {
     const {
       contentStyle
     } = this.state
     const { backgroundColor, color, placeholderColor } = contentStyle
-    const themeBg = { backgroundColor, height: 80, borderRadius: 8 }
+    const { readOnly, type, content } = this.props
+    const typeParams = this.getCorrectTypeParams(type)
+    const themeBg = { height: typeParams?.height, borderRadius: 8 }
     return (
-      <SafeAreaView style={{
-        position: 'absolute',
-        bottom: 0,
-        width: '100%'
-      }}>
+      <SafeAreaView style={typeParams?.style}>
         <KeyboardAvoidingView style={[themeBg]} behavior='padding'>
           <Animated.View style={{marginBottom: this.paddingInput}}>
             {
@@ -304,23 +331,24 @@ export class DescriptionTextEditor extends React.Component {
             }
             <ScrollView
             nestedScrollEnabled={true}
-            
             >
             
             <RichEditor
+              initialContentHTML={content}
               containerStyle={{
-                maxHeight: 80,
+                maxHeight: typeParams?.height,
                 borderRadius: 8
               }}
               editorStyle={{
-                maxHeight: 80,
+                maxHeight: typeParams?.height,
                 borderWidth: 1,
                 borderColor: Grey300,
-                
+                fontFamily: 'Rubik Light',
+                backgroundColor: typeParams?.backgroundColor
               }}
-
+              disabled={!!readOnly}
               ref={this.richText}
-              placeholder='Add description...'
+              placeholder={typeParams?.placeholder}
               onChange={this.handleChange}
               onKeyDown={this.handleKey}
             />
