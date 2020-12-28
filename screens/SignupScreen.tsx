@@ -1,6 +1,6 @@
 import React , { useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { StyleSheet, View, SafeAreaView, ActivityIndicator } from 'react-native'
+import { StyleSheet, View, SafeAreaView, ActivityIndicator, Dimensions } from 'react-native'
 import { useMutation } from '@apollo/client'
 // import {
 //   GoogleSignin,
@@ -9,7 +9,7 @@ import { useMutation } from '@apollo/client'
 // } from '@react-native-community/google-signin'
 
 import { RootStackParamList } from '../types'
-import { Red400 } from '../constants/Colors'
+import { Red400, White } from '../constants/Colors'
 import { Title, ErrorText } from '../storybook/stories/Text'
 import { SvgImage } from '../storybook/stories/Image'
 import { GoogleLogin, FacebookLogin } from '../storybook/stories/Button'

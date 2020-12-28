@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native'
+import { StyleSheet, View, TouchableOpacity, Text, Image, Pressable } from 'react-native'
 
 import { RootStackParamList } from '../../types'
 import { Orange, Black, White, Grey500 } from '../../constants/Colors'
@@ -75,13 +75,15 @@ function WelcomeScreen({
           We love action! Let's get started on your first project. Sound good?
         </Paragraph>
         <SvgImage width="80" height="80" srcElement={Celebration} style={loginStyles.image} />
-        <PrimaryButton textStyle={{
-          color: White
-        }} style={loginStyles.button}>
-          <ButtonText color={White}>
-            I'm ready!
-          </ButtonText>
-        </PrimaryButton>
+          <PrimaryButton textStyle={{
+            color: White
+          }} style={loginStyles.button} onPress={() => {
+            navigation.navigate('ProjectSetupCategory')
+          }}>
+            <ButtonText color={White}>
+              I'm ready!
+            </ButtonText>
+          </PrimaryButton>
         <TouchableOpacity onPress={() => navigation.navigate('Dashboard')}>
           <ButtonText color={Grey500} style={loginStyles.goToHome}>
             I like a challenge - let me figure it out

@@ -29,9 +29,14 @@ export default {
           Dashboard: 'dashboard'
         }
       },
+      ProjectSetupCategory: {
+        screens: {
+          ProjectSetupCategory: 'projectSetupCategory'
+        }
+      },
       FeedItem: {
         screens: {
-          FeedItem: 'feeditem'
+          FeedItem: 'feedItem'
         }
       },
       Root: {

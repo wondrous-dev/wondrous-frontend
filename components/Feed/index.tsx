@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useLazyQuery, useMutation } from '@apollo/client'
-import { Text, View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pressable } from 'react-native'
+import { Text, View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pressable, Dimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 
-import { Grey300, Black, Grey200, Grey600, Grey700 } from '../../constants/Colors'
+import { Grey300, Black, Grey200, Grey600, Grey700, White } from '../../constants/Colors'
 import { GET_HOME_FEED } from '../../graphql/queries'
 import { SafeImage, SvgImage } from '../../storybook/stories/Image'
 import { TinyText, RegularText } from '../../storybook/stories/Text'
@@ -226,7 +226,15 @@ export const HomeFeed = () => {
   }, [])
 
   if (loading) {
-    return <ActivityIndicator />
+    return (
+      <View style={{
+        height: Dimensions.get("window").height,
+        backgroundColor: White,
+        paddingTop: 16
+      }}>
+        <ActivityIndicator />
+      </View>
+      )
   }
 
   return (

@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Text } from 'react-native'
 import baseStyle from './style'
+import { White } from '../../../constants/Colors'
 
 export const Title = ({ style, children }) => (
   <Text style={{
@@ -10,10 +11,13 @@ export const Title = ({ style, children }) => (
   }}> {children} </Text>
 )
 
-export const Subheading = ({ style, children }) => (
+export const Subheading = ({ style, children, color=White }) => (
   <Text style={{
     ...baseStyle.subheading,
-    ...style
+    ...style,
+    ... {
+      color
+    }
   }}> {children} </Text>
 )
 

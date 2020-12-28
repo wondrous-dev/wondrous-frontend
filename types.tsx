@@ -1,12 +1,13 @@
 export type RootStackParamList = {
   Home: undefined
-  Signup: undefined,
+  Signup: undefined
   Login: undefined
-  Welcome: undefined,
+  Welcome: undefined
   Root: undefined
   Dashboard: undefined
   NotFound: undefined
   FeedItem: undefined
+  ProjectSetupCategory: undefined
 }
 
 export type BottomTabParamList = {

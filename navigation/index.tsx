@@ -7,6 +7,7 @@ import NotFoundScreen from '../screens/NotFoundScreen'
 import HomeScreen from '../screens/HomeScreen'
 import SignupScreen from '../screens/SignupScreen'
 import WelcomeScreen from '../screens/SignupFlow/Welcome'
+import ProjectSetupCategoryScreen from '../screens/SignupFlow/ProjectSetupCategory'
 import DashboardScreen from '../screens/Dashboard'
 import FeedItemScreen from '../screens/FeedItem'
 import { RootStackParamList } from '../types'
@@ -36,6 +37,7 @@ function RootNavigator() {
       <Stack.Screen name='Signup' component={SignupScreen} />
       <Stack.Screen name='Login' component={SignupScreen} />
       <Stack.Screen name='Welcome' component={WelcomeScreen} />
+      <Stack.Screen name='ProjectSetupCategory' component={ProjectSetupCategoryScreen} />
       <Stack.Screen name='Dashboard' component={DashboardScreen} />
       <Stack.Screen name='FeedItem' component={FeedItemScreen} />
       <Stack.Screen name='Root' component={BottomTabNavigator} />
