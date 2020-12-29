@@ -18,7 +18,7 @@ const usernameSetupStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-    marginTop: spacingUnit * 3,
+    top: spacingUnit * 3,
   },
   usernameInputContainer: {
     justifyContent: 'center',
@@ -32,6 +32,26 @@ const usernameSetupStyles = StyleSheet.create({
     fontStyle: 'normal',
     fontWeight: '500',
     marginTop: spacingUnit * 2,
+  },
+  back: {
+    position: 'absolute',
+    left: "6.4%",
+    right: "83.2%",
+    fontFamily: 'Rubik',
+    fontStyle: 'normal',
+    fontWeight: '500',
+    fontSize: 16,
+    color: Blue400
+  },
+  skip: {
+    position: 'absolute',
+    left: "85.87%",
+    right: "4%",
+    fontFamily: 'Rubik',
+    fontStyle: 'normal',
+    fontWeight: '500',
+    fontSize: 16,
+    color: Blue400
   }
 })
 
@@ -102,6 +122,8 @@ function UsernameSetupScreen({
     }}>
       <Header />
       <View style={usernameSetupStyles.progressCircleContainer}>
+      <Text style={usernameSetupStyles.back}>Back</Text>
+      <Text style={usernameSetupStyles.skip} >Skip</Text>
         <ProgressCircle
           percent={30}
           radius={50}
@@ -113,7 +135,7 @@ function UsernameSetupScreen({
         </ProgressCircle>
         <Text style={usernameSetupStyles.stepCount}>step 1/3</Text>
       </View>
-      <UsernameInput navigation={navigation}/>
+      <UsernameInput navigation={navigation} />
     </SafeAreaView>
   )
 }
