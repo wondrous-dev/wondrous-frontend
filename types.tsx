@@ -8,6 +8,8 @@ export type RootStackParamList = {
   NotFound: undefined
   FeedItem: undefined
   ProjectSetupCategory: undefined
+  UsernameSetup: undefined
+  FirstProjectSetup: undefined
 }
 
 export type BottomTabParamList = {

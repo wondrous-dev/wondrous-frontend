@@ -78,7 +78,7 @@ function WelcomeScreen({
           <PrimaryButton textStyle={{
             color: White
           }} style={loginStyles.button} onPress={() => {
-            navigation.navigate('ProjectSetupCategory')
+            navigation.navigate('UsernameSetup')
           }}>
             <ButtonText color={White}>
               I'm ready!
