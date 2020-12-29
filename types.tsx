@@ -9,6 +9,8 @@ export type RootStackParamList = {
   FeedItem: undefined
   Feed: undefined
   ProjectSetupCategory: undefined
+  UsernameSetup: undefined
+  FirstProjectSetup: undefined
 }
 
 export type BottomTabParamList = {

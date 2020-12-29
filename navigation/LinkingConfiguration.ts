@@ -34,6 +34,16 @@ export default {
           ProjectSetupCategory: 'projectSetupCategory'
         }
       },
+      UsernameSetup: {
+        screens: {
+          UsernameSetup: 'usernameSetup'
+        }
+      },
+      FirstProjectSetup: {
+        screens: {
+          FirstProjectSetup: 'firstProjectSetup'
+        }
+      },
       Root: {
         screens: {
           Feed: {
