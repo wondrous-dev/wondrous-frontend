@@ -3,8 +3,16 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
 import * as React from 'react'
 
-import Colors from '../constants/Colors'
+import Colors, { Blue500, Grey50 } from '../constants/Colors'
 import useColorScheme from '../hooks/useColorScheme'
+import Dashboard from '../screens/Dashboard'
+import Search from '../screens/Search'
+import Notifications from '../screens/Notifications'
+import Profile from '../screens/Profile'
+import DashboardIcon from '../assets/images/bottomNav/dashboard'
+import SearchIcon from '../assets/images/bottomNav/search'
+import NotificationIcon from '../assets/images/bottomNav/notification'
+import ProfileIcon from '../assets/images/bottomNav/profile'
 import TabOneScreen from '../screens/TabOneScreen'
 import TabTwoScreen from '../screens/TabTwoScreen'
 import { BottomTabParamList, TabOneParamList, TabTwoParamList } from '../types'
@@ -13,24 +21,42 @@ const BottomTab = createBottomTabNavigator<BottomTabParamList>()
 
 export default function BottomTabNavigator() {
   const colorScheme = useColorScheme()
-
   return (
     <BottomTab.Navigator
-      initialRouteName='TabOne'
-      tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}>
+      showLabel={false}
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName
+          if (route.name === 'Dashboard') {
+            return <DashboardIcon iconColor={focused ? Blue500 : Grey50} />
+          } else if (route.name === 'Search') {
+            return <SearchIcon iconColor={focused ? Blue500 : Grey50} />
+           } else if (route.name === 'Notifications') {
+             return <NotificationIcon iconColor={focused ? Blue500 : Grey50} />
+           } else if (route.name === 'Profile') {
+             return <ProfileIcon iconColor={focused ? Blue500 : Grey50} />
+           }
+        }
+      })}
+      tabBarOptions={{
+        showLabel: false
+      }}
+      >
       <BottomTab.Screen
-        name='TabOne'
-        component={TabOneNavigator}
-        options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name='ios-code' color={color} />,
-        }}
+        name='Dashboard'
+        component={Dashboard}
       />
       <BottomTab.Screen
-        name='TabTwo'
-        component={TabTwoNavigator}
-        options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name='ios-code' color={color} />,
-        }}
+        name='Search'
+        component={Search}
+      />
+      <BottomTab.Screen
+        name='Notifications'
+        component={Notifications}
+      />
+      <BottomTab.Screen
+        name='Profile'
+        component={Profile}
       />
     </BottomTab.Navigator>
   )

@@ -7,12 +7,15 @@ export type RootStackParamList = {
   Dashboard: undefined
   NotFound: undefined
   FeedItem: undefined
+  Feed: undefined
   ProjectSetupCategory: undefined
 }
 
 export type BottomTabParamList = {
-  TabOne: undefined
-  TabTwo: undefined
+  Dashboard: undefined
+  Search: undefined
+  Notifications: undefined
+  Profile: undefined
 }
 
 export type TabOneParamList = {

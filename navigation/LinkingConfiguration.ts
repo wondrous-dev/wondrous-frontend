@@ -34,22 +34,17 @@ export default {
           ProjectSetupCategory: 'projectSetupCategory'
         }
       },
-      FeedItem: {
-        screens: {
-          FeedItem: 'feedItem'
-        }
-      },
       Root: {
         screens: {
-          TabOne: {
+          Feed: {
             screens: {
-              TabOneScreen: 'one',
-            },
+              Feed: 'feed'
+            }
           },
-          TabTwo: {
+          FeedItem: {
             screens: {
-              TabTwoScreen: 'two',
-            },
+              FeedItem: 'feedItem'
+            }
           },
         },
       },

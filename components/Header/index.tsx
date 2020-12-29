@@ -11,7 +11,8 @@ const shouldbackPageRoutes = {
   'Search': true,
   'Notifications': true,
   'Welcome': true,
-  'Profile': true
+  'Profile': true,
+  'Feed': true
 }
 
 const shouldBackPage = (route) => {

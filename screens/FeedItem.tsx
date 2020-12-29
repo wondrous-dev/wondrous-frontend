@@ -42,7 +42,7 @@ function FeedItemScreen({
       feedItemId: item.id
     }
   })
-  console.log('data', data)
+
   return (
     <SafeAreaView style={{
       backgroundColor: White
