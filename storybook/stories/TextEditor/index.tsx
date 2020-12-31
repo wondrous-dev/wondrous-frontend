@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Appearance,
   Button,
@@ -16,13 +16,16 @@ import {
   Animated,
   ActivityIndicator,
   Image,
-  Pressable
+  Pressable,
+  Dimensions
 } from 'react-native'
+import { MentionInput, MentionSuggestionsProps, Suggestion } from 'react-native-controlled-mentions'
+import { useQuery, useLazyQuery } from '@apollo/client'
 
 import { RichEditor, RichToolbar } from './RichEditor'
 import { SvgImage } from '../Image'
 import Placeholder from '../../../assets/images/placeholder.svg'
-import { Black, Grey100, Grey200, Grey300, White } from '../../../constants/Colors'
+import { Black, Blue500, Grey100, Grey200, Grey300, Grey400, White } from '../../../constants/Colors'
 import apollo from '../../../services/apollo'
 import { GET_AUTOCOMPLETE_USERS } from '../../../graphql/queries'
 import { spacingUnit } from '../../../utils/common'
@@ -123,7 +126,7 @@ const AutocompleteList = ({ users, autocompleteLoading, autocompleteFill}) => {
 }
 
 
-export class TextEditor extends React.Component {
+export class RichTextEditor extends React.Component {
   richText = React.createRef()
 
   constructor(props) {
@@ -310,6 +313,16 @@ export class TextEditor extends React.Component {
             marginLeft: -spacingUnit,
           }
         }
+      case 'writeNavComment':
+        return {
+          height: 30,
+          placeholder: 'Add comment...',
+          backgroundColor: Grey400,
+          style: {
+            width: '100%',
+            height: 30
+          }
+        }
     }
   }
 
@@ -358,4 +371,117 @@ export class TextEditor extends React.Component {
       </SafeAreaView>
     )
   }
+}
+
+const renderSuggestions: (suggestions: Suggestion[]) => FC<MentionSuggestionsProps> = (suggestions) => (
+  {keyword, onSuggestionPress},
+) => {
+  if (keyword == null) {
+    return null;
+  }
+
+  return (
+    <View style={{
+      marginLeft: -spacingUnit * 6.25
+    }}>
+      {suggestions
+        .filter(one => one.username.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
+        .map(user => (
+          <Pressable key={user.id} onPress={() => {
+            onSuggestionPress({
+              ...user,
+              name: user.username
+            })
+            Keyboard.dismiss()
+          }}>
+          <View style={{
+            flexDirection: 'row',
+            padding: 10,
+            alignItems: 'center',
+            borderBottomWidth: 1,
+            borderBottomColor: Grey100,
+            backgroundColor: White,
+            zIndex: 1000
+          }}>
+            {
+              user.profilePicture && user.profilePicture !== 'None' ?
+              <Image
+              source={{uri: user.profilePicture}} style={{
+                width: 30,
+                height: 30,
+                borderRadius: 15,
+                marginRight: 8
+              }} />
+              :
+              <SvgImage width="30" height="30" srcElement={Placeholder} style={{
+                marginRight: 8
+              }} />
+            }
+            <View>
+              <Text style={{color: Black, marginBottom: 4, fontWeight: 'bold'}}>
+                {user.firstName} {user.lastName}
+              </Text>
+              <Text style={{ color: Grey200, fontSize: 14 }}>
+                @{user.username}
+              </Text>
+            </View>
+          </View>
+        </Pressable>
+        ))
+      }
+    </View>
+  );
+}
+
+export const TextEditor = () => {
+  const [value, setValue] = useState('')
+  // const [users, setUsers] = useState([])
+  const [getAutocompleteUsers, { data, loading, error }] = useLazyQuery(GET_AUTOCOMPLETE_USERS, {
+    variables: {
+      username: ''
+    }
+  })
+  useEffect(() => {
+    getAutocompleteUsers({
+      variables: {
+        username: ''
+      }
+    })
+  }, [])
+  const users = (data && data.getAutocompleteUsers) || []
+  return (
+    <MentionInput
+        value={value}
+        onChange={setValue}
+
+        mentionTypes={[
+          {
+            trigger: '@',
+            renderSuggestions: renderSuggestions(users),
+            textStyle: {fontWeight: 'bold', color: Blue500},
+          },
+          // {
+          //   trigger: '#',
+          //   renderSuggestions: renderHashtagSuggestions,
+          //   textStyle: {fontWeight: 'bold', color: 'grey'},
+          // },
+        ]}
+
+        placeholder="Add comment..."
+        style={{
+          width: Dimensions.get('window').width - (spacingUnit * 8),
+          paddingTop: 12,
+          paddingBottom: 12,
+          paddingLeft: 12,
+          paddingRight: 12,
+          backgroundColor: White,
+          borderRadius: spacingUnit * 3,
+          borderWidth: 1,
+          borderColor: Grey300,
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      />
+  )
+  
 }

@@ -111,7 +111,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
   return (
     <View style={feedStyles.feedItemContainer}>
       <View style={feedStyles.feedItemName}>
-        <SafeImage style={feedStyles.feedItemImage} src={item.actorProfilePicture} defaultImage={DefaultProfilePicture}/>
+        <SafeImage style={feedStyles.feedItemImage} src={item.actorProfilePicture} defaultImage={DefaultProfilePicture} />
         <RegularText style={{
           marginRight: spacingUnit
         }} color={Black}>{item.actorFirstName} {item.actorLastName}</RegularText>
@@ -131,7 +131,9 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           marginRight: spacingUnit
         }}/> */}
         {comment ?
-          <TextEditor type='comment' content={item.itemContent} readOnly={true} />
+          <RegularText>
+            {item.itemContent}
+          </RegularText>
           :
           <FeedString item={item} />
         }
@@ -190,9 +192,16 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
 
 export const renderItem = ({ item, navigation }) => {
   return (
-    <Pressable onPress={() => navigation.navigate('FeedItem', {
-      item,
-      liked: false
+    <Pressable onPress={() => navigation.navigate('Root', {
+      screen: 'Dashboard',
+      params: {
+        screen: 'FeedItem',
+        params: {
+          item,
+          liked: false,
+          comment: true
+        }
+      }
     })}>
       <FeedItem item={item} />
     </Pressable>

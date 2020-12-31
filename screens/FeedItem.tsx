@@ -1,12 +1,13 @@
 import * as React from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { SafeAreaView, View, ScrollView , StyleSheet} from 'react-native'
+import { SafeAreaView, View, ScrollView , StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
 import { useQuery } from '@apollo/client'
 
 import { withAuth } from '../components/withAuth'
 import { RootStackParamList } from '../types'
 import { Header } from '../components/Header'
 import { FeedItem } from '../components/Feed'
+import { WriteComment } from '../components/Comment'
 import { spacingUnit } from '../utils/common'
 import { Grey300, White } from '../constants/Colors'
 import { GET_FEED_COMMENTS } from '../graphql/queries'
@@ -44,14 +45,16 @@ function FeedItemScreen({
   })
 
   return (
+    <>
     <SafeAreaView style={{
-      backgroundColor: White
+      backgroundColor: White,
+      flex: 1
     }}>
       <Header />
       <ScrollView style={{
-        marginTop: spacingUnit
+        marginTop: spacingUnit,
       }}>
-        <FeedItem item={item} standAlone={true} />
+        <FeedItem item={item} standAlone={true} key={item.id} />
         <View
           style={{
             borderBottomColor: Grey300,
@@ -76,15 +79,29 @@ function FeedItemScreen({
           {
             data && data.getFeedItemComments.map(feedComment => {
               return (
-                <FeedItem item={feedComment} comment={true} />
+                <FeedItem item={feedComment} comment={true} key={feedComment.id} />
               )
             })
           }
         </View>
         {/* # Minimum div which contains all the comments */}
       </ScrollView>
-      {/* #bottom nav div */}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{
+          flex: 1
+        }}
+        
+      >
+      <View style={{
+        flex: 1
+      }}>
+              <WriteComment />
+      </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
+
+    </>
   )
 }
 

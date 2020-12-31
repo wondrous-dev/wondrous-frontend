@@ -162,6 +162,7 @@ function ProjectSetupCategoryScreen({
 }: StackScreenProps<RootStackParamList, 'ProjectSetupCategory'>) {
   const [projectCategory, setProjectCategory] = useState(null)
   // const [] = useMutation()
+  const []
   return (
     <SafeAreaView style={{
       backgroundColor: White,
