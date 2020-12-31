@@ -162,7 +162,6 @@ function ProjectSetupCategoryScreen({
 }: StackScreenProps<RootStackParamList, 'ProjectSetupCategory'>) {
   const [projectCategory, setProjectCategory] = useState(null)
   // const [] = useMutation()
-  const []
   return (
     <SafeAreaView style={{
       backgroundColor: White,
@@ -180,6 +179,8 @@ function ProjectSetupCategoryScreen({
           }} style={{
             alignSelf: 'center',
             marginTop: spacingUnit * 8
+          }} onPress={() => {
+            navigation.navigate('ProjectTagSelection')
           }}>
             <ButtonText color={White}>
               Continue

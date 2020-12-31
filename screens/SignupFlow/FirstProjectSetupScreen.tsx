@@ -72,7 +72,7 @@ const CreateProjectInput = ({ navigation }) => {
             <Formik
                 initialValues={{ projectName: '', projectDescription: '' }}
                 onSubmit={values => {
-                    navigation.navigate('ProjectTagSelection')
+                    navigation.navigate('ProjectSetupCategory')
                     console.log(values)
                 }}
             >
