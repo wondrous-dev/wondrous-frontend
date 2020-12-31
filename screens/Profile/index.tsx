@@ -16,7 +16,6 @@ function ProfileScreen({
       backgroundColor: White  
     }}>
       <Header />
-      <BottomTabNavigator />
     </SafeAreaView>
   )
 }

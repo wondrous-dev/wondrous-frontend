@@ -18,7 +18,10 @@ function DashboardScreen({
 }: StackScreenProps<RootStackParamList, 'Dashboard'>) {
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{ 
+      headerShown: false,
+      gestureResponseDistance: { vertical: 200, horizontal: 250 }
+    }}>
       <Stack.Screen name='Feed' component={Feed} />
       <Stack.Screen name='FeedItem' component={FeedItem} />
     {/* <BottomTabNavigator /> */}

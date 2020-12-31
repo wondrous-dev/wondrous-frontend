@@ -113,13 +113,11 @@ class CardList extends React.Component {
               childrenHeight={childrenHeight}
               scaleStatus={'scaleY'}
               onDragStart={(startIndex,endIndex)=>{
-                console.log("THE FUCK")
                 this.setState({
                     scrollEnabled: false
                 })
             }}
             onDataChange = {(data)=>{
-              console.log('data', data)
               if (data.length != this.state.cards.length) {
                   this.setState({
                       cards: data
@@ -127,7 +125,6 @@ class CardList extends React.Component {
               }
           }}
             onClickItem={(data,item,index)=>{
-              console.log("ANYTHING")
             }}
             onDragEnd={(startIndex)=>{
               console.log('no dragging')
