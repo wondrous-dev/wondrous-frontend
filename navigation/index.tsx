@@ -11,6 +11,7 @@ import WelcomeScreen from '../screens/SignupFlow/Welcome'
 import ProjectSetupCategoryScreen from '../screens/SignupFlow/ProjectSetupCategory'
 import UsernameSetupScreen from '../screens/SignupFlow/UsernameSetupScreen'
 import FirstProjectSetupScreen from '../screens/SignupFlow/FirstProjectSetupScreen'
+import ProjectTagSelectionScreen from '../screens/SignupFlow/ProjectTagSelectionScreen'
 import DashboardScreen from '../screens/Dashboard'
 import { RootStackParamList } from '../types'
 import BottomTabNavigator from './BottomTabNavigator'
@@ -33,6 +34,7 @@ function RootNavigator() {
       <Stack.Screen name='ProjectSetupCategory' component={ProjectSetupCategoryScreen} />
       <Stack.Screen name='UsernameSetup' component={UsernameSetupScreen} />
       <Stack.Screen name='FirstProjectSetup' component={FirstProjectSetupScreen} />
+      <Stack.Screen name='ProjectTagSelection' component={ProjectTagSelectionScreen} />
       <Stack.Screen name='Dashboard' component={DashboardScreen} />
       <Stack.Screen name='Root' component={BottomTabNavigator} />
       <Stack.Screen name='NotFound' component={NotFoundScreen} options={{ title: 'Oops!' }} />

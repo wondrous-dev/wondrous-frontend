@@ -39,6 +39,11 @@ export default {
           UsernameSetup: 'usernameSetup'
         }
       },
+      ProjectTagSelection : {
+        screens: {
+          ProjectTagSelection: 'projectTagSelection'
+        }
+      },
       FirstProjectSetup: {
         screens: {
           FirstProjectSetup: 'firstProjectSetup'

@@ -18,7 +18,7 @@ import WritingIcon from '../../assets/images/categories/writing'
 import FitnessIcon from '../../assets/images/categories/fitness'
 import OtherIcon from '../../assets/images/categories/other'
 import { spacingUnit } from '../../utils/common'
-import { Black, Blue600, White } from '../../constants/Colors'
+import { Black, Grey900, White } from '../../constants/Colors'
 import { Subheading, RegularText, ButtonText} from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { moderateScale } from '../../utils/scale'
@@ -99,7 +99,7 @@ const CategoryItem = ({ category }) => {
   if (category.title.toLowerCase() === projectCategory) {
     categoryColors = {
       iconColor: White,
-      backgroundColor: Blue600
+      backgroundColor: Grey900
     }
   }
 
@@ -114,7 +114,7 @@ const CategoryItem = ({ category }) => {
           alignItems: 'center'
         }}>
           <CategoryImage backgroundColor={(categoryColors && categoryColors?.backgroundColor) || '#F0F4FE'} iconColor={category && categoryColors?.iconColor} />
-          <RegularText color={Blue600} style={{
+          <RegularText color={Grey900} style={{
             marginTop: spacingUnit
           }} > {category.title} </RegularText>
         </Pressable>

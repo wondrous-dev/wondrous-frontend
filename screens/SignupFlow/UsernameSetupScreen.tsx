@@ -4,55 +4,41 @@ import { StyleSheet, View, TouchableOpacity, Text, Image, SafeAreaView, Dimensio
 import ProgressCircle from 'react-native-progress-circle'
 import { Formik } from 'formik';
 
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
+
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { spacingUnit } from '../../utils/common'
-import { Black, Blue600, White, Blue400, Red400, Grey100, Grey200, Grey300, Grey400 } from '../../constants/Colors'
+import { Black, White, Blue500, Red400, Grey100, Grey200, Grey300, GreyPlaceHolder } from '../../constants/Colors'
 import { Subheading, RegularText, ButtonText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { moderateScale } from '../../utils/scale'
 import { useMutation } from '@apollo/client'
 
 const usernameSetupStyles = StyleSheet.create({
+  stepContainer: {
+    marginTop: spacingUnit * 3,
+  },
   progressCircleContainer: {
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-    top: spacingUnit * 3,
+    marginTop: spacingUnit * 3,
   },
   usernameInputContainer: {
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
+    marginTop: spacingUnit * 3,
   },
   stepCount: {
     fontSize: 16,
-    color: Blue400,
+    color: Blue500,
     fontFamily: 'Rubik',
     fontStyle: 'normal',
     fontWeight: '500',
-    marginTop: spacingUnit * 2,
   },
-  back: {
-    position: 'absolute',
-    left: "6.4%",
-    right: "83.2%",
-    fontFamily: 'Rubik',
-    fontStyle: 'normal',
-    fontWeight: '500',
-    fontSize: 16,
-    color: Blue400
-  },
-  skip: {
-    position: 'absolute',
-    left: "85.87%",
-    right: "4%",
-    fontFamily: 'Rubik',
-    fontStyle: 'normal',
-    fontWeight: '500',
-    fontSize: 16,
-    color: Blue400
-  }
 })
 
 
@@ -61,8 +47,7 @@ const UsernameInput = ({ navigation }) => {
   return (
     <View style={usernameSetupStyles.usernameInputContainer}>
       <Subheading style={{
-        marginBottom: spacingUnit,
-        marginTop: spacingUnit * 4
+        marginBottom: spacingUnit * 3,
       }} color={Black}>
         Choose your username
       </Subheading>
@@ -78,16 +63,16 @@ const UsernameInput = ({ navigation }) => {
           <View>
             <TextInput
               style={{
-                marginTop: spacingUnit * 2,
                 width: spacingUnit * 43,
-                height: spacingUnit * 5,
+                height: spacingUnit * 4.5,
                 borderColor: Grey300,
                 borderWidth: 1,
-                padding: 8,
                 borderRadius: 4,
-                fontSize: 18
+                fontSize: 14,
+                padding: 8,
               }}
-
+              placeholder='Username'
+              placeholderTextColor={GreyPlaceHolder}
               onChangeText={handleChange('username')}
               onBlur={handleBlur('username')}
               value={values.username}
@@ -97,11 +82,11 @@ const UsernameInput = ({ navigation }) => {
               style={{
                 width: spacingUnit * 43,
                 alignSelf: 'center',
-                marginTop: spacingUnit * 5
+                marginTop: spacingUnit * 3.6 // this is not consistent with the next page on figma
               }}
               onPress={handleSubmit}
             >
-              <ButtonText color={White}> Continue  </ButtonText>
+              <ButtonText color={White}> Continue </ButtonText>
             </PrimaryButton>
 
           </View>
@@ -118,12 +103,10 @@ function UsernameSetupScreen({
   return (
     <SafeAreaView style={{
       backgroundColor: White,
-      flex: 1
+      flex: 1,
     }}>
       <Header />
       <View style={usernameSetupStyles.progressCircleContainer}>
-      <Text style={usernameSetupStyles.back}>Back</Text>
-      <Text style={usernameSetupStyles.skip} >Skip</Text>
         <ProgressCircle
           percent={30}
           radius={50}
@@ -133,8 +116,11 @@ function UsernameSetupScreen({
           bgColor={White}
         >
         </ProgressCircle>
-        <Text style={usernameSetupStyles.stepCount}>step 1/3</Text>
+        <View style={usernameSetupStyles.stepContainer}>
+          <Text style={usernameSetupStyles.stepCount}>step 1/3</Text>
+        </View>
       </View>
+
       <UsernameInput navigation={navigation} />
     </SafeAreaView>
   )
