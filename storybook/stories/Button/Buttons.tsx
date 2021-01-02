@@ -14,7 +14,9 @@ const BaseButton = ({
   buttonPressStyle,
   color,
   textStyle,
-  textPressStyle }) => {
+  textPressStyle,
+  ...props
+}) => {
   const [pressStatus, setPressStatus] = useState(false)
   const finalStyle = pressStatus ? {
     ...baseStyle,
@@ -32,31 +34,34 @@ const BaseButton = ({
       onHideUnderlay={() => setPressStatus(false)}
       onShowUnderlay={() => setPressStatus(true)}
       underlayColor={pressStatus ? baseStyle.backgroundColor : buttonPressStyle.backgroundColor}
+      {...props}
     >
         {children}
     </TouchableHighlight>
   )
 }
 
-export function PrimaryButton ({ onPress, children, style, textStyle, textPressStyle }) {
+export function PrimaryButton ({ onPress, children, style, textStyle, textPressStyle, ...props }) {
   return <BaseButton onPress={onPress} style={style} baseStyle={baseStyle.primary} buttonPressStyle={{
     backgroundColor: Blue500,
     
     ...baseStyle.primary,
     ...style
-  }} textStyle={textStyle} textPressStyle={textPressStyle}>
+  }} textStyle={textStyle} textPressStyle={textPressStyle} {...props}>
     
     {children}
     </BaseButton>
 }
 
-export function SecondaryButton ({ onPress, children, style, textStyle, textPressStyle }) {
+export function SecondaryButton ({ onPress, children, style, textStyle, textPressStyle, ...props }) {
   return <BaseButton onPress={onPress} style={style} baseStyle={baseStyle.secondary} buttonPressStyle={{
     backgroundColor: Grey100,
     color: Black,
   ...baseStyle.secondary,
   ...style,
-}} textStyle={textStyle} textPressStyle={textPressStyle}>
+}} textStyle={textStyle} textPressStyle={textPressStyle}
+  {...props}
+>
     {children}
   </BaseButton>
 }

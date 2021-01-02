@@ -50,7 +50,6 @@ export const SafeImage = ({ src, style, defaultImage }) => {
     }} />
   }
   if (data && data.getPreviewImage) {
-    console.log('data url', data.getPreviewImage.url)
     return <Image style={style} source={{
       uri: data.getPreviewImage.url
     }} />

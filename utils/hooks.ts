@@ -2,6 +2,8 @@ import {
   useContext
 } from 'react'
 
-import { CommentContext } from './contexts'
+import { CommentContext, TextEditorContext } from './contexts'
 
 export const useComment = () => useContext(CommentContext)
+
+export const useTextEditor = () => useContext(TextEditorContext)

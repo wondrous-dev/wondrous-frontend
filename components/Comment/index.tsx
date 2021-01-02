@@ -1,9 +1,10 @@
-import * as React from 'react'
-import { SafeAreaView, View, FlatList, StyleSheet, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, TextInput } from 'react-native'
+import React, { useState, useCallback } from 'react'
+import { View, StyleSheet, TouchableWithoutFeedback, Keyboard, Dimensions } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { TextEditor } from '../../storybook/stories/TextEditor'
 import { useComment } from '../../utils/hooks'
+import { TextEditorContext } from '../../utils/contexts'
 import { spacingUnit } from '../../utils/common'
 import { useMe } from '../withAuth'
 import { PrimaryButton } from '../../storybook/stories/Button'
@@ -31,8 +32,29 @@ const commentStyles = StyleSheet.create({
   }
 })
 
-const WriteComment = ({ commentMutation }) => {
+const WriteComment = () => {
   const user = useMe()
+  const [content, setContent] = useState('')
+  const [userMentions, setUserMentions] = useState([])
+  const {
+    commentMutation,
+    feedItemId
+  } = useComment()
+
+  const pressComment = useCallback(async content => {
+    console.log('content', content)
+    if (content) {
+      await commentMutation({
+        variables: {
+          feedItemId,
+          content
+        }
+      })
+      setContent('')
+      Keyboard.dismiss()
+    }
+  }, [])
+
   return (
     <View style={commentStyles.commentContainer}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -43,13 +65,23 @@ const WriteComment = ({ commentMutation }) => {
           borderRadius: spacingUnit * 2,
           marginRight: spacingUnit,
           marginBottom: 4
-        }} src={null} defaultImage={DefaultProfilePicture} />
-        <TextEditor />
-        {/* <PrimaryButton>
-          <ButtonText>
+        }} src={ user && user.profilePicture } defaultImage={DefaultProfilePicture} />
+        <TextEditorContext.Provider value={{
+          content,
+          setContent
+        }}>
+        <TextEditor style={{
+          width: Dimensions.get('window').width - (spacingUnit * 18),
+        }} />
+        </TextEditorContext.Provider>
+        <PrimaryButton onPress={() => pressComment(content)} disabled={!content} style={{
+          width: spacingUnit * 8,
+          marginLeft: spacingUnit
+        }}>
+          <ButtonText color={White}>
             Reply
           </ButtonText>
-        </PrimaryButton> */}
+        </PrimaryButton>
         </View>
       </TouchableWithoutFeedback>
     </View>

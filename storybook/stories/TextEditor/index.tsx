@@ -22,13 +22,16 @@ import {
 import { MentionInput, MentionSuggestionsProps, Suggestion } from 'react-native-controlled-mentions'
 import { useQuery, useLazyQuery } from '@apollo/client'
 
+
 import { RichEditor, RichToolbar } from './RichEditor'
 import { SvgImage } from '../Image'
 import Placeholder from '../../../assets/images/placeholder.svg'
+import DefaultProfilePicture from '../../../assets/images/default-profile-picture.jpg'
 import { Black, Blue500, Grey100, Grey200, Grey300, Grey400, White } from '../../../constants/Colors'
 import apollo from '../../../services/apollo'
 import { GET_AUTOCOMPLETE_USERS } from '../../../graphql/queries'
 import { spacingUnit } from '../../../utils/common'
+import { useTextEditor } from '../../../utils/hooks'
 
 function findIndexes(source, find) {
   if (!source) {
@@ -235,7 +238,6 @@ export class RichTextEditor extends React.Component {
   }
 
   handleChange = (html) => {
-    console.log('editor data:', html)
     this.setState({
       content: html
     })
@@ -405,16 +407,19 @@ const renderSuggestions: (suggestions: Suggestion[]) => FC<MentionSuggestionsPro
           }}>
             {
               user.profilePicture && user.profilePicture !== 'None' ?
-              <Image
-              source={{uri: user.profilePicture}} style={{
+              <SafeImage
+              src={user.profilePicture} style={{
                 width: 30,
                 height: 30,
                 borderRadius: 15,
                 marginRight: 8
               }} />
               :
-              <SvgImage width="30" height="30" srcElement={Placeholder} style={{
-                marginRight: 8
+              <Image source={DefaultProfilePicture} style={{
+                marginRight: 8,
+                width: 30,
+                height: 30,
+                borderRadius: 15
               }} />
             }
             <View>
@@ -433,8 +438,11 @@ const renderSuggestions: (suggestions: Suggestion[]) => FC<MentionSuggestionsPro
   );
 }
 
-export const TextEditor = () => {
-  const [value, setValue] = useState('')
+export const TextEditor = ({ style }) => {
+  const {
+    content,
+    setContent
+  } = useTextEditor()
   // const [users, setUsers] = useState([])
   const [getAutocompleteUsers, { data, loading, error }] = useLazyQuery(GET_AUTOCOMPLETE_USERS, {
     variables: {
@@ -451,8 +459,8 @@ export const TextEditor = () => {
   const users = (data && data.getAutocompleteUsers) || []
   return (
     <MentionInput
-        value={value}
-        onChange={setValue}
+        value={content}
+        onChange={(content) => setContent(content)}
 
         mentionTypes={[
           {
@@ -469,7 +477,6 @@ export const TextEditor = () => {
 
         placeholder="Add comment..."
         style={{
-          width: Dimensions.get('window').width - (spacingUnit * 8),
           paddingTop: 12,
           paddingBottom: 12,
           paddingLeft: 12,
@@ -479,7 +486,8 @@ export const TextEditor = () => {
           borderWidth: 1,
           borderColor: Grey300,
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          ...style
         }}
       />
   )
