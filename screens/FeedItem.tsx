@@ -53,10 +53,6 @@ function FeedItemScreen({
       cache.modify({
         fields: {
           getFeedItemComments(existingFeedItems = []) {
-            const newFeedItem = cache.writeFragment({
-              data: createFeedComment,
-              fragment: ActivityFeedItem
-            })
             return [...existingFeedItems, createFeedComment]
           }
         }
@@ -91,7 +87,7 @@ function FeedItemScreen({
           Number(item.reactionCount) > 0 &&
           <>
             <RegularText style={feedItemStyles.likeCount}>
-              {item.reactionCount} likes
+              {item.reactionCount} {item.reactionCount === '1' ? 'like' : 'likes'}
             </RegularText>
             <View
               style={{
@@ -136,4 +132,4 @@ function FeedItemScreen({
   )
 }
 
-export default FeedItemScreen
+export default withAuth(FeedItemScreen)

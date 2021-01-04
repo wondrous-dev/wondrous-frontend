@@ -5,8 +5,9 @@ import { useNavigation } from '@react-navigation/native'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 
-import { Grey300, Black, Grey200, Grey600, Grey700, White } from '../../constants/Colors'
+import { Grey300, Black, Grey200, Grey600, Grey700, Red400, White } from '../../constants/Colors'
 import { GET_HOME_FEED } from '../../graphql/queries'
+import { REACT_FEED_COMMENT } from '../../graphql/mutations'
 import { SafeImage, SvgImage } from '../../storybook/stories/Image'
 import { TinyText, RegularText } from '../../storybook/stories/Text'
 import { spacingUnit, capitalizeFirstLetter } from '../../utils/common'
@@ -15,10 +16,10 @@ import ProjectIcon from '../../assets/images/actions/project.svg'
 import GoalIcon from '../../assets/images/actions/goal.svg'
 import TaskIcon from '../../assets/images/actions/task.svg'
 import CompletedIcon from '../../assets/images/actions/completed.svg'
-import { LikeOutline } from '../../assets/images/reactions/like'
+import { LikeOutline, LikeFilled } from '../../assets/images/reactions/like'
 import CommentIcon from '../../assets/images/reactions/comment'
 import ShareIcon from '../../assets/images/share/feed'
-import { TextEditor } from '../../storybook/stories/TextEditor'
+import { useMe } from '../withAuth'
 
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
@@ -108,6 +109,62 @@ const FeedString = ({ item }) => {
 }
 
 export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePress }) => {
+  const user = useMe()
+  const [liked, setLiked] = useState(user && user.reactedFeedComments.includes(item.id))
+  const [reactFeedItem] = useMutation(REACT_FEED_COMMENT, {
+    update(cache) {
+      cache.modify({
+        fields: {
+          getHomeFeed(existingFeedItems = []) {
+            const newExistingFeedItems = existingFeedItems.map(feedItem => {
+              if (feedItem.id === item.id) {
+                // console.log('feedItem', feedItem)
+                if (liked) {
+                  return {
+                    ...feedItem,
+                    reactionCount: feedItem.reactionCount - 1
+                  }
+                } else if (!liked) {
+                  return {
+                    ...feedItem,
+                    reactionCount: feedItem.reactionCount + 1
+                  }
+                }
+              }
+            })
+            return newExistingFeedItems
+          },
+          users(existingUser = {}) {
+            if (liked && user && user.reactedFeedComments.includes(item.id)) {
+              // Unliked
+              const newReactedFeedComments = user.reactedFeedComments.filter(reactedFeedComment => reactedFeedComment.id !== item.id)
+              return {
+                ...user,
+                reactedFeedComments: newReactedFeedComments
+              }
+            } else if (!liked && user && !user.reactedFeedComments.includes(item.id)) {
+              return {
+                ...user,
+                reactedFeedComments: [...user.reactedFeedComments, item.id]
+              }
+            }
+          }
+        }
+      })
+    }
+  })
+  const likeFeedItem = useCallback(async liked => {
+    try {
+      await reactFeedItem({
+        variables: {
+          feedItemId: item.id
+        }
+      })
+    } catch (error) {
+      console.log("error", JSON.stringify(error, null, 2))
+    }
+    setLiked(!liked)
+  }, [])
   return (
     <View style={feedStyles.feedItemContainer}>
       <View style={feedStyles.feedItemName}>
@@ -170,11 +227,20 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
         </View>
       :
         <View style={feedStyles.reactions}>
-          <LikeOutline color={Grey700} style={{
-            marginRight: spacingUnit
-          }} />
+          <Pressable onPress={() => likeFeedItem(liked)} > 
+          {
+            liked ?
+            <LikeFilled color={Red400} style={{
+              marginRight: spacingUnit
+            }} />
+            :
+            <LikeOutline color={Grey700} style={{
+              marginRight: spacingUnit
+            }} />
+          }
+          </Pressable>
           <RegularText color={Grey600} style={{
-            marginRight: spacingUnit * 3
+            marginRight: spacingUnit * 3,
           }}>{item.reactionCount}</RegularText>
           <CommentIcon color={Grey700} style={{
             marginRight: spacingUnit

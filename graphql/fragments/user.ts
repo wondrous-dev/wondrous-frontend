@@ -5,9 +5,11 @@ export const PublicUserFragment = gql`
     id
     email
     profilePicture
+    bio
     username
     firstName
     lastName
     privacyLevel
+    reactedFeedComments
   }
 `
