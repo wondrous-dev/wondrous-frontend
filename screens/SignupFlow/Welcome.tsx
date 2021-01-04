@@ -56,7 +56,6 @@ function WelcomeScreen({
   navigation
 }: StackScreenProps<RootStackParamList, 'Welcome'>) {
   const user = useMe()
-  console.log('user', user)
   const [image, setImage] = React.useState('')
   const [snapperOpen, setSnapperOpen] = React.useState(false)
   React.useEffect(() => {

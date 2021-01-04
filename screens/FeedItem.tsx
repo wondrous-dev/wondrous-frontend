@@ -20,11 +20,6 @@ import { CommentContext } from '../utils/contexts'
 const feedItemStyles = StyleSheet.create({
   commentContainer: {
     minHeight: spacingUnit * 37.5
-  },
-  likeCount: {
-    paddingLeft: spacingUnit * 2,
-    paddingTop: spacingUnit,
-    paddingBottom: spacingUnit
   }
 })
 
@@ -77,26 +72,6 @@ function FeedItemScreen({
       ref={scrollViewRef}
       >
         <FeedItem item={item} standAlone={true} key={item.id} />
-        <View
-          style={{
-            borderBottomColor: Grey300,
-            borderBottomWidth: 1,
-          }}
-        />
-        {
-          Number(item.reactionCount) > 0 &&
-          <>
-            <RegularText style={feedItemStyles.likeCount}>
-              {item.reactionCount} {item.reactionCount === '1' ? 'like' : 'likes'}
-            </RegularText>
-            <View
-              style={{
-                borderBottomColor: Grey300,
-                borderBottomWidth: 1,
-              }}
-            />
-          </>
-        }
         <View style={feedItemStyles.commentContainer}>
           {
             data && data.getFeedItemComments.map(feedComment => {

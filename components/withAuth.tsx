@@ -50,9 +50,9 @@ export const withAuth = (Component) => {
 
     if (!tokenLoading && !token) {
       const pathname = route && route.name
-      if (loading !== true && pathname !== 'Signup' && pathname !== 'Login' && pathname !== 'InviteRedeem' && pathname !== '/') {
-        navigation.navigate('Login')
-      }
+      // if (loading !== true && pathname !== 'Signup' && pathname !== 'Login' && pathname !== 'InviteRedeem' && pathname !== '/') {
+      //   navigation.navigate('Login')
+      // }
       return <Component {...props} />
     } else {
       const user = data && data.users.length > 0 ? data.users[0] : null

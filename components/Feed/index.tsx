@@ -6,7 +6,7 @@ import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 
 import { Grey300, Black, Grey200, Grey600, Grey700, Red400, White } from '../../constants/Colors'
-import { GET_HOME_FEED } from '../../graphql/queries'
+import { GET_HOME_FEED, WHOAMI } from '../../graphql/queries'
 import { REACT_FEED_COMMENT } from '../../graphql/mutations'
 import { SafeImage, SvgImage } from '../../storybook/stories/Image'
 import { TinyText, RegularText } from '../../storybook/stories/Text'
@@ -15,7 +15,6 @@ import DefaultProfilePicture from '../../assets/images/default-profile-picture.j
 import ProjectIcon from '../../assets/images/actions/project.svg'
 import GoalIcon from '../../assets/images/actions/goal.svg'
 import TaskIcon from '../../assets/images/actions/task.svg'
-import CompletedIcon from '../../assets/images/actions/completed.svg'
 import { LikeOutline, LikeFilled } from '../../assets/images/reactions/like'
 import CommentIcon from '../../assets/images/reactions/comment'
 import ShareIcon from '../../assets/images/share/feed'
@@ -50,6 +49,11 @@ const feedStyles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: spacingUnit * 3,
     alignItems: 'center'
+  },
+  likeCount: {
+    paddingLeft: spacingUnit * 2,
+    paddingTop: spacingUnit,
+    paddingBottom: spacingUnit
   }
 })
 
@@ -110,7 +114,7 @@ const FeedString = ({ item }) => {
 
 export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePress }) => {
   const user = useMe()
-  const [liked, setLiked] = useState(user && user.reactedFeedComments.includes(item.id))
+  const [liked, setLiked] = useState(null)
   const [reactFeedItem] = useMutation(REACT_FEED_COMMENT, {
     update(cache) {
       cache.modify({
@@ -118,7 +122,6 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           getHomeFeed(existingFeedItems = []) {
             const newExistingFeedItems = existingFeedItems.map(feedItem => {
               if (feedItem.id === item.id) {
-                // console.log('feedItem', feedItem)
                 if (liked) {
                   return {
                     ...feedItem,
@@ -137,22 +140,33 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           users(existingUser = {}) {
             if (liked && user && user.reactedFeedComments.includes(item.id)) {
               // Unliked
-              const newReactedFeedComments = user.reactedFeedComments.filter(reactedFeedComment => reactedFeedComment.id !== item.id)
-              return {
+              const newReactedFeedComments = user.reactedFeedComments.filter(reactedFeedComment => {
+                return reactedFeedComment !== item.id
+              })
+
+              return [{
                 ...user,
                 reactedFeedComments: newReactedFeedComments
-              }
+              }]
             } else if (!liked && user && !user.reactedFeedComments.includes(item.id)) {
-              return {
+              return [{
                 ...user,
                 reactedFeedComments: [...user.reactedFeedComments, item.id]
-              }
+              }]
             }
           }
         }
       })
     }
   })
+  useEffect(() => {
+    if (user && user.reactedFeedComments.includes(item.id)) {
+      setLiked(true)
+    } else {
+      setLiked(false)
+    }
+  }, [user && <user className="reactedFeedComme"></user>, item.reactionCount])
+
   const likeFeedItem = useCallback(async liked => {
     try {
       await reactFeedItem({
@@ -163,9 +177,9 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
     } catch (error) {
       console.log("error", JSON.stringify(error, null, 2))
     }
-    setLiked(!liked)
   }, [])
   return (
+    <>
     <View style={feedStyles.feedItemContainer}>
       <View style={feedStyles.feedItemName}>
         <SafeImage style={feedStyles.feedItemImage} src={item.actorProfilePicture} defaultImage={DefaultProfilePicture} />
@@ -206,11 +220,18 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
             flexDirection: 'row',
             alignItems: 'center'
           }}>
-          <LikeOutline color={Grey700} style={{
-            marginRight: spacingUnit,
-            width: spacingUnit * 3.5,
-            height: spacingUnit * 3.5
-          }} />
+          <Pressable onPress={() => likeFeedItem(liked)} > 
+          {
+            liked ?
+            <LikeFilled color={Red400} style={{
+              marginRight: spacingUnit
+            }} />
+            :
+            <LikeOutline color={Grey700} style={{
+              marginRight: spacingUnit
+            }} />
+          }
+          </Pressable>
           {/* <RegularText color={Grey600} style={{
             marginRight: spacingUnit * 3,
           }}>{item.reactionCount}</RegularText> */}
@@ -253,6 +274,33 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
       }
 
     </View>
+    {standAlone &&
+      <>
+        <View
+          style={{
+            borderBottomColor: Grey300,
+            borderBottomWidth: 1,
+          }}
+        />
+        {
+          Number(item.reactionCount) > 0 &&
+          <View>
+            <>
+              <RegularText style={feedStyles.likeCount}>
+                {item.reactionCount} {item.reactionCount === '1' ? 'like' : 'likes'}
+              </RegularText>
+              <View
+                style={{
+                  borderBottomColor: Grey300,
+                  borderBottomWidth: 1,
+                }}
+              />
+            </>
+      </View>
+        }
+      </>
+    }
+    </>
   )
 }
 

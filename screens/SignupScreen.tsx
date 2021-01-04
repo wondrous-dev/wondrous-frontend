@@ -31,9 +31,9 @@ function SignupScreen({
   const [loginStatus, setLoginStatus] = useState(null)
   const [loginError, setLoginError] = useState(null)
   const [signup] = useMutation(SIGNUP)
-  if (user) {
-    navigation.navigate('Welcome')
-  }
+  // if (user) {
+  //   navigation.navigate('Welcome')
+  // }
 
   return (
     <SafeAreaView style={styles.container}>
