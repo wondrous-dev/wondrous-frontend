@@ -4,8 +4,6 @@ import { StyleSheet, View, TouchableOpacity, Text, Image, SafeAreaView, Dimensio
 import ProgressCircle from 'react-native-progress-circle'
 import { Formik } from 'formik';
 
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
 
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
@@ -15,7 +13,8 @@ import { Subheading, RegularText, ButtonText } from '../../storybook/stories/Tex
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { moderateScale } from '../../utils/scale'
 import { useMutation } from '@apollo/client'
-
+import { UPDATE_USER } from '../../graphql/mutations'
+import { useMe } from '../../components/withAuth'
 const usernameSetupStyles = StyleSheet.create({
   stepContainer: {
     marginTop: spacingUnit * 3,
@@ -44,6 +43,8 @@ const usernameSetupStyles = StyleSheet.create({
 
 
 const UsernameInput = ({ navigation }) => {
+  const [updateUser] = useMutation(UPDATE_USER)
+  const user: any = useMe()
   return (
     <View style={usernameSetupStyles.usernameInputContainer}>
       <Subheading style={{
@@ -54,7 +55,15 @@ const UsernameInput = ({ navigation }) => {
 
       <Formik
         initialValues={{ username: '' }}
-        onSubmit={values => {
+        onSubmit={async values => {
+          // await updateUser({
+          //   variables: {
+          //     userId: user.id,
+          //     input: {
+          //       username: values.username
+          //     }
+          //   }
+          // })
           navigation.navigate('FirstProjectSetup')
           console.log(values)
         }}
