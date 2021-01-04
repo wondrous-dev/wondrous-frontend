@@ -13,3 +13,11 @@ export const SIGNUP = gql`
   }
   ${PublicUserFragment}
 `
+export const UPDATE_USER = gql`
+  mutation UpdateUser($userId: ID $input: UserUpdateInput!) {
+    updateuser(userId: $userId, input: $input) {
+      ...PublicUser
+    }
+  }
+  ${PublicUserFragment}
+`
