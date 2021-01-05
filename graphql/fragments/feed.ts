@@ -20,6 +20,7 @@ export const ActivityFeedItem = gql`
     itemContent
     commentCount
     reactionCount
+    commentReacted
     media
   }
 `

@@ -7,7 +7,7 @@ import en from 'javascript-time-ago/locale/en'
 
 import { Grey300, Black, Grey200, Grey600, Grey700, Red400, White } from '../../constants/Colors'
 import { GET_HOME_FEED, WHOAMI } from '../../graphql/queries'
-import { REACT_FEED_COMMENT } from '../../graphql/mutations'
+import { REACT_FEED_COMMENT, REACT_FEED_ITEM } from '../../graphql/mutations'
 import { SafeImage, SvgImage } from '../../storybook/stories/Image'
 import { TinyText, RegularText } from '../../storybook/stories/Text'
 import { spacingUnit, capitalizeFirstLetter } from '../../utils/common'
@@ -147,33 +147,55 @@ const getItemFromRef = (ref, readField) => {
   }
 }
 
+const getNewExistingItems = ({ existingItems, liked, comment, item, readField }) => {
+  const newExistingFeedComments = existingItems.map(itemRef => {
+    const itemObj = getItemFromRef(itemRef, readField)
+    if (itemObj.id === item.id) {
+      if (liked) {
+        return {
+          ...itemObj,
+          reactionCount: itemObj.reactionCount - 1,
+          ...(comment && {
+            commentReacted: false
+          })
+        }
+      } else if (!liked) {
+        return {
+          ...itemObj,
+          reactionCount: itemObj.reactionCount + 1,
+          ...(comment && {
+            commentReacted: true
+          })
+        }
+      }
+    }
+    return itemObj
+  })
+  return newExistingFeedComments
+}
+
 export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePress }) => {
   const user = useMe()
   const [liked, setLiked] = useState(null)
   const [reactionCount, setReactionCount] = useState(0)
-  const [reactFeedItem] = useMutation(REACT_FEED_COMMENT, {
+  const [commentLiked, setCommentLiked] = useState(null)
+  const [reactFeedComment] = useMutation(REACT_FEED_COMMENT, {
     update(cache) {
       cache.modify({
         fields: {
-          getHomeFeed(existingFeedItems = [], { readField, }) {
-            const newExistingFeedItems = existingFeedItems.map(feedItemRef => {
-              const feedItem = getItemFromRef(feedItemRef, readField)
-              if (feedItem.id === item.id) {
-                if (liked) {
-                  return {
-                    ...feedItem,
-                    reactionCount: Number(feedItem.reactionCount) - 1
-                  }
-                } else if (!liked) {
-                  return {
-                    ...feedItem,
-                    reactionCount: Number(feedItem.reactionCount) + 1
-                  }
-                }
-              }
-              return feedItem
-            })
-            return newExistingFeedItems
+          getFeedItemComments(existingFeedComments=[], { readField }) {
+            return getNewExistingItems({ existingItems: existingFeedComments, liked: commentLiked, comment: true, item, readField })
+          }
+        }
+      })
+    }
+  })
+  const [reactFeedItem] = useMutation(REACT_FEED_ITEM, {
+    update(cache) {
+      cache.modify({
+        fields: {
+          getHomeFeed(existingFeedItems = [], { readField }) {
+            return getNewExistingItems({ existingItems: existingFeedItems, liked, comment: false, item, readField})
           },
           users(existingUser = {}) {
             if (liked && user && user.reactedFeedComments.includes(item.id)) {
@@ -206,20 +228,33 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
     }
 
     setReactionCount(Number(item.reactionCount))
-  }, [user && user.reactedFeedComments, item.reactionCount])
+    setCommentLiked(item.commentReacted)
+  }, [user && user.reactedFeedComments, item.reactionCount, item.commentReacted])
 
   const likeFeedItem = useCallback(async liked => {
-    try {
-      await reactFeedItem({
-        variables: {
-          feedItemId: item.id
-        }
-      })
-    } catch (error) {
-      console.log("error", JSON.stringify(error, null, 2))
+    if (comment) {
+      try {
+        reactFeedComment({
+          variables: {
+            feedCommentId: item.id
+          }
+        })
+      } catch (error) {
+        console.log('error reacting to comment', JSON.stringify(error, null, 2))
+      }
+    } else {
+      try {
+        reactFeedItem({
+          variables: {
+            feedItemId: item.id
+          }
+        })
+      } catch (error) {
+        console.log("error", JSON.stringify(error, null, 2))
+      }
     }
   }, [])
-  console.log('reactionCount', reactionCount, standAlone, item.itemName)
+
   return (
     <>
     <View style={feedStyles.feedItemContainer}>
@@ -264,7 +299,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           }}>
           <Pressable onPress={() => likeFeedItem(liked)} > 
           {
-            liked ?
+            liked || commentLiked ?
             <LikeFilled color={Red400} style={{
               marginRight: spacingUnit
             }} />
@@ -292,7 +327,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
         <View style={feedStyles.reactions}>
           <Pressable onPress={() => likeFeedItem(liked)} > 
           {
-            liked ?
+            liked || commentLiked ?
             <LikeFilled color={Red400} style={{
               marginRight: spacingUnit
             }} />
@@ -355,7 +390,8 @@ export const renderItem = ({ item, navigation }) => {
         params: {
           item,
           liked: false,
-          comment: true
+          comment: true,
+          standAlone: true
         }
       }
     })}>

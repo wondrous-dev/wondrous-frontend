@@ -12,9 +12,16 @@ export const CREATE_FEED_COMMENT = gql`
   ${ActivityFeedItem}
 `
 
-export const REACT_FEED_COMMENT = gql`
-  mutation ReactFeedComment($feedItemId: String!) {
+export const REACT_FEED_ITEM = gql`
+  mutation ReactFeedItem($feedItemId: String!) {
     reactFeedItem(feedItemId: $feedItemId) {
+      success
+    } 
+  }
+`
+export const REACT_FEED_COMMENT = gql`
+  mutation ReactFeedComment($feedCommentId: String!) {
+    reactFeedComment(feedCommentId: $feedCommentId) {
       success
     } 
   }

@@ -59,7 +59,7 @@ function WelcomeScreen({
   const [image, setImage] = React.useState('')
   const [snapperOpen, setSnapperOpen] = React.useState(false)
   React.useEffect(() => {
-    registerForPushNotificationsAsync(user.id)
+    registerForPushNotificationsAsync(user && user.id)
   }, [])
 
   return (
