@@ -19,6 +19,29 @@ import { LikeOutline, LikeFilled } from '../../assets/images/reactions/like'
 import CommentIcon from '../../assets/images/reactions/comment'
 import ShareIcon from '../../assets/images/share/feed'
 import { useMe } from '../withAuth'
+import apollo from '../../services/apollo'
+
+const FeedItemTypes = [
+  'id',
+  'timestamp',
+  'userId',
+  'verb',
+  'objectType',
+  'objectId',
+  'projectId',
+  'projectName',
+  'privacyLevel',
+  'actorFirstName',
+  'actorLastName',
+  'actorUsername',
+  'actorProfilePicture',
+  'parentCommentId',
+  'itemName',
+  'itemContent',
+  'commentCount',
+  'reactionCount',
+  'media',
+]
 
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
@@ -112,28 +135,43 @@ const FeedString = ({ item }) => {
   return null
 }
 
+const getItemFromRef = (ref, readField) => {
+  const finalItem = {}
+  FeedItemTypes.forEach(item => {
+    const field = readField(item, ref)
+    finalItem[item] = field
+  })
+  return {
+    ...finalItem,
+    __typename: 'FeedItem'
+  }
+}
+
 export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePress }) => {
   const user = useMe()
   const [liked, setLiked] = useState(null)
+  const [reactionCount, setReactionCount] = useState(0)
   const [reactFeedItem] = useMutation(REACT_FEED_COMMENT, {
     update(cache) {
       cache.modify({
         fields: {
-          getHomeFeed(existingFeedItems = []) {
-            const newExistingFeedItems = existingFeedItems.map(feedItem => {
+          getHomeFeed(existingFeedItems = [], { readField, }) {
+            const newExistingFeedItems = existingFeedItems.map(feedItemRef => {
+              const feedItem = getItemFromRef(feedItemRef, readField)
               if (feedItem.id === item.id) {
                 if (liked) {
                   return {
                     ...feedItem,
-                    reactionCount: feedItem.reactionCount - 1
+                    reactionCount: Number(feedItem.reactionCount) - 1
                   }
                 } else if (!liked) {
                   return {
                     ...feedItem,
-                    reactionCount: feedItem.reactionCount + 1
+                    reactionCount: Number(feedItem.reactionCount) + 1
                   }
                 }
               }
+              return feedItem
             })
             return newExistingFeedItems
           },
@@ -159,13 +197,16 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
       })
     }
   })
+
   useEffect(() => {
     if (user && user.reactedFeedComments.includes(item.id)) {
       setLiked(true)
     } else {
       setLiked(false)
     }
-  }, [user && <user className="reactedFeedComme"></user>, item.reactionCount])
+
+    setReactionCount(Number(item.reactionCount))
+  }, [user && user.reactedFeedComments, item.reactionCount])
 
   const likeFeedItem = useCallback(async liked => {
     try {
@@ -178,6 +219,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
       console.log("error", JSON.stringify(error, null, 2))
     }
   }, [])
+  console.log('reactionCount', reactionCount, standAlone, item.itemName)
   return (
     <>
     <View style={feedStyles.feedItemContainer}>
@@ -262,7 +304,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           </Pressable>
           <RegularText color={Grey600} style={{
             marginRight: spacingUnit * 3,
-          }}>{item.reactionCount}</RegularText>
+          }}>{reactionCount}</RegularText>
           <CommentIcon color={Grey700} style={{
             marginRight: spacingUnit
           }}/>
@@ -283,11 +325,11 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           }}
         />
         {
-          Number(item.reactionCount) > 0 &&
+          Number(reactionCount) > 0 &&
           <View>
             <>
               <RegularText style={feedStyles.likeCount}>
-                {item.reactionCount} {item.reactionCount === '1' ? 'like' : 'likes'}
+                {reactionCount} {reactionCount === '1' ? 'like' : 'likes'}
               </RegularText>
               <View
                 style={{
@@ -317,7 +359,7 @@ export const renderItem = ({ item, navigation }) => {
         }
       }
     })}>
-      <FeedItem item={item} />
+      <FeedItem item={item} key={item.id} />
     </Pressable>
   )
 }
