@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import { View, StyleSheet, TouchableWithoutFeedback, Keyboard, Dimensions } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { mentionRegEx } from 'react-native-controlled-mentions'
 
 import { TextEditor } from '../../storybook/stories/TextEditor'
 import { useComment } from '../../utils/hooks'
@@ -42,14 +43,31 @@ const WriteComment = () => {
   } = useComment()
 
   const pressComment = useCallback(async content => {
-    console.log('content', content)
     if (content) {
-      await commentMutation({
-        variables: {
-          feedItemId,
-          content
+      const mentionedUsers = []
+      const mentions = content.match(mentionRegEx)
+      console.log('mentions', mentions)
+      if (mentions) {
+        for (let mention of mentions) {
+          const mentionExp = mention.matchAll(mentionRegEx)
+          const { id } = [...mentionExp][0].groups
+          mentionedUsers.push(id)
         }
-      })
+      }
+      console.log('mentionedUsers', mentionedUsers)
+      try {
+        await commentMutation({
+          variables: {
+            feedItemId,
+            content,
+            ...(mentionedUsers.length > 0 && {
+              userMentions: JSON.stringify(mentionedUsers)
+            })
+          }
+        })
+      } catch (error) {
+        console.log("error commenting", JSON.stringify(error, null, 2))
+      }
       setContent('')
       Keyboard.dismiss()
     }
@@ -68,7 +86,7 @@ const WriteComment = () => {
         }} src={ user && user.profilePicture } defaultImage={DefaultProfilePicture} />
         <TextEditorContext.Provider value={{
           content,
-          setContent
+          setContent,
         }}>
         <TextEditor style={{
           width: Dimensions.get('window').width - (spacingUnit * 18),

@@ -4,13 +4,15 @@ import { Text, View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pr
 import { useNavigation } from '@react-navigation/native'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
+import { mentionRegEx, replaceMentionValues } from 'react-native-controlled-mentions'
+import regexifyString from 'regexify-string'
 
-import { Grey300, Black, Grey200, Grey600, Grey700, Red400, White } from '../../constants/Colors'
+import { Grey300, Black, Grey200, Grey600, Grey700, Red400, White, Blue400 } from '../../constants/Colors'
 import { GET_HOME_FEED, WHOAMI } from '../../graphql/queries'
 import { REACT_FEED_COMMENT, REACT_FEED_ITEM } from '../../graphql/mutations'
 import { SafeImage, SvgImage } from '../../storybook/stories/Image'
 import { TinyText, RegularText } from '../../storybook/stories/Text'
-import { spacingUnit, capitalizeFirstLetter } from '../../utils/common'
+import { spacingUnit, capitalizeFirstLetter, insertComponentsIntoText, getRegexGroup } from '../../utils/common'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import ProjectIcon from '../../assets/images/actions/project.svg'
 import GoalIcon from '../../assets/images/actions/goal.svg'
@@ -19,7 +21,6 @@ import { LikeOutline, LikeFilled } from '../../assets/images/reactions/like'
 import CommentIcon from '../../assets/images/reactions/comment'
 import ShareIcon from '../../assets/images/share/feed'
 import { useMe } from '../withAuth'
-import apollo from '../../services/apollo'
 
 const FeedItemTypes = [
   'id',
@@ -174,8 +175,39 @@ const getNewExistingItems = ({ existingItems, liked, comment, item, readField })
   return newExistingFeedComments
 }
 
+
+export const renderMentionString = (content, navigation) => {
+  const final = regexifyString({
+    pattern: mentionRegEx,
+    decorator: (match, index) => {
+      const mentionExp = /(?<original>(?<trigger>.)\[(?<name>([^[]*))]\((?<id>([\d\w-]*))\))/.exec(match)
+      if (!mentionExp) {
+        return match
+      }
+      const { id, name } = mentionExp.groups
+      return (
+        <Pressable onPress={() => navigation.navigate('Root', {
+          screen: 'Profile',
+          params: {
+              userId: id
+          }
+        })} style={{
+          marginTop: -5.5
+        }}>
+          <RegularText color={Blue400}>
+            {`@${name}`}
+          </RegularText>
+        </Pressable>
+      )
+    },
+    input: content
+  })
+
+  return final
+}
 export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePress }) => {
   const user = useMe()
+  const navigation = useNavigation()
   const [liked, setLiked] = useState(null)
   const [reactionCount, setReactionCount] = useState(0)
   const [commentLiked, setCommentLiked] = useState(null)
@@ -255,6 +287,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
     }
   }, [])
 
+
   return (
     <>
     <View style={feedStyles.feedItemContainer}>
@@ -280,7 +313,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
         }}/> */}
         {comment ?
           <RegularText>
-            {item.itemContent}
+          {renderMentionString(item.itemContent, navigation)}
           </RegularText>
           :
           <FeedString item={item} />

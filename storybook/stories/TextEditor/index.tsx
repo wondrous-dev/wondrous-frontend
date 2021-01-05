@@ -390,11 +390,11 @@ const renderSuggestions: (suggestions: Suggestion[]) => FC<MentionSuggestionsPro
         .filter(one => one.username.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
         .map(user => (
           <Pressable key={user.id} onPress={() => {
+
             onSuggestionPress({
               ...user,
               name: user.username
             })
-            Keyboard.dismiss()
           }}>
           <View style={{
             flexDirection: 'row',
