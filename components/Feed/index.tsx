@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useLazyQuery, useMutation } from '@apollo/client'
-import { Text, View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pressable, Dimensions } from 'react-native'
+import { Text, View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pressable, TouchableHighlight, Dimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
@@ -186,18 +186,20 @@ export const renderMentionString = (content, navigation) => {
       }
       const { id, name } = mentionExp.groups
       return (
-        <Pressable onPress={() => navigation.navigate('Root', {
-          screen: 'Profile',
-          params: {
-              userId: id
-          }
-        })} style={{
-          marginTop: -5.5
-        }}>
-          <RegularText color={Blue400}>
+          <Text style={{
+            color: Blue400,
+            fontSize: 14,
+            lineHeight: 22
+          }}
+          onPress={() => navigation.navigate('Root', {
+            screen: 'Profile',
+            params: {
+                userId: id
+            }
+          })}
+          >
             {`@${name}`}
-          </RegularText>
-        </Pressable>
+          </Text>
       )
     },
     input: content
@@ -211,6 +213,24 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
   const [liked, setLiked] = useState(null)
   const [reactionCount, setReactionCount] = useState(0)
   const [commentLiked, setCommentLiked] = useState(null)
+  const pressComment = () => {
+    if (standAlone || comment) {
+      onCommentPress(`@[${item.actorUsername}](${item.userId})`)
+    } else {
+      navigation.navigate('Root', {
+        screen: 'Dashboard',
+        params: {
+          screen: 'FeedItem',
+          params: {
+            item,
+            liked: false,
+            comment: true,
+            standAlone: true
+          }
+        }
+      })
+    }
+  }
   const [reactFeedComment] = useMutation(REACT_FEED_COMMENT, {
     update(cache) {
       cache.modify({
@@ -312,9 +332,11 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           marginRight: spacingUnit
         }}/> */}
         {comment ?
+        <Pressable>
           <RegularText>
           {renderMentionString(item.itemContent, navigation)}
           </RegularText>
+          </Pressable>
           :
           <FeedString item={item} />
         }
@@ -346,11 +368,13 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
             marginRight: spacingUnit * 3,
           }}>{item.reactionCount}</RegularText> */}
           </View>
-          <CommentIcon color={Grey700} style={{
-            marginRight: spacingUnit,
-            width: spacingUnit * 3.5,
-            height: spacingUnit * 3.5
-          }}/>
+          <Pressable onPress={pressComment}>
+            <CommentIcon color={Grey700} style={{
+              marginRight: spacingUnit,
+              width: spacingUnit * 3.5,
+              height: spacingUnit * 3.5
+            }}/>
+          </Pressable>
           <ShareIcon color={Grey700} style={{
             width: spacingUnit * 3.5,
             height: spacingUnit * 3.5
@@ -373,9 +397,11 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           <RegularText color={Grey600} style={{
             marginRight: spacingUnit * 3,
           }}>{reactionCount}</RegularText>
+          <Pressable onPress={pressComment}>
           <CommentIcon color={Grey700} style={{
             marginRight: spacingUnit
           }}/>
+          </Pressable>
           <RegularText color={Grey600} style={{
             marginRight: spacingUnit * 3
           }}>{item.commentCount}</RegularText>

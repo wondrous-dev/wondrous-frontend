@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { SafeAreaView, View, ScrollView , StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
 import { useQuery, useMutation } from '@apollo/client'
@@ -38,6 +38,11 @@ function FeedItemScreen({
     liked
   } = route.params
   const scrollViewRef = useRef()
+  const [replyName, setReplyName] = useState(null)
+  const replyToComment = (value) => {
+    setReplyName(value)
+  }
+
   const { data, loading, error, fetchMore } = useQuery(GET_FEED_COMMENTS, {
     variables: {
       feedItemId: item.id
@@ -71,12 +76,12 @@ function FeedItemScreen({
       }}
       ref={scrollViewRef}
       >
-        <FeedItem item={item} standAlone={true} key={item.id} />
+        <FeedItem item={item} standAlone={true} key={item.id} onCommentPress={replyToComment} />
         <View style={feedItemStyles.commentContainer}>
           {
             data && data.getFeedItemComments.map(feedComment => {
               return (
-                <FeedItem item={feedComment} comment={true} key={feedComment.id} />
+                <FeedItem item={feedComment} comment={true} key={feedComment.id} onCommentPress={replyToComment}/>
               )
             })
           }
@@ -92,7 +97,9 @@ function FeedItemScreen({
       >
         <CommentContext.Provider value={{
           commentMutation: createFeedComment,
-          feedItemId: item.id
+          feedItemId: item.id,
+          replyName,
+          setReplyName
         }}>
           <View style={{
             flex: 1

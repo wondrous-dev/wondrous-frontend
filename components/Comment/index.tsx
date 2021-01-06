@@ -39,14 +39,15 @@ const WriteComment = () => {
   const [userMentions, setUserMentions] = useState([])
   const {
     commentMutation,
-    feedItemId
+    feedItemId,
+    replyName,
+    setReplyName
   } = useComment()
 
   const pressComment = useCallback(async content => {
     if (content) {
       const mentionedUsers = []
       const mentions = content.match(mentionRegEx)
-      console.log('mentions', mentions)
       if (mentions) {
         for (let mention of mentions) {
           const mentionExp = mention.matchAll(mentionRegEx)
@@ -54,7 +55,6 @@ const WriteComment = () => {
           mentionedUsers.push(id)
         }
       }
-      console.log('mentionedUsers', mentionedUsers)
       try {
         await commentMutation({
           variables: {
@@ -87,6 +87,8 @@ const WriteComment = () => {
         <TextEditorContext.Provider value={{
           content,
           setContent,
+          replyName,
+          setReplyName
         }}>
         <TextEditor style={{
           width: Dimensions.get('window').width - (spacingUnit * 18),

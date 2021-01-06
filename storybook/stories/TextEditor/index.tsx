@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {
   Appearance,
   Button,
@@ -32,6 +32,7 @@ import apollo from '../../../services/apollo'
 import { GET_AUTOCOMPLETE_USERS } from '../../../graphql/queries'
 import { spacingUnit } from '../../../utils/common'
 import { useTextEditor } from '../../../utils/hooks'
+import { text } from '@storybook/addon-knobs'
 
 function findIndexes(source, find) {
   if (!source) {
@@ -441,9 +442,12 @@ const renderSuggestions: (suggestions: Suggestion[]) => FC<MentionSuggestionsPro
 export const TextEditor = ({ style }) => {
   const {
     content,
-    setContent
+    setContent,
+    replyName,
+    setReplyName
   } = useTextEditor()
   // const [users, setUsers] = useState([])
+  let textInputRef = useRef()
   const [getAutocompleteUsers, { data, loading, error }] = useLazyQuery(GET_AUTOCOMPLETE_USERS, {
     variables: {
       username: ''
@@ -455,13 +459,17 @@ export const TextEditor = ({ style }) => {
         username: ''
       }
     })
-  }, [])
+    if (replyName && setReplyName) {
+      console.log('textInput', textInputRef)
+      setContent(content + ' ' + replyName)
+    }
+  }, [replyName])
   const users = (data && data.getAutocompleteUsers) || []
   return (
     <MentionInput
         value={content}
         onChange={(content) => setContent(content)}
-
+        ref={textInputRef}
         mentionTypes={[
           {
             trigger: '@',
