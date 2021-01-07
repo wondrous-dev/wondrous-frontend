@@ -1,26 +1,31 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useLazyQuery, useMutation } from '@apollo/client'
-import { Text, View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pressable, TouchableHighlight, Dimensions } from 'react-native'
+import { Text, View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pressable, Dimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import { mentionRegEx, replaceMentionValues } from 'react-native-controlled-mentions'
 import regexifyString from 'regexify-string'
+import Modal from 'react-native-modal'
+import Clipboard from 'expo-clipboard'
 
-import { Grey300, Black, Grey200, Grey600, Grey700, Red400, White, Blue400 } from '../../constants/Colors'
+import { Grey300, Black, Grey150, Grey200, Grey600, Grey700, Red400, White, Blue400 } from '../../constants/Colors'
 import { GET_HOME_FEED, WHOAMI } from '../../graphql/queries'
 import { REACT_FEED_COMMENT, REACT_FEED_ITEM } from '../../graphql/mutations'
 import { SafeImage, SvgImage } from '../../storybook/stories/Image'
-import { TinyText, RegularText } from '../../storybook/stories/Text'
+import { TinyText, RegularText, Subheading } from '../../storybook/stories/Text'
+import { SecondaryButton } from '../../storybook/stories/Button'
 import { spacingUnit, capitalizeFirstLetter, insertComponentsIntoText, getRegexGroup } from '../../utils/common'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import ProjectIcon from '../../assets/images/actions/project.svg'
 import GoalIcon from '../../assets/images/actions/goal.svg'
 import TaskIcon from '../../assets/images/actions/task.svg'
 import { LikeOutline, LikeFilled } from '../../assets/images/reactions/like'
+import { TwitterShare, FacebookShare, CopyLink, LinkedinShare } from '../../assets/images/share'
 import CommentIcon from '../../assets/images/reactions/comment'
 import ShareIcon from '../../assets/images/share/feed'
 import { useMe } from '../withAuth'
+import { tweetNow, linkedinShare, postOnFacebook  } from '../Share'
 
 const FeedItemTypes = [
   'id',
@@ -207,12 +212,129 @@ export const renderMentionString = (content, navigation) => {
 
   return final
 }
+
+const ShareModal = ({ isVisible, item, setModalVisible }) => {
+  const SHARE_URL = `https://wonderapp.co/feed/${item.id}`
+  const CONTENT = 'Check this discussion from Wonder!'
+  return (
+    <Modal isVisible={isVisible}>
+      <View style={{
+        backgroundColor: White,
+        position: 'absolute',
+        bottom: 0,
+        width: Dimensions.get("window").width,
+        alignSelf: 'center',
+        flex: 1,
+        borderTopLeftRadius: spacingUnit * 3,
+        borderTopRightRadius: spacingUnit * 3,
+      }}>
+        <Subheading color={Black} style={{
+          padding: spacingUnit * 2,
+          paddingLeft: spacingUnit * 3
+        }}>
+          Share post via...
+        </Subheading>
+        <View
+          style={{
+            borderBottomColor: Grey300,
+            borderBottomWidth: 1,
+            marginBottom: spacingUnit
+          }}
+        />
+        <View style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          padding: spacingUnit * 2,
+          paddingLeft: spacingUnit * 3
+        }}>
+          <Pressable onPress={() => {
+            tweetNow({ twitterShareURL: SHARE_URL, tweetContent: CONTENT })
+          }}>
+          <View style={{
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <TwitterShare />
+            <RegularText style={{
+              marginTop: spacingUnit * 0.5
+            }}>
+              Twitter
+            </RegularText>
+          </View>
+          </Pressable>
+          <Pressable onPress={() => {
+            linkedinShare({ linkedinShareUrl: SHARE_URL, linkedinContent: CONTENT })
+          }}>
+          <View style={{
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <LinkedinShare />
+            <RegularText style={{
+              marginTop: spacingUnit * 0.5
+            }}>
+              Linkedin
+            </RegularText>
+          </View>
+          </Pressable>
+          <Pressable onPress={() => {
+            postOnFacebook({ facebookShareURL: SHARE_URL, postContent: CONTENT })
+          }}>
+          <View style={{
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <FacebookShare />
+            <RegularText style={{
+              marginTop: spacingUnit * 0.5
+            }}>
+              Facebook
+            </RegularText>
+          </View>
+          </Pressable>
+          <Pressable onPress={() => {
+            console.log('clip', Clipboard, SHARE_URL)
+            Clipboard.setString(SHARE_URL)
+            setModalVisible(false)
+          }}>
+          <View style={{
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <CopyLink />
+            <RegularText style={{
+              marginTop: spacingUnit * 0.5
+            }}>
+              Copy Link
+            </RegularText>
+          </View>
+          </Pressable>
+        </View>
+        <SecondaryButton style={{
+            backgroundColor: Grey150,
+            marginTop: spacingUnit * 4,
+            alignSelf: 'center',
+            maxWidth: Dimensions.get('window').width - (spacingUnit * 6),
+            marginBottom: spacingUnit * 3
+          }} onPress={() => setModalVisible(false)}>
+            <RegularText color={Black} style={{
+              fontFamily: 'Rubik SemiBold'
+            }}>
+            Cancel
+            </RegularText>
+          </SecondaryButton>
+      </View>
+    </Modal>
+  )
+}
+
 export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePress }) => {
   const user = useMe()
   const navigation = useNavigation()
   const [liked, setLiked] = useState(null)
   const [reactionCount, setReactionCount] = useState(0)
   const [commentLiked, setCommentLiked] = useState(null)
+  const [isModalVisible, setModalVisible] = useState(false)
   const pressComment = () => {
     if (standAlone || comment) {
       onCommentPress(`@[${item.actorUsername}](${item.userId})`)
@@ -310,6 +432,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
 
   return (
     <>
+    <ShareModal isVisible={isModalVisible} item={item} setModalVisible={setModalVisible} />
     <View style={feedStyles.feedItemContainer}>
       <View style={feedStyles.feedItemName}>
         <SafeImage style={feedStyles.feedItemImage} src={item.actorProfilePicture} defaultImage={DefaultProfilePicture} />
@@ -375,10 +498,12 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
               height: spacingUnit * 3.5
             }}/>
           </Pressable>
+          <Pressable onPress={() => setModalVisible(true)}>
           <ShareIcon color={Grey700} style={{
             width: spacingUnit * 3.5,
             height: spacingUnit * 3.5
           }} />
+          </Pressable>
         </View>
       :
         <View style={feedStyles.reactions}>
@@ -405,7 +530,9 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           <RegularText color={Grey600} style={{
             marginRight: spacingUnit * 3
           }}>{item.commentCount}</RegularText>
-          <ShareIcon color={Grey700} />
+          <Pressable onPress={() => setModalVisible(true)}>
+            <ShareIcon color={Grey700} />
+          </Pressable>
         </View>
       }
 

@@ -66,6 +66,12 @@ export function SecondaryButton ({ onPress, children, style, textStyle, textPres
   </BaseButton>
 }
 
+// export function GreyButton ({ onPress, children, style, ...props }) {
+//   return <BaseButton onPress={onPress} style={style} {...props}>
+//     {children}
+//   </BaseButton>
+// }
+
 PrimaryButton.defaultProps = {
   children: null,
   onPress: () => {},
