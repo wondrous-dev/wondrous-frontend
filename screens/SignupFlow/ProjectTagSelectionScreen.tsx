@@ -10,20 +10,35 @@ const screenHeight = Dimensions.get('window').height;
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { spacingUnit } from '../../utils/common'
-import { Black, White, Blue500, Red400, Grey500, Grey900, Grey300, GreyPlaceHolder } from '../../constants/Colors'
+import { Black, White, Blue500, Blue600, Red400, Orange, Grey500, Grey900, Grey300, GreyPlaceHolder } from '../../constants/Colors'
 import { Subheading, RegularText, ButtonText, Paragraph } from '../../storybook/stories/Text'
+import { CREATE_PROJECT_TAGS } from '../../graphql/mutations/project'
+import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { moderateScale } from '../../utils/scale'
 import { useMutation } from '@apollo/client'
 
+const TagContext = createContext(null)
 
 const tags = [
     { value: 'fintech', displayName: 'Fintech' },
     { value: 'consumer', displayName: 'Consumer' },
-    { value: 'ai_ml', displayName: 'AI/MML' },
-    { value: '1', displayName: 'AI/MML' },
-    { value: '2', displayName: 'AI/MML' },
-    { value: '3', displayName: 'AI/MML' },
+    { value: 'ai_ml', displayName: 'AI/ML' },
+    { value: 'social', displayName: 'Social'},
+    { value: 'crypto_blockchain', displayName: 'Crypto/Blockchain' },
+    { value: 'creator_tools', displayName: 'Creator Tools' },
+    { value: 'community', displayName: 'Community'},
+    { value: 'e_commerce', displayName: 'E-commerce'},
+    { value: 'b2b_sass', displayName: 'B2B Sass'},
+    { value: 'no_code', displayName: 'No Code'},
+    { value: 'biotech', displayName: 'Biotech'},
+    { value: 'climate', displayName: 'Climate'},
+    { value: 'future_of_work', displayName: 'Future of Work'},
+    { value: 'hardware', displayName: 'Hardware'},
+    { value: 'marketplace', displayName: 'Marketplace'},
+    { value: 'dev_tools', displayName: 'Dev Tools'},
+    { value: 'productivity', displayName: 'Productivity'},
+    { value: 'music', displayName: 'Music'}
 ]
 
 const projectTagStyles = StyleSheet.create({
@@ -63,18 +78,25 @@ const projectTagStyles = StyleSheet.create({
 })
 
 const SingleTag = ({ tagName, selected }) => {
-    const textColor = selected ? White : Black
-    const backgroundColor = selected ? Grey900 : White
+    const textColor = selected ? White : Blue500
+    const backgroundColor = selected ? Blue500 : White
+    const {
+        projectTags,
+        setProjectTags
+    } = useContext(TagContext)
+
     return (
+
         <View style={{
             borderColor: Blue500,
             borderStyle: 'solid',
             borderWidth: 2,
             borderRadius: 8,
-            width: spacingUnit * 13,
+            minWidth: spacingUnit * 15,
             height: spacingUnit * 4,
             backgroundColor: backgroundColor,
-            marginLeft: spacingUnit * 1.8
+            marginLeft: spacingUnit * 1.8,
+            justifyContent: 'center'
         }
         }>
             <ButtonText style={{
@@ -84,14 +106,32 @@ const SingleTag = ({ tagName, selected }) => {
     )
 }
 
-const ProjectTagInput = ({ navigation }) => {
+const ProjectTagInput = ({ navigation, projectId }) => {
     const [selectedTags, setSelectedTags] = useState({})
+    const [createTags] = useMutation(CREATE_PROJECT_TAGS, {
+        update(cache, { data: { updateProject }}) {
+            cache.modify({
+                fields: {
+                    users(existingUser) {
+                        const newUser = {...existingUser}
+                        newUser['usageProgress'] = newUser['usageProgress'] ? {
+                            ...newUser['usageProgress'],
+                            signupCompleted: true
+                        } : {
+                            signupCompleted: true
+                        }
+                        return [newUser]
+                    }
+                }
+            })
+        }
+    })
     const toggleTagSelection = (tag) => {
         let tempState = Object.assign({}, selectedTags);
 
         if (tempState[tag]) {
             delete tempState[tag]
-        } else {
+        } else if (Object.keys(selectedTags).length < 3) {
             tempState[tag] = true
         }
         setSelectedTags(tempState)
@@ -100,16 +140,21 @@ const ProjectTagInput = ({ navigation }) => {
     const TagsRow = ({ tags }) => (
         <View style={projectTagStyles.tagsRowContainer}>
             {tags.map(tag => (
-                <Pressable onPress={() => toggleTagSelection(tag.value)}>
+                <Pressable onPress={() => toggleTagSelection(tag.value)} key={tag.value}>
                     <SingleTag selected={selectedTags[tag.value]} tagName={tag.displayName} />
                 </Pressable>
             ))}
         </View>
     )
     // split tags into groups of thress
-    let i, chunk = 3;
+    let i, chunk = 2;
     const tagRows = [] // <- [[3 tags], [3 tags]... ]
     for (i = 0; i < tags.length; i += chunk) {
+        if (chunk === 2) {
+            chunk = 3
+        } else if (chunk === 3) {
+            chunk = 2
+        }
         tagRows.push(tags.slice(i, i + chunk));
     }
 
@@ -127,7 +172,7 @@ const ProjectTagInput = ({ navigation }) => {
                 alignItems: 'center',
                 flexDirection: 'column',
             }}>
-                {tagRows.map(tagRow => (<TagsRow tags={tagRow} />))}
+                {tagRows.map((tagRow, index) => (<TagsRow key={index} tags={tagRow} />))}
             </View>
             <PrimaryButton
                 textStyle={{ color: White }}
@@ -135,7 +180,22 @@ const ProjectTagInput = ({ navigation }) => {
                     width: spacingUnit * 43,
                     alignSelf: 'center',
                     marginTop: spacingUnit * 5
-                }}>
+                }}
+                onPress={async () => {
+                    await createTags({
+                        variables: {
+                            projectId,
+                            input: {
+                                tags: Object.keys(selectedTags)
+                            },
+                            firstTime: true
+                        }
+                    })
+                    navigation.navigate('Root', {
+                        screen: 'Profile'
+                    })
+                }}
+            >
                 <ButtonText color={White}> Continue  </ButtonText>
             </PrimaryButton>
 
@@ -144,30 +204,41 @@ const ProjectTagInput = ({ navigation }) => {
 }
 
 function ProjectTagSelectionScreen({
-    navigation
+    navigation,
+    route
 }: StackScreenProps<RootStackParamList, 'ProjectTagSelection'>) {
+    const {
+        projectId
+    } = route.params
+
+    const [projectTags, setProjectTags] = useState([])
     return (
         <SafeAreaView style={{
             backgroundColor: White,
             flex: 1,
         }}>
-            <Header />
+            <Header skip='Profile'/>
             <View style={projectTagStyles.progressCircleContainer}>
                 <ProgressCircle
-                    percent={30}
+                    percent={80}
                     radius={50}
                     borderWidth={10}
-                    color={Red400}
+                    color={Orange}
                     shadowColor={Grey300}
                     bgColor={White}
                 >
+                    <BigMouthSmile />
                 </ProgressCircle>
                 <View style={projectTagStyles.stepContainer}>
-                    <Text style={projectTagStyles.stepCount}>step 1/3</Text>
+                    <Text style={projectTagStyles.stepCount}>step 3/4</Text>
                 </View>
             </View>
-
-            <ProjectTagInput navigation={navigation} />
+            <TagContext.Provider value={{
+                projectTags,
+                setProjectTags
+            }}>
+            <ProjectTagInput navigation={navigation} projectId={projectId} />
+            </TagContext.Provider>
         </SafeAreaView>
     )
 }

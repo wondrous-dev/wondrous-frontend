@@ -111,7 +111,6 @@ export default class RichTextEditor extends Component {
                     }
                     break;
                 case messages.LOG:
-                    console.log('FROM EDIT:', ...message.data);
                     break;
                 case messages.SELECTION_CHANGE: {
                     const items = message.data;

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { StyleSheet, View, TouchableOpacity, Text, Image, SafeAreaView, Dimensions, Pressable, TextInput } from 'react-native'
 import ProgressCircle from 'react-native-progress-circle'
@@ -11,10 +11,11 @@ import { spacingUnit } from '../../utils/common'
 import { Black, White, Blue500, Red400, Grey100, Grey200, Grey300, GreyPlaceHolder } from '../../constants/Colors'
 import { Subheading, RegularText, ButtonText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
-import { moderateScale } from '../../utils/scale'
+import Neutral from '../../assets/images/emoji/neutral'
 import { useMutation } from '@apollo/client'
 import { UPDATE_USER } from '../../graphql/mutations'
-import { useMe } from '../../components/withAuth'
+import { useMe, withAuth } from '../../components/withAuth'
+
 const usernameSetupStyles = StyleSheet.create({
   stepContainer: {
     marginTop: spacingUnit * 3,
@@ -43,8 +44,28 @@ const usernameSetupStyles = StyleSheet.create({
 
 
 const UsernameInput = ({ navigation }) => {
-  const [updateUser] = useMutation(UPDATE_USER)
+  const [updateUser] = useMutation(UPDATE_USER, {
+    update(cache, { data: { updateUser }}) {
+      cache.modify({
+        fields: {
+          users() {
+            return [updateUser]
+          }
+        }
+      })
+    }
+  })
   const user: any = useMe()
+  useEffect(() => {
+    if (user && user.signupCompleted) {
+      navigation.navigate('Root', {
+        screen: 'Profile'
+      })
+    }
+    if (user && user.username) {
+      navigation.navigate('FirstProjectSetup')
+    }
+  }, [])
   return (
     <View style={usernameSetupStyles.usernameInputContainer}>
       <Subheading style={{
@@ -54,18 +75,16 @@ const UsernameInput = ({ navigation }) => {
       </Subheading>
 
       <Formik
-        initialValues={{ username: '' }}
+        initialValues={{ username: user.username }}
         onSubmit={async values => {
-          // await updateUser({
-          //   variables: {
-          //     userId: user.id,
-          //     input: {
-          //       username: values.username
-          //     }
-          //   }
-          // })
+          await updateUser({
+            variables: {
+              input: {
+                username: values.username
+              }
+            }
+          })
           navigation.navigate('FirstProjectSetup')
-          console.log(values)
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
@@ -117,13 +136,14 @@ function UsernameSetupScreen({
       <Header />
       <View style={usernameSetupStyles.progressCircleContainer}>
         <ProgressCircle
-          percent={30}
+          percent={25}
           radius={50}
           borderWidth={10}
           color={Red400}
           shadowColor={Grey300}
           bgColor={White}
         >
+          <Neutral />
         </ProgressCircle>
         <View style={usernameSetupStyles.stepContainer}>
           <Text style={usernameSetupStyles.stepCount}>step 1/3</Text>
@@ -135,4 +155,4 @@ function UsernameSetupScreen({
   )
 }
 
-export default UsernameSetupScreen
+export default withAuth(UsernameSetupScreen)

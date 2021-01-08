@@ -7,7 +7,7 @@ import { Text, View, Button, Platform } from 'react-native'
 import { CREATE_NOTIFICATION_TOKEN } from '../../graphql/mutations'
 import apollo from '../../services/apollo'
 
-export const registerForPushNotificationsAsync = async (userId) => {
+export const registerForPushNotificationsAsync = async () => {
   if (Constants.isDevice) {
     const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS)
     let finalStatus = existingStatus
@@ -24,7 +24,6 @@ export const registerForPushNotificationsAsync = async (userId) => {
       const result = await apollo.mutate({
         mutation: CREATE_NOTIFICATION_TOKEN,
         variables:{
-          userId,
           token
         }
       })

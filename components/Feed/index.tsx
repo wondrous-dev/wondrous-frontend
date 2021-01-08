@@ -293,7 +293,6 @@ const ShareModal = ({ isVisible, item, setModalVisible }) => {
           </View>
           </Pressable>
           <Pressable onPress={() => {
-            console.log('clip', Clipboard, SHARE_URL)
             Clipboard.setString(SHARE_URL)
             setModalVisible(false)
           }}>
@@ -372,7 +371,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
             return getNewExistingItems({ existingItems: existingFeedItems, liked, comment: false, item, readField})
           },
           users(existingUser = {}) {
-            if (liked && user && user.reactedFeedComments.includes(item.id)) {
+            if (liked && user && user.reactedFeedComments && user.reactedFeedComments.includes(item.id)) {
               // Unliked
               const newReactedFeedComments = user.reactedFeedComments.filter(reactedFeedComment => {
                 return reactedFeedComment !== item.id
@@ -382,7 +381,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
                 ...user,
                 reactedFeedComments: newReactedFeedComments
               }]
-            } else if (!liked && user && !user.reactedFeedComments.includes(item.id)) {
+            } else if (!liked && user && user.reactedFeedComments && !user.reactedFeedComments.includes(item.id)) {
               return [{
                 ...user,
                 reactedFeedComments: [...user.reactedFeedComments, item.id]
@@ -395,7 +394,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
   })
 
   useEffect(() => {
-    if (user && user.reactedFeedComments.includes(item.id)) {
+    if (user && user.reactedFeedComments && user.reactedFeedComments.includes(item.id)) {
       setLiked(true)
     } else {
       setLiked(false)

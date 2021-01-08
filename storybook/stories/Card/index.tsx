@@ -131,7 +131,6 @@ class Card extends React.Component {
 
   render () {
     const { item, drag, isActive, itemRefs } = this.props
-    console.log('Active?', isActive)
     return (
       <SwipeableItem
         key={item.key}

@@ -80,7 +80,7 @@ export default function Snapper ({ setSnapperOpen, snapperOpen, image, setImage 
                   "Content-Type": `image/${fileType}`
                 }
               })
-              console.log('uploadResponse', uploadResponse)
+              // console.log('uploadResponse', uploadResponse)
             } catch (error) {
               console.log("error", JSON.stringify(error, null, 2))
             }

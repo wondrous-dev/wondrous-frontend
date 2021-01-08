@@ -1,6 +1,8 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { StyleSheet, View, TouchableOpacity, Text, Image, SafeAreaView, Dimensions, Pressable } from 'react-native'
+import { useRoute, useNavigation } from '@react-navigation/native'
+import ProgressCircle from 'react-native-progress-circle'
 
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
@@ -18,11 +20,14 @@ import WritingIcon from '../../assets/images/categories/writing'
 import FitnessIcon from '../../assets/images/categories/fitness'
 import OtherIcon from '../../assets/images/categories/other'
 import { spacingUnit } from '../../utils/common'
-import { Black, Grey900, White } from '../../constants/Colors'
-import { Subheading, RegularText, ButtonText} from '../../storybook/stories/Text'
+import { Black, Blue500, Blue600, Yellow300, Grey300, White } from '../../constants/Colors'
+import { Subheading, RegularText, ButtonText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { moderateScale } from '../../utils/scale'
 import { useMutation } from '@apollo/client'
+import { UPDATE_PROJECT } from '../../graphql/mutations/project'
+import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
+import { withAuth, useMe } from '../../components/withAuth'
 
 const ProjectSetupCategoryContext = createContext(null)
 
@@ -35,9 +40,25 @@ const projectSetupStyles = StyleSheet.create({
   categoryRowContainer: {
     maxWidth: moderateScale(spacingUnit * 43),
     flexDirection: 'row',
-    marginTop: spacingUnit * 5,
+    marginTop: spacingUnit * 3,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  progressCircleContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    marginTop: spacingUnit * 3,
+  },
+  stepCount: {
+    fontSize: 16,
+    color: Blue500,
+    fontFamily: 'Rubik',
+    fontStyle: 'normal',
+    fontWeight: '500',
+  },
+  stepContainer: {
+    marginTop: spacingUnit * 3,
   }
 })
 
@@ -99,7 +120,7 @@ const CategoryItem = ({ category }) => {
   if (category.title.toLowerCase() === projectCategory) {
     categoryColors = {
       iconColor: White,
-      backgroundColor: Grey900
+      backgroundColor: Blue600
     }
   }
 
@@ -114,7 +135,7 @@ const CategoryItem = ({ category }) => {
           alignItems: 'center'
         }}>
           <CategoryImage backgroundColor={(categoryColors && categoryColors?.backgroundColor) || '#F0F4FE'} iconColor={category && categoryColors?.iconColor} />
-          <RegularText color={Grey900} style={{
+          <RegularText color={Blue600} style={{
             marginTop: spacingUnit
           }} > {category.title} </RegularText>
         </Pressable>
@@ -158,10 +179,48 @@ const CategoryDisplay = ({ categories }) => {
 }
 
 function ProjectSetupCategoryScreen({
-  navigation
+  navigation,
+  route
 }: StackScreenProps<RootStackParamList, 'ProjectSetupCategory'>) {
   const [projectCategory, setProjectCategory] = useState(null)
-  // const [] = useMutation()
+  const [updateProject] = useMutation(UPDATE_PROJECT, {
+    update(cache, { data: { updateProject }}) {
+      cache.modify({
+          fields: {
+              users(existingUser) {
+                  const newUser = {...existingUser}
+                  newUser['usageProgress'] = newUser['usageProgress'] ? {
+                      ...newUser['usageProgress'],
+                      projectCategorySelected: true
+                  } : {
+                      projectCategorySelected: true
+                  }
+                  return [newUser]
+              }
+          }
+      })
+    }
+  })
+
+  const {
+    projectId
+  } = route.params
+  const user = useMe()
+  useEffect(() => {
+    if (user && user.usageProgress && user.usageProgress.projectCategorySelected) {
+      const categorySelected = user.usageProgress.projectCategorySelected
+      if (categorySelected === 'business' || categorySelected === 'tech') {
+        navigation.navigate('ProjectTagSelection', {
+          projectId
+        })
+      } else {
+        navigation.navigate('Root', {
+          screen: 'Profile'
+        })
+      }
+    }
+  }, [])
+
   return (
     <SafeAreaView style={{
       backgroundColor: White,
@@ -172,16 +231,49 @@ function ProjectSetupCategoryScreen({
         setProjectCategory
       }}>
         <Header />
+        <View style={projectSetupStyles.progressCircleContainer}>
+          <ProgressCircle
+              percent={60}
+              radius={50}
+              borderWidth={10}
+              color={Yellow300}
+              shadowColor={Grey300}
+              bgColor={White}
+          >
+              <BigMouthSmile />
+          </ProgressCircle>
+          <View style={projectSetupStyles.stepContainer}>
+            <Text style={projectSetupStyles.stepCount}>step 3/4</Text>
+          </View>
+        </View>
         <CategoryDisplay categories={categories} />
       </ProjectSetupCategoryContext.Provider>
       <PrimaryButton textStyle={{
             color: White
           }} style={{
             alignSelf: 'center',
-            marginTop: spacingUnit * 8
-          }} onPress={() => {
-            navigation.navigate('ProjectTagSelection')
-          }}>
+            marginTop: spacingUnit * 5
+          }} onPress={async () => {
+            await updateProject({
+              variables: {
+                input: {
+                  category: projectCategory
+                },
+                projectId,
+                firstTime: true
+              }
+            })
+            if (projectCategory === 'business' || projectCategory === 'tech') {
+              navigation.navigate('ProjectTagSelection', {
+                projectId
+              })
+            } else {
+              navigation.navigate('Root', {
+                screen: 'Profile'
+              })
+            }
+          }
+          }>
             <ButtonText color={White}>
               Continue
             </ButtonText>
@@ -190,4 +282,4 @@ function ProjectSetupCategoryScreen({
   )
 }
 
-export default ProjectSetupCategoryScreen
+export default withAuth(ProjectSetupCategoryScreen)

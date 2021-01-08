@@ -45,7 +45,7 @@ const signInAsync = async ({ callToAction, setLoginStatus, setLoginError, naviga
   
         if (resp.data) {
           const { signup } = resp.data
-          console.log('signup', signup)
+
           await storeAuthHeader(signup.token, signup.user)
           navigation.navigate('Welcome')
         }

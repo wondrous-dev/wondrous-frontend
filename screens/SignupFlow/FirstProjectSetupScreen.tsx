@@ -1,8 +1,10 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { StyleSheet, View, TouchableOpacity, Text, Image, SafeAreaView, Dimensions, Pressable, TextInput } from 'react-native'
 import ProgressCircle from 'react-native-progress-circle'
 import { Formik } from 'formik';
+import { useMutation } from '@apollo/client'
+import { TouchableWithoutFeedback, Keyboard } from 'react-native'
 
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
@@ -10,8 +12,11 @@ import { spacingUnit } from '../../utils/common'
 import { Black, Grey900, White, Blue500, Yellow300, Grey300, Grey500, GreyPlaceHolder } from '../../constants/Colors'
 import { Subheading, RegularText, ButtonText, Paragraph } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
-import { moderateScale } from '../../utils/scale'
-import { useMutation } from '@apollo/client'
+import Smile from '../../assets/images/emoji/smile'
+import { withAuth, useMe } from '../../components/withAuth'
+import { CREATE_PROJECT, UPDATE_PROJECT } from '../../graphql/mutations/project'
+import { GET_PROJECT_BY_ID } from '../../graphql/queries/project'
+import apollo from '../../services/apollo'
 
 const firstProjectSetupStyles = StyleSheet.create({
     stepContainer: {
@@ -46,8 +51,6 @@ const firstProjectSetupStyles = StyleSheet.create({
     },
 })
 
-import { TouchableWithoutFeedback, Keyboard } from 'react-native'
-
 const DismissKeyboard = ({ children }) => (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         {children}
@@ -59,6 +62,44 @@ const DismissKeyboard = ({ children }) => (
 
 
 const CreateProjectInput = ({ navigation }) => {
+    const user = useMe()
+    const [name, setName] = useState('')
+    const [description, setDescription] = useState('')
+    const [createProject] = useMutation(CREATE_PROJECT, {
+        update(cache, { data: { createProject }}) {
+            cache.modify({
+                fields: {
+                    users(existingUser) {
+                        const newUser = {...existingUser}
+                        newUser['usageProgress'] = newUser['usageProgress'] ? {
+                            ...newUser['usageProgress'],
+                            projectCreated: createProject.id
+                        } : {
+                            projectCreated: createProject.id
+                        }
+                        return [newUser]
+                    }
+                }
+            })
+        }
+    })
+    const [updateProject] = useMutation(UPDATE_PROJECT)
+    const fillInitialProject = useCallback(async () => {
+        if (user && user.usageProgress && user.usageProgress.projectCreated) {
+            const result = await apollo.query({
+                query: GET_PROJECT_BY_ID,
+                variables: {
+                    projectId: user.usageProgress.projectCreated
+                }
+            })
+            const project = result.data && result.data.getProjectById
+            setName(project && project.name)
+            setDescription(project && project.description)
+        }
+    }, [])
+    useEffect(() => {
+        fillInitialProject()
+    }, [])
     return (
         <View style={firstProjectSetupStyles.createProjectInputContainer}>
             <Subheading style={{
@@ -70,10 +111,40 @@ const CreateProjectInput = ({ navigation }) => {
         </Paragraph>
 
             <Formik
-                initialValues={{ projectName: '', projectDescription: '' }}
-                onSubmit={values => {
-                    navigation.navigate('ProjectSetupCategory')
-                    console.log(values)
+                initialValues={{ projectName: name, projectDescription: description }}
+                onSubmit={async values => {
+                    try {
+                        if (user && user.usageProgress && user.usageProgress.projectCreated) {
+                            const projectId = user.usageProgress.projectCreated
+                            await updateProject({
+                                variables: {
+                                    input: {
+                                        name,
+                                        description
+                                    },
+                                    projectId
+                                }
+                            })
+                            navigation.navigate('ProjectSetupCategory', {
+                                projectId: user.usageProgress.projectCreated
+                            })
+                        } else {
+                            const projectData = await createProject({
+                                variables: {
+                                    input: {
+                                        name,
+                                        description
+                                    },
+                                    firstTime: true
+                                }
+                            })
+                            navigation.navigate('ProjectSetupCategory', {
+                                projectId: projectData.data.createProject && projectData.data.createProject.id
+                            })
+                        }
+                    } catch (error) {
+                        console.log("error creating project", JSON.stringify(error, null, 2))
+                    }
                 }}
             >
                 {({ handleChange, handleBlur, handleSubmit, values }) => (
@@ -90,9 +161,11 @@ const CreateProjectInput = ({ navigation }) => {
                             }}
                             placeholder='Name'
                             placeholderTextColor={GreyPlaceHolder}
-                            onChangeText={handleChange('projectName')}
+                            onChangeText={(val) => {
+                                setName(val)
+                            }}
                             onBlur={handleBlur('projectName')}
-                            value={values.projectName}
+                            value={name}
                         />
                         <TextInput
                             style={{
@@ -110,9 +183,11 @@ const CreateProjectInput = ({ navigation }) => {
                             placeholderTextColor={GreyPlaceHolder}
                             multiline={true}
                             numberOfLines={4}
-                            onChangeText={handleChange('projectDescription')}
+                            onChangeText={(val) => {
+                                setDescription(val)
+                            }}
                             onBlur={handleBlur('projectDescription')}
-                            value={values.projectDescription}
+                            value={description}
                         />
                         <PrimaryButton
                             textStyle={{ color: White }}
@@ -137,6 +212,15 @@ const CreateProjectInput = ({ navigation }) => {
 function FirstProjectSetupScreen({
     navigation
 }: StackScreenProps<RootStackParamList, 'FirstProjectSetup'>) {
+    const user = useMe()
+    // useEffect(() => {
+    //     if (user && user.usageProgress && user.usageProgress.projectCreated) {
+    //         navigation.navigate('ProjectSetupCategory', {
+    //             projectId: user.usageProgress.projectCreated
+    //         })
+    //     }
+    // }, [])
+
     return (
         <SafeAreaView style={{
             backgroundColor: White,
@@ -147,13 +231,14 @@ function FirstProjectSetupScreen({
                 <View>
                     <View style={firstProjectSetupStyles.progressCircleContainer}>
                         <ProgressCircle
-                            percent={60}
+                            percent={50}
                             radius={50}
                             borderWidth={10}
                             color={Yellow300}
                             shadowColor={Grey300}
                             bgColor={White}
                         >
+                            <Smile />
                         </ProgressCircle>
                         <View style={firstProjectSetupStyles.stepContainer}>
                             <Text style={firstProjectSetupStyles.stepCount}>step 2/3</Text>
@@ -167,4 +252,4 @@ function FirstProjectSetupScreen({
     )
 }
 
-export default FirstProjectSetupScreen
+export default withAuth(FirstProjectSetupScreen)

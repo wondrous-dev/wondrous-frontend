@@ -460,7 +460,6 @@ export const TextEditor = ({ style }) => {
       }
     })
     if (replyName && setReplyName) {
-      console.log('textInput', textInputRef)
       setContent(content + ' ' + replyName)
     }
   }, [replyName])

@@ -60,6 +60,18 @@ function WelcomeScreen({
   const [snapperOpen, setSnapperOpen] = React.useState(false)
   React.useEffect(() => {
     registerForPushNotificationsAsync(user && user.id)
+
+    if (user && user.usageProgress && user.usageProgress.signupCompleted) {
+      if (user.usageProgress.workFlowCompleted) {
+        navigation.navigate('Root', {
+          screen: 'Dashboard'
+        })
+      } else {
+        navigation.navigate('Root', {
+          screen: 'Profile'
+        })
+      }
+    } 
   }, [])
 
   return (

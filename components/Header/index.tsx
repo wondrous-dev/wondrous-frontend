@@ -1,10 +1,11 @@
 import React from 'react'
-import { SafeAreaView, View, Pressable } from 'react-native'
+import { SafeAreaView, View, Pressable, Dimensions } from 'react-native'
 import { useRoute, useNavigation } from '@react-navigation/native'
 
-import { Orange, Grey300 } from '../../constants/Colors'
-import { Title } from '../../storybook/stories/Text'
+import { Orange, Grey300, Grey250 } from '../../constants/Colors'
+import { Title, RegularText } from '../../storybook/stories/Text'
 import BackCaret from '../../assets/images/back-caret'
+import { spacingUnit } from '../../utils/common'
 
 const shouldbackPageRoutes = {
   'Dashboard': true,
@@ -22,7 +23,7 @@ const shouldBackPage = (route) => {
   return true
 }
 
-export const Header = () => {
+export const Header = ({ skip }) => {
   const route = useRoute()
   const navigation = useNavigation()
   const backPage = shouldBackPage(route)
@@ -35,7 +36,7 @@ export const Header = () => {
       flexDirection: 'row',
       height: 64,
       borderBottomWidth: 1,
-      borderBottomColor: Grey300
+      borderBottomColor: Grey300,
     }}>
       <Pressable onPress={() => {
         navigation.goBack()
@@ -49,11 +50,26 @@ export const Header = () => {
       }
       </Pressable>
       <Title style={{
-        color: Orange
+        color: Orange,
+        // flex: 2
       }}>
         W
       </Title>
-      <View />
+      {
+        skip ?
+        <Pressable onPress={() => {
+          navigation.navigate(skip)
+        }} style={{
+          marginRight: spacingUnit * 2,
+          marginLeft: -spacingUnit * 2
+        }}>
+          <RegularText color={Grey250}>
+            Skip
+          </RegularText>
+        </Pressable>
+        :
+        <View />
+      }
     </SafeAreaView>
   )
 }
