@@ -10,13 +10,15 @@ import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { spacingUnit } from '../../utils/common'
 import { Black, Grey900, White, Blue500, Yellow300, Grey300, Grey500, GreyPlaceHolder } from '../../constants/Colors'
-import { Subheading, RegularText, ButtonText, Paragraph } from '../../storybook/stories/Text'
+import { Subheading, ErrorText, ButtonText, Paragraph } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import Smile from '../../assets/images/emoji/smile'
 import { withAuth, useMe } from '../../components/withAuth'
 import { CREATE_PROJECT, UPDATE_PROJECT } from '../../graphql/mutations/project'
 import { GET_PROJECT_BY_ID } from '../../graphql/queries/project'
 import apollo from '../../services/apollo'
+
+const FirstProjectSetupContext = createContext(null)
 
 const firstProjectSetupStyles = StyleSheet.create({
     stepContainer: {
@@ -65,6 +67,9 @@ const CreateProjectInput = ({ navigation }) => {
     const user = useMe()
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
+    const {
+        setError
+    } = useContext(FirstProjectSetupContext)
     const [createProject] = useMutation(CREATE_PROJECT, {
         update(cache, { data: { createProject }}) {
             cache.modify({
@@ -113,37 +118,41 @@ const CreateProjectInput = ({ navigation }) => {
             <Formik
                 initialValues={{ projectName: name, projectDescription: description }}
                 onSubmit={async values => {
-                    try {
-                        if (user && user.usageProgress && user.usageProgress.projectCreated) {
-                            const projectId = user.usageProgress.projectCreated
-                            await updateProject({
-                                variables: {
-                                    input: {
-                                        name,
-                                        description
-                                    },
-                                    projectId
-                                }
-                            })
-                            navigation.navigate('ProjectSetupCategory', {
-                                projectId: user.usageProgress.projectCreated
-                            })
-                        } else {
-                            const projectData = await createProject({
-                                variables: {
-                                    input: {
-                                        name,
-                                        description
-                                    },
-                                    firstTime: true
-                                }
-                            })
-                            navigation.navigate('ProjectSetupCategory', {
-                                projectId: projectData.data.createProject && projectData.data.createProject.id
-                            })
+                    if (!name || !description) {
+                        setError('Please set a name and a description')
+                    } else {
+                        try {
+                            if (user && user.usageProgress && user.usageProgress.projectCreated) {
+                                const projectId = user.usageProgress.projectCreated
+                                await updateProject({
+                                    variables: {
+                                        input: {
+                                            name,
+                                            description
+                                        },
+                                        projectId
+                                    }
+                                })
+                                navigation.navigate('ProjectSetupCategory', {
+                                    projectId: user.usageProgress.projectCreated
+                                })
+                            } else {
+                                const projectData = await createProject({
+                                    variables: {
+                                        input: {
+                                            name,
+                                            description
+                                        },
+                                        firstTime: true
+                                    }
+                                })
+                                navigation.navigate('ProjectSetupCategory', {
+                                    projectId: projectData.data.createProject && projectData.data.createProject.id
+                                })
+                            }
+                        } catch (error) {
+                            console.log("error creating project", JSON.stringify(error, null, 2))
                         }
-                    } catch (error) {
-                        console.log("error creating project", JSON.stringify(error, null, 2))
                     }
                 }}
             >
@@ -213,13 +222,14 @@ function FirstProjectSetupScreen({
     navigation
 }: StackScreenProps<RootStackParamList, 'FirstProjectSetup'>) {
     const user = useMe()
-    // useEffect(() => {
-    //     if (user && user.usageProgress && user.usageProgress.projectCreated) {
-    //         navigation.navigate('ProjectSetupCategory', {
-    //             projectId: user.usageProgress.projectCreated
-    //         })
-    //     }
-    // }, [])
+    const [error, setError] = useState(null)
+    useEffect(() => {
+        if (user && user.usageProgress && user.usageProgress.projectCreated) {
+            navigation.navigate('ProjectSetupCategory', {
+                projectId: user.usageProgress.projectCreated
+            })
+        }
+    }, [])
 
     return (
         <SafeAreaView style={{
@@ -241,10 +251,25 @@ function FirstProjectSetupScreen({
                             <Smile />
                         </ProgressCircle>
                         <View style={firstProjectSetupStyles.stepContainer}>
-                            <Text style={firstProjectSetupStyles.stepCount}>step 2/3</Text>
+                            <Text style={firstProjectSetupStyles.stepCount}>step 2/4</Text>
                         </View>
                     </View>
+                    {                
+                        error &&
+                        <View style={{
+                            alignItems: 'center'
+                        }}>
+                            <ErrorText>
+                                {error}
+                            </ErrorText>
+                        </View>
+                    }
+                    <FirstProjectSetupContext.Provider value={{
+                        error,
+                        setError
+                    }}>
                     <CreateProjectInput navigation={navigation} />
+                    </FirstProjectSetupContext.Provider>
                 </View>
             </DismissKeyboard>
 

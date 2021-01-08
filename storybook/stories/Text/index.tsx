@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Text } from 'react-native'
 import baseStyle from './style'
-import { White } from '../../../constants/Colors'
+import { White, Red400 } from '../../../constants/Colors'
 
 export const Title = ({ style, children }) => (
   <Text style={{
@@ -57,7 +57,7 @@ export const TinyText = ({ style, children, color }) => (
   }}>{children}</Text>
 )
 
-export const ErrorText = ({ style, children, color }) => (
+export const ErrorText = ({ style, children, color=Red400 }) => (
   <Text style={{
     ...baseStyle.errorText,
     ...style,

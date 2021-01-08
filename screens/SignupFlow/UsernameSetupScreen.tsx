@@ -9,12 +9,13 @@ import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { spacingUnit } from '../../utils/common'
 import { Black, White, Blue500, Red400, Grey100, Grey200, Grey300, GreyPlaceHolder } from '../../constants/Colors'
-import { Subheading, RegularText, ButtonText } from '../../storybook/stories/Text'
+import { Subheading, RegularText, ButtonText, ErrorText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import Neutral from '../../assets/images/emoji/neutral'
 import { useMutation } from '@apollo/client'
 import { UPDATE_USER } from '../../graphql/mutations'
 import { useMe, withAuth } from '../../components/withAuth'
+const UsernameContext = createContext(null)
 
 const usernameSetupStyles = StyleSheet.create({
   stepContainer: {
@@ -44,6 +45,10 @@ const usernameSetupStyles = StyleSheet.create({
 
 
 const UsernameInput = ({ navigation }) => {
+  const {
+    setError,
+    error
+  } = useContext(UsernameContext)
   const [updateUser] = useMutation(UPDATE_USER, {
     update(cache, { data: { updateUser }}) {
       cache.modify({
@@ -55,6 +60,7 @@ const UsernameInput = ({ navigation }) => {
       })
     }
   })
+
   const user: any = useMe()
   useEffect(() => {
     if (user && user.signupCompleted) {
@@ -73,18 +79,21 @@ const UsernameInput = ({ navigation }) => {
       }} color={Black}>
         Choose your username
       </Subheading>
-
       <Formik
         initialValues={{ username: user.username }}
         onSubmit={async values => {
-          await updateUser({
-            variables: {
-              input: {
-                username: values.username
+          if (!values.username) {
+            setError('Please enter a shortname')
+          } else {
+            await updateUser({
+              variables: {
+                input: {
+                  username: values.username
+                }
               }
-            }
-          })
-          navigation.navigate('FirstProjectSetup')
+            })
+            navigation.navigate('FirstProjectSetup')
+          }
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
@@ -128,6 +137,7 @@ const UsernameInput = ({ navigation }) => {
 function UsernameSetupScreen({
   navigation
 }: StackScreenProps<RootStackParamList, 'UsernameSetup'>) {
+  const [error, setError] = useState(null)
   return (
     <SafeAreaView style={{
       backgroundColor: White,
@@ -149,8 +159,21 @@ function UsernameSetupScreen({
           <Text style={usernameSetupStyles.stepCount}>step 1/3</Text>
         </View>
       </View>
-
-      <UsernameInput navigation={navigation} />
+        {
+          error && <View style={{
+            alignItems: 'center'
+          }}>
+            <ErrorText>
+              {error}
+            </ErrorText>
+          </View>
+        }
+      <UsernameContext.Provider value={{
+        error,
+        setError
+      }}>
+        <UsernameInput navigation={navigation} />
+      </UsernameContext.Provider>
     </SafeAreaView>
   )
 }

@@ -10,10 +10,11 @@ const screenHeight = Dimensions.get('window').height;
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { spacingUnit } from '../../utils/common'
-import { Black, White, Blue500, Blue600, Red400, Orange, Grey500, Grey900, Grey300, GreyPlaceHolder } from '../../constants/Colors'
-import { Subheading, RegularText, ButtonText, Paragraph } from '../../storybook/stories/Text'
+import { Black, White, Blue500, Blue600, Red400, Orange, Grey500, Green400, Grey900, Grey300, GreyPlaceHolder } from '../../constants/Colors'
+import { Subheading, ErrorText, ButtonText, Paragraph } from '../../storybook/stories/Text'
 import { CREATE_PROJECT_TAGS } from '../../graphql/mutations/project'
 import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
+import HeartEyes from '../../assets/images/emoji/heartEyes'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { moderateScale } from '../../utils/scale'
 import { useMutation } from '@apollo/client'
@@ -108,6 +109,11 @@ const SingleTag = ({ tagName, selected }) => {
 
 const ProjectTagInput = ({ navigation, projectId }) => {
     const [selectedTags, setSelectedTags] = useState({})
+    const {
+        setFinished,
+        setError,
+        finished
+    } = useContext(TagContext)
     const [createTags] = useMutation(CREATE_PROJECT_TAGS, {
         update(cache, { data: { updateProject }}) {
             cache.modify({
@@ -162,7 +168,7 @@ const ProjectTagInput = ({ navigation, projectId }) => {
         <View style={projectTagStyles.projectTagInputContainer}>
             <Subheading style={{
             }} color={Black}>
-                Pick 3 industry specific tags
+                Pick up to 3 industry specific tags
         </Subheading>
             <Paragraph style={projectTagStyles.paragraph}>
                 Help us match you with relevant content!
@@ -182,18 +188,31 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                     marginTop: spacingUnit * 5
                 }}
                 onPress={async () => {
-                    await createTags({
-                        variables: {
-                            projectId,
-                            input: {
-                                tags: Object.keys(selectedTags)
-                            },
-                            firstTime: true
+                    if (Object.keys(selectedTags).length === 0) {
+                        setError('Please select at least one tag')
+                    } else {
+                        await createTags({
+                            variables: {
+                                projectId,
+                                input: {
+                                    tags: Object.keys(selectedTags)
+                                },
+                                firstTime: true
+                            }
+                        })
+                        if (finished) {
+                            navigation.navigate('Root', {
+                                screen: 'Profile'
+                            })
+                        } else {
+                            setFinished(true)
+                            setTimeout(() => {
+                                navigation.navigate('Root', {
+                                    screen: 'Profile'
+                                })
+                            }, 1000)
                         }
-                    })
-                    navigation.navigate('Root', {
-                        screen: 'Profile'
-                    })
+                    }
                 }}
             >
                 <ButtonText color={White}> Continue  </ButtonText>
@@ -211,7 +230,8 @@ function ProjectTagSelectionScreen({
         projectId
     } = route.params
 
-    const [projectTags, setProjectTags] = useState([])
+    const [finished, setFinished] = useState(false)
+    const [error, setError] = useState(null)
     return (
         <SafeAreaView style={{
             backgroundColor: White,
@@ -220,22 +240,38 @@ function ProjectTagSelectionScreen({
             <Header skip='Profile'/>
             <View style={projectTagStyles.progressCircleContainer}>
                 <ProgressCircle
-                    percent={80}
+                    percent={finished ? 100 :80}
                     radius={50}
                     borderWidth={10}
-                    color={Orange}
+                    color={finished ? Green400 : Orange}
                     shadowColor={Grey300}
                     bgColor={White}
                 >
-                    <BigMouthSmile />
+                    {finished ? 
+                        <HeartEyes />
+                        :
+                        <BigMouthSmile />
+                    }
                 </ProgressCircle>
                 <View style={projectTagStyles.stepContainer}>
-                    <Text style={projectTagStyles.stepCount}>step 3/4</Text>
+                    <Text style={projectTagStyles.stepCount}>step 4/4</Text>
                 </View>
             </View>
+            {
+                error &&
+                <View style={{
+                    alignItems: 'center'
+                }}>
+                    <ErrorText>
+                        {error}
+                    </ErrorText>
+                </View>
+            }
             <TagContext.Provider value={{
-                projectTags,
-                setProjectTags
+                finished,
+                setFinished,
+                error,
+                setError
             }}>
             <ProjectTagInput navigation={navigation} projectId={projectId} />
             </TagContext.Provider>

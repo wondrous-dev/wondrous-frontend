@@ -21,7 +21,7 @@ import FitnessIcon from '../../assets/images/categories/fitness'
 import OtherIcon from '../../assets/images/categories/other'
 import { spacingUnit } from '../../utils/common'
 import { Black, Blue500, Blue600, Yellow300, Grey300, White } from '../../constants/Colors'
-import { Subheading, RegularText, ButtonText } from '../../storybook/stories/Text'
+import { Subheading, RegularText, ButtonText, ErrorText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { moderateScale } from '../../utils/scale'
 import { useMutation } from '@apollo/client'
@@ -115,7 +115,7 @@ const categories = {
 
 const CategoryItem = ({ category }) => {
   const CategoryImage = category.image
-  const { projectCategory, setProjectCategory } = useContext(ProjectSetupCategoryContext)
+  const { projectCategory, setProjectCategory, setError, error } = useContext(ProjectSetupCategoryContext)
   let categoryColors = null
   if (category.title.toLowerCase() === projectCategory) {
     categoryColors = {
@@ -206,6 +206,7 @@ function ProjectSetupCategoryScreen({
     projectId
   } = route.params
   const user = useMe()
+  const [error, setError] = useState(null)
   useEffect(() => {
     if (user && user.usageProgress && user.usageProgress.projectCategorySelected) {
       const categorySelected = user.usageProgress.projectCategorySelected
@@ -228,7 +229,9 @@ function ProjectSetupCategoryScreen({
     }}>
       <ProjectSetupCategoryContext.Provider value={{
         projectCategory,
-        setProjectCategory
+        setProjectCategory,
+        error,
+        setError
       }}>
         <Header />
         <View style={projectSetupStyles.progressCircleContainer}>
@@ -246,6 +249,16 @@ function ProjectSetupCategoryScreen({
             <Text style={projectSetupStyles.stepCount}>step 3/4</Text>
           </View>
         </View>
+        {
+          error &&
+          <View style={{
+            alignItems: 'center'
+          }}>
+            <ErrorText>
+              {error}
+            </ErrorText>
+          </View>
+        }
         <CategoryDisplay categories={categories} />
       </ProjectSetupCategoryContext.Provider>
       <PrimaryButton textStyle={{
@@ -254,23 +267,27 @@ function ProjectSetupCategoryScreen({
             alignSelf: 'center',
             marginTop: spacingUnit * 5
           }} onPress={async () => {
-            await updateProject({
-              variables: {
-                input: {
-                  category: projectCategory
-                },
-                projectId,
-                firstTime: true
-              }
-            })
-            if (projectCategory === 'business' || projectCategory === 'tech') {
-              navigation.navigate('ProjectTagSelection', {
-                projectId
-              })
+            if (!projectCategory) {
+              setError('Please select a project category')
             } else {
-              navigation.navigate('Root', {
-                screen: 'Profile'
+              await updateProject({
+                variables: {
+                  input: {
+                    category: projectCategory
+                  },
+                  projectId,
+                  firstTime: true
+                }
               })
+              if (projectCategory === 'business' || projectCategory === 'tech') {
+                navigation.navigate('ProjectTagSelection', {
+                  projectId
+                })
+              } else {
+                navigation.navigate('Root', {
+                  screen: 'Profile'
+                })
+              }
             }
           }
           }>
