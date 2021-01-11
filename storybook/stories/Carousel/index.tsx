@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 import Swiper from 'react-native-web-swiper'
+import { White } from '../../../constants/Colors'
 
 import { Title, Subheading, Paragraph } from '../Text'
 
@@ -40,7 +41,7 @@ export class MyCarousel extends React.Component {
                 return (
                   <View key={item.subheading} style={{flex: 1}}>
                   <Subheading style={{textAlign: 'center'}}>{item.subheading}</Subheading>
-                  <Paragraph style={{textAlign: 'center', marginTop: 8}}>{item.paragraph}</Paragraph>
+                  <Paragraph color={White} style={{textAlign: 'center', marginTop: 8}}>{item.paragraph}</Paragraph>
                 </View>
                 )
               })

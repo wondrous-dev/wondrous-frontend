@@ -9,5 +9,12 @@ export const PublicProjectFragment = gql`
     archivedAt
     privacyLevel
     profilePicture
+    createdBy
+    tags
+    collaborators
+    createdAt
+    followCount
+    goalsCompleted
+    tasksCompleted
   }
 `

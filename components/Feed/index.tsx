@@ -213,9 +213,8 @@ export const renderMentionString = (content, navigation) => {
   return final
 }
 
-const ShareModal = ({ isVisible, item, setModalVisible }) => {
-  const SHARE_URL = `https://wonderapp.co/feed/${item.id}`
-  const CONTENT = 'Check this discussion from Wonder!'
+export const ShareModal = ({ isVisible, url, content, setModalVisible }) => {
+
   return (
     <Modal isVisible={isVisible}>
       <View style={{
@@ -248,7 +247,7 @@ const ShareModal = ({ isVisible, item, setModalVisible }) => {
           paddingLeft: spacingUnit * 3
         }}>
           <Pressable onPress={() => {
-            tweetNow({ twitterShareURL: SHARE_URL, tweetContent: CONTENT })
+            tweetNow({ twitterShareURL: url, tweetContent: content })
           }}>
           <View style={{
             justifyContent: 'center',
@@ -263,7 +262,7 @@ const ShareModal = ({ isVisible, item, setModalVisible }) => {
           </View>
           </Pressable>
           <Pressable onPress={() => {
-            linkedinShare({ linkedinShareUrl: SHARE_URL, linkedinContent: CONTENT })
+            linkedinShare({ linkedinShareUrl: url, linkedinContent: content })
           }}>
           <View style={{
             justifyContent: 'center',
@@ -278,7 +277,7 @@ const ShareModal = ({ isVisible, item, setModalVisible }) => {
           </View>
           </Pressable>
           <Pressable onPress={() => {
-            postOnFacebook({ facebookShareURL: SHARE_URL, postContent: CONTENT })
+            postOnFacebook({ facebookShareURL: url, postContent: content })
           }}>
           <View style={{
             justifyContent: 'center',
@@ -293,7 +292,7 @@ const ShareModal = ({ isVisible, item, setModalVisible }) => {
           </View>
           </Pressable>
           <Pressable onPress={() => {
-            Clipboard.setString(SHARE_URL)
+            Clipboard.setString(url)
             setModalVisible(false)
           }}>
           <View style={{
@@ -428,10 +427,11 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
     }
   }, [])
 
-
+  const SHARE_URL = `https://wonderapp.co/feed/${item.id}`
+  const CONTENT = 'Check this discussion from Wonder!'
   return (
     <>
-    <ShareModal isVisible={isModalVisible} item={item} setModalVisible={setModalVisible} />
+    <ShareModal isVisible={isModalVisible} url={SHARE_URL} content={CONTENT} setModalVisible={setModalVisible} />
     <View style={feedStyles.feedItemContainer}>
       <View style={feedStyles.feedItemName}>
         <SafeImage style={feedStyles.feedItemImage} src={item.actorProfilePicture} defaultImage={DefaultProfilePicture} />

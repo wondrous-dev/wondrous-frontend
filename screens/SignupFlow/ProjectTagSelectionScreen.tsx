@@ -237,7 +237,9 @@ function ProjectTagSelectionScreen({
             backgroundColor: White,
             flex: 1,
         }}>
-            <Header skip='Profile'/>
+            <Header skip='Root' skipParams={{
+                screen: 'Profile'
+            }} />
             <View style={projectTagStyles.progressCircleContainer}>
                 <ProgressCircle
                     percent={finished ? 100 :80}

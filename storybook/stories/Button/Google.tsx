@@ -9,6 +9,7 @@ import GoogleSvg from '../../../assets/images/social-auth/google.svg'
 import baseStyle from './style'
 import { Grey200 } from '../../../constants/Colors'
 import { storeAuthHeader } from '../../../components/withAuth'
+import { navigateUserOnLogin } from '../../../utils/common'
 
 const buttonStyle = StyleSheet.create({
   googleButtonText: {
@@ -42,7 +43,10 @@ const signInAsync = async ({ graphqlCall, setLoginStatus, setLoginError, navigat
         if (resp.data) {
           const { signup } = resp.data
           await storeAuthHeader(signup.token, signup.user)
-          navigation.navigate('Welcome')
+          if (signup.user) {
+            navigateUserOnLogin(signup.user, navigation)
+            setLoginStatus(null)
+          }
         }
       } catch (error) {
         console.log('Error calling login mutations', JSON.stringify(error, null, 2))

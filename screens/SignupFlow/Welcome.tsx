@@ -61,15 +61,9 @@ function WelcomeScreen({
   React.useEffect(() => {
     registerForPushNotificationsAsync(user && user.id)
 
-    if (user && user.usageProgress && user.usageProgress.signupCompleted) {
-      if (user.usageProgress.workFlowCompleted) {
-        navigation.navigate('Root', {
-          screen: 'Dashboard'
-        })
-      } else {
-        navigation.navigate('Root', {
-          screen: 'Profile'
-        })
+    if (user && user.usageProgress) {
+      if (user.username) {
+        navigation.navigate('FirstProjectSetup')
       }
     } 
   }, [])

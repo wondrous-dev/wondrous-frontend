@@ -34,3 +34,25 @@ export const insertComponentsIntoText = (
       return part;
   });
 }
+
+export const navigateUserOnLogin = (user, navigation) => {
+  console.log('got in')
+  if (user && user.usageProgress && user.usageProgress.signupCompleted) {
+    if (user.usageProgress.workFlowCompleted) {
+      navigation.navigate('Root', {
+        screen: 'Dashboard'
+      })
+    } else {
+      navigation.navigate('Root', {
+        screen: 'Profile',
+        params: {
+          screen: 'ProjectProfile',
+          params: {
+            projectId: user.usageProgress.projectCreated,
+            noGoingBack: true
+          }
+        }
+      })
+    }
+  } 
+}

@@ -1,11 +1,13 @@
-import React from 'react'
-import { SafeAreaView, View, Pressable, Dimensions } from 'react-native'
+import React, { useState } from 'react'
+import { SafeAreaView, View, Pressable, Dimensions, Share } from 'react-native'
 import { useRoute, useNavigation } from '@react-navigation/native'
+// import * as Sharing from 'expo-sharing'
 
 import { Orange, Grey300, Grey250 } from '../../constants/Colors'
 import { Title, RegularText } from '../../storybook/stories/Text'
 import BackCaret from '../../assets/images/back-caret'
 import { spacingUnit } from '../../utils/common'
+import { ShareModal } from '../Feed'
 
 const shouldbackPageRoutes = {
   'Dashboard': true,
@@ -23,10 +25,11 @@ const shouldBackPage = (route) => {
   return true
 }
 
-export const Header = ({ skip }) => {
+export const Header = ({ skip, skipParams, noGoingBack, share }) => {
   const route = useRoute()
   const navigation = useNavigation()
-  const backPage = shouldBackPage(route)
+  const backPage = noGoingBack ? false : shouldBackPage(route)
+  const [modalVisible, setModalVisible] = useState(false)
 
   return (
     <SafeAreaView style={{
@@ -49,6 +52,10 @@ export const Header = ({ skip }) => {
         <BackCaret />
       }
       </Pressable>
+      {
+        !backPage && share &&
+        <View />
+      }
       <Title style={{
         color: Orange,
         // flex: 2
@@ -58,7 +65,11 @@ export const Header = ({ skip }) => {
       {
         skip ?
         <Pressable onPress={() => {
-          navigation.navigate(skip)
+          navigation.navigate(skip, {
+            ...(skipParams && {
+              skipParams
+            })
+          })
         }} style={{
           marginRight: spacingUnit * 2,
           marginLeft: -spacingUnit * 2
@@ -69,6 +80,22 @@ export const Header = ({ skip }) => {
         </Pressable>
         :
         <View />
+      }
+      {
+        share &&
+        <>
+        <ShareModal isVisible={modalVisible} url={share} content='' setModalVisible={setModalVisible} />
+        <Pressable onPress={() => {
+          setModalVisible(true)
+        }} style={{
+          marginRight: spacingUnit * 2,
+          marginLeft: -spacingUnit * 2
+        }}>
+          <RegularText color={Grey250}>
+            Share
+          </RegularText>
+        </Pressable>
+        </>
       }
     </SafeAreaView>
   )

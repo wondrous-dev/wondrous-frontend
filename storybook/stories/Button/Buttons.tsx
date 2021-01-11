@@ -66,6 +66,17 @@ export function SecondaryButton ({ onPress, children, style, textStyle, textPres
   </BaseButton>
 }
 
+export function FlexibleButton ({ onPress, children, style, ...props }) {
+  return (
+    <TouchableHighlight onPress={onPress} style={{
+      ...style,
+      borderRadius: 4
+    }} {...props}>
+      {children}
+    </TouchableHighlight>
+  )
+}
+
 // export function GreyButton ({ onPress, children, style, ...props }) {
 //   return <BaseButton onPress={onPress} style={style} {...props}>
 //     {children}

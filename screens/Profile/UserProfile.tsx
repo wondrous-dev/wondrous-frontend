@@ -1,27 +1,25 @@
+
 import * as React from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { SafeAreaView } from 'react-native'
+import { createStackNavigator } from '@react-navigation/stack'
 
 import { withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { HomeFeed } from '../../components/Feed'
 import { White } from '../../constants/Colors'
+import BottomTabNavigator from '../../navigation/BottomTabNavigator'
 
-function Feed({
+function UserProfile({
   navigation
-}: StackScreenProps<RootStackParamList, 'Feed'>) {
-
+}: StackScreenProps<RootStackParamList, 'UserProfile'>) {
   return (
-    <>
     <SafeAreaView style={{
-      backgroundColor: White
+      backgroundColor: White  
     }}>
       <Header />
-      <HomeFeed />
     </SafeAreaView>
-    </>
   )
 }
 
-export default withAuth(Feed)
+export default withAuth(UserProfile)

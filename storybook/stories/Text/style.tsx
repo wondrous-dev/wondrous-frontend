@@ -16,7 +16,6 @@ export default {
   paragraph: {
     fontFamily: 'Rubik Light',
     fontSize: 16,
-    color: White,
     lineHeight: 24
   },
   regular: {

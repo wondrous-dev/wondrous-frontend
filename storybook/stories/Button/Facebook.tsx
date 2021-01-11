@@ -9,6 +9,7 @@ import FacebookSvg from '../../../assets/images/social-auth/facebook.svg'
 import baseStyle from './style'
 import { storeAuthHeader } from '../../../components/withAuth'
 import { White } from '../../../constants/Colors'
+import { navigateUserOnLogin } from '../../../utils/common'
 
 const buttonStyle = StyleSheet.create({
   facebookButtonText: {
@@ -47,7 +48,11 @@ const signInAsync = async ({ callToAction, setLoginStatus, setLoginError, naviga
           const { signup } = resp.data
 
           await storeAuthHeader(signup.token, signup.user)
-          navigation.navigate('Welcome')
+          if (signup.user) {
+            navigateUserOnLogin(signup.user, navigation)
+            setLoginStatus(null)
+          }
+
         }
       } catch(error) {
         console.log('Error calling login mutations', JSON.stringify(error, null, 2))
