@@ -1,27 +1,29 @@
 
-import React, { useState, createContext, useContext } from 'react'
+import React, { useState, createContext, useCallback, useEffect } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { Dimensions, Image, Pressable, SafeAreaView, StyleSheet, View } from 'react-native'
+import { Dimensions, Image, Pressable, SafeAreaView, StyleSheet, View, RefreshControl, FlatList } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
-import { useQuery } from '@apollo/client'
+import { useQuery, useLazyQuery } from '@apollo/client'
 import { Bar } from 'react-native-progress'
 import { useNavigation } from '@react-navigation/native'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { Black, Blue400, Blue500, Grey200, Grey350, Red400, White } from '../../constants/Colors'
+import { Black, Blue400, Blue500, Grey200, Grey300, Grey350, Red400, White } from '../../constants/Colors'
 import Plus from '../../assets/images/plus'
 import { profileStyles } from './style'
-import { GET_PROJECT_BY_ID } from '../../graphql/queries/project'
+import { GET_PROJECT_BY_ID, GET_PROJECT_FEED } from '../../graphql/queries/project'
 import ProfileDefaultImage from '../../assets/images/profile-placeholder'
 import { SafeImage } from '../../storybook/stories/Image'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton, FlexibleButton } from '../../storybook/stories/Button'
-import { spacingUnit } from '../../utils/common'
+import { spacingUnit, wait } from '../../utils/common'
 import { WONDER_BASE_URL } from '../../constants/'
 import { ProfileContext } from '../../utils/contexts'
 import { useProfile } from '../../utils/hooks'
+import { ProjectFeed, renderItem } from '../../components/Feed'
+import { ScrollView } from 'react-native-gesture-handler'
 
 const ProfilePlaceholder = ({ projectOwnedByUser }) => {
   if (projectOwnedByUser) {
@@ -53,6 +55,15 @@ const ProjectInfoText = ({ count, type }) => {
   )
 }
 
+const Sections = () => {
+  const { section } = useProfile()
+  const feedSelected = section === 'feed'
+  const actionSelected = section === 'action'
+  const asksSelected = section === 'asks'
+  if (feedSelected) {
+    return <ProjectFeed />
+  }
+}
 const SectionsHeader = () => {
   const { section, setSection } = useProfile()
   const feedSelected = section === 'feed'
@@ -179,30 +190,94 @@ function ProjectProfile({
 }: StackScreenProps<RootStackParamList, 'ProjectProfile'>) {
   const user = useMe()
   const [section, setSection] = useState('feed')
+  const [refreshing, setRefreshing] = useState(false)
   const {
     projectId,
     noGoingBack
   } = route.params
-  
+  const [getProjectFeed, {
+    loading: projectFeedLoading,
+    data: projectFeedData,
+    error: projectFeedError,
+    refetch,
+    fetchMore
+  }] = useLazyQuery(GET_PROJECT_FEED, {
+    fetchPolicy: 'network-only',
+    variables: {
+      projectId
+    }
+  })
+
   const { data, loading, error } = useQuery(GET_PROJECT_BY_ID, {
     variables: {
       projectId
     }
   })
   const project = data && data.getProjectById
-  console.log('data', data && data.getProjectById, project, user)
+
   const projectOwnedByUser = project && user && project.createdBy === user.id
-  
+  const feedSelected = section === 'feed'
+  const actionSelected = section === 'action'
+  const asksSelected = section === 'asks'
+
+  useEffect(() => {
+    if (section === 'feed') {
+      getProjectFeed()
+    }
+  }, [])
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true)
+    if (feedSelected) {
+      getProjectFeed()
+    } else if (actionSelected) {
+
+    } else if (asksSelected) {
+
+    }
+    wait(2000).then(() => setRefreshing(false))
+  }, [])
+
+  const getCorrectData = section => {
+    if (section === 'feed') {
+      return projectFeedData && projectFeedData.getProjectFeed
+    }
+  }
+
+  const profileData = getCorrectData(section)
+
   return (
     <SafeAreaView style={{
       backgroundColor: White,
       flex: 1
-    }}>
+    }}
+    >
       <Header noGoingBack={noGoingBack} share={`${WONDER_BASE_URL}/project/${projectId}`} />
       {
         project && 
-        <>
-          <View style={profileStyles.profileContainer}>
+        <ProfileContext.Provider value={{
+          section,
+          setSection,
+          refreshing,
+          setRefreshing,
+          projectFeedData,
+          projectFeedLoading,
+          projectFeedError,
+          getProjectFeed
+        }}>
+        <FlatList    refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        ItemSeparatorComponent={() => (
+          <View
+            style={{
+              borderBottomColor: Grey300,
+              borderBottomWidth: 1,
+            }}
+          />
+        )}
+        ListHeaderComponent={() => (
+            <View style={profileStyles.profileContainer}>
             <View style={[profileStyles.profileInfoContainer, {
               justifyContent: 'space-between',
             }]}>
@@ -255,14 +330,27 @@ function ProjectProfile({
               </Paragraph>
             </View>
             <DetermineUserProgress user={user} />
-            <ProfileContext.Provider value={{
-              section,
-              setSection
-            }}>
+
               <SectionsHeader />
-            </ProfileContext.Provider>
           </View>
-        </>
+        )}
+        data={profileData}
+        renderItem={({ item }) => renderItem({ item, navigation, screen: 'Root', params: {
+          screen: 'Profile',
+          params: {
+            screen: 'ProfileItem',
+            params: {
+              item,
+              liked: false,
+              comment: true,
+              standAlone: true
+            }
+          }
+        }   })}
+        >
+
+        </FlatList>
+        </ProfileContext.Provider>
       }
     </SafeAreaView>
   )

@@ -15,7 +15,7 @@ import { REACT_FEED_COMMENT, REACT_FEED_ITEM } from '../../graphql/mutations'
 import { SafeImage, SvgImage } from '../../storybook/stories/Image'
 import { TinyText, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton } from '../../storybook/stories/Button'
-import { spacingUnit, capitalizeFirstLetter, insertComponentsIntoText, getRegexGroup } from '../../utils/common'
+import { spacingUnit, capitalizeFirstLetter, insertComponentsIntoText, getRegexGroup, wait } from '../../utils/common'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import ProjectIcon from '../../assets/images/actions/project.svg'
 import GoalIcon from '../../assets/images/actions/goal.svg'
@@ -26,6 +26,7 @@ import CommentIcon from '../../assets/images/reactions/comment'
 import ShareIcon from '../../assets/images/share/feed'
 import { useMe } from '../withAuth'
 import { tweetNow, linkedinShare, postOnFacebook  } from '../Share'
+import { useProfile } from '../../utils/hooks'
 
 const FeedItemTypes = [
   'id',
@@ -566,29 +567,54 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
   )
 }
 
-export const renderItem = ({ item, navigation }) => {
+export const renderItem = ({ item, navigation, screen, params }) => {
   return (
-    <Pressable onPress={() => navigation.navigate('Root', {
-      screen: 'Dashboard',
-      params: {
-        screen: 'FeedItem',
-        params: {
-          item,
-          liked: false,
-          comment: true,
-          standAlone: true
-        }
-      }
-    })}>
+    <Pressable onPress={() => navigation.navigate(screen, params)}>
       <FeedItem item={item} key={item.id} />
     </Pressable>
   )
 }
 
-const wait = (timeout) => {
-  return new Promise(resolve => {
-    setTimeout(resolve, timeout);
-  });
+
+
+export const ProjectFeed = () => {
+  const navigation = useNavigation()
+  const {
+    refreshing,
+    setRefreshing,
+    projectFeedData,
+    projectFeedLoading,
+    projectFeedError,
+    getProjectFeed
+  } = useProfile()
+
+  useEffect(() => {
+    getProjectFeed()
+  }, [])
+  if (projectFeedData && !projectFeedLoading) {
+    setRefreshing(false)
+  }
+  return (
+    <>
+    <FlatList 
+      contentContainerStyle={{
+        paddingBottom: spacingUnit * 10
+      }}
+      data={projectFeedData}
+      renderItem={({ item }) => renderItem({ item, navigation })}
+      keyExtractor={item => item.id}
+      ItemSeparatorComponent={() => (
+        <View
+          style={{
+            borderBottomColor: Grey300,
+            borderBottomWidth: 1,
+          }}
+        />
+      )}
+    >
+    </FlatList>
+    </>
+  )
 }
 
 export const HomeFeed = () => {
@@ -614,7 +640,6 @@ export const HomeFeed = () => {
   if (loading) {
     return (
       <View style={{
-        height: Dimensions.get("window").height,
         backgroundColor: White,
         paddingTop: 16
       }}>
@@ -624,12 +649,24 @@ export const HomeFeed = () => {
   }
 
   return (
+    <>
     <FlatList 
       contentContainerStyle={{
         paddingBottom: spacingUnit * 10
       }}
       data={data && data.getHomeFeed}
-      renderItem={({ item }) => renderItem({ item, navigation })}
+      renderItem={({ item }) => renderItem({ item, navigation, screen: 'Root', params: {
+        screen: 'Dashboard',
+        params: {
+          screen: 'FeedItem',
+          params: {
+            item,
+            liked: false,
+            comment: true,
+            standAlone: true
+          }
+        }
+      }   })}
       keyExtractor={item => item.id}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -644,5 +681,6 @@ export const HomeFeed = () => {
       )}
     >
     </FlatList>
+    </>
   )
 }

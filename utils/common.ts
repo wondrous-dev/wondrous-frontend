@@ -36,7 +36,6 @@ export const insertComponentsIntoText = (
 }
 
 export const navigateUserOnLogin = (user, navigation) => {
-  console.log('got in')
   if (user && user.usageProgress && user.usageProgress.signupCompleted) {
     if (user.usageProgress.workFlowCompleted) {
       navigation.navigate('Root', {
@@ -55,4 +54,10 @@ export const navigateUserOnLogin = (user, navigation) => {
       })
     }
   } 
+}
+
+export const wait = (timeout) => {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout);
+  });
 }
