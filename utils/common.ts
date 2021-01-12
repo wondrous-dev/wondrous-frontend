@@ -53,7 +53,9 @@ export const navigateUserOnLogin = (user, navigation) => {
         }
       })
     }
-  } 
+  } else if (user) {
+    navigation.navigate('Welcome')
+  }
 }
 
 export const wait = (timeout) => {
