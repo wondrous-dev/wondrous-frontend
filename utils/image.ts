@@ -26,3 +26,13 @@ export const uploadMedia = async ({ filename, localUrl, fileType }) => {
     console.log("error", JSON.stringify(error, null, 2))
   }
 }
+
+export const getFilenameAndType = (result) => {
+  const uriArr = result.uri.split('/')
+  const filename = uriArr[uriArr.length - 1]
+  const fileType = filename.substring(filename.lastIndexOf(".") + 1)
+  return {
+    filename,
+    fileType
+  }
+}

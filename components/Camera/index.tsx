@@ -6,7 +6,8 @@ import * as FileSystem from 'expo-file-system'
 
 import apollo from '../../services/apollo'
 import { GET_PRESIGNED_IMAGE_URL } from '../../graphql/queries/media'
-import { uploadMedia } from '../../utils/image'
+import { uploadMedia, getFilenameAndType } from '../../utils/image'
+import { setDeepVariable } from '../../utils/common'
 
 const styles = StyleSheet.create({
   container: {
@@ -37,16 +38,6 @@ const styles = StyleSheet.create({
   }
 })
 
-const setDeepVariable = (obj, keyArr, value) => {
-  let reference = obj
-  for (let i = 0 ; i < keyArr.length -1; i++) {
-    reference= obj[keyArr[i]]
-  }
-
-  reference[keyArr[keyArr.length - 1]] = value
-  return obj
-}
-
 //TODO use hooks and contexts here
 export default function Snapper ({ setSnapperOpen, snapperOpen, image, setImage, setModalVisible, saveImageMutation, saveImageMutationVariable, filePrefix }) {
   const [hasPermission, setHasPermission] = useState(null)
@@ -71,9 +62,10 @@ export default function Snapper ({ setSnapperOpen, snapperOpen, image, setImage,
             // Get image filename
             setModalVisible(false)
             setImage(result.uri)
-            const uriArr = result.uri.split('/')
-            const filename = uriArr[uriArr.length - 1]
-            const fileType = filename.substring(filename.lastIndexOf(".") + 1)
+            const {
+              fileType,
+              filename
+            } = getFilenameAndType(result)
             const imageUrl = filePrefix + filename
             const variables = setDeepVariable(saveImageMutationVariable[0], saveImageMutationVariable[1], imageUrl)
             setSnapperOpen(false)

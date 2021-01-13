@@ -63,3 +63,13 @@ export const wait = (timeout) => {
     setTimeout(resolve, timeout);
   });
 }
+
+export const setDeepVariable = (obj, keyArr, value) => {
+  let reference = obj
+  for (let i = 0 ; i < keyArr.length -1; i++) {
+    reference= obj[keyArr[i]]
+  }
+
+  reference[keyArr[keyArr.length - 1]] = value
+  return obj
+}

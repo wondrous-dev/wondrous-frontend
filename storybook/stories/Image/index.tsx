@@ -12,8 +12,9 @@ import CameraIcon from '../../../assets/images/camera'
 import PictureIcon from '../../../assets/images/image'
 import { Blue500 } from '../../../constants/Colors'
 import { RegularText } from '../Text'
-import { spacingUnit } from '../../../utils/common'
+import { spacingUnit, setDeepVariable } from '../../../utils/common'
 import Camera from '../../../components/Camera'
+import { uploadMedia, getFilenameAndType } from '../../../utils/image'
 
 interface ImageProps {
   width?: String
@@ -38,6 +39,17 @@ export const UploadImage = ({ isVisible, setModalVisible, image, setImage, saveI
 
     if (!result.cancelled) {
       setImage(result.uri)
+      const {
+        fileType,
+        filename
+      } = getFilenameAndType(result)
+      const imageUrl = imagePrefix + filename
+      const variables = setDeepVariable(saveImageMutationVariable[0], saveImageMutationVariable[1], imageUrl)
+      uploadMedia({ filename: imageUrl, localUrl: result.uri, fileType })
+      saveImageMutation({
+        variables
+      })
+      
       setModalVisible(false)
     }
   }
