@@ -27,6 +27,7 @@ import ShareIcon from '../../assets/images/share/feed'
 import { useMe } from '../withAuth'
 import { tweetNow, linkedinShare, postOnFacebook  } from '../Share'
 import { useProfile } from '../../utils/hooks'
+import { FlexRowContentModal } from '../../components/Modal'
 
 const FeedItemTypes = [
   'id',
@@ -217,113 +218,74 @@ export const renderMentionString = (content, navigation) => {
 export const ShareModal = ({ isVisible, url, content, setModalVisible }) => {
 
   return (
-    <Modal isVisible={isVisible}>
-      <View style={{
-        backgroundColor: White,
-        position: 'absolute',
-        bottom: 0,
-        width: Dimensions.get("window").width,
-        alignSelf: 'center',
-        flex: 1,
-        borderTopLeftRadius: spacingUnit * 3,
-        borderTopRightRadius: spacingUnit * 3,
-      }}>
-        <Subheading color={Black} style={{
-          padding: spacingUnit * 2,
-          paddingLeft: spacingUnit * 3
-        }}>
-          Share post via...
-        </Subheading>
-        <View
-          style={{
-            borderBottomColor: Grey300,
-            borderBottomWidth: 1,
-            marginBottom: spacingUnit
-          }}
-        />
-        <View style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          padding: spacingUnit * 2,
-          paddingLeft: spacingUnit * 3
-        }}>
-          <Pressable onPress={() => {
-            tweetNow({ twitterShareURL: url, tweetContent: content })
-          }}>
-          <View style={{
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-            <TwitterShare />
-            <RegularText style={{
-              marginTop: spacingUnit * 0.5
+    <FlexRowContentModal
+      headerText='Share post via...'
+      setModalVisible={setModalVisible}
+      isVisible={isVisible}
+    >
+            <Pressable onPress={() => {
+              tweetNow({ twitterShareURL: url, tweetContent: content })
             }}>
-              Twitter
-            </RegularText>
-          </View>
-          </Pressable>
-          <Pressable onPress={() => {
-            linkedinShare({ linkedinShareUrl: url, linkedinContent: content })
-          }}>
-          <View style={{
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-            <LinkedinShare />
-            <RegularText style={{
-              marginTop: spacingUnit * 0.5
+            <View style={{
+              justifyContent: 'center',
+              alignItems: 'center'
             }}>
-              Linkedin
-            </RegularText>
-          </View>
-          </Pressable>
-          <Pressable onPress={() => {
-            postOnFacebook({ facebookShareURL: url, postContent: content })
-          }}>
-          <View style={{
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-            <FacebookShare />
-            <RegularText style={{
-              marginTop: spacingUnit * 0.5
+              <TwitterShare />
+              <RegularText style={{
+                marginTop: spacingUnit * 0.5
+              }}>
+                Twitter
+              </RegularText>
+            </View>
+            </Pressable>
+            <Pressable onPress={() => {
+              linkedinShare({ linkedinShareUrl: url, linkedinContent: content })
             }}>
-              Facebook
-            </RegularText>
-          </View>
-          </Pressable>
-          <Pressable onPress={() => {
-            Clipboard.setString(url)
-            setModalVisible(false)
-          }}>
-          <View style={{
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-            <CopyLink />
-            <RegularText style={{
-              marginTop: spacingUnit * 0.5
+            <View style={{
+              justifyContent: 'center',
+              alignItems: 'center'
             }}>
-              Copy Link
-            </RegularText>
-          </View>
-          </Pressable>
-        </View>
-        <SecondaryButton style={{
-            backgroundColor: Grey150,
-            marginTop: spacingUnit * 4,
-            alignSelf: 'center',
-            maxWidth: Dimensions.get('window').width - (spacingUnit * 6),
-            marginBottom: spacingUnit * 3
-          }} onPress={() => setModalVisible(false)}>
-            <RegularText color={Black} style={{
-              fontFamily: 'Rubik SemiBold'
+              <LinkedinShare />
+              <RegularText style={{
+                marginTop: spacingUnit * 0.5
+              }}>
+                Linkedin
+              </RegularText>
+            </View>
+            </Pressable>
+            <Pressable onPress={() => {
+              postOnFacebook({ facebookShareURL: url, postContent: content })
             }}>
-            Cancel
-            </RegularText>
-          </SecondaryButton>
-      </View>
-    </Modal>
+            <View style={{
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+              <FacebookShare />
+              <RegularText style={{
+                marginTop: spacingUnit * 0.5
+              }}>
+                Facebook
+              </RegularText>
+            </View>
+            </Pressable>
+            <Pressable onPress={() => {
+              Clipboard.setString(url)
+              setModalVisible(false)
+            }}>
+            <View style={{
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+              <CopyLink />
+              <RegularText style={{
+                marginTop: spacingUnit * 0.5
+              }}>
+                Copy Link
+              </RegularText>
+            </View>
+            </Pressable>
+     </FlexRowContentModal>  
+
   )
 }
 

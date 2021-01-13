@@ -6,6 +6,7 @@ import * as FileSystem from 'expo-file-system'
 
 import apollo from '../../services/apollo'
 import { GET_PRESIGNED_IMAGE_URL } from '../../graphql/queries/media'
+import { uploadMedia } from '../../utils/image'
 
 const styles = StyleSheet.create({
   container: {
@@ -36,10 +37,18 @@ const styles = StyleSheet.create({
   }
 })
 
-const win = Dimensions.get('window')
+const setDeepVariable = (obj, keyArr, value) => {
+  let reference = obj
+  for (let i = 0 ; i < keyArr.length -1; i++) {
+    reference= obj[keyArr[i]]
+  }
+
+  reference[keyArr[keyArr.length - 1]] = value
+  return obj
+}
 
 //TODO use hooks and contexts here
-export default function Snapper ({ setSnapperOpen, snapperOpen, image, setImage }) {
+export default function Snapper ({ setSnapperOpen, snapperOpen, image, setImage, setModalVisible, saveImageMutation, saveImageMutationVariable, filePrefix }) {
   const [hasPermission, setHasPermission] = useState(null)
   const [type, setType] = useState(Camera.Constants.Type.back)
   useEffect(() => {
@@ -59,32 +68,19 @@ export default function Snapper ({ setSnapperOpen, snapperOpen, image, setImage 
             setSnapperOpen(false)
           } else {
             // Set image
-            setImage(result.uri)
             // Get image filename
+            setModalVisible(false)
+            setImage(result.uri)
             const uriArr = result.uri.split('/')
             const filename = uriArr[uriArr.length - 1]
             const fileType = filename.substring(filename.lastIndexOf(".") + 1)
-            try {
-              const apolloResult = await apollo.query({
-                query: GET_PRESIGNED_IMAGE_URL,
-                variables: {
-                  filename
-                }
-              })
-              const apiUrl = apolloResult.data.getPresignedImageUrl.url
-              
-              const uploadResponse = await FileSystem.uploadAsync(apiUrl, result.uri, {
-                httpMethod: "PUT",
-                headers: {
-                  "Accept": "application/json",
-                  "Content-Type": `image/${fileType}`
-                }
-              })
-              // console.log('uploadResponse', uploadResponse)
-            } catch (error) {
-              console.log("error", JSON.stringify(error, null, 2))
-            }
+            const imageUrl = filePrefix + filename
+            const variables = setDeepVariable(saveImageMutationVariable[0], saveImageMutationVariable[1], imageUrl)
             setSnapperOpen(false)
+            uploadMedia({ filename: imageUrl, localUrl: result.uri, fileType })
+            saveImageMutation({
+              variables
+            })
           }
         }
         // if (status !== 'granted') {

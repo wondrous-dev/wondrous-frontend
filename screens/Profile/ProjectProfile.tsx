@@ -3,7 +3,7 @@ import React, { useState, createContext, useCallback, useEffect } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { Dimensions, Image, Pressable, SafeAreaView, StyleSheet, View, RefreshControl, FlatList } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
-import { useQuery, useLazyQuery } from '@apollo/client'
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client'
 import { Bar } from 'react-native-progress'
 import { useNavigation } from '@react-navigation/native'
 
@@ -14,8 +14,9 @@ import { Black, Blue400, Blue500, Grey200, Grey300, Grey350, Red400, White } fro
 import Plus from '../../assets/images/plus'
 import { profileStyles } from './style'
 import { GET_PROJECT_BY_ID, GET_PROJECT_FEED } from '../../graphql/queries/project'
+import { UPDATE_PROJECT } from '../../graphql/mutations/project'
 import ProfileDefaultImage from '../../assets/images/profile-placeholder'
-import { SafeImage } from '../../storybook/stories/Image'
+import { SafeImage, UploadImage } from '../../storybook/stories/Image'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton, FlexibleButton } from '../../storybook/stories/Button'
 import { spacingUnit, wait } from '../../utils/common'
@@ -23,15 +24,18 @@ import { WONDER_BASE_URL } from '../../constants/'
 import { ProfileContext } from '../../utils/contexts'
 import { useProfile } from '../../utils/hooks'
 import { ProjectFeed, renderItem } from '../../components/Feed'
-import { ScrollView } from 'react-native-gesture-handler'
 
 const ProfilePlaceholder = ({ projectOwnedByUser }) => {
+  const { setModalVisible } = useProfile()
   if (projectOwnedByUser) {
-    return (<View style={
-        profileStyles.profilePlaceholderContainer
-      }>
+    return (
+    <Pressable onPress={() => setModalVisible(true)}>
+      <View style={
+          profileStyles.profilePlaceholderContainer
+        }>
         <Plus />
       </View>
+      </Pressable>
     )
   }
   return <ProfileDefaultImage style={profileStyles.profilePlaceholderImage} />
@@ -191,6 +195,19 @@ function ProjectProfile({
   const user = useMe()
   const [section, setSection] = useState('feed')
   const [refreshing, setRefreshing] = useState(false)
+  const [isVisible, setModalVisible] = useState(false)
+  const [profilePicture, setProfilePicture] = useState('')
+  const [updateProject] = useMutation(UPDATE_PROJECT, {
+    update(cache, { data }) {
+      cache.modify({
+        fields: {
+          getProjectById(existingProject={}) {
+            // return updateProject
+          }
+        }
+      })
+    }
+  })
   const {
     projectId,
     noGoingBack
@@ -263,8 +280,10 @@ function ProjectProfile({
           projectFeedData,
           projectFeedLoading,
           projectFeedError,
-          getProjectFeed
+          getProjectFeed,
+          setModalVisible
         }}>
+        <UploadImage isVisible={isVisible} setModalVisible={setModalVisible} image={profilePicture} setImage={setProfilePicture} saveImageMutation={updateProject} imagePrefix={`project/${projectId}/`} saveImageMutationVariable={[{projectId, input: { profilePicture }}, ['input', 'profilePicture']]}  />
         <FlatList    refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
@@ -283,13 +302,13 @@ function ProjectProfile({
             }]}>
               {
                 project.profilePicture ?
-                <SafeImage style={profileStyles.profileImage} src={project.profilePicture} />
+                <SafeImage style={profileStyles.profileImage} src={profilePicture|| project.profilePicture} />
                 :
                 <ProfilePlaceholder projectOwnedByUser={projectOwnedByUser} />
               }
               <ProjectInfoText count={project.followCount} type={project.followCount === 1 ? 'follower' : 'followers'} />
               <ProjectInfoText count={project.collaborators.length} type={project.collaborators.length === 1 ? 'collaborator': 'collaborators'} />
-              <ProjectInfoText count={project.goalsCompleted} type='goals completed' />
+              <ProjectInfoText count={project.goalsCompletedCount} type='goals completed' />
               {/* <ProjectInfoText count={project.tasksCompleted} type='tasks completed' /> */}
             </View>
             <View style={[profileStyles.profileInfoContainer, {

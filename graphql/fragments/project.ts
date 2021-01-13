@@ -11,10 +11,15 @@ export const PublicProjectFragment = gql`
     profilePicture
     createdBy
     tags
-    collaborators
+    collaborators {
+      role
+      user {
+        id
+      }
+    }
     createdAt
     followCount
-    goalsCompleted
-    tasksCompleted
+    goalsCompletedCount
+    tasksCompletedCount
   }
 `

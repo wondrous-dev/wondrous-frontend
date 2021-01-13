@@ -30,7 +30,7 @@ export const profileStyles = StyleSheet.create({
   profileImage: {
     width: spacingUnit * 8,
     height: spacingUnit * 8,
-    borderRadius: 4
+    borderRadius: 4 * spacingUnit
   },
   sectionChoiceContainer: {
     flexDirection: 'row',
