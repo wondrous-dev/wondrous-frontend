@@ -3,12 +3,12 @@ import React, { useState, createContext, useCallback, useEffect } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { Dimensions, Image, Pressable, SafeAreaView, StyleSheet, View, RefreshControl, FlatList } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
-import { useQuery, useLazyQuery, useMutation } from '@apollo/client'
+import { useQuery, useLazyQuery, useMutation, useReactiveVar } from '@apollo/client'
 import { Bar } from 'react-native-progress'
 import { useNavigation } from '@react-navigation/native'
 
 import { withAuth, useMe } from '../../components/withAuth'
-import { RootStackParamList } from '../../types'
+import { ProfileStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { Black, Blue400, Blue500, Grey200, Grey300, Grey350, Red400, White } from '../../constants/Colors'
 import Plus from '../../assets/images/plus'
@@ -18,12 +18,14 @@ import { UPDATE_PROJECT } from '../../graphql/mutations/project'
 import ProfileDefaultImage from '../../assets/images/profile-placeholder'
 import { SafeImage, UploadImage } from '../../storybook/stories/Image'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
-import { SecondaryButton, FlexibleButton } from '../../storybook/stories/Button'
+import { SecondaryButton, FlexibleButton, PrimaryButton } from '../../storybook/stories/Button'
 import { spacingUnit, wait } from '../../utils/common'
 import { WONDER_BASE_URL } from '../../constants/'
 import { ProfileContext } from '../../utils/contexts'
 import { useProfile } from '../../utils/hooks'
 import { ProjectFeed, renderItem } from '../../components/Feed'
+import Navigation from '../../navigation'
+import { useUrl } from 'expo-linking'
 
 const ProfilePlaceholder = ({ projectOwnedByUser }) => {
   const { setModalVisible } = useProfile()
@@ -180,7 +182,12 @@ const DetermineUserProgress = ({ user }) => {
       // 50%
       const setupText = 'Goals and tasks'
       const setupButtonText = 'Start Workflow'
-      return <SetUpFlowProgress progress={0.5} navigationUrl={'WorkflowSetupWelcome'} navigationParams={{}} setupText={setupText} setupButtonText={setupButtonText} color={Red400} />
+      return <SetUpFlowProgress progress={0.5} navigationUrl={'Root'} navigationParams={{
+        screen: 'Profile',
+        params: {
+          screen: 'WorkflowWelcome'
+        }
+      }} setupText={setupText} setupButtonText={setupButtonText} color={Red400} />
     }
     return null
   } else {
@@ -188,10 +195,55 @@ const DetermineUserProgress = ({ user }) => {
   }
 }
 
+const renderProfileItem = ({ item, section, user, navigation }) => {
+  if (section === 'feed') {
+    return renderItem({ item, navigation, screen: 'Root', params: {
+      screen: 'Profile',
+      params: {
+        screen: 'ProfileItem',
+        params: {
+          item,
+          liked: false,
+          comment: true,
+          standAlone: true
+        }
+      }
+    }   })
+  } else if ( section === 'action') {
+    if (!(user && user.usageProgress && user.usageProgress.workflowCompleted)) {
+      // return a button to set up work flow
+      return (
+        <View style={{
+          flex: 1,
+          alignItems: 'center',
+          marginTop: spacingUnit * 4
+        }}>
+          <Paragraph style={{
+            marginBottom: spacingUnit * 2
+          }} color={Black}>
+            No goals or tasks yet.
+          </Paragraph>
+          <PrimaryButton style={{
+            backgroundColor: Blue400
+          }} onPress={() => navigation.navigate('Root', {
+            screen: 'Profile',
+            params: {
+              screen: 'WorkflowWelcome'
+            }
+          })}>
+            <RegularText color={White}>
+              Start workflow
+            </RegularText>
+          </PrimaryButton>
+        </View>
+      )
+    }
+  }
+}
 function ProjectProfile({
   navigation,
   route
-}: StackScreenProps<RootStackParamList, 'ProjectProfile'>) {
+}: StackScreenProps<ProfileStackParamList, 'ProjectProfile'>) {
   const user = useMe()
   const [section, setSection] = useState('feed')
   const [refreshing, setRefreshing] = useState(false)
@@ -202,7 +254,7 @@ function ProjectProfile({
       cache.modify({
         fields: {
           getProjectById(existingProject={}) {
-            // return updateProject
+
           }
         }
       })
@@ -258,6 +310,10 @@ function ProjectProfile({
   const getCorrectData = section => {
     if (section === 'feed') {
       return projectFeedData && projectFeedData.getProjectFeed
+    } else if (section === 'action') {
+      if (!(user && user.usageProgress && user.usageProgress.workflowCompleted)) {
+        return ['item']
+      }
     }
   }
 
@@ -354,18 +410,7 @@ function ProjectProfile({
           </View>
         )}
         data={profileData}
-        renderItem={({ item }) => renderItem({ item, navigation, screen: 'Root', params: {
-          screen: 'Profile',
-          params: {
-            screen: 'ProfileItem',
-            params: {
-              item,
-              liked: false,
-              comment: true,
-              standAlone: true
-            }
-          }
-        }   })}
+        renderItem={({ item }) => renderProfileItem({ item, section, user, navigation })}
         >
 
         </FlatList>
