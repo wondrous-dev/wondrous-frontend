@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
 })
 
 //TODO use hooks and contexts here
-export default function Snapper ({ setSnapperOpen, snapperOpen, image, setImage, setModalVisible, saveImageMutation, saveImageMutationVariable, filePrefix }) {
+export default function Snapper ({ setSnapperOpen, snapperOpen, setImage, setModalVisible, saveImageMutation, saveImageMutationVariable, filePrefix, saveLocalImage=true }) {
   const [hasPermission, setHasPermission] = useState(null)
   const [type, setType] = useState(Camera.Constants.Type.back)
   useEffect(() => {
@@ -60,19 +60,27 @@ export default function Snapper ({ setSnapperOpen, snapperOpen, image, setImage,
           } else {
             // Set image
             // Get image filename
-            setModalVisible(false)
-            setImage(result.uri)
+            if (setModalVisible) {
+              setModalVisible(false)
+            }
             const {
               fileType,
               filename
             } = getFilenameAndType(result)
             const imageUrl = filePrefix + filename
-            const variables = setDeepVariable(saveImageMutationVariable[0], saveImageMutationVariable[1], imageUrl)
+            if (saveLocalImage) {
+              setImage(result.uri)
+            } else {
+              setImage(imageUrl)
+            }
             setSnapperOpen(false)
             uploadMedia({ filename: imageUrl, localUrl: result.uri, fileType })
-            saveImageMutation({
-              variables
-            })
+            if (saveImageMutation && saveImageMutationVariable) {
+              const variables = setDeepVariable(saveImageMutationVariable[0], saveImageMutationVariable[1], imageUrl)
+              saveImageMutation({
+                variables
+              })
+            }
           }
         }
         // if (status !== 'granted') {

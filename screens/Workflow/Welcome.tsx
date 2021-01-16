@@ -5,7 +5,7 @@ import { SafeAreaView, StyleSheet, View } from 'react-native'
 import { Header } from '../../components/Header'
 import { Subheading, Paragraph, RegularText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
-import { RootStackParamList } from '../../types'
+import { ProfileTabParamList } from '../../types'
 import { Grey500, White, Black } from '../../constants/Colors'
 import { spacingUnit } from '../../utils/common'
 import WelcomeImage from '../../assets/images/workflow/welcome'
@@ -24,7 +24,10 @@ const welcomeStyles = StyleSheet.create({
 function WorkflowWelcomeScreen({
   route,
   navigation
-}: StackScreenProps<RootStackParamList, 'WorkflowWelcome'>) {
+}: StackScreenProps<ProfileTabParamList, 'WorkflowWelcome'>) {
+  const {
+    projectId
+  } = route.params
   return (
     <SafeAreaView style={{
       backgroundColor: White,
@@ -50,7 +53,10 @@ function WorkflowWelcomeScreen({
       }} onPress={() => navigation.navigate('Root', {
         screen: 'Profile',
         params: {
-          screen: 'SetupGoal'
+          screen: 'SetupGoal',
+          params: {
+            projectId
+          }
         }
       })}>
         <RegularText color={White}>

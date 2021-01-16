@@ -14,11 +14,12 @@ export type RootStackParamList = {
   ProjectTagSelection: undefined
 }
 
-export type ProfilTabParamList = {
+export type ProfileTabParamList = {
   ProjectProfile: undefined
   UserProfile: undefined
   WorkflowWelcome: undefined
   ProfileItem: undefined
+  SetupGoal: undefined
 }
 
 export type BottomTabParamList = {

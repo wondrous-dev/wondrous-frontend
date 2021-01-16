@@ -20,3 +20,15 @@ export const GET_PROJECT_FEED = gql`
   }
   ${ActivityFeedItem}
 `
+
+export const GET_USER_PROJECTS = gql`
+  query GetProjectsByUser {
+    getUserProjects {
+      project {
+        id
+        name
+      }
+      role
+    }
+  }
+`

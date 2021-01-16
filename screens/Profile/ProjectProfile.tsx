@@ -8,7 +8,7 @@ import { Bar } from 'react-native-progress'
 import { useNavigation } from '@react-navigation/native'
 
 import { withAuth, useMe } from '../../components/withAuth'
-import { ProfileStackParamList } from '../../types'
+import { ProfileTabParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { Black, Blue400, Blue500, Grey200, Grey300, Grey350, Red400, White } from '../../constants/Colors'
 import Plus from '../../assets/images/plus'
@@ -153,15 +153,17 @@ const SetUpFlowProgress = ({ progress, navigationUrl,navigationParams, setupText
         alignItems: 'center',
         justifyContent: 'space-between'
       }}>
-        <Paragraph>
-          Next step:<Paragraph color={Blue400}>{setupText}</Paragraph>
-        </Paragraph>
+        <Pressable onPress={() => navigation.navigate(navigationUrl, navigationParams)}>
+          <Paragraph>
+            Next step:<Paragraph color={Blue400}>{setupText}</Paragraph>
+          </Paragraph>
+        </Pressable>
         <FlexibleButton style={{
           paddingLeft: spacingUnit * 0.5,
           paddingRight: spacingUnit * 0.5,
           paddingTop: 2,
           paddingBottom: 2,
-          backgroundColor: Blue400
+          backgroundColor: Blue500
         }} onPress={() => {
           navigation.navigate(navigationUrl, navigationParams)
         }}>
@@ -174,7 +176,7 @@ const SetUpFlowProgress = ({ progress, navigationUrl,navigationParams, setupText
   )
 }
 
-const DetermineUserProgress = ({ user }) => {
+const DetermineUserProgress = ({ user, projectId }) => {
   if (user && user.usageProgress) {
     const usageProgress = user.usageProgress
     // Determine percentages. Start at 50 when workflow not finished. Then 80 once it is. Then invite friends. Then add link?
@@ -185,7 +187,11 @@ const DetermineUserProgress = ({ user }) => {
       return <SetUpFlowProgress progress={0.5} navigationUrl={'Root'} navigationParams={{
         screen: 'Profile',
         params: {
-          screen: 'WorkflowWelcome'
+          screen: 'WorkflowWelcome',
+          params: {
+            projectId
+          }
+
         }
       }} setupText={setupText} setupButtonText={setupButtonText} color={Red400} />
     }
@@ -195,7 +201,7 @@ const DetermineUserProgress = ({ user }) => {
   }
 }
 
-const renderProfileItem = ({ item, section, user, navigation }) => {
+const renderProfileItem = ({ item, section, user, navigation, projectId }) => {
   if (section === 'feed') {
     return renderItem({ item, navigation, screen: 'Root', params: {
       screen: 'Profile',
@@ -223,12 +229,13 @@ const renderProfileItem = ({ item, section, user, navigation }) => {
           }} color={Black}>
             No goals or tasks yet.
           </Paragraph>
-          <PrimaryButton style={{
-            backgroundColor: Blue400
-          }} onPress={() => navigation.navigate('Root', {
+          <PrimaryButton onPress={() => navigation.navigate('Root', {
             screen: 'Profile',
             params: {
-              screen: 'WorkflowWelcome'
+              screen: 'WorkflowWelcome',
+              params: {
+                projectId
+              }
             }
           })}>
             <RegularText color={White}>
@@ -243,7 +250,7 @@ const renderProfileItem = ({ item, section, user, navigation }) => {
 function ProjectProfile({
   navigation,
   route
-}: StackScreenProps<ProfileStackParamList, 'ProjectProfile'>) {
+}: StackScreenProps<ProfileTabParamList, 'ProjectProfile'>) {
   const user = useMe()
   const [section, setSection] = useState('feed')
   const [refreshing, setRefreshing] = useState(false)
@@ -404,13 +411,13 @@ function ProjectProfile({
                 {project.description}
               </Paragraph>
             </View>
-            <DetermineUserProgress user={user} />
+            <DetermineUserProgress user={user} projectId={projectId} />
 
               <SectionsHeader />
           </View>
         )}
         data={profileData}
-        renderItem={({ item }) => renderProfileItem({ item, section, user, navigation })}
+        renderItem={({ item }) => renderProfileItem({ item, section, user, navigation, projectId })}
         >
 
         </FlatList>

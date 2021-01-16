@@ -18,7 +18,7 @@ export default function HomeScreen({
   const homeScreens = [
     {
       subheading: 'Finish Your dream projects',
-      paragraph: 'Wonder helps you manage multiple projects and keeps you socially accountable for them.'
+      paragraph: 'Wonder helps you build/learn in public so you are held socially accountable.'
     },
     {
       subheading: 'Build a community around your work',
