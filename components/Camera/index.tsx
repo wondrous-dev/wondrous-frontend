@@ -68,11 +68,7 @@ export default function Snapper ({ setSnapperOpen, snapperOpen, setImage, setMod
               filename
             } = getFilenameAndType(result)
             const imageUrl = filePrefix + filename
-            if (saveLocalImage) {
-              setImage(result.uri)
-            } else {
-              setImage(imageUrl)
-            }
+            setImage(result.uri)
             setSnapperOpen(false)
             uploadMedia({ filename: imageUrl, localUrl: result.uri, fileType })
             if (saveImageMutation && saveImageMutationVariable) {

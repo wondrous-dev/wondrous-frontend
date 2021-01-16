@@ -18,6 +18,9 @@ import PriorityFlame from '../../assets/images/modal/priority'
 import CameraIcon from '../../assets/images/camera'
 import ImageIcon from '../../assets/images/image'
 import LinkIcon from '../../assets/images/link'
+import { SafeImage } from '../../storybook/stories/Image'
+
+const FILE_PREFIX = '/goal/new'
 
 const goalModalStyles = StyleSheet.create({
   fullScreenContainer: {
@@ -104,6 +107,16 @@ const goalModalStyles = StyleSheet.create({
   },
   addLinkButton: {
     padding: spacingUnit
+  },
+  mediaRows: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: spacingUnit * 2
+  },
+  mediaItem: {
+    width: spacingUnit * 12,
+    height: spacingUnit * 9,
+    borderRadius: 4
   }
 })
 
@@ -238,7 +251,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
     label: '',
     value: ''
   }]
-  console.log('projectDropdwons', projectDropdowns, projectId)
+  console.log('images', media)
   return (
     <Modal isVisible={isVisible}>
       <TouchableWithoutFeedback 
@@ -248,8 +261,8 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                 <Camera
                 snapperOpen={cameraOpen}
               setSnapperOpen={setCameraOpen}
-                setImage={(image) => setMedia([image])}
-                filePrefix={`goal/new`}
+                setImage={(image) => setMedia([...media, image])}
+                filePrefix={FILE_PREFIX}
                 saveLocalImage={false}
               />
         }
@@ -378,6 +391,14 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                       placeholder='Add link'
                       style={goalModalStyles.link}
                     />
+                  </View>
+                }
+                {
+                  media && 
+                  <View style={goalModalStyles.mediaRows}>
+                    {media.map(image => (
+                      <SafeImage key={image} src={image} style={goalModalStyles.mediaItem} />
+                    ))}
                   </View>
                 }
               </ScrollView>
