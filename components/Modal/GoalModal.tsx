@@ -1,233 +1,31 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { SafeAreaView, ScrollView, View, StyleSheet, Dimensions, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native'
 import Modal from 'react-native-modal'
 import { useQuery } from '@apollo/client'
 import DropDownPicker from 'react-native-dropdown-picker'
 import DateTimePicker from '@react-native-community/datetimepicker'
-import { isAfter, formatDistanceToNowStrict, format, toDate } from 'date-fns'
+import { toDate } from 'date-fns'
 
 import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300 } from '../../constants/Colors'
-import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
+import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
 import { endOfWeekFromNow } from '../../utils/date'
 import { useMe } from '../../components/withAuth'
 import { GET_USER_PROJECTS } from '../../graphql/queries/project'
 import Camera from '../../components/Camera'
-import { privacyDropdown } from './common'
-import PriorityFlame from '../../assets/images/modal/priority'
+import { privacyDropdown, submit, PriorityList, ModalDropdown, DateDisplay, modalStyles } from './common'
 import CameraIcon from '../../assets/images/camera'
 import ImageIcon from '../../assets/images/image'
 import LinkIcon from '../../assets/images/link'
 import { SafeImage } from '../../storybook/stories/Image'
+import ImageBrowser from './ImageBrowser'
+import { useNavigation } from '@react-navigation/native'
 
-const FILE_PREFIX = '/goal/new'
+const FILE_PREFIX = 'goal/new/'
 
-const goalModalStyles = StyleSheet.create({
-  fullScreenContainer: {
-    backgroundColor: White,
-    width: Dimensions.get('window').width,
-    height: (Dimensions.get('window').height),
-    alignSelf: 'center',
-    marginBottom: 0
-  },
-  topRowContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingLeft: spacingUnit * 2,
-    paddingRight: spacingUnit * 2,
-    marginTop: spacingUnit * 3
-  },
-  infoContainer: {
-    paddingLeft: spacingUnit * 2,
-    paddingRight: spacingUnit * 2,
-    marginTop: spacingUnit * 3,
-    ...(Platform.OS !== 'android' && {
-      zIndex: 100,
-    })
-  },
-  inputContainer: {
-
-  },
-  title: {
-    fontSize: 18
-  },
-  editContainer: {
-    borderTopColor: Grey400,
-    borderTopWidth: 1,
-    marginTop: spacingUnit * 3,
-    paddingTop: spacingUnit * 3
-  },
-  editRowContainer: {
-    flexDirection: 'row',
-    marginBottom: spacingUnit * 2.5,
-    alignItems: 'center',
-  },
-  editRowTextContainer: {
-    marginRight: spacingUnit * 2
-  },
-  editRowText: {
-    color: Grey800,
-    fontSize: 16,
-    width: spacingUnit * 7.5
-  },
-  priorityRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  priorityRowItem: {
-    padding: spacingUnit * 0.5,
-    paddingLeft: spacingUnit * 0.75,
-    paddingRight: spacingUnit * 0.75,
-    flexDirection: 'row',
-    marginRight: spacingUnit,
-    borderRadius: 4
-  },
-  descriptionBox: {
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: Grey400,
-    flex: 1,
-    minHeight: spacingUnit * 9,
-    padding: spacingUnit,
-    color: Black
-  },
-  attachmentRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  linkContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: spacingUnit * 2
-  },
-  link: {
-    fontFamily: 'Rubik Light',
-    fontSize: 16
-  },
-  addLinkButton: {
-    padding: spacingUnit
-  },
-  mediaRows: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: spacingUnit * 2
-  },
-  mediaItem: {
-    width: spacingUnit * 12,
-    height: spacingUnit * 9,
-    borderRadius: 4
-  }
-})
-
-const DateDisplay = ({ dueDate, onDateChange, editDate, setEditDate }) => {
-  return (
-    <View style={{
-      flexDirection: 'row',
-      alignItems: 'center'
-    }}>
-      {/* <DueDateIcon /> */}
-      <DateTimePicker
-          testID="dateTimePicker"
-          value={dueDate}
-          mode={'date'}
-          display="default"
-          onChange={(e, date) => {
-            if (date) {
-              onDateChange(new Date(date))
-            }
-          }}
-          style={{
-            flex: 1,
-            marginLeft: spacingUnit
-          }}
-        />
-    </View>
-  )
-}
-
-const ModalDropdown = ({ defaultValue, items, placeholder, value, setValue, zIndex }) => {
-  return (
-      <DropDownPicker
-      defaultValue={value}
-      style={{
-        backgroundColor: Grey750,
-        // borderColor: 'rgba(47,46,65, 0.54)'
-      }}
-
-      containerStyle={{
-        flex: 1,
-        height: 40
-      }}
-      labelStyle={{
-        color: Black,
-        fontSize: 16,
-        fontFamily: 'Rubik Light'
-      }}
-      itemStyle={{justifyContent: 'flex-start'}}
-      selectedLabelStyle={{
-        fontFamily: 'Rubik Light',
-        fontWeight: '500'
-      }}
-
-      searchable={true}
-        items={items}
-      />
-  )
-}
-
-export const PriorityList = ({ priority, setPriority }) => {
-  const priorityHigh = priority === 'high'
-  const priorityMedium = priority === 'medium'
-  const priorityLow = priority === 'low'
-
-  return (
-    <View style={goalModalStyles.priorityRow}>
-      <Pressable onPress={() => setPriority('high')} style={{
-        ...goalModalStyles.priorityRowItem,
-        ...(priorityHigh && {
-          backgroundColor: Red400
-        })
-      }}>
-        <PriorityFlame color={priorityHigh ? White : Red400} style={{
-          marginRight: 0.5 * spacingUnit
-        }} />
-        <Paragraph color={priorityHigh ? White : Grey800}>
-          High
-        </Paragraph>
-      </Pressable>
-      <Pressable onPress={() => setPriority('medium')} style={{
-        ...goalModalStyles.priorityRowItem,
-        ...(priorityMedium && {
-          backgroundColor: Yellow300
-        })
-      }}>
-        <PriorityFlame color={priorityMedium ? White: Yellow300} style={{
-          marginRight: 0.5 * spacingUnit
-        }} />
-        <Paragraph color={priorityMedium ? White : Grey800}>
-          Medium
-        </Paragraph>
-      </Pressable>
-      <Pressable onPress={() => setPriority('low')} style={{
-        ...goalModalStyles.priorityRowItem,
-        ...(priorityLow && {
-          backgroundColor: Blue400
-        })
-      }}>
-        <PriorityFlame color={priorityLow ? White : Blue400} style={{
-          marginRight: 0.5 * spacingUnit
-        }}/>
-        <Paragraph color={priorityLow ? White : Grey800}>
-          Low
-        </Paragraph>
-      </Pressable>
-    </View>
-  )
-}
-
-export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, projectId }) => {
+export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, projectId, goalMutation }) => {
   const initialDueDate = endOfWeekFromNow()
+  const navigation = useNavigation()
   const [completed, setCompleted] = useState(false)
   const [goalText, setGoalText] = useState(goal && goal.name)
   const [project, setProject] = useState((goal && goal.projectId) || projectId)
@@ -238,8 +36,11 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
   const [editDate, setEditDate] = useState(false)
   const [link, setLink] = useState(goal && goal.additionalData && goal.additionalData.link)
   const [addLink, setAddLink] = useState(!!(link))
-  const [media, setMedia] = useState((goal && goal.additionalData && goal.additionalData.media) || [])
+  const [media, setMedia] = useState((goal && goal.additionalData && goal.additionalData.images) || [])
   const [cameraOpen, setCameraOpen] = useState(false)
+  const [galleryOpen, setGalleryOpen] = useState(false)
+  const [errors, setErrors] = useState({})
+
   const user = useMe()
   const { data: projectUsers, loading, error } = useQuery(GET_USER_PROJECTS)
   const projectDropdowns = projectUsers && projectUsers.getUserProjects ? projectUsers.getUserProjects.map(projectUser => {
@@ -251,161 +52,205 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
     label: '',
     value: ''
   }]
-  console.log('images', media)
+
+  const resetState = useCallback(() => {
+    setGoalText('')
+    setPriority(null)
+    setLink(null)
+    setAddLink(null)
+    setMedia([])
+    setCameraOpen(false)
+    setGalleryOpen(false)
+    setDueDate(toDate(endOfWeekFromNow()))
+    setDescription('')
+    setCompleted(false)
+  }, [])
+
   return (
     <Modal isVisible={isVisible}>
+      {
+        galleryOpen
+        ?
+        <ImageBrowser setImageBrowser={setGalleryOpen} media={media} navigation={navigation} setMedia={setMedia} imagePrefix={FILE_PREFIX} />
+      :
       <TouchableWithoutFeedback 
-  onPress={() => Keyboard.dismiss()}>
-      <SafeAreaView style={goalModalStyles.fullScreenContainer}>
-        {cameraOpen &&
-                <Camera
-                snapperOpen={cameraOpen}
-              setSnapperOpen={setCameraOpen}
-                setImage={(image) => setMedia([...media, image])}
-                filePrefix={FILE_PREFIX}
-                saveLocalImage={false}
-              />
-        }
-        <View style={goalModalStyles.topRowContainer}>
-          <Pressable onPress={() => setModalVisible(false)} style={{
-            flex: 1
-          }}>
-          <RegularText color={Blue400} style={{
-            fontSize: 16
-          }}>
-            Cancel
-          </RegularText>
-          </Pressable>
-          <View style={{
-            flex: 1
-          }}>
-            <Subheading color={Black} style={{
-              fontSize: 24
-            }}>
-              {goal ? 'Edit' : 'New'} goal
-            </Subheading>
-          </View>
-          <View style={{
-            flex: 1,
-          }}>
-          <Pressable style={{
-                alignSelf: 'flex-end',
-                width: spacingUnit * 10,
-                paddingTop: 4,
-                paddingBottom: 4,
-                backgroundColor: Blue500,
-                borderRadius: spacingUnit,
-                alignItems: 'center'
+      onPress={() => Keyboard.dismiss()}>
+          <SafeAreaView style={modalStyles.fullScreenContainer}>
+            {cameraOpen &&
+                    <Camera
+                    snapperOpen={cameraOpen}
+                  setSnapperOpen={setCameraOpen}
+                    setImage={(image) => {
+                      if (media && media.length < 4) {
+                        setMedia([...media, image])
+                      } else {
+                        setErrors({
+                          ...errors,
+                          mediaError: 'Only a maximum of 4 images allowed'
+                        })
+                      }
+                    }}
+                    filePrefix={FILE_PREFIX}
+                  />
+            }
+            <View style={modalStyles.topRowContainer}>
+              <Pressable onPress={() => setModalVisible(false)} style={{
+                flex: 1
               }}>
-            <RegularText color={White} style={{
-              fontSize: 16
-            }}>
-              {goal ? 'Update': 'Create' }
-            </RegularText>
-          </Pressable>
-        </View>
-        </View>
-        <View style={goalModalStyles.infoContainer}>
-          <View style={goalModalStyles.inputContainer}>
-            <TextInput
-              multiline
-              onChangeText={text => setGoalText(text)}
-              value={goalText}
-              autoFocus={!(goalText)}
-              placeholder='Add goal...'
-              style={goalModalStyles.title}
-            />
-          </View>
-          <View style={goalModalStyles.editContainer}>
-              <View style={[
-                goalModalStyles.editRowContainer,
-
-                // NEW
-                Platform.OS !== 'android' && {
-                  zIndex: 5000
-                }
-              ]}>
-                <View style={goalModalStyles.editRowTextContainer}>
-                  <RegularText color={Grey800} style={goalModalStyles.editRowText}>
-                    Project
-                  </RegularText>
-                </View>
-                <ModalDropdown value={project} setValue={setProject} defaultValue={projectId} items={projectDropdowns} placeholder='Select a project' zIndex={5000} />
+              <RegularText color={Blue400} style={{
+                fontSize: 16
+              }}>
+                Cancel
+              </RegularText>
+              </Pressable>
+              <View style={{
+                flex: 1
+              }}>
+                <Subheading color={Black} style={{
+                  fontSize: 24
+                }}>
+                  {goal ? 'Edit' : 'New'} goal
+                </Subheading>
               </View>
-              <View style={[
-                goalModalStyles.editRowContainer,
-                Platform.OS !== 'android' && {
-                  zIndex: 4000
-                }
-              ]}>
-                <View style={goalModalStyles.editRowTextContainer}>
-                  <RegularText color={Grey800} style={goalModalStyles.editRowText}>
-                    Privacy
-                  </RegularText>
-                </View>
-                <ModalDropdown value={privacy} items={privacyDropdown} zIndex={4000} setValue={setPrivacy} placeholder='Select privacy level' />
-              </View>
-              <View style={goalModalStyles.editRowContainer}>
-                <View style={goalModalStyles.editRowTextContainer}>
-                  <RegularText color={Grey800} style={goalModalStyles.editRowText}>
-                    Priority
-                  </RegularText>
-                </View>
-                <PriorityList priority={priority} setPriority={setPriority} />
-              </View>
-              <View style={goalModalStyles.editRowContainer}>
-                    <View style={goalModalStyles.editRowTextContainer}>
-                      <RegularText color={Grey800} style={goalModalStyles.editRowText}>
-                        Due
-                      </RegularText>
-                    </View>
-                    <DateDisplay dueDate={dueDate} onDateChange={setDueDate} editDate={editDate} setEditDate={setEditDate} />
-                </View>
-              <View style={[goalModalStyles.editRowContainer, {
-                marginBottom: spacingUnit * 2
-              }]}>
+              <View style={{
+                flex: 1,
+              }}>
+              <Pressable style={modalStyles.createUpdateButton} onPress={() => {
+                submit({
+                  name: goalText,
+                  detail: description,
+                  priority,
+                  dueDate,
+                  link,
+                  privacyLevel: privacy,
+                  errors,
+                  setErrors,
+                  media,
+                  projectId,
+                  filePrefix: FILE_PREFIX,
+                  mutation: goalMutation,
+                  ...(goal && {
+                    goalId: goal.id
+                  })
+                })
+                setModalVisible(false)
+              }}>
+                <RegularText color={White} style={{
+                  fontSize: 16
+                }}>
+                  {goal ? 'Update': 'Create' }
+                </RegularText>
+              </Pressable>
+            </View>
+            </View>
+            <View style={modalStyles.infoContainer}>
+              <View style={modalStyles.inputContainer}>
                 <TextInput
                   multiline
-                  onChangeText={text => setDescription(text)}
-                  value={description}
-                  placeholder='Longer description...'
-                  style={goalModalStyles.descriptionBox}
+                  onChangeText={text => setGoalText(text)}
+                  value={goalText}
+                  autoFocus={!(goalText)}
+                  placeholder='Add goal...'
+                  style={modalStyles.title}
                 />
               </View>
-              <View style={goalModalStyles.attachmentRow}>
-                <LinkIcon color={Grey800} style={{
-                  marginRight: spacingUnit * 2
-                }} onPress={() => setAddLink(true)} />
-                <CameraIcon onPress={() => setCameraOpen(true)} color={Grey800} style={{
-                  marginRight: spacingUnit * 2
-                }} />
-                <ImageIcon color={Grey800} />
-              </View>
-              <ScrollView>
-                {addLink &&
-                  <View style={goalModalStyles.linkContainer}>
+              <View style={modalStyles.editContainer}>
+                  <View style={[
+                    modalStyles.editRowContainer,
+    
+                    // NEW
+                    Platform.OS !== 'android' && {
+                      zIndex: 5000
+                    }
+                  ]}>
+                    <View style={modalStyles.editRowTextContainer}>
+                      <RegularText color={Grey800} style={modalStyles.editRowText}>
+                        Project
+                      </RegularText>
+                    </View>
+                    <ModalDropdown value={project} setValue={setProject} defaultValue={projectId} items={projectDropdowns} placeholder='Select a project' zIndex={5000} />
+                  </View>
+                  <View style={[
+                    modalStyles.editRowContainer,
+                    Platform.OS !== 'android' && {
+                      zIndex: 4000
+                    }
+                  ]}>
+                    <View style={modalStyles.editRowTextContainer}>
+                      <RegularText color={Grey800} style={modalStyles.editRowText}>
+                        Privacy
+                      </RegularText>
+                    </View>
+                    <ModalDropdown value={privacy} items={privacyDropdown} zIndex={4000} setValue={setPrivacy} placeholder='Select privacy level' />
+                  </View>
+                  <View style={modalStyles.editRowContainer}>
+                    <View style={modalStyles.editRowTextContainer}>
+                      <RegularText color={Grey800} style={modalStyles.editRowText}>
+                        Priority
+                      </RegularText>
+                    </View>
+                    <PriorityList priority={priority} setPriority={setPriority} />
+                  </View>
+                  <View style={modalStyles.editRowContainer}>
+                        <View style={modalStyles.editRowTextContainer}>
+                          <RegularText color={Grey800} style={modalStyles.editRowText}>
+                            Due
+                          </RegularText>
+                        </View>
+                        <DateDisplay dueDate={dueDate} onDateChange={setDueDate} editDate={editDate} setEditDate={setEditDate} />
+                    </View>
+                  <View style={[modalStyles.editRowContainer, {
+                    marginBottom: spacingUnit * 2
+                  }]}>
                     <TextInput
-                      onChangeText={text => setLink(text)}
-                      value={link}
-                      autoFocus={!(link)}
-                      placeholder='Add link'
-                      style={goalModalStyles.link}
+                      multiline
+                      onChangeText={text => setDescription(text)}
+                      value={description}
+                      placeholder='Longer description...'
+                      style={modalStyles.descriptionBox}
                     />
                   </View>
-                }
-                {
-                  media && 
-                  <View style={goalModalStyles.mediaRows}>
-                    {media.map(image => (
-                      <SafeImage key={image} src={image} style={goalModalStyles.mediaItem} />
-                    ))}
+                  <View style={modalStyles.attachmentRow}>
+                    <LinkIcon color={Grey800} style={{
+                      marginRight: spacingUnit * 2
+                    }} onPress={() => setAddLink(true)} />
+                    <CameraIcon onPress={() => setCameraOpen(true)} color={Grey800} style={{
+                      marginRight: spacingUnit * 2
+                    }} />
+                    <ImageIcon color={Grey800} onPress={() => setGalleryOpen(true)} />
                   </View>
-                }
-              </ScrollView>
-          </View>
-        </View>
-      </SafeAreaView>
-      </TouchableWithoutFeedback>
+                  {
+                    errors.mediaError &&
+                    <ErrorText>
+                      {error.mediaError}
+                    </ErrorText>
+                  }
+                  <ScrollView>
+                    {addLink &&
+                      <View style={modalStyles.linkContainer}>
+                        <TextInput
+                          onChangeText={text => setLink(text)}
+                          value={link}
+                          autoFocus={!(link)}
+                          placeholder='Add link'
+                          style={modalStyles.link}
+                        />
+                      </View>
+                    }
+                    {
+                      media && 
+                      <View style={modalStyles.mediaRows}>
+                        {media.map(image => (
+                          <SafeImage key={image} src={image} style={modalStyles.mediaItem} />
+                        ))}
+                      </View>
+                    }
+                  </ScrollView>
+              </View>
+            </View>
+          </SafeAreaView>
+          </TouchableWithoutFeedback>
+      }
     </Modal>
   )
 }

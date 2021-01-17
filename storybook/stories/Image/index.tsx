@@ -42,7 +42,7 @@ export const UploadImage = ({ isVisible, setModalVisible, image, setImage, saveI
       const {
         fileType,
         filename
-      } = getFilenameAndType(result)
+      } = getFilenameAndType(result.uri)
       const imageUrl = imagePrefix + filename
       const variables = setDeepVariable(saveImageMutationVariable[0], saveImageMutationVariable[1], imageUrl)
       uploadMedia({ filename: imageUrl, localUrl: result.uri, fileType })
@@ -137,7 +137,7 @@ export const SafeImage = ({ src, style, defaultImage }) => {
   if (!src) {
     return null
   }
-
+  // console.log('src', src)
   useEffect(() => {
     if (src) {
       getImage({

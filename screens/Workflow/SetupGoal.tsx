@@ -13,6 +13,8 @@ import AddIcon from '../../assets/images/add-dark-button.svg'
 import { SvgImage } from '../../storybook/stories/Image'
 import GoalIcon from '../../assets/images/goal/standalone'
 import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
+import { useMutation } from '@apollo/client'
+import { CREATE_GOAL } from '../../graphql/mutations'
 
 const setupGoalStyles = StyleSheet.create({
   setupGoalContainer: {
@@ -30,7 +32,7 @@ function SetupGoalScreen({
   const {
     projectId
   } = route.params
-  console.log('projectId for goal setup', projectId)
+  const [createGoal] = useMutation(CREATE_GOAL)
   const [modalVisible, setModalVisible] = useState(false)
   return (
     <SafeAreaView style={{
@@ -38,7 +40,7 @@ function SetupGoalScreen({
       backgroundColor: White
     }}>
       <Header />
-      <FullScreenGoalModal setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} projectId={projectId} />
+      <FullScreenGoalModal setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} projectId={projectId} goalMutation={createGoal} />
       <View style={setupGoalStyles.setupGoalContainer}>
         <GoalIcon style={{
           width: spacingUnit * 8,
