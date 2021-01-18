@@ -21,6 +21,9 @@ export const ActivityFeedItem = gql`
     commentCount
     reactionCount
     commentReacted
-    media
+    media {
+      images
+      link
+    }
   }
 `

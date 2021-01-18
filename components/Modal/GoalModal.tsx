@@ -57,7 +57,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
     setGoalText('')
     setPriority(null)
     setLink(null)
-    setAddLink(null)
+    setAddLink(false)
     setMedia([])
     setCameraOpen(false)
     setGalleryOpen(false)
@@ -134,6 +134,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                   })
                 })
                 setModalVisible(false)
+                resetState()
               }}>
                 <RegularText color={White} style={{
                   fontSize: 16
@@ -155,6 +156,12 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                 />
               </View>
               <View style={modalStyles.editContainer}>
+                  {
+                    errors && errors.nameError &&
+                    <ErrorText>
+                      {errors.nameError}
+                    </ErrorText>
+                  }
                   <View style={[
                     modalStyles.editRowContainer,
     

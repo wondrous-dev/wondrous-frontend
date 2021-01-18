@@ -246,7 +246,6 @@ export const submit = async ({ name, detail, media, priority, dueDate, link, pri
       } = getFilenameAndType(media)
       return filePrefix + filename
     })
-    console.log('what', media)
     try {
       const result = await mutation({
         variables: {

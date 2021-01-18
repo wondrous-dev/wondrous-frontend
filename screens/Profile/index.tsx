@@ -24,7 +24,7 @@ function ProfileScreen({
       <Stack.Screen name='ProjectProfile' component={ProjectProfile} />
       <Stack.Screen name='ProfileItem' component={FeedItem} />
       <Stack.Screen name='WorkflowWelcome' component={WorkflowWelcome} />
-      <Stack.Screen name='SetupGoal' component={SetupGoal} />
+      <Stack.Screen name='SetupGoal' component={SetupGoal} options={{ gestureEnabled: false }} />
     </Stack.Navigator>
   )
 }

@@ -216,7 +216,7 @@ const renderProfileItem = ({ item, section, user, navigation, projectId }) => {
       }
     }   })
   } else if ( section === 'action') {
-    if (!(user && user.usageProgress && user.usageProgress.workflowCompleted)) {
+    if (item === 'start') {
       // return a button to set up work flow
       return (
         <View style={{
@@ -319,7 +319,7 @@ function ProjectProfile({
       return projectFeedData && projectFeedData.getProjectFeed
     } else if (section === 'action') {
       if (!(user && user.usageProgress && user.usageProgress.workflowCompleted)) {
-        return ['item']
+        return ['start']
       }
     }
   }

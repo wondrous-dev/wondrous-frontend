@@ -13,7 +13,7 @@ import { Grey300, Black, Grey150, Grey200, Grey600, Grey700, Red400, White, Blue
 import { GET_HOME_FEED, WHOAMI } from '../../graphql/queries'
 import { REACT_FEED_COMMENT, REACT_FEED_ITEM } from '../../graphql/mutations'
 import { SafeImage, SvgImage } from '../../storybook/stories/Image'
-import { TinyText, RegularText, Subheading } from '../../storybook/stories/Text'
+import { TinyText, RegularText, Subheading, Paragraph } from '../../storybook/stories/Text'
 import { SecondaryButton } from '../../storybook/stories/Button'
 import { spacingUnit, capitalizeFirstLetter, insertComponentsIntoText, getRegexGroup, wait } from '../../utils/common'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
@@ -107,15 +107,14 @@ const FeedString = ({ item }) => {
       <View style={{
         paddingRight: spacingUnit * 2
       }}>
-        <RegularText color={Black} style={{
+        <Paragraph color={Black} style={{
           flex: 1,
           flexWrap: 'wrap'
         }}>
-          {capitalizeFirstLetter(item.verb)} {item.objectType} - <RegularText style={{
+          {capitalizeFirstLetter(item.verb)} {item.objectType} -<Paragraph color={Black} style={{
             fontFamily: 'Rubik SemiBold',
-            textDecorationLine: 'underline'
-          }}> {item.projectName} </RegularText>
-        </RegularText>
+          }}>{item.projectName} </Paragraph>
+        </Paragraph>
       </View>
     )
   }
@@ -125,18 +124,16 @@ const FeedString = ({ item }) => {
         paddingRight: spacingUnit * 2,
         flexDirection: 'row'
       }}>
-      <RegularText color={Black} style={{
+      <Paragraph color={Black} style={{
           flexWrap: 'wrap',
           flexShrink: 1
       }}>
-        {capitalizeFirstLetter(item.verb)} {item.objectType} <RegularText style={{
+        {capitalizeFirstLetter(item.verb)} {item.objectType} <Paragraph color={Black} style={{
           fontFamily: 'Rubik SemiBold',
-          textDecorationLine: 'underline',
-        }}>{item.itemName} </RegularText> for <RegularText style={{
+        }}>{item.itemName} </Paragraph>for<Paragraph style={{
           fontFamily: 'Rubik SemiBold',
-          textDecorationLine: 'underline'
-        }}> {item.projectName} </RegularText>
-      </RegularText>
+        }}> {item.projectName} </Paragraph>
+      </Paragraph>
       </View>
     )
   }
