@@ -1,5 +1,5 @@
 import React from 'react'
-import { NativeModules, Platform } from 'react-native'
+import * as Localization from 'expo-localization'
 
 export const spacingUnit = 8
 
@@ -76,10 +76,6 @@ export const setDeepVariable = (obj, keyArr, value) => {
 }
 
 export const getLocale = () => {
-  if (Platform.OS === 'ios') {
-    return NativeModules.SettingsManager.settings.AppleLocale ||
-    NativeModules.SettingsManager.settings.AppleLanguages[0]
-  } else if (Platform.OS === 'android') {
-    return NativeModules.I18nManager.localeIdentifier
-  }
+  // await NativeModules.ExponentUtil.getCurrentLocaleAsync()
+  return Localization.timezone
 }

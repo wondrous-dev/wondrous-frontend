@@ -9,7 +9,7 @@ import { ProfileTabParamList } from '../../types'
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
 import { Grey400, White, Black, Grey500, Blue500 } from '../../constants/Colors'
-import { spacingUnit } from '../../utils/common'
+import { spacingUnit, getLocale } from '../../utils/common'
 import AddIcon from '../../assets/images/add-dark-button.svg'
 import { SvgImage } from '../../storybook/stories/Image'
 import TaskIcon from '../../assets/images/task/standalone'
@@ -56,6 +56,7 @@ function SetupTaskScreen({
       })
     }
   })
+
   const [modalVisible, setModalVisible] = useState(false)
   const taskArray = taskData && taskData.getTasksFromProject
   const itemRefs = useRef(new Map())
