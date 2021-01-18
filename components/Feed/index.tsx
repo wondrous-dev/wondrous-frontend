@@ -111,7 +111,7 @@ const FeedString = ({ item }) => {
           flex: 1,
           flexWrap: 'wrap'
         }}>
-          {capitalizeFirstLetter(item.verb)} {item.objectType} -<Paragraph color={Black} style={{
+          {capitalizeFirstLetter(item.verb)} {item.objectType} - <Paragraph color={Black} style={{
             fontFamily: 'Rubik SemiBold',
           }}>{item.projectName} </Paragraph>
         </Paragraph>

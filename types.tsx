@@ -20,6 +20,7 @@ export type ProfileTabParamList = {
   WorkflowWelcome: undefined
   ProfileItem: undefined
   SetupGoal: undefined
+  SetupTask: undefined
 }
 
 export type BottomTabParamList = {

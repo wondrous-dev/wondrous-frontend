@@ -8,6 +8,7 @@ import UserProfile from './UserProfile'
 import ProjectProfile from './ProjectProfile'
 import WorkflowWelcome from '../Workflow/Welcome'
 import SetupGoal from '../Workflow/SetupGoal'
+import SetupTask from '../Workflow/SetupTask'
 import FeedItem from '../FeedItem'
 
 const Stack = createStackNavigator<BottomTabParamList>()
@@ -25,6 +26,7 @@ function ProfileScreen({
       <Stack.Screen name='ProfileItem' component={FeedItem} />
       <Stack.Screen name='WorkflowWelcome' component={WorkflowWelcome} />
       <Stack.Screen name='SetupGoal' component={SetupGoal} options={{ gestureEnabled: false }} />
+      <Stack.Screen name='SetupTask' component={SetupTask} options={{ gestureEnabled: false }} />
     </Stack.Navigator>
   )
 }

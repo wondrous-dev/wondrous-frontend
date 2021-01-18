@@ -3,7 +3,7 @@ import { SafeAreaView, View, Pressable, Dimensions, Share } from 'react-native'
 import { useRoute, useNavigation } from '@react-navigation/native'
 // import * as Sharing from 'expo-sharing'
 
-import { Orange, Grey300, Grey250 } from '../../constants/Colors'
+import { Orange, Grey300, Grey250, White } from '../../constants/Colors'
 import { Title, RegularText } from '../../storybook/stories/Text'
 import BackCaret from '../../assets/images/back-caret'
 import { spacingUnit } from '../../utils/common'
@@ -25,7 +25,7 @@ const shouldBackPage = (route) => {
   return true
 }
 
-export const Header = ({ skip, skipParams, noGoingBack, share }) => {
+export const Header = ({ skip, skipParams, noGoingBack, share, rightButton }) => {
   const route = useRoute()
   const navigation = useNavigation()
   const backPage = noGoingBack ? false : shouldBackPage(route)
@@ -53,7 +53,7 @@ export const Header = ({ skip, skipParams, noGoingBack, share }) => {
       }
       </Pressable>
       {
-        !backPage && share &&
+        !backPage && share && rightButton &&
         <View />
       }
       <Title style={{
@@ -63,7 +63,7 @@ export const Header = ({ skip, skipParams, noGoingBack, share }) => {
         W
       </Title>
       {
-        skip ?
+        skip &&
         <Pressable onPress={() => {
           navigation.navigate(skip, {
             ...(skipParams && {
@@ -78,8 +78,6 @@ export const Header = ({ skip, skipParams, noGoingBack, share }) => {
             Skip
           </RegularText>
         </Pressable>
-        :
-        <View />
       }
       {
         share &&
@@ -96,6 +94,29 @@ export const Header = ({ skip, skipParams, noGoingBack, share }) => {
           </RegularText>
         </Pressable>
         </>
+      }
+      {
+        rightButton &&
+        <View>
+        <Pressable onPress={rightButton.onPress} style={{
+          backgroundColor: rightButton.color,
+          right: spacingUnit * 2,
+          top: -spacingUnit * 2.5,
+          borderRadius: 4,
+          padding: spacingUnit,
+          paddingLeft: spacingUnit * 1.5,
+          paddingRight: spacingUnit * 1.5,
+          position: 'absolute'
+        }}>
+          <RegularText color={White}>
+            {rightButton.text}
+          </RegularText>
+        </Pressable>
+        </View>
+      }
+      {
+        !skip && !rightButton && !share &&
+        <View />
       }
     </SafeAreaView>
   )

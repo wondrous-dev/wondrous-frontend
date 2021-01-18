@@ -11,6 +11,7 @@ export const PublicGoalFragment = gql`
     createdBy
     ownerId
     projectId
+    projectName
     additionalData {
       images
       link

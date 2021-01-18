@@ -139,9 +139,11 @@ const SetUpFlowProgress = ({ progress, navigationUrl,navigationParams, setupText
         alignItems: 'center',
         paddingLeft: spacingUnit * 2,
         paddingRight: spacingUnit * 2,
-        marginBottom: spacingUnit * 0.25
+        marginBottom: spacingUnit * 0.25,
       }}>
-      <Paragraph color={color}>
+      <Paragraph color={color} style={{
+        marginRight: spacingUnit
+      }}>
         {progress * 100}%
       </Paragraph>
       <Bar progress={progress} width={Dimensions.get('window').width - (spacingUnit * 9)} color={color} height={spacingUnit * 1.25} unfilledColor={Grey350} borderWidth={0} />
@@ -155,12 +157,12 @@ const SetUpFlowProgress = ({ progress, navigationUrl,navigationParams, setupText
       }}>
         <Pressable onPress={() => navigation.navigate(navigationUrl, navigationParams)}>
           <Paragraph>
-            Next step:<Paragraph color={Blue400}>{setupText}</Paragraph>
+            Next step: <Paragraph color={Blue400}>{setupText}</Paragraph>
           </Paragraph>
         </Pressable>
         <FlexibleButton style={{
-          paddingLeft: spacingUnit * 0.5,
-          paddingRight: spacingUnit * 0.5,
+          paddingLeft: spacingUnit * 1.5,
+          paddingRight: spacingUnit * 1.5,
           paddingTop: 2,
           paddingBottom: 2,
           backgroundColor: Blue500
@@ -183,7 +185,7 @@ const DetermineUserProgress = ({ user, projectId }) => {
     if (usageProgress.signupCompleted && !usageProgress.workflowCompleted) {
       // 50%
       const setupText = 'Goals and tasks'
-      const setupButtonText = 'Start Workflow'
+      const setupButtonText = 'Create actions'
       return <SetUpFlowProgress progress={0.5} navigationUrl={'Root'} navigationParams={{
         screen: 'Profile',
         params: {
@@ -238,9 +240,9 @@ const renderProfileItem = ({ item, section, user, navigation, projectId }) => {
               }
             }
           })}>
-            <RegularText color={White}>
-              Start workflow
-            </RegularText>
+            <Paragraph color={White}>
+              Create actions
+            </Paragraph>
           </PrimaryButton>
         </View>
       )

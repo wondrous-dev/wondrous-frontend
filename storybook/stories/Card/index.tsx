@@ -7,15 +7,20 @@ import {
   Platform,
   UIManager,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
+  Pressable
 } from 'react-native'
 import { TouchableOpacity as RNGHTouchableOpacity } from "react-native-gesture-handler"
-import Animated from "react-native-reanimated"
+import Animated, { withDecay } from "react-native-reanimated"
 
-import { Grey400, Black, Green400, White } from '../../../constants/Colors'
+import { Grey400, Blue400, Green400, White, Grey450, Purple, Red400, Yellow300 } from '../../../constants/Colors'
 import CompleteSvg from '../../../assets/images/complete.svg'
 import ArchiveSvg from '../../../assets/images/archive.svg'
-import { SvgImage } from '../Image'
+import { SafeImage, SvgImage } from '../Image'
+import { RegularText, TinyText } from '../Text'
+import { formatDueDate } from '../../../utils/date'
+import { spacingUnit } from '../../../utils/common'
+import PriorityFlame from '../../../assets/images/modal/priority'
 
 const { multiply, sub } = Animated
 const isAndroid = Platform.OS === "android"
@@ -24,7 +29,7 @@ if (isAndroid && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const PlatformTouchable = isAndroid ? RNGHTouchableOpacity : TouchableOpacity
+const PlatformTouchable = Pressable
 
 const styles = StyleSheet.create({
   container: {
@@ -41,8 +46,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     padding: 15,
     marginBottom: 16,
-    width: '100%',
-    borderRadius: 4,
+    borderRadius: 2,
     borderWidth: 2,
     borderColor: Grey400,
     elevation: 7,
@@ -52,22 +56,53 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 2, height: 2 }
   },
   text: {
-    fontWeight: "bold",
-    color: Black,
-    fontSize: 16
+    fontFamily: 'Rubik SemiBold',
+    fontSize: 16,
+    lineHeight: 24
   },
   underlayRight: {
-    flex: 1,
+    // flex: 1,
     justifyContent: "flex-start",
     backgroundColor: Green400,
     color: White
   },
   underlayLeft: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: Grey400,
     justifyContent: "flex-end"
+  },
+  bottomInfoContainer: {
+    marginTop: spacingUnit,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  dueText: {
+    color: Grey450
+  },
+  tag: {
+    borderRadius: 8,
+    paddingLeft: spacingUnit * 1.5,
+    paddingRight: spacingUnit * 1.5
+  },
+  topInfoContainer: {
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  profilePicture: {
+    width: spacingUnit * 4,
+    height: spacingUnit * 4,
+    borderRadius: spacingUnit * 2
   }
 })
+
+const Tag = ({ color, children, style }) => (
+  <View style={[styles.tag, {
+    backgroundColor: color,
+    ...style
+  }]}>
+    {children}
+  </View>
+)
 
 class Card extends React.Component {
 
@@ -108,19 +143,57 @@ class Card extends React.Component {
       </PlatformTouchable>
     </Animated.View>
   )
-
-  renderOverlay = ({ item, openLeft, openRight, openDirection, close }) => {
-    const { detail } = item.item
+  
+  renderOverlay = ({ item, openLeft, openRight, openDirection, close  }) => {
+    const { name, dueDate, projectName, useProfilePicture, user, priority } = item.item
+    const {
+      profilePicture
+    } = this.props
+    const sortPriority = () => {
+      switch(priority) {
+        case 'high':
+          return Red400
+        case 'medium':
+          return Yellow300
+        case 'low':
+          return Blue400
+      }
+    }
     return (
-      <View style={[styles.row, { backgroundColor: White }]}>
+      <View style={[styles.row, { backgroundColor: White, width: '100%' }]}>
             <PlatformTouchable
               onLongPress={item.drag}
               style={[{ width: 5, alignItems: "flex-start" }]}
             >
               <Text style={styles.text}>{` `}</Text>
             </PlatformTouchable>
-        <PlatformTouchable style={[styles.flex, { width: '100%'}]} onLongPress={item.drag}>
-          <Text style={[styles.text, { width: '100%'}]}>{detail}</Text>
+        <PlatformTouchable style={[styles.flex, { width: '100%', alignItems: 'flex-start'}]} onLongPress={item.drag}>
+          <View style={styles.topInfoContainer}>
+            {
+              profilePicture && 
+              <SafeImage src={profilePicture} style={styles.profilePicture} />
+            }
+            <Text style={[styles.text]}>{name}</Text>
+          </View>
+          <View style={styles.bottomInfoContainer}>
+            {
+              priority &&
+              <PriorityFlame color={sortPriority()} style={{
+                // marginLeft: spacingUnit,
+                marginRight: spacingUnit
+              }} />
+            }
+            <Tag color={Purple} style={{
+              marginRight: spacingUnit * 0.75
+            }}>
+              <RegularText color={White}>
+                {projectName}
+              </RegularText>
+            </Tag>
+            <RegularText color={Grey450} style={styles.dueText}>
+              Due by {formatDueDate(new Date(dueDate))}
+            </RegularText>
+          </View>
         </PlatformTouchable>
           <PlatformTouchable  onLongPress={item.drag} style={[{ width: 5, alignItems: "flex-end" }]}>
             <Text style={styles.text}>{` `}</Text>
@@ -130,13 +203,14 @@ class Card extends React.Component {
   }
 
   render () {
-    const { item, drag, isActive, itemRefs } = this.props
+    const { item, drag, isActive, itemRefs, swipeEnabled } = this.props
     return (
       <SwipeableItem
         key={item.key}
         item={{ item, drag }}
+        swipeEnabled={swipeEnabled}
         ref={ref => {
-          if (ref && !itemRefs.get(item.key)) {
+          if (ref && itemRefs && !itemRefs.get(item.key)) {
             itemRefs.set(item.key, ref);
           }
         }}

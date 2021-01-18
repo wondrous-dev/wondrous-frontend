@@ -28,7 +28,7 @@ export const Paragraph = ({ style, children, color=Black }) => (
     ...{
       color
     }
-  }}> {children} </Text>
+  }}>{children}</Text>
 )
 
 export const RegularText = ({ style, children, color }) => (

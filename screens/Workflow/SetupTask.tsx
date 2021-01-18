@@ -12,16 +12,15 @@ import { Grey400, White, Black, Grey500, Blue500 } from '../../constants/Colors'
 import { spacingUnit } from '../../utils/common'
 import AddIcon from '../../assets/images/add-dark-button.svg'
 import { SvgImage } from '../../storybook/stories/Image'
-import GoalIcon from '../../assets/images/goal/standalone'
-import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
+import TaskIcon from '../../assets/images/task/standalone'
+// import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
 import { CREATE_GOAL } from '../../graphql/mutations'
 import { GET_GOALS_FROM_PROJECT } from '../../graphql/queries'
-import { CardList } from '../../storybook/stories/CardList'
 import { Card } from '../../storybook/stories/Card'
 import { FlatList } from 'react-native-gesture-handler'
 
-const setupGoalStyles = StyleSheet.create({
-  setupGoalContainer: {
+const setupTaskStyles = StyleSheet.create({
+  setupTaskContainer: {
     alignItems: 'center',
     paddingRight: spacingUnit * 2,
     paddingLeft: spacingUnit * 2,
@@ -30,27 +29,27 @@ const setupGoalStyles = StyleSheet.create({
 })
 
 
-function SetupGoalScreen({
+function SetupTaskScreen({
   route,
   navigation
-}: StackScreenProps<ProfileTabParamList, 'SetupGoal'>) {
+}: StackScreenProps<ProfileTabParamList, 'SetupTask'>) {
   const {
     projectId
   } = route.params
   const user = useMe()
-  const { data: goalData, loading, error } = useQuery(GET_GOALS_FROM_PROJECT, {
+  const { data: taskData, loading, error } = useQuery(GET_GOALS_FROM_PROJECT, {
     variables: {
       projectId
     }
   })
-  const [createGoal] = useMutation(CREATE_GOAL, {
+  const [createTask] = useMutation(CREATE_GOAL, {
     update(cache, { data }) {
       cache.modify({
           fields: {
-              getGoalsFromProject(existingGoals=[]) {
+              getTasksFromProject(existingTasks=[]) {
                 return [
-                  ...existingGoals,
-                  data.createGoal
+                  ...existingTasks,
+                  data.createTask
                 ]
               }
           }
@@ -58,22 +57,22 @@ function SetupGoalScreen({
     }
   })
   const [modalVisible, setModalVisible] = useState(false)
-  const goalArray = goalData && goalData.getGoalsFromProject
+  const taskArray = taskData && taskData.getTasksFromProject
   const itemRefs = useRef(new Map())
-  // console.log('user', user, goalArray)
+  // console.log('user', user, taskArray)
   return (
     <SafeAreaView style={{
       flex: 1,
       backgroundColor: White
     }}>
-      <Header rightButton={goalArray && goalArray.length > 0 && {
+      <Header rightButton={taskArray && taskArray.length > 0 && {
         color: Blue500,
         text: 'Continue',
         onPress: () => {
           navigation.navigate('Root', {
             screen: 'Profile',
             params: {
-              screen: 'SetupTask',
+              screen: 'StreakIntro',
               params: {
                 projectId
               }
@@ -81,16 +80,16 @@ function SetupGoalScreen({
           })
         }
       }} />
-      <FullScreenGoalModal setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} projectId={projectId} goalMutation={createGoal} />
-      <View style={setupGoalStyles.setupGoalContainer}>
-        <GoalIcon style={{
-          width: spacingUnit * 8,
-          height: spacingUnit * 8
+      {/* <FullScreenTaskModal setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} projectId={projectId} taskMutation={createTask} /> */}
+      <View style={setupTaskStyles.setupTaskContainer}>
+        <TaskIcon style={{
+          width: spacingUnit * 5,
+          height: spacingUnit * 5
         }} />
         <Subheading color={Black} style={{
           marginTop: spacingUnit * 2
         }}>
-          Add goals
+          Add tasks
         </Subheading>
         <Paragraph color={Grey500} style={{
           textAlign: 'center',
@@ -98,7 +97,7 @@ function SetupGoalScreen({
           paddingRight: spacingUnit * 1.25,
           marginTop: spacingUnit
         }}>
-          Goals are measurable wins you want to achieve with this project
+          Tasks are small units of work that can be completed in a day
         </Paragraph>
         <Pressable onPress={() => setModalVisible(true)}>
           <SvgImage width={spacingUnit * 8} height={spacingUnit * 8} srcElement={AddIcon} style={{
@@ -108,7 +107,7 @@ function SetupGoalScreen({
         <View>
           {/* <CardList /> */}
           <FlatList
-            data={goalArray}
+            data={taskArray}
             renderItem={({ item }) => <Card profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
           >
 
@@ -119,4 +118,4 @@ function SetupGoalScreen({
   )
 }
 
-export default withAuth(SetupGoalScreen)
+export default withAuth(SetupTaskScreen)

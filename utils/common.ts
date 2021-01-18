@@ -1,4 +1,5 @@
 import React from 'react'
+import { NativeModules, Platform } from 'react-native'
 
 export const spacingUnit = 8
 
@@ -72,4 +73,13 @@ export const setDeepVariable = (obj, keyArr, value) => {
 
   reference[keyArr[keyArr.length - 1]] = value
   return obj
+}
+
+export const getLocale = () => {
+  if (Platform.OS === 'ios') {
+    return NativeModules.SettingsManager.settings.AppleLocale ||
+    NativeModules.SettingsManager.settings.AppleLanguages[0]
+  } else if (Platform.OS === 'android') {
+    return NativeModules.I18nManager.localeIdentifier
+  }
 }
