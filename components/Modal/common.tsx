@@ -232,7 +232,7 @@ export const PriorityList = ({ priority, setPriority }) => {
   )
 }
 
-export const submit = async ({ name, detail, media, priority, dueDate, link, privacyLevel, setErrors, errors, mutation, projectId, goalId, taskId, filePrefix }) => {
+export const submit = async ({ name, detail, media, priority, dueDate, link, privacyLevel, setErrors, errors, mutation, projectId, goalId, taskId, filePrefix, firstTime }) => {
   if (!name) {
     setErrors({
       ...errors,
@@ -265,6 +265,9 @@ export const submit = async ({ name, detail, media, priority, dueDate, link, pri
             }),
             ...(taskId && {
               taskId
+            }),
+            ...(firstTime && {
+              firstTime
             })
           }
         }

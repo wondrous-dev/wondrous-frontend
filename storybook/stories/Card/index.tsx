@@ -18,7 +18,7 @@ import CompleteSvg from '../../../assets/images/complete.svg'
 import ArchiveSvg from '../../../assets/images/archive.svg'
 import { SafeImage, SvgImage } from '../Image'
 import { RegularText, TinyText } from '../Text'
-import { formatDueDate } from '../../../utils/date'
+import { formatDueDate, redDate } from '../../../utils/date'
 import { spacingUnit } from '../../../utils/common'
 import PriorityFlame from '../../../assets/images/modal/priority'
 
@@ -164,7 +164,7 @@ class Card extends React.Component {
       }
     }
     const Icon = icon
-
+    const isRedDate = redDate(dueDate)
     return (
       <View style={[styles.row, { backgroundColor: White, width: '100%' }]}>
             <PlatformTouchable
@@ -212,7 +212,7 @@ class Card extends React.Component {
                 {projectName}
               </RegularText>
             </Tag>
-            <RegularText color={Grey450} style={styles.dueText}>
+            <RegularText color={isRedDate ? Red400 : Grey450} style={styles.dueText}>
               Due {formatDueDate(new Date(dueDate))}
             </RegularText>
           </View>

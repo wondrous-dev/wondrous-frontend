@@ -24,7 +24,7 @@ import { useNavigation } from '@react-navigation/native'
 
 const FILE_PREFIX = 'goal/new/'
 
-export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, projectId, goalMutation }) => {
+export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, projectId, goalMutation, firstTime }) => {
   const initialDueDate = endOfWeekFromNow()
   const navigation = useNavigation()
   const [completed, setCompleted] = useState(false)
@@ -133,7 +133,8 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                   mutation: goalMutation,
                   ...(goal && {
                     goalId: goal.id
-                  })
+                  }),
+                  firstTime
                 })
                 setModalVisible(false)
                 if (!goal) {

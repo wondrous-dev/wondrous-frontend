@@ -15,6 +15,8 @@ export const PublicUserFragment = gql`
       projectCreated
       projectCategorySelected
       signupCompleted
+      goalCreated
+      taskCreated
     }
   }
 `

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { SafeAreaView, View, StyleSheet, Pressable, Dimensions } from 'react-native'
+import { SafeAreaView, View, StyleSheet, Pressable, Dimensions, FlatList } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack'
 import { useQuery, useMutation } from '@apollo/client'
 
@@ -18,7 +18,7 @@ import { CREATE_GOAL } from '../../graphql/mutations'
 import { GET_GOALS_FROM_PROJECT } from '../../graphql/queries'
 import { CardList } from '../../storybook/stories/CardList'
 import { Card } from '../../storybook/stories/Card'
-import { FlatList } from 'react-native-gesture-handler'
+// import { FlatList } from 'react-native-gesture-handler'
 
 const setupGoalStyles = StyleSheet.create({
   setupGoalContainer: {
@@ -43,6 +43,7 @@ function SetupGoalScreen({
       projectId
     }
   })
+
   const [createGoal] = useMutation(CREATE_GOAL, {
     update(cache, { data }) {
       cache.modify({
@@ -52,6 +53,20 @@ function SetupGoalScreen({
                   ...existingGoals,
                   data.createGoal
                 ]
+              },
+              users() {
+                if (user) {
+                  const newUsageProgress = user.usageProgress ? {
+                    ...user.usageProgress,
+                    goalCreated: true
+                  } : {
+                    goalCreated: true
+                  }
+                  return [{
+                    ...user,
+                    usageProgress: newUsageProgress
+                  }]
+                }
               }
           }
       })
@@ -81,7 +96,7 @@ function SetupGoalScreen({
           })
         }
       }} />
-      <FullScreenGoalModal setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} projectId={projectId} goalMutation={createGoal} />
+      <FullScreenGoalModal firstTime={true} setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} projectId={projectId} goalMutation={createGoal} />
       <View style={setupGoalStyles.setupGoalContainer}>
         <GoalIcon style={{
           width: spacingUnit * 8,
@@ -109,6 +124,10 @@ function SetupGoalScreen({
           {/* <CardList /> */}
           <FlatList
             data={goalArray}
+            style={{
+              marginBottom: spacingUnit * 60
+            }}
+            ListFooterComponent={<View style={{marginBottom: 90, flex: 1}} />}
             renderItem={({ item }) => <Card type='goal' icon={GoalIcon} iconSize={4 * spacingUnit} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
           >
 

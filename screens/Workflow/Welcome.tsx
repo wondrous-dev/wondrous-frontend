@@ -10,7 +10,7 @@ import { Grey500, White, Black } from '../../constants/Colors'
 import { spacingUnit } from '../../utils/common'
 import WelcomeImage from '../../assets/images/workflow/welcome'
 import WelcomePicture from '../../assets/images/workflow/welcome'
-
+import { withAuth, useMe } from '../../components/withAuth'
 const welcomeStyles = StyleSheet.create({
   welcomeContainer: {
     alignItems: 'center',
@@ -28,6 +28,7 @@ function WorkflowWelcomeScreen({
   const {
     projectId
   } = route.params
+  const user = useMe()
   return (
     <SafeAreaView style={{
       backgroundColor: White,
@@ -50,15 +51,29 @@ function WorkflowWelcomeScreen({
       <WelcomePicture />
       <PrimaryButton style={{
         marginTop: spacingUnit * 6
-      }} onPress={() => navigation.navigate('Root', {
-        screen: 'Profile',
-        params: {
-          screen: 'SetupGoal',
-          params: {
-            projectId
-          }
+      }} onPress={() => {
+        if (user && user.usageProgress && user.usageProgress.goalCreated) {
+          navigation.navigate('Root', {
+            screen: 'Profile',
+            params: {
+              screen: 'SetupTask',
+              params: {
+                projectId
+              }
+            }
+          })
+        } else {
+          navigation.navigate('Root', {
+            screen: 'Profile',
+            params: {
+              screen: 'SetupGoal',
+              params: {
+                projectId
+              }
+            }
+          })
         }
-      })}>
+      }}>
         <RegularText color={White}>
           Got it
         </RegularText>
@@ -68,4 +83,4 @@ function WorkflowWelcomeScreen({
   )
 }
 
-export default WorkflowWelcomeScreen
+export default withAuth(WorkflowWelcomeScreen)

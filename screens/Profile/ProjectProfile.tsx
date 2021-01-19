@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native'
 import { withAuth, useMe } from '../../components/withAuth'
 import { ProfileTabParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { Black, Blue400, Blue500, Grey200, Grey300, Grey350, Red400, White } from '../../constants/Colors'
+import { Black, Blue400, Blue500, Grey200, Grey300, Grey350, Red400, White, Yellow300 } from '../../constants/Colors'
 import Plus from '../../assets/images/plus'
 import { profileStyles } from './style'
 import { GET_PROJECT_BY_ID, GET_PROJECT_FEED } from '../../graphql/queries/project'
@@ -182,7 +182,7 @@ const DetermineUserProgress = ({ user, projectId }) => {
   if (user && user.usageProgress) {
     const usageProgress = user.usageProgress
     // Determine percentages. Start at 50 when workflow not finished. Then 80 once it is. Then invite friends. Then add link?
-    if (usageProgress.signupCompleted && !usageProgress.workflowCompleted) {
+    if (usageProgress.signupCompleted && !usageProgress.taskCreated && !usageProgress.goalCreated) {
       // 50%
       const setupText = 'Goals and tasks'
       const setupButtonText = 'Create actions'
@@ -196,6 +196,20 @@ const DetermineUserProgress = ({ user, projectId }) => {
 
         }
       }} setupText={setupText} setupButtonText={setupButtonText} color={Red400} />
+    } else if (usageProgress.goalCreated && !usageProgress.taskCreated) {
+      const setupText = 'Tasks'
+      const setupButtonText = 'Create tasks'
+      return <SetUpFlowProgress progress={0.75} navigationUrl={'Root'} navigationParams={{
+        screen: 'Profile',
+        params: {
+          screen: 'WorkflowWelcome',
+          params: {
+            projectId
+          }
+        }
+      }}
+        setupButtonText={setupButtonText} setupText={setupText} color={Yellow300}
+      />
     }
     return null
   } else {

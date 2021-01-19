@@ -80,7 +80,7 @@ function WelcomeScreen({
         <Paragraph style={loginStyles.paragraph}>
           We love action! Let's get started on your first project. Sound good?
         </Paragraph>
-        <SvgImage width="80" height="80" srcElement={Celebration} style={loginStyles.image} />
+        {/* <SvgImage width="80" height="80" srcElement={Celebration} style={loginStyles.image} /> */}
           <PrimaryButton textStyle={{
             color: White
           }} style={loginStyles.button} onPress={() => {

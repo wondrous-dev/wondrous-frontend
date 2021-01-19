@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { SafeAreaView, View, StyleSheet, Pressable, Dimensions } from 'react-native'
+import { SafeAreaView, View, StyleSheet, Pressable, Dimensions, FlatList } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack'
 import { useQuery, useMutation } from '@apollo/client'
 
@@ -17,7 +17,6 @@ import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
 import { CREATE_TASK } from '../../graphql/mutations'
 import { GET_TASKS_FROM_PROJECT } from '../../graphql/queries'
 import { Card } from '../../storybook/stories/Card'
-import { FlatList } from 'react-native-gesture-handler'
 
 const setupTaskStyles = StyleSheet.create({
   setupTaskContainer: {
@@ -51,6 +50,20 @@ function SetupTaskScreen({
                   ...existingTasks,
                   data.createTask
                 ]
+              },
+              users() {
+                if (user) {
+                  const newUsageProgress = user.usageProgress ? {
+                    ...user.usageProgress,
+                    taskCreated: true
+                  } : {
+                    taskCreated: true
+                  }
+                  return [{
+                    ...user,
+                    usageProgress: newUsageProgress
+                  }]
+                }
               }
           }
       })
@@ -60,7 +73,7 @@ function SetupTaskScreen({
   const [modalVisible, setModalVisible] = useState(false)
   const taskArray = taskData && taskData.getTasksFromProject
   const itemRefs = useRef(new Map())
-  // console.log('user', user, taskArray)
+
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -81,7 +94,7 @@ function SetupTaskScreen({
           })
         }
       }} />
-      <FullScreenTaskModal setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} projectId={projectId} taskMutation={createTask} />
+      <FullScreenTaskModal firstTime={true} setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} projectId={projectId} taskMutation={createTask} />
       <View style={setupTaskStyles.setupTaskContainer}>
         <TaskIcon style={{
           width: spacingUnit * 6,
@@ -110,6 +123,9 @@ function SetupTaskScreen({
           <FlatList
             data={taskArray}
             renderItem={({ item }) => <Card type='task' iconSize={spacingUnit * 3} icon={TaskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
+            style={{
+              marginBottom: spacingUnit * 60
+            }}
           >
 
           </FlatList>

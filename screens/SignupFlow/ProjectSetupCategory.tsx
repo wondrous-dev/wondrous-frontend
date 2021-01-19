@@ -216,7 +216,14 @@ function ProjectSetupCategoryScreen({
         })
       } else {
         navigation.navigate('Root', {
-          screen: 'Profile'
+          screen: 'Profile',
+          params: {
+            screen: 'ProjectProfile',
+            params: {
+              projectId,
+              noGoingBack: true
+            }
+          }
         })
       }
     }
@@ -285,8 +292,16 @@ function ProjectSetupCategoryScreen({
                 })
               } else {
                 navigation.navigate('Root', {
-                  screen: 'Profile'
+                  screen: 'Profile',
+                  params: {
+                    screen: 'ProjectProfile',
+                    params: {
+                      projectId,
+                      noGoingBack: true
+                    }
+                  }
                 })
+                
               }
             }
           }

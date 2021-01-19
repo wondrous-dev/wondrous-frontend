@@ -63,9 +63,16 @@ const UsernameInput = ({ navigation }) => {
 
   const user: any = useMe()
   useEffect(() => {
-    if (user && user.signupCompleted) {
+    if (user && user.usageProgress && user.usageProgress.signupCompleted) {
       navigation.navigate('Root', {
-        screen: 'Profile'
+        screen: 'Profile',
+        params: {
+          screen: 'ProjectProfile',
+          params: {
+            projectId: user.usageProgress.projectCreated,
+            noGoingBack: true
+          }
+        }
       })
     }
     if (user && user.username) {

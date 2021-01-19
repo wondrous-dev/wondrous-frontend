@@ -202,14 +202,28 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                         })
                         if (finished) {
                             navigation.navigate('Root', {
-                                screen: 'Profile'
-                            })
+                                screen: 'Profile',
+                                params: {
+                                  screen: 'ProjectProfile',
+                                  params: {
+                                    projectId,
+                                    noGoingBack: true
+                                  }
+                                }
+                              })
                         } else {
                             setFinished(true)
                             setTimeout(() => {
                                 navigation.navigate('Root', {
-                                    screen: 'Profile'
-                                })
+                                    screen: 'Profile',
+                                    params: {
+                                      screen: 'ProjectProfile',
+                                      params: {
+                                        projectId,
+                                        noGoingBack: true
+                                      }
+                                    }
+                                  })
                             }, 1000)
                         }
                     }
