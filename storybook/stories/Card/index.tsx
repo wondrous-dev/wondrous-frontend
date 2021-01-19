@@ -86,7 +86,8 @@ const styles = StyleSheet.create({
   },
   topInfoContainer: {
     alignItems: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'flex-start'
   },
   profilePicture: {
     width: spacingUnit * 4,
@@ -147,7 +148,10 @@ class Card extends React.Component {
   renderOverlay = ({ item, openLeft, openRight, openDirection, close  }) => {
     const { name, dueDate, projectName, useProfilePicture, user, priority } = item.item
     const {
-      profilePicture
+      profilePicture,
+      icon,
+      iconSize,
+      type
     } = this.props
     const sortPriority = () => {
       switch(priority) {
@@ -159,6 +163,8 @@ class Card extends React.Component {
           return Blue400
       }
     }
+    const Icon = icon
+
     return (
       <View style={[styles.row, { backgroundColor: White, width: '100%' }]}>
             <PlatformTouchable
@@ -169,22 +175,38 @@ class Card extends React.Component {
             </PlatformTouchable>
         <PlatformTouchable style={[styles.flex, { width: '100%', alignItems: 'flex-start'}]} onLongPress={item.drag}>
           <View style={styles.topInfoContainer}>
-            {
+            {/* {
               profilePicture && 
               <SafeImage src={profilePicture} style={styles.profilePicture} />
+            } */}
+            <View style={{
+              marginLeft: type === 'goal' ? -8 : -4
+            }}>
+            {
+              icon &&
+              <Icon style={{
+                width: iconSize,
+                height: iconSize
+              }} />
+
             }
-            <Text style={[styles.text]}>{name}</Text>
+            </View>
+            <View>
+            <Text style={[styles.text, {
+              marginLeft: spacingUnit
+            }]}>{name}</Text>
+            </View>
           </View>
           <View style={styles.bottomInfoContainer}>
             {
               priority &&
               <PriorityFlame color={sortPriority()} style={{
                 // marginLeft: spacingUnit,
-                marginRight: spacingUnit
+                marginRight: spacingUnit * 1.5
               }} />
             }
             <Tag color={Purple} style={{
-              marginRight: spacingUnit * 0.75
+              marginRight: spacingUnit  
             }}>
               <RegularText color={White}>
                 {projectName}

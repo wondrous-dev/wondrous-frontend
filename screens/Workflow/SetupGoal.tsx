@@ -109,7 +109,7 @@ function SetupGoalScreen({
           {/* <CardList /> */}
           <FlatList
             data={goalArray}
-            renderItem={({ item }) => <Card profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
+            renderItem={({ item }) => <Card type='goal' icon={GoalIcon} iconSize={4 * spacingUnit} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
           >
 
           </FlatList>
