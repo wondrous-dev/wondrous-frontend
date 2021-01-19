@@ -1,12 +1,15 @@
-import { isSameISOWeek, formatDistanceToNowStrict, format, startOfWeek, addDays, isSameISOWeekYear } from 'date-fns'
+import { isSameISOWeek, isTomorrow, formatDistanceToNowStrict, format, startOfWeek, addDays, isSameISOWeekYear } from 'date-fns'
 
 export const endOfWeekFromNow = () => addDays(startOfWeek(new Date), 7)
 
 export const formatDueDate = (dueDate) => {
   const newDate = new Date()
   if (isSameISOWeek(dueDate, newDate)) {
-    return format(dueDate, 'cccc')
+    if (isTomorrow(dueDate, newDate)) {
+      return 'by tomorrow'
+    }
+    return 'by ' +  format(dueDate, 'cccc')
   } else {
-    return format(dueDate, 'P')
+    return 'by ' + format(dueDate, 'P')
   }
 }

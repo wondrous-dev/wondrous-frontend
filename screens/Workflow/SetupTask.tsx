@@ -13,9 +13,9 @@ import { spacingUnit, getLocale } from '../../utils/common'
 import AddIcon from '../../assets/images/add-dark-button.svg'
 import { SvgImage } from '../../storybook/stories/Image'
 import TaskIcon from '../../assets/images/task/standalone'
-// import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
-import { CREATE_GOAL } from '../../graphql/mutations'
-import { GET_GOALS_FROM_PROJECT } from '../../graphql/queries'
+import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
+import { CREATE_TASK } from '../../graphql/mutations'
+import { GET_TASKS_FROM_PROJECT } from '../../graphql/queries'
 import { Card } from '../../storybook/stories/Card'
 import { FlatList } from 'react-native-gesture-handler'
 
@@ -37,12 +37,12 @@ function SetupTaskScreen({
     projectId
   } = route.params
   const user = useMe()
-  const { data: taskData, loading, error } = useQuery(GET_GOALS_FROM_PROJECT, {
+  const { data: taskData, loading, error } = useQuery(GET_TASKS_FROM_PROJECT, {
     variables: {
       projectId
     }
   })
-  const [createTask] = useMutation(CREATE_GOAL, {
+  const [createTask] = useMutation(CREATE_TASK, {
     update(cache, { data }) {
       cache.modify({
           fields: {
@@ -81,7 +81,7 @@ function SetupTaskScreen({
           })
         }
       }} />
-      {/* <FullScreenTaskModal setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} projectId={projectId} taskMutation={createTask} /> */}
+      <FullScreenTaskModal setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} projectId={projectId} taskMutation={createTask} />
       <View style={setupTaskStyles.setupTaskContainer}>
         <TaskIcon style={{
           width: spacingUnit * 5,

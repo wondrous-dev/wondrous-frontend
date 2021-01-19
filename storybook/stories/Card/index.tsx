@@ -191,7 +191,7 @@ class Card extends React.Component {
               </RegularText>
             </Tag>
             <RegularText color={Grey450} style={styles.dueText}>
-              Due by {formatDueDate(new Date(dueDate))}
+              Due {formatDueDate(new Date(dueDate))}
             </RegularText>
           </View>
         </PlatformTouchable>
