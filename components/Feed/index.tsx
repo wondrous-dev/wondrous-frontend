@@ -387,7 +387,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
         }}/> */}
         {comment ?
           <RegularText>
-          {renderMentionString(item.itemContent, feedStyles.mentionedText, navigation)}
+          {renderMentionString({ content: item.itemContent, textStyle: feedStyles.mentionedText, navigation })}
           </RegularText>
   
           :

@@ -197,7 +197,7 @@ export const ModalDropdown = ({ defaultValue, items, placeholder, value, setValu
         fontFamily: 'Rubik Light',
         fontWeight: '500'
       }}
-
+      onChangeItem={item => setValue(item.value)}
       searchable={true}
         items={items}
       />
@@ -352,6 +352,7 @@ export const submit = async ({ name, detail, media, priority, dueDate, link, pri
     } else if (detailMentions && detailMentions.length > 0) {
       userMentions = detailMentions
     }
+
     try {
       const result = await mutation({
         variables: {

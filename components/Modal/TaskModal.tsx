@@ -11,7 +11,7 @@ import { TextEditor } from '../../storybook/stories/TextEditor'
 import { TextEditorContext } from '../../utils/contexts'
 import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300 } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
-import { spacingUnit } from '../../utils/common'
+import { spacingUnit, renderMentionString } from '../../utils/common'
 import { endOfWeekFromNow } from '../../utils/date'
 import { useMe } from '../../components/withAuth'
 import { GET_USER_PROJECTS } from '../../graphql/queries/project'
@@ -46,10 +46,11 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
   const [galleryOpen, setGalleryOpen] = useState(false)
   const [errors, setErrors] = useState({})
   const user = useMe()
+
   const { data: projectUsers, loading:  projectUserLoading, error: projectUserError } = useQuery(GET_USER_PROJECTS)
-  const { data: projectGoals, loading: projectGoalsLoading , error: projectErrorsLoading } = useQuery(GET_GOALS_FROM_PROJECT, {
+  const { data: projectGoals, loading: projectGoalsLoading , error: projectGoalsErrorsLoading } = useQuery(GET_GOALS_FROM_PROJECT, {
     variables: {
-      projectId
+      projectId: project
     }
   })
   const projectDropdowns = projectUsers && projectUsers.getUserProjects ? projectUsers.getUserProjects.map(projectUser => {
@@ -61,10 +62,13 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
     label: '',
     value: ''
   }]
+  // console.log('projectGoals', projectGoals, projectGoalsErrorsLoading)
+  // useEffect(() => {
 
+  // }, [projectGoalsDropdown])
   const projectGoalsDropdown = projectGoals && projectGoals.getGoalsFromProject ? projectGoals.getGoalsFromProject.map(projectGoal => {
     return {
-      label: projectGoal.name,
+      label: renderMentionString({ content: projectGoal.name, simple: true, navigation }),
       value: projectGoal.id
     }
   }) : [{

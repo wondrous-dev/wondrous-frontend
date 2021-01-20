@@ -101,7 +101,7 @@ export const getMentionArray = (content) => {
   return mentionedUsers
 }
 
-export const renderMentionString = (content, textStyle, navigation) => {
+export const renderMentionString = ({ content, textStyle, navigation, simple }) => {
   const final = regexifyString({
     pattern: mentionRegEx,
     decorator: (match, index) => {
@@ -109,7 +109,10 @@ export const renderMentionString = (content, textStyle, navigation) => {
       if (!mentionExp) {
         return match
       }
-      const { id, name } = mentionExp.groups
+      const { id, name, trigger } = mentionExp.groups
+      if (simple) {
+        return trigger + name
+      }
       return (
           <Text style={{
             color: Blue400,
@@ -130,6 +133,8 @@ export const renderMentionString = (content, textStyle, navigation) => {
     },
     input: content
   })
-
+  if (simple) {
+    return final.join('')
+  }
   return final
 }

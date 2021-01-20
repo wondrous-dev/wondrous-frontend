@@ -246,7 +246,7 @@ class Card extends React.Component {
             <View>
             <Text style={[styles.text, {
               marginLeft: spacingUnit
-            }]}>{renderMentionString(name, styles.text, this.props.navigation)}</Text>
+            }]}>{renderMentionString({ content: name, textStyle: styles.text, navigation: this.props.navigation })}</Text>
             </View>
           </View>
           <View style={styles.bottomInfoContainer}>

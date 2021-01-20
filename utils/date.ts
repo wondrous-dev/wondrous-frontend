@@ -1,20 +1,24 @@
-import { isSameISOWeek, isTomorrow, isToday, formatDistanceToNowStrict, format, startOfWeek, addDays, isSameISOWeekYear, isAfter } from 'date-fns'
+import { isSameISOWeek, differenceInDays, isTomorrow, isToday, formatDistanceToNowStrict, format, startOfWeek, addDays, isSameISOWeekYear, isAfter } from 'date-fns'
 
 export const endOfWeekFromNow = () => addDays(startOfWeek(new Date), 7)
 
 export const formatDueDate = (dueDate) => {
   const newDate = new Date()
   const formattedDate = new Date(dueDate)
-  if (isSameISOWeek(formattedDate, newDate)) {
-    if (isToday(formattedDate)) {
-      return 'today'
+  if (isToday(formattedDate)) {
+    return 'today'
+  } else if (isAfter(formattedDate, newDate)) {
+    if (isSameISOWeek(formattedDate, newDate)) {
+      if (isTomorrow(formattedDate)) {
+        return 'by tomorrow'
+      }
+      return 'by ' +  format(formattedDate, 'cccc')
+    } else {
+      return 'by ' + format(formattedDate, 'P')
     }
-    if (isTomorrow(formattedDate)) {
-      return 'by tomorrow'
-    }
-    return 'by ' +  format(formattedDate, 'cccc')
   } else {
-    return 'by ' + format(formattedDate, 'P')
+    const day = differenceInDays(newDate, formattedDate) === 1 ? 'day' : 'days'
+    return `${differenceInDays(newDate, formattedDate)} ${day} ago`
   }
 }
 
