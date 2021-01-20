@@ -1,12 +1,11 @@
 import React, { useState, useCallback } from 'react'
 import { View, StyleSheet, TouchableWithoutFeedback, Keyboard, Dimensions } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { mentionRegEx } from 'react-native-controlled-mentions'
 
 import { TextEditor } from '../../storybook/stories/TextEditor'
 import { useComment } from '../../utils/hooks'
 import { TextEditorContext } from '../../utils/contexts'
-import { spacingUnit } from '../../utils/common'
+import { spacingUnit, getMentionArray } from '../../utils/common'
 import { useMe } from '../withAuth'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { ButtonText } from '../../storybook/stories/Text'
@@ -46,15 +45,7 @@ const WriteComment = () => {
 
   const pressComment = useCallback(async content => {
     if (content) {
-      const mentionedUsers = []
-      const mentions = content.match(mentionRegEx)
-      if (mentions) {
-        for (let mention of mentions) {
-          const mentionExp = mention.matchAll(mentionRegEx)
-          const { id } = [...mentionExp][0].groups
-          mentionedUsers.push(id)
-        }
-      }
+      const mentionedUsers = getMentionArray(content)
       try {
         await commentMutation({
           variables: {
@@ -88,7 +79,8 @@ const WriteComment = () => {
           content,
           setContent,
           replyName,
-          setReplyName
+          setReplyName,
+          placeholder: 'Add comment...'
         }}>
         <TextEditor style={{
           width: Dimensions.get('window').width - (spacingUnit * 18),

@@ -376,7 +376,7 @@ export class RichTextEditor extends React.Component {
   }
 }
 
-const renderSuggestions: (suggestions: Suggestion[]) => FC<MentionSuggestionsProps> = (suggestions) => (
+const renderSuggestions: (suggestions: Suggestion[], renderStyle) => FC<MentionSuggestionsProps> = (suggestions, renderStyle={}) => (
   {keyword, onSuggestionPress},
 ) => {
   if (keyword == null) {
@@ -385,13 +385,14 @@ const renderSuggestions: (suggestions: Suggestion[]) => FC<MentionSuggestionsPro
 
   return (
     <View style={{
-      marginLeft: -spacingUnit * 6.25
+      marginLeft: -spacingUnit * 6.25,
+      flex: 1,
+      ...renderStyle
     }}>
       {suggestions
         .filter(one => one.username.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
         .map(user => (
           <Pressable key={user.id} onPress={() => {
-
             onSuggestionPress({
               ...user,
               name: user.username
@@ -400,6 +401,7 @@ const renderSuggestions: (suggestions: Suggestion[]) => FC<MentionSuggestionsPro
           <View style={{
             flexDirection: 'row',
             padding: 10,
+            width: '200%',
             alignItems: 'center',
             borderBottomWidth: 1,
             borderBottomColor: Grey100,
@@ -439,13 +441,15 @@ const renderSuggestions: (suggestions: Suggestion[]) => FC<MentionSuggestionsPro
   );
 }
 
-export const TextEditor = ({ style }) => {
+export const TextEditor = ({ style, renderSuggestionStyle, ...props }) => {
   const {
     content,
     setContent,
     replyName,
-    setReplyName
+    setReplyName,
+    placeholder,
   } = useTextEditor()
+
   // const [users, setUsers] = useState([])
   let textInputRef = useRef()
   const [getAutocompleteUsers, { data, loading, error }] = useLazyQuery(GET_AUTOCOMPLETE_USERS, {
@@ -472,7 +476,7 @@ export const TextEditor = ({ style }) => {
         mentionTypes={[
           {
             trigger: '@',
-            renderSuggestions: renderSuggestions(users),
+            renderSuggestions: renderSuggestions(users, renderSuggestionStyle),
             textStyle: {fontWeight: 'bold', color: Blue500},
           },
           // {
@@ -482,7 +486,7 @@ export const TextEditor = ({ style }) => {
           // },
         ]}
 
-        placeholder="Add comment..."
+        placeholder={placeholder}
         style={{
           paddingTop: 12,
           paddingBottom: 12,
@@ -494,8 +498,10 @@ export const TextEditor = ({ style }) => {
           borderColor: Grey300,
           alignItems: 'center',
           justifyContent: 'center',
+          fontSize: 16,
           ...style
         }}
+        {...props}
       />
   )
   

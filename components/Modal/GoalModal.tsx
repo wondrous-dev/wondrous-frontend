@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { SafeAreaView, ScrollView, View, StyleSheet, Dimensions, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native'
 import Modal from 'react-native-modal'
 import { useQuery } from '@apollo/client'
-import DropDownPicker from 'react-native-dropdown-picker'
-import DateTimePicker from '@react-native-community/datetimepicker'
 import { toDate } from 'date-fns'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
+import { TextEditor } from '../../storybook/stories/TextEditor'
+import { TextEditorContext } from '../../utils/contexts'
 import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300 } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
@@ -28,10 +28,10 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
   const initialDueDate = endOfWeekFromNow()
   const navigation = useNavigation()
   const [completed, setCompleted] = useState(false)
-  const [goalText, setGoalText] = useState(goal && goal.name)
+  const [goalText, setGoalText] = useState((goal && goal.name) || '')
   const [project, setProject] = useState((goal && goal.projectId) || projectId)
   const [priority, setPriority] = useState(goal && goal.priority)
-  const [description, setDescription] = useState(goal && goal.description)
+  const [description, setDescription] = useState((goal && goal.description) || '')
   const [privacy, setPrivacy] = useState('public')
   const [dueDate, setDueDate] = useState((goal && goal.dueDate) ? new Date(goal.dueDate) : toDate(initialDueDate))
   const [editDate, setEditDate] = useState(false)
@@ -151,15 +151,18 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
             </View>
             <View style={modalStyles.infoContainer}>
               <View style={modalStyles.inputContainer}>
-                <TextInput
-                  multiline
-                  onChangeText={text => setGoalText(text)}
-                  value={goalText}
-                  autoFocus={!(goalText)}
-                  placeholder='Add goal...'
-                  style={modalStyles.title}
+                <TextEditorContext.Provider value={{
+                  content: goalText,
+                  setContent: setGoalText,
+                  placeholder: 'Add goal...'
+                }}>
+                  <View style={{flex: 1}}>
+                <TextEditor multiline style={modalStyles.nameTextInput}
+                renderSuggestionStyle={modalStyles.renderSuggestion}
                 />
-              </View>
+                </View>
+                </TextEditorContext.Provider>
+                </View>
               <View style={modalStyles.editContainer}>
                   {
                     errors && errors.nameError &&
@@ -214,13 +217,16 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                   <View style={[modalStyles.editRowContainer, {
                     marginBottom: spacingUnit * 2
                   }]}>
-                    <TextInput
-                      multiline
-                      onChangeText={text => setDescription(text)}
-                      value={description}
-                      placeholder='Longer description...'
-                      style={modalStyles.descriptionBox}
+                    <TextEditorContext.Provider value={{
+                          content: description,
+                          setContent: setDescription,
+                          placeholder: 'Longer description'
+                        }}>
+                          <View style={{flex: 1}}>
+                        <TextEditor multiline style={modalStyles.descriptionBox} renderSuggestionStyle={modalStyles.renderSuggestion}
                     />
+                    </View>
+                    </TextEditorContext.Provider>
                   </View>
                   <View style={modalStyles.attachmentRow}>
                     <LinkIcon color={Grey800} style={{

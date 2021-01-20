@@ -7,6 +7,8 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 import { toDate } from 'date-fns'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
+import { TextEditor } from '../../storybook/stories/TextEditor'
+import { TextEditorContext } from '../../utils/contexts'
 import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300 } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
@@ -170,14 +172,17 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
             </View>
             <View style={modalStyles.infoContainer}>
               <View style={modalStyles.inputContainer}>
-                <TextInput
-                  multiline
-                  onChangeText={text => setTaskText(text)}
-                  value={taskText}
-                  autoFocus={!(taskText)}
-                  placeholder='Add task...'
-                  style={modalStyles.title}
+              <TextEditorContext.Provider value={{
+                  content: taskText,
+                  setContent: setTaskText,
+                  placeholder: 'Add task...'
+                }}>
+                  <View style={{flex: 1}}>
+                <TextEditor multiline style={modalStyles.nameTextInput}
+                renderSuggestionStyle={modalStyles.renderSuggestion}
                 />
+                </View>
+                </TextEditorContext.Provider>
               </View>
               <View style={modalStyles.editContainer}>
                   {
@@ -247,13 +252,16 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                   <View style={[modalStyles.editRowContainer, {
                     marginBottom: spacingUnit * 2
                   }]}>
-                    <TextInput
-                      multiline
-                      onChangeText={text => setDescription(text)}
-                      value={description}
-                      placeholder='Longer description...'
-                      style={modalStyles.descriptionBox}
+                    <TextEditorContext.Provider value={{
+                          content: description,
+                          setContent: setDescription,
+                          placeholder: 'Longer description'
+                        }}>
+                          <View style={{flex: 1}}>
+                        <TextEditor multiline style={modalStyles.descriptionBox} renderSuggestionStyle={modalStyles.renderSuggestion}
                     />
+                    </View>
+                    </TextEditorContext.Provider>
                   </View>
 
                   <View style={modalStyles.attachmentRow}>

@@ -2,10 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { View, Pressable, StyleSheet, Dimensions, Platform } from 'react-native'
 import DropDownPicker from 'react-native-dropdown-picker'
 import DateTimePicker from '@react-native-community/datetimepicker'
+import { mentionRegEx } from 'react-native-controlled-mentions'
 
 import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300 } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
-import { spacingUnit } from '../../utils/common'
+import { getMentionArray, spacingUnit } from '../../utils/common'
 import PriorityFlame from '../../assets/images/modal/priority'
 import { getFilenameAndType } from '../../utils/image'
 
@@ -92,10 +93,12 @@ export const modalStyles = StyleSheet.create({
     fontSize: 16,
     borderWidth: 1,
     borderColor: Grey400,
-    flex: 1,
     minHeight: spacingUnit * 9,
     padding: spacingUnit,
-    color: Black
+    color: Black,
+    borderRadius: 4,
+    alignSelf: 'stretch',
+    flex: 1,
   },
   attachmentRow: {
     flexDirection: 'row',
@@ -123,6 +126,16 @@ export const modalStyles = StyleSheet.create({
     height: spacingUnit * 9,
     borderRadius: 4,
     marginRight: spacingUnit
+  },
+  nameTextInput: {
+    borderWidth: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingLeft: 0,
+    paddingRight: 0
+  },
+  renderSuggestion: {
+    marginLeft: -(2 * spacingUnit)
   }
 })
 
@@ -246,6 +259,24 @@ export const submit = async ({ name, detail, media, priority, dueDate, link, pri
       } = getFilenameAndType(media)
       return filePrefix + filename
     })
+    const nameMentions = getMentionArray(name)
+    const detailMentions = getMentionArray(detail)
+    console.log('nameMentions', detailMentions, nameMentions)
+    let userMentions = null
+    if (nameMentions && detailMentions) {
+      const mergedMentions = [...new Set([
+        ...nameMentions,
+        ...detailMentions
+      ])]
+      if (mergedMentions.length > 0) {
+          userMentions = mergedMentions
+      }
+    } else if (nameMentions && nameMentions.length > 0) {
+      userMentions = nameMentions
+    } else if (detailMentions && detailMentions.length > 0) {
+      userMentions = detailMentions
+    }
+    console.log('userMentions', userMentions)
     try {
       const result = await mutation({
         variables: {
@@ -268,11 +299,14 @@ export const submit = async ({ name, detail, media, priority, dueDate, link, pri
             }),
             ...(firstTime && {
               firstTime
+            }),
+            ...(userMentions && {
+              userMentions
             })
           }
         }
       })
-      console.log('result', result)
+      // console.log('result', result)
     } catch (err) {
       console.log('err', err)
     }

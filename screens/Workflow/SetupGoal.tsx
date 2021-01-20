@@ -128,7 +128,7 @@ function SetupGoalScreen({
               marginBottom: spacingUnit * 60
             }}
             ListFooterComponent={<View style={{marginBottom: 90, flex: 1}} />}
-            renderItem={({ item }) => <Card type='goal' icon={GoalIcon} iconSize={4 * spacingUnit} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
+            renderItem={({ item }) => <Card navigation={navigation}  type='goal' icon={GoalIcon} iconSize={4 * spacingUnit} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
           >
 
           </FlatList>

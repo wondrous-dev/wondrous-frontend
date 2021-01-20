@@ -19,8 +19,9 @@ import ArchiveSvg from '../../../assets/images/archive.svg'
 import { SafeImage, SvgImage } from '../Image'
 import { RegularText, TinyText } from '../Text'
 import { formatDueDate, redDate } from '../../../utils/date'
-import { spacingUnit } from '../../../utils/common'
+import { spacingUnit, renderMentionString } from '../../../utils/common'
 import PriorityFlame from '../../../assets/images/modal/priority'
+import { useNavigation } from '@react-navigation/native'
 
 const { multiply, sub } = Animated
 const isAndroid = Platform.OS === "android"
@@ -194,7 +195,7 @@ class Card extends React.Component {
             <View>
             <Text style={[styles.text, {
               marginLeft: spacingUnit
-            }]}>{name}</Text>
+            }]}>{renderMentionString(name, styles.text, this.props.navigation)}</Text>
             </View>
           </View>
           <View style={styles.bottomInfoContainer}>

@@ -15,7 +15,7 @@ import { REACT_FEED_COMMENT, REACT_FEED_ITEM } from '../../graphql/mutations'
 import { SafeImage, SvgImage } from '../../storybook/stories/Image'
 import { TinyText, RegularText, Subheading, Paragraph } from '../../storybook/stories/Text'
 import { SecondaryButton } from '../../storybook/stories/Button'
-import { spacingUnit, capitalizeFirstLetter, insertComponentsIntoText, getRegexGroup, wait } from '../../utils/common'
+import { spacingUnit, capitalizeFirstLetter, renderMentionString, wait } from '../../utils/common'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import ProjectIcon from '../../assets/images/actions/project.svg'
 import GoalIcon from '../../assets/images/actions/goal.svg'
@@ -85,6 +85,10 @@ const feedStyles = StyleSheet.create({
     paddingLeft: spacingUnit * 2,
     paddingTop: spacingUnit,
     paddingBottom: spacingUnit
+  },
+  mentionedText: {
+    fontSize: 14,
+    lineHeight: 22
   }
 })
 
@@ -177,39 +181,6 @@ const getNewExistingItems = ({ existingItems, liked, comment, item, readField })
     return itemObj
   })
   return newExistingFeedComments
-}
-
-
-export const renderMentionString = (content, navigation) => {
-  const final = regexifyString({
-    pattern: mentionRegEx,
-    decorator: (match, index) => {
-      const mentionExp = /(?<original>(?<trigger>.)\[(?<name>([^[]*))]\((?<id>([\d\w-]*))\))/.exec(match)
-      if (!mentionExp) {
-        return match
-      }
-      const { id, name } = mentionExp.groups
-      return (
-          <Text style={{
-            color: Blue400,
-            fontSize: 14,
-            lineHeight: 22
-          }}
-          onPress={() => navigation.navigate('Root', {
-            screen: 'Profile',
-            params: {
-                userId: id
-            }
-          })}
-          >
-            {`@${name}`}
-          </Text>
-      )
-    },
-    input: content
-  })
-
-  return final
 }
 
 export const ShareModal = ({ isVisible, url, content, setModalVisible }) => {
@@ -414,11 +385,10 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           marginRight: spacingUnit
         }}/> */}
         {comment ?
-        <Pressable>
           <RegularText>
-          {renderMentionString(item.itemContent, navigation)}
+          {renderMentionString(item.itemContent, feedStyles.mentionedText, navigation)}
           </RegularText>
-          </Pressable>
+  
           :
           <FeedString item={item} />
         }

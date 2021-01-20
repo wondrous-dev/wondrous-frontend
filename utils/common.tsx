@@ -1,5 +1,10 @@
 import React from 'react'
+import { Text } from 'react-native'
 import * as Localization from 'expo-localization'
+import { mentionRegEx } from 'react-native-controlled-mentions'
+import regexifyString from 'regexify-string'
+
+import { Blue400 } from '../constants/Colors'
 
 export const spacingUnit = 8
 
@@ -78,4 +83,54 @@ export const setDeepVariable = (obj, keyArr, value) => {
 export const getLocale = () => {
   // await NativeModules.ExponentUtil.getCurrentLocaleAsync()
   return Localization.timezone
+}
+
+export const getMentionArray = (content) => {
+  if (!content) {
+    return null
+  }
+  const mentionedUsers = []
+  const mentions = content.match(mentionRegEx)
+  if (mentions) {
+    for (let mention of mentions) {
+      const mentionExp = mention.matchAll(mentionRegEx)
+      const { id } = [...mentionExp][0].groups
+      mentionedUsers.push(id)
+    }
+  }
+  return mentionedUsers
+}
+
+export const renderMentionString = (content, textStyle, navigation) => {
+  const final = regexifyString({
+    pattern: mentionRegEx,
+    decorator: (match, index) => {
+      const mentionExp = /(?<original>(?<trigger>.)\[(?<name>([^[]*))]\((?<id>([\d\w-]*))\))/.exec(match)
+      if (!mentionExp) {
+        return match
+      }
+      const { id, name } = mentionExp.groups
+      return (
+          <Text style={{
+            color: Blue400,
+            ...textStyle
+          }}
+          onPress={() => navigation.navigate('Root', {
+            screen: 'Profile',
+            params: {
+              screen:'UserProfile',
+              params: {
+                userId: id
+              }
+            }
+          })}
+          >
+            {`@${name}`}
+          </Text>
+      )
+    },
+    input: content
+  })
+
+  return final
 }

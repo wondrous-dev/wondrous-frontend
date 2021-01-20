@@ -122,7 +122,7 @@ function SetupTaskScreen({
           {/* <CardList /> */}
           <FlatList
             data={taskArray}
-            renderItem={({ item }) => <Card type='task' iconSize={spacingUnit * 3} icon={TaskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
+            renderItem={({ item }) => <Card type='task' navigation={navigation} iconSize={spacingUnit * 3} icon={TaskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
             style={{
               marginBottom: spacingUnit * 60
             }}

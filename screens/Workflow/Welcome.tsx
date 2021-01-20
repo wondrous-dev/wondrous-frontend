@@ -40,14 +40,34 @@ function WorkflowWelcomeScreen({
       <Subheading color={Black} style={{
         marginBottom: spacingUnit * 2
       }}>
-        Creating goals and tasks
+        Creating actions
       </Subheading>
-      <Paragraph color={Grey500} style={{
-        textAlign: 'center',
-        marginBottom: spacingUnit * 2
+      <View style={{
+        alignSelf: 'flex-start',
       }}>
-        Goals and tasks act as progress markers that you can share with your followers
+      <Paragraph color={Grey500} style={{
+        textAlign: 'left',
+        padding: spacingUnit
+      }}>
+        <Paragraph style={{
+          fontFamily: 'Rubik SemiBold'
+        }}>Goals </Paragraph>and 
+        <Paragraph style={{
+          fontFamily: 'Rubik SemiBold'
+        }}> Tasks </Paragraph>act as progress markers that you can share with your followers.
       </Paragraph>
+      <Paragraph color={Grey500} style={{
+        textAlign: 'left',
+        marginBottom: spacingUnit * 4,
+        marginLeft: spacingUnit
+      }}>
+        <Paragraph style={{
+          fontFamily: 'Rubik SemiBold'
+        }}>
+          Asks 
+        </Paragraph> are things you need help with.
+      </Paragraph>
+      </View>
       <WelcomePicture />
       <PrimaryButton style={{
         marginTop: spacingUnit * 6
@@ -74,9 +94,9 @@ function WorkflowWelcomeScreen({
           })
         }
       }}>
-        <RegularText color={White}>
+        <Paragraph color={White}>
           Got it
-        </RegularText>
+        </Paragraph>
       </PrimaryButton>
       </View>
     </SafeAreaView>
