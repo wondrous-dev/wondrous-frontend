@@ -94,7 +94,7 @@ function SetupTaskScreen({
           })
         }
       }} />
-      <FullScreenTaskModal firstTime={true} setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} projectId={projectId} taskMutation={createTask} />
+      <FullScreenTaskModal firstTime={true} setModalVisible={setModalVisible} isVisible={modalVisible} projectId={projectId} taskMutation={createTask} />
       <View style={setupTaskStyles.setupTaskContainer}>
         <TaskIcon style={{
           width: spacingUnit * 6,
@@ -124,7 +124,7 @@ function SetupTaskScreen({
             data={taskArray}
             renderItem={({ item }) => <Card type='task' navigation={navigation} iconSize={spacingUnit * 3} icon={TaskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
             style={{
-              marginBottom: spacingUnit * 60
+              marginBottom: spacingUnit * 65
             }}
           >
 

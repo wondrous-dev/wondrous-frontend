@@ -106,6 +106,7 @@ const getCorrectSrc = (itemType) => {
 }
 
 const FeedString = ({ item }) => {
+  const navigation = useNavigation()
   if (item.objectType === 'project') {
     return (
       <View style={{
@@ -134,7 +135,7 @@ const FeedString = ({ item }) => {
       }}>
         {capitalizeFirstLetter(item.verb)} {item.objectType} <Paragraph color={Black} style={{
           fontFamily: 'Rubik SemiBold',
-        }}>{item.itemName} </Paragraph>for<Paragraph style={{
+        }}>{renderMentionString(item.itemName, {}, navigation)} </Paragraph>for<Paragraph style={{
           fontFamily: 'Rubik SemiBold',
         }}> {item.projectName} </Paragraph>
       </Paragraph>

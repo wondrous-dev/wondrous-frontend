@@ -8,10 +8,10 @@ import { SecondaryButton } from '../../storybook/stories/Button'
 import { spacingUnit } from '../../utils/common'
 
 
-export const FlexRowContentModal = ({ isVisible, headerText, children, setModalVisible, centered, cancelButtonStyle }) => {
+export const FlexRowContentModal = ({ isVisible, headerText, children, setModalVisible, centered, cancelButtonStyle, flexDirection='row', ...props }) => {
 
   return (
-    <Modal isVisible={isVisible}>
+    <Modal isVisible={isVisible} {...props}>
       <View style={{
         backgroundColor: White,
         position: 'absolute',
@@ -36,7 +36,7 @@ export const FlexRowContentModal = ({ isVisible, headerText, children, setModalV
           }}
         />
         <View style={{
-          flexDirection: 'row',
+          flexDirection,
           justifyContent: centered ? 'center' : 'space-between',
           padding: spacingUnit * 2,
           paddingLeft: spacingUnit * 3,

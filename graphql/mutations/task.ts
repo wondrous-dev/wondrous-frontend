@@ -10,3 +10,12 @@ export const CREATE_TASK = gql`
   }
   ${PublicTaskFragment}
 `
+
+export const UPDATE_TASK = gql`
+  mutation UpdateTask($taskId: ID!, $input: TaskInput) {
+    updateTask(taskId: $taskId, input: $input) {
+      ...PublicTask
+    }
+  }
+  ${PublicTaskFragment}
+`

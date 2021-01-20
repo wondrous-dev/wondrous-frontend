@@ -10,7 +10,7 @@ import {
   Dimensions,
   Pressable
 } from 'react-native'
-import { TouchableOpacity as RNGHTouchableOpacity } from "react-native-gesture-handler"
+import { TouchableHighlight, TouchableOpacity as RNGHTouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler"
 import Animated, { withDecay } from "react-native-reanimated"
 
 import { Grey400, Blue400, Green400, White, Grey450, Purple, Red400, Yellow300 } from '../../../constants/Colors'
@@ -21,7 +21,12 @@ import { RegularText, TinyText } from '../Text'
 import { formatDueDate, redDate } from '../../../utils/date'
 import { spacingUnit, renderMentionString } from '../../../utils/common'
 import PriorityFlame from '../../../assets/images/modal/priority'
+import { FullScreenTaskModal } from '../../../components/Modal/TaskModal'
+import { FullScreenGoalModal } from '../../../components/Modal/GoalModal'
 import { useNavigation } from '@react-navigation/native'
+import apollo from '../../../services/apollo'
+import { UPDATE_GOAL, UPDATE_TASK } from '../../../graphql/mutations'
+import { cache } from 'webpack'
 
 const { multiply, sub } = Animated
 const isAndroid = Platform.OS === "android"
@@ -109,7 +114,7 @@ const Tag = ({ color, children, style }) => (
 class Card extends React.Component {
 
   state = {
-
+    isVisible: false
   }
 
   constructor(props) {
@@ -146,6 +151,47 @@ class Card extends React.Component {
     </Animated.View>
   )
   
+  setModalVisible = (arg) => {
+    this.setState({
+      isVisible: arg
+    })
+  }
+
+  updateGoal = (args) => {
+    const { item } = this.props
+    apollo.mutate({
+      mutation: UPDATE_GOAL,
+      update: (cache, { data }) => {
+        cache.modify({
+          fields: {
+            getGoalsFromProject(existingGoals=[]) {
+              // console.log('existingGoals', existingGoals)
+              return existingGoals
+            }
+          }
+        })
+      },
+      ...args
+    })
+  }
+
+  updateTask = (args) => {
+    apollo.mutate({
+      mutation: UPDATE_TASK,
+      update: (cache, { data }) => {
+        cache.modify({
+          fields: {
+            getTasksFromProject(existingGoals=[]) {
+              // console.log('existingGoals', existingGoals)
+              // return existingGoals
+            }
+          }
+        })
+      },
+      ...args
+    })
+  }
+
   renderOverlay = ({ item, openLeft, openRight, openDirection, close  }) => {
     const { name, dueDate, projectName, useProfilePicture, user, priority } = item.item
     const {
@@ -154,6 +200,7 @@ class Card extends React.Component {
       iconSize,
       type
     } = this.props
+
     const sortPriority = () => {
       switch(priority) {
         case 'high':
@@ -166,7 +213,11 @@ class Card extends React.Component {
     }
     const Icon = icon
     const isRedDate = redDate(dueDate)
+
     return (
+      <TouchableWithoutFeedback onPress={() => {
+        this.setModalVisible(true)
+      }}>
       <View style={[styles.row, { backgroundColor: White, width: '100%' }]}>
             <PlatformTouchable
               onLongPress={item.drag}
@@ -222,12 +273,26 @@ class Card extends React.Component {
             <Text style={styles.text}>{` `}</Text>
           </PlatformTouchable>
       </View>
+      </TouchableWithoutFeedback>
     );
   }
 
   render () {
-    const { item, drag, isActive, itemRefs, swipeEnabled } = this.props
+    const { item, drag, isActive, itemRefs, swipeEnabled, type } = this.props
+    const {
+      isVisible
+    } = this.state
+
     return (
+        <>
+                {
+          type === 'goal' &&
+          <FullScreenGoalModal goal={item} setModalVisible={this.setModalVisible} isVisible={isVisible} goalMutation={this.updateGoal} />
+        }
+        {
+          type === 'task' &&
+          <FullScreenTaskModal task={item} setModalVisible={this.setModalVisible} isVisible={isVisible} taskMutation={this.updateTask} />
+        }
       <SwipeableItem
         key={item.key}
         item={{ item, drag }}
@@ -258,6 +323,7 @@ class Card extends React.Component {
         snapPointsRight={[0, 100]}
         renderOverlay={this.renderOverlay}
       />
+      </>
 
     )
   }

@@ -14,7 +14,7 @@ import { endOfWeekFromNow } from '../../utils/date'
 import { useMe } from '../../components/withAuth'
 import { GET_USER_PROJECTS } from '../../graphql/queries/project'
 import Camera from '../../components/Camera'
-import { privacyDropdown, submit, PriorityList, ModalDropdown, DateDisplay, modalStyles } from './common'
+import { privacyDropdown, submit, PriorityList, ModalDropdown, DateDisplay, modalStyles, ImageDisplay } from './common'
 import CameraIcon from '../../assets/images/camera'
 import ImageIcon from '../../assets/images/image'
 import LinkIcon from '../../assets/images/link'
@@ -27,11 +27,11 @@ const FILE_PREFIX = 'goal/new/'
 export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, projectId, goalMutation, firstTime }) => {
   const initialDueDate = endOfWeekFromNow()
   const navigation = useNavigation()
-  const [completed, setCompleted] = useState(false)
+  const [completed, setCompleted] = useState(goal && goal.status === 'completed')
   const [goalText, setGoalText] = useState((goal && goal.name) || '')
   const [project, setProject] = useState((goal && goal.projectId) || projectId)
   const [priority, setPriority] = useState(goal && goal.priority)
-  const [description, setDescription] = useState((goal && goal.description) || '')
+  const [description, setDescription] = useState((goal && goal.detail) || '')
   const [privacy, setPrivacy] = useState('public')
   const [dueDate, setDueDate] = useState((goal && goal.dueDate) ? new Date(goal.dueDate) : toDate(initialDueDate))
   const [editDate, setEditDate] = useState(false)
@@ -65,6 +65,18 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
     setDueDate(toDate(endOfWeekFromNow()))
     setDescription('')
     setCompleted(false)
+    if (goal) {
+      setGoalText((goal && goal.name) || '')
+      setPriority(goal && goal.priority)
+      setLink(goal && goal.additionalData && goal.additionalData.link)
+      setAddLink(!!(goal && goal.additionalData && goal.additionalData.link))
+      setMedia((goal && goal.additionalData && goal.additionalData.images) || [])
+      setCameraOpen(false)
+      setGalleryOpen(false)
+      setDueDate((goal && goal.dueDate) ? new Date(goal.dueDate) : toDate(initialDueDate))
+      setDescription((goal && goal.detail) || '')
+      setCompleted(goal && goal.status === 'completed')
+    }
   }, [])
 
   return (
@@ -96,7 +108,14 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                   />
             }
             <View style={modalStyles.topRowContainer}>
-              <Pressable onPress={() => setModalVisible(false)} style={{
+              <Pressable onPress={() => {
+                if (goal) {
+                  resetState()
+                  setModalVisible(false)
+                } else {
+                  setModalVisible(false)
+                }
+              }} style={{
                 flex: 1
               }}>
               <RegularText color={Blue400} style={{
@@ -131,10 +150,11 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                   projectId,
                   filePrefix: FILE_PREFIX,
                   mutation: goalMutation,
+                  firstTime,
                   ...(goal && {
-                    goalId: goal.id
-                  }),
-                  firstTime
+                    updateId: goal.id,
+                    updateKey: 'goalId'
+                  })
                 })
                 setModalVisible(false)
                 if (!goal) {
@@ -243,7 +263,10 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                       {error.mediaError}
                     </ErrorText>
                   }
-                  <ScrollView>
+                  <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                    <View style={{
+                      flex: 1
+                    }}>
                     {addLink &&
                       <View style={modalStyles.linkContainer}>
                         <TextInput
@@ -259,10 +282,11 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                       media && 
                       <View style={modalStyles.mediaRows}>
                         {media.map(image => (
-                          <SafeImage key={image} src={image} style={modalStyles.mediaItem} />
+                          <ImageDisplay setMedia={setMedia} media={media} image={image} imagePrefix={FILE_PREFIX} />
                         ))}
                       </View>
                     }
+                    </View>
                   </ScrollView>
               </View>
             </View>

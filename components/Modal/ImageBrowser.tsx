@@ -19,26 +19,44 @@ export default class ImageBrowserScreen extends Component {
   );
 
   imagesCallback = (callback) => {
-    const { setImageBrowserOpen, setMedia, media
+    const { setImageBrowserOpen, setMedia, media,
+      edit
      } = this.props;
 
-
     callback.then(async (photos) => {
-      const cPhotos = [];
-      for(let photo of photos) {
-        const pPhoto = await this._processImageAsync(photo.uri);
+      if (edit) {
+        const photoToBeUpdated = photos && photos[0]
+        const pPhoto = await this._processImageAsync(photoToBeUpdated.uri)
         const {
           filename,
           fileType
         } = getFilenameAndType(pPhoto.uri)
         const newFileName = this.props.imagePrefix ? this.props.imagePrefix + filename : filename
         uploadMedia({ filename: newFileName, localUrl: pPhoto.uri, fileType} )
-        cPhotos.push(pPhoto.uri)
+        const newArr = media.map(image => {
+          if (image === edit) {
+            return pPhoto.uri
+          }
+          return image
+        })
+        setMedia(newArr)
+      } else {
+        const cPhotos = [];
+        for(let photo of photos) {
+          const pPhoto = await this._processImageAsync(photo.uri);
+          const {
+            filename,
+            fileType
+          } = getFilenameAndType(pPhoto.uri)
+          const newFileName = this.props.imagePrefix ? this.props.imagePrefix + filename : filename
+          uploadMedia({ filename: newFileName, localUrl: pPhoto.uri, fileType} )
+          cPhotos.push(pPhoto.uri)
+        }
+        setMedia([
+          ...media,
+          ...cPhotos
+        ])
       }
-      this.props.setMedia([
-        ...media,
-        ...cPhotos
-      ])
     }).catch((e) => console.log(e))
   };
 
@@ -81,8 +99,10 @@ export default class ImageBrowserScreen extends Component {
     } = this.state
     const {
       media,
-      setImageBrowser
+      setImageBrowser,
+      edit
     } = this.props
+    const maxPhotos = (media && (4 - media.length)) || 4
     return (
       <SafeAreaView style={[styles.flex, styles.container]}>
         <View style={{
@@ -117,7 +137,7 @@ export default class ImageBrowserScreen extends Component {
           </View>
         </View>
         <ImageBrowser
-          max={(media && (4 - media.length)) || 4}
+          max={edit ? 1 : maxPhotos}
           onChange={(count, onSubmit) => {
             this.setState({
               count,

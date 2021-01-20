@@ -1,16 +1,22 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { View, Pressable, StyleSheet, Dimensions, Platform } from 'react-native'
+import { View, Pressable, StyleSheet, Dimensions, Platform, SafeAreaView } from 'react-native'
 import DropDownPicker from 'react-native-dropdown-picker'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { mentionRegEx } from 'react-native-controlled-mentions'
+import Modal from 'react-native-modal'
 
 import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300 } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
+import { SafeImage } from '../../storybook/stories/Image'
 import { getMentionArray, spacingUnit } from '../../utils/common'
 import PriorityFlame from '../../assets/images/modal/priority'
+import CancelIcon from '../../assets/images/cancel'
 import { getFilenameAndType } from '../../utils/image'
+import ImageBrowser from './ImageBrowser'
+import { FlexRowContentModal } from './index'
 
 import { capitalizeFirstLetter } from '../../utils/common'
+import { useNavigation } from '@react-navigation/native'
 
 export const PRIVACY_LEVELS = ['public', 'private', 'collaborators']
 
@@ -18,7 +24,7 @@ export const privacyDropdown = PRIVACY_LEVELS.map(privacy => ({
   'label': capitalizeFirstLetter(privacy),
   'value': privacy
 }))
-
+const mediaItemWidth = (Dimensions.get('window').width - (spacingUnit * 6)) / 2
 export const modalStyles = StyleSheet.create({
   fullScreenContainer: {
     backgroundColor: White,
@@ -111,7 +117,8 @@ export const modalStyles = StyleSheet.create({
   },
   link: {
     fontFamily: 'Rubik Light',
-    fontSize: 16
+    fontSize: 16,
+    color: Blue400
   },
   addLinkButton: {
     padding: spacingUnit
@@ -119,11 +126,13 @@ export const modalStyles = StyleSheet.create({
   mediaRows: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: spacingUnit * 2
+    marginTop: spacingUnit * 2,
+    flexWrap: 'wrap'
   },
   mediaItem: {
-    width: spacingUnit * 12,
-    height: spacingUnit * 9,
+    marginTop: spacingUnit,
+    width: mediaItemWidth,
+    height: mediaItemWidth / 4 * 3,
     borderRadius: 4,
     marginRight: spacingUnit
   },
@@ -245,7 +254,70 @@ export const PriorityList = ({ priority, setPriority }) => {
   )
 }
 
-export const submit = async ({ name, detail, media, priority, dueDate, link, privacyLevel, setErrors, errors, mutation, projectId, goalId, taskId, filePrefix, firstTime }) => {
+export const ImageDisplay= ({ setMedia, image, imagePrefix, media }) => {
+  const [isVisible, setModalVisible] = useState(false)
+  const [galleryOpen, setGalleryOpen] = useState(false)
+  const navigation = useNavigation()
+
+  return (
+    <View>
+        {
+          galleryOpen ?
+          <Modal isVisible={galleryOpen}>
+            <ImageBrowser edit={image} setImageBrowser={(arg) => {
+              setGalleryOpen(arg)
+              setModalVisible(arg)
+            }} media={media} navigation={navigation} setMedia={setMedia} imagePrefix={imagePrefix} />
+          </Modal>
+        :
+        <FlexRowContentModal 
+        isVisible={isVisible}
+        setModalVisible={setModalVisible}
+        headerText='Edit picture'
+        centered={true}
+        cancelButtonStyle={{
+          marginTop: spacingUnit * 2
+        }}
+        flexDirection='column'
+      >
+        <Pressable onPress={() => {
+          setGalleryOpen(true)
+        }} style={{
+          marginBottom: spacingUnit * 3,
+          alignSelf: 'center',
+        }}>
+        <Subheading color={Blue400}>
+          Replace photo
+        </Subheading>
+        </Pressable>
+        <Pressable style={{
+          alignSelf: 'center'
+        }} onPress={() => {
+          const newArr = media.filter(mediaItem => mediaItem !== image)
+          setMedia(newArr)
+          setModalVisible(false)
+        }}>
+        <Subheading color={Red400}>
+          Delete photo
+        </Subheading>
+        </Pressable>
+      </FlexRowContentModal>
+        }
+      <SafeImage key={image} src={image} style={modalStyles.mediaItem} />
+      <View style={{
+        position: 'absolute',
+        backgroundColor: Grey800,
+        borderRadius: 12,
+        right: 12,
+        top: 12
+      }}>
+        <CancelIcon color={White} onPress={() => setModalVisible(true)} />
+      </View>
+      </View>
+  )
+}
+
+export const submit = async ({ name, detail, media, priority, dueDate, link, privacyLevel, setErrors, errors, mutation, projectId, goalId, taskId, filePrefix, firstTime, updateId, updateKey }) => {
   if (!name) {
     setErrors({
       ...errors,
@@ -254,14 +326,18 @@ export const submit = async ({ name, detail, media, priority, dueDate, link, pri
   } else {
     // Parse media:
     const finalMediaArr = media.map(media => {
-      const {
-        filename
-      } = getFilenameAndType(media)
-      return filePrefix + filename
+      if (media.startsWith('file://')) {
+        const {
+          filename
+        } = getFilenameAndType(media)
+        return filePrefix + filename
+      }
+      return media
     })
+
     const nameMentions = getMentionArray(name)
     const detailMentions = getMentionArray(detail)
-    console.log('nameMentions', detailMentions, nameMentions)
+
     let userMentions = null
     if (nameMentions && detailMentions) {
       const mergedMentions = [...new Set([
@@ -276,10 +352,12 @@ export const submit = async ({ name, detail, media, priority, dueDate, link, pri
     } else if (detailMentions && detailMentions.length > 0) {
       userMentions = detailMentions
     }
-    console.log('userMentions', userMentions)
     try {
       const result = await mutation({
         variables: {
+          ...(updateId && updateKey &&  {
+            [updateKey]: updateId
+          }),
           input: {
             name,
             detail,

@@ -10,3 +10,12 @@ export const CREATE_GOAL = gql`
   }
   ${PublicGoalFragment}
 `
+
+export const UPDATE_GOAL = gql`
+  mutation UpdateGoal($goalId: ID!, $input: GoalInput) {
+    updateGoal(goalId: $goalId, input: $input) {
+      ...PublicGoal
+    }
+  }
+  ${PublicGoalFragment}
+`

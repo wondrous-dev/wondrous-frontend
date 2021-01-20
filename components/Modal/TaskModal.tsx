@@ -17,7 +17,7 @@ import { useMe } from '../../components/withAuth'
 import { GET_USER_PROJECTS } from '../../graphql/queries/project'
 import { GET_GOALS_FROM_PROJECT } from '../../graphql/queries/goal'
 import Camera from '../../components/Camera'
-import { privacyDropdown, submit, PriorityList, ModalDropdown, DateDisplay, modalStyles } from './common'
+import { privacyDropdown, submit, PriorityList, ModalDropdown, DateDisplay, modalStyles, ImageDisplay } from './common'
 import CameraIcon from '../../assets/images/camera'
 import ImageIcon from '../../assets/images/image'
 import LinkIcon from '../../assets/images/link'
@@ -35,7 +35,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
   const [project, setProject] = useState((task && task.projectId) || projectId)
   const [goal, setGoal] = useState((task && task.goalId) || goalId)
   const [priority, setPriority] = useState(task && task.priority)
-  const [description, setDescription] = useState((task && task.description) || '')
+  const [description, setDescription] = useState((task && task.detail) || '')
   const [privacy, setPrivacy] = useState('public')
   const [dueDate, setDueDate] = useState((task && task.dueDate) ? new Date(task.dueDate) : toDate(initialDueDate))
   const [editDate, setEditDate] = useState(false)
@@ -83,6 +83,18 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
     setDueDate(toDate(endOfWeekFromNow()))
     setDescription('')
     setCompleted(false)
+    if (task) {
+      setTaskText((task && task.name) || '')
+      setPriority(task && task.priority)
+      setLink(task && task.additionalData && task.additionalData.link)
+      setAddLink(!!(task && task.additionalData && task.additionalData.link))
+      setMedia((task && task.additionalData && task.additionalData.images) || [])
+      setCameraOpen(false)
+      setGalleryOpen(false)
+      setDueDate((task && task.dueDate) ? new Date(task.dueDate) : toDate(initialDueDate))
+      setDescription((task && task.detail) || '')
+      setCompleted(task && task.status === 'completed')
+    }
   }, [])
 
   return (
@@ -116,7 +128,14 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                   />
             }
             <View style={modalStyles.topRowContainer}>
-              <Pressable onPress={() => setModalVisible(false)} style={{
+              <Pressable onPress={() => {
+                if (task) {
+                  resetState()
+                  setModalVisible(false)
+                } else {
+                  setModalVisible(false)
+                }
+              }} style={{
                 flex: 1
               }}>
               <RegularText color={Blue400} style={{
@@ -153,7 +172,8 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                   mutation: taskMutation,
                   goalId: goal,
                   ...(task && {
-                    taskId: task.id
+                    updateId: task.id,
+                    updateKey: 'taskId'
                   }),
                   firstTime
                 })
@@ -165,7 +185,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                 <RegularText color={White} style={{
                   fontSize: 16
                 }}>
-                  {goal ? 'Update': 'Create' }
+                  {task ? 'Update': 'Create' }
                 </RegularText>
               </Pressable>
             </View>
@@ -295,7 +315,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                       media && 
                       <View style={modalStyles.mediaRows}>
                         {media.map(image => (
-                          <SafeImage key={image} src={image} style={modalStyles.mediaItem} />
+                          <ImageDisplay setMedia={setMedia} media={media} image={image} imagePrefix={FILE_PREFIX} />
                         ))}
                       </View>
                     }
