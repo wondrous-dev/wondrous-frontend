@@ -124,8 +124,7 @@ export const renderMentionString = (content, textStyle, navigation) => {
               }
             }
           })}
-          >
-            {`@${name}`}
+          >{`@${name}`}
           </Text>
       )
     },
