@@ -72,7 +72,8 @@ function WorkflowWelcomeScreen({
       <PrimaryButton style={{
         marginTop: spacingUnit * 6
       }} onPress={() => {
-        if (user && user.usageProgress && user.usageProgress.goalCreated) {
+        const usageProgress = user && user.usageProgress
+        if (usageProgress && usageProgress.goalCreated) {
           navigation.navigate('Root', {
             screen: 'Profile',
             params: {
@@ -82,11 +83,11 @@ function WorkflowWelcomeScreen({
               }
             }
           })
-        } else {
+        } else if (usageProgress && usageProgress.taskCreated) {
           navigation.navigate('Root', {
             screen: 'Profile',
             params: {
-              screen: 'SetupGoal',
+              screen: 'SetupAsk',
               params: {
                 projectId
               }

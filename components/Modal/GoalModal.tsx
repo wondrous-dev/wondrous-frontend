@@ -264,7 +264,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                       {error.mediaError}
                     </ErrorText>
                   }
-                  <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                  <ScrollView keyboardDismissMode='interactive' keyboardShouldPersistTaps='handled'contentContainerStyle={{ flexGrow: 1 }}>
                     <View style={{
                       flex: 1
                     }}>

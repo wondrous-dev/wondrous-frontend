@@ -47,8 +47,8 @@ function SetupTaskScreen({
           fields: {
               getTasksFromProject(existingTasks=[]) {
                 return [
-                  ...existingTasks,
-                  data.createTask
+                  data.createTask,
+                  ...existingTasks
                 ]
               },
               users() {

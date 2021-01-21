@@ -50,8 +50,8 @@ function SetupGoalScreen({
           fields: {
               getGoalsFromProject(existingGoals=[]) {
                 return [
-                  ...existingGoals,
-                  data.createGoal
+                  data.createGoal,
+                  ...existingGoals
                 ]
               },
               users() {
@@ -75,7 +75,7 @@ function SetupGoalScreen({
   const [modalVisible, setModalVisible] = useState(false)
   const goalArray = goalData && goalData.getGoalsFromProject
   const itemRefs = useRef(new Map())
-  // console.log('user', user, goalArray)
+
   return (
     <SafeAreaView style={{
       flex: 1,

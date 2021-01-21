@@ -70,7 +70,7 @@ function FeedItemScreen({
       flex: 1
     }}>
       <Header />
-      <ScrollView style={{
+      <ScrollView keyboardDismissMode='interactive' keyboardShouldPersistTaps='handled' style={{
         marginTop: spacingUnit,
         marginBottom: spacingUnit * 10
       }}

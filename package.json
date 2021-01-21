@@ -65,7 +65,7 @@
     "react-grid-layout": "^1.2.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.4.tar.gz",
     "react-native-confetti-cannon": "^1.5.1",
-    "react-native-controlled-mentions": "^1.0.1",
+    "react-native-controlled-mentions": "^2.0.2",
     "react-native-drag-sort": "^2.3.9",
     "react-native-draggable-flatlist": "^2.5.1",
     "react-native-dropdown-picker": "^3.7.8",

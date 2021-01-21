@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native'
 import { withAuth, useMe } from '../../components/withAuth'
 import { ProfileTabParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { Black, Blue400, Blue500, Grey200, Grey300, Grey350, Red400, White, Yellow300 } from '../../constants/Colors'
+import { Black, Blue400, Blue500, Green400, Grey200, Grey300, Grey350, Orange, Red400, White, Yellow300 } from '../../constants/Colors'
 import Plus from '../../assets/images/plus'
 import { profileStyles } from './style'
 import { GET_PROJECT_BY_ID, GET_PROJECT_FEED } from '../../graphql/queries/project'
@@ -186,7 +186,7 @@ const DetermineUserProgress = ({ user, projectId }) => {
       // 50%
       const setupText = 'Action flow'
       const setupButtonText = 'Create actions'
-      return <SetUpFlowProgress progress={0.5} navigationUrl={'Root'} navigationParams={{
+      return <SetUpFlowProgress progress={0.7} navigationUrl={'Root'} navigationParams={{
         screen: 'Profile',
         params: {
           screen: 'WorkflowWelcome',
@@ -195,11 +195,11 @@ const DetermineUserProgress = ({ user, projectId }) => {
           }
 
         }
-      }} setupText={setupText} setupButtonText={setupButtonText} color={Red400} />
+      }} setupText={setupText} setupButtonText={setupButtonText} color={Yellow300} />
     } else if (usageProgress.goalCreated && !usageProgress.taskCreated) {
       const setupText = 'Tasks'
       const setupButtonText = 'Create tasks'
-      return <SetUpFlowProgress progress={0.75} navigationUrl={'Root'} navigationParams={{
+      return <SetUpFlowProgress progress={0.80} navigationUrl={'Root'} navigationParams={{
         screen: 'Profile',
         params: {
           screen: 'WorkflowWelcome',
@@ -208,7 +208,21 @@ const DetermineUserProgress = ({ user, projectId }) => {
           }
         }
       }}
-        setupButtonText={setupButtonText} setupText={setupText} color={Yellow300}
+        setupButtonText={setupButtonText} setupText={setupText} color={Orange}
+      />
+    } else if (usageProgress.goalCreated && usageProgress.taskCreated && !usageProgress.askCreated) {
+      const setupText = 'Asks'
+      const setupButtonText = 'Create Asks'
+      return <SetUpFlowProgress progress={0.90} navigationUrl={'Root'} navigationParams={{
+        screen: 'Profile',
+        params: {
+          screen: 'WorkflowWelcome',
+          params: {
+            projectId
+          }
+        }
+      }}
+        setupButtonText={setupButtonText} setupText={setupText} color={Green400}
       />
     }
     return null

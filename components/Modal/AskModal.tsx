@@ -31,6 +31,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
   const initialLink = ask && ask.additionalData && ask.additionalData.link
   const initialGoal = (ask && ask.additionalData && ask.additionalData.relatedGoalIds && ask.additionalData.relatedGoalIds[0]) || goalId
   const initialTask = (ask && ask.additionalData && ask.additionalData.relatedTaskIds && ask.additionalData.relatedTaskIds[0]) || taskId
+
   const navigation = useNavigation()
   const [completed, setCompleted] = useState(false)
   const [askText, setAskText] = useState((ask && ask.content) || '')
@@ -123,7 +124,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
           onPress={() => Keyboard.dismiss()}
         >
           <SafeAreaView style={modalStyles.fullScreenContainer}>
-          <KeyboardAwareScrollView>
+          <KeyboardAwareScrollView keyboardDismissMode='interactive' keyboardShouldPersistTaps='handled'>
           {cameraOpen &&
                     <Camera
                     snapperOpen={cameraOpen}
@@ -282,7 +283,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                       {error.mediaError}
                     </ErrorText>
                   }
-                  <ScrollView>
+                  <ScrollView keyboardDismissMode='interactive' keyboardShouldPersistTaps='handled'>
                     {addLink &&
                       <View style={modalStyles.linkContainer}>
                         <TextInput

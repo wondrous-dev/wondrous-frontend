@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, createRef } from 'react'
 import {
   Appearance,
   Button,
@@ -376,7 +376,7 @@ export class RichTextEditor extends React.Component {
   }
 }
 
-const renderSuggestions: (suggestions: Suggestion[], renderStyle) => FC<MentionSuggestionsProps> = (suggestions, renderStyle={}) => (
+const renderSuggestions: (suggestions: Suggestion[], renderStyle, textInputRef) => FC<MentionSuggestionsProps> = (suggestions, renderStyle={}, textInputRef) => (
   {keyword, onSuggestionPress},
 ) => {
   if (keyword == null) {
@@ -393,6 +393,9 @@ const renderSuggestions: (suggestions: Suggestion[], renderStyle) => FC<MentionS
         .filter(one => one.username.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
         .map(user => (
           <Pressable key={user.id} onPress={() => {
+            if (textInputRef && textInputRef.current) {
+              textInputRef.current.focus()
+            }
             onSuggestionPress({
               ...user,
               name: user.username
@@ -405,8 +408,7 @@ const renderSuggestions: (suggestions: Suggestion[], renderStyle) => FC<MentionS
             alignItems: 'center',
             borderBottomWidth: 1,
             borderBottomColor: Grey100,
-            backgroundColor: White,
-            zIndex: 1000
+            backgroundColor: White
           }}>
             {
               user.profilePicture && user.profilePicture !== 'None' ?
@@ -451,7 +453,7 @@ export const TextEditor = ({ style, renderSuggestionStyle, ...props }) => {
   } = useTextEditor()
 
   // const [users, setUsers] = useState([])
-  let textInputRef = useRef()
+  let textInputRef = createRef()
   const [getAutocompleteUsers, { data, loading, error }] = useLazyQuery(GET_AUTOCOMPLETE_USERS, {
     variables: {
       username: ''
@@ -470,13 +472,14 @@ export const TextEditor = ({ style, renderSuggestionStyle, ...props }) => {
   const users = (data && data.getAutocompleteUsers) || []
   return (
     <MentionInput
+
         value={content}
         onChange={(content) => setContent(content)}
-        ref={textInputRef}
-        mentionTypes={[
+        inputRef={textInputRef}
+        partTypes={[
           {
             trigger: '@',
-            renderSuggestions: renderSuggestions(users, renderSuggestionStyle),
+            renderSuggestions: renderSuggestions(users, renderSuggestionStyle, textInputRef),
             textStyle: {fontWeight: 'bold', color: Blue500},
           },
           // {

@@ -306,7 +306,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                       {error.mediaError}
                     </ErrorText>
                   }
-                  <ScrollView>
+                  <ScrollView keyboardDismissMode='interactive' keyboardShouldPersistTaps='handled'>
                     {addLink &&
                       <View style={modalStyles.linkContainer}>
                         <TextInput

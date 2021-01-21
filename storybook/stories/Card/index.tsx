@@ -23,9 +23,10 @@ import { spacingUnit, renderMentionString } from '../../../utils/common'
 import PriorityFlame from '../../../assets/images/modal/priority'
 import { FullScreenTaskModal } from '../../../components/Modal/TaskModal'
 import { FullScreenGoalModal } from '../../../components/Modal/GoalModal'
+import { FullScreenAskModal } from '../../../components/Modal/AskModal'
 import { useNavigation } from '@react-navigation/native'
 import apollo from '../../../services/apollo'
-import { UPDATE_GOAL, UPDATE_TASK } from '../../../graphql/mutations'
+import { UPDATE_GOAL, UPDATE_TASK, UPDATE_ASK } from '../../../graphql/mutations'
 import { cache } from 'webpack'
 
 const { multiply, sub } = Animated
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
     paddingRight: spacingUnit * 1.5
   },
   topInfoContainer: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     flexDirection: 'row',
     justifyContent: 'flex-start'
   },
@@ -181,7 +182,7 @@ class Card extends React.Component {
       update: (cache, { data }) => {
         cache.modify({
           fields: {
-            getTasksFromProject(existingGoals=[]) {
+            getTasksFromProject(existingTasks=[]) {
               // console.log('existingGoals', existingGoals)
               // return existingGoals
             }
@@ -192,8 +193,22 @@ class Card extends React.Component {
     })
   }
 
+  updateAsk = (args) => {
+    apollo.mutate({
+      mutation: UPDATE_ASK,
+      update: (cache, {}) => {
+        cache.modify({
+          fields: {
+            getAsksFromProject(existingAsks=[]) {
+
+            }
+          }
+        })
+      }
+    })
+  }
   renderOverlay = ({ item, openLeft, openRight, openDirection, close  }) => {
-    const { name, dueDate, projectName, useProfilePicture, user, priority } = item.item
+    const { name, dueDate, projectName, useProfilePicture, user, priority, content } = item.item
     const {
       profilePicture,
       icon,
@@ -245,8 +260,9 @@ class Card extends React.Component {
             </View>
             <View>
             <Text style={[styles.text, {
-              marginLeft: spacingUnit
-            }]}>{renderMentionString({ content: name, textStyle: styles.text, navigation: this.props.navigation })}</Text>
+              marginLeft: spacingUnit,
+              paddingRight: 4
+            }]}>{renderMentionString({ content: type === 'ask' ? content : name, textStyle: styles.text, navigation: this.props.navigation })}</Text>
             </View>
           </View>
           <View style={styles.bottomInfoContainer}>
@@ -264,9 +280,11 @@ class Card extends React.Component {
                 {projectName}
               </RegularText>
             </Tag>
-            <RegularText color={isRedDate ? Red400 : Grey450} style={styles.dueText}>
-              Due {formatDueDate(new Date(dueDate))}
-            </RegularText>
+            {dueDate &&
+                <RegularText color={isRedDate ? Red400 : Grey450} style={styles.dueText}>
+                Due {formatDueDate(new Date(dueDate))}
+              </RegularText>
+            }
           </View>
         </PlatformTouchable>
           <PlatformTouchable  onLongPress={item.drag} style={[{ width: 5, alignItems: "flex-end" }]}>
@@ -292,6 +310,10 @@ class Card extends React.Component {
         {
           type === 'task' &&
           <FullScreenTaskModal task={item} setModalVisible={this.setModalVisible} isVisible={isVisible} taskMutation={this.updateTask} />
+        }
+        {
+          type === 'ask' &&
+          <FullScreenAskModal ask={item} setModalVisible={this.setModalVisible} isVisible={isVisible} askMutation={this.updateAsk} />
         }
       <SwipeableItem
         key={item.key}

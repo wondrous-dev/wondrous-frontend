@@ -35,7 +35,7 @@ function SetupAskScreen({
     projectId
   } = route.params
   const user = useMe()
-  const { data: askData, loading, error } = useQuery(GET_ASKS_FROM_PROJECT, {
+  const { data: askData, loading, error: askDataError } = useQuery(GET_ASKS_FROM_PROJECT, {
     variables: {
       projectId
     }
@@ -46,8 +46,8 @@ function SetupAskScreen({
           fields: {
               getAsksFromProject(existingAsks=[]) {
                 return [
-                  ...existingAsks,
-                  data.createAsk
+                  data.createAsk,
+                  ...existingAsks
                 ]
               },
               users() {
@@ -68,7 +68,7 @@ function SetupAskScreen({
       })
     }
   })
-  console.log('createAskError', createAskError, createAskData)
+
   const [modalVisible, setModalVisible] = useState(false)
   const askArray = askData && askData.getAsksFromProject
   const itemRefs = useRef(new Map())
@@ -120,7 +120,7 @@ function SetupAskScreen({
           {/* <CardList /> */}
           <FlatList
             data={askArray}
-            renderItem={({ item }) => <Card type='ask' navigation={navigation} iconSize={spacingUnit * 3} icon={TaskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
+            renderItem={({ item }) => <Card type='ask' navigation={navigation} iconSize={spacingUnit * 3} icon={AskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
             style={{
               marginBottom: spacingUnit * 65
             }}

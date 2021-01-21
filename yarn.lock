@@ -13603,10 +13603,10 @@ react-native-confetti-cannon@^1.5.1:
   resolved "https://registry.yarnpkg.com/react-native-confetti-cannon/-/react-native-confetti-cannon-1.5.1.tgz#c4f15b8ccb2823fb4785d6896743865be6df58a4"
   integrity sha512-4yjnIqMsPFiiicVkICGVZqC+ZZiXmryQ4wxHSRbRtaYv4QuK/IWccXXA/wJq72kiefuh41cakG1HVEu8AgflQQ==
 
-react-native-controlled-mentions@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/react-native-controlled-mentions/-/react-native-controlled-mentions-1.0.1.tgz#02ceb56c70996c917cdffec9a475d718896112fd"
-  integrity sha512-adnEi2vHcfk9LPdpuRlaAhP3xvBACDl4OTK24Q8zR/hjcqDTAuxyf4Vi/c5Jro8eX+wiWAHxAIigAS3xSJ7u9A==
+react-native-controlled-mentions@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-controlled-mentions/-/react-native-controlled-mentions-2.0.2.tgz#c6faeed84ab908de6b3c0ac72324209a73661d4a"
+  integrity sha512-Jvq2J+4BtkGi2h+GyhVvUuUphL0rfPxBisWN/3YObDVxVOYlcTYzFgQK6Df5ZO092MYTXtbmvwKGPXgbXrnHZg==
   dependencies:
     diff "5.0.0"
     string.prototype.matchall "4.0.3"

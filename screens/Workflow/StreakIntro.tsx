@@ -50,7 +50,7 @@ function StreakIntro({
           marginTop: spacingUnit * 1.5,
           marginBottom: spacingUnit * 4
         }}>
-          Every day you create or complete a goal/task, your streak increases.
+          Every day you create or complete a goal/task/ask, your streak increases.
         </Paragraph>
         <PrimaryButton style={{
           backgroundColor: Green400
