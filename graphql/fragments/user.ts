@@ -17,6 +17,7 @@ export const PublicUserFragment = gql`
       signupCompleted
       goalCreated
       taskCreated
+      askCreated
     }
   }
 `

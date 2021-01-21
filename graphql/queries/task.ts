@@ -10,3 +10,12 @@ export const GET_TASKS_FROM_PROJECT = gql`
   }
   ${PublicTaskFragment}
 `
+
+export const GET_TASKS_FROM_USER = gql`
+  query GetTasksFromUser {
+    getTasksFromUser {
+      ...PublicTask
+    }
+  }
+  ${PublicTaskFragment}
+`

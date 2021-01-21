@@ -12,14 +12,14 @@ import { Grey400, White, Black, Grey500, Blue500 } from '../../constants/Colors'
 import { spacingUnit, getLocale } from '../../utils/common'
 import AddIcon from '../../assets/images/add-dark-button.svg'
 import { SvgImage } from '../../storybook/stories/Image'
-import TaskIcon from '../../assets/images/task/standalone'
-import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
-import { CREATE_TASK } from '../../graphql/mutations'
-import { GET_TASKS_FROM_PROJECT } from '../../graphql/queries'
+import AskIcon from '../../assets/images/ask/standalone'
+import { FullScreenAskModal } from '../../components/Modal/AskModal'
+import { CREATE_ASK } from '../../graphql/mutations'
+import { GET_ASKS_FROM_PROJECT } from '../../graphql/queries'
 import { Card } from '../../storybook/stories/Card'
 
-const setupTaskStyles = StyleSheet.create({
-  setupTaskContainer: {
+const setupAskStyles = StyleSheet.create({
+  setupAskContainer: {
     alignItems: 'center',
     paddingRight: spacingUnit * 2,
     paddingLeft: spacingUnit * 2,
@@ -27,37 +27,36 @@ const setupTaskStyles = StyleSheet.create({
   }
 })
 
-
-function SetupTaskScreen({
+function SetupAskScreen({
   route,
   navigation
-}: StackScreenProps<ProfileTabParamList, 'SetupTask'>) {
+}: StackScreenProps<ProfileTabParamList, 'SetupAsk'>) {
   const {
     projectId
   } = route.params
   const user = useMe()
-  const { data: taskData, loading, error } = useQuery(GET_TASKS_FROM_PROJECT, {
+  const { data: askData, loading, error } = useQuery(GET_ASKS_FROM_PROJECT, {
     variables: {
       projectId
     }
   })
-  const [createTask] = useMutation(CREATE_TASK, {
+  const [createAsk, { data: createAskData, loading: createAskLoading, error: createAskError }] = useMutation(CREATE_ASK, {
     update(cache, { data }) {
       cache.modify({
           fields: {
-              getTasksFromProject(existingTasks=[]) {
+              getAsksFromProject(existingAsks=[]) {
                 return [
-                  ...existingTasks,
-                  data.createTask
+                  ...existingAsks,
+                  data.createAsk
                 ]
               },
               users() {
                 if (user) {
                   const newUsageProgress = user.usageProgress ? {
                     ...user.usageProgress,
-                    taskCreated: true
+                    askCreated: true
                   } : {
-                    taskCreated: true
+                    askCreated: true
                   }
                   return [{
                     ...user,
@@ -69,24 +68,23 @@ function SetupTaskScreen({
       })
     }
   })
-
+  console.log('createAskError', createAskError, createAskData)
   const [modalVisible, setModalVisible] = useState(false)
-  const taskArray = taskData && taskData.getTasksFromProject
+  const askArray = askData && askData.getAsksFromProject
   const itemRefs = useRef(new Map())
-
   return (
     <SafeAreaView style={{
       flex: 1,
       backgroundColor: White
     }}>
-      <Header rightButton={taskArray && taskArray.length > 0 && {
+      <Header rightButton={askArray && askArray.length > 0 && {
         color: Blue500,
         text: 'Continue',
         onPress: () => {
           navigation.navigate('Root', {
             screen: 'Profile',
             params: {
-              screen: 'SetupAsk',
+              screen: 'StreakIntro',
               params: {
                 projectId
               }
@@ -94,16 +92,16 @@ function SetupTaskScreen({
           })
         }
       }} />
-      <FullScreenTaskModal firstTime={true} setModalVisible={setModalVisible} isVisible={modalVisible} projectId={projectId} taskMutation={createTask} />
-      <View style={setupTaskStyles.setupTaskContainer}>
-        <TaskIcon style={{
+      <FullScreenAskModal firstTime={true} setModalVisible={setModalVisible} isVisible={modalVisible} projectId={projectId} askMutation={createAsk} />
+      <View style={setupAskStyles.setupAskContainer}>
+        <AskIcon style={{
           width: spacingUnit * 6,
           height: spacingUnit * 6
         }} />
         <Subheading color={Black} style={{
           marginTop: spacingUnit * 2
         }}>
-          Add tasks
+          Add asks
         </Subheading>
         <Paragraph color={Grey500} style={{
           textAlign: 'center',
@@ -111,7 +109,7 @@ function SetupTaskScreen({
           paddingRight: spacingUnit * 1.25,
           marginTop: spacingUnit
         }}>
-          Tasks are small units of work that can be completed in a day
+          What do you need help with from your followers and the Wonder community?
         </Paragraph>
         <Pressable onPress={() => setModalVisible(true)}>
           <SvgImage width={spacingUnit * 8} height={spacingUnit * 8} srcElement={AddIcon} style={{
@@ -121,8 +119,8 @@ function SetupTaskScreen({
         <View>
           {/* <CardList /> */}
           <FlatList
-            data={taskArray}
-            renderItem={({ item }) => <Card type='task' navigation={navigation} iconSize={spacingUnit * 3} icon={TaskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
+            data={askArray}
+            renderItem={({ item }) => <Card type='ask' navigation={navigation} iconSize={spacingUnit * 3} icon={TaskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
             style={{
               marginBottom: spacingUnit * 65
             }}
@@ -135,4 +133,4 @@ function SetupTaskScreen({
   )
 }
 
-export default withAuth(SetupTaskScreen)
+export default withAuth(SetupAskScreen)

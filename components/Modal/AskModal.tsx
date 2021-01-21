@@ -14,8 +14,7 @@ import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/s
 import { spacingUnit, renderMentionString } from '../../utils/common'
 import { endOfWeekFromNow } from '../../utils/date'
 import { useMe } from '../../components/withAuth'
-import { GET_USER_PROJECTS } from '../../graphql/queries/project'
-import { GET_GOALS_FROM_PROJECT, GET_GOALS_FROM_USER } from '../../graphql/queries/goal'
+import { GET_USER_PROJECTS, GET_GOALS_FROM_PROJECT, GET_GOALS_FROM_USER, GET_TASKS_FROM_USER, GET_TASKS_FROM_PROJECT } from '../../graphql/queries'
 import Camera from '../../components/Camera'
 import { privacyDropdown, submit, PriorityList, ModalDropdown, DateDisplay, modalStyles, ImageDisplay } from './common'
 import CameraIcon from '../../assets/images/camera'
@@ -25,30 +24,30 @@ import { SafeImage } from '../../storybook/stories/Image'
 import ImageBrowser from './ImageBrowser'
 import { useNavigation } from '@react-navigation/native'
 
-const FILE_PREFIX = 'task/new/'
+const FILE_PREFIX = 'ask/new/'
 
-export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectId, goalId, taskMutation, firstTime, deleteMutation }) => {
-  const initialDueDate = endOfWeekFromNow()
+export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId, goalId, taskId, askMutation, firstTime, deleteMutation }) => {
+  const initialMedia = (ask && ask.additionalData && ask.additionalData.images) || []
+  const initialLink = ask && ask.additionalData && ask.additionalData.link
+  const initialGoal = (ask && ask.additionalData && ask.additionalData.relatedGoalIds && ask.additionalData.relatedGoalIds[0]) || goalId
+  const initialTask = (ask && ask.additionalData && ask.additionalData.relatedTaskIds && ask.additionalData.relatedTaskIds[0]) || taskId
   const navigation = useNavigation()
   const [completed, setCompleted] = useState(false)
-  const [taskText, setTaskText] = useState((task && task.name) || '')
-  const [project, setProject] = useState((task && task.projectId) || projectId)
-  const [goal, setGoal] = useState((task && task.goalId) || goalId)
-  const [priority, setPriority] = useState(task && task.priority)
-  const [description, setDescription] = useState((task && task.detail) || '')
-  const [privacy, setPrivacy] = useState('public')
-  const [dueDate, setDueDate] = useState((task && task.dueDate) ? new Date(task.dueDate) : toDate(initialDueDate))
-  const [editDate, setEditDate] = useState(false)
-  const [link, setLink] = useState(task && task.additionalData && task.additionalData.link)
+  const [askText, setAskText] = useState((ask && ask.content) || '')
+  const [project, setProject] = useState((ask && ask.projectId) || projectId)
+  const [goal, setGoal] = useState(initialGoal)
+  const [task, setTask] = useState(initialTask)
+  const [link, setLink] = useState(initialLink)
   const [addLink, setAddLink] = useState(!!(link))
-  const [media, setMedia] = useState((task && task.additionalData && task.additionalData.images) || [])
+  const [media, setMedia] = useState(initialMedia)
   const [cameraOpen, setCameraOpen] = useState(false)
   const [galleryOpen, setGalleryOpen] = useState(false)
   const [errors, setErrors] = useState({})
-  const user = useMe()
 
   const { data: projectUsers, loading:  projectUserLoading, error: projectUserError } = useQuery(GET_USER_PROJECTS)
   const { data: userGoals, loading: userGoalsLoading , error: userGoalsErrorsLoading } = useQuery(GET_GOALS_FROM_USER)
+  const { data: userTasks, loading: userTasksLoading, error: userTasksErrorsLoading } = useQuery(GET_TASKS_FROM_USER)
+
   const projectDropdowns = projectUsers && projectUsers.getUserProjects ? projectUsers.getUserProjects.map(projectUser => {
     return {
       label: projectUser.project.name,
@@ -59,16 +58,14 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
     value: ''
   }]
 
-  // useEffect(() => {
-
-  // }, [userGoalsDropdown])
   let userGoalArr = userGoals && userGoals.getGoalsFromUser
   if (userGoalArr) {
     if (project) {
       userGoalArr = userGoalArr.filter(userGoal => userGoal.projectId === project)
     }
   }
-  let userGoalsDropdown = userGoalArr ? userGoalArr.map(userGoal => {
+
+  const userGoalsDropdown = userGoalArr ? userGoalArr.map(userGoal => {
     return {
       label: renderMentionString({ content: userGoal.name, simple: true, navigation }),
       value: userGoal.id
@@ -77,36 +74,46 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
     label: '',
     value: ''
   }]
+  let userTaskArr = userTasks && userTasks.getTasksFromUser
+  if (userTaskArr) {
+    if (project) {
+      userTaskArr = userTaskArr.filter(userTask => userTask.projectId === project)
+    }
+    if (goal) {
+      userTaskArr = userTaskArr.filter(userTask => userTask.goalId === goal)
+    }
+  }
+  let userTasksDropdown = userTaskArr? userTasks.getTasksFromUser.map(userTask => {
+    return {
+      label: renderMentionString({ content: userTask.name, simple: true, navigation }),
+      value: userTask.id
+    }
+  }) : [{
+    label: '',
+    value: ''
+  }]
 
   const resetState = useCallback(() => {
-    setTaskText('')
-    setPriority(null)
+    setAskText('')
     setLink(null)
     setAddLink(false)
     setMedia([])
     setCameraOpen(false)
     setGalleryOpen(false)
-    setDueDate(toDate(endOfWeekFromNow()))
-    setDescription('')
     setCompleted(false)
     setErrors({})
-    if (task) {
-      setTaskText((task && task.name) || '')
-      setPriority(task && task.priority)
-      setLink(task && task.additionalData && task.additionalData.link)
-      setAddLink(!!(task && task.additionalData && task.additionalData.link))
-      setMedia((task && task.additionalData && task.additionalData.images) || [])
+    if (ask) {
+      setAskText((ask && ask.content) || '')
+      setLink(initialLink)
+      setAddLink(!!initialLink)
+      setMedia(initialMedia)
       setCameraOpen(false)
       setGalleryOpen(false)
-      setDueDate((task && task.dueDate) ? new Date(task.dueDate) : toDate(initialDueDate))
-      setDescription((task && task.detail) || '')
-      setCompleted(task && task.status === 'completed')
+      setCompleted(ask && ask.status === 'completed')
     }
   }, [])
-
   return (
     <Modal isVisible={isVisible}>
-
       {
         galleryOpen
         ?
@@ -136,7 +143,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
             }
             <View style={modalStyles.topRowContainer}>
               <Pressable onPress={() => {
-                if (task) {
+                if (ask) {
                   resetState()
                   setModalVisible(false)
                 } else {
@@ -157,42 +164,42 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                 <Subheading color={Black} style={{
                   fontSize: 24
                 }}>
-                  {task ? 'Edit' : 'New'} task
+                  {ask ? 'Edit' : 'New'} ask
                 </Subheading>
               </View>
               <View style={{
                 flex: 1,
               }}>
               <Pressable style={modalStyles.createUpdateButton} onPress={() => {
+                const relatedGoalIds = [goal]
+                const relatedTaskIds = [task]
                 submit({
-                  name: taskText,
-                  detail: description,
-                  priority,
-                  dueDate,
+                  type: 'ask',
+                  content: askText,
                   link,
-                  privacyLevel: privacy,
                   errors,
                   setErrors,
                   media,
                   projectId,
                   filePrefix: FILE_PREFIX,
-                  mutation: taskMutation,
-                  goalId: goal,
-                  ...(task && {
-                    updateId: task.id,
-                    updateKey: 'taskId'
+                  mutation: askMutation,
+                  relatedGoalIds,
+                  relatedTaskIds,
+                  ...(ask && {
+                    updateId: ask.id,
+                    updateKey: 'askId'
                   }),
                   firstTime
                 })
                 setModalVisible(false)
-                if (!task) {
+                if (!ask) {
                   resetState()
                 }
               }}>
                 <RegularText color={White} style={{
                   fontSize: 16
                 }}>
-                  {task ? 'Update': 'Create' }
+                  {ask ? 'Update': 'Create' }
                 </RegularText>
               </Pressable>
             </View>
@@ -200,9 +207,9 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
             <View style={modalStyles.infoContainer}>
               <View style={modalStyles.inputContainer}>
               <TextEditorContext.Provider value={{
-                  content: taskText,
-                  setContent: setTaskText,
-                  placeholder: 'Add task...'
+                  content: askText,
+                  setContent: setAskText,
+                  placeholder: 'Add ask...'
                 }}>
                   <View style={{flex: 1}}>
                 <TextEditor multiline style={modalStyles.nameTextInput}
@@ -255,42 +262,11 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                   ]}>
                     <View style={modalStyles.editRowTextContainer}>
                       <RegularText color={Grey800} style={modalStyles.editRowText}>
-                        Privacy
+                        Task
                       </RegularText>
                     </View>
-                    <ModalDropdown value={privacy} items={privacyDropdown} zIndex={4000} setValue={setPrivacy} placeholder='Select privacy level' />
+                    <ModalDropdown value={task} setValue={setTask} items={userTasksDropdown} placeholder='Select a task' />
                   </View>
-                  <View style={modalStyles.editRowContainer}>
-                    <View style={modalStyles.editRowTextContainer}>
-                      <RegularText color={Grey800} style={modalStyles.editRowText}>
-                        Priority
-                      </RegularText>
-                    </View>
-                    <PriorityList priority={priority} setPriority={setPriority} />
-                  </View>
-                  <View style={modalStyles.editRowContainer}>
-                        <View style={modalStyles.editRowTextContainer}>
-                          <RegularText color={Grey800} style={modalStyles.editRowText}>
-                            Due
-                          </RegularText>
-                        </View>
-                        <DateDisplay dueDate={dueDate} onDateChange={setDueDate} editDate={editDate} setEditDate={setEditDate} />
-                    </View>
-                  <View style={[modalStyles.editRowContainer, {
-                    marginBottom: spacingUnit * 2
-                  }]}>
-                    <TextEditorContext.Provider value={{
-                          content: description,
-                          setContent: setDescription,
-                          placeholder: 'Longer description'
-                        }}>
-                          <View style={{flex: 1}}>
-                        <TextEditor multiline style={modalStyles.descriptionBox} renderSuggestionStyle={modalStyles.renderSuggestion}
-                    />
-                    </View>
-                    </TextEditorContext.Provider>
-                  </View>
-
                   <View style={modalStyles.attachmentRow}>
                     <LinkIcon color={Grey800} style={{
                       marginRight: spacingUnit * 2

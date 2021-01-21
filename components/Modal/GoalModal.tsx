@@ -65,6 +65,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
     setDueDate(toDate(endOfWeekFromNow()))
     setDescription('')
     setCompleted(false)
+    setErrors({})
     if (goal) {
       setGoalText((goal && goal.name) || '')
       setPriority(goal && goal.priority)

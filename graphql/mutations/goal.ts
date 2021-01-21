@@ -19,3 +19,12 @@ export const UPDATE_GOAL = gql`
   }
   ${PublicGoalFragment}
 `
+
+export const DELETE_GOAL = gql`
+  mutation DeleteGoal($goalId: ID!) {
+    deleteGoal(goalId: $goalId) {
+      success
+    }
+  }
+  ${PublicGoalFragment}
+`

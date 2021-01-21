@@ -19,3 +19,9 @@ export const UPDATE_TASK = gql`
   }
   ${PublicTaskFragment}
 `
+
+export const DELETE_TASK = gql`
+  mutation DeleteTask($taskId: ID!) {
+    success
+  }
+`

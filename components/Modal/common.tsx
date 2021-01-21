@@ -317,11 +317,38 @@ export const ImageDisplay= ({ setMedia, image, imagePrefix, media }) => {
   )
 }
 
-export const submit = async ({ name, detail, media, priority, dueDate, link, privacyLevel, setErrors, errors, mutation, projectId, goalId, taskId, filePrefix, firstTime, updateId, updateKey }) => {
-  if (!name) {
+export const submit = async ({
+  name,
+  detail,
+  type,
+  media,
+  priority,
+  dueDate,
+  link,
+  privacyLevel,
+  setErrors,
+  errors,
+  mutation,
+  projectId,
+  goalId,
+  taskId,
+  filePrefix,
+  firstTime,
+  updateId,
+  updateKey,
+  content,
+  relatedGoalIds,
+  relatedTaskIds,
+}) => {
+  if (!name && type !== 'ask') {
     setErrors({
       ...errors,
       nameError: 'Name is required'
+    })
+  } else if (!content && type === 'ask') {
+    setErrors({
+      ...errors,
+      nameError: 'Ask required'
     })
   } else {
     // Parse media:
@@ -337,7 +364,7 @@ export const submit = async ({ name, detail, media, priority, dueDate, link, pri
 
     const nameMentions = getMentionArray(name)
     const detailMentions = getMentionArray(detail)
-
+    const contentMentions = getMentionArray(content)
     let userMentions = null
     if (nameMentions && detailMentions) {
       const mergedMentions = [...new Set([
@@ -351,6 +378,8 @@ export const submit = async ({ name, detail, media, priority, dueDate, link, pri
       userMentions = nameMentions
     } else if (detailMentions && detailMentions.length > 0) {
       userMentions = detailMentions
+    } else if (contentMentions) {
+      userMentions = contentMentions
     }
 
     try {
@@ -360,13 +389,26 @@ export const submit = async ({ name, detail, media, priority, dueDate, link, pri
             [updateKey]: updateId
           }),
           input: {
-            name,
-            detail,
+            ...(name && {
+              name
+            }),
+            ...(detail && {
+              detail
+            }),
             media: finalMediaArr,
-            priority,
-            dueDate,
+            ...(priority && {
+              priority
+            }),
+            ...(dueDate && {
+              dueDate
+            }),
             link,
-            privacyLevel,
+            ...(privacyLevel && {
+              privacyLevel
+            }),
+            ...(content && {
+              content
+            }),
             ...(projectId && {
               projectId
             }),
@@ -378,6 +420,12 @@ export const submit = async ({ name, detail, media, priority, dueDate, link, pri
             }),
             ...(firstTime && {
               firstTime
+            }),
+            ...(relatedGoalIds && {
+              relatedGoalIds
+            }),
+            ...(relatedTaskIds && {
+              relatedTaskIds
             }),
             ...(userMentions && {
               userMentions
