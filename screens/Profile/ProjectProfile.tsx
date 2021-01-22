@@ -10,273 +10,25 @@ import { useNavigation } from '@react-navigation/native'
 import { withAuth, useMe } from '../../components/withAuth'
 import { ProfileTabParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { Black, Blue400, Blue500, Green400, Grey200, Grey300, Grey350, Orange, Red400, White, Yellow300 } from '../../constants/Colors'
-import Plus from '../../assets/images/plus'
+import { Black, Grey300, White } from '../../constants/Colors'
 import { profileStyles } from './style'
 import { GET_PROJECT_BY_ID, GET_PROJECT_FEED } from '../../graphql/queries/project'
 import { UPDATE_PROJECT } from '../../graphql/mutations/project'
-import ProfileDefaultImage from '../../assets/images/profile-placeholder'
 import { SafeImage, UploadImage } from '../../storybook/stories/Image'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton, FlexibleButton, PrimaryButton } from '../../storybook/stories/Button'
 import { spacingUnit, wait } from '../../utils/common'
 import { WONDER_BASE_URL } from '../../constants/'
 import { ProfileContext } from '../../utils/contexts'
-import { useProfile } from '../../utils/hooks'
-import { ProjectFeed, renderItem } from '../../components/Feed'
-import Navigation from '../../navigation'
-import { useUrl } from 'expo-linking'
+import {
+  ProfilePlaceholder,
+  ProjectInfoText,
+  SectionsHeader,
+  SetUpFlowProgress,
+  DetermineUserProgress,
+  renderProfileItem
+} from './common'
 
-const ProfilePlaceholder = ({ projectOwnedByUser }) => {
-  const { setModalVisible } = useProfile()
-  if (projectOwnedByUser) {
-    return (
-    <Pressable onPress={() => setModalVisible(true)}>
-      <View style={
-          profileStyles.profilePlaceholderContainer
-        }>
-        <Plus />
-      </View>
-      </Pressable>
-    )
-  }
-  return <ProfileDefaultImage style={profileStyles.profilePlaceholderImage} />
-}
-
-const ProjectInfoText = ({ count, type }) => {
-  return (
-    <View style={{
-      alignItems: 'center',
-      justifyContent: 'center'
-    }}>
-      <RegularText style={{
-        fontFamily: 'Rubik SemiBold',
-      }} color={Grey200}>
-        {count}
-      </RegularText>
-      <RegularText color={Grey200}>
-        {type}
-      </RegularText>
-    </View>
-  )
-}
-
-const Sections = () => {
-  const { section } = useProfile()
-  const feedSelected = section === 'feed'
-  const actionSelected = section === 'action'
-  const asksSelected = section === 'asks'
-  if (feedSelected) {
-    return <ProjectFeed />
-  }
-}
-const SectionsHeader = () => {
-  const { section, setSection } = useProfile()
-  const feedSelected = section === 'feed'
-  const actionSelected = section === 'action'
-  const asksSelected = section === 'asks'
-
-  return (
-    <View style={profileStyles.sectionChoiceContainer}>
-      <Pressable onPress={() => setSection('feed')}>
-        <View style={{
-          ...(feedSelected && {
-            borderBottomColor: Blue400,
-            borderBottomWidth: 1
-          }),
-          paddingBottom: spacingUnit,
-          width: spacingUnit * 12,
-          alignItems: 'center'
-        }}>
-          <Paragraph color={feedSelected ? Blue400 : Black }>
-            Feed
-          </Paragraph>
-        </View>
-      </Pressable>
-      <Pressable onPress={() => setSection('action')}>
-        <View style={{
-          ...(actionSelected && {
-            borderBottomColor: Blue400,
-            borderBottomWidth: 1
-          }),
-          paddingBottom: spacingUnit,
-          width: spacingUnit * 12,
-          alignItems: 'center'
-        }}>
-          <Paragraph color={actionSelected ? Blue400 : Black }>
-            Action
-          </Paragraph>
-        </View>
-      </Pressable>
-      <Pressable onPress={() => setSection('asks')}>
-        <View style={{
-          ...(asksSelected && {
-            borderBottomColor: Blue400,
-            borderBottomWidth: 1,
-          }),
-          paddingBottom: spacingUnit,
-          alignItems: 'center',
-          width: spacingUnit * 12
-        }}>
-          <Paragraph color={asksSelected ? Blue400 : Black }>
-            Asks
-          </Paragraph>
-        </View>
-      </Pressable>
-    </View>
-  )
-}
-
-const SetUpFlowProgress = ({ progress, navigationUrl,navigationParams, setupText, setupButtonText, color }) => {
-  const navigation = useNavigation()
-
-  return (
-    <View style={{
-      marginTop: spacingUnit * 2
-    }}>
-      <View style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingLeft: spacingUnit * 2,
-        paddingRight: spacingUnit * 2,
-        marginBottom: spacingUnit * 0.25,
-      }}>
-      <Paragraph color={color} style={{
-        marginRight: spacingUnit
-      }}>
-        {progress * 100}%
-      </Paragraph>
-      <Bar progress={progress} width={Dimensions.get('window').width - (spacingUnit * 9)} color={color} height={spacingUnit * 1.25} unfilledColor={Grey350} borderWidth={0} />
-      </View>
-      <View style={{
-        flexDirection: 'row',
-        paddingLeft: spacingUnit * 2,
-        paddingRight: spacingUnit * 2,
-        alignItems: 'center',
-        justifyContent: 'space-between'
-      }}>
-        <Pressable onPress={() => navigation.navigate(navigationUrl, navigationParams)}>
-          <Paragraph>
-            Next step: <Paragraph color={Blue400}>{setupText}</Paragraph>
-          </Paragraph>
-        </Pressable>
-        <FlexibleButton style={{
-          paddingLeft: spacingUnit * 1.5,
-          paddingRight: spacingUnit * 1.5,
-          paddingTop: 2,
-          paddingBottom: 2,
-          backgroundColor: Blue500
-        }} onPress={() => {
-          navigation.navigate(navigationUrl, navigationParams)
-        }}>
-          <Paragraph color={White}>
-            {setupButtonText}
-          </Paragraph>
-        </FlexibleButton>
-      </View>
-    </View>
-  )
-}
-
-const DetermineUserProgress = ({ user, projectId }) => {
-  if (user && user.usageProgress) {
-    const usageProgress = user.usageProgress
-    // Determine percentages. Start at 50 when workflow not finished. Then 80 once it is. Then invite friends. Then add link?
-    if (usageProgress.signupCompleted && !usageProgress.taskCreated && !usageProgress.goalCreated) {
-      // 50%
-      const setupText = 'Action flow'
-      const setupButtonText = 'Create actions'
-      return <SetUpFlowProgress progress={0.7} navigationUrl={'Root'} navigationParams={{
-        screen: 'Profile',
-        params: {
-          screen: 'WorkflowWelcome',
-          params: {
-            projectId
-          }
-
-        }
-      }} setupText={setupText} setupButtonText={setupButtonText} color={Yellow300} />
-    } else if (usageProgress.goalCreated && !usageProgress.taskCreated) {
-      const setupText = 'Tasks'
-      const setupButtonText = 'Create tasks'
-      return <SetUpFlowProgress progress={0.80} navigationUrl={'Root'} navigationParams={{
-        screen: 'Profile',
-        params: {
-          screen: 'WorkflowWelcome',
-          params: {
-            projectId
-          }
-        }
-      }}
-        setupButtonText={setupButtonText} setupText={setupText} color={Orange}
-      />
-    } else if (usageProgress.goalCreated && usageProgress.taskCreated && !usageProgress.askCreated) {
-      const setupText = 'Asks'
-      const setupButtonText = 'Create Asks'
-      return <SetUpFlowProgress progress={0.90} navigationUrl={'Root'} navigationParams={{
-        screen: 'Profile',
-        params: {
-          screen: 'WorkflowWelcome',
-          params: {
-            projectId
-          }
-        }
-      }}
-        setupButtonText={setupButtonText} setupText={setupText} color={Green400}
-      />
-    }
-    return null
-  } else {
-    return null
-  }
-}
-
-const renderProfileItem = ({ item, section, user, navigation, projectId }) => {
-  if (section === 'feed') {
-    return renderItem({ item, navigation, screen: 'Root', params: {
-      screen: 'Profile',
-      params: {
-        screen: 'ProfileItem',
-        params: {
-          item,
-          liked: false,
-          comment: true,
-          standAlone: true
-        }
-      }
-    }   })
-  } else if ( section === 'action') {
-    if (item === 'start') {
-      // return a button to set up work flow
-      return (
-        <View style={{
-          flex: 1,
-          alignItems: 'center',
-          marginTop: spacingUnit * 4
-        }}>
-          <Paragraph style={{
-            marginBottom: spacingUnit * 2
-          }} color={Black}>
-            No goals or tasks yet.
-          </Paragraph>
-          <PrimaryButton onPress={() => navigation.navigate('Root', {
-            screen: 'Profile',
-            params: {
-              screen: 'WorkflowWelcome',
-              params: {
-                projectId
-              }
-            }
-          })}>
-            <Paragraph color={White}>
-              Create actions
-            </Paragraph>
-          </PrimaryButton>
-        </View>
-      )
-    }
-  }
-}
 function ProjectProfile({
   navigation,
   route
@@ -330,7 +82,8 @@ function ProjectProfile({
     if (section === 'feed') {
       getProjectFeed()
     }
-  }, [])
+    setProfilePicture(project && project.profilePicture)
+  }, [project])
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)
@@ -376,7 +129,10 @@ function ProjectProfile({
           getProjectFeed,
           setModalVisible
         }}>
-        <UploadImage isVisible={isVisible} setModalVisible={setModalVisible} image={profilePicture} setImage={setProfilePicture} saveImageMutation={updateProject} imagePrefix={`project/${projectId}/`} saveImageMutationVariable={[{projectId, input: { profilePicture }}, ['input', 'profilePicture']]}  />
+          {
+            projectOwnedByUser &&
+            <UploadImage isVisible={isVisible} setModalVisible={setModalVisible} image={profilePicture} setImage={setProfilePicture} saveImageMutation={updateProject} imagePrefix={`project/${projectId}/`} saveImageMutationVariable={[{projectId, input: { profilePicture }}, ['input', 'profilePicture']]}  />
+          }
         <FlatList    refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }

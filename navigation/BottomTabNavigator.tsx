@@ -151,6 +151,9 @@ export default function BottomTabNavigator() {
       <BottomTab.Screen
         name='Profile'
         component={Profile}
+        initialParams={{
+          noGoingBack: true
+        }}
       />
     </BottomTab.Navigator>
   )

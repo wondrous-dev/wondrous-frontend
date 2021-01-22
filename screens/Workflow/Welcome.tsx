@@ -40,7 +40,7 @@ function WorkflowWelcomeScreen({
       <Subheading color={Black} style={{
         marginBottom: spacingUnit * 2
       }}>
-        Creating actions
+        The Wonder workflow
       </Subheading>
       <View style={{
         alignSelf: 'flex-start',

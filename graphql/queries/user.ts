@@ -12,6 +12,25 @@ export const WHOAMI = gql`
   ${PublicUserFragment}
 `
 
+export const GET_USER = gql`
+  query GetUser($userId: ID!) {
+    getUser(userId: $userId) {
+      ...PublicUser
+    }
+  }
+  ${PublicUserFragment}
+`
+
+export const GET_USER_ADDITIONAL_INFO = gql`
+  query GetUserAdditionalInfo($userId: ID!) {
+    getUserAdditionalInfo(userId: $userId) {
+      followerCount
+      followingCount
+      projectCount
+    }
+  }
+`
+
 export const GET_AUTOCOMPLETE_USERS = gql`
   query GetAutocompleteUsers($username: String!) {
     getAutocompleteUsers(username: $username) {

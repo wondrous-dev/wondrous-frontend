@@ -45,8 +45,8 @@ function StreakIntro({
         </Subheading>
         <Paragraph color={Black} style={{
           textAlign: 'center',
-          paddingLeft: spacingUnit * 1.25,
-          paddingRight: spacingUnit * 1.25,
+          paddingLeft: spacingUnit * 2,
+          paddingRight: spacingUnit * 2,
           marginTop: spacingUnit * 1.5,
           marginBottom: spacingUnit * 4
         }}>
@@ -57,11 +57,7 @@ function StreakIntro({
         }} onPress={() => navigation.navigate('Root', {
           screen: 'Profile',
           params: {
-            screen: 'ProjectProfile',
-            params: {
-              projectId,
-              noGoingBack: true
-            }
+            screen: 'UserProfile'
           }
         })}>
           <Paragraph color={White} style={{

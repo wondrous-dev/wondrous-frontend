@@ -12,7 +12,9 @@ export const PublicTaskFragment = gql`
     ownerId
     projectId
     goalId
-    projectName
+    project {
+      name
+    }
     additionalData {
       images
       link

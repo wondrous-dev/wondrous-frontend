@@ -43,7 +43,7 @@ export const insertComponentsIntoText = (
 
 export const navigateUserOnLogin = (user, navigation) => {
   if (user && user.usageProgress && user.usageProgress.signupCompleted) {
-    if (user.usageProgress.workFlowCompleted) {
+    if (user.usageProgress.askCreated) {
       navigation.navigate('Root', {
         screen: 'Dashboard'
       })

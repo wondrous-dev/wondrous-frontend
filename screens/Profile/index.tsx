@@ -23,7 +23,9 @@ function ProfileScreen({
       headerShown: false,
       gestureResponseDistance: { vertical: 200, horizontal: 250 }
     }}>
-      <Stack.Screen name='UserProfile' component={UserProfile} />
+      <Stack.Screen name='UserProfile' component={UserProfile} initialParams={{
+        noGoingBack: true
+      }} />
       <Stack.Screen name='ProjectProfile' component={ProjectProfile} />
       <Stack.Screen name='ProfileItem' component={FeedItem} />
       <Stack.Screen name='WorkflowWelcome' component={WorkflowWelcome} />
