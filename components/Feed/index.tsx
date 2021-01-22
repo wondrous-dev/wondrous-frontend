@@ -64,9 +64,9 @@ const feedStyles = StyleSheet.create({
     alignItems: 'center'
   },
   feedItemImage: {
-    width: spacingUnit * 3,
-    height: spacingUnit * 3,
-    borderRadius: spacingUnit * 1.25,
+    width: spacingUnit * 6,
+    height: spacingUnit * 6,
+    borderRadius: spacingUnit * 3,
     marginRight: spacingUnit
   },
   feedItemContent: {

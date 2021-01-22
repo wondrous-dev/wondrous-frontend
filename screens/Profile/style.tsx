@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import { Blue500, Grey400 } from '../../constants/Colors'
+import { Blue500, Grey400, Grey300 } from '../../constants/Colors'
 import { spacingUnit } from '../../utils/common'
 
 export const profileStyles = StyleSheet.create({
@@ -13,9 +13,9 @@ export const profileStyles = StyleSheet.create({
     paddingRight: spacingUnit * 2
   },
   profilePlaceholderContainer: {
-    width: spacingUnit * 8,
-    height: spacingUnit * 8,
-    borderRadius: spacingUnit * 4,
+    width: spacingUnit * 10,
+    height: spacingUnit * 10,
+    borderRadius: spacingUnit * 5,
     borderStyle: 'dashed',
     justifyContent: 'center',
     alignItems: 'center',
@@ -28,9 +28,9 @@ export const profileStyles = StyleSheet.create({
     borderRadius: 4
   },
   profileImage: {
-    width: spacingUnit * 8,
-    height: spacingUnit * 8,
-    borderRadius: 4 * spacingUnit
+    width: spacingUnit * 10,
+    height: spacingUnit * 10,
+    borderRadius: 5 * spacingUnit
   },
   sectionChoiceContainer: {
     flexDirection: 'row',
@@ -38,5 +38,24 @@ export const profileStyles = StyleSheet.create({
     marginTop: spacingUnit * 3,
     borderBottomWidth: 1,
     borderBottomColor: Grey400
+  },
+  changeRowContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingRight: spacingUnit * 5,
+    marginBottom: spacingUnit * 2
+  },
+  changeRowParagraphText: {
+    marginRight: spacingUnit * 3,
+    width: spacingUnit * 10
+  },
+  changeRowText: {
+    fontSize: 16,
+    borderBottomWidth: 1,
+    marginTop: -2,
+    borderBottomColor: Grey300,
+    paddingBottom: spacingUnit,
+    flex: 1,
+    lineHeight: 22
   }
 })

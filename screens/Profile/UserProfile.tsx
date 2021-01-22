@@ -4,6 +4,7 @@ import { StackScreenProps } from '@react-navigation/stack'
 import { Dimensions, Image, Pressable, SafeAreaView, StyleSheet, View, RefreshControl, FlatList } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
+import * as Linking from 'expo-linking'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
@@ -11,13 +12,13 @@ import { Header } from '../../components/Header'
 import { profileStyles } from './style'
 import { spacingUnit, wait } from '../../utils/common'
 import BottomTabNavigator from '../../navigation/BottomTabNavigator'
-import { UploadImage } from '../../storybook/stories/Image'
+import { UploadImage, SafeImage } from '../../storybook/stories/Image'
 import { WONDER_BASE_URL } from '../../constants/'
 import { UPDATE_USER } from '../../graphql/mutations'
 import { GET_USER, GET_USER_ADDITIONAL_INFO } from '../../graphql/queries'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton } from '../../storybook/stories/Button'
-import { Black, Grey300, White } from '../../constants/Colors'
+import { Black, Grey300, White, Blue400 } from '../../constants/Colors'
 import { ProfileContext } from '../../utils/contexts'
 import {
   ProfilePlaceholder,
@@ -26,6 +27,7 @@ import {
   DetermineUserProgress,
   renderProfileItem
 } from './common'
+import { EditProfileModal } from './EditProfileModal'
 
 const getUserId = ({ route, user }) => {
   if (route && route.params && route.params.userId) {
@@ -65,6 +67,7 @@ function UserProfile({
   const userOwned = loggedInUser && (loggedInUser.id === finalUserId)
   const [section, setSection] = useState('feed')
   const [refreshing, setRefreshing] = useState(false)
+  const [isModalVisible, setModalVisible] = useState(false)
   const [getUser, {
     loading: userLoading,
     data: userData,
@@ -79,7 +82,7 @@ function UserProfile({
       userId: finalUserId
     }
   })
-  const [isVisible, setModalVisible] = useState(false)
+
   const [user, setUser] = useState(null)
   const [profilePicture, setProfilePicture] = useState(user && user.profilePicture)
   const [updateUser] = useMutation(UPDATE_USER, {
@@ -87,6 +90,7 @@ function UserProfile({
       cache.modify({
         fields: {
           users() {
+            setUser(updateUser)
             return [updateUser]
           }
         }
@@ -108,7 +112,7 @@ function UserProfile({
     }
     wait(2000).then(() => setRefreshing(false))
   }, [])
-  // console.log('userid', finalUserId, additionalInfo)
+
   useEffect(() => {
     if (userOwned) {
       setUser(loggedInUser)
@@ -117,10 +121,11 @@ function UserProfile({
         fetchUser({ getUser, userId: finalUserId, setUser})
       }
     }
-    // if (finalUserId && !additionalInfo) {
-    //   fetchAdditionalInfo({ getAdditionalInfo, userId: finalUserId, setAdditionalInfo })
-    // }
+    if (user) {
+      setProfilePicture(user.profilePicture)
+    }
   }, [])
+
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo
   return (
     <SafeAreaView style={{
@@ -128,6 +133,10 @@ function UserProfile({
       flex: 1
     }}>
       <Header noGoingBack={noGoingBack} share={`${WONDER_BASE_URL}/user/${finalUserId}`} />
+      {
+        user &&
+        <EditProfileModal user={user} isVisible={isModalVisible} setModalVisible={setModalVisible} saveMutation={updateUser} />
+      }
       <ProfileContext.Provider value={{
         section,
         setSection,
@@ -140,7 +149,7 @@ function UserProfile({
         setModalVisible
       }}>
         {userOwned &&
-          <UploadImage isVisible={isVisible} setModalVisible={setModalVisible} image={profilePicture} setImage={setProfilePicture} saveImageMutation={updateUser} imagePrefix={`project/${finalUserId}/`} saveImageMutationVariable={[{finalUserId, input: { profilePicture }}, ['input', 'profilePicture']]}  />
+          <UploadImage isVisible={isModalVisible} setModalVisible={setModalVisible} image={profilePicture} setImage={setProfilePicture} saveImageMutation={updateUser} imagePrefix={`user/${finalUserId}/`} saveImageMutationVariable={[{userId: finalUserId, input: { profilePicture }}, ['input', 'profilePicture']]}  />
         }
         {
           user &&
@@ -158,16 +167,25 @@ function UserProfile({
           ListHeaderComponent={() => (
               <View style={profileStyles.profileContainer}>
               <View style={[profileStyles.profileInfoContainer, {
-                justifyContent: 'space-between',
+                // justifyContent: 'space-between',
               }]}>
                 {
-                  user.profilePicture ?
-                  <SafeImage style={profileStyles.profileImage} src={profilePicture|| user.profilePicture} />
+                  profilePicture ?
+                  <SafeImage style={[profileStyles.profileImage, {
+                    width: spacingUnit * 10,
+                    height: spacingUnit * 10,
+                    borderRadius: spacingUnit * 5
+                  }]} src={profilePicture || user.profilePicture} />
                   :
                   <ProfilePlaceholder projectOwnedByUser={userOwned} />
                 }
-                <ProjectInfoText count={additionalInfo && additionalInfo.projectCount} type={user.projectCount === 1 ? 'project' : 'projects'} />
-                <ProjectInfoText count={additionalInfo && additionalInfo.followerCount} type={user.followerCount === 1 ? 'follower': 'followers'} />
+                <ProjectInfoText style={{
+                  marginRight: spacingUnit * 4,
+                  marginLeft: spacingUnit * 4
+                }} count={additionalInfo && additionalInfo.projectCount} type={additionalInfo && additionalInfo.projectCount === 1 ? 'project' : 'projects'} />
+                <ProjectInfoText style={{
+                  marginRight: spacingUnit * 4
+                }} count={additionalInfo && additionalInfo.followerCount} type={additionalInfo && additionalInfo.followerCount === 1 ? 'follower': 'followers'} />
                 <ProjectInfoText count={additionalInfo && additionalInfo.followingCount} type='following' />
                 {/* <ProjectInfoText count={user.tasksCompleted} type='tasks completed' /> */}
               </View>
@@ -190,7 +208,7 @@ function UserProfile({
                       paddingTop: 0,
                       paddingBottom: 0,
                       marginLeft: spacingUnit
-                    }}>
+                    }} onPress={() => setModalVisible(true)}>
                       <RegularText color={Black}>
                         Edit Profile
                       </RegularText>
@@ -198,16 +216,29 @@ function UserProfile({
                   </>
                 }
               </View>
-              <View style={[profileStyles.profileInfoContainer, {
-                marginTop: spacingUnit * 2,
-              }]}>
-                <Paragraph color={Black} style={{
-                  flexWrap: 'wrap',
-                  textAlign: 'left'
-                }}>
-                  {user.bio}
-                </Paragraph>
-              </View>
+              {
+                user.bio &&
+                <View style={[profileStyles.profileInfoContainer, {
+                  marginTop: spacingUnit * 2,
+                }]}>
+                  <Paragraph color={Black} style={{
+                    flexWrap: 'wrap',
+                    textAlign: 'left'
+                  }}>
+                    {user.bio}
+                  </Paragraph>
+                </View>
+              }
+              {
+                user.link &&
+                <Pressable onPress={() => Linking.openURL(user.link)} style={[profileStyles.profileInfoContainer, {
+                  marginTop: spacingUnit * 0.5,
+                }]}>
+                  <Paragraph color={Blue400}>
+                    {user.link}
+                  </Paragraph>
+                </Pressable>
+              }
               <DetermineUserProgress user={user} />
   
                 <SectionsHeader />

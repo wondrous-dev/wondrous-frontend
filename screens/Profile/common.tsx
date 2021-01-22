@@ -15,27 +15,29 @@ import { spacingUnit } from '../../utils/common'
 import { useProfile } from '../../utils/hooks'
 import { renderItem } from '../../components/Feed'
 
-export const ProfilePlaceholder = ({ projectOwnedByUser }) => {
+export const ProfilePlaceholder = ({ projectOwnedByUser, imageStyle }) => {
   const { setModalVisible } = useProfile()
   if (projectOwnedByUser) {
     return (
     <Pressable onPress={() => setModalVisible(true)}>
-      <View style={
-          profileStyles.profilePlaceholderContainer
-        }>
+      <View style={{
+          ...profileStyles.profilePlaceholderContainer,
+          ...imageStyle
+      }}>
         <Plus />
       </View>
       </Pressable>
     )
   }
-  return <ProfileDefaultImage style={profileStyles.profilePlaceholderImage} />
+  return <ProfileDefaultImage style={[profileStyles.profilePlaceholderImage, imageStyle]} />
 }
 
-export const ProjectInfoText = ({ count, type }) => {
+export const ProjectInfoText = ({ count, type, style }) => {
   return (
     <View style={{
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      ...style
     }}>
       <RegularText style={{
         fontFamily: 'Rubik SemiBold',

@@ -28,6 +28,7 @@ export const UploadImage = ({ isVisible, setModalVisible, image, setImage, saveI
   const [cameraOpen, setCameraOpen] = useState(false)
   // const [imageLibraryOpen, setLibraryOpen] = useState(false)
   const pickImage = async () => {
+    console.log('what the fuck')
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,

@@ -11,6 +11,7 @@ export const PublicUserFragment = gql`
     lastName
     privacyLevel
     reactedFeedComments
+    link
     usageProgress {
       projectCreated
       projectCategorySelected

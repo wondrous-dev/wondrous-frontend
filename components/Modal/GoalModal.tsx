@@ -168,7 +168,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                   {goal ? 'Update': 'Create' }
                 </RegularText>
               </Pressable>
-            </View>
+              </View>
             </View>
             <View style={modalStyles.infoContainer}>
               <View style={modalStyles.inputContainer}>
