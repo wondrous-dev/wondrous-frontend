@@ -57,5 +57,12 @@ export const profileStyles = StyleSheet.create({
     paddingBottom: spacingUnit,
     flex: 1,
     lineHeight: 22
+  },
+  editRowContainer: {
+    borderBottomColor: Grey300,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-between'
   }
 })

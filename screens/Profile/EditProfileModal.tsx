@@ -231,11 +231,12 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                             <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
                               Category
                             </Paragraph>
+                            <View style={profileStyles.editRowContainer}>
                             <Paragraph color={Black}>
                               {capitalizeFirstLetter(project.category)}
                             </Paragraph>
                             <Pressable style={{
-                              marginLeft: spacingUnit * 2
+                              // marginLeft: spacingUnit * 2
                             }} onPress={() => {
                               navigation.navigate('Root', {
                                 screen: 'Profile',
@@ -254,6 +255,40 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                                 Edit
                               </Paragraph>
                             </Pressable>
+                            </View>
+                          </View>
+                          <View style={profileStyles.changeRowContainer}>
+                            <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
+                              Tags
+                            </Paragraph>
+                            <View style={profileStyles.editRowContainer}>
+                            <Paragraph color={project.tags ? Black : Grey800}>
+                              {project.tags ?
+                              capitalizeFirstLetter(project.tags.join(', '))
+                              :
+                              'None'}
+                            </Paragraph>
+                            <Pressable style={{
+                              // marginLeft: spacingUnit * 2
+                            }} onPress={() => {
+                              navigation.navigate('Root', {
+                                screen: 'Profile',
+                                params: {
+                                  screen: 'EditProjectTags',
+                                  params: {
+                                    edit: true,
+                                    projectId: project.id,
+                                    existingTags: project.tags
+                                  }
+                                }
+                              })
+                              setModalVisible(false)
+                            }}>
+                              <Paragraph color={Blue400}>
+                                Edit
+                              </Paragraph>
+                            </Pressable>
+                            </View>
                           </View>
                         </>
                       }

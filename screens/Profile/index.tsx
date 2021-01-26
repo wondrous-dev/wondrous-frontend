@@ -13,6 +13,7 @@ import SetupTask from '../Workflow/SetupTask'
 import SetupAsk from '../Workflow/SetupAsk'
 import StreakIntro from '../Workflow/StreakIntro'
 import ProjectSetupCategory from '../SignupFlow/ProjectSetupCategory'
+import ProjectTagSelectionScreen from '../SignupFlow/ProjectTagSelectionScreen'
 import FeedItem from '../FeedItem'
 
 const Stack = createStackNavigator<BottomTabParamList>()
@@ -37,6 +38,7 @@ function ProfileScreen({
       <Stack.Screen name='SetupAsk' component={SetupAsk} options={{gestureEnabled: false}} />
       <Stack.Screen name='ProjectList' component={ProjectList} />
       <Stack.Screen name='EditProjectCategory' component={ProjectSetupCategory} />
+      <Stack.Screen name='EditProjectTags' component={ProjectTagSelectionScreen} />
     </Stack.Navigator>
   )
 }

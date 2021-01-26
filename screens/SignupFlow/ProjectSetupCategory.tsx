@@ -315,7 +315,8 @@ function ProjectSetupCategoryScreen({
                   params: {
                     screen: 'ProjectProfile',
                     params: {
-                      projectId
+                      projectId,
+                      editProfile: true
                     }
                   }
                 })

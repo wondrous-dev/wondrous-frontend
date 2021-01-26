@@ -56,7 +56,7 @@ function ProjectProfile({
   const [section, setSection] = useState('feed')
   const [refreshing, setRefreshing] = useState(false)
   const [isVisible, setModalVisible] = useState(false)
-  const [editProfile, setEditProfile] = useState(false)
+  const [editProfileModal, setEditProfileModal] = useState(false)
   const [profilePicture, setProfilePicture] = useState('')
   const [updateProject] = useMutation(UPDATE_PROJECT, {
     update(cache, { data }) {
@@ -71,7 +71,8 @@ function ProjectProfile({
   })
   const {
     projectId,
-    noGoingBack
+    noGoingBack,
+    editProfile
   } = route.params
   const [getProjectFeed, {
     loading: projectFeedLoading,
@@ -103,6 +104,9 @@ function ProjectProfile({
       getProjectFeed()
     }
     setProfilePicture(project && project.profilePicture)
+    if (editProfile) {
+      setEditProfileModal(true)
+    }
   }, [project])
 
   const onRefresh = useCallback(() => {
@@ -128,7 +132,7 @@ function ProjectProfile({
   }
 
   const profileData = getCorrectData(section)
-
+  console.log(project)
   return (
     <SafeAreaView style={{
       backgroundColor: White,
@@ -149,7 +153,7 @@ function ProjectProfile({
           getProjectFeed,
           setModalVisible
         }}>
-        <EditProfileModal project={project} isVisible={editProfile} setModalVisible={setEditProfile} saveMutation={updateProject} />
+        <EditProfileModal project={project} isVisible={editProfileModal} setModalVisible={setEditProfileModal} saveMutation={updateProject} />
 
           {
             projectOwnedByUser &&
@@ -201,7 +205,7 @@ function ProjectProfile({
                     paddingTop: 0,
                     paddingBottom: 0,
                     marginLeft: spacingUnit
-                  }} onPress={() => setEditProfile(true)}>
+                  }} onPress={() => setEditProfileModal(true)}>
                     <RegularText color={Black}>
                       Edit Profile
                     </RegularText>

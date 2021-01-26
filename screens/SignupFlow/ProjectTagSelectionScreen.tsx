@@ -17,6 +17,7 @@ import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
 import HeartEyes from '../../assets/images/emoji/heartEyes'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { moderateScale } from '../../utils/scale'
+import { withAuth, useMe } from '../../components/withAuth'
 import { useMutation } from '@apollo/client'
 
 const TagContext = createContext(null)
@@ -108,18 +109,28 @@ const SingleTag = ({ tagName, selected }) => {
 }
 
 const ProjectTagInput = ({ navigation, projectId }) => {
-    const [selectedTags, setSelectedTags] = useState({})
     const {
         setFinished,
         setError,
-        finished
+        finished,
+        existingTags,
+        edit
     } = useContext(TagContext)
+
+    let initialObj = {}
+    if (existingTags){
+        existingTags.forEach(tag => {
+            initialObj[tag] = true
+        })
+    }
+    const user = useMe()
+    const [selectedTags, setSelectedTags] = useState(initialObj)
     const [createTags] = useMutation(CREATE_PROJECT_TAGS, {
-        update(cache, { data: { updateProject }}) {
+        update(cache, { data: { createProjectTags }}) {
             cache.modify({
                 fields: {
-                    users(existingUser) {
-                        const newUser = {...existingUser}
+                    users() {
+                        const newUser = {...user}
                         newUser['usageProgress'] = newUser['usageProgress'] ? {
                             ...newUser['usageProgress'],
                             signupCompleted: true
@@ -127,6 +138,9 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                             signupCompleted: true
                         }
                         return [newUser]
+                    },
+                    getProjectById() {
+                        return {...createProjectTags}
                     }
                 }
             })
@@ -200,20 +214,19 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                                 firstTime: true
                             }
                         })
-                        if (finished) {
+                        if (edit) {
                             navigation.navigate('Root', {
                                 screen: 'Profile',
                                 params: {
-                                  screen: 'ProjectProfile',
-                                  params: {
-                                    projectId,
-                                    noGoingBack: true
-                                  }
+                                    screen: 'ProjectProfile',
+                                    params: {
+                                        projectId,
+                                        editProfile: true
+                                    }
                                 }
-                              })
+                            })
                         } else {
-                            setFinished(true)
-                            setTimeout(() => {
+                            if (finished) {
                                 navigation.navigate('Root', {
                                     screen: 'Profile',
                                     params: {
@@ -224,12 +237,26 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                                       }
                                     }
                                   })
-                            }, 1000)
+                            } else {
+                                setFinished(true)
+                                setTimeout(() => {
+                                    navigation.navigate('Root', {
+                                        screen: 'Profile',
+                                        params: {
+                                          screen: 'ProjectProfile',
+                                          params: {
+                                            projectId,
+                                            noGoingBack: true
+                                          }
+                                        }
+                                      })
+                                }, 1000)
+                            }
                         }
                     }
                 }}
             >
-                <ButtonText color={White}> Continue  </ButtonText>
+                <ButtonText color={White}> {edit ? 'Update' : 'Continue'}  </ButtonText>
             </PrimaryButton>
 
         </View>
@@ -241,7 +268,9 @@ function ProjectTagSelectionScreen({
     route
 }: StackScreenProps<RootStackParamList, 'ProjectTagSelection'>) {
     const {
-        projectId
+        projectId,
+        edit,
+        existingTags
     } = route.params
 
     const [finished, setFinished] = useState(false)
@@ -251,28 +280,31 @@ function ProjectTagSelectionScreen({
             backgroundColor: White,
             flex: 1,
         }}>
-            <Header skip='Root' skipParams={{
+            <Header skip={edit ? null : 'Root'} skipParams={{
                 screen: 'Profile'
             }} />
-            <View style={projectTagStyles.progressCircleContainer}>
-                <ProgressCircle
-                    percent={finished ? 100 :80}
-                    radius={50}
-                    borderWidth={10}
-                    color={finished ? Green400 : Orange}
-                    shadowColor={Grey300}
-                    bgColor={White}
-                >
-                    {finished ? 
-                        <HeartEyes />
-                        :
-                        <BigMouthSmile />
-                    }
-                </ProgressCircle>
-                <View style={projectTagStyles.stepContainer}>
-                    <Text style={projectTagStyles.stepCount}>step 4/4</Text>
+            {
+                !edit &&
+                <View style={projectTagStyles.progressCircleContainer}>
+                    <ProgressCircle
+                        percent={finished ? 100 :80}
+                        radius={50}
+                        borderWidth={10}
+                        color={finished ? Green400 : Orange}
+                        shadowColor={Grey300}
+                        bgColor={White}
+                    >
+                        {finished ? 
+                            <HeartEyes />
+                            :
+                            <BigMouthSmile />
+                        }
+                    </ProgressCircle>
+                    <View style={projectTagStyles.stepContainer}>
+                        <Text style={projectTagStyles.stepCount}>step 4/4</Text>
+                    </View>
                 </View>
-            </View>
+            }
             {
                 error &&
                 <View style={{
@@ -287,7 +319,9 @@ function ProjectTagSelectionScreen({
                 finished,
                 setFinished,
                 error,
-                setError
+                setError,
+                existingTags,
+                edit
             }}>
             <ProjectTagInput navigation={navigation} projectId={projectId} />
             </TagContext.Provider>
@@ -295,4 +329,4 @@ function ProjectTagSelectionScreen({
     )
 }
 
-export default ProjectTagSelectionScreen
+export default withAuth(ProjectTagSelectionScreen)
