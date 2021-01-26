@@ -16,8 +16,8 @@ import { useProfile } from '../../utils/hooks'
 import { renderItem } from '../../components/Feed'
 
 export const ProfilePlaceholder = ({ projectOwnedByUser, imageStyle }) => {
-  const { setModalVisible } = useProfile()
   if (projectOwnedByUser) {
+    const { setModalVisible } = useProfile()
     return (
     <Pressable onPress={() => setModalVisible(true)}>
       <View style={{

@@ -9,7 +9,7 @@ import { TextEditor } from '../../storybook/stories/TextEditor'
 import { TextEditorContext } from '../../utils/contexts'
 import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300, Grey300 } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
-import { spacingUnit } from '../../utils/common'
+import { capitalizeFirstLetter, spacingUnit } from '../../utils/common'
 import { endOfWeekFromNow } from '../../utils/date'
 import { useMe } from '../../components/withAuth'
 import { GET_USER_PROJECTS } from '../../graphql/queries/project'
@@ -26,11 +26,14 @@ import { useNavigation } from '@react-navigation/native'
 
 export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isVisible, setModalVisible }) => {
   const initialUsername = user && user.username
+  const initialProjectName = project && project.name
   const initialLink = user && user.link
   const initialBio = (user && user.bio) || (project && project.description)
   const initialProfilePicture = (user && user.profilePicture) || (project && project.profilePicture)
 
+  const navigation = useNavigation()
   const [username, setUsername] = useState(initialUsername)
+  const [projectName, setProjectName] = useState(initialProjectName)
   const [link, setLink] = useState(initialLink)
   const [bio, setBio] = useState(initialBio)
   const [profilePicture, setProfilePicture] = useState(initialProfilePicture)
@@ -59,6 +62,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
           <KeyboardAwareScrollView>
           <View style={modalStyles.topRowContainer}>
               <Pressable onPress={() => {
+                setModalVisible(false)
                 resetState()
               }} style={{
                 flex: 1
@@ -82,24 +86,34 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                 flex: 1,
               }}>
               <Pressable style={modalStyles.createUpdateButton} onPress={() => {
+                let variableInputObj = {}
                 if (user) {
-                  console.log('bio', bio, link, username)
-                  saveMutation({
-                    variables: {
-                      input: {
-                        ...(username && {
-                          username
-                        }),
-                        ...(bio && {
-                          bio
-                        }),
-                        ...(link && {
-                          link
-                        })
-                      }
-                    }
-                  })
+                  variableInputObj = {
+                    ...(username && {
+                      username
+                    }),
+                    ...(bio && {
+                      bio
+                    }),
+                    ...(link && {
+                      link
+                    })
+                  }
+                } else if (project) {
+                  variableInputObj = {
+                    ...(projectName && {
+                      name: projectName
+                    }),
+                    ...(bio && {
+                      description: bio
+                    })
+                  }
                 }
+                saveMutation({
+                  variables: {
+                    input: variableInputObj
+                  }
+                })
                 // submit({
                 //   name: goalText,
                 //   detail: description,
@@ -175,16 +189,18 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                 }}>
                     <View style={profileStyles.changeRowContainer}>
                       <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
-                        Username
+                        {user ? 'Username'  : 'Name'}
                       </Paragraph>
                       <TextInput
-                          onChangeText={text => setUsername(text)}
-                          value={username}
-                          placeholder='Username'
+                          onChangeText={text => user ? setUsername(text) : setProjectName(text)}
+                          value={user ? username : projectName}
+                          placeholder={user ? 'Username' : 'Project name'}
                           style={profileStyles.changeRowText}
                       />
                       </View>
-                      <View style={profileStyles.changeRowContainer}>
+                      {
+                        user &&
+                        <View style={profileStyles.changeRowContainer}>
                         <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
                           Website
                         </Paragraph>
@@ -195,6 +211,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                           style={profileStyles.changeRowText}
                         />
                       </View>
+                      }
                       <View style={profileStyles.changeRowContainer}>
                         <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
                           Bio
@@ -207,6 +224,39 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                           multiline
                         />
                       </View>
+                      {
+                        project &&
+                        <>
+                          <View style={profileStyles.changeRowContainer}>
+                            <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
+                              Category
+                            </Paragraph>
+                            <Paragraph color={Black}>
+                              {capitalizeFirstLetter(project.category)}
+                            </Paragraph>
+                            <Pressable style={{
+                              marginLeft: spacingUnit * 2
+                            }} onPress={() => {
+                              navigation.navigate('Root', {
+                                screen: 'Profile',
+                                params: {
+                                  screen: 'EditProjectCategory',
+                                  params: {
+                                    edit: true,
+                                    projectId: project.id,
+                                    existingProjectCategory: project.category
+                                  }
+                                }
+                              })
+                              setModalVisible(false)
+                            }}>
+                              <Paragraph color={Blue400}>
+                                Edit
+                              </Paragraph>
+                            </Pressable>
+                          </View>
+                        </>
+                      }
                 </View>
             </View>
           </KeyboardAwareScrollView>

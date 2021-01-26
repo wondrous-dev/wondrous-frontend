@@ -8,7 +8,7 @@ export const Title = ({ style, children }) => (
   <Text style={{
     ...baseStyle.title,
     ...style
-  }}> {children} </Text>
+  }}>{children}</Text>
 )
 
 export const Subheading = ({ style, children, color=White }) => (
@@ -18,7 +18,7 @@ export const Subheading = ({ style, children, color=White }) => (
     ... {
       color
     }
-  }}> {children} </Text>
+  }}>{children}</Text>
 )
 
 export const Paragraph = ({ style, children, color=Black }) => (
@@ -47,7 +47,7 @@ export const ButtonText = ({ style, children, color }) => (
     ...{
       color
     }
-  }}> {children} </Text>
+  }}>{children}</Text>
 )
 
 export const TinyText = ({ style, children, color }) => (
@@ -67,5 +67,5 @@ export const ErrorText = ({ style, children, color=Red400 }) => (
     ... {
       color
     }
-  }}> {children} </Text>
+  }}>{children}</Text>
 )

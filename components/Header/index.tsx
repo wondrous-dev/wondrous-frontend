@@ -3,8 +3,8 @@ import { SafeAreaView, View, Pressable, Dimensions, Share } from 'react-native'
 import { useRoute, useNavigation } from '@react-navigation/native'
 // import * as Sharing from 'expo-sharing'
 
-import { Orange, Grey300, Grey250, White } from '../../constants/Colors'
-import { Title, RegularText } from '../../storybook/stories/Text'
+import { Orange, Grey300, Grey250, White, Black } from '../../constants/Colors'
+import { Title, RegularText, Subheading } from '../../storybook/stories/Text'
 import BackCaret from '../../assets/images/back-caret'
 import { spacingUnit } from '../../utils/common'
 import { ShareModal } from '../Feed'
@@ -25,7 +25,7 @@ const shouldBackPage = (route) => {
   return true
 }
 
-export const Header = ({ skip, skipParams, noGoingBack, share, rightButton }) => {
+export const Header = ({ title, skip, skipParams, noGoingBack, share, rightButton }) => {
   const route = useRoute()
   const navigation = useNavigation()
   const backPage = noGoingBack ? false : shouldBackPage(route)
@@ -56,12 +56,19 @@ export const Header = ({ skip, skipParams, noGoingBack, share, rightButton }) =>
         !backPage && share && rightButton &&
         <View />
       }
-      <Title style={{
-        color: Orange,
-        // flex: 2
-      }}>
-        W
-      </Title>
+      {
+        title ?
+        <Subheading color={Black}>
+          {title}
+        </Subheading>
+        :
+        <Title style={{
+          color: Orange,
+          // flex: 2
+        }}>
+          W
+        </Title>
+      }
       {
         skip &&
         <Pressable onPress={() => {

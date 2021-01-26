@@ -11,6 +11,7 @@ import { PrimaryButton, SecondaryButton } from '../storybook/stories/Button'
 import { NotificationTester } from '../components/Notifications/RegisterNotification'
 import { scale, moderateScale, verticalScale } from '../utils/scale'
 import SuperHeroSvg from '../assets/images/superhero.svg'
+import { spacingUnit } from '../utils/common'
 
 export default function HomeScreen({
   navigation
@@ -41,14 +42,18 @@ export default function HomeScreen({
       }} textPressStyle = {{
         color: White
       }}>
-          <ButtonText color={White}>
+          <ButtonText style={{
+            fontSize: 16
+          }} color={White}>
           Get started
           </ButtonText>
       </PrimaryButton>
       <SecondaryButton onPress={() => navigation.navigate('Signup')} style={{
-        marginTop: 8
+        marginTop: spacingUnit * 1.5
       }}>
-        <ButtonText color={Black}>
+        <ButtonText style={{
+            fontSize: 16
+          }} color={Black}>
           Log in
         </ButtonText>
       </SecondaryButton>

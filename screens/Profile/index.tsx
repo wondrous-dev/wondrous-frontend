@@ -5,12 +5,14 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { withAuth } from '../../components/withAuth'
 import { BottomTabParamList } from '../../types'
 import UserProfile from './UserProfile'
+import ProjectList from './ProjectList'
 import ProjectProfile from './ProjectProfile'
 import WorkflowWelcome from '../Workflow/Welcome'
 import SetupGoal from '../Workflow/SetupGoal'
 import SetupTask from '../Workflow/SetupTask'
 import SetupAsk from '../Workflow/SetupAsk'
 import StreakIntro from '../Workflow/StreakIntro'
+import ProjectSetupCategory from '../SignupFlow/ProjectSetupCategory'
 import FeedItem from '../FeedItem'
 
 const Stack = createStackNavigator<BottomTabParamList>()
@@ -33,6 +35,8 @@ function ProfileScreen({
       <Stack.Screen name='SetupTask' component={SetupTask} options={{ gestureEnabled: false }} />
       <Stack.Screen name='StreakIntro' component={StreakIntro} />
       <Stack.Screen name='SetupAsk' component={SetupAsk} options={{gestureEnabled: false}} />
+      <Stack.Screen name='ProjectList' component={ProjectList} />
+      <Stack.Screen name='EditProjectCategory' component={ProjectSetupCategory} />
     </Stack.Navigator>
   )
 }

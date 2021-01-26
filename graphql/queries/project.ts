@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 
-import { PublicProjectFragment } from '../fragments/project'
+import { PublicProjectFragment, AdditionalProjectFragment } from '../fragments/project'
 import { ActivityFeedItem } from '../fragments/feed'
 
 export const GET_PROJECT_BY_ID = gql`
@@ -27,6 +27,8 @@ export const GET_USER_PROJECTS = gql`
       project {
         id
         name
+        description
+        profilePicture
       }
       role
     }

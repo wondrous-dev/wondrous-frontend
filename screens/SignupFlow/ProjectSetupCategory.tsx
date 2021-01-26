@@ -182,13 +182,13 @@ function ProjectSetupCategoryScreen({
   navigation,
   route
 }: StackScreenProps<RootStackParamList, 'ProjectSetupCategory'>) {
-  const [projectCategory, setProjectCategory] = useState(null)
+  const user = useMe()
   const [updateProject] = useMutation(UPDATE_PROJECT, {
     update(cache, { data: { updateProject }}) {
       cache.modify({
           fields: {
-              users(existingUser) {
-                  const newUser = {...existingUser}
+              users() {
+                  const newUser = {...user}
                   newUser['usageProgress'] = newUser['usageProgress'] ? {
                       ...newUser['usageProgress'],
                       projectCategorySelected: true
@@ -196,19 +196,23 @@ function ProjectSetupCategoryScreen({
                       projectCategorySelected: true
                   }
                   return [newUser]
+              },
+              getProjectById(existingProject) {
+
               }
           }
       })
     }
   })
-
   const {
-    projectId
+    projectId,
+    edit,
+    existingProjectCategory
   } = route.params
-  const user = useMe()
+  const [projectCategory, setProjectCategory] = useState(existingProjectCategory)
   const [error, setError] = useState(null)
   useEffect(() => {
-    if (user && user.usageProgress && user.usageProgress.projectCategorySelected) {
+    if (!edit && user && user.usageProgress && user.usageProgress.projectCategorySelected) {
       const categorySelected = user.usageProgress.projectCategorySelected
       if (categorySelected === 'business' || categorySelected === 'tech') {
         navigation.navigate('ProjectTagSelection', {
@@ -241,6 +245,7 @@ function ProjectSetupCategoryScreen({
         setError
       }}>
         <Header />
+        {!edit &&
         <View style={projectSetupStyles.progressCircleContainer}>
           <ProgressCircle
               percent={60}
@@ -256,6 +261,7 @@ function ProjectSetupCategoryScreen({
             <Text style={projectSetupStyles.stepCount}>step 3/4</Text>
           </View>
         </View>
+        }
         {
           error &&
           <View style={{
@@ -286,28 +292,39 @@ function ProjectSetupCategoryScreen({
                   firstTime: true
                 }
               })
-              if (projectCategory === 'business' || projectCategory === 'tech') {
-                navigation.navigate('ProjectTagSelection', {
-                  projectId
-                })
+              if (!edit) {
+                if (projectCategory === 'business' || projectCategory === 'tech') {
+                  navigation.navigate('ProjectTagSelection', {
+                    projectId
+                  })
+                } else {
+                  navigation.navigate('Root', {
+                    screen: 'Profile',
+                    params: {
+                      screen: 'ProjectProfile',
+                      params: {
+                        projectId,
+                        noGoingBack: true
+                      }
+                    }
+                  })
+                }
               } else {
                 navigation.navigate('Root', {
                   screen: 'Profile',
                   params: {
                     screen: 'ProjectProfile',
                     params: {
-                      projectId,
-                      noGoingBack: true
+                      projectId
                     }
                   }
                 })
-                
               }
             }
           }
           }>
             <ButtonText color={White}>
-              Continue
+              {edit ? 'Update' : 'Continue'}
             </ButtonText>
       </PrimaryButton>
     </SafeAreaView>

@@ -11,6 +11,7 @@ export const PublicProjectFragment = gql`
     profilePicture
     createdBy
     tags
+    category
     collaborators {
       role
       user {

@@ -18,7 +18,7 @@ import { UPDATE_USER } from '../../graphql/mutations'
 import { GET_USER, GET_USER_ADDITIONAL_INFO } from '../../graphql/queries'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton } from '../../storybook/stories/Button'
-import { Black, Grey300, White, Blue400 } from '../../constants/Colors'
+import { Black, Grey300, White, Blue400, Grey800 } from '../../constants/Colors'
 import { ProfileContext } from '../../utils/contexts'
 import {
   ProfilePlaceholder,
@@ -124,7 +124,7 @@ function UserProfile({
     if (user) {
       setProfilePicture(user.profilePicture)
     }
-  }, [])
+  }, [user && user.profilePicture])
 
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo
   return (
@@ -179,24 +179,41 @@ function UserProfile({
                   :
                   <ProfilePlaceholder projectOwnedByUser={userOwned} />
                 }
+                <Pressable onPress={() => navigation.navigate('Root', {
+                  screen: 'Profile',
+                  params: {
+                    screen: 'ProjectList'
+                  }
+                })}>
                 <ProjectInfoText style={{
                   marginRight: spacingUnit * 4,
                   marginLeft: spacingUnit * 4
                 }} count={additionalInfo && additionalInfo.projectCount} type={additionalInfo && additionalInfo.projectCount === 1 ? 'project' : 'projects'} />
+                </Pressable>
+                <Pressable>
                 <ProjectInfoText style={{
                   marginRight: spacingUnit * 4
                 }} count={additionalInfo && additionalInfo.followerCount} type={additionalInfo && additionalInfo.followerCount === 1 ? 'follower': 'followers'} />
-                <ProjectInfoText count={additionalInfo && additionalInfo.followingCount} type='following' />
+                </Pressable>
+                <Pressable>
+                  <ProjectInfoText count={additionalInfo && additionalInfo.followingCount} type='following' />
+                </Pressable>
                 {/* <ProjectInfoText count={user.tasksCompleted} type='tasks completed' /> */}
               </View>
               <View style={[profileStyles.profileInfoContainer, {
-                marginTop: spacingUnit * 3
+                marginTop: spacingUnit,
+                alignItems: 'flex-start'
               }]}>
+                <View style={{
+                  flexDirection: 'column'
+                }}>
                 <Subheading style={{
                   fontSize: 18
                 }} color={Black}>
                   {user.firstName} {user.lastName}
                 </Subheading>
+                <Paragraph color={Grey800}>@{user.username}</Paragraph>
+                </View>
                 {
                   userOwned &&
                   <>

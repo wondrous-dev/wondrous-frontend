@@ -10,16 +10,17 @@ import { useNavigation } from '@react-navigation/native'
 import { withAuth, useMe } from '../../components/withAuth'
 import { ProfileTabParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { Black, Grey300, White } from '../../constants/Colors'
+import { Black, Blue500, Grey300, White, Blue200 } from '../../constants/Colors'
 import { profileStyles } from './style'
 import { GET_PROJECT_BY_ID, GET_PROJECT_FEED } from '../../graphql/queries/project'
 import { UPDATE_PROJECT } from '../../graphql/mutations/project'
 import { SafeImage, UploadImage } from '../../storybook/stories/Image'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton, FlexibleButton, PrimaryButton } from '../../storybook/stories/Button'
-import { spacingUnit, wait } from '../../utils/common'
+import { capitalizeFirstLetter, spacingUnit, wait } from '../../utils/common'
 import { WONDER_BASE_URL } from '../../constants/'
 import { ProfileContext } from '../../utils/contexts'
+import { EditProfileModal } from './EditProfileModal'
 import {
   ProfilePlaceholder,
   ProjectInfoText,
@@ -29,6 +30,24 @@ import {
   renderProfileItem
 } from './common'
 
+const TagView = ({ tag }) => {
+  return (
+    <View style={{
+      backgroundColor: Blue500,
+      paddingLeft: spacingUnit,
+      paddingRight: spacingUnit,
+      paddingTop: 2,
+      paddingBottom: 2,
+      borderRadius: 4,
+      marginRight: spacingUnit * 2
+    }}>
+      <RegularText color={White}>
+        {capitalizeFirstLetter(tag)}
+      </RegularText>
+    </View>
+  )
+}
+
 function ProjectProfile({
   navigation,
   route
@@ -37,6 +56,7 @@ function ProjectProfile({
   const [section, setSection] = useState('feed')
   const [refreshing, setRefreshing] = useState(false)
   const [isVisible, setModalVisible] = useState(false)
+  const [editProfile, setEditProfile] = useState(false)
   const [profilePicture, setProfilePicture] = useState('')
   const [updateProject] = useMutation(UPDATE_PROJECT, {
     update(cache, { data }) {
@@ -77,7 +97,7 @@ function ProjectProfile({
   const feedSelected = section === 'feed'
   const actionSelected = section === 'action'
   const asksSelected = section === 'asks'
-
+  
   useEffect(() => {
     if (section === 'feed') {
       getProjectFeed()
@@ -101,7 +121,7 @@ function ProjectProfile({
     if (section === 'feed') {
       return projectFeedData && projectFeedData.getProjectFeed
     } else if (section === 'action') {
-      if (!(user && user.usageProgress && user.usageProgress.workflowCompleted)) {
+      if (!(user && user.usageProgress && user.usageProgress.askCreated)) {
         return ['start']
       }
     }
@@ -129,6 +149,8 @@ function ProjectProfile({
           getProjectFeed,
           setModalVisible
         }}>
+        <EditProfileModal project={project} isVisible={editProfile} setModalVisible={setEditProfile} saveMutation={updateProject} />
+
           {
             projectOwnedByUser &&
             <UploadImage isVisible={isVisible} setModalVisible={setModalVisible} image={profilePicture} setImage={setProfilePicture} saveImageMutation={updateProject} imagePrefix={`project/${projectId}/`} saveImageMutationVariable={[{projectId, input: { profilePicture }}, ['input', 'profilePicture']]}  />
@@ -179,7 +201,7 @@ function ProjectProfile({
                     paddingTop: 0,
                     paddingBottom: 0,
                     marginLeft: spacingUnit
-                  }}>
+                  }} onPress={() => setEditProfile(true)}>
                     <RegularText color={Black}>
                       Edit Profile
                     </RegularText>
@@ -196,6 +218,20 @@ function ProjectProfile({
               }}>
                 {project.description}
               </Paragraph>
+            </View>
+            <View style={{
+              marginTop: spacingUnit * 2,
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              paddingLeft: spacingUnit * 2,
+              paddingRight: spacingUnit * 2
+            }}>
+              <TagView tag={project.category} />
+              {
+                project.tags && project.tags.map(tag => (
+                  <TagView tag={tag}/>
+                ))
+              }
             </View>
             <DetermineUserProgress user={user} projectId={projectId} />
 
