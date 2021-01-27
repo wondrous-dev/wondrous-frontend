@@ -12,6 +12,10 @@ export const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
+export const isEmptyObject = (obj) => {
+  return Object.keys(obj).length === 0
+}
+
 export const flattenParams = (obj, accObj = {}) => {
   if (!obj) return null
   for (let key in obj) {

@@ -1,23 +1,20 @@
 
-import React, { useState, createContext, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { Dimensions, Image, Pressable, SafeAreaView, StyleSheet, View, RefreshControl, FlatList } from 'react-native'
-import { createStackNavigator } from '@react-navigation/stack'
-import { useQuery, useLazyQuery, useMutation, useReactiveVar } from '@apollo/client'
-import { Bar } from 'react-native-progress'
-import { useNavigation } from '@react-navigation/native'
+import { Pressable, SafeAreaView, View, RefreshControl, FlatList } from 'react-native'
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { ProfileTabParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { Black, Blue500, Grey300, White, Blue200 } from '../../constants/Colors'
+import { Black, Blue500, Grey300, White, Blue400, Grey800 } from '../../constants/Colors'
 import { profileStyles } from './style'
 import { GET_PROJECT_BY_ID, GET_PROJECT_FEED } from '../../graphql/queries/project'
 import { UPDATE_PROJECT } from '../../graphql/mutations/project'
 import { SafeImage, UploadImage } from '../../storybook/stories/Image'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton, FlexibleButton, PrimaryButton } from '../../storybook/stories/Button'
-import { capitalizeFirstLetter, spacingUnit, wait } from '../../utils/common'
+import { capitalizeFirstLetter, isEmptyObject, spacingUnit, wait } from '../../utils/common'
 import { WONDER_BASE_URL } from '../../constants/'
 import { ProfileContext } from '../../utils/contexts'
 import { EditProfileModal } from './EditProfileModal'
@@ -29,6 +26,7 @@ import {
   DetermineUserProgress,
   renderProfileItem
 } from './common'
+import Link from '../../assets/images/link'
 
 const TagView = ({ tag }) => {
   return (
@@ -103,7 +101,10 @@ function ProjectProfile({
     if (section === 'feed') {
       getProjectFeed()
     }
-    setProfilePicture(project && project.profilePicture)
+
+    if (!profilePicture && project && project.profilePicture) {
+      setProfilePicture(project && project.profilePicture)
+    }
     if (editProfile) {
       setEditProfileModal(true)
     }
@@ -132,7 +133,7 @@ function ProjectProfile({
   }
 
   const profileData = getCorrectData(section)
-  console.log(project)
+
   return (
     <SafeAreaView style={{
       backgroundColor: White,
@@ -176,7 +177,7 @@ function ProjectProfile({
               justifyContent: 'space-between',
             }]}>
               {
-                project.profilePicture ?
+                profilePicture ?
                 <SafeImage style={profileStyles.profileImage} src={profilePicture|| project.profilePicture} />
                 :
                 <ProfilePlaceholder projectOwnedByUser={projectOwnedByUser} />
@@ -223,6 +224,34 @@ function ProjectProfile({
                 {project.description}
               </Paragraph>
             </View>
+            {project && project.links && !isEmptyObject(project.links) && 
+              <Pressable style={{
+                paddingLeft: spacingUnit * 2,
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: spacingUnit
+              }} onPress={() => {
+                navigation.navigate('Root', {
+                  screen: 'Profile',
+                  params: {
+                    screen: 'Links',
+                    params: {
+                      links: project.links,
+                      name: project.name
+                    }
+                  }
+                })
+              }}>
+                <Link color={Grey800} style={{
+                  marginRight: spacingUnit * 0.5,
+                  width: spacingUnit * 2.5,
+                  height: spacingUnit * 2.5
+                }} />
+                <Paragraph color={Blue400}>
+                  Project links
+                </Paragraph>
+              </Pressable>
+            }
             <View style={{
               marginTop: spacingUnit * 2,
               flexDirection: 'row',

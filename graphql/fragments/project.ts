@@ -18,6 +18,13 @@ export const PublicProjectFragment = gql`
         id
       }
     }
+    links {
+      website
+      linkedin
+      github
+      twitter
+      instagram
+    }
     createdAt
     followCount
     goalsCompletedCount

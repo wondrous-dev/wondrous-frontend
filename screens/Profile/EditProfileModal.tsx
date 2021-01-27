@@ -30,7 +30,11 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
   const initialLink = user && user.link
   const initialBio = (user && user.bio) || (project && project.description)
   const initialProfilePicture = (user && user.profilePicture) || (project && project.profilePicture)
-
+  const initialProjectWebsite = (project && project.links && project.links.website) || ''
+  const initialProjectTwitter = (project && project.links && project.links.twitter) || ''
+  const initialProjectInstagram = (project && project.links && project.links.instagram) || ''
+  const initialProjectLinkedin = (project && project.links && project.links.linkedin) || ''
+  const initialProjectGithub = (project && project.links && project.links.github) || ''
   const navigation = useNavigation()
   const [username, setUsername] = useState(initialUsername)
   const [projectName, setProjectName] = useState(initialProjectName)
@@ -38,6 +42,11 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
   const [bio, setBio] = useState(initialBio)
   const [profilePicture, setProfilePicture] = useState(initialProfilePicture)
   const [changePhoto, setChangePhoto] = useState(false)
+  const [projectWebsite, setProjectWebsite] = useState(initialProjectWebsite)
+  const [projectTwitter, setProjectTwitter] = useState(initialProjectTwitter)
+  const [projectInstagram, setProjectInstagram] = useState(initialProjectInstagram)
+  const [projectLinkedin, setProjectLinkedin] = useState(initialProjectLinkedin)
+  const [projectGithub, setProjectGithub] = useState(initialProjectGithub)
 
   const resetState = useCallback(() => {
     setUsername(initialUsername)
@@ -86,7 +95,9 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                 flex: 1,
               }}>
               <Pressable style={modalStyles.createUpdateButton} onPress={() => {
-                let variableInputObj = {}
+                let variableInputObj = {
+                  'links': {}
+                }
                 if (user) {
                   variableInputObj = {
                     ...(username && {
@@ -106,11 +117,34 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                     }),
                     ...(bio && {
                       description: bio
-                    })
+                    }),
+                    links: {}
+                  }
+                  if (projectWebsite) {
+                    variableInputObj['links']['website'] = projectWebsite
+                  }
+                  if (projectTwitter) {
+                    variableInputObj['links']['twitter'] = projectTwitter
+                  }
+
+                  if (projectInstagram) {
+                    variableInputObj['links']['instagram'] = projectInstagram
+                  }
+                  if (projectLinkedin) {
+                    variableInputObj['links']['linkedin'] = projectLinkedin
+                  }
+                  if (projectGithub) {
+                    variableInputObj['links']['github'] = projectGithub
+                  }
+                  if (Object.keys(variableInputObj['links']).length === 0) {
+                    variableInputObj['links'] = null
                   }
                 }
                 saveMutation({
                   variables: {
+                    ...(project && {
+                      projectId: project.id
+                    }),
                     input: variableInputObj
                   }
                 })
@@ -290,6 +324,61 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                             </Pressable>
                             </View>
                           </View>
+                        <View style={profileStyles.changeRowContainer}>
+                          <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
+                            Website
+                          </Paragraph>
+                          <TextInput
+                            onChangeText={text => setProjectWebsite(text)}
+                            value={projectWebsite}
+                            placeholder='Add website'
+                            style={profileStyles.changeRowText}
+                          />
+                        </View>
+                        <View style={profileStyles.changeRowContainer}>
+                          <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
+                            Twitter
+                          </Paragraph>
+                          <TextInput
+                            onChangeText={text => setProjectTwitter(text)}
+                            value={projectTwitter}
+                            placeholder='Add Twitter'
+                            style={profileStyles.changeRowText}
+                          />
+                        </View>
+                        <View style={profileStyles.changeRowContainer}>
+                          <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
+                            Instagram
+                          </Paragraph>
+                          <TextInput
+                            onChangeText={text => setProjectInstagram(text)}
+                            value={projectInstagram}
+                            placeholder='Add Instagram'
+                            style={profileStyles.changeRowText}
+                          />
+                        </View>
+                        <View style={profileStyles.changeRowContainer}>
+                          <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
+                            Linkedin
+                          </Paragraph>
+                          <TextInput
+                            onChangeText={text => setProjectLinkedin(text)}
+                            value={projectLinkedin}
+                            placeholder='Add Linkedin'
+                            style={profileStyles.changeRowText}
+                          />
+                        </View>
+                        <View style={profileStyles.changeRowContainer}>
+                          <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
+                            Github
+                          </Paragraph>
+                          <TextInput
+                            onChangeText={text => setProjectGithub(text)}
+                            value={projectGithub}
+                            placeholder='Add Github'
+                            style={profileStyles.changeRowText}
+                          />
+                        </View>
                         </>
                       }
                 </View>

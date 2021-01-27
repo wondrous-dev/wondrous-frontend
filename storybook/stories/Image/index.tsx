@@ -28,7 +28,6 @@ export const UploadImage = ({ isVisible, setModalVisible, image, setImage, saveI
   const [cameraOpen, setCameraOpen] = useState(false)
   // const [imageLibraryOpen, setLibraryOpen] = useState(false)
   const pickImage = async () => {
-    console.log('what the fuck')
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -128,9 +127,7 @@ export function SvgImage ({ width, height, webStyle, srcElement, style }) {
 }
 
 export const SafeImage = ({ src, style, defaultImage }) => {
-  const [getImage, { data, loading, error }] = useLazyQuery(GET_PREVIEW_IMAGE, {
-    fetchPolicy: 'cache-and-network'
-  })
+  const [getImage, { data, loading, error }] = useLazyQuery(GET_PREVIEW_IMAGE)
   if (!src && defaultImage) {
     return <Image style={style} source={defaultImage} />
   }
@@ -147,7 +144,7 @@ export const SafeImage = ({ src, style, defaultImage }) => {
         }
       })
     }
-  }, [src])
+  }, [])
   if (src.startsWith('https') || src.startsWith('file://')) {
     return <Image style={style} source={{
       uri: src
