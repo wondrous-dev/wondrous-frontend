@@ -10,7 +10,7 @@ import { withAuth, useMe } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { profileStyles } from './style'
-import { spacingUnit, wait } from '../../utils/common'
+import { spacingUnit, wait, isEmptyObject } from '../../utils/common'
 import BottomTabNavigator from '../../navigation/BottomTabNavigator'
 import { UploadImage, SafeImage } from '../../storybook/stories/Image'
 import { WONDER_BASE_URL } from '../../constants/'
@@ -28,6 +28,7 @@ import {
   renderProfileItem
 } from './common'
 import { EditProfileModal } from './EditProfileModal'
+import Link from '../../assets/images/link'
 
 const getUserId = ({ route, user }) => {
   if (route && route.params && route.params.userId) {
@@ -190,12 +191,28 @@ function UserProfile({
                   marginLeft: spacingUnit * 4
                 }} count={additionalInfo && additionalInfo.projectCount} type={additionalInfo && additionalInfo.projectCount === 1 ? 'project' : 'projects'} />
                 </Pressable>
-                <Pressable>
+                <Pressable onPress={() => navigation.navigate('Root', {
+                  screen: 'Profile',
+                  params: {
+                    screen: 'UserList',
+                    params: {
+                      followers: true
+                    }
+                  }
+                })}>
                 <ProjectInfoText style={{
                   marginRight: spacingUnit * 4
                 }} count={additionalInfo && additionalInfo.followerCount} type={additionalInfo && additionalInfo.followerCount === 1 ? 'follower': 'followers'} />
                 </Pressable>
-                <Pressable>
+                <Pressable onPress={() => navigation.navigate('Root', {
+                  screen: 'Profile',
+                  params: {
+                    screen: 'UserList',
+                    params: {
+                      following: true
+                    }
+                  }
+                })}>
                   <ProjectInfoText count={additionalInfo && additionalInfo.followingCount} type='following' />
                 </Pressable>
                 {/* <ProjectInfoText count={user.tasksCompleted} type='tasks completed' /> */}
@@ -246,16 +263,34 @@ function UserProfile({
                   </Paragraph>
                 </View>
               }
-              {
-                user.link &&
-                <Pressable onPress={() => Linking.openURL(user.link)} style={[profileStyles.profileInfoContainer, {
-                  marginTop: spacingUnit * 0.5,
-                }]}>
-                  <Paragraph color={Blue400}>
-                    {user.link}
-                  </Paragraph>
-                </Pressable>
-              }
+              {user && user.links && !isEmptyObject(user.links) && 
+              <Pressable style={{
+                paddingLeft: spacingUnit * 2,
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: spacingUnit
+              }} onPress={() => {
+                navigation.navigate('Root', {
+                  screen: 'Profile',
+                  params: {
+                    screen: 'Links',
+                    params: {
+                      links: user.links,
+                      name: user.username
+                    }
+                  }
+                })
+              }}>
+                <Link color={Grey800} style={{
+                  marginRight: spacingUnit * 0.5,
+                  width: spacingUnit * 2.5,
+                  height: spacingUnit * 2.5
+                }} />
+                <Paragraph color={Blue400}>
+                  Personal links
+                </Paragraph>
+              </Pressable>
+            }
               <DetermineUserProgress user={user} />
   
                 <SectionsHeader />

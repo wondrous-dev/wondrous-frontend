@@ -66,3 +66,22 @@ export const profileStyles = StyleSheet.create({
     justifyContent: 'space-between'
   }
 })
+
+export const listStyles = StyleSheet.create({
+  listContainer: {
+    marginTop: spacingUnit * 2
+  },
+  listItem: {
+    flexDirection: 'row',
+    paddingLeft: spacingUnit * 2,
+    paddingRight: spacingUnit * 2,
+    alignItems: 'flex-start',
+    marginBottom: spacingUnit * 2
+  },
+  listImage: {
+    width: spacingUnit * 6,
+    height: spacingUnit * 6,
+    borderRadius: spacingUnit * 3,
+    marginRight: spacingUnit
+  }
+})

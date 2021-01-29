@@ -48,3 +48,22 @@ export const GET_HOME_FEED = gql`
   }
   ${ActivityFeedItem}
 `
+
+export const GET_USER_FOLLOWERS = gql`
+  query GetUserFollowers($userId: ID!) {
+    getUserFollowers(userId: $userId) {
+      ...PublicUser
+    }
+  }
+  ${PublicUserFragment}
+`
+
+export const GET_USER_FOLLOWING = gql`
+  query GetUserFollowing($userId: ID!) {
+    getUserFollowing(userId: $userId) {
+      ...PublicUser
+    }
+  }
+  ${PublicUserFragment}
+`
+

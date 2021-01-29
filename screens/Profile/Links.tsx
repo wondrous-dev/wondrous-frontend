@@ -32,6 +32,10 @@ const linkStyles = StyleSheet.create({
     marginRight: spacingUnit * 2,
     width: spacingUnit * 4,
     height: spacingUnit * 4
+  },
+  linkText: {
+    fontSize: 18,
+    textTransform: 'lowercase'
   }
 })
 
@@ -52,9 +56,7 @@ const Links = ({ route }) => {
           links.website && 
           <Pressable style={linkStyles.linkItem} onPress={() => Linking.openURL(links.website)}>
             <Link color={Grey800} style={linkStyles.linkImage} />
-              <Paragraph color={Grey800} style={{
-                fontSize: 18
-              }}>
+              <Paragraph color={Grey800} style={linkStyles.linkText}>
                 {links.website}
               </Paragraph>
           </Pressable>
@@ -63,9 +65,7 @@ const Links = ({ route }) => {
           links.twitter &&
           <Pressable style={linkStyles.linkItem} onPress={() => Linking.openURL(links.twitter)}>
           <TwitterShare style={linkStyles.linkImage} />
-            <Paragraph color={Grey800} style={{
-              fontSize: 18
-            }}>
+            <Paragraph color={Grey800} style={linkStyles.linkText}>
               {links.twitter}
             </Paragraph>
           </Pressable>
@@ -74,9 +74,7 @@ const Links = ({ route }) => {
           links.instagram &&
           <Pressable style={linkStyles.linkItem} onPress={() => Linking.openURL(links.instagram)}>
           <InstagramShare style={linkStyles.linkImage} />
-            <Paragraph color={Grey800} style={{
-              fontSize: 18
-            }}>
+            <Paragraph color={Grey800} style={linkStyles.linkText}>
               {links.instagram}
             </Paragraph>
           </Pressable>
@@ -85,9 +83,7 @@ const Links = ({ route }) => {
           links.linkedin &&
           <Pressable style={linkStyles.linkItem} onPress={() => Linking.openURL(links.linkedin)}>
           <LinkedinShare style={linkStyles.linkImage} />
-            <Paragraph color={Grey800} style={{
-              fontSize: 18
-            }}>
+            <Paragraph color={Grey800} style={linkStyles.linkText}>
               {links.linkedin}
             </Paragraph>
           </Pressable>
@@ -96,9 +92,7 @@ const Links = ({ route }) => {
           links.github &&
           <Pressable style={linkStyles.linkItem} onPress={() => Linking.openURL(links.github)}>
           <GithubShare style={linkStyles.linkImage} />
-            <Paragraph color={Grey800} style={{
-              fontSize: 18
-            }}>
+            <Paragraph color={Grey800} style={linkStyles.linkText}>
               {links.github}
             </Paragraph>
           </Pressable>

@@ -9,7 +9,7 @@ import { TextEditor } from '../../storybook/stories/TextEditor'
 import { TextEditorContext } from '../../utils/contexts'
 import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300, Grey300 } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
-import { capitalizeFirstLetter, spacingUnit } from '../../utils/common'
+import { capitalizeFirstLetter, getNonWhiteSpaceLength, spacingUnit } from '../../utils/common'
 import { endOfWeekFromNow } from '../../utils/date'
 import { useMe } from '../../components/withAuth'
 import { GET_USER_PROJECTS } from '../../graphql/queries/project'
@@ -23,6 +23,7 @@ import { ProfilePlaceholder } from './common'
 import { profileStyles } from './style'
 import ImageBrowser from '../../components/Modal/ImageBrowser'
 import { useNavigation } from '@react-navigation/native'
+import { MAX_BIO_LIMIT } from '../../constants'
 
 export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isVisible, setModalVisible }) => {
   const initialUsername = user && user.username
@@ -106,9 +107,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                     ...(bio && {
                       bio
                     }),
-                    ...(link && {
-                      link
-                    })
+                    links: {}
                   }
                 } else if (project) {
                   variableInputObj = {
@@ -120,25 +119,25 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                     }),
                     links: {}
                   }
-                  if (projectWebsite) {
-                    variableInputObj['links']['website'] = projectWebsite
-                  }
-                  if (projectTwitter) {
-                    variableInputObj['links']['twitter'] = projectTwitter
-                  }
+                }
+                if (projectWebsite) {
+                  variableInputObj['links']['website'] = projectWebsite
+                }
+                if (projectTwitter) {
+                  variableInputObj['links']['twitter'] = projectTwitter
+                }
 
-                  if (projectInstagram) {
-                    variableInputObj['links']['instagram'] = projectInstagram
-                  }
-                  if (projectLinkedin) {
-                    variableInputObj['links']['linkedin'] = projectLinkedin
-                  }
-                  if (projectGithub) {
-                    variableInputObj['links']['github'] = projectGithub
-                  }
-                  if (Object.keys(variableInputObj['links']).length === 0) {
-                    variableInputObj['links'] = null
-                  }
+                if (projectInstagram) {
+                  variableInputObj['links']['instagram'] = projectInstagram
+                }
+                if (projectLinkedin) {
+                  variableInputObj['links']['linkedin'] = projectLinkedin
+                }
+                if (projectGithub) {
+                  variableInputObj['links']['github'] = projectGithub
+                }
+                if (Object.keys(variableInputObj['links']).length === 0) {
+                  variableInputObj['links'] = null
                 }
                 saveMutation({
                   variables: {
@@ -232,26 +231,16 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                           style={profileStyles.changeRowText}
                       />
                       </View>
-                      {
-                        user &&
-                        <View style={profileStyles.changeRowContainer}>
-                        <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
-                          Website
-                        </Paragraph>
-                        <TextInput
-                          onChangeText={text => setLink(text)}
-                          value={link}
-                          placeholder='Add website'
-                          style={profileStyles.changeRowText}
-                        />
-                      </View>
-                      }
                       <View style={profileStyles.changeRowContainer}>
                         <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
                           Bio
                         </Paragraph>
                         <TextInput
-                          onChangeText={text => setBio(text)}
+                          onChangeText={text => {
+                            if (getNonWhiteSpaceLength(text) <= MAX_BIO_LIMIT) {
+                              setBio(text)
+                            }
+                          }}
                           value={bio}
                           placeholder='Add bio...'
                           style={profileStyles.changeRowText}
@@ -324,15 +313,20 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                             </Pressable>
                             </View>
                           </View>
-                        <View style={profileStyles.changeRowContainer}>
+                        </>
+                      }
+                                              <View style={profileStyles.changeRowContainer}>
                           <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
                             Website
                           </Paragraph>
                           <TextInput
+                          multiline
                             onChangeText={text => setProjectWebsite(text)}
                             value={projectWebsite}
                             placeholder='Add website'
-                            style={profileStyles.changeRowText}
+                            style={[profileStyles.changeRowText, {
+                              textTransform: 'lowercase'
+                            }]}
                           />
                         </View>
                         <View style={profileStyles.changeRowContainer}>
@@ -341,9 +335,12 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                           </Paragraph>
                           <TextInput
                             onChangeText={text => setProjectTwitter(text)}
+                            multiline
                             value={projectTwitter}
                             placeholder='Add Twitter'
-                            style={profileStyles.changeRowText}
+                            style={[profileStyles.changeRowText, {
+                              textTransform: 'lowercase'
+                            }]}
                           />
                         </View>
                         <View style={profileStyles.changeRowContainer}>
@@ -352,9 +349,12 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                           </Paragraph>
                           <TextInput
                             onChangeText={text => setProjectInstagram(text)}
+                            multiline
                             value={projectInstagram}
                             placeholder='Add Instagram'
-                            style={profileStyles.changeRowText}
+                            style={[profileStyles.changeRowText, {
+                              textTransform: 'lowercase'
+                            }]}
                           />
                         </View>
                         <View style={profileStyles.changeRowContainer}>
@@ -362,10 +362,13 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                             Linkedin
                           </Paragraph>
                           <TextInput
+                          multiline
                             onChangeText={text => setProjectLinkedin(text)}
                             value={projectLinkedin}
                             placeholder='Add Linkedin'
-                            style={profileStyles.changeRowText}
+                            style={[profileStyles.changeRowText, {
+                              textTransform: 'lowercase'
+                            }]}
                           />
                         </View>
                         <View style={profileStyles.changeRowContainer}>
@@ -373,14 +376,15 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                             Github
                           </Paragraph>
                           <TextInput
+                          multiline
                             onChangeText={text => setProjectGithub(text)}
                             value={projectGithub}
                             placeholder='Add Github'
-                            style={profileStyles.changeRowText}
+                            style={[profileStyles.changeRowText, {
+                              textTransform: 'lowercase'
+                            }]}
                           />
                         </View>
-                        </>
-                      }
                 </View>
             </View>
           </KeyboardAwareScrollView>

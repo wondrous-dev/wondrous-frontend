@@ -1,40 +1,18 @@
 
-import React, { useState, useCallback, useEffect } from 'react'
-import { StackScreenProps } from '@react-navigation/stack'
-import { Dimensions, Image, Pressable, SafeAreaView, StyleSheet, View, RefreshControl, FlatList, Button, TouchableOpacity } from 'react-native'
-import { createStackNavigator } from '@react-navigation/stack'
-import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
-import * as Linking from 'expo-linking'
+import React, { useEffect, useState, useCallback } from 'react'
+import { Image, Pressable, SafeAreaView, RefreshControl, FlatList, View, TouchableOpacity } from 'react-native'
+import { useLazyQuery } from '@apollo/client'
 
 import { GET_USER_PROJECTS } from '../../graphql/queries'
 import { withAuth, useMe } from '../../components/withAuth'
 import { Black, White, Grey800 } from '../../constants/Colors'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
-import { spacingUnit, cutString } from '../../utils/common'
+import { spacingUnit, cutString, wait } from '../../utils/common'
 import { ProfilePlaceholder } from './common'
 import { SafeImage } from '../../storybook/stories/Image'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { Header } from '../../components/Header'
-
-
-const listStyles = StyleSheet.create({
-  listContainer: {
-    marginTop: spacingUnit * 2
-  },
-  listItem: {
-    flexDirection: 'row',
-    paddingLeft: spacingUnit * 2,
-    paddingRight: spacingUnit * 2,
-    alignItems: 'flex-start',
-    marginBottom: spacingUnit
-  },
-  listImage: {
-    width: spacingUnit * 6,
-    height: spacingUnit * 6,
-    borderRadius: spacingUnit * 3,
-    marginRight: spacingUnit
-  }
-})
+import { listStyles } from './style'
 
 const ProjectItem = ({
   profilePicture,
@@ -44,7 +22,8 @@ const ProjectItem = ({
   itemDescription,
   buttonOnPress,
   buttonText,
-  itemPressed }) => {
+  itemPressed
+  }) => {
 
   return (
     <TouchableOpacity onPress={itemPressed}>
@@ -99,17 +78,31 @@ const ProjectList = ({
 }) => {
 
   const user = useMe()
-  const {
-    data,
-    loading,
-    error
-  } = useQuery(GET_USER_PROJECTS, {
+  const [refreshing, setRefreshing] = useState(false)
+  const [
+    getUserProjects,
+    {
+      data,
+      loading,
+      error
+    }
+  ] = useLazyQuery(GET_USER_PROJECTS, {
     variables: {
       userId: user && user.id
     }
   })
 
   const projects = data && data.getUserProjects
+  
+  useEffect(() => {
+    getUserProjects()
+  }, [])
+  const onRefresh = useCallback(() => {
+    setRefreshing(true)
+    getUserProjects()
+    wait(2000).then(() => setRefreshing(false))
+  }, [])
+
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -120,32 +113,36 @@ const ProjectList = ({
         <Subheading>
           Projects
         </Subheading>
-        <View style={listStyles.listContainer}>
-          {
-            projects && projects.map(projectItem => {
-              const project = projectItem.project
-              return (
-                <ProjectItem
-                key={project.id}
-              profilePicture={project.profilePicture}
-              project={true}
-              itemDescription={project.description}
-              itemName={project.name}
-              itemPressed={() => navigation.navigate('Root', {
-                screen: 'Profile',
-                params: {
-                  screen: 'ProjectProfile',
-                  params: {
-                    projectId: project.id
-                  }
-                }
-              })}
-              />
-              )
-            })
+
+        <FlatList    
+        contentContainerStyle={listStyles.listContainer}
+        refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
+        data={projects}
+        renderItem={({ item }) => {
+          const project = item.project
+          return (
+            <ProjectItem
+            key={project.id}
+            profilePicture={project.profilePicture}
+            project={true}
+            itemDescription={project.description}
+            itemName={project.name}
+            itemPressed={() => navigation.navigate('Root', {
+              screen: 'Profile',
+              params: {
+                screen: 'ProjectProfile',
+                params: {
+                  projectId: project.id
+                }
+              }
+            })}
+            />
+          )
+        }}
+          ></FlatList>
         </View>
-      </View>
     </SafeAreaView>
   )
 }

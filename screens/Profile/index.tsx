@@ -13,6 +13,7 @@ import SetupTask from '../Workflow/SetupTask'
 import SetupAsk from '../Workflow/SetupAsk'
 import StreakIntro from '../Workflow/StreakIntro'
 import Links from './Links'
+import UserList from './UserList'
 import ProjectSetupCategory from '../SignupFlow/ProjectSetupCategory'
 import ProjectTagSelectionScreen from '../SignupFlow/ProjectTagSelectionScreen'
 import FeedItem from '../FeedItem'
@@ -38,6 +39,7 @@ function ProfileScreen({
       <Stack.Screen name='StreakIntro' component={StreakIntro} />
       <Stack.Screen name='SetupAsk' component={SetupAsk} options={{gestureEnabled: false}} />
       <Stack.Screen name='ProjectList' component={ProjectList} />
+      <Stack.Screen name='UserList' component={UserList} />
       <Stack.Screen name='EditProjectCategory' component={ProjectSetupCategory} />
       <Stack.Screen name='EditProjectTags' component={ProjectTagSelectionScreen} />
       <Stack.Screen name='Links' component={Links} />
