@@ -135,7 +135,7 @@ const FeedString = ({ item }) => {
       }}>
         {capitalizeFirstLetter(item.verb)} {item.objectType} <Paragraph color={Black} style={{
           fontFamily: 'Rubik SemiBold',
-        }}>{renderMentionString(item.itemName, {}, navigation)} </Paragraph>for<Paragraph style={{
+        }}>{renderMentionString({ content: item.itemName, navigation })} </Paragraph>for<Paragraph style={{
           fontFamily: 'Rubik SemiBold',
         }}> {item.projectName} </Paragraph>
       </Paragraph>

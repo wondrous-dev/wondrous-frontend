@@ -299,20 +299,40 @@ export const renderProfileItem = ({ item, section, user, navigation, projectId, 
     } else {
 
       const type = item && item.__typename && item.__typename.toLowerCase()
-      let icon, iconSize
+      let icon, iconSize, redirect, redirectParams
       if (type === 'goal') {
         icon = GoalIcon
         iconSize = spacingUnit * 4
+        redirect = 'Root'
+        redirectParams = {
+          screen: 'Profile',
+          params: {
+            screen: 'GoalPage',
+            params: {
+              goal: item
+            }
+          }
+        }
       } else if (type === 'task') {
         icon = TaskIcon
         iconSize = spacingUnit * 3
+        redirect = 'Root'
+        redirectParams = {
+          screen: 'Profile',
+          params: {
+            screen: 'TaskPage',
+            params: {
+              task: item
+            }
+          }
+        }
       }
       return (
         <View style={{
           marginLeft: spacingUnit * 2,
           marginRight: spacingUnit * 2
         }}>
-          <Card navigation={navigation}  type={type} icon={icon} iconSize={iconSize} profilePicture={user && user.profilePicture} item={item} swipeEnabled={true} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />
+          <Card key={item.id} navigation={navigation} redirect={redirect} redirectParams={redirectParams} type={type} icon={icon} iconSize={iconSize} profilePicture={user && user.profilePicture} item={item} swipeEnabled={true} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />
         </View>
       )
     }

@@ -135,7 +135,7 @@ export const SafeImage = ({ src, style, defaultImage }) => {
   if (!src) {
     return null
   }
-  // console.log('src', src)
+
   useEffect(() => {
     if (src) {
       getImage({

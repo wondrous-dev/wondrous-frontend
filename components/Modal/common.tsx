@@ -174,7 +174,7 @@ export const DateDisplay = ({ dueDate, onDateChange, editDate, setEditDate }) =>
   )
 }
 
-export const ModalDropdown = ({ items, value, setValue }) => {
+export const ModalDropdown = ({ items, value, setValue, placeholder }) => {
   return (
       <DropDownPicker
       defaultValue={value}
@@ -182,7 +182,7 @@ export const ModalDropdown = ({ items, value, setValue }) => {
         backgroundColor: Grey750,
         // borderColor: 'rgba(47,46,65, 0.54)'
       }}
-
+      placeholder={placeholder}
       containerStyle={{
         flex: 1,
         height: 40
@@ -349,6 +349,11 @@ export const submit = async ({
     setErrors({
       ...errors,
       nameError: 'Ask required'
+    })
+  } else if (!projectId) {
+    setErrors({
+      ...errors,
+      projectError: 'Please select a project'
     })
   } else {
     // Parse media:

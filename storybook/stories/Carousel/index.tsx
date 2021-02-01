@@ -2,6 +2,8 @@ import * as React from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 import Swiper from 'react-native-web-swiper'
 import { White } from '../../../constants/Colors'
+import { spacingUnit } from '../../../utils/common'
+import { SafeImage } from '../Image'
 
 import { Title, Subheading, Paragraph } from '../Text'
 
@@ -17,8 +19,13 @@ export class MyCarousel extends React.Component {
   }
 
   render () {
+    const {
+      activeDotColor,
+      passiveDotColor,
+      images
+    } = this.props
       return (
-        <View style={{height: 150, width: '100%', alignContent: 'center', justifyContent: 'center', marginTop: 24}}>
+        <View style={{height: images ? 400: 150, width: '100%', alignContent: 'center', justifyContent: 'center', marginTop: 24}}>
 
           <Swiper
           from={0}
@@ -27,17 +34,25 @@ export class MyCarousel extends React.Component {
               prevPos: false,
               nextPos: false,
               dotActiveStyle: {
-                backgroundColor: 'white'
+                backgroundColor: activeDotColor || 'white'
               },
               dotProps: {
                 badgeStyle: {
-                  backgroundColor: 'rgba(255,255,255, 0.3)'
+                  backgroundColor: passiveDotColor || 'rgba(255,255,255, 0.3)'
                 }
               }
             }}
           >
             {
               this.state.entries.map(item => {
+                if (images) {
+                  return <SafeImage src={item} style={{
+                    flex: 1,
+                    // height: 500,
+                    borderRadius: 8,
+                    marginBottom: spacingUnit * 4
+                  }}/>
+                }
                 return (
                   <View key={item.subheading} style={{flex: 1}}>
                   <Subheading style={{textAlign: 'center'}}>{item.subheading}</Subheading>

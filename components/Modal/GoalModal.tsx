@@ -46,8 +46,8 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
   const { data: projectUsers, loading, error } = useQuery(GET_USER_PROJECTS)
   const projectDropdowns = projectUsers && projectUsers.getUserProjects ? projectUsers.getUserProjects.map(projectUser => {
     return {
-      label: projectUser.project.name,
-      value: projectUser.project.id
+      label: projectUser.project && projectUser.project.name,
+      value: projectUser.project && projectUser.project.id
     }
   }) : [{
     label: '',
@@ -204,7 +204,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                         Project
                       </RegularText>
                     </View>
-                    <ModalDropdown value={project} setValue={setProject} defaultValue={projectId} items={projectDropdowns} placeholder='Select a project' zIndex={5000} />
+                    <ModalDropdown value={project} setValue={setProject} items={projectDropdowns} placeholder='Select a project' zIndex={5000} />
                   </View>
                   <View style={[
                     modalStyles.editRowContainer,
@@ -217,7 +217,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                         Privacy
                       </RegularText>
                     </View>
-                    <ModalDropdown value={privacy} items={privacyDropdown} zIndex={4000} setValue={setPrivacy} placeholder='Select privacy level' />
+                    <ModalDropdown value={privacy} items={privacyDropdown} setValue={setPrivacy} placeholder='Select privacy level' />
                   </View>
                   <View style={modalStyles.editRowContainer}>
                     <View style={modalStyles.editRowTextContainer}>

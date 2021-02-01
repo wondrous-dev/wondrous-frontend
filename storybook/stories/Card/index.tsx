@@ -24,6 +24,7 @@ import PriorityFlame from '../../../assets/images/modal/priority'
 import { FullScreenTaskModal } from '../../../components/Modal/TaskModal'
 import { FullScreenGoalModal } from '../../../components/Modal/GoalModal'
 import { FullScreenAskModal } from '../../../components/Modal/AskModal'
+import { Tag } from '../../../components/Tag'
 import { useNavigation } from '@react-navigation/native'
 import apollo from '../../../services/apollo'
 import { UPDATE_GOAL, UPDATE_TASK, UPDATE_ASK } from '../../../graphql/mutations'
@@ -86,11 +87,6 @@ const styles = StyleSheet.create({
   dueText: {
     color: Grey450
   },
-  tag: {
-    borderRadius: 8,
-    paddingLeft: spacingUnit * 1.5,
-    paddingRight: spacingUnit * 1.5
-  },
   topInfoContainer: {
     alignItems: 'flex-start',
     flexDirection: 'row',
@@ -102,15 +98,6 @@ const styles = StyleSheet.create({
     borderRadius: spacingUnit * 2
   }
 })
-
-const Tag = ({ color, children, style }) => (
-  <View style={[styles.tag, {
-    backgroundColor: color,
-    ...style
-  }]}>
-    {children}
-  </View>
-)
 
 class Card extends React.Component {
 
@@ -215,7 +202,10 @@ class Card extends React.Component {
       profilePicture,
       icon,
       iconSize,
-      type
+      type,
+      navigation,
+      redirect,
+      redirectParams
     } = this.props
 
     const sortPriority = () => {
@@ -233,7 +223,11 @@ class Card extends React.Component {
 
     return (
       <TouchableWithoutFeedback onPress={() => {
-        this.setModalVisible(true)
+        if (!redirect) {
+          this.setModalVisible(true)
+        } else {
+          navigation.navigate(redirect, redirectParams)
+        }
       }}>
       <View style={[styles.row, { backgroundColor: White }]}>
             <PlatformTouchable

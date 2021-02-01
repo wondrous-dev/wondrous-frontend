@@ -17,6 +17,7 @@ import UserList from './UserList'
 import ProjectSetupCategory from '../SignupFlow/ProjectSetupCategory'
 import ProjectTagSelectionScreen from '../SignupFlow/ProjectTagSelectionScreen'
 import FeedItem from '../FeedItem'
+import GoalPage from '../Actions/Goal'
 
 const Stack = createStackNavigator<BottomTabParamList>()
 
@@ -43,6 +44,7 @@ function ProfileScreen({
       <Stack.Screen name='EditProjectCategory' component={ProjectSetupCategory} />
       <Stack.Screen name='EditProjectTags' component={ProjectTagSelectionScreen} />
       <Stack.Screen name='Links' component={Links} />
+      <Stack.Screen name='GoalPage' component={GoalPage} options={{ gestureEnabled: false }}/>
     </Stack.Navigator>
   )
 }

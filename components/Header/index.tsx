@@ -114,9 +114,12 @@ export const Header = ({ title, skip, skipParams, noGoingBack, share, rightButto
           padding: spacingUnit,
           paddingLeft: spacingUnit * 1.5,
           paddingRight: spacingUnit * 1.5,
-          position: 'absolute'
+          position: 'absolute',
+          ...(rightButton.style && {
+            ...rightButton.style
+          })
         }}>
-          <RegularText color={White}>
+          <RegularText color={rightButton.textColor || White}>
             {rightButton.text}
           </RegularText>
         </Pressable>
