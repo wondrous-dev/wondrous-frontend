@@ -18,6 +18,7 @@ import ProjectSetupCategory from '../SignupFlow/ProjectSetupCategory'
 import ProjectTagSelectionScreen from '../SignupFlow/ProjectTagSelectionScreen'
 import FeedItem from '../FeedItem'
 import GoalPage from '../Actions/Goal'
+import TaskPage from '../Actions/Task'
 
 const Stack = createStackNavigator<BottomTabParamList>()
 
@@ -32,6 +33,7 @@ function ProfileScreen({
       <Stack.Screen name='UserProfile' component={UserProfile} initialParams={{
         noGoingBack: true
       }} />
+      <Stack.Screen name='OtherUserProfile' component={UserProfile} />
       <Stack.Screen name='ProjectProfile' component={ProjectProfile} />
       <Stack.Screen name='ProfileItem' component={FeedItem} />
       <Stack.Screen name='WorkflowWelcome' component={WorkflowWelcome} />
@@ -45,6 +47,7 @@ function ProfileScreen({
       <Stack.Screen name='EditProjectTags' component={ProjectTagSelectionScreen} />
       <Stack.Screen name='Links' component={Links} />
       <Stack.Screen name='GoalPage' component={GoalPage} options={{ gestureEnabled: false }}/>
+      <Stack.Screen name='TaskPage' component={TaskPage} options={{ gestureEnabled: false }}/>
     </Stack.Navigator>
   )
 }

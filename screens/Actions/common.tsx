@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import { Black, Blue400 } from '../../constants/Colors'
+import { Black, Blue400, Red400, Yellow300 } from '../../constants/Colors'
 import { spacingUnit } from '../../utils/common'
 
 export const pageStyles = StyleSheet.create({
@@ -38,4 +38,18 @@ export const pageStyles = StyleSheet.create({
     color: Blue400,
     marginLeft: spacingUnit
   },
+  subContainer: {
+    flexDirection: 'row'
+  }
 })
+
+export const sortPriority = (priority) => {
+  switch(priority) {
+    case 'high':
+      return Red400
+    case 'medium':
+      return Yellow300
+    case 'low':
+      return Blue400
+  }
+}

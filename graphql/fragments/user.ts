@@ -10,7 +10,6 @@ export const PublicUserFragment = gql`
     firstName
     lastName
     privacyLevel
-    reactedFeedComments
     links {
       website
       linkedin
@@ -27,4 +26,12 @@ export const PublicUserFragment = gql`
       askCreated
     }
   }
+`
+
+export const LoggedinUserFragment = gql`
+  fragment LoggedinUser on User {
+    ...PublicUser
+    reactedFeedComments
+  }
+  ${PublicUserFragment}
 `

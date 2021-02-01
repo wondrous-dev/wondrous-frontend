@@ -32,6 +32,7 @@ import {
 import { EditProfileModal } from './EditProfileModal'
 import Link from '../../assets/images/link'
 import { sortByDueDate } from '../../utils/date'
+import apollo from '../../services/apollo'
 
 const getUserId = ({ route, user }) => {
   if (route && route.params && route.params.userId) {
@@ -50,14 +51,16 @@ const fetchAdditionalInfo = async ({ getAdditionalInfo, userId, setAdditionalInf
   setAdditionalInfo(result)
 }
 
-const fetchUser = async ({ getUser, userId, setUser }) => {
-  const userResponse = await getUser({
+
+const fetchUser = async ({ userId, setUser }) => {
+  const newUserResponse = await apollo.query({
+    query: GET_USER,
     variables: {
       userId
     }
   })
-  const user = userResponse && userResponse.data
-  setUser(user)
+
+  setUser(newUserResponse && newUserResponse.data && newUserResponse.data.getUser)
 }
 
 function UserProfile({
@@ -79,7 +82,9 @@ function UserProfile({
     loading: userLoading,
     data: userData,
     error: userError,
-  }] = useLazyQuery(GET_USER)
+  }] = useLazyQuery(GET_USER, {
+    fetchPolicy: 'network-only'
+  })
   const {
     loading: additionalInfoLoading,
     data: additionalInfoData,
@@ -152,14 +157,15 @@ function UserProfile({
     if (userOwned) {
       setUser(loggedInUser)
     } else {
+
       if (finalUserId && !user) {
-        fetchUser({ getUser, userId: finalUserId, setUser})
+        fetchUser({ userId: finalUserId, setUser })
       }
     }
     if (user) {
       setProfilePicture(user.profilePicture)
     }
-  }, [user && user.profilePicture, feedSelected, actionSelected])
+  }, [user && user.profilePicture, feedSelected, actionSelected, finalUserId, userData])
 
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo
   const getCorrectData = section => {
@@ -187,6 +193,7 @@ function UserProfile({
   const profileData = getCorrectData(section)
 
   const itemRefs = useRef(new Map())
+
   return (
     <SafeAreaView style={{
       backgroundColor: White,
@@ -245,7 +252,7 @@ function UserProfile({
                     borderRadius: spacingUnit * 5
                   }]} src={profilePicture || user.profilePicture} />
                   :
-                  <ProfilePlaceholder projectOwnedByUser={userOwned} />
+                  <ProfilePlaceholder projectOwnedByUser={userOwned} user={true} />
                 }
                 <Pressable onPress={() => navigation.navigate('Root', {
                   screen: 'Profile',

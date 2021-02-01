@@ -17,8 +17,9 @@ import { renderItem } from '../../components/Feed'
 import GoalIcon from '../../assets/images/goal/standalone'
 import TaskIcon from '../../assets/images/task/standalone'
 import { Card } from '../../storybook/stories/Card' 
+import UserPlaceholder from '../../assets/images/user/placeholder'
 
-export const ProfilePlaceholder = ({ projectOwnedByUser, imageStyle }) => {
+export const ProfilePlaceholder = ({ projectOwnedByUser, imageStyle, user }) => {
   if (projectOwnedByUser) {
     const { setModalVisible } = useProfile()
     return (
@@ -30,6 +31,14 @@ export const ProfilePlaceholder = ({ projectOwnedByUser, imageStyle }) => {
         <Plus />
       </View>
       </Pressable>
+    )
+  }
+  if (user) {
+    return (
+      <UserPlaceholder style={{
+        marginRight: -spacingUnit,
+        marginBottom: spacingUnit
+      }} />
     )
   }
   return <ProfileDefaultImage style={[profileStyles.profilePlaceholderImage, imageStyle]} />

@@ -140,9 +140,10 @@ export const renderMentionString = ({ content, textStyle, navigation, simple }) 
           onPress={() => navigation.navigate('Root', {
             screen: 'Profile',
             params: {
-              screen:'UserProfile',
+              screen:'OtherUserProfile',
               params: {
-                userId: id
+                userId: id,
+                noGoingBack: false
               }
             }
           })}

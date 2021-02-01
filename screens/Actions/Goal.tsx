@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, View, Text } from 'react-native'
+import { SafeAreaView, View, Text, ScrollView } from 'react-native'
 import { useLazyQuery, useMutation } from '@apollo/client'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import { Grey800, Purple, Red400, White, Yellow300, Blue400, Grey450 } from '../../constants/Colors'
+import { Grey800, Purple, Red400, White, Yellow300, Blue400, Grey450, Black } from '../../constants/Colors'
 import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
-import { pageStyles } from './common'
+import { pageStyles, sortPriority } from './common'
 import { UPDATE_GOAL } from '../../graphql/mutations'
-
-
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import PriorityFlame from '../../assets/images/modal/priority'
 import { capitalizeFirstLetter, renderMentionString, spacingUnit } from '../../utils/common'
@@ -17,6 +15,7 @@ import { Tag } from '../../components/Tag'
 import { formatDueDate, redDate } from '../../utils/date'
 import { GET_GOAL_BY_ID } from '../../graphql/queries'
 import { MyCarousel } from '../../storybook/stories/Carousel'
+import { LinkIcon } from '../../assets/images/link'
 
 const GoalPage = ({ navigation, route }) => {
   const user = useMe()
@@ -58,16 +57,6 @@ const GoalPage = ({ navigation, route }) => {
     }
   }, [data])
 
-  const sortPriority = () => {
-    switch(goal && goal.priority) {
-      case 'high':
-        return Red400
-      case 'medium':
-        return Yellow300
-      case 'low':
-        return Blue400
-    }
-  }
 
   if (!goal) {
     return (
@@ -79,7 +68,8 @@ const GoalPage = ({ navigation, route }) => {
     )
   }
   const images = goal.additionalData && goal.additionalData.images
-
+  const asks = goal.additionalData && goal.additionalData.relatedAskIds
+  const tasks = goal.additionalData && goal.additionalData.relatedTaskIds
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -97,7 +87,7 @@ const GoalPage = ({ navigation, route }) => {
           setModalVisible(true)
         }
       }}/>
-      <View style={pageStyles.container}>
+      <ScrollView style={pageStyles.container}>
         <Text style={pageStyles.title}>
           {renderMentionString({ content: goal.name, navigation })}
         </Text>
@@ -105,7 +95,7 @@ const GoalPage = ({ navigation, route }) => {
           {
               goal.priority &&
               <View style={[pageStyles.priorityContainer, {
-                backgroundColor: sortPriority()
+                backgroundColor: sortPriority(goal.priority)
               }]}>
               <PriorityFlame color={White} style={{
                 // marginLeft: spacingUnit,
@@ -143,6 +133,9 @@ const GoalPage = ({ navigation, route }) => {
         {
           goal.additionalData && goal.additionalData.link &&
           <View style={pageStyles.linkContainer}>
+            <LinkIcon color={Grey800} style={{
+              marginRight: spacingUnit
+            }} />
             <Paragraph color={Blue400} style={pageStyles.link}>
               {goal.additionalData.link}
             </Paragraph>
@@ -154,7 +147,22 @@ const GoalPage = ({ navigation, route }) => {
           <MyCarousel data={images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400}/>
         }
         </View>
-      </View>
+        <View style={pageStyles.subContainer}>
+        {
+          asks &&
+          <>
+          <Paragraph color={Black} style={{
+            fontSize: 18
+          }}>
+            {asks.length}
+          </Paragraph>
+          <Paragraph color={Black}>
+            asks
+          </Paragraph>
+          </>
+        }
+        </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }

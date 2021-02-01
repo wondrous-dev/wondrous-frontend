@@ -1,25 +1,25 @@
 import { gql } from '@apollo/client'
 
-import { PublicUserFragment } from '../fragments/user'
+import { PublicUserFragment, LoggedinUserFragment } from '../fragments/user'
 
 export const SIGNUP = gql`
   mutation Signup($input: AuthInput!) {
     signup(input: $input) {
       token
       user {
-        ...PublicUser
+        ...LoggedinUser
       }
     }
   }
-  ${PublicUserFragment}
+  ${LoggedinUserFragment}
 `
 export const UPDATE_USER = gql`
   mutation UpdateUser($input: UserUpdateInput!) {
     updateUser(input: $input) {
-      ...PublicUser
+      ...LoggedinUser
     }
   }
-  ${PublicUserFragment}
+  ${LoggedinUserFragment}
 `
 
 export const FOLLOW_USER = gql`
