@@ -88,19 +88,20 @@ export const Header = ({ title, skip, skipParams, noGoingBack, share, rightButto
       }
       {
         share &&
-        <>
+        <View>
         <ShareModal isVisible={modalVisible} url={share} content='' setModalVisible={setModalVisible} />
         <Pressable onPress={() => {
           setModalVisible(true)
         }} style={{
-          marginRight: spacingUnit * 2,
-          marginLeft: -spacingUnit * 2
+          right: spacingUnit * 2,
+          top: -spacingUnit,
+          position: 'absolute'
         }}>
           <RegularText color={Grey250}>
             Share
           </RegularText>
         </Pressable>
-        </>
+        </View>
       }
       {
         rightButton &&

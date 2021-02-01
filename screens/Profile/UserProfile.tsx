@@ -1,7 +1,7 @@
 
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { Dimensions, Image, Pressable, SafeAreaView, StyleSheet, View, RefreshControl, FlatList } from 'react-native'
+import { Dimensions, Image, Pressable, SafeAreaView, ActivityIndicator, View, RefreshControl, FlatList } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import * as Linking from 'expo-linking'
@@ -10,12 +10,12 @@ import { withAuth, useMe } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { profileStyles } from './style'
-import { spacingUnit, wait, isEmptyObject } from '../../utils/common'
+import { spacingUnit, wait, isEmptyObject, usePrevious } from '../../utils/common'
 import BottomTabNavigator from '../../navigation/BottomTabNavigator'
 import { UploadImage, SafeImage } from '../../storybook/stories/Image'
 import { WONDER_BASE_URL } from '../../constants/'
 import { UPDATE_USER } from '../../graphql/mutations'
-import { GET_USER, GET_USER_ADDITIONAL_INFO } from '../../graphql/queries'
+import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS } from '../../graphql/queries'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton } from '../../storybook/stories/Button'
 import { Black, Grey300, White, Blue400, Grey800 } from '../../constants/Colors'
@@ -25,10 +25,13 @@ import {
   ProjectInfoText,
   SectionsHeader,
   DetermineUserProgress,
-  renderProfileItem
+  renderProfileItem,
+  STATUS_ARR,
+  StatusItem
 } from './common'
 import { EditProfileModal } from './EditProfileModal'
 import Link from '../../assets/images/link'
+import { sortByDueDate } from '../../utils/date'
 
 const getUserId = ({ route, user }) => {
   if (route && route.params && route.params.userId) {
@@ -66,9 +69,12 @@ function UserProfile({
   const finalUserId = getUserId({ route, user: loggedInUser })
   let noGoingBack = route && route.params && route.params.noGoingBack
   const userOwned = loggedInUser && (loggedInUser.id === finalUserId)
+  const [status, setStatus] = useState(null)
   const [section, setSection] = useState('feed')
   const [refreshing, setRefreshing] = useState(false)
   const [isModalVisible, setModalVisible] = useState(false)
+  const [loading, setLoading] = useState(false)
+  // const [offset, setOffset] = useState(null)
   const [getUser, {
     loading: userLoading,
     data: userData,
@@ -82,6 +88,29 @@ function UserProfile({
     variables: {
       userId: finalUserId
     }
+  })
+
+  const [getUserFeed, {
+    loading: userFeedLoading,
+    data: userFeedData,
+    error: userFeedError
+  }] = useLazyQuery(GET_USER_FEED, {
+    variables: {
+      userId: finalUserId
+    },
+    fetchPolicy: 'network-only'
+  })
+
+  const [getUserActions, {
+    loading: userActionLoading,
+    data: userActionData,
+    error: userActionError
+  }] = useLazyQuery(GET_USER_ACTIONS, {
+    variables: {
+      userId: finalUserId,
+      status
+    },
+    fetchPolicy: 'network-only'
   })
 
   const [user, setUser] = useState(null)
@@ -105,9 +134,9 @@ function UserProfile({
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     if (feedSelected) {
-      // getProjectFeed()
+      getUserFeed()
     } else if (actionSelected) {
-
+      getUserActions()
     } else if (asksSelected) {
 
     }
@@ -115,6 +144,11 @@ function UserProfile({
   }, [])
 
   useEffect(() => {
+    if (feedSelected) {
+      getUserFeed()
+    } else if (actionSelected) {
+      getUserActions()
+    }
     if (userOwned) {
       setUser(loggedInUser)
     } else {
@@ -125,9 +159,34 @@ function UserProfile({
     if (user) {
       setProfilePicture(user.profilePicture)
     }
-  }, [user && user.profilePicture])
+  }, [user && user.profilePicture, feedSelected, actionSelected])
 
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo
+  const getCorrectData = section => {
+    if (section === 'feed') {
+      return userFeedData && userFeedData.getUserFeed
+    } else if (section === 'action') {
+      if (userOwned && !(user && user.usageProgress && user.usageProgress.askCreated)) {
+        return ['start']
+      } else {
+        const actions = userActionData && userActionData.getUserActions
+        if (actions && actions.goals && actions.tasks) {
+          return sortByDueDate([
+            ...actions.goals,
+            ...actions.tasks
+          ])
+        } else if (actions && actions.goals) {
+          return sortByDueDate(actions.goals)
+        } else if ( actions && actions.tasks) {
+          return sortByDueDate(actions.tasks)
+        }
+        return []
+      }
+    }
+  }
+  const profileData = getCorrectData(section)
+
+  const itemRefs = useRef(new Map())
   return (
     <SafeAreaView style={{
       backgroundColor: White,
@@ -147,6 +206,9 @@ function UserProfile({
         // projectFeedLoading,
         // projectFeedError,
         // getProjectFeed,
+        status,
+        setStatus,
+        setLoading,
         setModalVisible
       }}>
         {userOwned &&
@@ -154,15 +216,20 @@ function UserProfile({
         }
         {
           user &&
+          <View style={{
+            // flex: 1,
+            // paddingLeft: spacingUnit * 2,
+            // paddingRight: spacingUnit * 2
+          }}>
           <FlatList    refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
           ItemSeparatorComponent={() => (
             <View
-              style={{
+              style={[feedSelected && {
                 borderBottomColor: Grey300,
                 borderBottomWidth: 1,
-              }}
+              }]}
             />
           )}
           ListHeaderComponent={() => (
@@ -292,15 +359,58 @@ function UserProfile({
               </Pressable>
             }
               <DetermineUserProgress user={user} />
-  
-                <SectionsHeader />
+              <SectionsHeader />
+              {
+                actionSelected &&
+                <View style={{
+                  paddingLeft: spacingUnit * 2,
+                  paddingRight: spacingUnit * 2
+                }}>
+                  <View style={[{
+                    marginTop: spacingUnit * 3,
+                    flexDirection: 'row'
+                  }]}>
+                  {STATUS_ARR.map(statusItem => (
+                    <StatusItem
+                    statusValue={statusItem.value}
+                    statusLabel={statusItem.label}
+                    statusTrue={statusItem.value === status}
+                    setStatus={setStatus}
+                    />
+                  ))}
+                  </View>
+                  <RegularText color={Grey800} style={{
+                    marginTop: spacingUnit * 2,
+                    marginBottom: spacingUnit * 2
+                  }}>
+                    Swipe right to mark as complete, swipe left to archive.
+                  </RegularText>
+                </View>
+              }
             </View>
           )}
-          data={[]}
-          renderItem={({ item }) => renderProfileItem({ item, section, user, navigation })}
+
+          data={profileData}
+          contentContainerStyle={{
+            paddingBottom: spacingUnit * 10
+          }}
+          renderItem={({ item }) => renderProfileItem({ item, section, user, navigation, itemRefs })}
+          ListEmptyComponent={() => {
+            return (
+              <View style={{
+                marginTop: spacingUnit * 3
+              }}>
+                {
+                  (userFeedLoading || userActionLoading) &&
+                  <ActivityIndicator />
+                }
+              </View>
+            )
+          }}
           >
   
           </FlatList>
+          </View>
         }
         </ProfileContext.Provider>
     </SafeAreaView>

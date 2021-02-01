@@ -144,7 +144,7 @@ export const SafeImage = ({ src, style, defaultImage }) => {
         }
       })
     }
-  }, [])
+  }, [src])
   if (src.startsWith('https') || src.startsWith('file://')) {
     return <Image style={style} source={{
       uri: src

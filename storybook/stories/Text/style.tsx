@@ -25,7 +25,7 @@ export default {
   },
   buttonText: {
     fontFamily: 'Rubik',
-    fontSize: 14,
+    fontSize: 16,
     lineHeight: 22
   },
   tinyText: {

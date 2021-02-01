@@ -1,6 +1,8 @@
 import { gql } from '@apollo/client'
 
 import { PublicUserFragment } from '../fragments/user'
+import { PublicGoalFragment } from '../fragments/goal'
+import { PublicTaskFragment } from '../fragments/task'
 import { ActivityFeedItem } from '../fragments/feed'
 
 export const WHOAMI = gql`
@@ -67,3 +69,26 @@ export const GET_USER_FOLLOWING = gql`
   ${PublicUserFragment}
 `
 
+export const GET_USER_FEED = gql`
+  query GetUserFeed($userId: ID!, $offset: Int, $limit: Int) {
+    getUserFeed(userId: $userId, offset: $offset, limit: $limit) {
+      ...ActivityFeedItem
+    }
+  }
+  ${ActivityFeedItem}
+`
+
+export const GET_USER_ACTIONS = gql`
+  query GetUserActions($userId: ID!, $status: String) {
+    getUserActions(userId: $userId, status: $status) {
+      goals {
+        ...PublicGoal
+      }
+      tasks {
+        ...PublicTask
+      }
+    }
+  }
+  ${PublicGoalFragment}
+  ${PublicTaskFragment}
+`

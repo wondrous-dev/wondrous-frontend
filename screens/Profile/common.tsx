@@ -5,7 +5,7 @@ import { Dimensions, Pressable, View } from 'react-native'
 import { Bar } from 'react-native-progress'
 import { useNavigation } from '@react-navigation/native'
 
-import { Black, Blue400, Blue500, Green400, Grey200, Grey300, Grey350, Orange, Red400, White, Yellow300 } from '../../constants/Colors'
+import { Black, Blue400, Blue500, Green400, Grey200, Grey500, Grey350, Grey800, Orange, Red400, White, Yellow300 } from '../../constants/Colors'
 import Plus from '../../assets/images/plus'
 import { profileStyles } from './style'
 import ProfileDefaultImage from '../../assets/images/profile-placeholder'
@@ -14,6 +14,9 @@ import { FlexibleButton, PrimaryButton } from '../../storybook/stories/Button'
 import { spacingUnit } from '../../utils/common'
 import { useProfile } from '../../utils/hooks'
 import { renderItem } from '../../components/Feed'
+import GoalIcon from '../../assets/images/goal/standalone'
+import TaskIcon from '../../assets/images/task/standalone'
+import { Card } from '../../storybook/stories/Card' 
 
 export const ProfilePlaceholder = ({ projectOwnedByUser, imageStyle }) => {
   if (projectOwnedByUser) {
@@ -159,6 +162,25 @@ export const SetUpFlowProgress = ({ progress, navigationUrl,navigationParams, se
   )
 }
 
+export const StatusItem = ({ statusValue, setStatus, statusTrue, statusLabel }) => {
+  return (
+    <Pressable style={{
+      padding: spacingUnit * 0.5,
+      flex: 1,
+      alignItems: 'center',
+      textAlign: 'center',
+      borderRadius: 4,
+      ...(statusTrue && {
+        backgroundColor: Blue400
+      })
+    }} onPress={() => setStatus(statusValue)}>
+      <RegularText color={statusTrue ? White : Grey800}>
+        {statusLabel}
+      </RegularText>
+    </Pressable>
+  )
+}
+
 export const DetermineUserProgress = ({ user, projectId }) => {
   if (user && user.usageProgress) {
     const usageProgress = user.usageProgress
@@ -212,7 +234,26 @@ export const DetermineUserProgress = ({ user, projectId }) => {
   }
 }
 
-export const renderProfileItem = ({ item, section, user, navigation, projectId }) => {
+export const STATUS_ARR = [
+  {
+    label: 'All',
+    value: null
+  },
+  {
+    label: 'To do',
+    value: 'created',
+  },
+  {
+    label: 'Completed',
+    value: 'completed'
+  },
+  {
+    label: 'Archived',
+    value: 'archived'
+  }
+]
+
+export const renderProfileItem = ({ item, section, user, navigation, projectId, itemRefs }) => {
   if (section === 'feed') {
     return renderItem({ item, navigation, screen: 'Root', params: {
       screen: 'Profile',
@@ -253,6 +294,25 @@ export const renderProfileItem = ({ item, section, user, navigation, projectId }
               Create actions
             </Paragraph>
           </PrimaryButton>
+        </View>
+      )
+    } else {
+
+      const type = item && item.__typename && item.__typename.toLowerCase()
+      let icon, iconSize
+      if (type === 'goal') {
+        icon = GoalIcon
+        iconSize = spacingUnit * 4
+      } else if (type === 'task') {
+        icon = TaskIcon
+        iconSize = spacingUnit * 3
+      }
+      return (
+        <View style={{
+          marginLeft: spacingUnit * 2,
+          marginRight: spacingUnit * 2
+        }}>
+          <Card navigation={navigation}  type={type} icon={icon} iconSize={iconSize} profilePicture={user && user.profilePicture} item={item} swipeEnabled={true} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />
         </View>
       )
     }

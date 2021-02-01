@@ -1,9 +1,8 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Text } from 'react-native'
 import * as Localization from 'expo-localization'
 import { mentionRegEx } from 'react-native-controlled-mentions'
 import regexifyString from 'regexify-string'
-
 import { Blue400 } from '../constants/Colors'
 
 export const spacingUnit = 8
@@ -157,4 +156,13 @@ export const renderMentionString = ({ content, textStyle, navigation, simple }) 
     return final.join('')
   }
   return final
+}
+
+
+export function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
 }

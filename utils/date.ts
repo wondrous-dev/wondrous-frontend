@@ -33,3 +33,15 @@ export const redDate = (dueDate) => {
   }
   return false
 }
+
+export const sortByDueDate = (arr) => {
+  arr.sort((a, b) => {
+    const aDate = new Date(a.dueDate)
+    const bDate = new Date(b.dueDate)
+    if (isAfter(bDate, aDate)) {
+      return -1
+    }
+    return 1
+  })
+  return arr
+}

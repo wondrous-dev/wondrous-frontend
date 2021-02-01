@@ -126,7 +126,7 @@ function ProjectProfile({
     if (section === 'feed') {
       return projectFeedData && projectFeedData.getProjectFeed
     } else if (section === 'action') {
-      if (!(user && user.usageProgress && user.usageProgress.askCreated)) {
+      if (projectOwnedByUser && !(user && user.usageProgress && user.usageProgress.askCreated)) {
         return ['start']
       }
     }

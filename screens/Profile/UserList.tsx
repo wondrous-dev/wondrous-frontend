@@ -188,7 +188,7 @@ const UserList = ({
       flex: 1,
       backgroundColor: White
     }}>
-      <Header title={user && user.username} />
+      <Header title={following ? 'Following' : 'Followers'} />
       <View>
         <Subheading>
           Followers

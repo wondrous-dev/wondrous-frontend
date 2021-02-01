@@ -139,7 +139,7 @@ class Card extends React.Component {
         styles.row,
         styles.underlayRight,
         {
-          transform: [{ translateX: multiply(sub(1, percentOpen), -100) }], // Translate from left on open,
+          // transform: [{ translateX: multiply(sub(1, percentOpen), -100) }], // Translate from left on open,
           borderWidth: 0,
           backgroundColor: this.props.isActive ? Grey400 : Green400
         }
@@ -235,14 +235,14 @@ class Card extends React.Component {
       <TouchableWithoutFeedback onPress={() => {
         this.setModalVisible(true)
       }}>
-      <View style={[styles.row, { backgroundColor: White, width: '100%' }]}>
+      <View style={[styles.row, { backgroundColor: White }]}>
             <PlatformTouchable
               onLongPress={item.drag}
               style={[{ width: 5, alignItems: "flex-start" }]}
             >
               <Text style={styles.text}>{` `}</Text>
             </PlatformTouchable>
-        <PlatformTouchable style={[styles.flex, { width: '100%', alignItems: 'flex-start'}]} onLongPress={item.drag}>
+        <PlatformTouchable style={[styles.flex, { alignItems: 'flex-start'}]} onLongPress={item.drag}>
           <View style={styles.topInfoContainer}>
             {/* {
               profilePicture && 

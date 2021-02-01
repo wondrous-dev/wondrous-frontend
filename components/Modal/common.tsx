@@ -174,7 +174,7 @@ export const DateDisplay = ({ dueDate, onDateChange, editDate, setEditDate }) =>
   )
 }
 
-export const ModalDropdown = ({ defaultValue, items, placeholder, value, setValue, zIndex }) => {
+export const ModalDropdown = ({ items, value, setValue }) => {
   return (
       <DropDownPicker
       defaultValue={value}

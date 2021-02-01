@@ -34,7 +34,7 @@ const linkStyles = StyleSheet.create({
     height: spacingUnit * 4
   },
   linkText: {
-    fontSize: 18,
+    fontSize: 16,
     textTransform: 'lowercase'
   }
 })
@@ -50,7 +50,7 @@ const Links = ({ route }) => {
       flex: 1,
       backgroundColor: White
     }}>
-      <Header title={name} />
+      <Header title='Personal links' />
       <View style={linkStyles.container}>
         {
           links.website && 

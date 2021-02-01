@@ -548,6 +548,7 @@ export const ProjectFeed = () => {
 }
 
 export const HomeFeed = () => {
+  const user = useMe()
   const [refreshing, setRefreshing] = useState(false)
   const navigation = useNavigation()
   const [getItems, {loading, data, error, refetch, fetchMore}] = useLazyQuery(GET_HOME_FEED, {
@@ -577,14 +578,17 @@ export const HomeFeed = () => {
       </View>
       )
   }
+  const filteredData = (data && data.getHomeFeed.filter(feedItem => {
 
+    return user && (user.id !== feedItem.userId)
+  }))
   return (
     <>
     <FlatList 
       contentContainerStyle={{
         paddingBottom: spacingUnit * 10
       }}
-      data={data && data.getHomeFeed}
+      data={filteredData}
       renderItem={({ item }) => renderItem({ item, navigation, screen: 'Root', params: {
         screen: 'Dashboard',
         params: {

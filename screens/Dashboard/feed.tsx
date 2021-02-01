@@ -15,7 +15,8 @@ function Feed({
   return (
     <>
     <SafeAreaView style={{
-      backgroundColor: White
+      backgroundColor: White,
+      flex: 1
     }}>
       <Header />
       <HomeFeed />
