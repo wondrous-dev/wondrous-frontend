@@ -15,7 +15,7 @@ import { Tag } from '../../components/Tag'
 import { formatDueDate, redDate } from '../../utils/date'
 import { GET_TASK_BY_ID, GET_GOAL_BY_ID } from '../../graphql/queries'
 import { MyCarousel } from '../../storybook/stories/Carousel'
-import { LinkIcon } from '../../assets/images/link'
+import LinkIcon from '../../assets/images/link'
 
 const TaskPage = ({ navigation, route }) => {
   const user = useMe()
@@ -36,6 +36,12 @@ const TaskPage = ({ navigation, route }) => {
       cache.modify({
         fields: {
           getTasksFromProject(existingTasks=[]) {
+
+          },
+          getTasksFromUser() {
+
+          },
+          getUserActions() {
 
           }
         }

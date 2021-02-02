@@ -159,7 +159,7 @@ function UserProfile({
     if (user) {
       setProfilePicture(user.profilePicture)
     }
-  }, [user && user.profilePicture, feedSelected, actionSelected, finalUserId ])
+  }, [user && user.profilePicture, feedSelected, actionSelected, finalUserId, status ])
 
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo
   const getCorrectData = section => {

@@ -34,7 +34,7 @@ export class MyCarousel extends React.Component {
               prevPos: false,
               nextPos: false,
               dotActiveStyle: {
-                backgroundColor: activeDotColor || 'white'
+                backgroundColor: activeDotColor && this.state.entries.length > 1 ? activeDotColor : 'white'
               },
               dotProps: {
                 badgeStyle: {

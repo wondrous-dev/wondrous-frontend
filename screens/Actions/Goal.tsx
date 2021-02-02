@@ -15,7 +15,7 @@ import { Tag } from '../../components/Tag'
 import { formatDueDate, redDate } from '../../utils/date'
 import { GET_GOAL_BY_ID } from '../../graphql/queries'
 import { MyCarousel } from '../../storybook/stories/Carousel'
-import { LinkIcon } from '../../assets/images/link'
+import LinkIcon from '../../assets/images/link'
 
 const GoalPage = ({ navigation, route }) => {
   const user = useMe()
@@ -38,6 +38,12 @@ const GoalPage = ({ navigation, route }) => {
           getGoalsFromProject(existingGoals=[]) {
             // console.log('existingGoals', existingGoals)
             return existingGoals
+          },
+          getGoalsFromUser() {
+
+          },
+          getUserActions() {
+            
           }
         }
       })
@@ -69,7 +75,7 @@ const GoalPage = ({ navigation, route }) => {
   }
   const images = goal.additionalData && goal.additionalData.images
   const asks = goal.additionalData && goal.additionalData.relatedAskIds
-  const tasks = goal.additionalInfo && goal.additionalInfo.taskCount
+  const tasks = goal.additionalInfo && Number(goal.additionalInfo.taskCount)
 
   return (
     <SafeAreaView style={{
@@ -96,7 +102,7 @@ const GoalPage = ({ navigation, route }) => {
           goal.detail &&
           <View>
             <Text style={pageStyles.paragraph}>
-              {renderMentionString({content: goal.detail, navigation })}
+              {renderMentionString({ content: goal.detail, navigation })}
             </Text>
           </View>
         }
@@ -148,7 +154,7 @@ const GoalPage = ({ navigation, route }) => {
           <MyCarousel data={images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400}/>
         }
         </View>
-        <View style={[pageStyles.subContainer, ]}>
+        <View style={[pageStyles.subContainer]}>
         {
           asks &&
           <Pressable onPress={() => navigation.navigate('Root', {
@@ -176,7 +182,7 @@ const GoalPage = ({ navigation, route }) => {
           </Pressable>
         }
         {
-          tasks &&
+          tasks !== 0 &&
           <Pressable onPress={() => navigation.navigate('Root', {
             screen: 'Profile',
             params: {
@@ -190,9 +196,7 @@ const GoalPage = ({ navigation, route }) => {
           })}>
             <Paragraph color={Black} style={pageStyles.additionalInfoText}>
               {tasks}
-              <Paragraph color={Black} style={{
-                // textDecorationLine: 'underline'
-              }}>
+              <Paragraph color={Black}>
                 {Number(tasks)=== 1 ? ' task' : ' tasks'}
               </Paragraph>
             </Paragraph>

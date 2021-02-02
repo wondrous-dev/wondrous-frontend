@@ -32,7 +32,7 @@ export const pageStyles = StyleSheet.create({
   },
   linkContainer: {
     flexDirection: 'row',
-    marginTop: spacingUnit
+    marginTop: spacingUnit * 2
   },
   link: {
     fontFamily: 'Rubik Light',
