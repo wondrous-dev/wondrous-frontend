@@ -198,6 +198,7 @@ class Card extends React.Component {
     const { name, dueDate, project: {
       name: projectName
     }, useProfilePicture, user, priority, content } = item.item
+
     const {
       profilePicture,
       icon,

@@ -9,6 +9,7 @@ export const PublicAskFragment = gql`
     project {
       name
     }
+    userId
     additionalData {
       relatedTaskIds
       relatedGoalIds

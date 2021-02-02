@@ -13,7 +13,7 @@ export const CREATE_ASK = gql`
 
 export const UPDATE_ASK = gql`
   mutation UpdateTask($askId: ID!, $input: AskInput) {
-    updateAsk(AskId: $askId, input: $input) {
+    updateAsk(askId: $askId, input: $input) {
       ...PublicAsk
     }
   }

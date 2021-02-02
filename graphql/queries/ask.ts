@@ -3,8 +3,8 @@ import { gql } from '@apollo/client'
 import { PublicAskFragment } from '../fragments/ask'
 
 export const GET_ASKS_FROM_PROJECT = gql`
-  query GetAsksFromProject($projectId: ID!) {
-    getAsksFromProject(projectId: $projectId) {
+  query GetAsksFromProject($projectId: ID!, $status: String) {
+    getAsksFromProject(projectId: $projectId, status: $status) {
       ...PublicAsk
     }
   }

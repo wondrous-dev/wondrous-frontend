@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { Pressable, SafeAreaView, View, RefreshControl, FlatList } from 'react-native'
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client'
@@ -9,8 +9,8 @@ import { ProfileTabParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { Black, Blue500, Grey300, White, Blue400, Grey800 } from '../../constants/Colors'
 import { profileStyles } from './style'
-import { GET_PROJECT_BY_ID, GET_PROJECT_FEED } from '../../graphql/queries/project'
-import { UPDATE_PROJECT } from '../../graphql/mutations/project'
+import { GET_PROJECT_BY_ID, GET_PROJECT_FEED, GET_PROJECT_ACTIONS } from '../../graphql/queries/project'
+import { UPDATE_PROJECT, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK } from '../../graphql/mutations'
 import { SafeImage, UploadImage } from '../../storybook/stories/Image'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton, FlexibleButton, PrimaryButton } from '../../storybook/stories/Button'
@@ -23,10 +23,14 @@ import {
   ProjectInfoText,
   SectionsHeader,
   SetUpFlowProgress,
+  StatusSelector,
   DetermineUserProgress,
-  renderProfileItem
+  renderProfileItem,
+  onSwipe
 } from './common'
 import Link from '../../assets/images/link'
+import { GET_ASKS_FROM_PROJECT } from '../../graphql/queries'
+import { sortByDueDate } from '../../utils/date'
 
 const TagView = ({ tag }) => {
   return (
@@ -54,6 +58,7 @@ function ProjectProfile({
   const [section, setSection] = useState('feed')
   const [refreshing, setRefreshing] = useState(false)
   const [isVisible, setModalVisible] = useState(false)
+  const [status, setStatus] = useState('created')
   const [editProfileModal, setEditProfileModal] = useState(false)
   const [profilePicture, setProfilePicture] = useState('')
   const [updateProject] = useMutation(UPDATE_PROJECT, {
@@ -85,6 +90,35 @@ function ProjectProfile({
     }
   })
 
+  const [getProjectActions, {
+    loading: projectActionLoading,
+    data: projectActionData,
+    error: projectActionError
+  }] = useLazyQuery(GET_PROJECT_ACTIONS, {
+    variables: {
+      projectId,
+      status
+    },
+    fetchPolicy: 'network-only'
+  })
+
+  const [getProjectAsks, {
+    loading: projectAskLoading,
+    data: projectAskData,
+    error: projectAskError
+  }] = useLazyQuery(GET_ASKS_FROM_PROJECT, {
+    variables: {
+      projectId,
+      status
+    },
+    fetchPolicy: 'network-only'
+  })
+
+  const [updateGoal] = useMutation(UPDATE_GOAL)
+  const [updateTask] = useMutation(UPDATE_TASK)
+  const [completeGoal] = useMutation(COMPLETE_GOAL)
+  const [completeTask] = useMutation(COMPLETE_TASK)
+  const [updateAsk] = useMutation(UPDATE_ASK)
   const { data, loading, error } = useQuery(GET_PROJECT_BY_ID, {
     variables: {
       projectId
@@ -100,6 +134,20 @@ function ProjectProfile({
   useEffect(() => {
     if (section === 'feed') {
       getProjectFeed()
+    } else if (section === 'action') {
+      getProjectActions({
+        variables: {
+          projectId,
+          status
+        }
+      })
+    } else if (section === 'asks') {
+      getProjectAsks({
+        variables: {
+          projectId,
+          status
+        }
+      })
     }
 
     if (!profilePicture && project && project.profilePicture) {
@@ -108,16 +156,26 @@ function ProjectProfile({
     if (editProfile) {
       setEditProfileModal(true)
     }
-  }, [project])
+  }, [project, feedSelected, actionSelected, asksSelected, status])
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     if (feedSelected) {
       getProjectFeed()
     } else if (actionSelected) {
-
+      getProjectActions({
+        variables: {
+          projectId,
+          status
+        }
+      })
     } else if (asksSelected) {
-
+      getProjectAsks({
+        variables: {
+          projectId,
+          status
+        }
+      })
     }
     wait(2000).then(() => setRefreshing(false))
   }, [])
@@ -126,13 +184,66 @@ function ProjectProfile({
     if (section === 'feed') {
       return projectFeedData && projectFeedData.getProjectFeed
     } else if (section === 'action') {
-      if (projectOwnedByUser && !(user && user.usageProgress && user.usageProgress.askCreated)) {
+      const actions = projectActionData && projectActionData.getProjectActions
+      if (!(user && user.usageProgress && user.usageProgress.askCreated)) {
         return ['start']
+      } else if(actions && actions.length === 0 && status === 'created') {
+        return ['none']
+      } else {
+        if (actions && actions.goals && actions.tasks) {
+          return sortByDueDate([
+            ...actions.goals,
+            ...actions.tasks
+          ])
+        } else if (actions && actions.goals) {
+          return sortByDueDate(actions.goals)
+        } else if ( actions && actions.tasks) {
+          return sortByDueDate(actions.tasks)
+        }
+        return []
       }
+    } else if (section === 'asks') {
+      const asks = projectAskData && projectAskData.getAsksFromProject
+      if (asks && asks.length === 0 && status === 'created') {
+        return ['none']
+      }
+      return asks
     }
   }
 
   const profileData = getCorrectData(section)
+  const itemRefs = useRef(new Map())
+  const actions = projectActionData && projectActionData.getProjectActions
+  const onSwipeLeft = (item, type) => onSwipe({
+    item,
+    type,
+    status: 'archived',
+    completeGoal,
+    updateGoal,
+    project,
+    user: null,
+    actions,
+    completeTask,
+    updateTask,
+    updateAsk,
+    projectAskData,
+    userAsksData: null
+  })
+  const onSwipeRight = (item, type) => onSwipe({
+    item,
+    type,
+    status: 'completed',
+    completeGoal,
+    updateGoal,
+    project,
+    user: false,
+    actions,
+    completeTask,
+    updateTask,
+    updateAsk,
+    projectAskData,
+    userAsksData: null
+  })
 
   return (
     <SafeAreaView style={{
@@ -165,10 +276,10 @@ function ProjectProfile({
         }
         ItemSeparatorComponent={() => (
           <View
-            style={{
-              borderBottomColor: Grey300,
-              borderBottomWidth: 1,
-            }}
+          style={[feedSelected && {
+            borderBottomColor: Grey300,
+            borderBottomWidth: 1,
+          }]}
           />
         )}
         ListHeaderComponent={() => (
@@ -176,12 +287,14 @@ function ProjectProfile({
             <View style={[profileStyles.profileInfoContainer, {
               justifyContent: 'space-between',
             }]}>
+              <View style={profileStyles.imageContainer}>
               {
                 profilePicture ?
                 <SafeImage style={profileStyles.profileImage} src={profilePicture|| project.profilePicture} />
                 :
                 <ProfilePlaceholder projectOwnedByUser={projectOwnedByUser} />
               }
+              </View>
               <ProjectInfoText count={project.followCount} type={project.followCount === 1 ? 'follower' : 'followers'} />
               <ProjectInfoText count={project.collaborators.length} type={project.collaborators.length === 1 ? 'collaborator': 'collaborators'} />
               <ProjectInfoText count={project.goalsCompletedCount} type='goals completed' />
@@ -269,10 +382,14 @@ function ProjectProfile({
             <DetermineUserProgress user={user} projectId={projectId} />
 
               <SectionsHeader />
+              {
+                (actionSelected || asksSelected) &&
+                <StatusSelector setStatus={setStatus} status={status} />
+              }
           </View>
         )}
         data={profileData}
-        renderItem={({ item }) => renderProfileItem({ item, section, user, navigation, projectId })}
+        renderItem={({ item }) => renderProfileItem({ item, section, user, userOwned: projectOwnedByUser, navigation, projectId, onSwipeLeft, onSwipeRight, itemRefs })}
         >
 
         </FlatList>

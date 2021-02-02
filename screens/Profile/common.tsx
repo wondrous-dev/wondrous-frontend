@@ -291,7 +291,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
         }}>
           <Paragraph style={{
             marginBottom: spacingUnit * 2
-          }} color={Black}>
+          }} color={Grey800}>
             No goals or tasks here.
           </Paragraph>
           {
@@ -332,7 +332,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
         }}>
           <Paragraph style={{
             marginBottom: spacingUnit * 2
-          }} color={Black}>
+          }} color={Grey800}>
             No asks yet.
           </Paragraph>
           {
@@ -353,14 +353,14 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
               }
             }}>
               <Paragraph color={White}>
-                Create actions
+                Create asks
               </Paragraph>
             </PrimaryButton>
           }
         </View>
       )
     }
-    return renderCard({ navigation, item, type: 'asks', user, itemRefs, onSwipeRight, onSwipeLeft })
+    return renderCard({ navigation, item, type: 'ask', user, itemRefs, onSwipeRight, onSwipeLeft })
   }
 }
 
@@ -443,4 +443,203 @@ export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRigh
       />
     </View>
   )
+}
+
+const removeActions = ({item, type, original, actions }) => {
+  const newActions = {}
+  if (actions) {
+    const {
+      goals,
+      tasks
+    } = actions
+    if (type === 'goals') {
+      if (goals && (status === 'created' || status === null)) {
+        const newGoals = goals.filter(goal => goal.id !== item.id)
+
+        newActions.goals = newGoals
+        newActions.tasks = tasks
+        return newActions
+      }
+    } else if (type === 'tasks') {
+      if (tasks && (status === 'created' || status === null)) {
+        const newTasks = tasks.filter(task => task.id !== item.id)
+        newActions.goals = goals
+        newActions.tasks = newTasks
+        return newActions
+      }
+    }
+  }
+}
+export const StatusSelector = ({ setStatus, status}) => {
+  return (
+    
+      <View style={{
+        paddingLeft: spacingUnit * 2,
+        paddingRight: spacingUnit * 2
+      }}>
+        <View style={[{
+          marginTop: spacingUnit * 3,
+          flexDirection: 'row'
+        }]}>
+        {STATUS_ARR.map(statusItem => (
+          <StatusItem
+          statusValue={statusItem.value}
+          statusLabel={statusItem.label}
+          statusTrue={statusItem.value === status}
+          setStatus={setStatus}
+          />
+        ))}
+        </View>
+        <RegularText color={Grey800} style={{
+          marginTop: spacingUnit * 2,
+          marginBottom: spacingUnit * 2
+        }}>
+          Swipe right to mark as complete, swipe left to archive.
+        </RegularText>
+      </View>
+  )
+}
+
+export const onSwipe =({
+  item,
+  type,
+  status,
+  completeGoal,
+  updateGoal,
+  project,
+  user,
+  actions,
+  completeTask,
+  updateTask,
+  updateAsk,
+  projectAskData,
+  userAsksData
+}) => {
+  if (type === 'goal') {
+    if (status === 'completed') {
+      completeGoal({
+        variables: {
+          goalId: item.id
+        },
+        update(cache) {
+          if (project) {
+            cache.modify({
+              fields: {
+                getProjectActions(existingActions) {
+                  return removeActions({ item, type: 'goals', original: existingActions, actions })
+                }
+              }
+            })
+          } else if (user) {
+            cache.modify({
+              fields: {
+                getUserActions(existingActions) {
+                  return removeActions({ item, type: 'goals', original: existingActions, actions })
+                }
+              }
+            })
+          }
+        }
+      })
+    } else {
+      updateGoal({
+        variables: {
+          goalId: item.id,
+          input: {
+            status
+          }
+        },
+        update(cache) {
+          if (project) {
+            cache.modify({
+              fields: {
+                getProjectActions(existingActions) {
+                  return removeActions({ item, type: 'goals', original: existingActions, actions })
+                }
+              }
+            })
+          } else if (user) {
+            cache.modify({
+              fields: {
+                getUserActions(existingActions) {
+                  return removeActions({ item, type: 'goals', original: existingActions, actions })
+                }
+              }
+            })
+          }
+        }
+      })
+    }
+  } else if (type === 'task') {
+    if (status === 'completed') {
+      completeTask({
+        variables: {
+          taskId: item.id
+        },
+        update(cache) {
+          cache.modify({
+            fields: {
+              getProjectActions(existingActions) {
+                removeActions({ item, type: 'tasks', original: existingActions, actions })
+              }
+            }
+          })
+        }
+      })
+    } else {
+      updateTask({
+        variables: {
+          taskId: item.id,
+          input: {
+            status
+          }
+        },
+        update(cache) {
+          cache.modify({
+            fields: {
+              getProjectActions(existingActions) {
+                removeActions({ item, type: 'tasks', original: existingActions, actions })
+              }
+            }
+          })
+        }
+      })
+    }
+  } else if (type === 'ask') {
+
+    updateAsk({
+      variables: {
+        askId: item.id,
+        input: {
+          status
+        }
+      },
+      update(cache) {
+        if (project) {
+          cache.modify({
+            fields: {
+              getAsksFromProject(existingAsks) {
+                if (status === 'completed' || status === 'archived' || status === 'answered') {
+                  const newAsks = projectAskData && projectAskData.getAsksFromProject.map(ask => ask.id !== item.id)
+                  return newAsks
+                }
+              }
+            }
+          })
+        } else if (user) {
+          cache.modify({
+            fields: {
+              getAsksFromUser(existingAsks) {
+                if (status === 'completed' || status === 'archived') {
+                  const newAsks = userAsksData && userAsksData.getAsksFromUser.map(ask => ask.id !== item.id)
+                  return newAsks
+                }
+              }
+            }
+          })
+        }
+
+      }
+    })
+  }
 }

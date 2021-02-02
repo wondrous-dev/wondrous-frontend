@@ -36,7 +36,7 @@ function ProfileScreen({
         noGoingBack: true
       }} />
       <Stack.Screen name='OtherUserProfile' component={UserProfile} />
-      <Stack.Screen name='ProjectProfile' component={ProjectProfile} />
+      <Stack.Screen name='ProjectProfile' component={ProjectProfile} options={{ gestureEnabled: false }} />
       <Stack.Screen name='ProfileItem' component={FeedItem} />
       <Stack.Screen name='WorkflowWelcome' component={WorkflowWelcome} />
       <Stack.Screen name='SetupGoal' component={SetupGoal} options={{ gestureEnabled: false }} />

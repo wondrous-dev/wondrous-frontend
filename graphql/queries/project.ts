@@ -1,6 +1,8 @@
 import { gql } from '@apollo/client'
 
-import { PublicProjectFragment, AdditionalProjectFragment } from '../fragments/project'
+import { PublicProjectFragment } from '../fragments/project'
+import { AdditionalGoalFragment } from '../fragments/goal'
+import { PublicTaskFragment } from '../fragments/task'
 import { ActivityFeedItem } from '../fragments/feed'
 
 export const GET_PROJECT_BY_ID = gql`
@@ -33,4 +35,19 @@ export const GET_USER_PROJECTS = gql`
       role
     }
   }
+`
+
+export const GET_PROJECT_ACTIONS = gql`
+  query GetProjectActions($projectId: ID!, $status: String) {
+    getProjectActions(projectId: $projectId, status: $status) {
+      goals {
+        ...AdditionalGoal
+      }
+      tasks {
+        ...PublicTask
+      }
+    }
+  }
+  ${AdditionalGoalFragment}
+  ${PublicTaskFragment}
 `

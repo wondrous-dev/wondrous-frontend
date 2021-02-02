@@ -27,6 +27,10 @@ export const profileStyles = StyleSheet.create({
     height: spacingUnit * 8,
     borderRadius: 4
   },
+  imageContainer: {
+    width: spacingUnit * 10,
+    height: spacingUnit * 10
+  },
   profileImage: {
     width: spacingUnit * 10,
     height: spacingUnit * 10,

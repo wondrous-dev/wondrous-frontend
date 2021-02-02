@@ -26,8 +26,8 @@ import {
   SectionsHeader,
   DetermineUserProgress,
   renderProfileItem,
-  STATUS_ARR,
-  StatusItem
+  StatusSelector,
+  onSwipe
 } from './common'
 import { EditProfileModal } from './EditProfileModal'
 import Link from '../../assets/images/link'
@@ -186,7 +186,7 @@ function UserProfile({
     if (user) {
       setProfilePicture(user.profilePicture)
     }
-  }, [user && user.profilePicture, feedSelected, actionSelected, finalUserId, status])
+  }, [user && user.profilePicture, feedSelected, actionSelected, asksSelected, finalUserId, status])
 
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo
   const getCorrectData = section => {
@@ -194,7 +194,7 @@ function UserProfile({
       return userFeedData && userFeedData.getUserFeed
     } else if (section === 'action') {
       const actions = userActionData && userActionData.getUserActions
-      if ((actions && actions.length === 0)) {
+      if ((actions && actions.length === 0) && status === 'created') {
         return ['none']
       } else {
         if (actions && actions.goals && actions.tasks) {
@@ -211,7 +211,8 @@ function UserProfile({
       }
     } else if (section === 'asks') {
       const asks = userAsksData && userAsksData.getAsksFromUser
-      if (!asks || (asks && asks.length === 0)) {
+ 
+      if (asks && asks.length === 0 && status === 'created') {
         return ['none']
       }
       return asks
@@ -221,130 +222,36 @@ function UserProfile({
 
   const itemRefs = useRef(new Map())
 
-  const removeActions = useCallback((item, type, original) => {
-    const actions = userActionData && userActionData.getUserActions
-    const newActions = {}
-    if (actions) {
-      const {
-        goals,
-        tasks
-      } = actions
-      if (type === 'goals') {
-        if (goals && (status === 'created' || status === null)) {
-          const newGoals = goals.filter(goal => goal.id !== item.id)
-
-          newActions.goals = newGoals
-          newActions.tasks = tasks
-          return newActions
-        }
-      } else if (type === 'tasks') {
-        if (tasks && (status === 'created' || status === null)) {
-          const newTasks = tasks.filter(task => task.id !== item.id)
-          newActions.goals = goals
-          newActions.tasks = newTasks
-          return newActions
-        }
-      }
-    }
-  }, [])
-
-  const onSwipe = useCallback((item, type, status) => {
-    if (type === 'goal') {
-      if (status === 'completed') {
-        completeGoal({
-          variables: {
-            goalId: item.id
-          },
-          update(cache) {
-            cache.modify({
-              fields: {
-                getUserActions(existingActions) {
-                  return removeActions(item, 'goals', existingActions)
-                }
-              }
-            })
-          }
-        })
-      } else {
-        updateGoal({
-          variables: {
-            goalId: item.id,
-            input: {
-              status
-            }
-          },
-          update(cache) {
-            cache.modify({
-              fields: {
-                getUserActions(existingActions) {
-                  return removeActions(item, 'goals', existingActions)
-                }
-              }
-            })
-          }
-        })
-      }
-    } else if (type === 'task') {
-      if (status === 'completed') {
-        completeTask({
-          variables: {
-            taskId: item.id
-          },
-          update(cache) {
-            cache.modify({
-              fields: {
-                getUserActions(existingActions) {
-                  removeActions(item, 'tasks', existingActions)
-                }
-              }
-            })
-          }
-        })
-      } else {
-        updateTask({
-          variables: {
-            taskId: item.id,
-            input: {
-              status
-            }
-          },
-          update(cache) {
-            cache.modify({
-              fields: {
-                getUserActions(existingActions) {
-                  removeActions(item, 'tasks', existingActions)
-                }
-              }
-            })
-          }
-        })
-      }
-    } else if (type === 'ask') {
-      updateAsk({
-        variables: {
-          askId: item.id,
-          input: {
-            status
-          }
-        },
-        update(cache) {
-          cache.modify({
-            fields: {
-              getUserAsks(existingAsks) {
-                if (status === 'completed' || status === 'archived') {
-                  const newAsks = userAsksData && userAsksData.getAsksFromUser.map(ask => ask.id !== item.id)
-                  return newAsks
-                }
-              }
-            }
-          })
-        }
-      })
-    }
-  }, [])
-
-  const onSwipeLeft = (item, type) => onSwipe(item, type, 'archived')
-  const onSwipeRight = (item, type) => onSwipe(item, type, 'completed')
+  const onSwipeLeft = (item, type) => onSwipe({
+    item,
+    type,
+    status: 'archived',
+    completeGoal,
+    updateGoal,
+    project: false,
+    user,
+    actions: userActionData && userActionData.getUserActions,
+    completeTask,
+    updateTask,
+    updateAsk,
+    projectAskData: null,
+    userAsksData
+  })
+  const onSwipeRight = (item, type) => onSwipe({
+    item,
+    type,
+    status: 'completed',
+    completeGoal,
+    updateGoal,
+    project: false,
+    user,
+    actions: userActionData && userActionData.getUserActions,
+    completeTask,
+    updateTask,
+    updateAsk,
+    projectAskData: null,
+    userAsksData
+  })
 
   return (
     <SafeAreaView style={{
@@ -398,10 +305,7 @@ function UserProfile({
               <View style={[profileStyles.profileInfoContainer, {
                 // justifyContent: 'space-between',
               }]}>
-                <View style={{
-                  width: spacingUnit * 10,
-                  height: spacingUnit * 10
-                }}>
+                <View style={profileStyles.imageContainer}>
                 {
                   profilePicture ?
                   <SafeImage style={[profileStyles.profileImage, {
@@ -527,31 +431,8 @@ function UserProfile({
               <DetermineUserProgress user={user} />
               <SectionsHeader />
               {
-                actionSelected &&
-                <View style={{
-                  paddingLeft: spacingUnit * 2,
-                  paddingRight: spacingUnit * 2
-                }}>
-                  <View style={[{
-                    marginTop: spacingUnit * 3,
-                    flexDirection: 'row'
-                  }]}>
-                  {STATUS_ARR.map(statusItem => (
-                    <StatusItem
-                    statusValue={statusItem.value}
-                    statusLabel={statusItem.label}
-                    statusTrue={statusItem.value === status}
-                    setStatus={setStatus}
-                    />
-                  ))}
-                  </View>
-                  <RegularText color={Grey800} style={{
-                    marginTop: spacingUnit * 2,
-                    marginBottom: spacingUnit * 2
-                  }}>
-                    Swipe right to mark as complete, swipe left to archive.
-                  </RegularText>
-                </View>
+                (actionSelected || asksSelected) &&
+                <StatusSelector setStatus={setStatus} status={status} />
               }
             </View>
           )}
