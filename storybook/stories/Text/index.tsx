@@ -31,8 +31,8 @@ export const Paragraph = ({ style, children, color=Black }) => (
   }}>{children}</Text>
 )
 
-export const RegularText = ({ style, children, color }) => (
-  <Text style={{
+export const RegularText = ({ style, children, color, ...props }) => (
+  <Text {...props} style={{
     ...baseStyle.regular,
     ...style,
     ...{

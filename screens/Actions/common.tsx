@@ -26,7 +26,9 @@ export const pageStyles = StyleSheet.create({
     color: Black
   },
   paragraph: {
-    fontFamily: 'Rubik Light'
+    fontFamily: 'Rubik Light',
+    fontSize: 16,
+    marginTop: spacingUnit
   },
   linkContainer: {
     flexDirection: 'row',
@@ -39,7 +41,13 @@ export const pageStyles = StyleSheet.create({
     marginLeft: spacingUnit
   },
   subContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginTop: spacingUnit * 2
+  },
+  additionalInfoText: {
+    fontSize: 18,
+    marginRight: spacingUnit * 0.5,
+
   }
 })
 

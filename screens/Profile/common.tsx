@@ -16,6 +16,7 @@ import { useProfile } from '../../utils/hooks'
 import { renderItem } from '../../components/Feed'
 import GoalIcon from '../../assets/images/goal/standalone'
 import TaskIcon from '../../assets/images/task/standalone'
+import AskIcon from '../../assets/images/ask/standalone'
 import { Card } from '../../storybook/stories/Card' 
 import UserPlaceholder from '../../assets/images/user/placeholder'
 
@@ -306,44 +307,62 @@ export const renderProfileItem = ({ item, section, user, navigation, projectId, 
         </View>
       )
     } else {
-
       const type = item && item.__typename && item.__typename.toLowerCase()
-      let icon, iconSize, redirect, redirectParams
-      if (type === 'goal') {
-        icon = GoalIcon
-        iconSize = spacingUnit * 4
-        redirect = 'Root'
-        redirectParams = {
-          screen: 'Profile',
-          params: {
-            screen: 'GoalPage',
-            params: {
-              goal: item
-            }
-          }
-        }
-      } else if (type === 'task') {
-        icon = TaskIcon
-        iconSize = spacingUnit * 3
-        redirect = 'Root'
-        redirectParams = {
-          screen: 'Profile',
-          params: {
-            screen: 'TaskPage',
-            params: {
-              task: item
-            }
-          }
-        }
-      }
-      return (
-        <View style={{
-          marginLeft: spacingUnit * 2,
-          marginRight: spacingUnit * 2
-        }}>
-          <Card key={item.id} navigation={navigation} redirect={redirect} redirectParams={redirectParams} type={type} icon={icon} iconSize={iconSize} profilePicture={user && user.profilePicture} item={item} swipeEnabled={true} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />
-        </View>
-      )
+      return renderCard({ navigation, item, type, user, itemRefs })
     }
   }
+}
+
+export const renderCard = ({ navigation, item, type, user, itemRefs }) => {
+  let icon, iconSize, redirect, redirectParams
+  if (type === 'goal') {
+    icon = GoalIcon
+    iconSize = spacingUnit * 4
+    redirect = 'Root'
+    redirectParams = {
+      screen: 'Profile',
+      params: {
+        screen: 'GoalPage',
+        params: {
+          goal: item
+        }
+      }
+    }
+  } else if (type === 'task') {
+    icon = TaskIcon
+    iconSize = spacingUnit * 3
+    redirect = 'Root'
+    redirectParams = {
+      screen: 'Profile',
+      params: {
+        screen: 'TaskPage',
+        params: {
+          task: item
+        }
+      }
+    }
+  } else if (type === 'ask') {
+    icon = AskIcon
+    iconSize = spacingUnit * 3
+    redirect = 'Root'
+    redirectParams = {
+      screen: 'Profile',
+      params: {
+        screen: 'AskPage',
+        params: {
+          ask: item
+        }
+      }
+    }
+  }
+
+  const owned = (item.ownerId === (user && user.id) ) || (item.userId === (user && user.id))
+  return (
+    <View key={item.id} style={{
+      marginLeft: spacingUnit * 2,
+      marginRight: spacingUnit * 2
+    }}>
+      <Card key={item.id} navigation={navigation} redirect={redirect} redirectParams={redirectParams} type={type} icon={icon} iconSize={iconSize} profilePicture={user && user.profilePicture} item={item} swipeEnabled={!!(owned)} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />
+    </View>
+  )
 }

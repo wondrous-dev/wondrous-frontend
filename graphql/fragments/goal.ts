@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client'
 
+// PS made an additional fragment
 export const PublicGoalFragment = gql`
   fragment PublicGoal on Goal {
     id
@@ -17,6 +18,17 @@ export const PublicGoalFragment = gql`
     additionalData {
       images
       link
+      relatedAskIds
     }
   }
+`
+
+export const AdditionalGoalFragment = gql`
+  fragment AdditionalGoal on Goal {
+    ...PublicGoal
+    additionalInfo {
+      taskCount
+    }
+  }
+  ${PublicGoalFragment}
 `

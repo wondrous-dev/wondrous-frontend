@@ -19,3 +19,30 @@ export const GET_ASKS_FROM_USER = gql`
   }
   ${PublicAskFragment}
 `
+
+export const GET_ASKS_FROM_GOAL = gql`
+  query GetAsksFromGoal {
+    getAsksFromGoal {
+      ...PublicAsk
+    }
+  }
+  ${PublicAskFragment}
+`
+
+export const GET_ASKS_FROM_TASK = gql`
+  query getAsksFromTask {
+    getAsksFromTask {
+      ...PublicAsk
+    }
+  }
+  ${PublicAskFragment}
+`
+
+export const GET_ASK_BY_ID = gql`
+  query GetAskById($askId: ID!) {
+    getAskById(askId: $askId) {
+      ...PublicAsk
+    }
+  }
+  ${PublicAskFragment}
+`

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, View, Text, ScrollView } from 'react-native'
+import { SafeAreaView, View, Text, ScrollView, Pressable } from 'react-native'
 import { useLazyQuery, useMutation } from '@apollo/client'
 
 import { withAuth, useMe } from '../../components/withAuth'
@@ -69,7 +69,8 @@ const GoalPage = ({ navigation, route }) => {
   }
   const images = goal.additionalData && goal.additionalData.images
   const asks = goal.additionalData && goal.additionalData.relatedAskIds
-  const tasks = goal.additionalData && goal.additionalData.relatedTaskIds
+  const tasks = goal.additionalInfo && goal.additionalInfo.taskCount
+
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -91,6 +92,14 @@ const GoalPage = ({ navigation, route }) => {
         <Text style={pageStyles.title}>
           {renderMentionString({ content: goal.name, navigation })}
         </Text>
+        {
+          goal.detail &&
+          <View>
+            <Text style={pageStyles.paragraph}>
+              {renderMentionString({content: goal.detail, navigation })}
+            </Text>
+          </View>
+        }
         <View style={pageStyles.infoContainer}>
           {
               goal.priority &&
@@ -123,14 +132,6 @@ const GoalPage = ({ navigation, route }) => {
             }
         </View>
         {
-          goal.description &&
-          <View>
-            <Text style={pageStyles.paragraph}>
-              {renderMentionString({content: goal.description, navigation })}
-            </Text>
-          </View>
-        }
-        {
           goal.additionalData && goal.additionalData.link &&
           <View style={pageStyles.linkContainer}>
             <LinkIcon color={Grey800} style={{
@@ -147,19 +148,55 @@ const GoalPage = ({ navigation, route }) => {
           <MyCarousel data={images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400}/>
         }
         </View>
-        <View style={pageStyles.subContainer}>
+        <View style={[pageStyles.subContainer, ]}>
         {
           asks &&
-          <>
-          <Paragraph color={Black} style={{
-            fontSize: 18
+          <Pressable onPress={() => navigation.navigate('Root', {
+            screen: 'Profile',
+            params: {
+              screen: 'ActionList',
+              params: {
+                goalId: goal.id,
+                routeLabel: 'Asks',
+                type: 'ask',
+                askIds: asks
+              }
+            }
+          })} style={{
+            marginRight: spacingUnit
           }}>
+          <Paragraph color={Black} style={pageStyles.additionalInfoText}>
             {asks.length}
+            <Paragraph color={Black} style={{
+            // textDecorationLine: 'underline'
+          }}>
+            {asks.length === 1 ? ' ask' : ' asks'}
           </Paragraph>
-          <Paragraph color={Black}>
-            asks
           </Paragraph>
-          </>
+          </Pressable>
+        }
+        {
+          tasks &&
+          <Pressable onPress={() => navigation.navigate('Root', {
+            screen: 'Profile',
+            params: {
+              screen: 'ActionList',
+              params: {
+                goalId: goal.id,
+                routeLabel: 'Tasks',
+                type: 'task'
+              }
+            }
+          })}>
+            <Paragraph color={Black} style={pageStyles.additionalInfoText}>
+              {tasks}
+              <Paragraph color={Black} style={{
+                // textDecorationLine: 'underline'
+              }}>
+                {Number(tasks)=== 1 ? ' task' : ' tasks'}
+              </Paragraph>
+            </Paragraph>
+          </Pressable>
         }
         </View>
       </ScrollView>

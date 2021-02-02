@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
 import { PublicUserFragment } from '../fragments/user'
-import { PublicGoalFragment } from '../fragments/goal'
+import { AdditionalGoalFragment } from '../fragments/goal'
 import { PublicTaskFragment } from '../fragments/task'
 import { ActivityFeedItem } from '../fragments/feed'
 
@@ -82,13 +82,13 @@ export const GET_USER_ACTIONS = gql`
   query GetUserActions($userId: ID!, $status: String) {
     getUserActions(userId: $userId, status: $status) {
       goals {
-        ...PublicGoal
+        ...AdditionalGoal
       }
       tasks {
         ...PublicTask
       }
     }
   }
-  ${PublicGoalFragment}
+  ${AdditionalGoalFragment}
   ${PublicTaskFragment}
 `

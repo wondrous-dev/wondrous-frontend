@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, View, Text, ScrollView } from 'react-native'
+import { SafeAreaView, View, Text, ScrollView, Pressable } from 'react-native'
 import { useLazyQuery, useMutation } from '@apollo/client'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import { Grey800, Purple, Red400, White, Yellow300, Blue400, Grey450 } from '../../constants/Colors'
+import { Grey800, Purple, Red400, White, Black, Blue400, Grey450 } from '../../constants/Colors'
 import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
 import { pageStyles, sortPriority } from './common'
 import { UPDATE_TASK } from '../../graphql/mutations'
@@ -13,7 +13,7 @@ import PriorityFlame from '../../assets/images/modal/priority'
 import { capitalizeFirstLetter, renderMentionString, spacingUnit } from '../../utils/common'
 import { Tag } from '../../components/Tag'
 import { formatDueDate, redDate } from '../../utils/date'
-import { GET_TASK_BY_ID } from '../../graphql/queries'
+import { GET_TASK_BY_ID, GET_GOAL_BY_ID } from '../../graphql/queries'
 import { MyCarousel } from '../../storybook/stories/Carousel'
 import { LinkIcon } from '../../assets/images/link'
 
@@ -43,6 +43,10 @@ const TaskPage = ({ navigation, route }) => {
     }
   })
 
+  const [getGoalName, {
+    data: taskGoal
+  }] = useLazyQuery(GET_GOAL_BY_ID)
+
   useEffect(() => {
     if (!task) {
       getTask({
@@ -53,6 +57,14 @@ const TaskPage = ({ navigation, route }) => {
     }
     if (data) {
       setTask(data.getTaskById)
+    }
+    
+    if (task.goalId) {
+      getGoalName({
+        variables: {
+          goalId: task.goalId
+        }
+      })
     }
   }, [data])
 
@@ -67,6 +79,8 @@ const TaskPage = ({ navigation, route }) => {
     )
   }
   const images = task.additionalData && task.additionalData.images
+  const asks = task.additionalData && task.additionalData.relatedAskIds
+  const goal = taskGoal && taskGoal.getGoalById
 
   return (
     <SafeAreaView style={{
@@ -89,6 +103,14 @@ const TaskPage = ({ navigation, route }) => {
         <Text style={pageStyles.title}>
           {renderMentionString({ content: task.name, navigation })}
         </Text>
+        {
+          task.detail &&
+          <View>
+            <Text style={pageStyles.paragraph}>
+              {renderMentionString({ content: task.detail, navigation })}
+            </Text>
+          </View>
+        }
         <View style={pageStyles.infoContainer}>
           {
               task.priority &&
@@ -121,15 +143,30 @@ const TaskPage = ({ navigation, route }) => {
             }
         </View>
         {
-          task.description &&
-          <View>
-            <Text style={pageStyles.paragraph}>
-              {renderMentionString({content: task.description, navigation })}
-            </Text>
+          goal &&
+          <View style={{
+            marginTop: spacingUnit
+          }}>
+            <RegularText color={Black}>
+              From{` `}
+                <RegularText onPress={() => navigation.navigate('Root', {
+                screen: 'Profile',
+                params: {
+                  screen: 'GoalPage',
+                  params: {
+                    goal
+                  }
+                }
+              })} color={Blue400} style={{
+                  marginLeft: spacingUnit * 0.5
+                }}>
+                  {goal.name}
+                </RegularText>
+            </RegularText>
           </View>
         }
         {
-          task.additionalData && goal.additionalData.link &&
+          task.additionalData && task.additionalData.link &&
           <View style={pageStyles.linkContainer}>
             <LinkIcon color={Grey800} style={{
               marginRight: spacingUnit
@@ -143,6 +180,34 @@ const TaskPage = ({ navigation, route }) => {
         {
           images &&
           <MyCarousel data={images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400}/>
+        }
+        </View>
+        <View style={[pageStyles.subContainer]}>
+        {
+          asks &&
+          <Pressable onPress={() => navigation.navigate('Root', {
+            screen: 'Profile',
+            params: {
+              screen: 'ActionList',
+              params: {
+                taskId: task.id,
+                routeLabel: 'Asks',
+                type: 'ask',
+                askIds: asks
+              }
+            }
+          })} style={{
+            marginRight: spacingUnit
+          }}>
+          <Paragraph color={Black} style={pageStyles.additionalInfoText}>
+            {asks.length}
+            <Paragraph color={Black} style={{
+            // textDecorationLine: 'underline'
+          }}>
+            {asks.length === 1 ? ' ask' : ' asks'}
+          </Paragraph>
+          </Paragraph>
+          </Pressable>
         }
         </View>
       </ScrollView>

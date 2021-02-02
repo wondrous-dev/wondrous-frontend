@@ -11,6 +11,15 @@ export const GET_TASK_BY_ID = gql`
   ${PublicTaskFragment}
 `
 
+export const GET_TASKS_FROM_GOAL = gql`
+  query getTasksFromGoal($goalId: ID!) {
+    getTasksFromGoal(goalId: $goalId) {
+      ...PublicTask
+    }
+  }
+  ${PublicTaskFragment}
+`
+
 export const GET_TASKS_FROM_PROJECT = gql`
   query GetTasksFromProject($projectId: ID!) {
     getTasksFromProject(projectId: $projectId) {

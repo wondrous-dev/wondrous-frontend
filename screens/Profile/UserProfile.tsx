@@ -78,13 +78,7 @@ function UserProfile({
   const [isModalVisible, setModalVisible] = useState(false)
   const [loading, setLoading] = useState(false)
   // const [offset, setOffset] = useState(null)
-  const [getUser, {
-    loading: userLoading,
-    data: userData,
-    error: userError,
-  }] = useLazyQuery(GET_USER, {
-    fetchPolicy: 'network-only'
-  })
+
   const {
     loading: additionalInfoLoading,
     data: additionalInfoData,
@@ -136,7 +130,7 @@ function UserProfile({
   const feedSelected = section === 'feed'
   const actionSelected = section === 'action'
   const asksSelected = section === 'asks'
-  const onRefresh = useCallback(() => {
+  const onRefresh = useCallback((feedSelected, actionSelected, asksSelected) => {
     setRefreshing(true)
     if (feedSelected) {
       getUserFeed()
@@ -165,7 +159,7 @@ function UserProfile({
     if (user) {
       setProfilePicture(user.profilePicture)
     }
-  }, [user && user.profilePicture, feedSelected, actionSelected, finalUserId, userData])
+  }, [user && user.profilePicture, feedSelected, actionSelected, finalUserId ])
 
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo
   const getCorrectData = section => {
@@ -229,7 +223,7 @@ function UserProfile({
             // paddingRight: spacingUnit * 2
           }}>
           <FlatList    refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(feedSelected, actionSelected)} />
           }
           ItemSeparatorComponent={() => (
             <View
