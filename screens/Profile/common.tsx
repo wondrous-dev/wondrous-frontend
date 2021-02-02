@@ -365,7 +365,7 @@ export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRigh
   }
 
   const owned = (item.ownerId === (user && user.id) ) || (item.userId === (user && user.id))
-  const swipeEnabled = !!(owned) && (item.status !== 'completed' || item.status !== 'archived')
+  const swipeEnabled = !!(owned) && (item.status !== 'completed' && item.status !== 'archived')
 
   return (
     <View key={item.id} style={{

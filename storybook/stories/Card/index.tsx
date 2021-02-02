@@ -14,7 +14,7 @@ import {
 import { TouchableHighlight, TouchableOpacity as RNGHTouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler"
 import Animated, { withDecay } from "react-native-reanimated"
 
-import { Grey400, Blue400, Green400, White, Grey450, Purple, Red400, Yellow300 } from '../../../constants/Colors'
+import { Grey400, Blue400, Green400, White, Grey450, Purple, Red400, Yellow300, Grey300, Grey800 } from '../../../constants/Colors'
 import CompleteSvg from '../../../assets/images/complete.svg'
 import ArchiveSvg from '../../../assets/images/archive.svg'
 import { SafeImage, SvgImage } from '../Image'
@@ -81,7 +81,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end"
   },
   bottomInfoContainer: {
-    marginTop: spacingUnit,
     flexDirection: 'row',
     alignItems: 'center'
   },
@@ -221,7 +220,6 @@ class Card extends React.Component {
     }
     const Icon = icon
     const isRedDate = redDate(dueDate)
-
     return (
       <TouchableWithoutFeedback onPress={() => {
         if (!redirect) {
@@ -262,26 +260,55 @@ class Card extends React.Component {
             }]}>{renderMentionString({ content: type === 'ask' ? content : name, textStyle: styles.text, navigation: this.props.navigation })}</Text>
             </View>
           </View>
-          <View style={styles.bottomInfoContainer}>
-            {
-              priority &&
-              <PriorityFlame color={sortPriority()} style={{
-                // marginLeft: spacingUnit,
-                marginRight: spacingUnit * 1.5
-              }} />
-            }
-            <Tag color={Purple} style={{
-              marginRight: spacingUnit  
-            }}>
-              <RegularText color={White}>
-                {projectName}
-              </RegularText>
-            </Tag>
-            {dueDate &&
-                <RegularText color={isRedDate ? Red400 : Grey450} style={styles.dueText}>
-                Due {formatDueDate(new Date(dueDate))}
-              </RegularText>
-            }
+          <View style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: spacingUnit,
+            flex: 1
+          }}>
+            <View style={[styles.bottomInfoContainer, {
+              flex: 1
+            }]}>
+              {
+                priority &&
+                <PriorityFlame color={sortPriority()} style={{
+                  // marginLeft: spacingUnit,
+                  marginRight: spacingUnit * 1.5
+                }} />
+              }
+              <Tag color={Purple} style={{
+                marginRight: spacingUnit  
+              }}>
+                <RegularText color={White}>
+                  {projectName}
+                </RegularText>
+              </Tag>
+              {dueDate &&
+                  <RegularText color={isRedDate ? Red400 : Grey450} style={styles.dueText}>
+                  Due {formatDueDate(new Date(dueDate))}
+                </RegularText>
+              }
+            </View>
+            <View>
+              {
+                item.item && item.item.status === 'completed' &&
+                <Tag color={Green400} style={{
+                }}>
+                  <RegularText color={White}>
+                    Completed
+                  </RegularText>
+                </Tag>
+              }
+              {
+                item.item && item.item.status === 'archived' &&
+                <Tag color={Grey300}>
+                  <RegularText color={Grey800}>
+                    Archived
+                  </RegularText>
+                </Tag>
+              }
+            </View>
           </View>
         </PlatformTouchable>
           <PlatformTouchable  onLongPress={item.drag} style={[{ width: 5, alignItems: "flex-end" }]}>
