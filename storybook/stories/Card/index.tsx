@@ -340,7 +340,7 @@ class Card extends React.Component {
           <FullScreenAskModal ask={item} setModalVisible={this.setModalVisible} isVisible={isVisible} askMutation={this.updateAsk} />
         }
       <SwipeableItem
-        key={item.key}
+        key={item.id}
         item={{ item, drag }}
         swipeEnabled={swipeEnabled}
         ref={ref => {

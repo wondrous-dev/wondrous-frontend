@@ -36,7 +36,11 @@ const ProjectItem = ({
           :
           (project
             ?
-            <ProfilePlaceholder />
+            <ProfilePlaceholder imageStyle={{
+              width: spacingUnit * 6,
+              height: spacingUnit * 6,
+              marginRight: spacingUnit
+            }} />
             :
             <Image source={DefaultProfilePicture} style={{
               marginRight: 8,

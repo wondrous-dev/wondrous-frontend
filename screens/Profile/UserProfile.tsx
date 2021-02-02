@@ -15,7 +15,7 @@ import BottomTabNavigator from '../../navigation/BottomTabNavigator'
 import { UploadImage, SafeImage } from '../../storybook/stories/Image'
 import { WONDER_BASE_URL } from '../../constants/'
 import { UPDATE_USER, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK } from '../../graphql/mutations'
-import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS } from '../../graphql/queries'
+import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GET_ASKS_FROM_USER } from '../../graphql/queries'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton } from '../../storybook/stories/Button'
 import { Black, Grey300, White, Blue400, Grey800 } from '../../constants/Colors'
@@ -40,17 +40,6 @@ const getUserId = ({ route, user }) => {
   }
   return user && user.id
 }
-
-const fetchAdditionalInfo = async ({ getAdditionalInfo, userId, setAdditionalInfo }) => {
-  const additionalResponse = await getAdditionalInfo({
-    variables: {
-      userId
-    }
-  })
-  const result = additionalResponse && additionalResponse.data && additionalResponse.data.getUserAdditionalInfo
-  setAdditionalInfo(result)
-}
-
 
 const fetchUser = async ({ userId, setUser }) => {
   const newUserResponse = await apollo.query({
@@ -116,6 +105,18 @@ function UserProfile({
     fetchPolicy: 'network-only'
   })
 
+  const [getUserAsks, {
+    loading: userAsksLoading,
+    data: userAsksData,
+    error: userAsksError
+  }] = useLazyQuery(GET_ASKS_FROM_USER, {
+    variables: {
+      userId: finalUserId,
+      status
+    },
+    fetchPolicy: 'network-only'
+  })
+
   const [user, setUser] = useState(null)
   const [profilePicture, setProfilePicture] = useState(user && user.profilePicture)
   const [updateUser] = useMutation(UPDATE_USER, {
@@ -146,7 +147,12 @@ function UserProfile({
         }
       })
     } else if (asksSelected) {
-
+      getUserAsks({
+        variables: {
+          userId: finalUserId,
+          status
+        }
+      })
     }
     wait(2000).then(() => setRefreshing(false))
   }, [])
@@ -156,6 +162,13 @@ function UserProfile({
       getUserFeed()
     } else if (actionSelected) {
       getUserActions({
+        variables: {
+          userId: finalUserId,
+          status
+        }
+      })
+    } else if (asksSelected) {
+      getUserAsks({
         variables: {
           userId: finalUserId,
           status
@@ -173,17 +186,17 @@ function UserProfile({
     if (user) {
       setProfilePicture(user.profilePicture)
     }
-  }, [user && user.profilePicture, feedSelected, actionSelected, finalUserId, status ])
+  }, [user && user.profilePicture, feedSelected, actionSelected, finalUserId, status])
 
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo
   const getCorrectData = section => {
     if (section === 'feed') {
       return userFeedData && userFeedData.getUserFeed
     } else if (section === 'action') {
-      if (userOwned && !(user && user.usageProgress && user.usageProgress.askCreated)) {
-        return ['start']
+      const actions = userActionData && userActionData.getUserActions
+      if ((actions && actions.length === 0)) {
+        return ['none']
       } else {
-        const actions = userActionData && userActionData.getUserActions
         if (actions && actions.goals && actions.tasks) {
           return sortByDueDate([
             ...actions.goals,
@@ -196,6 +209,12 @@ function UserProfile({
         }
         return []
       }
+    } else if (section === 'asks') {
+      const asks = userAsksData && userAsksData.getAsksFromUser
+      if (!asks || (asks && asks.length === 0)) {
+        return ['none']
+      }
+      return asks
     }
   }
   const profileData = getCorrectData(section)
@@ -222,7 +241,7 @@ function UserProfile({
         if (tasks && (status === 'created' || status === null)) {
           const newTasks = tasks.filter(task => task.id !== item.id)
           newActions.goals = goals
-          newActions.tasks = tasks
+          newActions.tasks = newTasks
           return newActions
         }
       }
@@ -307,6 +326,18 @@ function UserProfile({
           input: {
             status
           }
+        },
+        update(cache) {
+          cache.modify({
+            fields: {
+              getUserAsks(existingAsks) {
+                if (status === 'completed' || status === 'archived') {
+                  const newAsks = userAsksData && userAsksData.getAsksFromUser.map(ask => ask.id !== item.id)
+                  return newAsks
+                }
+              }
+            }
+          })
         }
       })
     }
@@ -352,7 +383,7 @@ function UserProfile({
             // paddingRight: spacingUnit * 2
           }}>
           <FlatList    refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(feedSelected, actionSelected)} />
+            <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(feedSelected, actionSelected, asksSelected)} />
           }
           ItemSeparatorComponent={() => (
             <View
@@ -367,6 +398,10 @@ function UserProfile({
               <View style={[profileStyles.profileInfoContainer, {
                 // justifyContent: 'space-between',
               }]}>
+                <View style={{
+                  width: spacingUnit * 10,
+                  height: spacingUnit * 10
+                }}>
                 {
                   profilePicture ?
                   <SafeImage style={[profileStyles.profileImage, {
@@ -377,6 +412,7 @@ function UserProfile({
                   :
                   <ProfilePlaceholder projectOwnedByUser={userOwned} user={true} />
                 }
+                </View>
                 <Pressable onPress={() => navigation.navigate('Root', {
                   screen: 'Profile',
                   params: {
@@ -524,7 +560,7 @@ function UserProfile({
           contentContainerStyle={{
             paddingBottom: spacingUnit * 10
           }}
-          renderItem={({ item }) => renderProfileItem({ item, section, user, navigation, itemRefs, onSwipeLeft, onSwipeRight })}
+          renderItem={({ item }) => renderProfileItem({ item, section, user, userOwned, navigation, itemRefs, onSwipeLeft, onSwipeRight })}
           ListEmptyComponent={() => {
             return (
               <View style={{

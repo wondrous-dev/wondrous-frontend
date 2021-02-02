@@ -43,7 +43,13 @@ export const ProfilePlaceholder = ({ projectOwnedByUser, imageStyle, user }) => 
       }} />
     )
   }
-  return <ProfileDefaultImage style={[profileStyles.profilePlaceholderImage, imageStyle]} />
+
+  return <ProfileDefaultImage style={{
+    ...profileStyles.profilePlaceholderImage,
+    ...(imageStyle && {
+      ...imageStyle
+    })
+  }} />
 }
 
 export const ProjectInfoText = ({ count, type, style }) => {
@@ -260,7 +266,7 @@ export const STATUS_ARR = [
   }
 ]
 
-export const renderProfileItem = ({ item, section, user, navigation, projectId, itemRefs, onSwipeLeft, onSwipeRight }) => {
+export const renderProfileItem = ({ item, section, user, userOwned, navigation, projectId, itemRefs, onSwipeLeft, onSwipeRight }) => {
   if (section === 'feed') {
     return renderItem({ item, navigation, screen: 'Root', params: {
       screen: 'Profile',
@@ -275,7 +281,7 @@ export const renderProfileItem = ({ item, section, user, navigation, projectId, 
       }
     }   })
   } else if ( section === 'action') {
-    if (item === 'start') {
+    if (item === 'start' || item === 'none') {
       // return a button to set up work flow
       return (
         <View style={{
@@ -286,27 +292,75 @@ export const renderProfileItem = ({ item, section, user, navigation, projectId, 
           <Paragraph style={{
             marginBottom: spacingUnit * 2
           }} color={Black}>
-            No goals or tasks yet.
+            No goals or tasks here.
           </Paragraph>
-          <PrimaryButton onPress={() => navigation.navigate('Root', {
-            screen: 'Profile',
-            params: {
-              screen: 'WorkflowWelcome',
-              params: {
-                projectId
+          {
+            userOwned &&
+            <PrimaryButton onPress={() => {
+              if (item === 'start') {
+                navigation.navigate('Root', {
+                  screen: 'Profile',
+                  params: {
+                    screen: 'WorkflowWelcome',
+                    params: {
+                      projectId
+                    }
+                  }
+                })
+              } else if (item === 'none') {
+                //TODO: Add action in new modal
               }
-            }
-          })}>
-            <Paragraph color={White}>
-              Create actions
-            </Paragraph>
-          </PrimaryButton>
+            }}>
+              <Paragraph color={White}>
+                Create actions
+              </Paragraph>
+            </PrimaryButton>
+          }
         </View>
       )
     } else {
       const type = item && item.__typename && item.__typename.toLowerCase()
       return renderCard({ navigation, item, type, user, itemRefs, onSwipeRight, onSwipeLeft })
     }
+  } else if (section === 'asks') {
+    if (item === 'start' || item === 'none') {
+      return (
+        <View style={{
+          flex: 1,
+          alignItems: 'center',
+          marginTop: spacingUnit * 4
+        }}>
+          <Paragraph style={{
+            marginBottom: spacingUnit * 2
+          }} color={Black}>
+            No asks yet.
+          </Paragraph>
+          {
+            userOwned &&
+            <PrimaryButton onPress={() => {
+              if (item === 'start') {
+                navigation.navigate('Root', {
+                  screen: 'Profile',
+                  params: {
+                    screen: 'WorkflowWelcome',
+                    params: {
+                      projectId
+                    }
+                  }
+                })
+              } else if (item === 'none') {
+                //TODO navigate to 
+              }
+            }}>
+              <Paragraph color={White}>
+                Create actions
+              </Paragraph>
+            </PrimaryButton>
+          }
+        </View>
+      )
+    }
+    return renderCard({ navigation, item, type: 'asks', user, itemRefs, onSwipeRight, onSwipeLeft })
   }
 }
 

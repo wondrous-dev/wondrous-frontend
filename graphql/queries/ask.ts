@@ -12,8 +12,8 @@ export const GET_ASKS_FROM_PROJECT = gql`
 `
 
 export const GET_ASKS_FROM_USER = gql`
-  query GetAsksFromUser {
-    getAsksFromUser {
+  query GetAsksFromUser($userId: ID!, $status: String) {
+    getAsksFromUser(userId: $userId, status: $status) {
       ...PublicAsk
     }
   }
@@ -21,8 +21,8 @@ export const GET_ASKS_FROM_USER = gql`
 `
 
 export const GET_ASKS_FROM_GOAL = gql`
-  query GetAsksFromGoal {
-    getAsksFromGoal {
+  query GetAsksFromGoal($goalId: ID!, $status: String) {
+    getAsksFromGoal(goalId: $goalId, status: $status) {
       ...PublicAsk
     }
   }
@@ -30,8 +30,8 @@ export const GET_ASKS_FROM_GOAL = gql`
 `
 
 export const GET_ASKS_FROM_TASK = gql`
-  query getAsksFromTask {
-    getAsksFromTask {
+  query getAsksFromTask($taskId: ID!, $status: String) {
+    getAsksFromTask(taskId: $taskId, status: $status) {
       ...PublicAsk
     }
   }
