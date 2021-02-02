@@ -12,6 +12,7 @@ export const PublicGoalFragment = gql`
     createdBy
     ownerId
     projectId
+    status
     project {
       name
     }

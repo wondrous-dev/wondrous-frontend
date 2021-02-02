@@ -14,7 +14,7 @@ import { spacingUnit, wait, isEmptyObject, usePrevious } from '../../utils/commo
 import BottomTabNavigator from '../../navigation/BottomTabNavigator'
 import { UploadImage, SafeImage } from '../../storybook/stories/Image'
 import { WONDER_BASE_URL } from '../../constants/'
-import { UPDATE_USER } from '../../graphql/mutations'
+import { UPDATE_USER, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK } from '../../graphql/mutations'
 import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS } from '../../graphql/queries'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton } from '../../storybook/stories/Button'
@@ -72,13 +72,17 @@ function UserProfile({
   const finalUserId = getUserId({ route, user: loggedInUser })
   let noGoingBack = route && route.params && route.params.noGoingBack
   const userOwned = loggedInUser && (loggedInUser.id === finalUserId)
-  const [status, setStatus] = useState(null)
+  const [status, setStatus] = useState('created')
   const [section, setSection] = useState('feed')
   const [refreshing, setRefreshing] = useState(false)
   const [isModalVisible, setModalVisible] = useState(false)
   const [loading, setLoading] = useState(false)
   // const [offset, setOffset] = useState(null)
-
+  const [updateGoal] = useMutation(UPDATE_GOAL)
+  const [updateTask] = useMutation(UPDATE_TASK)
+  const [completeGoal] = useMutation(COMPLETE_GOAL)
+  const [completeTask] = useMutation(COMPLETE_TASK)
+  const [updateAsk] = useMutation(UPDATE_ASK)
   const {
     loading: additionalInfoLoading,
     data: additionalInfoData,
@@ -135,7 +139,12 @@ function UserProfile({
     if (feedSelected) {
       getUserFeed()
     } else if (actionSelected) {
-      getUserActions()
+      getUserActions({
+        variables: {
+          userId: finalUserId,
+          status
+        }
+      })
     } else if (asksSelected) {
 
     }
@@ -146,7 +155,12 @@ function UserProfile({
     if (feedSelected) {
       getUserFeed()
     } else if (actionSelected) {
-      getUserActions()
+      getUserActions({
+        variables: {
+          userId: finalUserId,
+          status
+        }
+      })
     }
     if (userOwned) {
       setUser(loggedInUser)
@@ -188,6 +202,119 @@ function UserProfile({
 
   const itemRefs = useRef(new Map())
 
+  const removeActions = useCallback((item, type, original) => {
+    const actions = userActionData && userActionData.getUserActions
+    const newActions = {}
+    if (actions) {
+      const {
+        goals,
+        tasks
+      } = actions
+      if (type === 'goals') {
+        if (goals && (status === 'created' || status === null)) {
+          const newGoals = goals.filter(goal => goal.id !== item.id)
+
+          newActions.goals = newGoals
+          newActions.tasks = tasks
+          return newActions
+        }
+      } else if (type === 'tasks') {
+        if (tasks && (status === 'created' || status === null)) {
+          const newTasks = tasks.filter(task => task.id !== item.id)
+          newActions.goals = goals
+          newActions.tasks = tasks
+          return newActions
+        }
+      }
+    }
+  }, [])
+
+  const onSwipe = useCallback((item, type, status) => {
+    if (type === 'goal') {
+      if (status === 'completed') {
+        completeGoal({
+          variables: {
+            goalId: item.id
+          },
+          update(cache) {
+            cache.modify({
+              fields: {
+                getUserActions(existingActions) {
+                  return removeActions(item, 'goals', existingActions)
+                }
+              }
+            })
+          }
+        })
+      } else {
+        updateGoal({
+          variables: {
+            goalId: item.id,
+            input: {
+              status
+            }
+          },
+          update(cache) {
+            cache.modify({
+              fields: {
+                getUserActions(existingActions) {
+                  return removeActions(item, 'goals', existingActions)
+                }
+              }
+            })
+          }
+        })
+      }
+    } else if (type === 'task') {
+      if (status === 'completed') {
+        completeTask({
+          variables: {
+            taskId: item.id
+          },
+          update(cache) {
+            cache.modify({
+              fields: {
+                getUserActions(existingActions) {
+                  removeActions(item, 'tasks', existingActions)
+                }
+              }
+            })
+          }
+        })
+      } else {
+        updateTask({
+          variables: {
+            taskId: item.id,
+            input: {
+              status
+            }
+          },
+          update(cache) {
+            cache.modify({
+              fields: {
+                getUserActions(existingActions) {
+                  removeActions(item, 'tasks', existingActions)
+                }
+              }
+            })
+          }
+        })
+      }
+    } else if (type === 'ask') {
+      updateAsk({
+        variables: {
+          askId: item.id,
+          input: {
+            status
+          }
+        }
+      })
+    }
+  }, [])
+
+  const onSwipeLeft = (item, type) => onSwipe(item, type, 'archived')
+  const onSwipeRight = (item, type) => onSwipe(item, type, 'completed')
+
   return (
     <SafeAreaView style={{
       backgroundColor: White,
@@ -207,6 +334,8 @@ function UserProfile({
         // projectFeedLoading,
         // projectFeedError,
         // getProjectFeed,
+        onSwipeLeft,
+        onSwipeRight,
         status,
         setStatus,
         setLoading,
@@ -395,7 +524,7 @@ function UserProfile({
           contentContainerStyle={{
             paddingBottom: spacingUnit * 10
           }}
-          renderItem={({ item }) => renderProfileItem({ item, section, user, navigation, itemRefs })}
+          renderItem={({ item }) => renderProfileItem({ item, section, user, navigation, itemRefs, onSwipeLeft, onSwipeRight })}
           ListEmptyComponent={() => {
             return (
               <View style={{

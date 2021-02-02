@@ -127,7 +127,9 @@ export function SvgImage ({ width, height, webStyle, srcElement, style }) {
 }
 
 export const SafeImage = ({ src, style, defaultImage }) => {
-  const [getImage, { data, loading, error }] = useLazyQuery(GET_PREVIEW_IMAGE)
+  const [getImage, { data, loading, error }] = useLazyQuery(GET_PREVIEW_IMAGE, {
+    fetchPolicy: 'network-only'
+  })
   if (!src && defaultImage) {
     return <Image style={style} source={defaultImage} />
   }

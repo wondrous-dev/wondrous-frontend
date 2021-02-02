@@ -5,6 +5,7 @@ export const PublicAskFragment = gql`
     id
     content
     projectId
+    status
     project {
       name
     }

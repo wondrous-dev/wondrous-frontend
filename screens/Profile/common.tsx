@@ -4,6 +4,7 @@ import React, { useState, createContext, useCallback, useEffect } from 'react'
 import { Dimensions, Pressable, View } from 'react-native'
 import { Bar } from 'react-native-progress'
 import { useNavigation } from '@react-navigation/native'
+import { useMutation } from '@apollo/client'
 
 import { Black, Blue400, Blue500, Green400, Grey200, Grey500, Grey350, Grey800, Orange, Red400, White, Yellow300 } from '../../constants/Colors'
 import Plus from '../../assets/images/plus'
@@ -18,7 +19,7 @@ import GoalIcon from '../../assets/images/goal/standalone'
 import TaskIcon from '../../assets/images/task/standalone'
 import AskIcon from '../../assets/images/ask/standalone'
 import { Card } from '../../storybook/stories/Card' 
-import UserPlaceholder from '../../assets/images/user/placeholder'
+
 
 export const ProfilePlaceholder = ({ projectOwnedByUser, imageStyle, user }) => {
   if (projectOwnedByUser) {
@@ -246,10 +247,6 @@ export const DetermineUserProgress = ({ user, projectId }) => {
 
 export const STATUS_ARR = [
   {
-    label: 'All',
-    value: null
-  },
-  {
     label: 'To do',
     value: 'created',
   },
@@ -263,7 +260,7 @@ export const STATUS_ARR = [
   }
 ]
 
-export const renderProfileItem = ({ item, section, user, navigation, projectId, itemRefs }) => {
+export const renderProfileItem = ({ item, section, user, navigation, projectId, itemRefs, onSwipeLeft, onSwipeRight }) => {
   if (section === 'feed') {
     return renderItem({ item, navigation, screen: 'Root', params: {
       screen: 'Profile',
@@ -308,12 +305,17 @@ export const renderProfileItem = ({ item, section, user, navigation, projectId, 
       )
     } else {
       const type = item && item.__typename && item.__typename.toLowerCase()
-      return renderCard({ navigation, item, type, user, itemRefs })
+      return renderCard({ navigation, item, type, user, itemRefs, onSwipeRight, onSwipeLeft })
     }
   }
 }
 
-export const renderCard = ({ navigation, item, type, user, itemRefs }) => {
+export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRight, onSwipeLeft }) => {
+  // const {
+  //   onSwipeRight,
+  //   onSwipeLeft
+  // } = useProfile()
+  let newOnSwipeRight, newOnSwipeLeft
   let icon, iconSize, redirect, redirectParams
   if (type === 'goal') {
     icon = GoalIcon
@@ -328,6 +330,8 @@ export const renderCard = ({ navigation, item, type, user, itemRefs }) => {
         }
       }
     }
+    newOnSwipeRight = () => onSwipeRight(item, 'goal')
+    newOnSwipeLeft = () => onSwipeLeft(item, 'goal')
   } else if (type === 'task') {
     icon = TaskIcon
     iconSize = spacingUnit * 3
@@ -341,6 +345,8 @@ export const renderCard = ({ navigation, item, type, user, itemRefs }) => {
         }
       }
     }
+    newOnSwipeRight = () => onSwipeRight(item, 'task')
+    newOnSwipeLeft = () => onSwipeLeft(item, 'task')
   } else if (type === 'ask') {
     icon = AskIcon
     iconSize = spacingUnit * 3
@@ -354,15 +360,33 @@ export const renderCard = ({ navigation, item, type, user, itemRefs }) => {
         }
       }
     }
+    newOnSwipeRight = () => onSwipeRight(item, 'ask')
+    newOnSwipeLeft = () => onSwipeLeft(item, 'ask')
   }
 
   const owned = (item.ownerId === (user && user.id) ) || (item.userId === (user && user.id))
+  const swipeEnabled = !!(owned) && (item.status !== 'completed' || item.status !== 'archived')
+
   return (
     <View key={item.id} style={{
       marginLeft: spacingUnit * 2,
       marginRight: spacingUnit * 2
     }}>
-      <Card key={item.id} navigation={navigation} redirect={redirect} redirectParams={redirectParams} type={type} icon={icon} iconSize={iconSize} profilePicture={user && user.profilePicture} item={item} swipeEnabled={!!(owned)} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />
+      <Card
+      key={item.id}
+      navigation={navigation}
+      redirect={redirect}
+      redirectParams={redirectParams}
+      type={type}
+      icon={icon}
+      iconSize={iconSize}
+      profilePicture={user && user.profilePicture}
+      item={item}
+      swipeEnabled={swipeEnabled}
+      itemRefs={itemRefs && itemRefs.current}
+      onSwipeRight={newOnSwipeRight}
+      onSwipeLeft={newOnSwipeLeft}
+      />
     </View>
   )
 }

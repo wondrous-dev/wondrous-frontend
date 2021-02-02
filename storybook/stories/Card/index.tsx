@@ -8,7 +8,8 @@ import {
   UIManager,
   TouchableOpacity,
   Dimensions,
-  Pressable
+  Pressable,
+  LayoutAnimation
 } from 'react-native'
 import { TouchableHighlight, TouchableOpacity as RNGHTouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler"
 import Animated, { withDecay } from "react-native-reanimated"
@@ -292,7 +293,7 @@ class Card extends React.Component {
   }
 
   render () {
-    const { item, drag, isActive, itemRefs, swipeEnabled, type } = this.props
+    const { item, drag, isActive, itemRefs, swipeEnabled, type, onSwipeRight, onSwipeLeft } = this.props
     const {
       isVisible
     } = this.state
@@ -323,9 +324,17 @@ class Card extends React.Component {
         onChange={({ open, snapPoint }) => {
           if (snapPoint > 90 && snapPoint !== 0 && open === 'left') {
             //TODO: Implement archive card functionality
+            if (onSwipeLeft) {
+              onSwipeLeft()
+              // LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
+            }
           }
           if (snapPoint > 90 && snapPoint !== 0 && open === 'right') {
             //TODO: Implement goal/task complete functionality
+            if (onSwipeRight) {
+              onSwipeRight()
+              // LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
+            }
           }
           if (open) {
             // Close all other open items

@@ -26,5 +26,13 @@ export const DELETE_GOAL = gql`
       success
     }
   }
+`
+
+export const COMPLETE_GOAL = gql`
+  mutation CompleteGoal($goalId: ID!) {
+    completeGoal(goalId: $goalId) {
+      ...PublicGoal
+    }
+  }
   ${PublicGoalFragment}
 `

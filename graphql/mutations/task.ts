@@ -22,6 +22,17 @@ export const UPDATE_TASK = gql`
 
 export const DELETE_TASK = gql`
   mutation DeleteTask($taskId: ID!) {
-    success
+    deleteTask(taskId: $taskId) {
+      success
+    }
   }
+`
+
+export const COMPLETE_TASK = gql`
+  mutation CompleteTask($taskId: ID!) {
+    completeTask(taskId: $taskId) {
+      ...PublicTask
+    }
+  }
+  ${PublicTaskFragment}
 `
