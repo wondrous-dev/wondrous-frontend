@@ -6,7 +6,7 @@ import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
 import { Grey800, Purple, Red400, White, Black, Blue400, Grey450 } from '../../constants/Colors'
 import { FullScreenAskModal } from '../../components/Modal/AskModal'
-import { pageStyles, sortPriority } from './common'
+import { pageStyles, ReactionFeed } from './common'
 import { UPDATE_ASK } from '../../graphql/mutations'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { renderMentionString, spacingUnit } from '../../utils/common'
@@ -79,7 +79,7 @@ const AskPage = ({ navigation, route }) => {
     }
   }, [data])
 
-  console.log('ask', ask)
+
   if (!ask) {
     return (
       <View>
@@ -208,6 +208,7 @@ const AskPage = ({ navigation, route }) => {
           <MyCarousel data={images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400}/>
         }
         </View>
+        <ReactionFeed type={'ask'} objId={ask.id} user={user} />
       </ScrollView>
     </SafeAreaView>
   )

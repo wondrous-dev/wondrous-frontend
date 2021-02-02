@@ -21,8 +21,8 @@ export const Subheading = ({ style, children, color=White }) => (
   }}>{children}</Text>
 )
 
-export const Paragraph = ({ style, children, color=Black }) => (
-  <Text style={{
+export const Paragraph = ({ style, children, color=Black, ...props }) => (
+  <Text {...props} style={{
     ...baseStyle.paragraph,
     ...style,
     ...{

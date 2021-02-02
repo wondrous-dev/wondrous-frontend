@@ -11,3 +11,12 @@ export const GET_FEED_COMMENTS = gql`
 
   ${ActivityFeedItem}
 `
+
+export const GET_FEED_REACTION_OBJ = gql`
+  query getFeedReactionObj($feedObjectId: ID!, $feedObjectType: String!) {
+    getFeedReactionObject(feedObjectId: $feedObjectId, feedObjectType: $feedObjectType) {
+      ...ActivityFeedItem
+    }
+  }
+  ${ActivityFeedItem}
+`

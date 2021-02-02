@@ -157,7 +157,7 @@ const getItemFromRef = (ref, readField) => {
   }
 }
 
-const getNewExistingItems = ({ existingItems, liked, comment, item, readField }) => {
+export const getNewExistingItems = ({ existingItems, liked, comment, item, readField }) => {
   const newExistingFeedComments = existingItems.map(itemRef => {
     const itemObj = getItemFromRef(itemRef, readField)
     if (itemObj.id === item.id) {
@@ -417,9 +417,9 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
             }} />
           }
           </Pressable>
-          {/* <RegularText color={Grey600} style={{
+          <RegularText color={Grey600} style={{
             marginRight: spacingUnit * 3,
-          }}>{item.reactionCount}</RegularText> */}
+          }}>{item.reactionCount}</RegularText>
           </View>
           <Pressable onPress={pressComment}>
             <CommentIcon color={Grey700} style={{

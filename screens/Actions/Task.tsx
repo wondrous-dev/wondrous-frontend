@@ -6,7 +6,7 @@ import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
 import { Grey800, Purple, Red400, White, Black, Blue400, Grey450 } from '../../constants/Colors'
 import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
-import { pageStyles, sortPriority } from './common'
+import { pageStyles, sortPriority, ReactionFeed } from './common'
 import { UPDATE_TASK } from '../../graphql/mutations'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import PriorityFlame from '../../assets/images/modal/priority'
@@ -216,6 +216,7 @@ const TaskPage = ({ navigation, route }) => {
           </Pressable>
         }
         </View>
+        <ReactionFeed type={'task'} objId={task.id} user={user} />
       </ScrollView>
     </SafeAreaView>
   )

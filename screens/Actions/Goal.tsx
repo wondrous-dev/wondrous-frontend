@@ -6,7 +6,7 @@ import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
 import { Grey800, Purple, Red400, White, Yellow300, Blue400, Grey450, Black } from '../../constants/Colors'
 import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
-import { pageStyles, sortPriority } from './common'
+import { pageStyles, sortPriority, ReactionFeed } from './common'
 import { UPDATE_GOAL } from '../../graphql/mutations'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import PriorityFlame from '../../assets/images/modal/priority'
@@ -203,6 +203,7 @@ const GoalPage = ({ navigation, route }) => {
           </Pressable>
         }
         </View>
+        <ReactionFeed type={'goal'} objId={goal.id} user={user} />
       </ScrollView>
     </SafeAreaView>
   )
