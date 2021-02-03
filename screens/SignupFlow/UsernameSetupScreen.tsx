@@ -76,7 +76,9 @@ const UsernameInput = ({ navigation }) => {
       })
     }
     if (user && user.username) {
-      navigation.navigate('FirstProjectSetup')
+      navigation.navigate('FirstProjectSetup', {
+        setup: true
+      })
     }
   }, [])
   return (

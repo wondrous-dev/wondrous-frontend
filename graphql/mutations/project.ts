@@ -3,8 +3,8 @@ import { gql } from '@apollo/client'
 import { PublicProjectFragment } from '../fragments/project'
 
 export const CREATE_PROJECT = gql`
-  mutation CreateProject($name: String, $description: String, $firstTime: Boolean) {
-    createProject(name: $name, description: $description, firstTime: $firstTime) {
+  mutation CreateProject($input: ProjectUpdateInput, $firstTime: Boolean) {
+    createProject(input: $input, firstTime: $firstTime) {
       ...PublicProject
     }
   }

@@ -1,8 +1,9 @@
-import * as React from 'react'
+import React, { useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { SafeAreaView, StyleSheet, View } from 'react-native'
+import { Pressable, SafeAreaView, StyleSheet, View } from 'react-native'
+import { useMutation } from '@apollo/client'
 
-import { withAuth } from '../../components/withAuth'
+import { useMe, withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { Black, Grey300, White } from '../../constants/Colors'
@@ -14,6 +15,8 @@ import AskIcon from '../../assets/images/ask/standalone'
 import ProjectIcon from '../../assets/images/actions/project'
 import PostIcon from '../../assets/images/actions/post'
 import { SvgImage } from '../../storybook/stories/Image'
+import { FullScreenGoalModal } from '../../components/Modal//GoalModal'
+import { CREATE_ASK, CREATE_GOAL, CREATE_TASK } from '../../graphql/mutations'
 
 const addStyles = StyleSheet.create({
   container: {
@@ -52,21 +55,54 @@ const addStyles = StyleSheet.create({
 function AddScreen({
   navigation
 }: StackScreenProps<RootStackParamList, 'Add'>) {
+  const [goalModalVisible, setGolModalVisible] = useState(false)
+  const user = useMe()
+  const [createGoal] = useMutation(CREATE_GOAL, {
+    update(cache, { data }) {
+      cache.modify({
+          fields: {
+              getGoalsFromProject(existingGoals=[]) {
+                return [
+                  data.createGoal,
+                  ...existingGoals
+                ]
+              },
+              users() {
+                if ((user && !user.usageProgress) || (user && user.usageProgress && !user.usageProgress.goalCreated)) {
+                  const newUsageProgress = user.usageProgress ? {
+                    ...user.usageProgress,
+                    goalCreated: true
+                  } : {
+                    goalCreated: true
+                  }
+                  return [{
+                    ...user,
+                    usageProgress: newUsageProgress
+                  }]
+                }
+              }
+          }
+      })
+    }
+  })
+  const [createTask] = useMutation(CREATE_TASK)
+  const [createAsk] = useMutation(CREATE_ASK)
   return (
     <SafeAreaView style={{
       backgroundColor: White,
       flex: 1
     }}>
       <Header />
+      <FullScreenGoalModal firstTime={true} setModalVisible={setGolModalVisible} isVisible={goalModalVisible} goalMutation={createGoal} />
       <View style={addStyles.container}>
       <Subheading color={Black}>
         Launch Pad
       </Subheading>
       <Paragraph color={Black} style={addStyles.paragraph}>
-        What do you want to add?
+        What do you want to create?
       </Paragraph>
       <View style={addStyles.choiceContainer}>
-        <View style={addStyles.choiceBox}>
+        <Pressable style={addStyles.choiceBox} onPress={() => navigation.navigate('FirstProjectSetup')}>
         <ProjectIcon
           style={{
             width: spacingUnit * 6,
@@ -79,16 +115,16 @@ function AddScreen({
         }}>
           Project
         </Paragraph>
-        </View>
-        <View style={addStyles.choiceBox}>
+        </Pressable>
+        <Pressable style={addStyles.choiceBox}>
         <GoalIcon style={addStyles.choiceImage} />
         <Paragraph color={Black} style={addStyles.choiceText}>
           Goal
         </Paragraph>
-        </View>
+        </Pressable>
       </View>
       <View style={addStyles.choiceContainer}>
-        <View style={addStyles.choiceBox}>
+        <Pressable style={addStyles.choiceBox}>
         <SvgImage
           width={spacingUnit * 6}
           height={spacingUnit * 6}
@@ -100,8 +136,8 @@ function AddScreen({
         }}>
           Task
         </Paragraph>
-        </View>
-        <View style={addStyles.choiceBox}>
+        </Pressable>
+        <Pressable style={addStyles.choiceBox}>
           <AskIcon style={addStyles.choiceImage} />
         <Paragraph color={Black} style={{
           ...addStyles.choiceText,
@@ -109,15 +145,15 @@ function AddScreen({
         }}>
           Ask
         </Paragraph>
-        </View>
+        </Pressable>
       </View>
       <View style={addStyles.choiceContainer}>
-        <View style={addStyles.choiceBox}>
+        <Pressable style={addStyles.choiceBox}>
           <PostIcon style={addStyles.choiceImage} />
           <Paragraph color={Black} style={addStyles.choiceText}>
             Post
           </Paragraph>
-        </View>
+        </Pressable>
       </View>
       </View>
     </SafeAreaView>

@@ -207,12 +207,13 @@ function ProjectSetupCategoryScreen({
   const {
     projectId,
     edit,
-    existingProjectCategory
+    existingProjectCategory,
+    setup
   } = route.params
   const [projectCategory, setProjectCategory] = useState(existingProjectCategory)
   const [error, setError] = useState(null)
   useEffect(() => {
-    if (!edit && user && user.usageProgress && user.usageProgress.projectCategorySelected) {
+    if (!edit && user && user.usageProgress && user.usageProgress.projectCategorySelected && setup) {
       const categorySelected = user.usageProgress.projectCategorySelected
       if (categorySelected === 'business' || categorySelected === 'tech') {
         navigation.navigate('ProjectTagSelection', {
@@ -258,7 +259,7 @@ function ProjectSetupCategoryScreen({
               <BigMouthSmile />
           </ProgressCircle>
           <View style={projectSetupStyles.stepContainer}>
-            <Text style={projectSetupStyles.stepCount}>step 3/4</Text>
+            <Text style={projectSetupStyles.stepCount}>step {setup ? '3/4' : '2/3'}</Text>
           </View>
         </View>
         }
@@ -295,7 +296,8 @@ function ProjectSetupCategoryScreen({
               if (!edit) {
                 if (projectCategory === 'business' || projectCategory === 'tech') {
                   navigation.navigate('ProjectTagSelection', {
-                    projectId
+                    projectId,
+                    setup
                   })
                 } else {
                   navigation.navigate('Root', {

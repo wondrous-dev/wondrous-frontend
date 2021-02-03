@@ -63,7 +63,7 @@ const DismissKeyboard = ({ children }) => (
 
 
 
-const CreateProjectInput = ({ navigation }) => {
+const CreateProjectInput = ({ navigation, setup }) => {
     const user = useMe()
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
@@ -74,15 +74,18 @@ const CreateProjectInput = ({ navigation }) => {
         update(cache, { data: { createProject }}) {
             cache.modify({
                 fields: {
-                    users(existingUser) {
-                        const newUser = {...existingUser}
-                        newUser['usageProgress'] = newUser['usageProgress'] ? {
-                            ...newUser['usageProgress'],
-                            projectCreated: createProject.id
-                        } : {
-                            projectCreated: createProject.id
+                    users() {
+                        if ((user && !user.usageProgress) || (user && user.usageProgress && !user.usageProgress.projectCreated)) {
+                            const newUser = {...user}
+                            newUser['usageProgress'] = newUser['usageProgress'] ? {
+                                ...newUser['usageProgress'],
+                                projectCreated: createProject.id
+                            } : {
+                                projectCreated: createProject.id
+                            }
+                            return [newUser]
                         }
-                        return [newUser]
+                        return [user]
                     }
                 }
             })
@@ -103,7 +106,9 @@ const CreateProjectInput = ({ navigation }) => {
         }
     }, [])
     useEffect(() => {
-        fillInitialProject()
+        if (setup) {
+            fillInitialProject()
+        }
     }, [])
     return (
         <View style={firstProjectSetupStyles.createProjectInputContainer}>
@@ -122,7 +127,7 @@ const CreateProjectInput = ({ navigation }) => {
                         setError('Please set a name and a description')
                     } else {
                         try {
-                            if (user && user.usageProgress && user.usageProgress.projectCreated) {
+                            if (user && user.usageProgress && user.usageProgress.projectCreated && setup) {
                                 const projectId = user.usageProgress.projectCreated
                                 await updateProject({
                                     variables: {
@@ -143,11 +148,12 @@ const CreateProjectInput = ({ navigation }) => {
                                             name,
                                             description
                                         },
-                                        firstTime: true
+                                        firstTime: !!(setup)
                                     }
                                 })
                                 navigation.navigate('ProjectSetupCategory', {
-                                    projectId: projectData.data.createProject && projectData.data.createProject.id
+                                    projectId: projectData.data.createProject && projectData.data.createProject.id,
+                                    setup
                                 })
                             }
                         } catch (error) {
@@ -219,14 +225,18 @@ const CreateProjectInput = ({ navigation }) => {
 }
 
 function FirstProjectSetupScreen({
-    navigation
+    navigation,
+    route
 }: StackScreenProps<RootStackParamList, 'FirstProjectSetup'>) {
     const user = useMe()
     const [error, setError] = useState(null)
+    let setup = false
+    setup = route && route.params && route.params.setup
     useEffect(() => {
-        if (user && user.usageProgress && user.usageProgress.projectCreated) {
+        if (user && user.usageProgress && user.usageProgress.projectCreated && setup) {
             navigation.navigate('ProjectSetupCategory', {
-                projectId: user.usageProgress.projectCreated
+                projectId: user.usageProgress.projectCreated,
+                setup: true
             })
         }
     }, [])
@@ -251,7 +261,7 @@ function FirstProjectSetupScreen({
                             <Smile />
                         </ProgressCircle>
                         <View style={firstProjectSetupStyles.stepContainer}>
-                            <Text style={firstProjectSetupStyles.stepCount}>step 2/4</Text>
+                            <Text style={firstProjectSetupStyles.stepCount}>step {setup ? '2/4' : '1/3'}</Text>
                         </View>
                     </View>
                     {                
@@ -268,7 +278,7 @@ function FirstProjectSetupScreen({
                         error,
                         setError
                     }}>
-                    <CreateProjectInput navigation={navigation} />
+                    <CreateProjectInput navigation={navigation} setup={setup} />
                     </FirstProjectSetupContext.Provider>
                 </View>
             </DismissKeyboard>

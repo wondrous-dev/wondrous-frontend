@@ -127,6 +127,7 @@ function ProjectProfile({
   const project = data && data.getProjectById
 
   const projectOwnedByUser = project && user && project.createdBy === user.id
+
   const feedSelected = section === 'feed'
   const actionSelected = section === 'action'
   const asksSelected = section === 'asks'
@@ -156,7 +157,7 @@ function ProjectProfile({
     if (editProfile) {
       setEditProfileModal(true)
     }
-  }, [project, feedSelected, actionSelected, asksSelected, status])
+  }, [project && project.profilePicture, feedSelected, actionSelected, asksSelected, status])
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)
