@@ -83,7 +83,7 @@ const GoalPage = ({ navigation, route }) => {
       backgroundColor: White
     }}>
       <FullScreenGoalModal setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} goal={goal} goalMutation={updateGoal} />
-      <Header rightButton={ownedByUser && {
+      <Header title='Goal' rightButton={ownedByUser && {
         style: {
           borderWidth: 1,
           borderColor: Grey800

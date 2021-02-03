@@ -94,7 +94,7 @@ const TaskPage = ({ navigation, route }) => {
       backgroundColor: White
     }}>
       <FullScreenTaskModal setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} task={task} taskMutation={updateTask} />
-      <Header rightButton={ownedByUser && {
+      <Header title='Task' rightButton={ownedByUser && {
         style: {
           borderWidth: 1,
           borderColor: Grey800

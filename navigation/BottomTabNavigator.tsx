@@ -8,6 +8,7 @@ import { SafeAreaView, View, Pressable, StyleSheet } from 'react-native'
 import Colors, { Blue500, Grey50, White, Grey400 } from '../constants/Colors'
 import Dashboard from '../screens/Dashboard'
 import Search from '../screens/Search'
+import Add from '../screens/Add'
 import Notifications from '../screens/Notifications'
 import Profile from '../screens/Profile'
 import DashboardIcon from '../assets/images/bottomNav/dashboard'
@@ -16,7 +17,9 @@ import NotificationIcon from '../assets/images/bottomNav/notification'
 import ProfileIcon from '../assets/images/bottomNav/profile'
 import TabOneScreen from '../screens/TabOneScreen'
 import TabTwoScreen from '../screens/TabTwoScreen'
+import AddIcon from '../assets/images/bottomNav/add'
 import { BottomTabParamList, TabOneParamList, TabTwoParamList } from '../types'
+import { SvgImage } from '../storybook/stories/Image'
 import { flattenParams, spacingUnit } from '../utils/common'
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>()
@@ -52,6 +55,16 @@ const TabBarIcon = ({ route, focused, color, size }) => {
     return <DashboardIcon iconColor={focused ? Blue500 : Grey50} />
   } else if (route.name === 'Search') {
     return <SearchIcon iconColor={focused ? Blue500 : Grey50} />
+   } else if (route.name === 'Add') {
+    return (
+      <AddIcon
+        style={{
+          width: spacingUnit * 10,
+          height: spacingUnit * 10,
+          marginTop: spacingUnit * 2.25
+        }}
+      />
+    )
    } else if (route.name === 'Notifications') {
      return <NotificationIcon iconColor={focused ? Blue500 : Grey50} />
    } else if (route.name === 'Profile') {
@@ -125,6 +138,14 @@ export default function BottomTabNavigator() {
             return <DashboardIcon iconColor={focused ? Blue500 : Grey50} />
           } else if (route.name === 'Search') {
             return <SearchIcon iconColor={focused ? Blue500 : Grey50} />
+           } else if (route.name === 'Add') {
+            return ( <AddIcon
+              style={{
+                width: spacingUnit * 10,
+                height: spacingUnit * 10,
+                marginTop: spacingUnit * 2.25
+              }}
+            />)
            } else if (route.name === 'Notifications') {
              return <NotificationIcon iconColor={focused ? Blue500 : Grey50} />
            } else if (route.name === 'Profile') {
@@ -143,6 +164,10 @@ export default function BottomTabNavigator() {
       <BottomTab.Screen
         name='Search'
         component={Search}
+      />
+      <BottomTab.Screen
+        name='Add'
+        component={Add}
       />
       <BottomTab.Screen
         name='Notifications'

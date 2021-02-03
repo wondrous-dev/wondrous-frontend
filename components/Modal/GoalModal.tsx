@@ -144,6 +144,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                   priority,
                   dueDate,
                   link,
+                  status,
                   privacyLevel: privacy,
                   errors,
                   setErrors,

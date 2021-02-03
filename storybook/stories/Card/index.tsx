@@ -243,7 +243,7 @@ class Card extends React.Component {
               <SafeImage src={profilePicture} style={styles.profilePicture} />
             } */}
             <View style={{
-              marginLeft: type === 'goal' ? -8 : -4
+              marginLeft: -4
             }}>
             {
               icon &&

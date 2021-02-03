@@ -373,7 +373,7 @@ export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRigh
   let icon, iconSize, redirect, redirectParams
   if (type === 'goal') {
     icon = GoalIcon
-    iconSize = spacingUnit * 4
+    iconSize = spacingUnit * 3
     redirect = 'Root'
     redirectParams = {
       screen: 'Profile',

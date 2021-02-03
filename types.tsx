@@ -26,6 +26,7 @@ export type ProfileTabParamList = {
 export type BottomTabParamList = {
   Dashboard: undefined
   Search: undefined
+  Add: undefined
   Notifications: undefined
   Profile: undefined
 }

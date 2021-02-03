@@ -107,7 +107,7 @@ const AskPage = ({ navigation, route }) => {
       backgroundColor: White
     }}>
       <FullScreenAskModal setModalVisible={setModalVisible} isVisible={modalVisible} ask={ask} askMutation={updateAsk} />
-      <Header rightButton={ownedByUser && {
+      <Header title='Ask' rightButton={ownedByUser && {
         style: {
           borderWidth: 1,
           borderColor: Grey800

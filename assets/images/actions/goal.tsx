@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path, G, Defs, ClipPath, Rect } from 'react-native-svg'
 
-const Standalone = ({ style }) => (
+const Goal = ({ style }) => (
   <Svg width={(style && style.width) || "64"} height={(style && style.height) || "64"} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
   <Path d="M32 64C14.355 64 0 49.645 0 32C0 14.355 14.355 0 32 0C49.645 0 64 14.355 64 32C64 49.645 49.645 64 32 64Z" fill="#FE0050"/>
   <Path d="M32 0V64C49.645 64 64 49.645 64 32C64 14.355 49.645 0 32 0Z" fill="#E10555"/>
@@ -16,4 +16,4 @@ const Standalone = ({ style }) => (
   </Svg>
 )
 
-export default Standalone
+export default Goal
