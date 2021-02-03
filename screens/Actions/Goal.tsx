@@ -4,7 +4,7 @@ import { useLazyQuery, useMutation } from '@apollo/client'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import { Grey800, Purple, Red400, White, Yellow300, Blue400, Grey450, Black } from '../../constants/Colors'
+import { Grey800, Purple, Red400, White, Yellow300, Grey300, Blue400, Grey450, Black, Green400 } from '../../constants/Colors'
 import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
 import { pageStyles, sortPriority, ReactionFeed } from './common'
 import { UPDATE_GOAL } from '../../graphql/mutations'
@@ -106,11 +106,34 @@ const GoalPage = ({ navigation, route }) => {
             </Text>
           </View>
         }
-        <View style={pageStyles.infoContainer}>
+        <View style={[pageStyles.infoContainer]}>
+          {
+            goal.status === 'completed' &&
+            <Tag color={Green400} style={{
+              marginRight: spacingUnit,
+              marginTop: spacingUnit
+            }}>
+              <RegularText color={White}>
+                Completed
+              </RegularText>
+            </Tag>
+          }
+          {
+            goal.status === 'archived' &&
+            <Tag color={Grey300} style={{
+              marginRight: spacingUnit,
+              marginTop: spacingUnit
+            }}>
+              <RegularText color={Grey800}>
+                Completed
+              </RegularText>
+          </Tag>
+          }
           {
               goal.priority &&
               <View style={[pageStyles.priorityContainer, {
-                backgroundColor: sortPriority(goal.priority)
+                backgroundColor: sortPriority(goal.priority),
+                marginTop: spacingUnit
               }]}>
               <PriorityFlame color={White} style={{
                 // marginLeft: spacingUnit,
@@ -124,7 +147,8 @@ const GoalPage = ({ navigation, route }) => {
             {
               goal.project &&
               <Tag color={Purple} style={{
-                marginRight: spacingUnit  
+                marginRight: spacingUnit ,
+                marginTop: spacingUnit 
               }}>
                 <RegularText color={White}>
                   {goal.project && goal.project.name}
@@ -132,16 +156,20 @@ const GoalPage = ({ navigation, route }) => {
               </Tag>
             }
             { goal.dueDate &&
+            <View style={{
+              marginTop: spacingUnit
+            }}>
                 <RegularText color={redDate(goal.dueDate) ? Red400 : Grey450}>
                 Due {formatDueDate(new Date(goal.dueDate))}
               </RegularText>
+              </View>
             }
         </View>
         {
           goal.additionalData && goal.additionalData.link &&
           <View style={pageStyles.linkContainer}>
             <LinkIcon color={Grey800} style={{
-              marginRight: spacingUnit
+              // marginRight: spacingUnit
             }} />
             <Paragraph color={Blue400} style={pageStyles.link}>
               {goal.additionalData.link}

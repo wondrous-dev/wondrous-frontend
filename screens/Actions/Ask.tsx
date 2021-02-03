@@ -4,7 +4,7 @@ import { useLazyQuery, useMutation } from '@apollo/client'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import { Grey800, Purple, Red400, White, Black, Blue400, Grey450 } from '../../constants/Colors'
+import { Grey800, Purple, Red400, White, Black, Blue400, Grey450, Green400, Grey300 } from '../../constants/Colors'
 import { FullScreenAskModal } from '../../components/Modal/AskModal'
 import { pageStyles, ReactionFeed } from './common'
 import { UPDATE_ASK } from '../../graphql/mutations'
@@ -92,7 +92,15 @@ const AskPage = ({ navigation, route }) => {
   const images = ask.additionalData && ask.additionalData.images
   const goal = askGoal && askGoal.getGoalById
   const task = askTask && askTask.getTaskById
-
+  let statusColor = Red400, statusTextColor=White, statusText='Open'
+  if (ask.status === 'completed') {
+    statusColor = Green400
+    statusText = 'Completed'
+  } else if (ask.status === 'archived') {
+    statusColor= Grey300
+    statusTextColor = White
+    statusText = 'Archived'
+  }
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -116,13 +124,14 @@ const AskPage = ({ navigation, route }) => {
         </Text>
         <View style={[pageStyles.infoContainer]}>
           <View style={{
-            backgroundColor: Red400,
+            backgroundColor: statusColor,
             paddingLeft: spacingUnit * 1.5,
             paddingRight: spacingUnit * 1.5,
-            borderRadius: 4
+            borderRadius: 4,
+            marginTop: spacingUnit
           }}>
-          <RegularText color={White}>
-            Status: {ask.status || 'Open'}
+          <RegularText color={statusTextColor}>
+            Status: {statusText || 'Open'}
           </RegularText>
           </View>
         </View>

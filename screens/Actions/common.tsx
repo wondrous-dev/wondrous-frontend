@@ -19,7 +19,9 @@ export const pageStyles = StyleSheet.create({
   },
   infoContainer: {
     flexDirection: 'row',
-    marginTop: spacingUnit * 1.5
+    marginTop: spacingUnit * 1.5,
+    flexWrap: 'wrap',
+    marginTop: -spacingUnit
   },
   priorityContainer: {
     flexDirection: 'row',
@@ -32,12 +34,13 @@ export const pageStyles = StyleSheet.create({
     fontFamily: 'Rubik SemiBold',
     fontSize: 18,
     lineHeight: 24,
-    color: Black
+    color: Black,
+    marginBottom: spacingUnit
   },
   paragraph: {
     fontFamily: 'Rubik Light',
     fontSize: 16,
-    marginTop: spacingUnit
+    marginBottom: spacingUnit
   },
   linkContainer: {
     flexDirection: 'row',

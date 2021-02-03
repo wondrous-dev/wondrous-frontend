@@ -339,6 +339,7 @@ export const submit = async ({
   content,
   relatedGoalIds,
   relatedTaskIds,
+  status
 }) => {
   if (!name && type !== 'ask') {
     setErrors({
@@ -406,6 +407,9 @@ export const submit = async ({
             }),
             ...(dueDate && {
               dueDate
+            }),
+            ...(status && {
+              status
             }),
             link,
             ...(privacyLevel && {

@@ -4,7 +4,7 @@ import { useLazyQuery, useMutation } from '@apollo/client'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import { Grey800, Purple, Red400, White, Black, Blue400, Grey450 } from '../../constants/Colors'
+import { Grey800, Purple, Red400, White, Black, Blue400, Grey450, Green400 } from '../../constants/Colors'
 import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
 import { pageStyles, sortPriority, ReactionFeed } from './common'
 import { UPDATE_TASK } from '../../graphql/mutations'
@@ -118,10 +118,33 @@ const TaskPage = ({ navigation, route }) => {
           </View>
         }
         <View style={pageStyles.infoContainer}>
+        {
+            task.status === 'completed' &&
+            <Tag color={Green400} style={{
+              marginRight: spacingUnit,
+              marginTop: spacingUnit
+            }}>
+              <RegularText color={White}>
+                Completed
+              </RegularText>
+            </Tag>
+          }
+          {
+            task.status === 'archived' &&
+            <Tag color={Grey300} style={{
+              marginRight: spacingUnit,
+              marginTop: spacingUnit
+            }}>
+              <RegularText color={Grey800}>
+                Completed
+              </RegularText>
+          </Tag>
+          }
           {
               task.priority &&
               <View style={[pageStyles.priorityContainer, {
-                backgroundColor: sortPriority(task.priority)
+                backgroundColor: sortPriority(task.priority),
+                marginTop: spacingUnit
               }]}>
               <PriorityFlame color={White} style={{
                 // marginLeft: spacingUnit,
@@ -135,7 +158,8 @@ const TaskPage = ({ navigation, route }) => {
             {
               task.project &&
               <Tag color={Purple} style={{
-                marginRight: spacingUnit  
+                marginRight: spacingUnit,
+                marginTop: spacingUnit  
               }}>
                 <RegularText color={White}>
                   {task.project && task.project.name}
@@ -143,9 +167,13 @@ const TaskPage = ({ navigation, route }) => {
               </Tag>
             }
             { task.dueDate &&
+            <View style={{
+              marginTop: spacingUnit
+            }}>
                 <RegularText color={redDate(task.dueDate) ? Red400 : Grey450}>
                 Due {formatDueDate(new Date(task.dueDate))}
               </RegularText>
+              </View>
             }
         </View>
         {
