@@ -296,8 +296,30 @@ function ProjectProfile({
                 <ProfilePlaceholder projectOwnedByUser={projectOwnedByUser} />
               }
               </View>
-              <ProjectInfoText count={project.followCount} type={project.followCount === 1 ? 'follower' : 'followers'} />
+              <Pressable onPress={() => navigation.navigate('Root', {
+                  screen: 'Profile',
+                  params: {
+                    screen: 'UserList',
+                    params: {
+                      projectFollowers: true,
+                      projectId: project.id
+                    }
+                  }
+                })}>
+                <ProjectInfoText count={project.followCount} type={project.followCount === 1 ? 'follower' : 'followers'} />
+              </Pressable>
+              <Pressable onPress={() => navigation.navigate('Root', {
+                  screen: 'Profile',
+                  params: {
+                    screen: 'UserList',
+                    params: {
+                      collaborators: project.collaborators,
+                      projectId: project.id
+                    }
+                  }
+              })}>
               <ProjectInfoText count={project.collaborators.length} type={project.collaborators.length === 1 ? 'collaborator': 'collaborators'} />
+              </Pressable>
               <ProjectInfoText count={project.goalsCompletedCount} type='goals completed' />
               {/* <ProjectInfoText count={project.tasksCompleted} type='tasks completed' /> */}
             </View>

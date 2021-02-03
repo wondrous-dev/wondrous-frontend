@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client'
+import { PublicUserFragment } from './user'
 
 export const PublicProjectFragment = gql`
   fragment PublicProject on Project {
@@ -15,7 +16,7 @@ export const PublicProjectFragment = gql`
     collaborators {
       role
       user {
-        id
+        ...PublicUser
       }
     }
     links {
@@ -30,4 +31,5 @@ export const PublicProjectFragment = gql`
     goalsCompletedCount
     tasksCompletedCount
   }
+  ${PublicUserFragment}
 `

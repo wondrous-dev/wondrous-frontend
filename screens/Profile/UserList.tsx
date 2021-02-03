@@ -97,6 +97,9 @@ const UserItem = ({ item, itemPressed, initialFollowing, existingUserFollowing }
         }
       </View>
       {
+        user.id !== item.id &&
+        <>
+{
         following
         ?
         <Pressable style={{
@@ -132,7 +135,8 @@ const UserItem = ({ item, itemPressed, initialFollowing, existingUserFollowing }
           </Paragraph>
         </Pressable>
       }
-
+        </>
+      }
     </View>
 </TouchableOpacity>
   )
@@ -147,7 +151,9 @@ const UserList = ({
     followers,
     following,
     userId,
-    projectId
+    projectId,
+    collaborators,
+    projectFollowers
   } = route.params
 
   const [getProjectFollowers, {
@@ -210,7 +216,11 @@ const UserList = ({
       users = followerData.getUserFollowers
     }
   } else if (projectId) {
-    users = projectFollowerData.projectFollowerData
+    if (collaborators) {
+      users = collaborators.map(collaborator => collaborator.user)
+    } else if (projectFollowers && projectFollowerData) (
+      users = projectFollowerData.getProjectFollowers
+    )
   }
 
   return (
