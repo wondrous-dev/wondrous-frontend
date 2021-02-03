@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 
-import { PublicUserFragment } from '../fragments/user'
+import { PublicUserFragment, LoggedinUserFragment } from '../fragments/user'
 import { AdditionalGoalFragment } from '../fragments/goal'
 import { PublicTaskFragment } from '../fragments/task'
 import { ActivityFeedItem } from '../fragments/feed'
@@ -8,10 +8,10 @@ import { ActivityFeedItem } from '../fragments/feed'
 export const WHOAMI = gql`
   query whoami {
     users {
-      ...PublicUser
+      ...LoggedinUser
     }
   }
-  ${PublicUserFragment}
+  ${LoggedinUserFragment}
 `
 
 export const GET_USER = gql`

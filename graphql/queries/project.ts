@@ -4,6 +4,7 @@ import { PublicProjectFragment } from '../fragments/project'
 import { AdditionalGoalFragment } from '../fragments/goal'
 import { PublicTaskFragment } from '../fragments/task'
 import { ActivityFeedItem } from '../fragments/feed'
+import { PublicUserFragment } from '../fragments/user'
 
 export const GET_PROJECT_BY_ID = gql`
   query GetProjectById($projectId: ID!) {
@@ -50,4 +51,13 @@ export const GET_PROJECT_ACTIONS = gql`
   }
   ${AdditionalGoalFragment}
   ${PublicTaskFragment}
+`
+
+export const GET_PROJECT_FOLLOWERS = gql`
+  query GetProjectFollowers($projectId: ID!) {
+    getProjectFollowers(projectId: $projectId) {
+      ...PublicUser
+    }
+  }
+  ${PublicUserFragment}
 `

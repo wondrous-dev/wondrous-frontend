@@ -3,7 +3,7 @@ import React, { useState, useCallback, useEffect } from 'react'
 import { Image, Pressable, SafeAreaView, RefreshControl, View, TouchableOpacity } from 'react-native'
 import { useLazyQuery, useMutation } from '@apollo/client'
 
-import { GET_USER_FOLLOWERS, GET_USER_FOLLOWING } from '../../graphql/queries'
+import { GET_USER_FOLLOWERS, GET_USER_FOLLOWING, GET_PROJECT_FOLLOWERS } from '../../graphql/queries'
 import { withAuth, useMe } from '../../components/withAuth'
 import { Black, White, Grey800, Blue400 } from '../../constants/Colors'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
@@ -18,6 +18,7 @@ import { UNFOLLOW_USER, FOLLOW_USER } from '../../graphql/mutations'
 
 const UserItem = ({ item, itemPressed, initialFollowing, existingUserFollowing }) => {
   const [following, setFollowing] = useState(initialFollowing)
+  const user = useMe()
   const [followUser] = useMutation(FOLLOW_USER, {
     variables: {
       followingId: item.id
@@ -25,13 +26,17 @@ const UserItem = ({ item, itemPressed, initialFollowing, existingUserFollowing }
     update(cache) {
       cache.modify({
         fields: {
-          getUserFollowing(existingFollowing) {
-            return [item, ...existingFollowing]
+          users() {
+            const newUser = {...user}
+            const newArr = [item.id, ...existingUserFollowing]
+            newUser.usersFollowing = newArr
+            return [newUser]
           }
         }
       })
     }
   })
+
   const [unfollowUser] = useMutation(UNFOLLOW_USER, {
     variables: {
       followingId: item.id
@@ -39,15 +44,20 @@ const UserItem = ({ item, itemPressed, initialFollowing, existingUserFollowing }
     update(cache) {
       cache.modify({
         fields: {
-          getUserFollowing() {
-            const newExistingFollowing = existingUserFollowing.filter(existingFollowingItem => existingFollowingItem.id !== item.id)
-            return newExistingFollowing
+          users() {
+            const newUser = {...user}
+            const newExistingFollowing = existingUserFollowing.filter(existingFollowingItem => existingFollowingItem !== item.id)
+            newUser.usersFollowing = newExistingFollowing
+            return [newUser]
           }
         }
       })
     }
   })
 
+  useEffect(() => {
+    setFollowing(initialFollowing)
+  }, [initialFollowing])
   return (
     <TouchableOpacity onPress={itemPressed}>
     <View style={[listStyles.listItem, {
@@ -131,31 +141,31 @@ const UserList = ({
   navigation,
   route
 }) => {
-  const user = useMe()
 
+  const user = useMe()
   const {
     followers,
-    following
+    following,
+    userId,
+    projectId
   } = route.params
+
+  const [getProjectFollowers, {
+    data: projectFollowerData,
+    loading: projectFollowerLoading,
+    error: projectFollowerError
+  }] = useLazyQuery(GET_PROJECT_FOLLOWERS)
 
   const [getUserFollowers, {
     data: followerData,
     loading: followerLoading,
     error: followerError
-  }] = useLazyQuery(GET_USER_FOLLOWERS, {
-    variables: {
-      userId: user && user.id
-    }
-  })
+  }] = useLazyQuery(GET_USER_FOLLOWERS)
   const [getUserFollowing, {
     data: followingData,
     loading: followingLoading,
     error: followingError
-  }] = useLazyQuery(GET_USER_FOLLOWING, {
-    variables: {
-      userId: user && user.id
-    }
-  })
+  }] = useLazyQuery(GET_USER_FOLLOWING)
 
   const [refreshing, setRefreshing] = useState(false)
   const onRefresh = useCallback(() => {
@@ -167,20 +177,40 @@ const UserList = ({
     }
     wait(2000).then(() => setRefreshing(false))
   }, [])
-
   useEffect(() => {
-    getUserFollowing()
-    if (followers) {
-      getUserFollowers()
+    if (projectId) {
+      getProjectFollowers({
+        variables: {
+          projectId
+        }
+      })
+    } else if (userId) {
+      if (followers) {
+        getUserFollowers({
+          variables: {
+            userId
+          }
+        })
+      } else if (following) {
+        getUserFollowing({
+          variables: {
+            userId
+          }
+        })
+      }
     }
   }, [])
 
-  const followingUsers = followingData && followingData.getUserFollowing
+  const followingUsers = user && user.usersFollowing
   let users = []
-  if (following && followingData) {
-    users = followingData.getUserFollowing
-  } else if (followers && followerData) {
-    users = followerData.getUserFollowers
+  if (userId) {
+    if (following && followingData) {
+      users = followingData.getUserFollowing
+    } else if (followers && followerData) {
+      users = followerData.getUserFollowers
+    }
+  } else if (projectId) {
+    users = projectFollowerData.projectFollowerData
   }
 
   return (
@@ -201,9 +231,8 @@ const UserList = ({
           }
           renderItem={({ item }) => {
             const userFollowing = followingUsers && followingUsers.some((element) => {
-              return element.id === item.id
+              return element === item.id
             })
-
             return (
               <UserItem
                 initialFollowing={userFollowing}

@@ -333,7 +333,8 @@ function UserProfile({
                   params: {
                     screen: 'UserList',
                     params: {
-                      followers: true
+                      followers: true,
+                      userId: finalUserId
                     }
                   }
                 })}>
@@ -346,7 +347,8 @@ function UserProfile({
                   params: {
                     screen: 'UserList',
                     params: {
-                      following: true
+                      following: true,
+                      userId: finalUserId
                     }
                   }
                 })}>
