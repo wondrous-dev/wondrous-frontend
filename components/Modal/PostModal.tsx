@@ -1,0 +1,211 @@
+import React, { useCallback, useState } from 'react'
+import { SafeAreaView, ScrollView, View, TextInput, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native'
+import Modal from 'react-native-modal'
+import { useQuery } from '@apollo/client'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
+import { TextEditor } from '../../storybook/stories/TextEditor'
+import { TextEditorContext } from '../../utils/contexts'
+import { Black, White, Blue400, Grey800 } from '../../constants/Colors'
+import { ErrorText, RegularText, Subheading } from '../../storybook/stories/Text'
+import { spacingUnit } from '../../utils/common'
+import { GET_USER_PROJECTS } from '../../graphql/queries/project'
+import Camera from '../../components/Camera'
+import { submit, modalStyles, ImageDisplay } from './common'
+import CameraIcon from '../../assets/images/camera'
+import ImageIcon from '../../assets/images/image'
+import LinkIcon from '../../assets/images/link'
+import ImageBrowser from './ImageBrowser'
+import { useNavigation } from '@react-navigation/native'
+
+const FILE_PREFIX = 'post/new/'
+
+export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMutation }) => {
+  const initialMedia = (post && post.additionalData && post.additionalData.images) || []
+  const initialLink = post && post.additionalData && post.additionalData.link
+  const initialContent = (post && post.content) || ''
+  // const [project, setProject] = useState((post && post.projectId))
+  const [link, setLink] = useState(initialLink)
+  const [addLink, setAddLink] = useState(!!(link))
+  const [media, setMedia] = useState(initialMedia)
+  const [cameraOpen, setCameraOpen] = useState(false)
+  const [content, setContent] = useState(initialContent)
+  const [galleryOpen, setGalleryOpen] = useState(false)
+  const [errors, setErrors] = useState({})
+  const { data: projectUsers, loading, error } = useQuery(GET_USER_PROJECTS)
+  const navigation = useNavigation()
+
+  // const projectDropdowns = projectUsers && projectUsers.getUserProjects ? projectUsers.getUserProjects.map(projectUser => {
+  //   return {
+  //     label: projectUser.project && projectUser.project.name,
+  //     value: projectUser.project && projectUser.project.id
+  //   }
+  // }) : [{
+  //   label: '',
+  //   value: ''
+  // }]
+  const resetState = useCallback(() => {
+    setLink(null)
+    setAddLink(false)
+    setMedia([])
+    setCameraOpen(false)
+    setGalleryOpen(false)
+    setContent('')
+    setErrors({})
+    if (post) {
+      setContent(initialContent)
+      setLink(initialLink)
+      setAddLink(!!(initialLink))
+      setMedia(initialMedia)
+      setCameraOpen(false)
+      setGalleryOpen(false)
+    }
+  }, [])
+  return (
+    <Modal isVisible={isVisible}>
+      {
+      galleryOpen
+      ?
+      <ImageBrowser setImageBrowser={setGalleryOpen} media={media} navigation={navigation} setMedia={setMedia} imagePrefix={FILE_PREFIX} />
+      :
+      <TouchableWithoutFeedback
+        onPress={() => Keyboard.dismiss()}
+      >
+        <SafeAreaView style={modalStyles.fullScreenContainer}>
+        <KeyboardAwareScrollView keyboardDismissMode='interactive' keyboardShouldPersistTaps='handled'>
+          {cameraOpen &&
+            <Camera
+                snapperOpen={cameraOpen}
+              setSnapperOpen={setCameraOpen}
+                setImage={(image) => {
+                  if (media && media.length < 4) {
+                    setMedia([...media, image])
+                  } else {
+                    setErrors({
+                      ...errors,
+                      mediaError: 'Only a maximum of 4 images allowed'
+                    })
+                  }
+                }}
+                filePrefix={FILE_PREFIX}
+              />
+            }
+            <View style={modalStyles.topRowContainer}>
+              <Pressable onPress={() => {
+                if (post) {
+                  resetState()
+                  setModalVisible(false)
+                } else {
+                  setModalVisible(false)
+                }
+              }} style={{
+                flex: 1
+              }}>
+              <RegularText color={Blue400} style={{
+                fontSize: 16
+              }}>
+                Cancel
+              </RegularText>
+              </Pressable>
+              <View style={{
+                flex: 1
+              }}>
+                <Subheading color={Black} style={{
+                  fontSize: 24
+                }}>
+                  {post ? 'Edit' : 'New'} post
+                </Subheading>
+              </View>
+              <View style={{
+                flex: 1,
+              }}>
+              <Pressable style={modalStyles.createUpdateButton} onPress={() => {
+                submit({
+                  type: 'post',
+                  content,
+                  link,
+                  errors,
+                  setErrors,
+                  media,
+                  filePrefix: FILE_PREFIX,
+                  mutation: postMutation,
+                  ...(post && {
+                    updateId: post.id,
+                    updateKey: 'postId'
+                  }),
+                })
+                setModalVisible(false)
+                if (!post) {
+                  resetState()
+                }
+              }}>
+                <RegularText color={White} style={{
+                  fontSize: 16
+                }}>
+                  {post ? 'Update': 'Create' }
+                </RegularText>
+              </Pressable>
+            </View>
+            </View>
+            <View style={modalStyles.infoContainer}>
+            <View style={[modalStyles.inputContainer, {
+              marginBottom: spacingUnit * 3
+            }]}>
+              <TextEditorContext.Provider value={{
+                  content,
+                  setContent,
+                  placeholder: `What's on your mind?`
+                }}>
+                  <View style={{flex: 1}}>
+                <TextEditor multiline style={modalStyles.nameTextInput}
+                renderSuggestionStyle={modalStyles.renderSuggestion}
+                />
+                </View>
+                </TextEditorContext.Provider>
+              </View>
+            <View style={modalStyles.attachmentRow}>
+                    <LinkIcon color={Grey800} style={{
+                      marginRight: spacingUnit * 2
+                    }} onPress={() => setAddLink(true)} />
+                    <CameraIcon onPress={() => setCameraOpen(true)} color={Grey800} style={{
+                      marginRight: spacingUnit * 2
+                    }} />
+                    <ImageIcon color={Grey800} onPress={() => setGalleryOpen(true)} />
+                  </View>
+                  {
+                    errors.mediaError &&
+                    <ErrorText>
+                      {error.mediaError}
+                    </ErrorText>
+                  }
+                  <ScrollView keyboardDismissMode='interactive' keyboardShouldPersistTaps='handled'>
+                    {addLink &&
+                      <View style={modalStyles.linkContainer}>
+                        <TextInput
+                          onChangeText={text => setLink(text)}
+                          value={link}
+                          autoFocus={!(link)}
+                          placeholder='Add link'
+                          style={modalStyles.link}
+                        />
+                      </View>
+                    }
+                    {
+                      media && 
+                      <View style={modalStyles.mediaRows}>
+                        {media.map(image => (
+                          <ImageDisplay setMedia={setMedia} media={media} image={image} imagePrefix={FILE_PREFIX} />
+                        ))}
+                      </View>
+                    }
+                  </ScrollView>
+                  </View>
+        </KeyboardAwareScrollView>
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
+      }
+    </Modal>
+  )
+}
+
+export default FullScreenPostModal

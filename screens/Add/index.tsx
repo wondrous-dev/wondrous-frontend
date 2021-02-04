@@ -16,7 +16,11 @@ import ProjectIcon from '../../assets/images/actions/project'
 import PostIcon from '../../assets/images/actions/post'
 import { SvgImage } from '../../storybook/stories/Image'
 import { FullScreenGoalModal } from '../../components/Modal//GoalModal'
+import { FullScreenAskModal } from '../../components/Modal/AskModal'
+import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
+import { FullScreenPostModal } from '../../components/Modal/PostModal'
 import { CREATE_ASK, CREATE_GOAL, CREATE_TASK } from '../../graphql/mutations'
+import { CREATE_POST } from '../../graphql/mutations/post'
 
 const addStyles = StyleSheet.create({
   container: {
@@ -55,7 +59,10 @@ const addStyles = StyleSheet.create({
 function AddScreen({
   navigation
 }: StackScreenProps<RootStackParamList, 'Add'>) {
-  const [goalModalVisible, setGolModalVisible] = useState(false)
+  const [goalModalVisible, setGoalModalVisible] = useState(false)
+  const [taskModalVisible, setTaskModalVisible] = useState(false)
+  const [askModalVisible, setAskModalVisible] = useState(false)
+  const [postModalVisible, setPostModalVisible] = useState(false)
   const user = useMe()
   const [createGoal] = useMutation(CREATE_GOAL, {
     update(cache, { data }) {
@@ -85,15 +92,65 @@ function AddScreen({
       })
     }
   })
-  const [createTask] = useMutation(CREATE_TASK)
-  const [createAsk] = useMutation(CREATE_ASK)
+  const [createTask] = useMutation(CREATE_TASK, {
+    update(cache, { data }) {
+      cache.modify({
+          fields: {
+              users() {
+                if (user) {
+                  const newUsageProgress = user.usageProgress ? {
+                    ...user.usageProgress,
+                    taskCreated: true
+                  } : {
+                    taskCreated: true
+                  }
+                  return [{
+                    ...user,
+                    usageProgress: newUsageProgress
+                  }]
+                }
+              }
+          }
+      })
+    }
+  })
+
+
+  const [createAsk, { data: createAskData, loading: createAskLoading, error: createAskError }] = useMutation(CREATE_ASK, {
+    update(cache, { data }) {
+      cache.modify({
+          fields: {
+              users() {
+                if (user) {
+                  const newUsageProgress = user.usageProgress ? {
+                    ...user.usageProgress,
+                    askCreated: true
+                  } : {
+                    askCreated: true
+                  }
+                  return [{
+                    ...user,
+                    usageProgress: newUsageProgress
+                  }]
+                }
+              }
+          }
+      })
+    }
+  })
+
+  const [createPost] = useMutation(CREATE_POST)
+
   return (
     <SafeAreaView style={{
       backgroundColor: White,
       flex: 1
     }}>
       <Header />
-      <FullScreenGoalModal firstTime={true} setModalVisible={setGolModalVisible} isVisible={goalModalVisible} goalMutation={createGoal} />
+      <FullScreenGoalModal setModalVisible={setGoalModalVisible} isVisible={goalModalVisible} goalMutation={createGoal} />
+      <FullScreenTaskModal setModalVisible={setTaskModalVisible} isVisible={taskModalVisible} taskMutation={createTask} />
+      <FullScreenAskModal setModalVisible={setAskModalVisible} isVisible={askModalVisible} askMutation={createAsk} />
+      <FullScreenPostModal setModalVisible={setPostModalVisible} isVisible={postModalVisible} postMutation={createPost} />
       <View style={addStyles.container}>
       <Subheading color={Black}>
         Launch Pad
@@ -104,11 +161,7 @@ function AddScreen({
       <View style={addStyles.choiceContainer}>
         <Pressable style={addStyles.choiceBox} onPress={() => navigation.navigate('FirstProjectSetup')}>
         <ProjectIcon
-          style={{
-            width: spacingUnit * 6,
-            height: spacingUnit * 6,
-
-          }}
+          style={addStyles.choiceImage}
         />
         <Paragraph color={Black} style={{
           ...addStyles.choiceText
@@ -116,7 +169,7 @@ function AddScreen({
           Project
         </Paragraph>
         </Pressable>
-        <Pressable style={addStyles.choiceBox}>
+        <Pressable style={addStyles.choiceBox} onPress={() => setGoalModalVisible(true)}>
         <GoalIcon style={addStyles.choiceImage} />
         <Paragraph color={Black} style={addStyles.choiceText}>
           Goal
@@ -124,7 +177,7 @@ function AddScreen({
         </Pressable>
       </View>
       <View style={addStyles.choiceContainer}>
-        <Pressable style={addStyles.choiceBox}>
+        <Pressable style={addStyles.choiceBox} onPress={() => setTaskModalVisible(true)}>
         <SvgImage
           width={spacingUnit * 6}
           height={spacingUnit * 6}
@@ -137,7 +190,7 @@ function AddScreen({
           Task
         </Paragraph>
         </Pressable>
-        <Pressable style={addStyles.choiceBox}>
+        <Pressable style={addStyles.choiceBox} onPress={() => setAskModalVisible(true)}>
           <AskIcon style={addStyles.choiceImage} />
         <Paragraph color={Black} style={{
           ...addStyles.choiceText,
@@ -148,7 +201,7 @@ function AddScreen({
         </Pressable>
       </View>
       <View style={addStyles.choiceContainer}>
-        <Pressable style={addStyles.choiceBox}>
+        <Pressable style={addStyles.choiceBox} onPress={() => setPostModalVisible(true)}>
           <PostIcon style={addStyles.choiceImage} />
           <Paragraph color={Black} style={addStyles.choiceText}>
             Post

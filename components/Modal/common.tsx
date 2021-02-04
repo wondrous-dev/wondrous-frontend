@@ -141,7 +141,8 @@ export const modalStyles = StyleSheet.create({
     paddingTop: 0,
     paddingBottom: 0,
     paddingLeft: 0,
-    paddingRight: 0
+    paddingRight: 0,
+    fontSize: 18
   },
   renderSuggestion: {
     marginLeft: -(2 * spacingUnit)
@@ -341,17 +342,17 @@ export const submit = async ({
   relatedTaskIds,
   status
 }) => {
-  if (!name && type !== 'ask') {
+  if (!name && type !== 'ask' && type !== 'post') {
     setErrors({
       ...errors,
       nameError: 'Name is required'
     })
-  } else if (!content && type === 'ask') {
+  } else if (!content && (type === 'ask' || type === 'post')) {
     setErrors({
       ...errors,
       nameError: 'Ask required'
     })
-  } else if (!projectId) {
+  } else if (!projectId && type !== 'post') {
     setErrors({
       ...errors,
       projectError: 'Please select a project'
