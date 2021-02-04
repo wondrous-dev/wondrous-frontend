@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { Pressable, SafeAreaView, StyleSheet, View } from 'react-native'
 import { useMutation } from '@apollo/client'
@@ -21,6 +21,7 @@ import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
 import { FullScreenPostModal } from '../../components/Modal/PostModal'
 import { CREATE_ASK, CREATE_GOAL, CREATE_TASK } from '../../graphql/mutations'
 import { CREATE_POST } from '../../graphql/mutations/post'
+import Toast from 'react-native-toast-message'
 
 const addStyles = StyleSheet.create({
   container: {
@@ -66,6 +67,10 @@ function AddScreen({
   const user = useMe()
   const [createGoal] = useMutation(CREATE_GOAL, {
     update(cache, { data }) {
+      Toast.show({
+        text1: 'Goal successfully created',
+        position: 'bottom'
+      })
       cache.modify({
           fields: {
               getGoalsFromProject(existingGoals=[]) {
@@ -94,6 +99,10 @@ function AddScreen({
   })
   const [createTask] = useMutation(CREATE_TASK, {
     update(cache, { data }) {
+      Toast.show({
+        text1: 'Task successfully created',
+        position: 'bottom'
+      })
       cache.modify({
           fields: {
               users() {
@@ -118,6 +127,10 @@ function AddScreen({
 
   const [createAsk, { data: createAskData, loading: createAskLoading, error: createAskError }] = useMutation(CREATE_ASK, {
     update(cache, { data }) {
+      Toast.show({
+        text1: 'Ask successfully created',
+        position: 'bottom'
+      })
       cache.modify({
           fields: {
               users() {
@@ -139,7 +152,14 @@ function AddScreen({
     }
   })
 
-  const [createPost] = useMutation(CREATE_POST)
+  const [createPost] = useMutation(CREATE_POST, {
+    update(cache) {
+      Toast.show({
+        text1: 'Post successfully created',
+        position: 'bottom'
+      })
+    }
+  })
 
   return (
     <SafeAreaView style={{

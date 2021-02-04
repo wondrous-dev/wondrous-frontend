@@ -81,6 +81,7 @@
     "react-native-svg": "12.1.0",
     "react-native-swipe-list-view": "^3.2.5",
     "react-native-swipeable-item": "^1.5.2",
+    "react-native-toast-message": "^1.4.3",
     "react-native-web": "~0.13.12",
     "react-native-web-swiper": "^2.1.7",
     "react-native-webview": "^10.10.2",
