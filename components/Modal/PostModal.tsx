@@ -11,7 +11,7 @@ import { ErrorText, RegularText, Subheading } from '../../storybook/stories/Text
 import { spacingUnit } from '../../utils/common'
 import { GET_USER_PROJECTS } from '../../graphql/queries/project'
 import Camera from '../../components/Camera'
-import { submit, modalStyles, ImageDisplay } from './common'
+import { submit, modalStyles, ImageDisplay, ModalDropdown } from './common'
 import CameraIcon from '../../assets/images/camera'
 import ImageIcon from '../../assets/images/image'
 import LinkIcon from '../../assets/images/link'
@@ -24,7 +24,8 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
   const initialMedia = (post && post.additionalData && post.additionalData.images) || []
   const initialLink = post && post.additionalData && post.additionalData.link
   const initialContent = (post && post.content) || ''
-  // const [project, setProject] = useState((post && post.projectId))
+  const initialProject = post && post.projectId
+  const [project, setProject] = useState(initialProject)
   const [link, setLink] = useState(initialLink)
   const [addLink, setAddLink] = useState(!!(link))
   const [media, setMedia] = useState(initialMedia)
@@ -35,15 +36,15 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
   const { data: projectUsers, loading, error } = useQuery(GET_USER_PROJECTS)
   const navigation = useNavigation()
 
-  // const projectDropdowns = projectUsers && projectUsers.getUserProjects ? projectUsers.getUserProjects.map(projectUser => {
-  //   return {
-  //     label: projectUser.project && projectUser.project.name,
-  //     value: projectUser.project && projectUser.project.id
-  //   }
-  // }) : [{
-  //   label: '',
-  //   value: ''
-  // }]
+  const projectDropdowns = projectUsers && projectUsers.getUserProjects ? projectUsers.getUserProjects.map(projectUser => {
+    return {
+      label: projectUser.project && projectUser.project.name,
+      value: projectUser.project && projectUser.project.id
+    }
+  }) : [{
+    label: '',
+    value: ''
+  }]
   const resetState = useCallback(() => {
     setLink(null)
     setAddLink(false)
@@ -52,11 +53,13 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
     setGalleryOpen(false)
     setContent('')
     setErrors({})
+    setProject(null)
     if (post) {
       setContent(initialContent)
       setLink(initialLink)
       setAddLink(!!(initialLink))
       setMedia(initialMedia)
+      setProject(initialProject)
       setCameraOpen(false)
       setGalleryOpen(false)
     }
@@ -127,6 +130,7 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
                   errors,
                   setErrors,
                   media,
+                  projectId: project,
                   filePrefix: FILE_PREFIX,
                   mutation: postMutation,
                   ...(post && {
@@ -154,7 +158,7 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
               <TextEditorContext.Provider value={{
                   content,
                   setContent,
-                  placeholder: `What's on your mind?`
+                  placeholder: `What's new?`
                 }}>
                   <View style={{flex: 1}}>
                 <TextEditor multiline style={modalStyles.nameTextInput}
@@ -162,7 +166,23 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
                 />
                 </View>
                 </TextEditorContext.Provider>
+      
               </View>
+              <View style={[
+                    modalStyles.editRowContainer,
+    
+                    // NEW
+                    Platform.OS !== 'android' && {
+                      zIndex: 5000
+                    }
+                  ]}>
+                    <View style={modalStyles.editRowTextContainer}>
+                      <RegularText color={Grey800} style={modalStyles.editRowText}>
+                        Project
+                      </RegularText>
+                    </View>
+                    <ModalDropdown value={project} setValue={setProject} items={projectDropdowns} placeholder='Select a project' zIndex={5000} />
+                  </View>
             <View style={modalStyles.attachmentRow}>
                     <LinkIcon color={Grey800} style={{
                       marginRight: spacingUnit * 2

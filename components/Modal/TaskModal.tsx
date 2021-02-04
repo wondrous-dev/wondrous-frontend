@@ -174,7 +174,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                   errors,
                   setErrors,
                   media,
-                  projectId,
+                  projectId: project,
                   filePrefix: FILE_PREFIX,
                   mutation: taskMutation,
                   goalId: goal,

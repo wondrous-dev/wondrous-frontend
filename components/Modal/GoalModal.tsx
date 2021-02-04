@@ -149,7 +149,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                   errors,
                   setErrors,
                   media,
-                  projectId,
+                  projectId: project,
                   filePrefix: FILE_PREFIX,
                   mutation: goalMutation,
                   firstTime,
