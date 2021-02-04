@@ -480,7 +480,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           <View>
             <>
               <RegularText style={feedStyles.likeCount}>
-                {reactionCount} {reactionCount === '1' ? 'like' : 'likes'}
+                {reactionCount} {reactionCount === '1' || reactionCount === 1 ? 'like' : 'likes'}
               </RegularText>
               <View
                 style={{

@@ -47,7 +47,7 @@ export function PrimaryButton ({ onPress, children, style, textStyle, textPressS
     
     ...baseStyle.primary,
     ...style
-  }} textStyle={textStyle} textPressStyle={textPressStyle} {...props}>
+  }} textPressStyle={textPressStyle} {...props}>
     
     {children}
     </BaseButton>
@@ -59,7 +59,7 @@ export function SecondaryButton ({ onPress, children, style, textStyle, textPres
     color: Black,
   ...baseStyle.secondary,
   ...style,
-}} textStyle={textStyle} textPressStyle={textPressStyle}
+}} textPressStyle={textPressStyle}
   {...props}
 >
     {children}

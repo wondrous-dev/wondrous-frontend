@@ -185,11 +185,12 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                   alignItems: 'center',
                   alignSelf: 'center'
                 }}>
-                <SafeImage style={[profileStyles.profileImage, {
+                <SafeImage style={{
+                  ...profileStyles.profileImage,
                   width: spacingUnit * 12,
                   height: spacingUnit * 12,
-                  borderRadius: spacingUnit * 6
-                }]} src={profilePicture} />
+                  borderRadius: spacingUnit * 6,
+                }} src={profilePicture} />
                 <Pressable onPress={() => setChangePhoto(true)}>
                   <Paragraph color={Blue400} style={{
                     marginTop: spacingUnit

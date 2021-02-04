@@ -308,11 +308,12 @@ function UserProfile({
                 <View style={profileStyles.imageContainer}>
                 {
                   profilePicture ?
-                  <SafeImage style={[profileStyles.profileImage, {
+                  <SafeImage style={{
+                    ...profileStyles.profileImage,
                     width: spacingUnit * 10,
                     height: spacingUnit * 10,
                     borderRadius: spacingUnit * 5
-                  }]} src={profilePicture || user.profilePicture} />
+                  }} src={profilePicture || user.profilePicture} />
                   :
                   <ProfilePlaceholder projectOwnedByUser={userOwned} user={true} />
                 }

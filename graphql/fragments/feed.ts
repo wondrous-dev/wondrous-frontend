@@ -20,10 +20,17 @@ export const ActivityFeedItem = gql`
     itemContent
     commentCount
     reactionCount
-    commentReacted
     media {
       images
       link
     }
   }
+`
+
+export const ActivityFeedComment = gql`
+  fragment ActivityFeedComment on FeedItem {
+    ...ActivityFeedItem
+    commentReacted
+  }
+  ${ActivityFeedItem}
 `
