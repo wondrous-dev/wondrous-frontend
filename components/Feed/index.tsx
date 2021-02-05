@@ -30,6 +30,7 @@ import { useProfile } from '../../utils/hooks'
 import { FlexRowContentModal } from '../../components/Modal'
 import { MyCarousel } from '../../storybook/stories/Carousel'
 import Link from '../../assets/images/link'
+import Celebration from '../../assets/images/celebrations/signupConfetti.svg'
 
 const FeedItemTypes = [
   'id',
@@ -94,6 +95,10 @@ const feedStyles = StyleSheet.create({
   },
   feedText: {
     fontSize: 18
+  },
+  confetti: {
+    marginRight: spacingUnit * 0.5,
+    marginTop: -spacingUnit
   }
 })
 
@@ -135,7 +140,13 @@ const FeedString = ({ item, standAlone }) => {
     return (
       <View style={{
         paddingRight: spacingUnit * 3,
+        flexDirection: 'row',
+        alignItems: 'flex-start'
       }}>
+         {
+  item.verb === 'complete' &&
+  <SvgImage width="30" height="30" srcElement={Celebration} style={feedStyles.confetti} />
+}
        <Paragraph color={Black} style={{
          ...feedStyles.feedText,
         fontSize: standAlone ? 18 : 16,
