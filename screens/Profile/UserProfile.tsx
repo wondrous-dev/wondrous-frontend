@@ -205,7 +205,7 @@ function UserProfile({
       return userFeed
     } else if (section === 'action') {
       const actions = userActionData && userActionData.getUserActions
-      if ((actions && actions.length === 0) && status === 'created') {
+      if ((actions && actions.goals.length === 0 && actions.tasks.length === 0) && status === 'created') {
         return ['none']
       } else {
         if (actions && actions.goals && actions.tasks) {

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useLazyQuery, useMutation } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client'
 import { Text, View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pressable, Dimensions, Linking } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import TimeAgo from 'javascript-time-ago'
@@ -606,8 +606,9 @@ export const ProjectFeed = () => {
 export const HomeFeed = () => {
   const user = useMe()
   const [refreshing, setRefreshing] = useState(false)
+  const [feed, setFeed] = useState([])
   const navigation = useNavigation()
-  const [getItems, {loading, data, error, refetch, fetchMore}] = useLazyQuery(GET_HOME_FEED, {
+  const {loading, data, error, refetch, fetchMore} = useQuery(GET_HOME_FEED, {
     fetchPolicy: 'network-only'
   })
   if (error) {
@@ -616,13 +617,17 @@ export const HomeFeed = () => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)
-    getItems()
+    if (refetch) {
+      refetch()
+    }
     wait(2000).then(() => setRefreshing(false))
   }, [])
 
   useEffect(() => {
-    getItems()
-  }, [])
+    if (data && data.getHomeFeed) {
+      setFeed(data && data.getHomeFeed)
+    }
+  }, [data && data.getHomeFeed])
 
   if (loading) {
     return (
@@ -634,7 +639,7 @@ export const HomeFeed = () => {
       </View>
       )
   }
-  const filteredData = (data && data.getHomeFeed.filter(feedItem => {
+  const filteredData = (feed.filter(feedItem => {
 
     return user && (user.id !== feedItem.userId)
   }))

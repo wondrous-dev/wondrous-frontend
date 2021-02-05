@@ -14,7 +14,7 @@ import { UPDATE_PROJECT, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, CO
 import { SafeImage, UploadImage } from '../../storybook/stories/Image'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton, FlexibleButton, PrimaryButton } from '../../storybook/stories/Button'
-import { capitalizeFirstLetter, isEmptyObject, spacingUnit, wait } from '../../utils/common'
+import { capitalizeFirstLetter, isCloseToBottom, isEmptyObject, spacingUnit, wait } from '../../utils/common'
 import { WONDER_BASE_URL } from '../../constants/'
 import { ProfileContext } from '../../utils/contexts'
 import { EditProfileModal } from './EditProfileModal'
@@ -55,12 +55,14 @@ function ProjectProfile({
   route
 }: StackScreenProps<ProfileTabParamList, 'ProjectProfile'>) {
   const user = useMe()
+
   const [section, setSection] = useState('feed')
   const [refreshing, setRefreshing] = useState(false)
   const [isVisible, setModalVisible] = useState(false)
   const [status, setStatus] = useState('created')
   const [editProfileModal, setEditProfileModal] = useState(false)
   const [profilePicture, setProfilePicture] = useState('')
+  const [projectFeed, setProjectFeed] = useState([])
   const [updateProject] = useMutation(UPDATE_PROJECT, {
     update(cache, { data }) {
       cache.modify({
@@ -77,13 +79,13 @@ function ProjectProfile({
     noGoingBack,
     editProfile
   } = route.params
-  const [getProjectFeed, {
+  const {
     loading: projectFeedLoading,
     data: projectFeedData,
     error: projectFeedError,
-    refetch,
-    fetchMore
-  }] = useLazyQuery(GET_PROJECT_FEED, {
+    refetch: feedRefetch,
+    fetchMore: feedFetchMore
+  } = useQuery(GET_PROJECT_FEED, {
     fetchPolicy: 'network-only',
     variables: {
       projectId
@@ -133,16 +135,14 @@ function ProjectProfile({
   const asksSelected = section === 'asks'
   
   useEffect(() => {
-    if (section === 'feed') {
-      getProjectFeed()
-    } else if (section === 'action') {
+    if (actionSelected) {
       getProjectActions({
         variables: {
           projectId,
           status
         }
       })
-    } else if (section === 'asks') {
+    } else if (asksSelected) {
       getProjectAsks({
         variables: {
           projectId,
@@ -157,12 +157,17 @@ function ProjectProfile({
     if (editProfile) {
       setEditProfileModal(true)
     }
-  }, [project && project.profilePicture, feedSelected, actionSelected, asksSelected, status])
+    if (projectFeedData && projectFeedData.getProjectFeed) {
+      setProjectFeed(projectFeedData.getProjectFeed)
+    }
+  }, [project && project.profilePicture, feedSelected, actionSelected, asksSelected, status, projectFeedData && projectFeedData.getProjectFeed])
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     if (feedSelected) {
-      getProjectFeed()
+      if (feedRefetch) {
+        feedRefetch()
+      }
     } else if (actionSelected) {
       getProjectActions({
         variables: {
@@ -183,12 +188,12 @@ function ProjectProfile({
 
   const getCorrectData = section => {
     if (section === 'feed') {
-      return projectFeedData && projectFeedData.getProjectFeed
+      return projectFeed
     } else if (section === 'action') {
       const actions = projectActionData && projectActionData.getProjectActions
-      if (!(user && user.usageProgress && user.usageProgress.askCreated)) {
+      if (!(user && user.usageProgress && user.usageProgress.askCreated) && (actions && actions.goals.length === 0 && actions.tasks.length === 0)) {
         return ['start']
-      } else if(actions && actions.length === 0 && status === 'created') {
+      } else if((actions && actions.goals.length === 0 && actions.tasks.length === 0) && status === 'created') {
         return ['none']
       } else {
         if (actions && actions.goals && actions.tasks) {
@@ -263,7 +268,6 @@ function ProjectProfile({
           projectFeedData,
           projectFeedLoading,
           projectFeedError,
-          getProjectFeed,
           setModalVisible
         }}>
         <EditProfileModal project={project} isVisible={editProfileModal} setModalVisible={setEditProfileModal} saveMutation={updateProject} />
@@ -413,6 +417,24 @@ function ProjectProfile({
         )}
         data={profileData}
         renderItem={({ item }) => renderProfileItem({ item, section, user, userOwned: projectOwnedByUser, navigation, projectId, onSwipeLeft, onSwipeRight, itemRefs })}
+        onScroll={async ({nativeEvent}) => {
+          if (section === 'feed') {
+            if (isCloseToBottom(nativeEvent)) {
+
+              if (feedFetchMore) {
+                const result = await feedFetchMore({
+                  variables: {
+                    offset: projectFeed.length
+                  }
+                })
+
+                if (result && result.data && result.data.getProjectFeed) {
+                  setProjectFeed([...projectFeed, ...result.data.getProjectFeed])
+                }
+              }
+            }
+          }
+        }}       
         >
 
         </FlatList>

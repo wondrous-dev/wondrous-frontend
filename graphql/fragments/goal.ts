@@ -27,9 +27,7 @@ export const PublicGoalFragment = gql`
 export const AdditionalGoalFragment = gql`
   fragment AdditionalGoal on Goal {
     ...PublicGoal
-    additionalInfo {
-      taskCount
-    }
+    taskCount
   }
   ${PublicGoalFragment}
 `

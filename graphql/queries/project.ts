@@ -16,8 +16,8 @@ export const GET_PROJECT_BY_ID = gql`
 `
 
 export const GET_PROJECT_FEED = gql`
-  query GetProjectFeed($projectId: ID!) {
-    getProjectFeed(projectId: $projectId) {
+  query GetProjectFeed($projectId: ID!, $offset: Int, $limit: Int) {
+    getProjectFeed(projectId: $projectId, offset: $offset, limit: $limit) {
       ...ActivityFeedItem
     }
   }
