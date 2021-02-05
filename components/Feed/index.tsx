@@ -108,7 +108,7 @@ const getCorrectSrc = (itemType) => {
   }
 }
 
-const FeedString = ({ item }) => {
+const FeedString = ({ item, standAlone }) => {
   const navigation = useNavigation()
   if (item.objectType === 'project') {
     return (
@@ -125,6 +125,7 @@ const FeedString = ({ item }) => {
             }
           })} color={Blue400} style={{
             ...feedStyles.feedText,
+            fontSize: standAlone ? 18 : 16
           }}>{item.projectName} </Paragraph>
       </View>
     )
@@ -133,7 +134,10 @@ const FeedString = ({ item }) => {
       <View style={{
         paddingRight: spacingUnit * 3,
       }}>
-       <Paragraph color={Black} style={feedStyles.feedText}>{renderMentionString({ content: item.itemContent ? item.itemName + ' - ' + item.itemContent : item.itemName, navigation })} </Paragraph>
+       <Paragraph color={Black} style={{
+         ...feedStyles.feedText,
+        fontSize: standAlone ? 18 : 16,
+        }}>{renderMentionString({ content: item.itemContent ? item.itemName + '. ' + item.itemContent : item.itemName, navigation })} </Paragraph>
 
       </View>
     )
@@ -143,7 +147,10 @@ const FeedString = ({ item }) => {
       <View style={{
         paddingRight: spacingUnit * 3,
       }}>
-       <Paragraph color={Black} style={feedStyles.feedText}>{renderMentionString({ content: item.itemContent, navigation })} </Paragraph>
+       <Paragraph color={Black} style={{
+         ...feedStyles.feedText,
+         fontSize: standAlone ? 18 : 16,
+          }}>{renderMentionString({ content: item.itemContent, navigation })} </Paragraph>
   
       </View>
     )
@@ -445,7 +452,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           {renderMentionString({ content: item.itemContent, textStyle: feedStyles.mentionedText, navigation })}
           </Paragraph>
           :
-          <FeedString item={item} />
+          <FeedString item={item} standAlone={standAlone} />
         }
       </View>
 
