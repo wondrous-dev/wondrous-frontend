@@ -5,12 +5,13 @@ import { Dimensions, Image, Pressable, SafeAreaView, ActivityIndicator, View, Re
 import { createStackNavigator } from '@react-navigation/stack'
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import * as Linking from 'expo-linking'
+import isEqual from 'lodash.isequal'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { profileStyles } from './style'
-import { spacingUnit, wait, isEmptyObject, usePrevious } from '../../utils/common'
+import { spacingUnit, wait, isEmptyObject, usePrevious, isCloseToBottom } from '../../utils/common'
 import BottomTabNavigator from '../../navigation/BottomTabNavigator'
 import { UploadImage, SafeImage } from '../../storybook/stories/Image'
 import { WONDER_BASE_URL } from '../../constants/'
@@ -65,6 +66,8 @@ function UserProfile({
   const [section, setSection] = useState('feed')
   const [refreshing, setRefreshing] = useState(false)
   const [isModalVisible, setModalVisible] = useState(false)
+  const [userFeed, setUserFeed] = useState([])
+  const prevFeed = usePrevious(userFeed)
   const [loading, setLoading] = useState(false)
   // const [offset, setOffset] = useState(null)
   const [updateGoal] = useMutation(UPDATE_GOAL)
@@ -82,17 +85,18 @@ function UserProfile({
     }
   })
 
-  const [getUserFeed, {
+  const {
     loading: userFeedLoading,
     data: userFeedData,
-    error: userFeedError
-  }] = useLazyQuery(GET_USER_FEED, {
+    error: userFeedError,
+    fetchMore: feedFetchMore,
+    refetch: feedRefetch
+  } = useQuery(GET_USER_FEED, {
     variables: {
       userId: finalUserId
     },
     fetchPolicy: 'network-only'
   })
-
   const [getUserActions, {
     loading: userActionLoading,
     data: userActionData,
@@ -135,10 +139,13 @@ function UserProfile({
   const feedSelected = section === 'feed'
   const actionSelected = section === 'action'
   const asksSelected = section === 'asks'
+
   const onRefresh = useCallback((feedSelected, actionSelected, asksSelected) => {
     setRefreshing(true)
     if (feedSelected) {
-      getUserFeed()
+      if (feedRefetch) {
+        feedRefetch()
+      }
     } else if (actionSelected) {
       getUserActions({
         variables: {
@@ -158,9 +165,7 @@ function UserProfile({
   }, [])
 
   useEffect(() => {
-    if (feedSelected) {
-      getUserFeed()
-    } else if (actionSelected) {
+    if (actionSelected) {
       getUserActions({
         variables: {
           userId: finalUserId,
@@ -186,12 +191,18 @@ function UserProfile({
     if (user) {
       setProfilePicture(user.profilePicture)
     }
-  }, [user && user.profilePicture, feedSelected, actionSelected, asksSelected, finalUserId, status])
+    // console.log('userFEed', userFeedData)
+    if (userFeedData && userFeedData.getUserFeed) {
+      if (!isEqual(userFeedData.getUserFeed, prevFeed)) {
+        setUserFeed(userFeedData.getUserFeed)
+      }
+    }
+  }, [user && user.profilePicture, feedSelected, actionSelected, asksSelected, finalUserId, status, userFeedData ])
 
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo
   const getCorrectData = section => {
     if (section === 'feed') {
-      return userFeedData && userFeedData.getUserFeed
+      return userFeed
     } else if (section === 'action') {
       const actions = userActionData && userActionData.getUserActions
       if ((actions && actions.length === 0) && status === 'created') {
@@ -221,7 +232,7 @@ function UserProfile({
   const profileData = getCorrectData(section)
 
   const itemRefs = useRef(new Map())
-
+  // console.log('profileData', profileData)
   const onSwipeLeft = (item, type) => onSwipe({
     item,
     type,
@@ -444,6 +455,7 @@ function UserProfile({
           contentContainerStyle={{
             paddingBottom: spacingUnit * 10
           }}
+          scrollEventThrottle={400}
           renderItem={({ item }) => renderProfileItem({ item, section, user, userOwned, navigation, itemRefs, onSwipeLeft, onSwipeRight })}
           ListEmptyComponent={() => {
             return (
@@ -456,6 +468,24 @@ function UserProfile({
                 }
               </View>
             )
+          }}
+          onScroll={async ({nativeEvent}) => {
+            if (section === 'feed') {
+              if (isCloseToBottom(nativeEvent)) {
+                console.log('feedFetchMore', feedFetchMore)
+                if (feedFetchMore) {
+                  const result = await feedFetchMore({
+                    variables: {
+                      offset: userFeed.length
+                    }
+                  })
+                  console.log('more', result)
+                  if (result && result.data && result.data.getUserFeed) {
+                    setUserFeed([...userFeed, ...result.data.getUserFeed])
+                  }
+                }
+              }
+            }
           }}
           >
   
