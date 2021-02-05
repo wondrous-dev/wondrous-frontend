@@ -89,6 +89,9 @@ const feedStyles = StyleSheet.create({
   mentionedText: {
     fontSize: 14,
     lineHeight: 22
+  },
+  feedText: {
+    fontSize: 18
   }
 })
 
@@ -110,40 +113,77 @@ const FeedString = ({ item }) => {
   if (item.objectType === 'project') {
     return (
       <View style={{
-        paddingRight: spacingUnit * 2
+        paddingRight: spacingUnit * 3
       }}>
-        <Paragraph color={Black} style={{
-          flex: 1,
-          flexWrap: 'wrap'
-        }}>
-          {capitalizeFirstLetter(item.verb)} {item.objectType} - <Paragraph color={Black} style={{
-            fontFamily: 'Rubik SemiBold',
+          <Paragraph onPress={() => navigation.navigate('Root', {
+            screen: 'Profile',
+            params: {
+              screen: 'ProjectProfile',
+              params: {
+                projectId: item.projectId
+              }
+            }
+          })} color={Blue400} style={{
+            ...feedStyles.feedText,
           }}>{item.projectName} </Paragraph>
-        </Paragraph>
       </View>
     )
-  }
-  if (item.objectType === 'goal' || item.objectType === 'task') {
+  } else if (item.objectType === 'goal' || item.objectType === 'task') {
     return (
       <View style={{
-        paddingRight: spacingUnit * 2,
-        flexDirection: 'row'
+        paddingRight: spacingUnit * 3,
       }}>
-      <Paragraph color={Black} style={{
-          flexWrap: 'wrap',
-          flexShrink: 1
+       <Paragraph color={Black} style={feedStyles.feedText}>{renderMentionString({ content: item.itemContent ? item.itemName + ' - ' + item.itemContent : item.itemName, navigation })} </Paragraph>
+
+      </View>
+    )
+  } 
+  else if (item.objectType === 'ask' || item.objectType === 'post') {
+    return (
+      <View style={{
+        paddingRight: spacingUnit * 3,
       }}>
-        {capitalizeFirstLetter(item.verb)} {item.objectType} <Paragraph color={Black} style={{
-          fontFamily: 'Rubik SemiBold',
-        }}>{renderMentionString({ content: item.itemName, navigation })} </Paragraph>for<Paragraph style={{
-          fontFamily: 'Rubik SemiBold',
-        }}> {item.projectName} </Paragraph>
-      </Paragraph>
+       <Paragraph color={Black} style={feedStyles.feedText}>{renderMentionString({ content: item.itemContent, navigation })} </Paragraph>
+  
       </View>
     )
   }
   return null
 }
+
+
+const getActionString = (item) => {
+  if (item.verb === 'create') {
+    return `created a ${item.objectType}`
+  } else if (item.verb === 'complete') {
+    return `completed a ${item.objectType}` 
+  }
+}
+
+const getProjectString = (item) => {
+  const navigation = useNavigation()
+  if (item.projectName) {
+    return (
+      <Paragraph color={Grey200} style={{
+        fontSize: 16,
+        fontFamily: 'Rubik SemiBold',
+        textDecorationLine: 'underline'
+      }} onPress={() => navigation.navigate('Root', {
+          screen: 'Profile',
+          params: {
+            screen: 'ProjectProfile',
+            params: {
+              projectId: item.projectId
+            }
+          }
+      })}>
+        {item.projectName ? `${item.projectName}` : ''}
+      </Paragraph>
+    )
+  }
+  return null
+}
+
 
 const getItemFromRef = (ref, readField) => {
   const finalItem = {}
@@ -367,75 +407,48 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
     <View style={feedStyles.feedItemContainer}>
       <View style={feedStyles.feedItemName}>
         <SafeImage style={feedStyles.feedItemImage} src={item.actorProfilePicture} defaultImage={DefaultProfilePicture} />
-        <RegularText style={{
-          marginRight: spacingUnit
-        }} color={Black}>{item.actorFirstName} {item.actorLastName}</RegularText>
-        <RegularText style={{
-          marginRight: spacingUnit * 0.5
-        }} color={Grey200}>{item.actorUsername}</RegularText>
-        <RegularText style={{
-          marginRight: spacingUnit * 0.5,
-          marginTop: -spacingUnit
-        }} color={Grey200}>.</RegularText>
-        <RegularText style={{
-          marginRight: spacingUnit
-        }} color={Grey200}>{timeAgo.format(new Date(item.timestamp))}</RegularText>
+        <View>
+          <View style={{
+            flexDirection: 'row',
+            alignItems: 'flex-start'
+          }}>
+            <View>
+          <Paragraph style={{
+          }} style={{
+            fontFamily: 'Rubik SemiBold'
+          }} color={Black}>{item.actorFirstName} {item.actorLastName}{` `}</Paragraph>
+          <RegularText style={{
+            lineHeight: '18'
+          }} color={Grey200}>{timeAgo.format(new Date(item.timestamp))}</RegularText>     
+          </View>
+                    {!comment && !(item.objectType === 'post') &&
+            <Paragraph color={Grey200} style={{
+
+            }}>
+              {getActionString(item)} {
+                item.objectType !== 'project' &&
+                <>
+{item.projectName && 'in'} {getProjectString(item)}
+                </>
+              }
+            </Paragraph>
+          }
+          </View>
+        </View>
       </View>
       <View style={feedStyles.feedItemContent}>
         {/* <SvgImage width="24" height="24" srcElement={getCorrectSrc(item.objectType)} style={{
           marginRight: spacingUnit
         }}/> */}
         {comment ?
-          <RegularText>
+          <Paragraph style={feedStyles.feedText}>
           {renderMentionString({ content: item.itemContent, textStyle: feedStyles.mentionedText, navigation })}
-          </RegularText>
-  
+          </Paragraph>
           :
           <FeedString item={item} />
         }
       </View>
-      {
-        standAlone ?
-        <View style={[feedStyles.reactions, {
-          justifyContent: 'space-between',
-          flexDirection: 'row',
-          alignItems: 'center',
-        }]}>
-          <View style={{
-            flexDirection: 'row',
-            alignItems: 'center'
-          }}>
-          <Pressable onPress={() => likeFeedItem(liked)} > 
-          {
-            liked || commentLiked ?
-            <LikeFilled color={Red400} style={{
-              marginRight: spacingUnit
-            }} />
-            :
-            <LikeOutline color={Grey700} style={{
-              marginRight: spacingUnit
-            }} />
-          }
-          </Pressable>
-          <RegularText color={Grey600} style={{
-            marginRight: spacingUnit * 3,
-          }}>{item.reactionCount}</RegularText>
-          </View>
-          <Pressable onPress={pressComment}>
-            <CommentIcon color={Grey700} style={{
-              marginRight: spacingUnit,
-              width: spacingUnit * 3.5,
-              height: spacingUnit * 3.5
-            }}/>
-          </Pressable>
-          <Pressable onPress={() => setModalVisible(true)}>
-          <ShareIcon color={Grey700} style={{
-            width: spacingUnit * 3.5,
-            height: spacingUnit * 3.5
-          }} />
-          </Pressable>
-        </View>
-      :
+
         <View style={feedStyles.reactions}>
           <Pressable onPress={() => likeFeedItem(liked)} > 
           {
@@ -462,9 +475,8 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           }}>{item.commentCount}</RegularText>
           <Pressable onPress={() => setModalVisible(true)}>
             <ShareIcon color={Grey700} />
-          </Pressable>
+          </Pressable>  
         </View>
-      }
 
     </View>
     {standAlone &&

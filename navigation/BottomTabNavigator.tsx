@@ -5,7 +5,7 @@ import { useRoute, NavigationState, useNavigationState } from '@react-navigation
 import * as React from 'react'
 import { SafeAreaView, View, Pressable, StyleSheet } from 'react-native'
 
-import Colors, { Blue500, Grey50, White, Grey400 } from '../constants/Colors'
+import Colors, { Blue500, Blue400, Grey50, White, Grey400 } from '../constants/Colors'
 import Dashboard from '../screens/Dashboard'
 import Search from '../screens/Search'
 import Add from '../screens/Add'
@@ -52,9 +52,9 @@ const bottomTabStyles = StyleSheet.create({
 const TabBarIcon = ({ route, focused, color, size }) => {
   let iconName
   if (route.name === 'Dashboard') {
-    return <DashboardIcon iconColor={focused ? Blue500 : Grey50} />
+    return <DashboardIcon iconColor={focused ? Blue400 : Grey50} />
   } else if (route.name === 'Search') {
-    return <SearchIcon iconColor={focused ? Blue500 : Grey50} />
+    return <SearchIcon iconColor={focused ? Blue400 : Grey50} />
    } else if (route.name === 'Add') {
     return (
       <AddIcon
@@ -66,9 +66,9 @@ const TabBarIcon = ({ route, focused, color, size }) => {
       />
     )
    } else if (route.name === 'Notifications') {
-     return <NotificationIcon iconColor={focused ? Blue500 : Grey50} />
+     return <NotificationIcon iconColor={focused ? Blue400 : Grey50} />
    } else if (route.name === 'Profile') {
-     return <ProfileIcon iconColor={focused ? Blue500 : Grey50} />
+     return <ProfileIcon iconColor={focused ? Blue400 : Grey50} />
    }
 }
 
@@ -135,9 +135,9 @@ export default function BottomTabNavigator() {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName
           if (route.name === 'Dashboard') {
-            return <DashboardIcon iconColor={focused ? Blue500 : Grey50} />
+            return <DashboardIcon iconColor={focused ? Blue400 : Grey50} />
           } else if (route.name === 'Search') {
-            return <SearchIcon iconColor={focused ? Blue500 : Grey50} />
+            return <SearchIcon iconColor={focused ? Blue400 : Grey50} />
            } else if (route.name === 'Add') {
             return ( <AddIcon
               style={{
@@ -147,9 +147,9 @@ export default function BottomTabNavigator() {
               }}
             />)
            } else if (route.name === 'Notifications') {
-             return <NotificationIcon iconColor={focused ? Blue500 : Grey50} />
+             return <NotificationIcon iconColor={focused ? Blue400 : Grey50} />
            } else if (route.name === 'Profile') {
-             return <ProfileIcon iconColor={focused ? Blue500 : Grey50} />
+             return <ProfileIcon iconColor={focused ? Blue400 : Grey50} />
            }
         }
       })}
