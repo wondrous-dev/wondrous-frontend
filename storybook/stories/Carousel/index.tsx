@@ -22,10 +22,18 @@ export class MyCarousel extends React.Component {
     const {
       activeDotColor,
       passiveDotColor,
-      images
+      images,
+      containerStyle
     } = this.props
       return (
-        <View style={{height: images ? 400: 150, width: '100%', alignContent: 'center', justifyContent: 'center', marginTop: 24}}>
+        <View style={{
+          height: images ? 400: 150, 
+          width: '100%',
+          alignContent: 'center',
+          justifyContent: 'center',
+          marginTop: 24,
+        ...containerStyle
+        }}>
 
           <Swiper
           from={0}

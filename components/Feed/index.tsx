@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useLazyQuery, useMutation } from '@apollo/client'
-import { Text, View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pressable, Dimensions } from 'react-native'
+import { Text, View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pressable, Dimensions, Linking } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
@@ -9,7 +9,7 @@ import regexifyString from 'regexify-string'
 import Modal from 'react-native-modal'
 import Clipboard from 'expo-clipboard'
 
-import { Grey300, Black, Grey150, Grey200, Grey600, Grey700, Red400, White, Blue400 } from '../../constants/Colors'
+import { Grey300, Black, Grey150, Grey200, Grey600, Grey700, Red400, White, Blue400, Grey800 } from '../../constants/Colors'
 import { GET_HOME_FEED, WHOAMI } from '../../graphql/queries'
 import { REACT_FEED_COMMENT, REACT_FEED_ITEM } from '../../graphql/mutations'
 import { SafeImage, SvgImage } from '../../storybook/stories/Image'
@@ -28,6 +28,8 @@ import { useMe } from '../withAuth'
 import { tweetNow, linkedinShare, postOnFacebook  } from '../Share'
 import { useProfile } from '../../utils/hooks'
 import { FlexRowContentModal } from '../../components/Modal'
+import { MyCarousel } from '../../storybook/stories/Carousel'
+import Link from '../../assets/images/link'
 
 const FeedItemTypes = [
   'id',
@@ -70,8 +72,8 @@ const feedStyles = StyleSheet.create({
     marginRight: spacingUnit
   },
   feedItemContent: {
-    flex: 1,
-    flexDirection: 'row',
+    // flex: 1,
+    // flexDirection: 'row',
     marginTop: spacingUnit * 3,
     alignContent: 'center',
     flexShrink: 1
@@ -161,6 +163,9 @@ const FeedString = ({ item, standAlone }) => {
 
 const getActionString = (item) => {
   if (item.verb === 'create') {
+    if (item.objectType === 'ask') {
+      return `needs help`
+    }
     return `created a ${item.objectType}`
   } else if (item.verb === 'complete') {
     return `completed a ${item.objectType}` 
@@ -453,6 +458,38 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           </Paragraph>
           :
           <FeedString item={item} standAlone={standAlone} />
+        }
+        {
+          item.media &&
+          <View style ={{
+            flex: 1,
+            flexDirection:'column',
+            marginTop: spacingUnit * 2
+          }}>
+          {item.media.link && 
+          <View style={{
+            flexDirection: 'row',
+            alignItems: 'center'
+          }}>
+          <Link color={Grey800} style={{
+            marginRight: spacingUnit * 0.5,
+            width: spacingUnit * 2.5,
+            height: spacingUnit * 2.5
+          }} />
+          <Paragraph color={Blue400} style={{
+            fontSize: standAlone ? 18 : 16,
+          }} onPress={() => Linking.openURL(item.media.link)}>
+            {item.media.link}
+          </Paragraph>
+          </View>
+          }
+          {
+            item.media.images &&
+            <MyCarousel data={item.media.images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400} containerStyle={{
+
+            }}/>
+          }
+          </View>
         }
       </View>
 
