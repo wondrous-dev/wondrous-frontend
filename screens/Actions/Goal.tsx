@@ -75,7 +75,7 @@ const GoalPage = ({ navigation, route }) => {
   }
   const images = goal.additionalData && goal.additionalData.images
   const asks = goal.additionalData && goal.additionalData.relatedAskIds
-  const tasks = goal.additionalInfo && Number(goal.additionalInfo.taskCount)
+  const tasks = goal.taskCount && Number(goal.taskCount)
 
   return (
     <SafeAreaView style={{

@@ -65,7 +65,7 @@ const TaskPage = ({ navigation, route }) => {
       setTask(data.getTaskById)
     }
     
-    if (task.goalId) {
+    if (task && task.goalId) {
       getGoalName({
         variables: {
           goalId: task.goalId

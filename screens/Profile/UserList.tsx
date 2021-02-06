@@ -252,7 +252,9 @@ const UserList = ({
                   screen: 'Profile',
                   params: {
                     screen: 'UserProfile',
-                    userId: item.id
+                    params: {
+                      userId: item.id
+                    }
                   }
                 })}
               />

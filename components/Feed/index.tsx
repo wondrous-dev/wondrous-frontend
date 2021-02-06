@@ -150,6 +150,43 @@ const FeedString = ({ item, standAlone }) => {
        <Paragraph color={Black} style={{
          ...feedStyles.feedText,
         fontSize: standAlone ? 18 : 16,
+        }} onPress={() => {
+          if (!standAlone) {
+            navigation.navigate('Root', {
+              screen: 'Profile',
+              params: {
+                screen: 'ProfileItem',
+                params: {
+                  item,
+                  liked: false,
+                  comment: true,
+                  standAlone: true
+                }
+              }
+            })
+          } else {
+            if (item.objectType === 'goal' && standAlone) {
+              navigation.navigate('Root', {
+                screen: 'Profile',
+                params: {
+                  screen: 'GoalPage',
+                  params: {
+                    goalId: item.objectId
+                  }
+                }
+              })
+            } else if (item.objectType === 'task' && standAlone) {
+              navigation.navigate('Root', {
+                screen: 'Profile',
+                params: {
+                  screen: 'TaskPage',
+                  params: {
+                    taskId: item.objectId
+                  }
+                }
+              })
+            }
+          }
         }}>{renderMentionString({ content: item.itemContent ? item.itemName + '. ' + item.itemContent : item.itemName, navigation })} </Paragraph>
 
       </View>
@@ -163,6 +200,33 @@ const FeedString = ({ item, standAlone }) => {
        <Paragraph color={Black} style={{
          ...feedStyles.feedText,
          fontSize: standAlone ? 18 : 16,
+          }} onPress={() => {
+            if (!standAlone) {
+              navigation.navigate('Root', {
+                screen: 'Profile',
+                params: {
+                  screen: 'ProfileItem',
+                  params: {
+                    item,
+                    liked: false,
+                    comment: true,
+                    standAlone: true
+                  }
+                }
+              })
+            } else {
+              if (item.objectType === 'ask') {
+                navigation.navigate('Root', {
+                  screen: 'Profile',
+                  params: {
+                    screen: 'AskPage',
+                    params: {
+                      askId: item.objectId
+                    }
+                  }
+                })
+              }
+            }
           }}>{renderMentionString({ content: item.itemContent, navigation })} </Paragraph>
   
       </View>
@@ -429,7 +493,17 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
     <ShareModal isVisible={isModalVisible} url={SHARE_URL} content={CONTENT} setModalVisible={setModalVisible} />
     <View style={feedStyles.feedItemContainer}>
       <View style={feedStyles.feedItemName}>
-        <SafeImage style={feedStyles.feedItemImage} src={item.actorProfilePicture} defaultImage={DefaultProfilePicture} />
+        <Pressable onPress={() => navigation.navigate('Root', {
+          screen: 'Profile',
+          params: {
+            screen: 'UserProfile',
+            params: {
+              userId: item.userId
+            }
+          }
+        })}>
+          <SafeImage style={feedStyles.feedItemImage} src={item.actorProfilePicture} defaultImage={DefaultProfilePicture} />
+        </Pressable>
         <View>
           <View style={{
             flexDirection: 'row',
@@ -439,7 +513,17 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           <Paragraph style={{
           }} style={{
             fontFamily: 'Rubik SemiBold'
-          }} color={Black}>{item.actorFirstName} {item.actorLastName}{` `}</Paragraph>
+          }} color={Black}
+          onPress={() => navigation.navigate('Root', {
+            screen: 'Profile',
+            params: {
+              screen: 'UserProfile',
+              params: {
+                userId: item.userId
+              }
+            }
+          })}         
+          >{item.actorFirstName} {item.actorLastName}{` `}</Paragraph>
           <RegularText style={{
             lineHeight: '18'
           }} color={Grey200}>{timeAgo.format(new Date(item.timestamp))}</RegularText>     

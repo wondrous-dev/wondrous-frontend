@@ -1,15 +1,15 @@
 import { useQuery, useMutation } from '@apollo/client'
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, FlatList } from 'react-native'
 
 import { Black, Blue400, Red400, Yellow300, Grey700, Grey800, Grey300 } from '../../constants/Colors'
 import { spacingUnit } from '../../utils/common'
-import { GET_FEED_REACTION_OBJ } from '../../graphql/queries'
+import { GET_ASK_FEED, GET_FEED_REACTION_OBJ, GET_GOAL_FEED, GET_TASK_FEED } from '../../graphql/queries'
 import { REACT_FEED_ITEM } from '../../graphql/mutations'
 import { LikeOutline, LikeFilled } from '../../assets/images/reactions/like'
 import { Paragraph, RegularText } from '../../storybook/stories/Text'
 import { useNavigation } from '@react-navigation/native'
-import { ShareModal } from '../../components/Feed'
+import { ShareModal, renderItem } from '../../components/Feed'
 
 export const pageStyles = StyleSheet.create({
   container: {
@@ -19,7 +19,6 @@ export const pageStyles = StyleSheet.create({
   },
   infoContainer: {
     flexDirection: 'row',
-    marginTop: spacingUnit * 1.5,
     flexWrap: 'wrap',
     marginTop: -spacingUnit
   },
@@ -76,15 +75,30 @@ export const sortPriority = (priority) => {
 
 export const ReactionFeed = ({ type, objId, user }) => {
   const navigation = useNavigation()
+  let variables, query
+  if (type === 'goal') {
+    variables = {
+      goalId: objId
+    }
+    query = GET_GOAL_FEED
+  } else if (type === 'task') {
+    variables = {
+      taskId: objId
+    }
+    query = GET_TASK_FEED
+  } else if (type === 'ask') {
+    variables = {
+      askId: objId
+    }
+    query = GET_ASK_FEED
+  }
+
   const {
     data,
     loading,
     error
-  } = useQuery(GET_FEED_REACTION_OBJ, {
-    variables: {
-      feedObjectId: objId,
-      feedObjectType: type
-    }
+  } = useQuery(query, {
+    variables
   })
   const [liked, setLiked] = useState(false)
   const [isModalVisible, setModalVisible] = useState(false)
@@ -130,115 +144,42 @@ export const ReactionFeed = ({ type, objId, user }) => {
       }
     }
   }, [data])
-  const feedReactions = data && data.getFeedReactionObject
-  const SHARE_URL = `https://wonderapp.co/feed/${feedReactions && feedReactions.id}`
-  const CONTENT = 'Check this discussion from Wonder!'
+
+  let finalData = []
+  if (type === 'goal') {
+    finalData = data && data.getGoalFeed
+  } else if (type === 'task') {
+    finalData = data && data.getTaskFeed
+  } else if (type === 'ask') {
+    finalData = data && data.getAskFeed
+  }
+
   return (
-    <View style={{
-      marginTop: spacingUnit * 2
-    }}>
-    <ShareModal isVisible={isModalVisible} url={SHARE_URL} content={CONTENT} setModalVisible={setModalVisible} />
-      {
-        feedReactions &&
-        <>
-        <View style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}>
-          <View style={{
-            flexDirection: 'row',
-            alignItems: 'center'
-          }}>
-            {
-              reactionCount > 0 &&
-              <>
-          {
-            liked  ?
-            <LikeFilled color={Red400} style={{
-              marginRight: spacingUnit
-            }} />
-            :
-            <LikeOutline color={Grey700} style={{
-              marginRight: spacingUnit
-            }} />
-          }
-            <View>
-              <Paragraph color={liked ? Red400 : Grey800}>
-                {feedReactions.reactionCount}
-              </Paragraph>
-            </View>
-              </>
-            }
-          </View>
-          <View>
-            <Paragraph color={Grey800} onPress={() => navigation.navigate('Root', {
-            screen: 'Profile',
-            params: {
-              screen: 'ProfileItem',
-              params: {
-                item: feedReactions,
-                liked: false,
-                comment: true,
-                standAlone: true
-              }
-            }
-          })}>
-              {feedReactions.commentCount} comments
-            </Paragraph>
-          </View>
-        </View>
-        </>
-      }
-        <View style={{
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-          borderBottomColor: Grey300,
-          paddingBottom: spacingUnit,
-          borderBottomWidth: 1,
-          paddingTop: spacingUnit,
-          paddingTop: spacingUnit,
-          marginTop: spacingUnit,
-          ...((reactionCount > 0 || (feedReactions && feedReactions.commentCount > 0)) && {
-            borderTopWidth: 1,
-            borderTopColor: Grey300
-          })
-        }}>
-          <Paragraph color={liked ? Blue400 : Grey800} onPress={() => {
-            if (feedReactions && feedReactions.id) {
-              reactFeedItem({
-                variables: {
-                  feedItemId: feedReactions && feedReactions.id
-                }
-              })
-            }
-            if (!liked) {
-              setReactionCount(reactionCount + 1)
-            } else if (liked) {
-              setReactionCount(reactionCount - 1)
-            }
-            setLiked(!liked)
-          }}>
-            {liked ? 'Liked' : 'Like'}
-          </Paragraph>
-          <Paragraph color={Grey800} onPress={() => navigation.navigate('Root', {
-            screen: 'Profile',
-            params: {
-              screen: 'ProfileItem',
-              params: {
-                item: feedReactions,
-                liked: false,
-                comment: true,
-                standAlone: true
-              }
-            }
-          })}>
-            Comment
-          </Paragraph>
-          <Paragraph color={Grey800} onPress={() => setModalVisible(true)}>
-            Share
-          </Paragraph>
-        </View>
-    </View>
+    <>
+    <Paragraph color={Grey800}>
+      Activity
+    </Paragraph>
+    <FlatList 
+      contentContainerStyle={{
+        paddingBottom: spacingUnit * 10,
+        borderTopColor: Grey300,
+        borderTopWidth: 1,
+        marginTop: spacingUnit
+      }}
+      data={finalData}
+      renderItem={({ item }) => renderItem({ item, navigation })}
+      keyExtractor={item => item.id}
+      ItemSeparatorComponent={() => (
+        <View
+          style={{
+            borderBottomColor: Grey300,
+            borderBottomWidth: 1,
+          }}
+        />
+      )}
+    >
+    </FlatList>
+    </>
   )
 
 
