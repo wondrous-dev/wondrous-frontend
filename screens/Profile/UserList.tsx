@@ -102,15 +102,7 @@ const UserItem = ({ item, itemPressed, initialFollowing, existingUserFollowing }
 {
         following
         ?
-        <Pressable style={{
-          paddingTop: 2,
-          paddingBottom: 2,
-          paddingLeft: spacingUnit * 2.5,
-          paddingRight: spacingUnit * 2.5,
-          borderWidth: 1,
-          borderRadius: 4,
-          borderColor: Black
-        }} onPress={() => {
+        <Pressable style={listStyles.followingButton} onPress={() => {
           setFollowing(false)
           unfollowUser()
         }}>
@@ -122,14 +114,7 @@ const UserItem = ({ item, itemPressed, initialFollowing, existingUserFollowing }
         <Pressable onPress={() => {
           setFollowing(true)
           followUser()
-        }} style={{
-          paddingTop: 2,
-          paddingBottom: 2,
-          paddingLeft: spacingUnit * 2.5,
-          paddingRight: spacingUnit * 2.5,
-          backgroundColor: Blue400,
-          borderRadius: 4
-        }}>
+        }} style={listStyles.followButton}>
           <Paragraph color={White}>
             Follow
           </Paragraph>

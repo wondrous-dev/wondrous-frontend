@@ -32,27 +32,6 @@ const searchStyles = StyleSheet.create({
     marginRight: spacingUnit
   }
 })
-const SearchBar = () => {
-  const [searchString, setSearchString] = useState('')
-  return (
-    <View style={{
-      flexDirection: 'row',
-      marginTop: spacingUnit * 2,
-      alignItems: 'center',
-      backgroundColor: Grey100,
-      marginLeft: spacingUnit * 2,
-      marginRight: spacingUnit * 2,
-      borderRadius: spacingUnit * 2,
-      padding: spacingUnit * 2
-    }}>
-      <TextInput
-          value={searchString}
-          onChangeText={setSearchString}
-          placeholder='Search by username or project name'
-      />
-    </View>
-  )
-}
 
 const SearchResult = ({ result, project, user }) => {
   const navigation = useNavigation()
@@ -148,7 +127,7 @@ const ProjectDisplay = ({ item }) => {
   } = item
   const navigation = useNavigation()
   return (
-    <Pressable style={{
+    <Pressable key={item.id} style={{
       paddingLeft: spacingUnit * 2,
       paddingRight: spacingUnit * 2,
       marginBottom: spacingUnit * 2.5
@@ -259,7 +238,7 @@ function DefaultSearch({
             </Paragraph>
             {searchData.users.slice(0, 6).map(userResult => {
               return (
-                <SearchResult user={true} result={userResult} />
+                <SearchResult user={true} result={userResult} key={userResult.id} />
               )
             })}
             <Paragraph color={Grey800} style={{
@@ -273,7 +252,7 @@ function DefaultSearch({
             {
               searchData.projects.slice(0, 6).map(projectResult => {
                 return (
-                  <SearchResult project={true} result={projectResult} />
+                  <SearchResult project={true} result={projectResult} key={projectResult.id} />
                 )
               })
             }
@@ -299,7 +278,7 @@ function DefaultSearch({
           </Subheading>
           {
             newestProjectData && newestProjectData.map(project => (
-              <ProjectDisplay item={project} />
+              <ProjectDisplay item={project} key={project.id} />
             ))
           }
         </View>

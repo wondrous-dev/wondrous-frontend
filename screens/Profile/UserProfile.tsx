@@ -15,7 +15,7 @@ import { spacingUnit, wait, isEmptyObject, usePrevious, isCloseToBottom } from '
 import BottomTabNavigator from '../../navigation/BottomTabNavigator'
 import { UploadImage, SafeImage } from '../../storybook/stories/Image'
 import { WONDER_BASE_URL } from '../../constants/'
-import { UPDATE_USER, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK } from '../../graphql/mutations'
+import { UPDATE_USER, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_USER, UNFOLLOW_USER } from '../../graphql/mutations'
 import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GET_ASKS_FROM_USER } from '../../graphql/queries'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton } from '../../storybook/stories/Button'
@@ -57,8 +57,8 @@ function UserProfile({
   navigation,
   route
 }: StackScreenProps<RootStackParamList, 'UserProfile'>) {
-
   const loggedInUser = useMe()
+
   const finalUserId = getUserId({ route, user: loggedInUser })
   let noGoingBack = route && route.params && route.params.noGoingBack
   const userOwned = loggedInUser && (loggedInUser.id === finalUserId)
@@ -70,6 +70,41 @@ function UserProfile({
   const prevFeed = usePrevious(userFeed)
   const [loading, setLoading] = useState(false)
   // const [offset, setOffset] = useState(null)
+  const [followUser] = useMutation(FOLLOW_USER, {
+    variables: {
+      followingId: finalUserId
+    },
+    update(cache) {
+      cache.modify({
+        fields: {
+          users() {
+            const newUser = {...loggedInUser}
+            const newArr = [finalUserId, ...(loggedInUser ? loggedInUser.usersFollowing : [])]
+            newUser.usersFollowing = newArr
+            return [newUser]
+          }
+        }
+      })
+    }
+  })
+    const [unfollowUser] = useMutation(UNFOLLOW_USER, {
+    variables: {
+      followingId: finalUserId
+    },
+    update(cache) {
+      cache.modify({
+        fields: {
+          users() {
+            const newUser = {...user}
+            const newExistingFollowing = loggedInUser && loggedInUser.usersFollowing.filter(existingFollowingItem => existingFollowingItem !== finalUserId)
+            newUser.usersFollowing = newExistingFollowing
+            return [newUser]
+          }
+        }
+      })
+    }
+  })
+  const [following, setFollowing] = useState(loggedInUser && loggedInUser.usersFollowing && loggedInUser.usersFollowing.includes(finalUserId))
   const [updateGoal] = useMutation(UPDATE_GOAL)
   const [updateTask] = useMutation(UPDATE_TASK)
   const [completeGoal] = useMutation(COMPLETE_GOAL)
@@ -383,23 +418,39 @@ function UserProfile({
                 <Paragraph color={Grey800}>@{user.username}</Paragraph>
                 </View>
                 {
-                  userOwned &&
+                  userOwned ?
                   <>
-                    <SecondaryButton style={{
-                      width: spacingUnit * 13,
-                      backgroundColor: White,
-                      borderColor: Black,
-                      borderWidth: 1,
-                      paddingTop: 0,
-                      paddingBottom: 0,
-                      marginLeft: spacingUnit
-                    }} onPress={() => setModalVisible(true)}>
+                    <SecondaryButton style={profileStyles.editButton} onPress={() => setModalVisible(true)}>
                       <RegularText color={Black}>
                         Edit Profile
                       </RegularText>
                     </SecondaryButton>
                   </>
+                  :
+                  <>
+                  {
+                  following ?
+                  <Pressable style={profileStyles.followingButton} onPress={() => {
+                    setFollowing(false)
+                    unfollowUser()
+                  }}>
+                    <Paragraph color={Black}>
+                      Following
+                    </Paragraph>
+                  </Pressable>
+                  :
+                  <Pressable onPress={() => {
+                    setFollowing(true)
+                    followUser()
+                  }} style={profileStyles.followButton}>
+                    <Paragraph color={White}>
+                      Follow
+                    </Paragraph>
+                  </Pressable>
+                  }
+                  </>
                 }
+                
               </View>
               {
                 user.bio &&
@@ -472,14 +523,13 @@ function UserProfile({
           onScroll={async ({nativeEvent}) => {
             if (section === 'feed') {
               if (isCloseToBottom(nativeEvent)) {
-                console.log('feedFetchMore', feedFetchMore)
+
                 if (feedFetchMore) {
                   const result = await feedFetchMore({
                     variables: {
                       offset: userFeed.length
                     }
                   })
-                  console.log('more', result)
                   if (result && result.data && result.data.getUserFeed) {
                     setUserFeed([...userFeed, ...result.data.getUserFeed])
                   }

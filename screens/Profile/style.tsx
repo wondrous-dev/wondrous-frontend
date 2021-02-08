@@ -1,7 +1,25 @@
 import { StyleSheet } from 'react-native'
-import { Blue500, Grey400, Grey300 } from '../../constants/Colors'
+import { Blue500, Grey400, Grey300, Black, Blue400, White } from '../../constants/Colors'
 import { spacingUnit } from '../../utils/common'
 
+const followingButtonStyle = {
+  paddingTop: 2,
+  paddingBottom: 2,
+  paddingLeft: spacingUnit * 2.5,
+  paddingRight: spacingUnit * 2.5,
+  borderWidth: 1,
+  borderRadius: 4,
+  borderColor: Black
+}
+
+const followButtonStyle = {
+  paddingTop: 2,
+  paddingBottom: 2,
+  paddingLeft: spacingUnit * 2.5,
+  paddingRight: spacingUnit * 2.5,
+  backgroundColor: Blue400,
+  borderRadius: 4
+}
 export const profileStyles = StyleSheet.create({
   profileContainer: {
     marginTop: spacingUnit * 4
@@ -36,6 +54,15 @@ export const profileStyles = StyleSheet.create({
     height: spacingUnit * 10,
     borderRadius: 5 * spacingUnit
   },
+  editButton: {
+    width: spacingUnit * 13,
+    backgroundColor: White,
+    borderColor: Black,
+    borderWidth: 1,
+    paddingTop: 0,
+    paddingBottom: 0,
+    marginLeft: spacingUnit
+  },
   sectionChoiceContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -68,6 +95,20 @@ export const profileStyles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
     justifyContent: 'space-between'
+  },
+  followingButton: {
+    ...followingButtonStyle,
+    marginLeft: spacingUnit,
+    paddingTop: 0,
+    paddingBottom: 0,
+    marginTop: -2
+  },
+  followButton: {
+    ...followButtonStyle,
+    marginLeft: spacingUnit,
+    paddingTop: 0,
+    paddingBottom: 0,
+    marginTop: -1
   }
 })
 
@@ -87,5 +128,7 @@ export const listStyles = StyleSheet.create({
     height: spacingUnit * 6,
     borderRadius: spacingUnit * 3,
     marginRight: spacingUnit
-  }
+  },
+  followingButton: followingButtonStyle,
+  followButton: followButtonStyle
 })
