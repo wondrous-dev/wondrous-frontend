@@ -19,6 +19,7 @@ import GoalIcon from '../../assets/images/goal/standalone'
 import TaskIcon from '../../assets/images/task/standalone'
 import AskIcon from '../../assets/images/ask/standalone'
 import { Card } from '../../storybook/stories/Card' 
+import UserPlaceholder from '../../assets/images/user/placeholder'
 
 
 export const ProfilePlaceholder = ({ projectOwnedByUser, imageStyle, user }) => {

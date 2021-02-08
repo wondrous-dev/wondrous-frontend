@@ -1,20 +1,37 @@
 import React, { useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { SafeAreaView, TextInput, View, TouchableWithoutFeedback, Keyboard, Image, Pressable } from 'react-native'
+import { SafeAreaView, TextInput, View, TouchableWithoutFeedback, Keyboard, Image, Pressable, StyleSheet } from 'react-native'
+import { createStackNavigator } from '@react-navigation/stack'
 
 import SearchIcon from '../../assets/images/bottomNav/search'
 import { withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { White, Grey100, Grey800, Grey300,Grey200, Black } from '../../constants/Colors'
-import { spacingUnit } from '../../utils/common'
+import { White, Grey100, Grey800, Grey300,Grey200, Black, Grey550, Grey500 } from '../../constants/Colors'
+import { capitalizeFirstLetter, spacingUnit } from '../../utils/common'
 import { useQuery } from '@apollo/client'
 import { GET_USERS_AND_PROJECTS } from '../../graphql/queries/search'
-import { Paragraph, RegularText } from '../../storybook/stories/Text'
+import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SafeImage } from '../../storybook/stories/Image'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { useNavigation } from '@react-navigation/native'
+import { GET_NEWEST_PROJECTS } from '../../graphql/queries'
+import UserProfile from '../Profile/UserProfile'
+import ProjectProfile from '../Profile/ProjectProfile'
 
+const Stack = createStackNavigator()
+
+const searchStyles = StyleSheet.create({
+  tags: {
+    borderWidth: 1,
+    borderColor: Grey300,
+    padding: spacingUnit * 0.5,
+    paddingLeft: spacingUnit,
+    paddingRight: spacingUnit,
+    borderRadius: 4,
+    marginRight: spacingUnit
+  }
+})
 const SearchBar = () => {
   const [searchString, setSearchString] = useState('')
   return (
@@ -52,16 +69,22 @@ const SearchResult = ({ result, project, user }) => {
     <Pressable onPress={() => {
       if (project) {
         navigation.navigate('Root', {
-          screen: 'ProjectProfile',
+          screen: 'Search',
           params: {
-            projectId: id
+            screen: 'ProjectProfile',
+            params: {
+              projectId: id
+            }
           }
         })
       } else if (user) {
         navigation.navigate('Root', {
-          screen: 'UserProfile',
+          screen: 'Search',
           params: {
-            userId: id
+            screen: 'UserProfile',
+            params: {
+              userId: id
+            }
           }
         })
       }
@@ -113,18 +136,104 @@ const SearchResult = ({ result, project, user }) => {
   )
 }
 
-function SearchScreen({
+const ProjectDisplay = ({ item }) => {
+  const {
+    profilePicture,
+    name,
+    description,
+    id,
+    collaborators,
+    followCount,
+    category
+  } = item
+  const navigation = useNavigation()
+  return (
+    <Pressable style={{
+      paddingLeft: spacingUnit * 2,
+      paddingRight: spacingUnit * 2,
+      marginBottom: spacingUnit * 2.5
+    }} onPress={() => navigation.navigate('Root', {
+      screen: 'Search',
+      params: {
+        screen: 'ProjectProfile',
+        params: {
+          projectId: id
+        }
+      }
+    })}>
+    <View style={{
+      flexDirection: 'row',
+    }}>
+      <SafeImage style={{
+        width: spacingUnit * 7.5,
+        height: spacingUnit * 7.5,
+        borderRadius: spacingUnit * 0.5,
+        marginRight: spacingUnit
+      }} src={profilePicture} />
+      <View style={{
+        flex: 1
+      }}>
+        <Paragraph color={Black} style={{
+
+          fontFamily: 'Rubik SemiBold'
+        }}>
+          {name}
+        </Paragraph>
+        <Paragraph color={Black}>
+          {description}
+        </Paragraph>
+      </View>
+    </View>
+    <View style={{
+      flexDirection: 'row',
+      marginTop: spacingUnit,
+    }}>
+      <View style={searchStyles.tags}>
+        <RegularText color={Grey500}>
+          <RegularText style={{
+          fontFamily: 'Rubik SemiBold'
+        }}>
+        {collaborators && collaborators.length ? collaborators.length : 0}{` `}
+        </RegularText>
+        {collaborators && collaborators.length === 1 ? 'collaborator' : 'collaborators'}
+        </RegularText>
+      </View>
+      <View style={searchStyles.tags}>
+        <RegularText color={Grey500}>
+        <RegularText style={{
+          fontFamily: 'Rubik SemiBold'
+        }}>{followCount} </RegularText> {followCount === 1 ? 'follower' : 'followers'}
+        </RegularText>
+      </View>
+      <View style={searchStyles.tags}>
+        <RegularText color={Grey500} style={{
+          fontFamily: 'Rubik SemiBold'
+        }}>
+        {capitalizeFirstLetter(category)}
+        </RegularText>
+      </View>
+    </View>
+    </Pressable>
+  )
+}
+
+function DefaultSearch({
   navigation
-}: StackScreenProps<RootStackParamList, 'Dashboard'>) {
+}: StackScreenProps<RootStackParamList, 'DefaultSearch'>) {
   const [searchString, setSearchString] = useState('')
-  const { data: searchDataResp, loading, error} = useQuery(GET_USERS_AND_PROJECTS, {
+  const { data: searchDataResp, loading: searchDataLoading, error: searchDataError} = useQuery(GET_USERS_AND_PROJECTS, {
     variables: {
       searchString
     }
   })
+  const {
+    data: newestProjectDataResp,
+    loading: newestProjectLoading,
+    error: newestProjectError
+  } = useQuery(GET_NEWEST_PROJECTS)
 
   const searchData = searchDataResp && searchDataResp.getUsersAndProjects
-
+  const newestProjectData = newestProjectDataResp && newestProjectDataResp.getNewestProjects
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     <SafeAreaView style={{
@@ -156,7 +265,7 @@ function SearchScreen({
             <Paragraph color={Grey800} style={{
               paddingLeft: spacingUnit * 2,
               paddingRight: spacingUnit * 2,
-              marignBottom: spacingUnit,
+              marginBottom: spacingUnit,
               marginTop: spacingUnit * 2
             }}>
               Projects
@@ -179,13 +288,38 @@ function SearchScreen({
         }
         </>
         :
-        <View>
-
+        <View style={{
+          marginTop: spacingUnit * 2
+        }}>
+          <Subheading color={Grey800} style={{
+            paddingLeft: spacingUnit * 2,
+            marginBottom: spacingUnit * 3
+          }}>
+            Newest Projects
+          </Subheading>
+          {
+            newestProjectData && newestProjectData.map(project => (
+              <ProjectDisplay item={project} />
+            ))
+          }
         </View>
       }
     </SafeAreaView>
     </TouchableWithoutFeedback>
   )
 }
-
+function SearchScreen({
+  navigation
+}: StackScreenProps<RootStackParamList, 'Search'>) {
+  return (
+  <Stack.Navigator screenOptions={{ 
+    headerShown: false,
+    gestureResponseDistance: { vertical: 200, horizontal: 250 }
+  }}>
+    <Stack.Screen name='Default' component={DefaultSearch} />
+    <Stack.Screen name='UserProfile' component={UserProfile} />
+    <Stack.Screen name='ProjectProfile' component={ProjectProfile} options={{ gestureEnabled: false }} />
+  </Stack.Navigator>
+  )
+}
 export default withAuth(SearchScreen)

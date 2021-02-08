@@ -24,6 +24,15 @@ export const GET_PROJECT_FEED = gql`
   ${ActivityFeedItem}
 `
 
+export const GET_NEWEST_PROJECTS = gql`
+  query {
+    getNewestProjects {
+      ...PublicProject
+    }
+  }
+  ${PublicProjectFragment}
+`
+
 export const GET_USER_PROJECTS = gql`
   query GetProjectsByUser {
     getUserProjects {
