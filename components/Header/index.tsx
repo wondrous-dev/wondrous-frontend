@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
-import { SafeAreaView, View, Pressable, Dimensions, Share } from 'react-native'
+import { SafeAreaView, View, Pressable, TextInput } from 'react-native'
 import { useRoute, useNavigation } from '@react-navigation/native'
 // import * as Sharing from 'expo-sharing'
 
-import { Orange, Grey300, Grey250, White, Black } from '../../constants/Colors'
+import { Orange, Grey300, Grey250, Grey100, White, Black, Grey800, Blue400 } from '../../constants/Colors'
 import { Title, RegularText, Subheading } from '../../storybook/stories/Text'
 import BackCaret from '../../assets/images/back-caret'
 import { spacingUnit } from '../../utils/common'
 import { ShareModal } from '../Feed'
+import SearchIcon from '../../assets/images/bottomNav/search'
+import Cancel from '../../assets/images/cancel'
 
 const shouldbackPageRoutes = {
   'Dashboard': true,
@@ -25,7 +27,49 @@ const shouldBackPage = (route) => {
   return true
 }
 
-export const Header = ({ title, skip, skipParams, noGoingBack, share, rightButton }) => {
+const SearchBar = ({ searchString, setSearchString }) => {
+  return (
+    <View style={{
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: Grey100,
+      marginLeft: spacingUnit * 2,
+      marginRight: spacingUnit * 2,
+      borderRadius: spacingUnit * 2,
+      padding: spacingUnit * 2,
+      paddingLeft: spacingUnit,
+      paddingTop: spacingUnit * 1.5,
+      paddingBottom: spacingUnit * 1.5,
+      marginBottom: spacingUnit * 0.5,
+      flex: 1
+    }}>
+      <SearchIcon iconColor={Grey800} />
+      <TextInput
+          value={searchString}
+          onChangeText={setSearchString}
+          placeholder='Search by username or project name'
+          style={{
+            flex: 1,
+            marginLeft: spacingUnit * 0.5,
+            fontSize: 16
+          }}
+      />
+      <Cancel color={Grey800} onPress={() => setSearchString('')} />
+    </View>
+  )
+}
+
+export const Header = ({
+  title,
+  skip,
+  skipParams,
+  noGoingBack,
+  share,
+  rightButton,
+  search,
+  searchString,
+  setSearchString
+}) => {
   const route = useRoute()
   const navigation = useNavigation()
   const backPage = noGoingBack ? false : shouldBackPage(route)
@@ -62,12 +106,17 @@ export const Header = ({ title, skip, skipParams, noGoingBack, share, rightButto
           {title}
         </Subheading>
         :
-        <Title style={{
-          color: Orange,
-          // flex: 2
-        }}>
-          W
-        </Title>
+        <>
+        {search ?
+        <SearchBar searchString={searchString} setSearchString={setSearchString} />
+      :
+      <Title style={{
+        color: Orange,
+        // flex: 2
+      }}>
+        W
+      </Title>}
+        </>
       }
       {
         skip &&
