@@ -95,7 +95,7 @@ function UserProfile({
       cache.modify({
         fields: {
           users() {
-            const newUser = {...user}
+            const newUser = {...loggedInUser}
             const newExistingFollowing = loggedInUser && loggedInUser.usersFollowing.filter(existingFollowingItem => existingFollowingItem !== finalUserId)
             newUser.usersFollowing = newExistingFollowing
             return [newUser]
@@ -226,7 +226,6 @@ function UserProfile({
     if (user) {
       setProfilePicture(user.profilePicture)
     }
-    // console.log('userFEed', userFeedData)
     if (userFeedData && userFeedData.getUserFeed) {
       if (!isEqual(userFeedData.getUserFeed, prevFeed)) {
         setUserFeed(userFeedData.getUserFeed)
@@ -267,7 +266,7 @@ function UserProfile({
   const profileData = getCorrectData(section)
 
   const itemRefs = useRef(new Map())
-  // console.log('profileData', profileData)
+
   const onSwipeLeft = (item, type) => onSwipe({
     item,
     type,
@@ -367,7 +366,11 @@ function UserProfile({
                 <Pressable onPress={() => navigation.navigate('Root', {
                   screen: 'Profile',
                   params: {
-                    screen: 'ProjectList'
+                    screen: 'ProjectList',
+                    params: {
+                      userId: finalUserId,
+                      user
+                    }
                   }
                 })}>
                 <ProjectInfoText style={{

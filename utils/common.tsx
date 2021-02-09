@@ -8,6 +8,9 @@ import { Blue400 } from '../constants/Colors'
 export const spacingUnit = 8
 
 export const capitalizeFirstLetter = (string) => {
+  if (!string) {
+    return ''
+  }
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
 

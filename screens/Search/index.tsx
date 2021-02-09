@@ -94,7 +94,9 @@ const SearchResult = ({ result, project, user }) => {
           }} />
                     
       }
-      <View>
+      <View style={{
+        flex: 1
+      }}>
         <Paragraph style={{color: Black, fontWeight: 'bold', fontFamily: 'Rubik SemiBold'}}>
           {user ? `${firstName} ${lastName}` : name}
         </Paragraph>
@@ -221,34 +223,40 @@ function DefaultSearch({
     }}>
       <Header search={true} searchString={searchString} setSearchString={setSearchString} />
       {
-        searchData && searchData.projects && searchData.users
+        searchString && searchData && searchData.projects && searchData.users
         ?
         <>
         {
-          searchData.projects.length > 0 && searchData.users.length > 0 ?
+          searchData.projects.length > 0 || searchData.users.length > 0 ?
           <View style={{
             marginTop: spacingUnit * 2,
           }}>
-            <Paragraph color={Grey800} style={{
-              paddingLeft: spacingUnit * 2,
-              paddingRight: spacingUnit * 2,
-              marginBottom: spacingUnit
-            }}>
-              Users
+            {
+              searchData.users.length > 0 && 
+              <Paragraph color={Grey800} style={{
+                paddingLeft: spacingUnit * 2,
+                paddingRight: spacingUnit * 2,
+                marginBottom: spacingUnit
+              }}>
+                              Users
             </Paragraph>
+            }
             {searchData.users.slice(0, 6).map(userResult => {
               return (
                 <SearchResult user={true} result={userResult} key={userResult.id} />
               )
             })}
-            <Paragraph color={Grey800} style={{
-              paddingLeft: spacingUnit * 2,
-              paddingRight: spacingUnit * 2,
-              marginBottom: spacingUnit,
-              marginTop: spacingUnit * 2
-            }}>
-              Projects
-            </Paragraph>
+            {
+              searchData.projects.length > 0 &&
+              <Paragraph color={Grey800} style={{
+                paddingLeft: spacingUnit * 2,
+                paddingRight: spacingUnit * 2,
+                marginBottom: spacingUnit,
+                marginTop: spacingUnit * 2
+              }}>
+                Projects
+              </Paragraph>
+            }
             {
               searchData.projects.slice(0, 6).map(projectResult => {
                 return (

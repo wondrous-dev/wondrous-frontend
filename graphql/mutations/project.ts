@@ -18,6 +18,21 @@ export const UPDATE_PROJECT = gql`
   }
   ${PublicProjectFragment}
 `
+export const FOLLOW_PROJECT = gql`
+  mutation FollowProject($projectId: ID!) {
+    followProject(projectId: $projectId) {
+      success
+    }
+  }
+`
+
+export const UNFOLLOW_PROJECT = gql`
+  mutation UnfollowProject($projectId: ID!) {
+    unfollowProject(projectId: $projectId) {
+      success
+    }
+  }
+`
 
 export const CREATE_PROJECT_TAGS = gql`
   mutation CreateProjectTags($projectId: ID, $input: ProjectTagsInput, $firstTime: Boolean) {

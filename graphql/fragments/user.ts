@@ -33,6 +33,7 @@ export const LoggedinUserFragment = gql`
     ...PublicUser
     reactedFeedComments
     usersFollowing
+    projectsFollowing
   }
   ${PublicUserFragment}
 `

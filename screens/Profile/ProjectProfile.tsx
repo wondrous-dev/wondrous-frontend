@@ -10,7 +10,7 @@ import { Header } from '../../components/Header'
 import { Black, Blue500, Grey300, White, Blue400, Grey800 } from '../../constants/Colors'
 import { profileStyles } from './style'
 import { GET_PROJECT_BY_ID, GET_PROJECT_FEED, GET_PROJECT_ACTIONS } from '../../graphql/queries/project'
-import { UPDATE_PROJECT, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK } from '../../graphql/mutations'
+import { UPDATE_PROJECT, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_PROJECT, UNFOLLOW_PROJECT } from '../../graphql/mutations'
 import { SafeImage, UploadImage } from '../../storybook/stories/Image'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton, FlexibleButton, PrimaryButton } from '../../storybook/stories/Button'
@@ -91,6 +91,42 @@ function ProjectProfile({
       projectId
     }
   })
+  console.log('user', user)
+  const [followProject] = useMutation(FOLLOW_PROJECT, {
+    variables: {
+      projectId
+    },
+    update(cache) {
+      cache.modify({
+        fields: {
+          users() {
+            const newUser = {...user}
+            const newArr = [projectId, ...(user ? user.projectsFollowing : [])]
+            newUser.projectsFollowing = newArr
+            return [newUser]
+          }
+        }
+      })
+    }
+  })
+    const [unfollowProject] = useMutation(UNFOLLOW_PROJECT, {
+    variables: {
+      projectId
+    },
+    update(cache) {
+      cache.modify({
+        fields: {
+          users() {
+            const newUser = {...user}
+            const newExistingFollowing = user && user.projectsFollowing.filter(existingFollowingItem => existingFollowingItem !== projectId)
+            newUser.projectsFollowing = newExistingFollowing
+            return [newUser]
+          }
+        }
+      })
+    }
+  })
+  const [following, setFollowing] = useState(user && user.projectsFollowing && user.projectsFollowing.includes(projectId))
 
   const [getProjectActions, {
     loading: projectActionLoading,
@@ -336,7 +372,7 @@ function ProjectProfile({
                 {project.name}
               </Subheading>
               {
-                projectOwnedByUser &&
+                projectOwnedByUser ?
                 <>
                   <SecondaryButton style={{
                     width: spacingUnit * 13,
@@ -351,6 +387,29 @@ function ProjectProfile({
                       Edit Profile
                     </RegularText>
                   </SecondaryButton>
+                </>
+                :
+                <>
+                {
+                following ?
+                <Pressable style={profileStyles.followingButton} onPress={() => {
+                  setFollowing(false)
+                  unfollowProject()
+                }}>
+                  <Paragraph color={Black}>
+                    Following
+                  </Paragraph>
+                </Pressable>
+                :
+                <Pressable onPress={() => {
+                  setFollowing(true)
+                  followProject()
+                }} style={profileStyles.followButton}>
+                  <Paragraph color={White}>
+                    Follow
+                  </Paragraph>
+                </Pressable>
+                }
                 </>
               }
             </View>
@@ -399,7 +458,10 @@ function ProjectProfile({
               paddingLeft: spacingUnit * 2,
               paddingRight: spacingUnit * 2
             }}>
-              <TagView tag={project.category} />
+              {
+                project.category &&
+                <TagView tag={project.category} />
+              }
               {
                 project.tags && project.tags.map(tag => (
                   <TagView tag={tag}/>
@@ -420,7 +482,6 @@ function ProjectProfile({
         onScroll={async ({nativeEvent}) => {
           if (section === 'feed') {
             if (isCloseToBottom(nativeEvent)) {
-
               if (feedFetchMore) {
                 const result = await feedFetchMore({
                   variables: {

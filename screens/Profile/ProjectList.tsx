@@ -78,10 +78,14 @@ const ProjectItem = ({
   )
 }
 const ProjectList = ({
-  navigation
+  navigation,
+  route
 }) => {
 
-  const user = useMe()
+  const {
+    userId,
+    user
+  } = route.params
   const [refreshing, setRefreshing] = useState(false)
   const [
     getUserProjects,
@@ -92,7 +96,7 @@ const ProjectList = ({
     }
   ] = useLazyQuery(GET_USER_PROJECTS, {
     variables: {
-      userId: user && user.id
+      userId
     }
   })
 
