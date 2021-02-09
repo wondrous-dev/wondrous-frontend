@@ -61,6 +61,7 @@ function UserProfile({
 
   const finalUserId = getUserId({ route, user: loggedInUser })
   let noGoingBack = route && route.params && route.params.noGoingBack
+  const tab = route && route.params && route.params.tab
   const userOwned = loggedInUser && (loggedInUser.id === finalUserId)
   const [status, setStatus] = useState('created')
   const [section, setSection] = useState('feed')
@@ -364,7 +365,7 @@ function UserProfile({
                 }
                 </View>
                 <Pressable onPress={() => navigation.navigate('Root', {
-                  screen: 'Profile',
+                  screen: tab || 'Profile',
                   params: {
                     screen: 'ProjectList',
                     params: {
@@ -379,7 +380,7 @@ function UserProfile({
                 }} count={additionalInfo && additionalInfo.projectCount} type={additionalInfo && additionalInfo.projectCount === 1 ? 'project' : 'projects'} />
                 </Pressable>
                 <Pressable onPress={() => navigation.navigate('Root', {
-                  screen: 'Profile',
+                  screen: tab || 'Profile',
                   params: {
                     screen: 'UserList',
                     params: {
@@ -393,7 +394,7 @@ function UserProfile({
                 }} count={additionalInfo && additionalInfo.followerCount} type={additionalInfo && additionalInfo.followerCount === 1 ? 'follower': 'followers'} />
                 </Pressable>
                 <Pressable onPress={() => navigation.navigate('Root', {
-                  screen: 'Profile',
+                  screen: tab || 'Profile',
                   params: {
                     screen: 'UserList',
                     params: {
@@ -476,7 +477,7 @@ function UserProfile({
                 marginTop: spacingUnit
               }} onPress={() => {
                 navigation.navigate('Root', {
-                  screen: 'Profile',
+                  screen: tab || 'Profile',
                   params: {
                     screen: 'Links',
                     params: {
@@ -510,7 +511,7 @@ function UserProfile({
             paddingBottom: spacingUnit * 10
           }}
           scrollEventThrottle={400}
-          renderItem={({ item }) => renderProfileItem({ item, section, user, userOwned, navigation, itemRefs, onSwipeLeft, onSwipeRight })}
+          renderItem={({ item }) => renderProfileItem({ item, section, user, userOwned, navigation, itemRefs, onSwipeLeft, onSwipeRight, tab })}
           ListEmptyComponent={() => {
             return (
               <View style={{

@@ -101,7 +101,7 @@ const UserItem = ({ item, itemPressed, initialFollowing, existingUserFollowing }
         }
       </View>
       {
-        user.id !== item.id &&
+        user && user.id !== item.id &&
         <>
 {
         following
@@ -142,7 +142,8 @@ const UserList = ({
     userId,
     projectId,
     collaborators,
-    projectFollowers
+    projectFollowers,
+    tab
   } = route.params
 
   const [getProjectFollowers, {
@@ -219,12 +220,22 @@ const UserList = ({
     )
   }
 
+  let title = ''
+  if (projectId) {
+    if (followers) {
+      title = 'Followers'
+    } else {
+      title = 'Collaborators'
+    }
+  } else {
+    title = following ? 'Following' : 'Followers'
+  }
   return (
     <SafeAreaView style={{
       flex: 1,
       backgroundColor: White
     }}>
-      <Header title={following ? 'Following' : 'Followers'} />
+      <Header title={title} />
       <View>
         {
           following &&
@@ -270,7 +281,7 @@ const UserList = ({
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
           renderItem={({ item }) => {
-            const userFollowing = followingUsers && (seeProject ? followingUsers.some((element) => {
+            const userFollowing = followingUsers && (!seeProject ? followingUsers.some((element) => {
               return element === item.id
             }) : followingProjects.some(element => element === item.id))
 
@@ -285,7 +296,7 @@ const UserList = ({
               itemDescription={item.description}
               itemName={item.name}
               itemPressed={() => navigation.navigate('Root', {
-                screen: 'Profile',
+                screen: tab || 'Profile',
                 params: {
                   screen: 'ProjectProfile',
                   params: {
@@ -300,7 +311,7 @@ const UserList = ({
                 existingUserFollowing={followingUsers}
                 item={item}
                 itemPressed={() => navigation.navigate('Root', {
-                  screen: 'Profile',
+                  screen: tab || 'Profile',
                   params: {
                     screen: 'UserProfile',
                     params: {

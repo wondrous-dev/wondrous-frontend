@@ -18,7 +18,8 @@ const ActionList = ({ route, navigation }) => {
     taskId,
     routeLabel,
     type,
-    askIds
+    askIds,
+    tab
   } = route.params
 
   const [getTasks, { 
@@ -73,7 +74,7 @@ const ActionList = ({ route, navigation }) => {
       }}>
         <FlatList
           data={data}
-          renderItem={({ item }) => renderCard({ navigation,item, itemRefs, type })}
+          renderItem={({ item }) => renderCard({ navigation,item, itemRefs, type, tab })}
         />
       </View>
     </SafeAreaView>

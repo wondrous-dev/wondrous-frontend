@@ -22,7 +22,7 @@ import { SafeImage, UploadImage } from '../../storybook/stories/Image'
 import { ProfilePlaceholder } from './common'
 import { profileStyles } from './style'
 import ImageBrowser from '../../components/Modal/ImageBrowser'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { MAX_BIO_LIMIT } from '../../constants'
 
 export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isVisible, setModalVisible }) => {
@@ -37,6 +37,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
   const initialProjectLinkedin = (project && project.links && project.links.linkedin) || ''
   const initialProjectGithub = (project && project.links && project.links.github) || ''
   const navigation = useNavigation()
+  const route = useRoute()
   const [username, setUsername] = useState(initialUsername)
   const [projectName, setProjectName] = useState(initialProjectName)
   const [link, setLink] = useState(initialLink)
@@ -263,7 +264,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                               // marginLeft: spacingUnit * 2
                             }} onPress={() => {
                               navigation.navigate('Root', {
-                                screen: 'Profile',
+                                screen: route && route.params && route.params.tab && 'Profile',
                                 params: {
                                   screen: 'EditProjectCategory',
                                   params: {
@@ -296,7 +297,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                               // marginLeft: spacingUnit * 2
                             }} onPress={() => {
                               navigation.navigate('Root', {
-                                screen: 'Profile',
+                                screen: route && route.params && route.params.tab && 'Profile',
                                 params: {
                                   screen: 'EditProjectTags',
                                   params: {

@@ -84,7 +84,8 @@ const ProjectList = ({
 
   const {
     userId,
-    user
+    user,
+    tab
   } = route.params
   const [refreshing, setRefreshing] = useState(false)
   const [
@@ -138,7 +139,7 @@ const ProjectList = ({
             itemDescription={project.description}
             itemName={project.name}
             itemPressed={() => navigation.navigate('Root', {
-              screen: 'Profile',
+              screen: tab || 'Profile',
               params: {
                 screen: 'ProjectProfile',
                 params: {

@@ -18,7 +18,8 @@ const AskPage = ({ navigation, route }) => {
   const user = useMe()
   const {
     ask: initialAsk,
-    askId
+    askId,
+    tab
   } = route.params
   const [ask, setAsk] = useState(initialAsk)
   const ownedByUser = (ask && ask.userId) === (user && user.id)
@@ -144,7 +145,7 @@ const AskPage = ({ navigation, route }) => {
             <RegularText color={Black}>
               From{` `}
                 <RegularText onPress={() => navigation.navigate('Root', {
-                screen: 'Profile',
+                screen: tab ||'Profile',
                 params: {
                   screen: 'GoalPage',
                   params: {
@@ -161,7 +162,7 @@ const AskPage = ({ navigation, route }) => {
                       ->
                     </RegularText>
                     <RegularText color={Blue400} onPress={() => navigation.navigate('Root', {
-                      screen: 'Profile',
+                      screen: tab || 'Profile',
                       params: {
                         screen: 'TaskPage',
                         params: {
@@ -185,7 +186,7 @@ const AskPage = ({ navigation, route }) => {
             <RegularText color={Black}>
               From{` `}
                 <RegularText onPress={() => navigation.navigate('Root', {
-                screen: 'Profile',
+                screen: tab || 'Profile',
                 params: {
                   screen: 'TaskPage',
                   params: {

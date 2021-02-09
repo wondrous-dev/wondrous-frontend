@@ -18,6 +18,21 @@ import { useNavigation } from '@react-navigation/native'
 import { GET_NEWEST_PROJECTS } from '../../graphql/queries'
 import UserProfile from '../Profile/UserProfile'
 import ProjectProfile from '../Profile/ProjectProfile'
+import ProjectList from '../Profile/ProjectList'
+import WorkflowWelcome from '../Workflow/Welcome'
+import SetupGoal from '../Workflow/SetupGoal'
+import SetupTask from '../Workflow/SetupTask'
+import SetupAsk from '../Workflow/SetupAsk'
+import StreakIntro from '../Workflow/StreakIntro'
+import Links from '../Profile/Links'
+import UserList from '../Profile/UserList'
+import ProjectSetupCategory from '../SignupFlow/ProjectSetupCategory'
+import ProjectTagSelectionScreen from '../SignupFlow/ProjectTagSelectionScreen'
+import FeedItem from '../FeedItem'
+import GoalPage from '../Actions/Goal'
+import TaskPage from '../Actions/Task'
+import AskPage from '../Actions/Ask'
+import ActionList from '../Actions/ActionList'
 
 const Stack = createStackNavigator()
 
@@ -138,7 +153,8 @@ const ProjectDisplay = ({ item }) => {
       params: {
         screen: 'ProjectProfile',
         params: {
-          projectId: id
+          projectId: id,
+          tab: 'Search'
         }
       }
     })}>
@@ -301,11 +317,62 @@ function SearchScreen({
   return (
   <Stack.Navigator screenOptions={{ 
     headerShown: false,
-    gestureResponseDistance: { vertical: 200, horizontal: 250 }
+    gestureResponseDistance: { vertical: 200, horizontal: 250 },
   }}>
-    <Stack.Screen name='Default' component={DefaultSearch} />
-    <Stack.Screen name='UserProfile' component={UserProfile} />
-    <Stack.Screen name='ProjectProfile' component={ProjectProfile} options={{ gestureEnabled: false }} />
+    <Stack.Screen name='Default' component={DefaultSearch} initialParams={{
+      tab: 'Search'
+    }} />
+    <Stack.Screen name='UserProfile' component={UserProfile}initialParams={{
+      tab: 'Search'
+    }} />
+    <Stack.Screen name='ProjectProfile' component={ProjectProfile} options={{ gestureEnabled: false }}initialParams={{
+      tab: 'Search'
+    }} />
+    <Stack.Screen name='ProfileItem' component={FeedItem} initialParams={{
+      tab: 'Search'
+    }}/>
+    <Stack.Screen name='WorkflowWelcome' component={WorkflowWelcome} initialParams={{
+      tab: 'Search'
+    }} />
+    <Stack.Screen name='SetupGoal' component={SetupGoal} options={{ gestureEnabled: false }} initialParams={{
+      tab: 'Search'
+    }}/>
+    <Stack.Screen name='SetupTask' component={SetupTask} options={{ gestureEnabled: false }} initialParams={{
+      tab: 'Search'
+    }} />
+    <Stack.Screen name='StreakIntro' component={StreakIntro} initialParams={{
+      tab: 'Search'
+    }} />
+    <Stack.Screen name='SetupAsk' component={SetupAsk} options={{gestureEnabled: false}} initialParams={{
+      tab: 'Search'
+    }} />
+    <Stack.Screen name='ProjectList' component={ProjectList} initialParams={{
+      tab: 'Search'
+    }}/>
+    <Stack.Screen name='UserList' component={UserList} initialParams={{
+      tab: 'Search'
+    }}/>
+    <Stack.Screen name='EditProjectCategory' component={ProjectSetupCategory} initialParams={{
+      tab: 'Search'
+    }} />
+    <Stack.Screen name='EditProjectTags' component={ProjectTagSelectionScreen} initialParams={{
+      tab: 'Search'
+    }} />
+    <Stack.Screen name='Links' component={Links} initialParams={{
+      tab: 'Search'
+    }} />
+    <Stack.Screen name='GoalPage' component={GoalPage} options={{ gestureEnabled: false }} initialParams={{
+      tab: 'Search'
+    }} />
+    <Stack.Screen name='TaskPage' component={TaskPage} options={{ gestureEnabled: false }} initialParams={{
+      tab: 'Search'
+    }} />
+    <Stack.Screen name='ActionList' component={ActionList} options={{ gestureEnabled: false }} initialParams={{
+      tab: 'Search'
+    }}/>
+    <Stack.Screen name='AskPage' component={AskPage} options={{ gestureEnabled: false }} initialParams={{
+      tab: 'Search'
+    }}/>
   </Stack.Navigator>
   )
 }

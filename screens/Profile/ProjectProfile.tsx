@@ -77,7 +77,8 @@ function ProjectProfile({
   const {
     projectId,
     noGoingBack,
-    editProfile
+    editProfile,
+    tab
   } = route.params
   const {
     loading: projectFeedLoading,
@@ -337,7 +338,7 @@ function ProjectProfile({
               }
               </View>
               <Pressable onPress={() => navigation.navigate('Root', {
-                  screen: 'Profile',
+                  screen: tab ? tab : 'Profile',
                   params: {
                     screen: 'UserList',
                     params: {
@@ -349,7 +350,7 @@ function ProjectProfile({
                 <ProjectInfoText count={project.followCount} type={project.followCount === 1 ? 'follower' : 'followers'} />
               </Pressable>
               <Pressable onPress={() => navigation.navigate('Root', {
-                  screen: 'Profile',
+                  screen: tab ? tab: 'Profile',
                   params: {
                     screen: 'UserList',
                     params: {
@@ -431,7 +432,7 @@ function ProjectProfile({
                 marginTop: spacingUnit
               }} onPress={() => {
                 navigation.navigate('Root', {
-                  screen: 'Profile',
+                  screen: tab ? tab : 'Profile',
                   params: {
                     screen: 'Links',
                     params: {
@@ -478,7 +479,7 @@ function ProjectProfile({
           </View>
         )}
         data={profileData}
-        renderItem={({ item }) => renderProfileItem({ item, section, user, userOwned: projectOwnedByUser, navigation, projectId, onSwipeLeft, onSwipeRight, itemRefs })}
+        renderItem={({ item }) => renderProfileItem({ item, section, user, userOwned: projectOwnedByUser, navigation, projectId, onSwipeLeft, onSwipeRight, itemRefs, tab })}
         onScroll={async ({nativeEvent}) => {
           if (section === 'feed') {
             if (isCloseToBottom(nativeEvent)) {

@@ -21,7 +21,8 @@ const TaskPage = ({ navigation, route }) => {
   const user = useMe()
   const {
     task: initialTask,
-    taskId
+    taskId,
+    tab
   } = route.params
   const [task, setTask] = useState(initialTask)
   const ownedByUser = (task && task.ownerId) === (user && user.id)
@@ -184,7 +185,7 @@ const TaskPage = ({ navigation, route }) => {
             <RegularText color={Black}>
               From{` `}
                 <RegularText onPress={() => navigation.navigate('Root', {
-                screen: 'Profile',
+                screen: tab || 'Profile',
                 params: {
                   screen: 'GoalPage',
                   params: {
@@ -220,7 +221,7 @@ const TaskPage = ({ navigation, route }) => {
         {
           asks &&
           <Pressable onPress={() => navigation.navigate('Root', {
-            screen: 'Profile',
+            screen: tab || 'Profile',
             params: {
               screen: 'ActionList',
               params: {

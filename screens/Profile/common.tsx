@@ -267,10 +267,10 @@ export const STATUS_ARR = [
   }
 ]
 
-export const renderProfileItem = ({ item, section, user, userOwned, navigation, projectId, itemRefs, onSwipeLeft, onSwipeRight }) => {
+export const renderProfileItem = ({ item, section, user, userOwned, navigation, projectId, itemRefs, onSwipeLeft, onSwipeRight, tab }) => {
   if (section === 'feed') {
     return renderItem({ item, navigation, screen: 'Root', params: {
-      screen: 'Profile',
+      screen: tab || 'Profile',
       params: {
         screen: 'ProfileItem',
         params: {
@@ -300,7 +300,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
             <PrimaryButton onPress={() => {
               if (item === 'start') {
                 navigation.navigate('Root', {
-                  screen: 'Profile',
+                  screen: tab || 'Profile',
                   params: {
                     screen: 'WorkflowWelcome',
                     params: {
@@ -341,7 +341,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
             <PrimaryButton onPress={() => {
               if (item === 'start') {
                 navigation.navigate('Root', {
-                  screen: 'Profile',
+                  screen: tab || 'Profile',
                   params: {
                     screen: 'WorkflowWelcome',
                     params: {
@@ -361,11 +361,11 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
         </View>
       )
     }
-    return renderCard({ navigation, item, type: 'ask', user, itemRefs, onSwipeRight, onSwipeLeft })
+    return renderCard({ navigation, item, type: 'ask', user, itemRefs, onSwipeRight, onSwipeLeft, tab })
   }
 }
 
-export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRight, onSwipeLeft }) => {
+export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRight, onSwipeLeft, tab }) => {
   // const {
   //   onSwipeRight,
   //   onSwipeLeft
@@ -377,7 +377,7 @@ export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRigh
     iconSize = spacingUnit * 3
     redirect = 'Root'
     redirectParams = {
-      screen: 'Profile',
+      screen: tab || 'Profile',
       params: {
         screen: 'GoalPage',
         params: {
@@ -392,7 +392,7 @@ export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRigh
     iconSize = spacingUnit * 3
     redirect = 'Root'
     redirectParams = {
-      screen: 'Profile',
+      screen: tab || 'Profile',
       params: {
         screen: 'TaskPage',
         params: {
@@ -407,7 +407,7 @@ export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRigh
     iconSize = spacingUnit * 3
     redirect = 'Root'
     redirectParams = {
-      screen: 'Profile',
+      screen: tab || 'Profile',
       params: {
         screen: 'AskPage',
         params: {

@@ -1,12 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { Text, View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pressable, Dimensions, Linking } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
-import { mentionRegEx, replaceMentionValues } from 'react-native-controlled-mentions'
-import regexifyString from 'regexify-string'
-import Modal from 'react-native-modal'
 import Clipboard from 'expo-clipboard'
 
 import { Grey300, Black, Grey150, Grey200, Grey600, Grey700, Red400, White, Blue400, Grey800 } from '../../constants/Colors'
@@ -117,13 +114,14 @@ const getCorrectSrc = (itemType) => {
 
 const FeedString = ({ item, standAlone }) => {
   const navigation = useNavigation()
+  const route = useRoute()
   if (item.objectType === 'project') {
     return (
       <View style={{
         paddingRight: spacingUnit * 3
       }}>
           <Paragraph onPress={() => navigation.navigate('Root', {
-            screen: 'Profile',
+            screen: route && route.params && route.params.tab || 'Profile',
             params: {
               screen: 'ProjectProfile',
               params: {
@@ -153,7 +151,7 @@ const FeedString = ({ item, standAlone }) => {
         }} onPress={() => {
           if (!standAlone) {
             navigation.navigate('Root', {
-              screen: 'Profile',
+              screen: route && route.params && route.params.tab || 'Profile',
               params: {
                 screen: 'ProfileItem',
                 params: {
@@ -167,7 +165,7 @@ const FeedString = ({ item, standAlone }) => {
           } else {
             if (item.objectType === 'goal' && standAlone) {
               navigation.navigate('Root', {
-                screen: 'Profile',
+                screen: route && route.params && route.params.tab || 'Profile',
                 params: {
                   screen: 'GoalPage',
                   params: {
@@ -177,7 +175,7 @@ const FeedString = ({ item, standAlone }) => {
               })
             } else if (item.objectType === 'task' && standAlone) {
               navigation.navigate('Root', {
-                screen: 'Profile',
+                screen: route && route.params && route.params.tab || 'Profile',
                 params: {
                   screen: 'TaskPage',
                   params: {
@@ -203,7 +201,7 @@ const FeedString = ({ item, standAlone }) => {
           }} onPress={() => {
             if (!standAlone) {
               navigation.navigate('Root', {
-                screen: 'Profile',
+                screen: route && route.params && route.params.tab || 'Profile',
                 params: {
                   screen: 'ProfileItem',
                   params: {
@@ -217,7 +215,7 @@ const FeedString = ({ item, standAlone }) => {
             } else {
               if (item.objectType === 'ask') {
                 navigation.navigate('Root', {
-                  screen: 'Profile',
+                  screen: route && route.params && route.params.tab || 'Profile',
                   params: {
                     screen: 'AskPage',
                     params: {
@@ -249,6 +247,7 @@ const getActionString = (item) => {
 
 const getProjectString = (item) => {
   const navigation = useNavigation()
+  const route = useRoute()
   if (item.projectName) {
     return (
       <Paragraph color={Grey200} style={{
@@ -256,7 +255,7 @@ const getProjectString = (item) => {
         fontFamily: 'Rubik SemiBold',
         textDecorationLine: 'underline'
       }} onPress={() => navigation.navigate('Root', {
-          screen: 'Profile',
+          screen: route && route.params && route.params.tab || 'Profile',
           params: {
             screen: 'ProjectProfile',
             params: {
@@ -388,6 +387,7 @@ export const ShareModal = ({ isVisible, url, content, setModalVisible }) => {
 export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePress }) => {
   const user = useMe()
   const navigation = useNavigation()
+  const route = useRoute()
   const [liked, setLiked] = useState(null)
   const [reactionCount, setReactionCount] = useState(0)
   const [commentLiked, setCommentLiked] = useState(null)
@@ -494,7 +494,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
     <View style={feedStyles.feedItemContainer}>
       <View style={feedStyles.feedItemName}>
         <Pressable onPress={() => navigation.navigate('Root', {
-          screen: 'Profile',
+          screen: route && route.params && route.tab || 'Profile',
           params: {
             screen: 'UserProfile',
             params: {
@@ -515,7 +515,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
             fontFamily: 'Rubik SemiBold'
           }} color={Black}
           onPress={() => navigation.navigate('Root', {
-            screen: 'Profile',
+            screen: route && route.params && route.tab || 'Profile',
             params: {
               screen: 'UserProfile',
               params: {

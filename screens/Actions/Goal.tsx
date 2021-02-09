@@ -21,7 +21,8 @@ const GoalPage = ({ navigation, route }) => {
   const user = useMe()
   const {
     goal: initialGoal,
-    goalId
+    goalId,
+    tab
   } = route.params
   const [goal, setGoal] = useState(initialGoal)
   const ownedByUser = (goal && goal.ownerId) === (user && user.id)
@@ -186,7 +187,7 @@ const GoalPage = ({ navigation, route }) => {
         {
           asks &&
           <Pressable onPress={() => navigation.navigate('Root', {
-            screen: 'Profile',
+            screen: tab || 'Profile',
             params: {
               screen: 'ActionList',
               params: {
@@ -212,7 +213,7 @@ const GoalPage = ({ navigation, route }) => {
         {
           tasks !== 0 &&
           <Pressable onPress={() => navigation.navigate('Root', {
-            screen: 'Profile',
+            screen: tab || 'Profile',
             params: {
               screen: 'ActionList',
               params: {
