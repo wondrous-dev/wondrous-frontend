@@ -17,6 +17,16 @@ export const GET_NOTIFICATIONS = gql`
       id
       timestamp
       userId
+      actorFirstName
+      actorId
+      actorLastName
+      actorProfilePicture
+      actorUsername
+      objectId
+      objectType
+      timestamp
+      type
+      viewedAt
     }
   }
 `

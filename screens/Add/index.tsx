@@ -69,7 +69,8 @@ function AddScreen({
     update(cache, { data }) {
       Toast.show({
         text1: 'Goal successfully created',
-        position: 'bottom'
+        position: 'bottom',
+        onHide: () => Toast.hide()
       })
       cache.modify({
           fields: {
@@ -101,7 +102,8 @@ function AddScreen({
     update(cache, { data }) {
       Toast.show({
         text1: 'Task successfully created',
-        position: 'bottom'
+        position: 'bottom',
+        onHide: () => Toast.hide()
       })
       cache.modify({
           fields: {
@@ -129,7 +131,8 @@ function AddScreen({
     update(cache, { data }) {
       Toast.show({
         text1: 'Ask successfully created',
-        position: 'bottom'
+        position: 'bottom',
+        onTrailingIconPress: () => Toast.hide()
       })
       cache.modify({
           fields: {
@@ -156,7 +159,8 @@ function AddScreen({
     update(cache) {
       Toast.show({
         text1: 'Post successfully created',
-        position: 'bottom'
+        position: 'bottom',
+        onHide: () => Toast.hide()
       })
     }
   })

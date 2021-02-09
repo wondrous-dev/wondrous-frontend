@@ -1,10 +1,11 @@
 import React from 'react'
 import { View } from 'react-native'
-import { BaseToast } from 'react-native-toast-message'
+import Toast, { BaseToast } from 'react-native-toast-message'
 
-import { Black, Green400 } from '../../constants/Colors'
+import { Black, Green400, Grey800 } from '../../constants/Colors'
 import { Paragraph } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
+import Cancel from '../../assets/images/cancel'
 
 export const toastConfig = {
   success: ({ text1, props, ...rest }) => (
@@ -17,6 +18,9 @@ export const toastConfig = {
         fontFamily: 'Rubik SemiBold'
       }}
       text1={text1}
+      onTrailingIconPress={() => {
+        Toast.hide()
+      }}
     />
   ),
   error: () => {},

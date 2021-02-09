@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { SafeAreaView, TextInput, View, TouchableWithoutFeedback, Keyboard, Image, Pressable, StyleSheet } from 'react-native'
+import { SafeAreaView, TextInput, View, TouchableWithoutFeedback, Keyboard, Image, Pressable, StyleSheet, RefreshControl } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
 
 import SearchIcon from '../../assets/images/bottomNav/search'
@@ -8,7 +8,7 @@ import { withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { White, Grey100, Grey800, Grey300,Grey200, Black, Grey550, Grey500 } from '../../constants/Colors'
-import { capitalizeFirstLetter, isCloseToBottom, spacingUnit } from '../../utils/common'
+import { capitalizeFirstLetter, isCloseToBottom, spacingUnit, wait } from '../../utils/common'
 import { useQuery } from '@apollo/client'
 import { GET_USERS_AND_PROJECTS } from '../../graphql/queries/search'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
@@ -226,12 +226,16 @@ function DefaultSearch({
     }
   })
   const [newestProjects, setNewestProjects] = useState([])
+  const [refreshing, setRefreshing] = useState(false)
   const {
     data: newestProjectDataResp,
     loading: newestProjectLoading,
     error: newestProjectError,
-    fetchMore
-  } = useQuery(GET_NEWEST_PROJECTS)
+    fetchMore,
+    refetch
+  } = useQuery(GET_NEWEST_PROJECTS, {
+    fetchPolicy: 'network-only'
+  })
 
   const searchData = searchDataResp && searchDataResp.getUsersAndProjects
 
@@ -240,6 +244,13 @@ function DefaultSearch({
       setNewestProjects(newestProjectDataResp && newestProjectDataResp.getNewestProjects)
     }
   }, [newestProjectDataResp])
+  const onRefresh = useCallback(() => {
+    setRefreshing(true)
+    if (refetch) {
+      refetch()
+    }
+    wait(2000).then(() => setRefreshing(false))
+  }, [])
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     <SafeAreaView style={{
@@ -302,6 +313,9 @@ function DefaultSearch({
         :
         <FlatList
         data={newestProjects}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         ListHeaderComponent={() => (
           <View style={{
             marginTop: spacingUnit * 2

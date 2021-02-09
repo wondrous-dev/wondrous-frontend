@@ -18,6 +18,7 @@ export default {
   },
 
 }
+export const Blue100 = '#DAE9F4'
 export const Blue200 = '#B1C6F5'
 export const Blue300 = '#0E91FB'
 export const Blue400 = '#42A5F5'

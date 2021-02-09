@@ -38,3 +38,30 @@ export const GET_ASK_FEED = gql`
   }
   ${ActivityFeedItem}
 `
+
+export const GET_FEED_ITEM_FOR_FEED_COMMENT = gql`
+  query GetFeedItemForFeedComment($commentId: ID!) {
+    getFeedItemForFeedComment(commentId: $commentId) {
+      ...ActivityFeedItem
+    }
+  }
+  ${ActivityFeedItem}
+`
+
+export const GET_FEED_ITEM = gql`
+  query GetFeedItem($feedItemId: ID!) {
+    getFeedItem(feedItemId: $feedItemId) {
+      ...ActivityFeedItem
+    } 
+  }
+  ${ActivityFeedItem}
+`
+
+export const GET_POST_ITEM = gql`
+  query GetPostItem($postId: ID!) {
+    getPostItem(postId: $postId) {
+      ...ActivityFeedItem
+    }
+  }
+  ${ActivityFeedItem}
+`
