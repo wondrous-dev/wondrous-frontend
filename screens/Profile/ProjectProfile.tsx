@@ -91,7 +91,7 @@ function ProjectProfile({
       projectId
     }
   })
-  console.log('user', user)
+
   const [followProject] = useMutation(FOLLOW_PROJECT, {
     variables: {
       projectId

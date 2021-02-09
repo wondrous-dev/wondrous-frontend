@@ -15,6 +15,10 @@ import { Header } from '../../components/Header'
 import { listStyles } from './style'
 import { FlatList } from 'react-native-gesture-handler'
 import { UNFOLLOW_USER, FOLLOW_USER } from '../../graphql/mutations'
+import {
+  ProjectItem
+} from './ProjectList'
+
 
 const UserItem = ({ item, itemPressed, initialFollowing, existingUserFollowing }) => {
   const [following, setFollowing] = useState(initialFollowing)
@@ -168,6 +172,8 @@ const UserList = ({
     }
     wait(2000).then(() => setRefreshing(false))
   }, [])
+  const [seeProject, setSeeProject] = useState(false)
+
   useEffect(() => {
     if (projectId) {
       getProjectFollowers({
@@ -193,18 +199,23 @@ const UserList = ({
   }, [])
 
   const followingUsers = user && user.usersFollowing
-  let users = []
+  const followingProjects = user && user.projectsFollowing
+  let list = []
   if (userId) {
     if (following && followingData) {
-      users = followingData.getUserFollowing
+      if (seeProject) {
+        list = followingData.getUserFollowing && followingData.getUserFollowing.projects
+      } else {
+        list = followingData.getUserFollowing && followingData.getUserFollowing.users
+      }
     } else if (followers && followerData) {
-      users = followerData.getUserFollowers
+      list = followerData.getUserFollowers
     }
   } else if (projectId) {
     if (collaborators) {
-      users = collaborators.map(collaborator => collaborator.user)
+      list = collaborators.map(collaborator => collaborator.user)
     } else if (projectFollowers && projectFollowerData) (
-      users = projectFollowerData.getProjectFollowers
+      list = projectFollowerData.getProjectFollowers
     )
   }
 
@@ -215,20 +226,75 @@ const UserList = ({
     }}>
       <Header title={following ? 'Following' : 'Followers'} />
       <View>
-        <Subheading>
-          Followers
-        </Subheading>
+        {
+          following &&
+          <View style={{
+            flexDirection: 'row',
+            marginTop: spacingUnit * 2,
+            paddingLeft: spacingUnit * 2,
+            paddingRight: spacingUnit * 2,
+            marginBottom: spacingUnit * 2
+          }}>
+            <Pressable onPress={() => setSeeProject(false)} style={{
+              padding: spacingUnit * 0.5,
+              flex: 1,
+              alignItems: 'center',
+              borderRadius: 4,
+              ...(!seeProject && {
+                backgroundColor: Blue400
+              })
+            }}>
+              <RegularText color={seeProject ? Grey800 : White}>
+                Users
+              </RegularText>
+            </Pressable>
+            <Pressable onPress={() => setSeeProject(true)} style={{
+              padding: spacingUnit * 0.5,
+              flex: 1,
+              alignItems: 'center',
+              borderRadius: 4,
+              ...(seeProject && {
+                backgroundColor: Blue400
+              })
+            }}>
+              <RegularText color={seeProject ? White : Grey800}>
+                Projects
+              </RegularText>
+            </Pressable>
+          </View>
+        }
         <FlatList
-        data={users}
+        data={list}
         contentContainerStyle={listStyles.listContainer}
         refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
           renderItem={({ item }) => {
-            const userFollowing = followingUsers && followingUsers.some((element) => {
+            const userFollowing = followingUsers && (seeProject ? followingUsers.some((element) => {
               return element === item.id
-            })
+            }) : followingProjects.some(element => element === item.id))
+
+
             return (
+              seeProject
+              ?
+              <ProjectItem
+              key={item.id}
+              profilePicture={item.profilePicture}
+              project={true}
+              itemDescription={item.description}
+              itemName={item.name}
+              itemPressed={() => navigation.navigate('Root', {
+                screen: 'Profile',
+                params: {
+                  screen: 'ProjectProfile',
+                  params: {
+                    projectId: item.id
+                  }
+                }
+              })}
+              />
+              :
               <UserItem
                 initialFollowing={userFollowing}
                 existingUserFollowing={followingUsers}

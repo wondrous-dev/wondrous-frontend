@@ -4,6 +4,7 @@ import { PublicUserFragment, LoggedinUserFragment } from '../fragments/user'
 import { AdditionalGoalFragment } from '../fragments/goal'
 import { PublicTaskFragment } from '../fragments/task'
 import { ActivityFeedItem } from '../fragments/feed'
+import { PublicProjectFragment } from '../fragments/project'
 
 export const WHOAMI = gql`
   query whoami {
@@ -63,10 +64,16 @@ export const GET_USER_FOLLOWERS = gql`
 export const GET_USER_FOLLOWING = gql`
   query GetUserFollowing($userId: ID!) {
     getUserFollowing(userId: $userId) {
-      ...PublicUser
+      users {
+        ...PublicUser
+      }
+      projects {
+        ...PublicProject
+      }
     }
   }
   ${PublicUserFragment}
+  ${PublicProjectFragment}
 `
 
 export const GET_USER_FEED = gql`

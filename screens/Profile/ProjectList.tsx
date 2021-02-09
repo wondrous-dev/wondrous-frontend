@@ -14,7 +14,7 @@ import DefaultProfilePicture from '../../assets/images/default-profile-picture.j
 import { Header } from '../../components/Header'
 import { listStyles } from './style'
 
-const ProjectItem = ({
+export const ProjectItem = ({
   profilePicture,
   project,
   user, 
