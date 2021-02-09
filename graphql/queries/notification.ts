@@ -10,3 +10,13 @@ export const GET_ACTIVE_NOTIFICATION_TOKEN = gql`
   }
   ${NotificationTokenFragment}
 `
+
+export const GET_NOTIFICATIONS = gql`
+  query GetNotifications($limit: Int, $offset: Int) {
+    getNotifications(limit: $limit, offset: $offset) {
+      id
+      timestamp
+      userId
+    }
+  }
+`
