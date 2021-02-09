@@ -3,6 +3,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { Pressable, SafeAreaView, View, RefreshControl, FlatList } from 'react-native'
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client'
+import ConfettiCannon from 'react-native-confetti-cannon'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { ProfileTabParamList } from '../../types'
@@ -153,6 +154,7 @@ function ProjectProfile({
     fetchPolicy: 'network-only'
   })
 
+  const [confetti, setConfetti] = useState(false)
   const [updateGoal] = useMutation(UPDATE_GOAL)
   const [updateTask] = useMutation(UPDATE_TASK)
   const [completeGoal] = useMutation(COMPLETE_GOAL)
@@ -285,7 +287,8 @@ function ProjectProfile({
     updateTask,
     updateAsk,
     projectAskData,
-    userAsksData: null
+    userAsksData: null,
+    setConfetti
   })
 
   return (
@@ -295,6 +298,10 @@ function ProjectProfile({
     }}
     >
       <Header noGoingBack={noGoingBack} share={`${WONDER_BASE_URL}/project/${projectId}`} />
+      {
+        confetti &&
+        <ConfettiCannon count={200} origin={{x: -10, y: 0}} />
+      }
       {
         project && 
         <ProfileContext.Provider value={{

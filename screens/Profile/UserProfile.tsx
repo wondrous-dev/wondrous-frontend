@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import * as Linking from 'expo-linking'
 import isEqual from 'lodash.isequal'
+import ConfettiCannon from 'react-native-confetti-cannon'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
@@ -106,6 +107,7 @@ function UserProfile({
     }
   })
   const [following, setFollowing] = useState(loggedInUser && loggedInUser.usersFollowing && loggedInUser.usersFollowing.includes(finalUserId))
+  const [confetti, setConfetti] = useState(false)
   const [updateGoal] = useMutation(UPDATE_GOAL)
   const [updateTask] = useMutation(UPDATE_TASK)
   const [completeGoal] = useMutation(COMPLETE_GOAL)
@@ -283,21 +285,24 @@ function UserProfile({
     projectAskData: null,
     userAsksData
   })
-  const onSwipeRight = (item, type) => onSwipe({
-    item,
-    type,
-    status: 'completed',
-    completeGoal,
-    updateGoal,
-    project: false,
-    user,
-    actions: userActionData && userActionData.getUserActions,
-    completeTask,
-    updateTask,
-    updateAsk,
-    projectAskData: null,
-    userAsksData
-  })
+  const onSwipeRight = (item, type) => {
+    onSwipe({
+      item,
+      type,
+      status: 'completed',
+      completeGoal,
+      updateGoal,
+      project: false,
+      user,
+      actions: userActionData && userActionData.getUserActions,
+      completeTask,
+      updateTask,
+      updateAsk,
+      projectAskData: null,
+      userAsksData,
+      setConfetti
+    })
+  }
 
   return (
     <SafeAreaView style={{
@@ -305,6 +310,10 @@ function UserProfile({
       flex: 1
     }}>
       <Header noGoingBack={noGoingBack} share={`${WONDER_BASE_URL}/user/${finalUserId}`} />
+      {
+        confetti &&
+        <ConfettiCannon count={200} origin={{x: -10, y: 0}} />
+      }
       {
         user &&
         <EditProfileModal user={user} isVisible={isModalVisible} setModalVisible={setModalVisible} saveMutation={updateUser} />

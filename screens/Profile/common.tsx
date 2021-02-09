@@ -5,6 +5,7 @@ import { Dimensions, Pressable, View } from 'react-native'
 import { Bar } from 'react-native-progress'
 import { useNavigation } from '@react-navigation/native'
 import { useMutation } from '@apollo/client'
+import { isBefore } from 'date-fns'
 
 import { Black, Blue400, Blue500, Green400, Grey200, Grey500, Grey350, Grey800, Orange, Red400, White, Yellow300 } from '../../constants/Colors'
 import Plus from '../../assets/images/plus'
@@ -370,6 +371,7 @@ export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRigh
   //   onSwipeRight,
   //   onSwipeLeft
   // } = useProfile()
+
   let newOnSwipeRight, newOnSwipeLeft
   let icon, iconSize, redirect, redirectParams
   if (type === 'goal') {
@@ -514,8 +516,22 @@ export const onSwipe =({
   updateTask,
   updateAsk,
   projectAskData,
-  userAsksData
+  userAsksData,
+  setConfetti
 }) => {
+  if (setConfetti) {
+    const formattedDueDate = new Date(item && item.dueDate)
+    const newDate = new Date()
+    if (isBefore(formattedDueDate, newDate)) {
+      const random = Math.random()
+      if ((type === 'goal' && random >= 0.2) || (type === 'task' && random >= 0.4)) {
+        setConfetti(true)
+        setTimeout(() => {
+          setConfetti(false)
+        }, 5000)
+      }
+    }
+  }
   if (type === 'goal') {
     if (status === 'completed') {
       completeGoal({
