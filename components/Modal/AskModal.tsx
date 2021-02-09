@@ -44,8 +44,13 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
   const [cameraOpen, setCameraOpen] = useState(false)
   const [galleryOpen, setGalleryOpen] = useState(false)
   const [errors, setErrors] = useState({})
+  const user = useMe()
 
-  const { data: projectUsers, loading:  projectUserLoading, error: projectUserError } = useQuery(GET_USER_PROJECTS)
+  const { data: projectUsers, loading:  projectUserLoading, error: projectUserError } = useQuery(GET_USER_PROJECTS, {
+    variables: {
+      userId: user && user.id
+    }
+  })
   const { data: userGoals, loading: userGoalsLoading , error: userGoalsErrorsLoading } = useQuery(GET_GOALS_FROM_USER)
   const { data: userTasks, loading: userTasksLoading, error: userTasksErrorsLoading } = useQuery(GET_TASKS_FROM_USER)
 

@@ -43,7 +43,11 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
   const [errors, setErrors] = useState({})
 
   const user = useMe()
-  const { data: projectUsers, loading, error } = useQuery(GET_USER_PROJECTS)
+  const { data: projectUsers, loading, error } = useQuery(GET_USER_PROJECTS, {
+    variables: {
+      userId: user && user.id
+    }
+  })
   const projectDropdowns = projectUsers && projectUsers.getUserProjects ? projectUsers.getUserProjects.map(projectUser => {
     return {
       label: projectUser.project && projectUser.project.name,

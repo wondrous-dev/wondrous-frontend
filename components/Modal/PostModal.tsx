@@ -17,6 +17,7 @@ import ImageIcon from '../../assets/images/image'
 import LinkIcon from '../../assets/images/link'
 import ImageBrowser from './ImageBrowser'
 import { useNavigation } from '@react-navigation/native'
+import { useMe } from '../../components/withAuth'
 
 const FILE_PREFIX = 'post/new/'
 
@@ -32,8 +33,13 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
   const [cameraOpen, setCameraOpen] = useState(false)
   const [content, setContent] = useState(initialContent)
   const [galleryOpen, setGalleryOpen] = useState(false)
+  const user = useMe()
   const [errors, setErrors] = useState({})
-  const { data: projectUsers, loading, error } = useQuery(GET_USER_PROJECTS)
+  const { data: projectUsers, loading, error } = useQuery(GET_USER_PROJECTS, {
+    variables: {
+      userId: user && user.id
+    }
+  })
   const navigation = useNavigation()
 
   const projectDropdowns = projectUsers && projectUsers.getUserProjects ? projectUsers.getUserProjects.map(projectUser => {

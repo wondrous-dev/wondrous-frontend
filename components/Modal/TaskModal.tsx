@@ -47,7 +47,11 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
   const [errors, setErrors] = useState({})
   const user = useMe()
 
-  const { data: projectUsers, loading:  projectUserLoading, error: projectUserError } = useQuery(GET_USER_PROJECTS)
+  const { data: projectUsers, loading:  projectUserLoading, error: projectUserError } = useQuery(GET_USER_PROJECTS, {
+    variables: {
+      userId: user && user.id
+    }
+  })
   const { data: userGoals, loading: userGoalsLoading , error: userGoalsErrorsLoading } = useQuery(GET_GOALS_FROM_USER)
   const projectDropdowns = projectUsers && projectUsers.getUserProjects ? projectUsers.getUserProjects.map(projectUser => {
     return {
@@ -58,7 +62,6 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
     label: '',
     value: ''
   }]
-
   // useEffect(() => {
 
   // }, [userGoalsDropdown])

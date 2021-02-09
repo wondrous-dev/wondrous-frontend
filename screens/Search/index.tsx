@@ -33,6 +33,7 @@ import GoalPage from '../Actions/Goal'
 import TaskPage from '../Actions/Task'
 import AskPage from '../Actions/Ask'
 import ActionList from '../Actions/ActionList'
+import { FlatList } from 'react-native-gesture-handler'
 
 const Stack = createStackNavigator()
 
@@ -300,11 +301,14 @@ function DefaultSearch({
           }}>
             Newest Projects
           </Subheading>
-          {
-            newestProjectData && newestProjectData.map(project => (
-              <ProjectDisplay item={project} key={project.id} />
-            ))
-          }
+          <FlatList
+            data={newestProjectData}
+            renderItem={({ item }) => {
+              return (
+                <ProjectDisplay item={item} key={item.id} />
+              )
+            }}
+          />
         </View>
       }
     </SafeAreaView>
