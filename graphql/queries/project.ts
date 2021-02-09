@@ -25,8 +25,8 @@ export const GET_PROJECT_FEED = gql`
 `
 
 export const GET_NEWEST_PROJECTS = gql`
-  query {
-    getNewestProjects {
+  query GetNewestProjects($limit: Int, $offset: Int) {
+    getNewestProjects(limit: $limit, offset: $offset) {
       ...PublicProject
     }
   }

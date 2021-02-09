@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { SafeAreaView, TextInput, View, TouchableWithoutFeedback, Keyboard, Image, Pressable, StyleSheet } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -8,7 +8,7 @@ import { withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { White, Grey100, Grey800, Grey300,Grey200, Black, Grey550, Grey500 } from '../../constants/Colors'
-import { capitalizeFirstLetter, spacingUnit } from '../../utils/common'
+import { capitalizeFirstLetter, isCloseToBottom, spacingUnit } from '../../utils/common'
 import { useQuery } from '@apollo/client'
 import { GET_USERS_AND_PROJECTS } from '../../graphql/queries/search'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
@@ -144,6 +144,7 @@ const ProjectDisplay = ({ item }) => {
     category
   } = item
   const navigation = useNavigation()
+
   return (
     <Pressable key={item.id} style={{
       paddingLeft: spacingUnit * 2,
@@ -224,14 +225,21 @@ function DefaultSearch({
       searchString
     }
   })
+  const [newestProjects, setNewestProjects] = useState([])
   const {
     data: newestProjectDataResp,
     loading: newestProjectLoading,
-    error: newestProjectError
+    error: newestProjectError,
+    fetchMore
   } = useQuery(GET_NEWEST_PROJECTS)
 
   const searchData = searchDataResp && searchDataResp.getUsersAndProjects
-  const newestProjectData = newestProjectDataResp && newestProjectDataResp.getNewestProjects
+
+  useEffect(() => {
+    if (newestProjectDataResp) {
+      setNewestProjects(newestProjectDataResp && newestProjectDataResp.getNewestProjects)
+    }
+  }, [newestProjectDataResp])
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     <SafeAreaView style={{
@@ -292,24 +300,42 @@ function DefaultSearch({
         }
         </>
         :
-        <View style={{
-          marginTop: spacingUnit * 2
-        }}>
-          <Subheading color={Grey800} style={{
-            paddingLeft: spacingUnit * 2,
-            marginBottom: spacingUnit * 3
+        <FlatList
+        data={newestProjects}
+        ListHeaderComponent={() => (
+          <View style={{
+            marginTop: spacingUnit * 2
           }}>
-            Newest Projects
-          </Subheading>
-          <FlatList
-            data={newestProjectData}
-            renderItem={({ item }) => {
-              return (
-                <ProjectDisplay item={item} key={item.id} />
-              )
-            }}
-          />
-        </View>
+            <Subheading color={Grey800} style={{
+              paddingLeft: spacingUnit * 2,
+              marginBottom: spacingUnit * 3
+            }}>
+              Newest Projects
+            </Subheading>
+  
+          </View>
+        )}
+        scrollEventThrottle={400}
+        onScroll={async ({nativeEvent}) => {
+          if (isCloseToBottom(nativeEvent)) {
+            if (fetchMore) {
+              const result = await fetchMore({
+                variables: {
+                  offset: newestProjects.length
+                }
+              })
+              if (result && result.data && result.data.getUserFeed) {
+                setNewestProjects([...newestProjects, ...result.data.getNewestProjects])
+              }
+            }
+          }
+        }}
+        renderItem={({ item }) => {
+          return (
+            <ProjectDisplay item={item} key={item.id} />
+          )
+        }}
+      />
       }
     </SafeAreaView>
     </TouchableWithoutFeedback>
