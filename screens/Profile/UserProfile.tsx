@@ -17,7 +17,7 @@ import BottomTabNavigator from '../../navigation/BottomTabNavigator'
 import { UploadImage, SafeImage } from '../../storybook/stories/Image'
 import { WONDER_BASE_URL } from '../../constants/'
 import { UPDATE_USER, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_USER, UNFOLLOW_USER } from '../../graphql/mutations'
-import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GET_ASKS_FROM_USER } from '../../graphql/queries'
+import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GET_ASKS_FROM_USER, WHOAMI } from '../../graphql/queries'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton } from '../../storybook/stories/Button'
 import { Black, Grey300, White, Blue400, Grey800 } from '../../constants/Colors'
@@ -110,8 +110,16 @@ function UserProfile({
   const [confetti, setConfetti] = useState(false)
   const [updateGoal] = useMutation(UPDATE_GOAL)
   const [updateTask] = useMutation(UPDATE_TASK)
-  const [completeGoal] = useMutation(COMPLETE_GOAL)
-  const [completeTask] = useMutation(COMPLETE_TASK)
+  const [completeGoal] = useMutation(COMPLETE_GOAL, {
+    refetchQueries: [
+      { query: WHOAMI }
+    ]
+  })
+  const [completeTask] = useMutation(COMPLETE_TASK, {
+    refetchQueries: [
+      { query: WHOAMI }
+    ]
+  })
   const [updateAsk] = useMutation(UPDATE_ASK)
   const {
     loading: additionalInfoLoading,

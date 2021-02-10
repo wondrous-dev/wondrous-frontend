@@ -25,6 +25,11 @@ export const PublicUserFragment = gql`
       taskCreated
       askCreated
     }
+    streak {
+      currentStreak
+      lastActivityAt
+      lastActiveTimezone
+    }
   }
 `
 

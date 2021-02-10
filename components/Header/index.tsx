@@ -1,15 +1,17 @@
 import React, { useState } from 'react'
-import { SafeAreaView, View, Pressable, TextInput } from 'react-native'
+import { SafeAreaView, View, Pressable, TextInput, StyleSheet } from 'react-native'
 import { useRoute, useNavigation } from '@react-navigation/native'
 // import * as Sharing from 'expo-sharing'
 
 import { Orange, Grey300, Grey250, Grey100, White, Black, Grey800, Blue400 } from '../../constants/Colors'
-import { Title, RegularText, Subheading } from '../../storybook/stories/Text'
+import { Title, RegularText, Subheading, Paragraph } from '../../storybook/stories/Text'
 import BackCaret from '../../assets/images/back-caret'
 import { spacingUnit } from '../../utils/common'
 import { ShareModal } from '../Feed'
 import SearchIcon from '../../assets/images/bottomNav/search'
 import Cancel from '../../assets/images/cancel'
+import { Streak } from '../Streak'
+
 
 const shouldbackPageRoutes = {
   'Dashboard': true,
@@ -19,6 +21,7 @@ const shouldbackPageRoutes = {
   'Profile': true,
   'Feed': true
 }
+
 
 const shouldBackPage = (route) => {
   if (route.name && (route.name in shouldbackPageRoutes )) {
@@ -68,13 +71,13 @@ export const Header = ({
   rightButton,
   search,
   searchString,
-  setSearchString
+  setSearchString,
+  streak
 }) => {
   const route = useRoute()
   const navigation = useNavigation()
   const backPage = noGoingBack ? false : shouldBackPage(route)
   const [modalVisible, setModalVisible] = useState(false)
-
   return (
     <SafeAreaView style={{
       width: '100%',
@@ -177,6 +180,16 @@ export const Header = ({
       {
         !skip && !rightButton && !share &&
         <View />
+      }
+      {
+        streak &&
+        <View style={{
+          right: spacingUnit * 2,
+          position: 'absolute'
+        }}>
+          <Streak streak={streak} />
+        </View>
+
       }
     </SafeAreaView>
   )

@@ -17,6 +17,7 @@ import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
 import { CREATE_TASK } from '../../graphql/mutations'
 import { GET_TASKS_FROM_PROJECT } from '../../graphql/queries'
 import { Card } from '../../storybook/stories/Card'
+import { WHOAMI } from '../../graphql/queries'
 
 const setupTaskStyles = StyleSheet.create({
   setupTaskContainer: {
@@ -42,6 +43,9 @@ function SetupTaskScreen({
     }
   })
   const [createTask] = useMutation(CREATE_TASK, {
+    refetchQueries: [
+      { query: WHOAMI }
+    ],
     update(cache, { data }) {
       cache.modify({
           fields: {

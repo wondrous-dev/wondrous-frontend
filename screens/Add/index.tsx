@@ -22,6 +22,7 @@ import { FullScreenPostModal } from '../../components/Modal/PostModal'
 import { CREATE_ASK, CREATE_GOAL, CREATE_TASK } from '../../graphql/mutations'
 import { CREATE_POST } from '../../graphql/mutations/post'
 import Toast from 'react-native-toast-message'
+import { WHOAMI } from '../../graphql/queries'
 
 const addStyles = StyleSheet.create({
   container: {
@@ -66,6 +67,9 @@ function AddScreen({
   const [postModalVisible, setPostModalVisible] = useState(false)
   const user = useMe()
   const [createGoal] = useMutation(CREATE_GOAL, {
+    refetchQueries: [
+      { query: WHOAMI }
+    ],
     update(cache, { data }) {
       Toast.show({
         text1: 'Goal successfully created',
@@ -99,6 +103,9 @@ function AddScreen({
     }
   })
   const [createTask] = useMutation(CREATE_TASK, {
+    refetchQueries: [
+      { query: WHOAMI }
+    ],
     update(cache, { data }) {
       Toast.show({
         text1: 'Task successfully created',

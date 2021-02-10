@@ -30,7 +30,7 @@ import {
   onSwipe
 } from './common'
 import Link from '../../assets/images/link'
-import { GET_ASKS_FROM_PROJECT } from '../../graphql/queries'
+import { GET_ASKS_FROM_PROJECT, WHOAMI } from '../../graphql/queries'
 import { sortByDueDate } from '../../utils/date'
 
 const TagView = ({ tag }) => {
@@ -157,8 +157,16 @@ function ProjectProfile({
   const [confetti, setConfetti] = useState(false)
   const [updateGoal] = useMutation(UPDATE_GOAL)
   const [updateTask] = useMutation(UPDATE_TASK)
-  const [completeGoal] = useMutation(COMPLETE_GOAL)
-  const [completeTask] = useMutation(COMPLETE_TASK)
+  const [completeGoal] = useMutation(COMPLETE_GOAL, {
+    refetchQueries: [
+      { query: WHOAMI }
+    ]
+  })
+  const [completeTask] = useMutation(COMPLETE_TASK, {
+    refetchQueries: [
+      { query: WHOAMI }
+    ]
+  })
   const [updateAsk] = useMutation(UPDATE_ASK)
   const { data, loading, error } = useQuery(GET_PROJECT_BY_ID, {
     variables: {

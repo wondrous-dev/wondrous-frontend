@@ -19,6 +19,7 @@ import { GET_GOALS_FROM_PROJECT } from '../../graphql/queries'
 import { CardList } from '../../storybook/stories/CardList'
 import { Card } from '../../storybook/stories/Card'
 // import { FlatList } from 'react-native-gesture-handler'
+import { WHOAMI } from '../../graphql/queries'
 
 const setupGoalStyles = StyleSheet.create({
   setupGoalContainer: {
@@ -45,6 +46,9 @@ function SetupGoalScreen({
   })
 
   const [createGoal] = useMutation(CREATE_GOAL, {
+    refetchQueries: [
+      { query: WHOAMI }
+    ],
     update(cache, { data }) {
       cache.modify({
           fields: {

@@ -11,7 +11,7 @@ import { spacingUnit } from '../../utils/common'
 export const FlexRowContentModal = ({ isVisible, headerText, children, setModalVisible, centered, cancelButtonStyle, flexDirection='row', ...props }) => {
 
   return (
-    <Modal isVisible={isVisible} {...props}>
+    <Modal isVisible={isVisible} onBackdropPress={() => setModalVisible(false)} {...props}>
       <View style={{
         backgroundColor: White,
         position: 'absolute',
