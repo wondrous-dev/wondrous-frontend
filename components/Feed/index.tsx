@@ -91,10 +91,11 @@ const feedStyles = StyleSheet.create({
     lineHeight: 22
   },
   feedText: {
-    fontSize: 18
+    fontSize: 18,
+    flex: 1
   },
   confetti: {
-    marginRight: spacingUnit * 0.5,
+    marginRight: spacingUnit,
     marginTop: -spacingUnit
   }
 })
