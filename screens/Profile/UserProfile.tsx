@@ -470,12 +470,11 @@ function UserProfile({
                     </Paragraph>
                   </Pressable>
                   }
-                  <Streak viewing={user && user.username} streak={user && user.streak} streakContainerStyle={{
-                    marginLeft: spacingUnit
-                  }} />
                   </>
                 }
-                
+                  <Streak viewing={userOwned ? false : user && user.username} streak={user && user.streak} streakContainerStyle={{
+                    marginLeft: spacingUnit
+                  }} />
               </View>
               {
                 user.bio &&
@@ -548,15 +547,18 @@ function UserProfile({
           onScroll={async ({nativeEvent}) => {
             if (section === 'feed') {
               if (isCloseToBottom(nativeEvent)) {
-
                 if (feedFetchMore) {
-                  const result = await feedFetchMore({
-                    variables: {
-                      offset: userFeed.length
+                  try {
+                    const result = await feedFetchMore({
+                      variables: {
+                        offset: userFeed.length
+                      }
+                    })
+                    if (result && result.data && result.data.getUserFeed) {
+                      setUserFeed([...userFeed, ...result.data.getUserFeed])
                     }
-                  })
-                  if (result && result.data && result.data.getUserFeed) {
-                    setUserFeed([...userFeed, ...result.data.getUserFeed])
+                  } catch (err) {
+                    console.log('err fetching more', err)
                   }
                 }
               }
