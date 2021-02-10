@@ -21,7 +21,7 @@ const iconStyles = StyleSheet.create({
 })
 
 const StreakIcon = ({ streak, iconStyle }) => {
-  if (streak && streak.currentStreak) {
+  if (streak) {
     if (streak.currentStreak === 0) {
       return <Neutral style={{
         ...iconStyles.emoji,
@@ -52,7 +52,7 @@ const StreakIcon = ({ streak, iconStyle }) => {
   return null
 }
 
-const StreakModal = ({ isVisible, streak, setStreakModal }) => {
+const StreakModal = ({ isVisible, streak, setStreakModal, viewing }) => {
   return (
     <Modal isVisible={isVisible}
     onBackdropPress={() => setStreakModal(false)}
@@ -86,24 +86,31 @@ const StreakModal = ({ isVisible, streak, setStreakModal }) => {
         <Paragraph color={Black} style={{
           textAlign: 'center'
         }}>
-          Your action streak can be extended by creating/completing a task or a goal daily.
+          {
+            viewing
+            ?
+            `This is the action streak of @${viewing}. This is extended by creating/completing a task or a goal daily. `
+            :
+            'Your action streak can be extended by creating/completing a task or a goal daily.'
+          }
         </Paragraph>
       </View>
     </Modal>
   )
 }
 
-export const Streak = ({ streakContainerStyle, streak }) => {
+export const Streak = ({ streakContainerStyle, streak, viewing }) => {
   const [streakModal, setStreakModal] = useState(false)
 
   return (
     <>
-    <StreakModal isVisible={streakModal} setStreakModal={setStreakModal} streak={streak} />
+    <StreakModal isVisible={streakModal} setStreakModal={setStreakModal} streak={streak} viewing={viewing} />
     <Pressable onPress={() => {
       setStreakModal(true)
     }} >
       <View style={{
-        flexDirection: 'row'
+        flexDirection: 'row',
+        ...streakContainerStyle
       }}>
       <StreakIcon streak={streak} />
       <Paragraph color={Black} style={{

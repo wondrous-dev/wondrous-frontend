@@ -35,6 +35,7 @@ import { EditProfileModal } from './EditProfileModal'
 import Link from '../../assets/images/link'
 import { sortByDueDate } from '../../utils/date'
 import apollo from '../../services/apollo'
+import { Streak } from '../../components/Streak'
 
 const getUserId = ({ route, user }) => {
   if (route && route.params && route.params.userId) {
@@ -469,6 +470,9 @@ function UserProfile({
                     </Paragraph>
                   </Pressable>
                   }
+                  <Streak viewing={user && user.username} streak={user && user.streak} streakContainerStyle={{
+                    marginLeft: spacingUnit
+                  }} />
                   </>
                 }
                 

@@ -40,6 +40,7 @@ function DashboardScreen({
     }}>
       <Stack.Screen name='Feed' component={Feed} initialParams={{ tab: 'Dashboard' }} />
       <Stack.Screen name='FeedItem' component={FeedItem} initialParams={{ tab: 'Dashboard' }} />
+      <Stack.Screen name='UserProfile' component={UserProfile} initialParams={{ tab: 'Dashboard' }} />
       <Stack.Screen name='ProjectProfile' component={ProjectProfile} options={{ gestureEnabled: false }} initialParams={{ tab: 'Dashboard' }}/>
       <Stack.Screen name='ProfileItem' component={FeedItem} initialParams={{ tab: 'Dashboard' }} />
       <Stack.Screen name='WorkflowWelcome' component={WorkflowWelcome} />

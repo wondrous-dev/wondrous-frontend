@@ -388,6 +388,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
   const user = useMe()
   const navigation = useNavigation()
   const route = useRoute()
+
   const [liked, setLiked] = useState(null)
   const [reactionCount, setReactionCount] = useState(0)
   const [commentLiked, setCommentLiked] = useState(null)
@@ -488,13 +489,14 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
 
   const SHARE_URL = `https://wonderapp.co/feed/${item.id}`
   const CONTENT = 'Check this discussion from Wonder!'
+
   return (
     <>
     <ShareModal isVisible={isModalVisible} url={SHARE_URL} content={CONTENT} setModalVisible={setModalVisible} />
     <View style={feedStyles.feedItemContainer}>
       <View style={feedStyles.feedItemName}>
         <Pressable onPress={() => navigation.navigate('Root', {
-          screen: route && route.params && route.tab || 'Profile',
+          screen: route && route.params && route.params.tab || 'Profile',
           params: {
             screen: 'UserProfile',
             params: {
@@ -515,7 +517,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
             fontFamily: 'Rubik SemiBold'
           }} color={Black}
           onPress={() => navigation.navigate('Root', {
-            screen: route && route.params && route.tab || 'Profile',
+            screen: route && route.params && route.params.tab || 'Profile',
             params: {
               screen: 'UserProfile',
               params: {
