@@ -5,11 +5,11 @@ import * as Facebook from 'expo-facebook'
 import { ButtonText } from '../Text'
 import { PrimaryButton } from './Buttons'
 import { SvgImage } from '../Image'
-import FacebookSvg from '../../../assets/images/social-auth/facebook.svg'
+import FacebookIcon from '../../../assets/images/social-auth/facebook.tsx'
 import baseStyle from './style'
 import { storeAuthHeader } from '../../../components/withAuth'
 import { White } from '../../../constants/Colors'
-import { navigateUserOnLogin } from '../../../utils/common'
+import { navigateUserOnLogin, spacingUnit } from '../../../utils/common'
 
 const buttonStyle = StyleSheet.create({
   facebookButtonText: {
@@ -73,7 +73,9 @@ export const FacebookLogin = ({ style, callToAction, loginStatus, setLoginStatus
       ...style
     }} onPress={() =>  signInAsync({ callToAction, setLoginStatus, navigation, setLoginError })}>
       <View style={{flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'center', width: '100%'}}>
-        <SvgImage width="32" height="32" srcElement={FacebookSvg} style={{
+        <FacebookIcon style={{
+          width: spacingUnit * 4,
+          height: spacingUnit * 4,
           marginTop: -5
         }}/>
         <ButtonText style={buttonStyle.facebookButtonText} color={White}>

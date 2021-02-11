@@ -5,7 +5,7 @@ import * as Google from 'expo-google-app-auth'
 import { ButtonText } from '../Text'
 import { SecondaryButton } from './Buttons'
 import { SvgImage } from '../Image'
-import GoogleSvg from '../../../assets/images/social-auth/google.svg'
+import GoogleSvg from '../../../assets/images/social-auth/google'
 import baseStyle from './style'
 import { Grey200 } from '../../../constants/Colors'
 import { storeAuthHeader } from '../../../components/withAuth'
@@ -69,7 +69,7 @@ export const GoogleLogin = ({ style, callToAction, loginStatus, setLoginStatus, 
       ...style
       }} onPress={() => signInAsync({ graphqlCall: callToAction, setLoginStatus, setLoginError, navigation }) }>
       <View style={{flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'center', width: '100%'}}>
-        <SvgImage width="32" height="32" srcElement={GoogleSvg} />
+        <GoogleSvg />
         <ButtonText style={buttonStyle.googleButtonText} color={Grey200}>
           Continue with Google
         </ButtonText>
