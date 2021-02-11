@@ -12,7 +12,7 @@ import { REACT_FEED_COMMENT, REACT_FEED_ITEM } from '../../graphql/mutations'
 import { SafeImage, SvgImage } from '../../storybook/stories/Image'
 import { TinyText, RegularText, Subheading, Paragraph } from '../../storybook/stories/Text'
 import { SecondaryButton } from '../../storybook/stories/Button'
-import { spacingUnit, capitalizeFirstLetter, renderMentionString, wait } from '../../utils/common'
+import { spacingUnit, capitalizeFirstLetter, renderMentionString, wait, isCloseToBottom } from '../../utils/common'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import ProjectIcon from '../../assets/images/actions/project'
 import GoalIcon from '../../assets/images/actions/goal'
@@ -528,7 +528,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           })}         
           >{item.actorFirstName} {item.actorLastName}{` `}</Paragraph>
           <RegularText style={{
-            lineHeight: '18'
+            lineHeight: 18
           }} color={Grey200}>{timeAgo.format(new Date(item.timestamp))}</RegularText>     
           </View>
                     {!comment && !(item.objectType === 'post') &&
@@ -772,6 +772,24 @@ export const HomeFeed = () => {
           }}
         />
       )}
+      onScroll={async ({nativeEvent}) => {
+        if (isCloseToBottom(nativeEvent)) {
+          if (fetchMore) {
+            try {
+              const result = await fetchMore({
+                variables: {
+                  offset: feed.length
+                }
+              })
+              if (result && result.data && result.data.getHomeFeed) {
+                setFeed([...feed, ...result.data.getHomeFeed])
+              }
+            } catch (err) {
+              console.log('err fetching more', err)
+            }
+          }
+        }
+      }}
     >
     </FlatList>
     </>
