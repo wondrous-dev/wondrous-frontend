@@ -3,6 +3,7 @@ import React from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { ApolloProvider } from '@apollo/client'
 import Toast from 'react-native-toast-message'
+import AppLoading from 'expo-app-loading'
 
 import useCachedResources from './hooks/useCachedResources'
 import useColorScheme from './hooks/useColorScheme'
@@ -18,7 +19,7 @@ export default function App() {
   const colorScheme = useColorScheme()
 
   if (!isLoadingComplete) {
-    return null
+    return  <AppLoading />
   } else {
     return (
       <ApolloProvider client={apollo}>

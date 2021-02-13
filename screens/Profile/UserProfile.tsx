@@ -60,7 +60,7 @@ function UserProfile({
   route
 }: StackScreenProps<RootStackParamList, 'UserProfile'>) {
   const loggedInUser = useMe()
-
+  console.log('loggedinUser', loggedInUser)
   const finalUserId = getUserId({ route, user: loggedInUser })
   let noGoingBack = route && route.params && route.params.noGoingBack
   const tab = route && route.params && route.params.tab

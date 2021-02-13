@@ -34,7 +34,7 @@ export const GET_NEWEST_PROJECTS = gql`
 `
 
 export const GET_USER_PROJECTS = gql`
-  query GetProjectsByUser($userId: ID!) {
+  query GetProjectsByUser($userId: ID) {
     getUserProjects(userId: $userId) {
       project {
         id

@@ -25,7 +25,7 @@ export const GET_USER = gql`
 `
 
 export const GET_USER_ADDITIONAL_INFO = gql`
-  query GetUserAdditionalInfo($userId: ID!) {
+  query GetUserAdditionalInfo($userId: ID) {
     getUserAdditionalInfo(userId: $userId) {
       followerCount
       followingCount
@@ -53,7 +53,7 @@ export const GET_HOME_FEED = gql`
 `
 
 export const GET_USER_FOLLOWERS = gql`
-  query GetUserFollowers($userId: ID!) {
+  query GetUserFollowers($userId: ID) {
     getUserFollowers(userId: $userId) {
       ...PublicUser
     }
@@ -62,7 +62,7 @@ export const GET_USER_FOLLOWERS = gql`
 `
 
 export const GET_USER_FOLLOWING = gql`
-  query GetUserFollowing($userId: ID!) {
+  query GetUserFollowing($userId: ID) {
     getUserFollowing(userId: $userId) {
       users {
         ...PublicUser
@@ -77,7 +77,7 @@ export const GET_USER_FOLLOWING = gql`
 `
 
 export const GET_USER_FEED = gql`
-  query GetUserFeed($userId: ID!, $offset: Int, $limit: Int) {
+  query GetUserFeed($userId: ID, $offset: Int, $limit: Int) {
     getUserFeed(userId: $userId, offset: $offset, limit: $limit) {
       ...ActivityFeedItem
     }
@@ -86,7 +86,7 @@ export const GET_USER_FEED = gql`
 `
 
 export const GET_USER_ACTIONS = gql`
-  query GetUserActions($userId: ID!, $status: String) {
+  query GetUserActions($userId: ID, $status: String) {
     getUserActions(userId: $userId, status: $status) {
       goals {
         ...AdditionalGoal
