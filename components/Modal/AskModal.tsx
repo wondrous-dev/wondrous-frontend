@@ -177,8 +177,14 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                 flex: 1,
               }}>
               <Pressable style={modalStyles.createUpdateButton} onPress={() => {
-                const relatedGoalIds = [goal]
-                const relatedTaskIds = [task]
+                let relatedGoalIds = []
+                let relatedTaskIds = []
+                if (goal) {
+                  relatedGoalIds = [goal]
+                }
+                if (task) {
+                  relatedTaskIds = [task]
+                }
                 submit({
                   type: 'ask',
                   content: askText,

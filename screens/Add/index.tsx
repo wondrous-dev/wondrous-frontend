@@ -74,31 +74,6 @@ function AddScreen({
       Toast.show({
         text1: 'Goal successfully created',
         position: 'bottom',
-        onHide: () => Toast.hide()
-      })
-      cache.modify({
-          fields: {
-              getGoalsFromProject(existingGoals=[]) {
-                return [
-                  data.createGoal,
-                  ...existingGoals
-                ]
-              },
-              users() {
-                if ((user && !user.usageProgress) || (user && user.usageProgress && !user.usageProgress.goalCreated)) {
-                  const newUsageProgress = user.usageProgress ? {
-                    ...user.usageProgress,
-                    goalCreated: true
-                  } : {
-                    goalCreated: true
-                  }
-                  return [{
-                    ...user,
-                    usageProgress: newUsageProgress
-                  }]
-                }
-              }
-          }
       })
     }
   })
@@ -110,25 +85,6 @@ function AddScreen({
       Toast.show({
         text1: 'Task successfully created',
         position: 'bottom',
-        onHide: () => Toast.hide()
-      })
-      cache.modify({
-          fields: {
-              users() {
-                if (user) {
-                  const newUsageProgress = user.usageProgress ? {
-                    ...user.usageProgress,
-                    taskCreated: true
-                  } : {
-                    taskCreated: true
-                  }
-                  return [{
-                    ...user,
-                    usageProgress: newUsageProgress
-                  }]
-                }
-              }
-          }
       })
     }
   })
@@ -138,8 +94,7 @@ function AddScreen({
     update(cache, { data }) {
       Toast.show({
         text1: 'Ask successfully created',
-        position: 'bottom',
-        onTrailingIconPress: () => Toast.hide()
+        position: 'bottom'
       })
       cache.modify({
           fields: {

@@ -355,7 +355,7 @@ export const submit = async ({
   } else if (!projectId && type !== 'post') {
     setErrors({
       ...errors,
-      projectError: 'Please select a project'
+      nameError: 'Please select a project'
     })
   } else {
     // Parse media:
