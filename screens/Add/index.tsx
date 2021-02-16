@@ -128,8 +128,7 @@ function AddScreen({
     update(cache) {
       Toast.show({
         text1: 'Post successfully created',
-        position: 'bottom',
-        onHide: () => Toast.hide()
+        position: 'bottom'
       })
     }
   })
