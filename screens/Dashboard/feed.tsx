@@ -11,14 +11,14 @@ import { White } from '../../constants/Colors'
 function Feed({
   navigation
 }: StackScreenProps<RootStackParamList, 'Feed'>) {
-  const user = useMe()
+
   return (
     <>
     <SafeAreaView style={{
       backgroundColor: White,
       flex: 1
     }}>
-      <Header streak={user && user.streak} />
+      <Header streak={true} />
       <HomeFeed />
     </SafeAreaView>
     </>

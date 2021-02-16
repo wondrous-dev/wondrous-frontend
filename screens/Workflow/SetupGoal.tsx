@@ -15,7 +15,7 @@ import { SvgImage } from '../../storybook/stories/Image'
 import GoalIcon from '../../assets/images/goal/standalone'
 import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
 import { CREATE_GOAL } from '../../graphql/mutations'
-import { GET_GOALS_FROM_PROJECT } from '../../graphql/queries'
+import { GET_GOALS_FROM_PROJECT, GET_USER_STREAK } from '../../graphql/queries'
 import { CardList } from '../../storybook/stories/CardList'
 import { Card } from '../../storybook/stories/Card'
 // import { FlatList } from 'react-native-gesture-handler'
@@ -47,7 +47,9 @@ function SetupGoalScreen({
 
   const [createGoal] = useMutation(CREATE_GOAL, {
     refetchQueries: [
-      { query: WHOAMI }
+      { query: GET_USER_STREAK, variables: {
+        userId: user && user.id
+      } }
     ],
     update(cache, { data }) {
       cache.modify({

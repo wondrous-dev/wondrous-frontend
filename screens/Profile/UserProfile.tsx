@@ -17,7 +17,7 @@ import BottomTabNavigator from '../../navigation/BottomTabNavigator'
 import { UploadImage, SafeImage } from '../../storybook/stories/Image'
 import { WONDER_BASE_URL } from '../../constants/'
 import { UPDATE_USER, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_USER, UNFOLLOW_USER } from '../../graphql/mutations'
-import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GET_ASKS_FROM_USER, WHOAMI } from '../../graphql/queries'
+import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GET_ASKS_FROM_USER, WHOAMI, GET_USER_STREAK } from '../../graphql/queries'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton } from '../../storybook/stories/Button'
 import { Black, Grey300, White, Blue400, Grey800 } from '../../constants/Colors'
@@ -112,12 +112,16 @@ function UserProfile({
   const [updateTask] = useMutation(UPDATE_TASK)
   const [completeGoal] = useMutation(COMPLETE_GOAL, {
     refetchQueries: [
-      { query: WHOAMI }
+      { query: GET_USER_STREAK, variables: {
+        userId: loggedInUser && loggedInUser.id
+      } }
     ]
   })
   const [completeTask] = useMutation(COMPLETE_TASK, {
     refetchQueries: [
-      { query: WHOAMI }
+      { query: GET_USER_STREAK, variables: {
+        userId: loggedInUser && loggedInUser.id
+      } }
     ]
   })
   const [updateAsk] = useMutation(UPDATE_ASK)
@@ -169,6 +173,11 @@ function UserProfile({
 
   const [user, setUser] = useState(null)
   const previousUser = usePrevious(user)
+  const { data: streakData } = useQuery(GET_USER_STREAK, {
+    variables: {
+      userId: finalUserId
+    }
+  })
   const [profilePicture, setProfilePicture] = useState(user && user.profilePicture)
   const [updateUser] = useMutation(UPDATE_USER, {
     update(cache, { data: { updateUser }}) {
@@ -423,7 +432,7 @@ function UserProfile({
                   }
                   </>
                 }
-                  <Streak viewing={userOwned ? false : user && user.username} streak={user && user.streak} streakContainerStyle={{
+                  <Streak viewing={userOwned ? false : user && user.username} streak={streakData && streakData.getUserStreak} streakContainerStyle={{
                     marginLeft: spacingUnit
                   }} />
               </View>

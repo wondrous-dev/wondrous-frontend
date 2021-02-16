@@ -11,6 +11,9 @@ import { ShareModal } from '../Feed'
 import SearchIcon from '../../assets/images/bottomNav/search'
 import Cancel from '../../assets/images/cancel'
 import { Streak } from '../Streak'
+import { GET_USER_STREAK } from '../../graphql/queries'
+import { useQuery } from '@apollo/client'
+import { useMe } from '../../components/withAuth'
 
 
 const shouldbackPageRoutes = {
@@ -78,6 +81,12 @@ export const Header = ({
   const navigation = useNavigation()
   const backPage = noGoingBack ? false : shouldBackPage(route)
   const [modalVisible, setModalVisible] = useState(false)
+  const user = useMe()
+  const { data, loading, error } = useQuery(GET_USER_STREAK, {
+    variables: {
+      userId: user && user.id
+    }
+  })
   return (
     <SafeAreaView style={{
       width: '100%',
@@ -182,12 +191,12 @@ export const Header = ({
         <View />
       }
       {
-        streak &&
+        streak && data &&
         <View style={{
           right: spacingUnit * 2,
           position: 'absolute'
         }}>
-          <Streak streak={streak} />
+          <Streak streak={data.getUserStreak} />
         </View>
 
       }

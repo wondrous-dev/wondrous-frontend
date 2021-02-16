@@ -15,7 +15,7 @@ import { SvgImage } from '../../storybook/stories/Image'
 import TaskIcon from '../../assets/images/task/standalone'
 import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
 import { CREATE_TASK } from '../../graphql/mutations'
-import { GET_TASKS_FROM_PROJECT } from '../../graphql/queries'
+import { GET_TASKS_FROM_PROJECT, GET_USER_STREAK } from '../../graphql/queries'
 import { Card } from '../../storybook/stories/Card'
 import { WHOAMI } from '../../graphql/queries'
 
@@ -44,7 +44,9 @@ function SetupTaskScreen({
   })
   const [createTask] = useMutation(CREATE_TASK, {
     refetchQueries: [
-      { query: WHOAMI }
+      { query: GET_USER_STREAK, variables: {
+        userId: user && user.id
+      } }
     ],
     update(cache, { data }) {
       cache.modify({

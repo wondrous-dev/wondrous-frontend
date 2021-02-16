@@ -30,7 +30,7 @@ import {
   onSwipe
 } from './common'
 import Link from '../../assets/images/link'
-import { GET_ASKS_FROM_PROJECT, WHOAMI } from '../../graphql/queries'
+import { GET_ASKS_FROM_PROJECT, GET_USER_STREAK, WHOAMI } from '../../graphql/queries'
 import { sortByDueDate } from '../../utils/date'
 
 const TagView = ({ tag }) => {
@@ -159,12 +159,17 @@ function ProjectProfile({
   const [updateTask] = useMutation(UPDATE_TASK)
   const [completeGoal] = useMutation(COMPLETE_GOAL, {
     refetchQueries: [
-      { query: WHOAMI }
+      { query: GET_USER_STREAK, variables: {
+        userId: user && user.id
+      } },
+      
     ]
   })
   const [completeTask] = useMutation(COMPLETE_TASK, {
     refetchQueries: [
-      { query: WHOAMI }
+      { query: GET_USER_STREAK, variables: {
+        userId: user && user.id
+      } }
     ]
   })
   const [updateAsk] = useMutation(UPDATE_ASK)

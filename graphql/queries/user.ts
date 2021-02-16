@@ -15,6 +15,16 @@ export const WHOAMI = gql`
   ${LoggedinUserFragment}
 `
 
+export const GET_USER_STREAK = gql`
+  query GetUserStreak($userId: ID) {
+    getUserStreak(userId: $userId) {
+      currentStreak
+      lastActivityAt
+      lastActiveTimezone
+    }
+  }
+`
+
 export const GET_USER = gql`
   query GetUser($userId: ID!) {
     getUser(userId: $userId) {
