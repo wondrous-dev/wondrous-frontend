@@ -1,9 +1,11 @@
-import { useLazyQuery } from '@apollo/client'
-import React, { useEffect, useState } from 'react'
+import { useLazyQuery, useQuery } from '@apollo/client'
+import React, { useEffect, useRef, useState } from 'react'
 import { Platform, Image, Pressable, View } from 'react-native'
 import { SvgXml } from "react-native-svg"
 import Modal from 'react-native-modal'
 import * as ImagePicker from 'expo-image-picker'
+import isEqual from 'lodash.isequal'
+import FastImage from 'react-native-fast-image'
 
 import { GET_PREVIEW_IMAGE } from '../../../graphql/queries'
 import apollo from '../../../services/apollo'
@@ -12,7 +14,7 @@ import CameraIcon from '../../../assets/images/camera'
 import PictureIcon from '../../../assets/images/image'
 import { Blue500 } from '../../../constants/Colors'
 import { RegularText } from '../Text'
-import { spacingUnit, setDeepVariable } from '../../../utils/common'
+import { spacingUnit, setDeepVariable, usePrevious } from '../../../utils/common'
 import Camera from '../../../components/Camera'
 import { uploadMedia, getFilenameAndType } from '../../../utils/image'
 
@@ -126,27 +128,26 @@ export function SvgImage ({ width, height, webStyle, srcElement, style }) {
   )
 }
 
-export const SafeImage = ({ src, style, defaultImage }) => {
-  const [getImage, { data, loading, error }] = useLazyQuery(GET_PREVIEW_IMAGE, {
+export const SafeImage = ({ src, style, defaultImage, setImage }) => {
+  const { data, loading, error } = useQuery(GET_PREVIEW_IMAGE, {
+    variables: {
+      path: src
+    }, 
     fetchPolicy: 'network-only'
   })
   if (!src && defaultImage) {
     return <Image style={style} source={defaultImage} />
   }
 
-  if (!src) {
-    return null
-  }
 
   useEffect(() => {
-    if (src) {
-      getImage({
-        variables: {
-          path: src
-        }
-      })
+    if (data && data.getPreviewImage && data.getPreviewImage.url) {
+      if (setImage && !(src.startsWith('https') || src.startsWith('file://'))) {
+        setImage(data.getPreviewImage.url)
+      }
     }
-  }, [src])
+  }, [data])
+
   if (src.startsWith('https') || src.startsWith('file://')) {
     return <Image style={style} source={{
       uri: src

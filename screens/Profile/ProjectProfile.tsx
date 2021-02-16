@@ -299,6 +299,164 @@ function ProjectProfile({
     setConfetti
   })
 
+  function ProfileHeader () {
+    return (
+      (
+        <View style={profileStyles.profileContainer}>
+        <View style={[profileStyles.profileInfoContainer, {
+          justifyContent: 'space-between',
+        }]}>
+          <View style={profileStyles.imageContainer}>
+          {
+            profilePicture ?
+            <SafeImage style={profileStyles.profileImage} src={profilePicture|| project.profilePicture} />
+            :
+            <ProfilePlaceholder projectOwnedByUser={projectOwnedByUser} />
+          }
+          </View>
+          <Pressable onPress={() => navigation.navigate('Root', {
+              screen: tab ? tab : 'Profile',
+              params: {
+                screen: 'UserList',
+                params: {
+                  projectFollowers: true,
+                  projectId: project.id
+                }
+              }
+            })}>
+            <ProjectInfoText count={project.followCount} type={project.followCount === 1 ? 'follower' : 'followers'} />
+          </Pressable>
+          <Pressable onPress={() => navigation.navigate('Root', {
+              screen: tab ? tab: 'Profile',
+              params: {
+                screen: 'UserList',
+                params: {
+                  collaborators: project.collaborators,
+                  projectId: project.id
+                }
+              }
+          })}>
+          <ProjectInfoText count={project.collaborators.length} type={project.collaborators.length === 1 ? 'collaborator': 'collaborators'} />
+          </Pressable>
+          <ProjectInfoText count={project.goalsCompletedCount} type='goals completed' />
+          {/* <ProjectInfoText count={project.tasksCompleted} type='tasks completed' /> */}
+        </View>
+        <View style={[profileStyles.profileInfoContainer, {
+          marginTop: spacingUnit * 3
+        }]}>
+          <Subheading style={{
+            fontSize: 18
+          }} color={Black}>
+            {project.name}
+          </Subheading>
+          {
+            projectOwnedByUser ?
+            <>
+              <SecondaryButton style={{
+                width: spacingUnit * 13,
+                backgroundColor: White,
+                borderColor: Black,
+                borderWidth: 1,
+                paddingTop: 0,
+                paddingBottom: 0,
+                marginLeft: spacingUnit
+              }} onPress={() => setEditProfileModal(true)}>
+                <RegularText color={Black}>
+                  Edit Profile
+                </RegularText>
+              </SecondaryButton>
+            </>
+            :
+            <>
+            {
+            following ?
+            <Pressable style={profileStyles.followingButton} onPress={() => {
+              setFollowing(false)
+              unfollowProject()
+            }}>
+              <Paragraph color={Black}>
+                Following
+              </Paragraph>
+            </Pressable>
+            :
+            <Pressable onPress={() => {
+              setFollowing(true)
+              followProject()
+            }} style={profileStyles.followButton}>
+              <Paragraph color={White}>
+                Follow
+              </Paragraph>
+            </Pressable>
+            }
+            </>
+          }
+        </View>
+        <View style={[profileStyles.profileInfoContainer, {
+          marginTop: spacingUnit * 2,
+        }]}>
+          <Paragraph color={Black} style={{
+            flexWrap: 'wrap',
+            textAlign: 'left'
+          }}>
+            {project.description}
+          </Paragraph>
+        </View>
+        {project && project.links && !isEmptyObject(project.links) && 
+          <Pressable style={{
+            paddingLeft: spacingUnit * 2,
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: spacingUnit
+          }} onPress={() => {
+            navigation.navigate('Root', {
+              screen: tab ? tab : 'Profile',
+              params: {
+                screen: 'Links',
+                params: {
+                  links: project.links,
+                  name: project.name
+                }
+              }
+            })
+          }}>
+            <Link color={Grey800} style={{
+              marginRight: spacingUnit * 0.5,
+              width: spacingUnit * 2.5,
+              height: spacingUnit * 2.5
+            }} />
+            <Paragraph color={Blue400}>
+              Project links
+            </Paragraph>
+          </Pressable>
+        }
+        <View style={{
+          marginTop: spacingUnit * 2,
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          paddingLeft: spacingUnit * 2,
+          paddingRight: spacingUnit * 2
+        }}>
+          {
+            project.category &&
+            <TagView tag={project.category} />
+          }
+          {
+            project.tags && project.tags.map(tag => (
+              <TagView tag={tag}/>
+            ))
+          }
+        </View>
+        <DetermineUserProgress user={user} projectId={projectId} />
+
+          <SectionsHeader />
+          {
+            (actionSelected || asksSelected) &&
+            <StatusSelector setStatus={setStatus} status={status} />
+          }
+      </View>
+    )
+    )
+  }
   return (
     <SafeAreaView style={{
       backgroundColor: White,
@@ -339,161 +497,9 @@ function ProjectProfile({
           }]}
           />
         )}
-        ListHeaderComponent={() => (
-            <View style={profileStyles.profileContainer}>
-            <View style={[profileStyles.profileInfoContainer, {
-              justifyContent: 'space-between',
-            }]}>
-              <View style={profileStyles.imageContainer}>
-              {
-                profilePicture ?
-                <SafeImage style={profileStyles.profileImage} src={profilePicture|| project.profilePicture} />
-                :
-                <ProfilePlaceholder projectOwnedByUser={projectOwnedByUser} />
-              }
-              </View>
-              <Pressable onPress={() => navigation.navigate('Root', {
-                  screen: tab ? tab : 'Profile',
-                  params: {
-                    screen: 'UserList',
-                    params: {
-                      projectFollowers: true,
-                      projectId: project.id
-                    }
-                  }
-                })}>
-                <ProjectInfoText count={project.followCount} type={project.followCount === 1 ? 'follower' : 'followers'} />
-              </Pressable>
-              <Pressable onPress={() => navigation.navigate('Root', {
-                  screen: tab ? tab: 'Profile',
-                  params: {
-                    screen: 'UserList',
-                    params: {
-                      collaborators: project.collaborators,
-                      projectId: project.id
-                    }
-                  }
-              })}>
-              <ProjectInfoText count={project.collaborators.length} type={project.collaborators.length === 1 ? 'collaborator': 'collaborators'} />
-              </Pressable>
-              <ProjectInfoText count={project.goalsCompletedCount} type='goals completed' />
-              {/* <ProjectInfoText count={project.tasksCompleted} type='tasks completed' /> */}
-            </View>
-            <View style={[profileStyles.profileInfoContainer, {
-              marginTop: spacingUnit * 3
-            }]}>
-              <Subheading style={{
-                fontSize: 18
-              }} color={Black}>
-                {project.name}
-              </Subheading>
-              {
-                projectOwnedByUser ?
-                <>
-                  <SecondaryButton style={{
-                    width: spacingUnit * 13,
-                    backgroundColor: White,
-                    borderColor: Black,
-                    borderWidth: 1,
-                    paddingTop: 0,
-                    paddingBottom: 0,
-                    marginLeft: spacingUnit
-                  }} onPress={() => setEditProfileModal(true)}>
-                    <RegularText color={Black}>
-                      Edit Profile
-                    </RegularText>
-                  </SecondaryButton>
-                </>
-                :
-                <>
-                {
-                following ?
-                <Pressable style={profileStyles.followingButton} onPress={() => {
-                  setFollowing(false)
-                  unfollowProject()
-                }}>
-                  <Paragraph color={Black}>
-                    Following
-                  </Paragraph>
-                </Pressable>
-                :
-                <Pressable onPress={() => {
-                  setFollowing(true)
-                  followProject()
-                }} style={profileStyles.followButton}>
-                  <Paragraph color={White}>
-                    Follow
-                  </Paragraph>
-                </Pressable>
-                }
-                </>
-              }
-            </View>
-            <View style={[profileStyles.profileInfoContainer, {
-              marginTop: spacingUnit * 2,
-            }]}>
-              <Paragraph color={Black} style={{
-                flexWrap: 'wrap',
-                textAlign: 'left'
-              }}>
-                {project.description}
-              </Paragraph>
-            </View>
-            {project && project.links && !isEmptyObject(project.links) && 
-              <Pressable style={{
-                paddingLeft: spacingUnit * 2,
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginTop: spacingUnit
-              }} onPress={() => {
-                navigation.navigate('Root', {
-                  screen: tab ? tab : 'Profile',
-                  params: {
-                    screen: 'Links',
-                    params: {
-                      links: project.links,
-                      name: project.name
-                    }
-                  }
-                })
-              }}>
-                <Link color={Grey800} style={{
-                  marginRight: spacingUnit * 0.5,
-                  width: spacingUnit * 2.5,
-                  height: spacingUnit * 2.5
-                }} />
-                <Paragraph color={Blue400}>
-                  Project links
-                </Paragraph>
-              </Pressable>
-            }
-            <View style={{
-              marginTop: spacingUnit * 2,
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              paddingLeft: spacingUnit * 2,
-              paddingRight: spacingUnit * 2
-            }}>
-              {
-                project.category &&
-                <TagView tag={project.category} />
-              }
-              {
-                project.tags && project.tags.map(tag => (
-                  <TagView tag={tag}/>
-                ))
-              }
-            </View>
-            <DetermineUserProgress user={user} projectId={projectId} />
-
-              <SectionsHeader />
-              {
-                (actionSelected || asksSelected) &&
-                <StatusSelector setStatus={setStatus} status={status} />
-              }
-          </View>
-        )}
+        ListHeaderComponent={ProfileHeader()}
         data={profileData}
+        keyExtractor={item => item.id}
         renderItem={({ item }) => renderProfileItem({ item, section, user, userOwned: projectOwnedByUser, navigation, projectId, onSwipeLeft, onSwipeRight, itemRefs, tab })}
         onScroll={async ({nativeEvent}) => {
           if (section === 'feed') {

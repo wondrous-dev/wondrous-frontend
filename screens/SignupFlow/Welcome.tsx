@@ -35,7 +35,8 @@ const loginStyles = StyleSheet.create({
     textAlign: 'center',
     maxWidth: spacingUnit * 43,
     alignSelf: 'center',
-    marginBottom: spacingUnit * 3
+    marginBottom: spacingUnit * 3,
+    fontFamily: 'Rubik SemiBold'
   },
   image: {
     alignSelf: 'center',

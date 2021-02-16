@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback, useEffect, useRef } from 'react'
+import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { Dimensions, Image, Pressable, SafeAreaView, ActivityIndicator, View, RefreshControl, FlatList } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -60,7 +60,6 @@ function UserProfile({
   route
 }: StackScreenProps<RootStackParamList, 'UserProfile'>) {
   const loggedInUser = useMe()
-  console.log('loggedinUser', loggedInUser)
   const finalUserId = getUserId({ route, user: loggedInUser })
   let noGoingBack = route && route.params && route.params.noGoingBack
   const tab = route && route.params && route.params.tab
@@ -169,6 +168,7 @@ function UserProfile({
   })
 
   const [user, setUser] = useState(null)
+  const previousUser = usePrevious(user)
   const [profilePicture, setProfilePicture] = useState(user && user.profilePicture)
   const [updateUser] = useMutation(UPDATE_USER, {
     update(cache, { data: { updateUser }}) {
@@ -235,7 +235,7 @@ function UserProfile({
         fetchUser({ userId: finalUserId, setUser })
       }
     }
-    if (user) {
+    if (!profilePicture && user && !isEqual(user, previousUser)) {
       setProfilePicture(user.profilePicture)
     }
     if (userFeedData && userFeedData.getUserFeed) {
@@ -313,59 +313,10 @@ function UserProfile({
     })
   }
 
-  return (
-    <SafeAreaView style={{
-      backgroundColor: White,
-      flex: 1
-    }}>
-      <Header noGoingBack={noGoingBack} share={`${WONDER_BASE_URL}/user/${finalUserId}`} />
-      {
-        confetti &&
-        <ConfettiCannon count={200} origin={{x: -10, y: 0}} />
-      }
-      {
-        user &&
-        <EditProfileModal user={user} isVisible={isModalVisible} setModalVisible={setModalVisible} saveMutation={updateUser} />
-      }
-      <ProfileContext.Provider value={{
-        section,
-        setSection,
-        refreshing,
-        setRefreshing,
-        // projectFeedData,
-        // projectFeedLoading,
-        // projectFeedError,
-        // getProjectFeed,
-        onSwipeLeft,
-        onSwipeRight,
-        status,
-        setStatus,
-        setLoading,
-        setModalVisible
-      }}>
-        {userOwned &&
-          <UploadImage isVisible={isModalVisible} setModalVisible={setModalVisible} image={profilePicture} setImage={setProfilePicture} saveImageMutation={updateUser} imagePrefix={`user/${finalUserId}/`} saveImageMutationVariable={[{userId: finalUserId, input: { profilePicture }}, ['input', 'profilePicture']]}  />
-        }
-        {
-          user &&
-          <View style={{
-            // flex: 1,
-            // paddingLeft: spacingUnit * 2,
-            // paddingRight: spacingUnit * 2
-          }}>
-          <FlatList    refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(feedSelected, actionSelected, asksSelected)} />
-          }
-          ItemSeparatorComponent={() => (
-            <View
-              style={[feedSelected && {
-                borderBottomColor: Grey300,
-                borderBottomWidth: 1,
-              }]}
-            />
-          )}
-          ListHeaderComponent={() => (
-              <View style={profileStyles.profileContainer}>
+
+  function ProfileHeader () {
+    return (
+      <View style={profileStyles.profileContainer}>
               <View style={[profileStyles.profileInfoContainer, {
                 // justifyContent: 'space-between',
               }]}>
@@ -377,7 +328,7 @@ function UserProfile({
                     width: spacingUnit * 10,
                     height: spacingUnit * 10,
                     borderRadius: spacingUnit * 5
-                  }} src={profilePicture || user.profilePicture} />
+                  }} src={profilePicture || user.profilePicture} setImage={setProfilePicture} />
                   :
                   <ProfilePlaceholder projectOwnedByUser={userOwned} user={true} />
                 }
@@ -523,13 +474,69 @@ function UserProfile({
                 (actionSelected || asksSelected) &&
                 <StatusSelector setStatus={setStatus} status={status} />
               }
-            </View>
+      </View>
+    )
+  }
+
+
+  return (
+    <SafeAreaView style={{
+      backgroundColor: White,
+      flex: 1
+    }}>
+      <Header noGoingBack={noGoingBack} share={`${WONDER_BASE_URL}/user/${finalUserId}`} />
+      {
+        confetti &&
+        <ConfettiCannon count={200} origin={{x: -10, y: 0}} />
+      }
+      {
+        user &&
+        <EditProfileModal user={user} isVisible={isModalVisible} setModalVisible={setModalVisible} saveMutation={updateUser} />
+      }
+      <ProfileContext.Provider value={{
+        section,
+        setSection,
+        refreshing,
+        setRefreshing,
+        // projectFeedData,
+        // projectFeedLoading,
+        // projectFeedError,
+        // getProjectFeed,
+        onSwipeLeft,
+        onSwipeRight,
+        status,
+        setStatus,
+        setLoading,
+        setModalVisible
+      }}>
+        {userOwned &&
+          <UploadImage isVisible={isModalVisible} setModalVisible={setModalVisible} image={profilePicture} setImage={setProfilePicture} saveImageMutation={updateUser} imagePrefix={`user/${finalUserId}/`} saveImageMutationVariable={[{userId: finalUserId, input: { profilePicture }}, ['input', 'profilePicture']]}  />
+        }
+        {
+          user &&
+          <View style={{
+            // flex: 1,
+            // paddingLeft: spacingUnit * 2,
+            // paddingRight: spacingUnit * 2
+          }}>
+          <FlatList    refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(feedSelected, actionSelected, asksSelected)} />
+          }
+          ItemSeparatorComponent={() => (
+            <View
+              style={[feedSelected && {
+                borderBottomColor: Grey300,
+                borderBottomWidth: 1,
+              }]}
+            />
           )}
+          ListHeaderComponent={ProfileHeader()}
 
           data={profileData}
           contentContainerStyle={{
             paddingBottom: spacingUnit * 10
           }}
+          keyExtractor={item => item.id}
           scrollEventThrottle={400}
           renderItem={({ item }) => renderProfileItem({ item, section, user, userOwned, navigation, itemRefs, onSwipeLeft, onSwipeRight, tab })}
           ListEmptyComponent={() => {
