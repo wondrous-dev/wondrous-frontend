@@ -448,7 +448,7 @@ export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRigh
   )
 }
 
-const removeActions = ({item, type, original, actions }) => {
+const removeActions = ({item, type, original, actions, status }) => {
   const newActions = {}
   if (actions) {
     const {
@@ -543,7 +543,7 @@ export const onSwipe =({
             cache.modify({
               fields: {
                 getProjectActions(existingActions) {
-                  return removeActions({ item, type: 'goals', original: existingActions, actions })
+                  return removeActions({ item, type: 'goals', original: existingActions, actions, status })
                 }
               }
             })
@@ -551,7 +551,7 @@ export const onSwipe =({
             cache.modify({
               fields: {
                 getUserActions(existingActions) {
-                  return removeActions({ item, type: 'goals', original: existingActions, actions })
+                  return removeActions({ item, type: 'goals', original: existingActions, actions, status })
                 }
               }
             })
@@ -559,6 +559,7 @@ export const onSwipe =({
         }
       })
     } else {
+
       updateGoal({
         variables: {
           goalId: item.id,
@@ -571,7 +572,7 @@ export const onSwipe =({
             cache.modify({
               fields: {
                 getProjectActions(existingActions) {
-                  return removeActions({ item, type: 'goals', original: existingActions, actions })
+                  return removeActions({ item, type: 'goals', original: existingActions, actions, status })
                 }
               }
             })
@@ -579,7 +580,7 @@ export const onSwipe =({
             cache.modify({
               fields: {
                 getUserActions(existingActions) {
-                  return removeActions({ item, type: 'goals', original: existingActions, actions })
+                  return removeActions({ item, type: 'goals', original: existingActions, actions, status })
                 }
               }
             })
@@ -597,7 +598,7 @@ export const onSwipe =({
           cache.modify({
             fields: {
               getProjectActions(existingActions) {
-                removeActions({ item, type: 'tasks', original: existingActions, actions })
+                removeActions({ item, type: 'tasks', original: existingActions, actions, status })
               }
             }
           })
@@ -615,7 +616,7 @@ export const onSwipe =({
           cache.modify({
             fields: {
               getProjectActions(existingActions) {
-                removeActions({ item, type: 'tasks', original: existingActions, actions })
+                removeActions({ item, type: 'tasks', original: existingActions, actions, status })
               }
             }
           })
