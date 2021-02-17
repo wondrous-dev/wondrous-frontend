@@ -21,6 +21,8 @@ import AddIcon from '../assets/images/bottomNav/add'
 import { BottomTabParamList, TabOneParamList, TabTwoParamList } from '../types'
 import { SvgImage } from '../storybook/stories/Image'
 import { flattenParams, spacingUnit } from '../utils/common'
+import { useQuery } from '@apollo/client'
+import { GET_UNREAD_NOTIFICATION_COUNT } from '../graphql/queries'
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>()
 
@@ -128,6 +130,11 @@ const TabBar = ({ state, descriptors, navigation, params }) => {
 }
 
 export default function BottomTabNavigator() {
+  const { data: unreadNotifCountData, loading, error} = useQuery(GET_UNREAD_NOTIFICATION_COUNT, {
+    fetchPolicy: 'network-only'
+  })
+  const unreadNotifCount = unreadNotifCountData && unreadNotifCountData.getUnreadNotificationCount && unreadNotifCountData.getUnreadNotificationCount.count
+  console.log('unadsf', unreadNotifCountData, error)
   return (
     <BottomTab.Navigator
     // tabBar={props => <TabBar {...props} />}
@@ -172,6 +179,12 @@ export default function BottomTabNavigator() {
       <BottomTab.Screen
         name='Notifications'
         component={Notifications}
+        options={{
+          tabBarLabel: 'Home',
+          tabBarColor: '#009387',
+          tabBarBadge: unreadNotifCount !== 0 ? unreadNotifCount : null,                          // This is for bar Badge
+
+        }}
       />
       <BottomTab.Screen
         name='Profile'

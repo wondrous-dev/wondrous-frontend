@@ -30,3 +30,11 @@ export const GET_NOTIFICATIONS = gql`
     }
   }
 `
+
+export const GET_UNREAD_NOTIFICATION_COUNT = gql`
+  query {
+    getUnreadNotificationCount {
+      count
+    }
+  }
+`

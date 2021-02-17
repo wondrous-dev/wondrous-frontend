@@ -11,7 +11,7 @@ import { withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { White, Grey300, Black, Grey800, Blue100 } from '../../constants/Colors'
-import { GET_NOTIFICATIONS, GET_FEED_ITEM_FOR_FEED_COMMENT, GET_FEED_ITEM, GET_POST_ITEM } from '../../graphql/queries'
+import { GET_NOTIFICATIONS, GET_FEED_ITEM_FOR_FEED_COMMENT, GET_FEED_ITEM, GET_POST_ITEM, GET_UNREAD_NOTIFICATION_COUNT } from '../../graphql/queries'
 import { MARK_NOTIFICATION_AS_VIEWED } from '../../graphql/mutations'
 import { RegularText } from '../../storybook/stories/Text'
 import { SafeImage } from '../../storybook/stories/Image'
@@ -74,6 +74,9 @@ const getNotificationPressFunction = async ({ notificationInfo, navigation, tab,
     variables: {
       notificationId: id
     },
+    refetchQueries: [
+      {query: GET_UNREAD_NOTIFICATION_COUNT}
+    ],
     update: (cache, { data }) => {
       cache.modify({
         fields: {
