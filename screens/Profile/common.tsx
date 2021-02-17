@@ -520,7 +520,9 @@ export const onSwipe =({
   projectAskData,
   userAsksData,
   setConfetti,
-  loggedInUser
+  loggedInUser,
+  setTaskCompleteModal,
+  setGoalCompleteModal
 }) => {
   if (setConfetti) {
     const formattedDueDate = new Date(item && item.dueDate)
@@ -537,6 +539,9 @@ export const onSwipe =({
   }
   if (type === 'goal') {
     if (status === 'completed') {
+      if (loggedInUser && loggedInUser.usageProgress && !loggedInUser.goalCompleted) {
+        setGoalCompleteModal(true)
+      }
       completeGoal({
         variables: {
           goalId: item.id
@@ -604,6 +609,9 @@ export const onSwipe =({
       })
     }
   } else if (type === 'task') {
+    if (loggedInUser && loggedInUser.usageProgress && !loggedInUser.taskCompleted) {
+      setTaskCompleteModal(true)
+    }
     if (status === 'completed') {
       completeTask({
         variables: {

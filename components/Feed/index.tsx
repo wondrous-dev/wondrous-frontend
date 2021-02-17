@@ -488,7 +488,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
     }
   }, [])
 
-  const SHARE_URL = `https://wonderapp.co/feed/${item.id}`
+  const SHARE_URL = `https://wonderapp.co/app/feed/${item.id}`
   const CONTENT = 'Check this discussion from Wonder!'
 
   return (

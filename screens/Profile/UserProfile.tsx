@@ -36,6 +36,7 @@ import Link from '../../assets/images/link'
 import { sortByDueDate } from '../../utils/date'
 import apollo from '../../services/apollo'
 import { Streak } from '../../components/Streak'
+import { GoalCongratsModal, TaskCongratsModal } from '../../components/Modal'
 
 const getUserId = ({ route, user }) => {
   if (route && route.params && route.params.userId) {
@@ -70,6 +71,8 @@ function UserProfile({
   const [isModalVisible, setModalVisible] = useState(false)
   const [userFeed, setUserFeed] = useState([])
   const prevFeed = usePrevious(userFeed)
+  const [taskCompleteModal, setTaskCompleteModal] = useState(false)
+  const [goalCompletemodal, setGoalCompleteModal] = useState(false)
   const [loading, setLoading] = useState(false)
   // const [offset, setOffset] = useState(null)
   const [followUser] = useMutation(FOLLOW_USER, {
@@ -321,7 +324,9 @@ function UserProfile({
       projectAskData: null,
       userAsksData,
       setConfetti,
-      loggedInUser
+      loggedInUser,
+      setTaskCompleteModal,
+      setGoalCompleteModal
     })
   }
 
@@ -329,6 +334,7 @@ function UserProfile({
   function ProfileHeader () {
     return (
       <View style={profileStyles.profileContainer}>
+        
               <View style={[profileStyles.profileInfoContainer, {
                 // justifyContent: 'space-between',
               }]}>
@@ -503,7 +509,12 @@ function UserProfile({
       }
       {
         user &&
+        <>
         <EditProfileModal user={user} isVisible={isModalVisible} setModalVisible={setModalVisible} saveMutation={updateUser} />
+
+        <GoalCongratsModal user={user} isVisible={goalCompletemodal} setModalVisible={setGoalCompleteModal} />
+        <TaskCongratsModal user={user} isVisible={taskCompleteModal} setModalVisible={setTaskCompleteModal} />
+        </>
       }
       <ProfileContext.Provider value={{
         section,
