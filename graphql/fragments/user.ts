@@ -24,6 +24,8 @@ export const PublicUserFragment = gql`
       goalCreated
       taskCreated
       askCreated
+      taskCompleted
+      goalCompleted
     }
   }
 `

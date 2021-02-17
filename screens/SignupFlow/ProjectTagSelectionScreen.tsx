@@ -19,6 +19,7 @@ import { PrimaryButton } from '../../storybook/stories/Button'
 import { moderateScale } from '../../utils/scale'
 import { withAuth, useMe } from '../../components/withAuth'
 import { useMutation } from '@apollo/client'
+import { updateUsageProgress } from '../../utils/apollo';
 
 const TagContext = createContext(null)
 
@@ -130,14 +131,7 @@ const ProjectTagInput = ({ navigation, projectId }) => {
             cache.modify({
                 fields: {
                     users() {
-                        const newUser = {...user}
-                        newUser['usageProgress'] = newUser['usageProgress'] ? {
-                            ...newUser['usageProgress'],
-                            signupCompleted: true
-                        } : {
-                            signupCompleted: true
-                        }
-                        return [newUser]
+                        return updateUsageProgress({ user, newKey: 'usageProgress'})
                     },
                     getProjectById() {
                         return {...createProjectTags}

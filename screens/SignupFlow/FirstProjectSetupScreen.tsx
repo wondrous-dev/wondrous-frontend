@@ -17,6 +17,7 @@ import { withAuth, useMe } from '../../components/withAuth'
 import { CREATE_PROJECT, UPDATE_PROJECT } from '../../graphql/mutations/project'
 import { GET_PROJECT_BY_ID } from '../../graphql/queries/project'
 import apollo from '../../services/apollo'
+import { updateUsageProgress } from '../../utils/apollo';
 
 const FirstProjectSetupContext = createContext(null)
 
@@ -76,14 +77,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                 fields: {
                     users() {
                         if ((user && !user.usageProgress) || (user && user.usageProgress && !user.usageProgress.projectCreated)) {
-                            const newUser = {...user}
-                            newUser['usageProgress'] = newUser['usageProgress'] ? {
-                                ...newUser['usageProgress'],
-                                projectCreated: createProject.id
-                            } : {
-                                projectCreated: createProject.id
-                            }
-                            return [newUser]
+                            return updateUsageProgress({ user, newKey: 'projectCreated', newValue: createProject.id})
                         }
                         return [user]
                     }

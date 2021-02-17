@@ -18,6 +18,7 @@ import { CREATE_TASK } from '../../graphql/mutations'
 import { GET_TASKS_FROM_PROJECT, GET_USER_STREAK } from '../../graphql/queries'
 import { Card } from '../../storybook/stories/Card'
 import { WHOAMI } from '../../graphql/queries'
+import { updateUsageProgress } from '../../utils/apollo'
 
 const setupTaskStyles = StyleSheet.create({
   setupTaskContainer: {
@@ -58,18 +59,7 @@ function SetupTaskScreen({
                 ]
               },
               users() {
-                if (user) {
-                  const newUsageProgress = user.usageProgress ? {
-                    ...user.usageProgress,
-                    taskCreated: true
-                  } : {
-                    taskCreated: true
-                  }
-                  return [{
-                    ...user,
-                    usageProgress: newUsageProgress
-                  }]
-                }
+                return updateUsageProgress({ user, newKey: 'taskCreated'})
               }
           }
       })

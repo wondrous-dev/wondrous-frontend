@@ -21,6 +21,8 @@ import TaskIcon from '../../assets/images/task/standalone'
 import AskIcon from '../../assets/images/ask/standalone'
 import { Card } from '../../storybook/stories/Card' 
 import UserPlaceholder from '../../assets/images/user/placeholder'
+import { GET_USER_STREAK } from '../../graphql/queries'
+import { updateUsageProgress } from '../../utils/apollo'
 
 
 export const ProfilePlaceholder = ({ projectOwnedByUser, imageStyle, user }) => {
@@ -517,7 +519,8 @@ export const onSwipe =({
   updateAsk,
   projectAskData,
   userAsksData,
-  setConfetti
+  setConfetti,
+  loggedInUser
 }) => {
   if (setConfetti) {
     const formattedDueDate = new Date(item && item.dueDate)
@@ -544,6 +547,9 @@ export const onSwipe =({
               fields: {
                 getProjectActions(existingActions) {
                   return removeActions({ item, type: 'goals', original: existingActions, actions, status })
+                },
+                users() {
+                  return updateUsageProgress({ user: loggedInUser, newKey: 'goalCompleted' })
                 }
               }
             })
@@ -552,6 +558,9 @@ export const onSwipe =({
               fields: {
                 getUserActions(existingActions) {
                   return removeActions({ item, type: 'goals', original: existingActions, actions, status })
+                },
+                users() {
+                  return updateUsageProgress({ user: loggedInUser, newKey: 'goalCompleted' })
                 }
               }
             })
@@ -573,6 +582,9 @@ export const onSwipe =({
               fields: {
                 getProjectActions(existingActions) {
                   return removeActions({ item, type: 'goals', original: existingActions, actions, status })
+                },
+                users() {
+                  return updateUsageProgress({ user: loggedInUser, newKey: 'goalCompleted' })
                 }
               }
             })
@@ -581,6 +593,9 @@ export const onSwipe =({
               fields: {
                 getUserActions(existingActions) {
                   return removeActions({ item, type: 'goals', original: existingActions, actions, status })
+                },
+                users() {
+                  return updateUsageProgress({ user: loggedInUser, newKey: 'goalCompleted' })
                 }
               }
             })
@@ -598,7 +613,10 @@ export const onSwipe =({
           cache.modify({
             fields: {
               getProjectActions(existingActions) {
-                removeActions({ item, type: 'tasks', original: existingActions, actions, status })
+                return removeActions({ item, type: 'tasks', original: existingActions, actions, status })
+              },
+              users() {
+                return updateUsageProgress({ user: loggedInUser, newKey: 'taskCompleted' })
               }
             }
           })
@@ -616,7 +634,10 @@ export const onSwipe =({
           cache.modify({
             fields: {
               getProjectActions(existingActions) {
-                removeActions({ item, type: 'tasks', original: existingActions, actions, status })
+                return removeActions({ item, type: 'tasks', original: existingActions, actions, status })
+              },
+              users() {
+                return updateUsageProgress({ user: loggedInUser, newKey: 'taskCompleted' })
               }
             }
           })

@@ -23,6 +23,7 @@ import { CREATE_ASK, CREATE_GOAL, CREATE_TASK } from '../../graphql/mutations'
 import { CREATE_POST } from '../../graphql/mutations/post'
 import Toast from 'react-native-toast-message'
 import { GET_USER_STREAK, WHOAMI } from '../../graphql/queries'
+import { updateUsageProgress } from '../../utils/apollo'
 
 const addStyles = StyleSheet.create({
   container: {
@@ -106,18 +107,7 @@ function AddScreen({
       cache.modify({
           fields: {
               users() {
-                if (user) {
-                  const newUsageProgress = user.usageProgress ? {
-                    ...user.usageProgress,
-                    askCreated: true
-                  } : {
-                    askCreated: true
-                  }
-                  return [{
-                    ...user,
-                    usageProgress: newUsageProgress
-                  }]
-                }
+                return updateUsageProgress({ user, newKey: 'askCreated'})
               }
           }
       })

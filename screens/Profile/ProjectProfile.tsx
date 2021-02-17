@@ -162,7 +162,6 @@ function ProjectProfile({
       { query: GET_USER_STREAK, variables: {
         userId: user && user.id
       } },
-      
     ]
   })
   const [completeTask] = useMutation(COMPLETE_TASK, {
@@ -285,7 +284,8 @@ function ProjectProfile({
     updateTask,
     updateAsk,
     projectAskData,
-    userAsksData: null
+    userAsksData: null,
+    loggedInUser: user
   })
   const onSwipeRight = (item, type) => onSwipe({
     item,
@@ -301,7 +301,8 @@ function ProjectProfile({
     updateAsk,
     projectAskData,
     userAsksData: null,
-    setConfetti
+    setConfetti,
+    loggedInUser: user
   })
 
   function ProfileHeader () {

@@ -28,6 +28,7 @@ import { useMutation } from '@apollo/client'
 import { UPDATE_PROJECT } from '../../graphql/mutations/project'
 import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
 import { withAuth, useMe } from '../../components/withAuth'
+import { updateUsageProgress } from '../../utils/apollo'
 
 const ProjectSetupCategoryContext = createContext(null)
 
@@ -188,14 +189,7 @@ function ProjectSetupCategoryScreen({
       cache.modify({
           fields: {
               users() {
-                  const newUser = {...user}
-                  newUser['usageProgress'] = newUser['usageProgress'] ? {
-                      ...newUser['usageProgress'],
-                      projectCategorySelected: true
-                  } : {
-                      projectCategorySelected: true
-                  }
-                  return [newUser]
+                return updateUsageProgress({ user, newKey: 'projectCategorySelected' })
               },
               getProjectById(existingProject) {
 

@@ -20,6 +20,7 @@ import { CardList } from '../../storybook/stories/CardList'
 import { Card } from '../../storybook/stories/Card'
 // import { FlatList } from 'react-native-gesture-handler'
 import { WHOAMI } from '../../graphql/queries'
+import { updateUsageProgress } from '../../utils/apollo'
 
 const setupGoalStyles = StyleSheet.create({
   setupGoalContainer: {
@@ -61,18 +62,7 @@ function SetupGoalScreen({
                 ]
               },
               users() {
-                if (user) {
-                  const newUsageProgress = user.usageProgress ? {
-                    ...user.usageProgress,
-                    goalCreated: true
-                  } : {
-                    goalCreated: true
-                  }
-                  return [{
-                    ...user,
-                    usageProgress: newUsageProgress
-                  }]
-                }
+                return updateUsageProgress({ user, newKey: 'goalCreated' })
               }
           }
       })

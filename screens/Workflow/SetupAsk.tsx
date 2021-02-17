@@ -17,6 +17,7 @@ import { FullScreenAskModal } from '../../components/Modal/AskModal'
 import { CREATE_ASK } from '../../graphql/mutations'
 import { GET_ASKS_FROM_PROJECT } from '../../graphql/queries'
 import { Card } from '../../storybook/stories/Card'
+import { updateUsageProgress } from '../../utils/apollo'
 
 const setupAskStyles = StyleSheet.create({
   setupAskContainer: {
@@ -52,16 +53,7 @@ function SetupAskScreen({
               },
               users() {
                 if (user) {
-                  const newUsageProgress = user.usageProgress ? {
-                    ...user.usageProgress,
-                    askCreated: true
-                  } : {
-                    askCreated: true
-                  }
-                  return [{
-                    ...user,
-                    usageProgress: newUsageProgress
-                  }]
+                  return updateUsageProgress({ user, newKey: 'askCreated' })
                 }
               }
           }

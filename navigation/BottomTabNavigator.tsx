@@ -134,7 +134,7 @@ export default function BottomTabNavigator() {
     fetchPolicy: 'network-only'
   })
   const unreadNotifCount = unreadNotifCountData && unreadNotifCountData.getUnreadNotificationCount && unreadNotifCountData.getUnreadNotificationCount.count
-  console.log('unadsf', unreadNotifCountData, error)
+
   return (
     <BottomTab.Navigator
     // tabBar={props => <TabBar {...props} />}
@@ -180,7 +180,6 @@ export default function BottomTabNavigator() {
         name='Notifications'
         component={Notifications}
         options={{
-          tabBarLabel: 'Home',
           tabBarColor: '#009387',
           tabBarBadge: unreadNotifCount !== 0 ? unreadNotifCount : null,                          // This is for bar Badge
 

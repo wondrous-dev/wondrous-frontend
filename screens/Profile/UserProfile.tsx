@@ -117,11 +117,12 @@ function UserProfile({
       } }
     ]
   })
+
   const [completeTask] = useMutation(COMPLETE_TASK, {
     refetchQueries: [
       { query: GET_USER_STREAK, variables: {
         userId: loggedInUser && loggedInUser.id
-      } }
+      } },
     ]
   })
   const [updateAsk] = useMutation(UPDATE_ASK)
@@ -301,7 +302,8 @@ function UserProfile({
     updateTask,
     updateAsk,
     projectAskData: null,
-    userAsksData
+    userAsksData,
+    loggedInUser
   })
   const onSwipeRight = (item, type) => {
     onSwipe({
@@ -318,7 +320,8 @@ function UserProfile({
       updateAsk,
       projectAskData: null,
       userAsksData,
-      setConfetti
+      setConfetti,
+      loggedInUser
     })
   }
 
