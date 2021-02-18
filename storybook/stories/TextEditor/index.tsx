@@ -27,12 +27,15 @@ import { RichEditor, RichToolbar } from './RichEditor'
 import { SvgImage } from '../Image'
 import Placeholder from '../../../assets/images/placeholder.svg'
 import DefaultProfilePicture from '../../../assets/images/default-profile-picture.jpg'
+import CoolProfilePic from '../../../assets/images/default-profile.png'
 import { Black, Blue500, Grey100, Grey200, Grey300, Grey400, White } from '../../../constants/Colors'
 import apollo from '../../../services/apollo'
-import { GET_AUTOCOMPLETE_USERS } from '../../../graphql/queries'
+import { GET_AUTOCOMPLETE_USERS, GET_PROJECTS_AUTOCOMPLETE } from '../../../graphql/queries'
 import { spacingUnit } from '../../../utils/common'
 import { useTextEditor } from '../../../utils/hooks'
 import { text } from '@storybook/addon-knobs'
+import { SafeImage } from '../Image'
+
 
 function findIndexes(source, find) {
   if (!source) {
@@ -181,15 +184,22 @@ export class RichTextEditor extends React.Component {
       autocompleteLoading: true
     })
     try {
-      const result = await apollo.query({
+      const userResult = await apollo.query({
         query: GET_AUTOCOMPLETE_USERS,
         variables: {
           username: this.state.autocompleteString
         },
       })
-      if (result.data) {
+      const projectResult = await apollo.query({
+        query: GET_PROJECTS_AUTOCOMPLETE,
+        variables: {
+          name: this.state.autocompleteString
+        }
+      })
+      console.log('projectReslui', projectResult)
+      if (userResult.data && projectResult.data) {
         this.setState({
-          autocompleteUserList: result.data.getAutocompleteUsers,
+          autocompleteUserList: [...userResult.data.getAutocompleteUsers, ...projectResult.data.getAutocompleteProjects],
           autocompleteLoading: false
         })
       }
@@ -382,6 +392,9 @@ const renderSuggestions: (suggestions: Suggestion[], renderStyle, textInputRef) 
   if (keyword == null) {
     return null;
   }
+  if (keyword === '') {
+    suggestions = suggestions.slice(0, 5)
+  }
 
   return (
     <View style={{
@@ -390,15 +403,21 @@ const renderSuggestions: (suggestions: Suggestion[], renderStyle, textInputRef) 
       ...renderStyle
     }}>
       {suggestions
-        .filter(one => one.username.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
-        .map(user => (
-          <Pressable key={user.id} onPress={() => {
+        .filter(one => {
+          if (one.username) {
+            return one.username.toLocaleLowerCase().includes(keyword.toLocaleLowerCase())
+          } else if (one.name) {
+            return one.name.toLocaleLowerCase().includes(keyword.toLocaleLowerCase())
+          }
+        })
+        .map(element => (
+          <Pressable key={element.id} onPress={() => {
             if (textInputRef && textInputRef.current) {
               textInputRef.current.focus()
             }
             onSuggestionPress({
-              ...user,
-              name: user.username
+              ...element,
+              name: element.name || element.username
             })
           }}>
           <View style={{
@@ -411,29 +430,48 @@ const renderSuggestions: (suggestions: Suggestion[], renderStyle, textInputRef) 
             backgroundColor: White
           }}>
             {
-              user.profilePicture && user.profilePicture !== 'None' ?
+              element.profilePicture && element.profilePicture !== 'None' ?
               <SafeImage
-              src={user.profilePicture} style={{
+              src={element.profilePicture} style={{
                 width: 30,
                 height: 30,
                 borderRadius: 15,
                 marginRight: 8
               }} />
               :
-              <Image source={DefaultProfilePicture} style={{
-                marginRight: 8,
-                width: 30,
-                height: 30,
-                borderRadius: 15
-              }} />
+              (
+                element.username
+                ?
+                <Image source={DefaultProfilePicture} style={{
+                  marginRight: 8,
+                  width: 30,
+                  height: 30,
+                  borderRadius: 15
+                }} />
+                :
+                <Image source={CoolProfilePic} style={{
+                  marginRight: 8,
+                  width: 30,
+                  height: 30,
+                  borderRadius: 15
+                }} />
+              )
             }
             <View>
               <Text style={{color: Black, marginBottom: 4, fontWeight: 'bold'}}>
-                {user.firstName} {user.lastName}
+                {
+                  element.firstName ?
+                    `${element.firstName} ${element.lastName}`
+                    :
+                    `${element.name}`
+                }
               </Text>
-              <Text style={{ color: Grey200, fontSize: 14 }}>
-                @{user.username}
-              </Text>
+              {
+                element.username &&
+                  <Text style={{ color: Grey200, fontSize: 14 }}>
+                  @{element.username}
+                </Text>
+              }
             </View>
           </View>
         </Pressable>
@@ -443,7 +481,7 @@ const renderSuggestions: (suggestions: Suggestion[], renderStyle, textInputRef) 
   );
 }
 
-export const TextEditor = ({ style, renderSuggestionStyle, ...props }) => {
+export const TextEditor = ({ style, renderSuggestionStyle, renderBottom=true, ...props }) => {
   const {
     content,
     setContent,
@@ -454,9 +492,14 @@ export const TextEditor = ({ style, renderSuggestionStyle, ...props }) => {
 
   // const [users, setUsers] = useState([])
   let textInputRef = createRef()
-  const [getAutocompleteUsers, { data, loading, error }] = useLazyQuery(GET_AUTOCOMPLETE_USERS, {
+  const [getAutocompleteUsers, { data: userData, loading: userLoading, error: userError }] = useLazyQuery(GET_AUTOCOMPLETE_USERS, {
     variables: {
       username: ''
+    }
+  })
+  const [getAutocompleteProjects, { data: projectData, loading: projectLoading, error: projectError }] = useLazyQuery(GET_PROJECTS_AUTOCOMPLETE, {
+    variables: {
+      name: ''
     }
   })
   useEffect(() => {
@@ -465,11 +508,22 @@ export const TextEditor = ({ style, renderSuggestionStyle, ...props }) => {
         username: ''
       }
     })
+    getAutocompleteProjects({
+      variables: {
+        name: ''
+      }
+    })
     if (replyName && setReplyName) {
       setContent(content + ' ' + replyName)
     }
   }, [replyName])
-  const users = (data && data.getAutocompleteUsers) || []
+  let finalArray = []
+  if (userData && userData.getAutocompleteUsers) {
+    finalArray = [...finalArray, ...userData.getAutocompleteUsers]
+  }
+  if (projectData && projectData.getAutocompleteProjects) {
+    finalArray = [...finalArray, ...projectData.getAutocompleteProjects]
+  }
   return (
     <MentionInput
 
@@ -479,8 +533,9 @@ export const TextEditor = ({ style, renderSuggestionStyle, ...props }) => {
         partTypes={[
           {
             trigger: '@',
-            renderSuggestions: renderSuggestions(users, renderSuggestionStyle, textInputRef),
+            renderSuggestions: renderSuggestions(finalArray, renderSuggestionStyle, textInputRef),
             textStyle: {fontWeight: 'bold', color: Blue500},
+            isBottomMentionSuggestionsRender: renderBottom
           },
           // {
           //   trigger: '#',

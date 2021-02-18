@@ -1,7 +1,7 @@
 
 
 import React, { useState, createContext, useCallback, useEffect } from 'react'
-import { Dimensions, Pressable, View } from 'react-native'
+import { Dimensions, Pressable, View, Image } from 'react-native'
 import { Bar } from 'react-native-progress'
 import { useNavigation } from '@react-navigation/native'
 import { useMutation } from '@apollo/client'
@@ -21,9 +21,10 @@ import TaskIcon from '../../assets/images/task/standalone'
 import AskIcon from '../../assets/images/ask/standalone'
 import { Card } from '../../storybook/stories/Card' 
 import UserPlaceholder from '../../assets/images/user/placeholder'
+import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { GET_USER_STREAK } from '../../graphql/queries'
 import { updateUsageProgress } from '../../utils/apollo'
-
+import CoolProfilePlaceholder from '../../assets/images/default-profile.png'
 
 export const ProfilePlaceholder = ({ projectOwnedByUser, imageStyle, user }) => {
   if (projectOwnedByUser) {
@@ -41,14 +42,16 @@ export const ProfilePlaceholder = ({ projectOwnedByUser, imageStyle, user }) => 
   }
   if (user) {
     return (
-      <UserPlaceholder style={{
-        marginRight: -spacingUnit,
-        marginBottom: spacingUnit
+      <Image source={DefaultProfilePicture} style={{
+        ...profileStyles.profilePlaceholderImage,
+        ...(imageStyle && {
+          ...imageStyle
+        })
       }} />
     )
   }
 
-  return <ProfileDefaultImage style={{
+  return <Image source={CoolProfilePlaceholder} style={{
     ...profileStyles.profilePlaceholderImage,
     ...(imageStyle && {
       ...imageStyle

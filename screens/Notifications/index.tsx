@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { SafeAreaView, RefreshControl, Text, StyleSheet, View, FlatList, ActivityIndicator, Pressable } from 'react-native'
+import { SafeAreaView, RefreshControl, Image, StyleSheet, View, FlatList, ActivityIndicator, Pressable } from 'react-native'
 import { useLazyQuery } from '@apollo/client'
 import { useNavigation } from '@react-navigation/native'
 import TimeAgo from 'javascript-time-ago'
@@ -13,6 +13,7 @@ import { Header } from '../../components/Header'
 import { White, Grey300, Black, Grey800, Blue100 } from '../../constants/Colors'
 import { GET_NOTIFICATIONS, GET_FEED_ITEM_FOR_FEED_COMMENT, GET_FEED_ITEM, GET_POST_ITEM, GET_UNREAD_NOTIFICATION_COUNT } from '../../graphql/queries'
 import { MARK_NOTIFICATION_AS_VIEWED } from '../../graphql/mutations'
+import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { RegularText } from '../../storybook/stories/Text'
 import { SafeImage } from '../../storybook/stories/Image'
 import { spacingUnit, wait } from '../../utils/common'
@@ -34,6 +35,9 @@ import GoalPage from '../Actions/Goal'
 import TaskPage from '../Actions/Task'
 import AskPage from '../Actions/Ask'
 import ActionList from '../Actions/ActionList'
+import ReviewIcon from '../../assets/images/notification/review'
+import ReviewWelcome from '../Review/ReviewWelcome'
+import CreateReview from '../Review/CreateReview'
 
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
@@ -46,7 +50,7 @@ const notificationStyles = StyleSheet.create({
     paddingTop: spacingUnit * 3,
     paddingBottom: spacingUnit * 3,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'flex-start'
   },
   notificationItemName: {
     flex: 1,
@@ -60,6 +64,12 @@ const notificationStyles = StyleSheet.create({
     alignContent: 'center',
     flexShrink: 1
   },
+  notificationImage: {
+    marginRight: 8,
+    width: spacingUnit * 6,
+    height: spacingUnit * 6,
+    borderRadius: spacingUnit * 3
+  }
 });
 
 const getNotificationPressFunction = async ({ notificationInfo, navigation, tab, getFeedItem, notifications }) => {
@@ -189,10 +199,17 @@ const getNotificationPressFunction = async ({ notificationInfo, navigation, tab,
         })
       }
       break
+      case 'review_reminder':
+        navigation.navigate('Root', {
+          screen: tab || 'profile',
+          params: {
+            screen: 'ReviewWelcome'
+          }
+        })
   }
 }
 
-const formatNotificationMessage = ({ notificationInfo, tab}) => {
+const formatNotificationMessage = ({ notificationInfo, tab }) => {
   let displayMessage = '';
   switch (notificationInfo.type) {
     case 'mention':
@@ -203,6 +220,13 @@ const formatNotificationMessage = ({ notificationInfo, tab}) => {
       break
     case 'comment':
       displayMessage = formatNotificationCommentMessage(notificationInfo);
+      break
+    case 'review_reminder':
+      displayMessage = (
+        <RegularText color={Black}>
+          Enter your weekly update! This will help reflect on your progress and keep your followers up to date.
+        </RegularText>
+      )
       break
     default:
       displayMessage = <></>;
@@ -326,8 +350,22 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
   const {
     actorProfilePicture: profilePicture,
     timestamp,
-    viewedAt
+    viewedAt,
+    type
   } = notificationInfo
+
+  const defaultImage = () => {
+    if (type === 'review_reminder') {
+      return (
+        <ReviewIcon 
+          style={notificationStyles.notificationImage}
+        />
+      )
+    }
+    return (
+      <Image source={DefaultProfilePicture} style={notificationStyles.notificationImage} />
+    )
+  }
   return (
     <Pressable onPress={() => getNotificationPressFunction({ notificationInfo, navigation, tab, notifications })} style={{
       ...notificationStyles.notificationItemContainer,
@@ -336,26 +374,19 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
       {
           profilePicture && profilePicture !== 'None' ?
           <SafeImage
-          src={profilePicture} style={{
-            width: spacingUnit * 6,
-            height: spacingUnit * 6,
-            borderRadius: spacingUnit * 3,
-            marginRight: 8
-          }} />
+          src={profilePicture} style={notificationStyles.notificationImage} />
           :
-          <Image source={DefaultProfilePicture} style={{
-            marginRight: 8,
-            width: spacingUnit * 6,
-            height: spacingUnit * 6,
-            borderRadius: spacingUnit * 3
-          }} />
+          defaultImage()
                     
       }
-      <View>
+      <View style={{
+        flex: 1
+      }}>
       {displayMessage}
       <RegularText color={Grey800} style={{
         fontSize: 13,
-        lineHeight: 18
+        lineHeight: 18,
+        marginTop: spacingUnit * 0.5
       }}>
       {timeAgo.format(new Date(timestamp))}
       </RegularText>
@@ -505,6 +536,12 @@ function NotificationScreenRoutes({
       <Stack.Screen name='AskPage' component={AskPage} options={{ gestureEnabled: false }} initialParams={{
         tab: 'Notifications'
       }}/>
+      <Stack.Screen name='ReviewWelcome' component={ReviewWelcome} initialParams={{
+        tab: 'Notifications'
+      }} />
+      <Stack.Screen name='CreateReview' component={CreateReview} initialParams={{
+        tab: 'Notifications'
+      }} />
     </Stack.Navigator>
     )
 }

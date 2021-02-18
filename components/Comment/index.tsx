@@ -82,7 +82,7 @@ const WriteComment = () => {
           setReplyName,
           placeholder: 'Add comment...'
         }}>
-        <TextEditor style={{
+        <TextEditor renderBottom={false} style={{
           width: Dimensions.get('window').width - (spacingUnit * 18),
         }} />
         </TextEditorContext.Provider>

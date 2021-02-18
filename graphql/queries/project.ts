@@ -47,6 +47,16 @@ export const GET_USER_PROJECTS = gql`
   }
 `
 
+export const GET_PROJECTS_AUTOCOMPLETE = gql`
+  query GetAutocompleteProjects($name: String) {
+    getAutocompleteProjects(name: $name) {
+      id
+      name
+      profilePicture
+    }
+  }
+`
+
 export const GET_PROJECT_ACTIONS = gql`
   query GetProjectActions($projectId: ID!, $status: String) {
     getProjectActions(projectId: $projectId, status: $status) {
