@@ -129,7 +129,7 @@ export const getMentionArray = (content) => {
   return mentionedUsers
 }
 
-export const renderMentionString = ({ content, textStyle, navigation, simple }) => {
+export const renderMentionString = ({ content, textStyle, navigation, simple, tab }) => {
   const final = regexifyString({
     pattern: mentionRegEx,
     decorator: (match, index) => {
@@ -147,12 +147,11 @@ export const renderMentionString = ({ content, textStyle, navigation, simple }) 
             ...textStyle
           }}
           onPress={() => navigation.navigate('Root', {
-            screen: 'Profile',
+            screen: tab || 'Profile',
             params: {
-              screen:'OtherUserProfile',
+              screen:'IdChecker',
               params: {
-                userId: id,
-                noGoingBack: false
+                id
               }
             }
           })}

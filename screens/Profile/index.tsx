@@ -21,6 +21,7 @@ import GoalPage from '../Actions/Goal'
 import TaskPage from '../Actions/Task'
 import AskPage from '../Actions/Ask'
 import ActionList from '../Actions/ActionList'
+import IdChecker from './IdChecker'
 
 const Stack = createStackNavigator<BottomTabParamList>()
 
@@ -52,6 +53,7 @@ function ProfileScreen({
       <Stack.Screen name='TaskPage' component={TaskPage} options={{ gestureEnabled: false }}/>
       <Stack.Screen name='ActionList' component={ActionList} options={{ gestureEnabled: false }} />
       <Stack.Screen name='AskPage' component={AskPage} options={{ gestureEnabled: false }} />
+      <Stack.Screen name='IdChecker' component={IdChecker} /> 
     </Stack.Navigator>
   )
 }

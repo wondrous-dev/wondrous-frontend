@@ -26,6 +26,7 @@ import GoalPage from '../Actions/Goal'
 import TaskPage from '../Actions/Task'
 import AskPage from '../Actions/Ask'
 import ActionList from '../Actions/ActionList'
+import IdChecker from '../Profile/IdChecker'
 
 const Stack = createStackNavigator<RootStackParamList>()
 
@@ -57,6 +58,9 @@ function DashboardScreen({
       <Stack.Screen name='TaskPage' component={TaskPage} options={{ gestureEnabled: false }} initialParams={{ tab: 'Dashboard' }}/>
       <Stack.Screen name='ActionList' component={ActionList} options={{ gestureEnabled: false }} initialParams={{ tab: 'Dashboard' }} />
       <Stack.Screen name='AskPage' component={AskPage} options={{ gestureEnabled: false }} initialParams={{ tab: 'Dashboard' }} />
+      <Stack.Screen name='IdChecker' component={IdChecker}  initialParams={{
+        tab: 'Dashboard'
+      }} /> 
     {/* <BottomTabNavigator /> */}
     </Stack.Navigator>
   )

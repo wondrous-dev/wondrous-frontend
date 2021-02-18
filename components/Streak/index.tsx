@@ -79,7 +79,7 @@ const StreakModal = ({ isVisible, streak, setStreakModal, viewing }) => {
           fontFamily: 'Rubik SemiBold',
           fontSize: 22
         }}>
-          {streak.currentStreak}
+          {streak && streak.currentStreak}
         </Subheading>
         </View>
         </View>
@@ -117,7 +117,7 @@ export const Streak = ({ streakContainerStyle, streak, viewing }) => {
         fontFamily: 'Rubik SemiBold',
         marginLeft: spacingUnit * 0.75
       }}>
-        {streak.currentStreak}
+        {streak && streak.currentStreak}
       </Paragraph>
       </View>
     </Pressable>

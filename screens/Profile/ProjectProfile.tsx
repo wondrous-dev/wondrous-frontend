@@ -79,7 +79,8 @@ function ProjectProfile({
     projectId,
     noGoingBack,
     editProfile,
-    tab
+    tab,
+    fetchedProject
   } = route.params
   const {
     loading: projectFeedLoading,
@@ -177,7 +178,7 @@ function ProjectProfile({
       projectId
     }
   })
-  const project = data && data.getProjectById
+  const project = fetchedProject || (data && data.getProjectById)
 
   const projectOwnedByUser = project && user && project.createdBy === user.id
 
@@ -368,7 +369,7 @@ function ProjectProfile({
                 marginLeft: spacingUnit
               }} onPress={() => setEditProfileModal(true)}>
                 <RegularText color={Black}>
-                  Edit Profile
+                  Edit Project
                 </RegularText>
               </SecondaryButton>
             </>

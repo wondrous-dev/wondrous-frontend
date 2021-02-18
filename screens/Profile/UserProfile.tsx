@@ -65,6 +65,9 @@ function UserProfile({
   let noGoingBack = route && route.params && route.params.noGoingBack
   const tab = route && route.params && route.params.tab
   const userOwned = loggedInUser && (loggedInUser.id === finalUserId)
+  const {
+    fetchedUser
+  } = route.params
   const [status, setStatus] = useState('created')
   const [section, setSection] = useState('feed')
   const [refreshing, setRefreshing] = useState(false)
@@ -175,7 +178,7 @@ function UserProfile({
     fetchPolicy: 'network-only'
   })
 
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(fetchedUser)
   const previousUser = usePrevious(user)
   const { data: streakData } = useQuery(GET_USER_STREAK, {
     variables: {

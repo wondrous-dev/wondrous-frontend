@@ -101,7 +101,7 @@ const TaskPage = ({ navigation, route }) => {
           borderColor: Grey800
         },
         textColor: Grey800,
-        text: 'Edit Profile',
+        text: 'Edit Task',
         onPress: () => {
           setModalVisible(true)
         }

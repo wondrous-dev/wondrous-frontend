@@ -114,7 +114,7 @@ const AskPage = ({ navigation, route }) => {
           borderColor: Grey800
         },
         textColor: Grey800,
-        text: 'Edit Profile',
+        text: 'Edit Ask',
         onPress: () => {
           setModalVisible(true)
         }
