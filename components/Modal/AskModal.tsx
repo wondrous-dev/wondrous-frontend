@@ -22,7 +22,7 @@ import ImageIcon from '../../assets/images/image'
 import LinkIcon from '../../assets/images/link'
 import { SafeImage } from '../../storybook/stories/Image'
 import ImageBrowser from './ImageBrowser'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 
 const FILE_PREFIX = 'ask/new/'
 
@@ -31,7 +31,10 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
   const initialLink = ask && ask.additionalData && ask.additionalData.link
   const initialGoal = (ask && ask.additionalData && ask.additionalData.relatedGoalIds && ask.additionalData.relatedGoalIds[0]) || goalId
   const initialTask = (ask && ask.additionalData && ask.additionalData.relatedTaskIds && ask.additionalData.relatedTaskIds[0]) || taskId
-
+  const route = useRoute()
+  const {
+    tab
+  } = route
   const navigation = useNavigation()
   const [completed, setCompleted] = useState(false)
   const [askText, setAskText] = useState((ask && ask.content) || '')
@@ -73,7 +76,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
 
   const userGoalsDropdown = userGoalArr ? userGoalArr.map(userGoal => {
     return {
-      label: renderMentionString({ content: userGoal.name, simple: true, navigation }),
+      label: renderMentionString({ content: userGoal.name, simple: true, navigation, tab }),
       value: userGoal.id
     }
   }) : [{
@@ -91,7 +94,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
   }
   let userTasksDropdown = userTaskArr? userTasks.getTasksFromUser.map(userTask => {
     return {
-      label: renderMentionString({ content: userTask.name, simple: true, navigation }),
+      label: renderMentionString({ content: userTask.name, simple: true, navigation, tab }),
       value: userTask.id
     }
   }) : [{

@@ -108,13 +108,13 @@ const TaskPage = ({ navigation, route }) => {
       }}/>
       <ScrollView style={pageStyles.container}>
         <Text style={pageStyles.title}>
-          {renderMentionString({ content: task.name, navigation })}
+          {renderMentionString({ content: task.name, navigation, tab })}
         </Text>
         {
           task.detail &&
           <View>
             <Text style={pageStyles.paragraph}>
-              {renderMentionString({ content: task.detail, navigation })}
+              {renderMentionString({ content: task.detail, navigation, tab })}
             </Text>
           </View>
         }

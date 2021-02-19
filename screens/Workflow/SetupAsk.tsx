@@ -112,7 +112,7 @@ function SetupAskScreen({
           {/* <CardList /> */}
           <FlatList
             data={askArray}
-            renderItem={({ item }) => <Card type='ask' navigation={navigation} iconSize={spacingUnit * 3} icon={AskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
+            renderItem={({ item }) => <Card type='ask' navigation={navigation} route={route} iconSize={spacingUnit * 3} icon={AskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
             style={{
               marginBottom: spacingUnit * 65
             }}

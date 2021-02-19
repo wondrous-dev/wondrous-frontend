@@ -2,12 +2,10 @@ import { useMutation, useQuery } from '@apollo/client'
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { SafeAreaView, View, StyleSheet, Pressable, TouchableWithoutFeedback, Keyboard, Dimensions } from 'react-native'
 import { Header } from '../../components/Header'
-import { White, Black, Red400, Green400, Grey400 } from '../../constants/Colors'
+import { White, Black, Red400, Green400, Grey400, Blue400 } from '../../constants/Colors'
 import { GET_REVIEW_STATS } from '../../graphql/queries/review'
-import { ButtonText, Paragraph, Subheading } from '../../storybook/stories/Text'
+import { ButtonText, ErrorText, Paragraph, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
-import GoalIcon from '../../assets/images/review/goal'
-import TaskIcon from '../../assets/images/review/task'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { withAuth } from '../../components/withAuth'
 import { CREATE_REVIEW } from '../../graphql/mutations'
@@ -24,7 +22,8 @@ const createReviewStyles = StyleSheet.create({
   emojiRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    marginBottom: spacingUnit * 4
   },
   emoji: {
     width: 28,
@@ -32,17 +31,22 @@ const createReviewStyles = StyleSheet.create({
     marginBottom: spacingUnit * 4,
   },
   emojiPressable: {
-    marginLeft: spacingUnit  * 3
+    marginLeft: spacingUnit  * 3,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    paddingTop: 8
   },
   descriptionBox: {
     fontSize: 16,
     borderWidth: 1,
     borderColor: Grey400,
-    minHeight: spacingUnit * 9,
+    minHeight: spacingUnit * 11,
     padding: spacingUnit * 2,
     color: Black,
     borderRadius: 4,
-
+    width: Dimensions.get('window').width - (4 * spacingUnit)
   },
   renderSuggestion: {
     marginLeft: 0,
@@ -54,7 +58,12 @@ const CreateReview = ({ navigation, route }) => {
   const [createReview] = useMutation(CREATE_REVIEW)
   const [description, setDescription] = useState('')
   const [reviewScore, setReviewScore] = useState(null)
-
+  const { 
+    tab
+  } = route.params
+  const [createRreview, { error: createErr }] = useMutation(CREATE_REVIEW)
+  const [error, setError] = useState('')
+  console.log('createErr', createErr)
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -62,19 +71,20 @@ const CreateReview = ({ navigation, route }) => {
     }}>
       <Header />
       <TouchableWithoutFeedback 
-      onPress={() => Keyboard.dismiss()}>
+      onPress={() => Keyboard.dismiss()} style={{
+        flex: 1
+      }}>
       <View style={{
         marginTop: spacingUnit * 5,
-        flex: 1,
         alignItems: 'center'
       }}>
         <View style={{
           padding: spacingUnit * 2,
-          alignItems: 'center'
+          alignItems: 'center',
         }}>
         <Subheading color={Black} style={{
           textAlign: 'center',
-          marginBottom: spacingUnit * 4
+          marginBottom: spacingUnit * 3
         }}>
          How do you feel about your progress this week?
         </Subheading>
@@ -82,36 +92,96 @@ const CreateReview = ({ navigation, route }) => {
           <Pressable style={{
             ...createReviewStyles.emojiPressable,
             ...{
-              marginLeft: 0
-            }
-          }}>
+              marginLeft: 0,
+            },
+            ...(reviewScore === 1 && {
+              backgroundColor: Blue400
+            })
+          }} onPress={() => setReviewScore(1)}>
             <Sad style={createReviewStyles.emoji} />
           </Pressable>
-          <Pressable style={createReviewStyles.emojiPressable}>
+          <Pressable style={{
+            ...createReviewStyles.emojiPressable,
+            ...(reviewScore === 2 && {
+              backgroundColor: Blue400
+            })
+            }} onPress={() => setReviewScore(2)}>
             <SlightFrown style={createReviewStyles.emoji} />
           </Pressable>
-          <Pressable style={createReviewStyles.emojiPressable}>
+          <Pressable style={{
+            ...createReviewStyles.emojiPressable,
+            ...(reviewScore === 3 && {
+              backgroundColor: Blue400
+            })
+            }} onPress={() => setReviewScore(3)}>
             <Neutral style={createReviewStyles.emoji} />
           </Pressable>
-          <Pressable style={createReviewStyles.emojiPressable}>
+          <Pressable style={{
+            ...createReviewStyles.emojiPressable,
+            ...(reviewScore === 4 && {
+              backgroundColor: Blue400
+            })
+            }} onPress={() => setReviewScore(4)} >
             <Smile style={createReviewStyles.emoji} />
           </Pressable>
-          <Pressable style={createReviewStyles.emojiPressable}>
+          <Pressable style={{
+            ...createReviewStyles.emojiPressable,
+            ...(reviewScore === 5 && {
+              backgroundColor: Blue400
+            })
+            }} onPress={() => setReviewScore(5)}>
             <StarEyes style={createReviewStyles.emoji} />
           </Pressable>
         </View>
         <TextEditorContext.Provider value={{
             content: description,
             setContent: setDescription,
-            placeholder: 'E.g. Last week was pretty productive! I completed goals A and B for my main project. But I should have slept better.'
+            placeholder: 'E.g. This week was pretty productive! I completed goals A and B for my main project. But I should have slept better.'
           }}>
-            <View style={{flex: 1}}>
+            <View>
           <TextEditor multiline style={createReviewStyles.descriptionBox}
           renderSuggestionStyle={createReviewStyles.renderSuggestion}
           />
           </View>
           </TextEditorContext.Provider>
       </View>
+      <PrimaryButton
+              style={{
+                alignSelf: 'center',
+                marginTop: spacingUnit * 3.5 
+              }}
+              onPress={async () => {
+                console.log('description', description, reviewScore)
+                if (description && reviewScore) {
+                  await createReview({
+                    variables: {
+                      input: {
+                        description,
+                        reviewScore
+                      }
+                    }
+                  })
+                  navigation.navigate('Root', {
+                    screen: tab || 'Profile',
+                    params: {
+                      screen: 'HouseKeeping'
+                    }
+                  })
+                } else {
+                  setError('Please click on an emoji and write a brief reflection on your week.')
+                }
+              }}
+            >
+              <ButtonText color={White}> Continue </ButtonText>
+            </PrimaryButton>
+            {
+              !!(error) &&
+              <ErrorText style={{
+                marginTop: spacingUnit * 0.5
+              }}>
+                {error}
+              </ErrorText>
+            }
       </View>
       </TouchableWithoutFeedback>
     </SafeAreaView>

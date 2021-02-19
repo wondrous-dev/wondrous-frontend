@@ -116,13 +116,16 @@ const getCorrectSrc = (itemType) => {
 const FeedString = ({ item, standAlone }) => {
   const navigation = useNavigation()
   const route = useRoute()
+  const {
+    tab
+  } = route
   if (item.objectType === 'project') {
     return (
       <View style={{
         paddingRight: spacingUnit * 3
       }}>
           <Paragraph onPress={() => navigation.navigate('Root', {
-            screen: route && route.params && route.params.tab || 'Profile',
+            screen: tab || 'Profile',
             params: {
               screen: 'ProjectProfile',
               params: {
@@ -152,7 +155,7 @@ const FeedString = ({ item, standAlone }) => {
         }} onPress={() => {
           if (!standAlone) {
             navigation.navigate('Root', {
-              screen: route && route.params && route.params.tab || 'Profile',
+              screen: tab || 'Profile',
               params: {
                 screen: 'ProfileItem',
                 params: {
@@ -166,7 +169,7 @@ const FeedString = ({ item, standAlone }) => {
           } else {
             if (item.objectType === 'goal' && standAlone) {
               navigation.navigate('Root', {
-                screen: route && route.params && route.params.tab || 'Profile',
+                screen: tab || 'Profile',
                 params: {
                   screen: 'GoalPage',
                   params: {
@@ -176,7 +179,7 @@ const FeedString = ({ item, standAlone }) => {
               })
             } else if (item.objectType === 'task' && standAlone) {
               navigation.navigate('Root', {
-                screen: route && route.params && route.params.tab || 'Profile',
+                screen: tab || 'Profile',
                 params: {
                   screen: 'TaskPage',
                   params: {
@@ -186,7 +189,7 @@ const FeedString = ({ item, standAlone }) => {
               })
             }
           }
-        }}>{renderMentionString({ content: item.itemContent ? item.itemName + '. ' + item.itemContent : item.itemName, navigation })} </Paragraph>
+        }}>{renderMentionString({ content: item.itemContent ? item.itemName + '. ' + item.itemContent : item.itemName, navigation, tab })} </Paragraph>
 
       </View>
     )
@@ -226,7 +229,7 @@ const FeedString = ({ item, standAlone }) => {
                 })
               }
             }
-          }}>{renderMentionString({ content: item.itemContent, navigation })} </Paragraph>
+          }}>{renderMentionString({ content: item.itemContent, navigation, tab })} </Paragraph>
   
       </View>
     )
@@ -552,7 +555,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
         }}/> */}
         {comment ?
           <Paragraph style={feedStyles.feedText}>
-          {renderMentionString({ content: item.itemContent, textStyle: feedStyles.mentionedText, navigation })}
+          {renderMentionString({ content: item.itemContent, textStyle: feedStyles.mentionedText, navigation, tab: route && route.params && route.params.tab })}
           </Paragraph>
           :
           <FeedString item={item} standAlone={standAlone} />

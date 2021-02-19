@@ -371,7 +371,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
   }
 }
 
-export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRight, onSwipeLeft, tab }) => {
+export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRight, onSwipeLeft, tab, route }) => {
   // const {
   //   onSwipeRight,
   //   onSwipeLeft
@@ -437,6 +437,7 @@ export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRigh
       <Card
       key={item.id}
       navigation={navigation}
+      route={route}
       redirect={redirect}
       redirectParams={redirectParams}
       type={type}

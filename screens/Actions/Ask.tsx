@@ -121,7 +121,7 @@ const AskPage = ({ navigation, route }) => {
       }}/>
       <ScrollView style={pageStyles.container}>
         <Text style={pageStyles.title}>
-          {renderMentionString({ content: ask.content, navigation })}
+          {renderMentionString({ content: ask.content, navigation, tab })}
         </Text>
         <View style={[pageStyles.infoContainer]}>
           <View style={{

@@ -97,13 +97,13 @@ const GoalPage = ({ navigation, route }) => {
       }}/>
       <ScrollView style={pageStyles.container}>
         <Text style={pageStyles.title}>
-          {renderMentionString({ content: goal.name, navigation })}
+          {renderMentionString({ content: goal.name, navigation, tab })}
         </Text>
         {
           goal.detail &&
           <View>
             <Text style={pageStyles.paragraph}>
-              {renderMentionString({ content: goal.detail, navigation })}
+              {renderMentionString({ content: goal.detail, navigation, tab })}
             </Text>
           </View>
         }

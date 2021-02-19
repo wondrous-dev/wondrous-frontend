@@ -39,6 +39,7 @@ import ReviewIcon from '../../assets/images/notification/review'
 import ReviewWelcome from '../Review/ReviewWelcome'
 import CreateReview from '../Review/CreateReview'
 import IdChecker from '../Profile/IdChecker'
+import HouseKeeping from '../Review/HouseKeeping'
 
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
@@ -546,6 +547,9 @@ function NotificationScreenRoutes({
       <Stack.Screen name='IdChecker' component={IdChecker}  initialParams={{
         tab: 'Notifications'
       }} /> 
+      <Stack.Screen name='HouseKeeping' component={HouseKeeping} initialParams={{
+        tab: 'Notifications'
+      }} options={{ gestureEnabled: false }} />
     </Stack.Navigator>
     )
 }

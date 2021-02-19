@@ -206,7 +206,8 @@ class Card extends React.Component {
       type,
       navigation,
       redirect,
-      redirectParams
+      redirectParams,
+      route
     } = this.props
 
     const sortPriority = () => {
@@ -258,7 +259,7 @@ class Card extends React.Component {
             <Text style={[styles.text, {
               marginLeft: spacingUnit,
               paddingRight: 4
-            }]}>{renderMentionString({ content: type === 'ask' ? content : name, textStyle: styles.text, navigation: this.props.navigation })}</Text>
+            }]}>{renderMentionString({ content: type === 'ask' ? content : name, textStyle: styles.text, navigation: this.props.navigation, tab: route && route.params && route.params.tab })}</Text>
             </View>
           </View>
           <View style={{

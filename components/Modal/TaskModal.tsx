@@ -23,13 +23,17 @@ import ImageIcon from '../../assets/images/image'
 import LinkIcon from '../../assets/images/link'
 import { SafeImage } from '../../storybook/stories/Image'
 import ImageBrowser from './ImageBrowser'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 
 const FILE_PREFIX = 'task/new/'
 
 export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectId, goalId, taskMutation, firstTime, deleteMutation }) => {
   const initialDueDate = endOfWeekFromNow()
   const navigation = useNavigation()
+  const route = useRoute()
+  const {
+    tab
+  } = route
   const [completed, setCompleted] = useState(false)
   const [taskText, setTaskText] = useState((task && task.name) || '')
   const [project, setProject] = useState((task && task.projectId) || projectId)
@@ -73,7 +77,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
   }
   let userGoalsDropdown = userGoalArr ? userGoalArr.map(userGoal => {
     return {
-      label: renderMentionString({ content: userGoal.name, simple: true, navigation }),
+      label: renderMentionString({ content: userGoal.name, simple: true, navigation, tab }),
       value: userGoal.id
     }
   }) : [{
