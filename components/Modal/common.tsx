@@ -318,6 +318,25 @@ export const ImageDisplay= ({ setMedia, image, imagePrefix, media }) => {
   )
 }
 
+const populateMentionArr = ({ nameMentions, detailMentions, contentMentions }) => {
+  let mentions = null
+  if (nameMentions && detailMentions) {
+    const mergedMentions = [...new Set([
+      ...nameMentions,
+      ...detailMentions
+    ])]
+    if (mergedMentions.length > 0) {
+        mentions = mergedMentions
+    }
+  } else if (nameMentions && nameMentions.length > 0) {
+    mentions = nameMentions
+  } else if (detailMentions && detailMentions.length > 0) {
+    mentions = detailMentions
+  } else if (contentMentions) {
+    mentions = contentMentions
+  }
+}
+
 export const submit = async ({
   name,
   detail,
@@ -369,25 +388,20 @@ export const submit = async ({
       return media
     })
 
-    const nameMentions = getMentionArray(name)
-    const detailMentions = getMentionArray(detail)
-    const contentMentions = getMentionArray(content)
-    let userMentions = null
-    if (nameMentions && detailMentions) {
-      const mergedMentions = [...new Set([
-        ...nameMentions,
-        ...detailMentions
-      ])]
-      if (mergedMentions.length > 0) {
-          userMentions = mergedMentions
-      }
-    } else if (nameMentions && nameMentions.length > 0) {
-      userMentions = nameMentions
-    } else if (detailMentions && detailMentions.length > 0) {
-      userMentions = detailMentions
-    } else if (contentMentions) {
-      userMentions = contentMentions
-    }
+    const {
+      mentionedUsers: nameMentionedUsers,
+      mentionedProjects: nameMentionedProjects
+    } = getMentionArray(name)
+    const {
+      mentionedUsers: detailMentionedUsers,
+      mentionedProjects: detailMentionedProjects
+    } = getMentionArray(detail)
+    const {
+      mentionedUsers: contentMentionedUsers,
+      mentionedProjects: contentMentionedProjects
+    } = getMentionArray(content)
+    const userMentions = populateMentionArr({ nameMentions: nameMentionedUsers, detailMentions: detailMentionedUsers, contentMentions: contentMentionedUsers })
+    const projectMentions = populateMentionArr({ nameMentions: nameMentionedProjects, detailMentions: detailMentionedProjects, contentMentions: contentMentionedProjects })
 
     try {
       const result = await mutation({
@@ -439,6 +453,9 @@ export const submit = async ({
             }),
             ...(userMentions && {
               userMentions
+            }),
+            ...(projectMentions && {
+              projectMentions
             })
           }
         }

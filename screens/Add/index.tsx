@@ -67,7 +67,7 @@ function AddScreen({
   const [askModalVisible, setAskModalVisible] = useState(false)
   const [postModalVisible, setPostModalVisible] = useState(false)
   const user = useMe()
-  console.log('user', user)
+
   const [createGoal] = useMutation(CREATE_GOAL, {
     refetchQueries: [
       { query: GET_USER_STREAK,

@@ -45,14 +45,20 @@ const WriteComment = () => {
 
   const pressComment = useCallback(async content => {
     if (content) {
-      const mentionedUsers = getMentionArray(content)
+      const {
+        mentionedUsers,
+        mentionedProjects
+      } = getMentionArray(content)
       try {
         await commentMutation({
           variables: {
             feedItemId,
             content,
             ...(mentionedUsers.length > 0 && {
-              userMentions: JSON.stringify(mentionedUsers)
+              userMentions: mentionedUsers
+            }),
+            ...(mentionedProjects.length > 0 && {
+              projectMentions: mentionedProjects
             })
           }
         })

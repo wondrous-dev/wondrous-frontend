@@ -517,13 +517,14 @@ export const TextEditor = ({ style, renderSuggestionStyle, renderBottom=true, ..
       setContent(content + ' ' + replyName)
     }
   }, [replyName])
-  let finalArray = []
+  let userArray, projectArray = []
   if (userData && userData.getAutocompleteUsers) {
-    finalArray = [...finalArray, ...userData.getAutocompleteUsers]
+    userArray = userData.getAutocompleteUsers
   }
   if (projectData && projectData.getAutocompleteProjects) {
-    finalArray = [...finalArray, ...projectData.getAutocompleteProjects]
+    projectArray = projectData.getAutocompleteProjects
   }
+
   return (
     <MentionInput
 
@@ -533,15 +534,16 @@ export const TextEditor = ({ style, renderSuggestionStyle, renderBottom=true, ..
         partTypes={[
           {
             trigger: '@',
-            renderSuggestions: renderSuggestions(finalArray, renderSuggestionStyle, textInputRef),
+            renderSuggestions: renderSuggestions(userArray, renderSuggestionStyle, textInputRef),
             textStyle: {fontWeight: 'bold', color: Blue500},
             isBottomMentionSuggestionsRender: renderBottom
           },
-          // {
-          //   trigger: '#',
-          //   renderSuggestions: renderHashtagSuggestions,
-          //   textStyle: {fontWeight: 'bold', color: 'grey'},
-          // },
+          {
+            trigger: '#',
+            renderSuggestions: renderSuggestions(projectArray, renderSuggestionStyle, textInputRef),
+            textStyle: {fontWeight: 'bold', color: Blue500},
+            isBottomMentionSuggestionsRender: renderBottom
+          },
         ]}
 
         placeholder={placeholder}

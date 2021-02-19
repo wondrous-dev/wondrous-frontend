@@ -115,18 +115,26 @@ export const getLocale = () => {
 
 export const getMentionArray = (content) => {
   if (!content) {
-    return null
+    return {}
   }
   const mentionedUsers = []
+  const mentionedProjects = []
   const mentions = content.match(mentionRegEx)
   if (mentions) {
     for (let mention of mentions) {
       const mentionExp = mention.matchAll(mentionRegEx)
-      const { id } = [...mentionExp][0].groups
-      mentionedUsers.push(id)
+      const { id, trigger } = [...mentionExp][0].groups
+      if (trigger === '#') {
+        mentionedProjects.push(id)
+      } else if (trigger === '@') {
+        mentionedUsers.push(id)
+      }
     }
   }
-  return mentionedUsers
+  return {
+    mentionedProjects,
+    mentionedUsers
+  }
 }
 
 export const renderMentionString = ({ content, textStyle, navigation, simple, tab }) => {
@@ -149,7 +157,7 @@ export const renderMentionString = ({ content, textStyle, navigation, simple, ta
           onPress={() => navigation.navigate('Root', {
             screen: tab || 'Profile',
             params: {
-              screen:'IdChecker',
+              screen: trigger === '@' ? 'OtherUserProfile' : 'ProjectProfile',
               params: {
                 id
               }
