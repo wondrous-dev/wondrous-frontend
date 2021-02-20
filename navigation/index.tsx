@@ -31,8 +31,8 @@ function RootNavigator() {
       gestureEnabled: false
     }}>
       <Stack.Screen name='Home' component={HomeScreen} />
-      <Stack.Screen name='Signup' component={SignupScreen} />
-      <Stack.Screen name='Login' component={SignupScreen} />
+      <Stack.Screen name='Signup' component={SignupScreen} options={{ gestureEnabled: true }}/>
+      <Stack.Screen name='Login' component={SignupScreen} options={{ gestureEnabled: true }}/>
       <Stack.Screen name='Welcome' component={WelcomeScreen} />
       <Stack.Screen name='ProjectSetupCategory' component={ProjectSetupCategoryScreen} />
       <Stack.Screen name='UsernameSetup' component={UsernameSetupScreen} />

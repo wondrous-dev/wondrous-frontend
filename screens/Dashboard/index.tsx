@@ -27,6 +27,7 @@ import TaskPage from '../Actions/Task'
 import AskPage from '../Actions/Ask'
 import ActionList from '../Actions/ActionList'
 import IdChecker from '../Profile/IdChecker'
+import ReviewPage from '../Review/ReviewPage'
 
 const Stack = createStackNavigator<RootStackParamList>()
 
@@ -61,6 +62,9 @@ function DashboardScreen({
       <Stack.Screen name='IdChecker' component={IdChecker}  initialParams={{
         tab: 'Dashboard'
       }} /> 
+      <Stack.Screen name='ReviewPage' component={ReviewPage} initialParams={{
+        tab: 'Dashboard'
+      }} />
     {/* <BottomTabNavigator /> */}
     </Stack.Navigator>
   )

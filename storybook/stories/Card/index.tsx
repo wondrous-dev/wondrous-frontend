@@ -18,7 +18,7 @@ import { Grey400, Blue400, Green400, White, Grey450, Purple, Red400, Yellow300, 
 import CompleteSvg from '../../../assets/images/complete.svg'
 import ArchiveSvg from '../../../assets/images/archive.svg'
 import { SafeImage, SvgImage } from '../Image'
-import { RegularText, TinyText } from '../Text'
+import { RegularText, TinyText, Paragraph } from '../Text'
 import { formatDueDate, redDate } from '../../../utils/date'
 import { spacingUnit, renderMentionString } from '../../../utils/common'
 import PriorityFlame from '../../../assets/images/modal/priority'
@@ -26,10 +26,13 @@ import { FullScreenTaskModal } from '../../../components/Modal/TaskModal'
 import { FullScreenGoalModal } from '../../../components/Modal/GoalModal'
 import { FullScreenAskModal } from '../../../components/Modal/AskModal'
 import { Tag } from '../../../components/Tag'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import apollo from '../../../services/apollo'
 import { UPDATE_GOAL, UPDATE_TASK, UPDATE_ASK } from '../../../graphql/mutations'
 import { cache } from 'webpack'
+import { GetReviewIcon } from '../../../screens/Review/utils'
+import { format } from 'date-fns'
+import RightCaret from '../../../assets/images/right-caret'
 
 const { multiply, sub } = Animated
 const isAndroid = Platform.OS === "android"
@@ -98,6 +101,41 @@ const styles = StyleSheet.create({
     borderRadius: spacingUnit * 2
   }
 })
+
+export const ReviewCard = ({ review, tab }) => {
+  const navigation = useNavigation()
+  return (
+    <Pressable onPress={() => navigation.navigate('Root', {
+      screen: tab || 'Profile',
+      params: {
+        screen: 'ReviewPage',
+        params: {
+          reviewId: review.id
+        }
+      }
+    })}>
+    <View style={[styles.row, { backgroundColor: White, justifyContent: 'space-between' }]}>
+        <View style={{
+          flexDirection: 'row',
+          alignItems: 'center'
+        }}>
+        <GetReviewIcon review={review}  style={{
+          width: 24,
+          height: 24,
+          marginRight: spacingUnit
+        }}/>
+        <Paragraph style={{
+          fontFamily: 'Rubik SemiBold',
+        }}>
+          Review on {format(new Date(review.createdAt), 'dd/MM/yy')}
+        </Paragraph>
+        </View>
+        <View />
+        <RightCaret />
+    </View>
+    </Pressable>
+  )
+}
 
 class Card extends React.Component {
 

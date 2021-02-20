@@ -159,7 +159,7 @@ export const GoalCongratsModal = ({ user, isVisible, setModalVisible }) => {
   const message = 'Well done! You finished your first goal!'
   const shareContent = 'Finished my first goal on Wonder! Follow my journey here'
   const shareUrl = `https://wonderapp.co/app/user/${user.id}`
-  console.log('set', setModalVisible)
+
   return <CompleteCongratsModal message={message} shareContent={shareContent} shareUrl={shareUrl} isVisible={isVisible} setModalVisible={setModalVisible} />
 }
 

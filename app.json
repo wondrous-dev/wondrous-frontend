@@ -25,11 +25,12 @@
       "supportsTablet": true,
       "config": {
         "googleSignIn": {
-          "reservedClientId": "276263235787-drii7vkaaflaql1vr7hvgc343igtlfud.apps.googleusercontent.com"
-        }
+          "reservedClientId": "com.googleusercontent.apps.276263235787-gc3g6ilmol63fvobrre6mmd79ou2ulku"
+        },
+        "usesNonExemptEncryption": false
       },
       "bundleIdentifier": "co.wonder.wonderapp",
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.4"
     },
     "android": {
       "package": "co.wonder.wonderapp",

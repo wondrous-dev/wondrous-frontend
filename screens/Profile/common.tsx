@@ -19,7 +19,7 @@ import { renderItem } from '../../components/Feed'
 import GoalIcon from '../../assets/images/goal/standalone'
 import TaskIcon from '../../assets/images/task/standalone'
 import AskIcon from '../../assets/images/ask/standalone'
-import { Card } from '../../storybook/stories/Card' 
+import { Card, ReviewCard } from '../../storybook/stories/Card' 
 import UserPlaceholder from '../../assets/images/user/placeholder'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { GET_USER_STREAK } from '../../graphql/queries'
@@ -79,10 +79,11 @@ export const ProjectInfoText = ({ count, type, style }) => {
 }
 
 export const SectionsHeader = () => {
-  const { section, setSection } = useProfile()
+  const { section, setSection, type } = useProfile()
   const feedSelected = section === 'feed'
   const actionSelected = section === 'action'
   const asksSelected = section === 'asks'
+  const reviewSelected = section === 'reviews'
 
   return (
     <View style={profileStyles.sectionChoiceContainer}>
@@ -131,6 +132,24 @@ export const SectionsHeader = () => {
           </Paragraph>
         </View>
       </Pressable>
+      {
+        type === 'user' &&
+        <Pressable onPress={() => setSection('reviews')}>
+        <View style={{
+          ...(reviewSelected && {
+            borderBottomColor: Blue400,
+            borderBottomWidth: 1,
+          }),
+          paddingBottom: spacingUnit,
+          alignItems: 'center',
+          width: spacingUnit * 12
+        }}>
+          <Paragraph color={reviewSelected ? Blue400 : Black }>
+            Reviews
+          </Paragraph>
+        </View>
+      </Pressable>
+      }
     </View>
   )
 }
@@ -368,6 +387,31 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
       )
     }
     return renderCard({ navigation, item, type: 'ask', user, itemRefs, onSwipeRight, onSwipeLeft, tab })
+  } else if (section === 'reviews') {
+    if (item === 'none') {
+      return (
+        <View style={{
+          flex: 1,
+          alignItems: 'center',
+          marginTop: spacingUnit * 4
+        }}>
+          <Paragraph style={{
+            marginBottom: spacingUnit * 2
+          }} color={Grey800}>
+            No reviews yet
+          </Paragraph>
+        </View>
+      )
+    }
+    return (
+      <View key={item.id} style={{
+        marginLeft: spacingUnit * 2,
+        marginRight: spacingUnit * 2,
+        
+      }}>
+        <ReviewCard review ={item} tab={tab} />
+      </View>
+    )
   }
 }
 

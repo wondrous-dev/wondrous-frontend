@@ -35,6 +35,7 @@ import AskPage from '../Actions/Ask'
 import ActionList from '../Actions/ActionList'
 import { FlatList } from 'react-native-gesture-handler'
 import IdChecker from '../Profile/IdChecker'
+import ReviewPage from '../Review/ReviewPage'
 
 const Stack = createStackNavigator()
 
@@ -421,6 +422,9 @@ function SearchScreen({
     <Stack.Screen name='IdChecker' component={IdChecker}  initialParams={{
         tab: 'Search'
       }} /> 
+    <Stack.Screen name='ReviewPage' component={ReviewPage} initialParams={{
+        tab: 'Search'
+      }} />
   </Stack.Navigator>
   )
 }

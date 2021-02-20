@@ -37,6 +37,7 @@ import { sortByDueDate } from '../../utils/date'
 import apollo from '../../services/apollo'
 import { Streak } from '../../components/Streak'
 import { GoalCongratsModal, TaskCongratsModal } from '../../components/Modal'
+import { GET_USER_REVIEWS } from '../../graphql/queries/review'
 
 const getUserId = ({ route, user }) => {
   if (route && route.params && route.params.userId) {
@@ -74,6 +75,8 @@ function UserProfile({
   const [isModalVisible, setModalVisible] = useState(false)
   const [userFeed, setUserFeed] = useState([])
   const prevFeed = usePrevious(userFeed)
+  const [reviews, setReviews] = useState([])
+  const prevReviews = usePrevious(reviews)
   const [taskCompleteModal, setTaskCompleteModal] = useState(false)
   const [goalCompletemodal, setGoalCompleteModal] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -178,6 +181,17 @@ function UserProfile({
     fetchPolicy: 'network-only'
   })
 
+  const {
+    data: userReviewData,
+    fetchMore: reviewFetchMore,
+    refetch: reviewRefetch
+  } = useQuery(GET_USER_REVIEWS, {
+    variables: {
+      userId: finalUserId
+    },
+    fetchPolicy: 'network-only'
+  })
+
   const [user, setUser] = useState(fetchedUser)
   const previousUser = usePrevious(user)
   const { data: streakData } = useQuery(GET_USER_STREAK, {
@@ -202,6 +216,7 @@ function UserProfile({
   const feedSelected = section === 'feed'
   const actionSelected = section === 'action'
   const asksSelected = section === 'asks'
+  const reviewSelected = section === 'reviews'
 
   const onRefresh = useCallback((feedSelected, actionSelected, asksSelected) => {
     setRefreshing(true)
@@ -223,6 +238,10 @@ function UserProfile({
           status
         }
       })
+    } else if (reviewSelected) {
+      if (reviewRefetch) {
+        reviewRefetch()
+      }
     }
     wait(2000).then(() => setRefreshing(false))
   }, [])
@@ -242,6 +261,8 @@ function UserProfile({
           status
         }
       })
+    } else if (reviewSelected) {
+
     }
     if (userOwned) {
       setUser(loggedInUser)
@@ -259,7 +280,12 @@ function UserProfile({
         setUserFeed(userFeedData.getUserFeed)
       }
     }
-  }, [user && user.profilePicture, feedSelected, actionSelected, asksSelected, finalUserId, status, userFeedData ])
+    if (userReviewData && userReviewData.getReviewsFromUser) {
+      if (!isEqual(userReviewData.getReviewsFromUser, prevReviews)) {
+        setReviews(userReviewData.getReviewsFromUser)
+      }
+    }
+  }, [user && user.profilePicture, feedSelected, actionSelected, asksSelected, finalUserId, status, userFeedData, userReviewData ])
 
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo
   const getCorrectData = section => {
@@ -289,6 +315,11 @@ function UserProfile({
         return ['none']
       }
       return asks
+    } else if (section === 'reviews') {
+      if (reviews.length === 0 ) {
+        return ['none']
+      }
+      return reviews
     }
   }
   const profileData = getCorrectData(section)
@@ -332,7 +363,6 @@ function UserProfile({
       setGoalCompleteModal
     })
   }
-
 
   function ProfileHeader () {
     return (
@@ -495,10 +525,15 @@ function UserProfile({
                 (actionSelected || asksSelected) &&
                 <StatusSelector setStatus={setStatus} status={status} />
               }
+              {
+                reviewSelected &&
+                <View style={{
+                  marginTop: spacingUnit * 3
+                }} />
+              }
       </View>
     )
   }
-
 
   return (
     <SafeAreaView style={{
@@ -533,7 +568,8 @@ function UserProfile({
         status,
         setStatus,
         setLoading,
-        setModalVisible
+        setModalVisible,
+        type: 'user'
       }}>
         {userOwned &&
           <UploadImage isVisible={isModalVisible} setModalVisible={setModalVisible} image={profilePicture} setImage={setProfilePicture} saveImageMutation={updateUser} imagePrefix={`user/${finalUserId}/`} saveImageMutationVariable={[{userId: finalUserId, input: { profilePicture }}, ['input', 'profilePicture']]}  />
@@ -592,6 +628,23 @@ function UserProfile({
                     }
                   } catch (err) {
                     console.log('err fetching more', err)
+                  }
+                }
+              }
+            } else if (section === 'reviews') {
+              if (isCloseToBottom(nativeEvent)) {
+                if (reviewFetchMore) {
+                  try {
+                    const result = await reviewFetchMore({
+                      variables: {
+                        offset: reviews.length
+                      }
+                    })
+                    if (result && result.data && result.data.getReviewsFromUser) {
+                      setReviews([...reviews, ...result.data.getReviewsFromUser ])
+                    }
+                  } catch (err) {
+                    console.log('err fetching more reviews', err)
                   }
                 }
               }
