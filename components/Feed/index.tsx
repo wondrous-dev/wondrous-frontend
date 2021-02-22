@@ -434,20 +434,20 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
             return getNewExistingItems({ existingItems: existingFeedItems, liked, comment: false, item, readField})
           },
           users(existingUser = {}) {
-            if (liked && user && user.reactedFeedComments && user.reactedFeedComments.includes(item.id)) {
+            if (liked && user && user.reactedFeedItems && user.reactedFeedItems.includes(item.id)) {
               // Unliked
-              const newReactedFeedComments = user.reactedFeedComments.filter(reactedFeedComment => {
+              const newReactedFeedComments = user.reactedFeedItems.filter(reactedFeedComment => {
                 return reactedFeedComment !== item.id
               })
 
               return [{
                 ...user,
-                reactedFeedComments: newReactedFeedComments
+                reactedFeedItems: newReactedFeedComments
               }]
-            } else if (!liked && user && user.reactedFeedComments && !user.reactedFeedComments.includes(item.id)) {
+            } else if (!liked && user && user.reactedFeedItems && !user.reactedFeedItems.includes(item.id)) {
               return [{
                 ...user,
-                reactedFeedComments: [...user.reactedFeedComments, item.id]
+                reactedFeedItems: [...user.reactedFeedItems, item.id]
               }]
             }
           }
@@ -457,7 +457,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
   })
 
   useEffect(() => {
-    if (user && user.reactedFeedComments && user.reactedFeedComments.includes(item.id)) {
+    if (user && user.reactedFeedItems && user.reactedFeedItems.includes(item.id)) {
       setLiked(true)
     } else {
       setLiked(false)
@@ -465,7 +465,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
 
     setReactionCount(Number(item.reactionCount))
     setCommentLiked(item.commentReacted)
-  }, [user && user.reactedFeedComments, item.reactionCount, item.commentReacted])
+  }, [user && user.reactedFeedItems, item.reactionCount, item.commentReacted])
 
   const likeFeedItem = useCallback(async liked => {
     if (comment) {

@@ -33,7 +33,7 @@ export const PublicUserFragment = gql`
 export const LoggedinUserFragment = gql`
   fragment LoggedinUser on User {
     ...PublicUser
-    reactedFeedComments
+    reactedFeedItems
     usersFollowing
     projectsFollowing
   }

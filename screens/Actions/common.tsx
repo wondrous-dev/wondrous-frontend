@@ -109,20 +109,20 @@ export const ReactionFeed = ({ type, objId, user }) => {
       cache.modify({
         fields: {
           users(existingUser = {}) {
-            if (liked && user && user.reactedFeedComments && user.reactedFeedComments.includes(item.id)) {
+            if (liked && user && user.reactedFeedItems && user.reactedFeedItems.includes(item.id)) {
               // Unliked
-              const newReactedFeedComments = user.reactedFeedComments.filter(reactedFeedComment => {
+              const newReactedFeedComments = user.reactedFeedItems.filter(reactedFeedComment => {
                 return reactedFeedComment !== item.id
               })
 
               return [{
                 ...user,
-                reactedFeedComments: newReactedFeedComments
+                reactedFeedItems: newReactedFeedComments
               }]
-            } else if (!liked && user && user.reactedFeedComments && !user.reactedFeedComments.includes(item.id)) {
+            } else if (!liked && user && user.reactedFeedItems && !user.reactedFeedItems.includes(item.id)) {
               return [{
                 ...user,
-                reactedFeedComments: [...user.reactedFeedComments, item.id]
+                reactedFeedItems: [...user.reactedFeedItems, item.id]
               }]
             }
           }
@@ -137,7 +137,7 @@ export const ReactionFeed = ({ type, objId, user }) => {
         commentCount,
         reactionCount
       } = data.getFeedReactionObj
-      if (user && user.reactedFeedComments && user.reactedFeedComments.includes(id)) {
+      if (user && user.reactedFeedItems && user.reactedFeedItems.includes(id)) {
         setLiked(true)
       }
       if (reactionCount) {

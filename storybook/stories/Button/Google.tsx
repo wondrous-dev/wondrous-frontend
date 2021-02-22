@@ -23,7 +23,7 @@ const signInAsync = async ({ graphqlCall, setLoginStatus, setLoginError, navigat
   try {
     const result = await Google.logInAsync({
       androidClientId: 'com.googleusercontent.apps.276263235787-b3j16n95sv6c6u7tdfi6mhs9mjdgh55e',
-      iosClientId: 'com.googleusercontent.apps.276263235787-drii7vkaaflaql1vr7hvgc343igtlfud',
+      iosClientId: 'com.googleusercontent.apps.276263235787-gc3g6ilmol63fvobrre6mmd79ou2ulku',
       iosStandaloneAppClientId: 'com.googleusercontent.apps.276263235787-gc3g6ilmol63fvobrre6mmd79ou2ulku',
       androidStandaloneAppClientId: 'com.googleusercontent.apps.276263235787-03pv0e4ndk9t67t1chhut8i3mb339s9a',
       scopes: ['profile', 'email', 'https://www.googleapis.com/auth/contacts.readonly'],
@@ -51,7 +51,7 @@ const signInAsync = async ({ graphqlCall, setLoginStatus, setLoginError, navigat
           }
         }
       } catch (error) {
-        console.log('Error calling login mutations', JSON.stringify(error, null, 2))
+        console.log('Error calling signup/login mutations', JSON.stringify(error, null, 2))
         throw Error('Failed to login to Google: ' + error)
       }
     } else {
