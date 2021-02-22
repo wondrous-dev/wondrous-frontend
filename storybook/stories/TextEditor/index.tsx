@@ -196,7 +196,7 @@ export class RichTextEditor extends React.Component {
           name: this.state.autocompleteString
         }
       })
-      console.log('projectReslui', projectResult)
+
       if (userResult.data && projectResult.data) {
         this.setState({
           autocompleteUserList: [...userResult.data.getAutocompleteUsers, ...projectResult.data.getAutocompleteProjects],

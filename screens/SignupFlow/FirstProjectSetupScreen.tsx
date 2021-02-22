@@ -85,6 +85,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
             })
         }
     })
+
     const [updateProject] = useMutation(UPDATE_PROJECT)
     const fillInitialProject = useCallback(async () => {
         if (user && user.usageProgress && user.usageProgress.projectCreated) {
@@ -165,7 +166,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                                 borderColor: Grey300,
                                 borderWidth: 1,
                                 borderRadius: 4,
-                                fontSize: 14,
+                                fontSize: 16,
                                 padding: 8
                             }}
                             placeholder='Name'
@@ -183,7 +184,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                                 borderColor: Grey300,
                                 borderWidth: 1,
                                 borderRadius: 4,
-                                fontSize: 14,
+                                fontSize: 16,
                                 height: spacingUnit * 9.5,
                                 padding: 8,
                                 justifyContent: "flex-start"

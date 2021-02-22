@@ -89,7 +89,7 @@ const UsernameInput = ({ navigation }) => {
         Choose your username
       </Subheading>
       <Formik
-        initialValues={{ username: user.username }}
+        initialValues={{ username: user && user.username }}
         onSubmit={async values => {
           if (!values.username) {
             setError('Please enter a shortname')
@@ -114,7 +114,7 @@ const UsernameInput = ({ navigation }) => {
                 borderColor: Grey300,
                 borderWidth: 1,
                 borderRadius: 4,
-                fontSize: 14,
+                fontSize: 16,
                 padding: 8,
               }}
               placeholder='Username'

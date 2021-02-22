@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { format } from 'date-fns'
-import React from 'react'
+import React, { useState } from 'react'
 import { SafeAreaView, StyleSheet, View } from 'react-native'
 import { Header } from '../../components/Header'
 import { withAuth } from '../../components/withAuth'
@@ -28,7 +28,8 @@ const ReviewPage = ({ navigation, route }) => {
     }
   })
   const review = data && data.getReviewById
-
+  const [replyName, setReplyName] = useState(null)
+  
   return (
     <SafeAreaView style={{
       flex: 1,

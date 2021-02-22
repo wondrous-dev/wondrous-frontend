@@ -38,7 +38,10 @@ export const withAuth = (Component) => {
     const { navigation, route } = props
     const [token , setToken] = useState(null)
     const [tokenLoading, setTokenLoading] = useState(true)
-    const { data, loading, error } = useQuery(WHOAMI)
+    const { data, loading, error } = useQuery(WHOAMI, {
+      partialRefetch: true,
+      returnPartialData: true
+    })
 
     useEffect(() => {
       (async () => {
@@ -55,7 +58,7 @@ export const withAuth = (Component) => {
       // }
       return <Component {...props} />
     } else {
-      const user = data && data.users.length > 0 ? data.users[0] : null
+      const user = data && data.users && data.users.length > 0 ? data.users[0] : null
       return (
         <MyContext.Provider value={user}>
           <Component {...props} user={user} />

@@ -36,7 +36,7 @@ function RootNavigator() {
       <Stack.Screen name='Welcome' component={WelcomeScreen} />
       <Stack.Screen name='ProjectSetupCategory' component={ProjectSetupCategoryScreen} />
       <Stack.Screen name='UsernameSetup' component={UsernameSetupScreen} />
-      <Stack.Screen name='FirstProjectSetup' component={FirstProjectSetupScreen} />
+      <Stack.Screen name='FirstProjectSetup' component={FirstProjectSetupScreen} initialParams={{ setup: true }} />
       <Stack.Screen name='ProjectTagSelection' component={ProjectTagSelectionScreen} />
       <Stack.Screen name='Dashboard' component={DashboardScreen} />
       <Stack.Screen name='Root' component={BottomTabNavigator} />

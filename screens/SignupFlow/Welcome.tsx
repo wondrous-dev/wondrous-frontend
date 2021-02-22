@@ -14,6 +14,7 @@ import { spacingUnit } from '../../utils/common'
 import Celebration from '../../assets/images/celebrations/signupConfetti.svg'
 import { SvgImage } from '../../storybook/stories/Image'
 import { PrimaryButton } from '../../storybook/stories/Button'
+import JustDoIt from '../../assets/images/just-do-it.jpg'
 
 const loginStyles = StyleSheet.create({
   container: {
@@ -23,7 +24,7 @@ const loginStyles = StyleSheet.create({
     marginTop: spacingUnit * 8,
     textAlign: 'center',
     justifyContent: 'center',
-    width: '100%'
+    width: '100%',
   },
   subheading: {
     color: Black,
@@ -36,7 +37,6 @@ const loginStyles = StyleSheet.create({
     maxWidth: spacingUnit * 43,
     alignSelf: 'center',
     marginBottom: spacingUnit * 3,
-    fontFamily: 'Rubik SemiBold'
   },
   image: {
     alignSelf: 'center',
@@ -75,9 +75,15 @@ function WelcomeScreen({
     }]}>
       <Header />
       <View style={loginStyles.welcomeBody}>
-        <Subheading style={loginStyles.subheading}>
-          Welcome to Wonder
+      <Subheading color={Black} style={loginStyles.subheading}>
+          Welcome to Wonder!
         </Subheading>
+        <Image source={JustDoIt} style={{
+          borderRadius: spacingUnit,
+          width: 330,
+          height: 200,
+          alignSelf: 'center'
+        }} />
         <Paragraph style={loginStyles.paragraph}>
           We love action! Let's get started on your first project. Sound good?
         </Paragraph>

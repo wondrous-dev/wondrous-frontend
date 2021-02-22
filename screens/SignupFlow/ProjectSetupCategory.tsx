@@ -184,6 +184,7 @@ function ProjectSetupCategoryScreen({
   route
 }: StackScreenProps<RootStackParamList, 'ProjectSetupCategory'>) {
   const user = useMe()
+
   const [updateProject] = useMutation(UPDATE_PROJECT, {
     update(cache, { data: { updateProject }}) {
       cache.modify({
