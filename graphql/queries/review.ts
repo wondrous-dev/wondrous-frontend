@@ -30,3 +30,11 @@ export const GET_REVIEW_BY_ID = gql`
   ${PublicReviewFragment}
 `
 
+export const GET_REVIEW_COMMENTS = gql`
+  query GetReviewComments($reviewId: ID!) {
+    getReviewComments(reviewId: $reviewId) {
+      ...PublicReview
+    }
+  }
+  ${PublicReviewFragment}
+`

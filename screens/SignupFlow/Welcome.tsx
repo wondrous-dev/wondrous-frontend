@@ -37,6 +37,7 @@ const loginStyles = StyleSheet.create({
     maxWidth: spacingUnit * 43,
     alignSelf: 'center',
     marginBottom: spacingUnit * 3,
+    marginTop: spacingUnit * 2
   },
   image: {
     alignSelf: 'center',

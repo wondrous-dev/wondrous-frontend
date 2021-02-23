@@ -9,3 +9,17 @@ export const CREATE_REVIEW = gql`
     }
   }
 `
+
+export const CREATE_REVIEW_COMMENT = gql`
+  mutation CreateReviewComment($input: ReviewCommentInput) {
+    createReviewComment(input: $input) {
+      content
+      weeklyReviewId
+      commenterId
+      commenterProfilePicture
+      commenterFirstName
+      commenterLastName
+      commenterUsername
+    }
+  }
+`

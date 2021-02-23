@@ -12,7 +12,7 @@ import { withAuth, useMe } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { profileStyles } from './style'
-import { spacingUnit, wait, isEmptyObject, usePrevious, isCloseToBottom } from '../../utils/common'
+import { spacingUnit, wait, isEmptyObject, usePrevious } from '../../utils/common'
 import BottomTabNavigator from '../../navigation/BottomTabNavigator'
 import { UploadImage, SafeImage } from '../../storybook/stories/Image'
 import { WONDER_BASE_URL } from '../../constants/'
@@ -613,9 +613,8 @@ function UserProfile({
               </View>
             )
           }}
-          onScroll={async ({nativeEvent}) => {
+          onEndReached={async () => {
             if (section === 'feed') {
-              if (isCloseToBottom(nativeEvent)) {
                 if (feedFetchMore) {
                   try {
                     const result = await feedFetchMore({
@@ -630,9 +629,8 @@ function UserProfile({
                     console.log('err fetching more', err)
                   }
                 }
-              }
+              
             } else if (section === 'reviews') {
-              if (isCloseToBottom(nativeEvent)) {
                 if (reviewFetchMore) {
                   try {
                     const result = await reviewFetchMore({
@@ -647,7 +645,7 @@ function UserProfile({
                     console.log('err fetching more reviews', err)
                   }
                 }
-              }
+              
             }
           }}
           >

@@ -40,7 +40,8 @@ const WriteComment = () => {
     commentMutation,
     feedItemId,
     replyName,
-    setReplyName
+    setReplyName,
+    reviewId
   } = useComment()
 
   const pressComment = useCallback(async content => {
@@ -50,18 +51,34 @@ const WriteComment = () => {
         mentionedProjects
       } = getMentionArray(content)
       try {
-        await commentMutation({
-          variables: {
-            feedItemId,
-            content,
-            ...(mentionedUsers.length > 0 && {
-              userMentions: mentionedUsers
-            }),
-            ...(mentionedProjects.length > 0 && {
-              projectMentions: mentionedProjects
-            })
-          }
-        })
+        if (reviewId) {
+          await commentMutation({
+            variables: {
+              input: {
+                content,
+                ...(mentionedUsers.length > 0 && {
+                  userMentions: mentionedUsers
+                }),
+                ...(mentionedProjects.length > 0 && {
+                  projectMentions: mentionedProjects
+                })
+              }
+            }
+          })
+        }  else if (feedItemId) {
+          await commentMutation({
+            variables: {
+              feedItemId,
+              content,
+              ...(mentionedUsers.length > 0 && {
+                userMentions: mentionedUsers
+              }),
+              ...(mentionedProjects.length > 0 && {
+                projectMentions: mentionedProjects
+              })
+            }
+          })
+        }
       } catch (error) {
         console.log("error commenting", JSON.stringify(error, null, 2))
       }

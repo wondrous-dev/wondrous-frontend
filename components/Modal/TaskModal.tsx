@@ -54,9 +54,12 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
   const { data: projectUsers, loading:  projectUserLoading, error: projectUserError } = useQuery(GET_USER_PROJECTS, {
     variables: {
       userId: user && user.id
-    }
+    },
+    fetchPolicy: 'network-only'
   })
-  const { data: userGoals, loading: userGoalsLoading , error: userGoalsErrorsLoading } = useQuery(GET_GOALS_FROM_USER)
+  const { data: userGoals, loading: userGoalsLoading , error: userGoalsErrorsLoading } = useQuery(GET_GOALS_FROM_USER, {
+    fetchPolicy: 'network-only'
+  })
   const projectDropdowns = projectUsers && projectUsers.getUserProjects ? projectUsers.getUserProjects.map(projectUser => {
     return {
       label: projectUser.project.name,
@@ -74,6 +77,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
     if (project) {
       userGoalArr = userGoalArr.filter(userGoal => userGoal.projectId === project)
     }
+    userGoalArr = userGoalArr.filter(userGoal => userGoal.status === 'created')
   }
   let userGoalsDropdown = userGoalArr ? userGoalArr.map(userGoal => {
     return {

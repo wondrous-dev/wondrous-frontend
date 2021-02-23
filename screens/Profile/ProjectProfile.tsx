@@ -15,7 +15,7 @@ import { UPDATE_PROJECT, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, CO
 import { SafeImage, UploadImage } from '../../storybook/stories/Image'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton, FlexibleButton, PrimaryButton } from '../../storybook/stories/Button'
-import { capitalizeFirstLetter, isCloseToBottom, isEmptyObject, spacingUnit, wait } from '../../utils/common'
+import { capitalizeFirstLetter, isEmptyObject, spacingUnit, wait } from '../../utils/common'
 import { WONDER_BASE_URL } from '../../constants/'
 import { ProfileContext } from '../../utils/contexts'
 import { EditProfileModal } from './EditProfileModal'
@@ -508,23 +508,21 @@ function ProjectProfile({
         data={profileData}
         keyExtractor={item => item.id}
         renderItem={({ item }) => renderProfileItem({ item, section, user, userOwned: projectOwnedByUser, navigation, projectId, onSwipeLeft, onSwipeRight, itemRefs, tab })}
-        onScroll={async ({nativeEvent}) => {
+        onEndReached={async () => {
           if (section === 'feed') {
-            if (isCloseToBottom(nativeEvent)) {
-              if (feedFetchMore) {
-                const result = await feedFetchMore({
-                  variables: {
-                    offset: projectFeed.length
-                  }
-                })
-
-                if (result && result.data && result.data.getProjectFeed) {
-                  setProjectFeed([...projectFeed, ...result.data.getProjectFeed])
+            if (feedFetchMore) {
+              const result = await feedFetchMore({
+                variables: {
+                  offset: projectFeed.length
                 }
+              })
+
+              if (result && result.data && result.data.getProjectFeed) {
+                setProjectFeed([...projectFeed, ...result.data.getProjectFeed])
               }
             }
           }
-        }}       
+        }}    
         >
 
         </FlatList>

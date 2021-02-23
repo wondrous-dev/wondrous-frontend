@@ -8,7 +8,7 @@ import { withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { White, Grey100, Grey800, Grey300,Grey200, Black, Grey550, Grey500 } from '../../constants/Colors'
-import { capitalizeFirstLetter, isCloseToBottom, spacingUnit, wait } from '../../utils/common'
+import { capitalizeFirstLetter, spacingUnit, wait } from '../../utils/common'
 import { useQuery } from '@apollo/client'
 import { GET_USERS_AND_PROJECTS } from '../../graphql/queries/search'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
@@ -332,17 +332,15 @@ function DefaultSearch({
           </View>
         )}
         scrollEventThrottle={400}
-        onScroll={async ({nativeEvent}) => {
-          if (isCloseToBottom(nativeEvent)) {
-            if (fetchMore) {
-              const result = await fetchMore({
-                variables: {
-                  offset: newestProjects.length
-                }
-              })
-              if (result && result.data && result.data.getUserFeed) {
-                setNewestProjects([...newestProjects, ...result.data.getNewestProjects])
+        onEndReached={async () => {
+          if (fetchMore) {
+            const result = await fetchMore({
+              variables: {
+                offset: newestProjects.length
               }
+            })
+            if (result && result.data && result.data.getUserFeed) {
+              setNewestProjects([...newestProjects, ...result.data.getNewestProjects])
             }
           }
         }}

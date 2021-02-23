@@ -12,7 +12,7 @@ import { REACT_FEED_COMMENT, REACT_FEED_ITEM } from '../../graphql/mutations'
 import { SafeImage, SvgImage } from '../../storybook/stories/Image'
 import { TinyText, RegularText, Subheading, Paragraph } from '../../storybook/stories/Text'
 import { SecondaryButton } from '../../storybook/stories/Button'
-import { spacingUnit, capitalizeFirstLetter, renderMentionString, wait, isCloseToBottom } from '../../utils/common'
+import { spacingUnit, capitalizeFirstLetter, renderMentionString, wait } from '../../utils/common'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import ProjectIcon from '../../assets/images/actions/project'
 import GoalIcon from '../../assets/images/actions/goal'
@@ -719,6 +719,7 @@ export const HomeFeed = () => {
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     if (refetch) {
+      console.log('something wrong?')
       refetch()
     }
     wait(2000).then(() => setRefreshing(false))
@@ -775,21 +776,19 @@ export const HomeFeed = () => {
           }}
         />
       )}
-      onScroll={async ({nativeEvent}) => {
-        if (isCloseToBottom(nativeEvent)) {
-          if (fetchMore) {
-            try {
-              const result = await fetchMore({
-                variables: {
-                  offset: feed.length
-                }
-              })
-              if (result && result.data && result.data.getHomeFeed) {
-                setFeed([...feed, ...result.data.getHomeFeed])
+      onEndReached={async () => {
+        if (fetchMore) {
+          try {
+            const result = await fetchMore({
+              variables: {
+                offset: feed.length
               }
-            } catch (err) {
-              console.log('err fetching more', err)
+            })
+            if (result && result.data && result.data.getHomeFeed) {
+              setFeed([...feed, ...result.data.getHomeFeed])
             }
+          } catch (err) {
+            console.log('err fetching more', err)
           }
         }
       }}
