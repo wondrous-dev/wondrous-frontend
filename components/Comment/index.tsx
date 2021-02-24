@@ -56,6 +56,7 @@ const WriteComment = () => {
             variables: {
               input: {
                 content,
+                reviewId,
                 ...(mentionedUsers.length > 0 && {
                   userMentions: mentionedUsers
                 }),

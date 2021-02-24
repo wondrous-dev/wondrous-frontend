@@ -41,6 +41,7 @@ const TaskPage = ({ navigation, route }) => {
           },
           getTasksFromUser() {
 
+            
           },
           getUserActions() {
 

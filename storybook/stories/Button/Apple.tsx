@@ -49,7 +49,7 @@ export const AppleLogin = ({ style, setLoginError, navigation, setLoginStatus, c
             }
           } catch(error) {
             console.log('Error calling login mutations', JSON.stringify(error, null, 2))
-            throw Error('Failed to login to Facebook: ' + error)
+            throw Error('Failed to login to Apple: ' + error)
           }
         }
         // signed in

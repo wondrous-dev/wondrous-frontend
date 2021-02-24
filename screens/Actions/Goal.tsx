@@ -45,6 +45,9 @@ const GoalPage = ({ navigation, route }) => {
           },
           getUserActions() {
             
+          },
+          getGoal() {
+            
           }
         }
       })
