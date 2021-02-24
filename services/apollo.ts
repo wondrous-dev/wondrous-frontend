@@ -58,9 +58,9 @@ const cache = new InMemoryCache({
     //       otherwise fall back to default handling.
     switch (object.__typename) {
       case 'User':
-        if (object.id) {
-          return `User:${object.id}:${object.usageProgress && object.usageProgress.projectCreated}`
-        }
+        // if (object.id) {
+        //   return `User:${object.id}:${object.usageProgress && object.usageProgress.projectCreated}`
+        // }
         return defaultDataIdFromObject(object)
       default:
         return defaultDataIdFromObject(object) // fall back to default handling

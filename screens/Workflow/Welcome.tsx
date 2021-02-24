@@ -73,7 +73,17 @@ function WorkflowWelcomeScreen({
         marginTop: spacingUnit * 6
       }} onPress={() => {
         const usageProgress = user && user.usageProgress
-        if (usageProgress && usageProgress.goalCreated) {
+        if (usageProgress && !usageProgress.goalCreated) {
+          navigation.navigate('Root', {
+            screen: 'Profile',
+            params: {
+              screen: 'SetupGoal',
+              params: {
+                projectId
+              }
+            }
+          })
+        } else if (usageProgress && usageProgress.goalCreated) {
           navigation.navigate('Root', {
             screen: 'Profile',
             params: {
