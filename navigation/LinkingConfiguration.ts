@@ -20,6 +20,16 @@ export default {
           Login: 'login'
         }
       },
+      EmailSignin: {
+        screens: {
+          Login: 'emailSignin'
+        }
+      },
+      EmailSignup: {
+        screens: {
+          Login: 'emailSignup'
+        }
+      },
       Welcome: {
         screens: {
           Welcome: 'welcome'

@@ -7,6 +7,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import NotFoundScreen from '../screens/NotFoundScreen'
 import HomeScreen from '../screens/HomeScreen'
 import SignupScreen from '../screens/SignupScreen'
+import EmailSigninScreen from '../screens/SignupFlow/EmailSigninScreen'
+import EmailSignupScreen from '../screens/SignupFlow/EmailSignupScreen'
 import WelcomeScreen from '../screens/SignupFlow/Welcome'
 import ProjectSetupCategoryScreen from '../screens/SignupFlow/ProjectSetupCategory'
 import UsernameSetupScreen from '../screens/SignupFlow/UsernameSetupScreen'
@@ -31,8 +33,10 @@ function RootNavigator() {
       gestureEnabled: false
     }}>
       <Stack.Screen name='Home' component={HomeScreen} />
-      <Stack.Screen name='Signup' component={SignupScreen} options={{ gestureEnabled: true }}/>
-      <Stack.Screen name='Login' component={SignupScreen} options={{ gestureEnabled: true }}/>
+      <Stack.Screen name='Signup' component={SignupScreen} options={{ gestureEnabled: true }} />
+      <Stack.Screen name='Login' component={SignupScreen} options={{ gestureEnabled: true }} />
+      <Stack.Screen name='EmailSignup' component={EmailSignupScreen}options={{ gestureEnabled: true }} />
+      <Stack.Screen name='EmailSignin' component={EmailSigninScreen} options={{ gestureEnabled: true }}/>
       <Stack.Screen name='Welcome' component={WelcomeScreen} />
       <Stack.Screen name='ProjectSetupCategory' component={ProjectSetupCategoryScreen} />
       <Stack.Screen name='UsernameSetup' component={UsernameSetupScreen} />
@@ -50,7 +54,7 @@ function RootNavigator() {
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const [isReady, setIsReady] = React.useState(false);
   const [initialState, setInitialState] = React.useState()
-
+  const navigationRef = React.useRef(null)
   useEffect(() => {
     const restoreState = async () => {
       try {
@@ -73,13 +77,18 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
     if (!isReady) {
       restoreState();
     }
-  }, [isReady]);
+    if (navigationRef && navigationRef.current) {
+      const navigation = navigationRef.current
+      // Redirect from here
+    }
+  }, [isReady, navigationRef]);
 
   if (!isReady) {
     return null;
   }
   return (
     <NavigationContainer
+      ref={navigationRef}
       linking={LinkingConfiguration}
       initialState={initialState}
       onStateChange={(state) =>

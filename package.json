@@ -90,7 +90,8 @@
     "react-native-webview": "^10.10.2",
     "regexify-string": "^1.0.5",
     "subscriptions-transport-ws": "^0.9.18",
-    "yarn": "^1.22.10"
+    "yarn": "^1.22.10",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

@@ -48,7 +48,9 @@ export default function HomeScreen({
           Get started
           </ButtonText>
       </PrimaryButton>
-      <SecondaryButton onPress={() => navigation.navigate('Signup')} style={{
+      <SecondaryButton onPress={() => navigation.navigate('Signup', {
+        login: true
+      })} style={{
         marginTop: spacingUnit * 1.5
       }}>
         <ButtonText style={{

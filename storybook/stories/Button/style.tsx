@@ -37,5 +37,11 @@ export default {
     display: 'flex',
     justifyContent: 'center',
     width: 300
+  },
+  emailLogin: {
+    height: 50,
+    display: 'flex',
+    justifyContent: 'center',
+    width: 300,
   }
 }
