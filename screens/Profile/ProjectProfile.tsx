@@ -532,4 +532,4 @@ function ProjectProfile({
   )
 }
 
-export default withAuth(ProjectProfile)
+export default withAuth(ProjectProfile, true)
