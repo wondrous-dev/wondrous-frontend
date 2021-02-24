@@ -31,5 +31,11 @@ export default {
     justifyContent: 'center',
     width: 300,
     backgroundColor: '#1877f2'
+  },
+  emailLogin: {
+    height: 68,
+    display: 'flex',
+    justifyContent: 'center',
+    width: 300,
   }
 }

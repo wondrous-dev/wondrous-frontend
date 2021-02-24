@@ -13,6 +13,28 @@ export const SIGNUP = gql`
   }
   ${LoggedinUserFragment}
 `
+export const EMAIL_SIGNUP = gql`
+  mutation emailSignup($input: AuthInput!) {
+    signup(input: $input) {
+      token
+      user {
+        ...LoggedinUser
+      }
+    }
+  }
+  ${LoggedinUserFragment}
+`
+export const EMAIL_SIGNIN = gql`
+  mutation emailSignin($input: AuthInput!) {
+    emailSignin(input: $input) {
+      token
+      user {
+        ...LoggedinUser
+      }
+    }
+  }
+  ${LoggedinUserFragment}
+`
 export const UPDATE_USER = gql`
   mutation UpdateUser($input: UserUpdateInput!) {
     updateUser(input: $input) {

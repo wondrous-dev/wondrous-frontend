@@ -12,6 +12,8 @@ export type RootStackParamList = {
   UsernameSetup: undefined
   FirstProjectSetup: undefined
   ProjectTagSelection: undefined
+  EmailSignup: undefined
+  EmailSignin: undefined
 }
 
 export type ProfileTabParamList = {

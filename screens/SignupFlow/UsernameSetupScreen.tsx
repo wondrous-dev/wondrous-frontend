@@ -108,6 +108,7 @@ const UsernameInput = ({ navigation }) => {
         {({ handleChange, handleBlur, handleSubmit, values }) => (
           <View>
             <TextInput
+              autoCapitalize = 'none'
               style={{
                 width: spacingUnit * 43,
                 height: spacingUnit * 4.5,

@@ -1,6 +1,6 @@
-import React , { useState } from 'react'
+import React, { useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { StyleSheet, View, SafeAreaView, ActivityIndicator, Dimensions } from 'react-native'
+import { StyleSheet, View, SafeAreaView, ActivityIndicator, Dimensions, Pressable } from 'react-native'
 import { useMutation } from '@apollo/client'
 // import {
 //   GoogleSignin,
@@ -10,9 +10,9 @@ import { useMutation } from '@apollo/client'
 
 import { RootStackParamList } from '../types'
 import { Red400, White } from '../constants/Colors'
-import { Title, ErrorText } from '../storybook/stories/Text'
+import { Title, ErrorText, RegularText, Subheading } from '../storybook/stories/Text'
 import { SvgImage } from '../storybook/stories/Image'
-import { GoogleLogin, FacebookLogin } from '../storybook/stories/Button'
+import { GoogleLogin, FacebookLogin, EmailLogin } from '../storybook/stories/Button'
 import { scale, moderateScale, verticalScale } from '../utils/scale'
 import { styles } from './HomeScreen'
 import GoogleSvg from '../assets/images/social-auth/google.svg'
@@ -42,26 +42,36 @@ function SignupScreen({
       </Title>
       {
         loginStatus === 'loading' && !loginError ?
-        <View style={{
-          marginTop: 48
-        }}><ActivityIndicator /></View>
-        :
-        <>
-          <GoogleLogin style={{
+          <View style={{
             marginTop: 48
-          }} callToAction={signup} loginStatus={loginStatus} setLoginStatus={setLoginStatus} navigation={navigation} setLoginError={setLoginError} />
-          <FacebookLogin style={{
-            marginTop: 16
-          }} callToAction={signup} loginStatus={loginStatus} setLoginStatus={setLoginStatus} navigation={navigation} setLoginError={setLoginError} />
-          {
-            loginError && 
-            <ErrorText style={{
-              marginTop: 8
-            }} color={Red400}>
-              {loginError}
-            </ErrorText>
-          }
-        </>
+          }}><ActivityIndicator /></View>
+          :
+          <>
+            <GoogleLogin style={{
+              marginTop: 48
+            }} callToAction={signup} loginStatus={loginStatus} setLoginStatus={setLoginStatus} navigation={navigation} setLoginError={setLoginError} />
+            <FacebookLogin style={{
+              marginTop: 16
+            }} callToAction={signup} loginStatus={loginStatus} setLoginStatus={setLoginStatus} navigation={navigation} setLoginError={setLoginError} />
+            <Pressable onPress={()=> {navigation.navigate('EmailSignin')}}>
+            <Subheading style={{
+              marginTop: 16,
+              fontFamily: 'Rubik',
+              fontSize: '16px',
+              lineHeight: '19px',
+              textAlign: 'center',
+              textDecorationLine: 'underline'
+            }} >Or continue with email</Subheading>
+            </Pressable>
+            {
+              loginError &&
+              <ErrorText style={{
+                marginTop: 8
+              }} color={Red400}>
+                {loginError}
+              </ErrorText>
+            }
+          </>
       }
 
       {/* <CardList /> */}
