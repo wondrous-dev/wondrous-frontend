@@ -13,9 +13,10 @@ import { navigateUserOnLogin, spacingUnit } from '../../../utils/common'
 
 const buttonStyle = StyleSheet.create({
   facebookButtonText: {
-    fontFamily: 'Rubik',
+    fontFamily: 'sans-serif',
+    fontWeight: '500',
     marginLeft: 8,
-    fontSize: 16,
+    fontSize: 18,
     color: White
   }
 })
@@ -74,8 +75,8 @@ export const FacebookLogin = ({ style, callToAction, loginStatus, setLoginStatus
     }} onPress={() =>  signInAsync({ callToAction, setLoginStatus, navigation, setLoginError })}>
       <View style={{flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'center', width: '100%'}}>
         <FacebookIcon style={{
-          width: spacingUnit * 4,
-          height: spacingUnit * 4,
+          width: spacingUnit * 3,
+          height: spacingUnit * 3,
           marginTop: -5
         }}/>
         <ButtonText style={buttonStyle.facebookButtonText} color={White}>

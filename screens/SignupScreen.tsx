@@ -19,6 +19,8 @@ import GoogleSvg from '../assets/images/social-auth/google.svg'
 import { SIGNUP } from '../graphql/mutations'
 import { withAuth, useMe } from '../components/withAuth'
 import { CardList } from '../storybook/stories/CardList'
+import { AppleLogin } from '../storybook/stories/Button/Apple'
+import { spacingUnit } from '../utils/common'
 
 const loginStyles = StyleSheet.create({
   container: styles.container
@@ -53,6 +55,9 @@ function SignupScreen({
           <FacebookLogin style={{
             marginTop: 16
           }} callToAction={signup} loginStatus={loginStatus} setLoginStatus={setLoginStatus} navigation={navigation} setLoginError={setLoginError} />
+          <AppleLogin style={{
+            marginTop: spacingUnit * 2
+          }} callToAction={signup} setLoginStatus={setLoginStatus} navigation={navigation} setLoginError={setLoginError} />
           {
             loginError && 
             <ErrorText style={{

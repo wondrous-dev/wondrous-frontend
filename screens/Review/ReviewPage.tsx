@@ -35,7 +35,11 @@ const ReviewPage = ({ navigation, route }) => {
   const scrollViewRef = useRef()
   const {
     data: reviewCommentData
-  } = useQuery(GET_REVIEW_COMMENTS)
+  } = useQuery(GET_REVIEW_COMMENTS, {
+    variables: {
+      reviewId
+    }
+  })
 
   const [createReviewComment] = useMutation(CREATE_REVIEW_COMMENT, {
     update(cache, { data: {createReviewComment }}) {
@@ -54,7 +58,7 @@ const ReviewPage = ({ navigation, route }) => {
       })
     }
 })
-
+  console.log('reviewCommentData', reviewCommentData)
   return (
     <SafeAreaView style={{
       flex: 1,

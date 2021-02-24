@@ -9,13 +9,14 @@ import GoogleSvg from '../../../assets/images/social-auth/google'
 import baseStyle from './style'
 import { Grey200 } from '../../../constants/Colors'
 import { storeAuthHeader } from '../../../components/withAuth'
-import { navigateUserOnLogin } from '../../../utils/common'
+import { navigateUserOnLogin, spacingUnit } from '../../../utils/common'
 
 const buttonStyle = StyleSheet.create({
   googleButtonText: {
-    fontFamily: 'Rubik',
+    fontFamily: 'sans-serif',
+    fontWeight: '500',
     marginLeft: 8,
-    fontSize: 16
+    fontSize: 18
   }
 })
 
@@ -71,9 +72,12 @@ export const GoogleLogin = ({ style, callToAction, loginStatus, setLoginStatus, 
       ...style
       }} onPress={() => signInAsync({ graphqlCall: callToAction, setLoginStatus, setLoginError, navigation }) }>
       <View style={{flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'center', width: '100%'}}>
-        <GoogleSvg />
+        <GoogleSvg style={{
+          width: spacingUnit * 3,
+          height: spacingUnit * 3
+        }} />
         <ButtonText style={buttonStyle.googleButtonText} color={Grey200}>
-          Continue with Google
+          Continue with Google{`     `}
         </ButtonText>
       </View>
     </SecondaryButton>

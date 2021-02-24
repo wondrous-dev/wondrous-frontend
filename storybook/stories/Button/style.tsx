@@ -20,16 +20,22 @@ export default {
     backgroundColor: White
   },
   google: {
-    height: 68,
+    height: 50,
     display: 'flex',
     justifyContent: 'center',
     width: 300
   },
   facebook: {
-    height: 68,
+    width: 300,
+    height: 50,
     display: 'flex',
     justifyContent: 'center',
-    width: 300,
     backgroundColor: '#1877f2'
+  },
+  apple: {
+    height: 50,
+    display: 'flex',
+    justifyContent: 'center',
+    width: 300
   }
 }

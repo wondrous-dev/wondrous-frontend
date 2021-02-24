@@ -33,8 +33,14 @@ export const GET_REVIEW_BY_ID = gql`
 export const GET_REVIEW_COMMENTS = gql`
   query GetReviewComments($reviewId: ID!) {
     getReviewComments(reviewId: $reviewId) {
-      ...PublicReview
+      createdAt
+      commenterId
+      weeklyReviewId
+      content
+      commenterProfilePicture
+      commenterFirstName
+      commenterLastName
+      commenterUsername
     }
   }
-  ${PublicReviewFragment}
 `

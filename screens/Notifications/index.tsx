@@ -75,12 +75,13 @@ const notificationStyles = StyleSheet.create({
   }
 });
 
-const getNotificationPressFunction = async ({ notificationInfo, navigation, tab, getFeedItem, notifications }) => {
+const getNotificationPressFunction = async ({ notificationInfo, navigation, tab, getFeedItem, notifications, push=false }) => {
   const {
     type,
     objectId,
     objectType,
-    id
+    id,
+    actorId
   } = notificationInfo
   apollo.mutate({
     mutation: MARK_NOTIFICATION_AS_VIEWED,
@@ -209,6 +210,24 @@ const getNotificationPressFunction = async ({ notificationInfo, navigation, tab,
             screen: 'ReviewWelcome'
           }
         })
+      case 'now_following':
+        if (push) {
+          navigation.navigate('Root', {
+            screen : 'Notifications'
+          })
+        } else {
+          navigation.navigate('Root', {
+            screen: {
+              screen: 'Notifications',
+              params: {
+                screen: 'OtherUserProfile',
+                params: {
+                  userId: actorId
+                }
+              }
+            }
+          })
+        }
   }
 }
 
@@ -231,6 +250,16 @@ const formatNotificationMessage = ({ notificationInfo, tab }) => {
         </RegularText>
       )
       break
+    case 'now_following':
+      displayMessage = (
+        <RegularText color={Black}>
+          <RegularText style={{
+            fontFamily: 'Rubik SemiBold'
+          }}>
+            @{notificationInfo.actorUsername}{` `} 
+            </RegularText> is now following you.
+        </RegularText>
+      )
     default:
       displayMessage = <></>;
   }
