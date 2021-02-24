@@ -56,8 +56,15 @@ const cache = new InMemoryCache({
   dataIdFromObject: object => {
     // NOTE: workaround buggy apollo cache, use `cacheKey` if given,
     //       otherwise fall back to default handling.
-    if (object.cacheKey) return `${object.__typename}:^:${object.cacheKey}`;
-    return defaultDataIdFromObject(object);
+    switch (object.__typename) {
+      case 'User':
+        if (object.id) {
+          return `User:${object.id}:${object.usageProgress && object.usageProgress.projectCreated}`
+        }
+        return defaultDataIdFromObject(object)
+      default:
+        return defaultDataIdFromObject(object) // fall back to default handling
+    }
   },
   typePolicies: {
     Query: {

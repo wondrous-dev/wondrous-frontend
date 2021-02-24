@@ -38,10 +38,7 @@ export const withAuth = (Component, noCache=false) => {
     const { navigation, route } = props
     const [token , setToken] = useState(null)
     const [tokenLoading, setTokenLoading] = useState(true)
-    const { data, loading, error } = useQuery(WHOAMI, {
-      fetchPolicy: noCache ? 'no-cache' : 'cache-first  '
-    })
-
+    const { data, loading, error } = useQuery(WHOAMI)
     useEffect(() => {
       (async () => {
         const newToken = await getAuthHeader()
