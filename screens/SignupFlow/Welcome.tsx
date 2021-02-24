@@ -98,11 +98,11 @@ function WelcomeScreen({
               I'm ready!
             </ButtonText>
           </PrimaryButton>
-        <TouchableOpacity onPress={() => navigation.navigate('Root')}>
+        {/* <TouchableOpacity onPress={() => navigation.navigate('Root')}>
           <ButtonText color={Grey500} style={loginStyles.goToHome}>
             I like a challenge - let me figure it out
           </ButtonText>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </SafeAreaView>
   )

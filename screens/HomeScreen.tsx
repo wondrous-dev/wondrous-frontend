@@ -11,11 +11,16 @@ import { PrimaryButton, SecondaryButton } from '../storybook/stories/Button'
 import { NotificationTester } from '../components/Notifications/RegisterNotification'
 import { scale, moderateScale, verticalScale } from '../utils/scale'
 import SuperHeroSvg from '../assets/images/superhero.svg'
-import { spacingUnit } from '../utils/common'
+import { navigateUserOnLogin, spacingUnit } from '../utils/common'
+import { useMe, withAuth } from '../components/withAuth'
 
-export default function HomeScreen({
+function HomeScreen({
   navigation
 }: StackScreenProps<RootStackParamList, 'Home'>) {
+  const user = useMe()
+  if (user) {
+    navigateUserOnLogin(user, navigation)
+  }
   const homeScreens = [
     {
       subheading: 'Finish Your dream projects',
@@ -64,6 +69,7 @@ export default function HomeScreen({
   )
 }
 
+export default withAuth(HomeScreen)
 
 export const styles = StyleSheet.create({
   container: {

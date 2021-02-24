@@ -5,10 +5,9 @@ import { NotificationTokenFragment } from '../fragments/notification'
 export const CREATE_NOTIFICATION_TOKEN = gql`
   mutation CreateNotificationToken($token: String!) {
     createNotificationToken(token: $token) {
-      ...NotificationTokenFragment
+      success
     }
   }
-  ${NotificationTokenFragment}
 `
 
 export const MARK_NOTIFICATION_AS_VIEWED = gql`
