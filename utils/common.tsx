@@ -54,12 +54,13 @@ export const navigateUserOnLogin = (user, navigation) => {
         screen: 'Dashboard'
       })
     } else {
+
       navigation.navigate('Root', {
         screen: 'Profile',
         params: {
-          screen: 'ProjectProfile',
+          screen: 'UserProfile',
           params: {
-            projectId: user.usageProgress.projectCreated,
+            projectId: user.id,
             noGoingBack: true
           }
         }

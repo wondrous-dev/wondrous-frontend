@@ -114,7 +114,7 @@ export const profileStyles = StyleSheet.create({
 
 export const listStyles = StyleSheet.create({
   listContainer: {
-    marginTop: spacingUnit * 2
+    marginTop: spacingUnit * 2.5
   },
   listItem: {
     flexDirection: 'row',

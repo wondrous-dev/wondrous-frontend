@@ -16,6 +16,7 @@ export const PublicUserFragment = gql`
       github
       twitter
       instagram
+      __typename
     }
     usageProgress {
       projectCreated
@@ -26,7 +27,9 @@ export const PublicUserFragment = gql`
       askCreated
       taskCompleted
       goalCompleted
+      __typename @skip(if: true)
     }
+    __typename
   }
 `
 

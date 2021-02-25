@@ -22,7 +22,7 @@ export const AppleLogin = ({ style, setLoginError, navigation, setLoginStatus, c
             AppleAuthentication.AppleAuthenticationScope.EMAIL,
           ],
         })
-        console.log('credential', credential)
+
         if (credential) {
           setLoginStatus('loading')
           try {
@@ -33,7 +33,7 @@ export const AppleLogin = ({ style, setLoginError, navigation, setLoginStatus, c
                   firstName: credential.fullName && credential.fullName.givenName,
                   lastName: credential.fullName && credential.fullName.familyName,
                   email: credential.email,
-                  appleAuthorizationCode: credential.authorizationCode
+                  appleIdentityToken: credential.identityToken
                 }
               }
             })

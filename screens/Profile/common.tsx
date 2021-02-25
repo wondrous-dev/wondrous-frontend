@@ -228,7 +228,7 @@ export const DetermineUserProgress = ({ user, projectId }) => {
   if (user && user.usageProgress) {
     const usageProgress = user.usageProgress
     // Determine percentages. Start at 50 when workflow not finished. Then 80 once it is. Then invite friends. Then add link?
-    if (usageProgress.signupCompleted && !usageProgress.taskCreated && !usageProgress.goalCreated) {
+    if (!usageProgress.taskCreated && !usageProgress.goalCreated) {
       // 50%
       const setupText = 'Work flow'
       const setupButtonText = 'Start workflow'

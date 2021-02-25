@@ -33,16 +33,12 @@ export const getAuthHeader = async () => {
   return token
 }
 
-export const withAuth = (Component) => {
+export const withAuth = (Component, noCache=false) => {
   return props => {
     const { navigation, route } = props
     const [token , setToken] = useState(null)
     const [tokenLoading, setTokenLoading] = useState(true)
-    const { data, loading, error } = useQuery(WHOAMI, {
-      partialRefetch: true,
-      returnPartialData: true
-    })
-
+    const { data, loading, error } = useQuery(WHOAMI)
     useEffect(() => {
       (async () => {
         const newToken = await getAuthHeader()

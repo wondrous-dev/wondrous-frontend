@@ -90,4 +90,4 @@ function SignupScreen({
   )
 }
 
-export default withAuth(SignupScreen)
+export default withAuth(SignupScreen, true)

@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache, HttpLink, split } from '@apollo/client'
+import { ApolloClient, InMemoryCache, HttpLink, split, defaultDataIdFromObject } from '@apollo/client'
 import { WebSocketLink } from '@apollo/client/link/ws'
 import { setContext } from '@apollo/client/link/context'
 import { getMainDefinition } from '@apollo/client/utilities'
@@ -53,6 +53,14 @@ const link = split(
 )
 
 const cache = new InMemoryCache({
+  dataIdFromObject: object => {
+    // NOTE: workaround buggy apollo cache, use `cacheKey` if given,
+    //       otherwise fall back to default handling.
+    switch (object.__typename) {
+      default:
+        return defaultDataIdFromObject(object) // fall back to default handling
+    }
+  },
   typePolicies: {
     Query: {
       fields: {
