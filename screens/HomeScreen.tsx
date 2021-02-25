@@ -15,12 +15,10 @@ import { navigateUserOnLogin, spacingUnit } from '../utils/common'
 import { useMe, withAuth } from '../components/withAuth'
 
 function HomeScreen({
-  navigation
+  navigation,
+  route
 }: StackScreenProps<RootStackParamList, 'Home'>) {
   const user = useMe()
-  if (user) {
-    navigateUserOnLogin(user, navigation)
-  }
   const homeScreens = [
     {
       subheading: 'Finish Your dream projects',
@@ -35,6 +33,11 @@ function HomeScreen({
       paragraph: `Wonder tracks your milestones and goals so you can be proud of what you've achieved. You can then share this with the world!`
     }
   ]
+  React.useEffect(() => {
+    if (user) {
+      navigateUserOnLogin(user, navigation)
+    }
+  }, [])
   return (
     <SafeAreaView style={styles.container}>
       <Title>

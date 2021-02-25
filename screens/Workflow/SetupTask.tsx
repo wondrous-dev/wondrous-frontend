@@ -114,7 +114,11 @@ function SetupTaskScreen({
             marginTop: spacingUnit * 3
           }} />
         </Pressable>
-        <View>
+      </View>
+      <View style={{
+        paddingLeft: spacingUnit * 2,
+        paddingRight: spacingUnit * 2
+      }}>
           {/* <CardList /> */}
           <FlatList
             data={taskArray}
@@ -126,7 +130,6 @@ function SetupTaskScreen({
 
           </FlatList>
         </View>
-      </View>
     </SafeAreaView>
   )
 }

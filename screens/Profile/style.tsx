@@ -43,7 +43,7 @@ export const profileStyles = StyleSheet.create({
   profilePlaceholderImage: {
     width: spacingUnit * 10,
     height: spacingUnit * 10,
-    borderRadius: 4
+    borderRadius: 5 * spacingUnit
   },
   imageContainer: {
     width: spacingUnit * 10,

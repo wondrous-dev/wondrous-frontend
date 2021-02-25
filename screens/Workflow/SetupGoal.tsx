@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react'
-import { SafeAreaView, View, StyleSheet, Pressable, Dimensions, FlatList } from 'react-native'
+import { SafeAreaView, View, StyleSheet, Pressable, Dimensions } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack'
 import { useQuery, useMutation } from '@apollo/client'
+import { FlatList } from 'react-native-gesture-handler'
 
 import { Paragraph, Subheading } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
@@ -56,13 +57,15 @@ function SetupGoalScreen({
       cache.modify({
           fields: {
               getGoalsFromProject(existingGoals=[]) {
+                const goalArray = goalData && goalData.getGoalsFromProject
                 return [
                   data.createGoal,
-                  ...existingGoals
+                  ...goalArray
                 ]
               },
               users() {
-                return updateUsageProgress({ user, newKey: 'goalCreated' })
+                const newUser = updateUsageProgress({ user, newKey: 'goalCreated' })
+                return newUser
               }
           }
       })
@@ -116,7 +119,11 @@ function SetupGoalScreen({
             marginTop: spacingUnit * 3
           }} />
         </Pressable>
-        <View>
+      </View>
+      <View style={{
+        paddingLeft: spacingUnit * 2,
+        paddingRight: spacingUnit * 2
+      }}>
           {/* <CardList /> */}
           <FlatList
             data={goalArray}
@@ -124,12 +131,17 @@ function SetupGoalScreen({
               marginBottom: spacingUnit * 60
             }}
             ListFooterComponent={<View style={{marginBottom: 90, flex: 1}} />}
-            renderItem={({ item }) => <Card navigation={navigation} route={route}  type='goal' icon={GoalIcon} iconSize={4 * spacingUnit} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
+            renderItem={({ item }) => {
+              return (
+                <View>
+                <Card navigation={navigation} route={route}  type='goal' icon={GoalIcon} iconSize={4 * spacingUnit} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} itemRefs={itemRefs && itemRefs.current} key={item && item.id} />
+                </View>
+              )
+            }}
           >
 
           </FlatList>
         </View>
-      </View>
     </SafeAreaView>
   )
 }

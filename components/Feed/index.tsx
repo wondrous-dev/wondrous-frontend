@@ -719,7 +719,6 @@ export const HomeFeed = () => {
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     if (refetch) {
-      console.log('something wrong?')
       refetch()
     }
     wait(2000).then(() => setRefreshing(false))

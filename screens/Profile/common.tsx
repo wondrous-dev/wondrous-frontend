@@ -159,7 +159,8 @@ export const SetUpFlowProgress = ({ progress, navigationUrl,navigationParams, se
 
   return (
     <View style={{
-      marginTop: spacingUnit * 2
+      marginTop: spacingUnit * 2,
+      flex: 1
     }}>
       <View style={{
         flexDirection: 'row',
@@ -167,13 +168,20 @@ export const SetUpFlowProgress = ({ progress, navigationUrl,navigationParams, se
         paddingLeft: spacingUnit * 2,
         paddingRight: spacingUnit * 2,
         marginBottom: spacingUnit * 0.25,
+
       }}>
+        <View>
       <Paragraph color={color} style={{
         marginRight: spacingUnit
       }}>
         {progress * 100}%
       </Paragraph>
-      <Bar progress={progress} width={Dimensions.get('window').width - (spacingUnit * 9)} color={color} height={spacingUnit * 1.25} unfilledColor={Grey350} borderWidth={0} />
+      </View>
+      <View style={{
+        flex: 1
+      }}>
+      <Bar width={null} progress={progress} color={color} height={spacingUnit * 1.25} unfilledColor={Grey350} borderWidth={0} />
+      </View>
       </View>
       <View style={{
         flexDirection: 'row',

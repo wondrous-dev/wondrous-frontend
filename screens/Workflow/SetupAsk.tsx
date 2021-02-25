@@ -108,11 +108,15 @@ function SetupAskScreen({
             marginTop: spacingUnit * 3
           }} />
         </Pressable>
-        <View>
+      </View>
+      <View style={{
+        paddingLeft: spacingUnit * 2,
+        paddingRight: spacingUnit * 2
+      }}>
           {/* <CardList /> */}
           <FlatList
             data={askArray}
-            renderItem={({ item }) => <Card type='ask' navigation={navigation} route={route} iconSize={spacingUnit * 3} icon={AskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
+            renderItem={({ item }) => <Card type='ask' navigation={navigation} route={route} iconSize={spacingUnit * 3} icon={AskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
             style={{
               marginBottom: spacingUnit * 65
             }}
@@ -120,7 +124,6 @@ function SetupAskScreen({
 
           </FlatList>
         </View>
-      </View>
     </SafeAreaView>
   )
 }
