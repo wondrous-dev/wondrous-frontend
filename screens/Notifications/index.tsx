@@ -41,6 +41,7 @@ import CreateReview from '../Review/CreateReview'
 import IdChecker from '../Profile/IdChecker'
 import HouseKeeping from '../Review/HouseKeeping'
 import ReviewPage from '../Review/ReviewPage'
+import { GET_REVIEW_FROM_REVIEW_COMMENT } from '../../graphql/queries/review'
 
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
@@ -75,7 +76,7 @@ const notificationStyles = StyleSheet.create({
   }
 });
 
-const getNotificationPressFunction = async ({ notificationInfo, navigation, tab, getFeedItem, notifications, push=false }) => {
+export const getNotificationPressFunction = async ({ notificationInfo, navigation, tab, notifications, push=false }) => {
   const {
     type,
     objectId,
@@ -96,15 +97,17 @@ const getNotificationPressFunction = async ({ notificationInfo, navigation, tab,
         fields: {
           getNotifications() {
             // console.log('existingGoals', existingGoals)
-            const newNotifications = notifications.map(notification => {
-              if (notification.id === id) {
-                const newNotification = {...notification}
-                newNotification.viewedAt = new Date()
-                return newNotification
-              }
-              return notification
-            })
-            return newNotifications
+            if (notifications) {
+              const newNotifications = notifications.map(notification => {
+                if (notification.id === id) {
+                  const newNotification = {...notification}
+                  newNotification.viewedAt = new Date()
+                  return newNotification
+                }
+                return notification
+              })
+              return newNotifications
+            }
           }
         }
       })
@@ -126,7 +129,7 @@ const getNotificationPressFunction = async ({ notificationInfo, navigation, tab,
           taskId: objectId
         }
       } else if (objectType === 'ask') {
-        actionsScreen = 'AskPage'
+        actionScreen = 'AskPage'
         params = {
           askId: objectId
         }
@@ -149,9 +152,47 @@ const getNotificationPressFunction = async ({ notificationInfo, navigation, tab,
               }
             }
           })
-          break
         }
-      }
+      } else if (objectType === 'feed_comment') {
+        // Fetch feed review id and then navigate there
+        const feedResponse = await apollo.query({
+          query: GET_FEED_ITEM_FOR_FEED_COMMENT,
+          variables: {
+            commentId: objectId
+          }
+        })
+        if (feedResponse & feedResponse.data && feedResponse.data.getFeedItemForFeedComment) {
+          navigation.navigate('Root', {
+            screen: tab || 'Profile',
+            params: {
+              screen: 'FeedItem',
+              params: {
+                item: feedResponse.data.getFeedItemForFeedComment,
+                comment: true,
+                standAlone: true
+              }
+            }
+          })
+        }
+      } else if (objectType === 'review_comment') {
+        const reviewResponse = await apollo.query({
+          query: GET_REVIEW_FROM_REVIEW_COMMENT,
+          variables: {
+            commentId: objectId
+          }
+        })
+        if (reviewResponse && reviewResponse.data && reviewResponse.data.getReviewFromReviewComment) {
+          navigation.navigate('Root', {
+            screen: tab || 'Profile',
+            params: {
+              screen: 'ReviewPage',
+              params: {
+                reviewId: objectId
+              }
+            }
+          })
+        }
+      } else if (objectType === 'review')
 
       navigation.navigate('Root', {
         screen: tab || 'Profile',
@@ -205,11 +246,12 @@ const getNotificationPressFunction = async ({ notificationInfo, navigation, tab,
       break
       case 'review_reminder':
         navigation.navigate('Root', {
-          screen: tab || 'profile',
+          screen: tab || 'Profile',
           params: {
             screen: 'ReviewWelcome'
           }
         })
+        break
       case 'now_following':
         if (push) {
           navigation.navigate('Root', {
@@ -228,6 +270,30 @@ const getNotificationPressFunction = async ({ notificationInfo, navigation, tab,
             }
           })
         }
+        break
+      case 'streak_reminder':
+        navigation.navigate('Root', {
+          screen: tab || 'Profile',
+          params: {
+            screen: 'UserProfile',
+            params: {
+              initialSection: 'actions'
+            }
+          }
+        })
+        break
+      case 'friend_project_creation':
+        navigation.navigate('Root', {
+          screen: tab || 'Profile',
+          params: {
+            screen: 'ProjectProfile',
+            params: {
+              projectId: objectId
+            }
+          }
+        })
+        break
+      
   }
 }
 

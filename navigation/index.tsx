@@ -3,7 +3,9 @@ import { createStackNavigator } from '@react-navigation/stack'
 import React, { useState, useEffect } from 'react'
 import { ColorSchemeName, Platform, Linking } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import * as Notifications from 'expo-notifications'
 
+import { getNotificationPressFunction } from '../screens/Notifications'
 import NotFoundScreen from '../screens/NotFoundScreen'
 import HomeScreen from '../screens/HomeScreen'
 import SignupScreen from '../screens/SignupScreen'
@@ -80,6 +82,27 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
     if (navigationRef && navigationRef.current) {
       const navigation = navigationRef.current
       // Redirect from here
+      const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+        const data = response.notification.request.content.data;
+
+        // Any custom logic to see whether the URL needs to be handled
+        //...
+        getNotificationPressFunction({
+          notificationInfo: data,
+          navigation,
+          tab: 'Notifications',
+          notifications: null,
+          push: true
+        })
+        // Let React Navigation handle the URL
+        // listener(url)
+      });
+  
+      return () => {
+        // Clean up the event listeners
+        // Linking.removeEventListener('url', onReceiveURL);
+        subscription.remove();
+      }
     }
   }, [isReady, navigationRef]);
 

@@ -67,10 +67,11 @@ function UserProfile({
   const tab = route && route.params && route.params.tab
   const userOwned = loggedInUser && (loggedInUser.id === finalUserId)
   const {
-    fetchedUser
+    fetchedUser,
+    initialSection
   } = route.params
   const [status, setStatus] = useState('created')
-  const [section, setSection] = useState('feed')
+  const [section, setSection] = useState(initialSection || 'feed')
   const [refreshing, setRefreshing] = useState(false)
   const [isModalVisible, setModalVisible] = useState(false)
   const [userFeed, setUserFeed] = useState([])

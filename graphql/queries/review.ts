@@ -44,3 +44,12 @@ export const GET_REVIEW_COMMENTS = gql`
     }
   }
 `
+
+export const GET_REVIEW_FROM_REVIEW_COMMENT = gql`
+  query GetReviewFromReviewComment($commentId: ID!) {
+    getReviewFromReviewComment(commentId: $commentId) {
+      ...PublicReview
+    }
+  }
+  ${PublicReviewFragment}
+`
