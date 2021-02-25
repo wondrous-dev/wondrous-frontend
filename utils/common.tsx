@@ -58,11 +58,10 @@ export const navigateUserOnLogin = (user, navigation) => {
       navigation.navigate('Root', {
         screen: 'Profile',
         params: {
-          screen: 'ProjectProfile',
+          screen: 'UserProfile',
           params: {
-            projectId: user.usageProgress.projectCreated.toString(),
-            noGoingBack: true,
-            noCache: true
+            projectId: user.id,
+            noGoingBack: true
           }
         }
       })
