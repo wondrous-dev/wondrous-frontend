@@ -11,7 +11,7 @@ import { FlatList } from 'react-native'
 import { renderCard } from '../Profile/common'
 import { spacingUnit } from '../../utils/common'
 import apollo from '../../services/apollo'
-
+import { withAuth, useMe } from '../../components/withAuth'
 const ActionList = ({ route, navigation }) => {
   const {
     goalId,
@@ -21,7 +21,7 @@ const ActionList = ({ route, navigation }) => {
     askIds,
     tab
   } = route.params
-
+  const user = useMe()
   const [getTasks, { 
     data: goalTasks
   }] = useLazyQuery(GET_TASKS_FROM_GOAL)
@@ -74,11 +74,11 @@ const ActionList = ({ route, navigation }) => {
       }}>
         <FlatList
           data={data}
-          renderItem={({ item }) => renderCard({ navigation,item, itemRefs, type, tab })}
+          renderItem={({ item }) => renderCard({ navigation,item, itemRefs, type, tab, loggedInUser: user })}
         />
       </View>
     </SafeAreaView>
   )
 }
 
-export default ActionList
+export default withAuth(ActionList)

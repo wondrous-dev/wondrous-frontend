@@ -601,7 +601,7 @@ function UserProfile({
           }}
           keyExtractor={item => item.id}
           scrollEventThrottle={400}
-          renderItem={({ item }) => renderProfileItem({ item, section, user, userOwned, navigation, itemRefs, onSwipeLeft, onSwipeRight, tab })}
+          renderItem={({ item }) => renderProfileItem({ item, section, user, userOwned, navigation, itemRefs, onSwipeLeft, onSwipeRight, tab, loggedInUser })}
           ListEmptyComponent={() => {
             return (
               <View style={{

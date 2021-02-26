@@ -300,7 +300,7 @@ export const STATUS_ARR = [
   }
 ]
 
-export const renderProfileItem = ({ item, section, user, userOwned, navigation, projectId, itemRefs, onSwipeLeft, onSwipeRight, tab }) => {
+export const renderProfileItem = ({ item, section, user, userOwned, navigation, projectId, itemRefs, onSwipeLeft, onSwipeRight, tab, loggedInUser }) => {
   if (section === 'feed') {
     return renderItem({ item, navigation, screen: 'Root', params: {
       screen: tab || 'Profile',
@@ -354,7 +354,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
       )
     } else {
       const type = item && item.__typename && item.__typename.toLowerCase()
-      return renderCard({ navigation, item, type, user, itemRefs, onSwipeRight, onSwipeLeft })
+      return renderCard({ navigation, item, type, user, itemRefs, onSwipeRight, onSwipeLeft, loggedInUser })
     }
   } else if (section === 'asks') {
     if (item === 'start' || item === 'none') {
@@ -394,7 +394,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
         </View>
       )
     }
-    return renderCard({ navigation, item, type: 'ask', user, itemRefs, onSwipeRight, onSwipeLeft, tab })
+    return renderCard({ navigation, item, type: 'ask', user, itemRefs, onSwipeRight, onSwipeLeft, tab, loggedInUser })
   } else if (section === 'reviews') {
     if (item === 'none') {
       return (
@@ -423,7 +423,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
   }
 }
 
-export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRight, onSwipeLeft, tab, route }) => {
+export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRight, onSwipeLeft, tab, route, loggedInUser }) => {
   // const {
   //   onSwipeRight,
   //   onSwipeLeft
@@ -478,7 +478,7 @@ export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRigh
     newOnSwipeLeft = () => onSwipeLeft(item, 'ask')
   }
 
-  const owned = (item.ownerId === (user && user.id) ) || (item.userId === (user && user.id))
+  const owned = (item.ownerId === (loggedInUser && loggedInUser.id) ) || (item.userId === (loggedInUser && loggedInUser.id))
   const swipeEnabled = !!(owned) && (item.status !== 'completed' && item.status !== 'archived')
 
   return (

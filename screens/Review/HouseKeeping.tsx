@@ -179,7 +179,7 @@ const HouseKeeping = ({ route, navigation }) => {
       )}
       renderItem={({ item }) => {
         const type = item && item.__typename && item.__typename.toLowerCase()
-        return renderCard({ navigation, item, itemRefs, user, onSwipeLeft, onSwipeRight, tab: 'Notifications', type  })
+        return renderCard({ navigation, item, itemRefs, user, onSwipeLeft, onSwipeRight, tab: 'Notifications', type, loggedInUser: user  })
       }}
       />
     </SafeAreaView>

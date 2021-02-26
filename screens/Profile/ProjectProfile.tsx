@@ -510,7 +510,7 @@ function ProjectProfile({
         ListHeaderComponent={ProfileHeader()}
         data={profileData}
         keyExtractor={item => item.id}
-        renderItem={({ item }) => renderProfileItem({ item, section, user, userOwned: projectOwnedByUser, navigation, projectId, onSwipeLeft, onSwipeRight, itemRefs, tab })}
+        renderItem={({ item }) => renderProfileItem({ item, section, user, userOwned: projectOwnedByUser, navigation, projectId, onSwipeLeft, onSwipeRight, itemRefs, tab, loggedInUser: user })}
         onEndReached={async () => {
           if (section === 'feed') {
             if (feedFetchMore) {
