@@ -551,12 +551,15 @@ export const StatusSelector = ({ setStatus, status}) => {
           />
         ))}
         </View>
-        <RegularText color={Grey800} style={{
-          marginTop: spacingUnit * 2,
-          marginBottom: spacingUnit * 2
-        }}>
-          Swipe right to mark as complete, swipe left to archive.
-        </RegularText>
+        {
+          status === 'created' &&
+          <RegularText color={Grey800} style={{
+            marginTop: spacingUnit * 2,
+            marginBottom: spacingUnit * 2
+          }}>
+            Swipe right to mark as complete, swipe left to archive.
+          </RegularText>
+        }
       </View>
   )
 }

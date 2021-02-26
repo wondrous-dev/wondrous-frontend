@@ -85,30 +85,6 @@ function SetupAskScreen({
         }
       }} />
       <FullScreenAskModal firstTime={true} setModalVisible={setModalVisible} isVisible={modalVisible} projectId={projectId} askMutation={createAsk} />
-      <View style={setupAskStyles.setupAskContainer}>
-        <AskIcon style={{
-          width: spacingUnit * 6,
-          height: spacingUnit * 6
-        }} />
-        <Subheading color={Black} style={{
-          marginTop: spacingUnit * 2
-        }}>
-          Add asks
-        </Subheading>
-        <Paragraph color={Grey500} style={{
-          textAlign: 'center',
-          paddingLeft: spacingUnit * 1.25,
-          paddingRight: spacingUnit * 1.25,
-          marginTop: spacingUnit
-        }}>
-          What do you need help with from your followers and the Wonder community?
-        </Paragraph>
-        <Pressable onPress={() => setModalVisible(true)}>
-          <SvgImage width={spacingUnit * 8} height={spacingUnit * 8} srcElement={AddIcon} style={{
-            marginTop: spacingUnit * 3
-          }} />
-        </Pressable>
-      </View>
       <View style={{
         paddingLeft: spacingUnit * 2,
         paddingRight: spacingUnit * 2
@@ -116,9 +92,35 @@ function SetupAskScreen({
           {/* <CardList /> */}
           <FlatList
             data={askArray}
+            ListHeaderComponent={() => (
+              <>
+              <AskIcon style={{
+                width: spacingUnit * 6,
+                height: spacingUnit * 6
+              }} />
+              <Subheading color={Black} style={{
+                marginTop: spacingUnit * 2
+              }}>
+                Add asks
+              </Subheading>
+              <Paragraph color={Grey500} style={{
+                textAlign: 'center',
+                paddingLeft: spacingUnit * 1.25,
+                paddingRight: spacingUnit * 1.25,
+                marginTop: spacingUnit
+              }}>
+                What do you need help with from your followers and the Wonder community?
+              </Paragraph>
+              <Pressable onPress={() => setModalVisible(true)}>
+                <SvgImage width={spacingUnit * 8} height={spacingUnit * 8} srcElement={AddIcon} style={{
+                  marginTop: spacingUnit * 3
+                }} />
+              </Pressable>
+              </>
+            )}
             renderItem={({ item }) => <Card type='ask' navigation={navigation} route={route} iconSize={spacingUnit * 3} icon={AskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
             style={{
-              marginBottom: spacingUnit * 65
+              marginBottom: spacingUnit * 3
             }}
           >
 

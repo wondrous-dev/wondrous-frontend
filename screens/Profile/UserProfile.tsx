@@ -520,7 +520,7 @@ function UserProfile({
                 </Paragraph>
               </Pressable>
             }
-              <DetermineUserProgress user={user} />
+
               <SectionsHeader />
               {
                 (actionSelected || asksSelected) &&

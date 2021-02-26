@@ -97,7 +97,18 @@ function SetupGoalScreen({
       }} />
       <FullScreenGoalModal firstTime={true} setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} projectId={projectId} goalMutation={createGoal} />
       <View style={setupGoalStyles.setupGoalContainer}>
-        <GoalIcon style={{
+
+      </View>
+      <View style={setupGoalStyles.setupGoalContainer}>
+          {/* <CardList /> */}
+          <FlatList
+            data={goalArray}
+            style={{
+              marginBottom: spacingUnit * 60
+            }}
+            ListHeaderComponent={() => (
+              <>
+                      <GoalIcon style={{
           width: spacingUnit * 8,
           height: spacingUnit * 8
         }} />
@@ -119,18 +130,9 @@ function SetupGoalScreen({
             marginTop: spacingUnit * 3
           }} />
         </Pressable>
-      </View>
-      <View style={{
-        paddingLeft: spacingUnit * 2,
-        paddingRight: spacingUnit * 2
-      }}>
-          {/* <CardList /> */}
-          <FlatList
-            data={goalArray}
-            style={{
-              marginBottom: spacingUnit * 60
-            }}
-            ListFooterComponent={<View style={{marginBottom: 90, flex: 1}} />}
+              </>
+            )}
+            ListFooterComponent={<View style={{ marginBottom: spacingUnit * 3, flex: 1 }} />}
             renderItem={({ item }) => {
               return (
                 <View>

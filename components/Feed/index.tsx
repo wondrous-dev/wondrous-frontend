@@ -12,7 +12,7 @@ import { REACT_FEED_COMMENT, REACT_FEED_ITEM } from '../../graphql/mutations'
 import { SafeImage, SvgImage } from '../../storybook/stories/Image'
 import { TinyText, RegularText, Subheading, Paragraph } from '../../storybook/stories/Text'
 import { SecondaryButton } from '../../storybook/stories/Button'
-import { spacingUnit, capitalizeFirstLetter, renderMentionString, wait } from '../../utils/common'
+import { spacingUnit, capitalizeFirstLetter, renderMentionString, wait, usePrevious } from '../../utils/common'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import ProjectIcon from '../../assets/images/actions/project'
 import GoalIcon from '../../assets/images/actions/goal'
@@ -287,31 +287,43 @@ const getItemFromRef = (ref, readField) => {
   }
 }
 
-export const getNewExistingItems = ({ existingItems, liked, comment, item, readField }) => {
+export const getNewExistingItems = ({ existingItems, liked, comment, item, readField, reactionCount }) => {
   const newExistingFeedComments = existingItems.map(itemRef => {
-    const itemObj = getItemFromRef(itemRef, readField)
-    if (itemObj.id === item.id) {
-      if (liked) {
+    const split = itemRef.__ref.split(':')
+    const itemId = split[split.length - 1]
+    if (itemId === item.id) {
+      const itemObj = getItemFromRef(itemRef, readField)
+      if (!liked) {
         return {
           ...itemObj,
-          reactionCount: itemObj.reactionCount - 1,
+          reactionCount: reactionCount + 1,
+          media: itemObj.media || {
+            media: null,
+            link: null,
+            __typename: 'Media'
+          },
           ...(comment && {
             commentReacted: false
           })
         }
-      } else if (!liked) {
+      } else if (liked) {
         return {
           ...itemObj,
-          reactionCount: itemObj.reactionCount + 1,
+          reactionCount: reactionCount - 1,
+          media: itemObj.media || {
+            media: null,
+            link: null,
+            __typename: 'Media'
+          },
           ...(comment && {
             commentReacted: true
           })
         }
       }
     }
-    return itemObj
+    return itemRef
   })
-  return newExistingFeedComments
+  return [...newExistingFeedComments]
 }
 
 export const ShareModal = ({ isVisible, url, content, setModalVisible }) => {
@@ -394,9 +406,10 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
   const route = useRoute()
 
   const [liked, setLiked] = useState(null)
-  const [reactionCount, setReactionCount] = useState(0)
+  const [reactionCount, setReactionCount] = useState(Number(item.reactionCount) || 0)
   const [commentLiked, setCommentLiked] = useState(null)
   const [isModalVisible, setModalVisible] = useState(false)
+  const previousReactionCount = usePrevious(item.reactionCount)
   const pressComment = () => {
     if (standAlone || comment) {
       onCommentPress(`@[${item.actorUsername}](${item.userId})`)
@@ -420,7 +433,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
       cache.modify({
         fields: {
           getFeedItemComments(existingFeedComments=[], { readField }) {
-            return getNewExistingItems({ existingItems: existingFeedComments, liked: commentLiked, comment: true, item, readField })
+            return getNewExistingItems({ existingItems: existingFeedComments, liked: commentLiked, comment: true, item, readField, reactionCount })
           }
         }
       })
@@ -431,7 +444,8 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
       cache.modify({
         fields: {
           getHomeFeed(existingFeedItems = [], { readField }) {
-            return getNewExistingItems({ existingItems: existingFeedItems, liked, comment: false, item, readField})
+            const newItems = getNewExistingItems({ existingItems: existingFeedItems, liked, comment: false, item, readField, reactionCount})
+            return newItems
           },
           users(existingUser = {}) {
             if (liked && user && user.reactedFeedItems && user.reactedFeedItems.includes(item.id)) {
@@ -457,17 +471,24 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
   })
 
   useEffect(() => {
+
     if (user && user.reactedFeedItems && user.reactedFeedItems.includes(item.id)) {
       setLiked(true)
     } else {
       setLiked(false)
     }
-
-    setReactionCount(Number(item.reactionCount))
+    if (previousReactionCount && previousReactionCount !== item.reactionCount) {
+      setReactionCount(item.reactionCount)
+    }
     setCommentLiked(item.commentReacted)
   }, [user && user.reactedFeedItems, item.reactionCount, item.commentReacted])
-
-  const likeFeedItem = useCallback(async liked => {
+  const likeFeedItem = useCallback(async (liked, reactionCount) => {
+    if (!liked) {
+      setReactionCount(Number(reactionCount) + 1)
+    } else if (liked) {
+      setReactionCount(Number(reactionCount) - 1 >= 0 ? Number(reactionCount) - 1 : 0)
+    }
+    setLiked(!liked)
     if (comment) {
       try {
         reactFeedComment({
@@ -595,7 +616,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
       </View>
 
         <View style={feedStyles.reactions}>
-          <Pressable onPress={() => likeFeedItem(liked)} > 
+          <Pressable onPress={() => likeFeedItem(liked, reactionCount)} > 
           {
             liked || commentLiked ?
             <LikeFilled color={Red400} style={{

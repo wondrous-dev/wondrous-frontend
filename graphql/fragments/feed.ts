@@ -23,7 +23,9 @@ export const ActivityFeedItem = gql`
     media {
       images
       link
+      __typename
     }
+    __typename
   }
 `
 

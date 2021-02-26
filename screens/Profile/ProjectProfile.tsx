@@ -453,7 +453,10 @@ function ProjectProfile({
             ))
           }
         </View>
-        <DetermineUserProgress user={user} projectId={projectId} />
+        {
+          projectOwnedByUser &&
+          <DetermineUserProgress user={user} projectId={projectId} />
+        }
 
           <SectionsHeader />
           {

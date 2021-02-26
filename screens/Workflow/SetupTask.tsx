@@ -91,40 +91,40 @@ function SetupTaskScreen({
         }
       }} />
       <FullScreenTaskModal firstTime={true} setModalVisible={setModalVisible} isVisible={modalVisible} projectId={projectId} taskMutation={createTask} />
+
       <View style={setupTaskStyles.setupTaskContainer}>
-        <TaskIcon style={{
-          width: spacingUnit * 6,
-          height: spacingUnit * 6
-        }} />
-        <Subheading color={Black} style={{
-          marginTop: spacingUnit * 2
-        }}>
-          Add tasks
-        </Subheading>
-        <Paragraph color={Grey500} style={{
-          textAlign: 'center',
-          paddingLeft: spacingUnit * 1.25,
-          paddingRight: spacingUnit * 1.25,
-          marginTop: spacingUnit
-        }}>
-          Tasks are small units of work that can be completed in a day
-        </Paragraph>
-        <Pressable onPress={() => setModalVisible(true)}>
-          <SvgImage width={spacingUnit * 8} height={spacingUnit * 8} srcElement={AddIcon} style={{
-            marginTop: spacingUnit * 3
-          }} />
-        </Pressable>
-      </View>
-      <View style={{
-        paddingLeft: spacingUnit * 2,
-        paddingRight: spacingUnit * 2
-      }}>
           {/* <CardList /> */}
           <FlatList
             data={taskArray}
+            ListHeaderComponent={() => (
+              <>
+          <TaskIcon style={{
+            width: spacingUnit * 6,
+            height: spacingUnit * 6
+          }} />
+          <Subheading color={Black} style={{
+            marginTop: spacingUnit * 2
+          }}>
+            Add tasks
+          </Subheading>
+          <Paragraph color={Grey500} style={{
+            textAlign: 'center',
+            paddingLeft: spacingUnit * 1.25,
+            paddingRight: spacingUnit * 1.25,
+            marginTop: spacingUnit
+          }}>
+            Tasks are small units of work that can be completed in a day
+          </Paragraph>
+          <Pressable onPress={() => setModalVisible(true)}>
+            <SvgImage width={spacingUnit * 8} height={spacingUnit * 8} srcElement={AddIcon} style={{
+              marginTop: spacingUnit * 3
+            }} />
+          </Pressable>
+              </>
+            )}
             renderItem={({ item }) => <Card type='task' route={route} navigation={navigation} iconSize={spacingUnit * 3} icon={TaskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
             style={{
-              marginBottom: spacingUnit * 65
+              marginBottom: spacingUnit * 3
             }}
           >
 
