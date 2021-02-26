@@ -48,14 +48,15 @@ const reviewStyles = StyleSheet.create({
 const ReviewPage = ({ navigation, route }) => {
   const {
     tab,
-    reviewId
+    reviewId,
+    initialReview
   } = route.params
   const { data, loading, error} = useQuery(GET_REVIEW_BY_ID, {
     variables: {
       reviewId
     }
   })
-  const review = data && data.getReviewById
+  const review = initialReview || (data && data.getReviewById)
   const [replyName, setReplyName] = useState(null)
   const scrollViewRef = useRef()
   const {

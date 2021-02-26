@@ -187,7 +187,8 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
             params: {
               screen: 'ReviewPage',
               params: {
-                reviewId: objectId
+                initialReview: reviewResponse.data.getReviewFromReviewComment,
+                reviewId: reviewResponse.data.getReviewFromReviewComment.id
               }
             }
           })
@@ -224,25 +225,46 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
       }
       break
     case 'comment':
-      const feedItemCommentResponse = await apollo.query({
-        query: GET_FEED_ITEM_FOR_FEED_COMMENT,
-        variables: {
-          commentId: objectId
-        }
-      })
-      if (feedItemCommentResponse && feedItemCommentResponse.data && feedItemCommentResponse.data.getFeedItemForFeedComment) {
-        navigation.navigate('Root', {
-          screen: tab || 'Profile',
-          params: {
-            screen : 'ProfileItem',
-            params: {
-              item: feedItemCommentResponse.data.getFeedItemForFeedComment,
-              comment: true,
-              standAlone: true
-            }
+      if (objectType === 'feed_comment') {
+        const feedItemCommentResponse = await apollo.query({
+          query: GET_FEED_ITEM_FOR_FEED_COMMENT,
+          variables: {
+            commentId: objectId
           }
         })
-      }
+        if (feedItemCommentResponse && feedItemCommentResponse.data && feedItemCommentResponse.data.getFeedItemForFeedComment) {
+          navigation.navigate('Root', {
+            screen: tab || 'Profile',
+            params: {
+              screen : 'ProfileItem',
+              params: {
+                item: feedItemCommentResponse.data.getFeedItemForFeedComment,
+                comment: true,
+                standAlone: true
+              }
+            }
+          })
+        } 
+      } else if (objectType === 'review_comment') {
+        const reviewResponse = await apollo.query({
+          query: GET_REVIEW_FROM_REVIEW_COMMENT,
+          variables: {
+            commentId: objectId
+          }
+        })
+        if (reviewResponse && reviewResponse.data && reviewResponse.data.getReviewFromReviewComment) {
+          navigation.navigate('Root', {
+            screen: tab || 'Profile',
+            params: {
+              screen: 'ReviewPage',
+              params: {
+                initialReview: reviewResponse.data.getReviewFromReviewComment,
+                reviewId: reviewResponse.data.getReviewFromReviewComment.id
+              }
+            }
+          })
+        }
+      } 
       break
       case 'review_reminder':
         navigation.navigate('Root', {
@@ -259,13 +281,11 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
           })
         } else {
           navigation.navigate('Root', {
-            screen: {
-              screen: 'Notifications',
+            screen: 'Notifications',
               params: {
-                screen: 'OtherUserProfile',
+                screen: 'UserProfile',
                 params: {
                   userId: actorId
-                }
               }
             }
           })
@@ -326,6 +346,7 @@ const formatNotificationMessage = ({ notificationInfo, tab }) => {
             </RegularText> is now following you.
         </RegularText>
       )
+      break
     default:
       displayMessage = <></>;
   }
@@ -427,8 +448,15 @@ const formatNotificationReactionMessage = (notificationInfo) => {
 }
 const formatNotificationCommentMessage = (notificationInfo) => {
   const {
-    actorProfilePicture: profilePicture
+    actorProfilePicture: profilePicture,
+    objectType
   } = notificationInfo
+  let string = ''
+  if (objectType === 'review_comment') {
+    string = 'review'
+  } else if (objectType === 'feed_comment') {
+    string = 'activity'
+  }
   return (
     <RegularText color={Black}>
     <RegularText style={{
@@ -436,7 +464,7 @@ const formatNotificationCommentMessage = (notificationInfo) => {
     }}>
         @{notificationInfo.actorUsername}{` `}
         </RegularText>
-        commented on your activity.
+        commented on your {string}.
     </RegularText>
   )
 }
@@ -583,7 +611,7 @@ function NotificationScreenRoutes({
       <Stack.Screen name='Default' component={NotificationScreen} initialParams={{
         tab: 'Notifications'
       }} />
-      <Stack.Screen name='UserProfile' component={UserProfile}initialParams={{
+      <Stack.Screen name='UserProfile' component={UserProfile} initialParams={{
         tab: 'Notifications'
       }} />
       <Stack.Screen name='ProjectProfile' component={ProjectProfile} options={{ gestureEnabled: false }}initialParams={{
