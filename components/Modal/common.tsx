@@ -335,6 +335,7 @@ const populateMentionArr = ({ nameMentions, detailMentions, contentMentions }) =
   } else if (contentMentions) {
     mentions = contentMentions
   }
+  return mentions
 }
 
 export const submit = async ({
@@ -392,14 +393,17 @@ export const submit = async ({
       mentionedUsers: nameMentionedUsers,
       mentionedProjects: nameMentionedProjects
     } = getMentionArray(name)
+
     const {
       mentionedUsers: detailMentionedUsers,
       mentionedProjects: detailMentionedProjects
     } = getMentionArray(detail)
+
     const {
       mentionedUsers: contentMentionedUsers,
       mentionedProjects: contentMentionedProjects
     } = getMentionArray(content)
+ 
     const userMentions = populateMentionArr({ nameMentions: nameMentionedUsers, detailMentions: detailMentionedUsers, contentMentions: contentMentionedUsers })
     const projectMentions = populateMentionArr({ nameMentions: nameMentionedProjects, detailMentions: detailMentionedProjects, contentMentions: contentMentionedProjects })
 
