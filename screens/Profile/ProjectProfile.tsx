@@ -34,6 +34,22 @@ import { GET_ASKS_FROM_PROJECT, GET_USER_STREAK, WHOAMI } from '../../graphql/qu
 import { sortByDueDate } from '../../utils/date'
 
 const TagView = ({ tag }) => {
+  if (tag === 'ai_ml') {
+    tag = 'AI/ML'
+  } else if (tag === 'crypto_blockchain') {
+    tag = 'Crypto/blockchain'
+  } else if (tag === 'creator_tools') {
+    tag = 'Creator tools'
+  } else if (tag === 'b2b_sass') {
+    tag = 'B2B Sass'
+  } else if (tag === 'no_code') {
+    tag = 'No code'
+  } else if (tag === 'future_of_work') {
+    tag = 'Future of work'
+  } else if (tag === 'dev_tools') {
+    tag = 'Dev tools'
+  }
+
   return (
     <View style={{
       backgroundColor: Blue500,

@@ -301,6 +301,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                     {addLink &&
                       <View style={modalStyles.linkContainer}>
                         <TextInput
+                        autoCapitalize="none"
                           onChangeText={text => setLink(text)}
                           value={link}
                           autoFocus={!(link)}

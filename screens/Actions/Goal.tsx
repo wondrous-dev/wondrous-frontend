@@ -33,7 +33,10 @@ const GoalPage = ({ navigation, route }) => {
     error
   }] = useLazyQuery(GET_GOAL_BY_ID)
   const [updateGoal] = useMutation(UPDATE_GOAL, {
-    update: (cache) => {
+    update: (cache, { data }) => {
+      if (data) {
+        setGoal(data && data.updateGoal)
+      }
       cache.modify({
         fields: {
           getGoalsFromProject(existingGoals=[]) {
@@ -46,7 +49,7 @@ const GoalPage = ({ navigation, route }) => {
           getUserActions() {
             
           },
-          getGoal() {
+          getGoalById() {
             
           }
         }

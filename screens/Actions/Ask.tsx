@@ -30,7 +30,10 @@ const AskPage = ({ navigation, route }) => {
     error
   }] = useLazyQuery(GET_ASK_BY_ID)
   const [updateAsk] = useMutation(UPDATE_ASK, {
-    update: (cache) => {
+    update: (cache, { data }) => {
+      if (data) {
+        setAsk(data && data.updateAsk)
+      }
       cache.modify({
         fields: {
           getAsksFromProject(existingAsks=[]) {

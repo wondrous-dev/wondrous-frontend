@@ -33,7 +33,10 @@ const TaskPage = ({ navigation, route }) => {
     error
   }] = useLazyQuery(GET_TASK_BY_ID)
   const [updateTask] = useMutation(UPDATE_TASK, {
-    update: (cache, { updateTask }) => {
+    update: (cache, { data } ) => {
+      if (data) {
+        setTask(data && data.updateTask)
+      }
       cache.modify({
         fields: {
           getTasksFromProject(existingTasks=[]) {
@@ -46,8 +49,10 @@ const TaskPage = ({ navigation, route }) => {
           getUserActions() {
 
           },
-          getTask() {
-
+          getTaskById() {
+            // console.log('updateTask', updateTask)
+            // setTask(updateTask)
+            // return [updateTask]
           }
         }
       })
