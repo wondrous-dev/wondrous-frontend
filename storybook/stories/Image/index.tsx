@@ -133,7 +133,7 @@ export const SafeImage = ({ src, style, defaultImage, setImage }) => {
     variables: {
       path: src
     }, 
-    fetchPolicy: 'network-only'
+    fetchPolicy: 'no-cache'
   })
   if (!src && defaultImage) {
     return <Image style={style} source={defaultImage} />
@@ -149,11 +149,11 @@ export const SafeImage = ({ src, style, defaultImage, setImage }) => {
   }, [data])
 
   if (src.startsWith('https') || src.startsWith('file://')) {
-    return <Image style={style} source={{
+    return <Image key={src} style={style} source={{
       uri: src
     }} />
   } else if (data && data.getPreviewImage) {
-    return <Image style={style} source={{
+    return <Image style={style} key={data.getPreviewImage.url} source={{
       uri: data.getPreviewImage.url
     }} />
   }

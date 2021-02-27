@@ -273,7 +273,7 @@ function UserProfile({
         fetchUser({ userId: finalUserId, setUser })
       }
     }
-    if (!profilePicture && user && !isEqual(user, previousUser)) {
+    if (user && !isEqual(user, previousUser)) {
       setProfilePicture(user.profilePicture)
     }
     if (userFeedData && userFeedData.getUserFeed) {
