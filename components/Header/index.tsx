@@ -33,7 +33,7 @@ const shouldBackPage = (route) => {
   return true
 }
 
-const SearchBar = ({ searchString, setSearchString }) => {
+export const SearchBar = ({ searchString, setSearchString, placeholder='' }) => {
   return (
     <View style={{
       flexDirection: 'row',
@@ -53,7 +53,7 @@ const SearchBar = ({ searchString, setSearchString }) => {
       <TextInput
           value={searchString}
           onChangeText={setSearchString}
-          placeholder='Search by username or project name'
+          placeholder= {placeholder || 'Search by username or project name'}
           style={{
             flex: 1,
             marginLeft: spacingUnit * 0.5,

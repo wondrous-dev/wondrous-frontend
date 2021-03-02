@@ -14,7 +14,7 @@ import { useMe } from '../../components/withAuth'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { ProfilePlaceholder } from './common'
 import { listStyles, profileStyles } from './style'
-
+import { SearchBar } from '../../components/Header'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { GET_PROJECT_INVITES, GET_USER_FOLLOWERS, GET_USER_FOLLOWING } from '../../graphql/queries'
 import { FlatList } from 'react-native-gesture-handler'
@@ -150,10 +150,18 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
     }
   })
 
+  const [searchString, setSearchString] = useState('')
+
   const following = followingData && followingData.getUserFollowing && followingData.getUserFollowing.users
-  const filteredData = following && following.filter(item => {
+  let filteredData = following && following.filter(item => {
     return !(project.collaborators && project.collaborators.some(element => element.id === item.id))
   })
+
+  if (searchString) {
+    filteredData = filteredData.filter(one => {
+      return one.username.toLocaleLowerCase().includes(searchString.toLocaleLowerCase())
+    })
+  }
 
   const projectInvites = projectInviteData && projectInviteData.getProjectInvitesForProject
   return (
@@ -196,6 +204,11 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
                 </RegularText>
               </Pressable>
               </View>
+            </View>
+            <View style={{
+              height: spacingUnit * 6
+            }}>
+            <SearchBar searchString={searchString} setSearchString={setSearchString} placeholder={'Search by username'} />
             </View>
             <FlatList
               data={filteredData}
