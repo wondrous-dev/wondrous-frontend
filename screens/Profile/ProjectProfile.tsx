@@ -19,6 +19,7 @@ import { capitalizeFirstLetter, isEmptyObject, spacingUnit, wait } from '../../u
 import { WONDER_BASE_URL } from '../../constants/'
 import { ProfileContext } from '../../utils/contexts'
 import { EditProfileModal } from './EditProfileModal'
+import { InviteCollaboratorModal } from './InviteCollaboratorModal'
 import {
   ProfilePlaceholder,
   ProjectInfoText,
@@ -52,7 +53,7 @@ const TagView = ({ tag }) => {
 
   return (
     <View style={{
-      backgroundColor: Blue500,
+      backgroundColor: Blue400,
       paddingLeft: spacingUnit,
       paddingRight: spacingUnit,
       paddingTop: 2,
@@ -78,6 +79,7 @@ function ProjectProfile({
   const [isVisible, setModalVisible] = useState(false)
   const [status, setStatus] = useState('created')
   const [editProfileModal, setEditProfileModal] = useState(false)
+  const [inviteCollaboratorModal, setInviteCollaboratorModal] = useState(false)
   const [profilePicture, setProfilePicture] = useState('')
   const [projectFeed, setProjectFeed] = useState([])
   const [updateProject] = useMutation(UPDATE_PROJECT, {
@@ -388,6 +390,16 @@ function ProjectProfile({
                   Edit Project
                 </RegularText>
               </SecondaryButton>
+              <PrimaryButton style={{
+                width: spacingUnit * 19,
+                paddingTop: 0,
+                paddingBottom: 0,
+                marginLeft: spacingUnit
+              }} onPress={() => setInviteCollaboratorModal(true)}>
+                <RegularText color={White} >
+                  Invite Collaborators
+                </RegularText>
+              </PrimaryButton>
             </>
             :
             <>
@@ -506,11 +518,13 @@ function ProjectProfile({
           projectFeedError,
           setModalVisible
         }}>
-        <EditProfileModal project={project} isVisible={editProfileModal} setModalVisible={setEditProfileModal} saveMutation={updateProject} />
-
           {
             projectOwnedByUser &&
+            <>
             <UploadImage isVisible={isVisible} setModalVisible={setModalVisible} image={profilePicture} setImage={setProfilePicture} saveImageMutation={updateProject} imagePrefix={`project/${projectId}/`} saveImageMutationVariable={[{projectId, input: { profilePicture }}, ['input', 'profilePicture']]}  />
+            <InviteCollaboratorModal project={project} isVisible={inviteCollaboratorModal} setModalVisible={setInviteCollaboratorModal} />
+            <EditProfileModal project={project} isVisible={editProfileModal} setModalVisible={setEditProfileModal} saveMutation={updateProject} />
+            </>
           }
         <FlatList    refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

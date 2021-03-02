@@ -2,6 +2,7 @@
   "name": "wondrous-app",
   "version": "0.1.0",
   "main": "node_modules/expo/AppEntry.js",
+  "owner": "wonderapp",
   "scripts": {
     "start": "expo start",
     "android": "adb reverse tcp:57464 tcp:57464 && expo start --android",

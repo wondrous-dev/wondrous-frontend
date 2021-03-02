@@ -80,3 +80,22 @@ export const GET_PROJECT_FOLLOWERS = gql`
   }
   ${PublicUserFragment}
 `
+
+export const GET_PROJECT_INVITES = gql`
+  query GetProjectInvites($projectId: ID) {
+    getProjectInvitesForProject(projectId: $projectId) {
+      id
+      project {
+        id
+      }
+      invitor {
+        id
+      }
+      invitee {
+        id
+      }
+      role
+      response
+    }
+  }
+`

@@ -139,25 +139,6 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                     input: variableInputObj
                   }
                 })
-                // submit({
-                //   name: goalText,
-                //   detail: description,
-                //   priority,
-                //   dueDate,
-                //   link,
-                //   privacyLevel: privacy,
-                //   errors,
-                //   setErrors,
-                //   media,
-                //   projectId,
-                //   filePrefix: FILE_PREFIX,
-                //   mutation: goalMutation,
-                //   firstTime,
-                //   ...(goal && {
-                //     updateId: goal.id,
-                //     updateKey: 'goalId'
-                //   })
-                // })
                 setModalVisible(false)
               }}>
                 <RegularText color={White} style={{

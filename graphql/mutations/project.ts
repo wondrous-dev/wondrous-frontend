@@ -42,3 +42,27 @@ export const CREATE_PROJECT_TAGS = gql`
   }
   ${PublicProjectFragment}
 `
+
+export const INVITE_COLLABORATOR = gql`
+  mutation InviteCollaboratorToProject($input: ProjectInviteInput) {
+    inviteCollaboratorToProject(input: $input) {
+      success
+    }
+  }
+`
+
+export const ACCEPT_PROJECT_INVITE = gql`
+  mutation AcceptProjectInvite($projectInviteId: ID) {
+    acceptProjectInvite(projectInviteId: $projectInviteId) {
+      success
+    }
+  }
+`
+
+export const REJECT_PROJECT_INVITE = gql`
+  mutation RejectProjectInvite($projectInviteId: ID) {
+    rejectProjectInvite(projectInviteId: $projectInviteId) {
+      success
+    }
+  }
+`
