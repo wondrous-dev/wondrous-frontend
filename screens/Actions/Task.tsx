@@ -95,7 +95,7 @@ const TaskPage = ({ navigation, route }) => {
     )
   }
   const images = task.additionalData && task.additionalData.images
-  const asks = task.additionalData && task.additionalData.relatedAskIds
+  const asks = task && task.relatedAskIds
   const goal = taskGoal && taskGoal.getGoalById
 
   return (

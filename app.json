@@ -3,6 +3,7 @@
     "name": "Wonder",
     "slug": "Wonder",
     "version": "1.0.0",
+    "owner": "wonderapp",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -30,7 +31,7 @@
         "usesNonExemptEncryption": false
       },
       "bundleIdentifier": "co.wonder.wonderapp",
-      "buildNumber": "1.0.14",
+      "buildNumber": "1.0.15",
       "usesAppleSignIn": true
     },
     "android": {

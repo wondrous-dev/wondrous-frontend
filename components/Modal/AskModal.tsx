@@ -54,7 +54,9 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
       userId: user && user.id
     }
   })
-  const { data: userGoals, loading: userGoalsLoading , error: userGoalsErrorsLoading } = useQuery(GET_GOALS_FROM_USER)
+  const { data: userGoals, loading: userGoalsLoading , error: userGoalsErrorsLoading } = useQuery(GET_GOALS_FROM_USER, {
+    fetchPolicy: 'no-cache'
+  })
   const { data: userTasks, loading: userTasksLoading, error: userTasksErrorsLoading } = useQuery(GET_TASKS_FROM_USER)
 
   const projectDropdowns = projectUsers && projectUsers.getUserProjects ? projectUsers.getUserProjects.map(projectUser => {

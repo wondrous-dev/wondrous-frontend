@@ -58,7 +58,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
     fetchPolicy: 'network-only'
   })
   const { data: userGoals, loading: userGoalsLoading , error: userGoalsErrorsLoading } = useQuery(GET_GOALS_FROM_USER, {
-    fetchPolicy: 'network-only'
+    fetchPolicy: 'no-cache'
   })
   const projectDropdowns = projectUsers && projectUsers.getUserProjects ? projectUsers.getUserProjects.map(projectUser => {
     return {

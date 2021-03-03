@@ -19,7 +19,7 @@ export const PublicTaskFragment = gql`
     additionalData {
       images
       link
-      relatedAskIds
     }
+    relatedAskIds
   }
 `

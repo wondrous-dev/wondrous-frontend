@@ -550,15 +550,9 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
               }
             }
           })}         
-          >{item.actorFirstName} {item.actorLastName}{` `}</Paragraph>
-          <RegularText style={{
-            lineHeight: 18
-          }} color={Grey200}>{timeAgo.format(new Date(item.timestamp))}</RegularText>     
-          </View>
+          >{item.actorFirstName} {item.actorLastName}{` `}
                     {!comment && !(item.objectType === 'post') &&
-            <Paragraph color={Grey200} style={{
-
-            }}>
+            <Paragraph color={Grey200}>
               {getActionString(item)} {
                 item.objectType !== 'project' &&
                 <>
@@ -567,6 +561,11 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
               }
             </Paragraph>
           }
+          </Paragraph>
+          <RegularText style={{
+            lineHeight: 18
+          }} color={Grey200}>{timeAgo.format(new Date(item.timestamp))}</RegularText>     
+          </View>
           </View>
         </View>
       </View>

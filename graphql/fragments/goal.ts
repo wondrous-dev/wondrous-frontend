@@ -19,10 +19,8 @@ export const PublicGoalFragment = gql`
     additionalData {
       images
       link
-      relatedAskIds
-      __typename
     }
-    __typename
+    relatedAskIds
   }
 `
 

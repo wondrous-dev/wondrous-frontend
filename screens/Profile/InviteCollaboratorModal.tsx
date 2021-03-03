@@ -159,7 +159,7 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
   })
 
   if (searchString) {
-    filteredData = filteredData.filter(one => {
+    filteredData = filteredData && filteredData.filter(one => {
       return one.username.toLocaleLowerCase().includes(searchString.toLocaleLowerCase())
     })
   }
