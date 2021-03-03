@@ -198,9 +198,7 @@ function ProjectProfile({
     fetchPolicy: 'network-only'
   })
   const project = fetchedProject || (data && data.getProjectById)
-
-  const projectOwnedByUser = project && user && project.createdBy === user.id
-
+  const projectOwnedByUser = project && (user && (project.createdBy === user.id || (project.collaborators && project.collaborators.some(element => element.user.id === user.id))))
   const feedSelected = section === 'feed'
   const actionSelected = section === 'action'
   const asksSelected = section === 'asks'

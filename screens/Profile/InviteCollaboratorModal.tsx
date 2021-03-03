@@ -155,7 +155,7 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
 
   const following = followingData && followingData.getUserFollowing && followingData.getUserFollowing.users
   let filteredData = following && following.filter(item => {
-    return !(project.collaborators && project.collaborators.some(element => element.id === item.id))
+    return !(project.collaborators && project.collaborators.some(element => element.user.id === item.id))
   })
 
   if (searchString) {
