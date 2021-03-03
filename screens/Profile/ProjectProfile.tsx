@@ -194,7 +194,8 @@ function ProjectProfile({
   const { data, loading, error } = useQuery(GET_PROJECT_BY_ID, {
     variables: {
       projectId
-    }
+    }, 
+    fetchPolicy: 'network-only'
   })
   const project = fetchedProject || (data && data.getProjectById)
 

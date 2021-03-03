@@ -63,7 +63,6 @@ const CreateReview = ({ navigation, route }) => {
   } = route.params
   const [createRreview, { error: createErr }] = useMutation(CREATE_REVIEW)
   const [error, setError] = useState('')
-  console.log('createErr', createErr)
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -151,7 +150,6 @@ const CreateReview = ({ navigation, route }) => {
                 marginTop: spacingUnit * 3.5 
               }}
               onPress={async () => {
-                console.log('description', description, reviewScore)
                 if (description && reviewScore) {
                   await createReview({
                     variables: {

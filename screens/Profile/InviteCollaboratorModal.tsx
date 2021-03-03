@@ -21,7 +21,7 @@ import { FlatList } from 'react-native-gesture-handler'
 import { INVITE_COLLABORATOR } from '../../graphql/mutations'
 
 
-const CollaboratorItem = ({ item, project, initialInvited, projectInvites }) => {
+const CollaboratorItem = ({ item, project, initialInvited, projectInvites, setModalVisible }) => {
   const navigation = useNavigation()
   const route = useRoute()
   const user = useMe()
@@ -66,10 +66,11 @@ const CollaboratorItem = ({ item, project, initialInvited, projectInvites }) => 
 
   return (
     <TouchableOpacity onPress={() => {
+      setModalVisible(false)
       navigation.navigate('Root', {
         screen: route && route.params && route.params.tab || 'Profile',
         params: {
-          screen: 'UserProfile',
+          screen: 'OtherUserProfile',
           params: {
             userId: item.id
           }
@@ -223,6 +224,7 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
                   project={project}
                   initialInvited={invited}
                   projectInvites={projectInvites}
+                  setModalVisible={setModalVisible}
                   />
                 )
               }}

@@ -99,3 +99,24 @@ export const GET_PROJECT_INVITES = gql`
     }
   }
 `
+
+export const GET_PROJECT_INVITE_FROM_NOTIFICATION = gql`
+  query GetProjectInviteFromNotification($projectId: ID, $invitorId: ID, $inviteeId: ID) {
+    getProjectInviteFromNotification(projectId: $projectId, invitorId: $invitorId, inviteeId: $inviteeId) {
+      id
+      project {
+        id
+        name
+      }
+      invitor {
+        id
+        username
+      }
+      invitee {
+        id
+      }
+      role
+      response
+    }
+  }
+`

@@ -369,6 +369,9 @@ function SearchScreen({
     <Stack.Screen name='UserProfile' component={UserProfile}initialParams={{
       tab: 'Search'
     }} />
+        <Stack.Screen name='OtherUserProfile' component={UserProfile}initialParams={{
+      tab: 'Search'
+    }} />
     <Stack.Screen name='ProjectProfile' component={ProjectProfile} options={{ gestureEnabled: false }}initialParams={{
       tab: 'Search'
     }} />

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { SafeAreaView, RefreshControl, Image, StyleSheet, View, FlatList, ActivityIndicator, Pressable } from 'react-native'
-import { useLazyQuery } from '@apollo/client'
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import { useNavigation } from '@react-navigation/native'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
@@ -11,8 +11,8 @@ import { withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { White, Grey300, Black, Grey800, Blue100 } from '../../constants/Colors'
-import { GET_NOTIFICATIONS, GET_FEED_ITEM_FOR_FEED_COMMENT, GET_FEED_ITEM, GET_POST_ITEM, GET_UNREAD_NOTIFICATION_COUNT } from '../../graphql/queries'
-import { MARK_NOTIFICATION_AS_VIEWED } from '../../graphql/mutations'
+import { GET_NOTIFICATIONS, GET_FEED_ITEM_FOR_FEED_COMMENT, GET_FEED_ITEM, GET_POST_ITEM, GET_UNREAD_NOTIFICATION_COUNT, GET_PROJECT_INVITE_FROM_NOTIFICATION } from '../../graphql/queries'
+import { MARK_NOTIFICATION_AS_VIEWED, ACCEPT_PROJECT_INVITE } from '../../graphql/mutations'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { RegularText } from '../../storybook/stories/Text'
 import { SafeImage } from '../../storybook/stories/Image'
@@ -42,6 +42,7 @@ import IdChecker from '../Profile/IdChecker'
 import HouseKeeping from '../Review/HouseKeeping'
 import ReviewPage from '../Review/ReviewPage'
 import { GET_REVIEW_FROM_REVIEW_COMMENT } from '../../graphql/queries/review'
+import { listStyles } from '../Profile/style'
 
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
@@ -75,6 +76,7 @@ const notificationStyles = StyleSheet.create({
     borderRadius: spacingUnit * 3
   }
 });
+
 
 export const getNotificationPressFunction = async ({ notificationInfo, navigation, tab, notifications, push=false }) => {
   const {
@@ -313,11 +315,28 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
           }
         })
         break
+      case 'project_invite':
+        if (push) {
+          navigation.navigate('Root', {
+            screen : 'Notifications'
+          })
+        } else {
+          navigation.navigate('Root', {
+            screen: tab || 'Profile',
+            params: {
+              screen: 'ProjectProfile',
+              params: {
+                projectId: objectId
+              }
+            }
+          })
+        }
+        break
       
   }
 }
 
-const formatNotificationMessage = ({ notificationInfo, tab }) => {
+const formatNotificationMessage = ({ notificationInfo, tab, projectInvite }) => {
   let displayMessage = '';
   switch (notificationInfo.type) {
     case 'mention':
@@ -347,11 +366,37 @@ const formatNotificationMessage = ({ notificationInfo, tab }) => {
         </RegularText>
       )
       break
+    case 'project_invite':
+      displayMessage = formatProjectInvite(notificationInfo, projectInvite)
+      break
     default:
       displayMessage = <></>;
   }
   return displayMessage;
 }
+
+const formatProjectInvite = (notificationInfo, projectInvite) => {
+
+  if (projectInvite) {
+    return (
+      <>
+        <RegularText color={Black}>
+            <RegularText style={{
+              fontFamily: 'Rubik SemiBold'
+            }}>
+              @{projectInvite.invitor.username}{` `} 
+              </RegularText>invited you to work on <RegularText style={{
+              fontFamily: 'Rubik SemiBold'
+            }}>
+              {projectInvite.project.name}
+              </RegularText>
+        </RegularText>
+      </>
+    )
+  }
+  return null
+}
+
 const formatNotificationMentionMessage = (notificationInfo) => {
   let displayMessage = ''
   switch (notificationInfo.objectType) {
@@ -410,7 +455,6 @@ const formatNotificationMentionMessage = (notificationInfo) => {
             mentioned you in a comment.
         </RegularText>
       )
-      break
     default:
       displayMessage = <></>;
   }
@@ -470,15 +514,40 @@ const formatNotificationCommentMessage = (notificationInfo) => {
 }
 
 export const NotificationDisplay = ({ notificationInfo, tab, notifications }) => {
-  const displayMessage = formatNotificationMessage({ notificationInfo, tab })
-  const navigation = useNavigation()
-
   const {
+    objectId,
+    actorId,
+    userId,
     actorProfilePicture: profilePicture,
     timestamp,
+    type,
     viewedAt,
-    type
   } = notificationInfo
+  const [projectInvite, setProjectInvite] = useState(null)
+  const [acceptInvite, setAcceptInvite] = useState(null)
+  const [acceptInviteMutation] = useMutation(ACCEPT_PROJECT_INVITE)
+  const [getInvite, {
+    data: projectInviteData
+  }] = useLazyQuery(GET_PROJECT_INVITE_FROM_NOTIFICATION, {
+    variables: {
+      projectId: objectId,
+      invitorId: actorId,
+      inviteeId: userId
+    }
+  })
+  useEffect(() => {
+    if (type === 'project_invite') {
+      getInvite()
+    }
+    if (projectInviteData) {
+      setProjectInvite(projectInviteData.getProjectInviteFromNotification)
+      if (projectInviteData.getProjectInviteFromNotification.response === 'accepted') {
+        setAcceptInvite(true)
+      }
+    }
+  }, [projectInviteData])
+  const displayMessage = formatNotificationMessage({ notificationInfo, tab, projectInvite })
+  const navigation = useNavigation()
 
   const defaultImage = () => {
     if (type === 'review_reminder') {
@@ -506,7 +575,8 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
                     
       }
       <View style={{
-        flex: 1
+        flex: 1,
+        marginRight: spacingUnit
       }}>
       {displayMessage}
       <RegularText color={Grey800} style={{
@@ -517,6 +587,32 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
       {timeAgo.format(new Date(timestamp))}
       </RegularText>
       </View>
+      {
+        type === 'project_invite' &&
+        <View>
+          {
+            acceptInvite ?
+            <Pressable style={listStyles.followingButton}>
+            <RegularText color={Black}>
+              Accepted
+            </RegularText>
+          </Pressable>
+          :
+          <Pressable onPress={() => {
+            setAcceptInvite(true)
+            acceptInviteMutation({
+              variables: {
+                projectInviteId: projectInvite.id
+              }
+            })
+          }} style={listStyles.followButton}>
+            <RegularText color={White}>
+              Accept
+            </RegularText>
+          </Pressable>
+          }
+        </View>
+      }
     </Pressable>
   )
 }
@@ -612,6 +708,9 @@ function NotificationScreenRoutes({
         tab: 'Notifications'
       }} />
       <Stack.Screen name='UserProfile' component={UserProfile} initialParams={{
+        tab: 'Notifications'
+      }} />
+      <Stack.Screen name='OtherUserProfile' component={UserProfile} initialParams={{
         tab: 'Notifications'
       }} />
       <Stack.Screen name='ProjectProfile' component={ProjectProfile} options={{ gestureEnabled: false }}initialParams={{
