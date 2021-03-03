@@ -25,7 +25,7 @@ const setupTaskStyles = StyleSheet.create({
     alignItems: 'center',
     paddingRight: spacingUnit * 2,
     paddingLeft: spacingUnit * 2,
-    marginTop: spacingUnit * 3
+    marginTop: spacingUnit * 3,
   }
 })
 
@@ -43,6 +43,7 @@ function SetupTaskScreen({
       projectId
     }
   })
+  const taskArray = taskData && taskData.getTasksFromProject
   const [createTask] = useMutation(CREATE_TASK, {
     refetchQueries: [
       { query: GET_USER_STREAK, variables: {
@@ -52,10 +53,10 @@ function SetupTaskScreen({
     update(cache, { data }) {
       cache.modify({
           fields: {
-              getTasksFromProject(existingTasks=[]) {
+              getTasksFromProject() {
                 return [
                   data.createTask,
-                  ...existingTasks
+                  ...taskArray
                 ]
               },
               users() {
@@ -67,9 +68,7 @@ function SetupTaskScreen({
   })
 
   const [modalVisible, setModalVisible] = useState(false)
-  const taskArray = taskData && taskData.getTasksFromProject
   const itemRefs = useRef(new Map())
-
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -97,7 +96,9 @@ function SetupTaskScreen({
           <FlatList
             data={taskArray}
             ListHeaderComponent={() => (
-              <>
+              <View style={{
+                alignItems: 'center'
+              }}>
           <TaskIcon style={{
             width: spacingUnit * 6,
             height: spacingUnit * 6
@@ -113,19 +114,17 @@ function SetupTaskScreen({
             paddingRight: spacingUnit * 1.25,
             marginTop: spacingUnit
           }}>
-            Tasks are small units of work that can be completed in a day
+            Tasks are small units of work that can be finished in a day
           </Paragraph>
           <Pressable onPress={() => setModalVisible(true)}>
             <SvgImage width={spacingUnit * 8} height={spacingUnit * 8} srcElement={AddIcon} style={{
               marginTop: spacingUnit * 3
             }} />
           </Pressable>
-              </>
+              </View>
             )}
-            renderItem={({ item }) => <Card type='task' route={route} navigation={navigation} iconSize={spacingUnit * 3} icon={TaskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} width={Dimensions.get('window').width} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
-            style={{
-              marginBottom: spacingUnit * 3
-            }}
+            renderItem={({ item }) => <Card type='task' route={route} navigation={navigation} iconSize={spacingUnit * 3} icon={TaskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
+            ListFooterComponent={<View style={{ marginBottom: spacingUnit * 3 }} />}
           >
 
           </FlatList>

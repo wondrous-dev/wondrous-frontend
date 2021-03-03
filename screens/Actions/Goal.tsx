@@ -31,7 +31,9 @@ const GoalPage = ({ navigation, route }) => {
     data,
     loading,
     error
-  }] = useLazyQuery(GET_GOAL_BY_ID)
+  }] = useLazyQuery(GET_GOAL_BY_ID, {
+    fetchPolicy: 'no-cache'
+  })
   const [updateGoal] = useMutation(UPDATE_GOAL, {
     update: (cache, { data }) => {
       if (data) {
@@ -83,7 +85,6 @@ const GoalPage = ({ navigation, route }) => {
   const images = goal.additionalData && goal.additionalData.images
   const asks = goal.additionalData && goal.additionalData.relatedAskIds
   const tasks = goal.taskCount && Number(goal.taskCount)
-
   return (
     <SafeAreaView style={{
       flex: 1,

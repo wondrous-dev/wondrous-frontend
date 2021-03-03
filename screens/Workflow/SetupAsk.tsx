@@ -64,6 +64,7 @@ function SetupAskScreen({
   const [modalVisible, setModalVisible] = useState(false)
   const askArray = askData && askData.getAsksFromProject
   const itemRefs = useRef(new Map())
+
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -87,13 +88,16 @@ function SetupAskScreen({
       <FullScreenAskModal firstTime={true} setModalVisible={setModalVisible} isVisible={modalVisible} projectId={projectId} askMutation={createAsk} />
       <View style={{
         paddingLeft: spacingUnit * 2,
-        paddingRight: spacingUnit * 2
+        paddingRight: spacingUnit * 2,
+        marginTop: spacingUnit * 3,
       }}>
           {/* <CardList /> */}
           <FlatList
             data={askArray}
             ListHeaderComponent={() => (
-              <>
+              <View style={{
+                alignItems: 'center'
+              }}>
               <AskIcon style={{
                 width: spacingUnit * 6,
                 height: spacingUnit * 6
@@ -116,9 +120,9 @@ function SetupAskScreen({
                   marginTop: spacingUnit * 3
                 }} />
               </Pressable>
-              </>
+              </View>
             )}
-            renderItem={({ item }) => <Card type='ask' navigation={navigation} route={route} iconSize={spacingUnit * 3} icon={AskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
+            renderItem={({ item }) => <Card type='ask' navigation={navigation} route={route} iconSize={spacingUnit * 3} icon={AskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} itemRefs={itemRefs && itemRefs.current} key={item && item.id} />}
             style={{
               marginBottom: spacingUnit * 3
             }}

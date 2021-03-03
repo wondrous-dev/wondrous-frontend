@@ -53,14 +53,6 @@ const link = split(
 )
 
 const cache = new InMemoryCache({
-  dataIdFromObject: object => {
-    // NOTE: workaround buggy apollo cache, use `cacheKey` if given,
-    //       otherwise fall back to default handling.
-    switch (object.__typename) {
-      default:
-        return defaultDataIdFromObject(object) // fall back to default handling
-    }
-  },
   typePolicies: {
     Query: {
       fields: {

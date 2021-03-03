@@ -27,7 +27,6 @@ const ActionList = ({ route, navigation }) => {
   }] = useLazyQuery(GET_TASKS_FROM_GOAL)
   const [askData, setAskData] = useState([])
   let data = []
-  
   useEffect(() => {
     if (type === 'task' && goalId) {
       getTasks({

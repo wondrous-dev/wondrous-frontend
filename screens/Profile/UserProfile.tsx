@@ -156,7 +156,7 @@ function UserProfile({
     variables: {
       userId: finalUserId
     },
-    fetchPolicy: 'network-only'
+    fetchPolicy: 'no-cache'
   })
   const [getUserActions, {
     loading: userActionLoading,
@@ -167,7 +167,7 @@ function UserProfile({
       userId: finalUserId,
       status
     },
-    fetchPolicy: 'network-only'
+    fetchPolicy: 'no-cache'
   })
 
   const [getUserAsks, {
@@ -179,7 +179,7 @@ function UserProfile({
       userId: finalUserId,
       status
     },
-    fetchPolicy: 'network-only'
+    fetchPolicy: 'no-cache'
   })
 
   const {
@@ -190,7 +190,7 @@ function UserProfile({
     variables: {
       userId: finalUserId
     },
-    fetchPolicy: 'network-only'
+    fetchPolicy: 'no-cache'
   })
 
   const [user, setUser] = useState(fetchedUser)

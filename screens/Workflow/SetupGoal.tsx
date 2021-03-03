@@ -74,7 +74,6 @@ function SetupGoalScreen({
   const [modalVisible, setModalVisible] = useState(false)
   const goalArray = goalData && goalData.getGoalsFromProject
   const itemRefs = useRef(new Map())
-
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -96,54 +95,48 @@ function SetupGoalScreen({
         }
       }} />
       <FullScreenGoalModal firstTime={true} setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} projectId={projectId} goalMutation={createGoal} />
-      <View style={setupGoalStyles.setupGoalContainer}>
-
-      </View>
-      <View style={setupGoalStyles.setupGoalContainer}>
           {/* <CardList /> */}
+          <View style={setupGoalStyles.setupGoalContainer}>
           <FlatList
             data={goalArray}
-            style={{
-              marginBottom: spacingUnit * 60
-            }}
             ListHeaderComponent={() => (
-              <>
-                      <GoalIcon style={{
-          width: spacingUnit * 8,
-          height: spacingUnit * 8
-        }} />
-        <Subheading color={Black} style={{
-          marginTop: spacingUnit * 2
-        }}>
-          Add goals
-        </Subheading>
-        <Paragraph color={Grey500} style={{
-          textAlign: 'center',
-          paddingLeft: spacingUnit * 1.25,
-          paddingRight: spacingUnit * 1.25,
-          marginTop: spacingUnit
-        }}>
-          Goals are measurable wins you want to achieve with this project
-        </Paragraph>
-        <Pressable onPress={() => setModalVisible(true)}>
-          <SvgImage width={spacingUnit * 8} height={spacingUnit * 8} srcElement={AddIcon} style={{
-            marginTop: spacingUnit * 3
-          }} />
-        </Pressable>
-              </>
+            <View style={{
+              alignItems: 'center'
+            }}>
+                <GoalIcon style={{
+                  width: spacingUnit * 8,
+                  height: spacingUnit * 8
+                }} />
+                <Subheading color={Black} style={{
+                  marginTop: spacingUnit * 2
+                }}>
+                  Add goals
+                </Subheading>
+                <Paragraph color={Grey500} style={{
+                  textAlign: 'center',
+                  paddingLeft: spacingUnit * 1.25,
+                  paddingRight: spacingUnit * 1.25,
+                  marginTop: spacingUnit
+                }}>
+                  Goals are measurable wins you want to achieve with this project
+                </Paragraph>
+                <Pressable onPress={() => setModalVisible(true)}>
+                  <SvgImage width={spacingUnit * 8} height={spacingUnit * 8} srcElement={AddIcon} style={{
+                    marginTop: spacingUnit * 3
+                  }} />
+                </Pressable>
+            </View>
             )}
-            ListFooterComponent={<View style={{ marginBottom: spacingUnit * 3, flex: 1 }} />}
+            ListFooterComponent={<View style={{ marginBottom: spacingUnit * 3 }} />}
             renderItem={({ item }) => {
               return (
-                <View>
                 <Card navigation={navigation} route={route}  type='goal' icon={GoalIcon} iconSize={4 * spacingUnit} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} itemRefs={itemRefs && itemRefs.current} key={item && item.id} />
-                </View>
               )
             }}
           >
 
           </FlatList>
-        </View>
+          </View>
     </SafeAreaView>
   )
 }

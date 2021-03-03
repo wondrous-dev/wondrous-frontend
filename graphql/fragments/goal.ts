@@ -20,7 +20,9 @@ export const PublicGoalFragment = gql`
       images
       link
       relatedAskIds
+      __typename
     }
+    __typename
   }
 `
 

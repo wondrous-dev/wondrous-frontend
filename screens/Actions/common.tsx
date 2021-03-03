@@ -157,7 +157,9 @@ export const ReactionFeed = ({ type, objId, user }) => {
 
   return (
     <>
-    <Paragraph color={Grey800}>
+    <Paragraph color={Grey800} style={{
+      marginTop: spacingUnit * 2
+    }}>
       Activity
     </Paragraph>
     <FlatList 
