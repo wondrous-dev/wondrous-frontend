@@ -32,7 +32,7 @@ const GoalPage = ({ navigation, route }) => {
     loading,
     error
   }] = useLazyQuery(GET_GOAL_BY_ID, {
-    fetchPolicy: 'no-cache'
+    fetchPolicy: 'network-only'
   })
   const [updateGoal] = useMutation(UPDATE_GOAL, {
     update: (cache, { data }) => {

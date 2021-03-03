@@ -444,7 +444,18 @@ const formatNotificationMentionMessage = (notificationInfo) => {
           mentioned you in a post.
       </RegularText>
       )
-    case 'comment':
+    case 'feed_comment':
+      return (
+        <RegularText color={Black}>
+        <RegularText style={{
+          fontFamily: 'Rubik SemiBold'
+        }}>
+            @{notificationInfo.actorUsername}{` `}  
+            </RegularText>
+            mentioned you in a comment.
+        </RegularText>
+      )
+    case 'review_comment':
       return (
         <RegularText color={Black}>
         <RegularText style={{

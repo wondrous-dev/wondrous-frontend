@@ -133,7 +133,7 @@ export const SafeImage = ({ src, style, defaultImage, setImage }) => {
     variables: {
       path: src
     }, 
-    fetchPolicy: 'no-cache'
+    fetchPolicy: 'network-only'
   })
   if (!src && defaultImage) {
     return <Image style={style} source={defaultImage} />

@@ -55,7 +55,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
     }
   })
   const { data: userGoals, loading: userGoalsLoading , error: userGoalsErrorsLoading } = useQuery(GET_GOALS_FROM_USER, {
-    fetchPolicy: 'no-cache'
+    fetchPolicy: 'network-only'
   })
   const { data: userTasks, loading: userTasksLoading, error: userTasksErrorsLoading } = useQuery(GET_TASKS_FROM_USER)
 

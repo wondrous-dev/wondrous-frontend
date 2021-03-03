@@ -506,7 +506,7 @@ export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRigh
   )
 }
 
-const removeActions = ({item, type, original, actions, status }) => {
+export const removeActions = ({item, type, original, actions, status }) => {
   const newActions = {}
   if (actions) {
     const {
@@ -531,6 +531,8 @@ const removeActions = ({item, type, original, actions, status }) => {
     }
   }
 }
+
+const update
 export const StatusSelector = ({ setStatus, status}) => {
   return (
     
@@ -598,7 +600,7 @@ export const onSwipe =({
   }
   if (type === 'goal') {
     if (status === 'completed') {
-      if (loggedInUser && loggedInUser.usageProgress && !loggedInUser.goalCompleted) {
+      if (loggedInUser && loggedInUser.usageProgress && !loggedInUser.usageProgress.goalCompleted) {
         setGoalCompleteModal(true)
       }
       completeGoal({
@@ -646,9 +648,6 @@ export const onSwipe =({
               fields: {
                 getProjectActions(existingActions) {
                   return removeActions({ item, type: 'goals', original: existingActions, actions, status })
-                },
-                users() {
-                  return updateUsageProgress({ user: loggedInUser, newKey: 'goalCompleted' })
                 }
               }
             })
@@ -657,9 +656,6 @@ export const onSwipe =({
               fields: {
                 getUserActions(existingActions) {
                   return removeActions({ item, type: 'goals', original: existingActions, actions, status })
-                },
-                users() {
-                  return updateUsageProgress({ user: loggedInUser, newKey: 'goalCompleted' })
                 }
               }
             })
@@ -668,7 +664,7 @@ export const onSwipe =({
       })
     }
   } else if (type === 'task') {
-    if (loggedInUser && loggedInUser.usageProgress && !loggedInUser.taskCompleted) {
+    if (loggedInUser && loggedInUser.usageProgress && !loggedInUser.usageProgress.taskCompleted && setTaskCompleteModal) {
       setTaskCompleteModal(true)
     }
     if (status === 'completed') {
@@ -677,16 +673,29 @@ export const onSwipe =({
           taskId: item.id
         },
         update(cache) {
-          cache.modify({
-            fields: {
-              getProjectActions(existingActions) {
-                return removeActions({ item, type: 'tasks', original: existingActions, actions, status })
-              },
-              users() {
-                return updateUsageProgress({ user: loggedInUser, newKey: 'taskCompleted' })
+          if (project) {
+            cache.modify({
+              fields: {
+                getProjectActions(existingActions=[]) {
+                  return removeActions({ item, type: 'tasks', original: existingActions, actions, status })
+                },
+                users() {
+                  return updateUsageProgress({ user: loggedInUser, newKey: 'taskCompleted' })
+                }
               }
-            }
-          })
+            })
+          } else if (user) {
+            cache.modify({
+              fields: {
+                getUserActions(existingActions=[]) {
+                  return removeActions({ item, type: 'tasks', original: existingActions, actions, status })
+                },
+                users() {
+                  return updateUsageProgress({ user: loggedInUser, newKey: 'taskCompleted' })
+                }
+              }
+            })
+          }
         }
       })
     } else {
@@ -698,16 +707,23 @@ export const onSwipe =({
           }
         },
         update(cache) {
-          cache.modify({
-            fields: {
-              getProjectActions(existingActions) {
-                return removeActions({ item, type: 'tasks', original: existingActions, actions, status })
-              },
-              users() {
-                return updateUsageProgress({ user: loggedInUser, newKey: 'taskCompleted' })
+          if (project) {
+            cache.modify({
+              fields: {
+                getProjectActions(existingActions) {
+                  return removeActions({ item, type: 'tasks', original: existingActions, actions, status })
+                }
               }
-            }
-          })
+            })
+          } else if (user) {
+            cache.modify({
+              fields: {
+                getUserActions(existingActions) {
+                  return removeActions({ item, type: 'tasks', original: existingActions, actions, status })
+                }
+              }
+            })
+          }
         }
       })
     }

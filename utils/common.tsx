@@ -48,7 +48,7 @@ export const insertComponentsIntoText = (
 }
 
 export const navigateUserOnLogin = (user, navigation) => {
-  if (user && user.usageProgress && user.usageProgress.signupCompleted) {
+  if (user && user.usageProgress && (user.usageProgress.signupCompleted || user.usageProgress.askCreated)) {
     if (user.usageProgress.askCreated) {
       navigation.navigate('Root', {
         screen: 'Dashboard'

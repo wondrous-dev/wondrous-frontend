@@ -33,6 +33,15 @@ export const getAuthHeader = async () => {
   return token
 }
 
+export const logout = async (navigation) => {
+  try {
+    await AsyncStorage.removeItem('token')
+    navigation.navigate('Home')
+  }
+  catch(exception) {
+      return false;
+  }
+}
 export const withAuth = (Component, noCache=false) => {
   return props => {
     const { navigation, route } = props

@@ -38,6 +38,8 @@ import apollo from '../../services/apollo'
 import { Streak } from '../../components/Streak'
 import { GoalCongratsModal, TaskCongratsModal } from '../../components/Modal'
 import { GET_USER_REVIEWS } from '../../graphql/queries/review'
+import Settings from '../../assets/images/settings'
+import { SettingsModal } from '../../components/Modal/SettingsModal'
 
 const getUserId = ({ route, user }) => {
   if (route && route.params && route.params.userId) {
@@ -156,7 +158,7 @@ function UserProfile({
     variables: {
       userId: finalUserId
     },
-    fetchPolicy: 'no-cache'
+    fetchPolicy: 'network-only'
   })
   const [getUserActions, {
     loading: userActionLoading,
@@ -167,7 +169,7 @@ function UserProfile({
       userId: finalUserId,
       status
     },
-    fetchPolicy: 'no-cache'
+    fetchPolicy: 'network-only'
   })
 
   const [getUserAsks, {
@@ -179,7 +181,7 @@ function UserProfile({
       userId: finalUserId,
       status
     },
-    fetchPolicy: 'no-cache'
+    fetchPolicy: 'network-only'
   })
 
   const {
@@ -190,7 +192,7 @@ function UserProfile({
     variables: {
       userId: finalUserId
     },
-    fetchPolicy: 'no-cache'
+    fetchPolicy: 'network-only'
   })
 
   const [user, setUser] = useState(fetchedUser)
@@ -200,6 +202,7 @@ function UserProfile({
       userId: finalUserId
     }
   })
+  const [settingsModal, setSettingsModal] = useState(false)
   const [profilePicture, setProfilePicture] = useState(user && user.profilePicture)
   const [updateUser] = useMutation(UPDATE_USER, {
     update(cache, { data: { updateUser }}) {
@@ -450,6 +453,7 @@ function UserProfile({
                         Edit Profile
                       </RegularText>
                     </SecondaryButton>
+
                   </>
                   :
                   <>
@@ -478,6 +482,14 @@ function UserProfile({
                   <Streak viewing={userOwned ? false : user && user.username} streak={streakData && streakData.getUserStreak} streakContainerStyle={{
                     marginLeft: spacingUnit
                   }} />
+                  {
+                    userOwned &&
+                    <Pressable onPress={() => setSettingsModal(true)}>
+                    <Settings style={{
+                      marginLeft: spacingUnit
+                    }} />
+                    </Pressable>
+                  }
               </View>
               {
                 user.bio &&
@@ -553,6 +565,7 @@ function UserProfile({
 
         <GoalCongratsModal user={user} isVisible={goalCompletemodal} setModalVisible={setGoalCompleteModal} />
         <TaskCongratsModal user={user} isVisible={taskCompleteModal} setModalVisible={setTaskCompleteModal} />
+        <SettingsModal isVisible={settingsModal} setModalVisible={setSettingsModal} />
         </>
       }
       <ProfileContext.Provider value={{
