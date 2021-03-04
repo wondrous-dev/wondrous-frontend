@@ -121,7 +121,7 @@ export const listStyles = StyleSheet.create({
     paddingLeft: spacingUnit * 2,
     paddingRight: spacingUnit * 2,
     alignItems: 'flex-start',
-    marginBottom: spacingUnit * 2
+    marginBottom: spacingUnit * 3
   },
   listImage: {
     width: spacingUnit * 6,

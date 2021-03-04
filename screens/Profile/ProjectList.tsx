@@ -98,7 +98,8 @@ const ProjectList = ({
   ] = useLazyQuery(GET_USER_PROJECTS, {
     variables: {
       userId
-    }
+    },
+    fetchPolicy: 'network-only'
   })
 
   const projects = data && data.getUserProjects

@@ -150,18 +150,24 @@ const UserList = ({
     data: projectFollowerData,
     loading: projectFollowerLoading,
     error: projectFollowerError
-  }] = useLazyQuery(GET_PROJECT_FOLLOWERS)
+  }] = useLazyQuery(GET_PROJECT_FOLLOWERS, {
+    fetchPolicy: 'network-only'
+  })
 
   const [getUserFollowers, {
     data: followerData,
     loading: followerLoading,
     error: followerError
-  }] = useLazyQuery(GET_USER_FOLLOWERS)
+  }] = useLazyQuery(GET_USER_FOLLOWERS, {
+    fetchPolicy: 'network-only'
+  })
   const [getUserFollowing, {
     data: followingData,
     loading: followingLoading,
     error: followingError
-  }] = useLazyQuery(GET_USER_FOLLOWING)
+  }] = useLazyQuery(GET_USER_FOLLOWING, {
+    fetchPolicy: 'network-only'
+  })
 
   const [refreshing, setRefreshing] = useState(false)
   const onRefresh = useCallback(() => {

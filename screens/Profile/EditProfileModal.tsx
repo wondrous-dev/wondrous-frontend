@@ -236,7 +236,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                               // marginLeft: spacingUnit * 2
                             }} onPress={() => {
                               navigation.navigate('Root', {
-                                screen: route && route.params && route.params.tab && 'Profile',
+                                screen: route && route.params && route.params.tab || 'Profile',
                                 params: {
                                   screen: 'EditProjectCategory',
                                   params: {
@@ -269,7 +269,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                               // marginLeft: spacingUnit * 2
                             }} onPress={() => {
                               navigation.navigate('Root', {
-                                screen: route && route.params && route.params.tab && 'Profile',
+                                screen: route && route.params && route.params.tab || 'Profile',
                                 params: {
                                   screen: 'EditProjectTags',
                                   params: {
