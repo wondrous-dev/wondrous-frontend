@@ -7,7 +7,7 @@ import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import { createStackNavigator } from '@react-navigation/stack'
 
-import { withAuth } from '../../components/withAuth'
+import { useMe, withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { White, Grey300, Black, Grey800, Blue100 } from '../../constants/Colors'
@@ -630,7 +630,7 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
 
 export const NotificationFeed = ({ route }) => {
   const [refreshing, setRefreshing] = React.useState(false);
-
+  const user = useMe()
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     getItems()
@@ -661,15 +661,19 @@ export const NotificationFeed = ({ route }) => {
   }
 
   const tab = route && route.params && route.params.tab
+  const filteredNotifications = data && data.getNotifications && data.getNotifications.filter(item => {
+    return item.actorId !== user.id
+  })
+
   return (
     <>
       <FlatList
         contentContainerStyle={{
           paddingBottom: spacingUnit * 10
         }}
-        data={data && data.getNotifications}
+        data={filteredNotifications}
         renderItem={({ item, index, separators }) => (
-          <NotificationDisplay notificationInfo={item}  tab={tab} notifications={data && data.getNotifications} />
+          <NotificationDisplay notificationInfo={item}  tab={tab} notifications={filteredNotifications} />
         )}
         keyExtractor={item => item.id}
         refreshControl={
@@ -690,6 +694,7 @@ export const NotificationFeed = ({ route }) => {
 
 }
 
+const AuthFeed = withAuth(NotificationFeed)
 function NotificationScreen({
   navigation,
   route
@@ -701,7 +706,7 @@ function NotificationScreen({
       flex: 1
     }}>
       <Header />
-      <NotificationFeed route={route} />
+      <AuthFeed route={route} />
     </SafeAreaView>
   )
 }
