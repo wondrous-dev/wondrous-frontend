@@ -189,6 +189,7 @@ export default function BottomTabNavigator() {
         name='Profile'
         component={Profile}
         initialParams={{
+          screen: 'UserProfile',
           loggedin: true,
           noGoingBack: true
         }}

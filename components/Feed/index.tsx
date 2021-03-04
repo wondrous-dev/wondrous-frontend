@@ -575,7 +575,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
         }}/> */}
         {comment ?
           <Paragraph style={feedStyles.feedText}>
-          {renderMentionString({ content: item.itemContent, textStyle: feedStyles.mentionedText, navigation, tab: route && route.params && route.params.tab })}
+          {renderMentionString({ content: item.itemContent, navigation, tab: route && route.params && route.params.tab })}
           </Paragraph>
           :
           <FeedString item={item} standAlone={standAlone} />
