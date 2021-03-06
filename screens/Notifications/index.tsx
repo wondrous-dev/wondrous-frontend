@@ -14,6 +14,7 @@ import { White, Grey300, Black, Grey800, Blue100 } from '../../constants/Colors'
 import { GET_NOTIFICATIONS, GET_FEED_ITEM_FOR_FEED_COMMENT, GET_FEED_ITEM, GET_POST_ITEM, GET_UNREAD_NOTIFICATION_COUNT, GET_PROJECT_INVITE_FROM_NOTIFICATION } from '../../graphql/queries'
 import { MARK_NOTIFICATION_AS_VIEWED, ACCEPT_PROJECT_INVITE } from '../../graphql/mutations'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
+import LogoImage from '../../assets/images/logo.png'
 import { RegularText } from '../../storybook/stories/Text'
 import { SafeImage } from '../../storybook/stories/Image'
 import { spacingUnit, wait } from '../../utils/common'
@@ -86,37 +87,47 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
     id,
     actorId
   } = notificationInfo
-  apollo.mutate({
-    mutation: MARK_NOTIFICATION_AS_VIEWED,
-    variables: {
-      notificationId: id
-    },
-    refetchQueries: [
-      {query: GET_UNREAD_NOTIFICATION_COUNT}
-    ],
-    update: (cache, { data }) => {
-      cache.modify({
-        fields: {
-          getNotifications() {
-            // console.log('existingGoals', existingGoals)
-            if (notifications) {
-              const newNotifications = notifications.map(notification => {
-                if (notification.id === id) {
-                  const newNotification = {...notification}
-                  newNotification.viewedAt = new Date()
-                  return newNotification
-                }
-                return notification
-              })
-              return newNotifications
+  if (type !== 'welcome') {
+    apollo.mutate({
+      mutation: MARK_NOTIFICATION_AS_VIEWED,
+      variables: {
+        notificationId: id
+      },
+      refetchQueries: [
+        {query: GET_UNREAD_NOTIFICATION_COUNT}
+      ],
+      update: (cache, { data }) => {
+        cache.modify({
+          fields: {
+            getNotifications() {
+              // console.log('existingGoals', existingGoals)
+              if (notifications) {
+                const newNotifications = notifications.map(notification => {
+                  if (notification.id === id) {
+                    const newNotification = {...notification}
+                    newNotification.viewedAt = new Date()
+                    return newNotification
+                  }
+                  return notification
+                })
+                return newNotifications
+              }
             }
           }
-        }
-      })
-    }
-  })
+        })
+      }
+    })
+  }
 
   switch(type) {
+    case 'welcome':
+      navigation.navigate('Root', {
+        screen: tab || 'Profile',
+        params: {
+          screen: 'UserProfile'
+        }
+      })
+      break
     case 'mention':
       let actionScreen = ''
       let params = {}
@@ -339,6 +350,13 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
 const formatNotificationMessage = ({ notificationInfo, tab, projectInvite }) => {
   let displayMessage = '';
   switch (notificationInfo.type) {
+    case 'welcome':
+      displayMessage =(
+        <RegularText color={Black}>
+          Welcome to Wonder! We're here to help your dream project succeed.
+        </RegularText>
+      )
+      break
     case 'mention':
       displayMessage = formatNotificationMentionMessage(notificationInfo);
       break
@@ -561,6 +579,11 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
   const navigation = useNavigation()
 
   const defaultImage = () => {
+    if (type === 'welcome') {
+      return (
+        <Image source={LogoImage} style={notificationStyles.notificationImage} />
+      )
+    }
     if (type === 'review_reminder') {
       return (
         <ReviewIcon 
@@ -590,13 +613,16 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
         marginRight: spacingUnit
       }}>
       {displayMessage}
-      <RegularText color={Grey800} style={{
-        fontSize: 13,
-        lineHeight: 18,
-        marginTop: spacingUnit * 0.5
-      }}>
-      {timeAgo.format(new Date(timestamp))}
-      </RegularText>
+      {
+        type !== 'welcome' &&
+        <RegularText color={Grey800} style={{
+          fontSize: 13,
+          lineHeight: 18,
+          marginTop: spacingUnit * 0.5
+        }}>
+        {timeAgo.format(new Date(timestamp))}
+        </RegularText>
+      }
       </View>
       {
         type === 'project_invite' &&
@@ -664,14 +690,19 @@ export const NotificationFeed = ({ route }) => {
   const filteredNotifications = data && data.getNotifications && data.getNotifications.filter(item => {
     return item.actorId !== user.id
   })
-
+  const welcomeObject = [
+    {
+      type: 'welcome',
+      viewedAt: new Date()
+    }
+  ]
   return (
     <>
       <FlatList
         contentContainerStyle={{
           paddingBottom: spacingUnit * 10
         }}
-        data={filteredNotifications}
+        data={filteredNotifications && filteredNotifications.length > 0 ? filteredNotifications : welcomeObject}
         renderItem={({ item, index, separators }) => (
           <NotificationDisplay notificationInfo={item}  tab={tab} notifications={filteredNotifications} />
         )}

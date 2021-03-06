@@ -9,7 +9,7 @@ import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yell
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { capitalizeFirstLetter, cutString, getNonWhiteSpaceLength, spacingUnit } from '../../utils/common'
 import { modalStyles } from '../../components/Modal/common'
-import { SafeImage, UploadImage } from '../../storybook/stories/Image'
+import { SafeImage } from '../../storybook/stories/Image'
 import { useMe } from '../../components/withAuth'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { ProfilePlaceholder } from './common'

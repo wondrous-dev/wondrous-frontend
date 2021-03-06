@@ -47,7 +47,7 @@ export const UploadImage = ({ isVisible, setModalVisible, image, setImage, saveI
       } = getFilenameAndType(result.uri)
       const imageUrl = imagePrefix + filename
       const variables = setDeepVariable(saveImageMutationVariable[0], saveImageMutationVariable[1], imageUrl)
-      uploadMedia({ filename: imageUrl, localUrl: result.uri, fileType })
+      await uploadMedia({ filename: imageUrl, localUrl: result.uri, fileType })
       saveImageMutation({
         variables
       })

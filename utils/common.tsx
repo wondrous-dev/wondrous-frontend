@@ -150,15 +150,18 @@ export const renderMentionString = ({ content, textStyle, navigation, simple, ta
             color: Blue400,
             ...textStyle
           }}
-          onPress={() => navigation.navigate('Root', {
-            screen: tab || 'Profile',
-            params: {
-              screen: trigger === '@' ? 'OtherUserProfile' : 'ProjectProfile',
+          onPress={() => {
+            navigation.navigate('Root', {
+              screen: tab || 'Profile',
               params: {
-                id
+                screen: trigger === '@' ? 'OtherUserProfile' : 'ProjectProfile',
+                params: {
+                  userId: id,
+                  id
+                }
               }
-            }
-          })}
+            })
+          }}
           >{`@${name}`}
           </Text>
       )
