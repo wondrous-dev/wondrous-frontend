@@ -5,7 +5,7 @@ import { SvgXml } from "react-native-svg"
 import Modal from 'react-native-modal'
 import * as ImagePicker from 'expo-image-picker'
 import isEqual from 'lodash.isequal'
-import FastImage from 'react-native-fast-image'
+import * as FileSystem from 'expo-file-system'
 
 import { GET_PREVIEW_IMAGE } from '../../../graphql/queries'
 import apollo from '../../../services/apollo'
@@ -24,6 +24,55 @@ interface ImageProps {
   webStyle?: any
   srcElement?: any
   style?: any
+}
+
+export const CachedImage = props => {
+  const { source: { uri }, cacheKey } = props
+  const filesystemURI = `${FileSystem.cacheDirectory}${cacheKey}`
+
+  const [imgURI, setImgURI] = useState(filesystemURI)
+
+  const componentIsMounted = useRef(true)
+
+  useEffect(() => {
+    const loadImage = async ({ fileURI }) => {
+      try {
+        // Use the cached image if it exists
+        const metadata = await FileSystem.getInfoAsync(fileURI)
+        if (!metadata.exists) {
+          // download to cache
+          if (componentIsMounted.current) {
+            setImgURI(null)
+            await FileSystem.downloadAsync(
+              uri,
+              fileURI
+            )
+          }
+          if (componentIsMounted.current) {
+            setImgURI(fileURI)
+          }
+        }
+      } catch (err) {
+        setImgURI(uri)
+      }
+    }
+
+    loadImage({ fileURI: filesystemURI })
+
+    return () => {
+      componentIsMounted.current = false
+    }
+  }, [])// eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <Image
+    // eslint-disable-next-line react/jsx-props-no-spreading
+      {...props}
+      source={{
+        uri: imgURI,
+      }}
+    />
+  )
 }
 
 export const UploadImage = ({ isVisible, setModalVisible, image, setImage, saveImageMutation, imagePrefix, saveImageMutationVariable }) => {
@@ -136,7 +185,7 @@ export const SafeImage = ({ src, style, defaultImage, setImage }) => {
     fetchPolicy: 'network-only'
   })
   if (!src && defaultImage) {
-    return <Image style={style} source={defaultImage} />
+    return <CachedImage cacheKey='safeDefaultImage' style={style} source={defaultImage} />
   }
 
 
@@ -149,11 +198,11 @@ export const SafeImage = ({ src, style, defaultImage, setImage }) => {
   }, [data])
 
   if (src.startsWith('https') || src.startsWith('file://')) {
-    return <Image key={src} style={style} source={{
+    return <CachedImage cacheKey={src} style={style} key={src} source={{
       uri: src
     }} />
   } else if (data && data.getPreviewImage) {
-    return <Image style={style} key={data.getPreviewImage.url} source={{
+    return <CachedImage cacheKey={src}style={style} key={data.getPreviewImage.url} source={{
       uri: data.getPreviewImage.url
     }} />
   }

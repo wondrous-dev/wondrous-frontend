@@ -159,7 +159,7 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
             </View>
             <View style={modalStyles.infoContainer}>
             <View style={[modalStyles.inputContainer, {
-              marginBottom: spacingUnit * 3
+              marginBottom: spacingUnit * 5
             }]}>
               <TextEditorContext.Provider value={{
                   content,
