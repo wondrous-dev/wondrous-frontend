@@ -71,7 +71,7 @@ const UserItem = ({ item, itemPressed, initialFollowing, existingUserFollowing }
       {
         item.profilePicture ?
         <View>
-        <SafeImage src={item.profilePicture} style={listStyles.listImage} />
+        <SafeImage src={(item.thumbnailPicture || item.profilePicture)} style={listStyles.listImage} />
         </View>
         :
         <Image source={DefaultProfilePicture} style={{
@@ -297,7 +297,7 @@ const UserList = ({
               ?
               <ProjectItem
               key={item.id}
-              profilePicture={item.profilePicture}
+              profilePicture={item.thumbnailPicture || item.profilePicture}
               project={true}
               itemDescription={item.description}
               itemName={item.name}

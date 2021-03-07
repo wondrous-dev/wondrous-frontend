@@ -27,6 +27,7 @@ export const GET_NOTIFICATIONS = gql`
       timestamp
       type
       viewedAt
+      message
     }
   }
 `

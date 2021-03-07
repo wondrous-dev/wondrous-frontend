@@ -221,7 +221,7 @@ function ProjectProfile({
     }
 
     if (!profilePicture && project && project.profilePicture) {
-      setProfilePicture(project && project.profilePicture)
+      setProfilePicture(project && (project.thumbnailPicture || project.profilePicture))
     }
     if (editProfile) {
       setEditProfileModal(true)
@@ -229,7 +229,7 @@ function ProjectProfile({
     if (projectFeedData && projectFeedData.getProjectFeed) {
       setProjectFeed(projectFeedData.getProjectFeed)
     }
-  }, [project && project.profilePicture, feedSelected, actionSelected, asksSelected, status, projectFeedData && projectFeedData.getProjectFeed])
+  }, [project && (project.thumbnailPicture || project.profilePicture), feedSelected, actionSelected, asksSelected, status, projectFeedData && projectFeedData.getProjectFeed])
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)
@@ -333,7 +333,7 @@ function ProjectProfile({
           <View style={profileStyles.imageContainer}>
           {
             profilePicture ?
-            <SafeImage style={profileStyles.profileImage} src={profilePicture|| project.profilePicture} />
+            <SafeImage style={profileStyles.profileImage} src={profilePicture || (project.thumbnailPicture || project.profilePicture)} />
             :
             <ProfilePlaceholder projectOwnedByUser={projectOwnedByUser} />
           }

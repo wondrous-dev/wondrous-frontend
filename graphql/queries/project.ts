@@ -114,6 +114,7 @@ export const GET_PROJECT_INVITE_FROM_NOTIFICATION = gql`
       }
       invitee {
         id
+        username
       }
       role
       response

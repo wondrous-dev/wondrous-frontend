@@ -98,7 +98,7 @@ const WriteComment = () => {
           borderRadius: spacingUnit * 2,
           marginRight: spacingUnit,
           marginBottom: 4
-        }} src={ user && user.profilePicture } defaultImage={DefaultProfilePicture} />
+        }} src={ user && (user.thumbnailPicture || user.profilePicture) } defaultImage={DefaultProfilePicture} />
         <TextEditorContext.Provider value={{
           content,
           setContent,

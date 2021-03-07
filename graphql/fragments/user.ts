@@ -10,6 +10,7 @@ export const PublicUserFragment = gql`
     firstName
     lastName
     privacyLevel
+    thumbnailPicture
     links {
       website
       linkedin

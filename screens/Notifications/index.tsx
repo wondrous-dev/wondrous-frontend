@@ -343,7 +343,46 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
           })
         }
         break
-      
+      case 'project_invite_accept':
+        if (push) {
+          navigation.navigate('Root', {
+            screen: 'Notifications'
+          })
+        } else {
+          navigation.navigate('Root', {
+            screen: tab || 'Profile',
+            params: {
+              screen: 'ProjectProfile',
+              params: {
+                projectId: objectId
+              }
+            }
+          })
+        }
+        break
+      case 'expiring_action_reminder':
+        navigation.navigate('Root', {
+          screen: tab || 'Profile',
+          params: {
+            screen: 'UserProfile',
+            params: {
+              initialSection: 'action'
+            }
+          }
+        })
+        break
+      case 'expired_action_reminder':
+        navigation.navigate('Root', {
+          screen: tab || 'Profile',
+          params: {
+            screen: 'UserProfile',
+            params: {
+              initialSection: 'action'
+            }
+          }
+        })
+        break
+    
   }
 }
 
@@ -387,10 +426,47 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite }) => 
     case 'project_invite':
       displayMessage = formatProjectInvite(notificationInfo, projectInvite)
       break
+    case 'project_invite_accept':
+      displayMessage = formatProjectInviteAccept(notificationInfo, projectInvite)
+      break
+    case 'expiring_action_reminder':
+      displayMessage = (
+        <RegularText color={Black}>
+          {notificationInfo.message}
+        </RegularText>
+      )
+      break
+    case 'expired_action_reminder':
+      displayMessage = (
+        <RegularText color={Black}>
+          {notificationInfo.message}
+        </RegularText>
+      )
+      break
     default:
       displayMessage = <></>;
   }
   return displayMessage;
+}
+
+const formatProjectInviteAccept = (notificationInfo, projectInvite) => {
+  if (projectInvite) {
+    return (
+      <>
+        <RegularText color={Black}>
+            <RegularText style={{
+              fontFamily: 'Rubik SemiBold'
+            }}>
+              @{projectInvite.invitee.username}{` `} 
+              </RegularText>accepted your invite to work on <RegularText style={{
+              fontFamily: 'Rubik SemiBold'
+            }}>
+              {projectInvite.project.name}
+              </RegularText>
+        </RegularText>
+      </>
+    )
+  }
 }
 
 const formatProjectInvite = (notificationInfo, projectInvite) => {
@@ -522,7 +598,8 @@ const formatNotificationReactionMessage = (notificationInfo) => {
 const formatNotificationCommentMessage = (notificationInfo) => {
   const {
     actorProfilePicture: profilePicture,
-    objectType
+    objectType,
+    actorThumbnail
   } = notificationInfo
   let string = ''
   if (objectType === 'review_comment') {
@@ -551,6 +628,7 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
     timestamp,
     type,
     viewedAt,
+    actorThumbnail
   } = notificationInfo
   const [projectInvite, setProjectInvite] = useState(null)
   const [acceptInvite, setAcceptInvite] = useState(null)
@@ -567,6 +645,14 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
   useEffect(() => {
     if (type === 'project_invite') {
       getInvite()
+    } else if (type === 'project_invite_accept') {
+      getInvite({
+        variables: {
+          projectId: objectId,
+          invitorId: userId,
+          inviteeId: actorId
+        }
+      })
     }
     if (projectInviteData) {
       setProjectInvite(projectInviteData.getProjectInviteFromNotification)
@@ -603,7 +689,7 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
       {
           profilePicture && profilePicture !== 'None' ?
           <SafeImage
-          src={profilePicture} style={notificationStyles.notificationImage} />
+          src={actorThumbnail || profilePicture} style={notificationStyles.notificationImage} />
           :
           defaultImage()
                     
@@ -657,14 +743,14 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
 export const NotificationFeed = ({ route }) => {
   const [refreshing, setRefreshing] = React.useState(false);
   const user = useMe()
+  const [notifications, setNotifications] = useState([])
   const onRefresh = useCallback(() => {
     setRefreshing(true)
-    getItems()
     wait(2000).then(() => setRefreshing(false))
   }, [])
 
 
-  const [getItems, { loading, data, error, refetch, fetchMore }] = useLazyQuery(GET_NOTIFICATIONS, {
+  const { loading, data, error, refetch, fetchMore } = useQuery(GET_NOTIFICATIONS, {
     fetchPolicy: 'network-only'
   })
   if (error) {
@@ -672,8 +758,10 @@ export const NotificationFeed = ({ route }) => {
   }
 
   useEffect(() => {
-    getItems()
-  }, [])
+    if (data && data.getNotifications) {
+      setNotifications(data.getNotifications)
+    }
+  }, [data])
 
   if (loading) {
     return (
@@ -687,9 +775,10 @@ export const NotificationFeed = ({ route }) => {
   }
 
   const tab = route && route.params && route.params.tab
-  const filteredNotifications = data && data.getNotifications && data.getNotifications.filter(item => {
-    return item.actorId !== user.id
+  const filteredNotifications = notifications.filter(item => {
+    return item && (item.actorId !== user.id)
   })
+
   const welcomeObject = [
     {
       type: 'welcome',
@@ -718,6 +807,22 @@ export const NotificationFeed = ({ route }) => {
             }}
           />
         )}
+        onEndReached={async () => {
+          if (fetchMore) {
+            try {
+              const result = await fetchMore({
+                variables: {
+                  offset: notifications && notifications.length
+                }
+              })
+              if (result && result.data && result.data.getNotifications) {
+                setNotifications([...data && data.getNotifications, ...result.data.getNotifications])
+              }
+            } catch (err) {
+              console.log('err fetching more', err)
+            }
+          }
+        }}
       >
       </FlatList>
     </>

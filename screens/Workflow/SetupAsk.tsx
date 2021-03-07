@@ -122,7 +122,7 @@ function SetupAskScreen({
               </Pressable>
               </View>
             )}
-            renderItem={({ item }) => <Card type='ask' navigation={navigation} route={route} iconSize={spacingUnit * 3} icon={AskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} itemRefs={itemRefs && itemRefs.current} key={item && item.id} />}
+            renderItem={({ item }) => <Card type='ask' navigation={navigation} route={route} iconSize={spacingUnit * 3} icon={AskIcon} profilePicture={user && (user.thumbnailPicture || user.profilePicture)} item={item} swipeEnabled={false} itemRefs={itemRefs && itemRefs.current} key={item && item.id} />}
             style={{
               marginBottom: spacingUnit * 3
             }}

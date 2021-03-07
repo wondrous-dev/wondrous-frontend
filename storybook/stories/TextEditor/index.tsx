@@ -79,7 +79,7 @@ const AutocompleteListItem = ({ user, autocompleteFill }) => {
         {
           user.profilePicture && user.profilePicture !== 'None' ?
           <Image
-          source={{uri: user.profilePicture}} style={{
+          source={{uri: (user.thumbnailPicture || user.profilePicture)}} style={{
             width: 30,
             height: 30,
             borderRadius: 15,
@@ -432,7 +432,7 @@ const renderSuggestions: (suggestions: Suggestion[], renderStyle, textInputRef) 
             {
               element.profilePicture && element.profilePicture !== 'None' ?
               <SafeImage
-              src={element.profilePicture} style={{
+              src={element.thumbnailPicture || element.profilePicture} style={{
                 width: 30,
                 height: 30,
                 borderRadius: 15,

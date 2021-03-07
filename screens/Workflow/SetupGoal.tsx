@@ -130,7 +130,7 @@ function SetupGoalScreen({
             ListFooterComponent={<View style={{ marginBottom: spacingUnit * 3 }} />}
             renderItem={({ item }) => {
               return (
-                <Card navigation={navigation} route={route}  type='goal' icon={GoalIcon} iconSize={4 * spacingUnit} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} itemRefs={itemRefs && itemRefs.current} key={item && item.id} />
+                <Card navigation={navigation} route={route}  type='goal' icon={GoalIcon} iconSize={4 * spacingUnit} profilePicture={user && (user.thumbnailPicture || user.profilePicture)} item={item} swipeEnabled={false} itemRefs={itemRefs && itemRefs.current} key={item && item.id} />
               )
             }}
           >

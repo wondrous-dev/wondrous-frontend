@@ -123,7 +123,7 @@ function SetupTaskScreen({
           </Pressable>
               </View>
             )}
-            renderItem={({ item }) => <Card type='task' route={route} navigation={navigation} iconSize={spacingUnit * 3} icon={TaskIcon} profilePicture={user && user.profilePicture} item={item} swipeEnabled={false} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
+            renderItem={({ item }) => <Card type='task' route={route} navigation={navigation} iconSize={spacingUnit * 3} icon={TaskIcon} profilePicture={user && (user.thumbnailPicture || user.profilePicture)} item={item} swipeEnabled={false} itemRefs={itemRefs && itemRefs.current} key={item && item.name} />}
             ListFooterComponent={<View style={{ marginBottom: spacingUnit * 3 }} />}
           >
 

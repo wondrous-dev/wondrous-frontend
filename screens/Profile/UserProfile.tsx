@@ -203,7 +203,7 @@ function UserProfile({
     }
   })
   const [settingsModal, setSettingsModal] = useState(false)
-  const [profilePicture, setProfilePicture] = useState(user && user.profilePicture)
+  const [profilePicture, setProfilePicture] = useState(user && (user.thumbnailPicture || user.profilePicture))
   const [updateUser] = useMutation(UPDATE_USER, {
     update(cache, { data: { updateUser }}) {
       cache.modify({
@@ -277,7 +277,7 @@ function UserProfile({
       }
     }
     if (user && !isEqual(user, previousUser)) {
-      setProfilePicture(user.profilePicture)
+      setProfilePicture(user.thumbnailPicture || user.profilePicture)
     }
     if (userFeedData && userFeedData.getUserFeed) {
       if (!isEqual(userFeedData.getUserFeed, prevFeed)) {
@@ -289,7 +289,7 @@ function UserProfile({
         setReviews(userReviewData.getReviewsFromUser)
       }
     }
-  }, [user && user.profilePicture, feedSelected, actionSelected, asksSelected, finalUserId, status, userFeedData, userReviewData ])
+  }, [user && (user.thumbnailPicture || user.profilePicture), feedSelected, actionSelected, asksSelected, finalUserId, status, userFeedData, userReviewData ])
 
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo
   const getCorrectData = section => {
@@ -383,7 +383,7 @@ function UserProfile({
                     width: spacingUnit * 10,
                     height: spacingUnit * 10,
                     borderRadius: spacingUnit * 5
-                  }} src={profilePicture || user.profilePicture} setImage={setProfilePicture} />
+                  }} src={profilePicture || user.thumbnailPicture || user.profilePicture} setImage={setProfilePicture} />
                   :
                   <ProfilePlaceholder projectOwnedByUser={userOwned} user={true} />
                 }

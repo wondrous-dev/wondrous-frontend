@@ -84,7 +84,7 @@ const CollaboratorItem = ({ item, project, initialInvited, projectInvites, setMo
       {
         item.profilePicture ?
         <View>
-        <SafeImage src={item.profilePicture} style={listStyles.listImage} />
+        <SafeImage src={item.thumbnailPicture || item.profilePicture} style={listStyles.listImage} />
         </View>
         :
         <Image source={DefaultProfilePicture} style={{
