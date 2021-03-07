@@ -135,6 +135,15 @@ export const getMentionArray = (content) => {
   }
 }
 
+export const openLink = (link) => {
+  if (!link) return null
+  if (!link.toLowerCase().startsWith('http') && !link.toLowerCase().startsWith('https')) {
+    WebBrowser.openBrowserAsync(`https://${link}`)
+  } else {
+    WebBrowser.openBrowserAsync(link)
+  }
+}
+
 export const renderMentionString = ({ content, textStyle, navigation, simple, tab }) => {
   const urlRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
   const final = regexifyString({
@@ -173,11 +182,7 @@ export const renderMentionString = ({ content, textStyle, navigation, simple, ta
             color: Blue400,
             ...textStyle
           }} onPress={() => {
-            if (!match.startsWith('http') || !match.startsWith('https')) {
-              WebBrowser.openBrowserAsync(`https://${match}`)
-            } else {
-              WebBrowser.openBrowserAsync(match)
-            }
+            openLink(match)
           }}>
             {match}
             </Text>

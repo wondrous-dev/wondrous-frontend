@@ -9,7 +9,7 @@ import { Header } from '../../components/Header'
 import { Black, Blue500, Grey300, White, Blue400, Grey800 } from '../../constants/Colors'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { TwitterShare, CopyLink, LinkedinShare, InstagramShare, GithubShare } from '../../assets/images/share'
-import { spacingUnit } from '../../utils/common'
+import { openLink, spacingUnit } from '../../utils/common'
 
 import Link from '../../assets/images/link'
 
@@ -50,7 +50,7 @@ const Links = ({ route }) => {
       <View style={linkStyles.container}>
         {
           links.website && 
-          <Pressable style={linkStyles.linkItem} onPress={() => Linking.openURL(links.website)}>
+          <Pressable style={linkStyles.linkItem} onPress={() => openLink(links.website)}>
             <Link color={Grey800} style={linkStyles.linkImage} />
               <Paragraph color={Grey800} style={linkStyles.linkText}>
                 {links.website}
@@ -59,7 +59,7 @@ const Links = ({ route }) => {
         }
         {
           links.twitter &&
-          <Pressable style={linkStyles.linkItem} onPress={() => Linking.openURL(links.twitter)}>
+          <Pressable style={linkStyles.linkItem} onPress={() => openLink(links.twitter)}>
           <TwitterShare style={linkStyles.linkImage} />
             <Paragraph color={Grey800} style={linkStyles.linkText}>
               {links.twitter}
@@ -68,7 +68,7 @@ const Links = ({ route }) => {
         }
         {
           links.instagram &&
-          <Pressable style={linkStyles.linkItem} onPress={() => Linking.openURL(links.instagram)}>
+          <Pressable style={linkStyles.linkItem} onPress={() => openLink(links.instagram)}>
           <InstagramShare style={linkStyles.linkImage} />
             <Paragraph color={Grey800} style={linkStyles.linkText}>
               {links.instagram}
@@ -77,7 +77,7 @@ const Links = ({ route }) => {
         }
         {
           links.linkedin &&
-          <Pressable style={linkStyles.linkItem} onPress={() => Linking.openURL(links.linkedin)}>
+          <Pressable style={linkStyles.linkItem} onPress={() => openLink(links.linkedin)}>
           <LinkedinShare style={linkStyles.linkImage} />
             <Paragraph color={Grey800} style={linkStyles.linkText}>
               {links.linkedin}
@@ -86,7 +86,7 @@ const Links = ({ route }) => {
         }
         {
           links.github &&
-          <Pressable style={linkStyles.linkItem} onPress={() => Linking.openURL(links.github)}>
+          <Pressable style={linkStyles.linkItem} onPress={() => openLink(links.github)}>
           <GithubShare style={linkStyles.linkImage} />
             <Paragraph color={Grey800} style={linkStyles.linkText}>
               {links.github}
