@@ -28,6 +28,9 @@ export const GET_NOTIFICATIONS = gql`
       type
       viewedAt
       message
+      additionalData {
+        message
+      }
     }
   }
 `

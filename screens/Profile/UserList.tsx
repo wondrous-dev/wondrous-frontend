@@ -319,7 +319,7 @@ const UserList = ({
                 itemPressed={() => navigation.navigate('Root', {
                   screen: tab || 'Profile',
                   params: {
-                    screen: 'UserProfile',
+                    screen: 'OtherUserProfile',
                     params: {
                       userId: item.id
                     }

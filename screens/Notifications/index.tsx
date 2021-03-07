@@ -444,16 +444,17 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite }) => 
       displayMessage = formatProjectInviteAccept(notificationInfo, projectInvite)
       break
     case 'expiring_action_reminder':
+      console.log('notificationINfo', notificationInfo)
       displayMessage = (
         <RegularText color={Black}>
-          {notificationInfo.message}
+          {notificationInfo.additionalData && notificationInfo.additionalData.message}
         </RegularText>
       )
       break
     case 'expired_action_reminder':
       displayMessage = (
         <RegularText color={Black}>
-          {notificationInfo.message}
+          {notificationInfo.additionalData && notificationInfo.additionalData.message}
         </RegularText>
       )
       break

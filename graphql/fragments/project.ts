@@ -10,6 +10,7 @@ export const PublicProjectFragment = gql`
     archivedAt
     privacyLevel
     profilePicture
+    thumbnailPicture
     createdBy
     tags
     category
