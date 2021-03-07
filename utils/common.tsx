@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from 'react'
-import { Text } from 'react-native'
+import { Pressable, Text, Linking } from 'react-native'
 import * as Localization from 'expo-localization'
 import { mentionRegEx } from 'react-native-controlled-mentions'
+import * as WebBrowser from 'expo-web-browser'
 import regexifyString from 'regexify-string'
+
 import { Blue400 } from '../constants/Colors'
 
 export const spacingUnit = 8
@@ -134,37 +136,55 @@ export const getMentionArray = (content) => {
 }
 
 export const renderMentionString = ({ content, textStyle, navigation, simple, tab }) => {
+  const urlRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
   const final = regexifyString({
-    pattern: mentionRegEx,
+    pattern: /(?<original>(?<trigger>.)\[(?<name>([^[]*))]\((?<id>([\d\w-]*))\))|([-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?)/gi,
     decorator: (match, index) => {
       const mentionExp = /(?<original>(?<trigger>.)\[(?<name>([^[]*))]\((?<id>([\d\w-]*))\))/.exec(match)
-      if (!mentionExp) {
-        return match
-      }
-      const { id, name, trigger } = mentionExp.groups
-      if (simple) {
-        return trigger + name
-      }
-      return (
+      const urlMatch = urlRegex.exec(match)
+      if (mentionExp) {
+        const { id, name, trigger } = mentionExp.groups
+        if (simple) {
+          return trigger + name
+        }
+        return (
+            <Text style={{
+              color: Blue400,
+              ...textStyle
+            }}
+            onPress={() => {
+              navigation.navigate('Root', {
+                screen: tab || 'Profile',
+                params: {
+                  screen: trigger === '@' ? 'OtherUserProfile' : 'ProjectProfile',
+                  params: {
+                    userId: id,
+                    id
+                  }
+                }
+              })
+            }}
+            >{`@${name}`}
+            </Text>
+        )
+      } else if (urlMatch) {
+        return (
           <Text style={{
             color: Blue400,
             ...textStyle
-          }}
-          onPress={() => {
-            navigation.navigate('Root', {
-              screen: tab || 'Profile',
-              params: {
-                screen: trigger === '@' ? 'OtherUserProfile' : 'ProjectProfile',
-                params: {
-                  userId: id,
-                  id
-                }
-              }
-            })
-          }}
-          >{`@${name}`}
-          </Text>
-      )
+          }} onPress={() => {
+            if (!match.startsWith('http') || !match.startsWith('https')) {
+              WebBrowser.openBrowserAsync(`https://${match}`)
+            } else {
+              WebBrowser.openBrowserAsync(match)
+            }
+          }}>
+            {match}
+            </Text>
+        )
+      } else {
+        return match
+      }
     },
     input: content
   })
