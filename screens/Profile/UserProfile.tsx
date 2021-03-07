@@ -368,7 +368,7 @@ function UserProfile({
     })
   }
 
-  function ProfileHeader () {
+  function ProfileHeader (user) {
     return (
       <View style={profileStyles.profileContainer}>
         
@@ -606,7 +606,7 @@ function UserProfile({
               }]}
             />
           )}
-          ListHeaderComponent={ProfileHeader()}
+          ListHeaderComponent={ProfileHeader(user)}
 
           data={profileData}
           contentContainerStyle={{

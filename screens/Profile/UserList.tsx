@@ -1,7 +1,7 @@
 
 import React, { useState, useCallback, useEffect } from 'react'
 import { Image, Pressable, SafeAreaView, RefreshControl, View, TouchableOpacity } from 'react-native'
-import { useLazyQuery, useMutation } from '@apollo/client'
+import { useLazyQuery, useQuery, useMutation } from '@apollo/client'
 
 import { GET_USER_FOLLOWERS, GET_USER_FOLLOWING, GET_PROJECT_FOLLOWERS } from '../../graphql/queries'
 import { withAuth, useMe } from '../../components/withAuth'
@@ -146,64 +146,51 @@ const UserList = ({
     tab
   } = route.params
 
-  const [getProjectFollowers, {
+  const {
     data: projectFollowerData,
     loading: projectFollowerLoading,
     error: projectFollowerError
-  }] = useLazyQuery(GET_PROJECT_FOLLOWERS, {
-    fetchPolicy: 'network-only'
+  } = useQuery(GET_PROJECT_FOLLOWERS, {
+    fetchPolicy: 'network-only',
+    variables: {
+      projectId
+    }
   })
 
-  const [getUserFollowers, {
+  const {
     data: followerData,
     loading: followerLoading,
-    error: followerError
-  }] = useLazyQuery(GET_USER_FOLLOWERS, {
-    fetchPolicy: 'network-only'
+    error: followerError,
+    refetch: refetchUserFollowers
+  } = useQuery(GET_USER_FOLLOWERS, {
+    fetchPolicy: 'network-only',
+    variables: {
+      userId
+    }
   })
-  const [getUserFollowing, {
+  const {
     data: followingData,
     loading: followingLoading,
-    error: followingError
-  }] = useLazyQuery(GET_USER_FOLLOWING, {
-    fetchPolicy: 'network-only'
+    error: followingError,
+    refetch: refetchUserFollowing
+  } = useQuery(GET_USER_FOLLOWING, {
+    fetchPolicy: 'network-only',
+    variables: {
+      userId
+    }
   })
 
   const [refreshing, setRefreshing] = useState(false)
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     if (followers) {
-      getUserFollowers()
+      refetchUserFollowers()
     } else if (following) {
-      getUserFollowing()
+      refetchUserFollowing()
     }
     wait(2000).then(() => setRefreshing(false))
   }, [])
   const [seeProject, setSeeProject] = useState(false)
-
-  useEffect(() => {
-    if (projectId) {
-      getProjectFollowers({
-        variables: {
-          projectId
-        }
-      })
-    } else if (userId) {
-      if (followers) {
-        getUserFollowers({
-          variables: {
-            userId
-          }
-        })
-      } else if (following) {
-        getUserFollowing({
-          variables: {
-            userId
-          }
-        })
-      }
-    }
-  }, [])
 
   const followingUsers = user && user.usersFollowing
   const followingProjects = user && user.projectsFollowing

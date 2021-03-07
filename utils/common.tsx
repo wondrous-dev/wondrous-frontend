@@ -184,7 +184,7 @@ export const renderMentionString = ({ content, textStyle, navigation, simple, ta
           }} onPress={() => {
             openLink(match)
           }}>
-            {match}
+            {!match.startsWith('https') && !match.startsWith('http') ? `https://${match}` : match}
             </Text>
         )
       } else {
