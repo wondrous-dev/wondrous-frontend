@@ -71,7 +71,7 @@ export default function Snapper ({ setSnapperOpen, snapperOpen, setImage, setMod
             setImage(result.uri)
             setSnapperOpen(false)
             if (upload) {
-              uploadMedia({ filename: imageUrl, localUrl: result.uri, fileType })
+              await uploadMedia({ filename: imageUrl, localUrl: result.uri, fileType })
             }
             if (saveImageMutation && saveImageMutationVariable) {
               const variables = setDeepVariable(saveImageMutationVariable[0], saveImageMutationVariable[1], imageUrl)

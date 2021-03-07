@@ -166,6 +166,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
             }
           })
         }
+        break
       } else if (objectType === 'feed_comment') {
         // Fetch feed review id and then navigate there
         const feedResponse = await apollo.query({
@@ -187,6 +188,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
             }
           })
         }
+        break
       } else if (objectType === 'review_comment') {
         const reviewResponse = await apollo.query({
           query: GET_REVIEW_FROM_REVIEW_COMMENT,
@@ -206,7 +208,19 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
             }
           })
         }
-      } else if (objectType === 'review')
+        break
+      } else if (objectType === 'review') {
+        navigation.navigate('Root', {
+          screen: tab || 'Profile',
+          params: {
+            screen: 'ReviewPage',
+            params: {
+              reviewId: objectId
+            }
+          }
+        })
+        break
+      }
 
       navigation.navigate('Root', {
         screen: tab || 'Profile',
