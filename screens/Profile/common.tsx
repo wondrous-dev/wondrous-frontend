@@ -535,7 +535,6 @@ export const removeActions = ({item, type, original, actions, status }) => {
   }
 }
 
-const update
 export const StatusSelector = ({ setStatus, status}) => {
   return (
     

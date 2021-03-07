@@ -21,5 +21,6 @@ export const PublicTaskFragment = gql`
       link
     }
     relatedAskIds
+    completedAt
   }
 `

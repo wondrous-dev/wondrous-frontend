@@ -1,4 +1,4 @@
-import { isSameISOWeek, differenceInDays, isTomorrow, isToday, formatDistanceToNowStrict, format, startOfWeek, addDays, isSameISOWeekYear, isAfter } from 'date-fns'
+import { isSameISOWeek, differenceInDays, differenceInWeeks, differenceInMonths, differenceInYears, isTomorrow, isToday, formatDistanceToNowStrict, format, startOfWeek, addDays, isSameISOWeekYear, isAfter } from 'date-fns'
 
 export const endOfWeekFromNow = () => addDays(startOfWeek(new Date), 7)
 
@@ -17,8 +17,20 @@ export const formatDueDate = (dueDate) => {
       return 'by ' + format(formattedDate, 'P')
     }
   } else {
-    const day = differenceInDays(newDate, formattedDate) === 1 ? 'day' : 'days'
-    return `${differenceInDays(newDate, formattedDate)} ${day} ago`
+    const diffDays = differenceInDays(newDate, formattedDate)
+    const diffWeeks = differenceInWeeks(newDate, formattedDate)
+    const diffMonths = differenceInMonths(newDate, formattedDate)
+    const diffYears = differenceInYears(newDate, formattedDate)
+    const day = diffDays === 1 ? 'day' : 'days'
+    if (diffDays < 7) {
+      return `${diffDays} ${day} ago`
+    } else if (diffMonths === 0) {
+      return `${diffWeeks} ${diffWeeks === 1 ? 'week': 'weeks'} ago`
+    } else if (diffYears === 0) {
+      return `${diffMonths} ${diffMonths === 1 ? 'month': 'months'} ago`
+    } else if (diffYears > 0) {
+      return `${diffYears} ${diffYears === 1 ? 'year': 'years'} ago`
+    }
   }
 }
 

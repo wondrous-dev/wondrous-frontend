@@ -21,6 +21,7 @@ export const PublicGoalFragment = gql`
       link
     }
     relatedAskIds
+    completedAt
   }
 `
 
