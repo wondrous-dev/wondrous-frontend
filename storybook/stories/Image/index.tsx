@@ -185,7 +185,7 @@ export const SafeImage = ({ src, style, defaultImage, setImage }) => {
     fetchPolicy: 'network-only'
   })
   if (!src && defaultImage) {
-    return <CachedImage cacheKey='safeDefaultImage' style={style} source={defaultImage} />
+    return <Image style={style} source={defaultImage} />
   }
 
 
