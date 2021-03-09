@@ -146,11 +146,13 @@ export const openLink = (link) => {
 
 export const renderMentionString = ({ content, textStyle, navigation, simple, tab }) => {
   const urlRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
+  const httpRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
   const final = regexifyString({
-    pattern: /(?<original>(?<trigger>.)\[(?<name>([^[]*))]\((?<id>([\d\w-]*))\))|([-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?)/gi,
+    pattern: /(?<original>(?<trigger>.)\[(?<name>([^[]*))]\((?<id>([\d\w-]*))\))|([-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?)|(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))/gi,
     decorator: (match, index) => {
       const mentionExp = /(?<original>(?<trigger>.)\[(?<name>([^[]*))]\((?<id>([\d\w-]*))\))/.exec(match)
       const urlMatch = urlRegex.exec(match)
+      const httpMatch = httpRegex.exec(match)
       if (mentionExp) {
         const { id, name, trigger } = mentionExp.groups
         if (simple) {
@@ -176,6 +178,17 @@ export const renderMentionString = ({ content, textStyle, navigation, simple, ta
             >{`@${name}`}
             </Text>
         )
+      } else if (httpMatch) {
+        return (
+          <Text style={{
+            color: Blue400,
+            ...textStyle
+          }} onPress={() => {
+            openLink(match)
+          }}>
+            {match}
+            </Text>
+        )
       } else if (urlMatch) {
         return (
           <Text style={{
@@ -184,7 +197,7 @@ export const renderMentionString = ({ content, textStyle, navigation, simple, ta
           }} onPress={() => {
             openLink(match)
           }}>
-            {!match.startsWith('https') && !match.startsWith('http') ? `https://${match}` : match}
+            {`https://${match}`}
             </Text>
         )
       } else {

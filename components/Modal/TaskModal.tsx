@@ -216,7 +216,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                   placeholder: 'Add task...'
                 }}>
                   <View style={{flex: 1}}>
-                <TextEditor multiline style={modalStyles.nameTextInput}
+                <TextEditor autoFocus multiline style={modalStyles.nameTextInput}
                 renderSuggestionStyle={modalStyles.renderSuggestion}
                 />
                 </View>
@@ -258,7 +258,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                     </View>
                     <ModalDropdown value={goal} setValue={setGoal} items={userGoalsDropdown} placeholder='Select a goal' />
                   </View>
-                  <View style={[
+                  {/* <View style={[
                     modalStyles.editRowContainer,
                     Platform.OS !== 'android' && {
                       zIndex: 3000
@@ -270,7 +270,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                       </RegularText>
                     </View>
                     <ModalDropdown value={privacy} items={privacyDropdown} zIndex={4000} setValue={setPrivacy} placeholder='Select privacy level' />
-                  </View>
+                  </View> */}
                   <View style={modalStyles.editRowContainer}>
                     <View style={modalStyles.editRowTextContainer}>
                       <RegularText color={Grey800} style={modalStyles.editRowText}>

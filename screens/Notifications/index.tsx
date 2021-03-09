@@ -855,7 +855,7 @@ function NotificationScreen({
       backgroundColor: White,
       flex: 1
     }}>
-      <Header />
+      <Header noGoingBack={true} />
       <AuthFeed route={route} />
     </SafeAreaView>
   )
@@ -871,7 +871,8 @@ function NotificationScreenRoutes({
       gestureResponseDistance: { vertical: 200, horizontal: 250 },
     }}>
       <Stack.Screen name='Default' component={NotificationScreen} initialParams={{
-        tab: 'Notifications'
+        tab: 'Notifications',
+        noGoingBack: true
       }} />
       <Stack.Screen name='UserProfile' component={UserProfile} initialParams={{
         tab: 'Notifications'

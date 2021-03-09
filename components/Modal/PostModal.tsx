@@ -167,7 +167,7 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
                   placeholder: `What's new?`
                 }}>
                   <View style={{flex: 1}}>
-                <TextEditor multiline style={modalStyles.nameTextInput}
+                <TextEditor autoFocus  multiline style={modalStyles.nameTextInput}
                 renderSuggestionStyle={modalStyles.renderSuggestion}
                 />
                 </View>

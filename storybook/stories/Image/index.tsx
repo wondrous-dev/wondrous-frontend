@@ -181,8 +181,7 @@ export const SafeImage = ({ src, style, defaultImage, setImage }) => {
   const { data, loading, error } = useQuery(GET_PREVIEW_IMAGE, {
     variables: {
       path: src
-    }, 
-    fetchPolicy: 'network-only'
+    }
   })
   if (!src && defaultImage) {
     return <Image style={style} source={defaultImage} />
