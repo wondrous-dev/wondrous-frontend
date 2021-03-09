@@ -9,6 +9,24 @@ import { Blue400 } from '../constants/Colors'
 
 export const spacingUnit = 8
 
+
+export const extractFirstAndLastName = (fullName) => {
+  const splitName = fullName.split(' ')
+  let firstName = ''
+  let lastName = ''
+  if (splitName.length > 2) {
+    firstName = splitName.slice(0, splitName.length - 1).join(' ')
+    lastName = splitName[splitName.length - 1]
+  } else {
+    firstName = splitName[0]
+    lastName = splitName[1]
+  }
+  return {
+    firstName,
+    lastName
+  }
+}
+
 export const capitalizeFirstLetter = (string) => {
   if (!string) {
     return ''

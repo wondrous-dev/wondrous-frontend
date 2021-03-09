@@ -7,7 +7,7 @@ import { Formik } from 'formik';
 
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { spacingUnit } from '../../utils/common'
+import { spacingUnit, extractFirstAndLastName } from '../../utils/common'
 import { Black, White, Blue500, Red400, Grey100, Grey200, Grey300, GreyPlaceHolder } from '../../constants/Colors'
 import { Subheading, RegularText, ButtonText, ErrorText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
@@ -101,16 +101,10 @@ const UsernameInput = ({ navigation }) => {
           }  else if (!values.username) {
             setError('Please enter a shortname')
           } else {
-            const splitName = values.fullName.split(' ')
-            let firstName = ''
-            let lastName = ''
-            if (splitName.length > 2) {
-              firstName = splitName.slice(0, splitName.length - 1).join('')
-              lastName = splitName[splitName.length - 1]
-            } else {
-              firstName = splitName[0]
-              lastName = splitName[1]
-            }
+            const {
+              firstName,
+              lastName 
+            } = extractFirstAndLastName(values.fullName)
 
             await updateUser({
               variables: {

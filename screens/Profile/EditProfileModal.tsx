@@ -7,7 +7,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300, Grey300 } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
-import { capitalizeFirstLetter, getNonWhiteSpaceLength, spacingUnit } from '../../utils/common'
+import { capitalizeFirstLetter, extractFirstAndLastName, getNonWhiteSpaceLength, spacingUnit } from '../../utils/common'
 import { modalStyles } from '../../components/Modal/common'
 import { SafeImage, UploadImage } from '../../storybook/stories/Image'
 import { ProfilePlaceholder } from './common'
@@ -27,9 +27,11 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
   const initialProjectInstagram = (project && project.links && project.links.instagram) || ''
   const initialProjectLinkedin = (project && project.links && project.links.linkedin) || ''
   const initialProjectGithub = (project && project.links && project.links.github) || ''
+  const initialName = user && `${user.firstName} ${user.lastName}` 
   const navigation = useNavigation()
   const route = useRoute()
   const [username, setUsername] = useState(initialUsername)
+  const [fullName, setFullName] = useState(initialName)
   const [projectName, setProjectName] = useState(initialProjectName)
   const [link, setLink] = useState(initialLink)
   const [bio, setBio] = useState(initialBio)
@@ -48,7 +50,6 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
     setProfilePicture(initialProfilePicture)
     setChangePhoto(false)
   }, [])
-
   return (
     <Modal isVisible={isVisible}>
       {
@@ -111,6 +112,14 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                     }),
                     links: {}
                   }
+                }
+                if (user && fullName) {
+                  const {
+                    firstName,
+                    lastName
+                  } = extractFirstAndLastName(fullName)
+                  variableInputObj['firstName'] = firstName
+                  variableInputObj['lastName'] = lastName
                 }
                 if (projectWebsite) {
                   variableInputObj['links']['website'] = projectWebsite
@@ -194,6 +203,20 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                   marginTop: spacingUnit * 5,
                   marginLeft: spacingUnit * 3
                 }}>
+                  {
+                    user &&
+                    <View style={profileStyles.changeRowContainer}>
+                      <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
+                        Fullname
+                      </Paragraph>
+                      <TextInput
+                          onChangeText={text => setFullName(text)}
+                          value={fullName}
+                          placeholder={'Full Name'}
+                          style={profileStyles.changeRowText}
+                      />
+                    </View>
+                  }
                     <View style={profileStyles.changeRowContainer}>
                       <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
                         {user ? 'Username'  : 'Name'}
