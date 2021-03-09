@@ -240,7 +240,7 @@ const GoalPage = ({ navigation, route }) => {
           </Pressable>
         }
         </View>
-        <ReactionFeed type={'goal'} objId={goal.id} user={user} />
+        <ReactionFeed type={'goal'} objId={goal.id} user={user} tab={tab} />
       </ScrollView>
     </SafeAreaView>
   )

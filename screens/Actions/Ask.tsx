@@ -221,7 +221,7 @@ const AskPage = ({ navigation, route }) => {
           <MyCarousel data={images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400}/>
         }
         </View>
-        <ReactionFeed type={'ask'} objId={ask.id} user={user} />
+        <ReactionFeed type={'ask'} objId={ask.id} user={user} tab={tab} />
       </ScrollView>
     </SafeAreaView>
   )

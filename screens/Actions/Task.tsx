@@ -254,7 +254,7 @@ const TaskPage = ({ navigation, route }) => {
           </Pressable>
         }
         </View>
-        <ReactionFeed type={'task'} objId={task.id} user={user} />
+        <ReactionFeed type={'task'} objId={task.id} user={user} tab={tab} />
       </ScrollView>
     </SafeAreaView>
   )

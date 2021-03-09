@@ -74,7 +74,7 @@ export const sortPriority = (priority) => {
   }
 }
 
-export const ReactionFeed = ({ type, objId, user }) => {
+export const ReactionFeed = ({ type, objId, user, tab }) => {
   const navigation = useNavigation()
   let variables, query
   if (type === 'goal') {
@@ -170,7 +170,15 @@ export const ReactionFeed = ({ type, objId, user }) => {
         marginTop: spacingUnit
       }}
       data={finalData}
-      renderItem={({ item }) => renderItem({ item, navigation })}
+      renderItem={({ item }) => renderItem({ item, navigation, screen: 'Root', params: {
+        screen: tab || 'Profile',
+        params: {
+          screen: 'FeedItem',
+          params: {
+            item
+          }
+        }
+      } })}
       keyExtractor={item => item.id}
       ItemSeparatorComponent={() => (
         <View
