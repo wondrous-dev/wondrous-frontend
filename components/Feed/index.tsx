@@ -8,7 +8,7 @@ import Clipboard from 'expo-clipboard'
 
 import { Grey300, Black, Grey150, Grey200, Grey600, Grey700, Red400, White, Blue400, Grey800 } from '../../constants/Colors'
 import { GET_HOME_FEED, WHOAMI } from '../../graphql/queries'
-import { REACT_FEED_COMMENT, REACT_FEED_ITEM } from '../../graphql/mutations'
+import { DELETE_FEED_COMMENT, REACT_FEED_COMMENT, REACT_FEED_ITEM } from '../../graphql/mutations'
 import { SafeImage, SvgImage } from '../../storybook/stories/Image'
 import { TinyText, RegularText, Subheading, Paragraph } from '../../storybook/stories/Text'
 import { SecondaryButton } from '../../storybook/stories/Button'
@@ -28,6 +28,7 @@ import { FlexRowContentModal } from '../../components/Modal'
 import { MyCarousel } from '../../storybook/stories/Carousel'
 import Link from '../../assets/images/link'
 import Celebration from '../../assets/images/celebrations/signupConfetti.svg'
+import Options from '../../assets/images/options'
 
 const FeedItemTypes = [
   'id',
@@ -326,6 +327,29 @@ export const getNewExistingItems = ({ existingItems, liked, comment, item, readF
   return [...newExistingFeedComments]
 }
 
+export const DeleteCommentModal = ({ isVisible, setModalVisible, deleteMutation }) => {
+  return (
+    <FlexRowContentModal
+    headerText='Delete comment'
+    setModalVisible={setModalVisible}
+    isVisible={isVisible}
+    >
+      <View />
+      <Pressable onPress={() => {
+        deleteMutation()
+        setModalVisible(false)
+      }}>
+        <Paragraph color={Red400} style={{
+
+        }}>
+          Delete comment
+        </Paragraph>
+      </Pressable>
+      <View />
+    </FlexRowContentModal>
+  )
+}
+
 export const ShareModal = ({ isVisible, url, content, setModalVisible }) => {
 
   return (
@@ -409,6 +433,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
   const [reactionCount, setReactionCount] = useState(Number(item.reactionCount) || 0)
   const [commentLiked, setCommentLiked] = useState(null)
   const [isModalVisible, setModalVisible] = useState(false)
+  const [deleteVisible, setDeleteVisible] = useState(false)
   const previousReactionCount = usePrevious(item.reactionCount)
   const pressComment = () => {
     if (standAlone || comment) {
@@ -428,6 +453,23 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
       })
     }
   }
+  const [deleteFeedComment] = useMutation(DELETE_FEED_COMMENT, {
+    update(cache) {
+      cache.modify({
+        fields: {
+          getFeedItemComments(existingFeedComments=[], { readField }) {
+            return existingFeedComments.filter(
+              commentRef => item.id !== readField('id', commentRef)
+            )
+          }
+        }
+      })
+    },
+    variables: {
+      feedCommentId: item.id
+    }
+  })
+
   const [reactFeedComment] = useMutation(REACT_FEED_COMMENT, {
     update(cache) {
       cache.modify({
@@ -517,6 +559,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
 
   return (
     <>
+    <DeleteCommentModal isVisible={deleteVisible} setModalVisible={setDeleteVisible} deleteMutation={deleteFeedComment} />
     <ShareModal isVisible={isModalVisible} url={SHARE_URL} content={CONTENT} setModalVisible={setModalVisible} />
     <View style={feedStyles.feedItemContainer}>
       <View style={feedStyles.feedItemName}>
@@ -637,10 +680,18 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           </Pressable>
           <RegularText color={Grey600} style={{
             marginRight: spacingUnit * 3
-          }}>{item.commentCount}</RegularText>
+          }}>{item.commentCount || 0}</RegularText>
           <Pressable onPress={() => setModalVisible(true)}>
             <ShareIcon color={Grey700} />
-          </Pressable>  
+          </Pressable> 
+          {
+            comment && item.userId === user.id &&
+            <Pressable style={{
+              marginLeft: spacingUnit * 3
+            }} onPress={() => setDeleteVisible(true)}>
+            <Options color={Grey700} />
+          </Pressable>
+          } 
         </View>
 
     </View>
