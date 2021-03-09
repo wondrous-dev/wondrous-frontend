@@ -14,7 +14,7 @@ import { spacingUnit } from '../utils/common'
 import { Grey300, White } from '../constants/Colors'
 import { GET_FEED_COMMENTS } from '../graphql/queries'
 import { RegularText } from '../storybook/stories/Text'
-import { CREATE_FEED_COMMENT } from '../graphql/mutations/feed'
+import { CREATE_FEED_COMMENT, DELETE_FEED_COMMENT } from '../graphql/mutations/feed'
 import { CommentContext } from '../utils/contexts'
 
 const feedItemStyles = StyleSheet.create({
@@ -50,6 +50,9 @@ function FeedItemScreen({
   })
   const [createFeedComment] = useMutation(CREATE_FEED_COMMENT, {
     update(cache, { data: { createFeedComment }}) {
+      if (scrollViewRef) {
+        scrollViewRef.current.scrollToEnd({ animated: true })
+      }
       cache.modify({
         fields: {
           getFeedItemComments(existingFeedItems = []) {
@@ -57,9 +60,6 @@ function FeedItemScreen({
           }
         }
       })
-      if (scrollViewRef) {
-        scrollViewRef.current.scrollToEnd({ animated: true })
-      }
     }
   })
 

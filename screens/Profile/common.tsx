@@ -28,9 +28,13 @@ import CoolProfilePlaceholder from '../../assets/images/default-profile.png'
 
 export const ProfilePlaceholder = ({ projectOwnedByUser, imageStyle, user }) => {
   if (projectOwnedByUser) {
-    const { setModalVisible } = useProfile()
+    const profileData = useProfile()
     return (
-    <Pressable onPress={() => setModalVisible(true)}>
+    <Pressable onPress={() => {
+      if (profileData && profileData.setModalVisible) {
+        profileData.setModalVisible(true)
+      }
+    }}>
       <View style={{
           ...profileStyles.profilePlaceholderContainer,
           ...imageStyle

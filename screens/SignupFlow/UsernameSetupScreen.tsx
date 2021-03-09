@@ -86,18 +86,38 @@ const UsernameInput = ({ navigation }) => {
       <Subheading style={{
         marginBottom: spacingUnit * 3,
       }} color={Black}>
-        Choose your username
+        {
+          user.firstName ?
+          'Choose your username'
+          :
+          'Set names'
+        }
       </Subheading>
       <Formik
-        initialValues={{ username: user && user.username }}
+        initialValues={{ username: user && user.username, fullName: '', }}
         onSubmit={async values => {
-          if (!values.username) {
+          if (!user.firstName && !values.fullName && !values.fullName.trim()) {
+            setError('Please enter a name')
+          }  else if (!values.username) {
             setError('Please enter a shortname')
           } else {
+            const splitName = values.fullName.split(' ')
+            let firstName = ''
+            let lastName = ''
+            if (splitName.length > 2) {
+              firstName = splitName.slice(0, splitName.length - 1).join('')
+              lastName = splitName[splitName.length - 1]
+            } else {
+              firstName = splitName[0]
+              lastName = splitName[1]
+            }
+
             await updateUser({
               variables: {
                 input: {
-                  username: values.username
+                  username: values.username,
+                  firstName,
+                  lastName
                 }
               }
             })
@@ -107,6 +127,25 @@ const UsernameInput = ({ navigation }) => {
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
           <View>
+            {!user.firstName &&
+            <TextInput
+            style={{
+              width: spacingUnit * 43,
+              height: spacingUnit * 4.5,
+              borderColor: Grey300,
+              borderWidth: 1,
+              borderRadius: 4,
+              fontSize: 16,
+              padding: 8,
+              marginBottom: 16
+            }}
+            placeholder='Full name'
+            placeholderTextColor={GreyPlaceHolder}
+            onChangeText={handleChange('fullName')}
+            onBlur={handleBlur('fullName')}
+            value={values.fullName}
+          />
+            }
             <TextInput
               autoCapitalize = 'none'
               style={{
