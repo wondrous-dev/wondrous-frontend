@@ -3,7 +3,7 @@ import React, { useState, useCallback, useEffect } from 'react'
 import { Image, Pressable, SafeAreaView, RefreshControl, View, TouchableOpacity } from 'react-native'
 import { useLazyQuery, useQuery, useMutation } from '@apollo/client'
 
-import { GET_USER_FOLLOWERS, GET_USER_FOLLOWING, GET_PROJECT_FOLLOWERS } from '../../graphql/queries'
+import { GET_USER_FOLLOWERS, GET_USER_FOLLOWING, GET_PROJECT_FOLLOWERS, GET_FEED_REACTED_USERS, GET_FEED_COMMENT_REACTED_USERS } from '../../graphql/queries'
 import { withAuth, useMe } from '../../components/withAuth'
 import { Black, White, Grey800, Blue400 } from '../../constants/Colors'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
@@ -130,6 +130,7 @@ const UserItem = ({ item, itemPressed, initialFollowing, existingUserFollowing }
 </TouchableOpacity>
   )
 }
+
 const UserList = ({
   navigation,
   route
@@ -143,7 +144,9 @@ const UserList = ({
     projectId,
     collaborators,
     projectFollowers,
-    tab
+    tab,
+    feedCommentId,
+    feedItemId
   } = route.params
 
   const {
@@ -180,6 +183,30 @@ const UserList = ({
     }
   })
 
+  const [getFeedReactedUsers, {
+    data: feedReactedData
+  }] = useLazyQuery(GET_FEED_REACTED_USERS)
+
+  const [getFeedCommentReactedUsers, {
+    data: feedCommentReactedData
+  }] = useLazyQuery(GET_FEED_COMMENT_REACTED_USERS)
+
+  useEffect(() => {
+    if (feedItemId) {
+      getFeedReactedUsers({
+        variables: {
+          feedItemId
+        }
+      })
+    }  else if (feedCommentId) {
+      getFeedCommentReactedUsers({
+        variables :{
+          feedCommentId
+        }
+      })
+    }
+  }, [feedItemId, feedCommentId])
+
   const [refreshing, setRefreshing] = useState(false)
   const onRefresh = useCallback(() => {
     setRefreshing(true)
@@ -211,6 +238,10 @@ const UserList = ({
     } else if (projectFollowers && projectFollowerData) (
       list = projectFollowerData.getProjectFollowers
     )
+  } else if (feedReactedData) {
+    list = feedReactedData.getFeedReactedUsers
+  } else if (feedCommentReactedData) {
+    list = feedCommentReactedData.getFeedCommentReactedUsers
   }
 
   let title = ''
@@ -220,6 +251,8 @@ const UserList = ({
     } else {
       title = 'Collaborators'
     }
+  } else if (feedCommentId || feedItemId) {
+    title = 'Liked by'
   } else {
     title = following ? 'Following' : 'Followers'
   }

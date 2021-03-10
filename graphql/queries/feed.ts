@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client'
 
 import { ActivityFeedItem, ActivityFeedComment } from '../fragments/feed'
+import { UserListFragment } from '../fragments/user'
 
 export const GET_FEED_COMMENTS = gql`
   query GetFeedItemComments($feedItemId: String!) {
@@ -46,6 +47,24 @@ export const GET_FEED_ITEM_FOR_FEED_COMMENT = gql`
     }
   }
   ${ActivityFeedItem}
+`
+
+export const GET_FEED_REACTED_USERS = gql`
+  query GetFeedReactedUsers($feedItemId: ID!) {
+    getFeedReactedUsers(feedItemId: $feedItemId) {
+      ...UserList
+    }
+  }
+  ${UserListFragment}
+`
+
+export const GET_FEED_COMMENT_REACTED_USERS = gql`
+  query GetFeedCommentReactedUsers($feedCommentId: ID!) {
+    getFeedCommentReactedUsers(feedCommentId: $feedCommentId) {
+      ...UserList
+    }
+  }
+  ${UserListFragment}
 `
 
 export const GET_FEED_ITEM = gql`

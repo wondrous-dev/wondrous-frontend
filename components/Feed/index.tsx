@@ -670,9 +670,23 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
             }} />
           }
           </Pressable>
+          <Pressable onPress={() => {
+            if (comment) {
+              navigation.navigate('Root', {
+                screen: route && route.params && route.params.tab || 'Profile',
+                params: {
+                  screen: 'UserList',
+                  params: {
+                    feedCommentId: item.id
+                  }
+                }
+              })
+            }
+          }}>
           <RegularText color={Grey600} style={{
             marginRight: spacingUnit * 3,
           }}>{reactionCount}</RegularText>
+          </Pressable>
           <Pressable onPress={pressComment}>
           <CommentIcon color={Grey700} style={{
             marginRight: spacingUnit
@@ -706,7 +720,15 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
         {
           Number(reactionCount) > 0 &&
           <View>
-            <>
+            <Pressable onPress={() => navigation.navigate('Root', {
+              screen: route && route.params && route.params.tab || 'Profile' || 'Profile',
+              params: {
+                screen: 'UserList',
+                params: {
+                  feedItemId: item.id
+                }
+              }
+            })}>
               <RegularText style={feedStyles.likeCount}>
                 {reactionCount} {reactionCount === '1' || reactionCount === 1 ? 'like' : 'likes'}
               </RegularText>
@@ -716,8 +738,8 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
                   borderBottomWidth: 1,
                 }}
               />
-            </>
-      </View>
+            </Pressable>
+        </View>
         }
       </>
     }
