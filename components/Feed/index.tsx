@@ -572,7 +572,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
             }
           }
         })}>
-          <SafeImage style={feedStyles.feedItemImage} src={item.actorProfilePicture} defaultImage={DefaultProfilePicture} />
+          <SafeImage style={feedStyles.feedItemImage} src={item.actorThumbnail || item.actorProfilePicture} defaultImage={DefaultProfilePicture} />
         </Pressable>
         <View>
           <View style={{

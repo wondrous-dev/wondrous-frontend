@@ -201,7 +201,7 @@ export const SafeImage = ({ src, style, defaultImage, setImage }) => {
       uri: src
     }} />
   } else if (data && data.getPreviewImage) {
-    return <CachedImage cacheKey={src}style={style} key={data.getPreviewImage.url} source={{
+    return <CachedImage cacheKey={data.getPreviewImage.url} style={style} key={data.getPreviewImage.url} source={{
       uri: data.getPreviewImage.url
     }} />
   }
