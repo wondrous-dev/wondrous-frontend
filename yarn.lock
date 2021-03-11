@@ -7428,6 +7428,14 @@ expo-asset@~8.2.0:
     path-browserify "^1.0.0"
     url-parse "^1.4.4"
 
+expo-av@~8.6.0:
+  version "8.6.0"
+  resolved "https://registry.yarnpkg.com/expo-av/-/expo-av-8.6.0.tgz#ab434c05241c1dcdca0edd57acb03aa21a3e46cc"
+  integrity sha512-ZZJtCLCDigeDMu2fyv76Kyifu2quhTn6ViYjM2ku/HvFSvUxlb5kK9imuLog3kR+LRxeIiVS9F29r3PCOqI+rQ==
+  dependencies:
+    lodash "^4.17.15"
+    nullthrows "^1.1.0"
+
 expo-camera@~9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-9.0.0.tgz#544fed30b64c80718602fa86e6313982ace49e51"
@@ -7449,6 +7457,13 @@ expo-constants@9.2.0, expo-constants@~9.2.0:
   dependencies:
     fbjs "1.0.0"
     uuid "^3.3.2"
+
+expo-contacts@~8.5.0:
+  version "8.5.0"
+  resolved "https://registry.yarnpkg.com/expo-contacts/-/expo-contacts-8.5.0.tgz#ed8436e8832ee6f06a9226cb64f532ea8624a3de"
+  integrity sha512-jkfTbXYOzsUpy+RWBgTEMcSpRnRUe/Bd9D6AQ7GEQgBoTViDQphDYMdhv7l1HXsTiuDOOD5dBBVKOMXLLn9lPQ==
+  dependencies:
+    uuid "^3.4.0"
 
 expo-error-recovery@~1.3.0:
   version "1.3.0"
@@ -7583,6 +7598,11 @@ expo-screen-orientation@^2.0.0:
   integrity sha512-QH9vm39jmXij5ajcTVIdOLRWNjU177OIyu43NTJw/1CQVSThl42a7XogWhDvvSg6r2fF2w1dZlWrVFo2escTfQ==
   dependencies:
     fbjs "1.0.0"
+
+expo-sms@~8.3.1:
+  version "8.3.1"
+  resolved "https://registry.yarnpkg.com/expo-sms/-/expo-sms-8.3.1.tgz#2731a3b2eaad01d1f793f7011488e1501c715b68"
+  integrity sha512-VdA0FMV5pJ4HikiFSWqcYy0VRW544KKkksPTU7js7HfqqSwKZNVzNQZhCgRC+MiWXy/LhyR4mAQ2d302k+LOUg==
 
 expo-splash-screen@0.8.1:
   version "0.8.1"

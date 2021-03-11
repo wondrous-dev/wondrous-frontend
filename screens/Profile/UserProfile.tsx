@@ -19,7 +19,7 @@ import { WONDER_BASE_URL } from '../../constants/'
 import { UPDATE_USER, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_USER, UNFOLLOW_USER } from '../../graphql/mutations'
 import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GET_ASKS_FROM_USER, WHOAMI, GET_USER_STREAK } from '../../graphql/queries'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
-import { SecondaryButton } from '../../storybook/stories/Button'
+import { PrimaryButton, SecondaryButton } from '../../storybook/stories/Button'
 import { Black, Grey300, White, Blue400, Grey800 } from '../../constants/Colors'
 import { ProfileContext } from '../../utils/contexts'
 import {
@@ -40,6 +40,7 @@ import { GoalCongratsModal, TaskCongratsModal } from '../../components/Modal'
 import { GET_USER_REVIEWS } from '../../graphql/queries/review'
 import Settings from '../../assets/images/settings'
 import { SettingsModal } from '../../components/Modal/SettingsModal'
+import { ContactsModal } from './ContactsModal'
 
 const getUserId = ({ route, user }) => {
   if (route && route.params && route.params.userId) {
@@ -203,6 +204,7 @@ function UserProfile({
     }
   })
   const [settingsModal, setSettingsModal] = useState(false)
+  const [contactsModal, setContactsModal] = useState(false)
   const [profilePicture, setProfilePicture] = useState(user && (user.thumbnailPicture || user.profilePicture))
   const [updateUser] = useMutation(UPDATE_USER, {
     update(cache, { data: { updateUser }}) {
@@ -504,12 +506,17 @@ function UserProfile({
                   </Paragraph>
                 </View>
               }
+              <View style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: spacingUnit
+              }}>
               {user && user.links && !isEmptyObject(user.links) && 
               <Pressable style={{
                 paddingLeft: spacingUnit * 2,
                 flexDirection: 'row',
                 alignItems: 'center',
-                marginTop: spacingUnit
               }} onPress={() => {
                 navigation.navigate('Root', {
                   screen: tab || 'Profile',
@@ -532,7 +539,23 @@ function UserProfile({
                 </Paragraph>
               </Pressable>
             }
-
+            {
+              <View style={{
+                marginLeft: spacingUnit,
+              }}>
+              <PrimaryButton style={{
+                width: spacingUnit * 19,
+                paddingTop: 0,
+                paddingBottom: 0,
+                marginLeft: spacingUnit
+              }} onPress={() => setContactsModal(true)}>
+                <Paragraph color={White} >
+                  Invite Friends
+                </Paragraph>
+              </PrimaryButton>
+              </View>
+            }
+            </View>
               <SectionsHeader />
               {
                 (actionSelected || asksSelected) &&
@@ -566,6 +589,7 @@ function UserProfile({
         <GoalCongratsModal user={user} isVisible={goalCompletemodal} setModalVisible={setGoalCompleteModal} />
         <TaskCongratsModal user={user} isVisible={taskCompleteModal} setModalVisible={setTaskCompleteModal} />
         <SettingsModal isVisible={settingsModal} setModalVisible={setSettingsModal} />
+        <ContactsModal isVisible={contactsModal} setModalVisible={setContactsModal} />
         </>
       }
       <ProfileContext.Provider value={{

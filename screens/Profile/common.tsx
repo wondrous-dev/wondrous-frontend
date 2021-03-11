@@ -600,7 +600,7 @@ export const onSwipe =({
     const newDate = new Date()
     if (isBefore(formattedDueDate, newDate)) {
       const random = Math.random()
-      if ((type === 'goal' && random >= 0.2) || (type === 'task' && random >= 0.4)) {
+      if ((type === 'goal' && random >= 0.2) || (type === 'task' && random >= 0.3)) {
         setConfetti(true)
         setTimeout(() => {
           setConfetti(false)

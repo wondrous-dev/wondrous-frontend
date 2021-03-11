@@ -689,12 +689,12 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           </Pressable>
           <Pressable onPress={pressComment}>
           <CommentIcon color={Grey700} style={{
-            marginRight: spacingUnit
+            marginRight: item.commentCount ? spacingUnit : 0
           }}/>
           </Pressable>
           <RegularText color={Grey600} style={{
             marginRight: spacingUnit * 3
-          }}>{item.commentCount || 0}</RegularText>
+          }}>{item.commentCount}</RegularText>
           <Pressable onPress={() => setModalVisible(true)}>
             <ShareIcon color={Grey700} />
           </Pressable> 
