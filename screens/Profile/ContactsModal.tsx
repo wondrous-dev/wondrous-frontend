@@ -133,7 +133,7 @@ export const ContactsModal = ({ isVisible, setModalVisible }) => {
                 <Subheading color={Black} style={{
                   fontSize: 20
                 }}>
-                  Invite collaborators
+                  Invite friends
                 </Subheading>
               </View>
               <View style={{
