@@ -175,11 +175,11 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
             commentId: objectId
           }
         })
-        if (feedResponse & feedResponse.data && feedResponse.data.getFeedItemForFeedComment) {
+        if (feedResponse && feedResponse.data && feedResponse.data.getFeedItemForFeedComment) {
           navigation.navigate('Root', {
             screen: tab || 'Profile',
             params: {
-              screen: 'FeedItem',
+              screen: 'ProfileItem',
               params: {
                 item: feedResponse.data.getFeedItemForFeedComment,
                 comment: true,

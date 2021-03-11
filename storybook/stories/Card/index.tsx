@@ -390,14 +390,12 @@ class Card extends React.Component {
         }}
         onChange={({ open, snapPoint }) => {
           if (snapPoint > 90 && snapPoint !== 0 && open === 'left') {
-            //TODO: Implement archive card functionality
             if (onSwipeLeft) {
               onSwipeLeft()
               // LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
             }
           }
           if (snapPoint > 90 && snapPoint !== 0 && open === 'right') {
-            //TODO: Implement goal/task complete functionality
             if (onSwipeRight) {
               onSwipeRight()
               // LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)

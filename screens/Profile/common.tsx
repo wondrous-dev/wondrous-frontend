@@ -346,7 +346,6 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
                   }
                 })
               } else if (item === 'none') {
-                //TODO: Add action in new modal
                 navigation.navigate('Root', {
                   screen: 'Add'
                 })
@@ -390,7 +389,9 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
                   }
                 })
               } else if (item === 'none') {
-                //TODO navigate to 
+                navigation.navigate('Root', {
+                  screen: 'Add'
+                })
               }
             }}>
               <Paragraph color={White}>
