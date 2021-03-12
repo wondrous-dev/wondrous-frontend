@@ -7,7 +7,7 @@ import en from 'javascript-time-ago/locale/en'
 import Clipboard from 'expo-clipboard'
 
 import { Grey300, Black, Grey150, Grey200, Grey600, Grey700, Red400, White, Blue400, Grey800 } from '../../constants/Colors'
-import { GET_HOME_FEED, WHOAMI } from '../../graphql/queries'
+import { GET_HOME_FEED, GET_PUBLIC_FEED, WHOAMI } from '../../graphql/queries'
 import { DELETE_FEED_COMMENT, REACT_FEED_COMMENT, REACT_FEED_ITEM } from '../../graphql/mutations'
 import { SafeImage, SvgImage } from '../../storybook/stories/Image'
 import { TinyText, RegularText, Subheading, Paragraph } from '../../storybook/stories/Text'
@@ -29,6 +29,7 @@ import { MyCarousel } from '../../storybook/stories/Carousel'
 import Link from '../../assets/images/link'
 import Celebration from '../../assets/images/celebrations/signupConfetti.svg'
 import Options from '../../assets/images/options'
+import { StatusItem } from '../../screens/Profile/common'
 
 const FeedItemTypes = [
   'id',
@@ -802,26 +803,39 @@ export const HomeFeed = () => {
   const [refreshing, setRefreshing] = useState(false)
   const [feed, setFeed] = useState([])
   const navigation = useNavigation()
+  const [status, setStatus] = useState('user')
   const {loading, data, error, refetch, fetchMore} = useQuery(GET_HOME_FEED, {
     fetchPolicy: 'network-only'
   })
+  const {
+    data: publicFeedData,
+    refetch: publicRefetch,
+    fetchMore: publicFetchmore
+  } = useQuery(GET_PUBLIC_FEED, {
+    fetchPolicy: 'network-only'
+  })
+
   if (error) {
     console.log('Error fetching Feed', error)
   }
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)
-    if (refetch) {
+    if (refetch && status === 'user') {
       refetch()
+    } else if (publicRefetch && status === 'public') {
+      publicRefetch()
     }
     wait(2000).then(() => setRefreshing(false))
   }, [])
 
   useEffect(() => {
-    if (data && data.getHomeFeed) {
+    if (status === 'user' && data && data.getHomeFeed) {
       setFeed(data && data.getHomeFeed)
+    } else if (status === 'public' && publicFeedData && publicFeedData.getPublicFeed) {
+      setFeed(publicFeedData.getPublicFeed)
     }
-  }, [data && data.getHomeFeed])
+  }, [data && data.getHomeFeed, publicFeedData && publicFeedData.getPublicFeed, status])
 
   if (loading) {
     return (
@@ -837,8 +851,18 @@ export const HomeFeed = () => {
 
     return user && (user.id !== feedItem.userId)
   }))
+
   return (
     <>
+    <View style={{
+      display: 'flex',
+      flexDirection: 'row',
+      padding: spacingUnit * 2,
+      marginTop: spacingUnit
+    }}>
+      <StatusItem setStatus={setStatus} statusValue={'user'} statusLabel='Following' statusTrue={status === 'user'} />
+      <StatusItem setStatus={setStatus} statusValue={'public'} statusLabel='Public' statusTrue={status === 'public'} />
+    </View>
     <FlatList 
       contentContainerStyle={{
         paddingBottom: spacingUnit * 10
@@ -869,7 +893,7 @@ export const HomeFeed = () => {
         />
       )}
       onEndReached={async () => {
-        if (fetchMore) {
+        if (fetchMore && status === 'user') {
           try {
             const result = await fetchMore({
               variables: {
@@ -881,6 +905,20 @@ export const HomeFeed = () => {
             }
           } catch (err) {
             console.log('err fetching more', err)
+          }
+        } else if (status === 'public' && publicFetchmore) {
+          try {
+            console.log('feed length', feed.length)
+            const result = await publicFetchmore({
+              variables: {
+                offset: feed.length
+              }
+            })
+            if (result && result.data && result.data.getPublicFeed) {
+              setFeed([...feed, ...result.data.getPublicFeed])
+            }
+          } catch (err) {
+            console.log('err fetching more public feed', err)
           }
         }
       }}

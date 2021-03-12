@@ -67,6 +67,15 @@ export const GET_FEED_COMMENT_REACTED_USERS = gql`
   ${UserListFragment}
 `
 
+export const GET_PUBLIC_FEED = gql`
+  query GetPublicFeed($limit: Int, $offset: Int) {
+    getPublicFeed(limit: $limit, offset: $offset) {
+      ...ActivityFeedItem
+    }
+  }
+  ${ActivityFeedItem}
+`
+
 export const GET_FEED_ITEM = gql`
   query GetFeedItem($feedItemId: ID!) {
     getFeedItem(feedItemId: $feedItemId) {

@@ -226,7 +226,7 @@ export const StatusItem = ({ statusValue, setStatus, statusTrue, statusLabel }) 
       textAlign: 'center',
       borderRadius: 4,
       ...(statusTrue && {
-        backgroundColor: Blue400
+        backgroundColor: Blue500
       })
     }} onPress={() => setStatus(statusValue)}>
       <RegularText color={statusTrue ? White : Grey800}>
