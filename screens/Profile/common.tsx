@@ -553,6 +553,7 @@ export const StatusSelector = ({ setStatus, status}) => {
         }]}>
         {STATUS_ARR.map(statusItem => (
           <StatusItem
+          key={statusItem.value}
           statusValue={statusItem.value}
           statusLabel={statusItem.label}
           statusTrue={statusItem.value === status}

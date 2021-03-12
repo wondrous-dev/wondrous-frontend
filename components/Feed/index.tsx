@@ -804,22 +804,18 @@ export const HomeFeed = () => {
   const [feed, setFeed] = useState([])
   const navigation = useNavigation()
   const [status, setStatus] = useState('user')
-  const {loading, data, error, refetch, fetchMore} = useQuery(GET_HOME_FEED, {
-    fetchPolicy: 'network-only'
-  })
+  const {loading, data, error, refetch, fetchMore} = useQuery(GET_HOME_FEED)
   const {
     data: publicFeedData,
     refetch: publicRefetch,
     fetchMore: publicFetchmore
-  } = useQuery(GET_PUBLIC_FEED, {
-    fetchPolicy: 'network-only'
-  })
+  } = useQuery(GET_PUBLIC_FEED)
 
   if (error) {
     console.log('Error fetching Feed', error)
   }
 
-  const onRefresh = useCallback(() => {
+  const onRefresh = useCallback((status) => {
     setRefreshing(true)
     if (refetch && status === 'user') {
       refetch()
@@ -860,8 +856,8 @@ export const HomeFeed = () => {
       padding: spacingUnit * 2,
       marginTop: spacingUnit
     }}>
-      <StatusItem setStatus={setStatus} statusValue={'user'} statusLabel='Following' statusTrue={status === 'user'} />
-      <StatusItem setStatus={setStatus} statusValue={'public'} statusLabel='Public' statusTrue={status === 'public'} />
+      <StatusItem setStatus={setStatus} statusValue='user' statusLabel='Following' statusTrue={status === 'user'} />
+      <StatusItem setStatus={setStatus} statusValue='public' statusLabel='Public' statusTrue={status === 'public'} />
     </View>
     <FlatList 
       contentContainerStyle={{
@@ -882,7 +878,7 @@ export const HomeFeed = () => {
       }   })}
       keyExtractor={item => item.id}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(status)} />
       }
       ItemSeparatorComponent={() => (
         <View
@@ -908,7 +904,6 @@ export const HomeFeed = () => {
           }
         } else if (status === 'public' && publicFetchmore) {
           try {
-            console.log('feed length', feed.length)
             const result = await publicFetchmore({
               variables: {
                 offset: feed.length
