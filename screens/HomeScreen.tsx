@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { StyleSheet, View, SafeAreaView, Platform } from 'react-native'
+import * as Notifications from 'expo-notifications'
 
 import { RootStackParamList } from '../types'
 import { Orange, Black, White } from '../constants/Colors'
@@ -11,11 +12,12 @@ import { PrimaryButton, SecondaryButton } from '../storybook/stories/Button'
 import { NotificationTester } from '../components/Notifications/RegisterNotification'
 import { scale, moderateScale, verticalScale } from '../utils/scale'
 import SuperHeroSvg from '../assets/images/superhero.svg'
-import { navigateUserOnLogin, spacingUnit } from '../utils/common'
+import { navigateUserOnLogin, snakeToCamelObj, spacingUnit } from '../utils/common'
 import { useMe, withAuth } from '../components/withAuth'
 import { useQuery } from '@apollo/client'
 import { GET_LOGGED_IN_USER, WHOAMI } from '../graphql/queries'
 import apollo from '../services/apollo'
+import { getNotificationPressFunction } from './Notifications'
 
 const redirectUser = async (user, navigation) => {
   await apollo.writeQuery({
@@ -48,7 +50,48 @@ function HomeScreen({
     }
   ]
 
+  const registerNotifications = () => {
+    // Redirect from here
+    const backgroundSubscription = Notifications.addNotificationResponseReceivedListener(response => {
+      const data = response.notification.request.content.data;
+      const cleanedData = snakeToCamelObj(data)
+      // Any custom logic to see whether the URL needs to be handled
+      //...
+      getNotificationPressFunction({
+        notificationInfo: cleanedData,
+        navigation,
+        tab: 'Notifications',
+        notifications: null,
+        push: true
+      })
+      // Let React Navigation handle the URL
+      // listener(url)
+    });
+
+    const foregroundSubscription = Notifications.addNotificationReceivedListener(notification=> {
+      const data = notification.request.content.data;
+      const cleanedData = snakeToCamelObj(data)
+      // Any custom logic to see whether the URL needs to be handled
+      //...
+      getNotificationPressFunction({
+        notificationInfo: cleanedData,
+        navigation,
+        tab: 'Notifications',
+        notifications: null,
+        push: true
+      })
+      // Let React Navigation handle the URL
+      // listener(url)
+    });
+    return () => {
+      // Clean up the event listeners
+      // Linking.removeEventListener('url', onReceiveURL);
+      backgroundSubscription.remove()
+      foregroundSubscription.remove()
+    }
+  }
   React.useEffect(() => {
+    registerNotifications()
     if (user) {
       navigateUserOnLogin(user, navigation)
     }
@@ -56,6 +99,7 @@ function HomeScreen({
       redirectUser(data.getLoggedinUser, navigation)
     }
   }, [data])
+
   return (
     <SafeAreaView style={styles.container}>
       <Title>

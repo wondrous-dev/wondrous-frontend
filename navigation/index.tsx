@@ -3,9 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import React, { useState, useEffect } from 'react'
 import { ColorSchemeName, Platform, Linking } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import * as Notifications from 'expo-notifications'
 
-import { getNotificationPressFunction } from '../screens/Notifications'
 import NotFoundScreen from '../screens/NotFoundScreen'
 import HomeScreen from '../screens/HomeScreen'
 import SignupScreen from '../screens/SignupScreen'
@@ -30,7 +28,8 @@ const PERSISTENCE_KEY = "persistenceKey"
 
 function RootNavigator() {
   return (
-    <Stack.Navigator screenOptions={{
+    <Stack.Navigator
+    screenOptions={{
       headerShown: false,
       gestureEnabled: false
     }}>
@@ -56,7 +55,7 @@ function RootNavigator() {
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const [isReady, setIsReady] = React.useState(false);
   const [initialState, setInitialState] = React.useState()
-  const navigationRef = React.useRef(null)
+
   useEffect(() => {
     const restoreState = async () => {
       try {
@@ -79,39 +78,13 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
     if (!isReady) {
       restoreState();
     }
-    if (navigationRef && navigationRef.current) {
-      const navigation = navigationRef.current
-      // Redirect from here
-      const subscription = Notifications.addNotificationResponseReceivedListener(response => {
-        const data = response.notification.request.content.data;
-
-        // Any custom logic to see whether the URL needs to be handled
-        //...
-        getNotificationPressFunction({
-          notificationInfo: data,
-          navigation,
-          tab: 'Notifications',
-          notifications: null,
-          push: true
-        })
-        // Let React Navigation handle the URL
-        // listener(url)
-      });
-  
-      return () => {
-        // Clean up the event listeners
-        // Linking.removeEventListener('url', onReceiveURL);
-        subscription.remove();
-      }
-    }
-  }, [isReady, navigationRef]);
+  }, [isReady]);
 
   if (!isReady) {
     return null;
   }
   return (
     <NavigationContainer
-      ref={navigationRef}
       linking={LinkingConfiguration}
       initialState={initialState}
       onStateChange={(state) =>

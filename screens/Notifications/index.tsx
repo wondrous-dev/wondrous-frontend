@@ -88,35 +88,39 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
     actorId
   } = notificationInfo
   if (type !== 'welcome') {
-    apollo.mutate({
-      mutation: MARK_NOTIFICATION_AS_VIEWED,
-      variables: {
-        notificationId: id
-      },
-      refetchQueries: [
-        {query: GET_UNREAD_NOTIFICATION_COUNT}
-      ],
-      update: (cache, { data }) => {
-        cache.modify({
-          fields: {
-            getNotifications() {
-              // console.log('existingGoals', existingGoals)
-              if (notifications) {
-                const newNotifications = notifications.map(notification => {
-                  if (notification.id === id) {
-                    const newNotification = {...notification}
-                    newNotification.viewedAt = new Date()
-                    return newNotification
-                  }
-                  return notification
-                })
-                return newNotifications
+    try {
+      apollo.mutate({
+        mutation: MARK_NOTIFICATION_AS_VIEWED,
+        variables: {
+          notificationId: id
+        },
+        refetchQueries: [
+          {query: GET_UNREAD_NOTIFICATION_COUNT}
+        ],
+        update: (cache, { data }) => {
+          cache.modify({
+            fields: {
+              getNotifications() {
+                // console.log('existingGoals', existingGoals)
+                if (notifications) {
+                  const newNotifications = notifications.map(notification => {
+                    if (notification.id === id) {
+                      const newNotification = {...notification}
+                      newNotification.viewedAt = new Date()
+                      return newNotification
+                    }
+                    return notification
+                  })
+                  return newNotifications
+                }
               }
             }
-          }
-        })
-      }
-    })
+          })
+        }
+      })
+    } catch (e) {
+      console.log('error marking as viewed')
+    }
   }
 
   switch(type) {

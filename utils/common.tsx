@@ -129,6 +129,26 @@ export const getLocale = () => {
   return Localization.timezone
 }
 
+const snakeToCamel = (str) => str.replace(
+  /([-_][a-z])/g,
+  (group) => group.toUpperCase().replace('-', '').replace('_', '')
+)
+
+export const snakeToCamelObj = (obj) => {
+  const newObj = {}
+  for (const key in obj) {
+    if (obj[key] && typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+      obj[key] = snakeToCamelObj(obj[key])
+    }
+    newObj[snakeToCamel(key)] = obj[key]
+  }
+  return newObj
+}
+
+export const snakeToCamelArr = (arr) => {
+  return arr.map(arrItem => snakeToCamelObj(arrItem))
+}
+
 export const getMentionArray = (content) => {
   if (!content) {
     return {}
