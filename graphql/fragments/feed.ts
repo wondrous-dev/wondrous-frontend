@@ -23,6 +23,8 @@ export const ActivityFeedItem = gql`
     media {
       images
       link
+      completedImages
+      completedMessage
       __typename
     }
     __typename

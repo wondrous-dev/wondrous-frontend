@@ -260,13 +260,13 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
             Post
             </RegularText>
           </PrimaryButton>
-          <SecondaryButton style={modalStyles.buttons} onPress={() => setModalVisible(false)}>
+          {/* <SecondaryButton style={modalStyles.buttons} onPress={() => setModalVisible(false)}>
               <RegularText color={Black} style={{
                 fontFamily: 'Rubik SemiBold'
               }}>
               Cancel
               </RegularText>
-            </SecondaryButton>
+            </SecondaryButton> */}
             </KeyboardAwareScrollView>
         </View>
         </TouchableWithoutFeedback>
@@ -339,7 +339,7 @@ export const FlexRowContentModal = ({ isVisible, headerText, children, setModalV
         }}>
           { children }
         </View>
-        {/* <SecondaryButton style={{
+        <SecondaryButton style={{
             backgroundColor: Grey150,
             marginTop: spacingUnit * 4,
             alignSelf: 'center',
@@ -352,7 +352,7 @@ export const FlexRowContentModal = ({ isVisible, headerText, children, setModalV
             }}>
             Cancel
             </RegularText>
-          </SecondaryButton> */}
+          </SecondaryButton>
       </View>
     </Modal>
   )

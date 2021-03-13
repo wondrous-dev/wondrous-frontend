@@ -141,6 +141,17 @@ const FeedString = ({ item, standAlone }) => {
       </View>
     )
   } else if (item.objectType === 'goal' || item.objectType === 'task') {
+    let finalString = ''
+    if (item.verb === 'complete') {
+      if (item.media?.completedMessage) {
+        finalString = item.itemName + '. ' + item.media.completedMessage
+      } else {
+        finalString = item.itemContent ? item.itemName + '. ' + item.itemContent : item.itemName
+      }
+    } else {
+      finalString = item.itemContent ? item.itemName + '. ' + item.itemContent : item.itemName
+    }
+
     return (
       <View style={{
         paddingRight: spacingUnit * 3,
@@ -191,7 +202,7 @@ const FeedString = ({ item, standAlone }) => {
               })
             }
           }
-        }}>{renderMentionString({ content: item.itemContent ? item.itemName + '. ' + item.itemContent : item.itemName, navigation, tab })} </Paragraph>
+        }}>{renderMentionString({ content: finalString, navigation, tab })} </Paragraph>
 
       </View>
     )
@@ -302,6 +313,8 @@ export const getNewExistingItems = ({ existingItems, liked, comment, item, readF
           media: itemObj.media || {
             media: null,
             link: null,
+            completedImages: null,
+            completedMessage: null,
             __typename: 'Media'
           },
           ...(comment && {
@@ -315,6 +328,8 @@ export const getNewExistingItems = ({ existingItems, liked, comment, item, readF
           media: itemObj.media || {
             media: null,
             link: null,
+            completedImages: null,
+            completedMessage: null,
             __typename: 'Media'
           },
           ...(comment && {
@@ -649,10 +664,12 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           </View>
           }
           {
-            item.media.images &&
-            <MyCarousel data={item.media.images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400} containerStyle={{
-
-            }}/>
+            item.verb === 'complete' && item.media.completedImages &&
+            <MyCarousel data={item.media.completedImages} images={true} passiveDotColor={Grey800} activeDotColor={Blue400} />
+          }
+          {
+            item.verb !== 'complete' && item.media.images &&
+            <MyCarousel data={item.media.images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400} />
           }
           </View>
         }
@@ -865,14 +882,13 @@ export const HomeFeed = () => {
       <StatusItem setStatus={setStatus} statusValue='public' statusLabel='Public' statusTrue={status === 'public'} />
     </View>
     {
-      feed.length === 0 && status === 'user' &&
+      filteredData.length === 0 && status === 'user' &&
       <Paragraph style={{
-        marginTop: spacingUnit,
         padding: spacingUnit * 2
-      }}>
-        No results - go to our <Paragraph onPress={() => navigation.navigate('Root', {
-          screen: 'Search'
-        })} color={Blue400}>
+      }} onPress={() => navigation.navigate('Root', {
+        screen: 'Search'
+      })}>
+        No results - go to our <Paragraph color={Blue400}>
           search page
         </Paragraph> to find some cool projects or users to follow!
       </Paragraph>
