@@ -256,7 +256,7 @@ export const PriorityList = ({ priority, setPriority }) => {
   )
 }
 
-export const ImageDisplay= ({ setMedia, image, imagePrefix, media }) => {
+export const ImageDisplay= ({ setMedia, image, imagePrefix, media, width, height }) => {
   const [isVisible, setModalVisible] = useState(false)
   const [galleryOpen, setGalleryOpen] = useState(false)
   const navigation = useNavigation()
@@ -305,7 +305,13 @@ export const ImageDisplay= ({ setMedia, image, imagePrefix, media }) => {
         </Pressable>
       </FlexRowContentModal>
         }
-      <SafeImage key={image} src={image} style={modalStyles.mediaItem} />
+      <SafeImage key={image} src={image} style={{
+        ...modalStyles.mediaItem,
+        ...(width && {
+          width,
+          height
+        })
+      }} />
       <View style={{
         position: 'absolute',
         backgroundColor: Grey800,
@@ -319,7 +325,7 @@ export const ImageDisplay= ({ setMedia, image, imagePrefix, media }) => {
   )
 }
 
-const populateMentionArr = ({ nameMentions, detailMentions, contentMentions }) => {
+const populateMentionArr = ({ nameMentions, detailMentions, contentMentions, completedMessageMentions }) => {
   let mentions = null
   if (nameMentions && detailMentions) {
     const mergedMentions = [...new Set([
@@ -335,6 +341,8 @@ const populateMentionArr = ({ nameMentions, detailMentions, contentMentions }) =
     mentions = detailMentions
   } else if (contentMentions) {
     mentions = contentMentions
+  } else if (completedMessageMentions) {
+    mentions = completedMessageMentions
   }
   return mentions
 }
@@ -361,35 +369,46 @@ export const submit = async ({
   content,
   relatedGoalIds,
   relatedTaskIds,
-  status
+  status,
+  completedMessage,
+  completedImages
 }) => {
-  if (!name && type !== 'ask' && type !== 'post') {
+  if (!name && type !== 'ask' && type !== 'post' && type !== 'completed') {
     setErrors({
       ...errors,
       nameError: 'Name is required'
     })
-  } else if (!content && (type === 'ask' || type === 'post')) {
+  } else if (!content && (type === 'ask' || type === 'post') && type !== 'completed') {
     setErrors({
       ...errors,
       nameError: 'Ask required'
     })
-  } else if (!projectId && type !== 'post') {
+  } else if (!projectId && type !== 'post' && type !== 'completed') {
     setErrors({
       ...errors,
       nameError: 'Please select a project'
     })
   } else {
     // Parse media:
-    const finalMediaArr = media.map(media => {
-      if (media.startsWith('file://')) {
+    const finalMediaArr = media && media.map(image => {
+      if (image.startsWith('file://')) {
         const {
           filename
-        } = getFilenameAndType(media)
+        } = getFilenameAndType(image)
         return filePrefix + filename
       }
-      return media
+      return image
     })
-
+    const finalCompletedImagesArr = completedImages && completedImages.map(image => {
+      if (image.startsWith('file://')) {
+        const {
+          filename
+        } = getFilenameAndType(image)
+        return filePrefix + filename
+      }
+      return image
+    })
+  
     const {
       mentionedUsers: nameMentionedUsers,
       mentionedProjects: nameMentionedProjects
@@ -404,9 +423,14 @@ export const submit = async ({
       mentionedUsers: contentMentionedUsers,
       mentionedProjects: contentMentionedProjects
     } = getMentionArray(content)
- 
-    const userMentions = populateMentionArr({ nameMentions: nameMentionedUsers, detailMentions: detailMentionedUsers, contentMentions: contentMentionedUsers })
-    const projectMentions = populateMentionArr({ nameMentions: nameMentionedProjects, detailMentions: detailMentionedProjects, contentMentions: contentMentionedProjects })
+  
+    const {
+      mentionedUsers: completedMessageUsers,
+      mentionedProjects: completedMessageProjects
+    } = getMentionArray(completedMessage)
+  
+    const userMentions = populateMentionArr({ nameMentions: nameMentionedUsers, detailMentions: detailMentionedUsers, contentMentions: contentMentionedUsers, completedMessageMentions: completedMessageUsers })
+    const projectMentions = populateMentionArr({ nameMentions: nameMentionedProjects, detailMentions: detailMentionedProjects, contentMentions: contentMentionedProjects, completedMessageMentions: completedMessageProjects })
 
     try {
       const result = await mutation({
@@ -421,7 +445,9 @@ export const submit = async ({
             ...(detail && {
               detail
             }),
-            media: finalMediaArr,
+            ...(media && {
+              media: finalMediaArr
+            }),
             ...(priority && {
               priority
             }),
@@ -461,6 +487,12 @@ export const submit = async ({
             }),
             ...(projectMentions && {
               projectMentions
+            }),
+            ...(completedImages && {
+              completedImages: finalCompletedImagesArr
+            }),
+            ...(completedMessage && {
+              completedMessage
             })
           }
         }

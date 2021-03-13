@@ -827,7 +827,12 @@ export const HomeFeed = () => {
 
   useEffect(() => {
     if (status === 'user' && data && data.getHomeFeed) {
-      setFeed(data && data.getHomeFeed)
+      if (data.getHomeFeed.length === 0 && publicFeedData && publicFeedData.getPublicFeed) {
+        setFeed(publicFeedData.getPublicFeed)
+        setStatus('public')
+      } else {
+        setFeed(data && data.getHomeFeed)
+      }
     } else if (status === 'public' && publicFeedData && publicFeedData.getPublicFeed) {
       setFeed(publicFeedData.getPublicFeed)
     }
@@ -859,6 +864,19 @@ export const HomeFeed = () => {
       <StatusItem setStatus={setStatus} statusValue='user' statusLabel='Following' statusTrue={status === 'user'} />
       <StatusItem setStatus={setStatus} statusValue='public' statusLabel='Public' statusTrue={status === 'public'} />
     </View>
+    {
+      feed.length === 0 && status === 'user' &&
+      <Paragraph style={{
+        marginTop: spacingUnit,
+        padding: spacingUnit * 2
+      }}>
+        No results - go to our <Paragraph onPress={() => navigation.navigate('Root', {
+          screen: 'Search'
+        })} color={Blue400}>
+          search page
+        </Paragraph> to find some cool projects or users to follow!
+      </Paragraph>
+    }
     <FlatList 
       contentContainerStyle={{
         paddingBottom: spacingUnit * 10

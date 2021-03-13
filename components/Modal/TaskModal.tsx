@@ -25,7 +25,7 @@ import { SafeImage } from '../../storybook/stories/Image'
 import ImageBrowser from './ImageBrowser'
 import { useNavigation, useRoute } from '@react-navigation/native'
 
-const FILE_PREFIX = 'task/new/'
+const FILE_PREFIX = 'tmp/task/new/'
 
 export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectId, goalId, taskMutation, firstTime, deleteMutation }) => {
   const initialDueDate = endOfWeekFromNow()

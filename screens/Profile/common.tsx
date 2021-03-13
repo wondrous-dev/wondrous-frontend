@@ -612,9 +612,13 @@ export const onSwipe =({
   }
   if (type === 'goal') {
     if (status === 'completed') {
-      if (loggedInUser && loggedInUser.usageProgress && !loggedInUser.usageProgress.goalCompleted) {
-        setGoalCompleteModal(true)
-      }
+      // if (loggedInUser && loggedInUser.usageProgress && !loggedInUser.usageProgress.goalCompleted) {
+      //   setGoalCompleteModal(true)
+      // }
+      setGoalCompleteModal({
+        id: item.id,
+        name: item.name
+      })
       completeGoal({
         variables: {
           goalId: item.id

@@ -22,7 +22,7 @@ import { SafeImage } from '../../storybook/stories/Image'
 import ImageBrowser from './ImageBrowser'
 import { useNavigation } from '@react-navigation/native'
 
-const FILE_PREFIX = 'goal/new/'
+const FILE_PREFIX = 'tmp/goal/new/'
 
 export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, projectId, goalMutation, firstTime }) => {
   const initialDueDate = endOfWeekFromNow()

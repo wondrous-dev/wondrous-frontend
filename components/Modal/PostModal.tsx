@@ -19,7 +19,7 @@ import ImageBrowser from './ImageBrowser'
 import { useNavigation } from '@react-navigation/native'
 import { useMe } from '../../components/withAuth'
 
-const FILE_PREFIX = 'post/new/'
+const FILE_PREFIX = 'tmp/post/new/'
 
 export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMutation }) => {
   const initialMedia = (post && post.additionalData && post.additionalData.images) || []

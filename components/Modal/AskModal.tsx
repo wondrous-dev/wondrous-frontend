@@ -24,7 +24,7 @@ import { SafeImage } from '../../storybook/stories/Image'
 import ImageBrowser from './ImageBrowser'
 import { useNavigation, useRoute } from '@react-navigation/native'
 
-const FILE_PREFIX = 'ask/new/'
+const FILE_PREFIX = 'tmp/ask/new/'
 
 export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId, goalId, taskId, askMutation, firstTime, deleteMutation }) => {
   const initialMedia = (ask && ask.additionalData && ask.additionalData.images) || []
