@@ -680,9 +680,10 @@ export const onSwipe =({
       })
     }
   } else if (type === 'task') {
-    if (loggedInUser && loggedInUser.usageProgress && !loggedInUser.usageProgress.taskCompleted && setTaskCompleteModal) {
-      setTaskCompleteModal(true)
-    }
+    setTaskCompleteModal({
+      id: item.id,
+      name: item.name
+    })
     if (status === 'completed') {
       completeTask({
         variables: {

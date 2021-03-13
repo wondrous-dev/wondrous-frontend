@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { ScrollView, View, Dimensions, StyleSheet, Pressable, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import Modal from 'react-native-modal'
 import Clipboard from 'expo-clipboard'
@@ -68,6 +68,14 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
     id,
     name
   } = item
+  const resetState = useCallback(() => {
+    setMedia([])
+    setCameraOpen(false)
+    setGalleryOpen(false)
+    setCompletedMessage('')
+    setErrors({})
+  }, [])
+
   return (
     <Modal
     isVisible={id}
@@ -243,6 +251,7 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
                 updateId: id,
                 updateKey: updateKey
               })
+              resetState()
               setModalVisible(false)
             }}>
             <RegularText color={White} style={{
@@ -267,16 +276,22 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
   )
 }
 
-export const TaskCongratsModal = ({ user, isVisible: taskId, setModalVisible,  }) => {
-  const message = 'You finished your first task - '
-  const shareContent = 'Finished my first task on Wonder! Follow my journey here'
+export const TaskCongratsModal = ({ user, isVisible: task, setModalVisible,  }) => {
+  let message, shareContent = ''
+  if (user && user.usageProgress && !user.usageProgress.taskCompleted) {
+    message = 'You finished your first task - '
+    shareContent = 'Finished my first task on Wonder! Follow my journey here'
+  } else {
+    message = 'Well done for completing the task -'
+    shareContent = 'Finished a goal on Wonder! Come see more of my progress'
+  }
   const shareUrl = `https://wonderapp.co/app/user/${user.id}`
   const [updateTask] = useMutation(UPDATE_TASK, {
     variables: {
-      taskId
+      taskId: task && task.id
     }
   })
-  return <CompleteCongratsModal message={message} shareContent={shareContent} shareUrl={shareUrl} isVisible={taskId} setModalVisible={setModalVisible} updateMutation={updateTask} updateKey='taskId' filePrefix={'tmp//task/new/'} />
+  return <CompleteCongratsModal message={message} shareContent={shareContent} shareUrl={shareUrl} isVisible={task} setModalVisible={setModalVisible} updateMutation={updateTask} updateKey='taskId' filePrefix={'tmp//task/new/'} />
 }
 
 export const GoalCongratsModal = ({ user, isVisible: goal, setModalVisible }) => {
