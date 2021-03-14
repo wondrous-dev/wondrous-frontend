@@ -5,7 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 import { mentionRegEx } from 'react-native-controlled-mentions'
 import Modal from 'react-native-modal'
 
-import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300 } from '../../constants/Colors'
+import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300, Green400 } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SafeImage } from '../../storybook/stories/Image'
 import { getMentionArray, spacingUnit } from '../../utils/common'
@@ -49,6 +49,21 @@ export const modalStyles = StyleSheet.create({
       zIndex: 100,
     })
   },
+  completedButton: {
+    backgroundColor: Green400,
+    padding: spacingUnit,
+    borderRadius: spacingUnit,
+    marginBottom: spacingUnit * 2,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  markAsCompleteButton: {
+    borderColor: Green400,
+    borderRadius: spacingUnit,
+    borderWidth: 1,
+    padding: spacingUnit,
+    marginBottom: spacingUnit * 2
+  },
   inputContainer: {
 
   },
@@ -67,13 +82,18 @@ export const modalStyles = StyleSheet.create({
   editContainer: {
     borderTopColor: Grey400,
     borderTopWidth: 1,
-    marginTop: spacingUnit * 3,
-    paddingTop: spacingUnit * 3
+    marginTop: spacingUnit * 2,
+    paddingTop: spacingUnit * 2
   },
   editRowContainer: {
     flexDirection: 'row',
     marginBottom: spacingUnit * 2.5,
     alignItems: 'center',
+  },
+  completeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start'
   },
   editRowTextContainer: {
     marginRight: spacingUnit * 2
@@ -371,7 +391,8 @@ export const submit = async ({
   relatedTaskIds,
   status,
   completedMessage,
-  completedImages
+  completedImages,
+  completed
 }) => {
   if (!name && type !== 'ask' && type !== 'post' && type !== 'completed') {
     setErrors({
@@ -493,7 +514,8 @@ export const submit = async ({
             }),
             ...(completedMessage && {
               completedMessage
-            })
+            }),
+            completed
           }
         }
       })

@@ -9,7 +9,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import { TextEditor } from '../../storybook/stories/TextEditor'
 import { TextEditorContext } from '../../utils/contexts'
-import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300 } from '../../constants/Colors'
+import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300, Green400 } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit, renderMentionString } from '../../utils/common'
 import { endOfWeekFromNow } from '../../utils/date'
@@ -24,6 +24,7 @@ import LinkIcon from '../../assets/images/link'
 import { SafeImage } from '../../storybook/stories/Image'
 import ImageBrowser from './ImageBrowser'
 import { useNavigation, useRoute } from '@react-navigation/native'
+import Checkmark from '../../assets/images/checkmark'
 
 const FILE_PREFIX = 'tmp/task/new/'
 
@@ -34,7 +35,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
   const {
     tab
   } = route
-  const [completed, setCompleted] = useState(false)
+  const [completed, setCompleted] = useState(task && task.status === 'completed')
   const [taskText, setTaskText] = useState((task && task.name) || '')
   const [project, setProject] = useState((task && task.projectId) || projectId)
   const [goal, setGoal] = useState((task && task.goalId) || goalId)
@@ -193,7 +194,8 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                     updateId: task.id,
                     updateKey: 'taskId'
                   }),
-                  firstTime
+                  firstTime,
+                  completed
                 })
                 setModalVisible(false)
                 if (!task) {
@@ -229,6 +231,29 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                       {errors.nameError}
                     </ErrorText>
                   }
+                  <View style={modalStyles.completeContainer}>
+                  {
+                    completed
+                    ?
+                    <Pressable style={modalStyles.completedButton} onPress={() => setCompleted(false)}>
+                      <Paragraph color={White} style={{
+                        marginRight: spacingUnit * 0.4
+                      }}>
+                        Task Completed
+                      </Paragraph>
+                      <Checkmark color={White} style={{
+                        width: 20,
+                        height: 20
+                      }}/>
+                    </Pressable>
+                    :
+                    <Pressable style={modalStyles.markAsCompleteButton} onPress={() => setCompleted(true)}>
+                      <Paragraph color={Green400}>
+                        Mark as complete
+                      </Paragraph>
+                    </Pressable>
+                  }
+                  </View>
                   <View style={[
                     modalStyles.editRowContainer,
     

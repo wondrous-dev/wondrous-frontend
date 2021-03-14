@@ -865,10 +865,10 @@ export const HomeFeed = () => {
       </View>
       )
   }
-  const filteredData = (feed.filter(feedItem => {
+  const filteredData = status === 'user' ? (feed.filter(feedItem => {
 
     return user && (user.id !== feedItem.userId)
-  }))
+  })) : feed
 
   return (
     <>
