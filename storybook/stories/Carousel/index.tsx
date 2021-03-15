@@ -47,8 +47,10 @@ export class MyCarousel extends React.Component {
               dotProps: {
                 badgeStyle: {
                   backgroundColor: passiveDotColor || 'rgba(255,255,255, 0.3)',
-                  borderColor: Orange,
-                  borderWidth: 1
+                  ...(!images && {
+                    borderColor: Orange,
+                    borderWidth: 1
+                  })
                 }
               }
             }}

@@ -143,8 +143,8 @@ const FeedString = ({ item, standAlone }) => {
   } else if (item.objectType === 'goal' || item.objectType === 'task') {
     let finalString = ''
     if (item.verb === 'complete') {
-      if (item.media?.completedMessage) {
-        finalString = item.itemName + '. ' + item.media.completedMessage
+      if (item.completedMessage) {
+        finalString = item.itemName + '. ' + item.completedMessage
       } else {
         finalString = item.itemContent ? item.itemName + '. ' + item.itemContent : item.itemName
       }
@@ -313,8 +313,6 @@ export const getNewExistingItems = ({ existingItems, liked, comment, item, readF
           media: itemObj.media || {
             media: null,
             link: null,
-            completedImages: null,
-            completedMessage: null,
             __typename: 'Media'
           },
           ...(comment && {
@@ -328,7 +326,6 @@ export const getNewExistingItems = ({ existingItems, liked, comment, item, readF
           media: itemObj.media || {
             media: null,
             link: null,
-            completedImages: null,
             completedMessage: null,
             __typename: 'Media'
           },
@@ -664,11 +661,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           </View>
           }
           {
-            item.verb === 'complete' && item.media.completedImages &&
-            <MyCarousel data={item.media.completedImages} images={true} passiveDotColor={Grey800} activeDotColor={Blue400} />
-          }
-          {
-            item.verb !== 'complete' && item.media.images &&
+            item.media && item.media.images &&
             <MyCarousel data={item.media.images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400} />
           }
           </View>

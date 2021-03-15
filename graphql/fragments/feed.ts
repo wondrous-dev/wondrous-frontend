@@ -20,11 +20,12 @@ export const ActivityFeedItem = gql`
     itemContent
     commentCount
     reactionCount
+    completedMessage
     media {
       images
       link
-      completedImages
-      completedMessage
+      videoProcessingStatus
+      playbackId
       __typename
     }
     __typename

@@ -42,7 +42,7 @@ function HomeScreen({
       paragraph: 'Wonder helps you build/learn in public so you are held socially accountable.'
     },
     {
-      subheading: 'Set goals, complete tasks and build projects i npublic',
+      subheading: 'Set goals, complete tasks and build projects in public',
       paragraph: 'Wonder helps you build a following from day one. Get feedback and help from people interested in your projects. '
     },
     {
