@@ -1,5 +1,5 @@
 import { scale, moderateScale, verticalScale } from '../../../utils/scale'
-import { White, Blue400, Blue500, Black } from '../../../constants/Colors'
+import { White, Blue400, Blue500, Black, Grey800 } from '../../../constants/Colors'
 
 const baseStyle = {
   maxWidth: moderateScale(344),
@@ -23,7 +23,9 @@ export default {
     height: 50,
     display: 'flex',
     justifyContent: 'center',
-    width: 300
+    width: 300,
+    borderWidth: 1,
+    borderColor: Grey800
   },
   facebook: {
     width: 300,

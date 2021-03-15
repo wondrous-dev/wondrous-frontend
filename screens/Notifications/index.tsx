@@ -410,7 +410,7 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite }) => 
     case 'welcome':
       displayMessage =(
         <RegularText color={Black}>
-          Welcome to Wonder! We're here to help your dream project succeed.
+          Welcome to Wonder! We're here to help your dream projects succeed.
         </RegularText>
       )
       break

@@ -9,7 +9,7 @@ import { RootStackParamList } from '../../types'
 import BackCaret from '../../assets/images/back-caret'
 import { Header } from '../../components/Header'
 import { spacingUnit } from '../../utils/common'
-import { Black, White, Blue500, Red400, Grey100, Grey200, Grey300, GreyPlaceHolder } from '../../constants/Colors'
+import { Black, White, Blue500, Red400, Grey100, Grey200, Grey300, GreyPlaceHolder, Orange, Grey800 } from '../../constants/Colors'
 import { Subheading, RegularText, ButtonText, ErrorText, Title, } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import Neutral from '../../assets/images/emoji/neutral'
@@ -75,7 +75,8 @@ function EmailSigninScreen({
         </Pressable>
 
         <Title style={{
-          flex: 1
+          flex: 1,
+          color: Orange
         }}>
           Wonder
         </Title>
@@ -173,7 +174,7 @@ function EmailSigninScreen({
               lineHeight: '19px',
               textAlign: 'center',
               textDecorationLine: 'underline'
-            }} >Or create an account with email</Subheading>
+            }} color={Grey800}>Or create an account with email</Subheading>
             </Pressable>
     </SafeAreaView>
   )

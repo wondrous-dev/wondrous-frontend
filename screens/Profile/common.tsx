@@ -373,7 +373,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
           <Paragraph style={{
             marginBottom: spacingUnit * 2
           }} color={Grey800}>
-            No asks yet.
+            No asks here.
           </Paragraph>
           {
             userOwned &&

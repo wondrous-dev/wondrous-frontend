@@ -9,7 +9,7 @@ import { useMutation } from '@apollo/client'
 // } from '@react-native-community/google-signin'
 
 import { RootStackParamList } from '../types'
-import { Red400, White } from '../constants/Colors'
+import { Black, Orange, Red400, White } from '../constants/Colors'
 import { Title, ErrorText, RegularText, Subheading } from '../storybook/stories/Text'
 import { SvgImage } from '../storybook/stories/Image'
 import { GoogleLogin, FacebookLogin, EmailLogin } from '../storybook/stories/Button'
@@ -39,7 +39,9 @@ function SignupScreen({
   // }
   return (
     <SafeAreaView style={styles.container}>
-      <Title>
+      <Title style={{
+        color: Orange
+      }}>
         Wonder
       </Title>
       {
@@ -72,7 +74,7 @@ function SignupScreen({
               lineHeight: '19px',
               textAlign: 'center',
               textDecorationLine: 'underline'
-            }} >Or continue with email</Subheading>
+            }} color={Black}>Or continue with email</Subheading>
             </Pressable>
             {
               loginError &&

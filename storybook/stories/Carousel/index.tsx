@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 import Swiper from 'react-native-web-swiper'
-import { White } from '../../../constants/Colors'
+import { White, Orange, Grey800, Black } from '../../../constants/Colors'
 import { spacingUnit } from '../../../utils/common'
 import { SafeImage } from '../Image'
 
@@ -27,7 +27,7 @@ export class MyCarousel extends React.Component {
     } = this.props
       return (
         <View style={{
-          height: images ? 400: 150, 
+          height: images ? 400: 130, 
           width: '100%',
           alignContent: 'center',
           justifyContent: 'center',
@@ -46,7 +46,9 @@ export class MyCarousel extends React.Component {
               },
               dotProps: {
                 badgeStyle: {
-                  backgroundColor: passiveDotColor || 'rgba(255,255,255, 0.3)'
+                  backgroundColor: passiveDotColor || 'rgba(255,255,255, 0.3)',
+                  borderColor: Orange,
+                  borderWidth: 1
                 }
               }
             }}
@@ -62,9 +64,9 @@ export class MyCarousel extends React.Component {
                   }}/>
                 }
                 return (
-                  <View key={item.subheading} style={{flex: 1}}>
-                  <Subheading style={{textAlign: 'center'}}>{item.subheading}</Subheading>
-                  <Paragraph color={White} style={{textAlign: 'center', marginTop: 8}}>{item.paragraph}</Paragraph>
+                  <View key={item.subheading} style={{flex: 1, padding: spacingUnit * 2}}>
+                  <Subheading color={Orange} style={{textAlign: 'center', lineHeight: 30}}>{item.subheading}</Subheading>
+                  {/* <Paragraph color={Black} style={{textAlign: 'center', marginTop: 8}}>{item.paragraph}</Paragraph> */}
                 </View>
                 )
               })
