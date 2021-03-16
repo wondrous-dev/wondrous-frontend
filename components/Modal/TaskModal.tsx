@@ -105,6 +105,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
     setDescription('')
     setCompleted(false)
     setErrors({})
+    setVideo(null)
     if (task) {
       setTaskText((task && task.name) || '')
       setPriority(task && task.priority)
@@ -116,6 +117,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
       setDueDate((task && task.dueDate) ? new Date(task.dueDate) : toDate(initialDueDate))
       setDescription((task && task.detail) || '')
       setCompleted(task && task.status === 'completed')
+      setVideo(task && task.muxPlaybackId || null)
     }
   }, [])
 

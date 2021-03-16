@@ -22,7 +22,6 @@ import { SafeImage } from '../../storybook/stories/Image'
 import ImageBrowser from './ImageBrowser'
 import { useNavigation } from '@react-navigation/native'
 import VideoIcon from '../../assets/images/video'
-import { Video, AVPlaybackStatus } from 'expo-av'
 
 const FILE_PREFIX = 'tmp/goal/new/'
 
@@ -73,6 +72,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
     setDescription('')
     setCompleted(false)
     setErrors({})
+    setVideo(null)
     if (goal) {
       setGoalText((goal && goal.name) || '')
       setPriority(goal && goal.priority)

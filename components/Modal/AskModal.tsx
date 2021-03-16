@@ -16,13 +16,14 @@ import { endOfWeekFromNow } from '../../utils/date'
 import { useMe } from '../../components/withAuth'
 import { GET_USER_PROJECTS, GET_GOALS_FROM_PROJECT, GET_GOALS_FROM_USER, GET_TASKS_FROM_USER, GET_TASKS_FROM_PROJECT } from '../../graphql/queries'
 import Camera from '../../components/Camera'
-import { privacyDropdown, submit, PriorityList, ModalDropdown, DateDisplay, modalStyles, ImageDisplay } from './common'
+import { privacyDropdown, submit, PriorityList, ModalDropdown, DateDisplay, modalStyles, ImageDisplay, pickVideo, VideoThumbnail } from './common'
 import CameraIcon from '../../assets/images/camera'
 import ImageIcon from '../../assets/images/image'
 import LinkIcon from '../../assets/images/link'
 import { SafeImage } from '../../storybook/stories/Image'
 import ImageBrowser from './ImageBrowser'
 import { useNavigation, useRoute } from '@react-navigation/native'
+import VideoIcon from '../../assets/images/video'
 
 const FILE_PREFIX = 'tmp/ask/new/'
 
@@ -46,6 +47,8 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
   const [media, setMedia] = useState(initialMedia)
   const [cameraOpen, setCameraOpen] = useState(false)
   const [galleryOpen, setGalleryOpen] = useState(false)
+  const [video, setVideo] = useState(goal && goal.muxPlaybackId || null)
+  const [videoUploading, setVideoUploading] = useState(null)
   const [errors, setErrors] = useState({})
   const user = useMe()
 
@@ -113,6 +116,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
     setGalleryOpen(false)
     setCompleted(false)
     setErrors({})
+    setVideo(null)
     if (ask) {
       setAskText((ask && ask.content) || '')
       setLink(initialLink)
@@ -121,6 +125,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
       setCameraOpen(false)
       setGalleryOpen(false)
       setCompleted(ask && ask.status === 'completed')
+      setVideo(ask && ask.muxPlaybackId || null)
     }
   }, [])
   return (
@@ -181,36 +186,45 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
               <View style={{
                 flex: 1,
               }}>
-              <Pressable style={modalStyles.createUpdateButton} onPress={() => {
-                let relatedGoalIds = []
-                let relatedTaskIds = []
-                if (goal) {
-                  relatedGoalIds = [goal]
-                }
-                if (task) {
-                  relatedTaskIds = [task]
-                }
-                submit({
-                  type: 'ask',
-                  content: askText,
-                  link,
-                  errors,
-                  setErrors,
-                  media,
-                  projectId: project,
-                  filePrefix: FILE_PREFIX,
-                  mutation: askMutation,
-                  relatedGoalIds,
-                  relatedTaskIds,
-                  ...(ask && {
-                    updateId: ask.id,
-                    updateKey: 'askId'
-                  }),
-                  firstTime
-                })
-                setModalVisible(false)
-                if (!ask) {
-                  resetState()
+              <Pressable style={{
+                ...modalStyles.createUpdateButton,
+                backgroundColor: videoUploading ? Grey800 : Blue500
+              }} onPress={() => {
+                if (videoUploading) {
+                  setErrors({
+                    submitError: 'Videos are still uploading!'
+                  })
+                } else {
+                  let relatedGoalIds = []
+                  let relatedTaskIds = []
+                  if (goal) {
+                    relatedGoalIds = [goal]
+                  }
+                  if (task) {
+                    relatedTaskIds = [task]
+                  }
+                  submit({
+                    type: 'ask',
+                    content: askText,
+                    link,
+                    errors,
+                    setErrors,
+                    media,
+                    projectId: project,
+                    filePrefix: FILE_PREFIX,
+                    mutation: askMutation,
+                    relatedGoalIds,
+                    relatedTaskIds,
+                    ...(ask && {
+                      updateId: ask.id,
+                      updateKey: 'askId'
+                    }),
+                    firstTime
+                  })
+                  setModalVisible(false)
+                  if (!ask) {
+                    resetState()
+                  }
                 }
               }}>
                 <RegularText color={White} style={{
@@ -288,10 +302,31 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                     <LinkIcon color={Grey800} style={{
                       marginRight: spacingUnit * 2
                     }} onPress={() => setAddLink(true)} />
-                    <CameraIcon onPress={() => setCameraOpen(true)} color={Grey800} style={{
+                    <CameraIcon onPress={() => {
+                      setErrors({
+                        ...errors,
+                        mediaError: null
+                      })
+                      setCameraOpen(true)}
+                    } color={Grey800} style={{
                       marginRight: spacingUnit * 2
                     }} />
-                    <ImageIcon color={Grey800} onPress={() => setGalleryOpen(true)} />
+                    <ImageIcon color={Grey800} style={{
+                      marginRight: spacingUnit * 2
+                    }} onPress={() => {
+                      setErrors({
+                        ...errors,
+                        mediaError: null
+                      })
+                      setGalleryOpen(true)
+                      }} />
+                    <VideoIcon color={Grey800} onPress={() => {
+                      setErrors({
+                        ...errors,
+                        mediaError: null
+                      })
+                      pickVideo({ setVideo, video, errors, setErrors, filePrefix: FILE_PREFIX, videoUploading, setVideoUploading })
+                    }} />
                   </View>
                   {
                     errors.mediaError &&
@@ -312,9 +347,28 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                         />
                       </View>
                     }
+                                        {
+                          videoUploading &&
+                          <View style={{
+                            marginTop: spacingUnit * 2
+                          }}>
+                             <ActivityIndicator />
+                             <RegularText color={Grey800} style={{
+                               textAlign: 'center'
+                             }}>
+                               Video uploading...
+                             </RegularText>
+                           </View>
+                    }
                     {
                       media && 
+                      (media || video) && 
                       <View style={modalStyles.mediaRows}>
+                        {
+                          !!(video) &&
+
+                          <VideoThumbnail source={video} setVideo={setVideo} video={video} errors={errors} setErrors={setErrors} filePrefix={FILE_PREFIX} videoUploading={videoUploading} setVideoUploading={setVideoUploading} />
+                        }
                         {media.map(image => (
                           <ImageDisplay setMedia={setMedia} media={media} image={image} imagePrefix={FILE_PREFIX} />
                         ))}
