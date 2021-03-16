@@ -328,7 +328,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
           params: {
             screen: 'UserProfile',
             params: {
-              initialSection: 'actions'
+              initialSection: 'action'
             }
           }
         })
@@ -458,6 +458,15 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite }) => 
       displayMessage = (
         <RegularText color={Black}>
           {notificationInfo.additionalData && notificationInfo.additionalData.message}
+        </RegularText>
+      )
+      break
+    case 'streak_reminder':
+      displayMessage = (
+        <RegularText color={Black}>
+          Keep your <RegularText style={{
+            fontFamily: 'Rubik SemiBold'
+          }}>{notificationInfo.additionalData && notificationInfo.additionalData.currentStreakCount} day streak</RegularText> by taking action!
         </RegularText>
       )
       break

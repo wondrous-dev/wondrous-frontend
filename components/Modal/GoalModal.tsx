@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { SafeAreaView, ScrollView, View, StyleSheet, Dimensions, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native'
+import React, { useCallback, useEffect, useState, useRef } from 'react'
+import { SafeAreaView, ScrollView, View, StyleSheet, Dimensions, Image, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Pressable, ActivityIndicator } from 'react-native'
 import Modal from 'react-native-modal'
 import { useQuery } from '@apollo/client'
 import { toDate } from 'date-fns'
@@ -14,13 +14,15 @@ import { endOfWeekFromNow } from '../../utils/date'
 import { useMe } from '../../components/withAuth'
 import { GET_USER_PROJECTS } from '../../graphql/queries/project'
 import Camera from '../../components/Camera'
-import { privacyDropdown, submit, PriorityList, ModalDropdown, DateDisplay, modalStyles, ImageDisplay } from './common'
+import { privacyDropdown, submit, PriorityList, ModalDropdown, DateDisplay, modalStyles, ImageDisplay, pickVideo, VideoThumbnail } from './common'
 import CameraIcon from '../../assets/images/camera'
 import ImageIcon from '../../assets/images/image'
 import LinkIcon from '../../assets/images/link'
 import { SafeImage } from '../../storybook/stories/Image'
 import ImageBrowser from './ImageBrowser'
 import { useNavigation } from '@react-navigation/native'
+import VideoIcon from '../../assets/images/video'
+import { Video, AVPlaybackStatus } from 'expo-av'
 
 const FILE_PREFIX = 'tmp/goal/new/'
 
@@ -41,7 +43,10 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
   const [cameraOpen, setCameraOpen] = useState(false)
   const [galleryOpen, setGalleryOpen] = useState(false)
   const [errors, setErrors] = useState({})
-
+  const [video, setVideo] = useState(goal && goal.muxPlaybackId || null)
+  const [videoUploading, setVideoUploading] = useState(null)
+  const videoRef = useRef(null)
+  const [status, setStatus] = React.useState({})
   const user = useMe()
   const { data: projectUsers, loading, error } = useQuery(GET_USER_PROJECTS, {
     variables: {
@@ -81,9 +86,9 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
       setDueDate((goal && goal.dueDate) ? new Date(goal.dueDate) : toDate(initialDueDate))
       setDescription((goal && goal.detail) || '')
       setCompleted(goal && goal.status === 'completed')
+      setVideo(goal && goal.muxPlaybackId || null)
     }
   }, [])
-
   return (
     <Modal isVisible={isVisible}>
       {
@@ -141,29 +146,39 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
               <View style={{
                 flex: 1,
               }}>
-              <Pressable style={modalStyles.createUpdateButton} onPress={() => {
-                submit({
-                  name: goalText,
-                  detail: description,
-                  priority,
-                  dueDate,
-                  link,
-                  privacyLevel: privacy,
-                  errors,
-                  setErrors,
-                  media,
-                  projectId: project,
-                  filePrefix: FILE_PREFIX,
-                  mutation: goalMutation,
-                  firstTime,
-                  ...(goal && {
-                    updateId: goal.id,
-                    updateKey: 'goalId'
+              <Pressable style={{
+                ...modalStyles.createUpdateButton,
+                backgroundColor: videoUploading ? Grey800 : Blue500
+              }} onPress={() => {
+                if (videoUploading) {
+                  setErrors({
+                    submitError: 'Videos are still uploading!'
                   })
-                })
-                setModalVisible(false)
-                if (!goal) {
-                  resetState()
+                } else {
+                  submit({
+                    name: goalText,
+                    detail: description,
+                    priority,
+                    dueDate,
+                    link,
+                    privacyLevel: privacy,
+                    errors,
+                    setErrors,
+                    media,
+                    projectId: project,
+                    filePrefix: FILE_PREFIX,
+                    mutation: goalMutation,
+                    firstTime,
+                    video,
+                    ...(goal && {
+                      updateId: goal.id,
+                      updateKey: 'goalId'
+                    })
+                  })
+                  setModalVisible(false)
+                  if (!goal) {
+                    resetState()
+                  }
                 }
               }}>
                 <RegularText color={White} style={{
@@ -260,7 +275,10 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                     <CameraIcon onPress={() => setCameraOpen(true)} color={Grey800} style={{
                       marginRight: spacingUnit * 2
                     }} />
-                    <ImageIcon color={Grey800} onPress={() => setGalleryOpen(true)} />
+                    <ImageIcon color={Grey800} onPress={() => setGalleryOpen(true)} style={{
+                      marginRight: spacingUnit * 2
+                    }} />
+                    <VideoIcon color={Grey800} onPress={() => pickVideo({ setVideo, video, errors, setErrors, filePrefix: FILE_PREFIX, videoUploading, setVideoUploading })} />
                   </View>
                   {
                     errors.mediaError &&
@@ -285,8 +303,26 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                       </View>
                     }
                     {
-                      media && 
+                          videoUploading &&
+                          <View style={{
+                            marginTop: spacingUnit
+                          }}>
+                             <ActivityIndicator />
+                             <RegularText color={Grey800} style={{
+                               textAlign: 'center'
+                             }}>
+                               Video uploading...
+                             </RegularText>
+                           </View>
+                        }
+                    {
+                      (media || video) && 
                       <View style={modalStyles.mediaRows}>
+                        {
+                          !!(video) &&
+
+                          <VideoThumbnail source={video} setVideo={setVideo} video={video} errors={errors} setErrors={setErrors} filePrefix={FILE_PREFIX} videoUploading={videoUploading} setVideoUploading={setVideoUploading} />
+                        }
                         {media.map(image => (
                           <ImageDisplay setMedia={setMedia} media={media} image={image} imagePrefix={FILE_PREFIX} />
                         ))}

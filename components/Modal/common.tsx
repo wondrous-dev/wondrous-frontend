@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { View, Pressable, StyleSheet, Dimensions, Platform, SafeAreaView } from 'react-native'
+import { View, Pressable, StyleSheet, Dimensions, Platform, SafeAreaView, Image } from 'react-native'
 import DropDownPicker from 'react-native-dropdown-picker'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { mentionRegEx } from 'react-native-controlled-mentions'
 import Modal from 'react-native-modal'
+import * as ImagePicker from 'expo-image-picker'
+import * as VideoThumbnails from 'expo-video-thumbnails'
 
 import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300, Green400 } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
@@ -11,12 +13,123 @@ import { SafeImage } from '../../storybook/stories/Image'
 import { getMentionArray, spacingUnit } from '../../utils/common'
 import PriorityFlame from '../../assets/images/modal/priority'
 import CancelIcon from '../../assets/images/cancel'
-import { getFilenameAndType } from '../../utils/image'
+import { getFilenameAndType, uploadVideo } from '../../utils/image'
 import ImageBrowser from './ImageBrowser'
 import { FlexRowContentModal } from './index'
 
 import { capitalizeFirstLetter } from '../../utils/common'
 import { useNavigation } from '@react-navigation/native'
+import { MAX_VIDEO_LIMIT } from '../../constants'
+
+export const VideoThumbnail = ({ source, width, height, setVideo, video, errors, setErrors, filePrefix, videoUploading, setVideoUploading }) => {
+  const [image, setImage] = useState('')
+  const [isVisible, setModalVisible] = useState(false)
+  const generateThumbnail = async () => {
+    try {
+      const { uri } = await VideoThumbnails.getThumbnailAsync(
+        source,
+        {
+          time: 0,
+        }
+      );
+      setImage(uri);
+    } catch (e) {
+      console.warn(e);
+    }
+  }
+  useEffect(() => {
+    generateThumbnail()
+  }, [])
+  return (
+    <View>
+              <FlexRowContentModal 
+        isVisible={isVisible}
+        setModalVisible={setModalVisible}
+        headerText='Edit picture'
+        centered={true}
+        cancelButtonStyle={{
+          marginTop: spacingUnit * 2
+        }}
+        flexDirection='column'
+      >
+        <Pressable onPress={() => {
+          pickVideo({ video, errors, setErrors, filePrefix, videoUploading, setVideoUploading })
+        }} style={{
+          marginBottom: spacingUnit * 3,
+          alignSelf: 'center',
+        }}>
+        <Subheading color={Blue400}>
+          Replace photo
+        </Subheading>
+        </Pressable>
+        <Pressable style={{
+          alignSelf: 'center'
+        }} onPress={() => {
+          setVideo(null)
+          setModalVisible(false)
+        }}>
+        <Subheading color={Red400}>
+          Delete photo
+        </Subheading>
+        </Pressable>
+      </FlexRowContentModal>
+      <Image style={{
+        ...modalStyles.mediaItem,
+        ...(width && {
+          width,
+          height
+        })
+      }} source={{
+        uri: image
+      }} />
+            <View style={{
+          position: 'absolute',
+          backgroundColor: Grey800,
+          borderRadius: 12,
+          right: 12,
+          top: 12
+        }}>
+          <CancelIcon color={White} onPress={() => setModalVisible(true)} />
+        </View>
+      </View>
+  )
+}
+export const pickVideo = async ({ edit, setVideo, media, setErrors, errors, filePrefix, setVideoUploading, setVideoThumbnail }) => {
+  if (Platform.OS !== 'web') {
+    const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Sorry, we need camera roll permissions to make this work!');
+    }
+  }
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1,
+  });
+
+  console.log(result);
+  if (result)
+  if (!result.cancelled) {
+    if (setErrors && Number(result.duration) > MAX_VIDEO_LIMIT) {
+      setErrors({
+        mediaError: 'Video can only be 10 seconds max.'
+      })
+    } else {
+      // Upload video
+      const {
+        fileType,
+        filename
+      } = getFilenameAndType(result.uri)
+      const newFileName = filePrefix ? `${filePrefix}${filename}` : filename
+      setVideoUploading(true)
+      await uploadVideo({ filename: newFileName, localUrl: result.uri, fileType })
+      setVideoUploading(false)
+
+      setVideo(result.uri)
+    }
+  }
+}
 
 export const PRIVACY_LEVELS = ['public', 'private', 'collaborators']
 
@@ -276,6 +389,49 @@ export const PriorityList = ({ priority, setPriority }) => {
   )
 }
 
+export const VideoDisplay = async({ setVideo, video }) => {
+  const [isVisible, setModalVisible] = useState(false)
+  const [galleryOpen, setGalleryOpen] = useState(false)
+  const navigation = useNavigation()
+  return (
+    <View>
+              <FlexRowContentModal 
+        isVisible={isVisible}
+        setModalVisible={setModalVisible}
+        headerText='Edit picture'
+        centered={true}
+        cancelButtonStyle={{
+          marginTop: spacingUnit * 2
+        }}
+        flexDirection='column'
+      >
+        <Pressable onPress={() => {
+          setGalleryOpen(true)
+        }} style={{
+          marginBottom: spacingUnit * 3,
+          alignSelf: 'center',
+        }}>
+        <Subheading color={Blue400}>
+          Replace photo
+        </Subheading>
+        </Pressable>
+        <Pressable style={{
+          alignSelf: 'center'
+        }} onPress={() => {
+          const newArr = media.filter(mediaItem => mediaItem !== image)
+          setMedia(newArr)
+          setModalVisible(false)
+        }}>
+        <Subheading color={Red400}>
+          Delete photo
+        </Subheading>
+        </Pressable>
+      </FlexRowContentModal>
+      
+    </View>
+  )
+}
+
 export const ImageDisplay= ({ setMedia, image, imagePrefix, media, width, height }) => {
   const [isVisible, setModalVisible] = useState(false)
   const [galleryOpen, setGalleryOpen] = useState(false)
@@ -392,7 +548,8 @@ export const submit = async ({
   status,
   completedMessage,
   completedImages,
-  completed
+  completed,
+  video
 }) => {
   if (!name && type !== 'ask' && type !== 'post' && type !== 'completed') {
     setErrors({
@@ -429,7 +586,15 @@ export const submit = async ({
       }
       return image
     })
-  
+    let finalVideo = video
+    if (video) {
+      if (video.startsWith('file://')) {
+        const {
+          filename: videoFilename
+        } = getFilenameAndType(video)
+        finalVideo = filePrefix + videoFilename
+      }
+    }
     const {
       mentionedUsers: nameMentionedUsers,
       mentionedProjects: nameMentionedProjects
@@ -514,6 +679,9 @@ export const submit = async ({
             }),
             ...(completedMessage && {
               completedMessage
+            }),
+            ...(video && {
+              videoUploadSlug: finalVideo
             }),
             completed
           }

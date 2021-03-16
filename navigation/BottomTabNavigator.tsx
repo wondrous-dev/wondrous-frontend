@@ -167,10 +167,16 @@ export default function BottomTabNavigator() {
       <BottomTab.Screen
         name='Dashboard'
         component={Dashboard}
+        initialParams={{
+          screen: 'Feed'
+        }}
       />
       <BottomTab.Screen
         name='Search'
         component={Search}
+        initialParams={{
+          screen: 'Default',
+        }}
       />
       <BottomTab.Screen
         name='Add'
@@ -179,6 +185,9 @@ export default function BottomTabNavigator() {
       <BottomTab.Screen
         name='Notifications'
         component={Notifications}
+        initialParams={{
+          screen: 'Default',
+        }}
         options={{
           tabBarColor: '#009387',
           tabBarBadge: unreadNotifCount !== 0 ? unreadNotifCount : null,                          // This is for bar Badge

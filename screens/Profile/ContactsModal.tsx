@@ -13,7 +13,7 @@ import { White, Black, Blue400 } from '../../constants/Colors'
 import { RegularText, Subheading } from '../../storybook/stories/Text'
 import { SafeImage } from '../../storybook/stories/Image'
 import * as SMS from 'expo-sms'
-import { TESTFLIGHT_BETA_LINK } from '../../utils/constants'
+import { TESTFLIGHT_BETA_LINK } from '../../constants/index'
 
 const checkAndRequestsPermission = async ({ setPermissions }) => {
     const hasPermissions = await Contacts.getPermissionsAsync()

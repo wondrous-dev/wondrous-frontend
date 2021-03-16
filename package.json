@@ -62,6 +62,7 @@
     "expo-sms": "~8.3.1",
     "expo-splash-screen": "~0.6.2",
     "expo-status-bar": "~1.0.2",
+    "expo-video-thumbnails": "~4.3.0",
     "expo-web-browser": "~8.5.0",
     "formik": "^2.2.6",
     "graphql": "^15.4.0",
