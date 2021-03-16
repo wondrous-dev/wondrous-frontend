@@ -1,23 +1,24 @@
 import React, { useCallback, useState } from 'react'
-import { SafeAreaView, ScrollView, View, TextInput, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native'
+import { SafeAreaView, ScrollView, View, TextInput, TouchableWithoutFeedback, Keyboard, Pressable, ActivityIndicator } from 'react-native'
 import Modal from 'react-native-modal'
 import { useQuery } from '@apollo/client'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { TextEditor } from '../../storybook/stories/TextEditor'
 import { TextEditorContext } from '../../utils/contexts'
-import { Black, White, Blue400, Grey800 } from '../../constants/Colors'
+import { Black, White, Blue400, Blue500, Grey800 } from '../../constants/Colors'
 import { ErrorText, RegularText, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
 import { GET_USER_PROJECTS } from '../../graphql/queries/project'
 import Camera from '../../components/Camera'
-import { submit, modalStyles, ImageDisplay, ModalDropdown } from './common'
+import { submit, modalStyles, ImageDisplay, ModalDropdown, pickVideo, VideoThumbnail } from './common'
 import CameraIcon from '../../assets/images/camera'
 import ImageIcon from '../../assets/images/image'
 import LinkIcon from '../../assets/images/link'
 import ImageBrowser from './ImageBrowser'
 import { useNavigation } from '@react-navigation/native'
 import { useMe } from '../../components/withAuth'
+import VideoIcon from '../../assets/images/video'
 
 const FILE_PREFIX = 'tmp/post/new/'
 
@@ -35,6 +36,8 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
   const [galleryOpen, setGalleryOpen] = useState(false)
   const user = useMe()
   const [errors, setErrors] = useState({})
+  const [video, setVideo] = useState(post && post.muxPlaybackId || null)
+  const [videoUploading, setVideoUploading] = useState(null)
   const { data: projectUsers, loading, error } = useQuery(GET_USER_PROJECTS, {
     variables: {
       userId: user && user.id
@@ -60,6 +63,7 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
     setContent('')
     setErrors({})
     setProject(null)
+    setVideo(null)
     if (post) {
       setContent(initialContent)
       setLink(initialLink)
@@ -68,6 +72,7 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
       setProject(initialProject)
       setCameraOpen(false)
       setGalleryOpen(false)
+      setVideo(post && post.muxPlaybackId || null)
     }
   }, [])
   return (
@@ -96,6 +101,7 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
                     })
                   }
                 }}
+                setVideo={setVideo}
                 filePrefix={FILE_PREFIX}
               />
             }
@@ -128,25 +134,35 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
               <View style={{
                 flex: 1,
               }}>
-              <Pressable style={modalStyles.createUpdateButton} onPress={() => {
-                submit({
-                  type: 'post',
-                  content,
-                  link,
-                  errors,
-                  setErrors,
-                  media,
-                  projectId: project,
-                  filePrefix: FILE_PREFIX,
-                  mutation: postMutation,
-                  ...(post && {
-                    updateId: post.id,
-                    updateKey: 'postId'
-                  }),
-                })
-                setModalVisible(false)
-                if (!post) {
-                  resetState()
+              <Pressable style={{
+                ...modalStyles.createUpdateButton,
+                backgroundColor: videoUploading ? Grey800 : Blue500
+              }} onPress={() => {
+                if (videoUploading) {
+                  setErrors({
+                    submitError: 'Videos are still uploading!'
+                  })
+                } else {
+                  submit({
+                    type: 'post',
+                    content,
+                    link,
+                    errors,
+                    setErrors,
+                    media,
+                    projectId: project,
+                    filePrefix: FILE_PREFIX,
+                    mutation: postMutation,
+                    video,
+                    ...(post && {
+                      updateId: post.id,
+                      updateKey: 'postId'
+                    }),
+                  })
+                  setModalVisible(false)
+                  if (!post) {
+                    resetState()
+                  }
                 }
               }}>
                 <RegularText color={White} style={{
@@ -193,10 +209,31 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
                     <LinkIcon color={Grey800} style={{
                       marginRight: spacingUnit * 2
                     }} onPress={() => setAddLink(true)} />
-                    <CameraIcon onPress={() => setCameraOpen(true)} color={Grey800} style={{
+                    <CameraIcon onPress={() =>{
+                      setErrors({
+                        ...errors,
+                        mediaError: null
+                      })
+                       setCameraOpen(true)
+                      }} color={Grey800} style={{
                       marginRight: spacingUnit * 2
                     }} />
-                    <ImageIcon color={Grey800} onPress={() => setGalleryOpen(true)} />
+                    <ImageIcon color={Grey800} style={{
+                      marginRight: spacingUnit * 2
+                    }} onPress={() => {
+                      setErrors({
+                        ...errors,
+                        mediaError: null
+                      })  
+                      setGalleryOpen(true)                    
+                      }} />
+                    <VideoIcon color={Grey800} onPress={() => {
+                      setErrors({
+                        ...errors,
+                        mediaError: null
+                      })
+                      pickVideo({ setVideo, video, errors, setErrors, filePrefix: FILE_PREFIX, videoUploading, setVideoUploading })
+                    }} />
                   </View>
                   {
                     errors.mediaError &&
@@ -217,8 +254,26 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
                       </View>
                     }
                     {
-                      media && 
+                          videoUploading &&
+                          <View style={{
+                            marginTop: spacingUnit * 2
+                          }}>
+                             <ActivityIndicator />
+                             <RegularText color={Grey800} style={{
+                               textAlign: 'center'
+                             }}>
+                               Video uploading...
+                             </RegularText>
+                           </View>
+                    }
+                    {
+                      (media || video) &&
                       <View style={modalStyles.mediaRows}>
+                        {
+                          !!(video) &&
+
+                          <VideoThumbnail source={video} setVideo={setVideo} video={video} errors={errors} setErrors={setErrors} filePrefix={FILE_PREFIX} videoUploading={videoUploading} setVideoUploading={setVideoUploading} />
+                        }
                         {media.map(image => (
                           <ImageDisplay setMedia={setMedia} media={media} image={image} imagePrefix={FILE_PREFIX} />
                         ))}

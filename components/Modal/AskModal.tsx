@@ -347,7 +347,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                         />
                       </View>
                     }
-                                        {
+                     {
                           videoUploading &&
                           <View style={{
                             marginTop: spacingUnit * 2
@@ -361,8 +361,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                            </View>
                     }
                     {
-                      media && 
-                      (media || video) && 
+                      (media || video) &&
                       <View style={modalStyles.mediaRows}>
                         {
                           !!(video) &&
