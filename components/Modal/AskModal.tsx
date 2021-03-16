@@ -295,8 +295,8 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                   </View>
                   {
                     errors.mediaError &&
-                    <ErrorText>
-                      {error.mediaError}
+                    <ErrorText style={modalStyles.errorText}>
+                      {errors.mediaError}
                     </ErrorText>
                   }
                   <ScrollView keyboardDismissMode='interactive' keyboardShouldPersistTaps='handled'>

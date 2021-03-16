@@ -42,7 +42,7 @@ export const VideoThumbnail = ({ source, width, height, setVideo, video, errors,
   }, [])
   return (
     <View>
-              <FlexRowContentModal 
+     <FlexRowContentModal 
         isVisible={isVisible}
         setModalVisible={setModalVisible}
         headerText='Edit picture'
@@ -59,7 +59,7 @@ export const VideoThumbnail = ({ source, width, height, setVideo, video, errors,
           alignSelf: 'center',
         }}>
         <Subheading color={Blue400}>
-          Replace photo
+          Replace video
         </Subheading>
         </Pressable>
         <Pressable style={{
@@ -69,7 +69,7 @@ export const VideoThumbnail = ({ source, width, height, setVideo, video, errors,
           setModalVisible(false)
         }}>
         <Subheading color={Red400}>
-          Delete photo
+          Delete video
         </Subheading>
         </Pressable>
       </FlexRowContentModal>
@@ -145,6 +145,9 @@ export const modalStyles = StyleSheet.create({
     height: (Dimensions.get('window').height),
     alignSelf: 'center',
     marginBottom: 0
+  },
+  errorText: {
+    marginTop: spacingUnit
   },
   topRowContainer: {
     flexDirection: 'row',

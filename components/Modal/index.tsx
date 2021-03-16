@@ -198,8 +198,8 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
           </View>
             {
               errors.mediaError &&
-              <ErrorText>
-                {error.mediaError}
+              <ErrorText style={modalStyles.errorText}>
+                {errors.mediaError}
               </ErrorText>
             }
             <ScrollView keyboardDismissMode='interactive' keyboardShouldPersistTaps='handled'contentContainerStyle={{ flexGrow: 1 }}>

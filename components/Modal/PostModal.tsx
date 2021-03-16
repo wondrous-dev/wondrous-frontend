@@ -200,8 +200,8 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
                   </View>
                   {
                     errors.mediaError &&
-                    <ErrorText>
-                      {error.mediaError}
+                    <ErrorText style={modalStyles.errorText}>
+                      {errors.mediaError}
                     </ErrorText>
                   }
                   <ScrollView keyboardDismissMode='interactive' keyboardShouldPersistTaps='handled'>

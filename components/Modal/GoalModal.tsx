@@ -45,8 +45,6 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
   const [errors, setErrors] = useState({})
   const [video, setVideo] = useState(goal && goal.muxPlaybackId || null)
   const [videoUploading, setVideoUploading] = useState(null)
-  const videoRef = useRef(null)
-  const [status, setStatus] = React.useState({})
   const user = useMe()
   const { data: projectUsers, loading, error } = useQuery(GET_USER_PROJECTS, {
     variables: {
@@ -272,18 +270,36 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                     <LinkIcon color={Grey800} style={{
                       marginRight: spacingUnit * 2
                     }} onPress={() => setAddLink(true)} />
-                    <CameraIcon onPress={() => setCameraOpen(true)} color={Grey800} style={{
+                    <CameraIcon onPress={() => {
+                      setErrors({
+                        ...errors,
+                        mediaError: null
+                      })
+                      setCameraOpen(true)
+                    }} color={Grey800} style={{
                       marginRight: spacingUnit * 2
                     }} />
-                    <ImageIcon color={Grey800} onPress={() => setGalleryOpen(true)} style={{
+                    <ImageIcon color={Grey800} onPress={() => {
+                      setErrors({
+                        ...errors,
+                        mediaError: null
+                      })
+                      setGalleryOpen(true)
+                    }} style={{
                       marginRight: spacingUnit * 2
                     }} />
-                    <VideoIcon color={Grey800} onPress={() => pickVideo({ setVideo, video, errors, setErrors, filePrefix: FILE_PREFIX, videoUploading, setVideoUploading })} />
+                    <VideoIcon color={Grey800} onPress={() => {
+                      setErrors({
+                        ...errors,
+                        mediaError: null
+                      })
+                      pickVideo({ setVideo, video, errors, setErrors, filePrefix: FILE_PREFIX, videoUploading, setVideoUploading })
+                    }} />
                   </View>
                   {
                     errors.mediaError &&
-                    <ErrorText>
-                      {error.mediaError}
+                    <ErrorText style={modalStyles.errorText}>
+                      {errors.mediaError}
                     </ErrorText>
                   }
                   <ScrollView keyboardDismissMode='interactive' keyboardShouldPersistTaps='handled'contentContainerStyle={{ flexGrow: 1 }}>
@@ -305,7 +321,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                     {
                           videoUploading &&
                           <View style={{
-                            marginTop: spacingUnit
+                            marginTop: spacingUnit * 2
                           }}>
                              <ActivityIndicator />
                              <RegularText color={Grey800} style={{
@@ -314,7 +330,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                                Video uploading...
                              </RegularText>
                            </View>
-                        }
+                    }
                     {
                       (media || video) && 
                       <View style={modalStyles.mediaRows}>
