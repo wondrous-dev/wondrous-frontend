@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { SafeAreaView, ScrollView, View, StyleSheet, Dimensions, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native'
+import { SafeAreaView, ScrollView, View, StyleSheet, Dimensions, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Pressable, ActivityIndicator } from 'react-native'
 import Modal from 'react-native-modal'
 import { useQuery } from '@apollo/client'
 import DropDownPicker from 'react-native-dropdown-picker'
@@ -155,6 +155,9 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                       }
                     }}
                     filePrefix={FILE_PREFIX}
+                    setVideo={setVideo} 
+                    setVideoUploading={setVideoUploading}
+                    setErrors={setErrors}
                   />
             }
             <View style={modalStyles.topRowContainer}>

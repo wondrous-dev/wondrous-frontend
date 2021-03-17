@@ -113,6 +113,9 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                       }
                     }}
                     filePrefix={FILE_PREFIX}
+                    setVideo={setVideo} 
+                    setVideoUploading={setVideoUploading}
+                    setErrors={setErrors}
                   />
             }
             <View style={modalStyles.topRowContainer}>

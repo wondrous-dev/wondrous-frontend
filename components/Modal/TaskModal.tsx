@@ -149,6 +149,9 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                       }
                     }}
                     filePrefix={FILE_PREFIX}
+                    setVideo={setVideo} 
+                    setVideoUploading={setVideoUploading}
+                    setErrors={setErrors}
                   />
             }
             <View style={modalStyles.topRowContainer}>

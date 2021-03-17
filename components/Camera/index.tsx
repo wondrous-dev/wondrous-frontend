@@ -8,6 +8,7 @@ import apollo from '../../services/apollo'
 import { GET_PRESIGNED_IMAGE_URL } from '../../graphql/queries/media'
 import { uploadMedia, getFilenameAndType } from '../../utils/image'
 import { setDeepVariable } from '../../utils/common'
+import { MAX_VIDEO_LIMIT } from '../../constants'
 
 const styles = StyleSheet.create({
   container: {
@@ -35,31 +36,36 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white'
-  }
+  },
 })
 
 //TODO use hooks and contexts here
-export default function Snapper ({ setSnapperOpen, snapperOpen, setImage, setModalVisible, saveImageMutation, saveImageMutationVariable, filePrefix, upload=true }) {
+export default function Snapper ({ setSnapperOpen, snapperOpen, setImage, setModalVisible, saveImageMutation, saveImageMutationVariable, filePrefix, upload=true , setVideo, setVideoUploading, setErrors }) {
   const [hasPermission, setHasPermission] = useState(null)
   const [type, setType] = useState(Camera.Constants.Type.back)
   useEffect(() => {
     (async () => {
       if (Platform.OS !== 'web') {
-        const { status: cameraRollStatus } = await ImagePicker.requestCameraRollPermissionsAsync()
-        const { status: cameraStatus} = await ImagePicker.requestCameraPermissionsAsync()
-        if (cameraStatus && cameraRollStatus) {
-          setHasPermission(true)
+        const { status: cameraStatus } = await Camera.requestPermissionsAsync()
+        if (cameraStatus) {
+          setHasPermission(cameraStatus === 'granted')
           const result = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
           })
+          console.log('result', result)
           if (result.cancelled) {
             setSnapperOpen(false)
           } else {
             // Set image
             // Get image filename
+            if (result.duration > MAX_VIDEO_LIMIT) {
+              setErrors({
+                mediaError: 'Cannot upload a video longer than 10 seconds'
+              })
+            }
             if (setModalVisible) {
               setModalVisible(false)
             }
@@ -67,18 +73,30 @@ export default function Snapper ({ setSnapperOpen, snapperOpen, setImage, setMod
               fileType,
               filename
             } = getFilenameAndType(result.uri)
-            const imageUrl = filePrefix + filename
-            setImage(result.uri)
+            const mediaUrl = filePrefix + filename
+            console.log('result', mediaUrl)
             setSnapperOpen(false)
             if (upload) {
-              await uploadMedia({ filename: imageUrl, localUrl: result.uri, fileType })
+              if (setVideoUploading) {
+                setVideoUploading(true)
+              }
+              await uploadMedia({ filename: mediaUrl, localUrl: result.uri, fileType })
+              if (setVideoUploading) {
+                setVideoUploading(false)
+              }
+            }
+            if (result.type === 'video') {
+              setVideo(result.uri)
+            } else if (result.type === 'image') {
+              setImage(result.uri)
             }
             if (saveImageMutation && saveImageMutationVariable) {
-              const variables = setDeepVariable(saveImageMutationVariable[0], saveImageMutationVariable[1], imageUrl)
+              const variables = setDeepVariable(saveImageMutationVariable[0], saveImageMutationVariable[1], mediaUrl)
               saveImageMutation({
                 variables
               })
             }
+
           }
         }
         // if (status !== 'granted') {
@@ -97,8 +115,22 @@ export default function Snapper ({ setSnapperOpen, snapperOpen, setImage, setMod
 
 
   return (
-    <View>
-
+    <View style={styles.container}>
+      {/* <Camera style={styles.camera} type={type}>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              setType(
+                type === Camera.Constants.Type.back
+                  ? Camera.Constants.Type.front
+                  : Camera.Constants.Type.back
+              );
+            }}>
+            <Text style={styles.text}> Flip </Text>
+          </TouchableOpacity>
+        </View>
+      </Camera> */}
     </View>
     // <View style={styles.container}>
     //   <Camera style={styles.camera} type={type}>

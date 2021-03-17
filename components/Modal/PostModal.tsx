@@ -101,8 +101,10 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
                     })
                   }
                 }}
-                setVideo={setVideo}
                 filePrefix={FILE_PREFIX}
+                setVideo={setVideo} 
+                setVideoUploading={setVideoUploading}
+                setErrors={setErrors}
               />
             }
             <View style={modalStyles.topRowContainer}>
