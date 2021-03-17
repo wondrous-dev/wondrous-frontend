@@ -55,7 +55,7 @@ export default function Snapper ({ setSnapperOpen, snapperOpen, setImage, setMod
             aspect: [4, 3],
             quality: 1,
           })
-          console.log('result', result)
+
           if (result.cancelled) {
             setSnapperOpen(false)
           } else {
@@ -74,7 +74,6 @@ export default function Snapper ({ setSnapperOpen, snapperOpen, setImage, setMod
               filename
             } = getFilenameAndType(result.uri)
             const mediaUrl = filePrefix + filename
-            console.log('result', mediaUrl)
             setSnapperOpen(false)
             if (upload) {
               if (setVideoUploading) {

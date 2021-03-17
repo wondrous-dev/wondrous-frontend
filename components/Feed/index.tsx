@@ -25,7 +25,7 @@ import { useMe } from '../withAuth'
 import { tweetNow, linkedinShare, postOnFacebook  } from '../Share'
 import { useProfile } from '../../utils/hooks'
 import { FlexRowContentModal } from '../../components/Modal'
-import { MyCarousel } from '../../storybook/stories/Carousel'
+import { MyCarousel, VideoDisplay } from '../../storybook/stories/Carousel'
 import Link from '../../assets/images/link'
 import Celebration from '../../assets/images/celebrations/signupConfetti.svg'
 import Options from '../../assets/images/options'
@@ -448,6 +448,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
   const [isModalVisible, setModalVisible] = useState(false)
   const [deleteVisible, setDeleteVisible] = useState(false)
   const previousReactionCount = usePrevious(item.reactionCount)
+  const [status, setStatus] = useState(false)
   const pressComment = () => {
     if (standAlone || comment) {
       onCommentPress(`@[${item.actorUsername}](${item.userId})`)
@@ -524,7 +525,6 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
       })
     }
   })
-
   useEffect(() => {
 
     if (user && user.reactedFeedItems && user.reactedFeedItems.includes(item.id)) {
@@ -660,9 +660,17 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           </Paragraph>
           </View>
           }
+          {item.media && (!item.media.images) && item.media.playbackId &&
+            <VideoDisplay video={item.media.playbackId} />
+          }
           {
             item.media && item.media.images &&
-            <MyCarousel data={item.media.images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400} />
+            <MyCarousel data={item.media.playbackId ? [
+              {
+                video: item.media.playbackId
+              },
+              ...item.media.images
+            ] : item.media.images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400} />
           }
           </View>
         }

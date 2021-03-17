@@ -218,6 +218,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                     mutation: askMutation,
                     relatedGoalIds,
                     relatedTaskIds,
+                    video,
                     ...(ask && {
                       updateId: ask.id,
                       updateKey: 'askId'
