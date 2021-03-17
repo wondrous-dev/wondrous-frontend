@@ -300,6 +300,18 @@ const UserList = ({
             </Pressable>
           </View>
         }
+        {
+          list && list.length === 0 &&
+          <Paragraph style={{
+            padding: spacingUnit * 2
+          }} onPress={() => navigation.navigate('Root', {
+            screen: 'Search'
+          })}>
+            Time to explore! Go to our <Paragraph color={Blue400}>
+              search page
+            </Paragraph> to find some cool projects or users!
+          </Paragraph>
+        }
         <FlatList
         data={list}
         contentContainerStyle={listStyles.listContainer}
