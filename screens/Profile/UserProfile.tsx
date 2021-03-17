@@ -540,7 +540,7 @@ function UserProfile({
               </Pressable>
             }
             {
-              <View style={{
+             userOwned && <View style={{
                 marginLeft: spacingUnit,
               }}>
               <PrimaryButton style={{
