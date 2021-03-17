@@ -22,5 +22,6 @@ export const PublicTaskFragment = gql`
     }
     relatedAskIds
     completedAt
+    muxPlaybackId
   }
 `

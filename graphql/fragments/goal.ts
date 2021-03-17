@@ -22,6 +22,7 @@ export const PublicGoalFragment = gql`
     }
     relatedAskIds
     completedAt
+    muxPlaybackId
   }
 `
 

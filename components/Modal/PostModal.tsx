@@ -19,6 +19,7 @@ import ImageBrowser from './ImageBrowser'
 import { useNavigation } from '@react-navigation/native'
 import { useMe } from '../../components/withAuth'
 import VideoIcon from '../../assets/images/video'
+import { VideoDisplay } from '../../storybook/stories/Carousel'
 
 const FILE_PREFIX = 'tmp/post/new/'
 
@@ -273,8 +274,8 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
                       <View style={modalStyles.mediaRows}>
                         {
                           !!(video) &&
-
                           <VideoThumbnail source={video} setVideo={setVideo} video={video} errors={errors} setErrors={setErrors} filePrefix={FILE_PREFIX} videoUploading={videoUploading} setVideoUploading={setVideoUploading} />
+
                         }
                         {media.map(image => (
                           <ImageDisplay setMedia={setMedia} media={media} image={image} imagePrefix={FILE_PREFIX} />

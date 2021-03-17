@@ -26,6 +26,7 @@ import ImageBrowser from './ImageBrowser'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import Checkmark from '../../assets/images/checkmark'
 import VideoIcon from '../../assets/images/video'
+import { VideoDisplay } from '../../storybook/stories/Carousel'
 
 const FILE_PREFIX = 'tmp/task/new/'
 
@@ -50,7 +51,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
   const [media, setMedia] = useState((task && task.additionalData && task.additionalData.images) || [])
   const [cameraOpen, setCameraOpen] = useState(false)
   const [galleryOpen, setGalleryOpen] = useState(false)
-  const [video, setVideo] = useState(goal && goal.muxPlaybackId || null)
+  const [video, setVideo] = useState(task && task.muxPlaybackId || null)
   const [videoUploading, setVideoUploading] = useState(null)
   const [errors, setErrors] = useState({})
   const user = useMe()
@@ -92,7 +93,6 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
     label: '',
     value: ''
   }]
-
   const resetState = useCallback(() => {
     setTaskText('')
     setPriority(null)
@@ -412,8 +412,8 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                       <View style={modalStyles.mediaRows}>
                         {
                           !!(video) &&
-
                           <VideoThumbnail source={video} setVideo={setVideo} video={video} errors={errors} setErrors={setErrors} filePrefix={FILE_PREFIX} videoUploading={videoUploading} setVideoUploading={setVideoUploading} />
+
                         }
                         {media.map(image => (
                           <ImageDisplay setMedia={setMedia} media={media} image={image} imagePrefix={FILE_PREFIX} />

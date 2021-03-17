@@ -11,5 +11,6 @@ export const PostFragment = gql`
       link
       images
     }
+    muxPlaybackId
   }
 `

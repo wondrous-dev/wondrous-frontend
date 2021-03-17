@@ -22,6 +22,7 @@ import { SafeImage } from '../../storybook/stories/Image'
 import ImageBrowser from './ImageBrowser'
 import { useNavigation } from '@react-navigation/native'
 import VideoIcon from '../../assets/images/video'
+import { VideoDisplay } from '../../storybook/stories/Carousel'
 
 const FILE_PREFIX = 'tmp/goal/new/'
 
@@ -339,7 +340,6 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                       <View style={modalStyles.mediaRows}>
                         {
                           !!(video) &&
-
                           <VideoThumbnail source={video} setVideo={setVideo} video={video} errors={errors} setErrors={setErrors} filePrefix={FILE_PREFIX} videoUploading={videoUploading} setVideoUploading={setVideoUploading} />
                         }
                         {media.map(image => (

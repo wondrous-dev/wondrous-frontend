@@ -24,6 +24,7 @@ import { SafeImage } from '../../storybook/stories/Image'
 import ImageBrowser from './ImageBrowser'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import VideoIcon from '../../assets/images/video'
+import { VideoDisplay } from '../../storybook/stories/Carousel'
 
 const FILE_PREFIX = 'tmp/ask/new/'
 
@@ -369,7 +370,6 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                       <View style={modalStyles.mediaRows}>
                         {
                           !!(video) &&
-
                           <VideoThumbnail source={video} setVideo={setVideo} video={video} errors={errors} setErrors={setErrors} filePrefix={FILE_PREFIX} videoUploading={videoUploading} setVideoUploading={setVideoUploading} />
                         }
                         {media.map(image => (

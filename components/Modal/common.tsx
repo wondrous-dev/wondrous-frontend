@@ -6,6 +6,7 @@ import { mentionRegEx } from 'react-native-controlled-mentions'
 import Modal from 'react-native-modal'
 import * as ImagePicker from 'expo-image-picker'
 import * as VideoThumbnails from 'expo-video-thumbnails'
+import { Video } from 'expo-av'
 
 import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300, Green400 } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
@@ -19,7 +20,7 @@ import { FlexRowContentModal } from './index'
 
 import { capitalizeFirstLetter } from '../../utils/common'
 import { useNavigation } from '@react-navigation/native'
-import { MAX_VIDEO_LIMIT } from '../../constants'
+import { MAX_VIDEO_LIMIT, MUX_URL_ENDING, MUX_URL_PREFIX } from '../../constants'
 
 export const VideoThumbnail = ({ source, width, height, setVideo, video, errors, setErrors, filePrefix, videoUploading, setVideoUploading }) => {
   const [image, setImage] = useState('')
@@ -73,15 +74,35 @@ export const VideoThumbnail = ({ source, width, height, setVideo, video, errors,
         </Subheading>
         </Pressable>
       </FlexRowContentModal>
-      <Image style={{
-        ...modalStyles.mediaItem,
-        ...(width && {
-          width,
-          height
-        })
-      }} source={{
-        uri: image
-      }} />
+      {
+        video.startsWith('file://')
+        ?
+        <Image style={{
+          ...modalStyles.mediaItem,
+          ...(width && {
+            width,
+            height
+          })
+        }} source={{
+          uri: image
+        }} />
+        :
+        <Video
+        style={{
+          ...modalStyles.mediaItem,
+          ...(width && {
+            width,
+            height
+          })
+        }}
+          source={{
+            uri: `${MUX_URL_PREFIX}${video}${MUX_URL_ENDING}`,
+          }}
+          useNativeControls
+          resizeMode="contain"
+          isLooping
+      />
+      }
             <View style={{
           position: 'absolute',
           backgroundColor: Grey800,
@@ -108,7 +129,6 @@ export const pickVideo = async ({ edit, setVideo, media, setErrors, errors, file
     quality: 1,
   });
 
-  console.log(result);
   if (result)
   if (!result.cancelled) {
     if (setErrors && Number(result.duration) > MAX_VIDEO_LIMIT) {

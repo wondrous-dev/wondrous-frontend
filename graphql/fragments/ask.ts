@@ -16,5 +16,6 @@ export const PublicAskFragment = gql`
       images
       link
     }
+    muxPlaybackId
   }
 `

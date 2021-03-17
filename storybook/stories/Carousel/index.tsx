@@ -4,7 +4,7 @@ import Swiper from 'react-native-web-swiper'
 import { White, Orange, Grey800, Black } from '../../../constants/Colors'
 import { spacingUnit } from '../../../utils/common'
 import { SafeImage } from '../Image'
-import { Video, AVPlaybackStatus } from 'expo-av'
+import { Video } from 'expo-av'
 
 import { Title, Subheading, Paragraph } from '../Text'
 import { MUX_URL_ENDING, MUX_URL_PREFIX } from '../../../constants'
