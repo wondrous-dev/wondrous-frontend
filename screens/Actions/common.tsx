@@ -170,9 +170,8 @@ export const ReactionFeed = ({ type, objId, user, tab }) => {
         marginTop: spacingUnit
       }}
       data={finalData}
-      renderItem={({ item }) => renderItem({ item, navigation, screen: 'Root', params: {
+      renderItem={({ item }) => renderItem({ item, navigation, screen: 'Root', activityPage: true, params: {
         screen: tab || 'Profile',
-        activityPage: true,
         params: {
           screen: 'FeedItem',
           params: {
