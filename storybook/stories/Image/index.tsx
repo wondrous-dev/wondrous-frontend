@@ -1,20 +1,17 @@
-import { useLazyQuery, useQuery } from '@apollo/client'
-import React, { useEffect, useRef, useState } from 'react'
+import { useLazyQuery } from '@apollo/client'
+import React, { useEffect, useState } from 'react'
 import { Platform, Image, Pressable, View } from 'react-native'
 import { SvgXml } from "react-native-svg"
-import Modal from 'react-native-modal'
 import * as ImagePicker from 'expo-image-picker'
-import isEqual from 'lodash.isequal'
 import * as FileSystem from 'expo-file-system'
 
 import { GET_PREVIEW_IMAGE } from '../../../graphql/queries'
-import apollo from '../../../services/apollo'
 import { FlexRowContentModal } from '../../../components/Modal'
 import CameraIcon from '../../../assets/images/camera'
 import PictureIcon from '../../../assets/images/image'
 import { Blue500 } from '../../../constants/Colors'
 import { RegularText } from '../Text'
-import { spacingUnit, setDeepVariable, usePrevious } from '../../../utils/common'
+import { spacingUnit, setDeepVariable } from '../../../utils/common'
 import Camera from '../../../components/Camera'
 import { uploadMedia, getFilenameAndType } from '../../../utils/image'
 
@@ -27,12 +24,10 @@ interface ImageProps {
 }
 
 export const CachedImage = props => {
-  const { source: { uri }, cacheKey } = props
-  const filesystemURI = `${FileSystem.cacheDirectory}${cacheKey}`
+  const { source: { uri }, cacheKey, setCachedImage } = props
+  const filesystemURI =  `${FileSystem.cacheDirectory}${cacheKey.replace(/(^\w+:|^)\/\//, '')}`
 
   const [imgURI, setImgURI] = useState(filesystemURI)
-
-  const componentIsMounted = useRef(true)
 
   useEffect(() => {
     const loadImage = async ({ fileURI }) => {
@@ -41,16 +36,13 @@ export const CachedImage = props => {
         const metadata = await FileSystem.getInfoAsync(fileURI)
         if (!metadata.exists) {
           // download to cache
-          if (componentIsMounted.current) {
-            setImgURI(null)
-            await FileSystem.downloadAsync(
-              uri,
-              fileURI
-            )
-          }
-          if (componentIsMounted.current) {
-            setImgURI(fileURI)
-          }
+          setImgURI(null)
+          await FileSystem.downloadAsync(
+            uri,
+            fileURI
+          )
+          setImgURI(fileURI)
+          setCachedImage(fileURI)
         }
       } catch (err) {
         setImgURI(uri)
@@ -58,12 +50,7 @@ export const CachedImage = props => {
     }
 
     loadImage({ fileURI: filesystemURI })
-
-    return () => {
-      componentIsMounted.current = false
-    }
   }, [])// eslint-disable-line react-hooks/exhaustive-deps
-
   return (
     <Image
     // eslint-disable-next-line react/jsx-props-no-spreading
@@ -142,6 +129,8 @@ export const UploadImage = ({ isVisible, setModalVisible, image, setImage, saveI
               <CameraIcon color={Blue500} style={{
                 width: spacingUnit * 4,
                 height: spacingUnit * 4
+              }} onPress={() => {
+                setCameraOpen(true)
               }}/>
               <RegularText color={Blue500}>
                 Take photo
@@ -156,7 +145,7 @@ export const UploadImage = ({ isVisible, setModalVisible, image, setImage, saveI
               <PictureIcon color={Blue500} style={{
                 width: spacingUnit * 4,
                 height: spacingUnit * 4
-              }} />
+              }} onPress={pickImage}/>
               <RegularText color={Blue500}>
                 Camera roll
               </RegularText>
@@ -177,8 +166,22 @@ export function SvgImage ({ width, height, webStyle, srcElement, style }) {
   )
 }
 
+const getCacheImage = async ({ cacheKey, setCachedImage, getImage }) => {
+  const filesystemURI = `${FileSystem.cacheDirectory}${cacheKey.replace(/(^\w+:|^)\/\//, '')}`
+  try {
+    const metadata = await FileSystem.getInfoAsync(filesystemURI)
+    if (!metadata.exists) {
+      getImage()
+    } else {
+      setCachedImage(filesystemURI)
+    }
+  } catch (err) {
+    getImage()
+  }
+}
+
 export const SafeImage = ({ src, style, defaultImage, setImage }) => {
-  const { data, loading, error } = useQuery(GET_PREVIEW_IMAGE, {
+  const [getImage, { data, loading, error }] = useLazyQuery(GET_PREVIEW_IMAGE, {
     variables: {
       path: src
     },
@@ -187,26 +190,35 @@ export const SafeImage = ({ src, style, defaultImage, setImage }) => {
   if (!src && defaultImage) {
     return <Image style={style} source={defaultImage} />
   }
-
+  const [cachedImage, setCachedImage] = useState(null)
 
   useEffect(() => {
-    if (data && data.getPreviewImage && data.getPreviewImage.url) {
+    if (cachedImage) {
+      if (setImage && !(src.startsWith('https') || src.startsWith('file://'))) {
+        setImage(cachedImage)
+      }
+    } else if (data && data.getPreviewImage && data.getPreviewImage.url) {
       if (setImage && !(src.startsWith('https') || src.startsWith('file://'))) {
         setImage(data.getPreviewImage.url)
       }
     }
-  }, [data])
+    if (!cachedImage && !data) {
+      getCacheImage({ cacheKey: src, setCachedImage, getImage })
+    }
+  }, [data, cachedImage])
 
   if (src.startsWith('https') || src.startsWith('file://')) {
-    return <CachedImage cacheKey={src} style={style} key={src} source={{
+    return src.startsWith('file://') ? <Image style={style} key={src} source={{
+      uri: src
+    }} /> :
+    <CachedImage cacheKey={src} style={style} key={src} source={{
       uri: src
     }} />
-  } else if (data && data.getPreviewImage) {
-    return <CachedImage cacheKey={src} style={style} key={data.getPreviewImage.url} source={{
-      uri: data.getPreviewImage.url
-    }} />
+  } else if (cachedImage || data?.getPreviewImage?.url) {
+    return (<CachedImage cacheKey={src} style={style} key={src} setCachedImage={setCachedImage} source={{
+      uri: (cachedImage || data?.getPreviewImage?.url)
+    }} />)
   }
-
   return null
 }
 
