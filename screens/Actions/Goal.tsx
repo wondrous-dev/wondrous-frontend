@@ -14,7 +14,7 @@ import { capitalizeFirstLetter, renderMentionString, spacingUnit } from '../../u
 import { Tag } from '../../components/Tag'
 import { formatDueDate, redDate } from '../../utils/date'
 import { GET_GOAL_BY_ID } from '../../graphql/queries'
-import { MyCarousel } from '../../storybook/stories/Carousel'
+import { MyCarousel, VideoDisplay } from '../../storybook/stories/Carousel'
 import LinkIcon from '../../assets/images/link'
 
 const GoalPage = ({ navigation, route }) => {
@@ -83,6 +83,7 @@ const GoalPage = ({ navigation, route }) => {
     )
   }
   const images = goal.additionalData && goal.additionalData.images
+  const muxPlaybackId = goal.muxPlaybackId
   const asks = goal && goal.relatedAskIds
   const tasks = goal.taskCount && Number(goal.taskCount)
 
@@ -186,9 +187,17 @@ const GoalPage = ({ navigation, route }) => {
           </View>
         }
         <View style={pageStyles.imageContainer}>
+        {!images && muxPlaybackId &&
+          <VideoDisplay video={muxPlaybackId} />
+        }
         {
           images &&
-          <MyCarousel data={images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400}/>
+          <MyCarousel data={muxPlaybackId ? [
+            {
+              video: muxPlaybackId
+            },
+            ...images
+          ] : images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400} />
         }
         </View>
         <View style={[pageStyles.subContainer]}>

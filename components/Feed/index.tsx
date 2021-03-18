@@ -437,7 +437,7 @@ export const ShareModal = ({ isVisible, url, content, setModalVisible }) => {
   )
 }
 
-export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePress }) => {
+export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePress, activityPage }) => {
   const user = useMe()
   const navigation = useNavigation()
   const route = useRoute()
@@ -660,17 +660,22 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           </Paragraph>
           </View>
           }
-          {item.media && (!item.media.images) && item.media.playbackId &&
-            <VideoDisplay video={item.media.playbackId} />
-          }
           {
-            item.media && item.media.images &&
-            <MyCarousel data={item.media.playbackId ? [
+            !activityPage &&
+            <>
+              {item.media && (!item.media.images) && item.media.playbackId &&
+                <VideoDisplay video={item.media.playbackId} />
+              }
               {
-                video: item.media.playbackId
-              },
-              ...item.media.images
-            ] : item.media.images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400} />
+                item.media && item.media.images &&
+                <MyCarousel data={item.media.playbackId ? [
+                  {
+                    video: item.media.playbackId
+                  },
+                  ...item.media.images
+                ] : item.media.images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400} />
+              }
+            </>
           }
           </View>
         }
@@ -766,10 +771,10 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
   )
 }
 
-export const renderItem = ({ item, navigation, screen, params }) => {
+export const renderItem = ({ item, navigation, screen, params, activityPage }) => {
   return (
     <Pressable key={item && item.id} onPress={() => navigation.navigate(screen, params)}>
-      <FeedItem item={item} key={item.id} />
+      <FeedItem item={item} key={item.id} activityPage={activityPage} />
     </Pressable>
   )
 }

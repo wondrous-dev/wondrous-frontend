@@ -172,6 +172,7 @@ export const ReactionFeed = ({ type, objId, user, tab }) => {
       data={finalData}
       renderItem={({ item }) => renderItem({ item, navigation, screen: 'Root', params: {
         screen: tab || 'Profile',
+        activityPage: true,
         params: {
           screen: 'FeedItem',
           params: {

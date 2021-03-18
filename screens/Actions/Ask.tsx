@@ -11,7 +11,7 @@ import { UPDATE_ASK } from '../../graphql/mutations'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { renderMentionString, spacingUnit } from '../../utils/common'
 import { GET_ASK_BY_ID, GET_TASK_BY_ID, GET_GOAL_BY_ID } from '../../graphql/queries'
-import { MyCarousel } from '../../storybook/stories/Carousel'
+import { MyCarousel, VideoDisplay } from '../../storybook/stories/Carousel'
 import LinkIcon from '../../assets/images/link'
 
 const AskPage = ({ navigation, route }) => {
@@ -94,6 +94,7 @@ const AskPage = ({ navigation, route }) => {
     )
   }
   const images = ask.additionalData && ask.additionalData.images
+  const muxPlaybackId = ask.muxPlaybackId
   const goal = askGoal && askGoal.getGoalById
   const task = askTask && askTask.getTaskById
   let statusColor = Red400, statusTextColor=White, statusText='Open'
@@ -216,9 +217,17 @@ const AskPage = ({ navigation, route }) => {
           </View>
         }
         <View style={pageStyles.imageContainer}>
+        {!images && muxPlaybackId &&
+          <VideoDisplay video={muxPlaybackId} />
+        }
         {
           images &&
-          <MyCarousel data={images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400}/>
+          <MyCarousel data={muxPlaybackId ? [
+            {
+              video: muxPlaybackId
+            },
+            ...images
+          ] : images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400} />
         }
         </View>
         <ReactionFeed type={'ask'} objId={ask.id} user={user} tab={tab} />

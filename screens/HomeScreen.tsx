@@ -18,7 +18,7 @@ import { useQuery } from '@apollo/client'
 import { GET_LOGGED_IN_USER, WHOAMI } from '../graphql/queries'
 import apollo from '../services/apollo'
 import { getNotificationPressFunction } from './Notifications'
-import Rocket from '../assets/images/animat-rocket_white.gif'
+import Rocket from '../assets/images/rocket_transparent_loop.gif'
 
 const redirectUser = async (user, navigation) => {
   await apollo.writeQuery({
