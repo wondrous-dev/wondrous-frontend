@@ -692,7 +692,7 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
   const navigation = useNavigation()
 
   const defaultImage = () => {
-    if (type === 'welcome' || type === 'expiring_action_reminder' || type === 'expired_action_reminder') {
+    if (type === 'welcome' || type === 'expiring_action_reminder' || type === 'expired_action_reminder' || type === 'streak_reminder') {
       return (
         <Image source={LogoImage} style={notificationStyles.notificationImage} />
       )
