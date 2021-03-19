@@ -133,11 +133,7 @@ export const Header = ({
       {
         skip &&
         <Pressable onPress={() => {
-          navigation.navigate(skip, {
-            ...(skipParams && {
-              skipParams
-            })
-          })
+          navigation.navigate(skip, skipParams)
         }} style={{
           marginRight: spacingUnit * 2,
           marginLeft: -spacingUnit * 2

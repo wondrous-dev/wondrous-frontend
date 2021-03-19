@@ -141,8 +141,9 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
     data: followingData,
     loading: followingLoading,
     error: followingError
-  } = useQuery(GET_USER_FOLLOWING)
-
+  } = useQuery(GET_USER_FOLLOWING, {
+    fetchPolicy: 'no-cache'
+  })
   const {
     data: projectInviteData
   } = useQuery(GET_PROJECT_INVITES, {
@@ -165,6 +166,7 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
   }
 
   const projectInvites = projectInviteData && projectInviteData.getProjectInvitesForProject
+
   return (
     <Modal isVisible={isVisible}>
       <SafeAreaView style={modalStyles.fullScreenContainer}>
@@ -211,6 +213,18 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
             }}>
             <SearchBar searchString={searchString} setSearchString={setSearchString} placeholder={'Search by username'} />
             </View>
+            {
+              (!filteredData || filteredData?.length === 0) &&
+              <Paragraph style={{
+                padding: spacingUnit * 2
+              }} onPress={() => navigation.navigate('Root', {
+                screen: 'Search'
+              })}>
+                You can only invite users you follow. Go to our <Paragraph color={Blue400}>
+                  search page
+                </Paragraph> to find some cool projects or users to follow!
+              </Paragraph>
+            }
             <FlatList
               data={filteredData}
               contentContainerStyle={listStyles.listContainer}

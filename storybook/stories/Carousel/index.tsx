@@ -102,11 +102,11 @@ export class MyCarousel extends React.Component {
               this.state.entries.map(item => {
                 if (item && item.video) {
                   return (
-                    <VideoDisplay videoRef={this.videoRef} video={item.video} setState={item => this.setState(item)}  />
+                    <VideoDisplay key={item.video} videoRef={this.videoRef} video={item.video} setState={item => this.setState(item)}  />
                   )
                 }
                 if (images) {
-                  return <SafeImage src={item} style={{
+                  return <SafeImage key={item} src={item} style={{
                     flex: 1,
                     // height: 500,
                     borderRadius: 8,

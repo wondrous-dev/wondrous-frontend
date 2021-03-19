@@ -70,7 +70,15 @@ function SetupAskScreen({
       flex: 1,
       backgroundColor: White
     }}>
-      <Header rightButton={askArray && askArray.length > 0 && {
+      <Header skip='Root' skipParams={{
+        screen: 'Profile',
+        params: {
+          screen: 'StreakIntro',
+          params: {
+            projectId
+          }
+        }
+      }} rightButton={askArray && askArray.length > 0 && {
         color: Blue500,
         text: 'Continue',
         onPress: () => {
