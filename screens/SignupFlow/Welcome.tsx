@@ -15,6 +15,8 @@ import Celebration from '../../assets/images/celebrations/signupConfetti.svg'
 import { SvgImage } from '../../storybook/stories/Image'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import JustDoIt from '../../assets/images/just-do-it.jpg'
+import { useMutation } from '@apollo/client'
+import { SET_USER_SIGNUP_COMPLETE } from '../../graphql/mutations'
 
 const loginStyles = StyleSheet.create({
   container: {
@@ -58,8 +60,7 @@ function WelcomeScreen({
   navigation
 }: StackScreenProps<RootStackParamList, 'Welcome'>) {
   const user = useMe()
-  const [image, setImage] = React.useState('')
-  const [snapperOpen, setSnapperOpen] = React.useState(false)
+  const [setSignupComplete] = useMutation(SET_USER_SIGNUP_COMPLETE)
   React.useEffect(() => {
     registerForPushNotificationsAsync(user && user.id)
 
@@ -98,11 +99,19 @@ function WelcomeScreen({
               I'm ready!
             </ButtonText>
           </PrimaryButton>
-        {/* <TouchableOpacity onPress={() => navigation.navigate('Root')}>
+        <TouchableOpacity onPress={async () => {
+          await setSignupComplete()
+          navigation.navigate('Root', {
+            screen: 'Profile',
+            params: {
+              screen: 'UserProfile',
+            }
+          })
+        }}>
           <ButtonText color={Grey500} style={loginStyles.goToHome}>
-            I like a challenge - let me figure it out
+            I already got invited to a project!
           </ButtonText>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   )

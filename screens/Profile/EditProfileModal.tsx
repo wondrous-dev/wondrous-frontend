@@ -210,6 +210,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                         Fullname
                       </Paragraph>
                       <TextInput
+                          autoCapitalize = 'none'
                           onChangeText={text => setFullName(text)}
                           value={fullName}
                           placeholder={'Full Name'}
@@ -222,6 +223,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                         {user ? 'Username'  : 'Name'}
                       </Paragraph>
                       <TextInput
+                          autoCapitalize = 'none'
                           onChangeText={text => user ? setUsername(text) : setProjectName(text)}
                           value={user ? username : projectName}
                           placeholder={user ? 'Username' : 'Project name'}
@@ -318,6 +320,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                           </Paragraph>
                           <TextInput
                           multiline
+                          autoCapitalize = 'none'
                             onChangeText={text => setProjectWebsite(text)}
                             value={projectWebsite}
                             placeholder='Add website'
@@ -331,6 +334,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                             Twitter
                           </Paragraph>
                           <TextInput
+                            autoCapitalize = 'none'
                             onChangeText={text => setProjectTwitter(text)}
                             multiline
                             value={projectTwitter}
@@ -345,6 +349,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                             Instagram
                           </Paragraph>
                           <TextInput
+                            autoCapitalize = 'none'
                             onChangeText={text => setProjectInstagram(text)}
                             multiline
                             value={projectInstagram}
@@ -359,7 +364,8 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                             Linkedin
                           </Paragraph>
                           <TextInput
-                          multiline
+                            autoCapitalize = 'none'
+                            multiline
                             onChangeText={text => setProjectLinkedin(text)}
                             value={projectLinkedin}
                             placeholder='Add Linkedin'
@@ -373,7 +379,8 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                             Github
                           </Paragraph>
                           <TextInput
-                          multiline
+                            autoCapitalize = 'none'
+                            multiline
                             onChangeText={text => setProjectGithub(text)}
                             value={projectGithub}
                             placeholder='Add Github'

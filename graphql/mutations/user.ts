@@ -44,6 +44,14 @@ export const UPDATE_USER = gql`
   ${LoggedinUserFragment}
 `
 
+export const SET_USER_SIGNUP_COMPLETE = gql`
+  mutation SetUserSignupComplete {
+    setUserSignupComplete {
+      success
+    }
+  }
+`
+
 export const FOLLOW_USER = gql`
   mutation FollowUser($followingId: ID!) {
     followUser(followingId: $followingId) {

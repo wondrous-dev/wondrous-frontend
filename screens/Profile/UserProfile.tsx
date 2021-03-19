@@ -434,7 +434,7 @@ function UserProfile({
                 {/* <ProjectInfoText count={user.tasksCompleted} type='tasks completed' /> */}
               </View>
               <View style={[profileStyles.profileInfoContainer, {
-                marginTop: spacingUnit,
+                marginTop: spacingUnit * 2,
                 alignItems: 'flex-start'
               }]}>
                 <View style={{
@@ -445,7 +445,9 @@ function UserProfile({
                 }} color={Black}>
                   {user.firstName} {user.lastName}
                 </Subheading>
+                {user.username &&
                 <Paragraph color={Grey800}>@{user.username}</Paragraph>
+                }
                 </View>
                 {
                   userOwned ?
@@ -510,7 +512,7 @@ function UserProfile({
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
-                marginTop: spacingUnit
+                marginTop: spacingUnit * 2
               }}>
               {user && user.links && !isEmptyObject(user.links) && 
               <Pressable style={{

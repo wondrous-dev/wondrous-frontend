@@ -80,7 +80,6 @@ export const navigateUserOnLogin = (user, navigation) => {
         params: {
           screen: 'UserProfile',
           params: {
-            projectId: user.id,
             noGoingBack: true
           }
         }
