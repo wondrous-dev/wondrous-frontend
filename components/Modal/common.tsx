@@ -40,7 +40,8 @@ export const VideoThumbnail = ({ source, width, height, setVideo, video, errors,
   }
   useEffect(() => {
     generateThumbnail()
-  }, [])
+  }, [source])
+
   return (
     <View>
      <FlexRowContentModal 
@@ -54,7 +55,7 @@ export const VideoThumbnail = ({ source, width, height, setVideo, video, errors,
         flexDirection='column'
       >
         <Pressable onPress={() => {
-          pickVideo({ video, errors, setErrors, filePrefix, videoUploading, setVideoUploading })
+          pickVideo({ video, errors, setErrors, videoUploading, setVideoUploading })
         }} style={{
           marginBottom: spacingUnit * 3,
           alignSelf: 'center',
@@ -115,7 +116,7 @@ export const VideoThumbnail = ({ source, width, height, setVideo, video, errors,
       </View>
   )
 }
-export const pickVideo = async ({ edit, setVideo, media, setErrors, errors, filePrefix, setVideoUploading, setVideoThumbnail }) => {
+export const pickVideo = async ({ setVideo, setErrors, setVideoUploading }) => {
   if (Platform.OS !== 'web') {
     const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
     if (status !== 'granted') {
@@ -141,11 +142,11 @@ export const pickVideo = async ({ edit, setVideo, media, setErrors, errors, file
         fileType,
         filename
       } = getFilenameAndType(result.uri)
-      const newFileName = filePrefix ? `${filePrefix}${filename}` : filename
+      const newFileName = `video/${filename}`
       setVideoUploading(true)
       await uploadVideo({ filename: newFileName, localUrl: result.uri, fileType })
       setVideoUploading(false)
-
+      console.log('result picking', result.uri)
       setVideo(result.uri)
     }
   }

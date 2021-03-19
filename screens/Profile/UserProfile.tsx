@@ -550,7 +550,7 @@ function UserProfile({
                 marginLeft: spacingUnit
               }} onPress={() => setContactsModal(true)}>
                 <Paragraph color={White} >
-                  Invite Friends
+                  Invite friends
                 </Paragraph>
               </PrimaryButton>
               </View>

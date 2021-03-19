@@ -4,9 +4,7 @@ import * as ImagePicker from 'expo-image-picker'
 import { Camera } from 'expo-camera'
 import * as FileSystem from 'expo-file-system'
 
-import apollo from '../../services/apollo'
-import { GET_PRESIGNED_IMAGE_URL } from '../../graphql/queries/media'
-import { uploadMedia, getFilenameAndType } from '../../utils/image'
+import { uploadMedia, getFilenameAndType, uploadVideo } from '../../utils/image'
 import { setDeepVariable } from '../../utils/common'
 import { MAX_VIDEO_LIMIT } from '../../constants'
 
@@ -73,18 +71,24 @@ export default function Snapper ({ setSnapperOpen, snapperOpen, setImage, setMod
               fileType,
               filename
             } = getFilenameAndType(result.uri)
-            const mediaUrl = filePrefix + filename
+            const isVideo = result.type === 'video'
+            const isImage = result.type === 'image'
+            const mediaUrl = isVideo ? `video/${filename}` : filePrefix + filename
             setSnapperOpen(false)
             if (upload) {
-              if (setVideoUploading) {
-                setVideoUploading(true)
-              }
-              await uploadMedia({ filename: mediaUrl, localUrl: result.uri, fileType })
-              if (setVideoUploading) {
-                setVideoUploading(false)
+              if (isVideo) {
+                if (setVideoUploading) {
+                  setVideoUploading(true)
+                }
+                await uploadVideo({ filename: mediaUrl, localUrl: result.uri, fileType })
+                if (setVideoUploading) {
+                  setVideoUploading(false)
+                }
+              } else if (isImage) {
+                await uploadMedia({ filename: mediaUrl, localUrl: result.uri, fileType })
               }
             }
-            if (result.type === 'video') {
+            if (isVideo) {
               setVideo(result.uri)
             } else if (result.type === 'image') {
               setImage(result.uri)

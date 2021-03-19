@@ -18,6 +18,8 @@ import { UNFOLLOW_USER, FOLLOW_USER } from '../../graphql/mutations'
 import {
   ProjectItem
 } from './ProjectList'
+import { ContactsModal } from './ContactsModal'
+import { PrimaryButton } from '../../storybook/stories/Button'
 
 
 const UserItem = ({ item, itemPressed, initialFollowing, existingUserFollowing }) => {
@@ -135,7 +137,7 @@ const UserList = ({
   navigation,
   route
 }) => {
-
+  const [contactsModal, setContactsModal] = useState(false)
   const user = useMe()
   const {
     followers,
@@ -256,13 +258,22 @@ const UserList = ({
   } else {
     title = following ? 'Following' : 'Followers'
   }
+
+  const userOwned = user && user.id === userId
+
   return (
     <SafeAreaView style={{
       flex: 1,
       backgroundColor: White
     }}>
+      {
+        userOwned &&
+        <ContactsModal isVisible={contactsModal} setModalVisible={setContactsModal} />
+      }
       <Header title={title} />
-      <View>
+      <View style={{
+        flex: 1
+      }}>
         {
           following &&
           <View style={{
@@ -301,20 +312,49 @@ const UserList = ({
           </View>
         }
         {
-          list && list.length === 0 &&
-          <Paragraph style={{
-            padding: spacingUnit * 2
-          }} onPress={() => navigation.navigate('Root', {
-            screen: 'Search'
-          })}>
-            Time to explore! Go to our <Paragraph color={Blue400}>
-              search page
-            </Paragraph> to find some cool projects or users!
-          </Paragraph>
+
+          list && list.length === 0 && 
+
+          <>
+          {
+            userOwned ?
+            <>
+            <Paragraph style={{
+              padding: spacingUnit * 2
+            }} onPress={() => navigation.navigate('Root', {
+              screen: 'Search'
+            })}>
+              Time to explore! Go to our <Paragraph color={Blue400}>
+                search page
+              </Paragraph> to find some cool projects or users! Or you can invite some friends :)
+            </Paragraph>
+              <PrimaryButton style={{
+                  width: spacingUnit * 19,
+                  paddingTop: 0,
+                  paddingBottom: 0,
+                  marginLeft: spacingUnit,
+                  marginTop: spacingUnit * 2,
+                  alignSelf: 'center'
+                }} onPress={() => setContactsModal(true)}>
+                  <Paragraph color={White} >
+                    Invite friends
+                  </Paragraph>
+              </PrimaryButton>
+            </>
+            :
+            <Paragraph style={{
+              padding: spacingUnit * 2
+            }}>
+              No users here yet.
+            </Paragraph>
+          }
+          </>
         }
         <FlatList
         data={list}
-        contentContainerStyle={listStyles.listContainer}
+        contentContainerStyle={{
+          ...listStyles.listContainer
+        }}
         refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }

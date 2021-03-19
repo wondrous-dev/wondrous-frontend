@@ -12,6 +12,14 @@ export const GET_REVIEW_STATS = gql`
   }
 `
 
+export const GET_LATEST_USER_REVIEW = gql`
+  query GetLatestReviewFromUser($userId: ID!) {
+    getLatestReviewFromUser(userId: $userId) {
+      ...PublicReview
+    }
+  }
+  ${PublicReviewFragment}
+`
 export const GET_USER_REVIEWS = gql`
   query GetReviewsFromUser($userId: ID, $limit: Int, $offset: Int) {
     getReviewsFromUser(userId: $userId, limit: $limit, offset: $offset) {

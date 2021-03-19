@@ -2,12 +2,12 @@
 import * as FileSystem from 'expo-file-system'
 
 import apollo from '../services/apollo'
-import { GET_PRESIGNED_IMAGE_URL } from '../graphql/queries/media'
+import { GET_PRESIGNED_IMAGE_URL, GET_PRESIGNED_VIDEO_URL } from '../graphql/queries/media'
 
 export const uploadVideo = async ({ filename, localUrl, fileType }) => {
   try {
     const apolloResult = await apollo.query({
-      query: GET_PRESIGNED_IMAGE_URL,
+      query: GET_PRESIGNED_VIDEO_URL,
       variables: {
         filename
       }

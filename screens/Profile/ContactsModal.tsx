@@ -14,6 +14,7 @@ import { RegularText, Subheading } from '../../storybook/stories/Text'
 import { SafeImage } from '../../storybook/stories/Image'
 import * as SMS from 'expo-sms'
 import { TESTFLIGHT_BETA_LINK } from '../../constants/index'
+import { useMe } from '../../components/withAuth'
 
 const checkAndRequestsPermission = async ({ setPermissions }) => {
     const hasPermissions = await Contacts.getPermissionsAsync()
@@ -32,7 +33,8 @@ const getContacts = async ({ setContacts }) => {
 }
 
 const ContactItem = ({ item, setModalVisible }) => {
-  const message = `You've been invited to the Wonder beta! We're here to help your passion projects flourish. Join us at ${TESTFLIGHT_BETA_LINK}!`
+  const user = useMe()
+  const message = `You've been invited to the Wonder beta by @${user && user.username}! We're here to help your passion projects flourish. Join us at ${TESTFLIGHT_BETA_LINK}!`
   return (
     <TouchableOpacity onPress={() => {
       const phoneNumbers = item.phoneNumbers?.map(number => number.digits)

@@ -372,7 +372,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                         ...errors,
                         mediaError: null
                       })
-                      pickVideo({ setVideo, video, errors, setErrors, filePrefix: FILE_PREFIX, videoUploading, setVideoUploading })
+                      pickVideo({ setVideo, video, errors, setErrors, videoUploading, setVideoUploading })
                     }} />
                   </View>
                   {

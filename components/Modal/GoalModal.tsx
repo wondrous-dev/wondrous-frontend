@@ -297,7 +297,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                         ...errors,
                         mediaError: null
                       })
-                      pickVideo({ setVideo, video, errors, setErrors, filePrefix: FILE_PREFIX, videoUploading, setVideoUploading })
+                      pickVideo({ setVideo, video, errors, setErrors, videoUploading, setVideoUploading })
                     }} />
                   </View>
                   {
