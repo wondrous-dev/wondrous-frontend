@@ -89,7 +89,7 @@ const UserItem = ({ item, itemPressed, initialFollowing, existingUserFollowing }
       }}>
         <Subheading style={{
           fontSize: 16
-        }} color={Black}>{item.firstName + ' ' +  item.lastName}</Subheading>
+        }} color={Black}>{(item.firstName || '') + ' ' +  (item.lastName || '')}</Subheading>
         {item.username &&
         <RegularText color={Grey800}>
           @{item.username}

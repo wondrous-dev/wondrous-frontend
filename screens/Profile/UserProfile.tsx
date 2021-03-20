@@ -146,7 +146,8 @@ function UserProfile({
   } = useQuery(GET_USER_ADDITIONAL_INFO, {
     variables: {
       userId: finalUserId
-    }
+    },
+    fetchPolicy: 'network-only'
   })
 
   const {
@@ -443,7 +444,7 @@ function UserProfile({
                 <Subheading style={{
                   fontSize: 18
                 }} color={Black}>
-                  {user.firstName} {user.lastName}
+                  {user.firstName || ''} {user.lastName || ''}
                 </Subheading>
                 {user.username &&
                 <Paragraph color={Grey800}>@{user.username}</Paragraph>

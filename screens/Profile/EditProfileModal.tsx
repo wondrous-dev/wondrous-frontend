@@ -21,7 +21,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
   const initialProjectName = project && project.name
   const initialLink = user && user.link
   const initialBio = (user && user.bio) || (project && project.description)
-  const initialProfilePicture = (user && (user.thumbnailPicture || user.profilePicture)) || (project && (project.thumbnailPicture || project.profilePicture))
+  const initialProfilePicture = (user?.thumbnailPicture || user?.profilePicture) || (project?.thumbnailPicture || project?.profilePicture)
   const initialProjectWebsite = (project && project.links && project.links.website) || ''
   const initialProjectTwitter = (project && project.links && project.links.twitter) || ''
   const initialProjectInstagram = (project && project.links && project.links.instagram) || ''
@@ -50,6 +50,11 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
     setProfilePicture(initialProfilePicture)
     setChangePhoto(false)
   }, [])
+  useEffect(() => {
+    if (initialProfilePicture) {
+      setProfilePicture(initialProfilePicture)
+    }
+  }, [initialProfilePicture]) 
   return (
     <Modal isVisible={isVisible}>
       {

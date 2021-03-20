@@ -92,7 +92,7 @@ const AutocompleteListItem = ({ user, autocompleteFill }) => {
         }
         <View>
           <Text style={{color: Black, marginBottom: 4, fontWeight: 'bold'}}>
-            {user.firstName} {user.lastName}
+            {user.firstName || ''} {user.lastName || ''}
           </Text>
           <Text style={{ color: Grey200, fontSize: 14 }}>
             @{user.username}

@@ -100,7 +100,7 @@ const CollaboratorItem = ({ item, project, initialInvited, projectInvites, setMo
       }}>
         <Subheading style={{
           fontSize: 16
-        }} color={Black}>{item.firstName + ' ' +  item.lastName}</Subheading>
+        }} color={Black}>{(item.firstName || '') + ' ' +  (item.lastName || '')}</Subheading>
         {item.username &&
         <RegularText color={Grey800}>
           @{item.username}

@@ -116,7 +116,7 @@ const SearchResult = ({ result, project, user }) => {
         flex: 1
       }}>
         <Paragraph style={{color: Black, fontWeight: 'bold', fontFamily: 'Rubik SemiBold'}}>
-          {user ? `${firstName} ${lastName}` : name}
+          {user ? `${firstName || ''} ${lastName || ''}` : name}
         </Paragraph>
         {
           user &&
