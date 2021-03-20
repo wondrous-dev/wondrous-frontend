@@ -151,34 +151,34 @@ const UserList = ({
     feedItemId
   } = route.params
 
-  const {
+  const [getProjectFollowers, {
     data: projectFollowerData,
     loading: projectFollowerLoading,
     error: projectFollowerError
-  } = useQuery(GET_PROJECT_FOLLOWERS, {
+  }] = useLazyQuery(GET_PROJECT_FOLLOWERS, {
     fetchPolicy: 'network-only',
     variables: {
       projectId
     }
   })
 
-  const {
+  const [getUserFollowers, {
     data: followerData,
     loading: followerLoading,
     error: followerError,
     refetch: refetchUserFollowers
-  } = useQuery(GET_USER_FOLLOWERS, {
+  }] = useLazyQuery(GET_USER_FOLLOWERS, {
     fetchPolicy: 'network-only',
     variables: {
       userId
     }
   })
-  const {
+  const [getUserFollowing, {
     data: followingData,
     loading: followingLoading,
     error: followingError,
     refetch: refetchUserFollowing
-  } = useQuery(GET_USER_FOLLOWING, {
+  }] = useLazyQuery(GET_USER_FOLLOWING, {
     fetchPolicy: 'network-only',
     variables: {
       userId
@@ -207,15 +207,24 @@ const UserList = ({
         }
       })
     }
-  }, [feedItemId, feedCommentId])
+    if (projectId) {
+      getProjectFollowers()
+    } else if (userId) {
+      if (following) {
+        getUserFollowing()
+      } else if (followers) {
+        getUserFollowers()
+      }
+    }
+  }, [feedItemId, feedCommentId, userId, projectId])
 
   const [refreshing, setRefreshing] = useState(false)
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     if (followers) {
-      refetchUserFollowers()
+      getUserFollowers()
     } else if (following) {
-      refetchUserFollowing()
+      getUserFollowing()
     }
     wait(2000).then(() => setRefreshing(false))
   }, [])
