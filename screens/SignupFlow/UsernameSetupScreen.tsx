@@ -199,7 +199,7 @@ function UsernameSetupScreen({
           <Neutral />
         </ProgressCircle>
         <View style={usernameSetupStyles.stepContainer}>
-          <Text style={usernameSetupStyles.stepCount}>step 1/3</Text>
+          <Text style={usernameSetupStyles.stepCount}>step 1/4</Text>
         </View>
       </View>
         {

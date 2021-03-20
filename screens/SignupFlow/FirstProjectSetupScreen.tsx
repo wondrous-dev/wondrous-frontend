@@ -18,6 +18,7 @@ import { CREATE_PROJECT, UPDATE_PROJECT } from '../../graphql/mutations/project'
 import { GET_PROJECT_BY_ID } from '../../graphql/queries/project'
 import apollo from '../../services/apollo'
 import { updateUsageProgress } from '../../utils/apollo';
+import { SET_USER_SIGNUP_COMPLETE } from '../../graphql/mutations';
 
 const FirstProjectSetupContext = createContext(null)
 
@@ -52,6 +53,12 @@ const firstProjectSetupStyles = StyleSheet.create({
         alignSelf: 'center',
         marginBottom: spacingUnit * 3
     },
+    goToHome: {
+        textDecorationLine: 'underline',
+        fontFamily: 'Rubik Light',
+        alignSelf: 'center',
+        marginTop: spacingUnit * 2
+      }
 })
 
 const DismissKeyboard = ({ children }) => (
@@ -225,8 +232,9 @@ function FirstProjectSetupScreen({
 }: StackScreenProps<RootStackParamList, 'FirstProjectSetup'>) {
     const user = useMe()
     const [error, setError] = useState(null)
+    const [setSignupComplete] = useMutation(SET_USER_SIGNUP_COMPLETE)
     let setup = false
-    setup = route && route.params && route.params.setup
+    setup = route?.params?.setup
     useEffect(() => {
         if (user && user.usageProgress && user.usageProgress.projectCreated && setup) {
             navigation.navigate('ProjectSetupCategory', {
@@ -274,6 +282,22 @@ function FirstProjectSetupScreen({
                         setError
                     }}>
                     <CreateProjectInput navigation={navigation} setup={setup} />
+                    {
+                        setup &&
+                        <TouchableOpacity onPress={async () => {
+                            await setSignupComplete()
+                            navigation.navigate('Root', {
+                              screen: 'Profile',
+                              params: {
+                                screen: 'UserProfile',
+                              }
+                            })
+                          }}>
+                            <ButtonText color={Grey500} style={firstProjectSetupStyles.goToHome}>
+                              I already got invited to a project!
+                            </ButtonText>
+                          </TouchableOpacity>
+                    }
                     </FirstProjectSetupContext.Provider>
                 </View>
             </DismissKeyboard>

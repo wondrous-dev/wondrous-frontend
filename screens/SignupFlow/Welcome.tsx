@@ -49,18 +49,12 @@ const loginStyles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: spacingUnit * 2
   },
-  goToHome: {
-    textDecorationLine: 'underline',
-    fontFamily: 'Rubik Light',
-    alignSelf: 'center'
-  }
 })
 
 function WelcomeScreen({
   navigation
 }: StackScreenProps<RootStackParamList, 'Welcome'>) {
   const user = useMe()
-  const [setSignupComplete] = useMutation(SET_USER_SIGNUP_COMPLETE)
   React.useEffect(() => {
     registerForPushNotificationsAsync(user && user.id)
 
@@ -99,19 +93,6 @@ function WelcomeScreen({
               I'm ready!
             </ButtonText>
           </PrimaryButton>
-        <TouchableOpacity onPress={async () => {
-          await setSignupComplete()
-          navigation.navigate('Root', {
-            screen: 'Profile',
-            params: {
-              screen: 'UserProfile',
-            }
-          })
-        }}>
-          <ButtonText color={Grey500} style={loginStyles.goToHome}>
-            I already got invited to a project!
-          </ButtonText>
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
   )
