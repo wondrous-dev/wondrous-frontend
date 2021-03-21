@@ -203,7 +203,7 @@ const GoalPage = ({ navigation, route }) => {
         <View style={[pageStyles.subContainer]}>
         {
           asks &&
-          <Pressable onPress={() => navigation.navigate('Root', {
+          <Pressable onPress={() => navigation.push('Root', {
             screen: tab || 'Profile',
             params: {
               screen: 'ActionList',
@@ -229,7 +229,7 @@ const GoalPage = ({ navigation, route }) => {
         }
         {
           tasks !== 0 &&
-          <Pressable onPress={() => navigation.navigate('Root', {
+          <Pressable onPress={() => navigation.push('Root', {
             screen: tab || 'Profile',
             params: {
               screen: 'ActionList',

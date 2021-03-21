@@ -140,7 +140,7 @@ const ReviewPage = ({ navigation, route }) => {
                     })
                   }}>
                     <View style={reviewStyles.row}>
-                    <Pressable onPress={() => navigation.navigate('Root', {
+                    <Pressable onPress={() => navigation.push('Root', {
                         screen: route && route.params && route.params.tab || 'Profile',
                         params: {
                           screen: 'UserProfile',
@@ -160,7 +160,7 @@ const ReviewPage = ({ navigation, route }) => {
                           fontFamily: 'Rubik SemiBold',
                           marginRight: spacingUnit * 0.5
                         }} color={Black}
-                        onPress={() => navigation.navigate('Root', {
+                        onPress={() => navigation.push('Root', {
                           screen: route && route.params && route.params.tab || 'Profile',
                           params: {
                             screen: 'UserProfile',

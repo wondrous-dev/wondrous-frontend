@@ -138,28 +138,29 @@ export default function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
     // tabBar={props => <TabBar {...props} />}
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName
-          if (route.name === 'Dashboard') {
-            return <DashboardIcon iconColor={focused ? Blue400 : Grey50} />
-          } else if (route.name === 'Search') {
-            return <SearchIcon iconColor={focused ? Blue400 : Grey50} />
-           } else if (route.name === 'Add') {
-            return ( <AddIcon
-              style={{
-                width: spacingUnit * 10,
-                height: spacingUnit * 10,
-                marginTop: spacingUnit * 2.25
-              }}
-            />)
-           } else if (route.name === 'Notifications') {
-             return <NotificationIcon iconColor={focused ? Blue400 : Grey50} />
-           } else if (route.name === 'Profile') {
-             return <ProfileIcon iconColor={focused ? Blue400 : Grey50} />
-           }
-        }
-      })}
+    // lazy={false}
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName
+        if (route.name === 'Dashboard') {
+          return <DashboardIcon iconColor={focused ? Blue400 : Grey50} />
+        } else if (route.name === 'Search') {
+          return <SearchIcon iconColor={focused ? Blue400 : Grey50} />
+          } else if (route.name === 'Add') {
+          return ( <AddIcon
+            style={{
+              width: spacingUnit * 10,
+              height: spacingUnit * 10,
+              marginTop: spacingUnit * 2.25
+            }}
+          />)
+          } else if (route.name === 'Notifications') {
+            return <NotificationIcon iconColor={focused ? Blue400 : Grey50} />
+          } else if (route.name === 'Profile') {
+            return <ProfileIcon iconColor={focused ? Blue400 : Grey50} />
+          }
+      }
+    })}
       tabBarOptions={{
         showLabel: false
       }}

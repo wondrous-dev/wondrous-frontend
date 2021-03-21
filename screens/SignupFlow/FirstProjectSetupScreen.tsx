@@ -286,7 +286,7 @@ function FirstProjectSetupScreen({
                         setup &&
                         <TouchableOpacity onPress={async () => {
                             await setSignupComplete()
-                            navigation.navigate('Root', {
+                            navigation.push('Root', {
                               screen: 'Profile',
                               params: {
                                 screen: 'UserProfile',

@@ -65,7 +65,7 @@ const SearchResult = ({ result, project, user }) => {
   return (
     <Pressable onPress={() => {
       if (project) {
-        navigation.navigate('Root', {
+        navigation.push('Root', {
           screen: 'Search',
           params: {
             screen: 'ProjectProfile',
@@ -75,7 +75,7 @@ const SearchResult = ({ result, project, user }) => {
           }
         })
       } else if (user) {
-        navigation.navigate('Root', {
+        navigation.push('Root', {
           screen: 'Search',
           params: {
             screen: 'UserProfile',
@@ -152,7 +152,7 @@ const ProjectDisplay = ({ item }) => {
       paddingLeft: spacingUnit * 2,
       paddingRight: spacingUnit * 2,
       marginBottom: spacingUnit * 2.5
-    }} onPress={() => navigation.navigate('Root', {
+    }} onPress={() => navigation.push('Root', {
       screen: 'Search',
       params: {
         screen: 'ProjectProfile',

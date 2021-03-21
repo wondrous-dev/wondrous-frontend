@@ -82,7 +82,7 @@ function SetupAskScreen({
         color: Blue500,
         text: 'Continue',
         onPress: () => {
-          navigation.navigate('Root', {
+          navigation.push('Root', {
             screen: 'Profile',
             params: {
               screen: 'StreakIntro',

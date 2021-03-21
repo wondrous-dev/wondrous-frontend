@@ -127,7 +127,7 @@ const FeedString = ({ item, standAlone }) => {
       <View style={{
         paddingRight: spacingUnit * 3
       }}>
-          <Paragraph onPress={() => navigation.navigate('Root', {
+          <Paragraph onPress={() => navigation.push('Root', {
             screen: tab || 'Profile',
             params: {
               screen: 'ProjectProfile',
@@ -168,7 +168,7 @@ const FeedString = ({ item, standAlone }) => {
         fontSize: standAlone ? 18 : 16,
         }} onPress={() => {
           if (!standAlone) {
-            navigation.navigate('Root', {
+            navigation.push('Root', {
               screen: tab || 'Profile',
               params: {
                 screen: 'ProfileItem',
@@ -182,7 +182,7 @@ const FeedString = ({ item, standAlone }) => {
             })
           } else {
             if (item.objectType === 'goal' && standAlone) {
-              navigation.navigate('Root', {
+              navigation.push('Root', {
                 screen: tab || 'Profile',
                 params: {
                   screen: 'GoalPage',
@@ -192,7 +192,7 @@ const FeedString = ({ item, standAlone }) => {
                 }
               })
             } else if (item.objectType === 'task' && standAlone) {
-              navigation.navigate('Root', {
+              navigation.push('Root', {
                 screen: tab || 'Profile',
                 params: {
                   screen: 'TaskPage',
@@ -218,7 +218,7 @@ const FeedString = ({ item, standAlone }) => {
          fontSize: standAlone ? 18 : 16,
           }} onPress={() => {
             if (!standAlone) {
-              navigation.navigate('Root', {
+              navigation.push('Root', {
                 screen: route && route.params && route.params.tab || 'Profile',
                 params: {
                   screen: 'ProfileItem',
@@ -232,7 +232,7 @@ const FeedString = ({ item, standAlone }) => {
               })
             } else {
               if (item.objectType === 'ask') {
-                navigation.navigate('Root', {
+                navigation.push('Root', {
                   screen: route && route.params && route.params.tab || 'Profile',
                   params: {
                     screen: 'AskPage',
@@ -272,7 +272,7 @@ const getProjectString = (item) => {
         fontSize: 16,
         fontFamily: 'Rubik SemiBold',
         textDecorationLine: 'underline'
-      }} onPress={() => navigation.navigate('Root', {
+      }} onPress={() => navigation.push('Root', {
           screen: route && route.params && route.params.tab || 'Profile',
           params: {
             screen: 'ProjectProfile',
@@ -454,7 +454,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
     if (standAlone || comment) {
       onCommentPress(`@[${item.actorUsername}](${item.userId})`)
     } else {
-      navigation.navigate('Root', {
+      navigation.push('Root', {
         screen: 'Dashboard',
         params: {
           screen: 'FeedItem',
@@ -577,7 +577,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
     <ShareModal isVisible={isModalVisible} url={SHARE_URL} content={CONTENT} setModalVisible={setModalVisible} />
     <View style={feedStyles.feedItemContainer}>
       <View style={feedStyles.feedItemName}>
-        <Pressable onPress={() => navigation.navigate('Root', {
+        <Pressable onPress={() => navigation.push('Root', {
           screen: route && route.params && route.params.tab || 'Profile',
           params: {
             screen: 'UserProfile',
@@ -598,18 +598,32 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           }} style={{
             fontFamily: 'Rubik SemiBold'
           }} color={Black}
-          onPress={() => navigation.navigate('Root', {
-            screen: route?.params?.tab || 'Profile',
-            params: {
-              screen: 'ProfileItem',
-              params: {
-                item,
-                liked: false,
-                comment: true,
-                standAlone: true
-              }
+          onPress={() => {
+            if (standAlone || comment) {
+              navigation.push('Root', {
+                screen: route && route.params && route.params.tab || 'Profile',
+                params: {
+                  screen: 'UserProfile',
+                  params: {
+                    userId: item.userId
+                  }
+                }
+              })
+            } else {
+              navigation.push('Root', {
+                screen: route?.params?.tab || 'Profile',
+                params: {
+                  screen: 'ProfileItem',
+                  params: {
+                    item,
+                    liked: false,
+                    comment: true,
+                    standAlone: true
+                  }
+                }
+              })
             }
-          })}         
+          }}         
           >{item.actorFirstName} {item.actorLastName}{` `}
                     {!comment && !(item.objectType === 'post') &&
             <Paragraph color={Grey200}>
@@ -700,7 +714,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           </Pressable>
           <Pressable onPress={() => {
             if (comment) {
-              navigation.navigate('Root', {
+              navigation.push('Root', {
                 screen: route && route.params && route.params.tab || 'Profile',
                 params: {
                   screen: 'UserList',
@@ -748,7 +762,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
         {
           Number(reactionCount) > 0 &&
           <View>
-            <Pressable onPress={() => navigation.navigate('Root', {
+            <Pressable onPress={() => navigation.push('Root', {
               screen: route && route.params && route.params.tab || 'Profile' || 'Profile',
               params: {
                 screen: 'UserList',
@@ -895,7 +909,7 @@ export const HomeFeed = () => {
       filteredData.length === 0 && status === 'user' &&
       <Paragraph style={{
         padding: spacingUnit * 2
-      }} onPress={() => navigation.navigate('Root', {
+      }} onPress={() => navigation.push('Root', {
         screen: 'Search'
       })}>
         No results - go to our <Paragraph color={Blue400}>

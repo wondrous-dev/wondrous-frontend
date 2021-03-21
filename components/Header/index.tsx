@@ -98,7 +98,7 @@ export const Header = ({
       borderBottomColor: Grey300,
     }}>
       <Pressable onPress={() => {
-        navigation.goBack()
+        navigation.pop()
       }} style={{
         width: 50,
         marginRight: -50

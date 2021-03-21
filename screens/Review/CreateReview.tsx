@@ -159,7 +159,7 @@ const CreateReview = ({ navigation, route }) => {
                       }
                     }
                   })
-                  navigation.navigate('Root', {
+                  navigation.push('Root', {
                     screen: tab || 'Profile',
                     params: {
                       screen: 'HouseKeeping'

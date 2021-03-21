@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
 export const ReviewCard = ({ review, tab }) => {
   const navigation = useNavigation()
   return (
-    <Pressable onPress={() => navigation.navigate('Root', {
+    <Pressable onPress={() => navigation.push('Root', {
       screen: tab || 'Profile',
       params: {
         screen: 'ReviewPage',

@@ -336,7 +336,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
             userOwned &&
             <PrimaryButton onPress={() => {
               if (item === 'start') {
-                navigation.navigate('Root', {
+                navigation.push('Root', {
                   screen: tab || 'Profile',
                   params: {
                     screen: 'WorkflowWelcome',
@@ -346,7 +346,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
                   }
                 })
               } else if (item === 'none') {
-                navigation.navigate('Root', {
+                navigation.push('Root', {
                   screen: 'Add'
                 })
               }
@@ -379,7 +379,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
             userOwned &&
             <PrimaryButton onPress={() => {
               if (item === 'start') {
-                navigation.navigate('Root', {
+                navigation.push('Root', {
                   screen: tab || 'Profile',
                   params: {
                     screen: 'WorkflowWelcome',
@@ -389,7 +389,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
                   }
                 })
               } else if (item === 'none') {
-                navigation.navigate('Root', {
+                navigation.push('Root', {
                   screen: 'Add'
                 })
               }

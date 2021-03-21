@@ -27,7 +27,7 @@ const IdChecker = ({ navigation, route }) => {
   const [error, setError] = useState('')
   useEffect(() => {
     if (projectData && projectData.getProjectById) {
-      navigation.navigate('Root', {
+      navigation.push('Root', {
         screen: tab || 'Profile',
         params: {
           screen:'ProjectProfile',
@@ -38,7 +38,7 @@ const IdChecker = ({ navigation, route }) => {
         }
       })
     } else if (userData && userData.getUser) {
-      navigation.navigate('Root', {
+      navigation.push('Root', {
         screen: tab || 'Profile',
         params: {
           screen:'OtherUserProfile',

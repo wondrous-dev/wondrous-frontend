@@ -70,12 +70,12 @@ export const insertComponentsIntoText = (
 export const navigateUserOnLogin = (user, navigation) => {
   if (user && user.usageProgress && (user.usageProgress.signupCompleted || user.usageProgress.askCreated)) {
     if (user.usageProgress.askCreated) {
-      navigation.navigate('Root', {
+      navigation.push('Root', {
         screen: 'Dashboard'
       })
     } else {
 
-      navigation.navigate('Root', {
+      navigation.push('Root', {
         screen: 'Profile',
         params: {
           screen: 'UserProfile',
@@ -201,7 +201,7 @@ export const renderMentionString = ({ content, textStyle, navigation, simple, ta
               ...textStyle
             }}
             onPress={() => {
-              navigation.navigate('Root', {
+              navigation.push('Root', {
                 screen: tab || 'Profile',
                 params: {
                   screen: trigger === '@' ? 'OtherUserProfile' : 'ProjectProfile',

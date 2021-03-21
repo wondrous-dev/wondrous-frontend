@@ -391,7 +391,7 @@ function UserProfile({
                   <ProfilePlaceholder projectOwnedByUser={userOwned} user={true} />
                 }
                 </View>
-                <Pressable onPress={() => navigation.navigate('Root', {
+                <Pressable onPress={() => navigation.push('Root', {
                   screen: tab || 'Profile',
                   params: {
                     screen: 'ProjectList',
@@ -406,7 +406,7 @@ function UserProfile({
                   marginLeft: spacingUnit * 4
                 }} count={additionalInfo && additionalInfo.projectCount} type={additionalInfo && additionalInfo.projectCount === 1 ? 'project' : 'projects'} />
                 </Pressable>
-                <Pressable onPress={() => navigation.navigate('Root', {
+                <Pressable onPress={() => navigation.push('Root', {
                   screen: tab || 'Profile',
                   params: {
                     screen: 'UserList',
@@ -420,7 +420,7 @@ function UserProfile({
                   marginRight: spacingUnit * 4
                 }} count={additionalInfo && additionalInfo.followerCount} type={additionalInfo && additionalInfo.followerCount === 1 ? 'follower': 'followers'} />
                 </Pressable>
-                <Pressable onPress={() => navigation.navigate('Root', {
+                <Pressable onPress={() => navigation.push('Root', {
                   screen: tab || 'Profile',
                   params: {
                     screen: 'UserList',
@@ -521,7 +521,7 @@ function UserProfile({
                 flexDirection: 'row',
                 alignItems: 'center',
               }} onPress={() => {
-                navigation.navigate('Root', {
+                navigation.push('Root', {
                   screen: tab || 'Profile',
                   params: {
                     screen: 'Links',

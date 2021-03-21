@@ -74,7 +74,7 @@ function WorkflowWelcomeScreen({
       }} onPress={() => {
         const usageProgress = user && user.usageProgress
         if (usageProgress && !usageProgress.goalCreated) {
-          navigation.navigate('Root', {
+          navigation.push('Root', {
             screen: 'Profile',
             params: {
               screen: 'SetupGoal',
@@ -84,7 +84,7 @@ function WorkflowWelcomeScreen({
             }
           })
         } else if (usageProgress && usageProgress.goalCreated) {
-          navigation.navigate('Root', {
+          navigation.push('Root', {
             screen: 'Profile',
             params: {
               screen: 'SetupTask',
@@ -94,7 +94,7 @@ function WorkflowWelcomeScreen({
             }
           })
         } else if (usageProgress && usageProgress.taskCreated) {
-          navigation.navigate('Root', {
+          navigation.push('Root', {
             screen: 'Profile',
             params: {
               screen: 'SetupAsk',

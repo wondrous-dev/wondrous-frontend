@@ -215,7 +215,7 @@ function ProjectSetupCategoryScreen({
           projectId
         })
       } else {
-        navigation.navigate('Root', {
+        navigation.push('Root', {
           screen: 'Profile',
           params: {
             screen: 'ProjectProfile',
@@ -295,7 +295,7 @@ function ProjectSetupCategoryScreen({
                     setup
                   })
                 } else {
-                  navigation.navigate('Root', {
+                  navigation.push('Root', {
                     screen: 'Profile',
                     params: {
                       screen: 'ProjectProfile',
@@ -307,7 +307,7 @@ function ProjectSetupCategoryScreen({
                   })
                 }
               } else {
-                navigation.navigate('Root', {
+                navigation.push('Root', {
                   screen: 'Profile',
                   params: {
                     screen: 'ProjectProfile',

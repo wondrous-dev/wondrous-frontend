@@ -113,7 +113,7 @@ const HouseKeeping = ({ route, navigation }) => {
         color: Blue500,
         text: 'Finish',
         onPress: () => {
-          navigation.navigate('Root', {
+          navigation.push('Root', {
             screen: 'Notifications',
             params: {
               screen: 'Default'

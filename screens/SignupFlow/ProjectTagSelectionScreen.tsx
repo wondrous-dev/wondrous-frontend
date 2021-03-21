@@ -209,7 +209,7 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                             }
                         })
                         if (edit) {
-                            navigation.navigate('Root', {
+                            navigation.push('Root', {
                                 screen: 'Profile',
                                 params: {
                                     screen: 'ProjectProfile',
@@ -221,7 +221,7 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                             })
                         } else {
                             if (finished) {
-                                navigation.navigate('Root', {
+                                navigation.push('Root', {
                                     screen: 'Profile',
                                     params: {
                                       screen: 'ProjectProfile',
@@ -234,7 +234,7 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                             } else {
                                 setFinished(true)
                                 setTimeout(() => {
-                                    navigation.navigate('Root', {
+                                    navigation.push('Root', {
                                         screen: 'Profile',
                                         params: {
                                           screen: 'ProjectProfile',

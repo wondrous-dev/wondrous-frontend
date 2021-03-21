@@ -67,7 +67,7 @@ const CollaboratorItem = ({ item, project, initialInvited, projectInvites, setMo
   return (
     <TouchableOpacity onPress={() => {
       setModalVisible(false)
-      navigation.navigate('Root', {
+      navigation.push('Root', {
         screen: route && route.params && route.params.tab || 'Profile',
         params: {
           screen: 'OtherUserProfile',
@@ -217,7 +217,7 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
               (!filteredData || filteredData?.length === 0) &&
               <Paragraph style={{
                 padding: spacingUnit * 2
-              }} onPress={() => navigation.navigate('Root', {
+              }} onPress={() => navigation.push('Root', {
                 screen: 'Search',
                 params: {
                   screen: 'Default'

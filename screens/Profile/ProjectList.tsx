@@ -139,7 +139,7 @@ const ProjectList = ({
             project={true}
             itemDescription={project.description}
             itemName={project.name}
-            itemPressed={() => navigation.navigate('Root', {
+            itemPressed={() => navigation.push('Root', {
               screen: tab || 'Profile',
               params: {
                 screen: 'ProjectProfile',

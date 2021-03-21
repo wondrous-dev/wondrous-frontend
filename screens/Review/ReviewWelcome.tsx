@@ -159,7 +159,7 @@ const ReviewWelcome = ({ navigation, route }) => {
                 marginTop: spacingUnit * 3.5 
               }}
               onPress={() => {
-                navigation.navigate('Root', {
+                navigation.push('Root', {
                   screen: tab || 'Profile',
                   params: {
                     screen: 'CreateReview'
