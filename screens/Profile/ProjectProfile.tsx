@@ -355,7 +355,7 @@ function ProjectProfile({
               params: {
                 screen: 'UserList',
                 params: {
-                  collaborators: project.collaborators,
+                  collaborators: project.collaborators || [],
                   projectId: project.id
                 }
               }

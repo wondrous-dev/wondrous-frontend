@@ -322,7 +322,7 @@ const UserList = ({
         }
         {
 
-          list && list.length === 0 && 
+          (followingData || followerData || projectFollowerData || collaborators)  && list.length === 0 && 
 
           <>
           {

@@ -168,7 +168,8 @@ export const modalStyles = StyleSheet.create({
     marginBottom: 0
   },
   errorText: {
-    marginTop: spacingUnit
+    marginTop: spacingUnit,
+    marginBottom: spacingUnit
   },
   topRowContainer: {
     flexDirection: 'row',

@@ -212,7 +212,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                     user &&
                     <View style={profileStyles.changeRowContainer}>
                       <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
-                        Fullname
+                        Full Name
                       </Paragraph>
                       <TextInput
                           autoCapitalize = 'none'

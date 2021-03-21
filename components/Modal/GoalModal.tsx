@@ -152,7 +152,11 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                 ...modalStyles.createUpdateButton,
                 backgroundColor: videoUploading ? Grey800 : Blue500
               }} onPress={() => {
-                if (videoUploading) {
+                if (!project) {
+                  setErrors({
+                    createError: 'Project is required'
+                  })
+                } else if (videoUploading) {
                   setErrors({
                     submitError: 'Videos are still uploading!'
                   })
@@ -206,9 +210,15 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                 </TextEditorContext.Provider>
                 </View>
               <View style={modalStyles.editContainer}>
+              {
+                  errors?.createError &&
+                  <ErrorText style={modalStyles.errorText}>
+                    {errors.createError}
+                  </ErrorText>
+                }
                   {
                     errors && errors.nameError &&
-                    <ErrorText>
+                    <ErrorText style={modalStyles.errorText}>
                       {errors.nameError}
                     </ErrorText>
                   }

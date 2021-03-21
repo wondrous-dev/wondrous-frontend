@@ -191,7 +191,11 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                   setErrors({
                     submitError: 'Videos are still uploading!'
                   })
-                } else {
+                } else if (!project) {
+                  setErrors({
+                    createError: 'Project is required'
+                  })
+                }else {
                   submit({
                     name: taskText,
                     detail: description,
@@ -243,9 +247,15 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                 </TextEditorContext.Provider>
               </View>
               <View style={modalStyles.editContainer}>
+              {
+                  errors?.createError &&
+                  <ErrorText style={modalStyles.errorText}>
+                    {errors.createError}
+                  </ErrorText>
+                }
                   {
                     errors && errors.nameError &&
-                    <ErrorText>
+                    <ErrorText style={modalStyles.errorText}>
                       {errors.nameError}
                     </ErrorText>
                   }

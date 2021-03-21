@@ -35,7 +35,7 @@ export default {
   },
   errorText: {
     fontFamily: 'Rubik',
-    fontSize: 12,
+    fontSize: 14,
     lineHeight: 20,
     color: Red400
   }
