@@ -120,7 +120,8 @@ const FeedString = ({ item, standAlone }) => {
   const route = useRoute()
   const {
     tab
-  } = route
+  } = route.params
+
   if (item.objectType === 'project') {
     return (
       <View style={{
@@ -598,11 +599,14 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
             fontFamily: 'Rubik SemiBold'
           }} color={Black}
           onPress={() => navigation.navigate('Root', {
-            screen: route && route.params && route.params.tab || 'Profile',
+            screen: route?.params?.tab || 'Profile',
             params: {
-              screen: 'UserProfile',
+              screen: 'ProfileItem',
               params: {
-                userId: item.userId
+                item,
+                liked: false,
+                comment: true,
+                standAlone: true
               }
             }
           })}         

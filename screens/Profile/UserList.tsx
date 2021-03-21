@@ -331,7 +331,10 @@ const UserList = ({
             <Paragraph style={{
               padding: spacingUnit * 2
             }} onPress={() => navigation.navigate('Root', {
-              screen: 'Search'
+              screen: 'Search',
+              params: {
+                screen: 'Default'
+              }
             })}>
               Time to explore! Go to our <Paragraph color={Blue400}>
                 search page

@@ -218,7 +218,10 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
               <Paragraph style={{
                 padding: spacingUnit * 2
               }} onPress={() => navigation.navigate('Root', {
-                screen: 'Search'
+                screen: 'Search',
+                params: {
+                  screen: 'Default'
+                }
               })}>
                 You can only invite users you follow. Go to our <Paragraph color={Blue400}>
                   search page
