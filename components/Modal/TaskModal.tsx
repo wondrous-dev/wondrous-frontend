@@ -249,13 +249,19 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
               <View style={modalStyles.editContainer}>
               {
                   errors?.createError &&
-                  <ErrorText style={modalStyles.errorText}>
+                  <ErrorText style={{
+                    ...modalStyles.errorText,
+                    marginTop: 0
+                  }}>
                     {errors.createError}
                   </ErrorText>
                 }
                   {
                     errors && errors.nameError &&
-                    <ErrorText style={modalStyles.errorText}>
+                    <ErrorText style={{
+                      ...modalStyles.errorText,
+                      marginTop: 0
+                    }}>
                       {errors.nameError}
                     </ErrorText>
                   }

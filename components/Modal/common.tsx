@@ -586,7 +586,7 @@ export const submit = async ({
       ...errors,
       nameError: 'Ask required'
     })
-  } else if (!projectId && type !== 'post' && type !== 'completed') {
+  } else if (!projectId && type !== 'post' && type !== 'ask' && type !== 'completed') {
     setErrors({
       ...errors,
       nameError: 'Please select a project'
