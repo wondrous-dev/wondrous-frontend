@@ -257,7 +257,7 @@ const UserList = ({
 
   let title = ''
   if (projectId) {
-    if (followers) {
+    if (projectFollowers) {
       title = 'Followers'
     } else {
       title = 'Collaborators'

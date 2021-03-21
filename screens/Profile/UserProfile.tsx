@@ -66,6 +66,9 @@ function UserProfile({
 }: StackScreenProps<RootStackParamList, 'UserProfile'>) {
   const loggedInUser = useMe()
   const finalUserId = getUserId({ route, user: loggedInUser })
+  if (!finalUserId) {
+    return null
+  }
   let noGoingBack = route && route.params && route.params.noGoingBack
   const tab = route && route.params && route.params.tab
   const userOwned = loggedInUser && (loggedInUser.id === finalUserId)
@@ -254,44 +257,48 @@ function UserProfile({
   }, [])
 
   useEffect(() => {
-    if (actionSelected) {
-      getUserActions({
-        variables: {
-          userId: finalUserId,
-          status
+    let mounted = true
+    if (mounted) {
+      if (actionSelected) {
+        getUserActions({
+          variables: {
+            userId: finalUserId,
+            status
+          }
+        })
+      } else if (asksSelected) {
+        getUserAsks({
+          variables: {
+            userId: finalUserId,
+            status
+          }
+        })
+      } else if (reviewSelected) {
+  
+      }
+      if (userOwned && loggedInUser) {
+          setUser(loggedInUser)
+      } else {
+  
+        if (finalUserId && !user) {
+          fetchUser({ userId: finalUserId, setUser })
         }
-      })
-    } else if (asksSelected) {
-      getUserAsks({
-        variables: {
-          userId: finalUserId,
-          status
+      }
+      if (user && !isEqual(user, previousUser)) {
+          setProfilePicture(user.thumbnailPicture || user.profilePicture)
+      }
+      if (userFeedData && userFeedData.getUserFeed) {
+        if (!isEqual(userFeedData.getUserFeed, prevFeed)) {
+          setUserFeed(userFeedData.getUserFeed)
         }
-      })
-    } else if (reviewSelected) {
-
-    }
-    if (userOwned) {
-      setUser(loggedInUser)
-    } else {
-
-      if (finalUserId && !user) {
-        fetchUser({ userId: finalUserId, setUser })
+      }
+      if (userReviewData && userReviewData.getReviewsFromUser) {
+        if (!isEqual(userReviewData.getReviewsFromUser, prevReviews)) {
+          setReviews(userReviewData.getReviewsFromUser)
+        }
       }
     }
-    if (user && !isEqual(user, previousUser)) {
-      setProfilePicture(user.thumbnailPicture || user.profilePicture)
-    }
-    if (userFeedData && userFeedData.getUserFeed) {
-      if (!isEqual(userFeedData.getUserFeed, prevFeed)) {
-        setUserFeed(userFeedData.getUserFeed)
-      }
-    }
-    if (userReviewData && userReviewData.getReviewsFromUser) {
-      if (!isEqual(userReviewData.getReviewsFromUser, prevReviews)) {
-        setReviews(userReviewData.getReviewsFromUser)
-      }
-    }
+    return () => mounted = false
   }, [user && (user.thumbnailPicture || user.profilePicture), feedSelected, actionSelected, asksSelected, finalUserId, status, userFeedData, userReviewData ])
 
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo

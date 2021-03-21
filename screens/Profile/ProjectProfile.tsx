@@ -204,31 +204,35 @@ function ProjectProfile({
   const asksSelected = section === 'asks'
   
   useEffect(() => {
-    if (actionSelected) {
-      getProjectActions({
-        variables: {
-          projectId,
-          status
-        }
-      })
-    } else if (asksSelected) {
-      getProjectAsks({
-        variables: {
-          projectId,
-          status
-        }
-      })
+    let mounted = true
+    if (mounted) {
+      if (actionSelected) {
+        getProjectActions({
+          variables: {
+            projectId,
+            status
+          }
+        })
+      } else if (asksSelected) {
+        getProjectAsks({
+          variables: {
+            projectId,
+            status
+          }
+        })
+      }
+  
+      if (!profilePicture && project && project.profilePicture) {
+        setProfilePicture(project && (project.thumbnailPicture || project.profilePicture))
+      }
+      if (editProfile) {
+        setEditProfileModal(true)
+      }
+      if (projectFeedData && projectFeedData.getProjectFeed) {
+        setProjectFeed(projectFeedData.getProjectFeed)
+      }
     }
-
-    if (!profilePicture && project && project.profilePicture) {
-      setProfilePicture(project && (project.thumbnailPicture || project.profilePicture))
-    }
-    if (editProfile) {
-      setEditProfileModal(true)
-    }
-    if (projectFeedData && projectFeedData.getProjectFeed) {
-      setProjectFeed(projectFeedData.getProjectFeed)
-    }
+    return () => mounted = false
   }, [project && (project.thumbnailPicture || project.profilePicture), feedSelected, actionSelected, asksSelected, status, projectFeedData && projectFeedData.getProjectFeed])
 
   const onRefresh = useCallback(() => {
