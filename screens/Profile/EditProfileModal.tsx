@@ -27,7 +27,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
   const initialProjectInstagram = (project && project.links && project.links.instagram) || ''
   const initialProjectLinkedin = (project && project.links && project.links.linkedin) || ''
   const initialProjectGithub = (project && project.links && project.links.github) || ''
-  const initialName = user && `${user.firstName} ${user.lastName}` 
+  const initialName = user && `${user.firstName || ''} ${user.lastName || ''}` 
   const navigation = useNavigation()
   const route = useRoute()
   const [username, setUsername] = useState(initialUsername)
@@ -123,8 +123,8 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                     firstName,
                     lastName
                   } = extractFirstAndLastName(fullName)
-                  variableInputObj['firstName'] = firstName
-                  variableInputObj['lastName'] = lastName
+                  variableInputObj['firstName'] = firstName || ''
+                  variableInputObj['lastName'] = lastName || ''
                 }
                 if (projectWebsite) {
                   variableInputObj['links']['website'] = projectWebsite
