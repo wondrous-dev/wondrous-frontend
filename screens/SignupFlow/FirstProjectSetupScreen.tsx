@@ -74,6 +74,8 @@ const DismissKeyboard = ({ children }) => (
 const CreateProjectInput = ({ navigation, setup }) => {
     const user = useMe()
     const [name, setName] = useState('')
+    // for some reason the formik isSubmitting was not working...
+    const [myIsSubmitting, setMyIsSubmitting] = useState(false)
     const [description, setDescription] = useState('')
     const {
         setError
@@ -124,7 +126,8 @@ const CreateProjectInput = ({ navigation, setup }) => {
 
             <Formik
                 initialValues={{ projectName: name, projectDescription: description }}
-                onSubmit={async values => {
+                onSubmit={async (values, { setSubmitting }) => {
+                    setMyIsSubmitting(true)
                     if (!name || !description) {
                         setError('Please set a name and a description')
                     } else {
@@ -162,9 +165,10 @@ const CreateProjectInput = ({ navigation, setup }) => {
                             console.log("error creating project", JSON.stringify(error, null, 2))
                         }
                     }
+                    setMyIsSubmitting(false)
                 }}
             >
-                {({ handleChange, handleBlur, handleSubmit, values }) => (
+                {({ handleChange, handleBlur, handleSubmit, values, isSubmitting }) => (
                     <View>
                         <TextInput
                             style={{
@@ -213,6 +217,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                                 alignSelf: 'center',
                                 marginTop: spacingUnit * 5.75
                             }}
+                            disabled={myIsSubmitting}
                             onPress={handleSubmit}
                         >
                             <ButtonText color={White}> Create Project  </ButtonText>
