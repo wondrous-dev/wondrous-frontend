@@ -235,24 +235,47 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
       })
       break
     case 'reaction':
-      const feedItemResponse = await apollo.query({
-        query: GET_FEED_ITEM,
-        variables: {
-          feedItemId: objectId
-        }
-      })
-      if (feedItemResponse && feedItemResponse.data && feedItemResponse.data.getFeedItem) {
-        navigation.push('Root', {
-          screen: tab || 'Profile',
-          params: {
-            screen : 'ProfileItem',
-            params: {
-              item: feedItemResponse.data.getFeedItem,
-              comment: true,
-              standAlone: true
-            }
+      if (objectType === 'feed_item') {
+        const feedItemResponse = await apollo.query({
+          query: GET_FEED_ITEM,
+          variables: {
+            feedItemId: objectId
           }
         })
+        if (feedItemResponse && feedItemResponse.data && feedItemResponse.data.getFeedItem) {
+          navigation.push('Root', {
+            screen: tab || 'Profile',
+            params: {
+              screen : 'ProfileItem',
+              params: {
+                item: feedItemResponse.data.getFeedItem,
+                comment: true,
+                standAlone: true
+              }
+            }
+          })
+        }
+      } else if (objectType === 'feed_comment') {
+        console.log('objectId', notificationInfo)
+        const feedItemCommentResponse = await apollo.query({
+          query: GET_FEED_ITEM_FOR_FEED_COMMENT,
+          variables: {
+            commentId: objectId
+          }
+        })
+        if (feedItemCommentResponse?.data?.getFeedItemForFeedComment) {
+          navigation.push('Root', {
+            screen: tab || 'Profile',
+            params: {
+              screen : 'ProfileItem',
+              params: {
+                item: feedItemCommentResponse.data.getFeedItemForFeedComment,
+                comment: true,
+                standAlone: true
+              }
+            }
+          })
+        } 
       }
       break
     case 'comment':
@@ -458,7 +481,7 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite }) => 
           <RegularText style={{
             fontFamily: 'Rubik SemiBold'
           }}>
-            @{notificationInfo.actorUsername}{` `} 
+            @{notificationInfo.actorUsername} 
             </RegularText> is now following {followingString}.
         </RegularText>
       )
@@ -636,7 +659,7 @@ const formatNotificationReactionMessage = (notificationInfo) => {
         }}>
             @{notificationInfo.actorUsername}{` `} 
             </RegularText>
-            reacted to your activity.
+            reacted to your comment.
         </RegularText>
       )
     default:
