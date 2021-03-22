@@ -460,8 +460,8 @@ const renderSuggestions: (suggestions: Suggestion[], renderStyle, textInputRef) 
             <View>
               <Text style={{color: Black, marginBottom: 4, fontWeight: 'bold'}}>
                 {
-                  element.firstName ?
-                    `${element.firstName} ${element.lastName}`
+                  (element.firstName || element.lastName) ?
+                    `${element.firstName || ''} ${element.lastName || ''}`
                     :
                     `${element.name}`
                 }
