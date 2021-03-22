@@ -257,8 +257,7 @@ function UserProfile({
   }, [])
 
   useEffect(() => {
-    let mounted = true
-    if (mounted) {
+
       if (actionSelected) {
         getUserActions({
           variables: {
@@ -276,7 +275,7 @@ function UserProfile({
       } else if (reviewSelected) {
   
       }
-      if (userOwned && loggedInUser) {
+      if (userOwned && !user && loggedInUser) {
           setUser(loggedInUser)
       } else {
   
@@ -297,8 +296,6 @@ function UserProfile({
           setReviews(userReviewData.getReviewsFromUser)
         }
       }
-    }
-    return () => mounted = false
   }, [user && (user.thumbnailPicture || user.profilePicture), feedSelected, actionSelected, asksSelected, finalUserId, status, userFeedData, userReviewData ])
 
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo

@@ -51,7 +51,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
     setChangePhoto(false)
   }, [])
   useEffect(() => {
-    if (initialProfilePicture) {
+    if (initialProfilePicture && !profilePicture) {
       setProfilePicture(initialProfilePicture)
     }
   }, [initialProfilePicture]) 
