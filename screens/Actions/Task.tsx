@@ -35,7 +35,7 @@ const TaskPage = ({ navigation, route }) => {
   const [updateTask] = useMutation(UPDATE_TASK, {
     update: (cache, { data } ) => {
       if (data) {
-        setTask(data && data.updateTask)
+        setTask(data?.updateTask)
       }
       cache.modify({
         fields: {

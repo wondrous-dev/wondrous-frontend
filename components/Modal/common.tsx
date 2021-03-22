@@ -617,7 +617,7 @@ export const submit = async ({
         const {
           filename: videoFilename
         } = getFilenameAndType(video)
-        finalVideo = filePrefix + videoFilename
+        finalVideo = `video/${videoFilename}`
       }
     }
     const {
