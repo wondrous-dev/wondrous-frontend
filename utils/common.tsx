@@ -4,6 +4,7 @@ import * as Localization from 'expo-localization'
 import { mentionRegEx } from 'react-native-controlled-mentions'
 import * as WebBrowser from 'expo-web-browser'
 import regexifyString from 'regexify-string'
+import { StackActions } from '@react-navigation/native'
 
 import { Blue400 } from '../constants/Colors'
 
@@ -70,23 +71,26 @@ export const insertComponentsIntoText = (
 export const navigateUserOnLogin = (user, navigation) => {
   if (user && user.usageProgress && (user.usageProgress.signupCompleted || user.usageProgress.askCreated)) {
     if (user.usageProgress.askCreated) {
-      navigation.push('Root', {
-        screen: 'Dashboard'
-      })
+      navigation.dispatch(
+        StackActions.replace('Root', {
+          screen: 'Dashboard'
+        })
+      )
     } else {
-
-      navigation.push('Root', {
-        screen: 'Profile',
-        params: {
-          screen: 'UserProfile',
+      navigation.dispatch(
+        StackActions.replace('Root', {
+          screen: 'Profile',
           params: {
-            noGoingBack: true
+            screen: 'UserProfile',
+            params: {
+              noGoingBack: true
+            }
           }
-        }
-      })
+        })
+      )
     }
   } else if (user) {
-    navigation.navigate('Welcome')
+    navigation.push('Welcome')
   }
 }
 

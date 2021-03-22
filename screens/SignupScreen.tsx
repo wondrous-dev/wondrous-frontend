@@ -54,9 +54,9 @@ function SignupScreen({
             <GoogleLogin style={{
               marginTop: 48
             }} callToAction={signup} loginStatus={loginStatus} setLoginStatus={setLoginStatus} navigation={navigation} setLoginError={setLoginError} />
-            {/* <FacebookLogin style={{
+            <FacebookLogin style={{
               marginTop: 16
-            }} callToAction={signup} loginStatus={loginStatus} setLoginStatus={setLoginStatus} navigation={navigation} setLoginError={setLoginError} /> */}
+            }} callToAction={signup} loginStatus={loginStatus} setLoginStatus={setLoginStatus} navigation={navigation} setLoginError={setLoginError} />
             <AppleLogin style={{
             marginTop: spacingUnit * 2
           }} callToAction={signup} setLoginStatus={setLoginStatus} navigation={navigation} setLoginError={setLoginError} />

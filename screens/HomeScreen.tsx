@@ -6,13 +6,10 @@ import * as Notifications from 'expo-notifications'
 import { RootStackParamList } from '../types'
 import { Orange, Black, White, Green400, Grey800 } from '../constants/Colors'
 import { Title, Subheading, Paragraph, ButtonText } from '../storybook/stories/Text'
-import { SvgImage } from '../storybook/stories/Image'
 import { MyCarousel } from '../storybook/stories/Carousel'
 import { PrimaryButton, SecondaryButton } from '../storybook/stories/Button'
-import { NotificationTester } from '../components/Notifications/RegisterNotification'
 import { scale, moderateScale, verticalScale } from '../utils/scale'
-import SuperHeroSvg from '../assets/images/superhero.svg'
-import { navigateUserOnLogin, snakeToCamelObj, spacingUnit } from '../utils/common'
+import { navigateUserOnLogin, snakeToCamelObj, spacingUnit, usePrevious } from '../utils/common'
 import { useMe, withAuth } from '../components/withAuth'
 import { useQuery } from '@apollo/client'
 import { GET_LOGGED_IN_USER, WHOAMI } from '../graphql/queries'
@@ -93,9 +90,6 @@ function HomeScreen({
   }
   React.useEffect(() => {
     registerNotifications()
-    if (user) {
-      navigateUserOnLogin(user, navigation)
-    }
     if (data && data.getLoggedinUser) {
       redirectUser(data.getLoggedinUser, navigation)
     }

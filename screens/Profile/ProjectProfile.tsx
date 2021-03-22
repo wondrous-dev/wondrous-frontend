@@ -204,35 +204,32 @@ function ProjectProfile({
   const asksSelected = section === 'asks'
   
   useEffect(() => {
-    let mounted = true
-    if (mounted) {
-      if (actionSelected) {
-        getProjectActions({
-          variables: {
-            projectId,
-            status
-          }
-        })
-      } else if (asksSelected) {
-        getProjectAsks({
-          variables: {
-            projectId,
-            status
-          }
-        })
-      }
-  
-      if (!profilePicture && project && project.profilePicture) {
-        setProfilePicture(project && (project.thumbnailPicture || project.profilePicture))
-      }
-      if (editProfile) {
-        setEditProfileModal(true)
-      }
-      if (projectFeedData && projectFeedData.getProjectFeed) {
-        setProjectFeed(projectFeedData.getProjectFeed)
-      }
+    if (actionSelected) {
+      getProjectActions({
+        variables: {
+          projectId,
+          status
+        }
+      })
+    } else if (asksSelected) {
+      getProjectAsks({
+        variables: {
+          projectId,
+          status
+        }
+      })
     }
-    return () => mounted = false
+
+    if (!profilePicture && project && project.profilePicture) {
+      setProfilePicture(project && (project.thumbnailPicture || project.profilePicture))
+    }
+    if (editProfile) {
+      setEditProfileModal(true)
+    }
+    if (projectFeedData && projectFeedData.getProjectFeed) {
+      setProjectFeed(projectFeedData.getProjectFeed)
+    }
+    
   }, [project && (project.thumbnailPicture || project.profilePicture), feedSelected, actionSelected, asksSelected, status, projectFeedData && projectFeedData.getProjectFeed])
 
   const onRefresh = useCallback(() => {
@@ -339,7 +336,13 @@ function ProjectProfile({
             profilePicture ?
             <SafeImage style={profileStyles.profileImage} src={profilePicture || (project.thumbnailPicture || project.profilePicture)} />
             :
-            <ProfilePlaceholder projectOwnedByUser={projectOwnedByUser} />
+            (
+              project 
+              ?
+              <ProfilePlaceholder projectOwnedByUser={projectOwnedByUser} />
+              :
+              null
+            )
           }
           </View>
           <Pressable onPress={() => navigation.push('Root', {

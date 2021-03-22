@@ -392,7 +392,12 @@ function UserProfile({
                     borderRadius: spacingUnit * 5
                   }} src={profilePicture || user.thumbnailPicture || user.profilePicture} setImage={setProfilePicture} />
                   :
-                  <ProfilePlaceholder projectOwnedByUser={userOwned} user={true} />
+                  (
+                    user ?
+                    <ProfilePlaceholder projectOwnedByUser={userOwned} user={true} />
+                    :
+                    null
+                  )
                 }
                 </View>
                 <Pressable onPress={() => navigation.push('Root', {

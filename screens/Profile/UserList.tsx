@@ -216,6 +216,7 @@ const UserList = ({
         getUserFollowers()
       }
     }
+  
   }, [feedItemId, feedCommentId, userId, projectId])
 
   const [refreshing, setRefreshing] = useState(false)
@@ -230,9 +231,10 @@ const UserList = ({
   }, [])
   const [seeProject, setSeeProject] = useState(false)
 
-  const followingUsers = user && user.usersFollowing
-  const followingProjects = user && user.projectsFollowing
+  const followingUsers = user?.usersFollowing
+  const followingProjects = user?.projectsFollowing
   let list = []
+
   if (userId) {
     if (following && followingData) {
       if (seeProject) {
@@ -268,8 +270,8 @@ const UserList = ({
     title = following ? 'Following' : 'Followers'
   }
 
-  const userOwned = user && user.id === userId
-
+  const userOwned = user?.id === userId
+ 
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -362,6 +364,7 @@ const UserList = ({
           }
           </>
         }
+
         <FlatList
         data={list}
         contentContainerStyle={{
@@ -374,7 +377,6 @@ const UserList = ({
             const userFollowing = followingUsers && (!seeProject ? followingUsers.some((element) => {
               return element === item.id
             }) : followingProjects.some(element => element === item.id))
-
 
             return (
               seeProject
