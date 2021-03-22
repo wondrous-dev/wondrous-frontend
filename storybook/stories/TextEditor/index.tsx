@@ -463,7 +463,7 @@ const renderSuggestions: (suggestions: Suggestion[], renderStyle, textInputRef) 
                   (element.firstName || element.lastName) ?
                     `${element.firstName || ''} ${element.lastName || ''}`
                     :
-                    `${element.name}`
+                    `${element.name || ''}`
                 }
               </Text>
               {
