@@ -24,6 +24,7 @@ export const GET_NOTIFICATIONS = gql`
       actorUsername
       objectId
       objectType
+      objectName
       timestamp
       type
       viewedAt

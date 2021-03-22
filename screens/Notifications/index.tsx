@@ -311,15 +311,27 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
             screen : 'Notifications'
           })
         } else {
-          navigation.push('Root', {
-            screen: 'Notifications',
+          if (notificationInfo.objectType === 'project' && notificationInfo.objectName) {
+            navigation.push('Root', {
+              screen: tab || 'Profile',
               params: {
-                screen: 'UserProfile',
+                screen: 'ProjectProfile',
                 params: {
-                  userId: actorId
+                  projectId: objectId
+                }
               }
-            }
-          })
+            })
+          } else {
+            navigation.push('Root', {
+              screen: 'Notifications',
+                params: {
+                  screen: 'UserProfile',
+                  params: {
+                    userId: actorId
+                }
+              }
+            })
+          }
         }
         break
       case 'streak_reminder':
@@ -431,13 +443,23 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite }) => 
       )
       break
     case 'now_following':
+      let followingString = ''
+      if (notificationInfo.objectType === 'project' && notificationInfo.objectName) {
+        followingString = <RegularText style={{
+          fontFamily: 'Rubik SemiBold'
+        }}>
+          {notificationInfo.objectName}
+          </RegularText>
+      } else {
+        followingString = 'you'
+      }
       displayMessage = (
         <RegularText color={Black}>
           <RegularText style={{
             fontFamily: 'Rubik SemiBold'
           }}>
             @{notificationInfo.actorUsername}{` `} 
-            </RegularText> is now following you.
+            </RegularText> is now following {followingString}.
         </RegularText>
       )
       break
