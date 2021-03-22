@@ -141,8 +141,9 @@ function AddScreen({
         What do you want to create?
       </Paragraph>
       <View style={addStyles.choiceContainer}>
-        <Pressable style={addStyles.choiceBox} onPress={() => navigation.navigate('FirstProjectSetup', {
-          setup: false
+        <Pressable style={addStyles.choiceBox} onPress={() => navigation.push('FirstProjectSetup', {
+          setup: false,
+          noGoingBack: true
         })}>
         <ProjectIcon
           style={addStyles.choiceImage}

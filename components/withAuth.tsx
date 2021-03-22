@@ -36,7 +36,7 @@ export const getAuthHeader = async () => {
 export const logout = async (navigation) => {
   try {
     await AsyncStorage.removeItem('token')
-    navigation.navigate('Home')
+    navigation.push('Home')
   }
   catch(exception) {
       return false;
