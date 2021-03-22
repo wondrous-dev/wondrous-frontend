@@ -12,7 +12,7 @@ export const uploadVideo = async ({ filename, localUrl, fileType }) => {
         filename
       }
     })
-    const apiUrl = apolloResult.data.getPresignedImageUrl.url
+    const apiUrl = apolloResult.data.getPresignedVideoUrl.url
     // TODO: parse filetype
     const uploadResponse = await FileSystem.uploadAsync(apiUrl, localUrl, {
       httpMethod: "PUT",

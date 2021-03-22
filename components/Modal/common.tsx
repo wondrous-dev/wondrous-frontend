@@ -143,10 +143,10 @@ export const pickVideo = async ({ setVideo, setErrors, setVideoUploading }) => {
         filename
       } = getFilenameAndType(result.uri)
       const newFileName = `video/${filename}`
+
       setVideoUploading(true)
       await uploadVideo({ filename: newFileName, localUrl: result.uri, fileType })
       setVideoUploading(false)
-      console.log('result picking', result.uri)
       setVideo(result.uri)
     }
   }
