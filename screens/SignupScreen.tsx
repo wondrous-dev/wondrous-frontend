@@ -35,7 +35,7 @@ function SignupScreen({
   const [loginError, setLoginError] = useState(null)
   const [signup] = useMutation(SIGNUP)
   // if (user) {
-  //   navigation.navigate('Welcome')
+  //   navigation.push('Welcome')
   // }
   return (
     <SafeAreaView style={styles.container}>
@@ -62,9 +62,9 @@ function SignupScreen({
           }} callToAction={signup} setLoginStatus={setLoginStatus} navigation={navigation} setLoginError={setLoginError} />
             <Pressable onPress={()=> {
               if (route && route.params && route.params.login) {
-                navigation.navigate('EmailSignin')
+                navigation.push('EmailSignin')
               } else {
-                navigation.navigate('EmailSignup')
+                navigation.push('EmailSignup')
               }
             }}>
             <Subheading style={{

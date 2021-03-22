@@ -106,7 +106,7 @@ function HomeScreen({
       <MyCarousel data={homeScreens} activeDotColor={Orange} passiveDotColor={White} containerStyle={{
         marginTop: spacingUnit
       }} />
-      <PrimaryButton onPress={() => navigation.navigate('Signup')} textStyle={{
+      <PrimaryButton onPress={() => navigation.push('Signup')} textStyle={{
         color: White
       }} textPressStyle = {{
         color: White
@@ -119,7 +119,7 @@ function HomeScreen({
           Get started
           </ButtonText>
       </PrimaryButton>
-      <SecondaryButton onPress={() => navigation.navigate('Signup', {
+      <SecondaryButton onPress={() => navigation.push('Signup', {
         login: true
       })} style={{
         marginTop: spacingUnit * 1.5,

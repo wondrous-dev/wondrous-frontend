@@ -265,7 +265,7 @@ class Card extends React.Component {
         if (!redirect) {
           this.setModalVisible(true)
         } else {
-          navigation.navigate(redirect, redirectParams)
+          navigation.push(redirect, redirectParams)
         }
       }}>
       <View style={[styles.row, { backgroundColor: White }]}>

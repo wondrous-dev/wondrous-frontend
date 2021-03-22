@@ -211,7 +211,7 @@ function ProjectSetupCategoryScreen({
     if (!edit && user && user.usageProgress && user.usageProgress.projectCategorySelected && setup) {
       const categorySelected = user.usageProgress.projectCategorySelected
       if (categorySelected === 'business' || categorySelected === 'tech') {
-        navigation.navigate('ProjectTagSelection', {
+        navigation.push('ProjectTagSelection', {
           projectId
         })
       } else {
@@ -290,7 +290,7 @@ function ProjectSetupCategoryScreen({
               })
               if (!edit) {
                 if (projectCategory === 'business' || projectCategory === 'tech') {
-                  navigation.navigate('ProjectTagSelection', {
+                  navigation.push('ProjectTagSelection', {
                     projectId,
                     setup
                   })
