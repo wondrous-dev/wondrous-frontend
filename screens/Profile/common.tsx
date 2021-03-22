@@ -194,7 +194,7 @@ export const SetUpFlowProgress = ({ progress, navigationUrl,navigationParams, se
         alignItems: 'center',
         justifyContent: 'space-between'
       }}>
-        <Pressable onPress={() => navigation.navigate(navigationUrl, navigationParams)}>
+        <Pressable onPress={() => navigation.push(navigationUrl, navigationParams)}>
           <Paragraph>
             Next step: <Paragraph color={Blue400}>{setupText}</Paragraph>
           </Paragraph>
@@ -206,7 +206,7 @@ export const SetUpFlowProgress = ({ progress, navigationUrl,navigationParams, se
           paddingBottom: 2,
           backgroundColor: Blue500
         }} onPress={() => {
-          navigation.navigate(navigationUrl, navigationParams)
+          navigation.push(navigationUrl, navigationParams)
         }}>
           <Paragraph color={White}>
             {setupButtonText}

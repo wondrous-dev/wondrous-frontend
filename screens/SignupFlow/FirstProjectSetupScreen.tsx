@@ -143,7 +143,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                                         projectId
                                     }
                                 })
-                                navigation.navigate('ProjectSetupCategory', {
+                                navigation.push('ProjectSetupCategory', {
                                     projectId: user.usageProgress.projectCreated
                                 })
                             } else {
@@ -156,7 +156,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                                         firstTime: !!(setup)
                                     }
                                 })
-                                navigation.navigate('ProjectSetupCategory', {
+                                navigation.push('ProjectSetupCategory', {
                                     projectId: projectData.data.createProject && projectData.data.createProject.id,
                                     setup
                                 })
@@ -242,7 +242,7 @@ function FirstProjectSetupScreen({
     setup = route?.params?.setup
     useEffect(() => {
         if (user && user.usageProgress && user.usageProgress.projectCreated && setup) {
-            navigation.navigate('ProjectSetupCategory', {
+            navigation.push('ProjectSetupCategory', {
                 projectId: user.usageProgress.projectCreated,
                 setup: true
             })

@@ -166,7 +166,7 @@ function EmailSigninScreen({
           </View>
         }
 
-      <Pressable onPress={()=> {navigation.navigate('EmailSignup')}}>
+      <Pressable onPress={()=> {navigation.push('EmailSignup')}}>
             <Subheading style={{
               marginTop: 16,
               fontFamily: 'Rubik',

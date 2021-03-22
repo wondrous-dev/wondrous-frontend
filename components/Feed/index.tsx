@@ -791,7 +791,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
 
 export const renderItem = ({ item, navigation, screen, params, activityPage }) => {
   return (
-    <Pressable key={item && item.id} onPress={() => navigation.navigate(screen, params)}>
+    <Pressable key={item && item.id} onPress={() => navigation.push(screen, params)}>
       <FeedItem item={item} key={item.id} activityPage={activityPage} />
     </Pressable>
   )

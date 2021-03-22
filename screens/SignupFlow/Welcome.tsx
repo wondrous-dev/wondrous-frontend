@@ -60,7 +60,7 @@ function WelcomeScreen({
 
     if (user && user.usageProgress) {
       if (user.username) {
-        navigation.navigate('FirstProjectSetup')
+        navigation.push('FirstProjectSetup')
       }
     } 
   }, [])
@@ -87,7 +87,7 @@ function WelcomeScreen({
           <PrimaryButton textStyle={{
             color: White
           }} style={loginStyles.button} onPress={() => {
-            navigation.navigate('UsernameSetup')
+            navigation.push('UsernameSetup')
           }}>
             <ButtonText color={White}>
               I'm ready!

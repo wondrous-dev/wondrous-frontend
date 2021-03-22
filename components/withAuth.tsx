@@ -36,7 +36,7 @@ export const getAuthHeader = async () => {
 export const logout = async (navigation) => {
   try {
     await AsyncStorage.removeItem('token')
-    navigation.navigate('Home')
+    navigation.push('Home')
   }
   catch(exception) {
       return false;
@@ -59,7 +59,7 @@ export const withAuth = (Component, noCache=false) => {
     if (!tokenLoading && !token) {
       const pathname = route && route.name
       // if (loading !== true && pathname !== 'Signup' && pathname !== 'Login' && pathname !== 'InviteRedeem' && pathname !== '/') {
-      //   navigation.navigate('Login')
+      //   navigation.push('Login')
       // }
       return <Component {...props} />
     } else {
