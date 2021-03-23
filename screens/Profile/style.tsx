@@ -28,7 +28,8 @@ export const profileStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: spacingUnit * 2,
-    paddingRight: spacingUnit * 2
+    paddingRight: spacingUnit * 2,
+    flexWrap: 'wrap'
   },
   profilePlaceholderContainer: {
     width: spacingUnit * 10,
@@ -54,14 +55,18 @@ export const profileStyles = StyleSheet.create({
     height: spacingUnit * 10,
     borderRadius: 5 * spacingUnit
   },
+  profileHeader: {
+    flexDirection: 'column',
+    marginRight: spacingUnit,
+    marginBottom: spacingUnit
+  },
   editButton: {
     width: spacingUnit * 13,
     backgroundColor: White,
     borderColor: Black,
     borderWidth: 1,
     paddingTop: 0,
-    paddingBottom: 0,
-    marginLeft: spacingUnit
+    paddingBottom: 0
   },
   sectionChoiceContainer: {
     flexDirection: 'row',

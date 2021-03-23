@@ -375,23 +375,17 @@ function ProjectProfile({
         <View style={[profileStyles.profileInfoContainer, {
           marginTop: spacingUnit * 3
         }]}>
+          <View style={profileStyles.profileHeader}>
           <Subheading style={{
             fontSize: 18
           }} color={Black}>
             {project.name}
           </Subheading>
+          </View>
           {
             projectOwnedByUser ?
             <>
-              <SecondaryButton style={{
-                width: spacingUnit * 13,
-                backgroundColor: White,
-                borderColor: Black,
-                borderWidth: 1,
-                paddingTop: 0,
-                paddingBottom: 0,
-                marginLeft: spacingUnit
-              }} onPress={() => setEditProfileModal(true)}>
+              <SecondaryButton style={profileStyles.editButton} onPress={() => setEditProfileModal(true)}>
                 <RegularText color={Black}>
                   Edit Project
                 </RegularText>
@@ -433,7 +427,7 @@ function ProjectProfile({
           }
         </View>
         <View style={[profileStyles.profileInfoContainer, {
-          marginTop: spacingUnit * 2,
+          marginTop: spacingUnit,
         }]}>
           <Paragraph color={Black} style={{
             flexWrap: 'wrap',

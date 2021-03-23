@@ -447,9 +447,7 @@ function UserProfile({
                 marginTop: spacingUnit * 2,
                 alignItems: 'flex-start'
               }]}>
-                <View style={{
-                  flexDirection: 'column'
-                }}>
+                <View style={profileStyles.profileHeader}>
                 <Subheading style={{
                   fontSize: 18
                 }} color={Black}>
@@ -507,9 +505,7 @@ function UserProfile({
               </View>
               {
                 user.bio &&
-                <View style={[profileStyles.profileInfoContainer, {
-                  marginTop: spacingUnit * 2,
-                }]}>
+                <View style={profileStyles.profileInfoContainer}>
                   <Paragraph color={Black} style={{
                     flexWrap: 'wrap',
                     textAlign: 'left'

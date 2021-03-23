@@ -94,7 +94,8 @@ const feedStyles = StyleSheet.create({
   },
   feedText: {
     fontSize: 18,
-    flex: 1
+    flex: 1,
+    flexWrap: 'wrap'
   },
   confetti: {
     marginRight: spacingUnit,
@@ -591,11 +592,11 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
         <View>
           <View style={{
             flexDirection: 'row',
-            alignItems: 'flex-start'
+            alignItems: 'flex-start',
+            paddingRight: spacingUnit * 2
           }}>
             <View>
           <Paragraph style={{
-          }} style={{
             fontFamily: 'Rubik SemiBold'
           }} color={Black}
           onPress={() => {
