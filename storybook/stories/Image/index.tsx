@@ -4,6 +4,7 @@ import { Platform, Image, Pressable, View } from 'react-native'
 import { SvgXml } from "react-native-svg"
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
+import * as Crypto from 'expo-crypto'
 
 import { GET_PREVIEW_IMAGE } from '../../../graphql/queries'
 import { FlexRowContentModal } from '../../../components/Modal'
@@ -25,31 +26,38 @@ interface ImageProps {
 
 export const CachedImage = props => {
   const { source: { uri }, cacheKey, setCachedImage } = props
-  const filesystemURI =  `${FileSystem.cacheDirectory}${cacheKey.replace(/(^\w+:|^)\/\//, '')}`
-
-  const [imgURI, setImgURI] = useState(filesystemURI)
-
+  const [imgURI, setImgURI] = useState(null)
+  console.log('imgURI', imgURI)
   useEffect(() => {
-    const loadImage = async ({ fileURI }) => {
+    const loadImage = async () => {
+      const hashed = await Crypto.digestStringAsync(
+        Crypto.CryptoDigestAlgorithm.SHA256,
+        cacheKey
+      )
+
+      const fileURI = `${FileSystem.cacheDirectory}${hashed}`
       try {
         // Use the cached image if it exists
+        console.log('fileURI', fileURI)
         const metadata = await FileSystem.getInfoAsync(fileURI)
         if (!metadata.exists) {
           // download to cache
-          setImgURI(null)
-          await FileSystem.downloadAsync(
+          const result = await FileSystem.downloadAsync(
             uri,
             fileURI
           )
+          console.log('result', result)
           setImgURI(fileURI)
           setCachedImage(fileURI)
+        } else {
+          setImgURI(fileURI)
         }
       } catch (err) {
         setImgURI(uri)
       }
     }
 
-    loadImage({ fileURI: filesystemURI })
+    loadImage()
   }, [])// eslint-disable-line react-hooks/exhaustive-deps
   return (
     <Image
@@ -167,7 +175,12 @@ export function SvgImage ({ width, height, webStyle, srcElement, style }) {
 }
 
 const getCacheImage = async ({ cacheKey, setCachedImage, getImage }) => {
-  const filesystemURI = `${FileSystem.cacheDirectory}${cacheKey.replace(/(^\w+:|^)\/\//, '')}`
+  const hashed = await Crypto.digestStringAsync(
+    Crypto.CryptoDigestAlgorithm.SHA256,
+    cacheKey
+  )
+  const filesystemURI = `${FileSystem.cacheDirectory}${hashed}`
+  console.log('post filesystem', filesystemURI)
   try {
     const metadata = await FileSystem.getInfoAsync(filesystemURI)
     if (!metadata.exists) {
