@@ -183,7 +183,11 @@ const CreateProjectInput = ({ navigation, setup }) => {
                             placeholder='Name'
                             placeholderTextColor={GreyPlaceHolder}
                             onChangeText={(val) => {
-                                setName(val)
+                                if (val.length <= 40) {
+                                    setName(val)
+                                } else {
+                                    setError('Please limit project name to 40 characters')
+                                }
                             }}
                             onBlur={handleBlur('projectName')}
                             value={name}

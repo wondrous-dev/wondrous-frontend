@@ -308,7 +308,8 @@ class Card extends React.Component {
             flex: 1
           }}>
             <View style={[styles.bottomInfoContainer, {
-              flex: 1
+              flex: 1,
+              flexWrap: 'wrap'
             }]}>
               {
                 priority &&
@@ -318,7 +319,8 @@ class Card extends React.Component {
                 }} />
               }
               <Tag color={Purple} style={{
-                marginRight: spacingUnit  
+                marginRight: spacingUnit,
+                marginBottom: spacingUnit
               }}>
                 <RegularText color={White}>
                   {projectName}

@@ -209,7 +209,7 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                             }
                         })
                         if (edit) {
-                            navigation.push('Root', {
+                            navigation.navigate('Root', {
                                 screen: 'Profile',
                                 params: {
                                     screen: 'ProjectProfile',
@@ -221,20 +221,15 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                             })
                         } else {
                             if (finished) {
-                                navigation.push('Root', {
-                                    screen: 'Profile',
-                                    params: {
-                                      screen: 'ProjectProfile',
-                                      params: {
-                                        projectId,
-                                        noGoingBack: true
-                                      }
-                                    }
-                                  })
-                            } else {
-                                setFinished(true)
-                                setTimeout(() => {
-                                    navigation.push('Root', {
+                                if (!user?.usageProgress?.projectCategorySelected) {
+                                    navigation.navigate('Root', {
+                                        screen: 'Profile',
+                                        params: {
+                                          screen: 'UserProfile'
+                                        }
+                                      })
+                                } else {
+                                    navigation.navigate('Root', {
                                         screen: 'Profile',
                                         params: {
                                           screen: 'ProjectProfile',
@@ -244,6 +239,29 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                                           }
                                         }
                                       })
+                                }
+                            } else {
+                                setFinished(true)
+                                setTimeout(() => {
+                                    if (!user?.usageProgress?.projectCategorySelected) {
+                                        navigation.navigate('Root', {
+                                            screen: 'Profile',
+                                            params: {
+                                              screen: 'UserProfile'
+                                            }
+                                          })
+                                    } else {
+                                        navigation.navigate('Root', {
+                                            screen: 'Profile',
+                                            params: {
+                                              screen: 'ProjectProfile',
+                                              params: {
+                                                projectId,
+                                                noGoingBack: true
+                                              }
+                                            }
+                                          })
+                                    }
                                 }, 1000)
                             }
                         }

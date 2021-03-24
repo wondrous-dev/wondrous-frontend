@@ -109,7 +109,7 @@ const UsernameInput = ({ navigation }) => {
             await updateUser({
               variables: {
                 input: {
-                  username: values.username,
+                  username: values.username.trim().toLowerCase(),
                   firstName,
                   lastName
                 }

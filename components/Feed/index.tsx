@@ -58,12 +58,13 @@ const timeAgo = new TimeAgo('en-US')
 
 const feedStyles = StyleSheet.create({
   feedItemContainer: {
-    padding: spacingUnit * 2
+    padding: spacingUnit * 2,
   },
   feedItemName: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'flex-start',
+    paddingRight: spacingUnit
   },
   feedItemImage: {
     width: spacingUnit * 6,
@@ -138,7 +139,7 @@ const FeedString = ({ item, standAlone }) => {
             }
           })} color={Blue400} style={{
             ...feedStyles.feedText,
-            fontSize: standAlone ? 18 : 16
+            fontSize: 18
           }}>{item.projectName} </Paragraph>
       </View>
     )
@@ -166,7 +167,7 @@ const FeedString = ({ item, standAlone }) => {
 }
        <Paragraph color={Black} style={{
          ...feedStyles.feedText,
-        fontSize: standAlone ? 18 : 16,
+        fontSize: 18,
         }} onPress={() => {
           if (!standAlone) {
             navigation.push('Root', {
@@ -216,7 +217,7 @@ const FeedString = ({ item, standAlone }) => {
       }}>
        <Paragraph color={Black} style={{
          ...feedStyles.feedText,
-         fontSize: standAlone ? 18 : 16,
+         fontSize: 18,
           }} onPress={() => {
             if (!standAlone) {
               navigation.push('Root', {
@@ -593,11 +594,17 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           <View style={{
             flexDirection: 'row',
             alignItems: 'flex-start',
-            paddingRight: spacingUnit * 2
+            paddingRight: spacingUnit * 2,
           }}>
-            <View>
+          <View style={{
+            flexShrink: 1,
+            paddingRight: spacingUnit,
+          }}>
           <Paragraph style={{
-            fontFamily: 'Rubik SemiBold'
+            fontFamily: 'Rubik SemiBold',
+            lineHeight: spacingUnit * 2.5,
+            flex: 1,
+            flexWrap: 'wrap'
           }} color={Black}
           onPress={() => {
             if (standAlone || comment) {
@@ -638,7 +645,8 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
           }
           </Paragraph>
           <RegularText style={{
-            lineHeight: 18
+            lineHeight: 18,
+            marginTop: spacingUnit * 0.5
           }} color={Grey200}>{timeAgo.format(new Date(item.timestamp))}</RegularText>     
           </View>
           </View>
@@ -673,7 +681,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
             height: spacingUnit * 2.5
           }} />
           <Paragraph color={Blue400} style={{
-            fontSize: standAlone ? 18 : 16,
+            fontSize: 18,
           }} onPress={() => Linking.openURL(item.media.link)}>
             {item.media.link}
           </Paragraph>
@@ -884,7 +892,7 @@ export const HomeFeed = () => {
     return (
       <View style={{
         backgroundColor: White,
-        paddingTop: 16
+        paddingTop: spacingUnit * 2
       }}>
         <ActivityIndicator />
       </View>

@@ -518,7 +518,7 @@ function UserProfile({
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
-                marginTop: spacingUnit * 2
+                marginTop: spacingUnit
               }}>
               {user && user.links && !isEmptyObject(user.links) && 
               <Pressable style={{
@@ -555,7 +555,6 @@ function UserProfile({
                 width: spacingUnit * 19,
                 paddingTop: 0,
                 paddingBottom: 0,
-                marginLeft: spacingUnit
               }} onPress={() => setContactsModal(true)}>
                 <Paragraph color={White} >
                   Invite friends

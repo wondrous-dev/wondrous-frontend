@@ -218,9 +218,8 @@ function ProjectSetupCategoryScreen({
         navigation.push('Root', {
           screen: 'Profile',
           params: {
-            screen: 'ProjectProfile',
+            screen: 'UserProfile',
             params: {
-              projectId,
               noGoingBack: true
             }
           }
@@ -295,16 +294,25 @@ function ProjectSetupCategoryScreen({
                     setup
                   })
                 } else {
-                  navigation.push('Root', {
-                    screen: 'Profile',
-                    params: {
-                      screen: 'ProjectProfile',
+                  if (!user?.usageProgress?.projectCategorySelected) {
+                    navigation.push('Root', {
+                      screen: 'Profile',
                       params: {
-                        projectId,
-                        noGoingBack: true
+                        screen: 'UserProfile'
                       }
-                    }
-                  })
+                    })
+                  } else {
+                    navigation.push('Root', {
+                      screen: 'Profile',
+                      params: {
+                        screen: 'ProjectProfile',
+                        params: {
+                          projectId,
+                          noGoingBack: true
+                        }
+                      }
+                    })
+                  }
                 }
               } else {
                 navigation.push('Root', {

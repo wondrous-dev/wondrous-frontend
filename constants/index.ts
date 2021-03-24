@@ -4,3 +4,4 @@ export const TESTFLIGHT_BETA_LINK = 'https://testflight.apple.com/join/i1d2uDJ2'
 export const MAX_VIDEO_LIMIT = 11000
 export const MUX_URL_PREFIX = 'https://stream.mux.com/'
 export const MUX_URL_ENDING = '.m3u8'
+export const PROJECT_NAME_CHAR_LIMIT = 40
