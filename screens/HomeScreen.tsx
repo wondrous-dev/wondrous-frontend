@@ -10,7 +10,7 @@ import { MyCarousel } from '../storybook/stories/Carousel'
 import { PrimaryButton, SecondaryButton } from '../storybook/stories/Button'
 import { scale, moderateScale, verticalScale } from '../utils/scale'
 import { navigateUserOnLogin, snakeToCamelObj, spacingUnit, usePrevious } from '../utils/common'
-import { useMe, withAuth } from '../components/withAuth'
+import { getAuthHeader, useMe, withAuth } from '../components/withAuth'
 import { useQuery } from '@apollo/client'
 import { GET_LOGGED_IN_USER, WHOAMI } from '../graphql/queries'
 import apollo from '../services/apollo'
@@ -18,13 +18,16 @@ import { getNotificationPressFunction } from './Notifications'
 import Rocket from '../assets/images/rocket_transparent_loop.gif'
 
 const redirectUser = async (user, navigation) => {
-  await apollo.writeQuery({
-    query: WHOAMI,
-    data: {
-      users: [user]
-    }
-  })
-  navigateUserOnLogin(user, navigation)
+  const token = await getAuthHeader()
+  if (token) {
+    await apollo.writeQuery({
+      query: WHOAMI,
+      data: {
+        users: [user]
+      }
+    })
+    navigateUserOnLogin(user, navigation)
+  }
 }
 
 function HomeScreen({
@@ -33,6 +36,7 @@ function HomeScreen({
 }: StackScreenProps<RootStackParamList, 'Home'>) {
   const user = useMe()
   const { data } = useQuery(GET_LOGGED_IN_USER)
+  console.log('dat', data)
   const homeScreens = [
     {
       subheading: 'The social platform where builders crush their goals',
