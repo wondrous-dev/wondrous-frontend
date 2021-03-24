@@ -19,6 +19,18 @@
     "experiments": {
       "turboModules": true
     },
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "wonder",
+            "project": "wonder-7x",
+            "authToken": "2b29f2ffab704b56b36b2b6355dbc9bcfc9cc922a4234582bef53108cf0b3a8f"
+          }
+        }
+      ]
+    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -31,7 +43,7 @@
         "usesNonExemptEncryption": false
       },
       "bundleIdentifier": "co.wonder.wonderapp",
-      "buildNumber": "1.0.53",
+      "buildNumber": "1.0.56",
       "usesAppleSignIn": true
     },
     "android": {

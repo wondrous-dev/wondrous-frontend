@@ -151,66 +151,78 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
           askId: objectId
         }
       } else if (objectType === 'post') {
-        const postResponse = await apollo.query({
-          query: GET_POST_ITEM,
-          variables: {
-            postId: objectId
-          }
-        })
-        if (postResponse && postResponse.data && postResponse.data.getPostItem) {
-          navigation.push('Root', {
-            screen : tab || 'Profile',
-            params: {
-              screen: 'ProfileItem',
-              params: {
-                item: postResponse.data.getPostItem,
-                comment: true,
-                standAlone: true
-              }
+        try {
+          const postResponse = await apollo.query({
+            query: GET_POST_ITEM,
+            variables: {
+              postId: objectId
             }
           })
+          if (postResponse && postResponse.data && postResponse.data.getPostItem) {
+            navigation.push('Root', {
+              screen : tab || 'Profile',
+              params: {
+                screen: 'ProfileItem',
+                params: {
+                  item: postResponse.data.getPostItem,
+                  comment: true,
+                  standAlone: true
+                }
+              }
+            })
+          }
+        } catch (err) {
+          console.log('err', err)
         }
         break
       } else if (objectType === 'feed_comment') {
         // Fetch feed review id and then navigate there
-        const feedResponse = await apollo.query({
-          query: GET_FEED_ITEM_FOR_FEED_COMMENT,
-          variables: {
-            commentId: objectId
-          }
-        })
-        if (feedResponse && feedResponse.data && feedResponse.data.getFeedItemForFeedComment) {
-          navigation.push('Root', {
-            screen: tab || 'Profile',
-            params: {
-              screen: 'ProfileItem',
-              params: {
-                item: feedResponse.data.getFeedItemForFeedComment,
-                comment: true,
-                standAlone: true
-              }
+        try {
+          const feedResponse = await apollo.query({
+            query: GET_FEED_ITEM_FOR_FEED_COMMENT,
+            variables: {
+              commentId: objectId
             }
           })
+          if (feedResponse && feedResponse.data && feedResponse.data.getFeedItemForFeedComment) {
+            navigation.push('Root', {
+              screen: tab || 'Profile',
+              params: {
+                screen: 'ProfileItem',
+                params: {
+                  item: feedResponse.data.getFeedItemForFeedComment,
+                  comment: true,
+                  standAlone: true
+                }
+              }
+            })
+          }
+        } catch (err) {
+          console.log('err')
         }
         break
       } else if (objectType === 'review_comment') {
-        const reviewResponse = await apollo.query({
-          query: GET_REVIEW_FROM_REVIEW_COMMENT,
-          variables: {
-            commentId: objectId
-          }
-        })
-        if (reviewResponse && reviewResponse.data && reviewResponse.data.getReviewFromReviewComment) {
-          navigation.push('Root', {
-            screen: tab || 'Profile',
-            params: {
-              screen: 'ReviewPage',
-              params: {
-                initialReview: reviewResponse.data.getReviewFromReviewComment,
-                reviewId: reviewResponse.data.getReviewFromReviewComment.id
-              }
+        try {
+          const reviewResponse = await apollo.query({
+            query: GET_REVIEW_FROM_REVIEW_COMMENT,
+            variables: {
+              commentId: objectId
             }
           })
+          if (reviewResponse && reviewResponse.data && reviewResponse.data.getReviewFromReviewComment) {
+            navigation.push('Root', {
+              screen: tab || 'Profile',
+              params: {
+                screen: 'ReviewPage',
+                params: {
+                  initialReview: reviewResponse.data.getReviewFromReviewComment,
+                  reviewId: reviewResponse.data.getReviewFromReviewComment.id
+                }
+              }
+            })
+          }
+        } catch (err) {
+          console.log('err', err)
         }
         break
       } else if (objectType === 'review') {
@@ -236,87 +248,102 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
       break
     case 'reaction':
       if (objectType === 'feed_item') {
-        const feedItemResponse = await apollo.query({
-          query: GET_FEED_ITEM,
-          variables: {
-            feedItemId: objectId
-          }
-        })
-        if (feedItemResponse && feedItemResponse.data && feedItemResponse.data.getFeedItem) {
-          navigation.push('Root', {
-            screen: tab || 'Profile',
-            params: {
-              screen : 'ProfileItem',
-              params: {
-                item: feedItemResponse.data.getFeedItem,
-                comment: true,
-                standAlone: true
-              }
+        try {
+          const feedItemResponse = await apollo.query({
+            query: GET_FEED_ITEM,
+            variables: {
+              feedItemId: objectId
             }
           })
+          if (feedItemResponse && feedItemResponse.data && feedItemResponse.data.getFeedItem) {
+            navigation.push('Root', {
+              screen: tab || 'Profile',
+              params: {
+                screen : 'ProfileItem',
+                params: {
+                  item: feedItemResponse.data.getFeedItem,
+                  comment: true,
+                  standAlone: true
+                }
+              }
+            })
+          }
+        } catch (err) {
+          console.log('err', err)
         }
       } else if (objectType === 'feed_comment') {
-        console.log('objectId', notificationInfo)
-        const feedItemCommentResponse = await apollo.query({
-          query: GET_FEED_ITEM_FOR_FEED_COMMENT,
-          variables: {
-            commentId: objectId
-          }
-        })
-        if (feedItemCommentResponse?.data?.getFeedItemForFeedComment) {
-          navigation.push('Root', {
-            screen: tab || 'Profile',
-            params: {
-              screen : 'ProfileItem',
-              params: {
-                item: feedItemCommentResponse.data.getFeedItemForFeedComment,
-                comment: true,
-                standAlone: true
-              }
+        try {
+          const feedItemCommentResponse = await apollo.query({
+            query: GET_FEED_ITEM_FOR_FEED_COMMENT,
+            variables: {
+              commentId: objectId
             }
           })
-        } 
+          if (feedItemCommentResponse?.data?.getFeedItemForFeedComment) {
+            navigation.push('Root', {
+              screen: tab || 'Profile',
+              params: {
+                screen : 'ProfileItem',
+                params: {
+                  item: feedItemCommentResponse.data.getFeedItemForFeedComment,
+                  comment: true,
+                  standAlone: true
+                }
+              }
+            })
+          } 
+        } catch (err) {
+          console.log('err', err)
+        }
       }
       break
     case 'comment':
       if (objectType === 'feed_comment') {
-        const feedItemCommentResponse = await apollo.query({
-          query: GET_FEED_ITEM_FOR_FEED_COMMENT,
-          variables: {
-            commentId: objectId
-          }
-        })
-        if (feedItemCommentResponse && feedItemCommentResponse.data && feedItemCommentResponse.data.getFeedItemForFeedComment) {
-          navigation.push('Root', {
-            screen: tab || 'Profile',
-            params: {
-              screen : 'ProfileItem',
-              params: {
-                item: feedItemCommentResponse.data.getFeedItemForFeedComment,
-                comment: true,
-                standAlone: true
-              }
+        try {
+          const feedItemCommentResponse = await apollo.query({
+            query: GET_FEED_ITEM_FOR_FEED_COMMENT,
+            variables: {
+              commentId: objectId
             }
           })
-        } 
+          if (feedItemCommentResponse && feedItemCommentResponse.data && feedItemCommentResponse.data.getFeedItemForFeedComment) {
+            navigation.push('Root', {
+              screen: tab || 'Profile',
+              params: {
+                screen : 'ProfileItem',
+                params: {
+                  item: feedItemCommentResponse.data.getFeedItemForFeedComment,
+                  comment: true,
+                  standAlone: true
+                }
+              }
+            })
+          } 
+        } catch (err) {
+          console.log('err', err)
+        }
       } else if (objectType === 'review_comment') {
-        const reviewResponse = await apollo.query({
-          query: GET_REVIEW_FROM_REVIEW_COMMENT,
-          variables: {
-            commentId: objectId
-          }
-        })
-        if (reviewResponse && reviewResponse.data && reviewResponse.data.getReviewFromReviewComment) {
-          navigation.push('Root', {
-            screen: tab || 'Profile',
-            params: {
-              screen: 'ReviewPage',
-              params: {
-                initialReview: reviewResponse.data.getReviewFromReviewComment,
-                reviewId: reviewResponse.data.getReviewFromReviewComment.id
-              }
+        try {
+          const reviewResponse = await apollo.query({
+            query: GET_REVIEW_FROM_REVIEW_COMMENT,
+            variables: {
+              commentId: objectId
             }
           })
+          if (reviewResponse && reviewResponse.data && reviewResponse.data.getReviewFromReviewComment) {
+            navigation.push('Root', {
+              screen: tab || 'Profile',
+              params: {
+                screen: 'ReviewPage',
+                params: {
+                  initialReview: reviewResponse.data.getReviewFromReviewComment,
+                  reviewId: reviewResponse.data.getReviewFromReviewComment.id
+                }
+              }
+            })
+          }
+        } catch (err) {
+          console.log('err', err)
         }
       } 
       break
@@ -828,7 +855,11 @@ export const NotificationFeed = ({ route }) => {
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     if (refetch) {
-      refetch()
+      try {
+        refetch()
+      } catch (err) {
+        console.log('refetch err', err)
+      }
     }
     wait(2000).then(() => setRefreshing(false))
   }, [])
