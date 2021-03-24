@@ -368,11 +368,11 @@ function SearchScreen({
     }} />
     <Stack.Screen name='UserProfile' component={UserProfile}initialParams={{
       tab: 'Search'
-    }} />
+    }} options={{ gestureEnabled: false }} />
         <Stack.Screen name='OtherUserProfile' component={UserProfile}initialParams={{
       tab: 'Search'
     }} />
-    <Stack.Screen name='ProjectProfile' component={ProjectProfile} options={{ gestureEnabled: false }}initialParams={{
+    <Stack.Screen name='ProjectProfile' component={ProjectProfile} options={{ gestureEnabled: false }} initialParams={{
       tab: 'Search'
     }} />
     <Stack.Screen name='ProfileItem' component={FeedItem} initialParams={{
@@ -381,16 +381,16 @@ function SearchScreen({
     <Stack.Screen name='WorkflowWelcome' component={WorkflowWelcome} initialParams={{
       tab: 'Search'
     }} />
-    <Stack.Screen name='SetupGoal' component={SetupGoal} options={{ gestureEnabled: false }} initialParams={{
+    <Stack.Screen name='SetupGoal' component={SetupGoal} initialParams={{
       tab: 'Search'
     }}/>
-    <Stack.Screen name='SetupTask' component={SetupTask} options={{ gestureEnabled: false }} initialParams={{
+    <Stack.Screen name='SetupTask' component={SetupTask} initialParams={{
       tab: 'Search'
     }} />
     <Stack.Screen name='StreakIntro' component={StreakIntro} initialParams={{
       tab: 'Search'
     }} />
-    <Stack.Screen name='SetupAsk' component={SetupAsk} options={{gestureEnabled: false}} initialParams={{
+    <Stack.Screen name='SetupAsk' component={SetupAsk} initialParams={{
       tab: 'Search'
     }} />
     <Stack.Screen name='ProjectList' component={ProjectList} initialParams={{
@@ -408,16 +408,16 @@ function SearchScreen({
     <Stack.Screen name='Links' component={Links} initialParams={{
       tab: 'Search'
     }} />
-    <Stack.Screen name='GoalPage' component={GoalPage} options={{ gestureEnabled: false }} initialParams={{
+    <Stack.Screen name='GoalPage' component={GoalPage} initialParams={{
       tab: 'Search'
     }} />
-    <Stack.Screen name='TaskPage' component={TaskPage} options={{ gestureEnabled: false }} initialParams={{
+    <Stack.Screen name='TaskPage' component={TaskPage} initialParams={{
       tab: 'Search'
     }} />
     <Stack.Screen name='ActionList' component={ActionList} options={{ gestureEnabled: false }} initialParams={{
       tab: 'Search'
     }}/>
-    <Stack.Screen name='AskPage' component={AskPage} options={{ gestureEnabled: false }} initialParams={{
+    <Stack.Screen name='AskPage' component={AskPage} initialParams={{
       tab: 'Search'
     }}/>
     <Stack.Screen name='IdChecker' component={IdChecker}  initialParams={{

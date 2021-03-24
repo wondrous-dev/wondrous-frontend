@@ -79,6 +79,7 @@
     "react-native-draggable-flatlist": "^2.5.1",
     "react-native-dropdown-picker": "^3.7.8",
     "react-native-gesture-handler": "~1.7.0",
+    "react-native-icon-badge": "^1.1.3",
     "react-native-keyboard-aware-scroll-view": "^0.9.3",
     "react-native-modal": "^11.6.1",
     "react-native-pell-rich-editor": "^1.3.0",

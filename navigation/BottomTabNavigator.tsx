@@ -3,9 +3,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
 import { useRoute, NavigationState, useNavigationState } from '@react-navigation/native'
 import * as React from 'react'
-import { SafeAreaView, View, Pressable, StyleSheet } from 'react-native'
+import { SafeAreaView, View, Pressable, StyleSheet, Dimensions } from 'react-native'
+import IconBadge from 'react-native-icon-badge'
 
-import Colors, { Blue500, Blue400, Grey50, White, Grey400 } from '../constants/Colors'
+import Colors, { Blue500, Blue400, Grey50, White, Grey400, Red400 } from '../constants/Colors'
 import Dashboard from '../screens/Dashboard'
 import Search from '../screens/Search'
 import Add from '../screens/Add'
@@ -23,6 +24,7 @@ import { SvgImage } from '../storybook/stories/Image'
 import { flattenParams, spacingUnit } from '../utils/common'
 import { useQuery } from '@apollo/client'
 import { GET_UNREAD_NOTIFICATION_COUNT } from '../graphql/queries'
+import { RegularText } from '../storybook/stories/Text'
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>()
 
@@ -41,13 +43,13 @@ const bottomTabStyles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: White,
-    width: '100%',
     borderTopWidth: 1,
     borderTopColor: Grey400,
     padding: spacingUnit * 2,
-    paddingLeft: spacingUnit * 3,
-    paddingRight: spacingUnit * 3,
-    paddingBottom: spacingUnit * 5
+    paddingLeft: spacingUnit,
+    paddingRight: spacingUnit,
+    paddingBottom: spacingUnit * 4,
+    maxHeight: spacingUnit * 10
   }
 })
 
@@ -76,7 +78,6 @@ const TabBarIcon = ({ route, focused, color, size }) => {
 
 const TabBar = ({ state, descriptors, navigation, params }) => {
   const focusedOptions = descriptors[state.routes[state.index].key].options;
-
   if (focusedOptions.tabBarVisible === false) {
     return null;
   }
@@ -93,14 +94,34 @@ const TabBar = ({ state, descriptors, navigation, params }) => {
             : route.name
           const isFocused = state.index === index
           const onPress = () => {
-            const event = navigation.emit({
-              type: 'tabPress',
-              target: route.key,
-              canPreventDefault: true,
-            });
-  
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.push(route.name)
+            if (!isFocused) {
+              navigation.push('Root', {
+                screen: route.name
+              })
+            } else {
+              if (route.name === 'Dashboard') {
+                navigation.navigate('Root', {
+                  screen: route.name,
+                  params: {
+                    screen: 'Feed'
+                  }
+                })
+              } else if (route.name === 'Profile') {
+                navigation.navigate('Root', {
+                  screen: route.name,
+                  params: {
+                    screen: 'UserProfile',
+                    noGoingBack: true
+                  }
+                })
+              } else if (route.name !== 'Add') {
+                navigation.navigate('Root', {
+                  screen: route.name,
+                  params: {
+                    screen: 'Default'
+                  }
+                })
+              }
             }
           }
           const onLongPress = () => {
@@ -109,7 +130,7 @@ const TabBar = ({ state, descriptors, navigation, params }) => {
               target: route.key,
             });
           }
-
+          const unreadNotifCount = options?.tabBarBadge
           return (
             <Pressable
               accessibilityRole="button"
@@ -118,9 +139,45 @@ const TabBar = ({ state, descriptors, navigation, params }) => {
               testID={options.tabBarTestID}
               onPress={onPress}
               onLongPress={onLongPress}
-              // style={{ flex: 1 }}
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                position:'relative'
+              }}
             >
+              <View style={{
+                position: 'relative'
+              }}>
               <TabBarIcon route={route} focused={isFocused} />
+              <IconBadge
+                  MainElement={
+                    <View style={{
+                    width:50,
+                    height: 50,
+                    position: 'absolute'
+                  }} />
+                  }
+                  BadgeElement={
+                    <RegularText style={{
+                      fontSize: 12,
+                      lineHeight: 16
+                    }} color={White}>{unreadNotifCount}</RegularText>
+                  }
+                  IconBadgeStyle={
+                    {
+                    width:spacingUnit * 2.5,
+                    height: spacingUnit * 2.5,
+                    top: -32,
+                    right: -16,
+                    position: 'absolute',
+                    backgroundColor: Red400,
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }
+                  }
+                  Hidden={!unreadNotifCount}
+                  />
+                  </View>
             </Pressable>
           )
         })
@@ -134,10 +191,9 @@ export default function BottomTabNavigator() {
     fetchPolicy: 'network-only'
   })
   const unreadNotifCount = unreadNotifCountData && unreadNotifCountData.getUnreadNotificationCount && unreadNotifCountData.getUnreadNotificationCount.count
-
   return (
     <BottomTab.Navigator
-    // tabBar={props => <TabBar {...props} />}
+    tabBar={props => <TabBar {...props} />}
     // lazy={false}
     screenOptions={({ route }) => ({
       tabBarIcon: ({ focused, color, size }) => {
@@ -155,7 +211,9 @@ export default function BottomTabNavigator() {
             }}
           />)
           } else if (route.name === 'Notifications') {
-            return <NotificationIcon iconColor={focused ? Blue400 : Grey50} />
+            return (
+                <NotificationIcon iconColor={focused ? Blue400 : Grey50} />
+            )
           } else if (route.name === 'Profile') {
             return <ProfileIcon iconColor={focused ? Blue400 : Grey50} />
           }
@@ -186,13 +244,9 @@ export default function BottomTabNavigator() {
       <BottomTab.Screen
         name='Notifications'
         component={Notifications}
-        initialParams={{
-          screen: 'Default',
-        }}
         options={{
           tabBarColor: '#009387',
           tabBarBadge: unreadNotifCount !== 0 ? unreadNotifCount : null,                          // This is for bar Badge
-
         }}
       />
       <BottomTab.Screen
@@ -216,30 +270,3 @@ export default function BottomTabNavigator() {
 
 // Each tab has its own navigation stack, you can read more about this pattern here:
 // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
-const TabOneStack = createStackNavigator<TabOneParamList>()
-
-function TabOneNavigator() {
-  return (
-    <TabOneStack.Navigator>
-      <TabOneStack.Screen
-        name='TabOneScreen'
-        component={TabOneScreen}
-        options={{ headerTitle: 'Tab One Title' }}
-      />
-    </TabOneStack.Navigator>
-  )
-}
-
-const TabTwoStack = createStackNavigator<TabTwoParamList>()
-
-function TabTwoNavigator() {
-  return (
-    <TabTwoStack.Navigator>
-      <TabTwoStack.Screen
-        name='TabTwoScreen'
-        component={TabTwoScreen}
-        options={{ headerTitle: 'Tab Two Title' }}
-      />
-    </TabTwoStack.Navigator>
-  )
-}

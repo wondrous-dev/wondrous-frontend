@@ -27,7 +27,6 @@ interface ImageProps {
 export const CachedImage = props => {
   const { source: { uri }, cacheKey, setCachedImage } = props
   const [imgURI, setImgURI] = useState(null)
-  console.log('imgURI', imgURI)
   useEffect(() => {
     const loadImage = async () => {
       const hashed = await Crypto.digestStringAsync(
@@ -38,7 +37,6 @@ export const CachedImage = props => {
       const fileURI = `${FileSystem.cacheDirectory}${hashed}`
       try {
         // Use the cached image if it exists
-        console.log('fileURI', fileURI)
         const metadata = await FileSystem.getInfoAsync(fileURI)
         if (!metadata.exists) {
           // download to cache
@@ -46,7 +44,6 @@ export const CachedImage = props => {
             uri,
             fileURI
           )
-          console.log('result', result)
           setImgURI(fileURI)
           setCachedImage(fileURI)
         } else {
@@ -180,7 +177,7 @@ const getCacheImage = async ({ cacheKey, setCachedImage, getImage }) => {
     cacheKey
   )
   const filesystemURI = `${FileSystem.cacheDirectory}${hashed}`
-  console.log('post filesystem', filesystemURI)
+
   try {
     const metadata = await FileSystem.getInfoAsync(filesystemURI)
     if (!metadata.exists) {

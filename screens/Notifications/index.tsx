@@ -816,10 +816,6 @@ export const NotificationFeed = ({ route }) => {
   const [refreshing, setRefreshing] = React.useState(false);
   const user = useMe()
   const [notifications, setNotifications] = useState([])
-  const onRefresh = useCallback(() => {
-    setRefreshing(true)
-    wait(2000).then(() => setRefreshing(false))
-  }, [])
 
 
   const { loading, data, error, refetch, fetchMore } = useQuery(GET_NOTIFICATIONS, {
@@ -828,6 +824,12 @@ export const NotificationFeed = ({ route }) => {
   if (error) {
     console.log('Error fetching Notification', error)
   }
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true)
+    refetch()
+    wait(2000).then(() => setRefreshing(false))
+  }, [])
 
   useEffect(() => {
     if (data && data.getNotifications) {
@@ -934,11 +936,11 @@ function NotificationScreenRoutes({
       }} />
       <Stack.Screen name='UserProfile' component={UserProfile} initialParams={{
         tab: 'Notifications'
-      }} />
+      }} options={{ gestureEnabled: false }} />
       <Stack.Screen name='OtherUserProfile' component={UserProfile} initialParams={{
         tab: 'Notifications'
       }} />
-      <Stack.Screen name='ProjectProfile' component={ProjectProfile} options={{ gestureEnabled: false }}initialParams={{
+      <Stack.Screen name='ProjectProfile' component={ProjectProfile} options={{ gestureEnabled: false }} initialParams={{
         tab: 'Notifications'
       }} />
       <Stack.Screen name='ProfileItem' component={FeedItem} initialParams={{
@@ -947,16 +949,16 @@ function NotificationScreenRoutes({
       <Stack.Screen name='WorkflowWelcome' component={WorkflowWelcome} initialParams={{
         tab: 'Notifications'
       }} />
-      <Stack.Screen name='SetupGoal' component={SetupGoal} options={{ gestureEnabled: false }} initialParams={{
+      <Stack.Screen name='SetupGoal' component={SetupGoal} initialParams={{
         tab: 'Notifications'
       }}/>
-      <Stack.Screen name='SetupTask' component={SetupTask} options={{ gestureEnabled: false }} initialParams={{
+      <Stack.Screen name='SetupTask' component={SetupTask} initialParams={{
         tab: 'Notifications'
       }} />
       <Stack.Screen name='StreakIntro' component={StreakIntro} initialParams={{
         tab: 'Notifications'
       }} />
-      <Stack.Screen name='SetupAsk' component={SetupAsk} options={{gestureEnabled: false}} initialParams={{
+      <Stack.Screen name='SetupAsk' component={SetupAsk} initialParams={{
         tab: 'Notifications'
       }} />
       <Stack.Screen name='ProjectList' component={ProjectList} initialParams={{
@@ -974,16 +976,16 @@ function NotificationScreenRoutes({
       <Stack.Screen name='Links' component={Links} initialParams={{
         tab: 'Notifications'
       }} />
-      <Stack.Screen name='GoalPage' component={GoalPage} options={{ gestureEnabled: false }} initialParams={{
+      <Stack.Screen name='GoalPage' component={GoalPage} initialParams={{
         tab: 'Notifications'
       }} />
-      <Stack.Screen name='TaskPage' component={TaskPage} options={{ gestureEnabled: false }} initialParams={{
+      <Stack.Screen name='TaskPage' component={TaskPage} initialParams={{
         tab: 'Notifications'
       }} />
       <Stack.Screen name='ActionList' component={ActionList} options={{ gestureEnabled: false }} initialParams={{
         tab: 'Notifications'
       }}/>
-      <Stack.Screen name='AskPage' component={AskPage} options={{ gestureEnabled: false }} initialParams={{
+      <Stack.Screen name='AskPage' component={AskPage} initialParams={{
         tab: 'Notifications'
       }}/>
       <Stack.Screen name='ReviewWelcome' component={ReviewWelcome} initialParams={{

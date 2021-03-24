@@ -43,23 +43,23 @@ function DashboardScreen({
       <Stack.Screen name='Feed' component={Feed} initialParams={{ tab: 'Dashboard' }} />
       <Stack.Screen name='FeedItem' component={FeedItem} initialParams={{ tab: 'Dashboard' }} />
       <Stack.Screen name='OtherUserProfile' component={UserProfile} initialParams={{ tab: 'Dashboard' }} />
-      <Stack.Screen name='UserProfile' component={UserProfile} initialParams={{ tab: 'Dashboard' }} />
+      <Stack.Screen name='UserProfile' component={UserProfile} initialParams={{ tab: 'Dashboard' }} options={{ gestureEnabled: false }} />
       <Stack.Screen name='ProjectProfile' component={ProjectProfile} options={{ gestureEnabled: false }} initialParams={{ tab: 'Dashboard' }}/>
       <Stack.Screen name='ProfileItem' component={FeedItem} initialParams={{ tab: 'Dashboard' }} />
       <Stack.Screen name='WorkflowWelcome' component={WorkflowWelcome} />
-      <Stack.Screen name='SetupGoal' component={SetupGoal} options={{ gestureEnabled: false }} initialParams={{ tab: 'Dashboard' }} />
-      <Stack.Screen name='SetupTask' component={SetupTask} options={{ gestureEnabled: false }} initialParams={{ tab: 'Dashboard' }} />
+      <Stack.Screen name='SetupGoal' component={SetupGoal} initialParams={{ tab: 'Dashboard' }} />
+      <Stack.Screen name='SetupTask' component={SetupTask} initialParams={{ tab: 'Dashboard' }} />
       <Stack.Screen name='StreakIntro' component={StreakIntro} initialParams={{ tab: 'Dashboard' }} />
-      <Stack.Screen name='SetupAsk' component={SetupAsk} options={{gestureEnabled: false}} initialParams={{ tab: 'Dashboard' }} />
+      <Stack.Screen name='SetupAsk' component={SetupAsk} initialParams={{ tab: 'Dashboard' }} />
       <Stack.Screen name='ProjectList' component={ProjectList} initialParams={{ tab: 'Dashboard' }} />
       <Stack.Screen name='UserList' component={UserList} initialParams={{ tab: 'Dashboard' }} />
       <Stack.Screen name='EditProjectCategory' component={ProjectSetupCategory} initialParams={{ tab: 'Dashboard' }} />
       <Stack.Screen name='EditProjectTags' component={ProjectTagSelectionScreen} initialParams={{ tab: 'Dashboard' }} />
       <Stack.Screen name='Links' component={Links} initialParams={{ tab: 'Dashboard' }} />
-      <Stack.Screen name='GoalPage' component={GoalPage} options={{ gestureEnabled: false }} initialParams={{ tab: 'Dashboard' }}/>
-      <Stack.Screen name='TaskPage' component={TaskPage} options={{ gestureEnabled: false }} initialParams={{ tab: 'Dashboard' }}/>
+      <Stack.Screen name='GoalPage' component={GoalPage} initialParams={{ tab: 'Dashboard' }}/>
+      <Stack.Screen name='TaskPage' component={TaskPage} initialParams={{ tab: 'Dashboard' }}/>
       <Stack.Screen name='ActionList' component={ActionList} options={{ gestureEnabled: false }} initialParams={{ tab: 'Dashboard' }} />
-      <Stack.Screen name='AskPage' component={AskPage} options={{ gestureEnabled: false }} initialParams={{ tab: 'Dashboard' }} />
+      <Stack.Screen name='AskPage' component={AskPage} initialParams={{ tab: 'Dashboard' }} />
       <Stack.Screen name='IdChecker' component={IdChecker}  initialParams={{
         tab: 'Dashboard'
       }} /> 
