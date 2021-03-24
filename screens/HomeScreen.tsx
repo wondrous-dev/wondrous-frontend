@@ -36,7 +36,6 @@ function HomeScreen({
 }: StackScreenProps<RootStackParamList, 'Home'>) {
   const user = useMe()
   const { data } = useQuery(GET_LOGGED_IN_USER)
-  console.log('dat', data)
   const homeScreens = [
     {
       subheading: 'The social platform where builders crush their goals',
