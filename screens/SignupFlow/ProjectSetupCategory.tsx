@@ -294,7 +294,7 @@ function ProjectSetupCategoryScreen({
                     setup
                   })
                 } else {
-                  if (!user?.usageProgress?.projectCategorySelected) {
+                  if (!user?.usageProgress?.signupCompleted) {
                     navigation.push('Root', {
                       screen: 'Profile',
                       params: {

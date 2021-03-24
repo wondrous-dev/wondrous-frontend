@@ -373,7 +373,7 @@ function ProjectProfile({
           {/* <ProjectInfoText count={project.tasksCompleted} type='tasks completed' /> */}
         </View>
         <View style={[profileStyles.profileInfoContainer, {
-          marginTop: spacingUnit * 3
+          marginTop: spacingUnit * 3,
         }]}>
           <View style={profileStyles.profileHeader}>
           <Subheading style={{
@@ -385,7 +385,10 @@ function ProjectProfile({
           {
             projectOwnedByUser ?
             <>
-              <SecondaryButton style={profileStyles.editButton} onPress={() => setEditProfileModal(true)}>
+              <SecondaryButton style={{
+                ...profileStyles.editButton,
+                marginRight: spacingUnit
+              }} onPress={() => setEditProfileModal(true)}>
                 <RegularText color={Black}>
                   Edit Project
                 </RegularText>
@@ -393,8 +396,7 @@ function ProjectProfile({
               <PrimaryButton style={{
                 width: spacingUnit * 19,
                 paddingTop: 0,
-                paddingBottom: 0,
-                marginLeft: spacingUnit
+                paddingBottom: 0
               }} onPress={() => setInviteCollaboratorModal(true)}>
                 <RegularText color={White} >
                   Invite Collaborators

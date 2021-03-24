@@ -99,7 +99,9 @@ const SingleTag = ({ tagName, selected }) => {
             height: spacingUnit * 4,
             backgroundColor: backgroundColor,
             marginLeft: spacingUnit * 1.8,
-            justifyContent: 'center'
+            justifyContent: 'center',
+            paddingLeft: spacingUnit,
+            paddingRight: spacingUnit
         }
         }>
             <ButtonText style={{
@@ -209,7 +211,7 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                             }
                         })
                         if (edit) {
-                            navigation.navigate('Root', {
+                            navigation.push('Root', {
                                 screen: 'Profile',
                                 params: {
                                     screen: 'ProjectProfile',
@@ -221,15 +223,15 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                             })
                         } else {
                             if (finished) {
-                                if (!user?.usageProgress?.projectCategorySelected) {
-                                    navigation.navigate('Root', {
+                                if (!user?.usageProgress?.signupCompleted) {
+                                    navigation.push('Root', {
                                         screen: 'Profile',
                                         params: {
                                           screen: 'UserProfile'
                                         }
                                       })
                                 } else {
-                                    navigation.navigate('Root', {
+                                    navigation.push('Root', {
                                         screen: 'Profile',
                                         params: {
                                           screen: 'ProjectProfile',
@@ -243,15 +245,15 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                             } else {
                                 setFinished(true)
                                 setTimeout(() => {
-                                    if (!user?.usageProgress?.projectCategorySelected) {
-                                        navigation.navigate('Root', {
+                                    if (!user?.usageProgress?.signupCompleted) {
+                                        navigation.push('Root', {
                                             screen: 'Profile',
                                             params: {
                                               screen: 'UserProfile'
                                             }
                                           })
                                     } else {
-                                        navigation.navigate('Root', {
+                                        navigation.push('Root', {
                                             screen: 'Profile',
                                             params: {
                                               screen: 'ProjectProfile',

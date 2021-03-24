@@ -94,7 +94,7 @@ const UsernameInput = ({ navigation }) => {
         }
       </Subheading>
       <Formik
-        initialValues={{ username: user && user.username, fullName: '', }}
+        initialValues={{ username: user && user.username, fullName: `${user?.firstName} ${user?.lastName}`, }}
         onSubmit={async values => {
           if (!user.firstName && !values.fullName && !values.fullName.trim()) {
             setError('Please enter a name')
