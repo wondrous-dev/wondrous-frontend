@@ -846,7 +846,11 @@ export const NotificationFeed = ({ route }) => {
 
 
   const { loading, data, error, refetch, fetchMore } = useQuery(GET_NOTIFICATIONS, {
-    fetchPolicy: 'network-only'
+    fetchPolicy: 'network-only',
+    variables: {
+      limit: 10,
+      
+    }
   })
   if (error) {
     console.log('Error fetching Notification', error)
@@ -923,7 +927,7 @@ export const NotificationFeed = ({ route }) => {
                 }
               })
               if (result && result.data && result.data.getNotifications) {
-                setNotifications([...data?.getNotifications, ...result.data.getNotifications])
+                setNotifications([...(data?.getNotifications || []), ...result.data.getNotifications])
               }
             } catch (err) {
               console.log('err fetching more', err)
