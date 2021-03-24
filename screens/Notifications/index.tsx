@@ -899,9 +899,9 @@ export const NotificationFeed = ({ route }) => {
   return (
     <>
       <FlatList
-        contentContainerStyle={{
-          paddingBottom: spacingUnit * 10
-        }}
+        // contentContainerStyle={{
+        //   paddingBottom: spacingUnit * 10
+        // }}
         data={filteredNotifications && filteredNotifications.length > 0 ? filteredNotifications : welcomeObject}
         renderItem={({ item, index, separators }) => (
           <NotificationDisplay notificationInfo={item}  tab={tab} notifications={filteredNotifications} />
@@ -923,11 +923,12 @@ export const NotificationFeed = ({ route }) => {
             try {
               const result = await fetchMore({
                 variables: {
+                  limit: 10,
                   offset: notifications && notifications.length
                 }
               })
               if (result && result.data && result.data.getNotifications) {
-                setNotifications([...(data?.getNotifications || []), ...result.data.getNotifications])
+                setNotifications([...notifications, ...result.data.getNotifications])
               }
             } catch (err) {
               console.log('err fetching more', err)
