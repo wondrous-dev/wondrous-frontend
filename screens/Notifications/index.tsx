@@ -827,7 +827,9 @@ export const NotificationFeed = ({ route }) => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)
-    refetch()
+    if (refetch) {
+      refetch()
+    }
     wait(2000).then(() => setRefreshing(false))
   }, [])
 
@@ -890,7 +892,7 @@ export const NotificationFeed = ({ route }) => {
                 }
               })
               if (result && result.data && result.data.getNotifications) {
-                setNotifications([...data && data.getNotifications, ...result.data.getNotifications])
+                setNotifications([...data?.getNotifications, ...result.data.getNotifications])
               }
             } catch (err) {
               console.log('err fetching more', err)
