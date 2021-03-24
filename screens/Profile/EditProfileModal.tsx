@@ -224,8 +224,15 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                     </View>
                   }
                     <View style={profileStyles.changeRowContainer}>
-                      <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
-                        {user ? 'Username'  : 'Name'}
+                      <Paragraph color={Black} style={{
+                        ...profileStyles.changeRowParagraphText,
+                        ...(!user &&
+                          {
+                            width: spacingUnit * 13,
+                            marginRight: spacingUnit
+                          })
+                        }}>
+                        {user ? 'Username'  : 'Project Name'}
                       </Paragraph>
                       <TextInput
                           autoCapitalize = 'none'
@@ -236,7 +243,14 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                       />
                       </View>
                       <View style={profileStyles.changeRowContainer}>
-                        <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
+                        <Paragraph color={Black} style={{
+                        ...profileStyles.changeRowParagraphText,
+                        ...(!user &&
+                          {
+                            width: spacingUnit * 13,
+                            marginRight: spacingUnit
+                          })
+                        }}>
                           Bio
                         </Paragraph>
                         <TextInput
@@ -255,7 +269,14 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                         project &&
                         <>
                           <View style={profileStyles.changeRowContainer}>
-                            <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
+                            <Paragraph color={Black} style={{
+                        ...profileStyles.changeRowParagraphText,
+                        ...(!user &&
+                          {
+                            width: spacingUnit * 13,
+                            marginRight: spacingUnit
+                          })
+                        }}>
                               Category
                             </Paragraph>
                             <View style={profileStyles.editRowContainer}>
@@ -284,43 +305,60 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                             </Pressable>
                             </View>
                           </View>
-                          <View style={profileStyles.changeRowContainer}>
-                            <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
-                              Tags
-                            </Paragraph>
-                            <View style={profileStyles.editRowContainer}>
-                            <Paragraph color={project.tags ? Black : Grey800}>
-                              {project.tags ?
-                              capitalizeFirstLetter(project.tags.join(', '))
-                              :
-                              'None'}
-                            </Paragraph>
-                            <Pressable style={{
-                              // marginLeft: spacingUnit * 2
-                            }} onPress={() => {
-                              navigation.push('Root', {
-                                screen: route && route.params && route.params.tab || 'Profile',
-                                params: {
-                                  screen: 'EditProjectTags',
-                                  params: {
-                                    edit: true,
-                                    projectId: project.id,
-                                    existingTags: project.tags
-                                  }
-                                }
-                              })
-                              setModalVisible(false)
-                            }}>
-                              <Paragraph color={Blue400}>
-                                Edit
+                          {
+                              (project.category === 'tech' || project.category === 'business') &&
+                              <View style={profileStyles.changeRowContainer}>
+                              <Paragraph color={Black} style={{
+                        ...profileStyles.changeRowParagraphText,
+                        ...(!user &&
+                          {
+                            width: spacingUnit * 13,
+                            marginRight: spacingUnit
+                          })
+                        }}>
+                                Tags
                               </Paragraph>
-                            </Pressable>
+                              <View style={profileStyles.editRowContainer}>
+                              <Paragraph color={project.tags ? Black : Grey800}>
+                                {project.tags ?
+                                capitalizeFirstLetter(project.tags.join(', '))
+                                :
+                                'None'}
+                              </Paragraph>
+                              <Pressable style={{
+                                // marginLeft: spacingUnit * 2
+                              }} onPress={() => {
+                                navigation.push('Root', {
+                                  screen: route && route.params && route.params.tab || 'Profile',
+                                  params: {
+                                    screen: 'EditProjectTags',
+                                    params: {
+                                      edit: true,
+                                      projectId: project.id,
+                                      existingTags: project.tags
+                                    }
+                                  }
+                                })
+                                setModalVisible(false)
+                              }}>
+                                <Paragraph color={Blue400}>
+                                  Edit
+                                </Paragraph>
+                              </Pressable>
+                              </View>
                             </View>
-                          </View>
+                          }
                         </>
                       }
-                                              <View style={profileStyles.changeRowContainer}>
-                          <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
+                        <View style={profileStyles.changeRowContainer}>
+                          <Paragraph color={Black} style={{
+                        ...profileStyles.changeRowParagraphText,
+                        ...(!user &&
+                          {
+                            width: spacingUnit * 13,
+                            marginRight: spacingUnit
+                          })
+                        }}>
                             Website
                           </Paragraph>
                           <TextInput
@@ -335,7 +373,14 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                           />
                         </View>
                         <View style={profileStyles.changeRowContainer}>
-                          <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
+                          <Paragraph color={Black} style={{
+                        ...profileStyles.changeRowParagraphText,
+                        ...(!user &&
+                          {
+                            width: spacingUnit * 13,
+                            marginRight: spacingUnit
+                          })
+                        }}>
                             Twitter
                           </Paragraph>
                           <TextInput
@@ -350,7 +395,14 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                           />
                         </View>
                         <View style={profileStyles.changeRowContainer}>
-                          <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
+                          <Paragraph color={Black} style={{
+                        ...profileStyles.changeRowParagraphText,
+                        ...(!user &&
+                          {
+                            width: spacingUnit * 13,
+                            marginRight: spacingUnit
+                          })
+                        }}>
                             Instagram
                           </Paragraph>
                           <TextInput
@@ -365,7 +417,14 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                           />
                         </View>
                         <View style={profileStyles.changeRowContainer}>
-                          <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
+                          <Paragraph color={Black} style={{
+                        ...profileStyles.changeRowParagraphText,
+                        ...(!user &&
+                          {
+                            width: spacingUnit * 13,
+                            marginRight: spacingUnit
+                          })
+                        }}>
                             Linkedin
                           </Paragraph>
                           <TextInput
@@ -380,7 +439,14 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                           />
                         </View>
                         <View style={profileStyles.changeRowContainer}>
-                          <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
+                          <Paragraph color={Black} style={{
+                        ...profileStyles.changeRowParagraphText,
+                        ...(!user &&
+                          {
+                            width: spacingUnit * 13,
+                            marginRight: spacingUnit
+                          })
+                        }}>
                             Github
                           </Paragraph>
                           <TextInput

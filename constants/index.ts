@@ -5,3 +5,7 @@ export const MAX_VIDEO_LIMIT = 11000
 export const MUX_URL_PREFIX = 'https://stream.mux.com/'
 export const MUX_URL_ENDING = '.m3u8'
 export const PROJECT_NAME_CHAR_LIMIT = 40
+export const TWITTER_PREFIX = 'twitter.com/'
+export const INSTAGRAM_PREFIX = 'instagram.com/'
+export const LINKED_PREFIX = 'linkedin.com/in/'
+export const GITHUB_PREFIX = 'github.com/'
