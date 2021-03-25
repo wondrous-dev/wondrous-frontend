@@ -902,6 +902,7 @@ export const NotificationFeed = ({ route }) => {
         // contentContainerStyle={{
         //   paddingBottom: spacingUnit * 10
         // }}
+        onEndReachedThreshold ={1}
         data={filteredNotifications && filteredNotifications.length > 0 ? filteredNotifications : welcomeObject}
         renderItem={({ item, index, separators }) => (
           <NotificationDisplay notificationInfo={item}  tab={tab} notifications={filteredNotifications} />
@@ -919,6 +920,7 @@ export const NotificationFeed = ({ route }) => {
           />
         )}
         onEndReached={async () => {
+          console.log(notifications.length)
           if (fetchMore) {
             try {
               const result = await fetchMore({
