@@ -94,11 +94,15 @@ const TabBar = ({ state, descriptors, navigation, params }) => {
             : route.name
           const isFocused = state.index === index
           const onPress = () => {
-            if (!isFocused) {
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route.key,
+            })
+            if (!isFocused && !event.defaultPrevented) {
               navigation.push('Root', {
                 screen: route.name
               })
-            } else {
+            } else if (!event.defaultPrevented) {
               if (route.name === 'Dashboard') {
                 navigation.navigate('Root', {
                   screen: route.name,
