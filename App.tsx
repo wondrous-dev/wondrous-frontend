@@ -15,8 +15,7 @@ import { toastConfig } from './components/Toast'
 
 const STORYBOOK_START = false
 Sentry.init({
-  dsn: 'https://567606376574429a9108c9be9f7c1c48@o552479.ingest.sentry.io/5678347',
-  debug: true, // Sentry will try to print out useful debugging information if something goes wrong with sending an event. Set this to `false` in production.
+  dsn: 'https://567606376574429a9108c9be9f7c1c48@o552479.ingest.sentry.io/5678347'
 });
 
 // // Access any @sentry/react-native exports via:
@@ -25,6 +24,7 @@ Sentry.init({
 // // Access any @sentry/browser exports via:
 // Sentry.Browser.*
 
+// Sentry.Native.captureException(new Error("Test on prod"))
 // Render story book if you want to look at development
 export default function App() {
   const isLoadingComplete = useCachedResources()
