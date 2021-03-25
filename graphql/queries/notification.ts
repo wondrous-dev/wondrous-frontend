@@ -21,6 +21,7 @@ export const GET_NOTIFICATIONS = gql`
       actorId
       actorLastName
       actorProfilePicture
+      actorThumbnail
       actorUsername
       objectId
       objectType
