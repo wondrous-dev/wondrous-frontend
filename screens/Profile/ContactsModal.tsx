@@ -10,11 +10,12 @@ import { FlatList, TouchableOpacity } from 'react-native-gesture-handler'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { listStyles, profileStyles } from './style'
 import { White, Black, Blue400 } from '../../constants/Colors'
-import { RegularText, Subheading } from '../../storybook/stories/Text'
+import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SafeImage } from '../../storybook/stories/Image'
 import * as SMS from 'expo-sms'
 import { TESTFLIGHT_BETA_LINK } from '../../constants/index'
 import { useMe } from '../../components/withAuth'
+import { useNavigation } from '@react-navigation/core'
 
 const checkAndRequestsPermission = async ({ setPermissions }) => {
     const hasPermissions = await Contacts.getPermissionsAsync()
@@ -96,10 +97,11 @@ export const ContactsModal = ({ isVisible, setModalVisible }) => {
   const [permissions, setPermissions] = useState(null)
   const [contacts, setContacts] = useState([])
   const [searchString, setSearchString] = useState('')
+  const navigation = useNavigation()
   useEffect(() => {
     if (permissions === null && isVisible) {
       checkAndRequestsPermission({ setPermissions })
-    } else {
+    } else if (isVisible) {
       getContacts({ setContacts })
     }
   }, [permissions, isVisible])
@@ -158,6 +160,19 @@ export const ContactsModal = ({ isVisible, setModalVisible }) => {
 
             <SearchBar searchString={searchString} setSearchString={setSearchString} placeholder={'Search by username'} />
             </View>
+            {
+              (!filteredData || filteredData?.length === 0) &&
+              <Paragraph style={{
+                padding: spacingUnit * 2
+              }} onPress={() => navigation.push('Root', {
+                screen: 'Search',
+                params: {
+                  screen: 'Default'
+                }
+              })}>
+                Your list might be empty because you haven't allowed Wonder to sync your contacts. Please go to your phone settings to change this.
+              </Paragraph>
+            }
             <FlatList
               data={filteredData}
               contentContainerStyle={listStyles.listContainer}

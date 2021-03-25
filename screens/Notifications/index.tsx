@@ -920,7 +920,6 @@ export const NotificationFeed = ({ route }) => {
           />
         )}
         onEndReached={async () => {
-          console.log(notifications.length)
           if (fetchMore) {
             try {
               const result = await fetchMore({

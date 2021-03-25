@@ -14,7 +14,7 @@ import { ProfilePlaceholder } from './common'
 import { profileStyles } from './style'
 
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { MAX_BIO_LIMIT } from '../../constants'
+import { LINKED_PREFIX, MAX_BIO_LIMIT } from '../../constants'
 
 export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isVisible, setModalVisible }) => {
   const initialUsername = user && user.username
@@ -22,27 +22,27 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
   const initialLink = user && user.link
   const initialBio = (user && user.bio) || (project && project.description)
   const initialProfilePicture = (user?.thumbnailPicture || user?.profilePicture) || (project?.thumbnailPicture || project?.profilePicture)
-  const initialProjectWebsite = (project && project.links && project.links.website) || ''
-  const initialProjectTwitter = (project && project.links && project.links.twitter) || ''
-  const initialProjectInstagram = (project && project.links && project.links.instagram) || ''
-  const initialProjectLinkedin = (project && project.links && project.links.linkedin) || ''
-  const initialProjectGithub = (project && project.links && project.links.github) || ''
+  const initialWebsite = (user?.links?.website || project?.links?.website) || ''
+
+  const initialTwitter = (user?.links?.twitter || project?.links?.twitter) || ''
+  const initialInstagram = (user?.links?.instagram || project?.links?.instagram) || ''
+  const initialLinkedin = (user?.links?.linkedin || project?.links?.linkedin) || ''
+  const initialGithub = (user?.links?.github || project?.links?.github) || ''
   const initialName = user && `${user.firstName || ''} ${user.lastName || ''}` 
   const navigation = useNavigation()
   const route = useRoute()
   const [username, setUsername] = useState(initialUsername)
   const [fullName, setFullName] = useState(initialName)
-  const [projectName, setProjectName] = useState(initialProjectName)
+  const [projectName, setProjectName] = useState(`https://${initialProjectName}`)
   const [link, setLink] = useState(initialLink)
   const [bio, setBio] = useState(initialBio)
   const [profilePicture, setProfilePicture] = useState(initialProfilePicture)
   const [changePhoto, setChangePhoto] = useState(false)
-  const [projectWebsite, setProjectWebsite] = useState(initialProjectWebsite)
-  const [projectTwitter, setProjectTwitter] = useState(initialProjectTwitter)
-  const [projectInstagram, setProjectInstagram] = useState(initialProjectInstagram)
-  const [projectLinkedin, setProjectLinkedin] = useState(initialProjectLinkedin)
-  const [projectGithub, setProjectGithub] = useState(initialProjectGithub)
-
+  const [website, setProjectWebsite] = useState(initialWebsite)
+  const [projectTwitter, setProjectTwitter] = useState(initialTwitter)
+  const [instagram, setProjectInstagram] = useState(initialInstagram)
+  const [linkedin, setProjectLinkedin] = useState(initialLinkedin)
+  const [github, setProjectGithub] = useState(initialGithub)
   const resetState = useCallback(() => {
     setUsername(initialUsername)
     setLink(initialLink)
@@ -126,21 +126,21 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                   variableInputObj['firstName'] = firstName || ''
                   variableInputObj['lastName'] = lastName || ''
                 }
-                if (projectWebsite) {
-                  variableInputObj['links']['website'] = projectWebsite
+                if (website) {
+                  variableInputObj['links']['website'] = website
                 }
                 if (projectTwitter) {
                   variableInputObj['links']['twitter'] = projectTwitter
                 }
 
-                if (projectInstagram) {
-                  variableInputObj['links']['instagram'] = projectInstagram
+                if (instagram) {
+                  variableInputObj['links']['instagram'] = instagram
                 }
-                if (projectLinkedin) {
-                  variableInputObj['links']['linkedin'] = projectLinkedin
+                if (linkedin) {
+                  variableInputObj['links']['linkedin'] = linkedin
                 }
-                if (projectGithub) {
-                  variableInputObj['links']['github'] = projectGithub
+                if (github) {
+                  variableInputObj['links']['github'] = github
                 }
                 if (Object.keys(variableInputObj['links']).length === 0) {
                   variableInputObj['links'] = null
@@ -365,7 +365,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                           multiline
                           autoCapitalize = 'none'
                             onChangeText={text => setProjectWebsite(text)}
-                            value={projectWebsite}
+                            value={website}
                             placeholder='Add website'
                             style={[profileStyles.changeRowText, {
                               textTransform: 'lowercase'
@@ -388,7 +388,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                             onChangeText={text => setProjectTwitter(text)}
                             multiline
                             value={projectTwitter}
-                            placeholder='Add Twitter'
+                            placeholder='Add Twitter handle'
                             style={[profileStyles.changeRowText, {
                               textTransform: 'lowercase'
                             }]}
@@ -409,8 +409,8 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                             autoCapitalize = 'none'
                             onChangeText={text => setProjectInstagram(text)}
                             multiline
-                            value={projectInstagram}
-                            placeholder='Add Instagram'
+                            value={instagram}
+                            placeholder='Add Instagram handle'
                             style={[profileStyles.changeRowText, {
                               textTransform: 'lowercase'
                             }]}
@@ -431,8 +431,8 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                             autoCapitalize = 'none'
                             multiline
                             onChangeText={text => setProjectLinkedin(text)}
-                            value={projectLinkedin}
-                            placeholder='Add Linkedin'
+                            value={linkedin}
+                            placeholder='Add Linkedin username'
                             style={[profileStyles.changeRowText, {
                               textTransform: 'lowercase'
                             }]}
@@ -453,8 +453,8 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                             autoCapitalize = 'none'
                             multiline
                             onChangeText={text => setProjectGithub(text)}
-                            value={projectGithub}
-                            placeholder='Add Github'
+                            value={github}
+                            placeholder='Add Github username'
                             style={[profileStyles.changeRowText, {
                               textTransform: 'lowercase'
                             }]}
