@@ -190,12 +190,12 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                 <View style={{
                   alignItems: 'center'
                 }}>
+                <Pressable onPress={() => setChangePhoto(true)}>
                 <ProfilePlaceholder imageStyles={{
                   width: spacingUnit * 12,
                   height: spacingUnit * 12,
                   borderRadius: spacingUnit * 6
-                }} projectOwnedByUser={true} />
-                <Pressable onPress={() => setChangePhoto(true)}>
+                }} projectOwnedByUser={true} onPress={() => setChangePhoto(true)}/>
                   <Paragraph color={Blue400} style={{
                     marginTop: spacingUnit
                   }}>

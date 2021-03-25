@@ -26,13 +26,15 @@ import { GET_USER_STREAK } from '../../graphql/queries'
 import { updateUsageProgress } from '../../utils/apollo'
 import CoolProfilePlaceholder from '../../assets/images/default-profile.png'
 
-export const ProfilePlaceholder = ({ projectOwnedByUser, imageStyle, user }) => {
+export const ProfilePlaceholder = ({ projectOwnedByUser, imageStyle, user, onPress }) => {
   if (projectOwnedByUser) {
     const profileData = useProfile()
     return (
     <Pressable onPress={() => {
       if (profileData && profileData.setModalVisible) {
         profileData.setModalVisible(true)
+      } else if (onPress) {
+        onPress()
       }
     }}>
       <View style={{

@@ -8,7 +8,7 @@ import ConfettiCannon from 'react-native-confetti-cannon'
 import { withAuth, useMe } from '../../components/withAuth'
 import { ProfileTabParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { Black, Blue500, Grey300, White, Blue400, Grey800 } from '../../constants/Colors'
+import { Black, Blue500, Grey300, White, Blue400, Grey800, Purple } from '../../constants/Colors'
 import { profileStyles } from './style'
 import { GET_PROJECT_BY_ID, GET_PROJECT_FEED, GET_PROJECT_ACTIONS } from '../../graphql/queries/project'
 import { UPDATE_PROJECT, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_PROJECT, UNFOLLOW_PROJECT } from '../../graphql/mutations'
@@ -53,13 +53,14 @@ const TagView = ({ tag }) => {
 
   return (
     <View style={{
-      backgroundColor: Blue400,
+      backgroundColor: Purple,
       paddingLeft: spacingUnit,
       paddingRight: spacingUnit,
       paddingTop: 2,
       paddingBottom: 2,
       borderRadius: 4,
-      marginRight: spacingUnit * 2
+      marginRight: spacingUnit * 2,
+      marginTop: spacingUnit
     }}>
       <RegularText color={White}>
         {capitalizeFirstLetter(tag)}
@@ -467,11 +468,11 @@ function ProjectProfile({
           </Pressable>
         }
         <View style={{
-          marginTop: spacingUnit * 2,
+          marginTop: spacingUnit,
           flexDirection: 'row',
           flexWrap: 'wrap',
           paddingLeft: spacingUnit * 2,
-          paddingRight: spacingUnit * 2
+          paddingRight: 0
         }}>
           {
             project.category &&

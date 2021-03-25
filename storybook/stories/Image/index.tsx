@@ -1,4 +1,4 @@
-import { useLazyQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import React, { useEffect, useState } from 'react'
 import { Platform, Image, Pressable, View } from 'react-native'
 import { SvgXml } from "react-native-svg"
@@ -22,49 +22,6 @@ interface ImageProps {
   webStyle?: any
   srcElement?: any
   style?: any
-}
-
-export const CachedImage = props => {
-  const { source: { uri }, cacheKey, setCachedImage } = props
-  const [imgURI, setImgURI] = useState(null)
-  useEffect(() => {
-    const loadImage = async () => {
-      const hashed = await Crypto.digestStringAsync(
-        Crypto.CryptoDigestAlgorithm.SHA256,
-        cacheKey
-      )
-
-      const fileURI = `${FileSystem.cacheDirectory}${hashed}`
-      try {
-        // Use the cached image if it exists
-        const metadata = await FileSystem.getInfoAsync(fileURI)
-        if (!metadata.exists) {
-          // download to cache
-          const result = await FileSystem.downloadAsync(
-            uri,
-            fileURI
-          )
-          setImgURI(fileURI)
-          setCachedImage(fileURI)
-        } else {
-          setImgURI(fileURI)
-        }
-      } catch (err) {
-        setImgURI(uri)
-      }
-    }
-
-    loadImage()
-  }, [])// eslint-disable-line react-hooks/exhaustive-deps
-  return (
-    <Image
-    // eslint-disable-next-line react/jsx-props-no-spreading
-      {...props}
-      source={{
-        uri: imgURI,
-      }}
-    />
-  )
 }
 
 export const UploadImage = ({ isVisible, setModalVisible, image, setImage, saveImageMutation, imagePrefix, saveImageMutationVariable }) => {
@@ -171,64 +128,37 @@ export function SvgImage ({ width, height, webStyle, srcElement, style }) {
   )
 }
 
-const getCacheImage = async ({ cacheKey, setCachedImage, getImage }) => {
-  const hashed = await Crypto.digestStringAsync(
-    Crypto.CryptoDigestAlgorithm.SHA256,
-    cacheKey
-  )
-  const filesystemURI = `${FileSystem.cacheDirectory}${hashed}`
-
-  try {
-    const metadata = await FileSystem.getInfoAsync(filesystemURI)
-    if (!metadata.exists) {
-      getImage()
-    } else {
-      setCachedImage(filesystemURI)
-    }
-  } catch (err) {
-    getImage()
-  }
-}
-
 export const SafeImage = ({ src, style, defaultImage, setImage }) => {
-  const [getImage, { data, loading, error }] = useLazyQuery(GET_PREVIEW_IMAGE, {
+  const { data, loading, error } = useQuery(GET_PREVIEW_IMAGE, {
     variables: {
       path: src
-    },
-    fetchPolicy: 'network-only'
+    }
   })
   if (!src && defaultImage) {
     return <Image style={style} source={defaultImage} />
   }
-  const [cachedImage, setCachedImage] = useState(null)
+
 
   useEffect(() => {
-    if (cachedImage) {
-      if (setImage && !(src.startsWith('https') || src.startsWith('file://'))) {
-        setImage(cachedImage)
-      }
-    } else if (data && data.getPreviewImage && data.getPreviewImage.url) {
+    if (data && data.getPreviewImage && data.getPreviewImage.url) {
       if (setImage && !(src.startsWith('https') || src.startsWith('file://'))) {
         setImage(data.getPreviewImage.url)
       }
     }
-    if (!cachedImage && !data) {
-      getCacheImage({ cacheKey: src, setCachedImage, getImage })
-    }
-  }, [data, cachedImage])
+  }, [data])
 
   if (src.startsWith('https') || src.startsWith('file://')) {
-    return src.startsWith('file://') ? <Image style={style} key={src} source={{
-      uri: src
-    }} /> :
-    <CachedImage cacheKey={src} style={style} key={src} source={{
-      uri: src
+    return <Image key={src} style={style} source={{
+      uri: src,
+      cache: 'force-cache'
     }} />
-  } else if (cachedImage || data?.getPreviewImage?.url) {
-    return (<CachedImage cacheKey={src} style={style} key={src} setCachedImage={setCachedImage} source={{
-      uri: (cachedImage || data?.getPreviewImage?.url)
-    }} />)
+  } else if (data && data.getPreviewImage) {
+    return <Image style={style} key={data.getPreviewImage.url} source={{
+      uri: data.getPreviewImage.url,
+      cache: 'force-cache'
+    }} />
   }
+
   return null
 }
 
