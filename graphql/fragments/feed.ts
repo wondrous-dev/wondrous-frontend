@@ -15,6 +15,7 @@ export const ActivityFeedItem = gql`
     actorLastName
     actorUsername
     actorProfilePicture
+    actorThumbnail
     parentCommentId
     itemName
     itemContent
