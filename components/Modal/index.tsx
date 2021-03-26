@@ -285,7 +285,7 @@ export const TaskCongratsModal = ({ user, isVisible: task, setModalVisible,  }) 
     message = 'Well done for completing the task -'
     shareContent = 'Finished a goal on Wonder! Come see more of my progress'
   }
-  const shareUrl = `https://wonderapp.co/app/user/${user.id}`
+  const shareUrl = `https://wonderapp.co/app/user/${user?.id}`
   const [updateTask] = useMutation(UPDATE_TASK, {
     variables: {
       taskId: task && task.id
@@ -303,7 +303,7 @@ export const GoalCongratsModal = ({ user, isVisible: goal, setModalVisible }) =>
     message = 'Well done for completing the goal -'
     shareContent = 'Finished a goal on Wonder! Come see more of my progress'
   }
-  const shareUrl = `https://wonderapp.co/app/user/${user.id}`
+  const shareUrl = `https://wonderapp.co/app/user/${user?.id}`
   const [updateGoal] = useMutation(UPDATE_GOAL, {
     variables: {
       goalId: goal && goal.id

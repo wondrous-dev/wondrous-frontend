@@ -27,13 +27,8 @@ const StreakIcon = ({ streak, iconStyle }) => {
         ...iconStyles.emoji,
         ...iconStyle
       }} />
-    } else if (streak.currentStreak > 0) {
-      return <Smile style={{
-        ...iconStyles.emoji,
-        ...iconStyle
-      }} />
-    } else if (streak.currentStreak > 3) {
-      return <OpenMouthSmile style={{
+    } else if (streak.currentStreak > 9) {
+      return <Fire style={{
         ...iconStyles.emoji,
         ...iconStyle
       }} />
@@ -42,8 +37,13 @@ const StreakIcon = ({ streak, iconStyle }) => {
         ...iconStyles.emoji,
         ...iconStyle
       }} />
-    } else if (streak.currentStreak > 9) {
-      return <Fire style={{
+    } else if (streak.currentStreak > 3) {
+      return <OpenMouthSmile style={{
+        ...iconStyles.emoji,
+        ...iconStyle
+      }} />
+    } else if (streak.currentStreak > 0) {
+      return <Smile style={{
         ...iconStyles.emoji,
         ...iconStyle
       }} />

@@ -33,6 +33,7 @@ import {
 import Link from '../../assets/images/link'
 import { GET_ASKS_FROM_PROJECT, GET_USER_STREAK, WHOAMI } from '../../graphql/queries'
 import { sortByDueDate } from '../../utils/date'
+import ProfilePictureModal from './ProfilePictureModal'
 
 const TagView = ({ tag }) => {
   if (tag === 'ai_ml') {
@@ -82,6 +83,7 @@ function ProjectProfile({
   const [editProfileModal, setEditProfileModal] = useState(false)
   const [inviteCollaboratorModal, setInviteCollaboratorModal] = useState(false)
   const [profilePicture, setProfilePicture] = useState('')
+  const [profilePictureModal, setProfilePictureModal] = useState(false)
   const [projectFeed, setProjectFeed] = useState([])
   const [updateProject] = useMutation(UPDATE_PROJECT, {
     update(cache, { data }) {
@@ -329,13 +331,28 @@ function ProjectProfile({
     return (
       (
         <View style={profileStyles.profileContainer}>
+        {
+          !profilePicture && projectOwnedByUser && 
+          <RegularText style={{
+            paddingLeft: spacingUnit * 2,
+            paddingRight: spacingUnit * 2,
+            marginTop: spacingUnit * -1,
+            marginBottom: spacingUnit,
+            color: Grey800
+          }}>
+            Your project will only appear on our search page if there is a profile picture!  
+          </RegularText>
+        }
         <View style={[profileStyles.profileInfoContainer, {
           justifyContent: 'space-between',
         }]}>
+          
           <View style={profileStyles.imageContainer}>
           {
             profilePicture ?
-            <SafeImage style={profileStyles.profileImage} src={profilePicture || (project.thumbnailPicture || project.profilePicture)} />
+            <Pressable onPress={() => setProfilePictureModal(true)}>
+              <SafeImage style={profileStyles.profileImage} src={profilePicture || (project.thumbnailPicture || project.profilePicture)} />
+            </Pressable>
             :
             (
               project 
@@ -529,6 +546,8 @@ function ProjectProfile({
             <EditProfileModal project={project} isVisible={editProfileModal} setModalVisible={setEditProfileModal} saveMutation={updateProject} />
             </>
           }
+          <ProfilePictureModal profilePicture={project?.profilePicture} isVisible={profilePictureModal} setModalVisible={setProfilePictureModal} />
+
         <FlatList    refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }

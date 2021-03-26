@@ -41,6 +41,7 @@ import { GET_USER_REVIEWS } from '../../graphql/queries/review'
 import Settings from '../../assets/images/settings'
 import { SettingsModal } from '../../components/Modal/SettingsModal'
 import { ContactsModal } from './ContactsModal'
+import ProfilePictureModal from './ProfilePictureModal'
 
 const getUserId = ({ route, user }) => {
   if (route && route.params && route.params.userId) {
@@ -222,7 +223,7 @@ function UserProfile({
       })
     }
   })
-
+  const [profilePictureModal, setProfilePictureModal] = useState(false)
   const feedSelected = section === 'feed'
   const actionSelected = section === 'action'
   const asksSelected = section === 'asks'
@@ -385,12 +386,14 @@ function UserProfile({
                 <View style={profileStyles.imageContainer}>
                 {
                   profilePicture ?
+                  <Pressable onPress={() => setProfilePictureModal(true)}>
                   <SafeImage style={{
                     ...profileStyles.profileImage,
                     width: spacingUnit * 10,
                     height: spacingUnit * 10,
                     borderRadius: spacingUnit * 5
                   }} src={profilePicture || user.thumbnailPicture || user.profilePicture} setImage={setProfilePicture} />
+                  </Pressable>
                   :
                   (
                     user ?
@@ -589,7 +592,7 @@ function UserProfile({
         <ConfettiCannon count={200} origin={{x: -10, y: 0}} />
       }
       {
-        user &&
+        userOwned &&
         <>
         <EditProfileModal user={user} isVisible={isModalVisible} setModalVisible={setModalVisible} saveMutation={updateUser} />
 
@@ -599,6 +602,7 @@ function UserProfile({
         <ContactsModal isVisible={contactsModal} setModalVisible={setContactsModal} />
         </>
       }
+      <ProfilePictureModal profilePicture={user?.profilePicture} isVisible={profilePictureModal} setModalVisible={setProfilePictureModal} />
       <ProfileContext.Provider value={{
         section,
         setSection,
