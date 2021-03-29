@@ -10,3 +10,12 @@ export const CREATE_POST = gql`
   }
   ${PostFragment}
 `
+
+export const UPDATE_POST = gql`
+  mutation UpdatePost($input: PostInput) {
+    createPost(input: $input) {
+      ...PostFragment
+    }
+  }
+  ${PostFragment}
+`
