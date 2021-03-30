@@ -20,6 +20,7 @@ import { moderateScale } from '../../utils/scale'
 import { withAuth, useMe } from '../../components/withAuth'
 import { useMutation } from '@apollo/client'
 import { updateUsageProgress } from '../../utils/apollo';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const TagContext = createContext(null)
 
@@ -76,11 +77,12 @@ const projectTagStyles = StyleSheet.create({
     },
     tagsRowContainer: {
         flexDirection: 'row',
-        marginTop: spacingUnit * 2.75
+        marginTop: spacingUnit * 2.75,
+        justifyContent: 'space-around'
     }
 })
 
-const SingleTag = ({ tagName, selected }) => {
+const SingleTag = ({ tagName, selected, tagLength }) => {
     const textColor = selected ? White : Blue500
     const backgroundColor = selected ? Blue500 : White
     const {
@@ -95,13 +97,15 @@ const SingleTag = ({ tagName, selected }) => {
             borderStyle: 'solid',
             borderWidth: 2,
             borderRadius: 8,
-            minWidth: spacingUnit * 15,
             height: spacingUnit * 4,
+            ...(tagLength === 2 && {
+                marginLeft: spacingUnit * 2
+            }),
             backgroundColor: backgroundColor,
-            marginLeft: spacingUnit * 1.8,
             justifyContent: 'center',
             paddingLeft: spacingUnit,
-            paddingRight: spacingUnit
+            paddingRight: spacingUnit,
+            flex: 1
         }
         }>
             <ButtonText style={{
@@ -154,10 +158,15 @@ const ProjectTagInput = ({ navigation, projectId }) => {
     }
 
     const TagsRow = ({ tags }) => (
-        <View style={projectTagStyles.tagsRowContainer}>
+        <View style={{
+            ...projectTagStyles.tagsRowContainer,
+            ...{
+                width: tags?.length === 3 ? '100%' : 'auto'
+            }
+        }}>
             {tags.map(tag => (
                 <Pressable onPress={() => toggleTagSelection(tag.value)} key={tag.value}>
-                    <SingleTag selected={selectedTags[tag.value]} tagName={tag.displayName} />
+                    <SingleTag selected={selectedTags[tag.value]} tagName={tag.displayName} tagLength={tags?.length} />
                 </Pressable>
             ))}
         </View>
@@ -297,6 +306,9 @@ function ProjectTagSelectionScreen({
             <Header skip={edit ? null : 'Root'} skipParams={{
                 screen: 'Profile'
             }} />
+            <ScrollView style={{
+                flex: 1
+            }}>
             {
                 !edit &&
                 <View style={projectTagStyles.progressCircleContainer}>
@@ -339,6 +351,7 @@ function ProjectTagSelectionScreen({
             }}>
             <ProjectTagInput navigation={navigation} projectId={projectId} />
             </TagContext.Provider>
+            </ScrollView>
         </SafeAreaView>
     )
 }

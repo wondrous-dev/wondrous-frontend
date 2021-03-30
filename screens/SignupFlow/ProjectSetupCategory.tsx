@@ -29,6 +29,7 @@ import { UPDATE_PROJECT } from '../../graphql/mutations/project'
 import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
 import { withAuth, useMe } from '../../components/withAuth'
 import { updateUsageProgress } from '../../utils/apollo'
+import { ScrollView } from 'react-native-gesture-handler'
 
 const ProjectSetupCategoryContext = createContext(null)
 
@@ -233,6 +234,9 @@ function ProjectSetupCategoryScreen({
       backgroundColor: White,
       flex: 1
     }}>
+      <ScrollView style={{
+        marginBottom: spacingUnit * 2
+      }}>
       <ProjectSetupCategoryContext.Provider value={{
         projectCategory,
         setProjectCategory,
@@ -333,6 +337,7 @@ function ProjectSetupCategoryScreen({
               {edit ? 'Update' : 'Continue'}
             </ButtonText>
       </PrimaryButton>
+      </ScrollView>
     </SafeAreaView>
   )
 }
