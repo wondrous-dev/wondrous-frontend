@@ -675,7 +675,7 @@ const formatNotificationReactionMessage = (notificationInfo) => {
         }}>
             @{notificationInfo.actorUsername}{` `} 
             </RegularText>
-            reacted to your action.
+            liked your action.
         </RegularText>
       )
     case 'feed_comment':
@@ -686,7 +686,7 @@ const formatNotificationReactionMessage = (notificationInfo) => {
         }}>
             @{notificationInfo.actorUsername}{` `} 
             </RegularText>
-            reacted to your comment.
+            liked your comment.
         </RegularText>
       )
     default:

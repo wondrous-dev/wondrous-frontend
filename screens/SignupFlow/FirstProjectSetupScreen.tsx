@@ -204,7 +204,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                                 padding: 8,
                                 justifyContent: "flex-start"
                             }}
-                            placeholder='E.g. A platform where brands can reward users for ideas and feedback related to their products.'
+                            placeholder='Description - e.g. A platform where brands can reward users for ideas and feedback related to their products.'
                             placeholderTextColor={GreyPlaceHolder}
                             multiline={true}
                             numberOfLines={4}

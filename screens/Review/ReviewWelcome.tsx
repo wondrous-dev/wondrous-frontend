@@ -90,7 +90,7 @@ const checkCanCreateReview = (lastestReview) =>{
   }
   const createdAt = new Date(lastestReview.createdAt)
   const getDayFromReview = getDay(createdAt)
-  const diffInDays = differenceInDays(createdAt, new Date())
+  const diffInDays = Math.abs(differenceInDays(createdAt, new Date()))
   const today = getDay(new Date())
   if (checkReviewDay(today) && (diffInDays > 4 || (diffInDays === 4 && getDayFromReview === 1 && today === 5))) {
     return true

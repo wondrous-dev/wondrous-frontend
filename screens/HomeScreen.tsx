@@ -35,7 +35,9 @@ function HomeScreen({
   route
 }: StackScreenProps<RootStackParamList, 'Home'>) {
   const user = useMe()
-  const { data } = useQuery(GET_LOGGED_IN_USER)
+  const { data } = useQuery(GET_LOGGED_IN_USER, {
+    fetchPolicy: 'no-cache'
+  })
   const homeScreens = [
     {
       subheading: 'The social platform where builders crush their goals',
