@@ -46,14 +46,21 @@ export const redDate = (dueDate) => {
   return false
 }
 
-export const sortByDueDate = (arr) => {
+export const sortByDueDate = (arr, descending=false) => {
   arr.sort((a, b) => {
-    const aDate = new Date(a.dueDate)
-    const bDate = new Date(b.dueDate)
-    if (isAfter(bDate, aDate)) {
+    const aDate = new Date(descending ? a.completedAt : a.dueDate)
+    const bDate = new Date(descending ? b.completedAt : b.dueDate)
+    if (descending) {
+      if (isAfter(bDate, aDate)) {
+        return 1
+      }
       return -1
+    } else {
+      if (isAfter(bDate, aDate)) {
+        return -1
+      }
+      return 1
     }
-    return 1
   })
   return arr
 }

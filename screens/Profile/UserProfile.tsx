@@ -312,11 +312,11 @@ function UserProfile({
           return sortByDueDate([
             ...actions.goals,
             ...actions.tasks
-          ])
+          ], status === 'completed')
         } else if (actions && actions.goals) {
-          return sortByDueDate(actions.goals)
+          return sortByDueDate(actions.goals, status === 'completed')
         } else if ( actions && actions.tasks) {
-          return sortByDueDate(actions.tasks)
+          return sortByDueDate(actions.tasks, status === 'completed')
         }
         return []
       }
@@ -337,7 +337,7 @@ function UserProfile({
   const profileData = getCorrectData(section)
 
   const itemRefs = useRef(new Map())
-  
+  console.log('profileData', profileData)
   const onSwipeLeft = (item, type) => onSwipe({
     item,
     type,

@@ -273,11 +273,11 @@ function ProjectProfile({
           return sortByDueDate([
             ...actions.goals,
             ...actions.tasks
-          ])
+          ], status === 'completed')
         } else if (actions && actions.goals) {
-          return sortByDueDate(actions.goals)
+          return sortByDueDate(actions.goals, status === 'completed')
         } else if ( actions && actions.tasks) {
-          return sortByDueDate(actions.tasks)
+          return sortByDueDate(actions.tasks, status === 'completed')
         }
         return []
       }
