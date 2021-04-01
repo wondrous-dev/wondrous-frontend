@@ -7,7 +7,7 @@ import { Formik } from 'formik';
 
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { spacingUnit, extractFirstAndLastName } from '../../utils/common'
+import { spacingUnit, extractFirstAndLastName, capitalizeFirstLetter } from '../../utils/common'
 import { Black, White, Blue500, Red400, Grey100, Grey200, Grey300, GreyPlaceHolder } from '../../constants/Colors'
 import { Subheading, RegularText, ButtonText, ErrorText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
@@ -105,17 +105,20 @@ const UsernameInput = ({ navigation }) => {
               firstName,
               lastName 
             } = extractFirstAndLastName(values.fullName)
-
-            await updateUser({
-              variables: {
-                input: {
-                  username: values.username.trim().toLowerCase(),
-                  firstName,
-                  lastName
+            try {
+              await updateUser({
+                variables: {
+                  input: {
+                    username: values.username.trim().toLowerCase(),
+                    firstName,
+                    lastName
+                  }
                 }
-              }
-            })
-            navigation.push('FirstProjectSetup')
+              })
+              navigation.push('FirstProjectSetup')
+            } catch (err) {
+              setError(capitalizeFirstLetter(err?.message))
+            }
           }
         }}
       >
@@ -202,21 +205,22 @@ function UsernameSetupScreen({
           <Text style={usernameSetupStyles.stepCount}>step 1/4</Text>
         </View>
       </View>
-        {
-          error && <View style={{
-            alignItems: 'center'
-          }}>
-            <ErrorText>
-              {error}
-            </ErrorText>
-          </View>
-        }
       <UsernameContext.Provider value={{
         error,
         setError
       }}>
         <UsernameInput navigation={navigation} />
       </UsernameContext.Provider>
+      {
+          error && <View style={{
+            alignItems: 'center',
+            marginTop: spacingUnit
+          }}>
+            <ErrorText>
+              {error}
+            </ErrorText>
+          </View>
+        }
     </SafeAreaView>
   )
 }

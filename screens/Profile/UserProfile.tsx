@@ -337,7 +337,6 @@ function UserProfile({
   const profileData = getCorrectData(section)
 
   const itemRefs = useRef(new Map())
-  console.log('profileData', profileData)
   const onSwipeLeft = (item, type) => onSwipe({
     item,
     type,

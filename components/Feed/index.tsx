@@ -30,6 +30,7 @@ import Link from '../../assets/images/link'
 import Celebration from '../../assets/images/celebrations/signupConfetti.svg'
 import Options from '../../assets/images/options'
 import { StatusItem } from '../../screens/Profile/common'
+import { UPDATE_POST } from '../../graphql/mutations/post'
 
 const FeedItemTypes = [
   'id',
@@ -343,7 +344,7 @@ export const getNewExistingItems = ({ existingItems, liked, comment, item, readF
   return [...newExistingFeedComments]
 }
 
-export const DeleteCommentModal = ({ isVisible, setModalVisible, deleteMutation }) => {
+export const EditModal = ({ isVisible, setModalVisible, deleteMutation, string }) => {
   return (
     <FlexRowContentModal
     headerText='Delete comment'
@@ -444,12 +445,14 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
   const user = useMe()
   const navigation = useNavigation()
   const route = useRoute()
-
+  const {
+    objectType
+  } = item
   const [liked, setLiked] = useState(null)
   const [reactionCount, setReactionCount] = useState(Number(item.reactionCount) || 0)
   const [commentLiked, setCommentLiked] = useState(null)
   const [isModalVisible, setModalVisible] = useState(false)
-  const [deleteVisible, setDeleteVisible] = useState(false)
+  const [editVisible, setEditVisible] = useState(false)
   const previousReactionCount = usePrevious(item.reactionCount)
   const [status, setStatus] = useState(false)
   const pressComment = () => {
@@ -486,7 +489,8 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
       feedCommentId: item.id
     }
   })
-
+  const [editPost] = useMutation(UPDATE_POST) 
+  // const [editComment] = useMutation(UPDATE_COMMENT)
   const [reactFeedComment] = useMutation(REACT_FEED_COMMENT, {
     update(cache) {
       cache.modify({
@@ -572,10 +576,16 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
 
   const SHARE_URL = `https://wonderapp.co/app/feed/${item.id}`
   const CONTENT = 'Check this discussion from Wonder!'
-
+  let deleteMutation, editMutation
+  if (objectType === 'post') {
+    editMutation = editPost
+  }
+  if (comment) {
+    editMutation = editComment
+  }
   return (
     <>
-    <DeleteCommentModal isVisible={deleteVisible} setModalVisible={setDeleteVisible} deleteMutation={deleteFeedComment} />
+    <EditModal isVisible={editVisible} setModalVisible={setEditVisible} deleteMutation={deleteFeedComment} editMutation={editMutation} />
     <ShareModal isVisible={isModalVisible} url={SHARE_URL} content={CONTENT} setModalVisible={setModalVisible} />
     <View style={feedStyles.feedItemContainer}>
       <View style={feedStyles.feedItemName}>
@@ -604,7 +614,8 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
             fontFamily: 'Rubik SemiBold',
             lineHeight: spacingUnit * 2.5,
             flex: 1,
-            flexWrap: 'wrap'
+            flexWrap: 'wrap',
+            paddginRight: spacingUnit
           }} color={Black}
           onPress={() => {
             if (standAlone || comment) {
