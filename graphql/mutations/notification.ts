@@ -10,6 +10,14 @@ export const CREATE_NOTIFICATION_TOKEN = gql`
   }
 `
 
+export const UPDATE_NOTIFICATION_TOKEN = gql`
+  mutation UpdateNotificationToken($token: String!) {
+    updateNotificationToken(token: $token) {
+      success
+    }
+  }
+`
+
 export const MARK_NOTIFICATION_AS_VIEWED = gql`
   mutation MarkNotificationAsViewed($notificationId: ID!) {
     markNotificationAsViewed(notificationId: $notificationId) {

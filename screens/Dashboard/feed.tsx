@@ -7,15 +7,15 @@ import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { HomeFeed } from '../../components/Feed'
 import { White } from '../../constants/Colors'
-import { registerForPushNotificationsAsync } from '../../components/Notifications/RegisterNotification'
+import { checkAndUpdateNotificationToken } from '../../components/Notifications/RegisterNotification'
 
 function Feed({
   navigation
 }: StackScreenProps<RootStackParamList, 'Feed'>) {
   const user = useMe()
   React.useEffect(() => {
-    registerForPushNotificationsAsync(user?.id)
-  }, [])
+    checkAndUpdateNotificationToken(user?.notificationToken?.token)
+  }, [user])
   return (
     <>
     <SafeAreaView style={{
