@@ -615,7 +615,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, onLikePres
             lineHeight: spacingUnit * 2.5,
             flex: 1,
             flexWrap: 'wrap',
-            paddginRight: spacingUnit
+            paddingRight: spacingUnit * 2
           }} color={Black}
           onPress={() => {
             if (standAlone || comment) {
