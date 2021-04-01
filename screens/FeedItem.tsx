@@ -43,7 +43,8 @@ function FeedItemScreen({
   const { data, loading, error, fetchMore } = useQuery(GET_FEED_COMMENTS, {
     variables: {
       feedItemId: item.id
-    }
+    },
+    fetchPolicy: 'network-only'
   })
   const [createFeedComment] = useMutation(CREATE_FEED_COMMENT, {
     update(cache, { data: { createFeedComment }}) {
