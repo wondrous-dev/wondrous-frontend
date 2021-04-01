@@ -52,9 +52,16 @@ export const LoggedinUserFragment = gql`
     reactedFeedItems
     usersFollowing
     projectsFollowing
+  }
+  ${PublicUserFragment}
+`
+
+export const LoggedinUserWithTokenFragment = gql`
+  fragment LoggedinUserWithToken on User {
+    ...LoggedinUser
     notificationToken {
       token
     }
   }
-  ${PublicUserFragment}
+  ${LoggedinUserFragment}
 `

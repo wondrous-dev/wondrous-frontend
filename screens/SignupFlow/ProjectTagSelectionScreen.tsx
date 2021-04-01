@@ -78,7 +78,8 @@ const projectTagStyles = StyleSheet.create({
     tagsRowContainer: {
         flexDirection: 'row',
         marginTop: spacingUnit * 2.75,
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
+        paddingLeft: spacingUnit
     }
 })
 

@@ -38,11 +38,12 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
   const [bio, setBio] = useState(initialBio)
   const [profilePicture, setProfilePicture] = useState(initialProfilePicture)
   const [changePhoto, setChangePhoto] = useState(false)
-  const [website, setProjectWebsite] = useState(initialWebsite)
-  const [projectTwitter, setProjectTwitter] = useState(initialTwitter)
-  const [instagram, setProjectInstagram] = useState(initialInstagram)
-  const [linkedin, setProjectLinkedin] = useState(initialLinkedin)
-  const [github, setProjectGithub] = useState(initialGithub)
+  const [website, setWebsite] = useState(initialWebsite)
+  const [projectTwitter, setTwitter] = useState(initialTwitter)
+  const [instagram, setInstagram] = useState(initialInstagram)
+  const [linkedin, setLinkedin] = useState(initialLinkedin)
+  const [github, setGithub] = useState(initialGithub)
+
   const resetState = useCallback(() => {
     setUsername(initialUsername)
     setLink(initialLink)
@@ -54,7 +55,35 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
     if (initialProfilePicture && !profilePicture) {
       setProfilePicture(initialProfilePicture)
     }
-  }, [initialProfilePicture]) 
+    if (initialUsername) {
+      setUsername(initialUsername)
+    }
+    if (initialName) {
+      setFullName(initialName)
+    }
+    if (initialBio) {
+      setBio(initialBio)
+    }
+    if (initialTwitter) {
+      setTwitter(initialTwitter)
+    }
+
+    if (initialInstagram) {
+      setInstagram(initialInstagram)
+    }
+
+    if (initialLinkedin) {
+      setLinkedin(initialLinkedin)
+    }
+    if (initialGithub) {
+      setGithub(initialGithub)
+    }
+
+    if (initialWebsite) {
+      setWebsite(initialWebsite)
+    }
+
+  }, [initialProfilePicture, initialUsername, initialName, initialBio, initialTwitter, initialInstagram, initialLinkedin, initialGithub, initialWebsite]) 
   return (
     <Modal isVisible={isVisible}>
       {
@@ -364,7 +393,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                           <TextInput
                           multiline
                           autoCapitalize = 'none'
-                            onChangeText={text => setProjectWebsite(text)}
+                            onChangeText={text => setWebsite(text)}
                             value={website}
                             placeholder='Add website'
                             style={[profileStyles.changeRowText, {
@@ -385,7 +414,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                           </Paragraph>
                           <TextInput
                             autoCapitalize = 'none'
-                            onChangeText={text => setProjectTwitter(text)}
+                            onChangeText={text => setTwitter(text)}
                             multiline
                             value={projectTwitter}
                             placeholder='Add Twitter handle'
@@ -407,7 +436,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                           </Paragraph>
                           <TextInput
                             autoCapitalize = 'none'
-                            onChangeText={text => setProjectInstagram(text)}
+                            onChangeText={text => setInstagram(text)}
                             multiline
                             value={instagram}
                             placeholder='Add Instagram handle'
@@ -430,7 +459,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                           <TextInput
                             autoCapitalize = 'none'
                             multiline
-                            onChangeText={text => setProjectLinkedin(text)}
+                            onChangeText={text => setLinkedin(text)}
                             value={linkedin}
                             placeholder='Add Linkedin username'
                             style={[profileStyles.changeRowText, {
@@ -452,7 +481,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                           <TextInput
                             autoCapitalize = 'none'
                             multiline
-                            onChangeText={text => setProjectGithub(text)}
+                            onChangeText={text => setGithub(text)}
                             value={github}
                             placeholder='Add Github username'
                             style={[profileStyles.changeRowText, {

@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 
-import { PublicUserFragment, LoggedinUserFragment } from '../fragments/user'
+import { PublicUserFragment, LoggedinUserFragment, LoggedinUserWithTokenFragment } from '../fragments/user'
 import { AdditionalGoalFragment } from '../fragments/goal'
 import { PublicTaskFragment } from '../fragments/task'
 import { ActivityFeedItem } from '../fragments/feed'
@@ -18,10 +18,10 @@ export const WHOAMI = gql`
 export const GET_LOGGED_IN_USER = gql`
   query {
     getLoggedinUser {
-      ...LoggedinUser
+      ...LoggedinUserWithToken
     }
   }
-  ${LoggedinUserFragment}
+  ${LoggedinUserWithTokenFragment}
 `
 export const GET_USER_STREAK = gql`
   query GetUserStreak($userId: ID) {

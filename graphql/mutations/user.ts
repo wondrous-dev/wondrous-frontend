@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 
-import { PublicUserFragment, LoggedinUserFragment } from '../fragments/user'
+import { PublicUserFragment, LoggedinUserFragment, LoggedinUserWithTokenFragment } from '../fragments/user'
 
 export const SIGNUP = gql`
   mutation Signup($input: AuthInput!) {
@@ -29,11 +29,11 @@ export const EMAIL_SIGNIN = gql`
     emailSignin(input: $input) {
       token
       user {
-        ...LoggedinUser
+        ...LoggedinUserWithToken
       }
     }
   }
-  ${LoggedinUserFragment}
+  ${LoggedinUserWithTokenFragment}
 `
 export const UPDATE_USER = gql`
   mutation UpdateUser($input: UserUpdateInput!) {
