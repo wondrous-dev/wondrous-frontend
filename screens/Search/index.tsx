@@ -140,8 +140,8 @@ const ProjectDisplay = ({ item }) => {
     name,
     description,
     id,
-    collaborators,
-    followCount,
+    // collaborators,
+    // followCount,
     category
   } = item
   const navigation = useNavigation()
@@ -188,7 +188,7 @@ const ProjectDisplay = ({ item }) => {
       flexDirection: 'row',
       marginTop: spacingUnit,
     }}>
-      <View style={searchStyles.tags}>
+      {/* <View style={searchStyles.tags}>
         <RegularText color={Grey500}>
           <RegularText style={{
           fontFamily: 'Rubik SemiBold'
@@ -204,7 +204,7 @@ const ProjectDisplay = ({ item }) => {
           fontFamily: 'Rubik SemiBold'
         }}>{followCount} </RegularText> {followCount === 1 ? 'follower' : 'followers'}
         </RegularText>
-      </View>
+      </View> */}
       <View style={searchStyles.tags}>
         <RegularText color={Grey500} style={{
           fontFamily: 'Rubik SemiBold'

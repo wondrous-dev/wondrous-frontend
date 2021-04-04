@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 
-import { PublicProjectFragment } from '../fragments/project'
+import { PublicProjectFragment, ProjectWithTagsFragment } from '../fragments/project'
 import { AdditionalGoalFragment } from '../fragments/goal'
 import { PublicTaskFragment } from '../fragments/task'
 import { ActivityFeedItem } from '../fragments/feed'
@@ -27,10 +27,10 @@ export const GET_PROJECT_FEED = gql`
 export const GET_NEWEST_PROJECTS = gql`
   query GetNewestProjects($limit: Int, $offset: Int) {
     getNewestProjects(limit: $limit, offset: $offset) {
-      ...PublicProject
+      ...ProjectWithTags
     }
   }
-  ${PublicProjectFragment}
+  ${ProjectWithTagsFragment}
 `
 
 export const GET_USER_PROJECTS = gql`
