@@ -28,7 +28,8 @@ import {
   StatusSelector,
   DetermineUserProgress,
   renderProfileItem,
-  onSwipe
+  onSwipe,
+  getPinnedFeed
 } from './common'
 import Link from '../../assets/images/link'
 import { GET_ASKS_FROM_PROJECT, GET_USER_STREAK, WHOAMI } from '../../graphql/queries'
@@ -112,7 +113,9 @@ function ProjectProfile({
   } = useQuery(GET_PROJECT_FEED, {
     fetchPolicy: 'network-only',
     variables: {
-      projectId
+      projectId,
+      offset: 0,
+      limit: 10
     }
   })
 
@@ -261,7 +264,7 @@ function ProjectProfile({
 
   const getCorrectData = section => {
     if (section === 'feed') {
-      return projectFeed
+      return getPinnedFeed(projectFeed)
     } else if (section === 'action') {
       const actions = projectActionData && projectActionData.getProjectActions
       if (!(user && user.usageProgress && user.usageProgress.askCreated) && (actions && actions.goals.length === 0 && actions.tasks.length === 0)) {

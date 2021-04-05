@@ -341,7 +341,7 @@ export const FlexRowContentModal = ({ isVisible, headerText, children, setModalV
         </View>
         <SecondaryButton style={{
             backgroundColor: Grey150,
-            marginTop: spacingUnit * 4,
+            marginTop: spacingUnit * 2,
             alignSelf: 'center',
             maxWidth: Dimensions.get('window').width - (spacingUnit * 6),
             marginBottom: spacingUnit * 3,

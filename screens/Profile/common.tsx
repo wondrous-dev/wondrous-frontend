@@ -26,6 +26,31 @@ import { GET_USER_STREAK } from '../../graphql/queries'
 import { updateUsageProgress } from '../../utils/apollo'
 import CoolProfilePlaceholder from '../../assets/images/default-profile.png'
 
+export const getPinnedFeed = (initialFeed) => {
+  // Find pinned item
+  if (initialFeed?.length > 1 && initialFeed[0].pinned) {
+    // Dedupe
+    // const pinnedItem = initialFeed[0]
+    var seen = {}
+    var retArr = []
+    for (var i = 0; i < initialFeed.length; i++) {
+        if (!(initialFeed[i].id in seen)) {
+          if (initialFeed[i].pinned && i !== 0) {
+            retArr.push({
+              ...initialFeed[i],
+              pinned: false
+            })
+          } else {
+            retArr.push(initialFeed[i])
+          }
+            seen[initialFeed[i].id] = true
+        }
+    }
+    return retArr
+  } else {
+    return initialFeed
+  }
+}
 export const ProfilePlaceholder = ({ projectOwnedByUser, imageStyle, user, onPress }) => {
   if (projectOwnedByUser) {
     const profileData = useProfile()
@@ -308,7 +333,7 @@ export const STATUS_ARR = [
 
 export const renderProfileItem = ({ item, section, user, userOwned, navigation, projectId, itemRefs, onSwipeLeft, onSwipeRight, tab, loggedInUser }) => {
   if (section === 'feed') {
-    return renderItem({ item, navigation, screen: 'Root', params: {
+    return renderItem({ projectId, item, navigation, screen: 'Root', params: {
       screen: tab || 'Profile',
       params: {
         screen: 'ProfileItem',
@@ -319,7 +344,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
           standAlone: true
         }
       }
-    }   })
+    }})
   } else if ( section === 'action') {
     if (item === 'start' || item === 'none') {
       // return a button to set up work flow
@@ -617,10 +642,12 @@ export const onSwipe =({
       // if (loggedInUser && loggedInUser.usageProgress && !loggedInUser.usageProgress.goalCompleted) {
       //   setGoalCompleteModal(true)
       // }
-      setGoalCompleteModal({
-        id: item.id,
-        name: item.name
-      })
+      if (setGoalCompleteModal) {
+        setGoalCompleteModal({
+          id: item.id,
+          name: item.name
+        })
+      }
       completeGoal({
         variables: {
           goalId: item.id
@@ -682,14 +709,16 @@ export const onSwipe =({
       })
     }
   } else if (type === 'task') {
-    setTaskCompleteModal({
-      id: item.id,
-      name: item.name
-    })
+    if (setTaskCompleteModal) {
+      setTaskCompleteModal({
+        id: item?.id,
+        name: item?.name
+      })
+    }
     if (status === 'completed') {
       completeTask({
         variables: {
-          taskId: item.id
+          taskId: item?.id
         },
         update(cache) {
           if (project) {

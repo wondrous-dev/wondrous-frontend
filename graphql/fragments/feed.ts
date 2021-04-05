@@ -22,6 +22,7 @@ export const ActivityFeedItem = gql`
     commentCount
     reactionCount
     completedMessage
+    pinned
     media {
       images
       link

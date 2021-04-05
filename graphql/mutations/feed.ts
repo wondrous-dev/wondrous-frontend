@@ -33,3 +33,27 @@ export const REACT_FEED_COMMENT = gql`
     } 
   }
 `
+
+export const PIN_USER_FEED_ITEM = gql`
+  mutation PinUserFeedItem($feedItemId: String!, $userId: String) {
+    createUserPinnedFeed(feedItemId: $feedItemId, userId: $userId) {
+      success
+    }
+  }
+`
+
+export const PIN_PROJECT_FEED_ITEM = gql`
+  mutation PinProjectFeedItem($feedItemId: String!, $projectId: String) {
+    createProjectPinnedFeed(feedItemId: $feedItemId, projectId: $projectId) {
+      success
+    }
+  }
+`
+
+export const UNPIN_FEED_ITEM = gql`
+  mutation UnpinFeedItem($userId: String, $projectId: String) {
+    deletePinnedFeed(userId: $userId, projectId: $projectId) {
+      success
+    }
+  }
+`

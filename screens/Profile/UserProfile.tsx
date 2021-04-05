@@ -29,7 +29,8 @@ import {
   DetermineUserProgress,
   renderProfileItem,
   StatusSelector,
-  onSwipe
+  onSwipe,
+  getPinnedFeed
 } from './common'
 import { EditProfileModal } from './EditProfileModal'
 import Link from '../../assets/images/link'
@@ -162,10 +163,12 @@ function UserProfile({
     refetch: feedRefetch
   } = useQuery(GET_USER_FEED, {
     variables: {
-      userId: finalUserId
-    },
-    fetchPolicy: 'network-only'
+      userId: finalUserId,
+      limit: 10,
+      offset: 0
+    }
   })
+
   const [getUserActions, {
     loading: userActionLoading,
     data: userActionData,
@@ -287,7 +290,7 @@ function UserProfile({
       if (user && !isEqual(user, previousUser)) {
           setProfilePicture(user.thumbnailPicture || user.profilePicture)
       }
-      if (userFeedData && userFeedData.getUserFeed) {
+      if (userFeedData?.getUserFeed) {
         if (!isEqual(userFeedData.getUserFeed, prevFeed)) {
           setUserFeed(userFeedData.getUserFeed)
         }
@@ -297,12 +300,12 @@ function UserProfile({
           setReviews(userReviewData.getReviewsFromUser)
         }
       }
-  }, [user && (user.thumbnailPicture || user.profilePicture), feedSelected, actionSelected, asksSelected, finalUserId, status, userFeedData, userReviewData ])
+  }, [user && (user.thumbnailPicture || user.profilePicture), feedSelected, actionSelected, asksSelected, finalUserId, status, userFeedData?.getUserFeed, userReviewData ])
 
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo
   const getCorrectData = section => {
     if (section === 'feed') {
-      return userFeed
+      return getPinnedFeed(userFeed)
     } else if (section === 'action') {
       const actions = userActionData && userActionData.getUserActions
       if ((actions && actions.goals.length === 0 && actions.tasks.length === 0) && status === 'created') {

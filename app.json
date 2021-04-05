@@ -43,7 +43,7 @@
         "usesNonExemptEncryption": false
       },
       "bundleIdentifier": "co.wonder.wonderapp",
-      "buildNumber": "1.0.70",
+      "buildNumber": "1.0.71",
       "usesAppleSignIn": true
     },
     "android": {
