@@ -15,6 +15,7 @@ import { RegularText } from '../Text'
 import { spacingUnit, setDeepVariable } from '../../../utils/common'
 import Camera from '../../../components/Camera'
 import { uploadMedia, getFilenameAndType } from '../../../utils/image'
+import PictureModal from '../../../components/Modal/PictureModal'
 
 interface ImageProps {
   width?: String
@@ -188,6 +189,77 @@ const getCacheImage = async ({ cacheKey, setCachedImage, getImage }) => {
   } catch (err) {
     getImage()
   }
+}
+
+export const ModalImage = ({ src, style, defaultImage, setImage }) => {
+  const [getImage, { data, loading, error }] = useLazyQuery(GET_PREVIEW_IMAGE, {
+    variables: {
+      path: src
+    },
+    fetchPolicy: 'network-only'
+  })
+  if (!src && defaultImage) {
+    return <Image style={style} source={defaultImage} />
+  }
+  const [pictureModal, setPictureModal] = useState(false)
+  const [cachedImage, setCachedImage] = useState(null)
+
+  useEffect(() => {
+    if (cachedImage) {
+      if (setImage && !(src.startsWith('https') || src.startsWith('file://'))) {
+        setImage(cachedImage)
+      }
+    } else if (data && data.getPreviewImage && data.getPreviewImage.url) {
+      if (setImage && !(src.startsWith('https') || src.startsWith('file://'))) {
+        setImage(data.getPreviewImage.url)
+      }
+    }
+    if (!cachedImage && !data) {
+      getCacheImage({ cacheKey: src, setCachedImage, getImage })
+    }
+  }, [data, cachedImage])
+
+  const openPictureModal = () => {
+    setPictureModal(true)
+  }
+
+  if (src.startsWith('https') || src.startsWith('file://')) {
+    return src.startsWith('file://') ? 
+    <>
+    <PictureModal isVisible={pictureModal} setModalVisible={setPictureModal} picture={src} />
+    <Pressable onPress={openPictureModal} style={{
+      flex: 1
+    }}></Pressable>
+    <Image style={style} key={src} source={{
+      uri: src
+    }} /> 
+    </>
+    :
+    <>
+    <PictureModal isVisible={pictureModal} setModalVisible={setPictureModal} picture={src} />
+    <Pressable onPress={openPictureModal} style={{
+      flex: 1
+    }}>
+    <CachedImage cacheKey={src} style={style} key={src} source={{
+      uri: src
+    }} />
+    </Pressable>
+    </>
+  } else if (cachedImage || data?.getPreviewImage?.url) {
+    return (
+      <>
+      <PictureModal isVisible={pictureModal} setModalVisible={setPictureModal} picture={cachedImage || data?.getPreviewImage?.url} />
+      <Pressable onPress={openPictureModal} style={{
+        flex: 1
+      }}>
+      <CachedImage cacheKey={src} style={style} key={src} setCachedImage={setCachedImage} source={{
+        uri: (cachedImage || data?.getPreviewImage?.url)
+      }} />
+      </Pressable>
+      </>
+    )
+  }
+  return null
 }
 
 export const SafeImage = ({ src, style, defaultImage, setImage }) => {

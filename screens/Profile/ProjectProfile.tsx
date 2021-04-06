@@ -353,8 +353,10 @@ function ProjectProfile({
           <View style={profileStyles.imageContainer}>
           {
             profilePicture ?
-            <Pressable onPress={() => setProfilePictureModal(true)}>
-              <SafeImage style={profileStyles.profileImage} src={profilePicture || (project.thumbnailPicture || project.profilePicture)} />
+            <Pressable onPress={() => {
+              setProfilePictureModal(true)
+            }}>
+              <SafeImage profilePicture style={profileStyles.profileImage} src={profilePicture || (project.thumbnailPicture || project.profilePicture)} />
             </Pressable>
             :
             (

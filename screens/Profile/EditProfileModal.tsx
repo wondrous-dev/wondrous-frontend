@@ -15,6 +15,8 @@ import { profileStyles } from './style'
 
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { LINKED_PREFIX, MAX_BIO_LIMIT } from '../../constants'
+import { projectTags } from '../SignupFlow/ProjectTagSelectionScreen'
+import { projectTagHash } from '../../constants/projectTag'
 
 export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isVisible, setModalVisible }) => {
   const initialUsername = user && user.username
@@ -84,6 +86,8 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
     }
 
   }, [initialProfilePicture, initialUsername, initialName, initialBio, initialTwitter, initialInstagram, initialLinkedin, initialGithub, initialWebsite]) 
+  const cleanedTags = project?.tags?.map(tag => projectTagHash[tag])
+
   return (
     <Modal isVisible={isVisible}>
       {
@@ -349,8 +353,8 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                               </Paragraph>
                               <View style={profileStyles.editRowContainer}>
                               <Paragraph color={project.tags ? Black : Grey800}>
-                                {project.tags ?
-                                capitalizeFirstLetter(project.tags.join(', '))
+                                {cleanedTags ?
+                                capitalizeFirstLetter(cleanedTags.join(', '))
                                 :
                                 'None'}
                               </Paragraph>

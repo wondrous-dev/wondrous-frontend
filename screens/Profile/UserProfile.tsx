@@ -394,7 +394,7 @@ function UserProfile({
                     width: spacingUnit * 10,
                     height: spacingUnit * 10,
                     borderRadius: spacingUnit * 5
-                  }} src={profilePicture || user.thumbnailPicture || user.profilePicture} setImage={setProfilePicture} />
+                  }} profilePicture src={profilePicture || user.thumbnailPicture || user.profilePicture} setImage={setProfilePicture} />
                   </Pressable>
                   :
                   (

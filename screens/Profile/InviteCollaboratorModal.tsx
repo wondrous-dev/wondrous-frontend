@@ -40,7 +40,7 @@ const CollaboratorItem = ({ item, project, initialInvited, projectInvites, setMo
                 id: project.id
               },
               invitor: {
-                id: user.id
+                id: user?.id
               },
               invitee: {
                 id: item.id

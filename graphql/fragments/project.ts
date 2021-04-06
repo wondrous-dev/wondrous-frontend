@@ -47,6 +47,10 @@ export const ProjectWithTagsFragment = gql`
     createdBy
     tags
     category
+    creator {
+      id
+      username
+    }
     links {
       website
       linkedin

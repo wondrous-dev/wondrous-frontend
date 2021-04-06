@@ -23,7 +23,7 @@ import { updateUsageProgress } from '../../utils/apollo'
 
 const TagContext = createContext(null)
 
-const tags = [
+const projectTags = [
     { value: 'fintech', displayName: 'Fintech' },
     { value: 'consumer', displayName: 'Consumer' },
     { value: 'ai_ml', displayName: 'AI/ML' },
@@ -174,13 +174,13 @@ const ProjectTagInput = ({ navigation, projectId }) => {
     // split tags into groups of thress
     let i, chunk = 2;
     const tagRows = [] // <- [[3 tags], [3 tags]... ]
-    for (i = 0; i < tags.length; i += chunk) {
+    for (i = 0; i < projectTags.length; i += chunk) {
         if (chunk === 2) {
             chunk = 3
         } else if (chunk === 3) {
             chunk = 2
         }
-        tagRows.push(tags.slice(i, i + chunk));
+        tagRows.push(projectTags.slice(i, i + chunk));
     }
 
     return (

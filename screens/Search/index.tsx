@@ -35,6 +35,7 @@ import AskPage from '../Actions/Ask'
 import ActionList from '../Actions/ActionList'
 import IdChecker from '../Profile/IdChecker'
 import ReviewPage from '../Review/ReviewPage'
+import { projectTagHash } from '../../constants/projectTag'
 
 const Stack = createStackNavigator()
 
@@ -142,10 +143,11 @@ const ProjectDisplay = ({ item }) => {
     id,
     // collaborators,
     // followCount,
-    category
+    tags,
+    category,
+    creator
   } = item
   const navigation = useNavigation()
-
   return (
     <Pressable key={item.id} style={{
       paddingLeft: spacingUnit * 2,
@@ -177,7 +179,21 @@ const ProjectDisplay = ({ item }) => {
 
           fontFamily: 'Rubik SemiBold'
         }}>
-          {name}
+          {name.trim()} <Paragraph>
+            created by
+          </Paragraph> <Paragraph style={{
+            fontFamily: 'Rubik SemiBold'
+          }} onPress={() => navigation.push('Root', {
+            screen: 'Search',
+            params: {
+              screen: 'UserProfile',
+              params: {
+                userId: creator?.id
+              }
+            }
+          })}>
+            {creator?.username}
+          </Paragraph>
         </Paragraph>
         <Paragraph color={Black}>
           {description}
@@ -212,6 +228,17 @@ const ProjectDisplay = ({ item }) => {
         {capitalizeFirstLetter(category)}
         </RegularText>
       </View>
+      {
+        tags && tags.map(tag => (
+          <View style={searchStyles.tags}>
+          <RegularText color={Grey500} style={{
+            fontFamily: 'Rubik SemiBold'
+          }}>
+          {capitalizeFirstLetter(projectTagHash[tag])}
+          </RegularText>
+        </View>
+        ))
+      }
     </View>
     </Pressable>
   )
