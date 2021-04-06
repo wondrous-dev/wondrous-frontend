@@ -250,7 +250,7 @@ export default function BottomTabNavigator() {
         component={Notifications}
         options={{
           tabBarColor: '#009387',
-          tabBarBadge: unreadNotifCount !== 0 ? unreadNotifCount : null,                          // This is for bar Badge
+          tabBarBadge: unreadNotifCount !== 0 ? (unreadNotifCount > 9 ? '9+' : unreadNotifCount) : null,                          // This is for bar Badge
         }}
       />
       <BottomTab.Screen

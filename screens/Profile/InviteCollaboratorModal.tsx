@@ -1,9 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { SafeAreaView, ScrollView, View, Image, StyleSheet, Dimensions, Platform, TextInput, TouchableOpacity, Pressable } from 'react-native'
+import { SafeAreaView, FlatList, View, Image, StyleSheet, Dimensions, Platform, TextInput, TouchableOpacity, Pressable } from 'react-native'
 import Modal from 'react-native-modal'
 import { useMutation, useQuery } from '@apollo/client'
-import { toDate } from 'date-fns'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300, Grey300 } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
@@ -17,7 +15,6 @@ import { listStyles, profileStyles } from './style'
 import { SearchBar } from '../../components/Header'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { GET_PROJECT_INVITES, GET_USER_FOLLOWERS, GET_USER_FOLLOWING } from '../../graphql/queries'
-import { FlatList } from 'react-native-gesture-handler'
 import { INVITE_COLLABORATOR } from '../../graphql/mutations'
 
 

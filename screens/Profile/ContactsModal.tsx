@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, View, Image, Pressable } from 'react-native'
+import { SafeAreaView, View, Image, Pressable, FlatList, TouchableOpacity } from 'react-native'
 import Modal from 'react-native-modal'
 import * as Contacts from 'expo-contacts'
 
 import { modalStyles } from '../../components/Modal/common'
 import { spacingUnit } from '../../utils/common'
 import { SearchBar } from '../../components/Header'
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { listStyles, profileStyles } from './style'
 import { White, Black, Blue400 } from '../../constants/Colors'

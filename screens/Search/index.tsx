@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { SafeAreaView, TextInput, View, TouchableWithoutFeedback, Keyboard, Image, Pressable, StyleSheet, RefreshControl } from 'react-native'
+import { SafeAreaView, FlatList, View, TouchableWithoutFeedback, Keyboard, Image, Pressable, StyleSheet, RefreshControl } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
 
 import SearchIcon from '../../assets/images/bottomNav/search'
@@ -33,7 +33,6 @@ import GoalPage from '../Actions/Goal'
 import TaskPage from '../Actions/Task'
 import AskPage from '../Actions/Ask'
 import ActionList from '../Actions/ActionList'
-import { FlatList } from 'react-native-gesture-handler'
 import IdChecker from '../Profile/IdChecker'
 import ReviewPage from '../Review/ReviewPage'
 

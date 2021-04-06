@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { StyleSheet, View, TouchableOpacity, Text, Image, SafeAreaView, Dimensions, Pressable, TextInput } from 'react-native'
+import { ScrollView, StyleSheet, View, TouchableOpacity, Text, Image, SafeAreaView, Dimensions, Pressable, TextInput } from 'react-native'
 import ProgressCircle from 'react-native-progress-circle'
 import { Formik } from 'formik';
 
@@ -19,8 +19,7 @@ import { PrimaryButton } from '../../storybook/stories/Button'
 import { moderateScale } from '../../utils/scale'
 import { withAuth, useMe } from '../../components/withAuth'
 import { useMutation } from '@apollo/client'
-import { updateUsageProgress } from '../../utils/apollo';
-import { ScrollView } from 'react-native-gesture-handler';
+import { updateUsageProgress } from '../../utils/apollo'
 
 const TagContext = createContext(null)
 

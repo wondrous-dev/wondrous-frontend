@@ -1,8 +1,7 @@
 import React, { useRef, useState } from 'react'
-import { SafeAreaView, View, StyleSheet, Pressable, Dimensions } from 'react-native'
+import { SafeAreaView, View, StyleSheet, Pressable, FlatList } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack'
 import { useQuery, useMutation } from '@apollo/client'
-import { FlatList } from 'react-native-gesture-handler'
 
 import { Paragraph, Subheading } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
@@ -19,7 +18,6 @@ import { CREATE_GOAL } from '../../graphql/mutations'
 import { GET_GOALS_FROM_PROJECT, GET_USER_STREAK } from '../../graphql/queries'
 import { CardList } from '../../storybook/stories/CardList'
 import { Card } from '../../storybook/stories/Card'
-// import { FlatList } from 'react-native-gesture-handler'
 import { WHOAMI } from '../../graphql/queries'
 import { updateUsageProgress } from '../../utils/apollo'
 

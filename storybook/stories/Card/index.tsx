@@ -6,12 +6,11 @@ import {
   StyleSheet,
   Platform,
   UIManager,
-  TouchableOpacity,
   Dimensions,
   Pressable,
-  LayoutAnimation
+  LayoutAnimation,
+  TouchableWithoutFeedback
 } from 'react-native'
-import { TouchableHighlight, TouchableOpacity as RNGHTouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler"
 import Animated, { withDecay } from "react-native-reanimated"
 
 import { Grey400, Blue400, Green400, White, Grey450, Purple, Red400, Yellow300, Grey300, Grey800 } from '../../../constants/Colors'
