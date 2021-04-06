@@ -9,7 +9,7 @@ import { TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { spacingUnit } from '../../utils/common'
-import { Black, Grey900, White, Blue500, Yellow300, Grey300, Grey500, GreyPlaceHolder } from '../../constants/Colors'
+import { Black, Grey900, White, Blue400, Blue500, Yellow300, Grey300, Grey500, GreyPlaceHolder } from '../../constants/Colors'
 import { Subheading, ErrorText, ButtonText, Paragraph } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import Smile from '../../assets/images/emoji/smile'
@@ -19,6 +19,7 @@ import { GET_PROJECT_BY_ID } from '../../graphql/queries/project'
 import apollo from '../../services/apollo'
 import { updateUsageProgress } from '../../utils/apollo';
 import { SET_USER_SIGNUP_COMPLETE } from '../../graphql/mutations';
+import { ProjectFAQModal } from '../../components/Modal/ProjectFAQModal';
 
 const FirstProjectSetupContext = createContext(null)
 
@@ -51,7 +52,7 @@ const firstProjectSetupStyles = StyleSheet.create({
         textAlign: 'center',
         maxWidth: spacingUnit * 43,
         alignSelf: 'center',
-        marginBottom: spacingUnit * 3
+        marginBottom: spacingUnit * 2
     },
     goToHome: {
         textDecorationLine: 'underline',
@@ -77,6 +78,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
     // for some reason the formik isSubmitting was not working...
     const [myIsSubmitting, setMyIsSubmitting] = useState(false)
     const [description, setDescription] = useState('')
+    const [projectFAQ, setProjectFAQ] = useState(false)
     const {
         setError
     } = useContext(FirstProjectSetupContext)
@@ -116,12 +118,16 @@ const CreateProjectInput = ({ navigation, setup }) => {
     }, [])
     return (
         <View style={firstProjectSetupStyles.createProjectInputContainer}>
+            <ProjectFAQModal isVisible={projectFAQ} setModalVisible={setProjectFAQ} />
             <Subheading style={{
             }} color={Black}>
                 What is your project?
         </Subheading>
             <Paragraph style={firstProjectSetupStyles.paragraph}>
-                Describe your project in one sentence
+            Describe your project in one sentence.{` `}
+                <Paragraph color={Blue400} onPress={() => setProjectFAQ(true)}>
+                    What is a project?
+                </Paragraph>
         </Paragraph>
 
             <Formik

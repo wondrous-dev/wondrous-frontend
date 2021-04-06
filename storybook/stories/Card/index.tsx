@@ -8,9 +8,9 @@ import {
   UIManager,
   Dimensions,
   Pressable,
-  LayoutAnimation,
-  TouchableWithoutFeedback
+  LayoutAnimation
 } from 'react-native'
+import {   TouchableWithoutFeedback  } from "react-native-gesture-handler"
 import Animated, { withDecay } from "react-native-reanimated"
 
 import { Grey400, Blue400, Green400, White, Grey450, Purple, Red400, Yellow300, Grey300, Grey800 } from '../../../constants/Colors'
