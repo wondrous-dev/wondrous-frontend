@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Button } from 'react-native'
 import Swiper from 'react-native-web-swiper'
 import { White, Orange, Grey800, Black } from '../../../constants/Colors'
 import { spacingUnit } from '../../../utils/common'
-import { SafeImage } from '../Image'
+import { ModalImage, SafeImage } from '../Image'
 import { Video } from 'expo-av'
 
 import { Title, Subheading, Paragraph } from '../Text'
@@ -106,7 +106,7 @@ export class MyCarousel extends React.Component {
                   )
                 }
                 if (images) {
-                  return <SafeImage key={item} src={item} style={{
+                  return <ModalImage key={item} src={item} style={{
                     flex: 1,
                     // height: 500,
                     borderRadius: 8,

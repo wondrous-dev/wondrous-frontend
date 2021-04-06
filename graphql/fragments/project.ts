@@ -34,3 +34,30 @@ export const PublicProjectFragment = gql`
   }
   ${PublicUserFragment}
 `
+
+export const ProjectWithTagsFragment = gql`
+  fragment ProjectWithTags on Project {
+    id
+    name
+    description
+    archivedAt
+    privacyLevel
+    profilePicture
+    thumbnailPicture
+    createdBy
+    tags
+    category
+    creator {
+      id
+      username
+    }
+    links {
+      website
+      linkedin
+      github
+      twitter
+      instagram
+    }
+    createdAt
+  }
+`

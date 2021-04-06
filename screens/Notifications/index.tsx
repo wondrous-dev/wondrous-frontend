@@ -887,7 +887,7 @@ export const NotificationFeed = ({ route }) => {
 
   const tab = route && route.params && route.params.tab
   const filteredNotifications = notifications.filter(item => {
-    return item && (item.actorId !== user.id)
+    return item && (item.actorId !== user?.id)
   })
 
   const welcomeObject = [

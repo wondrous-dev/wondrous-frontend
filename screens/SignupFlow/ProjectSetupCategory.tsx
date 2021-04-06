@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { StyleSheet, View, TouchableOpacity, Text, Image, SafeAreaView, Dimensions, Pressable } from 'react-native'
+import { StyleSheet, View, ScrollView, Text, Image, SafeAreaView, Dimensions, Pressable } from 'react-native'
 import { useRoute, useNavigation } from '@react-navigation/native'
 import ProgressCircle from 'react-native-progress-circle'
 
@@ -29,7 +29,6 @@ import { UPDATE_PROJECT } from '../../graphql/mutations/project'
 import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
 import { withAuth, useMe } from '../../components/withAuth'
 import { updateUsageProgress } from '../../utils/apollo'
-import { ScrollView } from 'react-native-gesture-handler'
 
 const ProjectSetupCategoryContext = createContext(null)
 

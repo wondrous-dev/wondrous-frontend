@@ -1,6 +1,6 @@
 
 import React, { useState, useCallback, useEffect } from 'react'
-import { Image, Pressable, SafeAreaView, RefreshControl, View, TouchableOpacity } from 'react-native'
+import { Image, Pressable, SafeAreaView, RefreshControl, View, TouchableOpacity, FlatList } from 'react-native'
 import { useLazyQuery, useQuery, useMutation } from '@apollo/client'
 
 import { GET_USER_FOLLOWERS, GET_USER_FOLLOWING, GET_PROJECT_FOLLOWERS, GET_FEED_REACTED_USERS, GET_FEED_COMMENT_REACTED_USERS } from '../../graphql/queries'
@@ -13,7 +13,6 @@ import { SafeImage } from '../../storybook/stories/Image'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { Header } from '../../components/Header'
 import { listStyles } from './style'
-import { FlatList } from 'react-native-gesture-handler'
 import { UNFOLLOW_USER, FOLLOW_USER } from '../../graphql/mutations'
 import {
   ProjectItem

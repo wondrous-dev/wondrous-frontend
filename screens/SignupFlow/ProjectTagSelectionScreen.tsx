@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { StyleSheet, View, TouchableOpacity, Text, Image, SafeAreaView, Dimensions, Pressable, TextInput } from 'react-native'
+import { ScrollView, StyleSheet, View, TouchableOpacity, Text, Image, SafeAreaView, Dimensions, Pressable, TextInput } from 'react-native'
 import ProgressCircle from 'react-native-progress-circle'
 import { Formik } from 'formik';
 
@@ -19,12 +19,11 @@ import { PrimaryButton } from '../../storybook/stories/Button'
 import { moderateScale } from '../../utils/scale'
 import { withAuth, useMe } from '../../components/withAuth'
 import { useMutation } from '@apollo/client'
-import { updateUsageProgress } from '../../utils/apollo';
-import { ScrollView } from 'react-native-gesture-handler';
+import { updateUsageProgress } from '../../utils/apollo'
 
 const TagContext = createContext(null)
 
-const tags = [
+const projectTags = [
     { value: 'fintech', displayName: 'Fintech' },
     { value: 'consumer', displayName: 'Consumer' },
     { value: 'ai_ml', displayName: 'AI/ML' },
@@ -175,13 +174,13 @@ const ProjectTagInput = ({ navigation, projectId }) => {
     // split tags into groups of thress
     let i, chunk = 2;
     const tagRows = [] // <- [[3 tags], [3 tags]... ]
-    for (i = 0; i < tags.length; i += chunk) {
+    for (i = 0; i < projectTags.length; i += chunk) {
         if (chunk === 2) {
             chunk = 3
         } else if (chunk === 3) {
             chunk = 2
         }
-        tagRows.push(tags.slice(i, i + chunk));
+        tagRows.push(projectTags.slice(i, i + chunk));
     }
 
     return (
