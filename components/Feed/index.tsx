@@ -1040,12 +1040,22 @@ export const HomeFeed = () => {
   const [feed, setFeed] = useState([])
   const navigation = useNavigation()
   const [status, setStatus] = useState('user')
-  const {loading, data, error, refetch, fetchMore} = useQuery(GET_HOME_FEED)
+  const {loading, data, error, refetch, fetchMore} = useQuery(GET_HOME_FEED, {
+    variables: {
+      limit: 15,
+      offset: 0
+    }
+  })
   const {
     data: publicFeedData,
     refetch: publicRefetch,
     fetchMore: publicFetchmore
-  } = useQuery(GET_PUBLIC_FEED)
+  } = useQuery(GET_PUBLIC_FEED, {
+    variables: {
+      limit: 15,
+      offset: 0
+    }
+  })
 
   if (error) {
     console.log('Error fetching Feed', error)
