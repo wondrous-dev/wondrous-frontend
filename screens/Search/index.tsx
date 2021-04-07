@@ -262,7 +262,11 @@ function DefaultSearch({
     fetchMore,
     refetch
   } = useQuery(GET_NEWEST_PROJECTS, {
-    fetchPolicy: 'network-only'
+    fetchPolicy: 'network-only',
+    variables: {
+      limit: 15,
+      offset: 0
+    }
   })
 
   const searchData = searchDataResp && searchDataResp.getUsersAndProjects
