@@ -152,7 +152,7 @@ export const pickVideo = async ({ setVideo, setErrors, setVideoUploading }) => {
   }
 }
 
-export const PRIVACY_LEVELS = ['public', 'private', 'collaborators']
+export const PRIVACY_LEVELS = ['public', 'private']
 
 export const privacyDropdown = PRIVACY_LEVELS.map(privacy => ({
   'label': capitalizeFirstLetter(privacy),

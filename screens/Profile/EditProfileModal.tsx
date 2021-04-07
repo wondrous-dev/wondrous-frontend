@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { SafeAreaView, ScrollView, View, StyleSheet, Dimensions, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native'
+import { SafeAreaView, ScrollView, View, Alert, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native'
 import Modal from 'react-native-modal'
 import { useQuery } from '@apollo/client'
 import { toDate } from 'date-fns'
@@ -8,11 +8,10 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300, Grey300 } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { capitalizeFirstLetter, extractFirstAndLastName, getNonWhiteSpaceLength, spacingUnit } from '../../utils/common'
-import { modalStyles } from '../../components/Modal/common'
+import { modalStyles, ModalDropdown, privacyDropdown } from '../../components/Modal/common'
 import { SafeImage, UploadImage } from '../../storybook/stories/Image'
-import { ProfilePlaceholder } from './common'
+import { ProfilePlaceholder} from './common'
 import { profileStyles } from './style'
-
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { LINKED_PREFIX, MAX_BIO_LIMIT } from '../../constants'
 import { projectTags } from '../SignupFlow/ProjectTagSelectionScreen'
@@ -25,12 +24,13 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
   const initialBio = (user && user.bio) || (project && project.description)
   const initialProfilePicture = (user?.thumbnailPicture || user?.profilePicture) || (project?.thumbnailPicture || project?.profilePicture)
   const initialWebsite = (user?.links?.website || project?.links?.website) || ''
+  const initialPrivacy= project?.privacyLevel || 'public'
 
   const initialTwitter = (user?.links?.twitter || project?.links?.twitter) || ''
   const initialInstagram = (user?.links?.instagram || project?.links?.instagram) || ''
   const initialLinkedin = (user?.links?.linkedin || project?.links?.linkedin) || ''
   const initialGithub = (user?.links?.github || project?.links?.github) || ''
-  const initialName = user && `${user.firstName || ''} ${user.lastName || ''}` 
+  const initialName = user && `${user.firstName || ''} ${user.lastName || ''}`
   const navigation = useNavigation()
   const route = useRoute()
   const [username, setUsername] = useState(initialUsername)
@@ -45,6 +45,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
   const [instagram, setInstagram] = useState(initialInstagram)
   const [linkedin, setLinkedin] = useState(initialLinkedin)
   const [github, setGithub] = useState(initialGithub)
+  const [privacy, setPrivacy] = useState(initialPrivacy)
 
   const resetState = useCallback(() => {
     setUsername(initialUsername)
@@ -85,9 +86,32 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
       setWebsite(initialWebsite)
     }
 
-  }, [initialProfilePicture, initialUsername, initialName, initialBio, initialTwitter, initialInstagram, initialLinkedin, initialGithub, initialWebsite]) 
+    if (initialPrivacy) {
+      setPrivacy(initialPrivacy)
+    }
+
+  }, [initialProfilePicture, initialUsername, initialName, initialBio, initialTwitter, initialInstagram, initialLinkedin, initialGithub, initialWebsite, initialPrivacy]) 
   const cleanedTags = project?.tags?.map(tag => projectTagHash[tag])
 
+  const setProjectPrivacy = useCallback((privacy) => {
+    const message = privacy === 'public' ? 'Making project public' : 'Making project private'
+    const subMessage = privacy === 'public' ? 'All project activity, bio and links can be seen by any user' : 'All project activity can only be seen by approved accounts'
+    Alert.alert(
+      message,
+      subMessage,
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "Got it", onPress: () => {
+          setPrivacy(privacy)
+        } }
+      ],
+      { cancelable: false }
+    )
+  }, [])
   return (
     <Modal isVisible={isVisible}>
       {
@@ -148,6 +172,7 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                     ...(bio && {
                       description: bio
                     }),
+                    privacyLevel: privacy,
                     links: {}
                   }
                 }
@@ -301,6 +326,26 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
                       {
                         project &&
                         <>
+                        <View style={{
+                          ...profileStyles.changeRowContainer,
+                          ...(
+                            Platform.OS !== 'android' && {
+                              zIndex: 4000
+                            }
+                          )
+                        }}>
+                          <Paragraph color={Black} style={{
+                          ...profileStyles.changeRowParagraphText,
+                          ...(!user &&
+                            {
+                              width: spacingUnit * 13,
+                              marginRight: spacingUnit
+                            })
+                          }}>
+                            Privacy
+                          </Paragraph>
+                          <ModalDropdown value={privacy} items={privacyDropdown} setValue={setProjectPrivacy} placeholder='Select privacy level' />
+                        </View>
                           <View style={profileStyles.changeRowContainer}>
                             <Paragraph color={Black} style={{
                         ...profileStyles.changeRowParagraphText,
