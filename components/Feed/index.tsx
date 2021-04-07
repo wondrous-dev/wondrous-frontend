@@ -689,7 +689,9 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
     if (previousReactionCount && previousReactionCount !== item.reactionCount) {
       setReactionCount(item.reactionCount)
     }
-    setPinned(item?.pinned)
+    if (item?.pinned != null) {
+      setPinned(item?.pinned)
+    }
     setCommentLiked(item.commentReacted)
   }, [user && user.reactedFeedItems, item.reactionCount, item.commentReacted, item?.pinned])
   const likeFeedItem = useCallback(async (liked, reactionCount) => {
