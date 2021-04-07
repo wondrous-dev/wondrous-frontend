@@ -369,7 +369,7 @@ function DefaultSearch({
                 offset: newestProjects.length
               }
             })
-            if (result && result.data && result.data.getUserFeed) {
+            if (result && result.data && result.data.getNewestProjects) {
               setNewestProjects([...newestProjects, ...result.data.getNewestProjects])
             }
           }
