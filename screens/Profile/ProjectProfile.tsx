@@ -8,7 +8,7 @@ import ConfettiCannon from 'react-native-confetti-cannon'
 import { withAuth, useMe } from '../../components/withAuth'
 import { ProfileTabParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { Black, Blue500, Grey300, White, Blue400, Grey800, Purple } from '../../constants/Colors'
+import { Black, Blue500, Grey300, White, Blue400, Grey800, Purple, Grey700 } from '../../constants/Colors'
 import { profileStyles } from './style'
 import { GET_PROJECT_BY_ID, GET_PROJECT_FEED, GET_PROJECT_ACTIONS } from '../../graphql/queries/project'
 import { UPDATE_PROJECT, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_PROJECT, UNFOLLOW_PROJECT } from '../../graphql/mutations'
@@ -35,6 +35,7 @@ import Link from '../../assets/images/link'
 import { GET_ASKS_FROM_PROJECT, GET_USER_STREAK, WHOAMI } from '../../graphql/queries'
 import { sortByDueDate } from '../../utils/date'
 import ProfilePictureModal from './ProfilePictureModal'
+import Lock from '../../assets/images/lock'
 
 const TagView = ({ tag }) => {
   if (tag === 'ai_ml') {
@@ -295,6 +296,8 @@ function ProjectProfile({
 
   const profileData = getCorrectData(section)
   const itemRefs = useRef(new Map())
+  const publicProject = project?.privacyLevel === 'public'
+  const projectAccessible = publicProject || following
   const actions = projectActionData && projectActionData.getProjectActions
   const onSwipeLeft = (item, type) => onSwipe({
     item,
@@ -368,28 +371,36 @@ function ProjectProfile({
             )
           }
           </View>
-          <Pressable onPress={() => navigation.push('Root', {
-              screen: tab ? tab : 'Profile',
-              params: {
-                screen: 'UserList',
+          <Pressable onPress={() => {
+            if (projectAcessible) {
+              navigation.push('Root', {
+                screen: tab ? tab : 'Profile',
                 params: {
-                  projectFollowers: true,
-                  projectId: project.id
+                  screen: 'UserList',
+                  params: {
+                    projectFollowers: true,
+                    projectId: project.id
+                  }
                 }
-              }
-            })}>
+              })
+            }
+          }}>
             <ProjectInfoText count={project.followCount} type={project.followCount === 1 ? 'follower' : 'followers'} />
           </Pressable>
-          <Pressable onPress={() => navigation.push('Root', {
-              screen: tab ? tab: 'Profile',
-              params: {
-                screen: 'UserList',
+          <Pressable onPress={() => {
+            if (projectAccessible) {
+              navigation.push('Root', {
+                screen: tab ? tab: 'Profile',
                 params: {
-                  collaborators: project.collaborators || [],
-                  projectId: project.id
+                  screen: 'UserList',
+                  params: {
+                    collaborators: project.collaborators || [],
+                    projectId: project.id
+                  }
                 }
-              }
-          })}>
+            })
+            }
+          }}>
           <ProjectInfoText count={project.collaborators.length} type={project.collaborators.length === 1 ? 'collaborator': 'collaborators'} />
           </Pressable>
           <ProjectInfoText count={project.goalsCompletedCount} type='goals completed' />
@@ -451,17 +462,20 @@ function ProjectProfile({
             </>
           }
         </View>
-        <View style={[profileStyles.profileInfoContainer, {
-          marginTop: spacingUnit,
-        }]}>
-          <Paragraph color={Black} style={{
-            flexWrap: 'wrap',
-            textAlign: 'left'
-          }}>
-            {project.description}
-          </Paragraph>
-        </View>
-        {project && project.links && !isEmptyObject(project.links) && 
+          {
+            projectAccessible &&
+            <View style={[profileStyles.profileInfoContainer, {
+              marginTop: spacingUnit,
+            }]}>
+              <Paragraph color={Black} style={{
+                flexWrap: 'wrap',
+                textAlign: 'left'
+              }}>
+                {project.description}
+              </Paragraph>
+            </View>
+          }
+        {project && projectAccessible && project.links && !isEmptyObject(project.links) && 
           <Pressable style={{
             paddingLeft: spacingUnit * 2,
             flexDirection: 'row',
@@ -497,11 +511,11 @@ function ProjectProfile({
           paddingRight: 0
         }}>
           {
-            project.category &&
+            project?.category && projectAccessible && 
             <TagView tag={project.category} />
           }
           {
-            project.tags && project.tags.map(tag => (
+            projectAccessible && project?.tags && project.tags.map(tag => (
               <TagView tag={tag}/>
             ))
           }
@@ -565,6 +579,38 @@ function ProjectProfile({
           />
         )}
         ListHeaderComponent={ProfileHeader()}
+        ListEmptyComponent={() => {
+          if (!projectAccessible) {
+            return (
+              <View style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: spacingUnit * 10
+              }}>
+                <Lock color={Grey800} style={{
+                  alignSelf: 'center',
+                  width: spacingUnit * 6,
+                  height: spacingUnit * 6
+                }} />
+                <Subheading color={Grey800} style={{
+                  marginTop: spacingUnit * 2
+                }}>
+                  This is a private project
+                </Subheading>
+                <Paragraph color={Grey700} style={{
+                  marginTop: spacingUnit
+                }}>
+                  Follow this project to see their activity
+                </Paragraph>
+              </View>
+            )
+          }
+          return (
+            <Paragraph>
+              Nothing here yet
+            </Paragraph>
+          )
+        }}
         data={profileData}
         keyExtractor={item => item.id}
         renderItem={({ item }) => renderProfileItem({ item, section, user, userOwned: projectOwnedByUser, navigation, projectId, onSwipeLeft, onSwipeRight, itemRefs, tab, loggedInUser: user })}
