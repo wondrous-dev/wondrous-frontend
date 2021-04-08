@@ -22,9 +22,12 @@ export const ProjectItem = ({
   itemDescription,
   buttonOnPress,
   buttonText,
-  itemPressed
+  itemPressed,
+  privacyLevel
   }) => {
-
+  const publicProject = privacyLevel === 'public'
+  const userFollowingProject = user?.projectsFollowing.some(id => id === projectId)
+  const accessible = publicProject || userFollowingProject
   return (
     <TouchableOpacity onPress={itemPressed}>
       <View style={listStyles.listItem}>
@@ -57,7 +60,7 @@ export const ProjectItem = ({
           <Subheading style={{
             fontSize: 18
           }} color={Black}>{itemName}</Subheading>
-          {itemDescription &&
+          {itemDescription && accessible &&
             <RegularText color={Grey800} style={{
               marginTop: spacingUnit * 0.5
             }}>
@@ -137,6 +140,7 @@ const ProjectList = ({
             key={project.id}
             profilePicture={project.profilePicture}
             project={true}
+            privacyLevel={project?.privacyLevel}
             itemDescription={project.description}
             itemName={project.name}
             itemPressed={() => navigation.push('Root', {
