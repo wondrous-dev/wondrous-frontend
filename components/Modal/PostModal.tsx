@@ -87,7 +87,7 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
         onPress={() => Keyboard.dismiss()}
       >
         <SafeAreaView style={modalStyles.fullScreenContainer}>
-        <KeyboardAwareScrollView keyboardDismissMode='interactive' keyboardShouldPersistTaps='handled'>
+        <KeyboardAwareScrollView enableResetScrollToCoords={false}keyboardDismissMode='interactive' keyboardShouldPersistTaps='handled'>
           {cameraOpen &&
             <Camera
                 snapperOpen={cameraOpen}

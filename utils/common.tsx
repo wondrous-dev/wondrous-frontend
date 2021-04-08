@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from 'react'
 import { Pressable, Text, Linking } from 'react-native'
 import * as Localization from 'expo-localization'
-import { mentionRegEx } from 'react-native-controlled-mentions'
 import * as WebBrowser from 'expo-web-browser'
 import regexifyString from 'regexify-string'
 import { StackActions } from '@react-navigation/native'
 
 import { Blue400 } from '../constants/Colors'
+import { MENTION_REGEX } from '../constants'
 
 export const spacingUnit = 8
 
@@ -158,10 +158,10 @@ export const getMentionArray = (content) => {
   }
   const mentionedUsers = []
   const mentionedProjects = []
-  const mentions = content.match(mentionRegEx)
+  const mentions = content.match(MENTION_REGEX)
   if (mentions) {
     for (let mention of mentions) {
-      const mentionExp = mention.matchAll(mentionRegEx)
+      const mentionExp = mention.matchAll(MENTION_REGEX)
       const { id, trigger } = [...mentionExp][0].groups
       if (trigger === '#') {
         mentionedProjects.push(id)

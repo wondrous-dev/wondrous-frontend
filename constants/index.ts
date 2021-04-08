@@ -9,3 +9,4 @@ export const TWITTER_PREFIX = 'twitter.com/'
 export const INSTAGRAM_PREFIX = 'instagram.com/'
 export const LINKED_PREFIX = 'linkedin.com/in/'
 export const GITHUB_PREFIX = 'github.com/'
+export const MENTION_REGEX = /(?<original>(?<trigger>.)\[(?<name>([^[]*))]\((?<id>([\d\w-]*))\))/gi

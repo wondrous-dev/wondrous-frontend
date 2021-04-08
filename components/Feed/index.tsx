@@ -733,6 +733,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
   // if (comment) {
   //   editMutation = editComment
   // }
+
   return (
     <>
     <EditCommentModal isVisible={editVisible} setModalVisible={setEditVisible} deleteMutation={deleteFeedComment} editMutation={editMutation} />

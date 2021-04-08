@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
-import { SafeAreaView, View, StyleSheet, Pressable, TouchableWithoutFeedback, Keyboard, Dimensions } from 'react-native'
+import { SafeAreaView, View, StyleSheet, Pressable, TouchableWithoutFeedback, Keyboard, Dimensions, ScrollView } from 'react-native'
 import { Header } from '../../components/Header'
 import { White, Black, Red400, Green400, Grey400, Blue400 } from '../../constants/Colors'
 import { GET_REVIEW_STATS } from '../../graphql/queries/review'
@@ -73,7 +73,7 @@ const CreateReview = ({ navigation, route }) => {
       onPress={() => Keyboard.dismiss()} style={{
         flex: 1
       }}>
-      <View style={{
+      <ScrollView style={{
         marginTop: spacingUnit * 5,
         alignItems: 'center'
       }}>
@@ -180,7 +180,7 @@ const CreateReview = ({ navigation, route }) => {
                 {error}
               </ErrorText>
             }
-      </View>
+      </ScrollView>
       </TouchableWithoutFeedback>
     </SafeAreaView>
   )
