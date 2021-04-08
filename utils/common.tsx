@@ -162,7 +162,6 @@ export const getMentionArray = (content) => {
   if (mentions) {
     for (let mention of mentions) {
       const mentionExp = mention.matchAll(MENTION_REGEX)
-      console.log('mentionEXP', mentionExp)
       const { id, trigger } = [...mentionExp][0].groups
       if (trigger === '#') {
         mentionedProjects.push(id)
@@ -171,7 +170,6 @@ export const getMentionArray = (content) => {
       }
     }
   }
-  console.log('mentionedProject', mentionedProjects, mentionedUsers)
   return {
     mentionedProjects,
     mentionedUsers
