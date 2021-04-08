@@ -169,7 +169,6 @@ function ProjectProfile({
   })
 
   const projectFollowRequest = projectFollowRequestData?.getProjectFollowRequest
-  console.log('roject', projectFollowRequest, projectFollowRequestData)
   const [following, setFollowing] = useState(user && user.projectsFollowing && user.projectsFollowing.includes(projectId))
   const [followRequested, setFollowRequested] = useState(false)
   const [getProjectActions, {
