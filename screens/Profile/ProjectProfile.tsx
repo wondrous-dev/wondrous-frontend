@@ -10,8 +10,8 @@ import { ProfileTabParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { Black, Blue500, Grey300, White, Blue400, Grey800, Purple, Grey700 } from '../../constants/Colors'
 import { profileStyles } from './style'
-import { GET_PROJECT_BY_ID, GET_PROJECT_FEED, GET_PROJECT_ACTIONS } from '../../graphql/queries/project'
-import { UPDATE_PROJECT, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_PROJECT, UNFOLLOW_PROJECT } from '../../graphql/mutations'
+import { GET_PROJECT_BY_ID, GET_PROJECT_FEED, GET_PROJECT_ACTIONS, GET_PROJECT_FOLLOW_REQUEST } from '../../graphql/queries/project'
+import { UPDATE_PROJECT, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_PROJECT, UNFOLLOW_PROJECT, REMOVE_FOLLOW_REQUEST } from '../../graphql/mutations'
 import { SafeImage, UploadImage } from '../../storybook/stories/Image'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SecondaryButton, FlexibleButton, PrimaryButton } from '../../storybook/stories/Button'
@@ -154,8 +154,24 @@ function ProjectProfile({
       })
     }
   })
-  const [following, setFollowing] = useState(user && user.projectsFollowing && user.projectsFollowing.includes(projectId))
+  const { data: projectFollowRequestData } = useQuery(GET_PROJECT_FOLLOW_REQUEST, {
+    variables: {
+      userId: user?.id,
+      projectId
+    }
+  })
 
+  const [removeFollowRequest] = useMutation(REMOVE_FOLLOW_REQUEST, {
+    variables: {
+      userId: user?.id,
+      projectId
+    }
+  })
+
+  const projectFollowRequest = projectFollowRequestData?.getProjectFollowRequest
+  console.log('roject', projectFollowRequest, projectFollowRequestData)
+  const [following, setFollowing] = useState(user && user.projectsFollowing && user.projectsFollowing.includes(projectId))
+  const [followRequested, setFollowRequested] = useState(false)
   const [getProjectActions, {
     loading: projectActionLoading,
     data: projectActionData,
@@ -237,7 +253,14 @@ function ProjectProfile({
       setProjectFeed(projectFeedData.getProjectFeed)
     }
     
-  }, [project && (project.thumbnailPicture || project.profilePicture), feedSelected, actionSelected, asksSelected, status, projectFeedData && projectFeedData.getProjectFeed])
+    if (projectFollowRequest) {
+      if (!projectFollowRequest?.approvedAt) {
+        setFollowRequested(true)
+      } else if (projectFollowRequest.approvedAt) {
+        setFollowing(true)
+      }
+    }
+  }, [project && (project.thumbnailPicture || project.profilePicture), feedSelected, actionSelected, asksSelected, status, projectFeedData && projectFeedData.getProjectFeed, projectFollowRequest])
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)
@@ -440,18 +463,32 @@ function ProjectProfile({
             :
             <>
             {
-            following ?
+            following || followRequested ?
             <Pressable style={profileStyles.followingButton} onPress={() => {
+              if (followRequested) {
+                setFollowRequested(false)
+                removeFollowRequest()
+              } 
               setFollowing(false)
               unfollowProject()
             }}>
               <Paragraph color={Black}>
-                Following
+               {
+                 following
+                 ?
+                 'Following'
+                 :
+                 'Requested'
+               }
               </Paragraph>
             </Pressable>
             :
             <Pressable onPress={() => {
-              setFollowing(true)
+              if (publicProject) {
+                setFollowing(true)
+              } else {
+                setFollowRequested(true)
+              }
               followProject()
             }} style={profileStyles.followButton}>
               <Paragraph color={White}>
@@ -566,8 +603,9 @@ function ProjectProfile({
             </>
           }
           <ProfilePictureModal profilePicture={project?.profilePicture} isVisible={profilePictureModal} setModalVisible={setProfilePictureModal} />
+        
 
-        <FlatList    refreshControl={
+<FlatList    refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         ItemSeparatorComponent={() => (
@@ -611,9 +649,37 @@ function ProjectProfile({
             </Paragraph>
           )
         }}
-        data={profileData}
+        data={projectAccessible ? profileData: [{id: null}]}
         keyExtractor={item => item.id}
-        renderItem={({ item }) => renderProfileItem({ item, section, user, userOwned: projectOwnedByUser, navigation, projectId, onSwipeLeft, onSwipeRight, itemRefs, tab, loggedInUser: user })}
+        renderItem={({ item }) => {
+          if (projectAccessible) {
+            return renderProfileItem({ item, section, user, userOwned: projectOwnedByUser, navigation, projectId, onSwipeLeft, onSwipeRight, itemRefs, tab, loggedInUser: user })
+          } else {
+            return (
+              <View style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: spacingUnit * 10
+              }}>
+                <Lock color={Grey800} style={{
+                  alignSelf: 'center',
+                  width: spacingUnit * 6,
+                  height: spacingUnit * 6
+                }} />
+                <Subheading color={Grey800} style={{
+                  marginTop: spacingUnit * 2
+                }}>
+                  This is a private project
+                </Subheading>
+                <Paragraph color={Grey700} style={{
+                  marginTop: spacingUnit
+                }}>
+                  Follow this project to see their activity
+                </Paragraph>
+              </View>
+            )
+          }
+        }}
         onEndReached={async () => {
           if (section === 'feed') {
             if (feedFetchMore) {
@@ -632,6 +698,8 @@ function ProjectProfile({
         >
 
         </FlatList>
+        
+
         </ProfileContext.Provider>
       }
     </SafeAreaView>

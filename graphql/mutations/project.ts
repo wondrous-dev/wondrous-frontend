@@ -26,6 +26,22 @@ export const FOLLOW_PROJECT = gql`
   }
 `
 
+export const APPROVE_FOLLOW_REQUEST = gql`
+  mutation ApproveFollowRequest($projectId: ID!, $userId: ID!) {
+    approveProjectFollowRequest(projectId: $projectId, userId: $userId) {
+      success
+    }
+  }
+`
+
+export const REMOVE_FOLLOW_REQUEST = gql`
+  mutation RemoveFollowRequest($projectId: ID!, $userId: ID!) {
+    removeProjectFollowRequest(projectId: $projectId, userId: $userId) {
+      success
+    }
+  }
+`
+
 export const UNFOLLOW_PROJECT = gql`
   mutation UnfollowProject($projectId: ID!) {
     unfollowProject(projectId: $projectId) {
