@@ -2,7 +2,6 @@ import { Ionicons } from '@expo/vector-icons'
 import * as Font from 'expo-font'
 import * as SplashScreen from 'expo-splash-screen'
 import * as React from 'react'
-const TIMEOUT = 5000
 
 export default function useCachedResources() {
   const [isLoadingComplete, setLoadingComplete] = React.useState(false)
@@ -12,10 +11,6 @@ export default function useCachedResources() {
     async function loadResourcesAndDataAsync() {
       try {
         SplashScreen.preventAutoHideAsync()
-        setTimeout(() => {
-          setLoadingComplete(true)
-          SplashScreen.hideAsync()
-        }, TIMEOUT)
         // Load fonts
         await Font.loadAsync({
           ...Ionicons.font,

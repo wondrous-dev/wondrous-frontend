@@ -14,16 +14,19 @@ import TaskIcon from '../../assets/images/actions/task.svg'
 import AskIcon from '../../assets/images/ask/standalone'
 import ProjectIcon from '../../assets/images/actions/project'
 import PostIcon from '../../assets/images/actions/post'
+import AddFriendIcon from '../../assets/images/actions/add_friend'
 import { SvgImage } from '../../storybook/stories/Image'
 import { FullScreenGoalModal } from '../../components/Modal//GoalModal'
 import { FullScreenAskModal } from '../../components/Modal/AskModal'
 import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
 import { FullScreenPostModal } from '../../components/Modal/PostModal'
+
 import { CREATE_ASK, CREATE_GOAL, CREATE_TASK } from '../../graphql/mutations'
 import { CREATE_POST } from '../../graphql/mutations/post'
 import Toast from 'react-native-toast-message'
 import { GET_USER_STREAK, WHOAMI } from '../../graphql/queries'
 import { updateUsageProgress } from '../../utils/apollo'
+import { ContactsModal } from '../Profile/ContactsModal'
 
 const addStyles = StyleSheet.create({
   container: {
@@ -66,6 +69,7 @@ function AddScreen({
   const [taskModalVisible, setTaskModalVisible] = useState(false)
   const [askModalVisible, setAskModalVisible] = useState(false)
   const [postModalVisible, setPostModalVisible] = useState(false)
+  const [contactsModal, setContactsModal] = useState(false)
   const user = useMe()
 
   const [createGoal] = useMutation(CREATE_GOAL, {
@@ -133,6 +137,7 @@ function AddScreen({
       <FullScreenTaskModal setModalVisible={setTaskModalVisible} isVisible={taskModalVisible} taskMutation={createTask} />
       <FullScreenAskModal setModalVisible={setAskModalVisible} isVisible={askModalVisible} askMutation={createAsk} />
       <FullScreenPostModal setModalVisible={setPostModalVisible} isVisible={postModalVisible} postMutation={createPost} />
+      <ContactsModal isVisible={contactsModal} setModalVisible={setContactsModal} />
       <View style={addStyles.container}>
       <Subheading color={Black}>
         Launch Pad
@@ -190,6 +195,12 @@ function AddScreen({
           <PostIcon style={addStyles.choiceImage} />
           <Paragraph color={Black} style={addStyles.choiceText}>
             Post
+          </Paragraph>
+        </Pressable>
+        <Pressable style={addStyles.choiceBox} onPress={() => setContactsModal(true)}>
+        <AddFriendIcon style={addStyles.choiceImage} />
+          <Paragraph color={Black} style={addStyles.choiceText}>
+            Add friends
           </Paragraph>
         </Pressable>
       </View>
