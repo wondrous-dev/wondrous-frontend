@@ -252,7 +252,7 @@ function ProjectProfile({
       setProjectFeed(projectFeedData.getProjectFeed)
     }
     
-    if (projectFollowRequest) {
+    if (projectFollowRequest?.id) {
       if (!projectFollowRequest?.approvedAt) {
         setFollowRequested(true)
       } else if (projectFollowRequest.approvedAt) {
