@@ -85,15 +85,6 @@ export const GET_PROJECT_FOLLOW_REQUEST = gql`
   query GetProjectFollowRequest($projectId: ID!, $userId: ID!) {
     getProjectFollowRequest(projectId: $projectId, userId: $userId) {
       id
-      user {
-        id
-        username
-        profilePicture
-        thumbnailPicture
-      }
-      project {
-        name
-      }
       approvedAt
     }
   }

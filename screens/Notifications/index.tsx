@@ -514,7 +514,7 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite, proje
       )
       break
     case 'follow_request':
-      displayMessage = formatProjectFollowRequest(projectFollowRequest)
+      displayMessage = formatProjectFollowRequest(notificationInfo)
       break
     case 'project_invite':
       displayMessage = formatProjectInvite(notificationInfo, projectInvite)
@@ -551,18 +551,22 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite, proje
   return displayMessage;
 }
 
-const formatProjectFollowRequest = (followRequest) => {
-  if (followRequest) {
+const formatProjectFollowRequest = (notificationInfo) => {
+  const {
+    objectName,
+    actorUsername
+  } = notificationInfo
+  if (notificationInfo) {
     return (
       <RegularText color={Black}>
       <RegularText style={{
         fontFamily: 'Rubik SemiBold'
       }}>
-        @{followRequest.user?.username}{` `} 
+        @{actorUsername}{` `} 
         </RegularText>requested to follow <RegularText style={{
         fontFamily: 'Rubik SemiBold'
       }}>
-        {followRequest.project?.name}
+        {objectName}
           </RegularText>
     </RegularText>
     )

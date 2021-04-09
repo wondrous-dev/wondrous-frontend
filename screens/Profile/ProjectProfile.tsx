@@ -321,6 +321,7 @@ function ProjectProfile({
   const publicProject = project?.privacyLevel === 'public'
   const projectAccessible = publicProject || following || projectOwnedByUser
   const actions = projectActionData && projectActionData.getProjectActions
+
   const onSwipeLeft = (item, type) => onSwipe({
     item,
     type,
@@ -394,7 +395,7 @@ function ProjectProfile({
           }
           </View>
           <Pressable onPress={() => {
-            if (projectAcessible) {
+            if (projectAccessible) {
               navigation.push('Root', {
                 screen: tab ? tab : 'Profile',
                 params: {
@@ -653,6 +654,7 @@ function ProjectProfile({
               </Paragraph>
             )
           }
+          return null
         }}
         data={projectAccessible ? profileData: [{id: null}]}
         keyExtractor={item => item.id}
