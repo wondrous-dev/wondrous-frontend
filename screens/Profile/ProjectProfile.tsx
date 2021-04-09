@@ -319,7 +319,7 @@ function ProjectProfile({
   const profileData = getCorrectData(section)
   const itemRefs = useRef(new Map())
   const publicProject = project?.privacyLevel === 'public'
-  const projectAccessible = publicProject || following
+  const projectAccessible = publicProject || following || projectOwnedByUser
   const actions = projectActionData && projectActionData.getProjectActions
   const onSwipeLeft = (item, type) => onSwipe({
     item,
@@ -570,6 +570,7 @@ function ProjectProfile({
     )
     )
   }
+
   return (
     <SafeAreaView style={{
       backgroundColor: White,
