@@ -644,14 +644,26 @@ function UserProfile({
             />
           )}
           ListHeaderComponent={ProfileHeader(user)}
-
           data={profileData}
           contentContainerStyle={{
             paddingBottom: spacingUnit * 10
           }}
           keyExtractor={item => item.id}
           scrollEventThrottle={400}
-          renderItem={({ item }) => renderProfileItem({ item, section, user, userOwned, navigation, itemRefs, onSwipeLeft, onSwipeRight, tab, loggedInUser })}
+          renderItem={({ item }) => {
+            if (profileData?.length > 0) {
+              return renderProfileItem({ item, section, user, userOwned, navigation, itemRefs, onSwipeLeft, onSwipeRight, tab, loggedInUser })
+            } else {
+              return (
+                <Paragraph color={Black} style={{
+                  alignSelf: 'center',
+                  marginTop: spacingUnit * 3
+                }}>
+                  Nothing here yet. If this user has private projects you can try to follow those by clicking on the project list above.
+                </Paragraph>
+              )
+            }
+          }}
           ListEmptyComponent={() => {
             return (
               <View style={{

@@ -332,6 +332,7 @@ export const STATUS_ARR = [
 ]
 
 export const renderProfileItem = ({ item, section, user, userOwned, navigation, projectId, itemRefs, onSwipeLeft, onSwipeRight, tab, loggedInUser }) => {
+
   if (section === 'feed') {
     return renderItem({ projectId, item, navigation, screen: 'Root', params: {
       screen: tab || 'Profile',

@@ -464,7 +464,7 @@ function ProjectProfile({
             {
             following || followRequested ?
             <Pressable style={profileStyles.followingButton} onPress={() => {
-              if (followRequested) {
+              if (followRequested || !publicProject) {
                 setFollowRequested(false)
                 removeFollowRequest()
               } 
@@ -642,11 +642,16 @@ function ProjectProfile({
               </View>
             )
           }
-          return (
-            <Paragraph>
-              Nothing here yet
-            </Paragraph>
-          )
+          if (profileData) {
+            return (
+              <Paragraph style={{
+                alignSelf: 'center',
+                marginTop: spacingUnit * 3
+              }}>
+                Nothing here yet
+              </Paragraph>
+            )
+          }
         }}
         data={projectAccessible ? profileData: [{id: null}]}
         keyExtractor={item => item.id}
