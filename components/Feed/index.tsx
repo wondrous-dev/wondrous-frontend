@@ -1116,7 +1116,7 @@ export const HomeFeed = () => {
       <StatusItem setStatus={setStatus} statusValue='public' statusLabel='Public' statusTrue={status === 'public'} />
     </View>
     {
-      filteredData.length === 0 && status === 'user' &&
+      (data || publicFeedData) && filteredData.length === 0 && status === 'user' &&
       <Paragraph style={{
         padding: spacingUnit * 2
       }} onPress={() => navigation.push('Root', {

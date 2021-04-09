@@ -17,10 +17,10 @@ import BottomTabNavigator from '../../navigation/BottomTabNavigator'
 import { UploadImage, SafeImage } from '../../storybook/stories/Image'
 import { WONDER_BASE_URL } from '../../constants/'
 import { UPDATE_USER, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_USER, UNFOLLOW_USER } from '../../graphql/mutations'
-import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GET_ASKS_FROM_USER, WHOAMI, GET_USER_STREAK } from '../../graphql/queries'
+import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GET_ASKS_FROM_USER, WHOAMI, GET_USER_STREAK, CHECK_USER_FOLLOWS_BACK } from '../../graphql/queries'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { PrimaryButton, SecondaryButton } from '../../storybook/stories/Button'
-import { Black, Grey300, White, Blue400, Grey800 } from '../../constants/Colors'
+import { Black, Grey300, White, Blue400, Grey800, Grey700 } from '../../constants/Colors'
 import { ProfileContext } from '../../utils/contexts'
 import {
   ProfilePlaceholder,
@@ -144,6 +144,14 @@ function UserProfile({
     ]
   })
   const [updateAsk] = useMutation(UPDATE_ASK)
+
+  const [checkUserFollowsBack, {
+    data: followBackData
+  }] = useLazyQuery(CHECK_USER_FOLLOWS_BACK, {
+    fetchPolicy: 'network-only'
+  })
+  const [followBack, setFollowBack] = useState(null)
+
   const {
     loading: additionalInfoLoading,
     data: additionalInfoData,
@@ -300,7 +308,17 @@ function UserProfile({
           setReviews(userReviewData.getReviewsFromUser)
         }
       }
-  }, [user && (user.thumbnailPicture || user.profilePicture), feedSelected, actionSelected, asksSelected, finalUserId, status, userFeedData?.getUserFeed, userReviewData ])
+      if (userOwned === false && followBack === null) {
+        checkUserFollowsBack({
+          variables: {
+            userId: finalUserId
+          }
+        })
+      }
+      if (followBackData) {
+        setFollowBack(followBackData?.doesUserFollowBack)
+      } 
+  }, [user && (user.thumbnailPicture || user.profilePicture), feedSelected, actionSelected, asksSelected, finalUserId, status, userFeedData?.getUserFeed, userReviewData, userOwned, followBackData ])
 
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo
   const getCorrectData = section => {
@@ -448,6 +466,26 @@ function UserProfile({
                 </Pressable>
                 {/* <ProjectInfoText count={user.tasksCompleted} type='tasks completed' /> */}
               </View>
+              {
+                followBack &&
+                <View style={{
+                  ...profileStyles.profileInfoContainer,
+                  marginBottom: -spacingUnit,
+                  marginTop: spacingUnit
+                }}>
+                  <View style={{
+                 backgroundColor: Grey700,
+                 borderRadius: spacingUnit,
+                 padding: spacingUnit * 0.5,
+                 paddingLeft: spacingUnit,
+                 paddingRight: spacingUnit
+                }}>
+                  <RegularText color={White}>
+                    Follows you
+                  </RegularText>
+                </View>
+                </View>
+              }
               <View style={[profileStyles.profileInfoContainer, {
                 marginTop: spacingUnit * 2,
                 alignItems: 'flex-start'

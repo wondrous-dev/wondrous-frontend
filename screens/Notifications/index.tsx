@@ -355,6 +355,17 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
           }
         })
         break
+      case 'follow_request':
+        navigation.push('Root', {
+          screen: 'Notifications',
+            params: {
+              screen: 'UserProfile',
+              params: {
+                userId: actorId
+            }
+          }
+        })
+        break
       case 'now_following':
         if (push) {
           navigation.push('Root', {
@@ -951,6 +962,7 @@ export const NotificationFeed = ({ route }) => {
       viewedAt: new Date()
     }
   ]
+
   return (
     <>
       <FlatList

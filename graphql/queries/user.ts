@@ -51,7 +51,11 @@ export const GET_USER_ADDITIONAL_INFO = gql`
     }
   }
 `
-
+export const CHECK_USER_FOLLOWS_BACK = gql`
+  query CheckUserFollowsBack($userId: ID!) {
+    doesUserFollowBack(userId: $userId)
+  }
+`
 export const GET_AUTOCOMPLETE_USERS = gql`
   query GetAutocompleteUsers($username: String!) {
     getAutocompleteUsers(username: $username) {
