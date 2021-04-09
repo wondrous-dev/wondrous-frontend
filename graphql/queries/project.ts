@@ -72,6 +72,32 @@ export const GET_PROJECT_ACTIONS = gql`
   ${PublicTaskFragment}
 `
 
+export const GET_PROJECT_FOLLOW_REQUESTS = gql`
+  query GetProjectFollowRequests($projectId: ID!) {
+    getProjectFollowRequests(projectId: $projectId) {
+      ...PublicUser
+    }
+  }
+  ${PublicUserFragment}
+`
+
+export const GET_PROJECT_FOLLOW_REQUEST = gql`
+  query GetProjectFollowRequest($projectId: ID!, $userId: ID!) {
+    getProjectFollowRequest(projectId: $projectId, userId: $userId) {
+      id
+      user {
+        id
+        username
+        profilePicture
+        thumbnailPicture
+      }
+      project {
+        name
+      }
+      approvedAt
+    }
+  }
+`
 export const GET_PROJECT_FOLLOWERS = gql`
   query GetProjectFollowers($projectId: ID!) {
     getProjectFollowers(projectId: $projectId) {

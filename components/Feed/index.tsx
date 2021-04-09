@@ -986,6 +986,10 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
 }
 
 export const renderItem = ({ projectId, item, navigation, screen, params, activityPage }) => {
+  if (item?.privacyLevel === 'private') {
+    return null
+  }
+
   return (
     <Pressable key={item && item.id} onPress={() => navigation.push(screen, params)}>
       <FeedItem item={item} key={item.id} activityPage={activityPage} projectId={projectId} />

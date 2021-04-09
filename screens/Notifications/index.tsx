@@ -11,8 +11,8 @@ import { useMe, withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { White, Grey300, Black, Grey800, Blue100 } from '../../constants/Colors'
-import { GET_NOTIFICATIONS, GET_FEED_ITEM_FOR_FEED_COMMENT, GET_FEED_ITEM, GET_POST_ITEM, GET_UNREAD_NOTIFICATION_COUNT, GET_PROJECT_INVITE_FROM_NOTIFICATION } from '../../graphql/queries'
-import { MARK_NOTIFICATION_AS_VIEWED, ACCEPT_PROJECT_INVITE } from '../../graphql/mutations'
+import { GET_NOTIFICATIONS, GET_FEED_ITEM_FOR_FEED_COMMENT, GET_FEED_ITEM, GET_POST_ITEM, GET_UNREAD_NOTIFICATION_COUNT, GET_PROJECT_INVITE_FROM_NOTIFICATION, GET_PROJECT_FOLLOW_REQUEST } from '../../graphql/queries'
+import { MARK_NOTIFICATION_AS_VIEWED, ACCEPT_PROJECT_INVITE, APPROVE_FOLLOW_REQUEST } from '../../graphql/mutations'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import LogoImage from '../../assets/images/logo.png'
 import { RegularText } from '../../storybook/stories/Text'
@@ -466,7 +466,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
   }
 }
 
-const formatNotificationMessage = ({ notificationInfo, tab, projectInvite }) => {
+const formatNotificationMessage = ({ notificationInfo, tab, projectInvite, projectFollowRequest }) => {
   let displayMessage = '';
   switch (notificationInfo.type) {
     case 'welcome':
@@ -513,6 +513,9 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite }) => 
         </RegularText>
       )
       break
+    case 'follow_request':
+      displayMessage = formatProjectFollowRequest(projectFollowRequest)
+      break
     case 'project_invite':
       displayMessage = formatProjectInvite(notificationInfo, projectInvite)
       break
@@ -546,6 +549,24 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite }) => 
       displayMessage = <></>;
   }
   return displayMessage;
+}
+
+const formatProjectFollowRequest = (followRequest) => {
+  if (followRequest) {
+    return (
+      <RegularText color={Black}>
+      <RegularText style={{
+        fontFamily: 'Rubik SemiBold'
+      }}>
+        @{followRequest.user?.username}{` `} 
+        </RegularText>requested to follow <RegularText style={{
+        fontFamily: 'Rubik SemiBold'
+      }}>
+        {followRequest.project?.name}
+          </RegularText>
+    </RegularText>
+    )
+  }
 }
 
 const formatProjectInviteAccept = (notificationInfo, projectInvite) => {
@@ -730,8 +751,11 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
     actorThumbnail
   } = notificationInfo
   const [projectInvite, setProjectInvite] = useState(null)
+  const [projectFollowRequest, setProjectFollowRequest] = useState(null)
+  const [acceptProjectFollowRequest, setAcceptProjectFollowRequest] = useState(null)
   const [acceptInvite, setAcceptInvite] = useState(null)
   const [acceptInviteMutation] = useMutation(ACCEPT_PROJECT_INVITE)
+  const [approveProjectFollowRequest] = useMutation(APPROVE_FOLLOW_REQUEST)
   const [getInvite, {
     data: projectInviteData
   }] = useLazyQuery(GET_PROJECT_INVITE_FROM_NOTIFICATION, {
@@ -741,6 +765,15 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
       inviteeId: userId
     }
   })
+  const [getProjectRequest, {
+    data: projectRequestData
+  }] = useLazyQuery(GET_PROJECT_FOLLOW_REQUEST, {
+    variables: {
+      projectId: objectId,
+      userId: actorId
+    }
+  })
+
   useEffect(() => {
     if (type === 'project_invite') {
       getInvite()
@@ -752,6 +785,8 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
           inviteeId: actorId
         }
       })
+    } else if (type === 'follow_request') {
+      getProjectRequest()
     }
     if (projectInviteData) {
       setProjectInvite(projectInviteData.getProjectInviteFromNotification)
@@ -759,8 +794,14 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
         setAcceptInvite(true)
       }
     }
-  }, [projectInviteData])
-  const displayMessage = formatNotificationMessage({ notificationInfo, tab, projectInvite })
+    if (projectRequestData) {
+      setProjectFollowRequest(projectRequestData.getProjectFollowRequest)
+      if (projectRequestData.getProjectFollowRequest.approvedAt) {
+        setAcceptProjectFollowRequest(true)
+      }
+    }
+  }, [projectInviteData, projectRequestData])
+  const displayMessage = formatNotificationMessage({ notificationInfo, tab, projectInvite, projectFollowRequest })
   const navigation = useNavigation()
 
   const defaultImage = () => {
@@ -810,10 +851,10 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
       }
       </View>
       {
-        type === 'project_invite' &&
+        (type === 'project_invite' || type === 'follow_request') &&
         <View>
           {
-            acceptInvite ?
+            ((type === 'project_invite' && acceptInvite) || (type === 'follow_request' && acceptProjectFollowRequest)) ?
             <Pressable style={listStyles.followingButton}>
             <RegularText color={Black}>
               Accepted
@@ -821,12 +862,22 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
           </Pressable>
           :
           <Pressable onPress={() => {
-            setAcceptInvite(true)
-            acceptInviteMutation({
-              variables: {
-                projectInviteId: projectInvite.id
-              }
-            })
+            if (type === 'project_invite') {
+              setAcceptInvite(true)
+              acceptInviteMutation({
+                variables: {
+                  projectInviteId: projectInvite.id
+                }
+              })
+            } else if (type === 'follow_request') {
+              setAcceptProjectFollowRequest(true)
+              approveProjectFollowRequest({
+                variables: {
+                  projectId: objectId,
+                  userId: actorId
+                }
+              })
+            }
           }} style={listStyles.followButton}>
             <RegularText color={White}>
               Accept
