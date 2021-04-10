@@ -476,7 +476,7 @@ function UserProfile({
                   <View style={{
                  backgroundColor: Grey700,
                  borderRadius: spacingUnit,
-                 padding: spacingUnit * 0.5,
+                 padding: 2,
                  paddingLeft: spacingUnit,
                  paddingRight: spacingUnit
                 }}>

@@ -786,7 +786,8 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
     variables: {
       projectId: objectId,
       userId: actorId
-    }
+    },
+    fetchPolicy: 'network-only'
   })
 
   useEffect(() => {
@@ -811,7 +812,7 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
     }
     if (projectRequestData) {
       setProjectFollowRequest(projectRequestData.getProjectFollowRequest)
-      if (projectRequestData.getProjectFollowRequest.approvedAt) {
+      if (projectRequestData.getProjectFollowRequest?.approvedAt) {
         setAcceptProjectFollowRequest(true)
       }
     }

@@ -1115,22 +1115,22 @@ export const HomeFeed = () => {
       <StatusItem setStatus={setStatus} statusValue='user' statusLabel='Following' statusTrue={status === 'user'} />
       <StatusItem setStatus={setStatus} statusValue='public' statusLabel='Public' statusTrue={status === 'public'} />
     </View>
-    {
-      (data || publicFeedData) && filteredData.length === 0 && status === 'user' &&
-      <Paragraph style={{
-        padding: spacingUnit * 2
-      }} onPress={() => navigation.push('Root', {
-        screen: 'Search'
-      })}>
-        No results - go to our <Paragraph color={Blue400}>
-          search page
-        </Paragraph> to find some cool projects or users to follow!
-      </Paragraph>
-    }
+
     <FlatList 
       contentContainerStyle={{
         paddingBottom: spacingUnit * 10
       }}
+      ListEmptyComponent={() => (
+        <Paragraph style={{
+          padding: spacingUnit * 2
+        }} onPress={() => navigation.push('Root', {
+          screen: 'Search'
+        })}>
+          No results - go to our <Paragraph color={Blue400}>
+            search page
+          </Paragraph> to find some cool projects or users to follow!
+        </Paragraph>
+      )}
       data={filteredData}
       renderItem={({ item }) => renderItem({ item, navigation, screen: 'Root', params: {
         screen: 'Dashboard',
