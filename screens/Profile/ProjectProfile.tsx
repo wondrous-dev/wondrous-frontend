@@ -600,7 +600,7 @@ function ProjectProfile({
             <>
             <UploadImage isVisible={isVisible} setModalVisible={setModalVisible} image={profilePicture} setImage={setProfilePicture} saveImageMutation={updateProject} imagePrefix={`tmp/${projectId}/`} saveImageMutationVariable={[{projectId, input: { profilePicture }}, ['input', 'profilePicture']]}  />
             <InviteCollaboratorModal project={project} isVisible={inviteCollaboratorModal} setModalVisible={setInviteCollaboratorModal} />
-            <EditProfileModal project={project} isVisible={editProfileModal} setModalVisible={setEditProfileModal} saveMutation={updateProject} />
+            <EditProfileModal project={project} isVisible={editProfileModal} setModalVisible={setEditProfileModal} saveMutation={updateProject} setParentImage={setProfilePicture}/>
             </>
           }
           <ProfilePictureModal profilePicture={project?.profilePicture} isVisible={profilePictureModal} setModalVisible={setProfilePictureModal} />

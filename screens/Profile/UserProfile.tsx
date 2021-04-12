@@ -298,7 +298,7 @@ function UserProfile({
           fetchUser({ userId: finalUserId, setUser })
         }
       }
-      if (user && !isEqual(user, previousUser)) {
+      if (!profilePicture && user && !isEqual(user, previousUser)) {
           setProfilePicture(user.thumbnailPicture || user.profilePicture)
       }
       if (userFeedData?.getUserFeed) {
@@ -637,7 +637,7 @@ function UserProfile({
       {
         userOwned &&
         <>
-        <EditProfileModal user={user} isVisible={isModalVisible} setModalVisible={setModalVisible} saveMutation={updateUser} />
+        <EditProfileModal setParentImage={setProfilePicture} user={user} isVisible={isModalVisible} setModalVisible={setModalVisible} saveMutation={updateUser} />
 
         <GoalCongratsModal user={user} isVisible={goalCompletemodal} setModalVisible={setGoalCompleteModal} />
         <TaskCongratsModal user={user} isVisible={taskCompleteModal} setModalVisible={setTaskCompleteModal} />

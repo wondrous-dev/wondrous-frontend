@@ -17,7 +17,7 @@ import { LINKED_PREFIX, MAX_BIO_LIMIT } from '../../constants'
 import { projectTags } from '../SignupFlow/ProjectTagSelectionScreen'
 import { projectTagHash } from '../../constants/projectTag'
 
-export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isVisible, setModalVisible }) => {
+export const EditProfileModal = ({ user, project, setParentImage, saveMutation, isVisible, setModalVisible }) => {
   const initialUsername = user && user.username
   const initialProjectName = project && project.name
   const initialLink = user && user.link
@@ -54,6 +54,11 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
     setProfilePicture(initialProfilePicture)
     setChangePhoto(false)
   }, [])
+
+  const setImage = useCallback((image) => {
+    setProfilePicture(image)
+    setParentImage(image)
+  })
   useEffect(() => {
     if (initialProfilePicture && !profilePicture) {
       setProfilePicture(initialProfilePicture)
@@ -116,11 +121,11 @@ export const EditProfileModal = ({ user, project, imagePrefix, saveMutation, isV
     <Modal isVisible={isVisible}>
       {
         project &&
-        <UploadImage isVisible={changePhoto} setModalVisible={setChangePhoto} image={profilePicture} setImage={setProfilePicture} saveImageMutation={saveMutation} imagePrefix={`tmp/${project.id}/`} saveImageMutationVariable={[{projectId: project.id, input: { profilePicture }}, ['input', 'profilePicture']]} />
+        <UploadImage isVisible={changePhoto} setModalVisible={setChangePhoto} image={profilePicture} setImage={setImage} saveImageMutation={saveMutation} imagePrefix={`tmp/${project.id}/`} saveImageMutationVariable={[{projectId: project.id, input: { profilePicture }}, ['input', 'profilePicture']]} />
       }
       {
         user &&
-        <UploadImage isVisible={changePhoto} setModalVisible={setChangePhoto} image={profilePicture} setImage={setProfilePicture} saveImageMutation={saveMutation} imagePrefix={`tmp/${user.id}/`} saveImageMutationVariable={[{userId: user.id, input: { profilePicture }}, ['input', 'profilePicture']]}  />
+        <UploadImage isVisible={changePhoto} setModalVisible={setChangePhoto} image={profilePicture} setImage={setImage} saveImageMutation={saveMutation} imagePrefix={`tmp/${user.id}/`} saveImageMutationVariable={[{userId: user.id, input: { profilePicture }}, ['input', 'profilePicture']]}  />
       }
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <SafeAreaView style={modalStyles.fullScreenContainer}>
