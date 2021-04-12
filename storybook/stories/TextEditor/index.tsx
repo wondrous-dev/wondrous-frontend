@@ -25,7 +25,7 @@ import { useQuery, useLazyQuery } from '@apollo/client'
 
 import { RichEditor, RichToolbar } from './RichEditor'
 import { SvgImage } from '../Image'
-import Placeholder from '../../../assets/images/placeholder.svg'
+import Placeholder from '../../../assets/images/placeholder'
 import DefaultProfilePicture from '../../../assets/images/default-profile-picture.jpg'
 import CoolProfilePic from '../../../assets/images/default-profile.png'
 import { Black, Blue500, Grey100, Grey200, Grey300, Grey400, White } from '../../../constants/Colors'
@@ -86,8 +86,10 @@ const AutocompleteListItem = ({ user, autocompleteFill }) => {
             marginRight: 8
           }} />
           :
-          <SvgImage width="30" height="30" srcElement={Placeholder} style={{
-            marginRight: 8
+          <Placeholder style={{
+            width: 30,
+            height: 30,
+            marginRight: spacingUnit
           }} />
         }
         <View>

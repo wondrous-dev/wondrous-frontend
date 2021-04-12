@@ -89,6 +89,14 @@ function UserProfile({
   const [taskCompleteModal, setTaskCompleteModal] = useState(false)
   const [goalCompletemodal, setGoalCompleteModal] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [following, setFollowing] = useState(loggedInUser && loggedInUser.usersFollowing && loggedInUser.usersFollowing.includes(finalUserId))
+  const [confetti, setConfetti] = useState(false)
+  const [followBack, setFollowBack] = useState(null)
+  const [user, setUser] = useState(fetchedUser)
+  const [settingsModal, setSettingsModal] = useState(false)
+  const [contactsModal, setContactsModal] = useState(false)
+  const [profilePicture, setProfilePicture] = useState(user && (user.thumbnailPicture || user.profilePicture))
+    const [profilePictureModal, setProfilePictureModal] = useState(false)
   // const [offset, setOffset] = useState(null)
   const [followUser] = useMutation(FOLLOW_USER, {
     variables: {
@@ -124,8 +132,7 @@ function UserProfile({
       })
     }
   })
-  const [following, setFollowing] = useState(loggedInUser && loggedInUser.usersFollowing && loggedInUser.usersFollowing.includes(finalUserId))
-  const [confetti, setConfetti] = useState(false)
+
   const [updateGoal] = useMutation(UPDATE_GOAL)
   const [updateTask] = useMutation(UPDATE_TASK)
   const [completeGoal] = useMutation(COMPLETE_GOAL, {
@@ -150,7 +157,6 @@ function UserProfile({
   }] = useLazyQuery(CHECK_USER_FOLLOWS_BACK, {
     fetchPolicy: 'network-only'
   })
-  const [followBack, setFollowBack] = useState(null)
 
   const {
     loading: additionalInfoLoading,
@@ -212,16 +218,13 @@ function UserProfile({
     fetchPolicy: 'network-only'
   })
 
-  const [user, setUser] = useState(fetchedUser)
   const previousUser = usePrevious(user)
   const { data: streakData } = useQuery(GET_USER_STREAK, {
     variables: {
       userId: finalUserId
     }
   })
-  const [settingsModal, setSettingsModal] = useState(false)
-  const [contactsModal, setContactsModal] = useState(false)
-  const [profilePicture, setProfilePicture] = useState(user && (user.thumbnailPicture || user.profilePicture))
+
   const [updateUser] = useMutation(UPDATE_USER, {
     update(cache, { data: { updateUser }}) {
       cache.modify({
@@ -234,7 +237,7 @@ function UserProfile({
       })
     }
   })
-  const [profilePictureModal, setProfilePictureModal] = useState(false)
+
   const feedSelected = section === 'feed'
   const actionSelected = section === 'action'
   const asksSelected = section === 'asks'

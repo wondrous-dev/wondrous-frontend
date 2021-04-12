@@ -87,6 +87,9 @@ function ProjectProfile({
   const [profilePicture, setProfilePicture] = useState('')
   const [profilePictureModal, setProfilePictureModal] = useState(false)
   const [projectFeed, setProjectFeed] = useState([])
+  const [following, setFollowing] = useState(user && user.projectsFollowing && user.projectsFollowing.includes(projectId))
+  const [followRequested, setFollowRequested] = useState(false)
+  const [confetti, setConfetti] = useState(false)
   const [updateProject] = useMutation(UPDATE_PROJECT, {
     update(cache, { data }) {
       cache.modify({
@@ -169,8 +172,6 @@ function ProjectProfile({
   })
 
   const projectFollowRequest = projectFollowRequestData?.getProjectFollowRequest
-  const [following, setFollowing] = useState(user && user.projectsFollowing && user.projectsFollowing.includes(projectId))
-  const [followRequested, setFollowRequested] = useState(false)
   const [getProjectActions, {
     loading: projectActionLoading,
     data: projectActionData,
@@ -195,7 +196,6 @@ function ProjectProfile({
     fetchPolicy: 'network-only'
   })
 
-  const [confetti, setConfetti] = useState(false)
   const [updateGoal] = useMutation(UPDATE_GOAL)
   const [updateTask] = useMutation(UPDATE_TASK)
   const [completeGoal] = useMutation(COMPLETE_GOAL, {
@@ -606,7 +606,7 @@ function ProjectProfile({
           <ProfilePictureModal profilePicture={project?.profilePicture} isVisible={profilePictureModal} setModalVisible={setProfilePictureModal} />
         
 
-<FlatList    refreshControl={
+        <FlatList    refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         ItemSeparatorComponent={() => (
@@ -696,17 +696,13 @@ function ProjectProfile({
                 }
               })
 
-              if (result && result.data && result.data.getProjectFeed) {
+              if (result?.data?.getProjectFeed) {
                 setProjectFeed([...projectFeed, ...result.data.getProjectFeed])
               }
             }
           }
         }}    
-        >
-
-        </FlatList>
-        
-
+        />
         </ProfileContext.Provider>
       }
     </SafeAreaView>

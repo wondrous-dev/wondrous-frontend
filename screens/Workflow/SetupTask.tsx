@@ -10,7 +10,7 @@ import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
 import { Grey400, White, Black, Grey500, Blue500 } from '../../constants/Colors'
 import { spacingUnit, getLocale } from '../../utils/common'
-import AddIcon from '../../assets/images/add-dark-button.svg'
+import AddIcon from '../../assets/images/add-dark-button'
 import { SvgImage } from '../../storybook/stories/Image'
 import TaskIcon from '../../assets/images/task/standalone'
 import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
@@ -117,9 +117,11 @@ function SetupTaskScreen({
             Tasks are small units of work that can be finished in a day
           </Paragraph>
           <Pressable onPress={() => setModalVisible(true)}>
-            <SvgImage width={spacingUnit * 8} height={spacingUnit * 8} srcElement={AddIcon} style={{
-              marginTop: spacingUnit * 3
-            }} />
+          <AddIcon style={{
+                  marginTop: spacingUnit * 3,
+                  width: spacingUnit * 8,
+                  height: spacingUnit * 8
+                }} />
           </Pressable>
               </View>
             )}

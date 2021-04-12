@@ -229,36 +229,39 @@ const CreateProjectInput = ({ navigation, setup }) => {
                             onBlur={handleBlur('projectDescription')}
                             value={description}
                         />
-                        <View style={{
-                            marginTop: spacingUnit * 2,
-                            flexDirection: 'row'
-                        }}>
                         {
-                            privacy === 'public'
-                            ?
-                            <Pressable style={firstProjectSetupStyles.privacyButton} onPress={() => setPrivacy('private')}>
-                                <Paragraph color={Black}>
-                                Make private
-                                </Paragraph>
-                                {/* <Checkmark color={White} style={{
-                                width: 20,
-                                height: 20
-                                }}/> */}
-                            </Pressable>
-                            :
-                            <Pressable style={{
-                                ...firstProjectSetupStyles.privacyButton,
-                                backgroundColor: Black
-                            }} onPress={() => setPrivacy('public')}>
-                                <Paragraph color={White}>
-                                Make public
-                                </Paragraph>
-                            </Pressable>
+                            !setup &&
+                            <View style={{
+                                marginTop: spacingUnit * 2,
+                                flexDirection: 'row'
+                            }}>
+                            {
+                                privacy === 'public'
+                                ?
+                                <Pressable style={firstProjectSetupStyles.privacyButton} onPress={() => setPrivacy('private')}>
+                                    <Paragraph color={Black}>
+                                    Make private
+                                    </Paragraph>
+                                    {/* <Checkmark color={White} style={{
+                                    width: 20,
+                                    height: 20
+                                    }}/> */}
+                                </Pressable>
+                                :
+                                <Pressable style={{
+                                    ...firstProjectSetupStyles.privacyButton,
+                                    backgroundColor: Black
+                                }} onPress={() => setPrivacy('public')}>
+                                    <Paragraph color={White}>
+                                    Make public
+                                    </Paragraph>
+                                </Pressable>
+                            }
+                            <View style={{
+                                flex: 1
+                            }} />
+                            </View>
                         }
-                        <View style={{
-                            flex: 1
-                        }} />
-                        </View>
                         <PrimaryButton
                             textStyle={{ color: White }}
                             style={{

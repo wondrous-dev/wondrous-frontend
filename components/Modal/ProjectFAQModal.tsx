@@ -7,7 +7,7 @@ import { SvgImage } from '../../storybook/stories/Image'
 import { ButtonText, Paragraph, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
 import { modalStyles } from './common'
-import CommunitySvg from '../../assets/images/community.svg'
+import CommunitySvg from '../../assets/images/community'
 
 export const ProjectFAQModal = ({ isVisible, setModalVisible }) => {
   return (
@@ -16,10 +16,13 @@ export const ProjectFAQModal = ({ isVisible, setModalVisible }) => {
         ...modalStyles.fullScreenContainer,
         alignItems: 'center',
       }}>
-      <SvgImage width="80" height="80" srcElement={CommunitySvg} style={{
-         marginTop: spacingUnit * 10,
-         marginBottom: spacingUnit * 4
-        }}/>
+
+        <CommunitySvg style={{
+          width: 80,
+          height: 80,
+          marginTop: spacingUnit * 10,
+          marginBottom: spacingUnit * 4
+        }} />
         <Subheading color={Black} style={{
           paddingLeft: spacingUnit * 2,
           paddingRight: spacingUnit * 2

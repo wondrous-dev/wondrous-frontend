@@ -10,9 +10,8 @@ import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
 import { Grey400, White, Black, Grey500, Blue500, Blue400, Green400 } from '../../constants/Colors'
 import { spacingUnit, getLocale } from '../../utils/common'
-import AddIcon from '../../assets/images/add-dark-button.svg'
 import { SvgImage } from '../../storybook/stories/Image'
-import Celebration from '../../assets/images/celebrations/signupConfetti.svg'
+import Celebration from '../../assets/images/celebrations/signupConfetti'
 const streakIntroStyles = StyleSheet.create({
   image: {
     alignSelf: 'center',
@@ -37,7 +36,11 @@ function StreakIntro({
         alignItems: 'center',
         marginTop: spacingUnit * 10
       }}>
-        <SvgImage width="80" height="80" srcElement={Celebration} style={streakIntroStyles.image} />
+        <Celebration style={{
+          width: 80,
+          height: 80,
+          ...streakIntroStyles.image
+        }} />
         <Subheading color={Blue400} style={{
           marginTop: spacingUnit * 3,
         }}>

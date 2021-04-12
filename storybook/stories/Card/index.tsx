@@ -14,8 +14,8 @@ import {   TouchableWithoutFeedback  } from "react-native-gesture-handler"
 import Animated, { withDecay } from "react-native-reanimated"
 
 import { Grey400, Blue400, Green400, White, Grey450, Purple, Red400, Yellow300, Grey300, Grey800 } from '../../../constants/Colors'
-import CompleteSvg from '../../../assets/images/complete.svg'
-import ArchiveSvg from '../../../assets/images/archive.svg'
+import CompleteSvg from '../../../assets/images/complete'
+import ArchiveSvg from '../../../assets/images/archive'
 import { SafeImage, SvgImage } from '../Image'
 import { RegularText, TinyText, Paragraph } from '../Text'
 import { formatDueDate, redDate } from '../../../utils/date'
@@ -152,7 +152,10 @@ class Card extends React.Component {
     >
       <PlatformTouchable style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 4 }}>
         <Text style={[styles.text, { marginRight: 8 }]}>Archive</Text>
-        <SvgImage width="16" height="16" srcElement={ArchiveSvg} />
+        <ArchiveSvg style={{
+          width: 16,
+          height: 16
+        }} />
       </PlatformTouchable>
     </Animated.View>
   )
@@ -171,7 +174,10 @@ class Card extends React.Component {
     >
       <PlatformTouchable style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Text style={[styles.text, { color: White, marginRight: 4 }]}>Done</Text>
-        <SvgImage width="20" height="20" srcElement={CompleteSvg} />
+        <CompleteSvg style={{
+          width: 20,
+          height: 20
+        }} />
       </PlatformTouchable>
     </Animated.View>
   )

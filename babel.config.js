@@ -4,11 +4,7 @@ module.exports = function(api) {
   return {
     presets: [ 'babel-preset-expo', 'module:metro-react-native-babel-preset' ],
     plugins: [
-      [ 'babel-plugin-inline-import', {
-        extensions: [
-          ".svg"
-        ]
-      }],
+      [ 'babel-plugin-inline-import'],
       'react-native-reanimated/plugin'
     ]
   };

@@ -10,7 +10,7 @@ import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
 import { Grey400, White, Black, Grey500, Blue500 } from '../../constants/Colors'
 import { spacingUnit, getLocale } from '../../utils/common'
-import AddIcon from '../../assets/images/add-dark-button.svg'
+import AddIcon from '../../assets/images/add-dark-button'
 import { SvgImage } from '../../storybook/stories/Image'
 import AskIcon from '../../assets/images/ask/standalone'
 import { FullScreenAskModal } from '../../components/Modal/AskModal'
@@ -124,8 +124,10 @@ function SetupAskScreen({
                 What do you need help with from your followers and the Wonder community?
               </Paragraph>
               <Pressable onPress={() => setModalVisible(true)}>
-                <SvgImage width={spacingUnit * 8} height={spacingUnit * 8} srcElement={AddIcon} style={{
-                  marginTop: spacingUnit * 3
+                <AddIcon style={{
+                  marginTop: spacingUnit * 3,
+                  width: spacingUnit * 8,
+                  height: spacingUnit * 8
                 }} />
               </Pressable>
               </View>

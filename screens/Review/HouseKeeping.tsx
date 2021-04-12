@@ -15,7 +15,6 @@ import { COMPLETE_GOAL, COMPLETE_TASK, CREATE_GOAL, CREATE_TASK, UPDATE_GOAL, UP
 import { GoalCongratsModal, TaskCongratsModal } from '../../components/Modal'
 import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
 import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
-import AddIcon from '../../assets/images/add-dark-button.svg'
 import { SvgImage } from '../../storybook/stories/Image'
 
 const HouseKeeping = ({ route, navigation }) => {

@@ -118,7 +118,6 @@
     "babel-plugin-react-native-web": "^0.14.7",
     "jest-expo": "^40.0.0",
     "metro-react-native-babel-preset": "^0.64.0",
-    "react-native-svg-transformer": "^0.14.3",
     "react-native-vector-icons": "^7.1.0",
     "typescript": "~4.0.0",
     "url-loader": "^4.1.1",

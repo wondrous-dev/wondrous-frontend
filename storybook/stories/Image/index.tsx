@@ -82,6 +82,7 @@ export const UploadImage = ({ isVisible, setModalVisible, image, setImage, saveI
     // console.log(result);
 
     if (!result.cancelled) {
+      console.log('result', result.uri, setImage)
       setImage(result.uri)
       const {
         fileType,

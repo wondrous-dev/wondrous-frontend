@@ -778,7 +778,8 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
       projectId: objectId,
       invitorId: actorId,
       inviteeId: userId
-    }
+    },
+    fetchPolicy: 'network-only'
   })
   const [getProjectRequest, {
     data: projectRequestData

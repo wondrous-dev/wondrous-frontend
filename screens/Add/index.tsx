@@ -10,7 +10,7 @@ import { Black, Grey300, White } from '../../constants/Colors'
 import { Paragraph, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
 import GoalIcon from '../../assets/images/actions/goal'
-import TaskIcon from '../../assets/images/actions/task.svg'
+import TaskIcon from '../../assets/images/actions/task'
 import AskIcon from '../../assets/images/ask/standalone'
 import ProjectIcon from '../../assets/images/actions/project'
 import PostIcon from '../../assets/images/actions/post'
@@ -168,11 +168,11 @@ function AddScreen({
       </View>
       <View style={addStyles.choiceContainer}>
         <Pressable style={addStyles.choiceBox} onPress={() => setTaskModalVisible(true)}>
-        <SvgImage
-          width={spacingUnit * 6}
-          height={spacingUnit * 6}
-          srcElement={TaskIcon}
-        />
+        <TaskIcon
+         style={{
+           width: spacingUnit * 6,
+           height: spacingUnit * 6
+         }} />
         <Paragraph color={Black} style={{
           ...addStyles.choiceText,
           marginTop: spacingUnit * 1.5

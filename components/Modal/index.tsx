@@ -8,7 +8,7 @@ import { Grey300, Black, Grey150, White, Grey800, Blue500, Blue400 } from '../..
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { PrimaryButton, SecondaryButton } from '../../storybook/stories/Button'
 import { spacingUnit, renderMentionString } from '../../utils/common'
-import Celebration from '../../assets/images/celebrations/signupConfetti.svg'
+import Celebration from '../../assets/images/celebrations/signupConfetti'
 import { SvgImage } from '../../storybook/stories/Image'
 import { TwitterShare, FacebookShare, CopyLink, LinkedinShare } from '../../assets/images/share'
 import { tweetNow, linkedinShare, postOnFacebook  } from '../Share'
@@ -118,7 +118,11 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
             padding: spacingUnit * 2,
             paddingTop: spacingUnit * 5
           }}>
-          <SvgImage width="60" height="60" srcElement={Celebration} style={modalStyles.confetti} />
+            <Celebration style={{
+              ...modalStyles.confetti,
+              width: 60,
+              height: 60
+            }} />
           <Subheading style={{
             marginBottom: spacingUnit * 2,
             fontFamily: 'Rubik SemiBold',

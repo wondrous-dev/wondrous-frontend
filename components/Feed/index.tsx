@@ -16,7 +16,7 @@ import { spacingUnit, capitalizeFirstLetter, renderMentionString, wait, usePrevi
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import ProjectIcon from '../../assets/images/actions/project'
 import GoalIcon from '../../assets/images/actions/goal'
-import TaskIcon from '../../assets/images/actions/task.svg'
+import TaskIcon from '../../assets/images/actions/task'
 import { LikeOutline, LikeFilled } from '../../assets/images/reactions/like'
 import { TwitterShare, FacebookShare, CopyLink, LinkedinShare } from '../../assets/images/share'
 import CommentIcon from '../../assets/images/reactions/comment'
@@ -27,7 +27,7 @@ import { useProfile } from '../../utils/hooks'
 import { FlexRowContentModal } from '../../components/Modal'
 import { MyCarousel, VideoDisplay } from '../../storybook/stories/Carousel'
 import Link from '../../assets/images/link'
-import Celebration from '../../assets/images/celebrations/signupConfetti.svg'
+import Celebration from '../../assets/images/celebrations/signupConfetti'
 import {
   FilledPin,
   UnfilledPin
@@ -168,7 +168,11 @@ const FeedString = ({ item, standAlone }) => {
       }}>
          {
   item.verb === 'complete' &&
-  <SvgImage width="30" height="30" srcElement={Celebration} style={feedStyles.confetti} />
+  <Celebration style={{
+    width: 30,
+    height: 30,
+    ...feedStyles.confetti
+  }} />
 }
        <Paragraph color={Black} style={{
          ...feedStyles.feedText,
