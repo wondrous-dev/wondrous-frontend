@@ -497,10 +497,10 @@ function UserProfile({
                 <Subheading style={{
                   fontSize: 18
                 }} color={Black}>
-                  {user.firstName || ''} {user.lastName || ''}
+                  {user?.firstName || ''} {user?.lastName || ''}
                 </Subheading>
-                {user.username &&
-                <Paragraph color={Grey800}>@{user.username}</Paragraph>
+                {user?.username &&
+                <Paragraph color={Grey800}>@{user?.username}</Paragraph>
                 }
                 </View>
                 {

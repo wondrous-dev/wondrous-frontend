@@ -20,6 +20,7 @@ export const pageStyles = StyleSheet.create({
   infoContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    alignItems: 'center'
     // marginTop: -spacingUnit
   },
   priorityContainer: {

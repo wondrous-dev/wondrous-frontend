@@ -76,7 +76,7 @@ export const VideoThumbnail = ({ source, width, height, setVideo, video, errors,
         </Pressable>
       </FlexRowContentModal>
       {
-        video.startsWith('file://')
+        video?.startsWith('file://')
         ?
         <Image style={{
           ...modalStyles.mediaItem,
@@ -594,7 +594,7 @@ export const submit = async ({
   } else {
     // Parse media:
     const finalMediaArr = media && media.map(image => {
-      if (image.startsWith('file://')) {
+      if (image?.startsWith('file://')) {
         const {
           filename
         } = getFilenameAndType(image)
@@ -603,7 +603,7 @@ export const submit = async ({
       return image
     })
     const finalCompletedImagesArr = completedImages && completedImages.map(image => {
-      if (image.startsWith('file://')) {
+      if (image?.startsWith('file://')) {
         const {
           filename
         } = getFilenameAndType(image)

@@ -528,10 +528,10 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite, proje
       displayMessage = formatProjectFollowRequest(notificationInfo)
       break
     case 'project_invite':
-      displayMessage = formatProjectInvite(notificationInfo, projectInvite)
+      displayMessage = formatProjectInvite(notificationInfo)
       break
     case 'project_invite_accept':
-      displayMessage = formatProjectInviteAccept(notificationInfo, projectInvite)
+      displayMessage = formatProjectInviteAccept(notificationInfo)
       break
     case 'expiring_action_reminder':
       displayMessage = (
@@ -584,19 +584,23 @@ const formatProjectFollowRequest = (notificationInfo) => {
   }
 }
 
-const formatProjectInviteAccept = (notificationInfo, projectInvite) => {
-  if (projectInvite) {
+const formatProjectInviteAccept = (notificationInfo) => {
+  if (notificationInfo) {
+    const {
+      objectName,
+      actorUsername
+    } = notificationInfo
     return (
       <>
         <RegularText color={Black}>
             <RegularText style={{
               fontFamily: 'Rubik SemiBold'
             }}>
-              @{projectInvite.invitee.username}{` `} 
+              @{actorUsername}{` `} 
               </RegularText>accepted your invite to work on <RegularText style={{
               fontFamily: 'Rubik SemiBold'
             }}>
-              {projectInvite.project.name}
+              {objectName}
               </RegularText>
         </RegularText>
       </>
@@ -604,20 +608,23 @@ const formatProjectInviteAccept = (notificationInfo, projectInvite) => {
   }
 }
 
-const formatProjectInvite = (notificationInfo, projectInvite) => {
-
-  if (projectInvite) {
+const formatProjectInvite = (notificationInfo) => {
+  if (notificationInfo) {
+    const {
+      objectName,
+      actorUsername
+    } = notificationInfo
     return (
       <>
         <RegularText color={Black}>
             <RegularText style={{
               fontFamily: 'Rubik SemiBold'
             }}>
-              @{projectInvite.invitor.username}{` `} 
+              @{objectName}{` `} 
               </RegularText>invited you to work on <RegularText style={{
               fontFamily: 'Rubik SemiBold'
             }}>
-              {projectInvite.project.name}
+              {actorUsername}
               </RegularText>
         </RegularText>
       </>
@@ -792,9 +799,9 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
   })
 
   useEffect(() => {
-    if (type === 'project_invite') {
+    if (type === 'project_invite' && projectInvite === null) {
       getInvite()
-    } else if (type === 'project_invite_accept') {
+    } else if (type === 'project_invite_accept' && projectFollowRequest === null) {
       getInvite({
         variables: {
           projectId: objectId,
@@ -802,7 +809,7 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
           inviteeId: actorId
         }
       })
-    } else if (type === 'follow_request') {
+    } else if (type === 'follow_request' && projectFollowRequest === null) {
       getProjectRequest()
     }
     if (projectInviteData) {

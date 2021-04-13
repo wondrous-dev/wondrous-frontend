@@ -97,16 +97,16 @@ const CollaboratorItem = ({ item, project, initialInvited, projectInvites, setMo
       }}>
         <Subheading style={{
           fontSize: 16
-        }} color={Black}>{(item.firstName || '') + ' ' +  (item.lastName || '')}</Subheading>
-        {item.username &&
+        }} color={Black}>{(item?.firstName || '') + ' ' +  (item?.lastName || '')}</Subheading>
+        {item?.username &&
         <RegularText color={Grey800}>
-          @{item.username}
+          @{item?.username}
         </RegularText>}
-        {item.bio &&
+        {item?.bio &&
           <RegularText color={Black} style={{
             marginTop: spacingUnit * 0.5
           }}>
-          {cutString(item.bio)}
+          {cutString(item?.bio)}
         </RegularText>
         }
       </View>

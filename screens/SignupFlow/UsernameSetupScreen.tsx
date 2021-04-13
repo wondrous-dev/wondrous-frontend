@@ -87,7 +87,7 @@ const UsernameInput = ({ navigation }) => {
         marginBottom: spacingUnit * 3,
       }} color={Black}>
         {
-          user.firstName ?
+          user?.firstName ?
           'Choose your username'
           :
           'Set names'
@@ -96,7 +96,7 @@ const UsernameInput = ({ navigation }) => {
       <Formik
         initialValues={{ username: user && user.username, fullName: user?.firstName ? `${user?.firstName} ${user?.lastName}` : null }}
         onSubmit={async values => {
-          if (!user.firstName && !values.fullName && !values.fullName.trim()) {
+          if (!user?.firstName && !values?.fullName && !values?.fullName.trim()) {
             setError('Please enter a name')
           }  else if (!values.username) {
             setError('Please enter a shortname')
@@ -124,7 +124,7 @@ const UsernameInput = ({ navigation }) => {
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
           <View>
-            {!user.firstName &&
+            {!user?.firstName &&
             <TextInput
             style={{
               width: spacingUnit * 43,
@@ -140,7 +140,7 @@ const UsernameInput = ({ navigation }) => {
             placeholderTextColor={GreyPlaceHolder}
             onChangeText={handleChange('fullName')}
             onBlur={handleBlur('fullName')}
-            value={values.fullName}
+            value={values?.fullName}
           />
             }
             <TextInput

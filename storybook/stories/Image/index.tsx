@@ -207,11 +207,11 @@ export const ModalImage = ({ src, style, defaultImage, setImage }) => {
 
   useEffect(() => {
     if (cachedImage) {
-      if (setImage && !(src.startsWith('https') || src.startsWith('file://'))) {
+      if (setImage && !(src?.startsWith('https') || src?.startsWith('file://'))) {
         setImage(cachedImage)
       }
     } else if (data && data.getPreviewImage && data.getPreviewImage.url) {
-      if (setImage && !(src.startsWith('https') || src.startsWith('file://'))) {
+      if (setImage && !(src?.startsWith('https') || src?.startsWith('file://'))) {
         setImage(data.getPreviewImage.url)
       }
     }
@@ -224,8 +224,8 @@ export const ModalImage = ({ src, style, defaultImage, setImage }) => {
     setPictureModal(true)
   }
 
-  if (src.startsWith('https') || src.startsWith('file://')) {
-    return src.startsWith('file://') ? 
+  if (src?.startsWith('https') || src?.startsWith('file://')) {
+    return src?.startsWith('file://') ? 
     <>
     <PictureModal isVisible={pictureModal} setModalVisible={setPictureModal} picture={src} />
     <Pressable onPress={openPictureModal} style={{
@@ -277,11 +277,11 @@ export const SafeImage = ({ src, style, defaultImage, setImage }) => {
 
   useEffect(() => {
     if (cachedImage) {
-      if (setImage && !(src.startsWith('https') || src.startsWith('file://'))) {
+      if (setImage && !(src?.startsWith('https') || src.startsWith('file://'))) {
         setImage(cachedImage)
       }
     } else if (data && data.getPreviewImage && data.getPreviewImage.url) {
-      if (setImage && !(src.startsWith('https') || src.startsWith('file://'))) {
+      if (setImage && !(src?.startsWith('https') || src?.startsWith('file://'))) {
         setImage(data.getPreviewImage.url)
       }
     }
@@ -290,8 +290,8 @@ export const SafeImage = ({ src, style, defaultImage, setImage }) => {
     }
   }, [data, cachedImage])
 
-  if (src.startsWith('https') || src.startsWith('file://')) {
-    return src.startsWith('file://') ? <Image style={style} key={src} source={{
+  if (src?.startsWith('https') || src?.startsWith('file://')) {
+    return src?.startsWith('file://') ? <Image style={style} key={src} source={{
       uri: src
     }} /> :
     <CachedImage cacheKey={src} style={style} key={src} source={{

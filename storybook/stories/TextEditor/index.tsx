@@ -94,10 +94,10 @@ const AutocompleteListItem = ({ user, autocompleteFill }) => {
         }
         <View>
           <Text style={{color: Black, marginBottom: 4, fontWeight: 'bold'}}>
-            {user.firstName || ''} {user.lastName || ''}
+            {user?.firstName || ''} {user?.lastName || ''}
           </Text>
           <Text style={{ color: Grey200, fontSize: 14 }}>
-            @{user.username}
+            @{user?.username}
           </Text>
         </View>
       </View>
@@ -462,16 +462,16 @@ const renderSuggestions: (suggestions: Suggestion[], renderStyle, textInputRef) 
             <View>
               <Text style={{color: Black, marginBottom: 4, fontWeight: 'bold'}}>
                 {
-                  (element.firstName || element.lastName) ?
-                    `${element.firstName || ''} ${element.lastName || ''}`
+                  (element?.firstName || element?.lastName) ?
+                    `${element?.firstName || ''} ${element?.lastName || ''}`
                     :
-                    `${element.name || ''}`
+                    `${element?.name || ''}`
                 }
               </Text>
               {
-                element.username &&
+                element?.username &&
                   <Text style={{ color: Grey200, fontSize: 14 }}>
-                  @{element.username}
+                  @{element?.username}
                 </Text>
               }
             </View>

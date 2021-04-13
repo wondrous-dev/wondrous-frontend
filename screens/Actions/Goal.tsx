@@ -13,9 +13,11 @@ import PriorityFlame from '../../assets/images/modal/priority'
 import { capitalizeFirstLetter, renderMentionString, spacingUnit } from '../../utils/common'
 import { Tag } from '../../components/Tag'
 import { formatDueDate, redDate } from '../../utils/date'
-import { GET_GOAL_BY_ID } from '../../graphql/queries'
+import { GET_GOAL_BY_ID, GET_USER_STREAK } from '../../graphql/queries'
+import { COMPLETE_GOAL } from '../../graphql/mutations'
 import { MyCarousel, VideoDisplay } from '../../storybook/stories/Carousel'
 import LinkIcon from '../../assets/images/link'
+import { modalStyles } from '../../components/Modal/common'
 
 const GoalPage = ({ navigation, route }) => {
   const user = useMe()
@@ -26,6 +28,7 @@ const GoalPage = ({ navigation, route }) => {
   } = route.params
   const [goal, setGoal] = useState(initialGoal)
   const ownedByUser = (goal && goal.ownerId) === (user && user.id)
+  const [status, setStatus] = useState(null)
   const [modalVisible, setModalVisible] = useState(false)
   const [getGoal, {
     data,
@@ -59,6 +62,14 @@ const GoalPage = ({ navigation, route }) => {
     }
   })
 
+  const [completeGoal] = useMutation(COMPLETE_GOAL, {
+    refetchQueries: [
+      { query: GET_USER_STREAK, variables: {
+        userId: user && user.id
+      } },
+    ]
+  })
+
   useEffect(() => {
     if (!goal) {
       getGoal({
@@ -70,9 +81,12 @@ const GoalPage = ({ navigation, route }) => {
     if (data) {
       setGoal(data.getGoalById)
     }
-  }, [data])
+    if (goal?.status) {
+      setStatus(goal?.status)
+    }
+  }, [data, goal])
 
-
+  const completed = status === 'completed'
   if (!goal) {
     return (
       <View>
@@ -118,7 +132,8 @@ const GoalPage = ({ navigation, route }) => {
         }
         <View style={[pageStyles.infoContainer]}>
           {
-            goal.status === 'completed' &&
+            completed
+            ?
             <Tag color={Green400} style={{
               marginRight: spacingUnit,
               marginTop: spacingUnit
@@ -127,6 +142,27 @@ const GoalPage = ({ navigation, route }) => {
                 Completed
               </RegularText>
             </Tag>
+            :
+            <Pressable onPress={() => {
+              setStatus('completed')
+              completeGoal({
+                variables: {
+                  goalId: goal?.id
+                }
+              })
+
+            }} style={{
+              borderColor: Green400,
+              borderWidth: 1,
+              marginRight: spacingUnit,
+              paddingLeft: spacingUnit,
+              paddingRight: spacingUnit,
+              borderRadius: spacingUnit
+            }}>
+              <RegularText color={Green400}>
+                Mark as complete
+              </RegularText>
+            </Pressable>
           }
           {
             goal.status === 'archived' &&
@@ -135,7 +171,7 @@ const GoalPage = ({ navigation, route }) => {
               marginTop: spacingUnit
             }}>
               <RegularText color={Grey800}>
-                Completed
+                Archived
               </RegularText>
           </Tag>
           }
