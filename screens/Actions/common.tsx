@@ -2,7 +2,7 @@ import { useQuery, useMutation } from '@apollo/client'
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, FlatList } from 'react-native'
 
-import { Black, Blue400, Red400, Yellow300, Grey700, Grey800, Grey300 } from '../../constants/Colors'
+import { Black, Blue400, Red400, Yellow300, Green400, Grey800, Grey300 } from '../../constants/Colors'
 import { spacingUnit } from '../../utils/common'
 import { GET_ASK_FEED, GET_FEED_REACTION_OBJ, GET_GOAL_FEED, GET_TASK_FEED } from '../../graphql/queries'
 import { REACT_FEED_ITEM } from '../../graphql/mutations'
@@ -29,6 +29,14 @@ export const pageStyles = StyleSheet.create({
     paddingLeft: spacingUnit * 1.5,
     paddingRight: spacingUnit * 1.5,
     borderRadius: 8
+  },
+  markAsComplete: {
+    borderColor: Green400,
+    borderWidth: 1,
+    marginRight: spacingUnit,
+    paddingLeft: spacingUnit,
+    paddingRight: spacingUnit,
+    borderRadius: spacingUnit
   },
   title: {
     fontFamily: 'Rubik SemiBold',

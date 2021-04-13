@@ -7,13 +7,13 @@ import { Header } from '../../components/Header'
 import { Grey800, Purple, Red400, White, Black, Blue400, Grey450, Green400 } from '../../constants/Colors'
 import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
 import { pageStyles, sortPriority, ReactionFeed } from './common'
-import { UPDATE_TASK } from '../../graphql/mutations'
+import { COMPLETE_TASK, UPDATE_TASK } from '../../graphql/mutations'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import PriorityFlame from '../../assets/images/modal/priority'
 import { capitalizeFirstLetter, renderMentionString, spacingUnit } from '../../utils/common'
 import { Tag } from '../../components/Tag'
 import { formatDueDate, redDate } from '../../utils/date'
-import { GET_TASK_BY_ID, GET_GOAL_BY_ID } from '../../graphql/queries'
+import { GET_TASK_BY_ID, GET_GOAL_BY_ID, GET_USER_STREAK } from '../../graphql/queries'
 import { MyCarousel, VideoDisplay } from '../../storybook/stories/Carousel'
 import LinkIcon from '../../assets/images/link'
 
@@ -26,6 +26,7 @@ const TaskPage = ({ navigation, route }) => {
   } = route.params
   const [task, setTask] = useState(initialTask)
   const ownedByUser = (task && task.ownerId) === (user && user.id)
+  const [status, setStatus] = useState(null)
   const [modalVisible, setModalVisible] = useState(false)
   const [getTask, {
     data,
@@ -59,6 +60,14 @@ const TaskPage = ({ navigation, route }) => {
     }
   })
 
+  const [completeTask] = useMutation(COMPLETE_TASK, {
+    refetchQueries: [
+      { query: GET_USER_STREAK, variables: {
+        userId: user && user.id
+      } }
+    ]
+  })
+
   const [getGoalName, {
     data: taskGoal
   }] = useLazyQuery(GET_GOAL_BY_ID)
@@ -82,7 +91,10 @@ const TaskPage = ({ navigation, route }) => {
         }
       })
     }
-  }, [data])
+    if (task?.status) {
+      setStatus(task?.status)
+    }
+  }, [data, task])
 
 
   if (!task) {
@@ -98,6 +110,8 @@ const TaskPage = ({ navigation, route }) => {
   const muxPlaybackId = task.muxPlaybackId
   const asks = task && task.relatedAskIds
   const goal = taskGoal && taskGoal.getGoalById
+  const completed = status === 'completed'
+  const archived = status === 'archived'
 
   return (
     <SafeAreaView style={{
@@ -129,6 +143,45 @@ const TaskPage = ({ navigation, route }) => {
           </View>
         }
         <View style={pageStyles.infoContainer}>
+          {
+            completed
+            ?
+            <Tag color={Green400} style={{
+              marginRight: spacingUnit,
+              marginTop: spacingUnit
+            }}>
+              <RegularText color={White}>
+                Completed
+              </RegularText>
+            </Tag>
+            :
+            (
+              archived
+              ?
+              <Tag color={Grey300} style={{
+                marginRight: spacingUnit,
+                marginTop: spacingUnit
+              }}>
+                <RegularText color={Grey800}>
+                  Completed
+                </RegularText>
+              </Tag>
+              :
+              <Pressable onPress={() => {
+                setStatus('completed')
+                completeTask({
+                  variables: {
+                    taskId: task?.id
+                  }
+                })
+  
+              }} style={pageStyles.markAsComplete}>
+                <RegularText color={Green400}>
+                  Mark as complete
+                </RegularText>
+              </Pressable>
+            )
+          }
         {
             task.status === 'completed' &&
             <Tag color={Green400} style={{

@@ -7,17 +7,15 @@ import { Header } from '../../components/Header'
 import { Grey800, Purple, Red400, White, Yellow300, Grey300, Blue400, Grey450, Black, Green400 } from '../../constants/Colors'
 import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
 import { pageStyles, sortPriority, ReactionFeed } from './common'
-import { UPDATE_GOAL } from '../../graphql/mutations'
+import { UPDATE_GOAL, COMPLETE_GOAL } from '../../graphql/mutations'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import PriorityFlame from '../../assets/images/modal/priority'
 import { capitalizeFirstLetter, renderMentionString, spacingUnit } from '../../utils/common'
 import { Tag } from '../../components/Tag'
 import { formatDueDate, redDate } from '../../utils/date'
 import { GET_GOAL_BY_ID, GET_USER_STREAK } from '../../graphql/queries'
-import { COMPLETE_GOAL } from '../../graphql/mutations'
 import { MyCarousel, VideoDisplay } from '../../storybook/stories/Carousel'
 import LinkIcon from '../../assets/images/link'
-import { modalStyles } from '../../components/Modal/common'
 
 const GoalPage = ({ navigation, route }) => {
   const user = useMe()
@@ -87,6 +85,7 @@ const GoalPage = ({ navigation, route }) => {
   }, [data, goal])
 
   const completed = status === 'completed'
+  const archived = status === 'archived'
   if (!goal) {
     return (
       <View>
@@ -143,38 +142,34 @@ const GoalPage = ({ navigation, route }) => {
               </RegularText>
             </Tag>
             :
-            <Pressable onPress={() => {
-              setStatus('completed')
-              completeGoal({
-                variables: {
-                  goalId: goal?.id
-                }
-              })
+            (
+              archived
+              ?
+              <Tag color={Grey300} style={{
+                marginRight: spacingUnit,
+                marginTop: spacingUnit
+              }}>
+                  <RegularText color={Grey800}>
+                    Archived
+                  </RegularText>
+              </Tag>
+              :
+              <Pressable onPress={() => {
+                setStatus('completed')
+                completeGoal({
+                  variables: {
+                    goalId: goal?.id
+                  }
+                })
+  
+              }} style={pageStyles.markAsComplete}>
+                <RegularText color={Green400}>
+                  Mark as complete
+                </RegularText>
+              </Pressable>
+            )
+          }
 
-            }} style={{
-              borderColor: Green400,
-              borderWidth: 1,
-              marginRight: spacingUnit,
-              paddingLeft: spacingUnit,
-              paddingRight: spacingUnit,
-              borderRadius: spacingUnit
-            }}>
-              <RegularText color={Green400}>
-                Mark as complete
-              </RegularText>
-            </Pressable>
-          }
-          {
-            goal.status === 'archived' &&
-            <Tag color={Grey300} style={{
-              marginRight: spacingUnit,
-              marginTop: spacingUnit
-            }}>
-              <RegularText color={Grey800}>
-                Archived
-              </RegularText>
-          </Tag>
-          }
           {
               goal.priority &&
               <View style={[pageStyles.priorityContainer, {

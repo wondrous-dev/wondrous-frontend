@@ -55,6 +55,7 @@ const AskPage = ({ navigation, route }) => {
     data: askTask
   }] = useLazyQuery(GET_TASK_BY_ID)
 
+  const [status, setStatus] = useState(null)
   useEffect(() => {
     if (!ask) {
       getAsk({
@@ -81,7 +82,10 @@ const AskPage = ({ navigation, route }) => {
         }
       })
     }
-  }, [data])
+    if (ask?.status) {
+      setStatus(ask?.status)
+    }
+  }, [data, ask])
 
 
   if (!ask) {
@@ -98,14 +102,18 @@ const AskPage = ({ navigation, route }) => {
   const goal = askGoal && askGoal.getGoalById
   const task = askTask && askTask.getTaskById
   let statusColor = Red400, statusTextColor=White, statusText='Open'
-  if (ask.status === 'completed') {
+  const completed = status === 'completed'
+  const archived = status === 'archived'
+
+  if (completed) {
     statusColor = Green400
     statusText = 'Completed'
-  } else if (ask.status === 'archived') {
+  } else if (archived) {
     statusColor= Grey300
     statusTextColor = White
     statusText = 'Archived'
   }
+
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -128,17 +136,38 @@ const AskPage = ({ navigation, route }) => {
           {renderMentionString({ content: ask.content, navigation, tab })}
         </Text>
         <View style={[pageStyles.infoContainer]}>
-          <View style={{
-            backgroundColor: statusColor,
-            paddingLeft: spacingUnit * 1.5,
-            paddingRight: spacingUnit * 1.5,
-            borderRadius: 4,
-            marginTop: spacingUnit
-          }}>
-          <RegularText color={statusTextColor}>
-            Status: {statusText || 'Open'}
-          </RegularText>
-          </View>
+          {
+            completed || archived
+            ?
+            <View style={{
+              backgroundColor: statusColor,
+              paddingLeft: spacingUnit * 1.5,
+              paddingRight: spacingUnit * 1.5,
+              borderRadius: 4,
+              marginTop: spacingUnit
+            }}>
+            <RegularText color={statusTextColor}>
+              Status: {statusText || 'Open'}
+            </RegularText>
+            </View>
+            :
+            <Pressable onPress={() => {
+              setStatus('completed')
+              updateAsk({
+                variables: {
+                  askId: ask?.id,
+                  input: {
+                    status: 'completed'
+                  }
+                }
+              })
+
+            }} style={pageStyles.markAsComplete}>
+              <RegularText color={Green400}>
+                Mark as complete
+              </RegularText>
+            </Pressable>
+          }
         </View>
         {
           goal &&
