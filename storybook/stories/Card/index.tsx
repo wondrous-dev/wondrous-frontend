@@ -238,9 +238,12 @@ class Card extends React.Component {
     })
   }
   renderOverlay = ({ item, openLeft, openRight, openDirection, close  }) => {
-    const { name, dueDate, project: {
-      name: projectName
-    }, useProfilePicture, user, priority, content, completedAt } = item.item
+    const name = item?.item?.name
+    const dueDate = item?.item?.dueDate
+    const projectName = item?.item?.name
+    const priority = item?.item?.priority
+    const content = item?.item?.content
+    const completedAt = item?.item?.completedAt
 
     const {
       profilePicture,
@@ -323,14 +326,17 @@ class Card extends React.Component {
                   marginRight: spacingUnit * 1.5
                 }} />
               }
-              <Tag color={Purple} style={{
-                marginRight: spacingUnit,
-                marginBottom: spacingUnit
-              }}>
-                <RegularText color={White}>
-                  {projectName}
-                </RegularText>
-              </Tag>
+              {
+                projectName &&
+                <Tag color={Purple} style={{
+                  marginRight: spacingUnit,
+                  marginBottom: spacingUnit
+                }}>
+                  <RegularText color={White}>
+                    {projectName}
+                  </RegularText>
+                </Tag>
+              }
               {dueDate && !completedAt &&  
                   <RegularText color={isRedDate ? Red400 : Grey450} style={styles.dueText}>
                   Due {formatDueDate(new Date(dueDate))}
