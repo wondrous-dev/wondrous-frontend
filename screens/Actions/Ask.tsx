@@ -151,22 +151,27 @@ const AskPage = ({ navigation, route }) => {
             </RegularText>
             </View>
             :
-            <Pressable onPress={() => {
-              setStatus('completed')
-              updateAsk({
-                variables: {
-                  askId: ask?.id,
-                  input: {
-                    status: 'completed'
+            <>
+            {
+              ownedByUser &&
+              <Pressable onPress={() => {
+                setStatus('completed')
+                updateAsk({
+                  variables: {
+                    askId: ask?.id,
+                    input: {
+                      status: 'completed'
+                    }
                   }
-                }
-              })
-
-            }} style={pageStyles.markAsComplete}>
-              <RegularText color={Green400}>
-                Mark as complete
-              </RegularText>
-            </Pressable>
+                })
+  
+              }} style={pageStyles.markAsComplete}>
+                <RegularText color={Green400}>
+                  Mark as complete
+                </RegularText>
+              </Pressable>
+            }
+            </>
           }
         </View>
         {

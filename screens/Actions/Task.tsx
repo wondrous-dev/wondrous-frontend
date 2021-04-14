@@ -167,19 +167,24 @@ const TaskPage = ({ navigation, route }) => {
                 </RegularText>
               </Tag>
               :
-              <Pressable onPress={() => {
-                setStatus('completed')
-                completeTask({
-                  variables: {
-                    taskId: task?.id
-                  }
-                })
-  
-              }} style={pageStyles.markAsComplete}>
-                <RegularText color={Green400}>
-                  Mark as complete
-                </RegularText>
-              </Pressable>
+              <>
+              {
+                ownedByUser &&
+                <Pressable onPress={() => {
+                  setStatus('completed')
+                  completeTask({
+                    variables: {
+                      taskId: task?.id
+                    }
+                  })
+    
+                }} style={pageStyles.markAsComplete}>
+                  <RegularText color={Green400}>
+                    Mark as complete
+                  </RegularText>
+                </Pressable>
+              }
+              </>
             )
           }
         {

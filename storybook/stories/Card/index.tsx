@@ -240,7 +240,7 @@ class Card extends React.Component {
   renderOverlay = ({ item, openLeft, openRight, openDirection, close  }) => {
     const name = item?.item?.name
     const dueDate = item?.item?.dueDate
-    const projectName = item?.item?.name
+    const projectName = item?.item?.project?.name
     const priority = item?.item?.priority
     const content = item?.item?.content
     const completedAt = item?.item?.completedAt

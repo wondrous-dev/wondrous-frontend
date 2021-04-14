@@ -33,6 +33,7 @@ export const GET_NOTIFICATIONS = gql`
       additionalData {
         message
         currentStreakCount
+        contentPreview
       }
     }
   }
