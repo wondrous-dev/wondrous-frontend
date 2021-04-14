@@ -635,6 +635,7 @@ const formatProjectInvite = (notificationInfo) => {
 
 const formatNotificationMentionMessage = (notificationInfo) => {
   let displayMessage = ''
+  const contentPreview = notificationInfo?.additionalData?.contentPreview
   switch (notificationInfo.objectType) {
     case 'goal':
       return (
@@ -644,7 +645,15 @@ const formatNotificationMentionMessage = (notificationInfo) => {
           }}>
             @{notificationInfo.actorUsername}{` `} 
             </RegularText>
-            mentioned you in a goal.
+            mentioned you in a goal
+            {
+              contentPreview &&
+              <RegularText style={{
+                fontFamily: 'Rubik SemiBold'
+              }}>
+                {`: "${contentPreview}"`}
+              </RegularText>
+            }
         </RegularText>
       )
     case 'task':
@@ -655,7 +664,15 @@ const formatNotificationMentionMessage = (notificationInfo) => {
         }}>
           @{notificationInfo.actorUsername}{` `} 
           </RegularText>
-          mentioned you in a task.
+          mentioned you in a task
+          {
+              contentPreview &&
+              <RegularText style={{
+                fontFamily: 'Rubik SemiBold'
+              }}>
+                {`: "${contentPreview}"`}
+              </RegularText>
+          }
       </RegularText>
       )
     case 'ask':
@@ -666,7 +683,15 @@ const formatNotificationMentionMessage = (notificationInfo) => {
         }}>
           @{notificationInfo.actorUsername}{` `} 
           </RegularText>
-          mentioned you in an ask.
+          mentioned you in an ask
+          {
+              contentPreview &&
+              <RegularText style={{
+                fontFamily: 'Rubik SemiBold'
+              }}>
+                {`: "${contentPreview}"`}
+              </RegularText>
+          }
       </RegularText>
       )
     case 'post':
@@ -677,7 +702,15 @@ const formatNotificationMentionMessage = (notificationInfo) => {
         }}>
           @{notificationInfo.actorUsername}{` `}  
           </RegularText>
-          mentioned you in a post.
+          mentioned you in a post
+          {
+              contentPreview &&
+              <RegularText style={{
+                fontFamily: 'Rubik SemiBold'
+              }}>
+                {`: "${contentPreview}"`}
+              </RegularText>
+          }
       </RegularText>
       )
     case 'feed_comment':
@@ -688,7 +721,15 @@ const formatNotificationMentionMessage = (notificationInfo) => {
         }}>
             @{notificationInfo.actorUsername}{` `}  
             </RegularText>
-            mentioned you in a comment.
+            mentioned you in a comment
+            {
+              contentPreview &&
+              <RegularText style={{
+                fontFamily: 'Rubik SemiBold'
+              }}>
+                {`: "${contentPreview}"`}
+              </RegularText>
+            }
         </RegularText>
       )
     case 'review_comment':
@@ -699,7 +740,15 @@ const formatNotificationMentionMessage = (notificationInfo) => {
         }}>
             @{notificationInfo.actorUsername}{` `}  
             </RegularText>
-            mentioned you in a comment.
+            mentioned you in a comment
+            {
+              contentPreview &&
+              <RegularText style={{
+                fontFamily: 'Rubik SemiBold'
+              }}>
+                {`: "${contentPreview}"`}
+              </RegularText>
+            }
         </RegularText>
       )
     default:
@@ -709,6 +758,7 @@ const formatNotificationMentionMessage = (notificationInfo) => {
 }
 const formatNotificationReactionMessage = (notificationInfo) => {
   let displayMessage = ''
+  const contentPreview = notificationInfo?.additionalData?.contentPreview
   switch (notificationInfo.objectType) {
     case 'feed_item':
       return (
@@ -718,7 +768,15 @@ const formatNotificationReactionMessage = (notificationInfo) => {
         }}>
             @{notificationInfo.actorUsername}{` `} 
             </RegularText>
-            liked your action.
+            liked your action
+            {
+              contentPreview &&
+              <RegularText style={{
+                fontFamily: 'Rubik SemiBold'
+              }}>
+                {`: "${contentPreview}"`}
+              </RegularText>
+            }
         </RegularText>
       )
     case 'feed_comment':
@@ -729,7 +787,15 @@ const formatNotificationReactionMessage = (notificationInfo) => {
         }}>
             @{notificationInfo.actorUsername}{` `} 
             </RegularText>
-            liked your comment.
+            liked your comment
+            {
+              contentPreview &&
+              <RegularText style={{
+                fontFamily: 'Rubik SemiBold'
+              }}>
+                {`: "${contentPreview}"`}
+              </RegularText>
+            }
         </RegularText>
       )
     default:
@@ -741,8 +807,10 @@ const formatNotificationCommentMessage = (notificationInfo) => {
   const {
     actorProfilePicture: profilePicture,
     objectType,
-    actorThumbnail
+    actorThumbnail,
+    additionalData
   } = notificationInfo
+  const contentPreview = additionalData?.contentPreview
   let string = ''
   if (objectType === 'review_comment') {
     string = 'review'
@@ -756,7 +824,15 @@ const formatNotificationCommentMessage = (notificationInfo) => {
     }}>
         @{notificationInfo.actorUsername}{` `}
         </RegularText>
-        commented on your {string}.
+        commented on your {string}
+        {
+              contentPreview &&
+              <RegularText style={{
+                fontFamily: 'Rubik SemiBold'
+              }}>
+                {`: "${contentPreview}"`}
+              </RegularText>
+        }
     </RegularText>
   )
 }
