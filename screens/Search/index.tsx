@@ -36,6 +36,7 @@ import ActionList from '../Actions/ActionList'
 import IdChecker from '../Profile/IdChecker'
 import ReviewPage from '../Review/ReviewPage'
 import { projectTagHash } from '../../constants/projectTag'
+import ProjectDiscussionItem from '../Profile/ProjectDiscussionItem'
 
 const Stack = createStackNavigator()
 
@@ -403,6 +404,9 @@ function SearchScreen({
       tab: 'Search'
     }} />
     <Stack.Screen name='ProjectProfile' component={ProjectProfile} options={{ gestureEnabled: false }} initialParams={{
+      tab: 'Search'
+    }} />
+    <Stack.Screen name='ProjectDiscussionItem' component={ProjectDiscussionItem} initialParams={{
       tab: 'Search'
     }} />
     <Stack.Screen name='ProfileItem' component={FeedItem} initialParams={{

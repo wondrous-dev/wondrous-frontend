@@ -58,19 +58,23 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
   const setImage = useCallback((image) => {
     setProfilePicture(image)
     setParentImage(image)
-  })
+  }, [])
+
   useEffect(() => {
     if (initialProfilePicture && !profilePicture) {
       setProfilePicture(initialProfilePicture)
     }
-    if (initialUsername) {
-      setUsername(initialUsername)
+    if (user?.username) {
+      setUsername(user?.username)
     }
     if (initialName) {
       setFullName(initialName)
     }
-    if (initialBio) {
-      setBio(initialBio)
+    if (project?.description) {
+      setBio(project?.description)
+    }
+    if (user?.bio) {
+      setBio(user?.bio)
     }
     if (initialTwitter) {
       setTwitter(initialTwitter)
@@ -95,7 +99,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
       setPrivacy(initialPrivacy)
     }
 
-  }, [initialProfilePicture, initialUsername, initialName, initialBio, initialTwitter, initialInstagram, initialLinkedin, initialGithub, initialWebsite, initialPrivacy]) 
+  }, [initialProfilePicture, user?.username, user?.bio, project?.description, initialName, initialBio, initialTwitter, initialInstagram, initialLinkedin, initialGithub, initialWebsite, initialPrivacy]) 
   const cleanedTags = project?.tags?.map(tag => projectTagHash[tag])
 
   const setProjectPrivacy = useCallback((privacy) => {

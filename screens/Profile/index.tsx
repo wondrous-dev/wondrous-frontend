@@ -23,6 +23,7 @@ import AskPage from '../Actions/Ask'
 import ActionList from '../Actions/ActionList'
 import IdChecker from './IdChecker'
 import ReviewPage from '../Review/ReviewPage'
+import ProjectDiscussionItem from './ProjectDiscussionItem'
 
 const Stack = createStackNavigator<BottomTabParamList>()
 
@@ -40,6 +41,7 @@ function ProfileScreen({
       <Stack.Screen name='OtherUserProfile' component={UserProfile} />
       <Stack.Screen name='ProjectProfile' component={ProjectProfile} options={{ gestureEnabled: false }} />
       <Stack.Screen name='ProfileItem' component={FeedItem} />
+      <Stack.Screen name='ProjectDiscussionItem' component={ProjectDiscussionItem} />
       <Stack.Screen name='WorkflowWelcome' component={WorkflowWelcome} />
       <Stack.Screen name='SetupGoal' component={SetupGoal} />
       <Stack.Screen name='SetupTask' component={SetupTask}/>

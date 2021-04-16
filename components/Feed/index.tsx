@@ -61,7 +61,7 @@ const FeedItemTypes = [
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
 
-const feedStyles = StyleSheet.create({
+export const feedStyles = StyleSheet.create({
   feedItemContainer: {
     padding: spacingUnit * 2,
   },
