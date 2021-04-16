@@ -28,6 +28,7 @@ import AskPage from '../Actions/Ask'
 import ActionList from '../Actions/ActionList'
 import IdChecker from '../Profile/IdChecker'
 import ReviewPage from '../Review/ReviewPage'
+import ProjectDiscussionItem from '../Profile/ProjectDiscussionItem'
 
 const Stack = createStackNavigator<RootStackParamList>()
 
@@ -46,6 +47,9 @@ function DashboardScreen({
       <Stack.Screen name='UserProfile' component={UserProfile} initialParams={{ tab: 'Dashboard' }} options={{ gestureEnabled: false }} />
       <Stack.Screen name='ProjectProfile' component={ProjectProfile} options={{ gestureEnabled: false }} initialParams={{ tab: 'Dashboard' }}/>
       <Stack.Screen name='ProfileItem' component={FeedItem} initialParams={{ tab: 'Dashboard' }} />
+      <Stack.Screen name='ProjectDiscussionItem' component={ProjectDiscussionItem} initialParams={{
+      tab: 'Dashboard'
+      }} />
       <Stack.Screen name='WorkflowWelcome' component={WorkflowWelcome} />
       <Stack.Screen name='SetupGoal' component={SetupGoal} initialParams={{ tab: 'Dashboard' }} />
       <Stack.Screen name='SetupTask' component={SetupTask} initialParams={{ tab: 'Dashboard' }} />

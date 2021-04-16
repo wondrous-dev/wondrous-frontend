@@ -576,15 +576,16 @@ export const submit = async ({
   completed,
   video
 }) => {
-  if (!name && type !== 'ask' && type !== 'post' && type !== 'completed') {
+
+  if (!name && type !== 'ask' && type !== 'post' && type !== 'projectDiscussion' && type !== 'completed') {
     setErrors({
       ...errors,
       nameError: 'Name is required'
     })
-  } else if (!content && (type === 'ask' || type === 'post') && type !== 'completed') {
+  } else if (!content && (type === 'ask' || type === 'post' || type === 'projectDiscussion') && type !== 'completed') {
     setErrors({
       ...errors,
-      nameError: 'Ask required'
+      nameError: 'Content required'
     })
   } else if (!projectId && type !== 'post' && type !== 'ask' && type !== 'completed') {
     setErrors({

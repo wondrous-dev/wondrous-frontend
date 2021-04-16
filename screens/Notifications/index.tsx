@@ -44,6 +44,7 @@ import HouseKeeping from '../Review/HouseKeeping'
 import ReviewPage from '../Review/ReviewPage'
 import { GET_REVIEW_FROM_REVIEW_COMMENT } from '../../graphql/queries/review'
 import { listStyles } from '../Profile/style'
+import ProjectDiscussionItem from '../Profile/ProjectDiscussionItem'
 
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
@@ -1006,7 +1007,7 @@ export const NotificationFeed = ({ route }) => {
   if (error) {
     console.log('Error fetching Notification', error)
   }
-
+  console.log('data', data)
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     if (refetch) {
@@ -1137,6 +1138,9 @@ function NotificationScreenRoutes({
       <Stack.Screen name='ProfileItem' component={FeedItem} initialParams={{
         tab: 'Notifications'
       }}/>
+      <Stack.Screen name='ProjectDiscussionItem' component={ProjectDiscussionItem} initialParams={{
+      tab: 'Notifications'
+      }} />
       <Stack.Screen name='WorkflowWelcome' component={WorkflowWelcome} initialParams={{
         tab: 'Notifications'
       }} />
