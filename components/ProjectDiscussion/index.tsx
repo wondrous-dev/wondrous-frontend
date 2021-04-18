@@ -11,6 +11,7 @@ import { GET_HOME_FEED, GET_PUBLIC_FEED, WHOAMI } from '../../graphql/queries'
 import { UPDATE_PROJECT_DISCUSSION } from '../../graphql/mutations'
 import { SafeImage, SvgImage } from '../../storybook/stories/Image'
 import { TinyText, RegularText, Subheading, Paragraph } from '../../storybook/stories/Text'
+import { FullScreenDiscussionModal } from '../../components/Modal/ProjectDiscussionModal'
 import { SecondaryButton } from '../../storybook/stories/Button'
 import { spacingUnit, capitalizeFirstLetter, renderMentionString, wait, usePrevious } from '../../utils/common'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
@@ -22,16 +23,50 @@ import { feedStyles, ShareModal, EditCommentModal } from '../Feed'
 import { MyCarousel, VideoDisplay } from '../../storybook/stories/Carousel'
 import Link from '../../assets/images/link'
 import Options from '../../assets/images/options'
+import { FlexRowContentModal } from '../Modal'
 
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
 
-export const ProjectDiscussionItem = ({ item, standAlone, comment, onCommentPress, projectId, activityPage }) => {
+export const ProjectDiscussionItem = ({ item: initialItem, standAlone, comment, onCommentPress, projectId, activityPage }) => {
   const user = useMe()
   const navigation = useNavigation()
+  const [item, setItem] = useState(initialItem)
+  const [updateProjectDiscussion] = useMutation(UPDATE_PROJECT_DISCUSSION, {
+    variables: {
+      projectDiscussionId: item?.id
+    },
+    update: (cache, { data: updateProjectDiscussion} ) => {
+      if (updateProjectDiscussion) {
+        setItem(updateProjectDiscussion?.updateProjectDiscussion)
+      }
+      cache.modify({
+        fields: {
+          getProjectDiscussions(existingItems) {
+            const newItems = existingItems.map(itemRef => {
+              let itemId
+              if (itemRef.__ref) {
+                const split = itemRef.__ref.split(':')
+                itemId = split[split.length - 1]
+              } else {
+                itemId = itemRef.id
+              }
+              if (itemId === item?.id) {
+                return updateProjectDiscussion?.updateProjectDiscussion
+              }
+              return itemRef
+            })
+            return newItems
+          }
+        }
+      })
+    }
+  })
+
   const route = useRoute()
   const [isModalVisible, setModalVisible] = useState(false)
   const [editVisible, setEditVisible] = useState(false)
+  const [preEditVisible, setPreEditVisible] = useState(false)
   const pressComment = () => {
     if (standAlone || comment) {
       onCommentPress(`@[${item.creatorUsername || item.actorUsername}](${item.createdBy || item.userId})`)
@@ -60,10 +95,11 @@ export const ProjectDiscussionItem = ({ item, standAlone, comment, onCommentPres
   // if (comment) {
   //   editMutation = editComment
   // }
-  console.log('item', item)
+
   return (
     <>
-    <EditCommentModal isVisible={editVisible} setModalVisible={setEditVisible} editMutation={editMutation} />
+    <FullScreenDiscussionModal isVisible={editVisible} setModalVisible={setEditVisible} projectDiscussion={item} projectDiscussionMutation={updateProjectDiscussion} projectId={projectId} />
+    <EditDiscussionModal isVisible={preEditVisible} setModalVisible={setPreEditVisible} setEditModalVisible={setEditVisible} />
     <ShareModal isVisible={isModalVisible} url={SHARE_URL} content={CONTENT} setModalVisible={setModalVisible} />
     <View style={feedStyles.feedItemContainer}>
       <View style={feedStyles.feedItemName}>
@@ -184,11 +220,13 @@ export const ProjectDiscussionItem = ({ item, standAlone, comment, onCommentPres
             <ShareIcon color={Grey700} />
           </Pressable> 
           {
-            item.userId === user.id &&
+            (item.createdBy === user.id || item.userId === user.id) &&
             <Pressable style={{
               marginLeft: spacingUnit * 3
             }} onPress={() => {
-              if (comment) {
+              console.log('item createdBy', item.createdBy, user.id)
+              if (item.createdBy === user.id) {
+                console.log('we in')
                 setEditVisible(true)
               }
             }}>
@@ -221,5 +259,26 @@ export const renderDiscussionItem = ({ projectId, item, navigation, screen, para
     <Pressable key={item && item.id} onPress={() => navigation.push(screen, params)}>
       <ProjectDiscussionItem item={item} key={item.id} activityPage={activityPage} projectId={projectId} />
     </Pressable>
+  )
+}
+
+export const EditDiscussionModal = ({ isVisible, setModalVisible, setEditModalVisible }) => {
+  return (
+    <FlexRowContentModal
+    headerText='Edit discussion'
+    setModalVisible={setModalVisible}
+    isVisible={isVisible}
+    >
+      <View />
+      <Pressable onPress={() => {
+        setEditModalVisible(true)
+        setModalVisible(false)
+      }}>
+        <Paragraph>
+          Edit Discussion
+        </Paragraph>
+      </Pressable>
+      <View />
+    </FlexRowContentModal>
   )
 }

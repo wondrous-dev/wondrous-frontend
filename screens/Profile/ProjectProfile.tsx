@@ -365,7 +365,6 @@ function ProjectProfile({
       }
       return asks
     } else if (section === 'discussion') {
-      const discussions = projectDiscussionData?.getProjectDiscussions
       if (discussions?.length === 0 ) {
         return ['none']
       }
@@ -769,6 +768,7 @@ function ProjectProfile({
                   offset: discussions.length
                 }
               })
+
               if (result?.data?.getProjectDiscussions) {
                 setDiscussions([...discussions, ...result.data.getProjectDiscussions])
               }
