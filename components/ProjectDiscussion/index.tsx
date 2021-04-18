@@ -6,9 +6,9 @@ import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import Clipboard from 'expo-clipboard'
 
-import { Grey300, Black, Grey150, Grey200, Grey600, Grey700, Red400, White, Blue400, Grey800 } from '../../constants/Colors'
+import { Grey300, Black, Grey150, Grey200, Grey600, Grey700, Red400, Green400,  Blue400, Grey800, White } from '../../constants/Colors'
 import { GET_HOME_FEED, GET_PUBLIC_FEED, WHOAMI } from '../../graphql/queries'
-import { UPDATE_PROJECT_DISCUSSION } from '../../graphql/mutations'
+import { CLOSE_PROJECT_DISCUSSION, UPDATE_PROJECT_DISCUSSION } from '../../graphql/mutations'
 import { SafeImage, SvgImage } from '../../storybook/stories/Image'
 import { TinyText, RegularText, Subheading, Paragraph } from '../../storybook/stories/Text'
 import { FullScreenDiscussionModal } from '../../components/Modal/ProjectDiscussionModal'
@@ -24,6 +24,7 @@ import { MyCarousel, VideoDisplay } from '../../storybook/stories/Carousel'
 import Link from '../../assets/images/link'
 import Options from '../../assets/images/options'
 import { FlexRowContentModal } from '../Modal'
+import { modalStyles } from '../Modal/common'
 
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
@@ -31,6 +32,7 @@ const timeAgo = new TimeAgo('en-US')
 export const ProjectDiscussionItem = ({ item: initialItem, standAlone, comment, onCommentPress, projectId, activityPage }) => {
   const user = useMe()
   const navigation = useNavigation()
+
   const [item, setItem] = useState(initialItem)
   const [updateProjectDiscussion] = useMutation(UPDATE_PROJECT_DISCUSSION, {
     variables: {
@@ -63,16 +65,23 @@ export const ProjectDiscussionItem = ({ item: initialItem, standAlone, comment, 
     }
   })
 
+  const [closeDiscussion] = useMutation(CLOSE_PROJECT_DISCUSSION, {
+    variables: {
+      projectDiscussionId: item?.id
+    }
+  })
+
   const route = useRoute()
   const [isModalVisible, setModalVisible] = useState(false)
   const [editVisible, setEditVisible] = useState(false)
   const [preEditVisible, setPreEditVisible] = useState(false)
+  const [closed, setClosed] = useState(false)
   const pressComment = () => {
     if (standAlone || comment) {
       onCommentPress(`@[${item.creatorUsername || item.actorUsername}](${item.createdBy || item.userId})`)
     } else {
       navigation.push('Root', {
-        screen: 'Dashboard',
+        screen: route?.params?.tab || 'Dashboard',
         params: {
           screen: 'ProjectDiscussionItem',
           params: {
@@ -86,6 +95,12 @@ export const ProjectDiscussionItem = ({ item: initialItem, standAlone, comment, 
     }
   }
 
+  useEffect(() => {
+    if (initialItem) {
+      setItem(initialItem)
+      setClosed(initialItem?.closedAt)
+    }
+  }, [initialItem])
   const SHARE_URL = `https://wonderapp.co/app/feed/${item.id}`
   const CONTENT = 'Check this discussion from Wonder!'
   let deleteMutation, editMutation
@@ -224,14 +239,57 @@ export const ProjectDiscussionItem = ({ item: initialItem, standAlone, comment, 
             <Pressable style={{
               marginLeft: spacingUnit * 3
             }} onPress={() => {
-              console.log('item createdBy', item.createdBy, user.id)
               if (item.createdBy === user.id) {
-                console.log('we in')
                 setEditVisible(true)
               }
             }}>
             <Options color={Grey700} />
           </Pressable>
+          }
+          {
+            <View style={{
+              flex: 1
+            }} />
+          }
+          {
+            item.userId === user.id &&
+            <>
+            {
+              closed
+              ?
+              <Pressable style={{
+                backgroundColor: Green400,
+                padding: spacingUnit * 0.5,
+                paddingLeft: spacingUnit,
+                paddingRight: spacingUnit,
+                borderRadius: spacingUnit,
+                flexDirection: 'row',
+                alignItems: 'center'
+              }}>
+              <RegularText color={White} style={{
+                marginRight: spacingUnit * 0.4
+              }}>
+                Closed
+              </RegularText>
+            </Pressable>
+            :
+            <Pressable style={{
+              borderColor: Green400,
+              borderRadius: spacingUnit,
+              borderWidth: 1,
+              padding: spacingUnit * 0.5,
+              paddingLeft: spacingUnit,
+              paddingRight: spacingUnit
+            }} onPress={() => {
+              setClosed(true)
+              closeDiscussion()
+            }}>
+              <RegularText color={Green400}>
+                Close discussion
+              </RegularText>
+            </Pressable>
+            }
+          </>
           }
         </View>
         {

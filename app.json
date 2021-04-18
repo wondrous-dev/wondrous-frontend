@@ -63,7 +63,6 @@
     "facebookAppId": "692135684870439",
     "facebookDisplayName": "Wonder",
     "packagerOpts": {
-      "config": "metro.config.js",
       "sourceExts": [
         "expo.ts",
         "expo.tsx",
@@ -74,8 +73,7 @@
         "js",
         "jsx",
         "json",
-        "wasm",
-        "svg"
+        "wasm"
       ]
     }
   }

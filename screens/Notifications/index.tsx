@@ -11,7 +11,7 @@ import { useMe, withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { White, Grey300, Black, Grey800, Blue100 } from '../../constants/Colors'
-import { GET_NOTIFICATIONS, GET_FEED_ITEM_FOR_FEED_COMMENT, GET_FEED_ITEM, GET_POST_ITEM, GET_UNREAD_NOTIFICATION_COUNT, GET_PROJECT_INVITE_FROM_NOTIFICATION, GET_PROJECT_FOLLOW_REQUEST } from '../../graphql/queries'
+import { GET_NOTIFICATIONS, GET_FEED_ITEM_FOR_FEED_COMMENT, GET_FEED_ITEM, GET_POST_ITEM, GET_UNREAD_NOTIFICATION_COUNT, GET_PROJECT_INVITE_FROM_NOTIFICATION, GET_PROJECT_FOLLOW_REQUEST, GET_PROJECT_DISCUSSION } from '../../graphql/queries'
 import { MARK_NOTIFICATION_AS_VIEWED, ACCEPT_PROJECT_INVITE, APPROVE_FOLLOW_REQUEST } from '../../graphql/mutations'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import LogoImage from '../../assets/images/logo.png'
@@ -474,12 +474,39 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
           }
         })
         break
+      case 'project_discussion_creation':
+        try {
+          const projectDiscussionCreation = await apollo.query({
+            query: GET_PROJECT_DISCUSSION,
+            variables: {
+              projectDiscussionId: objectId
+            }
+          })
+          if (projectDiscussionCreation?.data?.getProjectDiscussion) {
+            navigation.push('Root', {
+              screen: 'Dashboard',
+              params: {
+                screen: 'ProjectDiscussionItem',
+                params: {
+                  item: projectDiscussionCreation?.data?.getProjectDiscussion,
+                  liked: false,
+                  comment: true,
+                  standAlone: true
+                }
+              }
+            })
+          }
+        } catch (err) {
+          console.log('err', err)
+        }
+        break
     
   }
 }
 
 const formatNotificationMessage = ({ notificationInfo, tab, projectInvite, projectFollowRequest }) => {
   let displayMessage = '';
+  console.log('notificatioInfo', notificationInfo)
   switch (notificationInfo.type) {
     case 'welcome':
       displayMessage =(
@@ -557,6 +584,12 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite, proje
         </RegularText>
       )
       break
+    case 'project_discussion_creation':
+      displayMessage = (
+        <RegularText color={Black}>
+
+        </RegularText>
+      )
     default:
       displayMessage = <></>;
   }
