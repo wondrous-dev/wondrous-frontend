@@ -24,7 +24,7 @@ import { VideoDisplay } from '../../storybook/stories/Carousel'
 
 const FILE_PREFIX = 'tmp/projectDiscussion/new/'
 
-export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setModalVisible, projectDiscussionMutation, project }) => {
+export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setModalVisible, projectDiscussionMutation, project, projectId }) => {
   const initialMedia = (projectDiscussion && projectDiscussion.additionalData && projectDiscussion.additionalData.images) || []
   const initialLink = projectDiscussion && projectDiscussion.additionalData && projectDiscussion.additionalData.link
   const initialContent = (projectDiscussion && projectDiscussion.content) || ''
@@ -110,9 +110,13 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
               </RegularText>
               </Pressable>
               <View style={{
-                flex: 1
+                flex: 2
               }}>
-
+                <Subheading color={Black} style={{
+                  fontSize: 20
+                }}>
+                  {projectDiscussion ? 'Edit' : 'New'} discussion
+                </Subheading>
               </View>
               <View style={{
                 flex: 1,
@@ -126,6 +130,7 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
                     submitError: 'Videos are still uploading!'
                   })
                 } else {
+                  console.log('what', project)
                   submit({
                     type: 'projectDiscussion',
                     content,
@@ -133,7 +138,7 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
                     errors,
                     setErrors,
                     media,
-                    projectId: project?.id,
+                    projectId: projectId || project?.id || projectDiscussion?.projectId,
                     filePrefix: FILE_PREFIX,
                     mutation: projectDiscussionMutation,
                     video,
@@ -160,19 +165,6 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
             <View style={[modalStyles.inputContainer, {
               marginBottom: spacingUnit * 5
             }]}>
-                <Paragraph color={Black} style={{
-                  marginTop: spacingUnit * -1,
-                  marginBottom: spacingUnit * 2,
-                  fontSize: 20
-                }}>
-                  {projectDiscussion ? 'Edit' : 'New'} discussion in{` `}
-                  <Paragraph color={Black} style={{
-                  fontSize: 20,
-                  fontFamily: 'Rubik SemiBold'
-                }}>
-                  {project?.name}
-                  </Paragraph>
-                </Paragraph>
               <TextEditorContext.Provider value={{
                   content,
                   setContent,
@@ -186,6 +178,24 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
                 </TextEditorContext.Provider>
       
               </View>
+              {
+                  errors?.createError &&
+                  <ErrorText style={{
+                    ...modalStyles.errorText,
+                    marginTop: 0
+                  }}>
+                    {errors.createError}
+                  </ErrorText>
+                }
+                  {
+                    errors && errors.nameError &&
+                    <ErrorText style={{
+                      ...modalStyles.errorText,
+                      marginTop: 0
+                    }}>
+                      {errors.nameError}
+                    </ErrorText>
+                  }
             <View style={modalStyles.attachmentRow}>
                     <CameraIcon onPress={() =>{
                       setErrors({
