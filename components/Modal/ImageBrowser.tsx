@@ -19,7 +19,7 @@ export default class ImageBrowserScreen extends Component {
   );
 
   imagesCallback = (callback) => {
-    const { setImageBrowserOpen, setMedia, media,
+    const { setImageUploading, setMedia, media,
       edit
      } = this.props;
 
@@ -32,7 +32,9 @@ export default class ImageBrowserScreen extends Component {
           fileType
         } = getFilenameAndType(pPhoto.uri)
         const newFileName = this.props.imagePrefix ? this.props.imagePrefix + filename : filename
+        setImageUploading(true)
         uploadMedia({ filename: newFileName, localUrl: pPhoto.uri, fileType} )
+        setImageUploading(false)
         const newArr = media.map(image => {
           if (image === edit) {
             return pPhoto.uri
@@ -49,7 +51,9 @@ export default class ImageBrowserScreen extends Component {
             fileType
           } = getFilenameAndType(pPhoto.uri)
           const newFileName = this.props.imagePrefix ? this.props.imagePrefix + filename : filename
+          setImageUploading(true)
           uploadMedia({ filename: newFileName, localUrl: pPhoto.uri, fileType} )
+          setImageUploading(false)
           cPhotos.push(pPhoto.uri)
         }
         setMedia([

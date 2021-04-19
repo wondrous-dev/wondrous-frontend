@@ -46,6 +46,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
   const [errors, setErrors] = useState({})
   const [video, setVideo] = useState(goal && goal.muxPlaybackId || null)
   const [videoUploading, setVideoUploading] = useState(null)
+  const [imageUploading, setImageUploading] = useState(null)
   const user = useMe()
   const { data: projectUsers, loading, error } = useQuery(GET_USER_PROJECTS, {
     variables: {
@@ -94,7 +95,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
       {
         galleryOpen
         ?
-        <ImageBrowser setImageBrowser={setGalleryOpen} media={media} navigation={navigation} setMedia={setMedia} imagePrefix={FILE_PREFIX} />
+        <ImageBrowser setImageBrowser={setGalleryOpen} media={media} navigation={navigation} setMedia={setMedia} imagePrefix={FILE_PREFIX} setImageUploading={setImageUploading} />
       :
       <TouchableWithoutFeedback 
       onPress={() => Keyboard.dismiss()}>
@@ -117,6 +118,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                     filePrefix={FILE_PREFIX}
                     setVideo={setVideo} 
                     setVideoUploading={setVideoUploading}
+                    setImageUploading={setImageUploading}
                     setErrors={setErrors}
                   />
             }
@@ -151,7 +153,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
               }}>
               <Pressable style={{
                 ...modalStyles.createUpdateButton,
-                backgroundColor: videoUploading ? Grey800 : Blue500
+                backgroundColor: (imageUploading || videoUploading) ? Grey800 : Blue500
               }} onPress={() => {
                 if (!project) {
                   setErrors({
@@ -160,6 +162,10 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                 } else if (videoUploading) {
                   setErrors({
                     submitError: 'Videos are still uploading!'
+                  })
+                } else if (imageUploading) {
+                  setErrors({
+                    submitError: 'Images are still uploading!'
                   })
                 } else {
                   submit({
@@ -377,6 +383,19 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                            </View>
                     }
                     {
+                      imageUploading &&
+                      <View style={{
+                        marginTop: spacingUnit * 2
+                      }}>
+                         <ActivityIndicator />
+                         <RegularText color={Grey800} style={{
+                           textAlign: 'center'
+                         }}>
+                           Image uploading...
+                         </RegularText>
+                       </View>
+                    }
+                    {
                       (media || video) && 
                       <View style={modalStyles.mediaRows}>
                         {
@@ -384,7 +403,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                           <VideoThumbnail source={video} setVideo={setVideo} video={video} errors={errors} setErrors={setErrors} filePrefix={FILE_PREFIX} videoUploading={videoUploading} setVideoUploading={setVideoUploading} />
                         }
                         {media.map(image => (
-                          <ImageDisplay setMedia={setMedia} media={media} image={image} imagePrefix={FILE_PREFIX} />
+                          <ImageDisplay setMedia={setMedia} media={media} image={image} imagePrefix={FILE_PREFIX} setImageUploading={setImageUploading} />
                         ))}
                       </View>
                     }

@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 })
 
 //TODO use hooks and contexts here
-export default function Snapper ({ setSnapperOpen, snapperOpen, setImage, setModalVisible, saveImageMutation, saveImageMutationVariable, filePrefix, upload=true , setVideo, setVideoUploading, setErrors }) {
+export default function Snapper ({ setSnapperOpen, snapperOpen, setImage, setModalVisible, saveImageMutation, saveImageMutationVariable, filePrefix, upload=true , setVideo, setVideoUploading, setErrors, setImageUploading }) {
   const [hasPermission, setHasPermission] = useState(null)
   const [type, setType] = useState(Camera.Constants.Type.back)
   useEffect(() => {
@@ -85,7 +85,13 @@ export default function Snapper ({ setSnapperOpen, snapperOpen, setImage, setMod
                   setVideoUploading(false)
                 }
               } else if (isImage) {
+                if (setImageUploading) {
+                  setImageUploading(true)
+                }
                 await uploadMedia({ filename: mediaUrl, localUrl: result.uri, fileType })
+                if (setImageUploading) {
+                  setImageUploading(false)
+                }
               }
             }
             if (isVideo) {

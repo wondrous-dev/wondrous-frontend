@@ -27,7 +27,7 @@ const PictureModal = ({ picture, isVisible, setModalVisible }) => {
           alignSelf: 'flex-start'
         }} onPress={() => setModalVisible(false)}/>
         <SafeImage style={{
-          width: Dimensions.get('window').width - (spacingUnit * 4),
+          width: Dimensions.get('window').width,
           height: Dimensions.get('window').height - (spacingUnit * 25),
           borderRadius: spacingUnit * 0.5
         }}  src={picture} />

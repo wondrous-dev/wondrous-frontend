@@ -457,7 +457,7 @@ export const VideoDisplay = async({ setVideo, video }) => {
   )
 }
 
-export const ImageDisplay= ({ setMedia, image, imagePrefix, media, width, height }) => {
+export const ImageDisplay = ({ setMedia, image, imagePrefix, media, width, height, setImageUploading }) => {
   const [isVisible, setModalVisible] = useState(false)
   const [galleryOpen, setGalleryOpen] = useState(false)
   const navigation = useNavigation()
@@ -470,7 +470,7 @@ export const ImageDisplay= ({ setMedia, image, imagePrefix, media, width, height
             <ImageBrowser edit={image} setImageBrowser={(arg) => {
               setGalleryOpen(arg)
               setModalVisible(arg)
-            }} media={media} navigation={navigation} setMedia={setMedia} imagePrefix={imagePrefix} />
+            }} media={media} navigation={navigation} setMedia={setMedia} imagePrefix={imagePrefix} setImageUploading={setImageUploading} />
           </Modal>
         :
         <FlexRowContentModal 

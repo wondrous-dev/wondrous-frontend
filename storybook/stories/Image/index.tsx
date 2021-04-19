@@ -68,7 +68,7 @@ export const CachedImage = props => {
   )
 }
 
-export const UploadImage = ({ isVisible, setModalVisible, image, setImage, saveImageMutation, imagePrefix, saveImageMutationVariable }) => {
+export const UploadImage = ({ isVisible, setModalVisible, image, setImage, saveImageMutation, imagePrefix, saveImageMutationVariable, setImageUploading }) => {
   const [cameraOpen, setCameraOpen] = useState(false)
   // const [imageLibraryOpen, setLibraryOpen] = useState(false)
   const pickImage = async () => {
