@@ -28,3 +28,12 @@ export const GET_PROJECT_DISCUSSION_COMMENTS = gql`
   }
   ${ProjectDiscussionCommentFragment}
 `
+
+export const GET_PROJECT_DISCUSSION_FROM_COMMENT = gql`
+  query GetProjectDiscussionFromComment($projectDiscussionCommentId: ID!) {
+    getProjectDiscussionFromComment(projectDiscussionCommentId: $projectDiscussionCommentId) {
+      ...PublicProjectDiscussion
+    }
+  }
+  ${ProjectDiscussionFragment}
+`
