@@ -24,7 +24,6 @@ enum Socials {
 const openSocialLink = (social, url) => {
   switch(social) {
     case Socials.instagram:
-      console.log('anything?', url)
       if (url.includes(INSTAGRAM_PREFIX)) {
         openLink(url)
       } else {
@@ -39,9 +38,7 @@ const openSocialLink = (social, url) => {
       }
       break
     case Socials.linkedin:
-      console.log('url', url)
       if (url.includes(LINKED_PREFIX)) {
-        console.log('url', url)
         openLink(url)
       } else {
         openLink(`${LINKED_PREFIX}${url}`)

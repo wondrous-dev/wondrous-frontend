@@ -494,7 +494,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
     if (item === 'none') {
       return null
     }
-    return renderDiscussionItem({ projectId, item, navigation, screen: 'Root', params: {
+    return renderDiscussionItem({ projectId, userOwned, item, navigation, screen: 'Root', params: {
       screen: tab || 'Profile',
       params: {
         screen: 'ProjectDiscussionItem',
@@ -502,7 +502,8 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
           item,
           liked: false,
           comment: true,
-          standAlone: true
+          standAlone: true,
+          userOwned
         }
       }
     } })

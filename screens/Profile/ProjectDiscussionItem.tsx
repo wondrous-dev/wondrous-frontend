@@ -32,7 +32,8 @@ function ProjectDiscussionItemScreen({
 }: StackScreenProps<RootStackParamList, 'ProjectDiscussionItem'>) {
   const {
     item,
-    liked
+    liked,
+    userOwned
   } = route.params
   const scrollViewRef = useRef()
   const [replyName, setReplyName] = useState(null)
@@ -74,7 +75,7 @@ function ProjectDiscussionItemScreen({
       }}
       ref={scrollViewRef}
       >
-        <ProjectDiscussionItem item={item} standAlone={true} key={item.id} onCommentPress={replyToComment} />
+        <ProjectDiscussionItem item={item} standAlone={true} key={item.id} onCommentPress={replyToComment} userOwned={userOwned} />
         <View style={feedItemStyles.commentContainer}>
           {
             data && data.getProjectDiscussionComments.map(discussionComment => {

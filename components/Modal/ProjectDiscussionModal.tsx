@@ -136,7 +136,7 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
                     submitError: 'Images are still uploading!'
                   })
                 } else {
-                  console.log('what', project)
+
                   submit({
                     type: 'projectDiscussion',
                     content,

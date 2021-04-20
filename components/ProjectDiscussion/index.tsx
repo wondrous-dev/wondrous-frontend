@@ -29,7 +29,7 @@ import { modalStyles } from '../Modal/common'
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
 
-export const ProjectDiscussionItem = ({ item: initialItem, standAlone, comment, onCommentPress, projectId, activityPage }) => {
+export const ProjectDiscussionItem = ({ item: initialItem, userOwned, standAlone, comment, onCommentPress, projectId, activityPage }) => {
   const user = useMe()
   const navigation = useNavigation()
 
@@ -88,7 +88,8 @@ export const ProjectDiscussionItem = ({ item: initialItem, standAlone, comment, 
             item,
             liked: false,
             comment: true,
-            standAlone: true
+            standAlone: true,
+            userOwned
           }
         }
       })
@@ -123,7 +124,7 @@ export const ProjectDiscussionItem = ({ item: initialItem, standAlone, comment, 
           params: {
             screen: 'UserProfile',
             params: {
-              userId: item.userId
+              userId: item.createdBy
             }
           }
         })}>
@@ -153,7 +154,7 @@ export const ProjectDiscussionItem = ({ item: initialItem, standAlone, comment, 
                 params: {
                   screen: 'UserProfile',
                   params: {
-                    userId: item.userId
+                    userId: comment ? item.userId : item.createdBy
                   }
                 }
               })
@@ -166,7 +167,8 @@ export const ProjectDiscussionItem = ({ item: initialItem, standAlone, comment, 
                     item,
                     liked: false,
                     comment: true,
-                    standAlone: true
+                    standAlone: true,
+                    userOwned
                   }
                 }
               })
@@ -235,7 +237,7 @@ export const ProjectDiscussionItem = ({ item: initialItem, standAlone, comment, 
             <ShareIcon color={Grey700} />
           </Pressable> 
           {
-            (item.createdBy === user.id || item.userId === user.id) &&
+            (item.createdBy === user.id) &&
             <Pressable style={{
               marginLeft: spacingUnit * 3
             }} onPress={() => {
@@ -252,7 +254,7 @@ export const ProjectDiscussionItem = ({ item: initialItem, standAlone, comment, 
             }} />
           }
           {
-            item.userId === user.id &&
+            userOwned &&
             <>
             {
               closed
@@ -308,14 +310,14 @@ export const ProjectDiscussionItem = ({ item: initialItem, standAlone, comment, 
 }
 
 
-export const renderDiscussionItem = ({ projectId, item, navigation, screen, params, activityPage }) => {
+export const renderDiscussionItem = ({ projectId, userOwned, item, navigation, screen, params, activityPage }) => {
   if (item?.privacyLevel === 'private') {
     return null
   }
 
   return (
     <Pressable key={item && item.id} onPress={() => navigation.push(screen, params)}>
-      <ProjectDiscussionItem item={item} key={item.id} activityPage={activityPage} projectId={projectId} />
+      <ProjectDiscussionItem userOwned={userOwned} item={item} key={item.id} activityPage={activityPage} projectId={projectId} />
     </Pressable>
   )
 }

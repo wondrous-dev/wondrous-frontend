@@ -19,7 +19,7 @@ export const ProjectDiscussionFragment = gql`
     creatorProfilePicture
     creatorThumbnail
     creatorUsername
-    userId
+    projectOwnerId
     commentCount
   }
 `
