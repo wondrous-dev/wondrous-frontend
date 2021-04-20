@@ -39,6 +39,7 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
   const [errors, setErrors] = useState({})
   const [video, setVideo] = useState(projectDiscussion && projectDiscussion.muxPlaybackId || null)
   const [videoUploading, setVideoUploading] = useState(null)
+  const [imageUploading, setImageUploading] = useState(null)
   const navigation = useNavigation()
 
   const resetState = useCallback(() => {
@@ -65,7 +66,7 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
       {
       galleryOpen
       ?
-      <ImageBrowser setImageBrowser={setGalleryOpen} media={media} navigation={navigation} setMedia={setMedia} imagePrefix={FILE_PREFIX} />
+      <ImageBrowser setImageBrowser={setGalleryOpen} media={media} navigation={navigation} setMedia={setMedia} imagePrefix={FILE_PREFIX} setImageUploading={setImageUploading} />
       :
       <TouchableWithoutFeedback
         onPress={() => Keyboard.dismiss()}
@@ -89,6 +90,7 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
                 filePrefix={FILE_PREFIX}
                 setVideo={setVideo} 
                 setVideoUploading={setVideoUploading}
+                setImageUploading={setImageUploading}
                 setErrors={setErrors}
               />
             }
@@ -123,11 +125,15 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
               }}>
               <Pressable style={{
                 ...modalStyles.createUpdateButton,
-                backgroundColor: videoUploading ? Grey800 : Blue500
+                backgroundColor: (imageUploading || videoUploading) ? Grey800 : Blue500
               }} onPress={() => {
                 if (videoUploading) {
                   setErrors({
                     submitError: 'Videos are still uploading!'
+                  })
+                } else if (imageUploading) {
+                  setErrors({
+                    submitError: 'Images are still uploading!'
                   })
                 } else {
                   console.log('what', project)
@@ -245,6 +251,19 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
                            </View>
                     }
                     {
+                      imageUploading &&
+                      <View style={{
+                        marginTop: spacingUnit * 2
+                      }}>
+                         <ActivityIndicator />
+                         <RegularText color={Grey800} style={{
+                           textAlign: 'center'
+                         }}>
+                           Image uploading...
+                         </RegularText>
+                       </View>
+                    }
+                    {
                       (media || video) &&
                       <View style={modalStyles.mediaRows}>
                         {
@@ -253,7 +272,7 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
 
                         }
                         {media.map(image => (
-                          <ImageDisplay setMedia={setMedia} media={media} image={image} imagePrefix={FILE_PREFIX} />
+                          <ImageDisplay setMedia={setMedia} media={media} image={image} imagePrefix={FILE_PREFIX} setImageUploading={setImageUploading} />
                         ))}
                       </View>
                     }
