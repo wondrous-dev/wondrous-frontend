@@ -1,5 +1,6 @@
 
 
+
 import React, { useState, createContext, useCallback, useEffect } from 'react'
 import { Dimensions, Pressable, View, Image } from 'react-native'
 import { Bar } from 'react-native-progress'
@@ -10,12 +11,13 @@ import { isBefore } from 'date-fns'
 import { Black, Blue400, Blue500, Green400, Grey200, Grey500, Grey350, Grey800, Orange, Red400, White, Yellow300 } from '../../constants/Colors'
 import Plus from '../../assets/images/plus'
 import { profileStyles } from './style'
-import ProfileDefaultImage from '../../assets/images/profile-placeholder'
+import AddIcon from '../../assets/images/add-dark-button'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { FlexibleButton, PrimaryButton } from '../../storybook/stories/Button'
 import { spacingUnit } from '../../utils/common'
 import { useProfile } from '../../utils/hooks'
 import { renderItem } from '../../components/Feed'
+import { renderDiscussionItem } from '../../components/ProjectDiscussion'
 import GoalIcon from '../../assets/images/goal/standalone'
 import TaskIcon from '../../assets/images/task/standalone'
 import AskIcon from '../../assets/images/ask/standalone'
@@ -25,6 +27,7 @@ import DefaultProfilePicture from '../../assets/images/default-profile-picture.j
 import { GET_USER_STREAK } from '../../graphql/queries'
 import { updateUsageProgress } from '../../utils/apollo'
 import CoolProfilePlaceholder from '../../assets/images/default-profile.png'
+import { moderateScale } from '../../utils/scale'
 
 export const getPinnedFeed = (initialFeed) => {
   // Find pinned item
@@ -115,6 +118,7 @@ export const SectionsHeader = () => {
   const actionSelected = section === 'action'
   const asksSelected = section === 'asks'
   const reviewSelected = section === 'reviews'
+  const discussionSelected = section === 'discussion'
 
   return (
     <View style={profileStyles.sectionChoiceContainer}>
@@ -125,7 +129,7 @@ export const SectionsHeader = () => {
             borderBottomWidth: 1
           }),
           paddingBottom: spacingUnit,
-          width: spacingUnit * 12,
+          width: moderateScale(spacingUnit * 10.5),
           alignItems: 'center'
         }}>
           <Paragraph color={feedSelected ? Blue400 : Black }>
@@ -140,7 +144,7 @@ export const SectionsHeader = () => {
             borderBottomWidth: 1
           }),
           paddingBottom: spacingUnit,
-          width: spacingUnit * 12,
+          width: moderateScale(spacingUnit * 10.5),
           alignItems: 'center'
         }}>
           <Paragraph color={actionSelected ? Blue400 : Black }>
@@ -156,7 +160,7 @@ export const SectionsHeader = () => {
           }),
           paddingBottom: spacingUnit,
           alignItems: 'center',
-          width: spacingUnit * 12
+          width: moderateScale(spacingUnit * 10.5)
         }}>
           <Paragraph color={asksSelected ? Blue400 : Black }>
             Asks
@@ -173,10 +177,30 @@ export const SectionsHeader = () => {
           }),
           paddingBottom: spacingUnit,
           alignItems: 'center',
-          width: spacingUnit * 12
+          width: moderateScale(spacingUnit * 10.5)
         }}>
           <Paragraph color={reviewSelected ? Blue400 : Black }>
             Reviews
+          </Paragraph>
+        </View>
+      </Pressable>
+      }
+      {
+        type === 'project' &&
+        <Pressable onPress={() => setSection('discussion')}>
+        <View style={{
+          ...(discussionSelected && {
+            borderBottomColor: Blue400,
+            borderBottomWidth: 1,
+          }),
+          paddingBottom: spacingUnit,
+          alignItems: 'center',
+          width: moderateScale(spacingUnit * 11.5),
+        }}>
+          <Paragraph color={discussionSelected ? Blue400 : Black } style={{
+            paddingRight: spacingUnit
+          }}>
+            Discussion
           </Paragraph>
         </View>
       </Pressable>
@@ -316,6 +340,16 @@ export const DetermineUserProgress = ({ user, projectId }) => {
   }
 }
 
+export const DISCUSSION_STATUS_ARR = [
+  {
+    label: 'Open',
+    value: 'open'
+  },
+  {
+    label: 'Closed',
+    value: 'closed'
+  }
+]
 export const STATUS_ARR = [
   {
     label: 'To do',
@@ -331,7 +365,7 @@ export const STATUS_ARR = [
   }
 ]
 
-export const renderProfileItem = ({ item, section, user, userOwned, navigation, projectId, itemRefs, onSwipeLeft, onSwipeRight, tab, loggedInUser }) => {
+export const renderProfileItem = ({ item, section, user, userOwned, navigation, projectId, itemRefs, onSwipeLeft, onSwipeRight, tab, loggedInUser, setDiscussionModal, discussionState }) => {
 
   if (section === 'feed') {
     return renderItem({ projectId, item, navigation, screen: 'Root', params: {
@@ -456,6 +490,23 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
         <ReviewCard review ={item} tab={tab} />
       </View>
     )
+  } else if (section === 'discussion') {
+    if (item === 'none') {
+      return null
+    }
+    return renderDiscussionItem({ projectId, userOwned, item, navigation, screen: 'Root', params: {
+      screen: tab || 'Profile',
+      params: {
+        screen: 'ProjectDiscussionItem',
+        params: {
+          item,
+          liked: false,
+          comment: true,
+          standAlone: true,
+          userOwned
+        }
+      }
+    } })
   }
 }
 
@@ -568,9 +619,57 @@ export const removeActions = ({item, type, original, actions, status }) => {
   }
 }
 
+export const DiscussionSelector = ({ setDiscussionState, discussionState, setDiscussionModal }) => {
+  return (
+    <View style={{
+      paddingLeft: spacingUnit,
+      paddingRight: spacingUnit
+    }}>
+      <View style={[{
+        marginTop: spacingUnit * 2,
+        flexDirection: 'row',
+        paddingLeft: spacingUnit,
+        paddingRight: spacingUnit
+      }]}>
+      {DISCUSSION_STATUS_ARR.map(statusItem => (
+        <StatusItem
+        key={statusItem.value}
+        statusValue={statusItem.value}
+        statusLabel={statusItem.label}
+        statusTrue={statusItem.value === discussionState}
+        setStatus={setDiscussionState}
+        />
+      ))}
+      </View>
+      <View style={{
+          flex: 1,
+          marginTop: spacingUnit * 1.5,
+          marginBottom: -spacingUnit * 1.5,
+          alignItems: 'center',
+          flexDirection: 'row',
+        }}>
+         <Pressable onPress={() => setDiscussionModal(true)}>
+                <AddIcon style={{
+                  width: spacingUnit * 6.5,
+                  height: spacingUnit * 6.5
+                }} />
+          </Pressable>
+          <View>
+          <Paragraph style={{
+            textAlign: 'center',
+            marginTop: -spacingUnit,
+            paddingRight: spacingUnit
+          }} color={Grey800}>
+            Add feedback/comments for the project
+          </Paragraph>
+          </View>
+        </View>
+    </View>
+  )
+}
+
 export const StatusSelector = ({ setStatus, status}) => {
   return (
-    
       <View style={{
         paddingLeft: spacingUnit * 2,
         paddingRight: spacingUnit * 2

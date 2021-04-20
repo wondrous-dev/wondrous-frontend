@@ -51,7 +51,7 @@ const getCorrectStats = (reviewStats) => {
         <Paragraph color={Red400} style={{
           fontFamily: 'Rubik SemiBold'
         }}>
-          -{differenceInAverageComplete}{` `}
+          {differenceInAverageComplete}{` `}
         </Paragraph>
       </View>
       <Paragraph color={Red400}>

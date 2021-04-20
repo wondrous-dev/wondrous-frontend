@@ -14,8 +14,9 @@ import { GET_PROJECT_BY_ID, GET_PROJECT_FEED, GET_PROJECT_ACTIONS, GET_PROJECT_F
 import { UPDATE_PROJECT, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_PROJECT, UNFOLLOW_PROJECT, REMOVE_FOLLOW_REQUEST } from '../../graphql/mutations'
 import { SafeImage, UploadImage } from '../../storybook/stories/Image'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
+import { FullScreenDiscussionModal } from '../../components/Modal/ProjectDiscussionModal'
 import { SecondaryButton, FlexibleButton, PrimaryButton } from '../../storybook/stories/Button'
-import { capitalizeFirstLetter, isEmptyObject, spacingUnit, wait } from '../../utils/common'
+import { capitalizeFirstLetter, isEmptyObject, spacingUnit, usePrevious, wait } from '../../utils/common'
 import { WONDER_BASE_URL } from '../../constants/'
 import { ProfileContext } from '../../utils/contexts'
 import { EditProfileModal } from './EditProfileModal'
@@ -29,13 +30,16 @@ import {
   DetermineUserProgress,
   renderProfileItem,
   onSwipe,
-  getPinnedFeed
+  getPinnedFeed,
+  DiscussionSelector
 } from './common'
 import Link from '../../assets/images/link'
 import { GET_ASKS_FROM_PROJECT, GET_USER_STREAK, WHOAMI } from '../../graphql/queries'
 import { sortByDueDate } from '../../utils/date'
 import ProfilePictureModal from './ProfilePictureModal'
 import Lock from '../../assets/images/lock'
+import { GET_PROJECT_DISCUSSIONS } from '../../graphql/queries/projectDiscussion'
+import { CREATE_PROJECT_DISCUSSION } from '../../graphql/mutations/projectDiscussion'
 
 const TagView = ({ tag }) => {
   if (tag === 'ai_ml') {
@@ -86,7 +90,11 @@ function ProjectProfile({
   const [inviteCollaboratorModal, setInviteCollaboratorModal] = useState(false)
   const [profilePicture, setProfilePicture] = useState('')
   const [profilePictureModal, setProfilePictureModal] = useState(false)
+  const [discussionModal, setDiscussionModal] = useState(false)
+  const [discussionState, setDiscussionState] = useState('open')
   const [projectFeed, setProjectFeed] = useState([])
+  const [discussions, setDiscussions] = useState([])
+  const previousDiscussionState = usePrevious(discussionState)
   const [following, setFollowing] = useState(user && user.projectsFollowing && user.projectsFollowing.includes(projectId))
   const [followRequested, setFollowRequested] = useState(false)
   const [confetti, setConfetti] = useState(false)
@@ -161,7 +169,8 @@ function ProjectProfile({
     variables: {
       userId: user?.id,
       projectId
-    }
+    },
+    fetchPolicy: 'network-only'
   })
 
   const [removeFollowRequest] = useMutation(REMOVE_FOLLOW_REQUEST, {
@@ -196,6 +205,16 @@ function ProjectProfile({
     fetchPolicy: 'network-only'
   })
 
+  const [getProjectDiscussions, {
+    data: projectDiscussionData,
+    fetchMore: fetchMoreDiscussions
+  }] = useLazyQuery(GET_PROJECT_DISCUSSIONS, {
+    fetchPolicy: 'network-only',
+    variables: {
+      state: discussionState
+    }
+  })
+
   const [updateGoal] = useMutation(UPDATE_GOAL)
   const [updateTask] = useMutation(UPDATE_TASK)
   const [completeGoal] = useMutation(COMPLETE_GOAL, {
@@ -219,12 +238,25 @@ function ProjectProfile({
     }, 
     fetchPolicy: 'network-only'
   })
+  const [createProjectDiscussion] = useMutation(CREATE_PROJECT_DISCUSSION, {
+    update(cache, { data: createProjectDiscussion }) {
+      cache.modify({
+        fields: {
+          getProjectDiscussions(existingDiscussions=[], { readField }) {
+            return [createProjectDiscussion, ...existingDiscussions]
+          }
+        }
+      })
+    }
+  })
+
   const project = fetchedProject || (data && data.getProjectById)
   const projectOwnedByUser = project && (user && (project.createdBy === user.id || (project.collaborators && project.collaborators.some(element => element.user.id === user.id))))
   const feedSelected = section === 'feed'
   const actionSelected = section === 'action'
   const asksSelected = section === 'asks'
-  
+  const discussionSelected = section === 'discussion'
+
   useEffect(() => {
     if (actionSelected) {
       getProjectActions({
@@ -240,6 +272,15 @@ function ProjectProfile({
           status
         }
       })
+    } else if (discussionSelected && (!projectDiscussionData || (discussionState !== previousDiscussionState))) {
+      getProjectDiscussions({
+        variables: {
+          projectId,
+          state: discussionState,
+          limit: 10,
+          offset: 0
+        }
+      })
     }
 
     if (!profilePicture && project && project.profilePicture) {
@@ -251,6 +292,9 @@ function ProjectProfile({
     if (projectFeedData && projectFeedData.getProjectFeed) {
       setProjectFeed(projectFeedData.getProjectFeed)
     }
+    if (projectDiscussionData?.getProjectDiscussions) {
+      setDiscussions(projectDiscussionData?.getProjectDiscussions)
+    }
     
     if (projectFollowRequest?.id) {
       if (!projectFollowRequest?.approvedAt) {
@@ -259,7 +303,7 @@ function ProjectProfile({
         setFollowing(true)
       }
     }
-  }, [project && (project.thumbnailPicture || project.profilePicture), feedSelected, actionSelected, asksSelected, status, projectFeedData && projectFeedData.getProjectFeed, projectFollowRequest])
+  }, [project && (project.thumbnailPicture || project.profilePicture), feedSelected, actionSelected, asksSelected, discussionSelected, status, discussionState, projectFeedData && projectFeedData.getProjectFeed, projectDiscussionData?.getProjectDiscussions, projectFollowRequest])
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)
@@ -279,6 +323,13 @@ function ProjectProfile({
         variables: {
           projectId,
           status
+        }
+      })
+    } else if (discussionSelected) {
+      getProjectDiscussions({
+        variables: {
+          projectId,
+          state: discussionState
         }
       })
     }
@@ -313,6 +364,11 @@ function ProjectProfile({
         return ['none']
       }
       return asks
+    } else if (section === 'discussion') {
+      if (discussions?.length === 0 ) {
+        return ['none']
+      }
+      return discussions
     }
   }
 
@@ -567,6 +623,10 @@ function ProjectProfile({
             (actionSelected || asksSelected) &&
             <StatusSelector setStatus={setStatus} status={status} />
           }
+          {
+            discussionSelected &&
+            <DiscussionSelector setDiscussionModal={setDiscussionModal} setDiscussionState={setDiscussionState} discussionState={discussionState} />
+          }
       </View>
     )
     )
@@ -593,7 +653,8 @@ function ProjectProfile({
           projectFeedData,
           projectFeedLoading,
           projectFeedError,
-          setModalVisible
+          setModalVisible,
+          type: 'project'
         }}>
           {
             projectOwnedByUser &&
@@ -604,14 +665,14 @@ function ProjectProfile({
             </>
           }
           <ProfilePictureModal profilePicture={project?.profilePicture} isVisible={profilePictureModal} setModalVisible={setProfilePictureModal} />
-        
+          <FullScreenDiscussionModal isVisible={discussionModal} setModalVisible={setDiscussionModal} projectDiscussionMutation={createProjectDiscussion} project={project} />
 
-        <FlatList    refreshControl={
+        <FlatList refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         ItemSeparatorComponent={() => (
           <View
-          style={[feedSelected && {
+          style={[(feedSelected || discussionSelected) && {
             borderBottomColor: Grey300,
             borderBottomWidth: 1,
           }]}
@@ -660,7 +721,7 @@ function ProjectProfile({
         keyExtractor={item => item.id}
         renderItem={({ item }) => {
           if (projectAccessible) {
-            return renderProfileItem({ item, section, user, userOwned: projectOwnedByUser, navigation, projectId, onSwipeLeft, onSwipeRight, itemRefs, tab, loggedInUser: user })
+            return renderProfileItem({ item, section, user, userOwned: projectOwnedByUser, navigation, projectId, onSwipeLeft, onSwipeRight, itemRefs, tab, loggedInUser: user, setDiscussionModal })
           } else {
             return (
               <View style={{
@@ -698,6 +759,18 @@ function ProjectProfile({
 
               if (result?.data?.getProjectFeed) {
                 setProjectFeed([...projectFeed, ...result.data.getProjectFeed])
+              }
+            }
+          } else if (section === 'discussion') {
+            if (fetchMoreDiscussions) {
+              const result = await fetchMoreDiscussions({
+                variables: {
+                  offset: discussions.length
+                }
+              })
+
+              if (result?.data?.getProjectDiscussions) {
+                setDiscussions([...discussions, ...result.data.getProjectDiscussions])
               }
             }
           }

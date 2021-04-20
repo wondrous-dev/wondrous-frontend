@@ -41,7 +41,8 @@ const WriteComment = () => {
     feedItemId,
     replyName,
     setReplyName,
-    reviewId
+    reviewId,
+    projectDiscussionId
   } = useComment()
 
   const pressComment = useCallback(async content => {
@@ -77,6 +78,21 @@ const WriteComment = () => {
               ...(mentionedProjects.length > 0 && {
                 projectMentions: mentionedProjects
               })
+            }
+          })
+        } else if (projectDiscussionId) {
+          await commentMutation({
+            variables: {
+              input: {
+                projectDiscussionId,
+                content,
+                ...(mentionedUsers.length > 0 && {
+                  userMentions: mentionedUsers
+                }),
+                ...(mentionedProjects.length > 0 && {
+                  projectMentions: mentionedProjects
+                })
+              }
             }
           })
         }

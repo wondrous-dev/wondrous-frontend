@@ -51,7 +51,6 @@ export default class ImageBrowserScreen extends Component {
       edit
      } = this.props;
     callback.then(async (selectedMedia) => {
-      console.log('selected', selectedMedia)
       const videoErrors = this.checkVideoErrors(selectedMedia)
       if (videoErrors) {
         return

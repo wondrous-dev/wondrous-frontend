@@ -11,6 +11,7 @@ const moderateScale = (size: number, factor = 0.2) => {
   if (width < guidelineBaseWidth) {
     return size + ( scale(size) - size ) * factor
   }
+
   return size
 }
 
