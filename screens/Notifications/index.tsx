@@ -11,7 +11,7 @@ import { useMe, withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { White, Grey300, Black, Grey800, Blue100 } from '../../constants/Colors'
-import { GET_NOTIFICATIONS, GET_FEED_ITEM_FOR_FEED_COMMENT, GET_FEED_ITEM, GET_POST_ITEM, GET_UNREAD_NOTIFICATION_COUNT, GET_PROJECT_INVITE_FROM_NOTIFICATION, GET_PROJECT_FOLLOW_REQUEST, GET_PROJECT_DISCUSSION } from '../../graphql/queries'
+import { GET_NOTIFICATIONS, GET_FEED_ITEM_FOR_FEED_COMMENT, GET_FEED_ITEM, GET_POST_ITEM, GET_UNREAD_NOTIFICATION_COUNT, GET_PROJECT_INVITE_FROM_NOTIFICATION, GET_PROJECT_FOLLOW_REQUEST, GET_PROJECT_DISCUSSION, GET_PROJECT_DISCUSSION_FROM_COMMENT } from '../../graphql/queries'
 import { MARK_NOTIFICATION_AS_VIEWED, ACCEPT_PROJECT_INVITE, APPROVE_FOLLOW_REQUEST } from '../../graphql/mutations'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import LogoImage from '../../assets/images/logo.png'
@@ -202,6 +202,33 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
           console.log('err')
         }
         break
+      } else if (objectType === 'project_discussion_comment')  {
+
+        try {
+          const projectDiscussionCommentResponse = await apollo.query({
+            query: GET_PROJECT_DISCUSSION_FROM_COMMENT,
+            variables: {
+              projectDiscussionCommentId: objectId
+            }
+          })
+          if (projectDiscussionCommentResponse?.data?.getProjectDiscussionFromComment) {
+            navigation.push('Root', {
+              screen: tab || 'Profile',
+              params: {
+                screen: 'ProjectDiscussionItem',
+                params: {
+                  item: projectDiscussionCommentResponse?.data?.getProjectDiscussionFromComment,
+                  liked: false,
+                  comment: true,
+                  standAlone: true
+                }
+              }
+            })
+          }
+        } catch (err) {
+          console.log('err', err)
+        }
+         break
       } else if (objectType === 'review_comment') {
         try {
           const reviewResponse = await apollo.query({
@@ -782,6 +809,25 @@ const formatNotificationMentionMessage = (notificationInfo) => {
               </RegularText>
             }
         </RegularText>
+      )
+    case 'project_discussion_comment':
+      return (
+        <RegularText color={Black}>
+        <RegularText style={{
+          fontFamily: 'Rubik SemiBold'
+        }}>
+            @{notificationInfo.actorUsername}{` `}  
+            </RegularText>
+            mentioned you in a comment
+            {
+              contentPreview &&
+              <RegularText style={{
+                fontFamily: 'Rubik SemiBold'
+              }}>
+                {`: "${contentPreview}"`}
+              </RegularText>
+            }
+          </RegularText>
       )
     case 'review_comment':
       return (
