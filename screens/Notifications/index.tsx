@@ -506,7 +506,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
 
 const formatNotificationMessage = ({ notificationInfo, tab, projectInvite, projectFollowRequest }) => {
   let displayMessage = '';
-  console.log('notificatioInfo', notificationInfo)
+
   switch (notificationInfo.type) {
     case 'welcome':
       displayMessage =(
@@ -585,11 +585,28 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite, proje
       )
       break
     case 'project_discussion_creation':
+      const contentPreview = notificationInfo?.additionalData?.contentPreview
       displayMessage = (
         <RegularText color={Black}>
-
+          <RegularText style={{
+            fontFamily: 'Rubik SemiBold'
+          }}>
+            @{notificationInfo?.actorUsername}
+          </RegularText> posted a discussion for <RegularText style={{
+            fontFamily: 'Rubik SemiBold'
+          }}>{notificationInfo.objectName}
+          </RegularText>
+          {
+              contentPreview &&
+              <RegularText style={{
+                fontFamily: 'Rubik SemiBold'
+              }}>
+                {`: "${contentPreview}"`}
+              </RegularText>
+            }
         </RegularText>
       )
+      break
     default:
       displayMessage = <></>;
   }
@@ -1040,7 +1057,6 @@ export const NotificationFeed = ({ route }) => {
   if (error) {
     console.log('Error fetching Notification', error)
   }
-  console.log('data', data)
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     if (refetch) {

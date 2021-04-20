@@ -656,9 +656,10 @@ export const DiscussionSelector = ({ setDiscussionState, discussionState, setDis
           <View>
           <Paragraph style={{
             textAlign: 'center',
-            marginTop: -spacingUnit
+            marginTop: -spacingUnit,
+            paddingRight: spacingUnit
           }} color={Grey800}>
-            Add feedback or comments for the project
+            Add feedback/comments for the project
           </Paragraph>
           </View>
         </View>
