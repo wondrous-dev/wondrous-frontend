@@ -35,6 +35,7 @@
       "**/*"
     ],
     "ios": {
+      "associatedDomains": ["applinks:wonderco.app.link"],
       "supportsTablet": true,
       "config": {
         "googleSignIn": {
