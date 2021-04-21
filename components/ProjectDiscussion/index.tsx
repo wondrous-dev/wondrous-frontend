@@ -191,7 +191,7 @@ export const ProjectDiscussionItem = ({ item: initialItem, userOwned, standAlone
         }}/> */}
         {
           <Paragraph style={feedStyles.feedText}>
-          {renderMentionString({ content: item.content || item.itemContent, textStyle: feedStyles.feedText,  navigation, tab: route && route.params && route.params.tab })}
+          {renderMentionString({ content: item.title || item.content || item.itemContent, textStyle: feedStyles.feedText,  navigation, tab: route && route.params && route.params.tab })}
           </Paragraph>
         }
             <>

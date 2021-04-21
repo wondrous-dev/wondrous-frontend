@@ -574,7 +574,8 @@ export const submit = async ({
   completedMessage,
   completedImages,
   completed,
-  video
+  video,
+  title
 }) => {
 
   if (!name && type !== 'ask' && type !== 'post' && type !== 'projectDiscussion' && type !== 'completed') {
@@ -582,7 +583,12 @@ export const submit = async ({
       ...errors,
       nameError: 'Name is required'
     })
-  } else if (!content && (type === 'ask' || type === 'post' || type === 'projectDiscussion') && type !== 'completed') {
+  } else if (type === 'projectDiscussion' && !title) {
+    setErrors({
+      ...errors,
+      nameError: 'Title is required'
+    })
+  } else if (!content && (type === 'ask' || type === 'post') && type !== 'completed') {
     setErrors({
       ...errors,
       nameError: 'Content required'
@@ -653,6 +659,9 @@ export const submit = async ({
           input: {
             ...(name && {
               name
+            }),
+            ...(title && {
+              title
             }),
             ...(detail && {
               detail

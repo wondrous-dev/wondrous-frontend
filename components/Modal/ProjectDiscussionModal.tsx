@@ -139,7 +139,7 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
 
                   submit({
                     type: 'projectDiscussion',
-                    content,
+                    title: content,
                     link,
                     errors,
                     setErrors,
