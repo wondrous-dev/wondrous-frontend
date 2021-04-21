@@ -6,7 +6,7 @@
     "owner": "wonderapp",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "wonderapp",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/logo.png",
