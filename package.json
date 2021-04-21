@@ -45,6 +45,7 @@
     "expo-apple-authentication": "~2.2.2",
     "expo-asset": "~8.2.1",
     "expo-av": "~8.7.0",
+    "expo-branch": "~3.0.0",
     "expo-camera": "~9.1.0",
     "expo-clipboard": "~1.0.1",
     "expo-constants": "~9.3.3",

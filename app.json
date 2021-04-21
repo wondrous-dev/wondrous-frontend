@@ -35,9 +35,12 @@
       "**/*"
     ],
     "ios": {
-      "associatedDomains": ["applinks:wonderco.app.link"],
+      "associatedDomains": ["applinks:wonderco.app.link", "applinks:wonderco-alternate.test-app.link"],
       "supportsTablet": true,
       "config": {
+        "branch": {
+          "apiKey": "key_test_hf9fOJ5np5jDNzbyKf8ApfolsDnapzVW"
+        },
         "googleSignIn": {
           "reservedClientId": "com.googleusercontent.apps.276263235787-gc3g6ilmol63fvobrre6mmd79ou2ulku"
         },
