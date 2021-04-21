@@ -7806,6 +7806,13 @@ expo-av@~8.7.0:
     lodash "^4.17.15"
     nullthrows "^1.1.0"
 
+expo-branch@~3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/expo-branch/-/expo-branch-3.0.0.tgz#769ebc9648b19cddd9410cc7cffaf83bbfa9c37e"
+  integrity sha512-csCdGJXGPqu1qvxfYvgPC1cT8ByYHqBiI/aGyBjI7jReacV6Am9tuFxXLxkGvSsjP2WSfw93TFz42YkvDTbgkg==
+  dependencies:
+    react-native-branch "5.0.0"
+
 expo-camera@~9.1.0:
   version "9.1.1"
   resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-9.1.1.tgz#8630012524b112bf7667ae7a85bbbca5a0911a24"
@@ -14183,6 +14190,11 @@ react-native-animatable@1.3.3:
   integrity sha512-2ckIxZQAsvWn25Ho+DK3d1mXIgj7tITkrS4pYDvx96WyOttSvzzFeQnM2od0+FUMzILbdHDsDEqZvnz1DYNQ1w==
   dependencies:
     prop-types "^15.7.2"
+
+react-native-branch@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-branch/-/react-native-branch-5.0.0.tgz#9d2102abb3c9a577ce4327e434151ece2b4c7c78"
+  integrity sha512-6VInx3bvWOfEJ916zdA1yzJhcjB26N0oMUJInW3reFIijsk6KOjyM46UH3/MixdNUOV/nZn1JoRZM+wpLffDWQ==
 
 react-native-confetti-cannon@^1.5.1:
   version "1.5.2"
