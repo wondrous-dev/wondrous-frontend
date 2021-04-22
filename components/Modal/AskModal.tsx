@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { SafeAreaView, ScrollView, View, StyleSheet, Dimensions, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Pressable, ActivityIndicator } from 'react-native'
 import Modal from 'react-native-modal'
-import { useQuery } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client'
 import DropDownPicker from 'react-native-dropdown-picker'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { toDate } from 'date-fns'
@@ -11,7 +11,7 @@ import { TextEditor } from '../../storybook/stories/TextEditor'
 import { TextEditorContext } from '../../utils/contexts'
 import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300 } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
-import { spacingUnit, renderMentionString } from '../../utils/common'
+import { spacingUnit, renderMentionString, usePrevious } from '../../utils/common'
 import { endOfWeekFromNow } from '../../utils/date'
 import { useMe } from '../../components/withAuth'
 import { GET_USER_PROJECTS, GET_GOALS_FROM_PROJECT, GET_GOALS_FROM_USER, GET_TASKS_FROM_USER, GET_TASKS_FROM_PROJECT } from '../../graphql/queries'
@@ -41,6 +41,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
   const [completed, setCompleted] = useState(false)
   const [askText, setAskText] = useState((ask && ask.content) || '')
   const [project, setProject] = useState((ask && ask.projectId) || projectId)
+  const previousProject = usePrevious(project)
   const [goal, setGoal] = useState(initialGoal)
   const [task, setTask] = useState(initialTask)
   const [link, setLink] = useState(initialLink)
@@ -53,16 +54,33 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
   const [imageUploading, setImageUploading] = useState(null)
   const [errors, setErrors] = useState({})
   const user = useMe()
+  const [projectUsers, setProjectUsers] = useState(null)
+  const [userGoals, setUserGoals] = useState(null)
+  const [projectGoals, setProjectGoals] = useState(null)
+  const [userTasks, setUserTasks] = useState(null)
+  const [projectTasks, setProjectTasks] = useState(null)
+  const previousVisible = usePrevious(isVisible)
 
-  const { data: projectUsers, loading:  projectUserLoading, error: projectUserError } = useQuery(GET_USER_PROJECTS, {
+  const [getUserProjects, { data: projectUserData, loading:  projectUserLoading, error: projectUserError }] = useLazyQuery(GET_USER_PROJECTS, {
     variables: {
       userId: user && user.id
-    }
-  })
-  const { data: userGoals, loading: userGoalsLoading , error: userGoalsErrorsLoading } = useQuery(GET_GOALS_FROM_USER, {
+    },
     fetchPolicy: 'network-only'
   })
-  const { data: userTasks, loading: userTasksLoading, error: userTasksErrorsLoading } = useQuery(GET_TASKS_FROM_USER)
+  const [getUserGoals, { data: userGoalData, loading: userGoalsLoading , error: userGoalsErrorsLoading }] = useLazyQuery(GET_GOALS_FROM_USER, {
+    fetchPolicy: 'network-only'
+  })
+  const [getUserTasks, { data: userTaskData, loading: userTasksLoading, error: userTasksErrorsLoading }] = useLazyQuery(GET_TASKS_FROM_USER, {
+    fetchPolicy: 'network-only'
+  })
+
+  const [getProjectGoals, { data: projectGoalData }] = useLazyQuery(GET_GOALS_FROM_PROJECT, {
+    fetchPolicy: 'network-only'
+  })
+
+  const [getProjectTasks, {data: projectTaskData }] = useLazyQuery(GET_TASKS_FROM_PROJECT, {
+    fetchPolicy: 'network-only'
+  })
 
   const projectDropdowns = projectUsers && projectUsers.getUserProjects ? projectUsers.getUserProjects.map(projectUser => {
     return {
@@ -74,14 +92,50 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
     value: ''
   }]
 
-  let userGoalArr = userGoals && userGoals.getGoalsFromUser
-  if (userGoalArr) {
-    if (project) {
-      userGoalArr = userGoalArr.filter(userGoal => userGoal.projectId === project)
+  useEffect(() => {
+    if (isVisible && !previousVisible) {
+      getUserGoals()
+      getUserProjects()
+      getUserTasks()
+    }
+    if (project && previousProject !== project) {
+      getProjectGoals({
+        variables: {
+          projectId: project
+        }
+      })
+      getProjectTasks({
+        variables: {
+          projectId: project
+        }
+      })
+    }
+    if (projectGoalData) {
+      setProjectGoals(projectGoalData.getGoalsFromProject)
+    }
+    if (userGoalData) {
+      setUserGoals(userGoalData.getGoalsFromUser)
+    }
+    if (projectUserData) {
+      setProjectUsers(projectUserData)
+    }
+    if (userTaskData) {
+      setUserTasks(userTaskData.getTasksFromUser)
+    }
+    if (projectTaskData) {
+      setProjectTasks(projectTaskData.getTasksFromProject)
+    }
+  }, [isVisible, project, userTaskData, userGoalData, projectGoalData, projectUserData, projectTaskData])
+
+  let userGoalArr = userGoals
+  if (project) {
+    userGoalArr = projectGoals
+  } else {
+    if (userGoalArr) {
+      userGoalArr = userGoalArr?.filter(userGoal => userGoal.status === 'created')
     }
   }
-
-  const userGoalsDropdown = userGoalArr ? userGoalArr.map(userGoal => {
+  let userGoalsDropdown = userGoalArr ? userGoalArr.map(userGoal => {
     return {
       label: renderMentionString({ content: userGoal.name, simple: true, navigation, tab }),
       value: userGoal.id
@@ -90,16 +144,16 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
     label: '',
     value: ''
   }]
-  let userTaskArr = userTasks && userTasks.getTasksFromUser
-  if (userTaskArr) {
-    if (project) {
-      userTaskArr = userTaskArr.filter(userTask => userTask.projectId === project)
-    }
-    if (goal) {
-      userTaskArr = userTaskArr.filter(userTask => userTask.goalId === goal)
-    }
+
+  let userTaskArr = userTasks
+  if (project) {
+    userTaskArr = projectTasks
   }
-  let userTasksDropdown = userTaskArr? userTasks.getTasksFromUser.map(userTask => {
+  if (goal) {
+    console.log('userTask', userTaskArr)
+    userTaskArr = userTaskArr?.filter(userTask => userTask.goalId === goal)
+  }
+  let userTasksDropdown = userTaskArr? userTaskArr.map(userTask => {
     return {
       label: renderMentionString({ content: userTask.name, simple: true, navigation, tab }),
       value: userTask.id
@@ -169,6 +223,9 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                   resetState()
                   setModalVisible(false)
                 } else {
+                  setProject(null)
+                  setGoal(null)
+                  setTask(null)
                   setModalVisible(false)
                 }
               }} style={{
