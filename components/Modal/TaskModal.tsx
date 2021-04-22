@@ -29,6 +29,7 @@ import { useNavigation, useRoute } from '@react-navigation/native'
 import Checkmark from '../../assets/images/checkmark'
 import VideoIcon from '../../assets/images/video'
 import { VideoDisplay } from '../../storybook/stories/Carousel'
+import { ACTION_QUERY_LIMIT } from '../../constants'
 
 const FILE_PREFIX = 'tmp/task/new/'
 
@@ -65,16 +66,28 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
   const previousVisible = usePrevious(isVisible)
   const [getUserProjects, { data: projectUserData, loading:  projectUserLoading, error: projectUserError }] = useLazyQuery(GET_USER_PROJECTS, {
     variables: {
-      userId: user?.id
+      userId: user?.id,
+      status: 'created',
+      limit: ACTION_QUERY_LIMIT
     },
     fetchPolicy: 'network-only'
   })
   const [getUserGoals, { data: userGoalData, loading: userGoalsLoading , error: userGoalsErrorsLoading }] = useLazyQuery(GET_GOALS_FROM_USER, {
-    fetchPolicy: 'network-only'
+    fetchPolicy: 'network-only',
+    variables: {
+      userId: user?.id,
+      status: 'created',
+      limit: ACTION_QUERY_LIMIT
+    },
   })
 
   const [getProjectGoals, {data: projectGoalData}] = useLazyQuery(GET_GOALS_FROM_PROJECT, {
-    fetchPolicy: 'network-only'
+    fetchPolicy: 'network-only',
+    variables: {
+      userId: user?.id,
+      status: 'created',
+      limit: ACTION_QUERY_LIMIT
+    },
   })
 
 
@@ -95,7 +108,9 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
     if (project && previousProject !== project) {
       getProjectGoals({
         variables: {
-          projectId: project
+          projectId: project,
+          status: 'created',
+          limit: 20
         }
       })
     }

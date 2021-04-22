@@ -13,8 +13,8 @@ export const GET_GOAL_BY_ID = gql`
 `
 
 export const GET_GOALS_FROM_PROJECT = gql`
-  query GetGoalsFromProject($projectId: ID!) {
-    getGoalsFromProject(projectId: $projectId) {
+  query GetGoalsFromProject($projectId: ID!, $limit: Int, $offset: Int, $status: String) {
+    getGoalsFromProject(projectId: $projectId, limit: $limit, offset: $offset, status: $status) {
       ...AdditionalGoal
     }
   }
@@ -22,8 +22,8 @@ export const GET_GOALS_FROM_PROJECT = gql`
 `
 
 export const GET_GOALS_FROM_USER = gql`
-  query GetGoalsFromUser {
-    getGoalsFromUser {
+  query GetGoalsFromUser($limit: Int, $offset: Int, $status: String) {
+    getGoalsFromUser(limit: $limit, offset: $offset, status: $status) {
       ...AdditionalGoal
     }
   }

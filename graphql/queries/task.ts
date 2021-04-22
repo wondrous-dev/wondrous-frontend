@@ -12,8 +12,8 @@ export const GET_TASK_BY_ID = gql`
 `
 
 export const GET_TASKS_FROM_GOAL = gql`
-  query getTasksFromGoal($goalId: ID!) {
-    getTasksFromGoal(goalId: $goalId) {
+  query getTasksFromGoal($goalId: ID!, $status: string) {
+    getTasksFromGoal(goalId: $goalId, status: $status) {
       ...PublicTask
     }
   }
@@ -21,8 +21,8 @@ export const GET_TASKS_FROM_GOAL = gql`
 `
 
 export const GET_TASKS_FROM_PROJECT = gql`
-  query GetTasksFromProject($projectId: ID!) {
-    getTasksFromProject(projectId: $projectId) {
+  query GetTasksFromProject($projectId: ID!, $limit: Int, $offset: Int, $status: string) {
+    getTasksFromProject(projectId: $projectId, limit: $limit, offset: $offset, status: $status) {
       ...PublicTask
     }
   }
@@ -30,8 +30,8 @@ export const GET_TASKS_FROM_PROJECT = gql`
 `
 
 export const GET_TASKS_FROM_USER = gql`
-  query GetTasksFromUser {
-    getTasksFromUser {
+  query GetTasksFromUser($limit: Int, $offset: Int, $status: String) {
+    getTasksFromUser(limit: $limit, offset: $offset, status: $status) {
       ...PublicTask
     }
   }

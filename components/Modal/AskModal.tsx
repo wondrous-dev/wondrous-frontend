@@ -25,6 +25,7 @@ import ImageBrowser from './ImageBrowser'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import VideoIcon from '../../assets/images/video'
 import { VideoDisplay } from '../../storybook/stories/Carousel'
+import { ACTION_QUERY_LIMIT } from '../../constants'
 
 const FILE_PREFIX = 'tmp/ask/new/'
 
@@ -68,10 +69,20 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
     fetchPolicy: 'network-only'
   })
   const [getUserGoals, { data: userGoalData, loading: userGoalsLoading , error: userGoalsErrorsLoading }] = useLazyQuery(GET_GOALS_FROM_USER, {
-    fetchPolicy: 'network-only'
+    fetchPolicy: 'network-only',
+    variables: {
+      userId: user?.id,
+      status: 'created',
+      limit: ACTION_QUERY_LIMIT
+    },
   })
   const [getUserTasks, { data: userTaskData, loading: userTasksLoading, error: userTasksErrorsLoading }] = useLazyQuery(GET_TASKS_FROM_USER, {
-    fetchPolicy: 'network-only'
+    fetchPolicy: 'network-only',
+    variables: {
+      userId: user?.id,
+      status: 'created',
+      limit: ACTION_QUERY_LIMIT
+    },
   })
 
   const [getProjectGoals, { data: projectGoalData }] = useLazyQuery(GET_GOALS_FROM_PROJECT, {
@@ -101,12 +112,16 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
     if (project && previousProject !== project) {
       getProjectGoals({
         variables: {
-          projectId: project
+          projectId: project,
+          status: 'created',
+          limit: ACTION_QUERY_LIMIT
         }
       })
       getProjectTasks({
         variables: {
-          projectId: project
+          projectId: project,
+          status: 'created',
+          limit: ACTION_QUERY_LIMIT
         }
       })
     }
