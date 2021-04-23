@@ -116,7 +116,13 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
     if (projectUserData) {
       setProjectUsers(projectUserData)
     }
-  }, [isVisible, project, userGoalData, projectGoalData, projectUserData])
+    if (task?.projectId || projectId) {
+      setProject(task?.projectId || projectId)
+    }
+    if (task?.goalId || goalId) {
+      setGoal(task?.goalId || goalId)
+    }
+  }, [isVisible, project, userGoalData, projectGoalData, projectUserData, task?.projectId, projectId, task?.goalId, goalId])
   let userGoalArr = userGoals
 
   if (project) {

@@ -3,7 +3,7 @@ import { gql } from '@apollo/client'
 import { PublicAskFragment } from '../fragments/ask'
 
 export const GET_ASKS_FROM_PROJECT = gql`
-  query GetAsksFromProject($projectId: ID!, $status: String) {
+  query GetAsksFromProject($projectId: ID!, $status: String, $limit: Int, $offset: Int) {
     getAsksFromProject(projectId: $projectId, status: $status) {
       ...PublicAsk
     }
@@ -12,8 +12,8 @@ export const GET_ASKS_FROM_PROJECT = gql`
 `
 
 export const GET_ASKS_FROM_USER = gql`
-  query GetAsksFromUser($userId: ID!, $status: String) {
-    getAsksFromUser(userId: $userId, status: $status) {
+  query GetAsksFromUser($userId: ID!, $status: String, $limit: Int, $offset: Int) {
+    getAsksFromUser(userId: $userId, status: $status, limit: $limit, offset: $offset) {
       ...PublicAsk
     }
   }

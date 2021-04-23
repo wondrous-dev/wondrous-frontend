@@ -108,8 +108,8 @@ export const GET_USER_FEED = gql`
 `
 
 export const GET_USER_ACTIONS = gql`
-  query GetUserActions($userId: ID, $status: String) {
-    getUserActions(userId: $userId, status: $status) {
+  query GetUserActions($userId: ID, $status: String, $limit: Int, $offset: Int) {
+    getUserActions(userId: $userId, status: $status, limit: $limit, offset: $offset) {
       goals {
         ...AdditionalGoal
       }

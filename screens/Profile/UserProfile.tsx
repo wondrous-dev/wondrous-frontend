@@ -30,7 +30,8 @@ import {
   renderProfileItem,
   StatusSelector,
   onSwipe,
-  getPinnedFeed
+  getPinnedFeed,
+  fetchActions
 } from './common'
 import { EditProfileModal } from './EditProfileModal'
 import Link from '../../assets/images/link'
@@ -80,12 +81,17 @@ function UserProfile({
   } = route.params
   const [status, setStatus] = useState('created')
   const [section, setSection] = useState(initialSection || 'feed')
+  const prevSection = usePrevious(section)
   const [refreshing, setRefreshing] = useState(false)
   const [isModalVisible, setModalVisible] = useState(false)
   const [userFeed, setUserFeed] = useState([])
   const prevFeed = usePrevious(userFeed)
+  const [actions, setActions] = useState([])
+  const prevActions = usePrevious(actions)
   const [reviews, setReviews] = useState([])
   const prevReviews = usePrevious(reviews)
+  const [asks, setAsks] = useState([])
+  const prevAsks = usePrevious(asks)
   const [taskCompleteModal, setTaskCompleteModal] = useState(false)
   const [goalCompletemodal, setGoalCompleteModal] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -186,10 +192,12 @@ function UserProfile({
   const [getUserActions, {
     loading: userActionLoading,
     data: userActionData,
-    error: userActionError
+    error: userActionError,
+    fetchMore: actionFetchMore
   }] = useLazyQuery(GET_USER_ACTIONS, {
     variables: {
       userId: finalUserId,
+      limit: 10,
       status
     },
     fetchPolicy: 'network-only'
@@ -198,7 +206,8 @@ function UserProfile({
   const [getUserAsks, {
     loading: userAsksLoading,
     data: userAsksData,
-    error: userAsksError
+    error: userAsksError,
+    fetchMore: askFetchMore
   }] = useLazyQuery(GET_ASKS_FROM_USER, {
     variables: {
       userId: finalUserId,
@@ -272,15 +281,16 @@ function UserProfile({
   }, [])
 
   useEffect(() => {
-
-      if (actionSelected) {
+      console.log('actions', status)
+      if (actionSelected && !isEqual(section, prevSection)) {
+        console.log('actions', status)
         getUserActions({
           variables: {
             userId: finalUserId,
             status
           }
         })
-      } else if (asksSelected) {
+      } else if (asksSelected && !isEqual(section, prevSection)) {
         getUserAsks({
           variables: {
             userId: finalUserId,
@@ -311,6 +321,16 @@ function UserProfile({
           setReviews(userReviewData.getReviewsFromUser)
         }
       }
+      if (userActionData && userActionData.getUserActions) {
+        if (!isEqual(userActionData?.getUserActions, prevActions)) {
+          setActions(fetchActions(userActionData?.getUserActions, status))
+        }
+      }
+      if (userAsksData && userActionData.getUserAsks) {
+        if (!isEqual(userAsksData?.getUserAsks, prevAsks)) {
+          setAsks(userAsksData?.getUserAsks)
+        }
+      }
       if (userOwned === false && followBack === null) {
         checkUserFollowsBack({
           variables: {
@@ -321,29 +341,14 @@ function UserProfile({
       if (followBackData) {
         setFollowBack(followBackData?.doesUserFollowBack)
       } 
-  }, [user && (user.thumbnailPicture || user.profilePicture), feedSelected, actionSelected, asksSelected, finalUserId, status, userFeedData?.getUserFeed, userReviewData, userOwned, followBackData ])
+  }, [user && (user.thumbnailPicture || user.profilePicture), feedSelected, actionSelected, asksSelected, finalUserId, status, userFeedData?.getUserFeed, userReviewData, userOwned, followBackData, userActionData, userAsksData ])
 
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo
   const getCorrectData = section => {
     if (section === 'feed') {
       return getPinnedFeed(userFeed)
     } else if (section === 'action') {
-      const actions = userActionData && userActionData.getUserActions
-      if ((actions && actions.goals.length === 0 && actions.tasks.length === 0) && status === 'created') {
-        return ['none']
-      } else {
-        if (actions && actions.goals && actions.tasks) {
-          return sortByDueDate([
-            ...actions.goals,
-            ...actions.tasks
-          ], status === 'completed')
-        } else if (actions && actions.goals) {
-          return sortByDueDate(actions.goals, status === 'completed')
-        } else if ( actions && actions.tasks) {
-          return sortByDueDate(actions.tasks, status === 'completed')
-        }
-        return []
-      }
+      return actions
     } else if (section === 'asks') {
       const asks = userAsksData && userAsksData.getAsksFromUser
  
@@ -730,10 +735,43 @@ function UserProfile({
                       setUserFeed([...userFeed, ...result.data.getUserFeed])
                     }
                   } catch (err) {
-                    console.log('err fetching more', err)
+                    console.log('err fetching more feed', err)
                   }
                 }
               
+            } else if (section === 'action'){
+              if (actionFetchMore) {
+                try {
+                  const result = await actionFetchMore({
+                    variables: {
+                      offset: actions?.length
+                    }
+                  })
+
+                  if (result?.data?.getUserActions) {
+                    const newActions = fetchActions(result.data.getUserActions, status, true)
+                    setActions([...actions, ...newActions])
+                  }
+                } catch (err) {
+                  console.log('err fetching more actions', err)
+                }
+              }
+            } else if (section === 'asks'){
+              if (askFetchMore) {
+                try {
+                  const result = await askFetchMore({
+                    variables: {
+                      offset: asks?.length
+                    }
+                  })
+
+                  if (result?.data?.getUserAsks) {
+                    setAsks([...asks, ...result.data.getUserAsks])
+                  }
+                } catch (err) {
+                  console.log('err fetching more actions', err)
+                }
+              }
             } else if (section === 'reviews') {
                 if (reviewFetchMore) {
                   try {

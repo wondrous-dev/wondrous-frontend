@@ -13,7 +13,7 @@ import { navigateUserOnLogin, spacingUnit } from '../../../utils/common'
 
 const buttonStyle = StyleSheet.create({
   googleButtonText: {
-    fontFamily: 'sans-serif',
+    fontFamily: 'Arial',
     fontWeight: '500',
     marginLeft: 8,
     fontSize: 18

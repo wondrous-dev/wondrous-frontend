@@ -28,7 +28,26 @@ import { GET_USER_STREAK } from '../../graphql/queries'
 import { updateUsageProgress } from '../../utils/apollo'
 import CoolProfilePlaceholder from '../../assets/images/default-profile.png'
 import { moderateScale } from '../../utils/scale'
+import { sortByDueDate } from '../../utils/date'
 
+export const fetchActions = (actions, status, fetchMore) => {
+  const userActions = actions
+  if ((!fetchMore && userActions && userActions.goals?.length === 0 && userActions.tasks?.length === 0) && status === 'created') {
+    return ['none']
+  } else {
+    if (userActions && userActions?.goals && userActions?.tasks) {
+      return sortByDueDate([
+        ...userActions.goals,
+        ...userActions.tasks
+      ], status === 'completed')
+    } else if (userActions && userActions.goals) {
+      return sortByDueDate(userActions.goals, status === 'completed')
+    } else if ( userActions && userActions.tasks) {
+      return sortByDueDate(userActions?.tasks, status === 'completed')
+    }
+    return []
+  }
+}
 export const getPinnedFeed = (initialFeed) => {
   // Find pinned item
   if (initialFeed?.length > 1 && initialFeed[0].pinned) {
