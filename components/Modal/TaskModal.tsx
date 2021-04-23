@@ -130,9 +130,10 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
   if (project) {
     userGoalArr = projectGoals
   } else {
-    if (userGoalArr) {
-      userGoalArr = userGoalArr?.filter(userGoal => userGoal.status === 'created')
-    }
+    userGoalArr = [{
+      label: 'Please select a project',
+      value: ''
+    }]
   }
   let userGoalsDropdown = userGoalArr ? userGoalArr.map(userGoal => {
     return {

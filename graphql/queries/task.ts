@@ -21,7 +21,7 @@ export const GET_TASKS_FROM_GOAL = gql`
 `
 
 export const GET_TASKS_FROM_PROJECT = gql`
-  query GetTasksFromProject($projectId: ID!, $limit: Int, $offset: Int, $status: string) {
+  query GetTasksFromProject($projectId: ID!, $limit: Int, $offset: Int, $status: String) {
     getTasksFromProject(projectId: $projectId, limit: $limit, offset: $offset, status: $status) {
       ...PublicTask
     }

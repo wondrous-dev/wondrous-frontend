@@ -146,9 +146,10 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
   if (project) {
     userGoalArr = projectGoals
   } else {
-    if (userGoalArr) {
-      userGoalArr = userGoalArr?.filter(userGoal => userGoal.status === 'created')
-    }
+    userGoalArr = [{
+      label: 'Please select a project',
+      value: ''
+    }]
   }
   let userGoalsDropdown = userGoalArr ? userGoalArr.map(userGoal => {
     return {
@@ -163,10 +164,14 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
   let userTaskArr = userTasks
   if (project) {
     userTaskArr = projectTasks
-  }
-  if (goal) {
-    console.log('userTask', userTaskArr)
-    userTaskArr = userTaskArr?.filter(userTask => userTask.goalId === goal)
+    if (goal) {
+      userTaskArr = userTaskArr?.filter(userTask => userTask.goalId === goal)
+    }
+  } else {
+    userTaskArr = [{
+      label: '',
+      value: ''
+    }]
   }
   let userTasksDropdown = userTaskArr? userTaskArr.map(userTask => {
     return {
