@@ -99,8 +99,8 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
       value: projectUser.project.id
     }
   }) : [{
-    label: '',
-    value: ''
+    label: 'Select a project',
+    value: ask?.projectId || projectId || ''
   }]
 
   useEffect(() => {
@@ -140,7 +140,10 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
     if (projectTaskData) {
       setProjectTasks(projectTaskData.getTasksFromProject)
     }
-  }, [isVisible, project, userTaskData, userGoalData, projectGoalData, projectUserData, projectTaskData])
+    if (ask?.projectId || projectId) {
+      setProject(ask?.projectId || projectId)
+    } 
+  }, [isVisible, project, userTaskData, userGoalData, projectGoalData, projectUserData, projectTaskData, ask?.projectId, projectId])
 
   let userGoalArr = userGoals
   if (project) {

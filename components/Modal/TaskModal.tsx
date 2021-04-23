@@ -42,9 +42,9 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
   } = route
   const [completed, setCompleted] = useState(task && task.status === 'completed')
   const [taskText, setTaskText] = useState((task && task.name) || '')
-  const [project, setProject] = useState((task && task.projectId) || projectId)
+  const [project, setProject] = useState((task && task.projectId) || projectId || '')
   const previousProject = usePrevious(project)
-  const [goal, setGoal] = useState((task && task.goalId) || goalId)
+  const [goal, setGoal] = useState((task && task.goalId) || goalId || '')
   const [priority, setPriority] = useState(task && task.priority)
   const [description, setDescription] = useState((task && task.detail) || '')
   const [privacy, setPrivacy] = useState('public')
@@ -66,9 +66,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
   const previousVisible = usePrevious(isVisible)
   const [getUserProjects, { data: projectUserData, loading:  projectUserLoading, error: projectUserError }] = useLazyQuery(GET_USER_PROJECTS, {
     variables: {
-      userId: user?.id,
-      status: 'created',
-      limit: ACTION_QUERY_LIMIT
+      userId: user?.id
     },
     fetchPolicy: 'network-only'
   })
@@ -83,11 +81,6 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
 
   const [getProjectGoals, {data: projectGoalData}] = useLazyQuery(GET_GOALS_FROM_PROJECT, {
     fetchPolicy: 'network-only',
-    variables: {
-      userId: user?.id,
-      status: 'created',
-      limit: ACTION_QUERY_LIMIT
-    },
   })
 
 
@@ -97,8 +90,8 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
       value: projectUser.project.id
     }
   }) : [{
-    label: '',
-    value: ''
+    label: 'Select a project',
+    value: task?.projectId || projectId || ''
   }]
   useEffect(() => {
     if (isVisible && !previousVisible) {
@@ -110,7 +103,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
         variables: {
           projectId: project,
           status: 'created',
-          limit: 20
+          limit: ACTION_QUERY_LIMIT
         }
       })
     }
@@ -124,7 +117,6 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
       setProjectUsers(projectUserData)
     }
   }, [isVisible, project, userGoalData, projectGoalData, projectUserData])
-
   let userGoalArr = userGoals
 
   if (project) {
@@ -144,7 +136,6 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
     label: '',
     value: ''
   }]
-
   const resetState = useCallback(() => {
     setTaskText('')
     setPriority(null)
