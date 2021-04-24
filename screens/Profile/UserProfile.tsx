@@ -196,6 +196,11 @@ function UserProfile({
     error: userActionError,
     fetchMore: actionFetchMore
   }] = useLazyQuery(GET_USER_ACTIONS, {
+    variables: {
+      userId: finalUserId,
+      limit: 100,
+      status
+    },
     fetchPolicy: 'network-only'
   })
   const [userActionLoading, setUserActionLoading] = useState(userActionDataLoading)
