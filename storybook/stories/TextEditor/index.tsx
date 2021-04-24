@@ -388,7 +388,7 @@ export class RichTextEditor extends React.Component {
   }
 }
 
-const renderSuggestions: (suggestions: Suggestion[], renderStyle, textInputRef) => FC<MentionSuggestionsProps> = (suggestions, renderStyle={}, textInputRef) => (
+const renderSuggestions: (suggestions: Suggestion[], renderStyle, textInputRef, setName) => FC<MentionSuggestionsProps> = (suggestions, renderStyle={}, textInputRef, setName) => (
   {keyword, onSuggestionPress},
 ) => {
   if (keyword == null) {
@@ -397,7 +397,9 @@ const renderSuggestions: (suggestions: Suggestion[], renderStyle, textInputRef) 
   if (keyword === '') {
     suggestions = suggestions.slice(0, 5)
   }
-
+  if (setName) {
+    setName(keyword)
+  }
   return (
     <View style={{
       marginLeft: -spacingUnit * 6.25,
@@ -405,13 +407,6 @@ const renderSuggestions: (suggestions: Suggestion[], renderStyle, textInputRef) 
       ...renderStyle
     }}>
       {suggestions
-        .filter(one => {
-          if (one.username) {
-            return one.username.toLocaleLowerCase().includes(keyword.toLocaleLowerCase())
-          } else if (one.name) {
-            return one.name.toLocaleLowerCase().includes(keyword.toLocaleLowerCase())
-          }
-        })
         .map(element => (
           <Pressable key={element.id} onPress={() => {
             if (textInputRef && textInputRef.current) {
@@ -493,6 +488,7 @@ export const TextEditor = ({ style, renderSuggestionStyle, renderBottom=true, ..
   } = useTextEditor()
 
   // const [users, setUsers] = useState([])
+  const [name, setName] = useState('')
   let textInputRef = createRef()
   const [getAutocompleteUsers, { data: userData, loading: userLoading, error: userError }] = useLazyQuery(GET_AUTOCOMPLETE_USERS, {
     variables: {
@@ -507,7 +503,7 @@ export const TextEditor = ({ style, renderSuggestionStyle, renderBottom=true, ..
   useEffect(() => {
     getAutocompleteUsers({
       variables: {
-        username: ''
+        username: name
       }
     })
     getAutocompleteProjects({
@@ -518,13 +514,14 @@ export const TextEditor = ({ style, renderSuggestionStyle, renderBottom=true, ..
     if (replyName && setReplyName) {
       setContent(content + ' ' + replyName)
     }
-  }, [replyName])
+  }, [replyName, name])
   let userArray, projectArray = []
-  if (userData && userData.getAutocompleteUsers) {
-    userArray = userData.getAutocompleteUsers
+
+  if (userData?.getAutocompleteUsers) {
+    userArray = userData.getAutocompleteUsers || []
   }
-  if (projectData && projectData.getAutocompleteProjects) {
-    projectArray = projectData.getAutocompleteProjects
+  if (projectData?.getAutocompleteProjects) {
+    projectArray = projectData.getAutocompleteProjects || []
   }
 
   return (
@@ -536,13 +533,13 @@ export const TextEditor = ({ style, renderSuggestionStyle, renderBottom=true, ..
         partTypes={[
           {
             trigger: '@',
-            renderSuggestions: renderSuggestions(userArray, renderSuggestionStyle, textInputRef),
+            renderSuggestions: renderSuggestions(userArray || [], renderSuggestionStyle, textInputRef, setName),
             textStyle: {fontWeight: 'bold', color: Blue500},
             isBottomMentionSuggestionsRender: renderBottom
           },
           {
             trigger: '#',
-            renderSuggestions: renderSuggestions(projectArray, renderSuggestionStyle, textInputRef),
+            renderSuggestions: renderSuggestions(projectArray || [], renderSuggestionStyle, textInputRef, setName),
             textStyle: {fontWeight: 'bold', color: Blue500},
             isBottomMentionSuggestionsRender: renderBottom
           },

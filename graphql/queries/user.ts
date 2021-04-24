@@ -59,10 +59,13 @@ export const CHECK_USER_FOLLOWS_BACK = gql`
 export const GET_AUTOCOMPLETE_USERS = gql`
   query GetAutocompleteUsers($username: String!) {
     getAutocompleteUsers(username: $username) {
-      ...PublicUser
+      id
+      firstName
+      lastName
+      username
+      profilePicture
     }
   }
-  ${PublicUserFragment}
 `
 
 export const GET_HOME_FEED = gql`

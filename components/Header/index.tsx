@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { SafeAreaView, View, Pressable, TextInput, StyleSheet } from 'react-native'
+import { SafeAreaView, View, Pressable, TextInput, StyleSheet, Keyboard } from 'react-native'
 import { useRoute, useNavigation } from '@react-navigation/native'
 // import * as Sharing from 'expo-sharing'
 
@@ -33,7 +33,7 @@ const shouldBackPage = (route) => {
   return true
 }
 
-export const SearchBar = ({ searchString, setSearchString, placeholder='' }) => {
+export const SearchBar = ({ searchString, setSearchString, setFocus, placeholder='' }) => {
   return (
     <View style={{
       flexDirection: 'row',
@@ -59,8 +59,26 @@ export const SearchBar = ({ searchString, setSearchString, placeholder='' }) => 
             marginLeft: spacingUnit * 0.5,
             fontSize: 16
           }}
+          onFocus={() => {
+            if (setFocus) {
+              setFocus(true)
+            }
+          }}
+          onBlur={() => {
+            if (setFocus) {
+              setFocus(false)
+            }
+          }}
       />
-      <Cancel color={Grey800} onPress={() => setSearchString('')} />
+      <Cancel color={Grey800} onPress={() => {
+        if (!searchString) {
+          Keyboard.dismiss()
+        }
+        setSearchString('')
+        if (setFocus) {
+          setFocus(false)
+        }
+      }} />
     </View>
   )
 }
@@ -75,7 +93,8 @@ export const Header = ({
   search,
   searchString,
   setSearchString,
-  streak
+  streak,
+  setFocus
 }) => {
   const route = useRoute()
   const navigation = useNavigation()
@@ -120,7 +139,7 @@ export const Header = ({
         :
         <>
         {search ?
-        <SearchBar searchString={searchString} setSearchString={setSearchString} />
+        <SearchBar searchString={searchString} setSearchString={setSearchString} setFocus={setFocus} />
       :
       <Title style={{
         color: Orange,

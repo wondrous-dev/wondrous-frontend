@@ -9,7 +9,7 @@ import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { White, Grey100, Grey800, Grey300,Grey200, Black, Grey550, Grey500 } from '../../constants/Colors'
 import { capitalizeFirstLetter, spacingUnit, wait } from '../../utils/common'
-import { useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import { GET_USERS_AND_PROJECTS } from '../../graphql/queries/search'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SafeImage } from '../../storybook/stories/Image'
@@ -37,6 +37,7 @@ import IdChecker from '../Profile/IdChecker'
 import ReviewPage from '../Review/ReviewPage'
 import { projectTagHash } from '../../constants/projectTag'
 import ProjectDiscussionItem from '../Profile/ProjectDiscussionItem'
+import { CLICK_PROJECT_SEARCH, CLICK_USER_SEARCH } from '../../graphql/mutations/search'
 
 const Stack = createStackNavigator()
 
@@ -63,9 +64,18 @@ const SearchResult = ({ result, project, user }) => {
     description,
     id
   } = result
+  const [clickUserSearch] = useMutation(CLICK_USER_SEARCH)
+  const [clickProjectSearch] = useMutation(CLICK_PROJECT_SEARCH)
+
   return (
-    <Pressable onPress={() => {
+    <Pressable onPress={async () => {
       if (project) {
+        await clickProjectSearch({
+          variables: {
+            searchedProjectId: id,
+            projectName: name
+          }
+        })
         navigation.push('Root', {
           screen: 'Search',
           params: {
@@ -76,6 +86,19 @@ const SearchResult = ({ result, project, user }) => {
           }
         })
       } else if (user) {
+        console.log('what the fuck')
+        try {
+          await clickUserSearch({
+            variables: {
+              searchedUserId: id,
+              firstName,
+              lastName,
+              username
+            }
+          })
+        } catch (err) {
+          console.log('EERR', err)
+        }
         navigation.push('Root', {
           screen: 'Search',
           params: {
@@ -252,10 +275,12 @@ function DefaultSearch({
   const { data: searchDataResp, loading: searchDataLoading, error: searchDataError} = useQuery(GET_USERS_AND_PROJECTS, {
     variables: {
       searchString
-    }
+    },
+    fetchPolicy: 'network-only'
   })
   const [newestProjects, setNewestProjects] = useState([])
   const [refreshing, setRefreshing] = useState(false)
+  const [focus, setFocus] = useState(false)
   const {
     data: newestProjectDataResp,
     loading: newestProjectLoading,
@@ -284,15 +309,16 @@ function DefaultSearch({
     }
     wait(2000).then(() => setRefreshing(false))
   }, [])
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     <SafeAreaView style={{
       backgroundColor: White,
       flex: 1
     }}>
-      <Header search={true} searchString={searchString} setSearchString={setSearchString} />
+      <Header search={true} searchString={searchString} setSearchString={setSearchString} setFocus={setFocus} />
       {
-        searchString && searchData && searchData.projects && searchData.users
+        focus && searchData && searchData.projects && searchData.users
         ?
         <>
         {
