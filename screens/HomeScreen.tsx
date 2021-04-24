@@ -60,13 +60,15 @@ function HomeScreen({
       const cleanedData = snakeToCamelObj(data)
       // Any custom logic to see whether the URL needs to be handled
       //...
-      getNotificationPressFunction({
-        notificationInfo: cleanedData,
-        navigation,
-        tab: 'Notifications',
-        notifications: null,
-        push: true
-      })
+      if (navigation) {
+        getNotificationPressFunction({
+          notificationInfo: cleanedData,
+          navigation,
+          tab: 'Notifications',
+          notifications: null,
+          push: true
+        })
+      }
       // Let React Navigation handle the URL
       // listener(url)
     });
@@ -76,13 +78,15 @@ function HomeScreen({
       const cleanedData = snakeToCamelObj(data)
       // Any custom logic to see whether the URL needs to be handled
       //...
-      getNotificationPressFunction({
-        notificationInfo: cleanedData,
-        navigation,
-        tab: 'Notifications',
-        notifications: null,
-        push: true
-      })
+      if (navigation) {
+        getNotificationPressFunction({
+          notificationInfo: cleanedData,
+          navigation,
+          tab: 'Notifications',
+          notifications: null,
+          push: true
+        })
+      }
       // Let React Navigation handle the URL
       // listener(url)
     });
@@ -94,11 +98,13 @@ function HomeScreen({
     }
   }
   React.useEffect(() => {
-    registerNotifications()
+    if (navigation) {
+      registerNotifications()
+    }
     if (data && data.getLoggedinUser) {
       redirectUser(data.getLoggedinUser, navigation)
     }
-  }, [data])
+  }, [data, navigation])
 
   return (
     <SafeAreaView style={styles.container}>

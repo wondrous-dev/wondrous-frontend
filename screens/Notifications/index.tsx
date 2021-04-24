@@ -12,7 +12,7 @@ import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { White, Grey300, Black, Grey800, Blue100 } from '../../constants/Colors'
 import { GET_NOTIFICATIONS, GET_FEED_ITEM_FOR_FEED_COMMENT, GET_FEED_ITEM, GET_POST_ITEM, GET_UNREAD_NOTIFICATION_COUNT, GET_PROJECT_INVITE_FROM_NOTIFICATION, GET_PROJECT_FOLLOW_REQUEST, GET_PROJECT_DISCUSSION, GET_PROJECT_DISCUSSION_FROM_COMMENT } from '../../graphql/queries'
-import { MARK_NOTIFICATION_AS_VIEWED, ACCEPT_PROJECT_INVITE, APPROVE_FOLLOW_REQUEST } from '../../graphql/mutations'
+import { MARK_NOTIFICATION_AS_VIEWED, ACCEPT_PROJECT_INVITE, APPROVE_FOLLOW_REQUEST, MARK_ALL_NOTIFICATIONS_AS_VIEWED } from '../../graphql/mutations'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import LogoImage from '../../assets/images/logo.png'
 import { RegularText } from '../../storybook/stories/Text'
@@ -1196,13 +1196,28 @@ function NotificationScreen({
   navigation,
   route
 }: StackScreenProps<RootStackParamList, 'Dashboard'>) {
-
+  const [clearAllNotifications] = useMutation(MARK_ALL_NOTIFICATIONS_AS_VIEWED, {
+    refetchQueries: [
+      { query: GET_UNREAD_NOTIFICATION_COUNT},
+      { query: GET_NOTIFICATIONS }
+    ]
+  })
   return (
     <SafeAreaView style={{
       backgroundColor: White,
       flex: 1
     }}>
-      <Header noGoingBack={true} />
+      <Header noGoingBack={true} rightButton={{
+        style: {
+          borderWidth: 1,
+          borderColor: Grey800
+        },
+        textColor: Grey800,
+        text: 'Clear all',
+        onPress: () => {
+          clearAllNotifications()
+        }
+      }} />
       <AuthFeed route={route} />
     </SafeAreaView>
   )

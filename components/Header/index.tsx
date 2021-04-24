@@ -64,11 +64,6 @@ export const SearchBar = ({ searchString, setSearchString, setFocus, placeholder
               setFocus(true)
             }
           }}
-          onBlur={() => {
-            if (setFocus) {
-              setFocus(false)
-            }
-          }}
       />
       <Cancel color={Grey800} onPress={() => {
         if (!searchString) {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { SafeAreaView, FlatList, View, TouchableWithoutFeedback, Keyboard, Image, Pressable, StyleSheet, RefreshControl } from 'react-native'
+import { SafeAreaView, ScrollView, FlatList, View, TouchableWithoutFeedback, Keyboard, Image, Pressable, StyleSheet, RefreshControl } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
 
 import SearchIcon from '../../assets/images/bottomNav/search'
@@ -323,7 +323,8 @@ function DefaultSearch({
         <>
         {
           searchData.projects.length > 0 || searchData.users.length > 0 ?
-          <View style={{
+          <Pressable onPress={() => Keyboard.dismiss()}>
+          <ScrollView style={{
             marginTop: spacingUnit * 2,
           }}>
             {
@@ -359,7 +360,8 @@ function DefaultSearch({
                 )
               })
             }
-          </View>
+          </ScrollView>
+          </Pressable>
           :
           <Paragraph color={Grey800} style={{
             paddingLeft: spacingUnit * 2,

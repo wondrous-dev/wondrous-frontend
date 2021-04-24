@@ -25,3 +25,11 @@ export const MARK_NOTIFICATION_AS_VIEWED = gql`
     }
   }
 `
+
+export const MARK_ALL_NOTIFICATIONS_AS_VIEWED = gql`
+  mutation {
+    markAllNotificationAsViewed {
+      success
+    }
+  }
+`
