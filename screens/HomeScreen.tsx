@@ -78,15 +78,15 @@ function HomeScreen({
       const cleanedData = snakeToCamelObj(data)
       // Any custom logic to see whether the URL needs to be handled
       //...
-      if (navigation) {
-        getNotificationPressFunction({
-          notificationInfo: cleanedData,
-          navigation,
-          tab: 'Notifications',
-          notifications: null,
-          push: true
-        })
-      }
+      // if (navigation) {
+      //   getNotificationPressFunction({
+      //     notificationInfo: cleanedData,
+      //     navigation,
+      //     tab: 'Notifications',
+      //     notifications: null,
+      //     push: true
+      //   })
+      // }
       // Let React Navigation handle the URL
       // listener(url)
     });

@@ -80,6 +80,7 @@ function UserProfile({
     initialSection
   } = route.params
   const [status, setStatus] = useState('created')
+  const prevStatus = usePrevious(status)
   const [section, setSection] = useState(initialSection || 'feed')
   const prevSection = usePrevious(section)
   const [refreshing, setRefreshing] = useState(false)
@@ -190,19 +191,14 @@ function UserProfile({
   })
 
   const [getUserActions, {
-    loading: userActionLoading,
+    loading: userActionDataLoading,
     data: userActionData,
     error: userActionError,
     fetchMore: actionFetchMore
   }] = useLazyQuery(GET_USER_ACTIONS, {
-    variables: {
-      userId: finalUserId,
-      limit: 100,
-      status
-    },
     fetchPolicy: 'network-only'
   })
-
+  const [userActionLoading, setUserActionLoading] = useState(userActionDataLoading)
   const [getUserAsks, {
     loading: userAsksLoading,
     data: userAsksData,
@@ -263,7 +259,8 @@ function UserProfile({
         variables: {
           userId: finalUserId,
           status
-        }
+        },
+        fetchPolicy: 'network-only',
       })
     } else if (asksSelected) {
       getUserAsks({
@@ -281,16 +278,16 @@ function UserProfile({
   }, [])
 
   useEffect(() => {
-      console.log('actions', status)
-      if (actionSelected && !isEqual(section, prevSection)) {
-        console.log('actions', status)
+      if (actionSelected && (!isEqual(section, prevSection) || !isEqual(status, prevStatus))) {
+        setActions([])
         getUserActions({
           variables: {
             userId: finalUserId,
-            status
+            status,
+            limit: 100,
           }
         })
-      } else if (asksSelected && !isEqual(section, prevSection)) {
+      } else if (asksSelected && (!isEqual(section, prevSection) || !isEqual(status, prevStatus))) {
         getUserAsks({
           variables: {
             userId: finalUserId,
@@ -303,7 +300,6 @@ function UserProfile({
       if (userOwned && !user && loggedInUser) {
           setUser(loggedInUser)
       } else {
-  
         if (finalUserId && !user) {
           fetchUser({ userId: finalUserId, setUser })
         }
@@ -323,6 +319,7 @@ function UserProfile({
       }
       if (userActionData && userActionData.getUserActions) {
         if (!isEqual(userActionData?.getUserActions, prevActions)) {
+          setUserActionLoading(false)
           setActions(fetchActions(userActionData?.getUserActions, status))
         }
       }
@@ -678,7 +675,7 @@ function UserProfile({
             // paddingLeft: spacingUnit * 2,
             // paddingRight: spacingUnit * 2
           }}>
-          <FlatList    refreshControl={
+          <FlatList refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(feedSelected, actionSelected, asksSelected)} />
           }
           ItemSeparatorComponent={() => (
@@ -740,22 +737,22 @@ function UserProfile({
                 }
               
             } else if (section === 'action'){
-              if (actionFetchMore) {
-                try {
-                  const result = await actionFetchMore({
-                    variables: {
-                      offset: actions?.length
-                    }
-                  })
+              // if (actionFetchMore) {
+              //   try {
+              //     const result = await actionFetchMore({
+              //       variables: {
+              //         offset: actions?.length
+              //       }
+              //     })
 
-                  if (result?.data?.getUserActions) {
-                    const newActions = fetchActions(result.data.getUserActions, status, true)
-                    setActions([...actions, ...newActions])
-                  }
-                } catch (err) {
-                  console.log('err fetching more actions', err)
-                }
-              }
+              //     if (result?.data?.getUserActions) {
+              //       const newActions = fetchActions(result.data.getUserActions, status, true)
+              //       setActions([...actions, ...newActions])
+              //     }
+              //   } catch (err) {
+              //     console.log('err fetching more actions', err)
+              //   }
+              // }
             } else if (section === 'asks'){
               if (askFetchMore) {
                 try {

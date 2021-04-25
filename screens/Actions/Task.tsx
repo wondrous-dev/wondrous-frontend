@@ -4,7 +4,7 @@ import { useLazyQuery, useMutation } from '@apollo/client'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import { Grey800, Purple, Red400, White, Black, Blue400, Grey450, Green400 } from '../../constants/Colors'
+import { Grey800, Purple, Red400, White, Black, Blue400, Grey450, Green400, Grey300 } from '../../constants/Colors'
 import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
 import { pageStyles, sortPriority, ReactionFeed } from './common'
 import { COMPLETE_TASK, UPDATE_TASK } from '../../graphql/mutations'
