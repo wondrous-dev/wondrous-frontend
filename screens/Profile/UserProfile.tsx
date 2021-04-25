@@ -197,7 +197,7 @@ function UserProfile({
   }] = useLazyQuery(GET_USER_ACTIONS, {
     variables: {
       userId: finalUserId,
-      limit: 10,
+      limit: 100,
       status
     },
     fetchPolicy: 'network-only'
@@ -326,7 +326,7 @@ function UserProfile({
           setActions(fetchActions(userActionData?.getUserActions, status))
         }
       }
-      if (userAsksData && userActionData.getUserAsks) {
+      if (userAsksData && userAsksData.getUserAsks) {
         if (!isEqual(userAsksData?.getUserAsks, prevAsks)) {
           setAsks(userAsksData?.getUserAsks)
         }

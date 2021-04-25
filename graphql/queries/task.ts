@@ -12,7 +12,7 @@ export const GET_TASK_BY_ID = gql`
 `
 
 export const GET_TASKS_FROM_GOAL = gql`
-  query getTasksFromGoal($goalId: ID!, $status: string) {
+  query getTasksFromGoal($goalId: ID!, $status: String) {
     getTasksFromGoal(goalId: $goalId, status: $status) {
       ...PublicTask
     }
