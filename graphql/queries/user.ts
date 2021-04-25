@@ -115,6 +115,8 @@ export const GET_USER_ACTIONS = gql`
     getUserActions(userId: $userId, status: $status, limit: $limit, offset: $offset) {
       goals {
         ...AdditionalGoal
+        taskCount
+        completedTaskCount
       }
       tasks {
         ...PublicTask

@@ -22,6 +22,7 @@ import GoalIcon from '../../assets/images/goal/standalone'
 import TaskIcon from '../../assets/images/task/standalone'
 import AskIcon from '../../assets/images/ask/standalone'
 import { Card, ReviewCard } from '../../storybook/stories/Card' 
+import { GoalCard } from '../../storybook/stories/Card/goal'
 import UserPlaceholder from '../../assets/images/user/placeholder'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { GET_USER_STREAK } from '../../graphql/queries'
@@ -221,7 +222,7 @@ export const SectionsHeader = () => {
           <Paragraph color={discussionSelected ? Blue400 : Black } style={{
             paddingRight: spacingUnit
           }}>
-            Discussion
+            Feedback
           </Paragraph>
         </View>
       </Pressable>
@@ -588,28 +589,48 @@ export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRigh
 
   const owned = (item.ownerId === (loggedInUser && loggedInUser.id) ) || (item.userId === (loggedInUser && loggedInUser.id))
   const swipeEnabled = !!(owned) && (item.status !== 'completed' && item.status !== 'archived')
-
   return (
     <View key={item.id} style={{
       marginLeft: spacingUnit * 2,
       marginRight: spacingUnit * 2
     }}>
-      <Card
-      key={item.id}
-      navigation={navigation}
-      route={route}
-      redirect={redirect}
-      redirectParams={redirectParams}
-      type={type}
-      icon={icon}
-      iconSize={iconSize}
-      profilePicture={user && (user.thumbnailPicture || user.profilePicture)}
-      item={item}
-      swipeEnabled={swipeEnabled}
-      itemRefs={itemRefs && itemRefs.current}
-      onSwipeRight={newOnSwipeRight}
-      onSwipeLeft={newOnSwipeLeft}
-      />
+      {
+        type === 'goal'
+        ?
+        <GoalCard
+        key={item.id}
+        navigation={navigation}
+        route={route}
+        redirect={redirect}
+        redirectParams={redirectParams}
+        type={type}
+        icon={icon}
+        iconSize={iconSize}
+        profilePicture={user && (user.thumbnailPicture || user.profilePicture)}
+        item={item}
+        itemRefs={itemRefs && itemRefs.current}
+        onSwipeRight={newOnSwipeRight}
+        onSwipeLeft={newOnSwipeLeft}
+        swipeEnabled={swipeEnabled}
+        />
+        :
+        <Card
+        key={item.id}
+        navigation={navigation}
+        route={route}
+        redirect={redirect}
+        redirectParams={redirectParams}
+        type={type}
+        icon={icon}
+        iconSize={iconSize}
+        profilePicture={user && (user.thumbnailPicture || user.profilePicture)}
+        item={item}
+        swipeEnabled={swipeEnabled}
+        itemRefs={itemRefs && itemRefs.current}
+        onSwipeRight={newOnSwipeRight}
+        onSwipeLeft={newOnSwipeLeft}
+        />
+      }
     </View>
   )
 }
