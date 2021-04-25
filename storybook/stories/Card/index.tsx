@@ -6,17 +6,14 @@ import {
   StyleSheet,
   Platform,
   UIManager,
-  Dimensions,
   Pressable,
-  LayoutAnimation
 } from 'react-native'
-import {   TouchableWithoutFeedback  } from "react-native-gesture-handler"
-import Animated, { withDecay } from "react-native-reanimated"
+import { TouchableWithoutFeedback } from "react-native-gesture-handler"
+import Animated from "react-native-reanimated"
 
 import { Grey400, Blue400, Green400, White, Grey450, Purple, Red400, Yellow300, Grey300, Grey800 } from '../../../constants/Colors'
 import CompleteSvg from '../../../assets/images/complete'
 import ArchiveSvg from '../../../assets/images/archive'
-import { SafeImage, SvgImage } from '../Image'
 import { RegularText, TinyText, Paragraph } from '../Text'
 import { formatDueDate, redDate } from '../../../utils/date'
 import { spacingUnit, renderMentionString } from '../../../utils/common'
@@ -28,7 +25,6 @@ import { Tag } from '../../../components/Tag'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import apollo from '../../../services/apollo'
 import { UPDATE_GOAL, UPDATE_TASK, UPDATE_ASK } from '../../../graphql/mutations'
-import { cache } from 'webpack'
 import { GetReviewIcon } from '../../../screens/Review/utils'
 import { format } from 'date-fns'
 import RightCaret from '../../../assets/images/right-caret'

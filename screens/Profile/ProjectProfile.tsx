@@ -188,6 +188,7 @@ function ProjectProfile({
   }] = useLazyQuery(GET_PROJECT_ACTIONS, {
     variables: {
       projectId,
+      limit: 100,
       status
     },
     fetchPolicy: 'network-only'

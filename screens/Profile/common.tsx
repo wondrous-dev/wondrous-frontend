@@ -31,21 +31,23 @@ import { moderateScale } from '../../utils/scale'
 import { sortByDueDate } from '../../utils/date'
 
 export const fetchActions = (actions, status, fetchMore) => {
-  const userActions = actions
-  if ((!fetchMore && userActions && userActions.goals?.length === 0 && userActions.tasks?.length === 0) && status === 'created') {
+  if ((!fetchMore && actions && actions.goals?.length === 0 && actions.tasks?.length === 0) && status === 'created') {
     return ['none']
   } else {
-    if (userActions && userActions?.goals && userActions?.tasks) {
-      return sortByDueDate([
-        ...userActions.goals,
-        ...userActions.tasks
-      ], status === 'completed')
-    } else if (userActions && userActions.goals) {
-      return sortByDueDate(userActions.goals, status === 'completed')
-    } else if ( userActions && userActions.tasks) {
-      return sortByDueDate(userActions?.tasks, status === 'completed')
+    let finalArr = []
+    if (actions?.goals?.length > 0) {
+      finalArr = sortByDueDate([...actions.goals])
     }
-    return []
+
+    if (actions?.tasks?.length > 0) {
+      finalArr.push({
+        name: 'Unassigned',
+        __typename: 'Goal',
+        tasks: actions.tasks
+      })
+    }
+    console.log('finalArr', finalArr)
+    return finalArr
   }
 }
 export const getPinnedFeed = (initialFeed) => {
