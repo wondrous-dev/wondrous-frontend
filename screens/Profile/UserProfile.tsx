@@ -259,8 +259,7 @@ function UserProfile({
         variables: {
           userId: finalUserId,
           status
-        },
-        fetchPolicy: 'network-only',
+        }
       })
     } else if (asksSelected) {
       getUserAsks({
