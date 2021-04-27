@@ -87,8 +87,7 @@ function UserProfile({
   const [isModalVisible, setModalVisible] = useState(false)
   const [userFeed, setUserFeed] = useState([])
   const prevFeed = usePrevious(userFeed)
-  const [actions, setActions] = useState([])
-  const prevActions = usePrevious(actions)
+
   const [reviews, setReviews] = useState([])
   const prevReviews = usePrevious(reviews)
   const [asks, setAsks] = useState([])
@@ -282,8 +281,8 @@ function UserProfile({
   }, [])
 
   useEffect(() => {
-      if (actionSelected && (!isEqual(section, prevSection) || !isEqual(status, prevStatus))) {
-        setActions([])
+
+      if (actionSelected) {
         getUserActions({
           variables: {
             userId: finalUserId,
@@ -321,12 +320,6 @@ function UserProfile({
           setReviews(userReviewData.getReviewsFromUser)
         }
       }
-      if (userActionData && userActionData.getUserActions) {
-        if (!isEqual(userActionData?.getUserActions, prevActions)) {
-          setUserActionLoading(false)
-          setActions(fetchActions(userActionData?.getUserActions, status))
-        }
-      }
       if (userAsksData && userAsksData.getUserAsks) {
         if (!isEqual(userAsksData?.getUserAsks, prevAsks)) {
           setAsks(userAsksData?.getUserAsks)
@@ -342,14 +335,15 @@ function UserProfile({
       if (followBackData) {
         setFollowBack(followBackData?.doesUserFollowBack)
       } 
-  }, [user && (user.thumbnailPicture || user.profilePicture), feedSelected, actionSelected, asksSelected, finalUserId, status, userFeedData?.getUserFeed, userReviewData, userOwned, followBackData, userActionData, userAsksData ])
+  }, [user && (user.thumbnailPicture || user.profilePicture), feedSelected, actionSelected, asksSelected, finalUserId, status, userFeedData?.getUserFeed, userReviewData, userOwned, followBackData, userAsksData ])
 
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo
   const getCorrectData = section => {
     if (section === 'feed') {
       return getPinnedFeed(userFeed)
     } else if (section === 'action') {
-      return actions
+      const actions = userActionData && userActionData.getUserActions
+      return fetchActions(actions, status)
     } else if (section === 'asks') {
       const asks = userAsksData && userAsksData.getAsksFromUser
  
@@ -383,6 +377,7 @@ function UserProfile({
     userAsksData,
     loggedInUser
   })
+
   const onSwipeRight = (item, type) => {
     onSwipe({
       item,
@@ -740,24 +735,7 @@ function UserProfile({
                   }
                 }
               
-            } else if (section === 'action'){
-              // if (actionFetchMore) {
-              //   try {
-              //     const result = await actionFetchMore({
-              //       variables: {
-              //         offset: actions?.length
-              //       }
-              //     })
-
-              //     if (result?.data?.getUserActions) {
-              //       const newActions = fetchActions(result.data.getUserActions, status, true)
-              //       setActions([...actions, ...newActions])
-              //     }
-              //   } catch (err) {
-              //     console.log('err fetching more actions', err)
-              //   }
-              // }
-            } else if (section === 'asks'){
+            } else if (section === 'asks') {
               if (askFetchMore) {
                 try {
                   const result = await askFetchMore({

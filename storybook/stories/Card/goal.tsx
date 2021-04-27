@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { 
   View,
   Text,
@@ -16,14 +16,14 @@ import { Orange, Blue400, Green400, White, Grey400, Grey450, Purple, Red400, Yel
 import CompleteSvg from '../../../assets/images/complete'
 import ArchiveSvg from '../../../assets/images/archive'
 import { RegularText, TinyText, Paragraph } from '../Text'
-import { formatDueDate, redDate } from '../../../utils/date'
+import { formatDueDate, redDate, sortByDueDate } from '../../../utils/date'
 import { spacingUnit, renderMentionString } from '../../../utils/common'
 import PriorityFlame from '../../../assets/images/modal/priority'
 import { FullScreenGoalModal } from '../../../components/Modal/GoalModal'
 import { Tag } from '../../../components/Tag'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import apollo from '../../../services/apollo'
-import { UPDATE_GOAL, UPDATE_TASK, UPDATE_ASK } from '../../../graphql/mutations'
+import { UPDATE_GOAL, UPDATE_TASK, UPDATE_ASK, CREATE_TASK } from '../../../graphql/mutations'
 import { GetReviewIcon } from '../../../screens/Review/utils'
 import { format } from 'date-fns'
 import RightCaret from '../../../assets/images/right-caret'
@@ -32,7 +32,7 @@ import { GET_TASKS_FROM_GOAL } from '../../../graphql/queries'
 import TaskIcon from '../../../assets/images/task/standalone'
 import { Card } from './index'
 import { useMe } from '../../../components/withAuth'
-
+import { FullScreenTaskModal } from '../../../components/Modal/TaskModal'
 
 export const GoalCard = ({
   icon,
@@ -42,7 +42,6 @@ export const GoalCard = ({
   redirectParams,
   route,
   item,
-  itemRefs,
   onSwipeRight,
   onSwipeLeft,
   swipeEnabled,
@@ -62,16 +61,25 @@ export const GoalCard = ({
   const taskCount = item?.taskCount
   const completedTaskCount = item?.completedTaskCount
   const [tasks, setTasks] = useState(item?.tasks)
+  const itemRefs = useRef(new Map())
+  const [createTask] = useMutation(CREATE_TASK, {
+    onCompleted: () => {
+      setTasks(sortByDueDate([...tasks, createTask]))
+    }
+  })
+
   const [getTasksFromGoal, {
     data: goalTasksData
   }] = useLazyQuery(GET_TASKS_FROM_GOAL, {
     fetchPolicy: 'network-only',
     onCompleted: (goalTasksData) => {
+      console.log('what the fuck')
       if (goalTasksData) {
         setTasks(goalTasksData?.getTasksFromGoal)
       }
     }
   })
+
   const sortPriority = () => {
     switch(priority) {
       case 'high':
@@ -82,7 +90,9 @@ export const GoalCard = ({
         return Blue400
     }
   }
+
   const isRedDate = redDate(dueDate)
+
   useEffect(() => {
     if (item?.tasks) {
       setTasks(item?.tasks)
@@ -94,18 +104,22 @@ export const GoalCard = ({
   }
 
   const showGoals = () => {
-    if (!clicked) {
-      getTasksFromGoal({
-        variables: {
-          goalId: item?.id,
-          status
-        }
-      })
+    if (taskCount) {
+      if (!clicked) {
+        getTasksFromGoal({
+          variables: {
+            goalId: item?.id,
+            status
+          }
+        })
+      }
+      setClicked(!clicked)
     }
-    setClicked(!clicked)
   }
   return (
       <View>
+      <FullScreenTaskModal setModalVisible={setTaskModalVisible} isVisible={taskModalVisible} taskMutation={createTask} goalId={item?.id} projectId={item?.projectId} />
+
         <TouchableWithoutFeedback onPress={showGoals}>
         <View style={[styles.row, { 
           borderRadius: spacingUnit,
@@ -200,7 +214,7 @@ export const GoalCard = ({
               </View>
               <View>
                 {
-                  item.item && item.item.status === 'completed' &&
+                  item?.status === 'completed' &&
                   <Tag color={Green400} style={{
                   }}>
                     <RegularText color={White}>
@@ -209,7 +223,7 @@ export const GoalCard = ({
                   </Tag>
                 }
                 {
-                  item.item && item.item.status === 'archived' &&
+                  item?.status === 'archived' &&
                   <Tag color={Grey300}>
                     <RegularText color={Grey800}>
                       Archived
@@ -259,21 +273,24 @@ export const GoalCard = ({
                 </Paragraph>
               </Pressable>
               :
-              <Pressable onPress={() => setTaskModalVisible(true)} style={{
-                flexDirection: 'row',
-                marginTop: spacingUnit,
-                alignItems: 'center',
-                flex: 1,
-                alignContent: 'center',
-                alignSelf: 'center'
-              }}>
-                <Paragraph color={Blue400}>
-                  +{` `}
-                </Paragraph>
+              (
+                <>
+                {
+                  completedAt
+                  ?
+                  null
+                  :
+                  <Pressable onPress={() => setTaskModalVisible(true)} style={styles.addTask}>
                   <Paragraph color={Blue400}>
-                    Add task
+                    +{` `}
                   </Paragraph>
-              </Pressable>
+                    <Paragraph color={Blue400}>
+                      Add task
+                    </Paragraph>
+                </Pressable>
+                }
+                </>
+              )
             }
           </View>
       </TouchableWithoutFeedback>
@@ -285,12 +302,26 @@ export const GoalCard = ({
           borderTopWidth: 0,
           marginTop: -spacingUnit * 2,
           borderRadius: spacingUnit,
-          paddingTop: spacingUnit,
           marginBottom: spacingUnit * 2,
           backgroundColor: Grey100,
           borderTopLeftRadius: 0,
           borderTopRightRadius: 0
         }}>
+           <Pressable onPress={() => setTaskModalVisible(true)} style={{
+             ...styles.addTask,
+             alignSelf: 'flex-start',
+             marginLeft: spacingUnit * 2
+           }}>
+                <Paragraph color={Blue400}>
+                  +{` `}
+                </Paragraph>
+                  <Paragraph color={Blue400}>
+                    Add task
+                  </Paragraph>
+            </Pressable>
+          <View style={{
+            marginTop: spacingUnit
+          }}>
           {
             tasks && tasks?.map(task => {
               const icon = TaskIcon
@@ -305,8 +336,16 @@ export const GoalCard = ({
                   }
                 }
               }
-              const newOnSwipeRight = () => onSwipeRight(item, 'task')
-              const newOnSwipeLeft = () => onSwipeLeft(item, 'task')
+              const newOnSwipeRight = () => {
+                const newTasks = tasks.filter(existingTask => existingTask?.id !== task?.id)
+                setTasks(newTasks)
+                onSwipeRight(task, 'task')
+              }
+              const newOnSwipeLeft = () => {
+                const newTasks = tasks.filter(existingTask => existingTask?.id !== task?.id)
+                setTasks(newTasks)
+                onSwipeLeft(task, 'task')
+              }
               return (
                 <View key={task?.id} style={{
                   flex: 1,
@@ -314,7 +353,7 @@ export const GoalCard = ({
                   marginRight: spacingUnit * 2
                 }}>
                   <Card
-                    key={item.id}
+                    key={task?.id}
                     navigation={navigation}
                     route={route}
                     redirect={redirect}
@@ -323,7 +362,7 @@ export const GoalCard = ({
                     icon={icon}
                     iconSize={iconSize}
                     profilePicture={user && (user.thumbnailPicture || user.profilePicture)}
-                    item={item}
+                    item={task}
                     swipeEnabled={swipeEnabled}
                     itemRefs={itemRefs && itemRefs.current}
                     onSwipeRight={newOnSwipeRight}
@@ -333,6 +372,7 @@ export const GoalCard = ({
               )
             })
           }
+          </View>
         </View>
       }
 

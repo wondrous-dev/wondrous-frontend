@@ -47,7 +47,6 @@ export const fetchActions = (actions, status, fetchMore) => {
         tasks: actions.tasks
       })
     }
-    console.log('finalArr', finalArr)
     return finalArr
   }
 }
@@ -609,8 +608,8 @@ export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRigh
         profilePicture={user && (user.thumbnailPicture || user.profilePicture)}
         item={item}
         itemRefs={itemRefs && itemRefs.current}
-        onSwipeRight={newOnSwipeRight}
-        onSwipeLeft={newOnSwipeLeft}
+        onSwipeRight={onSwipeRight}
+        onSwipeLeft={onSwipeLeft}
         swipeEnabled={swipeEnabled}
         />
         :
@@ -766,6 +765,7 @@ export const onSwipe =({
   setTaskCompleteModal,
   setGoalCompleteModal
 }) => {
+  console.log('task', item, type)
   if (setConfetti) {
     const formattedDueDate = new Date(item && item.dueDate)
     const newDate = new Date()

@@ -10,6 +10,14 @@ export const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
+  addTask: {
+    flexDirection: 'row',
+    marginTop: spacingUnit,
+    alignItems: 'center',
+    flex: 1,
+    alignContent: 'center',
+    alignSelf: 'center'
+  },
   row: {
     flexDirection: "row",
     flex: 1,
