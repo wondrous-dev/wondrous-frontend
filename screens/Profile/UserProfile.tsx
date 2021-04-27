@@ -7,7 +7,10 @@ import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import * as Linking from 'expo-linking'
 import isEqual from 'lodash.isequal'
 import ConfettiCannon from 'react-native-confetti-cannon'
+import Toast from 'react-native-toast-message'
 
+import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
+import { FullScreenAskModal } from '../../components/Modal/AskModal'
 import { withAuth, useMe } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
@@ -16,7 +19,7 @@ import { spacingUnit, wait, isEmptyObject, usePrevious } from '../../utils/commo
 import BottomTabNavigator from '../../navigation/BottomTabNavigator'
 import { UploadImage, SafeImage } from '../../storybook/stories/Image'
 import { WONDER_BASE_URL } from '../../constants/'
-import { UPDATE_USER, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_USER, UNFOLLOW_USER } from '../../graphql/mutations'
+import { UPDATE_USER, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_USER, UNFOLLOW_USER, CREATE_GOAL, CREATE_ASK } from '../../graphql/mutations'
 import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GET_ASKS_FROM_USER, WHOAMI, GET_USER_STREAK, CHECK_USER_FOLLOWS_BACK } from '../../graphql/queries'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { PrimaryButton, SecondaryButton } from '../../storybook/stories/Button'
@@ -28,7 +31,6 @@ import {
   SectionsHeader,
   DetermineUserProgress,
   renderProfileItem,
-  StatusSelector,
   onSwipe,
   getPinnedFeed,
   fetchActions
@@ -44,6 +46,8 @@ import Settings from '../../assets/images/settings'
 import { SettingsModal } from '../../components/Modal/SettingsModal'
 import { ContactsModal } from './ContactsModal'
 import ProfilePictureModal from './ProfilePictureModal'
+import { StatusSelector } from '../../components/Status/StatusSelector'
+import AddIcon from '../../assets/images/add-dark-button'
 
 const getUserId = ({ route, user }) => {
   if (route && route.params && route.params.userId) {
@@ -94,6 +98,8 @@ function UserProfile({
   const prevAsks = usePrevious(asks)
   const [taskCompleteModal, setTaskCompleteModal] = useState(false)
   const [goalCompletemodal, setGoalCompleteModal] = useState(false)
+  const [goalModalVisible, setGoalModalVisible] = useState(false)
+  const [askModalVisible, setAskModalVisible] = useState(false)
   const [loading, setLoading] = useState(false)
   const [following, setFollowing] = useState(loggedInUser && loggedInUser.usersFollowing && loggedInUser.usersFollowing.includes(finalUserId))
   const [confetti, setConfetti] = useState(false)
@@ -121,6 +127,7 @@ function UserProfile({
       })
     }
   })
+
     const [unfollowUser] = useMutation(UNFOLLOW_USER, {
     variables: {
       followingId: finalUserId
@@ -202,6 +209,30 @@ function UserProfile({
     },
     fetchPolicy: 'network-only'
   })
+
+  const [createGoal] = useMutation(CREATE_GOAL, {
+    refetchQueries: [
+      { query: GET_USER_STREAK,
+      variables: {
+        userId: user && user.id
+      } },
+      {
+        query: GET_USER_ACTIONS,
+        variables: {
+          userId: finalUserId,
+          limit: 100,
+          status: 'created'
+        }
+      }
+    ],
+    onCompleted: () => {
+      Toast.show({
+        text1: 'Goal successfully created',
+        position: 'bottom',
+      })
+    }
+  })
+
   const [userActionLoading, setUserActionLoading] = useState(userActionDataLoading)
   const [getUserAsks, {
     loading: userAsksLoading,
@@ -216,6 +247,23 @@ function UserProfile({
     fetchPolicy: 'network-only'
   })
 
+  const [createAsk] = useMutation(CREATE_ASK, {
+    refetchQueries: [
+      {
+        query: GET_ASKS_FROM_USER,
+        variables: {
+          userId: finalUserId,
+          status: 'created'
+        }
+      }
+    ],
+    onCompleted: () => {
+      Toast.show({
+        text1: 'Ask successfully created',
+        position: 'bottom',
+      })
+    }
+  })
   const {
     data: userReviewData,
     fetchMore: reviewFetchMore,
@@ -613,7 +661,30 @@ function UserProfile({
               <SectionsHeader />
               {
                 (actionSelected || asksSelected) &&
-                <StatusSelector setStatus={setStatus} status={status} />
+                <View style={{
+                  alignItems: 'center',
+                  flexDirection: 'row'
+                }}>
+                <StatusSelector setStatus={setStatus} status={status} section={section} />
+                {
+                  userOwned &&
+                  <Pressable onPress={() => {
+                    if  (actionSelected) {
+                      setGoalModalVisible(true)
+                    } else if (asksSelected) {
+                      setAskModalVisible(true)
+                    }
+                  }} style={{
+                    marginTop: spacingUnit * 2,
+                    marginLeft: -spacingUnit * 2
+                  }}>
+                      <AddIcon style={{
+                        width: spacingUnit * 7,
+                        height: spacingUnit * 7
+                      }} />
+                  </Pressable>
+                }
+                </View>
               }
               {
                 reviewSelected &&
@@ -644,6 +715,8 @@ function UserProfile({
         <TaskCongratsModal user={user} isVisible={taskCompleteModal} setModalVisible={setTaskCompleteModal} />
         <SettingsModal isVisible={settingsModal} setModalVisible={setSettingsModal} />
         <ContactsModal isVisible={contactsModal} setModalVisible={setContactsModal} />
+        <FullScreenGoalModal setModalVisible={setGoalModalVisible} isVisible={goalModalVisible} goalMutation={createGoal} />
+        <FullScreenAskModal setModalVisible={setAskModalVisible} isVisible={askModalVisible} askMutation={createAsk} />
         </>
       }
       <ProfilePictureModal profilePicture={user?.profilePicture} isVisible={profilePictureModal} setModalVisible={setProfilePictureModal} />

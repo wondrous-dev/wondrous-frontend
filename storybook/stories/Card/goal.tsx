@@ -13,13 +13,11 @@ import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import { Bar } from 'react-native-progress'
 
 import { Orange, Blue400, Green400, White, Grey400, Grey450, Purple, Red400, Yellow300, Grey300, Grey350, Grey800, Blue500, Black, Grey200, Grey100 } from '../../../constants/Colors'
-import CompleteSvg from '../../../assets/images/complete'
-import ArchiveSvg from '../../../assets/images/archive'
+import AddIcon from '../../../assets/images/add-dark-button'
 import { RegularText, TinyText, Paragraph } from '../Text'
 import { formatDueDate, redDate, sortByDueDate } from '../../../utils/date'
 import { spacingUnit, renderMentionString } from '../../../utils/common'
 import PriorityFlame from '../../../assets/images/modal/priority'
-import { FullScreenGoalModal } from '../../../components/Modal/GoalModal'
 import { Tag } from '../../../components/Tag'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import apollo from '../../../services/apollo'
@@ -33,6 +31,7 @@ import TaskIcon from '../../../assets/images/task/standalone'
 import { Card } from './index'
 import { useMe } from '../../../components/withAuth'
 import { FullScreenTaskModal } from '../../../components/Modal/TaskModal'
+import { StatusSelector } from '../../../components/Status/StatusSelector'
 
 export const GoalCard = ({
   icon,
@@ -58,9 +57,10 @@ export const GoalCard = ({
   const description = item?.detail
   const priority = item?.priority
   const completedAt = item?.completedAt
-  const taskCount = item?.taskCount
+  const initialTaskCount = item?.taskCount
   const completedTaskCount = item?.completedTaskCount
-  const [tasks, setTasks] = useState(item?.tasks)
+  const [tasks, setTasks] = useState(item?.tasks || [])
+  const [taskCount, setTaskCount] = useState(initialTaskCount || 0)
   const itemRefs = useRef(new Map())
   const [createTask] = useMutation(CREATE_TASK, {
     onCompleted: () => {
@@ -73,9 +73,9 @@ export const GoalCard = ({
   }] = useLazyQuery(GET_TASKS_FROM_GOAL, {
     fetchPolicy: 'network-only',
     onCompleted: (goalTasksData) => {
-      console.log('what the fuck')
       if (goalTasksData) {
         setTasks(goalTasksData?.getTasksFromGoal)
+        setTaskCount(taskCount + 1)
       }
     }
   })
@@ -119,7 +119,6 @@ export const GoalCard = ({
   return (
       <View>
       <FullScreenTaskModal setModalVisible={setTaskModalVisible} isVisible={taskModalVisible} taskMutation={createTask} goalId={item?.id} projectId={item?.projectId} />
-
         <TouchableWithoutFeedback onPress={showGoals}>
         <View style={[styles.row, { 
           borderRadius: spacingUnit,
@@ -281,10 +280,10 @@ export const GoalCard = ({
                   null
                   :
                   <Pressable onPress={() => setTaskModalVisible(true)} style={styles.addTask}>
-                  <Paragraph color={Blue400}>
+                  <Paragraph color={Grey800}>
                     +{` `}
                   </Paragraph>
-                    <Paragraph color={Blue400}>
+                    <Paragraph color={Grey800}>
                       Add task
                     </Paragraph>
                 </Pressable>
@@ -305,20 +304,28 @@ export const GoalCard = ({
           marginBottom: spacingUnit * 2,
           backgroundColor: Grey100,
           borderTopLeftRadius: 0,
-          borderTopRightRadius: 0
+          borderTopRightRadius: 0,
+          paddingBottom: spacingUnit,
         }}>
-           <Pressable onPress={() => setTaskModalVisible(true)} style={{
-             ...styles.addTask,
-             alignSelf: 'flex-start',
-             marginLeft: spacingUnit * 2
-           }}>
-                <Paragraph color={Blue400}>
-                  +{` `}
-                </Paragraph>
-                  <Paragraph color={Blue400}>
-                    Add task
-                  </Paragraph>
+          <View style={{
+            flexDirection: 'row',
+            alignItems: 'center'
+          }}>
+            <StatusSelector setStatus={setStatus} status={status} section={'tasks'} style={{
+              marginBottom: spacingUnit,
+              marginTop: -spacingUnit
+            }}/>
+            <Pressable onPress={() => setTaskModalVisible(true)} style={{
+              marginTop: spacingUnit * 2,
+              marginLeft: -spacingUnit * 2
+            }}>
+                <AddIcon style={{
+                  width: spacingUnit * 7,
+                  height: spacingUnit * 7
+                }} />
             </Pressable>
+
+          </View>
           <View style={{
             marginTop: spacingUnit
           }}>

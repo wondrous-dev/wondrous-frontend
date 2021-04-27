@@ -21,6 +21,7 @@ import { renderDiscussionItem } from '../../components/ProjectDiscussion'
 import GoalIcon from '../../assets/images/goal/standalone'
 import TaskIcon from '../../assets/images/task/standalone'
 import AskIcon from '../../assets/images/ask/standalone'
+import DownCaret from '../../assets/images/down-caret'
 import { Card, ReviewCard } from '../../storybook/stories/Card' 
 import { GoalCard } from '../../storybook/stories/Card/goal'
 import UserPlaceholder from '../../assets/images/user/placeholder'
@@ -371,20 +372,6 @@ export const DISCUSSION_STATUS_ARR = [
     value: 'closed'
   }
 ]
-export const STATUS_ARR = [
-  {
-    label: 'To do',
-    value: 'created',
-  },
-  {
-    label: 'Completed',
-    value: 'completed'
-  },
-  {
-    label: 'Archived',
-    value: 'archived'
-  }
-]
 
 export const renderProfileItem = ({ item, section, user, userOwned, navigation, projectId, itemRefs, onSwipeLeft, onSwipeRight, tab, loggedInUser, setDiscussionModal, discussionState }) => {
 
@@ -706,43 +693,6 @@ export const DiscussionSelector = ({ setDiscussionState, discussionState, setDis
           </View>
         </View>
     </View>
-  )
-}
-
-export const StatusSelector = ({ setStatus, status}) => {
-  return (
-      <View style={{
-        paddingLeft: spacingUnit * 2,
-        paddingRight: spacingUnit * 2
-      }}>
-        <View style={[{
-          marginTop: spacingUnit * 3,
-          flexDirection: 'row'
-        }]}>
-        {STATUS_ARR.map(statusItem => (
-          <StatusItem
-          key={statusItem.value}
-          statusValue={statusItem.value}
-          statusLabel={statusItem.label}
-          statusTrue={statusItem.value === status}
-          setStatus={setStatus}
-          />
-        ))}
-        </View>
-        {
-          status === 'created' ?
-          <RegularText color={Grey800} style={{
-            marginTop: spacingUnit * 2,
-            marginBottom: spacingUnit * 2
-          }}>
-            Swipe right to mark as complete, swipe left to archive.
-          </RegularText>
-          :
-          <View style={{
-            marginBottom: spacingUnit * 2
-          }} />
-        }
-      </View>
   )
 }
 

@@ -62,7 +62,6 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
     label: '',
     value: ''
   }]
-
   const resetState = useCallback(() => {
     setGoalText('')
     setPriority(null)

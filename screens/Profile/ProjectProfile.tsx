@@ -26,7 +26,6 @@ import {
   ProjectInfoText,
   SectionsHeader,
   SetUpFlowProgress,
-  StatusSelector,
   DetermineUserProgress,
   renderProfileItem,
   onSwipe,
@@ -40,6 +39,7 @@ import ProfilePictureModal from './ProfilePictureModal'
 import Lock from '../../assets/images/lock'
 import { GET_PROJECT_DISCUSSIONS } from '../../graphql/queries/projectDiscussion'
 import { CREATE_PROJECT_DISCUSSION } from '../../graphql/mutations/projectDiscussion'
+import { StatusSelector } from '../../components/Status/StatusSelector'
 
 const TagView = ({ tag }) => {
   if (tag === 'ai_ml') {
@@ -622,7 +622,7 @@ function ProjectProfile({
           <SectionsHeader />
           {
             (actionSelected || asksSelected) &&
-            <StatusSelector setStatus={setStatus} status={status} />
+            <StatusSelector setStatus={setStatus} status={status} section={section} />
           }
           {
             discussionSelected &&
