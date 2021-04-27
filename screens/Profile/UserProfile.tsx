@@ -264,6 +264,7 @@ function UserProfile({
       })
     }
   })
+
   const {
     data: userReviewData,
     fetchMore: reviewFetchMore,

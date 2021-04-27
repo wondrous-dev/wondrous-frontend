@@ -215,7 +215,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                   resetState()
                   setModalVisible(false)
                 } else {
-                  setProject(projectId)
+                  setProject(projectId || '')
                   setModalVisible(false)
                 }
               }} style={{
@@ -361,7 +361,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                         Project
                       </RegularText>
                     </View>
-                    <ModalDropdown value={projectUsers?.getUserProjects && project} setValue={setProject} items={projectDropdowns} placeholder='Select a project' zIndex={5000} />
+                    <ModalDropdown value={projectUsers?.getUserProjects ? project : ''} setValue={setProject} items={projectDropdowns} placeholder='Select a project' zIndex={5000} />
                   </View>
                   <View style={[
                     modalStyles.editRowContainer,

@@ -65,6 +65,7 @@ export const GoalCard = ({
   const [createTask] = useMutation(CREATE_TASK, {
     onCompleted: () => {
       setTasks(sortByDueDate([...tasks, createTask]))
+      setTaskCount(taskCount + 1)
     }
   })
 
@@ -75,7 +76,6 @@ export const GoalCard = ({
     onCompleted: (goalTasksData) => {
       if (goalTasksData) {
         setTasks(goalTasksData?.getTasksFromGoal)
-        setTaskCount(taskCount + 1)
       }
     }
   })
@@ -97,14 +97,24 @@ export const GoalCard = ({
     if (item?.tasks) {
       setTasks(item?.tasks)
     }
-  }, [item?.tasks])
+    if (status) {
+      if (!unassigned) {
+        getTasksFromGoal({
+          variables: {
+            goalId: item?.id,
+            status
+          }
+        })
+      }
+    }
+  }, [item?.tasks, status])
   let progress = 0
   if (completedTaskCount && completedTaskCount !== 0) {
     progress = completedTaskCount /  taskCount
   }
-
-  const showGoals = () => {
-    if (taskCount) {
+  const unassigned = item?.unassigned
+  const showTasks = () => {
+    if (taskCount || unassigned) {
       if (!clicked) {
         getTasksFromGoal({
           variables: {
@@ -116,10 +126,14 @@ export const GoalCard = ({
       setClicked(!clicked)
     }
   }
+  if (unassigned && initialTaskCount === 0) {
+    return null
+  }
+
   return (
       <View>
       <FullScreenTaskModal setModalVisible={setTaskModalVisible} isVisible={taskModalVisible} taskMutation={createTask} goalId={item?.id} projectId={item?.projectId} />
-        <TouchableWithoutFeedback onPress={showGoals}>
+        <TouchableWithoutFeedback onPress={showTasks}>
         <View style={[styles.row, { 
           borderRadius: spacingUnit,
           flexDirection: 'column',
@@ -232,7 +246,7 @@ export const GoalCard = ({
               </View>
             </View>
             {
-              taskCount !== undefined && completedTaskCount !== undefined &&
+              !unassigned && 
               <View style={{
                 flex: 1,
                 width: '100%',
@@ -241,24 +255,35 @@ export const GoalCard = ({
                 alignItems: 'center'
               }}>
               <View>
-                <Bar width={Dimensions.get('window').width - (32 * 4)} progress={progress} color={Blue500} height={spacingUnit * 1.25} unfilledColor={Grey350} borderWidth={0} />
+                <Bar width={Dimensions.get('window').width - (32 * 4) - (spacingUnit * 2)} progress={progress} color={Blue500} height={spacingUnit * 1.25} unfilledColor={Grey350} borderWidth={0} />
               </View>
               <RegularText color={clicked ? White : Grey800} style={{
                   marginLeft: spacingUnit
                 }}>
                   {completedTaskCount || 0}/{taskCount || 0}
                 </RegularText>
+                {
+                  taskCount === 0 &&
+                  <Pressable onPress={() => setTaskModalVisible(true)} style={{
+                    alignSelf: 'flex-start',
+                    marginBottom: -spacingUnit
+                  }}>
+                      <AddIcon style={{
+                        width: spacingUnit * 6,
+                        height: spacingUnit * 6
+                      }} />
+                  </Pressable>
+                }
               </View>
             }
             {
-              taskCount 
-              ?
+              taskCount !== 0 || unassigned &&
               <Pressable style={{
                 marginTop: spacingUnit,
                 flex: 1,
                 alignContent: 'center',
                 alignSelf: 'center'
-              }} onPress={showGoals}>
+              }} onPress={showTasks}>
                 <Paragraph color={clicked ? White : Grey800} style={{
                   alignSelf: 'center'
                 }}>
@@ -271,25 +296,6 @@ export const GoalCard = ({
                   }
                 </Paragraph>
               </Pressable>
-              :
-              (
-                <>
-                {
-                  completedAt
-                  ?
-                  null
-                  :
-                  <Pressable onPress={() => setTaskModalVisible(true)} style={styles.addTask}>
-                  <Paragraph color={Grey800}>
-                    +{` `}
-                  </Paragraph>
-                    <Paragraph color={Grey800}>
-                      Add task
-                    </Paragraph>
-                </Pressable>
-                }
-                </>
-              )
             }
           </View>
       </TouchableWithoutFeedback>
@@ -311,19 +317,24 @@ export const GoalCard = ({
             flexDirection: 'row',
             alignItems: 'center'
           }}>
-            <StatusSelector setStatus={setStatus} status={status} section={'tasks'} style={{
-              marginBottom: spacingUnit,
-              marginTop: -spacingUnit
-            }}/>
-            <Pressable onPress={() => setTaskModalVisible(true)} style={{
-              marginTop: spacingUnit * 2,
-              marginLeft: -spacingUnit * 2
-            }}>
-                <AddIcon style={{
-                  width: spacingUnit * 7,
-                  height: spacingUnit * 7
-                }} />
-            </Pressable>
+            {
+              !unassigned &&
+              <>
+              <StatusSelector setStatus={setStatus} status={status} section={'tasks'} style={{
+                marginBottom: spacingUnit,
+                marginTop: -spacingUnit
+              }}/>
+              <Pressable onPress={() => setTaskModalVisible(true)} style={{
+                marginTop: spacingUnit * 2,
+                marginLeft: -spacingUnit * 2
+              }}>
+                  <AddIcon style={{
+                    width: spacingUnit * 7,
+                    height: spacingUnit * 7
+                  }} />
+              </Pressable>
+              </>
+            }
 
           </View>
           <View style={{
@@ -339,7 +350,7 @@ export const GoalCard = ({
                 params: {
                   screen: 'TaskPage',
                   params: {
-                    task: item
+                    task
                   }
                 }
               }

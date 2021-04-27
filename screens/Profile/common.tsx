@@ -40,10 +40,13 @@ export const fetchActions = (actions, status, fetchMore) => {
     if (actions?.goals?.length > 0) {
       finalArr = sortByDueDate([...actions.goals])
     }
-
+  
     if (actions?.tasks?.length > 0) {
       finalArr.push({
         name: 'Unassigned',
+        unassigned: true,
+        createdBy: actions?.tasks?.length > 0 && actions?.tasks[0]?.ownerId,
+        ownerId: actions?.tasks?.length > 0 && actions?.tasks[0]?.ownerId,
         __typename: 'Goal',
         tasks: actions.tasks
       })

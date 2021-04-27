@@ -62,6 +62,8 @@ export const GET_PROJECT_ACTIONS = gql`
     getProjectActions(projectId: $projectId, status: $status, limit: $limit, offset: $offset) {
       goals {
         ...AdditionalGoal
+        taskCount
+        completedTaskCount
       }
       tasks {
         ...PublicTask
