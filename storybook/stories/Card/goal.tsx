@@ -100,7 +100,7 @@ export const GoalCard = ({
   }, [item?.tasks])
   let progress = 0
   if (completedTaskCount && completedTaskCount !== 0) {
-    progress = taskCount / completedTaskCount
+    progress = completedTaskCount /  taskCount
   }
 
   const showGoals = () => {
