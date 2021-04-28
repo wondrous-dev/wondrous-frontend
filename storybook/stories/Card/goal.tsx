@@ -63,8 +63,8 @@ export const GoalCard = ({
   const [taskCount, setTaskCount] = useState(initialTaskCount || 0)
   const itemRefs = useRef(new Map())
   const [createTask] = useMutation(CREATE_TASK, {
-    onCompleted: () => {
-      setTasks(sortByDueDate([...tasks, createTask]))
+    onCompleted: (createTaskData) => {
+      setTasks(sortByDueDate([...tasks, createTaskData?.createTask]))
       setTaskCount(taskCount + 1)
     }
   })

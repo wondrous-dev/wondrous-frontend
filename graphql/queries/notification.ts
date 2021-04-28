@@ -26,7 +26,6 @@ export const GET_NOTIFICATIONS = gql`
       objectId
       objectType
       objectName
-      timestamp
       type
       viewedAt
       message

@@ -61,6 +61,7 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
   const [media, setMedia] = useState([])
   const [cameraOpen, setCameraOpen] = useState(false)
   const [completedMessage, setCompletedMessage] = useState('')
+  const [imageUploading, setImageUploading] = useState(null)
   const [errors, setErrors] = useState({})
   const navigation = useNavigation()
   const route = useRoute()
@@ -88,7 +89,7 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
         <View style={{
           flex: 1
         }}>
-        <ImageBrowser setImageBrowser={setGalleryOpen} media={media} navigation={navigation} setMedia={setMedia} imagePrefix={filePrefix} />
+        <ImageBrowser setImageBrowser={setGalleryOpen} media={media} navigation={navigation} setMedia={setMedia} imagePrefix={filePrefix} setImageUploading={setImageUploading} />
         </View>
         :
         <TouchableWithoutFeedback 
@@ -240,23 +241,30 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
           <PrimaryButton style={{
             ...modalStyles.buttons,
             ...{
-              backgroundColor: Blue500,
+              backgroundColor: imageUploading ? Grey800: Blue500,
               marginTop: spacingUnit * 4,
             }
             }} onPress={() => {
-              submit({
-                type: 'completed',
-                completedImages: media,
-                completedMessage,
-                errors,
-                setErrors,
-                filePrefix,
-                mutation: updateMutation,
-                updateId: id,
-                updateKey: updateKey
-              })
-              resetState()
-              setModalVisible(false)
+              if (imageUploading) {
+                setErrors({
+                  ...errors,
+                  mediaError: 'Images still uploading!'
+                })
+              } else {
+                submit({
+                  type: 'completed',
+                  completedImages: media,
+                  completedMessage,
+                  errors,
+                  setErrors,
+                  filePrefix,
+                  mutation: updateMutation,
+                  updateId: id,
+                  updateKey: updateKey
+                })
+                resetState()
+                setModalVisible(false)
+              }
             }}>
             <RegularText color={White} style={{
                 fontFamily: 'Rubik SemiBold'
