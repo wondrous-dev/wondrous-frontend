@@ -155,10 +155,19 @@ export const GoalCard = ({
               }}>
               {
                 icon &&
-                <Icon style={{
-                  width: iconSize,
-                  height: iconSize
-                }} />
+                (
+                  unassigned
+                  ?
+                  <TaskIcon style={{
+                    width: iconSize,
+                    height: iconSize
+                  }} />
+                  :
+                  <Icon style={{
+                    width: iconSize,
+                    height: iconSize
+                  }} />
+                )
 
               }
               </View>
@@ -277,7 +286,7 @@ export const GoalCard = ({
               </View>
             }
             {
-              taskCount !== 0 || unassigned &&
+              (taskCount !== 0 || unassigned) &&
               <Pressable style={{
                 marginTop: spacingUnit,
                 flex: 1,
@@ -333,7 +342,28 @@ export const GoalCard = ({
                     height: spacingUnit * 7
                   }} />
               </Pressable>
-              </>
+                <View style={{
+                  flex: 1
+                }} />
+                <Pressable style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                  marginRight: spacingUnit,
+                  marginTop: spacingUnit
+                }} onPress={() => {
+                  navigation.push(redirect, redirectParams)
+                }}>
+                  <RegularText color={Blue400}>
+                    View Details
+                  </RegularText>
+                  <RightCaret color={Blue400} style={{
+                    // width: spacingUnit,
+                    height: spacingUnit * 1.5,
+                    marginLeft: spacingUnit * 0.25
+                  }}/>
+                </Pressable>
+                </>
             }
 
           </View>

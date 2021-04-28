@@ -43,7 +43,7 @@ export const fetchActions = (actions, status, fetchMore) => {
   
     if (actions?.tasks?.length > 0) {
       finalArr.push({
-        name: 'Unassigned',
+        name: 'Unassigned tasks',
         unassigned: true,
         createdBy: actions?.tasks?.length > 0 && actions?.tasks[0]?.ownerId,
         ownerId: actions?.tasks?.length > 0 && actions?.tasks[0]?.ownerId,
