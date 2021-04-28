@@ -90,7 +90,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
   } = notificationInfo
   if (type !== 'welcome') {
     try {
-      apollo.mutate({
+      await apollo.mutate({
         mutation: MARK_NOTIFICATION_AS_VIEWED,
         variables: {
           notificationId: id

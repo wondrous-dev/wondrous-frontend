@@ -131,10 +131,10 @@ const CreateProjectInput = ({ navigation, setup }) => {
                 What is your project?
         </Subheading>
             <Paragraph style={firstProjectSetupStyles.paragraph}>
-            Describe your project in one sentence.{` `}
-                <Paragraph color={Blue400} onPress={() => setProjectFAQ(true)}>
-                    What is a project?
-                </Paragraph>
+            Describe your project in one sentence.{"\n"}
+            <Paragraph color={Blue400} onPress={() => setProjectFAQ(true)}>
+                What is a project?
+            </Paragraph>
         </Paragraph>
 
             <Formik

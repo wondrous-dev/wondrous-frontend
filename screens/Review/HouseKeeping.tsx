@@ -159,7 +159,7 @@ const HouseKeeping = ({ route, navigation }) => {
                 Add goal
               </Paragraph>
               </Pressable>
-              <Pressable onPress={() => setTaskModalVisible(true)} style={{
+          <Pressable onPress={() => setTaskModalVisible(true)} style={{
             flexDirection: 'row',
             alignItems: 'center'
           }}>
@@ -171,7 +171,7 @@ const HouseKeeping = ({ route, navigation }) => {
               <Paragraph color={Blue400}>
                 Add task
               </Paragraph>
-              </Pressable>
+          </Pressable>
           </View>
         </View>
       )}

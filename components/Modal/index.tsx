@@ -24,7 +24,7 @@ import { useNavigation, useRoute } from '@react-navigation/core'
 import ImageBrowser from './ImageBrowser'
 import { renderProfileItem } from '../../screens/Profile/common'
 
-const modalStyles = StyleSheet.create({
+export const modalStyles = StyleSheet.create({
   fixedContainer: {
     backgroundColor: White,
     position: 'absolute',

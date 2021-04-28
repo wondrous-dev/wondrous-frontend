@@ -58,10 +58,12 @@ export const GET_PROJECTS_AUTOCOMPLETE = gql`
 `
 
 export const GET_PROJECT_ACTIONS = gql`
-  query GetProjectActions($projectId: ID!, $status: String) {
-    getProjectActions(projectId: $projectId, status: $status) {
+  query GetProjectActions($projectId: ID!, $status: String, $limit: Int, $offset: Int) {
+    getProjectActions(projectId: $projectId, status: $status, limit: $limit, offset: $offset) {
       goals {
         ...AdditionalGoal
+        taskCount
+        completedTaskCount
       }
       tasks {
         ...PublicTask

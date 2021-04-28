@@ -7,7 +7,10 @@ import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import * as Linking from 'expo-linking'
 import isEqual from 'lodash.isequal'
 import ConfettiCannon from 'react-native-confetti-cannon'
+import Toast from 'react-native-toast-message'
 
+import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
+import { FullScreenAskModal } from '../../components/Modal/AskModal'
 import { withAuth, useMe } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
@@ -16,7 +19,7 @@ import { spacingUnit, wait, isEmptyObject, usePrevious } from '../../utils/commo
 import BottomTabNavigator from '../../navigation/BottomTabNavigator'
 import { UploadImage, SafeImage } from '../../storybook/stories/Image'
 import { WONDER_BASE_URL } from '../../constants/'
-import { UPDATE_USER, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_USER, UNFOLLOW_USER } from '../../graphql/mutations'
+import { UPDATE_USER, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_USER, UNFOLLOW_USER, CREATE_GOAL, CREATE_ASK } from '../../graphql/mutations'
 import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GET_ASKS_FROM_USER, WHOAMI, GET_USER_STREAK, CHECK_USER_FOLLOWS_BACK } from '../../graphql/queries'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { PrimaryButton, SecondaryButton } from '../../storybook/stories/Button'
@@ -28,7 +31,6 @@ import {
   SectionsHeader,
   DetermineUserProgress,
   renderProfileItem,
-  StatusSelector,
   onSwipe,
   getPinnedFeed,
   fetchActions
@@ -44,6 +46,8 @@ import Settings from '../../assets/images/settings'
 import { SettingsModal } from '../../components/Modal/SettingsModal'
 import { ContactsModal } from './ContactsModal'
 import ProfilePictureModal from './ProfilePictureModal'
+import { StatusSelector } from '../../components/Status/StatusSelector'
+import AddIcon from '../../assets/images/add-dark-button'
 
 const getUserId = ({ route, user }) => {
   if (route && route.params && route.params.userId) {
@@ -87,14 +91,15 @@ function UserProfile({
   const [isModalVisible, setModalVisible] = useState(false)
   const [userFeed, setUserFeed] = useState([])
   const prevFeed = usePrevious(userFeed)
-  const [actions, setActions] = useState([])
-  const prevActions = usePrevious(actions)
+
   const [reviews, setReviews] = useState([])
   const prevReviews = usePrevious(reviews)
   const [asks, setAsks] = useState([])
   const prevAsks = usePrevious(asks)
   const [taskCompleteModal, setTaskCompleteModal] = useState(false)
   const [goalCompletemodal, setGoalCompleteModal] = useState(false)
+  const [goalModalVisible, setGoalModalVisible] = useState(false)
+  const [askModalVisible, setAskModalVisible] = useState(false)
   const [loading, setLoading] = useState(false)
   const [following, setFollowing] = useState(loggedInUser && loggedInUser.usersFollowing && loggedInUser.usersFollowing.includes(finalUserId))
   const [confetti, setConfetti] = useState(false)
@@ -122,6 +127,7 @@ function UserProfile({
       })
     }
   })
+
     const [unfollowUser] = useMutation(UNFOLLOW_USER, {
     variables: {
       followingId: finalUserId
@@ -196,8 +202,37 @@ function UserProfile({
     error: userActionError,
     fetchMore: actionFetchMore
   }] = useLazyQuery(GET_USER_ACTIONS, {
+    variables: {
+      userId: finalUserId,
+      limit: 100,
+      status
+    },
     fetchPolicy: 'network-only'
   })
+
+  const [createGoal] = useMutation(CREATE_GOAL, {
+    refetchQueries: [
+      { query: GET_USER_STREAK,
+      variables: {
+        userId: user && user.id
+      } },
+      {
+        query: GET_USER_ACTIONS,
+        variables: {
+          userId: finalUserId,
+          limit: 100,
+          status: 'created'
+        }
+      }
+    ],
+    onCompleted: () => {
+      Toast.show({
+        text1: 'Goal successfully created',
+        position: 'bottom',
+      })
+    }
+  })
+
   const [userActionLoading, setUserActionLoading] = useState(userActionDataLoading)
   const [getUserAsks, {
     loading: userAsksLoading,
@@ -210,6 +245,24 @@ function UserProfile({
       status
     },
     fetchPolicy: 'network-only'
+  })
+
+  const [createAsk] = useMutation(CREATE_ASK, {
+    refetchQueries: [
+      {
+        query: GET_ASKS_FROM_USER,
+        variables: {
+          userId: finalUserId,
+          status: 'created'
+        }
+      }
+    ],
+    onCompleted: () => {
+      Toast.show({
+        text1: 'Ask successfully created',
+        position: 'bottom',
+      })
+    }
   })
 
   const {
@@ -259,8 +312,7 @@ function UserProfile({
         variables: {
           userId: finalUserId,
           status
-        },
-        fetchPolicy: 'network-only',
+        }
       })
     } else if (asksSelected) {
       getUserAsks({
@@ -278,8 +330,8 @@ function UserProfile({
   }, [])
 
   useEffect(() => {
-      if (actionSelected && (!isEqual(section, prevSection) || !isEqual(status, prevStatus))) {
-        setActions([])
+
+      if (actionSelected) {
         getUserActions({
           variables: {
             userId: finalUserId,
@@ -317,12 +369,6 @@ function UserProfile({
           setReviews(userReviewData.getReviewsFromUser)
         }
       }
-      if (userActionData && userActionData.getUserActions) {
-        if (!isEqual(userActionData?.getUserActions, prevActions)) {
-          setUserActionLoading(false)
-          setActions(fetchActions(userActionData?.getUserActions, status))
-        }
-      }
       if (userAsksData && userAsksData.getUserAsks) {
         if (!isEqual(userAsksData?.getUserAsks, prevAsks)) {
           setAsks(userAsksData?.getUserAsks)
@@ -338,14 +384,15 @@ function UserProfile({
       if (followBackData) {
         setFollowBack(followBackData?.doesUserFollowBack)
       } 
-  }, [user && (user.thumbnailPicture || user.profilePicture), feedSelected, actionSelected, asksSelected, finalUserId, status, userFeedData?.getUserFeed, userReviewData, userOwned, followBackData, userActionData, userAsksData ])
+  }, [user && (user.thumbnailPicture || user.profilePicture), feedSelected, actionSelected, asksSelected, finalUserId, status, userFeedData?.getUserFeed, userReviewData, userOwned, followBackData, userAsksData ])
 
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo
   const getCorrectData = section => {
     if (section === 'feed') {
       return getPinnedFeed(userFeed)
     } else if (section === 'action') {
-      return actions
+      const actions = userActionData && userActionData.getUserActions
+      return fetchActions(actions, status)
     } else if (section === 'asks') {
       const asks = userAsksData && userAsksData.getAsksFromUser
  
@@ -379,6 +426,7 @@ function UserProfile({
     userAsksData,
     loggedInUser
   })
+
   const onSwipeRight = (item, type) => {
     onSwipe({
       item,
@@ -614,7 +662,30 @@ function UserProfile({
               <SectionsHeader />
               {
                 (actionSelected || asksSelected) &&
-                <StatusSelector setStatus={setStatus} status={status} />
+                <View style={{
+                  alignItems: 'center',
+                  flexDirection: 'row'
+                }}>
+                <StatusSelector setStatus={setStatus} status={status} section={section} />
+                {
+                  userOwned &&
+                  <Pressable onPress={() => {
+                    if  (actionSelected) {
+                      setGoalModalVisible(true)
+                    } else if (asksSelected) {
+                      setAskModalVisible(true)
+                    }
+                  }} style={{
+                    marginTop: spacingUnit * 2,
+                    marginLeft: -spacingUnit * 2
+                  }}>
+                      <AddIcon style={{
+                        width: spacingUnit * 7,
+                        height: spacingUnit * 7
+                      }} />
+                  </Pressable>
+                }
+                </View>
               }
               {
                 reviewSelected &&
@@ -645,6 +716,8 @@ function UserProfile({
         <TaskCongratsModal user={user} isVisible={taskCompleteModal} setModalVisible={setTaskCompleteModal} />
         <SettingsModal isVisible={settingsModal} setModalVisible={setSettingsModal} />
         <ContactsModal isVisible={contactsModal} setModalVisible={setContactsModal} />
+        <FullScreenGoalModal setModalVisible={setGoalModalVisible} isVisible={goalModalVisible} goalMutation={createGoal} />
+        <FullScreenAskModal setModalVisible={setAskModalVisible} isVisible={askModalVisible} askMutation={createAsk} />
         </>
       }
       <ProfilePictureModal profilePicture={user?.profilePicture} isVisible={profilePictureModal} setModalVisible={setProfilePictureModal} />
@@ -736,24 +809,7 @@ function UserProfile({
                   }
                 }
               
-            } else if (section === 'action'){
-              // if (actionFetchMore) {
-              //   try {
-              //     const result = await actionFetchMore({
-              //       variables: {
-              //         offset: actions?.length
-              //       }
-              //     })
-
-              //     if (result?.data?.getUserActions) {
-              //       const newActions = fetchActions(result.data.getUserActions, status, true)
-              //       setActions([...actions, ...newActions])
-              //     }
-              //   } catch (err) {
-              //     console.log('err fetching more actions', err)
-              //   }
-              // }
-            } else if (section === 'asks'){
+            } else if (section === 'asks') {
               if (askFetchMore) {
                 try {
                   const result = await askFetchMore({

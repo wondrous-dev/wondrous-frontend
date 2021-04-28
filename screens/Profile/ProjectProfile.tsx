@@ -4,19 +4,23 @@ import { StackScreenProps } from '@react-navigation/stack'
 import { Pressable, SafeAreaView, View, RefreshControl, FlatList } from 'react-native'
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client'
 import ConfettiCannon from 'react-native-confetti-cannon'
+import Toast from 'react-native-toast-message'
 
+import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
+import { FullScreenAskModal } from '../../components/Modal/AskModal'
 import { withAuth, useMe } from '../../components/withAuth'
 import { ProfileTabParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { Black, Blue500, Grey300, White, Blue400, Grey800, Purple, Grey700 } from '../../constants/Colors'
 import { profileStyles } from './style'
 import { GET_PROJECT_BY_ID, GET_PROJECT_FEED, GET_PROJECT_ACTIONS, GET_PROJECT_FOLLOW_REQUEST } from '../../graphql/queries/project'
-import { UPDATE_PROJECT, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_PROJECT, UNFOLLOW_PROJECT, REMOVE_FOLLOW_REQUEST } from '../../graphql/mutations'
+import { UPDATE_PROJECT, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_PROJECT, UNFOLLOW_PROJECT, REMOVE_FOLLOW_REQUEST, CREATE_GOAL, CREATE_ASK } from '../../graphql/mutations'
 import { SafeImage, UploadImage } from '../../storybook/stories/Image'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { FullScreenDiscussionModal } from '../../components/Modal/ProjectDiscussionModal'
 import { SecondaryButton, FlexibleButton, PrimaryButton } from '../../storybook/stories/Button'
 import { capitalizeFirstLetter, isEmptyObject, spacingUnit, usePrevious, wait } from '../../utils/common'
+import { GoalCongratsModal, TaskCongratsModal } from '../../components/Modal'
 import { WONDER_BASE_URL } from '../../constants/'
 import { ProfileContext } from '../../utils/contexts'
 import { EditProfileModal } from './EditProfileModal'
@@ -26,12 +30,12 @@ import {
   ProjectInfoText,
   SectionsHeader,
   SetUpFlowProgress,
-  StatusSelector,
   DetermineUserProgress,
   renderProfileItem,
   onSwipe,
   getPinnedFeed,
-  DiscussionSelector
+  DiscussionSelector,
+  fetchActions
 } from './common'
 import Link from '../../assets/images/link'
 import { GET_ASKS_FROM_PROJECT, GET_USER_STREAK, WHOAMI } from '../../graphql/queries'
@@ -40,6 +44,8 @@ import ProfilePictureModal from './ProfilePictureModal'
 import Lock from '../../assets/images/lock'
 import { GET_PROJECT_DISCUSSIONS } from '../../graphql/queries/projectDiscussion'
 import { CREATE_PROJECT_DISCUSSION } from '../../graphql/mutations/projectDiscussion'
+import { StatusSelector } from '../../components/Status/StatusSelector'
+import AddIcon from '../../assets/images/add-dark-button'
 
 const TagView = ({ tag }) => {
   if (tag === 'ai_ml') {
@@ -94,6 +100,10 @@ function ProjectProfile({
   const [discussionState, setDiscussionState] = useState('open')
   const [projectFeed, setProjectFeed] = useState([])
   const [discussions, setDiscussions] = useState([])
+  const [taskCompleteModal, setTaskCompleteModal] = useState(false)
+  const [goalCompletemodal, setGoalCompleteModal] = useState(false)
+  const [goalModalVisible, setGoalModalVisible] = useState(false)
+  const [askModalVisible, setAskModalVisible] = useState(false)
   const previousDiscussionState = usePrevious(discussionState)
   const [following, setFollowing] = useState(user && user.projectsFollowing && user.projectsFollowing.includes(projectId))
   const [followRequested, setFollowRequested] = useState(false)
@@ -188,6 +198,7 @@ function ProjectProfile({
   }] = useLazyQuery(GET_PROJECT_ACTIONS, {
     variables: {
       projectId,
+      limit: 100,
       status
     },
     fetchPolicy: 'network-only'
@@ -215,6 +226,29 @@ function ProjectProfile({
     }
   })
 
+  const [createGoal] = useMutation(CREATE_GOAL, {
+    refetchQueries: [
+      { query: GET_USER_STREAK,
+      variables: {
+        userId: user && user.id
+      } },
+      {
+        query: GET_PROJECT_ACTIONS,
+        variables: {
+          projectId,
+          limit: 100,
+          status: 'created'
+        }
+      }
+    ],
+    onCompleted: () => {
+      Toast.show({
+        text1: 'Goal successfully created',
+        position: 'bottom',
+      })
+    }
+  })
+
   const [updateGoal] = useMutation(UPDATE_GOAL)
   const [updateTask] = useMutation(UPDATE_TASK)
   const [completeGoal] = useMutation(COMPLETE_GOAL, {
@@ -231,6 +265,25 @@ function ProjectProfile({
       } }
     ]
   })
+
+  const [createAsk] = useMutation(CREATE_ASK, {
+    refetchQueries: [
+      {
+        query: GET_ASKS_FROM_PROJECT,
+        variables: {
+          projectId,
+          status: 'created'
+        }
+      }
+    ],
+    onCompleted: () => {
+      Toast.show({
+        text1: 'Ask successfully created',
+        position: 'bottom',
+      })
+    }
+  })
+
   const [updateAsk] = useMutation(UPDATE_ASK)
   const { data, loading, error } = useQuery(GET_PROJECT_BY_ID, {
     variables: {
@@ -341,23 +394,7 @@ function ProjectProfile({
       return getPinnedFeed(projectFeed)
     } else if (section === 'action') {
       const actions = projectActionData && projectActionData.getProjectActions
-      if (!(user && user.usageProgress && user.usageProgress.askCreated) && (actions && actions.goals.length === 0 && actions.tasks.length === 0)) {
-        return ['start']
-      } else if((actions && actions.goals.length === 0 && actions.tasks.length === 0) && status === 'created') {
-        return ['none']
-      } else {
-        if (actions && actions.goals && actions.tasks) {
-          return sortByDueDate([
-            ...actions.goals,
-            ...actions.tasks
-          ], status === 'completed')
-        } else if (actions && actions.goals) {
-          return sortByDueDate(actions.goals, status === 'completed')
-        } else if ( actions && actions.tasks) {
-          return sortByDueDate(actions.tasks, status === 'completed')
-        }
-        return []
-      }
+      return fetchActions(actions, status)
     } else if (section === 'asks') {
       const asks = projectAskData && projectAskData.getAsksFromProject
       if (asks && asks.length === 0 && status === 'created') {
@@ -409,7 +446,9 @@ function ProjectProfile({
     projectAskData,
     userAsksData: null,
     setConfetti,
-    loggedInUser: user
+    loggedInUser: user,
+    setTaskCompleteModal,
+    setGoalCompleteModal
   })
 
   function ProfileHeader () {
@@ -621,7 +660,30 @@ function ProjectProfile({
           <SectionsHeader />
           {
             (actionSelected || asksSelected) &&
-            <StatusSelector setStatus={setStatus} status={status} />
+            <View style={{
+              alignItems: 'center',
+              flexDirection: 'row'
+            }}>
+            <StatusSelector setStatus={setStatus} status={status} section={section} />
+            {
+              projectOwnedByUser &&
+              <Pressable onPress={() => {
+                if  (actionSelected) {
+                  setGoalModalVisible(true)
+                } else if (asksSelected) {
+                  setAskModalVisible(true)
+                }
+              }} style={{
+                marginTop: spacingUnit * 2,
+                marginLeft: -spacingUnit * 2
+              }}>
+                  <AddIcon style={{
+                    width: spacingUnit * 7,
+                    height: spacingUnit * 7
+                  }} />
+              </Pressable>
+            }
+            </View>
           }
           {
             discussionSelected &&
@@ -662,6 +724,10 @@ function ProjectProfile({
             <UploadImage isVisible={isVisible} setModalVisible={setModalVisible} image={profilePicture} setImage={setProfilePicture} saveImageMutation={updateProject} imagePrefix={`tmp/${projectId}/`} saveImageMutationVariable={[{projectId, input: { profilePicture }}, ['input', 'profilePicture']]}  />
             <InviteCollaboratorModal project={project} isVisible={inviteCollaboratorModal} setModalVisible={setInviteCollaboratorModal} />
             <EditProfileModal project={project} isVisible={editProfileModal} setModalVisible={setEditProfileModal} saveMutation={updateProject} setParentImage={setProfilePicture}/>
+            <GoalCongratsModal user={user} isVisible={goalCompletemodal} setModalVisible={setGoalCompleteModal} />
+            <TaskCongratsModal user={user} isVisible={taskCompleteModal} setModalVisible={setTaskCompleteModal} />
+            <FullScreenGoalModal setModalVisible={setGoalModalVisible} isVisible={goalModalVisible} goalMutation={createGoal} />
+            <FullScreenAskModal setModalVisible={setAskModalVisible} isVisible={askModalVisible} askMutation={createAsk} />
             </>
           }
           <ProfilePictureModal profilePicture={project?.profilePicture} isVisible={profilePictureModal} setModalVisible={setProfilePictureModal} />

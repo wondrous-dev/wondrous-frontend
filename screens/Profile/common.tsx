@@ -21,7 +21,9 @@ import { renderDiscussionItem } from '../../components/ProjectDiscussion'
 import GoalIcon from '../../assets/images/goal/standalone'
 import TaskIcon from '../../assets/images/task/standalone'
 import AskIcon from '../../assets/images/ask/standalone'
+import DownCaret from '../../assets/images/down-caret'
 import { Card, ReviewCard } from '../../storybook/stories/Card' 
+import { GoalCard } from '../../storybook/stories/Card/goal'
 import UserPlaceholder from '../../assets/images/user/placeholder'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { GET_USER_STREAK } from '../../graphql/queries'
@@ -31,21 +33,25 @@ import { moderateScale } from '../../utils/scale'
 import { sortByDueDate } from '../../utils/date'
 
 export const fetchActions = (actions, status, fetchMore) => {
-  const userActions = actions
-  if ((!fetchMore && userActions && userActions.goals?.length === 0 && userActions.tasks?.length === 0) && status === 'created') {
+  if ((!fetchMore && actions && actions.goals?.length === 0 && actions.tasks?.length === 0) && status === 'created') {
     return ['none']
   } else {
-    if (userActions && userActions?.goals && userActions?.tasks) {
-      return sortByDueDate([
-        ...userActions.goals,
-        ...userActions.tasks
-      ], status === 'completed')
-    } else if (userActions && userActions.goals) {
-      return sortByDueDate(userActions.goals, status === 'completed')
-    } else if ( userActions && userActions.tasks) {
-      return sortByDueDate(userActions?.tasks, status === 'completed')
+    let finalArr = []
+    if (actions?.goals?.length > 0) {
+      finalArr = sortByDueDate([...actions.goals])
     }
-    return []
+  
+    if (actions?.tasks?.length > 0) {
+      finalArr.push({
+        name: 'Unassigned',
+        unassigned: true,
+        createdBy: actions?.tasks?.length > 0 && actions?.tasks[0]?.ownerId,
+        ownerId: actions?.tasks?.length > 0 && actions?.tasks[0]?.ownerId,
+        __typename: 'Goal',
+        tasks: actions.tasks
+      })
+    }
+    return finalArr
   }
 }
 export const getPinnedFeed = (initialFeed) => {
@@ -219,7 +225,7 @@ export const SectionsHeader = () => {
           <Paragraph color={discussionSelected ? Blue400 : Black } style={{
             paddingRight: spacingUnit
           }}>
-            Discussion
+            Feedback
           </Paragraph>
         </View>
       </Pressable>
@@ -367,20 +373,6 @@ export const DISCUSSION_STATUS_ARR = [
   {
     label: 'Closed',
     value: 'closed'
-  }
-]
-export const STATUS_ARR = [
-  {
-    label: 'To do',
-    value: 'created',
-  },
-  {
-    label: 'Completed',
-    value: 'completed'
-  },
-  {
-    label: 'Archived',
-    value: 'archived'
   }
 ]
 
@@ -586,28 +578,48 @@ export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRigh
 
   const owned = (item.ownerId === (loggedInUser && loggedInUser.id) ) || (item.userId === (loggedInUser && loggedInUser.id))
   const swipeEnabled = !!(owned) && (item.status !== 'completed' && item.status !== 'archived')
-
   return (
     <View key={item.id} style={{
       marginLeft: spacingUnit * 2,
       marginRight: spacingUnit * 2
     }}>
-      <Card
-      key={item.id}
-      navigation={navigation}
-      route={route}
-      redirect={redirect}
-      redirectParams={redirectParams}
-      type={type}
-      icon={icon}
-      iconSize={iconSize}
-      profilePicture={user && (user.thumbnailPicture || user.profilePicture)}
-      item={item}
-      swipeEnabled={swipeEnabled}
-      itemRefs={itemRefs && itemRefs.current}
-      onSwipeRight={newOnSwipeRight}
-      onSwipeLeft={newOnSwipeLeft}
-      />
+      {
+        type === 'goal'
+        ?
+        <GoalCard
+        key={item.id}
+        navigation={navigation}
+        route={route}
+        redirect={redirect}
+        redirectParams={redirectParams}
+        type={type}
+        icon={icon}
+        iconSize={iconSize}
+        profilePicture={user && (user.thumbnailPicture || user.profilePicture)}
+        item={item}
+        itemRefs={itemRefs && itemRefs.current}
+        onSwipeRight={onSwipeRight}
+        onSwipeLeft={onSwipeLeft}
+        swipeEnabled={swipeEnabled}
+        />
+        :
+        <Card
+        key={item.id}
+        navigation={navigation}
+        route={route}
+        redirect={redirect}
+        redirectParams={redirectParams}
+        type={type}
+        icon={icon}
+        iconSize={iconSize}
+        profilePicture={user && (user.thumbnailPicture || user.profilePicture)}
+        item={item}
+        swipeEnabled={swipeEnabled}
+        itemRefs={itemRefs && itemRefs.current}
+        onSwipeRight={newOnSwipeRight}
+        onSwipeLeft={newOnSwipeLeft}
+        />
+      }
     </View>
   )
 }
@@ -687,43 +699,6 @@ export const DiscussionSelector = ({ setDiscussionState, discussionState, setDis
   )
 }
 
-export const StatusSelector = ({ setStatus, status}) => {
-  return (
-      <View style={{
-        paddingLeft: spacingUnit * 2,
-        paddingRight: spacingUnit * 2
-      }}>
-        <View style={[{
-          marginTop: spacingUnit * 3,
-          flexDirection: 'row'
-        }]}>
-        {STATUS_ARR.map(statusItem => (
-          <StatusItem
-          key={statusItem.value}
-          statusValue={statusItem.value}
-          statusLabel={statusItem.label}
-          statusTrue={statusItem.value === status}
-          setStatus={setStatus}
-          />
-        ))}
-        </View>
-        {
-          status === 'created' ?
-          <RegularText color={Grey800} style={{
-            marginTop: spacingUnit * 2,
-            marginBottom: spacingUnit * 2
-          }}>
-            Swipe right to mark as complete, swipe left to archive.
-          </RegularText>
-          :
-          <View style={{
-            marginBottom: spacingUnit * 2
-          }} />
-        }
-      </View>
-  )
-}
-
 export const onSwipe =({
   item,
   type,
@@ -743,6 +718,7 @@ export const onSwipe =({
   setTaskCompleteModal,
   setGoalCompleteModal
 }) => {
+  console.log('task', item, type)
   if (setConfetti) {
     const formattedDueDate = new Date(item && item.dueDate)
     const newDate = new Date()

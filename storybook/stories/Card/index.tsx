@@ -6,17 +6,14 @@ import {
   StyleSheet,
   Platform,
   UIManager,
-  Dimensions,
   Pressable,
-  LayoutAnimation
 } from 'react-native'
-import {   TouchableWithoutFeedback  } from "react-native-gesture-handler"
-import Animated, { withDecay } from "react-native-reanimated"
+import { TouchableWithoutFeedback } from "react-native-gesture-handler"
+import Animated from "react-native-reanimated"
 
 import { Grey400, Blue400, Green400, White, Grey450, Purple, Red400, Yellow300, Grey300, Grey800 } from '../../../constants/Colors'
 import CompleteSvg from '../../../assets/images/complete'
 import ArchiveSvg from '../../../assets/images/archive'
-import { SafeImage, SvgImage } from '../Image'
 import { RegularText, TinyText, Paragraph } from '../Text'
 import { formatDueDate, redDate } from '../../../utils/date'
 import { spacingUnit, renderMentionString } from '../../../utils/common'
@@ -28,10 +25,10 @@ import { Tag } from '../../../components/Tag'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import apollo from '../../../services/apollo'
 import { UPDATE_GOAL, UPDATE_TASK, UPDATE_ASK } from '../../../graphql/mutations'
-import { cache } from 'webpack'
 import { GetReviewIcon } from '../../../screens/Review/utils'
 import { format } from 'date-fns'
 import RightCaret from '../../../assets/images/right-caret'
+import { styles } from './styles'
 
 const { multiply, sub } = Animated
 const isAndroid = Platform.OS === "android"
@@ -41,65 +38,6 @@ if (isAndroid && UIManager.setLayoutAnimationEnabledExperimental) {
 }
 
 const PlatformTouchable = Pressable
-
-const styles = StyleSheet.create({
-  container: {
-      backgroundColor: 'white',
-      flex: 1,
-  },
-  flex: {
-    flex: 1,
-  },
-  row: {
-    flexDirection: "row",
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "space-around",
-    padding: 15,
-    marginBottom: 16,
-    borderRadius: 2,
-    borderWidth: 2,
-    borderColor: Grey400,
-    elevation: 7,
-    shadowOpacity: 0.25,
-    shadowColor: Grey400,
-    shadowRadius: 2,
-    shadowOffset: { width: 2, height: 2 }
-  },
-  text: {
-    fontFamily: 'Rubik SemiBold',
-    fontSize: 16,
-    lineHeight: 24
-  },
-  underlayRight: {
-    // flex: 1,
-    justifyContent: "flex-start",
-    backgroundColor: Green400,
-    color: White
-  },
-  underlayLeft: {
-    // flex: 1,
-    backgroundColor: Grey400,
-    justifyContent: "flex-end"
-  },
-  bottomInfoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  dueText: {
-    color: Grey450
-  },
-  topInfoContainer: {
-    alignItems: 'flex-start',
-    flexDirection: 'row',
-    justifyContent: 'flex-start'
-  },
-  profilePicture: {
-    width: spacingUnit * 4,
-    height: spacingUnit * 4,
-    borderRadius: spacingUnit * 2
-  }
-})
 
 export const ReviewCard = ({ review, tab }) => {
   const navigation = useNavigation()

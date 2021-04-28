@@ -91,8 +91,9 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
     }
   }) : [{
     label: 'Select a project',
-    value: task?.projectId || projectId || ''
+    value: ''
   }]
+
   useEffect(() => {
     if (isVisible && !previousVisible) {
       getUserGoals()
@@ -116,8 +117,11 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
     if (projectUserData) {
       setProjectUsers(projectUserData)
     }
-    if (task?.projectId || projectId) {
-      setProject(task?.projectId || projectId)
+    if (task?.projectId) {
+      setProject(task?.projectId)
+    }
+    if (projectId) {
+      setProject(projectId)
     }
     if (task?.goalId || goalId) {
       setGoal(task?.goalId || goalId)
@@ -163,6 +167,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
       setMedia((task && task.additionalData && task.additionalData.images) || [])
       setCameraOpen(false)
       setGalleryOpen(false)
+      setProject(task?.projectId || projectId)
       setDueDate((task && task.dueDate) ? new Date(task.dueDate) : toDate(initialDueDate))
       setDescription((task && task.detail) || '')
       setCompleted(task && task.status === 'completed')
@@ -210,7 +215,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                   resetState()
                   setModalVisible(false)
                 } else {
-                  setProject(null)
+                  setProject(projectId || '')
                   setModalVisible(false)
                 }
               }} style={{
@@ -356,7 +361,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                         Project
                       </RegularText>
                     </View>
-                    <ModalDropdown value={project} setValue={setProject} defaultValue={projectId} items={projectDropdowns} placeholder='Select a project' zIndex={5000} />
+                    <ModalDropdown value={projectUsers?.getUserProjects ? project : ''} setValue={setProject} items={projectDropdowns} placeholder='Select a project' zIndex={5000} />
                   </View>
                   <View style={[
                     modalStyles.editRowContainer,
