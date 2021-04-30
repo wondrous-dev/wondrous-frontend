@@ -35,7 +35,7 @@
       "**/*"
     ],
     "ios": {
-      "associatedDomains": ["applinks:wonderco.app.link", "applinks:wonderco-alternate.test-app.link"],
+      "associatedDomains": ["applinks:wonderco.app.link", "applinks:wonderco-alternate.app.link", "applinks:wonderco-alternate.test-app.link", "applinks:wonderco.test-app.link"],
       "supportsTablet": true,
       "config": {
         "branch": {
