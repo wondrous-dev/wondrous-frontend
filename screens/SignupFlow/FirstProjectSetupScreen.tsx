@@ -98,6 +98,9 @@ const CreateProjectInput = ({ navigation, setup }) => {
                             return updateUsageProgress({ user, newKey: 'projectCreated', newValue: createProject.id})
                         }
                         return [user]
+                    },
+                    getUserProjects(existingProjects=[]) {
+                        return [...existingProjects, createProject]
                     }
                 }
             })

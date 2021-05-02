@@ -265,7 +265,7 @@ const FeedString = ({ item, standAlone }) => {
       <View style={{
         paddingRight: spacingUnit * 3,
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'flex-start'
       }}>
         <GetReviewIcon review={{
           reviewScore: Number(item?.additionalData?.reviewScore)

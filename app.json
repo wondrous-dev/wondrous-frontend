@@ -39,7 +39,7 @@
       "supportsTablet": true,
       "config": {
         "branch": {
-          "apiKey": "key_test_hf9fOJ5np5jDNzbyKf8ApfolsDnapzVW"
+          "apiKey": " key_live_je9hURYbe3pyUydyQazRWengzslpluMJ"
         },
         "googleSignIn": {
           "reservedClientId": "com.googleusercontent.apps.276263235787-gc3g6ilmol63fvobrre6mmd79ou2ulku"
@@ -47,7 +47,7 @@
         "usesNonExemptEncryption": false
       },
       "bundleIdentifier": "co.wonder.wonderapp",
-      "buildNumber": "1.1.11",
+      "buildNumber": "1.1.12",
       "usesAppleSignIn": true
     },
     "android": {
