@@ -86,7 +86,6 @@ const SearchResult = ({ result, project, user }) => {
           }
         })
       } else if (user) {
-        console.log('what the fuck')
         try {
           await clickUserSearch({
             variables: {

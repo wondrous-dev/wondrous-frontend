@@ -9,6 +9,7 @@ export const GetReviewIcon = ({ review, style }) => {
   const {
     reviewScore
   } = review
+
   if (reviewScore === 1) {
     return <Sad style={style} />
   } else if (reviewScore === 2) {

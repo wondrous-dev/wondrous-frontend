@@ -40,6 +40,15 @@ export const GET_ASK_FEED = gql`
   ${ActivityFeedItem}
 `
 
+export const GET_REVIEW_FEED = gql`
+  query GetReviewFeed($reviewId: ID!) {
+    getReviewFeed(reviewId: $reviewId) {
+      ...ActivityFeedItem
+    }
+  }
+  ${ActivityFeedItem}
+`
+
 export const GET_FEED_ITEM_FOR_FEED_COMMENT = gql`
   query GetFeedItemForFeedComment($commentId: ID!) {
     getFeedItemForFeedComment(commentId: $commentId) {
