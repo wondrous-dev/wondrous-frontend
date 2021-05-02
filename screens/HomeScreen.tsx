@@ -2,7 +2,7 @@ import * as React from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { StyleSheet, View, SafeAreaView, Platform, Image } from 'react-native'
 import * as Notifications from 'expo-notifications'
-import Branch, { BranchEvent } from 'expo-branch'
+// import Branch, { BranchEvent } from 'expo-branch'
 import * as Sentry from 'sentry-expo'
 
 import { RootStackParamList } from '../types'
@@ -117,23 +117,25 @@ function HomeScreen({
     if (navigation) {
       registerNotifications()
     }
-    Branch.subscribe(bundle => {
-      Sentry.Native.captureEvent({
-        message: 'Branch params outside',
-        extra: bundle?.params
-      })
-      if (bundle && bundle.params && !bundle.error) {
-        Sentry.Native.captureEvent({
-          message: 'Branch params inside',
-          extra: bundle?.params
-        })
-        writeInvite({
-          userInvitationId: bundle.params?.user_invitation_id,
-          invitorFirstName: bundle.params?.invitor_firstname,
-          invitorLastName: bundle.params?.invitor_lastname
-        })
-      }
-    })
+    // Uncomment for prod!
+  
+    // Branch.subscribe(bundle => {
+    //   Sentry.Native.captureEvent({
+    //     message: 'Branch params outside',
+    //     extra: bundle?.params
+    //   })
+    //   if (bundle && bundle.params && !bundle.error) {
+    //     Sentry.Native.captureEvent({
+    //       message: 'Branch params inside',
+    //       extra: bundle?.params
+    //     })
+    //     writeInvite({
+    //       userInvitationId: bundle.params?.user_invitation_id,
+    //       invitorFirstName: bundle.params?.invitor_firstname,
+    //       invitorLastName: bundle.params?.invitor_lastname
+    //     })
+    //   }
+    // })
 
     if (data && data.getLoggedinUser) {
       redirectUser(data.getLoggedinUser, navigation)

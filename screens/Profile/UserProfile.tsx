@@ -690,8 +690,32 @@ function UserProfile({
               {
                 reviewSelected &&
                 <View style={{
-                  marginTop: spacingUnit * 3
-                }} />
+                  marginTop: spacingUnit * 2,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingLeft: spacingUnit * 3
+                }}>
+                  <Paragraph style={{
+                  }}>
+                    Add Review
+                  </Paragraph>
+                  <Pressable style={{
+                    marginBottom: -spacingUnit * 0.5,
+                    marginLeft: -spacingUnit * 0.5
+                  }} onPress={() => {
+                    navigation.push('Root', {
+                      screen: tab || 'Profile',
+                      params: {
+                        screen: 'ReviewWelcome'
+                      }
+                    })
+                  }}>
+                  <AddIcon style={{
+                        width: spacingUnit * 7,
+                        height: spacingUnit * 7
+                  }} />
+                  </Pressable>
+                </View>
               }
       </View>
     )
