@@ -114,6 +114,9 @@ export const GoalCard = ({
   }
   const unassigned = item?.unassigned
   const showTasks = () => {
+    if (!taskCount && !unassigned) {
+      navigation.push(redirect, redirectParams)
+    }
     if (taskCount || unassigned) {
       if (!clicked) {
         getTasksFromGoal({
@@ -355,7 +358,7 @@ export const GoalCard = ({
                   navigation.push(redirect, redirectParams)
                 }}>
                   <RegularText color={Blue400}>
-                    View Details
+                    Goal Details
                   </RegularText>
                   <RightCaret color={Blue400} style={{
                     // width: spacingUnit,

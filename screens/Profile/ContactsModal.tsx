@@ -15,6 +15,8 @@ import * as SMS from 'expo-sms'
 import { TESTFLIGHT_BETA_LINK } from '../../constants/index'
 import { useMe } from '../../components/withAuth'
 import { useNavigation } from '@react-navigation/core'
+import { useMutation } from '@apollo/client'
+import { CREATE_INVITE_LINK } from '../../graphql/mutations/userInvite'
 
 const checkAndRequestsPermission = async ({ setPermissions }) => {
     const hasPermissions = await Contacts.getPermissionsAsync()
@@ -27,21 +29,32 @@ const checkAndRequestsPermission = async ({ setPermissions }) => {
 
 const getContacts = async ({ setContacts }) => {
   const { data } = await Contacts.getContactsAsync({
-    fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Image, Contacts.Fields.Name],
+    fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Image, Contacts.Fields.Name, Contacts.Fields.Emails],
   })
   setContacts(data)
 }
 
 const ContactItem = ({ item, setModalVisible }) => {
   const user = useMe()
-  const message = `You've been invited to the Wonder beta by @${user && user.username}! We're here to help your passion projects flourish. Join us at ${TESTFLIGHT_BETA_LINK}!`
-  return (
-    <TouchableOpacity onPress={() => {
-      const phoneNumbers = item.phoneNumbers?.map(number => number.digits)
+  const phoneNumbers = item.phoneNumbers?.map(number => number.digits)
+  const emails = item.emails?.map(email => email.email)
+  const [createInviteLink] = useMutation(CREATE_INVITE_LINK, {
+    variables: {
+      phoneNumber: phoneNumbers && phoneNumbers[0],
+      inviteeEmail: emails && emails[0]
+    },
+    onCompleted: (createInviteLinkData) => {
+      const inviteLink = createInviteLinkData?.createInviteLink?.link
+      const message = `You've been invited to the Wonder beta by @${user && user.username}! We're here to help your passion projects flourish. Join us at ${inviteLink}!`
       SMS.sendSMSAsync(
         phoneNumbers,
         message
       )
+    }
+  })
+  return (
+    <TouchableOpacity onPress={() => {      
+      createInviteLink()
     }}>
     <View style={[listStyles.listItem, {
       alignItems: 'center',

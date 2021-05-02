@@ -15,6 +15,8 @@ export const ProjectFAQModal = ({ isVisible, setModalVisible }) => {
       <SafeAreaView style={{
         ...modalStyles.fullScreenContainer,
         alignItems: 'center',
+        paddingLeft: spacingUnit * 2,
+        paddingRight: spacingUnit * 2
       }}>
 
         <CommunitySvg style={{
@@ -24,42 +26,26 @@ export const ProjectFAQModal = ({ isVisible, setModalVisible }) => {
           marginBottom: spacingUnit * 4
         }} />
         <Subheading color={Black} style={{
-          paddingLeft: spacingUnit * 2,
-          paddingRight: spacingUnit * 2
-        }}>
-          A project can be any large goal that you want to get done.
-        </Subheading>
-        <Paragraph style={{
+          fontSize: 18,
+          lineHeight: 28,
           paddingLeft: spacingUnit * 2,
           paddingRight: spacingUnit * 2,
-          marginTop: spacingUnit * 2
         }}>
-          This could be anything you are currently working on, or just ideas that you want to make reality.{` `}
-        </Paragraph>
+          A project can be anything you are currently working on, or an idea you want to explore
+        </Subheading>
+
         <Paragraph style={{
-            fontFamily: 'Rubik SemiBold',
             marginTop: spacingUnit * 2,
-            paddingLeft: spacingUnit * 2,
-            paddingRight: spacingUnit * 2
+            paddingLeft: spacingUnit * 1.5,
+            paddingRight: spacingUnit * 1.5
           }}>
             A startup/side hustle? That album you've always wanted to make? Those fitness goals you set in the new year?
-          </Paragraph>
+        </Paragraph>
         <Paragraph style={{
           marginTop: spacingUnit* 2,
-          marginBottom: spacingUnit * 3
+          marginBottom: spacingUnit * 4,
         }}>
-          Creating a project not only helps us{` `}
-          <Paragraph style={{
-            fontFamily: 'Rubik SemiBold'
-          }}>
-          celebrate your progress and keep you accountable
-            </Paragraph>, but also lets us connect you with
-          the{` `}
-          <Paragraph style={{
-            fontFamily: 'Rubik SemiBold'
-          }}>
-            relevant people who can help.
-            </Paragraph>
+          Creating a project not only helps us celebrate your progress and keep you accountable but also lets us connect you with the relevant people who can help.
         </Paragraph>
 
         <PrimaryButton onPress={() => setModalVisible(false)}>

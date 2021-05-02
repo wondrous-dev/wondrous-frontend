@@ -99,7 +99,7 @@ const SingleTag = ({ tagName, selected, tagLength }) => {
             borderRadius: 8,
             height: spacingUnit * 4,
             ...(tagLength === 2 && {
-                marginLeft: spacingUnit * 2
+                marginLeft: spacingUnit * 3
             }),
             backgroundColor: backgroundColor,
             justifyContent: 'center',

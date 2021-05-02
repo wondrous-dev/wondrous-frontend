@@ -9,12 +9,13 @@ import BackCaret from '../../assets/images/back-caret'
 import { spacingUnit } from '../../utils/common'
 import { ShareModal } from '../Feed'
 import SearchIcon from '../../assets/images/bottomNav/search'
+import AddFriend from '../../assets/images/add-friend'
 import Cancel from '../../assets/images/cancel'
 import { Streak } from '../Streak'
 import { GET_USER_STREAK } from '../../graphql/queries'
 import { useQuery } from '@apollo/client'
 import { useMe } from '../../components/withAuth'
-
+import { ContactsModal } from '../../screens/Profile/ContactsModal'
 
 const shouldbackPageRoutes = {
   'Dashboard': true,
@@ -95,6 +96,7 @@ export const Header = ({
   const navigation = useNavigation()
   const backPage = noGoingBack ? false : shouldBackPage(route)
   const [modalVisible, setModalVisible] = useState(false)
+  const [contactsModal, setContactsModal] = useState(false)
   const user = useMe()
   const { data, loading, error } = useQuery(GET_USER_STREAK, {
     variables: {
@@ -111,6 +113,7 @@ export const Header = ({
       borderBottomWidth: 1,
       borderBottomColor: Grey300,
     }}>
+      <ContactsModal isVisible={contactsModal} setModalVisible={setContactsModal} />
       <Pressable onPress={() => {
         navigation.pop()
       }} style={{
@@ -123,8 +126,13 @@ export const Header = ({
       }
       </Pressable>
       {
-        !backPage && share && rightButton &&
-        <View />
+        !backPage &&
+        <Pressable style={{
+          position: 'absolute',
+          marginLeft: spacingUnit * 2
+        }} onPress={() => setContactsModal(true)}>
+        <AddFriend />
+        </Pressable>
       }
       {
         title ?

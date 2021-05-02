@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { StyleSheet, View, SafeAreaView, ActivityIndicator, Dimensions, Pressable } from 'react-native'
-import { useMutation } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 // import {
 //   GoogleSignin,
 //   GoogleSigninButton,
@@ -21,6 +21,8 @@ import { withAuth, useMe } from '../components/withAuth'
 import { CardList } from '../storybook/stories/CardList'
 import { AppleLogin } from '../storybook/stories/Button/Apple'
 import { spacingUnit } from '../utils/common'
+import { UserInviteContext } from '../utils/contexts'
+import { MY_USER_INVITE } from '../graphql/queries/userInvite'
 
 const loginStyles = StyleSheet.create({
   container: styles.container
@@ -34,6 +36,7 @@ function SignupScreen({
   const [loginStatus, setLoginStatus] = useState(null)
   const [loginError, setLoginError] = useState(null)
   const [signup] = useMutation(SIGNUP)
+  const login = route && route.params && route.params.login
   // if (user) {
   //   navigation.push('Welcome')
   // }
@@ -61,7 +64,7 @@ function SignupScreen({
             marginTop: spacingUnit * 2
           }} callToAction={signup} setLoginStatus={setLoginStatus} navigation={navigation} setLoginError={setLoginError} />
             <Pressable onPress={()=> {
-              if (route && route.params && route.params.login) {
+              if (login) {
                 navigation.push('EmailSignin')
               } else {
                 navigation.push('EmailSignup')

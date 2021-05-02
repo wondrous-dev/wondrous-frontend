@@ -61,6 +61,9 @@ const cache = new InMemoryCache({
         },
         users(existingData, { args, toReference }) {
           return existingData || toReference({ __typename: 'User', ...args })
+        },
+        userInvitation(existingData, { args, toReference }) {
+          return existingData || toReference({ __typename: 'MyUserInvite', ...args})
         }
       }
     }
