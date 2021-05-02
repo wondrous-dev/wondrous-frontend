@@ -23,6 +23,9 @@ import AskPage from '../Actions/Ask'
 import ActionList from '../Actions/ActionList'
 import IdChecker from './IdChecker'
 import ReviewPage from '../Review/ReviewPage'
+import ReviewWelcome from '../Review/ReviewWelcome'
+import CreateReview from '../Review/CreateReview'
+import HouseKeeping from '../Review/HouseKeeping'
 import ProjectDiscussionItem from './ProjectDiscussionItem'
 
 const Stack = createStackNavigator<BottomTabParamList>()
@@ -58,6 +61,9 @@ function ProfileScreen({
       <Stack.Screen name='AskPage' component={AskPage} />
       <Stack.Screen name='IdChecker' component={IdChecker} /> 
       <Stack.Screen name='ReviewPage' component={ReviewPage} />
+      <Stack.Screen name='CreateReview' component={CreateReview} />
+      <Stack.Screen name='HouseKeeping' component={HouseKeeping} options={{ gestureEnabled: false }} />
+      <Stack.Screen name='ReviewWelcome' component={ReviewWelcome} />
     </Stack.Navigator>
   )
 }

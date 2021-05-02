@@ -7,13 +7,13 @@ import en from 'javascript-time-ago/locale/en'
 
 import { WriteComment } from '../../components/Comment'
 import { Header } from '../../components/Header'
-import { withAuth } from '../../components/withAuth'
+import { useMe, withAuth } from '../../components/withAuth'
 import { White, Black, Grey400, Grey200 } from '../../constants/Colors'
 import { CREATE_REVIEW_COMMENT } from '../../graphql/mutations'
 import { GET_REVIEW_BY_ID, GET_REVIEW_COMMENTS } from '../../graphql/queries/review'
 import { Paragraph, Subheading, RegularText } from '../../storybook/stories/Text'
 import { renderMentionString, spacingUnit } from '../../utils/common'
-import { CommentContext } from '../../utils/contexts'
+import { ReactionFeed } from '../Actions/common'
 import { GetReviewIcon } from './utils'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { SafeImage } from '../../storybook/stories/Image'
@@ -51,6 +51,7 @@ const ReviewPage = ({ navigation, route }) => {
     reviewId,
     initialReview
   } = route.params
+  const user = useMe()
   const { data, loading, error} = useQuery(GET_REVIEW_BY_ID, {
     variables: {
       reviewId
@@ -185,27 +186,8 @@ const ReviewPage = ({ navigation, route }) => {
             }
           </View>
         }
+        <ReactionFeed type={'weekly_review'} objId={review?.id} user={user} tab={tab} />
       </ScrollView>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        // style={{
-        //   flex: 1
-        // }}
-        
-      >
-      <CommentContext.Provider value={{
-          commentMutation: createReviewComment,
-          reviewId: review && review.id,
-          replyName,
-          setReplyName
-        }}>
-          <View style={{
-            flex: 1
-          }}>
-            <WriteComment />
-          </View>
-      </CommentContext.Provider>
-      </KeyboardAvoidingView>
       </>
       }
     </SafeAreaView>

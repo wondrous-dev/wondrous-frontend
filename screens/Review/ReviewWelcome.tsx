@@ -109,9 +109,7 @@ const ReviewWelcome = ({ navigation, route }) => {
     }
   })
 
-  const {
-    tab
-  } = route.params
+  const tab = route?.params?.tab
   const lastestReview = lastestReviewData?.getLatestReviewFromUser
   const canCreateReview = checkCanCreateReview(lastestReview)
   return (

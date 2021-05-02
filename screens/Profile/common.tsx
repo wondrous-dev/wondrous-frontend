@@ -405,30 +405,6 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
           }} color={Grey800}>
             No goals or tasks here.
           </Paragraph>
-          {
-            userOwned &&
-            <PrimaryButton onPress={() => {
-              if (item === 'start') {
-                navigation.push('Root', {
-                  screen: tab || 'Profile',
-                  params: {
-                    screen: 'WorkflowWelcome',
-                    params: {
-                      projectId
-                    }
-                  }
-                })
-              } else if (item === 'none') {
-                navigation.push('Root', {
-                  screen: 'Add'
-                })
-              }
-            }}>
-              <Paragraph color={White}>
-                Create actions
-              </Paragraph>
-            </PrimaryButton>
-          }
         </View>
       )
     } else {

@@ -58,9 +58,7 @@ const CreateReview = ({ navigation, route }) => {
   const [createReview] = useMutation(CREATE_REVIEW)
   const [description, setDescription] = useState('')
   const [reviewScore, setReviewScore] = useState(null)
-  const { 
-    tab
-  } = route.params
+  const tab = route?.params?.tab
   const [createRreview, { error: createErr }] = useMutation(CREATE_REVIEW)
   const [error, setError] = useState('')
   return (
@@ -73,7 +71,7 @@ const CreateReview = ({ navigation, route }) => {
       onPress={() => Keyboard.dismiss()} style={{
         flex: 1
       }}>
-      <ScrollView style={{
+      <ScrollView contentContainerStyle={{
         marginTop: spacingUnit * 5,
         alignItems: 'center'
       }}>

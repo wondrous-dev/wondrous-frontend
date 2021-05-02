@@ -4,7 +4,7 @@ import { StyleSheet, View, FlatList } from 'react-native'
 
 import { Black, Blue400, Red400, Yellow300, Green400, Grey800, Grey300 } from '../../constants/Colors'
 import { spacingUnit } from '../../utils/common'
-import { GET_ASK_FEED, GET_FEED_REACTION_OBJ, GET_GOAL_FEED, GET_TASK_FEED } from '../../graphql/queries'
+import { GET_ASK_FEED, GET_GOAL_FEED, GET_REVIEW_FEED, GET_TASK_FEED } from '../../graphql/queries'
 import { REACT_FEED_ITEM } from '../../graphql/mutations'
 import { LikeOutline, LikeFilled } from '../../assets/images/reactions/like'
 import { Paragraph, RegularText } from '../../storybook/stories/Text'
@@ -101,6 +101,11 @@ export const ReactionFeed = ({ type, objId, user, tab }) => {
       askId: objId
     }
     query = GET_ASK_FEED
+  } else if (type === 'weekly_review') {
+    variables = {
+      reviewId: objId
+    }
+    query = GET_REVIEW_FEED
   }
 
   const {
@@ -110,6 +115,7 @@ export const ReactionFeed = ({ type, objId, user, tab }) => {
   } = useQuery(query, {
     variables
   })
+
   const [liked, setLiked] = useState(false)
   const [isModalVisible, setModalVisible] = useState(false)
   const [reactionCount, setReactionCount] = useState(0)
@@ -162,8 +168,10 @@ export const ReactionFeed = ({ type, objId, user, tab }) => {
     finalData = data && data.getTaskFeed
   } else if (type === 'ask') {
     finalData = data && data.getAskFeed
+  } else if (type === 'weekly_review') {
+    finalData = data?.getReviewFeed
   }
-
+  console.log('finalData', finalData, data?.getReviewFeed, data)
   return (
     <>
     <Paragraph color={Grey800} style={{
