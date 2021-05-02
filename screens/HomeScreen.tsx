@@ -127,6 +127,12 @@ function HomeScreen({
           message: 'Branch params inside',
           extra: bundle?.params
         })
+        Sentry.Native.captureEvent({
+          message: 'Invitation ID: ' + bundle.params?.user_invitation_id
+        })
+
+        setInvitorFirstName(bundle.params?.invitor_firstname)
+        setInvitorLastName(bundle.params?.invitor_lastname)
         writeInvite({
           userInvitationId: bundle.params?.user_invitation_id,
           invitorFirstName: bundle.params?.invitor_firstname,

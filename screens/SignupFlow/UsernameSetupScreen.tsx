@@ -3,6 +3,7 @@ import { StackScreenProps } from '@react-navigation/stack'
 import { StyleSheet, View, TouchableOpacity, Text, Image, SafeAreaView, Dimensions, Pressable, TextInput } from 'react-native'
 import ProgressCircle from 'react-native-progress-circle'
 import { Formik } from 'formik';
+import * as Sentry from 'sentry-expo'
 
 
 import { RootStackParamList } from '../../types'
@@ -65,6 +66,7 @@ const UsernameInput = ({ navigation }) => {
 
   const user: any = useMe()
   const { data: userInviteData } = useQuery(MY_USER_INVITE)
+  const [userInvite, setUserInvite] = useState(null)
   console.log('userInviteData', userInviteData)
   const [createUsername] = useMutation(CREATE_USERNAME, {
     update(cache, { data: { createUsername }}) {
@@ -96,7 +98,11 @@ const UsernameInput = ({ navigation }) => {
         setup: true
       })
     }
-  }, [])
+    if (userInviteData) {
+      setUserInvite(userInviteData?.userInvitation?.userInvitationId)
+    }
+  }, [userInviteData])
+
   return (
     <View style={usernameSetupStyles.usernameInputContainer}>
       <Subheading style={{
@@ -123,6 +129,11 @@ const UsernameInput = ({ navigation }) => {
               firstName,
               lastName 
             } = extractFirstAndLastName(values.fullName)
+  
+            Sentry.Native.captureEvent({
+              message: 'User invitation',
+              extra: userInvite
+            })
             try {
               await updateUser({
                 variables: {
@@ -134,8 +145,8 @@ const UsernameInput = ({ navigation }) => {
               })
               await createUsername({
                 variables: {
-                  ...(userInviteData?.userInvitation && {
-                    userInvitationId:  userInviteData?.userInvitation?.userInvitationId
+                  ...(userInvite && {
+                    userInvitationId: userInvite
                   }),
                   username: values?.username
                 }
