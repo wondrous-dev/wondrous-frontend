@@ -23,6 +23,10 @@ export const ActivityFeedItem = gql`
     reactionCount
     completedMessage
     pinned
+    additionalData {
+      reviewScore
+      weekStartDate
+    }
     media {
       images
       link

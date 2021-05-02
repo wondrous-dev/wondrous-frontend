@@ -34,6 +34,7 @@ import {
 } from '../../assets/images/pin'
 import Options from '../../assets/images/options'
 import { StatusItem } from '../../screens/Profile/common'
+import { GetReviewIcon } from '../../screens/Review/utils'
 import { UPDATE_POST } from '../../graphql/mutations/post'
 
 const FeedItemTypes = [
@@ -128,7 +129,6 @@ const FeedString = ({ item, standAlone }) => {
   const {
     tab
   } = route.params
-
   if (item.objectType === 'project') {
     return (
       <View style={{
@@ -156,8 +156,10 @@ const FeedString = ({ item, standAlone }) => {
       } else {
         finalString = item.itemContent ? item.itemName + '. ' + item.itemContent : item.itemName
       }
+    } else if (item.objectType === 'weekly_review') {
+      finalString = item.itemContent
     } else {
-      finalString = item.itemContent ? item.itemName + '. ' + item.itemContent : item.itemName
+      finalString = item.itemContent ? item.itemName + '\n' + item.itemContent : item.itemName
     }
 
     return (
@@ -258,6 +260,52 @@ const FeedString = ({ item, standAlone }) => {
   
       </View>
     )
+  } else if (item.objectType === 'weekly_review') {
+    return (
+      <View style={{
+        paddingRight: spacingUnit * 3,
+        flexDirection: 'row',
+        alignItems: 'center'
+      }}>
+        <GetReviewIcon review={{
+          reviewScore: Number(item?.additionalData?.reviewScore)
+        }}  style={{
+          width: 24,
+          height: 24,
+          marginRight: spacingUnit
+        }}/>
+        <Paragraph numberOfLines={4} color={Black} style={{
+         ...feedStyles.feedText,
+         fontSize: 18,
+        flex: 1
+          }} onPress={() => {
+            if (!standAlone) {
+              navigation.push('Root', {
+                screen: route && route.params && route.params.tab || 'Profile',
+                params: {
+                  screen: 'ProfileItem',
+                  params: {
+                    item,
+                    liked: false,
+                    comment: true,
+                    standAlone: true
+                  }
+                }
+              })
+            } else {
+              navigation.push('Root', {
+                screen: tab || 'Profile',
+                params: {
+                  screen: 'ReviewPage',
+                  params: {
+                    reviewId: item?.objectId
+                  }
+                }
+              })
+            }
+          }}>{renderMentionString({ content: item.itemContent, navigation, tab })} </Paragraph>
+      </View>
+    )
   }
   return null
 }
@@ -268,9 +316,9 @@ const getActionString = (item) => {
     if (item.objectType === 'ask') {
       return `needs help`
     }
-    return `created a ${item.objectType}`
+    return `created a ${item.objectType === 'weekly_review' ? 'weekly review' : item.objectType}`
   } else if (item.verb === 'complete') {
-    return `completed a ${item.objectType}` 
+    return `completed a ${item.objectType === 'weekly_review' ? 'weekly review' : item.objectType}` 
   }
 }
 
@@ -841,12 +889,17 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
         {/* <SvgImage width="24" height="24" srcElement={getCorrectSrc(item.objectType)} style={{
           marginRight: spacingUnit
         }}/> */}
-        {comment ?
-          <Paragraph style={feedStyles.feedText}>
-          {renderMentionString({ content: item.itemContent, textStyle: feedStyles.feedText,  navigation, tab: route && route.params && route.params.tab })}
-          </Paragraph>
-          :
-          <FeedString item={item} standAlone={standAlone} />
+        {!activityPage &&
+        <>
+          {
+            comment ?
+            <Paragraph style={feedStyles.feedText}>
+            {renderMentionString({ content: item.itemContent, textStyle: feedStyles.feedText,  navigation, tab: route && route.params && route.params.tab })}
+            </Paragraph>
+            :
+            <FeedString item={item} standAlone={standAlone} />
+          }
+        </>
         }
         {
           item.media &&
