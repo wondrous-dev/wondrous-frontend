@@ -11,3 +11,4 @@ export const LINKED_PREFIX = 'linkedin.com/in/'
 export const GITHUB_PREFIX = 'github.com/'
 export const MENTION_REGEX = /(?<original>(?<trigger>.)\[(?<name>([^[]*))]\((?<id>([\d\w-]*))\))/gi
 export const ACTION_QUERY_LIMIT = 30
+export const SHORTNAME_REGEX = /^[A-Za-z0-9_]{3,16}$/

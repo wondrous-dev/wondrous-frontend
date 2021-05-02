@@ -163,7 +163,7 @@ const TaskPage = ({ navigation, route }) => {
                 marginTop: spacingUnit
               }}>
                 <RegularText color={Grey800}>
-                  Completed
+                  Archived
                 </RegularText>
               </Tag>
               :
@@ -186,28 +186,6 @@ const TaskPage = ({ navigation, route }) => {
               }
               </>
             )
-          }
-        {
-            task.status === 'completed' &&
-            <Tag color={Green400} style={{
-              marginRight: spacingUnit,
-              marginTop: spacingUnit
-            }}>
-              <RegularText color={White}>
-                Completed
-              </RegularText>
-            </Tag>
-          }
-          {
-            task.status === 'archived' &&
-            <Tag color={Grey300} style={{
-              marginRight: spacingUnit,
-              marginTop: spacingUnit
-            }}>
-              <RegularText color={Grey800}>
-                Completed
-              </RegularText>
-          </Tag>
           }
           {
               task.priority &&

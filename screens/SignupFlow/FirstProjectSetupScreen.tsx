@@ -351,7 +351,7 @@ function FirstProjectSetupScreen({
                             })
                           }}>
                             <ButtonText color={Grey500} style={firstProjectSetupStyles.goToHome}>
-                              I already got invited to a project!
+                              I'm trying to explore/already joining a project!
                             </ButtonText>
                           </TouchableOpacity>
                     }

@@ -64,7 +64,7 @@ const signInAsync = async ({ graphqlCall, setLoginStatus, setLoginError, navigat
   }
 }
 
-export const GoogleLogin = ({ style, callToAction, loginStatus, setLoginStatus, setLoginError, navigation }) => {
+export const GoogleLogin = ({ style, callToAction, setLoginStatus, setLoginError, navigation }) => {
   // TODO: set up separate procedure for web (awaiting issue clearance for https://github.com/expo/expo/issues/11061)
   return (
     <SecondaryButton style={{

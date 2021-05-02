@@ -12,9 +12,11 @@ import { Black, White, Blue500, Red400, Grey100, Grey200, Grey300, GreyPlaceHold
 import { Subheading, RegularText, ButtonText, ErrorText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import Neutral from '../../assets/images/emoji/neutral'
-import { useMutation } from '@apollo/client'
-import { UPDATE_USER } from '../../graphql/mutations'
+import { useMutation, useQuery } from '@apollo/client'
+import { CREATE_USERNAME, UPDATE_USER } from '../../graphql/mutations'
 import { useMe, withAuth } from '../../components/withAuth'
+import { SHORTNAME_REGEX } from '../../constants';
+import { MY_USER_INVITE } from '../../graphql/queries/userInvite';
 const UsernameContext = createContext(null)
 
 const usernameSetupStyles = StyleSheet.create({
@@ -62,6 +64,20 @@ const UsernameInput = ({ navigation }) => {
   })
 
   const user: any = useMe()
+  const { data: userInviteData } = useQuery(MY_USER_INVITE)
+  console.log('userInviteData', userInviteData)
+  const [createUsername] = useMutation(CREATE_USERNAME, {
+    update(cache, { data: { createUsername }}) {
+      cache.modify({
+        fields: {
+          users() {
+            return [createUsername]
+          }
+        }
+      })
+    }
+  })
+
   useEffect(() => {
     if (user && user.usageProgress && user.usageProgress.signupCompleted) {
       navigation.push('Root', {
@@ -100,6 +116,8 @@ const UsernameInput = ({ navigation }) => {
             setError('Please enter a name')
           }  else if (!values.username) {
             setError('Please enter a shortname')
+          } else if (values?.username && !SHORTNAME_REGEX.test(values?.username)) {
+            setError('Please enter a valid username between 3 to 16 characters')
           } else {
             const {
               firstName,
@@ -109,10 +127,17 @@ const UsernameInput = ({ navigation }) => {
               await updateUser({
                 variables: {
                   input: {
-                    username: values.username.trim().toLowerCase(),
                     firstName,
                     lastName
                   }
+                }
+              })
+              await createUsername({
+                variables: {
+                  ...(userInviteData?.userInvitation && {
+                    userInvitationId:  userInviteData?.userInvitation?.userInvitationId
+                  }),
+                  username: values?.username
                 }
               })
               navigation.push('FirstProjectSetup')
