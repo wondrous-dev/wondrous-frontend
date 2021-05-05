@@ -36,3 +36,11 @@ export const COMPLETE_TASK = gql`
   }
   ${PublicTaskFragment}
 `
+
+export const NUDGE_TASK = gql`
+  mutation NudgeTask($taskId: String!) {
+    nudgeTask(taskId: $taskId) {
+      success
+    }
+  }
+`
