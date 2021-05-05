@@ -8,6 +8,7 @@ import {
   UIManager,
   Pressable,
   Dimensions,
+  TouchableOpacity
 } from 'react-native'
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import { Bar } from 'react-native-progress'
@@ -205,16 +206,16 @@ export const GoalCard = ({
               }]}>{renderMentionString({ content: name, textStyle: styles.text, navigation, tab: route && route.params && route.params.tab })}</Text>
               </View>
               {
-                status === 'created' && followBack && 
+                status === 'created' && followBack &&
                 <>
                 <View style={{
                   flex: 1
                 }} />
-                <Pressable style={{
+                <TouchableOpacity style={{
                   marginLeft: spacingUnit
                 }} onPress={() => nudgeGoal()}>
                   <Nudge color={Yellow300} />
-                </Pressable>
+                </TouchableOpacity>
                 </>
               }
             </View>
@@ -442,10 +443,11 @@ export const GoalCard = ({
                   <Card
                     key={task?.id}
                     navigation={navigation}
+                    followBack={followBack}
                     route={route}
                     redirect={redirect}
                     redirectParams={redirectParams}
-                    type={type}
+                    type='task'
                     icon={icon}
                     iconSize={iconSize}
                     profilePicture={user && (user.thumbnailPicture || user.profilePicture)}
