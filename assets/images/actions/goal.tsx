@@ -1,5 +1,5 @@
 import React from 'react'
-import Svg, { Path, G, Defs, ClipPath, Rect } from 'react-native-svg'
+import Svg, { Path } from 'react-native-svg'
 
 const Goal = ({ style }) => (
   <Svg width={(style && style.width) || "64"} height={(style && style.height) || "64"} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -36,3 +36,11 @@ export const COMPLETE_GOAL = gql`
   }
   ${PublicGoalFragment}
 `
+
+export const NUDGE_GOAL = gql`
+  mutation NudgeGoal($goalId: String!) {
+    nudgeGoal(goalId: $goalId) {
+      success
+    }
+  }
+`

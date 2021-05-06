@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, View, Text, ScrollView, Pressable } from 'react-native'
+import { SafeAreaView, View, Text, ScrollView, Pressable, TouchableOpacity } from 'react-native'
 import { useLazyQuery, useMutation } from '@apollo/client'
+import Toast from 'react-native-toast-message'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
 import { Grey800, Purple, Red400, White, Yellow300, Grey300, Blue400, Grey450, Black, Green400 } from '../../constants/Colors'
 import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
 import { pageStyles, sortPriority, ReactionFeed } from './common'
-import { UPDATE_GOAL, COMPLETE_GOAL } from '../../graphql/mutations'
+import { UPDATE_GOAL, COMPLETE_GOAL, NUDGE_GOAL } from '../../graphql/mutations'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import PriorityFlame from '../../assets/images/modal/priority'
 import { capitalizeFirstLetter, renderMentionString, spacingUnit } from '../../utils/common'
 import { Tag } from '../../components/Tag'
 import { formatDueDate, redDate } from '../../utils/date'
-import { GET_GOAL_BY_ID, GET_USER_STREAK } from '../../graphql/queries'
+import { GET_GOAL_BY_ID, GET_USER_STREAK, CHECK_USER_FOLLOWS_BACK } from '../../graphql/queries'
 import { MyCarousel, VideoDisplay } from '../../storybook/stories/Carousel'
 import LinkIcon from '../../assets/images/link'
+import Nudge from '../../assets/images/actions/nudge'
 
 const GoalPage = ({ navigation, route }) => {
   const user = useMe()
@@ -28,6 +30,7 @@ const GoalPage = ({ navigation, route }) => {
   const ownedByUser = (goal && goal.ownerId) === (user && user.id)
   const [status, setStatus] = useState(null)
   const [modalVisible, setModalVisible] = useState(false)
+  const [followBack, setFollowBack] = useState(null)
   const [getGoal, {
     data,
     loading,
@@ -60,6 +63,15 @@ const GoalPage = ({ navigation, route }) => {
     }
   })
 
+  const [nudgeGoal] = useMutation(NUDGE_GOAL, {
+    onCompleted: () => {
+      Toast.show({
+        text1: 'Nudge successfully sent!',
+        position: 'bottom',
+      })
+    }
+  })
+
   const [completeGoal] = useMutation(COMPLETE_GOAL, {
     refetchQueries: [
       { query: GET_USER_STREAK, variables: {
@@ -67,6 +79,10 @@ const GoalPage = ({ navigation, route }) => {
       } },
     ]
   })
+
+  const [checkUserFollowBack, {
+    data: followBackData
+  }] = useLazyQuery(CHECK_USER_FOLLOWS_BACK)
 
   useEffect(() => {
     if (!goal) {
@@ -82,7 +98,17 @@ const GoalPage = ({ navigation, route }) => {
     if (goal?.status) {
       setStatus(goal?.status)
     }
-  }, [data, goal])
+    if (goal?.ownerId && followBack === null) {
+      checkUserFollowBack({
+        variables: {
+          userId: goal?.ownerId
+        }
+      })
+    }
+    if (followBackData) {
+      setFollowBack(followBackData?.doesUserFollowBack)
+    }
+  }, [data, goal, followBackData])
 
   const completed = status === 'completed'
   const archived = status === 'archived'
@@ -118,9 +144,31 @@ const GoalPage = ({ navigation, route }) => {
         }
       }}/>
       <ScrollView style={pageStyles.container}>
+        <View style={{
+          flexDirection: 'row',
+          alignItems: 'flex-start'
+        }}>
         <Text style={pageStyles.title}>
           {renderMentionString({ content: goal.name, navigation, tab })}
         </Text>
+        {
+                status === 'created' && followBack &&
+                <>
+                <View style={{
+                  flex: 1
+                }} />
+                <TouchableOpacity style={{
+                  marginLeft: spacingUnit
+                }} onPress={() => nudgeGoal({
+                  variables: {
+                    goalId: goal?.id
+                  }
+                })}>
+                  <Nudge color={Yellow300} />
+                </TouchableOpacity>
+                </>
+          }
+        </View>
         {
           goal.detail &&
           <View>

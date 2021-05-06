@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { spacingUnit } from '../../utils/common'
 import { SvgImage } from '../../storybook/stories/Image'
 import { PrimaryButton } from '../../storybook/stories/Button'
-import JustDoIt from '../../assets/images/superhero.png'
+import Superhero from '../../assets/images/superhero'
 import { useMutation } from '@apollo/client'
 import { SET_USER_SIGNUP_COMPLETE } from '../../graphql/mutations'
 
@@ -73,8 +73,7 @@ function WelcomeScreen({
       <Subheading color={Black} style={loginStyles.subheading}>
           Welcome to Wonder!
         </Subheading>
-        <Image source={JustDoIt} style={{
-          borderRadius: spacingUnit,
+        <Superhero style={{
           alignSelf: 'center'
         }} />
         <Paragraph style={loginStyles.paragraph}>
