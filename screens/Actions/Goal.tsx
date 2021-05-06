@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { SafeAreaView, View, Text, ScrollView, Pressable, TouchableOpacity } from 'react-native'
 import { useLazyQuery, useMutation } from '@apollo/client'
 import Toast from 'react-native-toast-message'
+import ConfettiCannon from 'react-native-confetti-cannon'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
@@ -38,6 +39,7 @@ const GoalPage = ({ navigation, route }) => {
   }] = useLazyQuery(GET_GOAL_BY_ID, {
     fetchPolicy: 'network-only'
   })
+  const [confetti, setConfetti] = useState(false)
   const [updateGoal] = useMutation(UPDATE_GOAL, {
     update: (cache, { data }) => {
       if (data) {
@@ -143,6 +145,10 @@ const GoalPage = ({ navigation, route }) => {
           setModalVisible(true)
         }
       }}/>
+      {
+        confetti &&
+        <ConfettiCannon count={200} origin={{x: -10, y: 0}} />
+      }
       <ScrollView style={pageStyles.container}>
         <View style={{
           flexDirection: 'row',
@@ -207,6 +213,10 @@ const GoalPage = ({ navigation, route }) => {
                 ownedByUser &&
                 <Pressable onPress={() => {
                   setStatus('completed')
+                  setConfetti(true)
+                  setTimeout(() => {
+                    setConfetti(false)
+                  }, 5000)
                   completeGoal({
                     variables: {
                       goalId: goal?.id

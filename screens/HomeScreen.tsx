@@ -119,19 +119,7 @@ function HomeScreen({
     }
     if (Branch) {
       Branch.subscribe(bundle => {
-        Sentry.Native.captureEvent({
-          message: 'Branch params outside',
-          extra: bundle
-        })
         if (bundle && bundle.params && !bundle.error) {
-          Sentry.Native.captureEvent({
-            message: 'Branch params inside',
-            extra: bundle?.params
-          })
-          Sentry.Native.captureEvent({
-            message: 'Invitation ID: ' + bundle.params?.user_invitation_id
-          })
-  
           setInvitorFirstName(bundle.params?.invitor_firstname)
           setInvitorLastName(bundle.params?.invitor_lastname)
           if (bundle.params?.user_invitation_id) {

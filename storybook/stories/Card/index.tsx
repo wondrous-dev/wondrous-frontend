@@ -243,7 +243,9 @@ class Card extends React.Component {
 
             }
             </View>
-            <View>
+            <View style={{
+              flex: 20
+            }}>
             <Text style={[styles.text, {
               marginLeft: spacingUnit,
               paddingRight: 4

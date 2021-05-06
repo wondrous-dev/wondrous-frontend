@@ -198,7 +198,9 @@ export const GoalCard = ({
 
               }
               </View>
-              <View>
+              <View style={{
+                flex: 20
+              }}>
               <Text style={[styles.text, {
                 marginLeft: spacingUnit,
                 paddingRight: 4,
@@ -269,7 +271,7 @@ export const GoalCard = ({
                   </Tag>
                 }
                 {dueDate && !completedAt &&  
-                    <RegularText color={isRedDate ? Red400 : Grey450} style={styles.dueText}>
+                    <RegularText color={isRedDate ? Red400 : (clicked ? White : Grey450)} style={styles.dueText}>
                     Due {formatDueDate(new Date(dueDate))}
                   </RegularText>
                 }

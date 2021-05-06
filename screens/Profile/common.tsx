@@ -694,7 +694,7 @@ export const onSwipe =({
   setTaskCompleteModal,
   setGoalCompleteModal
 }) => {
-  console.log('task', item, type)
+
   if (setConfetti) {
     const formattedDueDate = new Date(item && item.dueDate)
     const newDate = new Date()
