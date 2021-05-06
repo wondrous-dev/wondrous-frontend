@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, View, Text, ScrollView, Pressable } from 'react-native'
+import { SafeAreaView, View, Text, ScrollView, Pressable, TouchableOpacity } from 'react-native'
 import { useLazyQuery, useMutation } from '@apollo/client'
+import Toast from 'react-native-toast-message'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import { Grey800, Purple, Red400, White, Black, Blue400, Grey450, Green400, Grey300 } from '../../constants/Colors'
+import { Grey800, Purple, Red400, White, Black, Blue400, Grey450, Green400, Grey300, Yellow300 } from '../../constants/Colors'
 import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
 import { pageStyles, sortPriority, ReactionFeed } from './common'
-import { COMPLETE_TASK, UPDATE_TASK } from '../../graphql/mutations'
+import { COMPLETE_TASK, UPDATE_TASK, NUDGE_TASK } from '../../graphql/mutations'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import PriorityFlame from '../../assets/images/modal/priority'
 import { capitalizeFirstLetter, renderMentionString, spacingUnit } from '../../utils/common'
 import { Tag } from '../../components/Tag'
 import { formatDueDate, redDate } from '../../utils/date'
-import { GET_TASK_BY_ID, GET_GOAL_BY_ID, GET_USER_STREAK } from '../../graphql/queries'
+import { GET_TASK_BY_ID, GET_GOAL_BY_ID, GET_USER_STREAK, CHECK_USER_FOLLOWS_BACK } from '../../graphql/queries'
 import { MyCarousel, VideoDisplay } from '../../storybook/stories/Carousel'
 import LinkIcon from '../../assets/images/link'
+import Nudge from '../../assets/images/actions/nudge'
 
 const TaskPage = ({ navigation, route }) => {
   const user = useMe()
@@ -33,6 +35,10 @@ const TaskPage = ({ navigation, route }) => {
     loading,
     error
   }] = useLazyQuery(GET_TASK_BY_ID)
+  const [followBack, setFollowBack] = useState(null)
+  const [checkUserFollowBack, {
+    data: followBackData
+  }] = useLazyQuery(CHECK_USER_FOLLOWS_BACK)
   const [updateTask] = useMutation(UPDATE_TASK, {
     update: (cache, { data } ) => {
       if (data) {
@@ -68,6 +74,15 @@ const TaskPage = ({ navigation, route }) => {
     ]
   })
 
+  const [nudgeTask] = useMutation(NUDGE_TASK, {
+    onCompleted: () => {
+      Toast.show({
+        text1: 'Nudge successfully sent!',
+        position: 'bottom',
+      })
+    }
+  })
+
   const [getGoalName, {
     data: taskGoal
   }] = useLazyQuery(GET_GOAL_BY_ID)
@@ -90,11 +105,21 @@ const TaskPage = ({ navigation, route }) => {
           goalId: task.goalId
         }
       })
+      if (followBack === null) {
+        checkUserFollowBack({
+          variables: {
+            userId: task?.ownerId
+          }
+        })
+      }
     }
     if (task?.status) {
       setStatus(task?.status)
     }
-  }, [data, task])
+    if (followBackData) {
+      setFollowBack(followBackData?.doesUserFollowBack)
+    }
+  }, [data, task, followBackData])
 
 
   if (!task) {
@@ -131,9 +156,31 @@ const TaskPage = ({ navigation, route }) => {
         }
       }}/>
       <ScrollView style={pageStyles.container}>
-        <Text style={pageStyles.title}>
-          {renderMentionString({ content: task.name, navigation, tab })}
-        </Text>
+        <View style={{
+          flexDirection: 'row',
+          alignItems: 'flex-start'
+        }}>
+          <Text style={pageStyles.title}>
+            {renderMentionString({ content: task.name, navigation, tab })}
+          </Text>
+          {
+                status === 'created' && followBack &&
+                <>
+                <View style={{
+                  flex: 1
+                }} />
+                <TouchableOpacity style={{
+                  marginLeft: spacingUnit
+                }} onPress={() => nudgeTask({
+                  variables: {
+                    taskId: task?.id
+                  }
+                })}>
+                  <Nudge color={Yellow300} />
+                </TouchableOpacity>
+                </>
+          }
+        </View>
         {
           task.detail &&
           <View>
@@ -299,7 +346,8 @@ const TaskPage = ({ navigation, route }) => {
           </Pressable>
         }
         </View>
-        <ReactionFeed type={'task'} objId={task.id} user={user} tab={tab} />
+        <ReactionFeed type={'task'} objId={task.id} 
+         />
       </ScrollView>
     </SafeAreaView>
   )

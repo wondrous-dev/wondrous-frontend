@@ -171,7 +171,7 @@ export const ReactionFeed = ({ type, objId, user, tab }) => {
   } else if (type === 'weekly_review') {
     finalData = data?.getReviewFeed
   }
-  console.log('finalData', finalData, data?.getReviewFeed, data)
+
   return (
     <>
     <Paragraph color={Grey800} style={{

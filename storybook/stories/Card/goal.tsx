@@ -8,9 +8,11 @@ import {
   UIManager,
   Pressable,
   Dimensions,
+  TouchableOpacity
 } from 'react-native'
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import { Bar } from 'react-native-progress'
+import Toast from 'react-native-toast-message'
 
 import { Orange, Blue400, Green400, White, Grey400, Grey450, Purple, Red400, Yellow300, Grey300, Grey350, Grey800, Blue500, Black, Grey200, Grey100 } from '../../../constants/Colors'
 import AddIcon from '../../../assets/images/add-dark-button'
@@ -21,17 +23,16 @@ import PriorityFlame from '../../../assets/images/modal/priority'
 import { Tag } from '../../../components/Tag'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import apollo from '../../../services/apollo'
-import { UPDATE_GOAL, UPDATE_TASK, UPDATE_ASK, CREATE_TASK } from '../../../graphql/mutations'
-import { GetReviewIcon } from '../../../screens/Review/utils'
-import { format } from 'date-fns'
+import { CREATE_TASK, NUDGE_GOAL } from '../../../graphql/mutations'
 import RightCaret from '../../../assets/images/right-caret'
 import { styles } from './styles'
-import { GET_TASKS_FROM_GOAL } from '../../../graphql/queries'
+import { CHECK_USER_FOLLOWS_BACK, GET_TASKS_FROM_GOAL } from '../../../graphql/queries'
 import TaskIcon from '../../../assets/images/task/standalone'
 import { Card } from './index'
 import { useMe } from '../../../components/withAuth'
 import { FullScreenTaskModal } from '../../../components/Modal/TaskModal'
 import { StatusSelector } from '../../../components/Status/StatusSelector'
+import Nudge from '../../../assets/images/actions/nudge'
 
 export const GoalCard = ({
   icon,
@@ -49,6 +50,7 @@ export const GoalCard = ({
   const [status, setStatus] = useState('created')
   const navigation = useNavigation()
   const [taskModalVisible, setTaskModalVisible] = useState(false)
+  const [followBack, setFollowBack] = useState(null)
   const [clicked, setClicked] = useState(false)
   const Icon = icon
   const name = item?.name
@@ -60,8 +62,27 @@ export const GoalCard = ({
   const initialTaskCount = item?.taskCount
   const completedTaskCount = item?.completedTaskCount
   const [tasks, setTasks] = useState(item?.tasks || [])
+  const [nudgeGoal] = useMutation(NUDGE_GOAL, {
+    variables: {
+      goalId: item?.id
+    },
+    onCompleted: () => {
+      Toast.show({
+        text1: 'Nudge successfully sent!',
+        position: 'bottom',
+      })
+    }
+  })
   const [taskCount, setTaskCount] = useState(initialTaskCount || 0)
   const itemRefs = useRef(new Map())
+  const {
+    data: followBackData
+  } = useQuery(CHECK_USER_FOLLOWS_BACK, {
+    variables: {
+      userId: item?.ownerId
+    }
+  })
+
   const [createTask] = useMutation(CREATE_TASK, {
     onCompleted: (createTaskData) => {
       setTasks(sortByDueDate([...tasks, createTaskData?.createTask]))
@@ -107,7 +128,10 @@ export const GoalCard = ({
         })
       }
     }
-  }, [item?.tasks, status])
+    if (followBackData) {
+      setFollowBack(followBackData?.doesUserFollowBack)
+    }
+  }, [item?.tasks, status, followBackData])
   let progress = 0
   if (completedTaskCount && completedTaskCount !== 0) {
     progress = completedTaskCount /  taskCount
@@ -181,6 +205,19 @@ export const GoalCard = ({
                 color: clicked ? White : Black
               }]}>{renderMentionString({ content: name, textStyle: styles.text, navigation, tab: route && route.params && route.params.tab })}</Text>
               </View>
+              {
+                status === 'created' && followBack &&
+                <>
+                <View style={{
+                  flex: 1
+                }} />
+                <TouchableOpacity style={{
+                  marginLeft: spacingUnit
+                }} onPress={() => nudgeGoal()}>
+                  <Nudge color={Yellow300} />
+                </TouchableOpacity>
+                </>
+              }
             </View>
             {
               description &&
@@ -406,10 +443,11 @@ export const GoalCard = ({
                   <Card
                     key={task?.id}
                     navigation={navigation}
+                    followBack={followBack}
                     route={route}
                     redirect={redirect}
                     redirectParams={redirectParams}
-                    type={type}
+                    type='task'
                     icon={icon}
                     iconSize={iconSize}
                     profilePicture={user && (user.thumbnailPicture || user.profilePicture)}

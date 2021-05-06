@@ -8,7 +8,7 @@ import {
   UIManager,
   Pressable,
 } from 'react-native'
-import { TouchableWithoutFeedback } from "react-native-gesture-handler"
+import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler"
 import Animated from "react-native-reanimated"
 
 import { Grey400, Blue400, Green400, White, Grey450, Purple, Red400, Yellow300, Grey300, Grey800 } from '../../../constants/Colors'
@@ -24,11 +24,13 @@ import { FullScreenAskModal } from '../../../components/Modal/AskModal'
 import { Tag } from '../../../components/Tag'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import apollo from '../../../services/apollo'
-import { UPDATE_GOAL, UPDATE_TASK, UPDATE_ASK } from '../../../graphql/mutations'
+import { UPDATE_GOAL, UPDATE_TASK, UPDATE_ASK, NUDGE_TASK } from '../../../graphql/mutations'
 import { GetReviewIcon } from '../../../screens/Review/utils'
 import { format } from 'date-fns'
 import RightCaret from '../../../assets/images/right-caret'
+import Nudge from '../../../assets/images/actions/nudge'
 import { styles } from './styles'
+import Toast from 'react-native-toast-message'
 
 const { multiply, sub } = Animated
 const isAndroid = Platform.OS === "android"
@@ -182,7 +184,8 @@ class Card extends React.Component {
     const priority = item?.item?.priority
     const content = item?.item?.content
     const completedAt = item?.item?.completedAt
-
+    const status = item?.item?.status
+    const id = item?.item?.id
     const {
       profilePicture,
       icon,
@@ -191,9 +194,10 @@ class Card extends React.Component {
       navigation,
       redirect,
       redirectParams,
-      route
+      route,
+      followBack
     } = this.props
-
+    console.log('type', type)
     const sortPriority = () => {
       switch(priority) {
         case 'high':
@@ -245,6 +249,30 @@ class Card extends React.Component {
               paddingRight: 4
             }]}>{renderMentionString({ content: type === 'ask' ? content : name, textStyle: styles.text, navigation: this.props.navigation, tab: route && route.params && route.params.tab })}</Text>
             </View>
+            {
+                status === 'created' && followBack && type === 'task' &&
+                <>
+                <View style={{
+                  flex: 1
+                }} />
+                <TouchableOpacity containerStyle={{
+                  marginLeft: spacingUnit
+                }} onPress={async () => {
+                  await apollo.mutate({
+                    mutation: NUDGE_TASK,
+                    variables:{
+                      taskId: id
+                    }
+                  })
+                  Toast.show({
+                    text1: 'Nudge successfully sent!',
+                    position: 'bottom',
+                  })
+                }}>
+                  <Nudge color={Yellow300} />
+                </TouchableOpacity>
+                </>
+              }
           </View>
           <View style={{
             flexDirection: 'row',

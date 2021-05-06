@@ -527,6 +527,34 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
           console.log('err', err)
         }
         break
+      case 'nudge':
+        if (objectType === 'goal') {
+          navigation.push('Root', {
+            screen: tab || 'Profile',
+            params: {
+              screen: 'GoalPage',
+              params: {
+                goalId: objectId
+              }
+            }
+
+          })
+        } else if (objectType === 'task') {
+          navigation.push('Root', {
+            screen: tab || 'Profile',
+            params: {
+              screen: 'TaskPage',
+              params: {
+                taskId: objectId
+              }
+            }
+          })
+        }
+        // navigation.push('Root', {
+        //   screen: tab || 'Profile',
+
+        // })
+        break
     
   }
 }
@@ -557,6 +585,9 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite, proje
           Enter your weekly update! This will help reflect on your progress and keep your followers up to date.
         </RegularText>
       )
+      break
+    case 'nudge':
+      displayMessage = formatNudgeMessage(notificationInfo)
       break
     case 'now_following':
       let followingString = ''
@@ -640,6 +671,26 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite, proje
   return displayMessage;
 }
 
+const formatNudgeMessage = (notificationInfo) => {
+  const {
+    actorUsername,
+    objectType,
+    additionalData
+  } = notificationInfo
+  return (
+    <RegularText color={Black}>
+    <RegularText style={{
+      fontFamily: 'Rubik SemiBold'
+    }}>
+      @{actorUsername}{` `} 
+      </RegularText> nudged you on your {objectType}: <RegularText style={{
+      fontFamily: 'Rubik SemiBold'
+    }}>
+      {additionalData?.contentPreview}
+        </RegularText>
+  </RegularText>
+  )
+}
 const formatProjectFollowRequest = (notificationInfo) => {
   const {
     objectName,
