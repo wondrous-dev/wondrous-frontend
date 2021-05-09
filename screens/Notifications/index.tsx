@@ -1264,7 +1264,7 @@ function NotificationScreen({
           borderColor: Grey800
         },
         textColor: Grey800,
-        text: 'Clear all',
+        text: 'Mark all as viewed',
         onPress: () => {
           clearAllNotifications()
         }
