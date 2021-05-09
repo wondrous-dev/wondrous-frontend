@@ -8,6 +8,7 @@ import * as Linking from 'expo-linking'
 import isEqual from 'lodash.isequal'
 import ConfettiCannon from 'react-native-confetti-cannon'
 import Toast from 'react-native-toast-message'
+import ProgressCircle from 'react-native-progress-circle'
 
 import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
 import { FullScreenAskModal } from '../../components/Modal/AskModal'
@@ -20,10 +21,10 @@ import BottomTabNavigator from '../../navigation/BottomTabNavigator'
 import { UploadImage, SafeImage } from '../../storybook/stories/Image'
 import { WONDER_BASE_URL } from '../../constants/'
 import { UPDATE_USER, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_USER, UNFOLLOW_USER, CREATE_GOAL, CREATE_ASK } from '../../graphql/mutations'
-import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GET_ASKS_FROM_USER, WHOAMI, GET_USER_STREAK, CHECK_USER_FOLLOWS_BACK } from '../../graphql/queries'
+import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GET_ASKS_FROM_USER, WHOAMI, GET_USER_STREAK, CHECK_USER_FOLLOWS_BACK, GET_USER_RING_ACTION_COUNT } from '../../graphql/queries'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { PrimaryButton, SecondaryButton } from '../../storybook/stories/Button'
-import { Black, Grey300, White, Blue400, Grey800, Grey700 } from '../../constants/Colors'
+import { Black, Grey300, White, Blue400, Grey800, Grey700, Orange } from '../../constants/Colors'
 import { ProfileContext } from '../../utils/contexts'
 import {
   ProfilePlaceholder,
@@ -209,6 +210,20 @@ function UserProfile({
     },
     fetchPolicy: 'network-only'
   })
+
+  const {
+    data: userRingActionCountData
+  } = useQuery(GET_USER_RING_ACTION_COUNT, {
+    variables: {
+      userId: finalUserId
+    }, 
+    fetchPolicy: 'network-only'
+  })
+
+  const ringActions = userRingActionCountData?.getUserRingActionCount
+  const incompleteRingActions = (ringActions?.goalCount?.incompleteGoalCount || 0) + (ringActions?.taskCount?.incompleteTaskCount || 0)
+  const completedRingActions = (ringActions?.goalCount?.completedGoalCount || 0) + (ringActions?.goalCount?.completedGoalCount || 0)
+  const percentage =  incompleteRingActions + completedRingActions === 0 ? 0 : (completedRingActions / (completedRingActions + incompleteRingActions)) * 100
 
   const [createGoal] = useMutation(CREATE_GOAL, {
     refetchQueries: [
@@ -455,8 +470,18 @@ function UserProfile({
         
               <View style={[profileStyles.profileInfoContainer, {
                 // justifyContent: 'space-between',
+                marginBottom: spacingUnit * 2
               }]}>
                 <View style={profileStyles.imageContainer}>
+                <ProgressCircle
+                  percent={percentage}
+                  radius={50}
+                  borderWidth={8}
+                  color={Orange}
+                  shadowColor={Grey300}
+                  bgColor={White}
+                  
+                >
                 {
                   profilePicture ?
                   <Pressable onPress={() => setProfilePictureModal(true)}>
@@ -475,6 +500,7 @@ function UserProfile({
                     null
                   )
                 }
+                </ProgressCircle>
                 </View>
                 <Pressable onPress={() => navigation.push('Root', {
                   screen: tab || 'Profile',
