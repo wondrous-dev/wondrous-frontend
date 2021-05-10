@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { SafeAreaView, FlatList, View, Image, StyleSheet, Dimensions, Platform, TextInput, TouchableOpacity, Pressable } from 'react-native'
 import Modal from 'react-native-modal'
-import { useMutation, useQuery } from '@apollo/client'
+import { useMutation, useQuery, useLazyQuery } from '@apollo/client'
 
 import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300, Grey300 } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
@@ -141,12 +141,13 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
   } = useQuery(GET_USER_FOLLOWING, {
     fetchPolicy: 'no-cache'
   })
-  const {
+  const [getProjectInvites, {
     data: projectInviteData
-  } = useQuery(GET_PROJECT_INVITES, {
+  }] = useLazyQuery(GET_PROJECT_INVITES, {
     variables: {
       projectId: project.id
-    }
+    },
+    fetchPolicy: 'network-only'
   })
 
   const [searchString, setSearchString] = useState('')
@@ -161,6 +162,11 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
       return one.username.toLocaleLowerCase().includes(searchString.toLocaleLowerCase())
     })
   }
+  useEffect(() => {
+    if (isVisible) {
+      getProjectInvites()
+    }
+  }, [isVisible])
 
   const projectInvites = projectInviteData && projectInviteData.getProjectInvitesForProject
 
@@ -230,7 +236,7 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
               contentContainerStyle={listStyles.listContainer}
               renderItem={({ item }) => {
                 const invited = projectInvites && projectInvites.some(element => {
-                  return element.invitee.id === item.id
+                  return element?.inviteeId === item?.id
                 })
                 return (
                   <CollaboratorItem

@@ -105,6 +105,8 @@ export const GET_PROJECT_INVITES = gql`
     getProjectInvitesForProject(projectId: $projectId) {
       id
       role
+      inviteeId
+      invitorId
       response
     }
   }
