@@ -1,8 +1,7 @@
 
 import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { Dimensions, Image, Pressable, SafeAreaView, ActivityIndicator, View, RefreshControl, FlatList } from 'react-native'
-import { createStackNavigator } from '@react-navigation/stack'
+import { Pressable, SafeAreaView, ActivityIndicator, View, RefreshControl, FlatList } from 'react-native'
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import * as Linking from 'expo-linking'
 import isEqual from 'lodash.isequal'
@@ -25,7 +24,7 @@ import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GE
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { PrimaryButton, SecondaryButton } from '../../storybook/stories/Button'
 import { Black, Grey300, White, Blue400, Grey800, Grey700, Orange } from '../../constants/Colors'
-import { ProfileContext } from '../../utils/contexts'
+import { ProfileContext, UserCongratsContext } from '../../utils/contexts'
 import {
   ProfilePlaceholder,
   ProjectInfoText,
@@ -162,8 +161,15 @@ function UserProfile({
       { query: GET_USER_STREAK, variables: {
         userId: loggedInUser && loggedInUser.id
       } },
+      {
+        query: GET_USER_RING_ACTION_COUNT,
+        variables: {
+          userId: loggedInUser && loggedInUser.id
+        }
+      }
     ]
   })
+
   const [updateAsk] = useMutation(UPDATE_ASK)
 
   const [checkUserFollowsBack, {
@@ -475,12 +481,11 @@ function UserProfile({
                 <View style={profileStyles.imageContainer}>
                 <ProgressCircle
                   percent={percentage}
-                  radius={50}
+                  radius={48}
                   borderWidth={8}
                   color={Orange}
                   shadowColor={Grey300}
                   bgColor={White}
-                  
                 >
                 {
                   profilePicture ?
@@ -746,7 +751,7 @@ function UserProfile({
       </View>
     )
   }
-
+ 
   return (
     <SafeAreaView style={{
       backgroundColor: White,
@@ -761,9 +766,14 @@ function UserProfile({
         userOwned &&
         <>
         <EditProfileModal setParentImage={setProfilePicture} user={user} isVisible={isModalVisible} setModalVisible={setModalVisible} saveMutation={updateUser} />
-
+        <UserCongratsContext.Provider value={{
+          user,
+          incompleteRingActions,
+          completedRingActions: completedRingActions === 0 ? 0 : completedRingActions - 1
+        }}>
         <GoalCongratsModal user={user} isVisible={goalCompletemodal} setModalVisible={setGoalCompleteModal} />
         <TaskCongratsModal user={user} isVisible={taskCompleteModal} setModalVisible={setTaskCompleteModal} />
+        </UserCongratsContext.Provider>
         <SettingsModal isVisible={settingsModal} setModalVisible={setSettingsModal} />
         <ContactsModal isVisible={contactsModal} setModalVisible={setContactsModal} />
         <FullScreenGoalModal setModalVisible={setGoalModalVisible} isVisible={goalModalVisible} goalMutation={createGoal} />

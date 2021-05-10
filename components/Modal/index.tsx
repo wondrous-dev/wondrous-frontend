@@ -1,15 +1,18 @@
-import React, { useState, useCallback } from 'react'
-import { ScrollView, View, Dimensions, StyleSheet, Pressable, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import React, { useState, useCallback, useEffect } from 'react'
+import { ScrollView, View, Dimensions, StyleSheet, Pressable, TouchableWithoutFeedback, Keyboard, Image } from 'react-native'
 import Modal from 'react-native-modal'
 import Clipboard from 'expo-clipboard'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import ProgressCircle from 'react-native-progress-circle'
+import { AnimatedCircularProgress } from 'react-native-circular-progress'
+import * as Progress from 'react-native-progress'
 
-import { Grey300, Black, Grey150, White, Grey800, Blue500, Blue400 } from '../../constants/Colors'
+import { Grey300, Black, Grey150, White, Grey800, Blue500, Blue400, Orange } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { PrimaryButton, SecondaryButton } from '../../storybook/stories/Button'
+import { SafeImage } from '../../storybook/stories/Image'
 import { spacingUnit, renderMentionString } from '../../utils/common'
-import Celebration from '../../assets/images/celebrations/signupConfetti'
-import { SvgImage } from '../../storybook/stories/Image'
+import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { TwitterShare, FacebookShare, CopyLink, LinkedinShare } from '../../assets/images/share'
 import { tweetNow, linkedinShare, postOnFacebook  } from '../Share'
 import { useMutation } from '@apollo/client'
@@ -23,6 +26,7 @@ import { modalStyles as commonModalStyles, ImageDisplay, submit } from './common
 import { useNavigation, useRoute } from '@react-navigation/core'
 import ImageBrowser from './ImageBrowser'
 import { renderProfileItem } from '../../screens/Profile/common'
+import { useUserCongrats } from '../../utils/hooks'
 
 export const modalStyles = StyleSheet.create({
   fixedContainer: {
@@ -57,6 +61,15 @@ const imageItemWidth = (Dimensions.get('window').width - (spacingUnit * 10)) / 2
 const imageItemHeight = imageItemWidth / 4 * 3
 
 export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisible: item, updateKey, setModalVisible, updateMutation, filePrefix }) => {
+
+  const userCongratsHook = useUserCongrats()
+  const user = userCongratsHook?.user
+  const profilePicture = user?.profilePicture
+  const incompleteRingActions = userCongratsHook?.incompleteRingActions
+  const completedRingActions = userCongratsHook?.completedRingActions
+  const percentage =  incompleteRingActions + completedRingActions === 0 ? 0 : (completedRingActions / (completedRingActions + incompleteRingActions)) * 100
+  const increasedPercentage = incompleteRingActions + completedRingActions === 0 ? 0 : ((completedRingActions + 1) / (completedRingActions + incompleteRingActions)) * 100
+  const [increased, setIncreased] = useState(false)
   const [galleryOpen, setGalleryOpen] = useState(false)
   const [media, setMedia] = useState([])
   const [cameraOpen, setCameraOpen] = useState(false)
@@ -77,6 +90,13 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
     setErrors({})
   }, [])
 
+  useEffect(() => {
+    if (id) {
+      setTimeout(() => {
+        setIncreased(true)
+    }, 1000)
+    }
+  }, [id])
   return (
     <Modal
     isVisible={id}
@@ -119,11 +139,40 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
             padding: spacingUnit * 2,
             paddingTop: spacingUnit * 5
           }}>
-            <Celebration style={{
-              ...modalStyles.confetti,
-              width: 60,
-              height: 60
-            }} />
+            <View style={{
+              alignItems: 'center',
+              marginBottom: spacingUnit * 2
+            }}>
+                <AnimatedCircularProgress
+                prefill={percentage}
+                  fill={increased ? increasedPercentage : percentage}
+                  size={80}
+                  width={8}
+                  backgroundColor={Grey300}
+                  tintColor={Orange}
+                  style={{
+                    position: 'absolute',
+                    top: -spacingUnit
+                  }}
+                  rotation={0}
+                />
+                {
+                  profilePicture ?
+                  <SafeImage style={{
+                    width: spacingUnit * 8,
+                    height: spacingUnit * 8,
+                    borderRadius: spacingUnit * 4
+                  }} profilePicture src={user.thumbnailPicture || user.profilePicture} />
+                  :
+                  (
+                    <Image source={DefaultProfilePicture} style={{
+                      width: spacingUnit * 7,
+                      height: spacingUnit * 7,
+                      borderRadius: spacingUnit * 3.5
+                    }} />
+                  )
+                }
+              </View>
           <Subheading style={{
             marginBottom: spacingUnit * 2,
             fontFamily: 'Rubik SemiBold',
