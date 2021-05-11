@@ -261,3 +261,15 @@ export function usePrevious(value) {
   });
   return ref.current;
 }
+
+export const getRingActions = (userRingActionCountData) => {
+  const ringActions = userRingActionCountData?.getUserRingActionCount
+  const incompleteRingActions = (ringActions?.goalCount?.incompleteGoalCount || 0) + (ringActions?.taskCount?.incompleteTaskCount || 0)
+  const completedRingActions = (ringActions?.goalCount?.completedGoalCount || 0) + (ringActions?.goalCount?.completedGoalCount || 0)
+  const percentage =  incompleteRingActions + completedRingActions === 0 ? 0 : (completedRingActions / (completedRingActions + incompleteRingActions)) * 100
+  return {
+    incompleteRingActions,
+    completedRingActions,
+    percentage
+  }
+}

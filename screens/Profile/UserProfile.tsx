@@ -15,7 +15,7 @@ import { withAuth, useMe } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { profileStyles } from './style'
-import { spacingUnit, wait, isEmptyObject, usePrevious } from '../../utils/common'
+import { spacingUnit, wait, isEmptyObject, usePrevious, getRingActions } from '../../utils/common'
 import BottomTabNavigator from '../../navigation/BottomTabNavigator'
 import { UploadImage, SafeImage } from '../../storybook/stories/Image'
 import { WONDER_BASE_URL } from '../../constants/'
@@ -226,10 +226,11 @@ function UserProfile({
     fetchPolicy: 'network-only'
   })
 
-  const ringActions = userRingActionCountData?.getUserRingActionCount
-  const incompleteRingActions = (ringActions?.goalCount?.incompleteGoalCount || 0) + (ringActions?.taskCount?.incompleteTaskCount || 0)
-  const completedRingActions = (ringActions?.goalCount?.completedGoalCount || 0) + (ringActions?.goalCount?.completedGoalCount || 0)
-  const percentage =  incompleteRingActions + completedRingActions === 0 ? 0 : (completedRingActions / (completedRingActions + incompleteRingActions)) * 100
+  const {
+    percentage,
+    incompleteRingActions,
+    completedRingActions
+  } = getRingActions(userRingActionCountData)
 
   const [createGoal] = useMutation(CREATE_GOAL, {
     refetchQueries: [
