@@ -492,7 +492,7 @@ function UserProfile({
               setProfilePictureModal(true)
               setRingProfileOptions(false)
             }} style={{
-              marginBottom:spacingUnit
+              marginBottom:spacingUnit * 1.5
             }}>
               <Paragraph style={{
                 fontFamily: 'Rubik SemiBold'
@@ -501,6 +501,7 @@ function UserProfile({
               </Paragraph>
             </Pressable>
             <Pressable onPress={() => {
+              setRingProfileOptions(false)
               navigation.navigate('Root', {
                 screen: tab || 'Profile',
                 params: {

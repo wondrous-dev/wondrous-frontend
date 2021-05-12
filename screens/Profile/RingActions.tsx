@@ -126,7 +126,7 @@ const TaskView = ({ tasks, user, totalTasks, completedTasks }) => {
   const onSwipeRight = (item, type) => {
     onSwipe({
       item,
-      type: 'goal',
+      type: 'task',
       status: 'completed',
       completeTask,
       updateTask,
@@ -143,6 +143,14 @@ const TaskView = ({ tasks, user, totalTasks, completedTasks }) => {
     <View style={{
       marginTop: spacingUnit
     }}>
+      {
+        confetti &&
+        <ConfettiCannon count={200} origin={{x: -10, y: 0}} />
+      }
+      {
+        ownedByUser &&
+        <TaskCongratsModal user={user} isVisible={taskCompleteModal} setModalVisible={setTaskCompleteModal} />
+      }
       <View style={styles.actionHeaderContainer}>
         <Paragraph style={styles.actionHeaderText}>
           Tasks
