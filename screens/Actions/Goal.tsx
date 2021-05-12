@@ -151,7 +151,6 @@ const GoalPage = ({ navigation, route }) => {
   const muxPlaybackId = goal.muxPlaybackId
   const asks = goal && goal.relatedAskIds
   const tasks = goal.taskCount && Number(goal.taskCount)
-  console.log('ownedByUser', ownedByUser, incompleteRingActions, goalCompleteModal)
   return (
     <SafeAreaView style={{
       flex: 1,

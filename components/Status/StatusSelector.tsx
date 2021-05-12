@@ -25,7 +25,7 @@ export const STATUS_ARR = [
   }
 ]
 
-export const StatusSelector = ({ setStatus, status, section, style }) => {
+export const StatusSelector = ({ setStatus, status, section, style, includeArchived=true }) => {
   let text = 'goals'
   if (section === 'asks') {
     text = 'asks'
@@ -46,7 +46,7 @@ export const StatusSelector = ({ setStatus, status, section, style }) => {
         marginBottom: spacingUnit * 2,
         ...style
       }}>
-        <StatusModal isVisible={modalVisible} setModalVisible={setModalVisible} statusArr={STATUS_ARR} setStatus={setStatus} status={status} headerText={text} />
+        <StatusModal isVisible={modalVisible} setModalVisible={setModalVisible} statusArr={ includeArchived ? STATUS_ARR : STATUS_ARR.slice(0, 2)} setStatus={setStatus} status={status} headerText={text} />
         <View style={[{
           marginTop: spacingUnit * 3,
           flexDirection: 'row'

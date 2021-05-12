@@ -129,22 +129,33 @@ export const GET_USER_ACTIONS = gql`
 
 export const GET_USER_RING_ACTION_COUNT = gql`
   query GetUserRingActionCount($userId: ID!) {
-    getUserRingActionCount(userId: $userId) {
-      taskCount {
-        incompleteTaskCount
-        completedTaskCount
-      }
-      goalCount {
-        incompleteGoalCount
-        completedGoalCount
-      }
+    getUserRingData(userId: $userId) {
+      incompleteGoalCount
+      completedGoalCount
+      incompleteTaskCount
+      completedTaskCount
     }
   }
 `
 
-export const GET_USER_RING_ACTIONS = gql`
-  query GetUserRingActions($userId: ID!) {
-    tasks {
+export const GET_USER_RING_GOALS = gql`
+  query GetUserRingGoals($userId: ID!) {
+    getUserRingGoals(userId: $userId) {
+      incompleteGoals {
+        ...PublicGoal
+      }
+      completedGoals {
+        ...PublicGoal
+      }
+    }
+  }
+  ${PublicGoalFragment}
+`
+
+
+export const GET_USER_RING_TASKS = gql`
+  query GetUserRingTasks($userId: ID!) {
+    getUserRingTasks(userId: $userId) {
       incompleteTasks {
         ...PublicTask
       }
@@ -152,15 +163,6 @@ export const GET_USER_RING_ACTIONS = gql`
         ...PublicTask
       }
     }
-    goals {
-      incompleteGoals {
-        ...AdditionalGoal
-      }
-      completedGoals {
-        ...AdditionalGoal
-      }
-    }
   }
   ${PublicTaskFragment}
-  ${AdditionalGoalFragment}
 `

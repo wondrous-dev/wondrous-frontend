@@ -197,7 +197,7 @@ class Card extends React.Component {
       route,
       followBack
     } = this.props
-    console.log('type', type)
+
     const sortPriority = () => {
       switch(priority) {
         case 'high':

@@ -263,13 +263,21 @@ export function usePrevious(value) {
 }
 
 export const getRingActions = (userRingActionCountData) => {
-  const ringActions = userRingActionCountData?.getUserRingActionCount
-  const incompleteRingActions = (ringActions?.goalCount?.incompleteGoalCount || 0) + (ringActions?.taskCount?.incompleteTaskCount || 0)
-  const completedRingActions = (ringActions?.goalCount?.completedGoalCount || 0) + (ringActions?.goalCount?.completedGoalCount || 0)
+  const ringActions = userRingActionCountData?.getUserRingData
+  const incompleteGoalCount = ringActions?.incompleteGoalCount || 0
+  const incompleteTaskCount = ringActions?.incompleteTaskCount || 0
+  const completedGoalCount = ringActions?.completedGoalCount || 0
+  const completedTaskCount = ringActions?.completedGoalCount || 0
+  const incompleteRingActions = incompleteGoalCount + incompleteTaskCount
+  const completedRingActions = completedGoalCount + completedTaskCount
   const percentage =  incompleteRingActions + completedRingActions === 0 ? 0 : (completedRingActions / (completedRingActions + incompleteRingActions)) * 100
   return {
     incompleteRingActions,
     completedRingActions,
-    percentage
+    percentage,
+    incompleteGoalCount,
+    incompleteTaskCount,
+    completedGoalCount,
+    completedTaskCount
   }
 }

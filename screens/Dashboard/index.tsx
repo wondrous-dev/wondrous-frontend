@@ -29,6 +29,7 @@ import ActionList from '../Actions/ActionList'
 import IdChecker from '../Profile/IdChecker'
 import ReviewPage from '../Review/ReviewPage'
 import ProjectDiscussionItem from '../Profile/ProjectDiscussionItem'
+import RingActions from '../Profile/RingActions'
 
 const Stack = createStackNavigator<RootStackParamList>()
 
@@ -70,6 +71,9 @@ function DashboardScreen({
       <Stack.Screen name='ReviewPage' component={ReviewPage} initialParams={{
         tab: 'Dashboard'
       }} />
+      <Stack.Screen name='RingActions' component={RingActions} initialParams={{
+        tab: 'Dashboard'
+      }} options={{ gestureEnabled: false }} />
     {/* <BottomTabNavigator /> */}
     </Stack.Navigator>
   )

@@ -501,7 +501,15 @@ function UserProfile({
               </Paragraph>
             </Pressable>
             <Pressable onPress={() => {
-              
+              navigation.navigate('Root', {
+                screen: tab || 'Profile',
+                params: {
+                  screen: 'RingActions',
+                  params: {
+                    fetchedUser: user
+                  }
+                }
+              })
             }}>
               <Paragraph style={{
                 fontFamily: 'Rubik SemiBold'

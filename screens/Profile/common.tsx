@@ -1,7 +1,7 @@
 
 
 
-import React, { useState, createContext, useCallback, useEffect } from 'react'
+import React from 'react'
 import { Dimensions, Pressable, View, Image } from 'react-native'
 import { Bar } from 'react-native-progress'
 import { useNavigation } from '@react-navigation/native'
@@ -497,7 +497,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
   }
 }
 
-export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRight, onSwipeLeft, tab, route, loggedInUser }) => {
+export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRight, onSwipeLeft, tab, route, loggedInUser, goalBundle=true }) => {
   // const {
   //   onSwipeRight,
   //   onSwipeLeft
@@ -560,7 +560,7 @@ export const renderCard = ({ navigation, item, type, user, itemRefs, onSwipeRigh
       marginRight: spacingUnit * 2
     }}>
       {
-        type === 'goal'
+        type === 'goal' && goalBundle
         ?
         <GoalCard
         key={item.id}
