@@ -267,7 +267,7 @@ export const getRingActions = (userRingActionCountData) => {
   const incompleteGoalCount = ringActions?.incompleteGoalCount || 0
   const incompleteTaskCount = ringActions?.incompleteTaskCount || 0
   const completedGoalCount = ringActions?.completedGoalCount || 0
-  const completedTaskCount = ringActions?.completedGoalCount || 0
+  const completedTaskCount = ringActions?.completedTaskCount || 0
   const incompleteRingActions = incompleteGoalCount + incompleteTaskCount
   const completedRingActions = completedGoalCount + completedTaskCount
   const percentage =  incompleteRingActions + completedRingActions === 0 ? 0 : (completedRingActions / (completedRingActions + incompleteRingActions)) * 100
