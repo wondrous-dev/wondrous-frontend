@@ -45,6 +45,7 @@ import ReviewPage from '../Review/ReviewPage'
 import { GET_REVIEW_FROM_REVIEW_COMMENT } from '../../graphql/queries/review'
 import { listStyles } from '../Profile/style'
 import ProjectDiscussionItem from '../Profile/ProjectDiscussionItem'
+import RingActions from '../Profile/RingActions'
 
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
@@ -1264,7 +1265,7 @@ function NotificationScreen({
           borderColor: Grey800
         },
         textColor: Grey800,
-        text: 'Clear all',
+        text: 'Mark all as viewed',
         onPress: () => {
           clearAllNotifications()
         }
@@ -1359,6 +1360,9 @@ function NotificationScreenRoutes({
       <Stack.Screen name='ReviewPage' component={ReviewPage} initialParams={{
         tab: 'Notifications'
       }} />
+      <Stack.Screen name='RingActions' component={RingActions} initialParams={{
+        tab: 'Notifications'
+      }} options={{ gestureEnabled: false }} />
     </Stack.Navigator>
     )
 }

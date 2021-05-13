@@ -1,13 +1,13 @@
 
 import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { Dimensions, Image, Pressable, SafeAreaView, ActivityIndicator, View, RefreshControl, FlatList } from 'react-native'
-import { createStackNavigator } from '@react-navigation/stack'
+import { Pressable, SafeAreaView, ActivityIndicator, View, RefreshControl, FlatList } from 'react-native'
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import * as Linking from 'expo-linking'
 import isEqual from 'lodash.isequal'
 import ConfettiCannon from 'react-native-confetti-cannon'
 import Toast from 'react-native-toast-message'
+import ProgressCircle from 'react-native-progress-circle'
 
 import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
 import { FullScreenAskModal } from '../../components/Modal/AskModal'
@@ -15,16 +15,16 @@ import { withAuth, useMe } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { profileStyles } from './style'
-import { spacingUnit, wait, isEmptyObject, usePrevious } from '../../utils/common'
+import { spacingUnit, wait, isEmptyObject, usePrevious, getRingActions } from '../../utils/common'
 import BottomTabNavigator from '../../navigation/BottomTabNavigator'
 import { UploadImage, SafeImage } from '../../storybook/stories/Image'
 import { WONDER_BASE_URL } from '../../constants/'
 import { UPDATE_USER, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_USER, UNFOLLOW_USER, CREATE_GOAL, CREATE_ASK } from '../../graphql/mutations'
-import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GET_ASKS_FROM_USER, WHOAMI, GET_USER_STREAK, CHECK_USER_FOLLOWS_BACK } from '../../graphql/queries'
+import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GET_ASKS_FROM_USER, WHOAMI, GET_USER_STREAK, CHECK_USER_FOLLOWS_BACK, GET_USER_RING_ACTION_COUNT } from '../../graphql/queries'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { PrimaryButton, SecondaryButton } from '../../storybook/stories/Button'
-import { Black, Grey300, White, Blue400, Grey800, Grey700 } from '../../constants/Colors'
-import { ProfileContext } from '../../utils/contexts'
+import { Black, Grey300, White, Blue400, Grey800, Grey700, Orange } from '../../constants/Colors'
+import { ProfileContext, UserCongratsContext } from '../../utils/contexts'
 import {
   ProfilePlaceholder,
   ProjectInfoText,
@@ -109,6 +109,7 @@ function UserProfile({
   const [contactsModal, setContactsModal] = useState(false)
   const [profilePicture, setProfilePicture] = useState(user && (user.thumbnailPicture || user.profilePicture))
     const [profilePictureModal, setProfilePictureModal] = useState(false)
+    const [profilePictureDimensions, setProfilePictureDimensions] = useState({})
   // const [offset, setOffset] = useState(null)
   const [followUser] = useMutation(FOLLOW_USER, {
     variables: {
@@ -161,8 +162,15 @@ function UserProfile({
       { query: GET_USER_STREAK, variables: {
         userId: loggedInUser && loggedInUser.id
       } },
+      {
+        query: GET_USER_RING_ACTION_COUNT,
+        variables: {
+          userId: loggedInUser && loggedInUser.id
+        }
+      }
     ]
   })
+
   const [updateAsk] = useMutation(UPDATE_ASK)
 
   const [checkUserFollowsBack, {
@@ -209,6 +217,21 @@ function UserProfile({
     },
     fetchPolicy: 'network-only'
   })
+  const [ringProfileOptions, setRingProfileOptions] = useState(false)
+  const {
+    data: userRingActionCountData
+  } = useQuery(GET_USER_RING_ACTION_COUNT, {
+    variables: {
+      userId: finalUserId
+    }, 
+    fetchPolicy: 'network-only'
+  })
+
+  const {
+    percentage,
+    incompleteRingActions,
+    completedRingActions
+  } = getRingActions(userRingActionCountData)
 
   const [createGoal] = useMutation(CREATE_GOAL, {
     refetchQueries: [
@@ -448,279 +471,345 @@ function UserProfile({
       setGoalCompleteModal
     })
   }
-
-  function ProfileHeader (user) {
+  function ProfileHeader (user, profilePictureDimensions) {
     return (
+      <>
+      {
+        ringProfileOptions &&
+        <View style={{
+          position: 'absolute',
+          zIndex: 1000,
+          elevation: 1000,
+          backgroundColor: White,
+          left: profilePictureDimensions.x + profilePictureDimensions.width,
+          top: profilePictureDimensions.y + profilePictureDimensions.height,
+          borderRadius: spacingUnit,
+          borderWidth: 1,
+          borderColor: Grey300,
+          padding: spacingUnit * 2
+        }}>
+            <Pressable onPress={() => {
+              setProfilePictureModal(true)
+              setRingProfileOptions(false)
+            }} style={{
+              marginBottom:spacingUnit * 1.5
+            }}>
+              <Paragraph style={{
+                fontFamily: 'Rubik SemiBold'
+              }}>
+                View profile picture
+              </Paragraph>
+            </Pressable>
+            <Pressable onPress={() => {
+              setRingProfileOptions(false)
+              navigation.navigate('Root', {
+                screen: tab || 'Profile',
+                params: {
+                  screen: 'RingActions',
+                  params: {
+                    fetchedUser: user
+                  }
+                }
+              })
+            }}>
+              <Paragraph style={{
+                fontFamily: 'Rubik SemiBold'
+              }}>
+                View weekly actions
+              </Paragraph>
+            </Pressable>
+          </View>
+      }
       <View style={profileStyles.profileContainer}>
-        
-              <View style={[profileStyles.profileInfoContainer, {
-                // justifyContent: 'space-between',
-              }]}>
-                <View style={profileStyles.imageContainer}>
-                {
-                  profilePicture ?
-                  <Pressable onPress={() => setProfilePictureModal(true)}>
-                  <SafeImage style={{
-                    ...profileStyles.profileImage,
-                    width: spacingUnit * 10,
-                    height: spacingUnit * 10,
-                    borderRadius: spacingUnit * 5
-                  }} profilePicture src={profilePicture || user.thumbnailPicture || user.profilePicture} setImage={setProfilePicture} />
-                  </Pressable>
-                  :
-                  (
-                    user ?
-                    <ProfilePlaceholder projectOwnedByUser={userOwned} user={true} />
-                    :
-                    null
-                  )
-                }
-                </View>
-                <Pressable onPress={() => navigation.push('Root', {
-                  screen: tab || 'Profile',
-                  params: {
-                    screen: 'ProjectList',
-                    params: {
-                      userId: finalUserId,
-                      user
-                    }
-                  }
-                })}>
-                <ProjectInfoText style={{
-                  marginRight: spacingUnit * 4,
-                  marginLeft: spacingUnit * 4
-                }} count={additionalInfo && additionalInfo.projectCount} type={additionalInfo && additionalInfo.projectCount === 1 ? 'project' : 'projects'} />
-                </Pressable>
-                <Pressable onPress={() => navigation.push('Root', {
-                  screen: tab || 'Profile',
-                  params: {
-                    screen: 'UserList',
-                    params: {
-                      followers: true,
-                      userId: finalUserId
-                    }
-                  }
-                })}>
-                <ProjectInfoText style={{
-                  marginRight: spacingUnit * 4
-                }} count={additionalInfo && additionalInfo.followerCount} type={additionalInfo && additionalInfo.followerCount === 1 ? 'follower': 'followers'} />
-                </Pressable>
-                <Pressable onPress={() => navigation.push('Root', {
-                  screen: tab || 'Profile',
-                  params: {
-                    screen: 'UserList',
-                    params: {
-                      following: true,
-                      userId: finalUserId
-                    }
-                  }
-                })}>
-                  <ProjectInfoText count={additionalInfo && additionalInfo.followingCount} type='following' />
-                </Pressable>
-                {/* <ProjectInfoText count={user.tasksCompleted} type='tasks completed' /> */}
-              </View>
-              {
-                followBack &&
-                <View style={{
-                  ...profileStyles.profileInfoContainer,
-                  marginBottom: -spacingUnit,
-                  marginTop: spacingUnit
-                }}>
-                  <View style={{
-                 backgroundColor: Grey700,
-                 borderRadius: spacingUnit,
-                 padding: 2,
-                 paddingLeft: spacingUnit,
-                 paddingRight: spacingUnit
-                }}>
-                  <RegularText color={White}>
-                    Follows you
-                  </RegularText>
-                </View>
-                </View>
-              }
-              <View style={[profileStyles.profileInfoContainer, {
-                marginTop: spacingUnit * 2,
-                alignItems: 'flex-start'
-              }]}>
-                <View style={profileStyles.profileHeader}>
-                <Subheading style={{
-                  fontSize: 18
-                }} color={Black}>
-                  {user?.firstName || ''} {user?.lastName || ''}
-                </Subheading>
-                {user?.username &&
-                <Paragraph color={Grey800}>@{user?.username}</Paragraph>
-                }
-                </View>
-                {
-                  userOwned ?
-                  <>
-                    <SecondaryButton style={profileStyles.editButton} onPress={() => setModalVisible(true)}>
-                      <RegularText color={Black}>
-                        Edit Profile
-                      </RegularText>
-                    </SecondaryButton>
+        <View style={[profileStyles.profileInfoContainer, {
+          // justifyContent: 'space-between',
+          marginBottom: spacingUnit * 2
+        }]}>
+          <View style={profileStyles.imageContainer}>
+          <ProgressCircle
+            percent={percentage}
+            radius={48}
+            borderWidth={8}
+            color={Orange}
+            shadowColor={Grey300}
+            bgColor={White}
+          >
+          {
+            profilePicture ?
+            <Pressable onLayout={(event) => {
+              const layout = event.nativeEvent.layout
+              setProfilePictureDimensions({
+                height: layout.height,
+                width: layout.width,
+                x: layout.x,
+                y: layout.y
+              })
+            }} onPress={() => {
 
-                  </>
-                  :
-                  <>
-                  {
-                  following ?
-                  <Pressable style={profileStyles.followingButton} onPress={() => {
-                    setFollowing(false)
-                    unfollowUser()
-                  }}>
-                    <Paragraph color={Black}>
-                      Following
-                    </Paragraph>
-                  </Pressable>
-                  :
-                  <Pressable onPress={() => {
-                    setFollowing(true)
-                    followUser()
-                  }} style={profileStyles.followButton}>
-                    <Paragraph color={White}>
-                      Follow
-                    </Paragraph>
-                  </Pressable>
-                  }
-                  </>
-                }
-                  <Streak viewing={userOwned ? false : user && user.username} streak={streakData && streakData.getUserStreak} streakContainerStyle={{
-                    marginLeft: spacingUnit
-                  }} />
-                  {
-                    userOwned &&
-                    <Pressable onPress={() => setSettingsModal(true)}>
-                    <Settings style={{
-                      marginLeft: spacingUnit
-                    }} />
-                    </Pressable>
-                  }
-              </View>
-              {
-                user.bio &&
-                <View style={profileStyles.profileInfoContainer}>
-                  <Paragraph color={Black} style={{
-                    flexWrap: 'wrap',
-                    textAlign: 'left'
-                  }}>
-                    {user.bio}
-                  </Paragraph>
-                </View>
+              setRingProfileOptions(!ringProfileOptions)
+            }}>
+            <SafeImage style={{
+              ...profileStyles.profileImage,
+              width: spacingUnit * 10,
+              height: spacingUnit * 10,
+              borderRadius: spacingUnit * 5
+            }} profilePicture src={profilePicture || user.thumbnailPicture || user.profilePicture} setImage={setProfilePicture} />
+            </Pressable>
+            :
+            (
+              user ?
+              <ProfilePlaceholder projectOwnedByUser={userOwned} user={true} />
+              :
+              null
+            )
+          }
+          </ProgressCircle>
+          </View>
+          <Pressable onPress={() => navigation.push('Root', {
+            screen: tab || 'Profile',
+            params: {
+              screen: 'ProjectList',
+              params: {
+                userId: finalUserId,
+                user
               }
-              <View style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginTop: spacingUnit
-              }}>
-              {user && user.links && !isEmptyObject(user.links) && 
-              <Pressable style={{
-                paddingLeft: spacingUnit * 2,
-                flexDirection: 'row',
-                alignItems: 'center',
-              }} onPress={() => {
-                navigation.push('Root', {
-                  screen: tab || 'Profile',
-                  params: {
-                    screen: 'Links',
-                    params: {
-                      links: user.links,
-                      name: user.username
-                    }
-                  }
-                })
-              }}>
-                <Link color={Grey800} style={{
-                  marginRight: spacingUnit * 0.5,
-                  width: spacingUnit * 2.5,
-                  height: spacingUnit * 2.5
-                }} />
-                <Paragraph color={Blue400}>
-                  Personal links
-                </Paragraph>
+            }
+          })}>
+          <ProjectInfoText style={{
+            marginRight: spacingUnit * 4,
+            marginLeft: spacingUnit * 4
+          }} count={additionalInfo && additionalInfo.projectCount} type={additionalInfo && additionalInfo.projectCount === 1 ? 'project' : 'projects'} />
+          </Pressable>
+          <Pressable onPress={() => navigation.push('Root', {
+            screen: tab || 'Profile',
+            params: {
+              screen: 'UserList',
+              params: {
+                followers: true,
+                userId: finalUserId
+              }
+            }
+          })}>
+          <ProjectInfoText style={{
+            marginRight: spacingUnit * 4
+          }} count={additionalInfo && additionalInfo.followerCount} type={additionalInfo && additionalInfo.followerCount === 1 ? 'follower': 'followers'} />
+          </Pressable>
+          <Pressable onPress={() => navigation.push('Root', {
+            screen: tab || 'Profile',
+            params: {
+              screen: 'UserList',
+              params: {
+                following: true,
+                userId: finalUserId
+              }
+            }
+          })}>
+            <ProjectInfoText count={additionalInfo && additionalInfo.followingCount} type='following' />
+          </Pressable>
+          {/* <ProjectInfoText count={user.tasksCompleted} type='tasks completed' /> */}
+        </View>
+        {
+          followBack &&
+          <View style={{
+            ...profileStyles.profileInfoContainer,
+            marginBottom: -spacingUnit,
+            marginTop: spacingUnit
+          }}>
+            <View style={{
+            backgroundColor: Grey700,
+            borderRadius: spacingUnit,
+            padding: 2,
+            paddingLeft: spacingUnit,
+            paddingRight: spacingUnit
+          }}>
+            <RegularText color={White}>
+              Follows you
+            </RegularText>
+          </View>
+          </View>
+        }
+        <View style={[profileStyles.profileInfoContainer, {
+          marginTop: spacingUnit * 2,
+          alignItems: 'flex-start'
+        }]}>
+          <View style={profileStyles.profileHeader}>
+          <Subheading style={{
+            fontSize: 18
+          }} color={Black}>
+            {user?.firstName || ''} {user?.lastName || ''}
+          </Subheading>
+          {user?.username &&
+          <Paragraph color={Grey800}>@{user?.username}</Paragraph>
+          }
+          </View>
+          {
+            userOwned ?
+            <>
+              <SecondaryButton style={profileStyles.editButton} onPress={() => setModalVisible(true)}>
+                <RegularText color={Black}>
+                  Edit Profile
+                </RegularText>
+              </SecondaryButton>
+
+            </>
+            :
+            <>
+            {
+            following ?
+            <Pressable style={profileStyles.followingButton} onPress={() => {
+              setFollowing(false)
+              unfollowUser()
+            }}>
+              <Paragraph color={Black}>
+                Following
+              </Paragraph>
+            </Pressable>
+            :
+            <Pressable onPress={() => {
+              setFollowing(true)
+              followUser()
+            }} style={profileStyles.followButton}>
+              <Paragraph color={White}>
+                Follow
+              </Paragraph>
+            </Pressable>
+            }
+            </>
+          }
+            <Streak viewing={userOwned ? false : user && user.username} streak={streakData && streakData.getUserStreak} streakContainerStyle={{
+              marginLeft: spacingUnit
+            }} />
+            {
+              userOwned &&
+              <Pressable onPress={() => setSettingsModal(true)}>
+              <Settings style={{
+                marginLeft: spacingUnit
+              }} />
               </Pressable>
             }
-            {
-             userOwned && <View style={{
-                marginLeft: spacingUnit,
-              }}>
-              <PrimaryButton style={{
-                width: spacingUnit * 19,
-                paddingTop: 0,
-                paddingBottom: 0,
-              }} onPress={() => setContactsModal(true)}>
-                <Paragraph color={White} >
-                  Invite friends
-                </Paragraph>
-              </PrimaryButton>
-              </View>
+        </View>
+        {
+          user.bio &&
+          <View style={profileStyles.profileInfoContainer}>
+            <Paragraph color={Black} style={{
+              flexWrap: 'wrap',
+              textAlign: 'left'
+            }}>
+              {user.bio}
+            </Paragraph>
+          </View>
+        }
+        <View style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginTop: spacingUnit
+        }}>
+        {user && user.links && !isEmptyObject(user.links) && 
+        <Pressable style={{
+          paddingLeft: spacingUnit * 2,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }} onPress={() => {
+          navigation.push('Root', {
+            screen: tab || 'Profile',
+            params: {
+              screen: 'Links',
+              params: {
+                links: user.links,
+                name: user.username
+              }
             }
-            </View>
-              <SectionsHeader />
-              {
-                (actionSelected || asksSelected) &&
-                <View style={{
-                  alignItems: 'center',
-                  flexDirection: 'row'
-                }}>
-                <StatusSelector setStatus={setStatus} status={status} section={section} />
-                {
-                  userOwned &&
-                  <Pressable onPress={() => {
-                    if  (actionSelected) {
-                      setGoalModalVisible(true)
-                    } else if (asksSelected) {
-                      setAskModalVisible(true)
-                    }
-                  }} style={{
-                    marginTop: spacingUnit * 2,
-                    marginLeft: -spacingUnit * 2
-                  }}>
-                      <AddIcon style={{
-                        width: spacingUnit * 7,
-                        height: spacingUnit * 7
-                      }} />
-                  </Pressable>
-                }
-                </View>
-              }
-              {
-                reviewSelected &&
-                <View style={{
-                  marginTop: spacingUnit * 2,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  paddingLeft: spacingUnit * 3
-                }}>
-                  <Paragraph style={{
-                  }}>
-                    Add Review
-                  </Paragraph>
-                  <Pressable style={{
-                    marginBottom: -spacingUnit * 0.5,
-                    marginLeft: -spacingUnit * 0.5
-                  }} onPress={() => {
-                    navigation.push('Root', {
-                      screen: tab || 'Profile',
-                      params: {
-                        screen: 'ReviewWelcome'
-                      }
-                    })
-                  }}>
-                  <AddIcon style={{
-                        width: spacingUnit * 7,
-                        height: spacingUnit * 7
-                  }} />
-                  </Pressable>
-                </View>
-              }
+          })
+        }}>
+          <Link color={Grey800} style={{
+            marginRight: spacingUnit * 0.5,
+            width: spacingUnit * 2.5,
+            height: spacingUnit * 2.5
+          }} />
+          <Paragraph color={Blue400}>
+            Personal links
+          </Paragraph>
+        </Pressable>
+      }
+      {
+        userOwned && <View style={{
+          marginLeft: spacingUnit,
+        }}>
+        <PrimaryButton style={{
+          width: spacingUnit * 19,
+          paddingTop: 0,
+          paddingBottom: 0,
+        }} onPress={() => setContactsModal(true)}>
+          <Paragraph color={White} >
+            Invite friends
+          </Paragraph>
+        </PrimaryButton>
+        </View>
+      }
       </View>
+        <SectionsHeader />
+        {
+          (actionSelected || asksSelected) &&
+          <View style={{
+            alignItems: 'center',
+            flexDirection: 'row'
+          }}>
+          <StatusSelector setStatus={setStatus} status={status} section={section} />
+          {
+            userOwned &&
+            <Pressable onPress={() => {
+              if  (actionSelected) {
+                setGoalModalVisible(true)
+              } else if (asksSelected) {
+                setAskModalVisible(true)
+              }
+            }} style={{
+              marginTop: spacingUnit * 2,
+              marginLeft: -spacingUnit * 2
+            }}>
+                <AddIcon style={{
+                  width: spacingUnit * 7,
+                  height: spacingUnit * 7
+                }} />
+            </Pressable>
+          }
+          </View>
+        }
+        {
+          reviewSelected &&
+          <View style={{
+            marginTop: spacingUnit * 2,
+            flexDirection: 'row',
+            alignItems: 'center',
+            paddingLeft: spacingUnit * 3
+          }}>
+            <Paragraph style={{
+            }}>
+              Add Review
+            </Paragraph>
+            <Pressable style={{
+              marginBottom: -spacingUnit * 0.5,
+              marginLeft: -spacingUnit * 0.5
+            }} onPress={() => {
+              navigation.push('Root', {
+                screen: tab || 'Profile',
+                params: {
+                  screen: 'ReviewWelcome'
+                }
+              })
+            }}>
+            <AddIcon style={{
+                  width: spacingUnit * 7,
+                  height: spacingUnit * 7
+            }} />
+            </Pressable>
+          </View>
+        }
+      </View>
+      </>
     )
   }
-
   return (
     <SafeAreaView style={{
       backgroundColor: White,
@@ -735,9 +824,14 @@ function UserProfile({
         userOwned &&
         <>
         <EditProfileModal setParentImage={setProfilePicture} user={user} isVisible={isModalVisible} setModalVisible={setModalVisible} saveMutation={updateUser} />
-
+        <UserCongratsContext.Provider value={{
+          user,
+          incompleteRingActions,
+          completedRingActions: completedRingActions === 0 ? 0 : completedRingActions - 1
+        }}>
         <GoalCongratsModal user={user} isVisible={goalCompletemodal} setModalVisible={setGoalCompleteModal} />
         <TaskCongratsModal user={user} isVisible={taskCompleteModal} setModalVisible={setTaskCompleteModal} />
+        </UserCongratsContext.Provider>
         <SettingsModal isVisible={settingsModal} setModalVisible={setSettingsModal} />
         <ContactsModal isVisible={contactsModal} setModalVisible={setContactsModal} />
         <FullScreenGoalModal setModalVisible={setGoalModalVisible} isVisible={goalModalVisible} goalMutation={createGoal} />
@@ -767,11 +861,7 @@ function UserProfile({
         }
         {
           user &&
-          <View style={{
-            // flex: 1,
-            // paddingLeft: spacingUnit * 2,
-            // paddingRight: spacingUnit * 2
-          }}>
+          <Pressable onPress={() => setRingProfileOptions(false)}>
           <FlatList refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(feedSelected, actionSelected, asksSelected)} />
           }
@@ -783,7 +873,7 @@ function UserProfile({
               }]}
             />
           )}
-          ListHeaderComponent={ProfileHeader(user)}
+          ListHeaderComponent={ProfileHeader(user, profilePictureDimensions)}
           data={profileData}
           contentContainerStyle={{
             paddingBottom: spacingUnit * 10
@@ -870,7 +960,7 @@ function UserProfile({
           >
   
           </FlatList>
-          </View>
+          </Pressable>
         }
         </ProfileContext.Provider>
     </SafeAreaView>

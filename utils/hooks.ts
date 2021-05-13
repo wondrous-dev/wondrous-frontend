@@ -4,7 +4,7 @@ import {
   useEffect
 } from 'react'
 
-import { CommentContext, TextEditorContext, ProfileContext, UserInviteContext } from './contexts'
+import { CommentContext, TextEditorContext, ProfileContext, UserInviteContext, UserCongratsContext } from './contexts'
 
 export const useComment = () => useContext(CommentContext)
 
@@ -21,3 +21,5 @@ export const usePrevious = value => {
   });
   return ref.current;
 }
+
+export const useUserCongrats = () => useContext(UserCongratsContext)

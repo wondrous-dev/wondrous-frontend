@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
 import { PublicUserFragment, LoggedinUserFragment, LoggedinUserWithTokenFragment } from '../fragments/user'
-import { AdditionalGoalFragment } from '../fragments/goal'
+import { AdditionalGoalFragment, PublicGoalFragment } from '../fragments/goal'
 import { PublicTaskFragment } from '../fragments/task'
 import { ActivityFeedItem } from '../fragments/feed'
 import { PublicProjectFragment } from '../fragments/project'
@@ -124,5 +124,45 @@ export const GET_USER_ACTIONS = gql`
     }
   }
   ${AdditionalGoalFragment}
+  ${PublicTaskFragment}
+`
+
+export const GET_USER_RING_ACTION_COUNT = gql`
+  query GetUserRingActionCount($userId: ID!) {
+    getUserRingData(userId: $userId) {
+      incompleteGoalCount
+      completedGoalCount
+      incompleteTaskCount
+      completedTaskCount
+    }
+  }
+`
+
+export const GET_USER_RING_GOALS = gql`
+  query GetUserRingGoals($userId: ID!) {
+    getUserRingGoals(userId: $userId) {
+      incompleteGoals {
+        ...PublicGoal
+      }
+      completedGoals {
+        ...PublicGoal
+      }
+    }
+  }
+  ${PublicGoalFragment}
+`
+
+
+export const GET_USER_RING_TASKS = gql`
+  query GetUserRingTasks($userId: ID!) {
+    getUserRingTasks(userId: $userId) {
+      incompleteTasks {
+        ...PublicTask
+      }
+      completedTasks {
+        ...PublicTask
+      }
+    }
+  }
   ${PublicTaskFragment}
 `

@@ -21,7 +21,8 @@ const ProfilePictureModal = ({ profilePicture, isVisible, setModalVisible }) => 
         <SafeImage style={{
           width: spacingUnit * 40,
           height: spacingUnit * 40,
-          borderRadius: spacingUnit * 20
+          borderRadius: spacingUnit * 20,
+          resizeMode: 'contain'
         }}  src={profilePicture} />
       </SafeAreaView>
     </Modal>

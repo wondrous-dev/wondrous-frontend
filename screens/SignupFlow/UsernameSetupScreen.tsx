@@ -67,7 +67,7 @@ const UsernameInput = ({ navigation }) => {
   const user: any = useMe()
   const { data: userInviteData } = useQuery(MY_USER_INVITE)
   const [userInvite, setUserInvite] = useState(null)
-  console.log('userInviteData', userInviteData)
+
   const [createUsername] = useMutation(CREATE_USERNAME, {
     update(cache, { data: { createUsername }}) {
       cache.modify({
