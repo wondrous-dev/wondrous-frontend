@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, View, Text, ScrollView, Pressable, TouchableOpacity } from 'react-native'
-import { useLazyQuery, useMutation } from '@apollo/client'
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import Toast from 'react-native-toast-message'
 import ConfettiCannon from 'react-native-confetti-cannon'
 
@@ -8,17 +8,19 @@ import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
 import { Grey800, Purple, Red400, White, Yellow300, Grey300, Blue400, Grey450, Black, Green400 } from '../../constants/Colors'
 import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
+import { GoalCongratsModal, TaskCongratsModal } from '../../components/Modal'
 import { pageStyles, sortPriority, ReactionFeed } from './common'
 import { UPDATE_GOAL, COMPLETE_GOAL, NUDGE_GOAL } from '../../graphql/mutations'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import PriorityFlame from '../../assets/images/modal/priority'
-import { capitalizeFirstLetter, renderMentionString, spacingUnit } from '../../utils/common'
+import { capitalizeFirstLetter, getRingActions, renderMentionString, spacingUnit } from '../../utils/common'
 import { Tag } from '../../components/Tag'
 import { formatDueDate, redDate } from '../../utils/date'
-import { GET_GOAL_BY_ID, GET_USER_STREAK, CHECK_USER_FOLLOWS_BACK } from '../../graphql/queries'
+import { GET_GOAL_BY_ID, GET_USER_STREAK, CHECK_USER_FOLLOWS_BACK, GET_USER_RING_ACTION_COUNT } from '../../graphql/queries'
 import { MyCarousel, VideoDisplay } from '../../storybook/stories/Carousel'
 import LinkIcon from '../../assets/images/link'
 import Nudge from '../../assets/images/actions/nudge'
+import { UserCongratsContext } from '../../utils/contexts'
 
 const GoalPage = ({ navigation, route }) => {
   const user = useMe()
@@ -40,6 +42,22 @@ const GoalPage = ({ navigation, route }) => {
     fetchPolicy: 'network-only'
   })
   const [confetti, setConfetti] = useState(false)
+  const [goalCompleteModal, setGoalCompleteModal] = useState(false)
+  const {
+    data: userRingActionCountData
+  } = useQuery(GET_USER_RING_ACTION_COUNT, {
+    variables: {
+      userId: user?.id
+    }, 
+    fetchPolicy: 'network-only'
+  })
+
+  const {
+    percentage,
+    incompleteRingActions,
+    completedRingActions
+  } = getRingActions(userRingActionCountData)
+
   const [updateGoal] = useMutation(UPDATE_GOAL, {
     update: (cache, { data }) => {
       if (data) {
@@ -79,6 +97,12 @@ const GoalPage = ({ navigation, route }) => {
       { query: GET_USER_STREAK, variables: {
         userId: user && user.id
       } },
+      {
+        query: GET_USER_RING_ACTION_COUNT,
+        variables: {
+          userId: user?.id
+        }
+      }
     ]
   })
 
@@ -127,7 +151,6 @@ const GoalPage = ({ navigation, route }) => {
   const muxPlaybackId = goal.muxPlaybackId
   const asks = goal && goal.relatedAskIds
   const tasks = goal.taskCount && Number(goal.taskCount)
-
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -148,6 +171,16 @@ const GoalPage = ({ navigation, route }) => {
       {
         confetti &&
         <ConfettiCannon count={200} origin={{x: -10, y: 0}} />
+      }
+      {
+        ownedByUser && goalCompleteModal &&
+        <UserCongratsContext.Provider value={{
+          user,
+          incompleteRingActions,
+          completedRingActions: completedRingActions
+        }}>
+        <GoalCongratsModal user={user} isVisible={goal} setModalVisible={setGoalCompleteModal} />
+        </UserCongratsContext.Provider>
       }
       <ScrollView style={pageStyles.container}>
         <View style={{
@@ -217,6 +250,7 @@ const GoalPage = ({ navigation, route }) => {
                   setTimeout(() => {
                     setConfetti(false)
                   }, 5000)
+                  setGoalCompleteModal(true)
                   completeGoal({
                     variables: {
                       goalId: goal?.id

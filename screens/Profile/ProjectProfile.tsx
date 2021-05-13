@@ -19,10 +19,10 @@ import { SafeImage, UploadImage } from '../../storybook/stories/Image'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { FullScreenDiscussionModal } from '../../components/Modal/ProjectDiscussionModal'
 import { SecondaryButton, FlexibleButton, PrimaryButton } from '../../storybook/stories/Button'
-import { capitalizeFirstLetter, isEmptyObject, spacingUnit, usePrevious, wait } from '../../utils/common'
+import { capitalizeFirstLetter, getRingActions, isEmptyObject, spacingUnit, usePrevious, wait } from '../../utils/common'
 import { GoalCongratsModal, TaskCongratsModal } from '../../components/Modal'
 import { WONDER_BASE_URL } from '../../constants/'
-import { ProfileContext } from '../../utils/contexts'
+import { ProfileContext, UserCongratsContext } from '../../utils/contexts'
 import { EditProfileModal } from './EditProfileModal'
 import { InviteCollaboratorModal } from './InviteCollaboratorModal'
 import {
@@ -38,7 +38,7 @@ import {
   fetchActions
 } from './common'
 import Link from '../../assets/images/link'
-import { GET_ASKS_FROM_PROJECT, GET_USER_STREAK, WHOAMI } from '../../graphql/queries'
+import { GET_ASKS_FROM_PROJECT, GET_USER_RING_ACTION_COUNT, GET_USER_STREAK, WHOAMI } from '../../graphql/queries'
 import { sortByDueDate } from '../../utils/date'
 import ProfilePictureModal from './ProfilePictureModal'
 import Lock from '../../assets/images/lock'
@@ -248,7 +248,18 @@ function ProjectProfile({
       })
     }
   })
-
+  const {
+    data: userRingActionCountData
+  } = useQuery(GET_USER_RING_ACTION_COUNT, {
+    variables: {
+      userId: user?.id
+    }, 
+    fetchPolicy: 'network-only'
+  })
+  const {
+    incompleteRingActions,
+    completedRingActions
+  } = getRingActions(userRingActionCountData)
   const [updateGoal] = useMutation(UPDATE_GOAL)
   const [updateTask] = useMutation(UPDATE_TASK)
   const [completeGoal] = useMutation(COMPLETE_GOAL, {
@@ -724,8 +735,15 @@ function ProjectProfile({
             <UploadImage isVisible={isVisible} setModalVisible={setModalVisible} image={profilePicture} setImage={setProfilePicture} saveImageMutation={updateProject} imagePrefix={`tmp/${projectId}/`} saveImageMutationVariable={[{projectId, input: { profilePicture }}, ['input', 'profilePicture']]}  />
             <InviteCollaboratorModal project={project} isVisible={inviteCollaboratorModal} setModalVisible={setInviteCollaboratorModal} />
             <EditProfileModal project={project} isVisible={editProfileModal} setModalVisible={setEditProfileModal} saveMutation={updateProject} setParentImage={setProfilePicture}/>
-            <GoalCongratsModal user={user} isVisible={goalCompletemodal} setModalVisible={setGoalCompleteModal} />
-            <TaskCongratsModal user={user} isVisible={taskCompleteModal} setModalVisible={setTaskCompleteModal} />
+            <UserCongratsContext.Provider value={{
+              user,
+              incompleteRingActions,
+              completedRingActions
+            }}
+            >
+              <GoalCongratsModal user={user} isVisible={goalCompletemodal} setModalVisible={setGoalCompleteModal} />
+              <TaskCongratsModal user={user} isVisible={taskCompleteModal} setModalVisible={setTaskCompleteModal} />
+            </UserCongratsContext.Provider>
             <FullScreenGoalModal setModalVisible={setGoalModalVisible} isVisible={goalModalVisible} goalMutation={createGoal} />
             <FullScreenAskModal setModalVisible={setAskModalVisible} isVisible={askModalVisible} askMutation={createAsk} />
             </>

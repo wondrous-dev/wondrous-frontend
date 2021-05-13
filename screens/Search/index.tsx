@@ -38,6 +38,7 @@ import ReviewPage from '../Review/ReviewPage'
 import { projectTagHash } from '../../constants/projectTag'
 import ProjectDiscussionItem from '../Profile/ProjectDiscussionItem'
 import { CLICK_PROJECT_SEARCH, CLICK_USER_SEARCH } from '../../graphql/mutations/search'
+import RingActions from '../Profile/RingActions'
 
 const Stack = createStackNavigator()
 
@@ -96,7 +97,7 @@ const SearchResult = ({ result, project, user }) => {
             }
           })
         } catch (err) {
-          console.log('EERR', err)
+          console.log('error searching', err)
         }
         navigation.push('Root', {
           screen: 'Search',
@@ -487,6 +488,9 @@ function SearchScreen({
     <Stack.Screen name='ReviewPage' component={ReviewPage} initialParams={{
         tab: 'Search'
       }} />
+    <Stack.Screen name='RingActions' component={RingActions} initialParams={{
+        tab: 'Search'
+      }} options={{ gestureEnabled: false }} />
   </Stack.Navigator>
   )
 }

@@ -27,6 +27,7 @@ import ReviewWelcome from '../Review/ReviewWelcome'
 import CreateReview from '../Review/CreateReview'
 import HouseKeeping from '../Review/HouseKeeping'
 import ProjectDiscussionItem from './ProjectDiscussionItem'
+import RingActions from './RingActions'
 
 const Stack = createStackNavigator<BottomTabParamList>()
 
@@ -64,6 +65,7 @@ function ProfileScreen({
       <Stack.Screen name='CreateReview' component={CreateReview} />
       <Stack.Screen name='HouseKeeping' component={HouseKeeping} options={{ gestureEnabled: false }} />
       <Stack.Screen name='ReviewWelcome' component={ReviewWelcome} />
+      <Stack.Screen name='RingActions' component={RingActions} options={{ gestureEnabled: false }} />
     </Stack.Navigator>
   )
 }
