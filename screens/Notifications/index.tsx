@@ -46,6 +46,7 @@ import { GET_REVIEW_FROM_REVIEW_COMMENT } from '../../graphql/queries/review'
 import { listStyles } from '../Profile/style'
 import ProjectDiscussionItem from '../Profile/ProjectDiscussionItem'
 import RingActions from '../Profile/RingActions'
+import { handleFeedCommentClick } from './utils'
 
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
@@ -134,6 +135,15 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
         }
       })
       break
+    case 'conversation_comment':
+      if (objectType === 'feed_comment') {
+        await handleFeedCommentClick({
+          objectId,
+          navigation,
+          tab
+        })
+        break
+      }
     case 'mention':
       let actionScreen = ''
       let params = {}
@@ -178,30 +188,11 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
         }
         break
       } else if (objectType === 'feed_comment') {
-        // Fetch feed review id and then navigate there
-        try {
-          const feedResponse = await apollo.query({
-            query: GET_FEED_ITEM_FOR_FEED_COMMENT,
-            variables: {
-              commentId: objectId
-            }
-          })
-          if (feedResponse && feedResponse.data && feedResponse.data.getFeedItemForFeedComment) {
-            navigation.push('Root', {
-              screen: tab || 'Profile',
-              params: {
-                screen: 'ProfileItem',
-                params: {
-                  item: feedResponse.data.getFeedItemForFeedComment,
-                  comment: true,
-                  standAlone: true
-                }
-              }
-            })
-          }
-        } catch (err) {
-          console.log('err')
-        }
+        await handleFeedCommentClick({
+          objectId,
+          navigation,
+          tab
+        })
         break
       } else if (objectType === 'project_discussion_comment')  {
 
@@ -562,7 +553,6 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
 
 const formatNotificationMessage = ({ notificationInfo, tab, projectInvite, projectFollowRequest }) => {
   let displayMessage = '';
-
   switch (notificationInfo.type) {
     case 'welcome':
       displayMessage =(
@@ -572,7 +562,10 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite, proje
       )
       break
     case 'mention':
-      displayMessage = formatNotificationMentionMessage(notificationInfo);
+      displayMessage = formatNotificationMentionMessage(notificationInfo)
+      break
+    case 'conversation_comment':
+      displayMessage = formatNotificationConversationCommentMessage(notificationInfo)
       break
     case 'reaction':
       displayMessage = formatNotificationReactionMessage(notificationInfo);
@@ -761,6 +754,28 @@ const formatProjectInvite = (notificationInfo) => {
     )
   }
   return null
+}
+
+const formatNotificationConversationCommentMessage = (notificationInfo) => {
+  const contentPreview = notificationInfo?.additionalData?.contentPreview
+  return (
+    <RegularText color={Black}>
+    <RegularText style={{
+      fontFamily: 'Rubik SemiBold'
+    }}>
+        @{notificationInfo.actorUsername}{` `}  
+        </RegularText>
+        commented on a conversation you are following
+        {
+          contentPreview &&
+          <RegularText style={{
+            fontFamily: 'Rubik SemiBold'
+          }}>
+            {`: "${contentPreview}"`}
+          </RegularText>
+        }
+    </RegularText>
+  )
 }
 
 const formatNotificationMentionMessage = (notificationInfo) => {

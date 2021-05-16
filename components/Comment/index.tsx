@@ -42,9 +42,9 @@ const WriteComment = () => {
     replyName,
     setReplyName,
     reviewId,
-    projectDiscussionId
+    projectDiscussionId,
+    previousCommenterIds
   } = useComment()
-
   const pressComment = useCallback(async content => {
     if (content) {
       const {
@@ -77,6 +77,9 @@ const WriteComment = () => {
               }),
               ...(mentionedProjects.length > 0 && {
                 projectMentions: mentionedProjects
+              }),
+              ...(previousCommenterIds.length > 0 && {
+                previousCommenterIds
               })
             }
           })

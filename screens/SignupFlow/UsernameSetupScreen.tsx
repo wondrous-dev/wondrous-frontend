@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { StyleSheet, View, TouchableOpacity, Text, Image, SafeAreaView, Dimensions, Pressable, TextInput } from 'react-native'
+import { StyleSheet, View, Platform, Text, Image, SafeAreaView, KeyboardAvoidingView, TextInput } from 'react-native'
 import ProgressCircle from 'react-native-progress-circle'
 import { Formik } from 'formik';
 import * as Sentry from 'sentry-expo'
@@ -225,6 +225,9 @@ function UsernameSetupScreen({
       backgroundColor: White,
       flex: 1,
     }}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <Header />
       <View style={usernameSetupStyles.progressCircleContainer}>
         <ProgressCircle
@@ -257,6 +260,7 @@ function UsernameSetupScreen({
             </ErrorText>
           </View>
         }
+      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }

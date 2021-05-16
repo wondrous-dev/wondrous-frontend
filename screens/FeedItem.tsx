@@ -60,6 +60,14 @@ function FeedItemScreen({
       })
     }
   })
+  let previousCommenterIds: [string?] = []
+  if (data?.getFeedItemComments && data?.getFeedItemComments.length > 0) {
+    data.getFeedItemComments.forEach(feedItemComment => {
+      if (!previousCommenterIds.includes(feedItemComment?.userId)) {
+        previousCommenterIds.push(feedItemComment?.userId)
+      }
+    })
+  }
 
   return (
     <>
@@ -97,7 +105,8 @@ function FeedItemScreen({
           commentMutation: createFeedComment,
           feedItemId: item.id,
           replyName,
-          setReplyName
+          setReplyName,
+          previousCommenterIds
         }}>
           <View style={{
             flex: 1

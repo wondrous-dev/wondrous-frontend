@@ -3,8 +3,8 @@ import { gql } from '@apollo/client'
 import { ActivityFeedItem } from '../fragments/feed'
 
 export const CREATE_FEED_COMMENT = gql`
-  mutation CreateFeedComment($feedItemId: String!, $content: String!, $userMentions: [ID]) {
-    createFeedComment(feedItemId: $feedItemId, content: $content, userMentions: $userMentions) {
+  mutation CreateFeedComment($feedItemId: String!, $content: String!, $userMentions: [ID], $projectMentions: [String], $previousCommenterIds: [ID] ) {
+    createFeedComment(feedItemId: $feedItemId, content: $content, userMentions: $userMentions, projectMentions: $projectMentions, previousCommenterIds: $previousCommenterIds) {
       ...ActivityFeedItem
     }
   }

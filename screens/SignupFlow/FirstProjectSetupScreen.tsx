@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { StyleSheet, View, TouchableOpacity, Text, Image, SafeAreaView, Dimensions, Pressable, TextInput } from 'react-native'
+import { StyleSheet,Platform, View, TouchableOpacity, Text, KeyboardAvoidingView, SafeAreaView, Dimensions, Pressable, TextInput } from 'react-native'
 import ProgressCircle from 'react-native-progress-circle'
 import { Formik } from 'formik';
 import { useMutation } from '@apollo/client'
@@ -312,6 +312,9 @@ function FirstProjectSetupScreen({
             <Header />
             <DismissKeyboard>
                 <View>
+                <KeyboardAvoidingView
+                    behavior={"padding"}
+                >
                     <View style={firstProjectSetupStyles.progressCircleContainer}>
                         <ProgressCircle
                             percent={50}
@@ -359,9 +362,9 @@ function FirstProjectSetupScreen({
                           </TouchableOpacity>
                     }
                     </FirstProjectSetupContext.Provider>
+                </KeyboardAvoidingView>
                 </View>
             </DismissKeyboard>
-
         </SafeAreaView>
     )
 }
