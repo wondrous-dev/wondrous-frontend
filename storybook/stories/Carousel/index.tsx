@@ -115,7 +115,7 @@ export class MyCarousel extends React.Component {
                 }
                 return (
                   <View key={item.subheading} style={{flex: 1, padding: spacingUnit * 2}}>
-                  <Subheading color={Black} style={{textAlign: 'center', lineHeight: 30}}>{item.subheading}</Subheading>
+                  <Subheading color={White} style={{textAlign: 'center', lineHeight: 30}}>{item.subheading}</Subheading>
                   {/* <Paragraph color={Black} style={{textAlign: 'center', marginTop: 8}}>{item.paragraph}</Paragraph> */}
                 </View>
                 )

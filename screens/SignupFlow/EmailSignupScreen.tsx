@@ -76,7 +76,7 @@ function EmailSignupScreen({
 
         <Title style={{
           flex: 1,
-          color: Orange
+          color: White
         }}>
           Wonder
         </Title>
