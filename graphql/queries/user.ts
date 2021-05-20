@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 
-import { PublicUserFragment, LoggedinUserFragment, LoggedinUserWithTokenFragment } from '../fragments/user'
+import { PublicUserFragment, LoggedinUserFragment, LoggedinUserWithTokenFragment, UserListFragment } from '../fragments/user'
 import { AdditionalGoalFragment, PublicGoalFragment } from '../fragments/goal'
 import { PublicTaskFragment } from '../fragments/task'
 import { ActivityFeedItem } from '../fragments/feed'
@@ -152,7 +152,6 @@ export const GET_USER_RING_GOALS = gql`
   ${PublicGoalFragment}
 `
 
-
 export const GET_USER_RING_TASKS = gql`
   query GetUserRingTasks($userId: ID!) {
     getUserRingTasks(userId: $userId) {
@@ -165,4 +164,21 @@ export const GET_USER_RING_TASKS = gql`
     }
   }
   ${PublicTaskFragment}
+`
+
+export const GET_USER_INTERESTS = gql`
+  query GetUserInterests($userId: ID) {
+    getUserInterests(userId: $userId) {
+      interest
+    }
+  }
+`
+
+export const GET_RECOMMENDED_USERS_TO_FOLLOW = gql`
+  query {
+    getRecommendedUsersToFollow {
+      ...UserList
+    }
+  }
+  ${UserListFragment}
 `

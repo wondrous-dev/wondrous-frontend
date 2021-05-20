@@ -94,7 +94,7 @@ const UsernameInput = ({ navigation }) => {
       })
     }
     if (user && user.username) {
-      navigation.push('GroupSetup')
+      navigation.push('UserInterestCategory')
     }
     if (userInviteData) {
       setUserInvite(userInviteData?.userInvitation?.userInvitationId)
@@ -104,7 +104,7 @@ const UsernameInput = ({ navigation }) => {
   return (
     <View style={usernameSetupStyles.usernameInputContainer}>
       <Subheading color={Black} style={{
-        fontSize: 36
+        fontSize: 32
       }}>
         Let's get you set up
       </Subheading>
@@ -155,7 +155,7 @@ const UsernameInput = ({ navigation }) => {
                   username: values?.username
                 }
               })
-              navigation.push('GroupSetup')
+              navigation.push('UserInterestCategory')
             } catch (err) {
               setError(capitalizeFirstLetter(err?.message))
             }
