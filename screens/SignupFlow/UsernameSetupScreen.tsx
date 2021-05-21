@@ -22,7 +22,7 @@ const UsernameContext = createContext(null)
 
 export const usernameSetupStyles = StyleSheet.create({
   stepContainer: {
-    marginTop: spacingUnit * 3,
+    marginTop: spacingUnit,
   },
   progressCircleContainer: {
     justifyContent: 'center',
@@ -203,6 +203,7 @@ const UsernameInput = ({ navigation }) => {
             <PrimaryButton
               textStyle={{ color: White }}
               style={{
+                backgroundColor: Orange,
                 width: spacingUnit * 43,
                 alignSelf: 'center',
                 marginTop: spacingUnit * 3.6 // this is not consistent with the next page on figma

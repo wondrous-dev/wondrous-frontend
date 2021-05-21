@@ -7,13 +7,12 @@ import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { categories, projectSetupStyles } from './ProjectSetupCategory'
 import { spacingUnit } from '../../utils/common'
-import { Black, Blue600, Yellow300, Grey300, White } from '../../constants/Colors'
+import { Black, Blue600, Yellow300, Grey300, White, Orange } from '../../constants/Colors'
 import { Subheading, RegularText, ButtonText, ErrorText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { useMutation, useQuery } from '@apollo/client'
 import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
 import { withAuth, useMe } from '../../components/withAuth'
-import { updateUsageProgress } from '../../utils/apollo'
 import { CREATE_USER_INTERESTS } from '../../graphql/mutations'
 import { GET_USER_INTERESTS } from '../../graphql/queries'
 
@@ -181,7 +180,8 @@ function UserInterestCategoryScreen({
             color: White
           }} style={{
             alignSelf: 'center',
-            marginTop: spacingUnit * 5
+            marginTop: spacingUnit * 5,
+            backgroundColor: Orange
           }} onPress={async () => {
             if (interests.length === 0) {
               setError('Please select some interests')
