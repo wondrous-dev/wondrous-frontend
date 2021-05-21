@@ -19,6 +19,7 @@ export const PublicGoalFragment = gql`
     additionalData {
       images
       link
+      onboarding
     }
     relatedAskIds
     completedAt

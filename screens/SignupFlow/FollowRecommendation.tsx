@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, FlatList, Text, SafeAreaView} from 'react-native'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
 
 import { White, Black, Orange, Grey300, Grey800, Green400 } from '../../constants/Colors'
 import { Subheading, Paragraph, ButtonText, ErrorText } from '../../storybook/stories/Text'
 import { Header } from '../../components/Header'
-import { useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import { GET_RECOMMENDED_USERS_TO_FOLLOW } from '../../graphql/queries'
 import { projectSetupStyles } from './ProjectSetupCategory'
 import { spacingUnit } from '../../utils/common'
@@ -13,13 +13,14 @@ import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
 import HeartEyes from '../../assets/images/emoji/heartEyes'
 import { withAuth, useMe } from '../../components/withAuth'
 import { UserItem } from '../Profile/UserList'
+import { SET_USER_SIGNUP_COMPLETE } from '../../graphql/mutations'
 
 const FollowRecommendation = ({ navigation }) => {
   const user = useMe()
   const {
     data
   } = useQuery(GET_RECOMMENDED_USERS_TO_FOLLOW)
-
+  const [setSignupComplete] = useMutation(SET_USER_SIGNUP_COMPLETE)
   const [finished, setFinished] = useState(false)
 
   return (
@@ -32,11 +33,15 @@ const FollowRecommendation = ({ navigation }) => {
         text: 'Finish',
         onPress: () => {
           setFinished(true)
+          setSignupComplete()
           setTimeout(() => {
             navigation.push('Root', {
               screen: 'Profile',
               params: {
-                screen: 'UserProfile'
+                screen: 'UserProfile',
+                params: {
+                  initialSection: 'action'
+                }
               }
             })
           }, 2000)

@@ -173,7 +173,7 @@ function EmailSignupScreen({
               lineHeight: '19px',
               textAlign: 'center',
               textDecorationLine: 'underline'
-            }} color={Grey800}>Or log in with your email</Subheading>
+            }} color={White}>Or log in with your email</Subheading>
             </Pressable>
     </SafeAreaView>
   )

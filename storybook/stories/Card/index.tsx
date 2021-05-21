@@ -186,6 +186,7 @@ class Card extends React.Component {
     const completedAt = item?.item?.completedAt
     const status = item?.item?.status
     const id = item?.item?.id
+    const onboarding = item?.item?.additionalData?.onboarding
     const {
       profilePicture,
       icon,
@@ -345,7 +346,7 @@ class Card extends React.Component {
     const {
       isVisible
     } = this.state
-
+    const onboarding = item?.additionalData?.onboarding
     return (
         <>
                 {
@@ -370,7 +371,7 @@ class Card extends React.Component {
           }
         }}
         onChange={({ open, snapPoint }) => {
-          if (snapPoint > 90 && snapPoint !== 0 && open === 'left') {
+          if (snapPoint > 90 && snapPoint !== 0 && open === 'left' && !onboarding) {
             if (onSwipeLeft) {
               onSwipeLeft()
               // LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
@@ -390,7 +391,11 @@ class Card extends React.Component {
           }
         }}
         overSwipe={50}
-        renderUnderlayLeft={this.renderUnderlayLeft}
+        renderUnderlayLeft={({ item, percentOpen }) => {
+          if (!onboarding) {
+            this.renderUnderlayLeft({ item, percentOpen })
+          }
+        }}
         snapPointsLeft={[0, 100]}
         renderUnderlayRight={this.renderUnderlayRight}
         snapPointsRight={[0, 100]}

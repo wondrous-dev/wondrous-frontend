@@ -139,20 +139,20 @@ const UsernameInput = ({ navigation }) => {
               extra: userInvite
             })
             try {
-              await updateUser({
-                variables: {
-                  input: {
-                    firstName,
-                    lastName
-                  }
-                }
-              })
               await createUsername({
                 variables: {
                   ...(userInvite && {
                     userInvitationId: userInvite
                   }),
                   username: values?.username
+                }
+              })
+              await updateUser({
+                variables: {
+                  input: {
+                    firstName,
+                    lastName
+                  }
                 }
               })
               navigation.push('UserInterestCategory')

@@ -78,7 +78,7 @@ const projectTagStyles = StyleSheet.create({
         flexDirection: 'row',
         marginTop: spacingUnit * 2.75,
         justifyContent: 'space-around',
-        paddingLeft: spacingUnit
+
     }
 })
 
@@ -98,14 +98,12 @@ const SingleTag = ({ tagName, selected, tagLength }) => {
             borderWidth: 2,
             borderRadius: 8,
             height: spacingUnit * 4,
-            ...(tagLength === 2 && {
-                marginLeft: spacingUnit * 3
-            }),
             backgroundColor: backgroundColor,
             justifyContent: 'center',
             paddingLeft: spacingUnit,
             paddingRight: spacingUnit,
-            flex: 1
+            flex: 1,
+            marginLeft: spacingUnit
         }
         }>
             <ButtonText style={{
@@ -160,9 +158,6 @@ const ProjectTagInput = ({ navigation, projectId }) => {
     const TagsRow = ({ tags }) => (
         <View style={{
             ...projectTagStyles.tagsRowContainer,
-            ...{
-                width: tags?.length === 3 ? '100%' : 'auto'
-            }
         }}>
             {tags.map(tag => (
                 <Pressable onPress={() => toggleTagSelection(tag.value)} key={tag.value}>
@@ -202,7 +197,6 @@ const ProjectTagInput = ({ navigation, projectId }) => {
             <PrimaryButton
                 textStyle={{ color: White }}
                 style={{
-                    width: spacingUnit * 43,
                     alignSelf: 'center',
                     marginTop: spacingUnit * 5
                 }}

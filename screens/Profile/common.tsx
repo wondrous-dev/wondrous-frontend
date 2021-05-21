@@ -716,7 +716,8 @@ export const onSwipe =({
       if (setGoalCompleteModal) {
         setGoalCompleteModal({
           id: item.id,
-          name: item.name
+          name: item.name,
+          additionalData: item?.additionalData
         })
       }
       completeGoal({
@@ -783,7 +784,8 @@ export const onSwipe =({
     if (setTaskCompleteModal) {
       setTaskCompleteModal({
         id: item?.id,
-        name: item?.name
+        name: item?.name,
+        additionalData: item?.additionalData
       })
     }
     if (status === 'completed') {

@@ -102,7 +102,7 @@ function UserInterestCategoryScreen({
   route
 }: StackScreenProps<RootStackParamList, 'UserInterestCategory'>) {
   const user = useMe()
-
+  const [once, setOnce] = useState(false)
   const [createUserInterests] = useMutation(CREATE_USER_INTERESTS, {
     refetchQueries: [{
       query: GET_USER_INTERESTS,
@@ -192,7 +192,7 @@ function UserInterestCategoryScreen({
                 }
               })
               if (!edit) {
-                navigation.push('FollowRecommendation')
+                // navigation.push('FollowRecommendation')
               } else {
 
               }
