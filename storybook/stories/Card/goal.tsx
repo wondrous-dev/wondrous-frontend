@@ -374,15 +374,18 @@ export const GoalCard = ({
                 marginBottom: spacingUnit,
                 marginTop: -spacingUnit
               }}/>
-              <Pressable onPress={() => setTaskModalVisible(true)} style={{
-                marginTop: spacingUnit * 2,
-                marginLeft: -spacingUnit * 2
-              }}>
-                  <AddIcon style={{
-                    width: spacingUnit * 7,
-                    height: spacingUnit * 7
-                  }} />
-              </Pressable>
+              {
+                !onboarding &&
+                <>
+                <Pressable onPress={() => setTaskModalVisible(true)} style={{
+                  marginTop: spacingUnit * 2,
+                  marginLeft: -spacingUnit * 2
+                }}>
+                    <AddIcon style={{
+                      width: spacingUnit * 7,
+                      height: spacingUnit * 7
+                    }} />
+                </Pressable>
                 <View style={{
                   flex: 1
                 }} />
@@ -404,6 +407,8 @@ export const GoalCard = ({
                       marginLeft: spacingUnit * 0.25
                     }}/>
                   </Pressable>
+                  </>
+              }
                 </>
             }
 
