@@ -133,7 +133,7 @@ function HomeScreen({
         Welcome to Wonder
       </Title>
       <MyCarousel data={homeScreens} activeDotColor={White} passiveDotColor={Grey800} containerStyle={{
-        marginTop: spacingUnit * 2
+        marginTop: 0
       }} />
       <PrimaryButton onPress={() => navigation.push('Signup')} textStyle={{
         color: White

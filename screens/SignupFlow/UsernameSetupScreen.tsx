@@ -148,6 +148,7 @@ const UsernameInput = ({ navigation }) => {
                   username: values?.username
                 }
               })
+              await createOnboardingTasks()
               if (firstName || lastName) {
                 await updateUser({
                   variables: {
@@ -158,7 +159,6 @@ const UsernameInput = ({ navigation }) => {
                   }
                 })
               }
-              await createOnboardingTasks()
               navigation.push('UserInterestCategory')
             } catch (err) {
               setError(capitalizeFirstLetter(err?.message))
