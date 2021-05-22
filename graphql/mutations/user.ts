@@ -87,7 +87,7 @@ export const CREATE_USER_INTERESTS = gql`
 
 export const CREATE_ONBOARDING_TASKS = gql`
   mutation {
-    createOnboardingTasks {
+    createOnboardingActions {
       success
     }
   }
