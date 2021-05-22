@@ -262,7 +262,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                   if (archived) {
                     finalStatus = 'archived'
                   }
-                  if (completed && task) {
+                  if (completed && task && task?.status !== 'completed') {
                     try {
                       await completeTaskMutation({
                         variables: {
@@ -276,7 +276,9 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                   submit({
                     name: taskText,
                     detail: description,
-                    status: finalStatus,
+                    ...(!completed && {
+                      status: finalStatus,
+                    }),
                     priority,
                     dueDate,
                     link,
@@ -293,8 +295,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                       updateId: task.id,
                       updateKey: 'taskId'
                     }),
-                    firstTime,
-                    completed
+                    firstTime
                   })
                   setModalVisible(false)
                   if (!task) {

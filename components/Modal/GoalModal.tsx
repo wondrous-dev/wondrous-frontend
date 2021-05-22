@@ -27,9 +27,10 @@ import Checkmark from '../../assets/images/checkmark'
 
 const FILE_PREFIX = 'tmp/goal/new/'
 
-export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, projectId, goalMutation, firstTime }) => {
+export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, projectId, goalMutation, firstTime, completeGoalMutation }) => {
   const initialDueDate = endOfWeekFromNow()
   const navigation = useNavigation()
+  const [archived, setArchived] = useState(goal && goal.status === 'archived')
   const [completed, setCompleted] = useState(goal && goal.status === 'completed')
   const [goalText, setGoalText] = useState((goal && goal.name) || '')
   const [project, setProject] = useState((goal && goal.projectId) || projectId)
@@ -153,7 +154,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
               <Pressable style={{
                 ...modalStyles.createUpdateButton,
                 backgroundColor: (imageUploading || videoUploading) ? Grey800 : Blue500
-              }} onPress={() => {
+              }} onPress={async () => {
                 if (!project) {
                   setErrors({
                     createError: 'Project is required'
@@ -167,11 +168,29 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                     submitError: 'Images are still uploading!'
                   })
                 } else {
+                  let finalStatus = 'created'
+                  if (archived) {
+                    finalStatus = 'archived'
+                  }
+                  if (completed && goal && goal?.status !== 'completed') {
+                    try {
+                      await completeGoalMutation({
+                        variables: {
+                          goalId: goal?.id
+                        }
+                      })
+                    } catch (err) {
+                      console.error('Cannot complete task')
+                    }
+                  }
                   submit({
                     name: goalText,
                     detail: description,
                     priority,
                     dueDate,
+                    ...(!completed && {
+                      status: finalStatus,
+                    }),
                     link,
                     privacyLevel: privacy,
                     errors,
@@ -182,7 +201,6 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                     mutation: goalMutation,
                     firstTime,
                     video,
-                    completed,
                     ...(goal && {
                       updateId: goal.id,
                       updateKey: 'goalId'
@@ -239,7 +257,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                   {
                     completed
                     ?
-                    <Pressable style={modalStyles.completedButton} onPress={() => setCompleted(false)}>
+                    <Pressable style={modalStyles.completedButton}>
                       <Paragraph color={White} style={{
                         marginRight: spacingUnit * 0.4
                       }}>
@@ -251,11 +269,39 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                       }}/>
                     </Pressable>
                     :
-                    <Pressable style={modalStyles.markAsCompleteButton} onPress={() => setCompleted(true)}>
+                    <Pressable style={modalStyles.markAsCompleteButton} onPress={() => {
+                      if (!archived) {
+                        setCompleted(true)
+                      }
+                    }}>
                       <Paragraph color={Green400}>
                         Mark as complete
                       </Paragraph>
                     </Pressable>
+                  }
+                                    {
+                    goal &&
+                    <>
+                    {
+                      archived 
+                      ?
+                      <Pressable style={modalStyles.archivedButton} onPress={() => setArchived(false)}>
+                        <Paragraph color={White}>
+                          Archived
+                        </Paragraph>
+                      </Pressable>
+                      :
+                      <Pressable style={modalStyles.markAsArchivedButton} onPress={() => {
+                        if (!completed) {
+                          setArchived(true)
+                        }
+                      }}>
+                        <Paragraph color={Grey800}>
+                          Mark as archived
+                        </Paragraph>
+                      </Pressable>
+                    }
+                    </>
                   }
                   </View>
                   <View style={[
