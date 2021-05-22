@@ -148,7 +148,7 @@ const UsernameInput = ({ navigation }) => {
                   username: values?.username
                 }
               })
-              if (!user?.firstName || !user?.lastName) {
+              if (firstName || lastName) {
                 await updateUser({
                   variables: {
                     input: {
