@@ -166,9 +166,9 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
                   :
                   (
                     <Image source={DefaultProfilePicture} style={{
-                      width: spacingUnit * 7,
-                      height: spacingUnit * 7,
-                      borderRadius: spacingUnit * 3.5
+                      width: spacingUnit * 8,
+                      height: spacingUnit * 8,
+                      borderRadius: spacingUnit * 4
                     }} />
                   )
                 }
