@@ -125,9 +125,8 @@ function UserInterestCategoryScreen({
   const [interests, setInterests] = useState([])
   const [error, setError] = useState(null)
   useEffect(() => {
-    if (data?.getUserInterests && data?.getUserInterests.length > 0) {
-      const newInterests = data?.getUserInterests.map(userInterest => userInterest?.interest )
-      setInterests(newInterests)
+    if (data?.getUserInterests?.interests?.length > 0) {
+      setInterests(data?.getUserInterests?.interests)
       navigation.push('FollowRecommendation')
     }
   }, [data])

@@ -3,9 +3,6 @@ import {
   View,
   Text,
   TouchableWithoutFeedback,
-  StyleSheet,
-  Platform,
-  UIManager,
   Pressable,
   Dimensions,
   TouchableOpacity

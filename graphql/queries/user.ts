@@ -169,7 +169,7 @@ export const GET_USER_RING_TASKS = gql`
 export const GET_USER_INTERESTS = gql`
   query GetUserInterests($userId: ID) {
     getUserInterests(userId: $userId) {
-      interest
+      interests
     }
   }
 `

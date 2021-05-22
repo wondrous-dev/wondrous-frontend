@@ -14,7 +14,7 @@ import { Subheading, Paragraph, ButtonText, ErrorText } from '../../storybook/st
 import { PrimaryButton } from '../../storybook/stories/Button'
 import Neutral from '../../assets/images/emoji/neutral'
 import { useMutation, useQuery } from '@apollo/client'
-import { CREATE_USERNAME, UPDATE_USER } from '../../graphql/mutations'
+import { CREATE_ONBOARDING_TASKS, CREATE_USERNAME, UPDATE_USER } from '../../graphql/mutations'
 import { useMe, withAuth } from '../../components/withAuth'
 import { SHORTNAME_REGEX } from '../../constants'
 import { MY_USER_INVITE } from '../../graphql/queries/userInvite'
@@ -79,6 +79,7 @@ const UsernameInput = ({ navigation }) => {
       })
     }
   })
+  const [createOnboardingTasks] = useMutation(CREATE_ONBOARDING_TASKS)
 
   useEffect(() => {
     if (user && user.usageProgress && user.usageProgress.signupCompleted) {
@@ -147,14 +148,17 @@ const UsernameInput = ({ navigation }) => {
                   username: values?.username
                 }
               })
-              await updateUser({
-                variables: {
-                  input: {
-                    firstName,
-                    lastName
+              if (!user?.firstName || !user?.lastName) {
+                await updateUser({
+                  variables: {
+                    input: {
+                      firstName,
+                      lastName
+                    }
                   }
-                }
-              })
+                })
+              }
+              await createOnboardingTasks()
               navigation.push('UserInterestCategory')
             } catch (err) {
               setError(capitalizeFirstLetter(err?.message))
