@@ -32,7 +32,7 @@ import { updateUsageProgress } from '../../utils/apollo'
 
 const ProjectSetupCategoryContext = createContext(null)
 
-const projectSetupStyles = StyleSheet.create({
+export const projectSetupStyles = StyleSheet.create({
   categoryContainer: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -63,7 +63,7 @@ const projectSetupStyles = StyleSheet.create({
   }
 })
 
-const categories = {
+export const categories = {
   business: {
     title: 'Business',
     image: BusinessIcon
@@ -144,7 +144,7 @@ const CategoryItem = ({ category }) => {
   )
 }
 
-const CategoryRow = ({ threeCategories }) => {
+export const CategoryRow = ({ threeCategories }) => {
   return (
     <View style={projectSetupStyles.categoryRowContainer}>
       {

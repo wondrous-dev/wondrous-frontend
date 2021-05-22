@@ -24,8 +24,6 @@ export default {
     display: 'flex',
     justifyContent: 'center',
     width: 300,
-    borderWidth: 1,
-    borderColor: Grey800
   },
   facebook: {
     width: 300,

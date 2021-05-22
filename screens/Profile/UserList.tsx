@@ -21,7 +21,7 @@ import { ContactsModal } from './ContactsModal'
 import { PrimaryButton } from '../../storybook/stories/Button'
 
 
-const UserItem = ({ item, itemPressed, initialFollowing, existingUserFollowing }) => {
+export const UserItem = ({ item, itemPressed, initialFollowing, existingUserFollowing }) => {
   const [following, setFollowing] = useState(initialFollowing)
   const user = useMe()
   const [followUser] = useMutation(FOLLOW_USER, {

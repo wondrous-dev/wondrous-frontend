@@ -61,7 +61,7 @@ const imageItemWidth = (Dimensions.get('window').width - (spacingUnit * 10)) / 2
 const imageItemHeight = imageItemWidth / 4 * 3
 
 export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisible: item, updateKey, setModalVisible, updateMutation, filePrefix }) => {
-
+  const onboarding = item?.additionalData?.onboarding
   const userCongratsHook = useUserCongrats()
   const user = userCongratsHook?.user
   const profilePicture = user?.profilePicture
@@ -184,19 +184,22 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
               { renderMentionString({ content: name, navigation, tab: route?.params?.tab })}!
             </Subheading>
           </Subheading>
-          <View style={[commonModalStyles.editRowContainer, {
-            marginBottom: spacingUnit
-          }]}>
-            <TextEditorContext.Provider value={{
-                  content: completedMessage,
-                  setContent: setCompletedMessage,
-                  placeholder: 'Add message...' 
-                }}>
-                  <View style={{flex: 1}}>
-                <TextEditor multiline style={commonModalStyles.descriptionBox} renderSuggestionStyle={commonModalStyles.renderSuggestion} />
-                            </View>
-                  </TextEditorContext.Provider>
-          </View>
+          {
+            !onboarding &&
+            <View style={[commonModalStyles.editRowContainer, {
+              marginBottom: spacingUnit
+            }]}>
+              <TextEditorContext.Provider value={{
+                    content: completedMessage,
+                    setContent: setCompletedMessage,
+                    placeholder: 'Add message...' 
+                  }}>
+                    <View style={{flex: 1}}>
+                  <TextEditor multiline style={commonModalStyles.descriptionBox} renderSuggestionStyle={commonModalStyles.renderSuggestion} />
+                              </View>
+                    </TextEditorContext.Provider>
+            </View>
+          }
           <View style={[commonModalStyles.attachmentRow, {
             marginBottom: spacingUnit,
             justifyContent: 'flex-start',
@@ -332,7 +335,7 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
             <RegularText color={White} style={{
                 fontFamily: 'Rubik SemiBold'
               }}>
-            Post
+                {onboarding ? 'Done' : 'Post'}
             </RegularText>
           </PrimaryButton>
           {/* <SecondaryButton style={modalStyles.buttons} onPress={() => setModalVisible(false)}>
@@ -353,7 +356,7 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
 
 export const TaskCongratsModal = ({ user, isVisible: task, setModalVisible,  }) => {
   let message, shareContent = ''
-  if (user && user.usageProgress && !user.usageProgress.taskCompleted) {
+  if (user && user.usageProgress && !user.usageProgress.taskCompleted && !task?.additionalData?.onboarding) {
     message = 'You finished your first task - '
     shareContent = 'Finished my first task on Wonder! Follow my journey here'
   } else {

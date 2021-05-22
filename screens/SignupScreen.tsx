@@ -43,7 +43,7 @@ function SignupScreen({
   return (
     <SafeAreaView style={styles.container}>
       <Title style={{
-        color: Orange
+        color: White
       }}>
         Wonder
       </Title>
@@ -77,7 +77,7 @@ function SignupScreen({
               lineHeight: '19px',
               textAlign: 'center',
               textDecorationLine: 'underline'
-            }} color={Black}>Or continue with email</Subheading>
+            }} color={White}>Or continue with email</Subheading>
             </Pressable>
             {
               loginError &&

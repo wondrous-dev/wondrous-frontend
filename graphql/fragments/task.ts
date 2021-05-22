@@ -19,6 +19,7 @@ export const PublicTaskFragment = gql`
     additionalData {
       images
       link
+      onboarding
     }
     relatedAskIds
     completedAt

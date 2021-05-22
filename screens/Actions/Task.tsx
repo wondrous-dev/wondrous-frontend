@@ -71,7 +71,12 @@ const TaskPage = ({ navigation, route }) => {
       { query: GET_USER_STREAK, variables: {
         userId: user && user.id
       } }
-    ]
+    ],
+    update: (cache, { data } ) => {
+      if (data) {
+        setTask(data?.completeTask)
+      }
+    }
   })
 
   const [nudgeTask] = useMutation(NUDGE_TASK, {
@@ -137,14 +142,14 @@ const TaskPage = ({ navigation, route }) => {
   const goal = taskGoal && taskGoal.getGoalById
   const completed = status === 'completed'
   const archived = status === 'archived'
-
+  const onboarding = task?.additionalData?.onboarding
   return (
     <SafeAreaView style={{
       flex: 1,
       backgroundColor: White
     }}>
-      <FullScreenTaskModal setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} task={task} taskMutation={updateTask} />
-      <Header title='Task' rightButton={ownedByUser && {
+      <FullScreenTaskModal setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} task={task} taskMutation={updateTask} completeTaskMutation={completeTask} />
+      <Header title='Task' rightButton={ownedByUser && !onboarding && {
         style: {
           borderWidth: 1,
           borderColor: Grey800

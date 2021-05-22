@@ -103,7 +103,12 @@ const GoalPage = ({ navigation, route }) => {
           userId: user?.id
         }
       }
-    ]
+    ],
+    update: (cache, { data }) => {
+      if (data) {
+        setGoal(data?.completeGoal)
+      }
+    }
   })
 
   const [checkUserFollowBack, {
@@ -156,7 +161,7 @@ const GoalPage = ({ navigation, route }) => {
       flex: 1,
       backgroundColor: White
     }}>
-      <FullScreenGoalModal setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} goal={goal} goalMutation={updateGoal} />
+      <FullScreenGoalModal setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} goal={goal} goalMutation={updateGoal} completeGoalMutation={completeGoal} />
       <Header title='Goal' rightButton={ownedByUser && {
         style: {
           borderWidth: 1,

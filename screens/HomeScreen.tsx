@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { StyleSheet, View, SafeAreaView, Platform, Image } from 'react-native'
+import { StyleSheet, View, SafeAreaView, Platform, Image, Dimensions } from 'react-native'
 import * as Notifications from 'expo-notifications'
 import * as Sentry from 'sentry-expo'
 
@@ -18,6 +18,7 @@ import { GET_LOGGED_IN_USER, WHOAMI } from '../graphql/queries'
 import apollo from '../services/apollo'
 import { getNotificationPressFunction } from './Notifications'
 import Rocket from '../assets/images/rocket_transparent_loop.gif'
+import ExampleApp from '../assets/images/homepage-icon.png'
 import { MY_USER_INVITE } from '../graphql/queries/userInvite'
 
 const redirectUser = async (user, navigation) => {
@@ -89,28 +90,11 @@ function HomeScreen({
       // Let React Navigation handle the URL
       // listener(url)
     });
-    const foregroundSubscription = Notifications.addNotificationReceivedListener(notification=> {
-      const data = notification.request.content.data;
-      const cleanedData = snakeToCamelObj(data)
-      // Any custom logic to see whether the URL needs to be handled
-      //...
-      // if (navigation) {
-      //   getNotificationPressFunction({
-      //     notificationInfo: cleanedData,
-      //     navigation,
-      //     tab: 'Notifications',
-      //     notifications: null,
-      //     push: true
-      //   })
-      // }
-      // Let React Navigation handle the URL
-      // listener(url)
-    });
+
     return () => {
       // Clean up the event listeners
       // Linking.removeEventListener('url', onReceiveURL);
       backgroundSubscription.remove()
-      foregroundSubscription.remove()
     }
   }
   React.useEffect(() => {
@@ -141,13 +125,15 @@ function HomeScreen({
   return (
     <SafeAreaView style={styles.container}>
       <Title style={{
-        color: Orange
+        color: White,
+        marginTop: spacingUnit * 10,
+        fontFamily: 'Rubik SemiBold',
+        fontSize: 40
       }}>
-        Wonder
+        Welcome to Wonder
       </Title>
-      <Image style={styles.logo} source={Rocket} />
-      <MyCarousel data={homeScreens} activeDotColor={Orange} passiveDotColor={White} containerStyle={{
-        marginTop: spacingUnit
+      <MyCarousel data={homeScreens} activeDotColor={White} passiveDotColor={Grey800} containerStyle={{
+        marginTop: spacingUnit * 2
       }} />
       <PrimaryButton onPress={() => navigation.push('Signup')} textStyle={{
         color: White
@@ -166,8 +152,6 @@ function HomeScreen({
         login: true
       })} style={{
         marginTop: spacingUnit * 1.5,
-        borderColor: Black,
-        borderWidth: 1
       }}>
         <ButtonText style={{
             fontSize: 16
@@ -175,6 +159,8 @@ function HomeScreen({
           Log in
         </ButtonText>
       </SecondaryButton>
+
+      <Image style={styles.logo} source={ExampleApp} />
       {/* <NotificationTester /> */}
       {
         !!invitorFirstName &&
@@ -198,14 +184,17 @@ export default withAuth(HomeScreen)
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: White,
+    backgroundColor: Orange,
     alignItems: 'center',
     paddingTop: 8
   },
   logo: {
     marginTop: moderateScale(0),
-    width: 196,
-    height: 220
+    position: 'absolute',
+    bottom: 0,
+    width: Dimensions.get('window').width,
+    resizeMode: 'contain',
+    height: 400
   },
   subheading: {
     marginTop: moderateScale(8),

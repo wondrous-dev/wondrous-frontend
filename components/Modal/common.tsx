@@ -202,6 +202,23 @@ export const modalStyles = StyleSheet.create({
     padding: spacingUnit,
     marginBottom: spacingUnit * 2
   },
+  archivedButton: {
+    backgroundColor: Grey800,
+    padding: spacingUnit,
+    borderRadius: spacingUnit,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: spacingUnit,
+    marginBottom: spacingUnit * 2
+  },
+  markAsArchivedButton: {
+    borderColor: Grey800,
+    borderRadius: spacingUnit,
+    borderWidth: 1,
+    padding: spacingUnit,
+    marginBottom: spacingUnit * 2,
+    marginLeft: spacingUnit
+  },
   inputContainer: {
 
   },

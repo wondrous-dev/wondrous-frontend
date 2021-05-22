@@ -3,7 +3,7 @@ import { SafeAreaView, ScrollView, View, StyleSheet, Dimensions, Platform, TextI
 import Modal from 'react-native-modal'
 import isEqual from 'lodash.isequal'
 
-import { useQuery, useLazyQuery } from '@apollo/client'
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client'
 import DropDownPicker from 'react-native-dropdown-picker'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { toDate } from 'date-fns'
@@ -30,16 +30,19 @@ import Checkmark from '../../assets/images/checkmark'
 import VideoIcon from '../../assets/images/video'
 import { VideoDisplay } from '../../storybook/stories/Carousel'
 import { ACTION_QUERY_LIMIT } from '../../constants'
+import { COMPLETE_TASK } from '../../graphql/mutations'
+import { GET_USER_STREAK } from '../../graphql/queries'
 
 const FILE_PREFIX = 'tmp/task/new/'
 
-export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectId, goalId, taskMutation, firstTime, deleteMutation }) => {
+export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectId, goalId, taskMutation, firstTime, completeTaskMutation }) => {
   const initialDueDate = endOfWeekFromNow()
   const navigation = useNavigation()
   const route = useRoute()
   const {
     tab
   } = route
+  const [archived, setArchived] = useState(task && task.status === 'archived')
   const [completed, setCompleted] = useState(task && task.status === 'completed')
   const [taskText, setTaskText] = useState((task && task.name) || '')
   const [project, setProject] = useState((task && task.projectId) || projectId || '')
@@ -82,7 +85,6 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
   const [getProjectGoals, {data: projectGoalData}] = useLazyQuery(GET_GOALS_FROM_PROJECT, {
     fetchPolicy: 'network-only',
   })
-
 
   const projectDropdowns = projectUsers && projectUsers.getUserProjects ? projectUsers.getUserProjects.map(projectUser => {
     return {
@@ -242,7 +244,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
               <Pressable style={{
                 ...modalStyles.createUpdateButton,
                 backgroundColor: (imageUploading || videoUploading) ? Grey800 : Blue500
-              }} onPress={() => {
+              }} onPress={async () => {
                 if (videoUploading) {
                   setErrors({
                     submitError: 'Videos are still uploading!'
@@ -255,10 +257,28 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                   setErrors({
                     createError: 'Project is required'
                   })
-                }else {
+                } else {
+                  let finalStatus = 'created'
+                  if (archived) {
+                    finalStatus = 'archived'
+                  }
+                  if (completed && task && task?.status !== 'completed') {
+                    try {
+                      await completeTaskMutation({
+                        variables: {
+                          taskId: task?.id
+                        }
+                      })
+                    } catch (err) {
+                      console.error('Cannot complete task')
+                    }
+                  }
                   submit({
                     name: taskText,
                     detail: description,
+                    ...(!completed && {
+                      status: finalStatus,
+                    }),
                     priority,
                     dueDate,
                     link,
@@ -275,8 +295,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                       updateId: task.id,
                       updateKey: 'taskId'
                     }),
-                    firstTime,
-                    completed
+                    firstTime
                   })
                   setModalVisible(false)
                   if (!task) {
@@ -329,7 +348,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                   {
                     completed
                     ?
-                    <Pressable style={modalStyles.completedButton} onPress={() => setCompleted(false)}>
+                    <Pressable style={modalStyles.completedButton}>
                       <Paragraph color={White} style={{
                         marginRight: spacingUnit * 0.4
                       }}>
@@ -341,11 +360,39 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                       }}/>
                     </Pressable>
                     :
-                    <Pressable style={modalStyles.markAsCompleteButton} onPress={() => setCompleted(true)}>
+                    <Pressable style={modalStyles.markAsCompleteButton} onPress={() => {
+                      if (!archived) {
+                        setCompleted(true)
+                      }
+                    }}>
                       <Paragraph color={Green400}>
                         Mark as complete
                       </Paragraph>
                     </Pressable>
+                  }
+                  {
+                    task &&
+                    <>
+                    {
+                      archived 
+                      ?
+                      <Pressable style={modalStyles.archivedButton} onPress={() => setArchived(false)}>
+                        <Paragraph color={White}>
+                          Archived
+                        </Paragraph>
+                      </Pressable>
+                      :
+                      <Pressable style={modalStyles.markAsArchivedButton} onPress={() => {
+                        if (!completed) {
+                          setArchived(true)
+                        }
+                      }}>
+                        <Paragraph color={Grey800}>
+                          Mark as archived
+                        </Paragraph>
+                      </Pressable>
+                    }
+                    </>
                   }
                   </View>
                   <View style={[

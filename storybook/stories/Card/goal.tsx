@@ -3,9 +3,6 @@ import {
   View,
   Text,
   TouchableWithoutFeedback,
-  StyleSheet,
-  Platform,
-  UIManager,
   Pressable,
   Dimensions,
   TouchableOpacity
@@ -56,6 +53,8 @@ export const GoalCard = ({
   const name = item?.name
   const dueDate = item?.dueDate
   const projectName = item?.project?.name
+  const onboarding = item?.additionalData?.onboarding
+
   const description = item?.detail
   const priority = item?.priority
   const completedAt = item?.completedAt
@@ -375,40 +374,53 @@ export const GoalCard = ({
                 marginBottom: spacingUnit,
                 marginTop: -spacingUnit
               }}/>
-              <Pressable onPress={() => setTaskModalVisible(true)} style={{
-                marginTop: spacingUnit * 2,
-                marginLeft: -spacingUnit * 2
-              }}>
-                  <AddIcon style={{
-                    width: spacingUnit * 7,
-                    height: spacingUnit * 7
-                  }} />
-              </Pressable>
+              {
+                !onboarding &&
+                <>
+                <Pressable onPress={() => setTaskModalVisible(true)} style={{
+                  marginTop: spacingUnit * 2,
+                  marginLeft: -spacingUnit * 2
+                }}>
+                    <AddIcon style={{
+                      width: spacingUnit * 7,
+                      height: spacingUnit * 7
+                    }} />
+                </Pressable>
                 <View style={{
                   flex: 1
                 }} />
-                <Pressable style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  alignSelf: 'center',
-                  marginRight: spacingUnit,
-                  marginTop: spacingUnit
-                }} onPress={() => {
-                  navigation.push(redirect, redirectParams)
-                }}>
-                  <RegularText color={Blue400}>
-                    Goal Details
-                  </RegularText>
-                  <RightCaret color={Blue400} style={{
-                    // width: spacingUnit,
-                    height: spacingUnit * 1.5,
-                    marginLeft: spacingUnit * 0.25
-                  }}/>
-                </Pressable>
+                  <Pressable style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    alignSelf: 'center',
+                    marginRight: spacingUnit,
+                    marginTop: spacingUnit
+                  }} onPress={() => {
+                    navigation.push(redirect, redirectParams)
+                  }}>
+                    <RegularText color={Blue400}>
+                      Goal Details
+                    </RegularText>
+                    <RightCaret color={Blue400} style={{
+                      // width: spacingUnit,
+                      height: spacingUnit * 1.5,
+                      marginLeft: spacingUnit * 0.25
+                    }}/>
+                  </Pressable>
+                  </>
+              }
                 </>
             }
 
           </View>
+          {
+            onboarding &&
+            <Paragraph color={Grey800} style={{
+              paddingLeft: spacingUnit * 2
+            }}>
+              Click for more information and swipe right to complete these tasks.
+            </Paragraph>
+          }
           <View style={{
             marginTop: spacingUnit
           }}>

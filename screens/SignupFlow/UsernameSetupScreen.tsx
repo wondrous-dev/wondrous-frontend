@@ -2,27 +2,27 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { StyleSheet, View, Platform, Text, Image, SafeAreaView, KeyboardAvoidingView, TextInput } from 'react-native'
 import ProgressCircle from 'react-native-progress-circle'
-import { Formik } from 'formik';
+import { Formik } from 'formik'
 import * as Sentry from 'sentry-expo'
 
 
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { spacingUnit, extractFirstAndLastName, capitalizeFirstLetter } from '../../utils/common'
-import { Black, White, Blue500, Red400, Grey100, Grey200, Grey300, GreyPlaceHolder } from '../../constants/Colors'
-import { Subheading, RegularText, ButtonText, ErrorText } from '../../storybook/stories/Text'
+import { Black, White, Blue500, Red400, Grey500, Grey200, Grey300, GreyPlaceHolder, Orange } from '../../constants/Colors'
+import { Subheading, Paragraph, ButtonText, ErrorText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import Neutral from '../../assets/images/emoji/neutral'
 import { useMutation, useQuery } from '@apollo/client'
-import { CREATE_USERNAME, UPDATE_USER } from '../../graphql/mutations'
+import { CREATE_ONBOARDING_TASKS, CREATE_USERNAME, UPDATE_USER } from '../../graphql/mutations'
 import { useMe, withAuth } from '../../components/withAuth'
-import { SHORTNAME_REGEX } from '../../constants';
-import { MY_USER_INVITE } from '../../graphql/queries/userInvite';
+import { SHORTNAME_REGEX } from '../../constants'
+import { MY_USER_INVITE } from '../../graphql/queries/userInvite'
 const UsernameContext = createContext(null)
 
-const usernameSetupStyles = StyleSheet.create({
+export const usernameSetupStyles = StyleSheet.create({
   stepContainer: {
-    marginTop: spacingUnit * 3,
+    marginTop: spacingUnit,
   },
   progressCircleContainer: {
     justifyContent: 'center',
@@ -34,7 +34,7 @@ const usernameSetupStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-    marginTop: spacingUnit * 3,
+    marginTop: spacingUnit,
   },
   stepCount: {
     fontSize: 16,
@@ -79,6 +79,7 @@ const UsernameInput = ({ navigation }) => {
       })
     }
   })
+  const [createOnboardingTasks] = useMutation(CREATE_ONBOARDING_TASKS)
 
   useEffect(() => {
     if (user && user.usageProgress && user.usageProgress.signupCompleted) {
@@ -94,9 +95,7 @@ const UsernameInput = ({ navigation }) => {
       })
     }
     if (user && user.username) {
-      navigation.push('FirstProjectSetup', {
-        setup: true
-      })
+      navigation.push('UserInterestCategory')
     }
     if (userInviteData) {
       setUserInvite(userInviteData?.userInvitation?.userInvitationId)
@@ -105,16 +104,22 @@ const UsernameInput = ({ navigation }) => {
 
   return (
     <View style={usernameSetupStyles.usernameInputContainer}>
-      <Subheading style={{
+      <Subheading color={Black} style={{
+        fontSize: 32
+      }}>
+        Let's get you set up
+      </Subheading>
+      <Paragraph style={{
         marginBottom: spacingUnit * 3,
-      }} color={Black}>
+        marginTop: spacingUnit
+      }} color={Grey500}>
         {
           user?.firstName ?
-          'Choose your username'
+          'What do you want your username to be?'
           :
-          'Set names'
+          'What do you want your names to be?'
         }
-      </Subheading>
+      </Paragraph>
       <Formik
         initialValues={{ username: user && user.username, fullName: user?.firstName ? `${user?.firstName} ${user?.lastName}` : null }}
         onSubmit={async values => {
@@ -135,14 +140,6 @@ const UsernameInput = ({ navigation }) => {
               extra: userInvite
             })
             try {
-              await updateUser({
-                variables: {
-                  input: {
-                    firstName,
-                    lastName
-                  }
-                }
-              })
               await createUsername({
                 variables: {
                   ...(userInvite && {
@@ -151,7 +148,18 @@ const UsernameInput = ({ navigation }) => {
                   username: values?.username
                 }
               })
-              navigation.push('FirstProjectSetup')
+              if (firstName || lastName) {
+                await updateUser({
+                  variables: {
+                    input: {
+                      firstName,
+                      lastName
+                    }
+                  }
+                })
+              }
+              await createOnboardingTasks()
+              navigation.push('UserInterestCategory')
             } catch (err) {
               setError(capitalizeFirstLetter(err?.message))
             }
@@ -199,6 +207,7 @@ const UsernameInput = ({ navigation }) => {
             <PrimaryButton
               textStyle={{ color: White }}
               style={{
+                backgroundColor: Orange,
                 width: spacingUnit * 43,
                 alignSelf: 'center',
                 marginTop: spacingUnit * 3.6 // this is not consistent with the next page on figma
@@ -228,10 +237,10 @@ function UsernameSetupScreen({
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <Header />
+      <Header noGoingBack={true} />
       <View style={usernameSetupStyles.progressCircleContainer}>
         <ProgressCircle
-          percent={25}
+          percent={33}
           radius={50}
           borderWidth={10}
           color={Red400}
@@ -241,7 +250,7 @@ function UsernameSetupScreen({
           <Neutral />
         </ProgressCircle>
         <View style={usernameSetupStyles.stepContainer}>
-          <Text style={usernameSetupStyles.stepCount}>step 1/4</Text>
+          <Text style={usernameSetupStyles.stepCount}>step 1/3</Text>
         </View>
       </View>
       <UsernameContext.Provider value={{

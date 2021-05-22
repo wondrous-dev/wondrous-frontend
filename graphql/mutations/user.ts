@@ -76,3 +76,19 @@ export const CREATE_USERNAME = gql`
   }
   ${LoggedinUserFragment}
 `
+
+export const CREATE_USER_INTERESTS = gql`
+  mutation CreateUserInterests($interests: [String]) {
+    createUserInterests(interests: $interests) {
+      success
+    }
+  }
+`
+
+export const CREATE_ONBOARDING_TASKS = gql`
+  mutation {
+    createOnboardingActions {
+      success
+    }
+  }
+`

@@ -489,6 +489,7 @@ export const TextEditor = ({ style, renderSuggestionStyle, renderBottom=true, ..
 
   // const [users, setUsers] = useState([])
   const [name, setName] = useState('')
+  const [replyOnce, setReplyOnce] = useState(false)
   let textInputRef = createRef()
   const [getAutocompleteUsers, { data: userData, loading: userLoading, error: userError }] = useLazyQuery(GET_AUTOCOMPLETE_USERS, {
     variables: {
@@ -511,8 +512,9 @@ export const TextEditor = ({ style, renderSuggestionStyle, renderBottom=true, ..
         name: ''
       }
     })
-    if (replyName && setReplyName) {
+    if (replyName && setReplyName && !replyOnce) {
       setContent(content + ' ' + replyName)
+      setReplyOnce(true)
     }
   }, [replyName, name])
   let userArray, projectArray = []
