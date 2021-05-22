@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import { ScrollView, View, Dimensions, StyleSheet, Pressable, TouchableWithoutFeedback, Keyboard, Image } from 'react-native'
+import { ScrollView, View, Dimensions, StyleSheet, Pressable, TouchableWithoutFeedback, Keyboard, Image, ActivityIndicator } from 'react-native'
 import Modal from 'react-native-modal'
 import Clipboard from 'expo-clipboard'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -256,7 +256,21 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
                 {errors.mediaError}
               </ErrorText>
             }
+
             <ScrollView keyboardDismissMode='interactive' keyboardShouldPersistTaps='handled'contentContainerStyle={{ flexGrow: 1 }}>
+            {
+                      imageUploading &&
+                      <View style={{
+                        marginTop: spacingUnit * 2
+                      }}>
+                         <ActivityIndicator />
+                         <RegularText color={Grey800} style={{
+                           textAlign: 'center'
+                         }}>
+                           Image uploading...
+                         </RegularText>
+                       </View>
+              }
                     <View style={{
                       flex: 1
                     }}>
