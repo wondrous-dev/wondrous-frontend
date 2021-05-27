@@ -295,6 +295,9 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                       updateId: task.id,
                       updateKey: 'taskId'
                     }),
+                    ...(!task && {
+                      completed
+                    }),
                     firstTime
                   })
                   setModalVisible(false)

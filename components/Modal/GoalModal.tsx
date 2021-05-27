@@ -204,6 +204,9 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                     ...(goal && {
                       updateId: goal.id,
                       updateKey: 'goalId'
+                    }),
+                    ...(!goal && {
+                      completed
                     })
                   })
                   setModalVisible(false)
