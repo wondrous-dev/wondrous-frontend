@@ -386,6 +386,8 @@ export const GoalCard = ({
                       height: spacingUnit * 7
                     }} />
                 </Pressable>
+                  </>
+              }
                 <View style={{
                   flex: 1
                 }} />
@@ -407,8 +409,6 @@ export const GoalCard = ({
                       marginLeft: spacingUnit * 0.25
                     }}/>
                   </Pressable>
-                  </>
-              }
                 </>
             }
 
