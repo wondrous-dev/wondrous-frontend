@@ -87,7 +87,13 @@ function ProjectProfile({
   route
 }: StackScreenProps<ProfileTabParamList, 'ProjectProfile'>) {
   const user = useMe()
-
+  const {
+    projectId,
+    noGoingBack,
+    editProfile,
+    tab,
+    fetchedProject
+  } = route.params
   const [section, setSection] = useState('feed')
   const [refreshing, setRefreshing] = useState(false)
   const [isVisible, setModalVisible] = useState(false)
@@ -119,13 +125,6 @@ function ProjectProfile({
       })
     }
   })
-  const {
-    projectId,
-    noGoingBack,
-    editProfile,
-    tab,
-    fetchedProject
-  } = route.params
   const {
     loading: projectFeedLoading,
     data: projectFeedData,
