@@ -36,6 +36,7 @@ import Options from '../../assets/images/options'
 import { StatusItem } from '../../screens/Profile/common'
 import { GetReviewIcon } from '../../screens/Review/utils'
 import { UPDATE_POST } from '../../graphql/mutations/post'
+import { FLAG_CONTENT } from '../../graphql/mutations/flagContent'
 
 const FeedItemTypes = [
   'id',
@@ -467,6 +468,29 @@ export const PinPostModal = ({ isVisible, setModalVisible, pinMutation, unpinMut
   )
 }
 
+export const FlagContentModal = ({ isVisible, setModalVisible, flagMutation }) => {
+  return (
+    <FlexRowContentModal
+    headerText='More options'
+    setModalVisible={setModalVisible}
+    isVisible={isVisible}
+    >
+      <View />
+      <Pressable onPress={() => {
+        flagMutation()
+        setModalVisible(false)
+      }}>
+        <Paragraph style={{
+          fontFamily: 'Rubik SemiBold'
+        }} color={Red400}>
+          Report
+        </Paragraph>
+      </Pressable>
+      <View />
+    </FlexRowContentModal>
+  )
+}
+
 export const ShareModal = ({ isVisible, url, content, setModalVisible }) => {
 
   return (
@@ -554,6 +578,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
   const [isModalVisible, setModalVisible] = useState(false)
   const [editVisible, setEditVisible] = useState(false)
   const [pinPostVisible, setPinPostVisible] = useState(false)
+  const [reportVisible, setReportVisible] = useState(false)
   const [pinned, setPinned] = useState(item?.pinned)
   const previousReactionCount = usePrevious(item.reactionCount)
   const [status, setStatus] = useState(false)
@@ -634,6 +659,13 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
           }
         }
       })
+    }
+  })
+
+  const [createFlaggedContent] = useMutation(FLAG_CONTENT, {
+    variables: {
+      objectType: 'feed_item',
+      objectId: item?.id
     }
   })
 
@@ -790,6 +822,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
     <>
     <EditCommentModal isVisible={editVisible} setModalVisible={setEditVisible} deleteMutation={deleteFeedComment} editMutation={editMutation} />
     <PinPostModal isVisible={pinPostVisible} setModalVisible={setPinPostVisible} pinMutation={projectId ? pinProjectFeed: pinUserFeed} unpinMutation={unpinFeed} setPinned={setPinned} pinned={pinned} />
+    <FlagContentModal isVisible={reportVisible} setModalVisible={setReportVisible} flagMutation={createFlaggedContent} />
     <ShareModal isVisible={isModalVisible} url={SHARE_URL} content={CONTENT} setModalVisible={setModalVisible} />
     <View style={feedStyles.feedItemContainer}>
       {
@@ -987,20 +1020,21 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
           <Pressable onPress={() => setModalVisible(true)}>
             <ShareIcon color={Grey700} />
           </Pressable> 
-          {
-            item.userId === user.id &&
-            <Pressable style={{
+          <Pressable style={{
               marginLeft: spacingUnit * 3
             }} onPress={() => {
-              if (comment) {
-                setEditVisible(true)
+              if (item.userId === user?.id) {
+                if (comment) {
+                  setEditVisible(true)
+                } else {
+                  setPinPostVisible(true)
+                }
               } else {
-                setPinPostVisible(true)
+                setReportVisible(true)
               }
             }}>
             <Options color={Grey700} />
           </Pressable>
-          }
         </View>
 
     </View>
