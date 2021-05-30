@@ -92,3 +92,12 @@ export const CREATE_ONBOARDING_TASKS = gql`
     }
   }
 `
+
+export const BLOCK_USER = gql`
+  mutation BlockUser($blockedId: ID!) {
+    createBlockedUser(blockedId: $blockedId) {
+      blockedId
+      blockerId
+    }
+  }
+`

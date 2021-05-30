@@ -5,14 +5,14 @@ import { useNavigation, useRoute } from '@react-navigation/native'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import Clipboard from 'expo-clipboard'
+import Toast from 'react-native-toast-message'
 
-import { Grey300, Black, Grey150, Grey200, Grey600, Grey700, Red400, White, Blue400, Grey800 } from '../../constants/Colors'
-import { GET_HOME_FEED, GET_PUBLIC_FEED, WHOAMI } from '../../graphql/queries'
-import { DELETE_FEED_COMMENT, PIN_FEED_ITEM, PIN_PROJECT_FEED_ITEM, PIN_USER_FEED_ITEM, REACT_FEED_COMMENT, REACT_FEED_ITEM, UNPIN_FEED_ITEM } from '../../graphql/mutations'
-import { SafeImage, SvgImage } from '../../storybook/stories/Image'
-import { TinyText, RegularText, Subheading, Paragraph } from '../../storybook/stories/Text'
-import { SecondaryButton } from '../../storybook/stories/Button'
-import { spacingUnit, capitalizeFirstLetter, renderMentionString, wait, usePrevious } from '../../utils/common'
+import { Grey300, Black, Grey200, Grey600, Grey700, Red400, White, Blue400, Grey800 } from '../../constants/Colors'
+import { GET_HOME_FEED, GET_PUBLIC_FEED } from '../../graphql/queries'
+import { DELETE_FEED_COMMENT, PIN_PROJECT_FEED_ITEM, PIN_USER_FEED_ITEM, REACT_FEED_COMMENT, REACT_FEED_ITEM, UNPIN_FEED_ITEM } from '../../graphql/mutations'
+import { SafeImage} from '../../storybook/stories/Image'
+import { RegularText, Paragraph } from '../../storybook/stories/Text'
+import { spacingUnit, renderMentionString, wait, usePrevious } from '../../utils/common'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import ProjectIcon from '../../assets/images/actions/project'
 import GoalIcon from '../../assets/images/actions/goal'
@@ -1031,6 +1031,10 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
                 }
               } else {
                 setReportVisible(true)
+                Toast.show({
+                  text1: 'Content sucessfully reported',
+                  position: 'bottom',
+                })
               }
             }}>
             <Options color={Grey700} />
@@ -1190,10 +1194,14 @@ export const HomeFeed = () => {
       </View>
       )
   }
-  const filteredData = status === 'user' ? (feed.filter(feedItem => {
-
-    return user && (user.id !== feedItem.userId)
-  })) : feed
+  const filteredData = feed.filter(feedItem => {
+    const blockedCondition = !(user?.blockedUsers?.includes(feedItem.userId) || user?.blockedByUsers?.includes(feedItem.userId))
+    if (status === 'user') {
+      return user && (user.id !== feedItem.userId) && blockedCondition
+    }
+    return blockedCondition
+  })
+  
 
   return (
     <>
