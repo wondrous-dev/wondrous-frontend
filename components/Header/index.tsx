@@ -103,6 +103,7 @@ export const Header = ({
       userId: user && user.id
     }
   })
+
   return (
     <SafeAreaView style={{
       width: '100%',
@@ -167,17 +168,15 @@ export const Header = ({
       }
       {
         options &&
-          <View style={{
-            right: spacingUnit * 2,
-            position: 'absolute'
-          }}>
-          <Pressable onPress={() => {
-            const optionPress = options.setModalVisible
-            optionPress(true)
-          }}>
+        <Pressable style={{
+          right: spacingUnit * 2,
+          position: 'absolute'
+        }} onPress={() => {
+          const optionPress = options.setModalVisible
+          optionPress(true)
+        }}>
               <Options color={Grey700} />
           </Pressable>
-        </View>
       }
       {
         rightButton &&
