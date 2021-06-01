@@ -21,6 +21,7 @@ import { LikeOutline, LikeFilled } from '../../assets/images/reactions/like'
 import { TwitterShare, FacebookShare, CopyLink, LinkedinShare } from '../../assets/images/share'
 import CommentIcon from '../../assets/images/reactions/comment'
 import ShareIcon from '../../assets/images/share/feed'
+import RightCaret from '../../assets/images/right-caret'
 import { useMe } from '../withAuth'
 import { tweetNow, linkedinShare, postOnFacebook  } from '../Share'
 import { useProfile } from '../../utils/hooks'
@@ -468,24 +469,92 @@ export const PinPostModal = ({ isVisible, setModalVisible, pinMutation, unpinMut
   )
 }
 
+const getFlagContentModalBody = ({ flagMutation, setModalVisible, reportClicked, setReportClicked }) => {
+  const FLAG_REASONS = {
+    'spam': 'Spam',
+    'nudity': 'Nudity or sexual activity',
+    'violence': 'Violence or dangerous organizations',
+    'hate_speech': 'Hate speech or symbols',
+    'illegal_goods': 'Sale of illegal goods',
+    'bullying': 'Bullying or harassment',
+    'ip_violation': 'Intellectual property violation',
+    'suicide': 'Suicide or self injury',
+    'eating_disorders': 'Eating disorders',
+    'scam': 'Scam or fraud',
+    'false_info': 'False information'
+  }
+  const FLAG_REASONS_ARR = [
+    'spam',
+    'nudity',
+    'violence',
+    'hate_speech',
+    'illegal_goods',
+    'bullying',
+    'ip_violation',
+    'suicide',
+    'eating_disorders',
+    'scam',
+    'false_info'
+  ]
+  if (reportClicked) {
+    return (
+      <>
+        {FLAG_REASONS_ARR.map(flagReason => (
+          <Pressable style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginBottom: spacingUnit
+          }} onPress={() => {
+            flagMutation({
+              variables: {
+                flagReason
+              }
+            })
+            setModalVisible(false)
+            Toast.show({
+              text1: 'Content sucessfully reported',
+              position: 'bottom',
+            })
+          }}>
+            <Paragraph>
+              {FLAG_REASONS[flagReason]}
+            </Paragraph>
+            <RightCaret />
+          </Pressable>
+        ))}
+      </>
+    )
+  }
+  return (
+    <Pressable style={{
+      flexDirection: 'row',
+      justifyContent: 'center'
+    }} onPress={() => {
+      setReportClicked(true)
+    }}>
+      <Paragraph style={{
+        fontFamily: 'Rubik SemiBold'
+      }} color={Red400}>
+        Report
+      </Paragraph>
+    </Pressable>
+  )
+}
+
 export const FlagContentModal = ({ isVisible, setModalVisible, flagMutation }) => {
+  const [reportClicked, setReportClicked] = useState(false)
   return (
     <FlexRowContentModal
-    headerText='More options'
-    setModalVisible={setModalVisible}
+    headerText={reportClicked ? 'Flag reason' : 'More options'}
+    setModalVisible={(arg) => {
+      setModalVisible(arg)
+      setReportClicked(arg)
+    }}
     isVisible={isVisible}
+    flexDirection='column'
     >
       <View />
-      <Pressable onPress={() => {
-        flagMutation()
-        setModalVisible(false)
-      }}>
-        <Paragraph style={{
-          fontFamily: 'Rubik SemiBold'
-        }} color={Red400}>
-          Report
-        </Paragraph>
-      </Pressable>
+      {getFlagContentModalBody({ flagMutation, setModalVisible, reportClicked, setReportClicked })}
       <View />
     </FlexRowContentModal>
   )
@@ -1031,10 +1100,6 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
                 }
               } else {
                 setReportVisible(true)
-                Toast.show({
-                  text1: 'Content sucessfully reported',
-                  position: 'bottom',
-                })
               }
             }}>
             <Options color={Grey700} />
