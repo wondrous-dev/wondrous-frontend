@@ -9,20 +9,15 @@ import { useMutation, useQuery } from '@apollo/client'
 // } from '@react-native-community/google-signin'
 
 import { RootStackParamList } from '../types'
-import { Black, Orange, Red400, White } from '../constants/Colors'
+import { Red400, White } from '../constants/Colors'
 import { Title, ErrorText, RegularText, Subheading } from '../storybook/stories/Text'
 import { SvgImage } from '../storybook/stories/Image'
 import { GoogleLogin, FacebookLogin, EmailLogin } from '../storybook/stories/Button'
-import { scale, moderateScale, verticalScale } from '../utils/scale'
 import { styles } from './HomeScreen'
-import GoogleSvg from '../assets/images/social-auth/google.svg'
 import { SIGNUP } from '../graphql/mutations'
 import { withAuth, useMe } from '../components/withAuth'
-import { CardList } from '../storybook/stories/CardList'
 import { AppleLogin } from '../storybook/stories/Button/Apple'
-import { spacingUnit } from '../utils/common'
-import { UserInviteContext } from '../utils/contexts'
-import { MY_USER_INVITE } from '../graphql/queries/userInvite'
+import { spacingUnit, openLink } from '../utils/common'
 
 const loginStyles = StyleSheet.create({
   container: styles.container
@@ -87,6 +82,19 @@ function SignupScreen({
                 {loginError}
               </ErrorText>
             }
+            <RegularText color={White} style={{
+              textAlign: 'center',
+              marginTop: spacingUnit * 2
+            }}>
+              By signing up to Wonder you are agreeing to our
+              <Pressable onPress={() => openLink('https://wonderapp.co/eula-policy')}>
+                <RegularText style={{
+                  textDecorationLine: 'underline',
+                }} color={White}>
+                  terms and conditions
+                </RegularText>
+              </Pressable>
+            </RegularText>
           </>
       }
 

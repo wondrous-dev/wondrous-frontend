@@ -713,14 +713,6 @@ function UserProfile({
             <Streak viewing={userOwned ? false : user && user.username} streak={streakData && streakData.getUserStreak} streakContainerStyle={{
               marginLeft: spacingUnit
             }} />
-            {
-              userOwned &&
-              <Pressable onPress={() => setSettingsModal(true)}>
-              <Settings style={{
-                marginLeft: spacingUnit
-              }} />
-              </Pressable>
-            }
         </View>
         {
           user.bio &&

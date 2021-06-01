@@ -12,13 +12,11 @@ import { spacingUnit } from '../../utils/common'
 import { Black, White, Blue500, Red400, Grey100, Grey200, Grey300, GreyPlaceHolder, Orange, Grey800 } from '../../constants/Colors'
 import { Subheading, RegularText, ButtonText, ErrorText, Title, } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
-import Neutral from '../../assets/images/emoji/neutral'
 import { useMutation } from '@apollo/client'
 import { EMAIL_SIGNUP } from '../../graphql/mutations'
-import { useMe, withAuth } from '../../components/withAuth'
 import { styles } from '../HomeScreen'
 import { storeAuthHeader } from '../../components/withAuth'
-import { navigateUserOnLogin } from '../../utils/common'
+import { navigateUserOnLogin, openLink } from '../../utils/common'
 
 const SignupSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Required'),
@@ -175,6 +173,19 @@ function EmailSignupScreen({
               textDecorationLine: 'underline'
             }} color={White}>Or log in with your email</Subheading>
             </Pressable>
+            <RegularText color={White} style={{
+              textAlign: 'center',
+              marginTop: spacingUnit * 2
+            }}>
+              By signing up to Wonder you are agreeing to our
+              <Pressable onPress={() => openLink('https://wonderapp.co/eula-policy')}>
+                <RegularText style={{
+                  textDecorationLine: 'underline',
+                }} color={White}>
+                  terms and conditions
+                </RegularText>
+              </Pressable>
+            </RegularText>
     </SafeAreaView>
   )
 }
