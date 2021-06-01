@@ -5,14 +5,14 @@ import { useNavigation, useRoute } from '@react-navigation/native'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import Clipboard from 'expo-clipboard'
+import Toast from 'react-native-toast-message'
 
-import { Grey300, Black, Grey150, Grey200, Grey600, Grey700, Red400, White, Blue400, Grey800 } from '../../constants/Colors'
-import { GET_HOME_FEED, GET_PUBLIC_FEED, WHOAMI } from '../../graphql/queries'
-import { DELETE_FEED_COMMENT, PIN_FEED_ITEM, PIN_PROJECT_FEED_ITEM, PIN_USER_FEED_ITEM, REACT_FEED_COMMENT, REACT_FEED_ITEM, UNPIN_FEED_ITEM } from '../../graphql/mutations'
-import { SafeImage, SvgImage } from '../../storybook/stories/Image'
-import { TinyText, RegularText, Subheading, Paragraph } from '../../storybook/stories/Text'
-import { SecondaryButton } from '../../storybook/stories/Button'
-import { spacingUnit, capitalizeFirstLetter, renderMentionString, wait, usePrevious } from '../../utils/common'
+import { Grey300, Black, Grey200, Grey600, Grey700, Red400, White, Blue400, Grey800 } from '../../constants/Colors'
+import { GET_HOME_FEED, GET_PUBLIC_FEED } from '../../graphql/queries'
+import { DELETE_FEED_COMMENT, PIN_PROJECT_FEED_ITEM, PIN_USER_FEED_ITEM, REACT_FEED_COMMENT, REACT_FEED_ITEM, UNPIN_FEED_ITEM } from '../../graphql/mutations'
+import { SafeImage} from '../../storybook/stories/Image'
+import { RegularText, Paragraph } from '../../storybook/stories/Text'
+import { spacingUnit, renderMentionString, wait, usePrevious } from '../../utils/common'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import ProjectIcon from '../../assets/images/actions/project'
 import GoalIcon from '../../assets/images/actions/goal'
@@ -36,6 +36,7 @@ import Options from '../../assets/images/options'
 import { StatusItem } from '../../screens/Profile/common'
 import { GetReviewIcon } from '../../screens/Review/utils'
 import { UPDATE_POST } from '../../graphql/mutations/post'
+import { FLAG_CONTENT } from '../../graphql/mutations/flagContent'
 
 const FeedItemTypes = [
   'id',
@@ -467,6 +468,29 @@ export const PinPostModal = ({ isVisible, setModalVisible, pinMutation, unpinMut
   )
 }
 
+export const FlagContentModal = ({ isVisible, setModalVisible, flagMutation }) => {
+  return (
+    <FlexRowContentModal
+    headerText='More options'
+    setModalVisible={setModalVisible}
+    isVisible={isVisible}
+    >
+      <View />
+      <Pressable onPress={() => {
+        flagMutation()
+        setModalVisible(false)
+      }}>
+        <Paragraph style={{
+          fontFamily: 'Rubik SemiBold'
+        }} color={Red400}>
+          Report
+        </Paragraph>
+      </Pressable>
+      <View />
+    </FlexRowContentModal>
+  )
+}
+
 export const ShareModal = ({ isVisible, url, content, setModalVisible }) => {
 
   return (
@@ -554,6 +578,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
   const [isModalVisible, setModalVisible] = useState(false)
   const [editVisible, setEditVisible] = useState(false)
   const [pinPostVisible, setPinPostVisible] = useState(false)
+  const [reportVisible, setReportVisible] = useState(false)
   const [pinned, setPinned] = useState(item?.pinned)
   const previousReactionCount = usePrevious(item.reactionCount)
   const [status, setStatus] = useState(false)
@@ -634,6 +659,13 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
           }
         }
       })
+    }
+  })
+
+  const [createFlaggedContent] = useMutation(FLAG_CONTENT, {
+    variables: {
+      objectType: 'feed_item',
+      objectId: item?.id
     }
   })
 
@@ -790,6 +822,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
     <>
     <EditCommentModal isVisible={editVisible} setModalVisible={setEditVisible} deleteMutation={deleteFeedComment} editMutation={editMutation} />
     <PinPostModal isVisible={pinPostVisible} setModalVisible={setPinPostVisible} pinMutation={projectId ? pinProjectFeed: pinUserFeed} unpinMutation={unpinFeed} setPinned={setPinned} pinned={pinned} />
+    <FlagContentModal isVisible={reportVisible} setModalVisible={setReportVisible} flagMutation={createFlaggedContent} />
     <ShareModal isVisible={isModalVisible} url={SHARE_URL} content={CONTENT} setModalVisible={setModalVisible} />
     <View style={feedStyles.feedItemContainer}>
       {
@@ -987,20 +1020,25 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
           <Pressable onPress={() => setModalVisible(true)}>
             <ShareIcon color={Grey700} />
           </Pressable> 
-          {
-            item.userId === user.id &&
-            <Pressable style={{
+          <Pressable style={{
               marginLeft: spacingUnit * 3
             }} onPress={() => {
-              if (comment) {
-                setEditVisible(true)
+              if (item.userId === user?.id) {
+                if (comment) {
+                  setEditVisible(true)
+                } else {
+                  setPinPostVisible(true)
+                }
               } else {
-                setPinPostVisible(true)
+                setReportVisible(true)
+                Toast.show({
+                  text1: 'Content sucessfully reported',
+                  position: 'bottom',
+                })
               }
             }}>
             <Options color={Grey700} />
           </Pressable>
-          }
         </View>
 
     </View>
@@ -1156,10 +1194,14 @@ export const HomeFeed = () => {
       </View>
       )
   }
-  const filteredData = status === 'user' ? (feed.filter(feedItem => {
-
-    return user && (user.id !== feedItem.userId)
-  })) : feed
+  const filteredData = feed.filter(feedItem => {
+    const blockedCondition = !(user?.blockedUsers?.includes(feedItem.userId) || user?.blockedByUsers?.includes(feedItem.userId))
+    if (status === 'user') {
+      return user && (user.id !== feedItem.userId) && blockedCondition
+    }
+    return blockedCondition
+  })
+  
 
   return (
     <>

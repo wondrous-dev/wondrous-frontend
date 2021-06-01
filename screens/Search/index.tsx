@@ -4,7 +4,7 @@ import { SafeAreaView, ScrollView, FlatList, View, TouchableWithoutFeedback, Key
 import { createStackNavigator } from '@react-navigation/stack'
 
 import SearchIcon from '../../assets/images/bottomNav/search'
-import { withAuth } from '../../components/withAuth'
+import { useMe, withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { White, Grey100, Grey800, Grey300,Grey200, Black, Grey550, Grey500 } from '../../constants/Colors'
@@ -271,6 +271,7 @@ const ProjectDisplay = ({ item }) => {
 function DefaultSearch({
   navigation
 }: StackScreenProps<RootStackParamList, 'DefaultSearch'>) {
+  const loggedInUser = useMe()
   const [searchString, setSearchString] = useState('')
   const { data: searchDataResp, loading: searchDataLoading, error: searchDataError} = useQuery(GET_USERS_AND_PROJECTS, {
     variables: {
@@ -309,6 +310,9 @@ function DefaultSearch({
     }
     wait(2000).then(() => setRefreshing(false))
   }, [])
+  const filteredUsers = searchData?.users?.filter(user => {
+    return !(loggedInUser?.blockedUsers.includes(user.id) ||loggedInUser?.blockedByUsers.includes(user.id))
+  })
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -318,17 +322,17 @@ function DefaultSearch({
     }}>
       <Header search={true} searchString={searchString} setSearchString={setSearchString} setFocus={setFocus} />
       {
-        focus && searchData && searchData.projects && searchData.users
+        focus && searchData && searchData.projects && filteredUsers
         ?
         <>
         {
-          searchData.projects.length > 0 || searchData.users.length > 0 ?
+          searchData.projects.length > 0 || filteredUsers.length > 0 ?
           <Pressable onPress={() => Keyboard.dismiss()}>
           <ScrollView style={{
             marginTop: spacingUnit * 2,
           }}>
             {
-              searchData.users.length > 0 && 
+              filteredUsers.length > 0 && 
               <Paragraph color={Grey800} style={{
                 paddingLeft: spacingUnit * 2,
                 paddingRight: spacingUnit * 2,
@@ -337,7 +341,7 @@ function DefaultSearch({
                               Users
             </Paragraph>
             }
-            {searchData.users.slice(0, 6).map(userResult => {
+            {filteredUsers.slice(0, 6).map(userResult => {
               return (
                 <SearchResult user={true} result={userResult} key={userResult.id} />
               )

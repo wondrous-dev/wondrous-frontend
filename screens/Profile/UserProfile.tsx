@@ -19,7 +19,7 @@ import { spacingUnit, wait, isEmptyObject, usePrevious, getRingActions } from '.
 import BottomTabNavigator from '../../navigation/BottomTabNavigator'
 import { UploadImage, SafeImage } from '../../storybook/stories/Image'
 import { WONDER_BASE_URL } from '../../constants/'
-import { UPDATE_USER, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_USER, UNFOLLOW_USER, CREATE_GOAL, CREATE_ASK } from '../../graphql/mutations'
+import { UPDATE_USER, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_USER, UNFOLLOW_USER, CREATE_GOAL, CREATE_ASK, BLOCK_USER } from '../../graphql/mutations'
 import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GET_ASKS_FROM_USER, WHOAMI, GET_USER_STREAK, CHECK_USER_FOLLOWS_BACK, GET_USER_RING_ACTION_COUNT } from '../../graphql/queries'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { PrimaryButton, SecondaryButton } from '../../storybook/stories/Button'
@@ -44,6 +44,7 @@ import { GoalCongratsModal, TaskCongratsModal } from '../../components/Modal'
 import { GET_USER_REVIEWS } from '../../graphql/queries/review'
 import Settings from '../../assets/images/settings'
 import { SettingsModal } from '../../components/Modal/SettingsModal'
+import { OtherUserProfileModal } from '../../components/Modal/OtherUserProfileModal'
 import { ContactsModal } from './ContactsModal'
 import ProfilePictureModal from './ProfilePictureModal'
 import { StatusSelector } from '../../components/Status/StatusSelector'
@@ -100,16 +101,18 @@ function UserProfile({
   const [goalCompletemodal, setGoalCompleteModal] = useState(false)
   const [goalModalVisible, setGoalModalVisible] = useState(false)
   const [askModalVisible, setAskModalVisible] = useState(false)
+  const [blocked, setBlocked] = useState(false)
   const [loading, setLoading] = useState(false)
   const [following, setFollowing] = useState(loggedInUser && loggedInUser.usersFollowing && loggedInUser.usersFollowing.includes(finalUserId))
   const [confetti, setConfetti] = useState(false)
   const [followBack, setFollowBack] = useState(null)
   const [user, setUser] = useState(fetchedUser)
   const [settingsModal, setSettingsModal] = useState(false)
+  const [optionsModal, setOptionsModal] = useState(false)
   const [contactsModal, setContactsModal] = useState(false)
   const [profilePicture, setProfilePicture] = useState(user && (user.thumbnailPicture || user.profilePicture))
-    const [profilePictureModal, setProfilePictureModal] = useState(false)
-    const [profilePictureDimensions, setProfilePictureDimensions] = useState({})
+  const [profilePictureModal, setProfilePictureModal] = useState(false)
+  const [profilePictureDimensions, setProfilePictureDimensions] = useState({})
   // const [offset, setOffset] = useState(null)
   const [followUser] = useMutation(FOLLOW_USER, {
     variables: {
@@ -204,6 +207,24 @@ function UserProfile({
     }
   })
 
+  const [blockUser] = useMutation(BLOCK_USER, {
+    variables: {
+      blockedId: user?.id
+    },
+    update(cache, { data: { createBlockedUser }}) {
+      cache.modify({
+        fields: {
+          users() {
+            const newUser = {...loggedInUser}
+            const newArr = [...loggedInUser.blockedUsers, createBlockedUser?.blockedId]
+            newUser.blockedUsers = newArr
+            console.log('newArr', newUser)
+            return [newUser]
+          }
+        }
+      })
+    }
+  })
   const [getUserActions, {
     loading: userActionDataLoading,
     data: userActionData,
@@ -411,12 +432,22 @@ function UserProfile({
 
   const additionalInfo = additionalInfoData && additionalInfoData.getUserAdditionalInfo
   const getCorrectData = section => {
+    const blockedCondition = (loggedInUser?.blockedUsers.includes(user?.id) || loggedInUser?.blockedByUsers?.includes(user?.id))
     if (section === 'feed') {
+      if ( blockedCondition || blocked) {
+        return []
+      }
       return getPinnedFeed(userFeed)
     } else if (section === 'action') {
+      if ( blockedCondition || blocked) {
+        return []
+      }
       const actions = userActionData && userActionData.getUserActions
       return fetchActions(actions, status)
     } else if (section === 'asks') {
+      if ( blockedCondition || blocked) {
+        return []
+      }
       const asks = userAsksData && userAsksData.getAsksFromUser
  
       if (asks && asks.length === 0 && status === 'created') {
@@ -424,6 +455,9 @@ function UserProfile({
       }
       return asks
     } else if (section === 'reviews') {
+      if ( blockedCondition || blocked) {
+        return []
+      }
       if (reviews.length === 0 ) {
         return ['none']
       }
@@ -815,7 +849,9 @@ function UserProfile({
       backgroundColor: White,
       flex: 1
     }}>
-      <Header noGoingBack={noGoingBack} share={`${WONDER_BASE_URL}/user/${finalUserId}`} />
+      <Header noGoingBack={noGoingBack} options={{
+        setModalVisible: userOwned ? setSettingsModal : setOptionsModal
+      }} />
       {
         confetti &&
         <ConfettiCannon count={200} origin={{x: -10, y: 0}} />
@@ -838,6 +874,10 @@ function UserProfile({
         <FullScreenAskModal setModalVisible={setAskModalVisible} isVisible={askModalVisible} askMutation={createAsk} />
         </>
       }
+      <OtherUserProfileModal blockUser={() => {
+        blockUser()
+        setBlocked(true)
+      }} headerText={`${user?.firstName} ${user?.lastName}`} isVisible={optionsModal} setModalVisible={setOptionsModal} />
       <ProfilePictureModal profilePicture={user?.profilePicture} isVisible={profilePictureModal} setModalVisible={setProfilePictureModal} />
       <ProfileContext.Provider value={{
         section,

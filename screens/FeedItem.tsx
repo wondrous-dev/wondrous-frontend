@@ -3,7 +3,7 @@ import { StackScreenProps } from '@react-navigation/stack'
 import { SafeAreaView, View, ScrollView , StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
 import { useQuery, useMutation } from '@apollo/client'
 
-import { withAuth } from '../components/withAuth'
+import { withAuth, useMe } from '../components/withAuth'
 import { RootStackParamList } from '../types'
 import { Header } from '../components/Header'
 import { FeedItem } from '../components/Feed'
@@ -39,7 +39,7 @@ function FeedItemScreen({
   const replyToComment = (value) => {
     setReplyName(value)
   }
-
+  const user = useMe()
   const { data, loading, error, fetchMore } = useQuery(GET_FEED_COMMENTS, {
     variables: {
       feedItemId: item.id
@@ -68,7 +68,9 @@ function FeedItemScreen({
       }
     })
   }
-
+  const filteredComments = data?.getFeedItemComments?.filter(comment => {
+    return !(user?.blockedUsers?.includes(comment.userId) || user?.blockedByUsers?.includes(comment.userId))
+  })
   return (
     <>
     <SafeAreaView style={{
@@ -85,7 +87,7 @@ function FeedItemScreen({
         <FeedItem item={item} standAlone={true} key={item.id} onCommentPress={replyToComment} />
         <View style={feedItemStyles.commentContainer}>
           {
-            data && data.getFeedItemComments.map(feedComment => {
+            filteredComments?.map(feedComment => {
               return (
                 <FeedItem item={feedComment} comment={true} key={feedComment.id} onCommentPress={replyToComment}/>
               )
