@@ -401,21 +401,35 @@ function ProjectProfile({
 
   const getCorrectData = section => {
     if (section === 'feed') {
-      return getPinnedFeed(projectFeed)
+      const filteredFeed = projectFeed.filter(feedItem => {
+        return !(user?.blockedUsers?.includes(feedItem.userId) || user?.blockedByUsers?.includes(feedItem.userId))
+      })
+      return getPinnedFeed(filteredFeed)
     } else if (section === 'action') {
       const actions = projectActionData && projectActionData.getProjectActions
-      return fetchActions(actions, status)
+
+      const filteredActions = {
+        goals: actions?.goals?.filter(goalItem => !(user?.blockedUsers?.includes(goalItem.ownerId) || user?.blockedByUsers?.includes(goalItem.ownerId))),
+        tasks: actions?.tasks?.filter(taskItem => !(user?.blockedUsers?.includes(taskItem.ownerId) || user?.blockedByUsers?.includes(taskItem.ownerId))),
+      }
+      return fetchActions(filteredActions, status)
     } else if (section === 'asks') {
       const asks = projectAskData && projectAskData.getAsksFromProject
       if (asks && asks.length === 0 && status === 'created') {
         return ['none']
       }
-      return asks
+      const filteredAsks = asks && asks.filter(askItem => {
+        return !(user?.blockedUsers?.includes(askItem.userId) || user?.blockedByUsers?.includes(askItem.userId))
+      })
+      return filteredAsks
     } else if (section === 'discussion') {
       if (discussions?.length === 0 ) {
         return ['none']
       }
-      return discussions
+      const filteredDicussions = discussions?.filter(discussion => {
+        return !(user?.blockedUsers?.includes(discussion.createdBy) || user?.blockedByUsers?.includes(discussion.createdBy))
+      })
+      return filteredDicussions
     }
   }
 
@@ -710,7 +724,7 @@ function ProjectProfile({
       flex: 1
     }}
     >
-      <Header noGoingBack={noGoingBack} share={`${WONDER_BASE_URL}/project/${projectId}`} />
+      <Header noGoingBack={noGoingBack} />
       {
         confetti &&
         <ConfettiCannon count={200} origin={{x: -10, y: 0}} />

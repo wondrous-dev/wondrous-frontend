@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
 import { SafeAreaView, View, Pressable, TextInput, StyleSheet, Keyboard } from 'react-native'
 import { useRoute, useNavigation } from '@react-navigation/native'
-// import * as Sharing from 'expo-sharing'
 
-import { Orange, Grey300, Grey250, Grey100, White, Black, Grey800, Blue400 } from '../../constants/Colors'
+import { Orange, Grey300, Grey250, Grey100, White, Black, Grey800, Grey700 } from '../../constants/Colors'
 import { Title, RegularText, Subheading, Paragraph } from '../../storybook/stories/Text'
 import BackCaret from '../../assets/images/back-caret'
 import { spacingUnit } from '../../utils/common'
@@ -16,6 +15,7 @@ import { GET_USER_STREAK } from '../../graphql/queries'
 import { useQuery } from '@apollo/client'
 import { useMe } from '../../components/withAuth'
 import { ContactsModal } from '../../screens/Profile/ContactsModal'
+import Options from '../../assets/images/options'
 
 const shouldbackPageRoutes = {
   'Dashboard': true,
@@ -84,7 +84,7 @@ export const Header = ({
   skip,
   skipParams,
   noGoingBack,
-  share,
+  options,
   rightButton,
   search,
   searchString,
@@ -166,20 +166,17 @@ export const Header = ({
         </Pressable>
       }
       {
-        share &&
-        <View>
-        <ShareModal isVisible={modalVisible} url={share} content='' setModalVisible={setModalVisible} />
-        <Pressable onPress={() => {
-          setModalVisible(true)
-        }} style={{
-          right: spacingUnit * 2,
-          top: -spacingUnit,
-          position: 'absolute'
-        }}>
-          <RegularText color={Grey250}>
-            Share
-          </RegularText>
-        </Pressable>
+        options &&
+          <View style={{
+            right: spacingUnit * 2,
+            position: 'absolute'
+          }}>
+          <Pressable onPress={() => {
+            const optionPress = options.setModalVisible
+            optionPress(true)
+          }}>
+              <Options color={Grey700} />
+          </Pressable>
         </View>
       }
       {
@@ -205,7 +202,7 @@ export const Header = ({
         </View>
       }
       {
-        !skip && !rightButton && !share &&
+        !skip && !rightButton &&
         <View />
       }
       {

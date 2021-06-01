@@ -255,6 +255,9 @@ const UserList = ({
   } else if (feedCommentReactedData) {
     list = feedCommentReactedData.getFeedCommentReactedUsers
   }
+  list = list.filter(listItem => {
+    return !(user?.blockedUsers?.includes(listItem.id) || user?.blockedByUsers?.includes(listItem.id))
+  })
 
   let title = ''
   if (projectId) {

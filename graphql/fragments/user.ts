@@ -52,6 +52,8 @@ export const LoggedinUserFragment = gql`
     reactedFeedItems
     usersFollowing
     projectsFollowing
+    blockedUsers
+    blockedByUsers
   }
   ${PublicUserFragment}
 `
