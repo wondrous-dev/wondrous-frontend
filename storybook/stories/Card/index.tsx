@@ -86,19 +86,25 @@ class Card extends React.Component {
     super(props)
   }
 
-  renderUnderlayLeft = ({ item, percentOpen }) => (
-    <Animated.View
-      style={[styles.row, styles.underlayLeft, { opacity: percentOpen, borderWidth: 0 }]} // Fade in on open
-    >
-      <PlatformTouchable style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 4 }}>
-        <Text style={[styles.text, { marginRight: 8 }]}>Archive</Text>
-        <ArchiveSvg style={{
-          width: 16,
-          height: 16
-        }} />
-      </PlatformTouchable>
-    </Animated.View>
-  )
+  renderUnderlayLeft = ({ item, percentOpen }) => {
+    const onboarding = item?.item?.additionalData?.onboarding
+    if (!onboarding) {
+      return (
+      <Animated.View
+        style={[styles.row, styles.underlayLeft, { opacity: percentOpen, borderWidth: 0 }]} // Fade in on open
+      >
+        <PlatformTouchable style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 4 }}>
+          <Text style={[styles.text, { marginRight: 8 }]}>Archive</Text>
+          <ArchiveSvg style={{
+            width: 16,
+            height: 16
+          }} />
+        </PlatformTouchable>
+      </Animated.View>
+      )
+    }
+    return null
+  }
 
   renderUnderlayRight = ({ item, percentOpen, close }) => (
     <Animated.View
@@ -391,11 +397,7 @@ class Card extends React.Component {
           }
         }}
         overSwipe={50}
-        renderUnderlayLeft={({ item, percentOpen }) => {
-          if (!onboarding) {
-            this.renderUnderlayLeft({ item, percentOpen })
-          }
-        }}
+        renderUnderlayLeft={this.renderUnderlayLeft}
         snapPointsLeft={[0, 100]}
         renderUnderlayRight={this.renderUnderlayRight}
         snapPointsRight={[0, 100]}

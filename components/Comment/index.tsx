@@ -36,6 +36,7 @@ const WriteComment = () => {
   const user = useMe()
   const [content, setContent] = useState('')
   const [userMentions, setUserMentions] = useState([])
+  const [commentDisabled, setCommentDisabled] = useState(false)
   const {
     commentMutation,
     feedItemId,
@@ -51,6 +52,7 @@ const WriteComment = () => {
         mentionedUsers,
         mentionedProjects
       } = getMentionArray(content)
+      setCommentDisabled(true)
       try {
         if (reviewId) {
           await commentMutation({
@@ -102,6 +104,7 @@ const WriteComment = () => {
       } catch (error) {
         console.log("error commenting", JSON.stringify(error, null, 2))
       }
+      setCommentDisabled(false)
       setContent('')
       Keyboard.dismiss()
     }
@@ -129,7 +132,7 @@ const WriteComment = () => {
           width: Dimensions.get('window').width - (spacingUnit * 18),
         }} />
         </TextEditorContext.Provider>
-        <PrimaryButton onPress={() => pressComment(content)} disabled={!content} style={{
+        <PrimaryButton onPress={() => pressComment(content)} disabled={commentDisabled} style={{
           width: spacingUnit * 8,
           marginLeft: spacingUnit
         }}>

@@ -37,6 +37,12 @@
     "ios": {
       "associatedDomains": ["applinks:wonderco.app.link", "applinks:wonderco-alternate.app.link", "applinks:wonderco-alternate.test-app.link", "applinks:wonderco.test-app.link"],
       "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription":
+          "Wonder needs permission to your camera to take photos associated with your projects",
+        "NSPhotoLibraryUsageDescription":
+          "Wonder needs permission to your camera roll to add existing photos to your projects"
+      },
       "config": {
         "branch": {
           "apiKey": "key_live_je9hURYbe3pyUydyQazRWengzslpluMJ"
@@ -47,7 +53,7 @@
         "usesNonExemptEncryption": false
       },
       "bundleIdentifier": "co.wonder.wonderapp",
-      "buildNumber": "1.1.26",
+      "buildNumber": "1.1.28",
       "usesAppleSignIn": true
     },
     "android": {
