@@ -8,7 +8,7 @@ import { TouchableWithoutFeedback, Keyboard } from 'react-native'
 
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { spacingUnit } from '../../utils/common'
+import { spacingUnit, getLocale } from '../../utils/common'
 import { Black, Grey900, White, Blue400, Blue500, Yellow300, Grey300, Grey500, GreyPlaceHolder } from '../../constants/Colors'
 import { Subheading, ErrorText, ButtonText, Paragraph } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
@@ -169,7 +169,8 @@ const CreateProjectInput = ({ navigation, setup }) => {
                                         input: {
                                             name,
                                             description,
-                                            privacyLevel: privacy
+                                            privacyLevel: privacy,
+                                            currentTimezone: getLocale()
                                         },
                                         firstTime: !!(setup)
                                     }

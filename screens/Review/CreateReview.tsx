@@ -5,7 +5,7 @@ import { Header } from '../../components/Header'
 import { White, Black, Red400, Green400, Grey400, Blue400 } from '../../constants/Colors'
 import { GET_REVIEW_STATS } from '../../graphql/queries/review'
 import { ButtonText, ErrorText, Paragraph, Subheading } from '../../storybook/stories/Text'
-import { spacingUnit } from '../../utils/common'
+import { spacingUnit, getLocale } from '../../utils/common'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { withAuth } from '../../components/withAuth'
 import { CREATE_REVIEW } from '../../graphql/mutations'
@@ -153,7 +153,8 @@ const CreateReview = ({ navigation, route }) => {
                     variables: {
                       input: {
                         description,
-                        reviewScore
+                        reviewScore,
+                        currentTimezone: getLocale()
                       }
                     }
                   })

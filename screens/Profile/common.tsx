@@ -14,7 +14,7 @@ import { profileStyles } from './style'
 import AddIcon from '../../assets/images/add-dark-button'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { FlexibleButton, PrimaryButton } from '../../storybook/stories/Button'
-import { spacingUnit } from '../../utils/common'
+import { spacingUnit, getLocale } from '../../utils/common'
 import { useProfile } from '../../utils/hooks'
 import { renderItem } from '../../components/Feed'
 import { renderDiscussionItem } from '../../components/ProjectDiscussion'
@@ -722,7 +722,8 @@ export const onSwipe =({
       }
       completeGoal({
         variables: {
-          goalId: item.id
+          goalId: item.id,
+          currentTimezone: getLocale()
         },
         update(cache) {
           if (project) {
@@ -791,7 +792,8 @@ export const onSwipe =({
     if (status === 'completed') {
       completeTask({
         variables: {
-          taskId: item?.id
+          taskId: item?.id,
+          currentTimezone: getLocale()
         },
         update(cache) {
           if (project) {

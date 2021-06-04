@@ -18,7 +18,7 @@ import { getFilenameAndType, uploadVideo } from '../../utils/image'
 import ImageBrowser from './ImageBrowser'
 import { FlexRowContentModal } from './index'
 
-import { capitalizeFirstLetter } from '../../utils/common'
+import { capitalizeFirstLetter, getLocale } from '../../utils/common'
 import { useNavigation } from '@react-navigation/native'
 import { MAX_VIDEO_LIMIT, MUX_URL_ENDING, MUX_URL_PREFIX } from '../../constants'
 
@@ -666,7 +666,6 @@ export const submit = async ({
   
     const userMentions = populateMentionArr({ nameMentions: nameMentionedUsers, detailMentions: detailMentionedUsers, contentMentions: contentMentionedUsers, completedMessageMentions: completedMessageUsers })
     const projectMentions = populateMentionArr({ nameMentions: nameMentionedProjects, detailMentions: detailMentionedProjects, contentMentions: contentMentionedProjects, completedMessageMentions: completedMessageProjects })
-
     try {
       const result = await mutation({
         variables: {
@@ -735,7 +734,10 @@ export const submit = async ({
             ...(video && {
               videoUploadSlug: finalVideo
             }),
-            completed
+            completed,
+            ...(!(type === 'ask' || type === 'post' || type === 'projectDiscussion') && {
+              currentTimezone: getLocale()
+            } )
           }
         }
       })

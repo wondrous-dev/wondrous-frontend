@@ -19,7 +19,7 @@ import { SafeImage, UploadImage } from '../../storybook/stories/Image'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { FullScreenDiscussionModal } from '../../components/Modal/ProjectDiscussionModal'
 import { SecondaryButton, FlexibleButton, PrimaryButton } from '../../storybook/stories/Button'
-import { capitalizeFirstLetter, getRingActions, isEmptyObject, spacingUnit, usePrevious, wait } from '../../utils/common'
+import { capitalizeFirstLetter, getRingActions, isEmptyObject, spacingUnit, usePrevious, wait, getLocale } from '../../utils/common'
 import { GoalCongratsModal, TaskCongratsModal } from '../../components/Modal'
 import { WONDER_BASE_URL } from '../../constants/'
 import { ProfileContext, UserCongratsContext } from '../../utils/contexts'
@@ -271,7 +271,7 @@ function ProjectProfile({
   const [completeTask] = useMutation(COMPLETE_TASK, {
     refetchQueries: [
       { query: GET_USER_STREAK, variables: {
-        userId: user && user.id
+        userId: user && user.id,
       } }
     ]
   })

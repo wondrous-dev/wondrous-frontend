@@ -13,7 +13,7 @@ import { pageStyles, sortPriority, ReactionFeed } from './common'
 import { UPDATE_GOAL, COMPLETE_GOAL, NUDGE_GOAL } from '../../graphql/mutations'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import PriorityFlame from '../../assets/images/modal/priority'
-import { capitalizeFirstLetter, getRingActions, renderMentionString, spacingUnit } from '../../utils/common'
+import { capitalizeFirstLetter, getRingActions, renderMentionString, spacingUnit, getLocale } from '../../utils/common'
 import { Tag } from '../../components/Tag'
 import { formatDueDate, redDate } from '../../utils/date'
 import { GET_GOAL_BY_ID, GET_USER_STREAK, CHECK_USER_FOLLOWS_BACK, GET_USER_RING_ACTION_COUNT } from '../../graphql/queries'
@@ -258,7 +258,8 @@ const GoalPage = ({ navigation, route }) => {
                   setGoalCompleteModal(true)
                   completeGoal({
                     variables: {
-                      goalId: goal?.id
+                      goalId: goal?.id,
+                      currentTimezone: getLocale()
                     }
                   })
     

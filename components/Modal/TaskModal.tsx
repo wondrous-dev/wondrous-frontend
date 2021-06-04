@@ -291,6 +291,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                     mutation: taskMutation,
                     goalId: goal,
                     video,
+                    type: 'task',
                     ...(task && {
                       updateId: task.id,
                       updateKey: 'taskId'

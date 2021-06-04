@@ -29,8 +29,8 @@ export const DELETE_GOAL = gql`
 `
 
 export const COMPLETE_GOAL = gql`
-  mutation CompleteGoal($goalId: ID!) {
-    completeGoal(goalId: $goalId) {
+  mutation CompleteGoal($goalId: ID!, $currentTimezone: String) {
+    completeGoal(goalId: $goalId, currentTimezone: $currentTimezone) {
       ...PublicGoal
     }
   }

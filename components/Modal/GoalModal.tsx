@@ -9,7 +9,7 @@ import { TextEditor } from '../../storybook/stories/TextEditor'
 import { TextEditorContext } from '../../utils/contexts'
 import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Green400} from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
-import { spacingUnit } from '../../utils/common'
+import { spacingUnit, getLocale } from '../../utils/common'
 import { endOfWeekFromNow } from '../../utils/date'
 import { useMe } from '../../components/withAuth'
 import { GET_USER_PROJECTS } from '../../graphql/queries/project'
@@ -176,7 +176,8 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                     try {
                       await completeGoalMutation({
                         variables: {
-                          goalId: goal?.id
+                          goalId: goal?.id,
+                          currentTimezone: getLocale()
                         }
                       })
                     } catch (err) {
@@ -201,6 +202,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                     mutation: goalMutation,
                     firstTime,
                     video,
+                    type: 'goal',
                     ...(goal && {
                       updateId: goal.id,
                       updateKey: 'goalId'

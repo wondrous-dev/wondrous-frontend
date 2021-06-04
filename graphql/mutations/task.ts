@@ -29,8 +29,8 @@ export const DELETE_TASK = gql`
 `
 
 export const COMPLETE_TASK = gql`
-  mutation CompleteTask($taskId: ID!) {
-    completeTask(taskId: $taskId) {
+  mutation CompleteTask($taskId: ID!, $currentTimezone: String) {
+    completeTask(taskId: $taskId, currentTimezone: $currentTimezone) {
       ...PublicTask
     }
   }
