@@ -108,7 +108,7 @@ const WriteComment = () => {
       setContent('')
       Keyboard.dismiss()
     }
-  }, [])
+  }, [previousCommenterIds])
 
   return (
     <View style={commentStyles.commentContainer}>
