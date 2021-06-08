@@ -35,13 +35,9 @@ const FollowRecommendation = ({ navigation }) => {
           setFinished(true)
           setSignupComplete()
           setTimeout(() => {
-            navigation.push('Root', {
-              screen: 'Profile',
+            navigation.push('FirstProjectSetup', {
               params: {
-                screen: 'UserProfile',
-                params: {
-                  initialSection: 'action'
-                }
+                setup: true
               }
             })
           }, 2000)

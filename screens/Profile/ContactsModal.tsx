@@ -105,7 +105,7 @@ const ContactItem = ({ item, setModalVisible }) => {
   )
 }
 
-export const ContactsModal = ({ isVisible, setModalVisible }) => {
+export const ContactsList = ({ isVisible, setModalVisible}) => {
   const [permissions, setPermissions] = useState(null)
   const [contacts, setContacts] = useState([])
   const [searchString, setSearchString] = useState('')
@@ -123,6 +123,44 @@ export const ContactsModal = ({ isVisible, setModalVisible }) => {
       return one && one.name && one.name.toLocaleLowerCase().includes(searchString.toLocaleLowerCase())
     })
   }
+  return (
+    <>
+    <View style={{
+      height: spacingUnit * 6
+    }}>
+  
+    <SearchBar searchString={searchString} setSearchString={setSearchString} placeholder={'Search by username'} />
+    </View>
+    {
+      (!filteredData || filteredData?.length === 0) &&
+      <Paragraph style={{
+        padding: spacingUnit * 2
+      }} onPress={() => navigation.push('Root', {
+        screen: 'Search',
+        params: {
+          screen: 'Default'
+        }
+      })}>
+        Your list might be empty because you haven't allowed Wonder to sync your contacts. Please go to your phone settings to change this.
+      </Paragraph>
+    }
+    <FlatList
+      data={filteredData}
+      contentContainerStyle={listStyles.listContainer}
+      renderItem={({ item }) => {
+  
+        return (
+          <ContactItem
+          item={item}
+          setModalVisible={setModalVisible}
+          />
+        )
+      }}
+    />
+    </>
+  )
+}
+export const ContactsModal = ({ isVisible, setModalVisible }) => {
 
   return (
     <Modal isVisible={isVisible}>
@@ -166,38 +204,7 @@ export const ContactsModal = ({ isVisible, setModalVisible }) => {
               </Pressable>
               </View>
             </View>
-            <View style={{
-              height: spacingUnit * 6
-            }}>
-
-            <SearchBar searchString={searchString} setSearchString={setSearchString} placeholder={'Search by username'} />
-            </View>
-            {
-              (!filteredData || filteredData?.length === 0) &&
-              <Paragraph style={{
-                padding: spacingUnit * 2
-              }} onPress={() => navigation.push('Root', {
-                screen: 'Search',
-                params: {
-                  screen: 'Default'
-                }
-              })}>
-                Your list might be empty because you haven't allowed Wonder to sync your contacts. Please go to your phone settings to change this.
-              </Paragraph>
-            }
-            <FlatList
-              data={filteredData}
-              contentContainerStyle={listStyles.listContainer}
-              renderItem={({ item }) => {
-
-                return (
-                  <ContactItem
-                  item={item}
-                  setModalVisible={setModalVisible}
-                  />
-                )
-              }}
-            />
+            <ContactsList setModalVisible={setModalVisible} isVisible={isVisible} />
       </SafeAreaView>
     </Modal>
   )

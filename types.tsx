@@ -11,7 +11,9 @@ export type RootStackParamList = {
   ProjectSetupCategory: undefined
   UsernameSetup: undefined
   FirstProjectSetup: undefined
+  ProjectInviteCollaborators: undefined
   ProjectTagSelection: undefined
+  ProjectCollaborators: undefined
   EmailSignup: undefined
   EmailSignin: undefined
   GroupSetup: undefined
