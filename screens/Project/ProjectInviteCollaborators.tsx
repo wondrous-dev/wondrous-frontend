@@ -8,6 +8,8 @@ import { InviteCollaboratorList } from '../Profile/InviteCollaboratorModal'
 import { ContactsList } from '../Profile/ContactsModal'
 import { StatusItem } from '../Profile/common'
 import { useMe, withAuth } from '../../components/withAuth'
+import { useMutation, useQuery } from '@apollo/client'
+import { SET_USER_SIGNUP_COMPLETE } from '../../graphql/mutations'
 
 const styles = StyleSheet.create({
   pillContainer: {
@@ -28,6 +30,7 @@ const ProjectInviteCollaborators = ({
   const [status, setStatus] = useState('internal')
   const project = route?.params?.project
   const inviteInternal = status === 'internal'
+  const [setSignupComplete] = useMutation(SET_USER_SIGNUP_COMPLETE)
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -36,7 +39,8 @@ const ProjectInviteCollaborators = ({
       <Header rightButton={{
         color: Blue500,
         text: 'Finish',
-        onPress: () => {
+        onPress: async() => {
+          await setSignupComplete()
           if (!user?.usageProgress?.signupCompleted) {
             navigation.push('Root', {
               screen: 'Profile',
@@ -59,8 +63,9 @@ const ProjectInviteCollaborators = ({
         }
       }}/>
       <View style={styles.pillContainer}>
-      <StatusItem setStatus={setStatus} statusValue='internal' statusLabel='Through Wonder' statusTrue={status === 'internal'} />
       <StatusItem setStatus={setStatus} statusValue='external' statusLabel='Through text' statusTrue={status === 'external'} />
+      <StatusItem setStatus={setStatus} statusValue='internal' statusLabel='Through Wonder' statusTrue={status === 'internal'} />
+
       </View>
       {
         inviteInternal ?
