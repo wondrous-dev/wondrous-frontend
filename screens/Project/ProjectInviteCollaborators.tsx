@@ -27,7 +27,7 @@ const ProjectInviteCollaborators = ({
   route
 }) => {
   const user = useMe()
-  const [status, setStatus] = useState('internal')
+  const [status, setStatus] = useState('external')
   const project = route?.params?.project
   const inviteInternal = status === 'internal'
   const [setSignupComplete] = useMutation(SET_USER_SIGNUP_COMPLETE)
