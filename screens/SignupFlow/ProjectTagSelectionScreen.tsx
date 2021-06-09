@@ -226,47 +226,19 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                             })
                         } else {
                             if (finished) {
-                                if (!user?.usageProgress?.signupCompleted) {
-                                    navigation.push('Root', {
-                                        screen: 'Profile',
-                                        params: {
-                                          screen: 'UserProfile'
-                                        }
-                                      })
-                                } else {
-                                    navigation.push('Root', {
-                                        screen: 'Profile',
-                                        params: {
-                                          screen: 'ProjectProfile',
-                                          params: {
-                                            projectId,
-                                            noGoingBack: true
-                                          }
-                                        }
-                                      })
-                                }
+                                navigation.push('ProjectInviteCollaborators', {
+                                    project: {
+                                      id: projectId
+                                    }
+                                })
                             } else {
                                 setFinished(true)
                                 setTimeout(() => {
-                                    if (!user?.usageProgress?.signupCompleted) {
-                                        navigation.push('Root', {
-                                            screen: 'Profile',
-                                            params: {
-                                              screen: 'UserProfile'
-                                            }
-                                          })
-                                    } else {
-                                        navigation.push('Root', {
-                                            screen: 'Profile',
-                                            params: {
-                                              screen: 'ProjectProfile',
-                                              params: {
-                                                projectId,
-                                                noGoingBack: true
-                                              }
-                                            }
-                                          })
-                                    }
+                                    navigation.push('ProjectInviteCollaborators', {
+                                        project: {
+                                          id: projectId
+                                        }
+                                    })
                                 }, 1000)
                             }
                         }
@@ -297,8 +269,10 @@ function ProjectTagSelectionScreen({
             backgroundColor: White,
             flex: 1,
         }}>
-            <Header skip={edit ? null : 'Root'} skipParams={{
-                screen: 'Profile'
+            <Header skip={edit ? null : 'ProjectInviteCollaborators'} skipParams={{
+                project: {
+                    id: projectId
+                }
             }} />
             <ScrollView style={{
                 flex: 1
@@ -320,9 +294,9 @@ function ProjectTagSelectionScreen({
                             <BigMouthSmile />
                         }
                     </ProgressCircle>
-                    <View style={projectTagStyles.stepContainer}>
+                    {/* <View style={projectTagStyles.stepContainer}>
                         <Text style={projectTagStyles.stepCount}>step 4/4</Text>
-                    </View>
+                    </View> */}
                 </View>
             }
             {

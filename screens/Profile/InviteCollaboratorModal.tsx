@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { SafeAreaView, FlatList, View, Image, StyleSheet, Dimensions, Platform, TextInput, TouchableOpacity, Pressable } from 'react-native'
+import { SafeAreaView, FlatList, View, Image, TouchableOpacity, Pressable } from 'react-native'
 import Modal from 'react-native-modal'
 import { useMutation, useQuery, useLazyQuery } from '@apollo/client'
 
@@ -18,7 +18,7 @@ import { GET_PROJECT_INVITES, GET_USER_FOLLOWERS, GET_USER_FOLLOWING } from '../
 import { INVITE_COLLABORATOR } from '../../graphql/mutations'
 
 
-const CollaboratorItem = ({ item, project, initialInvited, projectInvites, setModalVisible }) => {
+export const CollaboratorItem = ({ item, project, initialInvited, projectInvites, setModalVisible }) => {
   const navigation = useNavigation()
   const route = useRoute()
   const user = useMe()
@@ -63,7 +63,9 @@ const CollaboratorItem = ({ item, project, initialInvited, projectInvites, setMo
 
   return (
     <TouchableOpacity onPress={() => {
-      setModalVisible(false)
+      if (setModalVisible) {
+        setModalVisible(false)
+      }
       navigation.push('Root', {
         screen: route && route.params && route.params.tab || 'Profile',
         params: {
@@ -133,42 +135,87 @@ const CollaboratorItem = ({ item, project, initialInvited, projectInvites, setMo
 </TouchableOpacity>
   )
 }
-export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, setModalVisible}) => {
-  const {
-    data: followingData,
-    loading: followingLoading,
-    error: followingError
-  } = useQuery(GET_USER_FOLLOWING, {
-    fetchPolicy: 'no-cache'
-  })
-  const [getProjectInvites, {
-    data: projectInviteData
-  }] = useLazyQuery(GET_PROJECT_INVITES, {
-    variables: {
-      projectId: project.id
-    },
-    fetchPolicy: 'network-only'
-  })
 
-  const [searchString, setSearchString] = useState('')
-
-  const following = followingData && followingData.getUserFollowing && followingData.getUserFollowing.users
-  let filteredData = following && following.filter(item => {
-    return !(project.collaborators && project.collaborators.some(element => element.user.id === item.id))
-  })
-
-  if (searchString) {
-    filteredData = filteredData && filteredData.filter(one => {
-      return one.username.toLocaleLowerCase().includes(searchString.toLocaleLowerCase())
+export const InviteCollaboratorList = ({ isVisible, project, setModalVisible }) => {
+    const {
+      data: followingData,
+      loading: followingLoading,
+      error: followingError
+    } = useQuery(GET_USER_FOLLOWING, {
+      fetchPolicy: 'no-cache'
     })
-  }
-  useEffect(() => {
-    if (isVisible) {
-      getProjectInvites()
-    }
-  }, [isVisible])
+    const [getProjectInvites, {
+      data: projectInviteData
+    }] = useLazyQuery(GET_PROJECT_INVITES, {
+      variables: {
+        projectId: project.id
+      },
+      fetchPolicy: 'network-only'
+    })
 
-  const projectInvites = projectInviteData && projectInviteData.getProjectInvitesForProject
+    const [searchString, setSearchString] = useState('')
+
+    const following = followingData && followingData.getUserFollowing && followingData.getUserFollowing.users
+    let filteredData = following && following.filter(item => {
+      return !(project.collaborators && project.collaborators.some(element => element.user.id === item.id))
+    })
+
+    if (searchString) {
+      filteredData = filteredData && filteredData.filter(one => {
+        return one.username.toLocaleLowerCase().includes(searchString.toLocaleLowerCase())
+      })
+    }
+    useEffect(() => {
+      if (isVisible) {
+        getProjectInvites()
+      }
+    }, [isVisible])
+
+    const projectInvites = projectInviteData && projectInviteData.getProjectInvitesForProject
+  return (
+    <>
+      <View style={{
+              height: spacingUnit * 6
+            }}>
+      <SearchBar searchString={searchString} setSearchString={setSearchString} placeholder={'Search by username'} />
+      </View>
+      {
+        (!filteredData || filteredData?.length === 0) &&
+        <Paragraph style={{
+          padding: spacingUnit * 2
+        }} onPress={() => navigation.push('Root', {
+          screen: 'Search',
+          params: {
+            screen: 'Default'
+          }
+        })}>
+          You can only invite users you follow. Go to our <Paragraph color={Blue400}>
+            search page
+          </Paragraph> to find some cool projects or users to follow!
+        </Paragraph>
+      }
+      <FlatList
+        data={filteredData}
+        contentContainerStyle={listStyles.listContainer}
+        renderItem={({ item }) => {
+          const invited = projectInvites && projectInvites.some(element => {
+            return element?.inviteeId === item?.id
+          })
+          return (
+            <CollaboratorItem
+            item={item}
+            project={project}
+            initialInvited={invited}
+            projectInvites={projectInvites}
+            setModalVisible={setModalVisible}
+            />
+          )
+        }}
+      />
+      </>
+  )
+}
+export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, setModalVisible}) => {
 
   return (
     <Modal isVisible={isVisible}>
@@ -211,44 +258,7 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
               </Pressable>
               </View>
             </View>
-            <View style={{
-              height: spacingUnit * 6
-            }}>
-            <SearchBar searchString={searchString} setSearchString={setSearchString} placeholder={'Search by username'} />
-            </View>
-            {
-              (!filteredData || filteredData?.length === 0) &&
-              <Paragraph style={{
-                padding: spacingUnit * 2
-              }} onPress={() => navigation.push('Root', {
-                screen: 'Search',
-                params: {
-                  screen: 'Default'
-                }
-              })}>
-                You can only invite users you follow. Go to our <Paragraph color={Blue400}>
-                  search page
-                </Paragraph> to find some cool projects or users to follow!
-              </Paragraph>
-            }
-            <FlatList
-              data={filteredData}
-              contentContainerStyle={listStyles.listContainer}
-              renderItem={({ item }) => {
-                const invited = projectInvites && projectInvites.some(element => {
-                  return element?.inviteeId === item?.id
-                })
-                return (
-                  <CollaboratorItem
-                  item={item}
-                  project={project}
-                  initialInvited={invited}
-                  projectInvites={projectInvites}
-                  setModalVisible={setModalVisible}
-                  />
-                )
-              }}
-            />
+            <InviteCollaboratorList isVisible={isVisible} project={project} setModalVisible={setModalVisible} />
       </SafeAreaView>
     </Modal>
   )

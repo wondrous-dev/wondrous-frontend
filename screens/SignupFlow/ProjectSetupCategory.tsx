@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { StyleSheet, View, ScrollView, Text, Image, SafeAreaView, Dimensions, Pressable } from 'react-native'
-import { useRoute, useNavigation } from '@react-navigation/native'
 import ProgressCircle from 'react-native-progress-circle'
 
 import { RootStackParamList } from '../../types'
@@ -212,17 +211,15 @@ function ProjectSetupCategoryScreen({
       const categorySelected = user.usageProgress.projectCategorySelected
       if (categorySelected === 'business' || categorySelected === 'tech') {
         navigation.push('ProjectTagSelection', {
-          projectId
+          projectId,
+          setup
         })
       } else {
-        navigation.push('Root', {
-          screen: 'Profile',
-          params: {
-            screen: 'UserProfile',
-            params: {
-              noGoingBack: true
-            }
-          }
+        navigation.push('ProjectInviteCollaborators', {
+          project: {
+            id: projectId
+          },
+          setup
         })
       }
     }
@@ -255,9 +252,9 @@ function ProjectSetupCategoryScreen({
           >
               <BigMouthSmile />
           </ProgressCircle>
-          <View style={projectSetupStyles.stepContainer}>
+          {/* <View style={projectSetupStyles.stepContainer}>
             <Text style={projectSetupStyles.stepCount}>step {setup ? '3/4' : '2/3'}</Text>
-          </View>
+          </View> */}
         </View>
         }
         {
@@ -297,25 +294,12 @@ function ProjectSetupCategoryScreen({
                     setup
                   })
                 } else {
-                  if (!user?.usageProgress?.signupCompleted) {
-                    navigation.push('Root', {
-                      screen: 'Profile',
-                      params: {
-                        screen: 'UserProfile'
-                      }
-                    })
-                  } else {
-                    navigation.push('Root', {
-                      screen: 'Profile',
-                      params: {
-                        screen: 'ProjectProfile',
-                        params: {
-                          projectId,
-                          noGoingBack: true
-                        }
-                      }
-                    })
-                  }
+                  navigation.push('ProjectInviteCollaborators', {
+                    project: {
+                      id: projectId
+                    },
+                    setup
+                  })
                 }
               } else {
                 navigation.push('Root', {

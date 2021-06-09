@@ -13,6 +13,7 @@ import WelcomeScreen from '../screens/SignupFlow/Welcome'
 import ProjectSetupCategoryScreen from '../screens/SignupFlow/ProjectSetupCategory'
 import UsernameSetupScreen from '../screens/SignupFlow/UsernameSetupScreen'
 import FirstProjectSetupScreen from '../screens/SignupFlow/FirstProjectSetupScreen'
+import ProjectInviteCollaborators from '../screens/Project/ProjectInviteCollaborators'
 import ProjectTagSelectionScreen from '../screens/SignupFlow/ProjectTagSelectionScreen'
 import DashboardScreen from '../screens/Dashboard'
 import { RootStackParamList } from '../types'
@@ -45,7 +46,8 @@ function RootNavigator() {
       <Stack.Screen name='ProjectSetupCategory' component={ProjectSetupCategoryScreen} />
       <Stack.Screen name='UsernameSetup' component={UsernameSetupScreen} />
       <Stack.Screen name='GroupSetup' component={GroupSetupScreen} />
-      <Stack.Screen name='FirstProjectSetup' component={FirstProjectSetupScreen} initialParams={{ setup: true }} />
+      <Stack.Screen name='FirstProjectSetup' component={FirstProjectSetupScreen} />
+      <Stack.Screen name='ProjectInviteCollaborators' component={ProjectInviteCollaborators} />
       <Stack.Screen name='ProjectTagSelection' component={ProjectTagSelectionScreen} />
       <Stack.Screen name='Dashboard' component={DashboardScreen} />
       <Stack.Screen name='Root' component={BottomTabNavigator} />

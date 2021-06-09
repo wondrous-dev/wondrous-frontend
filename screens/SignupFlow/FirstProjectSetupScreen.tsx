@@ -131,7 +131,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
             <ProjectFAQModal isVisible={projectFAQ} setModalVisible={setProjectFAQ} />
             <Subheading style={{
             }} color={Black}>
-                What is your project?
+                Make a project!
         </Subheading>
             <Paragraph style={firstProjectSetupStyles.paragraph}>
             Describe your project in one sentence.{"\n"}
@@ -300,7 +300,7 @@ function FirstProjectSetupScreen({
         if (user && user.usageProgress && user.usageProgress.projectCreated && setup) {
             navigation.push('ProjectSetupCategory', {
                 projectId: user.usageProgress.projectCreated,
-                setup: true
+                setup
             })
         }
     }, [])
@@ -327,9 +327,9 @@ function FirstProjectSetupScreen({
                         >
                             <Smile />
                         </ProgressCircle>
-                        <View style={firstProjectSetupStyles.stepContainer}>
+                        {/* <View style={firstProjectSetupStyles.stepContainer}>
                             <Text style={firstProjectSetupStyles.stepCount}>step {setup ? '2/4' : '1/3'}</Text>
-                        </View>
+                        </View> */}
                     </View>
                     {                
                         error &&
@@ -354,11 +354,12 @@ function FirstProjectSetupScreen({
                               screen: 'Profile',
                               params: {
                                 screen: 'UserProfile',
+                                setup
                               }
                             })
                           }}>
                             <ButtonText color={Grey500} style={firstProjectSetupStyles.goToHome}>
-                              I'm trying to explore/already joining a project!
+                              Skip and start exploring
                             </ButtonText>
                           </TouchableOpacity>
                     }
