@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import React, { useState, useEffect } from 'react'
 import { ColorSchemeName, Platform, Linking } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import * as Analytics from 'expo-firebase-analytics'
 
 import NotFoundScreen from '../screens/NotFoundScreen'
 import HomeScreen from '../screens/HomeScreen'
@@ -60,43 +61,76 @@ function RootNavigator() {
 
 // If you are not familiar with React Navigation, we recommend going through the
 // 'Fundamentals' guide: https://reactnavigation.org/docs/getting-started
-export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
-  const [isReady, setIsReady] = React.useState(false);
-  const [initialState, setInitialState] = React.useState()
 
+// Get the current screen from the navigation state
+function getActiveRouteName(navigationState) {
+  const previousRouteName = routeNameRef.current
+  const currentRouteName = navigationRef.current.getCurrentRoute().name
+
+  if (previousRouteName !== currentRouteName) {
+    // Do something here with it
+  }
+
+  // Save the current route name for later comparision
+  routeNameRef.current = currentRouteName
+}
+
+export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+  const [isReady, setIsReady] = React.useState(false)
+  const [initialState, setInitialState] = React.useState()
+  const routeNameRef = React.useRef()
   useEffect(() => {
+    Analytics.setDebugModeEnabled(true)
     const restoreState = async () => {
       try {
-        const initialUrl = await Linking.getInitialURL();
+        const initialUrl = await Linking.getInitialURL()
 
         if (Platform.OS !== 'web' && initialUrl == null) {
           // Only restore state if there's no deep link and we're not on web
-          const savedStateString = await AsyncStorage.getItem(PERSISTENCE_KEY);
-          const state = savedStateString ? JSON.parse(savedStateString) : undefined;
+          const savedStateString = await AsyncStorage.getItem(PERSISTENCE_KEY)
+          const state = savedStateString ? JSON.parse(savedStateString) : undefined
 
           if (state !== undefined) {
-            setInitialState(state);
+            setInitialState(state)
           }
         }
       } finally {
-        setIsReady(true);
+        setIsReady(true)
       }
-    };
+    }
 
     if (!isReady) {
-      restoreState();
+      restoreState()
     }
-  }, [isReady]);
+  }, [isReady])
 
   if (!isReady) {
-    return null;
+    return null
   }
+  
+  // Gets the current screen from navigation state
+  const getActiveRouteName = (state)=> {
+      const route = state.routes[state?.index || 0]
+      if (route.state) {
+        // Dive into nested navigators
+        return getActiveRouteName(route.state)
+      }
+
+      if (route.params) {
+        return route.name + JSON.stringify(route.params)
+      }
+      return route.name
+  }
+
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
       initialState={initialState}
-      onStateChange={(state) =>
+      onStateChange={(state) => {
         AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
+        const currentScreen = getActiveRouteName(state)
+        Analytics.setCurrentScreen(currentScreen)
+      }
       }
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <RootNavigator />
