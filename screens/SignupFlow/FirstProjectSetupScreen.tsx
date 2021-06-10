@@ -293,7 +293,6 @@ function FirstProjectSetupScreen({
 }: StackScreenProps<RootStackParamList, 'FirstProjectSetup'>) {
     const user = useMe()
     const [error, setError] = useState(null)
-    const [setSignupComplete] = useMutation(SET_USER_SIGNUP_COMPLETE)
     let setup = false
     setup = route?.params?.setup
     useEffect(() => {
@@ -349,7 +348,6 @@ function FirstProjectSetupScreen({
                     {
                         setup &&
                         <TouchableOpacity onPress={async () => {
-                            await setSignupComplete()
                             navigation.push('Root', {
                               screen: 'Profile',
                               params: {

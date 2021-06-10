@@ -148,7 +148,11 @@ const UsernameInput = ({ navigation }) => {
                   username: values?.username
                 }
               })
-              await createOnboardingTasks()
+              try {
+                await createOnboardingTasks()
+              } catch (err) {
+                console.error('Error creating onboarding tasks')
+              }
               if (firstName || lastName) {
                 await updateUser({
                   variables: {

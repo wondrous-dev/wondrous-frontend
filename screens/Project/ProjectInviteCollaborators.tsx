@@ -30,7 +30,6 @@ const ProjectInviteCollaborators = ({
   const [status, setStatus] = useState('external')
   const project = route?.params?.project
   const inviteInternal = status === 'internal'
-  const [setSignupComplete] = useMutation(SET_USER_SIGNUP_COMPLETE)
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -40,7 +39,6 @@ const ProjectInviteCollaborators = ({
         color: Blue500,
         text: 'Finish',
         onPress: async() => {
-          await setSignupComplete()
           if (!user?.usageProgress?.signupCompleted) {
             navigation.push('Root', {
               screen: 'Profile',
