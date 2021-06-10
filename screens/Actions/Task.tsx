@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, View, Text, ScrollView, Pressable, TouchableOpacity } from 'react-native'
-import { useLazyQuery, useMutation } from '@apollo/client'
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import Toast from 'react-native-toast-message'
+import ConfettiCannon from 'react-native-confetti-cannon'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
@@ -11,13 +12,15 @@ import { pageStyles, sortPriority, ReactionFeed } from './common'
 import { COMPLETE_TASK, UPDATE_TASK, NUDGE_TASK } from '../../graphql/mutations'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import PriorityFlame from '../../assets/images/modal/priority'
-import { capitalizeFirstLetter, renderMentionString, spacingUnit } from '../../utils/common'
+import { capitalizeFirstLetter, renderMentionString, spacingUnit, getRingActions } from '../../utils/common'
 import { Tag } from '../../components/Tag'
 import { formatDueDate, redDate } from '../../utils/date'
-import { GET_TASK_BY_ID, GET_GOAL_BY_ID, GET_USER_STREAK, CHECK_USER_FOLLOWS_BACK } from '../../graphql/queries'
+import { GET_TASK_BY_ID, GET_GOAL_BY_ID, GET_USER_STREAK, CHECK_USER_FOLLOWS_BACK, GET_USER_RING_ACTION_COUNT } from '../../graphql/queries'
 import { MyCarousel, VideoDisplay } from '../../storybook/stories/Carousel'
 import LinkIcon from '../../assets/images/link'
 import Nudge from '../../assets/images/actions/nudge'
+import { TaskCongratsModal } from '../../components/Modal'
+import { UserCongratsContext } from '../../utils/contexts'
 
 const TaskPage = ({ navigation, route }) => {
   const user = useMe()
@@ -30,6 +33,8 @@ const TaskPage = ({ navigation, route }) => {
   const ownedByUser = (task && task.ownerId) === (user && user.id)
   const [status, setStatus] = useState(null)
   const [modalVisible, setModalVisible] = useState(false)
+  const [taskCompleteModal, setTaskCompleteModal] = useState(false)
+  const [confetti, setConfetti]  = useState(false)
   const [getTask, {
     data,
     loading,
@@ -65,6 +70,21 @@ const TaskPage = ({ navigation, route }) => {
       })
     }
   })
+
+  const {
+    data: userRingActionCountData
+  } = useQuery(GET_USER_RING_ACTION_COUNT, {
+    variables: {
+      userId: user?.id
+    }, 
+    fetchPolicy: 'network-only'
+  })
+
+  const {
+    percentage,
+    incompleteRingActions,
+    completedRingActions
+  } = getRingActions(userRingActionCountData)
 
   const [completeTask] = useMutation(COMPLETE_TASK, {
     refetchQueries: [
@@ -160,6 +180,20 @@ const TaskPage = ({ navigation, route }) => {
           setModalVisible(true)
         }
       }}/>
+      {
+        confetti &&
+        <ConfettiCannon count={200} origin={{x: -10, y: 0}} />
+      }
+      {
+        ownedByUser && taskCompleteModal &&
+        <UserCongratsContext.Provider value={{
+          user,
+          incompleteRingActions,
+          completedRingActions: completedRingActions
+        }}>
+        <TaskCongratsModal user={user} isVisible={task} setModalVisible={setTaskCompleteModal} />
+        </UserCongratsContext.Provider>
+      }
       <ScrollView style={pageStyles.container}>
         <View style={{
           flexDirection: 'row',
@@ -224,6 +258,11 @@ const TaskPage = ({ navigation, route }) => {
                 ownedByUser &&
                 <Pressable onPress={() => {
                   setStatus('completed')
+                  setConfetti(true)
+                  setTimeout(() => {
+                    setConfetti(false)
+                  }, 5000)
+                  setTaskCompleteModal(true)
                   completeTask({
                     variables: {
                       taskId: task?.id
