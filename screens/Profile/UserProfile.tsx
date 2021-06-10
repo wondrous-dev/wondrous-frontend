@@ -204,7 +204,8 @@ function UserProfile({
       userId: finalUserId,
       limit: 10,
       offset: 0
-    }
+    },
+    fetchPolicy: 'network-only'
   })
 
   const [blockUser] = useMutation(BLOCK_USER, {

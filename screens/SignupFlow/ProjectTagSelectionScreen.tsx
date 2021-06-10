@@ -289,11 +289,25 @@ function ProjectTagSelectionScreen({
             backgroundColor: White,
             flex: 1,
         }}>
-            <Header skip={edit ? null : 'ProjectInviteCollaborators'} skipParams={{
-                project: {
-                    id: projectId
-                }
-            }} />
+            {
+                setup
+                ?
+                <Header skip={'Root'} skipParams={{
+                    screen: 'Profile',
+                    params: {
+                      screen: 'ProjectProfile',
+                      params: {
+                        projectId
+                      }
+                    }
+                }} />
+                :
+                <Header skip={edit ? null : 'ProjectInviteCollaborators'} skipParams={{
+                    project: {
+                        id: projectId
+                    }
+                }} />
+            }
             <ScrollView style={{
                 flex: 1
             }}>

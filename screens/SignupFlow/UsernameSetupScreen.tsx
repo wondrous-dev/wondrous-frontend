@@ -168,7 +168,9 @@ const UsernameInput = ({ navigation }) => {
               }
               navigation.push('UserInterestCategory')
             } catch (err) {
-              setError(capitalizeFirstLetter(err?.message))
+              // console.log('err', err)
+              setError('Username not available')
+              // setError(capitalizeFirstLetter(err?.message))
             }
           }
         }}

@@ -34,7 +34,7 @@ const ProjectInviteCollaborators = ({
       flex: 1,
       backgroundColor: White
     }}>
-      <Header rightButton={{
+      <Header title='Invite Collaborators' rightButton={{
         color: Blue500,
         text: 'Finish',
         onPress: async() => {
