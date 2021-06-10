@@ -14,8 +14,6 @@ import { spacingUnit } from '../../utils/common'
 import { SvgImage } from '../../storybook/stories/Image'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import Superhero from '../../assets/images/superhero'
-import { useMutation } from '@apollo/client'
-import { SET_USER_SIGNUP_COMPLETE } from '../../graphql/mutations'
 
 const loginStyles = StyleSheet.create({
   container: {

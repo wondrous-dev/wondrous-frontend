@@ -9,7 +9,6 @@ import { ContactsList } from '../Profile/ContactsModal'
 import { StatusItem } from '../Profile/common'
 import { useMe, withAuth } from '../../components/withAuth'
 import { useMutation, useQuery } from '@apollo/client'
-import { SET_USER_SIGNUP_COMPLETE } from '../../graphql/mutations'
 
 const styles = StyleSheet.create({
   pillContainer: {

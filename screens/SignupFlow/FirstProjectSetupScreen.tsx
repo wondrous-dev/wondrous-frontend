@@ -18,7 +18,6 @@ import { CREATE_PROJECT, UPDATE_PROJECT } from '../../graphql/mutations/project'
 import { GET_PROJECT_BY_ID } from '../../graphql/queries/project'
 import apollo from '../../services/apollo'
 import { updateUsageProgress } from '../../utils/apollo';
-import { SET_USER_SIGNUP_COMPLETE } from '../../graphql/mutations';
 import { ProjectFAQModal } from '../../components/Modal/ProjectFAQModal';
 
 const FirstProjectSetupContext = createContext(null)

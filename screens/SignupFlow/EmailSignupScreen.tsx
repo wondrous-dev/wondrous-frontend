@@ -175,7 +175,8 @@ function EmailSignupScreen({
             </Pressable>
             <RegularText color={White} style={{
               textAlign: 'center',
-              marginTop: spacingUnit * 4
+              position: 'absolute',
+              bottom: spacingUnit * 5
             }}>
               By signing up to Wonder you are agreeing to our
               <Pressable onPress={() => openLink('https://wonderapp.co/eula-policy')}>

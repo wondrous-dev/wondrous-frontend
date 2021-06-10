@@ -214,13 +214,6 @@ function ProjectSetupCategoryScreen({
           projectId,
           setup
         })
-      } else {
-        navigation.push('ProjectInviteCollaborators', {
-          project: {
-            id: projectId
-          },
-          setup
-        })
       }
     }
   }, [])
@@ -294,12 +287,21 @@ function ProjectSetupCategoryScreen({
                     setup
                   })
                 } else {
-                  navigation.push('ProjectInviteCollaborators', {
-                    project: {
-                      id: projectId
-                    },
-                    setup
-                  })
+                  if (setup) {
+                    navigation.push('Root', {
+                      screen: 'Profile',
+                      params: {
+                        screen: 'UserProfile'
+                      }
+                    })
+                  } else {
+                    navigation.push('ProjectInviteCollaborators', {
+                      project: {
+                        id: projectId
+                      },
+                      setup
+                    })
+                  }
                 }
               } else {
                 navigation.push('Root', {

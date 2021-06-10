@@ -119,7 +119,8 @@ const ProjectTagInput = ({ navigation, projectId }) => {
         setError,
         finished,
         existingTags,
-        edit
+        edit,
+        setup
     } = useContext(TagContext)
 
     let initialObj = {}
@@ -226,19 +227,37 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                             })
                         } else {
                             if (finished) {
-                                navigation.push('ProjectInviteCollaborators', {
-                                    project: {
-                                      id: projectId
-                                    }
-                                })
-                            } else {
-                                setFinished(true)
-                                setTimeout(() => {
+                                if (setup) {
+                                    navigation.push('Root', {
+                                        screen: 'Profile',
+                                        params: {
+                                          screen: 'UserProfile'
+                                        }
+                                      })
+                                } else {
                                     navigation.push('ProjectInviteCollaborators', {
                                         project: {
                                           id: projectId
                                         }
                                     })
+                                }
+                            } else {
+                                setFinished(true)
+                                setTimeout(() => {
+                                    if (setup) {
+                                        navigation.push('Root', {
+                                            screen: 'Profile',
+                                            params: {
+                                              screen: 'UserProfile'
+                                            }
+                                          })
+                                    } else {
+                                        navigation.push('ProjectInviteCollaborators', {
+                                            project: {
+                                              id: projectId
+                                            }
+                                        })
+                                    }
                                 }, 1000)
                             }
                         }
@@ -259,7 +278,8 @@ function ProjectTagSelectionScreen({
     const {
         projectId,
         edit,
-        existingTags
+        existingTags,
+        setup
     } = route.params
 
     const [finished, setFinished] = useState(false)
@@ -315,7 +335,8 @@ function ProjectTagSelectionScreen({
                 error,
                 setError,
                 existingTags,
-                edit
+                edit,
+                setup
             }}>
             <ProjectTagInput navigation={navigation} projectId={projectId} />
             </TagContext.Provider>

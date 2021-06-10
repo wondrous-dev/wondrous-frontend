@@ -73,7 +73,10 @@ const UsernameInput = ({ navigation }) => {
       cache.modify({
         fields: {
           users() {
-            return [createUsername]
+            return [{
+              ...user,
+              username: createUsername?.username
+            }]
           }
         }
       })

@@ -71,10 +71,9 @@ export const UNFOLLOW_USER = gql`
 export const CREATE_USERNAME = gql`
   mutation createUsername($username: String!, $userInvitationId: ID) {
     createUsername (username: $username, userInvitationId: $userInvitationId) {
-      ...LoggedinUser
+      username
     }
   }
-  ${LoggedinUserFragment}
 `
 
 export const CREATE_USER_INTERESTS = gql`

@@ -36,9 +36,7 @@ const FollowRecommendation = ({ navigation }) => {
           setSignupComplete()
           setTimeout(() => {
             navigation.push('FirstProjectSetup', {
-              params: {
-                setup: true
-              }
+              setup: true
             })
           }, 2000)
         }
