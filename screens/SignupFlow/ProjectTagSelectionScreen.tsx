@@ -1,11 +1,8 @@
 import React, { createContext, useContext, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { ScrollView, StyleSheet, View, TouchableOpacity, Text, Image, SafeAreaView, Dimensions, Pressable, TextInput } from 'react-native'
+import { ScrollView, StyleSheet, View, SafeAreaView, Dimensions, Pressable } from 'react-native'
 import ProgressCircle from 'react-native-progress-circle'
-import { Formik } from 'formik';
-
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
+import * as Analytics from 'expo-firebase-analytics'
 
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
@@ -20,6 +17,7 @@ import { moderateScale } from '../../utils/scale'
 import { withAuth, useMe } from '../../components/withAuth'
 import { useMutation } from '@apollo/client'
 import { updateUsageProgress } from '../../utils/apollo'
+import { LogEvents } from '../../utils/analytics'
 
 const TagContext = createContext(null)
 
@@ -228,6 +226,15 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                         } else {
                             if (finished) {
                                 if (setup) {
+                                    try {
+                                        Analytics.logEvent(LogEvents.SET_PROJECT_TAGS_FIRST_TIME, {
+                                          user_id: user?.id,
+                                          project_id: projectId,
+                                          tags: Object.keys(selectedTags)
+                                        })
+                                      } catch (err) {
+                                        console.log('Error logging setting project category for the first time: ', err)
+                                    }
                                     navigation.push('Root', {
                                         screen: 'Profile',
                                         params: {
@@ -235,6 +242,15 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                                         }
                                       })
                                 } else {
+                                    try {
+                                      Analytics.logEvent(LogEvents.SET_PROJECT_TAGS, {
+                                          user_id: user?.id,
+                                          project_id: projectId,
+                                          tags: Object.keys(selectedTags)
+                                        })
+                                      } catch (err) {
+                                        console.log('Error logging setting project category for the first time: ', err)
+                                    }
                                     navigation.push('ProjectInviteCollaborators', {
                                         project: {
                                           id: projectId
@@ -245,6 +261,15 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                                 setFinished(true)
                                 setTimeout(() => {
                                     if (setup) {
+                                        try {
+                                        Analytics.logEvent(LogEvents.SET_PROJECT_TAGS_FIRST_TIME, {
+                                              user_id: user?.id,
+                                              project_id: projectId,
+                                              tags: Object.keys(selectedTags)
+                                            })
+                                          } catch (err) {
+                                            console.log('Error logging setting project category for the first time: ', err)
+                                        }
                                         navigation.push('Root', {
                                             screen: 'Profile',
                                             params: {
@@ -252,6 +277,15 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                                             }
                                           })
                                     } else {
+                                        try {
+                                            Analytics.logEvent(LogEvents.SET_PROJECT_TAGS, {
+                                                user_id: user?.id,
+                                                project_id: projectId,
+                                                tags: Object.keys(selectedTags)
+                                              })
+                                            } catch (err) {
+                                              console.log('Error logging setting project category for the first time: ', err)
+                                        }
                                         navigation.push('ProjectInviteCollaborators', {
                                             project: {
                                               id: projectId

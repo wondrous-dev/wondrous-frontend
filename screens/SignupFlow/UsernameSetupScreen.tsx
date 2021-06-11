@@ -4,7 +4,7 @@ import { StyleSheet, View, Platform, Text, Image, SafeAreaView, KeyboardAvoiding
 import ProgressCircle from 'react-native-progress-circle'
 import { Formik } from 'formik'
 import * as Sentry from 'sentry-expo'
-
+import * as Analytics from 'expo-firebase-analytics'
 
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
@@ -18,6 +18,8 @@ import { CREATE_ONBOARDING_TASKS, CREATE_USERNAME, UPDATE_USER } from '../../gra
 import { useMe, withAuth } from '../../components/withAuth'
 import { SHORTNAME_REGEX } from '../../constants'
 import { MY_USER_INVITE } from '../../graphql/queries/userInvite'
+import { LogEvents } from '../../utils/analytics'
+
 const UsernameContext = createContext(null)
 
 export const usernameSetupStyles = StyleSheet.create({
@@ -157,10 +159,19 @@ const UsernameInput = ({ navigation }) => {
                 }
               })
               try {
+                Analytics.logEvent(LogEvents.CREATE_USERNAME, {
+                  user_id: user?.id,
+                  username: values?.username
+                })
+              } catch(err) {
+                console.error('failed to log username create')
+              }
+              try {
                 await createOnboardingTasks()
               } catch (err) {
                 console.error('Error creating onboarding tasks')
               }
+              
               if (firstName || lastName) {
                 await updateUser({
                   variables: {

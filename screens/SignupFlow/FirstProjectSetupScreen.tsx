@@ -5,6 +5,7 @@ import ProgressCircle from 'react-native-progress-circle'
 import { Formik } from 'formik';
 import { useMutation } from '@apollo/client'
 import { TouchableWithoutFeedback, Keyboard } from 'react-native'
+import * as Analytics from 'expo-firebase-analytics'
 
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
@@ -19,6 +20,7 @@ import { GET_PROJECT_BY_ID } from '../../graphql/queries/project'
 import apollo from '../../services/apollo'
 import { updateUsageProgress } from '../../utils/apollo';
 import { ProjectFAQModal } from '../../components/Modal/ProjectFAQModal';
+import { LogEvents } from '../../utils/analytics';
 
 const FirstProjectSetupContext = createContext(null)
 
@@ -174,8 +176,28 @@ const CreateProjectInput = ({ navigation, setup }) => {
                                         firstTime: !!(setup)
                                     }
                                 })
+                                const projectId = projectData?.data?.createProject?.id
+                                if (setup) {
+                                    try {
+                                        Analytics.logEvent(LogEvents.CREATE_PROJECT_FIRST_TIME, {
+                                            user_id: user?.id,
+                                            project_id: projectId
+                                        })
+                                        } catch (err) {
+                                        console.log('Error logging project creation: ', err)
+                                    }
+                                } else {
+                                    try {
+                                        Analytics.logEvent(LogEvents.CREATE_PROJECT, {
+                                            user_id: user?.id,
+                                            project_id: projectId
+                                        })
+                                        } catch (err) {
+                                        console.log('Error logging project creation: ', err)
+                                    }
+                                }
                                 navigation.push('ProjectSetupCategory', {
-                                    projectId: projectData.data.createProject && projectData.data.createProject.id,
+                                    projectId,
                                     setup
                                 })
                             }
@@ -186,7 +208,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                     setMyIsSubmitting(false)
                 }}
             >
-                {({ handleChange, handleBlur, handleSubmit, values, isSubmitting }) => (
+                {({ handleBlur, handleSubmit }) => (
                     <View>
                         <TextInput
                             style={{

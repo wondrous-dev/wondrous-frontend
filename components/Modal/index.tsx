@@ -92,9 +92,9 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
 
   useEffect(() => {
     if (id) {
-      setTimeout(() => {
-        setIncreased(true)
-    }, 1000)
+        setTimeout(() => {
+          setIncreased(true)
+      }, 1000)
     }
   }, [id])
   return (

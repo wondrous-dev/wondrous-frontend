@@ -80,6 +80,7 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
   const [initialState, setInitialState] = React.useState()
   const routeNameRef = React.useRef()
   useEffect(() => {
+    // TODO REMOVE
     Analytics.setDebugModeEnabled(true)
     const restoreState = async () => {
       try {

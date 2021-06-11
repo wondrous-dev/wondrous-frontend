@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { StyleSheet, View, ScrollView, Text, Image, SafeAreaView, Dimensions, Pressable } from 'react-native'
 import ProgressCircle from 'react-native-progress-circle'
+import * as Analytics from 'expo-firebase-analytics'
 
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
@@ -28,6 +29,7 @@ import { UPDATE_PROJECT } from '../../graphql/mutations/project'
 import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
 import { withAuth, useMe } from '../../components/withAuth'
 import { updateUsageProgress } from '../../utils/apollo'
+import { LogEvents } from '../../utils/analytics'
 
 const ProjectSetupCategoryContext = createContext(null)
 
@@ -288,6 +290,15 @@ function ProjectSetupCategoryScreen({
                   })
                 } else {
                   if (setup) {
+                    try {
+                      Analytics.logEvent(LogEvents.SET_PROJECT_CATEGORY_FIRST_TIME, {
+                        user_id: user?.id,
+                        project_id: projectId,
+                        category: projectCategory
+                      })
+                    } catch (err) {
+                      console.log('Error logging setting project category for the first time: ', err)
+                    }
                     navigation.push('Root', {
                       screen: 'Profile',
                       params: {
@@ -295,6 +306,15 @@ function ProjectSetupCategoryScreen({
                       }
                     })
                   } else {
+                    try {
+                      Analytics.logEvent(LogEvents.SET_PROJECT_CATEGORY, {
+                        user_id: user?.id,
+                        project_id: projectId,
+                        category: projectCategory
+                      })
+                    } catch (err) {
+                      console.log('Error logging setting project category: ', err)
+                    }
                     navigation.push('ProjectInviteCollaborators', {
                       project: {
                         id: projectId

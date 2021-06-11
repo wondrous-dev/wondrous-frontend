@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { SafeAreaView, FlatList, View, Image, TouchableOpacity, Pressable } from 'react-native'
 import Modal from 'react-native-modal'
 import { useMutation, useQuery, useLazyQuery } from '@apollo/client'
+import * as Analytics from 'expo-firebase-analytics'
 
 import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300, Grey300 } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
@@ -16,6 +17,7 @@ import { SearchBar } from '../../components/Header'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { GET_PROJECT_INVITES, GET_USER_FOLLOWERS, GET_USER_FOLLOWING } from '../../graphql/queries'
 import { INVITE_COLLABORATOR } from '../../graphql/mutations'
+import { LogEvents } from '../../utils/analytics'
 
 
 export const CollaboratorItem = ({ item, project, initialInvited, projectInvites, setModalVisible }) => {
@@ -123,6 +125,14 @@ export const CollaboratorItem = ({ item, project, initialInvited, projectInvites
         :
         <Pressable onPress={() => {
           setInvited(true)
+          try {
+            Analytics.logEvent(LogEvents.INVITE_INTERNAL_COLLABORATOR, {
+              user_id: user?.id,
+              inviteeId: item.id
+            })
+          } catch (err) {
+            console.log('Error logging inviting internal collaborator: ', err)
+          }
           inviteCollaborator()
         }} style={listStyles.followButton}>
           <Paragraph color={White}>
