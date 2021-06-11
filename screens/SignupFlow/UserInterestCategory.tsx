@@ -136,9 +136,7 @@ function UserInterestCategoryScreen({
       backgroundColor: White,
       flex: 1
     }}>
-      <ScrollView style={{
-        marginBottom: spacingUnit * 2
-      }}>
+      <ScrollView>
       <UserInterestCategoryContext.Provider value={{
         interests,
         setInterests,

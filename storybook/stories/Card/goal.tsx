@@ -351,7 +351,7 @@ export const GoalCard = ({
       </TouchableWithoutFeedback>
       {
         clicked &&
-        <View style={{
+        <Pressable style={{
           borderWidth: 1,
           borderColor: Grey400,
           borderTopWidth: 0,
@@ -361,7 +361,7 @@ export const GoalCard = ({
           backgroundColor: Grey100,
           borderTopLeftRadius: 0,
           borderTopRightRadius: 0,
-          paddingBottom: spacingUnit,
+          paddingBottom: spacingUnit
         }}>
           <View style={{
             flexDirection: 'row',
@@ -476,7 +476,7 @@ export const GoalCard = ({
             })
           }
           </View>
-        </View>
+        </Pressable>
       }
 
       </View>

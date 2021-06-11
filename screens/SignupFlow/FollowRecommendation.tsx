@@ -38,7 +38,7 @@ const FollowRecommendation = ({ navigation }) => {
             navigation.push('FirstProjectSetup', {
               setup: true
             })
-          }, 2000)
+          }, 1000)
         }
       }}/>
     <View style={projectSetupStyles.progressCircleContainer}>
