@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons'
 import * as Font from 'expo-font'
 import * as SplashScreen from 'expo-splash-screen'
 import * as React from 'react'
@@ -8,7 +7,7 @@ export default function useCachedResources() {
   setTimeout(() => {
     setLoadingComplete(true)
     SplashScreen.hideAsync()
-  }, 5000)
+  }, 3000)
   // Load any resources or data that we need prior to rendering the app
   React.useEffect(() => {
     async function loadResourcesAndDataAsync() {
@@ -16,25 +15,25 @@ export default function useCachedResources() {
         SplashScreen.preventAutoHideAsync()
         // Load fonts
         await Font.loadAsync({
-          ...Ionicons.font,
           'Rubik Light': require('../assets/fonts/Rubik-Regular.ttf'),
           'Rubik': require('../assets/fonts/Rubik-Medium.ttf'),
           'Rubik Bold': require('../assets/fonts/Rubik-Bold.ttf'),
           'Rubik SemiBold': require('../assets/fonts/Rubik-SemiBold.ttf'),
-          'Pacifico': require('../assets/fonts/Pacifico-Regular.ttf'),
-          'space-mono': require('../assets/fonts/SpaceMono-Regular.ttf'),
+          'Pacifico': require('../assets/fonts/Pacifico-Regular.ttf')
         })
       } catch (e) {
         // We might want to provide this error information to an error reporting service
         console.warn(e)
       } finally {
         setLoadingComplete(true)
-        SplashScreen.hideAsync()
       }
     }
-
-    loadResourcesAndDataAsync()
-  }, [])
+    if (isLoadingComplete) {
+      SplashScreen.hideAsync()
+    } else {
+      loadResourcesAndDataAsync()
+    }
+  }, [isLoadingComplete])
 
   return isLoadingComplete
 }
