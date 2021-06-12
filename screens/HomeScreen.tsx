@@ -58,6 +58,7 @@ function HomeScreen({
   ]
   const [invitorFirstName, setInvitorFirstName] = React.useState('')
   const [invitorLastName, setInvitorLastName] = React.useState('')
+  const [groupId, setGroupId] = React.useState('')
   const writeInvite = async ({ userInvitationId, invitorFirstName, invitorLastName }) => {
     await apollo.writeQuery({
       query: MY_USER_INVITE,
@@ -128,7 +129,7 @@ function HomeScreen({
         color: White,
         marginTop: spacingUnit * 10,
         fontFamily: 'Rubik SemiBold',
-        fontSize: 40
+        fontSize: 35
       }}>
         Welcome to Wonder
       </Title>
@@ -140,7 +141,8 @@ function HomeScreen({
       }} textPressStyle = {{
         color: White
       }} style={{
-        marginTop: spacingUnit
+        marginTop: spacingUnit,
+        zIndex: 10
       }}>
           <ButtonText style={{
             fontSize: 16
@@ -152,6 +154,8 @@ function HomeScreen({
         login: true
       })} style={{
         marginTop: spacingUnit * 1.5,
+        marginBottom: spacingUnit * 2,
+        zIndex: 10
       }}>
         <ButtonText style={{
             fontSize: 16
@@ -190,8 +194,6 @@ export const styles = StyleSheet.create({
   },
   logo: {
     marginTop: moderateScale(0),
-    position: 'absolute',
-    bottom: 0,
     width: Dimensions.get('window').width,
     resizeMode: 'contain',
     height: 400
