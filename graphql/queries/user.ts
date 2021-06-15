@@ -175,8 +175,8 @@ export const GET_USER_INTERESTS = gql`
 `
 
 export const GET_RECOMMENDED_USERS_TO_FOLLOW = gql`
-  query {
-    getRecommendedUsersToFollow {
+  query getRecommendedUsersToFollowOnSignup($groupId: ID, $limit: Int) {
+    getRecommendedUsersToFollowOnSignup(groupId: $groupId, limit: $limit) {
       ...UserList
     }
   }

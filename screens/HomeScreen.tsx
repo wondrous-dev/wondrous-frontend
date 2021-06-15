@@ -58,8 +58,7 @@ function HomeScreen({
   ]
   const [invitorFirstName, setInvitorFirstName] = React.useState('')
   const [invitorLastName, setInvitorLastName] = React.useState('')
-  const [groupId, setGroupId] = React.useState('')
-  const writeInvite = async ({ userInvitationId, invitorFirstName, invitorLastName }) => {
+  const writeInvite = async ({ userInvitationId, invitorFirstName, invitorLastName, groupId }) => {
     await apollo.writeQuery({
       query: MY_USER_INVITE,
       data: {
@@ -67,7 +66,8 @@ function HomeScreen({
           __typename: 'MyUserInvite',
           userInvitationId,
           invitorFirstName,
-          invitorLastName
+          invitorLastName,
+          groupId
         }
       }
     })
@@ -111,7 +111,8 @@ function HomeScreen({
             writeInvite({
               userInvitationId: bundle.params?.user_invitation_id,
               invitorFirstName: bundle.params?.invitor_firstname,
-              invitorLastName: bundle.params?.invitor_lastname
+              invitorLastName: bundle.params?.invitor_lastname,
+              groupId: bundle.params?.group_id
             })
           }
         }

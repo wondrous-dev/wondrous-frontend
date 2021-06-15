@@ -7,6 +7,7 @@ export const MY_USER_INVITE = gql`
       userInvitationId
       invitorFirstName
       invitorLastName
+      groupId
     }
   }
 `

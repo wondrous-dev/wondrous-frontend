@@ -67,7 +67,7 @@ const UsernameInput = ({ navigation }) => {
   const user: any = useMe()
   const { data: userInviteData } = useQuery(MY_USER_INVITE)
   const [userInvite, setUserInvite] = useState(null)
-
+  const [groupId, setGroupId] = useState(null)
   const [createUsername] = useMutation(CREATE_USERNAME, {
     update(cache, { data: { createUsername }}) {
       cache.modify({
@@ -102,6 +102,7 @@ const UsernameInput = ({ navigation }) => {
     }
     if (userInviteData) {
       setUserInvite(userInviteData?.userInvitation?.userInvitationId)
+      setGroupId(userInviteData?.userInvitation?.groupId)
     }
   }, [userInviteData])
 
@@ -130,7 +131,7 @@ const UsernameInput = ({ navigation }) => {
             setError('Please enter a name')
           }  else if (!values.username) {
             setError('Please enter a shortname')
-          } else if (values?.username && !SHORTNAME_REGEX.test(values?.username)) {
+          } else if (values?.username && !SHORTNAME_REGEX.test(values?.username?.trim())) {
             setError('Please enter a valid username between 3 to 16 characters')
           } else {
             const {
@@ -148,7 +149,10 @@ const UsernameInput = ({ navigation }) => {
                   ...(userInvite && {
                     userInvitationId: userInvite
                   }),
-                  username: values?.username
+                  username: values?.username?.trim(),
+                  ...(groupId && {
+                    groupId
+                  })
                 }
               })
               try {

@@ -5,7 +5,7 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import { White, Black, Orange, Grey300, Grey800, Green400 } from '../../constants/Colors'
 import { Subheading, Paragraph, ButtonText, ErrorText } from '../../storybook/stories/Text'
 import { Header } from '../../components/Header'
-import { useMutation, useQuery } from '@apollo/client'
+import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import { GET_RECOMMENDED_USERS_TO_FOLLOW } from '../../graphql/queries'
 import { projectSetupStyles } from './ProjectSetupCategory'
 import { spacingUnit } from '../../utils/common'
@@ -14,15 +14,29 @@ import HeartEyes from '../../assets/images/emoji/heartEyes'
 import { withAuth, useMe } from '../../components/withAuth'
 import { UserItem } from '../Profile/UserList'
 import { SET_USER_SIGNUP_COMPLETE } from '../../graphql/mutations'
+import { MY_USER_INVITE } from '../../graphql/queries/userInvite'
 
 const FollowRecommendation = ({ navigation }) => {
   const user = useMe()
-  const {
+  const { data: userInviteData } = useQuery(MY_USER_INVITE)
+  const [getRecommendedUsers, {
     data
-  } = useQuery(GET_RECOMMENDED_USERS_TO_FOLLOW)
+  }] = useLazyQuery(GET_RECOMMENDED_USERS_TO_FOLLOW)
   const [setSignupComplete] = useMutation(SET_USER_SIGNUP_COMPLETE)
   const [finished, setFinished] = useState(false)
 
+  useEffect(() => {
+    if (userInviteData) {
+      const groupId = userInviteData?.userInvitation?.groupId
+      getRecommendedUsers({
+        variables: {
+          ...(groupId && {
+            groupId
+          })
+        }
+      })
+    }
+  }, [userInviteData])
   return (
     <SafeAreaView style={{
       backgroundColor: White,
