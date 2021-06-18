@@ -65,7 +65,7 @@ const UsernameInput = ({ navigation }) => {
   })
 
   const user: any = useMe()
-  const { data: userInviteData } = useQuery(MY_USER_INVITE)
+  const { data: userInviteData, error: userInviteError } = useQuery(MY_USER_INVITE)
   const [userInvite, setUserInvite] = useState(null)
   const [groupId, setGroupId] = useState(null)
   const [createUsername] = useMutation(CREATE_USERNAME, {
@@ -101,10 +101,20 @@ const UsernameInput = ({ navigation }) => {
       navigation.push('UserInterestCategory')
     }
     if (userInviteData) {
+      Sentry.Native.captureEvent({
+        message: 'User invite data',
+        extra: userInviteData
+      })
       setUserInvite(userInviteData?.userInvitation?.userInvitationId)
       setGroupId(userInviteData?.userInvitation?.groupId)
     }
-  }, [userInviteData])
+    if (userInviteError) {
+      Sentry.Native.captureEvent({
+        message: 'Error fetching user invite data',
+        extra: userInviteError
+      })
+    }
+  }, [userInviteData, userInviteError])
 
   return (
     <View style={usernameSetupStyles.usernameInputContainer}>
@@ -142,6 +152,10 @@ const UsernameInput = ({ navigation }) => {
             Sentry.Native.captureEvent({
               message: 'User invitation',
               extra: userInvite
+            })
+            Sentry.Native.captureEvent({
+              message: 'GroupId',
+              extra: groupId
             })
             try {
               await createUsername({

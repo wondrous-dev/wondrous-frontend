@@ -36,6 +36,16 @@ export const getAuthHeader = async () => {
 export const logout = async (navigation) => {
   try {
     await AsyncStorage.removeItem('token')
+    try {
+      await apollo.writeQuery({
+        query: WHOAMI,
+        data: {
+          users: null
+        }
+      })
+    } catch (e) {
+      console.log('error writing user into apollo', e)
+    }
     navigation.push('Home')
   }
   catch(exception) {

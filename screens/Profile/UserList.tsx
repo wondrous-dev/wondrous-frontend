@@ -63,6 +63,7 @@ export const UserItem = ({ item, itemPressed, initialFollowing, existingUserFoll
   useEffect(() => {
     setFollowing(initialFollowing)
   }, [initialFollowing])
+
   return (
     <TouchableOpacity onPress={itemPressed}>
     <View style={[listStyles.listItem, {
@@ -104,7 +105,7 @@ export const UserItem = ({ item, itemPressed, initialFollowing, existingUserFoll
       {
         user && user.id !== item.id &&
         <>
-{
+      {
         following
         ?
         <Pressable style={listStyles.followingButton} onPress={() => {
@@ -376,7 +377,7 @@ const UserList = ({
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
           renderItem={({ item }) => {
-            const userFollowing = followingUsers && (!seeProject ? followingUsers.some((element) => {
+            const userFollowing = followingUsers && (!seeProject ? followingUsers?.some((element) => {
               return element === item.id
             }) : followingProjects.some(element => element === item.id))
 

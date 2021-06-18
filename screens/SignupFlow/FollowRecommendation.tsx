@@ -113,7 +113,7 @@ const FollowRecommendation = ({ navigation }) => {
         data={data?.getRecommendedUsersToFollowOnSignup || []}
         renderItem={({ item }) => {
           const followingUsers = user?.usersFollowing
-          const userFollowing = followingUsers.some((element) => {
+          const userFollowing = followingUsers?.some((element) => {
             return element === item.id
           })
           return (

@@ -143,7 +143,27 @@ function UserInterestCategoryScreen({
         error,
         setError
       }}>
-        <Header />
+        <Header rightButton={{
+        color: Orange,
+        text: 'Continue',
+        onPress: async () => {
+          if (interests.length === 0) {
+            setError('Please select some interests')
+          } else {
+            await createUserInterests({
+              variables: {
+                interests
+              }
+            })
+            navigation.push('FollowRecommendation')
+            if (!edit) {
+              // navigation.push('FollowRecommendation')
+            } else {
+
+            }
+          }
+        }
+      }}/>
         {!edit &&
         <View style={projectSetupStyles.progressCircleContainer}>
           <ProgressCircle
@@ -173,34 +193,6 @@ function UserInterestCategoryScreen({
         }
         <CategoryDisplay categories={categories} />
       </UserInterestCategoryContext.Provider>
-      <PrimaryButton textStyle={{
-            color: White
-          }} style={{
-            alignSelf: 'center',
-            marginTop: spacingUnit * 5,
-            backgroundColor: Orange
-          }} onPress={async () => {
-            if (interests.length === 0) {
-              setError('Please select some interests')
-            } else {
-              await createUserInterests({
-                variables: {
-                  interests
-                }
-              })
-              navigation.push('FollowRecommendation')
-              if (!edit) {
-                // navigation.push('FollowRecommendation')
-              } else {
-
-              }
-            }
-          }
-          }>
-            <ButtonText color={White}>
-              {edit ? 'Update' : 'Continue'}
-            </ButtonText>
-      </PrimaryButton>
       </ScrollView>
     </SafeAreaView>
   )
