@@ -35,8 +35,11 @@ const FollowRecommendation = ({ navigation }) => {
           })
         }
       })
+    } else {
+      getRecommendedUsers()
     }
   }, [userInviteData])
+
   return (
     <SafeAreaView style={{
       backgroundColor: White,
@@ -99,7 +102,7 @@ const FollowRecommendation = ({ navigation }) => {
         paddingRight: spacingUnit * 2,
         textAlign: 'center'
       }} color={Grey800}>
-        The magic of Wonder is working with our community, so come follow our top users!
+        The magic of Wonder is working with our community, so come follow our top user!
       </Paragraph>
       <FlatList
         contentContainerStyle={{
@@ -107,7 +110,7 @@ const FollowRecommendation = ({ navigation }) => {
           paddingRight: spacingUnit * 2,
           marginTop: spacingUnit * 3
         }}
-        data={data?.getRecommendedUsersToFollow || []}
+        data={data?.getRecommendedUsersToFollowOnSignup || []}
         renderItem={({ item }) => {
           const followingUsers = user?.usersFollowing
           const userFollowing = followingUsers.some((element) => {
