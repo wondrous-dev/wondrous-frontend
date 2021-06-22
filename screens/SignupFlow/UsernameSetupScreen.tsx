@@ -101,10 +101,6 @@ const UsernameInput = ({ navigation }) => {
       navigation.push('UserInterestCategory')
     }
     if (userInviteData) {
-      Sentry.Native.captureEvent({
-        message: 'User invite data',
-        extra: userInviteData
-      })
       setUserInvite(userInviteData?.userInvitation?.userInvitationId)
       setGroupId(userInviteData?.userInvitation?.groupId)
     }
@@ -148,15 +144,6 @@ const UsernameInput = ({ navigation }) => {
               firstName,
               lastName 
             } = extractFirstAndLastName(values.fullName)
-  
-            Sentry.Native.captureEvent({
-              message: 'User invitation',
-              extra: userInvite
-            })
-            Sentry.Native.captureEvent({
-              message: 'GroupId',
-              extra: groupId
-            })
             try {
               await createUsername({
                 variables: {

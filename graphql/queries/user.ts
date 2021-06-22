@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 
-import { PublicUserFragment, LoggedinUserFragment, LoggedinUserWithTokenFragment, UserListFragment } from '../fragments/user'
+import { PublicUserFragment, LoggedinUserFragment, LoggedinUserWithTokenFragment, UserListFragment, UserSignupRecommendationFragment } from '../fragments/user'
 import { AdditionalGoalFragment, PublicGoalFragment } from '../fragments/goal'
 import { PublicTaskFragment } from '../fragments/task'
 import { ActivityFeedItem } from '../fragments/feed'
@@ -177,8 +177,8 @@ export const GET_USER_INTERESTS = gql`
 export const GET_RECOMMENDED_USERS_TO_FOLLOW = gql`
   query getRecommendedUsersToFollowOnSignup($groupId: ID, $limit: Int) {
     getRecommendedUsersToFollowOnSignup(groupId: $groupId, limit: $limit) {
-      ...UserList
+      ...PublicUserSignupRecommendation
     }
   }
-  ${UserListFragment}
+  ${UserSignupRecommendationFragment}
 `

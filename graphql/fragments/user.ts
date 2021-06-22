@@ -12,6 +12,19 @@ export const UserListFragment = gql`
   }
 `
 
+export const UserSignupRecommendationFragment = gql`
+  fragment PublicUserSignupRecommendation on UserSignupRecommendation {
+    id
+    username
+    bio
+    firstName
+    lastName
+    profilePicture
+    thumbnailPicture
+    groupName
+  }
+`
+
 export const PublicUserFragment = gql`
   fragment PublicUser on User {
     id

@@ -5,7 +5,7 @@ import { useLazyQuery, useQuery, useMutation } from '@apollo/client'
 
 import { GET_USER_FOLLOWERS, GET_USER_FOLLOWING, GET_PROJECT_FOLLOWERS, GET_FEED_REACTED_USERS, GET_FEED_COMMENT_REACTED_USERS } from '../../graphql/queries'
 import { withAuth, useMe } from '../../components/withAuth'
-import { Black, White, Grey800, Blue400 } from '../../constants/Colors'
+import { Black, White, Grey800, Blue400, Grey300 } from '../../constants/Colors'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { wait, spacingUnit, cutString } from '../../utils/common'
 import { ProfilePlaceholder } from './common'
@@ -65,10 +65,17 @@ export const UserItem = ({ item, itemPressed, initialFollowing, existingUserFoll
   }, [initialFollowing])
 
   return (
-    <TouchableOpacity onPress={itemPressed}>
+    <TouchableOpacity style={{
+      marginBottom: spacingUnit * 2,
+      borderBottomWidth: 1,
+      borderBottomColor: Grey300,
+      paddingBottom: spacingUnit
+    }} onPress={itemPressed}>
+    <>
     <View style={[listStyles.listItem, {
       alignItems: 'flex-start',
-      marginBottom: spacingUnit * 2.5
+      marginBottom: 0,
+      marginTop: 0
     }]}>
       {
         item.profilePicture ?
@@ -129,6 +136,21 @@ export const UserItem = ({ item, itemPressed, initialFollowing, existingUserFoll
         </>
       }
     </View>
+    {
+      item.groupName &&
+      <RegularText color={Black} style={{
+        marginLeft: spacingUnit * 2,
+        marginTop: spacingUnit
+      }}>
+        Member of{` `}
+        <RegularText style={{
+          fontFamily: 'Rubik SemiBold'
+        }}>
+          {item.groupName}
+          </RegularText>
+      </RegularText>
+    }
+    </>
 </TouchableOpacity>
   )
 }
