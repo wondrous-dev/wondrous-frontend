@@ -37,6 +37,7 @@
     "ios": {
       "associatedDomains": ["applinks:wonderco.app.link", "applinks:wonderco-alternate.app.link", "applinks:wonderco-alternate.test-app.link", "applinks:wonderco.test-app.link"],
       "supportsTablet": true,
+      "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
         "NSCameraUsageDescription":
           "Wonder needs permission to your camera to take photos associated with your projects",
@@ -67,7 +68,18 @@
       "googleServicesFile": "./google-services.json"
     },
     "web": {
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "config": {
+        "firebase": {
+          "apiKey": "AIzaSyBKtwtrIHKbl1Tbq5d1f4W7ientemZdsqI",
+          "authDomain": "wondrous-1587456307075.firebaseapp.com",
+          "projectId": "wondrous-1587456307075",
+          "storageBucket": "wondrous-1587456307075.appspot.com",
+          "messagingSenderId": "276263235787",
+          "appId": "1:276263235787:web:ae8bfa184c59307d1dab4e",
+          "measurementId": "G-TG4L74GGJH"
+        }
+      }
     },
     "facebookScheme": "fb692135684870439",
     "facebookAppId": "692135684870439",

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { View } from 'react-native'
+import * as Analytics from 'expo-firebase-analytics'
 
 import apollo from '../services/apollo'
 import  { WHOAMI } from '../graphql/queries'
@@ -22,6 +22,11 @@ export const storeAuthHeader = async (token, user) => {
           users: [user]
         }
       })
+      try {
+        Analytics.setUserId(user?.id)
+      } catch(err) {
+        console.error('failed to set user id')
+      }
     } catch (e) {
       console.log('error writing user into apollo', e)
     }

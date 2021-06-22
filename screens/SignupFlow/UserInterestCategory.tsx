@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { StyleSheet, View, ScrollView, Text, Image, SafeAreaView, Dimensions, Pressable } from 'react-native'
 import ProgressCircle from 'react-native-progress-circle'
+import * as Analytics from 'expo-firebase-analytics'
 
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
@@ -15,6 +16,7 @@ import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
 import { withAuth, useMe } from '../../components/withAuth'
 import { CREATE_USER_INTERESTS } from '../../graphql/mutations'
 import { GET_USER_INTERESTS } from '../../graphql/queries'
+import { LogEvents } from '../../utils/analytics'
 
 const UserInterestCategoryContext = createContext(null)
 
@@ -155,6 +157,14 @@ function UserInterestCategoryScreen({
                 interests
               }
             })
+            try {
+              Analytics.logEvent(LogEvents.PICK_USER_INTERESTS, {
+                user_id: user?.id,
+                interests
+              })
+            } catch(err) {
+              console.error('failed to analyse pick user interests: ', err)
+            }
             navigation.push('FollowRecommendation')
             if (!edit) {
               // navigation.push('FollowRecommendation')

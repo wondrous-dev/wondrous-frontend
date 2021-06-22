@@ -2,7 +2,7 @@ import * as React from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { StyleSheet, View, SafeAreaView, Platform, Image, Dimensions } from 'react-native'
 import * as Notifications from 'expo-notifications'
-import * as Sentry from 'sentry-expo'
+import * as Analytics from 'expo-firebase-analytics'
 
 import Branch from '../services/branch'
 import { RootStackParamList } from '../types'
@@ -17,7 +17,6 @@ import { useQuery } from '@apollo/client'
 import { GET_LOGGED_IN_USER, WHOAMI } from '../graphql/queries'
 import apollo from '../services/apollo'
 import { getNotificationPressFunction } from './Notifications'
-import Rocket from '../assets/images/rocket_transparent_loop.gif'
 import ExampleApp from '../assets/images/homepage-icon.png'
 import { MY_USER_INVITE } from '../graphql/queries/userInvite'
 
@@ -30,6 +29,11 @@ const redirectUser = async (user, navigation) => {
         users: [user]
       }
     })
+    try {
+      Analytics.setUserId(user?.id)
+    } catch(err) {
+      console.error('failed to set user id')
+    }
     navigateUserOnLogin(user, navigation)
   }
 }

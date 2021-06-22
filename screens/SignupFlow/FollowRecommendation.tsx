@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, FlatList, Text, SafeAreaView} from 'react-native'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
+import * as Analytics from 'expo-firebase-analytics'
 
 import { White, Black, Orange, Grey300, Grey800, Green400 } from '../../constants/Colors'
 import { Subheading, Paragraph, ButtonText, ErrorText } from '../../storybook/stories/Text'
@@ -15,6 +16,7 @@ import { withAuth, useMe } from '../../components/withAuth'
 import { UserItem } from '../Profile/UserList'
 import { SET_USER_SIGNUP_COMPLETE } from '../../graphql/mutations'
 import { MY_USER_INVITE } from '../../graphql/queries/userInvite'
+import { LogEvents } from '../../utils/analytics'
 
 const FollowRecommendation = ({ navigation }) => {
   const user = useMe()
@@ -51,6 +53,13 @@ const FollowRecommendation = ({ navigation }) => {
         onPress: () => {
           setFinished(true)
           setSignupComplete()
+          try {
+            Analytics.logEvent(LogEvents.FINISH_FOLLOWING_RECOMMENDED_USERS, {
+              user_id: user?.id
+            })
+          } catch (err) {
+            console.log('Error logging finishing recommended users follow: ', err)
+          }
           setTimeout(() => {
             navigation.push('FirstProjectSetup', {
               setup: true
@@ -120,6 +129,7 @@ const FollowRecommendation = ({ navigation }) => {
             <UserItem
               initialFollowing={userFollowing}
               existingUserFollowing={followingUsers}
+              onboarding={true}
               item={item}
               itemPressed={() => {}}
             />

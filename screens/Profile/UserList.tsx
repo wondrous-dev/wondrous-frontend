@@ -2,6 +2,7 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import { Image, Pressable, SafeAreaView, RefreshControl, View, TouchableOpacity, FlatList } from 'react-native'
 import { useLazyQuery, useQuery, useMutation } from '@apollo/client'
+import * as Analytics from 'expo-firebase-analytics'
 
 import { GET_USER_FOLLOWERS, GET_USER_FOLLOWING, GET_PROJECT_FOLLOWERS, GET_FEED_REACTED_USERS, GET_FEED_COMMENT_REACTED_USERS } from '../../graphql/queries'
 import { withAuth, useMe } from '../../components/withAuth'
@@ -19,9 +20,9 @@ import {
 } from './ProjectList'
 import { ContactsModal } from './ContactsModal'
 import { PrimaryButton } from '../../storybook/stories/Button'
+import { LogEvents } from '../../utils/analytics'
 
-
-export const UserItem = ({ item, itemPressed, initialFollowing, existingUserFollowing }) => {
+export const UserItem = ({ item, itemPressed, initialFollowing, existingUserFollowing, onboarding }) => {
   const [following, setFollowing] = useState(initialFollowing)
   const user = useMe()
   const [followUser] = useMutation(FOLLOW_USER, {
@@ -126,6 +127,16 @@ export const UserItem = ({ item, itemPressed, initialFollowing, existingUserFoll
         :
         <Pressable onPress={() => {
           setFollowing(true)
+          if (onboarding) {
+            try {
+              Analytics.logEvent(LogEvents.FOLLOW_RECOMMENDED_USERS, {
+                user_id: user?.id,
+                user_followed: item.id
+              })
+            } catch (err) {
+              console.log('Error logging recommended users follow: ', err)
+            }
+          }
           followUser()
         }} style={listStyles.followButton}>
           <Paragraph color={White}>

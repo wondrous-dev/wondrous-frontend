@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { SafeAreaView, View, Image, Pressable, FlatList, TouchableOpacity } from 'react-native'
 import Modal from 'react-native-modal'
 import * as Contacts from 'expo-contacts'
+import * as Analytics from 'expo-firebase-analytics'
 
 import { modalStyles } from '../../components/Modal/common'
 import { spacingUnit } from '../../utils/common'
@@ -17,6 +18,7 @@ import { useMe } from '../../components/withAuth'
 import { useNavigation } from '@react-navigation/core'
 import { useMutation } from '@apollo/client'
 import { CREATE_INVITE_LINK } from '../../graphql/mutations/userInvite'
+import { LogEvents } from '../../utils/analytics'
 
 const checkAndRequestsPermission = async ({ setPermissions }) => {
     const hasPermissions = await Contacts.getPermissionsAsync()
@@ -34,7 +36,7 @@ const getContacts = async ({ setContacts }) => {
   setContacts(data)
 }
 
-const ContactItem = ({ item, setModalVisible }) => {
+const ContactItem = ({ item }) => {
   const user = useMe()
   const phoneNumbers = item.phoneNumbers?.map(number => number.digits)
   const emails = item.emails?.map(email => email.email)
@@ -50,6 +52,13 @@ const ContactItem = ({ item, setModalVisible }) => {
         phoneNumbers,
         message
       )
+      try {
+        Analytics.logEvent(LogEvents.INVITE_EXTERNAL_COLLABORATOR, {
+          user_id: user?.id
+        })
+      } catch (err) {
+        console.log('Error logging inviting external collaborator: ', err)
+      }
     }
   })
   return (
