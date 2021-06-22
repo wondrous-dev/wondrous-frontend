@@ -197,7 +197,8 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                 textStyle={{ color: White }}
                 style={{
                     alignSelf: 'center',
-                    marginTop: spacingUnit * 5
+                    marginTop: spacingUnit * 5,
+                    backgroundColor: Orange
                 }}
                 onPress={async () => {
                     if (Object.keys(selectedTags).length === 0) {
@@ -213,6 +214,15 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                             }
                         })
                         if (edit) {
+                            try {
+                                Analytics.logEvent(LogEvents.EDIT_PROJECT_TAGS, {
+                                    user_id: user?.id,
+                                    project_id: projectId,
+                                    tags: Object.keys(selectedTags)
+                                  })
+                                } catch (err) {
+                                  console.log('Error logging setting project category for the first time: ', err)
+                              }
                             navigation.push('Root', {
                                 screen: 'Profile',
                                 params: {

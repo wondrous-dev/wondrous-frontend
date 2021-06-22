@@ -13,16 +13,14 @@ import MusicIcon from '../../assets/images/categories/music'
 import VideoIcon from '../../assets/images/categories/video'
 import PhotographyIcon from '../../assets/images/categories/photography'
 import LearningIcon from '../../assets/images/categories/learning'
-import GamesIcon from '../../assets/images/categories/games'
 import FoodIcon from '../../assets/images/categories/food'
 import PodcastIcon from '../../assets/images/categories/podcast'
 import WritingIcon from '../../assets/images/categories/writing'
 import FitnessIcon from '../../assets/images/categories/fitness'
 import OtherIcon from '../../assets/images/categories/other'
 import { spacingUnit } from '../../utils/common'
-import { Black, Blue500, Blue600, Yellow300, Grey300, White } from '../../constants/Colors'
+import { Black, Blue500, Blue600, Yellow300, Grey300, White, Orange } from '../../constants/Colors'
 import { Subheading, RegularText, ButtonText, ErrorText } from '../../storybook/stories/Text'
-import { PrimaryButton } from '../../storybook/stories/Button'
 import { moderateScale } from '../../utils/scale'
 import { useMutation } from '@apollo/client'
 import { UPDATE_PROJECT } from '../../graphql/mutations/project'
@@ -234,7 +232,87 @@ function ProjectSetupCategoryScreen({
         error,
         setError
       }}>
-        <Header />
+        <Header  rightButton={{
+        color: Orange,
+        text: 'Continue',
+        onPress: async () => {
+          if (!projectCategory) {
+            setError('Please select a project category')
+          } else {
+            await updateProject({
+              variables: {
+                input: {
+                  category: projectCategory
+                },
+                projectId,
+                firstTime: true
+              }
+            })
+            if (!edit) {
+              if (projectCategory === 'business' || projectCategory === 'tech') {
+                navigation.push('ProjectTagSelection', {
+                  projectId,
+                  setup
+                })
+              } else {
+                if (setup) {
+                  try {
+                    Analytics.logEvent(LogEvents.SET_PROJECT_CATEGORY_FIRST_TIME, {
+                      user_id: user?.id,
+                      project_id: projectId,
+                      category: projectCategory
+                    })
+                  } catch (err) {
+                    console.log('Error logging setting project category for the first time: ', err)
+                  }
+                  navigation.push('Root', {
+                    screen: 'Profile',
+                    params: {
+                      screen: 'UserProfile'
+                    }
+                  })
+                } else {
+                  try {
+                    Analytics.logEvent(LogEvents.SET_PROJECT_CATEGORY, {
+                      user_id: user?.id,
+                      project_id: projectId,
+                      category: projectCategory
+                    })
+                  } catch (err) {
+                    console.log('Error logging setting project category: ', err)
+                  }
+                  navigation.push('ProjectInviteCollaborators', {
+                    project: {
+                      id: projectId
+                    },
+                    setup
+                  })
+                }
+              }
+            } else {
+              try {
+              Analytics.logEvent(LogEvents.EDIT_PROJECT_CATEGORY, {
+                  user_id: user?.id,
+                  project_id: projectId,
+                  category: projectCategory
+                })
+              } catch (err) {
+                console.log('Error logging setting project category: ', err)
+              }
+              navigation.push('Root', {
+                screen: 'Profile',
+                params: {
+                  screen: 'ProjectProfile',
+                  params: {
+                    projectId,
+                    editProfile: true
+                  }
+                }
+              })
+            }
+          }
+        }
+      }} />
         {!edit &&
         <View style={projectSetupStyles.progressCircleContainer}>
           <ProgressCircle
@@ -264,84 +342,6 @@ function ProjectSetupCategoryScreen({
         }
         <CategoryDisplay categories={categories} />
       </ProjectSetupCategoryContext.Provider>
-      <PrimaryButton textStyle={{
-            color: White
-          }} style={{
-            alignSelf: 'center',
-            marginTop: spacingUnit * 5
-          }} onPress={async () => {
-            if (!projectCategory) {
-              setError('Please select a project category')
-            } else {
-              await updateProject({
-                variables: {
-                  input: {
-                    category: projectCategory
-                  },
-                  projectId,
-                  firstTime: true
-                }
-              })
-              if (!edit) {
-                if (projectCategory === 'business' || projectCategory === 'tech') {
-                  navigation.push('ProjectTagSelection', {
-                    projectId,
-                    setup
-                  })
-                } else {
-                  if (setup) {
-                    try {
-                      Analytics.logEvent(LogEvents.SET_PROJECT_CATEGORY_FIRST_TIME, {
-                        user_id: user?.id,
-                        project_id: projectId,
-                        category: projectCategory
-                      })
-                    } catch (err) {
-                      console.log('Error logging setting project category for the first time: ', err)
-                    }
-                    navigation.push('Root', {
-                      screen: 'Profile',
-                      params: {
-                        screen: 'UserProfile'
-                      }
-                    })
-                  } else {
-                    try {
-                      Analytics.logEvent(LogEvents.SET_PROJECT_CATEGORY, {
-                        user_id: user?.id,
-                        project_id: projectId,
-                        category: projectCategory
-                      })
-                    } catch (err) {
-                      console.log('Error logging setting project category: ', err)
-                    }
-                    navigation.push('ProjectInviteCollaborators', {
-                      project: {
-                        id: projectId
-                      },
-                      setup
-                    })
-                  }
-                }
-              } else {
-                navigation.push('Root', {
-                  screen: 'Profile',
-                  params: {
-                    screen: 'ProjectProfile',
-                    params: {
-                      projectId,
-                      editProfile: true
-                    }
-                  }
-                })
-              }
-            }
-          }
-          }>
-            <ButtonText color={White}>
-              {edit ? 'Update' : 'Continue'}
-            </ButtonText>
-      </PrimaryButton>
       </ScrollView>
     </SafeAreaView>
   )
