@@ -115,6 +115,10 @@ function HomeScreen({
     }
     if (Branch) {
       Branch.subscribe(bundle => {
+        Sentry.Native.captureEvent({
+          message: 'Branch user invitation',
+          extra: bundle
+        })
         if (bundle && bundle.params && !bundle.error) {
           setInvitorFirstName(bundle.params?.invitor_firstname)
           setInvitorLastName(bundle.params?.invitor_lastname)

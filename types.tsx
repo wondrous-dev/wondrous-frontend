@@ -18,6 +18,7 @@ export type RootStackParamList = {
   EmailSignin: undefined
   GroupSetup: undefined
   UserInterestCategory: undefined
+  NotificationPrompt: undefined
   FollowRecommendation: undefined
 }
 

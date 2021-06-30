@@ -2,7 +2,7 @@
   "expo": {
     "name": "Wonder",
     "slug": "Wonder",
-    "version": "1.0.16",
+    "version": "1.0.18",
     "owner": "wonderapp",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -54,7 +54,7 @@
         "usesNonExemptEncryption": false
       },
       "bundleIdentifier": "co.wonder.wonderapp",
-      "buildNumber": "1.1.44",
+      "buildNumber": "1.1.46",
       "usesAppleSignIn": true
     },
     "android": {

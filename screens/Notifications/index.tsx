@@ -144,6 +144,17 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
         })
         break
       }
+    case 'new_group_member_joining':
+      navigation.push('Root', {
+        screen: 'Notifications',
+          params: {
+            screen: 'UserProfile',
+            params: {
+              userId: actorId
+          }
+        }
+      })
+      break
     case 'mention':
       let actionScreen = ''
       let params = {}

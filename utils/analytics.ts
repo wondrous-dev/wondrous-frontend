@@ -3,6 +3,8 @@ export const LogEvents = {
   'PICK_USER_INTERESTS': 'pick_user_interests',
   'FOLLOW_RECOMMENDED_USERS': 'follow_recommended_users',
   'CREATE_PROJECT_FIRST_TIME': 'create_project_first_time',
+  'TURN_ON_NOTIFICATIONS_CLICK': 'turn_on_notifications_click',
+  'NOTIFICATIONS_GRANTED': 'notification_permission_granted',
   'SET_PROJECT_CATEGORY_FIRST_TIME': 'set_project_category_first_time',
   'SET_PROJECT_TAGS_FIRST_TIME': 'set_project_tags_first_time',
   'CREATE_PROJECT': 'create_project',

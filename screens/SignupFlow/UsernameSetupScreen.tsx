@@ -100,9 +100,13 @@ const UsernameInput = ({ navigation }) => {
       })
     }
     if (user && user.username) {
-      navigation.push('UserInterestCategory')
+      navigation.push('NotificationPrompt')
     }
     if (userInviteData) {
+      Sentry.Native.captureEvent({
+        message: 'User Invite data',
+        extra: userInviteData
+      })
       setUserInvite(userInviteData?.userInvitation?.userInvitationId)
       setGroupId(userInviteData?.userInvitation?.groupId)
     }
@@ -182,7 +186,7 @@ const UsernameInput = ({ navigation }) => {
                   }
                 })
               }
-              navigation.push('UserInterestCategory')
+              navigation.push('NotificationPrompt')
             } catch (err) {
               // console.log('err', err)
               setError('Username not available')
@@ -275,7 +279,7 @@ function UsernameSetupScreen({
           <Neutral />
         </ProgressCircle>
         <View style={usernameSetupStyles.stepContainer}>
-          <Text style={usernameSetupStyles.stepCount}>step 1/3</Text>
+          <Text style={usernameSetupStyles.stepCount}>step 1/4</Text>
         </View>
       </View>
       <UsernameContext.Provider value={{

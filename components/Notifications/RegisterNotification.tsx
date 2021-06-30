@@ -3,13 +3,22 @@ import * as Notifications from 'expo-notifications'
 import * as Permissions from 'expo-permissions'
 import React, { useState, useEffect, useRef } from 'react'
 import { Text, View, Button, Platform } from 'react-native'
+import * as Analytics from 'expo-firebase-analytics'
 
 import { CREATE_NOTIFICATION_TOKEN, UPDATE_NOTIFICATION_TOKEN } from '../../graphql/mutations'
 import apollo from '../../services/apollo'
 import { useMe } from '../withAuth'
+import { LogEvents } from '../../utils/analytics'
 
-export const registerForPushNotificationsAsync = async () => {
+export const registerForPushNotificationsAsync = async (user) => {
   if (Constants.isDevice) {
+    try {
+      Analytics.logEvent(LogEvents.TURN_ON_NOTIFICATIONS_CLICK, {
+        user_id: user?.id
+      })
+    } catch(err) {
+      console.error('failed to log username create')
+    }
     const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS)
     let finalStatus = existingStatus
     if (existingStatus !== 'granted') {
@@ -18,6 +27,13 @@ export const registerForPushNotificationsAsync = async () => {
     }
     if (finalStatus !== 'granted') {
       return
+    }
+    try {
+      Analytics.logEvent(LogEvents.NOTIFICATIONS_GRANTED, {
+        user_id: user?.id
+      })
+    } catch(err) {
+      console.error('failed to log username create')
     }
     const token = (await Notifications.getExpoPushTokenAsync()).data
     try {

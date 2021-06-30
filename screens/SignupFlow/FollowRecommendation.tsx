@@ -69,8 +69,8 @@ const FollowRecommendation = ({ navigation }) => {
       }}/>
     <View style={projectSetupStyles.progressCircleContainer}>
                     <AnimatedCircularProgress
-                prefill={80}
-                fill={finished ? 100 : 80}
+                prefill={85}
+                fill={finished ? 100 : 85}
                 size={100}
                 width={10}
                 backgroundColor={Grey300}
@@ -94,7 +94,7 @@ const FollowRecommendation = ({ navigation }) => {
                       ...projectSetupStyles.stepContainer,
                       marginTop: spacingUnit * 5
                     }}>
-                        <Text style={projectSetupStyles.stepCount}>step 3/3</Text>
+                        <Text style={projectSetupStyles.stepCount}>step 4/4</Text>
                     </View>
                 </View>
     

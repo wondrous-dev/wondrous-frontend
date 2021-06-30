@@ -177,7 +177,7 @@ function UserInterestCategoryScreen({
         {!edit &&
         <View style={projectSetupStyles.progressCircleContainer}>
           <ProgressCircle
-              percent={75}
+              percent={70}
               radius={50}
               borderWidth={10}
               color={Yellow300}
@@ -187,7 +187,7 @@ function UserInterestCategoryScreen({
               <BigMouthSmile />
           </ProgressCircle>
           <View style={projectSetupStyles.stepContainer}>
-            <Text style={projectSetupStyles.stepCount}>step {setup ? '3/4' : '2/3'}</Text>
+            <Text style={projectSetupStyles.stepCount}>step 3/4</Text>
           </View>
         </View>
         }

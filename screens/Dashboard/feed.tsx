@@ -7,14 +7,18 @@ import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { HomeFeed } from '../../components/Feed'
 import { White } from '../../constants/Colors'
-import { checkAndUpdateNotificationToken } from '../../components/Notifications/RegisterNotification'
+import { checkAndUpdateNotificationToken, registerForPushNotificationsAsync } from '../../components/Notifications/RegisterNotification'
 
 function Feed({
   navigation
 }: StackScreenProps<RootStackParamList, 'Feed'>) {
   const user = useMe()
   React.useEffect(() => {
-    checkAndUpdateNotificationToken(user?.notificationToken?.token)
+    if (user?.notificationToken?.token) {
+      checkAndUpdateNotificationToken(user?.notificationToken?.token)
+    } else {
+      registerForPushNotificationsAsync(user)
+    }
   }, [user])
   return (
     <>
