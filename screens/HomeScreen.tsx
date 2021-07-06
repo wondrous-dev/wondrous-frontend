@@ -3,6 +3,7 @@ import { StackScreenProps } from '@react-navigation/stack'
 import { StyleSheet, View, SafeAreaView, Platform, Image, Dimensions } from 'react-native'
 import * as Notifications from 'expo-notifications'
 import * as Analytics from 'expo-firebase-analytics'
+import * as Sentry from 'sentry-expo'
 
 import Branch from '../services/branch'
 import { RootStackParamList } from '../types'

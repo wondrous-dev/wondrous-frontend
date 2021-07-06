@@ -1,32 +1,20 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { StyleSheet, View, Platform, Text, Image, SafeAreaView, KeyboardAvoidingView, TextInput } from 'react-native'
 import ProgressCircle from 'react-native-progress-circle'
-import { Formik } from 'formik'
-import * as Sentry from 'sentry-expo'
-import * as Analytics from 'expo-firebase-analytics'
 import Constants from 'expo-constants'
 import * as Notifications from 'expo-notifications'
 import * as Permissions from 'expo-permissions'
 
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { spacingUnit, extractFirstAndLastName, capitalizeFirstLetter } from '../../utils/common'
-import { Black, White, Blue500, Red400, Grey500, Grey200, Grey300, GreyPlaceHolder, Orange } from '../../constants/Colors'
-import { Subheading, Paragraph, ButtonText, ErrorText } from '../../storybook/stories/Text'
+import { spacingUnit } from '../../utils/common'
+import { Black, White, Blue500, Red400, Grey500, Grey300, Orange } from '../../constants/Colors'
+import { Subheading, Paragraph, ButtonText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
-import Neutral from '../../assets/images/emoji/neutral'
 import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
-import { useMutation, useQuery } from '@apollo/client'
-import { CREATE_ONBOARDING_TASKS, CREATE_USERNAME, UPDATE_NOTIFICATION_TOKEN, UPDATE_USER } from '../../graphql/mutations'
 import { useMe, withAuth } from '../../components/withAuth'
-import { SHORTNAME_REGEX } from '../../constants'
-import { MY_USER_INVITE } from '../../graphql/queries/userInvite'
-import { LogEvents } from '../../utils/analytics'
-import { checkAndUpdateNotificationToken, registerForPushNotificationsAsync } from '../../components/Notifications/RegisterNotification'
-import apollo from '../../services/apollo'
-
-const UsernameContext = createContext(null)
+import { registerForPushNotificationsAsync } from '../../components/Notifications/RegisterNotification'
 
 export const usernameSetupStyles = StyleSheet.create({
   stepContainer: {
@@ -53,33 +41,16 @@ export const usernameSetupStyles = StyleSheet.create({
   },
 })
 
-const redirectNotification = async ({ navigation, activeToken }) => {
+const redirectNotification = async ({ navigation, user }) => {
   if (Constants.isDevice) {
     const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS)
-    let finalStatus = existingStatus
-    if (existingStatus !== 'granted') {
-      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS)
-      finalStatus = status
-    }
-    if (finalStatus !== 'granted') {
-      return
-    }
-    const token = (await Notifications.getExpoPushTokenAsync()).data
-    if (token !== activeToken) {
-      // Update token
-      try {
-        const result = await apollo.mutate({
-          mutation: UPDATE_NOTIFICATION_TOKEN,
-          variables:{
-            token
-          }
-        })
-        // console.log('result', result)
-      } catch (error) {
-        console.log(JSON.stringify(error, null, 2))
+    if (existingStatus === 'granted' || existingStatus === 'denied') {
+      if (!user?.notificationToken?.token && existingStatus === 'granted') {
+        await registerForPushNotificationsAsync(user)
       }
+      navigation.push('UserInterestCategory')
     }
-    navigation.push('UserInterestCategory')
+
   } else {
     alert('Must use physical device for Push Notifications')
   }
@@ -95,31 +66,13 @@ const redirectNotification = async ({ navigation, activeToken }) => {
 }
 
 const NotificationPrompt = ({ navigation }) => {
-  const {
-    setError,
-    error
-  } = useContext(UsernameContext)
 
   const user: any = useMe()
-  const { data: userInviteData, error: userInviteError } = useQuery(MY_USER_INVITE)
+  const [promptClicked, setPromptClicked] = useState(false)
 
   useEffect(() => {
-    if (user && user.usageProgress && user.usageProgress.signupCompleted) {
-      navigation.push('Root', {
-        screen: 'Profile',
-        params: {
-          screen: 'ProjectProfile',
-          params: {
-            projectId: user.usageProgress.projectCreated,
-            noGoingBack: true
-          }
-        }
-      })
-    }
-    if (user?.notificationToken?.token) {
-      redirectNotification({ navigation, activeToken: user?.notificationToken?.token })
-    }
-  }, [])
+    redirectNotification({ navigation, user })
+  }, [promptClicked])
 
   return (
     <View style={usernameSetupStyles.usernameInputContainer}>
@@ -137,44 +90,41 @@ const NotificationPrompt = ({ navigation }) => {
       }} color={Grey500}>
         So you know when your community interacts with you and for us to keep you accountable!
       </Paragraph>
-      <Formik
-        initialValues={{ username: user && user.username, fullName: user?.firstName ? `${user?.firstName} ${user?.lastName}` : null }}
-        onSubmit={async () => {
-          navigation.push('UserInterestCategory')
-        }}
-      >
-        {({ handleSubmit }) => (
-          <View>
-            <PrimaryButton
-              textStyle={{ color: White }}
-              style={{
-                backgroundColor: Orange,
-                width: spacingUnit * 43,
-                alignSelf: 'center',
-                marginTop: spacingUnit // this is not consistent with the next page on figma
-              }}
-              onPress={() => registerForPushNotificationsAsync(user)}
-            >
-              <ButtonText color={White}> Turn on notifications </ButtonText>
-            </PrimaryButton>
-            <PrimaryButton
-              textStyle={{ color: White }}
-              style={{
-                backgroundColor: White,
-                borderColor: Orange,
-                borderWidth: 1,
-                width: spacingUnit * 43,
-                alignSelf: 'center',
-                marginTop: spacingUnit * 2 // this is not consistent with the next page on figma
-              }}
-              onPress={handleSubmit}
-            >
-              <ButtonText color={Orange}> Continue </ButtonText>
-            </PrimaryButton>
+      <View>
+        <PrimaryButton
+          textStyle={{ color: White }}
+          style={{
+            backgroundColor: Orange,
+            width: spacingUnit * 43,
+            alignSelf: 'center',
+            marginTop: spacingUnit // this is not consistent with the next page on figma
+          }}
+          onPress={async () => {
+            setPromptClicked(true)
+            await registerForPushNotificationsAsync(user)
+            navigation.push('UserInterestCategory')
+          }}
+        >
+          <ButtonText color={White}> Turn on notifications </ButtonText>
+        </PrimaryButton>
+        <PrimaryButton
+          textStyle={{ color: White }}
+          style={{
+            backgroundColor: White,
+            borderColor: Orange,
+            borderWidth: 1,
+            width: spacingUnit * 43,
+            alignSelf: 'center',
+            marginTop: spacingUnit * 2 // this is not consistent with the next page on figma
+          }}
+          onPress={() => {
+            navigation.push('UserInterestCategory')
+          }}
+        >
+          <ButtonText color={Orange}> Continue </ButtonText>
+        </PrimaryButton>
 
           </View>
-        )}
-      </Formik>
 
     </View>
   )
@@ -182,8 +132,7 @@ const NotificationPrompt = ({ navigation }) => {
 
 function NotificationSetupScreen({
   navigation
-}: StackScreenProps<RootStackParamList, 'UsernameSetup'>) {
-  const [error, setError] = useState(null)
+}: StackScreenProps<RootStackParamList, 'NotificationPrompt'>) {
   return (
     <SafeAreaView style={{
       backgroundColor: White,
@@ -208,22 +157,7 @@ function NotificationSetupScreen({
           <Text style={usernameSetupStyles.stepCount}>step 2/4</Text>
         </View>
       </View>
-      <UsernameContext.Provider value={{
-        error,
-        setError
-      }}>
         <NotificationPrompt navigation={navigation} />
-      </UsernameContext.Provider>
-      {
-          error && <View style={{
-            alignItems: 'center',
-            marginTop: spacingUnit
-          }}>
-            <ErrorText>
-              {error}
-            </ErrorText>
-          </View>
-        }
       </KeyboardAvoidingView>
     </SafeAreaView>
   )

@@ -104,7 +104,6 @@ function UserInterestCategoryScreen({
   route
 }: StackScreenProps<RootStackParamList, 'UserInterestCategory'>) {
   const user = useMe()
-  const [once, setOnce] = useState(false)
   const [createUserInterests] = useMutation(CREATE_USER_INTERESTS, {
     refetchQueries: [{
       query: GET_USER_INTERESTS,
@@ -123,7 +122,6 @@ function UserInterestCategoryScreen({
     }
   })
   const edit = route?.params?.edit
-  const setup = route?.params?.setup
   const [interests, setInterests] = useState([])
   const [error, setError] = useState(null)
 

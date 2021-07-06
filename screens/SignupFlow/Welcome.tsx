@@ -53,7 +53,7 @@ function WelcomeScreen({
 }: StackScreenProps<RootStackParamList, 'Welcome'>) {
   const user = useMe()
   React.useEffect(() => {
-    registerForPushNotificationsAsync()
+    registerForPushNotificationsAsync(user)
 
     if (user && user.usageProgress) {
       if (user.username) {
