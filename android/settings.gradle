@@ -1,16 +1,6 @@
 rootProject.name = 'Wonder'
 include ':react-native-branch'
 project(':react-native-branch').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-branch/android')
-include ':react-native-branch'
-project(':react-native-branch').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-branch/android')
-include ':react-native-branch'
-project(':react-native-branch').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-branch/android')
-include ':react-native-branch'
-project(':react-native-branch').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-branch/android')
-include ':react-native-branch'
-project(':react-native-branch').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-branch/android')
-include ':react-native-branch'
-project(':react-native-branch').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-branch/android')
 
 apply from: '../node_modules/react-native-unimodules/gradle.groovy'
 includeUnimodulesProjects()

@@ -65,5 +65,8 @@
         <data android:scheme="fb692135684870439"/>
       </intent-filter>
     </activity>
+    <!-- Branch App keys https://github.com/BranchMetrics/react-native-branch-deep-linking-attribution/pull/520 -->
+    <meta-data android:name="io.branch.sdk.BranchKey" android:value="key_live_je9hURYbe3pyUydyQazRWengzslpluMJ"/>
+    <meta-data android:name="io.branch.sdk.BranchKey.test" android:value="key_test_hf9fOJ5np5jDNzbyKf8ApfolsDnapzVW"/>
   </application>
 </manifest>
