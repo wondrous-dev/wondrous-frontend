@@ -4,6 +4,8 @@ import android.content.Intent;
 
 import android.os.Bundle;
 
+import io.branch.rnbranch.*;
+
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
@@ -24,16 +26,27 @@ public class MainActivity extends ReactActivity {
         sendBroadcast(intent);
     }
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(null);
-// @generated begin expo-splash-screen-mainActivity-onCreate-show-splash - expo prebuild (DO NOT MODIFY) sync-8915a20732e7fda227585f9b6ef0d38bef4fbbbe
-    SplashScreen.show(this, SplashScreenImageResizeMode.CONTAIN, ReactRootView.class, false);
-// @generated end expo-splash-screen-mainActivity-onCreate-show-splash
-    // SplashScreen.show(...) has to be called after super.onCreate(...)
-    // Below line is handled by '@expo/configure-splash-screen' command and it's discouraged to modify it manually
-  }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(null);
+         // @generated begin expo-splash-screen-mainActivity-onCreate-show-splash - expo prebuild (DO NOT MODIFY) sync-8915a20732e7fda227585f9b6ef0d38bef4fbbbe
+        SplashScreen.show(this, SplashScreenImageResizeMode.CONTAIN, ReactRootView.class, false);
+        // @generated end expo-splash-screen-mainActivity-onCreate-show-splash
+        // SplashScreen.show(...) has to be called after super.onCreate(...)
+        // Below line is handled by '@expo/configure-splash-screen' command and it's discouraged to modify it manually
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        RNBranchModule.initSession(getIntent().getData(), this);
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        RNBranchModule.onNewIntent(intent);
+    }
 
     /**
      * Returns the name of the main component registered from JavaScript.

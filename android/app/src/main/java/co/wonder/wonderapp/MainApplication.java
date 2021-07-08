@@ -6,12 +6,17 @@ import android.net.Uri;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import io.branch.rnbranch.RNBranchPackage;
+import io.branch.rnbranch.RNBranchPackage;
+import io.branch.rnbranch.RNBranchPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import co.wonder.wonderapp.generated.BasePackageList;
+
+import io.branch.rnbranch.RNBranchModule;
 
 import org.unimodules.adapters.react.ReactAdapterPackage;
 import org.unimodules.adapters.react.ModuleRegistryAdapter;
@@ -85,6 +90,8 @@ public class MainApplication extends Application implements ReactApplication {
     }
 
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+
+    RNBranchModule.getAutoInstance(this);
   }
 
   /**
