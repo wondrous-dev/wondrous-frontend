@@ -53,8 +53,7 @@
           <action android:name="android.intent.action.VIEW" />
           <category android:name="android.intent.category.DEFAULT" />
           <category android:name="android.intent.category.BROWSABLE" />
-          <!-- REPLACE HOST -->
-          <data android:scheme="https" android:host="uobg.app.link" />
+          <data android:scheme="https" android:host="wonderco.app.link" />
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>

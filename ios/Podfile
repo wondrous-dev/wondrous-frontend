@@ -21,6 +21,9 @@ target 'Wonder' do
   #  post_install do |installer|
   #    flipper_post_install(installer)
   #  end
+
+
+
   pod 'react-native-branch', :path => '../node_modules/react-native-branch'
 
 end

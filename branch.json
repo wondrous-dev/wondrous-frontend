@@ -1,1 +1,8 @@
-// TODO
+{
+  "debugMode": true,
+  "liveKey": "key_live_je9hURYbe3pyUydyQazRWengzslpluMJ",
+  "testKey": "key_test_hf9fOJ5np5jDNzbyKf8ApfolsDnapzVW",
+  "useTestInstance": true,
+  "delayInitToCheckForSearchAds": true,
+  "enableFacebookLinkCheck": true
+}
