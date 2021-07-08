@@ -167,8 +167,8 @@ function EmailSignupScreen({
             <Subheading style={{
               marginTop: 16,
               fontFamily: 'Rubik',
-              fontSize: '16px',
-              lineHeight: '19px',
+              fontSize: 16,
+              lineHeight: 19,
               textAlign: 'center',
               textDecorationLine: 'underline'
             }} color={White}>Or log in with your email</Subheading>
