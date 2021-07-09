@@ -44,7 +44,7 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  #ifdef USE_BRANCH_TEST_INSTANCE
+  #ifdef DEBUG
       [RNBranch useTestInstance];
   #endif
       [RNBranch initSessionWithLaunchOptions:launchOptions isReferrable:YES];
