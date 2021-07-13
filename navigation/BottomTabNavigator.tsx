@@ -137,6 +137,7 @@ const TabBar = ({ state, descriptors, navigation, params }) => {
           const unreadNotifCount = options?.tabBarBadge
           return (
             <Pressable
+              key={route.key}
               accessibilityRole="button"
               accessibilityState={isFocused ? { selected: true } : {}}
               accessibilityLabel={options.tabBarAccessibilityLabel}
