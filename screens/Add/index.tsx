@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { Pressable, SafeAreaView, StyleSheet, View } from 'react-native'
+import { Pressable, SafeAreaView, StyleSheet, ScrollView, View } from 'react-native'
 import { useMutation } from '@apollo/client'
 
 import { useMe, withAuth } from '../../components/withAuth'
@@ -132,79 +132,81 @@ function AddScreen({
       backgroundColor: White,
       flex: 1
     }}>
-      <Header />
-      <FullScreenGoalModal setModalVisible={setGoalModalVisible} isVisible={goalModalVisible} goalMutation={createGoal} />
-      <FullScreenTaskModal setModalVisible={setTaskModalVisible} isVisible={taskModalVisible} taskMutation={createTask} />
-      <FullScreenAskModal setModalVisible={setAskModalVisible} isVisible={askModalVisible} askMutation={createAsk} />
-      <FullScreenPostModal setModalVisible={setPostModalVisible} isVisible={postModalVisible} postMutation={createPost} />
-      <ContactsModal isVisible={contactsModal} setModalVisible={setContactsModal} />
-      <View style={addStyles.container}>
-      <Subheading color={Black}>
-        Launch Pad
-      </Subheading>
-      <Paragraph color={Black} style={addStyles.paragraph}>
-        What do you want to create?
-      </Paragraph>
-      <View style={addStyles.choiceContainer}>
-        <Pressable style={addStyles.choiceBox} onPress={() => navigation.push('FirstProjectSetup', {
-          setup: false,
-          noGoingBack: true
-        })}>
-        <ProjectIcon
-          style={addStyles.choiceImage}
-        />
-        <Paragraph color={Black} style={{
-          ...addStyles.choiceText
-        }}>
-          Project
+      <ScrollView>
+        <Header />
+        <FullScreenGoalModal setModalVisible={setGoalModalVisible} isVisible={goalModalVisible} goalMutation={createGoal} />
+        <FullScreenTaskModal setModalVisible={setTaskModalVisible} isVisible={taskModalVisible} taskMutation={createTask} />
+        <FullScreenAskModal setModalVisible={setAskModalVisible} isVisible={askModalVisible} askMutation={createAsk} />
+        <FullScreenPostModal setModalVisible={setPostModalVisible} isVisible={postModalVisible} postMutation={createPost} />
+        <ContactsModal isVisible={contactsModal} setModalVisible={setContactsModal} />
+        <View style={addStyles.container}>
+        <Subheading color={Black}>
+          Launch Pad
+        </Subheading>
+        <Paragraph color={Black} style={addStyles.paragraph}>
+          What do you want to create?
         </Paragraph>
-        </Pressable>
-        <Pressable style={addStyles.choiceBox} onPress={() => setGoalModalVisible(true)}>
-        <GoalIcon style={addStyles.choiceImage} />
-        <Paragraph color={Black} style={addStyles.choiceText}>
-          Goal
-        </Paragraph>
-        </Pressable>
-      </View>
-      <View style={addStyles.choiceContainer}>
-        <Pressable style={addStyles.choiceBox} onPress={() => setTaskModalVisible(true)}>
-        <TaskIcon
-         style={{
-           width: spacingUnit * 6,
-           height: spacingUnit * 6
-         }} />
-        <Paragraph color={Black} style={{
-          ...addStyles.choiceText,
-          marginTop: spacingUnit * 1.5
-        }}>
-          Task
-        </Paragraph>
-        </Pressable>
-        <Pressable style={addStyles.choiceBox} onPress={() => setAskModalVisible(true)}>
-          <AskIcon style={addStyles.choiceImage} />
-        <Paragraph color={Black} style={{
-          ...addStyles.choiceText,
-          marginTop: spacingUnit * 1.5
-        }}>
-          Ask
-        </Paragraph>
-        </Pressable>
-      </View>
-      <View style={addStyles.choiceContainer}>
-        <Pressable style={addStyles.choiceBox} onPress={() => setPostModalVisible(true)}>
-          <PostIcon style={addStyles.choiceImage} />
-          <Paragraph color={Black} style={addStyles.choiceText}>
-            Post
+        <View style={addStyles.choiceContainer}>
+          <Pressable style={addStyles.choiceBox} onPress={() => navigation.push('FirstProjectSetup', {
+            setup: false,
+            noGoingBack: true
+          })}>
+          <ProjectIcon
+            style={addStyles.choiceImage}
+          />
+          <Paragraph color={Black} style={{
+            ...addStyles.choiceText
+          }}>
+            Project
           </Paragraph>
-        </Pressable>
-        <Pressable style={addStyles.choiceBox} onPress={() => setContactsModal(true)}>
-        <AddFriendIcon style={addStyles.choiceImage} />
+          </Pressable>
+          <Pressable style={addStyles.choiceBox} onPress={() => setGoalModalVisible(true)}>
+          <GoalIcon style={addStyles.choiceImage} />
           <Paragraph color={Black} style={addStyles.choiceText}>
-            Add friends
+            Goal
           </Paragraph>
-        </Pressable>
-      </View>
-      </View>
+          </Pressable>
+        </View>
+        <View style={addStyles.choiceContainer}>
+          <Pressable style={addStyles.choiceBox} onPress={() => setTaskModalVisible(true)}>
+          <TaskIcon
+            style={{
+              width: spacingUnit * 6,
+              height: spacingUnit * 6
+            }} />
+          <Paragraph color={Black} style={{
+            ...addStyles.choiceText,
+            marginTop: spacingUnit * 1.5
+          }}>
+            Task
+          </Paragraph>
+          </Pressable>
+          <Pressable style={addStyles.choiceBox} onPress={() => setAskModalVisible(true)}>
+            <AskIcon style={addStyles.choiceImage} />
+          <Paragraph color={Black} style={{
+            ...addStyles.choiceText,
+            marginTop: spacingUnit * 1.5
+          }}>
+            Ask
+          </Paragraph>
+          </Pressable>
+        </View>
+        <View style={addStyles.choiceContainer}>
+          <Pressable style={addStyles.choiceBox} onPress={() => setPostModalVisible(true)}>
+            <PostIcon style={addStyles.choiceImage} />
+            <Paragraph color={Black} style={addStyles.choiceText}>
+              Post
+            </Paragraph>
+          </Pressable>
+          <Pressable style={addStyles.choiceBox} onPress={() => setContactsModal(true)}>
+          <AddFriendIcon style={addStyles.choiceImage} />
+            <Paragraph color={Black} style={addStyles.choiceText}>
+              Add friends
+            </Paragraph>
+          </Pressable>
+        </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }
