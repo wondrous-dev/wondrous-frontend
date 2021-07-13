@@ -54,6 +54,8 @@
 	<string>UIStatusBarStyleDefault</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Wonder needs permission to your camera to take photos associated with your projects</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Wonder needs permission to your camera to take photos associated with your projects</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Wonder needs permission to your camera roll to add existing photos to your projects</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
@@ -96,7 +98,7 @@
 		<string>fbshareextension</string>
 	</array>
 	<key>NSContactsUsageDescription</key>
-	<string>$(PRODUCT_NAME) contact use</string>
+	<string>Wonder needs permission to contacts to invite your friends</string>
 	<key>FacebookDisplayName</key>
 	<string>Wonder</string>
 </dict>
