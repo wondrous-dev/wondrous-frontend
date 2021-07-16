@@ -10,6 +10,7 @@ import baseStyle from './style'
 import { Grey200 } from '../../../constants/Colors'
 import { storeAuthHeader } from '../../../components/withAuth'
 import { navigateUserOnLogin, spacingUnit } from '../../../utils/common'
+import * as Application from 'expo-application'
 
 const buttonStyle = StyleSheet.create({
   googleButtonText: {
@@ -28,6 +29,7 @@ const signInAsync = async ({ graphqlCall, setLoginStatus, setLoginError, navigat
       iosStandaloneAppClientId: 'com.googleusercontent.apps.276263235787-gc3g6ilmol63fvobrre6mmd79ou2ulku',
       androidStandaloneAppClientId: 'com.googleusercontent.apps.276263235787-03pv0e4ndk9t67t1chhut8i3mb339s9a',
       scopes: ['profile', 'email'],
+      redirectUrl: `${Application.applicationId}:/oauth2redirect/google`,
     });
     if (result.type === 'success') {
       try {
