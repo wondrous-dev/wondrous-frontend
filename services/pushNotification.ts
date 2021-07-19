@@ -4,9 +4,9 @@ import * as Notifications from 'expo-notifications'
 export const getPushTokenData = async () => {
   const token =  await getPushToken()
 
-  console.log("PushNotification. token: " + JSON.stringify(token));
+  console.log("PushNotification. token: " + JSON.stringify(token))
 
-  return token
+  return token.data
 }
 
 const  getPushToken = async () => Notifications.getExpoPushTokenAsync(getConfig())
