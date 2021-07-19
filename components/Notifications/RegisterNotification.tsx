@@ -9,6 +9,7 @@ import { CREATE_NOTIFICATION_TOKEN, UPDATE_NOTIFICATION_TOKEN } from '../../grap
 import apollo from '../../services/apollo'
 import { useMe } from '../withAuth'
 import { LogEvents } from '../../utils/analytics'
+import { getPushTokenData } from '../../services/pushNotification'
 
 export const registerForPushNotificationsAsync = async (user) => {
   if (Constants.isDevice) {
@@ -35,8 +36,9 @@ export const registerForPushNotificationsAsync = async (user) => {
     } catch(err) {
       console.error('failed to log username create')
     }
-    const token = (await Notifications.getExpoPushTokenAsync()).data
+    const token = await getPushTokenData()
     try {
+      console.log("PushNotification. register token on backend")
       const result = await apollo.mutate({
         mutation: CREATE_NOTIFICATION_TOKEN,
         variables:{
@@ -72,9 +74,9 @@ export const checkAndUpdateNotificationToken = async (activeToken) => {
     if (finalStatus !== 'granted') {
       return
     }
-    const token = (await Notifications.getExpoPushTokenAsync()).data
+    const token = await getPushTokenData()
     if (token !== activeToken) {
-      // Update token
+      console.log("PushNotification. update token on backend")
       try {
         const result = await apollo.mutate({
           mutation: UPDATE_NOTIFICATION_TOKEN,
@@ -95,7 +97,7 @@ export const checkAndUpdateNotificationToken = async (activeToken) => {
     Notifications.setNotificationChannelAsync('default', {
       name: 'default',
       importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
+vibrationPattern: [0, 250, 250, 250],
       lightColor: '#FF231F7C',
     })
   }
