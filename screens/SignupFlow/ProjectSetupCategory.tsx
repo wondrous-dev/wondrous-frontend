@@ -19,8 +19,8 @@ import WritingIcon from '../../assets/images/categories/writing'
 import FitnessIcon from '../../assets/images/categories/fitness'
 import OtherIcon from '../../assets/images/categories/other'
 import { spacingUnit } from '../../utils/common'
-import { Black, Blue500, Blue600, Yellow300, Grey300, White, Orange } from '../../constants/Colors'
-import { Subheading, RegularText, ButtonText, ErrorText } from '../../storybook/stories/Text'
+import { Black, Blue500, Blue600, Yellow300, Grey300, Grey500, White, Orange } from '../../constants/Colors'
+import { Subheading, RegularText, Paragraph, ErrorText } from '../../storybook/stories/Text'
 import { moderateScale } from '../../utils/scale'
 import { useMutation } from '@apollo/client'
 import { UPDATE_PROJECT } from '../../graphql/mutations/project'
@@ -169,6 +169,13 @@ const CategoryDisplay = ({ categories }) => {
         }} color={Black}>
           What type of project is this?
       </Subheading>
+      <Paragraph style={{
+        textAlign: 'center',
+        paddingLeft: spacingUnit * 2,
+        paddingRight: spacingUnit * 2
+      }} color={Grey500}>
+        You only need to pick one!
+      </Paragraph>
       {
         newCategories.map((threeCategories, index) => (
           <CategoryRow threeCategories={threeCategories} key={index} />

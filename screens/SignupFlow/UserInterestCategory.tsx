@@ -8,8 +8,8 @@ import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { categories, projectSetupStyles } from './ProjectSetupCategory'
 import { spacingUnit } from '../../utils/common'
-import { Black, Blue600, Yellow300, Grey300, White, Orange } from '../../constants/Colors'
-import { Subheading, RegularText, ButtonText, ErrorText } from '../../storybook/stories/Text'
+import { Black, Blue600, Yellow300, Grey300, White, Orange, Grey500 } from '../../constants/Colors'
+import { Subheading, RegularText, Paragraph, ErrorText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { useMutation, useQuery } from '@apollo/client'
 import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
@@ -90,6 +90,13 @@ const CategoryDisplay = ({ categories }) => {
         }} color={Black}>
           Pick 3 areas of interests
       </Subheading>
+      <Paragraph style={{
+        textAlign: 'center',
+        paddingLeft: spacingUnit * 2,
+        paddingRight: spacingUnit * 2
+      }} color={Grey500}>
+        So we can recommend the right people for you to follow!
+      </Paragraph>
       {
         newCategories.map((threeCategories, index) => (
           <CategoryRow threeCategories={threeCategories} key={index} />

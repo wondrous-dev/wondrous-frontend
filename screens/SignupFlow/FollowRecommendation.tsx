@@ -111,7 +111,7 @@ const FollowRecommendation = ({ navigation }) => {
         paddingRight: spacingUnit * 2,
         textAlign: 'center'
       }} color={Grey800}>
-        The magic of Wonder is working with our community, so come follow our top user!
+        The magic of Wonder is working with our community, so come follow our top users!
       </Paragraph>
       <FlatList
         contentContainerStyle={{

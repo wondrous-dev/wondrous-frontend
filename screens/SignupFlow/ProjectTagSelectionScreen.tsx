@@ -184,7 +184,7 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                 Pick up to 3 industry specific tags
         </Subheading>
             <Paragraph style={projectTagStyles.paragraph}>
-                Help us match you with relevant content!
+                Help us match you with relevant content and people!
         </Paragraph>
             <View style={{
                 justifyContent: 'center',
