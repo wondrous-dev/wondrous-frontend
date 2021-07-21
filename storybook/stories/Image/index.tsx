@@ -198,9 +198,7 @@ export const ModalImage = ({ src, style, defaultImage, setImage }) => {
     },
     fetchPolicy: 'network-only'
   })
-  if (!src && defaultImage) {
-    return <Image style={style} source={defaultImage} />
-  }
+
   const [pictureModal, setPictureModal] = useState(false)
   const [cachedImage, setCachedImage] = useState(null)
 
@@ -221,6 +219,10 @@ export const ModalImage = ({ src, style, defaultImage, setImage }) => {
 
   const openPictureModal = () => {
     setPictureModal(true)
+  }
+
+  if (!src && defaultImage) {
+    return <Image style={style} source={defaultImage} />
   }
 
   if (src?.startsWith('https') || src?.startsWith('file://')) {
@@ -269,9 +271,7 @@ export const SafeImage = ({ src, style, defaultImage, setImage }) => {
     },
     fetchPolicy: 'network-only'
   })
-  if (!src && defaultImage) {
-    return <Image style={style} source={defaultImage} />
-  }
+
   const [cachedImage, setCachedImage] = useState(null)
 
   useEffect(() => {
@@ -288,6 +288,10 @@ export const SafeImage = ({ src, style, defaultImage, setImage }) => {
       getCacheImage({ cacheKey: src, setCachedImage, getImage })
     }
   }, [data, cachedImage])
+
+  if (!src && defaultImage) {
+    return <Image style={style} source={defaultImage} />
+  }
 
   if (src?.startsWith('https') || src?.startsWith('file://')) {
     return src?.startsWith('file://') ? <Image style={style} key={src} source={{

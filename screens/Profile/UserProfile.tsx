@@ -74,9 +74,6 @@ function UserProfile({
 }: StackScreenProps<RootStackParamList, 'UserProfile'>) {
   const loggedInUser = useMe()
   const finalUserId = getUserId({ route, user: loggedInUser })
-  if (!finalUserId) {
-    return null
-  }
   let noGoingBack = route && route.params && route.params.noGoingBack
   const tab = route && route.params && route.params.tab
   const userOwned = loggedInUser && (loggedInUser.id === finalUserId)
@@ -837,6 +834,11 @@ function UserProfile({
       </>
     )
   }
+
+  if (!finalUserId) {
+    return null
+  }
+
   return (
     <SafeAreaView style={{
       backgroundColor: White,

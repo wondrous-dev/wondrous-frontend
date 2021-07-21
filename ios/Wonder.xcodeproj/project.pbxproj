@@ -350,7 +350,7 @@
 				CODE_SIGN_ENTITLEMENTS = Wonder/wonderapp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1.1.58;
+				CURRENT_PROJECT_VERSION = 1.1.60;
 				DEVELOPMENT_TEAM = 5SAJ387A5J;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -361,7 +361,7 @@
 				INFOPLIST_FILE = Wonder/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.0.30;
+				MARKETING_VERSION = 1.0.32;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -387,13 +387,13 @@
 				CODE_SIGN_ENTITLEMENTS = Wonder/wonderapp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1.1.58;
+				CURRENT_PROJECT_VERSION = 1.1.60;
 				DEVELOPMENT_TEAM = 5SAJ387A5J;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = Wonder/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.0.30;
+				MARKETING_VERSION = 1.0.32;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

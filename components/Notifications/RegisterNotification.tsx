@@ -11,6 +11,14 @@ import { useMe } from '../withAuth'
 import { LogEvents } from '../../utils/analytics'
 import { getPushTokenData } from '../../services/pushNotification'
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+})
+
 export const registerForPushNotificationsAsync = async (user) => {
   if (Constants.isDevice) {
     try {
@@ -45,7 +53,7 @@ export const registerForPushNotificationsAsync = async (user) => {
           token
         }
       })
-      // console.log('result', result)
+    // console.log('result', result)
     } catch (error) {
       console.log(JSON.stringify(error, null, 2))
     }
@@ -84,7 +92,7 @@ export const checkAndUpdateNotificationToken = async (activeToken) => {
             token
           }
         })
-        // console.log('result', result)
+          // console.log('result', result)
       } catch (error) {
         console.log(JSON.stringify(error, null, 2))
       }
