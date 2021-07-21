@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useQuery, useMutation } from '@apollo/client'
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Analytics from 'expo-firebase-analytics'
 
 import apollo from '../services/apollo'
-import  { WHOAMI } from '../graphql/queries'
+import  { WHOAMI, GET_LOGGED_IN_USER } from '../graphql/queries'
 const MyContext = React.createContext(null)
 
 export const useMe = () => {
@@ -63,9 +63,23 @@ export const withAuth = (Component, noCache=false) => {
     const [token , setToken] = useState(null)
     const [tokenLoading, setTokenLoading] = useState(true)
     const { data, loading, error } = useQuery(WHOAMI)
+    const [loggedinUser, setLoggedInUser] = useState(null)
+    const user = data && data.users && data.users.length > 0 ? data.users[0] : null
     useEffect(() => {
       (async () => {
         const newToken = await getAuthHeader()
+        if (newToken && !user) {
+          // fetch the new user and write into storage
+          const userResponse = await apollo.query({
+            query: GET_LOGGED_IN_USER
+          })
+          if (userResponse?.data?.getLoggedinUser) {
+            setLoggedInUser(userResponse?.data?.getLoggedinUser)
+            await storeAuthHeader(newToken, userResponse?.data?.getLoggedinUser)
+          }
+        } else if (user) {
+          setLoggedInUser(user)
+        }
         setToken(newToken)
         setTokenLoading(false)
       })()
@@ -78,10 +92,9 @@ export const withAuth = (Component, noCache=false) => {
       // }
       return <Component {...props} />
     } else {
-      const user = data && data.users && data.users.length > 0 ? data.users[0] : null
       return (
-        <MyContext.Provider value={user}>
-          <Component {...props} user={user} />
+        <MyContext.Provider value={loggedinUser}>
+          <Component {...props} user={loggedinUser} />
         </MyContext.Provider>
       )
     }
