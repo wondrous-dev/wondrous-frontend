@@ -58,7 +58,7 @@ export const registerForPushNotificationsAsync = async (user) => {
       console.log(JSON.stringify(error, null, 2))
     }
   } else {
-    alert('Must use physical device for Push Notifications')
+    console.log('Must use physical device for Push Notifications')
   }
 
   if (Platform.OS === 'android') {
@@ -98,7 +98,7 @@ export const checkAndUpdateNotificationToken = async (activeToken) => {
       }
     }
   } else {
-    alert('Must use physical device for Push Notifications')
+    console.log('Must use physical device for Push Notifications')
   }
 
   if (Platform.OS === 'android') {
