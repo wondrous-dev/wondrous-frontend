@@ -52,7 +52,7 @@ const redirectNotification = async ({ navigation, user }) => {
     }
 
   } else {
-    alert('Must use physical device for Push Notifications')
+    console.log('Must use physical device for Push Notifications')
   }
 
   if (Platform.OS === 'android') {
