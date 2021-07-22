@@ -85,7 +85,7 @@ export const withAuth = (Component, noCache=false) => {
       })()
     }, [token])
 
-    if (!tokenLoading && !token) {
+    if (!tokenLoading && !token && !loggedinUser) {
       const pathname = route && route.name
       // if (loading !== true && pathname !== 'Signup' && pathname !== 'Login' && pathname !== 'InviteRedeem' && pathname !== '/') {
       //   navigation.push('Login')
