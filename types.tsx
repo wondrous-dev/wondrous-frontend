@@ -24,7 +24,12 @@ export type RootStackParamList = {
 
 export type ProfileTabParamList = {
   ProjectProfile: undefined
-  UserProfile: undefined
+  UserProfile: {
+    noGoingBack: boolean,
+    tab: string,
+    fetchedUser: any,
+    initialSection: string,
+  }
   WorkflowWelcome: undefined
   ProfileItem: undefined
   SetupGoal: undefined

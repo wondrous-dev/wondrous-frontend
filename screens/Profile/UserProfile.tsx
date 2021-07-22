@@ -3,6 +3,7 @@ import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { Pressable, SafeAreaView, ActivityIndicator, View, RefreshControl, FlatList } from 'react-native'
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
+import { useNavigation } from '@react-navigation/native'
 import * as Linking from 'expo-linking'
 import isEqual from 'lodash.isequal'
 import ConfettiCannon from 'react-native-confetti-cannon'
@@ -12,7 +13,7 @@ import ProgressCircle from 'react-native-progress-circle'
 import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
 import { FullScreenAskModal } from '../../components/Modal/AskModal'
 import { withAuth, useMe } from '../../components/withAuth'
-import { RootStackParamList } from '../../types'
+import { ProfileTabParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { profileStyles } from './style'
 import { spacingUnit, wait, isEmptyObject, usePrevious, getRingActions } from '../../utils/common'
@@ -50,13 +51,6 @@ import ProfilePictureModal from './ProfilePictureModal'
 import { StatusSelector } from '../../components/Status/StatusSelector'
 import AddIcon from '../../assets/images/add-dark-button'
 
-const getUserId = ({ route, user }) => {
-  if (route && route.params && route.params.userId) {
-    return route.params.userId
-  }
-  return user && user.id
-}
-
 const fetchUser = async ({ userId, setUser }) => {
   const newUserResponse = await apollo.query({
     query: GET_USER,
@@ -68,19 +62,19 @@ const fetchUser = async ({ userId, setUser }) => {
   setUser(newUserResponse && newUserResponse.data && newUserResponse.data.getUser)
 }
 
-function UserProfile({
-  navigation,
-  route
-}: StackScreenProps<RootStackParamList, 'UserProfile'>) {
-  const loggedInUser = useMe()
-  const finalUserId = getUserId({ route, user: loggedInUser })
-  let noGoingBack = route && route.params && route.params.noGoingBack
-  const tab = route && route.params && route.params.tab
+const UserProfile = React.memo(({
+  tab,
+  noGoingBack,
+  finalUserId,
+  loggedInUser,
+  fetchedUser,
+  initialSection, 
+}: ContentHookResult) => {
+
+  const navigation = useNavigation()
+
   const userOwned = loggedInUser && (loggedInUser.id === finalUserId)
-  const {
-    fetchedUser,
-    initialSection
-  } = route.params
+
   const [status, setStatus] = useState('created')
   const prevStatus = usePrevious(status)
   const [section, setSection] = useState(initialSection || 'feed')
@@ -1000,6 +994,54 @@ function UserProfile({
         </ProfileContext.Provider>
     </SafeAreaView>
   )
+})
+
+const getUserId = ({ route, user }: any) => {
+  if (route && route.params && route.params.userId) {
+    return route.params.userId
+  }
+  return user && user.id
 }
 
-export default withAuth(UserProfile)
+export type ContentHookResult = {
+  tab : string,
+  noGoingBack : boolean,
+  finalUserId: string,
+  loggedInUser: any,
+  fetchedUser: any,
+  initialSection: any 
+}
+
+const useContent = ({ route }: Pick<ContentProps, 'route'>): ContentHookResult => {
+
+  const loggedInUser = useMe()
+  const finalUserId = useMemo(() => getUserId({ route, user: loggedInUser }), [route, loggedInUser])
+
+  let noGoingBack = route && route.params && route.params.noGoingBack
+
+  const tab = route && route.params && route.params.tab
+  const fetchedUser =  route && route.params && route.params.fetchedUser
+  const initialSection = route && route.params && route.params.initialSection
+
+  return {tab, noGoingBack, finalUserId, loggedInUser, fetchedUser, initialSection}
+}
+
+type ContentProps = StackScreenProps<ProfileTabParamList, 'UserProfile'>;
+
+const Content = (props: ContentProps) => {
+  const hookProps = useContent({ route: props.route })
+
+  if (!hookProps.finalUserId) {
+    return (<SafeAreaView style={{ 
+      backgroundColor: White, 
+      justifyContent: 'center',
+      alignItems: 'center',
+      flex: 1}}>    
+      <ActivityIndicator/>
+    </SafeAreaView>)
+  }
+
+  return <UserProfile {...hookProps} />
+}
+
+export default withAuth(Content)
