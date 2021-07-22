@@ -57,6 +57,7 @@ export const logout = async (navigation) => {
       return false;
   }
 }
+
 export const withAuth = (Component, noCache=false) => {
   return props => {
     const { navigation, route } = props
@@ -68,22 +69,23 @@ export const withAuth = (Component, noCache=false) => {
     useEffect(() => {
       (async () => {
         const newToken = await getAuthHeader()
-        if (newToken && !user) {
+        if (newToken && !user && !loggedinUser) {
           // fetch the new user and write into storage
           const userResponse = await apollo.query({
             query: GET_LOGGED_IN_USER
           })
-          if (userResponse?.data?.getLoggedinUser) {
-            setLoggedInUser(userResponse?.data?.getLoggedinUser)
-            await storeAuthHeader(newToken, userResponse?.data?.getLoggedinUser)
+          const fetchedLoggedinUser = userResponse?.data?.getLoggedinUser
+          if (fetchedLoggedinUser) {
+            setLoggedInUser(fetchedLoggedinUser)
+            await storeAuthHeader(newToken, fetchedLoggedinUser)
           }
-        } else if (user) {
+        } else if (user && !loggedinUser) {
           setLoggedInUser(user)
         }
         setToken(newToken)
         setTokenLoading(false)
       })()
-    }, [token])
+    }, [user])
 
     if (!tokenLoading && !token && !loggedinUser) {
       const pathname = route && route.name
