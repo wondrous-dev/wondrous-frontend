@@ -25,7 +25,7 @@ import GroupSetupScreen from '../screens/SignupFlow/GroupSetupScreen'
 import UserInterestCategoryScreen from '../screens/SignupFlow/UserInterestCategory'
 import FollowRecommendation from '../screens/SignupFlow/FollowRecommendation'
 import NotificationsScreen from '../screens/SignupFlow/NotificationsScreen'
-
+import { withSessionCacheManager } from '../session'
 
 // A root stack navigator is often used for displaying modals on top of all other content
 // Read more here: https://reactnavigation.org/docs/modal
@@ -78,7 +78,7 @@ function getActiveRouteName(navigationState) {
   routeNameRef.current = currentRouteName
 }
 
-export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const [isReady, setIsReady] = React.useState(false)
   const [initialState, setInitialState] = React.useState()
   const routeNameRef = React.useRef()
@@ -139,3 +139,5 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
     </NavigationContainer>
   )
 }
+
+export default withSessionCacheManager(Navigation)

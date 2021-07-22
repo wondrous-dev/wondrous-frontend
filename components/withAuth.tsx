@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
+import React, { useContext } from 'react'
+import { useQuery } from '@apollo/client'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Analytics from 'expo-firebase-analytics'
 
 import apollo from '../services/apollo'
-import  { WHOAMI, GET_LOGGED_IN_USER } from '../graphql/queries'
+import  { WHOAMI } from '../graphql/queries'
 const MyContext = React.createContext(null)
 
 export const useMe = () => {
@@ -60,45 +60,16 @@ export const logout = async (navigation) => {
 
 export const withAuth = (Component, noCache=false) => {
   return props => {
-    const { navigation, route } = props
-    const [token , setToken] = useState(null)
-    const [tokenLoading, setTokenLoading] = useState(true)
-    const { data, loading, error } = useQuery(WHOAMI)
-    const [loggedinUser, setLoggedInUser] = useState(null)
-    const user = data && data.users && data.users.length > 0 ? data.users[0] : null
-    useEffect(() => {
-      (async () => {
-        const newToken = await getAuthHeader()
-        if (newToken && !user && !loggedinUser) {
-          // fetch the new user and write into storage
-          const userResponse = await apollo.query({
-            query: GET_LOGGED_IN_USER
-          })
-          const fetchedLoggedinUser = userResponse?.data?.getLoggedinUser
-          if (fetchedLoggedinUser) {
-            setLoggedInUser(fetchedLoggedinUser)
-            await storeAuthHeader(newToken, fetchedLoggedinUser)
-          }
-        } else if (user && !loggedinUser) {
-          setLoggedInUser(user)
-        }
-        setToken(newToken)
-        setTokenLoading(false)
-      })()
-    }, [user])
 
-    if (!tokenLoading && !token && !loggedinUser) {
-      const pathname = route && route.name
-      // if (loading !== true && pathname !== 'Signup' && pathname !== 'Login' && pathname !== 'InviteRedeem' && pathname !== '/') {
-      //   navigation.push('Login')
-      // }
+    const { data, loading, error } = useQuery(WHOAMI)
+    const user = data && data.users && data.users.length > 0 ? data.users[0] : null
+
+    if (!user) {
       return <Component {...props} />
-    } else {
-      return (
-        <MyContext.Provider value={loggedinUser}>
-          <Component {...props} user={loggedinUser} />
-        </MyContext.Provider>
-      )
     }
+
+    return <MyContext.Provider value={user}>
+      <Component {...props} user={user} />
+    </MyContext.Provider>
   }
 }
