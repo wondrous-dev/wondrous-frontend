@@ -43,10 +43,6 @@ function HomeScreen({
   navigation,
   route
 }: StackScreenProps<RootStackParamList, 'Home'>) {
-  const user = useMe()
-  const { data } = useQuery(GET_LOGGED_IN_USER, {
-    fetchPolicy: 'no-cache'
-  })
   const homeScreens = [
     {
       subheading: 'The social platform where builders crush their goals',
@@ -132,11 +128,7 @@ function HomeScreen({
         }
       })
     }
-
-    if (data && data.getLoggedinUser) {
-      redirectUser(data.getLoggedinUser, navigation)
-    }
-  }, [data, navigation])
+  }, [navigation])
 
   return (
     <SafeAreaView style={styles.container}>

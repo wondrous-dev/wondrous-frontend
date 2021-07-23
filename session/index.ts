@@ -1,1 +1,1 @@
-export * from './SessionCacheManager'
+export * from './SessionStoreManager'
