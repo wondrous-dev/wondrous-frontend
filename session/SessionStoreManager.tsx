@@ -25,6 +25,4 @@ export const useSessionStoreManager = () => {
       console.log("Error while loading user from cache. " + error)
     }
   })
-
-  console.log("datadata = " + data)
 }
