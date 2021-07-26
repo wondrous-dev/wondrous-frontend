@@ -8,10 +8,11 @@ import * as Sentry from 'sentry-expo'
 
 import useCachedResources from './hooks/useCachedResources'
 import useColorScheme from './hooks/useColorScheme'
-import Navigation from './navigation'
+import Router from './navigation'
 import apollo from './services/apollo'
 import storybook from './storybook'
 import { toastConfig } from './components/Toast'
+import { AuthProvider } from './session'
 
 const STORYBOOK_START = false
 Sentry.init({
@@ -36,7 +37,9 @@ export default function App() {
     return (
       <ApolloProvider client={apollo}>
         <SafeAreaProvider>
-          <Navigation colorScheme={colorScheme} />
+          <AuthProvider>
+            <Router colorScheme={colorScheme} />
+          </AuthProvider>
           <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
           <StatusBar />
         </SafeAreaProvider>

@@ -13,31 +13,13 @@ import { MyCarousel } from '../storybook/stories/Carousel'
 import { PrimaryButton, SecondaryButton } from '../storybook/stories/Button'
 import { scale, moderateScale, verticalScale } from '../utils/scale'
 import { navigateUserOnLogin, snakeToCamelObj, spacingUnit, usePrevious } from '../utils/common'
-import { getAuthHeader, useMe, withAuth } from '../components/withAuth'
+import { useMe, withAuth } from '../components/withAuth'
 import { useQuery } from '@apollo/client'
 import { GET_LOGGED_IN_USER, WHOAMI } from '../graphql/queries'
 import apollo from '../services/apollo'
 import { getNotificationPressFunction } from './Notifications'
 import ExampleApp from '../assets/images/homepage-icon.png'
 import { MY_USER_INVITE } from '../graphql/queries/userInvite'
-
-const redirectUser = async (user, navigation) => {
-  const token = await getAuthHeader()
-  if (token) {
-    await apollo.writeQuery({
-      query: WHOAMI,
-      data: {
-        users: [user]
-      }
-    })
-    try {
-      Analytics.setUserId(user?.id)
-    } catch(err) {
-      console.error('failed to set user id')
-    }
-    navigateUserOnLogin(user, navigation)
-  }
-}
 
 function HomeScreen({
   navigation,

@@ -1,10 +1,13 @@
 import * as AppleAuthentication from 'expo-apple-authentication'
 import React from 'react'
-import { storeAuthHeader } from '../../../components/withAuth'
+import { useAuth } from '../../../session'
 import { navigateUserOnLogin } from '../../../utils/common'
 import baseStyle from './style'
 
 export const AppleLogin = ({ style, setLoginError, navigation, setLoginStatus, callToAction  }) => {
+
+  const { saveSession } = useAuth()
+
   return (
     <AppleAuthentication.AppleAuthenticationButton
     buttonType={AppleAuthentication.AppleAuthenticationButtonType.CONTINUE}
@@ -40,7 +43,7 @@ export const AppleLogin = ({ style, setLoginError, navigation, setLoginStatus, c
             
             if (resp.data) {
               const { signup } = resp.data
-              await storeAuthHeader(signup.token, signup.user)
+              await saveSession(signup.token, signup.user)
               if (signup.user) {
                 navigateUserOnLogin(signup.user, navigation)
                 setLoginStatus(null)

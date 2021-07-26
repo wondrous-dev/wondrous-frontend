@@ -17,7 +17,7 @@ import { useMutation } from '@apollo/client'
 import { EMAIL_SIGNIN } from '../../graphql/mutations'
 import { useMe, withAuth } from '../../components/withAuth'
 import { styles } from '../HomeScreen'
-import { storeAuthHeader } from '../../components/withAuth'
+import { useAuth } from '../../session'
 import { navigateUserOnLogin } from '../../utils/common'
 
 const SigninSchema = Yup.object().shape({
@@ -30,6 +30,9 @@ function EmailSigninScreen({
   navigation
 }: StackScreenProps<RootStackParamList, 'EmailSignin'>) {
   const [loginError, setLoginError] = useState(null)
+
+  const { saveSession } = useAuth()
+
   const [emailSignin] = useMutation(EMAIL_SIGNIN, {
   })
   const handleSignin = async (email, password) => {
@@ -44,7 +47,7 @@ function EmailSigninScreen({
     })
     if (resp.data) {
       const { emailSignin } = resp.data
-      await storeAuthHeader(emailSignin.token, emailSignin.user)
+      await saveSession(emailSignin.token, emailSignin.user)
       if (emailSignin.user) {
         navigateUserOnLogin(emailSignin.user, navigation)
       }

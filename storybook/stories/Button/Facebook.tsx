@@ -7,7 +7,7 @@ import { PrimaryButton } from './Buttons'
 import { SvgImage } from '../Image'
 import FacebookIcon from '../../../assets/images/social-auth/facebook.tsx'
 import baseStyle from './style'
-import { storeAuthHeader } from '../../../components/withAuth'
+import { useAuth } from '../../../session'
 import { White } from '../../../constants/Colors'
 import { navigateUserOnLogin, spacingUnit } from '../../../utils/common'
 
@@ -24,7 +24,7 @@ const buttonStyle = StyleSheet.create({
 Facebook.initializeAsync({
   appId: '692135684870439'
 })
-const signInAsync = async ({ callToAction, setLoginStatus, setLoginError, navigation }) => {
+const signInAsync = async ({ saveSession, callToAction, setLoginStatus, setLoginError, navigation }) => {
   try {
     const result = await Facebook.logInWithReadPermissionsAsync()
     const {
@@ -48,7 +48,7 @@ const signInAsync = async ({ callToAction, setLoginStatus, setLoginError, naviga
         if (resp.data) {
           const { signup } = resp.data
 
-          await storeAuthHeader(signup.token, signup.user)
+          await saveSession(signup.token, signup.user)
           if (signup.user) {
             navigateUserOnLogin(signup.user, navigation)
             setLoginStatus(null)
@@ -68,11 +68,14 @@ const signInAsync = async ({ callToAction, setLoginStatus, setLoginError, naviga
 }
 
 export const FacebookLogin = ({ style, callToAction, loginStatus, setLoginStatus, setLoginError, navigation }) => {
+
+  const { saveSession } = useAuth()
+
   return (
     <PrimaryButton style={{
       ...baseStyle.facebook,
       ...style
-    }} onPress={() =>  signInAsync({ callToAction, setLoginStatus, navigation, setLoginError })}>
+    }} onPress={() =>  signInAsync({ saveSession, callToAction, setLoginStatus, navigation, setLoginError })}>
       <View style={{flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'center', width: '100%'}}>
         <FacebookIcon style={{
           width: spacingUnit * 3,

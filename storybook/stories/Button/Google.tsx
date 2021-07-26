@@ -8,7 +8,7 @@ import { SvgImage } from '../Image'
 import GoogleSvg from '../../../assets/images/social-auth/google'
 import baseStyle from './style'
 import { Grey200 } from '../../../constants/Colors'
-import { storeAuthHeader } from '../../../components/withAuth'
+import { useAuth } from '../../../session'
 import { navigateUserOnLogin, spacingUnit } from '../../../utils/common'
 import * as Application from 'expo-application'
 
@@ -21,7 +21,7 @@ const buttonStyle = StyleSheet.create({
   }
 })
 
-const signInAsync = async ({ graphqlCall, setLoginStatus, setLoginError, navigation }) => {
+const signInAsync = async ({ saveSession, graphqlCall, setLoginStatus, setLoginError, navigation }) => {
   try {
     const result = await Google.logInAsync({
       androidClientId: 'com.googleusercontent.apps.276263235787-b3j16n95sv6c6u7tdfi6mhs9mjdgh55e',
@@ -47,7 +47,7 @@ const signInAsync = async ({ graphqlCall, setLoginStatus, setLoginError, navigat
         })
         if (resp.data) {
           const { signup } = resp.data
-          await storeAuthHeader(signup.token, signup.user)
+          await saveSession(signup.token, signup.user)
           if (signup.user) {
             navigateUserOnLogin(signup.user, navigation)
             setLoginStatus(null)
@@ -68,11 +68,14 @@ const signInAsync = async ({ graphqlCall, setLoginStatus, setLoginError, navigat
 
 export const GoogleLogin = ({ style, callToAction, setLoginStatus, setLoginError, navigation }) => {
   // TODO: set up separate procedure for web (awaiting issue clearance for https://github.com/expo/expo/issues/11061)
+
+  const { saveSession } = useAuth()
+
   return (
     <SecondaryButton style={{
       ...baseStyle.google,
       ...style
-      }} onPress={() => signInAsync({ graphqlCall: callToAction, setLoginStatus, setLoginError, navigation }) }>
+      }} onPress={() => signInAsync({ saveSession, graphqlCall: callToAction, setLoginStatus, setLoginError, navigation }) }>
       <View style={{flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'center', width: '100%'}}>
         <GoogleSvg style={{
           width: spacingUnit * 3,
