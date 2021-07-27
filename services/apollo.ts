@@ -5,7 +5,7 @@ import { getMainDefinition } from '@apollo/client/utilities'
 import { SubscriptionClient } from 'subscriptions-transport-ws'
 import Constants from 'expo-constants'
 
-import { getAuthHeader } from '../components/withAuth'
+import { getAuthHeader } from '../session'
 
 const httpUri = Constants.manifest.extra.httpUri
 const wsBaseUrl = httpUri

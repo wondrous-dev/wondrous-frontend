@@ -8,8 +8,6 @@ import { SvgImage } from '../Image'
 import GoogleSvg from '../../../assets/images/social-auth/google'
 import baseStyle from './style'
 import { Grey200 } from '../../../constants/Colors'
-import { storeAuthHeader } from '../../../components/withAuth'
-import { navigateUserOnLogin } from '../../../utils/common'
 
 const buttonStyle = StyleSheet.create({
   googleButtonText: {

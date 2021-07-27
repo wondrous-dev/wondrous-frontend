@@ -25,7 +25,7 @@ import GroupSetupScreen from '../screens/SignupFlow/GroupSetupScreen'
 import UserInterestCategoryScreen from '../screens/SignupFlow/UserInterestCategory'
 import FollowRecommendation from '../screens/SignupFlow/FollowRecommendation'
 import NotificationsScreen from '../screens/SignupFlow/NotificationsScreen'
-
+import { useAuth, useSessionStoreManager } from '../session'
 
 // A root stack navigator is often used for displaying modals on top of all other content
 // Read more here: https://reactnavigation.org/docs/modal
@@ -33,7 +33,31 @@ const Stack = createStackNavigator<RootStackParamList>()
 
 const PERSISTENCE_KEY = "persistenceKey"
 
-function RootNavigator() {
+const AppStack = () => {
+
+  return (
+    <Stack.Navigator
+    screenOptions={{
+      headerShown: false,
+      gestureEnabled: false
+    }}>
+      <Stack.Screen name='Root' component={BottomTabNavigator} />
+      <Stack.Screen name='ProjectSetupCategory' component={ProjectSetupCategoryScreen} />
+      <Stack.Screen name='UsernameSetup' component={UsernameSetupScreen} />
+      <Stack.Screen name='GroupSetup' component={GroupSetupScreen} />
+      <Stack.Screen name='FirstProjectSetup' component={FirstProjectSetupScreen} />
+      <Stack.Screen name='ProjectInviteCollaborators' component={ProjectInviteCollaborators} />
+      <Stack.Screen name='ProjectTagSelection' component={ProjectTagSelectionScreen} />
+      <Stack.Screen name='Dashboard' component={DashboardScreen} />
+      <Stack.Screen name='NotFound' component={NotFoundScreen} options={{ title: 'Oops!' }} />
+      <Stack.Screen name='UserInterestCategory' component={UserInterestCategoryScreen} />
+      <Stack.Screen name='NotificationPrompt' component={NotificationsScreen} />
+      <Stack.Screen name='FollowRecommendation' component={FollowRecommendation} />
+    </Stack.Navigator>
+  )
+}
+
+const AuthStack = () => {
   return (
     <Stack.Navigator
     screenOptions={{
@@ -46,18 +70,6 @@ function RootNavigator() {
       <Stack.Screen name='EmailSignup' component={EmailSignupScreen}options={{ gestureEnabled: true }} />
       <Stack.Screen name='EmailSignin' component={EmailSigninScreen} options={{ gestureEnabled: true }}/>
       <Stack.Screen name='Welcome' component={WelcomeScreen} />
-      <Stack.Screen name='ProjectSetupCategory' component={ProjectSetupCategoryScreen} />
-      <Stack.Screen name='UsernameSetup' component={UsernameSetupScreen} />
-      <Stack.Screen name='GroupSetup' component={GroupSetupScreen} />
-      <Stack.Screen name='FirstProjectSetup' component={FirstProjectSetupScreen} />
-      <Stack.Screen name='ProjectInviteCollaborators' component={ProjectInviteCollaborators} />
-      <Stack.Screen name='ProjectTagSelection' component={ProjectTagSelectionScreen} />
-      <Stack.Screen name='Dashboard' component={DashboardScreen} />
-      <Stack.Screen name='Root' component={BottomTabNavigator} />
-      <Stack.Screen name='NotFound' component={NotFoundScreen} options={{ title: 'Oops!' }} />
-      <Stack.Screen name='UserInterestCategory' component={UserInterestCategoryScreen} />
-      <Stack.Screen name='NotificationPrompt' component={NotificationsScreen} />
-      <Stack.Screen name='FollowRecommendation' component={FollowRecommendation} />
     </Stack.Navigator>
   )
 }
@@ -78,13 +90,14 @@ function getActiveRouteName(navigationState) {
   routeNameRef.current = currentRouteName
 }
 
-export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+
+  const {authData, loading} = useAuth()
+
   const [isReady, setIsReady] = React.useState(false)
   const [initialState, setInitialState] = React.useState()
   const routeNameRef = React.useRef()
   useEffect(() => {
-    // TODO REMOVE
-    Analytics.setDebugModeEnabled(true)
     const restoreState = async () => {
       try {
         const initialUrl = await Linking.getInitialURL()
@@ -126,6 +139,10 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
       return route.name
   }
 
+  if (loading) {
+    return null
+  }
+
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
@@ -137,7 +154,9 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
       }
       }
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <RootNavigator />
+      {authData?.token ? <AppStack /> : <AuthStack />}
     </NavigationContainer>
   )
 }
+
+export default Navigation

@@ -8,12 +8,14 @@ import { Grey300, Black, Blue400, White } from '../../constants/Colors'
 import { Paragraph, RegularText } from '../../storybook/stories/Text';
 import { getFilenameAndType, uploadMedia } from '../../utils/image';
 import { FlexRowContentModal } from '.';
-import { logout } from '../withAuth';
 import Logout from '../../assets/images/logout';
 import { spacingUnit } from '../../utils/common';
+import { useAuth } from '../../session';
 
 export const SettingsModal = ({ isVisible, setModalVisible }) => {
-  const navigation = useNavigation()
+
+  const { signOut } = useAuth()
+
   return (
     <FlexRowContentModal
     headerText='Settings'
@@ -22,7 +24,7 @@ export const SettingsModal = ({ isVisible, setModalVisible }) => {
     >
       <View />
       <Pressable onPress={() => {
-        logout(navigation)
+        signOut()
         setModalVisible(false)
       }}>
       <View style={{

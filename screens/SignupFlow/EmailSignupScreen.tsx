@@ -15,7 +15,7 @@ import { PrimaryButton } from '../../storybook/stories/Button'
 import { useMutation } from '@apollo/client'
 import { EMAIL_SIGNUP } from '../../graphql/mutations'
 import { styles } from '../HomeScreen'
-import { storeAuthHeader } from '../../components/withAuth'
+import { useAuth } from '../../session'
 import { navigateUserOnLogin, openLink } from '../../utils/common'
 
 const SignupSchema = Yup.object().shape({
@@ -28,6 +28,9 @@ function EmailSignupScreen({
   navigation
 }: StackScreenProps<RootStackParamList, 'EmailSignup'>) {
   const [loginError, setLoginError] = useState(null)
+
+  const { saveSession } = useAuth()
+
   const [emailSignup] = useMutation(EMAIL_SIGNUP, {
   })
   const handleSignup = async (email, password) => {
@@ -42,7 +45,7 @@ function EmailSignupScreen({
     })
     if (resp.data) {
       const { emailSignup } = resp.data
-      await storeAuthHeader(emailSignup.token, emailSignup.user)
+      await saveSession(emailSignup.token, emailSignup.user)
       if (emailSignup.user) {
         navigateUserOnLogin(emailSignup.user, navigation)
       }
@@ -167,8 +170,8 @@ function EmailSignupScreen({
             <Subheading style={{
               marginTop: 16,
               fontFamily: 'Rubik',
-              fontSize: '16px',
-              lineHeight: '19px',
+              fontSize: 16,
+              lineHeight: 19,
               textAlign: 'center',
               textDecorationLine: 'underline'
             }} color={White}>Or log in with your email</Subheading>

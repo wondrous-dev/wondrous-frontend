@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "276263235787",
+    "project_id": "wondrous-1587456307075",
+    "storage_bucket": "wondrous-1587456307075.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:276263235787:android:35e58273c40773461dab4e",
+        "android_client_info": {
+          "package_name": "co.wonder.wonderapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "com.googleusercontent.apps.276263235787-bof1bnu0u95ku8e1b87ghs2uit7dpetc",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJqMDAt1NSXVeiw02gHcIW9qaZRFJho9M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "com.googleusercontent.apps.276263235787-bof1bnu0u95ku8e1b87ghs2uit7dpetc",
+              "client_type": 3
+            },
+            {
+              "client_id": "com.googleusercontent.apps.276263235787-gc3g6ilmol63fvobrre6mmd79ou2ulku",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "host.exp.exponent"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

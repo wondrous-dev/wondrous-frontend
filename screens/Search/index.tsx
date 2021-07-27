@@ -314,6 +314,8 @@ function DefaultSearch({
     return !(loggedInUser?.blockedUsers.includes(user.id) ||loggedInUser?.blockedByUsers.includes(user.id))
   })
 
+  const newestProjectsKeyExtractor = useCallback((item) => item.id, []); 
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     <SafeAreaView style={{
@@ -395,6 +397,7 @@ function DefaultSearch({
           </View>
         )}
         scrollEventThrottle={400}
+        keyExtractor={newestProjectsKeyExtractor}
         onEndReached={async () => {
           if (fetchMore) {
             const result = await fetchMore({

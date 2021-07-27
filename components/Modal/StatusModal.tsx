@@ -24,7 +24,9 @@ export const StatusModal = ({ isVisible, setModalVisible, statusArr, setStatus, 
         }}>
         {
           statusArr.map(statusElement => (
-            <Pressable onPress={() => {
+            <Pressable 
+            key={statusElement?.value}
+            onPress={() => {
               setStatus(statusElement?.value)
               setModalVisible(false)
             }} style={{
