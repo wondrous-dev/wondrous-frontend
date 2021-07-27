@@ -90,8 +90,12 @@ const TabBar = ({ state, descriptors, navigation, params, getUnreadNotificationC
             });
   
             if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name);
-              getUnreadNotificationCount()
+              if (route.name === 'Add') {
+                navigation.push('Add')
+              } else {
+                navigation.navigate(route.name)
+                getUnreadNotificationCount()
+              }
             }
           }
           const onLongPress = () => {
