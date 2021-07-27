@@ -1,12 +1,10 @@
-import { Ionicons } from '@expo/vector-icons'
+import React, { useEffect } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { createStackNavigator } from '@react-navigation/stack'
-import { useRoute, NavigationState, useNavigationState } from '@react-navigation/native'
-import * as React from 'react'
-import { SafeAreaView, View, Pressable, StyleSheet, Dimensions } from 'react-native'
+import { NavigationState } from '@react-navigation/native'
+import { View, Pressable, StyleSheet } from 'react-native'
 import IconBadge from 'react-native-icon-badge'
 
-import Colors, { Blue500, Blue400, Grey50, White, Grey400, Red400 } from '../constants/Colors'
+import { Blue400, Grey50, White, Grey400, Red400 } from '../constants/Colors'
 import Dashboard from '../screens/Dashboard'
 import Search from '../screens/Search'
 import Add from '../screens/Add'
@@ -16,13 +14,10 @@ import DashboardIcon from '../assets/images/bottomNav/dashboard'
 import SearchIcon from '../assets/images/bottomNav/search'
 import NotificationIcon from '../assets/images/bottomNav/notification'
 import ProfileIcon from '../assets/images/bottomNav/profile'
-import TabOneScreen from '../screens/TabOneScreen'
-import TabTwoScreen from '../screens/TabTwoScreen'
 import AddIcon from '../assets/images/bottomNav/add'
-import { BottomTabParamList, TabOneParamList, TabTwoParamList } from '../types'
-import { SvgImage } from '../storybook/stories/Image'
-import { flattenParams, spacingUnit } from '../utils/common'
-import { useQuery } from '@apollo/client'
+import { BottomTabParamList } from '../types'
+import { spacingUnit } from '../utils/common'
+import { useLazyQuery } from '@apollo/client'
 import { GET_UNREAD_NOTIFICATION_COUNT } from '../graphql/queries'
 import { RegularText } from '../storybook/stories/Text'
 
@@ -53,8 +48,7 @@ const bottomTabStyles = StyleSheet.create({
   }
 })
 
-const TabBarIcon = ({ route, focused, color, size }) => {
-  let iconName
+const TabBarIcon = ({ route, focused }) => {
   if (route.name === 'Dashboard') {
     return <DashboardIcon iconColor={focused ? Blue400 : Grey50} />
   } else if (route.name === 'Search') {
@@ -76,7 +70,7 @@ const TabBarIcon = ({ route, focused, color, size }) => {
    }
 }
 
-const TabBar = ({ state, descriptors, navigation, params }) => {
+const TabBar = ({ state, descriptors, navigation, params, getUnreadNotificationCount }) => {
   const focusedOptions = descriptors[state.routes[state.index].key].options;
   if (focusedOptions.tabBarVisible === false) {
     return null;
@@ -87,45 +81,17 @@ const TabBar = ({ state, descriptors, navigation, params }) => {
       {
         state.routes.map((route, index) => {
           const { options } = descriptors[route.key]
-          const label = options.tabBarLabel !== undefined
-            ? options.tabBarLabel
-            : options.title !== undefined
-            ? options.title
-            : route.name
           const isFocused = state.index === index
           const onPress = () => {
             const event = navigation.emit({
               type: 'tabPress',
               target: route.key,
-            })
+              canPreventDefault: true,
+            });
+  
             if (!isFocused && !event.defaultPrevented) {
-              navigation.push('Root', {
-                screen: route.name
-              })
-            } else if (!event.defaultPrevented) {
-              if (route.name === 'Dashboard') {
-                navigation.navigate('Root', {
-                  screen: route.name,
-                  params: {
-                    screen: 'Feed'
-                  }
-                })
-              } else if (route.name === 'Profile') {
-                navigation.navigate('Root', {
-                  screen: route.name,
-                  params: {
-                    screen: 'UserProfile',
-                    noGoingBack: true
-                  }
-                })
-              } else if (route.name !== 'Add') {
-                navigation.navigate('Root', {
-                  screen: route.name,
-                  params: {
-                    screen: 'Default'
-                  }
-                })
-              }
+              navigation.navigate(route.name);
+              getUnreadNotificationCount()
             }
           }
           const onLongPress = () => {
@@ -192,14 +158,20 @@ const TabBar = ({ state, descriptors, navigation, params }) => {
 }
 
 export default function BottomTabNavigator() {
-  const { data: unreadNotifCountData, loading, error} = useQuery(GET_UNREAD_NOTIFICATION_COUNT, {
+
+  const [getUnreadNotificationCount, { data: unreadNotifCountData, loading, error}] = useLazyQuery(GET_UNREAD_NOTIFICATION_COUNT, {
     fetchPolicy: 'network-only'
   })
   const unreadNotifCount = unreadNotifCountData && unreadNotifCountData.getUnreadNotificationCount && unreadNotifCountData.getUnreadNotificationCount.count
+
+  useEffect(() => {
+    getUnreadNotificationCount()
+  }, [])
+
   return (
     <BottomTab.Navigator
-    tabBar={props => <TabBar {...props} />}
-    // lazy={false}
+    tabBar={props => <TabBar {...props} getUnreadNotificationCount={getUnreadNotificationCount} />}
+    lazy
     screenOptions={({ route }) => ({
       tabBarIcon: ({ focused, color, size }) => {
         let iconName
