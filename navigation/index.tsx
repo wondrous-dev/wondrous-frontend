@@ -25,7 +25,8 @@ import GroupSetupScreen from '../screens/SignupFlow/GroupSetupScreen'
 import UserInterestCategoryScreen from '../screens/SignupFlow/UserInterestCategory'
 import FollowRecommendation from '../screens/SignupFlow/FollowRecommendation'
 import NotificationsScreen from '../screens/SignupFlow/NotificationsScreen'
-import { useAuth, useSessionStoreManager } from '../session'
+import Add from '../screens/Add'
+import { useAuth } from '../session'
 
 // A root stack navigator is often used for displaying modals on top of all other content
 // Read more here: https://reactnavigation.org/docs/modal
@@ -53,6 +54,7 @@ const AppStack = () => {
       <Stack.Screen name='UserInterestCategory' component={UserInterestCategoryScreen} />
       <Stack.Screen name='NotificationPrompt' component={NotificationsScreen} />
       <Stack.Screen name='FollowRecommendation' component={FollowRecommendation} />
+      <Stack.Screen name='Add' component={Add} />
     </Stack.Navigator>
   )
 }
