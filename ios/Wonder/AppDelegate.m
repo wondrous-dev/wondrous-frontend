@@ -44,6 +44,7 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  // Don't useTestInstance if you want getting deep link params in Debug mode
   #ifdef DEBUG
       [RNBranch useTestInstance];
   #endif
