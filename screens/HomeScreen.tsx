@@ -93,20 +93,25 @@ function HomeScreen({
       registerNotifications()
     }
     if (Branch) {
-      Branch.subscribe(bundle => {
+      Branch.subscribe(async (bundle: any) => {
         Sentry.Native.captureEvent({
           message: 'Branch user invitation',
           extra: bundle
         })
-        if (bundle && bundle.params && !bundle.error) {
-          setInvitorFirstName(bundle.params?.invitor_firstname)
-          setInvitorLastName(bundle.params?.invitor_lastname)
-          writeInvite({
-            userInvitationId: bundle.params?.user_invitation_id || null,
-            invitorFirstName: bundle.params?.invitor_firstname || null,
-            invitorLastName: bundle.params?.invitor_lastname || null,
-            groupId: bundle.params?.group_id || null
-          })
+        if (bundle && !bundle.error) {
+          try {
+            const params = await Branch.getFirstReferringParams();
+            setInvitorFirstName(params?.invitor_firstname)
+            setInvitorLastName(params?.invitor_lastname)
+            writeInvite({
+              userInvitationId: params?.user_invitation_id || null,
+              invitorFirstName: params?.invitor_firstname || null,
+              invitorLastName: params?.invitor_lastname || null,
+              groupId: params?.group_id || null
+            })
+          } catch (e) {
+            console.log('Failed to get deeplink params!' + e)
+          }
         }
       })
     }
