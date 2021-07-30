@@ -80,7 +80,7 @@ export const ProjectDiscussionItem = ({ item: initialItem, userOwned, standAlone
     if (standAlone || comment) {
       onCommentPress(`@[${item.creatorUsername || item.actorUsername}](${item.createdBy || item.userId})`)
     } else {
-      navigation.push('Root', {
+      navigation.navigate('Root', {
         screen: route?.params?.tab || 'Dashboard',
         params: {
           screen: 'ProjectDiscussionItem',
@@ -119,7 +119,7 @@ export const ProjectDiscussionItem = ({ item: initialItem, userOwned, standAlone
     <ShareModal isVisible={isModalVisible} url={SHARE_URL} content={CONTENT} setModalVisible={setModalVisible} />
     <View style={feedStyles.feedItemContainer}>
       <View style={feedStyles.feedItemName}>
-        <Pressable onPress={() => navigation.push('Root', {
+        <Pressable onPress={() => navigation.navigate('Root', {
           screen: route && route.params && route.params.tab || 'Profile',
           params: {
             screen: 'UserProfile',
@@ -149,7 +149,7 @@ export const ProjectDiscussionItem = ({ item: initialItem, userOwned, standAlone
           }} color={Black}
           onPress={() => {
             if (standAlone || comment) {
-              navigation.push('Root', {
+              navigation.navigate('Root', {
                 screen: route && route.params && route.params.tab || 'Profile',
                 params: {
                   screen: 'UserProfile',
@@ -159,7 +159,7 @@ export const ProjectDiscussionItem = ({ item: initialItem, userOwned, standAlone
                 }
               })
             } else {
-              navigation.push('Root', {
+              navigation.navigate('Root', {
                 screen: route?.params?.tab || 'Profile',
                 params: {
                   screen: 'ProjectDiscussionItem',
@@ -213,7 +213,7 @@ export const ProjectDiscussionItem = ({ item: initialItem, userOwned, standAlone
         <View style={feedStyles.reactions}>
           <Pressable onPress={() => {
             if (comment) {
-              navigation.push('Root', {
+              navigation.navigate('Root', {
                 screen: route && route.params && route.params.tab || 'Profile',
                 params: {
                   screen: 'UserList',

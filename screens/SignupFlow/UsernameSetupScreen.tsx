@@ -88,7 +88,7 @@ const UsernameInput = ({ navigation }) => {
 
   useEffect(() => {
     if (user && user.usageProgress && user.usageProgress.signupCompleted) {
-      navigation.push('Root', {
+      navigation.navigate('Root', {
         screen: 'Profile',
         params: {
           screen: 'ProjectProfile',

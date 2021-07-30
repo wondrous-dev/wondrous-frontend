@@ -68,7 +68,7 @@ export const CollaboratorItem = ({ item, project, initialInvited, projectInvites
       if (setModalVisible) {
         setModalVisible(false)
       }
-      navigation.push('Root', {
+      navigation.navigate('Root', {
         screen: route && route.params && route.params.tab || 'Profile',
         params: {
           screen: 'OtherUserProfile',
@@ -193,7 +193,7 @@ export const InviteCollaboratorList = ({ isVisible, project, setModalVisible }) 
         (!filteredData || filteredData?.length === 0) &&
         <Paragraph style={{
           padding: spacingUnit * 2
-        }} onPress={() => navigation.push('Root', {
+        }} onPress={() => navigation.navigate('Root', {
           screen: 'Search',
           params: {
             screen: 'Default'

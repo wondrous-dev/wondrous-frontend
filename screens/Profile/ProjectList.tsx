@@ -143,7 +143,7 @@ const ProjectList = ({
             privacyLevel={project?.privacyLevel}
             itemDescription={project.description}
             itemName={project.name}
-            itemPressed={() => navigation.push('Root', {
+            itemPressed={() => navigation.navigate('Root', {
               screen: tab || 'Profile',
               params: {
                 screen: 'ProjectProfile',

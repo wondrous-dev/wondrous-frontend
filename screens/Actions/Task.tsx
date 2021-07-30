@@ -321,7 +321,7 @@ const TaskPage = ({ navigation, route }) => {
           }}>
             <RegularText color={Black}>
               From{` `}
-                <RegularText onPress={() => navigation.push('Root', {
+                <RegularText onPress={() => navigation.navigate('Root', {
                 screen: tab || 'Profile',
                 params: {
                   screen: 'GoalPage',
@@ -365,7 +365,7 @@ const TaskPage = ({ navigation, route }) => {
         <View style={[pageStyles.subContainer]}>
         {
           asks &&
-          <Pressable onPress={() => navigation.push('Root', {
+          <Pressable onPress={() => navigation.navigate('Root', {
             screen: tab || 'Profile',
             params: {
               screen: 'ActionList',

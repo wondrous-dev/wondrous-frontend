@@ -144,7 +144,7 @@ export const ContactsList = ({ isVisible, setModalVisible}) => {
       (!filteredData || filteredData?.length === 0) &&
       <Paragraph style={{
         padding: spacingUnit * 2
-      }} onPress={() => navigation.push('Root', {
+      }} onPress={() => navigation.navigate('Root', {
         screen: 'Search',
         params: {
           screen: 'Default'

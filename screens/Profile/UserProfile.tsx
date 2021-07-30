@@ -591,7 +591,7 @@ const UserProfile = React.memo(({
           }
           </ProgressCircle>
           </View>
-          <Pressable onPress={() => navigation.push('Root', {
+          <Pressable onPress={() => navigation.navigate('Root', {
             screen: tab || 'Profile',
             params: {
               screen: 'ProjectList',
@@ -606,7 +606,7 @@ const UserProfile = React.memo(({
             marginLeft: spacingUnit * 4
           }} count={additionalInfo && additionalInfo.projectCount} type={additionalInfo && additionalInfo.projectCount === 1 ? 'project' : 'projects'} />
           </Pressable>
-          <Pressable onPress={() => navigation.push('Root', {
+          <Pressable onPress={() => navigation.navigate('Root', {
             screen: tab || 'Profile',
             params: {
               screen: 'UserList',
@@ -620,7 +620,7 @@ const UserProfile = React.memo(({
             marginRight: spacingUnit * 4
           }} count={additionalInfo && additionalInfo.followerCount} type={additionalInfo && additionalInfo.followerCount === 1 ? 'follower': 'followers'} />
           </Pressable>
-          <Pressable onPress={() => navigation.push('Root', {
+          <Pressable onPress={() => navigation.navigate('Root', {
             screen: tab || 'Profile',
             params: {
               screen: 'UserList',
@@ -729,7 +729,7 @@ const UserProfile = React.memo(({
           flexDirection: 'row',
           alignItems: 'center',
         }} onPress={() => {
-          navigation.push('Root', {
+          navigation.navigate('Root', {
             screen: tab || 'Profile',
             params: {
               screen: 'Links',
@@ -810,7 +810,7 @@ const UserProfile = React.memo(({
               marginBottom: -spacingUnit * 0.5,
               marginLeft: -spacingUnit * 0.5
             }} onPress={() => {
-              navigation.push('Root', {
+              navigation.navigate('Root', {
                 screen: tab || 'Profile',
                 params: {
                   screen: 'ReviewWelcome'

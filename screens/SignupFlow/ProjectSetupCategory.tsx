@@ -272,7 +272,7 @@ function ProjectSetupCategoryScreen({
                   } catch (err) {
                     console.log('Error logging setting project category for the first time: ', err)
                   }
-                  navigation.push('Root', {
+                  navigation.navigate('Root', {
                     screen: 'Profile',
                     params: {
                       screen: 'UserProfile'
@@ -306,7 +306,7 @@ function ProjectSetupCategoryScreen({
               } catch (err) {
                 console.log('Error logging setting project category: ', err)
               }
-              navigation.push('Root', {
+              navigation.navigate('Root', {
                 screen: 'Profile',
                 params: {
                   screen: 'ProjectProfile',

@@ -39,14 +39,14 @@ const ProjectInviteCollaborators = ({
         text: 'Finish',
         onPress: async() => {
           if (!user?.usageProgress?.signupCompleted) {
-            navigation.push('Root', {
+            navigation.navigate('Root', {
               screen: 'Profile',
               params: {
                 screen: 'UserProfile'
               }
             })
           } else {
-            navigation.push('Root', {
+            navigation.navigate('Root', {
               screen: 'Profile',
               params: {
                 screen: 'ProjectProfile',

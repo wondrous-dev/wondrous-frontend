@@ -77,7 +77,7 @@ const SearchResult = ({ result, project, user }) => {
             projectName: name
           }
         })
-        navigation.push('Root', {
+        navigation.navigate('Root', {
           screen: 'Search',
           params: {
             screen: 'ProjectProfile',
@@ -99,7 +99,7 @@ const SearchResult = ({ result, project, user }) => {
         } catch (err) {
           console.log('error searching', err)
         }
-        navigation.push('Root', {
+        navigation.navigate('Root', {
           screen: 'Search',
           params: {
             screen: 'UserProfile',
@@ -177,7 +177,7 @@ const ProjectDisplay = ({ item }) => {
       paddingLeft: spacingUnit * 2,
       paddingRight: spacingUnit * 2,
       marginBottom: spacingUnit * 2.5
-    }} onPress={() => navigation.push('Root', {
+    }} onPress={() => navigation.navigate('Root', {
       screen: 'Search',
       params: {
         screen: 'ProjectProfile',
@@ -207,7 +207,7 @@ const ProjectDisplay = ({ item }) => {
             created by
           </Paragraph> <Paragraph style={{
             fontFamily: 'Rubik SemiBold'
-          }} onPress={() => navigation.push('Root', {
+          }} onPress={() => navigation.navigate('Root', {
             screen: 'Search',
             params: {
               screen: 'UserProfile',

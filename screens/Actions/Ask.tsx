@@ -182,7 +182,7 @@ const AskPage = ({ navigation, route }) => {
           }}>
             <RegularText color={Black}>
               From{` `}
-                <RegularText onPress={() => navigation.push('Root', {
+                <RegularText onPress={() => navigation.navigate('Root', {
                 screen: tab ||'Profile',
                 params: {
                   screen: 'GoalPage',
@@ -199,7 +199,7 @@ const AskPage = ({ navigation, route }) => {
                     <RegularText color={Black}>
                       ->
                     </RegularText>
-                    <RegularText color={Blue400} onPress={() => navigation.push('Root', {
+                    <RegularText color={Blue400} onPress={() => navigation.navigate('Root', {
                       screen: tab || 'Profile',
                       params: {
                         screen: 'TaskPage',
@@ -223,7 +223,7 @@ const AskPage = ({ navigation, route }) => {
           }}>
             <RegularText color={Black}>
               From{` `}
-                <RegularText onPress={() => navigation.push('Root', {
+                <RegularText onPress={() => navigation.navigate('Root', {
                 screen: tab || 'Profile',
                 params: {
                   screen: 'TaskPage',
