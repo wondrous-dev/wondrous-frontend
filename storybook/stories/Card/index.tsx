@@ -44,7 +44,7 @@ const PlatformTouchable = Pressable
 export const ReviewCard = ({ review, tab }) => {
   const navigation = useNavigation()
   return (
-    <Pressable onPress={() => navigation.push('Root', {
+    <Pressable onPress={() => navigation.navigate('Root', {
       screen: tab || 'Profile',
       params: {
         screen: 'ReviewPage',

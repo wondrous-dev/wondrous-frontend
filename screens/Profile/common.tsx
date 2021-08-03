@@ -428,7 +428,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
             userOwned &&
             <PrimaryButton onPress={() => {
               if (item === 'start') {
-                navigation.push('Root', {
+                navigation.navigate('Root', {
                   screen: tab || 'Profile',
                   params: {
                     screen: 'WorkflowWelcome',
@@ -438,7 +438,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
                   }
                 })
               } else if (item === 'none') {
-                navigation.push('Root', {
+                navigation.navigate('Root', {
                   screen: 'Add'
                 })
               }

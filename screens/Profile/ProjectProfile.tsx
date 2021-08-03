@@ -515,7 +515,7 @@ function ProjectProfile({
           </View>
           <Pressable onPress={() => {
             if (projectAccessible) {
-              navigation.push('Root', {
+              navigation.navigate('Root', {
                 screen: tab ? tab : 'Profile',
                 params: {
                   screen: 'UserList',
@@ -531,7 +531,7 @@ function ProjectProfile({
           </Pressable>
           <Pressable onPress={() => {
             if (projectAccessible) {
-              navigation.push('Root', {
+              navigation.navigate('Root', {
                 screen: tab ? tab: 'Profile',
                 params: {
                   screen: 'UserList',
@@ -638,7 +638,7 @@ function ProjectProfile({
             alignItems: 'center',
             marginTop: spacingUnit
           }} onPress={() => {
-            navigation.push('Root', {
+            navigation.navigate('Root', {
               screen: tab ? tab : 'Profile',
               params: {
                 screen: 'Links',

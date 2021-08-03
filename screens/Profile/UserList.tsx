@@ -368,7 +368,7 @@ const UserList = ({
             <>
             <Paragraph style={{
               padding: spacingUnit * 2
-            }} onPress={() => navigation.push('Root', {
+            }} onPress={() => navigation.navigate('Root', {
               screen: 'Search',
               params: {
                 screen: 'Default'
@@ -423,7 +423,7 @@ const UserList = ({
               project={true}
               itemDescription={item.description}
               itemName={item.name}
-              itemPressed={() => navigation.push('Root', {
+              itemPressed={() => navigation.navigate('Root', {
                 screen: tab || 'Profile',
                 params: {
                   screen: 'ProjectProfile',
@@ -438,7 +438,7 @@ const UserList = ({
                 initialFollowing={userFollowing}
                 existingUserFollowing={followingUsers}
                 item={item}
-                itemPressed={() => navigation.push('Root', {
+                itemPressed={() => navigation.navigate('Root', {
                   screen: tab || 'Profile',
                   params: {
                     screen: 'OtherUserProfile',

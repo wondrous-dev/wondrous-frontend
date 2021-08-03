@@ -223,7 +223,7 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                                 } catch (err) {
                                   console.log('Error logging setting project category for the first time: ', err)
                               }
-                            navigation.push('Root', {
+                            navigation.navigate('Root', {
                                 screen: 'Profile',
                                 params: {
                                     screen: 'ProjectProfile',
@@ -245,7 +245,7 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                                       } catch (err) {
                                         console.log('Error logging setting project category for the first time: ', err)
                                     }
-                                    navigation.push('Root', {
+                                    navigation.navigate('Root', {
                                         screen: 'Profile',
                                         params: {
                                           screen: 'UserProfile'
@@ -280,7 +280,7 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                                           } catch (err) {
                                             console.log('Error logging setting project category for the first time: ', err)
                                         }
-                                        navigation.push('Root', {
+                                        navigation.navigate('Root', {
                                             screen: 'Profile',
                                             params: {
                                               screen: 'UserProfile'

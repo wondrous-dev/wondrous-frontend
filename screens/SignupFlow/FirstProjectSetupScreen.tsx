@@ -369,7 +369,7 @@ function FirstProjectSetupScreen({
                     {
                         setup &&
                         <TouchableOpacity onPress={async () => {
-                            navigation.push('Root', {
+                            navigation.navigate('Root', {
                               screen: 'Profile',
                               params: {
                                 screen: 'UserProfile',

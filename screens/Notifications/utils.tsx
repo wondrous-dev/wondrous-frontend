@@ -17,7 +17,7 @@ export const handleFeedCommentClick = async ({
         }
       })
       if (feedResponse && feedResponse.data && feedResponse.data.getFeedItemForFeedComment) {
-        navigation.push('Root', {
+        navigation.navigate('Root', {
           screen: tab || 'Profile',
           params: {
             screen: 'ProfileItem',

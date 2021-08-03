@@ -57,7 +57,7 @@ function StreakIntro({
         </Paragraph>
         <PrimaryButton style={{
           backgroundColor: Green400
-        }} onPress={() => navigation.push('Root', {
+        }} onPress={() => navigation.navigate('Root', {
           screen: 'Profile',
           params: {
             screen: 'UserProfile'

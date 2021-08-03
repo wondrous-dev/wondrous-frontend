@@ -205,7 +205,7 @@ export const renderMentionString = ({ content, textStyle, navigation, simple, ta
               ...textStyle
             }}
             onPress={() => {
-              navigation.push('Root', {
+              navigation.navigate('Root', {
                 screen: tab || 'Profile',
                 params: {
                   screen: trigger === '@' ? 'OtherUserProfile' : 'ProjectProfile',

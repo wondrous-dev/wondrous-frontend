@@ -217,7 +217,7 @@ export const FullScreenTaskModal = ({ task, isVisible, setModalVisible, projectI
                   resetState()
                   setModalVisible(false)
                 } else {
-                  setProject(projectId || '')
+                  setProject(null)
                   setModalVisible(false)
                 }
               }} style={{

@@ -128,7 +128,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
 
   switch(type) {
     case 'welcome':
-      navigation.push('Root', {
+      navigation.navigate('Root', {
         screen: tab || 'Profile',
         params: {
           screen: 'UserProfile'
@@ -145,7 +145,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
         break
       }
     case 'new_group_member_joining':
-      navigation.push('Root', {
+      navigation.navigate('Root', {
         screen: 'Notifications',
           params: {
             screen: 'UserProfile',
@@ -182,7 +182,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
             }
           })
           if (postResponse && postResponse.data && postResponse.data.getPostItem) {
-            navigation.push('Root', {
+            navigation.navigate('Root', {
               screen : tab || 'Profile',
               params: {
                 screen: 'ProfileItem',
@@ -215,7 +215,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
             }
           })
           if (projectDiscussionCommentResponse?.data?.getProjectDiscussionFromComment) {
-            navigation.push('Root', {
+            navigation.navigate('Root', {
               screen: tab || 'Profile',
               params: {
                 screen: 'ProjectDiscussionItem',
@@ -241,7 +241,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
             }
           })
           if (reviewResponse && reviewResponse.data && reviewResponse.data.getReviewFromReviewComment) {
-            navigation.push('Root', {
+            navigation.navigate('Root', {
               screen: tab || 'Profile',
               params: {
                 screen: 'ReviewPage',
@@ -257,7 +257,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
         }
         break
       } else if (objectType === 'review') {
-        navigation.push('Root', {
+        navigation.navigate('Root', {
           screen: tab || 'Profile',
           params: {
             screen: 'ReviewPage',
@@ -269,7 +269,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
         break
       }
 
-      navigation.push('Root', {
+      navigation.navigate('Root', {
         screen: tab || 'Profile',
         params: {
           screen: actionScreen,
@@ -287,7 +287,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
             }
           })
           if (feedItemResponse && feedItemResponse.data && feedItemResponse.data.getFeedItem) {
-            navigation.push('Root', {
+            navigation.navigate('Root', {
               screen: tab || 'Profile',
               params: {
                 screen : 'ProfileItem',
@@ -311,7 +311,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
             }
           })
           if (feedItemCommentResponse?.data?.getFeedItemForFeedComment) {
-            navigation.push('Root', {
+            navigation.navigate('Root', {
               screen: tab || 'Profile',
               params: {
                 screen : 'ProfileItem',
@@ -338,7 +338,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
             }
           })
           if (feedItemCommentResponse && feedItemCommentResponse.data && feedItemCommentResponse.data.getFeedItemForFeedComment) {
-            navigation.push('Root', {
+            navigation.navigate('Root', {
               screen: tab || 'Profile',
               params: {
                 screen : 'ProfileItem',
@@ -362,7 +362,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
             }
           })
           if (reviewResponse && reviewResponse.data && reviewResponse.data.getReviewFromReviewComment) {
-            navigation.push('Root', {
+            navigation.navigate('Root', {
               screen: tab || 'Profile',
               params: {
                 screen: 'ReviewPage',
@@ -379,7 +379,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
       } 
       break
       case 'review_reminder':
-        navigation.push('Root', {
+        navigation.navigate('Root', {
           screen: tab || 'Profile',
           params: {
             screen: 'ReviewWelcome'
@@ -387,7 +387,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
         })
         break
       case 'follow_request':
-        navigation.push('Root', {
+        navigation.navigate('Root', {
           screen: 'Notifications',
             params: {
               screen: 'UserProfile',
@@ -399,12 +399,12 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
         break
       case 'now_following':
         if (push) {
-          navigation.push('Root', {
+          navigation.navigate('Root', {
             screen : 'Notifications'
           })
         } else {
           if (notificationInfo.objectType === 'project' && notificationInfo.objectName) {
-            navigation.push('Root', {
+            navigation.navigate('Root', {
               screen: tab || 'Profile',
               params: {
                 screen: 'ProjectProfile',
@@ -414,7 +414,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
               }
             })
           } else {
-            navigation.push('Root', {
+            navigation.navigate('Root', {
               screen: 'Notifications',
                 params: {
                   screen: 'UserProfile',
@@ -427,7 +427,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
         }
         break
       case 'streak_reminder':
-        navigation.push('Root', {
+        navigation.navigate('Root', {
           screen: tab || 'Profile',
           params: {
             screen: 'UserProfile',
@@ -438,7 +438,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
         })
         break
       case 'friend_project_creation':
-        navigation.push('Root', {
+        navigation.navigate('Root', {
           screen: tab || 'Profile',
           params: {
             screen: 'ProjectProfile',
@@ -450,11 +450,11 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
         break
       case 'project_invite':
         if (push) {
-          navigation.push('Root', {
+          navigation.navigate('Root', {
             screen : 'Notifications'
           })
         } else {
-          navigation.push('Root', {
+          navigation.navigate('Root', {
             screen: tab || 'Profile',
             params: {
               screen: 'ProjectProfile',
@@ -467,11 +467,11 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
         break
       case 'project_invite_accept':
         if (push) {
-          navigation.push('Root', {
+          navigation.navigate('Root', {
             screen: 'Notifications'
           })
         } else {
-          navigation.push('Root', {
+          navigation.navigate('Root', {
             screen: tab || 'Profile',
             params: {
               screen: 'ProjectProfile',
@@ -483,7 +483,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
         }
         break
       case 'expiring_action_reminder':
-        navigation.push('Root', {
+        navigation.navigate('Root', {
           screen: tab || 'Profile',
           params: {
             screen: 'UserProfile',
@@ -494,7 +494,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
         })
         break
       case 'expired_action_reminder':
-        navigation.push('Root', {
+        navigation.navigate('Root', {
           screen: tab || 'Profile',
           params: {
             screen: 'UserProfile',
@@ -513,7 +513,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
             }
           })
           if (projectDiscussionCreation?.data?.getProjectDiscussion) {
-            navigation.push('Root', {
+            navigation.navigate('Root', {
               screen: 'Dashboard',
               params: {
                 screen: 'ProjectDiscussionItem',
@@ -532,7 +532,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
         break
       case 'nudge':
         if (objectType === 'goal') {
-          navigation.push('Root', {
+          navigation.navigate('Root', {
             screen: tab || 'Profile',
             params: {
               screen: 'GoalPage',
@@ -543,7 +543,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
 
           })
         } else if (objectType === 'task') {
-          navigation.push('Root', {
+          navigation.navigate('Root', {
             screen: tab || 'Profile',
             params: {
               screen: 'TaskPage',
@@ -553,7 +553,7 @@ export const getNotificationPressFunction = async ({ notificationInfo, navigatio
             }
           })
         }
-        // navigation.push('Root', {
+        // navigation.navigate('Root', {
         //   screen: tab || 'Profile',
 
         // })

@@ -81,7 +81,7 @@ function SetupGoalScreen({
         color: Blue500,
         text: 'Continue',
         onPress: () => {
-          navigation.push('Root', {
+          navigation.navigate('Root', {
             screen: 'Profile',
             params: {
               screen: 'SetupTask',
