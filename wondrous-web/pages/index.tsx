@@ -1,7 +1,6 @@
-export default function Home() {
-  return (
-    <div>
-      hi
-    </div>
-  )
+import React from 'react'
+import Home from '../components/Home'
+
+export default function App(props) {
+	return <Home {...props} />
 }

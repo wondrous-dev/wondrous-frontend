@@ -24,8 +24,8 @@ const getAuth = async () => {
 const wsClient = new SubscriptionClient(
   wsUri,
   {
-    connectionParams: () => {
-      const authorization = getAuth()
+    connectionParams: async () => {
+      const authorization = await getAuth()
       return authorization ? { authorization, headers: { authorization } } : {}
     }
   }
