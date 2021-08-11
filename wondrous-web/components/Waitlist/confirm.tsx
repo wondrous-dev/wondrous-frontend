@@ -17,7 +17,7 @@ const WaitlistConfirmation = () => {
 		<Container>
 			<Typography variant="h1">Congratulations!</Typography>
 			<Subtext style={{ marginTop: `${createSpacingUnit(4)}px` }}>
-				You're on the waitlist
+				You&apos;re on the waitlist
 			</Subtext>
 		</Container>
 	)
