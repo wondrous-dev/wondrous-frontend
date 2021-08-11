@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import Trackable from '../Trackable'
 import SmartLink from '../SmartLink'
 import Image from 'next/image'
-
+import { Modal, TextField } from '@material-ui/core'
+import JoinWaitList from '../Waitlist'
 import {
 	Container,
 	LeftImage,
@@ -14,11 +15,19 @@ import {
 	HomeButton,
 	HomeButtonText,
 } from './styles'
-import { Typography } from '@material-ui/core'
 import { useIsMobile } from '../../utils/hooks'
+import styled from 'styled-components'
+const StyledModal = styled(Modal)`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`
 
 const Home = () => {
+	const [showJoinWaitList, setShowJoinWaitList] = useState(false)
+
 	const isMobile = useIsMobile()
+
 	return (
 		<Container>
 			<LeftImage src="/images/homepage-left.png" />
@@ -30,10 +39,19 @@ const Home = () => {
 					{!isMobile && <br />}
 					<FunkyText>crypto rewards</FunkyText> by completing tasks.
 				</Subtext>
-				<HomeButton>
+				<HomeButton onClick={() => setShowJoinWaitList(!showJoinWaitList)}>
 					<HomeButtonText>Join waitlist</HomeButtonText>
 				</HomeButton>
 			</ContentDiv>
+			<StyledModal
+				open={showJoinWaitList}
+				onClose={() => setShowJoinWaitList(false)}
+			>
+				<JoinWaitList
+					showJoinWaitList={showJoinWaitList}
+					setShowJoinWaitList={setShowJoinWaitList}
+				/>
+			</StyledModal>
 		</Container>
 	)
 }
