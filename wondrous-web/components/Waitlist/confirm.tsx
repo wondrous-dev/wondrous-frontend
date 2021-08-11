@@ -7,21 +7,18 @@ import JoinWaitList from '../Waitlist'
 import { Typography } from '@material-ui/core'
 import { useIsMobile } from '../../utils/hooks'
 import styled from 'styled-components'
-import {
-	Container,
-	Subtext,
-} from './styles'
+import { Container, Subtext } from './styles'
+import { createSpacingUnit } from '../../utils'
 
 const WaitlistConfirmation = () => {
-
 	const isMobile = useIsMobile()
 
 	return (
 		<Container>
-				<Typography variant="h1">Congratulations!</Typography>
-				<Subtext>
-                    You're on the waitlist
-				</Subtext>
+			<Typography variant="h1">Congratulations!</Typography>
+			<Subtext style={{ marginTop: `${createSpacingUnit(4)}px` }}>
+				You're on the waitlist
+			</Subtext>
 		</Container>
 	)
 }

@@ -12,6 +12,9 @@ import { CREATE_WAISTLIST_USER } from '../../graphql/mutations'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import Grid from '@material-ui/core/Grid'
+import { device } from '../../utils/device'
+import { createSpacingUnit } from '../../utils'
+import { Orange, White, Grey10, Red400 } from '../../services/colors'
 
 const JoinWaitListFormContainer = styled.div`
 	display: flex;
@@ -19,7 +22,7 @@ const JoinWaitListFormContainer = styled.div`
 	align-items: center;
 	flex-direction: row;
 `
-import { Orange, White } from '../../services/colors'
+
 const ModalWrapper = styled.div`
 	&& {
 		width: 100%;
@@ -30,16 +33,19 @@ const ModalWrapper = styled.div`
 		align-items: center;
 		background: ${Orange};
 		flex-direction: column;
+		& .MuiSvgIcon-root {
+			fill: ${White};
+		}
 	}
 `
 
-import { device } from '../../utils/device'
 export const CenteredGrid = styled(Grid)`
 	&& {
 		@media ${device.mobileL} {
 			display: flex;
 			justify-content: center;
 			align-items: center;
+			margin-top: ${createSpacingUnit(2)}px !important;
 		}
 	}
 `
@@ -53,8 +59,20 @@ const WaitlistTextField = styled(TextField)(({ theme }) => ({
 	'& .MuiInput-underline:before': {
 		borderBottomColor: 'white',
 	},
+	'& .MuiFormLabel-root': {
+		color: White,
+	},
+	'.MuiInputBase-input': {
+		color: White,
+	},
 	'& .MuiInputBase-root-root': {
-		color: 'white'
+		color: White,
+	},
+	'& .MuiInput-underline:hover:not(.Mui-disabled):before': {
+		borderBottomColor: White,
+	},
+	'& .MuiInputLabel-shrink': {
+		color: '#8d6fea !important',
 	},
 }))
 
@@ -98,6 +116,7 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 					<form onSubmit={formik.handleSubmit} style={{ width: '80%' }}>
 						{/* <JoinWaitListFormContainer> */}
 						<Grid container alignItems="center" justify="center" spacing={3}>
+							<Grid item md={1} xs={0} />
 							<Grid item md={8} xs={12}>
 								<div>
 									<WaitlistTextField
@@ -110,11 +129,11 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 										onBlur={formik.handleBlur}
 									/>
 									{formik.touched.email && formik.errors.email ? (
-										<div>{formik.errors.email}</div>
+										<div style={{ color: Red400 }}>{formik.errors.email}</div>
 									) : null}
 								</div>
 							</Grid>
-							<CenteredGrid item md={4} xs={12}>
+							<CenteredGrid item md={3} xs={12}>
 								<JoinWaitListButton type="submit">
 									<HomeButtonText nowrap>Join waitlist</HomeButtonText>
 								</JoinWaitListButton>

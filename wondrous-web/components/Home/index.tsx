@@ -14,6 +14,8 @@ import {
 	FunkyText,
 	HomeButton,
 	HomeButtonText,
+	Blob1,
+	Blob2,
 } from './styles'
 import { useIsMobile } from '../../utils/hooks'
 import styled from 'styled-components'
@@ -30,7 +32,14 @@ const Home = () => {
 
 	return (
 		<Container>
-			<LeftImage src="/images/homepage-left.png" />
+			{isMobile ? (
+				<>
+					<Blob1 src="/images/blob1.png" />
+					<Blob2 src="/images/blob2.png" />
+				</>
+			) : (
+				<LeftImage src="/images/homepage-left.png" />
+			)}
 			<RightImage src="/images/homepage-right.png" />
 			<ContentDiv>
 				<Title variant="h1">Wonder</Title>
