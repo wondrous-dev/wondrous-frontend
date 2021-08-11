@@ -10,7 +10,7 @@ import {
 	RightImage,
 	ContentDiv,
 	Title,
-	Subtext,
+	HomeSubtext,
 	FunkyText,
 	HomeButton,
 	HomeButtonText,
@@ -43,11 +43,10 @@ const Home = () => {
 			<RightImage src="/images/homepage-right.png" />
 			<ContentDiv>
 				<Title variant="h1">Wonder</Title>
-				<Subtext>
+				<HomeSubtext>
 					The productivity metaverse - build your projects in public and earn
-					{!isMobile && <br />}
 					<FunkyText>crypto rewards</FunkyText> by completing tasks.
-				</Subtext>
+				</HomeSubtext>
 				<HomeButton onClick={() => setShowJoinWaitList(!showJoinWaitList)}>
 					<HomeButtonText>Join waitlist</HomeButtonText>
 				</HomeButton>

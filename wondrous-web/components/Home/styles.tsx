@@ -87,7 +87,12 @@ export const ContentDiv = styled.div`
 		display: flex;
 		flex-direction: column;
 		padding: ${createSpacingUnit(2)}px;
+		max-width: ${createSpacingUnit()};
 	}
+`
+
+export const HomeSubtext = styled(Subtext)`
+	max-width: ${createSpacingUnit(88)}px;
 `
 
 export const FunkyText = styled(Subtext)`
@@ -114,9 +119,7 @@ export const FunkyText = styled(Subtext)`
 		-webkit-text-fill-color: transparent;
 		-webkit-animation: shine 5s ease infinite;
 		animation: shine 5s ease infinite;
-		@media ${device.tablet} {
-			margin-left: ${createSpacingUnit(0.75)}px;
-		}
+		margin-left: ${createSpacingUnit(0.75)}px;
 	}
 `
 
