@@ -119,7 +119,6 @@ export const FunkyText = styled(Subtext)`
 		-webkit-text-fill-color: transparent;
 		-webkit-animation: shine 5s ease infinite;
 		animation: shine 5s ease infinite;
-		margin-left: ${createSpacingUnit(0.75)}px;
 	}
 `
 

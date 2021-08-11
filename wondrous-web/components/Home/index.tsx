@@ -45,6 +45,7 @@ const Home = () => {
 				<Title variant="h1">Wonder</Title>
 				<HomeSubtext>
 					The productivity metaverse - build your projects in public and earn
+					{` `}
 					<FunkyText>crypto rewards</FunkyText> by completing tasks.
 				</HomeSubtext>
 				<HomeButton onClick={() => setShowJoinWaitList(!showJoinWaitList)}>
