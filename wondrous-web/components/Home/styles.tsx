@@ -97,11 +97,11 @@ export const HomeSubtext = styled(Subtext)`
 
 export const FunkyText = styled(Subtext)`
 	&& {
-		@keyframes shine {
-			to {
-				background-position: 200% center;
-			}
-		}
+		// @keyframes shine {
+		// 	to {
+		// 		background-position: 200% center;
+		// 	}
+		// }
 		display: inline;
 		font-weight: bold;
 		background: linear-gradient(
@@ -111,14 +111,14 @@ export const FunkyText = styled(Subtext)`
 			#fccd3f 60%,
 			#f9d873 80%
 		);
-		background-size: 200% auto;
-		background-clip: text;
-		-webkit-background-clip: text;
-		-moz-background-clip: text;
-		-moz-text-fill-color: transparent;
-		-webkit-text-fill-color: transparent;
-		-webkit-animation: shine 5s ease infinite;
-		animation: shine 5s ease infinite;
+		// background-size: 200% auto;
+		// background-clip: text;
+		// -webkit-background-clip: text;
+		// -moz-background-clip: text;
+		// -moz-text-fill-color: transparent;
+		// -webkit-text-fill-color: transparent;
+		// -webkit-animation: shine 5s ease infinite;
+		// animation: shine 5s ease infinite;
 	}
 `
 
