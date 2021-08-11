@@ -71,10 +71,12 @@ export const Subtext = styled(Typography)`
 
 		@media ${device.mobileL} {
 			font-size: 16px;
+			line-height: 26px;
 		}
 
 		@media ${device.mobileS} {
 			font-size: 14px;
+			line-height: 24px;
 		}
 	}
 `
@@ -84,9 +86,7 @@ export const ContentDiv = styled.div`
 		align-items: center;
 		display: flex;
 		flex-direction: column;
-		@media ${device.mobileL} {
-			padding: ${createSpacingUnit(2)}px;
-		}
+		padding: ${createSpacingUnit(2)}px;
 	}
 `
 
@@ -139,6 +139,56 @@ export const HomeButtonText = styled(Typography)`
 
 		@media ${device.mobileS} {
 			font-size: 14px;
+		}
+	}
+`
+
+export const Blob = styled.img`
+	&& {
+		position: absolute;
+		width: ${createSpacingUnit(20)}px;
+		height: ${createSpacingUnit(20)}px;
+		border-radius: ${createSpacingUnit(10)}px;
+
+		@media ${device.mobileM} {
+			width: ${createSpacingUnit(16)}px;
+			height: ${createSpacingUnit(16)}px;
+			border-radius: ${createSpacingUnit(8)}px;
+		}
+
+		@media ${device.mobileS} {
+			width: ${createSpacingUnit(12)}px;
+			height: ${createSpacingUnit(12)}px;
+			border-radius: ${createSpacingUnit(6)}px;
+		}
+	}
+`
+export const Blob1 = styled(Blob)`
+	&& {
+		top: ${createSpacingUnit(8)}px;
+		left: ${createSpacingUnit(3)}px;
+
+		@media ${device.mobileM} {
+			top: ${createSpacingUnit(6)}px;
+		}
+
+		@media ${device.mobileS} {
+			top: ${createSpacingUnit(4)}px;
+		}
+	}
+`
+
+export const Blob2 = styled(Blob)`
+	&& {
+		top: ${createSpacingUnit(4)}px;
+		right: ${createSpacingUnit(3)}px;
+
+		@media ${device.mobileM} {
+			top: ${createSpacingUnit(3)}px;
+		}
+
+		@media ${device.mobileS} {
+			top: ${createSpacingUnit(2)}px;
 		}
 	}
 `
