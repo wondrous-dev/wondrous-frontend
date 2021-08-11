@@ -92,7 +92,12 @@ export const ContentDiv = styled.div`
 `
 
 export const HomeSubtext = styled(Subtext)`
-	max-width: ${createSpacingUnit(88)}px;
+	&& {
+		max-width: ${createSpacingUnit(88)}px;
+		@media ${device.mobileL} {
+			max-width: none;
+		}
+	}
 `
 
 export const FunkyText = styled(Subtext)`
@@ -117,7 +122,7 @@ export const FunkyText = styled(Subtext)`
 		-moz-background-clip: text;
 		-moz-text-fill-color: transparent;
 		-webkit-text-fill-color: transparent;
-
+		-webkit-animation: shine 5s ease infinite;
 		animation: shine 5s ease infinite;
 	}
 `
