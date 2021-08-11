@@ -116,7 +116,7 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 					<form onSubmit={formik.handleSubmit} style={{ width: '80%' }}>
 						{/* <JoinWaitListFormContainer> */}
 						<Grid container alignItems="center" justify="center" spacing={3}>
-							<Grid item md={1} xs={0} />
+							<Grid item md={1} xs={false} />
 							<Grid item md={8} xs={12}>
 								<div>
 									<WaitlistTextField

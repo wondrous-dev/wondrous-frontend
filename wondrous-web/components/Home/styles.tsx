@@ -86,9 +86,7 @@ export const ContentDiv = styled.div`
 		align-items: center;
 		display: flex;
 		flex-direction: column;
-		@media ${device.mobileL} {
-			padding: ${createSpacingUnit(2)}px;
-		}
+		padding: ${createSpacingUnit(2)}px;
 	}
 `
 
