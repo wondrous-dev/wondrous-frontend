@@ -149,15 +149,9 @@ export const HomeButtonText = styled(Typography)`
 export const Blob = styled.img`
 	&& {
 		position: absolute;
-		width: ${createSpacingUnit(20)}px;
-		height: ${createSpacingUnit(20)}px;
-		border-radius: ${createSpacingUnit(10)}px;
-
-		@media ${device.mobileM} {
-			width: ${createSpacingUnit(16)}px;
-			height: ${createSpacingUnit(16)}px;
-			border-radius: ${createSpacingUnit(8)}px;
-		}
+		width: ${createSpacingUnit(16)}px;
+		height: ${createSpacingUnit(16)}px;
+		border-radius: ${createSpacingUnit(8)}px;
 
 		@media ${device.mobileS} {
 			width: ${createSpacingUnit(12)}px;
