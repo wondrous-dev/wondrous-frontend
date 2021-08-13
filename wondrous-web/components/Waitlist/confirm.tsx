@@ -10,14 +10,14 @@ import styled from 'styled-components'
 import { Container, Subtext } from './styles'
 import { createSpacingUnit } from '../../utils'
 
-const WaitlistConfirmation = ({waitlistPosition}) => {
+const WaitlistConfirmation = ({ waitlistPosition }) => {
 	const isMobile = useIsMobile()
 
 	return (
 		<Container>
 			<Typography variant="h1">Congratulations!</Typography>
 			<Subtext style={{ marginTop: `${createSpacingUnit(4)}px` }}>
-				You&apos;re #{waitlistPosition} on the waitlist!
+				You&apos;re #{waitlistPosition} on the waitlist :)
 			</Subtext>
 		</Container>
 	)
