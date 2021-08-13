@@ -86,7 +86,7 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 			email: '',
 		},
 		onSubmit: async (values) => {
-			// await createWaitlistUser({ variables: { email: values.email } })
+			await createWaitlistUser({ variables: { email: values.email } })
 			// alert(JSON.stringify(values, null, 2))
 			setAddedToWaitlist(true)
 		},
@@ -131,6 +131,7 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 									{formik.touched.email && formik.errors.email ? (
 										<div style={{ color: Red400 }}>{formik.errors.email}</div>
 									) : null}
+									{error && <div style={{ color: Red400 }}>Unknown error</div>}
 								</div>
 							</Grid>
 							<CenteredGrid item md={3} xs={12}>
@@ -143,7 +144,7 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 					</form>
 				</>
 			)}
-			{addedToWaitlist && <WaitlistConfirmation />}
+			{addedToWaitlist && <WaitlistConfirmation waitlistPosition={data?.createWaitlistUser?.position}/>}
 			<CloseModalButton
 				aria-label="Close modal"
 				onClick={() => setShowJoinWaitList(false)}
