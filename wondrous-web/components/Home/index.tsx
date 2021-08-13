@@ -32,14 +32,8 @@ const Home = () => {
 
 	return (
 		<Container>
-			{isMobile ? (
-				<>
-					<Blob1 src="/images/blob1.png" />
-					<Blob2 src="/images/blob2.png" />
-				</>
-			) : (
-				<LeftImage src="/images/homepage-left.png" />
-			)}
+			<Blob1 src="/images/blob1.png" />
+			<Blob2 src="/images/blob2.png" />
 			<RightImage src="/images/homepage-right.png" />
 			<ContentDiv>
 				<Title variant="h1">Wonder</Title>

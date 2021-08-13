@@ -150,10 +150,15 @@ export const HomeButtonText = styled(Typography)`
 export const Blob = styled.img`
 	&& {
 		position: absolute;
-		width: ${createSpacingUnit(16)}px;
-		height: ${createSpacingUnit(16)}px;
-		border-radius: ${createSpacingUnit(8)}px;
+		width: ${createSpacingUnit(20)}px;
+		height: ${createSpacingUnit(20)}px;
+		border-radius: ${createSpacingUnit(10)}px;
 
+		@media ${device.tablet} {
+			width: ${createSpacingUnit(16)}px;
+			height: ${createSpacingUnit(16)}px;
+			border-radius: ${createSpacingUnit(8)}px;
+		}
 		@media ${device.mobileS} {
 			width: ${createSpacingUnit(12)}px;
 			height: ${createSpacingUnit(12)}px;
@@ -163,8 +168,12 @@ export const Blob = styled.img`
 `
 export const Blob1 = styled(Blob)`
 	&& {
+		left: ${createSpacingUnit(8)}px;
 		top: ${createSpacingUnit(8)}px;
-		left: ${createSpacingUnit(3)}px;
+
+		@media ${device.mobileL} {
+			left: ${createSpacingUnit(3)}px;
+		}
 
 		@media ${device.mobileM} {
 			top: ${createSpacingUnit(6)}px;
@@ -179,8 +188,11 @@ export const Blob1 = styled(Blob)`
 export const Blob2 = styled(Blob)`
 	&& {
 		top: ${createSpacingUnit(4)}px;
-		right: ${createSpacingUnit(3)}px;
+		right: ${createSpacingUnit(8)}px;
 
+		@media ${device.mobileL} {
+			right: ${createSpacingUnit(3)}px;
+		}
 		@media ${device.mobileM} {
 			top: ${createSpacingUnit(3)}px;
 		}
