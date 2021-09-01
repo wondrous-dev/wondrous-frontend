@@ -1,6 +1,6 @@
 import { Typography } from '@material-ui/core'
 import styled from 'styled-components'
-import { Orange, Orange100, White } from '../../services/colors'
+import { Orange, Orange100, White, Yellow400 } from '../../services/colors'
 import { createSpacingUnit } from '../../utils'
 import { device } from '../../utils/device'
 import { FunkyButton } from '../Button'
@@ -106,21 +106,7 @@ export const FunkyText = styled(Subtext)`
 		}
 		display: inline;
 		font-weight: bold;
-		background: linear-gradient(
-			to right,
-			${Orange} 20%,
-			${Orange100} 40%,
-			${Orange100} 60%,
-			${Orange} 80%
-		);
-		background-size: 200% auto;
-		background-clip: text;
-		-webkit-background-clip: text;
-		-moz-background-clip: text;
-		-moz-text-fill-color: transparent;
-		-webkit-text-fill-color: transparent;
-		-webkit-animation: shine 5s ease infinite;
-		animation: shine 5s ease infinite;
+		color: ${Yellow400};
 	}
 `
 
