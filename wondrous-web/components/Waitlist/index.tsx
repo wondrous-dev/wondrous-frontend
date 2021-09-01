@@ -31,7 +31,7 @@ const ModalWrapper = styled.div`
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background: ${Orange};
+		background: linear-gradient(270deg, #c2e9fb 0%, #a1c4fd 50.16%);
 		flex-direction: column;
 		& .MuiSvgIcon-root {
 			fill: ${White};
@@ -144,7 +144,11 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 					</form>
 				</>
 			)}
-			{addedToWaitlist && <WaitlistConfirmation waitlistPosition={data?.createWaitlistUser?.position}/>}
+			{addedToWaitlist && (
+				<WaitlistConfirmation
+					waitlistPosition={data?.createWaitlistUser?.position}
+				/>
+			)}
 			<CloseModalButton
 				aria-label="Close modal"
 				onClick={() => setShowJoinWaitList(false)}

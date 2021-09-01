@@ -6,7 +6,6 @@ import { device } from '../../utils/device'
 import { FunkyButton } from '../Button'
 import ClearIcon from '@material-ui/icons/Clear'
 
-
 export const Subtext = styled(Typography)`
 	&& {
 		margin-top: ${createSpacingUnit(3)}px;
@@ -36,7 +35,7 @@ export const Container = styled.div`
 		align-items: center;
 		justify-content: center;
 		position: fixed;
-		background-color: ${Orange};
+		background: linear-gradient(270deg, #c2e9fb 0%, #a1c4fd 50.16%);
 	}
 `
 

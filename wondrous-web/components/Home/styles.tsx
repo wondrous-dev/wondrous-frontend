@@ -1,6 +1,6 @@
 import { Typography } from '@material-ui/core'
 import styled from 'styled-components'
-import { Orange, White } from '../../services/colors'
+import { Orange, Orange100, White } from '../../services/colors'
 import { createSpacingUnit } from '../../utils'
 import { device } from '../../utils/device'
 import { FunkyButton } from '../Button'
@@ -13,7 +13,7 @@ export const Container = styled.div`
 		align-items: center;
 		justify-content: center;
 		position: fixed;
-		background-color: ${Orange};
+		background: linear-gradient(270deg, #c2e9fb 0%, #a1c4fd 50.16%);
 	}
 `
 
@@ -108,10 +108,10 @@ export const FunkyText = styled(Subtext)`
 		font-weight: bold;
 		background: linear-gradient(
 			to right,
-			#f9d873 20%,
-			#fccd3f 40%,
-			#fccd3f 60%,
-			#f9d873 80%
+			${Orange} 20%,
+			${Orange100} 40%,
+			${Orange100} 60%,
+			${Orange} 80%
 		);
 		background-size: 200% auto;
 		background-clip: text;
