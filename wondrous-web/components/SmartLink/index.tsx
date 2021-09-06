@@ -11,7 +11,7 @@ import Link from 'next/link'
  */
 export default function SmartLink({ children, href, as }: Props) {
 	return (
-		<Link href={href} as={as}>
+		<Link href={href} as={as} passHref={true}>
 			<SmartLinkInner aHref={as}>{children}</SmartLinkInner>
 		</Link>
 	)

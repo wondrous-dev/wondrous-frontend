@@ -18,6 +18,7 @@ import {
 	Blob2,
 } from './styles'
 import { useIsMobile } from '../../utils/hooks'
+import HomeNavBar from '../Navbar/Home'
 import styled from 'styled-components'
 const StyledModal = styled(Modal)`
 	display: flex;
@@ -33,7 +34,7 @@ const Home = () => {
 	return (
 		<Container>
 			<Blob1 src="/images/blob1.png" />
-			<Blob2 src="/images/blob2.png" />
+
 			<RightImage src="/images/homepage-right.png" />
 			<ContentDiv>
 				<Title variant="h1">Wonder</Title>
@@ -45,6 +46,7 @@ const Home = () => {
 				<HomeButton onClick={() => setShowJoinWaitList(!showJoinWaitList)}>
 					<HomeButtonText>Join waitlist</HomeButtonText>
 				</HomeButton>
+				<HomeNavBar />
 			</ContentDiv>
 			<StyledModal
 				open={showJoinWaitList}
