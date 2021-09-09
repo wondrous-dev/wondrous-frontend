@@ -15,12 +15,18 @@ const HomeNavbar = () => {
 		<NavContainer>
 			<LinkContainer>
 				<ManifestoLink>
-					<HomeNavLink href="https://wonderapp.notion.site/Wonder-Manifesto-caa5a446e8a54e7f8baffc667a77a33f">
+					<HomeNavLink
+						href="https://wonderapp.notion.site/Wonder-Manifesto-caa5a446e8a54e7f8baffc667a77a33f"
+						target="_blank"
+					>
 						Manifesto
 					</HomeNavLink>
 				</ManifestoLink>
 				<HomeNavLinkTypography>
-					<HomeNavLink href="https://wonderapp.notion.site/FAQ-for-Wonder-b2968c6f76bc480ca7f060fe83f7a2a9">
+					<HomeNavLink
+						href="https://wonderapp.notion.site/FAQ-for-Wonder-b2968c6f76bc480ca7f060fe83f7a2a9"
+						target="_blank"
+					>
 						FAQ
 					</HomeNavLink>
 				</HomeNavLinkTypography>
