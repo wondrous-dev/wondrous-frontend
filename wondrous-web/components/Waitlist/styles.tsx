@@ -1,6 +1,6 @@
 import { Typography } from '@material-ui/core'
 import styled from 'styled-components'
-import { Orange, White } from '../../services/colors'
+import { Orange, Red400, White } from '../../services/colors'
 import { createSpacingUnit } from '../../utils'
 import { device } from '../../utils/device'
 import { FunkyButton } from '../Button'
@@ -53,6 +53,19 @@ export const CloseModalButton = styled(ClearIcon)`
 export const JoinWaitListButton = styled(FunkyButton)`
 	&& {
 		padding: ${createSpacingUnit(1.5)}px ${createSpacingUnit(3)}px;
+		margin-top: ${createSpacingUnit(4)}px;
+	}
+`
+
+export const ErrorDiv = styled.div`
+	color: ${Red400};
+	margin-top: ${createSpacingUnit()}px;
+`
+
+export const JoinWaitlistHeader = styled(Typography)`
+	&& {
+		color: White;
+		margin-bottom: ${createSpacingUnit(2)}px;
 	}
 `
 
@@ -70,4 +83,11 @@ export const HomeButtonText = styled(Typography)`
 			font-size: 14px;
 		}
 	}
+`
+
+export const CenteredDiv = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
 `

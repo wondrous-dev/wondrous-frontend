@@ -1,9 +1,22 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import { useRouter } from 'next/router'
-import { TextField } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
+import {
+	isPossiblePhoneNumber,
+	getCountries,
+	parsePhoneNumber,
+} from 'libphonenumber-js'
 
 import WaitlistConfirmation from './confirm'
-import { JoinWaitListButton, HomeButtonText, CloseModalButton } from './styles'
+import {
+	JoinWaitListButton,
+	HomeButtonText,
+	CloseModalButton,
+	JoinWaitlistHeader,
+	CenteredDiv,
+	ErrorDiv,
+} from './styles'
 import { useIsMobile } from '../../utils/hooks'
 import styled from 'styled-components'
 import ClearIcon from '@material-ui/icons/Clear'
@@ -49,51 +62,23 @@ export const CenteredGrid = styled(Grid)`
 		}
 	}
 `
-const WaitlistTextField = styled(TextField)(({ theme }) => ({
-	'& label.Mui-focused': {
-		color: 'blue',
-	},
-	'& .MuiInput-underline:after': {
-		borderBottomColor: 'white',
-	},
-	'& .MuiInput-underline:before': {
-		borderBottomColor: 'white',
-	},
-	'& .MuiFormLabel-root': {
-		color: White,
-	},
-	'.MuiInputBase-input': {
-		color: White,
-	},
-	'& .MuiInputBase-root-root': {
-		color: White,
-	},
-	'& .MuiInput-underline:hover:not(.Mui-disabled):before': {
-		borderBottomColor: White,
-	},
-	'& .MuiInputLabel-shrink': {
-		color: '#8d6fea !important',
+const PhoneTextField = styled(PhoneInput)(({ theme }) => ({
+	'& input': {
+		minHeight: `${createSpacingUnit(6)}px`,
+		fontSize: '16px',
 	},
 }))
 
 const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
-	const [createWaitlistUser, { data, loading, error }] = useMutation(
-		CREATE_WAISTLIST_USER
-	)
-	const [addedToWaitlist, setAddedToWaitlist] = useState(false)
-	const formik = useFormik({
-		initialValues: {
-			email: '',
-		},
-		onSubmit: async (values) => {
-			await createWaitlistUser({ variables: { email: values.email } })
-			// alert(JSON.stringify(values, null, 2))
-			setAddedToWaitlist(true)
-		},
-		validationSchema: Yup.object({
-			email: Yup.string().email('Invalid email address'),
-		}),
-	})
+	const [
+		createWaitlistUser,
+		{ data, loading, error: mutationError },
+	] = useMutation(CREATE_WAISTLIST_USER)
+	const isMobile = useIsMobile()
+	const [verifyPhoneNumber, setVerifyPhoneNumber] = useState(false)
+	const [phoneNumber, setPhoneNumber] = useState('')
+	const [error, setError] = useState(null)
+	const [validNumber, setValidNumber] = useState(null)
 
 	const keyPress = useCallback(
 		(e) => {
@@ -111,40 +96,78 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 
 	return (
 		<ModalWrapper>
-			{!addedToWaitlist && (
+			{!verifyPhoneNumber && (
 				<>
-					<form onSubmit={formik.handleSubmit} style={{ width: '80%' }}>
+					<div
+						style={{
+							display: 'flex',
+							flexDirection: 'column',
+							justifyContent: 'center',
+							alignItems: 'center',
+						}}
+					>
 						{/* <JoinWaitListFormContainer> */}
-						<Grid container alignItems="center" justify="center" spacing={3}>
-							<Grid item md={1} xs={false} />
-							<Grid item md={8} xs={12}>
-								<div>
-									<WaitlistTextField
-										fullWidth
-										name="email"
-										label="email"
-										color="primary"
-										onChange={formik.handleChange}
-										value={formik.values.email}
-										onBlur={formik.handleBlur}
-									/>
-									{formik.touched.email && formik.errors.email ? (
-										<div style={{ color: Red400 }}>{formik.errors.email}</div>
-									) : null}
-									{error && <div style={{ color: Red400 }}>Unknown error</div>}
-								</div>
-							</Grid>
-							<CenteredGrid item md={3} xs={12}>
-								<JoinWaitListButton type="submit">
-									<HomeButtonText nowrap>Join waitlist</HomeButtonText>
-								</JoinWaitListButton>
-							</CenteredGrid>
-						</Grid>
+
+						<CenteredDiv>
+							<JoinWaitlistHeader variant="h4">
+								Enter your phone number
+							</JoinWaitlistHeader>
+							<PhoneInput
+								country="us"
+								placeholder="Enter phone number"
+								value={phoneNumber}
+								onChange={(value) => {
+									setPhoneNumber(value)
+									setError(null)
+								}}
+								isValid={(inputNumber, country, countries) => {
+									setValidNumber(
+										isPossiblePhoneNumber(
+											inputNumber,
+											country?.iso2?.toUpperCase()
+										)
+									)
+									return isPossiblePhoneNumber(
+										inputNumber,
+										country?.iso2?.toUpperCase()
+									)
+								}}
+								inputStyle={{
+									height: '48px',
+									fontSize: '16px',
+									width: isMobile ? '300px' : '500px',
+								}}
+							/>
+							{error && <ErrorDiv>{error}</ErrorDiv>}
+							{mutationError && <ErrorDiv>Unknown error</ErrorDiv>}
+						</CenteredDiv>
+						<JoinWaitListButton
+							onClick={async () => {
+								// Verify phone number
+
+								if (!validNumber) {
+									setError('Please enter a valid phone number')
+								} else {
+									try {
+										await createWaitlistUser({
+											variables: {
+												phoneNumber,
+											},
+										})
+										setVerifyPhoneNumber(true)
+									} catch (err) {
+										setError('Error with connection. Please try again')
+									}
+								}
+							}}
+						>
+							<HomeButtonText nowrap>Join waitlist</HomeButtonText>
+						</JoinWaitListButton>
 						{/* </JoinWaitListFormContainer> */}
-					</form>
+					</div>
 				</>
 			)}
-			{addedToWaitlist && (
+			{verifyPhoneNumber && (
 				<WaitlistConfirmation
 					waitlistPosition={data?.createWaitlistUser?.position}
 				/>
