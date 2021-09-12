@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core'
+import { Typography, Button } from '@material-ui/core'
 import styled from 'styled-components'
 import { Orange, Red400, White } from '../../services/colors'
 import { createSpacingUnit } from '../../utils'
@@ -82,6 +82,17 @@ export const HomeButtonText = styled(Typography)`
 		@media ${device.mobileS} {
 			font-size: 14px;
 		}
+	}
+`
+
+export const ResendLink = styled(Typography)`
+	&& {
+		color: ${White};
+		font-size: 16px;
+		font-weight: bold;
+		text-decoration: underline;
+		margin-top: ${createSpacingUnit(2)}px;
+		cursor: pointer;
 	}
 `
 

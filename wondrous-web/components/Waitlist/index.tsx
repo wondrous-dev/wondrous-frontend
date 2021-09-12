@@ -8,7 +8,7 @@ import {
 	parsePhoneNumber,
 } from 'libphonenumber-js'
 
-import WaitlistConfirmation from './confirm'
+import PhoneVerification from './verifyPhoneNumber'
 import {
 	JoinWaitListButton,
 	HomeButtonText,
@@ -21,7 +21,10 @@ import { useIsMobile } from '../../utils/hooks'
 import styled from 'styled-components'
 import ClearIcon from '@material-ui/icons/Clear'
 import { useQuery, useMutation } from '@apollo/client'
-import { CREATE_WAISTLIST_USER } from '../../graphql/mutations'
+import {
+	CREATE_WAISTLIST_USER,
+	VERIFY_WAITLIST_USER,
+} from '../../graphql/mutations'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import Grid from '@material-ui/core/Grid'
@@ -74,12 +77,29 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 		createWaitlistUser,
 		{ data, loading, error: mutationError },
 	] = useMutation(CREATE_WAISTLIST_USER)
+	const [verifyWaitlistUser] = useMutation(VERIFY_WAITLIST_USER)
 	const isMobile = useIsMobile()
 	const [verifyPhoneNumber, setVerifyPhoneNumber] = useState(false)
 	const [phoneNumber, setPhoneNumber] = useState('')
 	const [error, setError] = useState(null)
 	const [validNumber, setValidNumber] = useState(null)
-
+	const [verificationCode, setVerificationCode] = useState(null)
+	const completeVerification = useCallback(
+		(verificationCode) => {
+			// TODO redirect to invite page with link
+			try {
+				verifyWaitlistUser({
+					variables: {
+						phoneNumber,
+						verificationCode,
+					},
+				})
+			} catch (err) {
+				setError('Failed to verify code')
+			}
+		},
+		[phoneNumber, verifyWaitlistUser]
+	)
 	const keyPress = useCallback(
 		(e) => {
 			if (e.key === 'Escape' && showJoinWaitList) {
@@ -144,7 +164,6 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 						<JoinWaitListButton
 							onClick={async () => {
 								// Verify phone number
-
 								if (!validNumber) {
 									setError('Please enter a valid phone number')
 								} else {
@@ -168,9 +187,15 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 				</>
 			)}
 			{verifyPhoneNumber && (
-				<WaitlistConfirmation
-					waitlistPosition={data?.createWaitlistUser?.position}
-				/>
+				<>
+					<PhoneVerification
+						verificationCode={verificationCode}
+						setVerificationCode={setVerificationCode}
+						phoneNumber={phoneNumber}
+						setCompleteFunc={completeVerification}
+					/>
+					{error && <ErrorDiv>{error}</ErrorDiv>}
+				</>
 			)}
 			<CloseModalButton
 				aria-label="Close modal"
