@@ -10,8 +10,8 @@ import {
 	Container,
 	Subtext,
 	JoinWaitlistHeader,
-	ResendLinkButton,
 	ResendLink,
+	ErrorDiv,
 } from './styles'
 import { createSpacingUnit } from '../../utils'
 import { useMutation } from '@apollo/client'
@@ -31,21 +31,31 @@ const PhoneVerification = ({
 	setVerificationCode,
 	setCompleteFunc,
 	phoneNumber,
+	error,
+	setError,
+	setOpen,
 }) => {
 	const isMobile = useIsMobile()
-	const [resendVerificationCode] = useMutation(RESEND_VERIFICATION_CODE)
+	const [
+		resendVerificationCode,
+		{ data, loading, error: resendError },
+	] = useMutation(RESEND_VERIFICATION_CODE)
 	const onChange = useCallback(
 		(vals) => {
 			if (vals.length <= 6) {
 				setVerificationCode(vals)
+				if (vals.length < 6) {
+					setError(null)
+				}
 				if (vals.length === 6) {
 					setCompleteFunc(vals)
 				}
 			}
 		},
-		[setVerificationCode, setCompleteFunc]
+		[setVerificationCode, setCompleteFunc, setError]
 	)
-
+	const resendErrorMsg =
+		'Too many attempts reached to send code. Please try again later'
 	return (
 		<Container>
 			<JoinWaitlistHeader variant="h4">
@@ -58,15 +68,21 @@ const PhoneVerification = ({
 				variant="body1"
 				onClick={async () => {
 					// Verify phone number
-					resendVerificationCode({
-						variables: {
-							phoneNumber,
-						},
-					})
+					try {
+						await resendVerificationCode({
+							variables: {
+								phoneNumber,
+							},
+						})
+						setOpen(true)
+					} catch (err) {
+						setError(resendErrorMsg)
+					}
 				}}
 			>
 				Resend Verification code
 			</ResendLink>
+			{error && <ErrorDiv>{error || (resendError && resendErrorMsg)}</ErrorDiv>}
 		</Container>
 	)
 }

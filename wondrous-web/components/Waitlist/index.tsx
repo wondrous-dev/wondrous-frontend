@@ -2,11 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react'
 import { Typography } from '@material-ui/core'
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
-import {
-	isPossiblePhoneNumber,
-	getCountries,
-	parsePhoneNumber,
-} from 'libphonenumber-js'
+import { isPossiblePhoneNumber } from 'libphonenumber-js'
 
 import PhoneVerification from './verifyPhoneNumber'
 import {
@@ -19,25 +15,21 @@ import {
 } from './styles'
 import { useIsMobile } from '../../utils/hooks'
 import styled from 'styled-components'
-import ClearIcon from '@material-ui/icons/Clear'
 import { useQuery, useMutation } from '@apollo/client'
 import {
 	CREATE_WAISTLIST_USER,
 	VERIFY_WAITLIST_USER,
 } from '../../graphql/mutations'
-import { useFormik } from 'formik'
-import * as Yup from 'yup'
 import Grid from '@material-ui/core/Grid'
 import { device } from '../../utils/device'
 import { createSpacingUnit } from '../../utils'
-import { Orange, White, Grey10, Red400 } from '../../services/colors'
+import { White } from '../../services/colors'
+import Snackbar from '@material-ui/core/Snackbar'
+import MuiAlert from '@material-ui/lab/Alert'
 
-const JoinWaitListFormContainer = styled.div`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: row;
-`
+function Alert(props) {
+	return <MuiAlert elevation={6} variant="filled" {...props} />
+}
 
 const ModalWrapper = styled.div`
 	&& {
@@ -77,25 +69,36 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 		createWaitlistUser,
 		{ data, loading, error: mutationError },
 	] = useMutation(CREATE_WAISTLIST_USER)
-	const [verifyWaitlistUser] = useMutation(VERIFY_WAITLIST_USER)
+	const [
+		verifyWaitlistUser,
+		{ data: verifyData, loading: verifyLoading, error: verifyError },
+	] = useMutation(VERIFY_WAITLIST_USER)
 	const isMobile = useIsMobile()
 	const [verifyPhoneNumber, setVerifyPhoneNumber] = useState(false)
 	const [phoneNumber, setPhoneNumber] = useState('')
 	const [error, setError] = useState(null)
 	const [validNumber, setValidNumber] = useState(null)
 	const [verificationCode, setVerificationCode] = useState(null)
+	const [open, setOpen] = useState(false)
+	const incorrectVerificationText =
+		'Incorrect code. Please try again or resend verification code'
 	const completeVerification = useCallback(
-		(verificationCode) => {
+		async (verificationCode) => {
 			// TODO redirect to invite page with link
 			try {
-				verifyWaitlistUser({
+				const result = await verifyWaitlistUser({
 					variables: {
 						phoneNumber,
 						verificationCode,
 					},
 				})
+				if (result?.data?.verifyWaitlistUser) {
+				} else {
+					console.log('what the')
+					setError(incorrectVerificationText)
+				}
 			} catch (err) {
-				setError('Failed to verify code')
+				setError(incorrectVerificationText)
 			}
 		},
 		[phoneNumber, verifyWaitlistUser]
@@ -114,6 +117,9 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 		return () => document.removeEventListener('keydown', keyPress)
 	}, [keyPress])
 
+	const handleClose = useCallback(() => {
+		setOpen(false)
+	}, [])
 	return (
 		<ModalWrapper>
 			{!verifyPhoneNumber && (
@@ -140,7 +146,7 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 									setPhoneNumber(value)
 									setError(null)
 								}}
-								isValid={(inputNumber, country, countries) => {
+								isValid={(inputNumber, country: any, countries) => {
 									setValidNumber(
 										isPossiblePhoneNumber(
 											inputNumber,
@@ -193,10 +199,17 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 						setVerificationCode={setVerificationCode}
 						phoneNumber={phoneNumber}
 						setCompleteFunc={completeVerification}
+						error={error}
+						setError={setError}
+						setOpen={setOpen}
 					/>
-					{error && <ErrorDiv>{error}</ErrorDiv>}
 				</>
 			)}
+			<Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+				<Alert onClose={handleClose} severity="success">
+					Verification code sent!
+				</Alert>
+			</Snackbar>
 			<CloseModalButton
 				aria-label="Close modal"
 				onClick={() => setShowJoinWaitList(false)}
