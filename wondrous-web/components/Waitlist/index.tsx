@@ -3,6 +3,7 @@ import { Typography } from '@material-ui/core'
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { isPossiblePhoneNumber } from 'libphonenumber-js'
+import { useRouter } from 'next/router'
 
 import PhoneVerification from './verifyPhoneNumber'
 import {
@@ -12,12 +13,13 @@ import {
 	JoinWaitlistHeader,
 	CenteredDiv,
 	ErrorDiv,
+	ModalWrapper,
 } from './styles'
 import { useIsMobile } from '../../utils/hooks'
 import styled from 'styled-components'
 import { useQuery, useMutation } from '@apollo/client'
 import {
-	CREATE_WAISTLIST_USER,
+	CREATE_WAITLIST_USER,
 	VERIFY_WAITLIST_USER,
 } from '../../graphql/mutations'
 import Grid from '@material-ui/core/Grid'
@@ -26,26 +28,11 @@ import { createSpacingUnit } from '../../utils'
 import { White } from '../../services/colors'
 import Snackbar from '@material-ui/core/Snackbar'
 import MuiAlert from '@material-ui/lab/Alert'
+import { storeAuthWaitlistHeader } from '../Auth/withAuth'
 
 function Alert(props) {
 	return <MuiAlert elevation={6} variant="filled" {...props} />
 }
-
-const ModalWrapper = styled.div`
-	&& {
-		width: 100%;
-		height: 100%;
-		position: fixed;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		background: linear-gradient(270deg, #c2e9fb 0%, #a1c4fd 50.16%);
-		flex-direction: column;
-		& .MuiSvgIcon-root {
-			fill: ${White};
-		}
-	}
-`
 
 export const CenteredGrid = styled(Grid)`
 	&& {
@@ -68,11 +55,12 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 	const [
 		createWaitlistUser,
 		{ data, loading, error: mutationError },
-	] = useMutation(CREATE_WAISTLIST_USER)
+	] = useMutation(CREATE_WAITLIST_USER)
 	const [
 		verifyWaitlistUser,
 		{ data: verifyData, loading: verifyLoading, error: verifyError },
 	] = useMutation(VERIFY_WAITLIST_USER)
+	const router = useRouter()
 	const isMobile = useIsMobile()
 	const [verifyPhoneNumber, setVerifyPhoneNumber] = useState(false)
 	const [phoneNumber, setPhoneNumber] = useState('')
@@ -93,15 +81,15 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 					},
 				})
 				if (result?.data?.verifyWaitlistUser) {
+					router.push('/waitlistProfile')
 				} else {
-					console.log('what the')
 					setError(incorrectVerificationText)
 				}
 			} catch (err) {
 				setError(incorrectVerificationText)
 			}
 		},
-		[phoneNumber, verifyWaitlistUser]
+		[phoneNumber, verifyWaitlistUser, router]
 	)
 	const keyPress = useCallback(
 		(e) => {
@@ -170,17 +158,27 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 						<JoinWaitListButton
 							onClick={async () => {
 								// Verify phone number
+								// TODO: add loading screen
 								if (!validNumber) {
 									setError('Please enter a valid phone number')
 								} else {
 									try {
-										await createWaitlistUser({
+										const result = await createWaitlistUser({
 											variables: {
 												phoneNumber,
 											},
 										})
-										setVerifyPhoneNumber(true)
+										const waitlistUser =
+											result?.data?.createOrGetWaitlistUser?.waitlistUser
+										const token = result?.data?.createOrGetWaitlistUser?.token
+										if (waitlistUser?.phoneVerified) {
+											storeAuthWaitlistHeader(token, waitlistUser)
+											router.push('/waitlistProfile')
+										} else {
+											setVerifyPhoneNumber(true)
+										}
 									} catch (err) {
+										console.log('err', err)
 										setError('Error with connection. Please try again')
 									}
 								}

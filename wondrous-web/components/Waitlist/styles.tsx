@@ -6,6 +6,21 @@ import { device } from '../../utils/device'
 import { FunkyButton } from '../Button'
 import ClearIcon from '@material-ui/icons/Clear'
 
+export const ModalWrapper = styled.div`
+	&& {
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background: linear-gradient(270deg, #c2e9fb 0%, #a1c4fd 50.16%);
+		flex-direction: column;
+		& .MuiSvgIcon-root {
+			fill: ${White};
+		}
+	}
+`
 export const Subtext = styled(Typography)`
 	&& {
 		margin-top: ${createSpacingUnit(3)}px;
@@ -60,6 +75,7 @@ export const JoinWaitListButton = styled(FunkyButton)`
 export const ErrorDiv = styled.div`
 	color: ${Red400};
 	margin-top: ${createSpacingUnit()}px;
+	margin-bottom: -${createSpacingUnit(3.5)}px;
 `
 
 export const JoinWaitlistHeader = styled(Typography)`

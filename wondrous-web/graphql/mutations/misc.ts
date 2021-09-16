@@ -1,15 +1,16 @@
 import { gql } from '@apollo/client'
+import { LoggedinWaitlistUserFragment } from '../fragments/user'
 
-export const CREATE_WAISTLIST_USER = gql`
+export const CREATE_WAITLIST_USER = gql`
 	mutation createWaitlistUser($phoneNumber: String!) {
 		createOrGetWaitlistUser(phoneNumber: $phoneNumber) {
-			email
-			phoneNumber
-			invitesSent
-			tokensRedeemed
-			phoneVerified
+			token
+			waitlistUser {
+				...LoggedinWaitlistUser
+			}
 		}
 	}
+	${LoggedinWaitlistUserFragment}
 `
 
 export const RESEND_VERIFICATION_CODE = gql`
@@ -29,10 +30,11 @@ export const VERIFY_WAITLIST_USER = gql`
 			phoneNumber: $phoneNumber
 			verificationCode: $verificationCode
 		) {
-			email
-			phoneNumber
-			invitesSent
-			tokensRedeemed
+			token
+			waitlistUser {
+				...LoggedinWaitlistUser
+			}
 		}
 	}
+	${LoggedinWaitlistUserFragment}
 `

@@ -69,6 +69,7 @@ const PhoneVerification = ({
 				onClick={async () => {
 					// Verify phone number
 					try {
+						setError(null)
 						await resendVerificationCode({
 							variables: {
 								phoneNumber,
