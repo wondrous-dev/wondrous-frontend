@@ -49,6 +49,7 @@ const MyApp = (props) => {
 					name="viewport"
 					content="minimum-scale=1, initial-scale=1, width=device-width"
 				/>
+				<link rel="shortcut icon" href="/images/favicon.ico" />
 			</Head>
 			<IsMobileContext.Provider value={isMobile}>
 				<StyledComponentProvider theme={theme}>

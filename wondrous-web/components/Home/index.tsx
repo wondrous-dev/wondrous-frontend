@@ -36,7 +36,7 @@ const Home = () => {
 	useEffect(() => {
 		if (user) {
 			// Redirect to unique link page
-			router.push('/waitlistProfile')
+			router.push('/waitlist/profile')
 		}
 	}, [user, router])
 

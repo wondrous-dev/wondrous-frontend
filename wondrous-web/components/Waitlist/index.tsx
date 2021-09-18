@@ -44,18 +44,10 @@ export const CenteredGrid = styled(Grid)`
 		}
 	}
 `
-const PhoneTextField = styled(PhoneInput)(({ theme }) => ({
-	'& input': {
-		minHeight: `${createSpacingUnit(6)}px`,
-		fontSize: '16px',
-	},
-}))
 
 const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
-	const [
-		createWaitlistUser,
-		{ data, loading, error: mutationError },
-	] = useMutation(CREATE_WAITLIST_USER)
+	const [createWaitlistUser, { data, loading, error: mutationError }] =
+		useMutation(CREATE_WAITLIST_USER)
 	const [
 		verifyWaitlistUser,
 		{ data: verifyData, loading: verifyLoading, error: verifyError },
@@ -81,7 +73,7 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 					},
 				})
 				if (result?.data?.verifyWaitlistUser) {
-					router.push('/waitlistProfile')
+					router.push('/waitlist/profile')
 				} else {
 					setError(incorrectVerificationText)
 				}
@@ -173,7 +165,7 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 										const token = result?.data?.createOrGetWaitlistUser?.token
 										if (waitlistUser?.phoneVerified) {
 											storeAuthWaitlistHeader(token, waitlistUser)
-											router.push('/waitlistProfile')
+											router.push('/waitlist/profile')
 										} else {
 											setVerifyPhoneNumber(true)
 										}
