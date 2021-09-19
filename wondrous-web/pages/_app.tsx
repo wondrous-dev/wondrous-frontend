@@ -1,6 +1,5 @@
-import type { AppProps } from 'next/app'
-import React from 'react'
-import App from 'next/app'
+import React, { useEffect } from 'react'
+import { useRouter } from 'next/router'
 import { ThemeProvider as StyledComponentProvider } from 'styled-components'
 import Head from 'next/head'
 import { ApolloProvider } from '@apollo/client'
@@ -27,15 +26,21 @@ const MyApp = (props) => {
 	// every single page in your application. This disables the ability to
 	// perform automatic static optimization, causing every page in your app to
 	// be server-side rendered.
-
+	const router = useRouter()
 	const isMobile = !useMediaQuery(theme.breakpoints.up('sm'))
-	const {
-		Component,
-		pageProps,
-		context,
-		isAuthenticated,
-		user,
-	} = props as Readonly<typeof props & AppContextStore>
+	const { Component, pageProps, context, isAuthenticated, user } =
+		props as Readonly<typeof props & AppContextStore>
+	useEffect(() => {
+		const handleRouteChange = (url) => {
+			window.gtag('config', process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS, {
+				page_path: url,
+			})
+		}
+		router.events.on('routeChangeComplete', handleRouteChange)
+		return () => {
+			router.events.off('routeChangeComplete', handleRouteChange)
+		}
+	}, [router.events])
 	return (
 		<>
 			<Head>
