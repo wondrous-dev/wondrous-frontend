@@ -19,7 +19,8 @@ export const LoggedinWaitlistUserFragment = gql`
 		email
 		phoneNumber
 		invitesSent
-		tokensRedeemed
+		refCode
+		tokensEarned
 		phoneVerified
 	}
 `

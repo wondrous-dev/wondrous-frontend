@@ -63,7 +63,7 @@ let timeout = null
 const WaitlistProfile = () => {
 	const waitlistUser = useMe()
 	const windowSize = useWindowSize()
-	const referralLink = `https://wonderverse.xyz/invite?ref=${waitlistUser?.id}`
+	const referralLink = `https://wonderverse.xyz?ref=${waitlistUser?.refCode}`
 	const [copied, setCopied] = useState(false)
 	const handleCopyClick = (e) => {
 		const newEl = document.createElement('input')
@@ -101,7 +101,10 @@ const WaitlistProfile = () => {
 			<JoinWaitlistHeader variant="h4">
 				Thanks for joining the waitlist! You now have:
 			</JoinWaitlistHeader>
-			<FunkyText variant="h3">{` `}10 $WONDER</FunkyText>
+			<FunkyText variant="h3">
+				{` `}
+				{waitlistUser?.tokensEarned || '10'} $WONDER
+			</FunkyText>
 			<ExplanationText>
 				Share the link below with friends to get{' '}
 				<FunkyTextYellow>{` `}30 $WONDER</FunkyTextYellow> tokens for each
@@ -140,7 +143,9 @@ const WaitlistProfile = () => {
 						<TweetButtonText>Tweet</TweetButtonText>
 					</TweetButton>
 					<ReferredFunkyButton>
-						<ReferredText>Users referred: 0</ReferredText>
+						<ReferredText>
+							Users referred: {waitlistUser?.invitesSent || 0}
+						</ReferredText>
 					</ReferredFunkyButton>
 				</>
 			)}

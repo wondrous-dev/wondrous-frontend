@@ -60,6 +60,8 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 	const [validNumber, setValidNumber] = useState(null)
 	const [verificationCode, setVerificationCode] = useState(null)
 	const [open, setOpen] = useState(false)
+	const inviteRefCode = router?.query?.ref
+
 	const incorrectVerificationText =
 		'Incorrect code. Please try again or resend verification code'
 	const completeVerification = useCallback(
@@ -72,7 +74,10 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 						verificationCode,
 					},
 				})
-				if (result?.data?.verifyWaitlistUser) {
+				const waitlistUser = result?.data?.verifyWaitlistUser?.waitlistUser
+				const token = result?.data?.verifyWaitlistUser?.token
+				if (waitlistUser) {
+					await storeAuthWaitlistHeader(token, waitlistUser)
 					router.push('/waitlist/profile')
 				} else {
 					setError(incorrectVerificationText)
@@ -145,7 +150,7 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 								}}
 							/>
 							{error && <ErrorDiv>{error}</ErrorDiv>}
-							{mutationError && <ErrorDiv>Unknown error</ErrorDiv>}
+							{mutationError && !error && <ErrorDiv>Unknown error</ErrorDiv>}
 						</CenteredDiv>
 						<JoinWaitListButton
 							onClick={async () => {
@@ -158,13 +163,16 @@ const JoinWaitList = ({ showJoinWaitList, setShowJoinWaitList }) => {
 										const result = await createWaitlistUser({
 											variables: {
 												phoneNumber,
+												...(inviteRefCode && {
+													inviteRefCode,
+												}),
 											},
 										})
 										const waitlistUser =
 											result?.data?.createOrGetWaitlistUser?.waitlistUser
 										const token = result?.data?.createOrGetWaitlistUser?.token
 										if (waitlistUser?.phoneVerified) {
-											storeAuthWaitlistHeader(token, waitlistUser)
+											await storeAuthWaitlistHeader(token, waitlistUser)
 											router.push('/waitlist/profile')
 										} else {
 											setVerifyPhoneNumber(true)
