@@ -93,7 +93,7 @@ export const ContentDiv = styled.div`
 
 export const HomeSubtext = styled(Subtext)`
 	&& {
-		max-width: ${createSpacingUnit(88)}px;
+		max-width: ${createSpacingUnit(94)}px;
 	}
 `
 

@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react'
 import Trackable from '../Trackable'
 import SmartLink from '../SmartLink'
 import Image from 'next/image'
+import Head from 'next/head'
 import { Modal } from '@material-ui/core'
 import JoinWaitList from '../Waitlist'
 import {
@@ -32,12 +33,29 @@ const Home = () => {
 	return (
 		<Container>
 			<Blob1 src="/images/blob1.png" />
-
+			<Head>
+				<meta
+					property="twitter:image"
+					content="https://wonderverse.xyz/images/twitter-meta.png"
+				/>
+				<meta property="twitter:site" content="@wonderversexyz" />
+				<meta property="twitter:title" content="Wonder Waitlist" />
+				<meta
+					property="og:description"
+					content="Earn tokens for building, learning and creating."
+				/>
+				<meta
+					property="og:image"
+					content="https://wonderverse.xyz/images/twitter-meta.png"
+				/>
+				<meta property="og:title" content="Wonder Waitlist" />
+			</Head>
 			<RightImage src="/images/homepage-right.png" />
 			<ContentDiv>
 				<Title variant="h1">Wonder</Title>
 				<HomeSubtext>
-					The productivity metaverse - build your projects in public and earn
+					The productivity metaverse - build projects in public with our
+					management tools and earn
 					{` `}
 					<FunkyText>crypto rewards</FunkyText> by completing tasks.
 				</HomeSubtext>

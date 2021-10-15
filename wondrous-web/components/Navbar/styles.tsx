@@ -22,7 +22,6 @@ export const LinkContainer = styled.div`
 export const HomeNavLink = styled.a`
 	&& {
 		color: ${White};
-		text-decoration: none;
 	}
 `
 
