@@ -7,7 +7,10 @@ import {
 } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 import { getMainDefinition } from '@apollo/client/utilities'
-import { getAuthHeader } from '../components/Auth/withAuth'
+import {
+	getAuthHeader,
+	getWaitlistAuthHeader,
+} from '../components/Auth/withAuth'
 
 const graphqlUri =
 	process.env.NEXT_PUBLIC_GRAPHQL_SERVER_URL || 'http://localhost:4000/graphql'
@@ -23,13 +26,19 @@ const httpLink = new HttpLink({
 	credentials: 'include',
 })
 
-const getAuth = async () => {
-	const token = await getAuthHeader()
+const getAuth = () => {
+	const token = getAuthHeader()
 	return token ? `Bearer ${token}` : ''
 }
 
-const authLink = setContext(async (_, { headers }) => {
-	const auth = await getAuth()
+const getWaitlistAuth = () => {
+	const token = getWaitlistAuthHeader()
+	return token ? `Bearer ${token}` : ''
+}
+
+const authLink = setContext((_, { headers }) => {
+	let auth = getAuth() || getWaitlistAuth()
+
 	return {
 		headers: {
 			...headers,
@@ -47,6 +56,11 @@ const cache = new InMemoryCache({
 				},
 				users(existingData, { args, toReference }) {
 					return existingData || toReference({ __typename: 'User', ...args })
+				},
+				waitlistUsers(existingData, { args, toReference }) {
+					return (
+						existingData || toReference({ __typename: 'WaitlistUser', ...args })
+					)
 				},
 			},
 		},

@@ -19,6 +19,8 @@ import {
 import { useIsMobile } from '../../utils/hooks'
 import HomeNavBar from '../Navbar/Home'
 import styled from 'styled-components'
+import { useMe, withWaitlistAuth } from '../Auth/withAuth'
+import { useRouter } from 'next/router'
 const StyledModal = styled(Modal)`
 	display: flex;
 	justify-content: center;
@@ -29,6 +31,14 @@ const Home = () => {
 	const [showJoinWaitList, setShowJoinWaitList] = useState(false)
 
 	const isMobile = useIsMobile()
+	const user = useMe()
+	const router = useRouter()
+	useEffect(() => {
+		if (user) {
+			// Redirect to unique link page
+			router.push('/waitlist/profile')
+		}
+	}, [user, router])
 
 	return (
 		<Container>
@@ -77,4 +87,4 @@ const Home = () => {
 	)
 }
 
-export default Home
+export default withWaitlistAuth(Home)
