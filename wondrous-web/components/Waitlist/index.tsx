@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import { Typography } from '@material-ui/core'
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { isPossiblePhoneNumber } from 'libphonenumber-js'
