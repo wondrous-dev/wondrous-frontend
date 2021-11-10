@@ -119,13 +119,13 @@ const theme = createTheme({
 		},
 		body1: {
 			fontSize: '16px',
-			lineHeight: '24px',
+			lineHeight: '28px',
 			color: Colors.Grey100,
 			letterSpacing: '0.5%',
 		},
 		body2: {
-			fontSize: '12px',
-			lineHeight: '22px',
+			fontSize: '14px',
+			lineHeight: '24px',
 			color: Colors.Grey100,
 			letterSpacing: '0.25%',
 		},

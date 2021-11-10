@@ -1,5 +1,5 @@
 import React from 'react'
-import { useIsMobile } from '../../utils/hooks'
+import { useIsMobile, useWindowSize } from '../../utils/hooks'
 import {
 	HomeNavLink,
 	HomeNavLinkTypography,
@@ -11,16 +11,21 @@ import {
 	FlexDiv,
 	LinkDiv,
 	JoinDiscordButton,
+	LogoNoTextImg,
 } from './styles'
 
 const HomeNavbar = () => {
-	const isMobile = useIsMobile()
-
+	const windowSize = useWindowSize()
+	console.log('windowSize', windowSize)
 	return (
 		<NavContainer>
 			<LinkContainer>
 				<ImgLink>
-					<LogoImg src="/images/logo/horizontal-white-text.png" />
+					{windowSize?.width < 375 ? (
+						<LogoNoTextImg src="/images/logo/wonder-logo-no-text.png" />
+					) : (
+						<LogoImg src="/images/logo/horizontal-white-text.png" />
+					)}
 				</ImgLink>
 				<FlexDiv />
 				<LinkDiv>

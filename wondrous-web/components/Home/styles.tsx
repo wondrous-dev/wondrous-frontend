@@ -1,6 +1,14 @@
-import { Button, Typography } from '@material-ui/core'
+import { Button, Typography, Grid } from '@material-ui/core'
 import styled from 'styled-components'
-import { Orange, Orange100, White, Yellow400 } from '../../services/colors'
+import {
+	Green200,
+	Orange,
+	Orange100,
+	Purple,
+	Purple100,
+	White,
+	Yellow400,
+} from '../../services/colors'
 import { createSpacingUnit } from '../../utils'
 import { device } from '../../utils/device'
 import { FunkyButton } from '../Button'
@@ -9,14 +17,36 @@ export const HeaderContainer = styled.div`
 	&& {
 		width: 100%;
 		height: 100%;
-		min-height: 100vh;
+		min-height: 125vh;
 		display: flex;
 		align-items: center;
-		position: fixed;
+		background-color: ${Purple};
 		background-image: url('/images/homepage/homepage-header-graphic.png');
 		background-position: 0 0 center; /* Center the image */
 		background-repeat: no-repeat; /* Do not repeat the image */
 		background-size: cover; /* Resize the background image to cover the entire container */
+
+		@media ${device.tablet} {
+			background-image: url('/images/homepage/header-no-background.png');
+			background-position-x: 100%;
+			background-position-y: 50vh;
+			align-items: baseline;
+			padding-top: ${createSpacingUnit(30)}px;
+			min-height: 125vh;
+		}
+
+		@media (max-width: 600px) {
+			background-position-y: 60vh;
+		}
+
+		@media ${device.mobileL} {
+			background-image: url('/images/homepage/header-no-background.png');
+			background-position-x: 100%;
+			background-position-y: 80vh;
+			align-items: baseline;
+			padding-top: ${createSpacingUnit(30)}px;
+			min-height: 130vh;
+		}
 	}
 `
 
@@ -75,6 +105,20 @@ export const Title = styled(Typography)`
 		-moz-background-clip: text;
 		-moz-text-fill-color: transparent;
 		-webkit-text-fill-color: transparent;
+		@media ${device.tablet} {
+			text-align: center;
+			padding-left: 0;
+		}
+
+		@media ${device.mobileL} {
+			font-size: 42px;
+			line-height: 55px;
+		}
+
+		@media ${device.mobileM} {
+			font-size: 30px;
+			line-height: 38px;
+		}
 	}
 `
 
@@ -104,13 +148,22 @@ export const ContentDiv = styled.div`
 		display: flex;
 		flex-direction: column;
 		padding: ${createSpacingUnit(2)}px;
-		max-width: ${createSpacingUnit()};
+		margin-top: -${createSpacingUnit(10)}px;
+		@media ${device.tablet} {
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+		}
 	}
 `
 
 export const HomeSubtext = styled(Subtext)`
 	&& {
-		max-width: 441px;
+		max-width: ${createSpacingUnit(60)}px;
+		@media ${device.tablet} {
+			text-align: center;
+			padding-left: 0;
+		}
 	}
 `
 
@@ -135,6 +188,11 @@ export const HomeButton = styled(Button)`
 		border-radius: 9px;
 		margin-left: ${createSpacingUnit(8)}px;
 		max-width: ${createSpacingUnit(30)}px;
+		@media ${device.tablet} {
+			justify-content: center;
+			align-items: center;
+			margin-left: 0;
+		}
 	}
 `
 
@@ -201,4 +259,244 @@ export const Blob2 = styled(Blob)`
 			top: ${createSpacingUnit(2)}px;
 		}
 	}
+`
+
+export const Block2Container = styled.div`
+	background: ${Purple};
+	padding: ${createSpacingUnit(2)}px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-bottom: ${createSpacingUnit(10)}px;
+	@media ${device.laptop} {
+		padding-bottom: ${createSpacingUnit(30)}px;
+	}
+`
+
+export const FeatureDiv = styled(Grid)`
+	&& {
+		margin-top: -${createSpacingUnit(20)}px;
+		@media ${device.laptop} {
+			margin-top: -${createSpacingUnit(30)}px;
+		}
+		@media ${device.mobileL} {
+			margin-top: -${createSpacingUnit(20)}px;
+		}
+	}
+`
+
+export const FeatureBlock = styled(Grid)``
+
+export const FeatureBlockInner = styled.div`
+	&& {
+		padding: ${createSpacingUnit(2)}px ${createSpacingUnit(3)}px;
+		border: 2px solid black;
+		text-align: center;
+		border-image-slice: 1;
+		border-image-source: linear-gradient(
+			179.47deg,
+			#4f8bff 0.46%,
+			#7000ff 295.96%
+		);
+		position: relative;
+		z-index: 100;
+		background: linear-gradient(
+			0deg,
+			rgba(2, 2, 16, 0.45),
+			rgba(2, 2, 16, 0.45)
+		);
+		background-blend-mode: overlay, normal;
+		box-shadow: 0px 14px 44px rgba(0, 0, 0, 0.35);
+		backdrop-filter: blur(30px);
+		min-height: ${createSpacingUnit(30.5)}px;
+	}
+`
+export const FeatureImg = styled.img`
+	&& {
+		margin-bottom: ${createSpacingUnit(1.5)}px;
+		width: ${createSpacingUnit(7.25)}px;
+	}
+`
+
+export const FeatureHeader = styled(Typography)`
+	&& {
+		font-family: Carmen Sans Bold;
+		size: 18px;
+		line-height: 26px;
+		text-align: center;
+		color: ${White};
+		margin-bottom: ${createSpacingUnit(2)}px;
+	}
+`
+
+export const FeatureText = styled(Typography)`
+	&& {
+		font-family: Carmen Sans;
+		font-size: 16px;
+		line-height: 24px;
+		text-align: center;
+		color: ${White};
+	}
+`
+
+export const Block2Header = styled(Title)`
+	&& {
+		font-size: 32px;
+		line-height: 40px;
+		margin-top: ${createSpacingUnit(8)}px;
+		margin-bottom: ${createSpacingUnit(2.5)}px;
+		padding-left: 0;
+		text-align: center;
+		@media ${device.laptop} {
+			font-size: 28px;
+			line-height: 35px;
+		}
+	}
+`
+
+export const Block2TextDiv = styled.div`
+	&& {
+		max-width: ${createSpacingUnit(80)}px;
+	}
+`
+
+export const CollaborativeImg = styled.img`
+	width: ${createSpacingUnit(100)}px;
+	margin-top: ${createSpacingUnit(4)}px;
+`
+
+export const Block3LeftSideGraphic = styled.img`
+	position: absolute;
+	top: -${createSpacingUnit(30)}px;
+	left: -${createSpacingUnit(50)}px;
+	width: ${createSpacingUnit(100)}px;
+	@media ${device.mobileL} {
+		width: ${createSpacingUnit(85)}px;
+	}
+
+	@media ${device.mobileM} {
+		width: ${createSpacingUnit(70)}px;
+	}
+`
+
+export const Block3Container = styled(Block2Container)`
+	&& {
+		background-color: ${Purple};
+		background-image: url('/images/homepage/impact-background.png');
+		background-repeat: no-repeat;
+		background-position: 50 0 center; /* Center the image */
+		background-size: cover; /* Resize the background image to cover the entire container */
+		height: 100vh;
+		justify-content: center;
+		position: relative;
+		@media ${device.laptop} {
+			height: 125vh;
+			background-position: center;
+		}
+	}
+`
+
+export const Block3Header = styled(Block2Header)`
+	&& {
+		max-width: ${createSpacingUnit(56)}px;
+		margin-top: ${createSpacingUnit(8)}px;
+		margin-bottom: ${createSpacingUnit(2.5)}px;
+		padding-left: 0;
+		text-align: center;
+		@media ${device.laptop} {
+			margin-bottom: ${createSpacingUnit(4)}px;
+		}
+	}
+`
+
+export const Block4Container = styled(Block2Container)`
+	background-color: ${Purple100};
+	position: relative;
+	height: auto;
+`
+
+export const GetFreeTokensDiv = styled.div`
+	&& {
+		border: 2px solid black;
+		text-align: center;
+		border-image-slice: 1;
+		border-image-source: linear-gradient(
+			179.47deg,
+			#4f8bff 0.46%,
+			#7000ff 295.96%
+		);
+		position: relative;
+		z-index: 100;
+		background: linear-gradient(
+			0deg,
+			rgba(2, 2, 16, 0.45),
+			rgba(2, 2, 16, 0.45)
+		);
+		background-blend-mode: overlay, normal;
+		box-shadow: 0px 14px 44px rgba(0, 0, 0, 0.35);
+		backdrop-filter: blur(30px);
+		padding: ${createSpacingUnit(4)}px;
+		max-width: ${createSpacingUnit(110.5)}px;
+		width: 100%;
+		margin-top: -${createSpacingUnit(10)}px;
+	}
+`
+
+export const GetFreeTokensHeader = styled(Typography)`
+	&& {
+		font-size: 24px;
+		line-height: 34px;
+		font-family: Carmen Sans SemiBold;
+		color: ${White};
+		margin-bottom: ${createSpacingUnit(4)}px;
+	}
+`
+
+export const TokenText = styled.span`
+	&& {
+		color: ${Green200};
+	}
+`
+
+export const WonderToken = styled.img`
+	width: ${createSpacingUnit(10.25)}px;
+	margin-bottom: ${createSpacingUnit(3)}px;
+`
+
+export const FreeTokenButton = styled(Button)`
+	&& {
+		margin-top: ${createSpacingUnit(4)}px;
+		padding: ${createSpacingUnit(2)}px;
+		border: 1px solid ${Green200};
+		border-radius: 9px;
+		max-width: ${createSpacingUnit(30)}px;
+	}
+`
+
+export const JoinDiscordBox = styled(GetFreeTokensDiv)`
+	&& {
+		max-width: ${createSpacingUnit(75.5)}px;
+		margin-top: ${createSpacingUnit(10)}px;
+		height: auto;
+	}
+`
+
+export const DiscordLogo = styled.img`
+	&& {
+		width: ${createSpacingUnit(16)}px;
+	}
+`
+
+export const JoinDiscordText = styled(Typography)`
+	&& {
+		font-size: 22px;
+		line-height: 27.5px;
+		color: ${White};
+		margin-top: ${createSpacingUnit(3)}px;
+		margin-bottom: ${createSpacingUnit(2)}px;
+		font-family: Carmen Sans Bold;
+	}
+`
+export const JoinDiscordButton = styled(FreeTokenButton)`
+	max-width: none;
 `

@@ -8,13 +8,14 @@ import SmartLink from '../SmartLink'
 
 export const NavContainer = styled.div`
 	&& {
-		position: fixed;
+		position: absolute;
 		top: ${createSpacingUnit(1)}px;
 		padding-top: ${createSpacingUnit(2)}px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		width: 100%;
+		z-index: 1000;
 	}
 `
 export const LinkContainer = styled.div`
@@ -35,6 +36,10 @@ export const ImgLink = styled.a`
 
 export const LogoImg = styled.img`
 	width: ${createSpacingUnit(22.75)}px;
+`
+
+export const LogoNoTextImg = styled.img`
+	width: ${createSpacingUnit(7.5)}px;
 `
 
 export const FlexDiv = styled.div`
@@ -63,23 +68,29 @@ export const HomeNavLinkTypography = styled(Typography)`
 
 export const LinkDiv = styled.div`
 	&& {
-		flex: 1;
 		text-align: right;
 		padding-right: ${createSpacingUnit(6)}px;
+		@media ${device.mobileL} {
+			padding-right: ${createSpacingUnit(2)}px;
+		}
 	}
 `
 
 export const ManifestoLink = styled(HomeNavLinkTypography)`
 	&& {
 		margin-right: ${createSpacingUnit(6)}px;
-		margin-left: -${createSpacingUnit(5)}px;
+		@media ${device.tablet} {
+			margin-right: ${createSpacingUnit(2)}px;
+		}
+		@media (max-width: 550px) {
+			display: none;
+		}
 	}
 `
 
 export const JoinDiscordButton = styled(HomeNavLink)`
 	&& {
 		border: 2px solid #7fff31;
-		box-sizing: border-box;
 		border-radius: 9px;
 		padding: ${createSpacingUnit(2)}px;
 	}
