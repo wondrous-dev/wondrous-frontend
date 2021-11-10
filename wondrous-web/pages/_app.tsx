@@ -5,6 +5,7 @@ import Head from 'next/head'
 import { ApolloProvider } from '@apollo/client'
 import { CssBaseline, useMediaQuery } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/core/styles'
+import '../services/stylesheets/body.css'
 
 import apollo from '../services/apollo'
 import theme from '../services/theme'

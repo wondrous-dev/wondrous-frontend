@@ -1,20 +1,22 @@
-import { Typography } from '@material-ui/core'
+import { Button, Typography } from '@material-ui/core'
 import styled from 'styled-components'
 import { Orange, Orange100, White, Yellow400 } from '../../services/colors'
 import { createSpacingUnit } from '../../utils'
 import { device } from '../../utils/device'
 import { FunkyButton } from '../Button'
 
-export const Container = styled.div`
+export const HeaderContainer = styled.div`
 	&& {
 		width: 100%;
 		height: 100%;
 		min-height: 100vh;
 		display: flex;
 		align-items: center;
-		justify-content: center;
 		position: fixed;
-		background: linear-gradient(270deg, #c2e9fb 0%, #a1c4fd 50.16%);
+		background-image: url('/images/homepage/homepage-header-graphic.png');
+		background-position: 0 0 center; /* Center the image */
+		background-repeat: no-repeat; /* Do not repeat the image */
+		background-size: cover; /* Resize the background image to cover the entire container */
 	}
 `
 
@@ -57,24 +59,39 @@ export const Title = styled(Typography)`
 	&& {
 		position: relative;
 		z-index: 10;
+		max-width: ${createSpacingUnit(60.6)}px;
+		display: inline;
+		font-weight: bold;
+		background: linear-gradient(
+			267.61deg,
+			#ccbbff 12.13%,
+			#7427ff 91.76%,
+			#00baff 180.15%
+		);
+		padding-left: ${createSpacingUnit(8)}px;
+		background-size: 200% auto;
+		background-clip: text;
+		-webkit-background-clip: text;
+		-moz-background-clip: text;
+		-moz-text-fill-color: transparent;
+		-webkit-text-fill-color: transparent;
 	}
+`
+
+export const EmphasisSpan = styled.span`
+	font-family: Faktum Bold;
 `
 
 export const Subtext = styled(Typography)`
 	&& {
 		margin-top: ${createSpacingUnit(3)}px;
 		color: ${White};
-		font-size: 20px;
-		text-align: center;
-		line-height: 32px;
+		font-size: 16px;
+		font-family: Faktum;
+		line-height: 27.5px;
 		position: relative;
 		z-index: 10;
-
-		@media ${device.mobileL} {
-			font-size: 16px;
-			line-height: 26px;
-		}
-
+		padding-left: ${createSpacingUnit(8)}px;
 		@media ${device.mobileS} {
 			font-size: 14px;
 			line-height: 24px;
@@ -84,7 +101,6 @@ export const Subtext = styled(Typography)`
 
 export const ContentDiv = styled.div`
 	&& {
-		align-items: center;
 		display: flex;
 		flex-direction: column;
 		padding: ${createSpacingUnit(2)}px;
@@ -94,7 +110,7 @@ export const ContentDiv = styled.div`
 
 export const HomeSubtext = styled(Subtext)`
 	&& {
-		max-width: ${createSpacingUnit(94)}px;
+		max-width: 441px;
 	}
 `
 
@@ -111,26 +127,23 @@ export const FunkyText = styled(Subtext)`
 	}
 `
 
-export const HomeButton = styled(FunkyButton)`
+export const HomeButton = styled(Button)`
 	&& {
 		margin-top: ${createSpacingUnit(4)}px;
-		padding: ${createSpacingUnit(1.5)}px ${createSpacingUnit(3)}px;
+		padding: ${createSpacingUnit(2)}px;
+		border: 1px solid #7fff31;
+		border-radius: 9px;
+		margin-left: ${createSpacingUnit(8)}px;
+		max-width: ${createSpacingUnit(30)}px;
 	}
 `
 
 export const HomeButtonText = styled(Typography)`
 	&& {
-		font-size: 20px;
+		font-size: 15px;
 		color: ${White};
 		font-weight: bold;
-
-		@media ${device.mobileL} {
-			font-size: 16px;
-		}
-
-		@media ${device.mobileS} {
-			font-size: 14px;
-		}
+		font-family: Carmen Sans Bold;
 	}
 `
 
