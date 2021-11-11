@@ -25,7 +25,7 @@ export const RESEND_VERIFICATION_CODE = gql`
 `
 
 export const VERIFY_WAITLIST_USER = gql`
-	mutation verifyWaitlistUser(
+	mutation VerifyWaitlistUser(
 		$phoneNumber: String!
 		$verificationCode: String!
 	) {

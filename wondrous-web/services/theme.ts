@@ -1,5 +1,4 @@
 import { createTheme } from '@material-ui/core/styles'
-
 import * as Colors from './colors'
 
 const theme = createTheme({
@@ -73,10 +72,10 @@ const theme = createTheme({
 		},
 		// Maintenance pages
 		h1: {
-			fontFamily: 'Pacifico',
+			fontFamily: 'Carmen Sans Bold',
 			fontWeight: 'bold',
-			fontSize: '48px',
-			lineHeight: '40px',
+			fontSize: '52px',
+			lineHeight: '60px',
 			color: Colors.White,
 		},
 		// Main page title
@@ -120,17 +119,17 @@ const theme = createTheme({
 		},
 		body1: {
 			fontSize: '16px',
-			lineHeight: '24px',
+			lineHeight: '28px',
 			color: Colors.Grey100,
 			letterSpacing: '0.5%',
 		},
 		body2: {
-			fontSize: '12px',
-			lineHeight: '22px',
+			fontSize: '14px',
+			lineHeight: '24px',
 			color: Colors.Grey100,
 			letterSpacing: '0.25%',
 		},
-		fontFamily: 'Inter, sans-serif',
+		fontFamily: 'Faktum, sans-serif',
 	},
 	props: {
 		MuiWithWidth: {

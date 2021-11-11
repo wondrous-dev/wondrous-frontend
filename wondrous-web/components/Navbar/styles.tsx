@@ -1,43 +1,66 @@
 import { Typography, Button } from '@material-ui/core'
 import Link from 'next/link'
 import styled from 'styled-components'
-import { Orange, Orange100, White, Yellow400 } from '../../services/colors'
+import {
+	Green200,
+	Orange,
+	Orange100,
+	White,
+	Yellow400,
+} from '../../services/colors'
 import { createSpacingUnit } from '../../utils'
 import { device } from '../../utils/device'
 import SmartLink from '../SmartLink'
 
-export const TopNavContainer = styled.div`
+export const NavContainer = styled.div`
 	&& {
-		position: fixed;
-		top: 0;
+		position: absolute;
+		top: ${createSpacingUnit(1)}px;
 		padding-top: ${createSpacingUnit(2)}px;
+		padding-left: ${createSpacingUnit(4)}px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		width: 100%;
-	}
-`
-
-export const NavContainer = styled.div`
-	&& {
-		z-index: 50;
-		margin-top: ${createSpacingUnit(2.5)}px;
+		z-index: 1000;
 	}
 `
 export const LinkContainer = styled.div`
 	flex-direction: row;
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	justify-content: space-between;
+	width: 100%;
 `
 
 export const WaitlistContainer = styled(LinkContainer)`
 	margin-right: ${createSpacingUnit(4)}px;
 `
 
+export const ImgLink = styled(Link)`
+	margin-left: ${createSpacingUnit(2)}px;
+	cursor: pointer;
+`
+
+export const LogoImg = styled.img`
+	width: ${createSpacingUnit(22.75)}px;
+`
+
+export const LogoNoTextImg = styled.img`
+	&& {
+		width: ${createSpacingUnit(7.5)}px;
+	}
+`
+
+export const FlexDiv = styled.div`
+	flex: 1;
+`
+
 export const HomeNavLink = styled.a`
 	&& {
 		color: ${White};
+		text-decoration: none;
+		font-family: Faktum Bold;
 	}
 `
 
@@ -53,17 +76,32 @@ export const HomeNavLinkTypography = styled(Typography)`
 	}
 `
 
-export const ManifestoLink = styled(HomeNavLinkTypography)`
+export const LinkDiv = styled.div`
 	&& {
-		margin-right: ${createSpacingUnit(2)}px;
+		text-align: right;
+		padding-right: ${createSpacingUnit(6)}px;
+		@media ${device.mobileL} {
+			padding-right: ${createSpacingUnit(2)}px;
+		}
 	}
 `
 
-export const JoinDiscordButton = styled(Button)`
+export const ManifestoLink = styled(HomeNavLinkTypography)`
 	&& {
-		border: 1px solid ${White};
-		border-radius: ${createSpacingUnit(0.5)}px;
-		padding: ${createSpacingUnit()}px ${createSpacingUnit(1.5)}px;
-		margin-left: ${createSpacingUnit(2)}px;
+		margin-right: ${createSpacingUnit(6)}px;
+		@media ${device.tablet} {
+			margin-right: ${createSpacingUnit(2)}px;
+		}
+		@media (max-width: 550px) {
+			display: none;
+		}
+	}
+`
+
+export const JoinDiscordButton = styled(HomeNavLink)`
+	&& {
+		border: 2px solid ${Green200};
+		border-radius: 9px;
+		padding: ${createSpacingUnit(2)}px;
 	}
 `

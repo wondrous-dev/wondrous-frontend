@@ -5,18 +5,27 @@ import { useMe, withWaitlistAuth } from '../../components/Auth/withAuth'
 import { TwitterShare } from '../../components/Icons/twitter'
 import {
 	JoinWaitlistHeader,
-	ModalWrapper,
+	ProfileWrapper,
 	FunkyText,
 	ExplanationText,
 	FunkyTextYellow,
 	LinkBox,
 	LinkText,
 	CopyText,
-	TweetButton,
-	TweetButtonText,
+	InviteButtonText,
 	ReferredText,
 	LinkRow,
-	ReferredFunkyButton,
+	CenteredDiv,
+	LogoNoTextImg,
+	ProfileText,
+	TokenEarnedDiv,
+	YouHaveText,
+	TokenEarnedInnerDiv,
+	WonderTokenSymbol,
+	InviteDiv,
+	InviteButton,
+	InviteButtonDiv,
+	ProfileCenteredDiv,
 } from '../../components/Waitlist/styles'
 import { Blue500, Grey800 } from '../../services/colors'
 import {
@@ -25,10 +34,12 @@ import {
 	LinkContainer,
 	ManifestoLink,
 } from '../../components/Navbar/styles'
-import WaitlistNavbar from '../../components/Navbar/Waitlist'
 import { NewCanvas } from '../../components/Common'
-import { useWindowSize } from '../../utils/hooks'
+import { useIsMobile, useWindowSize } from '../../utils/hooks'
 import { FunkyButton } from '../../components/Button'
+import HomeNavbar from '../../components/Navbar/Home'
+import { TokenText } from '../../components/Home/styles'
+import { DiscordShare } from '../../components/Icons/discord'
 
 // Have $10 Wonder tokens
 // Invite for another $30
@@ -62,8 +73,8 @@ let timeout = null
 
 const WaitlistProfile = () => {
 	const waitlistUser = useMe()
-	const windowSize = useWindowSize()
 	const referralLink = `https://wonderverse.xyz?ref=${waitlistUser?.refCode}`
+	const isMobile = useIsMobile()
 	const [copied, setCopied] = useState(false)
 	const handleCopyClick = (e) => {
 		const newEl = document.createElement('input')
@@ -84,72 +95,92 @@ const WaitlistProfile = () => {
 	}
 
 	return (
-		<ModalWrapper>
-			{windowSize?.width && (
-				<Confetti
-					width={windowSize?.width}
-					height={windowSize?.height}
-					recycle={false}
-					initialVelocityY={{
-						min: 8,
-						max: 10,
+		<ProfileWrapper>
+			<HomeNavbar />
+			<ProfileCenteredDiv>
+				<LogoNoTextImg src="/images/logo/wonder-logo-no-text.png" />
+				<JoinWaitlistHeader variant="h3">You&apos;re in</JoinWaitlistHeader>
+				<ProfileText
+					style={{
+						marginBottom: '16px',
 					}}
-					gravity={0.2}
-				/>
-			)}
-			<WaitlistNavbar />
-			<JoinWaitlistHeader variant="h4">
-				Thanks for joining the waitlist! You now have:
-			</JoinWaitlistHeader>
-			<FunkyText variant="h3">
-				{` `}
-				{waitlistUser?.tokensEarned || '10'} $WONDER
-			</FunkyText>
-			<ExplanationText>
-				Share the link below with friends to get{' '}
-				<FunkyTextYellow>{` `}30 $WONDER</FunkyTextYellow> tokens for each
-				additional person who signs up!
-			</ExplanationText>
-			{waitlistUser && (
-				<>
-					<LinkRow>
-						<LinkBox data-cy="referral-link">
-							<LinkText>{referralLink}</LinkText>
-							<CopyText
-								onClick={handleCopyClick}
-								style={{
-									color: copied ? Grey800 : Blue500,
-								}}
-							>
-								{copied ? 'Copied!' : 'Copy'}
-							</CopyText>
-						</LinkBox>
-					</LinkRow>
-					<TweetButton
-						onClick={() =>
-							tweetNow({
-								twitterShareURL: referralLink,
-								tweetContent: shareContent,
-							})
-						}
-					>
-						<TwitterShare
-							style={{
-								width: '28',
-								height: '28',
-								marginRight: '2px',
-							}}
-						/>
-						<TweetButtonText>Tweet</TweetButtonText>
-					</TweetButton>
-					<ReferredFunkyButton>
-						<ReferredText>
-							Users referred: {waitlistUser?.invitesSent || 0}
-						</ReferredText>
-					</ReferredFunkyButton>
-				</>
-			)}
-		</ModalWrapper>
+				>
+					Claim your tokens during our launch in January
+				</ProfileText>
+				<TokenEarnedDiv>
+					<YouHaveText>You have:</YouHaveText>
+					<TokenEarnedInnerDiv>
+						<WonderTokenSymbol src="/images/wonder-token.svg" />
+						<YouHaveText>
+							<TokenText>
+								{waitlistUser?.tokensEarned || '10'} $WONDER
+							</TokenText>
+						</YouHaveText>
+					</TokenEarnedInnerDiv>
+				</TokenEarnedDiv>
+				<InviteDiv>
+					<ProfileText>
+						Earn <TokenText>30 $WONDER</TokenText> tokens for each person that
+						signs up through your link.
+					</ProfileText>
+					{waitlistUser && (
+						<>
+							<InviteButtonDiv>
+								<InviteButton
+									style={{
+										marginRight: '16px',
+									}}
+									onClick={() =>
+										tweetNow({
+											twitterShareURL: referralLink,
+											tweetContent: shareContent,
+										})
+									}
+								>
+									<TwitterShare
+										style={{
+											marginRight: '8px',
+										}}
+									/>
+									<InviteButtonText>
+										{isMobile ? 'Tweet link' : 'tweet your link'}
+									</InviteButtonText>
+								</InviteButton>
+								<InviteButton
+									href="https://discord.gg/vUnfjnZADH"
+									target="_blank"
+								>
+									<DiscordShare
+										style={{
+											marginRight: '8px',
+										}}
+									/>
+									<InviteButtonText>
+										{isMobile ? 'Join Discord' : 'join our discord'}
+									</InviteButtonText>
+								</InviteButton>
+							</InviteButtonDiv>
+							<LinkRow>
+								<LinkBox data-cy="referral-link">
+									<LinkText>{referralLink}</LinkText>
+									<CopyText
+										onClick={handleCopyClick}
+										style={{
+											color: copied ? Grey800 : Blue500,
+										}}
+									>
+										{copied ? 'Copied!' : 'Copy'}
+									</CopyText>
+								</LinkBox>
+							</LinkRow>
+							<ReferredText>
+								Users referred: {waitlistUser?.invitesSent || 0}
+							</ReferredText>
+						</>
+					)}
+				</InviteDiv>
+			</ProfileCenteredDiv>
+		</ProfileWrapper>
 	)
 }
 

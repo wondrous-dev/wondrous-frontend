@@ -12,10 +12,13 @@ import {
 	JoinWaitlistHeader,
 	ResendLink,
 	ErrorDiv,
+	SmallerCenteredDiv,
 } from './styles'
 import { createSpacingUnit } from '../../utils'
 import { useMutation } from '@apollo/client'
 import { RESEND_VERIFICATION_CODE } from '../../graphql/mutations'
+import { device } from '../../utils/device'
+import HomeNavbar from '../Navbar/Home'
 
 const VerificationCodeInput = styled(ReactCodeInput)`
 	&& {
@@ -23,6 +26,14 @@ const VerificationCodeInput = styled(ReactCodeInput)`
 			font-size: 16px;
 			font-family: Inter;
 			font-weight: bolder;
+
+			@media ${device.mobileL} {
+				width: 48px !important;
+			}
+
+			@media ${device.mobileS} {
+				width: 40px !important;
+			}
 		}
 	}
 `
@@ -36,10 +47,8 @@ const PhoneVerification = ({
 	setOpen,
 }) => {
 	const isMobile = useIsMobile()
-	const [
-		resendVerificationCode,
-		{ data, loading, error: resendError },
-	] = useMutation(RESEND_VERIFICATION_CODE)
+	const [resendVerificationCode, { data, loading, error: resendError }] =
+		useMutation(RESEND_VERIFICATION_CODE)
 	const onChange = useCallback(
 		(vals) => {
 			if (vals.length <= 6) {
@@ -58,32 +67,37 @@ const PhoneVerification = ({
 		'Too many attempts reached to send code. Please try again later'
 	return (
 		<Container>
-			<JoinWaitlistHeader variant="h4">
-				Enter your 6-digit verification code
-			</JoinWaitlistHeader>
-			<VerificationCodeInput onChange={onChange} autoFocus={true} />
+			<HomeNavbar />
+			<SmallerCenteredDiv>
+				<JoinWaitlistHeader variant="h4">
+					Enter your 6-digit verification code
+				</JoinWaitlistHeader>
+				<VerificationCodeInput onChange={onChange} autoFocus={true} />
 
-			<ResendLink
-				nowrap
-				variant="body1"
-				onClick={async () => {
-					// Verify phone number
-					try {
-						setError(null)
-						await resendVerificationCode({
-							variables: {
-								phoneNumber,
-							},
-						})
-						setOpen(true)
-					} catch (err) {
-						setError(resendErrorMsg)
-					}
-				}}
-			>
-				Resend Verification code
-			</ResendLink>
-			{error && <ErrorDiv>{error || (resendError && resendErrorMsg)}</ErrorDiv>}
+				<ResendLink
+					nowrap
+					variant="body1"
+					onClick={async () => {
+						// Verify phone number
+						try {
+							setError(null)
+							await resendVerificationCode({
+								variables: {
+									phoneNumber,
+								},
+							})
+							setOpen(true)
+						} catch (err) {
+							setError(resendErrorMsg)
+						}
+					}}
+				>
+					Resend Verification code
+				</ResendLink>
+				{error && (
+					<ErrorDiv>{error || (resendError && resendErrorMsg)}</ErrorDiv>
+				)}
+			</SmallerCenteredDiv>
 		</Container>
 	)
 }

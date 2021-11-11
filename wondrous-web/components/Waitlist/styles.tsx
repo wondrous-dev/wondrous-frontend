@@ -2,12 +2,18 @@ import { Typography, Button } from '@material-ui/core'
 import styled from 'styled-components'
 import {
 	Black,
+	Green200,
 	Grey150,
 	Grey50,
 	Grey55,
 	Grey700,
 	Grey800,
 	Orange,
+	Purple,
+	Purple200,
+	Purple300,
+	Purple400,
+	Purple500,
 	Red400,
 	White,
 	Yellow400,
@@ -17,16 +23,20 @@ import { device } from '../../utils/device'
 import { FunkyButton } from '../Button'
 import ClearIcon from '@material-ui/icons/Clear'
 import { CenteredFlexRow } from '../Common'
+import { BlurredDiv } from '../Home/styles'
 
 export const ModalWrapper = styled.div`
 	&& {
 		width: 100%;
 		height: 100%;
-		position: fixed;
+		min-height: 100vh;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background: linear-gradient(270deg, #c2e9fb 0%, #a1c4fd 50.16%);
+		background-image: url('/images/waitlist/background-desktop.png');
+		background-repeat: no-repeat;
+		background-position: center; /* Center the image */
+		background-size: cover;
 		flex-direction: column;
 		padding: ${createSpacingUnit(3)}px;
 		& .MuiSvgIcon-root {
@@ -35,20 +45,15 @@ export const ModalWrapper = styled.div`
 	}
 `
 
-export const BodyWrapper = styled.div`
-	background: ${White};
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	border-radius: ${createSpacingUnit()}px;
-	padding: ${createSpacingUnit(5)}px;
-	min-height: 80vh;
-
-	@media ${device.mobileL} {
-		padding: ${createSpacingUnit(2)}px ${createSpacingUnit()}px;
-		padding-top: ;
+export const ProfileWrapper = styled(ModalWrapper)`
+	&& {
+		background-image: url('/images/waitlist/waitlist-profile-background.png');
 	}
+`
+
+export const LogoNoTextImg = styled.img`
+	width: ${createSpacingUnit(9.5)}px;
+	margin-bottom: ${createSpacingUnit(2)}px;
 `
 
 export const Subtext = styled(Typography)`
@@ -75,12 +80,17 @@ export const Container = styled.div`
 	&& {
 		width: 100%;
 		height: 100%;
+		min-height: 100vh;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 		position: fixed;
-		background: linear-gradient(270deg, #c2e9fb 0%, #a1c4fd 50.16%);
+		padding: ${createSpacingUnit(2)}px;
+		background-image: url('/images/waitlist/background-desktop.png');
+		background-repeat: no-repeat;
+		background-position: center; /* Center the image */
+		background-size: cover;
 	}
 `
 
@@ -95,27 +105,32 @@ export const CloseModalButton = styled(ClearIcon)`
 	z-index: 10;
 `
 
-export const JoinWaitListButton = styled(FunkyButton)`
+export const JoinWaitListButton = styled(Button)`
 	&& {
+		padding: ${createSpacingUnit(2)}px;
+		border: 1px solid ${Green200};
+		border-radius: 9px;
 		padding: ${createSpacingUnit(1.5)}px ${createSpacingUnit(3)}px;
-		margin-top: ${createSpacingUnit(4)}px;
+		margin-top: ${createSpacingUnit(3)}px;
 	}
 `
 
 export const ErrorDiv = styled.div`
 	color: ${Red400};
 	margin-top: ${createSpacingUnit()}px;
-	margin-bottom: -${createSpacingUnit(3.5)}px;
+	margin-bottom: -${createSpacingUnit()}px;
 `
 
 export const JoinWaitlistHeader = styled(Typography)`
 	&& {
 		color: White;
-		margin-bottom: ${createSpacingUnit(2)}px;
 		text-align: center;
+		margin-bottom: ${createSpacingUnit(2)}px;
 		@media ${device.mobileL} {
 			font-size: 20px;
-			margin-bottom: ${createSpacingUnit()}px;
+		}
+		@media ${device.mobileS} {
+			font-size: 16px;
 		}
 	}
 `
@@ -123,18 +138,89 @@ export const JoinWaitlistHeader = styled(Typography)`
 export const ExplanationText = styled(Typography)`
 	&& {
 		color: ${White};
-		margin-top: ${createSpacingUnit(2)}px;
+		margin-top: ${createSpacingUnit()}px;
 		max-width: ${createSpacingUnit(80)}px;
 		font-size: 18px;
 		line-height: 28px;
 		text-align: center;
-		margin-bottom: ${createSpacingUnit(2)}px;
+		margin-bottom: ${createSpacingUnit(4)}px;
 		@media ${device.mobileL} {
 			font-size: 16px;
 			line-height: 24px;
-			margin-top: ${createSpacingUnit()}px;
-			margin-bottom: ${createSpacingUnit()}px;
+			margin-top: ${createSpacingUnit(1.5)}px;
+			margin-bottom: ${createSpacingUnit(1.5)}px;
 		}
+	}
+`
+
+export const ProfileText = styled(Typography)`
+	&& {
+		font-size: 16px;
+		line-height: 27.5px;
+		color: ${White};
+	}
+`
+
+export const TokenEarnedDiv = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: ${Purple200};
+	border-radius: 289.08px;
+	padding-left: ${createSpacingUnit(3)}px;
+	padding-top: ${createSpacingUnit(0.5)}px;
+	padding-bottom: ${createSpacingUnit(0.5)}px;
+	margin-bottom: ${createSpacingUnit(3)}px;
+`
+
+export const TokenEarnedInnerDiv = styled(TokenEarnedDiv)`
+	&& {
+		background: rgb(91, 0, 255, 0.6);
+		padding-left: 0;
+		padding-right: ${createSpacingUnit(3)}px;
+		padding-top: 4px;
+		margin-bottom: 0;
+	}
+`
+
+export const InviteDiv = styled.div`
+	background-color: ${Purple};
+	padding: ${createSpacingUnit(4)}px;
+	@media ${device.tablet} {
+		padding: ${createSpacingUnit()}px;
+	}
+	@media ${device.mobileL} {
+		padding-left: 4px;
+		padding-right: 4px;
+	}
+`
+
+export const WonderTokenSymbol = styled.img`
+	&& {
+		width: ${createSpacingUnit(6)}px;
+		margin-right: ${createSpacingUnit()}px;
+	}
+`
+
+export const YouHaveText = styled(Typography)`
+	&& {
+		font-size: 23px;
+		line-height: 36px;
+		color: ${White};
+		font-family: Carmen Sans SemiBold;
+		margin-right: ${createSpacingUnit(2)}px;
+		@media ${device.mobileL} {
+			font-size: 16px;
+			line-height: 24px;
+		}
+	}
+`
+
+export const TokenText = styled(YouHaveText)`
+	&& {
+		color: ${Green200};
+		margin-right: 0;
+		font-family: Carmen Sans Bold;
 	}
 `
 
@@ -153,14 +239,13 @@ export const MetaTag = styled.span`
 
 export const LinkBox = styled.div`
 	&& {
-		background: ${Grey55};
-		border: 1px solid ${Grey150};
+		background: ${Purple500};
 		border-radius: ${createSpacingUnit()}px;
 		padding: ${createSpacingUnit(2)}px;
 
 		display: flex;
 		align-items: center;
-		margin-top: ${createSpacingUnit(2)}px;
+		margin-top: ${createSpacingUnit(3)}px;
 		@media ${device.mobileL} {
 			font-size: 16px;
 			line-height: 24px;
@@ -172,8 +257,12 @@ export const LinkBox = styled.div`
 export const LinkText = styled(Typography)`
 	&& {
 		font-size: ${createSpacingUnit(2)}px;
+		color: ${White};
 		@media ${device.mobileL} {
 			font-size: 14px;
+			width: 200px;
+			white-space: nowrap;
+			overflow: hidden;
 		}
 	}
 `
@@ -183,6 +272,7 @@ export const CopyText = styled(Typography)`
 		font-size: ${createSpacingUnit(2)}px;
 		cursor: pointer;
 		margin-left: ${createSpacingUnit(2)}px;
+		color: ${Green200};
 		@media ${device.mobileL} {
 			font-size: 14px;
 		}
@@ -191,14 +281,10 @@ export const CopyText = styled(Typography)`
 
 export const HomeButtonText = styled(Typography)`
 	&& {
-		font-size: 20px;
+		font-size: 16px;
 		color: ${White};
 		font-weight: bold;
-
-		@media ${device.mobileL} {
-			font-size: 16px;
-		}
-
+		font-family: Carmen Sans SemiBold;
 		@media ${device.mobileS} {
 			font-size: 14px;
 		}
@@ -216,15 +302,51 @@ export const ResendLink = styled(Typography)`
 	}
 `
 
-export const CenteredDiv = styled.div`
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
+export const CenteredDiv = styled(BlurredDiv)`
+	&& {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+		max-width: ${createSpacingUnit(91)}px;
+		width: 100%;
+		padding: ${createSpacingUnit(6)}px;
+		@media ${device.mobileL} {
+			margin-top: ${createSpacingUnit(3)}px;
+			padding: ${createSpacingUnit(3)}px;
+		}
+
+		@media ${device.mobileS} {
+			padding-left: 4px;
+			padding-right: 4px;
+		}
+	}
 `
 
+export const ProfileCenteredDiv = styled(CenteredDiv)`
+	&& {
+		margin-top: 100px;
+		margin-bottom: 100px;
+	}
+`
+export const SmallerCenteredDiv = styled(CenteredDiv)`
+	&& {
+		padding: ${createSpacingUnit(10)}px !important;
+		@media ${device.mobileL} {
+			margin-top: ${createSpacingUnit(3)}px !important;
+			padding: ${createSpacingUnit(3)}px !important;
+		}
+
+		@media ${device.mobileS} {
+			padding-left: 4px !important;
+			padding-right: 4px !important;
+		}
+	}
+`
 export const LinkRow = styled(CenteredFlexRow)`
 	&& {
+		display: flex;
+		justify-content: center;
 		@media ${device.mobileL} {
 			padding: ${createSpacingUnit(1.5)}px;
 		}
@@ -279,15 +401,22 @@ export const FunkyTextYellow = styled(Typography)`
 		}
 	}
 `
+export const InviteButtonDiv = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+`
 
-export const TweetButton = styled(Button)`
+export const InviteButton = styled(Button)`
 	&& {
-		padding: ${createSpacingUnit(1.5)}px ${createSpacingUnit(3)}px;
+		padding: ${createSpacingUnit(2)}px;
 		margin-top: ${createSpacingUnit(3)}px;
-		background: #1da1f2;
+		background: ${Purple400};
 		border-radius: ${createSpacingUnit()}px;
+		display: flex;
+		align-items: center;
 		&:hover {
-			background: #1da1f2;
+			background: ${Purple300};
 		}
 		@media ${device.mobileL} {
 			margin-top: ${createSpacingUnit()}px;
@@ -295,27 +424,18 @@ export const TweetButton = styled(Button)`
 	}
 `
 
-export const TweetButtonText = styled(Typography)`
+export const InviteButtonText = styled(Typography)`
 	&& {
-		color: ${White};
+		color: ${Green200};
 		font-weight: bolder;
-		font-size: 18px;
+		font-size: 15px;
 	}
 `
 
-export const ReferredFunkyButton = styled(FunkyButton)`
-	&& {
-		cursor: pointer;
-		margin-top: ${createSpacingUnit(2.5)}px;
-		border-radius: ${createSpacingUnit(4)}px;
-		padding-left: ${createSpacingUnit(2.5)}px;
-		padding-right: ${createSpacingUnit(2.5)}px;
-	}
-`
 export const ReferredText = styled(Typography)`
 	&& {
 		color: ${White};
-		font-weight: bolder;
+		margin-top: ${createSpacingUnit(3)}px;
 	}
 `
 
