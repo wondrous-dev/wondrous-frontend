@@ -1,38 +1,84 @@
-import React from 'react'
-import { useIsMobile } from '../../utils/hooks'
+import React, { useState } from 'react'
+import { useWindowSize } from '../../utils/hooks'
 import {
 	HomeNavLink,
 	HomeNavLinkTypography,
 	LinkContainer,
 	ManifestoLink,
 	NavContainer,
+	ImgLink,
+	LogoImg,
+	FlexDiv,
+	LinkDiv,
+	JoinDiscordButton,
+	LogoNoTextImg,
 } from './styles'
 
 const HomeNavbar = () => {
-	const isMobile = useIsMobile()
-
-	return (
-		<NavContainer>
-			<LinkContainer>
-				<ManifestoLink>
-					<HomeNavLink
-						href="https://wonderapp.notion.site/Wonder-Manifesto-caa5a446e8a54e7f8baffc667a77a33f"
-						target="_blank"
-					>
-						Manifesto
-					</HomeNavLink>
-				</ManifestoLink>
-				<HomeNavLinkTypography>
-					<HomeNavLink
-						href="https://wonderapp.notion.site/FAQ-for-Wonder-b2968c6f76bc480ca7f060fe83f7a2a9"
-						target="_blank"
-					>
-						FAQ
-					</HomeNavLink>
-				</HomeNavLinkTypography>
-			</LinkContainer>
-		</NavContainer>
-	)
+	try {
+		const windowSize = useWindowSize()
+		return (
+			<NavContainer>
+				<LinkContainer>
+					<ImgLink href="/?redirect=false">
+						{windowSize && windowSize?.width < 375 ? (
+							<LogoNoTextImg src="/images/logo/wonder-logo-no-text.png" />
+						) : (
+							<LogoImg src="/images/logo/horizontal-white-text.png" />
+						)}
+					</ImgLink>
+					<FlexDiv />
+					<LinkDiv>
+						<ManifestoLink>
+							<HomeNavLink
+								href="https://wonderapp.notion.site/Wonder-Manifesto-caa5a446e8a54e7f8baffc667a77a33f"
+								target="_blank"
+							>
+								Manifesto
+							</HomeNavLink>
+						</ManifestoLink>
+						<HomeNavLinkTypography>
+							<JoinDiscordButton
+								href="https://discord.gg/vUnfjnZADH"
+								target="_blank"
+							>
+								Join Discord
+							</JoinDiscordButton>
+						</HomeNavLinkTypography>
+					</LinkDiv>
+				</LinkContainer>
+			</NavContainer>
+		)
+	} catch (err) {
+		return (
+			<NavContainer>
+				<LinkContainer>
+					<ImgLink href="/">
+						<LogoImg src="/images/logo/horizontal-white-text.png" />
+					</ImgLink>
+					<FlexDiv />
+					<LinkDiv>
+						<ManifestoLink>
+							<HomeNavLink
+								href="https://wonderapp.notion.site/Wonder-Manifesto-caa5a446e8a54e7f8baffc667a77a33f"
+								target="_blank"
+							>
+								Manifesto
+							</HomeNavLink>
+						</ManifestoLink>
+						<HomeNavLinkTypography>
+							<JoinDiscordButton
+								href="https://discord.gg/vUnfjnZADH"
+								target="_blank"
+							>
+								Join Discord
+							</JoinDiscordButton>
+						</HomeNavLinkTypography>
+					</LinkDiv>
+				</LinkContainer>
+			</NavContainer>
+		)
+	}
 }
 
 export default HomeNavbar
