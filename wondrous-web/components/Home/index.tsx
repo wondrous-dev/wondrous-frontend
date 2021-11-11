@@ -52,7 +52,7 @@ const Home = () => {
 				<meta property="twitter:title" content="Wonder Waitlist" />
 				<meta
 					property="og:description"
-					content="Earn tokens for building, learning and creating."
+					content="Manage your projects and earn tokens while you build!"
 				/>
 				<meta
 					property="og:image"
