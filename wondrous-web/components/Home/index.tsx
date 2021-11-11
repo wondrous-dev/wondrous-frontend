@@ -1,10 +1,9 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import Trackable from '../Trackable'
 import SmartLink from '../SmartLink'
-import Image from 'next/image'
 import Head from 'next/head'
 import { Modal } from '@material-ui/core'
-import JoinWaitList from '../Waitlist'
+import Link from 'next/link'
 import {
 	HeaderContainer,
 	ContentDiv,
@@ -51,17 +50,25 @@ const StyledModal = styled(Modal)`
 `
 
 const Home = () => {
-	const [showJoinWaitList, setShowJoinWaitList] = useState(false)
-
 	const isMobile = useIsMobile()
 	const user = useMe()
 	const router = useRouter()
 	useEffect(() => {
 		if (user) {
 			// Redirect to unique link page
-			router.push('/waitlist/profile')
+			if (router.query?.redirect !== 'false') {
+				router.push('/waitlist/profile')
+			}
 		}
 	}, [user, router])
+
+	const getToWaitlist = useCallback(() => {
+		if (user) {
+			router.push('/waitlist/profile')
+		} else {
+			router.push('/waitlist/signup')
+		}
+	}, [router, user])
 
 	return (
 		<>
@@ -93,20 +100,11 @@ const Home = () => {
 						organize projects, pay contributors, and collaborate in{' '}
 						<EmphasisSpan> our project metaverse.</EmphasisSpan>
 					</HomeSubtext>
-					<HomeButton onClick={() => setShowJoinWaitList(!showJoinWaitList)}>
+					<HomeButton onClick={getToWaitlist}>
 						<HomeButtonText>Enter the Wonderverse</HomeButtonText>
 					</HomeButton>
 					<HomeNavBar />
 				</ContentDiv>
-				<StyledModal
-					open={showJoinWaitList}
-					onClose={() => setShowJoinWaitList(false)}
-				>
-					<JoinWaitList
-						showJoinWaitList={showJoinWaitList}
-						setShowJoinWaitList={setShowJoinWaitList}
-					/>
-				</StyledModal>
 			</HeaderContainer>
 			<Block2Container>
 				<FeatureDiv container spacing={4}>
@@ -201,9 +199,8 @@ const Home = () => {
 					<FeatureText>
 						Sign up and get 10 $WONDER tokens for free on launch.
 					</FeatureText>
-					<FreeTokenButton
-						onClick={() => setShowJoinWaitList(!showJoinWaitList)}
-					>
+
+					<FreeTokenButton onClick={getToWaitlist}>
 						<HomeButtonText>
 							Get <TokenText>10 $WONDER</TokenText> Free
 						</HomeButtonText>

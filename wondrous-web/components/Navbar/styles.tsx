@@ -1,7 +1,13 @@
 import { Typography, Button } from '@material-ui/core'
 import Link from 'next/link'
 import styled from 'styled-components'
-import { Orange, Orange100, White, Yellow400 } from '../../services/colors'
+import {
+	Green200,
+	Orange,
+	Orange100,
+	White,
+	Yellow400,
+} from '../../services/colors'
 import { createSpacingUnit } from '../../utils'
 import { device } from '../../utils/device'
 import SmartLink from '../SmartLink'
@@ -11,6 +17,7 @@ export const NavContainer = styled.div`
 		position: absolute;
 		top: ${createSpacingUnit(1)}px;
 		padding-top: ${createSpacingUnit(2)}px;
+		padding-left: ${createSpacingUnit(4)}px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -30,8 +37,9 @@ export const WaitlistContainer = styled(LinkContainer)`
 	margin-right: ${createSpacingUnit(4)}px;
 `
 
-export const ImgLink = styled.a`
+export const ImgLink = styled(Link)`
 	margin-left: ${createSpacingUnit(2)}px;
+	cursor: pointer;
 `
 
 export const LogoImg = styled.img`
@@ -39,7 +47,9 @@ export const LogoImg = styled.img`
 `
 
 export const LogoNoTextImg = styled.img`
-	width: ${createSpacingUnit(7.5)}px;
+	&& {
+		width: ${createSpacingUnit(7.5)}px;
+	}
 `
 
 export const FlexDiv = styled.div`
@@ -90,7 +100,7 @@ export const ManifestoLink = styled(HomeNavLinkTypography)`
 
 export const JoinDiscordButton = styled(HomeNavLink)`
 	&& {
-		border: 2px solid #7fff31;
+		border: 2px solid ${Green200};
 		border-radius: 9px;
 		padding: ${createSpacingUnit(2)}px;
 	}

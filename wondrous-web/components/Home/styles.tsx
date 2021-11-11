@@ -184,7 +184,7 @@ export const HomeButton = styled(Button)`
 	&& {
 		margin-top: ${createSpacingUnit(4)}px;
 		padding: ${createSpacingUnit(2)}px;
-		border: 1px solid #7fff31;
+		border: 1px solid ${Green200};
 		border-radius: 9px;
 		margin-left: ${createSpacingUnit(8)}px;
 		max-width: ${createSpacingUnit(30)}px;
@@ -415,26 +415,25 @@ export const Block4Container = styled(Block2Container)`
 	height: auto;
 `
 
-export const GetFreeTokensDiv = styled.div`
+export const BlurredDiv = styled.div`
+	border: 2px solid black;
+	text-align: center;
+	border-image-slice: 1;
+	border-image-source: linear-gradient(
+		179.47deg,
+		#4f8bff 0.46%,
+		#7000ff 295.96%
+	);
+	position: relative;
+	z-index: 100;
+	background: linear-gradient(0deg, rgba(2, 2, 16, 0.45), rgba(2, 2, 16, 0.45));
+	background-blend-mode: overlay, normal;
+	box-shadow: 0px 14px 44px rgba(0, 0, 0, 0.35);
+	backdrop-filter: blur(30px);
+`
+
+export const GetFreeTokensDiv = styled(BlurredDiv)`
 	&& {
-		border: 2px solid black;
-		text-align: center;
-		border-image-slice: 1;
-		border-image-source: linear-gradient(
-			179.47deg,
-			#4f8bff 0.46%,
-			#7000ff 295.96%
-		);
-		position: relative;
-		z-index: 100;
-		background: linear-gradient(
-			0deg,
-			rgba(2, 2, 16, 0.45),
-			rgba(2, 2, 16, 0.45)
-		);
-		background-blend-mode: overlay, normal;
-		box-shadow: 0px 14px 44px rgba(0, 0, 0, 0.35);
-		backdrop-filter: blur(30px);
 		padding: ${createSpacingUnit(4)}px;
 		max-width: ${createSpacingUnit(110.5)}px;
 		width: 100%;
@@ -455,6 +454,7 @@ export const GetFreeTokensHeader = styled(Typography)`
 export const TokenText = styled.span`
 	&& {
 		color: ${Green200};
+		font-family: Carmen Sans SemiBold;
 	}
 `
 
