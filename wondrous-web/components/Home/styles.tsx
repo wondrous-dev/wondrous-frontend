@@ -411,6 +411,10 @@ export const Block3Header = styled(Block2Header)`
 
 export const Block4Container = styled(Block2Container)`
 	background-color: ${Purple100};
+	background-image: url('/images/homepage/discordbackground-nosonicwave.jpg');
+	background-repeat: no-repeat;
+	background-position: center; /* Center the image */
+	background-size: cover; /* Resize the background image to cover the entire container */
 	position: relative;
 	height: auto;
 `
