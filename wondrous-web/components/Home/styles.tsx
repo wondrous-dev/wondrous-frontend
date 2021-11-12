@@ -92,13 +92,10 @@ export const Title = styled(Typography)`
 		max-width: ${createSpacingUnit(60.6)}px;
 		display: inline;
 		font-weight: bold;
-		background: linear-gradient(
-			267.61deg,
-			#ccbbff 12.13%,
-			#7427ff 91.76%,
-			#00baff 180.15%
-		);
-		padding-left: ${createSpacingUnit(8)}px;
+		background: linear-gradient(267.33deg, #ffffff 12.13%, #7000ff 89.1%);
+
+		box-sizing: content-box;
+		padding-left: ${createSpacingUnit(12)}px;
 		background-size: 200% auto;
 		background-clip: text;
 		-webkit-background-clip: text;
@@ -135,7 +132,7 @@ export const Subtext = styled(Typography)`
 		line-height: 27.5px;
 		position: relative;
 		z-index: 10;
-		padding-left: ${createSpacingUnit(8)}px;
+		padding-left: ${createSpacingUnit(12)}px;
 		@media ${device.mobileS} {
 			font-size: 14px;
 			line-height: 24px;
@@ -160,6 +157,7 @@ export const ContentDiv = styled.div`
 export const HomeSubtext = styled(Subtext)`
 	&& {
 		max-width: ${createSpacingUnit(60)}px;
+		box-sizing: content-box;
 		@media ${device.tablet} {
 			text-align: center;
 			padding-left: 0;
@@ -186,8 +184,9 @@ export const HomeButton = styled(Button)`
 		padding: ${createSpacingUnit(2)}px;
 		border: 1px solid ${Green200};
 		border-radius: 9px;
-		margin-left: ${createSpacingUnit(8)}px;
+		margin-left: ${createSpacingUnit(12)}px;
 		max-width: ${createSpacingUnit(30)}px;
+		filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
 		@media ${device.tablet} {
 			justify-content: center;
 			align-items: center;
@@ -285,13 +284,17 @@ export const FeatureDiv = styled(Grid)`
 	}
 `
 
-export const FeatureBlock = styled(Grid)``
+export const FeatureBlock = styled(Grid)`
+	display: flex;
+	justify-content: center;
+`
 
 export const FeatureBlockInner = styled.div`
 	&& {
 		padding: ${createSpacingUnit(2)}px ${createSpacingUnit(3)}px;
 		border: 2px solid black;
 		text-align: center;
+		max-width: ${createSpacingUnit(36)}px;
 		border-image-slice: 1;
 		border-image-source: linear-gradient(
 			179.47deg,
@@ -308,7 +311,10 @@ export const FeatureBlockInner = styled.div`
 		background-blend-mode: overlay, normal;
 		box-shadow: 0px 14px 44px rgba(0, 0, 0, 0.35);
 		backdrop-filter: blur(30px);
-		min-height: ${createSpacingUnit(30.5)}px;
+		min-height: ${createSpacingUnit(33)}px;
+		@media (max-width: 1280px) {
+			max-width: none;
+		}
 	}
 `
 export const FeatureImg = styled.img`
@@ -438,7 +444,7 @@ export const BlurredDiv = styled.div`
 
 export const GetFreeTokensDiv = styled(BlurredDiv)`
 	&& {
-		padding: ${createSpacingUnit(4)}px;
+		padding: ${createSpacingUnit(9)}px;
 		max-width: ${createSpacingUnit(110.5)}px;
 		width: 100%;
 		margin-top: -${createSpacingUnit(10)}px;

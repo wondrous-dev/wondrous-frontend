@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Confetti from 'react-confetti'
 
 import { useMe, withWaitlistAuth } from '../../components/Auth/withAuth'
@@ -40,6 +40,7 @@ import { FunkyButton } from '../../components/Button'
 import HomeNavbar from '../../components/Navbar/Home'
 import { TokenText } from '../../components/Home/styles'
 import { DiscordShare } from '../../components/Icons/discord'
+import { initHotjar } from '../../utils/hotjar'
 
 // Have $10 Wonder tokens
 // Invite for another $30
@@ -94,6 +95,9 @@ const WaitlistProfile = () => {
 		}, COPIED_TIMEOUT)
 	}
 
+	useEffect(() => {
+		initHotjar()
+	}, [])
 	return (
 		<ProfileWrapper>
 			<HomeNavbar />

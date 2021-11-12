@@ -17,8 +17,20 @@ const Footer = () => {
 				<FooterEmailText variant="body2">hello@wonderverse.xyz</FooterEmailText>
 			</FooterEmailLink>
 			<FooterLogoDiv>
-				<TwitterLogo src="/images/twitter.svg" />
-				<DiscordLogo src="/images/discord-logo.png" />
+				<a
+					href="https://twitter.com/wonderverse_xyz"
+					target="_blank"
+					rel="noreferrer"
+				>
+					<TwitterLogo src="/images/twitter.svg" />
+				</a>
+				<a
+					href="https://discord.gg/vUnfjnZADH"
+					target="_blank"
+					rel="noreferrer"
+				>
+					<DiscordLogo src="/images/discord-logo.png" />
+				</a>
 			</FooterLogoDiv>
 		</FooterContainer>
 	)

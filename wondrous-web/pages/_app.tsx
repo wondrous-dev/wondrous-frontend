@@ -5,13 +5,13 @@ import Head from 'next/head'
 import { ApolloProvider } from '@apollo/client'
 import { CssBaseline, useMediaQuery } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/core/styles'
-import { hotjar } from 'react-hotjar'
 
 import '../services/stylesheets/body.css'
 
 import apollo from '../services/apollo'
 import theme from '../services/theme'
 import { IsMobileContext } from '../utils/contexts'
+import { initHotjar } from '../utils/hotjar'
 
 type User = {
 	dummy: String
@@ -34,7 +34,7 @@ const MyApp = (props) => {
 	const { Component, pageProps, context, isAuthenticated, user } =
 		props as Readonly<typeof props & AppContextStore>
 	useEffect(() => {
-		hotjar.initialize(2694974, 6)
+		initHotjar()
 		const handleRouteChange = (url) => {
 			window.gtag('config', process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS, {
 				page_path: url,

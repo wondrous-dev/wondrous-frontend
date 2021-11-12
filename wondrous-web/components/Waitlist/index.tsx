@@ -31,6 +31,7 @@ import MuiAlert from '@material-ui/lab/Alert'
 import { storeAuthWaitlistHeader } from '../Auth/withAuth'
 import HomeNavbar from '../Navbar/Home'
 import { TokenText } from '../Home/styles'
+import { initHotjar } from '../../utils/hotjar'
 
 function Alert(props) {
 	return <MuiAlert elevation={6} variant="filled" {...props} />
@@ -92,6 +93,10 @@ const JoinWaitList = () => {
 
 	const handleClose = useCallback(() => {
 		setOpen(false)
+	}, [])
+
+	useEffect(() => {
+		initHotjar()
 	}, [])
 	return (
 		<>
