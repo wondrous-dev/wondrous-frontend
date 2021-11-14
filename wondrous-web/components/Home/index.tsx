@@ -35,6 +35,7 @@ import {
 	DiscordLogo,
 	JoinDiscordText,
 	JoinDiscordButton,
+	BackgroundContainer,
 } from './styles'
 import { useIsMobile } from '../../utils/hooks'
 import HomeNavBar from '../Navbar/Home'
@@ -71,7 +72,7 @@ const Home = () => {
 	}, [router, user])
 
 	return (
-		<>
+		<BackgroundContainer>
 			<HeaderContainer>
 				<Head>
 					<meta
@@ -222,7 +223,7 @@ const Home = () => {
 				</JoinDiscordBox>
 			</Block4Container>
 			<Footer />
-		</>
+		</BackgroundContainer>
 	)
 }
 

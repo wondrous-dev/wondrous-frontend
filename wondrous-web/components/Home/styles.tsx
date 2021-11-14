@@ -13,6 +13,10 @@ import { createSpacingUnit } from '../../utils'
 import { device } from '../../utils/device'
 import { FunkyButton } from '../Button'
 
+export const BackgroundContainer = styled.div`
+	background-color: ${Purple};
+`
+
 export const HeaderContainer = styled.div`
 	&& {
 		width: 100%;
@@ -92,11 +96,11 @@ export const Title = styled(Typography)`
 		max-width: ${createSpacingUnit(60.6)}px;
 		display: inline;
 		font-weight: bold;
+		font-family: Carmen Sans Bold;
 		background: linear-gradient(267.33deg, #ffffff 12.13%, #7000ff 89.1%);
-
 		box-sizing: content-box;
 		padding-left: ${createSpacingUnit(12)}px;
-		background-size: 200% auto;
+		background-size: 130% auto;
 		background-clip: text;
 		-webkit-background-clip: text;
 		-moz-background-clip: text;
@@ -183,6 +187,7 @@ export const HomeButton = styled(Button)`
 		margin-top: ${createSpacingUnit(4)}px;
 		padding: ${createSpacingUnit(2)}px;
 		border: 1px solid ${Green200};
+		box-shadow: 0 0 10px ${Green200};
 		border-radius: 9px;
 		margin-left: ${createSpacingUnit(12)}px;
 		max-width: ${createSpacingUnit(30)}px;
@@ -507,6 +512,7 @@ export const JoinDiscordText = styled(Typography)`
 		font-family: Carmen Sans Bold;
 	}
 `
+
 export const JoinDiscordButton = styled(FreeTokenButton)`
 	max-width: none;
 `
