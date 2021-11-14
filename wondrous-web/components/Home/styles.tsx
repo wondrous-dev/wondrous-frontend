@@ -356,6 +356,7 @@ export const Block2Header = styled(Title)`
 		line-height: 40px;
 		margin-top: ${createSpacingUnit(8)}px;
 		margin-bottom: ${createSpacingUnit(2.5)}px;
+		max-width: ${createSpacingUnit(80)}px;
 		padding-left: 0;
 		text-align: center;
 		@media ${device.laptop} {
