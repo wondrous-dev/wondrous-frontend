@@ -31,7 +31,7 @@ const HomeNavbar = () => {
 					<LinkDiv>
 						<ManifestoLink>
 							<HomeNavLink
-								href="https://wonderapp.notion.site/Wonder-Manifesto-caa5a446e8a54e7f8baffc667a77a33f"
+								href="https://wonderverse.notion.site/Wonder-Manifesto-caa5a446e8a54e7f8baffc667a77a33f"
 								target="_blank"
 							>
 								Manifesto
@@ -60,7 +60,7 @@ const HomeNavbar = () => {
 					<LinkDiv>
 						<ManifestoLink>
 							<HomeNavLink
-								href="https://wonderapp.notion.site/Wonder-Manifesto-caa5a446e8a54e7f8baffc667a77a33f"
+								href="https://wonderverse.notion.site/Wonder-Manifesto-caa5a446e8a54e7f8baffc667a77a33ff"
 								target="_blank"
 							>
 								Manifesto
