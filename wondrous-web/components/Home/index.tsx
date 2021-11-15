@@ -77,7 +77,7 @@ const Home = () => {
 				<Head>
 					<meta
 						property="twitter:image"
-						content="https://wonderverse.xyz/images/twitter-meta.png"
+						content="https://wonderverse.xyz/images/twitter-meta.svg"
 					/>
 					<meta property="twitter:site" content="@wonderversexyz" />
 					<meta property="twitter:title" content="Wonder Waitlist" />
@@ -87,7 +87,7 @@ const Home = () => {
 					/>
 					<meta
 						property="og:image"
-						content="https://wonderverse.xyz/images/twitter-meta.png"
+						content="https://wonderverse.xyz/images/twitter-meta.svg"
 					/>
 					<meta property="og:title" content="Wonder Waitlist" />
 				</Head>
