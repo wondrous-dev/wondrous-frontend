@@ -64,10 +64,15 @@ const Home = () => {
 	}, [user, router])
 
 	const getToWaitlist = useCallback(() => {
+		const ref = router.query?.ref
 		if (user) {
 			router.push('/waitlist/profile')
 		} else {
-			router.push('/waitlist/signup')
+			if (ref) {
+				router.push(`/waitlist/signup?ref=${ref}`)
+			} else {
+				router.push('/waitlist/signup')
+			}
 		}
 	}, [router, user])
 
