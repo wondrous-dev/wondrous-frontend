@@ -126,6 +126,8 @@ const WaitlistProfile = () => {
 					<ProfileText>
 						Earn <TokenText>30 $WONDER</TokenText> tokens for each person that
 						signs up through your link.
+						<br />
+						(Max: 15 referrals)
 					</ProfileText>
 					{waitlistUser && (
 						<>
