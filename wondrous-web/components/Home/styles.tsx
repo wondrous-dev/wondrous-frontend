@@ -268,6 +268,10 @@ export const Blob2 = styled(Blob)`
 export const Block2Container = styled.div`
 	background: ${Purple};
 	padding: ${createSpacingUnit(2)}px;
+	background-image: url('/images/homepage/background-full@1x.png');
+	background-repeat: no-repeat;
+	background-position: center; /* Center the image */
+	background-size: cover; /* Resize the background image to cover the entire container */
 	display: flex;
 	flex-direction: column;
 	align-items: center;
