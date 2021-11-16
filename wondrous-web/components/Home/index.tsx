@@ -159,26 +159,26 @@ const Home = () => {
 				<Block2TextDiv>
 					<FeatureText>
 						Business isn’t as usual. Cooperation is a better strategy than
-						competiting. DAOs have proven that shared incentives drive radical
+						competing. DAOs have proven that shared incentives drive radical
 						collaboration.
 					</FeatureText>
 					<br />
 					<FeatureText>
-						Our project collaboration infastructure facilitates powerful network
-						effects for DAOs and gives these shared advantages to startups and
-						builders.
+						Our project collaboration infrastructure facilitates powerful
+						network effects for DAOs and gives these shared advantages to
+						startups and builders.
 					</FeatureText>
 				</Block2TextDiv>
 				<CollaborativeImg src="/images/homepage/collaborative-future.png" />
 				<Block2Header>What is the project metaverse?</Block2Header>
 				<Block2TextDiv>
 					<FeatureText>
-						Our project metaverse is a all-in-one platform that empowers people
+						Our project metaverse is an all-in-one platform that empowers people
 						to launch and scale projects with ease.
 					</FeatureText>
 					<br />
 					<FeatureText>
-						Build a following, pay/get paid in any currancy or token,
+						Build a following, pay/get paid in any currency or token,
 						intuitively manage DAOs, and collaborate on a universe of projects.
 					</FeatureText>
 				</Block2TextDiv>
