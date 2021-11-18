@@ -39,6 +39,7 @@ export const ModalWrapper = styled.div`
 		background-size: cover;
 		flex-direction: column;
 		padding: ${createSpacingUnit(3)}px;
+		background-color: ${Purple};
 		& .MuiSvgIcon-root {
 			fill: ${White};
 		}
@@ -48,6 +49,7 @@ export const ModalWrapper = styled.div`
 export const ProfileWrapper = styled(ModalWrapper)`
 	&& {
 		background-image: url('/images/waitlist/waitlist-profile-background.png');
+		background-color: ${Purple};
 	}
 `
 

@@ -122,69 +122,34 @@ const WaitlistProfile = () => {
 						</YouHaveText>
 					</TokenEarnedInnerDiv>
 				</TokenEarnedDiv>
-				<InviteDiv>
-					<ProfileText>
-						Earn <TokenText>30 $WONDER</TokenText> tokens for each person that
-						signs up through your link.
-						<br />
-						(Max: 15 referrals)
-					</ProfileText>
-					{waitlistUser && (
-						<>
-							<InviteButtonDiv>
-								<InviteButton
-									style={{
-										marginRight: '16px',
-									}}
-									onClick={() =>
-										tweetNow({
-											twitterShareURL: referralLink,
-											tweetContent: shareContent,
-										})
-									}
-								>
-									<TwitterShare
-										style={{
-											marginRight: '8px',
-										}}
-									/>
-									<InviteButtonText>
-										{isMobile ? 'Tweet link' : 'tweet your link'}
-									</InviteButtonText>
-								</InviteButton>
-								<InviteButton
-									href="https://discord.gg/vUnfjnZADH"
-									target="_blank"
-								>
-									<DiscordShare
-										style={{
-											marginRight: '8px',
-										}}
-									/>
-									<InviteButtonText>
-										{isMobile ? 'Join Discord' : 'join our discord'}
-									</InviteButtonText>
-								</InviteButton>
-							</InviteButtonDiv>
-							<LinkRow>
-								<LinkBox data-cy="referral-link">
-									<LinkText>{referralLink}</LinkText>
-									<CopyText
-										onClick={handleCopyClick}
-										style={{
-											color: copied ? Grey800 : Blue500,
-										}}
-									>
-										{copied ? 'Copied!' : 'Copy'}
-									</CopyText>
-								</LinkBox>
-							</LinkRow>
-							<ReferredText>
-								Users referred: {waitlistUser?.invitesSent || 0}
-							</ReferredText>
-						</>
-					)}
-				</InviteDiv>
+				<InviteButtonDiv>
+					<InviteButton
+						style={{
+							marginRight: '16px',
+						}}
+						href="https://twitter.com/wonderverse_xyz"
+						target="_blank"
+					>
+						<TwitterShare
+							style={{
+								marginRight: '8px',
+							}}
+						/>
+						<InviteButtonText>
+							{isMobile ? 'Join Twitter' : 'join our twitter'}
+						</InviteButtonText>
+					</InviteButton>
+					<InviteButton href="https://discord.gg/vUnfjnZADH" target="_blank">
+						<DiscordShare
+							style={{
+								marginRight: '8px',
+							}}
+						/>
+						<InviteButtonText>
+							{isMobile ? 'Join Discord' : 'join our discord'}
+						</InviteButtonText>
+					</InviteButton>
+				</InviteButtonDiv>
 			</ProfileCenteredDiv>
 		</ProfileWrapper>
 	)
