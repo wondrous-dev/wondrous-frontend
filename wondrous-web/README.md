@@ -52,4 +52,4 @@ export NODE_OPTIONS=--openssl-legacy-provider
 Then try again.
 
 OS's affected:
-* Big Sur (M1 Pro)
+* macOS Monterey (M1 Pro)
