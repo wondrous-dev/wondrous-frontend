@@ -35,7 +35,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ## Known Issues and Solutions
 
-
 #### yarn dev openssl issue
 
 If after running `yarn dev` you see:
