@@ -9,6 +9,10 @@ on:
 
 name: Web - Lint and Test
 
+defaults:
+  run:
+    working-directory: wondrous-web
+
 jobs:
   lint:
     runs-on: ubuntu-latest
