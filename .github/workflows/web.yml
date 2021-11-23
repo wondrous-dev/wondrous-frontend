@@ -1,0 +1,25 @@
+on:
+  pull_request:
+    paths:
+      - 'wondrous-web/**/**.ts'
+      - 'wondrous-web/**/**.js'
+    types:
+      - opened
+      - synchronize
+
+name: Web - Lint and Test
+
+defaults:
+  run:
+    working-directory: wondrous-web
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - run: yarn
+      - run: yarn lint
+
+
