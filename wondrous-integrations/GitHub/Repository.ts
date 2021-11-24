@@ -5,3 +5,7 @@ class Repository {
     this.name = name;
   }
 }
+
+module.exports = {
+  Repository
+}
