@@ -1,9 +1,7 @@
 import { Issue } from './Issue';
-import { Label } from './Label';
 import { Organization } from './Organization';
 import { PullRequest } from './PullRequest';
 import { Repository } from './Repository';
-import { User } from './User';
 import { Octokit } from 'octokit';
 
 // authenticate via personal token for now
@@ -15,8 +13,8 @@ async function GetOrganization(orgName: string) : Promise<Organization> {
   const respRepos = await octokit.rest.repos.listForOrg({ org: orgName });
   const repositories: Repository[] = [];
 
-  for (const i in respRepos) {
-    let r = resp.data[i];
+  for (const i in respRepos.data) {
+    let r = respRepos.data[i];
     repositories.push(await GetRepository(orgName, r.name, r.id));
   }
 

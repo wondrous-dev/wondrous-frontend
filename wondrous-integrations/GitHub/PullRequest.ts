@@ -1,6 +1,3 @@
-import { Label } from './Label';
-import { User } from './User';
-
 /*
  * See here: https://docs.github.com/en/rest/reference/orgs#get-an-organization
  * All pull requests are issues but not all issues are pull requests.
