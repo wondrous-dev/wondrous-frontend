@@ -1,12 +1,16 @@
+import { Repository } from './Repository';
+
 /*
  * See here: https://docs.github.com/en/rest/reference/orgs#get-an-organization
  */
-class Organization {
+export class Organization {
   private readonly name: string;
+  private readonly id: number;
   private readonly repos: Repository[];
 
-  constructor(name: string, repos: Repository[]) {
+  constructor(name: string, id: number, repos: Repository[]) {
     this.name = name;
+    this.id = id;
     this.repos = repos;
   }
 

@@ -1,8 +1,17 @@
-class Repository {
-  name: string;
+import { Issue } from './Issue';
+import { PullRequest } from './PullRequest';
 
-  constructor(name: string) {
+export class Repository {
+  name: string;
+  id: number;
+  issues: Issue[];
+  pullRequests: PullRequest[];
+
+  constructor(name: string, id: number, issues: Issue[], pullRequests: PullRequest[]) {
     this.name = name;
+    this.id = id;
+    this.issues = issues;
+    this.pullRequests = pullRequests;
   }
 }
 
