@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { isPossiblePhoneNumber } from 'libphonenumber-js'
@@ -54,7 +54,7 @@ const JoinWaitList = () => {
 	const [verifyPhoneNumber, setVerifyPhoneNumber] = useState(false)
 	const [phoneNumber, setPhoneNumber] = useState('')
 	const [error, setError] = useState(null)
-	const [validNumber, setValidNumber] = useState(null)
+	const validNumber = useRef(false)
 	const [verificationCode, setVerificationCode] = useState(null)
 	const [open, setOpen] = useState(false)
 	const inviteRefCode = router?.query?.ref
@@ -95,9 +95,24 @@ const JoinWaitList = () => {
 		setOpen(false)
 	}, [])
 
+	const checkIfNumberIsValid = useCallback(
+		(inputNumber, country: any, countries) => {
+			const isValid = isPossiblePhoneNumber(
+				inputNumber,
+				country?.iso2?.toUpperCase()
+			)
+
+			validNumber.current = isValid
+
+			return isValid
+		},
+		[validNumber]
+	)
+
 	useEffect(() => {
 		initHotjar()
 	}, [])
+
 	return (
 		<>
 			<ModalWrapper>
@@ -128,18 +143,7 @@ const JoinWaitList = () => {
 										setPhoneNumber(value)
 										setError(null)
 									}}
-									isValid={(inputNumber, country: any, countries) => {
-										setValidNumber(
-											isPossiblePhoneNumber(
-												inputNumber,
-												country?.iso2?.toUpperCase()
-											)
-										)
-										return isPossiblePhoneNumber(
-											inputNumber,
-											country?.iso2?.toUpperCase()
-										)
-									}}
+									isValid={checkIfNumberIsValid}
 									inputStyle={{
 										height: '48px',
 										fontSize: '16px',
@@ -159,7 +163,7 @@ const JoinWaitList = () => {
 									onClick={async () => {
 										// Verify phone number
 										// TODO: add loading screen
-										if (!validNumber) {
+										if (!validNumber.current) {
 											setError('Please enter a valid phone number')
 										} else {
 											try {
@@ -188,7 +192,7 @@ const JoinWaitList = () => {
 										}
 									}}
 								>
-									<HomeButtonText nowrap>Enter the Wonderverse</HomeButtonText>
+									<HomeButtonText noWrap>Enter the Wonderverse</HomeButtonText>
 								</JoinWaitListButton>
 							</CenteredDiv>
 						</div>
