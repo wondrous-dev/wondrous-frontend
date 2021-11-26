@@ -12,4 +12,15 @@ export class MockWonderBackend implements WonderBackend {
     this.projects[sourceOfTruthProject.title] = sourceOfTruthProject;
     return sourceOfTruthProject;
   }
+
+  sync(): boolean {
+    let failed: boolean = false;
+    for (const i in this.projects) {
+      if (!this.projects[i].sync()) {
+        failed = true;
+      }
+    }
+
+    return failed;
+  }
 }

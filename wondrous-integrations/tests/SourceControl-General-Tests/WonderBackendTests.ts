@@ -28,10 +28,7 @@ describe("SyncProjectWithWonder functions properly", () => {
     expect(SyncProjectWithWonder(ProjectD, WonderBackendA)).to.equal(true);
   });
 
-  // throws due to implementation of sync in MockProject, or lack thereof a useful, real sync method
-  it("throws on unable to sync", () => {
-    expect(() => SyncProjectWithWonder(ProjectA, WonderBackendA)).to.throw(
-      "Unable to update out of sync project fooProject in backend."
-    );
+  it("happy path - sync for one project, different set of tasks", () => {
+    expect(SyncProjectWithWonder(ProjectA, WonderBackendA)).to.equal(true);
   });
 });

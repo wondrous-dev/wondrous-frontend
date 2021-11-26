@@ -1,6 +1,6 @@
-/*
- * See here: https://docs.github.com/en/rest/reference/orgs#get-an-organization
- * All pull requests are issues but not all issues are pull requests.
+/**
+ * See response to "get pull request" for all available fields:
+ * https://docs.github.com/en/rest/reference/pulls#list-pull-requests
  */
 export class PullRequest {
   title: string;

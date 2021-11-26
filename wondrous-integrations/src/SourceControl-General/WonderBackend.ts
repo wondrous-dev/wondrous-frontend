@@ -1,38 +1,24 @@
 import { Project } from "./Project";
 
 // TODO: consider whether we want to have a projects field here. Essentially
-//       acts like a cache which comes with its own complexities.
+//       acts like a cache which comes with its own complexities. The alternative
+//       would be to query all at sync time instead of updating on the fly, i.e.
+//       updating DB and this cache at the same time.
 export interface WonderBackend {
   projects: { [key: string]: Project };
   updateProject(sourceOfTruthProject: Project): Project;
+  sync(): boolean;
 }
 
-export function SyncWonderBackend(wonderBackend: WonderBackend): boolean {
-  let failed: boolean = false;
-  for (const i in wonderBackend.projects) {
-    if (!wonderBackend.projects[i].sync()) {
-      failed = true;
-    }
-  }
-
-  return failed;
-}
-
+// TODO: determine if this is the correct semantics... often not great to hide
+// errors like this or write offensive OO side-effect filled methods.
 export function GetOrAddWonderBackendProject(
   wonderBackend: WonderBackend,
-  project: Project,
-  trySyncOnFail: boolean = false
+  project: Project
 ): Project {
   if (project.title in wonderBackend.projects) {
     return wonderBackend.projects[project.title];
   } else {
     return wonderBackend.updateProject(project);
   }
-
-  if (trySyncOnFail) {
-    SyncWonderBackend(wonderBackend);
-    return GetOrAddWonderBackendProject(wonderBackend, project, false);
-  }
-
-  throw new Error("Project [" + project.title + "] not found in WonderBackend");
 }

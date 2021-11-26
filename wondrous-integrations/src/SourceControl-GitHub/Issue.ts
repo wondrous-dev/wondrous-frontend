@@ -1,5 +1,6 @@
-/*
- * See here: https://docs.github.com/en/rest/reference/orgs#get-an-organization
+/**
+ * See response to "get repo issues" for all available fields:
+ * https://docs.github.com/en/rest/reference/issues#list-repository-issues
  */
 export class Issue {
   title: string;

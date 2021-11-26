@@ -1,7 +1,13 @@
 import { Project, ProjectsAreEqual } from "./Project";
 import { GetOrAddWonderBackendProject, WonderBackend } from "./WonderBackend";
 
-// TODO: insert some sort of logging
+/**
+ * SyncProjectWithWonder - description
+ *
+ * @param  {type} project: Project             project to compare with
+ * @param  {type} wonderBackend: WonderBackend the backend to sync
+ * @return {type}                              whether or not this succeeded
+ */
 export function SyncProjectWithWonder(
   project: Project,
   wonderBackend: WonderBackend
@@ -10,12 +16,7 @@ export function SyncProjectWithWonder(
 
   let wonderBackendProject: Project;
   try {
-    wonderBackendProject = GetOrAddWonderBackendProject(
-      wonderBackend,
-      project,
-      true
-    );
-    wonderBackendProject.sync();
+    wonderBackendProject = GetOrAddWonderBackendProject(wonderBackend, project);
   } catch (ex) {
     console.log(ex);
     return false;
@@ -45,6 +46,7 @@ export function SyncProjectWithWonder(
         "Unable to update out of sync project " + project.title + " in backend."
       );
     }
+    return true;
   } else {
     console.log("Project [" + project.title + "] in sync with backend.");
     return true;

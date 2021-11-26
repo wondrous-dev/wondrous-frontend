@@ -7,7 +7,8 @@ import { Octokit } from "octokit";
 // authenticate via personal token for now
 const octokit = new Octokit({ auth: process.env.GITHUB_AUTHTOKEN });
 
-export async function GetRepository(
+// private to this module
+async function GetRepository(
   orgName: string,
   repoName: string,
   repoId: number
@@ -33,6 +34,13 @@ export async function GetRepository(
   return new Repository(repoName, repoId, issues, pullRequests);
 }
 
+/**
+ * GetOrganization - queries GitHub for Organization information, resolving all
+ *                   sub info, such as Repositories, Issues, etc.
+ *
+ * @param  {type} orgName: string organization name
+ * @return {type}                 a GitHub organization
+ */
 export async function GetOrganization(orgName: string): Promise<Organization> {
   const {
     data: { id },
