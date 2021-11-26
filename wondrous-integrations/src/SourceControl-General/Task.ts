@@ -17,5 +17,10 @@ interface
 export interface Task {
   title: string;
   label: Label;
-  updateLabel(): boolean;
+  updateLabel(newLabel: Label): boolean;
+}
+
+
+export function TasksAreEqual(a: Task, b: Task) : boolean {
+  return a.title === b.title && a.label === b.label
 }
