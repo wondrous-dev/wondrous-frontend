@@ -1,13 +1,20 @@
-import { Project, ProjectsAreEqual } from './Project'
-import { GetOrAddWonderBackendProject, WonderBackend } from './WonderBackend'
+import { Project, ProjectsAreEqual } from "./Project";
+import { GetOrAddWonderBackendProject, WonderBackend } from "./WonderBackend";
 
 // TODO: insert some sort of logging
-export function SyncProjectWithWonder(project: Project, wonderBackend: WonderBackend) : boolean {
+export function SyncProjectWithWonder(
+  project: Project,
+  wonderBackend: WonderBackend
+): boolean {
   project.sync();
 
   let wonderBackendProject: Project;
   try {
-    wonderBackendProject = GetOrAddWonderBackendProject(wonderBackend, project, true);
+    wonderBackendProject = GetOrAddWonderBackendProject(
+      wonderBackend,
+      project,
+      true
+    );
     wonderBackendProject.sync();
   } catch (ex) {
     console.log(ex);
@@ -33,8 +40,10 @@ export function SyncProjectWithWonder(project: Project, wonderBackend: WonderBac
     // Thus, we want to update to (here) and catch (live) on next sync, or as a
     // update call.
     const updatedWonderBackendProject = wonderBackend.updateProject(project);
-    if (!ProjectsAreEqual(project, wonderBackendProject)) {
-      throw "Unable to update out of sync project " + project.title + " in backend.";
+    if (!ProjectsAreEqual(project, updatedWonderBackendProject)) {
+      throw new Error(
+        "Unable to update out of sync project " + project.title + " in backend."
+      );
     }
   } else {
     console.log("Project [" + project.title + "] in sync with backend.");

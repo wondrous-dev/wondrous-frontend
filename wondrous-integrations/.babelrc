@@ -1,4 +1,4 @@
 {
-	"presets": ["@babel/preset-typescript"],
-	"plugins": [["styled-components", { "ssr": true }]]
+  "presets": ["@babel/preset-typescript"],
+  "plugins": [["styled-components", { "ssr": true }]]
 }

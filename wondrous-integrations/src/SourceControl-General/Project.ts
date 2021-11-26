@@ -1,8 +1,8 @@
-import { Task, TasksAreEqual } from './Task'
+import { Task, TasksAreEqual } from "./Task";
 
 export interface Project {
   title: string;
-  tasks: { [key: string] : Task};
+  tasks: { [key: string]: Task };
   sync(): boolean;
 }
 
@@ -11,7 +11,7 @@ export interface Project {
 // for a "deeper" equality in the future, however since Wonder is mostly just
 // a view into SourceControl (the exception being write for labels), we don't
 // need much more for now.
-export function ProjectsAreEqual(a: Project, b: Project) : boolean {
+export function ProjectsAreEqual(a: Project, b: Project): boolean {
   if (a.title !== b.title) {
     return false;
   }

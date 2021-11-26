@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": [
-    ],
+    "lib": [],
     "allowJs": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
@@ -15,12 +14,6 @@
     "jsx": "preserve",
     "strict": false
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }

@@ -1,13 +1,21 @@
-import { Issue } from './Issue';
-import { PullRequest } from './PullRequest';
+import { Issue } from "./Issue";
+import { PullRequest } from "./PullRequest";
 
 export class Repository {
   name: string;
+
   id: number;
+
   issues: Issue[];
+
   pullRequests: PullRequest[];
 
-  constructor(name: string, id: number, issues: Issue[], pullRequests: PullRequest[]) {
+  constructor(
+    name: string,
+    id: number,
+    issues: Issue[],
+    pullRequests: PullRequest[]
+  ) {
     this.name = name;
     this.id = id;
     this.issues = issues;
@@ -16,5 +24,5 @@ export class Repository {
 }
 
 module.exports = {
-  Repository
-}
+  Repository,
+};

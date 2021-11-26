@@ -4,14 +4,12 @@
  */
 export class PullRequest {
   title: string;
+
   id: number;
+
   number: number;
 
-  constructor(
-    title: string,
-    id: number,
-    number: number,
-  ) {
+  constructor(title: string, id: number, number: number) {
     this.title = title;
     this.id = id;
     this.number = number;
@@ -19,5 +17,5 @@ export class PullRequest {
 }
 
 module.exports = {
-  PullRequest
-}
+  PullRequest,
+};

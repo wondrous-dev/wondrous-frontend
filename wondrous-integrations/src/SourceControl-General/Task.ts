@@ -1,4 +1,4 @@
-import { Label } from './Label'
+import { Label } from "./Label";
 
 /*
 
@@ -20,7 +20,6 @@ export interface Task {
   updateLabel(newLabel: Label): boolean;
 }
 
-
-export function TasksAreEqual(a: Task, b: Task) : boolean {
-  return a.title === b.title && a.label === b.label
+export function TasksAreEqual(a: Task, b: Task): boolean {
+  return a.title === b.title && a.label === b.label;
 }

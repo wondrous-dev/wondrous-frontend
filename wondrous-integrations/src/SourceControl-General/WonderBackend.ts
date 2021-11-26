@@ -1,13 +1,13 @@
-import { Project } from './Project'
+import { Project } from "./Project";
 
 // TODO: consider whether we want to have a projects field here. Essentially
 //       acts like a cache which comes with its own complexities.
 export interface WonderBackend {
-  projects: { [key: string]: Project }
+  projects: { [key: string]: Project };
   updateProject(sourceOfTruthProject: Project): Project;
 }
 
-export function SyncWonderBackend(wonderBackend: WonderBackend) : boolean {
+export function SyncWonderBackend(wonderBackend: WonderBackend): boolean {
   let failed: boolean = false;
   for (const i in wonderBackend.projects) {
     if (!wonderBackend.projects[i].sync()) {
@@ -18,7 +18,11 @@ export function SyncWonderBackend(wonderBackend: WonderBackend) : boolean {
   return failed;
 }
 
-export function GetOrAddWonderBackendProject(wonderBackend: WonderBackend, project: Project, trySyncOnFail: boolean = false) : Project {
+export function GetOrAddWonderBackendProject(
+  wonderBackend: WonderBackend,
+  project: Project,
+  trySyncOnFail: boolean = false
+): Project {
   if (project.title in wonderBackend.projects) {
     return wonderBackend.projects[project.title];
   } else {
@@ -30,5 +34,5 @@ export function GetOrAddWonderBackendProject(wonderBackend: WonderBackend, proje
     return GetOrAddWonderBackendProject(wonderBackend, project, false);
   }
 
-  throw "Project [" + project.title + "] not found in WonderBackend";
+  throw new Error("Project [" + project.title + "] not found in WonderBackend");
 }

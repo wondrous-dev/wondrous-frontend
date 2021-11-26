@@ -1,5 +1,5 @@
-import { Label } from "../../src/SourceControl-General/Label"
-import { Task } from "../../src/SourceControl-General/Task"
+import { Label } from "../../src/SourceControl-General/Label";
+import { Task } from "../../src/SourceControl-General/Task";
 
 export class MockTask implements Task {
   title: string;
@@ -10,7 +10,7 @@ export class MockTask implements Task {
     this.label = label;
   }
 
-  updateLabel(newLabel: Label) : boolean {
+  updateLabel(newLabel: Label): boolean {
     this.label = newLabel;
     return true;
   }
