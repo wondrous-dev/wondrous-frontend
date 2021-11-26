@@ -23,7 +23,8 @@ function GetOrAddWonderBackendProject(
 }
 
 /**
- * SyncProjectWithWonder - description
+ * SyncProjectWithWonder - sync latest state of truth with what we have in the
+ *                         Wonder backend.
  *
  * @param  {type} project: Project             project to compare with
  * @param  {type} wonderBackend: WonderBackend the backend to sync
@@ -33,33 +34,39 @@ export function SyncProjectWithWonder(
   project: Project,
   wonderBackend: WonderBackend
 ): boolean {
+  // update the project so we get the latest state
   project.sync();
 
   let wonderBackendProject: Project;
   try {
     wonderBackendProject = GetOrAddWonderBackendProject(wonderBackend, project);
   } catch (ex) {
-    console.log(ex);
+    // TODO: add logging
     return false;
   }
 
-  if (!ProjectsAreEqual(project, wonderBackendProject)) {
+  // no reason wonderBackendProject should be null unless unexpected things go wrong
+  if (
+    wonderBackendProject === null ||
+    !ProjectsAreEqual(project, wonderBackendProject)
+  ) {
     // force overwrite. We pass in the source of truth project in order to avoid a
     // race condition where source of truth != wonder backend, source of truth
     // receives an update, thus the "cached" version of source of truth here
     // != project. So, on sync we'd see that everything still not equal.
     // Example:
-    //    == original state ==
-    //    GitHub: wondrous-dev, 3 issues
-    //    WonderBE: wondrous-dev, 2 issues
+    //    (1) == original state ==
+    //        GitHub: wondrous-dev, 3 issues
+    //        WonderBE: wondrous-dev, 2 issues
     //
-    //    Check equality.
+    //    (2) Check equality.
     //
-    //    == update to GitHub ==
-    //    GitHub (live): wondrous-dev, 4 issues
-    //    GitHub (here): wondrous-dev, 3 issues
+    //    (3) == update to GitHub ==
+    //        GitHub (live): wondrous-dev, 4 issues
+    //        GitHub (here): wondrous-dev, 3 issues
     //
-    // Thus, we want to update to (here) and catch (live) on next sync, or as a
+    //    (4) query live version of project from GitHub <---- what we want to avoid
+    // Thus, we want to update to (here) and catch (live) on next sync, or as an
     // update call.
     const updatedWonderBackendProject = wonderBackend.updateProject(project);
 
@@ -72,8 +79,7 @@ export function SyncProjectWithWonder(
 
     return true;
   } else {
-    // TODO: add actual logging
-    console.log("Project [" + project.title + "] in sync with backend.");
+    // TODO: add logging
     return true;
   }
 }

@@ -24,7 +24,7 @@ between SourceControl updates.
 
 In pseudocode:
 
-```bash
+```
 1. query all projects in your flavor of SourceControl (i.e. GitHub)
 2. for each project in (1), SyncProjectWithWonder
 ```
@@ -36,7 +36,7 @@ and whatever doesn't violate the API limitations of said SourceControl.
 
 The tests for this code live in `tests/SourceControl-General-Tests`. Invoke them by:
 
-```bash
+```
 yarn test
 ```
 
@@ -44,7 +44,7 @@ yarn test
 
 Each of these have their own script:
 
-```bash
+```
 yarn format
 
 yarn lint
