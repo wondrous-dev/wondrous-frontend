@@ -7,6 +7,8 @@ the basic behaviors we expect of each Source Control integration. Thus, we can d
 Wonder functionality using this library and in the future connect more and more Source
 Control websites as requested by our users.
 
+## Syncing Logic
+
 ## Testing
 
 The tests for this code live in `tests/SourceControl-General-Tests`. Invoke them by:
