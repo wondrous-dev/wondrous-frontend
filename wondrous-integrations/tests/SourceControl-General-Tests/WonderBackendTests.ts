@@ -2,7 +2,7 @@ import { Label } from "../../src/SourceControl-General/Label";
 import { MockProject } from "./MockProject";
 import { MockTask } from "./MockTask";
 import { MockWonderBackend } from "./MockWonderBackend";
-import { SyncProjectWithWonder } from "../../src/SourceControl-General/Index";
+import { SyncProjectWithWonder } from "../../src/SourceControl-General/WonderBackend";
 import { expect } from "chai";
 
 const TaskA = new MockTask("foo", Label.InProgress);
