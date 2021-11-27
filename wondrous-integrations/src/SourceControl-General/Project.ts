@@ -1,3 +1,4 @@
+import { Milestone, MilestonesAreEqual } from "./Milestone";
 import { Task, TasksAreEqual } from "./Task";
 
 /**
@@ -8,6 +9,7 @@ import { Task, TasksAreEqual } from "./Task";
 export interface Project {
   title: string;
   tasks: { [key: string]: Task };
+  milestones: { [key: string]: Milestone };
   sync(): boolean;
 }
 
@@ -34,6 +36,19 @@ export function ProjectsAreEqual(a: Project, b: Project): boolean {
 
   for (let key in a.tasks) {
     if (!(key in b.tasks) || !TasksAreEqual(a.tasks[key], b.tasks[key])) {
+      return false;
+    }
+  }
+
+  if (a.milestones.length !== b.milestones.length) {
+    return false;
+  }
+
+  for (let key in a.milestones) {
+    if (
+      !(key in b.milestones) ||
+      !MilestonesAreEqual(a.milestones[key], b.milestones[key])
+    ) {
       return false;
     }
   }

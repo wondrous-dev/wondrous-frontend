@@ -80,6 +80,10 @@ export function SyncProjectWithWonder(
     return true;
   } else {
     // TODO: add logging
+    // So here true means, was updated correctly. This true means the projects
+    // are equivalent, i.e. in sync.  The other code path is for when they are
+    // not equivalent, which force updates and then throws if the force update
+    // did not work.
     return true;
   }
 }
