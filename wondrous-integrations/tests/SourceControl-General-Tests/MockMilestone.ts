@@ -28,4 +28,16 @@ export class MockMilestone implements Milestone {
     this.status = status;
     this.tasks = tasks;
   }
+
+  updateStatus(newStatus: Label): boolean {
+    this.status = newStatus;
+    return true;
+  }
+
+  // in the real world, we'd do some checking to make sure this isn't already
+  // complete
+  complete(completionDate: Date): boolean {
+    this.completionDate = completionDate;
+    return true;
+  }
 }
