@@ -1,3 +1,4 @@
+import { GUID } from "../Common/GUID";
 import { Milestone, MilestonesAreEqual } from "./Milestone";
 import { Task, TasksAreEqual } from "./Task";
 
@@ -7,6 +8,7 @@ import { Task, TasksAreEqual } from "./Task";
  * data stored in this object.
  */
 export interface Project {
+  id: GUID;
   title: string;
   tasks: { [key: string]: Task };
   milestones: { [key: string]: Milestone };
@@ -26,7 +28,7 @@ export interface Project {
  * @return {type}            description
  */
 export function ProjectsAreEqual(a: Project, b: Project): boolean {
-  if (a.title !== b.title) {
+  if (a.id !== b.id || a.title !== b.title) {
     return false;
   }
 

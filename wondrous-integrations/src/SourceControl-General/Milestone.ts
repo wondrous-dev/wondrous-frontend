@@ -1,3 +1,4 @@
+import { GUID } from "../Common/GUID";
 import { Label } from "./Label";
 import { Task, TasksAreEqual } from "./Task";
 
@@ -8,6 +9,7 @@ import { Task, TasksAreEqual } from "./Task";
  * or update its status from Wonder.
  */
 export interface Milestone {
+  id: GUID;
   title: string;
   description: string;
   dueDate: Date;
@@ -27,7 +29,7 @@ export interface Milestone {
  * @return {type}              whether two Milestones are equal.
  */
 export function MilestonesAreEqual(a: Milestone, b: Milestone): boolean {
-  if (a.title !== b.title || a.description !== b.description) {
+  if (a.id !== b.id || a.title !== b.title || a.description !== b.description) {
     return false;
   }
 

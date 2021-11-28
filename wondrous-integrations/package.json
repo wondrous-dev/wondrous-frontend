@@ -8,7 +8,9 @@
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'tests/**/*.ts'"
   },
   "dependencies": {
-    "octokit": "^1.7.1"
+    "@types/uuid": "^8.3.3",
+    "octokit": "^1.7.1",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.16.0",
@@ -27,6 +29,7 @@
     "eslint-plugin-promise": "4",
     "mocha": "^9.1.3",
     "prettier": "^2.5.0",
+    "ts-node": "^10.4.0",
     "typescript": "4.3.5"
   }
 }

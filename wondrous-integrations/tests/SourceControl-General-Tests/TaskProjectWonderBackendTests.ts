@@ -107,7 +107,11 @@ const WonderBackendA = new MockWonderBackend({
 
 describe("Tasks Equality", () => {
   it("equal", () => {
-    expect(TasksAreEqual(TaskA, TaskB)).to.equal(true);
+    expect(TasksAreEqual(TaskA, TaskA)).to.equal(true);
+  });
+
+  it("differ by id", () => {
+    expect(TasksAreEqual(TaskA, TaskB)).to.equal(false);
   });
 
   it("differ by title", () => {
@@ -121,7 +125,11 @@ describe("Tasks Equality", () => {
 
 describe("Mileston Equality", () => {
   it("equal", () => {
-    expect(MilestonesAreEqual(MilestoneA, MilestoneB)).to.equal(true);
+    expect(MilestonesAreEqual(MilestoneA, MilestoneA)).to.equal(true);
+  });
+
+  it("differ by id", () => {
+    expect(MilestonesAreEqual(MilestoneA, MilestoneB)).to.equal(false);
   });
 
   it("differ by completionDate", () => {
@@ -139,7 +147,11 @@ describe("Mileston Equality", () => {
 
 describe("Project Equality", () => {
   it("equal", () => {
-    expect(ProjectsAreEqual(ProjectA, ProjectB)).to.equal(true);
+    expect(ProjectsAreEqual(ProjectA, ProjectA)).to.equal(true);
+  });
+
+  it("differ by id", () => {
+    expect(ProjectsAreEqual(ProjectA, ProjectB)).to.equal(false);
   });
 
   it("differ by title", () => {

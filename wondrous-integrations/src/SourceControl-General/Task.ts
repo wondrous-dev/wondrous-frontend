@@ -1,3 +1,4 @@
+import { GUID } from "../Common/GUID";
 import { Label } from "./Label";
 
 /**
@@ -12,6 +13,7 @@ import { Label } from "./Label";
  * interface
  */
 export interface Task {
+  id: GUID;
   title: string;
   label: Label;
   updateLabel(newLabel: Label): boolean;
@@ -25,5 +27,5 @@ export interface Task {
  * @return {type} boolen - whether or not the two are equal
  */
 export function TasksAreEqual(a: Task, b: Task): boolean {
-  return a.title === b.title && a.label === b.label;
+  return a.id === b.id && a.title === b.title && a.label === b.label;
 }
