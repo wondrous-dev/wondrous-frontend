@@ -1,17 +1,16 @@
 import React, { useState } from 'react'
 import { useWindowSize } from '../../utils/hooks'
+import { Logo, Logotype } from '../Common/ci'
 import {
 	HomeNavLink,
 	HomeNavLinkTypography,
 	LinkContainer,
 	ManifestoLink,
 	NavContainer,
-	ImgLink,
-	LogoImg,
+	LogoLink,
 	FlexDiv,
 	LinkDiv,
 	JoinDiscordButton,
-	LogoNoTextImg,
 } from './styles'
 
 const HomeNavbar = () => {
@@ -20,13 +19,9 @@ const HomeNavbar = () => {
 		return (
 			<NavContainer>
 				<LinkContainer>
-					<ImgLink href="/?redirect=false">
-						{windowSize && windowSize?.width < 375 ? (
-							<LogoNoTextImg src="/images/logo/wonder-logo-no-text.png" />
-						) : (
-							<LogoImg src="/images/logo/horizontal-white-text.png" />
-						)}
-					</ImgLink>
+					<LogoLink href="/?redirect=false">
+						{windowSize && windowSize?.width < 375 ? <Logo /> : <Logotype />}
+					</LogoLink>
 					<FlexDiv />
 					<LinkDiv>
 						<ManifestoLink>
@@ -53,9 +48,9 @@ const HomeNavbar = () => {
 		return (
 			<NavContainer>
 				<LinkContainer>
-					<ImgLink href="/">
-						<LogoImg src="/images/logo/horizontal-white-text.png" />
-					</ImgLink>
+					<LogoLink href="/">
+						<Logotype />
+					</LogoLink>
 					<FlexDiv />
 					<LinkDiv>
 						<ManifestoLink>

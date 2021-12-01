@@ -330,6 +330,11 @@ export const ProfileCenteredDiv = styled(CenteredDiv)`
 		margin-top: 100px;
 		margin-bottom: 100px;
 	}
+
+	& > .logo {
+		height: 56px;
+		margin-bottom: 16px;
+	}
 `
 export const SmallerCenteredDiv = styled(CenteredDiv)`
 	&& {
