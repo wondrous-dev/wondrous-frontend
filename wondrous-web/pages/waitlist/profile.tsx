@@ -41,6 +41,7 @@ import HomeNavbar from '../../components/Navbar/Home'
 import { TokenText } from '../../components/Home/styles'
 import { DiscordShare } from '../../components/Icons/discord'
 import { initHotjar } from '../../utils/hotjar'
+import { Logo } from '../../components/Common/ci'
 
 // Have $10 Wonder tokens
 // Invite for another $30
@@ -102,7 +103,7 @@ const WaitlistProfile = () => {
 		<ProfileWrapper>
 			<HomeNavbar />
 			<ProfileCenteredDiv>
-				<LogoNoTextImg src="/images/logo/wonder-logo-no-text.png" />
+				<Logo />
 				<JoinWaitlistHeader variant="h3">You&apos;re in</JoinWaitlistHeader>
 				<ProfileText
 					style={{

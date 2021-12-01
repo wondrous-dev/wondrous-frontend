@@ -31,25 +31,20 @@ export const LinkContainer = styled.div`
 	align-items: center;
 	justify-content: space-between;
 	width: 100%;
+
+	& > .logo,
+	& > .logotype {
+		height: 44px;
+	}
 `
 
 export const WaitlistContainer = styled(LinkContainer)`
 	margin-right: ${createSpacingUnit(4)}px;
 `
 
-export const ImgLink = styled(Link)`
+export const LogoLink = styled(Link)`
 	margin-left: ${createSpacingUnit(2)}px;
 	cursor: pointer;
-`
-
-export const LogoImg = styled.img`
-	width: ${createSpacingUnit(22.75)}px;
-`
-
-export const LogoNoTextImg = styled.img`
-	&& {
-		width: ${createSpacingUnit(7.5)}px;
-	}
 `
 
 export const FlexDiv = styled.div`
