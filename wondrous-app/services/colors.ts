@@ -56,3 +56,8 @@ export const Black50 = '#999DA2'
 export const Black60 = '#6B7075'
 export const Black90 = '#23292F'
 export const Black100 = '#010114'
+
+export const HighlightBlue = '#00BAFF'
+export const HighlightPurple = '#7427FF'
+export const Midnight = '#141414'
+export const Background = '#0F0F0F'
