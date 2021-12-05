@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { Purple, White } from '../../services/colors'
 import { Logotype } from '../Common/ci'
+import { CenteredFlexRow } from '../Common/index'
 
 export const LoginWrapper = styled.div`
 	&& {
@@ -28,6 +29,7 @@ export const SmallLogo = styled(Logotype)`
 		max-width: fit-content;
 	}
 `
+
 export const Form = styled.form`
  && {
 	display: flex;
@@ -46,3 +48,26 @@ export const Field = styled.input`
 	 outline: none;
  }
 `
+export const Line = styled.h2`
+ && {
+	text-align: center;
+	border-bottom: 1px solid #828282;
+	line-height: 0.1rem;
+	width: ${props => props.width};
+ }
+`
+
+export const PaddedParagraph = styled.p`
+	padding: 0 10px;
+	color: ${props => props.color};
+`
+
+export const LineWithText = ({children}) => {
+	return (
+		<CenteredFlexRow>
+			<Line width="25%"/>
+			{children}
+			<Line width="25%"/>
+		</CenteredFlexRow>
+	)	
+}

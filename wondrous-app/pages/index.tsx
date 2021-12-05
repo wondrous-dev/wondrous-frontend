@@ -3,8 +3,9 @@ import { useRouter } from 'next/router'
 import { Card } from '../components/Common/auth'
 import { Button } from '../components/Common/button'
 import AuthLayout from '../components/Common/Layout/Auth'
-import { LoginWrapper, SmallLogo, Form, Field } from '../components/Pages/login'
+import { LoginWrapper, SmallLogo, Form, Field, LineWithText, PaddedParagraph, Line } from '../components/Pages/login'
 import { useState } from 'react'
+import Image from 'next/image'
 
 const Login = () => {
 	const router = useRouter()
@@ -39,6 +40,18 @@ const Login = () => {
 							Log me in
 						</Button>
 					</Form>
+					<LineWithText>
+						<PaddedParagraph color="#828282">
+							or
+						</PaddedParagraph>
+					</LineWithText>
+					<Button>
+						<Image src="/images/login/metamask-logo.png" alt="" height="18" width="17"/>
+						<PaddedParagraph color="white">
+							Log in with MetaMask
+						</PaddedParagraph>
+					</Button>
+					<Line size="80%" />
 
 
 				</Card>

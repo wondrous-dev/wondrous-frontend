@@ -11,6 +11,7 @@ export const FlexRow = styled.div`
 
 export const CenteredFlexRow = styled(FlexRow)`
 	align-items: center;
+	justify-content: center;
 `
 
 export const NewCanvas = styled.canvas`
