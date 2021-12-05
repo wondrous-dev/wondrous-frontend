@@ -56,7 +56,10 @@ const Login = () => {
 						</StyledLink>
 					</CenteredFlexRow>
 					<CenteredFlexRow>
-						Problems logging in?
+						{/* replace link once we build out a way to report */}
+						<StyledLink href="/report">
+							Problems logging in?
+						</StyledLink>
 					</CenteredFlexRow>
 
 
