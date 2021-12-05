@@ -6,7 +6,7 @@ export const HeaderWrapper = styled.header`
 
 	height: 70px;
 	width: 100%;
-	padding-bottom: 2px;
+	padding-bottom: 1px;
 
 	&::after {
 		content: '';
@@ -15,7 +15,7 @@ export const HeaderWrapper = styled.header`
 		left: 0;
 
 		width: 100%;
-		height: 2px;
+		height: 1px;
 
 		background: rgb(75, 75, 75);
 		background: linear-gradient(
