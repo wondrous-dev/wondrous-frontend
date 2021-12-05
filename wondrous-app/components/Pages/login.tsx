@@ -25,5 +25,12 @@ export const LoginWrapper = styled.div`
 export const SmallLogo = styled(Logotype)`
 	&& {
 		max-height: 3vh;
+		max-width: fit-content;
 	}
+`
+export const Form = styled.form`
+ && {
+	display: flex;
+	flex-direction: column;
+ }
 `
