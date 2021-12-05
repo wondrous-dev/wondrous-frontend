@@ -46,6 +46,7 @@ export const Field = styled.input`
 	 color: #828282;
 	 background: #0F0F0F url(${props => props.url}) no-repeat 10px;
 	 outline: none;
+	 font-size: 14px;
  }
 `
 export const Line = styled.h2`
@@ -61,6 +62,7 @@ export const PaddedParagraph = styled.p`
 	&& {
 		padding: ${props => props.padding};
 		color: ${props => props.color};
+		margin: 0;
 	}
 `
 
