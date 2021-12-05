@@ -12,6 +12,7 @@ export const FlexRow = styled.div`
 export const CenteredFlexRow = styled(FlexRow)`
 	align-items: center;
 	justify-content: center;
+	margin-top: ${props => props.marginTop};
 `
 
 export const NewCanvas = styled.canvas`

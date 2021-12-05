@@ -31,9 +31,9 @@ export const SmallLogo = styled(Logotype)`
 `
 
 export const Form = styled.form`
- && {
-	display: flex;
-	flex-direction: column;
+	&& {
+		display: flex;
+		flex-direction: column;
  }
 `
 
@@ -49,17 +49,19 @@ export const Field = styled.input`
  }
 `
 export const Line = styled.h2`
- && {
-	text-align: center;
-	border-bottom: 1px solid #828282;
-	line-height: 0.1rem;
-	width: ${props => props.width};
+	&& {
+		text-align: center;
+		border-bottom: 1px solid #828282;
+		line-height: 0.1rem;
+		width: ${props => props.width};
  }
 `
 
 export const PaddedParagraph = styled.p`
-	padding: 0 10px;
-	color: ${props => props.color};
+	&& {
+		padding: ${props => props.padding};
+		color: ${props => props.color};
+	}
 `
 
 export const LineWithText = ({children}) => {
@@ -71,3 +73,7 @@ export const LineWithText = ({children}) => {
 		</CenteredFlexRow>
 	)	
 }
+
+export const StyledLink = styled.a`
+	color: #01baff;
+`

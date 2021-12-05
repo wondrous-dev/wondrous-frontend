@@ -3,9 +3,10 @@ import { useRouter } from 'next/router'
 import { Card } from '../components/Common/auth'
 import { Button } from '../components/Common/button'
 import AuthLayout from '../components/Common/Layout/Auth'
-import { LoginWrapper, SmallLogo, Form, Field, LineWithText, PaddedParagraph, Line } from '../components/Pages/login'
+import { LoginWrapper, SmallLogo, Form, Field, LineWithText, PaddedParagraph, Line, StyledLink } from '../components/Pages/login'
 import { useState } from 'react'
 import Image from 'next/image'
+import { CenteredFlexRow } from '../components/Common/index'
 
 const Login = () => {
 	const router = useRouter()
@@ -41,17 +42,26 @@ const Login = () => {
 						</Button>
 					</Form>
 					<LineWithText>
-						<PaddedParagraph color="#828282">
+						<PaddedParagraph padding="0 10px" color="#828282">
 							or
 						</PaddedParagraph>
 					</LineWithText>
 					<Button>
 						<Image src="/images/login/metamask-logo.png" alt="" height="18" width="17"/>
-						<PaddedParagraph color="white">
+						<PaddedParagraph padding="0 10px" color="white">
 							Log in with MetaMask
 						</PaddedParagraph>
 					</Button>
 					<Line size="80%" />
+					<CenteredFlexRow marginTop="16px">
+						Don't have an account yet?&nbsp;
+						<StyledLink href="/signup">
+							Sign up for the beta.
+						</StyledLink>
+					</CenteredFlexRow>
+					<CenteredFlexRow>
+						Problems logging in?
+					</CenteredFlexRow>
 
 
 				</Card>

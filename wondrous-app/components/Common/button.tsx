@@ -15,6 +15,7 @@ const ButtonInner = styled.div`
 	${GradientMidnightVertical}
 
 	border-radius: 98px;
+	font-size: 16px;
 `
 
 const buttonAttrs = () => ({
