@@ -26,6 +26,7 @@ const ButtonWrapper = styled.div.attrs(buttonAttrs)`
 	flex-direction: row;
 	min-height: 50px;
 	padding: 2px;
+	margin-top: ${props => props.marginTop};
 
 	background: #515151;
 	${(props) => props.highlighted && GradientHighlightHorizontal}

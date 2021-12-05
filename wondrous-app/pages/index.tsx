@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { Card } from '../components/Common/auth'
 import { Button } from '../components/Common/button'
 import AuthLayout from '../components/Common/Layout/Auth'
-import { LoginWrapper, SmallLogo, Form } from '../components/Pages/login'
+import { LoginWrapper, SmallLogo, Form, Field } from '../components/Pages/login'
 import { useState } from 'react'
 
 const Login = () => {
@@ -33,14 +33,12 @@ const Login = () => {
 					<SmallLogo />
 					<h1>Login</h1>
 					<Form onSubmit={handleSubmit}>
-						<input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-						<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-						<Button highlighted type="submit">
+						<Field type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter email address" url="/images/login/email.png"/>
+						<Field type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter password" url="/images/login/lock.png"/>
+						<Button highlighted type="submit" marginTop="25px">
 							Log me in
 						</Button>
 					</Form>
-
-					<p>Login Form Here</p>
 
 
 				</Card>
