@@ -25,7 +25,7 @@ const ButtonWrapper = styled.div`
 	flex-direction: row;
 	min-height: 50px;
 	padding: 2px;
-	margin-top: ${props => props.marginTop};
+	margin-top: ${(props) => props.marginTop || 0};
 
 	background: #515151;
 	${(props) => props.highlighted && GradientHighlightHorizontal}

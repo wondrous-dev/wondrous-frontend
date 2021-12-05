@@ -2,8 +2,8 @@ import styled from 'styled-components'
 
 export const PaddedParagraph = styled.p`
 	&& {
-		padding: ${props => props.padding};
-		color: ${props => props.color};
+		padding: ${(props) => props.padding || 0};
+		color: ${(props) => props.color || "white"};
 		margin: 0;
 	}
 `

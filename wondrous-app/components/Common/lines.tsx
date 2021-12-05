@@ -6,7 +6,7 @@ export const Line = styled.h2`
 		text-align: center;
 		border-bottom: 1px solid #828282;
 		line-height: 0.1rem;
-		width: ${props => props.width};
+		width: ${(props) => props.width || "100%"};
  }
 `
 
