@@ -1,4 +1,12 @@
 import styled from 'styled-components'
+import { Logotype } from '../Common/ci'
+
+export const SmallLogo = styled(Logotype)`
+	&& {
+		max-height: 30px;
+		max-width: fit-content;
+	}
+`
 
 export const LoginWrapper = styled.div`
 	&& {

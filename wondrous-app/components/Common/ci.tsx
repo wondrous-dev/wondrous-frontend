@@ -1,6 +1,4 @@
 import React, { SVGProps } from 'react'
-import styled from 'styled-components'
-
 
 export const Logo = (props: SVGProps<SVGSVGElement>) => (
 	<svg
@@ -141,10 +139,3 @@ export const Logotype = (props: LogotypeProps) => (
 		</defs>
 	</svg>
 )
-
-export const SmallLogo = styled(Logotype)`
-	&& {
-		max-height: 30px;
-		max-width: fit-content;
-	}
-`
