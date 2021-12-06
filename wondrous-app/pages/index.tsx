@@ -11,6 +11,7 @@ import { SmallLogo, LoginWrapper, TopBubble } from '../components/Pages/login'
 import { useState } from 'react'
 import Image from 'next/image'
 import { CenteredFlexRow } from '../components/Common/index'
+import { Grey50 } from '../services/colors'
 
 const Login = () => {
 	const router = useRouter()
@@ -43,7 +44,7 @@ const Login = () => {
 						</Button>
 					</Form>
 					<LineWithText>
-						<PaddedParagraph padding="0 10px" color="#828282">
+						<PaddedParagraph padding="0 10px" color={Grey50}>
 							or
 						</PaddedParagraph>
 					</LineWithText>

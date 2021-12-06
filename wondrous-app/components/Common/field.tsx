@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Background, Grey50 } from '../../services/colors'
 
 export const Field = styled.input`
  && {
@@ -6,9 +7,9 @@ export const Field = styled.input`
 	 margin: 5px 0;
 	 border-radius: 8px;
 	 border: 0px;
-	 color: #828282;
+	 color: ${Grey50};
 	 outline: none;
 	 font-size: 14px;
-	 background: ${(props) => props.url ? "#0F0F0F url("+props.url+") no-repeat 10px" : "#0F0F0F"}
+	 background: ${(props) => props.url ? Background+" url("+props.url+") no-repeat 10px" : Background}
  }
 `
