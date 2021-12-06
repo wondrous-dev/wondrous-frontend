@@ -12,6 +12,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { CenteredFlexRow } from '../components/Common/index'
 import { Grey50 } from '../services/colors'
+import { Metamask } from '../components/Icons/metamask'
 
 const Login = () => {
 	const router = useRouter()
@@ -49,7 +50,7 @@ const Login = () => {
 						</PaddedParagraph>
 					</LineWithText>
 					<Button onClick={loginWithWallet}>
-						<Image src="/images/login/metamask-logo.png" alt="" height="18" width="17"/>
+						<Metamask height="18" width="17"/>
 						<PaddedParagraph padding="0 10px">
 							Log in with MetaMask
 						</PaddedParagraph>
