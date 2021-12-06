@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import Image from 'next/image'
 
 export const LoginWrapper = styled.div`
 	&& {
@@ -14,5 +13,23 @@ export const LoginWrapper = styled.div`
 		background-position: center; /* Center the image */
 		background-size: cover;
 		flex-direction: column;
+	}
+`
+
+export const TopBubble = styled.img`
+	position: absolute;
+	top: -187px;
+	right: -200px;
+	@media (max-width: 745px) {
+		display: none;
+	}
+	@media (max-height: 775px) {
+		display: none;
+	}
+	@media (orientation: portrait) {
+		display: none;
+	}
+	@media (min-height: 965px) {
+		display: none;
 	}
 `

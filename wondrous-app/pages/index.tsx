@@ -8,7 +8,7 @@ import { LineWithText, Line } from '../components/Common/lines'
 import { Form } from '../components/Common/form'
 import { Field } from '../components/Common/field'
 import { PaddedParagraph, StyledLink } from '../components/Common/text'
-import { LoginWrapper } from '../components/Pages/login'
+import { LoginWrapper, TopBubble } from '../components/Pages/login'
 import { useState } from 'react'
 import Image from 'next/image'
 import { CenteredFlexRow } from '../components/Common/index'
@@ -33,6 +33,7 @@ const Login = () => {
 		<AuthLayout>
 			<LoginWrapper>
 				<Card>
+					<TopBubble src="/images/login/top-floater-bubble.png" alt="" height="275" width="500" />
 					<SmallLogo />
 					<h1>Login</h1>
 					<Form onSubmit={handleSubmit}>
