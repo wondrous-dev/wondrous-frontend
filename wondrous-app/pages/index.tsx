@@ -32,8 +32,8 @@ const Login = () => {
 		
 		<AuthLayout>
 			<LoginWrapper>
+				<TopBubble src="/images/login/top-floater-bubble.png" alt=""/>
 				<Card>
-					<TopBubble src="/images/login/top-floater-bubble.png" alt="" height="275" width="500" />
 					<SmallLogo />
 					<h1>Login</h1>
 					<Form onSubmit={handleSubmit}>
