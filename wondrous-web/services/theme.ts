@@ -4,7 +4,7 @@ import * as Colors from './colors'
 const theme = createTheme({
 	palette: {
 		primary: {
-			main: Colors.Orange,
+			main: Colors.Purple,
 			contrastText: Colors.White,
 		},
 		secondary: {
