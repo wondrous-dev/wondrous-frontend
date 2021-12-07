@@ -33,8 +33,11 @@
 	src: url('./FaktumBold.otf');
 }
 
-html, body {
+html,
+body {
 	overflow-x: hidden;
 	height: 100%;
-	background-color: #0D0738;
+	background-color: #0d0738;
+	padding: 0;
+	margin: 0;
 }
