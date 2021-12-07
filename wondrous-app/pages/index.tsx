@@ -9,10 +9,10 @@ import { Field } from '../components/Common/field'
 import { PaddedParagraph, StyledLink } from '../components/Common/text'
 import { SmallLogo, LoginWrapper, TopBubble } from '../components/Pages/login'
 import { useState } from 'react'
-import Image from 'next/image'
 import { CenteredFlexRow } from '../components/Common/index'
 import { Grey50 } from '../services/colors'
 import { Metamask } from '../components/Icons/metamask'
+import { EmailIcon, LockIcon } from '../components/Icons/userpass'
 
 const Login = () => {
 	const router = useRouter()
@@ -38,8 +38,8 @@ const Login = () => {
 					<SmallLogo />
 					<h1>Login</h1>
 					<Form onSubmit={handleSubmit}>
-						<Field type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter email address" url="/images/login/email.png" required/>
-						<Field type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter password" url="/images/login/lock.png" required/>
+						<Field type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter email address" icon={EmailIcon} required/>
+						<Field type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter password" icon={LockIcon} required/>
 						<Button highlighted type="submit" marginTop="25px">
 								Log me in
 						</Button>
