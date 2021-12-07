@@ -27,7 +27,6 @@ export const MainWrapper = styled.main`
 	}
 
 	color: ${White};
-	padding: ${createSpacingUnit(4)}px;
 	background: ${Background};
 
 	overflow-x: hidden;

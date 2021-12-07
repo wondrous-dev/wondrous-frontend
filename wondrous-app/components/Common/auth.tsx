@@ -5,4 +5,5 @@ export const Card = styled(BaseCard)`
 	min-height: 25vh;
 	width: 100%;
 	max-width: 578px;
+	position: relative;
 `
