@@ -4,7 +4,7 @@ import { Logotype } from '../Common/ci'
 export const SmallLogo = styled(Logotype)`
 	&& {
 		max-height: 30px;
-		max-width: fit-content;
+		max-width: 130px;
 	}
 `
 
@@ -26,30 +26,19 @@ export const LoginWrapper = styled.div`
 
 export const TopBubble = styled.img`
 	z-index: 1;
-	height: 275px;
-	width: 500px; 
 	position: absolute;
+	left: 50vw;
+	top: 0;
+		
 	@media (max-width: 745px) {
 		display: none;
 	}
 	@media (max-height: 775px) {
-		top: 0;
-		right: 10vw;
 		max-height: 25%;
-		max-width: 30%;
 	}
 	@media (min-height: 775px) and (max-height: 965px) {
-		top: 0;
-		right: 20vw;
 		max-height: min(275px, 30%);
 	}
-	@media (min-height: 965px) {
-		top: 0;
-		right: 15vw;
-		height: 35%;
-		width: 40%;
-	}
-
 	@media (orientation: portrait) {
 		display: none;
 	}
