@@ -7,16 +7,16 @@ export const Line = styled.h2`
 		text-align: center;
 		border-bottom: 1px solid ${Grey50};
 		line-height: 0.1rem;
-		width: ${(props) => props.width || "100%"};
- }
+		width: ${(props) => props.width || '100%'};
+	}
 `
 
-export const LineWithText = ({children}) => {
+export const LineWithText = ({ children }) => {
 	return (
 		<CenteredFlexRow>
-			<Line width="25%"/>
+			<Line width="25%" />
 			{children}
-			<Line width="25%"/>
+			<Line width="25%" />
 		</CenteredFlexRow>
-	)	
+	)
 }

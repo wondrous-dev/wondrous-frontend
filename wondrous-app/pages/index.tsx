@@ -16,11 +16,11 @@ import { EmailIcon, LockIcon } from '../components/Icons/userpass'
 
 const Login = () => {
 	const router = useRouter()
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const [email, setEmail] = useState('')
+	const [password, setPassword] = useState('')
 
 	const handleSubmit = (event) => {
-		event.preventDefault();
+		event.preventDefault()
 		//store email & password
 		// route to home ---- router.push('/home')
 	}
@@ -30,18 +30,33 @@ const Login = () => {
 	}
 
 	return (
-		
 		<AuthLayout>
 			<LoginWrapper>
-				<TopBubble src="/images/login/top-floater-bubble.png" alt=""/>
+				<TopBubble src="/images/login/top-floater-bubble.png" alt="" />
 				<Card>
 					<SmallLogo />
 					<h1>Login</h1>
 					<Form onSubmit={handleSubmit}>
-						<Field type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter email address" icon={EmailIcon} required/>
-						<Field type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter password" icon={LockIcon} required/>
+						<Field
+							type="email"
+							name="email"
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+							placeholder="Enter email address"
+							icon={EmailIcon}
+							required
+						/>
+						<Field
+							type="password"
+							name="password"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							placeholder="Enter password"
+							icon={LockIcon}
+							required
+						/>
 						<Button highlighted type="submit" marginTop="25px">
-								Log me in
+							Log me in
 						</Button>
 					</Form>
 					<LineWithText>
@@ -50,7 +65,7 @@ const Login = () => {
 						</PaddedParagraph>
 					</LineWithText>
 					<Button onClick={loginWithWallet}>
-						<Metamask height="18" width="17"/>
+						<Metamask height="18" width="17" />
 						<PaddedParagraph padding="0 10px">
 							Log in with MetaMask
 						</PaddedParagraph>
@@ -58,18 +73,12 @@ const Login = () => {
 					<Line size="80%" />
 					<CenteredFlexRow marginTop="16px">
 						Don't have an account yet?&nbsp;
-						<StyledLink href="/signup">
-							Sign up for the beta.
-						</StyledLink>
+						<StyledLink href="/signup">Sign up for the beta.</StyledLink>
 					</CenteredFlexRow>
 					<CenteredFlexRow>
 						{/* TODO: replace link once we build out a way to report */}
-						<StyledLink href="/report">
-							Problems logging in?
-						</StyledLink>
+						<StyledLink href="/report">Problems logging in?</StyledLink>
 					</CenteredFlexRow>
-
-
 				</Card>
 			</LoginWrapper>
 		</AuthLayout>

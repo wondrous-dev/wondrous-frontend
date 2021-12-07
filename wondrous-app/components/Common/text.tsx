@@ -11,6 +11,6 @@ export const PaddedParagraph = styled.p`
 
 export const StyledLink = styled.a`
 	&& {
-    color: ${HighlightBlue};
-  }
+		color: ${HighlightBlue};
+	}
 `

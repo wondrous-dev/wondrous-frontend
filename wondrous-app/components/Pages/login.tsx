@@ -16,7 +16,8 @@ export const LoginWrapper = styled.div`
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-image: url('/images/login/background.png'), url('/images/login/background-blur.png');
+		background-image: url('/images/login/background.png'),
+			url('/images/login/background-blur.png');
 		background-repeat: no-repeat;
 		background-position: center; /* Center the image */
 		background-size: cover;
@@ -29,7 +30,7 @@ export const TopBubble = styled.img`
 	position: absolute;
 	left: 50vw;
 	top: 0;
-		
+
 	@media (max-width: 745px) {
 		display: none;
 	}
