@@ -1,7 +1,13 @@
 import { Typography, Button } from '@material-ui/core'
 import Link from 'next/link'
 import styled from 'styled-components'
-import { Green200, White, Yellow400 } from '../../services/colors'
+import {
+	Green200,
+	Orange,
+	Orange100,
+	White,
+	Yellow400,
+} from '../../services/colors'
 import { createSpacingUnit } from '../../utils'
 import { device } from '../../utils/device'
 import SmartLink from '../SmartLink'

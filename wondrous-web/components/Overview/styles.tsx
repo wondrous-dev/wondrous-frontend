@@ -16,6 +16,7 @@ export const HeaderImage = styled.div`
 	background-image: url('/images/overview/background.png');
 	//background-repeat: no-repeat;
 	background-position: center;
+	margin-top: 70px;
 `
 export const TokenHeader = styled.div`
 	position: relative;
@@ -86,7 +87,7 @@ export const HeaderFollowButton = styled(Button)`
 		height: 40px;
 		filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
 		border-radius: 204px;
-		border: 1px solid white;
+		border: 1px solid deepskyblue;
 	}
 `
 
@@ -210,7 +211,6 @@ export const StyledTabs = styled((props) => (
 	'&.MuiTabs-root': {
 		marginTop: 30,
 		width: '100%',
-		// backgroundColor: 'red',
 	},
 	'& .MuiTabs-flexContainer': {
 		display: 'flex',
