@@ -1,4 +1,5 @@
 import { css } from 'styled-components'
+import { Grey75, Black90 } from '../../services/colors'
 
 export const GradientHighlightHorizontal = css`
 	background: rgb(204, 187, 255);
@@ -16,5 +17,14 @@ export const GradientMidnightVertical = css`
 		0deg,
 		rgba(20, 20, 20, 1) 0%,
 		rgba(30, 30, 30, 1) 100%
+	);
+`
+
+export const GradientMidnightDiagonal = css`
+	background: ${Black90};
+	background: linear-gradient(
+		250deg,
+		${Grey75}80,
+		${Black90}80
 	);
 `
