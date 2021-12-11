@@ -4,7 +4,7 @@ import { ToDo, InProgress, Done } from '../components/Icons'
 import { GmBox, WelcomeMessage } from '../components/Pages/home'
 import { KanbanBoard } from '../components/Pages/boards'
 
-const MOCK_COLUMNS = [
+const MOCK_COLUMNS_DATA = [
 	{
 		title: 'To-Do',
 		icon: ToDo,
@@ -45,6 +45,7 @@ const MOCK_COLUMNS = [
 					}
 				],
 				description: 'This is Task #1',
+				taskType: 'TODO',
 				media: {
 					type: 'image',
 					url: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.windowsreport.com%2Fwp-content%2Fuploads%2F2018%2F10%2FMozilla-Firefox-memory-leak.jpg&f=1&nofb=1'
@@ -58,6 +59,7 @@ const MOCK_COLUMNS = [
 			},
 			{
 				title: 'Task 2',
+				taskType: 'TODO',
 				users: [
 					{
 						name: 'UserName',
@@ -79,6 +81,7 @@ const MOCK_COLUMNS = [
 		tasks: [
 			{
 				title: 'Task 3',
+				taskType: 'INPROGRESS',
 				users: [
 					{
 						name: 'UserName',
@@ -95,6 +98,7 @@ const MOCK_COLUMNS = [
 			},
 			{
 				title: 'Task 4',
+				taskType: 'INPROGRESS',
 				users: [
 					{
 						name: 'UserName',
@@ -116,6 +120,7 @@ const MOCK_COLUMNS = [
 		tasks: [
 			{
 				title: 'Task 5',
+				taskType: 'DONE',
 				users: [
 					{
 						name: 'UserName',
@@ -129,21 +134,6 @@ const MOCK_COLUMNS = [
 				],
 				description: 'This is Task #5',
 				priority: 1
-			},
-			{
-				title: 'Task 6',
-				users: [
-					{
-						name: 'UserName',
-						avatar: {
-							isOwnerOfPod: true
-						}
-					},
-					{
-						name: 'AnotherUser'
-					}
-				],
-				description: 'This is description for Task #6'
 			}
 		]
 	}
@@ -157,7 +147,7 @@ const Home = () => {
 				<GmBox>☀️gm</GmBox>
 				<span>Welcome to Wonderverse!</span>
 			</WelcomeMessage>
-			<KanbanBoard columns={MOCK_COLUMNS} />
+			<KanbanBoard columns={MOCK_COLUMNS_DATA} />
 		</AppLayout>
 	)
 }

@@ -1,5 +1,5 @@
 import { css } from 'styled-components'
-import { Grey75, Black90 } from '../../services/colors'
+import { Grey75, Black90 } from '../../theme/colors'
 
 export const GradientHighlightHorizontal = css`
 	background: rgb(204, 187, 255);
