@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Background, Grey50 } from '../../services/colors'
+import { Background, Grey50 } from '../../theme/colors'
 
 export const FieldWrapper = styled.div`
 	position: relative;

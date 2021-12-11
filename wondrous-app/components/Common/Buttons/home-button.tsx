@@ -3,7 +3,7 @@ import {
 	GradientHighlightHorizontal,
 	GradientMidnightVertical,
 } from '../gradients'
-import { Grey80 } from '../../../services/colors'
+import { Grey80 } from '../../../theme/colors'
 
 export const StyledButton = styled.button`
 	display: flex;

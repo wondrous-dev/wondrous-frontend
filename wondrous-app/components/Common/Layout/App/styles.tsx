@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Midnight, Background, White } from '../../../../services/colors'
+import { Midnight, Background, White } from '../../../../theme/colors'
 
 export const HeaderWrapper = styled.header`
 	position: relative;

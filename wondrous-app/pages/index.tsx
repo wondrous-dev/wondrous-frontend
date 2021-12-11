@@ -10,7 +10,7 @@ import { PaddedParagraph, StyledLink } from '../components/Common/text'
 import { SmallLogo, LoginWrapper, TopBubble } from '../components/Pages/login'
 import { useState } from 'react'
 import { CenteredFlexRow } from '../components/Common/index'
-import { Grey50 } from '../services/colors'
+import { Grey50 } from '../theme/colors'
 import { Metamask } from '../components/Icons/metamask'
 import { EmailIcon, LockIcon } from '../components/Icons/userpass'
 

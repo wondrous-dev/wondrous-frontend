@@ -1,0 +1,71 @@
+@font-face {
+	font-family: 'Carmen Sans';
+	font-weight: normal;
+	font-style: normal;
+	src: url('../fonts/CarmenSansRegular.otf');
+}
+
+@font-face {
+	font-family: 'Carmen Sans SemiBold';
+	font-weight: 600;
+	font-style: normal;
+	src: url('../fonts/CarmenSansSemiBold.otf');
+}
+
+@font-face {
+	font-family: 'Carmen Sans Bold';
+	font-weight: bold;
+	font-style: normal;
+	src: url('../fonts/CarmenSansBold.otf');
+}
+
+@font-face {
+	font-family: 'Faktum';
+	font-weight: normal;
+	font-style: normal;
+	src: url('../fonts/FaktumRegular.otf');
+}
+
+@font-face {
+	font-family: 'Faktum Bold';
+	font-weight: bold;
+	font-style: normal;
+	src: url('../fonts/FaktumBold.otf');
+}
+
+@font-face {
+	font-family: 'Space Grotesk';
+	font-weight: normal;
+	font-style: normal;
+	src: url('../fonts/SpaceGrotesk-Regular.ttf');
+}
+
+@font-face {
+	font-family: 'Space Grotesk';
+	font-weight: bold;
+	font-style: normal;
+	src: url('../fonts/SpaceGrotesk-Bold.ttf');
+}
+
+@font-face {
+	font-family: 'Space Grotesk';
+	font-weight: lighter;
+	font-style: normal;
+	src: url('../fonts/SpaceGrotesk-Light.ttf');
+}
+
+@font-face {
+	font-family: 'Space Grotesk';
+	font-weight: 500;
+	font-style: normal;
+	src: url('../fonts/SpaceGrotesk-SemiBold.ttf');
+}
+
+@font-face {
+	font-family: 'Space Grotesk';
+	font-weight: 300;
+	font-style: normal;
+	src: url('../fonts/SpaceGrotesk-Medium.ttf');
+}
+
+

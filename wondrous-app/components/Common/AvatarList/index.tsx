@@ -1,50 +1,9 @@
-import styled from 'styled-components'
-import { HighlightBlue } from '../../../services/colors'
-import * as Colors from '../../../services/colors'
-
-/* 
-    Avatar List display of users.
-    -----------------------------
-*/
+import React from 'react'
+import * as Colors from '../../../theme/colors'
+import { SmallAvatarWrapper, BlackAura, AvatarListWrapper } from './styles'
 
 export const OVERFLOW_MAX = 5
 
-export const SmallAvatarWrapper = styled.div `
-    display: flex;
-    align-self: flex-start;
-    flex-flow: column;
-    align-items: center;
-    justify-content: center;
-    width: 27px;
-    height: 27px;
-    border-radius: 27px;
-    box-shadow: 0 2px solid black;
-    border: ${props => (props.isOwnerOfPod ? '1.5px solid ' + HighlightBlue : '1.5px solid black')};
-    background-color: ${props => (props.randomColor)};
-    ${props => (props.avatarURL ? 'background: url(' + props.avatarURL + ');' : '')}
-    background-position: center;
-    background-size: cover;
-
-    font-size: 10px;
-`
-
-const BlackAura = styled.div `
-    min-width: 27px;
-    min-height: 27px;
-    border-radius: 27px;
-    margin-left: -6px;
-    border: 1px solid black;
-    background: black;
-    padding: 0;
-`
-
-const AvatarListWrapper = styled.div `
-    display: flex;
-    flex-direction: row;
-    flex-grow: 1;
-    margin-left: 16px;
-
-`
 export const SmallAvatar = (props) => {
     let avatar = props.avatar || {}
 

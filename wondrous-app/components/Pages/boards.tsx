@@ -1,6 +1,6 @@
 import styled from 'styled-components'
-import { Task } from '../Common/Task/task'
-import { Grey400 } from '../../services/colors'
+import { Task } from '../Common/Task'
+import { Grey400 } from '../../theme/colors'
 
 export const BoardWrapper = styled.div`
     display: flex;
