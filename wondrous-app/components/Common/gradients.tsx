@@ -28,3 +28,14 @@ export const GradientMidnightDiagonal = css`
 		${Black90}80
 	);
 `
+
+export const GradientMidnightDiagonalOposite = css`
+	background: ${Black90};
+	background: linear-gradient(
+		170deg,
+		${Grey75}FF,
+		${Black90}FF
+	);
+`
+
+
