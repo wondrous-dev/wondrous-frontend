@@ -15,7 +15,7 @@ export const SmallAvatarWrapper = styled.div`
 		props.isOwnerOfPod
 			? '1.5px solid ' + Colors.HighlightBlue
 			: '1.5px solid black'};
-	background-color: ${(props) => props.randomColor};
+	background-color: ${(props) => (props.randomColor || Colors.HighlightBlue)};
 	${(props) =>
 		props.avatarURL ? 'background: url(' + props.avatarURL + ');' : ''}
 	background-position: center;
