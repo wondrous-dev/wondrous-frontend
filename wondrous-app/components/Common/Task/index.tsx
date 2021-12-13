@@ -54,7 +54,7 @@ export const Task = (props) => {
 			<TaskInner>
 				<TaskHeader>
 					<LogoButton />
-					<AvatarList users={task.users} />
+					<AvatarList id={task.id} users={task.users} />
 					<Compensation compensation={task.compensation} icon={TaskIcon}/>
 				</TaskHeader>
 				<TaskContent>
@@ -79,7 +79,7 @@ export const Task = (props) => {
 						<DropDown handler={TaskMenuIcon}>
 							<DropDownItem key={'task-menu-edit-' + task.id} onClick={editTask}>Edit task</DropDownItem>
 							<DropDownItem key={'task-menu-report-' + task.id} onClick={reportTask}>Report</DropDownItem>
-							<DropDownItem key={'task-menu-report-' + task.id} onClick={openSettings}>Settings</DropDownItem>
+							<DropDownItem key={'task-menu-settings-' + task.id} onClick={openSettings}>Settings</DropDownItem>
 						</DropDown>
 					</TaskActionMenu>
 				</TaskFooter>
