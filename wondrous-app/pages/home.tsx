@@ -91,6 +91,11 @@ const MOCK_COLUMNS_DATA = [
 					id: '14dcb3cc-3a04-4314-a1b1-e9f6a0bbe57e',
 					type: 'video',
 					url: 'https://www.youtube.com/watch?v=HmpP7e9gLYs'
+				},
+				actions: {
+					likes: 0,
+					comments: 0,
+					shares: 0
 				}
 			}
 		]
@@ -119,7 +124,12 @@ const MOCK_COLUMNS_DATA = [
 					}
 				],
 				description: 'This is Task #3',
-				priority: 1
+				priority: 1,
+				actions: {
+					likes: 0,
+					comments: 0,
+					shares: 0
+				}
 			},
 			{
 				title: 'Task 4',
@@ -144,6 +154,11 @@ const MOCK_COLUMNS_DATA = [
 					id: 'db006231-6f00-42eb-9687-463ea0d393d6',
 					type: 'audio',
 					url: 'https://soundcloud.com/undiscoveredsounds/coldplay-ft-beyonce-hymn-for-the-weekend-ash-remix',
+				},
+				actions: {
+					likes: 0,
+					comments: 0,
+					shares: 0
 				}
 			}
 		]
@@ -171,7 +186,12 @@ const MOCK_COLUMNS_DATA = [
 					}
 				],
 				description: 'This is Task #5',
-				priority: 1
+				priority: 1,
+				actions: {
+					likes: 0,
+					comments: 0,
+					shares: 0
+				}
 			}
 		]
 	}

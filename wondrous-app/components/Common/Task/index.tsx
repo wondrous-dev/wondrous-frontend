@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import { LogoButton } from '../logo'
 import { ToDo, InProgress, Done } from '../../Icons'
 import { TaskLikeIcon } from '../../Icons/taskLike'
@@ -7,7 +8,7 @@ import { TaskMenuIcon } from '../../Icons/taskMenu'
 
 import { AvatarList } from '../AvatarList'
 import { Compensation } from '../Compensation'
-import { TaskMedia } from './media'
+import { TaskMedia } from '../MediaPlayer'
 import { DropDown, DropDownItem } from '../dropdown'
 
 import {
@@ -24,6 +25,7 @@ import {
 } from './styles'
 
 export const Task = (props) => {
+
 	let task = props.task
 	let TaskIcon = ToDo
 
@@ -37,6 +39,12 @@ export const Task = (props) => {
 	let comments = task.actions ? task.actions.comments : 0
 	let shares = task.actions ? task.actions.shares : 0
 
+	let iLikedThisTask = task.actions ? task.actions.iLiked : false
+	let iCommentedThisTask = task.actions ? task.actions.iCommented : false
+	let iSharedThisTask = task.actions ? task.actions.iShared : false
+
+	let [ liked, setLiked ] = useState(iLikedThisTask)
+
 	const editTask = () => {
 		console.log('Edit Task Menu Clicked')
 	}
@@ -47,6 +55,15 @@ export const Task = (props) => {
 
 	const openSettings = () => {
 		console.log('Open Task Settings Menu Clicked')
+	}
+
+	const toggleLike = () => {
+		setLiked(!liked)
+		if(liked) {
+			props.task.actions.likes -= 1
+		} else {
+			props.task.actions.likes += 1
+		}
 	}
 
 	return (
@@ -63,8 +80,8 @@ export const Task = (props) => {
 					{task.media ? <TaskMedia media={task.media} /> : <TaskSeparator />}
 				</TaskContent>
 				<TaskFooter>
-					<TaskAction key={'task-like-' + task.id}>
-						<TaskLikeIcon />
+					<TaskAction key={'task-like-' + task.id} onClick={toggleLike} >
+						<TaskLikeIcon liked={liked} />
 						<TaskActionAmount>{likes}</TaskActionAmount>
 					</TaskAction>
 					<TaskAction key={'task-comment-' + task.id}>
