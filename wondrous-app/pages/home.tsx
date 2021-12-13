@@ -57,6 +57,7 @@ const MOCK_COLUMNS_DATA = [
 				description: 'This is Task #1',
 				taskType: 'TODO',
 				media: {
+					id: '2c67291e-6fbe-4e62-b687-8a4e9bc9a4fc',
 					type: 'image',
 					url: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.windowsreport.com%2Fwp-content%2Fuploads%2F2018%2F10%2FMozilla-Firefox-memory-leak.jpg&f=1&nofb=1'
 				},
@@ -85,7 +86,12 @@ const MOCK_COLUMNS_DATA = [
 						id: '760ff8fa-2b39-4b4a-8c52-21f7622072a9',
 					}
 				],
-				description: 'This is description for Task #2'
+				description: 'This is description for Task #2',
+				media: {
+					id: '14dcb3cc-3a04-4314-a1b1-e9f6a0bbe57e',
+					type: 'video',
+					url: 'https://www.youtube.com/watch?v=HmpP7e9gLYs'
+				}
 			}
 		]
 	},
@@ -133,7 +139,12 @@ const MOCK_COLUMNS_DATA = [
 						id: 'ac7bb8ff-1a3d-47f2-aacf-ac1ef414e7af',
 					}
 				],
-				description: 'This is description for Task #4'
+				description: 'This is description for Task #4',
+				media: {
+					id: 'db006231-6f00-42eb-9687-463ea0d393d6',
+					type: 'audio',
+					url: 'https://soundcloud.com/undiscoveredsounds/coldplay-ft-beyonce-hymn-for-the-weekend-ash-remix',
+				}
 			}
 		]
 	},
