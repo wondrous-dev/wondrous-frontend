@@ -8,7 +8,6 @@ import {
 	Grey55,
 	Grey700,
 	Grey800,
-	Orange,
 	Purple,
 	Purple200,
 	Purple300,

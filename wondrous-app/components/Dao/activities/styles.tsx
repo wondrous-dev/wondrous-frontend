@@ -1,12 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Button, IconButton, Tabs, Typography } from '@material-ui/core'
-import { Black80 } from '../../services/colors'
+import {Background} from "../../../services/colors";
+import {BaseCard} from "../../Common/card";
 
 export const OverviewComponent = styled.section`
 	width: 100vw;
 	height: 100%;
-	//background-color: ${Black80};
+	//background-color: ${Background};
 	background-color: #0f0f0f;
 `
 
@@ -241,19 +242,16 @@ export const StyledTabs = styled((props) => (
 })
 
 //cardStyles
-export const PostComponent = styled.div`
+export const PostComponent = styled(BaseCard)`
 	margin-top: 22px;
-	width: 100%;
 	height: 540px;
-	padding: 18px 28px;
-	background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
-	border-radius: 6px;
 `
 
 export const PostBlock = styled.div`
 	position: relative;
 	padding: 0 26px 18px;
 	border-left: 1px solid #4b4b4b;
+	margin-bottom: 0 !important;
 `
 
 export const PostSetting = styled(IconButton)`
@@ -436,7 +434,7 @@ export const PostLeftImage = styled.div`
 `
 
 export const PostActivity = styled.div`
-	margin-top: 20px;
+	//margin-top: 20px;
 	max-width: 190px;
 	width: 100%;
 	height: 18px;

@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import { Menu, MenuItem } from '@material-ui/core'
 
-import CheckedIcon from '../Icons/checkedIcon'
-import DotsIcon from '../Icons/dots'
+import CheckedIcon from '../../Icons/checkedIcon'
+import DotsIcon from '../../Icons/dots'
 
 import {
 	PostLeftImage,

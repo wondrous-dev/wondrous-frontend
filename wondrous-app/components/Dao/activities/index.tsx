@@ -25,10 +25,10 @@ import {
 	TokenLogo,
 } from './styles'
 import { TabsActivity } from './tabs'
-import Header from '../Header'
-import SideBarComponent from '../SideBar'
+import Header from '../../Header'
+import SideBarComponent from '../../SideBar'
 
-const Overview = () => {
+const Activities = () => {
 	return (
 		<>
 			<Header />
@@ -76,4 +76,4 @@ const Overview = () => {
 	)
 }
 
-export default Overview
+export default Activities

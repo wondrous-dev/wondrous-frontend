@@ -15,6 +15,8 @@ import { FunkyButton } from '../Button'
 
 export const BackgroundContainer = styled.div`
 	background-color: ${Purple};
+	margin: 0;
+	height: 100%;
 `
 
 export const HeaderContainer = styled.div`
