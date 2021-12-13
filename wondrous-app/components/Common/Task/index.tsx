@@ -8,6 +8,7 @@ import { TaskMenuIcon } from '../../Icons/taskMenu'
 import { AvatarList } from '../AvatarList'
 import { Compensation } from '../Compensation'
 import { TaskMedia } from './media'
+import { DropDown, DropDownItem } from '../dropdown'
 
 import {
 	TaskWrapper,
@@ -36,6 +37,18 @@ export const Task = (props) => {
 	let comments = task.actions ? task.actions.comments : 0
 	let shares = task.actions ? task.actions.shares : 0
 
+	const editTask = () => {
+		console.log('Edit Task Menu Clicked')
+	}
+
+	const reportTask = () => {
+		console.log('Report Task Menu Clicked')
+	}
+
+	const openSettings = () => {
+		console.log('Open Task Settings Menu Clicked')
+	}
+
 	return (
 		<TaskWrapper key={task.id}>
 			<TaskInner>
@@ -63,7 +76,11 @@ export const Task = (props) => {
 						<TaskActionAmount>{shares}</TaskActionAmount>
 					</TaskAction>
 					<TaskActionMenu right="true">
-						<TaskMenuIcon />
+						<DropDown handler={TaskMenuIcon}>
+							<DropDownItem key={'task-menu-edit-' + task.id} onClick={editTask}>Edit task</DropDownItem>
+							<DropDownItem key={'task-menu-report-' + task.id} onClick={reportTask}>Report</DropDownItem>
+							<DropDownItem key={'task-menu-report-' + task.id} onClick={openSettings}>Settings</DropDownItem>
+						</DropDown>
 					</TaskActionMenu>
 				</TaskFooter>
 			</TaskInner>
