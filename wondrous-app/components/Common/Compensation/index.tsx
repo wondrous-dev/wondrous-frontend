@@ -8,9 +8,10 @@ import {
 } from './styles'
 
 export const Compensation = (props) => {
-	let amount = props.compensation ? props.compensation.amount : '---'
+	const { icon = ToDo, compensation = {}, } = props	
+	const { amount = '---', } = compensation
 
-	let TaskIcon = props.icon || ToDo
+	const TaskIcon = icon
 
 	return (
 		<CompensationWrapper key={props.id}>

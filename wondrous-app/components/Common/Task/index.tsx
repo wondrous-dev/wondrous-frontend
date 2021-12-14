@@ -28,23 +28,16 @@ import {
 
 export const Task = ({task, setTask}) => {
 	
-	let TaskIcon = ToDo
+	const { actions = {}, description, id, media, taskType, title, users = [] } = task
+	const { likes = 0 , comments = 0, shares = 0, iLiked = false, iCommented = false, iShared = false  } = actions || {}
+	const [ liked, setLiked ] = useState(iLiked)
 
+	let TaskIcon = ToDo
 	if (task.taskType === Constants.TASK_STATUS_INPROGRESS) {
 		TaskIcon = InProgress
 	} else if (task.taskType === Constants.TASK_STATUS_DONE) {
 		TaskIcon = Done
 	}
-
-	let likes = task.actions ? task.actions.likes : 0
-	let comments = task.actions ? task.actions.comments : 0
-	let shares = task.actions ? task.actions.shares : 0
-
-	let iLikedThisTask = task.actions ? task.actions.iLiked : false
-	let iCommentedThisTask = task.actions ? task.actions.iCommented : false
-	let iSharedThisTask = task.actions ? task.actions.iShared : false
-
-	let [liked, setLiked] = useState(iLikedThisTask)
 
 	const editTask = () => {
 		console.log('Edit Task Menu Clicked')
@@ -60,6 +53,7 @@ export const Task = ({task, setTask}) => {
 
 	const toggleLike = () => {
 		setLiked(!liked)
+
 		if (liked) {
 			task.actions.likes -= 1 
 		} else {
@@ -98,7 +92,7 @@ export const Task = ({task, setTask}) => {
 						<TaskActionAmount>{shares}</TaskActionAmount>
 					</TaskAction>
 					<TaskActionMenu right="true">
-						<DropDown handler={TaskMenuIcon}>
+						<DropDown DropdownHandler={TaskMenuIcon}>
 							<DropDownItem
 								key={'task-menu-edit-' + task.id}
 								onClick={editTask}

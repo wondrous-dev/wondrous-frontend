@@ -1,6 +1,5 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Grey75 } from '../../theme/colors'
 import {
 	GradientMidnightDiagonalOposite,
 	GradientMidnightVertical,
@@ -70,10 +69,8 @@ export const DropdownOverlay = styled.div`
 	z-index: 97;
 `
 
-export const DropDown = ({ handler, children }) => {
+export const DropDown = ({ DropdownHandler, children }) => {
 	const [isOpen, setIsOpen] = useState(false)
-
-	let DropdownHandler = handler
 
 	const toggleDropDown = () => {
 		setIsOpen(!isOpen)

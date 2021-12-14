@@ -1,63 +1,62 @@
 import React from 'react'
 import * as Colors from '../../../theme/colors'
 import { SmallAvatarWrapper, BlackAura, AvatarListWrapper } from './styles'
-
-export const OVERFLOW_MAX = 5
+import { AVATAR_LIST_OVERFLOW_MAX } from '../../../utils/constants'
 
 export const SmallAvatar = (props) => {
-	let avatar = props.avatar || {}
+	const { avatar = {}, id, initials = '', style = {}, } = props
 
 	//TODO: create this as a service
-	let keys = Object.keys(Colors)
-	const randomColor = Colors[keys[Math.floor(Math.random() * keys.length)]]
+	const colorValues = Object.values(Colors)
+	const randomColor = colorValues[Math.floor(Math.random() * colorValues.length)]
 
 	return (
-		<BlackAura key={props.id} style={{ zIndex: 6 - props.style.zIndex }}>
+		<BlackAura key={id} style={{ zIndex: 6 - style.zIndex }}>
 			<SmallAvatarWrapper
 				randomColor={randomColor}
 				isOwnerOfPod={avatar.isOwnerOfPod}
 				avatarURL={avatar.url}
 			>
-				{avatar.avatarURL ? '' : <span>{props.initials}</span>}
+				{avatar.avatarURL ? '' : <span>{initials}</span>}
 			</SmallAvatarWrapper>
 		</BlackAura>
 	)
 }
 
 export const SmallAvatarOverflow = (props) => {
+	const { index = 0, overflow = 0, } = props
+
 	return (
-		<BlackAura key={props.id} style={{ zIndex: 7 }}>
+		<BlackAura key={index} style={{ zIndex: (AVATAR_LIST_OVERFLOW_MAX + 1) }}>
 			<SmallAvatarWrapper avatarURL="/images/avatar-overflow.png">
-				+{props.overflow}
+				+{overflow}
 			</SmallAvatarWrapper>
 		</BlackAura>
 	)
 }
 
 export const AvatarList = (props) => {
-	// Siege User List to max of OVERFLOW_MAX
-	let users = props.users
-		? props.users.length > 6
-			? props.users.slice(0, OVERFLOW_MAX)
-			: props.users
-		: []
-	let overflow = props.users ? props.users.length - users.length : 0
+	const { id = '', users = [], } = props
+
+	// Siege User List to max of AVATAR_LIST_OVERFLOW_MAX
+	let usersSieged = users.slice(0, AVATAR_LIST_OVERFLOW_MAX)
+	let overflow = users.length - usersSieged.length
 
 	return (
-		<AvatarListWrapper key={props.id + '-list'}>
-			{users.map((user, id) => (
+		<AvatarListWrapper key={id + '-list'}>
+			{usersSieged.map((user, index) => (
 				<SmallAvatar
 					id={user.id}
 					key={'avatar-' + user.id}
 					avatar={user.avatar}
 					initials={user.initials}
-					style={{ zIndex: id }}
+					style={{ zIndex: index }}
 				/>
 			))}
 			{overflow > 0 ? (
-				props.users.length > OVERFLOW_MAX ? (
+				users.length > AVATAR_LIST_OVERFLOW_MAX ? (
 					<SmallAvatarOverflow
-						id={'avatar-overflow-' + props.id}
+						id={'avatar-overflow-' + id}
 						overflow={overflow}
 					/>
 				) : (

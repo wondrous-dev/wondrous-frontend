@@ -13,6 +13,10 @@ const MOCK_COLUMNS_DATA = [
 			{
 				title: 'Task 1',
 				id: '4d4444de-d1cd-47ff-9219-d25b3015699f',
+				compensation: {
+					currency: 'WONDER',
+					amount: '2500'
+				},
 				users: [
 					{
 						name: 'UserName',
