@@ -76,18 +76,20 @@ export const DropDown = ({ DropdownHandler, children }) => {
 		setIsOpen(!isOpen)
 	}
 
+	const display = isOpen ? 'block' : 'none'
+
 	return (
 		<>
 			<DropdownOverlay
 				onClick={toggleDropDown}
-				style={{ display: isOpen ? 'block' : 'none' }}
+				style={{ display: display }}
 			/>
 			<div onClick={toggleDropDown}>
 				<DropdownHandler />
-				<DropDownWrapper style={{ display: isOpen ? 'block' : 'none' }}>
+				<DropDownWrapper style={{ display: display }}>
 					{children}
 				</DropDownWrapper>
-				<DropDownArrow style={{ display: isOpen ? 'block' : 'none' }} />
+				<DropDownArrow style={{ display: display }} />
 			</div>
 		</>
 	)
