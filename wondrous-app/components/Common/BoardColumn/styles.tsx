@@ -8,7 +8,7 @@ export const BoardColumnWrapper = styled.div `
 
     font-weight: bold;
 
-    min-width: 200px; 
+    min-width: 323px; 
 `
 
 export const BoardColumnTitle = styled.h3 `

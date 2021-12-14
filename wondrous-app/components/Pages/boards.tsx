@@ -4,8 +4,8 @@ import { BoardColumn } from '../Common/BoardColumn'
 export const BoardWrapper = styled.div`
     display: flex;
 	flex-direction: row;
-	align-items: flex-start;
-    flex-wrap: nowrap;
+	flex-wrap: wrap;
+    align-items: flex-start;
     justify-content: space-evenly;
 
 	min-height: 56px;
@@ -16,6 +16,7 @@ export const BoardWrapper = styled.div`
 	& > *:not(:first-child) {
 		margin-left: 15px;
 	}
+
     z-index: 100;
 `
 
