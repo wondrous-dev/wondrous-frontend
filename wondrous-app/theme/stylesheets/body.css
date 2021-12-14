@@ -68,4 +68,10 @@
 	src: url('../fonts/SpaceGrotesk-Medium.ttf');
 }
 
-
+html,
+body {
+	overflow-x: hidden;
+	background-color: #0d0738;
+	padding: 0;
+	margin: 0;
+}
