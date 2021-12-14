@@ -4,7 +4,7 @@ import {
 	GradientMidnightVertical,
 } from './gradients'
 
-const ButtonInner = styled.div`
+const ButtonInner = styled.button`
 	flex: 1 1 auto;
 
 	display: flex;
@@ -15,17 +15,17 @@ const ButtonInner = styled.div`
 	${GradientMidnightVertical}
 
 	border-radius: 98px;
+	font-size: 16px;
+	border: none;
+	color: white;
 `
 
-const buttonAttrs = () => ({
-	role: 'button',
-})
-
-const ButtonWrapper = styled.div.attrs(buttonAttrs)`
+const ButtonWrapper = styled.div`
 	display: flex;
 	flex-direction: row;
 	min-height: 50px;
 	padding: 2px;
+	margin-top: ${(props) => props.marginTop || 0};
 
 	background: #515151;
 	${(props) => props.highlighted && GradientHighlightHorizontal}
