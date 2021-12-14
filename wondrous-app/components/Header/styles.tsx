@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { AppBar, Badge, Button, IconButton, TextField } from '@material-ui/core'
+import {Logo} from "../Common/ci";
 
 export const Header = styled(AppBar)`
 	&& {
@@ -36,7 +37,7 @@ export const HeaderLeftBlock = styled.div`
 	align-items: center;
 `
 
-export const HeaderLogo = styled.img`
+export const HeaderLogo = styled(Logo)`
 	width: 41px;
 	height: 31px;
 `

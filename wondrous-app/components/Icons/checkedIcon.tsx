@@ -1,8 +1,13 @@
 import React from 'react';
 
-export default function CheckedIcon({width = 19, height = 19}) {
+export default function CheckedIcon(props) {
 	return (
-		<svg width={width} height={height} viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<svg
+			viewBox="0 0 19 19"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			{...props}
+		>
 			<path
 				fillRule="evenodd"
 				clipRule="evenodd"

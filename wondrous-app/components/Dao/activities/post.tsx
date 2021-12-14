@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import Image from 'next/image'
 import { Menu, MenuItem } from '@material-ui/core'
 
 import CheckedIcon from '../../Icons/checkedIcon'
 import DotsIcon from '../../Icons/dots'
+import { LogotypeWithText } from '../../Common/ci'
 
 import {
 	PostLeftImage,
@@ -22,6 +22,7 @@ import {
 	PostTaskHeaderButtonImg,
 	PostTaskHeaderButtons,
 	PostTaskHeaderCheckedButton,
+	PostTaskHeaderCheckedIcon,
 	PostTaskHeaderImage,
 	PostTaskHeaderText,
 	PostTaskImage,
@@ -96,7 +97,7 @@ export const PostCard = () => {
 					</PostTaskHeaderAuthor>
 					<PostTaskHeaderButtons>
 						<PostTaskHeaderCheckedButton>
-							<CheckedIcon width={17} height={17} />
+							<PostTaskHeaderCheckedIcon />
 						</PostTaskHeaderCheckedButton>
 						<PostTaskHeaderButton>
 							<PostTaskHeaderButtonImg src="/images/overview/rhombus.png" />
@@ -113,9 +114,7 @@ export const PostCard = () => {
 					</PostTaskTextBlock>
 					<PostTaskImageBlock>
 						<PostLeftImage>
-							<Image
-								alt="wonder-investment-deck"
-								src="/images/overview/logo-with-text.png"
+							<LogotypeWithText
 								width={256}
 								height={132}
 							/>

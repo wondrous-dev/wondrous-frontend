@@ -3,6 +3,9 @@ import styled from 'styled-components'
 import { Button, IconButton, Tabs, Typography } from '@material-ui/core'
 import {Background} from "../../../services/colors";
 import {BaseCard} from "../../Common/card";
+import {LogoCircle} from "../../Common/ci";
+import {LinkIcon} from "../../Icons/linkIcon";
+import CheckedIcon from "../../Icons/checkedIcon";
 
 export const OverviewComponent = styled.section`
 	width: 100vw;
@@ -32,7 +35,7 @@ export const TokenHeader = styled.div`
 	//background-color: red;
 `
 
-export const TokenLogo = styled.img`
+export const TokenLogo = styled(LogoCircle)`
 	position: absolute;
 	width: 103px;
 	height: 103px;
@@ -159,15 +162,16 @@ export const HeaderActivityLink = styled.a`
 	line-height: 16px;
 	display: flex;
 	align-items: center;
-	text-decoration-line: underline;
+	text-decoration: none;
 	color: #ccbbff;
 	text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `
 
-export const HeaderActivityLinkIcon = styled.img`
-	width: 14px;
-	height: 14px;
+export const HeaderActivityLinkIcon = styled(LinkIcon)`
+	height: 23px;
+	width: 23px;
 	margin-right: 8px;
+	margin-top: 8px;
 `
 
 export const HeaderContributors = styled.div`
@@ -356,6 +360,11 @@ export const PostTaskHeaderCheckedButton = styled(IconButton)`
 		border: 1px solid #474747;
 		padding: 0;
 	}
+`
+
+export const PostTaskHeaderCheckedIcon = styled(CheckedIcon)`
+	height: 17px;
+	width: 17px;
 `
 
 export const PostTaskHeaderButton = styled(Button)`

@@ -1,4 +1,8 @@
 import React from 'react'
+
+import Header from '../../Header'
+import SideBarComponent from '../../SideBar'
+
 import {
 	Content,
 	ContentContainer,
@@ -25,8 +29,6 @@ import {
 	TokenLogo,
 } from './styles'
 import { TabsActivity } from './tabs'
-import Header from '../../Header'
-import SideBarComponent from '../../SideBar'
 
 const Activities = () => {
 	return (
@@ -38,7 +40,7 @@ const Activities = () => {
 				<Content>
 					<ContentContainer>
 						<TokenHeader>
-							<TokenLogo src="/images/overview/logo.png" />
+							<TokenLogo />
 							<HeaderMainBlock>
 								<HeaderTitle>Wonder</HeaderTitle>
 								<HeaderButtons>
@@ -55,7 +57,7 @@ const Activities = () => {
 							</HeaderText>
 							<HeaderActivity>
 								<HeaderActivityLink href="https://wonderverse.xyz">
-									<HeaderActivityLinkIcon src="/images/overview/linkIcon.png" />
+									<HeaderActivityLinkIcon />
 									wonderverse.xyz
 								</HeaderActivityLink>
 								<HeaderContributors>

@@ -1,4 +1,11 @@
 import React from 'react'
+import { InputAdornment } from '@material-ui/core'
+
+import HomeIcon from '../Icons/home'
+import SearchIcon from '../Icons/search'
+import NotificationsIcon from '../Icons/notifications'
+import CreateBtnIcon from '../Icons/createBtn'
+
 import {
 	Header,
 	HeaderHomeButton,
@@ -11,18 +18,13 @@ import {
 	HeaderCreateButton,
 	StyledBadge,
 } from './styles'
-import HomeIcon from '../Icons/home'
-import { InputAdornment } from '@material-ui/core'
-import SearchIcon from '../Icons/search'
-import NotificationsIcon from '../Icons/notifications'
-import CreateBtnIcon from '../Icons/createBtn'
 
 const HeaderComponent = () => {
 	return (
 		<Header>
 			<HeaderContainer>
 				<HeaderLeftBlock>
-					<HeaderLogo src="/images/logo/wonder-logo-no-text.png" />
+					<HeaderLogo />
 					<HeaderHomeButton>
 						<HomeIcon />
 					</HeaderHomeButton>
