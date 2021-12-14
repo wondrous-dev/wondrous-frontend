@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { Background, Grey400, White } from '../../theme/colors'
 
 export const TaskMenuIcon = (props) => {
-	let [colorFill, setColorFill] = useState(Background)
-	let [strokeColor, setStrokeColor] = useState(Grey400)
+	const [colorFill, setColorFill] = useState(Background)
+	const [strokeColor, setStrokeColor] = useState(Grey400)
 
 	const handlePointerEnter = (event) => {
 		setColorFill(Grey400)
