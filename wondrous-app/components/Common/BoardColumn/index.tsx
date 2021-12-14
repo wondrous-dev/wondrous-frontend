@@ -3,8 +3,7 @@ import { Task } from '../../Common/Task'
 import { Grey400 } from '../../../theme/colors'
 import { BoardColumnWrapper, BoardColumnTitle, IconWrapper } from './styles'
 
-export const BoardColumn = ({column, setColumn}) => {
-	
+export const BoardColumn = ({ column, setColumn }) => {
 	const count = column.tasks.length
 	const Icon = column.icon
 	const iconStyle = {

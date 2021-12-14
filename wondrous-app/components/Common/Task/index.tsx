@@ -26,11 +26,25 @@ import {
 	TaskActionMenu,
 } from './styles'
 
-export const Task = ({task, setTask}) => {
-	
-	const { actions = {}, description, id, media, taskType, title, users = [] } = task
-	const { likes = 0 , comments = 0, shares = 0, iLiked = false, iCommented = false, iShared = false  } = actions || {}
-	const [ liked, setLiked ] = useState(iLiked)
+export const Task = ({ task, setTask }) => {
+	const {
+		actions = {},
+		description,
+		id,
+		media,
+		taskType,
+		title,
+		users = [],
+	} = task
+	const {
+		likes = 0,
+		comments = 0,
+		shares = 0,
+		iLiked = false,
+		iCommented = false,
+		iShared = false,
+	} = actions || {}
+	const [liked, setLiked] = useState(iLiked)
 
 	let TaskIcon = ToDo
 	if (task.taskType === Constants.TASK_STATUS_INPROGRESS) {
@@ -55,15 +69,15 @@ export const Task = ({task, setTask}) => {
 		setLiked(!liked)
 
 		if (liked) {
-			task.actions.likes -= 1 
+			task.actions.likes -= 1
 		} else {
 			task.actions.likes += 1
 		}
 	}
 
 	useEffect(() => {
-		setTask(task);
-	},[setTask, task])
+		setTask(task)
+	}, [setTask, task])
 
 	return (
 		<TaskWrapper key={task.id}>

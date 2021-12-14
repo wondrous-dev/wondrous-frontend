@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Grey57, Red400 } from '../../theme/colors'
 
 export const TaskLikeIcon = (props) => {
-	const { liked = false, } = props
+	const { liked = false } = props
 	const [colorFill, setColorFill] = useState(Grey57)
 
 	const handlePointerEnter = (event) => {

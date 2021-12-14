@@ -8,8 +8,8 @@ import {
 } from './styles'
 
 export const Compensation = (props) => {
-	const { icon = ToDo, compensation = {}, } = props	
-	const { amount = '---', } = compensation
+	const { icon = ToDo, compensation = {} } = props
+	const { amount = '---' } = compensation
 
 	const TaskIcon = icon
 

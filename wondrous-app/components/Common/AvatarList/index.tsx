@@ -4,11 +4,12 @@ import { SmallAvatarWrapper, BlackAura, AvatarListWrapper } from './styles'
 import { AVATAR_LIST_OVERFLOW_MAX } from '../../../utils/constants'
 
 export const SmallAvatar = (props) => {
-	const { avatar = {}, id, initials = '', style = {}, } = props
+	const { avatar = {}, id, initials = '', style = {} } = props
 
 	//TODO: create this as a service
 	const colorValues = Object.values(Colors)
-	const randomColor = colorValues[Math.floor(Math.random() * colorValues.length)]
+	const randomColor =
+		colorValues[Math.floor(Math.random() * colorValues.length)]
 
 	return (
 		<BlackAura key={id} style={{ zIndex: 6 - style.zIndex }}>
@@ -24,10 +25,10 @@ export const SmallAvatar = (props) => {
 }
 
 export const SmallAvatarOverflow = (props) => {
-	const { index = 0, overflow = 0, } = props
+	const { index = 0, overflow = 0 } = props
 
 	return (
-		<BlackAura key={index} style={{ zIndex: (AVATAR_LIST_OVERFLOW_MAX + 1) }}>
+		<BlackAura key={index} style={{ zIndex: AVATAR_LIST_OVERFLOW_MAX + 1 }}>
 			<SmallAvatarWrapper avatarURL="/images/avatar-overflow.png">
 				+{overflow}
 			</SmallAvatarWrapper>
@@ -36,7 +37,7 @@ export const SmallAvatarOverflow = (props) => {
 }
 
 export const AvatarList = (props) => {
-	const { id = '', users = [], } = props
+	const { id = '', users = [] } = props
 
 	// Siege User List to max of AVATAR_LIST_OVERFLOW_MAX
 	let usersSieged = users.slice(0, AVATAR_LIST_OVERFLOW_MAX)
@@ -53,15 +54,8 @@ export const AvatarList = (props) => {
 					style={{ zIndex: index }}
 				/>
 			))}
-			{overflow > 0 ? (
-				users.length > AVATAR_LIST_OVERFLOW_MAX ? (
-					<SmallAvatarOverflow
-						id={'avatar-overflow-' + id}
-						overflow={overflow}
-					/>
-				) : (
-					''
-				)
+			{overflow > 0 && users.length > AVATAR_LIST_OVERFLOW_MAX ? (
+				<SmallAvatarOverflow id={'avatar-overflow-' + id} overflow={overflow} />
 			) : (
 				''
 			)}

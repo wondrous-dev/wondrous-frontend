@@ -22,20 +22,19 @@ export const BoardWrapper = styled.div`
 `
 
 export const KanbanBoard = (props) => {
-	
-    let [columns, setColumns] = useState(props.columns)
-    let setParentColumns = props.setColumns
+	let [columns, setColumns] = useState(props.columns)
+	let setParentColumns = props.setColumns
 
 	const setColumn = (columnSet) => {
 		columns.filter((col) => col.id === columnSet.id)[0] = columnSet
 		setColumns(columns)
 	}
 
-    useEffect(() => {
-        setParentColumns(columns)
-    }, [setParentColumns, columns])
+	useEffect(() => {
+		setParentColumns(columns)
+	}, [setParentColumns, columns])
 
-    return (
+	return (
 		<BoardWrapper key="board-wrapper">
 			{columns.map((column) => (
 				<BoardColumn
