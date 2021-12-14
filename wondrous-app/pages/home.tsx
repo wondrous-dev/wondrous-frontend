@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import AppLayout from '../components/Common/Layout/App'
 import { ToDo, InProgress, Done } from '../components/Icons'
 import { GmBox, WelcomeMessage } from '../components/Pages/home'
@@ -198,13 +198,16 @@ const MOCK_COLUMNS_DATA = [
 ]
 
 const Home = () => {
+
+	let [columns, setColums] = useState(MOCK_COLUMNS_DATA)
+
 	return (
 		<AppLayout>
 			<WelcomeMessage>
 				<GmBox>☀️gm</GmBox>
 				<span>Welcome to Wonderverse!</span>
 			</WelcomeMessage>
-			<KanbanBoard columns={MOCK_COLUMNS_DATA} />
+			<KanbanBoard columns={columns} setColumns={setColums} />
 		</AppLayout>
 	)
 }

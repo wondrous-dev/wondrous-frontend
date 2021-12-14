@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { BoardColumn } from '../Common/BoardColumn'
 
@@ -21,14 +22,26 @@ export const BoardWrapper = styled.div`
 `
 
 export const KanbanBoard = (props) => {
-	return (
+	
+    let [columns, setColumns] = useState(props.columns)
+    let setParentColumns = props.setColumns
+
+	const setColumn = (columnSet) => {
+		columns.filter((col) => col.id === columnSet.id)[0] = columnSet
+		setColumns(columns)
+	}
+
+    useEffect(() => {
+        setParentColumns(columns)
+    }, [setParentColumns, columns])
+
+    return (
 		<BoardWrapper key="board-wrapper">
-			{props.columns.map((column) => (
+			{columns.map((column) => (
 				<BoardColumn
 					key={'board-column-' + column.id}
-					title={column.title}
-					icon={column.icon}
-					tasks={column.tasks}
+					column={column}
+					setColumn={setColumn}
 				/>
 			))}
 		</BoardWrapper>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { LogoButton } from '../logo'
 import { ToDo, InProgress, Done } from '../../Icons'
 import { TaskLikeIcon } from '../../Icons/taskLike'
@@ -26,8 +26,8 @@ import {
 	TaskActionMenu,
 } from './styles'
 
-export const Task = (props) => {
-	let task = props.task
+export const Task = ({task, setTask}) => {
+	
 	let TaskIcon = ToDo
 
 	if (task.taskType === Constants.TASK_STATUS_INPROGRESS) {
@@ -61,11 +61,15 @@ export const Task = (props) => {
 	const toggleLike = () => {
 		setLiked(!liked)
 		if (liked) {
-			props.task.actions.likes -= 1
+			task.actions.likes -= 1 
 		} else {
-			props.task.actions.likes += 1
+			task.actions.likes += 1
 		}
 	}
+
+	useEffect(() => {
+		setTask(task);
+	},[setTask, task])
 
 	return (
 		<TaskWrapper key={task.id}>
