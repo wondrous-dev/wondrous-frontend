@@ -1,17 +1,17 @@
 on:
   pull_request:
     paths:
-      - "wondrous-web/**/**.ts"
-      - "wondrous-web/**/**.js"
+      - "wondrous-app/**/**.ts"
+      - "wondrous-app/**/**.js"
     types:
       - opened
       - synchronize
 
-name: Web - Lint and Test
+name: Web App - Lint and Test
 
 defaults:
   run:
-    working-directory: wondrous-web
+    working-directory: wondrous-app
 
 jobs:
   lint:
