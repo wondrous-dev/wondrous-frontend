@@ -20,8 +20,8 @@ const MOCK_COLUMNS_DATA = [
 						initials: 'LT',
 						avatar: {
 							id: 'e5c92eca-7218-418f-a74b-7cf4932f6a36',
-							isOwnerOfPod: true
-						}
+							isOwnerOfPod: true,
+						},
 					},
 					{
 						name: 'AnotherUser',
@@ -52,21 +52,21 @@ const MOCK_COLUMNS_DATA = [
 						name: 'Third User',
 						id: '0770c50c-8598-4b2a-ad75-0f58d5937e89',
 						initials: 'JA',
-					}
+					},
 				],
 				description: 'This is Task #1',
 				taskType: 'TODO',
 				media: {
 					id: '2c67291e-6fbe-4e62-b687-8a4e9bc9a4fc',
 					type: 'image',
-					url: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.windowsreport.com%2Fwp-content%2Fuploads%2F2018%2F10%2FMozilla-Firefox-memory-leak.jpg&f=1&nofb=1'
+					url: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.windowsreport.com%2Fwp-content%2Fuploads%2F2018%2F10%2FMozilla-Firefox-memory-leak.jpg&f=1&nofb=1',
 				},
 				priority: 1,
 				actions: {
 					likes: 18,
 					comments: 12,
-					shares: 9
-				}
+					shares: 9,
+				},
 			},
 			{
 				title: 'Task 2',
@@ -78,27 +78,27 @@ const MOCK_COLUMNS_DATA = [
 						id: 'b6720780-f82e-4079-a4c6-017561140308',
 						avatar: {
 							id: 'f89333be-6034-412e-be0d-7881e7efaa5c',
-							isOwnerOfPod: true
-						}
+							isOwnerOfPod: true,
+						},
 					},
 					{
 						name: 'AnotherUser',
 						id: '760ff8fa-2b39-4b4a-8c52-21f7622072a9',
-					}
+					},
 				],
 				description: 'This is description for Task #2',
 				media: {
 					id: '14dcb3cc-3a04-4314-a1b1-e9f6a0bbe57e',
 					type: 'video',
-					url: 'https://www.youtube.com/watch?v=HmpP7e9gLYs'
+					url: 'https://www.youtube.com/watch?v=HmpP7e9gLYs',
 				},
 				actions: {
 					likes: 0,
 					comments: 0,
-					shares: 0
-				}
-			}
-		]
+					shares: 0,
+				},
+			},
+		],
 	},
 	{
 		title: 'In Progress',
@@ -115,21 +115,21 @@ const MOCK_COLUMNS_DATA = [
 						id: '0c4db830-f31a-4d5b-8863-00612f4b2501',
 						avatar: {
 							id: 'c2a10d67-6046-4395-89b8-3cdb466625ed',
-							isOwnerOfPod: true
-						}
+							isOwnerOfPod: true,
+						},
 					},
 					{
 						name: 'AnotherUser',
 						id: 'bb44d5ac-b09e-4b62-9b2c-2c625250b843',
-					}
+					},
 				],
 				description: 'This is Task #3',
 				priority: 1,
 				actions: {
 					likes: 0,
 					comments: 0,
-					shares: 0
-				}
+					shares: 0,
+				},
 			},
 			{
 				title: 'Task 4',
@@ -141,13 +141,13 @@ const MOCK_COLUMNS_DATA = [
 						id: 'b36555db-68dd-4595-a9eb-7d910d1fb61c',
 						avatar: {
 							id: '507100df-4a00-40dd-a613-8ee705bd12de',
-							isOwnerOfPod: true
-						}
+							isOwnerOfPod: true,
+						},
 					},
 					{
 						name: 'AnotherUser',
 						id: 'ac7bb8ff-1a3d-47f2-aacf-ac1ef414e7af',
-					}
+					},
 				],
 				description: 'This is description for Task #4',
 				media: {
@@ -158,10 +158,10 @@ const MOCK_COLUMNS_DATA = [
 				actions: {
 					likes: 0,
 					comments: 0,
-					shares: 0
-				}
-			}
-		]
+					shares: 0,
+				},
+			},
+		],
 	},
 	{
 		title: 'Done',
@@ -177,28 +177,27 @@ const MOCK_COLUMNS_DATA = [
 						name: 'UserName',
 						id: '1c9c207d-f694-4658-9321-e292eb16ecfd',
 						avatar: {
-							isOwnerOfPod: true
-						}
+							isOwnerOfPod: true,
+						},
 					},
 					{
 						name: 'AnotherUser',
 						id: '4013195f-8715-4696-b504-fce9b2d4ae25',
-					}
+					},
 				],
 				description: 'This is Task #5',
 				priority: 1,
 				actions: {
 					likes: 0,
 					comments: 0,
-					shares: 0
-				}
-			}
-		]
-	}
+					shares: 0,
+				},
+			},
+		],
+	},
 ]
 
 const Home = () => {
-
 	return (
 		<AppLayout>
 			<WelcomeMessage>

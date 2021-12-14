@@ -60,14 +60,14 @@ export const DropDownItem = styled.div`
 	}
 `
 
-export const DropdownOverlay = styled.div `
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background: transparent;
-    z-index: 97;
+export const DropdownOverlay = styled.div`
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background: transparent;
+	z-index: 97;
 `
 
 export const DropDown = ({ handler, children }) => {
@@ -81,14 +81,17 @@ export const DropDown = ({ handler, children }) => {
 
 	return (
 		<>
-            <DropdownOverlay onClick={toggleDropDown} style={{ display: isOpen ? 'block' : 'none' }} />
-            <div onClick={toggleDropDown}>
-                <DropdownHandler />
-                <DropDownWrapper style={{ display: isOpen ? 'block' : 'none' }}>
-                    {children}
-                </DropDownWrapper>
-                <DropDownArrow style={{ display: isOpen ? 'block' : 'none' }} />
-            </div>
-        </>
+			<DropdownOverlay
+				onClick={toggleDropDown}
+				style={{ display: isOpen ? 'block' : 'none' }}
+			/>
+			<div onClick={toggleDropDown}>
+				<DropdownHandler />
+				<DropDownWrapper style={{ display: isOpen ? 'block' : 'none' }}>
+					{children}
+				</DropDownWrapper>
+				<DropDownArrow style={{ display: isOpen ? 'block' : 'none' }} />
+			</div>
+		</>
 	)
 }

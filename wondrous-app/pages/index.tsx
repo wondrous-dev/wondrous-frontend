@@ -22,7 +22,7 @@ const Login = () => {
 	const handleSubmit = (event) => {
 		event.preventDefault()
 		//store email & password
-		// route to home ---- 
+		// route to home ----
 		router.push('/home')
 	}
 

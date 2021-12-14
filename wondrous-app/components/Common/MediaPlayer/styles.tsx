@@ -34,7 +34,6 @@ export const TaskAudio = styled(ReactPlayer)`
 	iframe {
 		border-radius: 10px;
 	}
-
 `
 export const TaskMediaUnsuported = styled.div`
 position: flex;

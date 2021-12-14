@@ -25,7 +25,6 @@ import {
 } from './styles'
 
 export const Task = (props) => {
-
 	let task = props.task
 	let TaskIcon = ToDo
 
@@ -43,7 +42,7 @@ export const Task = (props) => {
 	let iCommentedThisTask = task.actions ? task.actions.iCommented : false
 	let iSharedThisTask = task.actions ? task.actions.iShared : false
 
-	let [ liked, setLiked ] = useState(iLikedThisTask)
+	let [liked, setLiked] = useState(iLikedThisTask)
 
 	const editTask = () => {
 		console.log('Edit Task Menu Clicked')
@@ -59,7 +58,7 @@ export const Task = (props) => {
 
 	const toggleLike = () => {
 		setLiked(!liked)
-		if(liked) {
+		if (liked) {
 			props.task.actions.likes -= 1
 		} else {
 			props.task.actions.likes += 1
@@ -72,7 +71,7 @@ export const Task = (props) => {
 				<TaskHeader>
 					<LogoButton />
 					<AvatarList id={task.id} users={task.users} />
-					<Compensation compensation={task.compensation} icon={TaskIcon}/>
+					<Compensation compensation={task.compensation} icon={TaskIcon} />
 				</TaskHeader>
 				<TaskContent>
 					<TaskTitle>{task.title}</TaskTitle>
@@ -80,7 +79,7 @@ export const Task = (props) => {
 					{task.media ? <TaskMedia media={task.media} /> : <TaskSeparator />}
 				</TaskContent>
 				<TaskFooter>
-					<TaskAction key={'task-like-' + task.id} onClick={toggleLike} >
+					<TaskAction key={'task-like-' + task.id} onClick={toggleLike}>
 						<TaskLikeIcon liked={liked} />
 						<TaskActionAmount>{likes}</TaskActionAmount>
 					</TaskAction>
@@ -94,9 +93,24 @@ export const Task = (props) => {
 					</TaskAction>
 					<TaskActionMenu right="true">
 						<DropDown handler={TaskMenuIcon}>
-							<DropDownItem key={'task-menu-edit-' + task.id} onClick={editTask}>Edit task</DropDownItem>
-							<DropDownItem key={'task-menu-report-' + task.id} onClick={reportTask}>Report</DropDownItem>
-							<DropDownItem key={'task-menu-settings-' + task.id} onClick={openSettings}>Settings</DropDownItem>
+							<DropDownItem
+								key={'task-menu-edit-' + task.id}
+								onClick={editTask}
+							>
+								Edit task
+							</DropDownItem>
+							<DropDownItem
+								key={'task-menu-report-' + task.id}
+								onClick={reportTask}
+							>
+								Report
+							</DropDownItem>
+							<DropDownItem
+								key={'task-menu-settings-' + task.id}
+								onClick={openSettings}
+							>
+								Settings
+							</DropDownItem>
 						</DropDown>
 					</TaskActionMenu>
 				</TaskFooter>

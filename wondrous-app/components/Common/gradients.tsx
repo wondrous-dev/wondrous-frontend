@@ -22,20 +22,10 @@ export const GradientMidnightVertical = css`
 
 export const GradientMidnightDiagonal = css`
 	background: ${Black90};
-	background: linear-gradient(
-		250deg,
-		${Grey75}80,
-		${Black90}80
-	);
+	background: linear-gradient(250deg, ${Grey75}80, ${Black90}80);
 `
 
 export const GradientMidnightDiagonalOposite = css`
 	background: ${Black90};
-	background: linear-gradient(
-		170deg,
-		${Grey75}FF,
-		${Black90}FF
-	);
+	background: linear-gradient(170deg, ${Grey75}FF, ${Black90}FF);
 `
-
-

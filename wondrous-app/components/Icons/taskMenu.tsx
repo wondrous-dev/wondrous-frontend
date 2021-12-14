@@ -2,30 +2,29 @@ import React, { useState } from 'react'
 import { Background, Grey400, White } from '../../theme/colors'
 
 export const TaskMenuIcon = (props) => {
+	let [colorFill, setColorFill] = useState(Background)
+	let [strokeColor, setStrokeColor] = useState(Grey400)
 
-    let [colorFill, setColorFill] = useState(Background)
-    let [strokeColor, setStrokeColor] = useState(Grey400)
+	const handlePointerEnter = (event) => {
+		setColorFill(Grey400)
+		setStrokeColor(White)
+	}
 
-    const handlePointerEnter = (event) => {
-        setColorFill(Grey400)
-        setStrokeColor(White)
-    }
-
-    const handlePointerLeave = (event) => {
-        setColorFill(Background)
-        setStrokeColor(Grey400)
-    }
+	const handlePointerLeave = (event) => {
+		setColorFill(Background)
+		setStrokeColor(Grey400)
+	}
 
 	return (
 		<svg
 			width="26"
 			height="25"
-            cursor="pointer"
+			cursor="pointer"
 			viewBox="0 0 26 25"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
-            onPointerEnter={handlePointerEnter}
-            onPointerLeave={handlePointerLeave}
+			onPointerEnter={handlePointerEnter}
+			onPointerLeave={handlePointerLeave}
 		>
 			<circle cx="13.1061" cy="12.7446" r="12.1562" fill={colorFill} />
 			<path
