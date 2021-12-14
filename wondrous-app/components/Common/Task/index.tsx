@@ -11,6 +11,8 @@ import { Compensation } from '../Compensation'
 import { TaskMedia } from '../MediaPlayer'
 import { DropDown, DropDownItem } from '../dropdown'
 
+import * as Constants from '../../../utils/constants'
+
 import {
 	TaskWrapper,
 	TaskInner,
@@ -28,9 +30,9 @@ export const Task = (props) => {
 	let task = props.task
 	let TaskIcon = ToDo
 
-	if (task.taskType === 'INPROGRESS') {
+	if (task.taskType === Constants.TASK_STATUS_INPROGRESS) {
 		TaskIcon = InProgress
-	} else if (task.taskType === 'DONE') {
+	} else if (task.taskType === Constants.TASK_STATUS_DONE) {
 		TaskIcon = Done
 	}
 
