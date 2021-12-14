@@ -8,15 +8,16 @@ import {
 } from './styles'
 
 export const TaskMedia = (props) => {
-	let mediaType = props.media ? props.media.type : ''
+	const { id = '', media = {}, } = props
+	const { type = '', url = '' } = media
 
 	return (
-		<TaskMediaWrapper key={'media-task-' + props.id}>
-			{mediaType == 'image' ? (
-				<TaskImage src={props.media.url} />
-			) : mediaType == 'video' ? (
+		<TaskMediaWrapper key={'media-task-' + id}>
+			{type == 'image' ? (
+				<TaskImage src={url} />
+			) : type == 'video' ? (
 				<TaskVideo
-					url={props.media.url}
+					url={url}
 					config={{
 						youtube: {
 							playerVars: {
@@ -27,9 +28,9 @@ export const TaskMedia = (props) => {
 					width="100%"
 					height="100%"
 				/>
-			) : mediaType == 'audio' ? (
+			) : type == 'audio' ? (
 				<TaskAudio
-					url={props.media.url}
+					url={url}
 					config={{
 						soundcloud: {
 							show_artwork: false,
