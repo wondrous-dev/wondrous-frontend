@@ -73,7 +73,7 @@ const Login = () => {
 					</Button>
 					<Line size="80%" />
 					<CenteredFlexRow marginTop="16px">
-						Don't have an account yet?&nbsp;
+						Don&apos;t have an account yet?&nbsp;
 						<StyledLink href="/signup">Sign up for the beta.</StyledLink>
 					</CenteredFlexRow>
 					<CenteredFlexRow>

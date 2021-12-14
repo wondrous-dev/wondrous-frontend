@@ -69,7 +69,7 @@ export const logout = async (navigation) => {
 }
 
 export const withAuth = (Component, noCache = false) => {
-	return (props) => {
+	const AuthComponent = (props) => {
 		const { navigation, route } = props
 		const [token, setToken] = useState(null)
 		const [tokenLoading, setTokenLoading] = useState(true)
@@ -94,10 +94,11 @@ export const withAuth = (Component, noCache = false) => {
 			)
 		}
 	}
+	return AuthComponent
 }
 
 export const withWaitlistAuth = (Component, noCache = false) => {
-	return (props) => {
+	const WaitlistAuthComponent = (props) => {
 		const [token, setToken] = useState(null)
 		const [tokenLoading, setTokenLoading] = useState(true)
 		const { data, loading, error } = useQuery(GET_LOGGED_IN_WAITLIST_USER)
@@ -121,4 +122,5 @@ export const withWaitlistAuth = (Component, noCache = false) => {
 			)
 		}
 	}
+	return WaitlistAuthComponent
 }
