@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import AppLayout from '../components/Common/Layout/App'
 import { ToDo, InProgress, Done } from '../components/Icons'
+import { Requested, InReview, Archived } from '../components/Icons/sections'
 import { GmBox, WelcomeMessage } from '../components/Pages/home'
 import { KanbanBoard } from '../components/Pages/boards'
 
@@ -108,57 +109,104 @@ const MOCK_COLUMNS_DATA = [
 		title: 'In Progress',
 		id: '4e0b2ae8-f1d5-49d6-98ac-c28ae7b767f7',
 		icon: InProgress,
+		sections: [
+			{
+				title: 'In Review',
+				icon: InReview,
+				id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
+				filter: {
+					taskType: 'INREVIEW',
+				},
+				expandable: true,
+				action: {
+					text: 'Review',
+				},
+				tasks: [
+					{
+						title: 'Web3 Instagram Post',
+						id: '8e5b842e-3a6a-4d7b-9658-4e253e240b39',
+						taskType: 'INREVIEW',
+						users: [
+							{
+								name: 'UserName',
+								id: '0c4db830-f31a-4d5b-8863-00612f4b2501',
+								avatar: {
+									id: 'c2a10d67-6046-4395-89b8-3cdb466625ed',
+									isOwnerOfPod: true,
+								},
+							},
+							{
+								name: 'AnotherUser',
+								id: 'bb44d5ac-b09e-4b62-9b2c-2c625250b843',
+							},
+						],
+						description: `Here's what I am thinking for the web3 insta post`,
+						priority: 1,
+						media: {
+							id: '2c67291e-6fbe-4e62-b687-8a4e9bc9a4fc',
+							type: 'image',
+							url: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.windowsreport.com%2Fwp-content%2Fuploads%2F2018%2F10%2FMozilla-Firefox-memory-leak.jpg&f=1&nofb=1',
+						},
+						actions: {
+							likes: 0,
+							comments: 0,
+							shares: 0,
+						},
+					},
+					{
+						title: 'Task 4',
+						id: '8aed37ba-2bcd-48d1-9d4e-4e75ce4562c5',
+						taskType: 'INREVIEW',
+						users: [
+							{
+								name: 'UserName',
+								id: 'b36555db-68dd-4595-a9eb-7d910d1fb61c',
+								avatar: {
+									id: '507100df-4a00-40dd-a613-8ee705bd12de',
+									isOwnerOfPod: true,
+								},
+							},
+							{
+								name: 'AnotherUser',
+								id: 'ac7bb8ff-1a3d-47f2-aacf-ac1ef414e7af',
+							},
+						],
+						description: 'This is description for Task #4',
+						media: {
+							id: 'db006231-6f00-42eb-9687-463ea0d393d6',
+							type: 'audio',
+							url: 'https://soundcloud.com/undiscoveredsounds/coldplay-ft-beyonce-hymn-for-the-weekend-ash-remix',
+						},
+						actions: {
+							likes: 0,
+							comments: 0,
+							shares: 0,
+						},
+					},
+				],
+			},
+		],
 		tasks: [
 			{
-				title: 'Task 3',
-				id: '8e5b842e-3a6a-4d7b-9658-4e253e240b39',
+				title: 'Task 5',
+				id: 'a83d77fb-5d9d-49fc-99b9-8f90cae98031',
 				taskType: 'INPROGRESS',
 				users: [
 					{
 						name: 'UserName',
-						id: '0c4db830-f31a-4d5b-8863-00612f4b2501',
+						id: 'bbd3a28c-e3f1-49d3-a5ba-3df809586f13',
 						avatar: {
-							id: 'c2a10d67-6046-4395-89b8-3cdb466625ed',
+							id: 'd075d368-a7be-4ed2-aed5-e85eef4d6379',
 							isOwnerOfPod: true,
 						},
 					},
 					{
 						name: 'AnotherUser',
-						id: 'bb44d5ac-b09e-4b62-9b2c-2c625250b843',
+						id: 'd075d368-a7be-4ed2-aed5-e85eef4d6379',
 					},
 				],
 				description: 'This is Task #3',
 				priority: 1,
-				actions: {
-					likes: 0,
-					comments: 0,
-					shares: 0,
-				},
-			},
-			{
-				title: 'Task 4',
-				id: '8aed37ba-2bcd-48d1-9d4e-4e75ce4562c5',
-				taskType: 'INPROGRESS',
-				users: [
-					{
-						name: 'UserName',
-						id: 'b36555db-68dd-4595-a9eb-7d910d1fb61c',
-						avatar: {
-							id: '507100df-4a00-40dd-a613-8ee705bd12de',
-							isOwnerOfPod: true,
-						},
-					},
-					{
-						name: 'AnotherUser',
-						id: 'ac7bb8ff-1a3d-47f2-aacf-ac1ef414e7af',
-					},
-				],
-				description: 'This is description for Task #4',
-				media: {
-					id: 'db006231-6f00-42eb-9687-463ea0d393d6',
-					type: 'audio',
-					url: 'https://soundcloud.com/undiscoveredsounds/coldplay-ft-beyonce-hymn-for-the-weekend-ash-remix',
-				},
 				actions: {
 					likes: 0,
 					comments: 0,
@@ -173,7 +221,7 @@ const MOCK_COLUMNS_DATA = [
 		icon: Done,
 		tasks: [
 			{
-				title: 'Task 5',
+				title: 'Task 6',
 				id: '8bc14067-3f90-461c-98fd-6c2b56451304',
 				taskType: 'DONE',
 				users: [
@@ -189,7 +237,7 @@ const MOCK_COLUMNS_DATA = [
 						id: '4013195f-8715-4696-b504-fce9b2d4ae25',
 					},
 				],
-				description: 'This is Task #5',
+				description: 'This is Task #6',
 				priority: 1,
 				actions: {
 					likes: 0,

@@ -52,6 +52,7 @@ export const TaskContent = styled.div`
 	align-self: flex-start;
 	width: 100%;
 	font-size: 16px;
+	font-weight: 400;
 `
 
 export const TaskSeparator = styled.div`
