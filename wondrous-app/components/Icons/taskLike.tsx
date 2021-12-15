@@ -29,6 +29,7 @@ export const TaskLikeIcon = (props) => {
 				stroke={liked ? Red400 : colorFill}
 				strokeLinecap="round"
 				strokeLinejoin="round"
+				fill={liked ? Red400: 'none'}
 			/>
 		</svg>
 	)
