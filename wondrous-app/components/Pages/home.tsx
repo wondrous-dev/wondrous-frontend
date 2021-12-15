@@ -9,6 +9,7 @@ export const WelcomeMessageWrapper = styled.div`
 		rgba(35, 35, 35, 0.5) 100%
 	);
 	border-radius: 6px;
+	margin-bottom: 1em;
 `
 
 export const WelcomeMessageInner = styled.div`

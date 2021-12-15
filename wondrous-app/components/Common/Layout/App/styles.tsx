@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Midnight, Background, White } from '../../../../services/colors'
+import { Midnight, Background, White } from '../../../../theme/colors'
 
 export const HeaderWrapper = styled.header`
 	position: relative;
@@ -102,6 +102,9 @@ export const MainBgColorCircle = styled(MainBgShape)`
 	position: absolute;
 	top: 250px;
 	left: 150px;
+
+	z-index: 0;
+
 	height: 193px;
 	width: 193px;
 	border-radius: 50%;
@@ -115,6 +118,8 @@ export const MainBgGradientOval = styled(MainBgShape)`
 	top: 400px;
 	right: -150px;
 	bottom: 0;
+
+	z-index: 0;
 
 	@supports (width: calc(2px - 1px)) {
 		bottom: unset;
@@ -141,16 +146,19 @@ export const MainBgGradientOval = styled(MainBgShape)`
 export const Main = ({ children }) => {
 	return (
 		<MainWrapper>
-			{children}
 			<MainBgColorCircle />
 			<MainBgGradientOval />
+			{children}
 		</MainWrapper>
 	)
 }
 
 export const Container = styled.div`
+	position: inherit;
 	max-width: 1024px;
 	margin: 0 auto;
+
+	z-index: 100;
 `
 
 export const Footer = styled.footer`

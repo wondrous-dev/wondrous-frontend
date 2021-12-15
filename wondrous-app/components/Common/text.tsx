@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { White, HighlightBlue } from '../../services/colors'
+import { White, HighlightBlue } from '../../theme/colors'
 
 export const PaddedParagraph = styled.p`
 	&& {

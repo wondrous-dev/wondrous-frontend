@@ -5,7 +5,7 @@ import {
 	HighlightPurple,
 	HighlightBlue,
 	Background,
-} from '../../../../services/colors'
+} from '../../../../theme/colors'
 import { createSpacingUnit } from '../../../../utils'
 import { Discord } from '../../../Icons/discord'
 import { Twitter } from '../../../Icons/twitter'

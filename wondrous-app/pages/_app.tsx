@@ -6,10 +6,10 @@ import { ApolloProvider } from '@apollo/client'
 import { CssBaseline, useMediaQuery } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/core/styles'
 
-import '../services/stylesheets/body.css'
+import '../theme/stylesheets/body.css'
 
 import apollo from '../services/apollo'
-import theme from '../services/theme'
+import theme from '../theme/theme'
 import { IsMobileContext } from '../utils/contexts'
 import { initHotjar } from '../utils/hotjar'
 

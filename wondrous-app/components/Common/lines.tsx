@@ -1,6 +1,6 @@
 import { CenteredFlexRow } from './index'
 import styled from 'styled-components'
-import { Grey50 } from '../../services/colors'
+import { Grey50 } from '../../theme/colors'
 
 export const Line = styled.h2`
 	&& {
