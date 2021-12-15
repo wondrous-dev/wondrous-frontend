@@ -15,25 +15,9 @@ import SettingsIcon from '../Icons/settings'
 import ExitIcon from '../Icons/exit'
 import BackArrowIcon from '../Icons/backArrow'
 
-const listItems = [
-	{
-		id: 1,
-		icon: '/images/sidebar/first.png',
-		path: '/',
-	},
-	{
-		id: 2,
-		icon: '/images/sidebar/second.png',
-		path: '/',
-	},
-	{
-		id: 3,
-		icon: '/images/sidebar/third.png',
-		path: '/',
-	},
-]
+const SideBarComponent = (props) => {
+	const { listItems } = props
 
-const SideBarComponent = () => {
 	return (
 		<DrawerComponent variant="permanent" anchor="left">
 			<DrawerContainer>

@@ -30,11 +30,29 @@ import {
 } from './styles'
 import { TabsActivity } from './tabs'
 
+const SIDEBAR_LIST_ITEMS = [
+	{
+		id: 1,
+		icon: '/images/sidebar/first.png',
+		path: '/',
+	},
+	{
+		id: 2,
+		icon: '/images/sidebar/second.png',
+		path: '/',
+	},
+	{
+		id: 3,
+		icon: '/images/sidebar/third.png',
+		path: '/',
+	},
+]
+
 const Activities = () => {
 	return (
 		<>
 			<Header />
-			<SideBarComponent />
+			<SideBarComponent listItems={SIDEBAR_LIST_ITEMS} />
 			<OverviewComponent>
 				<HeaderImage />
 				<Content>
