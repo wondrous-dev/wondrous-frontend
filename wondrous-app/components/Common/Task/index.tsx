@@ -27,6 +27,7 @@ import {
 } from './styles'
 
 export const Task = ({ task, setTask }) => {
+	
 	const {
 		actions = {},
 		description = '',
@@ -37,7 +38,8 @@ export const Task = ({ task, setTask }) => {
 		title = '',
 		users = [],
 	} = task
-	const {
+	
+	let {
 		likes = 0,
 		comments = 0,
 		shares = 0,
@@ -45,6 +47,7 @@ export const Task = ({ task, setTask }) => {
 		iCommented = false,
 		iShared = false,
 	} = actions || {}
+
 	const [liked, setLiked] = useState(iLiked)
 
 	let TaskIcon = ToDo
@@ -71,16 +74,16 @@ export const Task = ({ task, setTask }) => {
 	const toggleLike = () => {
 		setLiked(!liked)
 
-		if (liked) {
-			actions.likes -= 1
-		} else {
-			actions.likes += 1
-		}
-	}
+		likes = liked ? likes - 1 : likes + 1
 
-	useEffect(() => {
-		setTask(task)
-	}, [setTask, task])
+		setTask({
+			...task,
+			actions: {
+				...actions,
+				likes 
+			}
+		})
+	}
 
 	return (
 		<TaskWrapper key={id}>

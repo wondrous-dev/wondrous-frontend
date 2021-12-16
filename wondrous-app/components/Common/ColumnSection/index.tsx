@@ -20,7 +20,6 @@ export const ColumnSection = ({ section, setSection }) => {
 	const count = tasks.length
 
 	const toggleSection = () => {
-		console.log('tap')
 		setIsOpen(!isOpen)
 	}
 

@@ -18,20 +18,23 @@ export const BoardColumn = ({ column, setColumn }) => {
 		border: '1px solid ' + Grey400,
 		padding: '3px',
 	}
-
+	
 	const setTask = (task) => {
-		tasks.filter((t) => t.id === task.id)[0] = task
-		setColumn(column)
+		setColumn({
+			...column,
+			tasks: tasks.map((t) => {
+				if (t.id === task.id) {
+					return task
+				}
+				return t
+			})
+		})
 	}
 
 	const setSection = (section) => {
 		sections.filter((s) => s.id === section.id)[0] = section
 		setColumn(column)
 	}
-
-	useEffect(() => {
-		setColumn(column)
-	}, [setColumn, column])
 
 	return (
 		<BoardColumnWrapper key={column.id + '-wrapper'}>

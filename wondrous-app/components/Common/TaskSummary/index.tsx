@@ -42,9 +42,9 @@ export const TaskSummary = ({ task, setTask, action }) => {
         // TODO: Open Task
     }
 
-	useEffect(() => {
-		setTask(task)
-	}, [setTask, task])
+	// useEffect(() => {
+	// 	setTask(task)
+	// }, [setTask, task])
 
 	return (
 		<TaskSummaryWrapper key={id}>
