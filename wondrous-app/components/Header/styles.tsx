@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { AppBar, Badge, Button, IconButton, TextField } from '@material-ui/core'
-import {Logo} from "../Common/ci";
+import { Logo } from '../Common/ci'
 
 export const Header = styled(AppBar)`
 	&& {

@@ -165,30 +165,25 @@ export const LogotypeWithText = (props: SVGProps<SVGSVGElement>) => {
 export const LogoCircle = (props: SVGProps<SVGSVGElement>) => {
 	return (
 		<svg
-			viewBox="0 0 118 118" fill="none"
+			viewBox="0 0 118 118"
+			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
 			{...props}
 		>
-			<circle
-				cx={59}
-				cy={59}
-				r={53.5}
-				stroke="#0F0F0F"
-				strokeWidth={11}
-			/>
+			<circle cx={59} cy={59} r={53.5} stroke="#0F0F0F" strokeWidth={11} />
 			<mask
 				id="mask0_448_4071"
-				style={{ maskType: "alpha" }}
+				style={{ maskType: 'alpha' }}
 				maskUnits="userSpaceOnUse"
 				x={10}
 				y={10}
 				width={98}
 				height={98}
 			>
-				<circle cx={59} cy={59} r={48.5} fill="#C4C4C4" stroke="#0F0F0F"/>
+				<circle cx={59} cy={59} r={48.5} fill="#C4C4C4" stroke="#0F0F0F" />
 			</mask>
 			<g mask="url(#mask0_448_4071)">
-				<circle cx={59} cy={59} r={48} fill="#648596"/>
+				<circle cx={59} cy={59} r={48} fill="#648596" />
 				<rect
 					x={6.55957}
 					y={4.52979}
@@ -213,12 +208,11 @@ export const LogoCircle = (props: SVGProps<SVGSVGElement>) => {
 					y2={108.97}
 					gradientUnits="userSpaceOnUse"
 				>
-					<stop stopColor="#CCBBFF"/>
-					<stop offset={0.473958} stopColor="#7427FF"/>
-					<stop offset={1} stopColor="#00BAFF"/>
+					<stop stopColor="#CCBBFF" />
+					<stop offset={0.473958} stopColor="#7427FF" />
+					<stop offset={1} stopColor="#00BAFF" />
 				</linearGradient>
 			</defs>
 		</svg>
-
 	)
 }

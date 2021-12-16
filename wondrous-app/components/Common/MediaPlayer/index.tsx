@@ -47,8 +47,6 @@ export const TaskMedia = (props) => {
 	)
 
 	return (
-		<TaskMediaWrapper key={'media-task-' + id}>
-			{mediaContent}
-		</TaskMediaWrapper>
+		<TaskMediaWrapper key={'media-task-' + id}>{mediaContent}</TaskMediaWrapper>
 	)
 }

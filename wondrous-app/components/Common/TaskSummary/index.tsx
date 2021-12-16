@@ -15,12 +15,17 @@ import {
 	TaskFooter,
 } from '../Task/styles'
 
-import { TaskSummaryWrapper, TaskSummaryMedia, TaskSummaryInner, TaskSummaryAction } from './styles'
+import {
+	TaskSummaryWrapper,
+	TaskSummaryMedia,
+	TaskSummaryInner,
+	TaskSummaryAction,
+} from './styles'
 import { Arrow, Media } from '../../Icons/sections'
 
 export const TaskSummary = ({ task, setTask, action }) => {
 	const {
-        compensation = {},
+		compensation = {},
 		description = '',
 		id,
 		media,
@@ -38,9 +43,9 @@ export const TaskSummary = ({ task, setTask, action }) => {
 		TaskIcon = InReview
 	}
 
-    const openTask = () => {
-        // TODO: Open Task
-    }
+	const openTask = () => {
+		// TODO: Open Task
+	}
 
 	// useEffect(() => {
 	// 	setTask(task)
@@ -59,24 +64,22 @@ export const TaskSummary = ({ task, setTask, action }) => {
 					<p>{description}</p>
 				</TaskContent>
 				<TaskFooter>
-                    {
-                    media 
-                    ? <TaskSummaryMedia>
-                        <Media />
-                    </TaskSummaryMedia>
-                    : ''
-                    }
-                    {
-                    action
-                    ? (
-                        <TaskSummaryAction onClick={openTask}>
-                            {action.text}
-                            &nbsp;
-                            <Arrow />
-                        </TaskSummaryAction>
-                    )
-                    : ''
-                    }
+					{media ? (
+						<TaskSummaryMedia>
+							<Media />
+						</TaskSummaryMedia>
+					) : (
+						''
+					)}
+					{action ? (
+						<TaskSummaryAction onClick={openTask}>
+							{action.text}
+							&nbsp;
+							<Arrow />
+						</TaskSummaryAction>
+					) : (
+						''
+					)}
 				</TaskFooter>
 			</TaskSummaryInner>
 		</TaskSummaryWrapper>

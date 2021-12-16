@@ -1,11 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Button, IconButton, Tabs, Typography } from '@material-ui/core'
-import {Background} from "../../../theme/colors";
-import {BaseCard} from "../../Common/card";
-import {LogoCircle} from "../../Common/ci";
-import {LinkIcon} from "../../Icons/linkIcon";
-import CheckedIcon from "../../Icons/checkedIcon";
+import { Background } from '../../../theme/colors'
+import { BaseCard } from '../../Common/card'
+import { LogoCircle } from '../../Common/ci'
+import { LinkIcon } from '../../Icons/linkIcon'
+import CheckedIcon from '../../Icons/checkedIcon'
 
 export const OverviewComponent = styled.section`
 	width: 100vw;

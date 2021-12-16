@@ -14,7 +14,7 @@ import {
 import { TaskSummaryFooter } from '../TaskSummary/styles'
 
 export const ColumnSection = ({ section, setSection }) => {
-	const { icon = Requested, title = '', tasks = [], action = {}, } = section
+	const { icon = Requested, title = '', tasks = [], action = {} } = section
 	const [isOpen, setIsOpen] = useState(false)
 	const SectionIcon = icon
 	const count = tasks.length
@@ -44,7 +44,12 @@ export const ColumnSection = ({ section, setSection }) => {
 			</SectionHeaderContainer>
 			<SectionContainer in={isOpen}>
 				{tasks.map((task) => (
-					<TaskSummary key={task.id} task={task} setTask={setTask} action={action} />
+					<TaskSummary
+						key={task.id}
+						task={task}
+						setTask={setTask}
+						action={action}
+					/>
 				))}
 				{tasks.length >= 2 ? (
 					<TaskSummaryFooter>See more</TaskSummaryFooter>

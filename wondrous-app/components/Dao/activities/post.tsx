@@ -114,10 +114,7 @@ export const PostCard = () => {
 					</PostTaskTextBlock>
 					<PostTaskImageBlock>
 						<PostLeftImage>
-							<LogotypeWithText
-								width={256}
-								height={132}
-							/>
+							<LogotypeWithText width={256} height={132} />
 						</PostLeftImage>
 						<PostTaskImage src="/images/overview/graphs.png" />
 					</PostTaskImageBlock>

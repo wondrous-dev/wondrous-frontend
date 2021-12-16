@@ -6,8 +6,7 @@ import { Grey400 } from '../../../theme/colors'
 import { BoardColumnWrapper, BoardColumnTitle, IconWrapper } from './styles'
 
 export const BoardColumn = ({ column, setColumn }) => {
-	
-	const { sections = [], tasks = [], icon = ToDo,title = '',  } = column
+	const { sections = [], tasks = [], icon = ToDo, title = '' } = column
 
 	const count = tasks.length
 	const Icon = icon
@@ -18,7 +17,7 @@ export const BoardColumn = ({ column, setColumn }) => {
 		border: '1px solid ' + Grey400,
 		padding: '3px',
 	}
-	
+
 	const setTask = (task) => {
 		setColumn({
 			...column,
@@ -27,7 +26,7 @@ export const BoardColumn = ({ column, setColumn }) => {
 					return task
 				}
 				return t
-			})
+			}),
 		})
 	}
 
@@ -47,11 +46,13 @@ export const BoardColumn = ({ column, setColumn }) => {
 					{title} {count}{' '}
 				</span>
 			</BoardColumnTitle>
-			{
-				sections.map((section) => (
-					<ColumnSection key={section.id} section={section} setSection={setSection}/>
-				))
-			}
+			{sections.map((section) => (
+				<ColumnSection
+					key={section.id}
+					section={section}
+					setSection={setSection}
+				/>
+			))}
 			<div key={title + '-task-list'}>
 				{tasks.map((task) => (
 					<Task key={task.id} task={task} setTask={setTask} />

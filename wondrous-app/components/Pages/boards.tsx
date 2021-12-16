@@ -22,9 +22,7 @@ export const BoardWrapper = styled.div`
 `
 
 export const KanbanBoard = ({ board, setBoard }) => {
-	
-	const { columns = [], } = board
-	
+	const { columns = [] } = board
 
 	const setColumn = (column) => {
 		setBoard({
@@ -34,7 +32,7 @@ export const KanbanBoard = ({ board, setBoard }) => {
 					return column
 				}
 				return c
-			})
+			}),
 		})
 	}
 

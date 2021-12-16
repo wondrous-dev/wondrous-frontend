@@ -1,8 +1,8 @@
-import React from 'react';
-import Activities from "../../components/Dao/activities";
+import React from 'react'
+import Activities from '../../components/Dao/activities'
 
 const ActivitiesPage = () => {
-  return <Activities />
+	return <Activities />
 }
 
-export default ActivitiesPage;
+export default ActivitiesPage

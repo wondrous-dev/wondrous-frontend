@@ -5,7 +5,7 @@ import { Background, Blue800, Violet300 } from '../../../theme/colors'
 export const TaskSummaryWrapper = styled.div`
 	display: flex;
 	margin: 1em auto;
-    align-self: center;
+	align-self: center;
 
 	padding: 1px;
 	background: #515151;
@@ -29,29 +29,28 @@ export const TaskSummaryInner = styled.div`
 	border-radius: 5px;
 	padding: 14px;
 
-	padding-bottom: 18px; 
+	padding-bottom: 18px;
 `
 
+export const TaskSummaryMedia = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	align-items: center;
+	width: 29px;
+	height: 29px;
 
-export const TaskSummaryMedia = styled.div `
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    width: 29px;
-    height: 29px;
-    
-    border-radius: 3px;
+	border-radius: 3px;
 
-    background-color: ${Blue800};
+	background-color: ${Blue800};
 `
 
 export const TaskSummaryFooter = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    height: 42px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	align-items: center;
+	height: 42px;
 `
 
 export const TaskSummaryAction = styled.div`
@@ -64,5 +63,5 @@ export const TaskSummaryAction = styled.div`
 	cursor: pointer;
 
 	font-size: 16px;
-	color: ${Violet300}
+	color: ${Violet300};
 `

@@ -27,7 +27,6 @@ import {
 } from './styles'
 
 export const Task = ({ task, setTask }) => {
-	
 	const {
 		actions = {},
 		description = '',
@@ -38,7 +37,7 @@ export const Task = ({ task, setTask }) => {
 		title = '',
 		users = [],
 	} = task
-	
+
 	let {
 		likes = 0,
 		comments = 0,
@@ -80,8 +79,8 @@ export const Task = ({ task, setTask }) => {
 			...task,
 			actions: {
 				...actions,
-				likes 
-			}
+				likes,
+			},
 		})
 	}
 
@@ -113,16 +112,10 @@ export const Task = ({ task, setTask }) => {
 					</TaskAction>
 					<TaskActionMenu right="true">
 						<DropDown DropdownHandler={TaskMenuIcon}>
-							<DropDownItem
-								key={'task-menu-edit-' + id}
-								onClick={editTask}
-							>
+							<DropDownItem key={'task-menu-edit-' + id} onClick={editTask}>
 								Edit task
 							</DropDownItem>
-							<DropDownItem
-								key={'task-menu-report-' + id}
-								onClick={reportTask}
-							>
+							<DropDownItem key={'task-menu-report-' + id} onClick={reportTask}>
 								Report
 							</DropDownItem>
 							<DropDownItem

@@ -24,7 +24,7 @@ export const SectionHeaderContainer = styled.div`
 	flex-direction: row;
 	justify-content: flex-start;
 
-    cursor: pointer;
+	cursor: pointer;
 
 	padding: 7px 15px;
 	background: ${Black92}3C;
