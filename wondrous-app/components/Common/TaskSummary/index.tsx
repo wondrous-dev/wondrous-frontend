@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { LogoButton } from '../logo'
 import { ToDo, InProgress, Done, InReview } from '../../Icons'
 
@@ -8,7 +8,6 @@ import { Compensation } from '../Compensation'
 import * as Constants from '../../../utils/constants'
 
 import {
-	TaskInner,
 	TaskHeader,
 	TaskContent,
 	TaskTitle,
@@ -23,6 +22,13 @@ import {
 } from './styles'
 import { Arrow, Media } from '../../Icons/sections'
 
+const TASK_ICONS = {
+	[Constants.TASK_STATUS_TODO]: ToDo,
+	[Constants.TASK_STATUS_IN_PROGRESS]: InProgress,
+	[Constants.TASK_STATUS_DONE]: Done,
+	[Constants.TASK_STATUS_IN_REVIEW]: InReview,
+}
+
 export const TaskSummary = ({ task, setTask, action }) => {
 	const {
 		compensation = {},
@@ -34,22 +40,11 @@ export const TaskSummary = ({ task, setTask, action }) => {
 		users = [],
 	} = task
 
-	let TaskIcon = ToDo
-	if (taskType === Constants.TASK_STATUS_IN_PROGRESS) {
-		TaskIcon = InProgress
-	} else if (taskType === Constants.TASK_STATUS_DONE) {
-		TaskIcon = Done
-	} else if (taskType === Constants.TASK_STATUS_IN_REVIEW) {
-		TaskIcon = InReview
-	}
+	let TaskIcon = TASK_ICONS[taskType]
 
 	const openTask = () => {
 		// TODO: Open Task
 	}
-
-	// useEffect(() => {
-	// 	setTask(task)
-	// }, [setTask, task])
 
 	return (
 		<TaskSummaryWrapper key={id}>

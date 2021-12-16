@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Task } from '../../Common/Task'
 import { ToDo } from '../../Icons'
 import { ColumnSection } from '../ColumnSection'

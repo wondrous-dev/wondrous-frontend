@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import AppLayout from '../components/Common/Layout/App'
 import { ToDo, InProgress, Done } from '../components/Icons'
-import { Requested, InReview, Archived } from '../components/Icons/sections'
+import { InReview } from '../components/Icons/sections'
 import { GmBox, WelcomeMessage } from '../components/Pages/home'
 import { KanbanBoard } from '../components/Pages/boards'
 import * as Constants from '../utils/constants'

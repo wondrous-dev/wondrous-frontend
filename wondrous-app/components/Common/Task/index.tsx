@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { LogoButton } from '../logo'
 import { ToDo, InProgress, Done, InReview } from '../../Icons'
 import { TaskLikeIcon } from '../../Icons/taskLike'
@@ -26,6 +26,13 @@ import {
 	TaskActionMenu,
 } from './styles'
 
+const TASK_ICONS = {
+	[Constants.TASK_STATUS_TODO]: ToDo,
+	[Constants.TASK_STATUS_IN_PROGRESS]: InProgress,
+	[Constants.TASK_STATUS_DONE]: Done,
+	[Constants.TASK_STATUS_IN_REVIEW]: InReview,
+}
+
 export const Task = ({ task, setTask }) => {
 	const {
 		actions = {},
@@ -49,14 +56,7 @@ export const Task = ({ task, setTask }) => {
 
 	const [liked, setLiked] = useState(iLiked)
 
-	let TaskIcon = ToDo
-	if (taskType === Constants.TASK_STATUS_IN_PROGRESS) {
-		TaskIcon = InProgress
-	} else if (taskType === Constants.TASK_STATUS_DONE) {
-		TaskIcon = Done
-	} else if (taskType === Constants.TASK_STATUS_IN_REVIEW) {
-		TaskIcon = InReview
-	}
+	let TaskIcon = TASK_ICONS[taskType]
 
 	const editTask = () => {
 		console.log('Edit Task Menu Clicked')
