@@ -80,10 +80,7 @@ export const DropDown = ({ DropdownHandler, children }) => {
 
 	return (
 		<>
-			<DropdownOverlay
-				onClick={toggleDropDown}
-				style={{ display: display }}
-			/>
+			<DropdownOverlay onClick={toggleDropDown} style={{ display: display }} />
 			<div onClick={toggleDropDown}>
 				<DropdownHandler />
 				<DropDownWrapper style={{ display: display }}>

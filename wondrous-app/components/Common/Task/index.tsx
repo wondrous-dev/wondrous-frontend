@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { LogoButton } from '../logo'
-import { ToDo, InProgress, Done } from '../../Icons'
+import { ToDo, InProgress, Done, InReview } from '../../Icons'
 import { TaskLikeIcon } from '../../Icons/taskLike'
 import { TaskCommentIcon } from '../../Icons/taskComment'
 import { TaskShareIcon } from '../../Icons/taskShare'
@@ -26,17 +26,26 @@ import {
 	TaskActionMenu,
 } from './styles'
 
+const TASK_ICONS = {
+	[Constants.TASK_STATUS_TODO]: ToDo,
+	[Constants.TASK_STATUS_IN_PROGRESS]: InProgress,
+	[Constants.TASK_STATUS_DONE]: Done,
+	[Constants.TASK_STATUS_IN_REVIEW]: InReview,
+}
+
 export const Task = ({ task, setTask }) => {
 	const {
 		actions = {},
-		description,
+		description = '',
+		compensation = {},
 		id,
 		media,
 		taskType,
-		title,
+		title = '',
 		users = [],
 	} = task
-	const {
+
+	let {
 		likes = 0,
 		comments = 0,
 		shares = 0,
@@ -44,14 +53,10 @@ export const Task = ({ task, setTask }) => {
 		iCommented = false,
 		iShared = false,
 	} = actions || {}
+
 	const [liked, setLiked] = useState(iLiked)
 
-	let TaskIcon = ToDo
-	if (task.taskType === Constants.TASK_STATUS_INPROGRESS) {
-		TaskIcon = InProgress
-	} else if (task.taskType === Constants.TASK_STATUS_DONE) {
-		TaskIcon = Done
-	}
+	let TaskIcon = TASK_ICONS[taskType]
 
 	const editTask = () => {
 		console.log('Edit Task Menu Clicked')
@@ -68,59 +73,53 @@ export const Task = ({ task, setTask }) => {
 	const toggleLike = () => {
 		setLiked(!liked)
 
-		if (liked) {
-			task.actions.likes -= 1
-		} else {
-			task.actions.likes += 1
-		}
+		likes = liked ? likes - 1 : likes + 1
+
+		setTask({
+			...task,
+			actions: {
+				...actions,
+				likes,
+			},
+		})
 	}
 
-	useEffect(() => {
-		setTask(task)
-	}, [setTask, task])
-
 	return (
-		<TaskWrapper key={task.id}>
+		<TaskWrapper key={id}>
 			<TaskInner>
 				<TaskHeader>
 					<LogoButton />
-					<AvatarList id={task.id} users={task.users} />
-					<Compensation compensation={task.compensation} icon={TaskIcon} />
+					<AvatarList id={id} users={users} />
+					<Compensation compensation={compensation} icon={TaskIcon} />
 				</TaskHeader>
 				<TaskContent>
-					<TaskTitle>{task.title}</TaskTitle>
-					<p>{task.description}</p>
-					{task.media ? <TaskMedia media={task.media} /> : <TaskSeparator />}
+					<TaskTitle>{title}</TaskTitle>
+					<p>{description}</p>
+					{media ? <TaskMedia media={media} /> : <TaskSeparator />}
 				</TaskContent>
 				<TaskFooter>
-					<TaskAction key={'task-like-' + task.id} onClick={toggleLike}>
+					<TaskAction key={'task-like-' + id} onClick={toggleLike}>
 						<TaskLikeIcon liked={liked} />
 						<TaskActionAmount>{likes}</TaskActionAmount>
 					</TaskAction>
-					<TaskAction key={'task-comment-' + task.id}>
+					<TaskAction key={'task-comment-' + id}>
 						<TaskCommentIcon />
 						<TaskActionAmount>{comments}</TaskActionAmount>
 					</TaskAction>
-					<TaskAction key={'task-share-' + task.id}>
+					<TaskAction key={'task-share-' + id}>
 						<TaskShareIcon />
 						<TaskActionAmount>{shares}</TaskActionAmount>
 					</TaskAction>
 					<TaskActionMenu right="true">
 						<DropDown DropdownHandler={TaskMenuIcon}>
-							<DropDownItem
-								key={'task-menu-edit-' + task.id}
-								onClick={editTask}
-							>
+							<DropDownItem key={'task-menu-edit-' + id} onClick={editTask}>
 								Edit task
 							</DropDownItem>
-							<DropDownItem
-								key={'task-menu-report-' + task.id}
-								onClick={reportTask}
-							>
+							<DropDownItem key={'task-menu-report-' + id} onClick={reportTask}>
 								Report
 							</DropDownItem>
 							<DropDownItem
-								key={'task-menu-settings-' + task.id}
+								key={'task-menu-settings-' + id}
 								onClick={openSettings}
 							>
 								Settings

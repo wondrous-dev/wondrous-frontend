@@ -77,6 +77,97 @@ export const InProgress = (props) => (
 	</svg>
 )
 
+export const InReview = (props) => (
+	<svg
+		width="29"
+		height="29"
+		viewBox="0 0 29 29"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<circle
+			cx="14.2542"
+			cy="14.1227"
+			r="13.5"
+			fill="#0F0F0F"
+			stroke="#474747"
+		/>
+		<circle
+			cx="11.1464"
+			cy="14.1227"
+			r="0.990845"
+			fill="url(#paint0_linear_509_3000)"
+		/>
+		<circle
+			cx="14.2548"
+			cy="14.1227"
+			r="0.990845"
+			fill="url(#paint1_linear_509_3000)"
+		/>
+		<circle
+			cx="17.3632"
+			cy="14.1227"
+			r="0.990845"
+			fill="url(#paint2_linear_509_3000)"
+		/>
+		<circle
+			cx="14.2542"
+			cy="14.1227"
+			r="8"
+			stroke="url(#paint3_linear_509_3000)"
+			strokeWidth="1.4"
+			strokeLinecap="round"
+			strokeDasharray="3.2 3.2"
+		/>
+		<defs>
+			<linearGradient
+				id="paint0_linear_509_3000"
+				x1="11.1464"
+				y1="13.1318"
+				x2="11.1464"
+				y2="15.1135"
+				gradientUnits="userSpaceOnUse"
+			>
+				<stop stopColor="white" />
+				<stop offset="1" stopColor="#00BAFF" />
+			</linearGradient>
+			<linearGradient
+				id="paint1_linear_509_3000"
+				x1="14.2548"
+				y1="13.1318"
+				x2="14.2548"
+				y2="15.1135"
+				gradientUnits="userSpaceOnUse"
+			>
+				<stop stopColor="white" />
+				<stop offset="1" stopColor="#00BAFF" />
+			</linearGradient>
+			<linearGradient
+				id="paint2_linear_509_3000"
+				x1="17.3632"
+				y1="13.1318"
+				x2="17.3632"
+				y2="15.1135"
+				gradientUnits="userSpaceOnUse"
+			>
+				<stop stopColor="white" />
+				<stop offset="1" stopColor="#00BAFF" />
+			</linearGradient>
+			<linearGradient
+				id="paint3_linear_509_3000"
+				x1="14.2542"
+				y1="6.12268"
+				x2="14.2542"
+				y2="22.1227"
+				gradientUnits="userSpaceOnUse"
+			>
+				<stop stopColor="white" />
+				<stop offset="1" stopColor="#00BAFF" />
+			</linearGradient>
+		</defs>
+	</svg>
+)
+
 export const Done = (props) => (
 	<svg
 		width="28"

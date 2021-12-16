@@ -61,6 +61,7 @@ export const MainWrapper = styled.main`
 	}
 
 	padding: 36px;
+	padding-bottom: 200px;
 
 	color: ${White};
 	background: ${Background};
