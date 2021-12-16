@@ -126,7 +126,7 @@ const MOCK_COLUMNS_DATA = [
 					{
 						title: 'Web3 Instagram Post',
 						id: '8e5b842e-3a6a-4d7b-9658-4e253e240b39',
-						taskType: 'INREVIEW',
+						taskType: Constants.TASK_STATUS_IN_REVIEW,
 						users: [
 							{
 								name: 'UserName',
