@@ -1,5 +1,5 @@
 import React from 'react'
-import Activities from '../../components/Dao/activities'
+import Activities from '../../components/Dao/activities/activities'
 
 const ActivitiesPage = () => {
 	return <Activities />

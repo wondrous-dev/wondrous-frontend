@@ -5,10 +5,10 @@ import {
 	IconButton,
 	Typography,
 } from '@material-ui/core'
-
 import { Background } from '../../../theme/colors'
-import { BaseCard } from '../../Common/card'
-import { LogoSquare } from '../../Common/ci'
+import {BaseCard} from "../../Common/card";
+import {LogoCircle} from "../../Common/ci";
+import {LinkIcon} from "../../Icons/linkIcon";
 
 export const OverviewComponent = styled.section`
 	width: 100vw;
@@ -36,6 +36,14 @@ export const TokenHeader = styled.div`
 	display: flex;
 	justify-content: space-between;
 	flex-direction: column;
+`
+
+export const TokenLogo = styled(LogoCircle)`
+	position: absolute;
+	width: 103px;
+	height: 103px;
+	top: -50px;
+	left: -20px;
 `
 
 export const Content = styled.div`
@@ -152,6 +160,24 @@ export const HeaderActivity = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+`
+
+export const HeaderActivityLink = styled.a`
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 16px;
+	display: flex;
+	align-items: center;
+	text-decoration: none;
+	color: #ccbbff;
+	text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+`
+
+export const HeaderActivityLinkIcon = styled(LinkIcon)`
+	height: 23px;
+	width: 23px;
+	margin-right: 8px;
+	margin-top: 8px;
 `
 
 export const HeaderContributors = styled.div`
@@ -288,14 +314,47 @@ export const PostTaskHeaderAuthorNickname = styled(PostAuthorNickname)`
 	padding-right: 5px;
 `
 
-export const PostTaskHeaderLogo = styled(LogoSquare)`
+export const PostTaskHeaderImage = styled.img`
 	width: 28px;
 	height: 28px;
 `
 
-export const PostTaskHeaderImage = styled.img`
-	width: 28px;
-	height: 28px;
+export const PostTaskHeaderButtons = styled.div`
+	max-width: 90px;
+	width: 100%;
+	display: flex;
+	align-items: center;
+`
+
+export const PostTaskHeaderCheckedButton = styled(IconButton)`
+	&& {
+		width: 28px !important;
+		height: 28px !important;
+		background-color: #0f0f0f;
+		border: 1px solid #474747;
+		padding: 0;
+	}
+`
+
+export const PostTaskHeaderButton = styled(Button)`
+	&& {
+		width: 60px;
+		height: 28px;
+		padding: 7px 10px;
+		background: #363636;
+		border-radius: 300px;
+
+		//text
+		color: #fff;
+		font-weight: 500;
+		display: flex;
+		justify-content: space-between;
+	}
+`
+
+export const PostTaskHeaderButtonImg = styled.img`
+	width: 10px;
+	height: 10px;
 `
 
 export const PostTaskContent = styled.div``
@@ -364,6 +423,7 @@ export const PostActivity = styled.div`
 
 export const PostLikes = styled(Typography)`
 	&& {
+		//width: 45px;
 		font-weight: 500;
 		font-size: 13px;
 		line-height: 17px;
@@ -371,10 +431,15 @@ export const PostLikes = styled(Typography)`
 		align-items: center;
 		color: #ffffff;
 
-		& svg {
+		& img {
 			margin-right: 10px;
 		}
 	}
+`
+
+export const PostActivityIcon = styled.img`
+	width: auto;
+	height: auto;
 `
 
 export const PostComments = styled(PostLikes)``

@@ -2,6 +2,7 @@ import React from 'react'
 
 import Header from '../../Header'
 import SideBarComponent from '../../SideBar'
+import Tabs from '../tabs/tabs'
 
 import {
 	Content,
@@ -28,7 +29,6 @@ import {
 	TokenHeader,
 	TokenLogo,
 } from './styles'
-import { TabsActivity } from './tabs'
 
 const SIDEBAR_LIST_ITEMS = [
 	{
@@ -48,7 +48,9 @@ const SIDEBAR_LIST_ITEMS = [
 	},
 ]
 
-const Activities = () => {
+const Wrapper = (props) => {
+	const { children } = props;
+
 	return (
 		<>
 			<Header />
@@ -88,7 +90,11 @@ const Activities = () => {
 								</HeaderPods>
 							</HeaderActivity>
 						</TokenHeader>
-						<TabsActivity />
+
+						<Tabs>
+							{children}
+						</Tabs>
+
 					</ContentContainer>
 				</Content>
 			</OverviewComponent>
@@ -96,4 +102,4 @@ const Activities = () => {
 	)
 }
 
-export default Activities
+export default Wrapper;
