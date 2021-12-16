@@ -61,7 +61,7 @@ export const MultiSelect = (props) => {
 				onChange={handleChange}
 				input={<OutlinedInput label="Chip" />}
 				renderValue={(selected) => (
-					<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+					<Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
 						{selected.map((value) => (
 							<Chip key={value} label={value} />
 						))}

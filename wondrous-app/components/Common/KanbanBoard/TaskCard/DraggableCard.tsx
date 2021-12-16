@@ -25,7 +25,7 @@ const DraggableCard = DropTarget(ItemTypes.CARD, {
     const {
       moveCard,
       status,
-    } = props
+    } = props as any
 
     if (!component) {
       return null;
@@ -50,7 +50,7 @@ const DraggableCard = DropTarget(ItemTypes.CARD, {
 }, (connect) => ({
   connectDropTarget: connect.dropTarget(),
 }))(DragSource(ItemTypes.CARD, {
-  beginDrag: (props) => ({
+  beginDrag: (props: any) => ({
     id: props.id,
     status: props.status,
   }),

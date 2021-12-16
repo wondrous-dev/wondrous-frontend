@@ -35,6 +35,7 @@ const Tabs = (props) => {
 			<StyledTabs value={pathname}>
 				{tabsLinks.map(tab => (
 					<Link
+						// @ts-ignore
 						value={tab.href}
 						key={tab.href}
 						href={tab.href}
