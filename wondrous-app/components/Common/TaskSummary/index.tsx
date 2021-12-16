@@ -30,11 +30,11 @@ export const TaskSummary = ({ task, setTask, action }) => {
 	} = task
 
 	let TaskIcon = ToDo
-	if (taskType === Constants.TASK_STATUS_INPROGRESS) {
+	if (taskType === Constants.TASK_STATUS_IN_PROGRESS) {
 		TaskIcon = InProgress
 	} else if (taskType === Constants.TASK_STATUS_DONE) {
 		TaskIcon = Done
-	} else if (taskType === Constants.TASK_STATUS_INREVIEW) {
+	} else if (taskType === Constants.TASK_STATUS_IN_REVIEW) {
 		TaskIcon = InReview
 	}
 

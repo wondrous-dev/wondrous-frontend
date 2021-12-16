@@ -4,6 +4,7 @@ import { ToDo, InProgress, Done } from '../components/Icons'
 import { Requested, InReview, Archived } from '../components/Icons/sections'
 import { GmBox, WelcomeMessage } from '../components/Pages/home'
 import { KanbanBoard } from '../components/Pages/boards'
+import * as Constants from '../utils/constants'
 
 const MOCK_COLUMNS_DATA = [
 	{
@@ -60,7 +61,7 @@ const MOCK_COLUMNS_DATA = [
 					},
 				],
 				description: 'This is Task #1',
-				taskType: 'TODO',
+				taskType: Constants.TASK_STATUS_TODO,
 				media: {
 					id: '2c67291e-6fbe-4e62-b687-8a4e9bc9a4fc',
 					type: 'image',
@@ -76,7 +77,7 @@ const MOCK_COLUMNS_DATA = [
 			{
 				title: 'Task 2',
 				id: '632348bf-b202-451a-b67e-9e074afcfd87',
-				taskType: 'TODO',
+				taskType: Constants.TASK_STATUS_TODO,
 				users: [
 					{
 						name: 'UserName',
@@ -115,7 +116,7 @@ const MOCK_COLUMNS_DATA = [
 				icon: InReview,
 				id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
 				filter: {
-					taskType: 'INREVIEW',
+					taskType: Constants.TASK_STATUS_IN_REVIEW,
 				},
 				expandable: true,
 				action: {
@@ -156,7 +157,7 @@ const MOCK_COLUMNS_DATA = [
 					{
 						title: 'Task 4',
 						id: '8aed37ba-2bcd-48d1-9d4e-4e75ce4562c5',
-						taskType: 'INREVIEW',
+						taskType: Constants.TASK_STATUS_IN_REVIEW,
 						users: [
 							{
 								name: 'UserName',
@@ -190,7 +191,7 @@ const MOCK_COLUMNS_DATA = [
 			{
 				title: 'Task 5',
 				id: 'a83d77fb-5d9d-49fc-99b9-8f90cae98031',
-				taskType: 'INPROGRESS',
+				taskType: Constants.TASK_STATUS_IN_PROGRESS,
 				users: [
 					{
 						name: 'UserName',
@@ -223,7 +224,7 @@ const MOCK_COLUMNS_DATA = [
 			{
 				title: 'Task 6',
 				id: '8bc14067-3f90-461c-98fd-6c2b56451304',
-				taskType: 'DONE',
+				taskType: Constants.TASK_STATUS_DONE,
 				users: [
 					{
 						name: 'UserName',
