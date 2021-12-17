@@ -1,43 +1,42 @@
 import React from 'react'
+import { IconButton } from '@material-ui/core'
 
 import RightArrowIcon from '../../Icons/rightArrow'
+import { AvatarList } from '../../Common/AvatarList'
 
 import {
-	PodsCard,
-	PodsCardContent,
+	OrganisationsCard,
+	OrganisationsCardContent,
+	OrganisationsCardHeader,
 	PodsCardFooter,
 	PodsCardFooterButton,
 	PodsCardFooterIcon,
-	PodsCardHeader,
-	PodsCardHeaderAvatars,
-	PodsCardHeaderButton,
 	PodsCardName
 } from './styles'
 
-export const AboutPodsCard = (props) => {
-
+const AboutPodsCard = (props) => {
 	const {
-		participantsAvatars,
-		title,
-		text,
-		tasksAmount,
-		goalsAmount,
+		title = '',
+		description = '',
+		tasksAmount = 0,
+		goalsAmount = 0,
+		users,
 	} = props
 
 	return (
-		<PodsCard>
-			<PodsCardHeader>
-				<PodsCardHeaderAvatars src={participantsAvatars}/>
-				<PodsCardHeaderButton>
+		<OrganisationsCard>
+			<OrganisationsCardHeader>
+				<AvatarList users={users} />
+				<IconButton>
 					<RightArrowIcon />
-				</PodsCardHeaderButton>
-			</PodsCardHeader>
+				</IconButton>
+			</OrganisationsCardHeader>
 			<PodsCardName>
 				{title}
 			</PodsCardName>
-			<PodsCardContent>
-				{text}
-			</PodsCardContent>
+			<OrganisationsCardContent>
+				{description}
+			</OrganisationsCardContent>
 			<PodsCardFooter>
 				<PodsCardFooterIcon />
 				<PodsCardFooterButton>
@@ -47,6 +46,8 @@ export const AboutPodsCard = (props) => {
 					{goalsAmount} goal
 				</PodsCardFooterButton>
 			</PodsCardFooter>
-		</PodsCard>
+		</OrganisationsCard>
 	)
 }
+
+export default AboutPodsCard

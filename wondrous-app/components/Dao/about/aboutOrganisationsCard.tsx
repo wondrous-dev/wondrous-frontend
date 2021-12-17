@@ -1,4 +1,5 @@
 import React from 'react'
+import { IconButton } from '@material-ui/core'
 
 import RightArrowIcon from '../../Icons/rightArrow'
 
@@ -9,48 +10,44 @@ import {
 	OrganisationsCardAuthorPosition,
 	OrganisationsCardContent,
 	OrganisationsCardHeader,
-	OrganisationsCardHeaderButton,
 	OrganisationsCardHeaderName,
 	OrganisationsCardHeaderWonderIcon
 } from './styles'
 
-export const AboutOrganisationsCard = (props) => {
+const ICONS = {
+	wonder: OrganisationsCardHeaderWonderIcon
+}
+
+const AboutOrganisationsCard = (props) => {
 
 	const {
 		icon,
 		title,
-		text,
+		description,
 		position,
 		avatar,
 	} = props
 
-	const logo = param => {
-		switch (param) {
-			case 'wonder':
-				return <OrganisationsCardHeaderWonderIcon />
-			// case: 'upClick':
-
-		}
-	}
+	const Icon = ICONS[icon]
 
 	return (
 		<OrganisationsCard>
 			<OrganisationsCardHeader>
 
-				{logo(icon)}
+				<Icon />
 
 				<OrganisationsCardHeaderName>
 					{title}
 				</OrganisationsCardHeaderName>
-				<OrganisationsCardHeaderButton>
+				<IconButton>
 					<RightArrowIcon />
-				</OrganisationsCardHeaderButton>
+				</IconButton>
 			</OrganisationsCardHeader>
 			<OrganisationsCardContent>
-				{text}
+				{description}
 			</OrganisationsCardContent>
 			<OrganisationsCardAuthor>
-				<OrganisationsCardAuthorAvatar src={avatar}/>
+				<OrganisationsCardAuthorAvatar src={avatar} />
 				<OrganisationsCardAuthorPosition>
 					{position}
 				</OrganisationsCardAuthorPosition>
@@ -58,3 +55,5 @@ export const AboutOrganisationsCard = (props) => {
 		</OrganisationsCard>
 	)
 }
+
+export default AboutOrganisationsCard

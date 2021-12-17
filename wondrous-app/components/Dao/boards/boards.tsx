@@ -13,17 +13,11 @@ import {
 	BoardsContainer,
 } from './styles'
 
-const selectOptions = [
-	'#copywriting (23)',
-	'#growth (23)',
-	'#design (23)',
-	'#community (11)',
-	'#sales (23)',
-	'#tiktok (13)',
-	'#analytics (23)',
-]
-
-const Boards = () => {
+const Boards = (props) => {
+	const {
+		selectOptions,
+		tasksList,
+	} = props
 
 	return (
 		<Wrapper>
@@ -46,7 +40,7 @@ const Boards = () => {
 
 				</BoardsActivity>
 
-				<KanbanBoard />
+				<KanbanBoard tasksList={tasksList} />
 
 			</BoardsContainer>
 		</Wrapper>

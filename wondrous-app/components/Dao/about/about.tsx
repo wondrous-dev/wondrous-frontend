@@ -10,10 +10,15 @@ import CheckMarkIcon from '../../Icons/checkMark'
 import FacebookIcon from '../../Icons/facebook'
 import TwitterPurpleIcon from '../../Icons/twitterPurple'
 import LinkedInIcon from '../../Icons/linkedIn'
+import {
+	SOCIAL_MEDIA_FACEBOOK,
+	SOCIAL_MEDIA_LINKEDIN,
+	SOCIAL_MEDIA_TWITTER,
+} from '../../../utils/constants'
 
-import { AboutOrganisationsCard } from './aboutOrganisationsCard'
-import { AboutPodsCard } from './aboutPodsCard'
-import { AboutCompletedCard } from './aboutCompletedCard'
+import AboutOrganisationsCard from './aboutOrganisationsCard'
+import AboutPodsCard from './aboutPodsCard'
+import AboutCompletedCard from './aboutCompletedCard'
 
 import {
 	AboutInfoBlock,
@@ -38,79 +43,27 @@ import {
 	AboutSection,
 } from './styles'
 
-const About = () => {
+const SOCIAL_MEDIA_ICONS = {
+	[SOCIAL_MEDIA_FACEBOOK]: FacebookIcon,
+	[SOCIAL_MEDIA_TWITTER]: TwitterPurpleIcon,
+	[SOCIAL_MEDIA_LINKEDIN]: LinkedInIcon,
+}
 
-	const infoBlockList = [
-		{
-			id: 1,
-			title: 'Organisations',
-			amount: 2,
-			seeAll: false,
-		},
-		{
-			id: 2,
-			title: 'Pods',
-			amount: 4,
-			seeAll: false,
-		},
-		{
-			id: 3,
-			title: 'completed tasks',
-			amount: 321,
-			seeAll: true,
-		}
-	];
+const About = (props) => {
+	const {
+		lastCompletedTask = {},
+		organizations = [],
+		profileInfo = {},
+		pods = [],
+	} = props
 
-	const organisationsCardList = [
-		{
-			id: 1,
-			icon: 'wonder',
-			title: 'Wonder',
-			text: 'A social platform where founders build in public using crypto incentives.',
-			avatar: '/images/boards/avatar.png',
-			position: 'Founder',
-		},
-		{
-			id: 2,
-			// icon: 'upClick',
-			icon: 'wonder',
-			title: 'UpClick',
-			text: 'Upclick is a custom e-commerce platform with expertise in sales tool.',
-			avatar: '/images/boards/avatarNFT.png',
-			position: 'Public Relations',
-		},
-	];
-
-	const podsCardList = [
-		{
-			id: 1,
-			participantsAvatars: '/images/overview/people.png',
-			title: 'PR Dream Team',
-			text: 'Tortor aliquet dui posuere tortor in viverra orci cras quisque. Lectus mauris.',
-			tasksAmount: 42,
-			goalsAmount: 1,
-		},
-		{
-			id: 2,
-			participantsAvatars: '/images/overview/people.png',
-			title: 'Analytics system creation',
-			text: 'Tortor aliquet dui posuere tortor in viverra orci cras quisque. Lectus mauris.',
-			tasksAmount: 21,
-			goalsAmount: 1,
-		},
-	];
-
-	const socialIconsList = [
-		{
-			icon: <FacebookIcon />,
-		},
-		{
-			icon: <TwitterPurpleIcon />,
-		},
-		{
-			icon: <LinkedInIcon />,
-		},
-	];
+	const {
+		completedTasks,
+		resume,
+		skills,
+		socialMedia,
+		status,
+	} = profileInfo
 
 	return (
 		<Wrapper>
@@ -126,16 +79,13 @@ const About = () => {
 							</AboutInfoTableRowTitle>
 						</AboutInfoTableRowNameBlock>
 						<AboutInfoTableRowContent>
-							<AboutInfoTableRowContentItem>
-								<AboutInfoTableRowContentItemHashtag>
-									#publicrelations
-								</AboutInfoTableRowContentItemHashtag>
-							</AboutInfoTableRowContentItem>
-							<AboutInfoTableRowContentItem>
-								<AboutInfoTableRowContentItemHashtag>
-									#analytics
-								</AboutInfoTableRowContentItemHashtag>
-							</AboutInfoTableRowContentItem>
+							{skills.map((skill) => (
+								<AboutInfoTableRowContentItem key={skill}>
+									<AboutInfoTableRowContentItemHashtag>
+										{skill}
+									</AboutInfoTableRowContentItemHashtag>
+								</AboutInfoTableRowContentItem>
+							))}
 						</AboutInfoTableRowContent>
 					</AboutInfoTableRow>
 
@@ -151,7 +101,7 @@ const About = () => {
 						<AboutInfoTableRowContent>
 							<AboutInfoTableRowContentItem>
 								<AboutInfoTableRowContentItemText>
-									Jane_Seymour_Resume_11.21.22.pdf
+									{resume}
 									<AboutInfoTableRowContentIconBtn>
 										<DownloadPdfIcon />
 									</AboutInfoTableRowContentIconBtn>
@@ -173,7 +123,7 @@ const About = () => {
 							<AboutInfoTableRowContentItemOpen>
 								<AboutInfoTableRowContentItemText>
 									<CheckMarkIcon />
-									Open to work
+									{status.label}
 								</AboutInfoTableRowContentItemText>
 							</AboutInfoTableRowContentItemOpen>
 						</AboutInfoTableRowContent>
@@ -189,11 +139,15 @@ const About = () => {
 							</AboutInfoTableRowTitle>
 						</AboutInfoTableRowNameBlock>
 						<AboutInfoTableRowContent>
-							{socialIconsList.map((item, index) => (
-								<AboutInfoTableRowContentSocialButton key={index}>
-									{item.icon}
-								</AboutInfoTableRowContentSocialButton>
-							))}
+							{socialMedia.map(({ name }) => {
+								const SocialMediaIcon = SOCIAL_MEDIA_ICONS[name]
+
+								return (
+									<AboutInfoTableRowContentSocialButton key={name}>
+										<SocialMediaIcon />
+									</AboutInfoTableRowContentSocialButton>
+								)
+							})}
 						</AboutInfoTableRowContent>
 					</AboutInfoTableRow>
 				</AboutInfoTable>
@@ -203,7 +157,7 @@ const About = () => {
 					<AboutInfoBlock>
 						<AboutInfoBlockHeader>
 							<AboutInfoBlockHeaderAmount>
-								2
+								{organizations.length}
 							</AboutInfoBlockHeaderAmount>
 							<AboutInfoBlockHeaderText>
 								Organisations
@@ -211,14 +165,10 @@ const About = () => {
 						</AboutInfoBlockHeader>
 						<AboutInfoBlockContent>
 
-							{organisationsCardList.map(card => (
+							{organizations.map((organization) => (
 								<AboutOrganisationsCard
-									key={card.id}
-									icon={card.icon}
-									title={card.title}
-									text={card.text}
-									position={card.position}
-									avatar={card.avatar}
+									key={organizations.id}
+									{...organization}
 								/>
 							))}
 
@@ -228,7 +178,7 @@ const About = () => {
 					<AboutInfoBlock>
 						<AboutInfoBlockHeader>
 							<AboutInfoBlockHeaderAmount>
-								4
+								{pods.length}
 							</AboutInfoBlockHeaderAmount>
 							<AboutInfoBlockHeaderText>
 								Pods
@@ -236,14 +186,10 @@ const About = () => {
 						</AboutInfoBlockHeader>
 						<AboutInfoBlockContent>
 
-							{podsCardList.map(card => (
+							{pods.map((pod) => (
 								<AboutPodsCard
-									key={card.id}
-									participantsAvatars={card.participantsAvatars}
-									title={card.title}
-									text={card.text}
-									tasksAmount={card.tasksAmount}
-									goalsAmount={card.goalsAmount}
+									key={pod.id}
+									{...pod}
 								/>
 							))}
 
@@ -252,7 +198,7 @@ const About = () => {
 					<AboutInfoBlock>
 						<AboutInfoBlockHeader>
 							<AboutInfoBlockHeaderAmount>
-								321
+								{completedTasks}
 							</AboutInfoBlockHeaderAmount>
 							<AboutInfoBlockHeaderText>
 								completed tasks
@@ -263,7 +209,7 @@ const About = () => {
 						</AboutInfoBlockHeader>
 						<AboutInfoBlockContent>
 
-							<AboutCompletedCard />
+							<AboutCompletedCard lastCompletedTask={lastCompletedTask} />
 
 						</AboutInfoBlockContent>
 					</AboutInfoBlock>

@@ -10,7 +10,7 @@ import {
 
 import PlusIcon from '../../../Icons/plus'
 import { ToDo, InProgress, Done } from '../../../Icons'
-import TaskCard, {ITaskCard} from '../TaskCard/taskCard'
+import TaskCard from '../TaskCard/taskCard'
 import DraggableCard, {ItemTypes} from '../TaskCard/DraggableCard'
 
 import {
@@ -21,7 +21,7 @@ import {
 } from './styles'
 
 interface ITaskColumn {
-  cardsList: Array<ITaskCard>
+  cardsList: Array<any>
   moveCard: any
   status: string
 }
@@ -74,7 +74,7 @@ const TaskColumn = (props: ITaskColumn) => {
           <PlusIcon />
         </TaskColumnContainerHeaderPlusButton>
       </TaskColumnContainerHeader>
-      {cardsList.map((card: ITaskCard) => (
+      {cardsList.map((card) => (
         <DraggableCard
           key={card.id}
           id={card.id}

@@ -1,12 +1,15 @@
 import React from 'react';
 import styled from 'styled-components'
-import CheckedIcon from '../Icons/checkedIcon'
-import GreenStarIcon from '../Icons/greenStar'
 import { Typography } from '@material-ui/core'
-import InProgressIcon from '../Icons/inProgress'
-import YellowStarIcon from '../Icons/yellowStar'
-import ToDoIcon from '../Icons/toDo'
-import RedStarIcon from '../Icons/redStar'
+
+import {
+  CheckedIcon,
+  GreenStarIcon,
+  InProgressIcon,
+  RedStarIcon,
+  ToDoIcon,
+  YellowStarIcon,
+} from '../Icons/taskTypes'
 
 export const CardCategoryBlock = styled.div`
    position: relative;

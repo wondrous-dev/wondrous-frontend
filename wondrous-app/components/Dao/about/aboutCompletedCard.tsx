@@ -1,55 +1,68 @@
-import React from 'react';
+import React from 'react'
+import { IconButton } from '@material-ui/core'
 
 import LikeIcon from '../../Icons/like'
 import CommentsIcon from '../../Icons/comments'
 import ShareIcon from '../../Icons/share'
 import DotsIcon from '../../Icons/dots'
 import { CardHeaderCategory } from '../../CardHeaderCategory'
-import {TASK_STATUS_DONE} from "../../../utils/constants";
-import {TaskMedia} from "../../Common/MediaPlayer";
+import { TaskMedia } from '../../Common/MediaPlayer'
+import { TaskCardLogo} from '../../Common/KanbanBoard/TaskCard/styles'
+import { AvatarList } from '../../Common/AvatarList'
 
 import {
-  CompletedCard,
-  CompletedCardAvatar,
   CompletedCardFooter,
   CompletedCardFooterActivity,
   CompletedCardFooterActivityAmount,
   CompletedCardFooterActivityIconBtn,
   CompletedCardFooterBlock,
-  CompletedCardFooterSettingsBtn,
-  CompletedCardHeader,
-  CompletedCardIcon,
   CompletedCardText,
-  CompletedCardTitle
+  CompletedCardTitle,
+  OrganisationsCard,
+  OrganisationsCardHeader,
 } from './styles'
 
-export const AboutCompletedCard = () => {
+const AboutCompletedCard = (props) => {
+  const { lastCompletedTask } = props
+
+  const {
+    actions,
+    compensation,
+    description,
+    media,
+    status,
+    title,
+    users,
+  } = lastCompletedTask
+
+  const {
+    comments,
+    likes,
+    shares,
+  } = actions
+
   return (
-    <CompletedCard>
-      <CompletedCardHeader>
-        <div>
-          <CompletedCardIcon />
-          <CompletedCardAvatar src='/images/boards/avatar.png'/>
-        </div>
+    <OrganisationsCard>
+      <OrganisationsCardHeader>
+        <TaskCardLogo />
+        <AvatarList users={users} />
 
         <CardHeaderCategory
-          status={TASK_STATUS_DONE}
-          starCount={2400}
+          compensation={compensation}
+          status={status}
         />
+      </OrganisationsCardHeader>
 
-      </CompletedCardHeader>
       <CompletedCardTitle>
-        🔥Narrate our showreel🔥
+        {title}
       </CompletedCardTitle>
+
       <CompletedCardText>
-        Maecenas hendrerit porttitor integer viverra lorem metus et in.
+        {description}
       </CompletedCardText>
-      <TaskMedia
-        media={{
-          type: 'audio',
-          url: 'https://soundcloud.com/undiscoveredsounds/coldplay-ft-beyonce-hymn-for-the-weekend-ash-remix'
-        }}
-      />
+
+      <TaskMedia media={media} />
+
       <CompletedCardFooter>
         <CompletedCardFooterActivity>
           <CompletedCardFooterBlock>
@@ -57,7 +70,7 @@ export const AboutCompletedCard = () => {
               <LikeIcon />
             </CompletedCardFooterActivityIconBtn>
             <CompletedCardFooterActivityAmount>
-              30
+              {likes}
             </CompletedCardFooterActivityAmount>
           </CompletedCardFooterBlock>
           <CompletedCardFooterBlock>
@@ -65,7 +78,7 @@ export const AboutCompletedCard = () => {
               <CommentsIcon />
             </CompletedCardFooterActivityIconBtn>
             <CompletedCardFooterActivityAmount>
-              19
+              {comments}
             </CompletedCardFooterActivityAmount>
           </CompletedCardFooterBlock>
           <CompletedCardFooterBlock>
@@ -73,14 +86,16 @@ export const AboutCompletedCard = () => {
               <ShareIcon />
             </CompletedCardFooterActivityIconBtn>
             <CompletedCardFooterActivityAmount>
-              16
+              {shares}
             </CompletedCardFooterActivityAmount>
           </CompletedCardFooterBlock>
         </CompletedCardFooterActivity>
-        <CompletedCardFooterSettingsBtn>
+        <IconButton>
           <DotsIcon />
-        </CompletedCardFooterSettingsBtn>
+        </IconButton>
       </CompletedCardFooter>
-    </CompletedCard>
-  );
+    </OrganisationsCard>
+  )
 }
+
+export default AboutCompletedCard

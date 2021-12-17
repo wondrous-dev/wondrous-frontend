@@ -34,9 +34,13 @@ const STATUS_ICONS = {
 
 export const CardHeaderCategory = (props) => {
 	const {
+		compensation,
 		status,
-		starCount
 	} = props;
+
+	const {
+		amount,
+	} = compensation || {}
 
 	const StarIcon = STAR_ICONS[status]
 	const StatusIcon = STATUS_ICONS[status]
@@ -49,7 +53,7 @@ export const CardHeaderCategory = (props) => {
 			<CardCategoryInfoBlock>
 				<StarIcon />
 				<CardCategoryInfoBlockText>
-					{shrinkNumber(starCount)}
+					{shrinkNumber(amount)}
 				</CardCategoryInfoBlockText>
 			</CardCategoryInfoBlock>
 		</CardCategoryBlock>

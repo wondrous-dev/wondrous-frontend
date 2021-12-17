@@ -6,11 +6,10 @@ import CommentsIcon from '../../../Icons/comments'
 import ShareIcon from '../../../Icons/share'
 import DotsIcon from '../../../Icons/dots'
 import { TaskMedia } from '../../MediaPlayer'
+import { AvatarList } from '../../AvatarList'
 
 import {
   TaskCardWrapper,
-  TaskCardAvatar,
-  TaskCardAvatarBlock,
   TaskCardContent,
   TaskCardContentText,
   TaskCardContentTitle,
@@ -27,49 +26,38 @@ import {
   TaskCardLogo
 } from './styles'
 
-export interface ITaskCard {
-  authorAvatar: string
-  comments: number
-  id: number | string
-  likes: number
-  media: { type: string, url: string }
-  shares: number
-  starCount: number
-  status: string
-  text: string
-  title: string
-}
-
-const TaskCard = (props: ITaskCard) => {
+const TaskCard = (props) => {
   const {
-    likes,
-    comments,
-    shares,
-    authorAvatar,
+    actions,
+    compensation,
+    description,
     media,
     status,
-    starCount,
     title,
-    text,
+    users,
   } = props
+
+  const {
+    comments,
+    likes,
+    shares,
+  } = actions
 
   return (
     <TaskCardWrapper>
       <TaskCardHeader>
         <TaskCardLogo />
-        <TaskCardAvatarBlock>
-          <TaskCardAvatar src={authorAvatar} />
-        </TaskCardAvatarBlock>
+        <AvatarList users={users} />
 
         <CardHeaderCategory
+          compensation={compensation}
           status={status}
-          starCount={starCount}
         />
 
       </TaskCardHeader>
       <TaskCardContent>
         <TaskCardContentTitle>{title}</TaskCardContentTitle>
-        <TaskCardContentText>{text}</TaskCardContentText>
+        <TaskCardContentText>{description}</TaskCardContentText>
         {media && <TaskMedia media={media} />}
       </TaskCardContent>
       <TaskCardFooter>

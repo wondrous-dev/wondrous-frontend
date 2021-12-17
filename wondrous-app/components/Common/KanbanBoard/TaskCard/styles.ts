@@ -26,17 +26,6 @@ export const TaskCardLogo = styled(LogoSquare)`
   height: 27px;
 `
 
-export const TaskCardAvatarBlock = styled.div`
-	height: 100%;
-	width: 100%;
-	padding: 0 15px;
-`
-
-export const TaskCardAvatar = styled(UserAvatar)`
-  width: 27px;
-  height: 27px;
-`
-
 export const TaskCardContent = styled.div`
 	width: 100%;
 	height: 100%;

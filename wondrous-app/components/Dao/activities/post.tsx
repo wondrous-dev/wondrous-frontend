@@ -97,8 +97,8 @@ const PostCard = () => {
 						</PostTaskHeaderAuthor>
 
 						<CardHeaderCategory
+							compensation={{ amount: 3200, currency: 'wonder' }}
 							status={TASK_STATUS_DONE}
-							starCount={3200}
 						/>
 
 					</PostTaskHeader>

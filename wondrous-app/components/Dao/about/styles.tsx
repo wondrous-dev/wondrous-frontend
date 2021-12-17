@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import {Button, IconButton, Typography} from "@material-ui/core";
+import { Button, IconButton, Typography } from '@material-ui/core'
 
-import {LogoSquare} from "../../Common/ci";
-import UserAvatar from "../../Icons/userAvatar";
+import { LogoSquare } from '../../Common/ci'
+import UserAvatar from '../../Icons/userAvatar'
 
 export const AboutSection = styled.div`
   max-width: 1038px;
@@ -201,11 +201,6 @@ export const OrganisationsCardHeaderName = styled(Typography)`
 	}
 `
 
-export const OrganisationsCardHeaderButton = styled(IconButton)`
-	&& {
-	}
-`
-
 export const OrganisationsCardContent = styled(Typography)`
 	&& {
 		font-size: 13px;
@@ -238,14 +233,6 @@ export const OrganisationsCardAuthorPosition = styled(Typography)`
 `
 //about pods card
 
-export const PodsCard = styled(OrganisationsCard)``
-
-export const PodsCardHeader = styled(OrganisationsCardHeader)``
-
-export const PodsCardHeaderAvatars = styled.img``
-
-export const PodsCardHeaderButton = styled(OrganisationsCardHeaderButton)``
-
 export const PodsCardName = styled(Typography)`
 	&& {
 		margin-top: 10px;
@@ -256,8 +243,6 @@ export const PodsCardName = styled(Typography)`
     color: #FFFFFF;
 	}
 `
-
-export const PodsCardContent = styled(OrganisationsCardContent) ``
 
 export const PodsCardFooter = styled.div`
 	max-width: 190px;
@@ -290,23 +275,6 @@ export const PodsCardFooterButton = styled(Button)`
 `
 
 //completedTasks card
-
-export const CompletedCard = styled(OrganisationsCard)``
-
-export const CompletedCardHeader = styled(OrganisationsCardHeader)``
-
-export const CompletedCardIcon = styled(LogoSquare)`
-	margin-right: 15px;
-	width: 27px;
-	height: 27px;
-`
-
-export const CompletedCardAvatar = styled(UserAvatar)`
-	margin-left: 15px;
-  width: 27px;
-  height: 27px;
-`
-
 export const CompletedCardTitle = styled(PodsCardName)`
 	&& {
 		margin-top: 28px;
@@ -359,5 +327,3 @@ export const CompletedCardFooterActivityAmount = styled(Typography)`
 		color: #FFFFFF;
 	}
 `
-
-export const CompletedCardFooterSettingsBtn = styled(IconButton)``
