@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react'
 import styled from 'styled-components'
-import {Tabs} from "@material-ui/core";
+import {Tabs} from '@material-ui/core'
 
 export const StyledTabs = styled((props) => (
   <Tabs
     {...props}
-    TabIndicatorProps={{ children: <span className="MuiTabs-indicatorSpan" /> }}
+    TabIndicatorProps={{ children: <span className='MuiTabs-indicatorSpan' /> }}
   />
 ))({
   '&.MuiTabs-root': {

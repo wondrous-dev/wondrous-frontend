@@ -1,11 +1,11 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import { DragSource, DropTarget, } from 'react-dnd';
 
-const ItemTypes = {
+export const ItemTypes = {
   CARD: 'card',
 }
 
-const Card = ({ children, isDragging, connectDragSource, connectDropTarget }, ref) => {
+const Card = ({ children, isDragging, isSpacer, connectDragSource, connectDropTarget }, ref) => {
   const elementRef = useRef(null);
   connectDragSource(elementRef);
   connectDropTarget(elementRef);
@@ -24,7 +24,7 @@ const DraggableCard = DropTarget(ItemTypes.CARD, {
   hover(props, monitor, component) {
     const {
       moveCard,
-      status,
+      status: columnStatus,
     } = props as any
 
     if (!component) {
@@ -35,17 +35,18 @@ const DraggableCard = DropTarget(ItemTypes.CARD, {
     if (!node) {
       return null;
     }
-    const dragStatus = monitor.getItem().status;
+    const draggableItem = monitor.getItem()
+    const { id, status: dragStatus, } = draggableItem;
 
-    const statusesEqual = dragStatus === status
+    const statusesEqual = dragStatus === columnStatus
 
     if (statusesEqual) {
       return;
     }
 
-    moveCard(dragStatus, status);
+    moveCard(id, columnStatus);
 
-    monitor.getItem().status = status;
+    monitor.getItem().status = columnStatus;
   },
 }, (connect) => ({
   connectDropTarget: connect.dropTarget(),

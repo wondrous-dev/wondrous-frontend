@@ -1,12 +1,19 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Button, FormControl, InputLabel, MenuItem, Select, Typography } from '@material-ui/core'
-
+import {
+	Button,
+	FormControl,
+	InputLabel,
+	MenuItem,
+	Select,
+	Typography,
+} from '@material-ui/core'
 
 export const MultiSelectForm = styled(FormControl)({
 	'&.MuiFormControl-root': {
+		position: 'relative',
 		width: 325,
-		height: 40,
+		minHeight: 40,
 		background: 'linear-gradient(90.93deg, #1E1E1E 3.85%, #141414 101.76%)',
 		borderRadius: 6,
 	},
@@ -18,8 +25,7 @@ export const MultiSelectForm = styled(FormControl)({
 
 
 export const MultiSelectInputLabel = styled(InputLabel)({
-
-	'&.MuiInputLabel-formControl': {
+	'&.MuiInputLabel-root': {
 		transform: 'translateY(50%)',
 		fontSize: 14,
 		display: 'flex',
@@ -34,14 +40,27 @@ export const MultiSelectInputLabel = styled(InputLabel)({
 			marginLeft: 12,
 		},
 	},
+
+	'&.MuiInputLabel-animated': {
+		color: "#C4C4C4 !important",
+	},
 })
 
 export const MultiSelectSelector = styled(Select)({
 	'& .MuiSelect-root': {
+		position: 'relative',
 		boxSizing: 'border-box',
-		height: 40,
+		// height: 40,
+		minHeight: 40,
 		display: 'flex',
 		alignItems: 'center',
+		padding: '0 0 0 10px',
+	},
+
+	'& .MuiChip-root': {
+		border: '1px solid #7427FF',
+		color: '#CCBBFF',
+		background: '#121212',
 	}
 })
 

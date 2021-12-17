@@ -13,11 +13,11 @@ export const AboutSection = styled.div`
 `
 
 export const AboutInfoTable = styled.div`
-    max-width: 680px;
-    //width: 100px;
-    width: 680px;
-    height: 150px;
-    margin: 20px auto 40px;
+  max-width: 680px;
+  //width: 100px;
+  width: 680px;
+  height: 150px;
+  margin: 20px auto 40px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;

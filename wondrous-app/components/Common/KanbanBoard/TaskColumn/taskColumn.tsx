@@ -1,16 +1,17 @@
-import React from "react";
+import React, {useRef} from 'react'
+import {useDrop} from 'react-dnd'
 
 import {
   TASK_STATUS_DONE,
-  TASK_STATUS_INPROGRESS,
-  TASK_STATUS_INREVIEW,
+  TASK_STATUS_IN_PROGRESS,
+  TASK_STATUS_IN_REVIEW,
   TASK_STATUS_TODO,
-} from "../../../../utils/constants";
+} from '../../../../utils/constants'
 
-import PlusIcon from "../../../Icons/plus";
-import { ToDo, InProgress, Done } from "../../../Icons";
-import TaskCard, {ITaskCard} from "../TaskCard/taskCard";
-import DraggableCard from "../TaskCard/DraggableCard";
+import PlusIcon from '../../../Icons/plus'
+import { ToDo, InProgress, Done } from '../../../Icons'
+import TaskCard, {ITaskCard} from '../TaskCard/taskCard'
+import DraggableCard, {ItemTypes} from '../TaskCard/DraggableCard'
 
 import {
   TaskColumnContainer,
@@ -27,16 +28,30 @@ interface ITaskColumn {
 
 const TITLES = {
   [TASK_STATUS_TODO]: 'To-do',
-  [TASK_STATUS_INPROGRESS]: 'In-Progress',
-  [TASK_STATUS_INREVIEW]: 'In-Review',
+  [TASK_STATUS_IN_PROGRESS]: 'In-Progress',
+  [TASK_STATUS_IN_REVIEW]: 'In-Review',
   [TASK_STATUS_DONE]: 'Done',
 }
 
 const HEADER_ICONS = {
   [TASK_STATUS_TODO]: ToDo,
-  [TASK_STATUS_INPROGRESS]: InProgress,
-  // [TASK_STATUS_INREVIEW]: InReview,
+  [TASK_STATUS_IN_PROGRESS]: InProgress,
+  // [TASK_STATUS_IN_REVIEW]: InReview,
   [TASK_STATUS_DONE]: Done,
+}
+
+const ColumnDropZone = ({ status, moveCard, children }) => {
+  const ref = useRef(null)
+  const [, drop] = useDrop({
+    accept: ItemTypes.CARD,
+    drop(item: any) {
+      moveCard(item.id, status)
+    }
+  })
+  drop(ref)
+  return (
+    <div ref={ref}>{children}</div>
+  )
 }
 
 const TaskColumn = (props: ITaskColumn) => {
@@ -69,6 +84,14 @@ const TaskColumn = (props: ITaskColumn) => {
           <TaskCard {...card} />
         </DraggableCard>
       ))}
+      {!cardsList.length && (
+        <ColumnDropZone
+          moveCard={moveCard}
+          status={status}
+        >
+          <div style={{ width: '325px', height: '200px'}} />
+        </ColumnDropZone>
+      )}
     </TaskColumnContainer>
   )
 }

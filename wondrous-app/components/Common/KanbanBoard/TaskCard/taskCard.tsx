@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react'
 
-import {CardHeaderCategory} from "../../../CardHeaderCategory";
-import LikeIcon from "../../../Icons/like";
-import CommentsIcon from "../../../Icons/comments";
-import ShareIcon from "../../../Icons/share";
-import DotsIcon from "../../../Icons/dots";
-import {TaskMedia} from "../../MediaPlayer";
+import { CardHeaderCategory } from '../../../CardHeaderCategory'
+import LikeIcon from '../../../Icons/like'
+import CommentsIcon from '../../../Icons/comments'
+import ShareIcon from '../../../Icons/share'
+import DotsIcon from '../../../Icons/dots'
+import { TaskMedia } from '../../MediaPlayer'
 
 import {
   TaskCardWrapper,
@@ -25,7 +25,7 @@ import {
   TaskCardFooterShareCount,
   TaskCardHeader,
   TaskCardLogo
-} from "./styles";
+} from './styles'
 
 export interface ITaskCard {
   authorAvatar: string

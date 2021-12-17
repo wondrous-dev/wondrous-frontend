@@ -1,4 +1,7 @@
-import React from 'react';
+import React from 'react'
+
+import RightArrowIcon from '../../Icons/rightArrow'
+
 import {
 	OrganisationsCard,
 	OrganisationsCardAuthor,
@@ -7,9 +10,9 @@ import {
 	OrganisationsCardContent,
 	OrganisationsCardHeader,
 	OrganisationsCardHeaderButton,
-	OrganisationsCardHeaderName, OrganisationsCardHeaderWonderIcon
+	OrganisationsCardHeaderName,
+	OrganisationsCardHeaderWonderIcon
 } from './styles'
-import RightArrowIcon from '../../Icons/rightArrow'
 
 export const AboutOrganisationsCard = (props) => {
 
@@ -19,7 +22,7 @@ export const AboutOrganisationsCard = (props) => {
 		text,
 		position,
 		avatar,
-	} = props;
+	} = props
 
 	const logo = param => {
 		switch (param) {
@@ -53,5 +56,5 @@ export const AboutOrganisationsCard = (props) => {
 				</OrganisationsCardAuthorPosition>
 			</OrganisationsCardAuthor>
 		</OrganisationsCard>
-	);
+	)
 }

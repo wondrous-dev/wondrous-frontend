@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
+import { Box, Chip, OutlinedInput } from '@material-ui/core'
 
 import FilterIcon from '../../Icons/filter'
-import { Box, Chip, OutlinedInput } from '@material-ui/core'
+
 import {
 	MultiSelectClearButton,
 	MultiSelectCounter,
@@ -9,14 +10,15 @@ import {
 	MultiSelectInputLabel,
 	MultiSelectMenuHeader,
 	MultiSelectMenuItem,
-	MultiSelectSelector
+	MultiSelectSelector,
 } from './styles'
 
 const MenuProps = {
 	PaperProps: {
 		style: {
-			height: 340,
-			width: 250,
+			maxHeight: 340,
+			height: '100%',
+			minWidth: 325,
 			background: 'linear-gradient(180deg, #1E1E1E 0%, #141414 109.19%)',
 			padding: '15px',
 		},
@@ -42,10 +44,17 @@ export const MultiSelect = (props) => {
 		setValue([])
 	}
 
+	const toggleHtmlOverflow = () => {
+		const htmlTagElements = document.getElementsByTagName('html')
+		const { style } = htmlTagElements.item(0)
+
+		style.overflow = style.overflow ? '' : 'hidden'
+	}
+
 	return (
 		<MultiSelectForm>
 			<MultiSelectInputLabel id="demo-multiple-chip-label">
-				{value.length == 0 && (
+				{!value.length && (
 					<>
 						<FilterIcon />
 						Filter
@@ -59,6 +68,8 @@ export const MultiSelect = (props) => {
 				id="demo-multiple-chip"
 				value={value}
 				onChange={handleChange}
+				onClose={toggleHtmlOverflow}
+				onOpen={toggleHtmlOverflow}
 				input={<OutlinedInput label="Chip" />}
 				renderValue={(selected) => (
 					<Box sx={{ display: 'flex', flexWrap: 'wrap' }}>

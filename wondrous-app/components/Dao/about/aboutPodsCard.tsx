@@ -1,4 +1,7 @@
-import React from 'react';
+import React from 'react'
+
+import RightArrowIcon from '../../Icons/rightArrow'
+
 import {
 	PodsCard,
 	PodsCardContent,
@@ -10,7 +13,6 @@ import {
 	PodsCardHeaderButton,
 	PodsCardName
 } from './styles'
-import RightArrowIcon from '../../Icons/rightArrow'
 
 export const AboutPodsCard = (props) => {
 
@@ -46,5 +48,5 @@ export const AboutPodsCard = (props) => {
 				</PodsCardFooterButton>
 			</PodsCardFooter>
 		</PodsCard>
-	);
+	)
 }

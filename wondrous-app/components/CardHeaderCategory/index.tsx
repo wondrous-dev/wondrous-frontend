@@ -2,7 +2,7 @@ import React from 'react';
 
 import {
 	TASK_STATUS_DONE,
-	TASK_STATUS_INPROGRESS,
+	TASK_STATUS_IN_PROGRESS,
 	TASK_STATUS_TODO,
 } from "../../utils/constants";
 import { shrinkNumber } from "../../utils/helpers";
@@ -22,13 +22,13 @@ import {
 
 const STAR_ICONS = {
 	[TASK_STATUS_DONE]: CardCategoryDoneStarIcon,
-	[TASK_STATUS_INPROGRESS]: CardCategoryInProgressStarIcon,
+	[TASK_STATUS_IN_PROGRESS]: CardCategoryInProgressStarIcon,
 	[TASK_STATUS_TODO]: CardCategoryToDoStarIcon,
 }
 
 const STATUS_ICONS = {
 	[TASK_STATUS_DONE]: CardCategoryDoneIcon,
-	[TASK_STATUS_INPROGRESS]: CardCategoryInProgressIcon,
+	[TASK_STATUS_IN_PROGRESS]: CardCategoryInProgressIcon,
 	[TASK_STATUS_TODO]: CardCategoryToDoIcon,
 }
 

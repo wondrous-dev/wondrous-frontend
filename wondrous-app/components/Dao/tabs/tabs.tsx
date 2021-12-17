@@ -1,12 +1,12 @@
 import React from 'react'
 import { Tab } from '@material-ui/core'
 import Link from 'next/link'
-import { useRouter } from "next/router"
+import { useRouter } from 'next/router'
 
-import Boards from "../boards/boards";
-import About from "../about/about";
+import Boards from '../boards/boards'
+import About from '../about/about'
 
-import {StyledTabs} from "./styles";
+import {StyledTabs} from './styles'
 
 const tabsLinks = [
 	{
@@ -21,14 +21,14 @@ const tabsLinks = [
 		href: '/dao/about',
 		label: 'About',
 	},
-];
+]
 
 const Tabs = (props) => {
-	const {children} = props;
+	const {children} = props
 
-	const router = useRouter();
+	const router = useRouter()
 
-	const { pathname } = router;
+	const { pathname } = router
 
 	return (
 		<div>

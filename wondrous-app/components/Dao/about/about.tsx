@@ -1,29 +1,5 @@
-import React from 'react';
-import {
-	AboutInfoBlock,
-	AboutInfoBlockContent,
-	AboutInfoBlockHeader,
-	AboutInfoBlockHeaderAmount,
-	AboutInfoBlockHeaderSeeAll,
-	AboutInfoBlockHeaderText,
-	AboutInfoContainer,
-	AboutInfoTable,
-	AboutInfoTableRow,
-	AboutInfoTableRowContent, AboutInfoTableRowContentIconBtn,
-	AboutInfoTableRowContentItem,
-	AboutInfoTableRowContentItemHashtag, AboutInfoTableRowContentItemOpen,
-	AboutInfoTableRowContentItemText, AboutInfoTableRowContentSocialButton,
-	AboutInfoTableRowNameBlock,
-	AboutInfoTableRowTitle,
-	AboutInfoTableRowTitleText,
-	AboutSection,
-	OrganisationsCard,
-	PodsCard
-} from './styles'
-import { TableBody, TableCell, TableHead, TableRow } from '@material-ui/core'
-import { AboutOrganisationsCard } from './aboutOrganisationsCard'
-import { AboutPodsCard } from './aboutPodsCard'
-import { AboutCompletedCard } from './aboutCompletedCard'
+import React from 'react'
+
 import Wrapper from '../wrapper/wrapper'
 import StatusIcon from '../../Icons/status'
 import ResumeIcon from '../../Icons/resume'
@@ -34,6 +10,33 @@ import CheckMarkIcon from '../../Icons/checkMark'
 import FacebookIcon from '../../Icons/facebook'
 import TwitterPurpleIcon from '../../Icons/twitterPurple'
 import LinkedInIcon from '../../Icons/linkedIn'
+
+import { AboutOrganisationsCard } from './aboutOrganisationsCard'
+import { AboutPodsCard } from './aboutPodsCard'
+import { AboutCompletedCard } from './aboutCompletedCard'
+
+import {
+	AboutInfoBlock,
+	AboutInfoBlockContent,
+	AboutInfoBlockHeader,
+	AboutInfoBlockHeaderAmount,
+	AboutInfoBlockHeaderSeeAll,
+	AboutInfoBlockHeaderText,
+	AboutInfoContainer,
+	AboutInfoTable,
+	AboutInfoTableRow,
+	AboutInfoTableRowContent,
+	AboutInfoTableRowContentIconBtn,
+	AboutInfoTableRowContentItem,
+	AboutInfoTableRowContentItemHashtag,
+	AboutInfoTableRowContentItemOpen,
+	AboutInfoTableRowContentItemText,
+	AboutInfoTableRowContentSocialButton,
+	AboutInfoTableRowNameBlock,
+	AboutInfoTableRowTitle,
+	AboutInfoTableRowTitleText,
+	AboutSection,
+} from './styles'
 
 const About = () => {
 

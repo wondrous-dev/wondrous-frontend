@@ -1,16 +1,20 @@
-import React, {useMemo, useState} from "react";
-import {DndProvider} from "react-dnd";
-import {HTML5Backend} from "react-dnd-html5-backend";
+import React, { useMemo, useState } from 'react'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
-import {TASK_STATUS_DONE, TASK_STATUS_INPROGRESS, TASK_STATUS_TODO} from "../../../utils/constants";
+import {
+  TASK_STATUS_DONE,
+  TASK_STATUS_IN_PROGRESS,
+  TASK_STATUS_TODO,
+} from '../../../utils/constants'
 
-import TaskColumn from "./TaskColumn/taskColumn";
-import {ITaskCard} from "./TaskCard/taskCard";
-import { KanbanBoardContainer } from "./styles";
+import TaskColumn from './TaskColumn/taskColumn'
+import { ITaskCard } from './TaskCard/taskCard'
+import { KanbanBoardContainer } from './styles'
 
 const TO_DO_CARDS_LIST: Array<ITaskCard> = [
   {
-    id: 1,
+    id: 11,
     authorAvatar: '/images/boards/people.png',
     likes: 30,
     shares: 13,
@@ -25,7 +29,7 @@ const TO_DO_CARDS_LIST: Array<ITaskCard> = [
     }
   },
   {
-    id: 2,
+    id: 12,
     authorAvatar: '/images/boards/avatar.png',
     likes: 43,
     shares: 11,
@@ -39,18 +43,18 @@ const TO_DO_CARDS_LIST: Array<ITaskCard> = [
       url: '/images/boards/space.png',
     }
   },
-];
+]
 
 const INPROGRESS_CARDS_LIST: Array<ITaskCard> = [
   {
-    id: 1,
+    id: 21,
     authorAvatar: '/images/boards/avatar.png',
     likes: 144,
     shares: 52,
     comments: 81,
     title: 'Create twitter analytics template',
     text: 'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
-    status: TASK_STATUS_INPROGRESS,
+    status: TASK_STATUS_IN_PROGRESS,
     starCount: 3100,
     media: {
       type: 'image',
@@ -58,25 +62,25 @@ const INPROGRESS_CARDS_LIST: Array<ITaskCard> = [
     }
   },
   {
-    id: 2,
+    id: 22,
     authorAvatar: '/images/boards/people.png',
     likes: 144,
     shares: 52,
     comments: 81,
     title: 'Create twitter analytics template',
     text: 'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
-    status: TASK_STATUS_INPROGRESS,
+    status: TASK_STATUS_IN_PROGRESS,
     starCount: 2100,
     media: {
       type: 'video',
       url: 'https://www.youtube.com/watch?v=HmpP7e9gLYs',
     }
   },
-];
+]
 
 const DONE_CARDS_LIST: Array<ITaskCard> = [
   {
-    id: 1,
+    id: 31,
     authorAvatar: '/images/boards/avatarNFT.png',
     likes: 14,
     shares: 12,
@@ -91,7 +95,7 @@ const DONE_CARDS_LIST: Array<ITaskCard> = [
     }
   },
   {
-    id: 2,
+    id: 32,
     authorAvatar: '/images/boards/people.png',
     likes: 17,
     shares: 5,
@@ -105,7 +109,7 @@ const DONE_CARDS_LIST: Array<ITaskCard> = [
       url: 'https://soundcloud.com/undiscoveredsounds/coldplay-ft-beyonce-hymn-for-the-weekend-ash-remix',
     }
   },
-];
+]
 
 const CARDS_LIST = [
   ...TO_DO_CARDS_LIST,
@@ -114,11 +118,11 @@ const CARDS_LIST = [
 ]
 
 const KanbanBoard = () => {
-  const [statusCards, setStatusCards] = useState(CARDS_LIST);
+  const [statusCards, setStatusCards] = useState(CARDS_LIST)
 
   const {
     [TASK_STATUS_TODO]: toDoCardsList,
-    [TASK_STATUS_INPROGRESS]: inProgressCardsList,
+    [TASK_STATUS_IN_PROGRESS]: inProgressCardsList,
     [TASK_STATUS_DONE]: doneCardsList,
   } = useMemo(() => {
     return (
@@ -132,28 +136,21 @@ const KanbanBoard = () => {
 
       }, {
         [TASK_STATUS_TODO]: [],
-        [TASK_STATUS_INPROGRESS]: [],
+        [TASK_STATUS_IN_PROGRESS]: [],
         [TASK_STATUS_DONE]: [],
       })
     )
   }, [statusCards])
 
-  const handleMoveCard = (dragStatus, hoverStatus) => {
+  const handleMoveCard = (draggableItemId, columnStatus) => {
     setStatusCards((prevState) => (
       prevState.map((item) => {
-        const { status } = item
+        const { id } = item
 
-        if (status === hoverStatus) {
+        if (id === draggableItemId) {
           return ({
             ...item,
-            status: dragStatus
-          })
-        }
-
-        if (status === dragStatus) {
-          return ({
-            ...item,
-            status: hoverStatus
+            status: columnStatus
           })
         }
 
@@ -173,7 +170,7 @@ const KanbanBoard = () => {
         <TaskColumn
           cardsList={inProgressCardsList}
           moveCard={handleMoveCard}
-          status={TASK_STATUS_INPROGRESS}
+          status={TASK_STATUS_IN_PROGRESS}
         />
         <TaskColumn
           cardsList={doneCardsList}
