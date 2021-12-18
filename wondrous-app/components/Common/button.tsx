@@ -1,4 +1,6 @@
 import styled from 'styled-components'
+import { Grey800, White } from '../../theme/colors'
+import { createSpacingUnit } from '../../utils'
 import {
 	GradientHighlightHorizontal,
 	GradientMidnightVertical,
@@ -18,6 +20,12 @@ const ButtonInner = styled.button`
 	font-size: 16px;
 	border: none;
 	color: white;
+`
+
+export const GithubButton = styled.button`
+	background: ${White};
+	border: 1px solid ${Grey800};
+	padding: ${createSpacingUnit(1.5)}px;
 `
 
 const ButtonWrapper = styled.div`
