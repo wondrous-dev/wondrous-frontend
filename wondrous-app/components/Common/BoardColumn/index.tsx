@@ -1,5 +1,5 @@
 import React from 'react'
-import { Task } from '../../Common/Task'
+import { Task } from '../Task'
 import { ToDo } from '../../Icons'
 import { ColumnSection } from '../ColumnSection'
 import { Grey400 } from '../../../theme/colors'
