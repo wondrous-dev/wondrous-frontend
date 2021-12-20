@@ -1,6 +1,6 @@
 import React from 'react'
 
-import About from '../../components/Dao/about/about'
+import About from '../../components/organization/about/about'
 import {
 	SOCIAL_MEDIA_FACEBOOK,
 	SOCIAL_MEDIA_LINKEDIN,

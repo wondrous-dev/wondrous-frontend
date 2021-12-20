@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Boards from '../../components/Dao/boards/boards'
+import Boards from '../../components/organization/boards/boards'
 import {
 	TASK_STATUS_DONE,
 	TASK_STATUS_IN_PROGRESS,
@@ -143,9 +143,6 @@ const IN_PROGRESS_TASKS_LIST = [
 const DONE_TASKS_LIST = [
 	{
 		id: 31,
-		likes: 14,
-		shares: 12,
-		comments: 8,
 		title: 'Get 10,000 Twitter followers',
 		description: 'Design google sheet where we can get an open look at our twitters performance ✨🦄 ',
 		status: TASK_STATUS_DONE,

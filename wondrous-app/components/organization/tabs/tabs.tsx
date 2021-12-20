@@ -10,15 +10,15 @@ import {StyledTabs} from './styles'
 
 const tabsLinks = [
 	{
-		href: '/dao/activities',
+		href: '/organization/activities',
 		label: 'Activity',
 	},
 	{
-		href: '/dao/boards',
+		href: '/organization/boards',
 		label: 'Boards',
 	},
 	{
-		href: '/dao/about',
+		href: '/organization/about',
 		label: 'About',
 	},
 ]
