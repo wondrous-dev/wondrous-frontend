@@ -40,6 +40,7 @@ export default NextAuth({
 				// })
 				// const user = await res.json()
 
+				console.log(credentials)
 				// TODO: Server Side
 				const res = {
 					ok: true,
@@ -69,16 +70,16 @@ export default NextAuth({
 		// callback URL for it needs updating due to Vercel changing domains
 
 		/*
-    Providers.Apple({
-      clientId: process.env.APPLE_ID,
-      clientSecret: {
-        appleId: process.env.APPLE_ID,
-        teamId: process.env.APPLE_TEAM_ID,
-        privateKey: process.env.APPLE_PRIVATE_KEY,
-        keyId: process.env.APPLE_KEY_ID,
-      },
-    }),
-    */
+        Providers.Apple({
+        clientId: process.env.APPLE_ID,
+        clientSecret: {
+            appleId: process.env.APPLE_ID,
+            teamId: process.env.APPLE_TEAM_ID,
+            privateKey: process.env.APPLE_PRIVATE_KEY,
+            keyId: process.env.APPLE_KEY_ID,
+        },
+        }),
+        */
 		// FacebookProvider({
 		//   clientId: process.env.FACEBOOK_ID,
 		//   clientSecret: process.env.FACEBOOK_SECRET,
