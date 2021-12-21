@@ -40,7 +40,6 @@ export default NextAuth({
 				// })
 				// const user = await res.json()
 
-				console.log(credentials)
 				// TODO: Server Side
 				const res = {
 					ok: true,

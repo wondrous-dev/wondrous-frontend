@@ -64,7 +64,7 @@ const AppLayout = ({ children }) => {
 		
 		setWallet({
 			address: account.slice(0,6) + '...' + account.slice(account.length - 4, account.length),
-			wonder: 2551,
+			wonder: 2551, //TODO: Check Wonder Balance with eth contract address.
 		})
 	}
 

@@ -1,3 +1,4 @@
+import { IconButton } from '@material-ui/core'
 import styled from 'styled-components'
 import { Background, Black95 } from '../../../theme/colors'
 
@@ -11,18 +12,14 @@ export const WalletWrapper = styled.div`
     margin-right: 20px;
 `
 
-export const ChainWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 3px;
-
-    margin-right: 20px;
-
-    background: ${Black95};
+export const ChainWrapper = styled(IconButton)`
+	&& {
+		width: 40px;
+		height: 40px;
+		background: #1e1e1e;
+		border-radius: 4px;
+        margin-right: 20px;
+	}
 `
 
 export const WalletDisplay = styled.div`
