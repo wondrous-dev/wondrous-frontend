@@ -6,6 +6,8 @@ import SearchIcon from '../Icons/search'
 import NotificationsIcon from '../Icons/notifications'
 import CreateBtnIcon from '../Icons/createBtn'
 
+import Wallet from '../Common/Wallet'
+
 import {
 	Header,
 	HeaderHomeButton,
@@ -19,7 +21,7 @@ import {
 	StyledBadge,
 } from './styles'
 
-const HeaderComponent = () => {
+const HeaderComponent = (props) => {
 	return (
 		<Header>
 			<HeaderContainer>
@@ -40,6 +42,10 @@ const HeaderComponent = () => {
 					/>
 				</HeaderLeftBlock>
 				<HeaderRightBlock>
+					{props.wallet
+					? <Wallet wallet={props.wallet} />
+					: ''
+					}
 					<StyledBadge color="primary" badgeContent={5}>
 						<HeaderNotificationsButton>
 							<NotificationsIcon />

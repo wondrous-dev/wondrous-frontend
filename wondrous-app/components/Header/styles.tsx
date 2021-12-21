@@ -75,10 +75,11 @@ export const HeaderInput = styled(TextField)({
 })
 
 export const HeaderRightBlock = styled.div`
-	max-width: 171px;
+	max-width: 480px;
 	width: 100%;
 	display: flex;
-	justify-content: space-between;
+	align-items: flex-end;
+	justify-content: flex-end;
 `
 
 export const HeaderNotificationsButton = styled(IconButton)`
@@ -105,6 +106,7 @@ export const StyledBadge = styled(Badge)({
 		width: 16,
 		backgroundColor: '#FF5C00',
 	},
+	marginRight: '20px',
 })
 
 export const HeaderCreateButton = styled(Button)`
@@ -117,6 +119,8 @@ export const HeaderCreateButton = styled(Button)`
 		align-items: center;
 		padding-right: 1px;
 		padding-top: 4px;
+
+		margin-right: 20px;
 
 		//text
 		font-weight: 500;
