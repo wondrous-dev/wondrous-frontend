@@ -7,12 +7,7 @@ import { Compensation } from '../Compensation'
 
 import * as Constants from '../../../utils/constants'
 
-import {
-	TaskHeader,
-	TaskContent,
-	TaskTitle,
-	TaskFooter,
-} from '../Task/styles'
+import { TaskHeader, TaskContent, TaskTitle, TaskFooter } from '../Task/styles'
 
 import {
 	TaskSummaryWrapper,
