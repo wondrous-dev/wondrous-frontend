@@ -1,3 +1,4 @@
+import { getSession } from 'next-auth/react'
 import React from 'react'
 
 import About from '../../components/organization/about/about'
@@ -153,5 +154,21 @@ const AboutPage = () => {
 		/>
 	)
 }
+
+export async function getServerSideProps(context) {
+	const session = await getSession({ req: context.req })
+	if (!session) {
+		return {
+			redirect: {
+				destination: '/login',
+				permanent: false,
+			},
+		}
+	}
+	return {
+		props: { session },
+	}
+}
+
 
 export default AboutPage

@@ -68,7 +68,7 @@ const Wallet = () => {
 				}
 			}
 		}
-	}, [wonderWeb3.wallet, session.user, wonderWeb3.connecting, firstConnect])
+	}, [wonderWeb3.wallet, session.user, wonderWeb3.connecting, connectWallet, session.user.email, firstConnect])
 
 	if (!connected) {
 		return (
