@@ -1,14 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import {
-	Button,
-	IconButton,
-	Typography,
-} from '@material-ui/core'
+import { Button, IconButton, Typography } from '@material-ui/core'
 import { Background } from '../../../theme/colors'
-import {BaseCard} from "../../Common/card";
-import {LogoCircle} from "../../Common/ci";
-import {LinkIcon} from "../../Icons/linkIcon";
+import { BaseCard } from '../../Common/card'
+import { LogoCircle } from '../../Common/ci'
+import { LinkIcon } from '../../Icons/linkIcon'
 
 export const OverviewComponent = styled.section`
 	width: 100vw;
@@ -444,4 +440,3 @@ export const PostActivityIcon = styled.img`
 
 export const PostComments = styled(PostLikes)``
 export const PostShares = styled(PostLikes)``
-

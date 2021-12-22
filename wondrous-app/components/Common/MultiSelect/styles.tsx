@@ -20,9 +20,8 @@ export const MultiSelectForm = styled(FormControl)({
 
 	'& .PrivateNotchedOutline-root-1': {
 		border: 'none',
-	}
+	},
 })
-
 
 export const MultiSelectInputLabel = styled(InputLabel)({
 	'&.MuiInputLabel-root': {
@@ -32,7 +31,7 @@ export const MultiSelectInputLabel = styled(InputLabel)({
 		alignItems: 'center',
 		lineHeight: '19px',
 		letterSpacing: '0.01em',
-		color: "#C4C4C4",
+		color: '#C4C4C4',
 		zIndex: 1000,
 
 		'& svg': {
@@ -42,7 +41,7 @@ export const MultiSelectInputLabel = styled(InputLabel)({
 	},
 
 	'&.MuiInputLabel-animated': {
-		color: "#C4C4C4 !important",
+		color: '#C4C4C4 !important',
 	},
 })
 
@@ -61,16 +60,16 @@ export const MultiSelectSelector = styled(Select)({
 		border: '1px solid #7427FF',
 		color: '#CCBBFF',
 		background: '#121212',
-	}
+	},
 })
 
 export const MultiSelectMenuHeader = styled.div`
-  width: 100%;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
+	width: 100%;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 10px;
 `
 
 export const MultiSelectMenuItem = styled(MenuItem)({
@@ -88,31 +87,31 @@ export const MultiSelectMenuItem = styled(MenuItem)({
 	'&.MuiListItem-root.Mui-selected': {
 		border: '1px solid #7427FF',
 		color: '#CCBBFF',
-	}
+	},
 })
 
 export const MultiSelectCounter = styled(Typography)`
-  && {
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 19px;
-    letter-spacing: 0.01em;
-    color: #C4C4C4;
-  }
+	&& {
+		font-weight: bold;
+		font-size: 14px;
+		line-height: 19px;
+		letter-spacing: 0.01em;
+		color: #c4c4c4;
+	}
 `
 
 export const MultiSelectClearButton = styled(Button)`
-  && {
-    border: 1px solid #7427FF;
-    box-sizing: border-box;
-    border-radius: 4px;
-    width: 73px;
-    height: 28px;
-    
-    //text
-    font-weight: 500;
-    font-size: 13px;
-    line-height: 150%;
-    color: #FFFFFF;
-  }
+	&& {
+		border: 1px solid #7427ff;
+		box-sizing: border-box;
+		border-radius: 4px;
+		width: 73px;
+		height: 28px;
+
+		//text
+		font-weight: 500;
+		font-size: 13px;
+		line-height: 150%;
+		color: #ffffff;
+	}
 `

@@ -11,7 +11,7 @@ import {
 	PodsCardFooter,
 	PodsCardFooterButton,
 	PodsCardFooterIcon,
-	PodsCardName
+	PodsCardName,
 } from './styles'
 
 const AboutPodsCard = (props) => {
@@ -31,20 +31,12 @@ const AboutPodsCard = (props) => {
 					<RightArrowIcon />
 				</IconButton>
 			</OrganisationsCardHeader>
-			<PodsCardName>
-				{title}
-			</PodsCardName>
-			<OrganisationsCardContent>
-				{description}
-			</OrganisationsCardContent>
+			<PodsCardName>{title}</PodsCardName>
+			<OrganisationsCardContent>{description}</OrganisationsCardContent>
 			<PodsCardFooter>
 				<PodsCardFooterIcon />
-				<PodsCardFooterButton>
-					{tasksAmount} tasks
-				</PodsCardFooterButton>
-				<PodsCardFooterButton>
-					{goalsAmount} goal
-				</PodsCardFooterButton>
+				<PodsCardFooterButton>{tasksAmount} tasks</PodsCardFooterButton>
+				<PodsCardFooterButton>{goalsAmount} goal</PodsCardFooterButton>
 			</PodsCardFooter>
 		</OrganisationsCard>
 	)

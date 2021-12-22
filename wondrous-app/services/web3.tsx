@@ -10,24 +10,33 @@ import { IAssetData } from '../types/assets'
 
 // Handler of Web3 State for the app
 export const WonderWeb3 = () => {
-	
-    // Some don't need state management
-    let web3 = null
+	// Some don't need state management
+	let web3 = null
 	let provider = null
-    let accounts = []
-    let address = null
-    let addressTag = null 
-    let assets = []
-    let chain = null 
-    let network = null
-    let fetching = false
-    let subscribed = false 
+	let accounts = []
+	let address = null
+	let addressTag = null
+	let assets = []
+	let chain = null
+	let network = null
+	let fetching = false
+	let subscribed = false
 
-    const [wallet, setWallet] = useState({})
-    const [connecting, setConnecting] = useState(false)
+	let wonder = 0
+
+	const [wallet, setWallet] = useState({
+		accounts: null,
+		address: null,
+		chain: null,
+		wonder: null,
+		addressTag: null,
+		network: null,
+		assets: null,
+	})
+	const [connecting, setConnecting] = useState(false)
 
 	const onConnect = async () => {
-        setConnecting(true)
+		setConnecting(true)
 		const web3Modal = new Web3Modal()
 
 		try {
@@ -40,66 +49,72 @@ export const WonderWeb3 = () => {
 
 		if (web3) {
 			accounts = await web3.eth.getAccounts()
-            address = accounts[0]
-			addressTag = accounts[0].slice(0,6) + '...' + accounts[0].slice(accounts[0].length - 4, accounts[0].length)
-            network = await web3.eth.net.getId()
+			address = accounts[0]
+			addressTag =
+				accounts[0].slice(0, 6) +
+				'...' +
+				accounts[0].slice(accounts[0].length - 4, accounts[0].length)
+			network = await web3.eth.net.getId()
 			chain = await web3.eth.chainId()
 			await getAccountAssets()
 
-            await setWallet({
-                accounts,
-                address,
-                addressTag,
-                network,
-                chain,
-                assets
-            })
+			await setWallet({
+				accounts,
+				address,
+				addressTag,
+				network,
+				wonder,
+				chain,
+				assets,
+			})
 		}
 
-        setConnecting(false)
+		setConnecting(false)
 	}
 
 	const getTokenBalance = async (tokenAddress: string) => {
-        return 0
+		return 0
 	}
 
 	const subscribeProvider = async (provider: any) => {
 		if (!provider.on) {
 			return
 		}
-        if(!subscribed) {
-            provider.on('close', () => {
-                console.log('Wallet Closed')
-            })
+		if (!subscribed) {
+			provider.on('close', () => {
+				console.log('Wallet Closed')
+			})
 
-            provider.on('accountsChanged', async (accounts: string[]) => {
-                if(accounts.length === 0) {
-                    // Disconnected
-                    cleanWallet()
-                    await setWallet({})
-                } else {
-                    address = accounts[0]
-                    addressTag = accounts[0].slice(0,6) + '...' + accounts[0].slice(accounts[0].length - 4, accounts[0].length)
-                    await getAccountAssets()
-                }
-            })
+			provider.on('accountsChanged', async (accounts: string[]) => {
+				if (accounts.length === 0) {
+					// Disconnected
+					await cleanWallet()
+				} else {
+					address = accounts[0]
+					addressTag =
+						accounts[0].slice(0, 6) +
+						'...' +
+						accounts[0].slice(accounts[0].length - 4, accounts[0].length)
+					await getAccountAssets()
+				}
+			})
 
-            provider.on('chainChanged', async (chainId: number) => {
-                chain = chainId
-                await getAccountAssets()
-            })
+			provider.on('chainChanged', async (chainId: number) => {
+				chain = chainId
+				await getAccountAssets()
+			})
 
-            provider.on('networkChanged', async (networkId: number) => {
-                network = networkId
-                await getAccountAssets()
-            })
-            subscribed = true
-        }
+			provider.on('networkChanged', async (networkId: number) => {
+				network = networkId
+				await getAccountAssets()
+			})
+			subscribed = true
+		}
 	}
 
 	const getAccountAssets = async () => {
-        const address = accounts[0]
-        if (!fetching && address) {
+		const address = accounts[0]
+		if (!fetching && address) {
 			fetching = true
 			try {
 				// get account balances
@@ -109,30 +124,42 @@ export const WonderWeb3 = () => {
 				console.error(error) // tslint:disable-line
 				fetching = false
 			}
-            await setWallet({
-                accounts,
-                address,
-                addressTag,
-                network,
-                chain,
-                assets
-            })
+			await setWallet({
+				accounts,
+				address,
+				addressTag,
+				network,
+				wonder,
+				chain,
+				assets,
+			})
 		} else {
 			console.log('getAccountsAssets() failed.', address)
 		}
 	}
 
-    const cleanWallet = () => {
-        accounts = []
-        address = null
-        addressTag = null
-        network = null
-        chain = null
-        assets = [] 
-    }
+	const cleanWallet = async () => {
+		accounts = []
+		address = null
+		addressTag = null
+		network = null
+		chain = null
+		wonder = null
+		assets = []
+
+		await setWallet({
+			accounts,
+			address,
+			addressTag,
+			network,
+			wonder,
+			chain,
+			assets,
+		})
+	}
 
 	return {
-        connecting,
+		connecting,
 		wallet,
 		address,
 		assets,

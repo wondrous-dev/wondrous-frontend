@@ -6,18 +6,18 @@ import { LogoSquare } from '../../Common/ci'
 import UserAvatar from '../../Icons/userAvatar'
 
 export const AboutSection = styled.div`
-  max-width: 1038px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+	max-width: 1038px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
 `
 
 export const AboutInfoTable = styled.div`
-  max-width: 680px;
-  //width: 100px;
-  width: 680px;
-  height: 150px;
-  margin: 20px auto 40px;
+	max-width: 680px;
+	//width: 100px;
+	width: 680px;
+	height: 150px;
+	margin: 20px auto 40px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -37,25 +37,30 @@ export const AboutInfoTableRowNameBlock = styled.div`
 `
 
 export const AboutInfoTableRowTitle = styled.div`
-  padding: 5px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(0deg, rgba(196, 196, 196, 0.07), rgba(196, 196, 196, 0.07)), #0F0F0F;
-  border-radius: 4px;
+	padding: 5px 12px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: linear-gradient(
+			0deg,
+			rgba(196, 196, 196, 0.07),
+			rgba(196, 196, 196, 0.07)
+		),
+		#0f0f0f;
+	border-radius: 4px;
 `
 
 export const AboutInfoTableRowTitleText = styled(Typography)`
 	&& {
 		margin-left: 10px;
-    font-size: 14px;
-    line-height: 21px;
-    color: #828282;
+		font-size: 14px;
+		line-height: 21px;
+		color: #828282;
 	}
 `
 
 export const AboutInfoTableRowContent = styled.div`
-  width: 100%;
+	width: 100%;
 	height: 100%;
 	display: flex;
 	align-items: center;
@@ -65,25 +70,27 @@ export const AboutInfoTableRowContentItem = styled.div`
 	display: flex;
 	justify-content: space-between;
 	padding: 7px;
-  background: #333333;
-  border-radius: 2px;
+	background: #333333;
+	border-radius: 2px;
 	margin-right: 9px;
 `
 
 export const AboutInfoTableRowContentItemText = styled(Typography)`
 	&& {
-    font-size: 14px;
-    line-height: 18px;
-    text-align: center;
-    letter-spacing: 0.01em;
-		color: #FFF;
+		font-size: 14px;
+		line-height: 18px;
+		text-align: center;
+		letter-spacing: 0.01em;
+		color: #fff;
 	}
 `
 
-export const AboutInfoTableRowContentItemHashtag = styled(AboutInfoTableRowContentItemText)`
+export const AboutInfoTableRowContentItemHashtag = styled(
+	AboutInfoTableRowContentItemText
+)`
 	&& {
-    color: #CCBBFF;
-  }
+		color: #ccbbff;
+	}
 `
 
 export const AboutInfoTableRowContentIconBtn = styled(IconButton)`
@@ -93,8 +100,10 @@ export const AboutInfoTableRowContentIconBtn = styled(IconButton)`
 	}
 `
 
-export const AboutInfoTableRowContentItemOpen = styled(AboutInfoTableRowContentItem)`
-  background: #06FFA5;
+export const AboutInfoTableRowContentItemOpen = styled(
+	AboutInfoTableRowContentItem
+)`
+	background: #06ffa5;
 	border-radius: 4px;
 `
 
@@ -102,7 +111,7 @@ export const AboutInfoTableRowContentSocialButton = styled(IconButton)`
 	&& {
 		width: 32px;
 		height: 32px;
-    background: #1C1C1C;
+		background: #1c1c1c;
 		margin-right: 8px;
 		padding: 0;
 		border-radius: 2px;
@@ -110,72 +119,72 @@ export const AboutInfoTableRowContentSocialButton = styled(IconButton)`
 `
 
 export const AboutInfoContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: space-between;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: space-between;
 `
 
 export const AboutInfoBlock = styled.div`
-  max-width: 325px;
-  width: 100%;
-  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
-  border-radius: 6px;
-  display: flex;
-  flex-direction: column;
-  padding: 18px 14px;
+	max-width: 325px;
+	width: 100%;
+	background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
+	border-radius: 6px;
+	display: flex;
+	flex-direction: column;
+	padding: 18px 14px;
 `
 
 export const AboutInfoBlockHeader = styled.div`
 	position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	padding: 0 10px;
 `
 
 export const AboutInfoBlockHeaderAmount = styled(Typography)`
-  && {
-    color: #ccbbff;
-    font-weight: bold;
-    font-size: 18px;
-    line-height: 23px;
-    margin-right: 5px;
-  }
+	&& {
+		color: #ccbbff;
+		font-weight: bold;
+		font-size: 18px;
+		line-height: 23px;
+		margin-right: 5px;
+	}
 `
 
 export const AboutInfoBlockHeaderText = styled(AboutInfoBlockHeaderAmount)`
-  && {
-    color: #fff;
-  }
+	&& {
+		color: #fff;
+	}
 `
 
 export const AboutInfoBlockHeaderSeeAll = styled(AboutInfoBlockHeaderAmount)`
-  && {
-    position: absolute;
+	&& {
+		position: absolute;
 		right: 10px;
-    font-size: 15px;
-    line-height: 19px;
+		font-size: 15px;
+		line-height: 19px;
 		cursor: pointer;
-  }
+	}
 `
 
 export const AboutInfoBlockContent = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
 `
 
 //about organisations card
 export const OrganisationsCard = styled.div`
-  margin-top: 10px;
-  width: 100%;
-  //height: 160px;
-  background: #0f0f0f;
-  border-radius: 6px;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
+	margin-top: 10px;
+	width: 100%;
+	//height: 160px;
+	background: #0f0f0f;
+	border-radius: 6px;
+	padding: 15px;
+	display: flex;
+	flex-direction: column;
 `
 
 export const OrganisationsCardHeader = styled.div`
@@ -237,10 +246,10 @@ export const PodsCardName = styled(Typography)`
 	&& {
 		margin-top: 10px;
 		width: 100%;
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 19px;
-    color: #FFFFFF;
+		font-weight: 600;
+		font-size: 16px;
+		line-height: 19px;
+		color: #ffffff;
 	}
 `
 
@@ -254,23 +263,28 @@ export const PodsCardFooter = styled.div`
 `
 
 export const PodsCardFooterIcon = styled(LogoSquare)`
-  width: 30px;
-  height: 30px;
-  margin-right: 10px;
+	width: 30px;
+	height: 30px;
+	margin-right: 10px;
 `
 
 export const PodsCardFooterButton = styled(Button)`
 	&& {
 		//height: 30px;
 		padding: 6px 10px;
-    background: linear-gradient(0deg, rgba(196, 196, 196, 0.07), rgba(196, 196, 196, 0.07)), #0F0F0F;
-    border-radius: 4px;
-		
+		background: linear-gradient(
+				0deg,
+				rgba(196, 196, 196, 0.07),
+				rgba(196, 196, 196, 0.07)
+			),
+			#0f0f0f;
+		border-radius: 4px;
+
 		//text
-    font-size: 13px;
-    line-height: 19px;
-    letter-spacing: 0.01em;
-    color: #FFFFFF;
+		font-size: 13px;
+		line-height: 19px;
+		letter-spacing: 0.01em;
+		color: #ffffff;
 	}
 `
 
@@ -282,9 +296,9 @@ export const CompletedCardTitle = styled(PodsCardName)`
 `
 
 export const CompletedCardText = styled(OrganisationsCardContent)`
-  font-size: 14px;
-  line-height: 19px;
-  color: #C4C4C4;
+	font-size: 14px;
+	line-height: 19px;
+	color: #c4c4c4;
 	margin: 10px 0 15px;
 `
 
@@ -324,6 +338,6 @@ export const CompletedCardFooterActivityAmount = styled(Typography)`
 		font-weight: 500;
 		font-size: 13px;
 		line-height: 17px;
-		color: #FFFFFF;
+		color: #ffffff;
 	}
 `

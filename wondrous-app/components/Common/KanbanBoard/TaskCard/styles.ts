@@ -1,17 +1,17 @@
-import {Card, IconButton, Typography} from "@material-ui/core";
-import {LogoSquare} from "../../ci";
-import UserAvatar from "../../../Icons/userAvatar";
-import styled from "styled-components";
+import { Card, IconButton, Typography } from '@material-ui/core'
+import { LogoSquare } from '../../ci'
+import UserAvatar from '../../../Icons/userAvatar'
+import styled from 'styled-components'
 
 export const TaskCardWrapper = styled(Card)({
-  '&.MuiCard-root': {
-    width: '100%',
-    minHeight: 273,
-    background: 'linear-gradient(180deg, #1E1E1E 0%, #141414 100%)',
-    borderRadius: 6,
-    padding: 15,
-    marginTop: 30,
-  },
+	'&.MuiCard-root': {
+		width: '100%',
+		minHeight: 273,
+		background: 'linear-gradient(180deg, #1E1E1E 0%, #141414 100%)',
+		borderRadius: 6,
+		padding: 15,
+		marginTop: 30,
+	},
 })
 
 export const TaskCardHeader = styled.div`
@@ -22,8 +22,8 @@ export const TaskCardHeader = styled.div`
 `
 
 export const TaskCardLogo = styled(LogoSquare)`
-  width: 48px;
-  height: 27px;
+	width: 48px;
+	height: 27px;
 `
 
 export const TaskCardContent = styled.div`

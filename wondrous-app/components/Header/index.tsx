@@ -52,10 +52,8 @@ const HeaderComponent = (props) => {
 							<NotificationsIcon />
 						</HeaderNotificationsButton>
 					</StyledBadge>
-					<HeaderCreateButton highlighted="true" > 
-						<span style={{ padding: '0px 8px' }}>
-							Create
-						</span>
+					<HeaderCreateButton highlighted="true">
+						<span style={{ padding: '0px 8px' }}>Create</span>
 						<CreateBtnIcon />
 					</HeaderCreateButton>
 				</HeaderRightBlock>

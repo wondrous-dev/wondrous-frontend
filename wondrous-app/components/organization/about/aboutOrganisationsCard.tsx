@@ -11,41 +11,29 @@ import {
 	OrganisationsCardContent,
 	OrganisationsCardHeader,
 	OrganisationsCardHeaderName,
-	OrganisationsCardHeaderWonderIcon
+	OrganisationsCardHeaderWonderIcon,
 } from './styles'
 
 const ICONS = {
-	wonder: OrganisationsCardHeaderWonderIcon
+	wonder: OrganisationsCardHeaderWonderIcon,
 }
 
 const AboutOrganisationsCard = (props) => {
-
-	const {
-		icon,
-		title,
-		description,
-		position,
-		avatar,
-	} = props
+	const { icon, title, description, position, avatar } = props
 
 	const Icon = ICONS[icon]
 
 	return (
 		<OrganisationsCard>
 			<OrganisationsCardHeader>
-
 				<Icon />
 
-				<OrganisationsCardHeaderName>
-					{title}
-				</OrganisationsCardHeaderName>
+				<OrganisationsCardHeaderName>{title}</OrganisationsCardHeaderName>
 				<IconButton>
 					<RightArrowIcon />
 				</IconButton>
 			</OrganisationsCardHeader>
-			<OrganisationsCardContent>
-				{description}
-			</OrganisationsCardContent>
+			<OrganisationsCardContent>{description}</OrganisationsCardContent>
 			<OrganisationsCardAuthor>
 				<OrganisationsCardAuthorAvatar src={avatar} />
 				<OrganisationsCardAuthorPosition>

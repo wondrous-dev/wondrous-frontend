@@ -19,11 +19,9 @@ import { getCsrfToken, getSession, signIn } from 'next-auth/react'
 import { WonderWeb3 } from '../services/web3'
 
 const Login = ({ csrfToken }) => {
-	
 	const wonderWeb3 = WonderWeb3()
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
-
 
 	const handleSubmit = (event) => {
 		event.preventDefault()
@@ -37,7 +35,7 @@ const Login = ({ csrfToken }) => {
 	}
 
 	useEffect(() => {
-		if(wonderWeb3.wallet['address']) {
+		if (wonderWeb3.wallet['address']) {
 			signIn('credentials', { wallet: wonderWeb3.wallet.address })
 		} else {
 			// Error Login Here

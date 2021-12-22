@@ -1,10 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import {
-	Button,
-	IconButton,
-	Typography,
-} from '@material-ui/core'
+import { Button, IconButton, Typography } from '@material-ui/core'
 
 import { Background } from '../../../theme/colors'
 import { BaseCard } from '../../Common/card'
@@ -379,4 +375,3 @@ export const PostLikes = styled(Typography)`
 
 export const PostComments = styled(PostLikes)``
 export const PostShares = styled(PostLikes)``
-

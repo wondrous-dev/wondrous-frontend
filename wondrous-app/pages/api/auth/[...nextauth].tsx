@@ -156,10 +156,10 @@ export default NextAuth({
 		//     session.token = token
 		//     return session
 		// },
-		// async jwt({ token, user, account, profile, isNewUser }) { 
-        //     token['user'] = user
-        //     return token 
-        // }
+		// async jwt({ token, user, account, profile, isNewUser }) {
+		//     token['user'] = user
+		//     return token
+		// }
 	},
 
 	// Events are useful for logging

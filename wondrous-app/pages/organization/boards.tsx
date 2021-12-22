@@ -11,7 +11,8 @@ const TO_DO_TASKS_LIST = [
 	{
 		id: 11,
 		title: 'Create twitter analytics template',
-		description: 'Design google sheet where we can get an open look at our twitters performance ✨🦄',
+		description:
+			'Design google sheet where we can get an open look at our twitters performance ✨🦄',
 		status: TASK_STATUS_TODO,
 		actions: {
 			comments: 18,
@@ -42,12 +43,13 @@ const TO_DO_TASKS_LIST = [
 				id: 'a7d1d8d5-ee35-4519-b9ec-dd42f71bea93',
 				initials: 'AA',
 			},
-		]
+		],
 	},
 	{
 		id: 12,
 		title: 'Create twitter analytics template',
-		description: 'Design google sheet where we can get an open look at our twitters performance ✨🦄',
+		description:
+			'Design google sheet where we can get an open look at our twitters performance ✨🦄',
 		status: TASK_STATUS_TODO,
 		actions: {
 			comments: 8,
@@ -69,7 +71,7 @@ const TO_DO_TASKS_LIST = [
 				id: 'beafc448-5a68-4382-9aad-1de24ead8563',
 				initials: 'OP',
 			},
-		]
+		],
 	},
 ]
 
@@ -77,7 +79,8 @@ const IN_PROGRESS_TASKS_LIST = [
 	{
 		id: 21,
 		title: 'Create twitter analytics template',
-		description: 'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
+		description:
+			'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
 		status: TASK_STATUS_IN_PROGRESS,
 		actions: {
 			comments: 81,
@@ -109,12 +112,13 @@ const IN_PROGRESS_TASKS_LIST = [
 				id: 'bf551338-b9c9-41d2-b984-6cdc1714bce6',
 				initials: 'RT',
 			},
-		]
+		],
 	},
 	{
 		id: 22,
 		title: 'Create twitter analytics template',
-		description: 'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
+		description:
+			'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
 		status: TASK_STATUS_IN_PROGRESS,
 		actions: {
 			comments: 81,
@@ -136,7 +140,7 @@ const IN_PROGRESS_TASKS_LIST = [
 				id: '0770c50c-8598-4b2a-ad75-0f58d5937e89',
 				initials: 'JA',
 			},
-		]
+		],
 	},
 ]
 
@@ -144,7 +148,8 @@ const DONE_TASKS_LIST = [
 	{
 		id: 31,
 		title: 'Get 10,000 Twitter followers',
-		description: 'Design google sheet where we can get an open look at our twitters performance ✨🦄 ',
+		description:
+			'Design google sheet where we can get an open look at our twitters performance ✨🦄 ',
 		status: TASK_STATUS_DONE,
 		actions: {
 			comments: 8,
@@ -171,12 +176,13 @@ const DONE_TASKS_LIST = [
 				id: 'a7d1d8d5-ee35-4519-b9ec-dd42f71bea93',
 				initials: 'AA',
 			},
-		]
+		],
 	},
 	{
 		id: 32,
 		title: 'Create twitter analytics template',
-		description: 'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
+		description:
+			'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
 		status: TASK_STATUS_DONE,
 		actions: {
 			comments: 181,
@@ -203,7 +209,7 @@ const DONE_TASKS_LIST = [
 				id: '0770c50c-8598-4b2a-ad75-0f58d5937e89',
 				initials: 'JA',
 			},
-		]
+		],
 	},
 ]
 
@@ -224,12 +230,7 @@ const SELECT_OPTIONS = [
 ]
 
 const BoardsPage = () => {
-	return (
-		<Boards
-			selectOptions={SELECT_OPTIONS}
-			tasksList={TASKS_LIST}
-		/>
-	)
+	return <Boards selectOptions={SELECT_OPTIONS} tasksList={TASKS_LIST} />
 }
 
 export default BoardsPage
