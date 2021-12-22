@@ -14,6 +14,7 @@ import {
 import SettingsIcon from '../Icons/settings'
 import ExitIcon from '../Icons/exit'
 import BackArrowIcon from '../Icons/backArrow'
+import { signOut } from 'next-auth/react'
 
 const SideBarComponent = (props) => {
 	const { listItems } = props
@@ -35,7 +36,7 @@ const SideBarComponent = (props) => {
 					<DrawerBottomButton>
 						<SettingsIcon />
 					</DrawerBottomButton>
-					<DrawerBottomButton>
+					<DrawerBottomButton onClick={signOut}>
 						<ExitIcon />
 					</DrawerBottomButton>
 					<DrawerBackButton>

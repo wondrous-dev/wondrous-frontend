@@ -22,6 +22,16 @@ export const ChainWrapper = styled(IconButton)`
 	}
 `
 
+export const WalletConnectButton = styled(IconButton)`
+    && {
+        width: 200px;
+        height: 40px;
+        background: #1e1e1e;
+		border-radius: 4px;
+        margin-right: 20px;
+    }
+`
+
 export const WalletDisplay = styled.div`
     display: flex;
     flex-direction: row;

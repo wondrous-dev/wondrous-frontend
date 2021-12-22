@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Card } from '../components/Common/auth'
 import { Button } from '../components/Common/button'
@@ -16,57 +16,33 @@ import { EmailIcon, LockIcon } from '../components/Icons/userpass'
 
 import { getCsrfToken, getSession, signIn } from 'next-auth/react'
 
-import Web3 from 'web3'
-import Web3Modal from 'web3modal'
-import WalletConnectProvider from '@walletconnect/web3-provider'
+import { WonderWeb3 } from '../services/web3'
 
 const Login = ({ csrfToken }) => {
+	
+	const wonderWeb3 = WonderWeb3()
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 
-	const providerOptions = {
-		walletconnect: {
-			package: WalletConnectProvider,
-			options: {
-				infuraId: process.env.REACT_APP_INFURA_ID,
-			},
-		},
-	}
-
-	let provider = null
-	let web3 = null
-	let accounts = null
 
 	const handleSubmit = (event) => {
 		event.preventDefault()
 		signIn('credentials', { email: email, username: email, password: password })
 	}
 
+	// This happens async, so we bind it to the
+	// state of the component.
 	const loginWithWallet = async (event) => {
-		if (!accounts) {
-			await showWalletConnect()
-		}
-		signIn('credentials', { wallet: accounts[0] })
+		await wonderWeb3.onConnect()
 	}
 
-	const connect = async (web3Modal) => {
-		provider = await web3Modal.connect()
-		return new Web3(provider)
-	}
-
-	const showWalletConnect = async () => {
-		if (!provider) {
-			const web3Modal = new Web3Modal({
-				cacheProvider: true,
-				providerOptions,
-			})
-			web3 = await connect(web3Modal)
+	useEffect(() => {
+		if(wonderWeb3.wallet['address']) {
+			signIn('credentials', { wallet: wonderWeb3.wallet.address })
+		} else {
+			// Error Login Here
 		}
-
-		if (!accounts) {
-			accounts = await web3.eth.getAccounts()
-		}
-	}
+	}, [wonderWeb3.wallet])
 
 	return (
 		<AuthLayout>

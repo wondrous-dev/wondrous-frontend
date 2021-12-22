@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { AppBar, Badge, Button, IconButton, TextField } from '@material-ui/core'
+import { AppBar, Badge, IconButton, TextField } from '@material-ui/core'
 import { Logo } from '../Common/ci'
+import { Button } from '../Common/button'
 
 export const Header = styled(AppBar)`
 	&& {
@@ -111,21 +112,14 @@ export const StyledBadge = styled(Badge)({
 
 export const HeaderCreateButton = styled(Button)`
 	&& {
-		width: 110px;
-		height: 44px;
-		border: 2px solid deepskyblue;
 		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding-right: 1px;
-		padding-top: 4px;
-
+		flex-direction: row;
+		justify-content: flex-end;
+		width: 110px;
+		min-height: 40px;
+		height: 40px;
 		margin-right: 20px;
 
-		//text
-		font-weight: 500;
-		font-size: 16px;
-		line-height: 150%;
-		color: #ffffff;
+		line-height: 40px;
 	}
 `

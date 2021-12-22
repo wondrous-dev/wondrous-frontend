@@ -6,7 +6,6 @@ import NextAuth from 'next-auth'
 // import Auth0Provider from "next-auth/providers/auth0"
 // import AppleProvider from "next-auth/providers/apple"
 // import EmailProvider from "next-auth/providers/email"
-
 import CredentialsProvider from 'next-auth/providers/credentials'
 
 // For more information on each option (and a full list of options) go to
@@ -46,9 +45,8 @@ export default NextAuth({
 				}
 
 				const user = {
-					username: credentials.username,
-					email: credentials.username,
-					wallet: '',
+					name: credentials.username,
+					email: credentials.wallet,
 				}
 
 				// If no error and we have user data, return it
@@ -153,12 +151,15 @@ export default NextAuth({
 		// async signIn({ user, account, profile, email, credentials }) { return true },
 		// async redirect({ url, baseUrl }) { return baseUrl },
 		// async session({ session, token, user }) {
-		//     console.log('Session', session)
-		//     session.user = user
+		//     console.log('Session', session, token, user)
+		//     session = user
 		//     session.token = token
 		//     return session
 		// },
-		// async jwt({ token, user, account, profile, isNewUser }) { return token }
+		// async jwt({ token, user, account, profile, isNewUser }) { 
+        //     token['user'] = user
+        //     return token 
+        // }
 	},
 
 	// Events are useful for logging

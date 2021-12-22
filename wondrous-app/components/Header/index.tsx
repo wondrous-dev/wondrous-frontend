@@ -20,6 +20,8 @@ import {
 	HeaderCreateButton,
 	StyledBadge,
 } from './styles'
+import Link from 'next/link'
+import { PaddedParagraph } from '../Common/text'
 
 const HeaderComponent = (props) => {
 	return (
@@ -27,9 +29,11 @@ const HeaderComponent = (props) => {
 			<HeaderContainer>
 				<HeaderLeftBlock>
 					<HeaderLogo />
-					<HeaderHomeButton>
-						<HomeIcon />
-					</HeaderHomeButton>
+					<Link href="/dashboard">
+						<HeaderHomeButton>
+							<HomeIcon />
+						</HeaderHomeButton>
+					</Link>
 					<HeaderInput
 						placeholder="Search wonder..."
 						InputProps={{
@@ -42,17 +46,16 @@ const HeaderComponent = (props) => {
 					/>
 				</HeaderLeftBlock>
 				<HeaderRightBlock>
-					{props.wallet
-					? <Wallet wallet={props.wallet} />
-					: ''
-					}
+					<Wallet />
 					<StyledBadge color="primary" badgeContent={5}>
 						<HeaderNotificationsButton>
 							<NotificationsIcon />
 						</HeaderNotificationsButton>
 					</StyledBadge>
-					<HeaderCreateButton>
-						Create
+					<HeaderCreateButton highlighted="true" > 
+						<span style={{ padding: '0px 8px' }}>
+							Create
+						</span>
 						<CreateBtnIcon />
 					</HeaderCreateButton>
 				</HeaderRightBlock>
