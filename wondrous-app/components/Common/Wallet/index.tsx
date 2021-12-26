@@ -1,5 +1,5 @@
 import { Button } from '../button'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { WonderWeb3 } from '../../../services/web3'
 import Ethereum from '../../Icons/ethereum'
 import { Metamask } from '../../Icons/metamask'
@@ -13,26 +13,51 @@ import {
 	WonderBalance,
 	WalletAddress,
 } from './styles'
-import { logout, useMe } from '../../Auth/withAuth'
+import { linkWallet, logout, useMe } from '../../Auth/withAuth'
 
 const Wallet = () => {
 	const wonderWeb3 = WonderWeb3()
 	const [connected, setConnected] = useState(false)
 	const [firstConnect, setFirstConnect] = useState(true)
+	const [signedMessage, setSignedMessage] = useState('')
 	const user = useMe()
 
-	console.log(user)
-
-	const connectWallet = async (event = {}) => {
+	const connectWallet = useCallback(async (event = {}) => {
 		await wonderWeb3.onConnect()
 		setFirstConnect(false)
-	}
+	},[wonderWeb3])
+
+	const signMessage = useCallback(async () => {
+		const message = 'Sign this message to link your wallet to your Wonder account.'
+		const signature = await wonderWeb3.signMessage(message)
+		if(signature === false) {
+			// User didn't sign
+			// TODO: Toast logic here.
+		} else if(signature) {
+			setSignedMessage(signature)
+			return true
+		}
+		return false
+	}, [wonderWeb3])
+
+	const linkUserWithWallet = useCallback(async () => {
+		await signMessage()
+		const result = await linkWallet(wonderWeb3.address, signedMessage)
+		if(result) {
+			// Wallet linked successfully.
+		} else {
+			// Error with wallet link. Disconnect wallet
+			await wonderWeb3.disconnect()
+			setConnected(false)
+		}
+		return true
+	},[signMessage, signedMessage, wonderWeb3])
 
 	useEffect(() => {
 		if (user && user.active_eth_address) {
 			connectWallet()
 		}
-	}, [])
+	}, [connectWallet, user])
 
 	// Bind to the Web3 wallet to monitor changes (i.e user unlinks wallet)
 	useEffect(() => {
@@ -50,12 +75,6 @@ const Wallet = () => {
 					// Wallet has changed, and doesn't match user's
 					// registered. SignOut.
 					logout()
-				} else if (!user.active_eth_address) {
-					// User without wallet has linked a wallet
-					// lets add it to the session
-
-					// TODO: User Link Wallet on backend (with prompt "are you sure?")
-					user.active_eth_address = wonderWeb3.wallet.address
 				}
 			} else if (!firstConnect) {
 				setConnected(false)
@@ -63,14 +82,10 @@ const Wallet = () => {
 				if (!user.username) {
 					// Sign out, no other means of identification left
 					logout()
-				} else {
-					console.log('Removing from Session')
-					// Clean Wallet from Session
-					user.active_eth_address = null
 				}
 			}
 		}
-	}, [wonderWeb3.wallet, wonderWeb3.connecting, connectWallet, firstConnect, user])
+	}, [wonderWeb3.wallet, wonderWeb3.connecting, connectWallet, firstConnect, user, linkUserWithWallet])
 
 	if (!connected) {
 		return (

@@ -6,7 +6,6 @@ import {
 	GET_LOGGED_IN_USER,
 	GET_LOGGED_IN_WAITLIST_USER,
 	WHOAMI,
-	WHOAMI_WAITLIST,
 } from '../../graphql/queries'
 
 const MyContext = React.createContext(null)
@@ -23,12 +22,17 @@ export const getWaitlistAuthHeader = () => {
 	return localStorage.getItem('waitlistToken') || null
 }
 
+export const linkWallet = async (address, wallet) => {
+	// TODO:
+	return true
+}
+
 export const storeAuthHeader = async (token, user) => {
 	localStorage.setItem('wonderToken', token)
 	if (user) {
 		try {
 			await apollo.writeQuery({
-				query: WHOAMI,
+				query: GET_LOGGED_IN_USER,
 				data: {
 					users: [user],
 				},

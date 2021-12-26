@@ -1,11 +1,13 @@
 import Web3 from 'web3'
 import Web3Modal from 'web3modal'
+import { ethers } from 'ethers'
 import axios, { AxiosInstance } from 'axios'
 // Need Infura API Key for this one:
 // import WalletConnectProvider from '@walletconnect/web3-provider'
 import { useState } from 'react'
 
 import { IAssetData } from '../types/assets'
+import { generateRandomString } from '../utils'
 
 // Handler of Web3 State for the app
 export const WonderWeb3 = () => {
@@ -69,6 +71,29 @@ export const WonderWeb3 = () => {
 		}
 
 		setConnecting(false)
+	}
+
+	const signMessage = async (message) => {
+		if(!connecting) {
+			setConnecting(true)
+			try {
+				const web3Modal = new Web3Modal()
+				const provider = await web3Modal.connect()
+				const prov = new ethers.providers.Web3Provider(provider)
+				const signer = await prov.getSigner()
+				// Now sign message
+				const signedMessage = await signer.signMessage(message)
+				setConnecting(false)
+				return signedMessage
+			} catch (error) {
+				// Error Signed message
+				console.log(error)
+				setConnecting(false)
+				return false
+			}
+		}
+		return null
+		
 	}
 
 	const getTokenBalance = async (tokenAddress: string) => {
@@ -137,6 +162,11 @@ export const WonderWeb3 = () => {
 		}
 	}
 
+	const disconnect = async () => {
+		await cleanWallet()
+		return true
+	}
+
 	const cleanWallet = async () => {
 		accounts = []
 		address = null
@@ -165,6 +195,8 @@ export const WonderWeb3 = () => {
 		chain,
 		network,
 		onConnect,
+		disconnect,
+		signMessage,
 		getTokenBalance,
 	}
 }
