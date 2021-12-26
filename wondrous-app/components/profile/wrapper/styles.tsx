@@ -1,9 +1,8 @@
-import React from 'react'
-import styled from 'styled-components'
 import { Button, IconButton, Typography } from '@material-ui/core'
+import styled from 'styled-components'
 import { Background } from '../../../theme/colors'
 import { BaseCard } from '../../Common/card'
-import { LogoCircle } from '../../Common/ci'
+import { ProfileImage } from '../../Common/profile'
 import { LinkIcon } from '../../Icons/linkIcon'
 
 export const OverviewComponent = styled.section`
@@ -35,7 +34,7 @@ export const TokenHeader = styled.div`
 	margin-bottom: 30px;
 `
 
-export const TokenLogo = styled(LogoCircle)`
+export const TokenLogo = styled(ProfileImage)`
 	position: absolute;
 	width: 103px;
 	height: 103px;
