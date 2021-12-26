@@ -14,10 +14,14 @@ import {
 import SettingsIcon from '../Icons/settings'
 import ExitIcon from '../Icons/exit'
 import BackArrowIcon from '../Icons/backArrow'
-import { signOut } from 'next-auth/react'
+import { logout } from '../Auth/withAuth'
 
 const SideBarComponent = (props) => {
 	const { listItems } = props
+
+	const signOut = () => {
+		logout()
+	}
 
 	return (
 		<DrawerComponent variant="permanent" anchor="left">

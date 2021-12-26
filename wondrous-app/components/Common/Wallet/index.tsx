@@ -1,5 +1,4 @@
 import { Button } from '../button'
-import { getSession, signOut, useSession } from 'next-auth/react'
 import React, { useEffect, useState } from 'react'
 import { WonderWeb3 } from '../../../services/web3'
 import Ethereum from '../../Icons/ethereum'
@@ -14,12 +13,15 @@ import {
 	WonderBalance,
 	WalletAddress,
 } from './styles'
+import { logout, useMe } from '../../Auth/withAuth'
 
 const Wallet = () => {
 	const wonderWeb3 = WonderWeb3()
-	const { data: session, status } = useSession()
 	const [connected, setConnected] = useState(false)
 	const [firstConnect, setFirstConnect] = useState(true)
+	const user = useMe()
+
+	console.log(user)
 
 	const connectWallet = async (event = {}) => {
 		await wonderWeb3.onConnect()
@@ -27,7 +29,7 @@ const Wallet = () => {
 	}
 
 	useEffect(() => {
-		if (session.user.email) {
+		if (user && user.active_eth_address) {
 			connectWallet()
 		}
 	}, [])
@@ -42,33 +44,33 @@ const Wallet = () => {
 				// Change the UI now.
 				setConnected(true)
 				if (
-					session.user.email &&
-					wonderWeb3.wallet.address !== session.user.email
+					user.address &&
+					wonderWeb3.wallet.address !== user.active_eth_address
 				) {
 					// Wallet has changed, and doesn't match user's
 					// registered. SignOut.
-					signOut()
-				} else if (!session.user.email) {
+					logout()
+				} else if (!user.active_eth_address) {
 					// User without wallet has linked a wallet
 					// lets add it to the session
 
 					// TODO: User Link Wallet on backend (with prompt "are you sure?")
-					session.user.email = wonderWeb3.wallet.address
+					user.active_eth_address = wonderWeb3.wallet.address
 				}
 			} else if (!firstConnect) {
 				setConnected(false)
 				// No wallet, maybe unlinked?
-				if (!session.user.name) {
+				if (!user.username) {
 					// Sign out, no other means of identification left
-					signOut()
+					logout()
 				} else {
 					console.log('Removing from Session')
 					// Clean Wallet from Session
-					session.user.email = null
+					user.active_eth_address = null
 				}
 			}
 		}
-	}, [wonderWeb3.wallet, session.user, wonderWeb3.connecting, connectWallet, session.user.email, firstConnect])
+	}, [wonderWeb3.wallet, wonderWeb3.connecting, connectWallet, firstConnect, user])
 
 	if (!connected) {
 		return (
@@ -108,12 +110,11 @@ const Wallet = () => {
 	}
 }
 
-export async function getServerSideProps(context) {
-	const session = await getSession({ req: context.req })
-	console.log(session)
-	return {
-		props: { session },
-	}
-}
+// export async function getServerSideProps(context) {
+// 	const session = await getSession({ req: context.req })
+// 	return {
+// 		props: { session },
+// 	}
+// }
 
 export default Wallet

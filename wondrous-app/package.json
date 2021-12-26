@@ -22,7 +22,6 @@
     "graphql": "^15.5.1",
     "lodash": "^4.17.21",
     "next": "11.0.1",
-    "next-auth": "^4.0.5",
     "react": "17.0.2",
     "react-confetti": "^6.0.1",
     "react-dnd": "^14.0.4",

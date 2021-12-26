@@ -13,19 +13,39 @@ import { CenteredFlexRow } from '../components/Common/index'
 import { Grey50 } from '../theme/colors'
 import { Metamask } from '../components/Icons/metamask'
 import { EmailIcon, LockIcon } from '../components/Icons/userpass'
-
-import { getCsrfToken, getSession, signIn } from 'next-auth/react'
-
 import { WonderWeb3 } from '../services/web3'
+import { storeAuthHeader } from '../components/Auth/withAuth'
+import apollo from '../services/apollo'
+import { LOGIN_MUTATION } from '../graphql/mutations'
 
 const Login = ({ csrfToken }) => {
 	const wonderWeb3 = WonderWeb3()
-	const [email, setEmail] = useState('')
+	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
+	const router = useRouter()
 
-	const handleSubmit = (event) => {
+	const handleSubmit = async (event) => {
 		event.preventDefault()
-		signIn('credentials', { email: email, username: email, password: password })
+
+		const {
+			data: {
+				emailSignin: { user, token },
+			},
+		} = await apollo.mutate({
+			mutation: LOGIN_MUTATION,
+			variables: {
+				username: username,
+				password: password,
+			},
+		})
+
+		if (user) {
+			// Set Apollo with Session
+			await storeAuthHeader(token, user)
+			
+			// Lets go to Dashboard :)
+			router.replace('/dashboard')	
+		}
 	}
 
 	// This happens async, so we bind it to the
@@ -36,7 +56,7 @@ const Login = ({ csrfToken }) => {
 
 	useEffect(() => {
 		if (wonderWeb3.wallet['address']) {
-			signIn('credentials', { wallet: wonderWeb3.wallet.address })
+			// Wallet sign in
 		} else {
 			// Error Login Here
 		}
@@ -54,8 +74,8 @@ const Login = ({ csrfToken }) => {
 						<Field
 							type="email"
 							name="email"
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
+							value={username}
+							onChange={(e) => setUsername(e.target.value)}
 							placeholder="Enter email address"
 							icon={EmailIcon}
 							required
@@ -97,24 +117,6 @@ const Login = ({ csrfToken }) => {
 			</LoginWrapper>
 		</AuthLayout>
 	)
-}
-
-// This is the recommended way for Next.js 9.3 or newer
-export async function getServerSideProps(context) {
-	const session = await getSession({ req: context.req })
-	if (session) {
-		return {
-			redirect: {
-				destination: '/dashboard',
-				permanent: false,
-			},
-		}
-	}
-	return {
-		props: {
-			csrfToken: await getCsrfToken(context),
-		},
-	}
 }
 
 export default Login

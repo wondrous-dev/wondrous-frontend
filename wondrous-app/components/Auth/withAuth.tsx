@@ -3,6 +3,7 @@ import { useQuery, useMutation } from '@apollo/client'
 
 import apollo from '../../services/apollo'
 import {
+	GET_LOGGED_IN_USER,
 	GET_LOGGED_IN_WAITLIST_USER,
 	WHOAMI,
 	WHOAMI_WAITLIST,
@@ -57,12 +58,11 @@ export const storeAuthWaitlistHeader = async (token, waitlistUser) => {
 	}
 }
 
-export const logout = async (navigation) => {
+export const logout = async () => {
 	try {
-		localStorage.removeItem('token')
-		// window.location.href = '/sign-in'
-
-		return apollo.clearStore()
+		localStorage.removeItem('wonderToken')
+		await apollo.clearStore()
+		window.location.href = '/'
 	} catch (exception) {
 		return false
 	}
@@ -73,7 +73,7 @@ export const withAuth = (Component, noCache = false) => {
 		const { navigation, route } = props
 		const [token, setToken] = useState(null)
 		const [tokenLoading, setTokenLoading] = useState(true)
-		const { data, loading, error } = useQuery(WHOAMI)
+		const { data, loading, error } = useQuery(GET_LOGGED_IN_USER)
 		useEffect(() => {
 			;(async () => {
 				const newToken = await getAuthHeader()
@@ -83,10 +83,11 @@ export const withAuth = (Component, noCache = false) => {
 		}, [token])
 
 		if (!tokenLoading && !token) {
+			// Back to the world
+			window.location.href = '/login'
 			return <Component {...props} />
 		} else {
-			const user =
-				data && data.users && data.users.length > 0 ? data.users[0] : null
+			const user = data?.getLoggedinUser
 			return (
 				<MyContext.Provider value={user}>
 					<Component {...props} user={user} />

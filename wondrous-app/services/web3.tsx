@@ -4,7 +4,6 @@ import axios, { AxiosInstance } from 'axios'
 // Need Infura API Key for this one:
 // import WalletConnectProvider from '@walletconnect/web3-provider'
 import { useState } from 'react'
-import { signOut } from 'next-auth/react'
 
 import { IAssetData } from '../types/assets'
 

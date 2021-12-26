@@ -1,5 +1,5 @@
-import { getSession } from 'next-auth/react'
 import React from 'react'
+import { withAuth } from '../../components/Auth/withAuth'
 
 import Boards from '../../components/organization/boards/boards'
 import {
@@ -234,20 +234,4 @@ const BoardsPage = () => {
 	return <Boards selectOptions={SELECT_OPTIONS} tasksList={TASKS_LIST} />
 }
 
-export async function getServerSideProps(context) {
-	const session = await getSession({ req: context.req })
-	if (!session) {
-		return {
-			redirect: {
-				destination: '/login',
-				permanent: false,
-			},
-		}
-	}
-	return {
-		props: { session },
-	}
-}
-
-
-export default BoardsPage
+export default withAuth(BoardsPage)

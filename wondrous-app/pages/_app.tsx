@@ -13,8 +13,6 @@ import theme from '../theme/theme'
 import { IsMobileContext } from '../utils/contexts'
 import { initHotjar } from '../utils/hotjar'
 
-import { SessionProvider } from 'next-auth/react'
-
 type User = {
 	dummy: String
 }
@@ -62,23 +60,21 @@ const MyApp = ({
 				/>
 				<link rel="shortcut icon" href="/images/favicon.ico" />
 			</Head>
-			<SessionProvider session={session}>
-				<IsMobileContext.Provider value={isMobile}>
-					<StyledComponentProvider theme={theme}>
-						<ThemeProvider theme={theme}>
-							<CssBaseline />
-							<ApolloProvider client={apollo}>
-								<Component
-									{...pageProps}
-									query={context?.query}
-									user={user}
-									isAuthenticated={isAuthenticated}
-								/>
-							</ApolloProvider>
-						</ThemeProvider>
-					</StyledComponentProvider>
-				</IsMobileContext.Provider>
-			</SessionProvider>
+			<IsMobileContext.Provider value={isMobile}>
+				<StyledComponentProvider theme={theme}>
+					<ThemeProvider theme={theme}>
+						<CssBaseline />
+						<ApolloProvider client={apollo}>
+							<Component
+								{...pageProps}
+								query={context?.query}
+								user={user}
+								isAuthenticated={isAuthenticated}
+							/>
+						</ApolloProvider>
+					</ThemeProvider>
+				</StyledComponentProvider>
+			</IsMobileContext.Provider>
 		</>
 	)
 }

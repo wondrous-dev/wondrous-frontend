@@ -5,7 +5,7 @@ import { InReview } from '../components/Icons/sections'
 import { GmBox, WelcomeMessage } from '../components/Pages/home'
 import { KanbanBoard } from '../components/Pages/boards'
 import * as Constants from '../utils/constants'
-import { getSession } from 'next-auth/react'
+import { withAuth } from '../components/Auth/withAuth'
 
 const MOCK_COLUMNS_DATA = {
 	columns: [
@@ -267,19 +267,4 @@ const Home = () => {
 	)
 }
 
-export async function getServerSideProps(context) {
-	const session = await getSession({ req: context.req })
-	if (!session) {
-		return {
-			redirect: {
-				destination: '/login',
-				permanent: false,
-			},
-		}
-	}
-	return {
-		props: { session },
-	}
-}
-
-export default Home
+export default withAuth(Home)
