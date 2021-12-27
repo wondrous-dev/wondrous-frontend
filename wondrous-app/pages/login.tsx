@@ -51,7 +51,6 @@ const Login = ({ csrfToken }) => {
 		const signedMessage = await wonderWeb3.signMessage(messageToSign)
 
 		if (signedMessage) {
-			console.log(wonderWeb3.address, signedMessage)
 			// Sign with Wallet
 			const result = await walletSignin(wonderWeb3.address, signedMessage)
 			if (result === true) {

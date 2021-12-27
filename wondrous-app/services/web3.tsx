@@ -104,8 +104,9 @@ export const useWonderWeb3 = () => {
 			return
 		}
 		if (!subscribed) {
-			provider.on('disconnect', () => {
-				console.log('Wallet Closed')
+			provider.on('disconnect', async () => {
+				// Wallet closed.
+				await cleanWallet()
 			})
 
 			provider.on('accountsChanged', async (acc: string[]) => {
