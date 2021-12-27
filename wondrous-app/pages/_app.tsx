@@ -14,9 +14,9 @@ import { IsMobileContext } from '../utils/contexts'
 import { initHotjar } from '../utils/hotjar'
 
 declare global {
-    interface Window {
-        gtag:any;
-    }
+	interface Window {
+		gtag: any
+	}
 }
 
 type User = {
