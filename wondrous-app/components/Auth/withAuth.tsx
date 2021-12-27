@@ -5,6 +5,7 @@ import apollo from '../../services/apollo'
 import {
 	GET_LOGGED_IN_USER,
 	GET_LOGGED_IN_WAITLIST_USER,
+	GET_USER_SIGNING_MESSAGE,
 	WHOAMI,
 } from '../../graphql/queries'
 import { LOGIN_MUTATION, LOGIN_WALLET_MUTATION } from '../../graphql/mutations'
@@ -65,6 +66,25 @@ export const walletSignin = async (
 		return 'Sign up with this wallet address first.'
 	} catch (err) {
 		return 'Sign up with this wallet address first.'
+	}
+}
+
+export const getUserSigningMessage = async (
+	web3Address: string,
+	blockchain: string
+) => {
+	try {
+		const { data, loading, error } = await apollo.query({
+			query: GET_USER_SIGNING_MESSAGE,
+			variables: {
+				web3Address,
+				blockchain
+			}
+		})
+		return data.getUserSigningMessage.signingMessage
+	} catch (e) {
+		console.log('error retrieving nonce', e)
+		return false
 	}
 }
 

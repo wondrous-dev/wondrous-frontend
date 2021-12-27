@@ -9,6 +9,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { IAssetData } from '../types/assets'
 import { generateRandomString } from '../utils'
 
+const CHAINS = {
+	1: 'eth'
+}
+
 // Handler of Web3 State for the app
 export const useWonderWeb3 = () => {
 	// Some don't need state management
@@ -22,6 +26,10 @@ export const useWonderWeb3 = () => {
 	const [fetching, setFetching] = useState(false)
 
 	let subscribed = false
+
+	const chainName = useMemo(() => {
+		return CHAINS[chain] || 'none' 
+	}, [chain])
 
 	const address = useMemo(() => {
 		return accounts[0] || null
@@ -165,6 +173,7 @@ export const useWonderWeb3 = () => {
 		address,
 		assets,
 		chain,
+		chainName,
 		onConnect,
 		disconnect,
 		signMessage,

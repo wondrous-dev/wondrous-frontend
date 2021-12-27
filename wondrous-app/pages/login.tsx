@@ -19,7 +19,7 @@ import { Grey50 } from '../theme/colors'
 import { Metamask } from '../components/Icons/metamask'
 import { EmailIcon, LockIcon } from '../components/Icons/userpass'
 import { useWonderWeb3 } from '../services/web3'
-import { emailSignin, walletSignin } from '../components/Auth/withAuth'
+import { emailSignin, getUserSigningMessage, walletSignin } from '../components/Auth/withAuth'
 import { ErrorMessage } from 'formik'
 
 const Login = ({ csrfToken }) => {
@@ -47,19 +47,24 @@ const Login = ({ csrfToken }) => {
 		await wonderWeb3.onConnect()
 
 		// Retrieve Signed Message
-		const messageToSign = '1' // await getAddressNonce()
-		const signedMessage = await wonderWeb3.signMessage(messageToSign)
+		const messageToSign = await getUserSigningMessage(wonderWeb3.address, wonderWeb3.chainName)
 
-		if (signedMessage) {
-			// Sign with Wallet
-			const result = await walletSignin(wonderWeb3.address, signedMessage)
-			if (result === true) {
-				router.replace('/dashboard')
+		if(messageToSign) {
+			const signedMessage = await wonderWeb3.signMessage(messageToSign)
+
+			if (signedMessage) {
+				// Sign with Wallet
+				const result = await walletSignin(wonderWeb3.address, signedMessage)
+				if (result === true) {
+					router.replace('/dashboard')
+				} else {
+					setErrorMessage(result)
+				}
 			} else {
-				setErrorMessage(result)
+				setErrorMessage('You need to sign the message on your Metamask')
 			}
 		} else {
-			setErrorMessage('You need to sign the message on your Metamask')
+			setErrorMessage('There is an error with the site. Check with the Administrator.')
 		}
 	}
 
