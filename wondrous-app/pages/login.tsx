@@ -7,51 +7,56 @@ import { LineWithText, Line } from '../components/Common/lines'
 import { Form } from '../components/Common/form'
 import { Field } from '../components/Common/field'
 import { PaddedParagraph, StyledLink } from '../components/Common/text'
-import { SmallLogo, LoginWrapper, TopBubble } from '../components/Pages/login'
+import { SmallLogo, LoginWrapper, TopBubble, LoginError } from '../components/Pages/login'
 import { useState } from 'react'
 import { CenteredFlexRow } from '../components/Common/index'
 import { Grey50 } from '../theme/colors'
 import { Metamask } from '../components/Icons/metamask'
 import { EmailIcon, LockIcon } from '../components/Icons/userpass'
-import { WonderWeb3 } from '../services/web3'
-import { storeAuthHeader } from '../components/Auth/withAuth'
-import apollo from '../services/apollo'
-import { LOGIN_MUTATION } from '../graphql/mutations'
+import { useWonderWeb3 } from '../services/web3'
+import { emailSignin, walletSignin } from '../components/Auth/withAuth'
+import { ErrorMessage } from 'formik'
 
 const Login = ({ csrfToken }) => {
-	const wonderWeb3 = WonderWeb3()
-	const [username, setUsername] = useState('')
+	const wonderWeb3 = useWonderWeb3()
+	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [errorMessage, setErrorMessage] = useState('')
 	const router = useRouter()
 
 	const handleSubmit = async (event) => {
 		event.preventDefault()
 
-		const {
-			data: {
-				emailSignin: { user, token },
-			},
-		} = await apollo.mutate({
-			mutation: LOGIN_MUTATION,
-			variables: {
-				username: username,
-				password: password,
-			},
-		})
-
-		if (user) {
-			// Set Apollo with Session
-			await storeAuthHeader(token, user)
-			
-			// Lets go to Dashboard :)
-			router.replace('/dashboard')	
+		const result = await emailSignin(email, password)
+		if(result === true) {
+			router.replace('/dashboard')
+		} else {
+			setErrorMessage(result)
 		}
 	}
 
 	// This happens async, so we bind it to the
 	// state of the component.
 	const loginWithWallet = async (event) => {
+		// Connect Wallet first
 		await wonderWeb3.onConnect()
+
+		// Retrieve Signed Message
+		const messageToSign = '1' // await getAddressNonce()
+		const signedMessage = await wonderWeb3.signMessage(messageToSign)
+
+		if(signedMessage) {
+			console.log(wonderWeb3.address, signedMessage)
+			// Sign with Wallet
+			const result = await walletSignin(wonderWeb3.address, signedMessage)
+			if(result === true) {
+				router.replace('/dashboard')
+			} else {
+				setErrorMessage(result)
+			}
+		} else {
+			setErrorMessage('You need to sign the message on your Metamask')
+		}
 	}
 
 	useEffect(() => {
@@ -71,11 +76,16 @@ const Login = ({ csrfToken }) => {
 					<h1>Login</h1>
 					<Form onSubmit={handleSubmit}>
 						<input name="csrfToken" type="hidden" defaultValue={csrfToken} />
+						{
+							errorMessage
+							? <LoginError>{errorMessage}</LoginError>
+							: ''
+						}
 						<Field
 							type="email"
 							name="email"
-							value={username}
-							onChange={(e) => setUsername(e.target.value)}
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
 							placeholder="Enter email address"
 							icon={EmailIcon}
 							required

@@ -4,36 +4,47 @@ import { ethers } from 'ethers'
 import axios, { AxiosInstance } from 'axios'
 // Need Infura API Key for this one:
 // import WalletConnectProvider from '@walletconnect/web3-provider'
-import { useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { IAssetData } from '../types/assets'
 import { generateRandomString } from '../utils'
 
 // Handler of Web3 State for the app
-export const WonderWeb3 = () => {
+export const useWonderWeb3 = () => {
 	// Some don't need state management
 	let web3 = null
 	let provider = null
-	let accounts = []
-	let address = null
-	let addressTag = null
-	let assets = []
-	let chain = null
-	let network = null
-	let fetching = false
+
+	const [accounts, setAccounts] = useState([])
+	const [assets, setAssets] = useState([])
+	const [chain, setChain] = useState(null)
+	const [wonder, setWonder] = useState(0)
+	const [fetching, setFetching] = useState(false)
+
 	let subscribed = false
 
-	let wonder = 0
+	const address = useMemo(() => {
+		return accounts[0] || null
+	}, [accounts])
 
-	const [wallet, setWallet] = useState({
-		accounts: null,
-		address: null,
-		chain: null,
-		wonder: null,
-		addressTag: null,
-		network: null,
-		assets: null,
-	})
+	const addressTag = useMemo(() => {
+		if(!address) {
+			return ''
+		}
+		return `${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}`
+	}, [address])
+
+	const wallet = useMemo(() => {
+		return {
+			accounts,
+			address,
+			chain,
+			wonder,
+			addressTag,
+			assets,
+		}
+	}, [accounts, address, addressTag, assets, chain, wonder])
+
 	const [connecting, setConnecting] = useState(false)
 
 	const onConnect = async () => {
@@ -49,31 +60,17 @@ export const WonderWeb3 = () => {
 		}
 
 		if (web3) {
-			accounts = await web3.eth.getAccounts()
-			address = accounts[0]
-			addressTag =
-				accounts[0].slice(0, 6) +
-				'...' +
-				accounts[0].slice(accounts[0].length - 4, accounts[0].length)
-			network = await web3.eth.net.getId()
-			chain = await web3.eth.chainId()
-			await getAccountAssets()
+			const a = await web3.eth.getAccounts()
+			const c = await web3.eth.chainId()
 
-			await setWallet({
-				accounts,
-				address,
-				addressTag,
-				network,
-				wonder,
-				chain,
-				assets,
-			})
+			await setAccounts(a)
+			await setChain(c)
 		}
 
 		setConnecting(false)
 	}
 
-	const signMessage = async (message) => {
+	const signMessage = async (message: string) => {
 		if(!connecting) {
 			setConnecting(true)
 			try {
@@ -93,7 +90,6 @@ export const WonderWeb3 = () => {
 			}
 		}
 		return null
-		
 	}
 
 	const getTokenBalance = async (tokenAddress: string) => {
@@ -105,58 +101,37 @@ export const WonderWeb3 = () => {
 			return
 		}
 		if (!subscribed) {
-			provider.on('close', () => {
+			provider.on('disconnect', () => {
 				console.log('Wallet Closed')
 			})
 
-			provider.on('accountsChanged', async (accounts: string[]) => {
-				if (accounts.length === 0) {
+			provider.on('accountsChanged', async (acc: string[]) => {
+				if (acc.length === 0) {
 					// Disconnected
 					await cleanWallet()
 				} else {
-					address = accounts[0]
-					addressTag =
-						accounts[0].slice(0, 6) +
-						'...' +
-						accounts[0].slice(accounts[0].length - 4, accounts[0].length)
-					await getAccountAssets()
+					setAccounts(acc)
 				}
 			})
 
 			provider.on('chainChanged', async (chainId: number) => {
-				chain = chainId
-				await getAccountAssets()
-			})
-
-			provider.on('networkChanged', async (networkId: number) => {
-				network = networkId
-				await getAccountAssets()
+				setChain(chainId)
 			})
 			subscribed = true
 		}
 	}
 
 	const getAccountAssets = async () => {
-		const address = accounts[0]
-		if (!fetching && address) {
-			fetching = true
+		if (!fetching && address && chain) {
+			setFetching(true)
 			try {
 				// get account balances
-				assets = await apiGetAccountAssets(address, chain)
-				fetching = false
+				setAssets(await apiGetAccountAssets(address, chain))
+				setFetching(false)
 			} catch (error) {
 				console.error(error) // tslint:disable-line
-				fetching = false
+				setFetching(false)
 			}
-			await setWallet({
-				accounts,
-				address,
-				addressTag,
-				network,
-				wonder,
-				chain,
-				assets,
-			})
 		} else {
 			console.log('getAccountsAssets() failed.', address)
 		}
@@ -168,24 +143,17 @@ export const WonderWeb3 = () => {
 	}
 
 	const cleanWallet = async () => {
-		accounts = []
-		address = null
-		addressTag = null
-		network = null
-		chain = null
-		wonder = null
-		assets = []
-
-		await setWallet({
-			accounts,
-			address,
-			addressTag,
-			network,
-			wonder,
-			chain,
-			assets,
-		})
+		setAccounts([])
+		setChain(null)
+		setWonder(null)
+		setAssets(null)
 	}
+
+	useEffect(() => {
+		if(accounts.length && chain) {
+			getAccountAssets()
+		}
+	}, [accounts, chain])
 
 	return {
 		connecting,
@@ -193,7 +161,6 @@ export const WonderWeb3 = () => {
 		address,
 		assets,
 		chain,
-		network,
 		onConnect,
 		disconnect,
 		signMessage,
@@ -218,7 +185,7 @@ function initWeb3(provider: any) {
 	return web3
 }
 
-const api: AxiosInstance = axios.create({
+const ethereumApi: AxiosInstance = axios.create({
 	baseURL: 'https://ethereum-api.xyz',
 	timeout: 30000, // 30 secs
 	headers: {
@@ -231,9 +198,7 @@ export async function apiGetAccountAssets(
 	address: string,
 	chainId: number
 ): Promise<IAssetData[]> {
-	const response = await api.get(
-		`/account-assets?address=${address}&chainId=${chainId}`
-	)
+	const response = await ethereumApi.get('/account-assets', { params: { address, chainId } })
 	const { result } = response.data
 	return result
 }

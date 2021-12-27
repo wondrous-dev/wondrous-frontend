@@ -1,6 +1,6 @@
 import { Button } from '../button'
 import React, { useCallback, useEffect, useState } from 'react'
-import { WonderWeb3 } from '../../../services/web3'
+import { useWonderWeb3 } from '../../../services/web3'
 import Ethereum from '../../Icons/ethereum'
 import { Metamask } from '../../Icons/metamask'
 import { WonderCoin } from '../../Icons/wonderCoin'
@@ -16,7 +16,7 @@ import {
 import { linkWallet, logout, useMe } from '../../Auth/withAuth'
 
 const Wallet = () => {
-	const wonderWeb3 = WonderWeb3()
+	const wonderWeb3 = useWonderWeb3()
 	const [connected, setConnected] = useState(false)
 	const [firstConnect, setFirstConnect] = useState(true)
 	const [signedMessage, setSignedMessage] = useState('')
@@ -44,7 +44,8 @@ const Wallet = () => {
 		await signMessage()
 		const result = await linkWallet(wonderWeb3.address, signedMessage)
 		if(result) {
-			// Wallet linked successfully.
+			// Wallet linked successfully. Send to backend
+			
 		} else {
 			// Error with wallet link. Disconnect wallet
 			await wonderWeb3.disconnect()

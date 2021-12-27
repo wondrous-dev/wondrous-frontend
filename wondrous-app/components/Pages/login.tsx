@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { Logotype } from '../Common/ci'
+import { HighlightBlue } from '../../theme/colors'
 
 export const SmallLogo = styled(Logotype)`
 	&& {
@@ -43,4 +44,19 @@ export const TopBubble = styled.img`
 	@media (orientation: portrait) {
 		display: none;
 	}
+`
+
+export const LoginError = styled.div`
+	display: flex;
+	flex-grow: 1;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	
+	height: 40px;
+	margin: 1em 0;
+
+	background: ${HighlightBlue};
+
+	border-radius: 6px;
 `

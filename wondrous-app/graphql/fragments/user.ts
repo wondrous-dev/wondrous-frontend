@@ -4,7 +4,7 @@ export const LoggedinUserFragment = gql`
 	fragment LoggedinUser on User {
 		id
 		username
-		active_eth_address
+		activeEthAddress
 		profilePicture
 		thumbnailPicture
 	}
