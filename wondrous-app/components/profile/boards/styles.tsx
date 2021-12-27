@@ -40,7 +40,6 @@ export const BoardsActivityInput = styled(TextField)({
 })
 
 export const BoardsActivityFilterMenuItem = styled(MenuItem)`
-	//background: #121212;
 	background-color: blue;
 	border-radius: 4px;
 `

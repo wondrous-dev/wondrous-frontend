@@ -11,7 +11,6 @@ export const AboutSection = styled.div`
 
 export const AboutInfoTable = styled.div`
 	max-width: 680px;
-	//width: 100px;
 	width: 680px;
 	height: 130px;
 	margin: 20px auto 40px;
@@ -201,7 +200,6 @@ export const AboutInfoBlockContent = styled.div`
 export const OrganisationsCard = styled.div`
 	margin-top: 10px;
 	width: 100%;
-	//height: 160px;
 	background: #0f0f0f;
 	border-radius: 6px;
 	padding: 15px;
@@ -292,7 +290,6 @@ export const PodsCardFooterIcon = styled(LogoSquare)`
 
 export const PodsCardFooterButton = styled(Button)`
 	&& {
-		//height: 30px;
 		padding: 6px 10px;
 		background: linear-gradient(
 				0deg,
