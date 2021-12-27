@@ -13,6 +13,12 @@ import theme from '../theme/theme'
 import { IsMobileContext } from '../utils/contexts'
 import { initHotjar } from '../utils/hotjar'
 
+declare global {
+    interface Window {
+        gtag:any;
+    }
+}
+
 type User = {
 	dummy: String
 }
