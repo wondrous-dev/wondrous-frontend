@@ -18,7 +18,7 @@ export const useWonderWeb3 = () => {
 	const [accounts, setAccounts] = useState([])
 	const [assets, setAssets] = useState([])
 	const [chain, setChain] = useState(null)
-	const [wonder, setWonder] = useState(0)
+	const [wonder, setWonder] = useState({ amount: 0 })
 	const [fetching, setFetching] = useState(false)
 
 	let subscribed = false
@@ -28,10 +28,13 @@ export const useWonderWeb3 = () => {
 	}, [accounts])
 
 	const addressTag = useMemo(() => {
-		if(!address) {
+		if (!address) {
 			return ''
 		}
-		return `${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}`
+		return `${address.slice(0, 6)}...${address.slice(
+			address.length - 4,
+			address.length
+		)}`
 	}, [address])
 
 	const wallet = useMemo(() => {
@@ -71,7 +74,7 @@ export const useWonderWeb3 = () => {
 	}
 
 	const signMessage = async (message: string) => {
-		if(!connecting) {
+		if (!connecting) {
 			setConnecting(true)
 			try {
 				const web3Modal = new Web3Modal()
@@ -150,7 +153,7 @@ export const useWonderWeb3 = () => {
 	}
 
 	useEffect(() => {
-		if(accounts.length && chain) {
+		if (accounts.length && chain) {
 			getAccountAssets()
 		}
 	}, [accounts, chain])
@@ -198,7 +201,9 @@ export async function apiGetAccountAssets(
 	address: string,
 	chainId: number
 ): Promise<IAssetData[]> {
-	const response = await ethereumApi.get('/account-assets', { params: { address, chainId } })
+	const response = await ethereumApi.get('/account-assets', {
+		params: { address, chainId },
+	})
 	const { result } = response.data
 	return result
 }

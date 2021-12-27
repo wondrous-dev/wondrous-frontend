@@ -29,7 +29,7 @@ const HeaderComponent = (props) => {
 			<HeaderContainer>
 				<HeaderLeftBlock>
 					<HeaderLogo />
-					<Link href="/dashboard">
+					<Link passHref={true} href="/dashboard">
 						<HeaderHomeButton>
 							<HomeIcon />
 						</HeaderHomeButton>

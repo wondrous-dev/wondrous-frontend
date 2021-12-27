@@ -7,7 +7,12 @@ import { LineWithText, Line } from '../components/Common/lines'
 import { Form } from '../components/Common/form'
 import { Field } from '../components/Common/field'
 import { PaddedParagraph, StyledLink } from '../components/Common/text'
-import { SmallLogo, LoginWrapper, TopBubble, LoginError } from '../components/Pages/login'
+import {
+	SmallLogo,
+	LoginWrapper,
+	TopBubble,
+	LoginError,
+} from '../components/Pages/login'
 import { useState } from 'react'
 import { CenteredFlexRow } from '../components/Common/index'
 import { Grey50 } from '../theme/colors'
@@ -28,7 +33,7 @@ const Login = ({ csrfToken }) => {
 		event.preventDefault()
 
 		const result = await emailSignin(email, password)
-		if(result === true) {
+		if (result === true) {
 			router.replace('/dashboard')
 		} else {
 			setErrorMessage(result)
@@ -45,11 +50,11 @@ const Login = ({ csrfToken }) => {
 		const messageToSign = '1' // await getAddressNonce()
 		const signedMessage = await wonderWeb3.signMessage(messageToSign)
 
-		if(signedMessage) {
+		if (signedMessage) {
 			console.log(wonderWeb3.address, signedMessage)
 			// Sign with Wallet
 			const result = await walletSignin(wonderWeb3.address, signedMessage)
-			if(result === true) {
+			if (result === true) {
 				router.replace('/dashboard')
 			} else {
 				setErrorMessage(result)
@@ -76,11 +81,7 @@ const Login = ({ csrfToken }) => {
 					<h1>Login</h1>
 					<Form onSubmit={handleSubmit}>
 						<input name="csrfToken" type="hidden" defaultValue={csrfToken} />
-						{
-							errorMessage
-							? <LoginError>{errorMessage}</LoginError>
-							: ''
-						}
+						{errorMessage ? <LoginError>{errorMessage}</LoginError> : ''}
 						<Field
 							type="email"
 							name="email"

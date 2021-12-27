@@ -22,18 +22,22 @@ const Wallet = () => {
 	const [signedMessage, setSignedMessage] = useState('')
 	const user = useMe()
 
-	const connectWallet = useCallback(async (event = {}) => {
-		await wonderWeb3.onConnect()
-		setFirstConnect(false)
-	},[wonderWeb3])
+	const connectWallet = useCallback(
+		async (event = {}) => {
+			await wonderWeb3.onConnect()
+			setFirstConnect(false)
+		},
+		[wonderWeb3]
+	)
 
 	const signMessage = useCallback(async () => {
-		const message = 'Sign this message to link your wallet to your Wonder account.'
+		const message =
+			'Sign this message to link your wallet to your Wonder account.'
 		const signature = await wonderWeb3.signMessage(message)
-		if(signature === false) {
+		if (signature === false) {
 			// User didn't sign
 			// TODO: Toast logic here.
-		} else if(signature) {
+		} else if (signature) {
 			setSignedMessage(signature)
 			return true
 		}
@@ -43,16 +47,15 @@ const Wallet = () => {
 	const linkUserWithWallet = useCallback(async () => {
 		await signMessage()
 		const result = await linkWallet(wonderWeb3.address, signedMessage)
-		if(result) {
+		if (result) {
 			// Wallet linked successfully. Send to backend
-			
 		} else {
 			// Error with wallet link. Disconnect wallet
 			await wonderWeb3.disconnect()
 			setConnected(false)
 		}
 		return true
-	},[signMessage, signedMessage, wonderWeb3])
+	}, [signMessage, signedMessage, wonderWeb3])
 
 	useEffect(() => {
 		if (user && user.active_eth_address) {
@@ -86,7 +89,14 @@ const Wallet = () => {
 				}
 			}
 		}
-	}, [wonderWeb3.wallet, wonderWeb3.connecting, connectWallet, firstConnect, user, linkUserWithWallet])
+	}, [
+		wonderWeb3.wallet,
+		wonderWeb3.connecting,
+		connectWallet,
+		firstConnect,
+		user,
+		linkUserWithWallet,
+	])
 
 	if (!connected) {
 		return (

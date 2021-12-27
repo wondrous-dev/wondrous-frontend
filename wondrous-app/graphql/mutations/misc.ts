@@ -1,12 +1,12 @@
 import { gql } from '@apollo/client'
-import { LoggedinUserFragment, LoggedinWaitlistUserFragment } from '../fragments/user'
+import {
+	LoggedinUserFragment,
+	LoggedinWaitlistUserFragment,
+} from '../fragments/user'
 
 export const CREATE_USER = gql`
 	mutation createUser($email: String!, $password: String) {
-		createOrGetUser(
-			email: $email
-			password: $password
-		) {
+		createOrGetUser(email: $email, password: $password) {
 			token
 			waitlistUser {
 				...LoggedinUser

@@ -35,12 +35,15 @@ export const emailSignin = async (email: string, password: string) => {
 			return true
 		}
 		return 'Incorrect Email and Password combination'
-	} catch(err) {
+	} catch (err) {
 		return 'Incorrect Email and Password combination'
 	}
 }
 
-export const walletSignin = async (web3Address: string, signedMessage: string) => {
+export const walletSignin = async (
+	web3Address: string,
+	signedMessage: string
+) => {
 	try {
 		const {
 			data: {
@@ -60,7 +63,7 @@ export const walletSignin = async (web3Address: string, signedMessage: string) =
 			return true
 		}
 		return 'Sign up with this wallet address first.'
-	} catch(err) {
+	} catch (err) {
 		return 'Sign up with this wallet address first.'
 	}
 }

@@ -155,5 +155,4 @@ const AboutPage = () => {
 	)
 }
 
-
 export default withAuth(AboutPage)
