@@ -25,6 +25,10 @@ import {
 const AboutCompletedCard = (props) => {
 	const { lastCompletedTask } = props
 
+	if (Object.keys(lastCompletedTask).length === 0) {
+		return null
+	}
+
 	const { actions, compensation, description, media, status, title, users } =
 		lastCompletedTask
 
