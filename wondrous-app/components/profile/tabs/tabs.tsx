@@ -28,7 +28,6 @@ const Tabs = (props) => {
 
 	return (
 		<div>
-			{console.log(pathname)}
 			<StyledTabs value={pathname}>
 				{tabsLinks.map((tab) => (
 					<Link
