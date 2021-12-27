@@ -24,7 +24,7 @@ const Boards = (props) => {
 			<BoardsContainer>
 				<BoardsActivity>
 					<BoardsActivityInput
-						placeholder='Search people or tasks...'
+						placeholder='Search people or pods...'
 						InputProps={{
 							startAdornment: (
 								<InputAdornment position='start'>
