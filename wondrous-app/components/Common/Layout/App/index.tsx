@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from 'react'
 import Header from '../../../Header'
 import { Main, Footer, Container } from './styles'
 import SideBarComponent from '../../../SideBar'
-
-import { WonderWeb3 } from '../../../../services/web3'
 
 const SIDEBAR_LIST_ITEMS = [
 	{
