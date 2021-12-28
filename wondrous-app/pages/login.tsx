@@ -71,7 +71,7 @@ const Login = ({ csrfToken }) => {
 			}
 		} else {
 			setErrorMessage(
-				'There is an error with the site. Check with the Administrator.'
+				'Login failed - please contact support.'
 			)
 		}
 	}
