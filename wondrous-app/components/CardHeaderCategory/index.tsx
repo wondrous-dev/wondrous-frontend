@@ -1,11 +1,11 @@
-import React from 'react';
+import React from 'react'
 
 import {
 	TASK_STATUS_DONE,
 	TASK_STATUS_IN_PROGRESS,
 	TASK_STATUS_TODO,
-} from "../../utils/constants";
-import { shrinkNumber } from "../../utils/helpers";
+} from '../../utils/constants'
+import { shrinkNumber } from '../../utils/helpers'
 
 import {
 	CardCategoryBlock,
@@ -17,7 +17,7 @@ import {
 	CardCategoryInProgressIcon,
 	CardCategoryInProgressStarIcon,
 	CardCategoryToDoIcon,
-	CardCategoryToDoStarIcon
+	CardCategoryToDoStarIcon,
 } from './styles'
 
 const STAR_ICONS = {
@@ -33,14 +33,9 @@ const STATUS_ICONS = {
 }
 
 export const CardHeaderCategory = (props) => {
-	const {
-		compensation,
-		status,
-	} = props;
+	const { compensation, status } = props
 
-	const {
-		amount,
-	} = compensation || {}
+	const { amount } = compensation || {}
 
 	const StarIcon = STAR_ICONS[status]
 	const StatusIcon = STATUS_ICONS[status]
@@ -57,5 +52,5 @@ export const CardHeaderCategory = (props) => {
 				</CardCategoryInfoBlockText>
 			</CardCategoryInfoBlock>
 		</CardCategoryBlock>
-	);
+	)
 }

@@ -5,6 +5,7 @@ import { InReview } from '../components/Icons/sections'
 import { GmBox, WelcomeMessage } from '../components/Pages/home'
 import { KanbanBoard } from '../components/Pages/boards'
 import * as Constants from '../utils/constants'
+import { withAuth } from '../components/Auth/withAuth'
 
 const MOCK_COLUMNS_DATA = {
 	columns: [
@@ -266,4 +267,4 @@ const Home = () => {
 	)
 }
 
-export default Home
+export default withAuth(Home)

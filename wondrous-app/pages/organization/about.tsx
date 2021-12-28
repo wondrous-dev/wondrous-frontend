@@ -1,4 +1,5 @@
 import React from 'react'
+import { withAuth } from '../../components/Auth/withAuth'
 
 import About from '../../components/organization/about/about'
 import {
@@ -13,7 +14,8 @@ const ORGANIZATIONS = [
 		id: 1,
 		icon: 'wonder',
 		title: 'Wonder',
-		description: 'A social platform where founders build in public using crypto incentives.',
+		description:
+			'A social platform where founders build in public using crypto incentives.',
 		avatar: '/images/boards/avatar.png',
 		position: 'Founder',
 	},
@@ -21,7 +23,8 @@ const ORGANIZATIONS = [
 		id: 2,
 		icon: 'wonder',
 		title: 'UpClick',
-		description: 'Upclick is a custom e-commerce platform with expertise in sales tool.',
+		description:
+			'Upclick is a custom e-commerce platform with expertise in sales tool.',
 		avatar: '/images/boards/avatarNFT.png',
 		position: 'Public Relations',
 	},
@@ -31,7 +34,8 @@ const PODS = [
 	{
 		id: 1,
 		title: 'PR Dream Team',
-		description: 'Tortor aliquet dui posuere tortor in viverra orci cras quisque. Lectus mauris.',
+		description:
+			'Tortor aliquet dui posuere tortor in viverra orci cras quisque. Lectus mauris.',
 		tasksAmount: 42,
 		goalsAmount: 1,
 		users: [
@@ -49,12 +53,13 @@ const PODS = [
 				id: 'a7d1d8d5-ee35-4519-b9ec-dd42f71bea93',
 				initials: 'AA',
 			},
-		]
+		],
 	},
 	{
 		id: 2,
 		title: 'Analytics system creation',
-		description: 'Tortor aliquet dui posuere tortor in viverra orci cras quisque. Lectus mauris.',
+		description:
+			'Tortor aliquet dui posuere tortor in viverra orci cras quisque. Lectus mauris.',
 		tasksAmount: 21,
 		goalsAmount: 1,
 		users: [
@@ -73,17 +78,14 @@ const PODS = [
 				id: 'bf551338-b9c9-41d2-b984-6cdc1714bce6',
 				initials: 'RT',
 			},
-		]
+		],
 	},
 ]
 
 const PROFILE_INFO = {
 	completedTasks: 321,
 	resume: 'Jane_Seymour_Resume_11.21.22.pdf',
-	skills: [
-		'#publicrelations',
-		'#analytics',
-	],
+	skills: ['#publicrelations', '#analytics'],
 	socialMedia: [
 		{
 			name: SOCIAL_MEDIA_FACEBOOK,
@@ -96,13 +98,13 @@ const PROFILE_INFO = {
 		{
 			name: SOCIAL_MEDIA_LINKEDIN,
 			url: '',
-		}
+		},
 	],
 	status: {
 		id: 1,
 		label: 'Open to work',
-		value: 'OPEN_TO_WORK'
-	}
+		value: 'OPEN_TO_WORK',
+	},
 }
 
 const LAST_COMPLETED_TASK = {
@@ -111,7 +113,8 @@ const LAST_COMPLETED_TASK = {
 	shares: 12,
 	comments: 8,
 	title: 'Get 10,000 Twitter followers',
-	description: 'Design google sheet where we can get an open look at our twitters performance ✨🦄 ',
+	description:
+		'Design google sheet where we can get an open look at our twitters performance ✨🦄 ',
 	status: TASK_STATUS_DONE,
 	actions: {
 		comments: 8,
@@ -138,7 +141,7 @@ const LAST_COMPLETED_TASK = {
 			id: 'a7d1d8d5-ee35-4519-b9ec-dd42f71bea93',
 			initials: 'AA',
 		},
-	]
+	],
 }
 
 const AboutPage = () => {
@@ -152,4 +155,4 @@ const AboutPage = () => {
 	)
 }
 
-export default AboutPage
+export default withAuth(AboutPage)

@@ -13,6 +13,12 @@ import theme from '../theme/theme'
 import { IsMobileContext } from '../utils/contexts'
 import { initHotjar } from '../utils/hotjar'
 
+declare global {
+	interface Window {
+		gtag: any
+	}
+}
+
 type User = {
 	dummy: String
 }
@@ -24,15 +30,20 @@ type AppContextStore = {
 	user: User
 }
 
-const MyApp = (props) => {
+const MyApp = ({
+	Component,
+	context,
+	isAuthenticated,
+	user,
+	pageProps: { session, ...pageProps },
+}) => {
 	// Only uncomment this method if you have blocking data requirements for
 	// every single page in your application. This disables the ability to
 	// perform automatic static optimization, causing every page in your app to
 	// be server-side rendered.
 	const router = useRouter()
 	const isMobile = !useMediaQuery(theme.breakpoints.up('sm'))
-	const { Component, pageProps, context, isAuthenticated, user } =
-		props as Readonly<typeof props & AppContextStore>
+
 	useEffect(() => {
 		initHotjar()
 		const handleRouteChange = (url) => {

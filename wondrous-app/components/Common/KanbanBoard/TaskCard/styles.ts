@@ -41,8 +41,8 @@ export const TaskCardHeader = styled.div`
 `
 
 export const TaskCardLogo = styled(LogoSquare)`
-  width: 48px;
-  height: 27px;
+	width: 48px;
+	height: 27px;
 `
 
 export const TaskCardContent = styled.div`

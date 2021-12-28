@@ -1,17 +1,91 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useQuery, useMutation } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 
 import apollo from '../../services/apollo'
 import {
+	GET_LOGGED_IN_USER,
 	GET_LOGGED_IN_WAITLIST_USER,
+	GET_USER_SIGNING_MESSAGE,
 	WHOAMI,
-	WHOAMI_WAITLIST,
 } from '../../graphql/queries'
+import { LOGIN_MUTATION, LOGIN_WALLET_MUTATION } from '../../graphql/mutations'
 
 const MyContext = React.createContext(null)
 
 export const useMe = () => {
 	return useContext(MyContext)
+}
+
+export const emailSignin = async (email: string, password: string) => {
+	try {
+		const {
+			data: {
+				emailSignin: { user, token },
+			},
+		} = await apollo.mutate({
+			mutation: LOGIN_MUTATION,
+			variables: {
+				email: email,
+				password: password,
+			},
+		})
+
+		if (user) {
+			// Set Apollo with Session
+			await storeAuthHeader(token, user)
+			return true
+		}
+		return 'Incorrect Email and Password combination'
+	} catch (err) {
+		return 'Incorrect Email and Password combination'
+	}
+}
+
+export const walletSignin = async (
+	web3Address: string,
+	signedMessage: string
+) => {
+	try {
+		const {
+			data: {
+				signinWithWeb3: { user, token },
+			},
+		} = await apollo.mutate({
+			mutation: LOGIN_WALLET_MUTATION,
+			variables: {
+				web3Address,
+				signedMessage,
+			},
+		})
+
+		if (user) {
+			// Set Apollo with Session
+			await storeAuthHeader(token, user)
+			return true
+		}
+		return 'Sign up with this wallet address first.'
+	} catch (err) {
+		return 'Sign up with this wallet address first.'
+	}
+}
+
+export const getUserSigningMessage = async (
+	web3Address: string,
+	blockchain: string
+) => {
+	try {
+		const { data, loading, error } = await apollo.query({
+			query: GET_USER_SIGNING_MESSAGE,
+			variables: {
+				web3Address,
+				blockchain
+			}
+		})
+		return data.getUserSigningMessage.signingMessage
+	} catch (e) {
+		console.log('error retrieving nonce', e)
+		return false
+	}
 }
 
 export const getAuthHeader = () => {
@@ -20,6 +94,12 @@ export const getAuthHeader = () => {
 
 export const getWaitlistAuthHeader = () => {
 	return localStorage.getItem('waitlistToken') || null
+}
+
+export const linkWallet = async (address, signedMessage) => {
+	// TODO: send wallet and signed message to backend
+	//		 to link with user (current session).
+	return true
 }
 
 export const storeAuthHeader = async (token, user) => {
@@ -57,12 +137,11 @@ export const storeAuthWaitlistHeader = async (token, waitlistUser) => {
 	}
 }
 
-export const logout = async (navigation) => {
+export const logout = async () => {
 	try {
-		localStorage.removeItem('token')
-		// window.location.href = '/sign-in'
-
-		return apollo.clearStore()
+		localStorage.removeItem('wonderToken')
+		await apollo.clearStore()
+		window.location.href = '/'
 	} catch (exception) {
 		return false
 	}
@@ -73,7 +152,7 @@ export const withAuth = (Component, noCache = false) => {
 		const { navigation, route } = props
 		const [token, setToken] = useState(null)
 		const [tokenLoading, setTokenLoading] = useState(true)
-		const { data, loading, error } = useQuery(WHOAMI)
+		const { data, loading, error } = useQuery(GET_LOGGED_IN_USER)
 		useEffect(() => {
 			;(async () => {
 				const newToken = await getAuthHeader()
@@ -83,10 +162,11 @@ export const withAuth = (Component, noCache = false) => {
 		}, [token])
 
 		if (!tokenLoading && !token) {
+			// Back to the world
+			window.location.href = '/login'
 			return <Component {...props} />
 		} else {
-			const user =
-				data && data.users && data.users.length > 0 ? data.users[0] : null
+			const user = data?.getLoggedinUser
 			return (
 				<MyContext.Provider value={user}>
 					<Component {...props} user={user} />

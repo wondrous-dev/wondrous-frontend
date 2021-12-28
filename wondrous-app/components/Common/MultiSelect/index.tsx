@@ -23,22 +23,21 @@ const MenuProps = {
 			padding: '15px',
 		},
 	},
-};
-
+}
 
 export const MultiSelect = (props) => {
-	const { options } = props;
-	const [value, setValue] = useState([]);
+	const { options } = props
+	const [value, setValue] = useState([])
 
 	const handleChange = (event) => {
 		const {
 			target: { value },
-		} = event;
+		} = event
 		setValue(
 			// On autofill we get a the stringified value.
-			typeof value === 'string' ? value.split(',') : value,
-		);
-	};
+			typeof value === 'string' ? value.split(',') : value
+		)
+	}
 
 	const resetValue = () => {
 		setValue([])
@@ -80,12 +79,10 @@ export const MultiSelect = (props) => {
 				)}
 				MenuProps={MenuProps}
 			>
-				<MultiSelectMenuHeader onClick={(e)=>e.stopPropagation()}>
-					<MultiSelectCounter>
-						{value.length} selected
-					</MultiSelectCounter>
+				<MultiSelectMenuHeader onClick={(e) => e.stopPropagation()}>
+					<MultiSelectCounter>{value.length} selected</MultiSelectCounter>
 					<MultiSelectClearButton
-						onClick={(e)=> {
+						onClick={(e) => {
 							e.stopPropagation()
 							resetValue()
 						}}
@@ -94,14 +91,11 @@ export const MultiSelect = (props) => {
 					</MultiSelectClearButton>
 				</MultiSelectMenuHeader>
 				{options.map((name) => (
-					<MultiSelectMenuItem
-						key={name}
-						value={name}
-					>
+					<MultiSelectMenuItem key={name} value={name}>
 						{name}
 					</MultiSelectMenuItem>
 				))}
 			</MultiSelectSelector>
 		</MultiSelectForm>
-	);
+	)
 }

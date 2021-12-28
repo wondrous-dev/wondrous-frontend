@@ -1,16 +1,16 @@
-import React, {useRef} from 'react'
-import {useDrop} from 'react-dnd'
+import React, { useRef } from 'react'
+import { useDrop } from 'react-dnd'
 
 import {
-  TASK_STATUS_DONE,
-  TASK_STATUS_IN_PROGRESS,
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_TODO,
+	TASK_STATUS_DONE,
+	TASK_STATUS_IN_PROGRESS,
+	TASK_STATUS_IN_REVIEW,
+	TASK_STATUS_TODO,
 } from '../../../../utils/constants'
 
 import { ToDo, InProgress, Done } from '../../../Icons'
 import TaskCard from '../TaskCard/taskCard'
-import DraggableCard, {ItemTypes} from '../TaskCard/DraggableCard'
+import DraggableCard, { ItemTypes } from '../TaskCard/DraggableCard'
 
 import {
   TaskColumnContainer,
@@ -20,47 +20,41 @@ import {
 } from './styles'
 
 interface ITaskColumn {
-  cardsList: Array<any>
-  moveCard: any
-  status: string
+	cardsList: Array<any>
+	moveCard: any
+	status: string
 }
 
 const TITLES = {
-  [TASK_STATUS_TODO]: 'To-do',
-  [TASK_STATUS_IN_PROGRESS]: 'In-Progress',
-  [TASK_STATUS_IN_REVIEW]: 'In-Review',
-  [TASK_STATUS_DONE]: 'Done',
+	[TASK_STATUS_TODO]: 'To-do',
+	[TASK_STATUS_IN_PROGRESS]: 'In-Progress',
+	[TASK_STATUS_IN_REVIEW]: 'In-Review',
+	[TASK_STATUS_DONE]: 'Done',
 }
 
 const HEADER_ICONS = {
-  [TASK_STATUS_TODO]: ToDo,
-  [TASK_STATUS_IN_PROGRESS]: InProgress,
-  // [TASK_STATUS_IN_REVIEW]: InReview,
-  [TASK_STATUS_DONE]: Done,
+	[TASK_STATUS_TODO]: ToDo,
+	[TASK_STATUS_IN_PROGRESS]: InProgress,
+	// [TASK_STATUS_IN_REVIEW]: InReview,
+	[TASK_STATUS_DONE]: Done,
 }
 
 const ColumnDropZone = ({ status, moveCard, children }) => {
-  const ref = useRef(null)
-  const [, drop] = useDrop({
-    accept: ItemTypes.CARD,
-    drop(item: any) {
-      moveCard(item.id, status)
-    }
-  })
-  drop(ref)
-  return (
-    <div ref={ref}>{children}</div>
-  )
+	const ref = useRef(null)
+	const [, drop] = useDrop({
+		accept: ItemTypes.CARD,
+		drop(item: any) {
+			moveCard(item.id, status)
+		},
+	})
+	drop(ref)
+	return <div ref={ref}>{children}</div>
 }
 
 const TaskColumn = (props: ITaskColumn) => {
-  const {
-    cardsList,
-    moveCard,
-    status,
-  } = props
+	const { cardsList, moveCard, status } = props
 
-  const HeaderIcon = HEADER_ICONS[status]
+	const HeaderIcon = HEADER_ICONS[status]
 
   return (
     <TaskColumnContainer>

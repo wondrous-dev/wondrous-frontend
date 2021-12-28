@@ -1,5 +1,5 @@
 import React from 'react'
-import { InputAdornment} from '@material-ui/core'
+import { InputAdornment } from '@material-ui/core'
 
 import SearchIcon from '../../Icons/search'
 import Wrapper from '../wrapper/wrapper'
@@ -7,17 +7,10 @@ import Wrapper from '../wrapper/wrapper'
 import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard'
 import { MultiSelect } from '../../Common/MultiSelect'
 
-import {
-	BoardsActivity,
-	BoardsActivityInput,
-	BoardsContainer,
-} from './styles'
+import { BoardsActivity, BoardsActivityInput, BoardsContainer } from './styles'
 
 const Boards = (props) => {
-	const {
-		selectOptions,
-		tasksList,
-	} = props
+	const { selectOptions, tasksList } = props
 
 	return (
 		<Wrapper>
@@ -27,21 +20,17 @@ const Boards = (props) => {
 						placeholder='Search people or pods...'
 						InputProps={{
 							startAdornment: (
-								<InputAdornment position='start'>
+								<InputAdornment position="start">
 									<SearchIcon />
 								</InputAdornment>
 							),
 						}}
 					/>
 
-					<MultiSelect
-						options={selectOptions}
-					/>
-
+					<MultiSelect options={selectOptions} />
 				</BoardsActivity>
 
 				<KanbanBoard tasksList={tasksList} />
-
 			</BoardsContainer>
 		</Wrapper>
 	)

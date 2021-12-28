@@ -39,3 +39,12 @@ export const GET_LOGGED_IN_WAITLIST_USER = gql`
 	}
 	${LoggedinWaitlistUserFragment}
 `
+
+export const GET_USER_SIGNING_MESSAGE = gql`
+	query getUserSigningMessage($web3Address: String!, $blockchain: String!) {
+		getUserSigningMessage(web3Address: $web3Address, blockchain: $blockchain) {
+			userExists,
+			signingMessage
+		}
+	}
+`

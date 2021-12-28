@@ -14,9 +14,14 @@ import {
 import SettingsIcon from '../Icons/settings'
 import ExitIcon from '../Icons/exit'
 import BackArrowIcon from '../Icons/backArrow'
+import { logout } from '../Auth/withAuth'
 
 const SideBarComponent = (props) => {
 	const { listItems } = props
+
+	const signOut = () => {
+		logout()
+	}
 
 	return (
 		<DrawerComponent variant="permanent" anchor="left">
@@ -35,7 +40,7 @@ const SideBarComponent = (props) => {
 					<DrawerBottomButton>
 						<SettingsIcon />
 					</DrawerBottomButton>
-					<DrawerBottomButton>
+					<DrawerBottomButton onClick={signOut}>
 						<ExitIcon />
 					</DrawerBottomButton>
 					<DrawerBackButton>

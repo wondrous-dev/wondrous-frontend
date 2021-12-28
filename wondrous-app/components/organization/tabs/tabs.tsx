@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import Boards from '../boards/boards'
 import About from '../about/about'
 
-import {StyledTabs} from './styles'
+import { StyledTabs } from './styles'
 
 const tabsLinks = [
 	{
@@ -24,7 +24,7 @@ const tabsLinks = [
 ]
 
 const Tabs = (props) => {
-	const {children} = props
+	const { children } = props
 
 	const router = useRouter()
 
@@ -33,7 +33,7 @@ const Tabs = (props) => {
 	return (
 		<div>
 			<StyledTabs value={pathname}>
-				{tabsLinks.map(tab => (
+				{tabsLinks.map((tab) => (
 					<Link
 						// @ts-ignore
 						value={tab.href}
@@ -46,9 +46,7 @@ const Tabs = (props) => {
 					</Link>
 				))}
 			</StyledTabs>
-			<div>
-				{children}
-			</div>
+			<div>{children}</div>
 		</div>
 	)
 }

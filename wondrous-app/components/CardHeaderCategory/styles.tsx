@@ -2,29 +2,29 @@ import styled from 'styled-components'
 import { Typography } from '@material-ui/core'
 
 import {
-  CheckedIcon,
-  GreenStarIcon,
-  InProgressIcon,
-  RedStarIcon,
-  ToDoIcon,
-  YellowStarIcon,
+	CheckedIcon,
+	GreenStarIcon,
+	InProgressIcon,
+	RedStarIcon,
+	ToDoIcon,
+	YellowStarIcon,
 } from '../Icons/taskTypes'
 
 export const CardCategoryBlock = styled.div`
-   position: relative;
-   max-width: 80px;
-   width: 100%;
-   display: flex;
-   flex-direction: row-reverse;
-   align-items: center;
+	position: relative;
+	max-width: 80px;
+	width: 100%;
+	display: flex;
+	flex-direction: row-reverse;
+	align-items: center;
 `
 
 export const CardCategoryIconContainer = styled.div`
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 5;
+	position: absolute;
+	left: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 5;
 
   display: flex;
   align-items: center;
@@ -36,8 +36,8 @@ export const CardCategoryIconContainer = styled.div`
 `
 
 export const CardCategoryDoneIcon = styled(CheckedIcon)`
-  width: 20px;
-  height: 20px;
+	width: 20px;
+	height: 20px;
 `
 
 export const CardCategoryInfoBlock = styled.div`
@@ -55,17 +55,17 @@ export const CardCategoryInfoBlock = styled.div`
 
 export const CardCategoryInfoBlockText = styled(Typography)`
 	&& {
-    font-weight: 600;
-    font-size: 13px;
-    line-height: 14px;
-    letter-spacing: 0.01em;
-    color: #ffffff;
+		font-weight: 600;
+		font-size: 13px;
+		line-height: 14px;
+		letter-spacing: 0.01em;
+		color: #ffffff;
 	}
 `
 
 export const CardCategoryDoneStarIcon = styled(GreenStarIcon)`
-  width: 10px;
-  height: 10px;
+	width: 10px;
+	height: 10px;
 `
 
 export const CardCategoryInProgressIcon = styled(InProgressIcon)`
@@ -79,8 +79,8 @@ export const CardCategoryInProgressStarIcon = styled(YellowStarIcon)`
 `
 
 export const CardCategoryToDoIcon = styled(ToDoIcon)`
-  width: 20px;
-  height: 20px;
+	width: 20px;
+	height: 20px;
 `
 
 export const CardCategoryToDoStarIcon = styled(RedStarIcon)`
