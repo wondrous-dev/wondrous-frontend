@@ -8,7 +8,6 @@ import {
   TASK_STATUS_TODO,
 } from '../../../../utils/constants'
 
-import PlusIcon from '../../../Icons/plus'
 import { ToDo, InProgress, Done } from '../../../Icons'
 import TaskCard from '../TaskCard/taskCard'
 import DraggableCard, {ItemTypes} from '../TaskCard/DraggableCard'
@@ -17,7 +16,7 @@ import {
   TaskColumnContainer,
   TaskColumnContainerHeader,
   TaskColumnContainerHeaderTitle,
-  TaskColumnContainerHeaderPlusButton,
+  TaskColumnContainerCount
 } from './styles'
 
 interface ITaskColumn {
@@ -70,9 +69,9 @@ const TaskColumn = (props: ITaskColumn) => {
         <TaskColumnContainerHeaderTitle>
           {TITLES[status]}
         </TaskColumnContainerHeaderTitle>
-        <TaskColumnContainerHeaderPlusButton>
-          <PlusIcon />
-        </TaskColumnContainerHeaderPlusButton>
+        <TaskColumnContainerCount>
+          {cardsList.length}
+        </TaskColumnContainerCount>
       </TaskColumnContainerHeader>
       {cardsList.map((card) => (
         <DraggableCard
