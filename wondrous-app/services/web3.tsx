@@ -4,10 +4,9 @@ import { ethers } from 'ethers'
 import axios, { AxiosInstance } from 'axios'
 // Need Infura API Key for this one:
 // import WalletConnectProvider from '@walletconnect/web3-provider'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { IAssetData } from '../types/assets'
-import { generateRandomString } from '../utils'
 
 const CHAINS = {
 	1: 'eth'
@@ -16,8 +15,6 @@ const CHAINS = {
 // Handler of Web3 State for the app
 export const useWonderWeb3 = () => {
 	// Some don't need state management
-	let web3 = null
-	let provider = null
 
 	const [accounts, setAccounts] = useState([])
 	const [assets, setAssets] = useState([])
@@ -25,7 +22,7 @@ export const useWonderWeb3 = () => {
 	const [wonder, setWonder] = useState({ amount: 0 })
 	const [fetching, setFetching] = useState(false)
 
-	let subscribed = false
+	const [subscribed, setSubscribed] = useState(false)
 
 	const chainName = useMemo(() => {
 		return CHAINS[chain] || 'none' 
@@ -63,19 +60,18 @@ export const useWonderWeb3 = () => {
 		const web3Modal = new Web3Modal()
 
 		try {
-			provider = await web3Modal.connect()
+			const provider = await web3Modal.connect()
 			await subscribeProvider(provider)
-			web3 = await initWeb3(provider)
+			const web3 = await initWeb3(provider)
+			if (web3) {
+				const a = await web3.eth.getAccounts()
+				const c = await web3.eth.chainId()
+	
+				setAccounts(a)
+				setChain(c)
+			}
 		} catch (e) {
 			console.log('Error', e)
-		}
-
-		if (web3) {
-			const a = await web3.eth.getAccounts()
-			const c = await web3.eth.chainId()
-
-			await setAccounts(a)
-			await setChain(c)
 		}
 
 		setConnecting(false)
@@ -129,7 +125,7 @@ export const useWonderWeb3 = () => {
 			provider.on('chainChanged', async (chainId: number) => {
 				setChain(chainId)
 			})
-			subscribed = true
+			setSubscribed(true)
 		}
 	}
 
@@ -149,8 +145,8 @@ export const useWonderWeb3 = () => {
 		}
 	}
 
-	const disconnect = async () => {
-		await cleanWallet()
+	const disconnect = () => {
+		cleanWallet()
 		return true
 	}
 
