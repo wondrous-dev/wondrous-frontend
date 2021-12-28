@@ -18,6 +18,8 @@ const ButtonInner = styled.button`
 	font-size: 16px;
 	border: none;
 	color: white;
+
+	cursor: pointer;
 `
 
 const ButtonWrapper = styled.div`

@@ -1,52 +1,6 @@
 import styled from 'styled-components'
 import { Midnight, Background, White } from '../../../../theme/colors'
 
-export const HeaderWrapper = styled.header`
-	position: relative;
-
-	height: 70px;
-	width: 100%;
-	padding-bottom: 2px;
-
-	&::after {
-		content: '';
-		position: absolute;
-		bottom: 0;
-		left: 0;
-
-		width: 100%;
-		height: 2px;
-
-		background: rgb(75, 75, 75);
-		background: linear-gradient(
-			90deg,
-			rgba(75, 75, 75, 1) 0%,
-			rgba(35, 35, 35, 1) 100%
-		);
-	}
-`
-
-const HeaderInner = styled.div`
-	display: flex;
-	align-items: center;
-
-	height: 100%;
-	width: 100%;
-	padding: 15px 20px;
-	background: ${Midnight};
-
-	& > .logo {
-		flex: 0 0 auto;
-		height: 31px;
-	}
-`
-
-export const Header = ({ children }) => (
-	<HeaderWrapper>
-		<HeaderInner>{children}</HeaderInner>
-	</HeaderWrapper>
-)
-
 const MainBgShape = styled.div``
 
 export const MainWrapper = styled.main`
@@ -61,6 +15,7 @@ export const MainWrapper = styled.main`
 	}
 
 	padding: 36px;
+	padding-top: 95px;
 	padding-bottom: 200px;
 
 	color: ${White};

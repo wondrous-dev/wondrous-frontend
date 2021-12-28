@@ -43,7 +43,7 @@ export const TaskMedia = (props) => {
 		),
 	}
 	const mediaContent = mediaContentComponents[type] || (
-		<TaskMediaUnsuported>Medua Not supported.</TaskMediaUnsuported>
+		<TaskMediaUnsuported>Media Not supported.</TaskMediaUnsuported>
 	)
 
 	return (

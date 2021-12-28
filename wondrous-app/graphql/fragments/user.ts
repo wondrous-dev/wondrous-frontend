@@ -3,13 +3,10 @@ import { gql } from '@apollo/client'
 export const LoggedinUserFragment = gql`
 	fragment LoggedinUser on User {
 		id
-		country
-		displayName
-		email
+		username
+		activeEthAddress
 		profilePicture
-		accountType
-		userType
-		createdAt
+		thumbnailPicture
 	}
 `
 

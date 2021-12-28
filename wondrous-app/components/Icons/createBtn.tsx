@@ -3,9 +3,9 @@ import React from 'react'
 export default function CreateBtnIcon() {
 	return (
 		<svg
-			width="35"
+			width="33"
 			height="35"
-			viewBox="0 0 35 35"
+			viewBox="0 1 35 35"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
 		>

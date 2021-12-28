@@ -49,7 +49,7 @@ const SIDEBAR_LIST_ITEMS = [
 ]
 
 const Wrapper = (props) => {
-	const { children } = props;
+	const { children } = props
 
 	return (
 		<>
@@ -91,10 +91,7 @@ const Wrapper = (props) => {
 							</HeaderActivity>
 						</TokenHeader>
 
-						<Tabs>
-							{children}
-						</Tabs>
-
+						<Tabs>{children}</Tabs>
 					</ContentContainer>
 				</Content>
 			</OverviewComponent>
@@ -102,4 +99,4 @@ const Wrapper = (props) => {
 	)
 }
 
-export default Wrapper;
+export default Wrapper

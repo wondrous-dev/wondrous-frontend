@@ -6,6 +6,8 @@ import SearchIcon from '../Icons/search'
 import NotificationsIcon from '../Icons/notifications'
 import CreateBtnIcon from '../Icons/createBtn'
 
+import Wallet from '../Common/Wallet'
+
 import {
 	Header,
 	HeaderHomeButton,
@@ -18,16 +20,20 @@ import {
 	HeaderCreateButton,
 	StyledBadge,
 } from './styles'
+import Link from 'next/link'
+import { PaddedParagraph } from '../Common/text'
 
-const HeaderComponent = () => {
+const HeaderComponent = (props) => {
 	return (
 		<Header>
 			<HeaderContainer>
 				<HeaderLeftBlock>
 					<HeaderLogo />
-					<HeaderHomeButton>
-						<HomeIcon />
-					</HeaderHomeButton>
+					<Link passHref={true} href="/dashboard">
+						<HeaderHomeButton>
+							<HomeIcon />
+						</HeaderHomeButton>
+					</Link>
 					<HeaderInput
 						placeholder="Search wonder..."
 						InputProps={{
@@ -40,13 +46,14 @@ const HeaderComponent = () => {
 					/>
 				</HeaderLeftBlock>
 				<HeaderRightBlock>
+					<Wallet />
 					<StyledBadge color="primary" badgeContent={5}>
 						<HeaderNotificationsButton>
 							<NotificationsIcon />
 						</HeaderNotificationsButton>
 					</StyledBadge>
-					<HeaderCreateButton>
-						Create
+					<HeaderCreateButton highlighted="true">
+						<span style={{ padding: '0px 8px' }}>Create</span>
 						<CreateBtnIcon />
 					</HeaderCreateButton>
 				</HeaderRightBlock>

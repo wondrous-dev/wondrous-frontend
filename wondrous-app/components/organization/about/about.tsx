@@ -57,13 +57,7 @@ const About = (props) => {
 		pods = [],
 	} = props
 
-	const {
-		completedTasks,
-		resume,
-		skills,
-		socialMedia,
-		status,
-	} = profileInfo
+	const { completedTasks, resume, skills, socialMedia, status } = profileInfo
 
 	return (
 		<Wrapper>
@@ -73,9 +67,7 @@ const About = (props) => {
 						<AboutInfoTableRowNameBlock>
 							<AboutInfoTableRowTitle>
 								<SkillsIcon />
-								<AboutInfoTableRowTitleText>
-									Skills
-								</AboutInfoTableRowTitleText>
+								<AboutInfoTableRowTitleText>Skills</AboutInfoTableRowTitleText>
 							</AboutInfoTableRowTitle>
 						</AboutInfoTableRowNameBlock>
 						<AboutInfoTableRowContent>
@@ -93,9 +85,7 @@ const About = (props) => {
 						<AboutInfoTableRowNameBlock>
 							<AboutInfoTableRowTitle>
 								<ResumeIcon />
-								<AboutInfoTableRowTitleText>
-									Resume
-								</AboutInfoTableRowTitleText>
+								<AboutInfoTableRowTitleText>Resume</AboutInfoTableRowTitleText>
 							</AboutInfoTableRowTitle>
 						</AboutInfoTableRowNameBlock>
 						<AboutInfoTableRowContent>
@@ -114,9 +104,7 @@ const About = (props) => {
 						<AboutInfoTableRowNameBlock>
 							<AboutInfoTableRowTitle>
 								<StatusIcon />
-								<AboutInfoTableRowTitleText>
-									Status
-								</AboutInfoTableRowTitleText>
+								<AboutInfoTableRowTitleText>Status</AboutInfoTableRowTitleText>
 							</AboutInfoTableRowTitle>
 						</AboutInfoTableRowNameBlock>
 						<AboutInfoTableRowContent>
@@ -133,9 +121,7 @@ const About = (props) => {
 						<AboutInfoTableRowNameBlock>
 							<AboutInfoTableRowTitle>
 								<SocialIcon />
-								<AboutInfoTableRowTitleText>
-									Social
-								</AboutInfoTableRowTitleText>
+								<AboutInfoTableRowTitleText>Social</AboutInfoTableRowTitleText>
 							</AboutInfoTableRowTitle>
 						</AboutInfoTableRowNameBlock>
 						<AboutInfoTableRowContent>
@@ -153,25 +139,20 @@ const About = (props) => {
 				</AboutInfoTable>
 
 				<AboutInfoContainer>
-
 					<AboutInfoBlock>
 						<AboutInfoBlockHeader>
 							<AboutInfoBlockHeaderAmount>
 								{organizations.length}
 							</AboutInfoBlockHeaderAmount>
-							<AboutInfoBlockHeaderText>
-								Organisations
-							</AboutInfoBlockHeaderText>
+							<AboutInfoBlockHeaderText>Organisations</AboutInfoBlockHeaderText>
 						</AboutInfoBlockHeader>
 						<AboutInfoBlockContent>
-
 							{organizations.map((organization) => (
 								<AboutOrganisationsCard
 									key={organizations.id}
 									{...organization}
 								/>
 							))}
-
 						</AboutInfoBlockContent>
 					</AboutInfoBlock>
 
@@ -180,19 +161,12 @@ const About = (props) => {
 							<AboutInfoBlockHeaderAmount>
 								{pods.length}
 							</AboutInfoBlockHeaderAmount>
-							<AboutInfoBlockHeaderText>
-								Pods
-							</AboutInfoBlockHeaderText>
+							<AboutInfoBlockHeaderText>Pods</AboutInfoBlockHeaderText>
 						</AboutInfoBlockHeader>
 						<AboutInfoBlockContent>
-
 							{pods.map((pod) => (
-								<AboutPodsCard
-									key={pod.id}
-									{...pod}
-								/>
+								<AboutPodsCard key={pod.id} {...pod} />
 							))}
-
 						</AboutInfoBlockContent>
 					</AboutInfoBlock>
 					<AboutInfoBlock>
@@ -203,20 +177,16 @@ const About = (props) => {
 							<AboutInfoBlockHeaderText>
 								completed tasks
 							</AboutInfoBlockHeaderText>
-							<AboutInfoBlockHeaderSeeAll>
-								See all
-							</AboutInfoBlockHeaderSeeAll>
+							<AboutInfoBlockHeaderSeeAll>See all</AboutInfoBlockHeaderSeeAll>
 						</AboutInfoBlockHeader>
 						<AboutInfoBlockContent>
-
 							<AboutCompletedCard lastCompletedTask={lastCompletedTask} />
-
 						</AboutInfoBlockContent>
 					</AboutInfoBlock>
 				</AboutInfoContainer>
 			</AboutSection>
 		</Wrapper>
-	);
+	)
 }
 
 export default About

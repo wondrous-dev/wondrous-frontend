@@ -29,13 +29,14 @@ import {
 	PostComments,
 	PostShares,
 	PostSetting,
-	PostsContainer, PostTaskHeaderLogo
+	PostsContainer,
+	PostTaskHeaderLogo,
 } from './styles'
 import { CardHeaderCategory } from '../../CardHeaderCategory'
 import LikeIcon from '../../Icons/like'
 import CommentsIcon from '../../Icons/comments'
 import ShareIcon from '../../Icons/share'
-import {TASK_STATUS_DONE} from "../../../utils/constants";
+import { TASK_STATUS_DONE } from '../../../utils/constants'
 
 const PostCard = () => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null)
@@ -100,7 +101,6 @@ const PostCard = () => {
 							compensation={{ amount: 3200, currency: 'wonder' }}
 							status={TASK_STATUS_DONE}
 						/>
-
 					</PostTaskHeader>
 					<PostTaskContent>
 						<PostTaskTextBlock>
@@ -111,10 +111,7 @@ const PostCard = () => {
 						</PostTaskTextBlock>
 						<PostTaskImageBlock>
 							<PostLeftImage>
-								<LogotypeWithText
-									width={256}
-									height={132}
-								/>
+								<LogotypeWithText width={256} height={132} />
 							</PostLeftImage>
 							<PostTaskImage src="/images/overview/graphs.png" />
 						</PostTaskImageBlock>
