@@ -2,10 +2,11 @@ import React from 'react'
 import { InputAdornment } from '@material-ui/core'
 
 import SearchIcon from '../../Icons/search'
-import Wrapper from '../../profile/wrapper/wrapper'
+import Wrapper from '../wrapper/wrapper'
 
 import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard'
 import { MultiSelect } from '../../Common/MultiSelect'
+import { ButtonGroup } from '../../Common/ButtonGroup'
 
 import { BoardsActivity, BoardsActivityInput, BoardsContainer } from './styles'
 
@@ -17,7 +18,7 @@ const Boards = (props) => {
 			<BoardsContainer>
 				<BoardsActivity>
 					<BoardsActivityInput
-						placeholder="Search people or tasks..."
+						placeholder="Search people or pods..."
 						InputProps={{
 							startAdornment: (
 								<InputAdornment position="start">
@@ -28,6 +29,8 @@ const Boards = (props) => {
 					/>
 
 					<MultiSelect options={selectOptions} />
+
+					<ButtonGroup></ButtonGroup>
 				</BoardsActivity>
 
 				<KanbanBoard tasksList={tasksList} />

@@ -9,7 +9,7 @@ import {
 	Typography,
 } from '@material-ui/core'
 
-export const MultiSelectForm = styled(FormControl)({
+export const MultiSelectForm1 = styled(FormControl)({
 	'&.MuiFormControl-root': {
 		position: 'relative',
 		width: 325,
@@ -20,8 +20,41 @@ export const MultiSelectForm = styled(FormControl)({
 
 	'& .PrivateNotchedOutline-root-1': {
 		border: 'none',
-	},
+	}
 })
+
+export const MultiSelectForm = styled(FormControl)`
+	&.MuiFormControl-root {
+		position: relative;
+		width: 325px;
+		min-height: 40px;
+		background: linear-gradient(
+			169.47deg,
+			rgba(75, 75, 75, 0.6) 7.84%,
+			rgba(35, 35, 35, 0.6) 108.71%
+		);
+		border-radius: 6px;
+		z-index: 1;
+	}
+	
+	&.privatenotchedoutline-root-1: {
+		border: none;
+	}
+	
+	.MuiInputBase-root::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		margin: 0.1em;
+		z-index: -1;
+		border-radius: inherit;
+		background: linear-gradient(90.93deg, #1e1e1e 3.85%, #141414 101.76%);
+	}
+`
+
 
 export const MultiSelectInputLabel = styled(InputLabel)({
 	'&.MuiInputLabel-root': {
@@ -31,7 +64,7 @@ export const MultiSelectInputLabel = styled(InputLabel)({
 		alignItems: 'center',
 		lineHeight: '19px',
 		letterSpacing: '0.01em',
-		color: '#C4C4C4',
+		color: "#C4C4C4",
 		zIndex: 1000,
 
 		'& svg': {
@@ -41,7 +74,7 @@ export const MultiSelectInputLabel = styled(InputLabel)({
 	},
 
 	'&.MuiInputLabel-animated': {
-		color: '#C4C4C4 !important',
+		color: "#C4C4C4 !important",
 	},
 })
 
@@ -60,16 +93,16 @@ export const MultiSelectSelector = styled(Select)({
 		border: '1px solid #7427FF',
 		color: '#CCBBFF',
 		background: '#121212',
-	},
+	}
 })
 
 export const MultiSelectMenuHeader = styled.div`
-	width: 100%;
-	height: 30px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 10px;
+  width: 100%;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
 `
 
 export const MultiSelectMenuItem = styled(MenuItem)({
@@ -87,31 +120,31 @@ export const MultiSelectMenuItem = styled(MenuItem)({
 	'&.MuiListItem-root.Mui-selected': {
 		border: '1px solid #7427FF',
 		color: '#CCBBFF',
-	},
+	}
 })
 
 export const MultiSelectCounter = styled(Typography)`
-	&& {
-		font-weight: bold;
-		font-size: 14px;
-		line-height: 19px;
-		letter-spacing: 0.01em;
-		color: #c4c4c4;
-	}
+  && {
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 19px;
+    letter-spacing: 0.01em;
+    color: #C4C4C4;
+  }
 `
 
 export const MultiSelectClearButton = styled(Button)`
-	&& {
-		border: 1px solid #7427ff;
-		box-sizing: border-box;
-		border-radius: 4px;
-		width: 73px;
-		height: 28px;
-
-		//text
-		font-weight: 500;
-		font-size: 13px;
-		line-height: 150%;
-		color: #ffffff;
-	}
+  && {
+    border: 1px solid #7427FF;
+    box-sizing: border-box;
+    border-radius: 4px;
+    width: 73px;
+    height: 28px;
+    
+    //text
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 150%;
+    color: #FFFFFF;
+  }
 `
