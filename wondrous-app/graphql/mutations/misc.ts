@@ -5,12 +5,12 @@ import {
 } from '../fragments/user'
 
 export const CREATE_USER = gql`
-	mutation createUser($email: String!, $password: String) {
-		createOrGetUser(email: $email, password: $password) {
-			token
-			waitlistUser {
+	mutation emailSignup($email: String!, $password: String!) {
+		emailSignup(input: { email: $email, password: $password }) {
+			user {
 				...LoggedinUser
 			}
+			token
 		}
 	}
 	${LoggedinUserFragment}

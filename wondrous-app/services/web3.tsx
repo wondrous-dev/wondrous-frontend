@@ -9,7 +9,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { IAssetData } from '../types/assets'
 
 const CHAINS = {
-	1: 'eth'
+	1: 'eth',
 }
 
 // Handler of Web3 State for the app
@@ -25,7 +25,7 @@ export const useWonderWeb3 = () => {
 	const [subscribed, setSubscribed] = useState(false)
 
 	const chainName = useMemo(() => {
-		return CHAINS[chain] || 'none' 
+		return CHAINS[chain] || 'none'
 	}, [chain])
 
 	const address = useMemo(() => {
@@ -66,7 +66,7 @@ export const useWonderWeb3 = () => {
 			if (web3) {
 				const a = await web3.eth.getAccounts()
 				const c = await web3.eth.chainId()
-	
+
 				setAccounts(a)
 				setChain(c)
 			}

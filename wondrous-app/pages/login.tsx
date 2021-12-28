@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { Card } from '../components/Common/auth'
+import { Card, CardBody, CardFooter } from '../components/Common/auth'
 import { Button } from '../components/Common/button'
 import AuthLayout from '../components/Common/Layout/Auth'
 import { LineWithText, Line } from '../components/Common/lines'
@@ -19,8 +19,11 @@ import { Grey50 } from '../theme/colors'
 import { Metamask } from '../components/Icons/metamask'
 import { EmailIcon, LockIcon } from '../components/Icons/userpass'
 import { useWonderWeb3 } from '../services/web3'
-import { emailSignin, getUserSigningMessage, walletSignin } from '../components/Auth/withAuth'
-import { ErrorMessage } from 'formik'
+import {
+	emailSignin,
+	getUserSigningMessage,
+	walletSignin,
+} from '../components/Auth/withAuth'
 
 const Login = ({ csrfToken }) => {
 	const wonderWeb3 = useWonderWeb3()
@@ -47,9 +50,12 @@ const Login = ({ csrfToken }) => {
 		await wonderWeb3.onConnect()
 
 		// Retrieve Signed Message
-		const messageToSign = await getUserSigningMessage(wonderWeb3.address, wonderWeb3.chainName)
+		const messageToSign = await getUserSigningMessage(
+			wonderWeb3.address,
+			wonderWeb3.chainName
+		)
 
-		if(messageToSign) {
+		if (messageToSign) {
 			const signedMessage = await wonderWeb3.signMessage(messageToSign)
 
 			if (signedMessage) {
@@ -64,7 +70,9 @@ const Login = ({ csrfToken }) => {
 				setErrorMessage('You need to sign the message on your Metamask')
 			}
 		} else {
-			setErrorMessage('There is an error with the site. Check with the Administrator.')
+			setErrorMessage(
+				'There is an error with the site. Check with the Administrator.'
+			)
 		}
 	}
 
@@ -81,53 +89,59 @@ const Login = ({ csrfToken }) => {
 			<LoginWrapper>
 				<TopBubble src="/images/login/top-floater-bubble.png" alt="" />
 				<Card>
-					<SmallLogo />
-					<h1>Login</h1>
-					<Form onSubmit={handleSubmit}>
-						<input name="csrfToken" type="hidden" defaultValue={csrfToken} />
-						{errorMessage ? <LoginError>{errorMessage}</LoginError> : ''}
-						<Field
-							type="email"
-							name="email"
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
-							placeholder="Enter email address"
-							icon={EmailIcon}
-							required
-						/>
-						<Field
-							type="password"
-							name="password"
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-							placeholder="Enter password"
-							icon={LockIcon}
-							required
-						/>
-						<Button highlighted type="submit" marginTop="25px">
-							Log me in
+					<CardBody>
+						<SmallLogo />
+						<h1>Login</h1>
+						<Form onSubmit={handleSubmit}>
+							<input name="csrfToken" type="hidden" defaultValue={csrfToken} />
+							{errorMessage ? <LoginError>{errorMessage}</LoginError> : ''}
+							<Field
+								type="email"
+								name="email"
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
+								placeholder="Enter email address"
+								icon={EmailIcon}
+								required
+							/>
+							<Field
+								type="password"
+								name="password"
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								placeholder="Enter password"
+								icon={LockIcon}
+								required
+							/>
+							<Button highlighted type="submit" marginTop="25px">
+								Log me in
+							</Button>
+						</Form>
+						<LineWithText>
+							<PaddedParagraph padding="0 10px" color={Grey50}>
+								or
+							</PaddedParagraph>
+						</LineWithText>
+						<Button onClick={loginWithWallet}>
+							<Metamask height="18" width="17" />
+							<PaddedParagraph padding="0 10px">
+								Log in with MetaMask
+							</PaddedParagraph>
 						</Button>
-					</Form>
-					<LineWithText>
-						<PaddedParagraph padding="0 10px" color={Grey50}>
-							or
-						</PaddedParagraph>
-					</LineWithText>
-					<Button onClick={loginWithWallet}>
-						<Metamask height="18" width="17" />
-						<PaddedParagraph padding="0 10px">
-							Log in with MetaMask
-						</PaddedParagraph>
-					</Button>
-					<Line size="80%" />
-					<CenteredFlexRow marginTop="16px">
-						Don&apos;t have an account yet?&nbsp;
-						<StyledLink href="/signup">Sign up for the beta.</StyledLink>
-					</CenteredFlexRow>
-					<CenteredFlexRow>
-						{/* TODO: replace link once we build out a way to report */}
-						<StyledLink href="/report">Problems logging in?</StyledLink>
-					</CenteredFlexRow>
+					</CardBody>
+					<CardFooter>
+						<Line size="80%" />
+						<CenteredFlexRow marginTop="16px">
+							Don&apos;t have an account yet?&nbsp;
+							<StyledLink href="/signup">Sign up for the beta.</StyledLink>
+						</CenteredFlexRow>
+						<CenteredFlexRow>
+							Forgot &nbsp;
+							<StyledLink href="/forgot-password">password</StyledLink>
+							&nbsp; or &nbsp;
+							<StyledLink href="/forgot-email">email</StyledLink>?
+						</CenteredFlexRow>
+					</CardFooter>
 				</Card>
 			</LoginWrapper>
 		</AuthLayout>

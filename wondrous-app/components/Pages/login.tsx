@@ -6,6 +6,7 @@ export const SmallLogo = styled(Logotype)`
 	&& {
 		max-height: 30px;
 		max-width: 130px;
+		margin-bottom: 30px;
 	}
 `
 
