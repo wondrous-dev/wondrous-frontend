@@ -5,6 +5,8 @@ import { SideBarContext } from '../../../utils/contexts'
 import Header from '../../Header'
 import SideBarComponent from '../../SideBar'
 import Tabs from '../tabs/tabs'
+import CreateFormModal from '../../CreateEntity'
+import { shrinkNumber, toggleHtmlOverflow } from '../../../utils/helpers'
 
 import {
 	Content,
@@ -50,12 +52,32 @@ const SIDEBAR_LIST_ITEMS = [
 	},
 ]
 
+const MOCK_ORGANIZATION_DATA = {
+	amount: 1234567,
+	contributors: 201,
+	pods: 11,
+	link: 'https://wonderverse.xyz',
+	title: 'Wonder',
+	description:
+		'Helping DAOs manage projects with web3 native collaboration tools.',
+}
+
 const Wrapper = (props) => {
 	const { children } = props
 	const [minimized, setMinimized] = useState(false)
+
+	const [createFormModal, setCreateFormModal] = useState(false)
+	const [data, setData] = useState(MOCK_ORGANIZATION_DATA)
+	const { amount, contributors, pods, link, title, description } = data
+
+	const toggleCreateFormModal = () => {
+		toggleHtmlOverflow()
+		setCreateFormModal((prevState) => !prevState)
+	}
+
 	return (
 		<>
-			<Header />
+			<Header openCreateFormModal={toggleCreateFormModal} />
 			<SideBarContext.Provider
 				value={{
 					minimized,
@@ -63,6 +85,10 @@ const Wrapper = (props) => {
 				}}
 			>
 				<SideBarComponent listItems={SIDEBAR_LIST_ITEMS} />
+				<CreateFormModal
+					open={createFormModal}
+					toggleOpen={toggleCreateFormModal}
+				/>
 				<OverviewComponent
 					style={{
 						paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
@@ -74,32 +100,33 @@ const Wrapper = (props) => {
 							<TokenHeader>
 								<TokenLogo />
 								<HeaderMainBlock>
-									<HeaderTitle>Wonder</HeaderTitle>
+									<HeaderTitle>{title}</HeaderTitle>
 									<HeaderButtons>
 										<HeaderFollowButton>
-											<HeaderFollowButtonText>1.2m</HeaderFollowButtonText>
+											<HeaderFollowButtonText>
+												{shrinkNumber(amount)}
+											</HeaderFollowButtonText>
 											<HeaderFollowButtonIcon src="/images/overview/icon.png" />
 										</HeaderFollowButton>
 										<HeaderContributeButton>Contribute</HeaderContributeButton>
 									</HeaderButtons>
 								</HeaderMainBlock>
-								<HeaderText>
-									Helping DAOs manage projects with web3 native collaboration
-									tools.
-								</HeaderText>
+								<HeaderText>{description}</HeaderText>
 								<HeaderActivity>
-									<HeaderActivityLink href="https://wonderverse.xyz">
+									<HeaderActivityLink href={link}>
 										<HeaderActivityLinkIcon />
-										wonderverse.xyz
+										{link.replace('https://', '')}
 									</HeaderActivityLink>
 									<HeaderContributors>
-										<HeaderContributorsAmount>201</HeaderContributorsAmount>
+										<HeaderContributorsAmount>
+											{contributors}
+										</HeaderContributorsAmount>
 										<HeaderContributorsText>
 											Contributors
 										</HeaderContributorsText>
 									</HeaderContributors>
 									<HeaderPods>
-										<HeaderPodsAmount>11</HeaderPodsAmount>
+										<HeaderPodsAmount>{pods}</HeaderPodsAmount>
 										<HeaderPodsText>Pods</HeaderPodsText>
 									</HeaderPods>
 								</HeaderActivity>

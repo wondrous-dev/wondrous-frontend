@@ -455,13 +455,34 @@ const DONE = {
 const COLUMNS = [TO_DO, IN_PROGRESS, DONE]
 
 const SELECT_OPTIONS = [
-	'#copywriting (23)',
-	'#growth (23)',
-	'#design (23)',
-	'#community (11)',
-	'#sales (23)',
-	'#tiktok (13)',
-	'#analytics (23)',
+	{
+		label: '#copywriting (23)',
+		value: 'copywriting',
+	},
+	{
+		label: '#growth (23)',
+		value: 'growth',
+	},
+	{
+		label: '#design (23)',
+		value: 'design',
+	},
+	{
+		label: '#community (11)',
+		value: 'community',
+	},
+	{
+		label: '#sales (23)',
+		value: 'sales',
+	},
+	{
+		label: '#tiktok (13)',
+		value: 'tiktok',
+	},
+	{
+		label: '#analytics (23)',
+		value: 'analytics',
+	},
 ]
 
 const BoardsPage = () => {

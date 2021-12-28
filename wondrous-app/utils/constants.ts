@@ -64,3 +64,18 @@ export const CURRENCY_KEYS = {
 }
 
 export const SIDEBAR_WIDTH = '80px'
+export const ENTITIES_TYPES = {
+	TASK: 'task',
+	MILESTONE: 'milestone',
+	POD: 'pod',
+	DAO: 'dao',
+}
+
+export const MEDIA_TYPES = {
+	IMAGE: 'image',
+	TEXT: 'text',
+	AUDIO: 'audio',
+	CODE: 'code',
+	LINK: 'link',
+	VIDEO: 'video',
+}
