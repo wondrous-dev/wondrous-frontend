@@ -1,15 +1,8 @@
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-
-import {
-	TASK_STATUS_DONE,
-	TASK_STATUS_IN_PROGRESS,
-	TASK_STATUS_TODO,
-} from '../../../utils/constants'
-
-import TaskColumn from './TaskColumn/taskColumn'
 import { KanbanBoardContainer } from './styles'
+import TaskColumn from './TaskColumn/taskColumn'
 
 const KanbanBoard = (props) => {
 	const { columns } = props
@@ -25,7 +18,7 @@ const KanbanBoard = (props) => {
 			}
 			const task = columnsState
 				.map(({ tasks }) => tasks.find((task) => task.id === id))
-				.filter(i => i)[0]
+				.filter((i) => i)[0]
 			const updatedTask = { ...task, status }
 			return {
 				...column,
