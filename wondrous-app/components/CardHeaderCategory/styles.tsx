@@ -26,13 +26,13 @@ export const CardCategoryIconContainer = styled.div`
 	transform: translateY(-50%);
 	z-index: 5;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #0F0F0F;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	background: #0f0f0f;
 `
 
 export const CardCategoryDoneIcon = styled(CheckedIcon)`
@@ -41,16 +41,16 @@ export const CardCategoryDoneIcon = styled(CheckedIcon)`
 `
 
 export const CardCategoryInfoBlock = styled.div`
-  z-index: 1;
-  width: 60px;
-  height: 28px;
-  background-color: #0F0F0F;
-  min-width: 50px;
-  border-radius: 300px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 7px 9px;
+	z-index: 1;
+	width: 60px;
+	height: 28px;
+	background-color: #0f0f0f;
+	min-width: 50px;
+	border-radius: 300px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 7px 9px;
 `
 
 export const CardCategoryInfoBlockText = styled(Typography)`

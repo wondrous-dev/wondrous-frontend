@@ -24,7 +24,7 @@ export const MultiSelectForm = styled(FormControl)`
 		z-index: 1;
 		display: flex;
 	}
-	
+
 	.MuiInputBase-root::after {
 		content: '';
 		position: absolute;
@@ -48,7 +48,6 @@ export const MultiSelectForm = styled(FormControl)`
 	}
 `
 
-
 export const MultiSelectInputLabel = styled(InputLabel)({
 	'&.MuiInputLabel-root': {
 		transform: 'translateY(100%)',
@@ -56,7 +55,7 @@ export const MultiSelectInputLabel = styled(InputLabel)({
 		display: 'flex',
 		alignItems: 'center',
 		letterSpacing: '0.01em',
-		color: "#C4C4C4",
+		color: '#C4C4C4',
 
 		'& svg': {
 			marginRight: 8,
@@ -65,7 +64,7 @@ export const MultiSelectInputLabel = styled(InputLabel)({
 	},
 
 	'&.MuiInputLabel-animated': {
-		color: "#C4C4C4 !important",
+		color: '#C4C4C4 !important',
 	},
 })
 
@@ -93,12 +92,12 @@ export const MultiSelectSelector = styled(Select)({
 })
 
 export const MultiSelectMenuHeader = styled.div`
-  width: 100%;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
+	width: 100%;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 10px;
 `
 
 export const MultiSelectMenuItem = styled(MenuItem)({
@@ -116,31 +115,31 @@ export const MultiSelectMenuItem = styled(MenuItem)({
 	'&.MuiListItem-root.Mui-selected': {
 		border: '1px solid #7427FF',
 		color: '#CCBBFF',
-	}
+	},
 })
 
 export const MultiSelectCounter = styled(Typography)`
-  && {
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 19px;
-    letter-spacing: 0.01em;
-    color: #C4C4C4;
-  }
+	&& {
+		font-weight: bold;
+		font-size: 14px;
+		line-height: 19px;
+		letter-spacing: 0.01em;
+		color: #c4c4c4;
+	}
 `
 
 export const MultiSelectClearButton = styled(Button)`
-  && {
-    border: 1px solid #7427FF;
-    box-sizing: border-box;
-    border-radius: 4px;
-    width: 73px;
-    height: 28px;
-    
-    //text
-    font-weight: 500;
-    font-size: 13px;
-    line-height: 150%;
-    color: #FFFFFF;
-  }
+	&& {
+		border: 1px solid #7427ff;
+		box-sizing: border-box;
+		border-radius: 4px;
+		width: 73px;
+		height: 28px;
+
+		//text
+		font-weight: 500;
+		font-size: 13px;
+		line-height: 150%;
+		color: #ffffff;
+	}
 `
