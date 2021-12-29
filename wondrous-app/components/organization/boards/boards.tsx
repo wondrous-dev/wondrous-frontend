@@ -11,7 +11,7 @@ import { ButtonGroup } from '../../Common/ButtonGroup'
 import { BoardsActivity, BoardsActivityInput, BoardsContainer } from './styles'
 
 const Boards = (props) => {
-	const { selectOptions, tasksList } = props
+	const { selectOptions, columns } = props
 
 	return (
 		<Wrapper>
@@ -33,7 +33,7 @@ const Boards = (props) => {
 					<ButtonGroup></ButtonGroup>
 				</BoardsActivity>
 
-				<KanbanBoard tasksList={tasksList} />
+				<KanbanBoard columns={columns} />
 			</BoardsContainer>
 		</Wrapper>
 	)
