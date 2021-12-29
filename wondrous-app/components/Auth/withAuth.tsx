@@ -8,12 +8,72 @@ import {
 	GET_USER_SIGNING_MESSAGE,
 	WHOAMI,
 } from '../../graphql/queries'
-import { LOGIN_MUTATION, LOGIN_WALLET_MUTATION } from '../../graphql/mutations'
+import {
+	CREATE_USER,
+	CREATE_WALLET_USER,
+	LOGIN_MUTATION,
+	LOGIN_WALLET_MUTATION,
+} from '../../graphql/mutations'
 
 const MyContext = React.createContext(null)
 
 export const useMe = () => {
 	return useContext(MyContext)
+}
+
+export const emailSignup = async (email: string, password: string) => {
+	try {
+		const {
+			data: {
+				emailSignup: { user, token },
+			},
+		} = await apollo.mutate({
+			mutation: CREATE_USER,
+			variables: {
+				email,
+				password,
+			},
+		})
+
+		if (user) {
+			// Set Apollo with Session
+			await storeAuthHeader(token, user)
+			return true
+		}
+		return 'This email is already registered. Try recovering password.'
+	} catch (err) {
+		return 'This email is already registered. Try recovering password.'
+	}
+}
+
+export const walletSignup = async (
+	web3Address: string,
+	signedMessage: string,
+	blockchain: string
+) => {
+	try {
+		const {
+			data: {
+				signupWithWeb3: { user, token },
+			},
+		} = await apollo.mutate({
+			mutation: CREATE_WALLET_USER,
+			variables: {
+				web3Address,
+				signedMessage,
+				blockchain,
+			},
+		})
+
+		if (user) {
+			// Set Apollo with Session
+			await storeAuthHeader(token, user)
+			return true
+		}
+		return 'We hit a problem, please contact support.'
+	} catch (err) {
+		return 'We hit a problem, please contact support.'
+	}
 }
 
 export const emailSignin = async (email: string, password: string) => {
@@ -78,8 +138,8 @@ export const getUserSigningMessage = async (
 			query: GET_USER_SIGNING_MESSAGE,
 			variables: {
 				web3Address,
-				blockchain
-			}
+				blockchain,
+			},
 		})
 		return data.getUserSigningMessage.signingMessage
 	} catch (e) {

@@ -1,11 +1,12 @@
 import styled from 'styled-components'
 import { Logotype } from '../Common/ci'
-import { HighlightBlue } from '../../theme/colors'
+import { Red300, Red800, White } from '../../theme/colors'
 
 export const SmallLogo = styled(Logotype)`
 	&& {
 		max-height: 30px;
 		max-width: 130px;
+		margin-bottom: 30px;
 	}
 `
 
@@ -56,7 +57,8 @@ export const LoginError = styled.div`
 	height: 40px;
 	margin: 1em 0;
 
-	background: ${HighlightBlue};
+	background: ${Red800};
+	background: linear-gradient(196.76deg, ${White} -48.71%, ${Red300} 90.48%);
 
 	border-radius: 6px;
 `

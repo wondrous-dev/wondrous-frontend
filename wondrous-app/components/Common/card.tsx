@@ -21,8 +21,8 @@ const BaseCardInner = styled.div`
 	display: flex;
 	flex-direction: column;
 	min-height: 100%;
+	min-width: 100%;
 
-	line-height: 1.1;
 	color: #ffffff;
 	padding: ${createSpacingUnit(4)}px;
 	background: rgb(20, 20, 20);

@@ -9,7 +9,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { IAssetData } from '../types/assets'
 
 const CHAINS = {
-	1: 'eth'
+	1: 'eth',
 }
 
 // Handler of Web3 State for the app
@@ -25,7 +25,7 @@ export const useWonderWeb3 = () => {
 	const [subscribed, setSubscribed] = useState(false)
 
 	const chainName = useMemo(() => {
-		return CHAINS[chain] || 'none' 
+		return CHAINS[chain] || 'none'
 	}, [chain])
 
 	const address = useMemo(() => {
@@ -66,7 +66,7 @@ export const useWonderWeb3 = () => {
 			if (web3) {
 				const a = await web3.eth.getAccounts()
 				const c = await web3.eth.chainId()
-	
+
 				setAccounts(a)
 				setChain(c)
 			}
@@ -85,6 +85,7 @@ export const useWonderWeb3 = () => {
 				const provider = await web3Modal.connect()
 				const prov = new ethers.providers.Web3Provider(provider)
 				const signer = await prov.getSigner()
+
 				// Now sign message
 				const signedMessage = await signer.signMessage(message)
 				setConnecting(false)
@@ -95,8 +96,9 @@ export const useWonderWeb3 = () => {
 				setConnecting(false)
 				return false
 			}
+		} else {
+			return false
 		}
-		return null
 	}
 
 	const getTokenBalance = async (tokenAddress: string) => {
@@ -170,6 +172,7 @@ export const useWonderWeb3 = () => {
 		assets,
 		chain,
 		chainName,
+		subscribed,
 		onConnect,
 		disconnect,
 		signMessage,
