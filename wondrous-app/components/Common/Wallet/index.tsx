@@ -94,7 +94,7 @@ const Wallet = () => {
 			const selectedCurrency = wonderWeb3.assets.filter(
 				(c) => c.symbol == currencyCode
 			)[0]
-			if (selectedCurrency) {
+			if (selectedCurrency && selectedCurrency.balance) {
 				const balance =
 					parseFloat(formatEther(selectedCurrency.balance)).toPrecision(4) + ' '
 				setCurrency({
