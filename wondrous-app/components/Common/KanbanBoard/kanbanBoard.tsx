@@ -14,29 +14,25 @@ import { KanbanBoardContainer } from './styles'
 const KanbanBoard = (props) => {
 	const { columns } = props
 	const [columnsState, setColumnsState] = useState(columns)
-	const [draggedTask, setDraggedTask] = useState(null)
 
 	const moveCard = (id, status) => {
-		console.log(id, status)
-		draggedTask ? draggedTask : setDraggedTask(columnsState.map(({tasks}) => tasks.find(task => task.id === id)).filter(task => task)[0])
-		console.log(draggedTask)
-		const newColumns = columnsState.map(column => {
-			if (column.status === draggedTask.status) {
+		const updatedColumns = columnsState.map((column) => {
+			if (column.status !== status) {
 				return {
 					...column,
-					tasks: column.tasks.filter(task => task.id !== id),
+					tasks: column.tasks.filter((task) => task.id !== id),
 				}
 			}
-			// if (column.status === status) {
-			// 	return {
-			// 		...column,
-			// 		tasks: [task, ...column.tasks],
-			// 	}
-			// }
-			return column
+			const task = columnsState
+				.map(({ tasks }) => tasks.find((task) => task.id === id))
+				.filter(i => i)[0]
+			const updatedTask = { ...task, status }
+			return {
+				...column,
+				tasks: [updatedTask, ...column.tasks],
+			}
 		})
-		console.log(newColumns)
-		setColumnsState(newColumns)
+		setColumnsState(updatedColumns)
 	}
 
 	return (
