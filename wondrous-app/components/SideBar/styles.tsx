@@ -59,8 +59,8 @@ export const DrawerListItem = styled(ListItem)`
 	& {
 		display: flex;
 		height: 36px;
-		padding: .5em auto;
-		margin: .5em auto;
+		padding: 0.5em auto;
+		margin: 0.5em auto;
 	}
 `
 
@@ -97,7 +97,7 @@ export const DrawerBackButton = styled(DrawerBottomButton)`
 		display: flex;
 		align-items: center;
 		justify-content: center;
-	
+
 		background: linear-gradient(
 			169.47deg,
 			rgba(75, 75, 75, 0.6) 7.84%,
@@ -105,7 +105,7 @@ export const DrawerBackButton = styled(DrawerBottomButton)`
 		);
 
 		transition: transform 0.2s;
-	
+
 		&.active {
 			transform: rotate(180deg);
 		}

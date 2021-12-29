@@ -20,17 +20,23 @@ import {
 import { linkWallet, logout, useMe } from '../../Auth/withAuth'
 import { DropDown, DropDownItem } from '../dropdown'
 import { Matic } from '../../Icons/matic'
-import { SUPPORTED_CHAINS } from '../../../utils/constants'
+import { CURRENCY_KEYS, SUPPORTED_CHAINS } from '../../../utils/constants'
 
 const CHAIN_LOGO = {
 	'1': <Ethereum />,
-	'137': <Matic />
+	'137': <Matic />,
 }
 
 const CURRENCY_SYMBOL = {
 	ETH: <Ethereum />,
 	WONDER: <WonderCoin />,
 	MATIC: <Matic />,
+}
+
+const CURRENCY_UI_ELEMENTS = {
+	ETH: { icon: <Ethereum />, label: 'ETH' },
+	WONDER: { icon: <WonderCoin />, label: 'WONDER' },
+	MATIC: { icon: <Matic />, label: 'MATIC' },
 }
 
 const Wallet = () => {
@@ -40,8 +46,8 @@ const Wallet = () => {
 	const [firstConnect, setFirstConnect] = useState(true)
 	const [signedMessage, setSignedMessage] = useState('')
 	const [currency, setCurrency] = useState({
-		balance: '0.0000',
-		symbol: <WonderCoin />,
+		balance: '0.000',
+		symbol: 'WONDER',
 	})
 	const user = useMe()
 
@@ -88,18 +94,18 @@ const Wallet = () => {
 				) + ' '
 			setCurrency({
 				balance,
-				symbol: CURRENCY_SYMBOL[currencyCode],
+				symbol: currencyCode,
 			})
-		} else if (wonderWeb3.assets) {
-			const selectedCurrency = wonderWeb3.assets.filter(
+		} else if (wonderWeb3.wallet.assets) {
+			const selectedCurrency = wonderWeb3.wallet.assets.find(
 				(c) => c.symbol == currencyCode
-			)[0]
+			)
 			if (selectedCurrency && selectedCurrency.balance) {
 				const balance =
 					parseFloat(formatEther(selectedCurrency.balance)).toPrecision(4) + ' '
 				setCurrency({
 					balance,
-					symbol: CURRENCY_SYMBOL[selectedCurrency.symbol],
+					symbol: selectedCurrency.symbol,
 				})
 			}
 		}
@@ -111,21 +117,17 @@ const Wallet = () => {
 		}
 	}, [connectWallet, user])
 
-	// Detect Chain 
+	// Detect Chain
 	useEffect(() => {
-		if(!SUPPORTED_CHAINS[wonderWeb3.chain]) {
-			setNotSupported(true)
-		} else {
-			setNotSupported(false)
-		}
+		setNotSupported(!SUPPORTED_CHAINS[wonderWeb3.chain])
 	}, [wonderWeb3.chain])
 
 	// Change Currency when the Chain changes
 	useEffect(() => {
-		if(wonderWeb3.wallet.assets && wonderWeb3.wallet.assets.length) {
+		if (wonderWeb3.wallet.assets && wonderWeb3.wallet.assets.length) {
 			displayCurrency(wonderWeb3.wallet.assets[0].symbol)
 		}
-	},[wonderWeb3.wallet.assets])
+	}, [wonderWeb3.wallet.assets])
 
 	// Bind to the Web3 wallet to monitor changes (i.e user unlinks wallet)
 	useEffect(() => {
@@ -169,8 +171,24 @@ const Wallet = () => {
 			<WonderBalance>
 				{currency ? currency.balance : 0}
 				&nbsp;
-				{currency.symbol}
+				{CURRENCY_SYMBOL[currency.symbol]}
 			</WonderBalance>
+		)
+	}
+
+	const CurrencyDropdownItem = ({ currency }) => {
+		const { icon: currencyIcon, label: currencyLabel } =
+			CURRENCY_UI_ELEMENTS[currency]
+		return (
+			<DropDownItem
+				key={`wallet-currency-${currency}`}
+				onClick={() => displayCurrency(currency)}
+			>
+				<CurrencySelectorItem>
+					<CurrencySymbol>{currencyIcon}</CurrencySymbol>
+					<CurrencyName>{currencyLabel}</CurrencyName>
+				</CurrencySelectorItem>
+			</DropDownItem>
 		)
 	}
 
@@ -187,58 +205,23 @@ const Wallet = () => {
 				</Button>
 			</WalletWrapper>
 		)
-	} else if(notSupported) {
+	} else if (notSupported) {
 		return (
 			<WalletWrapper>
-				<WalletDisplay>
-					Chain Not Supported
-				</WalletDisplay>
+				<WalletDisplay>Chain Not Supported</WalletDisplay>
 			</WalletWrapper>
 		)
 	} else {
 		return (
 			<WalletWrapper>
-				<ChainWrapper>
-					{CHAIN_LOGO[wonderWeb3.wallet.chain]}
-				</ChainWrapper>
+				<ChainWrapper>{CHAIN_LOGO[wonderWeb3.wallet.chain]}</ChainWrapper>
 				<WalletDisplay>
 					<DropDown DropdownHandler={Balance}>
-						<DropDownItem key={'wallet-currency-WONDER'} onClick={() => displayCurrency('WONDER') }>
-							<CurrencySelectorItem>
-								<CurrencySymbol>
-									<WonderCoin />
-								</CurrencySymbol>
-								<CurrencyName>Wonder</CurrencyName>
-							</CurrencySelectorItem>
-						</DropDownItem>
-						{ wonderWeb3.chainName == 'ETH'
-						? (
-						<DropDownItem key={'wallet-currency-ETH'} onClick={() => displayCurrency('ETH')}>
-							<CurrencySelectorItem>
-								<CurrencySymbol>
-									<Ethereum />
-								</CurrencySymbol>
-								<CurrencyName>Ethereum</CurrencyName>
-							</CurrencySelectorItem>
-						</DropDownItem>
-						)
-						: ''
-						}
-						{ wonderWeb3.chainName == 'MATIC' 
-						? (
-						<DropDownItem key={'wallet-currency-MATIC'} onClick={() => displayCurrency('MATIC')}>
-							<CurrencySelectorItem>
-								<CurrencySymbol>
-									<Matic />
-								</CurrencySymbol>
-								<CurrencyName>MATIC</CurrencyName>
-							</CurrencySelectorItem>
-						</DropDownItem>
-						)
-						: ''
-						}
+						<CurrencyDropdownItem currency={CURRENCY_KEYS.WONDER} />
+						{wonderWeb3.chainName && (
+							<CurrencyDropdownItem currency={wonderWeb3.chainName} />
+						)}
 					</DropDown>
-
 					<WalletAddress>
 						{wonderWeb3.wallet.addressTag || 'loading...'}
 					</WalletAddress>

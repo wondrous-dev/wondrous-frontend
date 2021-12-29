@@ -8,7 +8,7 @@ import axios, { AxiosInstance } from 'axios'
 import { useEffect, useMemo, useState } from 'react'
 
 import { IAssetData } from '../types/assets'
-import { SUPPORTED_CHAINS } from '../utils/constants'
+import { CURRENCY_KEYS, SUPPORTED_CHAINS } from '../utils/constants'
 
 // TODO: Define Contract Address for WONDER Token for wallet balance
 const WONDER_CONTRACT = '0x00'
@@ -21,10 +21,10 @@ export const useWonderWeb3 = () => {
 	const [assets, setAssets] = useState([])
 	const [chain, setChain] = useState(null)
 	const [ensName, setENSName] = useState(null)
-	
+
 	// Keep this Balance aside of Assets to manage separately
 	const [wonder, setWonder] = useState({ balance: 0, symbol: 'WONDER' })
-	
+
 	const [fetching, setFetching] = useState(false)
 	const [subscribed, setSubscribed] = useState(false)
 
@@ -40,7 +40,7 @@ export const useWonderWeb3 = () => {
 		if (!address) {
 			return ''
 		}
-		if(ensName) {
+		if (ensName) {
 			return ensName
 		} else {
 			return `${address.slice(0, 6)}...${address.slice(
@@ -76,7 +76,7 @@ export const useWonderWeb3 = () => {
 				const c = await web3.eth.chainId()
 
 				// Gate Keeper for Usupported chains
-				if(!SUPPORTED_CHAINS[c]) {
+				if (!SUPPORTED_CHAINS[c]) {
 					disconnect()
 					setConnecting(false)
 					return false
@@ -167,17 +167,17 @@ export const useWonderWeb3 = () => {
 		const web3Modal = new Web3Modal()
 		const provider = await web3Modal.connect()
 		const prov = new ethers.providers.Web3Provider(provider)
-		
-		const ens = new ENS({ provider: prov, ensAddress: getEnsAddress('1') });
+
+		const ens = new ENS({ provider: prov, ensAddress: getEnsAddress('1') })
 		// If chain supports ENS...
 		try {
 			let name = await ens.getName(address)
 			setENSName(name.name)
-		} catch(err) {
+		} catch (err) {
 			// Chain not supported. No problem
 			setENSName(null)
 		}
-		
+
 		return true
 	}
 
@@ -188,8 +188,8 @@ export const useWonderWeb3 = () => {
 				// get account balances
 				const wonderBalance = await apiGetWonderBalance(address, chain)
 				setWonder({
-					balance: wonderBalance.balance,
-					symbol: wonderBalance.symbol,
+					balance: wonderBalance['balance'] || 0.0,
+					symbol: CURRENCY_KEYS.WONDER,
 				})
 				setFetching(false)
 			} catch (error) {
@@ -273,7 +273,6 @@ export async function apiGetAccountAssets(
 	const { result } = response.data
 	return result
 }
-
 
 export async function apiGetWonderBalance(
 	address: string,

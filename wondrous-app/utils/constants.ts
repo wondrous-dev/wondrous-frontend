@@ -17,6 +17,12 @@ export const SOCIAL_MEDIA_DISCORD = 'discord'
 
 // Supported Chains (ETHEREUM, POLYGON)
 export const SUPPORTED_CHAINS = {
-    1: 'ETH',
-    137: 'MATIC'
+	1: 'ETH',
+	137: 'MATIC',
+}
+
+export const CURRENCY_KEYS = {
+	ETH: 'ETH',
+	WONDER: 'WONDER',
+	MATIC: 'MATIC',
 }

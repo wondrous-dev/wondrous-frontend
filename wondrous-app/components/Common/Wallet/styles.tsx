@@ -89,7 +89,7 @@ export const CurrencySymbol = styled.div`
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	
+
 	width: 30px;
 	height: 32px;
 `
