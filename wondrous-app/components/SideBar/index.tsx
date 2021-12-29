@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
 	DrawerBackButton,
 	DrawerBottomBlock,
@@ -19,12 +19,18 @@ import { logout } from '../Auth/withAuth'
 const SideBarComponent = (props) => {
 	const { listItems } = props
 
+	const [minimized, setMinimized] = useState(false)
+
+	const handleMinimize = (event) => {
+		setMinimized(!minimized)
+	} 
+
 	const signOut = () => {
 		logout()
 	}
 
 	return (
-		<DrawerComponent variant="permanent" anchor="left">
+		<DrawerComponent variant="permanent" anchor="left" className={minimized ? 'active' : ''}>
 			<DrawerContainer>
 				<DrawerTopBlock>
 					<DrawerUserImage src="/images/sidebar/avatar.png" />
@@ -43,11 +49,11 @@ const SideBarComponent = (props) => {
 					<DrawerBottomButton onClick={signOut}>
 						<ExitIcon />
 					</DrawerBottomButton>
-					<DrawerBackButton>
-						<BackArrowIcon />
-					</DrawerBackButton>
 				</DrawerBottomBlock>
 			</DrawerContainer>
+			<DrawerBackButton onClick={handleMinimize} className={minimized ? 'active' : ''}>
+				<BackArrowIcon />
+			</DrawerBackButton>
 		</DrawerComponent>
 	)
 }
