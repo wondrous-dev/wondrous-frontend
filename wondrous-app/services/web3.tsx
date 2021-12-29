@@ -85,6 +85,7 @@ export const useWonderWeb3 = () => {
 				const provider = await web3Modal.connect()
 				const prov = new ethers.providers.Web3Provider(provider)
 				const signer = await prov.getSigner()
+
 				// Now sign message
 				const signedMessage = await signer.signMessage(message)
 				setConnecting(false)
@@ -95,8 +96,9 @@ export const useWonderWeb3 = () => {
 				setConnecting(false)
 				return false
 			}
+		} else {
+			return false
 		}
-		return null
 	}
 
 	const getTokenBalance = async (tokenAddress: string) => {
@@ -170,6 +172,7 @@ export const useWonderWeb3 = () => {
 		assets,
 		chain,
 		chainName,
+		subscribed,
 		onConnect,
 		disconnect,
 		signMessage,

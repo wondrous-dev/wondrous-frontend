@@ -10,6 +10,7 @@ import {
 } from '../../graphql/queries'
 import {
 	CREATE_USER,
+	CREATE_WALLET_USER,
 	LOGIN_MUTATION,
 	LOGIN_WALLET_MUTATION,
 } from '../../graphql/mutations'
@@ -34,8 +35,6 @@ export const emailSignup = async (email: string, password: string) => {
 			},
 		})
 
-		console.log('Signup: ', user, token)
-
 		if (user) {
 			// Set Apollo with Session
 			await storeAuthHeader(token, user)
@@ -44,6 +43,36 @@ export const emailSignup = async (email: string, password: string) => {
 		return 'This email is already registered. Try recovering password.'
 	} catch (err) {
 		return 'This email is already registered. Try recovering password.'
+	}
+}
+
+export const walletSignup = async (
+	web3Address: string,
+	signedMessage: string,
+	blockchain: string
+) => {
+	try {
+		const {
+			data: {
+				signupWithWeb3: { user, token },
+			},
+		} = await apollo.mutate({
+			mutation: CREATE_WALLET_USER,
+			variables: {
+				web3Address,
+				signedMessage,
+				blockchain,
+			},
+		})
+
+		if (user) {
+			// Set Apollo with Session
+			await storeAuthHeader(token, user)
+			return true
+		}
+		return 'We hit a problem, please contact support.'
+	} catch (err) {
+		return 'We hit a problem, please contact support.'
 	}
 }
 

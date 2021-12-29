@@ -16,6 +16,34 @@ export const CREATE_USER = gql`
 	${LoggedinUserFragment}
 `
 
+export const CREATE_WALLET_USER = gql`
+	mutation signupWithWeb3(
+		$web3Address: String!
+		$signedMessage: String!
+		$blockchain: String!
+		$username: String
+		$firstName: String
+		$lastName: String
+	) {
+		signupWithWeb3(
+			input: {
+				web3Address: $web3Address
+				signedMessage: $signedMessage
+				blockchain: $blockchain
+				username: $username
+				firstName: $firstName
+				lastName: $lastName
+			}
+		) {
+			user {
+				...LoggedinUser
+			}
+			token
+		}
+	}
+	${LoggedinUserFragment}
+`
+
 export const CREATE_WAITLIST_USER = gql`
 	mutation createWaitlistUser($phoneNumber: String!, $inviteRefCode: String) {
 		createOrGetWaitlistUser(

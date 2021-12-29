@@ -19,7 +19,11 @@ import { Grey50 } from '../theme/colors'
 import { Metamask } from '../components/Icons/metamask'
 import { EmailIcon, LockIcon } from '../components/Icons/userpass'
 import { useWonderWeb3 } from '../services/web3'
-import { emailSignup } from '../components/Auth/withAuth'
+import {
+	emailSignup,
+	getUserSigningMessage,
+	walletSignup,
+} from '../components/Auth/withAuth'
 
 const Signup = () => {
 	const wonderWeb3 = useWonderWeb3()
@@ -45,13 +49,50 @@ const Signup = () => {
 		}
 	}
 
-	// Signup with Wallet.
-	const signupWithWallet = async (event) => {
+	// Two stage process as wallet connection takes
+	// time.
+	const connectWallet = async (event) => {
 		// Connect Wallet first
 		await wonderWeb3.onConnect()
-
-		// Register Wallet
 	}
+
+	const signupWithWallet = async () => {
+		if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
+			// Retrieve Signed Message
+			const messageToSign = await getUserSigningMessage(
+				wonderWeb3.address,
+				wonderWeb3.chainName
+			)
+
+			if (messageToSign) {
+				const signedMessage = await wonderWeb3.signMessage(messageToSign)
+
+				if (signedMessage) {
+					// Sign with Wallet
+					const result = await walletSignup(
+						wonderWeb3.address,
+						signedMessage,
+						wonderWeb3.chainName
+					)
+					if (result === true) {
+						router.replace('/dashboard')
+					} else {
+						setErrorMessage(result)
+					}
+				} else {
+					setErrorMessage('There has been an issue, contact with support.')
+				}
+			} else {
+				setErrorMessage('Signup failed - please contact support.')
+			}
+		}
+	}
+
+	useEffect(() => {
+		if (wonderWeb3.address) {
+			signupWithWallet()
+		}
+	}, [wonderWeb3.wallet])
 
 	return (
 		<AuthLayout>
@@ -99,7 +140,7 @@ const Signup = () => {
 								or
 							</PaddedParagraph>
 						</LineWithText>
-						<Button onClick={signupWithWallet}>
+						<Button onClick={connectWallet}>
 							<Metamask height="18" width="17" />
 							<PaddedParagraph padding="0 10px">
 								Sign up with MetaMask

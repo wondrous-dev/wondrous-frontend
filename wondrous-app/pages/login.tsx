@@ -23,6 +23,7 @@ import {
 	emailSignin,
 	getUserSigningMessage,
 	walletSignin,
+	walletSignup,
 } from '../components/Auth/withAuth'
 
 const Login = ({ csrfToken }) => {
@@ -43,42 +44,44 @@ const Login = ({ csrfToken }) => {
 		}
 	}
 
-	// This happens async, so we bind it to the
-	// state of the component.
-	const loginWithWallet = async (event) => {
+	const conenctWallet = async (event) => {
 		// Connect Wallet first
 		await wonderWeb3.onConnect()
+	}
 
-		// Retrieve Signed Message
-		const messageToSign = await getUserSigningMessage(
-			wonderWeb3.address,
-			wonderWeb3.chainName
-		)
+	// This happens async, so we bind it to the
+	// state of the component.
+	const loginWithWallet = async () => {
+		if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
+			// Retrieve Signed Message
+			const messageToSign = await getUserSigningMessage(
+				wonderWeb3.address,
+				wonderWeb3.chainName
+			)
 
-		if (messageToSign) {
-			const signedMessage = await wonderWeb3.signMessage(messageToSign)
-
-			if (signedMessage) {
-				// Sign with Wallet
-				const result = await walletSignin(wonderWeb3.address, signedMessage)
-				if (result === true) {
-					router.replace('/dashboard')
+			if (messageToSign) {
+				const signedMessage = await wonderWeb3.signMessage(messageToSign)
+				if (signedMessage) {
+					// Sign with Wallet
+					const result = await walletSignin(wonderWeb3.address, signedMessage)
+					if (result === true) {
+						router.replace('/dashboard')
+					} else {
+						setErrorMessage(result)
+					}
 				} else {
-					setErrorMessage(result)
+					setErrorMessage('You need to sign the message on your Metamask')
 				}
 			} else {
-				setErrorMessage('You need to sign the message on your Metamask')
+				setErrorMessage('Login failed - try again.')
 			}
-		} else {
-			setErrorMessage(
-				'Login failed - please contact support.'
-			)
 		}
 	}
 
 	useEffect(() => {
 		if (wonderWeb3.wallet['address']) {
 			// Wallet sign in
+			loginWithWallet()
 		} else {
 			// Error Login Here
 		}
@@ -122,7 +125,7 @@ const Login = ({ csrfToken }) => {
 								or
 							</PaddedParagraph>
 						</LineWithText>
-						<Button onClick={loginWithWallet}>
+						<Button onClick={conenctWallet}>
 							<Metamask height="18" width="17" />
 							<PaddedParagraph padding="0 10px">
 								Log in with MetaMask
