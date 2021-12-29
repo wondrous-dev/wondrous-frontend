@@ -54,6 +54,10 @@ export const WonderBalance = styled.div`
 	align-items: center;
 	justify-content: center;
 	min-width: 65px;
+
+	cursor: pointer;
+
+	margin-right: 10px;
 `
 
 export const WalletAddress = styled.div`
@@ -71,4 +75,28 @@ export const WalletAddress = styled.div`
 
 	font-size: 14px;
 	font-weight: 600;
+`
+
+export const CurrencySelectorItem = styled.div`
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: flex-start;
+`
+
+export const CurrencySymbol = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	
+	width: 30px;
+	height: 32px;
+`
+
+export const CurrencyName = styled.div`
+	display: flex;
+	flex-grow: 1;
+	flext-direction: column;
+	align-items: center;
 `

@@ -14,3 +14,9 @@ export const SOCIAL_MEDIA_FACEBOOK = 'facebook'
 export const SOCIAL_MEDIA_TWITTER = 'twitter'
 export const SOCIAL_MEDIA_LINKEDIN = 'linkedin'
 export const SOCIAL_MEDIA_DISCORD = 'discord'
+
+// Supported Chains (ETHEREUM, POLYGON)
+export const SUPPORTED_CHAINS = {
+    1: 'ETH',
+    137: 'MATIC'
+}
