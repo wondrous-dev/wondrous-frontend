@@ -5,12 +5,40 @@ import {
 } from '../fragments/user'
 
 export const CREATE_USER = gql`
-	mutation createUser($email: String!, $password: String) {
-		createOrGetUser(email: $email, password: $password) {
-			token
-			waitlistUser {
+	mutation emailSignup($email: String!, $password: String!) {
+		emailSignup(input: { email: $email, password: $password }) {
+			user {
 				...LoggedinUser
 			}
+			token
+		}
+	}
+	${LoggedinUserFragment}
+`
+
+export const CREATE_WALLET_USER = gql`
+	mutation signupWithWeb3(
+		$web3Address: String!
+		$signedMessage: String!
+		$blockchain: String!
+		$username: String
+		$firstName: String
+		$lastName: String
+	) {
+		signupWithWeb3(
+			input: {
+				web3Address: $web3Address
+				signedMessage: $signedMessage
+				blockchain: $blockchain
+				username: $username
+				firstName: $firstName
+				lastName: $lastName
+			}
+		) {
+			user {
+				...LoggedinUser
+			}
+			token
 		}
 	}
 	${LoggedinUserFragment}
