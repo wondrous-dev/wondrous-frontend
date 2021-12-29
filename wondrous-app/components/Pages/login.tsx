@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Logotype } from '../Common/ci'
-import { Red800 } from '../../theme/colors'
+import { Red300, Red800, White } from '../../theme/colors'
 
 export const SmallLogo = styled(Logotype)`
 	&& {
@@ -58,6 +58,7 @@ export const LoginError = styled.div`
 	margin: 1em 0;
 
 	background: ${Red800};
+	background: linear-gradient(196.76deg, ${White} -48.71%, ${Red300} 90.48%);
 
 	border-radius: 6px;
 `
