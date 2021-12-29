@@ -11,6 +11,7 @@ import {
 import { ToDo, InProgress, Done } from '../../../Icons'
 import TaskCard from '../TaskCard/taskCard'
 import DraggableCard, { ItemTypes } from '../TaskCard/DraggableCard'
+import { ColumnSection } from '../../ColumnSection'
 
 import {
   TaskColumnContainer,
@@ -22,7 +23,8 @@ import {
 interface ITaskColumn {
 	cardsList: Array<any>
 	moveCard: any
-	status: string
+	status: string,
+	section: Array<any>
 }
 
 const TITLES = {
@@ -52,41 +54,41 @@ const ColumnDropZone = ({ status, moveCard, children }) => {
 }
 
 const TaskColumn = (props: ITaskColumn) => {
-	const { cardsList, moveCard, status } = props
+	const { cardsList, moveCard, status, section } = props
 
 	const HeaderIcon = HEADER_ICONS[status]
 
   return (
-    <TaskColumnContainer>
-      <TaskColumnContainerHeader>
-        <HeaderIcon />
-        <TaskColumnContainerHeaderTitle>
-          {TITLES[status]}
-        </TaskColumnContainerHeaderTitle>
-        <TaskColumnContainerCount>
-          {cardsList.length}
-        </TaskColumnContainerCount>
-      </TaskColumnContainerHeader>
-      {cardsList.map((card) => (
-        <DraggableCard
-          key={card.id}
-          id={card.id}
-          status={card.status}
-          moveCard={moveCard}
-        >
-          <TaskCard {...card} />
-        </DraggableCard>
-      ))}
-      {!cardsList.length && (
-        <ColumnDropZone
-          moveCard={moveCard}
-          status={status}
-        >
-          <div style={{ width: '325px', height: '200px'}} />
-        </ColumnDropZone>
-      )}
-    </TaskColumnContainer>
-  )
+		<TaskColumnContainer>
+			<TaskColumnContainerHeader>
+				<HeaderIcon />
+				<TaskColumnContainerHeaderTitle>
+					{TITLES[status]}
+				</TaskColumnContainerHeaderTitle>
+				<TaskColumnContainerCount>{cardsList.length}</TaskColumnContainerCount>
+			</TaskColumnContainerHeader>
+			<ColumnSection
+				section={section}
+				setSection={() => {}}
+			/>
+
+			{cardsList.map((card) => (
+				<DraggableCard
+					key={card.id}
+					id={card.id}
+					status={card.status}
+					moveCard={moveCard}
+				>
+					<TaskCard {...card} />
+				</DraggableCard>
+			))}
+			{!cardsList.length && (
+				<ColumnDropZone moveCard={moveCard} status={status}>
+					<div style={{ width: '325px', height: '200px' }} />
+				</ColumnDropZone>
+			)}
+		</TaskColumnContainer>
+	)
 }
 
 export default TaskColumn

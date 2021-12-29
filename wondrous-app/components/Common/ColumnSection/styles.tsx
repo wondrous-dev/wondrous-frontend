@@ -21,8 +21,8 @@ export const SectionWrapper = styled.div`
 
 export const SectionHeaderContainer = styled.div`
 	display: flex;
-	flex-direction: row;
 	justify-content: flex-start;
+	align-items: center;
 
 	cursor: pointer;
 
@@ -35,6 +35,7 @@ export const SectionHeaderContainer = styled.div`
 
 export const SectionHeader = styled.div`
 	display: flex;
+	align-items: center;
 	flex-grow: 1;
 `
 
@@ -60,7 +61,9 @@ export const SectionContainer = styled(Collapse)`
 
 export const SectionIconContainer = styled.div`
 	display: flex;
-	align-self: flex-start;
+	justify-content: center;
+	align-items: center;
+	height: inherit;
 
 	margin-right: 9px;
 `

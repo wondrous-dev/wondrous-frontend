@@ -12,66 +12,48 @@ import TaskColumn from './TaskColumn/taskColumn'
 import { KanbanBoardContainer } from './styles'
 
 const KanbanBoard = (props) => {
-	const { tasksList } = props
-	const [statusCards, setStatusCards] = useState(tasksList)
+	const { columns } = props
+	const [columnsState, setColumnsState] = useState(columns)
+	const [draggedTask, setDraggedTask] = useState(null)
 
-	const {
-		[TASK_STATUS_TODO]: toDoCardsList,
-		[TASK_STATUS_IN_PROGRESS]: inProgressCardsList,
-		[TASK_STATUS_DONE]: doneCardsList,
-	} = useMemo(() => {
-		return statusCards.reduce(
-			(acc, item) => {
-				const { status } = item
-
+	const moveCard = (id, status) => {
+		console.log(id, status)
+		draggedTask ? draggedTask : setDraggedTask(columnsState.map(({tasks}) => tasks.find(task => task.id === id)).filter(task => task)[0])
+		console.log(draggedTask)
+		const newColumns = columnsState.map(column => {
+			if (column.status === draggedTask.status) {
 				return {
-					...acc,
-					[status]: [...acc[status], item],
+					...column,
+					tasks: column.tasks.filter(task => task.id !== id),
 				}
-			},
-			{
-				[TASK_STATUS_TODO]: [],
-				[TASK_STATUS_IN_PROGRESS]: [],
-				[TASK_STATUS_DONE]: [],
 			}
-		)
-	}, [statusCards])
-
-	const handleMoveCard = (draggableItemId, columnStatus) => {
-		setStatusCards((prevState) =>
-			prevState.map((item) => {
-				const { id } = item
-
-				if (id === draggableItemId) {
-					return {
-						...item,
-						status: columnStatus,
-					}
-				}
-
-				return item
-			})
-		)
+			// if (column.status === status) {
+			// 	return {
+			// 		...column,
+			// 		tasks: [task, ...column.tasks],
+			// 	}
+			// }
+			return column
+		})
+		console.log(newColumns)
+		setColumnsState(newColumns)
 	}
 
 	return (
 		<KanbanBoardContainer>
 			<DndProvider backend={HTML5Backend}>
-				<TaskColumn
-					cardsList={toDoCardsList}
-					moveCard={handleMoveCard}
-					status={TASK_STATUS_TODO}
-				/>
-				<TaskColumn
-					cardsList={inProgressCardsList}
-					moveCard={handleMoveCard}
-					status={TASK_STATUS_IN_PROGRESS}
-				/>
-				<TaskColumn
-					cardsList={doneCardsList}
-					moveCard={handleMoveCard}
-					status={TASK_STATUS_DONE}
-				/>
+				{columnsState.map((column) => {
+					const { status, section, tasks } = column
+					return (
+						<TaskColumn
+							key={status}
+							cardsList={tasks}
+							moveCard={moveCard}
+							status={status}
+							section={section}
+						/>
+					)
+				})}
 			</DndProvider>
 		</KanbanBoardContainer>
 	)
