@@ -58,7 +58,7 @@ const Wallet = () => {
 	}, [signMessage, signedMessage, wonderWeb3])
 
 	useEffect(() => {
-		if (user && user.active_eth_address) {
+		if (user && user.activeEthAddress && !wonderWeb3.subscribed) {
 			connectWallet()
 		}
 	}, [connectWallet, user])

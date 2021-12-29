@@ -8,7 +8,6 @@ const Index = () => {
 
 	const checkSession = useCallback(async () => {
 		const token = getAuthHeader()
-		console.log('Token:', token)
 		if (token) {
 			router.replace('/dashboard')
 		} else {
