@@ -7,7 +7,7 @@ export const DrawerComponent = styled(Drawer)`
 	&& {
 		& .MuiDrawer-paperAnchorDockedLeft {
 			background-color: ${Black97};
-			z-index: 1;
+			z-index: 200;
 			margin-top: 50px;
 			transition: 0.3s;
 		}
