@@ -22,7 +22,6 @@ export const TaskColumnContainerHeaderTitle = styled(Typography)({
 		fontWeight: 'bold',
 		fontSize: 14,
 		textAlign: 'left',
-		marginLeft: 10,
 		color: '#FFF',
 	},
 })
