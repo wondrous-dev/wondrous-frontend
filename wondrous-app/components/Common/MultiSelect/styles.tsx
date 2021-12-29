@@ -78,14 +78,11 @@ export const MultiSelectSelector = styled(Select)({
 		zIndex: 1,
 	},
 
-	'.MuiSelect-select.MuiSelect-select': {
-		padding: '0',
-	},
-
 	'& .MuiChip-root': {
 		border: '1px solid #7427FF',
 		color: '#CCBBFF',
 		background: '#121212',
+		margin: 2,
 	},
 
 	'& svg': {
