@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Box, Chip, OutlinedInput } from '@material-ui/core'
 
 import FilterIcon from '../../Icons/filter'
+import ArrowDropDownIcon from '../../Icons/arrowDropDown'
 
 import {
 	MultiSelectClearButton,
@@ -78,6 +79,7 @@ export const MultiSelect = (props) => {
 					</Box>
 				)}
 				MenuProps={MenuProps}
+				IconComponent={ArrowDropDownIcon}
 			>
 				<MultiSelectMenuHeader onClick={(e) => e.stopPropagation()}>
 					<MultiSelectCounter>{value.length} selected</MultiSelectCounter>

@@ -9,20 +9,6 @@ import {
 	Typography,
 } from '@material-ui/core'
 
-export const MultiSelectForm1 = styled(FormControl)({
-	'&.MuiFormControl-root': {
-		position: 'relative',
-		width: 325,
-		minHeight: 40,
-		background: 'linear-gradient(90.93deg, #1E1E1E 3.85%, #141414 101.76%)',
-		borderRadius: 6,
-	},
-
-	'& .PrivateNotchedOutline-root-1': {
-		border: 'none',
-	}
-})
-
 export const MultiSelectForm = styled(FormControl)`
 	&.MuiFormControl-root {
 		position: relative;
@@ -33,12 +19,10 @@ export const MultiSelectForm = styled(FormControl)`
 			rgba(75, 75, 75, 0.6) 7.84%,
 			rgba(35, 35, 35, 0.6) 108.71%
 		);
+		padding: 0.1em;
 		border-radius: 6px;
 		z-index: 1;
-	}
-	
-	&.privatenotchedoutline-root-1: {
-		border: none;
+		display: flex;
 	}
 	
 	.MuiInputBase-root::after {
@@ -48,24 +32,31 @@ export const MultiSelectForm = styled(FormControl)`
 		left: 0;
 		bottom: 0;
 		right: 0;
-		margin: 0.1em;
+		padding: 0;
 		z-index: -1;
 		border-radius: inherit;
+		border: 0px;
 		background: linear-gradient(90.93deg, #1e1e1e 3.85%, #141414 101.76%);
+	}
+
+	.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+		border: none;
+	}
+
+	.MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+		border: none;
 	}
 `
 
 
 export const MultiSelectInputLabel = styled(InputLabel)({
 	'&.MuiInputLabel-root': {
-		transform: 'translateY(50%)',
+		transform: 'translateY(100%)',
 		fontSize: 14,
 		display: 'flex',
 		alignItems: 'center',
-		lineHeight: '19px',
 		letterSpacing: '0.01em',
 		color: "#C4C4C4",
-		zIndex: 1000,
 
 		'& svg': {
 			marginRight: 8,
@@ -82,18 +73,26 @@ export const MultiSelectSelector = styled(Select)({
 	'& .MuiSelect-root': {
 		position: 'relative',
 		boxSizing: 'border-box',
-		// height: 40,
 		minHeight: 40,
-		display: 'flex',
-		alignItems: 'center',
-		padding: '0 0 0 10px',
+		padding: '0',
+		zIndex: 1,
+	},
+
+	'.MuiSelect-select.MuiSelect-select': {
+		padding: '0',
 	},
 
 	'& .MuiChip-root': {
 		border: '1px solid #7427FF',
 		color: '#CCBBFF',
 		background: '#121212',
-	}
+	},
+
+	'& svg': {
+		position: 'absolute',
+		top: 'calc(50% - 0.1em)',
+		right: 12,
+	},
 })
 
 export const MultiSelectMenuHeader = styled.div`
