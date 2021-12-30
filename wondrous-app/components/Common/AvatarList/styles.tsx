@@ -13,8 +13,8 @@ export const SmallAvatarWrapper = styled.div`
 	box-shadow: 0 2px solid black;
 	border: ${(props) =>
 		props.isOwnerOfPod
-			? '1.5px solid ' + Colors.HighlightBlue
-			: '1.5px solid black'};
+			? '2px solid ' + Colors.HighlightBlue
+			: '2px solid black'};
 	background-color: ${(props) => props.randomColor || Colors.HighlightBlue};
 	${(props) =>
 		props.avatarURL ? 'background: url(' + props.avatarURL + ');' : ''}
@@ -24,14 +24,8 @@ export const SmallAvatarWrapper = styled.div`
 	font-size: 10px;
 `
 
-export const BlackAura = styled.div`
-	min-width: 27px;
-	min-height: 27px;
-	border-radius: 27px;
+export const SmallAvatarContainer = styled.div`
 	margin-left: -6px;
-	border: 1px solid black;
-	background: black;
-	padding: 0;
 `
 
 export const AvatarListWrapper = styled.div`
