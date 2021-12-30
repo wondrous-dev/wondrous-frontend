@@ -12,7 +12,7 @@ import {
 export const MultiSelectForm = styled(FormControl)({
 	'&.MuiFormControl-root': {
 		position: 'relative',
-		width: 325,
+		width: '100%',
 		minHeight: 40,
 		background: 'linear-gradient(90.93deg, #1E1E1E 3.85%, #141414 101.76%)',
 		borderRadius: 6,
