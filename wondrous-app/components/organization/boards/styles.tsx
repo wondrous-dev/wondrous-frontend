@@ -12,7 +12,7 @@ export const BoardsActivity = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	max-width: 680px;
+	max-width: 1038px;
 	margin: 0 auto;
 `
 
@@ -40,7 +40,6 @@ export const BoardsActivityInput = styled(TextField)({
 })
 
 export const BoardsActivityFilterMenuItem = styled(MenuItem)`
-	//background: #121212;
 	background-color: blue;
 	border-radius: 4px;
 `
