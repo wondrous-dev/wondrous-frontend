@@ -20,9 +20,10 @@ const SIDEBAR_LIST_ITEMS = [
 	},
 ]
 
-const AppLayout = ({ children }) => {
+const AppLayout = ({ banner, children }) => {
 	return (
 		<>
+			{banner}
 			<Header />
 			<SideBarComponent listItems={SIDEBAR_LIST_ITEMS} />
 			<Main>
