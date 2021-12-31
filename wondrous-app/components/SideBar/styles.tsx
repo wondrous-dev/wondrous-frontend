@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Drawer, IconButton, List, ListItem } from '@material-ui/core'
 import { Black97 } from '../../theme/colors'
+import { SIDEBAR_WIDTH } from '../../utils/constants'
 
 export const DrawerComponent = styled(Drawer)`
 	&& {
@@ -20,7 +21,7 @@ export const DrawerComponent = styled(Drawer)`
 
 export const DrawerContainer = styled.div`
 	min-height: 740px;
-	width: 80px;
+	width: ${SIDEBAR_WIDTH};
 	display: flex;
 	flex-grow: 1;
 	flex-direction: column;

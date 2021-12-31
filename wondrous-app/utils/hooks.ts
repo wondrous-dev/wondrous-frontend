@@ -1,9 +1,10 @@
 import { useContext, useState, useEffect } from 'react'
 
-import { IsMobileContext } from './contexts'
+import { IsMobileContext, SideBarContext } from './contexts'
 
 export const useIsMobile = () => useContext(IsMobileContext)
 
+export const useSideBar = () => useContext(SideBarContext)
 // Hook
 export const useWindowSize = () => {
 	// Initialize state with undefined width/height so server and client renders match
