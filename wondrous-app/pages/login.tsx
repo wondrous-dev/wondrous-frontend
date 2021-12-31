@@ -85,6 +85,7 @@ const Login = ({ csrfToken }) => {
 		} else {
 			// Error Login Here
 		}
+	 // eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [wonderWeb3.wallet])
 
 	return (

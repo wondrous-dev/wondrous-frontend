@@ -2,18 +2,14 @@ import React from 'react'
 import { Logo } from '../../Icons/logo'
 import { ProgressBar } from '../ProgressBar'
 
-import {
-	MetricsBlock,
-	MetricSubtitle,
-	MetricTitle,
-} from './styles'
+import { MetricsBlock, MetricSubtitle, MetricTitle } from './styles'
 
 export const CircleBarMetric = (prop) => {
-    return (
-        <>
-            <Logo />
-        </>
-    )
+	return (
+		<>
+			<Logo />
+		</>
+	)
 }
 
 export const SimpleMetric = ({ value, total, name, color }) => {

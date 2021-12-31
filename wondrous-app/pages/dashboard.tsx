@@ -7,7 +7,11 @@ import { GmBox, WelcomeMessage } from '../components/Pages/home'
 import KanbanBoard from '../components/Common/KanbanBoard/kanbanBoard'
 import * as Constants from '../utils/constants'
 import { withAuth } from '../components/Auth/withAuth'
-import { BoardsActivity, BoardsActivityInput, BoardsContainer } from '../components/organization/boards/styles'
+import {
+	BoardsActivity,
+	BoardsActivityInput,
+	BoardsContainer,
+} from '../components/organization/boards/styles'
 import { InputAdornment } from '@material-ui/core'
 import SearchIcon from '../components/Icons/search'
 import { MultiSelect } from '../components/Common/MultiSelect'
@@ -496,18 +500,21 @@ const Home = () => {
 	const listViewOptions = [
 		{
 			name: 'List',
-			action: () => { console.log('Show List View') }
+			action: () => {
+				console.log('Show List View')
+			},
 		},
 		{
 			name: 'Grid',
 			active: true,
-			action: () => { console.log('Show Grid View') }
-		}
+			action: () => {
+				console.log('Show Grid View')
+			},
+		},
 	]
 
 	return (
 		<AppLayout banner={<DashboardBanner />}>
-
 			{/* <WelcomeMessage>
 				<GmBox>☀️gm</GmBox>
 				<span>Welcome to Wonderverse!</span>
@@ -529,7 +536,7 @@ const Home = () => {
 					/>
 
 					<MultiSelect style={{ width: '50%' }} options={SELECT_OPTIONS} />
-					<ToggleViewButton options={listViewOptions}/>
+					<ToggleViewButton options={listViewOptions} />
 				</DashboardActivity>
 
 				<KanbanBoard columns={COLUMNS} />

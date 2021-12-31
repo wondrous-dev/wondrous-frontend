@@ -23,14 +23,18 @@ const SideBarComponent = (props) => {
 
 	const handleMinimize = (event) => {
 		setMinimized(!minimized)
-	} 
+	}
 
 	const signOut = () => {
 		logout()
 	}
 
 	return (
-		<DrawerComponent variant="permanent" anchor="left" className={minimized ? 'active' : ''}>
+		<DrawerComponent
+			variant="permanent"
+			anchor="left"
+			className={minimized ? 'active' : ''}
+		>
 			<DrawerContainer>
 				<DrawerTopBlock>
 					<DrawerUserImage src="/images/sidebar/avatar.png" />
@@ -51,7 +55,10 @@ const SideBarComponent = (props) => {
 					</DrawerBottomButton>
 				</DrawerBottomBlock>
 			</DrawerContainer>
-			<DrawerBackButton onClick={handleMinimize} className={minimized ? 'active' : ''}>
+			<DrawerBackButton
+				onClick={handleMinimize}
+				className={minimized ? 'active' : ''}
+			>
 				<BackArrowIcon />
 			</DrawerBackButton>
 		</DrawerComponent>

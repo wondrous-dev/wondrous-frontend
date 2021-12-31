@@ -1,9 +1,6 @@
-import React from 'react'
 import styled from 'styled-components'
 import { Button, IconButton, Typography } from '@material-ui/core'
-
 import { LogoSquare } from '../../Common/ci'
-import UserAvatar from '../../Icons/userAvatar'
 
 export const AboutSection = styled.div`
 	max-width: 1038px;
@@ -325,6 +322,11 @@ export const CompletedCardFooterBlock = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+`
+
+export const TaskCardLogo = styled(LogoSquare)`
+	width: 48px;
+	height: 27px;
 `
 
 export const CompletedCardFooterActivityIconBtn = styled(IconButton)`

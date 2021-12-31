@@ -61,6 +61,7 @@ const Wallet = () => {
 		if (user && user.activeEthAddress && !wonderWeb3.subscribed) {
 			connectWallet()
 		}
+	 // eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [connectWallet, user])
 
 	// Bind to the Web3 wallet to monitor changes (i.e user unlinks wallet)

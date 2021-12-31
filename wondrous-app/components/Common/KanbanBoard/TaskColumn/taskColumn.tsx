@@ -13,17 +13,17 @@ import DraggableCard, { ItemTypes } from './DraggableCard'
 import { ColumnSection } from '../../ColumnSection'
 
 import {
-  TaskColumnContainer,
-  TaskColumnContainerHeader,
-  TaskColumnContainerHeaderTitle,
-  TaskColumnContainerCount
+	TaskColumnContainer,
+	TaskColumnContainerHeader,
+	TaskColumnContainerHeaderTitle,
+	TaskColumnContainerCount,
 } from './styles'
 import { Task } from '../../Task'
 
 interface ITaskColumn {
 	cardsList: Array<any>
 	moveCard: any
-	status: string,
+	status: string
 	section: Array<any>
 }
 
@@ -58,7 +58,7 @@ const TaskColumn = (props: ITaskColumn) => {
 
 	const HeaderIcon = HEADER_ICONS[status]
 
-  return (
+	return (
 		<TaskColumnContainer>
 			<TaskColumnContainerHeader>
 				<HeaderIcon />
@@ -67,10 +67,7 @@ const TaskColumn = (props: ITaskColumn) => {
 				</TaskColumnContainerHeaderTitle>
 				<TaskColumnContainerCount>{cardsList.length}</TaskColumnContainerCount>
 			</TaskColumnContainerHeader>
-			<ColumnSection
-				section={section}
-				setSection={() => {}}
-			/>
+			<ColumnSection section={section} setSection={() => {}} />
 
 			{cardsList.map((card) => (
 				<DraggableCard

@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import { ToggleViewWrapper, ToggleViewOption } from './styles'
 
-
 // Toggler between views (i.e. grid vs list)
 export const ToggleViewButton = ({ options }) => {
-	
-    
-    const [active, setActive] = useState(0)
-    
-	const activateOption = (index) => {
-        setActive(index)
-    }
+	const [active, setActive] = useState(0)
 
-    useEffect(() => {
-        // Set active based on input
-        options.map((o, k) => { if(o.active) { setActive(k)} })
-    }, [])
+	const activateOption = (index) => {
+		setActive(index)
+	}
+
+	useEffect(() => {
+		// Set active based on input
+		options.map((o, k) => {
+			if (o.active) {
+				setActive(k)
+			}
+		})
+	 // eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	return (
 		<ToggleViewWrapper>
@@ -25,7 +27,7 @@ export const ToggleViewButton = ({ options }) => {
 					className={key == active ? 'active' : ''}
 					onClick={() => {
 						activateOption(key)
-                        opt.action()
+						opt.action()
 					}}
 				>
 					{opt.name}
