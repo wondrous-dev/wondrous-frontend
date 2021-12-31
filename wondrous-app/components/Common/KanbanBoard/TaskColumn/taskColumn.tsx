@@ -8,22 +8,23 @@ import {
 	TASK_STATUS_TODO,
 } from '../../../../utils/constants'
 
-import PlusIcon from '../../../Icons/plus'
 import { ToDo, InProgress, Done } from '../../../Icons'
-import TaskCard from '../TaskCard/taskCard'
-import DraggableCard, { ItemTypes } from '../TaskCard/DraggableCard'
+import DraggableCard, { ItemTypes } from './DraggableCard'
+import { ColumnSection } from '../../ColumnSection'
 
 import {
 	TaskColumnContainer,
 	TaskColumnContainerHeader,
 	TaskColumnContainerHeaderTitle,
-	TaskColumnContainerHeaderPlusButton,
+	TaskColumnContainerCount,
 } from './styles'
+import { Task } from '../../Task'
 
 interface ITaskColumn {
 	cardsList: Array<any>
 	moveCard: any
 	status: string
+	section: Array<any>
 }
 
 const TITLES = {
@@ -53,7 +54,7 @@ const ColumnDropZone = ({ status, moveCard, children }) => {
 }
 
 const TaskColumn = (props: ITaskColumn) => {
-	const { cardsList, moveCard, status } = props
+	const { cardsList, moveCard, status, section } = props
 
 	const HeaderIcon = HEADER_ICONS[status]
 
@@ -64,10 +65,10 @@ const TaskColumn = (props: ITaskColumn) => {
 				<TaskColumnContainerHeaderTitle>
 					{TITLES[status]}
 				</TaskColumnContainerHeaderTitle>
-				<TaskColumnContainerHeaderPlusButton>
-					<PlusIcon />
-				</TaskColumnContainerHeaderPlusButton>
+				<TaskColumnContainerCount>{cardsList.length}</TaskColumnContainerCount>
 			</TaskColumnContainerHeader>
+			<ColumnSection section={section} setSection={() => {}} />
+
 			{cardsList.map((card) => (
 				<DraggableCard
 					key={card.id}
@@ -75,7 +76,7 @@ const TaskColumn = (props: ITaskColumn) => {
 					status={card.status}
 					moveCard={moveCard}
 				>
-					<TaskCard {...card} />
+					<Task task={card} setTask={() => {}} />
 				</DraggableCard>
 			))}
 			{!cardsList.length && (

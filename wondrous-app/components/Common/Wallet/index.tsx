@@ -115,6 +115,7 @@ const Wallet = () => {
 		if (user && user.activeEthAddress && !wonderWeb3.subscribed) {
 			connectWallet()
 		}
+	 // eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [connectWallet, user])
 
 	// Detect Chain

@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 import { Typography } from '@material-ui/core'
 
@@ -34,7 +33,6 @@ export const CardCategoryIconContainer = styled.div`
 	height: 28px;
 	border-radius: 50%;
 	background: #0f0f0f;
-	border: 0.857143px solid #474747;
 `
 
 export const CardCategoryDoneIcon = styled(CheckedIcon)`
@@ -46,7 +44,7 @@ export const CardCategoryInfoBlock = styled.div`
 	z-index: 1;
 	width: 60px;
 	height: 28px;
-	background-color: #363636;
+	background-color: #0f0f0f;
 	min-width: 50px;
 	border-radius: 300px;
 	display: flex;

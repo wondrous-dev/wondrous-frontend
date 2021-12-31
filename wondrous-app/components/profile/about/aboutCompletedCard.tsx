@@ -7,7 +7,7 @@ import ShareIcon from '../../Icons/share'
 import DotsIcon from '../../Icons/dots'
 import { CardHeaderCategory } from '../../CardHeaderCategory'
 import { TaskMedia } from '../../Common/MediaPlayer'
-import { TaskCardLogo } from '../../Common/KanbanBoard/TaskCard/styles'
+import { TaskCardLogo } from '../../organization/about/styles'
 import { AvatarList } from '../../Common/AvatarList'
 
 import {

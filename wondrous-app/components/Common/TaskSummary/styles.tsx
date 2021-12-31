@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Background, Blue800, Violet300 } from '../../../theme/colors'
+import { Background, Blue800, Violet300, Grey250 } from '../../../theme/colors'
 
 export const TaskSummaryWrapper = styled.div`
 	display: flex;
@@ -17,6 +17,7 @@ export const TaskSummaryWrapper = styled.div`
 	min-width: 296px;
 	min-height: 170px;
 	width: 296px;
+	color: ${Grey250};
 `
 
 export const TaskSummaryInner = styled.div`

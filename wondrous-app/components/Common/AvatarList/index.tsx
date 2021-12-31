@@ -1,6 +1,10 @@
 import React from 'react'
 import * as Colors from '../../../theme/colors'
-import { SmallAvatarWrapper, BlackAura, AvatarListWrapper } from './styles'
+import {
+	SmallAvatarWrapper,
+	SmallAvatarContainer,
+	AvatarListWrapper,
+} from './styles'
 import { AVATAR_LIST_OVERFLOW_MAX } from '../../../utils/constants'
 
 export const SmallAvatar = (props) => {
@@ -12,7 +16,7 @@ export const SmallAvatar = (props) => {
 		colorValues[Math.floor(Math.random() * colorValues.length)]
 
 	return (
-		<BlackAura key={id} style={{ zIndex: 6 - style.zIndex }}>
+		<SmallAvatarContainer key={id} style={{ zIndex: 6 - style.zIndex }}>
 			<SmallAvatarWrapper
 				randomColor={avatar.color}
 				isOwnerOfPod={avatar.isOwnerOfPod}
@@ -20,7 +24,7 @@ export const SmallAvatar = (props) => {
 			>
 				{avatar.avatarURL ? '' : <span>{initials}</span>}
 			</SmallAvatarWrapper>
-		</BlackAura>
+		</SmallAvatarContainer>
 	)
 }
 
@@ -28,11 +32,14 @@ export const SmallAvatarOverflow = (props) => {
 	const { index = 0, overflow = 0 } = props
 
 	return (
-		<BlackAura key={index} style={{ zIndex: AVATAR_LIST_OVERFLOW_MAX + 1 }}>
+		<SmallAvatarContainer
+			key={index}
+			style={{ zIndex: AVATAR_LIST_OVERFLOW_MAX + 1 }}
+		>
 			<SmallAvatarWrapper avatarURL="/images/avatar-overflow.png">
 				+{overflow}
 			</SmallAvatarWrapper>
-		</BlackAura>
+		</SmallAvatarContainer>
 	)
 }
 
