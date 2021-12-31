@@ -21,6 +21,7 @@ import { linkWallet, logout, useMe } from '../../Auth/withAuth'
 import { DropDown, DropDownItem } from '../dropdown'
 import { Matic } from '../../Icons/matic'
 import { CURRENCY_KEYS, SUPPORTED_CHAINS } from '../../../utils/constants'
+import { USDCoin } from '../../Icons/USDCoin'
 
 const CHAIN_LOGO = {
 	'1': <Ethereum />,
@@ -31,12 +32,14 @@ const CURRENCY_SYMBOL = {
 	ETH: <Ethereum />,
 	WONDER: <WonderCoin />,
 	MATIC: <Matic />,
+	USDC: <USDCoin />,
 }
 
 const CURRENCY_UI_ELEMENTS = {
 	ETH: { icon: <Ethereum />, label: 'ETH' },
 	WONDER: { icon: <WonderCoin />, label: 'WONDER' },
 	MATIC: { icon: <Matic />, label: 'MATIC' },
+	USDC: { icon: <USDCoin />, label: 'USDC' },
 }
 
 const Wallet = () => {
@@ -87,27 +90,11 @@ const Wallet = () => {
 	}, [signMessage, signedMessage, wonderWeb3])
 
 	const displayCurrency = (currencyCode) => {
-		if (currencyCode == 'WONDER') {
-			const balance =
-				parseFloat(formatEther(wonderWeb3.wallet.wonder.balance)).toPrecision(
-					4
-				) + ' '
+		if(wonderWeb3.assets[currencyCode]) {
 			setCurrency({
-				balance,
-				symbol: currencyCode,
+				balance: wonderWeb3.assets[currencyCode].balance,
+				symbol: wonderWeb3.assets[currencyCode].symbol
 			})
-		} else if (wonderWeb3.wallet.assets) {
-			const selectedCurrency = wonderWeb3.wallet.assets.find(
-				(c) => c.symbol == currencyCode
-			)
-			if (selectedCurrency && selectedCurrency.balance) {
-				const balance =
-					parseFloat(formatEther(selectedCurrency.balance)).toPrecision(4) + ' '
-				setCurrency({
-					balance,
-					symbol: selectedCurrency.symbol,
-				})
-			}
 		}
 	}
 
@@ -125,10 +112,10 @@ const Wallet = () => {
 
 	// Change Currency when the Chain changes
 	useEffect(() => {
-		if (wonderWeb3.wallet.assets && wonderWeb3.wallet.assets.length) {
-			displayCurrency(wonderWeb3.wallet.assets[0].symbol)
+		if (wonderWeb3.assets) {
+			displayCurrency(wonderWeb3.getNativeTokenSymbol())
 		}
-	}, [wonderWeb3.wallet.assets])
+	}, [wonderWeb3.assets])
 
 	// Bind to the Web3 wallet to monitor changes (i.e user unlinks wallet)
 	useEffect(() => {
@@ -219,6 +206,7 @@ const Wallet = () => {
 				<WalletDisplay>
 					<DropDown DropdownHandler={Balance}>
 						<CurrencyDropdownItem currency={CURRENCY_KEYS.WONDER} />
+						<CurrencyDropdownItem currency={CURRENCY_KEYS.USDC} />
 						{wonderWeb3.chainName && (
 							<CurrencyDropdownItem currency={wonderWeb3.chainName} />
 						)}

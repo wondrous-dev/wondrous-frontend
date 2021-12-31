@@ -1,6 +1,6 @@
 import Web3 from 'web3'
 import Web3Modal from 'web3modal'
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import ENS, { getEnsAddress } from '@ensdomains/ensjs'
 import axios, { AxiosInstance } from 'axios'
 // Need Infura API Key for this one:
@@ -8,7 +8,10 @@ import axios, { AxiosInstance } from 'axios'
 import { useEffect, useMemo, useState } from 'react'
 
 import { IAssetData } from '../types/assets'
-import { CURRENCY_KEYS, SUPPORTED_CHAINS } from '../utils/constants'
+import { CURRENCY_KEYS, SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../utils/constants'
+
+import ERC20abi from './contracts/erc20.abi.json'
+import { formatEther } from 'ethers/lib/utils'
 
 // TODO: Define Contract Address for WONDER Token for wallet balance
 const WONDER_CONTRACT = '0x00'
@@ -18,12 +21,9 @@ export const useWonderWeb3 = () => {
 	// Some don't need state management
 
 	const [accounts, setAccounts] = useState([])
-	const [assets, setAssets] = useState([])
+	const [assets, setAssets] = useState(null)
 	const [chain, setChain] = useState(null)
 	const [ensName, setENSName] = useState(null)
-
-	// Keep this Balance aside of Assets to manage separately
-	const [wonder, setWonder] = useState({ balance: 0, symbol: 'WONDER' })
 
 	const [fetching, setFetching] = useState(false)
 	const [subscribed, setSubscribed] = useState(false)
@@ -55,11 +55,10 @@ export const useWonderWeb3 = () => {
 			accounts,
 			address,
 			chain,
-			wonder,
 			addressTag,
 			assets,
 		}
-	}, [accounts, address, addressTag, assets, chain, wonder])
+	}, [accounts, address, addressTag, assets, chain])
 
 	const [connecting, setConnecting] = useState(false)
 
@@ -116,10 +115,6 @@ export const useWonderWeb3 = () => {
 		}
 	}
 
-	const getTokenBalance = async (tokenAddress: string) => {
-		return 0
-	}
-
 	const subscribeProvider = async (provider: any) => {
 		if (!provider.on) {
 			return
@@ -136,6 +131,7 @@ export const useWonderWeb3 = () => {
 					await cleanWallet()
 				} else {
 					setAccounts(acc)
+					// Refresh Assets
 				}
 			})
 
@@ -146,16 +142,66 @@ export const useWonderWeb3 = () => {
 		}
 	}
 
+	const getChainCurrencies = () => {
+		const supportedCurrencies = []
+		if(chain) {
+			SUPPORTED_CURRENCIES.map((c) => {
+				if(c.chains.includes(chain)) {
+					supportedCurrencies.push(c)
+				}
+			})
+		}
+		return supportedCurrencies
+	}
+
+	const getNativeChainBalance = async() => {
+		const web3 = new Web3(window.ethereum)
+		const balance = await web3.eth.getBalance(address)
+		const balanceFormatted = parseFloat(formatEther(balance)).toPrecision(4) + ' '
+		return balanceFormatted
+	}
+
+	const getTokenBalance = async (token) => {
+		if (!fetching && address && chain && token.contracts[chain] !== '') {
+			setFetching(true)
+			const web3 = new Web3(window.ethereum)
+			const usdcContract = new web3.eth.Contract(ERC20abi, token.contracts[chain]);
+			const balanceRaw =  await usdcContract.methods.balanceOf(address).call()
+			const decimals = await usdcContract.methods.decimals().call()
+			const bnBalance = await BigNumber.from(balanceRaw)
+			const balance = bnBalance.div(10**decimals)
+			setFetching(false)
+			return parseFloat(balance.toString()).toPrecision(4) 
+		} else {
+			console.log('getAccountsAssets() failed.', address)
+			return '0.000'
+		}
+	}
+
 	const getAccountAssets = async () => {
 		if (!fetching && address && chain) {
 			setFetching(true)
-			try {
-				// get account balances
-				setAssets(await apiGetAccountAssets(address, chain))
-				setFetching(false)
-			} catch (error) {
-				setFetching(false)
-			}
+			const chainAssets = {}
+
+			// Get supported currencies for this chain
+			const currencies = getChainCurrencies()
+
+			currencies.map(async (c) => {
+				let balance = '0.000'
+				if(c.contracts) {
+					balance = await getTokenBalance(c)
+				} else {
+					balance = await getNativeChainBalance()
+				}
+				chainAssets[c.symbol] = {
+					balance,
+					symbol: c.symbol
+				}
+			})
+
+			// Reset Assets based on Chain
+			setAssets(chainAssets)
+			setFetching(false)
 		} else {
 			console.log('getAccountsAssets() failed.', address)
 		}
@@ -181,24 +227,8 @@ export const useWonderWeb3 = () => {
 		return true
 	}
 
-	const getWonderBalance = async () => {
-		if (!fetching && address && chain) {
-			setFetching(true)
-			try {
-				// get account balances
-				const wonderBalance = await apiGetWonderBalance(address, chain)
-				setWonder({
-					balance: wonderBalance['balance'] || 0.0,
-					symbol: CURRENCY_KEYS.WONDER,
-				})
-				setFetching(false)
-			} catch (error) {
-				console.error(error) // tslint:disable-line
-				setFetching(false)
-			}
-		} else {
-			console.log('getAccountsAssets() failed.', address)
-		}
+	const getNativeTokenSymbol = () => {
+		return SUPPORTED_CHAINS[chain]
 	}
 
 	const disconnect = () => {
@@ -209,16 +239,13 @@ export const useWonderWeb3 = () => {
 	const cleanWallet = async () => {
 		setAccounts([])
 		setChain(null)
-		setWonder(null)
 		setAssets(null)
 	}
 
 	useEffect(() => {
 		if (accounts.length && chain) {
-			getAccountAssets()
-			// TODO: Define WONDER token contract to get balance of account.
-			// getWonderBalance()
 			getENSName()
+			getAccountAssets()
 		}
 	}, [accounts, chain])
 
@@ -233,7 +260,7 @@ export const useWonderWeb3 = () => {
 		onConnect,
 		disconnect,
 		signMessage,
-		getTokenBalance,
+		getNativeTokenSymbol,
 	}
 }
 
@@ -252,35 +279,4 @@ function initWeb3(provider: any) {
 	})
 
 	return web3
-}
-
-const ethereumApi: AxiosInstance = axios.create({
-	baseURL: 'https://ethereum-api.xyz',
-	timeout: 30000, // 30 secs
-	headers: {
-		Accept: 'application/json',
-		'Content-Type': 'application/json',
-	},
-})
-
-export async function apiGetAccountAssets(
-	address: string,
-	chainId: number
-): Promise<IAssetData[]> {
-	const response = await ethereumApi.get('/account-assets', {
-		params: { address, chainId },
-	})
-	const { result } = response.data
-	return result
-}
-
-export async function apiGetWonderBalance(
-	address: string,
-	chainId: number
-): Promise<IAssetData[]> {
-	const response = await ethereumApi.get('/token-balance', {
-		params: { address, chainId, WONDER_CONTRACT },
-	})
-	const { result } = response.data
-	return result
 }
