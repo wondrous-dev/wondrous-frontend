@@ -1,14 +1,17 @@
 import React from 'react'
-import About from '../../components/pod/about/about'
+import About from '../../components/About'
+import Tabs from '../../components/Tabs'
+import Token from '../../components/TokenHeader'
+import Wrapper from '../../components/Wrapper'
 import {
 	SOCIAL_MEDIA_FACEBOOK,
 	SOCIAL_MEDIA_LINKEDIN,
 	SOCIAL_MEDIA_TWITTER,
-	TASK_STATUS_DONE,
+	TASK_STATUS_DONE
 } from '../../utils/constants'
 
 const SAMPLE_DATA = {
-	podData: {
+	data: {
 		pod: {
 			name: 'PR Dream Team',
 			description:
@@ -16,7 +19,8 @@ const SAMPLE_DATA = {
 			followers: 8500,
 			link: {
 				url: 'https://andros.io',
-				text: 'andros.io',}
+				text: 'andros.io',
+			},
 		},
 		members: [
 			{
@@ -39,6 +43,36 @@ const SAMPLE_DATA = {
 				initials: 'AA',
 				avatar: {
 					src: '/images/boards/avatarNFT.png',
+				},
+			},
+			{
+				name: 'Third User',
+				description: 'Building the future of work and play.',
+				skills: ['JavaScript', 'React'],
+				id: 'beac6b46-0b6b-4e23-b1b3-50492294e3e6',
+				initials: 'IK',
+				avatar: {
+					src: '/images/boards/avatar.png',
+				},
+			},
+			{
+				name: 'Third User',
+				description: 'Building the future of work and play.',
+				skills: ['JavaScript', 'React'],
+				id: 'beac6b46-0b6b-4e23-b1b3-50492294e3e6',
+				initials: 'IK',
+				avatar: {
+					src: '/images/boards/avatar.png',
+				},
+			},
+			{
+				name: 'Third User',
+				description: 'Building the future of work and play.',
+				skills: ['JavaScript', 'React'],
+				id: 'beac6b46-0b6b-4e23-b1b3-50492294e3e6',
+				initials: 'IK',
+				avatar: {
+					src: '/images/boards/avatar.png',
 				},
 			},
 			{
@@ -132,9 +166,29 @@ const SAMPLE_DATA = {
 	},
 }
 
+const tabsLinks = [
+	{
+		href: '/profile/boards',
+		label: 'Boards',
+	},
+	{
+		href: '/profile/activities',
+		label: 'Activity',
+	},
+	{
+		href: '/profile/about',
+		label: 'About',
+	},
+]
 
 const AboutPage = () => {
-	return <About data={SAMPLE_DATA} />
+	return (
+		<Wrapper {...SAMPLE_DATA}>
+			<Token {...SAMPLE_DATA} />
+			<Tabs tabsLinks={tabsLinks} />
+			<About {...SAMPLE_DATA} />
+		</Wrapper>
+	)
 }
 
 export default AboutPage

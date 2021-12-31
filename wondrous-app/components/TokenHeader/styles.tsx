@@ -1,22 +1,7 @@
 import { Button, IconButton, Typography } from '@material-ui/core'
 import styled from 'styled-components'
-import { Background } from '../../../theme/colors'
-import { BaseCard } from '../../Common/card'
-import { LinkIcon } from '../../Icons/linkIcon'
-
-export const OverviewComponent = styled.section`
-	width: 100vw;
-	height: 100%;
-	background-color: #0f0f0f;
-`
-
-export const HeaderImage = styled.div`
-	width: 100%;
-	height: 220px;
-	background-image: url('/images/overview/background.png');
-	background-position: center;
-	margin-top: 70px;
-`
+import { BaseCard } from '../Common/card'
+import { LinkIcon } from '../Icons/linkIcon'
 
 export const TokenHeader = styled.div`
 	position: relative;
@@ -35,23 +20,6 @@ export const AvatarContainer = styled.div`
 	position: absolute;
 	top: -50px;
 	left: -20px;
-`
-
-export const Content = styled.div`
-	width: 100%;
-	height: 100%;
-	display: flex;
-	justify-content: center;
-`
-
-export const ContentContainer = styled.div`
-	//max-width: 680px;
-	max-width: 1037px;
-	display: flex;
-	//justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	width: 100%;
 `
 
 export const HeaderMainBlock = styled.div`

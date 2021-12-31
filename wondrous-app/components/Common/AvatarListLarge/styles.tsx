@@ -19,7 +19,6 @@ export const AvatarWrapper = styled.div`
 		props.avatarURL ? 'background: url(' + props.avatarURL + ');' : ''}
 	background-position: center;
 	background-size: cover;
-
 	font-size: 24px;
 `
 

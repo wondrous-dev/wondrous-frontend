@@ -3,23 +3,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { StyledTabs } from './styles'
 
-const tabsLinks = [
-	{
-		href: '/profile/boards',
-		label: 'Boards',
-	},
-	{
-		href: '/profile/activities',
-		label: 'Activity',
-	},
-	{
-		href: '/profile/about',
-		label: 'About',
-	},
-]
-
 const Tabs = (props) => {
-	const { children } = props
+	const { tabsLinks } = props
 
 	const router = useRouter()
 
@@ -41,7 +26,6 @@ const Tabs = (props) => {
 					</Link>
 				))}
 			</StyledTabs>
-			<div>{children}</div>
 		</div>
 	)
 }

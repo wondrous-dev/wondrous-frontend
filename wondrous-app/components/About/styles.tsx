@@ -1,6 +1,6 @@
 import { Button, IconButton, Typography } from '@material-ui/core'
 import styled from 'styled-components'
-import { LogoSquare } from '../../Common/ci'
+import { LogoSquare } from '../Common/ci'
 
 export const AboutSection = styled.div`
 	max-width: 1038px;
@@ -12,8 +12,7 @@ export const AboutSection = styled.div`
 export const AboutInfoTable = styled.div`
 	max-width: 680px;
 	width: 680px;
-	height: 80px;
-	margin: 20px auto 40px;
+	margin: 10px auto 40px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -23,6 +22,7 @@ export const AboutInfoTableRow = styled.div`
 	width: 100%;
 	height: 32px;
 	display: flex;
+	margin-top: 15px;
 `
 
 export const AboutInfoTableRowNameBlock = styled.div`

@@ -1,6 +1,6 @@
 import { IconButton } from '@material-ui/core'
-import { AvatarList } from '../../Common/AvatarList'
-import RightArrowIcon from '../../Icons/rightArrow'
+import { AvatarList } from '../Common/AvatarList'
+import RightArrowIcon from '../Icons/rightArrow'
 import {
 	Card,
 	CardContent,
