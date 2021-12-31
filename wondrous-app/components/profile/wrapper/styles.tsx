@@ -10,6 +10,7 @@ export const OverviewComponent = styled.section`
 	height: 100%;
 	//background-color: ${Background};
 	background-color: #0f0f0f;
+	transition: 0.15s all ease;
 `
 
 export const HeaderImage = styled.div`
