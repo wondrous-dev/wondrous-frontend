@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {
 	DrawerBackButton,
 	DrawerBottomBlock,
@@ -15,14 +15,19 @@ import SettingsIcon from '../Icons/settings'
 import ExitIcon from '../Icons/exit'
 import BackArrowIcon from '../Icons/backArrow'
 import { logout } from '../Auth/withAuth'
+import { useSideBar } from '../../utils/hooks'
 
 const SideBarComponent = (props) => {
 	const { listItems } = props
 
-	const [minimized, setMinimized] = useState(false)
+	const sidebar = useSideBar()
+	const minimized = sidebar?.minimized
+	const setMinimized = sidebar?.setMinimized
 
 	const handleMinimize = (event) => {
-		setMinimized(!minimized)
+		if (setMinimized) {
+			setMinimized(!minimized)
+		}
 	}
 
 	const signOut = () => {
