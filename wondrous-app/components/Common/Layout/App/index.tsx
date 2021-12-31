@@ -27,7 +27,6 @@ const AppLayout = ({ banner, children }) => {
 	const [minimized, setMinimized] = useState(false)
 	return (
 		<>
-			{banner}
 			<Header />
 			<SideBarContext.Provider
 				value={{
@@ -41,6 +40,7 @@ const AppLayout = ({ banner, children }) => {
 						paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
 					}}
 				>
+					{banner}
 					<Container>{children}</Container>
 				</Main>
 			</SideBarContext.Provider>
