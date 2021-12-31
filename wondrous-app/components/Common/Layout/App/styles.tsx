@@ -8,7 +8,9 @@ export const MainWrapper = styled.main`
 
 	width: 100%;
 	min-height: 100vh;
+	height: 100vh;
 
+	transition: 0.15s all ease;
 	@supports (width: calc(2px - 1px)) {
 		/* Viewheight - Header Height */
 		min-height: calc(100vh - 70px);
@@ -99,9 +101,9 @@ export const MainBgGradientOval = styled(MainBgShape)`
 	filter: blur(200px);
 `
 
-export const Main = ({ children }) => {
+export const Main = ({ children, style }) => {
 	return (
-		<MainWrapper>
+		<MainWrapper style={style}>
 			<MainBgColorCircle />
 			<MainBgGradientOval />
 			{children}

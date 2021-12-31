@@ -28,3 +28,5 @@ export const CURRENCY_KEYS = {
 	WONDER: 'WONDER',
 	MATIC: 'MATIC',
 }
+
+export const SIDEBAR_WIDTH = '80px'
