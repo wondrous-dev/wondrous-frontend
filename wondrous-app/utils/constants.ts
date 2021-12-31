@@ -24,21 +24,21 @@ export const SUPPORTED_CHAINS = {
 }
 
 export const SUPPORTED_CURRENCIES = [
-	{ 
+	{
 		symbol: 'ETH',
-		chains: [1] 
+		chains: [1],
 	},
-	{ 
+	{
 		symbol: 'MATIC',
-		chains: [137] 
+		chains: [137],
 	},
-	{ 
+	{
 		symbol: 'WONDER',
-		chains: [1, 137], 
-		contracts: { 
-			1: '', 
-			137: '' 
-		} 
+		chains: [1, 137],
+		contracts: {
+			1: '',
+			137: '',
+		},
 	},
 	{
 		symbol: 'USDC',

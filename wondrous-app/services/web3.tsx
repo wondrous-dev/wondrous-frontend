@@ -8,10 +8,15 @@ import axios, { AxiosInstance } from 'axios'
 import { useEffect, useMemo, useState } from 'react'
 
 import { IAssetData } from '../types/assets'
-import { CURRENCY_KEYS, SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../utils/constants'
+import {
+	CURRENCY_KEYS,
+	SUPPORTED_CHAINS,
+	SUPPORTED_CURRENCIES,
+} from '../utils/constants'
 
-import ERC20abi from './contracts/erc20.abi.json'
+import { ERC20abi } from './contracts/erc20.abi'
 import { formatEther } from 'ethers/lib/utils'
+import { AbiItem } from 'web3-utils'
 
 // TODO: Define Contract Address for WONDER Token for wallet balance
 const WONDER_CONTRACT = '0x00'
@@ -144,9 +149,9 @@ export const useWonderWeb3 = () => {
 
 	const getChainCurrencies = () => {
 		const supportedCurrencies = []
-		if(chain) {
+		if (chain) {
 			SUPPORTED_CURRENCIES.map((c) => {
-				if(c.chains.includes(chain)) {
+				if (c.chains.includes(chain)) {
 					supportedCurrencies.push(c)
 				}
 			})
@@ -154,10 +159,11 @@ export const useWonderWeb3 = () => {
 		return supportedCurrencies
 	}
 
-	const getNativeChainBalance = async() => {
+	const getNativeChainBalance = async () => {
 		const web3 = new Web3(window.ethereum)
 		const balance = await web3.eth.getBalance(address)
-		const balanceFormatted = parseFloat(formatEther(balance)).toPrecision(4) + ' '
+		const balanceFormatted =
+			parseFloat(formatEther(balance)).toPrecision(4) + ' '
 		return balanceFormatted
 	}
 
@@ -165,13 +171,16 @@ export const useWonderWeb3 = () => {
 		if (!fetching && address && chain && token.contracts[chain] !== '') {
 			setFetching(true)
 			const web3 = new Web3(window.ethereum)
-			const usdcContract = new web3.eth.Contract(ERC20abi, token.contracts[chain]);
-			const balanceRaw =  await usdcContract.methods.balanceOf(address).call()
+			const usdcContract = new web3.eth.Contract(
+				ERC20abi as AbiItem[],
+				token.contracts[chain]
+			)
+			const balanceRaw = await usdcContract.methods.balanceOf(address).call()
 			const decimals = await usdcContract.methods.decimals().call()
 			const bnBalance = await BigNumber.from(balanceRaw)
-			const balance = bnBalance.div(10**decimals)
+			const balance = bnBalance.div(10 ** decimals)
 			setFetching(false)
-			return parseFloat(balance.toString()).toPrecision(4) 
+			return parseFloat(balance.toString()).toPrecision(4)
 		} else {
 			console.log('getAccountsAssets() failed.', address)
 			return '0.000'
@@ -188,14 +197,14 @@ export const useWonderWeb3 = () => {
 
 			currencies.map(async (c) => {
 				let balance = '0.000'
-				if(c.contracts) {
+				if (c.contracts) {
 					balance = await getTokenBalance(c)
 				} else {
 					balance = await getNativeChainBalance()
 				}
 				chainAssets[c.symbol] = {
 					balance,
-					symbol: c.symbol
+					symbol: c.symbol,
 				}
 			})
 

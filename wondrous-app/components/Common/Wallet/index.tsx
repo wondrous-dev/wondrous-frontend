@@ -90,10 +90,10 @@ const Wallet = () => {
 	}, [signMessage, signedMessage, wonderWeb3])
 
 	const displayCurrency = (currencyCode) => {
-		if(wonderWeb3.assets[currencyCode]) {
+		if (wonderWeb3.assets[currencyCode]) {
 			setCurrency({
 				balance: wonderWeb3.assets[currencyCode].balance,
-				symbol: wonderWeb3.assets[currencyCode].symbol
+				symbol: wonderWeb3.assets[currencyCode].symbol,
 			})
 		}
 	}
@@ -102,7 +102,7 @@ const Wallet = () => {
 		if (user && user.activeEthAddress && !wonderWeb3.subscribed) {
 			connectWallet()
 		}
-	 // eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [connectWallet, user])
 
 	// Detect Chain
@@ -115,6 +115,7 @@ const Wallet = () => {
 		if (wonderWeb3.assets) {
 			displayCurrency(wonderWeb3.getNativeTokenSymbol())
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [wonderWeb3.assets])
 
 	// Bind to the Web3 wallet to monitor changes (i.e user unlinks wallet)
