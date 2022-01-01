@@ -111,14 +111,15 @@ export const useWonderWeb3 = () => {
 				return signedMessage
 			} catch (error) {
 				// Error Signed message
-				console.log(error)
 				setConnecting(false)
-				return false
+				if(error.code && error.code == 4001) {
+					return false 
+				}
 			}
 		} else {
 			setConnecting(false)
-			return false
 		}
+		return null
 	}
 
 	const subscribeProvider = async (provider: any) => {
