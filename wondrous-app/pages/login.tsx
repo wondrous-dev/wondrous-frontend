@@ -56,7 +56,7 @@ const Login = ({ csrfToken }) => {
 			// Retrieve Signed Message
 			const messageToSign = await getUserSigningMessage(
 				wonderWeb3.address,
-				wonderWeb3.chainName
+				wonderWeb3.chainName.toLowerCase()
 			)
 
 			if (messageToSign) {

@@ -116,6 +116,7 @@ export const useWonderWeb3 = () => {
 				return false
 			}
 		} else {
+			setConnecting(false)
 			return false
 		}
 	}

@@ -24,6 +24,7 @@ import {
 	getUserSigningMessage,
 	walletSignup,
 } from '../components/Auth/withAuth'
+import { SUPPORTED_CHAINS } from '../utils/constants'
 
 const Signup = () => {
 	const wonderWeb3 = useWonderWeb3()
@@ -31,6 +32,9 @@ const Signup = () => {
 	const [password, setPassword] = useState('')
 	const [repassword, setRePassword] = useState('')
 	const [errorMessage, setErrorMessage] = useState('')
+
+	const [unsuportedChain, setUnsuportedChain] = useState(false)
+
 	const router = useRouter()
 
 	const handleSubmit = async (event) => {
@@ -61,7 +65,7 @@ const Signup = () => {
 			// Retrieve Signed Message
 			const messageToSign = await getUserSigningMessage(
 				wonderWeb3.address,
-				wonderWeb3.chainName
+				wonderWeb3.chainName.toLowerCase()
 			)
 
 			if (messageToSign) {
@@ -72,7 +76,7 @@ const Signup = () => {
 					const result = await walletSignup(
 						wonderWeb3.address,
 						signedMessage,
-						wonderWeb3.chainName
+						wonderWeb3.chainName.toLowerCase()
 					)
 					if (result === true) {
 						router.replace('/dashboard')
@@ -94,6 +98,12 @@ const Signup = () => {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [wonderWeb3.wallet])
+
+	useEffect(() => {
+		if(wonderWeb3.wallet.chain) {
+			setUnsuportedChain(!SUPPORTED_CHAINS[wonderWeb3.chain])
+		}
+	},[wonderWeb3.wallet.chain])
 
 	return (
 		<AuthLayout>
@@ -141,12 +151,24 @@ const Signup = () => {
 								or
 							</PaddedParagraph>
 						</LineWithText>
-						<Button onClick={connectWallet}>
-							<Metamask height="18" width="17" />
-							<PaddedParagraph padding="0 10px">
-								Sign up with MetaMask
-							</PaddedParagraph>
-						</Button>
+						{unsuportedChain
+						? (
+							<Button disabled>
+								<Metamask height="18" width="17" />
+								<PaddedParagraph padding="0 10px">
+									Change the Network to Mainnet or Polygon
+								</PaddedParagraph>
+							</Button>
+						)
+						: (
+							<Button onClick={connectWallet}>
+								<Metamask height="18" width="17" />
+								<PaddedParagraph padding="0 10px">
+									Sign up with MetaMask
+								</PaddedParagraph>
+							</Button>
+						)
+						}
 					</CardBody>
 					<CardFooter>
 						<Line size="80%" />
