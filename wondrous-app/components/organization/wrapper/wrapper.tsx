@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { SIDEBAR_WIDTH } from '../../../utils/constants'
+import { SideBarContext } from '../../../utils/contexts'
 
 import Header from '../../Header'
 import SideBarComponent from '../../SideBar'
@@ -50,51 +52,64 @@ const SIDEBAR_LIST_ITEMS = [
 
 const Wrapper = (props) => {
 	const { children } = props
-
+	const [minimized, setMinimized] = useState(false)
 	return (
 		<>
 			<Header />
-			<SideBarComponent listItems={SIDEBAR_LIST_ITEMS} />
-			<OverviewComponent>
-				<HeaderImage />
-				<Content>
-					<ContentContainer>
-						<TokenHeader>
-							<TokenLogo />
-							<HeaderMainBlock>
-								<HeaderTitle>Wonder</HeaderTitle>
-								<HeaderButtons>
-									<HeaderFollowButton>
-										<HeaderFollowButtonText>1.2m</HeaderFollowButtonText>
-										<HeaderFollowButtonIcon src="/images/overview/icon.png" />
-									</HeaderFollowButton>
-									<HeaderContributeButton>Contribute</HeaderContributeButton>
-								</HeaderButtons>
-							</HeaderMainBlock>
-							<HeaderText>
-								Helping DAOs manage projects with web3 native collaboration
-								tools.
-							</HeaderText>
-							<HeaderActivity>
-								<HeaderActivityLink href="https://wonderverse.xyz">
-									<HeaderActivityLinkIcon />
-									wonderverse.xyz
-								</HeaderActivityLink>
-								<HeaderContributors>
-									<HeaderContributorsAmount>201</HeaderContributorsAmount>
-									<HeaderContributorsText>Contributors</HeaderContributorsText>
-								</HeaderContributors>
-								<HeaderPods>
-									<HeaderPodsAmount>11</HeaderPodsAmount>
-									<HeaderPodsText>Pods</HeaderPodsText>
-								</HeaderPods>
-							</HeaderActivity>
-						</TokenHeader>
+			<SideBarContext.Provider
+				value={{
+					minimized,
+					setMinimized,
+				}}
+			>
+				<SideBarComponent listItems={SIDEBAR_LIST_ITEMS} />
+				<OverviewComponent
+					style={{
+						paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
+					}}
+				>
+					<HeaderImage />
+					<Content>
+						<ContentContainer>
+							<TokenHeader>
+								<TokenLogo />
+								<HeaderMainBlock>
+									<HeaderTitle>Wonder</HeaderTitle>
+									<HeaderButtons>
+										<HeaderFollowButton>
+											<HeaderFollowButtonText>1.2m</HeaderFollowButtonText>
+											<HeaderFollowButtonIcon src="/images/overview/icon.png" />
+										</HeaderFollowButton>
+										<HeaderContributeButton>Contribute</HeaderContributeButton>
+									</HeaderButtons>
+								</HeaderMainBlock>
+								<HeaderText>
+									Helping DAOs manage projects with web3 native collaboration
+									tools.
+								</HeaderText>
+								<HeaderActivity>
+									<HeaderActivityLink href="https://wonderverse.xyz">
+										<HeaderActivityLinkIcon />
+										wonderverse.xyz
+									</HeaderActivityLink>
+									<HeaderContributors>
+										<HeaderContributorsAmount>201</HeaderContributorsAmount>
+										<HeaderContributorsText>
+											Contributors
+										</HeaderContributorsText>
+									</HeaderContributors>
+									<HeaderPods>
+										<HeaderPodsAmount>11</HeaderPodsAmount>
+										<HeaderPodsText>Pods</HeaderPodsText>
+									</HeaderPods>
+								</HeaderActivity>
+							</TokenHeader>
 
-						<Tabs>{children}</Tabs>
-					</ContentContainer>
-				</Content>
-			</OverviewComponent>
+							<Tabs>{children}</Tabs>
+						</ContentContainer>
+					</Content>
+				</OverviewComponent>
+			</SideBarContext.Provider>
 		</>
 	)
 }

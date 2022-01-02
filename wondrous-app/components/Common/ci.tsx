@@ -1,5 +1,7 @@
 import React, { SVGProps } from 'react'
 
+// TODO: Move with the rest of the Icons
+
 export const Logo = (props: SVGProps<SVGSVGElement>) => (
 	<svg
 		className="logo"

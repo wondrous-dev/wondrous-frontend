@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Drawer, IconButton, List, ListItem } from '@material-ui/core'
 import { Black97 } from '../../theme/colors'
+import { SIDEBAR_WIDTH } from '../../utils/constants'
 
 export const DrawerComponent = styled(Drawer)`
 	&& {
@@ -20,7 +21,7 @@ export const DrawerComponent = styled(Drawer)`
 
 export const DrawerContainer = styled.div`
 	min-height: 740px;
-	width: 80px;
+	width: ${SIDEBAR_WIDTH};
 	display: flex;
 	flex-grow: 1;
 	flex-direction: column;
@@ -59,8 +60,8 @@ export const DrawerListItem = styled(ListItem)`
 	& {
 		display: flex;
 		height: 36px;
-		padding: .5em auto;
-		margin: .5em auto;
+		padding: 0.5em auto;
+		margin: 0.5em auto;
 	}
 `
 
@@ -97,7 +98,7 @@ export const DrawerBackButton = styled(DrawerBottomButton)`
 		display: flex;
 		align-items: center;
 		justify-content: center;
-	
+
 		background: linear-gradient(
 			169.47deg,
 			rgba(75, 75, 75, 0.6) 7.84%,
@@ -105,7 +106,7 @@ export const DrawerBackButton = styled(DrawerBottomButton)`
 		);
 
 		transition: transform 0.2s;
-	
+
 		&.active {
 			transform: rotate(180deg);
 		}

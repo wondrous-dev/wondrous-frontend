@@ -92,6 +92,7 @@ const Signup = () => {
 		if (wonderWeb3.address) {
 			signupWithWallet()
 		}
+	 // eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [wonderWeb3.wallet])
 
 	return (

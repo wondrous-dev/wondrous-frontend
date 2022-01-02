@@ -12,7 +12,7 @@ import {
 export const MultiSelectForm = styled(FormControl)`
 	&.MuiFormControl-root {
 		position: relative;
-		width: 325px;
+		width: 100%;
 		min-height: 40px;
 		background: linear-gradient(
 			169.47deg,
@@ -24,7 +24,6 @@ export const MultiSelectForm = styled(FormControl)`
 		z-index: 1;
 		display: flex;
 	}
-
 	.MuiInputBase-root::after {
 		content: '';
 		position: absolute;

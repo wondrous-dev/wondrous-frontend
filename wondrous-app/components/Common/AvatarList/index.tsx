@@ -1,6 +1,10 @@
 import React from 'react'
 import * as Colors from '../../../theme/colors'
-import { SmallAvatarWrapper, SmallAvatarContainer, AvatarListWrapper } from './styles'
+import {
+	SmallAvatarWrapper,
+	SmallAvatarContainer,
+	AvatarListWrapper,
+} from './styles'
 import { AVATAR_LIST_OVERFLOW_MAX } from '../../../utils/constants'
 
 export const SmallAvatar = (props) => {
@@ -28,7 +32,10 @@ export const SmallAvatarOverflow = (props) => {
 	const { index = 0, overflow = 0 } = props
 
 	return (
-		<SmallAvatarContainer key={index} style={{ zIndex: AVATAR_LIST_OVERFLOW_MAX + 1 }}>
+		<SmallAvatarContainer
+			key={index}
+			style={{ zIndex: AVATAR_LIST_OVERFLOW_MAX + 1 }}
+		>
 			<SmallAvatarWrapper avatarURL="/images/avatar-overflow.png">
 				+{overflow}
 			</SmallAvatarWrapper>

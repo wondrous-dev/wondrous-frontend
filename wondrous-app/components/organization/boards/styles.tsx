@@ -18,7 +18,7 @@ export const BoardsActivity = styled.div`
 
 export const BoardsActivityInput = styled(TextField)({
 	'&.MuiTextField-root': {
-		width: 538,
+		width: '100%',
 		maxWidth: '100%',
 		height: 40,
 		backgroundColor: '#0F0F0F',
