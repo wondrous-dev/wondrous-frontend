@@ -48,3 +48,11 @@ export const GET_USER_SIGNING_MESSAGE = gql`
 		}
 	}
 `
+
+export const GET_USER_ID_FROM_USERNAME = gql`
+	query getUserIdFromUsername($username: String!) {
+		getUserIdFromUsername(username: $username) {
+			userId
+		}
+	}
+`
