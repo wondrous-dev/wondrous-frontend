@@ -10,6 +10,7 @@ export const TASK_STATUS_ARCHIVED = 'ARCHIVED'
 
 // Max avatar user list count
 export const AVATAR_LIST_OVERFLOW_MAX = 5
+export const AVATAR_LIST_LARGE_OVERFLOW_MAX = 2
 
 // Social media
 export const SOCIAL_MEDIA_FACEBOOK = 'facebook'

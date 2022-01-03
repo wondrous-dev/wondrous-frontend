@@ -1,22 +1,22 @@
 import { IconButton } from '@material-ui/core'
 import { CardHeaderCategory } from '../CardHeaderCategory'
 import { AvatarList } from '../Common/AvatarList'
-import { TaskCardLogo } from '../Common/KanbanBoard/TaskCard/styles'
 import { TaskMedia } from '../Common/MediaPlayer'
 import CommentsIcon from '../Icons/comments'
 import DotsIcon from '../Icons/dots'
 import LikeIcon from '../Icons/like'
 import ShareIcon from '../Icons/share'
+import { TaskCardLogo } from '../organization/about/styles'
 import {
-    Card,
-    CardHeader,
-    CompletedCardFooter,
-    CompletedCardFooterActivity,
-    CompletedCardFooterActivityAmount,
-    CompletedCardFooterActivityIconBtn,
-    CompletedCardFooterBlock,
-    CompletedCardText,
-    CompletedCardTitle
+	Card,
+	CardHeader,
+	CompletedCardFooter,
+	CompletedCardFooterActivity,
+	CompletedCardFooterActivityAmount,
+	CompletedCardFooterActivityIconBtn,
+	CompletedCardFooterBlock,
+	CompletedCardText,
+	CompletedCardTitle
 } from './styles'
 
 const AboutCompletedCard = (props) => {
