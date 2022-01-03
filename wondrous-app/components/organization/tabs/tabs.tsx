@@ -29,7 +29,22 @@ const Tabs = (props) => {
 	const router = useRouter()
 
 	const { pathname } = router
+	const { username } = router.query
 
+	const tabsLinks = [
+		{
+			href: `/organization/${username}/boards`,
+			label: 'Boards',
+		},
+		{
+			href: `/organization/${username}/activities`,
+			label: 'Activity',
+		},
+		{
+			href: `/organization/${username}/about`,
+			label: 'About',
+		},
+	]
 	return (
 		<div>
 			<StyledTabs value={pathname}>
