@@ -1,11 +1,11 @@
 import React from 'react'
-import About from '../../components/profile/about/about'
+import About from '../../../components/profile/about/about'
 import {
 	SOCIAL_MEDIA_FACEBOOK,
 	SOCIAL_MEDIA_LINKEDIN,
 	SOCIAL_MEDIA_TWITTER,
 	TASK_STATUS_DONE,
-} from '../../utils/constants'
+} from '../../../utils/constants'
 
 const ORGANIZATIONS = [
 	{
