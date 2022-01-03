@@ -4,27 +4,27 @@ import { useRouter } from 'next/router'
 import React from 'react'
 import { StyledTabs } from './styles'
 
-const tabsLinks = [
-	{
-		href: '/profile/boards',
-		label: 'Boards',
-	},
-	{
-		href: '/profile/activities',
-		label: 'Activity',
-	},
-	{
-		href: '/profile/about',
-		label: 'About',
-	},
-]
-
 const Tabs = (props) => {
 	const { children } = props
 
 	const router = useRouter()
 
 	const { pathname } = router
+	const { username } = router.query
+	const tabsLinks = [
+		{
+			href: `/profile/${username}/boards`,
+			label: 'Boards',
+		},
+		{
+			href: `/profile/${username}/activities`,
+			label: 'Activity',
+		},
+		{
+			href: `/profile/${username}/about`,
+			label: 'About',
+		},
+	]
 
 	return (
 		<div>
