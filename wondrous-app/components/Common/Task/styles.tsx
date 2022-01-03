@@ -3,7 +3,7 @@ import {
 	GradientMidnightDiagonal,
 	GradientMidnightVertical,
 } from '../gradients'
-import { Grey80 } from '../../../theme/colors'
+import { Grey80, White } from '../../../theme/colors'
 
 export const TaskInner = styled.div`
 	display: flex;
@@ -52,6 +52,7 @@ export const TaskContent = styled.div`
 	width: 100%;
 	font-size: 16px;
 	font-weight: 400;
+	color: ${White};
 `
 
 export const TaskSeparator = styled.div`
