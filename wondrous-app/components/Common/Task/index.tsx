@@ -26,7 +26,7 @@ import {
 	TaskActionMenu,
 } from './styles'
 
-const TASK_ICONS = {
+export const TASK_ICONS = {
 	[Constants.TASK_STATUS_TODO]: ToDo,
 	[Constants.TASK_STATUS_IN_PROGRESS]: InProgress,
 	[Constants.TASK_STATUS_DONE]: Done,
@@ -40,7 +40,7 @@ export const Task = ({ task, setTask }) => {
 		compensation = {},
 		id,
 		media,
-		taskType,
+		status,
 		title = '',
 		users = [],
 	} = task
@@ -56,7 +56,7 @@ export const Task = ({ task, setTask }) => {
 
 	const [liked, setLiked] = useState(iLiked)
 
-	let TaskIcon = TASK_ICONS[taskType]
+	let TaskIcon = TASK_ICONS[status]
 
 	const editTask = () => {
 		console.log('Edit Task Menu Clicked')
