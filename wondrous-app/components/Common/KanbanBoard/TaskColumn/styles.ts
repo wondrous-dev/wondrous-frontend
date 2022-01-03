@@ -1,8 +1,7 @@
 import { Typography } from '@material-ui/core'
 import styled from 'styled-components'
 import { White } from '../../../../theme/colors'
-export const DropMeHere = styled.div `
-	
+export const DropMeHere = styled.div`
 	margin: 1em 0 0 0;
 
 	display: flex;
@@ -16,9 +15,9 @@ export const DropMeHere = styled.div `
 
 	background: linear-gradient(180deg, #141414 0%, #151515 100%);
 	border-radius: 6px;
-	border: 1px dashed #4B4B4B;
+	border: 1px dashed #4b4b4b;
 
-	color: ${White}
+	color: ${White};
 `
 
 export const TaskColumnContainer = styled.div`

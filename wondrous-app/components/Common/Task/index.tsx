@@ -26,7 +26,7 @@ import {
 	TaskActionMenu,
 } from './styles'
 
-const TASK_ICONS = {
+export const TASK_ICONS = {
 	[Constants.TASK_STATUS_TODO]: ToDo,
 	[Constants.TASK_STATUS_IN_PROGRESS]: InProgress,
 	[Constants.TASK_STATUS_DONE]: Done,

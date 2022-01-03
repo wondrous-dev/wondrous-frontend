@@ -59,7 +59,7 @@ const ColumnDropZone = ({ status, moveCard, children }) => {
 	drop(ref)
 	return (
 		<div ref={ref}>
-			{ isOver && (
+			{isOver && (
 				<DropMeHere>
 					<DropZone />
 					<p>Drag task here</p>
