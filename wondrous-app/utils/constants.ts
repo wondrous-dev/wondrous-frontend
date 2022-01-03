@@ -24,6 +24,11 @@ export const SUPPORTED_CHAINS = {
 	137: 'MATIC',
 }
 
+export const CHAIN_IDS = {
+	ETH: 1,
+	MATIC: 137,
+}
+
 export const SUPPORTED_CURRENCIES = [
 	{
 		symbol: 'ETH',

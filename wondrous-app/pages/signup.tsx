@@ -62,7 +62,6 @@ const Signup = () => {
 
 	const signupWithWallet = async () => {
 		if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
-			
 			// Retrieve Signed Message
 			const messageToSign = await getUserSigningMessage(
 				wonderWeb3.address,
@@ -84,7 +83,7 @@ const Signup = () => {
 					} else {
 						setErrorMessage(result)
 					}
-				} else if(signedMessage === false) {
+				} else if (signedMessage === false) {
 					setErrorMessage('Signature rejected. Try again.')
 				} else {
 					setErrorMessage('There has been an issue, contact with support.')
@@ -155,15 +154,13 @@ const Signup = () => {
 								or
 							</PaddedParagraph>
 						</LineWithText>
-						{wonderWeb3.connecting
-						? (
+						{wonderWeb3.connecting ? (
 							<Button disabled className="disabled">
 								<PaddedParagraph padding="0 10px">
 									Continue on your wallet
 								</PaddedParagraph>
 							</Button>
-						)
-						: unsuportedChain ? (
+						) : unsuportedChain ? (
 							<Button disabled>
 								<Metamask height="18" width="17" />
 								<PaddedParagraph padding="0 10px">

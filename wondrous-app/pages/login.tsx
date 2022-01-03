@@ -23,9 +23,7 @@ import {
 	emailSignin,
 	getUserSigningMessage,
 	walletSignin,
-	walletSignup,
 } from '../components/Auth/withAuth'
-import { isInlineFragment } from '@apollo/client/utilities'
 
 const Login = ({ csrfToken }) => {
 	const wonderWeb3 = useWonderWeb3()
@@ -46,7 +44,7 @@ const Login = ({ csrfToken }) => {
 	}
 
 	const conenctWallet = async (event) => {
-		if(wonderWeb3.address) {
+		if (wonderWeb3.address) {
 			loginWithWallet()
 		} else {
 			// Connect Wallet first
@@ -131,23 +129,20 @@ const Login = ({ csrfToken }) => {
 								or
 							</PaddedParagraph>
 						</LineWithText>
-						{wonderWeb3.connecting
-						? (
+						{wonderWeb3.connecting ? (
 							<Button disabled className="disabled">
 								<PaddedParagraph padding="0 10px">
-									Continue on your wallet	
+									Continue on your wallet
 								</PaddedParagraph>
 							</Button>
-						)
-						: (
+						) : (
 							<Button onClick={conenctWallet}>
 								<Metamask height="18" width="17" />
 								<PaddedParagraph padding="0 10px">
 									Log in with MetaMask
 								</PaddedParagraph>
 							</Button>
-							)
-						}
+						)}
 					</CardBody>
 					<CardFooter>
 						<Line size="80%" />

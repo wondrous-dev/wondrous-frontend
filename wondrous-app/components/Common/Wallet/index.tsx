@@ -113,7 +113,7 @@ const Wallet = () => {
 	// Change Currency when the Chain changes
 	useEffect(() => {
 		if (wonderWeb3.assets) {
-			displayCurrency(wonderWeb3.getNativeTokenSymbol())
+			displayCurrency(wonderWeb3.nativeTokenSymbol)
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [wonderWeb3.assets])

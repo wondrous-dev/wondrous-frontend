@@ -1,8 +1,8 @@
 import React from 'react'
 import {
-    SOCIAL_MEDIA_FACEBOOK,
-    SOCIAL_MEDIA_LINKEDIN,
-    SOCIAL_MEDIA_TWITTER
+	SOCIAL_MEDIA_FACEBOOK,
+	SOCIAL_MEDIA_LINKEDIN,
+	SOCIAL_MEDIA_TWITTER,
 } from '../../utils/constants'
 import FacebookIcon from '../Icons/facebook'
 import LinkedInIcon from '../Icons/linkedIn'
@@ -13,23 +13,23 @@ import AboutCompletedCard from './aboutCompletedCard'
 import AboutMembersCard from './aboutMembersCard'
 import AboutMilestonesCard from './aboutMilestonesCard'
 import {
-    AboutInfoBlock,
-    AboutInfoBlockContent,
-    AboutInfoBlockHeader,
-    AboutInfoBlockHeaderAmount,
-    AboutInfoBlockHeaderSeeAll,
-    AboutInfoBlockHeaderText,
-    AboutInfoContainer,
-    AboutInfoTable,
-    AboutInfoTableRow,
-    AboutInfoTableRowContent,
-    AboutInfoTableRowContentItem,
-    AboutInfoTableRowContentItemLink,
-    AboutInfoTableRowContentSocialButton,
-    AboutInfoTableRowNameBlock,
-    AboutInfoTableRowTitle,
-    AboutInfoTableRowTitleText,
-    AboutSection
+	AboutInfoBlock,
+	AboutInfoBlockContent,
+	AboutInfoBlockHeader,
+	AboutInfoBlockHeaderAmount,
+	AboutInfoBlockHeaderSeeAll,
+	AboutInfoBlockHeaderText,
+	AboutInfoContainer,
+	AboutInfoTable,
+	AboutInfoTableRow,
+	AboutInfoTableRowContent,
+	AboutInfoTableRowContentItem,
+	AboutInfoTableRowContentItemLink,
+	AboutInfoTableRowContentSocialButton,
+	AboutInfoTableRowNameBlock,
+	AboutInfoTableRowTitle,
+	AboutInfoTableRowTitleText,
+	AboutSection,
 } from './styles'
 
 const SOCIAL_MEDIA_ICONS = {

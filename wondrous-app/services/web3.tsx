@@ -2,14 +2,13 @@ import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import { BigNumber, ethers } from 'ethers'
 import ENS, { getEnsAddress } from '@ensdomains/ensjs'
-import axios, { AxiosInstance } from 'axios'
+
 // Need Infura API Key for this one:
 // import WalletConnectProvider from '@walletconnect/web3-provider'
 import { useEffect, useMemo, useState } from 'react'
 
-import { IAssetData } from '../types/assets'
 import {
-	CURRENCY_KEYS,
+	CHAIN_IDS,
 	SUPPORTED_CHAINS,
 	SUPPORTED_CURRENCIES,
 } from '../utils/constants'
@@ -17,9 +16,6 @@ import {
 import { ERC20abi } from './contracts/erc20.abi'
 import { formatEther } from 'ethers/lib/utils'
 import { AbiItem } from 'web3-utils'
-
-// TODO: Define Contract Address for WONDER Token for wallet balance
-const WONDER_CONTRACT = '0x00'
 
 // Handler of Web3 State for the app
 export const useWonderWeb3 = () => {
@@ -67,6 +63,10 @@ export const useWonderWeb3 = () => {
 
 	const [connecting, setConnecting] = useState(false)
 
+	const nativeTokenSymbol = useMemo(() => {
+		return SUPPORTED_CHAINS[chain]
+	}, [chain])
+
 	const onConnect = async () => {
 		setConnecting(true)
 		const web3Modal = new Web3Modal()
@@ -112,8 +112,8 @@ export const useWonderWeb3 = () => {
 			} catch (error) {
 				// Error Signed message
 				setConnecting(false)
-				if(error.code && error.code == 4001) {
-					return false 
+				if (error.code && error.code == 4001) {
+					return false
 				}
 			}
 		} else {
@@ -150,15 +150,9 @@ export const useWonderWeb3 = () => {
 	}
 
 	const getChainCurrencies = () => {
-		const supportedCurrencies = []
-		if (chain) {
-			SUPPORTED_CURRENCIES.map((c) => {
-				if (c.chains.includes(chain)) {
-					supportedCurrencies.push(c)
-				}
-			})
-		}
-		return supportedCurrencies
+		return chain
+			? SUPPORTED_CURRENCIES.filter((c) => c.chains.includes(chain))
+			: []
 	}
 
 	const getNativeChainBalance = async () => {
@@ -192,23 +186,28 @@ export const useWonderWeb3 = () => {
 	const getAccountAssets = async () => {
 		if (!fetching && address && chain) {
 			setFetching(true)
-			const chainAssets = {}
 
 			// Get supported currencies for this chain
-			const currencies = getChainCurrencies()
+			const currencies = await getChainCurrencies()
 
-			currencies.map(async (c) => {
-				let balance = '0.000'
-				if (c.contracts) {
-					balance = await getTokenBalance(c)
-				} else {
-					balance = await getNativeChainBalance()
+			const chainAssets = await currencies.reduce(async (acc, currency) => {
+				const { contracts, symbol } = currency
+
+				const balance = contracts
+					? await getTokenBalance(currency)
+					: await getNativeChainBalance()
+
+				// Promise
+				const previous = await acc
+
+				return {
+					...previous,
+					[symbol]: {
+						balance,
+						symbol,
+					},
 				}
-				chainAssets[c.symbol] = {
-					balance,
-					symbol: c.symbol,
-				}
-			})
+			}, {})
 
 			// Reset Assets based on Chain
 			setAssets(chainAssets)
@@ -225,7 +224,10 @@ export const useWonderWeb3 = () => {
 		const provider = await web3Modal.connect()
 		const prov = new ethers.providers.Web3Provider(provider)
 
-		const ens = new ENS({ provider: prov, ensAddress: getEnsAddress('1') })
+		const ens = new ENS({
+			provider: prov,
+			ensAddress: getEnsAddress(CHAIN_IDS.ETH),
+		})
 		// If chain supports ENS...
 		try {
 			let name = await ens.getName(address)
@@ -236,10 +238,6 @@ export const useWonderWeb3 = () => {
 		}
 
 		return true
-	}
-
-	const getNativeTokenSymbol = () => {
-		return SUPPORTED_CHAINS[chain]
 	}
 
 	const disconnect = () => {
@@ -258,6 +256,7 @@ export const useWonderWeb3 = () => {
 			getENSName()
 			getAccountAssets()
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [accounts, chain])
 
 	return {
@@ -268,10 +267,10 @@ export const useWonderWeb3 = () => {
 		chain,
 		chainName,
 		subscribed,
+		nativeTokenSymbol,
 		onConnect,
 		disconnect,
 		signMessage,
-		getNativeTokenSymbol,
 	}
 }
 

@@ -1,10 +1,10 @@
 import Header from '../Header'
 import SideBarComponent from '../SideBar'
 import {
-    Content,
-    ContentContainer,
-    HeaderImage,
-    OverviewComponent
+	Content,
+	ContentContainer,
+	HeaderImage,
+	OverviewComponent,
 } from './styles'
 
 const SIDEBAR_LIST_ITEMS = [
