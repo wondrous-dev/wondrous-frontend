@@ -1,7 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useLazyQuery } from '@apollo/client'
 
-import Boards from '../../components/profile/boards/boards'
-import { InReview, Requested, Archived } from '../../components/Icons/sections'
+import Boards from '../../../components/profile/boards/boards'
+import { GET_USER_TASK_BOARD_TASKS } from '../../../graphql/queries/taskBoard'
+import { useMe } from '../../../components/Auth/withAuth'
+
+import {
+	InReview,
+	Requested,
+	Archived,
+} from '../../../components/Icons/sections'
 import {
 	TASK_STATUS_DONE,
 	TASK_STATUS_IN_PROGRESS,
@@ -9,7 +17,11 @@ import {
 	TASK_STATUS_REQUESTED,
 	TASK_STATUS_IN_REVIEW,
 	TASK_STATUS_ARCHIVED,
-} from '../../utils/constants'
+	DEFAULT_STATUS_ARR,
+} from '../../../utils/constants'
+import { useRouter, userRouter } from 'next/router'
+import { useEffect } from 'react'
+import { GET_USER_ID_FROM_USERNAME } from '../../../graphql/queries'
 
 const TO_DO = {
 	status: TASK_STATUS_TODO,
@@ -464,6 +476,73 @@ const SELECT_OPTIONS = [
 ]
 
 const BoardsPage = () => {
+	const [columns, setColumns] = useState([])
+	const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR)
+	const [profileUserId, setProfileUserId] = useState(null)
+	const user = useMe()
+	const router = useRouter()
+	const { username, userId } = router.query
+
+	const [
+		getUserTasks,
+		{
+			loading: userTasksLoading,
+			data: userTasksData,
+			error: userTasksError,
+			refetch: userTasksRefetch,
+			fetchMore: userTasksFetchMore,
+		},
+	] = useLazyQuery(GET_USER_TASK_BOARD_TASKS)
+	const [
+		getUserIdFromUsername,
+		{ data: getUserIdFromUsernameData, error: getUserIdFromUsernameError },
+	] = useLazyQuery(GET_USER_ID_FROM_USERNAME, {
+		onCompleted: (data) => {
+			if (data?.getUserIdFromUsername?.userId) {
+				setProfileUserId(data?.getUserIdFromUsername?.userId)
+			}
+		},
+	})
+
+	useEffect(() => {
+		if (userId) {
+			// get user task board tasks immediately
+			getUserTasks({
+				variables: {
+					userId,
+					statuses,
+					offset: 0,
+					limit: 10,
+				},
+			})
+		} else if (!userId && username) {
+			// Get userId from username
+			getUserIdFromUsername({
+				variables: {
+					username,
+				},
+			})
+		}
+		if (!userId && profileUserId) {
+			// fetch user task boards after getting userId from username
+			getUserTasks({
+				variables: {
+					userId: profileUserId,
+					statuses,
+					offset: 0,
+					limit: 10,
+				},
+			})
+		}
+	}, [
+		username,
+		userId,
+		profileUserId,
+		getUserTasks,
+		statuses,
+		getUserIdFromUsername,
+	])
+
 	return <Boards selectOptions={SELECT_OPTIONS} columns={COLUMNS} />
 }
 
