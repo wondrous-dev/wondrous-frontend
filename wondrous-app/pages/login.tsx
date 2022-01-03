@@ -23,7 +23,6 @@ import {
 	emailSignin,
 	getUserSigningMessage,
 	walletSignin,
-	walletSignup,
 } from '../components/Auth/withAuth'
 
 const Login = ({ csrfToken }) => {
@@ -45,8 +44,12 @@ const Login = ({ csrfToken }) => {
 	}
 
 	const conenctWallet = async (event) => {
-		// Connect Wallet first
-		await wonderWeb3.onConnect()
+		if (wonderWeb3.address) {
+			loginWithWallet()
+		} else {
+			// Connect Wallet first
+			await wonderWeb3.onConnect()
+		}
 	}
 
 	// This happens async, so we bind it to the
@@ -56,7 +59,7 @@ const Login = ({ csrfToken }) => {
 			// Retrieve Signed Message
 			const messageToSign = await getUserSigningMessage(
 				wonderWeb3.address,
-				wonderWeb3.chainName
+				wonderWeb3.chainName.toLowerCase()
 			)
 
 			if (messageToSign) {
@@ -126,12 +129,20 @@ const Login = ({ csrfToken }) => {
 								or
 							</PaddedParagraph>
 						</LineWithText>
-						<Button onClick={conenctWallet}>
-							<Metamask height="18" width="17" />
-							<PaddedParagraph padding="0 10px">
-								Log in with MetaMask
-							</PaddedParagraph>
-						</Button>
+						{wonderWeb3.connecting ? (
+							<Button disabled className="disabled">
+								<PaddedParagraph padding="0 10px">
+									Continue on your wallet
+								</PaddedParagraph>
+							</Button>
+						) : (
+							<Button onClick={conenctWallet}>
+								<Metamask height="18" width="17" />
+								<PaddedParagraph padding="0 10px">
+									Log in with MetaMask
+								</PaddedParagraph>
+							</Button>
+						)}
 					</CardBody>
 					<CardFooter>
 						<Line size="80%" />

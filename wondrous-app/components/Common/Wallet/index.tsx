@@ -5,6 +5,7 @@ import Ethereum from '../../Icons/ethereum'
 import { Metamask } from '../../Icons/metamask'
 import { WonderCoin } from '../../Icons/wonderCoin'
 import { PaddedParagraph } from '../text'
+import { formatEther } from '@ethersproject/units'
 
 import {
 	WalletWrapper,
@@ -12,14 +13,45 @@ import {
 	WalletDisplay,
 	WonderBalance,
 	WalletAddress,
+	CurrencySelectorItem,
+	CurrencyName,
+	CurrencySymbol,
 } from './styles'
 import { linkWallet, logout, useMe } from '../../Auth/withAuth'
+import { DropDown, DropDownItem } from '../dropdown'
+import { Matic } from '../../Icons/matic'
+import { CURRENCY_KEYS, SUPPORTED_CHAINS } from '../../../utils/constants'
+import { USDCoin } from '../../Icons/USDCoin'
+
+const CHAIN_LOGO = {
+	'1': <Ethereum />,
+	'137': <Matic />,
+}
+
+const CURRENCY_SYMBOL = {
+	ETH: <Ethereum />,
+	WONDER: <WonderCoin />,
+	MATIC: <Matic />,
+	USDC: <USDCoin />,
+}
+
+const CURRENCY_UI_ELEMENTS = {
+	ETH: { icon: <Ethereum />, label: 'ETH' },
+	WONDER: { icon: <WonderCoin />, label: 'WONDER' },
+	MATIC: { icon: <Matic />, label: 'MATIC' },
+	USDC: { icon: <USDCoin />, label: 'USDC' },
+}
 
 const Wallet = () => {
 	const wonderWeb3 = useWonderWeb3()
 	const [connected, setConnected] = useState(false)
+	const [notSupported, setNotSupported] = useState(false)
 	const [firstConnect, setFirstConnect] = useState(true)
 	const [signedMessage, setSignedMessage] = useState('')
+	const [currency, setCurrency] = useState({
+		balance: '0.000',
+		symbol: 'WONDER',
+	})
 	const user = useMe()
 
 	const connectWallet = useCallback(
@@ -57,12 +89,34 @@ const Wallet = () => {
 		return true
 	}, [signMessage, signedMessage, wonderWeb3])
 
+	const displayCurrency = (currencyCode) => {
+		if (wonderWeb3.assets[currencyCode]) {
+			setCurrency({
+				balance: wonderWeb3.assets[currencyCode].balance,
+				symbol: wonderWeb3.assets[currencyCode].symbol,
+			})
+		}
+	}
+
 	useEffect(() => {
 		if (user && user.activeEthAddress && !wonderWeb3.subscribed) {
 			connectWallet()
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [connectWallet, user])
+
+	// Detect Chain
+	useEffect(() => {
+		setNotSupported(!SUPPORTED_CHAINS[wonderWeb3.chain])
+	}, [wonderWeb3.chain])
+
+	// Change Currency when the Chain changes
+	useEffect(() => {
+		if (wonderWeb3.assets) {
+			displayCurrency(wonderWeb3.nativeTokenSymbol)
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [wonderWeb3.assets])
 
 	// Bind to the Web3 wallet to monitor changes (i.e user unlinks wallet)
 	useEffect(() => {
@@ -75,7 +129,7 @@ const Wallet = () => {
 				setConnected(true)
 				if (
 					user.address &&
-					wonderWeb3.wallet.address !== user.active_eth_address
+					wonderWeb3.wallet.address !== user.activeEthAddress
 				) {
 					// Wallet has changed, and doesn't match user's
 					// registered. SignOut.
@@ -84,9 +138,11 @@ const Wallet = () => {
 			} else if (!firstConnect) {
 				setConnected(false)
 				// No wallet, maybe unlinked?
-				if (!user.username) {
+				if (!user.email) {
 					// Sign out, no other means of identification left
-					logout()
+					// TODO: Email is not brought on the current Session
+					//       management.
+					// logout()
 				}
 			}
 		}
@@ -98,6 +154,32 @@ const Wallet = () => {
 		user,
 		linkUserWithWallet,
 	])
+
+	const Balance = () => {
+		return (
+			<WonderBalance>
+				{currency ? currency.balance : 0}
+				&nbsp;
+				{CURRENCY_SYMBOL[currency.symbol]}
+			</WonderBalance>
+		)
+	}
+
+	const CurrencyDropdownItem = ({ currency }) => {
+		const { icon: currencyIcon, label: currencyLabel } =
+			CURRENCY_UI_ELEMENTS[currency]
+		return (
+			<DropDownItem
+				key={`wallet-currency-${currency}`}
+				onClick={() => displayCurrency(currency)}
+			>
+				<CurrencySelectorItem>
+					<CurrencySymbol>{currencyIcon}</CurrencySymbol>
+					<CurrencyName>{currencyLabel}</CurrencyName>
+				</CurrencySelectorItem>
+			</DropDownItem>
+		)
+	}
 
 	if (!connected) {
 		return (
@@ -112,22 +194,24 @@ const Wallet = () => {
 				</Button>
 			</WalletWrapper>
 		)
+	} else if (notSupported) {
+		return (
+			<WalletWrapper>
+				<WalletDisplay>Chain Not Supported</WalletDisplay>
+			</WalletWrapper>
+		)
 	} else {
 		return (
 			<WalletWrapper>
-				<ChainWrapper>
-					{wonderWeb3.wallet.chain == 1 ? (
-						<Ethereum />
-					) : (
-						<>{wonderWeb3.wallet.chain}</>
-					)}
-				</ChainWrapper>
+				<ChainWrapper>{CHAIN_LOGO[wonderWeb3.wallet.chain]}</ChainWrapper>
 				<WalletDisplay>
-					<WonderBalance>
-						{wonderWeb3.wallet.wonder ? wonderWeb3.wallet.wonder.amount : 0}
-						&nbsp;
-						<WonderCoin />
-					</WonderBalance>
+					<DropDown DropdownHandler={Balance}>
+						<CurrencyDropdownItem currency={CURRENCY_KEYS.WONDER} />
+						<CurrencyDropdownItem currency={CURRENCY_KEYS.USDC} />
+						{wonderWeb3.chainName && (
+							<CurrencyDropdownItem currency={wonderWeb3.chainName} />
+						)}
+					</DropDown>
 					<WalletAddress>
 						{wonderWeb3.wallet.addressTag || 'loading...'}
 					</WalletAddress>
@@ -136,12 +220,5 @@ const Wallet = () => {
 		)
 	}
 }
-
-// export async function getServerSideProps(context) {
-// 	const session = await getSession({ req: context.req })
-// 	return {
-// 		props: { session },
-// 	}
-// }
 
 export default Wallet

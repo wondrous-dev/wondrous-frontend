@@ -16,7 +16,7 @@ import {
 	CompletedCardFooterActivityIconBtn,
 	CompletedCardFooterBlock,
 	CompletedCardText,
-	CompletedCardTitle
+	CompletedCardTitle,
 } from './styles'
 
 const AboutCompletedCard = (props) => {

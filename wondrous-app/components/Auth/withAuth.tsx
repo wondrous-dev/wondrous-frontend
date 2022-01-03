@@ -125,6 +125,7 @@ export const walletSignin = async (
 		}
 		return 'Sign up with this wallet address first.'
 	} catch (err) {
+		console.log(err)
 		return 'Sign up with this wallet address first.'
 	}
 }

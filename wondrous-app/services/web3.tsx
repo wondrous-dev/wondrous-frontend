@@ -1,31 +1,36 @@
 import Web3 from 'web3'
 import Web3Modal from 'web3modal'
-import { ethers } from 'ethers'
-import axios, { AxiosInstance } from 'axios'
+import { BigNumber, ethers } from 'ethers'
+import ENS, { getEnsAddress } from '@ensdomains/ensjs'
+
 // Need Infura API Key for this one:
 // import WalletConnectProvider from '@walletconnect/web3-provider'
 import { useEffect, useMemo, useState } from 'react'
 
-import { IAssetData } from '../types/assets'
+import {
+	CHAIN_IDS,
+	SUPPORTED_CHAINS,
+	SUPPORTED_CURRENCIES,
+} from '../utils/constants'
 
-const CHAINS = {
-	1: 'eth',
-}
+import { ERC20abi } from './contracts/erc20.abi'
+import { formatEther } from 'ethers/lib/utils'
+import { AbiItem } from 'web3-utils'
 
 // Handler of Web3 State for the app
 export const useWonderWeb3 = () => {
 	// Some don't need state management
 
 	const [accounts, setAccounts] = useState([])
-	const [assets, setAssets] = useState([])
+	const [assets, setAssets] = useState(null)
 	const [chain, setChain] = useState(null)
-	const [wonder, setWonder] = useState({ amount: 0 })
-	const [fetching, setFetching] = useState(false)
+	const [ensName, setENSName] = useState(null)
 
+	const [fetching, setFetching] = useState(false)
 	const [subscribed, setSubscribed] = useState(false)
 
 	const chainName = useMemo(() => {
-		return CHAINS[chain] || 'none'
+		return SUPPORTED_CHAINS[chain] || 'none'
 	}, [chain])
 
 	const address = useMemo(() => {
@@ -36,24 +41,31 @@ export const useWonderWeb3 = () => {
 		if (!address) {
 			return ''
 		}
-		return `${address.slice(0, 6)}...${address.slice(
-			address.length - 4,
-			address.length
-		)}`
-	}, [address])
+		if (ensName) {
+			return ensName
+		} else {
+			return `${address.slice(0, 6)}...${address.slice(
+				address.length - 4,
+				address.length
+			)}`
+		}
+	}, [address, ensName])
 
 	const wallet = useMemo(() => {
 		return {
 			accounts,
 			address,
 			chain,
-			wonder,
 			addressTag,
 			assets,
 		}
-	}, [accounts, address, addressTag, assets, chain, wonder])
+	}, [accounts, address, addressTag, assets, chain])
 
 	const [connecting, setConnecting] = useState(false)
+
+	const nativeTokenSymbol = useMemo(() => {
+		return SUPPORTED_CHAINS[chain]
+	}, [chain])
 
 	const onConnect = async () => {
 		setConnecting(true)
@@ -66,6 +78,13 @@ export const useWonderWeb3 = () => {
 			if (web3) {
 				const a = await web3.eth.getAccounts()
 				const c = await web3.eth.chainId()
+
+				// Gate Keeper for Usupported chains
+				if (!SUPPORTED_CHAINS[c]) {
+					disconnect()
+					setConnecting(false)
+					return false
+				}
 
 				setAccounts(a)
 				setChain(c)
@@ -92,17 +111,15 @@ export const useWonderWeb3 = () => {
 				return signedMessage
 			} catch (error) {
 				// Error Signed message
-				console.log(error)
 				setConnecting(false)
-				return false
+				if (error.code && error.code == 4001) {
+					return false
+				}
 			}
 		} else {
-			return false
+			setConnecting(false)
 		}
-	}
-
-	const getTokenBalance = async (tokenAddress: string) => {
-		return 0
+		return null
 	}
 
 	const subscribeProvider = async (provider: any) => {
@@ -121,30 +138,106 @@ export const useWonderWeb3 = () => {
 					await cleanWallet()
 				} else {
 					setAccounts(acc)
+					// Refresh Assets
 				}
 			})
 
 			provider.on('chainChanged', async (chainId: number) => {
-				setChain(chainId)
+				setChain(parseInt(chainId + ''))
 			})
 			setSubscribed(true)
+		}
+	}
+
+	const getChainCurrencies = () => {
+		return chain
+			? SUPPORTED_CURRENCIES.filter((c) => c.chains.includes(chain))
+			: []
+	}
+
+	const getNativeChainBalance = async () => {
+		const web3 = new Web3(window.ethereum)
+		const balance = await web3.eth.getBalance(address)
+		const balanceFormatted =
+			parseFloat(formatEther(balance)).toPrecision(4) + ' '
+		return balanceFormatted
+	}
+
+	const getTokenBalance = async (token) => {
+		if (!fetching && address && chain && token.contracts[chain] !== '') {
+			setFetching(true)
+			const web3 = new Web3(window.ethereum)
+			const usdcContract = new web3.eth.Contract(
+				ERC20abi as AbiItem[],
+				token.contracts[chain]
+			)
+			const balanceRaw = await usdcContract.methods.balanceOf(address).call()
+			const decimals = await usdcContract.methods.decimals().call()
+			const bnBalance = await BigNumber.from(balanceRaw)
+			const balance = bnBalance.div(10 ** decimals)
+			setFetching(false)
+			return parseFloat(balance.toString()).toPrecision(4)
+		} else {
+			console.log('getAccountsAssets() failed.', address)
+			return '0.000'
 		}
 	}
 
 	const getAccountAssets = async () => {
 		if (!fetching && address && chain) {
 			setFetching(true)
-			try {
-				// get account balances
-				setAssets(await apiGetAccountAssets(address, chain))
-				setFetching(false)
-			} catch (error) {
-				console.error(error) // tslint:disable-line
-				setFetching(false)
-			}
+
+			// Get supported currencies for this chain
+			const currencies = await getChainCurrencies()
+
+			const chainAssets = await currencies.reduce(async (acc, currency) => {
+				const { contracts, symbol } = currency
+
+				const balance = contracts
+					? await getTokenBalance(currency)
+					: await getNativeChainBalance()
+
+				// Promise
+				const previous = await acc
+
+				return {
+					...previous,
+					[symbol]: {
+						balance,
+						symbol,
+					},
+				}
+			}, {})
+
+			// Reset Assets based on Chain
+			setAssets(chainAssets)
+			setFetching(false)
 		} else {
 			console.log('getAccountsAssets() failed.', address)
 		}
+	}
+
+	// If the wallet has an ENS Name, represent it
+	// instead of the address.
+	const getENSName = async () => {
+		const web3Modal = new Web3Modal()
+		const provider = await web3Modal.connect()
+		const prov = new ethers.providers.Web3Provider(provider)
+
+		const ens = new ENS({
+			provider: prov,
+			ensAddress: getEnsAddress(CHAIN_IDS.ETH),
+		})
+		// If chain supports ENS...
+		try {
+			let name = await ens.getName(address)
+			setENSName(name.name)
+		} catch (err) {
+			// Chain not supported. No problem
+			setENSName(null)
+		}
+
+		return true
 	}
 
 	const disconnect = () => {
@@ -155,14 +248,15 @@ export const useWonderWeb3 = () => {
 	const cleanWallet = async () => {
 		setAccounts([])
 		setChain(null)
-		setWonder(null)
 		setAssets(null)
 	}
 
 	useEffect(() => {
 		if (accounts.length && chain) {
+			getENSName()
 			getAccountAssets()
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [accounts, chain])
 
 	return {
@@ -173,10 +267,10 @@ export const useWonderWeb3 = () => {
 		chain,
 		chainName,
 		subscribed,
+		nativeTokenSymbol,
 		onConnect,
 		disconnect,
 		signMessage,
-		getTokenBalance,
 	}
 }
 
@@ -195,24 +289,4 @@ function initWeb3(provider: any) {
 	})
 
 	return web3
-}
-
-const ethereumApi: AxiosInstance = axios.create({
-	baseURL: 'https://ethereum-api.xyz',
-	timeout: 30000, // 30 secs
-	headers: {
-		Accept: 'application/json',
-		'Content-Type': 'application/json',
-	},
-})
-
-export async function apiGetAccountAssets(
-	address: string,
-	chainId: number
-): Promise<IAssetData[]> {
-	const response = await ethereumApi.get('/account-assets', {
-		params: { address, chainId },
-	})
-	const { result } = response.data
-	return result
 }
