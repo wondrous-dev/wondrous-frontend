@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { KanbanBoardContainer } from './styles'
-import TaskColumn from './TaskColumn/taskColumn'
+import TaskColumn from './TaskColumn'
 
 const KanbanBoard = (props) => {
 	const { columns } = props

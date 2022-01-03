@@ -17,8 +17,11 @@ import {
 	TaskColumnContainerHeader,
 	TaskColumnContainerHeaderTitle,
 	TaskColumnContainerCount,
+	DropMeHere,
 } from './styles'
 import { Task } from '../../Task'
+
+import { DropZone } from '../../../Icons/dropZone'
 
 interface ITaskColumn {
 	cardsList: Array<any>
@@ -43,14 +46,28 @@ const HEADER_ICONS = {
 
 const ColumnDropZone = ({ status, moveCard, children }) => {
 	const ref = useRef(null)
-	const [, drop] = useDrop({
+	const [{ isOver, canDrop }, drop] = useDrop({
 		accept: ItemTypes.CARD,
 		drop(item: any) {
 			moveCard(item.id, status)
 		},
+		collect: (monitor) => ({
+			isOver: !!monitor.isOver(),
+			canDrop: !!monitor.canDrop(),
+		}),
 	})
 	drop(ref)
-	return <div ref={ref}>{children}</div>
+	return (
+		<div ref={ref}>
+			{isOver && (
+				<DropMeHere>
+					<DropZone />
+					<p>Drag task here</p>
+				</DropMeHere>
+			)}
+			{children}
+		</div>
+	)
 }
 
 const TaskColumn = (props: ITaskColumn) => {
