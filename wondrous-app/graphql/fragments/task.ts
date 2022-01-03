@@ -26,7 +26,6 @@ export const TaskCardFragment = gql`
 		shareCount
 		additionalData {
 			link
-			images
 			userMentions
 			reviewerIds
 		}
