@@ -146,7 +146,7 @@ const Wallet = () => {
 				setConnected(false)
 
 				// No wallet, maybe unlinked?
-				if (!user.email) {
+				if (!user?.email) {
 					// Sign out, no other means of identification left
 					// TODO: Email is not brought on the current Session
 					//       management.

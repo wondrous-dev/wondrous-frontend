@@ -5,7 +5,7 @@ export const TASK_STATUS_IN_PROGRESS = 'in_progress'
 export const TASK_STATUS_TODO = 'created'
 export const TASK_STATUS_IN_REVIEW = 'in_review'
 export const TASK_STATUS_DONE = 'completed'
-export const TASK_STATUS_REQUESTED = 'REQUESTED'
+export const TASK_STATUS_REQUESTED = 'requested'
 export const TASK_STATUS_ARCHIVED = 'archived'
 
 // Max avatar user list count
@@ -81,9 +81,9 @@ export const MEDIA_TYPES = {
 }
 
 export const DEFAULT_STATUS_ARR = [
-	'created',
-	'in_progress',
-	'in_review',
-	'completed',
-	'archived',
+	TASK_STATUS_TODO,
+	TASK_STATUS_IN_PROGRESS,
+	TASK_STATUS_IN_REVIEW,
+	TASK_STATUS_DONE,
+	TASK_STATUS_ARCHIVED,
 ]

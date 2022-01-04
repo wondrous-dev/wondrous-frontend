@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { useLazyQuery } from '@apollo/client'
 import { useRouter } from 'next/router'
+import { useLazyQuery } from '@apollo/client'
 
-import Boards from '../../../components/profile/boards/boards'
-import { GET_USER_TASK_BOARD_TASKS } from '../../../graphql/queries/taskBoard'
 import { useMe } from '../../../components/Auth/withAuth'
-
+import { GET_ORG_TASK_BOARD_TASKS } from '../../../graphql/queries/taskBoard'
+import Boards from '../../../components/organization/boards/boards'
 import {
 	InReview,
 	Requested,
@@ -20,7 +19,7 @@ import {
 	TASK_STATUS_ARCHIVED,
 	DEFAULT_STATUS_ARR,
 } from '../../../utils/constants'
-import { GET_USER_ID_FROM_USERNAME } from '../../../graphql/queries'
+import { GET_ORG_ID_FROM_USERNAME } from '../../../graphql/queries/org'
 
 const TO_DO = {
 	status: TASK_STATUS_TODO,
@@ -91,13 +90,13 @@ const SELECT_OPTIONS = [
 const BoardsPage = () => {
 	const [columns, setColumns] = useState(COLUMNS)
 	const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR)
-	const [profileUserId, setProfileUserId] = useState(null)
+	const [profileOrgId, setProfileOrgId] = useState(null)
 	const user = useMe()
 	const router = useRouter()
-	const { username, userId } = router.query
+	const { username, orgId } = router.query
 
 	const [
-		getUserTasks,
+		getOrgTasks,
 		{
 			loading: userTasksLoading,
 			data: userTasksData,
@@ -105,11 +104,11 @@ const BoardsPage = () => {
 			refetch: userTasksRefetch,
 			fetchMore: userTasksFetchMore,
 		},
-	] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
+	] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
 		onCompleted: (data) => {
 			// Parse task board data
 			const newColumns = [...COLUMNS]
-			const tasks = data?.getUserTaskBoardTasks
+			const tasks = data?.getOrgTaskBoardTasks
 			tasks.forEach((task) => {
 				if (task?.status === TASK_STATUS_TODO) {
 					newColumns[0].tasks.push(task)
@@ -129,40 +128,40 @@ const BoardsPage = () => {
 		},
 	})
 	const [
-		getUserIdFromUsername,
-		{ data: getUserIdFromUsernameData, error: getUserIdFromUsernameError },
-	] = useLazyQuery(GET_USER_ID_FROM_USERNAME, {
+		getOrgIdFromUsername,
+		{ data: getOrgIdFromUsernameData, error: getOrgIdFromUsernameError },
+	] = useLazyQuery(GET_ORG_ID_FROM_USERNAME, {
 		onCompleted: (data) => {
-			if (data?.getUserIdFromUsername?.userId) {
-				setProfileUserId(data?.getUserIdFromUsername?.userId)
+			if (data?.getOrgIdFromUsername?.orgId) {
+				setProfileOrgId(data?.getOrgIdFromUsername?.orgId)
 			}
 		},
 	})
 
 	useEffect(() => {
-		if (userId) {
+		if (orgId) {
 			// get user task board tasks immediately
-			getUserTasks({
+			getOrgTasks({
 				variables: {
-					userId,
+					orgId,
 					statuses,
 					offset: 0,
 					limit: 10,
 				},
 			})
-		} else if (!userId && username) {
-			// Get userId from username
-			getUserIdFromUsername({
+		} else if (!orgId && username) {
+			// Get orgId from username
+			getOrgIdFromUsername({
 				variables: {
 					username,
 				},
 			})
 		}
-		if (!userId && profileUserId) {
-			// fetch user task boards after getting userId from username
-			getUserTasks({
+		if (!orgId && profileOrgId) {
+			// fetch user task boards after getting orgId from username
+			getOrgTasks({
 				variables: {
-					userId: profileUserId,
+					orgId: profileOrgId,
 					statuses,
 					offset: 0,
 					limit: 10,
@@ -171,14 +170,14 @@ const BoardsPage = () => {
 		}
 	}, [
 		username,
-		userId,
-		profileUserId,
-		getUserTasks,
+		orgId,
+		profileOrgId,
+		getOrgTasks,
 		statuses,
-		getUserIdFromUsername,
+		getOrgIdFromUsername,
 	])
-
 	return <Boards selectOptions={SELECT_OPTIONS} columns={columns} />
 }
 
+//export default withAuth(BoardsPage)
 export default BoardsPage
