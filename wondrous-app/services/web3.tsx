@@ -86,13 +86,15 @@ export const useWonderWeb3 = () => {
 					return false
 				}
 
-				setAccounts(a)
 				setChain(c)
+				setConnecting(false)
+				
+				setAccounts(a)
 			}
 		} catch (e) {
 			console.log('Error', e)
+			setConnecting(false)
 		}
-
 		setConnecting(false)
 	}
 
@@ -110,6 +112,7 @@ export const useWonderWeb3 = () => {
 				setConnecting(false)
 				return signedMessage
 			} catch (error) {
+				console.log('Error signing message ', error)
 				// Error Signed message
 				setConnecting(false)
 				if (error.code && error.code == 4001) {
@@ -177,10 +180,10 @@ export const useWonderWeb3 = () => {
 			const balance = bnBalance.div(10 ** decimals)
 			setFetching(false)
 			return parseFloat(balance.toString()).toPrecision(4)
-		} else {
-			console.log('getAccountsAssets() failed.', address)
-			return '0.000'
 		}
+		// If not enough information to retrieve, return
+		// empty balance.
+		return '0.000'
 	}
 
 	const getAccountAssets = async () => {

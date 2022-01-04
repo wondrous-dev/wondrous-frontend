@@ -17,7 +17,12 @@ import {
 	CurrencyName,
 	CurrencySymbol,
 } from './styles'
-import { linkWallet, logout, useMe } from '../../Auth/withAuth'
+import {
+	getUserSigningMessage,
+	linkWallet,
+	logout,
+	useMe,
+} from '../../Auth/withAuth'
 import { DropDown, DropDownItem } from '../dropdown'
 import { Matic } from '../../Icons/matic'
 import { CURRENCY_KEYS, SUPPORTED_CHAINS } from '../../../utils/constants'
@@ -47,7 +52,6 @@ const Wallet = () => {
 	const [connected, setConnected] = useState(false)
 	const [notSupported, setNotSupported] = useState(false)
 	const [firstConnect, setFirstConnect] = useState(true)
-	const [signedMessage, setSignedMessage] = useState('')
 	const [currency, setCurrency] = useState({
 		balance: '0.000',
 		symbol: 'WONDER',
@@ -62,32 +66,30 @@ const Wallet = () => {
 		[wonderWeb3]
 	)
 
-	const signMessage = useCallback(async () => {
-		const message =
-			'Sign this message to link your wallet to your Wonder account.'
-		const signature = await wonderWeb3.signMessage(message)
-		if (signature === false) {
-			// User didn't sign
-			// TODO: Toast logic here.
-		} else if (signature) {
-			setSignedMessage(signature)
-			return true
-		}
-		return false
-	}, [wonderWeb3])
-
 	const linkUserWithWallet = useCallback(async () => {
-		await signMessage()
-		const result = await linkWallet(wonderWeb3.address, signedMessage)
-		if (result) {
-			// Wallet linked successfully. Send to backend
-		} else {
-			// Error with wallet link. Disconnect wallet
-			await wonderWeb3.disconnect()
-			setConnected(false)
+		if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
+			const messageToSign = await getUserSigningMessage(
+				wonderWeb3.address,
+				wonderWeb3.chainName.toLowerCase()
+			)
+
+			if (messageToSign) {
+				const signedMessage = await wonderWeb3.signMessage(messageToSign)
+				if (signedMessage) {
+					const result = await linkWallet(
+						wonderWeb3.address,
+						signedMessage,
+						wonderWeb3.chainName.toLowerCase()
+					)
+					if (!result) {
+						// Error with wallet link. Disconnect wallet
+						await wonderWeb3.disconnect()
+						setConnected(false)
+					}
+				}
+			}
 		}
-		return true
-	}, [signMessage, signedMessage, wonderWeb3])
+	}, [wonderWeb3])
 
 	const displayCurrency = (currencyCode) => {
 		if (wonderWeb3.assets[currencyCode]) {
@@ -124,19 +126,24 @@ const Wallet = () => {
 		// wallet is done.
 		if (!wonderWeb3.connecting) {
 			// Enable the wallet.
-			if (wonderWeb3.wallet['address']) {
+			if (wonderWeb3.address) {
 				// Change the UI now.
 				setConnected(true)
 				if (
-					user.address &&
-					wonderWeb3.wallet.address !== user.activeEthAddress
+					user && user.activeEthAddress &&
+					wonderWeb3.address !== user.activeEthAddress
 				) {
 					// Wallet has changed, and doesn't match user's
 					// registered. SignOut.
 					logout()
+				} else if (user && !user.activeEthAddress) {
+					// Link the wallet to the user.
+					linkUserWithWallet()
 				}
+				// Wallet disabled.
 			} else if (!firstConnect) {
 				setConnected(false)
+
 				// No wallet, maybe unlinked?
 				if (!user.email) {
 					// Sign out, no other means of identification left
@@ -146,14 +153,8 @@ const Wallet = () => {
 				}
 			}
 		}
-	}, [
-		wonderWeb3.wallet,
-		wonderWeb3.connecting,
-		connectWallet,
-		firstConnect,
-		user,
-		linkUserWithWallet,
-	])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [wonderWeb3.address])
 
 	const Balance = () => {
 		return (
@@ -190,7 +191,11 @@ const Wallet = () => {
 					style={{ width: '270px', minHeight: '40px' }}
 				>
 					<Metamask height="18" width="17" />
-					<PaddedParagraph padding="0 10px">Connect MetaMask</PaddedParagraph>
+					<PaddedParagraph padding="0 10px">
+						{user && !user.activeEthAddress
+							? 'Link Metamask to Account'
+							: 'Connect MetaMask'}
+					</PaddedParagraph>
 				</Button>
 			</WalletWrapper>
 		)
