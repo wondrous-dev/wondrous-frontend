@@ -1,13 +1,13 @@
 import React from 'react'
-import { withAuth } from '../../components/Auth/withAuth'
+import { withAuth } from '../../../components/Auth/withAuth'
 
-import About from '../../components/organization/about/about'
+import About from '../../../components/organization/about/about'
 import {
 	SOCIAL_MEDIA_FACEBOOK,
 	SOCIAL_MEDIA_LINKEDIN,
 	SOCIAL_MEDIA_TWITTER,
 	TASK_STATUS_DONE,
-} from '../../utils/constants'
+} from '../../../utils/constants'
 
 const ORGANIZATIONS = [
 	{
