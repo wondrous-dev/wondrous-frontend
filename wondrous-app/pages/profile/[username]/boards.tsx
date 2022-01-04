@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useLazyQuery } from '@apollo/client'
+import { useRouter } from 'next/router'
 
 import Boards from '../../../components/profile/boards/boards'
 import { GET_USER_TASK_BOARD_TASKS } from '../../../graphql/queries/taskBoard'
@@ -19,8 +20,6 @@ import {
   TASK_STATUS_ARCHIVED,
   DEFAULT_STATUS_ARR,
 } from '../../../utils/constants'
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
 import { GET_USER_ID_FROM_USERNAME } from '../../../graphql/queries'
 
 const TO_DO = {
