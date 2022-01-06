@@ -353,6 +353,7 @@ const DONE = {
 			description:
 				'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
 			status: Constants.TASK_STATUS_DONE,
+			milestone: true,
 			actions: {
 				comments: 181,
 				likes: 17,

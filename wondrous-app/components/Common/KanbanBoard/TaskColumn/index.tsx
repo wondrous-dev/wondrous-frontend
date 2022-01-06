@@ -22,6 +22,7 @@ import {
 import { Task } from '../../Task'
 
 import { DropZone } from '../../../Icons/dropZone'
+import Milestone from '../../Milestone'
 
 interface ITaskColumn {
 	cardsList: Array<any>
@@ -93,7 +94,13 @@ const TaskColumn = (props: ITaskColumn) => {
 					status={card.status}
 					moveCard={moveCard}
 				>
-					<Task task={card} setTask={() => {}} />
+					{card.milestone ? (
+						<Milestone>
+							<Task task={card} setTask={() => {}} />
+						</Milestone>
+					) : (
+						<Task task={card} setTask={() => {}} />
+					)}
 				</DraggableCard>
 			))}
 			{!cardsList.length && (

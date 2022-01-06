@@ -88,7 +88,7 @@ export const useWonderWeb3 = () => {
 
 				setChain(c)
 				setConnecting(false)
-				
+
 				setAccounts(a)
 			}
 		} catch (e) {
