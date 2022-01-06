@@ -41,6 +41,7 @@ export const Task = ({ task, setTask }) => {
 		id,
 		media,
 		status,
+		milestone = false,
 		title = '',
 		users = [],
 	} = task
@@ -85,7 +86,7 @@ export const Task = ({ task, setTask }) => {
 	}
 
 	return (
-		<TaskWrapper key={id}>
+		<TaskWrapper key={id} wrapped={milestone}>
 			<TaskInner>
 				<TaskHeader>
 					<LogoButton />
