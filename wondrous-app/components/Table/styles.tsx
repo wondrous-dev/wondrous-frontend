@@ -107,7 +107,11 @@ export const DeliverableItem = styled.div`
 	align-items: center;
 	color: #7a7a7a;
 	width: 29px;
-	margin-right: 15px;
+	margin-left: 15px;
+
+	:first-child {
+		margin-left: 0;
+	}
 `
 
 export const DeliverablesIconContainer = styled(Button)`
@@ -125,10 +129,11 @@ export const DeliverablesIconContainer = styled(Button)`
 `
 
 export const StyledLinkIcon = styled(LinkIcon)`
-	&& {width: 28px;
-	height: 28px;
-	margin: 0};
-
+	&& {
+		width: 28px;
+		height: 28px;
+		margin: 0;
+	}
 `
 
 export const DropDownButton = styled(Button)`

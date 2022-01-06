@@ -2,8 +2,8 @@ import { MoreVert } from '@material-ui/icons'
 import { AvatarList } from '../Common/AvatarList'
 import { TodoWithBorder } from '../Icons'
 import ArrowDropDownIcon from '../Icons/arrowDropDown'
+import ImageIcon from '../Icons/image'
 import AudioIcon from '../Icons/MediaTypesIcons/audio'
-import { ImageIcon } from '../Icons/image'
 import PlayIcon from '../Icons/play'
 import { RewardRed } from '../Icons/reward'
 import UpClickIcon from '../Icons/upClick'
@@ -16,6 +16,7 @@ import {
 	Reward,
 	RewardAmount,
 	RewardContainer,
+	StyledLinkIcon,
 	StyledTable,
 	StyledTableBody,
 	StyledTableCell,
@@ -24,7 +25,6 @@ import {
 	StyledTableRow,
 	TaskDescription,
 	TaskTitle,
-	StyledLinkIcon,
 } from './styles'
 
 export const Table = () => {
