@@ -130,7 +130,8 @@ const Wallet = () => {
 				// Change the UI now.
 				setConnected(true)
 				if (
-					user && user.activeEthAddress &&
+					user &&
+					user.activeEthAddress &&
 					wonderWeb3.address !== user.activeEthAddress
 				) {
 					// Wallet has changed, and doesn't match user's

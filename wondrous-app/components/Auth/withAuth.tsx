@@ -164,11 +164,8 @@ export const linkWallet = async (
 	blockchain: string
 ) => {
 	try {
-
 		const {
-			data: {
-				connectUserWallet: user
-			}
+			data: { connectUserWallet: user },
 		} = await apollo.mutate({
 			mutation: CONNECT_USER_WALLET,
 			variables: {
@@ -178,7 +175,7 @@ export const linkWallet = async (
 			},
 		})
 
-		if(user) {
+		if (user) {
 			// Store the user on the session (no token update)
 			await storeAuthHeader(null, user)
 			return true
@@ -192,7 +189,7 @@ export const linkWallet = async (
 }
 
 export const storeAuthHeader = async (token, user) => {
-	if(token) { 
+	if (token) {
 		localStorage.setItem('wonderToken', token)
 	}
 
