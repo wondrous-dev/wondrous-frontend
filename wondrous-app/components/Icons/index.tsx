@@ -33,6 +33,46 @@ export const ToDo = (props) => (
 	</svg>
 )
 
+export const TodoWithBorder = (props) => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="29"
+		height="29"
+		fill="none"
+		viewBox="0 0 29 29"
+	>
+		<circle
+			cx="14.518"
+			cy="14.768"
+			r="13.5"
+			fill="#0F0F0F"
+			stroke="#474747"
+		></circle>
+		<circle
+			cx="14.518"
+			cy="14.768"
+			r="8"
+			stroke="url(#paint0_linear_1310_5109)"
+			strokeDasharray="4.2 4.2"
+			strokeLinecap="round"
+			strokeWidth="1.4"
+		></circle>
+		<defs>
+			<linearGradient
+				id="paint0_linear_1310_5109"
+				x1="21.681"
+				x2="13.681"
+				y1="-3.624"
+				y2="22.944"
+				gradientUnits="userSpaceOnUse"
+			>
+				<stop stopColor="#fff"></stop>
+				<stop offset="1" stopColor="#F93701"></stop>
+			</linearGradient>
+		</defs>
+	</svg>
+)
+
 export const InProgress = (props) => (
 	<svg
 		width="28"

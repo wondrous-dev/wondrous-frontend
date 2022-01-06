@@ -31,6 +31,7 @@ export const SmallAvatarContainer = styled.div`
 export const AvatarListWrapper = styled.div`
 	display: flex;
 	flex-direction: row;
+	justify-content: ${(props) => props.align || 'flex-start'};
 	flex-grow: 1;
-	margin-left: 16px;
+	/* margin-left: 16px; */
 `

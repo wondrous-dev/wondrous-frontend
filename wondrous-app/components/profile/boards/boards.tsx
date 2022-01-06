@@ -10,8 +10,11 @@ import { ButtonGroup } from '../../Common/ButtonGroup'
 
 import { BoardsActivity, BoardsActivityInput, BoardsContainer } from './styles'
 
+import { Table } from '../../Table'
+
 const Boards = (props) => {
 	const { selectOptions, columns } = props
+	const [selected, setSelected] = React.useState(0)
 
 	return (
 		<Wrapper>
@@ -30,10 +33,13 @@ const Boards = (props) => {
 
 					<MultiSelect options={selectOptions} />
 
-					<ButtonGroup></ButtonGroup>
+					<ButtonGroup
+						selected={selected}
+						setSelected={setSelected}
+					></ButtonGroup>
 				</BoardsActivity>
-
-				<KanbanBoard columns={columns} />
+				{selected === 0 && <Table />}
+				{selected === 1 && <KanbanBoard columns={columns} />}
 			</BoardsContainer>
 		</Wrapper>
 	)
