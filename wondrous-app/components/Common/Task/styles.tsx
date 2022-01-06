@@ -22,18 +22,17 @@ export const TaskInner = styled.div`
 
 export const TaskWrapper = styled.div`
 	display: flex;
-	margin: 1em 0 0 0;
+	margin: ${(props) => (props.wrapped ? '0' : '1em 0 0 0')};
 
 	padding: 1px;
 	background: #515151;
 
 	${GradientMidnightDiagonal}
 
-	border-radius: 6px;
+	border-radius: ${(props) => (props.wrapped ? '0px' : '6px')};
 
-	min-width: 326px;
+	min-width: 290px;
 	min-height: 216px;
-	width: 326px;
 `
 
 export const TaskHeader = styled.div`

@@ -215,8 +215,6 @@ export const useWonderWeb3 = () => {
 			// Reset Assets based on Chain
 			setAssets(chainAssets)
 			setFetching(false)
-		} else {
-			console.log('getAccountsAssets() failed.', address)
 		}
 	}
 
