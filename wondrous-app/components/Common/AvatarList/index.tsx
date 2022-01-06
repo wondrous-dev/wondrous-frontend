@@ -16,7 +16,7 @@ export const SmallAvatar = (props) => {
 		colorValues[Math.floor(Math.random() * colorValues.length)]
 
 	return (
-		<SmallAvatarContainer key={id} style={{ zIndex: 6 - style.zIndex }}>
+		<SmallAvatarContainer key={id} style={{ zIndex: 6 - (style.zIndex || 0) }}>
 			<SmallAvatarWrapper
 				randomColor={avatar.color || randomColor}
 				isOwnerOfPod={avatar.isOwnerOfPod}
