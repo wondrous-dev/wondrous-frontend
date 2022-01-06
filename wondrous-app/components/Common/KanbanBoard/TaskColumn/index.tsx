@@ -93,7 +93,12 @@ const TaskColumn = (props: ITaskColumn) => {
 					status={card.status}
 					moveCard={moveCard}
 				>
-					<Task task={card} setTask={() => {}} />
+					<Task
+						task={card}
+						setTask={() => {
+							console.log('setTask needs implementation!')
+						}}
+					/>
 				</DraggableCard>
 			))}
 			{!cardsList.length && (
