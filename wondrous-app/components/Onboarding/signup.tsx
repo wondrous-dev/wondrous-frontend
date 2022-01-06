@@ -14,9 +14,9 @@ import { useWonderWeb3 } from '../../services/web3'
 import { getUserSigningMessage, walletSignup } from '../Auth/withAuth'
 import { useRouter } from 'next/router'
 import { SUPPORTED_CHAINS } from '../../utils/constants'
-import { Button } from '../../components/Common/button'
-import { PaddedParagraph } from '../../components/Common/text'
-import { Metamask } from '../../components/Icons/metamask'
+import { Button } from '../Common/button'
+import { PaddedParagraph } from '../Common/text'
+import { Metamask } from '../Icons/metamask'
 
 export const Logo = () => {
 	return (

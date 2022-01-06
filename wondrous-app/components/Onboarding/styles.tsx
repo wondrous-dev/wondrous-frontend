@@ -1,7 +1,7 @@
 import styled from 'styled-components'
-import { Typography } from '@material-ui/core'
+import { TextField, Typography } from '@material-ui/core'
 import Image from 'next/image'
-import { White } from '../../theme/colors'
+import { Grey250, Grey85, White } from '../../theme/colors'
 import { Button } from '../Common/button'
 
 export const MainWrapper = styled.div`
@@ -20,7 +20,7 @@ export const LogoDiv = styled.div`
 	top: 30px;
 `
 
-export const LogoImg = styled(Image)`
+export const LogoImg = styled.img`
 	width: 40px;
 	height: 30px;
 `
@@ -37,10 +37,12 @@ export const LogoText = styled(Typography)`
 export const InviteWelcomeBoxWrapper = styled.div`
 	background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
 	border-radius: 6px;
-	padding: 30px 45px;
+	padding: 40px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	position: relative;
+	min-height: 80vh;
 `
 
 export const OrgProfilePicture = styled.img`
@@ -64,7 +66,7 @@ export const InviteWelcomeBoxParagraph = styled(Typography)`
 	&& {
 		color: ${White};
 		font-size: 16px;
-		font-weight: 400;
+		font-weight: 450;
 	}
 `
 
@@ -73,3 +75,83 @@ export const MetamaskButton = styled(Button)`
 		margin-top: 32px;
 	}
 `
+
+export const StyledHr = styled.hr`
+	border: 1px solid ${Grey85};
+	width: 100%;
+`
+
+export const ProgressBar = styled.img`
+	&& {
+		margin-top: 26px;
+	}
+`
+
+export const OnboardingTitle = styled(Typography)`
+	&& {
+		font-size: 28px;
+		color: ${White};
+		margin-top: 18px;
+		margin-bottom: 18px;
+		font-weight: 500;
+	}
+`
+
+export const ButtonDiv = styled.div`
+	width: 100%;
+	margin-top: ;
+`
+
+export const ContinueButton = styled(Button)`
+	&& {
+		position: absolute;
+		bottom: 40px;
+		right: 40px;
+	}
+`
+
+export const ContinueText = styled(Typography)`
+	&& {
+	}
+`
+
+export const UsernameTitle = styled(Typography)`
+	&& {
+		color: #ccbbff;
+		font-size: 14px;
+		line-height: 18px;
+		font-weight: 500;
+		margin-top: 36px;
+		width: 100%;
+	}
+`
+
+export const UsernameDescription = styled(UsernameTitle)`
+	&& {
+		color: ${Grey250};
+		margin-top: 8px;
+		margin-bottom: 20px;
+	}
+`
+export const UsernameInput = styled(TextField)({
+	'&.MuiTextField-root': {
+		width: '100%',
+		maxWidth: '100%',
+		height: 40,
+		backgroundColor: '#0F0F0F',
+		borderRadius: 6,
+		padding: 10,
+		display: 'flex',
+		justifyContent: 'center',
+		border: '1px solid #4B4B4B',
+	},
+	'& .MuiInputBase-input': {
+		fontSize: 14,
+		lineHeight: 19,
+		letterSpacing: '0.01em',
+		color: '#C4C4C4',
+	},
+	'& .MuiInput-underline:after': {
+		borderBottom: '2px solid violet',
+	},
+})

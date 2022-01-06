@@ -33,3 +33,12 @@ export const REDEEM_ORG_INVITE_LINK = gql`
 		}
 	}
 `
+
+export const UPDATE_USER = gql`
+	mutation updateUser($input: UserUpdateInput!) {
+		updateUser(input: $input) {
+			...LoggedinUser
+		}
+	}
+	${LoggedinUserFragment}
+`

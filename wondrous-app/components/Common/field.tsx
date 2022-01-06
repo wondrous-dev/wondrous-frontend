@@ -29,7 +29,7 @@ export const FieldInput = styled.input`
 
 export const Field = ({ ...props }) => (
 	<FieldWrapper>
-		{props.icon !== null && props.icon()}
+		{props.icon && props.icon()}
 		<FieldInput {...props} />
 	</FieldWrapper>
 )

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { useQuery, useMutation } from '@apollo/client'
 import { GET_ORG_INVITE_ORG_INFO } from '../../graphql/queries/org'
 
-import { InviteWelcomeBox, Logo } from '../../components/Onboarding'
+import { InviteWelcomeBox, Logo } from '../../components/Onboarding/signup'
 import { MainWrapper } from '../../components/Onboarding/styles'
 import { REDEEM_ORG_INVITE_LINK } from '../../graphql/mutations'
 
