@@ -57,10 +57,16 @@ export const NotificationsBoardArrow = styled.div`
 
 export const NotificationsBoardOverArrow = styled.div`
 	position: absolute;
-	height: 40px;
-	width: 40px;
+	height: 30px;
+	width: 30px;
 
-	background: linear-gradient(176.83deg, #1e1e1e -68.66%, #141414 239.25%);
+	background: linear-gradient(
+        135deg, 
+        #1b1b1b 0%, 
+        #1b1b1b 40%,
+        rgba(0,0,0,0) 40%,
+        #191919 100%
+        );
 	border: 0px solid transparent;
 
 	/* drop shadow */
@@ -69,8 +75,8 @@ export const NotificationsBoardOverArrow = styled.div`
 	border-radius: 8px;
 	transform: rotate(45deg);
 
-	margin-left: 0px;
-	margin-top: 3px;
+	margin-left: 5px;
+	margin-top: 1px;
 
 	content: '';
 	z-index: 102;
