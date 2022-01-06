@@ -133,7 +133,8 @@ export const walletSignin = async (
 
 export const getUserSigningMessage = async (
 	web3Address: string,
-	blockchain: string
+	blockchain: string,
+	includeUserExistsCheck?: boolean
 ) => {
 	try {
 		const { data, loading, error } = await apollo.query({
@@ -143,6 +144,9 @@ export const getUserSigningMessage = async (
 				blockchain,
 			},
 		})
+		if (includeUserExistsCheck) {
+			return data.getUserSigningMessage
+		}
 		return data.getUserSigningMessage.signingMessage
 	} catch (e) {
 		console.log('error retrieving nonce', e)

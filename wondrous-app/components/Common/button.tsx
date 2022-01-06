@@ -18,7 +18,7 @@ const ButtonInner = styled.button`
 	font-size: 16px;
 	border: none;
 	color: white;
-
+	padding: 16px;
 	cursor: pointer;
 `
 
@@ -35,8 +35,8 @@ const ButtonWrapper = styled.div`
 	border-radius: 98px;
 `
 
-export const Button = ({ children, ...props }) => (
+export const Button = ({ children, buttonInnerStyle, ...props }) => (
 	<ButtonWrapper {...props}>
-		<ButtonInner>{children}</ButtonInner>
+		<ButtonInner style={buttonInnerStyle}>{children}</ButtonInner>
 	</ButtonWrapper>
 )
