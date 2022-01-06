@@ -45,7 +45,7 @@ const NOTIFICATIONS_MOCK = [
 		timestamp: 123412341236,
 		text: (
 			<>
-				<b>Adam</b> assigned a <StyledLink href="#">task</StyledLink>to Terry
+				<b>Adam</b> assigned a <StyledLink href="#">task</StyledLink> to Terry
 			</>
 		),
 		icon: <SmallAvatar initials="AO" />,
