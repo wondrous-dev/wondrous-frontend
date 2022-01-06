@@ -165,8 +165,16 @@ export const NotificationsMarkRead = styled.div`
 
     line-height 32px;
 
-    color: ${White};
-    text-decoration: underline;
+    ${props => props.enabled 
+        ? `
+        color: ${White};
+        text-decoration: underline;
+        ` : `
+        color: ${Grey75};
+        text-decoration: none;
+        `}
+
+    
 `
 
 export const NotificationsOverlay = styled.div`
@@ -228,7 +236,7 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
 				</StyledBadge>
 				<NotificationsBoardWrapper style={{ display: display }}>
 					<NotificationsBoardHeader>
-						<NotificationsMarkRead>
+						<NotificationsMarkRead enabled={notifications.length}>
 							<span style={{ cursor: 'pointer' }} onClick={handleMarkAllRead}>
 								Mark all as read
 							</span>
