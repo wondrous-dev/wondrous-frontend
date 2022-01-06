@@ -3,6 +3,8 @@ import { AvatarList } from '../Common/AvatarList'
 import { TodoWithBorder } from '../Icons'
 import ArrowDropDownIcon from '../Icons/arrowDropDown'
 import AudioIcon from '../Icons/MediaTypesIcons/audio'
+import { ImageIcon } from '../Icons/image'
+import PlayIcon from '../Icons/play'
 import { RewardRed } from '../Icons/reward'
 import UpClickIcon from '../Icons/upClick'
 import {
@@ -22,6 +24,7 @@ import {
 	StyledTableRow,
 	TaskDescription,
 	TaskTitle,
+	StyledLinkIcon,
 } from './styles'
 
 export const Table = () => {
@@ -57,7 +60,7 @@ export const Table = () => {
 						</StyledTableCell>
 						<StyledTableCell align="center">
 							<AvatarList
-							    align="center"
+								align="center"
 								users={[
 									{
 										name: 'UserName',
@@ -152,13 +155,19 @@ export const Table = () => {
 								</DeliverableItem>
 								<DeliverableItem>
 									<DeliverablesIconContainer>
-										<AudioIcon />
+										<StyledLinkIcon />
 									</DeliverablesIconContainer>
 									3
 								</DeliverableItem>
 								<DeliverableItem>
 									<DeliverablesIconContainer>
-										<AudioIcon />
+										<ImageIcon />
+									</DeliverablesIconContainer>
+									3
+								</DeliverableItem>
+								<DeliverableItem>
+									<DeliverablesIconContainer>
+										<PlayIcon />
 									</DeliverablesIconContainer>
 									3
 								</DeliverableItem>

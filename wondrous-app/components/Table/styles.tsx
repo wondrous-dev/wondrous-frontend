@@ -7,6 +7,7 @@ import TableRow from '@material-ui/core/TableRow'
 import { Typography } from '@material-ui/core'
 import styled from 'styled-components'
 import { Button } from '@material-ui/core'
+import { LinkIcon } from '../Icons/linkIcon'
 
 export const StyledTable = styled(Table)`
 	background: #0f0f0f;
@@ -121,6 +122,13 @@ export const DeliverablesIconContainer = styled(Button)`
 		justify-content: center;
 		padding: 7px;
 	}
+`
+
+export const StyledLinkIcon = styled(LinkIcon)`
+	&& {width: 28px;
+	height: 28px;
+	margin: 0};
+
 `
 
 export const DropDownButton = styled(Button)`
