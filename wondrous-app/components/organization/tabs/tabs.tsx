@@ -8,21 +8,6 @@ import About from '../about/about'
 
 import { StyledTabs } from './styles'
 
-const tabsLinks = [
-	{
-		href: '/organization/activities',
-		label: 'Activity',
-	},
-	{
-		href: '/organization/boards',
-		label: 'Boards',
-	},
-	{
-		href: '/organization/about',
-		label: 'About',
-	},
-]
-
 const Tabs = (props) => {
 	const { children } = props
 
