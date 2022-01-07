@@ -3,10 +3,12 @@ import { TextField, Typography } from '@material-ui/core'
 import Image from 'next/image'
 import { Grey250, Grey85, White } from '../../theme/colors'
 import { Button } from '../Common/button'
+import { SafeImage } from '../Common/Image'
 
 export const MainWrapper = styled.div`
 	width: 100%;
 	min-height: 100vh;
+	height: 100%;
 	background-image: url('/images/onboarding/background.png');
 	display: flex;
 	align-items: center;
@@ -155,3 +157,8 @@ export const UsernameInput = styled(TextField)({
 		borderBottom: '2px solid violet',
 	},
 })
+
+export const ProfilePictureDiv = styled.div`
+	width: 100%;
+	position: relative;
+`

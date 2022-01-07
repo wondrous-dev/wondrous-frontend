@@ -21,6 +21,8 @@ import { FirstStep } from '../../components/Common/Image/OnboardingProgressBar'
 import { useWonderWeb3 } from '../../services/web3'
 import { Field, FieldInput } from '../Common/field'
 
+const USERNAME_REGEX = /^[A-Za-z0-9_]{3,16}$/
+
 export const Logo = ({ divStyle }) => {
 	return (
 		<LogoDiv style={divStyle}>
@@ -34,6 +36,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
 	const router = useRouter()
 	const wonderWeb3 = useWonderWeb3()
 	const [username, setUsername] = useState('')
+	const [error, setError] = useState('')
 	// Two stage process as wallet connection takes
 	// time.
 	const buttonStyle = {
@@ -98,18 +101,25 @@ export const InviteWelcomeBox = ({ updateUser }) => {
 				onChange={(e) => setUsername(e.target.value)}
 				placeholder="Enter username"
 				required
+				error={error}
 			/>
 			<ContinueButton
 				style={buttonStyle}
-				onClick={() =>
-					updateUser({
-						variables: {
-							input: {
-								username,
+				onClick={() => {
+					if (USERNAME_REGEX.test(username)) {
+						updateUser({
+							variables: {
+								input: {
+									username,
+								},
 							},
-						},
-					})
-				}
+						})
+					} else {
+						setError(
+							'Please enter a valid username with 3-15 alphanumeric characters '
+						)
+					}
+				}}
 				buttonInnerStyle={{
 					padding: '8px 16px',
 				}}

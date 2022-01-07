@@ -1,7 +1,6 @@
 import React from 'react'
 import { useRouter } from 'next/router'
-import { useQuery, useMutation } from '@apollo/client'
-import { GET_ORG_INVITE_ORG_INFO } from '../../graphql/queries/org'
+import { useMutation } from '@apollo/client'
 
 import { InviteWelcomeBox } from '../../components/Onboarding/welcome'
 import { MainWrapper } from '../../components/Onboarding/styles'
