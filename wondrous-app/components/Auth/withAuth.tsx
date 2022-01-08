@@ -15,8 +15,10 @@ import {
 	LOGIN_MUTATION,
 	LOGIN_WALLET_MUTATION,
 } from '../../graphql/mutations'
+import { useRouter } from 'next/router'
 
 const MyContext = React.createContext(null)
+const EXCLUDED_PATHS = ['/invite/[token]']
 
 export const useMe = () => {
 	return useContext(MyContext)
@@ -243,6 +245,7 @@ export const logout = async () => {
 export const withAuth = (Component, noCache = false) => {
 	const AuthComponent = (props) => {
 		const { navigation, route } = props
+		const router = useRouter()
 		const [token, setToken] = useState(null)
 		const [tokenLoading, setTokenLoading] = useState(true)
 		const { data, loading, error } = useQuery(GET_LOGGED_IN_USER)
@@ -256,7 +259,9 @@ export const withAuth = (Component, noCache = false) => {
 
 		if (!tokenLoading && !token) {
 			// Back to the world
-			window.location.href = '/login'
+			if (!EXCLUDED_PATHS.includes(router.pathname)) {
+				window.location.href = '/login'
+			}
 			return <Component {...props} />
 		} else {
 			const user = data?.getLoggedinUser

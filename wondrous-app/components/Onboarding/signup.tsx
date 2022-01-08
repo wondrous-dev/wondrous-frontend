@@ -66,7 +66,11 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
 					)
 					if (result === true) {
 						//
-						redeemOrgInviteLink()
+						redeemOrgInviteLink({
+							variables: {
+								token,
+							},
+						})
 					} else {
 						setErrorMessage(result)
 					}
@@ -127,7 +131,7 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
 				<MetamaskButton style={buttonStyle} disabled className="disabled">
 					<Metamask height="18" width="17" />
 					<PaddedParagraph padding="0 10px">
-						Continue on your wallet
+						Connect with MetaMask
 					</PaddedParagraph>
 				</MetamaskButton>
 			) : unsuportedChain ? (

@@ -102,7 +102,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
 				onChange={(e) => setUsername(e.target.value)}
 				placeholder="Enter username"
 				required
-				error={error}
+				error={!!error}
 			/>
 			{error && <ErrorText>{error}</ErrorText>}
 			<ContinueButton
