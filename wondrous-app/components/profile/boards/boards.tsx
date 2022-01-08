@@ -1,4 +1,4 @@
-import React from 'react'
+import { useState } from 'react'
 import { InputAdornment } from '@material-ui/core'
 
 import SearchIcon from '../../Icons/search'
@@ -14,8 +14,8 @@ import { Table } from '../../Table'
 
 const Boards = (props) => {
 	const { selectOptions, columns } = props
-	const [selected, setSelected] = React.useState(0)
-
+	const [selected, setSelected] = useState(0)
+	const buttons = ['List', 'Grid']
 	return (
 		<Wrapper>
 			<BoardsContainer>
@@ -34,6 +34,7 @@ const Boards = (props) => {
 					<MultiSelect options={selectOptions} />
 
 					<ButtonGroup
+						buttons={buttons}
 						selected={selected}
 						setSelected={setSelected}
 					></ButtonGroup>

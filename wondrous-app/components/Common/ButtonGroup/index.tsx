@@ -2,9 +2,7 @@ import { useState } from 'react'
 import { ButtonGroupStyled, ButtonStyled } from './styles'
 
 export const ButtonGroup = (props) => {
-	const { selected, setSelected } = props
-
-	const buttons = ['List', 'Grid']
+	const { selected, setSelected, buttons = [] } = props
 
 	return (
 		<ButtonGroupStyled>
