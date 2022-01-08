@@ -3,7 +3,11 @@ import { useLazyQuery } from '@apollo/client'
 import { useRouter } from 'next/router'
 
 import Boards from '../../../components/profile/boards/boards'
-import { GET_USER_TASK_BOARD_TASKS } from '../../../graphql/queries/taskBoard'
+import {
+	GET_USER_TASK_BOARD_PROPOSALS,
+	GET_USER_TASK_BOARD_SUBMISSIONS,
+	GET_USER_TASK_BOARD_TASKS,
+} from '../../../graphql/queries/taskBoard'
 import { useMe } from '../../../components/Auth/withAuth'
 
 import {
@@ -96,29 +100,45 @@ const BoardsPage = () => {
 	const router = useRouter()
 	const { username, userId } = router.query
 
-	const [
-		getUserTasks,
-		{
-			loading: userTasksLoading,
-			data: userTasksData,
-			error: userTasksError,
-			refetch: userTasksRefetch,
-			fetchMore: userTasksFetchMore,
+	const [getUserTaskProposals] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
+		onCompleted: (data) => {
+			const newColumns = [...columns]
+			const taskProposals = data?.getUserTaskBoardProposals
+			newColumns[0].section.tasks = []
+			taskProposals.forEach((taskProposal) => {
+				newColumns[0].section.tasks.push(taskProposal)
+			})
+			setColumns(newColumns)
 		},
-	] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
+	})
+	const [getUserTaskSubmissions] = useLazyQuery(
+		GET_USER_TASK_BOARD_SUBMISSIONS,
+		{
+			onCompleted: (data) => {
+				const newColumns = [...columns]
+				const taskSubmissions = data?.getUserTaskBoardSubmissions
+				newColumns[1].section.tasks = []
+				taskSubmissions.forEach((taskSubmission) => {
+					newColumns[0].section.tasks.push(taskSubmission)
+				})
+				setColumns(newColumns)
+			},
+		}
+	)
+
+	const [getUserTasks] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
 		onCompleted: (data) => {
 			// Parse task board data
-			const newColumns = [...COLUMNS]
+			const newColumns = [...columns]
 			const tasks = data?.getUserTaskBoardTasks
+			newColumns[0].tasks = []
+			newColumns[1].tasks = []
+			newColumns[2].tasks = []
 			tasks.forEach((task) => {
 				if (task?.status === TASK_STATUS_TODO) {
 					newColumns[0].tasks.push(task)
-				} else if (task?.status === TASK_STATUS_REQUESTED) {
-					newColumns[0].section.tasks.push(task)
 				} else if (task?.status === TASK_STATUS_IN_PROGRESS) {
 					newColumns[1].tasks.push(task)
-				} else if (task?.status === TASK_STATUS_IN_REVIEW) {
-					newColumns[1].section.tasks.push(task)
 				} else if (task?.status === TASK_STATUS_DONE) {
 					newColumns[2].tasks.push(task)
 				} else if (task?.status === TASK_STATUS_ARCHIVED) {
@@ -168,6 +188,23 @@ const BoardsPage = () => {
 					limit: 10,
 				},
 			})
+			getUserTaskProposals({
+				variables: {
+					userId: profileUserId,
+					statuses,
+					offset: 0,
+					limit: 10,
+				},
+			})
+
+			getUserTaskSubmissions({
+				variables: {
+					userId: profileUserId,
+					statuses,
+					offset: 0,
+					limit: 10,
+				},
+			})
 		}
 	}, [
 		username,
@@ -176,6 +213,8 @@ const BoardsPage = () => {
 		getUserTasks,
 		statuses,
 		getUserIdFromUsername,
+		getUserTaskSubmissions,
+		getUserTaskProposals,
 	])
 
 	return <Boards selectOptions={SELECT_OPTIONS} columns={columns} />
