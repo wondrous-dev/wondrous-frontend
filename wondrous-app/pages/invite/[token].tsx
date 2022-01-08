@@ -22,7 +22,7 @@ const ContributorOnboardingPage = () => {
 		},
 		onCompleted: (data) => {
 			if (data?.redeemOrgInviteLink?.success) {
-				router.replace(`/welcome/${token}`)
+				router.replace(`/onboarding/welcome`)
 			}
 		},
 	})

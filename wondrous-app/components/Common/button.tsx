@@ -35,8 +35,8 @@ const ButtonWrapper = styled.div`
 	border-radius: 98px;
 `
 
-export const Button = ({ children, buttonInnerStyle, ...props }) => (
+export const Button = ({ children, ...props }) => (
 	<ButtonWrapper {...props}>
-		<ButtonInner style={buttonInnerStyle}>{children}</ButtonInner>
+		<ButtonInner style={props?.buttonInnerStyle}>{children}</ButtonInner>
 	</ButtonWrapper>
 )

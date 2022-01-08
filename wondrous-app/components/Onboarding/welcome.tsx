@@ -12,6 +12,7 @@ import {
 	UsernameTitle,
 	UsernameDescription,
 	UsernameInput,
+	ErrorText,
 } from './styles'
 import WonderLogo from '../../public/images/onboarding/wonder-logo.svg'
 
@@ -103,6 +104,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
 				required
 				error={error}
 			/>
+			{error && <ErrorText>{error}</ErrorText>}
 			<ContinueButton
 				style={buttonStyle}
 				onClick={() => {

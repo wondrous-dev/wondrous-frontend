@@ -6,7 +6,7 @@ interface SafeImageArgs {
 	src: string
 	style?: object
 	defaultImage?: string
-	setImage?: object
+	setImage?(url: string): void
 }
 export const SafeImage = (safeImageArgs: SafeImageArgs) => {
 	const { src, style, defaultImage, setImage } = safeImageArgs

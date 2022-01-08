@@ -17,11 +17,12 @@ import { SUPPORTED_CHAINS } from '../../utils/constants'
 import { Button } from '../Common/button'
 import { PaddedParagraph } from '../Common/text'
 import { Metamask } from '../Icons/metamask'
+import { SafeImage } from '../Common/Image'
 
 export const Logo = () => {
 	return (
 		<LogoDiv>
-			<LogoImg src={WonderLogo} />
+			<WonderLogo />
 			<LogoText>Wonder</LogoText>
 		</LogoDiv>
 	)
@@ -96,18 +97,31 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
 		background:
 			'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
 	}
+
 	return (
 		<InviteWelcomeBoxWrapper>
-			<OrgProfilePicture
-				src={'https://readyplayerdao.xyz/static/media/rpd-icon.6b6c0c9e.png'}
-				width="77px"
-				height="77px"
+			<SafeImage
+				style={{
+					width: '78px',
+					height: '78px',
+					borderRadius: '39px',
+					marginBottom: '20px',
+				}}
+				src={orgInfo?.profilePicture}
 			/>
 			<InviteWelcomeBoxTitle>
 				{orgInfo?.name} is requesting your help.
 			</InviteWelcomeBoxTitle>
 			<InviteWelcomeBoxParagraph>
 				Wonder is where DAOs manage world changing projects
+			</InviteWelcomeBoxParagraph>
+			<InviteWelcomeBoxParagraph
+				style={{
+					fontWeight: 'normal',
+				}}
+			>
+				{orgInfo?.contributorCount} members are already contributing to{' '}
+				{orgInfo?.name}
 			</InviteWelcomeBoxParagraph>
 			{wonderWeb3.connecting ? (
 				<MetamaskButton style={buttonStyle} disabled className="disabled">

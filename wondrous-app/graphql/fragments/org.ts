@@ -5,5 +5,6 @@ export const OrgInviteFragment = gql`
 		id
 		name
 		profilePicture
+		contributorCount
 	}
 `

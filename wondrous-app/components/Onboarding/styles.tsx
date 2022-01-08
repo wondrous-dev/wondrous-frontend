@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { TextField, Typography } from '@material-ui/core'
 import Image from 'next/image'
-import { Grey250, Grey85, White } from '../../theme/colors'
+import { Grey250, Grey85, Red400, White } from '../../theme/colors'
 import { Button } from '../Common/button'
 import { SafeImage } from '../Common/Image'
 
@@ -45,9 +45,13 @@ export const InviteWelcomeBoxWrapper = styled.div`
 	align-items: center;
 	position: relative;
 	min-height: 80vh;
+	min-width: 555px;
+	@media (max-width: 745px) {
+		min-width: 0;
+	}
 `
 
-export const OrgProfilePicture = styled.img`
+export const OrgProfilePicture = styled(SafeImage)`
 	&& {
 		margin-bottom: 20px;
 		width: 77px;
@@ -112,6 +116,16 @@ export const ContinueButton = styled(Button)`
 	}
 `
 
+export const LaterButton = styled(Button)`
+	&& {
+		position: relative;
+		width: 138px;
+		height: 50px;
+		margin-right: 16px;
+		margin-top: 24px;
+	}
+`
+
 export const ContinueText = styled(Typography)`
 	&& {
 	}
@@ -161,4 +175,11 @@ export const UsernameInput = styled(TextField)({
 export const ProfilePictureDiv = styled.div`
 	width: 100%;
 	position: relative;
+`
+
+export const ErrorText = styled(Typography)`
+	&& {
+		color: ${Red400};
+		font-size: 14px;
+	}
 `

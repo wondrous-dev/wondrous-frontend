@@ -17,3 +17,12 @@ export const GET_ORG_INVITE_ORG_INFO = gql`
 	}
 	${OrgInviteFragment}
 `
+
+export const GET_USER_ORGS = gql`
+	query getUserOrgs($userId: String) {
+		getUserOrgs(userId: $userId) {
+			id
+			username
+		}
+	}
+`

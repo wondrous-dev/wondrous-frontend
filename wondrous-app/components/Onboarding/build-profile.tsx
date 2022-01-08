@@ -3,10 +3,8 @@ import {
 	InviteWelcomeBoxParagraph,
 	InviteWelcomeBoxWrapper,
 	LogoDiv,
-	LogoImg,
 	LogoText,
 	StyledHr,
-	ProgressBar,
 	OnboardingTitle,
 	ContinueButton,
 	UsernameTitle,
@@ -36,7 +34,7 @@ export const Logo = ({ divStyle }) => {
 	)
 }
 
-export const InviteWelcomeBox = ({ updateUser, uploadImage }) => {
+export const InviteWelcomeBox = ({ updateUser }) => {
 	const router = useRouter()
 	const [bio, setBio] = useState('')
 	const user = useMe()
@@ -77,7 +75,6 @@ export const InviteWelcomeBox = ({ updateUser, uploadImage }) => {
 	}
 
 	useEffect(() => {
-		console.log('user', user)
 		if (user?.profilePicture) {
 			setImage(user?.profilePicture)
 		}
