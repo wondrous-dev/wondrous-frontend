@@ -92,14 +92,14 @@ export const Table = (props) => {
 							<StyledTableCell>
 								<DeliverableContainer>
 									{Object.entries(groupBy(task?.media, 'type')).map(
-										([key, val], index) => (
-											<DeliverableItem key={index}>
+										([key, value]: [string, any], index) => {
+											return (<DeliverableItem key={index}>
 												<DeliverablesIconContainer>
 													{DELIVERABLES_ICONS[key]}
 												</DeliverablesIconContainer>
-												{val.length}
-											</DeliverableItem>
-										)
+												{value.length}
+											</DeliverableItem>)
+										}
 									)}
 								</DeliverableContainer>
 							</StyledTableCell>
