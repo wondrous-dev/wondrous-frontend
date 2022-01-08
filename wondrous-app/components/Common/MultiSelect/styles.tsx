@@ -72,8 +72,17 @@ export const MultiSelectSelector = styled(Select)({
 		position: 'relative',
 		boxSizing: 'border-box',
 		minHeight: 40,
-		padding: '0',
 		zIndex: 1,
+		height: 40,
+		overflowY: 'scroll',
+		scrollbarWidth: 'none',
+		display: 'flex',
+		alignItems: 'center',
+		padding: '0 0 0 10px',
+
+		'&::-webkit-scrollbar': {
+			display: 'none',
+		},
 	},
 
 	'& .MuiChip-root': {

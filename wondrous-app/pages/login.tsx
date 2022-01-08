@@ -24,6 +24,7 @@ import {
 	getUserSigningMessage,
 	walletSignin,
 } from '../components/Auth/withAuth'
+import { ErrorMessage } from 'formik'
 
 const Login = ({ csrfToken }) => {
 	const wonderWeb3 = useWonderWeb3()

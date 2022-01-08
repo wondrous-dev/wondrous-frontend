@@ -9,6 +9,7 @@ import {
 	WHOAMI,
 } from '../../graphql/queries'
 import {
+	CONNECT_USER_WALLET,
 	CREATE_USER,
 	CREATE_WALLET_USER,
 	LOGIN_MUTATION,
@@ -157,14 +158,41 @@ export const getWaitlistAuthHeader = () => {
 	return localStorage.getItem('waitlistToken') || null
 }
 
-export const linkWallet = async (address, signedMessage) => {
-	// TODO: send wallet and signed message to backend
-	//		 to link with user (current session).
-	return true
+export const linkWallet = async (
+	web3Address: string,
+	signedMessage: string,
+	blockchain: string
+) => {
+	try {
+		const {
+			data: { connectUserWallet: user },
+		} = await apollo.mutate({
+			mutation: CONNECT_USER_WALLET,
+			variables: {
+				web3Address,
+				signedMessage,
+				blockchain,
+			},
+		})
+
+		if (user) {
+			// Store the user on the session (no token update)
+			await storeAuthHeader(null, user)
+			return true
+		}
+
+		return false
+	} catch (err) {
+		console.log('Error linking wallet: ', err)
+		return false
+	}
 }
 
 export const storeAuthHeader = async (token, user) => {
-	localStorage.setItem('wonderToken', token)
+	if (token) {
+		localStorage.setItem('wonderToken', token)
+	}
+
 	if (user) {
 		try {
 			await apollo.writeQuery({
