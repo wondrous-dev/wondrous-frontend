@@ -1,12 +1,17 @@
 import { MoreVert } from '@material-ui/icons'
+import {
+	TASK_STATUS_DONE,
+	TASK_STATUS_IN_PROGRESS,
+	TASK_STATUS_TODO
+} from '../../utils/constants'
+import { groupBy, shrinkNumber } from '../../utils/helpers'
 import { AvatarList } from '../Common/AvatarList'
-import { TodoWithBorder, InProgressWithBorder, DoneWithBorder } from '../Icons'
+import { DoneWithBorder, InProgressWithBorder, TodoWithBorder, WonderCoin } from '../Icons'
 import ArrowDropDownIcon from '../Icons/arrowDropDown'
 import ImageIcon from '../Icons/image'
 import AudioIcon from '../Icons/MediaTypesIcons/audio'
 import PlayIcon from '../Icons/play'
 import { RewardRed } from '../Icons/reward'
-import UpClickIcon from '../Icons/upClick'
 import {
 	DeliverableContainer,
 	DeliverableItem,
@@ -24,15 +29,8 @@ import {
 	StyledTableHead,
 	StyledTableRow,
 	TaskDescription,
-	TaskTitle,
+	TaskTitle
 } from './styles'
-import {
-	TASK_STATUS_DONE,
-	TASK_STATUS_IN_PROGRESS,
-	TASK_STATUS_TODO,
-	WonderCoin,
-} from '../../utils/constants'
-import {shrinkNumber, groupBy} from '../../utils/helpers' 	
 
 const STATUS_ICONS = {
 	[TASK_STATUS_TODO]: <TodoWithBorder />,
