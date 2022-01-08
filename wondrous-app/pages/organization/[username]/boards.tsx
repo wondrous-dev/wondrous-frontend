@@ -3,7 +3,11 @@ import { useRouter } from 'next/router'
 import { useLazyQuery } from '@apollo/client'
 
 import { useMe } from '../../../components/Auth/withAuth'
-import { GET_ORG_TASK_BOARD_TASKS } from '../../../graphql/queries/taskBoard'
+import {
+	GET_ORG_TASK_BOARD_PROPOSALS,
+	GET_ORG_TASK_BOARD_SUBMISSIONS,
+	GET_ORG_TASK_BOARD_TASKS,
+} from '../../../graphql/queries/taskBoard'
 import Boards from '../../../components/organization/boards/boards'
 import {
 	InReview,
@@ -95,20 +99,37 @@ const BoardsPage = () => {
 	const router = useRouter()
 	const { username, orgId } = router.query
 
-	const [
-		getOrgTasks,
-		{
-			loading: userTasksLoading,
-			data: userTasksData,
-			error: userTasksError,
-			refetch: userTasksRefetch,
-			fetchMore: userTasksFetchMore,
+	const [getOrgTaskProposals] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
+		onCompleted: (data) => {
+			const newColumns = [...columns]
+			const taskProposals = data?.getOrgTaskBoardProposals
+			newColumns[0].section.tasks = []
+			taskProposals.forEach((taskProposal) => {
+				newColumns[0].section.tasks.push(taskProposal)
+			})
+			setColumns(newColumns)
 		},
-	] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
+	})
+
+	const [getOrgTaskSubmissions] = useLazyQuery(GET_ORG_TASK_BOARD_SUBMISSIONS, {
+		onCompleted: (data) => {
+			const newColumns = [...columns]
+			const taskSubmissions = data?.getOrgTaskBoardSubmissions
+			newColumns[1].section.tasks = []
+			taskSubmissions.forEach((taskSubmission) => {
+				newColumns[1].section.tasks.push(taskSubmission)
+			})
+			setColumns(newColumns)
+		},
+	})
+	const [getOrgTasks] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
 		onCompleted: (data) => {
 			// Parse task board data
-			const newColumns = [...COLUMNS]
+			const newColumns = [...columns]
 			const tasks = data?.getOrgTaskBoardTasks
+			newColumns[0].tasks = []
+			newColumns[1].tasks = []
+			newColumns[2].tasks = []
 			tasks.forEach((task) => {
 				if (task?.status === TASK_STATUS_TODO) {
 					newColumns[0].tasks.push(task)
@@ -116,8 +137,6 @@ const BoardsPage = () => {
 					newColumns[0].section.tasks.push(task)
 				} else if (task?.status === TASK_STATUS_IN_PROGRESS) {
 					newColumns[1].tasks.push(task)
-				} else if (task?.status === TASK_STATUS_IN_REVIEW) {
-					newColumns[1].section.tasks.push(task)
 				} else if (task?.status === TASK_STATUS_DONE) {
 					newColumns[2].tasks.push(task)
 				} else if (task?.status === TASK_STATUS_ARCHIVED) {
@@ -167,6 +186,22 @@ const BoardsPage = () => {
 					limit: 10,
 				},
 			})
+			getOrgTaskProposals({
+				variables: {
+					orgId: profileOrgId,
+					statuses,
+					offset: 0,
+					limit: 10,
+				},
+			})
+			getOrgTaskSubmissions({
+				variables: {
+					orgId: profileOrgId,
+					statuses,
+					offset: 0,
+					limit: 10,
+				},
+			})
 		}
 	}, [
 		username,
@@ -175,6 +210,8 @@ const BoardsPage = () => {
 		getOrgTasks,
 		statuses,
 		getOrgIdFromUsername,
+		getOrgTaskSubmissions,
+		getOrgTaskProposals,
 	])
 	return <Boards selectOptions={SELECT_OPTIONS} columns={columns} />
 }
