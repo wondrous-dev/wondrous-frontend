@@ -12,6 +12,7 @@ import {
 	getWaitlistAuthHeader,
 } from '../components/Auth/withAuth'
 
+// Staging is http://34.135.9.199/graphql
 const graphqlUri =
 	process.env.NEXT_PUBLIC_GRAPHQL_SERVER_URL || 'http://localhost:4000/graphql'
 
