@@ -10,8 +10,8 @@ import { Button } from '@material-ui/core'
 import { LinkIcon } from '../Icons/linkIcon'
 
 export const StyledTable = styled(Table)`
-	background: #0f0f0f;
 	width: 100%;
+	overflow: hidden;
 	margin: 25px 0;
 `
 
