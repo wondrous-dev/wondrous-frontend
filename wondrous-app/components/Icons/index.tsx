@@ -101,6 +101,58 @@ export const InProgress = (props) => (
 	</svg>
 )
 
+export const InProgressWithBorder = (props) => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="29"
+		height="29"
+		fill="none"
+		viewBox="0 0 29 29"
+	>
+		<circle
+			cx="14.703"
+			cy="14.681"
+			r="13.5"
+			fill="#0F0F0F"
+			stroke="#474747"
+		></circle>
+		<circle
+			cx="14.703"
+			cy="14.68"
+			r="2.949"
+			fill="url(#paint0_linear_2681_10580)"
+		></circle>
+		<path
+			fill="url(#paint1_linear_2681_10580)"
+			d="M14.69 5.823a.738.738 0 00-.726.747v2.95a.738.738 0 101.475 0V6.57a.74.74 0 00-.749-.747zm4.078 1.087a.737.737 0 00-.65.379l-1.474 2.553a.738.738 0 101.276.737l1.474-2.553a.737.737 0 00-.626-1.116zm-8.155.001a.738.738 0 00-.604 1.115l1.474 2.553a.737.737 0 101.276-.737l-1.475-2.553a.738.738 0 00-.67-.378zM7.697 9.882c-.024 0-.049 0-.073.002a.737.737 0 00-.314 1.38l2.553 1.474a.738.738 0 10.738-1.276L8.046 9.987a.737.737 0 00-.35-.105zm14.06.002a.737.737 0 00-.401.103l-2.553 1.475a.736.736 0 00-.1 1.242.737.737 0 00.837.034l2.553-1.475a.737.737 0 00-.335-1.38zM6.593 13.943a.736.736 0 00-.691 1.022.737.737 0 00.69.453h2.95a.736.736 0 00.69-1.022.736.736 0 00-.69-.453H6.59zm13.27 0a.735.735 0 00-.747.737.737.737 0 00.748.738h2.949a.736.736 0 100-1.475h-2.95zm-.672 2.575a.737.737 0 00-.387 1.38l2.553 1.475a.738.738 0 10.737-1.276l-2.553-1.474a.738.738 0 00-.35-.105zm-8.925.001a.738.738 0 00-.402.104L7.31 18.097a.736.736 0 10.737 1.276L10.6 17.9a.737.737 0 00-.335-1.38zm1.868 1.884a.738.738 0 00-.65.378l-1.474 2.553a.738.738 0 101.275.738l1.475-2.553a.737.737 0 00-.626-1.116zm5.116.001a.737.737 0 00-.605 1.115l1.475 2.553a.737.737 0 101.276-.738l-1.475-2.553a.738.738 0 00-.671-.377zm-2.559.69a.738.738 0 00-.726.747v2.95a.738.738 0 101.475 0v-2.95a.739.739 0 00-.749-.747z"
+		></path>
+		<defs>
+			<linearGradient
+				id="paint0_linear_2681_10580"
+				x1="17.343"
+				x2="14.395"
+				y1="7.901"
+				y2="17.694"
+				gradientUnits="userSpaceOnUse"
+			>
+				<stop stopColor="#474747"></stop>
+				<stop offset="1" stopColor="#181818"></stop>
+			</linearGradient>
+			<linearGradient
+				id="paint1_linear_2681_10580"
+				x1="14.702"
+				x2="14.702"
+				y1="5.823"
+				y2="23.538"
+				gradientUnits="userSpaceOnUse"
+			>
+				<stop stopColor="#fff"></stop>
+				<stop offset="1" stopColor="#FFD653"></stop>
+			</linearGradient>
+		</defs>
+	</svg>
+)
+
 export const InReview = (props) => (
 	<svg
 		width="29"
@@ -233,6 +285,60 @@ export const Done = (props) => (
 			>
 				<stop stopColor="white" />
 				<stop offset="1" stopColor="#06FFA5" />
+			</linearGradient>
+		</defs>
+	</svg>
+)
+
+export const DoneWithBorder = (props) => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="29"
+		height="29"
+		fill="none"
+		viewBox="0 0 29 29"
+	>
+		<circle
+			cx="14.746"
+			cy="14.681"
+			r="13.5"
+			fill="#0F0F0F"
+			stroke="#474747"
+		></circle>
+		<circle
+			cx="14.976"
+			cy="14.68"
+			r="7.999"
+			fill="url(#paint0_linear_2681_10611)"
+		></circle>
+		<path
+			fill="url(#paint1_linear_2681_10611)"
+			fillRule="evenodd"
+			d="M7.4 14.682a7.349 7.349 0 1114.697 0 7.349 7.349 0 01-14.697 0zm7.349-8.748a8.749 8.749 0 100 17.497 8.749 8.749 0 000-17.497zm2.554 5.822a.914.914 0 111.292 1.292l-4.57 4.57a.914.914 0 01-1.292 0l-1.828-1.828a.915.915 0 111.292-1.292l1.182 1.182 3.924-3.924z"
+			clipRule="evenodd"
+		></path>
+		<defs>
+			<linearGradient
+				id="paint0_linear_2681_10611"
+				x1="22.138"
+				x2="14.139"
+				y1="-3.709"
+				y2="22.855"
+				gradientUnits="userSpaceOnUse"
+			>
+				<stop stopColor="#474747"></stop>
+				<stop offset="1" stopColor="#181818"></stop>
+			</linearGradient>
+			<linearGradient
+				id="paint1_linear_2681_10611"
+				x1="14.749"
+				x2="14.749"
+				y1="5.934"
+				y2="23.431"
+				gradientUnits="userSpaceOnUse"
+			>
+				<stop stopColor="#fff"></stop>
+				<stop offset="1" stopColor="#06FFA5"></stop>
 			</linearGradient>
 		</defs>
 	</svg>

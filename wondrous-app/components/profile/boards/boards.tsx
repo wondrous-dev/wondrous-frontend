@@ -13,7 +13,7 @@ import { BoardsActivity, BoardsActivityInput, BoardsContainer } from './styles'
 import { Table } from '../../Table'
 
 const Boards = (props) => {
-	const { selectOptions, columns } = props
+	const { selectOptions, columns, tasks } = props
 	const [selected, setSelected] = useState(0)
 	const buttons = ['List', 'Grid']
 	return (
@@ -39,7 +39,7 @@ const Boards = (props) => {
 						setSelected={setSelected}
 					></ButtonGroup>
 				</BoardsActivity>
-				{selected === 0 && <Table />}
+				{selected === 0 && <Table tasks={tasks} />}
 				{selected === 1 && <KanbanBoard columns={columns} />}
 			</BoardsContainer>
 		</Wrapper>

@@ -1,6 +1,6 @@
 import { MoreVert } from '@material-ui/icons'
 import { AvatarList } from '../Common/AvatarList'
-import { TodoWithBorder } from '../Icons'
+import { TodoWithBorder, InProgressWithBorder, DoneWithBorder } from '../Icons'
 import ArrowDropDownIcon from '../Icons/arrowDropDown'
 import ImageIcon from '../Icons/image'
 import AudioIcon from '../Icons/MediaTypesIcons/audio'
@@ -26,8 +26,29 @@ import {
 	TaskDescription,
 	TaskTitle,
 } from './styles'
+import {
+	TASK_STATUS_DONE,
+	TASK_STATUS_IN_PROGRESS,
+	TASK_STATUS_TODO,
+	WonderCoin,
+} from '../../utils/constants'
+import {shrinkNumber, groupBy} from '../../utils/helpers' 	
 
-export const Table = () => {
+const STATUS_ICONS = {
+	[TASK_STATUS_TODO]: <TodoWithBorder />,
+	[TASK_STATUS_IN_PROGRESS]: <InProgressWithBorder />,
+	[TASK_STATUS_DONE]: <DoneWithBorder />,
+}
+
+const DELIVERABLES_ICONS = {
+	audio: <AudioIcon />,
+	image: <ImageIcon />,
+	link: <StyledLinkIcon />,
+	video: <PlayIcon />,
+}
+
+export const Table = (props) => {
+	const { tasks } = props
 	return (
 		<StyledTableContainer>
 			<StyledTable>
@@ -53,147 +74,61 @@ export const Table = () => {
 						<StyledTableCell width="54px"></StyledTableCell>
 					</StyledTableRow>
 				</StyledTableHead>
+
 				<StyledTableBody>
-					<StyledTableRow>
-						<StyledTableCell align="center">
-							<UpClickIcon />
-						</StyledTableCell>
-						<StyledTableCell align="center">
-							<AvatarList
-								align="center"
-								users={[
-									{
-										name: 'UserName',
-										id: '0c4db830-f31a-4d5b-8863-00612f4b2501',
-										avatar: {
-											id: 'c2a10d67-6046-4395-89b8-3cdb466625ed',
-											isOwnerOfPod: true,
-										},
-									},
-									{
-										name: 'AnotherUser',
-										id: 'bb44d5ac-b09e-4b62-9b2c-2c625250b843',
-									},
-									{
-										name: 'AnotherUser',
-										id: 'bb44d5ac-b09e-4b62-9b2c-2c625250b843',
-									},
-								]}
-							/>
-						</StyledTableCell>
-						<StyledTableCell align="center">
-							<TodoWithBorder />
-						</StyledTableCell>
-						<StyledTableCell>
-							<TaskTitle>Web3 Instagram Post</TaskTitle>
-							<TaskDescription>
-								Design google sheet where we can get an open look at our
-								twitters performance ✨🦄
-							</TaskDescription>
-						</StyledTableCell>
-						<StyledTableCell>
-							<DeliverableItem>
-								<DeliverablesIconContainer>
-									<AudioIcon />
-								</DeliverablesIconContainer>
-								3
-							</DeliverableItem>
-						</StyledTableCell>
-						<StyledTableCell>
-							<RewardContainer>
-								<Reward>
-									<RewardRed />
-									<RewardAmount>2.5k</RewardAmount>
-								</Reward>
-							</RewardContainer>
-						</StyledTableCell>
-						<StyledTableCell align="center">
-							<DropDownButton>
-								{' '}
-								<ArrowDropDownIcon />{' '}
-							</DropDownButton>
-						</StyledTableCell>
-						<StyledTableCell align="center">
-							<MoreOptions>
-								{' '}
-								<MoreVert />{' '}
-							</MoreOptions>
-						</StyledTableCell>
-					</StyledTableRow>
-					<StyledTableRow>
-						<StyledTableCell align="center">
-							<UpClickIcon />
-						</StyledTableCell>
-						<StyledTableCell align="center">
-							<AvatarList
-								align="center"
-								users={[
-									{
-										name: 'AnotherUser',
-										id: 'bb44d5ac-b09e-4b62-9b2c-2c625250b843',
-									},
-								]}
-							/>
-						</StyledTableCell>
-						<StyledTableCell align="center">
-							<TodoWithBorder />
-						</StyledTableCell>
-						<StyledTableCell>
-							<TaskTitle>Web3 Instagram Post</TaskTitle>
-							<TaskDescription>
-								Design google sheet where we can get an open look at our
-								twitters performance ✨🦄
-							</TaskDescription>
-						</StyledTableCell>
-						<StyledTableCell>
-							<DeliverableContainer>
-								<DeliverableItem>
-									<DeliverablesIconContainer>
-										<AudioIcon />
-									</DeliverablesIconContainer>
-									3
-								</DeliverableItem>
-								<DeliverableItem>
-									<DeliverablesIconContainer>
-										<StyledLinkIcon />
-									</DeliverablesIconContainer>
-									3
-								</DeliverableItem>
-								<DeliverableItem>
-									<DeliverablesIconContainer>
-										<ImageIcon />
-									</DeliverablesIconContainer>
-									3
-								</DeliverableItem>
-								<DeliverableItem>
-									<DeliverablesIconContainer>
-										<PlayIcon />
-									</DeliverablesIconContainer>
-									3
-								</DeliverableItem>
-							</DeliverableContainer>
-						</StyledTableCell>
-						<StyledTableCell>
-							<RewardContainer>
-								<Reward>
-									<RewardRed />
-									<RewardAmount>2.5k</RewardAmount>
-								</Reward>
-							</RewardContainer>
-						</StyledTableCell>
-						<StyledTableCell align="center">
-							<DropDownButton>
-								{' '}
-								<ArrowDropDownIcon />{' '}
-							</DropDownButton>
-						</StyledTableCell>
-						<StyledTableCell align="center">
-							<MoreOptions>
-								{' '}
-								<MoreVert />{' '}
-							</MoreOptions>
-						</StyledTableCell>
-					</StyledTableRow>
+					{tasks.map((task, index) => (
+						<StyledTableRow key={index}>
+							<StyledTableCell align="center">
+								<WonderCoin />
+							</StyledTableCell>
+							<StyledTableCell align="center">
+								<AvatarList align="center" users={task.users} />
+							</StyledTableCell>
+							<StyledTableCell align="center">
+								{STATUS_ICONS[task.status]}
+							</StyledTableCell>
+							<StyledTableCell>
+								<TaskTitle>{task.title}</TaskTitle>
+								<TaskDescription>{task.description}</TaskDescription>
+							</StyledTableCell>
+							<StyledTableCell>
+								<DeliverableContainer>
+									{Object.entries(groupBy(task?.media, 'type')).map(
+										([key, val], index) => (
+											<DeliverableItem key={index}>
+												<DeliverablesIconContainer>
+													{DELIVERABLES_ICONS[key]}
+												</DeliverablesIconContainer>
+												{val.length}
+											</DeliverableItem>
+										)
+									)}
+								</DeliverableContainer>
+							</StyledTableCell>
+							<StyledTableCell>
+								<RewardContainer>
+									<Reward>
+										<RewardRed />
+										<RewardAmount>
+											{shrinkNumber(task.compensation.amount)}
+										</RewardAmount>
+									</Reward>
+								</RewardContainer>
+							</StyledTableCell>
+							<StyledTableCell align="center">
+								<DropDownButton>
+									{' '}
+									<ArrowDropDownIcon />{' '}
+								</DropDownButton>
+							</StyledTableCell>
+							<StyledTableCell align="center">
+								<MoreOptions>
+									{' '}
+									<MoreVert />{' '}
+								</MoreOptions>
+							</StyledTableCell>
+						</StyledTableRow>
+					))}
 				</StyledTableBody>
 			</StyledTable>
 		</StyledTableContainer>
