@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { InputAdornment } from '@material-ui/core'
 
 import HomeIcon from '../Icons/home'
@@ -22,7 +23,6 @@ import {
 	HeaderContainer,
 	HeaderCreateButton,
 } from './styles'
-import Link from 'next/link'
 import { StyledLink } from '../Common/text'
 import NotificationsBoard from '../Notifications'
 import { SmallAvatar } from '../Common/AvatarList'
@@ -92,6 +92,7 @@ const NOTIFICATIONS_MOCK = [
 ]
 
 const HeaderComponent = (props) => {
+	const { openCreateFormModal } = props
 	const [notifications, setNotifications] = useState(NOTIFICATIONS_MOCK)
 
 	return (
@@ -99,7 +100,7 @@ const HeaderComponent = (props) => {
 			<HeaderContainer>
 				<HeaderLeftBlock>
 					<HeaderLogo />
-					<Link passHref={true} href="/dashboard">
+					<Link passHref href="/dashboard">
 						<HeaderHomeButton>
 							<HomeIcon />
 						</HeaderHomeButton>
@@ -123,7 +124,7 @@ const HeaderComponent = (props) => {
 						setNofications={setNotifications}
 					/>
 
-					<HeaderCreateButton highlighted="true">
+					<HeaderCreateButton highlighted="true" onClick={openCreateFormModal}>
 						<span style={{ padding: '0px 8px' }}>Create</span>
 						<CreateBtnIcon />
 					</HeaderCreateButton>

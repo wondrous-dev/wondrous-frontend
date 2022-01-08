@@ -119,7 +119,10 @@ export const HeaderCreateButton = styled(Button)`
 		min-height: 40px;
 		height: 40px;
 		margin-right: 20px;
-
 		line-height: 40px;
+
+		button {
+			padding-right: 0;
+		}
 	}
 `

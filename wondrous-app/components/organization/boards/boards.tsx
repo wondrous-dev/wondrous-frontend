@@ -28,8 +28,7 @@ const Boards = (props) => {
 						}}
 					/>
 
-					<MultiSelect options={selectOptions} />
-
+					<MultiSelect options={selectOptions} name="filter" />
 					<ButtonGroup></ButtonGroup>
 				</BoardsActivity>
 

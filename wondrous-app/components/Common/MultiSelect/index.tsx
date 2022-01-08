@@ -3,6 +3,9 @@ import { Box, Chip, OutlinedInput } from '@material-ui/core'
 
 import FilterIcon from '../../Icons/filter'
 import ArrowDropDownIcon from '../../Icons/arrowDropDown'
+import { toggleHtmlOverflow } from '../../../utils/helpers'
+
+import { CreateFormSelectArrowIcon } from '../DropdownSelect/styles'
 
 import {
 	MultiSelectClearButton,
@@ -22,12 +25,16 @@ const MenuProps = {
 			minWidth: 325,
 			background: 'linear-gradient(180deg, #1E1E1E 0%, #141414 109.19%)',
 			padding: '15px',
+
+			'*::-webkit-scrollbar': {
+				width: 100,
+			},
 		},
 	},
 }
 
 export const MultiSelect = (props) => {
-	const { options } = props
+	const { name, options } = props
 	const [value, setValue] = useState([])
 
 	const handleChange = (event) => {
@@ -44,16 +51,11 @@ export const MultiSelect = (props) => {
 		setValue([])
 	}
 
-	const toggleHtmlOverflow = () => {
-		const htmlTagElements = document.getElementsByTagName('html')
-		const { style } = htmlTagElements.item(0)
-
-		style.overflow = style.overflow ? '' : 'hidden'
-	}
+	const labelId = `multiple-chip-label-${name}`
 
 	return (
 		<MultiSelectForm>
-			<MultiSelectInputLabel id="demo-multiple-chip-label">
+			<MultiSelectInputLabel id={labelId}>
 				{!value.length && (
 					<>
 						<FilterIcon />
@@ -64,8 +66,8 @@ export const MultiSelect = (props) => {
 
 			<MultiSelectSelector
 				multiple
-				labelId="demo-multiple-chip-label"
-				id="demo-multiple-chip"
+				labelId={labelId}
+				id={`multiple-chip-${name}`}
 				value={value}
 				onChange={handleChange}
 				onClose={toggleHtmlOverflow}
@@ -92,9 +94,9 @@ export const MultiSelect = (props) => {
 						Clear
 					</MultiSelectClearButton>
 				</MultiSelectMenuHeader>
-				{options.map((name) => (
-					<MultiSelectMenuItem key={name} value={name}>
-						{name}
+				{options.map(({ label, value }) => (
+					<MultiSelectMenuItem key={value} value={value}>
+						{label}
 					</MultiSelectMenuItem>
 				))}
 			</MultiSelectSelector>

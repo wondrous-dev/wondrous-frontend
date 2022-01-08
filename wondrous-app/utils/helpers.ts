@@ -3,7 +3,6 @@ const MILLION = THOUSAND ** 2
 const BILLION = THOUSAND ** 3
 
 export const shrinkNumber = (number = 0) => {
-	//
 	const shrinkThousands = ({
 		divider = THOUSAND,
 		fractionDigits = 1,
@@ -24,4 +23,11 @@ export const shrinkNumber = (number = 0) => {
 	if (number < BILLION) {
 		return shrinkThousands({ divider: MILLION, letter: 'M' }) // 1234567 => 1.2M
 	}
+}
+
+export const toggleHtmlOverflow = () => {
+	const htmlTagElements = document.getElementsByTagName('html')
+	const { style } = htmlTagElements.item(0)
+
+	style.overflow = style.overflow ? '' : 'hidden'
 }
