@@ -2,12 +2,17 @@ import { MoreVert } from '@material-ui/icons'
 import {
 	TASK_STATUS_DONE,
 	TASK_STATUS_IN_PROGRESS,
-	TASK_STATUS_TODO
+	TASK_STATUS_TODO,
 } from '../../utils/constants'
 import { groupBy, shrinkNumber } from '../../utils/helpers'
 import { AvatarList } from '../Common/AvatarList'
-import { DoneWithBorder, InProgressWithBorder, TodoWithBorder, WonderCoin } from '../Icons'
-import ArrowDropDownIcon from '../Icons/arrowDropDown'
+import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton'
+import {
+	DoneWithBorder,
+	InProgressWithBorder,
+	TodoWithBorder,
+	WonderCoin,
+} from '../Icons'
 import ImageIcon from '../Icons/image'
 import AudioIcon from '../Icons/MediaTypesIcons/audio'
 import PlayIcon from '../Icons/play'
@@ -16,7 +21,6 @@ import {
 	DeliverableContainer,
 	DeliverableItem,
 	DeliverablesIconContainer,
-	DropDownButton,
 	MoreOptions,
 	Reward,
 	RewardAmount,
@@ -29,7 +33,7 @@ import {
 	StyledTableHead,
 	StyledTableRow,
 	TaskDescription,
-	TaskTitle
+	TaskTitle,
 } from './styles'
 
 const STATUS_ICONS = {
@@ -47,6 +51,7 @@ const DELIVERABLES_ICONS = {
 
 export const Table = (props) => {
 	const { tasks } = props
+
 	return (
 		<StyledTableContainer>
 			<StyledTable>
@@ -93,12 +98,14 @@ export const Table = (props) => {
 								<DeliverableContainer>
 									{Object.entries(groupBy(task?.media, 'type')).map(
 										([key, value]: [string, any], index) => {
-											return (<DeliverableItem key={index}>
-												<DeliverablesIconContainer>
-													{DELIVERABLES_ICONS[key]}
-												</DeliverablesIconContainer>
-												{value.length}
-											</DeliverableItem>)
+											return (
+												<DeliverableItem key={index}>
+													<DeliverablesIconContainer>
+														{DELIVERABLES_ICONS[key]}
+													</DeliverablesIconContainer>
+													{value?.length}
+												</DeliverableItem>
+											)
 										}
 									)}
 								</DeliverableContainer>
@@ -114,10 +121,7 @@ export const Table = (props) => {
 								</RewardContainer>
 							</StyledTableCell>
 							<StyledTableCell align="center">
-								<DropDownButton>
-									{' '}
-									<ArrowDropDownIcon />{' '}
-								</DropDownButton>
+								<DropDownButtonDecision />
 							</StyledTableCell>
 							<StyledTableCell align="center">
 								<MoreOptions>
