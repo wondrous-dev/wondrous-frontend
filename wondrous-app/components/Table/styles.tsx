@@ -160,7 +160,7 @@ export const DropDownButton = styled(Button)`
 		left: 0;
 		bottom: 0;
 		right: 0;
-		margin: 0.05em;
+		margin: 0.08em;
 		z-index: -1;
 		border-radius: inherit;
 		background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
