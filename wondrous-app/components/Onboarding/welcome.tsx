@@ -49,9 +49,13 @@ export const InviteWelcomeBox = ({ updateUser }) => {
 		if (wonderWeb3?.onConnect) {
 			wonderWeb3.onConnect()
 		}
-		if (wonderWeb3?.wallet?.addressTag) {
-			const splitUsernameArr = wonderWeb3?.wallet?.addressTag.split('.')
-			setUsername(splitUsernameArr[0])
+		const addressTag = wonderWeb3?.wallet?.addressTag
+		if (addressTag) {
+			// Check if start of address is 0x
+			if (!addressTag.startsWith('0x')) {
+				const splitUsernameArr = wonderWeb3?.wallet?.addressTag.split('.')
+				setUsername(splitUsernameArr[0])
+			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [wonderWeb3?.wallet?.addressTag])
