@@ -61,12 +61,12 @@ export const NotificationsBoardOverArrow = styled.div`
 	width: 30px;
 
 	background: linear-gradient(
-        135deg, 
-        #1b1b1b 0%, 
-        #1b1b1b 40%,
-        rgba(0,0,0,0) 40%,
-        #191919 100%
-        );
+		135deg,
+		#1b1b1b 0%,
+		#1b1b1b 40%,
+		rgba(0, 0, 0, 0) 40%,
+		#191919 100%
+	);
 	border: 0px solid transparent;
 
 	/* drop shadow */

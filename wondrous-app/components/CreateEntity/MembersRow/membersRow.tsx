@@ -28,7 +28,6 @@ const MembersRow = (props) => {
 					<CreateFormMembersListAdminBlockText>
 						Admin
 					</CreateFormMembersListAdminBlockText>
-					{/*<AndroidSwitch />*/}
 					{styledSwitch}
 				</CreateFormMembersListAdminBlock>
 				<CreateFormMembersListDeleteButton>

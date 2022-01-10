@@ -13,4 +13,4 @@ export const ImageIcon = () => (
 	</svg>
 )
 
-export default ImageIcon;
+export default ImageIcon
