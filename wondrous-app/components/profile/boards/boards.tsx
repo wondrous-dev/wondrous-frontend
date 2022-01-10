@@ -1,4 +1,4 @@
-import React from 'react'
+import { useState } from 'react'
 import { InputAdornment } from '@material-ui/core'
 
 import SearchIcon from '../../Icons/search'
@@ -10,9 +10,12 @@ import { ButtonGroup } from '../../Common/ButtonGroup'
 
 import { BoardsActivity, BoardsActivityInput, BoardsContainer } from './styles'
 
-const Boards = (props) => {
-	const { selectOptions, columns } = props
+import { Table } from '../../Table'
 
+const Boards = (props) => {
+	const { selectOptions, columns, tasks } = props
+	const [selected, setSelected] = useState(0)
+	const buttons = ['List', 'Grid']
 	return (
 		<Wrapper>
 			<BoardsContainer>
@@ -30,10 +33,14 @@ const Boards = (props) => {
 
 					<MultiSelect options={selectOptions} />
 
-					<ButtonGroup></ButtonGroup>
+					<ButtonGroup
+						buttons={buttons}
+						selected={selected}
+						setSelected={setSelected}
+					></ButtonGroup>
 				</BoardsActivity>
-
-				<KanbanBoard columns={columns} />
+				{selected === 0 && <Table tasks={tasks} />}
+				{selected === 1 && <KanbanBoard columns={columns} />}
 			</BoardsContainer>
 		</Wrapper>
 	)

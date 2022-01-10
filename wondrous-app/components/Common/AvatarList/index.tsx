@@ -44,14 +44,14 @@ export const SmallAvatarOverflow = (props) => {
 }
 
 export const AvatarList = (props) => {
-	const { id = '', users = [] } = props
+	const { id = '', users = [], align = "" } = props
 
 	// Siege User List to max of AVATAR_LIST_OVERFLOW_MAX
 	let usersSieged = users.slice(0, AVATAR_LIST_OVERFLOW_MAX)
 	let overflow = users.length - usersSieged.length
 
 	return (
-		<AvatarListWrapper key={id + '-list'}>
+		<AvatarListWrapper key={id + '-list'} align={align}>
 			{usersSieged.map((user, index) => (
 				<SmallAvatar
 					id={user.id}

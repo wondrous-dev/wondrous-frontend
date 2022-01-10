@@ -8,6 +8,12 @@ export const TASK_STATUS_DONE = 'DONE'
 export const TASK_STATUS_REQUESTED = 'REQUESTED'
 export const TASK_STATUS_ARCHIVED = 'ARCHIVED'
 
+// Decision
+export const DECISION_SEND_INTO_REVISION = "Send into revision"
+export const DECISION_REJECT = "Reject"
+export const DECISION_APPROVE_ONLY = "Approve only"
+export const DECISION_APPROVE_AND_PAY = "Approve and pay"
+
 // Max avatar user list count
 export const AVATAR_LIST_OVERFLOW_MAX = 5
 export const AVATAR_LIST_LARGE_OVERFLOW_MAX = 2
