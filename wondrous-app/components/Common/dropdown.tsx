@@ -50,6 +50,9 @@ export const DropDownItem = styled.div`
 	padding: 4px 8px;
 	height: 32px;
 	line-height: 32px;
+	color: ${props => props.color};
+	font-size: ${props => props.fontSize};
+	font-weight: ${props => props.fontWeight};
 
 	cursor: pointer;
 
@@ -69,7 +72,8 @@ export const DropdownOverlay = styled.div`
 	z-index: 97;
 `
 
-export const DropDown = ({ DropdownHandler, children }) => {
+export const DropDown = (props) => {
+	const { DropdownHandler, children } = props
 	const [isOpen, setIsOpen] = useState(false)
 
 	const toggleDropDown = () => {
@@ -82,7 +86,7 @@ export const DropDown = ({ DropdownHandler, children }) => {
 		<>
 			<DropdownOverlay onClick={toggleDropDown} style={{ display: display }} />
 			<div onClick={toggleDropDown}>
-				<DropdownHandler />
+				<DropdownHandler {...props} />
 				<DropDownWrapper style={{ display: display }}>
 					{children}
 				</DropDownWrapper>

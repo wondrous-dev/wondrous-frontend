@@ -35,6 +35,8 @@ import {
 	TaskDescription,
 	TaskTitle,
 } from './styles'
+import { DropDown, DropDownItem } from '../Common/dropdown'
+import { TaskMenuIcon } from '../Icons/taskMenu'
 
 const STATUS_ICONS = {
 	[TASK_STATUS_TODO]: <TodoWithBorder />,
@@ -125,8 +127,26 @@ export const Table = (props) => {
 							</StyledTableCell>
 							<StyledTableCell align="center">
 								<MoreOptions>
-									{' '}
-									<MoreVert />{' '}
+									<DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
+										<DropDownItem
+											key={'task-menu-edit-' + task.id}
+											onClick={''}
+											color="#C4C4C4"
+											fontSize="13px"
+											fontWeight="normal"
+										>
+											Edit task
+										</DropDownItem>
+										<DropDownItem
+											key={'task-menu-report-' + task.id}
+											onClick={''}
+											color="#C4C4C4"
+											fontSize="13px"
+											fontWeight="normal"
+										>
+											Report
+										</DropDownItem>
+									</DropDown>
 								</MoreOptions>
 							</StyledTableCell>
 						</StyledTableRow>

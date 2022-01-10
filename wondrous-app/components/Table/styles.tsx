@@ -138,15 +138,14 @@ export const StyledLinkIcon = styled(LinkIcon)`
 
 export const MoreOptions = styled(Button)`
 	&& {
-		width: 24.31px;
-		height: 24.31px;
+		width: 24px;
+		height: 24px;
 		min-width: 0;
-		background: #1f1f1f;
 		border-radius: 100%;
 		color: #545454;
 	}
 
 	svg {
-		height: 18px;
+		height: 24px;
 	}
 `
