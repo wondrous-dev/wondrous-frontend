@@ -121,7 +121,7 @@ export const HeaderCreateButton = styled(Button)`
 		line-height: 40px;
 
 		button {
-			padding-right: 0;
+			padding-right: 2px;
 		}
 	}
 `

@@ -16,7 +16,6 @@ import {
 import CircleIcon from '../Icons/circleIcon'
 import CodeIcon from '../Icons/MediaTypesIcons/code'
 import AudioIcon from '../Icons/MediaTypesIcons/audio'
-import WonderTokenIcon from '../Icons/wonderToken'
 import PriorityIcon from '../Icons/priority'
 import CloseModalIcon from '../Icons/closeModal'
 import CreateDaoIcon from '../Icons/createDao'
@@ -107,6 +106,7 @@ import { CREATE_TASK } from '../../graphql/mutations/task'
 import { useOrgBoard } from '../../utils/hooks'
 import { CREATE_TASK_PROPOSAL } from '../../graphql/mutations/taskProposal'
 import { useMe } from '../Auth/withAuth'
+import WonderTokenIcon from '../Icons/wonderToken'
 
 const filterUserOptions = (options) => {
   if (!options) return []

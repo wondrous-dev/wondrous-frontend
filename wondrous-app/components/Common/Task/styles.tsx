@@ -66,9 +66,13 @@ export const TaskSeparator = styled.div`
 
 export const TaskTitle = styled.div`
   display: flex;
-
+  color: white;
   font-size: 16px;
   font-weight: bold;
+`
+
+export const TaskDescription = styled.p`
+  color: #c4c4c4;
 `
 
 export const TaskFooter = styled.div`

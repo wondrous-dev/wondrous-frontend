@@ -24,9 +24,19 @@ export const MediaUploadGrid = styled(Grid)`
   }
 `
 export const CreateModalOverlay = styled(Modal)`
-  position: relative;
-  width: 100%;
-  overflow-y: scroll;
+  position: fixed;
+  z-index: 300;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+
+  overflow: auto;
 `
 
 export const CreateLayoutsModal = styled(BaseCard)`
@@ -174,11 +184,10 @@ export const CreateLayoutsModalItemTitle = styled(Typography)`
 `
 
 export const CreateFormBaseModal = styled(BaseCard)`
+  display: flex;
   width: 680px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -20%);
+
+  position: relative;
 
   & .hbhroD > *:not(:last-child) {
     margin-bottom: 0;
@@ -585,5 +594,20 @@ export const OptionTypography = styled(Typography)`
     font-size: 14px;
     color: ${White};
     margin-left: 8px;
+  }
+`
+
+export const CreateFormSubmitButton = styled(Button)`
+  && {
+    padding: 2px;
+    height: 40px;
+    min-height: 40px;
+    margin-left: 25px;
+
+    //text
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 150%;
+    color: #ffffff;
   }
 `

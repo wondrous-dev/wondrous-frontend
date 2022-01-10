@@ -4,7 +4,19 @@ import { DropDown, DropDownItem } from '../Common/dropdown'
 import { HeaderNotificationsButton, StyledBadge } from '../Header/styles'
 import NotificationsIcon from '../Icons/notifications'
 import { TaskMenuIcon } from '../Icons/taskMenu'
-import { NotificationItemBody, NotificationItemIcon, NotificationItemStatus, NotificationItemTimeline, NotificationsBoardArrow, NotificationsBoardHeader, NotificationsBoardOverArrow, NotificationsBoardWrapper, NotificationsItem, NotificationsMarkRead, NotificationsOverlay } from './styles'
+import {
+	NotificationItemBody,
+	NotificationItemIcon,
+	NotificationItemStatus,
+	NotificationItemTimeline,
+	NotificationsBoardArrow,
+	NotificationsBoardHeader,
+	NotificationsBoardOverArrow,
+	NotificationsBoardWrapper,
+	NotificationsItem,
+	NotificationsMarkRead,
+	NotificationsOverlay,
+} from './styles'
 
 const NotificationsBoard = ({ notifications, setNofications }) => {
 	const unreadCount = useMemo(() => {

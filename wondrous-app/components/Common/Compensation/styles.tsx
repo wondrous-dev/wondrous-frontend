@@ -34,4 +34,7 @@ export const IconContainer = styled.div`
   margin-right: 8px;
 `
 
-export const CompensationAmount = styled.div``
+export const CompensationAmount = styled.div`
+	color: white;
+	font-weight: 600;
+`

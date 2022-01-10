@@ -148,7 +148,7 @@ export const Task = ({ task, setTask }) => {
             />
             {task?.podName && (
               <PodWrapper>
-                <PodName>{task?.podNAme}</PodName>
+                <PodName>{task?.podName}</PodName>
               </PodWrapper>
             )}
             {task?.assigneeUsername && (
