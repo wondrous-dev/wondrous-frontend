@@ -1,6 +1,10 @@
 import { gql } from '@apollo/client'
 
-import { TaskCardFragment } from '../fragments/task'
+import {
+	TaskCardFragment,
+	TaskProposalCardFragment,
+	TaskSubmissionCardFragment,
+} from '../fragments/task'
 
 export const GET_ORG_TASK_BOARD_TASKS = gql`
 	query getOrgTaskBoardTasks(
@@ -46,10 +50,10 @@ export const GET_ORG_TASK_BOARD_PROPOSALS = gql`
 				offset: $offset
 			}
 		) {
-			...TaskCardFragment
+			...TaskProposalCardFragment
 		}
 	}
-	${TaskCardFragment}
+	${TaskProposalCardFragment}
 `
 
 export const GET_ORG_TASK_BOARD_SUBMISSIONS = gql`
@@ -71,10 +75,10 @@ export const GET_ORG_TASK_BOARD_SUBMISSIONS = gql`
 				offset: $offset
 			}
 		) {
-			...TaskCardFragment
+			...TaskCardSubmissionCardFragment
 		}
 	}
-	${TaskCardFragment}
+	${TaskSubmissionCardFragment}
 `
 
 export const GET_USER_TASK_BOARD_TASKS = gql`
@@ -121,10 +125,10 @@ export const GET_USER_TASK_BOARD_PROPOSALS = gql`
 				offset: $offset
 			}
 		) {
-			...TaskCardFragment
+			...TaskProposalCardFragment
 		}
 	}
-	${TaskCardFragment}
+	${TaskProposalCardFragment}
 `
 
 export const GET_USER_TASK_BOARD_SUBMISSIONS = gql`
@@ -146,8 +150,8 @@ export const GET_USER_TASK_BOARD_SUBMISSIONS = gql`
 				offset: $offset
 			}
 		) {
-			...TaskCardFragment
+			...TaskCardSubmissionFragment
 		}
 	}
-	${TaskCardFragment}
+	${TaskSubmissionCardFragment}
 `
