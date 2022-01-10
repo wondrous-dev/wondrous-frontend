@@ -1,7 +1,16 @@
-import React, { useMemo, useState } from 'react'
-import { styled, Switch } from '@material-ui/core'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
+import { styled, Switch, TextField } from '@material-ui/core'
+import DesktopDatePicker from '@mui/lab/DesktopDatePicker'
+import AdapterDateFns from '@mui/lab/AdapterDateFns'
+import LocalizationProvider from '@mui/lab/LocalizationProvider'
 
-import { ENTITIES_TYPES, MEDIA_TYPES } from '../../utils/constants'
+import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg'
+import {
+	ENTITIES_TYPES,
+	IMAGE_FILE_EXTENSIONS_TYPE_MAPPING,
+	MEDIA_TYPES,
+	VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
+} from '../../utils/constants'
 import CircleIcon from '../Icons/circleIcon'
 import CodeIcon from '../Icons/MediaTypesIcons/code'
 import AudioIcon from '../Icons/MediaTypesIcons/audio'
@@ -54,7 +63,18 @@ import {
 	CreateFormTaskRequirementsTitle,
 	CreateLayoutDaoMenuItemIcon,
 	CreateFormMainBlockTitle,
+	CreateRewardAmountDiv,
+	CreateFormAddDetailsButtonText,
+	MultiMediaUploadButton,
+	MultiMediaUploadButtonText,
+	MediaUploadDiv,
 } from './styles'
+import SelectDownIcon from '../Icons/selectDownIcon'
+import UploadImageIcon from '../Icons/uploadImage'
+import { getFilenameAndType, uploadMedia } from '../../utils/media'
+import DatePicker from '../Common/DatePicker'
+import { MediaItem } from './MediaItem'
+import { AddFileUpload } from '../Icons/addFileUpload'
 
 export const MEDIA_UI_ELEMENTS = {
 	[MEDIA_TYPES.IMAGE]: {
@@ -260,7 +280,7 @@ const CreateLayoutBaseModal = (props) => {
 
 	const [addDetails, setAddDetails] = useState(false)
 	const [descriptionText, setDescriptionText] = useState([])
-
+	const [mediaUploads, setMediaUploads] = useState([])
 	const addDetailsHandleClick = () => {
 		setAddDetails(!addDetails)
 	}
@@ -268,7 +288,7 @@ const CreateLayoutBaseModal = (props) => {
 	const descriptionTextCounter = (e) => {
 		setDescriptionText(e.target.value)
 	}
-
+	const [dueDate, setDueDate] = useState(null)
 	const {
 		showDeliverableRequirementsSection,
 		showBountySwitchSection,
@@ -292,6 +312,35 @@ const CreateLayoutBaseModal = (props) => {
 	}, [entityType])
 
 	const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType]
+	const inputRef: any = useRef()
+
+	const handleAddFile = useCallback(
+		async (event) => {
+			const file = event.target.files[0]
+			if (file) {
+				const fileName = file?.name
+				// get image preview
+				const { fileType, filename } = getFilenameAndType(fileName)
+				const filePrefix = 'tmp/task/new/'
+				const fileUrl = filePrefix + filename
+				await uploadMedia({ filename: fileUrl, fileType, file })
+				const fileToAdd = {
+					uploadSlug: fileUrl,
+					name: filename,
+					type: '',
+				}
+				if (fileType in IMAGE_FILE_EXTENSIONS_TYPE_MAPPING) {
+					fileToAdd.type = 'image'
+				} else if (fileType in VIDEO_FILE_EXTENSIONS_TYPE_MAPPING) {
+					fileToAdd.type = 'video'
+				} else {
+					fileToAdd.type = 'file'
+				}
+				setMediaUploads([...mediaUploads, fileToAdd])
+			}
+		},
+		[mediaUploads]
+	)
 
 	return (
 		<CreateFormBaseModal>
@@ -342,7 +391,52 @@ const CreateLayoutBaseModal = (props) => {
 						{descriptionText.length}/900 characters
 					</CreateFormMainDescriptionInputSymbolCounter>
 				</CreateFormMainInputBlock>
+				<CreateFormMainInputBlock>
+					<CreateFormMainBlockTitle>Multi-media</CreateFormMainBlockTitle>
 
+					{mediaUploads.length > 0 ? (
+						<MediaUploadDiv>
+							{mediaUploads.map((mediaItem) => (
+								<MediaItem
+									key={mediaItem?.uploadSlug}
+									mediaUploads={mediaUploads}
+									setMediaUploads={setMediaUploads}
+									mediaItem={mediaItem}
+								/>
+							))}
+							<AddFileUpload
+								onClick={() => {
+									inputRef.current.click()
+								}}
+								style={{
+									cursor: 'pointer',
+									width: '24',
+									height: '24',
+									marginBottom: '8px',
+								}}
+							/>
+						</MediaUploadDiv>
+					) : (
+						<MultiMediaUploadButton onClick={() => inputRef.current.click()}>
+							<UploadImageIcon
+								style={{
+									width: '13',
+									height: '17',
+									marginRight: '8px',
+								}}
+							/>
+							<MultiMediaUploadButtonText>
+								Upload file
+							</MultiMediaUploadButtonText>
+						</MultiMediaUploadButton>
+					)}
+					<input
+						type="file"
+						hidden
+						ref={inputRef}
+						onChange={(event) => handleAddFile(event)}
+					/>
+				</CreateFormMainInputBlock>
 				{/*Upload header image block*/}
 				{showHeaderImagePickerSection && <HeaderImage />}
 
@@ -353,12 +447,18 @@ const CreateLayoutBaseModal = (props) => {
 						options={REWARD_SELECT_OPTIONS}
 						name="reward-currency"
 					/>
-					<DropdownSelect
-						title="Amount of reward"
-						labelText="Enter reward amount"
-						options={AMOUNT_SELECT_OPTIONS}
-						name="reward-amount"
-					/>
+					<CreateRewardAmountDiv>
+						<CreateFormMainBlockTitle>Reward amount</CreateFormMainBlockTitle>
+
+						<InputForm
+							style={{
+								marginTop: '16px',
+							}}
+							type={'number'}
+							placeholder="Enter reward amount"
+							search={false}
+						/>
+					</CreateRewardAmountDiv>
 				</CreateFormMainSelects>
 
 				{showMembersSection && (
@@ -389,9 +489,39 @@ const CreateLayoutBaseModal = (props) => {
 						</CreateFormMembersBlock>
 					</CreateFormMembersSection>
 				)}
+				{showAppearSection && (
+					<CreateFormAddDetailsInputs
+						style={{
+							marginBottom: '40px',
+						}}
+					>
+						<CreateFormAddDetailsInputBlock>
+							<CreateFormAddDetailsInputLabel>
+								Assigned to
+							</CreateFormAddDetailsInputLabel>
+
+							<InputForm
+								icon={<CircleIcon />}
+								placeholder="0xAndros"
+								search={false}
+							/>
+						</CreateFormAddDetailsInputBlock>
+
+						<CreateFormAddDetailsInputBlock>
+							<CreateFormAddDetailsInputLabel>
+								Reviewer
+							</CreateFormAddDetailsInputLabel>
+							<InputForm
+								search
+								icon={<CircleIcon />}
+								placeholder="Search users and pods"
+							/>
+						</CreateFormAddDetailsInputBlock>
+					</CreateFormAddDetailsInputs>
+				)}
 			</CreateFormMainSection>
 
-			{showDeliverableRequirementsSection && (
+			{/* {showDeliverableRequirementsSection && (
 				<CreateFormTaskRequirements>
 					<CreateFormTaskRequirementsTitle>
 						Deliverables requirements
@@ -409,48 +539,46 @@ const CreateLayoutBaseModal = (props) => {
 						)}
 					</CreateFormTaskRequirementsContainer>
 				</CreateFormTaskRequirements>
-			)}
+			)} */}
 
 			<CreateFormAddDetailsSection>
 				<CreateFormAddDetailsButton onClick={() => addDetailsHandleClick()}>
-					{!addDetails ? 'Add more details (optional)' : '^'}
+					{!addDetails ? (
+						<>
+							<CreateFormAddDetailsButtonText>
+								Add more details
+							</CreateFormAddDetailsButtonText>
+							<SelectDownIcon
+								style={{
+									width: '10',
+									height: '5.83',
+								}}
+							></SelectDownIcon>
+						</>
+					) : (
+						<SelectDownIcon
+							style={{
+								transform: 'rotate(180deg)',
+								width: '10',
+								height: '5.83',
+							}}
+						></SelectDownIcon>
+					)}
 				</CreateFormAddDetailsButton>
 				{addDetails && (
 					<CreateFormAddDetailsAppearBlock>
 						{showAppearSection && (
 							<CreateFormAddDetailsAppearBlockContainer>
-								<CreateFormAddDetailsInputs>
-									<CreateFormAddDetailsInputBlock>
-										<CreateFormAddDetailsInputLabel>
-											Asigned to
-										</CreateFormAddDetailsInputLabel>
-
-										<InputForm
-											icon={<CircleIcon />}
-											placeholder="0xAndros"
-											search={false}
-										/>
-									</CreateFormAddDetailsInputBlock>
-
-									<CreateFormAddDetailsInputBlock>
-										<CreateFormAddDetailsInputLabel>
-											Reviewer
-										</CreateFormAddDetailsInputLabel>
-										<InputForm
-											search
-											icon={<CircleIcon />}
-											placeholder="Search users and pods"
-										/>
-									</CreateFormAddDetailsInputBlock>
-								</CreateFormAddDetailsInputs>
-
 								<CreateFormAddDetailsSelects>
-									<DropdownSelect
-										title="Due date"
-										labelText="Select date"
-										options={SELECT_OPTIONS}
-										name="date"
-									/>
+									<LocalizationProvider dateAdapter={AdapterDateFns}>
+										<DatePicker
+											title="Due date"
+											inputFormat="MM/dd/yyyy"
+											value={dueDate}
+											setValue={setDueDate}
+											renderInput={(params) => <TextField {...params} />}
+										/>
+									</LocalizationProvider>
 									<DropdownSelect
 										title="Connect to Milestone"
 										labelText="Choose Milestone"
@@ -460,12 +588,12 @@ const CreateLayoutBaseModal = (props) => {
 								</CreateFormAddDetailsSelects>
 
 								<CreateFormAddDetailsSelects>
-									<CreateFormAddDetailsSwitch>
+									{/* <CreateFormAddDetailsSwitch>
 										<CreateFormAddDetailsInputLabel>
 											Private task
 										</CreateFormAddDetailsInputLabel>
 										<AndroidSwitch />
-									</CreateFormAddDetailsSwitch>
+									</CreateFormAddDetailsSwitch> */}
 
 									{/*if Suggest a task opened */}
 									{showBountySwitchSection && (
@@ -511,7 +639,7 @@ const CreateLayoutBaseModal = (props) => {
 					<CreateFormCancelButton onClick={resetEntityType}>
 						Cancel
 					</CreateFormCancelButton>
-					<CreateFormPreviewButton>Preview {titleText}</CreateFormPreviewButton>
+					<CreateFormPreviewButton>Create {titleText}</CreateFormPreviewButton>
 				</CreateFormButtonsBlock>
 			</CreateFormFooterButtons>
 		</CreateFormBaseModal>

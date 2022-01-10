@@ -2,10 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 import {
 	Button,
+	ButtonBase,
 	IconButton,
 	Modal,
 	TextField,
 	Typography,
+	Grid,
 } from '@material-ui/core'
 import { BaseCard } from '../Common/card'
 import CreateTaskIcon from '../Icons/createTask'
@@ -13,7 +15,12 @@ import CreateMilestoneIcon from '../Icons/createMilestone'
 import CreatePodIcon from '../Icons/createPod'
 import CreateDaoIcon from '../Icons/createDao'
 import { LogoSquare } from '../Common/ci'
+import { White } from '../../theme/colors'
 
+export const MediaUploadGrid = styled(Grid)`
+	&& {
+	}
+`
 export const CreateModalOverlay = styled(Modal)`
 	position: relative;
 	width: 100%;
@@ -29,6 +36,12 @@ export const CreateLayoutsModal = styled(BaseCard)`
 		width: 330px;
 		z-index: 2100;
 	}
+`
+export const MediaUploadDiv = styled.div`
+	display: flex;
+	align-items: center;
+	margin-bottom: -8px;
+	flex-flow: wrap;
 `
 
 export const CreateLayoutsModalHeader = styled.div`
@@ -131,6 +144,22 @@ export const CreateFormMainBlockTitle = styled(Typography)`
 	}
 `
 
+export const MultiMediaUploadButton = styled(ButtonBase)`
+	&& {
+		border-radius: 6px;
+		border: 1px solid rgba(116, 39, 255, 1);
+		padding: 8px;
+	}
+`
+
+export const MultiMediaUploadButtonText = styled(Typography)`
+	&& {
+		color: ${White};
+		font-size: 14px;
+		line-height: 22px;
+	}
+`
+
 export const CreateLayoutsModalItemTitle = styled(Typography)`
 	&& {
 		font-weight: 500;
@@ -218,6 +247,11 @@ export const CreateFormMainInputBlock = styled.div`
 	& .MuiTextField-root {
 		width: 100%;
 	}
+`
+
+export const CreateRewardAmountDiv = styled.div`
+	width: 100%;
+	margin-left: 8px;
 `
 
 export const CreateFormMainTitleInput = styled(TextField)({
@@ -325,18 +359,22 @@ export const CreateFormAddDetailsSection = styled.div`
 export const CreateFormAddDetailsButton = styled(Button)`
 	&& {
 		position: absolute;
-		top: -20px;
+		top: -40px;
 		left: 50%;
 		transform: translateX(-50%);
 		background: #0f0f0f;
 		height: 40px;
 		padding: 9px 15px;
+	}
+`
 
-		//text
+export const CreateFormAddDetailsButtonText = styled(Typography)`
+	&& {
 		font-weight: bold;
 		font-size: 14px;
 		line-height: 18px;
 		color: #707070;
+		margin-right: 8px;
 	}
 `
 
@@ -353,7 +391,7 @@ export const CreateFormAddDetailsAppearBlockContainer = styled.div`
 	align-items: center;
 	justify-content: space-between;
 	flex-direction: column;
-	padding: 55px 40px 35px;
+	padding: 30px 40px 35px;
 	border-bottom: 1px solid #363636;
 `
 

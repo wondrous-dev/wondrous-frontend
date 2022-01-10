@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FormControl } from '@material-ui/core'
+import { FormControl, TextField } from '@material-ui/core'
 import {
 	CreateFormInputLabel,
 	CreateFormMenuItem,
@@ -7,7 +7,8 @@ import {
 	CreateFormSelectArrowIcon,
 	CreateFormSelectBlock,
 	CreateFormSelectBlockTitle,
-} from './styles'
+} from '../DropdownSelect/styles'
+import { StyledDatePicker, StyledTextField } from './styles'
 
 const MenuProps = {
 	PaperProps: {
@@ -24,13 +25,11 @@ const MenuProps = {
 	},
 }
 
-const DropdownSelect = (props) => {
-	const { title, labelText, labelIcon, options, name } = props
-
-	const [value, setValue] = useState(null)
+const DatePicker = (props) => {
+	const { title, labelText, labelIcon, options, name, value, setValue } = props
 
 	const handleChange = (event) => {
-		setValue(event.target.value)
+		setValue(event)
 	}
 
 	return (
@@ -44,25 +43,15 @@ const DropdownSelect = (props) => {
 					</CreateFormInputLabel>
 				)}
 
-				<CreateFormSelect
-					// IconComponent={CreateFormSelectArrowIcon}
+				<StyledDatePicker
+					inputFormat="MM/dd/yyyy"
 					value={value}
 					onChange={handleChange}
-					MenuProps={MenuProps}
-					labelId={`select-label-${name}`}
-					id={`select-${name}`}
-				>
-					{options.map((item) => (
-						<CreateFormMenuItem key={item.value} value={item.value}>
-							{item.icon}
-							{item.label}
-							{item.amount && <span>{`(${item.amount})`}</span>}
-						</CreateFormMenuItem>
-					))}
-				</CreateFormSelect>
+					renderInput={(params) => <StyledTextField {...params} />}
+				></StyledDatePicker>
 			</FormControl>
 		</CreateFormSelectBlock>
 	)
 }
 
-export default DropdownSelect
+export default DatePicker

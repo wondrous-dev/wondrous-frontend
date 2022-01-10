@@ -52,7 +52,7 @@ export const CreateFormSelect = styled(Select)`
 		width: 100%;
 		height: 40px;
 		padding: 0 15px;
-
+		position: relative;
 		font-size: 14px;
 		line-height: 19px;
 		letter-spacing: 0.01em;
@@ -60,7 +60,11 @@ export const CreateFormSelect = styled(Select)`
 	}
 `
 
-export const CreateFormSelectArrowIcon = styled(SelectDownIcon)``
+export const CreateFormSelectArrowIcon = styled(SelectDownIcon)`
+	&& {
+		cursor: pointer;
+	}
+`
 
 export const CreateFormMenuItem = styled(MenuItem)`
 	&& {

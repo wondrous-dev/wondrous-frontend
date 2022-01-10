@@ -14,12 +14,8 @@ export const uploadMedia = async ({ filename, fileType, file }) => {
 		const uploadResponse = await fetch(apiUrl, {
 			method: 'PUT',
 			body: file,
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': `image/${fileType}`,
-			},
 		})
-		// console.log('uploadResponse', uploadResponse)
+		console.log('uploadResponse', uploadResponse, apiUrl)
 	} catch (error) {
 		console.log('error', JSON.stringify(error, null, 2))
 	}

@@ -43,25 +43,27 @@ export const InviteWelcomeBox = ({ updateUser }) => {
 	const handleFile = useCallback(
 		async (event) => {
 			const file = event.target.files[0]
-			const fileName = file?.name
-			// get image preview
-			const { fileType, filename } = getFilenameAndType(fileName)
-			const imagePrefix = `tmp/${user?.id}/`
-			const imageUrl = imagePrefix + filename
-			await uploadMedia({ filename: imageUrl, fileType, file })
+			if (file) {
+				const fileName = file?.name
+				// get image preview
+				const { fileType, filename } = getFilenameAndType(fileName)
+				const imagePrefix = `tmp/${user?.id}/`
+				const imageUrl = imagePrefix + filename
+				await uploadMedia({ filename: imageUrl, fileType, file })
 
-			updateUser({
-				variables: {
-					input: {
-						profilePicture: imageUrl,
+				updateUser({
+					variables: {
+						input: {
+							profilePicture: imageUrl,
+						},
 					},
-				},
-				onCompleted: (data) => {
-					if (data?.updateUser?.profilePicture) {
-						setImage(data?.updateUser?.profilePicture)
-					}
-				},
-			})
+					onCompleted: (data) => {
+						if (data?.updateUser?.profilePicture) {
+							setImage(data?.updateUser?.profilePicture)
+						}
+					},
+				})
+			}
 		},
 		[updateUser, user?.id]
 	)

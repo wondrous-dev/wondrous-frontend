@@ -3,15 +3,11 @@ import { useRouter } from 'next/router'
 import { useLazyQuery } from '@apollo/client'
 
 import { useMe } from '../../../components/Auth/withAuth'
-<<<<<<< HEAD
 import {
 	GET_ORG_TASK_BOARD_PROPOSALS,
 	GET_ORG_TASK_BOARD_SUBMISSIONS,
 	GET_ORG_TASK_BOARD_TASKS,
 } from '../../../graphql/queries/taskBoard'
-=======
-import { GET_ORG_TASK_BOARD_TASKS } from '../../../graphql/queries/taskBoard'
->>>>>>> b6ca038 (feat: add task board queries for organization)
 import Boards from '../../../components/organization/boards/boards'
 import {
 	InReview,
@@ -103,7 +99,6 @@ const BoardsPage = () => {
 	const router = useRouter()
 	const { username, orgId } = router.query
 
-<<<<<<< HEAD
 	const [getOrgTaskProposals] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
 		onCompleted: (data) => {
 			const newColumns = [...columns]
@@ -135,22 +130,6 @@ const BoardsPage = () => {
 			newColumns[0].tasks = []
 			newColumns[1].tasks = []
 			newColumns[2].tasks = []
-=======
-	const [
-		getOrgTasks,
-		{
-			loading: userTasksLoading,
-			data: userTasksData,
-			error: userTasksError,
-			refetch: userTasksRefetch,
-			fetchMore: userTasksFetchMore,
-		},
-	] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
-		onCompleted: (data) => {
-			// Parse task board data
-			const newColumns = [...COLUMNS]
-			const tasks = data?.getOrgTaskBoardTasks
->>>>>>> b6ca038 (feat: add task board queries for organization)
 			tasks.forEach((task) => {
 				if (task?.status === TASK_STATUS_TODO) {
 					newColumns[0].tasks.push(task)
@@ -158,11 +137,6 @@ const BoardsPage = () => {
 					newColumns[0].section.tasks.push(task)
 				} else if (task?.status === TASK_STATUS_IN_PROGRESS) {
 					newColumns[1].tasks.push(task)
-<<<<<<< HEAD
-=======
-				} else if (task?.status === TASK_STATUS_IN_REVIEW) {
-					newColumns[1].section.tasks.push(task)
->>>>>>> b6ca038 (feat: add task board queries for organization)
 				} else if (task?.status === TASK_STATUS_DONE) {
 					newColumns[2].tasks.push(task)
 				} else if (task?.status === TASK_STATUS_ARCHIVED) {
@@ -212,7 +186,6 @@ const BoardsPage = () => {
 					limit: 10,
 				},
 			})
-<<<<<<< HEAD
 			getOrgTaskProposals({
 				variables: {
 					orgId: profileOrgId,
@@ -229,8 +202,6 @@ const BoardsPage = () => {
 					limit: 10,
 				},
 			})
-=======
->>>>>>> b6ca038 (feat: add task board queries for organization)
 		}
 	}, [
 		username,
@@ -239,11 +210,8 @@ const BoardsPage = () => {
 		getOrgTasks,
 		statuses,
 		getOrgIdFromUsername,
-<<<<<<< HEAD
 		getOrgTaskSubmissions,
 		getOrgTaskProposals,
-=======
->>>>>>> b6ca038 (feat: add task board queries for organization)
 	])
 	return <Boards selectOptions={SELECT_OPTIONS} columns={columns} />
 }

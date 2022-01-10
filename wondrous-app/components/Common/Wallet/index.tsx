@@ -121,6 +121,7 @@ const Wallet = () => {
 	}, [wonderWeb3.assets])
 
 	// Bind to the Web3 wallet to monitor changes (i.e user unlinks wallet)
+
 	useEffect(() => {
 		// Don't listen to anything before the connection to the
 		// wallet is done.
@@ -193,7 +194,7 @@ const Wallet = () => {
 				>
 					<Metamask height="18" width="17" />
 					<PaddedParagraph padding="0 10px">
-						{user && !user.activeEthAddress
+						{!user?.activeEthAddress
 							? 'Link Metamask to Account'
 							: 'Connect MetaMask'}
 					</PaddedParagraph>

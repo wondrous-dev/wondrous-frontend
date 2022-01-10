@@ -115,7 +115,6 @@ export const HeaderCreateButton = styled(Button)`
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-end;
-		width: 110px;
 		min-height: 40px;
 		height: 40px;
 		margin-right: 20px;
