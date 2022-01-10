@@ -7,10 +7,10 @@ import {
 
 const DropDownWrapper = styled.div`
     position: absolute;
-    min-width: 233px;
+    min-width: 185px;
     min-height: 30px;
     padding: 4px 2px;
-    margin-left: -192px;
+    margin-left: -145px;
     margin-top: 9px;
 
     border-radius: 5px;
@@ -50,9 +50,9 @@ export const DropDownItem = styled.div`
 	padding: 4px 8px;
 	height: 32px;
 	line-height: 32px;
-	color: ${props => props.color};
-	font-size: ${props => props.fontSize};
-	font-weight: ${props => props.fontWeight};
+	color: ${(props) => props.color};
+	font-size: ${(props) => props.fontSize};
+	font-weight: ${(props) => props.fontWeight};
 
 	cursor: pointer;
 

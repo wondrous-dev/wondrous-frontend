@@ -1,4 +1,3 @@
-import { MoreVert } from '@material-ui/icons'
 import {
 	TASK_STATUS_DONE,
 	TASK_STATUS_IN_PROGRESS,
@@ -6,6 +5,7 @@ import {
 } from '../../utils/constants'
 import { groupBy, shrinkNumber } from '../../utils/helpers'
 import { AvatarList } from '../Common/AvatarList'
+import { DropDown, DropDownItem } from '../Common/dropdown'
 import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton'
 import {
 	DoneWithBorder,
@@ -17,6 +17,7 @@ import ImageIcon from '../Icons/image'
 import AudioIcon from '../Icons/MediaTypesIcons/audio'
 import PlayIcon from '../Icons/play'
 import { RewardRed } from '../Icons/reward'
+import { TaskMenuIcon } from '../Icons/taskMenu'
 import {
 	DeliverableContainer,
 	DeliverableItem,
@@ -35,8 +36,6 @@ import {
 	TaskDescription,
 	TaskTitle,
 } from './styles'
-import { DropDown, DropDownItem } from '../Common/dropdown'
-import { TaskMenuIcon } from '../Icons/taskMenu'
 
 const STATUS_ICONS = {
 	[TASK_STATUS_TODO]: <TodoWithBorder />,
