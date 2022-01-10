@@ -25,3 +25,20 @@ export const LOGIN_WALLET_MUTATION = gql`
 	}
 	${LoggedinUserFragment}
 `
+
+export const REDEEM_ORG_INVITE_LINK = gql`
+	mutation redeemOrgInviteLink($token: String!) {
+		redeemOrgInviteLink(token: $token) {
+			success
+		}
+	}
+`
+
+export const UPDATE_USER = gql`
+	mutation updateUser($input: UserUpdateInput!) {
+		updateUser(input: $input) {
+			...LoggedinUser
+		}
+	}
+	${LoggedinUserFragment}
+`
