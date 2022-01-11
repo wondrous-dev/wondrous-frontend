@@ -112,3 +112,5 @@ export const VIDEO_FILE_EXTENSIONS_TYPE_MAPPING = {
 	flv: 'video/x-flv',
 	webm: 'webm',
 }
+
+export const MENTION_REGEX = /@\[(.*?)]\((.*?)\)/g

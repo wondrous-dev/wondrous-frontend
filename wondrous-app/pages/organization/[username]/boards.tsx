@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useLazyQuery } from '@apollo/client'
 
-import { useMe } from '../../../components/Auth/withAuth'
+import { useMe, withAuth } from '../../../components/Auth/withAuth'
 import {
 	GET_ORG_TASK_BOARD_PROPOSALS,
 	GET_ORG_TASK_BOARD_SUBMISSIONS,
@@ -217,4 +217,4 @@ const BoardsPage = () => {
 }
 
 //export default withAuth(BoardsPage)
-export default BoardsPage
+export default withAuth(BoardsPage)

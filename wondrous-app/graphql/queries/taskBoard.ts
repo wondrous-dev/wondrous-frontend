@@ -50,7 +50,7 @@ export const GET_ORG_TASK_BOARD_SUBMISSIONS = gql`
 				offset: $offset
 			}
 		) {
-			...TaskCardSubmissionCardFragment
+			...TaskSubmissionCardFragment
 		}
 	}
 	${TaskSubmissionCardFragment}
@@ -150,7 +150,7 @@ export const GET_USER_TASK_BOARD_SUBMISSIONS = gql`
 				offset: $offset
 			}
 		) {
-			...TaskCardSubmissionFragment
+			...TaskSubmissionCardFragment
 		}
 	}
 	${TaskSubmissionCardFragment}

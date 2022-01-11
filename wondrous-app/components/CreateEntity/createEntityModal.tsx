@@ -1,8 +1,9 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react'
-import { styled, Switch, TextField } from '@material-ui/core'
+import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react'
+import { Popper, styled, Switch, TextField } from '@material-ui/core'
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
+import Autocomplete from '@mui/material/Autocomplete'
 
 import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg'
 import {
@@ -68,6 +69,11 @@ import {
 	MultiMediaUploadButton,
 	MultiMediaUploadButtonText,
 	MediaUploadDiv,
+	TextInputDiv,
+	StyledAutocomplete,
+	AutocompleteList,
+	OptionDiv,
+	OptionTypography,
 } from './styles'
 import SelectDownIcon from '../Icons/selectDownIcon'
 import UploadImageIcon from '../Icons/uploadImage'
@@ -75,6 +81,23 @@ import { getFilenameAndType, uploadMedia } from '../../utils/media'
 import DatePicker from '../Common/DatePicker'
 import { MediaItem } from './MediaItem'
 import { AddFileUpload } from '../Icons/addFileUpload'
+import { TextInput } from '../TextInput'
+import { White } from '../../theme/colors'
+import { TextInputContext } from '../../utils/contexts'
+import { useLazyQuery } from '@apollo/client'
+import { GET_AUTOCOMPLETE_USERS } from '../../graphql/queries'
+import { SafeImage } from '../Common/Image'
+
+const filterUserOptions = (options) => {
+	if (!options) return []
+	return options.map((option) => {
+		return {
+			label: option?.username,
+			id: option?.id,
+			profilePicture: option?.profilePicture,
+		}
+	})
+}
 
 export const MEDIA_UI_ELEMENTS = {
 	[MEDIA_TYPES.IMAGE]: {
@@ -227,21 +250,6 @@ const REWARD_SELECT_OPTIONS = [
 	},
 ]
 
-const AMOUNT_SELECT_OPTIONS = [
-	{
-		label: '100 tokens',
-		value: '100',
-	},
-	{
-		label: '200 tokens',
-		value: '200',
-	},
-	{
-		label: '300 tokens',
-		value: '300',
-	},
-]
-
 const PRIORITY_SELECT_OPTIONS = [
 	{
 		icon: <PriorityIcon />,
@@ -279,12 +287,19 @@ const CreateLayoutBaseModal = (props) => {
 	const { entityType, handleClose, resetEntityType } = props
 
 	const [addDetails, setAddDetails] = useState(false)
-	const [descriptionText, setDescriptionText] = useState([])
+	const [descriptionText, setDescriptionText] = useState('')
 	const [mediaUploads, setMediaUploads] = useState([])
 	const addDetailsHandleClick = () => {
 		setAddDetails(!addDetails)
 	}
 
+	const [assigneeString, setAssigneeString] = useState('')
+	const [reviewerString, setReviewerString] = useState('')
+	const [assigneeId, setAssigneeId] = useState(null)
+	const [reviewerIds, setReviewerIds] = useState([])
+	const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(
+		GET_AUTOCOMPLETE_USERS
+	)
 	const descriptionTextCounter = (e) => {
 		setDescriptionText(e.target.value)
 	}
@@ -380,13 +395,31 @@ const CreateLayoutBaseModal = (props) => {
 
 				<CreateFormMainInputBlock>
 					<CreateFormMainBlockTitle>Task description</CreateFormMainBlockTitle>
-					<CreateFormMainDescriptionInput
-						placeholder="Enter task description"
-						onChange={(e) => descriptionTextCounter(e)}
-						multiline
-						rows={5}
-						maxRows={5}
-					/>
+					<TextInputDiv>
+						<TextInputContext.Provider
+							value={{
+								content: descriptionText,
+								onChange: descriptionTextCounter,
+							}}
+						>
+							<TextInput
+								placeholder="Enter task description"
+								// rows={5}
+								// maxRows={5}
+								style={{
+									input: {
+										overflow: 'auto',
+										color: White,
+										height: '100px',
+										marginBottom: '16px',
+										borderRadius: '6px',
+										padding: '8px',
+									},
+								}}
+							/>
+						</TextInputContext.Provider>
+					</TextInputDiv>
+
 					<CreateFormMainDescriptionInputSymbolCounter>
 						{descriptionText.length}/900 characters
 					</CreateFormMainDescriptionInputSymbolCounter>
@@ -469,7 +502,7 @@ const CreateLayoutBaseModal = (props) => {
 							search
 							margin
 							icon={<CircleIcon />}
-							placeholder="Search users and pods"
+							placeholder="Search reviewers"
 						/>
 
 						<CreateFormMembersBlock>
@@ -499,11 +532,56 @@ const CreateLayoutBaseModal = (props) => {
 							<CreateFormAddDetailsInputLabel>
 								Assigned to
 							</CreateFormAddDetailsInputLabel>
-
-							<InputForm
-								icon={<CircleIcon />}
-								placeholder="0xAndros"
-								search={false}
+							<StyledAutocomplete
+								options={filterUserOptions(
+									autocompleteData?.getAutocompleteUsers
+								)}
+								renderInput={(params) => (
+									<TextField
+										style={{
+											color: White,
+											fontFamily: 'Space Grotesk',
+											fontSize: '14px',
+											paddingLeft: '4px',
+										}}
+										placeholder="Enter username..."
+										InputLabelProps={{ shrink: false }}
+										onChange={(event) => {
+											setAssigneeString(event.target.value)
+											getAutocompleteUsers({
+												variables: {
+													username: event.target.value,
+												},
+											})
+										}}
+										{...params}
+									/>
+								)}
+								value={assigneeString}
+								PopperComponent={AutocompleteList}
+								renderOption={(props, option, state) => {
+									return (
+										<OptionDiv
+											onClick={(event) => {
+												setAssigneeId(option?.id)
+												props?.onClick(event)
+											}}
+										>
+											{option?.profilePicture && (
+												<SafeImage
+													src={option?.profilePicture}
+													style={{
+														width: '30px',
+														height: '30px',
+														borderRadius: '15px',
+														marginRight: '8px',
+													}}
+												/>
+											)}
+											<OptionTypography>{option?.label}</OptionTypography>
+										</OptionDiv>
+									)
+								}}
 							/>
 						</CreateFormAddDetailsInputBlock>
 
@@ -514,7 +592,9 @@ const CreateLayoutBaseModal = (props) => {
 							<InputForm
 								search
 								icon={<CircleIcon />}
-								placeholder="Search users and pods"
+								placeholder="Search reviewers"
+								value={reviewerString}
+								onChange={(event) => setReviewerString(event.target.value)}
 							/>
 						</CreateFormAddDetailsInputBlock>
 					</CreateFormAddDetailsInputs>
@@ -576,7 +656,6 @@ const CreateLayoutBaseModal = (props) => {
 											inputFormat="MM/dd/yyyy"
 											value={dueDate}
 											setValue={setDueDate}
-											renderInput={(params) => <TextField {...params} />}
 										/>
 									</LocalizationProvider>
 									<DropdownSelect

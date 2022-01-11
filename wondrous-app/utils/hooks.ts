@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from 'react'
 
-import { IsMobileContext, SideBarContext } from './contexts'
+import { IsMobileContext, SideBarContext, TextInputContext } from './contexts'
 
 export const useIsMobile = () => useContext(IsMobileContext)
 
@@ -40,3 +40,5 @@ export const useWindowSize = () => {
 	}, []) // Empty array ensures that effect is only run on mount
 	return windowSize
 }
+
+export const useTextInput = () => useContext(TextInputContext)

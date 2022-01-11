@@ -15,7 +15,7 @@ export const uploadMedia = async ({ filename, fileType, file }) => {
 			method: 'PUT',
 			body: file,
 		})
-		console.log('uploadResponse', uploadResponse, apiUrl)
+		// console.log('uploadResponse', uploadResponse, apiUrl)
 	} catch (error) {
 		console.log('error', JSON.stringify(error, null, 2))
 	}

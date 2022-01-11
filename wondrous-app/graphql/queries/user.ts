@@ -68,3 +68,15 @@ export const GET_USER_ORGS = gql`
 		}
 	}
 `
+
+export const GET_AUTOCOMPLETE_USERS = gql`
+	query GetAutocompleteUsers($username: String!) {
+		getAutocompleteUsers(username: $username) {
+			id
+			firstName
+			lastName
+			username
+			profilePicture
+		}
+	}
+`

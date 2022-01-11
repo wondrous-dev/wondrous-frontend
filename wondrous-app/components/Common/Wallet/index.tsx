@@ -193,7 +193,7 @@ const Wallet = () => {
 					style={{ width: '270px', minHeight: '40px' }}
 				>
 					<Metamask height="18" width="17" />
-					<PaddedParagraph padding="0 10px">
+					<PaddedParagraph>
 						{!user?.activeEthAddress
 							? 'Link Metamask to Account'
 							: 'Connect MetaMask'}

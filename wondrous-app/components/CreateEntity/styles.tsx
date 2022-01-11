@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete'
 import {
 	Button,
 	ButtonBase,
@@ -8,6 +9,7 @@ import {
 	TextField,
 	Typography,
 	Grid,
+	Popper,
 } from '@material-ui/core'
 import { BaseCard } from '../Common/card'
 import CreateTaskIcon from '../Icons/createTask'
@@ -289,6 +291,10 @@ export const CreateFormMainDescriptionInput = styled(CreateFormMainTitleInput)({
 	},
 })
 
+export const TextInputDiv = styled.div`
+	height: 100px;
+`
+
 export const CreateFormMainDescriptionInputSymbolCounter = styled(Typography)`
 	&& {
 		position: absolute;
@@ -515,5 +521,67 @@ export const CreateFormPreviewButton = styled(Button)`
 		font-size: 16px;
 		line-height: 150%;
 		color: #ffffff;
+	}
+`
+export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
+	className: 'MuiAutocomplete-root',
+}))`
+	display: flex;
+	align-items: center;
+	background: #0f0f0f;
+	border-radius: 6px;
+	height: 40px;
+	color: ${White};
+
+	input {
+		color: #c4c4c4;
+		top: -10px;
+		left: 8px;
+		font-size: 14px;
+		height: 30px;
+	}
+
+	svg {
+		color: #c4c4c4;
+	}
+
+	.MuiAutocomplete-popper {
+		background: #0f0f0f;
+	}
+`
+
+export const AutocompleteList = styled(Popper).attrs((props) => ({
+	className: `${autocompleteClasses.listbox}`,
+}))`
+	.MuiPaper-root {
+		background: #0f0f0f !important;
+	}
+
+	li {
+		font-family: Space Grotesk;
+		font-size: 14px;
+		color: ${White};
+		display: flex;
+		align-items: center;
+	}
+
+	.MuiAutocomplete-noOptions {
+		font-family: Space Grotesk;
+		font-size: 14px;
+		color: ${White};
+	}
+`
+
+export const OptionDiv = styled.div`
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+`
+
+export const OptionTypography = styled(Typography)`
+	&& {
+		font-family: Space Grotesk;
+		font-size: 14px;
+		color: ${White};
 	}
 `

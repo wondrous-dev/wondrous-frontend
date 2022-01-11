@@ -78,7 +78,6 @@ export const TaskSubmissionCardFragment = gql`
 	fragment TaskSubmissionCardFragment on TaskSubmissionCard {
 		id
 		createdAt
-		type
 		createdBy
 		creatorUsername
 		creatorProfilePicture
