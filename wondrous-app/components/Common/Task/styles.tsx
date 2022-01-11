@@ -26,6 +26,7 @@ export const TaskWrapper = styled.div`
 
 	padding: 1px;
 	background: #515151;
+	cursor: pointer;
 
 	${GradientMidnightDiagonal}
 

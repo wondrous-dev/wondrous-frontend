@@ -395,6 +395,17 @@ const CreateLayoutBaseModal = (props) => {
 		}))
 	}, [])
 
+	const filterOrgUsersForAutocomplete = useCallback((orgUsers) => {
+		if (!orgUsers) {
+			return []
+		}
+		return orgUsers.map((orgUser) => ({
+			...orgUser?.user,
+			display: orgUser?.user?.username,
+			id: orgUser?.user?.id,
+		}))
+	}, [])
+
 	useEffect(() => {
 		if (userOrgs?.getUserOrgs?.length === 1) {
 			// If you're only part of one dao then just set that as default
@@ -469,6 +480,7 @@ const CreateLayoutBaseModal = (props) => {
 							value={{
 								content: descriptionText,
 								onChange: descriptionTextCounter,
+								list: filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers),
 							}}
 						>
 							<TextInput
@@ -626,6 +638,7 @@ const CreateLayoutBaseModal = (props) => {
 										<OptionDiv
 											onClick={(event) => {
 												setAssigneeId(option?.id)
+												setAssigneeString(option?.username)
 												props?.onClick(event)
 											}}
 										>

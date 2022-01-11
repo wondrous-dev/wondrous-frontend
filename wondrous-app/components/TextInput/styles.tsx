@@ -11,6 +11,9 @@ export const UserSuggestionWrapper = styled.div`
 	padding: 8px;
 	border-radius: 8px;
 	top: 10px;
+	div {
+		top: 10px;
+	}
 `
 
 export const UserSuggestionTypography = styled(Typography)`
@@ -20,9 +23,6 @@ export const UserSuggestionTypography = styled(Typography)`
 	}
 `
 
-export const StyledMention = styled(Mention)({
-	div: {
-		top: '20px',
-		marginTop: '10px',
-	},
-})
+export const StyledMention = styled(Mention).attrs`
+
+`

@@ -10,6 +10,7 @@ import {
 	UserSuggestionWrapper,
 } from './styles'
 import { SafeImage } from '../Common/Image'
+import { Blue400, White } from '../../theme/colors'
 
 const renderUserSuggestion = (entry) => {
 	// console.log('entry', entry)
@@ -31,39 +32,41 @@ export const TextInput = (props) => {
 		[inputProps]
 	)
 
-	const fetchUsers = (query, callback) => {
-		if (!query) return
-		return callback(orgUsers)
-	}
-
 	useEffect(() => {
 		if (inputProps?.orgId) {
 		}
 	}, [inputProps?.orgId])
+	const fetchData = (query, callback) => {
+		return inputProps?.list.filter((user) => user?.username?.startsWith(query))
+	}
+
+	const style = {
+		suggestions: {
+			top: '16px',
+			borderRadius: '8px',
+			list: {
+				borderRadius: '8px',
+				background: 'linear-gradient(180deg, #1e1e1e 0%, #141414 100%)',
+				boxShadow: '0px 34px 84px rgba(0, 0, 0, 0.55)',
+			},
+			item: {},
+		},
+	}
 	return (
 		<MentionsInput
 			value={inputProps?.content}
 			onChange={handleChange}
-			style={{
-				top: '10px !important',
-				borderRadius: '8px',
-				div: {
-					top: '10px !important',
-					borderRadius: '8px',
-				},
-				suggestions: {
-					list: {
-						top: '10px !important',
-						borderRadius: '8px',
-					},
-				},
-			}}
 			{...props}
+			style={{
+				...props?.style,
+				...style,
+			}}
 		>
 			<Mention
 				trigger="@"
-				data={fetchUsers}
-				suggestionsPortalHost={UserSuggestionWrapper}
+				data={fetchData}
+				displayTransform={(id, display) => `@${display}`}
+				regex={/@\[(.*?)]\((.*?)\)/}
 				renderSuggestion={(
 					suggestion,
 					search,
