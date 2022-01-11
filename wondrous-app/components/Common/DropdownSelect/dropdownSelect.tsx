@@ -8,6 +8,7 @@ import {
 	CreateFormSelectBlock,
 	CreateFormSelectBlockTitle,
 } from './styles'
+import { SafeImage } from '../Image'
 
 const MenuProps = {
 	PaperProps: {
@@ -25,9 +26,7 @@ const MenuProps = {
 }
 
 const DropdownSelect = (props) => {
-	const { title, labelText, labelIcon, options, name } = props
-
-	const [value, setValue] = useState(null)
+	const { title, labelText, labelIcon, options, name, value, setValue } = props
 
 	const handleChange = (event) => {
 		setValue(event.target.value)
@@ -54,7 +53,18 @@ const DropdownSelect = (props) => {
 				>
 					{options.map((item) => (
 						<CreateFormMenuItem key={item.value} value={item.value}>
-							{item.icon}
+							{item?.imageUrl ? (
+								<SafeImage
+									style={{
+										width: '20px',
+										height: '20px',
+										borderRadius: '20px',
+									}}
+									src={item?.imageUrl}
+								/>
+							) : (
+								<>{item.icon || labelIcon}</>
+							)}
 							{item.label}
 							{item.amount && <span>{`(${item.amount})`}</span>}
 						</CreateFormMenuItem>

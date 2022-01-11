@@ -114,3 +114,10 @@ export const VIDEO_FILE_EXTENSIONS_TYPE_MAPPING = {
 }
 
 export const MENTION_REGEX = /@\[(.*?)]\((.*?)\)/g
+
+export const PERMISSIONS = {
+	CREATE_TASK: 'create_task',
+	MANAGE_BOARD: 'manage_board', /// move task around, but can't move it to 'done'
+	APPROVE_PAYMENT: 'approve_payment',
+	CAN_COMMENT: 'can_comment',
+}

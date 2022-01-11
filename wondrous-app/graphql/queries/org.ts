@@ -23,6 +23,34 @@ export const GET_USER_ORGS = gql`
 		getUserOrgs(userId: $userId) {
 			id
 			username
+			name
+			profilePicture
+		}
+	}
+`
+
+export const GET_ORG_USERS = gql`
+	query getOrgUsers($orgId: String!) {
+		getOrgUsers(orgId: $orgId) {
+			user {
+				id
+				username
+				profilePicture
+			}
+			role {
+				permissions
+			}
+		}
+	}
+`
+
+export const GET_ORG_REVIEWERS = gql`
+	query getOrgReviewers($orgId: String!) {
+		getOrgReviewers(orgId: $orgId) {
+			profilePicture
+			id
+			username
+			name
 		}
 	}
 `

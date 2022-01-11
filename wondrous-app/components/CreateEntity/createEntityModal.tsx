@@ -10,6 +10,7 @@ import {
 	ENTITIES_TYPES,
 	IMAGE_FILE_EXTENSIONS_TYPE_MAPPING,
 	MEDIA_TYPES,
+	PERMISSIONS,
 	VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
 } from '../../utils/constants'
 import CircleIcon from '../Icons/circleIcon'
@@ -84,9 +85,19 @@ import { AddFileUpload } from '../Icons/addFileUpload'
 import { TextInput } from '../TextInput'
 import { White } from '../../theme/colors'
 import { TextInputContext } from '../../utils/contexts'
-import { useLazyQuery } from '@apollo/client'
-import { GET_AUTOCOMPLETE_USERS } from '../../graphql/queries'
+import { useLazyQuery, useQuery } from '@apollo/client'
+import {
+	GET_AUTOCOMPLETE_USERS,
+	GET_USER_ORGS,
+	GET_USER_PERMISSION_CONTEXT,
+} from '../../graphql/queries'
 import { SafeImage } from '../Common/Image'
+import {
+	GET_USER_AVAILABLE_PODS,
+	GET_USER_PODS,
+} from '../../graphql/queries/pod'
+import { parseUserPermissionContext } from '../../utils/helpers'
+import { GET_ORG_USERS } from '../../graphql/queries/org'
 
 const filterUserOptions = (options) => {
 	if (!options) return []
@@ -199,24 +210,6 @@ const SELECT_OPTIONS = [
 	},
 ]
 
-const DAO_SELECT_OPTIONS = [
-	{
-		icon: <CreateLayoutDaoMenuItemIcon />,
-		label: 'Wonder',
-		value: 'wonder',
-	},
-	{
-		icon: <CreateLayoutDaoMenuItemIcon />,
-		label: 'Winder',
-		value: 'winder',
-	},
-	{
-		icon: <CreateLayoutDaoMenuItemIcon />,
-		label: 'Wander',
-		value: 'wander',
-	},
-]
-
 const POD_SELECT_OPTIONS = [
 	{
 		icon: <CreatePodIcon ellipseColor="#00BAFF" />,
@@ -293,16 +286,39 @@ const CreateLayoutBaseModal = (props) => {
 		setAddDetails(!addDetails)
 	}
 
+	const [org, setOrg] = useState(null)
 	const [assigneeString, setAssigneeString] = useState('')
 	const [reviewerString, setReviewerString] = useState('')
 	const [assigneeId, setAssigneeId] = useState(null)
 	const [reviewerIds, setReviewerIds] = useState([])
+	const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT)
+	const { data: userOrgs } = useQuery(GET_USER_ORGS)
 	const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(
 		GET_AUTOCOMPLETE_USERS
 	)
+
+	const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS)
+
 	const descriptionTextCounter = (e) => {
 		setDescriptionText(e.target.value)
 	}
+
+	const [getUserPods] = useLazyQuery(GET_USER_PODS, {
+		onCompleted: (data) => {
+			setPods(data?.getUserPods || [])
+		},
+	})
+
+	const [getUserAvailablePods] = useLazyQuery(GET_USER_AVAILABLE_PODS, {
+		onCompleted: (data) => {
+			setPods(data?.getAvailableUserPods)
+		},
+		fetchPolicy: 'network-only',
+	})
+
+	// const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
+	const [pods, setPods] = useState([])
+	const [pod, setPod] = useState(null)
 	const [dueDate, setDueDate] = useState(null)
 	const {
 		showDeliverableRequirementsSection,
@@ -356,7 +372,56 @@ const CreateLayoutBaseModal = (props) => {
 		},
 		[mediaUploads]
 	)
+	const filterDAOptions = useCallback((orgs) => {
+		if (!orgs) {
+			return []
+		}
+		return orgs.map((org) => ({
+			imageUrl: org?.profilePicture,
+			label: org?.name,
+			value: org?.id,
+		}))
+	}, [])
 
+	const filterOrgUsers = useCallback((orgUsers) => {
+		if (!orgUsers) {
+			return []
+		}
+
+		return orgUsers.map((orgUser) => ({
+			profilePicture: orgUser?.user?.profilePicture,
+			label: orgUser?.user?.username,
+			value: orgUser?.user?.id,
+		}))
+	}, [])
+
+	useEffect(() => {
+		if (userOrgs?.getUserOrgs?.length === 1) {
+			// If you're only part of one dao then just set that as default
+			setOrg(userOrgs?.getUserOrgs[0]?.id)
+		}
+		if (org) {
+			getUserAvailablePods({
+				variables: {
+					orgId: org,
+				},
+			})
+			getOrgUsers({
+				variables: {
+					orgId: org,
+				},
+			})
+		}
+	}, [userOrgs?.getUserOrgs, org, getUserAvailablePods, getOrgUsers])
+
+	const permissions = parseUserPermissionContext({
+		userPermissionsContext: userPermissionsContext?.getUserPermissionContext
+			? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+			: null,
+		orgId: org,
+		podId: pod,
+	})
+	const canCreateTask = permissions.includes(PERMISSIONS.CREATE_TASK)
 	return (
 		<CreateFormBaseModal>
 			<CreateFormBaseModalCloseBtn onClick={handleClose}>
@@ -373,16 +438,20 @@ const CreateLayoutBaseModal = (props) => {
 				<CreateFormMainSelects>
 					<DropdownSelect
 						title="DAO"
+						value={org}
+						setValue={setOrg}
 						labelText="Choose DAO"
 						labelIcon={<CreateDaoIcon />}
-						options={DAO_SELECT_OPTIONS}
+						options={filterDAOptions(userOrgs?.getUserOrgs) || []}
 						name="dao"
 					/>
 					<DropdownSelect
 						title="Pod"
 						labelText="Choose Pod"
+						value={pod}
+						setValue={setPod}
 						labelIcon={<CreatePodIcon />}
-						options={POD_SELECT_OPTIONS}
+						options={filterDAOptions(pods) || []}
 						name="pod"
 					/>
 				</CreateFormMainSelects>
@@ -485,7 +554,7 @@ const CreateLayoutBaseModal = (props) => {
 
 						<InputForm
 							style={{
-								marginTop: '16px',
+								marginTop: '20px',
 							}}
 							type={'number'}
 							placeholder="Enter reward amount"
@@ -533,9 +602,7 @@ const CreateLayoutBaseModal = (props) => {
 								Assigned to
 							</CreateFormAddDetailsInputLabel>
 							<StyledAutocomplete
-								options={filterUserOptions(
-									autocompleteData?.getAutocompleteUsers
-								)}
+								options={filterOrgUsers(orgUsersData?.getOrgUsers)}
 								renderInput={(params) => (
 									<TextField
 										style={{
@@ -548,11 +615,6 @@ const CreateLayoutBaseModal = (props) => {
 										InputLabelProps={{ shrink: false }}
 										onChange={(event) => {
 											setAssigneeString(event.target.value)
-											getAutocompleteUsers({
-												variables: {
-													username: event.target.value,
-												},
-											})
 										}}
 										{...params}
 									/>
@@ -589,12 +651,58 @@ const CreateLayoutBaseModal = (props) => {
 							<CreateFormAddDetailsInputLabel>
 								Reviewer
 							</CreateFormAddDetailsInputLabel>
-							<InputForm
-								search
-								icon={<CircleIcon />}
-								placeholder="Search reviewers"
+							<StyledAutocomplete
+								options={filterUserOptions(
+									autocompleteData?.getAutocompleteUsers
+								)}
+								renderInput={(params) => (
+									<TextField
+										style={{
+											color: White,
+											fontFamily: 'Space Grotesk',
+											fontSize: '14px',
+											paddingLeft: '4px',
+										}}
+										placeholder="Enter username..."
+										InputLabelProps={{ shrink: false }}
+										onChange={(event) => {
+											setReviewerString(event.target.value)
+											getAutocompleteUsers({
+												variables: {
+													username: event.target.value,
+												},
+											})
+										}}
+										{...params}
+									/>
+								)}
 								value={reviewerString}
-								onChange={(event) => setReviewerString(event.target.value)}
+								PopperComponent={AutocompleteList}
+								renderOption={(props, option, state) => {
+									return (
+										<OptionDiv
+											onClick={(event) => {
+												if (reviewerIds.indexOf(option?.id) === -1) {
+													setReviewerIds([...reviewerIds, option?.id])
+												}
+												props?.onClick(event)
+											}}
+										>
+											{option?.profilePicture && (
+												<SafeImage
+													src={option?.profilePicture}
+													style={{
+														width: '30px',
+														height: '30px',
+														borderRadius: '15px',
+														marginRight: '8px',
+													}}
+												/>
+											)}
+											<OptionTypography>{option?.label}</OptionTypography>
+										</OptionDiv>
+									)
+								}}
 							/>
 						</CreateFormAddDetailsInputBlock>
 					</CreateFormAddDetailsInputs>
@@ -718,7 +826,9 @@ const CreateLayoutBaseModal = (props) => {
 					<CreateFormCancelButton onClick={resetEntityType}>
 						Cancel
 					</CreateFormCancelButton>
-					<CreateFormPreviewButton>Create {titleText}</CreateFormPreviewButton>
+					<CreateFormPreviewButton>
+						{canCreateTask ? 'Create' : 'Propose'} {titleText}
+					</CreateFormPreviewButton>
 				</CreateFormButtonsBlock>
 			</CreateFormFooterButtons>
 		</CreateFormBaseModal>

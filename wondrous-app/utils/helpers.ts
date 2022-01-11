@@ -61,3 +61,16 @@ export const getMentionArray = (content) => {
     mentionedUsers,
   }
 }
+
+export const parseUserPermissionContext = (props) => {
+	const userPermissionsContext = props?.userPermissionsContext
+	if (!userPermissionsContext) return []
+	const podId = props?.podId
+	const orgId = props?.orgId
+	if (podId) {
+		return userPermissionsContext?.podPermissions[podId] || []
+	} else if (orgId) {
+		return userPermissionsContext?.orgPermissions[orgId] || []
+	}
+	return []
+}

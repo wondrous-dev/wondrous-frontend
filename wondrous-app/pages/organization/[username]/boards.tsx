@@ -116,7 +116,7 @@ const BoardsPage = () => {
 			const newColumns = [...columns]
 			const taskSubmissions = data?.getOrgTaskBoardSubmissions
 			newColumns[1].section.tasks = []
-			taskSubmissions.forEach((taskSubmission) => {
+			taskSubmissions?.forEach((taskSubmission) => {
 				newColumns[1].section.tasks.push(taskSubmission)
 			})
 			setColumns(newColumns)

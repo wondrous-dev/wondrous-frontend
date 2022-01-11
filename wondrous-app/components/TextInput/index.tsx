@@ -19,10 +19,9 @@ const renderUserSuggestion = (entry) => {
 export const TextInput = (props) => {
 	const [name, setName] = useState('')
 	const inputProps = useTextInput()
-	const [
-		getAutocompleteUsers,
-		{ data: userData, loading: userLoading, error: userError },
-	] = useLazyQuery(GET_AUTOCOMPLETE_USERS)
+	// const getOrgUsers = useLazyQuery()
+	// Only return a list of org users if an org is set
+	const [orgUsers, setOrgUsers] = useState([])
 	const handleChange = useCallback(
 		(event, newValue, newPlainTextValue, mentions) => {
 			if (inputProps?.onChange) {
@@ -34,15 +33,13 @@ export const TextInput = (props) => {
 
 	const fetchUsers = (query, callback) => {
 		if (!query) return
-		getAutocompleteUsers({
-			variables: {
-				username: query,
-			},
-		}).then((usersResult) => {
-			callback(usersResult?.data?.getAutocompleteUsers)
-		})
+		return callback(orgUsers)
 	}
 
+	useEffect(() => {
+		if (inputProps?.orgId) {
+		}
+	}, [inputProps?.orgId])
 	return (
 		<MentionsInput
 			value={inputProps?.content}
