@@ -110,6 +110,8 @@ export const FilterBox = styled.div`
 `
 
 export const FilterBoxInner = styled.div`
+    position: relative;
+
 	display: flex;
 	flex: 1 0 0;
 	flex-direction: column;
@@ -238,6 +240,19 @@ export const FilterItemCount = styled.div`
 
 `
 
+export const FilterItemListShade = styled.div`
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    display: flex;
+
+    width: 290px;
+    height: 55px;
+
+    background: linear-gradient(0deg, ${Black97} 0%, rgba(20, 20, 20, 0) 80.07%);
+`
+
 /**
  *
  * @param filterSchema ( tabs: [{ name: String, multiChoice: boolean, items: [{ id: String, name: String }] }])
@@ -250,6 +265,7 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
 	
     const [selected, setSelected] = useState(null)
     const [items, setItems] = useState([])
+    const [multiChoice, setMultichoice] = useState(true)
     const [open, setOpen] = useState(false)
 
 	const toggleOpen = () => {
@@ -261,6 +277,7 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
         filterSchema.map(tab => {
             if(tab.name == tabName) {
                 setItems(tab.items)
+                setMultichoice(tab.multiChoice)
             }
         })
         setSelected(tabName)
@@ -270,6 +287,9 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
     const toggleInFilter = (itemId) => {
         const newItems = [ ...items ]
         newItems.map(it => {
+            if(!multiChoice) {
+                it.selected = false
+            }
             if(it.id === itemId) {
                 it.selected = !it.selected
             }
@@ -342,6 +362,7 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
                                 </FilterItem>
                             ))}
                         </FilterItemList>
+                        <FilterItemListShade />
                     </FilterItemsContainer>
 				</FilterBoxInner>
 			</FilterBox>
