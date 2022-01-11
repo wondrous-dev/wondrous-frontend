@@ -92,6 +92,7 @@ export const FilterHandleContainer = styled.div`
 export const FilterBox = styled.div`
     position: absolute;
     top: 40px;
+    left: 0;
 
     display: ${(props) => (props.open ? 'flex' : 'none')};
     flex-direction: column;
@@ -99,12 +100,12 @@ export const FilterBox = styled.div`
     justify-content: flex-start;
 
     margin-top: 
-    width: 323px;
+    max-width: 323px;
     height: 400px;
 
     padding: 0px 1px 1px 1px;
 
-    background: linear-gradient(270.93deg,  ${Black95} 3.85%, ${Black97} 101.76%);
+    background: linear-gradient(180deg,  ${Grey75} 3.85%, ${Black97} 101.76%);
 
     z-index: 100;
 `
