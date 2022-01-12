@@ -625,20 +625,23 @@ const CreateLayoutBaseModal = (props) => {
 										}}
 										placeholder="Enter username..."
 										InputLabelProps={{ shrink: false }}
-										onChange={(event) => {
-											setAssigneeString(event.target.value)
-										}}
 										{...params}
 									/>
 								)}
-								value={assigneeString}
 								PopperComponent={AutocompleteList}
+								value={assigneeId}
+								onChange={(event, newValue) => {
+									setAssigneeId(newValue)
+								}}
+								inputValue={assigneeString}
+								onInputChange={(event, newInputValue) => {
+									setAssigneeString(newInputValue)
+								}}
 								renderOption={(props, option, state) => {
 									return (
 										<OptionDiv
 											onClick={(event) => {
 												setAssigneeId(option?.id)
-												setAssigneeString(option?.username)
 												props?.onClick(event)
 											}}
 										>

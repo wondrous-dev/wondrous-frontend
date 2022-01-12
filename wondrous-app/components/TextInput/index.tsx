@@ -1,30 +1,16 @@
 import { MentionsInput, Mention } from 'react-mentions'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useTextInput } from '../../utils/hooks'
-import { useLazyQuery } from '@apollo/client'
-import { GET_AUTOCOMPLETE_USERS } from '../../graphql/queries'
-import { MENTION_REGEX } from '../../utils/constants'
-import {
-	StyledMention,
-	UserSuggestionTypography,
-	UserSuggestionWrapper,
-} from './styles'
+import { UserSuggestionTypography, UserSuggestionWrapper } from './styles'
 import { SafeImage } from '../Common/Image'
 import { Blue400, White } from '../../theme/colors'
-
-const renderUserSuggestion = (entry) => {
-	// console.log('entry', entry)
-	return <></>
-}
 
 export const TextInput = (props) => {
 	const [name, setName] = useState('')
 	const inputProps = useTextInput()
-	// const getOrgUsers = useLazyQuery()
-	// Only return a list of org users if an org is set
-	const [orgUsers, setOrgUsers] = useState([])
+
 	const handleChange = useCallback(
-		(event, newValue, newPlainTextValue, mentions) => {
+		(event) => {
 			if (inputProps?.onChange) {
 				inputProps?.onChange(event)
 			}
@@ -36,7 +22,8 @@ export const TextInput = (props) => {
 		if (inputProps?.orgId) {
 		}
 	}, [inputProps?.orgId])
-	const fetchData = (query, callback) => {
+
+	const fetchData = (query) => {
 		return inputProps?.list.filter((user) => user?.username?.startsWith(query))
 	}
 
@@ -52,6 +39,7 @@ export const TextInput = (props) => {
 			item: {},
 		},
 	}
+
 	return (
 		<MentionsInput
 			value={inputProps?.content}
@@ -67,13 +55,7 @@ export const TextInput = (props) => {
 				data={fetchData}
 				displayTransform={(id, display) => `@${display}`}
 				regex={/@\[(.*?)]\((.*?)\)/}
-				renderSuggestion={(
-					suggestion,
-					search,
-					highlightedDisplay,
-					index,
-					focused
-				) => (
+				renderSuggestion={(suggestion) => (
 					<UserSuggestionWrapper>
 						<SafeImage
 							src={suggestion?.profilePicture}
