@@ -93,8 +93,6 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected]);
 
-  console.log(items)
-
   return (
     <FilterHandle open={open}>
       <FilterHandleInner open={open} onClick={toggleOpen}>
@@ -135,7 +133,7 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
                   {item.organization 
                   ? (
                     <FilterItemOrgIcon>
-                      {item.organization.icon}
+                      {item.organization.profilePicture}
                     </FilterItemOrgIcon>
                   )
                   : ''}
