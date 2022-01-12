@@ -11,7 +11,7 @@ import { ButtonGroup } from '../../Common/ButtonGroup'
 import { BoardsActivity, BoardsActivityInput, BoardsContainer } from './styles'
 
 const Boards = (props) => {
-	const { selectOptions, columns } = props
+	const { selectOptions, columns, onLoadMore } = props
 
 	return (
 		<Wrapper>
@@ -32,7 +32,7 @@ const Boards = (props) => {
 					<ButtonGroup></ButtonGroup>
 				</BoardsActivity>
 
-				<KanbanBoard columns={columns} />
+				<KanbanBoard columns={columns} onLoadMore={onLoadMore}/>
 			</BoardsContainer>
 		</Wrapper>
 	)

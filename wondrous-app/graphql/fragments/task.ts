@@ -29,7 +29,8 @@ export const TaskCardFragment = gql`
 			userMentions
 			reviewerIds
 		}
-		images
-		muxPlaybackId
+		# NOTE: These fields are failing to be fetched 
+		# images
+		# muxPlaybackId
 	}
 `

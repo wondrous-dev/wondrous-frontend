@@ -93,6 +93,7 @@ const SELECT_OPTIONS = [
 
 const BoardsPage = () => {
 	const [columns, setColumns] = useState(COLUMNS)
+	const [orgTaskLimit, setOrgTaskLimit] = useState(10)
 	const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR)
 	const [profileOrgId, setProfileOrgId] = useState(null)
 	const user = useMe()
@@ -122,7 +123,8 @@ const BoardsPage = () => {
 			setColumns(newColumns)
 		},
 	})
-	const [getOrgTasks] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
+
+	const [getOrgTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
 		onCompleted: (data) => {
 			// Parse task board data
 			const newColumns = [...columns]
@@ -213,7 +215,34 @@ const BoardsPage = () => {
 		getOrgTaskSubmissions,
 		getOrgTaskProposals,
 	])
-	return <Boards selectOptions={SELECT_OPTIONS} columns={columns} />
+
+	const handleLoadMore = () => {
+		fetchMore({
+			variables: {
+				offset: 0,
+				limit: orgTaskLimit,
+			},
+		})
+			.then(() => {
+				/**  FIX: The "last" page is not fetched when the limit exceeds the total number of tasks.
+					 When there are 21 items, the 1st-10th item is fetched,
+					 then the next ten, 11th-20th, item is fetched
+					 but the 21st item is not fetched
+				*/
+				setOrgTaskLimit(orgTaskLimit + 10)
+			})
+			.catch((error) => {
+				console.log(error)
+			})
+	}
+
+	return (
+		<Boards
+			selectOptions={SELECT_OPTIONS}
+			columns={columns}
+			onLoadMore={handleLoadMore}
+		/>
+	)
 }
 
 //export default withAuth(BoardsPage)

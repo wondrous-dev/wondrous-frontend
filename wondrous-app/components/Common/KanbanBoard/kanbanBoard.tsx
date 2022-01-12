@@ -1,12 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { KanbanBoardContainer } from './styles'
+import { useInView } from 'react-intersection-observer'
+import { KanbanBoardContainer, LoadMore } from './styles'
 import TaskColumn from './TaskColumn'
 
 const KanbanBoard = (props) => {
-	const { columns } = props
+	const { columns, onLoadMore } = props
 	const [columnsState, setColumnsState] = useState(columns)
+	const [ref, inView] = useInView({})
+
+	useEffect(() => {
+		if (inView) {
+			onLoadMore()
+		}
+	}, [inView, onLoadMore])
 
 	const moveCard = (id, status) => {
 		const updatedColumns = columnsState.map((column) => {
@@ -29,22 +37,25 @@ const KanbanBoard = (props) => {
 	}
 
 	return (
-		<KanbanBoardContainer>
-			<DndProvider backend={HTML5Backend}>
-				{columnsState.map((column) => {
-					const { status, section, tasks } = column
-					return (
-						<TaskColumn
-							key={status}
-							cardsList={tasks}
-							moveCard={moveCard}
-							status={status}
-							section={section}
-						/>
-					)
-				})}
-			</DndProvider>
-		</KanbanBoardContainer>
+		<>
+			<KanbanBoardContainer>
+				<DndProvider backend={HTML5Backend}>
+					{columnsState.map((column) => {
+						const { status, section, tasks } = column
+						return (
+							<TaskColumn
+								key={status}
+								cardsList={tasks}
+								moveCard={moveCard}
+								status={status}
+								section={section}
+							/>
+						)
+					})}
+				</DndProvider>
+			</KanbanBoardContainer>
+			<LoadMore ref={ref}></LoadMore>
+		</>
 	)
 }
 
