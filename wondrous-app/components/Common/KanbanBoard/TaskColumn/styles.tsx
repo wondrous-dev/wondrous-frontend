@@ -11,6 +11,7 @@ export const DropMeHere = styled.div`
 
 	width: 100%;
 	height: 100%;
+	max-height: 400px;
 	min-height: 300px;
 
 	background: linear-gradient(180deg, #141414 0%, #151515 100%);
@@ -21,12 +22,12 @@ export const DropMeHere = styled.div`
 `
 
 export const TaskColumnContainer = styled.div`
-	max-width: 325px;
-	width: 100%;
-	height: 100%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+
+	max-width: 325px;
+	width: 100%;
 `
 
 export const TaskColumnContainerHeader = styled.div`
@@ -51,4 +52,12 @@ export const TaskColumnContainerCount = styled(Typography)`
 		margin-left: 10px;
 		font-size: 14px;
 	}
+`
+
+export const TaskColumnDropContainer = styled.div`
+	display: flex;
+	flex-grow: 1;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
 `

@@ -18,6 +18,7 @@ import {
 	TaskColumnContainerHeaderTitle,
 	TaskColumnContainerCount,
 	DropMeHere,
+	TaskColumnDropContainer,
 } from './styles'
 import { Task } from '../../Task'
 
@@ -59,7 +60,7 @@ const ColumnDropZone = ({ status, moveCard, children }) => {
 	})
 	drop(ref)
 	return (
-		<div ref={ref}>
+		<TaskColumnDropContainer ref={ref}>
 			{isOver && (
 				<DropMeHere>
 					<DropZone />
@@ -67,7 +68,7 @@ const ColumnDropZone = ({ status, moveCard, children }) => {
 				</DropMeHere>
 			)}
 			{children}
-		</div>
+		</TaskColumnDropContainer>
 	)
 }
 
@@ -104,9 +105,9 @@ const TaskColumn = (props: ITaskColumn) => {
 
 				</DraggableCard>
 			))}
-			{!cardsList.length && (
+			{(
 				<ColumnDropZone moveCard={moveCard} status={status}>
-					<div style={{ width: '325px', height: '200px' }} />
+					<div style={{ width: '325px', height: '100%' }} />
 				</ColumnDropZone>
 			)}
 		</TaskColumnContainer>
