@@ -4,8 +4,8 @@ export default function DeleteIcon(props) {
 	const { onClick, style } = props
 	return (
 		<svg
-			width="15"
-			height="18"
+			width={style?.width || '15'}
+			height={style?.height || '15'}
 			viewBox="0 0 15 18"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"

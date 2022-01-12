@@ -1,7 +1,7 @@
 import React from 'react'
 import regexifyString from 'regexify-string'
 import { Typography } from '@material-ui/core'
-import { Blue400 } from '../theme/colors'
+import { HighlightBlue } from '../theme/colors'
 
 export const renderMentionString = (props) => {
 	const { content, textStyle, simple, router } = props
@@ -17,54 +17,53 @@ export const renderMentionString = (props) => {
 			const urlMatch = urlRegex.exec(match)
 			const httpMatch = httpRegex.exec(match)
 			if (mentionExp) {
-				const { id, name, trigger } = mentionExp.groups
+				const [original, username, id] = mentionExp
 				if (simple) {
-					return trigger + name
+					return '@' + username
 				}
 				return (
-					<Typography
+					<span
 						style={{
-							color: Blue400,
+							color: HighlightBlue,
+							marginRight: '4px',
 							...textStyle,
 						}}
 						onClick={() => {
-							router.replace(`/profile/${name}/boards`)
+							router.replace(`/profile/${username}/boards`)
 						}}
 					>
-						{`@${name}`}
-					</Typography>
+						{`@${username}`}
+					</span>
 				)
 			} else if (httpMatch) {
 				return (
-					<Typography
+					<a
+						href={match}
+						target="_blank"
+						rel="noreferrer"
 						style={{
-							color: Blue400,
+							color: HighlightBlue,
+							marginRight: '4px',
 							...textStyle,
-						}}
-						onClick={() => {
-							if (window) {
-								window.open(match, '_blank').focus()
-							}
 						}}
 					>
 						{match}
-					</Typography>
+					</a>
 				)
 			} else if (urlMatch) {
 				return (
-					<Typography
+					<a
+						href={`https://${match}`}
+						target="_blank"
+						rel="noreferrer"
 						style={{
-							color: Blue400,
+							color: HighlightBlue,
+							marginRight: '4px',
 							...textStyle,
-						}}
-						onClick={() => {
-							if (window) {
-								window.open(`https://${match}`, '_blank').focus()
-							}
 						}}
 					>
 						{`https://${match}`}
-					</Typography>
+					</a>
 				)
 			} else {
 				return match
@@ -75,5 +74,5 @@ export const renderMentionString = (props) => {
 	if (simple) {
 		return final.join('')
 	}
-	return ''
+	return final
 }

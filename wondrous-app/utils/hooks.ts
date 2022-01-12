@@ -1,6 +1,12 @@
 import { useContext, useState, useEffect } from 'react'
 
-import { IsMobileContext, SideBarContext, TextInputContext } from './contexts'
+import {
+	IsMobileContext,
+	OrgBoardContext,
+	SideBarContext,
+	TextInputContext,
+	UserBoardContext,
+} from './contexts'
 
 export const useIsMobile = () => useContext(IsMobileContext)
 
@@ -42,3 +48,7 @@ export const useWindowSize = () => {
 }
 
 export const useTextInput = () => useContext(TextInputContext)
+
+export const useOrgBoard = () => useContext(OrgBoardContext)
+
+export const useUserBoard = () => useContext(UserBoardContext)

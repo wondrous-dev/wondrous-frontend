@@ -85,7 +85,7 @@ import { AddFileUpload } from '../Icons/addFileUpload'
 import { TextInput } from '../TextInput'
 import { White } from '../../theme/colors'
 import { TextInputContext } from '../../utils/contexts'
-import { useLazyQuery, useQuery } from '@apollo/client'
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import {
 	GET_AUTOCOMPLETE_USERS,
 	GET_USER_ORGS,
@@ -96,8 +96,17 @@ import {
 	GET_USER_AVAILABLE_PODS,
 	GET_USER_PODS,
 } from '../../graphql/queries/pod'
-import { parseUserPermissionContext } from '../../utils/helpers'
+import {
+	getMentionArray,
+	parseUserPermissionContext,
+	transformTaskProposalToTaskProposalCard,
+	transformTaskToTaskCard,
+} from '../../utils/helpers'
 import { GET_ORG_USERS } from '../../graphql/queries/org'
+import { CREATE_TASK } from '../../graphql/mutations/task'
+import { useOrgBoard } from '../../utils/hooks'
+import { CREATE_TASK_PROPOSAL } from '../../graphql/mutations/taskProposal'
+import { useMe } from '../Auth/withAuth'
 
 const filterUserOptions = (options) => {
 	if (!options) return []
@@ -278,7 +287,7 @@ const MILESTONE_SELECT_OPTION = [
 
 const CreateLayoutBaseModal = (props) => {
 	const { entityType, handleClose, resetEntityType } = props
-
+	const user = useMe()
 	const [addDetails, setAddDetails] = useState(false)
 	const [descriptionText, setDescriptionText] = useState('')
 	const [mediaUploads, setMediaUploads] = useState([])
@@ -287,10 +296,13 @@ const CreateLayoutBaseModal = (props) => {
 	}
 
 	const [org, setOrg] = useState(null)
+	const [milestone, setMilestone] = useState(null)
 	const [assigneeString, setAssigneeString] = useState('')
 	const [reviewerString, setReviewerString] = useState('')
-	const [assigneeId, setAssigneeId] = useState(null)
+	const [assignee, setAssignee] = useState(null)
 	const [reviewerIds, setReviewerIds] = useState([])
+	const [title, setTitle] = useState('')
+	const orgBoard = useOrgBoard()
 	const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT)
 	const { data: userOrgs } = useQuery(GET_USER_ORGS)
 	const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(
@@ -433,6 +445,116 @@ const CreateLayoutBaseModal = (props) => {
 		podId: pod,
 	})
 	const canCreateTask = permissions.includes(PERMISSIONS.CREATE_TASK)
+
+	const getPodObject = useCallback(() => {
+		let justCreatedPod = null
+		pods.forEach((testPod) => {
+			if (testPod.id === pod) {
+				justCreatedPod = testPod
+			}
+		})
+		return justCreatedPod
+	}, [pods, pod])
+
+	const [createTask] = useMutation(CREATE_TASK, {
+		onCompleted: (data) => {
+			const task = data?.createTask
+			const justCreatedPod = getPodObject()
+
+			if (orgBoard?.setColumns && task?.orgId === orgBoard?.orgId) {
+				const transformedTask = transformTaskToTaskCard(task, {
+					orgName: orgBoard?.org?.name,
+					orgProfilePicture: orgBoard?.org?.profilePicture,
+					podName: justCreatedPod?.name,
+				})
+				console.log('transofmred', transformedTask)
+				const columns = [...orgBoard?.columns]
+				columns[0].tasks = [transformedTask, ...columns[0].tasks]
+				orgBoard.setColumns(columns)
+			}
+			handleClose()
+		},
+	})
+
+	const [createTaskProposal] = useMutation(CREATE_TASK_PROPOSAL, {
+		onCompleted: (data) => {
+			const taskProposal = data?.createTaskProposal
+			const justCreatedPod = getPodObject()
+			if (orgBoard?.setColumns && taskProposal?.orgId === orgBoard?.orgId) {
+				const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
+					taskProposal,
+					{
+						userProfilePicture: user?.profilePicture,
+						username: user?.username,
+						orgName: orgBoard?.org?.name,
+						orgProfilePicture: orgBoard?.org?.profilePicture,
+						podName: justCreatedPod?.name,
+					}
+				)
+
+				const columns = [...orgBoard?.columns]
+				columns[0].section.tasks = [
+					transformedTaskProposal,
+					...columns[0].section.tasks,
+				]
+				orgBoard.setColumns(columns)
+			}
+			handleClose()
+		},
+	})
+
+	const submitMutation = useCallback(() => {
+		switch (entityType) {
+			case ENTITIES_TYPES.TASK:
+				const taskInput = {
+					title,
+					description: descriptionText,
+					orgId: org,
+					milestoneId: milestone,
+					podId: pod,
+					dueDate,
+					// TODO: add links?,
+					...(canCreateTask && {
+						assigneeId: assignee?.value,
+					}),
+					...(!canCreateTask && {
+						proposedAssigneeId: assignee?.value,
+					}),
+					reviewerIds,
+					userMentions: getMentionArray(descriptionText),
+					mediaUploads,
+				}
+				if (canCreateTask) {
+					createTask({
+						variables: {
+							input: taskInput,
+						},
+					})
+				} else {
+					createTaskProposal({
+						variables: {
+							input: taskInput,
+						},
+					})
+				}
+				break
+		}
+	}, [
+		title,
+		descriptionText,
+		org,
+		milestone,
+		pod,
+		dueDate,
+		assignee,
+		reviewerIds,
+		mediaUploads,
+		canCreateTask,
+		createTask,
+		entityType,
+		createTaskProposal,
+	])
+	console.log('')
 	return (
 		<CreateFormBaseModal>
 			<CreateFormBaseModalCloseBtn onClick={handleClose}>
@@ -470,7 +592,12 @@ const CreateLayoutBaseModal = (props) => {
 				<CreateFormMainInputBlock>
 					<CreateFormMainBlockTitle>Task title</CreateFormMainBlockTitle>
 
-					<InputForm placeholder="Enter task title" search={false} />
+					<InputForm
+						value={title}
+						onChange={(e) => setTitle(e.target.value)}
+						placeholder="Enter task title"
+						search={false}
+					/>
 				</CreateFormMainInputBlock>
 
 				<CreateFormMainInputBlock>
@@ -629,10 +756,7 @@ const CreateLayoutBaseModal = (props) => {
 									/>
 								)}
 								PopperComponent={AutocompleteList}
-								value={assigneeId}
-								onChange={(event, newValue) => {
-									setAssigneeId(newValue)
-								}}
+								value={assignee}
 								inputValue={assigneeString}
 								onInputChange={(event, newInputValue) => {
 									setAssigneeString(newInputValue)
@@ -641,7 +765,7 @@ const CreateLayoutBaseModal = (props) => {
 									return (
 										<OptionDiv
 											onClick={(event) => {
-												setAssigneeId(option?.id)
+												setAssignee(option)
 												props?.onClick(event)
 											}}
 										>
@@ -799,7 +923,7 @@ const CreateLayoutBaseModal = (props) => {
 									</CreateFormAddDetailsSwitch> */}
 
 									{/*if Suggest a task opened */}
-									{showBountySwitchSection && (
+									{showBountySwitchSection && canCreateTask && (
 										<CreateFormAddDetailsSwitch>
 											<CreateFormAddDetailsInputLabel>
 												This is a bounty
@@ -842,7 +966,7 @@ const CreateLayoutBaseModal = (props) => {
 					<CreateFormCancelButton onClick={resetEntityType}>
 						Cancel
 					</CreateFormCancelButton>
-					<CreateFormPreviewButton>
+					<CreateFormPreviewButton onClick={submitMutation}>
 						{canCreateTask ? 'Create' : 'Propose'} {titleText}
 					</CreateFormPreviewButton>
 				</CreateFormButtonsBlock>

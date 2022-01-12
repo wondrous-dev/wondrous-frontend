@@ -35,7 +35,11 @@ const DatePicker = (props) => {
 	return (
 		<CreateFormSelectBlock>
 			<CreateFormSelectBlockTitle>{title}</CreateFormSelectBlockTitle>
-			<FormControl>
+			<FormControl
+				style={{
+					marginTop: '4px',
+				}}
+			>
 				{!value && (
 					<CreateFormInputLabel id={`select-label-${name}`} shrink={false}>
 						{labelIcon}

@@ -25,6 +25,9 @@ import {
 	TaskActionAmount,
 	TaskActionMenu,
 } from './styles'
+import { renderMentionString } from '../../../utils/common'
+import { useRouter } from 'next/router'
+import { Typography } from '@material-ui/core'
 
 export const TASK_ICONS = {
 	[Constants.TASK_STATUS_TODO]: ToDo,
@@ -45,7 +48,7 @@ export const Task = ({ task, setTask }) => {
 		title = '',
 		users = [],
 	} = task
-
+	const router = useRouter()
 	let {
 		likes = 0,
 		comments = 0,
@@ -95,7 +98,12 @@ export const Task = ({ task, setTask }) => {
 				</TaskHeader>
 				<TaskContent>
 					<TaskTitle>{title}</TaskTitle>
-					<p>{description}</p>
+					<p>
+						{renderMentionString({
+							content: description,
+							router,
+						})}
+					</p>
 					{media ? <TaskMedia media={media} /> : <TaskSeparator />}
 				</TaskContent>
 				<TaskFooter>

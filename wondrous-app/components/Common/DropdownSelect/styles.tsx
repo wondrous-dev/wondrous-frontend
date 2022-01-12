@@ -62,6 +62,10 @@ export const CreateFormSelect = styled(Select)`
 			display: flex;
 			align-items: center;
 		}
+
+		svg {
+			color: #c4c4c4;
+		}
 	}
 `
 

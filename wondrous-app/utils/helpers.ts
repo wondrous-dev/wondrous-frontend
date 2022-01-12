@@ -48,29 +48,54 @@ export const getMentionArray = (content) => {
   const mentionedUsers = []
   // const mentionedProjects = []
   const mentions = content.match(MENTION_REGEX)
+
   if (mentions) {
     for (let mention of mentions) {
       const mentionExp = mention.matchAll(MENTION_REGEX)
-      console.log
-      const { __id__, __display__ } = [...mentionExp][0].groups
-      mentionedUsers.push(__id__)
+
+      const id = [...mentionExp][0][2]
+      mentionedUsers.push(id)
     }
   }
-  return {
-    // mentionedProjects,
-    mentionedUsers,
-  }
+  return mentionedUsers
 }
 
 export const parseUserPermissionContext = (props) => {
-	const userPermissionsContext = props?.userPermissionsContext
-	if (!userPermissionsContext) return []
-	const podId = props?.podId
-	const orgId = props?.orgId
-	if (podId) {
-		return userPermissionsContext?.podPermissions[podId] || []
-	} else if (orgId) {
-		return userPermissionsContext?.orgPermissions[orgId] || []
-	}
-	return []
+  const userPermissionsContext = props?.userPermissionsContext
+  if (!userPermissionsContext) return []
+  const podId = props?.podId
+  const orgId = props?.orgId
+  if (podId) {
+    return userPermissionsContext?.podPermissions[podId] || []
+  } else if (orgId) {
+    return userPermissionsContext?.orgPermissions[orgId] || []
+  }
+  return []
+}
+
+export const transformTaskToTaskCard = (task, extraData) => {
+  return {
+    ...task,
+    assigneeUsername: task?.assignee?.username,
+    assigneeProfilePicture: task?.assignee?.profilePicture,
+    orgProfilePicture: extraData?.orgProfilePicture,
+    orgName: extraData?.orgName,
+    podName: extraData?.podName,
+    media: task?.media && task?.media[0],
+  }
+}
+
+export const transformTaskProposalToTaskProposalCard = (
+  taskProposal,
+  extraData
+) => {
+  return {
+    ...taskProposal,
+    creatorUsername: extraData?.username,
+    creatorProfilePicture: extraData?.userProfilePicture,
+    orgProfilePicture: extraData?.orgProfilePicture,
+    orgName: extraData?.orgName,
+    podName: extraData?.podName,
+    media: taskProposal?.media && taskProposal?.media[0],
+  }
 }

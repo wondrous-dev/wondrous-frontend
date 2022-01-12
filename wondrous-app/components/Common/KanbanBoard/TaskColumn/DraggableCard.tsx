@@ -17,7 +17,11 @@ const Card = (
 		getNode: () => elementRef.current,
 	}))
 	return (
-		<div ref={elementRef} style={{ opacity }} className="draggable">
+		<div
+			ref={elementRef}
+			style={{ opacity, width: '100%' }}
+			className="draggable"
+		>
 			{children}
 		</div>
 	)

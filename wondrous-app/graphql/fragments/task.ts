@@ -1,5 +1,44 @@
 import { gql } from '@apollo/client'
 
+export const TaskFragment = gql`
+	fragment TaskFragment on Task {
+		id
+		title
+		createdAt
+		createdBy
+		description
+		milestoneId
+		orgId
+		podId
+		type
+		priority
+		blockerTaskIds
+		dueDate
+		status
+		links {
+			url
+			name
+			type
+		}
+		assigneeId
+		userMentions
+		media {
+			slug
+			name
+			type
+			muxAssetId
+			muxPlaybackId
+			videoProcessingStatus
+		}
+		assignee {
+			username
+			profilePicture
+		}
+		reactionCount
+		commentCount
+	}
+`
+
 export const TaskCardFragment = gql`
 	# emits reviewerIds, userMentions
 	fragment TaskCardFragment on TaskCard {
@@ -25,9 +64,10 @@ export const TaskCardFragment = gql`
 		reactionCount
 		commentCount
 		shareCount
-		additionalData {
-			link
-			images
+		links {
+			url
+			name
+			type
 		}
 		media {
 			slug
@@ -59,10 +99,6 @@ export const TaskProposalCardFragment = gql`
 		approvedAt
 		changeRequestedAt
 		rejectedAt
-		additionalData {
-			link
-			images
-		}
 		media {
 			slug
 			name
@@ -92,10 +128,6 @@ export const TaskSubmissionCardFragment = gql`
 		approvedAt
 		changeRequestedAt
 		rejectedAt
-		additionalData {
-			link
-			images
-		}
 		media {
 			slug
 			name
@@ -104,5 +136,41 @@ export const TaskSubmissionCardFragment = gql`
 			muxPlaybackId
 			videoProcessingStatus
 		}
+	}
+`
+
+export const TaskProposalFragment = gql`
+	fragment TaskProposalFragment on TaskProposal {
+		id
+		title
+		createdAt
+		createdBy
+		description
+		milestoneId
+		orgId
+		podId
+		priority
+		dueDate
+		links {
+			url
+			name
+			type
+		}
+		userMentions
+		approvedAt
+		changeRequestedAt
+		rejectedAt
+		lastReviewedBy
+		associatedTaskId
+		media {
+			slug
+			name
+			type
+			muxAssetId
+			muxPlaybackId
+			videoProcessingStatus
+		}
+		reactionCount
+		commentCount
 	}
 `

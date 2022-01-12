@@ -576,6 +576,7 @@ export const OptionDiv = styled.div`
 	display: flex;
 	align-items: center;
 	cursor: pointer;
+	margin-bottom: 8px;
 `
 
 export const OptionTypography = styled(Typography)`

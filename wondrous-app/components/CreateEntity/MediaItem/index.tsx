@@ -20,6 +20,9 @@ export const MediaItem = (props) => {
 			)}
 			<Filename>{mediaItem?.name}</Filename>
 			<DeleteIcon
+				style={{
+					width: '30',
+				}}
 				onClick={() => {
 					const newMediaUploads = mediaUploads.filter(
 						(mediaUpload) => mediaUpload.uploadSlug !== mediaItem?.uploadSlug

@@ -24,6 +24,7 @@ import {
 	DEFAULT_STATUS_ARR,
 } from '../../../utils/constants'
 import { GET_ORG_ID_FROM_USERNAME } from '../../../graphql/queries/org'
+import { OrgBoardContext } from '../../../utils/contexts'
 
 const TO_DO = {
 	status: TASK_STATUS_TODO,
@@ -213,7 +214,20 @@ const BoardsPage = () => {
 		getOrgTaskSubmissions,
 		getOrgTaskProposals,
 	])
-	return <Boards selectOptions={SELECT_OPTIONS} columns={columns} />
+
+	return (
+		<OrgBoardContext.Provider
+			value={{
+				statuses,
+				setStatuses,
+				columns,
+				setColumns,
+				orgId: profileOrgId,
+			}}
+		>
+			<Boards selectOptions={SELECT_OPTIONS} columns={columns} />
+		</OrgBoardContext.Provider>
+	)
 }
 
 //export default withAuth(BoardsPage)
