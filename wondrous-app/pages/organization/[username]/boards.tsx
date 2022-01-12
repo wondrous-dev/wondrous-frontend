@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { useLazyQuery } from '@apollo/client'
+import { useLazyQuery, useQuery } from '@apollo/client'
 
 import { useMe, withAuth } from '../../../components/Auth/withAuth'
 import {
@@ -23,8 +23,12 @@ import {
 	TASK_STATUS_ARCHIVED,
 	DEFAULT_STATUS_ARR,
 } from '../../../utils/constants'
-import { GET_ORG_ID_FROM_USERNAME } from '../../../graphql/queries/org'
+import {
+	GET_ORG_BY_ID,
+	GET_ORG_ID_FROM_USERNAME,
+} from '../../../graphql/queries/org'
 import { OrgBoardContext } from '../../../utils/contexts'
+import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries'
 
 const TO_DO = {
 	status: TASK_STATUS_TODO,
@@ -99,6 +103,12 @@ const BoardsPage = () => {
 	const user = useMe()
 	const router = useRouter()
 	const { username, orgId } = router.query
+	const { data: userPermissionsContext } = useQuery(
+		GET_USER_PERMISSION_CONTEXT,
+		{
+			fetchPolicy: 'cache-and-network',
+		}
+	)
 
 	const [getOrgTaskProposals] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
 		onCompleted: (data) => {
@@ -223,6 +233,9 @@ const BoardsPage = () => {
 				columns,
 				setColumns,
 				orgId: profileOrgId,
+				userPermissionsContext: userPermissionsContext?.getUserPermissionContext
+					? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+					: null,
 			}}
 		>
 			<Boards selectOptions={SELECT_OPTIONS} columns={columns} />

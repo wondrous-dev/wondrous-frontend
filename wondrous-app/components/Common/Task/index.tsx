@@ -107,10 +107,10 @@ export const Task = ({ task, setTask }) => {
 					{media ? <TaskMedia media={media} /> : <TaskSeparator />}
 				</TaskContent>
 				<TaskFooter>
-					<TaskAction key={'task-like-' + id} onClick={toggleLike}>
+					{/* <TaskAction key={'task-like-' + id} onClick={toggleLike}>
 						<TaskLikeIcon liked={liked} />
 						<TaskActionAmount>{likes}</TaskActionAmount>
-					</TaskAction>
+					</TaskAction> */}
 					<TaskAction key={'task-comment-' + id}>
 						<TaskCommentIcon />
 						<TaskActionAmount>{comments}</TaskActionAmount>

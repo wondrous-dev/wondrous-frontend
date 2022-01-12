@@ -133,7 +133,7 @@ const Login = ({ csrfToken }) => {
 						{wonderWeb3.connecting ? (
 							<Button disabled className="disabled">
 								<PaddedParagraph padding="0 10px">
-									Continue on your wallet
+									Log in with MetaMask
 								</PaddedParagraph>
 							</Button>
 						) : (

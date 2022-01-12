@@ -33,6 +33,10 @@ import {
 	TokenHeader,
 	TokenLogo,
 } from './styles'
+import { useOrgBoard } from '../../../utils/hooks'
+import { useQuery } from '@apollo/client'
+import { GET_ORG_BY_ID } from '../../../graphql/queries/org'
+import { SafeImage } from '../../Common/Image'
 
 const SIDEBAR_LIST_ITEMS = [
 	{
@@ -65,7 +69,17 @@ const MOCK_ORGANIZATION_DATA = {
 const Wrapper = (props) => {
 	const { children } = props
 	const [minimized, setMinimized] = useState(false)
-
+	const orgBoard = useOrgBoard()
+	const [orgProfile, setOrgProfile] = useState(null)
+	const { data: orgData } = useQuery(GET_ORG_BY_ID, {
+		onCompleted: (data) => {
+			const org = data?.getOrgById
+			setOrgProfile(org)
+		},
+		variables: {
+			orgId: orgBoard?.orgId,
+		},
+	})
 	const [createFormModal, setCreateFormModal] = useState(false)
 	const [data, setData] = useState(MOCK_ORGANIZATION_DATA)
 	const { amount, contributors, pods, link, title, description } = data
@@ -74,6 +88,7 @@ const Wrapper = (props) => {
 		toggleHtmlOverflow()
 		setCreateFormModal((prevState) => !prevState)
 	}
+	const links = orgProfile?.links
 
 	return (
 		<>
@@ -98,35 +113,51 @@ const Wrapper = (props) => {
 					<Content>
 						<ContentContainer>
 							<TokenHeader>
-								<TokenLogo />
+								<SafeImage
+									src={orgProfile?.profilePicture}
+									style={{
+										width: '96px',
+										height: '96px',
+										position: 'absolute',
+										borderRadius: '48px',
+										top: '-50px',
+										border: '10px solid #0f0f0f',
+									}}
+								/>
 								<HeaderMainBlock>
-									<HeaderTitle>{title}</HeaderTitle>
+									<HeaderTitle>{orgProfile?.name}</HeaderTitle>
 									<HeaderButtons>
-										<HeaderFollowButton>
+										<HeaderFollowButton
+											style={{
+												visibility: 'hidden',
+											}}
+										>
 											<HeaderFollowButtonText>
 												{shrinkNumber(amount)}
 											</HeaderFollowButtonText>
 											<HeaderFollowButtonIcon src="/images/overview/icon.png" />
 										</HeaderFollowButton>
-										<HeaderContributeButton>Contribute</HeaderContributeButton>
+										{/* <HeaderContributeButton>Contribute</HeaderContributeButton> */}
 									</HeaderButtons>
 								</HeaderMainBlock>
-								<HeaderText>{description}</HeaderText>
+								<HeaderText>{orgProfile?.description}</HeaderText>
 								<HeaderActivity>
-									<HeaderActivityLink href={link}>
-										<HeaderActivityLinkIcon />
-										{link.replace('https://', '')}
-									</HeaderActivityLink>
+									{links?.map((link) => (
+										<HeaderActivityLink href={link?.url} key={link}>
+											<HeaderActivityLinkIcon />
+											{link?.name || link?.url}
+										</HeaderActivityLink>
+									))}
 									<HeaderContributors>
 										<HeaderContributorsAmount>
-											{contributors}
+											{orgProfile?.contributorCount}
 										</HeaderContributorsAmount>
 										<HeaderContributorsText>
 											Contributors
 										</HeaderContributorsText>
 									</HeaderContributors>
 									<HeaderPods>
-										<HeaderPodsAmount>{pods}</HeaderPodsAmount>
+										<HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
 										<HeaderPodsText>Pods</HeaderPodsText>
 									</HeaderPods>
 								</HeaderActivity>

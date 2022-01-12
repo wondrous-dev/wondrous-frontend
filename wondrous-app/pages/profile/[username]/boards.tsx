@@ -392,6 +392,7 @@ const BoardsPage = () => {
       })
       setColumns(newColumns)
     },
+    fetchPolicy: 'cache-and-network',
   })
   const [getUserTaskSubmissions] = useLazyQuery(
     GET_USER_TASK_BOARD_SUBMISSIONS,
@@ -405,6 +406,7 @@ const BoardsPage = () => {
         })
         setColumns(newColumns)
       },
+      fetchPolicy: 'cache-and-network',
     }
   )
 
@@ -429,6 +431,7 @@ const BoardsPage = () => {
       })
       setColumns(newColumns)
     },
+    fetchPolicy: 'cache-and-network',
   })
   const [
     getUserIdFromUsername,

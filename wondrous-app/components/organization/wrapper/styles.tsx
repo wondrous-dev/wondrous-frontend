@@ -144,9 +144,11 @@ export const HeaderContributeButton = styled(Button)`
 export const HeaderText = styled(Typography)`
 	&& {
 		font-size: 15px;
-		line-height: 19px;
+		line-height: 22px;
 		letter-spacing: 0.01em;
 		color: #ffffff;
+		margin-bottom: 8px;
+		margin-top: 8px;
 	}
 `
 
@@ -169,6 +171,7 @@ export const HeaderActivityLink = styled.a`
 	text-decoration: none;
 	color: #ccbbff;
 	text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+	margin-right: 12px;
 `
 
 export const HeaderActivityLinkIcon = styled(LinkIcon)`
@@ -183,6 +186,7 @@ export const HeaderContributors = styled.div`
 	justify-content: space-between;
 	align-items: center;
 	cursor: pointer;
+	margin-right: 8px;
 `
 
 export const HeaderContributorsAmount = styled(Typography)`

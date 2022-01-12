@@ -1,6 +1,14 @@
 import { gql } from '@apollo/client'
-import { OrgInviteFragment } from '../fragments/org'
+import { OrgFragment, OrgInviteFragment } from '../fragments/org'
 
+export const GET_ORG_BY_ID = gql`
+	query getOrgById($orgId: ID!) {
+		getOrgById(orgId: $orgId) {
+			...OrgFragment
+		}
+	}
+	${OrgFragment}
+`
 export const GET_ORG_ID_FROM_USERNAME = gql`
 	query getOrgIdFromUsername($username: String!) {
 		getOrgIdFromUsername(username: $username) {

@@ -303,7 +303,12 @@ const CreateLayoutBaseModal = (props) => {
 	const [reviewerIds, setReviewerIds] = useState([])
 	const [title, setTitle] = useState('')
 	const orgBoard = useOrgBoard()
-	const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT)
+	const { data: userPermissionsContext } = useQuery(
+		GET_USER_PERMISSION_CONTEXT,
+		{
+			fetchPolicy: 'cache-and-network',
+		}
+	)
 	const { data: userOrgs } = useQuery(GET_USER_ORGS)
 	const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(
 		GET_AUTOCOMPLETE_USERS
@@ -467,7 +472,7 @@ const CreateLayoutBaseModal = (props) => {
 					orgProfilePicture: orgBoard?.org?.profilePicture,
 					podName: justCreatedPod?.name,
 				})
-				console.log('transofmred', transformedTask)
+
 				const columns = [...orgBoard?.columns]
 				columns[0].tasks = [transformedTask, ...columns[0].tasks]
 				orgBoard.setColumns(columns)
@@ -554,7 +559,6 @@ const CreateLayoutBaseModal = (props) => {
 		entityType,
 		createTaskProposal,
 	])
-	console.log('')
 	return (
 		<CreateFormBaseModal>
 			<CreateFormBaseModalCloseBtn onClick={handleClose}>
