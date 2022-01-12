@@ -3,23 +3,19 @@ import styled from 'styled-components'
 import AppLayout from '../components/Common/Layout/App'
 import { ToDo, InProgress, Done } from '../components/Icons'
 import { Archived, InReview, Requested } from '../components/Icons/sections'
-import { GmBox, WelcomeMessage } from '../components/Pages/home'
 import KanbanBoard from '../components/Common/KanbanBoard/kanbanBoard'
 import * as Constants from '../utils/constants'
 import { withAuth } from '../components/Auth/withAuth'
 import {
-	BoardsActivity,
 	BoardsActivityInput,
 	BoardsContainer,
 } from '../components/organization/boards/styles'
 import { InputAdornment } from '@material-ui/core'
 import SearchIcon from '../components/Icons/search'
-import { MultiSelect } from '../components/Common/MultiSelect'
 import MetricsPanel from '../components/Common/Metrics'
 import { ToggleViewButton } from '../components/Common/ToggleViewButton'
 import Filter from '../components/Common/Filter'
 import CreatePodIcon from '../components/Icons/createPod'
-import StatusIcon from '../components/Icons/status'
 
 const TO_DO = {
 	status: Constants.TASK_STATUS_TODO,
@@ -464,16 +460,6 @@ const DONE = {
 
 const COLUMNS = [TO_DO, IN_PROGRESS, DONE]
 
-const SELECT_OPTIONS = [
-	'#copywriting (23)',
-	'#growth (23)',
-	'#design (23)',
-	'#community (11)',
-	'#sales (23)',
-	'#tiktok (13)',
-	'#analytics (23)',
-]
-
 const DashboardBanner = styled.div`
 	position: absolute;
 	top: 0;
@@ -550,13 +536,7 @@ const Home = () => {
 
 	return (
 		<AppLayout banner={<DashboardBanner />}>
-			{/* <WelcomeMessage>
-				<GmBox>☀️gm</GmBox>
-				<span>Welcome to Wonderverse!</span>
-			</WelcomeMessage> */}
-
 			<MetricsPanel />
-
 			<BoardsContainer>
 				<DashboardActivity>
 					<BoardsActivityInput
@@ -570,7 +550,6 @@ const Home = () => {
 						}}
 					/>
 					<Filter filterSchema={filterSchema} filter={filter} setFilter={setFilter}/>
-					{/* <MultiSelect style={{ width: '50%' }} options={SELECT_OPTIONS} /> */}
 					<ToggleViewButton options={listViewOptions} />
 				</DashboardActivity>
 
