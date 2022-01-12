@@ -19,6 +19,7 @@ import {
   FilterItemName,
   FilterItemCount,
   FilterItemListShade,
+  FilterItemOrgIcon,
 } from "./styles";
 
 /**
@@ -92,6 +93,8 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected]);
 
+  console.log(items)
+
   return (
     <FilterHandle open={open}>
       <FilterHandleInner open={open} onClick={toggleOpen}>
@@ -129,6 +132,13 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
                 >
                   <FilterItemIcon>{item.icon}</FilterItemIcon>
                   <FilterItemName>{item.name}</FilterItemName>
+                  {item.organization 
+                  ? (
+                    <FilterItemOrgIcon>
+                      {item.organization.icon}
+                    </FilterItemOrgIcon>
+                  )
+                  : ''}
                   <FilterItemCount>{item.count}</FilterItemCount>
                 </FilterItem>
               ))}

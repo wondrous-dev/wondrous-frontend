@@ -16,6 +16,7 @@ import MetricsPanel from '../components/Common/Metrics'
 import { ToggleViewButton } from '../components/Common/ToggleViewButton'
 import Filter from '../components/Common/Filter'
 import CreatePodIcon from '../components/Icons/createPod'
+import { Logo } from '../components/Icons/logo'
 
 const TO_DO = {
 	status: Constants.TASK_STATUS_TODO,
@@ -492,15 +493,15 @@ const Home = () => {
 	const filterSchema = [
 			{
 				name: 'Pods',
-				multiChoice: true,
+				multiChoice: false,
 				items: [
-					{ id: 'designPod', name: 'Design Pod', icon: <CreatePodIcon />, count: 12},
-					{ id: 'growthTeam', name: 'Growth Team', icon: <CreatePodIcon />, count: 4},
-					{ id: 'analytics', name: 'Analytics', icon: <CreatePodIcon />, count: 1},
-					{ id: 'dataPod', name: 'Data Pod', icon: <CreatePodIcon />, count: 0},
-					{ id: 'prDreamTeam', name: 'PR Dream Team', icon: <CreatePodIcon />, count: 2},
-					{ id: 'twitterPod', name: 'Twitter Pod', icon: <CreatePodIcon />, count: 10},
-					{ id: 'blogPod', name: 'Blog Pod', icon: <CreatePodIcon />, count: 2},
+					{ id: 'designPod', name: 'Design Pod', icon: <CreatePodIcon />, organization: { id: 'Wonder', icon: <Logo />} , count: 12},
+					{ id: 'growthTeam', name: 'Growth Team', icon: <CreatePodIcon />, organization: { id: 'Wonder', icon: <Logo />} , count: 4},
+					{ id: 'analytics', name: 'Analytics', icon: <CreatePodIcon />, organization: { id: 'Wonder', icon: <Logo />} , count: 1},
+					{ id: 'dataPod', name: 'Data Pod', icon: <CreatePodIcon />, organization: { id: 'Wonder', icon: <Logo />} , count: 0},
+					{ id: 'prDreamTeam', name: 'PR Dream Team', icon: <CreatePodIcon />, organization: { id: 'Wonder', icon: <Logo />} , count: 2},
+					{ id: 'twitterPod', name: 'Twitter Pod', icon: <CreatePodIcon />, organization: { id: 'Wonder', icon: <Logo />} , count: 10},
+					{ id: 'blogPod', name: 'Blog Pod', icon: <CreatePodIcon />, organization: { id: 'Wonder', icon: <Logo />} , count: 2},
 				]
 			},
 			{
