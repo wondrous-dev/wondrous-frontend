@@ -470,7 +470,7 @@ const BoardsPage = () => {
           userId: profileUserId,
           statuses,
           offset: 0,
-          limit: 10,
+          limit: 3,
         },
       })
       getUserTaskProposals({
@@ -478,7 +478,7 @@ const BoardsPage = () => {
           userId: profileUserId,
           statuses,
           offset: 0,
-          limit: 10,
+          limit: 3,
         },
       })
 
@@ -487,7 +487,7 @@ const BoardsPage = () => {
           userId: profileUserId,
           statuses,
           offset: 0,
-          limit: 10,
+          limit: 3,
         },
       })
     }

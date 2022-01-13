@@ -195,7 +195,7 @@ const BoardsPage = () => {
           orgId: profileOrgId,
           statuses,
           offset: 0,
-          limit: 10,
+          limit: 3,
         },
       })
       getOrgTaskSubmissions({
@@ -203,7 +203,7 @@ const BoardsPage = () => {
           orgId: profileOrgId,
           statuses,
           offset: 0,
-          limit: 10,
+          limit: 3,
         },
       })
     }
