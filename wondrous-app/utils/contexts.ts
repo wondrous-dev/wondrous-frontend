@@ -9,3 +9,5 @@ export const TextInputContext = createContext(null)
 export const OrgBoardContext = createContext(null)
 
 export const UserBoardContext = createContext(null)
+
+export const PodBoardContext = createContext(null)

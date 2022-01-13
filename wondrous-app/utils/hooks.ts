@@ -1,11 +1,12 @@
 import { useContext, useState, useEffect } from 'react'
 
 import {
-	IsMobileContext,
-	OrgBoardContext,
-	SideBarContext,
-	TextInputContext,
-	UserBoardContext,
+  IsMobileContext,
+  OrgBoardContext,
+  PodBoardContext,
+  SideBarContext,
+  TextInputContext,
+  UserBoardContext,
 } from './contexts'
 
 export const useIsMobile = () => useContext(IsMobileContext)
@@ -13,42 +14,44 @@ export const useIsMobile = () => useContext(IsMobileContext)
 export const useSideBar = () => useContext(SideBarContext)
 // Hook
 export const useWindowSize = () => {
-	// Initialize state with undefined width/height so server and client renders match
-	// Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
-	const [windowSize, setWindowSize] = useState({
-		width: undefined,
-		height: undefined,
-	})
+  // Initialize state with undefined width/height so server and client renders match
+  // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
+  const [windowSize, setWindowSize] = useState({
+    width: undefined,
+    height: undefined,
+  })
 
-	useEffect(() => {
-		// only execute all the code below in client side
-		if (typeof window !== 'undefined') {
-			// Handler to call on window resize
-			const handleResize = () => {
-				setWindowSize({
-					width: window.innerWidth,
-					height: window.innerHeight,
-				})
-			}
+  useEffect(() => {
+    // only execute all the code below in client side
+    if (typeof window !== 'undefined') {
+      // Handler to call on window resize
+      const handleResize = () => {
+        setWindowSize({
+          width: window.innerWidth,
+          height: window.innerHeight,
+        })
+      }
 
-			// Add event listener
-			window.addEventListener('resize', handleResize)
+      // Add event listener
+      window.addEventListener('resize', handleResize)
 
-			// Call handler right away so state gets updated with initial window size
-			setWindowSize({
-				width: window.innerWidth,
-				height: window.innerHeight,
-			})
+      // Call handler right away so state gets updated with initial window size
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      })
 
-			// Remove event listener on cleanup
-			return () => window.removeEventListener('resize', handleResize)
-		}
-	}, []) // Empty array ensures that effect is only run on mount
-	return windowSize
+      // Remove event listener on cleanup
+      return () => window.removeEventListener('resize', handleResize)
+    }
+  }, []) // Empty array ensures that effect is only run on mount
+  return windowSize
 }
 
 export const useTextInput = () => useContext(TextInputContext)
 
 export const useOrgBoard = () => useContext(OrgBoardContext)
+
+export const usePodBoard = () => useContext(PodBoardContext)
 
 export const useUserBoard = () => useContext(UserBoardContext)
