@@ -27,6 +27,7 @@ export const BoardsActivityInput = styled(TextField)({
 		display: 'flex',
 		justifyContent: 'center',
 		border: '1px solid #4B4B4B',
+		marginRight: '8px',
 	},
 	'& .MuiInputBase-input': {
 		fontSize: 14,

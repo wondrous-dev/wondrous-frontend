@@ -33,7 +33,7 @@ export const CreateFormInputLabel = styled(InputLabel)({
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'center',
-		padding: '0 15px',
+		padding: '4px 15px',
 
 		'& svg': {
 			marginRight: 7,
@@ -52,15 +52,28 @@ export const CreateFormSelect = styled(Select)`
 		width: 100%;
 		height: 40px;
 		padding: 0 15px;
-
+		position: relative;
 		font-size: 14px;
 		line-height: 19px;
 		letter-spacing: 0.01em;
 		color: #c4c4c4;
+		margin-top: 20px;
+		.MuiSelect-select.MuiSelect-select {
+			display: flex;
+			align-items: center;
+		}
+
+		svg {
+			color: #c4c4c4;
+		}
 	}
 `
 
-export const CreateFormSelectArrowIcon = styled(SelectDownIcon)``
+export const CreateFormSelectArrowIcon = styled(SelectDownIcon)`
+	&& {
+		cursor: pointer;
+	}
+`
 
 export const CreateFormMenuItem = styled(MenuItem)`
 	&& {
@@ -68,7 +81,8 @@ export const CreateFormMenuItem = styled(MenuItem)`
 		line-height: 19px;
 		letter-spacing: 0.01em;
 		color: #c4c4c4;
-
+		display: flex;
+		align-items: center;
 		& span {
 			margin-left: 5px;
 			opacity: 0.5;

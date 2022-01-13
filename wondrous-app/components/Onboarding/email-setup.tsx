@@ -18,6 +18,7 @@ import WonderLogo from '../../public/images/onboarding/wonder-logo.svg'
 import { useRouter } from 'next/router'
 
 import { ThirdStep } from '../../components/Common/Image/OnboardingProgressBar'
+import { CircularProgress } from '@material-ui/core'
 
 const EMAIL_REGEX =
 	/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -38,6 +39,7 @@ export const Logo = ({ divStyle }) => {
 export const InviteWelcomeBox = ({ updateUser }) => {
 	const [email, setEmail] = useState('')
 	const [error, setError] = useState('')
+	const [loading, setLoading] = useState(null)
 	const buttonStyle = {
 		background:
 			'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
@@ -112,6 +114,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
 				<ContinueButton
 					style={buttonStyle}
 					onClick={() => {
+						setLoading(true)
 						if (validateEmail(email)) {
 							updateUser({
 								variables: {
@@ -121,6 +124,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
 								},
 							})
 						} else {
+							setLoading(false)
 							setError('Please enter a valid email')
 						}
 					}}
@@ -128,7 +132,9 @@ export const InviteWelcomeBox = ({ updateUser }) => {
 						padding: '8px 16px',
 					}}
 				>
-					<InviteWelcomeBoxParagraph>Continue</InviteWelcomeBoxParagraph>
+					<InviteWelcomeBoxParagraph>
+						{loading ? <CircularProgress /> : 'Finish'}
+					</InviteWelcomeBoxParagraph>
 				</ContinueButton>
 			</div>
 		</InviteWelcomeBoxWrapper>

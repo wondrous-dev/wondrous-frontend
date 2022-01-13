@@ -33,8 +33,6 @@ const FileUpload = (props) => {
 		if (newFiles.length) {
 			const updatedFiles = addNewFiles(newFiles)
 			setFiles(updatedFiles)
-
-			console.log('updatedFiles', updatedFiles)
 			callUpdateFilesCb(updatedFiles)
 		}
 	}

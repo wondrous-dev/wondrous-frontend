@@ -102,7 +102,6 @@ const TaskColumn = (props: ITaskColumn) => {
 					) : (
 						<Task task={card} setTask={() => {}} />
 					)}
-
 				</DraggableCard>
 			))}
 			{(

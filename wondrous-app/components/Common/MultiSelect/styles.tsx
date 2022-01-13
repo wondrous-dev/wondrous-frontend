@@ -23,6 +23,7 @@ export const MultiSelectForm = styled(FormControl)`
 		border-radius: 6px;
 		z-index: 1;
 		display: flex;
+		margin-right: 8px;
 	}
 	.MuiInputBase-root::after {
 		content: '';

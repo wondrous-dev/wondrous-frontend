@@ -121,6 +121,7 @@ const Wallet = () => {
 	}, [wonderWeb3.assets])
 
 	// Bind to the Web3 wallet to monitor changes (i.e user unlinks wallet)
+
 	useEffect(() => {
 		// Don't listen to anything before the connection to the
 		// wallet is done.
@@ -146,7 +147,7 @@ const Wallet = () => {
 				setConnected(false)
 
 				// No wallet, maybe unlinked?
-				if (!user.email) {
+				if (!user?.email) {
 					// Sign out, no other means of identification left
 					// TODO: Email is not brought on the current Session
 					//       management.
@@ -192,8 +193,8 @@ const Wallet = () => {
 					style={{ width: '270px', minHeight: '40px' }}
 				>
 					<Metamask height="18" width="17" />
-					<PaddedParagraph padding="0 10px">
-						{user && !user.activeEthAddress
+					<PaddedParagraph>
+						{!user?.activeEthAddress
 							? 'Link Metamask to Account'
 							: 'Connect MetaMask'}
 					</PaddedParagraph>

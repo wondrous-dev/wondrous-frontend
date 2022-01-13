@@ -8,28 +8,28 @@ import About from '../about/about'
 
 import { StyledTabs } from './styles'
 
-const tabsLinks = [
-	{
-		href: '/organization/activities',
-		label: 'Activity',
-	},
-	{
-		href: '/organization/boards',
-		label: 'Boards',
-	},
-	{
-		href: '/organization/about',
-		label: 'About',
-	},
-]
-
 const Tabs = (props) => {
 	const { children } = props
 
 	const router = useRouter()
 
 	const { pathname } = router
+	const { username } = router.query
 
+	const tabsLinks = [
+		{
+			href: `/organization/${username}/boards`,
+			label: 'Boards',
+		},
+		{
+			href: `/organization/${username}/activities`,
+			label: 'Activity',
+		},
+		{
+			href: `/organization/${username}/about`,
+			label: 'About',
+		},
+	]
 	return (
 		<div>
 			<StyledTabs value={pathname}>

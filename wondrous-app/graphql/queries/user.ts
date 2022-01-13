@@ -48,3 +48,41 @@ export const GET_USER_SIGNING_MESSAGE = gql`
 		}
 	}
 `
+
+export const GET_USER_ID_FROM_USERNAME = gql`
+	query getUserIdFromUsername($username: String!) {
+		getUserIdFromUsername(username: $username) {
+			userId
+		}
+	}
+`
+
+export const GET_USER_ORGS = gql`
+	query getUserOrgs($userId: String) {
+		getUserOrgs(userId: $userId) {
+			id
+			username
+			name
+			profilePicture
+			thumbnailPicture
+		}
+	}
+`
+
+export const GET_USER_PERMISSION_CONTEXT = gql`
+	query getUserPermissionContext {
+		getUserPermissionContext
+	}
+`
+
+export const GET_AUTOCOMPLETE_USERS = gql`
+	query GetAutocompleteUsers($username: String!) {
+		getAutocompleteUsers(username: $username) {
+			id
+			firstName
+			lastName
+			username
+			profilePicture
+		}
+	}
+`

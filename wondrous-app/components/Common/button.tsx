@@ -18,7 +18,7 @@ const ButtonInner = styled.button`
 	font-size: 16px;
 	border: none;
 	color: white;
-	padding: 16px;
+	padding: 12px;
 	cursor: pointer;
 `
 

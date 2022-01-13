@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { IconButton, InputAdornment, InputBase } from '@material-ui/core'
+import { White } from '../../../theme/colors'
 
 export const SearchInputBlock = styled.div`
 	width: 100%;
@@ -24,7 +25,7 @@ export const SearchInput = styled(InputBase)`
 		font-size: 14px;
 		line-height: 19px;
 		letter-spacing: 0.01em;
-		color: #c4c4c4;
+		color: ${White};
 	}
 `
 

@@ -9,8 +9,7 @@ export const StyledTabs = styled((props) => (
 	/>
 ))({
 	'&.MuiTabs-root': {
-		marginTop: 30,
-		width: 1037,
+		marginTop: '30px !important',
 		margin: '0 auto',
 	},
 	'& .MuiTabs-flexContainer': {

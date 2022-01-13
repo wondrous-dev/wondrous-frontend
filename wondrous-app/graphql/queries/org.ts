@@ -1,6 +1,14 @@
 import { gql } from '@apollo/client'
-import { OrgInviteFragment } from '../fragments/org'
+import { OrgFragment, OrgInviteFragment } from '../fragments/org'
 
+export const GET_ORG_BY_ID = gql`
+	query getOrgById($orgId: ID!) {
+		getOrgById(orgId: $orgId) {
+			...OrgFragment
+		}
+	}
+	${OrgFragment}
+`
 export const GET_ORG_ID_FROM_USERNAME = gql`
 	query getOrgIdFromUsername($username: String!) {
 		getOrgIdFromUsername(username: $username) {
@@ -23,6 +31,34 @@ export const GET_USER_ORGS = gql`
 		getUserOrgs(userId: $userId) {
 			id
 			username
+			name
+			profilePicture
+		}
+	}
+`
+
+export const GET_ORG_USERS = gql`
+	query getOrgUsers($orgId: String!) {
+		getOrgUsers(orgId: $orgId) {
+			user {
+				id
+				username
+				profilePicture
+			}
+			role {
+				permissions
+			}
+		}
+	}
+`
+
+export const GET_ORG_REVIEWERS = gql`
+	query getOrgReviewers($orgId: String!) {
+		getOrgReviewers(orgId: $orgId) {
+			profilePicture
+			id
+			username
+			name
 		}
 	}
 `

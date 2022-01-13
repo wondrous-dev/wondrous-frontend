@@ -1,4 +1,5 @@
 import React from 'react'
+import { SafeImage } from '../Image'
 import {
 	TaskMediaWrapper,
 	TaskImage,
@@ -12,7 +13,14 @@ export const TaskMedia = (props) => {
 	const { type = '', url = '' } = media
 
 	const mediaContentComponents = {
-		image: <TaskImage src={url} />,
+		image: (
+			<SafeImage
+				style={{
+					borderRadius: '6px',
+				}}
+				src={url}
+			/>
+		),
 		video: (
 			<TaskVideo
 				url={url}
