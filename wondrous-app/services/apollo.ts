@@ -63,7 +63,6 @@ const cache = new InMemoryCache({
 						existingData || toReference({ __typename: 'WaitlistUser', ...args })
 					)
 				},
-				getOrgTaskBoardTasks: offsetLimitPagination()
 			},
 		},
 	},
