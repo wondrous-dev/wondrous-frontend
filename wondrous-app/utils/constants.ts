@@ -9,10 +9,10 @@ export const TASK_STATUS_REQUESTED = 'REQUESTED'
 export const TASK_STATUS_ARCHIVED = 'ARCHIVED'
 
 // Decision
-export const DECISION_SEND_INTO_REVISION = "Send into revision"
-export const DECISION_REJECT = "Reject"
-export const DECISION_APPROVE_ONLY = "Approve only"
-export const DECISION_APPROVE_AND_PAY = "Approve and pay"
+export const DECISION_SEND_INTO_REVISION = 'Send into revision'
+export const DECISION_REJECT = 'Reject'
+export const DECISION_APPROVE_ONLY = 'Approve only'
+export const DECISION_APPROVE_AND_PAY = 'Approve and pay'
 
 // Max avatar user list count
 export const AVATAR_LIST_OVERFLOW_MAX = 5
@@ -84,4 +84,24 @@ export const MEDIA_TYPES = {
 	CODE: 'code',
 	LINK: 'link',
 	VIDEO: 'video',
+}
+
+export const POST_TYPES = {
+	ANNOUNCEMENT: 'announcement',
+	ACTIVITY: 'activity',
+	QUOTE: 'quote',
+}
+
+export const VERBS = {
+	CREATE: 'create',
+	JOIN: 'join',
+	AWARD: 'award',
+	COMPLETE: 'complete',
+}
+
+export const OBJECT_TYPE = {
+	POD: 'pod',
+	TASK: 'task',
+	MILESTONE: 'milestone',
+	KUDOS: 'kudos',
 }

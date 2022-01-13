@@ -15,7 +15,7 @@ export const BaseCardWrapper = styled.header`
 	border-radius: 6px;
 `
 
-const BaseCardInner = styled.div`
+export const BaseCardInner = styled.div`
 	flex: 1 1 auto;
 
 	display: flex;

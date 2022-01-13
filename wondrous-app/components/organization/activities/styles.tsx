@@ -3,8 +3,9 @@ import styled from 'styled-components'
 import { Button, IconButton, Typography } from '@material-ui/core'
 
 import { Background } from '../../../theme/colors'
-import { BaseCard } from '../../Common/card'
+import { BaseCard, BaseCardInner } from '../../Common/card'
 import { LogoSquare } from '../../Common/ci'
+import ReactPlayer from 'react-player'
 
 export const OverviewComponent = styled.section`
 	width: 100vw;
@@ -193,12 +194,16 @@ export const PostsContainer = styled.div`
 //cardStyles
 export const PostComponent = styled(BaseCard)`
 	margin-top: 22px;
-	height: 540px;
+	${BaseCardInner} {
+		${(props) => (props.outlined ? 'background: rgb(15,15,15);' : '')}
+	}
 `
+
+export const PostContent = styled.div``
 
 export const PostBlock = styled.div`
 	position: relative;
-	padding: 0 26px 18px;
+	padding: 0 26px ${(props) => (props.quoted ? '8px' : '')};
 	border-left: 1px solid #4b4b4b;
 	margin-bottom: 0 !important;
 `
@@ -222,12 +227,30 @@ export const PostAuthor = styled.div`
 	margin-bottom: 10px;
 `
 
-export const PostAuthorPhoto = styled.img`
+export const PostAuthorPlaceHolder = styled.div`
 	position: absolute;
 	left: -40px;
-	width: 28px;
+	min-width: 28px;
 	height: 28px;
 	margin-right: 10px;
+	display: flex;
+	justify-content: center;
+`
+
+export const PostAuthorPhoto = styled.img`
+	width: 28px;
+	height: 28px;
+`
+
+export const PostActivityPlaceHolder = styled.div`
+	width: 28px;
+	height: 28px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 14px;
+	border: 1px solid #4b4b4b;
+	background: rgb(20, 20, 20);
 `
 
 export const PostAuthorNickname = styled(Typography)`
@@ -236,6 +259,15 @@ export const PostAuthorNickname = styled(Typography)`
 		font-size: 16px;
 		line-height: 20px;
 		color: #ffffff;
+	}
+`
+
+export const PostAuthorSubtitle = styled(Typography)`
+	&& {
+		font-size: 16px;
+		line-height: 20px;
+		color: #ffffff;
+		margin-left: 10px;
 	}
 `
 
@@ -299,7 +331,6 @@ export const PostTaskContent = styled.div``
 export const PostTaskTextBlock = styled.div`
 	width: 100%;
 	min-height: 50px;
-	height: 50px;
 	display: flex;
 	justify-content: space-between;
 	flex-direction: column;
@@ -333,7 +364,7 @@ export const PostTaskImageBlock = styled.div`
 `
 
 export const PostTaskImage = styled.img`
-	width: 290px;
+	width: auto;
 	height: auto;
 `
 
@@ -375,3 +406,51 @@ export const PostLikes = styled(Typography)`
 
 export const PostComments = styled(PostLikes)``
 export const PostShares = styled(PostLikes)``
+
+export const PostMediaImage = styled.img`
+	display: flex;
+	flex-grow: 1;
+	width: 296px;
+	border-radius: 6px;
+	margin: 0 auto;
+`
+
+export const PostMediaVideo = styled(ReactPlayer)`
+	display: flex;
+	flex-grow: 1;
+	min-height: 344px;
+	border-radius: 6px;
+	margin: 0 auto;
+
+	iframe {
+		border-radius: 10px;
+	}
+`
+
+export const PostMediaAudio = styled(ReactPlayer)`
+	display: flex;
+	flex-grow: 1;
+	max-width: 296px;
+	height: 54px;
+	border-radius: 6px;
+	margin: 0 auto;
+
+	iframe {
+		border-radius: 10px;
+	}
+`
+export const PostMediaUnsuported = styled.div`
+	position: flex;
+	height: flex-grow: 1;
+	max-width: 296px;
+	min-height: 166px;
+	margin: 0 auto;
+`
+
+export const PostMediaWrapper = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	max-width: 296px;
+	margin: 0 auto;
+`
