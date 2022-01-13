@@ -11,10 +11,10 @@ const KanbanBoard = (props) => {
 	const [ref, inView] = useInView({})
 
 	useEffect(() => {
-		if (inView) {
+		if (inView && hasMore) {
 			onLoadMore()
 		}
-	}, [inView, onLoadMore])
+	}, [inView, hasMore, onLoadMore])
 
 	const moveCard = (id, status) => {
 		const updatedColumns = columnsState.map((column) => {

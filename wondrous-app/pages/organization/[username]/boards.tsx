@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useLazyQuery, useQuery } from '@apollo/client'
 
@@ -146,7 +146,7 @@ const BoardsPage = () => {
         }, column)
       })
       setColumns(newColumns)
-      setOrgTaskHasMore(data?.hasMore || true)
+      setOrgTaskHasMore(data?.hasMore || data?.getOrgTaskBoardTasks.length >= LIMIT)
     },
   })
 
@@ -218,13 +218,20 @@ const BoardsPage = () => {
     getOrgTaskProposals,
   ])
 
-  const handleLoadMore = () => {
+  const handleLoadMore = useCallback(() => {
     if (orgTaskHasMore) {
+      console.log(
+        'offset',
+        Math.max(...columns.map(({ tasks }) => tasks.length))
+      )
       fetchMore({
         variables: {
-          offset: Math.max(...columns.map(({ tasks }) => tasks.length))
+          offset: Math.max(...columns.map(({ tasks }) => tasks.length)),
+          limit: LIMIT,
         },
         updateQuery: (prev, { fetchMoreResult }) => {
+          console.log('prev', prev)
+          console.log('fetchMoreResult', fetchMoreResult)
           const hasMore = fetchMoreResult.getOrgTaskBoardTasks.length >= LIMIT
           if (!fetchMoreResult) {
             return prev
@@ -243,7 +250,7 @@ const BoardsPage = () => {
         console.error(error)
       })
     }
-  }
+  }, [orgTaskHasMore, columns, fetchMore])
 
   return (
     <OrgBoardContext.Provider
