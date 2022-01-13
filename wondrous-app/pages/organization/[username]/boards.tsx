@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useLazyQuery, useQuery } from '@apollo/client'
 
@@ -93,6 +93,8 @@ const SELECT_OPTIONS = [
   '#analytics (23)',
 ]
 
+const LIMIT = 10
+
 const BoardsPage = () => {
   const [columns, setColumns] = useState(COLUMNS)
   const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR)
@@ -105,6 +107,7 @@ const BoardsPage = () => {
       fetchPolicy: 'cache-and-network',
     }
   )
+  const [orgTaskHasMore, setOrgTaskHasMore] = useState(false)
 
   const [getOrgTaskProposals] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
     onCompleted: (data) => {
@@ -130,30 +133,23 @@ const BoardsPage = () => {
     },
   })
 
-  const [getOrgTasks] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
+  const [getOrgTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     onCompleted: (data) => {
-      // Parse task board data
-      const newColumns = [...columns]
       const tasks = data?.getOrgTaskBoardTasks
-      newColumns[0].tasks = []
-      newColumns[1].tasks = []
-      newColumns[2].tasks = []
-      tasks.forEach((task) => {
-        if (task?.status === TASK_STATUS_TODO) {
-          newColumns[0].tasks.push(task)
-        } else if (task?.status === TASK_STATUS_REQUESTED) {
-          newColumns[0].section.tasks.push(task)
-        } else if (task?.status === TASK_STATUS_IN_PROGRESS) {
-          newColumns[1].tasks.push(task)
-        } else if (task?.status === TASK_STATUS_DONE) {
-          newColumns[2].tasks.push(task)
-        } else if (task?.status === TASK_STATUS_ARCHIVED) {
-          newColumns[2].section.tasks.push(task)
-        }
+      const newColumns = columns.map((column) => {
+        column.tasks = []
+        return tasks.reduce((column, task) => {
+          if (column.status === task.status) {
+            column.tasks = [...column.tasks, task]
+          }
+          return column
+        }, column)
       })
       setColumns(newColumns)
+      setOrgTaskHasMore(data?.hasMore || data?.getOrgTaskBoardTasks.length >= LIMIT)
     },
   })
+
   const [
     getOrgIdFromUsername,
     { data: getOrgIdFromUsernameData, error: getOrgIdFromUsernameError },
@@ -173,7 +169,7 @@ const BoardsPage = () => {
           orgId,
           statuses,
           offset: 0,
-          limit: 10,
+          limit: LIMIT,
         },
       })
     } else if (!orgId && username) {
@@ -191,7 +187,7 @@ const BoardsPage = () => {
           orgId: profileOrgId,
           statuses,
           offset: 0,
-          limit: 10,
+          limit: LIMIT,
         },
       })
       getOrgTaskProposals({
@@ -222,24 +218,51 @@ const BoardsPage = () => {
     getOrgTaskProposals,
   ])
 
+  const handleLoadMore = useCallback(() => {
+    if (orgTaskHasMore) {
+      fetchMore({
+        variables: {
+          offset: Math.max(...columns.map(({ tasks }) => tasks.length)),
+          limit: LIMIT,
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          const hasMore = fetchMoreResult.getOrgTaskBoardTasks.length >= LIMIT
+          if (!fetchMoreResult) {
+            return prev
+          }
+          if (!hasMore) {
+            setOrgTaskHasMore(false)
+          }
+          return {
+            hasMore,
+            getOrgTaskBoardTasks: prev.getOrgTaskBoardTasks.concat(
+              fetchMoreResult.getOrgTaskBoardTasks
+            ),
+          }
+        },
+      }).catch((error) => {
+        console.error(error)
+      })
+    }
+  }, [orgTaskHasMore, columns, fetchMore])
+
   return (
-    <>
-      <OrgBoardContext.Provider
-        value={{
-          statuses,
-          setStatuses,
-          columns,
-          setColumns,
-          orgId: profileOrgId,
-          userPermissionsContext:
-            userPermissionsContext?.getUserPermissionContext
-              ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
-              : null,
-        }}
-      >
-        <Boards selectOptions={SELECT_OPTIONS} columns={columns} />
-      </OrgBoardContext.Provider>
-    </>
+    <OrgBoardContext.Provider
+      value={{
+        statuses,
+        setStatuses,
+        columns,
+        setColumns,
+        orgId: profileOrgId,
+      }}
+    >
+      <Boards
+        selectOptions={SELECT_OPTIONS}
+        columns={columns}
+        onLoadMore={handleLoadMore}
+        hasMore={orgTaskHasMore}
+      />
+    </OrgBoardContext.Provider>
   )
 }
 
