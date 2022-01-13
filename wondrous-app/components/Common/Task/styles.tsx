@@ -5,6 +5,7 @@ import {
 } from '../gradients'
 import { Grey80, White } from '../../../theme/colors'
 import { Typography } from '@material-ui/core'
+import { BaseCard } from '../card'
 
 export const TaskInner = styled.div`
   display: flex;
@@ -117,6 +118,27 @@ export const PodWrapper = styled.div`
 export const PodName = styled(Typography)`
   && {
     font-size: 13px;
+    color: ${White};
+  }
+`
+
+export const TaskModal = styled(BaseCard)`
+  width: 680px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -20%);
+`
+
+export const TaskModalHeader = styled.div`
+  display: flex;
+  align-items: center;
+`
+export const PodNameTypography = styled(Typography)`
+  && {
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 17px;
     color: ${White};
   }
 `

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { InputAdornment } from '@material-ui/core'
 
 import SearchIcon from '../../Icons/search'
@@ -43,7 +43,6 @@ const Boards = (props) => {
 				]
 			}
 		]
-	
 
 	return (
 		<Wrapper>

@@ -81,7 +81,6 @@ export const transformTaskToTaskCard = (task, extraData) => {
     orgProfilePicture: extraData?.orgProfilePicture,
     orgName: extraData?.orgName,
     podName: extraData?.podName,
-    media: task?.media && task?.media[0],
   }
 }
 
@@ -96,6 +95,5 @@ export const transformTaskProposalToTaskProposalCard = (
     orgProfilePicture: extraData?.orgProfilePicture,
     orgName: extraData?.orgName,
     podName: extraData?.podName,
-    media: taskProposal?.media && taskProposal?.media[0],
   }
 }
