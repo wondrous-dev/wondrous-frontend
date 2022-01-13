@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { LogoButton } from '../logo'
 import { ToDo, InProgress, Done, InReview } from '../../Icons'
 import { TaskLikeIcon } from '../../Icons/taskLike'
@@ -34,6 +34,7 @@ import { SafeImage } from '../Image'
 import { parseUserPermissionContext } from '../../../utils/helpers'
 import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks'
 import { White } from '../../../theme/colors'
+import { TaskViewModal } from './modal'
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: ToDo,
@@ -72,6 +73,7 @@ export const Task = ({ task, setTask }) => {
     podBoard?.userPermissionsContext ||
     userBoard?.userPermissionsContext
   const [liked, setLiked] = useState(iLiked)
+  const [modalOpen, setModalOpen] = useState(false)
 
   let TaskIcon = TASK_ICONS[status]
 
@@ -104,92 +106,85 @@ export const Task = ({ task, setTask }) => {
     permissions.includes(Constants.PERMISSIONS.MANAGE_BOARD) ||
     permissions.includes(Constants.PERMISSIONS.FULL_ACCESS)
 
-  return (
-    <TaskWrapper key={id} wrapped={milestone}>
-      <TaskInner>
-        <TaskHeader>
-          <SafeImage
-            src={task?.orgProfilePicture || 'seed/wonder_logo.jpg'}
-            style={{
-              width: '29px',
-              height: '28px',
-              borderRadius: '4px',
-            }}
-          />
-          {task?.podName && (
-            <PodWrapper>
-              <PodName>{task?.podNAme}</PodName>
-            </PodWrapper>
-          )}
-          {task?.assigneeUsername && (
-            <>
-              {task?.assigneeProfilePicture ? (
-                <SafeImage
-                  style={{
-                    width: '29px',
-                    height: '29px',
-                    borderRadius: '20px',
-                    marginLeft: '12px',
-                  }}
-                  src={task?.assigneeProfilePicture}
-                />
-              ) : (
-                <SmallAvatar
-                  style={{ marginLeft: '12px' }}
-                  initals={task?.assigneeUsername[0]}
-                />
-              )}
-            </>
-          )}
+  const openModal = () => {
+    router.push(`${router.asPath}?task=${task?.id}`)
+    setModalOpen(true)
+  }
 
-          <Compensation compensation={compensation} icon={TaskIcon} />
-        </TaskHeader>
-        <TaskContent>
-          <TaskTitle>{title}</TaskTitle>
-          <p>
-            {renderMentionString({
-              content: description,
-              router,
-            })}
-          </p>
-          {media ? <TaskMedia media={media} /> : <TaskSeparator />}
-        </TaskContent>
-        <TaskFooter>
-          {/* <TaskAction key={'task-like-' + id} onClick={toggleLike}>
+  return (
+    <>
+      <TaskViewModal
+        open={modalOpen}
+        handleOpen={() => setModalOpen(true)}
+        handleClose={() => setModalOpen(false)}
+        task={task}
+      />
+      <TaskWrapper key={id} wrapped={milestone} onClick={openModal}>
+        <TaskInner>
+          <TaskHeader>
+            <SafeImage
+              src={task?.orgProfilePicture || 'seed/wonder_logo.jpg'}
+              style={{
+                width: '29px',
+                height: '28px',
+                borderRadius: '4px',
+              }}
+            />
+            {task?.podName && (
+              <PodWrapper>
+                <PodName>{task?.podNAme}</PodName>
+              </PodWrapper>
+            )}
+            {task?.assigneeUsername && (
+              <>
+                {task?.assigneeProfilePicture ? (
+                  <SafeImage
+                    style={{
+                      width: '29px',
+                      height: '29px',
+                      borderRadius: '20px',
+                      marginLeft: '12px',
+                    }}
+                    src={task?.assigneeProfilePicture}
+                  />
+                ) : (
+                  <SmallAvatar
+                    style={{ marginLeft: '12px' }}
+                    initals={task?.assigneeUsername[0]}
+                  />
+                )}
+              </>
+            )}
+
+            <Compensation compensation={compensation} icon={TaskIcon} />
+          </TaskHeader>
+          <TaskContent>
+            <TaskTitle>{title}</TaskTitle>
+            <p>
+              {renderMentionString({
+                content: description,
+                router,
+              })}
+            </p>
+            {media?.length > 0 ? (
+              <TaskMedia media={media[0]} />
+            ) : (
+              <TaskSeparator />
+            )}
+          </TaskContent>
+          <TaskFooter>
+            {/* <TaskAction key={'task-like-' + id} onClick={toggleLike}>
 						<TaskLikeIcon liked={liked} />
 						<TaskActionAmount>{likes}</TaskActionAmount>
 					</TaskAction> */}
-          <TaskAction key={'task-comment-' + id}>
-            <TaskCommentIcon />
-            <TaskActionAmount>{comments}</TaskActionAmount>
-          </TaskAction>
-          <TaskAction key={'task-share-' + id}>
-            <TaskShareIcon />
-            <TaskActionAmount>{shares}</TaskActionAmount>
-          </TaskAction>
-          <TaskActionMenu right="true">
-            <DropDown DropdownHandler={TaskMenuIcon}>
-              <DropDownItem
-                key={'task-menu-edit-' + id}
-                onClick={archiveTask}
-                style={{
-                  color: White,
-                }}
-              >
-                Archive Task
-              </DropDownItem>
-              {/* <DropDownItem key={'task-menu-report-' + id} onClick={reportTask}>
-                Report
-              </DropDownItem> */}
-              {/* <DropDownItem
-                key={'task-menu-settings-' + id}
-                onClick={openSettings}
-              >
-                Settings
-              </DropDownItem> */}
-            </DropDown>
-          </TaskActionMenu>
-          {canEdit && (
+            <TaskAction key={'task-comment-' + id}>
+              <TaskCommentIcon />
+              <TaskActionAmount>{comments}</TaskActionAmount>
+            </TaskAction>
+            <TaskAction key={'task-share-' + id}>
+              <TaskShareIcon />
+              <TaskActionAmount>{shares}</TaskActionAmount>
+            </TaskAction>
             <TaskActionMenu right="true">
               <DropDown DropdownHandler={TaskMenuIcon}>
                 <DropDownItem
@@ -202,19 +197,43 @@ export const Task = ({ task, setTask }) => {
                   Archive Task
                 </DropDownItem>
                 {/* <DropDownItem key={'task-menu-report-' + id} onClick={reportTask}>
+                Report
+              </DropDownItem> */}
+                {/* <DropDownItem
+                key={'task-menu-settings-' + id}
+                onClick={openSettings}
+              >
+                Settings
+              </DropDownItem> */}
+              </DropDown>
+            </TaskActionMenu>
+            {canEdit && (
+              <TaskActionMenu right="true">
+                <DropDown DropdownHandler={TaskMenuIcon}>
+                  <DropDownItem
+                    key={'task-menu-edit-' + id}
+                    onClick={archiveTask}
+                    style={{
+                      color: White,
+                    }}
+                  >
+                    Archive Task
+                  </DropDownItem>
+                  {/* <DropDownItem key={'task-menu-report-' + id} onClick={reportTask}>
 							Report
 						</DropDownItem> */}
-                {/* <DropDownItem
+                  {/* <DropDownItem
 							key={'task-menu-settings-' + id}
 							onClick={openSettings}
 						>
 							Settings
 						</DropDownItem> */}
-              </DropDown>
-            </TaskActionMenu>
-          )}
-        </TaskFooter>
-      </TaskInner>
-    </TaskWrapper>
+                </DropDown>
+              </TaskActionMenu>
+            )}
+          </TaskFooter>
+        </TaskInner>
+      </TaskWrapper>
+    </>
   )
 }
