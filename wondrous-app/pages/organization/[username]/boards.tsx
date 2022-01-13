@@ -105,6 +105,8 @@ const BoardsPage = () => {
       fetchPolicy: 'cache-and-network',
     }
   )
+  const [orgTaskLimit, setOrgTaskLimit] = useState(10)
+	const [orgTaskHasMore, setOrgTaskHasMore] = useState(true)
 
   const [getOrgTaskProposals] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
     onCompleted: (data) => {
@@ -130,7 +132,7 @@ const BoardsPage = () => {
     },
   })
 
-  const [getOrgTasks] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
+  const [getOrgTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     onCompleted: (data) => {
       // Parse task board data
       const newColumns = [...columns]
@@ -152,6 +154,7 @@ const BoardsPage = () => {
         }
       })
       setColumns(newColumns)
+      setOrgTaskHasMore(data?.getOrgTaskBoardTasks?.length >= orgTaskLimit)
     },
   })
   const [
@@ -222,25 +225,41 @@ const BoardsPage = () => {
     getOrgTaskProposals,
   ])
 
-  return (
-    <>
-      <OrgBoardContext.Provider
-        value={{
-          statuses,
-          setStatuses,
-          columns,
-          setColumns,
-          orgId: profileOrgId,
-          userPermissionsContext:
-            userPermissionsContext?.getUserPermissionContext
-              ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
-              : null,
-        }}
-      >
-        <Boards selectOptions={SELECT_OPTIONS} columns={columns} />
-      </OrgBoardContext.Provider>
-    </>
-  )
+  const handleLoadMore = () => {
+		if (orgTaskHasMore) {
+			fetchMore({
+				variables: {
+					offset: 0,
+					limit: orgTaskLimit,
+				},
+			})
+				.then((result) => {
+					setOrgTaskLimit(orgTaskLimit + 10)
+				})
+				.catch((error) => {
+					console.log(error)
+				})
+		}
+	}
+
+	return (
+		<OrgBoardContext.Provider
+			value={{
+				statuses,
+				setStatuses,
+				columns,
+				setColumns,
+				orgId: profileOrgId,
+			}}
+		>
+			<Boards
+				selectOptions={SELECT_OPTIONS}
+				columns={columns}
+				onLoadMore={handleLoadMore}
+				hasMore={orgTaskHasMore}
+			/>
+		</OrgBoardContext.Provider>
+	)
 }
 
 //export default withAuth(BoardsPage)

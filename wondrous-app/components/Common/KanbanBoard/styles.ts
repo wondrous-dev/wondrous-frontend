@@ -9,3 +9,7 @@ export const KanbanBoardContainer = styled.div`
 	justify-content: space-between;
 	margin-top: 65px;
 `
+export const LoadMore = styled.div`
+	height: 50px;
+	display: ${props => props.hasMore ? 'block' : 'none'};
+` 

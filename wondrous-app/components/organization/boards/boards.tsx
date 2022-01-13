@@ -13,7 +13,7 @@ import { ToDo, InProgress, Done } from '../../Icons'
 import CreatePodIcon from '../../Icons/createPod'
 
 const Boards = (props) => {
-	const { selectOptions, columns } = props
+	const { selectOptions, columns, onLoadMore, hasMore } = props
 	const [filter, setFilter] = useState([])
 	const filterSchema = [
 			{
@@ -43,6 +43,7 @@ const Boards = (props) => {
 				]
 			}
 		]
+	
 
 	return (
 		<Wrapper>
@@ -62,7 +63,7 @@ const Boards = (props) => {
 					<ButtonGroup></ButtonGroup>
 				</BoardsActivity>
 
-				<KanbanBoard columns={columns} />
+				<KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore}/>
 			</BoardsContainer>
 		</Wrapper>
 	)
