@@ -220,18 +220,12 @@ const BoardsPage = () => {
 
   const handleLoadMore = useCallback(() => {
     if (orgTaskHasMore) {
-      console.log(
-        'offset',
-        Math.max(...columns.map(({ tasks }) => tasks.length))
-      )
       fetchMore({
         variables: {
           offset: Math.max(...columns.map(({ tasks }) => tasks.length)),
           limit: LIMIT,
         },
         updateQuery: (prev, { fetchMoreResult }) => {
-          console.log('prev', prev)
-          console.log('fetchMoreResult', fetchMoreResult)
           const hasMore = fetchMoreResult.getOrgTaskBoardTasks.length >= LIMIT
           if (!fetchMoreResult) {
             return prev
