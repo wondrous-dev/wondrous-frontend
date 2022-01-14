@@ -1,27 +1,31 @@
 export const addSearchParamsUrl = (
-	url: string,
-	param: string,
-	paramValue: string
+  url: string,
+  param: string,
+  paramValue: string
 ) => {
-	const newUrl = new URL(url)
-	const searchParams = new URLSearchParams(newUrl.searchParams)
-	searchParams.set(param, paramValue)
-	return newUrl.pathname + '?' + searchParams.toString()
+  const newUrl = new URL(url)
+  const searchParams = new URLSearchParams(newUrl.searchParams)
+  searchParams.set(param, paramValue)
+  return newUrl.pathname + '?' + searchParams.toString()
 }
 
 export const generateRandomString = function (length: number) {
-	let text = ''
-	const possible =
-		'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let text = ''
+  const possible =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
-	for (var i = 0; i < length; i++) {
-		text += possible.charAt(Math.floor(Math.random() * possible.length))
-	}
-	return text
+  for (var i = 0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length))
+  }
+  return text
 }
 
 export function createSpacingUnit(multiplier = 1) {
-	return function spacingUnit({ theme }) {
-		return theme.spacing(multiplier)
-	}
+  return function spacingUnit({ theme }) {
+    return theme.spacing(multiplier)
+  }
+}
+
+export const delQuery = (asPath) => {
+  return asPath.split('?')[0]
 }

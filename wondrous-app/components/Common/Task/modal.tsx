@@ -1,27 +1,66 @@
 import React, { useEffect, useState } from 'react'
 import Modal from '@mui/material/Modal'
-import Box from '@mui/material/Box'
-import { PodNameTypography, TaskModal, TaskModalHeader } from './styles'
-import { useLazyQuery } from '@apollo/client'
-import { GET_TASK_BY_ID } from '../../../graphql/queries/task'
+import { format } from 'date-fns'
+import {
+  PodNameTypography,
+  TaskActionMenu,
+  TaskModal,
+  TaskModalHeader,
+  TaskTitleDiv,
+  TaskTitleTextDiv,
+  TaskTitleText,
+  TaskDescriptionText,
+  TaskSectionDisplayDiv,
+  TaskSectionDisplayLabel,
+  TaskSectionDisplayText,
+  TaskSectionInfoText,
+  TaskSectionInfoDiv,
+} from './styles'
+import { useLazyQuery, useQuery } from '@apollo/client'
+import {
+  GET_TASK_BY_ID,
+  GET_TASK_REVIEWERS,
+} from '../../../graphql/queries/task'
 import { SafeImage } from '../Image'
 import {
+  parseUserPermissionContext,
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
 } from '../../../utils/helpers'
 import { RightCaret } from '../Image/RightCaret'
 import CreatePodIcon from '../../Icons/createPod'
+import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks'
+import { PERMISSIONS } from '../../../utils/constants'
+import { DropDown, DropDownItem } from '../dropdown'
+import { TaskMenuIcon } from '../../Icons/taskMenu'
+import { White } from '../../../theme/colors'
+import { useMe } from '../../Auth/withAuth'
+import { GetStatusIcon } from '../../../utils/common'
+import { AssigneeIcon, ReviewerIcon } from '../../Icons/taskModalIcons'
+import { DefaultUserImage } from '../Image/DefaultImages'
 
 export const TaskViewModal = (props) => {
   const { open, handleOpen, handleClose, task, taskId } = props
   const [fetchedTask, setFetchedTask] = useState(task)
+  const orgBoard = useOrgBoard()
+  const userBoard = useUserBoard()
+  const podBoard = usePodBoard()
+  const [canEdit, setCanEdit] = useState(false)
+  const [editTask, setEditTask] = useState(false)
+  const [getReviewers, { data: reviewerData }] =
+    useLazyQuery(GET_TASK_REVIEWERS)
+  const user = useMe()
+  const userPermissionsContext =
+    orgBoard?.userPermissionsContext ||
+    podBoard?.userPermissionsContext ||
+    userBoard?.userPermissionsContext
 
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     onCompleted: (data) => {
       const taskData = data?.getTaskById
       if (taskData) {
         setFetchedTask(
-          transformTaskProposalToTaskProposalCard(taskData, {
+          transformTaskToTaskCard(taskData, {
             orgProfilePicture: taskData?.org?.profilePicture,
             orgName: taskData?.org?.name,
             podName: taskData?.pod?.name,
@@ -39,8 +78,34 @@ export const TaskViewModal = (props) => {
         },
       })
     }
-  }, [taskId, task, getTaskById])
+    if (fetchedTask) {
+      const permissions = parseUserPermissionContext({
+        userPermissionsContext,
+        orgId: task?.orgId,
+        podId: task?.podId,
+      })
 
+      const canEdit =
+        permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
+        permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+        fetchedTask?.createdBy === user?.id ||
+        (fetchedTask?.assigneeId && fetchedTask?.assigneeId === user?.id)
+      setCanEdit(canEdit)
+      getReviewers({
+        variables: {
+          taskId: fetchedTask?.id,
+        },
+      })
+    }
+  }, [
+    taskId,
+    task,
+    getTaskById,
+    fetchedTask,
+    userPermissionsContext,
+    user?.id,
+    getReviewers,
+  ])
   return (
     <Modal open={open} onClose={handleClose}>
       <TaskModal>
@@ -72,10 +137,144 @@ export const TaskViewModal = (props) => {
                   marginRight: '2px',
                 }}
               />
-              <PodNameTypography>hello</PodNameTypography>
+              <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
             </div>
           )}
+
+          {canEdit && (
+            <TaskActionMenu right="true">
+              <DropDown DropdownHandler={TaskMenuIcon}>
+                <DropDownItem
+                  key={'task-menu-edit-' + fetchedTask?.id}
+                  onClick={() => setEditTask(true)}
+                  style={{
+                    color: White,
+                  }}
+                >
+                  Edit task
+                </DropDownItem>
+              </DropDown>
+            </TaskActionMenu>
+          )}
         </TaskModalHeader>
+        <TaskTitleDiv>
+          <GetStatusIcon
+            status={fetchedTask?.status}
+            style={{
+              marginRight: '12px',
+            }}
+          />
+          <TaskTitleTextDiv>
+            <TaskTitleText>{fetchedTask?.title}</TaskTitleText>
+            <TaskDescriptionText>
+              {fetchedTask?.description}
+            </TaskDescriptionText>
+          </TaskTitleTextDiv>
+        </TaskTitleDiv>
+        <TaskSectionDisplayDiv>
+          <TaskSectionDisplayLabel>
+            <ReviewerIcon />
+            <TaskSectionDisplayText>Reviewer</TaskSectionDisplayText>
+          </TaskSectionDisplayLabel>
+          {reviewerData?.getTaskReviewers?.length > 0 ? (
+            reviewerData?.getTaskReviewers.map((taskReviewer) => (
+              <TaskSectionInfoDiv key={taskReviewer?.id}>
+                {taskReviewer?.profilePicture ? (
+                  <SafeImage
+                    style={{
+                      width: '26px',
+                      height: '26px',
+                      borderRadius: '13px',
+                      marginRight: '4px',
+                    }}
+                    src={taskReviewer?.profilePicture}
+                  />
+                ) : (
+                  <DefaultUserImage
+                    style={{
+                      width: '26px',
+                      height: '26px',
+                      borderRadius: '13px',
+                      marginRight: '4px',
+                    }}
+                  />
+                )}
+                <TaskSectionInfoText>
+                  {taskReviewer?.username}
+                </TaskSectionInfoText>
+              </TaskSectionInfoDiv>
+            ))
+          ) : (
+            <TaskSectionInfoText
+              style={{
+                marginTop: '8px',
+                marginLeft: '16px',
+              }}
+            >
+              None
+            </TaskSectionInfoText>
+          )}
+        </TaskSectionDisplayDiv>
+        <TaskSectionDisplayDiv>
+          <TaskSectionDisplayLabel>
+            <AssigneeIcon />
+            <TaskSectionDisplayText>Assignee</TaskSectionDisplayText>
+          </TaskSectionDisplayLabel>
+          <TaskSectionInfoDiv key={fetchedTask?.assigneeUsername}>
+            {fetchedTask?.assigneeUsername && (
+              <>
+                {fetchedTask?.assigneeProfilePicture ? (
+                  <SafeImage
+                    style={{
+                      width: '26px',
+                      height: '26px',
+                      borderRadius: '13px',
+                      marginRight: '4px',
+                    }}
+                    src={fetchedTask?.assigneeProfilePicture}
+                  />
+                ) : (
+                  <DefaultUserImage
+                    style={{
+                      width: '26px',
+                      height: '26px',
+                      borderRadius: '13px',
+                      marginRight: '4px',
+                    }}
+                  />
+                )}
+                <TaskSectionInfoText>
+                  {fetchedTask?.assigneeUsername}
+                </TaskSectionInfoText>
+              </>
+            )}
+            {!fetchedTask?.assigneeUsername && (
+              <TaskSectionInfoText
+                style={{
+                  marginLeft: '4px',
+                }}
+              >
+                None
+              </TaskSectionInfoText>
+            )}
+          </TaskSectionInfoDiv>
+        </TaskSectionDisplayDiv>
+        <TaskSectionDisplayDiv>
+          <TaskSectionDisplayLabel>
+            <AssigneeIcon />
+            <TaskSectionDisplayText>Due date</TaskSectionDisplayText>
+          </TaskSectionDisplayLabel>
+          <TaskSectionInfoText
+            style={{
+              marginTop: '8px',
+              marginLeft: '16px',
+            }}
+          >
+            {fetchedTask?.dueDate
+              ? format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy')
+              : 'None'}
+          </TaskSectionInfoText>
+        </TaskSectionDisplayDiv>
       </TaskModal>
     </Modal>
   )

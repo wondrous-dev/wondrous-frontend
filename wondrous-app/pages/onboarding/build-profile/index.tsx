@@ -9,18 +9,18 @@ import { GET_PRESIGNED_IMAGE_URL } from '../../../graphql/queries/media'
 import { withAuth } from '../../../components/Auth/withAuth'
 
 const ContributorBuildProfilePage = () => {
-	const router = useRouter()
-	const [updateImage] = useLazyQuery(GET_PRESIGNED_IMAGE_URL)
-	const [updateUser] = useMutation(UPDATE_USER, {
-		onCompleted: () => {
-			router.replace('/onboarding/email-setup')
-		},
-	})
-	return (
-		<MainWrapper>
-			<InviteWelcomeBox updateUser={updateUser} />
-		</MainWrapper>
-	)
+  const router = useRouter()
+  const [updateImage] = useLazyQuery(GET_PRESIGNED_IMAGE_URL)
+  const [updateUser] = useMutation(UPDATE_USER, {
+    onCompleted: () => {
+      router.push('/onboarding/email-setup')
+    },
+  })
+  return (
+    <MainWrapper>
+      <InviteWelcomeBox updateUser={updateUser} />
+    </MainWrapper>
+  )
 }
 
 export default withAuth(ContributorBuildProfilePage)

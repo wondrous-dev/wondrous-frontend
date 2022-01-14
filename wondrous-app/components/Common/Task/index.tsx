@@ -35,6 +35,8 @@ import { parseUserPermissionContext } from '../../../utils/helpers'
 import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks'
 import { White } from '../../../theme/colors'
 import { TaskViewModal } from './modal'
+import { useMe } from '../../Auth/withAuth'
+import { delQuery } from '../../../utils'
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: ToDo,
@@ -43,6 +45,7 @@ export const TASK_ICONS = {
   [Constants.TASK_STATUS_IN_REVIEW]: InReview,
 }
 
+let windowOffset = 0
 export const Task = ({ task, setTask }) => {
   const {
     actions = {},
@@ -68,6 +71,7 @@ export const Task = ({ task, setTask }) => {
   const orgBoard = useOrgBoard()
   const userBoard = useUserBoard()
   const podBoard = usePodBoard()
+  const user = useMe()
   const userPermissionsContext =
     orgBoard?.userPermissionsContext ||
     podBoard?.userPermissionsContext ||
@@ -102,12 +106,20 @@ export const Task = ({ task, setTask }) => {
     podId: task?.podId,
   })
 
-  const canEdit =
+  const canArchive =
     permissions.includes(Constants.PERMISSIONS.MANAGE_BOARD) ||
-    permissions.includes(Constants.PERMISSIONS.FULL_ACCESS)
+    permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
+    task?.createdBy === user?.id
 
   const openModal = () => {
-    router.push(`${router.asPath}?task=${task?.id}`)
+    router.replace(`${delQuery(router.asPath)}?task=${task?.id}`)
+    document.body.style.overflow = 'hidden'
+    // document.body.scroll = false
+    windowOffset = window.scrollY
+    document.body.setAttribute(
+      'style',
+      `position: fixed; top: -${windowOffset}px; left:0; right:0`
+    )
     setModalOpen(true)
   }
 
@@ -116,7 +128,11 @@ export const Task = ({ task, setTask }) => {
       <TaskViewModal
         open={modalOpen}
         handleOpen={() => setModalOpen(true)}
-        handleClose={() => setModalOpen(false)}
+        handleClose={() => {
+          document.body.setAttribute('style', '')
+          window?.scrollTo(0, windowOffset)
+          setModalOpen(false)
+        }}
         task={task}
       />
       <TaskWrapper key={id} wrapped={milestone} onClick={openModal}>
@@ -207,7 +223,7 @@ export const Task = ({ task, setTask }) => {
               </DropDownItem> */}
               </DropDown>
             </TaskActionMenu>
-            {canEdit && (
+            {canArchive && (
               <TaskActionMenu right="true">
                 <DropDown DropdownHandler={TaskMenuIcon}>
                   <DropDownItem

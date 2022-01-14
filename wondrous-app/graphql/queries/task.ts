@@ -9,3 +9,15 @@ export const GET_TASK_BY_ID = gql`
   }
   ${TaskFragment}
 `
+
+export const GET_TASK_REVIEWERS = gql`
+  query getTaskReviewers($taskId: ID!) {
+    getTaskReviewers(taskId: $taskId) {
+      id
+      profilePicture
+      firstName
+      lastName
+      username
+    }
+  }
+`
