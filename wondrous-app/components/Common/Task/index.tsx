@@ -56,6 +56,9 @@ export const Task = ({ task, setTask }) => {
     status,
     milestone = false,
     title = '',
+    assigneeId = null,
+    assigneeUsername = null,
+    assigneeProfilePicture = null,
     users = [],
   } = task
   const router = useRouter()
@@ -76,6 +79,7 @@ export const Task = ({ task, setTask }) => {
     orgBoard?.userPermissionsContext ||
     podBoard?.userPermissionsContext ||
     userBoard?.userPermissionsContext
+  const [userList, setUserList] = useState([])
   const [liked, setLiked] = useState(iLiked)
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -123,6 +127,32 @@ export const Task = ({ task, setTask }) => {
     setModalOpen(true)
   }
 
+  const goToPod = (podId) => {
+    // Filter or go to Pod Page
+    console.log('Pod tap: ', podId)
+  }
+
+  useEffect(() => {
+    // One assigned person.
+    if(assigneeUsername) {
+      // clean
+      setUserList([
+        {
+          id: assigneeId,
+          name: assigneeUsername,
+          initials: assigneeUsername[0].toUpperCase(),
+          avatar: { 
+            url: assigneeProfilePicture,
+            isOwnerOfPod: false,
+            color: null,
+          },
+        }
+      ])
+    } else {
+      setUserList(users)
+    }
+  }, [])
+
   return (
     <>
       <TaskViewModal
@@ -135,7 +165,7 @@ export const Task = ({ task, setTask }) => {
         }}
         task={task}
       />
-      <TaskWrapper key={id} wrapped={milestone} onClick={openModal}>
+      <TaskWrapper key={id} wrapped={milestone}>
         <TaskInner>
           <TaskHeader>
             <SafeImage
@@ -147,34 +177,14 @@ export const Task = ({ task, setTask }) => {
               }}
             />
             {task?.podName && (
-              <PodWrapper>
-                <PodName>{task?.podNAme}</PodName>
+              <PodWrapper onclick={() => {goToPod(task?.podId)}}>
+                <PodName>{task?.podName.slice(0,15)}</PodName>
               </PodWrapper>
             )}
-            {task?.assigneeUsername && (
-              <>
-                {task?.assigneeProfilePicture ? (
-                  <SafeImage
-                    style={{
-                      width: '29px',
-                      height: '29px',
-                      borderRadius: '20px',
-                      marginLeft: '12px',
-                    }}
-                    src={task?.assigneeProfilePicture}
-                  />
-                ) : (
-                  <SmallAvatar
-                    style={{ marginLeft: '12px' }}
-                    initals={task?.assigneeUsername[0]}
-                  />
-                )}
-              </>
-            )}
-
+            <AvatarList style={{ marginLeft: '12px' }} users={userList} id={'task-' + task?.id }/>
             <Compensation compensation={compensation} icon={TaskIcon} />
           </TaskHeader>
-          <TaskContent>
+          <TaskContent onClick={openModal}>
             <TaskTitle>{title}</TaskTitle>
             <p>
               {renderMentionString({
@@ -201,28 +211,7 @@ export const Task = ({ task, setTask }) => {
               <TaskShareIcon />
               <TaskActionAmount>{shares}</TaskActionAmount>
             </TaskAction>
-            <TaskActionMenu right="true">
-              <DropDown DropdownHandler={TaskMenuIcon}>
-                <DropDownItem
-                  key={'task-menu-edit-' + id}
-                  onClick={archiveTask}
-                  style={{
-                    color: White,
-                  }}
-                >
-                  Archive Task
-                </DropDownItem>
-                {/* <DropDownItem key={'task-menu-report-' + id} onClick={reportTask}>
-                Report
-              </DropDownItem> */}
-                {/* <DropDownItem
-                key={'task-menu-settings-' + id}
-                onClick={openSettings}
-              >
-                Settings
-              </DropDownItem> */}
-              </DropDown>
-            </TaskActionMenu>
+
             {canArchive && (
               <TaskActionMenu right="true">
                 <DropDown DropdownHandler={TaskMenuIcon}>
@@ -235,18 +224,10 @@ export const Task = ({ task, setTask }) => {
                   >
                     Archive Task
                   </DropDownItem>
-                  {/* <DropDownItem key={'task-menu-report-' + id} onClick={reportTask}>
-							Report
-						</DropDownItem> */}
-                  {/* <DropDownItem
-							key={'task-menu-settings-' + id}
-							onClick={openSettings}
-						>
-							Settings
-						</DropDownItem> */}
                 </DropDown>
               </TaskActionMenu>
             )}
+
           </TaskFooter>
         </TaskInner>
       </TaskWrapper>

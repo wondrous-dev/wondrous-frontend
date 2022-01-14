@@ -22,6 +22,8 @@ export const SmallAvatarWrapper = styled.div`
   background-size: cover;
 
   font-size: 10px;
+  color: ${Colors.White};
+  font-weight: 700;
 `
 
 export const SmallAvatarContainer = styled.div`
