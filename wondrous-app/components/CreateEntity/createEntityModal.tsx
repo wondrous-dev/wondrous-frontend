@@ -107,6 +107,8 @@ import { CREATE_TASK } from '../../graphql/mutations/task'
 import { useOrgBoard } from '../../utils/hooks'
 import { CREATE_TASK_PROPOSAL } from '../../graphql/mutations/taskProposal'
 import { useMe } from '../Auth/withAuth'
+import Ethereum from '../Icons/ethereum'
+import { USDCoin } from '../Icons/USDCoin'
 
 const filterUserOptions = (options) => {
   if (!options) return []
@@ -236,19 +238,14 @@ const POD_SELECT_OPTIONS = [
 
 const REWARD_SELECT_OPTIONS = [
   {
-    icon: <WonderTokenIcon />,
-    label: 'Wonder Tokens',
-    value: 'wonder',
+    icon: <Ethereum />,
+    label: 'Ether',
+    value: 'ETH',
   },
   {
-    icon: <WonderTokenIcon />,
-    label: 'Bitcoin',
-    value: 'bitcoin',
-  },
-  {
-    icon: <WonderTokenIcon />,
-    label: 'Ethereum',
-    value: 'ethereum',
+    icon: <USDCoin />,
+    label: 'USDC',
+    value: 'USDC',
   },
 ]
 
@@ -301,6 +298,8 @@ const CreateLayoutBaseModal = (props) => {
   const [reviewerString, setReviewerString] = useState('')
   const [assignee, setAssignee] = useState(null)
   const [reviewerIds, setReviewerIds] = useState([])
+  const [rewardsCurrency, setRewardsCurrency] = useState(null)
+  const [rewardsAmount, setRewardsAmount] = useState(null)
   const [title, setTitle] = useState('')
   const orgBoard = useOrgBoard()
   const { data: userPermissionsContext } = useQuery(
@@ -691,6 +690,8 @@ const CreateLayoutBaseModal = (props) => {
             labelText="Choose tokens"
             options={REWARD_SELECT_OPTIONS}
             name="reward-currency"
+            setValue={setRewardsCurrency}
+            value={rewardsCurrency}
           />
           <CreateRewardAmountDiv>
             <CreateFormMainBlockTitle>Reward amount</CreateFormMainBlockTitle>
@@ -702,6 +703,8 @@ const CreateLayoutBaseModal = (props) => {
               type={'number'}
               placeholder="Enter reward amount"
               search={false}
+              value={rewardsAmount}
+              setValue={setRewardsAmount}
             />
           </CreateRewardAmountDiv>
         </CreateFormMainSelects>
