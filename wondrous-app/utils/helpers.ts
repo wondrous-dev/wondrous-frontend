@@ -90,8 +90,8 @@ export const transformTaskProposalToTaskProposalCard = (
 ) => {
   return {
     ...taskProposal,
-    creatorUsername: extraData?.username,
-    creatorProfilePicture: extraData?.userProfilePicture,
+    creatorUsername: taskProposal?.creator?.username,
+    creatorProfilePicture: taskProposal?.creator?.userProfilePicture,
     orgProfilePicture: extraData?.orgProfilePicture,
     orgName: extraData?.orgName,
     podName: extraData?.podName,

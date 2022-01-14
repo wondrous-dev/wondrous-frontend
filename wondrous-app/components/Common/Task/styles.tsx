@@ -127,12 +127,13 @@ export const TaskModal = styled(BaseCard)`
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -20%);
+  transform: translate(-50%, -80%);
 `
 
 export const TaskModalHeader = styled.div`
   display: flex;
   align-items: center;
+  margin-bottom: 24px !important;
 `
 export const PodNameTypography = styled(Typography)`
   && {
@@ -141,4 +142,76 @@ export const PodNameTypography = styled(Typography)`
     line-height: 17px;
     color: ${White};
   }
+`
+
+export const TaskTitleDiv = styled.div`
+  display: flex;
+  align-items: flex-start;
+`
+
+export const TaskTitleTextDiv = styled.div``
+
+export const TaskTitleText = styled(Typography)`
+  && {
+    color: ${White};
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 32px;
+    margin-bottom: 8px;
+  }
+`
+
+export const TaskDescriptionText = styled(Typography)`
+  && {
+    color: #828282;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 19px;
+  }
+`
+
+export const TaskSectionDisplayDiv = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  &:not:first-child {
+    margin-top: -8px;
+  }
+`
+
+export const TaskSectionDisplayLabel = styled.div`
+  background: #0f0f0f;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding: 4px 12px;
+  margin-top: 8px;
+`
+
+export const TaskSectionDisplayText = styled(Typography)`
+  && {
+    font-family: Space Grotesk;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 22px;
+    color: #ccbbff;
+    margin-left: 8px;
+  }
+`
+
+export const TaskSectionInfoText = styled(TaskSectionDisplayText)`
+  && {
+    color: #c4c4c4;
+  }
+`
+
+export const TaskSectionInfoDiv = styled.div`
+  margin-right: 12px;
+  margin-left: 12px;
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
 `

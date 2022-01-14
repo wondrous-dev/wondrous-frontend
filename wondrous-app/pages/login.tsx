@@ -40,7 +40,7 @@ const Login = ({ csrfToken }) => {
 
     const result = await emailSignin(email, password)
     if (result === true) {
-      router.replace('/dashboard')
+      router.push('/dashboard')
     } else {
       setErrorMessage(result)
     }
@@ -72,7 +72,7 @@ const Login = ({ csrfToken }) => {
           setLoading(true)
           const result = await walletSignin(wonderWeb3.address, signedMessage)
           if (result === true) {
-            router.replace('/dashboard')
+            router.push('/dashboard')
           } else {
             setErrorMessage(result)
           }
