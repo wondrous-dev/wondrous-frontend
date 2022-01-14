@@ -151,6 +151,7 @@ export const Task = ({ task, setTask }) => {
     } else {
       setUserList(users)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
