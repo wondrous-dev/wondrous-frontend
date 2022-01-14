@@ -20,7 +20,7 @@ import CreatePodIcon from '../Icons/createPod'
 import CreateDaoIcon from '../Icons/createDao'
 import { LogoSquare } from '../Common/ci'
 import { White } from '../../theme/colors'
-
+import WonderTokenIcon from '../Icons/wonderToken'
 export const MediaUploadGrid = styled(Grid)`
   && {
   }
@@ -182,11 +182,12 @@ export const CreateLayoutsModalItemTitle = styled(Typography)`
 `
 
 export const CreateFormBaseModal = styled(BaseCard)`
-  display: flex;
   width: 680px;
   margin-top: ${(props) => (props.isPod ? '15em' : '30em')};
-
-  position: relative;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -20%);
 
   & .hbhroD > *:not(:last-child) {
     margin-bottom: 0;
@@ -626,4 +627,8 @@ export const CreateFormSubmitButton = styled(Button)`
     line-height: 150%;
     color: #ffffff;
   }
+`
+
+export const RewardCurrencyTokenIcon = styled(WonderTokenIcon)`
+  margin-right: 12px;
 `
