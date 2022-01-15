@@ -4,6 +4,7 @@ import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete'
 import {
   Button,
   ButtonBase,
+  Chip,
   IconButton,
   Modal,
   TextField,
@@ -532,7 +533,7 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
   align-items: center;
   background: #0f0f0f;
   border-radius: 6px;
-  height: 40px;
+  min-height: 40px;
   color: ${White};
 
   input {
@@ -587,5 +588,14 @@ export const OptionTypography = styled(Typography)`
     font-size: 14px;
     color: ${White};
     margin-left: 8px;
+  }
+`
+
+export const StyledChip = styled(Chip)`
+  && {
+    margin: 3px 5px 3px 0;
+    color: #c4c4c4;
+    background: #0f0f0f;
+    border: 1px solid rgb(116, 39, 255);
   }
 `
