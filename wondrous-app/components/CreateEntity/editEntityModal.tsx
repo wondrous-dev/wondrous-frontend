@@ -103,7 +103,12 @@ import {
   transformTaskToTaskCard,
 } from '../../utils/helpers'
 import { GET_ORG_USERS } from '../../graphql/queries/org'
-import { CREATE_TASK, UPDATE_TASK } from '../../graphql/mutations/task'
+import {
+  ATTACH_MEDIA_TO_TASK,
+  CREATE_TASK,
+  REMOVE_MEDIA_FROM_TASK,
+  UPDATE_TASK,
+} from '../../graphql/mutations/task'
 import { useOrgBoard } from '../../utils/hooks'
 import {
   CREATE_TASK_PROPOSAL,
@@ -387,6 +392,9 @@ const EditLayoutBaseModal = (props) => {
   const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType]
   const inputRef: any = useRef()
 
+  const [attachMedia] = useMutation(ATTACH_MEDIA_TO_TASK)
+  const [removeMedia] = useMutation(REMOVE_MEDIA_FROM_TASK)
+
   const handleAddFile = useCallback(
     async (event) => {
       const file = event.target.files[0]
@@ -409,10 +417,37 @@ const EditLayoutBaseModal = (props) => {
         } else {
           fileToAdd.type = 'file'
         }
+        console.log('file', fileToAdd)
         setMediaUploads([...mediaUploads, fileToAdd])
+        attachMedia({
+          variables: {
+            taskId: existingTask?.id,
+            input: {
+              mediaUploads: [fileToAdd],
+            },
+          },
+          onCompleted: () => {
+            if (
+              orgBoard?.setColumns &&
+              existingTask?.orgId === orgBoard?.orgId
+            ) {
+              const columns = [...orgBoard?.columns]
+              columns[0].tasks = columns[0].tasks.map((taskItem) => {
+                if (existingTask?.id === taskItem?.id) {
+                  return {
+                    ...existingTask,
+                    media: [...mediaUploads, fileToAdd],
+                  }
+                }
+                return existingTask
+              })
+              orgBoard.setColumns(columns)
+            }
+          },
+        })
       }
     },
-    [mediaUploads]
+    [attachMedia, mediaUploads, existingTask, orgBoard]
   )
   const filterDAOptions = useCallback((orgs) => {
     if (!orgs) {
@@ -680,6 +715,14 @@ const EditLayoutBaseModal = (props) => {
                   mediaUploads={mediaUploads}
                   setMediaUploads={setMediaUploads}
                   mediaItem={mediaItem}
+                  removeMediaItem={() => {
+                    removeMedia({
+                      variables: {
+                        taskId: existingTask?.id,
+                        slug: mediaItem?.uploadSlug,
+                      },
+                    })
+                  }}
                 />
               ))}
               <AddFileUpload
