@@ -89,3 +89,11 @@ export const CreateFormMenuItem = styled(MenuItem)`
 		}
 	}
 `
+
+export const CreateFormMenuItemIcon = styled.div`
+	display: flex;
+	margin: 0 8px 0 0;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+`

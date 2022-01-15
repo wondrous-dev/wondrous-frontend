@@ -28,7 +28,8 @@ export const TaskWrapper = styled.div`
 
   padding: 1px;
   background: #515151;
-  cursor: pointer;
+
+  cursor: grab;
 
   ${GradientMidnightDiagonal}
 
@@ -56,6 +57,8 @@ export const TaskContent = styled.div`
   font-size: 16px;
   font-weight: 400;
   color: ${White};
+
+  cursor: pointer;
 `
 
 export const TaskSeparator = styled.div`

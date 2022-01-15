@@ -3,6 +3,7 @@ import { FormControl } from '@material-ui/core'
 import {
   CreateFormInputLabel,
   CreateFormMenuItem,
+  CreateFormMenuItemIcon,
   CreateFormSelect,
   CreateFormSelectArrowIcon,
   CreateFormSelectBlock,
@@ -64,7 +65,7 @@ const DropdownSelect = (props) => {
                   src={item?.imageUrl}
                 />
               ) : (
-                <>{item.icon || labelIcon}</>
+                <CreateFormMenuItemIcon>{item.icon || labelIcon}</CreateFormMenuItemIcon>
               )}
               {item.label}
               {item.amount && <span>{`(${item.amount})`}</span>}
