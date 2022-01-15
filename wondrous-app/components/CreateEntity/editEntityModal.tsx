@@ -417,7 +417,7 @@ const EditLayoutBaseModal = (props) => {
         } else {
           fileToAdd.type = 'file'
         }
-        console.log('file', fileToAdd)
+
         setMediaUploads([...mediaUploads, fileToAdd])
         attachMedia({
           variables: {
