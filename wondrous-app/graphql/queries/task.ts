@@ -21,3 +21,14 @@ export const GET_TASK_REVIEWERS = gql`
     }
   }
 `
+
+export const GET_ELIGIBLE_REVIEWERS_FOR_ORG = gql`
+  query getEligibleReviewersForOrg ($orgId: ID!, $searchString: String) {
+    getEligibleReviewersForOrg(orgId: $orgId, searchString: $searchString
+  ) {
+    id
+    username
+  }
+}
+
+`

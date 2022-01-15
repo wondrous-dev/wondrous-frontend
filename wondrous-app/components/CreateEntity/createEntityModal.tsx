@@ -75,6 +75,7 @@ import {
   AutocompleteList,
   OptionDiv,
   OptionTypography,
+  StyledChip,
 } from './styles'
 import SelectDownIcon from '../Icons/selectDownIcon'
 import UploadImageIcon from '../Icons/uploadImage'
@@ -96,6 +97,7 @@ import {
   GET_USER_AVAILABLE_PODS,
   GET_USER_PODS,
 } from '../../graphql/queries/pod'
+import { GET_ELIGIBLE_REVIEWERS_FOR_ORG } from '../../graphql/queries/task'
 import {
   getMentionArray,
   parseUserPermissionContext,
@@ -297,7 +299,7 @@ const CreateLayoutBaseModal = (props) => {
   const [assigneeString, setAssigneeString] = useState('')
   const [reviewerString, setReviewerString] = useState('')
   const [assignee, setAssignee] = useState(null)
-  const [reviewerIds, setReviewerIds] = useState([])
+  const [selectedReviewers, setSelectedReviewers] = useState([])
   const [rewardsCurrency, setRewardsCurrency] = useState(null)
   const [rewardsAmount, setRewardsAmount] = useState(null)
   const [title, setTitle] = useState('')
@@ -314,6 +316,10 @@ const CreateLayoutBaseModal = (props) => {
   )
 
   const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS)
+
+  const [getEligibleReviewersForOrg, { data: eligibleReviewersData }] = useLazyQuery(
+    GET_ELIGIBLE_REVIEWERS_FOR_ORG
+  )
 
   const descriptionTextCounter = (e) => {
     setDescriptionText(e.target.value)
@@ -524,7 +530,7 @@ const CreateLayoutBaseModal = (props) => {
           ...(!canCreateTask && {
             proposedAssigneeId: assignee?.value,
           }),
-          reviewerIds,
+          reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         }
@@ -551,7 +557,7 @@ const CreateLayoutBaseModal = (props) => {
     pod,
     dueDate,
     assignee,
-    reviewerIds,
+    selectedReviewers,
     mediaUploads,
     canCreateTask,
     createTask,
@@ -799,8 +805,27 @@ const CreateLayoutBaseModal = (props) => {
               </CreateFormAddDetailsInputLabel>
               <StyledAutocomplete
                 options={filterUserOptions(
-                  autocompleteData?.getAutocompleteUsers
+                  eligibleReviewersData?.getEligibleReviewersForOrg
+                ).filter(
+                  ({ id }) => !selectedReviewers.map(({ id }) => id).includes(id)
                 )}
+                multiple
+                onChange={(event, newValue, reason) => {
+                  if ("clear" === reason) {
+                    setSelectedReviewers([])
+                  }
+                  if (event.code === 'Backspace' && reviewerString === '') {
+                    setSelectedReviewers(selectedReviewers.slice(0, -1))
+                  }
+                }}
+                onOpen={() =>
+                  getEligibleReviewersForOrg({
+                    variables: {
+                      orgId: org,
+                      searchString: '',
+                    },
+                  })
+                }
                 renderInput={(params) => (
                   <TextField
                     style={{
@@ -813,23 +838,44 @@ const CreateLayoutBaseModal = (props) => {
                     InputLabelProps={{ shrink: false }}
                     onChange={(event) => {
                       setReviewerString(event.target.value)
-                      getAutocompleteUsers({
+                      getEligibleReviewersForOrg({
                         variables: {
-                          username: event.target.value,
+                          orgId: org,
+                          searchString: event.target.value,
                         },
                       })
                     }}
                     {...params}
                   />
                 )}
-                value={reviewerString}
+                value={selectedReviewers}
+                renderTags={(value) =>
+                  value?.map((option, index) => {
+                    return (
+                      <StyledChip
+                        key={index}
+                        label={option?.label}
+                        onDelete={() =>
+                          setSelectedReviewers(
+                            selectedReviewers.filter(({ id }) => id !== option?.id)
+                          )
+                        }
+                      />
+                    )
+                  })
+                }
                 PopperComponent={AutocompleteList}
                 renderOption={(props, option, state) => {
                   return (
                     <OptionDiv
                       onClick={(event) => {
-                        if (reviewerIds.indexOf(option?.id) === -1) {
-                          setReviewerIds([...reviewerIds, option?.id])
+                        if (
+                          selectedReviewers
+                            .map(({ id }) => id)
+                            .indexOf(option?.id === -1)
+                        ) {
+                          setSelectedReviewers([...selectedReviewers, option])
+                          setReviewerString('')
                         }
                         props?.onClick(event)
                       }}
