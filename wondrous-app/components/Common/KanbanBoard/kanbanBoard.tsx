@@ -7,6 +7,11 @@ import { TaskViewModal } from '../Task/modal'
 import { KanbanBoardContainer, LoadMore } from './styles'
 import TaskColumn from './TaskColumn'
 
+// Task update (column changes)
+import apollo from '../../../services/apollo'
+import { UPDATE_TASK_STATUS } from '../../../graphql/mutations/task'
+
+
 const KanbanBoard = (props) => {
   const { columns, onLoadMore, hasMore } = props
   const [columnsState, setColumnsState] = useState(columns)
@@ -21,7 +26,30 @@ const KanbanBoard = (props) => {
     }
   }, [inView, hasMore, onLoadMore])
 
-  const moveCard = (id, status) => {
+  // Updates the task status on Backend
+  // TODO: Aggregate all Task mutations on one Task
+  //       service.
+  const updateTask = async (taskToBeUpdated) => {
+    try {
+      const {
+        data: { updateTask: task },
+      } = await apollo.mutate({
+        mutation: UPDATE_TASK_STATUS,
+        variables: {
+          taskId: taskToBeUpdated.id,
+          input: { 
+            newStatus: taskToBeUpdated.status
+          }
+        },
+      })
+
+      return true
+    } catch(err) {
+      console.log('Error: ', err)
+    }
+  }
+
+  const moveCard = async (id, status) => {
     const updatedColumns = columnsState.map((column) => {
       if (column.status !== status) {
         return {
@@ -33,6 +61,10 @@ const KanbanBoard = (props) => {
         .map(({ tasks }) => tasks.find((task) => task.id === id))
         .filter((i) => i)[0]
       const updatedTask = { ...task, status }
+      
+      // Update task
+      updateTask(updatedTask)
+      
       return {
         ...column,
         tasks: [updatedTask, ...column.tasks],
