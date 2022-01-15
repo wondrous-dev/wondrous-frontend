@@ -117,7 +117,7 @@ export const Task = ({ task, setTask }) => {
 
   const openModal = () => {
     router.replace(`${delQuery(router.asPath)}?task=${task?.id}`)
-    document.body.style.overflow = 'hidden'
+    // document.body.style.overflow = 'hidden'
     // document.body.scroll = false
     windowOffset = window.scrollY
     document.body.setAttribute(
@@ -134,19 +134,19 @@ export const Task = ({ task, setTask }) => {
 
   useEffect(() => {
     // One assigned person.
-    if(assigneeUsername) {
+    if (assigneeUsername) {
       // clean
       setUserList([
         {
           id: assigneeId,
           name: assigneeUsername,
           initials: assigneeUsername[0].toUpperCase(),
-          avatar: { 
+          avatar: {
             url: assigneeProfilePicture,
             isOwnerOfPod: false,
             color: null,
           },
-        }
+        },
       ])
     } else {
       setUserList(users)
@@ -178,11 +178,19 @@ export const Task = ({ task, setTask }) => {
               }}
             />
             {task?.podName && (
-              <PodWrapper onclick={() => {goToPod(task?.podId)}}>
-                <PodName>{task?.podName.slice(0,15)}</PodName>
+              <PodWrapper
+                onclick={() => {
+                  goToPod(task?.podId)
+                }}
+              >
+                <PodName>{task?.podName.slice(0, 15)}</PodName>
               </PodWrapper>
             )}
-            <AvatarList style={{ marginLeft: '12px' }} users={userList} id={'task-' + task?.id }/>
+            <AvatarList
+              style={{ marginLeft: '12px' }}
+              users={userList}
+              id={'task-' + task?.id}
+            />
             <Compensation compensation={compensation} icon={TaskIcon} />
           </TaskHeader>
           <TaskContent onClick={openModal}>
@@ -228,7 +236,6 @@ export const Task = ({ task, setTask }) => {
                 </DropDown>
               </TaskActionMenu>
             )}
-
           </TaskFooter>
         </TaskInner>
       </TaskWrapper>

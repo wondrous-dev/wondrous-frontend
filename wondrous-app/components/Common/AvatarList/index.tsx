@@ -18,7 +18,9 @@ export const SmallAvatar = (props) => {
   return (
     <SmallAvatarContainer
       key={id}
-      onClick={() => { goTo(id) }}
+      onClick={() => {
+        goTo(id)
+      }}
       style={{ ...style, zIndex: 6 - (style.zIndex || 0) }}
     >
       <SmallAvatarWrapper
@@ -26,7 +28,7 @@ export const SmallAvatar = (props) => {
         isOwnerOfPod={avatar?.isOwnerOfPod}
         avatarURL={avatar?.url}
       >
-        {avatar.avatarURL ? '' : <span>{initials}</span>}
+        {avatar.url ? '' : <span>{initials}</span>}
       </SmallAvatarWrapper>
     </SmallAvatarContainer>
   )

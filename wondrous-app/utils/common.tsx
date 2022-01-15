@@ -33,6 +33,7 @@ export const renderMentionString = (props) => {
             style={{
               color: HighlightBlue,
               marginRight: '4px',
+              cursor: 'pointer',
               ...textStyle,
             }}
             onClick={() => {

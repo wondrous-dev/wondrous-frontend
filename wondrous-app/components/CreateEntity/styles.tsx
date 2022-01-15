@@ -181,8 +181,8 @@ export const CreateLayoutsModalItemTitle = styled(Typography)`
 export const CreateFormBaseModal = styled(BaseCard)`
   display: flex;
   width: 680px;
-  margin-top: 10em;
-  
+  margin-top: 30em;
+
   & .hbhroD > *:not(:last-child) {
     margin-bottom: 0;
   }
@@ -558,6 +558,8 @@ export const AutocompleteList = styled(Popper).attrs((props) => ({
 }))`
   .MuiPaper-root {
     background: #0f0f0f !important;
+    top: auto;
+    bottom: auto;
   }
 
   li {

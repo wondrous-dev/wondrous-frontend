@@ -14,7 +14,7 @@ export const SafeImage = (safeImageArgs: SafeImageArgs) => {
     variables: {
       path: src,
     },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'network-only',
   })
 
   const imgUrl = data?.getPreviewImage?.url

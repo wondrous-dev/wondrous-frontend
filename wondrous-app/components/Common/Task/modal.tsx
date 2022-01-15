@@ -30,21 +30,26 @@ import {
 import { RightCaret } from '../Image/RightCaret'
 import CreatePodIcon from '../../Icons/createPod'
 import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks'
-import { PERMISSIONS } from '../../../utils/constants'
+import { ENTITIES_TYPES, PERMISSIONS } from '../../../utils/constants'
 import { DropDown, DropDownItem } from '../dropdown'
 import { TaskMenuIcon } from '../../Icons/taskMenu'
 import { White } from '../../../theme/colors'
 import { useMe } from '../../Auth/withAuth'
-import { GetStatusIcon } from '../../../utils/common'
+import { GetStatusIcon, renderMentionString } from '../../../utils/common'
 import { AssigneeIcon, ReviewerIcon } from '../../Icons/taskModalIcons'
 import { DefaultUserImage } from '../Image/DefaultImages'
+import EditLayoutBaseModal from '../../CreateEntity/editEntityModal'
+import { CreateModalOverlay } from '../../CreateEntity/styles'
+import { useRouter } from 'next/router'
 
 export const TaskViewModal = (props) => {
   const { open, handleOpen, handleClose, task, taskId } = props
-  const [fetchedTask, setFetchedTask] = useState(task)
+  const [fetchedTask, setFetchedTask] = useState(null)
   const orgBoard = useOrgBoard()
+
   const userBoard = useUserBoard()
   const podBoard = usePodBoard()
+  const router = useRouter()
   const [canEdit, setCanEdit] = useState(false)
   const [editTask, setEditTask] = useState(false)
   const [getReviewers, { data: reviewerData }] =
@@ -77,7 +82,10 @@ export const TaskViewModal = (props) => {
           taskId,
         },
       })
+    } else if (task) {
+      setFetchedTask(task)
     }
+
     if (fetchedTask) {
       const permissions = parseUserPermissionContext({
         userPermissionsContext,
@@ -106,6 +114,35 @@ export const TaskViewModal = (props) => {
     user?.id,
     getReviewers,
   ])
+  if (editTask) {
+    return (
+      <CreateModalOverlay
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        open={open}
+        onClose={() => {
+          setEditTask(false)
+          handleClose()
+        }}
+      >
+        <EditLayoutBaseModal
+          entityType={ENTITIES_TYPES.TASK}
+          handleClose={() => {
+            setEditTask(false)
+            handleClose()
+          }}
+          cancelEdit={() => setEditTask(false)}
+          existingTask={
+            fetchedTask && {
+              ...fetchedTask,
+              reviewers: reviewerData?.getTaskReviewers || [],
+            }
+          }
+          isTaskProposal={false}
+        />
+      </CreateModalOverlay>
+    )
+  }
   return (
     <Modal open={open} onClose={handleClose}>
       <TaskModal>
@@ -167,7 +204,10 @@ export const TaskViewModal = (props) => {
           <TaskTitleTextDiv>
             <TaskTitleText>{fetchedTask?.title}</TaskTitleText>
             <TaskDescriptionText>
-              {fetchedTask?.description}
+              {renderMentionString({
+                content: fetchedTask?.description,
+                router,
+              })}
             </TaskDescriptionText>
           </TaskTitleTextDiv>
         </TaskTitleDiv>
