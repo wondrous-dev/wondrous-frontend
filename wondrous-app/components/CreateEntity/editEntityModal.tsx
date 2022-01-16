@@ -78,7 +78,11 @@ import {
 } from './styles'
 import SelectDownIcon from '../Icons/selectDownIcon'
 import UploadImageIcon from '../Icons/uploadImage'
-import { getFilenameAndType, uploadMedia } from '../../utils/media'
+import {
+  getFilenameAndType,
+  handleAddFile,
+  uploadMedia,
+} from '../../utils/media'
 import DatePicker from '../Common/DatePicker'
 import { MediaItem } from './MediaItem'
 import { AddFileUpload } from '../Icons/addFileUpload'
@@ -395,60 +399,6 @@ const EditLayoutBaseModal = (props) => {
   const [attachMedia] = useMutation(ATTACH_MEDIA_TO_TASK)
   const [removeMedia] = useMutation(REMOVE_MEDIA_FROM_TASK)
 
-  const handleAddFile = useCallback(
-    async (event) => {
-      const file = event.target.files[0]
-      if (file) {
-        const fileName = file?.name
-        // get image preview
-        const { fileType, filename } = getFilenameAndType(fileName)
-        const filePrefix = 'tmp/task/new/'
-        const fileUrl = filePrefix + filename
-        await uploadMedia({ filename: fileUrl, fileType, file })
-        const fileToAdd = {
-          uploadSlug: fileUrl,
-          name: filename,
-          type: '',
-        }
-        if (fileType in IMAGE_FILE_EXTENSIONS_TYPE_MAPPING) {
-          fileToAdd.type = 'image'
-        } else if (fileType in VIDEO_FILE_EXTENSIONS_TYPE_MAPPING) {
-          fileToAdd.type = 'video'
-        } else {
-          fileToAdd.type = 'file'
-        }
-
-        setMediaUploads([...mediaUploads, fileToAdd])
-        attachMedia({
-          variables: {
-            taskId: existingTask?.id,
-            input: {
-              mediaUploads: [fileToAdd],
-            },
-          },
-          onCompleted: () => {
-            if (
-              orgBoard?.setColumns &&
-              existingTask?.orgId === orgBoard?.orgId
-            ) {
-              const columns = [...orgBoard?.columns]
-              columns[0].tasks = columns[0].tasks.map((taskItem) => {
-                if (existingTask?.id === taskItem?.id) {
-                  return {
-                    ...existingTask,
-                    media: [...mediaUploads, fileToAdd],
-                  }
-                }
-                return existingTask
-              })
-              orgBoard.setColumns(columns)
-            }
-          },
-        })
-      }
-    },
-    [attachMedia, mediaUploads, existingTask, orgBoard]
-  )
   const filterDAOptions = useCallback((orgs) => {
     if (!orgs) {
       return []
@@ -755,7 +705,41 @@ const EditLayoutBaseModal = (props) => {
             type="file"
             hidden
             ref={inputRef}
-            onChange={(event) => handleAddFile(event)}
+            onChange={async (event) => {
+              const fileToAdd = await handleAddFile({
+                event,
+                filePrefix: 'tmp/task/new/',
+                mediaUploads,
+                setMediaUploads,
+              })
+
+              attachMedia({
+                variables: {
+                  taskId: existingTask?.id,
+                  input: {
+                    mediaUploads: [fileToAdd],
+                  },
+                },
+                onCompleted: () => {
+                  if (
+                    orgBoard?.setColumns &&
+                    existingTask?.orgId === orgBoard?.orgId
+                  ) {
+                    const columns = [...orgBoard?.columns]
+                    columns[0].tasks = columns[0].tasks.map((taskItem) => {
+                      if (existingTask?.id === taskItem?.id) {
+                        return {
+                          ...existingTask,
+                          media: [...mediaUploads, fileToAdd],
+                        }
+                      }
+                      return existingTask
+                    })
+                    orgBoard.setColumns(columns)
+                  }
+                },
+              })
+            }}
           />
         </CreateFormMainInputBlock>
         {/*Upload header image block*/}

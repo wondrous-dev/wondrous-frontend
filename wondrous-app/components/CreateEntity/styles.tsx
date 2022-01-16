@@ -302,8 +302,6 @@ export const CreateFormMainDescriptionInputSymbolCounter = styled(Typography)`
   && {
     position: absolute;
     right: 15px;
-    bottom: 15px;
-
     font-size: 12px;
     line-height: 19px;
     letter-spacing: 0.01em;

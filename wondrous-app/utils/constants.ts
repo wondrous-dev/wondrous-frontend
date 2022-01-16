@@ -8,6 +8,10 @@ export const TASK_STATUS_DONE = 'completed'
 export const TASK_STATUS_REQUESTED = 'requested'
 export const TASK_STATUS_ARCHIVED = 'archived'
 
+// Task types
+export const TASK_TYPE = 'task'
+export const BOUNTY_TYPE = 'bounty'
+export const MILESTONE_TYPE = 'milestone'
 // Decision
 export const DECISION_SEND_INTO_REVISION = 'Send into revision'
 export const DECISION_REJECT = 'Reject'

@@ -41,3 +41,12 @@ export const REMOVE_MEDIA_FROM_TASK = gql`
     }
   }
 `
+
+export const UPDATE_TASK_STATUS = gql`
+  mutation updateTaskStatus($taskId: ID!, $input: updateTaskStatusInput!) {
+    updateTaskStatus(taskId: $taskId, input: $input) {
+      ...TaskFragment
+    }
+  }
+  ${TaskFragment}
+`

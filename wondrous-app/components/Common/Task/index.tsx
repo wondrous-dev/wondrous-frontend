@@ -170,7 +170,7 @@ export const Task = ({ task, setTask }) => {
         <TaskInner>
           <TaskHeader>
             <SafeImage
-              src={task?.orgProfilePicture || 'seed/wonder_logo.jpg'}
+              src={task?.orgProfilePicture}
               style={{
                 width: '29px',
                 height: '28px',

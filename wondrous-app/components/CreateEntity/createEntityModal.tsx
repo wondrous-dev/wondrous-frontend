@@ -79,7 +79,11 @@ import {
 } from './styles'
 import SelectDownIcon from '../Icons/selectDownIcon'
 import UploadImageIcon from '../Icons/uploadImage'
-import { getFilenameAndType, uploadMedia } from '../../utils/media'
+import {
+  getFilenameAndType,
+  handleAddFile,
+  uploadMedia,
+} from '../../utils/media'
 import DatePicker from '../Common/DatePicker'
 import { MediaItem } from './MediaItem'
 import { AddFileUpload } from '../Icons/addFileUpload'
@@ -269,6 +273,17 @@ const PRIORITY_SELECT_OPTIONS = [
   },
 ]
 
+export const filterOrgUsersForAutocomplete = (orgUsers) => {
+  if (!orgUsers) {
+    return []
+  }
+  return orgUsers.map((orgUser) => ({
+    ...orgUser?.user,
+    display: orgUser?.user?.username,
+    id: orgUser?.user?.id,
+  }))
+}
+
 const CreateLayoutBaseModal = (props) => {
   const { entityType, handleClose, resetEntityType } = props
   const user = useMe()
@@ -302,9 +317,8 @@ const CreateLayoutBaseModal = (props) => {
 
   const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS)
 
-  const [getEligibleReviewersForOrg, { data: eligibleReviewersData }] = useLazyQuery(
-    GET_ELIGIBLE_REVIEWERS_FOR_ORG
-  )
+  const [getEligibleReviewersForOrg, { data: eligibleReviewersData }] =
+    useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_ORG)
 
   const descriptionTextCounter = (e) => {
     setDescriptionText(e.target.value)
@@ -352,33 +366,6 @@ const CreateLayoutBaseModal = (props) => {
   const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType]
   const inputRef: any = useRef()
 
-  const handleAddFile = useCallback(
-    async (event) => {
-      const file = event.target.files[0]
-      if (file) {
-        const fileName = file?.name
-        // get image preview
-        const { fileType, filename } = getFilenameAndType(fileName)
-        const filePrefix = 'tmp/task/new/'
-        const fileUrl = filePrefix + filename
-        await uploadMedia({ filename: fileUrl, fileType, file })
-        const fileToAdd = {
-          uploadSlug: fileUrl,
-          name: filename,
-          type: '',
-        }
-        if (fileType in IMAGE_FILE_EXTENSIONS_TYPE_MAPPING) {
-          fileToAdd.type = 'image'
-        } else if (fileType in VIDEO_FILE_EXTENSIONS_TYPE_MAPPING) {
-          fileToAdd.type = 'video'
-        } else {
-          fileToAdd.type = 'file'
-        }
-        setMediaUploads([...mediaUploads, fileToAdd])
-      }
-    },
-    [mediaUploads]
-  )
   const filterDAOptions = useCallback((orgs) => {
     if (!orgs) {
       return []
@@ -399,17 +386,6 @@ const CreateLayoutBaseModal = (props) => {
       profilePicture: orgUser?.user?.profilePicture,
       label: orgUser?.user?.username,
       value: orgUser?.user?.id,
-    }))
-  }, [])
-
-  const filterOrgUsersForAutocomplete = useCallback((orgUsers) => {
-    if (!orgUsers) {
-      return []
-    }
-    return orgUsers.map((orgUser) => ({
-      ...orgUser?.user,
-      display: orgUser?.user?.username,
-      id: orgUser?.user?.id,
     }))
   }, [])
 
@@ -455,7 +431,6 @@ const CreateLayoutBaseModal = (props) => {
     onCompleted: (data) => {
       const task = data?.createTask
       const justCreatedPod = getPodObject()
-
       if (orgBoard?.setColumns && task?.orgId === orgBoard?.orgId) {
         const transformedTask = transformTaskToTaskCard(task, {
           orgName: orgBoard?.org?.name,
@@ -673,7 +648,14 @@ const CreateLayoutBaseModal = (props) => {
             type="file"
             hidden
             ref={inputRef}
-            onChange={(event) => handleAddFile(event)}
+            onChange={(event) =>
+              handleAddFile({
+                event,
+                filePrefix: 'tmp/task/new/',
+                mediaUploads,
+                setMediaUploads,
+              })
+            }
           />
         </CreateFormMainInputBlock>
         {/*Upload header image block*/}
@@ -796,11 +778,12 @@ const CreateLayoutBaseModal = (props) => {
                 options={filterUserOptions(
                   eligibleReviewersData?.getEligibleReviewersForOrg
                 ).filter(
-                  ({ id }) => !selectedReviewers.map(({ id }) => id).includes(id)
+                  ({ id }) =>
+                    !selectedReviewers.map(({ id }) => id).includes(id)
                 )}
                 multiple
                 onChange={(event, newValue, reason) => {
-                  if ("clear" === reason) {
+                  if ('clear' === reason) {
                     setSelectedReviewers([])
                   }
                   if (event.code === 'Backspace' && reviewerString === '') {
@@ -846,7 +829,9 @@ const CreateLayoutBaseModal = (props) => {
                         label={option?.label}
                         onDelete={() =>
                           setSelectedReviewers(
-                            selectedReviewers.filter(({ id }) => id !== option?.id)
+                            selectedReviewers.filter(
+                              ({ id }) => id !== option?.id
+                            )
                           )
                         }
                       />
