@@ -146,7 +146,9 @@ const BoardsPage = () => {
         }, column)
       })
       setColumns(newColumns)
-      setOrgTaskHasMore(data?.hasMore || data?.getOrgTaskBoardTasks.length >= LIMIT)
+      setOrgTaskHasMore(
+        data?.hasMore || data?.getOrgTaskBoardTasks.length >= LIMIT
+      )
     },
   })
 
