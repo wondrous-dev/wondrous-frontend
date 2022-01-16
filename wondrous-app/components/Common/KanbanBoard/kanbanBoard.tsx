@@ -10,9 +10,14 @@ import TaskColumn from './TaskColumn'
 // Task update (column changes)
 import apollo from '../../../services/apollo'
 import { UPDATE_TASK_STATUS } from '../../../graphql/mutations/task'
-
+import { parseUserPermissionContext } from '../../../utils/helpers'
+import { PERMISSIONS } from '../../../utils/constants'
+import { useOrgBoard, useUserBoard, usePodBoard } from '../../../utils/hooks'
+import { useMe } from '../../Auth/withAuth'
+import { update } from 'lodash'
 
 const KanbanBoard = (props) => {
+  const user = useMe()
   const { columns, onLoadMore, hasMore } = props
   const [columnsState, setColumnsState] = useState(columns)
   const [ref, inView] = useInView({})
@@ -20,11 +25,36 @@ const KanbanBoard = (props) => {
   const [once, setOnce] = useState(false)
   const router = useRouter()
 
+  // Permissions for Draggable context
+  const orgBoard = useOrgBoard()
+  const userBoard = useUserBoard()
+  const podBoard = usePodBoard()
+  const userPermissionsContext =
+    orgBoard?.userPermissionsContext ||
+    podBoard?.userPermissionsContext ||
+    userBoard?.userPermissionsContext
+
   useEffect(() => {
     if (inView && hasMore) {
       onLoadMore()
     }
   }, [inView, hasMore, onLoadMore])
+
+  const checkPermissions = (task) => {
+    const permissions = parseUserPermissionContext({
+      userPermissionsContext,
+      orgId: task?.orgId,
+      podId: task?.podId,
+    })
+
+    const canEdit =
+      permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
+      permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+      task?.createdBy === user?.id ||
+      (task?.assigneeId && task?.assigneeId === user?.id)
+
+    return canEdit && user && task
+  }
 
   // Updates the task status on Backend
   // TODO: Aggregate all Task mutations on one Task
@@ -37,14 +67,14 @@ const KanbanBoard = (props) => {
         mutation: UPDATE_TASK_STATUS,
         variables: {
           taskId: taskToBeUpdated.id,
-          input: { 
-            newStatus: taskToBeUpdated.status
-          }
+          input: {
+            newStatus: taskToBeUpdated.status,
+          },
         },
       })
 
       return true
-    } catch(err) {
+    } catch (err) {
       console.log('Error: ', err)
     }
   }
@@ -60,11 +90,15 @@ const KanbanBoard = (props) => {
       const task = columnsState
         .map(({ tasks }) => tasks.find((task) => task.id === id))
         .filter((i) => i)[0]
-      const updatedTask = { ...task, status }
-      
-      // Update task
-      updateTask(updatedTask)
-      
+
+      // Only allow when permissions are OK
+      const updatedTask = checkPermissions(task) ? { ...task, status } : task
+
+      if (updatedTask.status !== task.status) {
+        console.log(updatedTask.status)
+        updateTask(updatedTask)
+      }
+
       return {
         ...column,
         tasks: [updatedTask, ...column.tasks],
