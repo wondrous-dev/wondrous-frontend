@@ -100,6 +100,11 @@ import { CompletedIcon, InReviewIcon } from '../../Icons/statusIcons'
 import { RejectIcon } from '../../Icons/decisionIcons'
 
 const SubmissionStatusIcon = (submission) => {
+  const iconStyle = {
+    width: '20px',
+    height: '20px',
+    marginRight: '8px',
+  }
   if (
     !submission?.approvedAt &&
     !submission?.changedRequested &&
@@ -112,7 +117,7 @@ const SubmissionStatusIcon = (submission) => {
           alignItems: 'center',
         }}
       >
-        <InReviewIcon />
+        <InReviewIcon style={iconStyle} />
         <TaskStatusHeaderText>Awaiting review</TaskStatusHeaderText>
       </div>
     )
@@ -124,7 +129,7 @@ const SubmissionStatusIcon = (submission) => {
           alignItems: 'center',
         }}
       >
-        <RejectIcon />
+        <RejectIcon style={iconStyle} />
         <TaskStatusHeaderText>Changes requested</TaskStatusHeaderText>
       </div>
     )
@@ -136,7 +141,7 @@ const SubmissionStatusIcon = (submission) => {
           alignItems: 'center',
         }}
       >
-        <CompletedIcon />
+        <CompletedIcon style={iconStyle} />
         <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
       </div>
     )
@@ -147,28 +152,23 @@ const SubmissionItem = (props) => {
   const { submission } = props
   const router = useRouter()
   const mediaUploads = submission?.media
+  console.log('submission', submission)
+  const imageStyle = {
+    width: '40px',
+    height: '40px',
+    borderRadius: '20px',
+    marginRight: '12px',
+  }
   return (
     <TaskSubmissionItemDiv>
       <TaskSubmissionHeader>
         {submission?.creatorProfilePicture ? (
           <SafeImage
-            style={{
-              width: '26px',
-              height: '26px',
-              borderRadius: '13px',
-              marginRight: '4px',
-            }}
+            style={imageStyle}
             src={submission?.creatorProfilePicture}
           />
         ) : (
-          <DefaultUserImage
-            style={{
-              width: '26px',
-              height: '26px',
-              borderRadius: '13px',
-              marginRight: '4px',
-            }}
-          />
+          <DefaultUserImage style={imageStyle} />
         )}
         <TaskSubmissionHeaderTextDiv>
           <div
@@ -177,7 +177,11 @@ const SubmissionItem = (props) => {
               alignItems: 'center',
             }}
           >
-            <TaskSubmissionHeaderCreatorText>
+            <TaskSubmissionHeaderCreatorText
+              style={{
+                marginRight: '8px',
+              }}
+            >
               {submission.creatorUsername}
             </TaskSubmissionHeaderCreatorText>
             <TaskSubmissionHeaderTimeText>
@@ -211,15 +215,17 @@ const SubmissionItem = (props) => {
               ))}
             </MediaUploadDiv>
           ) : (
-            <Typography>None</Typography>
+            <TaskDescriptionText
+              style={{
+                marginTop: '8px',
+              }}
+            >
+              None
+            </TaskDescriptionText>
           )}
         </TaskSectionInfoDiv>
       </TaskSectionDisplayDiv>
-      <TaskSectionDisplayDiv
-        style={{
-          alignItems: 'flex-start',
-        }}
-      >
+      <TaskSectionDisplayDiv>
         <TaskSectionDisplayLabel
           style={{
             marginRight: '8px',
@@ -228,9 +234,21 @@ const SubmissionItem = (props) => {
           <LinkIcon />
           <TaskSectionDisplayText>Link </TaskSectionDisplayText>
         </TaskSectionDisplayLabel>
-        <TaskSubmissionLink href={submission?.links[0]?.url}>
-          {submission?.links[0]?.name || 'None'}
-        </TaskSubmissionLink>
+        {submission?.links[0]?.url ? (
+          <TaskSubmissionLink href={submission?.links[0]?.url}>
+            {submission?.links[0]?.url}
+          </TaskSubmissionLink>
+        ) : (
+          <>
+            <TaskDescriptionText
+              style={{
+                marginTop: '8px',
+              }}
+            >
+              None
+            </TaskDescriptionText>
+          </>
+        )}
       </TaskSectionDisplayDiv>
       <TaskSectionDisplayDiv
         style={{
@@ -245,7 +263,11 @@ const SubmissionItem = (props) => {
           <NotesIcon />
           <TaskSectionDisplayText>Notes </TaskSectionDisplayText>
         </TaskSectionDisplayLabel>
-        <TaskDescriptionText>
+        <TaskDescriptionText
+          style={{
+            marginTop: '12px',
+          }}
+        >
           {renderMentionString({
             content: submission?.description,
             router,
@@ -623,7 +645,10 @@ const TaskSubmissionContent = (props) => {
           return (
             <SubmissionItem
               key={taskSubmission?.id}
-              submission={taskSubmission}
+              submission={transformTaskSubmissionToTaskSubmissionCard(
+                taskSubmission,
+                {}
+              )}
             />
           )
         })}

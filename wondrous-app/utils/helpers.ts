@@ -101,7 +101,7 @@ export const transformTaskProposalToTaskProposalCard = (
   return {
     ...taskProposal,
     creatorUsername: taskProposal?.creator?.username,
-    creatorProfilePicture: taskProposal?.creator?.userProfilePicture,
+    creatorProfilePicture: taskProposal?.creator?.profilePicture,
     orgProfilePicture:
       extraData?.orgProfilePicture || taskProposal?.org?.profilePicture,
     orgName: extraData?.orgName || taskProposal?.org?.name,
@@ -116,7 +116,7 @@ export const transformTaskSubmissionToTaskSubmissionCard = (
   return {
     ...taskSubmission,
     creatorUsername: taskSubmission?.creator?.username,
-    creatorProfilePicture: taskSubmission?.creator?.userProfilePicture,
+    creatorProfilePicture: taskSubmission?.creator?.profilePicture,
     orgProfilePicture:
       extraData?.orgProfilePicture || taskSubmission?.org?.profilePicture,
     orgName: extraData?.orgName || taskSubmission?.org?.name,

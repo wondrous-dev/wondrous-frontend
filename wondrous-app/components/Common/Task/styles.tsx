@@ -138,11 +138,7 @@ export const TaskModal = styled(BaseCard)`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(
-    0deg,
-    rgba(20, 20, 20, 1) 0%,
-    rgba(30, 30, 30, 1) 100%
-  );
+  background: rgb(20, 20, 20);
 `
 
 export const TaskModalHeader = styled.div`
@@ -274,13 +270,16 @@ export const MakeSubmissionDiv = styled.div`
 `
 
 export const TaskSubmissionItemDiv = styled.div`
-  border-bottom: 1px solid #363636;
   padding: 30px;
+  & :not(:last-child) {
+    border-bottom: 1px solid #363636;
+  }
 `
 
 export const TaskSubmissionHeader = styled.div`
   display: flex;
   align-items: center;
+  margin-bottom: 8px;
 `
 
 export const TaskSubmissionHeaderTextDiv = styled.div``
@@ -313,5 +312,7 @@ export const TaskSubmissionLink = styled.a`
     color: #00baff;
     font-size: 14px;
     font-family: Space Grotesk;
+    margin-top: 8px;
+    margin-left: 8px;
   }
 `
