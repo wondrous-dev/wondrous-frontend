@@ -130,7 +130,19 @@ export const TaskModal = styled(BaseCard)`
   position: absolute;
   left: 50%;
   top: 50%;
+  height: 80%;
   transform: translate(-50%, -50%);
+  overflow-y: scroll;
+  z-index: 2100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    0deg,
+    rgba(20, 20, 20, 1) 0%,
+    rgba(30, 30, 30, 1) 100%
+  );
 `
 
 export const TaskModalHeader = styled.div`

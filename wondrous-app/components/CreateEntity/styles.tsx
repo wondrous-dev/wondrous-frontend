@@ -7,6 +7,7 @@ import {
   Chip,
   IconButton,
   Modal,
+  Dialog,
   TextField,
   Typography,
   Grid,
@@ -25,13 +26,15 @@ export const MediaUploadGrid = styled(Grid)`
   }
 `
 export const CreateModalOverlay = styled(Modal)`
-  position: relative;
+  position: absolute;
   width: 100%;
   overflow-y: scroll;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding-top: 50px;
 `
 
 export const CreateLayoutsModal = styled(BaseCard)`

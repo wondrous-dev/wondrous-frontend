@@ -655,7 +655,8 @@ export const TaskViewModal = (props) => {
         setTaskSubmissionLoading(false)
       },
       fetchPolicy: 'network-only',
-      onError: () => {
+      onError: (err) => {
+        console.log('err', err)
         setTaskSubmissionLoading(false)
       },
     }
@@ -723,6 +724,7 @@ export const TaskViewModal = (props) => {
           taskId: fetchedTask?.id,
         },
       })
+      console.log('what the fudge')
       getTaskSubmissionsForTask({
         variables: {
           taskId: fetchedTask?.id,
