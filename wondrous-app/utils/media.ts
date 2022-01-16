@@ -13,7 +13,7 @@ export const uploadMedia = async ({ filename, fileType, file }) => {
         filename,
       },
     })
-    const apiUrl = apolloResult.data.getPresignedImageUrl.url
+    const apiUrl = apolloResult.data.getPresignedFileUrl.url
     // TODO: parse filetype
     const uploadResponse = await fetch(apiUrl, {
       method: 'PUT',

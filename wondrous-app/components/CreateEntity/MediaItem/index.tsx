@@ -15,7 +15,7 @@ export const MediaItem = (props) => {
     <MediaItemWrapper>
       {mediaItem?.type === 'image' && (
         <SafeImage
-          src={mediaItem?.uploadSlug}
+          src={mediaItem?.uploadSlug || mediaItem?.slug}
           style={{
             borderRadius: '4px',
             position: 'relative',
@@ -32,7 +32,9 @@ export const MediaItem = (props) => {
           }}
           onClick={() => {
             const newMediaUploads = mediaUploads.filter(
-              (mediaUpload) => mediaUpload.uploadSlug !== mediaItem?.uploadSlug
+              (mediaUpload) =>
+                mediaUpload.uploadSlug !== mediaItem?.uploadSlug ||
+                mediaUpload?.uploadSlug !== mediaItem?.slug
             )
             setMediaUploads(newMediaUploads)
             if (removeMediaItem) {

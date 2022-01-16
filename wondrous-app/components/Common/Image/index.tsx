@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useQuery } from '@apollo/client'
-import { GET_PREVIEW_IMAGE } from '../../../graphql/queries/media'
+import { GET_PREVIEW_FILE } from '../../../graphql/queries/media'
 
 interface SafeImageArgs {
   src: string
@@ -10,21 +10,21 @@ interface SafeImageArgs {
 }
 export const SafeImage = (safeImageArgs: SafeImageArgs) => {
   const { src, style, defaultImage, setImage } = safeImageArgs
-  const { data, loading, error } = useQuery(GET_PREVIEW_IMAGE, {
+  const { data, loading, error } = useQuery(GET_PREVIEW_FILE, {
     variables: {
       path: src,
     },
     fetchPolicy: 'network-only',
   })
 
-  const imgUrl = data?.getPreviewImage?.url
+  const imgUrl = data?.getPreviewFile?.url
   useEffect(() => {
     if (imgUrl) {
       if (
         setImage &&
         !(src?.startsWith('https') || src?.startsWith('file://'))
       ) {
-        setImage(data.getPreviewImage.url)
+        setImage(data.getPreviewFile.url)
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

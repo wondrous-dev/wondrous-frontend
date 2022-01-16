@@ -12,6 +12,7 @@ import {
   MEDIA_TYPES,
   PERMISSIONS,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
+  TASK_STATUS_IN_PROGRESS,
 } from '../../utils/constants'
 import CircleIcon from '../Icons/circleIcon'
 import CodeIcon from '../Icons/MediaTypesIcons/code'
@@ -25,7 +26,6 @@ import ImageIcon from '../Icons/MediaTypesIcons/image'
 import VideoIcon from '../Icons/MediaTypesIcons/video'
 import InputForm from '../Common/InputForm/inputForm'
 import DropdownSelect from '../Common/DropdownSelect/dropdownSelect'
-
 import { ENTITIES_UI_ELEMENTS } from './chooseEntityToCreateModal'
 import MembersRow from './MembersRow/membersRow'
 import { CreateFormMembersList } from './MembersRow/styles'
@@ -280,13 +280,13 @@ const PRIORITY_SELECT_OPTIONS = [
   },
 ]
 
-const transformMediaFormat = (media) => {
+export const transformMediaFormat = (media) => {
   return (
     media &&
     media.map((item) => {
       return {
         uploadSlug: item?.slug,
-        type: item?.item,
+        type: item?.type,
         name: item?.name,
       }
     })
@@ -472,14 +472,19 @@ const EditLayoutBaseModal = (props) => {
           orgProfilePicture: orgBoard?.org?.profilePicture,
           podName: justCreatedPod?.name,
         })
-
+        let columnNumber = 0
+        if (task.status === TASK_STATUS_IN_PROGRESS) {
+          columnNumber = 1
+        }
         const columns = [...orgBoard?.columns]
-        columns[0].tasks = columns[0].tasks.map((existingTask) => {
-          if (transformedTask?.id === existingTask?.id) {
-            return transformedTask
+        columns[columnNumber].tasks = columns[columnNumber].tasks.map(
+          (existingTask) => {
+            if (transformedTask?.id === existingTask?.id) {
+              return transformedTask
+            }
+            return existingTask
           }
-          return existingTask
-        })
+        )
         orgBoard.setColumns(columns)
       }
       handleClose()
@@ -669,7 +674,41 @@ const EditLayoutBaseModal = (props) => {
                     removeMedia({
                       variables: {
                         taskId: existingTask?.id,
-                        slug: mediaItem?.uploadSlug,
+                        slug: mediaItem?.uploadSlug || mediaItem?.slug,
+                      },
+                      onCompleted: () => {
+                        if (
+                          orgBoard?.setColumns &&
+                          existingTask?.orgId === orgBoard?.orgId
+                        ) {
+                          const columns = [...orgBoard?.columns]
+                          let columnNumber = 0
+                          if (
+                            existingTask?.status === TASK_STATUS_IN_PROGRESS
+                          ) {
+                            columnNumber = 1
+                          }
+                          columns[columnNumber].tasks = columns[
+                            columnNumber
+                          ].tasks.map((taskItem) => {
+                            if (existingTask?.id === taskItem?.id) {
+                              const newMedia = mediaUploads.filter(
+                                (mediaUpload) => {
+                                  return (
+                                    mediaUpload?.uploadSlug !==
+                                    mediaItem?.uploadSlug
+                                  )
+                                }
+                              )
+                              return {
+                                ...existingTask,
+                                media: newMedia,
+                              }
+                            }
+                            return existingTask
+                          })
+                          orgBoard.setColumns(columns)
+                        }
                       },
                     })
                   }}
@@ -726,7 +765,13 @@ const EditLayoutBaseModal = (props) => {
                     existingTask?.orgId === orgBoard?.orgId
                   ) {
                     const columns = [...orgBoard?.columns]
-                    columns[0].tasks = columns[0].tasks.map((taskItem) => {
+                    let columnNumber = 0
+                    if (existingTask?.status === TASK_STATUS_IN_PROGRESS) {
+                      columnNumber = 1
+                    }
+                    columns[columnNumber].tasks = columns[
+                      columnNumber
+                    ].tasks.map((taskItem) => {
                       if (existingTask?.id === taskItem?.id) {
                         return {
                           ...existingTask,

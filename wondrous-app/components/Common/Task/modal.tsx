@@ -28,6 +28,8 @@ import {
   TaskSubmissionHeaderTimeText,
   TaskStatusHeaderText,
   TaskSubmissionLink,
+  TaskLink,
+  TaskMediaContainer,
 } from './styles'
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import {
@@ -81,7 +83,12 @@ import {
 import { useRouter } from 'next/router'
 import { CircularProgress, Typography } from '@material-ui/core'
 import { UPDATE_TASK_STATUS } from '../../../graphql/mutations/task'
-import { CREATE_TASK_SUBMISSION } from '../../../graphql/mutations/taskSubmission'
+import {
+  ATTACH_SUBMISSION_MEDIA,
+  CREATE_TASK_SUBMISSION,
+  REMOVE_SUBMISSION_MEDIA,
+  UPDATE_TASK_SUBMISSION,
+} from '../../../graphql/mutations/taskSubmission'
 import UploadImageIcon from '../../Icons/uploadImage'
 import {
   getFilenameAndType,
@@ -98,6 +105,33 @@ import InputForm from '../InputForm/inputForm'
 import { PinDropSharp } from '@material-ui/icons'
 import { CompletedIcon, InReviewIcon } from '../../Icons/statusIcons'
 import { RejectIcon } from '../../Icons/decisionIcons'
+import { GET_PREVIEW_FILE } from '../../../graphql/queries/media'
+import { transformMediaFormat } from '../../CreateEntity/editEntityModal'
+
+const MediaLink = (props) => {
+  const { media, style } = props
+  const [getPreviewFile, { data, loading, error }] = useLazyQuery(
+    GET_PREVIEW_FILE,
+    {
+      fetchPolicy: 'network-only',
+    }
+  )
+  const fileUrl = data?.getPreviewFile?.url
+  useEffect(() => {
+    if (media?.slug) {
+      getPreviewFile({
+        variables: {
+          path: media?.slug,
+        },
+      })
+    }
+  }, [media?.slug, getPreviewFile])
+  return (
+    <TaskLink style={style} href={fileUrl} target="_blank">
+      {media?.name}
+    </TaskLink>
+  )
+}
 
 const SubmissionStatusIcon = (submission) => {
   const iconStyle = {
@@ -149,16 +183,18 @@ const SubmissionStatusIcon = (submission) => {
 }
 
 const SubmissionItem = (props) => {
-  const { submission } = props
+  const { submission, setMakeSubmission, setSubmissionToEdit } = props
   const router = useRouter()
+  const user = useMe()
   const mediaUploads = submission?.media
-  console.log('submission', submission)
   const imageStyle = {
     width: '40px',
     height: '40px',
     borderRadius: '20px',
     marginRight: '12px',
   }
+  const isCreator = user?.id === submission?.createdBy
+
   return (
     <TaskSubmissionItemDiv>
       <TaskSubmissionHeader>
@@ -184,11 +220,13 @@ const SubmissionItem = (props) => {
             >
               {submission.creatorUsername}
             </TaskSubmissionHeaderCreatorText>
-            <TaskSubmissionHeaderTimeText>
-              {formatDistance(new Date(submission.createdAt), new Date(), {
-                addSuffix: true,
-              })}
-            </TaskSubmissionHeaderTimeText>
+            {submission.createdAt && (
+              <TaskSubmissionHeaderTimeText>
+                {formatDistance(new Date(submission.createdAt), new Date(), {
+                  addSuffix: true,
+                })}
+              </TaskSubmissionHeaderTimeText>
+            )}
           </div>
           <SubmissionStatusIcon submission={submission} />
         </TaskSubmissionHeaderTextDiv>
@@ -200,18 +238,13 @@ const SubmissionItem = (props) => {
           }}
         >
           <ImageIcon />
-          <TaskSectionDisplayText>File</TaskSectionDisplayText>
+          <TaskSectionDisplayText>Files</TaskSectionDisplayText>
         </TaskSectionDisplayLabel>
         <TaskSectionInfoDiv>
           {mediaUploads.length > 0 ? (
             <MediaUploadDiv>
               {mediaUploads.map((mediaItem) => (
-                <MediaItem
-                  key={mediaItem?.uploadSlug}
-                  mediaUploads={mediaUploads}
-                  mediaItem={mediaItem}
-                  viewOnly={true}
-                />
+                <MediaLink key={mediaItem?.slug} media={mediaItem} />
               ))}
             </MediaUploadDiv>
           ) : (
@@ -234,7 +267,7 @@ const SubmissionItem = (props) => {
           <LinkIcon />
           <TaskSectionDisplayText>Link </TaskSectionDisplayText>
         </TaskSectionDisplayLabel>
-        {submission?.links[0]?.url ? (
+        {submission?.links && submission?.links[0]?.url ? (
           <TaskSubmissionLink href={submission?.links[0]?.url}>
             {submission?.links[0]?.url}
           </TaskSubmissionLink>
@@ -274,6 +307,26 @@ const SubmissionItem = (props) => {
           })}
         </TaskDescriptionText>
       </TaskSectionDisplayDiv>
+
+      {isCreator && (
+        <>
+          <CreateFormFooterButtons>
+            <CreateFormButtonsBlock>
+              {/* <CreateFormCancelButton onClick={}>
+            TODO: this should be delete
+          </CreateFormCancelButton> */}
+              <CreateFormPreviewButton
+                onClick={() => {
+                  setMakeSubmission(true)
+                  setSubmissionToEdit(submission)
+                }}
+              >
+                Edit submission
+              </CreateFormPreviewButton>
+            </CreateFormButtonsBlock>
+          </CreateFormFooterButtons>
+        </>
+      )}
     </TaskSubmissionItemDiv>
   )
 }
@@ -281,19 +334,23 @@ const SubmissionItem = (props) => {
 const TaskSubmissionForm = (props) => {
   const {
     setFetchedTaskSubmissions,
-    setMakeSubmission,
+    cancelSubmissionForm,
     fetchedTaskSubmissions,
     orgId,
     taskId,
-    existingMediaUploads,
-    existingDescriptionText,
-    existingLink,
+    submissionToEdit,
   } = props
-  const [mediaUploads, setMediaUploads] = useState(existingMediaUploads || [])
-  const [descriptionText, setDescriptionText] = useState(
-    existingDescriptionText || ''
+
+  const [mediaUploads, setMediaUploads] = useState(
+    transformMediaFormat(submissionToEdit?.media) || []
   )
-  const [link, setLink] = useState(existingLink || '')
+  const [descriptionText, setDescriptionText] = useState(
+    submissionToEdit?.description || ''
+  )
+
+  const [link, setLink] = useState(
+    (submissionToEdit?.links && submissionToEdit?.links[0]?.url) || ''
+  )
   const [createTaskSubmission] = useMutation(CREATE_TASK_SUBMISSION, {
     onCompleted: (data) => {
       const taskSubmission = data?.createTaskSubmission
@@ -303,9 +360,32 @@ const TaskSubmissionForm = (props) => {
         transformedTaskSubmission,
         ...fetchedTaskSubmissions,
       ])
-      setMakeSubmission(false)
+      if (cancelSubmissionForm) {
+        cancelSubmissionForm()
+      }
     },
   })
+  const [updateTaskSubmission] = useMutation(UPDATE_TASK_SUBMISSION, {
+    onCompleted: (data) => {
+      const taskSubmission = data?.updateTaskSubmission
+      const transformedTaskSubmission =
+        transformTaskSubmissionToTaskSubmissionCard(taskSubmission, {})
+      const newFetchedTaskSubmissions = fetchedTaskSubmissions.map(
+        (fetchedTaskSubmission) => {
+          if (taskSubmission?.id === fetchedTaskSubmission?.id) {
+            return transformedTaskSubmission
+          }
+          return fetchedTaskSubmission
+        }
+      )
+      setFetchedTaskSubmissions(newFetchedTaskSubmissions)
+      if (cancelSubmissionForm) {
+        cancelSubmissionForm()
+      }
+    },
+  })
+  const [attachTaskSubmissionMedia] = useMutation(ATTACH_SUBMISSION_MEDIA)
+  const [removeTaskSubmissionMedia] = useMutation(REMOVE_SUBMISSION_MEDIA)
 
   const { data: orgUsersData } = useQuery(GET_ORG_USERS, {
     variables: {
@@ -314,6 +394,7 @@ const TaskSubmissionForm = (props) => {
   })
 
   const inputRef: any = useRef()
+  let removeItem = null
   return (
     <>
       <TaskSectionDisplayDiv>
@@ -323,7 +404,7 @@ const TaskSubmissionForm = (props) => {
           }}
         >
           <ImageIcon />
-          <TaskSectionDisplayText>File</TaskSectionDisplayText>
+          <TaskSectionDisplayText>Files</TaskSectionDisplayText>
         </TaskSectionDisplayLabel>
         <TaskSectionInfoDiv>
           {mediaUploads.length > 0 ? (
@@ -334,6 +415,46 @@ const TaskSubmissionForm = (props) => {
                   mediaUploads={mediaUploads}
                   setMediaUploads={setMediaUploads}
                   mediaItem={mediaItem}
+                  removeMediaItem={
+                    submissionToEdit
+                      ? () => {
+                          removeTaskSubmissionMedia({
+                            variables: {
+                              submissionId: submissionToEdit?.id,
+                              slug: mediaItem?.uploadSlug,
+                            },
+                            onCompleted: () => {
+                              const newFetchedTaskSubmissions =
+                                fetchedTaskSubmissions.map(
+                                  (fetchedTaskSubmission) => {
+                                    if (
+                                      fetchedTaskSubmission?.id ===
+                                      submissionToEdit?.id
+                                    ) {
+                                      const newMedia = mediaUploads.filter(
+                                        (mediaUpload) => {
+                                          return (
+                                            mediaUpload?.uploadSlug !==
+                                            mediaItem?.uploadSlug
+                                          )
+                                        }
+                                      )
+                                      const newTaskSubmission = {
+                                        ...fetchedTaskSubmission,
+                                        media: newMedia,
+                                      }
+                                      return newTaskSubmission
+                                    }
+                                  }
+                                )
+                              setFetchedTaskSubmissions(
+                                newFetchedTaskSubmissions
+                              )
+                            },
+                          })
+                        }
+                      : null
+                  }
                 />
               ))}
               <AddFileUpload
@@ -366,14 +487,39 @@ const TaskSubmissionForm = (props) => {
             type="file"
             hidden
             ref={inputRef}
-            onChange={(event) =>
-              handleAddFile({
+            onChange={async (event) => {
+              const fileToAdd = await handleAddFile({
                 event,
-                filePrefix: 'tmp/task_submission/new/',
-                setMediaUploads,
+                filePrefix: 'tmp/task/new/',
                 mediaUploads,
+                setMediaUploads,
               })
-            }
+              if (submissionToEdit) {
+                attachTaskSubmissionMedia({
+                  variables: {
+                    submissionId: submissionToEdit?.id,
+                    input: {
+                      mediaUploads: [fileToAdd],
+                    },
+                  },
+                  onCompleted: () => {
+                    const newFetchedTaskSubmissions =
+                      fetchedTaskSubmissions.map((fetchedTaskSubmission) => {
+                        if (
+                          fetchedTaskSubmission?.id === submissionToEdit?.id
+                        ) {
+                          const newTaskSubmission = {
+                            ...fetchedTaskSubmission,
+                            media: [...mediaUploads, fileToAdd],
+                          }
+                          return newTaskSubmission
+                        }
+                      })
+                    setFetchedTaskSubmissions(newFetchedTaskSubmissions)
+                  },
+                })
+              }
+            }}
           />
         </TaskSectionInfoDiv>
       </TaskSectionDisplayDiv>
@@ -448,29 +594,46 @@ const TaskSubmissionForm = (props) => {
       </TaskSectionDisplayDiv>
       <CreateFormFooterButtons>
         <CreateFormButtonsBlock>
-          <CreateFormCancelButton onClick={() => setMakeSubmission(false)}>
+          <CreateFormCancelButton onClick={cancelSubmissionForm}>
             Cancel
           </CreateFormCancelButton>
           <CreateFormPreviewButton
             onClick={() => {
-              createTaskSubmission({
-                variables: {
-                  input: {
-                    taskId,
-                    description: descriptionText,
-                    links: [
-                      {
-                        url: link,
-                        displayName: link,
-                      },
-                    ],
-                    mediaUploads,
+              if (submissionToEdit) {
+                updateTaskSubmission({
+                  variables: {
+                    submissionId: submissionToEdit?.id,
+                    input: {
+                      description: descriptionText,
+                      links: [
+                        {
+                          url: link,
+                          displayName: link,
+                        },
+                      ],
+                    },
                   },
-                },
-              })
+                })
+              } else {
+                createTaskSubmission({
+                  variables: {
+                    input: {
+                      taskId,
+                      description: descriptionText,
+                      links: [
+                        {
+                          url: link,
+                          displayName: link,
+                        },
+                      ],
+                      mediaUploads,
+                    },
+                  },
+                })
+              }
             }}
           >
-            Submit for approval
+            {submissionToEdit ? 'Submit edits' : 'Submit for approval'}
           </CreateFormPreviewButton>
         </CreateFormButtonsBlock>
       </CreateFormFooterButtons>
@@ -532,6 +695,7 @@ const MakeSubmissionBlock = (props) => {
     </MakeSubmissionDiv>
   )
 }
+
 const TaskSubmissionContent = (props) => {
   const {
     taskSubmissionLoading,
@@ -546,6 +710,8 @@ const TaskSubmissionContent = (props) => {
     orgId,
     setFetchedTaskSubmissions,
   } = props
+
+  const [submissionToEdit, setSubmissionToEdit] = useState(null)
 
   if (taskSubmissionLoading) {
     return <CircularProgress />
@@ -617,7 +783,7 @@ const TaskSubmissionContent = (props) => {
         {makeSubmission ? (
           <TaskSubmissionForm
             setFetchedTaskSubmissions={setFetchedTaskSubmissions}
-            setMakeSubmission={setMakeSubmission}
+            cancelSubmissionForm={() => setMakeSubmission(false)}
             fetchedTaskSubmissions={fetchedTaskSubmissions}
             orgId={orgId}
             taskId={fetchedTask?.id}
@@ -625,33 +791,63 @@ const TaskSubmissionContent = (props) => {
         ) : (
           <MakeSubmissionBlock
             fetchedTask={fetchedTask}
-            setMakeSubmission={setMakeSubmission}
             prompt={'Make a submission'}
           />
         )}
       </>
     )
   }
+  if (makeSubmission && submissionToEdit) {
+    return (
+      <TaskSubmissionForm
+        setFetchedTaskSubmissions={setFetchedTaskSubmissions}
+        isEdit={true}
+        cancelSubmissionForm={() => {
+          setMakeSubmission(false)
+          setSubmissionToEdit(null)
+        }}
+        fetchedTaskSubmissions={fetchedTaskSubmissions}
+        orgId={orgId}
+        taskId={fetchedTask?.id}
+        submissionToEdit={submissionToEdit}
+      />
+    )
+  }
+
   if (fetchedTaskSubmissions?.length > 0) {
     // display list of submissions
     return (
       <>
-        <MakeSubmissionBlock
-          fetchedTask={fetchedTask}
-          setMakeSubmission={setMakeSubmission}
-          prompt={'Make another submission'}
-        />
-        {fetchedTaskSubmissions?.map((taskSubmission) => {
-          return (
-            <SubmissionItem
-              key={taskSubmission?.id}
-              submission={transformTaskSubmissionToTaskSubmissionCard(
-                taskSubmission,
-                {}
-              )}
+        {makeSubmission ? (
+          <TaskSubmissionForm
+            setFetchedTaskSubmissions={setFetchedTaskSubmissions}
+            cancelSubmissionForm={() => setMakeSubmission(false)}
+            fetchedTaskSubmissions={fetchedTaskSubmissions}
+            orgId={orgId}
+            taskId={fetchedTask?.id}
+          />
+        ) : (
+          <>
+            <MakeSubmissionBlock
+              fetchedTask={fetchedTask}
+              setMakeSubmission={setMakeSubmission}
+              prompt={'Make another submission'}
             />
-          )
-        })}
+            {fetchedTaskSubmissions?.map((taskSubmission) => {
+              return (
+                <SubmissionItem
+                  setMakeSubmission={setMakeSubmission}
+                  setSubmissionToEdit={setSubmissionToEdit}
+                  key={taskSubmission?.id}
+                  submission={transformTaskSubmissionToTaskSubmissionCard(
+                    taskSubmission,
+                    {}
+                  )}
+                />
+              )
+            })}
+          </>
+        )}
       </>
     )
   }
@@ -749,7 +945,6 @@ export const TaskViewModal = (props) => {
           taskId: fetchedTask?.id,
         },
       })
-      console.log('what the fudge')
       getTaskSubmissionsForTask({
         variables: {
           taskId: fetchedTask?.id,
@@ -958,6 +1153,17 @@ export const TaskViewModal = (props) => {
               </TaskSectionInfoText>
             )}
           </TaskSectionInfoDiv>
+        </TaskSectionDisplayDiv>
+        <TaskSectionDisplayDiv>
+          <TaskSectionDisplayLabel>
+            <ImageIcon />
+            <TaskSectionDisplayText>Media</TaskSectionDisplayText>
+          </TaskSectionDisplayLabel>
+          <TaskMediaContainer>
+            {fetchedTask?.media?.map((mediaItem) => (
+              <MediaLink key={mediaItem?.slug} media={mediaItem} />
+            ))}
+          </TaskMediaContainer>
         </TaskSectionDisplayDiv>
         <TaskSectionDisplayDiv>
           <TaskSectionDisplayLabel>
