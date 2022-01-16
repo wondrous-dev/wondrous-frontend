@@ -220,6 +220,11 @@ const BoardsPage = () => {
     getOrgTaskProposals,
   ])
 
+  // Handle Column changes (tasks movements)
+  useEffect(() => {
+    console.log('Colum Changed: ', columns)
+  }, [columns])
+
   const handleLoadMore = useCallback(() => {
     if (orgTaskHasMore) {
       fetchMore({
