@@ -95,7 +95,6 @@ const KanbanBoard = (props) => {
       const updatedTask = checkPermissions(task) ? { ...task, status } : task
 
       if (updatedTask.status !== task.status) {
-        console.log(updatedTask.status)
         updateTask(updatedTask)
       }
 
