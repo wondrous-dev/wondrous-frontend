@@ -19,15 +19,6 @@ export const UPDATE_TASK = gql`
   ${TaskFragment}
 `
 
-export const UPDATE_TASK_STATUS = gql`
-  mutation updateTaskStatus($taskId: ID!, $input: updateTaskStatusInput!) {
-    updateTaskStatus(taskId: $taskId, input: $input) {
-      ...TaskFragment
-    }
-  }
-  ${TaskFragment}
-`
-
 export const COMPLETE_TASK = gql`
   mutation completeTask($taskId: ID!) {
     completeTask(taskId: $taskId) {

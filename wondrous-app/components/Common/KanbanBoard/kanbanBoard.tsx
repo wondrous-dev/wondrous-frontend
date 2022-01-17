@@ -13,7 +13,6 @@ import apollo from '../../../services/apollo'
 import { UPDATE_TASK_STATUS } from '../../../graphql/mutations/task'
 import { parseUserPermissionContext } from '../../../utils/helpers'
 import { PERMISSIONS } from '../../../utils/constants'
-import { useOrgBoard, useUserBoard, usePodBoard } from '../../../utils/hooks'
 import { useMe } from '../../Auth/withAuth'
 import { update } from 'lodash'
 
@@ -106,9 +105,6 @@ const KanbanBoard = (props) => {
     })
     setColumnsState(updatedColumns)
   }
-  const orgBoard = useOrgBoard()
-  const podBoard = usePodBoard()
-  const userBoard = useUserBoard()
 
   useEffect(() => {
     if (router?.query?.task && !once && (orgBoard || userBoard || podBoard)) {

@@ -36,11 +36,13 @@ const TO_DO = {
         amount: 2500,
         currency: 'wonder',
       },
-      media: {
-        id: 11,
-        type: 'audio',
-        url: 'https://soundcloud.com/undiscoveredsounds/coldplay-ft-beyonce-hymn-for-the-weekend-ash-remix',
-      },
+      media: [
+        {
+          id: 11,
+          type: 'audio',
+          url: 'https://soundcloud.com/undiscoveredsounds/coldplay-ft-beyonce-hymn-for-the-weekend-ash-remix',
+        },
+      ],
       users: [
         {
           name: 'UserName',

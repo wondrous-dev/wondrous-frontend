@@ -1303,9 +1303,10 @@ export const TaskViewModal = (props) => {
             <TaskSectionDisplayText>Media</TaskSectionDisplayText>
           </TaskSectionDisplayLabel>
           <TaskMediaContainer>
-            {fetchedTask?.media?.map((mediaItem) => (
-              <MediaLink key={mediaItem?.slug} media={mediaItem} />
-            ))}
+            {Array.isArray(fetchedTask?.media) &&
+              fetchedTask?.media.map((mediaItem) => (
+                <MediaLink key={mediaItem?.slug} media={mediaItem} />
+              ))}
           </TaskMediaContainer>
         </TaskSectionDisplayDiv>
         <TaskSectionDisplayDiv>
