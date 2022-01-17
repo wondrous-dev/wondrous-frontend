@@ -57,7 +57,7 @@ export const TaskContent = styled.div`
   font-size: 16px;
   font-weight: 400;
   color: ${White};
-
+  white-space: pre-line;
   cursor: pointer;
 `
 
@@ -130,7 +130,23 @@ export const TaskModal = styled(BaseCard)`
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -80%);
+  height: 80%;
+  transform: translate(-50%, -50%);
+  overflow-y: scroll;
+  z-index: 2100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgb(20, 20, 20);
+
+  &:-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 `
 
 export const TaskModalHeader = styled.div`
@@ -171,6 +187,7 @@ export const TaskDescriptionText = styled(Typography)`
     font-weight: 500;
     font-size: 15px;
     line-height: 19px;
+    white-space: pre-line;
   }
 `
 
@@ -217,4 +234,110 @@ export const TaskSectionInfoDiv = styled.div`
   display: flex;
   align-items: center;
   margin-top: 8px;
+`
+
+export const TaskModalFooter = styled.div`
+  margin-top: 24px;
+`
+
+export const TaskSectionFooterTitleDiv = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+export const TaskSubmissionTab = styled.div`
+  flex: 1;
+  margin-right: 16px;
+  text-align: center;
+  padding-bottom: 8px;
+  cursor: pointer;
+`
+
+export const TaskOverviewTab = styled.div`
+  flex: 1;
+  text-align: center;
+`
+export const TaskTabText = styled(Typography)`
+  && {
+    font-size: 16px;
+    line-height: 24px;
+    color: ${White};
+  }
+`
+
+export const TaskSectionContent = styled.div`
+  text-align: center;
+  padding-top: 16px;
+  padding-bottom: 20px;
+`
+export const MakeSubmissionDiv = styled.div`
+  background: #0f0f0f;
+  border-radius: 184px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+`
+
+export const TaskSubmissionItemDiv = styled.div`
+  padding: 30px;
+  & :not(:last-child) {
+    border-bottom: 1px solid #363636;
+  }
+
+  & :last-child {
+    margin-bottom: 32px;
+  }
+`
+
+export const TaskSubmissionHeader = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+`
+
+export const TaskSubmissionHeaderTextDiv = styled.div``
+
+export const TaskSubmissionHeaderCreatorText = styled(Typography)`
+  && {
+    color: ${White};
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: bold;
+  }
+`
+export const TaskSubmissionHeaderTimeText = styled(Typography)`
+  && {
+    color: #828282;
+    font-size: 13px;
+    line-height: 20px;
+  }
+`
+
+export const TaskStatusHeaderText = styled(Typography)`
+  && {
+    color: #c4c4c4;
+    font-size: 14px;
+  }
+`
+
+export const TaskLink = styled.a`
+  && {
+    color: #00baff;
+    font-size: 14px;
+    font-family: Space Grotesk;
+  }
+`
+
+export const TaskSubmissionLink = styled(TaskLink)`
+  && {
+    margin-top: 8px;
+    margin-left: 8px;
+  }
+`
+
+export const TaskMediaContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  margin-left: 28px;
 `

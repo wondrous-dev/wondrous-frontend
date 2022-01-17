@@ -6,6 +6,7 @@ import {
   AvatarListWrapper,
 } from './styles'
 import { AVATAR_LIST_OVERFLOW_MAX } from '../../../utils/constants'
+import { SafeImage } from '../Image'
 
 export const SmallAvatar = (props) => {
   const { avatar = {}, id, goTo, initials = '', style = {} } = props
@@ -23,13 +24,29 @@ export const SmallAvatar = (props) => {
       }}
       style={{ ...style, zIndex: 6 - (style.zIndex || 0) }}
     >
-      <SmallAvatarWrapper
-        randomColor={avatar?.color || randomColor}
-        isOwnerOfPod={avatar?.isOwnerOfPod}
-        avatarURL={avatar?.url}
-      >
-        {avatar.url ? '' : <span>{initials}</span>}
-      </SmallAvatarWrapper>
+      {avatar.url ? (
+        <SafeImage
+          src={avatar.url}
+          style={{
+            width: '29px',
+            height: '29px',
+            borderRadius: '29px',
+            display: 'flex',
+            alignSelf: 'flex-start',
+            flexFlow: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        />
+      ) : (
+        <SmallAvatarWrapper
+          randomColor={avatar?.color || randomColor}
+          isOwnerOfPod={avatar?.isOwnerOfPod}
+          avatarURL={avatar?.url}
+        >
+          {avatar.url ? '' : <span>{initials}</span>}
+        </SmallAvatarWrapper>
+      )}
     </SmallAvatarContainer>
   )
 }

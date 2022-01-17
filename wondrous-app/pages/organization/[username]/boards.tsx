@@ -261,6 +261,9 @@ const BoardsPage = () => {
         columns,
         setColumns,
         orgId: profileOrgId,
+        userPermissionsContext: userPermissionsContext?.getUserPermissionContext
+          ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+          : null,
       }}
     >
       <Boards

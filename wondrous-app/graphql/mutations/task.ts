@@ -28,6 +28,15 @@ export const UPDATE_TASK_STATUS = gql`
   ${TaskFragment}
 `
 
+export const COMPLETE_TASK = gql`
+  mutation completeTask($taskId: ID!) {
+    completeTask(taskId: $taskId) {
+      ...TaskFragment
+    }
+  }
+  ${TaskFragment}
+`
+
 export const DELETE_TASK = gql`
   mutation deleteTask($taskId: String!) {
     deleteTask(taskId: $taskId) {
@@ -43,10 +52,20 @@ export const ATTACH_MEDIA_TO_TASK = gql`
     }
   }
 `
+
 export const REMOVE_MEDIA_FROM_TASK = gql`
   mutation removeTaskMedia($taskId: ID!, $slug: String!) {
     removeTaskMedia(taskId: $taskId, slug: $slug) {
       success
     }
   }
+`
+
+export const UPDATE_TASK_STATUS = gql`
+  mutation updateTaskStatus($taskId: ID!, $input: updateTaskStatusInput!) {
+    updateTaskStatus(taskId: $taskId, input: $input) {
+      ...TaskFragment
+    }
+  }
+  ${TaskFragment}
 `

@@ -7,6 +7,7 @@ import {
   Chip,
   IconButton,
   Modal,
+  Dialog,
   TextField,
   Typography,
   Grid,
@@ -25,13 +26,15 @@ export const MediaUploadGrid = styled(Grid)`
   }
 `
 export const CreateModalOverlay = styled(Modal)`
-  position: relative;
+  position: absolute;
   width: 100%;
   overflow-y: scroll;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding-top: 50px;
 `
 
 export const CreateLayoutsModal = styled(BaseCard)`
@@ -302,8 +305,6 @@ export const CreateFormMainDescriptionInputSymbolCounter = styled(Typography)`
   && {
     position: absolute;
     right: 15px;
-    bottom: 15px;
-
     font-size: 12px;
     line-height: 19px;
     letter-spacing: 0.01em;
@@ -499,7 +500,7 @@ export const CreateFormButtonsBlock = styled.div`
 
 export const CreateFormCancelButton = styled(Button)`
   && {
-    width: 96px;
+    min-width: 96px;
     height: 100%;
     background: #232323;
 
@@ -508,6 +509,9 @@ export const CreateFormCancelButton = styled(Button)`
     font-size: 16px;
     line-height: 150%;
     color: #ffffff;
+    margin-left: 25px;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 `
 

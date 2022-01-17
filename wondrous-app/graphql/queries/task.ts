@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client'
-import { TaskFragment } from '../fragments/task'
+import { TaskFragment, TaskSubmissionFragment } from '../fragments/task'
 
 export const GET_TASK_BY_ID = gql`
   query getTaskById($taskId: ID!) {
@@ -23,12 +23,19 @@ export const GET_TASK_REVIEWERS = gql`
 `
 
 export const GET_ELIGIBLE_REVIEWERS_FOR_ORG = gql`
-  query getEligibleReviewersForOrg ($orgId: ID!, $searchString: String) {
-    getEligibleReviewersForOrg(orgId: $orgId, searchString: $searchString
-  ) {
-    id
-    username
+  query getEligibleReviewersForOrg($orgId: ID!, $searchString: String) {
+    getEligibleReviewersForOrg(orgId: $orgId, searchString: $searchString) {
+      id
+      username
+    }
   }
-}
+`
 
+export const GET_TASK_SUBMISSIONS_FOR_TASK = gql`
+  query getTaskSubmissionsForTask($taskId: ID!) {
+    getTaskSubmissionsForTask(taskId: $taskId) {
+      ...TaskSubmissionFragment
+    }
+  }
+  ${TaskSubmissionFragment}
 `

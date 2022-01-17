@@ -1,4 +1,4 @@
-import { MENTION_REGEX } from './constants'
+import { MENTION_REGEX, PERMISSIONS } from './constants'
 
 const THOUSAND = 1000
 const MILLION = THOUSAND ** 2
@@ -65,6 +65,15 @@ export const parseUserPermissionContext = (props) => {
   if (!userPermissionsContext) return []
   const podId = props?.podId
   const orgId = props?.orgId
+  if (
+    orgId &&
+    userPermissionsContext?.orgPermissions[orgId]?.includes(
+      PERMISSIONS.FULL_ACCESS
+    )
+  ) {
+    // Check for full access
+    return userPermissionsContext?.orgPermissions[orgId] || []
+  }
   if (podId) {
     return userPermissionsContext?.podPermissions[podId] || []
   } else if (orgId) {
@@ -78,9 +87,10 @@ export const transformTaskToTaskCard = (task, extraData) => {
     ...task,
     assigneeUsername: task?.assignee?.username,
     assigneeProfilePicture: task?.assignee?.profilePicture,
-    orgProfilePicture: extraData?.orgProfilePicture,
-    orgName: extraData?.orgName,
-    podName: extraData?.podName,
+    orgProfilePicture:
+      extraData?.orgProfilePicture || task?.org?.profilePicture,
+    orgName: extraData?.orgName || task?.org?.name,
+    podName: extraData?.podName || task?.pod?.name,
   }
 }
 
@@ -91,9 +101,25 @@ export const transformTaskProposalToTaskProposalCard = (
   return {
     ...taskProposal,
     creatorUsername: taskProposal?.creator?.username,
-    creatorProfilePicture: taskProposal?.creator?.userProfilePicture,
-    orgProfilePicture: extraData?.orgProfilePicture,
-    orgName: extraData?.orgName,
-    podName: extraData?.podName,
+    creatorProfilePicture: taskProposal?.creator?.profilePicture,
+    orgProfilePicture:
+      extraData?.orgProfilePicture || taskProposal?.org?.profilePicture,
+    orgName: extraData?.orgName || taskProposal?.org?.name,
+    podName: extraData?.podName || taskProposal?.pod?.name,
+  }
+}
+
+export const transformTaskSubmissionToTaskSubmissionCard = (
+  taskSubmission,
+  extraData
+) => {
+  return {
+    ...taskSubmission,
+    creatorUsername: taskSubmission?.creator?.username,
+    creatorProfilePicture: taskSubmission?.creator?.profilePicture,
+    orgProfilePicture:
+      extraData?.orgProfilePicture || taskSubmission?.org?.profilePicture,
+    orgName: extraData?.orgName || taskSubmission?.org?.name,
+    podName: extraData?.podName || taskSubmission?.pod?.name,
   }
 }

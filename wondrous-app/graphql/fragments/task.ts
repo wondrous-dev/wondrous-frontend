@@ -106,6 +106,11 @@ export const TaskProposalCardFragment = gql`
     approvedAt
     changeRequestedAt
     rejectedAt
+    links {
+      url
+      name
+      type
+    }
     media {
       slug
       name
@@ -135,6 +140,11 @@ export const TaskSubmissionCardFragment = gql`
     approvedAt
     changeRequestedAt
     rejectedAt
+    links {
+      url
+      name
+      type
+    }
     media {
       slug
       name
@@ -146,6 +156,46 @@ export const TaskSubmissionCardFragment = gql`
   }
 `
 
+export const TaskSubmissionFragment = gql`
+  fragment TaskSubmissionFragment on TaskSubmission {
+    id
+    createdAt
+    createdBy
+    description
+    orgId
+    podId
+    links {
+      url
+      name
+      type
+    }
+    approvedAt
+    changeRequestedAt
+    rejectedAt
+    lastReviewedBy
+    org {
+      profilePicture
+      name
+    }
+    pod {
+      name
+    }
+    creator {
+      username
+      profilePicture
+    }
+    media {
+      slug
+      name
+      type
+      muxAssetId
+      muxPlaybackId
+      videoProcessingStatus
+    }
+    reactionCount
+    commentCount
+  }
+`
 export const TaskProposalFragment = gql`
   fragment TaskProposalFragment on TaskProposal {
     id
@@ -169,6 +219,10 @@ export const TaskProposalFragment = gql`
     rejectedAt
     lastReviewedBy
     associatedTaskId
+    creator {
+      username
+      profilePicture
+    }
     media {
       slug
       name
@@ -179,5 +233,12 @@ export const TaskProposalFragment = gql`
     }
     reactionCount
     commentCount
+    org {
+      profilePicture
+      name
+    }
+    pod {
+      name
+    }
   }
 `

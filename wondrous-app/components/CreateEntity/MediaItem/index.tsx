@@ -4,12 +4,18 @@ import DeleteIcon from '../../Icons/delete'
 import { Filename, MediaItemWrapper } from './styles'
 
 export const MediaItem = (props) => {
-  const { mediaItem, setMediaUploads, mediaUploads, removeMediaItem } = props
+  const {
+    mediaItem,
+    setMediaUploads,
+    mediaUploads,
+    removeMediaItem,
+    viewOnly,
+  } = props
   return (
     <MediaItemWrapper>
       {mediaItem?.type === 'image' && (
         <SafeImage
-          src={mediaItem?.uploadSlug}
+          src={mediaItem?.uploadSlug || mediaItem?.slug}
           style={{
             borderRadius: '4px',
             position: 'relative',
@@ -19,20 +25,24 @@ export const MediaItem = (props) => {
         />
       )}
       <Filename>{mediaItem?.name}</Filename>
-      <DeleteIcon
-        style={{
-          width: '30',
-        }}
-        onClick={() => {
-          const newMediaUploads = mediaUploads.filter(
-            (mediaUpload) => mediaUpload.uploadSlug !== mediaItem?.uploadSlug
-          )
-          setMediaUploads(newMediaUploads)
-          if (removeMediaItem) {
-            removeMediaItem()
-          }
-        }}
-      />
+      {!viewOnly && (
+        <DeleteIcon
+          style={{
+            width: '30',
+          }}
+          onClick={() => {
+            const newMediaUploads = mediaUploads.filter(
+              (mediaUpload) =>
+                mediaUpload.uploadSlug !== mediaItem?.uploadSlug ||
+                mediaUpload?.uploadSlug !== mediaItem?.slug
+            )
+            setMediaUploads(newMediaUploads)
+            if (removeMediaItem) {
+              removeMediaItem()
+            }
+          }}
+        />
+      )}
     </MediaItemWrapper>
   )
 }

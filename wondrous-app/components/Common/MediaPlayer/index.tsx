@@ -16,6 +16,7 @@ export const TaskMedia = (props) => {
       <SafeImage
         style={{
           width: '295px',
+          maxHeight: '295px',
           borderRadius: '6px',
         }}
         src={slug || uploadSlug}
