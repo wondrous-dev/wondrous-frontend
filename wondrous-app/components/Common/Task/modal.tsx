@@ -48,9 +48,11 @@ import { RightCaret } from '../Image/RightCaret'
 import CreatePodIcon from '../../Icons/createPod'
 import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks'
 import {
+  BOUNTY_TYPE,
   ENTITIES_TYPES,
   IMAGE_FILE_EXTENSIONS_TYPE_MAPPING,
   PERMISSIONS,
+  TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
@@ -82,11 +84,16 @@ import {
 } from '../../CreateEntity/styles'
 import { useRouter } from 'next/router'
 import { CircularProgress, Typography } from '@material-ui/core'
-import { UPDATE_TASK_STATUS } from '../../../graphql/mutations/task'
 import {
+  COMPLETE_TASK,
+  UPDATE_TASK_STATUS,
+} from '../../../graphql/mutations/task'
+import {
+  APPROVE_SUBMISSION,
   ATTACH_SUBMISSION_MEDIA,
   CREATE_TASK_SUBMISSION,
   REMOVE_SUBMISSION_MEDIA,
+  REQUEST_CHANGE_SUBMISSION,
   UPDATE_TASK_SUBMISSION,
 } from '../../../graphql/mutations/taskSubmission'
 import UploadImageIcon from '../../Icons/uploadImage'
@@ -133,7 +140,8 @@ const MediaLink = (props) => {
   )
 }
 
-const SubmissionStatusIcon = (submission) => {
+const SubmissionStatusIcon = (props) => {
+  const { submission } = props
   const iconStyle = {
     width: '20px',
     height: '20px',
@@ -141,7 +149,7 @@ const SubmissionStatusIcon = (submission) => {
   }
   if (
     !submission?.approvedAt &&
-    !submission?.changedRequested &&
+    !submission?.changeRequestedAt &&
     !submission.rejectedAt
   ) {
     return (
@@ -155,7 +163,7 @@ const SubmissionStatusIcon = (submission) => {
         <TaskStatusHeaderText>Awaiting review</TaskStatusHeaderText>
       </div>
     )
-  } else if (submission?.changedRequested || submission?.rejectedAt) {
+  } else if (submission?.changeRequestedAt || submission?.rejectedAt) {
     return (
       <div
         style={{
@@ -163,7 +171,13 @@ const SubmissionStatusIcon = (submission) => {
           alignItems: 'center',
         }}
       >
-        <RejectIcon style={iconStyle} />
+        <RejectIcon
+          style={{
+            width: '16px',
+            height: '16px',
+            marginRight: '8px',
+          }}
+        />
         <TaskStatusHeaderText>Changes requested</TaskStatusHeaderText>
       </div>
     )
@@ -183,7 +197,17 @@ const SubmissionStatusIcon = (submission) => {
 }
 
 const SubmissionItem = (props) => {
-  const { submission, setMakeSubmission, setSubmissionToEdit } = props
+  const {
+    submission,
+    setMakeSubmission,
+    setSubmissionToEdit,
+    canReview,
+    fetchedTask,
+    setFetchedTask,
+    fetchedTaskSubmissions,
+    setFetchedTaskSubmissions,
+    handleClose,
+  } = props
   const router = useRouter()
   const user = useMe()
   const mediaUploads = submission?.media
@@ -194,6 +218,79 @@ const SubmissionItem = (props) => {
     marginRight: '12px',
   }
   const isCreator = user?.id === submission?.createdBy
+  const orgBoard = useOrgBoard()
+
+  const podBoard = usePodBoard()
+  // TODO: add user board
+  const completeTask = () => {
+    const newTask = {
+      ...fetchedTask,
+      completedAt: new Date(),
+      status: TASK_STATUS_DONE,
+    }
+    const transformedTask = transformTaskToTaskCard(newTask, {})
+    if (orgBoard) {
+      const columns = [...orgBoard?.columns]
+      const newInProgress = columns[1].tasks.filter(
+        (task) => task.id !== fetchedTask.id
+      )
+      const newDone = [transformedTask, ...columns[2].tasks]
+      const newInReview = (columns[1].section.tasks =
+        columns[1].section.tasks.filter(
+          (taskSubmission) => taskSubmission.id !== submission?.id
+        ))
+      columns[1].tasks = newInProgress
+      columns[1].section.tasks = newInReview
+      columns[2].tasks = newDone
+      orgBoard?.setColumns(columns)
+    }
+    //TODO: add pod board and user board
+  }
+  const [approveSubmission] = useMutation(APPROVE_SUBMISSION, {
+    variables: {
+      submissionId: submission?.id,
+    },
+    onCompleted: () => {
+      // Change status of submission
+      const newFetchedTaskSubmissions = fetchedTaskSubmissions.map(
+        (taskSubmission) => {
+          if (taskSubmission?.id === submission?.id) {
+            return {
+              ...taskSubmission,
+              approvedAt: new Date(),
+            }
+          }
+        }
+      )
+      setFetchedTaskSubmissions(newFetchedTaskSubmissions)
+      if (fetchedTask.type !== BOUNTY_TYPE) {
+        completeTask()
+        handleClose()
+        document.body.setAttribute('style', `position: relative;`)
+        window?.scrollTo(0, window.scrollY)
+      }
+    },
+  })
+  const [requestChangeSubmission] = useMutation(REQUEST_CHANGE_SUBMISSION, {
+    variables: {
+      submissionId: submission?.id,
+    },
+    onCompleted: () => {
+      // Change status of submission
+      // Change status of submission
+      const newFetchedTaskSubmissions = fetchedTaskSubmissions.map(
+        (taskSubmission) => {
+          if (taskSubmission?.id === submission?.id) {
+            return {
+              ...taskSubmission,
+              changeRequestedAt: new Date(),
+            }
+          }
+        }
+      )
+      setFetchedTaskSubmissions(newFetchedTaskSubmissions)
+    },
+  })
 
   return (
     <TaskSubmissionItemDiv>
@@ -234,14 +331,14 @@ const SubmissionItem = (props) => {
       <TaskSectionDisplayDiv>
         <TaskSectionDisplayLabel
           style={{
-            marginRight: '8px',
+            marginRight: '4px',
           }}
         >
           <ImageIcon />
           <TaskSectionDisplayText>Files</TaskSectionDisplayText>
         </TaskSectionDisplayLabel>
         <TaskSectionInfoDiv>
-          {mediaUploads.length > 0 ? (
+          {mediaUploads?.length > 0 ? (
             <MediaUploadDiv>
               {mediaUploads.map((mediaItem) => (
                 <MediaLink key={mediaItem?.slug} media={mediaItem} />
@@ -308,22 +405,40 @@ const SubmissionItem = (props) => {
         </TaskDescriptionText>
       </TaskSectionDisplayDiv>
 
-      {isCreator && (
+      {(isCreator || canReview) && (
         <>
           <CreateFormFooterButtons>
-            <CreateFormButtonsBlock>
-              {/* <CreateFormCancelButton onClick={}>
-            TODO: this should be delete
-          </CreateFormCancelButton> */}
-              <CreateFormPreviewButton
-                onClick={() => {
-                  setMakeSubmission(true)
-                  setSubmissionToEdit(submission)
-                }}
-              >
-                Edit submission
-              </CreateFormPreviewButton>
-            </CreateFormButtonsBlock>
+            {isCreator && !submission.approvedAt && (
+              <CreateFormButtonsBlock>
+                {/* <CreateFormCancelButton onClick={}>
+                    TODO: this should be delete
+                  </CreateFormCancelButton> */}
+                <CreateFormPreviewButton
+                  onClick={() => {
+                    setMakeSubmission(true)
+                    setSubmissionToEdit(submission)
+                  }}
+                >
+                  Edit submission
+                </CreateFormPreviewButton>
+              </CreateFormButtonsBlock>
+            )}
+            {canReview && (
+              <>
+                <CreateFormButtonsBlock>
+                  {!submission.changeRequestedAt && !submission.approvedAt && (
+                    <CreateFormCancelButton onClick={requestChangeSubmission}>
+                      Request changes
+                    </CreateFormCancelButton>
+                  )}
+                  {!submission.approvedAt && (
+                    <CreateFormPreviewButton onClick={approveSubmission}>
+                      Approve
+                    </CreateFormPreviewButton>
+                  )}
+                </CreateFormButtonsBlock>
+              </>
+            )}
           </CreateFormFooterButtons>
         </>
       )}
@@ -340,7 +455,8 @@ const TaskSubmissionForm = (props) => {
     taskId,
     submissionToEdit,
   } = props
-
+  const orgBoard = useOrgBoard()
+  const podBoard = usePodBoard()
   const [mediaUploads, setMediaUploads] = useState(
     transformMediaFormat(submissionToEdit?.media) || []
   )
@@ -360,6 +476,28 @@ const TaskSubmissionForm = (props) => {
         transformedTaskSubmission,
         ...fetchedTaskSubmissions,
       ])
+      if (orgBoard) {
+        const columns = orgBoard?.columns
+        const newColumns = [...columns]
+        newColumns[1].section.tasks = [
+          transformedTaskSubmission,
+          ...newColumns[1].section.tasks,
+        ]
+        if (orgBoard?.setColumns) {
+          orgBoard?.setColumns(newColumns)
+        }
+      } else if (podBoard) {
+        const columns = podBoard?.columns
+        const newColumns = [...columns]
+        newColumns[1].section.tasks = [
+          transformedTaskSubmission,
+          ...newColumns[1].section.tasks,
+        ]
+        if (podBoard?.setColumns) {
+          podBoard?.setColumns(newColumns)
+        }
+      }
+
       if (cancelSubmissionForm) {
         cancelSubmissionForm()
       }
@@ -400,14 +538,14 @@ const TaskSubmissionForm = (props) => {
       <TaskSectionDisplayDiv>
         <TaskSectionDisplayLabel
           style={{
-            marginRight: '8px',
+            marginRight: '4px',
           }}
         >
           <ImageIcon />
           <TaskSectionDisplayText>Files</TaskSectionDisplayText>
         </TaskSectionDisplayLabel>
         <TaskSectionInfoDiv>
-          {mediaUploads.length > 0 ? (
+          {mediaUploads?.length > 0 ? (
             <MediaUploadDiv>
               {mediaUploads.map((mediaItem) => (
                 <MediaItem
@@ -701,14 +839,17 @@ const TaskSubmissionContent = (props) => {
     taskSubmissionLoading,
     canSubmit,
     fetchedTask,
+    setFetchedTask,
     updateTaskStatus,
     fetchedTaskSubmissions,
     orgBoard,
     canMoveProgress,
+    canReview,
     setMakeSubmission,
     makeSubmission,
     orgId,
     setFetchedTaskSubmissions,
+    handleClose,
   } = props
 
   const [submissionToEdit, setSubmissionToEdit] = useState(null)
@@ -839,6 +980,12 @@ const TaskSubmissionContent = (props) => {
                   setMakeSubmission={setMakeSubmission}
                   setSubmissionToEdit={setSubmissionToEdit}
                   key={taskSubmission?.id}
+                  canReview={canReview}
+                  fetchedTask={fetchedTask}
+                  setFetchedTask={setFetchedTask}
+                  handleClose={handleClose}
+                  setFetchedTaskSubmissions={setFetchedTaskSubmissions}
+                  fetchedTaskSubmissions={fetchedTaskSubmissions}
                   submission={transformTaskSubmissionToTaskSubmissionCard(
                     taskSubmission,
                     {}
@@ -884,8 +1031,6 @@ export const TaskViewModal = (props) => {
   )
   const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS)
   const router = useRouter()
-  const [canEdit, setCanEdit] = useState(false)
-  const [canMoveProgress, setCanMoveProgress] = useState(false)
   const [editTask, setEditTask] = useState(false)
   const [submissionSelected, setSubmissionSelected] = useState(true)
   const [getReviewers, { data: reviewerData }] =
@@ -895,7 +1040,6 @@ export const TaskViewModal = (props) => {
     orgBoard?.userPermissionsContext ||
     podBoard?.userPermissionsContext ||
     userBoard?.userPermissionsContext
-
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     onCompleted: (data) => {
       const taskData = data?.getTaskById
@@ -923,23 +1067,6 @@ export const TaskViewModal = (props) => {
     }
 
     if (fetchedTask) {
-      const permissions = parseUserPermissionContext({
-        userPermissionsContext,
-        orgId: task?.orgId,
-        podId: task?.podId,
-      })
-
-      const canEdit =
-        permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-        fetchedTask?.createdBy === user?.id ||
-        (fetchedTask?.assigneeId && fetchedTask?.assigneeId === user?.id)
-      const canMoveProgress =
-        (podBoard && permissions.includes(PERMISSIONS.MANAGE_BOARD)) ||
-        permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-        fetchedTask?.createdBy === user?.id ||
-        (fetchedTask?.assigneeId && fetchedTask?.assigneeId === user?.id)
-      setCanEdit(canEdit)
-      setCanMoveProgress(canMoveProgress)
       getReviewers({
         variables: {
           taskId: fetchedTask?.id,
@@ -963,8 +1090,6 @@ export const TaskViewModal = (props) => {
     user?.id,
     getReviewers,
     getTaskSubmissionsForTask,
-    // boardOrg,
-    podBoard,
   ])
   if (editTask) {
     return (
@@ -997,6 +1122,24 @@ export const TaskViewModal = (props) => {
   }
 
   const canSubmit = fetchedTask?.assigneeId === user?.id
+
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId: fetchedTask?.orgId,
+    podId: fetchedTask?.podId,
+  })
+  const canEdit =
+    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    fetchedTask?.createdBy === user?.id ||
+    (fetchedTask?.assigneeId && fetchedTask?.assigneeId === user?.id)
+  const canMoveProgress =
+    (podBoard && permissions.includes(PERMISSIONS.MANAGE_BOARD)) ||
+    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    fetchedTask?.createdBy === user?.id ||
+    (fetchedTask?.assigneeId && fetchedTask?.assigneeId === user?.id)
+  const canReview =
+    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions.includes(PERMISSIONS.REVIEW_TASK)
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -1033,7 +1176,7 @@ export const TaskViewModal = (props) => {
             </div>
           )}
 
-          {canEdit && (
+          {canEdit && fetchedTask?.status !== TASK_STATUS_DONE && (
             <TaskActionMenu right="true">
               <DropDown DropdownHandler={TaskMenuIcon}>
                 <DropDownItem
@@ -1223,10 +1366,13 @@ export const TaskViewModal = (props) => {
                 taskSubmissionLoading={taskSubmissionLoading}
                 canSubmit={canSubmit}
                 fetchedTask={fetchedTask}
+                handleClose={handleClose}
+                setFetchedTask={setFetchedTask}
                 updateTaskStatus={updateTaskStatus}
                 fetchedTaskSubmissions={fetchedTaskSubmissions}
                 orgBoard={orgBoard}
                 canMoveProgress={canMoveProgress}
+                canReview={canReview}
                 assigneeUsername={fetchedTask?.assigneeUsername}
                 assigneeProfilePicture={fetchedTask?.profilePicture}
                 makeSubmission={makeSubmission}

@@ -500,7 +500,7 @@ export const CreateFormButtonsBlock = styled.div`
 
 export const CreateFormCancelButton = styled(Button)`
   && {
-    width: 96px;
+    min-width: 96px;
     height: 100%;
     background: #232323;
 
@@ -509,6 +509,9 @@ export const CreateFormCancelButton = styled(Button)`
     font-size: 16px;
     line-height: 150%;
     color: #ffffff;
+    margin-left: 25px;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 `
 

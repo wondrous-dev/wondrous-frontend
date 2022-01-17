@@ -57,7 +57,7 @@ export const TaskContent = styled.div`
   font-size: 16px;
   font-weight: 400;
   color: ${White};
-
+  white-space: pre-line;
   cursor: pointer;
 `
 

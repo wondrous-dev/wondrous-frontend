@@ -608,7 +608,7 @@ const CreateLayoutBaseModal = (props) => {
         <CreateFormMainInputBlock>
           <CreateFormMainBlockTitle>Multi-media</CreateFormMainBlockTitle>
 
-          {mediaUploads.length > 0 ? (
+          {mediaUploads?.length > 0 ? (
             <MediaUploadDiv>
               {mediaUploads.map((mediaItem) => (
                 <MediaItem

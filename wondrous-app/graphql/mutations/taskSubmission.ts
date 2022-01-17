@@ -39,3 +39,19 @@ export const REMOVE_SUBMISSION_MEDIA = gql`
     }
   }
 `
+
+export const APPROVE_SUBMISSION = gql`
+  mutation approveTaskSubmission($submissionId: ID!) {
+    approveTaskSubmission(submissionId: $submissionId) {
+      success
+    }
+  }
+`
+
+export const REQUEST_CHANGE_SUBMISSION = gql`
+  mutation requestChangeSubmission($submissionId: ID!) {
+    requestChangeTaskSubmission(submissionId: $submissionId) {
+      success
+    }
+  }
+`

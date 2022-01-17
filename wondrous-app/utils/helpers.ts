@@ -67,7 +67,7 @@ export const parseUserPermissionContext = (props) => {
   const orgId = props?.orgId
   if (
     orgId &&
-    userPermissionsContext?.orgPermissions[orgId].includes(
+    userPermissionsContext?.orgPermissions[orgId]?.includes(
       PERMISSIONS.FULL_ACCESS
     )
   ) {

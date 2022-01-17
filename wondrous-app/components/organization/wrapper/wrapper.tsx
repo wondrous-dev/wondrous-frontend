@@ -98,6 +98,7 @@ const Wrapper = (props) => {
 
   useEffect(() => {
     const orgPermissions = parseUserPermissionContext({
+      userPermissionsContext,
       orgId: orgBoard?.orgId,
     })
 
