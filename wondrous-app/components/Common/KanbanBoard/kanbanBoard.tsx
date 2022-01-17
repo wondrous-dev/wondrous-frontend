@@ -3,10 +3,10 @@ import React, { useState, useEffect } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useInView } from 'react-intersection-observer'
+import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks'
 import { TaskViewModal } from '../Task/modal'
 import { KanbanBoardContainer, LoadMore } from './styles'
 import TaskColumn from './TaskColumn'
-import { usePodBoard, useUserBoard, useOrgBoard } from '../../../utils/hooks'
 
 const KanbanBoard = (props) => {
   const { columns, onLoadMore, hasMore } = props
@@ -42,8 +42,9 @@ const KanbanBoard = (props) => {
     setColumnsState(updatedColumns)
   }
   const orgBoard = useOrgBoard()
-  const userBoard = useUserBoard()
   const podBoard = usePodBoard()
+  const userBoard = useUserBoard()
+
   useEffect(() => {
     if (router?.query?.task && !once && (orgBoard || userBoard || podBoard)) {
       setOpenModal(true)
