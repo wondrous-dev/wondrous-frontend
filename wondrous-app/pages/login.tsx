@@ -136,6 +136,7 @@ const Login = ({ csrfToken }) => {
             </LineWithText>
             {wonderWeb3.connecting ? (
               <Button disabled className="disabled">
+                <Metamask height="18" width="17" />
                 <PaddedParagraph padding="0 10px">
                   Log in with MetaMask
                 </PaddedParagraph>

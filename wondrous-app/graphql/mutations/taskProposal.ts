@@ -26,3 +26,19 @@ export const DELETE_TASK_PROPOSAL = gql`
     }
   }
 `
+
+export const APPROVE_TASK_PROPOSAL = gql`
+  mutation approveProposal($proposalId: ID!) {
+    approveTaskProposal(proposalId: $proposalId) {
+      success
+    }
+  }
+`
+
+export const REQUEST_CHANGE_TASK_PROPOSAL = gql`
+  mutation requestChangeTaskProposal($proposalId: ID!) {
+    requestChangeTaskProposal(proposalId: $proposalId) {
+      success
+    }
+  }
+`

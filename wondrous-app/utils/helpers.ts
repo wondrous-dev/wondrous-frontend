@@ -90,6 +90,7 @@ export const transformTaskToTaskCard = (task, extraData) => {
     orgProfilePicture:
       extraData?.orgProfilePicture || task?.org?.profilePicture,
     orgName: extraData?.orgName || task?.org?.name,
+    orgUsername: extraData?.orgUsername || task?.org?.username,
     podName: extraData?.podName || task?.pod?.name,
   }
 }
@@ -105,6 +106,7 @@ export const transformTaskProposalToTaskProposalCard = (
     orgProfilePicture:
       extraData?.orgProfilePicture || taskProposal?.org?.profilePicture,
     orgName: extraData?.orgName || taskProposal?.org?.name,
+    orgUsername: extraData?.orgUsername || taskProposal?.org?.username,
     podName: extraData?.podName || taskProposal?.pod?.name,
   }
 }
@@ -120,6 +122,7 @@ export const transformTaskSubmissionToTaskSubmissionCard = (
     orgProfilePicture:
       extraData?.orgProfilePicture || taskSubmission?.org?.profilePicture,
     orgName: extraData?.orgName || taskSubmission?.org?.name,
+    orgUsername: extraData?.orgUsername || taskSubmission?.org?.username,
     podName: extraData?.podName || taskSubmission?.pod?.name,
   }
 }

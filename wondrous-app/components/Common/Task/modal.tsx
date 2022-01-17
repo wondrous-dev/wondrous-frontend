@@ -67,6 +67,7 @@ import {
   ImageIcon,
   LinkIcon,
   NotesIcon,
+  ProposerIcon,
   ReviewerIcon,
 } from '../../Icons/taskModalIcons'
 import { DefaultUserImage } from '../Image/DefaultImages'
@@ -114,6 +115,7 @@ import { CompletedIcon, InReviewIcon } from '../../Icons/statusIcons'
 import { RejectIcon } from '../../Icons/decisionIcons'
 import { GET_PREVIEW_FILE } from '../../../graphql/queries/media'
 import { transformMediaFormat } from '../../CreateEntity/editEntityModal'
+import { GET_TASK_PROPOSAL_BY_ID } from '../../../graphql/queries/taskProposal'
 
 const MediaLink = (props) => {
   const { media, style } = props
@@ -1002,15 +1004,18 @@ const TaskSubmissionContent = (props) => {
 }
 
 export const TaskViewModal = (props) => {
-  const { open, handleOpen, handleClose, task, taskId } = props
+  const { open, handleOpen, handleClose, task, taskId, isTaskProposal } = props
+  if (open) {
+    console.log('task', task, taskId)
+  }
   const [fetchedTask, setFetchedTask] = useState(null)
   const [fetchedTaskSubmissions, setFetchedTaskSubmissions] = useState([])
   const [fetchedTaskComments, setFetchedTaskComments] = useState([])
-  const [taskSubmissionLoading, setTaskSubmissionLoading] = useState(true)
+  const [taskSubmissionLoading, setTaskSubmissionLoading] = useState(
+    !isTaskProposal
+  )
   const [makeSubmission, setMakeSubmission] = useState(false)
-  // const [orgBoard, setOrgBoard] = useState(null)
-  // const [userBoard, setUserBoard] = useState(null)
-  // const [podBoard, setPodBoard] = useState(null)
+
   const orgBoard = useOrgBoard()
   const userBoard = useUserBoard()
   const podBoard = usePodBoard()
@@ -1032,7 +1037,9 @@ export const TaskViewModal = (props) => {
   const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS)
   const router = useRouter()
   const [editTask, setEditTask] = useState(false)
-  const [submissionSelected, setSubmissionSelected] = useState(true)
+  const [submissionSelected, setSubmissionSelected] = useState(
+    isTaskProposal ? false : true
+  )
   const [getReviewers, { data: reviewerData }] =
     useLazyQuery(GET_TASK_REVIEWERS)
   const user = useMe()
@@ -1055,28 +1062,53 @@ export const TaskViewModal = (props) => {
     },
   })
 
+  const [getTaskProposalById] = useLazyQuery(GET_TASK_PROPOSAL_BY_ID, {
+    onCompleted: (data) => {
+      const taskProposalData = data?.getTaskProposalById
+      if (taskProposalData) {
+        setFetchedTask(
+          transformTaskProposalToTaskProposalCard(taskProposalData, {})
+        )
+      }
+    },
+  })
+
   useEffect(() => {
+    if (isTaskProposal) {
+      setTaskSubmissionLoading(false)
+      setSubmissionSelected(false)
+    }
     if (!task && taskId) {
-      getTaskById({
-        variables: {
-          taskId,
-        },
-      })
+      if (isTaskProposal) {
+        getTaskProposalById({
+          variables: {
+            proposalId: taskId,
+          },
+        })
+      } else {
+        getTaskById({
+          variables: {
+            taskId,
+          },
+        })
+      }
     } else if (task) {
       setFetchedTask(task)
     }
 
     if (fetchedTask) {
-      getReviewers({
-        variables: {
-          taskId: fetchedTask?.id,
-        },
-      })
-      getTaskSubmissionsForTask({
-        variables: {
-          taskId: fetchedTask?.id,
-        },
-      })
+      if (!isTaskProposal) {
+        getReviewers({
+          variables: {
+            taskId: fetchedTask?.id,
+          },
+        })
+        getTaskSubmissionsForTask({
+          variables: {
+            taskId: fetchedTask?.id,
+          },
+        })
+      }
     }
     // if (boardOrg) {
     //   setOrgBoard(boardOrg)
@@ -1090,7 +1122,10 @@ export const TaskViewModal = (props) => {
     user?.id,
     getReviewers,
     getTaskSubmissionsForTask,
+    isTaskProposal,
+    getTaskProposalById,
   ])
+
   if (editTask) {
     return (
       <CreateModalOverlay
@@ -1115,7 +1150,7 @@ export const TaskViewModal = (props) => {
               reviewers: reviewerData?.getTaskReviewers || [],
             }
           }
-          isTaskProposal={false}
+          isTaskProposal={isTaskProposal}
         />
       </CreateModalOverlay>
     )
@@ -1128,6 +1163,7 @@ export const TaskViewModal = (props) => {
     orgId: fetchedTask?.orgId,
     podId: fetchedTask?.podId,
   })
+
   const canEdit =
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     fetchedTask?.createdBy === user?.id ||
@@ -1141,12 +1177,18 @@ export const TaskViewModal = (props) => {
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     permissions.includes(PERMISSIONS.REVIEW_TASK)
 
+  const displayDivProfileImageStyle = {
+    width: '26px',
+    height: '26px',
+    borderRadius: '13px',
+    marginRight: '4px',
+  }
   return (
     <Modal open={open} onClose={handleClose}>
       <TaskModal>
         <TaskModalHeader>
           <SafeImage
-            src={task?.orgProfilePicture || 'seed/wonder_logo.jpg'}
+            src={task?.orgProfilePicture}
             style={{
               width: '29px',
               height: '28px',
@@ -1209,50 +1251,74 @@ export const TaskViewModal = (props) => {
             </TaskDescriptionText>
           </TaskTitleTextDiv>
         </TaskTitleDiv>
-        <TaskSectionDisplayDiv>
-          <TaskSectionDisplayLabel>
-            <ReviewerIcon />
-            <TaskSectionDisplayText>Reviewer</TaskSectionDisplayText>
-          </TaskSectionDisplayLabel>
-          {reviewerData?.getTaskReviewers?.length > 0 ? (
-            reviewerData?.getTaskReviewers.map((taskReviewer) => (
-              <TaskSectionInfoDiv key={taskReviewer?.id}>
-                {taskReviewer?.profilePicture ? (
-                  <SafeImage
-                    style={{
-                      width: '26px',
-                      height: '26px',
-                      borderRadius: '13px',
-                      marginRight: '4px',
-                    }}
-                    src={taskReviewer?.profilePicture}
-                  />
-                ) : (
-                  <DefaultUserImage
-                    style={{
-                      width: '26px',
-                      height: '26px',
-                      borderRadius: '13px',
-                      marginRight: '4px',
-                    }}
-                  />
-                )}
-                <TaskSectionInfoText>
-                  {taskReviewer?.username}
+        {!isTaskProposal && (
+          <TaskSectionDisplayDiv>
+            <TaskSectionDisplayLabel>
+              <ReviewerIcon />
+              <TaskSectionDisplayText>Reviewer</TaskSectionDisplayText>
+            </TaskSectionDisplayLabel>
+            {reviewerData?.getTaskReviewers?.length > 0 ? (
+              reviewerData?.getTaskReviewers.map((taskReviewer) => (
+                <TaskSectionInfoDiv key={taskReviewer?.id}>
+                  {taskReviewer?.profilePicture ? (
+                    <SafeImage
+                      style={displayDivProfileImageStyle}
+                      src={taskReviewer?.profilePicture}
+                    />
+                  ) : (
+                    <DefaultUserImage style={displayDivProfileImageStyle} />
+                  )}
+                  <TaskSectionInfoText>
+                    {taskReviewer?.username}
+                  </TaskSectionInfoText>
+                </TaskSectionInfoDiv>
+              ))
+            ) : (
+              <TaskSectionInfoText
+                style={{
+                  marginTop: '8px',
+                  marginLeft: '16px',
+                }}
+              >
+                None
+              </TaskSectionInfoText>
+            )}
+          </TaskSectionDisplayDiv>
+        )}
+        {isTaskProposal && (
+          <TaskSectionDisplayDiv>
+            <TaskSectionDisplayLabel>
+              <ProposerIcon />
+              <TaskSectionDisplayText>Proposer</TaskSectionDisplayText>
+            </TaskSectionDisplayLabel>
+            <TaskSectionInfoDiv key={fetchedTask?.creatorUsername}>
+              {fetchedTask?.creatorUsername && (
+                <>
+                  {fetchedTask?.creatorProfilePicture ? (
+                    <SafeImage
+                      style={displayDivProfileImageStyle}
+                      src={fetchedTask?.creatorProfilePicture}
+                    />
+                  ) : (
+                    <DefaultUserImage style={displayDivProfileImageStyle} />
+                  )}
+                  <TaskSectionInfoText>
+                    {fetchedTask?.creatorUsername}
+                  </TaskSectionInfoText>
+                </>
+              )}
+              {!fetchedTask?.creatorUsername && (
+                <TaskSectionInfoText
+                  style={{
+                    marginLeft: '4px',
+                  }}
+                >
+                  None
                 </TaskSectionInfoText>
-              </TaskSectionInfoDiv>
-            ))
-          ) : (
-            <TaskSectionInfoText
-              style={{
-                marginTop: '8px',
-                marginLeft: '16px',
-              }}
-            >
-              None
-            </TaskSectionInfoText>
-          )}
-        </TaskSectionDisplayDiv>
+              )}
+            </TaskSectionInfoDiv>
+          </TaskSectionDisplayDiv>
+        )}
         <TaskSectionDisplayDiv>
           <TaskSectionDisplayLabel>
             <AssigneeIcon />
@@ -1263,23 +1329,11 @@ export const TaskViewModal = (props) => {
               <>
                 {fetchedTask?.assigneeProfilePicture ? (
                   <SafeImage
-                    style={{
-                      width: '26px',
-                      height: '26px',
-                      borderRadius: '13px',
-                      marginRight: '4px',
-                    }}
+                    style={displayDivProfileImageStyle}
                     src={fetchedTask?.assigneeProfilePicture}
                   />
                 ) : (
-                  <DefaultUserImage
-                    style={{
-                      width: '26px',
-                      height: '26px',
-                      borderRadius: '13px',
-                      marginRight: '4px',
-                    }}
-                  />
+                  <DefaultUserImage style={displayDivProfileImageStyle} />
                 )}
                 <TaskSectionInfoText>
                   {fetchedTask?.assigneeUsername}
@@ -1297,17 +1351,30 @@ export const TaskViewModal = (props) => {
             )}
           </TaskSectionInfoDiv>
         </TaskSectionDisplayDiv>
+
         <TaskSectionDisplayDiv>
           <TaskSectionDisplayLabel>
             <ImageIcon />
             <TaskSectionDisplayText>Media</TaskSectionDisplayText>
           </TaskSectionDisplayLabel>
-          <TaskMediaContainer>
-            {Array.isArray(fetchedTask?.media) &&
-              fetchedTask?.media.map((mediaItem) => (
-                <MediaLink key={mediaItem?.slug} media={mediaItem} />
-              ))}
-          </TaskMediaContainer>
+          {Array.isArray(fetchedTask?.media) &&
+          fetchedTask?.media.length > 0 ? (
+            <TaskMediaContainer>
+              {Array.isArray(fetchedTask?.media) &&
+                fetchedTask?.media.map((mediaItem) => (
+                  <MediaLink key={mediaItem?.slug} media={mediaItem} />
+                ))}
+            </TaskMediaContainer>
+          ) : (
+            <TaskSectionInfoText
+              style={{
+                marginLeft: '32px',
+                marginTop: '8px',
+              }}
+            >
+              None
+            </TaskSectionInfoText>
+          )}
         </TaskSectionDisplayDiv>
         <TaskSectionDisplayDiv>
           <TaskSectionDisplayLabel>
@@ -1327,22 +1394,24 @@ export const TaskViewModal = (props) => {
         </TaskSectionDisplayDiv>
         <TaskModalFooter>
           <TaskSectionFooterTitleDiv>
-            <TaskSubmissionTab
-              style={{
-                borderBottom: `2px solid ${
-                  submissionSelected ? '#7427FF' : '#4B4B4B'
-                }`,
-              }}
-              onClick={() => setSubmissionSelected(true)}
-            >
-              <TaskTabText
+            {!isTaskProposal && (
+              <TaskSubmissionTab
                 style={{
-                  fontWeight: `${submissionSelected ? '500' : '400'}`,
+                  borderBottom: `2px solid ${
+                    submissionSelected ? '#7427FF' : '#4B4B4B'
+                  }`,
                 }}
+                onClick={() => setSubmissionSelected(true)}
               >
-                Submissions
-              </TaskTabText>
-            </TaskSubmissionTab>
+                <TaskTabText
+                  style={{
+                    fontWeight: `${submissionSelected ? '500' : '400'}`,
+                  }}
+                >
+                  Submissions
+                </TaskTabText>
+              </TaskSubmissionTab>
+            )}
             <TaskSubmissionTab
               style={{
                 borderBottom: `2px solid ${

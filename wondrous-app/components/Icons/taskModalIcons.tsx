@@ -31,6 +31,45 @@ export const ReviewerIcon = (props) => {
   )
 }
 
+export const ProposerIcon = (props) => {
+  const { style } = props
+  return (
+    <svg
+      style={style}
+      width="11"
+      height="14"
+      viewBox="0 0 11 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M7.80485 9.91272H3.26562C3.26562 10.187 3.26562 10.6828 3.26562 10.6828C3.26562 11.7461 4.28165 12.6079 5.53524 12.6079C6.78882 12.6079 7.80485 11.7461 7.80485 10.6828C7.80485 10.6828 7.80485 10.187 7.80485 9.91272Z"
+        stroke="#CCBBFF"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10.0784 4.45775C10.0784 2.33147 8.04601 0.607544 5.53922 0.607544C3.03244 0.607544 1 2.33147 1 4.45775C1 6.7037 3.26961 8.30795 3.26961 9.52719V9.91221H7.80883V9.52719C7.80883 8.30795 10.0784 6.7037 10.0784 4.45775Z"
+        stroke="#CCBBFF"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5.53125 3.62366V6.89627"
+        stroke="#CCBBFF"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.17105 5.25989H3.89844"
+        stroke="#CCBBFF"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 export const AssigneeIcon = (props) => {
   const { style } = props
   return (

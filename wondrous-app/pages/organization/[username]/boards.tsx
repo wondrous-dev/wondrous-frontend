@@ -7,6 +7,7 @@ import {
   GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_SUBMISSIONS,
   GET_ORG_TASK_BOARD_TASKS,
+  GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
 } from '../../../graphql/queries/taskBoard'
 import Boards from '../../../components/organization/boards/boards'
 import {
@@ -31,7 +32,7 @@ const TO_DO = {
   status: TASK_STATUS_TODO,
   tasks: [],
   section: {
-    title: 'Requests',
+    title: 'Proposals',
     icon: Requested,
     id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
     filter: {
@@ -39,7 +40,7 @@ const TO_DO = {
     },
     expandable: true,
     action: {
-      text: 'Request',
+      text: 'Proposal',
     },
     tasks: [],
   },
@@ -113,6 +114,7 @@ const BoardsPage = () => {
     onCompleted: (data) => {
       const newColumns = [...columns]
       const taskProposals = data?.getOrgTaskBoardProposals
+      console.log('taskProposals', taskProposals)
       newColumns[0].section.tasks = []
       taskProposals.forEach((taskProposal) => {
         newColumns[0].section.tasks.push(taskProposal)
@@ -132,6 +134,10 @@ const BoardsPage = () => {
       setColumns(newColumns)
     },
   })
+
+  const [getOrgBoardTaskCount, { data: orgTaskCountData }] = useLazyQuery(
+    GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD
+  )
 
   const [getOrgTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     onCompleted: (data) => {
@@ -197,7 +203,7 @@ const BoardsPage = () => {
           orgId: profileOrgId,
           statuses,
           offset: 0,
-          limit: 3,
+          limit: 2,
         },
       })
       getOrgTaskSubmissions({
@@ -205,7 +211,12 @@ const BoardsPage = () => {
           orgId: profileOrgId,
           statuses,
           offset: 0,
-          limit: 3,
+          limit: 2,
+        },
+      })
+      getOrgBoardTaskCount({
+        variables: {
+          orgId: profileOrgId,
         },
       })
     }
@@ -218,6 +229,7 @@ const BoardsPage = () => {
     getOrgIdFromUsername,
     getOrgTaskSubmissions,
     getOrgTaskProposals,
+    getOrgBoardTaskCount,
   ])
 
   // Handle Column changes (tasks movements)
@@ -261,6 +273,7 @@ const BoardsPage = () => {
         columns,
         setColumns,
         orgId: profileOrgId,
+        taskCount: orgTaskCountData?.getPerStatusTaskCountForOrgBoard,
         userPermissionsContext: userPermissionsContext?.getUserPermissionContext
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
           : null,
