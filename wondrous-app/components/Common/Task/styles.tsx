@@ -357,3 +357,9 @@ export const TaskListCardWrapper = styled.div`
   padding: 16px;
   margin-bottom: 20px;
 `
+export const ArchivedTaskUndo = styled.span`
+  text-decoration: underline;
+  :hover {
+    cursor: pointer;
+  }
+`

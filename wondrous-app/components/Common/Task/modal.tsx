@@ -30,6 +30,7 @@ import {
   PodWrapper,
   PodName,
   TaskStatusHeaderText,
+  ArchivedTaskUndo,
 } from './styles'
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import {
@@ -37,6 +38,9 @@ import {
   GET_TASK_REVIEWERS,
   GET_TASK_SUBMISSIONS_FOR_TASK,
 } from '../../../graphql/queries/task'
+import {
+  UPDATE_TASK_STATUS
+} from '../../../graphql/mutations/task'
 import { SafeImage } from '../Image'
 import {
   parseUserPermissionContext,
@@ -57,6 +61,7 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
+  TASK_STATUS_ARCHIVED
 } from '../../../utils/constants'
 import { DropDown, DropDownItem } from '../dropdown'
 import { TaskMenuIcon } from '../../Icons/taskMenu'
@@ -81,6 +86,8 @@ import {
   CreateFormPreviewButton,
   CreateModalOverlay,
 } from '../../CreateEntity/styles'
+import { ArchiveTaskModal } from '../ArchiveTaskModal'
+import { SnackbarAlert } from '../SnackbarAlert'
 import { useRouter } from 'next/router'
 import { UPDATE_TASK_STATUS } from '../../../graphql/mutations/task'
 import { GET_PREVIEW_FILE } from '../../../graphql/queries/media'
@@ -380,6 +387,9 @@ export const TaskViewModal = (props) => {
   const [submissionSelected, setSubmissionSelected] = useState(
     isTaskProposal ? false : true
   )
+  const [archiveTask, setArchiveTask] = useState(false)
+  const [initialStatus, setInitialStatus] = useState(null)
+  const [archiveTaskAlert, setArchiveTaskAlert] = useState(false)
   const [getReviewers, { data: reviewerData }] =
     useLazyQuery(GET_TASK_REVIEWERS)
   const user = useMe()
@@ -388,9 +398,14 @@ export const TaskViewModal = (props) => {
     podBoard?.userPermissionsContext ||
     userBoard?.userPermissionsContext
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
+    fetchPolicy: 'network-only',
+    nextFetchPolicy: 'network-only',
     onCompleted: (data) => {
       const taskData = data?.getTaskById
       if (taskData) {
+        if (!initialStatus) {
+          setInitialStatus(taskData?.status)
+        }
         setFetchedTask(
           transformTaskToTaskCard(taskData, {
             orgProfilePicture: taskData?.org?.profilePicture,
@@ -412,6 +427,37 @@ export const TaskViewModal = (props) => {
       }
     },
   })
+
+  const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS, {
+    refetchQueries: () => [{
+      query: GET_TASK_BY_ID,
+      variables: {
+        taskId: fetchedTask?.id,
+      }
+    }],
+    onCompleted: (data) => {
+      if (data?.updateTaskStatus.status === TASK_STATUS_ARCHIVED) {
+        setArchiveTaskAlert(true)
+      }
+    },
+    onError: (error) => {
+      console.error(error)
+    }
+  })
+
+  const handleNewStatus = (newStatus) => {
+    if (initialStatus !== TASK_STATUS_ARCHIVED) {
+      setArchiveTaskAlert(false)
+    }
+    updateTaskStatusMutation({
+      variables: {
+        taskId: fetchedTask?.id,
+        input: {
+          newStatus
+        }
+      }
+    })
+  }
 
   useEffect(() => {
     if (isTaskProposal) {
@@ -536,6 +582,9 @@ export const TaskViewModal = (props) => {
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     permissions.includes(PERMISSIONS.CREATE_TASK)
   return (
+    <>
+    <SnackbarAlert open={archiveTaskAlert} onClose={() => setArchiveTaskAlert(false)}>Task archived successfully! <ArchivedTaskUndo onClick={() => handleNewStatus(initialStatus)}>Undo</ArchivedTaskUndo></SnackbarAlert>)
+    <ArchiveTaskModal open={archiveTask} onClose={() => setArchiveTask(false)} onArchive={handleNewStatus} />
     <Modal open={open} onClose={handleClose}>
       <TaskModal>
         <TaskModalHeader>
@@ -551,19 +600,17 @@ export const TaskViewModal = (props) => {
           {fetchedTask?.podName && (
             <div
               style={{
-                display: 'flex',
-                alignItems: 'center',
+                width: '29px',
+                height: '28px',
+                borderRadius: '4px',
+                marginRight: '8px',
               }}
-            >
-              <RightCaret
+            />
+            {fetchedTask?.podName && (
+              <div
                 style={{
-                  marginRight: '12px',
-                  marginLeft: '12px',
-                }}
-              />
-              <CreatePodIcon
-                style={{
-                  marginRight: '2px',
+                  display: 'flex',
+                  alignItems: 'center',
                 }}
               />
               <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
@@ -583,11 +630,23 @@ export const TaskViewModal = (props) => {
                   key={'task-menu-edit-' + fetchedTask?.id}
                   onClick={() => setEditTask(true)}
                   style={{
-                    color: White,
+                    marginRight: '12px',
+                    marginLeft: '12px',
                   }}
                 >
                   Edit {isTaskProposal ? 'task proposal' : 'task'}
                 </DropDownItem>
+                <DropDownItem
+                    key={'task-menu-archive-' + fetchedTask?.id}
+                    onClick={() => {
+                      setArchiveTask(true)
+                    }}
+                    style={{
+                      color: White,
+                    }}
+                  >
+                    Archive Task
+                  </DropDownItem>
               </DropDown>
             </TaskActionMenu>
           )}
@@ -698,10 +757,62 @@ export const TaskViewModal = (props) => {
                 </TaskSectionInfoText>
               </>
             )}
-            {!fetchedTask?.assigneeUsername && (
+          </TaskModalHeader>
+          <TaskTitleDiv>
+            <GetStatusIcon
+              status={fetchedTask?.status}
+              style={{
+                marginRight: '12px',
+              }}
+            />
+            <TaskTitleTextDiv>
+              <TaskTitleText>{fetchedTask?.title}</TaskTitleText>
+              <TaskDescriptionText>
+                {renderMentionString({
+                  content: fetchedTask?.description,
+                  router,
+                })}
+              </TaskDescriptionText>
+            </TaskTitleTextDiv>
+          </TaskTitleDiv>
+          <TaskSectionDisplayDiv>
+            <TaskSectionDisplayLabel>
+              <ReviewerIcon />
+              <TaskSectionDisplayText>Reviewer</TaskSectionDisplayText>
+            </TaskSectionDisplayLabel>
+            {reviewerData?.getTaskReviewers?.length > 0 ? (
+              reviewerData?.getTaskReviewers.map((taskReviewer) => (
+                <TaskSectionInfoDiv key={taskReviewer?.id}>
+                  {taskReviewer?.profilePicture ? (
+                    <SafeImage
+                      style={{
+                        width: '26px',
+                        height: '26px',
+                        borderRadius: '13px',
+                        marginRight: '4px',
+                      }}
+                      src={taskReviewer?.profilePicture}
+                    />
+                  ) : (
+                    <DefaultUserImage
+                      style={{
+                        width: '26px',
+                        height: '26px',
+                        borderRadius: '13px',
+                        marginRight: '4px',
+                      }}
+                    />
+                  )}
+                  <TaskSectionInfoText>
+                    {taskReviewer?.username}
+                  </TaskSectionInfoText>
+                </TaskSectionInfoDiv>
+              ))
+            ) : (
               <TaskSectionInfoText
                 style={{
-                  marginLeft: '4px',
+                  marginTop: '8px',
+                  marginLeft: '16px',
                 }}
               >
                 None
@@ -895,5 +1006,6 @@ export const TaskViewModal = (props) => {
         </TaskModalFooter>
       </TaskModal>
     </Modal>
+    </>
   )
 }
