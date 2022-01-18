@@ -106,6 +106,7 @@ export const TaskProposalCardFragment = gql`
     description
     approvedAt
     changeRequestedAt
+    lastReviewedBy
     rejectedAt
     links {
       url
@@ -142,6 +143,7 @@ export const TaskSubmissionCardFragment = gql`
     approvedAt
     changeRequestedAt
     rejectedAt
+    lastReviewedBy
     links {
       url
       name

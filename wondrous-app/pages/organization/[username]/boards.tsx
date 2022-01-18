@@ -114,9 +114,8 @@ const BoardsPage = () => {
     onCompleted: (data) => {
       const newColumns = [...columns]
       const taskProposals = data?.getOrgTaskBoardProposals
-      console.log('taskProposals', taskProposals)
       newColumns[0].section.tasks = []
-      taskProposals.forEach((taskProposal) => {
+      taskProposals?.forEach((taskProposal) => {
         newColumns[0].section.tasks.push(taskProposal)
       })
       setColumns(newColumns)
@@ -203,7 +202,7 @@ const BoardsPage = () => {
           orgId: profileOrgId,
           statuses,
           offset: 0,
-          limit: 2,
+          limit: LIMIT,
         },
       })
       getOrgTaskSubmissions({
@@ -211,7 +210,7 @@ const BoardsPage = () => {
           orgId: profileOrgId,
           statuses,
           offset: 0,
-          limit: 2,
+          limit: LIMIT,
         },
       })
       getOrgBoardTaskCount({

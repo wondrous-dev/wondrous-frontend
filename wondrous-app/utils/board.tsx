@@ -17,6 +17,7 @@ export const removeProposalItem = (itemId, columns) => {
   columns[0].section.tasks = columns[0].section.tasks.filter(
     (task) => task.id !== itemId
   )
+
   return columns
 }
 

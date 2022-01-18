@@ -42,3 +42,19 @@ export const REQUEST_CHANGE_TASK_PROPOSAL = gql`
     }
   }
 `
+
+export const ATTACH_MEDIA_TO_TASK_PROPOSAL = gql`
+  mutation attachTaskMedia($proposalId: ID!, $input: AttachMediaInput) {
+    attachTaskMedia(proposalId: $proposalId, input: $input) {
+      success
+    }
+  }
+`
+
+export const REMOVE_MEDIA_FROM_TASK_PROPOSAL = gql`
+  mutation removeTaskMedia($proposalId: ID!, $slug: String!) {
+    removeTaskMedia(proposalId: $proposalId, slug: $slug) {
+      success
+    }
+  }
+`

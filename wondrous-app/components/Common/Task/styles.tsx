@@ -341,3 +341,19 @@ export const TaskMediaContainer = styled.div`
   margin-top: 8px;
   margin-left: 28px;
 `
+
+export const TaskListModalHeader = styled(Typography)`
+  && {
+    font-size: 18px;
+    line-height: 26px;
+    margin-bottom: 20px;
+    color: ${White};
+  }
+`
+
+export const TaskListCardWrapper = styled.div`
+  background: #0f0f0f;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 20px;
+`

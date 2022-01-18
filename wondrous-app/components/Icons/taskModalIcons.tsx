@@ -310,10 +310,11 @@ export const ClockIcon = (props) => {
 }
 
 export const RejectIcon = (props) => {
-  const { style } = props
+  const { style, onClick } = props
   return (
     <svg
       style={style}
+      onClick={onClick}
       width="15"
       height="14"
       viewBox="0 0 15 14"

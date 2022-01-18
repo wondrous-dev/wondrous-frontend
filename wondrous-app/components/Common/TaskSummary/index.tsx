@@ -14,6 +14,7 @@ import {
   PodName,
   TaskAction,
   TaskActionAmount,
+  TaskSeparator,
 } from '../Task/styles'
 
 import { TASK_ICONS } from '../Task/index'
@@ -24,6 +25,7 @@ import {
   TaskSummaryInner,
   TaskSummaryAction,
   OrgProfilePicture,
+  SmallerCardActionButtons,
 } from './styles'
 import { Arrow, Media } from '../../Icons/sections'
 import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks'
@@ -59,8 +61,30 @@ import {
   updateSubmissionItem,
 } from '../../../utils/board'
 import { TaskCommentIcon } from '../../Icons/taskComment'
+import { renderMentionString } from '../../../utils/common'
+import { TaskMedia } from '../MediaPlayer'
+import { useMe } from '../../Auth/withAuth'
 
 let windowOffset
+
+const iconStyle = {
+  width: '20px',
+  height: '20px',
+  marginRight: '8px',
+}
+
+export const flexDivStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  width: 'max-content',
+  marginRight: '20px',
+}
+
+export const rejectIconStyle = {
+  width: '16px',
+  height: '16px',
+  marginRight: '4px',
+}
 
 export const TaskSummary = ({ task, setTask, action, taskType }) => {
   const {
@@ -105,21 +129,10 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
     setModalOpen(true)
   }
 
-  const iconStyle = {
-    width: '20px',
-    height: '20px',
-    marginRight: '8px',
-  }
-
-  const flexDivStyle = {
-    display: 'flex',
-    alignItems: 'center',
-  }
-
   const orgBoard = useOrgBoard()
   const podBoard = usePodBoard()
   const userBoard = useUserBoard()
-
+  const user = useMe()
   const userPermissionsContext =
     orgBoard?.userPermissionsContext ||
     podBoard?.userPermissionsContext ||
@@ -201,6 +214,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
             {
               ...task,
               changeRequestedAt: new Date(),
+              lastReviewdBy: user?.id,
             },
             columns
           )
@@ -266,55 +280,49 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
 
           <TaskContent>
             <TaskTitle>{title}</TaskTitle>
-            <p>{description}</p>
+            <p>
+              {renderMentionString({
+                content: task?.description,
+                router,
+              })}
+            </p>
+            {task?.media?.length > 0 ? (
+              <TaskMedia media={task?.media[0]} />
+            ) : (
+              <TaskSeparator />
+            )}
           </TaskContent>
           <TaskFooter>
-            {media?.length > 0 ? (
-              <TaskSummaryMedia>
-                <Media media={media[0]} />
-              </TaskSummaryMedia>
-            ) : (
-              ''
-            )}
             {
-              <TaskAction key={'task-comment-' + id}>
+              <TaskAction
+                style={{
+                  marginRight: '0',
+                }}
+                key={'task-comment-' + id}
+              >
                 <TaskCommentIcon />
                 <TaskActionAmount>{task?.commentCount || 0}</TaskActionAmount>
               </TaskAction>
             }
             {task?.approvedAt && (
-              <div style={flexDivStyle}>
-                <CompletedIcon style={iconStyle} />
-                <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
-              </div>
-            )}
-            {task?.changeRequestedAt && (
-              <div style={flexDivStyle} onClick={requestChange}>
-                <RejectIcon
-                  style={{
-                    width: '16px',
-                    height: '16px',
-                    marginRight: '8px',
-                  }}
-                />
-                <TaskStatusHeaderText>Changes requested</TaskStatusHeaderText>
-              </div>
-            )}
-            {canApprove && !task?.approvedAt && !task?.changeRequestedAt && (
-              <CreateFormButtonsBlock>
-                <CreateFormPreviewButton>
-                  {taskType === TASK_STATUS_IN_REVIEW
-                    ? 'Request changes'
-                    : 'Deny'}
-                </CreateFormPreviewButton>
-                <CreateFormPreviewButton onClick={approve}>
-                  Approve
-                </CreateFormPreviewButton>
-              </CreateFormButtonsBlock>
-            )}
-            {action && !canApprove ? (
               <TaskSummaryAction>
-                {action.text}
+                <div style={flexDivStyle}>
+                  <CompletedIcon style={iconStyle} />
+                  <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
+                </div>
+              </TaskSummaryAction>
+            )}
+
+            {action && !task?.approvedAt ? (
+              <TaskSummaryAction>
+                {task?.changeRequestedAt ? (
+                  <div style={flexDivStyle} onClick={requestChange}>
+                    <RejectIcon style={rejectIconStyle} />
+                    Change requested
+                  </div>
+                ) : (
+                  action.text
+                )}
                 &nbsp;
                 <Arrow />
               </TaskSummaryAction>

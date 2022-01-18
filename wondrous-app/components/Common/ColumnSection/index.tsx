@@ -12,18 +12,25 @@ import {
   SectionContainer,
 } from './styles'
 import { TaskSummaryFooter } from '../TaskSummary/styles'
-import { useOrgBoard } from '../../../utils/hooks'
+import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks'
 import {
+  ENTITIES_TYPES,
   TASK_STATUS_ARCHIVED,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
 } from '../../../utils/constants'
+import { TaskListViewModal } from '../Task/modal'
 
+let windowOffset
 export const ColumnSection = ({ section, setSection }) => {
   const { icon = Requested, title = '', tasks = [], action = {} } = section
   const [isOpen, setIsOpen] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
   const SectionIcon = icon
   const orgBoard = useOrgBoard()
+  const podBoard = usePodBoard()
+  const userBoard = useUserBoard()
+
   const taskCount = orgBoard?.taskCount
   const type = section?.filter?.taskType
   let number = 0
@@ -53,8 +60,40 @@ export const ColumnSection = ({ section, setSection }) => {
     setSection(section)
   }
 
+  let entityType
+  if (orgBoard) {
+    entityType = ENTITIES_TYPES.ORG
+  } else if (podBoard) {
+    entityType = ENTITIES_TYPES.POD
+  } else if (userBoard) {
+    entityType = ENTITIES_TYPES.USER
+  }
+  const openModal = () => {
+    // document.body.style.overflow = 'hidden'
+    // document.body.scroll = false
+    windowOffset = window.scrollY
+    document.body.setAttribute(
+      'style',
+      `position: fixed; top: -${windowOffset}px; left:0; right:0`
+    )
+    setModalOpen(true)
+  }
   return (
     <SectionWrapper>
+      <TaskListViewModal
+        taskType={type}
+        entityType={entityType}
+        orgId={orgBoard?.orgId}
+        podId={podBoard?.podId}
+        open={modalOpen}
+        handleClose={() => {
+          document.body.setAttribute('style', '')
+          window?.scrollTo(0, windowOffset)
+          setModalOpen(false)
+        }}
+        count={number}
+      />
+
       <SectionHeaderContainer onClick={toggleSection}>
         <SectionIconContainer>
           <SectionIcon active={isOpen} />
@@ -77,8 +116,8 @@ export const ColumnSection = ({ section, setSection }) => {
             taskType={type}
           />
         ))}
-        {tasks.length >= 2 ? (
-          <TaskSummaryFooter>See more</TaskSummaryFooter>
+        {tasks.length >= 2 || number >= 2 ? (
+          <TaskSummaryFooter onClick={openModal}>See more</TaskSummaryFooter>
         ) : (
           ''
         )}

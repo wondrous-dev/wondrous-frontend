@@ -1,6 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Background, Blue800, Violet300, Grey250 } from '../../../theme/colors'
+import {
+  CreateFormButtonsBlock,
+  CreateFormPreviewButton,
+} from '../../CreateEntity/styles'
 import { SafeImage } from '../Image'
 
 export const TaskSummaryWrapper = styled.div`
@@ -78,6 +82,18 @@ export const OrgProfilePicture = (props) => (
       width: '29px',
       height: '28px',
       borderRadius: '4px',
+      marginRight: '16px',
     }}
   />
 )
+
+export const SmallerCardActionButtons = styled(CreateFormButtonsBlock)`
+  && {
+    margin-left: 8px;
+    padding: 8px;
+    border: 1px solid #c4c4c4;
+    border-radius: 20px;
+    width: max-content;
+    cursor: pointer;
+  }
+`

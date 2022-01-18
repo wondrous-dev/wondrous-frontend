@@ -387,7 +387,7 @@ const BoardsPage = () => {
       const newColumns = [...columns]
       const taskProposals = data?.getUserTaskBoardProposals
       newColumns[0].section.tasks = []
-      taskProposals.forEach((taskProposal) => {
+      taskProposals?.forEach((taskProposal) => {
         newColumns[0].section.tasks.push(taskProposal)
       })
       setColumns(newColumns)
