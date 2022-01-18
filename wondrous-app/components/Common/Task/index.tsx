@@ -99,8 +99,8 @@ export const Task = ({ task, setTask }) => {
   const [initialStatus, setInitialStatus] = useState('')
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } =
     useContext(SnackbarAlertContext)
-  const { getOrgTasksVariables } = useContext(OrgBoardContext)
-
+  const orgBoardContext = useContext(OrgBoardContext)
+  const getOrgTasksVariables = orgBoardContext?.getOrgTaskVariables
   let TaskIcon = TASK_ICONS[status]
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] =
