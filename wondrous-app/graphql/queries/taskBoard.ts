@@ -7,7 +7,7 @@ import {
 } from '../fragments/task'
 
 export const GET_ORG_TASK_BOARD_PROPOSALS = gql`
-  query getOrgTaskBoardProposals(
+  query GetOrgTaskBoardProposals(
     $orgId: ID!
     $statuses: [String]
     $searchString: String

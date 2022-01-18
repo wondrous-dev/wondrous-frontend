@@ -231,6 +231,9 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
         handleClose={() => {
           document.body.setAttribute('style', '')
           window?.scrollTo(0, windowOffset)
+          router.push(`${delQuery(router.asPath)}`, undefined, {
+            shallow: true,
+          })
           setModalOpen(false)
         }}
         task={

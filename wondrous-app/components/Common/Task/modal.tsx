@@ -99,7 +99,7 @@ import {
 import {
   addTaskItem,
   removeProposalItem,
-  updateSubmissionItem,
+  updateProposalItem,
 } from '../../../utils/board'
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary'
 import { CompletedIcon } from '../../Icons/statusIcons'
@@ -138,37 +138,39 @@ export const TaskListViewModal = (props) => {
   const { taskType, entityType, orgId, podId, open, handleClose, count } = props
   const [ref, inView] = useInView({})
   const [hasMore, setHasMore] = useState(false)
-  const [getOrgTaskProposals, { fetchMore: fetchMoreOrgProposals }] =
-    useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
-      onCompleted: (data) => {
-        const proposals = data?.getOrgTaskBoardProposals
-        setFetchedList(proposals)
-        setHasMore(data?.hasMore || data?.getOrgTaskBoardProposals.length >= 1)
-      },
-    })
-  const [getOrgTaskSubmissions, { fetchMore: fetchMoreOrgSubmissions }] =
-    useLazyQuery(GET_ORG_TASK_BOARD_SUBMISSIONS, {
-      onCompleted: (data) => {
-        const submissions = data?.getOrgTaskBoardSubmissions
-        console.log('hasMore', hasMore)
-        setFetchedList(submissions)
-        setHasMore(
-          data?.hasMore || data?.getOrgTaskBoardSubmissions.length >= 1
-        )
-      },
-    })
+  const [
+    getOrgTaskProposals,
+    { refetch: refetchOrgProposals, fetchMore: fetchMoreOrgProposals },
+  ] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
+    onCompleted: (data) => {
+      const proposals = data?.getOrgTaskBoardProposals
+      setFetchedList(proposals)
+      setHasMore(data?.hasMore || data?.getOrgTaskBoardProposals.length >= 1)
+    },
+  })
+  const [
+    getOrgTaskSubmissions,
+    { refetch: refetchOrgSubmissions, fetchMore: fetchMoreOrgSubmissions },
+  ] = useLazyQuery(GET_ORG_TASK_BOARD_SUBMISSIONS, {
+    onCompleted: (data) => {
+      const submissions = data?.getOrgTaskBoardSubmissions
+      setFetchedList(submissions)
+      setHasMore(data?.hasMore || data?.getOrgTaskBoardSubmissions.length >= 1)
+    },
+  })
 
-  const [getOrgArchivedTasks, { fetchMore: fetchMoreOrgArchivedTasks }] =
-    useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
-      onCompleted: (data) => {
-        const tasks = data?.getOrgTaskBoardTasks
-        setFetchedList(tasks)
-        setHasMore(data?.hasMore || data?.getOrgTaskBoardTasks.length >= LIMIT)
-      },
-    })
+  const [
+    getOrgArchivedTasks,
+    { refetch: refetchOrgArchivedTasks, fetchMore: fetchMoreOrgArchivedTasks },
+  ] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
+    onCompleted: (data) => {
+      const tasks = data?.getOrgTaskBoardTasks
+      setFetchedList(tasks)
+      setHasMore(data?.hasMore || data?.getOrgTaskBoardTasks.length >= LIMIT)
+    },
+  })
 
   const handleLoadMore = useCallback(() => {
-    console.log('scrolled', hasMore)
     if (hasMore) {
       if (taskType === TASK_STATUS_REQUESTED) {
         if (entityType === ENTITIES_TYPES.ORG) {
@@ -213,7 +215,7 @@ export const TaskListViewModal = (props) => {
               if (!hasMore) {
                 setHasMore(false)
               }
-              console.log('returned')
+
               return {
                 hasMore,
                 getOrgTaskBoardSubmissions:
@@ -301,12 +303,16 @@ export const TaskListViewModal = (props) => {
   }, [orgId, taskType, entityType, inView])
 
   let text = ''
+  let refetch
   if (taskType === TASK_STATUS_REQUESTED) {
     text = 'Proposals'
+    refetch = refetchOrgProposals
   } else if (taskType === TASK_STATUS_IN_REVIEW) {
     text = 'Submissions'
+    refetch = refetchOrgSubmissions
   } else if (taskType === TASK_STATUS_ARCHIVED) {
     text = 'Tasks'
+    refetch = refetchOrgSubmissions
   }
   return (
     <CreateModalOverlay
@@ -783,7 +789,7 @@ export const TaskViewModal = (props) => {
                       onCompleted: () => {
                         let columns = [...board?.columns]
                         // Move from proposal to task
-                        columns = updateSubmissionItem(
+                        columns = updateProposalItem(
                           {
                             ...fetchedTask,
                             changeRequestedAt: new Date(),
@@ -792,6 +798,7 @@ export const TaskViewModal = (props) => {
                         )
                         board?.setColumns(columns)
                       },
+                      refetchQueries: ['GetOrgTaskBoardProposals'],
                     })
                   }}
                 >
@@ -815,6 +822,7 @@ export const TaskViewModal = (props) => {
                         )
                         handleClose()
                       },
+                      refetchQueries: ['GetOrgTaskBoardProposals'],
                     })
                   }}
                 >

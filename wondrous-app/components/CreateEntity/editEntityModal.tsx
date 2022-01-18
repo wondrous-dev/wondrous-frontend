@@ -125,6 +125,7 @@ import Ethereum from '../Icons/ethereum'
 import { USDCoin } from '../Icons/USDCoin'
 import { TaskFragment } from '../../graphql/fragments/task'
 import { updateProposalItem } from '../../utils/board'
+import { GET_ORG_TASK_BOARD_PROPOSALS } from '../../graphql/queries/taskBoard'
 
 const filterUserOptions = (options) => {
   if (!options) return []
@@ -527,6 +528,7 @@ const EditLayoutBaseModal = (props) => {
       }
       handleClose()
     },
+    refetchQueries: ['GetOrgTaskBoardProposals'],
   })
 
   const textFieldRef = useRef()
@@ -561,7 +563,7 @@ const EditLayoutBaseModal = (props) => {
         } else {
           updateTaskProposal({
             variables: {
-              taskProposalId: existingTask?.id,
+              proposalId: existingTask?.id,
               input: taskInput,
             },
           })

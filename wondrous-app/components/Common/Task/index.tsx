@@ -10,9 +10,10 @@ import { AvatarList, SmallAvatar } from '../AvatarList'
 import { Compensation } from '../Compensation'
 import { TaskMedia } from '../MediaPlayer'
 import { DropDown, DropDownItem } from '../dropdown'
-
+import { CompletedIcon } from '../../Icons/statusIcons'
+import { RejectIcon } from '../../Icons/taskModalIcons'
 import * as Constants from '../../../utils/constants'
-
+import { flexDivStyle, rejectIconStyle } from '../TaskSummary'
 import {
   TaskWrapper,
   TaskInner,
@@ -27,6 +28,7 @@ import {
   PodWrapper,
   PodName,
   TaskListCardWrapper,
+  TaskStatusHeaderText,
 } from './styles'
 import { renderMentionString } from '../../../utils/common'
 import { useRouter } from 'next/router'
@@ -166,6 +168,9 @@ export const Task = ({ task, setTask }) => {
           document.body.setAttribute('style', '')
           window?.scrollTo(0, windowOffset)
           setModalOpen(false)
+          router.push(`${delQuery(router.asPath)}`, undefined, {
+            shallow: true,
+          })
         }}
         task={task}
       />
@@ -357,6 +362,18 @@ export const TaskListCard = (props) => {
         )}
       </TaskContent>
       <TaskFooter>
+        {task?.changeRequestedAt && (
+          <div style={flexDivStyle}>
+            <RejectIcon style={rejectIconStyle} />
+            <TaskStatusHeaderText>Change requested</TaskStatusHeaderText>
+          </div>
+        )}
+        {task?.approvedAt && (
+          <div style={flexDivStyle}>
+            <CompletedIcon style={rejectIconStyle} />
+            <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
+          </div>
+        )}
         <TaskSummaryAction>
           Details
           <Arrow

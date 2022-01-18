@@ -237,6 +237,7 @@ const SubmissionItem = (props) => {
         window?.scrollTo(0, window.scrollY)
       }
     },
+    refetchQueries: ['getOrgTaskBoardSubmissions'],
   })
   const [requestChangeSubmission] = useMutation(REQUEST_CHANGE_SUBMISSION, {
     variables: {
@@ -257,8 +258,8 @@ const SubmissionItem = (props) => {
       )
       setFetchedTaskSubmissions(newFetchedTaskSubmissions)
     },
+    refetchQueries: ['getOrgTaskBoardSubmissions'],
   })
-
   return (
     <TaskSubmissionItemDiv>
       <TaskSubmissionHeader>
@@ -390,7 +391,7 @@ const SubmissionItem = (props) => {
                 </CreateFormPreviewButton>
               </CreateFormButtonsBlock>
             )}
-            {canReview && (
+            {canReview && fetchedTask?.status !== TASK_STATUS_DONE && (
               <>
                 <CreateFormButtonsBlock>
                   {!submission.changeRequestedAt && !submission.approvedAt && (
@@ -461,6 +462,7 @@ const TaskSubmissionForm = (props) => {
         cancelSubmissionForm()
       }
     },
+    refetchQueries: ['getOrgTaskBoardSubmissions'],
   })
   const [updateTaskSubmission] = useMutation(UPDATE_TASK_SUBMISSION, {
     onCompleted: (data) => {
@@ -480,6 +482,7 @@ const TaskSubmissionForm = (props) => {
         cancelSubmissionForm()
       }
     },
+    refetchQueries: ['getOrgTaskBoardSubmissions'],
   })
   const [attachTaskSubmissionMedia] = useMutation(ATTACH_SUBMISSION_MEDIA)
   const [removeTaskSubmissionMedia] = useMutation(REMOVE_SUBMISSION_MEDIA)
