@@ -113,15 +113,19 @@ import {
   REMOVE_MEDIA_FROM_TASK,
   UPDATE_TASK,
 } from '../../graphql/mutations/task'
-import { useOrgBoard } from '../../utils/hooks'
+import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks'
 import {
+  ATTACH_MEDIA_TO_TASK_PROPOSAL,
   CREATE_TASK_PROPOSAL,
+  REMOVE_MEDIA_FROM_TASK_PROPOSAL,
   UPDATE_TASK_PROPOSAL,
 } from '../../graphql/mutations/taskProposal'
 import { useMe } from '../Auth/withAuth'
 import Ethereum from '../Icons/ethereum'
 import { USDCoin } from '../Icons/USDCoin'
 import { TaskFragment } from '../../graphql/fragments/task'
+import { updateProposalItem } from '../../utils/board'
+import { GET_ORG_TASK_BOARD_PROPOSALS } from '../../graphql/queries/taskBoard'
 
 const filterUserOptions = (options) => {
   if (!options) return []
@@ -298,7 +302,7 @@ const EditLayoutBaseModal = (props) => {
     props
   const user = useMe()
 
-  const [addDetails, setAddDetails] = useState(false)
+  const [addDetails, setAddDetails] = useState(true)
   const [descriptionText, setDescriptionText] = useState(
     existingTask?.description
   )
@@ -335,7 +339,10 @@ const EditLayoutBaseModal = (props) => {
   const [rewardsAmount, setRewardsAmount] = useState(null)
   const [title, setTitle] = useState(existingTask?.title)
   const orgBoard = useOrgBoard()
-  // TODO: add pod board
+  const podBoard = usePodBoard()
+  const userBoard = useUserBoard()
+
+  const board = orgBoard || podBoard || userBoard
 
   const { data: userOrgs } = useQuery(GET_USER_ORGS)
   const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(
@@ -398,6 +405,8 @@ const EditLayoutBaseModal = (props) => {
 
   const [attachMedia] = useMutation(ATTACH_MEDIA_TO_TASK)
   const [removeMedia] = useMutation(REMOVE_MEDIA_FROM_TASK)
+  const [attachTaskProposalMedia] = useMutation(ATTACH_MEDIA_TO_TASK_PROPOSAL)
+  const [removeTaskProposalMedia] = useMutation(REMOVE_MEDIA_FROM_TASK_PROPOSAL)
 
   const filterDAOptions = useCallback((orgs) => {
     if (!orgs) {
@@ -433,6 +442,11 @@ const EditLayoutBaseModal = (props) => {
     }))
   }, [])
 
+  const onCorrectPage =
+    existingTask?.orgId === board?.orgId ||
+    existingTask?.podId === board?.podId ||
+    existingTask?.userId === board?.userId
+
   useEffect(() => {
     if (userOrgs?.getUserOrgs?.length === 1) {
       // If you're only part of one dao then just set that as default
@@ -466,17 +480,13 @@ const EditLayoutBaseModal = (props) => {
     onCompleted: (data) => {
       const task = data?.updateTask
       const justCreatedPod = getPodObject()
-      if (orgBoard?.setColumns && task?.orgId === orgBoard?.orgId) {
-        const transformedTask = transformTaskToTaskCard(task, {
-          orgName: orgBoard?.org?.name,
-          orgProfilePicture: orgBoard?.org?.profilePicture,
-          podName: justCreatedPod?.name,
-        })
+      if (board?.setColumns && onCorrectPage) {
+        const transformedTask = transformTaskToTaskCard(task, {})
         let columnNumber = 0
         if (task.status === TASK_STATUS_IN_PROGRESS) {
           columnNumber = 1
         }
-        const columns = [...orgBoard?.columns]
+        const columns = [...board?.columns]
         columns[columnNumber].tasks = columns[columnNumber].tasks.map(
           (existingTask) => {
             if (transformedTask?.id === existingTask?.id) {
@@ -485,7 +495,7 @@ const EditLayoutBaseModal = (props) => {
             return existingTask
           }
         )
-        orgBoard.setColumns(columns)
+        board.setColumns(columns)
       }
       handleClose()
     },
@@ -495,19 +505,17 @@ const EditLayoutBaseModal = (props) => {
     onCompleted: (data) => {
       const taskProposal = data?.updateTaskProposal
       const justCreatedPod = getPodObject()
-      if (orgBoard?.setColumns && taskProposal?.orgId === orgBoard?.orgId) {
+      if (board?.setColumns && onCorrectPage) {
         const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
           taskProposal,
           {
             userProfilePicture: user?.profilePicture,
             username: user?.username,
-            orgName: orgBoard?.org?.name,
-            orgProfilePicture: orgBoard?.org?.profilePicture,
             podName: justCreatedPod?.name,
           }
         )
 
-        const columns = [...orgBoard?.columns]
+        const columns = [...board?.columns]
         columns[0].section.tasks = columns[0].section.tasks.map(
           (existingTaskProposal) => {
             if (transformedTaskProposal?.id === existingTaskProposal.id) {
@@ -516,10 +524,11 @@ const EditLayoutBaseModal = (props) => {
             return existingTaskProposal
           }
         )
-        orgBoard.setColumns(columns)
+        board.setColumns(columns)
       }
       handleClose()
     },
+    refetchQueries: ['GetOrgTaskBoardProposals'],
   })
 
   const textFieldRef = useRef()
@@ -554,7 +563,7 @@ const EditLayoutBaseModal = (props) => {
         } else {
           updateTaskProposal({
             variables: {
-              taskProposalId: existingTask?.id,
+              proposalId: existingTask?.id,
               input: taskInput,
             },
           })
@@ -671,46 +680,73 @@ const EditLayoutBaseModal = (props) => {
                   setMediaUploads={setMediaUploads}
                   mediaItem={mediaItem}
                   removeMediaItem={() => {
-                    removeMedia({
-                      variables: {
-                        taskId: existingTask?.id,
-                        slug: mediaItem?.uploadSlug || mediaItem?.slug,
-                      },
-                      onCompleted: () => {
-                        if (
-                          orgBoard?.setColumns &&
-                          existingTask?.orgId === orgBoard?.orgId
-                        ) {
-                          const columns = [...orgBoard?.columns]
-                          let columnNumber = 0
-                          if (
-                            existingTask?.status === TASK_STATUS_IN_PROGRESS
-                          ) {
-                            columnNumber = 1
-                          }
-                          columns[columnNumber].tasks = columns[
-                            columnNumber
-                          ].tasks.map((taskItem) => {
-                            if (existingTask?.id === taskItem?.id) {
-                              const newMedia = mediaUploads.filter(
-                                (mediaUpload) => {
-                                  return (
-                                    mediaUpload?.uploadSlug !==
-                                    mediaItem?.uploadSlug
-                                  )
-                                }
-                              )
-                              return {
+                    if (isTaskProposal) {
+                      removeTaskProposalMedia({
+                        variables: {
+                          proposalId: existingTask?.id,
+                          slug: mediaItem?.uploadSlug || mediaItem?.slug,
+                        },
+                        onCompleted: () => {
+                          if (board?.setColumns && onCorrectPage) {
+                            let columns = [...board?.columns]
+                            const newMedia = mediaUploads.filter(
+                              (mediaUpload) => {
+                                return (
+                                  mediaUpload?.uploadSlug !==
+                                  mediaItem?.uploadSlug
+                                )
+                              }
+                            )
+                            columns = updateProposalItem(
+                              {
                                 ...existingTask,
                                 media: newMedia,
-                              }
+                              },
+                              columns
+                            )
+                            board.setColumns(columns)
+                          }
+                        },
+                      })
+                    } else {
+                      removeMedia({
+                        variables: {
+                          taskId: existingTask?.id,
+                          slug: mediaItem?.uploadSlug || mediaItem?.slug,
+                        },
+                        onCompleted: () => {
+                          if (board?.setColumns && onCorrectPage) {
+                            const columns = [...board?.columns]
+                            let columnNumber = 0
+                            if (
+                              existingTask?.status === TASK_STATUS_IN_PROGRESS
+                            ) {
+                              columnNumber = 1
                             }
-                            return existingTask
-                          })
-                          orgBoard.setColumns(columns)
-                        }
-                      },
-                    })
+                            columns[columnNumber].tasks = columns[
+                              columnNumber
+                            ].tasks.map((taskItem) => {
+                              if (existingTask?.id === taskItem?.id) {
+                                const newMedia = mediaUploads.filter(
+                                  (mediaUpload) => {
+                                    return (
+                                      mediaUpload?.uploadSlug !==
+                                      mediaItem?.uploadSlug
+                                    )
+                                  }
+                                )
+                                return {
+                                  ...existingTask,
+                                  media: newMedia,
+                                }
+                              }
+                              return existingTask
+                            })
+                            board.setColumns(columns)
+                          }
+                        },
+                      })
+                    }
                   }}
                 />
               ))}
@@ -751,39 +787,59 @@ const EditLayoutBaseModal = (props) => {
                 mediaUploads,
                 setMediaUploads,
               })
-
-              attachMedia({
-                variables: {
-                  taskId: existingTask?.id,
-                  input: {
-                    mediaUploads: [fileToAdd],
+              if (isTaskProposal) {
+                attachTaskProposalMedia({
+                  variables: {
+                    proposalId: existingTask?.id,
+                    input: {
+                      mediaUploads: [fileToAdd],
+                    },
                   },
-                },
-                onCompleted: () => {
-                  if (
-                    orgBoard?.setColumns &&
-                    existingTask?.orgId === orgBoard?.orgId
-                  ) {
-                    const columns = [...orgBoard?.columns]
-                    let columnNumber = 0
-                    if (existingTask?.status === TASK_STATUS_IN_PROGRESS) {
-                      columnNumber = 1
-                    }
-                    columns[columnNumber].tasks = columns[
-                      columnNumber
-                    ].tasks.map((taskItem) => {
-                      if (existingTask?.id === taskItem?.id) {
-                        return {
+                  onCompleted: () => {
+                    if (board?.setColumns && onCorrectPage) {
+                      let columns = [...board?.columns]
+                      columns = updateProposalItem(
+                        {
                           ...existingTask,
                           media: [...mediaUploads, fileToAdd],
-                        }
+                        },
+                        columns
+                      )
+                      board.setColumns(columns)
+                    }
+                  },
+                })
+              } else {
+                attachMedia({
+                  variables: {
+                    taskId: existingTask?.id,
+                    input: {
+                      mediaUploads: [fileToAdd],
+                    },
+                  },
+                  onCompleted: () => {
+                    if (board?.setColumns && onCorrectPage) {
+                      const columns = [...board?.columns]
+                      let columnNumber = 0
+                      if (existingTask?.status === TASK_STATUS_IN_PROGRESS) {
+                        columnNumber = 1
                       }
-                      return existingTask
-                    })
-                    orgBoard.setColumns(columns)
-                  }
-                },
-              })
+                      columns[columnNumber].tasks = columns[
+                        columnNumber
+                      ].tasks.map((taskItem) => {
+                        if (existingTask?.id === taskItem?.id) {
+                          return {
+                            ...existingTask,
+                            media: [...mediaUploads, fileToAdd],
+                          }
+                        }
+                        return existingTask
+                      })
+                      board.setColumns(columns)
+                    }
+                  },
+                })
+              }
             }}
           />
         </CreateFormMainInputBlock>
@@ -983,7 +1039,7 @@ const EditLayoutBaseModal = (props) => {
 			)} */}
 
       <CreateFormAddDetailsSection>
-        <CreateFormAddDetailsButton onClick={() => addDetailsHandleClick()}>
+        {/* <CreateFormAddDetailsButton onClick={() => addDetailsHandleClick()}>
           {!addDetails ? (
             <>
               <CreateFormAddDetailsButtonText>
@@ -1005,7 +1061,7 @@ const EditLayoutBaseModal = (props) => {
               }}
             ></SelectDownIcon>
           )}
-        </CreateFormAddDetailsButton>
+        </CreateFormAddDetailsButton> */}
         {addDetails && (
           <CreateFormAddDetailsAppearBlock>
             {showAppearSection && (
@@ -1027,34 +1083,34 @@ const EditLayoutBaseModal = (props) => {
                   /> */}
                 </CreateFormAddDetailsSelects>
 
-                <CreateFormAddDetailsSelects>
-                  {/* <CreateFormAddDetailsSwitch>
+                {/* <CreateFormAddDetailsSelects> */}
+                {/* <CreateFormAddDetailsSwitch>
 										<CreateFormAddDetailsInputLabel>
 											Private task
 										</CreateFormAddDetailsInputLabel>
 										<AndroidSwitch />
 									</CreateFormAddDetailsSwitch> */}
 
-                  {/*if Suggest a task opened */}
-                  {showBountySwitchSection && !isTaskProposal && (
+                {/*if Suggest a task opened */}
+                {/* {showBountySwitchSection && !isTaskProposal && (
                     <CreateFormAddDetailsSwitch>
                       <CreateFormAddDetailsInputLabel>
                         This is a bounty
                       </CreateFormAddDetailsInputLabel>
                       <AndroidSwitch />
                     </CreateFormAddDetailsSwitch>
-                  )}
+                  )} */}
 
-                  {/*if Create a milestone opened*/}
-                  {showPrioritySelectSection && (
+                {/*if Create a milestone opened*/}
+                {/* {showPrioritySelectSection && (
                     <DropdownSelect
                       title="Priority"
                       labelText="Choose Milestone"
                       options={PRIORITY_SELECT_OPTIONS}
                       name="priority"
                     />
-                  )}
-                </CreateFormAddDetailsSelects>
+                  )} */}
+                {/* </CreateFormAddDetailsSelects> */}
               </CreateFormAddDetailsAppearBlockContainer>
             )}
 
@@ -1080,7 +1136,7 @@ const EditLayoutBaseModal = (props) => {
             Cancel
           </CreateFormCancelButton>
           <CreateFormPreviewButton onClick={submitMutation}>
-            Update {titleText}
+            Update {isTaskProposal ? 'proposal' : titleText}
           </CreateFormPreviewButton>
         </CreateFormButtonsBlock>
       </CreateFormFooterButtons>

@@ -105,14 +105,14 @@ const KanbanBoard = (props) => {
     })
     setColumnsState(updatedColumns)
   }
-
+  const hasQuery = (router?.query?.task, router?.query?.taskProposal)
   useEffect(() => {
-    if (router?.query?.task && !once && (orgBoard || userBoard || podBoard)) {
+    if (hasQuery && !once && (orgBoard || userBoard || podBoard)) {
       setOpenModal(true)
       setOnce(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router?.query?.task, orgBoard || userBoard || podBoard])
+  }, [hasQuery, orgBoard || userBoard || podBoard])
 
   return (
     <>
@@ -120,7 +120,8 @@ const KanbanBoard = (props) => {
         <TaskViewModal
           open={openModal}
           handleClose={() => setOpenModal(false)}
-          taskId={router?.query?.task}
+          taskId={router?.query?.task || router?.query?.taskProposal}
+          isTaskProposal={!!router?.query?.taskProposal}
         />
         <DndProvider backend={HTML5Backend}>
           {columnsState.map((column) => {

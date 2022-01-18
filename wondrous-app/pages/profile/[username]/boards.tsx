@@ -30,7 +30,7 @@ const TO_DO = {
   status: TASK_STATUS_TODO,
   tasks: [],
   section: {
-    title: 'Requests',
+    title: 'Proposal',
     icon: Requested,
     id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
     filter: {
@@ -38,7 +38,7 @@ const TO_DO = {
     },
     expandable: true,
     action: {
-      text: 'Request',
+      text: 'Proposals',
     },
     tasks: [],
   },
@@ -387,7 +387,7 @@ const BoardsPage = () => {
       const newColumns = [...columns]
       const taskProposals = data?.getUserTaskBoardProposals
       newColumns[0].section.tasks = []
-      taskProposals.forEach((taskProposal) => {
+      taskProposals?.forEach((taskProposal) => {
         newColumns[0].section.tasks.push(taskProposal)
       })
       setColumns(newColumns)
@@ -470,7 +470,7 @@ const BoardsPage = () => {
           userId: profileUserId,
           statuses,
           offset: 0,
-          limit: 3,
+          limit: 2,
         },
       })
       getUserTaskProposals({
@@ -478,7 +478,7 @@ const BoardsPage = () => {
           userId: profileUserId,
           statuses,
           offset: 0,
-          limit: 3,
+          limit: 2,
         },
       })
 
@@ -487,7 +487,7 @@ const BoardsPage = () => {
           userId: profileUserId,
           statuses,
           offset: 0,
-          limit: 3,
+          limit: 2,
         },
       })
     }

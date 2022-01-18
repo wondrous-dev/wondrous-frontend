@@ -75,10 +75,11 @@ export const CURRENCY_KEYS = {
 
 export const SIDEBAR_WIDTH = '80px'
 export const ENTITIES_TYPES = {
+  USER: 'user',
   TASK: 'task',
   MILESTONE: 'milestone',
   POD: 'pod',
-  DAO: 'dao',
+  ORG: 'org',
 }
 
 export const MEDIA_TYPES = {

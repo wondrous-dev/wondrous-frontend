@@ -13,8 +13,7 @@ export const SmallAvatar = (props) => {
 
   //TODO: create this as a service
   const colorValues = Object.values(Colors)
-  const randomColor =
-    colorValues[Math.floor(Math.random() * colorValues.length)]
+  const randomColor = '#363636'
 
   return (
     <SmallAvatarContainer

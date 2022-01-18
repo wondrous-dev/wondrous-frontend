@@ -403,6 +403,10 @@ export const CreateFormAddDetailsAppearBlockContainer = styled.div`
   flex-direction: column;
   padding: 30px 40px 35px;
   border-bottom: 1px solid #363636;
+
+  &:last-child {
+    border-bottom: none;
+  }
 `
 
 export const CreateFormAddDetailsInputs = styled(CreateFormMainSelects)``

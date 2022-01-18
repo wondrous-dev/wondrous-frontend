@@ -1,5 +1,6 @@
 import React from 'react'
 import { SafeImage } from '../Image'
+import { MediaLink } from '../Task/modal'
 import {
   TaskMediaWrapper,
   TaskImage,
@@ -18,6 +19,7 @@ export const TaskMedia = (props) => {
           width: '295px',
           maxHeight: '295px',
           borderRadius: '6px',
+          objectFit: 'cover',
         }}
         src={slug || uploadSlug}
       />
@@ -50,6 +52,7 @@ export const TaskMedia = (props) => {
         height="54px"
       />
     ),
+    file: <MediaLink media={media} />,
   }
   let mediaContent = null
   if (type in mediaContentComponents) {

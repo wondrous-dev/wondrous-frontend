@@ -6,6 +6,7 @@ import {
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_REQUESTED,
   TASK_STATUS_TODO,
 } from '../../../../utils/constants'
 
@@ -111,8 +112,31 @@ const ColumnDropZone = ({ status, moveCard, children }) => {
 
 const TaskColumn = (props: ITaskColumn) => {
   const { cardsList, moveCard, status, section } = props
-
+  const orgBoard = useOrgBoard()
+  const taskCount = orgBoard?.taskCount
   const HeaderIcon = HEADER_ICONS[status]
+  let number
+
+  switch (status) {
+    case TASK_STATUS_TODO:
+      number = taskCount?.created || 0
+      break
+    case TASK_STATUS_IN_PROGRESS:
+      number = taskCount?.inProgress || 0
+      break
+    case TASK_STATUS_REQUESTED:
+      number = taskCount?.proposal || 0
+      break
+    case TASK_STATUS_DONE:
+      number = taskCount?.completed || 0
+      break
+    case TASK_STATUS_IN_REVIEW:
+      number = taskCount?.submission || 0
+      break
+    default:
+      number = 0
+      break
+  }
 
   return (
     <TaskColumnContainer>
@@ -121,7 +145,7 @@ const TaskColumn = (props: ITaskColumn) => {
         <TaskColumnContainerHeaderTitle>
           {TITLES[status]}
         </TaskColumnContainerHeaderTitle>
-        <TaskColumnContainerCount>{cardsList.length}</TaskColumnContainerCount>
+        <TaskColumnContainerCount>{number}</TaskColumnContainerCount>
       </TaskColumnContainerHeader>
       <ColumnSection section={section} setSection={() => {}} />
 
