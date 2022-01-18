@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { space } from 'styled-system';
 import {
   InputBase,
   Switch,
@@ -11,6 +12,10 @@ import { Button } from '../../Common/button';
 export const RolesContainer = styled.div`
   height: 100vh;
   width: 555px;
+`;
+
+export const Box = styled.div`
+  ${space}
 `;
 
 export const RolesInputsBlock = styled.div`
@@ -106,6 +111,7 @@ export const AndroidSwitch = styled(Switch)(({ theme }) => ({
 
 export const LabelBlock = styled(Typography)`
   && {
+    ${space}
     font-weight: 500;
     font-size: 14px;
     line-height: 18px;
