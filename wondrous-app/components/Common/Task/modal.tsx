@@ -586,7 +586,6 @@ export const TaskViewModal = (props) => {
     permissions.includes(PERMISSIONS.CREATE_TASK)
   return (
     <>
-
       <ArchiveTaskModal open={archiveTask} onClose={() => setArchiveTask(false)} onArchive={handleNewStatus} />
       <Modal open={open} onClose={handleClose}>
         <TaskModal>

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext, useCallback } from 'react'
+import { useMutation } from '@apollo/client'
 import { LogoButton } from '../logo'
 import { ToDo, InProgress, Done, InReview } from '../../Icons'
 import { TaskLikeIcon } from '../../Icons/taskLike'
@@ -12,6 +13,10 @@ import { TaskMedia } from '../MediaPlayer'
 import { DropDown, DropDownItem } from '../dropdown'
 import { CompletedIcon } from '../../Icons/statusIcons'
 import { RejectIcon } from '../../Icons/taskModalIcons'
+import { SnackbarAlertContext } from '../SnackbarAlert'
+import { ArchiveTaskModal } from '../ArchiveTaskModal'
+import { GET_ORG_TASK_BOARD_TASKS } from '../../../graphql/queries/taskBoard'
+
 import * as Constants from '../../../utils/constants'
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary'
 import {
@@ -29,6 +34,7 @@ import {
   PodName,
   TaskListCardWrapper,
   TaskStatusHeaderText,
+  ArchivedTaskUndo,
 } from './styles'
 import { renderMentionString } from '../../../utils/common'
 import { useRouter } from 'next/router'
@@ -42,6 +48,8 @@ import { useMe } from '../../Auth/withAuth'
 import { delQuery } from '../../../utils'
 import { TaskSummaryAction } from '../TaskSummary/styles'
 import { Arrow } from '../../Icons/sections'
+import { UPDATE_TASK_STATUS } from '../../../graphql/mutations/task'
+import { OrgBoardContext } from '../../../utils/contexts'
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: ToDo,
@@ -87,13 +95,74 @@ export const Task = ({ task, setTask }) => {
   const [userList, setUserList] = useState([])
   const [liked, setLiked] = useState(iLiked)
   const [modalOpen, setModalOpen] = useState(false)
+  const [archiveTask, setArchiveTask] = useState(false)
+  const [initialStatus, setInitialStatus] = useState('')
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage } =
+    useContext(SnackbarAlertContext)
+  const { getOrgTasksVariables } = useContext(OrgBoardContext)
 
   let TaskIcon = TASK_ICONS[status]
 
-  const archiveTask = () => {
-    // TODO: open modal asking for confirmation
-    console.log('Edit Task Menu Clicked')
-  }
+  const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] =
+    useMutation(UPDATE_TASK_STATUS, {
+      refetchQueries: () => [
+        {
+          query: GET_ORG_TASK_BOARD_TASKS,
+          variables: getOrgTasksVariables,
+        },
+      ],
+      onError: () => {
+        console.error('Something went wrong.')
+      },
+    })
+
+  const handleNewStatus = useCallback(
+    (newStatus) => {
+      updateTaskStatusMutation({
+        variables: {
+          taskId: id,
+          input: {
+            newStatus,
+          },
+        },
+      })
+    },
+    [id, updateTaskStatusMutation]
+  )
+
+  useEffect(() => {
+    if (!initialStatus) {
+      setInitialStatus(status)
+    }
+
+    if (
+      updateTaskStatusMutationData?.updateTaskStatus.status ===
+      Constants.TASK_STATUS_ARCHIVED
+    ) {
+      setSnackbarAlertOpen(true)
+      setSnackbarAlertMessage(
+        <>
+          Task archived successfully!{' '}
+          <ArchivedTaskUndo
+            onClick={() => {
+              handleNewStatus(initialStatus)
+              setSnackbarAlertOpen(false)
+            }}
+          >
+            Undo
+          </ArchivedTaskUndo>
+        </>
+      )
+    }
+  }, [
+    initialStatus,
+    setInitialStatus,
+    status,
+    updateTaskStatusMutationData,
+    setSnackbarAlertOpen,
+    setSnackbarAlertMessage,
+    handleNewStatus,
+  ])
 
   const toggleLike = () => {
     setLiked(!liked)
@@ -161,6 +230,11 @@ export const Task = ({ task, setTask }) => {
 
   return (
     <>
+      <ArchiveTaskModal
+        open={archiveTask}
+        onClose={() => setArchiveTask(false)}
+        onArchive={handleNewStatus}
+      />
       <TaskViewModal
         open={modalOpen}
         handleOpen={() => setModalOpen(true)}
@@ -236,7 +310,9 @@ export const Task = ({ task, setTask }) => {
                 <DropDown DropdownHandler={TaskMenuIcon}>
                   <DropDownItem
                     key={'task-menu-edit-' + id}
-                    onClick={archiveTask}
+                    onClick={() => {
+                      setArchiveTask(true)
+                    }}
                     style={{
                       color: White,
                     }}
