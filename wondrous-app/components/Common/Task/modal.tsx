@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState, useContext } from 'react'
 import Modal from '@mui/material/Modal'
 import { format, formatDistance } from 'date-fns'
 import { useInView } from 'react-intersection-observer'
@@ -79,6 +79,8 @@ import {
 } from '../../Icons/taskModalIcons'
 import { DefaultUserImage } from '../Image/DefaultImages'
 import EditLayoutBaseModal from '../../CreateEntity/editEntityModal'
+import { ArchiveTaskModal } from '../ArchiveTaskModal'
+import { SnackbarAlertContext } from '../SnackbarAlert'
 import {
   CreateFormButtonsBlock,
   CreateFormCancelButton,
@@ -388,8 +390,9 @@ export const TaskViewModal = (props) => {
     isTaskProposal ? false : true
   )
   const [archiveTask, setArchiveTask] = useState(false)
-  const [initialStatus, setInitialStatus] = useState(null)
   const [archiveTaskAlert, setArchiveTaskAlert] = useState(false)
+  const [initialStatus, setInitialStatus] = useState("")
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext)
   const [getReviewers, { data: reviewerData }] =
     useLazyQuery(GET_TASK_REVIEWERS)
   const user = useMe()
@@ -403,9 +406,6 @@ export const TaskViewModal = (props) => {
     onCompleted: (data) => {
       const taskData = data?.getTaskById
       if (taskData) {
-        if (!initialStatus) {
-          setInitialStatus(taskData?.status)
-        }
         setFetchedTask(
           transformTaskToTaskCard(taskData, {
             orgProfilePicture: taskData?.org?.profilePicture,
@@ -428,27 +428,19 @@ export const TaskViewModal = (props) => {
     },
   })
 
-  const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS, {
+  const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
     refetchQueries: () => [{
       query: GET_TASK_BY_ID,
       variables: {
         taskId: fetchedTask?.id,
       }
     }],
-    onCompleted: (data) => {
-      if (data?.updateTaskStatus.status === TASK_STATUS_ARCHIVED) {
-        setArchiveTaskAlert(true)
-      }
-    },
-    onError: (error) => {
-      console.error(error)
+    onError: () => {
+      console.error("Something went wrong.")
     }
   })
 
-  const handleNewStatus = (newStatus) => {
-    if (initialStatus !== TASK_STATUS_ARCHIVED) {
-      setArchiveTaskAlert(false)
-    }
+  const handleNewStatus = useCallback((newStatus) => {
     updateTaskStatusMutation({
       variables: {
         taskId: fetchedTask?.id,
@@ -457,7 +449,18 @@ export const TaskViewModal = (props) => {
         }
       }
     })
-  }
+  }, [fetchedTask, updateTaskStatusMutation])
+
+  useEffect(() => {
+    if (!initialStatus) {
+      setInitialStatus(fetchedTask?.status)
+    }
+
+    if (updateTaskStatusMutationData?.updateTaskStatus.status === TASK_STATUS_ARCHIVED) {
+      setSnackbarAlertOpen(true)
+      setSnackbarAlertMessage(<>Task archived successfully! <ArchivedTaskUndo onClick={() => { handleNewStatus(initialStatus); setSnackbarAlertOpen(false) }}>Undo</ArchivedTaskUndo></>)
+    }
+  }, [initialStatus, setInitialStatus, fetchedTask, updateTaskStatusMutationData, setSnackbarAlertOpen, setSnackbarAlertMessage, handleNewStatus])
 
   useEffect(() => {
     if (isTaskProposal) {
@@ -583,22 +586,13 @@ export const TaskViewModal = (props) => {
     permissions.includes(PERMISSIONS.CREATE_TASK)
   return (
     <>
-    <SnackbarAlert open={archiveTaskAlert} onClose={() => setArchiveTaskAlert(false)}>Task archived successfully! <ArchivedTaskUndo onClick={() => handleNewStatus(initialStatus)}>Undo</ArchivedTaskUndo></SnackbarAlert>)
-    <ArchiveTaskModal open={archiveTask} onClose={() => setArchiveTask(false)} onArchive={handleNewStatus} />
-    <Modal open={open} onClose={handleClose}>
-      <TaskModal>
-        <TaskModalHeader>
-          <SafeImage
-            src={task?.orgProfilePicture}
-            style={{
-              width: '29px',
-              height: '28px',
-              borderRadius: '4px',
-              marginRight: '8px',
-            }}
-          />
-          {fetchedTask?.podName && (
-            <div
+
+      <ArchiveTaskModal open={archiveTask} onClose={() => setArchiveTask(false)} onArchive={handleNewStatus} />
+      <Modal open={open} onClose={handleClose}>
+        <TaskModal>
+          <TaskModalHeader>
+            <SafeImage
+              src={task?.orgProfilePicture || 'seed/wonder_logo.jpg'}
               style={{
                 width: '29px',
                 height: '28px',

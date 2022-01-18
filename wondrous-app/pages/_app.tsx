@@ -5,6 +5,7 @@ import Head from 'next/head'
 import { ApolloProvider } from '@apollo/client'
 import { CssBaseline, useMediaQuery } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/core/styles'
+import { SnackbarAlertProvider } from '../components/Common/SnackbarAlert'
 
 import '../theme/stylesheets/body.css'
 
@@ -71,12 +72,14 @@ const MyApp = ({
 					<ThemeProvider theme={theme}>
 						<CssBaseline />
 						<ApolloProvider client={apollo}>
-							<Component
-								{...pageProps}
-								query={context?.query}
-								user={user}
-								isAuthenticated={isAuthenticated}
-							/>
+							<SnackbarAlertProvider>
+								<Component
+									{...pageProps}
+									query={context?.query}
+									user={user}
+									isAuthenticated={isAuthenticated}
+								/>
+							</SnackbarAlertProvider>
 						</ApolloProvider>
 					</ThemeProvider>
 				</StyledComponentProvider>
