@@ -1,46 +1,72 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
-import { SettingsWrapper } from '../settingsWrapper'
-import { HeaderBlock } from '../headerBlock'
-import UserCheckIcon from '../../Icons/userCheckIcon'
+import { SettingsWrapper } from '../settingsWrapper';
+import { HeaderBlock } from '../headerBlock';
+import UserCheckIcon from '../../Icons/userCheckIcon';
+import Accordion from '../../Common/Accordion';
 
+import { useQuery } from '@apollo/client';
+import { GET_USER_ORGS } from '../../../graphql/queries/org';
+
+import permissons from './permissons';
 import {
-  GeneralSettingsContainer,
-  GeneralSettingsDAONameBlock,
-  GeneralSettingsDAONameInput,
-  GeneralSettingsInputsBlock,
+  RolesContainer,
+  CreateRole,
+  CreateRoleButton,
+  RoleNameBlock,
+  AndroidSwitch,
+  RoleNameInput,
+  RolesInputsBlock,
+  Permission,
   LabelBlock,
-} from '../styles'
-
+  PermissionSubtitle,
+  PermissionTitle,
+} from './styles';
 
 const Roles = () => {
-  const [newRole, setNewRole] = useState('')
+  const [newRole, setNewRole] = useState('');
+  const { data: getOrgData } = useQuery(GET_USER_ORGS);
 
   const handleNewRoleNameChange = (e) => {
-    const { value } = e.target
+    const { value } = e.target;
 
     if (value.length <= 100) {
-      setNewRole(value)
+      setNewRole(value);
     }
-  }
+  };
 
   return (
     <SettingsWrapper>
-      <GeneralSettingsContainer>
+      <RolesContainer>
         <HeaderBlock
           icon={<UserCheckIcon circle />}
           title="Roles"
           description="Use roles to organize contributors and admins"
         />
-        <GeneralSettingsInputsBlock>
-          <GeneralSettingsDAONameBlock>
+        <RolesInputsBlock>
+          <RoleNameBlock>
             <LabelBlock>Create a new role</LabelBlock>
-            <GeneralSettingsDAONameInput />
-          </GeneralSettingsDAONameBlock>
-        </GeneralSettingsInputsBlock>
-      </GeneralSettingsContainer>
-    </SettingsWrapper>
-  )
-}
 
-export default Roles
+            <CreateRole>
+              <RoleNameInput />
+              <CreateRoleButton highlighted>Create role</CreateRoleButton>
+            </CreateRole>
+          </RoleNameBlock>
+        </RolesInputsBlock>
+        <Accordion title="Select permissions">
+          {permissons.map((permisson) => (
+            <Permission key={permisson.title}>
+              <div>
+                <PermissionTitle>{permisson.title}</PermissionTitle>
+                <PermissionSubtitle>{permisson.subTitle}</PermissionSubtitle>
+              </div>
+              <AndroidSwitch />
+            </Permission>
+          ))}
+        </Accordion>
+      </RolesContainer>
+    </SettingsWrapper>
+  );
+};
+
+export default Roles;
