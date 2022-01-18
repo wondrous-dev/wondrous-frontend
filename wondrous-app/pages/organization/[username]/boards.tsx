@@ -138,24 +138,25 @@ const BoardsPage = () => {
     GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD
   )
 
-  const [getOrgTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
-    onCompleted: (data) => {
-      const tasks = data?.getOrgTaskBoardTasks
-      const newColumns = columns.map((column) => {
-        column.tasks = []
-        return tasks.reduce((column, task) => {
-          if (column.status === task.status) {
-            column.tasks = [...column.tasks, task]
-          }
-          return column
-        }, column)
-      })
-      setColumns(newColumns)
-      setOrgTaskHasMore(
-        data?.hasMore || data?.getOrgTaskBoardTasks.length >= LIMIT
-      )
-    },
-  })
+  const [getOrgTasks, { fetchMore, variables: getOrgTasksVariables }] =
+    useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
+      onCompleted: (data) => {
+        const tasks = data?.getOrgTaskBoardTasks
+        const newColumns = columns.map((column) => {
+          column.tasks = []
+          return tasks.reduce((column, task) => {
+            if (column.status === task.status) {
+              column.tasks = [...column.tasks, task]
+            }
+            return column
+          }, column)
+        })
+        setColumns(newColumns)
+        setOrgTaskHasMore(
+          data?.hasMore || data?.getOrgTaskBoardTasks.length >= LIMIT
+        )
+      },
+    })
 
   const [
     getOrgIdFromUsername,
@@ -276,6 +277,7 @@ const BoardsPage = () => {
         userPermissionsContext: userPermissionsContext?.getUserPermissionContext
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
           : null,
+        getOrgTasksVariables,
       }}
     >
       <Boards
