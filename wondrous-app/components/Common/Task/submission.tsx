@@ -237,7 +237,10 @@ const SubmissionItem = (props) => {
         window?.scrollTo(0, window.scrollY)
       }
     },
-    refetchQueries: ['getOrgTaskBoardSubmissions'],
+    refetchQueries: [
+      'getOrgTaskBoardSubmissions',
+      'getPerStatusTaskCountForOrgBoard',
+    ],
   })
   const [requestChangeSubmission] = useMutation(REQUEST_CHANGE_SUBMISSION, {
     variables: {
@@ -462,7 +465,10 @@ const TaskSubmissionForm = (props) => {
         cancelSubmissionForm()
       }
     },
-    refetchQueries: ['getOrgTaskBoardSubmissions'],
+    refetchQueries: [
+      'getOrgTaskBoardSubmissions',
+      'getPerStatusTaskCountForOrgBoard',
+    ],
   })
   const [updateTaskSubmission] = useMutation(UPDATE_TASK_SUBMISSION, {
     onCompleted: (data) => {

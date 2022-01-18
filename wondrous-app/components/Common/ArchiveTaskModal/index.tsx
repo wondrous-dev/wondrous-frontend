@@ -49,7 +49,7 @@ export const ArchiveTaskModal = (props) => {
                         <StyledArchiveTaskButton>
                             <ArchivedIcon />
                             <StyledArchivedLabel onClick={handleArchive}>
-                                Archive Task
+                                Archive task
                             </StyledArchivedLabel>
                         </StyledArchiveTaskButton>
                     </StyledButtonsContainer>

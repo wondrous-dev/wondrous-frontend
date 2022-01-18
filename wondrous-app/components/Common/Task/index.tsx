@@ -317,7 +317,7 @@ export const Task = ({ task, setTask }) => {
                       color: White,
                     }}
                   >
-                    Archive Task
+                    Archive task
                   </DropDownItem>
                 </DropDown>
               </TaskActionMenu>
