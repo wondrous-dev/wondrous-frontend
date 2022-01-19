@@ -401,7 +401,8 @@ export const TaskViewModal = (props) => {
   const userPermissionsContext =
     orgBoard?.userPermissionsContext ||
     podBoard?.userPermissionsContext ||
-    userBoard?.userPermissionsContext
+    userBoard?.userPermissionsContext ||
+    null
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
