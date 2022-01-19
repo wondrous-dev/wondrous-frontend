@@ -37,6 +37,7 @@ export const TaskFragment = gql`
     org {
       profilePicture
       name
+      username
     }
     pod {
       name
@@ -105,6 +106,7 @@ export const TaskProposalCardFragment = gql`
     description
     approvedAt
     changeRequestedAt
+    lastReviewedBy
     rejectedAt
     links {
       url
@@ -129,6 +131,7 @@ export const TaskSubmissionCardFragment = gql`
     createdBy
     creatorUsername
     creatorProfilePicture
+    taskId
     orgId
     orgProfilePicture
     orgName
@@ -140,6 +143,7 @@ export const TaskSubmissionCardFragment = gql`
     approvedAt
     changeRequestedAt
     rejectedAt
+    lastReviewedBy
     links {
       url
       name
@@ -164,6 +168,7 @@ export const TaskSubmissionFragment = gql`
     description
     orgId
     podId
+    taskId
     links {
       url
       name
@@ -176,9 +181,11 @@ export const TaskSubmissionFragment = gql`
     org {
       profilePicture
       name
+      username
     }
     pod {
       name
+      username
     }
     creator {
       username
@@ -236,6 +243,7 @@ export const TaskProposalFragment = gql`
     org {
       profilePicture
       name
+      username
     }
     pod {
       name

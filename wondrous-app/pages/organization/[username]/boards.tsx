@@ -7,6 +7,7 @@ import {
   GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_SUBMISSIONS,
   GET_ORG_TASK_BOARD_TASKS,
+  GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
 } from '../../../graphql/queries/taskBoard'
 import Boards from '../../../components/organization/boards/boards'
 import {
@@ -31,7 +32,7 @@ const TO_DO = {
   status: TASK_STATUS_TODO,
   tasks: [],
   section: {
-    title: 'Requests',
+    title: 'Proposals',
     icon: Requested,
     id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
     filter: {
@@ -39,7 +40,7 @@ const TO_DO = {
     },
     expandable: true,
     action: {
-      text: 'Request',
+      text: 'Proposal',
     },
     tasks: [],
   },
@@ -114,7 +115,7 @@ const BoardsPage = () => {
       const newColumns = [...columns]
       const taskProposals = data?.getOrgTaskBoardProposals
       newColumns[0].section.tasks = []
-      taskProposals.forEach((taskProposal) => {
+      taskProposals?.forEach((taskProposal) => {
         newColumns[0].section.tasks.push(taskProposal)
       })
       setColumns(newColumns)
@@ -133,24 +134,29 @@ const BoardsPage = () => {
     },
   })
 
-  const [getOrgTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
-    onCompleted: (data) => {
-      const tasks = data?.getOrgTaskBoardTasks
-      const newColumns = columns.map((column) => {
-        column.tasks = []
-        return tasks.reduce((column, task) => {
-          if (column.status === task.status) {
-            column.tasks = [...column.tasks, task]
-          }
-          return column
-        }, column)
-      })
-      setColumns(newColumns)
-      setOrgTaskHasMore(
-        data?.hasMore || data?.getOrgTaskBoardTasks.length >= LIMIT
-      )
-    },
-  })
+  const [getOrgBoardTaskCount, { data: orgTaskCountData }] = useLazyQuery(
+    GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD
+  )
+
+  const [getOrgTasks, { fetchMore, variables: getOrgTasksVariables }] =
+    useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
+      onCompleted: (data) => {
+        const tasks = data?.getOrgTaskBoardTasks
+        const newColumns = columns.map((column) => {
+          column.tasks = []
+          return tasks.reduce((column, task) => {
+            if (column.status === task.status) {
+              column.tasks = [...column.tasks, task]
+            }
+            return column
+          }, column)
+        })
+        setColumns(newColumns)
+        setOrgTaskHasMore(
+          data?.hasMore || data?.getOrgTaskBoardTasks.length >= LIMIT
+        )
+      },
+    })
 
   const [
     getOrgIdFromUsername,
@@ -197,7 +203,7 @@ const BoardsPage = () => {
           orgId: profileOrgId,
           statuses,
           offset: 0,
-          limit: 3,
+          limit: LIMIT,
         },
       })
       getOrgTaskSubmissions({
@@ -205,7 +211,12 @@ const BoardsPage = () => {
           orgId: profileOrgId,
           statuses,
           offset: 0,
-          limit: 3,
+          limit: LIMIT,
+        },
+      })
+      getOrgBoardTaskCount({
+        variables: {
+          orgId: profileOrgId,
         },
       })
     }
@@ -218,6 +229,7 @@ const BoardsPage = () => {
     getOrgIdFromUsername,
     getOrgTaskSubmissions,
     getOrgTaskProposals,
+    getOrgBoardTaskCount,
   ])
 
   const handleLoadMore = useCallback(() => {
@@ -256,9 +268,11 @@ const BoardsPage = () => {
         columns,
         setColumns,
         orgId: profileOrgId,
+        taskCount: orgTaskCountData?.getPerStatusTaskCountForOrgBoard,
         userPermissionsContext: userPermissionsContext?.getUserPermissionContext
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
           : null,
+        getOrgTasksVariables,
       }}
     >
       <Boards

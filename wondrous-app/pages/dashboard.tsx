@@ -90,7 +90,7 @@ const TO_DO = {
     },
   ],
   section: {
-    title: 'Requests',
+    title: 'Proposals',
     icon: Requested,
     id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
     filter: {
@@ -98,7 +98,7 @@ const TO_DO = {
     },
     expandable: true,
     action: {
-      text: 'Request',
+      text: 'Proposal',
     },
     tasks: [
       {

@@ -115,6 +115,7 @@ import { CREATE_TASK_PROPOSAL } from '../../graphql/mutations/taskProposal'
 import { useMe } from '../Auth/withAuth'
 import Ethereum from '../Icons/ethereum'
 import { USDCoin } from '../Icons/USDCoin'
+import { addProposalItem } from '../../utils/board'
 
 const filterUserOptions = (options) => {
   if (!options) return []
@@ -287,7 +288,7 @@ export const filterOrgUsersForAutocomplete = (orgUsers) => {
 const CreateLayoutBaseModal = (props) => {
   const { entityType, handleClose, resetEntityType } = props
   const user = useMe()
-  const [addDetails, setAddDetails] = useState(false)
+  const [addDetails, setAddDetails] = useState(true)
   const [descriptionText, setDescriptionText] = useState('')
   const [mediaUploads, setMediaUploads] = useState([])
   const addDetailsHandleClick = () => {
@@ -462,11 +463,8 @@ const CreateLayoutBaseModal = (props) => {
           }
         )
 
-        const columns = [...orgBoard?.columns]
-        columns[0].section.tasks = [
-          transformedTaskProposal,
-          ...columns[0].section.tasks,
-        ]
+        let columns = [...orgBoard?.columns]
+        columns = addProposalItem(transformedTaskProposal, columns)
         orgBoard.setColumns(columns)
       }
       handleClose()
@@ -686,34 +684,35 @@ const CreateLayoutBaseModal = (props) => {
           </CreateRewardAmountDiv>
         </CreateFormMainSelects>
 
-        {showMembersSection && (
-          <CreateFormMembersSection>
-            <CreateFormMainBlockTitle>Members</CreateFormMainBlockTitle>
+        {showMembersSection &&
+          canCreateTask(
+            <CreateFormMembersSection>
+              <CreateFormMainBlockTitle>Members</CreateFormMainBlockTitle>
 
-            <InputForm
-              search
-              margin
-              icon={<CircleIcon />}
-              placeholder="Search reviewers"
-            />
+              <InputForm
+                search
+                margin
+                icon={<CircleIcon />}
+                placeholder="Search reviewers"
+              />
 
-            <CreateFormMembersBlock>
-              <CreateFormMembersBlockTitle>
-                {createPodMembersList.length}
-                {createPodMembersList.length > 1 ? ' members' : ' member'}
-              </CreateFormMembersBlockTitle>
-              <CreateFormMembersList>
-                {createPodMembersList.map((item) => (
-                  <MembersRow
-                    key={item.name}
-                    name={item.name}
-                    styledSwitch={<AndroidSwitch />}
-                  />
-                ))}
-              </CreateFormMembersList>
-            </CreateFormMembersBlock>
-          </CreateFormMembersSection>
-        )}
+              <CreateFormMembersBlock>
+                <CreateFormMembersBlockTitle>
+                  {createPodMembersList.length}
+                  {createPodMembersList.length > 1 ? ' members' : ' member'}
+                </CreateFormMembersBlockTitle>
+                <CreateFormMembersList>
+                  {createPodMembersList.map((item) => (
+                    <MembersRow
+                      key={item.name}
+                      name={item.name}
+                      styledSwitch={<AndroidSwitch />}
+                    />
+                  ))}
+                </CreateFormMembersList>
+              </CreateFormMembersBlock>
+            </CreateFormMembersSection>
+          )}
         {showAppearSection && (
           <CreateFormAddDetailsInputs
             style={{
@@ -769,108 +768,109 @@ const CreateLayoutBaseModal = (props) => {
                 }}
               />
             </CreateFormAddDetailsInputBlock>
-
-            <CreateFormAddDetailsInputBlock>
-              <CreateFormAddDetailsInputLabel>
-                Reviewer
-              </CreateFormAddDetailsInputLabel>
-              <StyledAutocomplete
-                options={filterUserOptions(
-                  eligibleReviewersData?.getEligibleReviewersForOrg
-                ).filter(
-                  ({ id }) =>
-                    !selectedReviewers.map(({ id }) => id).includes(id)
-                )}
-                multiple
-                onChange={(event, newValue, reason) => {
-                  if ('clear' === reason) {
-                    setSelectedReviewers([])
+            {canCreateTask && (
+              <CreateFormAddDetailsInputBlock>
+                <CreateFormAddDetailsInputLabel>
+                  Reviewer
+                </CreateFormAddDetailsInputLabel>
+                <StyledAutocomplete
+                  options={filterUserOptions(
+                    eligibleReviewersData?.getEligibleReviewersForOrg
+                  ).filter(
+                    ({ id }) =>
+                      !selectedReviewers.map(({ id }) => id).includes(id)
+                  )}
+                  multiple
+                  onChange={(event, newValue, reason) => {
+                    if ('clear' === reason) {
+                      setSelectedReviewers([])
+                    }
+                    if (event.code === 'Backspace' && reviewerString === '') {
+                      setSelectedReviewers(selectedReviewers.slice(0, -1))
+                    }
+                  }}
+                  onOpen={() =>
+                    getEligibleReviewersForOrg({
+                      variables: {
+                        orgId: org,
+                        searchString: '',
+                      },
+                    })
                   }
-                  if (event.code === 'Backspace' && reviewerString === '') {
-                    setSelectedReviewers(selectedReviewers.slice(0, -1))
-                  }
-                }}
-                onOpen={() =>
-                  getEligibleReviewersForOrg({
-                    variables: {
-                      orgId: org,
-                      searchString: '',
-                    },
-                  })
-                }
-                renderInput={(params) => (
-                  <TextField
-                    style={{
-                      color: White,
-                      fontFamily: 'Space Grotesk',
-                      fontSize: '14px',
-                      paddingLeft: '4px',
-                    }}
-                    placeholder="Enter username..."
-                    InputLabelProps={{ shrink: false }}
-                    onChange={(event) => {
-                      setReviewerString(event.target.value)
-                      getEligibleReviewersForOrg({
-                        variables: {
-                          orgId: org,
-                          searchString: event.target.value,
-                        },
-                      })
-                    }}
-                    {...params}
-                  />
-                )}
-                value={selectedReviewers}
-                renderTags={(value) =>
-                  value?.map((option, index) => {
-                    return (
-                      <StyledChip
-                        key={index}
-                        label={option?.label}
-                        onDelete={() =>
-                          setSelectedReviewers(
-                            selectedReviewers.filter(
-                              ({ id }) => id !== option?.id
-                            )
-                          )
-                        }
-                      />
-                    )
-                  })
-                }
-                PopperComponent={AutocompleteList}
-                renderOption={(props, option, state) => {
-                  return (
-                    <OptionDiv
-                      onClick={(event) => {
-                        if (
-                          selectedReviewers
-                            .map(({ id }) => id)
-                            .indexOf(option?.id === -1)
-                        ) {
-                          setSelectedReviewers([...selectedReviewers, option])
-                          setReviewerString('')
-                        }
-                        props?.onClick(event)
+                  renderInput={(params) => (
+                    <TextField
+                      style={{
+                        color: White,
+                        fontFamily: 'Space Grotesk',
+                        fontSize: '14px',
+                        paddingLeft: '4px',
                       }}
-                    >
-                      {option?.profilePicture && (
-                        <SafeImage
-                          src={option?.profilePicture}
-                          style={{
-                            width: '30px',
-                            height: '30px',
-                            borderRadius: '15px',
-                            marginRight: '8px',
-                          }}
+                      placeholder="Enter username..."
+                      InputLabelProps={{ shrink: false }}
+                      onChange={(event) => {
+                        setReviewerString(event.target.value)
+                        getEligibleReviewersForOrg({
+                          variables: {
+                            orgId: org,
+                            searchString: event.target.value,
+                          },
+                        })
+                      }}
+                      {...params}
+                    />
+                  )}
+                  value={selectedReviewers}
+                  renderTags={(value) =>
+                    value?.map((option, index) => {
+                      return (
+                        <StyledChip
+                          key={index}
+                          label={option?.label}
+                          onDelete={() =>
+                            setSelectedReviewers(
+                              selectedReviewers.filter(
+                                ({ id }) => id !== option?.id
+                              )
+                            )
+                          }
                         />
-                      )}
-                      <OptionTypography>{option?.label}</OptionTypography>
-                    </OptionDiv>
-                  )
-                }}
-              />
-            </CreateFormAddDetailsInputBlock>
+                      )
+                    })
+                  }
+                  PopperComponent={AutocompleteList}
+                  renderOption={(props, option, state) => {
+                    return (
+                      <OptionDiv
+                        onClick={(event) => {
+                          if (
+                            selectedReviewers
+                              .map(({ id }) => id)
+                              .indexOf(option?.id === -1)
+                          ) {
+                            setSelectedReviewers([...selectedReviewers, option])
+                            setReviewerString('')
+                          }
+                          props?.onClick(event)
+                        }}
+                      >
+                        {option?.profilePicture && (
+                          <SafeImage
+                            src={option?.profilePicture}
+                            style={{
+                              width: '30px',
+                              height: '30px',
+                              borderRadius: '15px',
+                              marginRight: '8px',
+                            }}
+                          />
+                        )}
+                        <OptionTypography>{option?.label}</OptionTypography>
+                      </OptionDiv>
+                    )
+                  }}
+                />
+              </CreateFormAddDetailsInputBlock>
+            )}
           </CreateFormAddDetailsInputs>
         )}
       </CreateFormMainSection>
@@ -896,7 +896,7 @@ const CreateLayoutBaseModal = (props) => {
 			)} */}
 
       <CreateFormAddDetailsSection>
-        <CreateFormAddDetailsButton onClick={() => addDetailsHandleClick()}>
+        {/* <CreateFormAddDetailsButton onClick={() => addDetailsHandleClick()}>
           {!addDetails ? (
             <>
               <CreateFormAddDetailsButtonText>
@@ -918,7 +918,7 @@ const CreateLayoutBaseModal = (props) => {
               }}
             ></SelectDownIcon>
           )}
-        </CreateFormAddDetailsButton>
+        </CreateFormAddDetailsButton> */}
         {addDetails && (
           <CreateFormAddDetailsAppearBlock>
             {showAppearSection && (
@@ -940,34 +940,34 @@ const CreateLayoutBaseModal = (props) => {
                   /> */}
                 </CreateFormAddDetailsSelects>
 
-                <CreateFormAddDetailsSelects>
-                  {/* <CreateFormAddDetailsSwitch>
+                {/* <CreateFormAddDetailsSelects> */}
+                {/* <CreateFormAddDetailsSwitch>
 										<CreateFormAddDetailsInputLabel>
 											Private task
 										</CreateFormAddDetailsInputLabel>
 										<AndroidSwitch />
 									</CreateFormAddDetailsSwitch> */}
 
-                  {/*if Suggest a task opened */}
-                  {showBountySwitchSection && canCreateTask && (
+                {/*if Suggest a task opened */}
+                {/* {showBountySwitchSection && canCreateTask && (
                     <CreateFormAddDetailsSwitch>
                       <CreateFormAddDetailsInputLabel>
                         This is a bounty
                       </CreateFormAddDetailsInputLabel>
                       <AndroidSwitch />
                     </CreateFormAddDetailsSwitch>
-                  )}
+                  )} */}
 
-                  {/*if Create a milestone opened*/}
-                  {showPrioritySelectSection && (
+                {/*if Create a milestone opened*/}
+                {/* {showPrioritySelectSection && (
                     <DropdownSelect
                       title="Priority"
                       labelText="Choose Milestone"
                       options={PRIORITY_SELECT_OPTIONS}
                       name="priority"
                     />
-                  )}
-                </CreateFormAddDetailsSelects>
+                  )} */}
+                {/* </CreateFormAddDetailsSelects> */}
               </CreateFormAddDetailsAppearBlockContainer>
             )}
 
