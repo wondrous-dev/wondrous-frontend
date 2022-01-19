@@ -97,8 +97,9 @@ export const Task = ({ task, setTask }) => {
   const [modalOpen, setModalOpen] = useState(false)
   const [archiveTask, setArchiveTask] = useState(false)
   const [initialStatus, setInitialStatus] = useState('')
-  const { setSnackbarAlertOpen, setSnackbarAlertMessage } =
-    useContext(SnackbarAlertContext)
+  const snackbarContext = useContext(SnackbarAlertContext)
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage
   const orgBoardContext = useContext(OrgBoardContext)
   const getOrgTasksVariables = orgBoardContext?.getOrgTaskVariables
   let TaskIcon = TASK_ICONS[status]
@@ -262,7 +263,7 @@ export const Task = ({ task, setTask }) => {
             />
             {task?.podName && (
               <PodWrapper
-                onclick={(e) => {
+                onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
                   goToPod(task?.podId)
@@ -392,7 +393,9 @@ export const TaskListCard = (props) => {
         />
         {task?.podName && (
           <PodWrapper
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
               router.push(`/pod/${task?.podId}/boards`)
             }}
           >

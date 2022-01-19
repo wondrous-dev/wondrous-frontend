@@ -254,7 +254,9 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
                 style={{
                   marginRight: '8px',
                 }}
-                onclick={() => {
+                onclick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
                   goToPod(task?.podId)
                 }}
               >
