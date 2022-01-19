@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client'
+import { CommentFragment } from '../fragments/comments'
 import { TaskFragment } from '../fragments/task'
 
 export const CREATE_TASK = gql`
@@ -59,4 +60,21 @@ export const UPDATE_TASK_STATUS = gql`
     }
   }
   ${TaskFragment}
+`
+
+export const CREATE_TASK_COMMENT = gql`
+  mutation createTaskComment($input: TaskCommentInput) {
+    createTaskComment(input: $input) {
+      ...CommentFragment
+    }
+  }
+  ${CommentFragment}
+`
+
+export const DELETE_TASK_COMMENT = gql`
+  mutation deleteTaskComment($taskCommentId: String!) {
+    deleteTaskComment(taskCommentId: $taskCommentId) {
+      success
+    }
+  }
 `
