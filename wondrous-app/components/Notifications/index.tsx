@@ -8,7 +8,8 @@ import { NotificationItemBody, NotificationItemIcon, NotificationItemStatus, Not
 
 const NotificationsBoard = ({ notifications, setNofications }) => {
 	const unreadCount = useMemo(() => {
-		return notifications.filter((n) => n.unread).length
+		console.log(notifications)
+		return notifications?.getNotifications?.filter((n) => n.unread).length
 	}, [notifications])
 
 	const [isOpen, setIsOpen] = useState(false)
@@ -75,8 +76,8 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
 							</DropDown>
 						</div>
 					</NotificationsBoardHeader>
-					{notifications.length ? (
-						notifications.map((notification) => (
+					{notifications?.getNofications?.length ? (
+						notifications.getNotifications?.map((notification) => (
 							<NotificationsItem key={'notifications-' + notification.id}>
 								<NotificationItemIcon>
 									{notification.icon}

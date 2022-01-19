@@ -33,6 +33,7 @@ export const GET_USER_ORGS = gql`
 			username
 			name
 			profilePicture
+			thumbnailPicture
 		}
 	}
 `

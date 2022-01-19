@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { InputAdornment } from '@material-ui/core'
 
@@ -26,6 +26,8 @@ import {
 import { StyledLink } from '../Common/text'
 import NotificationsBoard from '../Notifications'
 import { SmallAvatar } from '../Common/AvatarList'
+import { GET_NOTIFICATIONS } from '../../graphql/queries'
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
 
 const NOTIFICATIONS_MOCK = [
 	{
@@ -92,8 +94,16 @@ const NOTIFICATIONS_MOCK = [
 ]
 
 const HeaderComponent = (props) => {
+
+	// Grab Notifications from Backend
+	const { data: notifications } = useQuery(GET_NOTIFICATIONS)
 	const { openCreateFormModal } = props
-	const [notifications, setNotifications] = useState(NOTIFICATIONS_MOCK)
+
+	const setNotifications = (newNotifications) => {
+		console.log(newNotifications)
+		// Read
+		return true
+	}
 
 	return (
 		<Header>
@@ -120,7 +130,7 @@ const HeaderComponent = (props) => {
 					<Wallet />
 
 					<NotificationsBoard
-						notifications={notifications}
+						notifications={notifications || []}
 						setNofications={setNotifications}
 					/>
 
