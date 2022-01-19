@@ -126,6 +126,7 @@ import { USDCoin } from '../Icons/USDCoin'
 import { TaskFragment } from '../../graphql/fragments/task'
 import { updateProposalItem } from '../../utils/board'
 import { GET_ORG_TASK_BOARD_PROPOSALS } from '../../graphql/queries/taskBoard'
+import { filterOrgUsersForAutocomplete } from './createEntityModal'
 
 const filterUserOptions = (options) => {
   if (!options) return []
@@ -428,17 +429,6 @@ const EditLayoutBaseModal = (props) => {
       profilePicture: orgUser?.user?.profilePicture,
       label: orgUser?.user?.username,
       value: orgUser?.user?.id,
-    }))
-  }, [])
-
-  const filterOrgUsersForAutocomplete = useCallback((orgUsers) => {
-    if (!orgUsers) {
-      return []
-    }
-    return orgUsers.map((orgUser) => ({
-      ...orgUser?.user,
-      display: orgUser?.user?.username,
-      id: orgUser?.user?.id,
     }))
   }, [])
 

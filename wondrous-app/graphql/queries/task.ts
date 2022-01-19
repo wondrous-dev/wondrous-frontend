@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client'
+import { CommentFragment } from '../fragments/comments'
 import { TaskFragment, TaskSubmissionFragment } from '../fragments/task'
 
 export const GET_TASK_BY_ID = gql`
@@ -38,4 +39,13 @@ export const GET_TASK_SUBMISSIONS_FOR_TASK = gql`
     }
   }
   ${TaskSubmissionFragment}
+`
+
+export const GET_COMMENTS_FOR_TASK = gql`
+  query getTaskComments($taskId: ID!) {
+    getTaskComments(taskId: $taskId) {
+      ...CommentFragment
+    }
+  }
+  ${CommentFragment}
 `

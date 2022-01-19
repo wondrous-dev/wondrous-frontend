@@ -44,38 +44,23 @@ import {
   TASK_STATUS_TODO,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
 } from '../../../utils/constants'
-import { DropDown, DropDownItem } from '../dropdown'
-import { TaskMenuIcon } from '../../Icons/taskMenu'
 import { White } from '../../../theme/colors'
 import { useMe } from '../../Auth/withAuth'
 import { GetStatusIcon, renderMentionString } from '../../../utils/common'
-import {
-  AssigneeIcon,
-  ImageIcon,
-  LinkIcon,
-  NotesIcon,
-  ProposerIcon,
-  ReviewerIcon,
-} from '../../Icons/taskModalIcons'
+import { ImageIcon, LinkIcon, NotesIcon } from '../../Icons/taskModalIcons'
 import { DefaultUserImage } from '../Image/DefaultImages'
-import EditLayoutBaseModal from '../../CreateEntity/editEntityModal'
 import {
   CreateFormButtonsBlock,
   CreateFormCancelButton,
   CreateFormFooterButtons,
   CreateFormPreviewButton,
-  CreateModalOverlay,
   MediaUploadDiv,
   MultiMediaUploadButton,
   MultiMediaUploadButtonText,
   TextInputDiv,
 } from '../../CreateEntity/styles'
 import { useRouter } from 'next/router'
-import { CircularProgress, Typography } from '@material-ui/core'
-import {
-  COMPLETE_TASK,
-  UPDATE_TASK_STATUS,
-} from '../../../graphql/mutations/task'
+import { CircularProgress } from '@material-ui/core'
 import {
   APPROVE_SUBMISSION,
   ATTACH_SUBMISSION_MEDIA,
@@ -85,11 +70,7 @@ import {
   UPDATE_TASK_SUBMISSION,
 } from '../../../graphql/mutations/taskSubmission'
 import UploadImageIcon from '../../Icons/uploadImage'
-import {
-  getFilenameAndType,
-  handleAddFile,
-  uploadMedia,
-} from '../../../utils/media'
+import { handleAddFile } from '../../../utils/media'
 import { MediaItem } from '../../CreateEntity/MediaItem'
 import { AddFileUpload } from '../../Icons/addFileUpload'
 import { TextInputContext } from '../../../utils/contexts'
@@ -97,12 +78,9 @@ import { TextInput } from '../../TextInput'
 import { filterOrgUsersForAutocomplete } from '../../CreateEntity/createEntityModal'
 import { GET_ORG_USERS } from '../../../graphql/queries/org'
 import InputForm from '../InputForm/inputForm'
-import { PinDropSharp } from '@material-ui/icons'
 import { CompletedIcon, InReviewIcon } from '../../Icons/statusIcons'
 import { RejectIcon } from '../../Icons/decisionIcons'
-import { GET_PREVIEW_FILE } from '../../../graphql/queries/media'
 import { transformMediaFormat } from '../../CreateEntity/editEntityModal'
-import { GET_TASK_PROPOSAL_BY_ID } from '../../../graphql/queries/taskProposal'
 import { MediaLink } from './modal'
 
 const SubmissionStatusIcon = (props) => {
@@ -281,11 +259,7 @@ const SubmissionItem = (props) => {
               alignItems: 'center',
             }}
           >
-            <TaskSubmissionHeaderCreatorText
-              style={{
-                marginRight: '8px',
-              }}
-            >
+            <TaskSubmissionHeaderCreatorText>
               {submission.creatorUsername}
             </TaskSubmissionHeaderCreatorText>
             {submission.createdAt && (
