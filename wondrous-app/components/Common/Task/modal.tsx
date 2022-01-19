@@ -114,6 +114,7 @@ import { flexDivStyle, rejectIconStyle } from '../TaskSummary'
 import { CompletedIcon } from '../../Icons/statusIcons'
 import { TaskListCard } from '.'
 import { LoadMore } from '../KanbanBoard/styles'
+import { CommentList } from '../../Comment'
 
 export const MediaLink = (props) => {
   const { media, style } = props
@@ -1023,6 +1024,12 @@ export const TaskViewModal = (props) => {
                   setMakeSubmission={setMakeSubmission}
                   orgId={fetchedTask?.orgId}
                   setFetchedTaskSubmissions={setFetchedTaskSubmissions}
+                />
+              )}
+              {!submissionSelected && (
+                <CommentList
+                  task={fetchedTask}
+                  taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'}
                 />
               )}
             </TaskSectionContent>

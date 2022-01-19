@@ -59,7 +59,18 @@ export const TextInput = (props) => {
       style={{
         ...props?.style,
         ...style,
+        ...{
+          input: {
+            overflow: 'auto',
+            color: White,
+            height: '100px',
+            marginBottom: '16px',
+            borderRadius: '6px',
+            padding: '12px',
+          },
+        },
       }}
+      onKeyDown={inputProps?.keyDownHandler}
     >
       <Mention
         trigger="@"

@@ -251,6 +251,9 @@ export const TaskSubmissionTab = styled.div`
   text-align: center;
   padding-bottom: 8px;
   cursor: pointer;
+  &:last-child {
+    margin-right: 0;
+  }
 `
 
 export const TaskOverviewTab = styled.div`
@@ -303,6 +306,7 @@ export const TaskSubmissionHeaderCreatorText = styled(Typography)`
     font-size: 13px;
     line-height: 20px;
     font-weight: bold;
+    margin-right: 8px;
   }
 `
 export const TaskSubmissionHeaderTimeText = styled(Typography)`
