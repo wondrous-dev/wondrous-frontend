@@ -204,6 +204,7 @@ export const Task = ({ task, setTask }) => {
   const goToPod = (podId) => {
     // Filter or go to Pod Page
     console.log('Pod tap: ', podId)
+    router.push(`/pod/${podId}/boards`)
   }
 
   useEffect(() => {
@@ -392,9 +393,7 @@ export const TaskListCard = (props) => {
         {task?.podName && (
           <PodWrapper
             onClick={() => {
-              router.push(
-                `/organization/${task?.orgUsername}/pod/${task?.podId}`
-              )
+              router.push(`/pod/${task?.podId}/boards`)
             }}
           >
             <PodName>{task?.podName.slice(0, 15)}</PodName>
