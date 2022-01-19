@@ -84,7 +84,7 @@ export const HeaderTitle = styled(Typography)`
 `
 
 export const HeaderButtons = styled.div`
-  max-width: 252px;
+  /* max-width: 252px; TODO: fix later */
   width: 100%;
   height: 100%;
   display: flex;
@@ -115,6 +115,42 @@ export const HeaderFollowButtonText = styled(Typography)`
 export const HeaderFollowButtonIcon = styled.img`
   width: 22px;
   height: 22px;
+`
+
+export const HeaderInviteButton = styled(Button)`
+  && {
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    background: #232323;
+    width: 98px;
+    height: 39px;
+    padding: 7px 7px 7px 14px;
+    display: flex;
+    justify-content: space-between;
+
+    :hover {
+      background: #3D3D3D;
+
+      .MuiButton-label > div {
+        background: #232323;
+      }
+    }
+  }
+`
+
+export const PlusIconWrapper = styled.div`
+  background: #3D3D3D;
+  border-radius: 100%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  // TODO: look for other ways to do this
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+
 `
 
 export const HeaderContributeButton = styled(Button)`

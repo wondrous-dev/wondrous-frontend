@@ -15,6 +15,7 @@ import CreatePodIcon from '../../Icons/createPod'
 const Boards = (props) => {
   const { selectOptions, columns, onLoadMore, hasMore } = props
   const [filter, setFilter] = useState([])
+
   const filterSchema = [
     {
       name: 'Pods',

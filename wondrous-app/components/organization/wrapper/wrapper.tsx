@@ -38,11 +38,16 @@ import {
   OverviewComponent,
   TokenHeader,
   TokenLogo,
+  HeaderInviteButton,
+  PlusIconWrapper,
+
 } from './styles'
 import { useOrgBoard } from '../../../utils/hooks'
 import { useQuery } from '@apollo/client'
 import { GET_ORG_BY_ID } from '../../../graphql/queries/org'
 import { SafeImage } from '../../Common/Image'
+import PlusIcon from '../../Icons/plus'
+import { InviteLinkModal } from '../../Common/InviteLinkModal'
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -88,6 +93,7 @@ const Wrapper = (props) => {
   })
   const [createFormModal, setCreateFormModal] = useState(false)
   const [data, setData] = useState(MOCK_ORGANIZATION_DATA)
+  const [openInvite, setOpenInvite] = useState(false)
   const { amount } = data
 
   const toggleCreateFormModal = () => {
@@ -119,6 +125,7 @@ const Wrapper = (props) => {
 
   return (
     <>
+      <InviteLinkModal open={openInvite} onClose={() => setOpenInvite(false)} />
       <Header openCreateFormModal={toggleCreateFormModal} />
       <SideBarContext.Provider
         value={{
@@ -164,6 +171,9 @@ const Wrapper = (props) => {
                       </HeaderFollowButtonText>
                       <HeaderFollowButtonIcon src="/images/overview/icon.png" />
                     </HeaderFollowButton>
+                    <HeaderInviteButton onClick={() => setOpenInvite(true)}>
+                      Invite <PlusIconWrapper><PlusIcon height="8" width="8" fill="#fff" /></PlusIconWrapper>
+                    </HeaderInviteButton>
                     {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
                       <HeaderManageSettingsButton>
                         Settings
