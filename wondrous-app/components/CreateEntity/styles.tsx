@@ -184,7 +184,7 @@ export const CreateLayoutsModalItemTitle = styled(Typography)`
 export const CreateFormBaseModal = styled(BaseCard)`
   display: flex;
   width: 680px;
-  margin-top: 30em;
+  margin-top: ${(props) => (props.isPod ? '15em' : '30em')};
 
   & .hbhroD > *:not(:last-child) {
     margin-bottom: 0;

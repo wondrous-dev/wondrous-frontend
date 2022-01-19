@@ -20,16 +20,17 @@ import {
   CreateLayoutsModalTitle,
   CreateLayoutTaskIcon,
 } from './styles'
+import { useRouter } from 'next/router'
 
 export const ENTITIES_UI_ELEMENTS = {
   [ENTITIES_TYPES.TASK]: {
     icon: CreateLayoutTaskIcon,
     label: 'Task',
   },
-  [ENTITIES_TYPES.MILESTONE]: {
-    icon: CreateLayoutMilestoneIcon,
-    label: 'Milestone',
-  },
+  // [ENTITIES_TYPES.MILESTONE]: {
+  //   icon: CreateLayoutMilestoneIcon,
+  //   label: 'Milestone',
+  // },
   [ENTITIES_TYPES.POD]: {
     icon: CreateLayoutPodsIcon,
     label: 'Pod',
@@ -44,9 +45,14 @@ const ChooseEntityToCreateModal = (props) => {
   const { handleClose, setEntityType } = props
 
   // TODO: remove since DAO creation will be introduced
-  const entries = Object.entries(ENTITIES_UI_ELEMENTS).filter(
-    ([key]) => key !== ENTITIES_TYPES.ORG
-  )
+  const router = useRouter()
+  const onPodPage = router.pathname.includes('/pod/')
+  const entries = Object.entries(ENTITIES_UI_ELEMENTS).filter(([key]) => {
+    const condition = onPodPage
+      ? key !== ENTITIES_TYPES.ORG && key !== ENTITIES_TYPES.POD
+      : key !== ENTITIES_TYPES.ORG
+    return condition
+  })
 
   return (
     <CreateLayoutsModal>
