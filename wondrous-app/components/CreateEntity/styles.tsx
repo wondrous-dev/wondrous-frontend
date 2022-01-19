@@ -493,6 +493,7 @@ export const CreateFormFooterButtons = styled.div`
   display: flex;
   justify-content: right;
   margin-top: 30px;
+  align-items: center;
 `
 
 export const CreateFormButtonsBlock = styled.div`

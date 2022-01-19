@@ -88,7 +88,7 @@ import DatePicker from '../Common/DatePicker'
 import { MediaItem } from './MediaItem'
 import { AddFileUpload } from '../Icons/addFileUpload'
 import { TextInput } from '../TextInput'
-import { White } from '../../theme/colors'
+import { White, Grey700 } from '../../theme/colors'
 import { TextInputContext } from '../../utils/contexts'
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import {
@@ -119,6 +119,7 @@ import { addProposalItem } from '../../utils/board'
 import { CREATE_POD } from '../../graphql/mutations/pod'
 import { useRouter } from 'next/router'
 import { delQuery } from '../../utils'
+import { ErrorText } from '../Common'
 
 const filterUserOptions = (options) => {
   if (!options) return []
@@ -298,6 +299,7 @@ const CreateLayoutBaseModal = (props) => {
     setAddDetails(!addDetails)
   }
 
+  const [error, setError] = useState('')
   const [org, setOrg] = useState(null)
   const [milestone, setMilestone] = useState(null)
   const [assigneeString, setAssigneeString] = useState('')
@@ -429,6 +431,7 @@ const CreateLayoutBaseModal = (props) => {
     podId: pod,
   })
   const canCreateTask = permissions.includes(PERMISSIONS.CREATE_TASK)
+  const canCreatePod = permissions.includes(PERMISSIONS.FULL_ACCESS)
   const router = useRouter()
   const getPodObject = useCallback(() => {
     let justCreatedPod = null
@@ -527,24 +530,29 @@ const CreateLayoutBaseModal = (props) => {
         }
         break
       case ENTITIES_TYPES.POD:
-        const podInput = {
-          name: title,
-          username: title?.toLowerCase().split(' ').join('_'),
-          description: descriptionText,
-          orgId: org,
-          privacyLevel: isPrivate ? 'private' : 'public',
-          links: [
-            {
-              url: link,
-              displayName: link,
+        if (canCreatePod) {
+          const podInput = {
+            name: title,
+            username: title?.toLowerCase().split(' ').join('_'),
+            description: descriptionText,
+            orgId: org,
+            privacyLevel: isPrivate ? 'private' : 'public',
+            links: [
+              {
+                url: link,
+                displayName: link,
+              },
+            ],
+          }
+          createPod({
+            variables: {
+              input: podInput,
             },
-          ],
+          })
+        } else {
+          setError('You need full access permissions to create a pod')
         }
-        createPod({
-          variables: {
-            input: podInput,
-          },
-        })
+        break
     }
   }, [
     title,
@@ -563,8 +571,9 @@ const CreateLayoutBaseModal = (props) => {
     isPrivate,
     link,
     createPod,
+    canCreatePod,
   ])
-  console.log('isBpod', isPod)
+
   return (
     <CreateFormBaseModal isPod={isPod}>
       <CreateFormBaseModalCloseBtn onClick={handleClose}>
@@ -1068,11 +1077,22 @@ const CreateLayoutBaseModal = (props) => {
       </CreateFormAddDetailsSection>
 
       <CreateFormFooterButtons>
+        {error && <ErrorText>{error}</ErrorText>}
         <CreateFormButtonsBlock>
           <CreateFormCancelButton onClick={resetEntityType}>
             Cancel
           </CreateFormCancelButton>
-          <CreateFormPreviewButton onClick={submitMutation}>
+          <CreateFormPreviewButton
+            style={{
+              ...(isPod &&
+                !canCreatePod && {
+                  background: Grey700,
+                  border: `1px solid ${Grey700}`,
+                  cursor: 'default',
+                }),
+            }}
+            onClick={submitMutation}
+          >
             {canCreateTask ? 'Create' : 'Propose'} {titleText}
           </CreateFormPreviewButton>
         </CreateFormButtonsBlock>
