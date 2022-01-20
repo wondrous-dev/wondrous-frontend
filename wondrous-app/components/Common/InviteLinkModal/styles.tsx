@@ -154,7 +154,6 @@ export const InviteThruLinkSelect = styled(({ className, ...props }) => (
     &.MuiPaper-root {
         background: linear-gradient(180deg, #1E1E1E 0%, #141414 109.19%);
         width: 141px;
-        height: 126px;
         color: #fff;
     }
     &.MuiPaper-root > .MuiList-padding {

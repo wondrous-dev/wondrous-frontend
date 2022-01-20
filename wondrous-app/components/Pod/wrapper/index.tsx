@@ -37,12 +37,16 @@ import {
   HeaderTitle,
   OverviewComponent,
   TokenHeader,
+  HeaderInviteButton,
+  PlusIconWrapper,
 } from '../../organization/wrapper/styles'
 import { useOrgBoard, usePodBoard } from '../../../utils/hooks'
 import { useQuery } from '@apollo/client'
 import { GET_POD_BY_ID } from '../../../graphql/queries/pod'
 import { SafeImage } from '../../Common/Image'
 import { MoreInfoModal } from '../../profile/modals'
+import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink'
+import PlusIcon from '../../Icons/plus'
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -81,6 +85,7 @@ const Wrapper = (props) => {
   const [permissions, setPermissions] = useState(null)
   const [createFormModal, setCreateFormModal] = useState(false)
   const [data, setData] = useState(MOCK_ORGANIZATION_DATA)
+  const [openInvite, setOpenInvite] = useState(false)
   const { amount } = data
   const podProfile = podBoard?.pod
   const toggleCreateFormModal = () => {
@@ -113,6 +118,7 @@ const Wrapper = (props) => {
 
   return (
     <>
+      <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
       <MoreInfoModal
         open={open && (showUsers || showPods)}
         handleClose={() => setOpen(false)}
@@ -167,9 +173,14 @@ const Wrapper = (props) => {
                       <HeaderFollowButtonIcon src="/images/overview/icon.png" />
                     </HeaderFollowButton>
                     {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
-                      <HeaderManageSettingsButton>
-                        Settings
-                      </HeaderManageSettingsButton>
+                      <>
+                        <HeaderInviteButton onClick={() => setOpenInvite(true)}>
+                          Invite <PlusIconWrapper><PlusIcon height="8" width="8" fill="#fff" /></PlusIconWrapper>
+                        </HeaderInviteButton>
+                        <HeaderManageSettingsButton>
+                          Settings
+                        </HeaderManageSettingsButton>
+                      </>
                     )}
                     {permissions === ORG_PERMISSIONS.CONTRIBUTOR && (
                       <HeaderSettingsLockedButton>

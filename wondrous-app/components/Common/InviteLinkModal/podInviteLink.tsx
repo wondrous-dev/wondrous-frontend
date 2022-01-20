@@ -30,28 +30,28 @@ import {
 import PersonAddIcon from '../../Icons/personAdd'
 import { CopyIcon, CopySuccessIcon } from '../../Icons/copy'
 import { useMutation, useLazyQuery } from '@apollo/client'
-import { CREATE_ORG_INVITE_LINK } from '../../../graphql/mutations/org'
-import { GET_ORG_ROLES } from '../../../graphql/queries/org'
+import { CREATE_POD_INVITE_LINK } from '../../../graphql/mutations/pod'
+import { GET_POD_ROLES } from '../../../graphql/queries/pod'
 
 const link = `https://www.wonder.io/invite/`
 
-export const OrgInviteLinkModal = (props) => {
-    const { orgId, open, onClose } = props
+export const PodInviteLinkModal = (props) => {
+    const { podId, open, onClose } = props
     const [copy, setCopy] = useState(false)
     const [role, setRole] = useState("")
     const [inviteLink, setInviteLink] = useState("")
     const [linkOneTimeUse, setLinkOneTimeUse] = useState(false)
-    const [createOrgInviteLink] = useMutation(CREATE_ORG_INVITE_LINK, {
+    const [createPodInviteLink] = useMutation(CREATE_POD_INVITE_LINK, {
         onCompleted: (data) => {
-            setInviteLink(`${link}${data?.createOrgInviteLink.token}`)
+            setInviteLink(`${link}${data?.createPodInviteLink.token}`)
         },
         onError: (e) => {
             console.error(e)
         }
     })
-    const [getOrgRoles, { data: orgRoles }] = useLazyQuery(GET_ORG_ROLES, {
+    const [getPodRoles, { data: podRoles }] = useLazyQuery(GET_POD_ROLES, {
         onCompleted: (data) => {
-            setRole(data?.getOrgRoles[0]?.id)
+            setRole(data?.getPodRoles[0]?.id)
         },
         onError: (e) => {
             console.error(e)
@@ -80,25 +80,25 @@ export const OrgInviteLinkModal = (props) => {
 
     useEffect(() => {
         if (!role) {
-            getOrgRoles({
+            getPodRoles({
                 variables: {
-                    orgId: orgId
+                    podId: podId
                 }
             })
         }
-        createOrgInviteLink({
+        createPodInviteLink({
             variables: {
                 input: {
                     invitorId: "",
                     type: linkOneTimeUse ? "one_time" : "public",
-                    orgId: orgId,
-                    orgRoleId: role,
+                    podId: podId,
+                    podRoleId: role,
                     expiry: ""
                 }
             }
         })
         setCopy(false)
-    }, [role, createOrgInviteLink, linkOneTimeUse, orgId, orgRoles, open, getOrgRoles])
+    }, [role, createPodInviteLink, linkOneTimeUse, podId, podRoles, open, getPodRoles])
 
     return (
         <StyledModal open={open} onClose={handleOnClose}>
@@ -123,7 +123,7 @@ export const OrgInviteLinkModal = (props) => {
                     <InviteThruLinkTextField variant="outlined" value={`${inviteLink}`} disabled />
                     <InviteThruLinkFormControlSelect>
                         <InviteThruLinkSelect value={role} onChange={handleRoleChange}>
-                            {orgRoles?.getOrgRoles.map((role) => (
+                            {podRoles?.getPodRoles.map((role) => (
                                 <InviteThruLinkMenuItem key={role.id} value={role.id}>{role.name}</InviteThruLinkMenuItem>
                             ))}
                         </InviteThruLinkSelect>
