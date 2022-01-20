@@ -60,8 +60,8 @@ export const GET_USER_PROFLIE = gql`
 	${ProfileUserFragment}
 `
 
-export const GET_USER_ABOUT_PAGE = gql`
-	query getUserAboutPageData($userId: String) {
+export const GET_USER_ABOUT_PAGE_DATA = gql`
+	query getUserAboutPageData($userId: ID!) {
 		getUserAboutPageData(userId: $userId) {
 			orgs {
 				name

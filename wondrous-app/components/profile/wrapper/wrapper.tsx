@@ -55,7 +55,11 @@ const SIDEBAR_LIST_ITEMS = [
 ]
 
 const Wrapper = (props) => {
-	const { children, userProfileData } = props
+	const { children, userProfileData, loggedInUser } = props
+	let viewingSelf = false
+	if (userProfileData?.id === loggedInUser?.id) {
+		viewingSelf = true
+	}
 	const username = userProfileData?.username
 	const bio = userProfileData?.bio
 	const orgCount = userProfileData?.additionalInfo?.orgCount
@@ -83,11 +87,11 @@ const Wrapper = (props) => {
 								<TokenLogo />
 								<HeaderMainBlock>
 									<HeaderTitle>{username}</HeaderTitle>
-									<HeaderButtons>
+									{viewingSelf && <HeaderButtons>
 										<HeaderEditProfileButton>
 											Edit my profile
 										</HeaderEditProfileButton>
-									</HeaderButtons>
+									</HeaderButtons>}
 								</HeaderMainBlock>
 								<HeaderText>{bio}</HeaderText>
 								<HeaderActivity>
@@ -96,11 +100,11 @@ const Wrapper = (props) => {
 										andros.io
 									</HeaderActivityLink>
 									<HeaderFollowers>
-										<HeaderFollowersAmount>{podCount}</HeaderFollowersAmount>
+										<HeaderFollowersAmount>{podCount || 0}</HeaderFollowersAmount>
 										<HeaderFollowersText>Pods</HeaderFollowersText>
 									</HeaderFollowers>
 									<HeaderFollowing>
-										<HeaderFollowingAmount>{orgCount}</HeaderFollowingAmount>
+										<HeaderFollowingAmount>{orgCount || 0}</HeaderFollowingAmount>
 										<HeaderFollowingText>DAOs</HeaderFollowingText>
 									</HeaderFollowing>
 								</HeaderActivity>

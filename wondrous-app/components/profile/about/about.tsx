@@ -50,7 +50,10 @@ const SOCIAL_MEDIA_ICONS = {
 }
 const SOCIAL_LINKS = ['twitter', 'discord', 'instagram','github', 'linkedin', 'spotify']
 
-const _parseLinks = (links) => {
+const parseLinks = (links) => {
+	/**
+	 * parse links from backend into social links, websites, and main
+	 */ 
 	if (!links){
 		return {
 			'social': [],
@@ -81,12 +84,12 @@ const _parseLinks = (links) => {
 
 const About = (props) => {
 	const {
-		userProfileData = {}
+		userProfileData = {},
+		loggedInUser = {}
 	} = props
-	const {social, websites, main} = _parseLinks(userProfileData?.links)
-
+	const {social, websites, main} = parseLinks(userProfileData?.links)
 	return (
-		<Wrapper userProfileData={userProfileData}>
+		<Wrapper userProfileData={userProfileData} loggedInUser={loggedInUser}>
 			<AboutSection>
 				<AboutInfoTable>
 					{/* <AboutInfoTableRow>

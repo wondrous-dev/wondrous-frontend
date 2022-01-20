@@ -18,26 +18,36 @@ import {
   GET_USER_PERMISSION_CONTEXT,
   GET_USER_PROFLIE,
   GET_USER_FROM_USERNAME,
+  GET_USER_ABOUT_PAGE_DATA,
   GET_USER_PODS,
   GET_USER_ORGS
 } from '../../../graphql/queries'
 
 
 const AboutPage = () => {
-  const [profileUserId, setProfileUserId] = useState(null)
+  const loggedInUser = useMe()
   const [userProfileData, setUserProfileData] = useState(null)
+  const [userAboutPageData, setUserAboutPageData] = useState(null)
   const [userDaosData, setUserDaosData] = useState(null)
   const [userPodsData, setUserPodsData] = useState(null)
   const [userCompletedTaskCount, setUserCompletedTaskCount] = useState(null)
   const [userCompletedTasks, setUserCompletedTasks] = useState(null)
   const router = useRouter()
   const { username, userId } = router.query
-  const { data: userPermissionsContext } = useQuery(
-    GET_USER_PERMISSION_CONTEXT,
-    {
-      fetchPolicy: 'cache-and-network',
-    }
-  )
+  // const { data: userPermissionsContext } = useQuery(
+  //   GET_USER_PERMISSION_CONTEXT,
+  //   {
+  //     fetchPolicy: 'cache-and-network',
+  //   }
+  // )
+
+
+  const [getUserAboutPageData] = useLazyQuery(GET_USER_ABOUT_PAGE_DATA, {
+    onCompleted: (data) => {
+      console.log('about data', data)
+      setUserAboutPageData(data?.getUserAboutPageData)
+    },
+  })
 
   const [getUser] = useLazyQuery(GET_USER_PROFLIE, {
     onCompleted: (data) => {
@@ -74,15 +84,20 @@ const AboutPage = () => {
       })
     }
     else if (userProfileData && userProfileData.id) {
-
+      getUserAboutPageData({
+        variables: {
+          userId: userProfileData.id,
+        },
+      })
     }
   }, [username, userId, userProfileData, getUser, getUserFromUsername])
 
   return (
     <About
       userProfileData={userProfileData}
+      loggedInUser={loggedInUser}
     />
   )
 }
 
-export default AboutPage
+export default withAuth(AboutPage)
