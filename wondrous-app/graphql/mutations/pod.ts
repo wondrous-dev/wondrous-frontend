@@ -9,3 +9,12 @@ export const CREATE_POD = gql`
   }
   ${PodFragment}
 `
+
+export const CREATE_POD_INVITE_LINK = gql`
+mutation createPodInviteLink($input: PodInviteLinkInput) {
+    createPodInviteLink (input: $input) {
+      id
+      token
+    }
+  }
+`

@@ -47,3 +47,12 @@ export const GET_POD_USERS = gql`
     }
   }
 `
+
+export const GET_POD_ROLES = gql`
+	query getPodRoles ($podId: ID){
+		getPodRoles(podId: $podId) {
+			id
+			name
+		}
+	}
+`
