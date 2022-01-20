@@ -110,7 +110,7 @@ import {
 } from '../../utils/helpers'
 import { GET_ORG_USERS } from '../../graphql/queries/org'
 import { CREATE_TASK } from '../../graphql/mutations/task'
-import { useOrgBoard } from '../../utils/hooks'
+import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks'
 import { CREATE_TASK_PROPOSAL } from '../../graphql/mutations/taskProposal'
 import { useMe } from '../Auth/withAuth'
 import Ethereum from '../Icons/ethereum'
@@ -311,6 +311,9 @@ const CreateLayoutBaseModal = (props) => {
   const [rewardsAmount, setRewardsAmount] = useState(null)
   const [title, setTitle] = useState('')
   const orgBoard = useOrgBoard()
+  const podBoard = usePodBoard()
+  const userBoard = useUserBoard()
+  const board = orgBoard || podBoard || userBoard
   const isPod = entityType === ENTITIES_TYPES.POD
   const isTask = entityType === ENTITIES_TYPES.TASK
   const textLimit = isPod ? 200 : 900
@@ -324,8 +327,12 @@ const CreateLayoutBaseModal = (props) => {
   const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(
     GET_AUTOCOMPLETE_USERS
   )
-
-  const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS)
+  const [orgUserFetched, setOrgUserFetched] = useState(false)
+  const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS, {
+    onCompleted: () => {
+      setOrgUserFetched(true)
+    },
+  })
 
   const [getEligibleReviewersForOrg, { data: eligibleReviewersData }] =
     useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_ORG)
@@ -342,9 +349,11 @@ const CreateLayoutBaseModal = (props) => {
     },
   })
 
+  const [podsFetched, setPodsFetched] = useState(false)
   const [getUserAvailablePods] = useLazyQuery(GET_USER_AVAILABLE_PODS, {
     onCompleted: (data) => {
       setPods(data?.getAvailableUserPods)
+      setPodsFetched(true)
     },
     fetchPolicy: 'network-only',
   })
@@ -403,34 +412,64 @@ const CreateLayoutBaseModal = (props) => {
       value: orgUser?.user?.id,
     }))
   }, [])
+  const fetchedUserPermissionsContext =
+    userPermissionsContext?.getUserPermissionContext
+      ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+      : null
 
   useEffect(() => {
-    if (userOrgs?.getUserOrgs?.length === 1) {
+    if (
+      fetchedUserPermissionsContext &&
+      board?.orgId in fetchedUserPermissionsContext?.orgPermissions &&
+      !org
+    ) {
       // If you're only part of one dao then just set that as default
-      setOrg(userOrgs?.getUserOrgs[0]?.id)
+      // TODO: if you are part of the org and you're on that page it should be create on that org
+      setOrg(board?.orgId)
+    }
+    if (
+      fetchedUserPermissionsContext &&
+      board?.podId in fetchedUserPermissionsContext?.podPermissions &&
+      !pod
+    ) {
+      // If you're only part of one dao then just set that as default
+      // TODO: if you are part of the org and you're on that page it should be create on that org
+      setPod(board?.podId)
     }
     if (org) {
-      getUserAvailablePods({
-        variables: {
-          orgId: org,
-        },
-      })
-      getOrgUsers({
-        variables: {
-          orgId: org,
-        },
-      })
+      if (!podsFetched) {
+        getUserAvailablePods({
+          variables: {
+            orgId: org,
+          },
+        })
+      }
+      if (!orgUserFetched) {
+        getOrgUsers({
+          variables: {
+            orgId: org,
+          },
+        })
+      }
     }
-  }, [userOrgs?.getUserOrgs, org, getUserAvailablePods, getOrgUsers])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    userOrgs?.getUserOrgs,
+    board?.orgId,
+    fetchedUserPermissionsContext,
+    board?.podId,
+    org,
+    pod,
+  ])
 
   const permissions = parseUserPermissionContext({
-    userPermissionsContext: userPermissionsContext?.getUserPermissionContext
-      ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
-      : null,
+    userPermissionsContext: fetchedUserPermissionsContext,
     orgId: org,
     podId: pod,
   })
-  const canCreateTask = permissions.includes(PERMISSIONS.CREATE_TASK)
+  const canCreateTask =
+    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions.includes(PERMISSIONS.CREATE_TASK)
   const canCreatePod = permissions.includes(PERMISSIONS.FULL_ACCESS)
   const router = useRouter()
   const getPodObject = useCallback(() => {
@@ -447,16 +486,16 @@ const CreateLayoutBaseModal = (props) => {
     onCompleted: (data) => {
       const task = data?.createTask
       const justCreatedPod = getPodObject()
-      if (orgBoard?.setColumns && task?.orgId === orgBoard?.orgId) {
+      if (board?.setColumns && task?.orgId === board?.orgId) {
         const transformedTask = transformTaskToTaskCard(task, {
-          orgName: orgBoard?.org?.name,
-          orgProfilePicture: orgBoard?.org?.profilePicture,
+          orgName: board?.org?.name,
+          orgProfilePicture: board?.org?.profilePicture,
           podName: justCreatedPod?.name,
         })
 
-        const columns = [...orgBoard?.columns]
+        const columns = [...board?.columns]
         columns[0].tasks = [transformedTask, ...columns[0].tasks]
-        orgBoard.setColumns(columns)
+        board.setColumns(columns)
       }
       handleClose()
     },
@@ -466,21 +505,21 @@ const CreateLayoutBaseModal = (props) => {
     onCompleted: (data) => {
       const taskProposal = data?.createTaskProposal
       const justCreatedPod = getPodObject()
-      if (orgBoard?.setColumns && taskProposal?.orgId === orgBoard?.orgId) {
+      if (board?.setColumns && taskProposal?.orgId === board?.orgId) {
         const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
           taskProposal,
           {
             userProfilePicture: user?.profilePicture,
             username: user?.username,
-            orgName: orgBoard?.org?.name,
-            orgProfilePicture: orgBoard?.org?.profilePicture,
+            orgName: board?.org?.name,
+            orgProfilePicture: board?.org?.profilePicture,
             podName: justCreatedPod?.name,
           }
         )
 
-        let columns = [...orgBoard?.columns]
+        let columns = [...board?.columns]
         columns = addProposalItem(transformedTaskProposal, columns)
-        orgBoard.setColumns(columns)
+        board.setColumns(columns)
       }
       handleClose()
     },
@@ -1038,7 +1077,7 @@ const CreateLayoutBaseModal = (props) => {
               </CreateFormAddDetailsAppearBlockContainer>
             )}
 
-            {showLinkAttachmentSection && (
+            {/* {showLinkAttachmentSection && (
               <CreateFormLinkAttachmentBlock
                 style={{
                   borderBottom: 'none',
@@ -1056,7 +1095,7 @@ const CreateLayoutBaseModal = (props) => {
                   search={false}
                 />
               </CreateFormLinkAttachmentBlock>
-            )}
+            )} */}
             {isPod && (
               <div>
                 <CreateFormAddDetailsSwitch>

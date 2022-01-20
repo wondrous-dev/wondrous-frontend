@@ -2,28 +2,28 @@ import { gql } from '@apollo/client'
 import { OrgFragment, OrgInviteFragment } from '../fragments/org'
 
 export const GET_ORG_BY_ID = gql`
-	query getOrgById($orgId: ID!) {
-		getOrgById(orgId: $orgId) {
-			...OrgFragment
-		}
-	}
-	${OrgFragment}
+  query getOrgById($orgId: ID!) {
+    getOrgById(orgId: $orgId) {
+      ...OrgFragment
+    }
+  }
+  ${OrgFragment}
 `
 export const GET_ORG_ID_FROM_USERNAME = gql`
-	query getOrgIdFromUsername($username: String!) {
-		getOrgIdFromUsername(username: $username) {
-			orgId
-		}
-	}
+  query getOrgIdFromUsername($username: String!) {
+    getOrgIdFromUsername(username: $username) {
+      orgId
+    }
+  }
 `
 
 export const GET_ORG_INVITE_ORG_INFO = gql`
-	query getInvitedOrgInfo($token: String!) {
-		getInvitedOrgInfo(token: $token) {
-			...OrgInviteFragment
-		}
-	}
-	${OrgInviteFragment}
+  query getInvitedOrgInfo($token: String!) {
+    getInvitedOrgInfo(token: $token) {
+      ...OrgInviteFragment
+    }
+  }
+  ${OrgInviteFragment}
 `
 
 export const GET_USER_ORGS = gql`
@@ -39,27 +39,48 @@ export const GET_USER_ORGS = gql`
 `
 
 export const GET_ORG_USERS = gql`
-	query getOrgUsers($orgId: String!) {
-		getOrgUsers(orgId: $orgId) {
-			user {
-				id
-				username
-				profilePicture
-			}
-			role {
-				permissions
-			}
-		}
-	}
+  query getOrgUsers($orgId: String!) {
+    getOrgUsers(orgId: $orgId) {
+      user {
+        id
+        username
+        profilePicture
+      }
+      role {
+        permissions
+      }
+    }
+  }
 `
 
 export const GET_ORG_REVIEWERS = gql`
-	query getOrgReviewers($orgId: String!) {
-		getOrgReviewers(orgId: $orgId) {
-			profilePicture
-			id
-			username
-			name
-		}
-	}
+  query getOrgReviewers($orgId: String!) {
+    getOrgReviewers(orgId: $orgId) {
+      profilePicture
+      id
+      username
+      name
+    }
+  }
+`
+
+export const GET_ORG_PODS = gql`
+  query getOrgPods($orgId: String) {
+    getOrgPods(orgId: $orgId) {
+      id
+      name
+      username
+      description
+      privacyLevel
+      headerPicture
+      profilePicture
+      thumbnailPicture
+      createdBy
+      createdAt
+      orgId
+      tags
+      contributorCount
+      tasksCompletedCount
+    }
+  }
 `

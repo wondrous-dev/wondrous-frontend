@@ -4,7 +4,7 @@ import { SideBarContext } from '../../../utils/contexts'
 
 import Header from '../../Header'
 import SideBarComponent from '../../SideBar'
-import Tabs from '../tabs/tabs'
+import Tabs from '../../organization/tabs/tabs'
 import CreateFormModal from '../../CreateEntity'
 import {
   parseUserPermissionContext,
@@ -37,11 +37,10 @@ import {
   HeaderTitle,
   OverviewComponent,
   TokenHeader,
-  TokenLogo,
-} from './styles'
-import { useOrgBoard } from '../../../utils/hooks'
+} from '../../organization/wrapper/styles'
+import { useOrgBoard, usePodBoard } from '../../../utils/hooks'
 import { useQuery } from '@apollo/client'
-import { GET_ORG_BY_ID } from '../../../graphql/queries/org'
+import { GET_POD_BY_ID } from '../../../graphql/queries/pod'
 import { SafeImage } from '../../Common/Image'
 import { MoreInfoModal } from '../../profile/modals'
 
@@ -69,41 +68,32 @@ const MOCK_ORGANIZATION_DATA = {
 
 const Wrapper = (props) => {
   const { children } = props
-  const [open, setOpen] = useState(false)
   const [minimized, setMinimized] = useState(false)
   const [showUsers, setShowUsers] = useState(false)
   const [showPods, setShowPods] = useState(false)
-  const orgBoard = useOrgBoard()
+  const [open, setOpen] = useState(false)
+  const podBoard = usePodBoard()
   const ORG_PERMISSIONS = {
     MANAGE_SETTINGS: 'manageSettings',
     CONTRIBUTOR: 'contributor',
   }
-  const userPermissionsContext = orgBoard?.userPermissionsContext
+  const userPermissionsContext = podBoard?.userPermissionsContext
   const [permissions, setPermissions] = useState(null)
-  const [orgProfile, setOrgProfile] = useState(null)
-  const { data: orgData } = useQuery(GET_ORG_BY_ID, {
-    onCompleted: (data) => {
-      const org = data?.getOrgById
-      setOrgProfile(org)
-    },
-    variables: {
-      orgId: orgBoard?.orgId,
-    },
-  })
   const [createFormModal, setCreateFormModal] = useState(false)
   const [data, setData] = useState(MOCK_ORGANIZATION_DATA)
   const { amount } = data
-
+  const podProfile = podBoard?.pod
   const toggleCreateFormModal = () => {
     toggleHtmlOverflow()
     setCreateFormModal((prevState) => !prevState)
   }
-  const links = orgProfile?.links
+  const links = podProfile?.links
 
   useEffect(() => {
     const orgPermissions = parseUserPermissionContext({
       userPermissionsContext,
-      orgId: orgBoard?.orgId,
+      podId: podBoard?.podId,
+      orgId: podBoard?.orgId,
     })
 
     if (
@@ -119,7 +109,7 @@ const Wrapper = (props) => {
       setPermissions(null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgBoard?.orgId, userPermissionsContext])
+  }, [podBoard?.orgId, userPermissionsContext])
 
   return (
     <>
@@ -128,8 +118,8 @@ const Wrapper = (props) => {
         handleClose={() => setOpen(false)}
         showUsers={showUsers}
         showPods={showPods}
-        name={orgProfile?.name}
-        orgId={orgBoard?.orgId}
+        name={podProfile?.name}
+        podId={podProfile?.id}
       />
       <Header openCreateFormModal={toggleCreateFormModal} />
       <SideBarContext.Provider
@@ -153,7 +143,7 @@ const Wrapper = (props) => {
             <ContentContainer>
               <TokenHeader>
                 <SafeImage
-                  src={orgProfile?.profilePicture}
+                  src={podProfile?.profilePicture}
                   style={{
                     width: '96px',
                     height: '96px',
@@ -164,7 +154,7 @@ const Wrapper = (props) => {
                   }}
                 />
                 <HeaderMainBlock>
-                  <HeaderTitle>{orgProfile?.name}</HeaderTitle>
+                  <HeaderTitle>{podProfile?.name}</HeaderTitle>
                   <HeaderButtons>
                     <HeaderFollowButton
                       style={{
@@ -193,7 +183,7 @@ const Wrapper = (props) => {
                     )}
                   </HeaderButtons>
                 </HeaderMainBlock>
-                <HeaderText>{orgProfile?.description}</HeaderText>
+                <HeaderText>{podProfile?.description}</HeaderText>
                 <HeaderActivity>
                   {links?.map((link) => (
                     <HeaderActivityLink href={link?.url} key={link}>
@@ -208,21 +198,18 @@ const Wrapper = (props) => {
                     }}
                   >
                     <HeaderContributorsAmount>
-                      {orgProfile?.contributorCount}
+                      {podProfile?.contributorCount}
                     </HeaderContributorsAmount>
                     <HeaderContributorsText>
-                      Contributors
+                      {podProfile?.contributorCount === 1
+                        ? 'Contributor'
+                        : 'Contributors'}
                     </HeaderContributorsText>
                   </HeaderContributors>
-                  <HeaderPods
-                    onClick={() => {
-                      setOpen(true)
-                      setShowPods(true)
-                    }}
-                  >
-                    <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
+                  {/* <HeaderPods>
+                    <HeaderPodsAmount>{podProfile?.podCount}</HeaderPodsAmount>
                     <HeaderPodsText>Pods</HeaderPodsText>
-                  </HeaderPods>
+                  </HeaderPods> */}
                 </HeaderActivity>
               </TokenHeader>
 
