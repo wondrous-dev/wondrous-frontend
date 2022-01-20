@@ -84,7 +84,7 @@ export const HeaderTitle = styled(Typography)`
 `
 
 export const HeaderButtons = styled.div`
-  /* max-width: 252px; TODO: fix later */
+  max-width: 352px;
   width: 100%;
   height: 100%;
   display: flex;

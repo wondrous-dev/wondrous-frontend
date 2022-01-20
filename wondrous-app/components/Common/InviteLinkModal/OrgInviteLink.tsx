@@ -35,7 +35,7 @@ import { GET_ORG_ROLES } from '../../../graphql/queries/org'
 
 const link = `https://www.wonder.io/invite/`
 
-export const InviteLinkModal = (props) => {
+export const OrgInviteLinkModal = (props) => {
     const { orgId, open, onClose } = props
     const [copy, setCopy] = useState(false)
     const [role, setRole] = useState("")
@@ -79,18 +79,17 @@ export const InviteLinkModal = (props) => {
     }
 
     useEffect(() => {
-        getOrgRoles({
-            variables: {
-                orgId: orgId
-            }
-        })
-    }, [])
-
-    useEffect(() => {
+        if (role === "") {
+            getOrgRoles({
+                variables: {
+                    orgId: orgId
+                }
+            })
+        }
         createOrgInviteLink({
             variables: {
                 input: {
-                    invitorId: "45514342520586241",
+                    invitorId: "",
                     type: linkOneTimeUse ? "one_time" : "public",
                     orgId: orgId,
                     orgRoleId: role,
@@ -99,7 +98,7 @@ export const InviteLinkModal = (props) => {
             }
         })
         setCopy(false)
-    }, [role, createOrgInviteLink, linkOneTimeUse, orgId, orgRoles, open])
+    }, [role, createOrgInviteLink, linkOneTimeUse, orgId, orgRoles, open, getOrgRoles])
 
     return (
         <StyledModal open={open} onClose={handleOnClose}>

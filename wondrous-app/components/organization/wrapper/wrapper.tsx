@@ -47,7 +47,7 @@ import { useQuery } from '@apollo/client'
 import { GET_ORG_BY_ID } from '../../../graphql/queries/org'
 import { SafeImage } from '../../Common/Image'
 import PlusIcon from '../../Icons/plus'
-import { InviteLinkModal } from '../../Common/InviteLinkModal'
+import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink'
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -125,7 +125,7 @@ const Wrapper = (props) => {
 
   return (
     <>
-      <InviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
+      <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
       <Header openCreateFormModal={toggleCreateFormModal} />
       <SideBarContext.Provider
         value={{
@@ -171,13 +171,15 @@ const Wrapper = (props) => {
                       </HeaderFollowButtonText>
                       <HeaderFollowButtonIcon src="/images/overview/icon.png" />
                     </HeaderFollowButton>
-                    <HeaderInviteButton onClick={() => setOpenInvite(true)}>
-                      Invite <PlusIconWrapper><PlusIcon height="8" width="8" fill="#fff" /></PlusIconWrapper>
-                    </HeaderInviteButton>
                     {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
-                      <HeaderManageSettingsButton>
-                        Settings
-                      </HeaderManageSettingsButton>
+                      <>
+                        <HeaderInviteButton onClick={() => setOpenInvite(true)}>
+                          Invite <PlusIconWrapper><PlusIcon height="8" width="8" fill="#fff" /></PlusIconWrapper>
+                        </HeaderInviteButton>
+                        <HeaderManageSettingsButton>
+                          Settings
+                        </HeaderManageSettingsButton>
+                      </>
                     )}
                     {permissions === ORG_PERMISSIONS.CONTRIBUTOR && (
                       <HeaderSettingsLockedButton>
