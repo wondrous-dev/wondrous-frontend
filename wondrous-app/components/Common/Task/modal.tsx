@@ -31,10 +31,6 @@ import {
   TaskLink,
   TaskMediaContainer,
   TaskListModalHeader,
-  TaskListCardWrapper,
-  TaskHeader,
-  PodWrapper,
-  PodName,
   TaskStatusHeaderText,
   ArchivedTaskUndo,
 } from './styles'
@@ -393,8 +389,9 @@ export const TaskViewModal = (props) => {
   const [archiveTask, setArchiveTask] = useState(false)
   const [archiveTaskAlert, setArchiveTaskAlert] = useState(false)
   const [initialStatus, setInitialStatus] = useState('')
-  const { setSnackbarAlertOpen, setSnackbarAlertMessage } =
-    useContext(SnackbarAlertContext)
+  const snackbarContext = useContext(SnackbarAlertContext)
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage
   const [getReviewers, { data: reviewerData }] =
     useLazyQuery(GET_TASK_REVIEWERS)
   const user = useMe()
@@ -795,52 +792,6 @@ export const TaskViewModal = (props) => {
               )}
             </TaskSectionInfoDiv>
           </TaskSectionDisplayDiv>
-
-          <TaskSectionDisplayDiv>
-            <TaskSectionDisplayLabel>
-              <ReviewerIcon />
-              <TaskSectionDisplayText>Reviewer</TaskSectionDisplayText>
-            </TaskSectionDisplayLabel>
-            {reviewerData?.getTaskReviewers?.length > 0 ? (
-              reviewerData?.getTaskReviewers.map((taskReviewer) => (
-                <TaskSectionInfoDiv key={taskReviewer?.id}>
-                  {taskReviewer?.profilePicture ? (
-                    <SafeImage
-                      style={{
-                        width: '26px',
-                        height: '26px',
-                        borderRadius: '13px',
-                        marginRight: '4px',
-                      }}
-                      src={taskReviewer?.profilePicture}
-                    />
-                  ) : (
-                    <DefaultUserImage
-                      style={{
-                        width: '26px',
-                        height: '26px',
-                        borderRadius: '13px',
-                        marginRight: '4px',
-                      }}
-                    />
-                  )}
-                  <TaskSectionInfoText>
-                    {taskReviewer?.username}
-                  </TaskSectionInfoText>
-                </TaskSectionInfoDiv>
-              ))
-            ) : (
-              <TaskSectionInfoText
-                style={{
-                  marginTop: '8px',
-                  marginLeft: '16px',
-                }}
-              >
-                None
-              </TaskSectionInfoText>
-            )}
-          </TaskSectionDisplayDiv>
-
           <TaskSectionDisplayDiv>
             <TaskSectionDisplayLabel>
               <ImageIcon />

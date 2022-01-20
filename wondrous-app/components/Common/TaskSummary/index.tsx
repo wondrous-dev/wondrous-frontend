@@ -108,7 +108,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
   const goToPod = (podId) => {
     // router query into pod
     const { username } = router.query
-    router.push(`/organization/${username}/pod/${podId}`)
+    router.push(`/pod/${podId}/boards`)
   }
   const openModal = () => {
     if (taskType === TASK_STATUS_REQUESTED) {
@@ -254,7 +254,9 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
                 style={{
                   marginRight: '8px',
                 }}
-                onclick={() => {
+                onclick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
                   goToPod(task?.podId)
                 }}
               >

@@ -12,8 +12,6 @@ import {
 
 export const renderMentionString = (props) => {
   const { content, textStyle, simple, router } = props
-  const urlRegex =
-    /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
   const httpRegex =
     /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{2,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
   const final = regexifyString({
@@ -21,7 +19,6 @@ export const renderMentionString = (props) => {
       /@\[(.*?)]\((.*?)\)|([-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?)|(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))/gi,
     decorator: (match, index) => {
       const mentionExp = /@\[(.*?)]\((.*?)\)/.exec(match)
-      const urlMatch = urlRegex.exec(match)
       const httpMatch = httpRegex.exec(match)
       if (mentionExp) {
         const [original, username, id] = mentionExp
@@ -56,21 +53,6 @@ export const renderMentionString = (props) => {
             }}
           >
             {match}
-          </a>
-        )
-      } else if (urlMatch) {
-        return (
-          <a
-            href={`https://${match}`}
-            target="_blank"
-            rel="noreferrer"
-            style={{
-              color: HighlightBlue,
-              marginRight: '4px',
-              ...textStyle,
-            }}
-          >
-            {`https://${match}`}
           </a>
         )
       } else {
