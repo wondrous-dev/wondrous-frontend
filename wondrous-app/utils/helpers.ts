@@ -126,3 +126,20 @@ export const transformTaskSubmissionToTaskSubmissionCard = (
     podName: extraData?.podName || taskSubmission?.pod?.name,
   }
 }
+
+export const getNonWhiteSpaceLength = (string) => {
+  // use the \s quantifier to remove all white space
+  if (!string) return 0
+  let remText = string.replace(/\s/g, '')
+
+  // get the length of the string after removal
+  let length = remText.length
+  return length
+}
+
+export const cutString = (string, length = 240, afterText = '...') => {
+  if (getNonWhiteSpaceLength(string) > length) {
+    return string.slice(0, length) + afterText
+  }
+  return string
+}

@@ -30,8 +30,8 @@ export const ColumnSection = ({ section, setSection }) => {
   const orgBoard = useOrgBoard()
   const podBoard = usePodBoard()
   const userBoard = useUserBoard()
-
-  const taskCount = orgBoard?.taskCount
+  const board = orgBoard || podBoard || userBoard
+  const taskCount = board?.taskCount
   const type = section?.filter?.taskType
   let number = 0
   switch (type) {

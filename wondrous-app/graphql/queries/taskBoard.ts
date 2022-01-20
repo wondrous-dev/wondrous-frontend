@@ -169,3 +169,44 @@ export const GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD = gql`
     }
   }
 `
+
+export const GET_POD_TASK_BOARD_PROPOSALS = gql`
+  query getPodTaskBoardProposals($input: PodTaskBoardQueryInput) {
+    getPodTaskBoardProposals(input: $input) {
+      ...TaskProposalCardFragment
+    }
+  }
+  ${TaskProposalCardFragment}
+`
+
+export const GET_POD_TASK_BOARD_TASKS = gql`
+  query getPodTaskBoardTasks($input: PodTaskBoardQueryInput) {
+    getPodTaskBoardTasks(input: $input) {
+      ...TaskCardFragment
+    }
+  }
+  ${TaskCardFragment}
+`
+
+export const GET_POD_TASK_BOARD_SUBMISSIONS = gql`
+  query getPodTaskBoardSubmissions($input: PodTaskBoardQueryInput) {
+    getPodTaskBoardSubmissions(input: $input) {
+      ...TaskSubmissionCardFragment
+    }
+  }
+  ${TaskSubmissionCardFragment}
+`
+
+export const GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD = gql`
+  query getPerStatusTaskCountForPodBoard($podId: ID!) {
+    getPerStatusTaskCountForPodBoard(podId: $podId) {
+      created
+      inProgress
+      completed
+      proposal
+      submission
+      inReview
+      archived
+    }
+  }
+`

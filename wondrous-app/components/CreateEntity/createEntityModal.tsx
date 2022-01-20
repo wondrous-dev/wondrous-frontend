@@ -88,7 +88,7 @@ import DatePicker from '../Common/DatePicker'
 import { MediaItem } from './MediaItem'
 import { AddFileUpload } from '../Icons/addFileUpload'
 import { TextInput } from '../TextInput'
-import { White } from '../../theme/colors'
+import { White, Grey700 } from '../../theme/colors'
 import { TextInputContext } from '../../utils/contexts'
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import {
@@ -110,12 +110,16 @@ import {
 } from '../../utils/helpers'
 import { GET_ORG_USERS } from '../../graphql/queries/org'
 import { CREATE_TASK } from '../../graphql/mutations/task'
-import { useOrgBoard } from '../../utils/hooks'
+import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks'
 import { CREATE_TASK_PROPOSAL } from '../../graphql/mutations/taskProposal'
 import { useMe } from '../Auth/withAuth'
 import Ethereum from '../Icons/ethereum'
 import { USDCoin } from '../Icons/USDCoin'
 import { addProposalItem } from '../../utils/board'
+import { CREATE_POD } from '../../graphql/mutations/pod'
+import { useRouter } from 'next/router'
+import { delQuery } from '../../utils'
+import { ErrorText } from '../Common'
 
 const filterUserOptions = (options) => {
   if (!options) return []
@@ -295,16 +299,24 @@ const CreateLayoutBaseModal = (props) => {
     setAddDetails(!addDetails)
   }
 
+  const [error, setError] = useState('')
   const [org, setOrg] = useState(null)
   const [milestone, setMilestone] = useState(null)
   const [assigneeString, setAssigneeString] = useState('')
   const [reviewerString, setReviewerString] = useState('')
   const [assignee, setAssignee] = useState(null)
   const [selectedReviewers, setSelectedReviewers] = useState([])
+  const [link, setLink] = useState('')
   const [rewardsCurrency, setRewardsCurrency] = useState(null)
   const [rewardsAmount, setRewardsAmount] = useState(null)
   const [title, setTitle] = useState('')
   const orgBoard = useOrgBoard()
+  const podBoard = usePodBoard()
+  const userBoard = useUserBoard()
+  const board = orgBoard || podBoard || userBoard
+  const isPod = entityType === ENTITIES_TYPES.POD
+  const isTask = entityType === ENTITIES_TYPES.TASK
+  const textLimit = isPod ? 200 : 900
   const { data: userPermissionsContext } = useQuery(
     GET_USER_PERMISSION_CONTEXT,
     {
@@ -315,14 +327,20 @@ const CreateLayoutBaseModal = (props) => {
   const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(
     GET_AUTOCOMPLETE_USERS
   )
-
-  const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS)
+  const [orgUserFetched, setOrgUserFetched] = useState(false)
+  const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS, {
+    onCompleted: () => {
+      setOrgUserFetched(true)
+    },
+  })
 
   const [getEligibleReviewersForOrg, { data: eligibleReviewersData }] =
     useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_ORG)
 
   const descriptionTextCounter = (e) => {
-    setDescriptionText(e.target.value)
+    if (e.target.value.length < textLimit) {
+      setDescriptionText(e.target.value)
+    }
   }
 
   const [getUserPods] = useLazyQuery(GET_USER_PODS, {
@@ -331,9 +349,11 @@ const CreateLayoutBaseModal = (props) => {
     },
   })
 
+  const [podsFetched, setPodsFetched] = useState(false)
   const [getUserAvailablePods] = useLazyQuery(GET_USER_AVAILABLE_PODS, {
     onCompleted: (data) => {
       setPods(data?.getAvailableUserPods)
+      setPodsFetched(true)
     },
     fetchPolicy: 'network-only',
   })
@@ -342,6 +362,7 @@ const CreateLayoutBaseModal = (props) => {
   const [pods, setPods] = useState([])
   const [pod, setPod] = useState(null)
   const [dueDate, setDueDate] = useState(null)
+  const [isPrivate, setIsPrivate] = useState(false)
   const {
     showDeliverableRequirementsSection,
     showBountySwitchSection,
@@ -358,8 +379,10 @@ const CreateLayoutBaseModal = (props) => {
         entityType === ENTITIES_TYPES.TASK ||
         entityType === ENTITIES_TYPES.MILESTONE,
       showLinkAttachmentSection: entityType === ENTITIES_TYPES.POD,
-      showHeaderImagePickerSection: entityType === ENTITIES_TYPES.POD,
-      showMembersSection: entityType === ENTITIES_TYPES.POD,
+      // TODO: add back in entityType === ENTITIES_TYPES.POD
+      showHeaderImagePickerSection: false,
+      // TODO: add back in entityType === ENTITIES_TYPES.POD
+      showMembersSection: false,
       showPrioritySelectSection: entityType === ENTITIES_TYPES.MILESTONE,
     }
   }, [entityType])
@@ -389,35 +412,66 @@ const CreateLayoutBaseModal = (props) => {
       value: orgUser?.user?.id,
     }))
   }, [])
+  const fetchedUserPermissionsContext =
+    userPermissionsContext?.getUserPermissionContext
+      ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+      : null
 
   useEffect(() => {
-    if (userOrgs?.getUserOrgs?.length === 1) {
+    if (
+      fetchedUserPermissionsContext &&
+      board?.orgId in fetchedUserPermissionsContext?.orgPermissions &&
+      !org
+    ) {
       // If you're only part of one dao then just set that as default
-      setOrg(userOrgs?.getUserOrgs[0]?.id)
+      // TODO: if you are part of the org and you're on that page it should be create on that org
+      setOrg(board?.orgId)
+    }
+    if (
+      fetchedUserPermissionsContext &&
+      board?.podId in fetchedUserPermissionsContext?.podPermissions &&
+      !pod
+    ) {
+      // If you're only part of one dao then just set that as default
+      // TODO: if you are part of the org and you're on that page it should be create on that org
+      setPod(board?.podId)
     }
     if (org) {
-      getUserAvailablePods({
-        variables: {
-          orgId: org,
-        },
-      })
-      getOrgUsers({
-        variables: {
-          orgId: org,
-        },
-      })
+      if (!podsFetched) {
+        getUserAvailablePods({
+          variables: {
+            orgId: org,
+          },
+        })
+      }
+      if (!orgUserFetched) {
+        getOrgUsers({
+          variables: {
+            orgId: org,
+          },
+        })
+      }
     }
-  }, [userOrgs?.getUserOrgs, org, getUserAvailablePods, getOrgUsers])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    userOrgs?.getUserOrgs,
+    board?.orgId,
+    fetchedUserPermissionsContext,
+    board?.podId,
+    org,
+    pod,
+  ])
 
   const permissions = parseUserPermissionContext({
-    userPermissionsContext: userPermissionsContext?.getUserPermissionContext
-      ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
-      : null,
+    userPermissionsContext: fetchedUserPermissionsContext,
     orgId: org,
     podId: pod,
   })
-  const canCreateTask = permissions.includes(PERMISSIONS.CREATE_TASK)
-
+  const canCreateTask =
+    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions.includes(PERMISSIONS.CREATE_TASK)
+  const canCreatePod = permissions.includes(PERMISSIONS.FULL_ACCESS)
+  const router = useRouter()
   const getPodObject = useCallback(() => {
     let justCreatedPod = null
     pods.forEach((testPod) => {
@@ -432,16 +486,16 @@ const CreateLayoutBaseModal = (props) => {
     onCompleted: (data) => {
       const task = data?.createTask
       const justCreatedPod = getPodObject()
-      if (orgBoard?.setColumns && task?.orgId === orgBoard?.orgId) {
+      if (board?.setColumns && task?.orgId === board?.orgId) {
         const transformedTask = transformTaskToTaskCard(task, {
-          orgName: orgBoard?.org?.name,
-          orgProfilePicture: orgBoard?.org?.profilePicture,
+          orgName: board?.org?.name,
+          orgProfilePicture: board?.org?.profilePicture,
           podName: justCreatedPod?.name,
         })
 
-        const columns = [...orgBoard?.columns]
+        const columns = [...board?.columns]
         columns[0].tasks = [transformedTask, ...columns[0].tasks]
-        orgBoard.setColumns(columns)
+        board.setColumns(columns)
       }
       handleClose()
     },
@@ -451,24 +505,32 @@ const CreateLayoutBaseModal = (props) => {
     onCompleted: (data) => {
       const taskProposal = data?.createTaskProposal
       const justCreatedPod = getPodObject()
-      if (orgBoard?.setColumns && taskProposal?.orgId === orgBoard?.orgId) {
+      if (board?.setColumns && taskProposal?.orgId === board?.orgId) {
         const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
           taskProposal,
           {
             userProfilePicture: user?.profilePicture,
             username: user?.username,
-            orgName: orgBoard?.org?.name,
-            orgProfilePicture: orgBoard?.org?.profilePicture,
+            orgName: board?.org?.name,
+            orgProfilePicture: board?.org?.profilePicture,
             podName: justCreatedPod?.name,
           }
         )
 
-        let columns = [...orgBoard?.columns]
+        let columns = [...board?.columns]
         columns = addProposalItem(transformedTaskProposal, columns)
-        orgBoard.setColumns(columns)
+        board.setColumns(columns)
       }
       handleClose()
     },
+  })
+
+  const [createPod] = useMutation(CREATE_POD, {
+    onCompleted: (data) => {
+      const pod = data?.createPod
+      router.push(`/pod/${pod?.id}`)
+    },
+    refetchQueries: ['getOrgById'],
   })
 
   const submitMutation = useCallback(() => {
@@ -506,6 +568,30 @@ const CreateLayoutBaseModal = (props) => {
           })
         }
         break
+      case ENTITIES_TYPES.POD:
+        if (canCreatePod) {
+          const podInput = {
+            name: title,
+            username: title?.toLowerCase().split(' ').join('_'),
+            description: descriptionText,
+            orgId: org,
+            privacyLevel: isPrivate ? 'private' : 'public',
+            links: [
+              {
+                url: link,
+                displayName: link,
+              },
+            ],
+          }
+          createPod({
+            variables: {
+              input: podInput,
+            },
+          })
+        } else {
+          setError('You need full access permissions to create a pod')
+        }
+        break
     }
   }, [
     title,
@@ -521,9 +607,14 @@ const CreateLayoutBaseModal = (props) => {
     createTask,
     entityType,
     createTaskProposal,
+    isPrivate,
+    link,
+    createPod,
+    canCreatePod,
   ])
+
   return (
-    <CreateFormBaseModal>
+    <CreateFormBaseModal isPod={isPod}>
       <CreateFormBaseModalCloseBtn onClick={handleClose}>
         <CloseModalIcon />
       </CreateFormBaseModalCloseBtn>
@@ -549,30 +640,34 @@ const CreateLayoutBaseModal = (props) => {
             options={filterDAOptions(userOrgs?.getUserOrgs) || []}
             name="dao"
           />
-          <DropdownSelect
-            title="Pod"
-            labelText="Choose Pod"
-            value={pod}
-            setValue={setPod}
-            labelIcon={<CreatePodIcon />}
-            options={filterDAOptions(pods) || []}
-            name="pod"
-          />
+          {!isPod && (
+            <DropdownSelect
+              title="Pod"
+              labelText="Choose Pod"
+              value={pod}
+              setValue={setPod}
+              labelIcon={<CreatePodIcon />}
+              options={filterDAOptions(pods) || []}
+              name="pod"
+            />
+          )}
         </CreateFormMainSelects>
 
         <CreateFormMainInputBlock>
-          <CreateFormMainBlockTitle>Task title</CreateFormMainBlockTitle>
+          <CreateFormMainBlockTitle>{titleText} title</CreateFormMainBlockTitle>
 
           <InputForm
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter task title"
+            placeholder={`Enter ${titleText.toLowerCase()} title`}
             search={false}
           />
         </CreateFormMainInputBlock>
 
         <CreateFormMainInputBlock>
-          <CreateFormMainBlockTitle>Task description</CreateFormMainBlockTitle>
+          <CreateFormMainBlockTitle>
+            {titleText} description
+          </CreateFormMainBlockTitle>
           <TextInputDiv>
             <TextInputContext.Provider
               value={{
@@ -582,7 +677,7 @@ const CreateLayoutBaseModal = (props) => {
               }}
             >
               <TextInput
-                placeholder="Enter task description"
+                placeholder={`Enter ${titleText.toLowerCase()} description`}
                 // rows={5}
                 // maxRows={5}
                 style={{
@@ -600,119 +695,123 @@ const CreateLayoutBaseModal = (props) => {
           </TextInputDiv>
 
           <CreateFormMainDescriptionInputSymbolCounter>
-            {descriptionText.length}/900 characters
+            {descriptionText.length}/{textLimit} characters
           </CreateFormMainDescriptionInputSymbolCounter>
         </CreateFormMainInputBlock>
-        <CreateFormMainInputBlock>
-          <CreateFormMainBlockTitle>Multi-media</CreateFormMainBlockTitle>
+        {!isPod && (
+          <CreateFormMainInputBlock>
+            <CreateFormMainBlockTitle>Multi-media</CreateFormMainBlockTitle>
 
-          {mediaUploads?.length > 0 ? (
-            <MediaUploadDiv>
-              {mediaUploads.map((mediaItem) => (
-                <MediaItem
-                  key={mediaItem?.uploadSlug}
-                  mediaUploads={mediaUploads}
-                  setMediaUploads={setMediaUploads}
-                  mediaItem={mediaItem}
+            {mediaUploads?.length > 0 ? (
+              <MediaUploadDiv>
+                {mediaUploads.map((mediaItem) => (
+                  <MediaItem
+                    key={mediaItem?.uploadSlug}
+                    mediaUploads={mediaUploads}
+                    setMediaUploads={setMediaUploads}
+                    mediaItem={mediaItem}
+                  />
+                ))}
+                <AddFileUpload
+                  onClick={() => {
+                    inputRef.current.click()
+                  }}
+                  style={{
+                    cursor: 'pointer',
+                    width: '24',
+                    height: '24',
+                    marginBottom: '8px',
+                  }}
                 />
-              ))}
-              <AddFileUpload
-                onClick={() => {
-                  inputRef.current.click()
-                }}
-                style={{
-                  cursor: 'pointer',
-                  width: '24',
-                  height: '24',
-                  marginBottom: '8px',
-                }}
-              />
-            </MediaUploadDiv>
-          ) : (
-            <MultiMediaUploadButton onClick={() => inputRef.current.click()}>
-              <UploadImageIcon
-                style={{
-                  width: '13',
-                  height: '17',
-                  marginRight: '8px',
-                }}
-              />
-              <MultiMediaUploadButtonText>
-                Upload file
-              </MultiMediaUploadButtonText>
-            </MultiMediaUploadButton>
-          )}
-          <input
-            type="file"
-            hidden
-            ref={inputRef}
-            onChange={(event) =>
-              handleAddFile({
-                event,
-                filePrefix: 'tmp/task/new/',
-                mediaUploads,
-                setMediaUploads,
-              })
-            }
-          />
-        </CreateFormMainInputBlock>
+              </MediaUploadDiv>
+            ) : (
+              <MultiMediaUploadButton onClick={() => inputRef.current.click()}>
+                <UploadImageIcon
+                  style={{
+                    width: '13',
+                    height: '17',
+                    marginRight: '8px',
+                  }}
+                />
+                <MultiMediaUploadButtonText>
+                  Upload file
+                </MultiMediaUploadButtonText>
+              </MultiMediaUploadButton>
+            )}
+            <input
+              type="file"
+              hidden
+              ref={inputRef}
+              onChange={(event) =>
+                handleAddFile({
+                  event,
+                  filePrefix: 'tmp/task/new/',
+                  mediaUploads,
+                  setMediaUploads,
+                })
+              }
+            />
+          </CreateFormMainInputBlock>
+        )}
+
         {/*Upload header image block*/}
         {showHeaderImagePickerSection && <HeaderImage />}
 
-        <CreateFormMainSelects>
-          <DropdownSelect
-            title="Reward currency"
-            labelText="Choose tokens"
-            options={REWARD_SELECT_OPTIONS}
-            name="reward-currency"
-            setValue={setRewardsCurrency}
-            value={rewardsCurrency}
-          />
-          <CreateRewardAmountDiv>
-            <CreateFormMainBlockTitle>Reward amount</CreateFormMainBlockTitle>
-
-            <InputForm
-              style={{
-                marginTop: '20px',
-              }}
-              type={'number'}
-              placeholder="Enter reward amount"
-              search={false}
-              value={rewardsAmount}
-              setValue={setRewardsAmount}
+        {isTask && (
+          <CreateFormMainSelects>
+            <DropdownSelect
+              title="Reward currency"
+              labelText="Choose tokens"
+              options={REWARD_SELECT_OPTIONS}
+              name="reward-currency"
+              setValue={setRewardsCurrency}
+              value={rewardsCurrency}
             />
-          </CreateRewardAmountDiv>
-        </CreateFormMainSelects>
-
-        {showMembersSection &&
-          canCreateTask(
-            <CreateFormMembersSection>
-              <CreateFormMainBlockTitle>Members</CreateFormMainBlockTitle>
+            <CreateRewardAmountDiv>
+              <CreateFormMainBlockTitle>Reward amount</CreateFormMainBlockTitle>
 
               <InputForm
-                search
-                margin
-                icon={<CircleIcon />}
-                placeholder="Search reviewers"
+                style={{
+                  marginTop: '20px',
+                }}
+                type={'number'}
+                placeholder="Enter reward amount"
+                search={false}
+                value={rewardsAmount}
+                setValue={setRewardsAmount}
               />
+            </CreateRewardAmountDiv>
+          </CreateFormMainSelects>
+        )}
 
-              <CreateFormMembersBlock>
-                <CreateFormMembersBlockTitle>
-                  {createPodMembersList.length}
-                  {createPodMembersList.length > 1 ? ' members' : ' member'}
-                </CreateFormMembersBlockTitle>
-                <CreateFormMembersList>
-                  {createPodMembersList.map((item) => (
-                    <MembersRow
-                      key={item.name}
-                      name={item.name}
-                      styledSwitch={<AndroidSwitch />}
-                    />
-                  ))}
-                </CreateFormMembersList>
-              </CreateFormMembersBlock>
-            </CreateFormMembersSection>
-          )}
+        {showMembersSection && (
+          <CreateFormMembersSection>
+            <CreateFormMainBlockTitle>Members</CreateFormMainBlockTitle>
+
+            <InputForm
+              search
+              margin
+              icon={<CircleIcon />}
+              placeholder="Search reviewers"
+            />
+
+            <CreateFormMembersBlock>
+              <CreateFormMembersBlockTitle>
+                {createPodMembersList.length}
+                {createPodMembersList.length > 1 ? ' members' : ' member'}
+              </CreateFormMembersBlockTitle>
+              <CreateFormMembersList>
+                {createPodMembersList.map((item) => (
+                  <MembersRow
+                    key={item.name}
+                    name={item.name}
+                    styledSwitch={<AndroidSwitch />}
+                  />
+                ))}
+              </CreateFormMembersList>
+            </CreateFormMembersBlock>
+          </CreateFormMembersSection>
+        )}
         {showAppearSection && (
           <CreateFormAddDetailsInputs
             style={{
@@ -941,12 +1040,19 @@ const CreateLayoutBaseModal = (props) => {
                 </CreateFormAddDetailsSelects>
 
                 {/* <CreateFormAddDetailsSelects> */}
-                {/* <CreateFormAddDetailsSwitch>
-										<CreateFormAddDetailsInputLabel>
-											Private task
-										</CreateFormAddDetailsInputLabel>
-										<AndroidSwitch />
-									</CreateFormAddDetailsSwitch> */}
+                {/* {isPod && (
+                  <CreateFormAddDetailsSwitch>
+                    <CreateFormAddDetailsInputLabel>
+                      Private
+                    </CreateFormAddDetailsInputLabel>
+                    <AndroidSwitch
+                      checked={isPrivate}
+                      onChange={(e) => {
+                        setIsPrivate(e.target.checked)
+                      }}
+                    />
+                  </CreateFormAddDetailsSwitch>
+                )} */}
 
                 {/*if Suggest a task opened */}
                 {/* {showBountySwitchSection && canCreateTask && (
@@ -971,28 +1077,61 @@ const CreateLayoutBaseModal = (props) => {
               </CreateFormAddDetailsAppearBlockContainer>
             )}
 
-            {showLinkAttachmentSection && (
-              <CreateFormLinkAttachmentBlock>
+            {/* {showLinkAttachmentSection && (
+              <CreateFormLinkAttachmentBlock
+                style={{
+                  borderBottom: 'none',
+                  paddingTop: '16px',
+                }}
+              >
                 <CreateFormLinkAttachmentLabel>
-                  Links
+                  Link
                 </CreateFormLinkAttachmentLabel>
                 <InputForm
+                  value={link}
+                  onChange={(e) => setLink(e.target.value)}
                   margin
-                  placeholder="Enter link attachment"
+                  placeholder="Enter link URL"
                   search={false}
                 />
               </CreateFormLinkAttachmentBlock>
+            )} */}
+            {isPod && (
+              <div>
+                <CreateFormAddDetailsSwitch>
+                  <CreateFormAddDetailsInputLabel>
+                    Private {titleText.toLowerCase()}
+                  </CreateFormAddDetailsInputLabel>
+                  <AndroidSwitch
+                    checked={isPrivate}
+                    onChange={(e) => {
+                      setIsPrivate(e.target.checked)
+                    }}
+                  />
+                </CreateFormAddDetailsSwitch>
+              </div>
             )}
           </CreateFormAddDetailsAppearBlock>
         )}
       </CreateFormAddDetailsSection>
 
       <CreateFormFooterButtons>
+        {error && <ErrorText>{error}</ErrorText>}
         <CreateFormButtonsBlock>
           <CreateFormCancelButton onClick={resetEntityType}>
             Cancel
           </CreateFormCancelButton>
-          <CreateFormPreviewButton onClick={submitMutation}>
+          <CreateFormPreviewButton
+            style={{
+              ...(isPod &&
+                !canCreatePod && {
+                  background: Grey700,
+                  border: `1px solid ${Grey700}`,
+                  cursor: 'default',
+                }),
+            }}
+            onClick={submitMutation}
+          >
             {canCreateTask ? 'Create' : 'Propose'} {titleText}
           </CreateFormPreviewButton>
         </CreateFormButtonsBlock>

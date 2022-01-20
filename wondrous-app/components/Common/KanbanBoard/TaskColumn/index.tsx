@@ -59,6 +59,7 @@ const ColumnDropZone = ({ status, moveCard, children }) => {
   const orgBoard = useOrgBoard()
   const userBoard = useUserBoard()
   const podBoard = usePodBoard()
+  const board = orgBoard || userBoard || podBoard
   const userPermissionsContext =
     orgBoard?.userPermissionsContext ||
     podBoard?.userPermissionsContext ||
@@ -113,7 +114,10 @@ const ColumnDropZone = ({ status, moveCard, children }) => {
 const TaskColumn = (props: ITaskColumn) => {
   const { cardsList, moveCard, status, section } = props
   const orgBoard = useOrgBoard()
-  const taskCount = orgBoard?.taskCount
+  const userBoard = useUserBoard()
+  const podBoard = usePodBoard()
+  const board = orgBoard || userBoard || podBoard
+  const taskCount = board?.taskCount
   const HeaderIcon = HEADER_ICONS[status]
   let number
 
