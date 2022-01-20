@@ -130,7 +130,7 @@ export const HeaderInviteButton = styled(Button)`
     justify-content: space-between;
 
     :hover {
-      background: #3D3D3D;
+      background: #3d3d3d;
 
       .MuiButton-label > div {
         background: #232323;
@@ -140,7 +140,7 @@ export const HeaderInviteButton = styled(Button)`
 `
 
 export const PlusIconWrapper = styled.div`
-  background: #3D3D3D;
+  background: #3d3d3d;
   border-radius: 100%;
   width: 26px;
   height: 26px;
@@ -149,8 +149,9 @@ export const PlusIconWrapper = styled.div`
   justify-content: center;
 
   // TODO: look for other ways to do this
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 `
 
 export const HeaderContributeButton = styled(Button)`
@@ -230,7 +231,6 @@ export const HeaderActivity = styled.div`
   min-height: 23px;
   height: 23px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
 `
 
