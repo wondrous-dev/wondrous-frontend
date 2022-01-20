@@ -17,7 +17,7 @@ export const TaskFragment = gql`
     status
     links {
       url
-      name
+      displayName
       type
     }
     assigneeId

@@ -55,7 +55,11 @@ const SIDEBAR_LIST_ITEMS = [
 ]
 
 const Wrapper = (props) => {
-	const { children } = props
+	const { children, userProfileData } = props
+	const username = userProfileData?.username
+	const bio = userProfileData?.bio
+	const orgCount = userProfileData?.additionalInfo?.orgCount
+	const podCount = userProfileData?.additionalInfo?.podCount
 	const [minimized, setMinimized] = useState(false)
 	return (
 		<>
@@ -78,35 +82,27 @@ const Wrapper = (props) => {
 							<TokenHeader>
 								<TokenLogo />
 								<HeaderMainBlock>
-									<HeaderTitle>0xAndros</HeaderTitle>
+									<HeaderTitle>{username}</HeaderTitle>
 									<HeaderButtons>
-										<HeaderFollowButton>
-											<HeaderFollowButtonText>2,500</HeaderFollowButtonText>
-											<HeaderFollowButtonIcon src="/images/overview/icon.png" />
-										</HeaderFollowButton>
 										<HeaderEditProfileButton>
 											Edit my profile
 										</HeaderEditProfileButton>
 									</HeaderButtons>
 								</HeaderMainBlock>
-								<HeaderText>Building the future of work and play.</HeaderText>
+								<HeaderText>{bio}</HeaderText>
 								<HeaderActivity>
 									<HeaderActivityLink href="https://andros.io">
 										<HeaderActivityLinkIcon />
 										andros.io
 									</HeaderActivityLink>
 									<HeaderFollowers>
-										<HeaderFollowersAmount>201</HeaderFollowersAmount>
-										<HeaderFollowersText>Followers</HeaderFollowersText>
+										<HeaderFollowersAmount>{podCount}</HeaderFollowersAmount>
+										<HeaderFollowersText>Pods</HeaderFollowersText>
 									</HeaderFollowers>
 									<HeaderFollowing>
-										<HeaderFollowingAmount>201</HeaderFollowingAmount>
-										<HeaderFollowingText>Following</HeaderFollowingText>
+										<HeaderFollowingAmount>{orgCount}</HeaderFollowingAmount>
+										<HeaderFollowingText>DAOs</HeaderFollowingText>
 									</HeaderFollowing>
-									<HeaderProjects>
-										<HeaderProjectsAmount>11</HeaderProjectsAmount>
-										<HeaderProjectsText>Projects</HeaderProjectsText>
-									</HeaderProjects>
 								</HeaderActivity>
 							</TokenHeader>
 

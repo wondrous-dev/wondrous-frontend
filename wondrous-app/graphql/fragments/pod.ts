@@ -18,7 +18,7 @@ export const PodFragment = gql`
     tasksCompletedCount
     links {
       url
-      name
+      displayName
       type
     }
   }

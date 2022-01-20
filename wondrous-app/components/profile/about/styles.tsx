@@ -12,7 +12,7 @@ export const AboutSection = styled.div`
 export const AboutInfoTable = styled.div`
 	max-width: 680px;
 	width: 680px;
-	height: 130px;
+	height: 80px;
 	margin: 20px auto 40px;
 	display: flex;
 	flex-direction: column;

@@ -1,7 +1,11 @@
 import React from 'react'
 import {
+	SOCIAL_MEDIA_DISCORD,
 	SOCIAL_MEDIA_FACEBOOK,
+	SOCIAL_MEDIA_GITHUB,
+	SOCIAL_MEDIA_INSTAGRAM,
 	SOCIAL_MEDIA_LINKEDIN,
+	SOCIAL_MEDIA_SPOTIFY,
 	SOCIAL_MEDIA_TWITTER,
 } from '../../../utils/constants'
 import FacebookIcon from '../../Icons/facebook'
@@ -39,23 +43,53 @@ const SOCIAL_MEDIA_ICONS = {
 	[SOCIAL_MEDIA_FACEBOOK]: FacebookIcon,
 	[SOCIAL_MEDIA_TWITTER]: TwitterPurpleIcon,
 	[SOCIAL_MEDIA_LINKEDIN]: LinkedInIcon,
+	[SOCIAL_MEDIA_DISCORD]: LinkedInIcon,
+	[SOCIAL_MEDIA_GITHUB]: LinkedInIcon,
+	[SOCIAL_MEDIA_SPOTIFY]: LinkedInIcon,
+	[SOCIAL_MEDIA_INSTAGRAM]: LinkedInIcon,
+}
+const SOCIAL_LINKS = ['twitter', 'discord', 'instagram','github', 'linkedin', 'spotify']
+
+const _parseLinks = (links) => {
+	if (!links){
+		return {
+			'social': [],
+			'websites': [],
+			'main': {},		
+		}
+	}
+	let mainLink = {}
+	const socialLinks = []
+	const websites = []
+	for(const link of links) {
+		if (!link.type || link.type=== 'website') {
+			websites.push(link)
+		}
+		else if (SOCIAL_LINKS.includes(link.type)){
+			socialLinks.push(link)
+		}
+		else if (link.type==='main'){
+			mainLink = link
+		}
+	}
+	return {
+		'social': socialLinks,
+		'websites': websites,
+		'main': mainLink,		
+	}
 }
 
 const About = (props) => {
 	const {
-		lastCompletedTask = {},
-		organizations = [],
-		profileInfo = {},
-		pods = [],
+		userProfileData = {}
 	} = props
-
-	const { completedTasks, links, skills, socialMedia } = profileInfo
+	const {social, websites, main} = _parseLinks(userProfileData?.links)
 
 	return (
-		<Wrapper>
+		<Wrapper userProfileData={userProfileData}>
 			<AboutSection>
 				<AboutInfoTable>
-					<AboutInfoTableRow>
+					{/* <AboutInfoTableRow>
 						<AboutInfoTableRowNameBlock>
 							<AboutInfoTableRowTitle>
 								<SkillsIcon />
@@ -71,7 +105,7 @@ const About = (props) => {
 								</AboutInfoTableRowContentItem>
 							))}
 						</AboutInfoTableRowContent>
-					</AboutInfoTableRow>
+					</AboutInfoTableRow> */}
 
 					<AboutInfoTableRow>
 						<AboutInfoTableRowNameBlock>
@@ -81,12 +115,12 @@ const About = (props) => {
 							</AboutInfoTableRowTitle>
 						</AboutInfoTableRowNameBlock>
 						<AboutInfoTableRowContent>
-							{socialMedia.map(({ name }) => {
-								const SocialMediaIcon = SOCIAL_MEDIA_ICONS[name]
-
+							{social.map(({ url, type }) => {
+								const SocialMediaIcon = SOCIAL_MEDIA_ICONS[type]
 								return (
-									<AboutInfoTableRowContentSocialButton key={name}>
-										<SocialMediaIcon />
+									// href={url} as="a" target="_blank"
+									<AboutInfoTableRowContentSocialButton key={url} >
+										<SocialMediaIcon  />
 									</AboutInfoTableRowContentSocialButton>
 								)
 							})}
@@ -101,10 +135,10 @@ const About = (props) => {
 							</AboutInfoTableRowTitle>
 						</AboutInfoTableRowNameBlock>
 						<AboutInfoTableRowContent>
-							{links.map(({ link, text }) => (
-								<AboutInfoTableRowContentItem key={link}>
-									<AboutInfoTableRowContentItemLink href={link} as="a">
-										{text}
+							{websites.map(({ url, displayName }) => (
+								<AboutInfoTableRowContentItem key={url}>
+									<AboutInfoTableRowContentItemLink href={url} as="a" target="_blank">
+										{displayName ? displayName: url.substring(0,20)}
 									</AboutInfoTableRowContentItemLink>
 								</AboutInfoTableRowContentItem>
 							))}
@@ -112,7 +146,7 @@ const About = (props) => {
 					</AboutInfoTableRow>
 				</AboutInfoTable>
 
-				<AboutInfoContainer>
+				{/* <AboutInfoContainer>
 					<AboutInfoBlock>
 						<AboutInfoBlockHeader>
 							<AboutInfoBlockHeaderAmount>
@@ -157,7 +191,7 @@ const About = (props) => {
 							<AboutCompletedCard lastCompletedTask={lastCompletedTask} />
 						</AboutInfoBlockContent>
 					</AboutInfoBlock>
-				</AboutInfoContainer>
+				</AboutInfoContainer> */}
 			</AboutSection>
 		</Wrapper>
 	)
