@@ -133,6 +133,8 @@ export const PERMISSIONS = {
   REVIEW_TASK: 'review_task', //can be set as reviewer, once approved, it' automatically done
   MANAGE_COMMENT: 'manage_comment',
   MANAGE_POST: 'manage_post',
+  MANAGE_POD: 'manage_pod', //  create new pod, archive existing pod
+  REORDER_TASK: 'reorder_task', // reorder task vertically
 }
 
 export const NOTIFICATION_VERBS = {

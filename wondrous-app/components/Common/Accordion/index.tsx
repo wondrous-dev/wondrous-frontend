@@ -7,7 +7,7 @@ import { AccordionComp, AccordionDetails } from './styles';
 import { Chevron } from '../../Icons/sections';
 
 // https://mui.com/api/accordion/
-export default function Accordion({ children, title, disabled }) {
+export default function Accordion({ children, title, disabled = false }) {
   return (
     <AccordionComp disabled={disabled}>
       <AccordionSummary expandIcon={<Chevron />}>

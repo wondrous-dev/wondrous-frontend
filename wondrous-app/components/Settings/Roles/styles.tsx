@@ -1,17 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import { space } from 'styled-system';
-import {
-  InputBase,
-  Switch,
-  Typography,
-} from '@material-ui/core';
-import { Button } from '../../Common/button';
+import { InputBase, Switch, Typography } from '@material-ui/core';
+import SnackbarComp from '@mui/material/Snackbar';
 
+import { Button } from '../../Common/button';
 
 export const RolesContainer = styled.div`
   height: 100vh;
-  width: 555px;
+  width: 100%;
+  max-width: 765px;
 `;
 
 export const Box = styled.div`
@@ -19,7 +17,7 @@ export const Box = styled.div`
 `;
 
 export const RolesInputsBlock = styled.div`
-  padding: 30px 0;
+  padding: 30px 0 10px;
 `;
 
 export const RoleNameBlock = styled.div`
@@ -43,22 +41,48 @@ export const CreateRoleButton = styled(Button)`
   min-height: 36px;
 `;
 
+export const DeleteButton = styled(Button).attrs({ variant: 'outlined', color: 'error' })`
+  && {
+    border: 1px solid #cb3340;
+    color: white;
+    width: 150px;
+    height: 36px;
+    min-height: 36px;
+  }
+`;
+
+export const Permissions = styled.div`
+  padding: 0 24px;
+`;
+
 export const Permission = styled.div`
-  padding: 24px;
   color: white;
   display: flex;
   justify-content: space-between;
-  border-top: 1px solid #4b4b4b;
+  align-items: center;
+  height: 85px;
+
+  &:not(:first-child) {
+    border-top: 1px solid #4b4b4b;
+  }
 `;
 
 export const PermissionTitle = styled.h5`
   font-size: 16px;
-  margin: 0 0 10px 0;
+  margin-bottom: 7px;
+  margin-top: 14px;
 `;
 
 export const PermissionSubtitle = styled.div`
   font-size: 13px;
   color: #c4c4c4;
+`;
+
+export const PermissionFooter = styled.div`
+  border-top: 1px solid #4b4b4b;
+  padding: 50px 0 30px;
+  display: flex;
+  justify-content: flex-end;
 `;
 
 export const RoleNameInput = styled(InputBase)`
@@ -76,47 +100,22 @@ export const RoleNameInput = styled(InputBase)`
   }
 `;
 
-export const AndroidSwitch = styled(Switch)(({ theme }) => ({
-  padding: 8,
-  '& .MuiSwitch-track': {
-    borderRadius: 22 / 2,
-    background: '#3E3E3E',
-
-    '&:before': {
-      content: '""',
-      position: 'absolute',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      width: 16,
-      height: 16,
-      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="white" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
-      left: 12,
-      zIndex: 1000,
-      opacity: 1,
-    },
-  },
-  '& .MuiSwitch-thumb': {
-    boxShadow: 'none',
-    width: 16,
-    height: 16,
-    margin: 2,
-    background: 'white',
-  },
-
-  '& .MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track': {
-    background:
-      'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
-  },
-}));
-
 export const LabelBlock = styled(Typography)`
   && {
-    ${space}
+    ${space};
+    margin-left: 20px;
     font-weight: 500;
     font-size: 14px;
     line-height: 18px;
     letter-spacing: 0.01em;
     color: #ccbbff;
     margin-bottom: 10px;
+  }
+`;
+
+export const Snackbar = styled(SnackbarComp)`
+  .MuiPaper-elevation {
+    background: rgb(0, 67, 61);
+    color: white;
   }
 `;

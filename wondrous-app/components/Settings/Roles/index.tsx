@@ -1,45 +1,71 @@
-import React, { useEffect, useState } from 'react';
+import React, { SyntheticEvent, useEffect, useState } from 'react';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { GET_ORG_ROLES, GET_ORG_USERS, GET_USER_ORGS } from '../../../graphql/queries/org';
+import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
 import UserCheckIcon from '../../Icons/userCheckIcon';
 import Accordion from '../../Common/Accordion';
-
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_ROLES, GET_ORG_USERS, GET_USER_ORGS } from '../../../graphql/queries/org';
+import Switch from '../../Common/Switch';
 
 import permissons from './permissons';
+
 import {
   RolesContainer,
   CreateRole,
   CreateRoleButton,
   RoleNameBlock,
-  AndroidSwitch,
   RoleNameInput,
   RolesInputsBlock,
   Permission,
   LabelBlock,
   PermissionSubtitle,
+  Permissions,
   PermissionTitle,
   Box,
+  Snackbar,
+  DeleteButton,
+  PermissionFooter,
 } from './styles';
 import { transformTaskToTaskCard } from '../../../utils/helpers';
 import { CREATE_ORG_ROLE, DELETE_ORG_ROLE, UPDATE_ORG_ROLE } from '../../../graphql/mutations/org';
 
 const Roles = () => {
   const [newRoleName, setNewRoleName] = useState('');
+  const [newRolePermissions, setNewRolePermissions] = useState([]);
+  const [organizationRoles, setOrganizationRoles] = useState([]);
+  const [toast, setToast] = useState({ show: false, message: '' });
+  // Get user organizations
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
-  const [getOrgRoles, { data: organizationRoles }] = useLazyQuery(GET_ORG_ROLES);
-  const [updateOrgRole, { data: data2 }] = useMutation(UPDATE_ORG_ROLE);
-  const [deleteOrgRole, { data }] = useMutation(DELETE_ORG_ROLE);
-  const [createOrgRole] = useMutation(CREATE_ORG_ROLE, {
+  // Get organization roles
+  const [getOrgRoles, { data: getOrgRolesData }] = useLazyQuery(GET_ORG_ROLES);
+  const [updateOrgRole] = useMutation(UPDATE_ORG_ROLE, {
     onCompleted: (data) => {
       debugger;
     },
   });
+
+  // Mutation to delete organization role
+  const [deleteOrgRole, { loading: deleting }] = useMutation(DELETE_ORG_ROLE, {
+    onCompleted: () => {
+      setToast({ ...toast, message: `Role deleted successfully!`, show: true });
+      getOrgRoles();
+    },
+  });
+  // Mutation to create organization role
+  const [createOrgRole] = useMutation(CREATE_ORG_ROLE, {
+    onCompleted: ({ createOrgRole: role }) => {
+      setToast({ ...toast, message: `${role.name} created successfully!`, show: true });
+      getOrgRoles();
+    },
+  });
+
+  // TODO: Use selected organization in the future instead of the first one
   const firstOrganization = userOrgs?.getUserOrgs[0];
 
+  // Get organization roles when organization is defined
   useEffect(() => {
     if (firstOrganization) {
       getOrgRoles({
@@ -50,12 +76,39 @@ const Roles = () => {
     }
   }, [firstOrganization]);
 
-  const handleNewRoleNameChange = (e) => {
-    if (!newRoleName) {
-      return;
+  useEffect(() => {
+    if (getOrgRolesData) {
+      setOrganizationRoles(JSON.parse(JSON.stringify(getOrgRolesData?.getOrgRoles)) || []);
     }
-    console.log('-------')
+  }, [getOrgRolesData]);
 
+  // Creates new role
+  function createNewRole() {
+    createOrgRole({
+      variables: {
+        input: {
+          permissions: newRolePermissions,
+          orgId: firstOrganization.id,
+          name: newRoleName,
+        },
+      },
+    });
+
+    setNewRolePermissions([]);
+    setNewRoleName('');
+  }
+
+  function handleOrgRolePermissionChange(orgRole, permission: string, checked: boolean) {
+    const permissions = [...orgRole.permissions];
+
+    if (checked) {
+      permissions.push(permission);
+    } else {
+      permissions.splice(permissions.indexOf(permission), 1);
+    }
+
+    orgRole.permissions = permissions;
+    setOrganizationRoles(organizationRoles);
 
     // updateOrgRole({
     //   variables: {
@@ -66,34 +119,36 @@ const Roles = () => {
     //     },
     //   },
     // });
-    //
-    // return;
-    // deleteOrgRole({
-    //   variables: {
-    //     id: '45818761557573640',
-    //   },
-    // });
-    //
-    // return;
-    //
-    // const roleInput = {
-    //   permissions: ['manage_pod'],
-    //   orgId: firstOrganization.id,
-    //   // org: firstOrganization,
-    //   name: 'test',
-    // };
-    //
-    // // debugger;
-    // createOrgRole({
-    //   variables: {
-    //     input: roleInput,
-    //   },
-    // });
 
-  };
+    updateOrgRole({
+      variables: {
+        input: orgRole,
+      },
+    });
+  }
+
+  function handleNewRolePermissionChange(permission: string, checked: boolean) {
+    const permissions = [...newRolePermissions];
+
+    if (checked) {
+      permissions.push(permission);
+    } else {
+      permissions.splice(newRolePermissions.indexOf(permission), 1);
+    }
+
+    setNewRolePermissions(permissions);
+  }
 
   return (
     <SettingsWrapper>
+      <Snackbar
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={toast.show}
+        onClose={() => setToast({ ...toast, show: false })}
+        message={toast.message}
+      />
+
       <RolesContainer>
         <HeaderBlock
           icon={<UserCheckIcon circle />}
@@ -106,45 +161,62 @@ const Roles = () => {
 
             <CreateRole>
               <RoleNameInput value={newRoleName} onChange={(e) => setNewRoleName(e.target.value)} />
-              <CreateRoleButton onClick={handleNewRoleNameChange} disabled={!newRoleName} highlighted={!!newRoleName}>
+              <CreateRoleButton onClick={createNewRole} disabled={!newRoleName} highlighted={!!newRoleName}>
                 Create role
               </CreateRoleButton>
             </CreateRole>
           </RoleNameBlock>
         </RolesInputsBlock>
         <Accordion title="Select permissions" disabled={!newRoleName}>
-          {/*{permissons.map((permisson) => (*/}
-          {/*  <Permission key={permisson.title}>*/}
-          {/*    <div>*/}
-          {/*      <PermissionTitle>{permisson.title}</PermissionTitle>*/}
-          {/*      <PermissionSubtitle>{permisson.subTitle}</PermissionSubtitle>*/}
-          {/*    </div>*/}
-          {/*    <AndroidSwitch />*/}
-          {/*  </Permission>*/}
-          {/*))}*/}
+          <Permissions>
+            {permissons.map((item) => (
+              <Permission key={item.permission}>
+                <div>
+                  <PermissionTitle>{item.title}</PermissionTitle>
+                  <PermissionSubtitle>{item.subTitle}</PermissionSubtitle>
+                </div>
+                <Switch
+                  size="medium"
+                  checked={newRolePermissions.includes(item.permission)}
+                  onChange={(e) => handleNewRolePermissionChange(item.permission, e.currentTarget.checked)}
+                />
+              </Permission>
+            ))}
+          </Permissions>
         </Accordion>
 
-        {/*{organizationRoles?.getOrgRoles.length ? (*/}
-        {/*  <LabelBlock mt={120}>{organizationRoles?.getOrgRoles.length} Existing roles</LabelBlock>*/}
-        {/*) : null}*/}
+        {organizationRoles.length ? <LabelBlock mt={120}>{organizationRoles.length} Existing roles</LabelBlock> : null}
 
-        {/*{(organizationRoles?.getOrgRoles || []).map((role) => (*/}
-        {/*  <Box mt={22}>*/}
-        {/*    <Accordion key={role.id} title={role.name}>*/}
-        {/*      {permissons.map((permisson) => (*/}
-        {/*        <Permission key={role.name}>*/}
-        {/*          <div>*/}
-        {/*            <PermissionTitle>{permisson.title}</PermissionTitle>*/}
-        {/*            <PermissionSubtitle>{permisson.subTitle}</PermissionSubtitle>*/}
-        {/*          </div>*/}
-        {/*          <AndroidSwitch />*/}
-        {/*        </Permission>*/}
-        {/*      ))}*/}
-
-        {/*      <LabelBlock>Delete role</LabelBlock>*/}
-        {/*    </Accordion>*/}
-        {/*  </Box>*/}
-        {/*))}*/}
+        {organizationRoles.map((orgRole) => (
+          <Box key={orgRole.id} mt={22}>
+            <Accordion title={orgRole.name}>
+              <Permissions>
+                {permissons.map((item) => (
+                  <Permission key={item.permission}>
+                    <div>
+                      <PermissionTitle>{item.title}</PermissionTitle>
+                      <PermissionSubtitle>{item.subTitle}</PermissionSubtitle>
+                    </div>
+                    <Switch
+                      size="medium"
+                      checked={orgRole.permissions.includes(item.permission)}
+                      onChange={(e) => handleOrgRolePermissionChange(orgRole, item.permission, e.currentTarget.checked)}
+                    />
+                  </Permission>
+                ))}
+                <PermissionFooter>
+                  {!deleting ? (
+                    <DeleteButton disabled onClick={() => deleteOrgRole({ variables: { id: orgRole.id } })}>
+                      Delete role
+                    </DeleteButton>
+                  ) : (
+                    <CircularProgress />
+                  )}
+                </PermissionFooter>
+              </Permissions>
+            </Accordion>
+          </Box>
+        ))}
       </RolesContainer>
     </SettingsWrapper>
   );
