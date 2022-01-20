@@ -1,8 +1,6 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_ROLES, GET_ORG_USERS, GET_USER_ORGS } from '../../../graphql/queries/org';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 
 import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
@@ -28,8 +26,8 @@ import {
   Snackbar,
   DeleteButton,
   PermissionFooter,
+  Error,
 } from './styles';
-import { transformTaskToTaskCard } from '../../../utils/helpers';
 import { CREATE_ORG_ROLE, DELETE_ORG_ROLE, UPDATE_ORG_ROLE } from '../../../graphql/mutations/org';
 
 const Roles = () => {
@@ -38,26 +36,25 @@ const Roles = () => {
   const [organizationRoles, setOrganizationRoles] = useState([]);
   const [toast, setToast] = useState({ show: false, message: '' });
   // Get user organizations
-  const { data: userOrgs } = useQuery(GET_USER_ORGS);
+  const { data: userOrgs, error: userOrgsError } = useQuery(GET_USER_ORGS);
   // Get organization roles
   const [getOrgRoles, { data: getOrgRolesData }] = useLazyQuery(GET_ORG_ROLES);
   const [updateOrgRole] = useMutation(UPDATE_ORG_ROLE, {
-    onCompleted: (data) => {
-      debugger;
+    onCompleted: (role) => {
+      setToast({ ...toast, message: `${role.name} updated successfully.`, show: true });
     },
   });
 
   // Mutation to delete organization role
-  const [deleteOrgRole, { loading: deleting }] = useMutation(DELETE_ORG_ROLE, {
+  const [deleteOrgRole] = useMutation(DELETE_ORG_ROLE, {
     onCompleted: () => {
-      setToast({ ...toast, message: `Role deleted successfully!`, show: true });
-      getOrgRoles();
+      setToast({ ...toast, message: `Role deleted successfully.`, show: true });
     },
   });
   // Mutation to create organization role
   const [createOrgRole] = useMutation(CREATE_ORG_ROLE, {
     onCompleted: ({ createOrgRole: role }) => {
-      setToast({ ...toast, message: `${role.name} created successfully!`, show: true });
+      setToast({ ...toast, message: `${role.name} created successfully.`, show: true });
       getOrgRoles();
     },
   });
@@ -98,6 +95,19 @@ const Roles = () => {
     setNewRoleName('');
   }
 
+  function deleteRole(orgRole) {
+    const index = organizationRoles.indexOf(orgRole);
+
+    if (index > -1) {
+      const newOrganizationRoles = [...organizationRoles];
+      newOrganizationRoles.splice(index, 1);
+
+      setOrganizationRoles(newOrganizationRoles);
+    }
+
+    deleteOrgRole({ variables: { id: orgRole.id } });
+  }
+
   function handleOrgRolePermissionChange(orgRole, permission: string, checked: boolean) {
     const permissions = [...orgRole.permissions];
 
@@ -110,19 +120,13 @@ const Roles = () => {
     orgRole.permissions = permissions;
     setOrganizationRoles(organizationRoles);
 
-    // updateOrgRole({
-    //   variables: {
-    //     input: {
-    //       id: '45817491831652359',
-    //       permissions: ['manage_pod'],
-    //       name: 'efa',
-    //     },
-    //   },
-    // });
-
     updateOrgRole({
       variables: {
-        input: orgRole,
+        input: {
+          id: orgRole.id,
+          permissions: orgRole.permissions,
+          name: orgRole.name,
+        },
       },
     });
   }
@@ -137,6 +141,18 @@ const Roles = () => {
     }
 
     setNewRolePermissions(permissions);
+  }
+
+  if (userOrgsError) {
+    return <SettingsWrapper>
+      <HeaderBlock
+        icon={<UserCheckIcon circle />}
+        title="Roles"
+        description="Use roles to organize contributors and admins"
+      />
+
+      <Error>Error: {userOrgsError?.graphQLErrors[0].message}</Error>
+    </SettingsWrapper>
   }
 
   return (
@@ -205,13 +221,9 @@ const Roles = () => {
                   </Permission>
                 ))}
                 <PermissionFooter>
-                  {!deleting ? (
-                    <DeleteButton disabled onClick={() => deleteOrgRole({ variables: { id: orgRole.id } })}>
-                      Delete role
-                    </DeleteButton>
-                  ) : (
-                    <CircularProgress />
-                  )}
+                  <DeleteButton disabled onClick={() => deleteRole(orgRole)}>
+                    Delete role
+                  </DeleteButton>
                 </PermissionFooter>
               </Permissions>
             </Accordion>

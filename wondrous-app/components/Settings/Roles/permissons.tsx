@@ -18,24 +18,23 @@ const permissons: Permisson[] = [
     permission: PERMISSIONS.MANAGE_MEMBER,
   },
   {
-    title: 'Create tasks',
+    title: 'Create task',
     subTitle: 'Member can create tasks.',
     permission: PERMISSIONS.CREATE_TASK,
+  },   {
+    title: 'Edit task',
+    subTitle: 'Member can edit tasks.',
+    permission: PERMISSIONS.EDIT_TASK,
   },
-  {
-    title: 'Manage board',
-    subTitle: 'Member can manage board.',
-    permission: PERMISSIONS.MANAGE_BOARD,
-  },
+  // {
+  //   title: 'Manage board',
+  //   subTitle: 'Member can manage board.',
+  //   permission: PERMISSIONS.MANAGE_BOARD,
+  // },
   {
     title: 'Review tasks',
     subTitle: 'Member can review tasks.',
     permission: PERMISSIONS.REVIEW_TASK,
-  },
-  {
-    title: 'Can comment',
-    subTitle: 'Can comment tasks.',
-    permission: PERMISSIONS.CAN_COMMENT,
   },
   {
     title: 'Manage comment',
@@ -61,11 +60,11 @@ const permissons: Permisson[] = [
   //   title: 'Manage Roles',
   //   subTitle: 'Can kick, ban, upgrade, downgrade members.',
   // },
-  // {
-  //   title: 'Payout Permissions',
-  //   subTitle: 'Can payout members for their work.',
-  //   permission: PERMISSIONS.APPROVE_PAYMENT
-  // },
+  {
+    title: 'Payout Permissions',
+    subTitle: 'Can payout members for their work.',
+    permission: PERMISSIONS.APPROVE_PAYMENT
+  },
   // {
   //   title: 'Milestone approvals',
   //   subTitle: 'Can approve requested milestones',

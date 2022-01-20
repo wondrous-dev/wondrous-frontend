@@ -5,6 +5,7 @@ import { InputBase, Switch, Typography } from '@material-ui/core';
 import SnackbarComp from '@mui/material/Snackbar';
 
 import { Button } from '../../Common/button';
+import { Red800 } from '../../../theme/colors'
 
 export const RolesContainer = styled.div`
   height: 100vh;
@@ -119,3 +120,8 @@ export const Snackbar = styled(SnackbarComp)`
     color: white;
   }
 `;
+
+export const Error = styled.h3`
+	color: ${Red800};
+  margin: 30px 0;
+`
