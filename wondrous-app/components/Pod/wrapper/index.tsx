@@ -42,6 +42,7 @@ import { useOrgBoard, usePodBoard } from '../../../utils/hooks'
 import { useQuery } from '@apollo/client'
 import { GET_POD_BY_ID } from '../../../graphql/queries/pod'
 import { SafeImage } from '../../Common/Image'
+import { MoreInfoModal } from '../../profile/modals'
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -68,6 +69,9 @@ const MOCK_ORGANIZATION_DATA = {
 const Wrapper = (props) => {
   const { children } = props
   const [minimized, setMinimized] = useState(false)
+  const [showUsers, setShowUsers] = useState(false)
+  const [showPods, setShowPods] = useState(false)
+  const [open, setOpen] = useState(false)
   const podBoard = usePodBoard()
   const ORG_PERMISSIONS = {
     MANAGE_SETTINGS: 'manageSettings',
@@ -109,6 +113,14 @@ const Wrapper = (props) => {
 
   return (
     <>
+      <MoreInfoModal
+        open={open && (showUsers || showPods)}
+        handleClose={() => setOpen(false)}
+        showUsers={showUsers}
+        showPods={showPods}
+        name={podProfile?.name}
+        podId={podProfile?.id}
+      />
       <Header openCreateFormModal={toggleCreateFormModal} />
       <SideBarContext.Provider
         value={{
@@ -179,7 +191,12 @@ const Wrapper = (props) => {
                       {link?.name || link?.url}
                     </HeaderActivityLink>
                   ))}
-                  <HeaderContributors>
+                  <HeaderContributors
+                    onClick={() => {
+                      setOpen(true)
+                      setShowUsers(true)
+                    }}
+                  >
                     <HeaderContributorsAmount>
                       {podProfile?.contributorCount}
                     </HeaderContributorsAmount>

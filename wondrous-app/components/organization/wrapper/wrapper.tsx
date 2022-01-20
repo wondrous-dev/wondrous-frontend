@@ -43,6 +43,7 @@ import { useOrgBoard } from '../../../utils/hooks'
 import { useQuery } from '@apollo/client'
 import { GET_ORG_BY_ID } from '../../../graphql/queries/org'
 import { SafeImage } from '../../Common/Image'
+import { MoreInfoModal } from '../../profile/modals'
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -68,7 +69,10 @@ const MOCK_ORGANIZATION_DATA = {
 
 const Wrapper = (props) => {
   const { children } = props
+  const [open, setOpen] = useState(false)
   const [minimized, setMinimized] = useState(false)
+  const [showUsers, setShowUsers] = useState(false)
+  const [showPods, setShowPods] = useState(false)
   const orgBoard = useOrgBoard()
   const ORG_PERMISSIONS = {
     MANAGE_SETTINGS: 'manageSettings',
@@ -119,6 +123,14 @@ const Wrapper = (props) => {
 
   return (
     <>
+      <MoreInfoModal
+        open={open && (showUsers || showPods)}
+        handleClose={() => setOpen(false)}
+        showUsers={showUsers}
+        showPods={showPods}
+        name={orgProfile?.name}
+        orgId={orgBoard?.orgId}
+      />
       <Header openCreateFormModal={toggleCreateFormModal} />
       <SideBarContext.Provider
         value={{
@@ -189,7 +201,12 @@ const Wrapper = (props) => {
                       {link?.name || link?.url}
                     </HeaderActivityLink>
                   ))}
-                  <HeaderContributors>
+                  <HeaderContributors
+                    onClick={() => {
+                      setOpen(true)
+                      setShowUsers(true)
+                    }}
+                  >
                     <HeaderContributorsAmount>
                       {orgProfile?.contributorCount}
                     </HeaderContributorsAmount>
@@ -197,7 +214,12 @@ const Wrapper = (props) => {
                       Contributors
                     </HeaderContributorsText>
                   </HeaderContributors>
-                  <HeaderPods>
+                  <HeaderPods
+                    onClick={() => {
+                      setOpen(true)
+                      setShowPods(true)
+                    }}
+                  >
                     <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
                     <HeaderPodsText>Pods</HeaderPodsText>
                   </HeaderPods>
