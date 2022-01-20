@@ -12,8 +12,8 @@ export const CREATE_TASK = gql`
 `
 
 export const UPDATE_TASK = gql`
-  mutation updateTask($input: TaskInput) {
-    updateTask(input: $input) {
+  mutation updateTask($taskId: ID!, $input: TaskInput) {
+    updateTask(taskId: $taskId, input: $input) {
       ...TaskFragment
     }
   }

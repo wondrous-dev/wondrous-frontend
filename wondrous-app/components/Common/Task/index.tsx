@@ -64,6 +64,7 @@ export const Task = ({ task, setTask }) => {
     actions = {},
     description = '',
     compensation = {},
+    rewards,
     id,
     media,
     status,
@@ -229,7 +230,7 @@ export const Task = ({ task, setTask }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
+  console.log('task ', task)
   return (
     <>
       <ArchiveTaskModal
@@ -277,7 +278,9 @@ export const Task = ({ task, setTask }) => {
               users={userList}
               id={'task-' + task?.id}
             />
-            <Compensation compensation={compensation} icon={TaskIcon} />
+            {rewards && rewards?.length > 0 && (
+              <Compensation compensation={rewards[0]} />
+            )}
           </TaskHeader>
           <TaskContent>
             <TaskTitle>{title}</TaskTitle>
