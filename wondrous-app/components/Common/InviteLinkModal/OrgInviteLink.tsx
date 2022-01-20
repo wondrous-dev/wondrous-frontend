@@ -112,9 +112,6 @@ export const OrgInviteLinkModal = (props) => {
                             <TextHeading>
                                 Share with people and groups
                             </TextHeading>
-                            <TextSubheading>
-                                Admins can send out 1 of 1 invite links.
-                            </TextSubheading>
                         </TextHeadingWrapper>
                     </IconTextWrapper>
                     <CloseButton onClick={handleOnClose} />
