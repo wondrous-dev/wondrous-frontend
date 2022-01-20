@@ -1,4 +1,7 @@
+import { Link } from '@material-ui/core'
 import React, { useMemo, useState } from 'react'
+import { NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS } from '../../utils/constants'
+import { SmallAvatar } from '../Common/AvatarList'
 import { DropDown, DropDownItem } from '../Common/dropdown'
 
 import { HeaderNotificationsButton, StyledBadge } from '../Header/styles'
@@ -32,6 +35,37 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
 
 	const handleNotificationsSettings = () => {
 		console.log('Tap on Notifications Settings')
+	}
+
+	const getNotificationActorIcon = (notification) => {
+		const initials = notification.actorUsername[0]
+		const avatar = {
+			url: notification.actorThumbnail
+		}
+
+		return (
+			<SmallAvatar initials={initials} avatar={avatar} />
+		)
+	}
+
+	// Construct Text of Notification
+	const getNotificationText = (notification) => {
+		const userName = notification.actorUsername
+		const userId = notification.actorId
+
+		const actor = (<Link href={`/profile/${userId}`}>{userName}</Link>)
+
+		const verb = NOTIFICATION_VERBS[notification.type]
+		const objectType = NOTIFICATION_OBJECT_TYPES[notification.objectType]
+		const objectId = notification.objectId
+		
+		const object = (<Link href={`/${objectType}/${objectId}`}>{objectType}</Link>)
+
+		return (
+			<>
+				{actor} {verb} {object}
+			</>
+		)
 	}
 
 	const display = isOpen ? 'block' : 'none'
@@ -80,13 +114,13 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
 						notifications.getNotifications?.map((notification) => (
 							<NotificationsItem key={'notifications-' + notification.id}>
 								<NotificationItemIcon>
-									{notification.icon}
+									{getNotificationActorIcon(notification)}
 									<NotificationItemStatus>
 										{notification.status}
 									</NotificationItemStatus>
 								</NotificationItemIcon>
 								<NotificationItemBody>
-									<div style={{ paddingTop: '2px' }}>{notification.text}</div>
+									<div style={{ paddingTop: '2px' }}>{getNotificationText(notification)}</div>
 									<NotificationItemTimeline>
 										{calculateTimeLapse(notification.timestamp)}
 									</NotificationItemTimeline>
