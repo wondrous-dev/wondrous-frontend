@@ -161,7 +161,7 @@ export const MEDIA_UI_ELEMENTS = {
   },
 }
 
-const AndroidSwitch = styled(Switch)(({ theme }) => ({
+export const AndroidSwitch = styled(Switch)(({ theme }) => ({
   padding: 8,
   '& .MuiSwitch-track': {
     borderRadius: 22 / 2,
