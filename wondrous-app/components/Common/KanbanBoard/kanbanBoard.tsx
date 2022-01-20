@@ -7,6 +7,7 @@ import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks'
 import { TaskViewModal } from '../Task/modal'
 import { KanbanBoardContainer, LoadMore } from './styles'
 import TaskColumn from './TaskColumn'
+import { useDndProvider } from './DragAndDrop'
 
 // Task update (column changes)
 import apollo from '../../../services/apollo'
@@ -46,7 +47,6 @@ const KanbanBoard = (props) => {
       orgId: task?.orgId,
       podId: task?.podId,
     })
-    console.log('permissions', permissions)
     const canEdit =
       permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
       permissions.includes(PERMISSIONS.FULL_ACCESS) ||
@@ -80,7 +80,6 @@ const KanbanBoard = (props) => {
   }
 
   const moveCard = async (id, status) => {
-    console.log('moved?')
     const updatedColumns = columnsState.map((column) => {
       if (column.status !== status) {
         return {
@@ -114,30 +113,32 @@ const KanbanBoard = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasQuery, orgBoard || userBoard || podBoard])
-
+  const { dndArea, handleRef, html5Options } = useDndProvider()
   return (
     <>
-      <KanbanBoardContainer>
+      <KanbanBoardContainer ref={handleRef}>
         <TaskViewModal
           open={openModal}
           handleClose={() => setOpenModal(false)}
           taskId={router?.query?.task || router?.query?.taskProposal}
           isTaskProposal={!!router?.query?.taskProposal}
         />
-        <DndProvider backend={HTML5Backend}>
-          {columnsState.map((column) => {
-            const { status, section, tasks } = column
-            return (
-              <TaskColumn
-                key={status}
-                cardsList={tasks}
-                moveCard={moveCard}
-                status={status}
-                section={section}
-              />
-            )
-          })}
-        </DndProvider>
+        {dndArea && (
+          <DndProvider backend={HTML5Backend} options={html5Options}>
+            {columnsState.map((column) => {
+              const { status, section, tasks } = column
+              return (
+                <TaskColumn
+                  key={status}
+                  cardsList={tasks}
+                  moveCard={moveCard}
+                  status={status}
+                  section={section}
+                />
+              )
+            })}
+          </DndProvider>
+        )}
       </KanbanBoardContainer>
       <LoadMore ref={ref} hasMore={hasMore}></LoadMore>
     </>
