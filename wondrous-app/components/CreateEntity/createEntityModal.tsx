@@ -1125,7 +1125,7 @@ const CreateLayoutBaseModal = (props) => {
               </CreateFormAddDetailsAppearBlockContainer>
             )}
 
-            {/* {showLinkAttachmentSection && (
+            {showLinkAttachmentSection && (
               <CreateFormLinkAttachmentBlock
                 style={{
                   borderBottom: 'none',
@@ -1143,7 +1143,7 @@ const CreateLayoutBaseModal = (props) => {
                   search={false}
                 />
               </CreateFormLinkAttachmentBlock>
-            )} */}
+            )}
             {isPod && (
               <div>
                 <CreateFormAddDetailsSwitch>

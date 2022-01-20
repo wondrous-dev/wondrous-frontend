@@ -230,7 +230,7 @@ export const Task = ({ task, setTask }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  console.log('task ', task)
+
   return (
     <>
       <ArchiveTaskModal
