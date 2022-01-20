@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import Accordion from '@mui/material/Accordion';
-import AccordionSummaryComp from '@mui/material/AccordionSummary';
 import AccordionDetailsComp from '@mui/material/AccordionDetails';
 
 export const AccordionComp = styled(Accordion)`
@@ -14,25 +13,54 @@ export const AccordionComp = styled(Accordion)`
     letter-spacing: 0.01em;
     background: transparent;
   }
-  
+
   .MuiAccordionSummary-content {
     margin: 0;
   }
-  
+
   .MuiAccordionSummary-gutters {
-    padding: 0 15px;
+    padding: 0;
     display: flex;
     height: 40px;
     min-height: 40px;
   }
-  
+
+  .MuiAccordionSummary-contentGutters {
+    padding-left: 15px;
+
+    &:not(.Mui-disabled) p {
+      color: #ffffff;
+    }
+  }
+
+  .MuiAccordionSummary-expandIconWrapper {
+    width: 40px;
+    height: 100%;
+    border-left: 1px solid #4b4b4b;
+
+    &.Mui-expanded {
+      border-right: 1px solid #4b4b4b;
+      border-left: none;
+    }
+
+    svg {
+      margin: auto;
+    }
+    
+    &:not(.Mui-disabled) {
+
+      svg {
+        path {
+          fill: #ccbbff;
+        }
+      }
+    }
+  }
+
   .MuiTypography-body1 {
     color: #c4c4c4;
   }
-  
-  .Mui-expanded {
-  }
-  
+
   .MuiCollapse-vertical {
     .MuiAccordionDetails-root {
       padding: 0;
