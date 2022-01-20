@@ -46,7 +46,7 @@ const KanbanBoard = (props) => {
       orgId: task?.orgId,
       podId: task?.podId,
     })
-    console.log('permissions', permissions)
+
     const canEdit =
       permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
       permissions.includes(PERMISSIONS.FULL_ACCESS) ||
@@ -80,7 +80,6 @@ const KanbanBoard = (props) => {
   }
 
   const moveCard = async (id, status) => {
-    console.log('moved?')
     const updatedColumns = columnsState.map((column) => {
       if (column.status !== status) {
         return {
