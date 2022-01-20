@@ -32,6 +32,7 @@ import { CREATE_ORG_ROLE, DELETE_ORG_ROLE, UPDATE_ORG_ROLE } from '../../../grap
 
 const Roles = () => {
   const [newRoleName, setNewRoleName] = useState('');
+  const [newRolePermissionsExpanded, setNewRolePermissionsExpanded] = useState(false);
   const [newRolePermissions, setNewRolePermissions] = useState([]);
   const [organizationRoles, setOrganizationRoles] = useState([]);
   const [toast, setToast] = useState({ show: false, message: '' });
@@ -97,6 +98,7 @@ const Roles = () => {
 
     setNewRolePermissions([]);
     setNewRoleName('');
+    setNewRolePermissionsExpanded(false);
   }
 
   function deleteRole(orgRole) {
@@ -148,15 +150,17 @@ const Roles = () => {
   }
 
   if (userOrgsError) {
-    return <SettingsWrapper>
-      <HeaderBlock
-        icon={<UserCheckIcon circle />}
-        title="Roles"
-        description="Use roles to organize contributors and admins"
-      />
+    return (
+      <SettingsWrapper>
+        <HeaderBlock
+          icon={<UserCheckIcon circle />}
+          title="Roles"
+          description="Use roles to organize contributors and admins"
+        />
 
-      <Error>Error: {userOrgsError?.graphQLErrors[0].message}</Error>
-    </SettingsWrapper>
+        <Error>Error: {userOrgsError?.graphQLErrors[0].message}</Error>
+      </SettingsWrapper>
+    );
   }
 
   return (
@@ -187,7 +191,12 @@ const Roles = () => {
             </CreateRole>
           </RoleNameBlock>
         </RolesInputsBlock>
-        <Accordion title="Select permissions" disabled={!newRoleName}>
+        <Accordion
+          title="Select permissions"
+          disabled={!newRoleName}
+          expanded={newRolePermissionsExpanded}
+          onChange={(e, expanded) => setNewRolePermissionsExpanded(expanded)}
+        >
           <Permissions>
             {permissons.map((item) => (
               <Permission key={item.permission}>
