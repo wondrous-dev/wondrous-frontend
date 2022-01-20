@@ -42,7 +42,7 @@ const DraggableCard = DropTarget(
 				return null
 			}
 			const draggableItem = monitor.getItem()
-			const { id, status: dragStatus } = draggableItem
+			const { id, orgId, podId, status: dragStatus } = draggableItem
 
 			const statusesEqual = dragStatus === columnStatus
 
@@ -64,6 +64,10 @@ const DraggableCard = DropTarget(
 		{
 			beginDrag: (props: any) => ({
 				id: props.id,
+				assigneeId: props.assigneeId,
+				createdBy: props.createdBy,
+				orgId: props.orgId,
+				podId: props.podId,
 				status: props.status,
 			}),
 		},
