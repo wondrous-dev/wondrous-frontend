@@ -131,3 +131,15 @@ export const PERMISSIONS = {
   MANAGE_COMMENT: 'manage_comment',
   MANAGE_POST: 'manage_post',
 }
+
+export const NOTIFICATION_VERBS = {
+  task_assign: 'assigned a task to',
+  comment: 'commented on task',
+  task_submit: 'submitted task'
+}
+
+export const NOTIFICATION_OBJECT_TYPES = {
+  task: 'Task',
+  task_comment: 'Comment',
+  task_submission: 'Submission'
+}

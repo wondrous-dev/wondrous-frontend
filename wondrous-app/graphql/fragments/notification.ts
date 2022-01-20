@@ -7,16 +7,16 @@ export const NotificationFragment = gql`
     userId
     viewedAt
     actorId
-    verb
+    actorType
+    actorUsername
+    actorProfilePicture
+    actorThumbnail
     type
     objectType
     objectId
     objectName
-    message
-    actorFirstName
-    actorLastName
-    actorUsername
-    actorProfilePicture
-    actorThumbnail
+    additionalData {
+      contentPreview
+    }
   }
 `

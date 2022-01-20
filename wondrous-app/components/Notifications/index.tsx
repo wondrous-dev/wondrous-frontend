@@ -9,7 +9,7 @@ import { NotificationItemBody, NotificationItemIcon, NotificationItemStatus, Not
 const NotificationsBoard = ({ notifications, setNofications }) => {
 	const unreadCount = useMemo(() => {
 		console.log(notifications)
-		return notifications?.getNotifications?.filter((n) => n.unread).length
+		return notifications?.getNotifications?.filter((n) => !n.viewedAt).length
 	}, [notifications])
 
 	const [isOpen, setIsOpen] = useState(false)
@@ -54,7 +54,7 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
 				</StyledBadge>
 				<NotificationsBoardWrapper style={{ display: display }}>
 					<NotificationsBoardHeader>
-						<NotificationsMarkRead enabled={notifications.length}>
+						<NotificationsMarkRead enabled={notifications?.getNofications?.length}>
 							<span style={{ cursor: 'pointer' }} onClick={handleMarkAllRead}>
 								Mark all as read
 							</span>
@@ -76,7 +76,7 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
 							</DropDown>
 						</div>
 					</NotificationsBoardHeader>
-					{notifications?.getNofications?.length ? (
+					{notifications?.getNotifications?.length ? (
 						notifications.getNotifications?.map((notification) => (
 							<NotificationsItem key={'notifications-' + notification.id}>
 								<NotificationItemIcon>
