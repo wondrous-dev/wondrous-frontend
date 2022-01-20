@@ -81,6 +81,10 @@ const Roles = () => {
 
   // Creates new role
   function createNewRole() {
+    if (!newRoleName) {
+      return;
+    }
+
     createOrgRole({
       variables: {
         input: {
