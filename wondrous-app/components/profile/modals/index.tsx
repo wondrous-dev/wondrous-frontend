@@ -33,7 +33,7 @@ const PodItem = (props) => {
   const router = useRouter()
   const { pod } = props
   return (
-    <PodWrapper onClick={() => router.push(`/pod/${pod?.id}`)}>
+    <PodWrapper onClick={() => router.push(`/pod/${pod?.id}/boards`)}>
       <TabContainerText
         style={{
           fontWeight: 'bolder',
@@ -50,7 +50,7 @@ const UserItem = (props) => {
   const router = useRouter()
   const { user } = props
   return (
-    <UserWrapper onClick={() => router.push(`/pod/${user?.username}`)}>
+    <UserWrapper onClick={() => router.push(`/user/${user?.username}/boards`)}>
       {user?.profilePicture ? (
         <UserProfilePicture src={user?.profilePicture} />
       ) : (
