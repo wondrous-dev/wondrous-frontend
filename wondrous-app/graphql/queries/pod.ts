@@ -34,7 +34,7 @@ export const GET_USER_AVAILABLE_PODS = gql`
 
 export const GET_POD_USERS = gql`
   query getPodUsers($podId: String!) {
-    getPodUsers(orgId: $orgId) {
+    getPodUsers(podId: $podId) {
       user {
         id
         username

@@ -29,6 +29,7 @@ export const TabContainer = styled.div`
   display: flex;
   align-items: center;
   margin-top: 16px;
+  margin-bottom: 16px;
 `
 
 export const PodExplainerText = styled(Typography)`
