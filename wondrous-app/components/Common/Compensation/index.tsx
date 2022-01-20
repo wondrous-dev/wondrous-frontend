@@ -1,29 +1,31 @@
 import { ToDo } from '../../Icons'
 import { WonderCoin } from '../../Icons/wonderCoin'
+import { SafeImage } from '../Image'
 import {
-	CompensationWrapper,
-	IconContainer,
-	CompensationPill,
-	CompensationAmount,
+  CompensationWrapper,
+  IconContainer,
+  CompensationPill,
+  CompensationAmount,
 } from './styles'
 
 export const Compensation = (props) => {
-	const { icon = ToDo, compensation = {} } = props
-	const { amount = '---' } = compensation
+  const { icon, symbol, tokenName, rewardAmount } = props?.compensation
 
-	const TaskIcon = icon
-
-	return (
-		<CompensationWrapper key={props.id}>
-			<IconContainer>
-				<TaskIcon />
-			</IconContainer>
-			<CompensationPill>
-				<IconContainer>
-					<WonderCoin />
-				</IconContainer>
-				<CompensationAmount>{amount}</CompensationAmount>
-			</CompensationPill>
-		</CompensationWrapper>
-	)
+  return (
+    <CompensationWrapper key={props.id}>
+      <CompensationPill>
+        <IconContainer>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <SafeImage
+            src={icon}
+            style={{
+              width: '24px',
+              height: '24px',
+            }}
+          />
+        </IconContainer>
+        <CompensationAmount>{rewardAmount}</CompensationAmount>
+      </CompensationPill>
+    </CompensationWrapper>
+  )
 }

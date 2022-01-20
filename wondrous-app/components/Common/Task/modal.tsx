@@ -620,7 +620,6 @@ export const TaskViewModal = (props) => {
     permissions.includes(PERMISSIONS.CREATE_TASK)
   const dropdownItemStyle = {
     marginRight: '12px',
-    marginLeft: '12px',
   }
   return (
     <>

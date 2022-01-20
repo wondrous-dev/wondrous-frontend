@@ -126,7 +126,11 @@ import { USDCoin } from '../Icons/USDCoin'
 import { TaskFragment } from '../../graphql/fragments/task'
 import { updateProposalItem } from '../../utils/board'
 import { GET_ORG_TASK_BOARD_PROPOSALS } from '../../graphql/queries/taskBoard'
-import { filterOrgUsersForAutocomplete } from './createEntityModal'
+import {
+  filterOrgUsersForAutocomplete,
+  filterPaymentMethods,
+} from './createEntityModal'
+import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment'
 
 const filterUserOptions = (options) => {
   if (!options) return []
@@ -336,8 +340,11 @@ const EditLayoutBaseModal = (props) => {
     existingTask?.reviewers?.map((reviewer) => reviewer?.id)
   )
   // TODO: set later
-  const [rewardsCurrency, setRewardsCurrency] = useState(null)
-  const [rewardsAmount, setRewardsAmount] = useState(null)
+  const initialRewards = existingTask?.rewards && existingTask?.rewards[0]
+  const initialCurrency = initialRewards?.paymentMethodId
+  const initialAmount = initialRewards?.rewardAmount
+  const [rewardsCurrency, setRewardsCurrency] = useState(initialCurrency)
+  const [rewardsAmount, setRewardsAmount] = useState(initialAmount)
   const [title, setTitle] = useState(existingTask?.title)
   const orgBoard = useOrgBoard()
   const podBoard = usePodBoard()
@@ -368,14 +375,16 @@ const EditLayoutBaseModal = (props) => {
     },
     fetchPolicy: 'cache-and-network',
   })
-
+  const [fetchPaymentMethod, setFetchPaymentMethod] = useState(false)
+  const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(
+    GET_PAYMENT_METHODS_FOR_ORG
+  )
   // const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
   const [pods, setPods] = useState([])
   const [pod, setPod] = useState(
     existingTask?.podName && {
       name: existingTask?.podName,
-      id: existingTask?.id,
-      profilePicture: existingTask?.profilePicture,
+      id: existingTask?.podId,
     }
   )
   const [dueDate, setDueDate] = useState(existingTask?.dueDate)
@@ -438,9 +447,9 @@ const EditLayoutBaseModal = (props) => {
     existingTask?.userId === board?.userId
 
   useEffect(() => {
-    if (userOrgs?.getUserOrgs?.length === 1) {
+    if (existingTask?.orgId) {
       // If you're only part of one dao then just set that as default
-      setOrg(userOrgs?.getUserOrgs[0]?.id)
+      setOrg(existingTask?.orgId)
     }
     if (org) {
       getUserAvailablePods({
@@ -453,8 +462,20 @@ const EditLayoutBaseModal = (props) => {
           orgId: org?.id || org,
         },
       })
+      getPaymentMethods({
+        variables: {
+          orgId: org?.id || org,
+        },
+      })
     }
-  }, [userOrgs?.getUserOrgs, org, getUserAvailablePods, getOrgUsers])
+  }, [
+    userOrgs?.getUserOrgs,
+    org,
+    getUserAvailablePods,
+    getOrgUsers,
+    existingTask?.orgId,
+    getPaymentMethods,
+  ])
 
   const getPodObject = useCallback(() => {
     let justCreatedPod = null
@@ -532,6 +553,15 @@ const EditLayoutBaseModal = (props) => {
           milestoneId: milestone,
           podId: pod?.id,
           dueDate,
+          ...(rewardsAmount &&
+            rewardsCurrency && {
+              rewards: [
+                {
+                  rewardAmount: parseFloat(rewardsAmount),
+                  paymentMethodId: rewardsCurrency,
+                },
+              ],
+            }),
           // TODO: add links?,
           ...(!isTaskProposal && {
             assigneeId: assignee?.value,
@@ -543,6 +573,7 @@ const EditLayoutBaseModal = (props) => {
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         }
+
         if (!isTaskProposal) {
           updateTask({
             variables: {
@@ -575,8 +606,13 @@ const EditLayoutBaseModal = (props) => {
     entityType,
     updateTaskProposal,
     existingTask?.id,
+    rewardsAmount,
+    rewardsCurrency,
   ])
 
+  const paymentMethods = filterPaymentMethods(
+    paymentMethodData?.getPaymentMethodsForOrg
+  )
   return (
     <CreateFormBaseModal>
       <CreateFormBaseModalCloseBtn onClick={handleClose}>
@@ -840,7 +876,7 @@ const EditLayoutBaseModal = (props) => {
           <DropdownSelect
             title="Reward currency"
             labelText="Choose tokens"
-            options={REWARD_SELECT_OPTIONS}
+            options={paymentMethods}
             name="reward-currency"
             setValue={setRewardsCurrency}
             value={rewardsCurrency}
@@ -856,7 +892,7 @@ const EditLayoutBaseModal = (props) => {
               placeholder="Enter reward amount"
               search={false}
               value={rewardsAmount}
-              setValue={setRewardsAmount}
+              onChange={(e) => setRewardsAmount(e.target.value)}
             />
           </CreateRewardAmountDiv>
         </CreateFormMainSelects>
