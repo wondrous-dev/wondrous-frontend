@@ -152,7 +152,7 @@ export const SettingsSidebarLogoutButtonText = styled(
 
 export const SettingsContentBlock = styled.div`
 	width: 100%;
-	height: 100vh;
+	height: 100%;
 	padding: 140px 120px;
 	background-color: #0f0f0f;
 	overflow-y: auto;
