@@ -41,7 +41,7 @@ const Roles = () => {
   // Get organization roles
   const [getOrgRoles, { data: getOrgRolesData }] = useLazyQuery(GET_ORG_ROLES);
   const [updateOrgRole] = useMutation(UPDATE_ORG_ROLE, {
-    onCompleted: (role) => {
+    onCompleted: ({ updateOrgRole: role }) => {
       setToast({ ...toast, message: `${role.name} updated successfully.`, show: true });
     },
   });
