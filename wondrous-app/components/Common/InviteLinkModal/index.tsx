@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
     StyledModal,
     StyledBox,
@@ -13,37 +13,93 @@ import {
     InviteThruLinkTextField,
     InviteThruLinkButton,
     InviteThruLinkButtonLabel,
-    InviteThruLinkTextFieldButtonWrapper,
+    InviteThruLinkInputWrapper,
     StyledDivider,
     InviteThruEmailLabel,
     InviteThruEmailTextFieldButtonWrapper,
     InviteThruEmailTextField,
-    InviteThruEmailSelect,
-    InviteThruEmailMenuItem,
-    InviteThruEmailFormControlSelect,
+    InviteThruLinkSelect,
+    InviteThruLinkMenuItem,
+    InviteThruLinkFormControlSelect,
     InviteThruEmailTextFieldSelectWrapper,
     InviteThruEmailButtonLabel,
     InviteThruEmailButton,
-    InviteThruLinkButtonSuccessLabel
+    InviteThruLinkButtonSuccessLabel,
+    LinkSwitch
 } from './styles'
 import PersonAddIcon from '../../Icons/personAdd'
 import { CopyIcon, CopySuccessIcon } from '../../Icons/copy'
+import { useMutation, useLazyQuery } from '@apollo/client'
+import { CREATE_ORG_INVITE_LINK } from '../../../graphql/mutations/org'
+import { GET_ORG_ROLES } from '../../../graphql/queries/org'
+
+const link = `https://www.wonder.io/invite/`
 
 export const InviteLinkModal = (props) => {
-    const { open, onClose } = props
+    const { orgId, open, onClose } = props
     const [copy, setCopy] = useState(false)
-    const [selectRole, setSelectRole] = useState("contributor")
+    const [role, setRole] = useState("")
+    const [inviteLink, setInviteLink] = useState("")
+    const [linkOneTimeUse, setLinkOneTimeUse] = useState(false)
+    const [createOrgInviteLink] = useMutation(CREATE_ORG_INVITE_LINK, {
+        onCompleted: (data) => {
+            setInviteLink(`${link}${data?.createOrgInviteLink.token}`)
+        },
+        onError: (e) => {
+            console.error(e)
+        }
+    })
+    const [getOrgRoles, { data: orgRoles }] = useLazyQuery(GET_ORG_ROLES, {
+        onCompleted: (data) => {
+            setRole(data?.getOrgRoles[0]?.id)
+        },
+        onError: (e) => {
+            console.error(e)
+        }
+    })
 
     const handleOnClose = () => {
         onClose();
         setCopy(false)
-        setSelectRole("contributor")
+        setLinkOneTimeUse(false)
+        setInviteLink("")
     }
 
     const handleOnCopy = () => {
+        navigator.clipboard.writeText(`${inviteLink}`)
         setCopy(true)
-        // TODO: copy to clipboard
     }
+
+    const handleRoleChange = (e) => {
+        setRole(e.target.value)
+    }
+
+    const handleLinkOneTimeUseChange = () => {
+        setLinkOneTimeUse(!linkOneTimeUse)
+    }
+
+    useEffect(() => {
+        getOrgRoles({
+            variables: {
+                orgId: orgId
+            }
+        })
+    }, [])
+
+    useEffect(() => {
+        createOrgInviteLink({
+            variables: {
+                input: {
+                    invitorId: "45514342520586241",
+                    type: linkOneTimeUse ? "one_time" : "public",
+                    orgId: orgId,
+                    orgRoleId: role,
+                    expiry: ""
+                }
+            }
+        })
+        setCopy(false)
+    }, [role, createOrgInviteLink, linkOneTimeUse, orgId, orgRoles, open])
 
     return (
         <StyledModal open={open} onClose={handleOnClose}>
@@ -67,23 +123,29 @@ export const InviteLinkModal = (props) => {
                 <InviteThruLinkLabel>
                     Invite through universal link
                 </InviteThruLinkLabel>
-                <InviteThruLinkTextFieldButtonWrapper>
-                    <InviteThruLinkTextField variant="outlined" value="1" disabled />
-                    {copy ?
-                        <InviteThruLinkButton onClick={handleOnCopy}>
-                            <InviteThruLinkButtonSuccessLabel>Link copied!</InviteThruLinkButtonSuccessLabel> <CopySuccessIcon />
-                        </InviteThruLinkButton> :
-                        <InviteThruLinkButton onClick={handleOnCopy}>
-                            <InviteThruLinkButtonLabel>Copy link</InviteThruLinkButtonLabel> <CopyIcon />
-                        </InviteThruLinkButton>
-                    }
-
-                </InviteThruLinkTextFieldButtonWrapper>
-                <StyledDivider />
-                <InviteThruEmailLabel>
+                <InviteThruLinkInputWrapper>
+                    <InviteThruLinkTextField variant="outlined" value={`${inviteLink}`} disabled />
+                    <InviteThruLinkFormControlSelect>
+                        <InviteThruLinkSelect value={role} onChange={handleRoleChange}>
+                            {orgRoles?.getOrgRoles.map((role) => (
+                                <InviteThruLinkMenuItem key={role.id} value={role.id}>{role.name}</InviteThruLinkMenuItem>
+                            ))}
+                        </InviteThruLinkSelect>
+                    </InviteThruLinkFormControlSelect>
+                    <InviteThruLinkButton onClick={handleOnCopy}>
+                        {copy ?
+                            <><InviteThruLinkButtonSuccessLabel>Link copied!</InviteThruLinkButtonSuccessLabel> <CopySuccessIcon /></>
+                            :
+                            <><InviteThruLinkButtonLabel>Copy link</InviteThruLinkButtonLabel> <CopyIcon /></>
+                        }
+                    </InviteThruLinkButton>
+                </InviteThruLinkInputWrapper>
+                <LinkSwitch label="Link expires after one-time use" checked={linkOneTimeUse} onClick={handleLinkOneTimeUseChange} />
+                {/* <StyledDivider /> */}
+                {/* <InviteThruEmailLabel>
                     Invite through email
-                </InviteThruEmailLabel>
-                <InviteThruEmailTextFieldButtonWrapper>
+                </InviteThruEmailLabel> */}
+                {/* <InviteThruEmailTextFieldButtonWrapper>
                     <InviteThruEmailTextFieldSelectWrapper>
                         <InviteThruEmailTextField />
                         <InviteThruEmailFormControlSelect>
@@ -97,7 +159,7 @@ export const InviteLinkModal = (props) => {
                     <InviteThruEmailButton>
                         <InviteThruEmailButtonLabel>Send invite</InviteThruEmailButtonLabel>
                     </InviteThruEmailButton>
-                </InviteThruEmailTextFieldButtonWrapper>
+                </InviteThruEmailTextFieldButtonWrapper> */}
             </StyledBox>
         </StyledModal>
     )

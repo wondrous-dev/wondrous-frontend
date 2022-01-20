@@ -9,11 +9,13 @@ import {
     Menu,
     MenuItem,
     FormControl,
+    FormControlLabel,
     InputLabel
 } from '@material-ui/core'
 import styled from 'styled-components'
 import { ModalCloseButton } from '../ModalCloseButton'
 import { Button as ButtonComponent } from '../button'
+import { AndroidSwitch } from '../../CreateEntity/createEntityModal'
 
 export const StyledModal = styled(Modal)``
 
@@ -88,19 +90,21 @@ export const InviteThruLinkLabel = styled(Typography)`
         font-size: 14px;
         font-weight: 500;
         margin-top: 32px;
+        margin-left: 12px;
     }
 `
 
-export const InviteThruLinkTextFieldButtonWrapper = styled.div`
+export const InviteThruLinkInputWrapper = styled.div`
     display: flex;
+    justify-content: space-between;
     margin-top: 12px;
 `
 
 export const InviteThruLinkTextField = styled(TextField)`
     background: #0F0F0F;
-    border-radius: 6px;
+    border-radius: 6px 0 0 6px;
     height: 40px;
-    width: 511px;
+    width: 351px;
     padding: 0;
     
     .MuiInputBase-input {
@@ -109,6 +113,73 @@ export const InviteThruLinkTextField = styled(TextField)`
 
     .MuiOutlinedInput-input {
         padding: 11px 15px;
+    }
+`
+
+export const InviteThruLinkFormControlSelect = styled(FormControl)``
+
+export const StyledSelect = styled(Select)`
+    && {
+        background: #0F0F0F;
+        width: 141px;
+        height: 40px;
+        color: #fff;
+        border-radius: 0;
+        font-size: 14px;
+    }
+
+    & .MuiSelect-root {
+        padding-left: 12px;
+    }
+    
+    & .MuiInputBase-root {
+        border-radius: 0 6px 6px 0;
+    }
+
+    & .MuiInput-underline {
+        :hover:not(.Mui-disabled)::before {
+            border: none;
+        ::before {
+            border: none;
+        }
+        ::before {
+            border: none;
+        }
+    }}
+`
+
+export const InviteThruLinkSelect = styled(({ className, ...props }) => (
+    <StyledSelect {...props} MenuProps={{ classes: { paper: className } }} />
+))`
+    &.MuiPaper-root {
+        background: linear-gradient(180deg, #1E1E1E 0%, #141414 109.19%);
+        width: 141px;
+        height: 126px;
+        color: #fff;
+    }
+    &.MuiPaper-root > .MuiList-padding {
+        padding: 0;
+    }
+`
+
+export const InviteThruLinkMenuItem = styled(MenuItem)`
+    && {
+        background: #121212;
+        color: #C4C4C4;
+        margin: 6px;
+        border-radius: 6px;
+        font-size: 13px;
+        border: 1px solid transparent;
+        height: 34px;
+    }
+
+    &&:hover {
+            background: rgba(0, 0, 0, 1);
+            border: 1px solid #7427FF;
+        }
+
+    .MuiListItem-root.Mui-selected, .MuiListItem-root.Mui-selected:hover {
+        background: none
     }
 `
 
@@ -121,7 +192,6 @@ export const InviteThruLinkButton = styled(Button)`
         flex-basis: 137px;
         height: 40px;
         border-radius: 6px;
-        margin-left: -20px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -151,6 +221,17 @@ export const InviteThruLinkButtonSuccessLabel = styled(InviteThruLinkButtonLabel
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-left: 11px;
+    }
+`
+
+export const LinkSwitch = styled(({ ...props }) => (
+    <FormControlLabel {...props} control={<AndroidSwitch />} label={props.label} />
+))`
+    margin-top: 12px;
+
+    .MuiTypography-body1 {
+        color: #C4C4C4;
+        font-size: 14px;
     }
 `
 
@@ -187,75 +268,6 @@ export const InviteThruEmailTextField = styled(TextField)`
 
     .MuiOutlinedInput-input {
         padding: 11px 15px;
-    }
-`
-
-export const InviteThruEmailFormControlSelect = styled(FormControl)``
-
-export const StyledSelect = styled(Select)`
-    && {
-        background: #0F0F0F;
-        width: 141px;
-        height: 40px;
-        color: #fff;
-        border-radius: 0 6px 6px 0;
-        font-size: 14px;
-    }
-
-    & .MuiSelect-root {
-        padding-left: 12px;
-    }
-    
-    & .MuiInputBase-root {
-        border-radius: 0 6px 6px 0;
-    }
-
-    & .MuiInput-underline {
-        :hover:not(.Mui-disabled)::before {
-            border: none;
-        ::before {
-            border: none;
-        }
-        ::before {
-            border: none;
-        }
-    }}
-`
-
-export const InviteThruEmailSelect = styled(({ className, ...props }) => (
-    <StyledSelect {...props} MenuProps={{ classes: { paper: className } }} />
-))`
-    &.MuiPaper-root {
-        background: linear-gradient(180deg, #1E1E1E 0%, #141414 109.19%);
-        width: 141px;
-        height: 126px;
-        color: #fff;
-    }
-    &.MuiPaper-root > .MuiList-padding {
-        padding: 0;
-    }
-
-    
-`
-
-export const InviteThruEmailMenuItem = styled(MenuItem)`
-    && {
-        background: #121212;
-        color: #C4C4C4;
-        margin: 6px;
-        border-radius: 6px;
-        font-size: 13px;
-        border: 1px solid transparent;
-        height: 34px;
-    }
-
-    &&:hover {
-            background: rgba(0, 0, 0, 1);
-            border: 1px solid #7427FF;
-        }
-
-    .MuiListItem-root.Mui-selected, .MuiListItem-root.Mui-selected:hover {
-        background: none
     }
 `
 

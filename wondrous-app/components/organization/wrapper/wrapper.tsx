@@ -125,7 +125,7 @@ const Wrapper = (props) => {
 
   return (
     <>
-      <InviteLinkModal open={openInvite} onClose={() => setOpenInvite(false)} />
+      <InviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
       <Header openCreateFormModal={toggleCreateFormModal} />
       <SideBarContext.Provider
         value={{
