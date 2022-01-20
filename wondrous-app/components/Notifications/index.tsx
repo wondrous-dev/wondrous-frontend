@@ -3,6 +3,7 @@ import React, { useMemo, useState } from 'react'
 import { NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS } from '../../utils/constants'
 import { SmallAvatar } from '../Common/AvatarList'
 import { DropDown, DropDownItem } from '../Common/dropdown'
+import { StyledLink } from '../Common/text'
 
 import { HeaderNotificationsButton, StyledBadge } from '../Header/styles'
 import NotificationsIcon from '../Icons/notifications'
@@ -11,7 +12,6 @@ import { NotificationItemBody, NotificationItemIcon, NotificationItemStatus, Not
 
 const NotificationsBoard = ({ notifications, setNofications }) => {
 	const unreadCount = useMemo(() => {
-		console.log(notifications)
 		return notifications?.getNotifications?.filter((n) => !n.viewedAt).length
 	}, [notifications])
 
@@ -26,11 +26,8 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
 	}
 
 	const handleMarkAllRead = async () => {
-		console.log('Tap on Mark all read')
-	}
-
-	const handleCleanNotifications = () => {
-		setNofications([])
+		// Mark all read (empty arg)
+		setNofications()
 	}
 
 	const handleNotificationsSettings = () => {
@@ -53,13 +50,13 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
 		const userName = notification.actorUsername
 		const userId = notification.actorId
 
-		const actor = (<Link href={`/profile/${userId}`}>{userName}</Link>)
+		const actor = (<StyledLink href={`/profile/${userId}`}>{userName}</StyledLink>)
 
 		const verb = NOTIFICATION_VERBS[notification.type]
 		const objectType = NOTIFICATION_OBJECT_TYPES[notification.objectType]
 		const objectId = notification.objectId
 		
-		const object = (<Link href={`/${objectType}/${objectId}`}>{objectType}</Link>)
+		const object = (<StyledLink href={`/${objectType}/${objectId}`}>{objectType}</StyledLink>)
 
 		return (
 			<>
@@ -97,15 +94,9 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
 							<DropDown DropdownHandler={TaskMenuIcon}>
 								<DropDownItem
 									key={'notifications-menu-clean'}
-									onClick={handleCleanNotifications}
+									onClick={handleMarkAllRead}
 								>
-									Clean all notifications
-								</DropDownItem>
-								<DropDownItem
-									key={'notifications-menu-settings'}
-									onClick={handleNotificationsSettings}
-								>
-									Settings
+									Mark all read
 								</DropDownItem>
 							</DropDown>
 						</div>

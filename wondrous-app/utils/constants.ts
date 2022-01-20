@@ -133,13 +133,23 @@ export const PERMISSIONS = {
 }
 
 export const NOTIFICATION_VERBS = {
+  task_like: 'liked a',
+  mention: 'mentioned',
+  task_approve: 'approved a',
+  task_deny: 'denied a',
+  task_revise: 'send into revision a',
+  payment: 'paid',
+  task_add: 'added',
+  post: 'posted a',
   task_assign: 'assigned a',
   comment: 'commented on',
   task_submit: 'submitted a'
 }
 
 export const NOTIFICATION_OBJECT_TYPES = {
-  task: 'Task',
-  task_comment: 'Task',
-  task_submission: 'Task'
+  task: 'task',
+  task_comment: 'task',
+  task_submission: 'task',
+  comment: 'Comment',
+  
 }

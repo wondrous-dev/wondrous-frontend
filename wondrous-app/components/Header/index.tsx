@@ -23,87 +23,31 @@ import {
 	HeaderContainer,
 	HeaderCreateButton,
 } from './styles'
-import { StyledLink } from '../Common/text'
 import NotificationsBoard from '../Notifications'
-import { SmallAvatar } from '../Common/AvatarList'
 import { GET_NOTIFICATIONS } from '../../graphql/queries'
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
-
-const NOTIFICATIONS_MOCK = [
-	{
-		id: 12341234124,
-		timestamp: 123412341234,
-		text: (
-			<>
-				<b>Adam</b> liked Terry&apos;s <StyledLink href="#">post</StyledLink>
-			</>
-		),
-		icon: <SmallAvatar initials="AO" />,
-		status: <StatusLiked />,
-		unread: true,
-	},
-	{
-		id: 12341234125,
-		timestamp: 123412341236,
-		text: (
-			<>
-				<b>Adam</b> assigned a <StyledLink href="#">task</StyledLink> to Terry
-			</>
-		),
-		icon: <SmallAvatar initials="AO" />,
-		status: <StatusAssigned />,
-		unread: true,
-	},
-	{
-		id: 12341234126,
-		timestamp: 123412341236,
-		text: (
-			<>
-				<b>Terry</b> archived a <StyledLink href="#">pod</StyledLink> in{' '}
-				<StyledLink href="#">Wonder</StyledLink>
-			</>
-		),
-		icon: <SmallAvatar initials="TP" />,
-		status: <StatusArchived />,
-		unread: true,
-	},
-	{
-		id: 12341234127,
-		timestamp: 123412341236,
-		text: (
-			<>
-				<b>Content</b> pod assigned you a <StyledLink href="#">task</StyledLink>
-			</>
-		),
-		icon: <SmallAvatar initials="CP" />,
-		status: <StatusAssigned />,
-		unread: true,
-	},
-	{
-		id: 12341234128,
-		timestamp: 123412341236,
-		text: (
-			<>
-				<b>TikTok</b> pod assigned you a <StyledLink href="#">task</StyledLink>
-			</>
-		),
-		icon: <SmallAvatar initials="CP" />,
-		status: <StatusAssigned />,
-		unread: true,
-	},
-]
+import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from '../../graphql/mutations/notification'
 
 const HeaderComponent = (props) => {
 
 	// Grab Notifications from Backend
-	const { data: notifications } = useQuery(GET_NOTIFICATIONS)
+	const { data: notifications, refetch } = useQuery(GET_NOTIFICATIONS)
+	const [markAllNotificationsRead] = useMutation(MARK_ALL_NOTIFICATIONS_READ)
+	const [markNotificationRead] = useMutation(MARK_NOTIFICATIONS_READ)
 	const { openCreateFormModal } = props
 
-	const setNotifications = (newNotifications) => {
-		console.log(newNotifications)
-		// Read
-		return true
-	}
+	const setNotifications = async (newNotifications = null) => {
+		if(newNotifications) {
+			// Mark as read specific notifications
+			await newNotifications.map((n) => {
+				markNotificationRead(n.id)
+			})
+		} else {
+			// Clean all Notifications
+			await markAllNotificationsRead()
+		}
+		refetch()
+	} 
 
 	return (
 		<Header>
