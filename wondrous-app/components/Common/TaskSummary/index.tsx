@@ -280,7 +280,9 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
                 },
               ]}
             />
-            <Compensation compensation={compensation} icon={TaskIcon} />
+            {task?.rewards && task?.rewards > 0 && (
+              <Compensation compensation={task?.rewards[0]} />
+            )}
           </TaskHeader>
 
           <TaskContent>

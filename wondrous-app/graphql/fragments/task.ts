@@ -44,6 +44,13 @@ export const TaskFragment = gql`
     }
     reactionCount
     commentCount
+    rewards {
+      rewardAmount
+      paymentMethodId
+      symbol
+      icon
+      tokenName
+    }
   }
 `
 
@@ -72,6 +79,13 @@ export const TaskCardFragment = gql`
     reactionCount
     commentCount
     shareCount
+    rewards {
+      rewardAmount
+      paymentMethodId
+      symbol
+      icon
+      tokenName
+    }
     links {
       url
       name
@@ -108,6 +122,13 @@ export const TaskProposalCardFragment = gql`
     changeRequestedAt
     lastReviewedBy
     rejectedAt
+    rewards {
+      rewardAmount
+      paymentMethodId
+      symbol
+      icon
+      tokenName
+    }
     links {
       url
       name
@@ -237,6 +258,13 @@ export const TaskProposalFragment = gql`
       muxAssetId
       muxPlaybackId
       videoProcessingStatus
+    }
+    rewards {
+      rewardAmount
+      paymentMethodId
+      symbol
+      icon
+      tokenName
     }
     reactionCount
     commentCount

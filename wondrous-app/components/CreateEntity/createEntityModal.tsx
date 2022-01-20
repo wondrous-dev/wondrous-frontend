@@ -120,6 +120,7 @@ import { CREATE_POD } from '../../graphql/mutations/pod'
 import { useRouter } from 'next/router'
 import { delQuery } from '../../utils'
 import { ErrorText } from '../Common'
+import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment'
 
 const filterUserOptions = (options) => {
   if (!options) return []
@@ -289,6 +290,22 @@ export const filterOrgUsersForAutocomplete = (orgUsers) => {
   }))
 }
 
+export const filterPaymentMethods = (paymentMethods) => {
+  if (!paymentMethods) return []
+  return paymentMethods.map((paymentMethod) => {
+    return {
+      ...paymentMethod,
+      icon: (
+        <SafeImage
+          src={paymentMethod.icon}
+          style={{ width: '30px', height: '30px', borderRadius: '15px' }}
+        />
+      ),
+      label: paymentMethod.tokenName,
+      value: paymentMethod.id,
+    }
+  })
+}
 const CreateLayoutBaseModal = (props) => {
   const { entityType, handleClose, resetEntityType } = props
   const user = useMe()
@@ -326,6 +343,15 @@ const CreateLayoutBaseModal = (props) => {
   const { data: userOrgs } = useQuery(GET_USER_ORGS)
   const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(
     GET_AUTOCOMPLETE_USERS
+  )
+  const [fetchPaymentMethod, setFetchPaymentMethod] = useState(false)
+  const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(
+    GET_PAYMENT_METHODS_FOR_ORG,
+    {
+      onCompleted: () => {
+        setFetchPaymentMethod(true)
+      },
+    }
   )
   const [orgUserFetched, setOrgUserFetched] = useState(false)
   const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS, {
@@ -451,6 +477,13 @@ const CreateLayoutBaseModal = (props) => {
           },
         })
       }
+      if (!fetchPaymentMethod) {
+        getPaymentMethods({
+          variables: {
+            orgId: org,
+          },
+        })
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -543,6 +576,15 @@ const CreateLayoutBaseModal = (props) => {
           milestoneId: milestone,
           podId: pod,
           dueDate,
+          ...(rewardsAmount &&
+            rewardsCurrency && {
+              rewards: [
+                {
+                  rewardAmount: parseFloat(rewardsAmount),
+                  paymentMethodId: rewardsCurrency,
+                },
+              ],
+            }),
           // TODO: add links?,
           ...(canCreateTask && {
             assigneeId: assignee?.value,
@@ -611,7 +653,13 @@ const CreateLayoutBaseModal = (props) => {
     link,
     createPod,
     canCreatePod,
+    rewardsAmount,
+    rewardsCurrency,
   ])
+
+  const paymentMethods = filterPaymentMethods(
+    paymentMethodData?.getPaymentMethodsForOrg
+  )
 
   return (
     <CreateFormBaseModal isPod={isPod}>
@@ -762,7 +810,7 @@ const CreateLayoutBaseModal = (props) => {
             <DropdownSelect
               title="Reward currency"
               labelText="Choose tokens"
-              options={REWARD_SELECT_OPTIONS}
+              options={paymentMethods}
               name="reward-currency"
               setValue={setRewardsCurrency}
               value={rewardsCurrency}
@@ -778,7 +826,7 @@ const CreateLayoutBaseModal = (props) => {
                 placeholder="Enter reward amount"
                 search={false}
                 value={rewardsAmount}
-                setValue={setRewardsAmount}
+                onChange={(e) => setRewardsAmount(e.target.value)}
               />
             </CreateRewardAmountDiv>
           </CreateFormMainSelects>
@@ -1077,7 +1125,7 @@ const CreateLayoutBaseModal = (props) => {
               </CreateFormAddDetailsAppearBlockContainer>
             )}
 
-            {/* {showLinkAttachmentSection && (
+            {showLinkAttachmentSection && (
               <CreateFormLinkAttachmentBlock
                 style={{
                   borderBottom: 'none',
@@ -1095,7 +1143,7 @@ const CreateLayoutBaseModal = (props) => {
                   search={false}
                 />
               </CreateFormLinkAttachmentBlock>
-            )} */}
+            )}
             {isPod && (
               <div>
                 <CreateFormAddDetailsSwitch>
