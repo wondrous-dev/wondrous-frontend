@@ -71,7 +71,7 @@ const Roles = () => {
         },
       });
     }
-  }, [firstOrganization]);
+  }, [firstOrganization, getOrgRoles]);
 
   useEffect(() => {
     if (getOrgRolesData) {
