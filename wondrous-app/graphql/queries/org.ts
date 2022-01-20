@@ -27,14 +27,15 @@ export const GET_ORG_INVITE_ORG_INFO = gql`
 `
 
 export const GET_USER_ORGS = gql`
-  query getUserOrgs($userId: String) {
-    getUserOrgs(userId: $userId) {
-      id
-      username
-      name
-      profilePicture
-    }
-  }
+	query getUserOrgs($userId: String) {
+		getUserOrgs(userId: $userId) {
+			id
+			username
+			name
+			profilePicture
+			thumbnailPicture
+		}
+	}
 `
 
 export const GET_ORG_USERS = gql`

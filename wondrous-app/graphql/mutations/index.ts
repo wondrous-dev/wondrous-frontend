@@ -1,2 +1,6 @@
-export * from './user'
 export * from './misc'
+export * from './milestone'
+export * from './task'
+export * from './taskProposal'
+export * from './taskSubmission'
+export * from './user'

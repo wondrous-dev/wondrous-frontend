@@ -57,18 +57,6 @@ export const GET_USER_ID_FROM_USERNAME = gql`
 	}
 `
 
-export const GET_USER_ORGS = gql`
-	query getUserOrgs($userId: String) {
-		getUserOrgs(userId: $userId) {
-			id
-			username
-			name
-			profilePicture
-			thumbnailPicture
-		}
-	}
-`
-
 export const GET_USER_PERMISSION_CONTEXT = gql`
 	query getUserPermissionContext {
 		getUserPermissionContext
