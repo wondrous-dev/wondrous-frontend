@@ -604,10 +604,16 @@ const Home = () => {
       const firstOrg = userOrgs.getUserOrgs[0]
       router.push(`/organization/${firstOrg?.username}/boards`)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userOrgs?.getUserOrgs])
 
   return (
-    <AppLayout banner={<DashboardBanner />}>
+    <AppLayout
+      containerStyle={{
+        textAlign: 'center',
+      }}
+      banner={<DashboardBanner />}
+    >
       <CircularProgress />
       {/* <MetricsPanel />
       <BoardsContainer>

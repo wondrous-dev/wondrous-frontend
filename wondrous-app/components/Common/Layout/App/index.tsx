@@ -23,7 +23,7 @@ const SIDEBAR_LIST_ITEMS = [
   },
 ]
 
-const AppLayout = ({ banner, children }) => {
+const AppLayout = ({ banner, children, ...props }) => {
   const [minimized, setMinimized] = useState(false)
   return (
     <>
@@ -41,7 +41,7 @@ const AppLayout = ({ banner, children }) => {
           }}
         >
           {banner}
-          <Container>{children}</Container>
+          <Container style={props?.containerStyle}>{children}</Container>
         </Main>
       </SideBarContext.Provider>
       <Footer />

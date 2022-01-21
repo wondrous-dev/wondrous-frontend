@@ -47,6 +47,7 @@ import { SafeImage } from '../../Common/Image'
 import { MoreInfoModal } from '../../profile/modals'
 import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink'
 import PlusIcon from '../../Icons/plus'
+import { useRouter } from 'next/router'
 
 const SIDEBAR_LIST_ITEMS = [
   {
