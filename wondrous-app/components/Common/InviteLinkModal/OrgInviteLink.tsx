@@ -32,10 +32,13 @@ import { CopyIcon, CopySuccessIcon } from '../../Icons/copy';
 import { useMutation, useLazyQuery } from '@apollo/client';
 import { CREATE_ORG_INVITE_LINK } from '../../../graphql/mutations/org';
 import { GET_ORG_ROLES } from '../../../graphql/queries/org';
+import { useOrgBoard, usePodBoard } from '../../../utils/hooks';
+import { parseUserPermissionContext } from '../../../utils/helpers';
+import { PERMISSIONS } from '../../../utils/constants';
 
-const link = `https://www.app.wonderverse.xyz/invite/`;
+const link = `https://app.wonderverse.xyz/invite/`;
 
-export const putDefaultRoleOnTop = (roles) => {
+export const putDefaultRoleOnTop = (roles, permissions) => {
   if (!roles) return [];
   roles = [...roles];
   let defaultRole;
@@ -45,6 +48,12 @@ export const putDefaultRoleOnTop = (roles) => {
       defaultRole = { ...role };
       defaultRoleIndex = index;
     }
+  });
+  roles.filter((role) => {
+    if (role?.permissions?.includes(PERMISSIONS.FULL_ACCESS) && !permissions.includes(PERMISSIONS.FULL_ACCESS)) {
+      return false;
+    }
+    return true;
   });
 
   if (defaultRole && defaultRoleIndex) {
@@ -60,6 +69,16 @@ export const OrgInviteLinkModal = (props) => {
   const [role, setRole] = useState('');
   const [inviteLink, setInviteLink] = useState('');
   const [linkOneTimeUse, setLinkOneTimeUse] = useState(false);
+  const orgBoard = useOrgBoard();
+  const podBoard = usePodBoard();
+  const board = orgBoard || podBoard;
+  const userPermissionsContext = board?.userPermissionsContext;
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId: board?.orgId,
+    podId: board?.podId,
+  });
+
   const [createOrgInviteLink] = useMutation(CREATE_ORG_INVITE_LINK, {
     onCompleted: (data) => {
       setInviteLink(`${link}${data?.createOrgInviteLink.token}`);
@@ -124,7 +143,7 @@ export const OrgInviteLinkModal = (props) => {
     }
     setCopy(false);
   }, [role, createOrgInviteLink, linkOneTimeUse, orgId, orgRoles, open, getOrgRoles]);
-  const roles = putDefaultRoleOnTop(orgRoles?.getOrgRoles);
+  const roles = putDefaultRoleOnTop(orgRoles?.getOrgRoles, permissions);
 
   return (
     <StyledModal open={open} onClose={handleOnClose}>
