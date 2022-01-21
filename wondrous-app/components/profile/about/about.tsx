@@ -16,6 +16,8 @@ import LinkedInIcon from '../../Icons/linkedIn'
 import LinksIcon from '../../Icons/resume'
 import SkillsIcon from '../../Icons/skills'
 import SocialIcon from '../../Icons/social'
+import githubIcon from '../../Icons/githubIcon'
+import {DiscordIcon} from '../../Icons/discord'
 import TwitterPurpleIcon from '../../Icons/twitterPurple'
 import Wrapper from '../wrapper/wrapper'
 import AboutCompletedCard from './aboutCompletedCard'
@@ -46,13 +48,13 @@ const SOCIAL_MEDIA_ICONS = {
 	[SOCIAL_MEDIA_FACEBOOK]: FacebookIcon,
 	[SOCIAL_MEDIA_TWITTER]: TwitterPurpleIcon,
 	[SOCIAL_MEDIA_LINKEDIN]: LinkedInIcon,
-	[SOCIAL_MEDIA_DISCORD]: LinkedInIcon,
-	[SOCIAL_MEDIA_GITHUB]: LinkedInIcon,
-	[SOCIAL_MEDIA_SPOTIFY]: LinkedInIcon,
-	[SOCIAL_MEDIA_INSTAGRAM]: LinkedInIcon,
+	[SOCIAL_MEDIA_DISCORD]: DiscordIcon,
+	[SOCIAL_MEDIA_GITHUB]: githubIcon,
+	// [SOCIAL_MEDIA_SPOTIFY]: LinkedInIcon,
+	// [SOCIAL_MEDIA_INSTAGRAM]: LinkedInIcon,
 	[SOCIAL_OPENSEA]: OpenSeaIcon,
 }
-const SOCIAL_LINKS = ['twitter', 'discord', 'instagram','github', 'linkedin', 'spotify']
+const SOCIAL_LINKS = ['twitter', 'discord', 'instagram','github', 'linkedin', 'spotify', 'opensea', 'facebook']
 
 const parseLinks = (links) => {
 	/**
