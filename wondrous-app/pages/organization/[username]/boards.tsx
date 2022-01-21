@@ -20,7 +20,7 @@ import {
   TASK_STATUS_ARCHIVED,
   DEFAULT_STATUS_ARR,
 } from '../../../utils/constants';
-import { GET_ORG_ID_FROM_USERNAME } from '../../../graphql/queries/org';
+import { GET_ORG_FROM_USERNAME, GET_ORG_BY_ID } from '../../../graphql/queries/org';
 import { OrgBoardContext } from '../../../utils/contexts';
 import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
 
@@ -95,12 +95,14 @@ const LIMIT = 10;
 const BoardsPage = () => {
   const [columns, setColumns] = useState(COLUMNS);
   const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR);
+  const [orgData, setOrgData] = useState(null);
   const router = useRouter();
   const { username, orgId } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
   const [orgTaskHasMore, setOrgTaskHasMore] = useState(false);
+
 
   const [getOrgTaskProposals] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
     onCompleted: (data) => {
@@ -148,70 +150,70 @@ const BoardsPage = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const [getOrgIdFromUsername, { data: getOrgIdFromUsernameData, error: getOrgIdFromUsernameError }] =
-    useLazyQuery(GET_ORG_ID_FROM_USERNAME);
-  const profileOrgId = getOrgIdFromUsernameData?.getOrgIdFromUsername?.orgId;
+  const [getOrgFromUsername] =
+    useLazyQuery(GET_ORG_FROM_USERNAME, {
+      onCompleted: (data) => {
+        if (data?.getOrgFromUsername) {
+          setOrgData(data?.getOrgFromUsername);
+        }
+      }
+    });
+    const [getOrg] = useLazyQuery(GET_ORG_BY_ID, {
+      onCompleted: (data) => {
+        setOrgData(data?.getOrgById);
+      },
+    });
+  
+    // getOrgTasks({
+    //   variables: {
+    //     orgId,
+    //     statuses,
+    //     offset: 0,
+    //     limit: LIMIT,
+    //   },
+    // });
+    // getOrgTaskProposals({
+    //   variables: {
+    //     orgId: profileOrgId,
+    //     statuses,
+    //     offset: 0,
+    //     limit: LIMIT,
+    //   },
+    // });
+    // getOrgTaskSubmissions({
+    //   variables: {
+    //     orgId: profileOrgId,
+    //     statuses,
+    //     offset: 0,
+    //     limit: LIMIT,
+    //   },
+    // });
+    // getOrgBoardTaskCount({
+    //   variables: {
+    //     orgId: profileOrgId,
+    //   },
+    // });
+
   useEffect(() => {
-    if (orgId) {
+    if (orgId && !orgData) {
+      getOrg({variables: {
+        orgId
+      }})
       // get user task board tasks immediately
-      getOrgTasks({
-        variables: {
-          orgId,
-          statuses,
-          offset: 0,
-          limit: LIMIT,
-        },
-      });
-    } else if (!orgId && username) {
+    } else if (!orgId && username && !orgData) {
       // Get orgId from username
-      getOrgIdFromUsername({
+      getOrgFromUsername({
         variables: {
           username,
-        },
-      });
-    }
-    if (!orgId && profileOrgId) {
-      // fetch user task boards after getting orgId from username
-      getOrgTasks({
-        variables: {
-          orgId: profileOrgId,
-          statuses,
-          offset: 0,
-          limit: LIMIT,
-        },
-      });
-      getOrgTaskProposals({
-        variables: {
-          orgId: profileOrgId,
-          statuses,
-          offset: 0,
-          limit: LIMIT,
-        },
-      });
-      getOrgTaskSubmissions({
-        variables: {
-          orgId: profileOrgId,
-          statuses,
-          offset: 0,
-          limit: LIMIT,
-        },
-      });
-      getOrgBoardTaskCount({
-        variables: {
-          orgId: profileOrgId,
         },
       });
     }
   }, [
     username,
     orgId,
-    profileOrgId,
-    getOrgTasks,
-    statuses,
-    getOrgIdFromUsername,
-    getOrgTaskSubmissions,
-    getOrgTaskProposals,
-    getOrgBoardTaskCount,
+    orgData,
+    getOrg,
+    getOrgFromUsername,
   ]);
 
   const handleLoadMore = useCallback(() => {
@@ -246,7 +248,7 @@ const BoardsPage = () => {
         setStatuses,
         columns,
         setColumns,
-        orgId: profileOrgId,
+        orgId: orgData?.id,
         taskCount: orgTaskCountData?.getPerStatusTaskCountForOrgBoard,
         userPermissionsContext: userPermissionsContext?.getUserPermissionContext
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
@@ -254,7 +256,7 @@ const BoardsPage = () => {
         getOrgTasksVariables,
       }}
     >
-      <Boards selectOptions={SELECT_OPTIONS} columns={columns} onLoadMore={handleLoadMore} hasMore={orgTaskHasMore} />
+      <Boards selectOptions={SELECT_OPTIONS} columns={columns} onLoadMore={handleLoadMore} hasMore={orgTaskHasMore} orgData={orgData}/>
     </OrgBoardContext.Provider>
   );
 };
