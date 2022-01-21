@@ -35,7 +35,7 @@ const UserItem = (props) => {
   const router = useRouter();
   const { user } = props;
   return (
-    <UserWrapper onClick={() => router.push(`/user/${user?.username}/boards`)}>
+    <UserWrapper onClick={() => router.push(`/profile/${user?.username}/boards`)}>
       {user?.profilePicture ? <UserProfilePicture src={user?.profilePicture} /> : <DefaultProfilePicture />}
       <div
         style={{
