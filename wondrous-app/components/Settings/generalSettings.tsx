@@ -198,7 +198,7 @@ const GeneralSettings = () => {
       </SettingsWrapper>
     );
   }
-  console.log('orgLinks', orgLinks);
+
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>

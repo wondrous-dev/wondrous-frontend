@@ -317,7 +317,7 @@ const CreateLayoutBaseModal = (props) => {
   const isTask = entityType === ENTITIES_TYPES.TASK;
   const textLimit = isPod ? 200 : 900;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'network-only',
   });
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
   const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
