@@ -33,8 +33,10 @@ import { useMutation, useLazyQuery } from '@apollo/client';
 import { CREATE_POD_INVITE_LINK } from '../../../graphql/mutations/pod';
 import { GET_POD_ROLES } from '../../../graphql/queries/pod';
 import { putDefaultRoleOnTop } from './OrgInviteLink';
+import { useOrgBoard, usePodBoard } from '../../../utils/hooks';
+import { parseUserPermissionContext } from '../../../utils/helpers';
 
-const link = `https://www.app.wonderverse.xyz/invite/`;
+const link = `https://app.wonderverse.xyz/invite/`;
 
 export const PodInviteLinkModal = (props) => {
   const { podId, open, onClose } = props;
@@ -42,6 +44,15 @@ export const PodInviteLinkModal = (props) => {
   const [role, setRole] = useState('');
   const [inviteLink, setInviteLink] = useState('');
   const [linkOneTimeUse, setLinkOneTimeUse] = useState(false);
+  const orgBoard = useOrgBoard();
+  const podBoard = usePodBoard();
+  const board = orgBoard || podBoard;
+  const userPermissionsContext = board?.userPermissionsContext;
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId: board?.orgId,
+    podId: board?.podId,
+  });
   const [createPodInviteLink] = useMutation(CREATE_POD_INVITE_LINK, {
     onCompleted: (data) => {
       setInviteLink(`${link}${data?.createPodInviteLink.token}`);
@@ -107,7 +118,7 @@ export const PodInviteLinkModal = (props) => {
     }
     setCopy(false);
   }, [role, createPodInviteLink, linkOneTimeUse, podId, podRoles, open, getPodRoles]);
-  const roles = putDefaultRoleOnTop(podRoles?.getPodRoles);
+  const roles = putDefaultRoleOnTop(podRoles?.getPodRoles, permissions);
 
   return (
     <StyledModal open={open} onClose={handleOnClose}>
