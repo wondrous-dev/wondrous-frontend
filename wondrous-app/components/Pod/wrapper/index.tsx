@@ -71,6 +71,7 @@ const MOCK_ORGANIZATION_DATA = {
 }
 
 const Wrapper = (props) => {
+  const router = useRouter()
   const { children } = props
   const [minimized, setMinimized] = useState(false)
   const [showUsers, setShowUsers] = useState(false)
@@ -184,7 +185,9 @@ const Wrapper = (props) => {
                             <PlusIcon height="8" width="8" fill="#fff" />
                           </PlusIconWrapper>
                         </HeaderInviteButton>
-                        <HeaderManageSettingsButton>
+                        <HeaderManageSettingsButton
+                          onClick={() => router.push('/organization/settings')}
+                        >
                           Settings
                         </HeaderManageSettingsButton>
                       </>

@@ -27,15 +27,15 @@ export const GET_ORG_INVITE_ORG_INFO = gql`
 `
 
 export const GET_USER_ORGS = gql`
-	query getUserOrgs($userId: String) {
-		getUserOrgs(userId: $userId) {
-			id
-			username
-			name
-			profilePicture
-			thumbnailPicture
-		}
-	}
+  query getUserOrgs($userId: String) {
+    getUserOrgs(userId: $userId) {
+      id
+      username
+      name
+      profilePicture
+      thumbnailPicture
+    }
+  }
 `
 
 export const GET_ORG_USERS = gql`
@@ -49,6 +49,17 @@ export const GET_ORG_USERS = gql`
       role {
         permissions
       }
+    }
+  }
+`
+
+export const GET_ORG_ROLES = gql`
+  query getOrgRoles($orgId: String!) {
+    getOrgRoles(orgId: $orgId) {
+      id
+      name
+      default
+      permissions
     }
   }
 `
@@ -83,13 +94,4 @@ export const GET_ORG_PODS = gql`
       tasksCompletedCount
     }
   }
-`
-
-export const GET_ORG_ROLES = gql`
-	query getOrgRoles ($orgId: ID){
-		getOrgRoles(orgId: $orgId) {
-			id
-			name
-		}
-	}
 `
