@@ -43,6 +43,8 @@ export const GET_POD_USERS = gql`
       }
       role {
         permissions
+        id
+        name
       }
     }
   }

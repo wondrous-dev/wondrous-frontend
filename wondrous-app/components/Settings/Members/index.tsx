@@ -26,29 +26,23 @@ import { CircularProgress } from '@material-ui/core';
 import { PERMISSIONS } from '../../../utils/constants';
 import { useSettings } from '../../../utils/hooks';
 import { parseUserPermissionContext } from '../../../utils/helpers';
+import { UPDATE_USER_POD_ROLE } from '../../../graphql/mutations/pod';
+import { GET_POD_ROLES, GET_POD_USERS } from '../../../graphql/queries/pod';
 
-const LIMIT = 2;
-
-const filterRoles = (roles) => {
-  if (!roles) {
-    return [];
-  }
-  return roles.map((role) => ({
-    label: role?.name,
-    value: role?.id,
-  }));
-};
+const LIMIT = 10;
 
 const MemberRoleDropdown = (props) => {
-  const { existingRole, roleList, userId, username, orgId } = props;
+  const { existingRole, roleList, userId, orgId, podId, isPod } = props;
   const [role, setRole] = useState(existingRole?.id);
   const [updateUserOrgRole] = useMutation(UPDATE_USER_ORG_ROLE);
+  const [updateUserPodRole] = useMutation(UPDATE_USER_POD_ROLE);
   const isOwner = existingRole?.permissions.includes(PERMISSIONS.FULL_ACCESS);
   const settings = useSettings();
   const loggedInUserPermissions = settings?.userPermissionsContext;
   const permissions = parseUserPermissionContext({
     userPermissionsContext: loggedInUserPermissions,
     orgId,
+    podId,
   });
 
   const userIsOwner = permissions.includes(PERMISSIONS.FULL_ACCESS);
@@ -82,17 +76,29 @@ const MemberRoleDropdown = (props) => {
       value={role}
       setValue={(roleId) => {
         setRole(roleId);
-        updateUserOrgRole({
-          variables: {
-            input: {
-              userId,
-              orgId,
-              roleId,
+        if (podId) {
+          updateUserPodRole({
+            variables: {
+              input: {
+                userId,
+                podId,
+                roleId,
+              },
             },
-          },
-        });
+          });
+        } else {
+          updateUserOrgRole({
+            variables: {
+              input: {
+                userId,
+                orgId,
+                roleId,
+              },
+            },
+          });
+        }
       }}
-      labelText="Choose Role"
+      labelText={isOwner && !role ? 'Owner' : 'Choose your role'}
       options={filterRoles(roleList)}
       disabled={isOwner}
       formSelectStyle={{
@@ -102,18 +108,30 @@ const MemberRoleDropdown = (props) => {
     />
   );
 };
+
 const Members = (props) => {
   const router = useRouter();
-  const { orgId } = router.query;
+  const { orgId, podId } = router.query;
   const [hasMore, setHasMore] = useState(false);
-  const [orgUsers, setOrgUsers] = useState([]);
+  const [users, setUsers] = useState([]);
+
   const [getOrgUsers, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_USERS, {
     onCompleted: (data) => {
-      setOrgUsers(data?.getOrgUsers);
+      setUsers(data?.getOrgUsers);
       setHasMore(data?.hasMore || data?.getOrgUsers.length >= LIMIT);
     },
     fetchPolicy: 'network-only',
   });
+
+  const [getPodUsers] = useLazyQuery(GET_POD_USERS, {
+    onCompleted: (data) => {
+      setUsers(data?.getPodUsers);
+      setHasMore(data?.hasMore || data?.getPodUsers.length >= LIMIT);
+    },
+    fetchPolicy: 'network-only',
+  });
+
+  const [getPodRoles, { data: podRoleData }] = useLazyQuery(GET_POD_ROLES);
   const [getOrgRoles, { data: orgRoleData }] = useLazyQuery(GET_ORG_ROLES);
 
   useEffect(() => {
@@ -129,10 +147,22 @@ const Members = (props) => {
           orgId,
         },
       });
+    } else if (podId) {
+      getPodUsers({
+        variables: {
+          podId,
+          limit: LIMIT,
+        },
+      });
+      getPodRoles({
+        variables: {
+          podId,
+        },
+      });
     }
-  }, [orgId]);
-  const roleList = orgRoleData?.getOrgRoles;
-
+  }, [orgId, podId]);
+  const roleList = podRoleData?.getPodRoles || orgRoleData?.getOrgRoles;
+  const settings = useSettings();
   const handleLoadMore = useCallback(() => {
     if (hasMore) {
       fetchMore({
@@ -141,23 +171,37 @@ const Members = (props) => {
           limit: LIMIT,
         },
         updateQuery: (prev, { fetchMoreResult }) => {
-          const hasMore = fetchMoreResult.getOrgUsers.length >= LIMIT;
-          if (!fetchMoreResult) {
-            return prev;
+          if (orgId) {
+            const hasMore = fetchMoreResult.getOrgUsers.length >= LIMIT;
+            if (!fetchMoreResult) {
+              return prev;
+            }
+            if (!hasMore) {
+              setHasMore(false);
+            }
+            return {
+              hasMore,
+              getOrgUsers: prev.getOrgUsers.concat(fetchMoreResult.getOrgUsers),
+            };
+          } else if (podId) {
+            const hasMore = fetchMoreResult.getPodUsers.length >= LIMIT;
+            if (!fetchMoreResult) {
+              return prev;
+            }
+            if (!hasMore) {
+              setHasMore(false);
+            }
+            return {
+              hasMore,
+              getPodUsers: prev.getPodUsers.concat(fetchMoreResult.getPodUsers),
+            };
           }
-          if (!hasMore) {
-            setHasMore(false);
-          }
-          return {
-            hasMore,
-            getOrgUsers: prev.getOrgUsers.concat(fetchMoreResult.getOrgUsers),
-          };
         },
       }).catch((error) => {
         console.error(error);
       });
     }
-  }, [hasMore, roleList, fetchMore]);
+  }, [hasMore, roleList, fetchMore, orgId, podId]);
 
   return (
     <SettingsWrapper>
@@ -183,27 +227,28 @@ const Members = (props) => {
               {loading && <CircularProgress />}
             </div>
             <StyledTableBody>
-              {orgUsers &&
-                orgUsers.map((orgUser) => {
+              {users &&
+                users.map((user) => {
                   return (
-                    <StyledTableRow key={orgUser?.id}>
+                    <StyledTableRow key={user?.id}>
                       <StyledTableCell>
                         <UserInfoDiv>
-                          {orgUser?.user?.profilePicture ? (
-                            <UserProfilePicture src={orgUser?.user?.profilePicture} />
+                          {user?.user?.profilePicture ? (
+                            <UserProfilePicture src={user?.user?.profilePicture} />
                           ) : (
                             <DefaultProfilePicture />
                           )}
-                          <UsernameText>{orgUser?.user?.username}</UsernameText>
+                          <UsernameText>{user?.user?.username}</UsernameText>
                         </UserInfoDiv>
                       </StyledTableCell>
                       <StyledTableCell>
                         <MemberRoleDropdown
-                          userId={orgUser?.user?.id}
-                          orgId={orgId}
-                          existingRole={orgUser?.role}
+                          userId={user?.user?.id}
+                          orgId={orgId || settings?.pod?.orgId}
+                          podId={podId}
+                          existingRole={user?.role}
                           roleList={roleList}
-                          username={orgUser?.user?.username}
+                          username={user?.user?.username}
                         />
                       </StyledTableCell>
                     </StyledTableRow>

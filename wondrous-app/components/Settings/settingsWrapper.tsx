@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toggleHtmlOverflow } from '../../utils/helpers';
 import { useRouter } from 'next/router';
 import { List } from '@mui/material';
@@ -29,11 +29,12 @@ import GeneralSettingsIcon from '../Icons/generalSettings';
 import ConfigurePaymentsIcon from '../Icons/configurePayments';
 import CreatePodIcon from '../Icons/createPod';
 import MembersIcon from '../Icons/members';
-import { useQuery } from '@apollo/client';
+import { useQuery, useLazyQuery } from '@apollo/client';
 import { GET_ORG_BY_ID } from '../../graphql/queries/org';
 import { SafeImage } from '../Common/Image';
 import { GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
 import { SettingsBoardContext } from '../../utils/contexts';
+import { GET_POD_BY_ID } from '../../graphql/queries/pod';
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -93,7 +94,7 @@ export const SettingsWrapper = (props) => {
   const router = useRouter();
 
   const { pathname } = router;
-  const { orgId } = router.query;
+  const { orgId, podId } = router.query;
   const [createFormModal, setCreateFormModal] = useState(false);
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
@@ -103,30 +104,31 @@ export const SettingsWrapper = (props) => {
     toggleHtmlOverflow();
     setCreateFormModal((prevState) => !prevState);
   };
-  const { data: orgData } = useQuery(GET_ORG_BY_ID, {
-    variables: {
-      orgId,
-    },
-  });
+  const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
+
+  const [getPodById, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
+
   const org = orgData?.getOrgById;
+  const pod = podData?.getPodById;
+
   const SETTINGS_SIDEBAR_LIST_ITEMS = [
     {
       icon: <GeneralSettingsIcon width={40} height={40} />,
       label: 'General settings',
       value: 'general',
-      href: `/organization/settings/${orgId}/general`,
+      href: orgId ? `/organization/settings/${orgId}/general` : `/pod/settings/${podId}/general`,
     },
     {
       icon: <MembersIcon width={40} height={40} />,
       label: 'Members',
       value: 'members',
-      href: `/organization/settings/${orgId}/members`,
+      href: orgId ? `/organization/settings/${orgId}/members` : `/pod/settings/${podId}/members`,
     },
     {
       icon: <MembersIcon width={40} height={40} />,
       label: 'Roles',
       value: 'roles',
-      href: `/organization/settings/${orgId}/roles`,
+      href: orgId ? `/organization/settings/${orgId}/roles` : `/pod/settings/${podId}/roles`,
     },
   ];
 
@@ -134,11 +136,30 @@ export const SettingsWrapper = (props) => {
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
 
+  useEffect(() => {
+    if (orgId) {
+      getOrgById({
+        variables: {
+          orgId,
+        },
+      });
+    }
+    if (podId) {
+      getPodById({
+        variables: {
+          podId,
+        },
+      });
+    }
+  }, [orgId, podId]);
+
   return (
     <>
       <SettingsBoardContext.Provider
         value={{
           userPermissionsContext: parsedUserPermissionsContext,
+          org,
+          pod,
         }}
       >
         <HeaderComponent openCreateFormModal={toggleCreateFormModal} />
@@ -148,16 +169,18 @@ export const SettingsWrapper = (props) => {
           <SettingsSidebar>
             <SettingsSidebarContainer>
               <SettingsSidebarHeader>
-                <SafeImage
-                  src={org?.profilePicture}
-                  style={{
-                    width: '44px',
-                    height: '44px',
-                    borderRadius: '4px',
-                    marginRight: '14px',
-                  }}
-                />
-                <SettingsSidebarHeaderTitle>{org?.name}</SettingsSidebarHeaderTitle>
+                {org && (
+                  <SafeImage
+                    src={org?.profilePicture}
+                    style={{
+                      width: '44px',
+                      height: '44px',
+                      borderRadius: '4px',
+                      marginRight: '14px',
+                    }}
+                  />
+                )}
+                <SettingsSidebarHeaderTitle>{pod?.name || org?.name}</SettingsSidebarHeaderTitle>
               </SettingsSidebarHeader>
               <SettingsSidebarTabsSection>
                 <SettingsSidebarTabsSectionLabel>Settings Overview</SettingsSidebarTabsSectionLabel>

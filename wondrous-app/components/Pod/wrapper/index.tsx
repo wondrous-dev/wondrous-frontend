@@ -174,7 +174,7 @@ const Wrapper = (props) => {
                           </PlusIconWrapper>
                         </HeaderInviteButton>
                         <HeaderManageSettingsButton
-                          onClick={() => router.push(`/pod/settings/${podBoard?.orgId}/general`)}
+                          onClick={() => router.push(`/pod/settings/${podBoard?.podId}/general`)}
                         >
                           Settings
                         </HeaderManageSettingsButton>

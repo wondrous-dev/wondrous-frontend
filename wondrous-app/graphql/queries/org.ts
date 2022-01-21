@@ -45,6 +45,7 @@ export const GET_ORG_USERS = gql`
         id
         username
         profilePicture
+        bio
       }
       role {
         id
