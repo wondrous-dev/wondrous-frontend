@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client'
-import { OrgFragment, OrgInviteFragment } from '../fragments/org'
+import { gql } from '@apollo/client';
+import { OrgFragment, OrgInviteFragment } from '../fragments/org';
 
 export const GET_ORG_BY_ID = gql`
   query getOrgById($orgId: ID!) {
@@ -8,14 +8,14 @@ export const GET_ORG_BY_ID = gql`
     }
   }
   ${OrgFragment}
-`
+`;
 export const GET_ORG_ID_FROM_USERNAME = gql`
   query getOrgIdFromUsername($username: String!) {
     getOrgIdFromUsername(username: $username) {
       orgId
     }
   }
-`
+`;
 
 export const GET_ORG_INVITE_ORG_INFO = gql`
   query getInvitedOrgInfo($token: String!) {
@@ -24,7 +24,7 @@ export const GET_ORG_INVITE_ORG_INFO = gql`
     }
   }
   ${OrgInviteFragment}
-`
+`;
 
 export const GET_USER_ORGS = gql`
   query getUserOrgs($userId: String) {
@@ -36,7 +36,7 @@ export const GET_USER_ORGS = gql`
       thumbnailPicture
     }
   }
-`
+`;
 
 export const GET_ORG_USERS = gql`
   query getOrgUsers($orgId: String!) {
@@ -51,10 +51,10 @@ export const GET_ORG_USERS = gql`
       }
     }
   }
-`
+`;
 
 export const GET_ORG_ROLES = gql`
-  query getOrgRoles($orgId: String!) {
+  query getOrgRoles($orgId: ID) {
     getOrgRoles(orgId: $orgId) {
       id
       name
@@ -62,7 +62,7 @@ export const GET_ORG_ROLES = gql`
       permissions
     }
   }
-`
+`;
 
 export const GET_ORG_REVIEWERS = gql`
   query getOrgReviewers($orgId: String!) {
@@ -73,7 +73,7 @@ export const GET_ORG_REVIEWERS = gql`
       name
     }
   }
-`
+`;
 
 export const GET_ORG_PODS = gql`
   query getOrgPods($orgId: String) {
@@ -94,4 +94,4 @@ export const GET_ORG_PODS = gql`
       tasksCompletedCount
     }
   }
-`
+`;

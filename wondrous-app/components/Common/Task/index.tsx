@@ -270,7 +270,7 @@ export const Task = ({ task, setTask }) => {
                   goToPod(task?.podId)
                 }}
               >
-                <PodName>{task?.podName.slice(0, 15)}</PodName>
+                <PodName>{task?.podName}</PodName>
               </PodWrapper>
             )}
             <AvatarList

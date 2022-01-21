@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { FormControl } from '@material-ui/core'
 import {
   CreateFormInputLabel,
   CreateFormMenuItem,
@@ -10,6 +9,7 @@ import {
   CreateFormSelectBlockTitle,
 } from './styles'
 import { SafeImage } from '../Image'
+import { FormControl } from '@material-ui/core'
 
 const MenuProps = {
   PaperProps: {

@@ -34,7 +34,7 @@ export const DropDownButtonDecision = (props) => {
 					preventOverflow: {
 						enabled: false,
 						boundariesElement: 'scrollParent',
-					}
+					},
 				}}
 			/>
 		</>

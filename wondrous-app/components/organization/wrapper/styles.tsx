@@ -1,11 +1,11 @@
-import React from 'react'
-import styled from 'styled-components'
-import { Button, IconButton, Typography } from '@material-ui/core'
-import { Background } from '../../../theme/colors'
-import { BaseCard } from '../../Common/card'
-import { LogoCircle } from '../../Common/ci'
-import { LinkIcon } from '../../Icons/linkIcon'
-import { Button as BorderButton } from '../../Common/button'
+import React from 'react';
+import styled from 'styled-components';
+import { Button, Typography, IconButton } from '@material-ui/core';
+import { Background } from '../../../theme/colors';
+import { LogoCircle } from '../../Common/ci';
+import { LinkIcon } from '../../Icons/linkIcon';
+import { Button as BorderButton } from '../../Common/button';
+import { BaseCard } from '../../Common/card';
 
 export const OverviewComponent = styled.section`
   width: 100vw;
@@ -14,7 +14,7 @@ export const OverviewComponent = styled.section`
   background-color: #0f0f0f;
   transition: 0.15s all ease;
   padding-bottom: 40px;
-`
+`;
 
 export const HeaderImage = styled.div`
   width: 100%;
@@ -23,7 +23,7 @@ export const HeaderImage = styled.div`
   //background-repeat: no-repeat;
   background-position: center;
   margin-top: 70px;
-`
+`;
 
 export const TokenHeader = styled.div`
   position: relative;
@@ -35,7 +35,7 @@ export const TokenHeader = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-`
+`;
 
 export const TokenLogo = styled(LogoCircle)`
   position: absolute;
@@ -43,14 +43,14 @@ export const TokenLogo = styled(LogoCircle)`
   height: 103px;
   top: -50px;
   left: -20px;
-`
+`;
 
 export const Content = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
-`
+`;
 
 export const ContentContainer = styled.div`
   //max-width: 680px;
@@ -60,7 +60,7 @@ export const ContentContainer = styled.div`
   align-items: center;
   flex-direction: column;
   width: 100%;
-`
+`;
 
 export const HeaderMainBlock = styled.div`
   width: 100%;
@@ -69,7 +69,7 @@ export const HeaderMainBlock = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`
+`;
 
 export const HeaderTitle = styled(Typography)`
   && {
@@ -81,7 +81,7 @@ export const HeaderTitle = styled(Typography)`
     color: #ffffff;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
-`
+`;
 
 export const HeaderButtons = styled.div`
   max-width: 352px;
@@ -89,7 +89,7 @@ export const HeaderButtons = styled.div`
   height: 100%;
   display: flex;
   justify-content: space-between;
-`
+`;
 
 export const HeaderFollowButton = styled(Button)`
   && {
@@ -99,7 +99,7 @@ export const HeaderFollowButton = styled(Button)`
     border-radius: 204px;
     border: 1px solid deepskyblue;
   }
-`
+`;
 
 export const HeaderFollowButtonText = styled(Typography)`
   && {
@@ -110,12 +110,12 @@ export const HeaderFollowButtonText = styled(Typography)`
     align-items: center;
     color: #ffffff;
   }
-`
+`;
 
 export const HeaderFollowButtonIcon = styled.img`
   width: 22px;
   height: 22px;
-`
+`;
 
 export const HeaderInviteButton = styled(Button)`
   && {
@@ -137,7 +137,7 @@ export const HeaderInviteButton = styled(Button)`
       }
     }
   }
-`
+`;
 
 export const PlusIconWrapper = styled.div`
   background: #3d3d3d;
@@ -149,19 +149,13 @@ export const PlusIconWrapper = styled.div`
   justify-content: center;
 
   // TODO: look for other ways to do this
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-`
+`;
 
 export const HeaderContributeButton = styled(Button)`
   && {
-    background: linear-gradient(
-      267.08deg,
-      #ccbbff -2.92%,
-      #7427ff 81.21%,
-      #00baff 174.59%
-    );
+    background: linear-gradient(267.08deg, #ccbbff -2.92%, #7427ff 81.21%, #00baff 174.59%);
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 204px;
     padding: 8px 10px;
@@ -177,22 +171,22 @@ export const HeaderContributeButton = styled(Button)`
     text-align: center;
     color: #ffffff;
   }
-`
+`;
 
 export const HeaderManageSettingsButton = (props) => (
   <BorderButton
     style={{
-      background:
-        'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
+      background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
       borderRadius: '204px',
       width: '135px',
       height: '40px',
       minHeight: '0',
     }}
+    onClick={props?.onClick}
   >
     {props.children}
   </BorderButton>
-)
+);
 
 export const HeaderSettingsLockedButton = (props) => (
   <BorderButton
@@ -212,7 +206,7 @@ export const HeaderSettingsLockedButton = (props) => (
   >
     {props.children}
   </BorderButton>
-)
+);
 
 export const HeaderText = styled(Typography)`
   && {
@@ -223,7 +217,7 @@ export const HeaderText = styled(Typography)`
     margin-bottom: 8px;
     margin-top: 8px;
   }
-`
+`;
 
 export const HeaderActivity = styled.div`
   max-width: 390px;
@@ -232,7 +226,7 @@ export const HeaderActivity = styled.div`
   height: 23px;
   display: flex;
   align-items: center;
-`
+`;
 
 export const HeaderActivityLink = styled.a`
   font-weight: 500;
@@ -244,14 +238,14 @@ export const HeaderActivityLink = styled.a`
   color: #ccbbff;
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   margin-right: 12px;
-`
+`;
 
 export const HeaderActivityLinkIcon = styled(LinkIcon)`
   height: 23px;
   width: 23px;
   margin-right: 8px;
   margin-top: 8px;
-`
+`;
 
 export const HeaderContributors = styled.div`
   display: flex;
@@ -259,7 +253,7 @@ export const HeaderContributors = styled.div`
   align-items: center;
   cursor: pointer;
   margin-right: 8px;
-`
+`;
 
 export const HeaderContributorsAmount = styled(Typography)`
   && {
@@ -272,19 +266,19 @@ export const HeaderContributorsAmount = styled(Typography)`
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     margin-right: 5px;
   }
-`
+`;
 
 export const HeaderContributorsText = styled(HeaderContributorsAmount)`
   color: #6c6c6c;
-`
+`;
 
-export const HeaderPods = styled(HeaderContributors)``
+export const HeaderPods = styled(HeaderContributors)``;
 
-export const HeaderPodsAmount = styled(HeaderContributorsAmount)``
+export const HeaderPodsAmount = styled(HeaderContributorsAmount)``;
 
 export const HeaderPodsText = styled(HeaderContributorsAmount)`
   color: #6c6c6c;
-`
+`;
 
 //cardStyles
 export const PostsContainer = styled.div`
@@ -292,20 +286,20 @@ export const PostsContainer = styled.div`
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-`
+`;
 
 //cardStyles
 export const PostComponent = styled(BaseCard)`
   margin-top: 22px;
   height: 540px;
-`
+`;
 
 export const PostBlock = styled.div`
   position: relative;
   padding: 0 26px 18px;
   border-left: 1px solid #4b4b4b;
   margin-bottom: 0 !important;
-`
+`;
 
 export const PostSetting = styled(IconButton)`
   && {
@@ -317,14 +311,14 @@ export const PostSetting = styled(IconButton)`
     background: #0f0f0f;
     padding: 0;
   }
-`
+`;
 
 export const PostAuthor = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-`
+`;
 
 export const PostAuthorPhoto = styled.img`
   position: absolute;
@@ -332,7 +326,7 @@ export const PostAuthorPhoto = styled.img`
   width: 28px;
   height: 28px;
   margin-right: 10px;
-`
+`;
 
 export const PostAuthorNickname = styled(Typography)`
   && {
@@ -341,7 +335,7 @@ export const PostAuthorNickname = styled(Typography)`
     line-height: 20px;
     color: #ffffff;
   }
-`
+`;
 
 export const PostAuthorText = styled(Typography)`
   && {
@@ -350,7 +344,7 @@ export const PostAuthorText = styled(Typography)`
     letter-spacing: 0.01em;
     color: #c4c4c4;
   }
-`
+`;
 
 export const PostTask = styled.div`
   max-width: 625px;
@@ -361,44 +355,44 @@ export const PostTask = styled.div`
   border-top-right-radius: 6px;
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
-`
+`;
 
 export const PostTaskHeader = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-`
+`;
 
 export const PostTaskHeaderText = styled(PostAuthorText)`
   display: flex;
   align-items: flex-end;
   max-width: 380px;
   width: 100%;
-`
+`;
 
 export const PostTaskHeaderAuthor = styled(PostAuthor)`
   display: flex;
   justify-content: space-between;
   max-width: 460px;
   width: 100%;
-`
+`;
 
 export const PostTaskHeaderAuthorNickname = styled(PostAuthorNickname)`
   padding-right: 5px;
-`
+`;
 
 export const PostTaskHeaderImage = styled.img`
   width: 28px;
   height: 28px;
-`
+`;
 
 export const PostTaskHeaderButtons = styled.div`
   max-width: 90px;
   width: 100%;
   display: flex;
   align-items: center;
-`
+`;
 
 export const PostTaskHeaderCheckedButton = styled(IconButton)`
   && {
@@ -408,7 +402,7 @@ export const PostTaskHeaderCheckedButton = styled(IconButton)`
     border: 1px solid #474747;
     padding: 0;
   }
-`
+`;
 
 export const PostTaskHeaderButton = styled(Button)`
   && {
@@ -424,14 +418,14 @@ export const PostTaskHeaderButton = styled(Button)`
     display: flex;
     justify-content: space-between;
   }
-`
+`;
 
 export const PostTaskHeaderButtonImg = styled.img`
   width: 10px;
   height: 10px;
-`
+`;
 
-export const PostTaskContent = styled.div``
+export const PostTaskContent = styled.div``;
 
 export const PostTaskTextBlock = styled.div`
   width: 100%;
@@ -441,7 +435,7 @@ export const PostTaskTextBlock = styled.div`
   justify-content: space-between;
   flex-direction: column;
   margin-bottom: 10px;
-`
+`;
 
 export const PostTaskTitle = styled(Typography)`
   && {
@@ -451,7 +445,7 @@ export const PostTaskTitle = styled(Typography)`
     line-height: 20px;
     color: #ffffff;
   }
-`
+`;
 
 export const PostTaskText = styled(Typography)`
   && {
@@ -460,19 +454,19 @@ export const PostTaskText = styled(Typography)`
     letter-spacing: 0.01em;
     color: #c4c4c4;
   }
-`
+`;
 
 export const PostTaskImageBlock = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-`
+`;
 
 export const PostTaskImage = styled.img`
   width: 290px;
   height: auto;
-`
+`;
 
 export const PostLeftImage = styled.div`
   width: 290px;
@@ -483,7 +477,7 @@ export const PostLeftImage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 
 export const PostActivity = styled.div`
   //margin-top: 20px;
@@ -493,7 +487,7 @@ export const PostActivity = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`
+`;
 
 export const PostLikes = styled(Typography)`
   && {
@@ -509,12 +503,12 @@ export const PostLikes = styled(Typography)`
       margin-right: 10px;
     }
   }
-`
+`;
 
 export const PostActivityIcon = styled.img`
   width: auto;
   height: auto;
-`
+`;
 
-export const PostComments = styled(PostLikes)``
-export const PostShares = styled(PostLikes)``
+export const PostComments = styled(PostLikes)``;
+export const PostShares = styled(PostLikes)``;

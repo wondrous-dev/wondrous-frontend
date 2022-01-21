@@ -16,7 +16,6 @@ import {
 import CircleIcon from '../Icons/circleIcon'
 import CodeIcon from '../Icons/MediaTypesIcons/code'
 import AudioIcon from '../Icons/MediaTypesIcons/audio'
-import WonderTokenIcon from '../Icons/wonderToken'
 import PriorityIcon from '../Icons/priority'
 import CloseModalIcon from '../Icons/closeModal'
 import CreateDaoIcon from '../Icons/createDao'

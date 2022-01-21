@@ -1,46 +1,46 @@
-export const spacingUnit = 8
+export const spacingUnit = 8;
 
 // Task Status
-export const TASK_STATUS_IN_PROGRESS = 'in_progress'
-export const TASK_STATUS_TODO = 'created'
-export const TASK_STATUS_IN_REVIEW = 'in_review'
-export const TASK_STATUS_DONE = 'completed'
-export const TASK_STATUS_REQUESTED = 'requested'
-export const TASK_STATUS_ARCHIVED = 'archived'
+export const TASK_STATUS_IN_PROGRESS = 'in_progress';
+export const TASK_STATUS_TODO = 'created';
+export const TASK_STATUS_IN_REVIEW = 'in_review';
+export const TASK_STATUS_DONE = 'completed';
+export const TASK_STATUS_REQUESTED = 'requested';
+export const TASK_STATUS_ARCHIVED = 'archived';
 
 // Task types
-export const TASK_TYPE = 'task'
-export const BOUNTY_TYPE = 'bounty'
-export const MILESTONE_TYPE = 'milestone'
+export const TASK_TYPE = 'task';
+export const BOUNTY_TYPE = 'bounty';
+export const MILESTONE_TYPE = 'milestone';
 // Decision
-export const DECISION_SEND_INTO_REVISION = 'Send into revision'
-export const DECISION_REJECT = 'Reject'
-export const DECISION_APPROVE_ONLY = 'Approve only'
-export const DECISION_APPROVE_AND_PAY = 'Approve and pay'
+export const DECISION_SEND_INTO_REVISION = 'Send into revision';
+export const DECISION_REJECT = 'Reject';
+export const DECISION_APPROVE_ONLY = 'Approve only';
+export const DECISION_APPROVE_AND_PAY = 'Approve and pay';
 
 // Max avatar user list count
-export const AVATAR_LIST_OVERFLOW_MAX = 5
-export const AVATAR_LIST_LARGE_OVERFLOW_MAX = 2
+export const AVATAR_LIST_OVERFLOW_MAX = 5;
+export const AVATAR_LIST_LARGE_OVERFLOW_MAX = 2;
 
 // Social media
-export const SOCIAL_MEDIA_FACEBOOK = 'facebook'
-export const SOCIAL_MEDIA_TWITTER = 'twitter'
-export const SOCIAL_MEDIA_LINKEDIN = 'linkedin'
-export const SOCIAL_MEDIA_DISCORD = 'discord'
-export const SOCIAL_MEDIA_GITHUB = 'github'
-export const SOCIAL_MEDIA_SPOTIFY = 'spotify'
-export const SOCIAL_MEDIA_INSTAGRAM = 'instagram'
+export const SOCIAL_MEDIA_FACEBOOK = 'facebook';
+export const SOCIAL_MEDIA_TWITTER = 'twitter';
+export const SOCIAL_MEDIA_LINKEDIN = 'linkedin';
+export const SOCIAL_MEDIA_DISCORD = 'discord';
+export const SOCIAL_MEDIA_GITHUB = 'github';
+export const SOCIAL_MEDIA_SPOTIFY = 'spotify';
+export const SOCIAL_MEDIA_INSTAGRAM = 'instagram';
 
 // Supported Chains (ETHEREUM, POLYGON)
 export const SUPPORTED_CHAINS = {
   1: 'ETH',
   137: 'MATIC',
-}
+};
 
 export const CHAIN_IDS = {
   ETH: 1,
   MATIC: 137,
-}
+};
 
 export const SUPPORTED_CURRENCIES = [
   {
@@ -67,23 +67,23 @@ export const SUPPORTED_CURRENCIES = [
       137: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
     },
   },
-]
+];
 
 export const CURRENCY_KEYS = {
   ETH: 'ETH',
   WONDER: 'WONDER',
   MATIC: 'MATIC',
   USDC: 'USDC',
-}
+};
 
-export const SIDEBAR_WIDTH = '80px'
+export const SIDEBAR_WIDTH = '80px';
 export const ENTITIES_TYPES = {
   USER: 'user',
   TASK: 'task',
   MILESTONE: 'milestone',
   POD: 'pod',
   ORG: 'org',
-}
+};
 
 export const MEDIA_TYPES = {
   IMAGE: 'image',
@@ -92,7 +92,7 @@ export const MEDIA_TYPES = {
   CODE: 'code',
   LINK: 'link',
   VIDEO: 'video',
-}
+};
 
 export const DEFAULT_STATUS_ARR = [
   TASK_STATUS_TODO,
@@ -100,7 +100,7 @@ export const DEFAULT_STATUS_ARR = [
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_DONE,
   TASK_STATUS_ARCHIVED,
-]
+];
 
 export const IMAGE_FILE_EXTENSIONS_TYPE_MAPPING = {
   gif: 'image/gif',
@@ -110,7 +110,7 @@ export const IMAGE_FILE_EXTENSIONS_TYPE_MAPPING = {
   tiff: 'image/tiff',
   ico: 'image/x-icon',
   svg: 'image/svg+xml',
-}
+};
 
 export const VIDEO_FILE_EXTENSIONS_TYPE_MAPPING = {
   mpeg: 'video/mpeg',
@@ -119,12 +119,13 @@ export const VIDEO_FILE_EXTENSIONS_TYPE_MAPPING = {
   wmv: 'video/x-ms-wmv',
   flv: 'video/x-flv',
   webm: 'webm',
-}
+};
 
-export const MENTION_REGEX = /@\[(.*?)]\((.*?)\)/g
+export const MENTION_REGEX = /@\[(.*?)]\((.*?)\)/g;
 
 export const PERMISSIONS = {
   CREATE_TASK: 'create_task',
+  EDIT_TASK: 'edit_task', // edit task even when you are not the creator
   MANAGE_BOARD: 'manage_board', /// move task around, but can't move it to 'done'
   APPROVE_PAYMENT: 'approve_payment',
   CAN_COMMENT: 'can_comment',
@@ -133,7 +134,9 @@ export const PERMISSIONS = {
   REVIEW_TASK: 'review_task', //can be set as reviewer, once approved, it' automatically done
   MANAGE_COMMENT: 'manage_comment',
   MANAGE_POST: 'manage_post',
-}
+  MANAGE_POD: 'manage_pod', //  create new pod, archive existing pod
+  REORDER_TASK: 'reorder_task', // reorder task vertically
+};
 
 export const NOTIFICATION_VERBS = {
   task_like: 'liked a',
@@ -146,13 +149,12 @@ export const NOTIFICATION_VERBS = {
   post: 'posted a',
   task_assign: 'assigned a',
   comment: 'commented on',
-  task_submit: 'submitted a'
-}
+  task_submit: 'submitted a',
+};
 
 export const NOTIFICATION_OBJECT_TYPES = {
   task: 'task',
   task_comment: 'task',
   task_submission: 'task',
   comment: 'Comment',
-  
-}
+};

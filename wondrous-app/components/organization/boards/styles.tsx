@@ -35,8 +35,11 @@ export const BoardsActivityInput = styled(TextField)({
 		letterSpacing: '0.01em',
 		color: '#C4C4C4',
 	},
+	'& .MuiInput-underline:before': {
+		display: 'none',
+	},
 	'& .MuiInput-underline:after': {
-		borderBottom: '2px solid violet',
+		display: 'none',
 	},
 })
 

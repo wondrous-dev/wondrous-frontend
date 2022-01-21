@@ -1,16 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { PERMISSIONS, SIDEBAR_WIDTH } from '../../../utils/constants'
-import { SideBarContext } from '../../../utils/contexts'
+import React, { useCallback, useEffect, useState } from 'react';
+import { PERMISSIONS, SIDEBAR_WIDTH } from '../../../utils/constants';
+import { SideBarContext } from '../../../utils/contexts';
 
-import Header from '../../Header'
-import SideBarComponent from '../../SideBar'
-import Tabs from '../tabs/tabs'
-import CreateFormModal from '../../CreateEntity'
-import {
-  parseUserPermissionContext,
-  shrinkNumber,
-  toggleHtmlOverflow,
-} from '../../../utils/helpers'
+import Header from '../../Header';
+import SideBarComponent from '../../SideBar';
+import Tabs from '../tabs/tabs';
+import CreateFormModal from '../../CreateEntity';
+import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from '../../../utils/helpers';
 
 import {
   Content,
@@ -40,15 +36,15 @@ import {
   TokenLogo,
   HeaderInviteButton,
   PlusIconWrapper,
-} from './styles'
-import { useOrgBoard } from '../../../utils/hooks'
-import { useQuery } from '@apollo/client'
-import { GET_ORG_BY_ID } from '../../../graphql/queries/org'
-import { SafeImage } from '../../Common/Image'
-import PlusIcon from '../../Icons/plus'
-import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink'
-import { MoreInfoModal } from '../../profile/modals'
-import { Router, useRouter } from 'next/router'
+} from './styles';
+import { useOrgBoard } from '../../../utils/hooks';
+import { useQuery } from '@apollo/client';
+import { GET_ORG_BY_ID } from '../../../graphql/queries/org';
+import { SafeImage } from '../../Common/Image';
+import PlusIcon from '../../Icons/plus';
+import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink';
+import { MoreInfoModal } from '../../profile/modals';
+import { Router, useRouter } from 'next/router';
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -66,74 +62,70 @@ const SIDEBAR_LIST_ITEMS = [
     icon: '/images/sidebar/third.png',
     path: '/',
   },
-]
+];
 
 const MOCK_ORGANIZATION_DATA = {
   amount: 1234567,
-}
+};
 
 const Wrapper = (props) => {
-  const { children } = props
-  const [open, setOpen] = useState(false)
-  const [minimized, setMinimized] = useState(false)
-  const [showUsers, setShowUsers] = useState(false)
-  const [showPods, setShowPods] = useState(false)
-  const orgBoard = useOrgBoard()
+  const { children } = props;
+  const [open, setOpen] = useState(false);
+  const [minimized, setMinimized] = useState(false);
+  const [showUsers, setShowUsers] = useState(false);
+  const [showPods, setShowPods] = useState(false);
+  const orgBoard = useOrgBoard();
   const ORG_PERMISSIONS = {
     MANAGE_SETTINGS: 'manageSettings',
     CONTRIBUTOR: 'contributor',
-  }
-  const userPermissionsContext = orgBoard?.userPermissionsContext
-  const [permissions, setPermissions] = useState(null)
-  const [orgProfile, setOrgProfile] = useState(null)
+  };
+  const userPermissionsContext = orgBoard?.userPermissionsContext;
+  const [permissions, setPermissions] = useState(null);
+  const [orgProfile, setOrgProfile] = useState(null);
   const { data: orgData } = useQuery(GET_ORG_BY_ID, {
     onCompleted: (data) => {
-      const org = data?.getOrgById
-      setOrgProfile(org)
+      const org = data?.getOrgById;
+      setOrgProfile(org);
     },
     variables: {
       orgId: orgBoard?.orgId,
     },
-  })
-  const [createFormModal, setCreateFormModal] = useState(false)
-  const [data, setData] = useState(MOCK_ORGANIZATION_DATA)
-  const [openInvite, setOpenInvite] = useState(false)
-  const { amount } = data
+  });
+  const [createFormModal, setCreateFormModal] = useState(false);
+  const [data, setData] = useState(MOCK_ORGANIZATION_DATA);
+  const [openInvite, setOpenInvite] = useState(false);
+  const { amount } = data;
 
   const toggleCreateFormModal = () => {
-    toggleHtmlOverflow()
-    setCreateFormModal((prevState) => !prevState)
-  }
-  const links = orgProfile?.links
-  const router = useRouter()
+    toggleHtmlOverflow();
+    setCreateFormModal((prevState) => !prevState);
+  };
+  const links = orgProfile?.links;
+  const router = useRouter();
   useEffect(() => {
     const orgPermissions = parseUserPermissionContext({
       userPermissionsContext,
       orgId: orgBoard?.orgId,
-    })
+    });
 
     if (
       orgPermissions?.includes(PERMISSIONS.MANAGE_MEMBER) ||
       orgPermissions?.includes(PERMISSIONS.FULL_ACCESS) ||
       orgPermissions?.includes(PERMISSIONS.APPROVE_PAYMENT)
     ) {
-      setPermissions(ORG_PERMISSIONS.MANAGE_SETTINGS)
+      setPermissions(ORG_PERMISSIONS.MANAGE_SETTINGS);
     } else if (userPermissionsContext && orgPermissions) {
       // Normal contributor with no access to admin settings
-      setPermissions(ORG_PERMISSIONS.CONTRIBUTOR)
+      setPermissions(ORG_PERMISSIONS.CONTRIBUTOR);
     } else if (!userPermissionsContext) {
-      setPermissions(null)
+      setPermissions(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgBoard?.orgId, userPermissionsContext])
-
+  }, [orgBoard?.orgId, userPermissionsContext]);
+  console.log('here');
   return (
     <>
-      <OrgInviteLinkModal
-        orgId={orgBoard?.orgId}
-        open={openInvite}
-        onClose={() => setOpenInvite(false)}
-      />
+      <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
       <MoreInfoModal
         open={open && (showUsers || showPods)}
         handleClose={() => setOpen(false)}
@@ -150,10 +142,7 @@ const Wrapper = (props) => {
         }}
       >
         <SideBarComponent />
-        <CreateFormModal
-          open={createFormModal}
-          toggleOpen={toggleCreateFormModal}
-        />
+        <CreateFormModal open={createFormModal} toggleOpen={toggleCreateFormModal} />
         <OverviewComponent
           style={{
             paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
@@ -182,9 +171,7 @@ const Wrapper = (props) => {
                         visibility: 'hidden',
                       }}
                     >
-                      <HeaderFollowButtonText>
-                        {shrinkNumber(amount)}
-                      </HeaderFollowButtonText>
+                      <HeaderFollowButtonText>{shrinkNumber(amount)}</HeaderFollowButtonText>
                       <HeaderFollowButtonIcon src="/images/overview/icon.png" />
                     </HeaderFollowButton>
                     {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
@@ -196,16 +183,16 @@ const Wrapper = (props) => {
                           </PlusIconWrapper>
                         </HeaderInviteButton>
                         <HeaderManageSettingsButton
-                          onClick={() => router.push('/organization/settings')}
+                          onClick={() => {
+                            router.push('/organization/settings/general');
+                          }}
                         >
                           Settings
                         </HeaderManageSettingsButton>
                       </>
                     )}
                     {permissions === ORG_PERMISSIONS.CONTRIBUTOR && (
-                      <HeaderSettingsLockedButton>
-                        Settings
-                      </HeaderSettingsLockedButton>
+                      <HeaderSettingsLockedButton>Settings</HeaderSettingsLockedButton>
                     )}
                     {/* {!permissions && (
                       <HeaderContributeButton>
@@ -224,21 +211,17 @@ const Wrapper = (props) => {
                   ))}
                   <HeaderContributors
                     onClick={() => {
-                      setOpen(true)
-                      setShowUsers(true)
+                      setOpen(true);
+                      setShowUsers(true);
                     }}
                   >
-                    <HeaderContributorsAmount>
-                      {orgProfile?.contributorCount}
-                    </HeaderContributorsAmount>
-                    <HeaderContributorsText>
-                      Contributors
-                    </HeaderContributorsText>
+                    <HeaderContributorsAmount>{orgProfile?.contributorCount}</HeaderContributorsAmount>
+                    <HeaderContributorsText>Contributors</HeaderContributorsText>
                   </HeaderContributors>
                   <HeaderPods
                     onClick={() => {
-                      setOpen(true)
-                      setShowPods(true)
+                      setOpen(true);
+                      setShowPods(true);
                     }}
                   >
                     <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
@@ -253,7 +236,7 @@ const Wrapper = (props) => {
         </OverviewComponent>
       </SideBarContext.Provider>
     </>
-  )
-}
+  );
+};
 
-export default Wrapper
+export default Wrapper;

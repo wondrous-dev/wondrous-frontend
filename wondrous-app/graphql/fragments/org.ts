@@ -31,3 +31,15 @@ export const OrgFragment = gql`
 		}
 	}
 `
+
+export const OrgRoleFragment = gql`
+	fragment OrgRoleFragment on OrgRole {
+		id
+		createAt
+		createdBy
+		default
+		permissions
+		orgId
+		name
+	}
+`

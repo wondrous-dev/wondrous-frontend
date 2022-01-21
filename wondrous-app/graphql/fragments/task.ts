@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client'
+import { gql } from '@apollo/client';
 
 export const TaskFragment = gql`
   fragment TaskFragment on Task {
@@ -52,7 +52,7 @@ export const TaskFragment = gql`
       tokenName
     }
   }
-`
+`;
 
 export const TaskCardFragment = gql`
   # emits reviewerIds, userMentions
@@ -88,7 +88,7 @@ export const TaskCardFragment = gql`
     }
     links {
       url
-      name
+      displayName
       type
     }
     media {
@@ -100,7 +100,7 @@ export const TaskCardFragment = gql`
       videoProcessingStatus
     }
   }
-`
+`;
 // Omitting reactionCount, commentCount, share Count
 export const TaskProposalCardFragment = gql`
   fragment TaskProposalCardFragment on TaskProposalCard {
@@ -131,7 +131,7 @@ export const TaskProposalCardFragment = gql`
     }
     links {
       url
-      name
+      displayName
       type
     }
     media {
@@ -143,7 +143,7 @@ export const TaskProposalCardFragment = gql`
       videoProcessingStatus
     }
   }
-`
+`;
 
 export const TaskSubmissionCardFragment = gql`
   fragment TaskSubmissionCardFragment on TaskSubmissionCard {
@@ -167,7 +167,7 @@ export const TaskSubmissionCardFragment = gql`
     lastReviewedBy
     links {
       url
-      name
+      displayName
       type
     }
     media {
@@ -179,7 +179,7 @@ export const TaskSubmissionCardFragment = gql`
       videoProcessingStatus
     }
   }
-`
+`;
 
 export const TaskSubmissionFragment = gql`
   fragment TaskSubmissionFragment on TaskSubmission {
@@ -192,7 +192,7 @@ export const TaskSubmissionFragment = gql`
     taskId
     links {
       url
-      name
+      displayName
       type
     }
     approvedAt
@@ -223,7 +223,7 @@ export const TaskSubmissionFragment = gql`
     reactionCount
     commentCount
   }
-`
+`;
 export const TaskProposalFragment = gql`
   fragment TaskProposalFragment on TaskProposal {
     id
@@ -238,7 +238,7 @@ export const TaskProposalFragment = gql`
     dueDate
     links {
       url
-      name
+      displayName
       type
     }
     userMentions
@@ -277,4 +277,4 @@ export const TaskProposalFragment = gql`
       name
     }
   }
-`
+`;

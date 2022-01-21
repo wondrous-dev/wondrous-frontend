@@ -44,6 +44,7 @@
     "react-player": "^2.9.0",
     "regexify-string": "^1.0.17",
     "styled-components": "^5.3.0",
+    "styled-system": "^5.1.5",
     "web3": "^1.6.1",
     "web3modal": "^1.9.4",
     "yup": "^0.32.9"
