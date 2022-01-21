@@ -46,7 +46,6 @@ const HeaderComponent = (props) => {
   };
 
   const { pathname } = useRouter();
-  console.log('paht', pathname);
   return (
     <Header>
       <HeaderContainer>
