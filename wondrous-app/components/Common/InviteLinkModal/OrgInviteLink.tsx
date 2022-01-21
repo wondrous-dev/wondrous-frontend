@@ -94,7 +94,6 @@ export const OrgInviteLinkModal = (props) => {
             type: linkOneTimeUse ? 'one_time' : 'public',
             orgId: orgId,
             orgRoleId: role,
-            expiry: '',
           },
         },
       });
