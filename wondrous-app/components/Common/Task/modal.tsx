@@ -1,13 +1,7 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useContext,
-} from 'react'
-import Modal from '@mui/material/Modal'
-import { format, formatDistance } from 'date-fns'
-import { useInView } from 'react-intersection-observer'
+import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
+import Modal from '@mui/material/Modal';
+import { format, formatDistance } from 'date-fns';
+import { useInView } from 'react-intersection-observer';
 
 import {
   PodNameTypography,
@@ -33,23 +27,19 @@ import {
   TaskListModalHeader,
   TaskStatusHeaderText,
   ArchivedTaskUndo,
-} from './styles'
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
-import {
-  GET_TASK_BY_ID,
-  GET_TASK_REVIEWERS,
-  GET_TASK_SUBMISSIONS_FOR_TASK,
-} from '../../../graphql/queries/task'
-import { SafeImage } from '../Image'
+} from './styles';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from '../../../graphql/queries/task';
+import { SafeImage } from '../Image';
 import {
   parseUserPermissionContext,
   transformTaskProposalToTaskProposalCard,
   transformTaskSubmissionToTaskSubmissionCard,
   transformTaskToTaskCard,
-} from '../../../utils/helpers'
-import { RightCaret } from '../Image/RightCaret'
-import CreatePodIcon from '../../Icons/createPod'
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks'
+} from '../../../utils/helpers';
+import { RightCaret } from '../Image/RightCaret';
+import CreatePodIcon from '../../Icons/createPod';
+import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
 import {
   BOUNTY_TYPE,
   ENTITIES_TYPES,
@@ -60,12 +50,12 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
-} from '../../../utils/constants'
-import { DropDown, DropDownItem } from '../dropdown'
-import { TaskMenuIcon } from '../../Icons/taskMenu'
-import { White } from '../../../theme/colors'
-import { useMe } from '../../Auth/withAuth'
-import { GetStatusIcon, renderMentionString } from '../../../utils/common'
+} from '../../../utils/constants';
+import { DropDown, DropDownItem } from '../dropdown';
+import { TaskMenuIcon } from '../../Icons/taskMenu';
+import { White } from '../../../theme/colors';
+import { useMe } from '../../Auth/withAuth';
+import { GetStatusIcon, renderMentionString } from '../../../utils/common';
 import {
   AssigneeIcon,
   ImageIcon,
@@ -74,107 +64,95 @@ import {
   ProposerIcon,
   RejectIcon,
   ReviewerIcon,
-} from '../../Icons/taskModalIcons'
-import { DefaultUserImage } from '../Image/DefaultImages'
-import EditLayoutBaseModal from '../../CreateEntity/editEntityModal'
-import { ArchiveTaskModal } from '../ArchiveTaskModal'
-import { SnackbarAlertContext } from '../SnackbarAlert'
+} from '../../Icons/taskModalIcons';
+import { DefaultUserImage } from '../Image/DefaultImages';
+import EditLayoutBaseModal from '../../CreateEntity/editEntityModal';
+import { ArchiveTaskModal } from '../ArchiveTaskModal';
+import { SnackbarAlertContext } from '../SnackbarAlert';
 import {
   CreateFormButtonsBlock,
   CreateFormCancelButton,
   CreateFormFooterButtons,
   CreateFormPreviewButton,
   CreateModalOverlay,
-} from '../../CreateEntity/styles'
-import { useRouter } from 'next/router'
-import { UPDATE_TASK_STATUS } from '../../../graphql/mutations/task'
-import { GET_PREVIEW_FILE } from '../../../graphql/queries/media'
-import { GET_TASK_PROPOSAL_BY_ID } from '../../../graphql/queries/taskProposal'
-import { TaskSubmissionContent } from './submission'
+} from '../../CreateEntity/styles';
+import { useRouter } from 'next/router';
+import { UPDATE_TASK_STATUS } from '../../../graphql/mutations/task';
+import { GET_PREVIEW_FILE } from '../../../graphql/queries/media';
+import { GET_TASK_PROPOSAL_BY_ID } from '../../../graphql/queries/taskProposal';
+import { TaskSubmissionContent } from './submission';
 import {
   GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_SUBMISSIONS,
   GET_ORG_TASK_BOARD_TASKS,
-} from '../../../graphql/queries/taskBoard'
-import { AvatarList } from '../AvatarList'
-import {
-  APPROVE_TASK_PROPOSAL,
-  REQUEST_CHANGE_TASK_PROPOSAL,
-} from '../../../graphql/mutations/taskProposal'
-import {
-  addTaskItem,
-  removeProposalItem,
-  updateProposalItem,
-} from '../../../utils/board'
-import { flexDivStyle, rejectIconStyle } from '../TaskSummary'
-import { CompletedIcon } from '../../Icons/statusIcons'
-import { TaskListCard } from '.'
-import { LoadMore } from '../KanbanBoard/styles'
-import { CommentList } from '../../Comment'
+} from '../../../graphql/queries/taskBoard';
+import { AvatarList } from '../AvatarList';
+import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from '../../../graphql/mutations/taskProposal';
+import { addTaskItem, removeProposalItem, updateProposalItem } from '../../../utils/board';
+import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
+import { CompletedIcon } from '../../Icons/statusIcons';
+import { TaskListCard } from '.';
+import { LoadMore } from '../KanbanBoard/styles';
+import { CommentList } from '../../Comment';
 
 export const MediaLink = (props) => {
-  const { media, style } = props
-  const [getPreviewFile, { data, loading, error }] = useLazyQuery(
-    GET_PREVIEW_FILE,
-    {
-      fetchPolicy: 'network-only',
-    }
-  )
-  const fileUrl = data?.getPreviewFile?.url
+  const { media, style } = props;
+  const [getPreviewFile, { data, loading, error }] = useLazyQuery(GET_PREVIEW_FILE, {
+    fetchPolicy: 'network-only',
+  });
+  const fileUrl = data?.getPreviewFile?.url;
   useEffect(() => {
     if (media?.slug) {
       getPreviewFile({
         variables: {
           path: media?.slug,
         },
-      })
+      });
     }
-  }, [media?.slug, getPreviewFile])
+  }, [media?.slug, getPreviewFile]);
   return (
     <TaskLink style={style} href={fileUrl} target="_blank">
       {media?.name}
     </TaskLink>
-  )
-}
+  );
+};
 
-const LIMIT = 10
+const LIMIT = 10;
 
 export const TaskListViewModal = (props) => {
-  const [fetchedList, setFetchedList] = useState([])
-  const { taskType, entityType, orgId, podId, open, handleClose, count } = props
-  const [ref, inView] = useInView({})
-  const [hasMore, setHasMore] = useState(false)
-  const [
-    getOrgTaskProposals,
-    { refetch: refetchOrgProposals, fetchMore: fetchMoreOrgProposals },
-  ] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
-    onCompleted: (data) => {
-      const proposals = data?.getOrgTaskBoardProposals
-      setFetchedList(proposals)
-      setHasMore(data?.hasMore || data?.getOrgTaskBoardProposals.length >= 1)
-    },
-  })
-  const [
-    getOrgTaskSubmissions,
-    { refetch: refetchOrgSubmissions, fetchMore: fetchMoreOrgSubmissions },
-  ] = useLazyQuery(GET_ORG_TASK_BOARD_SUBMISSIONS, {
-    onCompleted: (data) => {
-      const submissions = data?.getOrgTaskBoardSubmissions
-      setFetchedList(submissions)
-      setHasMore(data?.hasMore || data?.getOrgTaskBoardSubmissions.length >= 1)
-    },
-  })
+  const [fetchedList, setFetchedList] = useState([]);
+  const { taskType, entityType, orgId, podId, open, handleClose, count } = props;
+  const [ref, inView] = useInView({});
+  const [hasMore, setHasMore] = useState(false);
+  const [getOrgTaskProposals, { refetch: refetchOrgProposals, fetchMore: fetchMoreOrgProposals }] = useLazyQuery(
+    GET_ORG_TASK_BOARD_PROPOSALS,
+    {
+      onCompleted: (data) => {
+        const proposals = data?.getOrgTaskBoardProposals;
+        setFetchedList(proposals);
+        setHasMore(data?.hasMore || data?.getOrgTaskBoardProposals.length >= 1);
+      },
+    }
+  );
+  const [getOrgTaskSubmissions, { refetch: refetchOrgSubmissions, fetchMore: fetchMoreOrgSubmissions }] = useLazyQuery(
+    GET_ORG_TASK_BOARD_SUBMISSIONS,
+    {
+      onCompleted: (data) => {
+        const submissions = data?.getOrgTaskBoardSubmissions;
+        setFetchedList(submissions);
+        setHasMore(data?.hasMore || data?.getOrgTaskBoardSubmissions.length >= 1);
+      },
+    }
+  );
 
-  const [
-    getOrgArchivedTasks,
-    { refetch: refetchOrgArchivedTasks, fetchMore: fetchMoreOrgArchivedTasks },
-  ] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
-    onCompleted: (data) => {
-      const tasks = data?.getOrgTaskBoardTasks
-      setFetchedList(tasks)
-      setHasMore(data?.hasMore || data?.getOrgTaskBoardTasks.length >= LIMIT)
-    },
-  })
+  const [getOrgArchivedTasks, { refetch: refetchOrgArchivedTasks, fetchMore: fetchMoreOrgArchivedTasks }] =
+    useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
+      onCompleted: (data) => {
+        const tasks = data?.getOrgTaskBoardTasks;
+        setFetchedList(tasks);
+        setHasMore(data?.hasMore || data?.getOrgTaskBoardTasks.length >= LIMIT);
+      },
+    });
 
   const handleLoadMore = useCallback(() => {
     if (hasMore) {
@@ -186,24 +164,23 @@ export const TaskListViewModal = (props) => {
               limit: LIMIT,
             },
             updateQuery: (prev, { fetchMoreResult }) => {
-              const hasMore =
-                fetchMoreResult.getOrgTaskBoardProposals.length >= LIMIT
+              const hasMore = fetchMoreResult.getOrgTaskBoardProposals.length >= LIMIT;
               if (!fetchMoreResult) {
-                return prev
+                return prev;
               }
               if (!hasMore) {
-                setHasMore(false)
+                setHasMore(false);
               }
               return {
                 hasMore,
                 getOrgTaskBoardProposals: prev.getOrgTaskBoardProposals.concat(
                   fetchMoreResult.getOrgTaskBoardProposals
                 ),
-              }
+              };
             },
           }).catch((error) => {
-            console.error(error)
-          })
+            console.error(error);
+          });
         }
       } else if (taskType === TASK_STATUS_IN_REVIEW) {
         if (entityType === ENTITIES_TYPES.ORG) {
@@ -213,24 +190,22 @@ export const TaskListViewModal = (props) => {
               limit: LIMIT,
             },
             updateQuery: (prev, { fetchMoreResult }) => {
-              const hasMore =
-                fetchMoreResult.getOrgTaskBoardSubmissions.length >= LIMIT
+              const hasMore = fetchMoreResult.getOrgTaskBoardSubmissions.length >= LIMIT;
               if (!fetchMoreResult) {
-                return prev
+                return prev;
               }
               if (!hasMore) {
-                setHasMore(false)
+                setHasMore(false);
               }
 
               return {
                 hasMore,
-                getOrgTaskBoardSubmissions:
-                  prev.getOrgTaskBoardSubmissions.concat(
-                    fetchMoreResult.getOrgTaskBoardSubmissions
-                  ),
-              }
+                getOrgTaskBoardSubmissions: prev.getOrgTaskBoardSubmissions.concat(
+                  fetchMoreResult.getOrgTaskBoardSubmissions
+                ),
+              };
             },
-          })
+          });
         }
       } else if (taskType === TASK_STATUS_ARCHIVED) {
         if (entityType === ENTITIES_TYPES.ORG) {
@@ -241,22 +216,19 @@ export const TaskListViewModal = (props) => {
               limit: LIMIT,
             },
             updateQuery: (prev, { fetchMoreResult }) => {
-              const hasMore =
-                fetchMoreResult.getOrgTaskBoardTasks.length >= LIMIT
+              const hasMore = fetchMoreResult.getOrgTaskBoardTasks.length >= LIMIT;
               if (!fetchMoreResult) {
-                return prev
+                return prev;
               }
               if (!hasMore) {
-                setHasMore(false)
+                setHasMore(false);
               }
               return {
                 hasMore,
-                getOrgTaskBoardTasks: prev.getOrgTaskBoardTasks.concat(
-                  fetchMoreResult.getOrgTaskBoardTasks
-                ),
-              }
+                getOrgTaskBoardTasks: prev.getOrgTaskBoardTasks.concat(fetchMoreResult.getOrgTaskBoardTasks),
+              };
             },
-          })
+          });
         }
       }
     }
@@ -268,9 +240,9 @@ export const TaskListViewModal = (props) => {
     fetchedList?.length,
     fetchMoreOrgArchivedTasks,
     fetchMoreOrgSubmissions,
-  ])
+  ]);
 
-  const listInnerRef = useRef()
+  const listInnerRef = useRef();
   useEffect(() => {
     if (fetchedList?.length === 0 && !hasMore) {
       if (taskType === TASK_STATUS_REQUESTED) {
@@ -279,7 +251,7 @@ export const TaskListViewModal = (props) => {
             variables: {
               orgId,
             },
-          })
+          });
         }
       } else if (taskType === TASK_STATUS_IN_REVIEW) {
         if (entityType === ENTITIES_TYPES.ORG) {
@@ -287,7 +259,7 @@ export const TaskListViewModal = (props) => {
             variables: {
               orgId,
             },
-          })
+          });
         }
       } else if (taskType === TASK_STATUS_ARCHIVED) {
         if (entityType === ENTITIES_TYPES.ORG) {
@@ -298,27 +270,27 @@ export const TaskListViewModal = (props) => {
               offset: 0,
               limit: LIMIT,
             },
-          })
+          });
         }
       }
     }
     if (inView && hasMore) {
-      handleLoadMore()
+      handleLoadMore();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, taskType, entityType, inView])
+  }, [orgId, taskType, entityType, inView]);
 
-  let text = ''
-  let refetch
+  let text = '';
+  let refetch;
   if (taskType === TASK_STATUS_REQUESTED) {
-    text = 'Proposals'
-    refetch = refetchOrgProposals
+    text = 'Proposals';
+    refetch = refetchOrgProposals;
   } else if (taskType === TASK_STATUS_IN_REVIEW) {
-    text = 'Submissions'
-    refetch = refetchOrgSubmissions
+    text = 'Submissions';
+    refetch = refetchOrgSubmissions;
   } else if (taskType === TASK_STATUS_ARCHIVED) {
-    text = 'Tasks'
-    refetch = refetchOrgSubmissions
+    text = 'Tasks';
+    refetch = refetchOrgSubmissions;
   }
   return (
     <CreateModalOverlay
@@ -326,7 +298,7 @@ export const TaskListViewModal = (props) => {
       aria-describedby="modal-modal-description"
       open={open}
       onClose={() => {
-        handleClose()
+        handleClose();
       }}
     >
       <TaskModal>
@@ -339,72 +311,59 @@ export const TaskListViewModal = (props) => {
           }}
         >
           {fetchedList?.map((task, index) => {
-            return (
-              <TaskListCard key={task?.id} taskType={taskType} task={task} />
-            )
+            return <TaskListCard key={task?.id} taskType={taskType} task={task} />;
           })}
           <LoadMore ref={ref} hasMore={hasMore}></LoadMore>
         </div>
       </TaskModal>
     </CreateModalOverlay>
-  )
-}
+  );
+};
 export const TaskViewModal = (props) => {
-  const { open, handleClose, task, taskId, isTaskProposal, back } = props
-  const [fetchedTask, setFetchedTask] = useState(null)
-  const [fetchedTaskSubmissions, setFetchedTaskSubmissions] = useState([])
-  const [fetchedTaskComments, setFetchedTaskComments] = useState([])
-  const [taskSubmissionLoading, setTaskSubmissionLoading] = useState(
-    !isTaskProposal
-  )
-  const [makeSubmission, setMakeSubmission] = useState(false)
+  const { open, handleClose, task, taskId, isTaskProposal, back } = props;
+  const [fetchedTask, setFetchedTask] = useState(null);
+  const [fetchedTaskSubmissions, setFetchedTaskSubmissions] = useState([]);
+  const [fetchedTaskComments, setFetchedTaskComments] = useState([]);
+  const [taskSubmissionLoading, setTaskSubmissionLoading] = useState(!isTaskProposal);
+  const [makeSubmission, setMakeSubmission] = useState(false);
 
-  const orgBoard = useOrgBoard()
-  const userBoard = useUserBoard()
-  const podBoard = usePodBoard()
-  const board = orgBoard || podBoard || userBoard
-  const [getTaskSubmissionsForTask] = useLazyQuery(
-    GET_TASK_SUBMISSIONS_FOR_TASK,
-    {
-      onCompleted: (data) => {
-        const taskSubmissions = data?.getTaskSubmissionsForTask
-        setFetchedTaskSubmissions(taskSubmissions || [])
-        setTaskSubmissionLoading(false)
-      },
-      fetchPolicy: 'network-only',
-      onError: (err) => {
-        console.log('err', err)
-        setTaskSubmissionLoading(false)
-      },
-    }
-  )
-  const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS)
-  const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL)
-  const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL)
-  const router = useRouter()
-  const [editTask, setEditTask] = useState(false)
-  const [submissionSelected, setSubmissionSelected] = useState(
-    isTaskProposal ? false : true
-  )
-  const [archiveTask, setArchiveTask] = useState(false)
-  const [archiveTaskAlert, setArchiveTaskAlert] = useState(false)
-  const [initialStatus, setInitialStatus] = useState('')
-  const snackbarContext = useContext(SnackbarAlertContext)
-  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen
-  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage
-  const [getReviewers, { data: reviewerData }] =
-    useLazyQuery(GET_TASK_REVIEWERS)
-  const user = useMe()
+  const orgBoard = useOrgBoard();
+  const userBoard = useUserBoard();
+  const podBoard = usePodBoard();
+  const board = orgBoard || podBoard || userBoard;
+  const [getTaskSubmissionsForTask] = useLazyQuery(GET_TASK_SUBMISSIONS_FOR_TASK, {
+    onCompleted: (data) => {
+      const taskSubmissions = data?.getTaskSubmissionsForTask;
+      setFetchedTaskSubmissions(taskSubmissions || []);
+      setTaskSubmissionLoading(false);
+    },
+    fetchPolicy: 'network-only',
+    onError: (err) => {
+      console.log('err', err);
+      setTaskSubmissionLoading(false);
+    },
+  });
+  const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS);
+  const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
+  const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
+  const router = useRouter();
+  const [editTask, setEditTask] = useState(false);
+  const [submissionSelected, setSubmissionSelected] = useState(isTaskProposal ? false : true);
+  const [archiveTask, setArchiveTask] = useState(false);
+  const [archiveTaskAlert, setArchiveTaskAlert] = useState(false);
+  const [initialStatus, setInitialStatus] = useState('');
+  const snackbarContext = useContext(SnackbarAlertContext);
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
+  const user = useMe();
   const userPermissionsContext =
-    orgBoard?.userPermissionsContext ||
-    podBoard?.userPermissionsContext ||
-    userBoard?.userPermissionsContext ||
-    null
+    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext || null;
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
     onCompleted: (data) => {
-      const taskData = data?.getTaskById
+      const taskData = data?.getTaskById;
       if (taskData) {
         setFetchedTask(
           transformTaskToTaskCard(taskData, {
@@ -412,41 +371,38 @@ export const TaskViewModal = (props) => {
             orgName: taskData?.org?.name,
             podName: taskData?.pod?.name,
           })
-        )
+        );
       }
     },
-  })
+  });
 
   const [getTaskProposalById] = useLazyQuery(GET_TASK_PROPOSAL_BY_ID, {
     onCompleted: (data) => {
-      const taskProposalData = data?.getTaskProposalById
+      const taskProposalData = data?.getTaskProposalById;
       if (taskProposalData) {
-        setFetchedTask(
-          transformTaskProposalToTaskProposalCard(taskProposalData, {})
-        )
+        setFetchedTask(transformTaskProposalToTaskProposalCard(taskProposalData, {}));
       }
     },
-  })
+  });
 
-  const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] =
-    useMutation(UPDATE_TASK_STATUS, {
-      refetchQueries: () => [
-        {
-          query: GET_TASK_BY_ID,
-          variables: {
-            taskId: fetchedTask?.id,
-          },
+  const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
+    refetchQueries: () => [
+      {
+        query: GET_TASK_BY_ID,
+        variables: {
+          taskId: fetchedTask?.id,
         },
-        'getPerStatusTaskCountForOrgBoard',
-      ],
-      onError: () => {
-        console.error('Something went wrong.')
       },
-      onCompleted: () => {
-        // TODO: Move columns
-        // let columns = [...board?.columns]
-      },
-    })
+      'getPerStatusTaskCountForOrgBoard',
+    ],
+    onError: () => {
+      console.error('Something went wrong.');
+    },
+    onCompleted: () => {
+      // TODO: Move columns
+      // let columns = [...board?.columns]
+    },
+  });
 
   const handleNewStatus = useCallback(
     (newStatus) => {
@@ -457,34 +413,31 @@ export const TaskViewModal = (props) => {
             newStatus,
           },
         },
-      })
+      });
     },
     [fetchedTask, updateTaskStatusMutation]
-  )
+  );
 
   useEffect(() => {
     if (!initialStatus) {
-      setInitialStatus(fetchedTask?.status)
+      setInitialStatus(fetchedTask?.status);
     }
 
-    if (
-      updateTaskStatusMutationData?.updateTaskStatus.status ===
-      TASK_STATUS_ARCHIVED
-    ) {
-      setSnackbarAlertOpen(true)
+    if (updateTaskStatusMutationData?.updateTaskStatus.status === TASK_STATUS_ARCHIVED) {
+      setSnackbarAlertOpen(true);
       setSnackbarAlertMessage(
         <>
           Task archived successfully!{' '}
           <ArchivedTaskUndo
             onClick={() => {
-              handleNewStatus(initialStatus)
-              setSnackbarAlertOpen(false)
+              handleNewStatus(initialStatus);
+              setSnackbarAlertOpen(false);
             }}
           >
             Undo
           </ArchivedTaskUndo>
         </>
-      )
+      );
     }
   }, [
     initialStatus,
@@ -494,43 +447,45 @@ export const TaskViewModal = (props) => {
     setSnackbarAlertOpen,
     setSnackbarAlertMessage,
     handleNewStatus,
-  ])
+  ]);
 
   useEffect(() => {
-    if (isTaskProposal) {
-      setTaskSubmissionLoading(false)
-      setSubmissionSelected(false)
-    }
-    if (!task && taskId) {
+    if (open) {
       if (isTaskProposal) {
-        getTaskProposalById({
-          variables: {
-            proposalId: taskId,
-          },
-        })
-      } else {
-        getTaskById({
-          variables: {
-            taskId,
-          },
-        })
+        setTaskSubmissionLoading(false);
+        setSubmissionSelected(false);
       }
-    } else if (task) {
-      setFetchedTask(task)
-    }
+      if (!task && taskId) {
+        if (isTaskProposal) {
+          getTaskProposalById({
+            variables: {
+              proposalId: taskId,
+            },
+          });
+        } else {
+          getTaskById({
+            variables: {
+              taskId,
+            },
+          });
+        }
+      } else if (task) {
+        setFetchedTask(task);
+      }
 
-    if (fetchedTask) {
-      if (!isTaskProposal) {
-        getReviewers({
-          variables: {
-            taskId: fetchedTask?.id,
-          },
-        })
-        getTaskSubmissionsForTask({
-          variables: {
-            taskId: fetchedTask?.id,
-          },
-        })
+      if (fetchedTask) {
+        if (!isTaskProposal) {
+          getReviewers({
+            variables: {
+              taskId: fetchedTask?.id,
+            },
+          });
+          getTaskSubmissionsForTask({
+            variables: {
+              taskId: fetchedTask?.id,
+            },
+          });
+        }
       }
     }
     // if (boardOrg) {
@@ -547,7 +502,8 @@ export const TaskViewModal = (props) => {
     getTaskSubmissionsForTask,
     isTaskProposal,
     getTaskProposalById,
-  ])
+    open,
+  ]);
   const BackToListStyle = {
     color: White,
     width: '100%',
@@ -555,7 +511,7 @@ export const TaskViewModal = (props) => {
     marginRight: '8px',
     textDecoration: 'underline',
     cursor: 'pointer',
-  }
+  };
   if (editTask) {
     return (
       <>
@@ -564,15 +520,15 @@ export const TaskViewModal = (props) => {
           aria-describedby="modal-modal-description"
           open={open}
           onClose={() => {
-            setEditTask(false)
-            handleClose()
+            setEditTask(false);
+            handleClose();
           }}
         >
           <EditLayoutBaseModal
             entityType={ENTITIES_TYPES.TASK}
             handleClose={() => {
-              setEditTask(false)
-              handleClose()
+              setEditTask(false);
+              handleClose();
             }}
             cancelEdit={() => setEditTask(false)}
             existingTask={
@@ -585,49 +541,42 @@ export const TaskViewModal = (props) => {
           />
         </CreateModalOverlay>
       </>
-    )
+    );
   }
 
-  const canSubmit = fetchedTask?.assigneeId === user?.id
+  const canSubmit = fetchedTask?.assigneeId === user?.id;
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
     orgId: fetchedTask?.orgId,
     podId: fetchedTask?.podId,
-  })
+  });
 
   const canEdit =
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     fetchedTask?.createdBy === user?.id ||
-    (fetchedTask?.assigneeId && fetchedTask?.assigneeId === user?.id)
+    (fetchedTask?.assigneeId && fetchedTask?.assigneeId === user?.id);
   const canMoveProgress =
     (podBoard && permissions.includes(PERMISSIONS.MANAGE_BOARD)) ||
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     fetchedTask?.createdBy === user?.id ||
-    (fetchedTask?.assigneeId && fetchedTask?.assigneeId === user?.id)
-  const canReview =
-    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-    permissions.includes(PERMISSIONS.REVIEW_TASK)
+    (fetchedTask?.assigneeId && fetchedTask?.assigneeId === user?.id);
+  const canReview = permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.REVIEW_TASK);
 
   const displayDivProfileImageStyle = {
     width: '26px',
     height: '26px',
     borderRadius: '13px',
     marginRight: '4px',
-  }
+  };
   const canApproveProposal =
-    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-    permissions.includes(PERMISSIONS.CREATE_TASK)
+    permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK);
   const dropdownItemStyle = {
     marginRight: '12px',
-  }
+  };
   return (
     <>
-      <ArchiveTaskModal
-        open={archiveTask}
-        onClose={() => setArchiveTask(false)}
-        onArchive={handleNewStatus}
-      />
+      <ArchiveTaskModal open={archiveTask} onClose={() => setArchiveTask(false)} onArchive={handleNewStatus} />
       <Modal open={open} onClose={handleClose}>
         <TaskModal>
           <TaskModalHeader>
@@ -652,10 +601,7 @@ export const TaskViewModal = (props) => {
             )}
             {back && (
               <>
-                <PodNameTypography
-                  style={BackToListStyle}
-                  onClick={handleClose}
-                >
+                <PodNameTypography style={BackToListStyle} onClick={handleClose}>
                   Back to list
                 </PodNameTypography>
               </>
@@ -673,7 +619,7 @@ export const TaskViewModal = (props) => {
                   <DropDownItem
                     key={'task-menu-archive-' + fetchedTask?.id}
                     onClick={() => {
-                      setArchiveTask(true)
+                      setArchiveTask(true);
                     }}
                     style={dropdownItemStyle}
                   >
@@ -710,16 +656,11 @@ export const TaskViewModal = (props) => {
                 reviewerData?.getTaskReviewers.map((taskReviewer) => (
                   <TaskSectionInfoDiv key={taskReviewer?.id}>
                     {taskReviewer?.profilePicture ? (
-                      <SafeImage
-                        style={displayDivProfileImageStyle}
-                        src={taskReviewer?.profilePicture}
-                      />
+                      <SafeImage style={displayDivProfileImageStyle} src={taskReviewer?.profilePicture} />
                     ) : (
                       <DefaultUserImage style={displayDivProfileImageStyle} />
                     )}
-                    <TaskSectionInfoText>
-                      {taskReviewer?.username}
-                    </TaskSectionInfoText>
+                    <TaskSectionInfoText>{taskReviewer?.username}</TaskSectionInfoText>
                   </TaskSectionInfoDiv>
                 ))
               ) : (
@@ -744,16 +685,11 @@ export const TaskViewModal = (props) => {
                 {fetchedTask?.creatorUsername && (
                   <>
                     {fetchedTask?.creatorProfilePicture ? (
-                      <SafeImage
-                        style={displayDivProfileImageStyle}
-                        src={fetchedTask?.creatorProfilePicture}
-                      />
+                      <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.creatorProfilePicture} />
                     ) : (
                       <DefaultUserImage style={displayDivProfileImageStyle} />
                     )}
-                    <TaskSectionInfoText>
-                      {fetchedTask?.creatorUsername}
-                    </TaskSectionInfoText>
+                    <TaskSectionInfoText>{fetchedTask?.creatorUsername}</TaskSectionInfoText>
                   </>
                 )}
                 {!fetchedTask?.creatorUsername && (
@@ -777,16 +713,11 @@ export const TaskViewModal = (props) => {
               {fetchedTask?.assigneeUsername && (
                 <>
                   {fetchedTask?.assigneeProfilePicture ? (
-                    <SafeImage
-                      style={displayDivProfileImageStyle}
-                      src={fetchedTask?.assigneeProfilePicture}
-                    />
+                    <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.assigneeProfilePicture} />
                   ) : (
                     <DefaultUserImage style={displayDivProfileImageStyle} />
                   )}
-                  <TaskSectionInfoText>
-                    {fetchedTask?.assigneeUsername}
-                  </TaskSectionInfoText>
+                  <TaskSectionInfoText>{fetchedTask?.assigneeUsername}</TaskSectionInfoText>
                 </>
               )}
             </TaskSectionInfoDiv>
@@ -796,13 +727,10 @@ export const TaskViewModal = (props) => {
               <ImageIcon />
               <TaskSectionDisplayText>Media</TaskSectionDisplayText>
             </TaskSectionDisplayLabel>
-            {Array.isArray(fetchedTask?.media) &&
-            fetchedTask?.media.length > 0 ? (
+            {Array.isArray(fetchedTask?.media) && fetchedTask?.media.length > 0 ? (
               <TaskMediaContainer>
                 {Array.isArray(fetchedTask?.media) &&
-                  fetchedTask?.media.map((mediaItem) => (
-                    <MediaLink key={mediaItem?.slug} media={mediaItem} />
-                  ))}
+                  fetchedTask?.media.map((mediaItem) => <MediaLink key={mediaItem?.slug} media={mediaItem} />)}
               </TaskMediaContainer>
             ) : (
               <TaskSectionInfoText
@@ -826,9 +754,7 @@ export const TaskViewModal = (props) => {
                 marginLeft: '16px',
               }}
             >
-              {fetchedTask?.dueDate
-                ? format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy')
-                : 'None'}
+              {fetchedTask?.dueDate ? format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy') : 'None'}
             </TaskSectionInfoText>
           </TaskSectionDisplayDiv>
           {isTaskProposal && (
@@ -837,9 +763,7 @@ export const TaskViewModal = (props) => {
                 <>
                   <div style={flexDivStyle}>
                     <RejectIcon style={rejectIconStyle} />
-                    <TaskStatusHeaderText>
-                      Change requested
-                    </TaskStatusHeaderText>
+                    <TaskStatusHeaderText>Change requested</TaskStatusHeaderText>
                   </div>
                   <div
                     style={{
@@ -870,7 +794,7 @@ export const TaskViewModal = (props) => {
                           proposalId: fetchedTask?.id,
                         },
                         onCompleted: () => {
-                          let columns = [...board?.columns]
+                          let columns = [...board?.columns];
                           // Move from proposal to task
                           columns = updateProposalItem(
                             {
@@ -878,11 +802,11 @@ export const TaskViewModal = (props) => {
                               changeRequestedAt: new Date(),
                             },
                             columns
-                          )
-                          board?.setColumns(columns)
+                          );
+                          board?.setColumns(columns);
                         },
                         refetchQueries: ['GetOrgTaskBoardProposals'],
-                      })
+                      });
                     }}
                   >
                     Request changes
@@ -894,22 +818,16 @@ export const TaskViewModal = (props) => {
                           proposalId: fetchedTask?.id,
                         },
                         onCompleted: () => {
-                          let columns = [...board?.columns]
+                          let columns = [...board?.columns];
                           // Move from proposal to task
-                          columns = removeProposalItem(fetchedTask?.id, columns)
-                          columns = addTaskItem(fetchedTask, columns)
-                          board?.setColumns(columns)
-                          document.body.setAttribute(
-                            'style',
-                            `position: relative;`
-                          )
-                          handleClose()
+                          columns = removeProposalItem(fetchedTask?.id, columns);
+                          columns = addTaskItem(fetchedTask, columns);
+                          board?.setColumns(columns);
+                          document.body.setAttribute('style', `position: relative;`);
+                          handleClose();
                         },
-                        refetchQueries: [
-                          'GetOrgTaskBoardProposals',
-                          'getPerStatusTaskCountForOrgBoard',
-                        ],
-                      })
+                        refetchQueries: ['GetOrgTaskBoardProposals', 'getPerStatusTaskCountForOrgBoard'],
+                      });
                     }}
                   >
                     Approve
@@ -923,9 +841,7 @@ export const TaskViewModal = (props) => {
               {!isTaskProposal && (
                 <TaskSubmissionTab
                   style={{
-                    borderBottom: `2px solid ${
-                      submissionSelected ? '#7427FF' : '#4B4B4B'
-                    }`,
+                    borderBottom: `2px solid ${submissionSelected ? '#7427FF' : '#4B4B4B'}`,
                   }}
                   onClick={() => setSubmissionSelected(true)}
                 >
@@ -940,9 +856,7 @@ export const TaskViewModal = (props) => {
               )}
               <TaskSubmissionTab
                 style={{
-                  borderBottom: `2px solid ${
-                    !submissionSelected ? '#7427FF' : '#4B4B4B'
-                  }`,
+                  borderBottom: `2px solid ${!submissionSelected ? '#7427FF' : '#4B4B4B'}`,
                 }}
                 onClick={() => setSubmissionSelected(false)}
               >
@@ -978,15 +892,12 @@ export const TaskViewModal = (props) => {
                 />
               )}
               {!submissionSelected && (
-                <CommentList
-                  task={fetchedTask}
-                  taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'}
-                />
+                <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
               )}
             </TaskSectionContent>
           </TaskModalFooter>
         </TaskModal>
       </Modal>
     </>
-  )
-}
+  );
+};
