@@ -1,13 +1,7 @@
-import React from 'react'
-import styled from 'styled-components'
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Typography,
-} from '@material-ui/core'
-import SelectDownIcon from '../../Icons/selectDownIcon'
+import React from 'react';
+import styled from 'styled-components';
+import { FormControl, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
+import SelectDownIcon from '../../Icons/selectDownIcon';
 
 export const CreateFormSelectBlock = styled.div`
   max-width: 260px;
@@ -16,7 +10,7 @@ export const CreateFormSelectBlock = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-`
+`;
 
 export const CreateFormSelectBlockTitle = styled(Typography)`
   && {
@@ -27,7 +21,7 @@ export const CreateFormSelectBlockTitle = styled(Typography)`
     color: #ccbbff;
     margin-bottom: 0;
   }
-`
+`;
 
 export const CreateFormControl = styled(FormControl)({
   '& .MuiFormControl-root': {
@@ -41,7 +35,7 @@ export const CreateFormControl = styled(FormControl)({
   '& .MuiInput-underline:after': {
     display: 'none',
   },
-})
+});
 
 export const CreateFormInputLabel = styled(InputLabel)({
   '&.MuiFormLabel-root': {
@@ -65,7 +59,7 @@ export const CreateFormInputLabel = styled(InputLabel)({
   '&.MuiInputLabel-animated': {
     color: '#C4C4C4 !important',
   },
-})
+});
 
 export const CreateFormSelect = styled(Select)`
   && {
@@ -99,14 +93,22 @@ export const CreateFormSelect = styled(Select)`
     & .MuiSelect-select.MuiSelect-select {
       display: flex;
     }
+
+    & .Mui-disabled {
+      color: white !important;
+    }
+
+    & svg.Mui-disabled {
+      opacity: 0;
+    }
   }
-`
+`;
 
 export const CreateFormSelectArrowIcon = styled(SelectDownIcon)`
   && {
     cursor: pointer;
   }
-`
+`;
 
 export const CreateFormMenuItem = styled(MenuItem)`
   && {
@@ -128,12 +130,12 @@ export const CreateFormMenuItem = styled(MenuItem)`
       opacity: 0.5;
     }
   }
-`
+`;
 
 export const CreateFormMenuItemIcon = styled.div`
-	display: flex;
-	margin: 0 8px 0 0;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-`
+  display: flex;
+  margin: 0 8px 0 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;

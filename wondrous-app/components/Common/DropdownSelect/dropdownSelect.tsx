@@ -27,7 +27,7 @@ const MenuProps = {
 };
 
 const DropdownSelect = (props) => {
-  const { title, labelText, labelIcon, options, name, value, setValue, formSelectStyle } = props;
+  const { title, labelText, labelIcon, options, name, value, setValue, formSelectStyle, disabled } = props;
 
   const handleChange = (event) => {
     setValue(event.target.value);
@@ -51,6 +51,7 @@ const DropdownSelect = (props) => {
           MenuProps={MenuProps}
           labelId={`select-label-${name}`}
           id={`select-${name}`}
+          disabled={disabled}
         >
           {options.map((item) => (
             <CreateFormMenuItem key={item.value} value={item.value}>
