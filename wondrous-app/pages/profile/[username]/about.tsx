@@ -90,7 +90,7 @@ const AboutPage = () => {
         },
       })
     }
-  }, [username, userId, userProfileData, getUser, getUserFromUsername])
+  }, [username, userId, userProfileData, getUser, getUserFromUsername, getUserAboutPageData])
 
   return (
     <About
