@@ -118,7 +118,11 @@ const Wrapper = (props) => {
 
   return (
     <>
-      <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
+      <PodInviteLinkModal
+        podId={podBoard?.podId}
+        open={openInvite}
+        onClose={() => setOpenInvite(false)}
+      />
       <MoreInfoModal
         open={open && (showUsers || showPods)}
         handleClose={() => setOpen(false)}
@@ -134,7 +138,7 @@ const Wrapper = (props) => {
           setMinimized,
         }}
       >
-        <SideBarComponent listItems={SIDEBAR_LIST_ITEMS} />
+        <SideBarComponent />
         <CreateFormModal
           open={createFormModal}
           toggleOpen={toggleCreateFormModal}
@@ -175,7 +179,10 @@ const Wrapper = (props) => {
                     {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
                       <>
                         <HeaderInviteButton onClick={() => setOpenInvite(true)}>
-                          Invite <PlusIconWrapper><PlusIcon height="8" width="8" fill="#fff" /></PlusIconWrapper>
+                          Invite{' '}
+                          <PlusIconWrapper>
+                            <PlusIcon height="8" width="8" fill="#fff" />
+                          </PlusIconWrapper>
                         </HeaderInviteButton>
                         <HeaderManageSettingsButton>
                           Settings
@@ -187,11 +194,11 @@ const Wrapper = (props) => {
                         Settings
                       </HeaderSettingsLockedButton>
                     )}
-                    {!permissions && (
+                    {/* {!permissions && (
                       <HeaderContributeButton>
                         Contribute
                       </HeaderContributeButton>
-                    )}
+                    )} */}
                   </HeaderButtons>
                 </HeaderMainBlock>
                 <HeaderText>{podProfile?.description}</HeaderText>

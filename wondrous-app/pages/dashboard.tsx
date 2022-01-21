@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import AppLayout from '../components/Common/Layout/App'
 import { ToDo, InProgress, Done } from '../components/Icons'
@@ -17,6 +17,10 @@ import { ToggleViewButton } from '../components/Common/ToggleViewButton'
 import Filter from '../components/Common/Filter'
 import CreatePodIcon from '../components/Icons/createPod'
 import { Logo } from '../components/Icons/logo'
+import { CircularProgress } from '@mui/material'
+import { useQuery } from '@apollo/client'
+import { GET_USER_ORGS } from '../graphql/queries'
+import { useRouter } from 'next/router'
 
 const TO_DO = {
   status: Constants.TASK_STATUS_TODO,
@@ -593,9 +597,19 @@ const Home = () => {
     },
   ]
 
+  const { data: userOrgs } = useQuery(GET_USER_ORGS)
+  const router = useRouter()
+  useEffect(() => {
+    if (userOrgs?.getUserOrgs) {
+      const firstOrg = userOrgs.getUserOrgs[0]
+      router.push(`/organization/${firstOrg?.username}/boards`)
+    }
+  }, [userOrgs?.getUserOrgs])
+
   return (
     <AppLayout banner={<DashboardBanner />}>
-      <MetricsPanel />
+      <CircularProgress />
+      {/* <MetricsPanel />
       <BoardsContainer>
         <DashboardActivity>
           <BoardsActivityInput
@@ -617,7 +631,7 @@ const Home = () => {
         </DashboardActivity>
 
         <KanbanBoard columns={COLUMNS} />
-      </BoardsContainer>
+      </BoardsContainer> */}
     </AppLayout>
   )
 }
