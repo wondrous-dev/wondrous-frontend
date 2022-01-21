@@ -1,16 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { PERMISSIONS, SIDEBAR_WIDTH } from '../../../utils/constants'
-import { SideBarContext } from '../../../utils/contexts'
+import React, { useCallback, useEffect, useState } from 'react';
+import { PERMISSIONS, SIDEBAR_WIDTH } from '../../../utils/constants';
+import { SideBarContext } from '../../../utils/contexts';
 
-import Header from '../../Header'
-import SideBarComponent from '../../SideBar'
-import Tabs from '../../organization/tabs/tabs'
-import CreateFormModal from '../../CreateEntity'
-import {
-  parseUserPermissionContext,
-  shrinkNumber,
-  toggleHtmlOverflow,
-} from '../../../utils/helpers'
+import Header from '../../Header';
+import SideBarComponent from '../../SideBar';
+import Tabs from '../../organization/tabs/tabs';
+import CreateFormModal from '../../CreateEntity';
+import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from '../../../utils/helpers';
 
 import {
   Content,
@@ -39,15 +35,15 @@ import {
   TokenHeader,
   HeaderInviteButton,
   PlusIconWrapper,
-} from '../../organization/wrapper/styles'
-import { useOrgBoard, usePodBoard } from '../../../utils/hooks'
-import { useQuery } from '@apollo/client'
-import { GET_POD_BY_ID } from '../../../graphql/queries/pod'
-import { SafeImage } from '../../Common/Image'
-import { MoreInfoModal } from '../../profile/modals'
-import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink'
-import PlusIcon from '../../Icons/plus'
-import { useRouter } from 'next/router'
+} from '../../organization/wrapper/styles';
+import { useOrgBoard, usePodBoard } from '../../../utils/hooks';
+import { useQuery } from '@apollo/client';
+import { GET_POD_BY_ID } from '../../../graphql/queries/pod';
+import { SafeImage } from '../../Common/Image';
+import { MoreInfoModal } from '../../profile/modals';
+import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
+import PlusIcon from '../../Icons/plus';
+import { useRouter } from 'next/router';
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -65,66 +61,62 @@ const SIDEBAR_LIST_ITEMS = [
     icon: '/images/sidebar/third.png',
     path: '/',
   },
-]
+];
 
 const MOCK_ORGANIZATION_DATA = {
   amount: 1234567,
-}
+};
 
 const Wrapper = (props) => {
-  const router = useRouter()
-  const { children } = props
-  const [minimized, setMinimized] = useState(false)
-  const [showUsers, setShowUsers] = useState(false)
-  const [showPods, setShowPods] = useState(false)
-  const [open, setOpen] = useState(false)
-  const podBoard = usePodBoard()
+  const router = useRouter();
+  const { children } = props;
+  const [minimized, setMinimized] = useState(false);
+  const [showUsers, setShowUsers] = useState(false);
+  const [showPods, setShowPods] = useState(false);
+  const [open, setOpen] = useState(false);
+  const podBoard = usePodBoard();
   const ORG_PERMISSIONS = {
     MANAGE_SETTINGS: 'manageSettings',
     CONTRIBUTOR: 'contributor',
-  }
-  const userPermissionsContext = podBoard?.userPermissionsContext
-  const [permissions, setPermissions] = useState(null)
-  const [createFormModal, setCreateFormModal] = useState(false)
-  const [data, setData] = useState(MOCK_ORGANIZATION_DATA)
-  const [openInvite, setOpenInvite] = useState(false)
-  const { amount } = data
-  const podProfile = podBoard?.pod
+  };
+  const userPermissionsContext = podBoard?.userPermissionsContext;
+  const [permissions, setPermissions] = useState(null);
+  const [createFormModal, setCreateFormModal] = useState(false);
+  const [data, setData] = useState(MOCK_ORGANIZATION_DATA);
+  const [openInvite, setOpenInvite] = useState(false);
+  const { amount } = data;
+  const podProfile = podBoard?.pod;
   const toggleCreateFormModal = () => {
-    toggleHtmlOverflow()
-    setCreateFormModal((prevState) => !prevState)
-  }
-  const links = podProfile?.links
+    toggleHtmlOverflow();
+    setCreateFormModal((prevState) => !prevState);
+  };
+  const links = podProfile?.links;
 
   useEffect(() => {
     const orgPermissions = parseUserPermissionContext({
       userPermissionsContext,
       podId: podBoard?.podId,
       orgId: podBoard?.orgId,
-    })
+    });
 
     if (
       orgPermissions?.includes(PERMISSIONS.MANAGE_MEMBER) ||
       orgPermissions?.includes(PERMISSIONS.FULL_ACCESS) ||
       orgPermissions?.includes(PERMISSIONS.APPROVE_PAYMENT)
     ) {
-      setPermissions(ORG_PERMISSIONS.MANAGE_SETTINGS)
+      setPermissions(ORG_PERMISSIONS.MANAGE_SETTINGS);
     } else if (userPermissionsContext && orgPermissions) {
       // Normal contributor with no access to admin settings
-      setPermissions(ORG_PERMISSIONS.CONTRIBUTOR)
+      setPermissions(ORG_PERMISSIONS.CONTRIBUTOR);
     } else if (!userPermissionsContext) {
-      setPermissions(null)
+      setPermissions(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [podBoard?.orgId, userPermissionsContext])
+  }, [podBoard?.orgId, userPermissionsContext]);
 
   return (
     <>
-      <PodInviteLinkModal
-        podId={podBoard?.podId}
-        open={openInvite}
-        onClose={() => setOpenInvite(false)}
-      />
+      <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
       <MoreInfoModal
         open={open && (showUsers || showPods)}
         handleClose={() => setOpen(false)}
@@ -141,10 +133,7 @@ const Wrapper = (props) => {
         }}
       >
         <SideBarComponent />
-        <CreateFormModal
-          open={createFormModal}
-          toggleOpen={toggleCreateFormModal}
-        />
+        <CreateFormModal open={createFormModal} toggleOpen={toggleCreateFormModal} />
         <OverviewComponent
           style={{
             paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
@@ -173,9 +162,7 @@ const Wrapper = (props) => {
                         visibility: 'hidden',
                       }}
                     >
-                      <HeaderFollowButtonText>
-                        {shrinkNumber(amount)}
-                      </HeaderFollowButtonText>
+                      <HeaderFollowButtonText>{shrinkNumber(amount)}</HeaderFollowButtonText>
                       <HeaderFollowButtonIcon src="/images/overview/icon.png" />
                     </HeaderFollowButton>
                     {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
@@ -187,16 +174,14 @@ const Wrapper = (props) => {
                           </PlusIconWrapper>
                         </HeaderInviteButton>
                         <HeaderManageSettingsButton
-                          onClick={() => router.push('/organization/settings')}
+                          onClick={() => router.push(`/pod/settings/${podBoard?.podId}/general`)}
                         >
                           Settings
                         </HeaderManageSettingsButton>
                       </>
                     )}
                     {permissions === ORG_PERMISSIONS.CONTRIBUTOR && (
-                      <HeaderSettingsLockedButton>
-                        Settings
-                      </HeaderSettingsLockedButton>
+                      <HeaderSettingsLockedButton>Settings</HeaderSettingsLockedButton>
                     )}
                     {/* {!permissions && (
                       <HeaderContributeButton>
@@ -215,17 +200,13 @@ const Wrapper = (props) => {
                   ))}
                   <HeaderContributors
                     onClick={() => {
-                      setOpen(true)
-                      setShowUsers(true)
+                      setOpen(true);
+                      setShowUsers(true);
                     }}
                   >
-                    <HeaderContributorsAmount>
-                      {podProfile?.contributorCount}
-                    </HeaderContributorsAmount>
+                    <HeaderContributorsAmount>{podProfile?.contributorCount}</HeaderContributorsAmount>
                     <HeaderContributorsText>
-                      {podProfile?.contributorCount === 1
-                        ? 'Contributor'
-                        : 'Contributors'}
+                      {podProfile?.contributorCount === 1 ? 'Contributor' : 'Contributors'}
                     </HeaderContributorsText>
                   </HeaderContributors>
                   {/* <HeaderPods>
@@ -241,7 +222,7 @@ const Wrapper = (props) => {
         </OverviewComponent>
       </SideBarContext.Provider>
     </>
-  )
-}
+  );
+};
 
-export default Wrapper
+export default Wrapper;

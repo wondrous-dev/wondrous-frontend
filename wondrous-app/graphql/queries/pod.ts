@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client'
-import { PodFragment } from '../fragments/pod'
+import { gql } from '@apollo/client';
+import { PodFragment } from '../fragments/pod';
 
 export const GET_POD_BY_ID = gql`
   query getPodById($podId: ID!) {
@@ -8,7 +8,7 @@ export const GET_POD_BY_ID = gql`
     }
   }
   ${PodFragment}
-`
+`;
 
 export const GET_USER_PODS = gql`
   query getUserPods($userId: String) {
@@ -19,7 +19,7 @@ export const GET_USER_PODS = gql`
       profilePicture
     }
   }
-`
+`;
 
 export const GET_USER_AVAILABLE_PODS = gql`
   query getAvailableUserPods($orgId: String) {
@@ -30,11 +30,11 @@ export const GET_USER_AVAILABLE_PODS = gql`
       profilePicture
     }
   }
-`
+`;
 
 export const GET_POD_USERS = gql`
-  query getPodUsers($podId: String!) {
-    getPodUsers(podId: $podId) {
+  query getPodUsers($podId: String!, $limit: Int, $offset: Int) {
+    getPodUsers(podId: $podId, limit: $limit, offset: $offset) {
       user {
         id
         username
@@ -43,16 +43,18 @@ export const GET_POD_USERS = gql`
       }
       role {
         permissions
+        id
+        name
       }
     }
   }
-`
+`;
 
 export const GET_POD_ROLES = gql`
-	query getPodRoles ($podId: ID){
-		getPodRoles(podId: $podId) {
-			id
-			name
-		}
-	}
-`
+  query getPodRoles($podId: ID) {
+    getPodRoles(podId: $podId) {
+      id
+      name
+    }
+  }
+`;

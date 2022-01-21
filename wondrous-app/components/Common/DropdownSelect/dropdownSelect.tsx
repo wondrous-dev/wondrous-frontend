@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   CreateFormInputLabel,
   CreateFormMenuItem,
@@ -7,9 +7,9 @@ import {
   CreateFormSelectArrowIcon,
   CreateFormSelectBlock,
   CreateFormSelectBlockTitle,
-} from './styles'
-import { SafeImage } from '../Image'
-import { FormControl } from '@material-ui/core'
+} from './styles';
+import { SafeImage } from '../Image';
+import { FormControl } from '@material-ui/core';
 
 const MenuProps = {
   PaperProps: {
@@ -24,17 +24,17 @@ const MenuProps = {
       },
     },
   },
-}
+};
 
 const DropdownSelect = (props) => {
-  const { title, labelText, labelIcon, options, name, value, setValue } = props
+  const { title, labelText, labelIcon, options, name, value, setValue, formSelectStyle, disabled } = props;
 
   const handleChange = (event) => {
-    setValue(event.target.value)
-  }
+    setValue(event.target.value);
+  };
 
   return (
-    <CreateFormSelectBlock>
+    <CreateFormSelectBlock style={formSelectStyle}>
       <CreateFormSelectBlockTitle>{title}</CreateFormSelectBlockTitle>
       <FormControl>
         {!value && (
@@ -51,6 +51,7 @@ const DropdownSelect = (props) => {
           MenuProps={MenuProps}
           labelId={`select-label-${name}`}
           id={`select-${name}`}
+          disabled={disabled}
         >
           {options.map((item) => (
             <CreateFormMenuItem key={item.value} value={item.value}>
@@ -74,7 +75,7 @@ const DropdownSelect = (props) => {
         </CreateFormSelect>
       </FormControl>
     </CreateFormSelectBlock>
-  )
-}
+  );
+};
 
-export default DropdownSelect
+export default DropdownSelect;

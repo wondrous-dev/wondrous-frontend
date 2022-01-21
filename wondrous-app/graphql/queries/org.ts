@@ -39,15 +39,18 @@ export const GET_USER_ORGS = gql`
 `;
 
 export const GET_ORG_USERS = gql`
-  query getOrgUsers($orgId: String!) {
-    getOrgUsers(orgId: $orgId) {
+  query getOrgUsers($orgId: String!, $limit: Int, $offset: Int) {
+    getOrgUsers(orgId: $orgId, limit: $limit, offset: $offset) {
       user {
         id
         username
         profilePicture
+        bio
       }
       role {
+        id
         permissions
+        name
       }
     }
   }

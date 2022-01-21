@@ -1,34 +1,34 @@
-import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react'
-import { Popper, styled, Switch, TextField } from '@material-ui/core'
-import DesktopDatePicker from '@mui/lab/DesktopDatePicker'
-import AdapterDateFns from '@mui/lab/AdapterDateFns'
-import LocalizationProvider from '@mui/lab/LocalizationProvider'
-import Autocomplete from '@mui/material/Autocomplete'
+import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
+import { Popper, styled, Switch, TextField } from '@material-ui/core';
+import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import Autocomplete from '@mui/material/Autocomplete';
 
-import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg'
+import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
 import {
   ENTITIES_TYPES,
   IMAGE_FILE_EXTENSIONS_TYPE_MAPPING,
   MEDIA_TYPES,
   PERMISSIONS,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
-} from '../../utils/constants'
-import CircleIcon from '../Icons/circleIcon'
-import CodeIcon from '../Icons/MediaTypesIcons/code'
-import AudioIcon from '../Icons/MediaTypesIcons/audio'
-import PriorityIcon from '../Icons/priority'
-import CloseModalIcon from '../Icons/closeModal'
-import CreateDaoIcon from '../Icons/createDao'
-import CreatePodIcon from '../Icons/createPod'
-import ImageIcon from '../Icons/MediaTypesIcons/image'
-import VideoIcon from '../Icons/MediaTypesIcons/video'
-import InputForm from '../Common/InputForm/inputForm'
-import DropdownSelect from '../Common/DropdownSelect/dropdownSelect'
+} from '../../utils/constants';
+import CircleIcon from '../Icons/circleIcon';
+import CodeIcon from '../Icons/MediaTypesIcons/code';
+import AudioIcon from '../Icons/MediaTypesIcons/audio';
+import PriorityIcon from '../Icons/priority';
+import CloseModalIcon from '../Icons/closeModal';
+import CreateDaoIcon from '../Icons/createDao';
+import CreatePodIcon from '../Icons/createPod';
+import ImageIcon from '../Icons/MediaTypesIcons/image';
+import VideoIcon from '../Icons/MediaTypesIcons/video';
+import InputForm from '../Common/InputForm/inputForm';
+import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
 
-import { ENTITIES_UI_ELEMENTS } from './chooseEntityToCreateModal'
-import MembersRow from './MembersRow/membersRow'
-import { CreateFormMembersList } from './MembersRow/styles'
-import HeaderImage from './HeaderImage/headerImage'
+import { ENTITIES_UI_ELEMENTS } from './chooseEntityToCreateModal';
+import MembersRow from './MembersRow/membersRow';
+import { CreateFormMembersList } from './MembersRow/styles';
+import HeaderImage from './HeaderImage/headerImage';
 import {
   CreateFormAddDetailsAppearBlock,
   CreateFormAddDetailsAppearBlockContainer,
@@ -75,62 +75,51 @@ import {
   OptionDiv,
   OptionTypography,
   StyledChip,
-} from './styles'
-import SelectDownIcon from '../Icons/selectDownIcon'
-import UploadImageIcon from '../Icons/uploadImage'
-import {
-  getFilenameAndType,
-  handleAddFile,
-  uploadMedia,
-} from '../../utils/media'
-import DatePicker from '../Common/DatePicker'
-import { MediaItem } from './MediaItem'
-import { AddFileUpload } from '../Icons/addFileUpload'
-import { TextInput } from '../TextInput'
-import { White, Grey700 } from '../../theme/colors'
-import { TextInputContext } from '../../utils/contexts'
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
-import {
-  GET_AUTOCOMPLETE_USERS,
-  GET_USER_ORGS,
-  GET_USER_PERMISSION_CONTEXT,
-} from '../../graphql/queries'
-import { SafeImage } from '../Common/Image'
-import {
-  GET_USER_AVAILABLE_PODS,
-  GET_USER_PODS,
-} from '../../graphql/queries/pod'
-import { GET_ELIGIBLE_REVIEWERS_FOR_ORG } from '../../graphql/queries/task'
+} from './styles';
+import SelectDownIcon from '../Icons/selectDownIcon';
+import UploadImageIcon from '../Icons/uploadImage';
+import { getFilenameAndType, handleAddFile, uploadMedia } from '../../utils/media';
+import DatePicker from '../Common/DatePicker';
+import { MediaItem } from './MediaItem';
+import { AddFileUpload } from '../Icons/addFileUpload';
+import { TextInput } from '../TextInput';
+import { White, Grey700 } from '../../theme/colors';
+import { TextInputContext } from '../../utils/contexts';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
+import { SafeImage } from '../Common/Image';
+import { GET_USER_AVAILABLE_PODS, GET_USER_PODS } from '../../graphql/queries/pod';
+import { GET_ELIGIBLE_REVIEWERS_FOR_ORG } from '../../graphql/queries/task';
 import {
   getMentionArray,
   parseUserPermissionContext,
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
-} from '../../utils/helpers'
-import { GET_ORG_USERS } from '../../graphql/queries/org'
-import { CREATE_TASK } from '../../graphql/mutations/task'
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks'
-import { CREATE_TASK_PROPOSAL } from '../../graphql/mutations/taskProposal'
-import { useMe } from '../Auth/withAuth'
-import Ethereum from '../Icons/ethereum'
-import { USDCoin } from '../Icons/USDCoin'
-import { addProposalItem } from '../../utils/board'
-import { CREATE_POD } from '../../graphql/mutations/pod'
-import { useRouter } from 'next/router'
-import { delQuery } from '../../utils'
-import { ErrorText } from '../Common'
-import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment'
+} from '../../utils/helpers';
+import { GET_ORG_USERS } from '../../graphql/queries/org';
+import { CREATE_TASK } from '../../graphql/mutations/task';
+import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
+import { CREATE_TASK_PROPOSAL } from '../../graphql/mutations/taskProposal';
+import { useMe } from '../Auth/withAuth';
+import Ethereum from '../Icons/ethereum';
+import { USDCoin } from '../Icons/USDCoin';
+import { addProposalItem } from '../../utils/board';
+import { CREATE_POD } from '../../graphql/mutations/pod';
+import { useRouter } from 'next/router';
+import { delQuery } from '../../utils';
+import { ErrorText } from '../Common';
+import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment';
 
 const filterUserOptions = (options) => {
-  if (!options) return []
+  if (!options) return [];
   return options.map((option) => {
     return {
       label: option?.username,
       id: option?.id,
       profilePicture: option?.profilePicture,
-    }
-  })
-}
+    };
+  });
+};
 
 export const MEDIA_UI_ELEMENTS = {
   [MEDIA_TYPES.IMAGE]: {
@@ -159,7 +148,7 @@ export const MEDIA_UI_ELEMENTS = {
     icon: VideoIcon,
     label: 'Video',
   },
-}
+};
 
 export const AndroidSwitch = styled(Switch)(({ theme }) => ({
   padding: 8,
@@ -189,10 +178,9 @@ export const AndroidSwitch = styled(Switch)(({ theme }) => ({
   },
 
   '& .MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track': {
-    background:
-      'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
+    background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
   },
-}))
+}));
 
 const createPodMembersList = [
   {
@@ -215,7 +203,7 @@ const createPodMembersList = [
     name: '0xAsndros',
     admin: 'false',
   },
-]
+];
 
 const SELECT_OPTIONS = [
   {
@@ -230,7 +218,7 @@ const SELECT_OPTIONS = [
     label: 'Never',
     value: 'never',
   },
-]
+];
 
 const POD_SELECT_OPTIONS = [
   {
@@ -245,7 +233,7 @@ const POD_SELECT_OPTIONS = [
     amount: 8,
     value: 'alfa-launch',
   },
-]
+];
 
 const REWARD_SELECT_OPTIONS = [
   {
@@ -258,7 +246,7 @@ const REWARD_SELECT_OPTIONS = [
     label: 'USDC',
     value: 'USDC',
   },
-]
+];
 
 const PRIORITY_SELECT_OPTIONS = [
   {
@@ -276,118 +264,104 @@ const PRIORITY_SELECT_OPTIONS = [
     label: 'Priority 3',
     value: 'priority-3',
   },
-]
+];
 
 export const filterOrgUsersForAutocomplete = (orgUsers) => {
   if (!orgUsers) {
-    return []
+    return [];
   }
   return orgUsers.map((orgUser) => ({
     ...orgUser?.user,
     display: orgUser?.user?.username,
     id: orgUser?.user?.id,
-  }))
-}
+  }));
+};
 
 export const filterPaymentMethods = (paymentMethods) => {
-  if (!paymentMethods) return []
+  if (!paymentMethods) return [];
   return paymentMethods.map((paymentMethod) => {
     return {
       ...paymentMethod,
-      icon: (
-        <SafeImage
-          src={paymentMethod.icon}
-          style={{ width: '30px', height: '30px', borderRadius: '15px' }}
-        />
-      ),
+      icon: <SafeImage src={paymentMethod.icon} style={{ width: '30px', height: '30px', borderRadius: '15px' }} />,
       label: paymentMethod.tokenName,
       value: paymentMethod.id,
-    }
-  })
-}
+    };
+  });
+};
 const CreateLayoutBaseModal = (props) => {
-  const { entityType, handleClose, resetEntityType } = props
-  const user = useMe()
-  const [addDetails, setAddDetails] = useState(true)
-  const [descriptionText, setDescriptionText] = useState('')
-  const [mediaUploads, setMediaUploads] = useState([])
+  const { entityType, handleClose, resetEntityType } = props;
+  const user = useMe();
+  const [addDetails, setAddDetails] = useState(true);
+  const [descriptionText, setDescriptionText] = useState('');
+  const [mediaUploads, setMediaUploads] = useState([]);
   const addDetailsHandleClick = () => {
-    setAddDetails(!addDetails)
-  }
+    setAddDetails(!addDetails);
+  };
 
-  const [error, setError] = useState('')
-  const [org, setOrg] = useState(null)
-  const [milestone, setMilestone] = useState(null)
-  const [assigneeString, setAssigneeString] = useState('')
-  const [reviewerString, setReviewerString] = useState('')
-  const [assignee, setAssignee] = useState(null)
-  const [selectedReviewers, setSelectedReviewers] = useState([])
-  const [link, setLink] = useState('')
-  const [rewardsCurrency, setRewardsCurrency] = useState(null)
-  const [rewardsAmount, setRewardsAmount] = useState(null)
-  const [title, setTitle] = useState('')
-  const orgBoard = useOrgBoard()
-  const podBoard = usePodBoard()
-  const userBoard = useUserBoard()
-  const board = orgBoard || podBoard || userBoard
-  const isPod = entityType === ENTITIES_TYPES.POD
-  const isTask = entityType === ENTITIES_TYPES.TASK
-  const textLimit = isPod ? 200 : 900
-  const { data: userPermissionsContext } = useQuery(
-    GET_USER_PERMISSION_CONTEXT,
-    {
-      fetchPolicy: 'cache-and-network',
-    }
-  )
-  const { data: userOrgs } = useQuery(GET_USER_ORGS)
-  const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(
-    GET_AUTOCOMPLETE_USERS
-  )
-  const [fetchPaymentMethod, setFetchPaymentMethod] = useState(false)
-  const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(
-    GET_PAYMENT_METHODS_FOR_ORG,
-    {
-      onCompleted: () => {
-        setFetchPaymentMethod(true)
-      },
-    }
-  )
-  const [orgUserFetched, setOrgUserFetched] = useState(false)
+  const [error, setError] = useState('');
+  const [org, setOrg] = useState(null);
+  const [milestone, setMilestone] = useState(null);
+  const [assigneeString, setAssigneeString] = useState('');
+  const [reviewerString, setReviewerString] = useState('');
+  const [assignee, setAssignee] = useState(null);
+  const [selectedReviewers, setSelectedReviewers] = useState([]);
+  const [link, setLink] = useState('');
+  const [rewardsCurrency, setRewardsCurrency] = useState(null);
+  const [rewardsAmount, setRewardsAmount] = useState(null);
+  const [title, setTitle] = useState('');
+  const orgBoard = useOrgBoard();
+  const podBoard = usePodBoard();
+  const userBoard = useUserBoard();
+  const board = orgBoard || podBoard || userBoard;
+  const isPod = entityType === ENTITIES_TYPES.POD;
+  const isTask = entityType === ENTITIES_TYPES.TASK;
+  const textLimit = isPod ? 200 : 900;
+  const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
+    fetchPolicy: 'cache-and-network',
+  });
+  const { data: userOrgs } = useQuery(GET_USER_ORGS);
+  const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
+  const [fetchPaymentMethod, setFetchPaymentMethod] = useState(false);
+  const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG, {
+    onCompleted: () => {
+      setFetchPaymentMethod(true);
+    },
+  });
+  const [orgUserFetched, setOrgUserFetched] = useState(false);
   const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS, {
     onCompleted: () => {
-      setOrgUserFetched(true)
+      setOrgUserFetched(true);
     },
-  })
+  });
 
-  const [getEligibleReviewersForOrg, { data: eligibleReviewersData }] =
-    useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_ORG)
+  const [getEligibleReviewersForOrg, { data: eligibleReviewersData }] = useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_ORG);
 
   const descriptionTextCounter = (e) => {
     if (e.target.value.length < textLimit) {
-      setDescriptionText(e.target.value)
+      setDescriptionText(e.target.value);
     }
-  }
+  };
 
   const [getUserPods] = useLazyQuery(GET_USER_PODS, {
     onCompleted: (data) => {
-      setPods(data?.getUserPods || [])
+      setPods(data?.getUserPods || []);
     },
-  })
+  });
 
-  const [podsFetched, setPodsFetched] = useState(false)
+  const [podsFetched, setPodsFetched] = useState(false);
   const [getUserAvailablePods] = useLazyQuery(GET_USER_AVAILABLE_PODS, {
     onCompleted: (data) => {
-      setPods(data?.getAvailableUserPods)
-      setPodsFetched(true)
+      setPods(data?.getAvailableUserPods);
+      setPodsFetched(true);
     },
     fetchPolicy: 'network-only',
-  })
+  });
 
   // const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
-  const [pods, setPods] = useState([])
-  const [pod, setPod] = useState(null)
-  const [dueDate, setDueDate] = useState(null)
-  const [isPrivate, setIsPrivate] = useState(false)
+  const [pods, setPods] = useState([]);
+  const [pod, setPod] = useState(null);
+  const [dueDate, setDueDate] = useState(null);
+  const [isPrivate, setIsPrivate] = useState(false);
   const {
     showDeliverableRequirementsSection,
     showBountySwitchSection,
@@ -400,66 +374,55 @@ const CreateLayoutBaseModal = (props) => {
     return {
       showDeliverableRequirementsSection: entityType === ENTITIES_TYPES.TASK,
       showBountySwitchSection: entityType === ENTITIES_TYPES.TASK,
-      showAppearSection:
-        entityType === ENTITIES_TYPES.TASK ||
-        entityType === ENTITIES_TYPES.MILESTONE,
+      showAppearSection: entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.MILESTONE,
       showLinkAttachmentSection: entityType === ENTITIES_TYPES.POD,
       // TODO: add back in entityType === ENTITIES_TYPES.POD
       showHeaderImagePickerSection: false,
       // TODO: add back in entityType === ENTITIES_TYPES.POD
       showMembersSection: false,
       showPrioritySelectSection: entityType === ENTITIES_TYPES.MILESTONE,
-    }
-  }, [entityType])
+    };
+  }, [entityType]);
 
-  const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType]
-  const inputRef: any = useRef()
+  const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType];
+  const inputRef: any = useRef();
 
   const filterDAOptions = useCallback((orgs) => {
     if (!orgs) {
-      return []
+      return [];
     }
     return orgs.map((org) => ({
       imageUrl: org?.profilePicture,
       label: org?.name,
       value: org?.id,
-    }))
-  }, [])
+    }));
+  }, []);
 
   const filterOrgUsers = useCallback((orgUsers) => {
     if (!orgUsers) {
-      return []
+      return [];
     }
 
     return orgUsers.map((orgUser) => ({
       profilePicture: orgUser?.user?.profilePicture,
       label: orgUser?.user?.username,
       value: orgUser?.user?.id,
-    }))
-  }, [])
-  const fetchedUserPermissionsContext =
-    userPermissionsContext?.getUserPermissionContext
-      ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
-      : null
+    }));
+  }, []);
+  const fetchedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
+    ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+    : null;
 
   useEffect(() => {
-    if (
-      fetchedUserPermissionsContext &&
-      board?.orgId in fetchedUserPermissionsContext?.orgPermissions &&
-      !org
-    ) {
+    if (fetchedUserPermissionsContext && board?.orgId in fetchedUserPermissionsContext?.orgPermissions && !org) {
       // If you're only part of one dao then just set that as default
       // TODO: if you are part of the org and you're on that page it should be create on that org
-      setOrg(board?.orgId)
+      setOrg(board?.orgId);
     }
-    if (
-      fetchedUserPermissionsContext &&
-      board?.podId in fetchedUserPermissionsContext?.podPermissions &&
-      !pod
-    ) {
+    if (fetchedUserPermissionsContext && board?.podId in fetchedUserPermissionsContext?.podPermissions && !pod) {
       // If you're only part of one dao then just set that as default
       // TODO: if you are part of the org and you're on that page it should be create on that org
-      setPod(board?.podId)
+      setPod(board?.podId);
     }
     if (org) {
       if (!podsFetched) {
@@ -467,103 +430,92 @@ const CreateLayoutBaseModal = (props) => {
           variables: {
             orgId: org,
           },
-        })
+        });
       }
       if (!orgUserFetched) {
         getOrgUsers({
           variables: {
             orgId: org,
+            limit: 100, // TODO: fix autocomplete
           },
-        })
+        });
       }
       if (!fetchPaymentMethod) {
         getPaymentMethods({
           variables: {
             orgId: org,
           },
-        })
+        });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    userOrgs?.getUserOrgs,
-    board?.orgId,
-    fetchedUserPermissionsContext,
-    board?.podId,
-    org,
-    pod,
-  ])
+  }, [userOrgs?.getUserOrgs, board?.orgId, fetchedUserPermissionsContext, board?.podId, org, pod]);
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext: fetchedUserPermissionsContext,
     orgId: org,
     podId: pod,
-  })
-  const canCreateTask =
-    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-    permissions.includes(PERMISSIONS.CREATE_TASK)
-  const canCreatePod = permissions.includes(PERMISSIONS.FULL_ACCESS)
-  const router = useRouter()
+  });
+  const canCreateTask = permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK);
+  const canCreatePod = permissions.includes(PERMISSIONS.FULL_ACCESS);
+  const router = useRouter();
   const getPodObject = useCallback(() => {
-    let justCreatedPod = null
+    let justCreatedPod = null;
     pods.forEach((testPod) => {
       if (testPod.id === pod) {
-        justCreatedPod = testPod
+        justCreatedPod = testPod;
       }
-    })
-    return justCreatedPod
-  }, [pods, pod])
+    });
+    return justCreatedPod;
+  }, [pods, pod]);
 
   const [createTask] = useMutation(CREATE_TASK, {
     onCompleted: (data) => {
-      const task = data?.createTask
-      const justCreatedPod = getPodObject()
+      const task = data?.createTask;
+      const justCreatedPod = getPodObject();
       if (board?.setColumns && task?.orgId === board?.orgId) {
         const transformedTask = transformTaskToTaskCard(task, {
           orgName: board?.org?.name,
           orgProfilePicture: board?.org?.profilePicture,
           podName: justCreatedPod?.name,
-        })
+        });
 
-        const columns = [...board?.columns]
-        columns[0].tasks = [transformedTask, ...columns[0].tasks]
-        board.setColumns(columns)
+        const columns = [...board?.columns];
+        columns[0].tasks = [transformedTask, ...columns[0].tasks];
+        board.setColumns(columns);
       }
-      handleClose()
+      handleClose();
     },
-  })
+  });
 
   const [createTaskProposal] = useMutation(CREATE_TASK_PROPOSAL, {
     onCompleted: (data) => {
-      const taskProposal = data?.createTaskProposal
-      const justCreatedPod = getPodObject()
+      const taskProposal = data?.createTaskProposal;
+      const justCreatedPod = getPodObject();
       if (board?.setColumns && taskProposal?.orgId === board?.orgId) {
-        const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
-          taskProposal,
-          {
-            userProfilePicture: user?.profilePicture,
-            username: user?.username,
-            orgName: board?.org?.name,
-            orgProfilePicture: board?.org?.profilePicture,
-            podName: justCreatedPod?.name,
-          }
-        )
+        const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
+          userProfilePicture: user?.profilePicture,
+          username: user?.username,
+          orgName: board?.org?.name,
+          orgProfilePicture: board?.org?.profilePicture,
+          podName: justCreatedPod?.name,
+        });
 
-        let columns = [...board?.columns]
-        columns = addProposalItem(transformedTaskProposal, columns)
-        board.setColumns(columns)
+        let columns = [...board?.columns];
+        columns = addProposalItem(transformedTaskProposal, columns);
+        board.setColumns(columns);
       }
-      handleClose()
+      handleClose();
     },
-  })
+  });
 
   const [createPod] = useMutation(CREATE_POD, {
     onCompleted: (data) => {
-      const pod = data?.createPod
-      router.push(`/pod/${pod?.id}`)
+      const pod = data?.createPod;
+      router.push(`/pod/${pod?.id}/boards`);
     },
     refetchQueries: ['getOrgById'],
-  })
+  });
 
   const submitMutation = useCallback(() => {
     switch (entityType) {
@@ -594,21 +546,21 @@ const CreateLayoutBaseModal = (props) => {
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
-        }
+        };
         if (canCreateTask) {
           createTask({
             variables: {
               input: taskInput,
             },
-          })
+          });
         } else {
           createTaskProposal({
             variables: {
               input: taskInput,
             },
-          })
+          });
         }
-        break
+        break;
       case ENTITIES_TYPES.POD:
         if (canCreatePod) {
           const podInput = {
@@ -623,16 +575,16 @@ const CreateLayoutBaseModal = (props) => {
                 displayName: link,
               },
             ],
-          }
+          };
           createPod({
             variables: {
               input: podInput,
             },
-          })
+          });
         } else {
-          setError('You need full access permissions to create a pod')
+          setError('You need full access permissions to create a pod');
         }
-        break
+        break;
     }
   }, [
     title,
@@ -654,11 +606,9 @@ const CreateLayoutBaseModal = (props) => {
     canCreatePod,
     rewardsAmount,
     rewardsCurrency,
-  ])
+  ]);
 
-  const paymentMethods = filterPaymentMethods(
-    paymentMethodData?.getPaymentMethodsForOrg
-  )
+  const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
 
   return (
     <CreateFormBaseModal isPod={isPod}>
@@ -671,9 +621,7 @@ const CreateLayoutBaseModal = (props) => {
         }}
       >
         <TitleIcon circle />
-        <CreateFormBaseModalTitle>
-          Create a {titleText.toLowerCase()}
-        </CreateFormBaseModalTitle>
+        <CreateFormBaseModalTitle>Create a {titleText.toLowerCase()}</CreateFormBaseModalTitle>
       </CreateFormBaseModalHeader>
 
       <CreateFormMainSection>
@@ -712,9 +660,7 @@ const CreateLayoutBaseModal = (props) => {
         </CreateFormMainInputBlock>
 
         <CreateFormMainInputBlock>
-          <CreateFormMainBlockTitle>
-            {titleText} description
-          </CreateFormMainBlockTitle>
+          <CreateFormMainBlockTitle>{titleText} description</CreateFormMainBlockTitle>
           <TextInputDiv>
             <TextInputContext.Provider
               value={{
@@ -761,7 +707,7 @@ const CreateLayoutBaseModal = (props) => {
                 ))}
                 <AddFileUpload
                   onClick={() => {
-                    inputRef.current.click()
+                    inputRef.current.click();
                   }}
                   style={{
                     cursor: 'pointer',
@@ -780,9 +726,7 @@ const CreateLayoutBaseModal = (props) => {
                     marginRight: '8px',
                   }}
                 />
-                <MultiMediaUploadButtonText>
-                  Upload file
-                </MultiMediaUploadButtonText>
+                <MultiMediaUploadButtonText>Upload file</MultiMediaUploadButtonText>
               </MultiMediaUploadButton>
             )}
             <input
@@ -835,12 +779,7 @@ const CreateLayoutBaseModal = (props) => {
           <CreateFormMembersSection>
             <CreateFormMainBlockTitle>Members</CreateFormMainBlockTitle>
 
-            <InputForm
-              search
-              margin
-              icon={<CircleIcon />}
-              placeholder="Search reviewers"
-            />
+            <InputForm search margin icon={<CircleIcon />} placeholder="Search reviewers" />
 
             <CreateFormMembersBlock>
               <CreateFormMembersBlockTitle>
@@ -849,11 +788,7 @@ const CreateLayoutBaseModal = (props) => {
               </CreateFormMembersBlockTitle>
               <CreateFormMembersList>
                 {createPodMembersList.map((item) => (
-                  <MembersRow
-                    key={item.name}
-                    name={item.name}
-                    styledSwitch={<AndroidSwitch />}
-                  />
+                  <MembersRow key={item.name} name={item.name} styledSwitch={<AndroidSwitch />} />
                 ))}
               </CreateFormMembersList>
             </CreateFormMembersBlock>
@@ -866,9 +801,7 @@ const CreateLayoutBaseModal = (props) => {
             }}
           >
             <CreateFormAddDetailsInputBlock>
-              <CreateFormAddDetailsInputLabel>
-                Assigned to
-              </CreateFormAddDetailsInputLabel>
+              <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
               <StyledAutocomplete
                 options={filterOrgUsers(orgUsersData?.getOrgUsers)}
                 renderInput={(params) => (
@@ -888,14 +821,14 @@ const CreateLayoutBaseModal = (props) => {
                 value={assignee}
                 inputValue={assigneeString}
                 onInputChange={(event, newInputValue) => {
-                  setAssigneeString(newInputValue)
+                  setAssigneeString(newInputValue);
                 }}
                 renderOption={(props, option, state) => {
                   return (
                     <OptionDiv
                       onClick={(event) => {
-                        setAssignee(option)
-                        props?.onClick(event)
+                        setAssignee(option);
+                        props?.onClick(event);
                       }}
                     >
                       {option?.profilePicture && (
@@ -910,29 +843,24 @@ const CreateLayoutBaseModal = (props) => {
                       )}
                       <OptionTypography>{option?.label}</OptionTypography>
                     </OptionDiv>
-                  )
+                  );
                 }}
               />
             </CreateFormAddDetailsInputBlock>
             {canCreateTask && (
               <CreateFormAddDetailsInputBlock>
-                <CreateFormAddDetailsInputLabel>
-                  Reviewer
-                </CreateFormAddDetailsInputLabel>
+                <CreateFormAddDetailsInputLabel>Reviewer</CreateFormAddDetailsInputLabel>
                 <StyledAutocomplete
-                  options={filterUserOptions(
-                    eligibleReviewersData?.getEligibleReviewersForOrg
-                  ).filter(
-                    ({ id }) =>
-                      !selectedReviewers.map(({ id }) => id).includes(id)
+                  options={filterUserOptions(eligibleReviewersData?.getEligibleReviewersForOrg).filter(
+                    ({ id }) => !selectedReviewers.map(({ id }) => id).includes(id)
                   )}
                   multiple
                   onChange={(event, newValue, reason) => {
                     if ('clear' === reason) {
-                      setSelectedReviewers([])
+                      setSelectedReviewers([]);
                     }
                     if (event.code === 'Backspace' && reviewerString === '') {
-                      setSelectedReviewers(selectedReviewers.slice(0, -1))
+                      setSelectedReviewers(selectedReviewers.slice(0, -1));
                     }
                   }}
                   onOpen={() =>
@@ -954,13 +882,13 @@ const CreateLayoutBaseModal = (props) => {
                       placeholder="Enter username..."
                       InputLabelProps={{ shrink: false }}
                       onChange={(event) => {
-                        setReviewerString(event.target.value)
+                        setReviewerString(event.target.value);
                         getEligibleReviewersForOrg({
                           variables: {
                             orgId: org,
                             searchString: event.target.value,
                           },
-                        })
+                        });
                       }}
                       {...params}
                     />
@@ -972,15 +900,9 @@ const CreateLayoutBaseModal = (props) => {
                         <StyledChip
                           key={index}
                           label={option?.label}
-                          onDelete={() =>
-                            setSelectedReviewers(
-                              selectedReviewers.filter(
-                                ({ id }) => id !== option?.id
-                              )
-                            )
-                          }
+                          onDelete={() => setSelectedReviewers(selectedReviewers.filter(({ id }) => id !== option?.id))}
                         />
-                      )
+                      );
                     })
                   }
                   PopperComponent={AutocompleteList}
@@ -988,15 +910,11 @@ const CreateLayoutBaseModal = (props) => {
                     return (
                       <OptionDiv
                         onClick={(event) => {
-                          if (
-                            selectedReviewers
-                              .map(({ id }) => id)
-                              .indexOf(option?.id === -1)
-                          ) {
-                            setSelectedReviewers([...selectedReviewers, option])
-                            setReviewerString('')
+                          if (selectedReviewers.map(({ id }) => id).indexOf(option?.id === -1)) {
+                            setSelectedReviewers([...selectedReviewers, option]);
+                            setReviewerString('');
                           }
-                          props?.onClick(event)
+                          props?.onClick(event);
                         }}
                       >
                         {option?.profilePicture && (
@@ -1012,7 +930,7 @@ const CreateLayoutBaseModal = (props) => {
                         )}
                         <OptionTypography>{option?.label}</OptionTypography>
                       </OptionDiv>
-                    )
+                    );
                   }}
                 />
               </CreateFormAddDetailsInputBlock>
@@ -1071,12 +989,7 @@ const CreateLayoutBaseModal = (props) => {
               <CreateFormAddDetailsAppearBlockContainer>
                 <CreateFormAddDetailsSelects>
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DatePicker
-                      title="Due date"
-                      inputFormat="MM/dd/yyyy"
-                      value={dueDate}
-                      setValue={setDueDate}
-                    />
+                    <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
                   </LocalizationProvider>
                   {/* <DropdownSelect
                     title="Connect to Milestone"
@@ -1131,9 +1044,7 @@ const CreateLayoutBaseModal = (props) => {
                   paddingTop: '16px',
                 }}
               >
-                <CreateFormLinkAttachmentLabel>
-                  Link
-                </CreateFormLinkAttachmentLabel>
+                <CreateFormLinkAttachmentLabel>Link</CreateFormLinkAttachmentLabel>
                 <InputForm
                   value={link}
                   onChange={(e) => setLink(e.target.value)}
@@ -1146,13 +1057,11 @@ const CreateLayoutBaseModal = (props) => {
             {isPod && (
               <div>
                 <CreateFormAddDetailsSwitch>
-                  <CreateFormAddDetailsInputLabel>
-                    Private {titleText.toLowerCase()}
-                  </CreateFormAddDetailsInputLabel>
+                  <CreateFormAddDetailsInputLabel>Private {titleText.toLowerCase()}</CreateFormAddDetailsInputLabel>
                   <AndroidSwitch
                     checked={isPrivate}
                     onChange={(e) => {
-                      setIsPrivate(e.target.checked)
+                      setIsPrivate(e.target.checked);
                     }}
                   />
                 </CreateFormAddDetailsSwitch>
@@ -1165,9 +1074,7 @@ const CreateLayoutBaseModal = (props) => {
       <CreateFormFooterButtons>
         {error && <ErrorText>{error}</ErrorText>}
         <CreateFormButtonsBlock>
-          <CreateFormCancelButton onClick={resetEntityType}>
-            Cancel
-          </CreateFormCancelButton>
+          <CreateFormCancelButton onClick={resetEntityType}>Cancel</CreateFormCancelButton>
           <CreateFormPreviewButton
             style={{
               ...(isPod &&
@@ -1184,7 +1091,7 @@ const CreateLayoutBaseModal = (props) => {
         </CreateFormButtonsBlock>
       </CreateFormFooterButtons>
     </CreateFormBaseModal>
-  )
-}
+  );
+};
 
-export default CreateLayoutBaseModal
+export default CreateLayoutBaseModal;

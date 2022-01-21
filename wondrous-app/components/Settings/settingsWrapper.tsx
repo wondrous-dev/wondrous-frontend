@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { toggleHtmlOverflow } from '../../utils/helpers';
+import React, { useEffect, useState } from 'react';
+import { parseUserPermissionContext, toggleHtmlOverflow } from '../../utils/helpers';
 import { useRouter } from 'next/router';
 import { List } from '@mui/material';
 import Link from 'next/link';
@@ -29,6 +29,13 @@ import GeneralSettingsIcon from '../Icons/generalSettings';
 import ConfigurePaymentsIcon from '../Icons/configurePayments';
 import CreatePodIcon from '../Icons/createPod';
 import MembersIcon from '../Icons/members';
+import { useQuery, useLazyQuery } from '@apollo/client';
+import { GET_ORG_BY_ID } from '../../graphql/queries/org';
+import { SafeImage } from '../Common/Image';
+import { GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
+import { SettingsBoardContext } from '../../utils/contexts';
+import { GET_POD_BY_ID } from '../../graphql/queries/pod';
+import { PERMISSIONS } from '../../utils/constants';
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -48,32 +55,39 @@ const SIDEBAR_LIST_ITEMS = [
   },
 ];
 
-const SETTINGS_SIDEBAR_LIST_ITEMS = [
-  {
-    icon: <GeneralSettingsIcon width={40} height={40} />,
-    label: 'General settings',
-    value: 'general',
-    href: `/organization/settings/general`,
-  },
-  {
-    icon: <CreatePodIcon width={35} height={35} />,
-    label: 'Pod management',
-    value: 'management',
-    href: `/organization/settings/pod`,
-  },
-  {
-    icon: <MembersIcon width={40} height={40} />,
-    label: 'Members',
-    value: 'members',
-    href: `/organization/settings/members`,
-  },
-  {
-    icon: <MembersIcon width={40} height={40} />,
-    label: 'Roles',
-    value: 'roles',
-    href: `/organization/settings/roles`,
-  },
-];
+// Full list
+//  const SETTINGS_SIDEBAR_LIST_ITEMS = [
+// 	{
+// 		icon: <GeneralSettingsIcon width={40} height={40} />,
+// 		label: 'General settings',
+// 		value: 'general',
+// 		href: `/organization/settings/general`,
+// 	},
+// 	// {
+// 	// 	icon: <ConfigurePaymentsIcon width={40} height={40} />,
+// 	// 	label: 'Configure payments',
+// 	// 	value: 'payments',
+// 	// 	href: `/organization/settings/payments`,
+// 	// },
+// 	{
+// 		icon: <CreatePodIcon width={35} height={35} />,
+// 		label: 'Pod management',
+// 		value: 'management',
+// 		href: `/organization/settings/pod`,
+// 	},
+// 	{
+// 		icon: <MembersIcon width={40} height={40} />,
+// 		label: 'Members',
+// 		value: 'members',
+// 		href: `/organization/settings/members`,
+// 	},
+// 	{
+// 		icon: <MembersIcon width={40} height={40} />,
+// 		label: 'Roles',
+// 		value: 'roles',
+// 		href: `/organization/settings/roles`,
+// 	},
+// ]
 
 export const SettingsWrapper = (props) => {
   const { children } = props;
@@ -81,57 +95,145 @@ export const SettingsWrapper = (props) => {
   const router = useRouter();
 
   const { pathname } = router;
-
+  const { orgId, podId } = router.query;
   const [createFormModal, setCreateFormModal] = useState(false);
+  const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
+    fetchPolicy: 'cache-and-network',
+  });
 
   const toggleCreateFormModal = () => {
     toggleHtmlOverflow();
     setCreateFormModal((prevState) => !prevState);
   };
+  const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
 
+  const [getPodById, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
+
+  const org = orgData?.getOrgById;
+  const pod = podData?.getPodById;
+
+  const SETTINGS_SIDEBAR_LIST_ITEMS = [
+    {
+      icon: <GeneralSettingsIcon width={40} height={40} />,
+      label: 'General settings',
+      value: 'general',
+      href: orgId ? `/organization/settings/${orgId}/general` : `/pod/settings/${podId}/general`,
+    },
+    {
+      icon: <MembersIcon width={40} height={40} />,
+      label: 'Members',
+      value: 'members',
+      href: orgId ? `/organization/settings/${orgId}/members` : `/pod/settings/${podId}/members`,
+    },
+    {
+      icon: <MembersIcon width={40} height={40} />,
+      label: 'Roles',
+      value: 'roles',
+      href: orgId ? `/organization/settings/${orgId}/roles` : `/pod/settings/${podId}/roles`,
+    },
+  ];
+
+  const parsedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
+    ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+    : null;
+
+  useEffect(() => {
+    if (orgId) {
+      getOrgById({
+        variables: {
+          orgId,
+        },
+      });
+    }
+    if (podId) {
+      getPodById({
+        variables: {
+          podId,
+        },
+      });
+    }
+  }, [orgId, podId]);
+
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext: parsedUserPermissionsContext,
+    orgId,
+    podId,
+  });
+
+  if (
+    !permissions.includes(
+      PERMISSIONS.MANAGE_MEMBER ||
+        permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+        permissions.includes(PERMISSIONS.APPROVE_PAYMENT)
+    )
+  ) {
+    if (podId) {
+      router.push(`/pod/${podId}/boards`);
+    } else if (org) {
+      router.push(`/organization/${org?.username}/boards`);
+    }
+  }
   return (
     <>
-      <HeaderComponent openCreateFormModal={toggleCreateFormModal} />
-      <SideBarComponent />
-      <CreateFormModal open={createFormModal} toggleOpen={toggleCreateFormModal} />
-      <SettingsContainer>
-        <SettingsSidebar>
-          <SettingsSidebarContainer>
-            <SettingsSidebarHeader>
-              <SettingsSidebarHeaderLogo />
-              <SettingsSidebarHeaderTitle>Wonder</SettingsSidebarHeaderTitle>
-            </SettingsSidebarHeader>
-            <SettingsSidebarTabsSection>
-              <SettingsSidebarTabsSectionLabel>Settings Overview</SettingsSidebarTabsSectionLabel>
-              <SettingsSidebarTabsListContainer>
-                <List>
-                  {SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
-                    const { href, icon, label } = item;
+      <SettingsBoardContext.Provider
+        value={{
+          userPermissionsContext: parsedUserPermissionsContext,
+          org,
+          pod,
+        }}
+      >
+        <HeaderComponent openCreateFormModal={toggleCreateFormModal} />
+        <SideBarComponent />
+        <CreateFormModal open={createFormModal} toggleOpen={toggleCreateFormModal} />
+        <SettingsContainer>
+          <SettingsSidebar>
+            <SettingsSidebarContainer>
+              <SettingsSidebarHeader>
+                {org && (
+                  <SafeImage
+                    src={org?.profilePicture}
+                    style={{
+                      width: '44px',
+                      height: '44px',
+                      borderRadius: '4px',
+                      marginRight: '14px',
+                    }}
+                  />
+                )}
+                <SettingsSidebarHeaderTitle>{pod?.name || org?.name}</SettingsSidebarHeaderTitle>
+              </SettingsSidebarHeader>
+              <SettingsSidebarTabsSection>
+                <SettingsSidebarTabsSectionLabel>Settings Overview</SettingsSidebarTabsSectionLabel>
+                <SettingsSidebarTabsListContainer>
+                  <List>
+                    {SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
+                      const { href, icon, label } = item;
 
-                    const active = pathname === href;
+                      const active = pathname === href;
 
-                    return (
-                      <Link key={href} href={href}>
-                        <SettingsSidebarTabsListItemButtonWrapper active={active}>
-                          <SettingsSidebarTabsListItemButton selected={active}>
-                            <SettingsSidebarTabsListItemIcon>{icon}</SettingsSidebarTabsListItemIcon>
-                            <SettingsSidebarTabsListItemText>{label}</SettingsSidebarTabsListItemText>
-                          </SettingsSidebarTabsListItemButton>
-                        </SettingsSidebarTabsListItemButtonWrapper>
-                      </Link>
-                    );
-                  })}
-                </List>
-                <SettingsSidebarLogoutButton>
-                  <SettingsSidebarLogoutButtonIcon />
-                  <SettingsSidebarLogoutButtonText>Log out</SettingsSidebarLogoutButtonText>
-                </SettingsSidebarLogoutButton>
-              </SettingsSidebarTabsListContainer>
-            </SettingsSidebarTabsSection>
-          </SettingsSidebarContainer>
-        </SettingsSidebar>
-        <SettingsContentBlock>{children}</SettingsContentBlock>
-      </SettingsContainer>
+                      return (
+                        <Link key={href} href={href}>
+                          <SettingsSidebarTabsListItemButtonWrapper active={active}>
+                            <SettingsSidebarTabsListItemButton selected={active}>
+                              <SettingsSidebarTabsListItemIcon>{icon}</SettingsSidebarTabsListItemIcon>
+                              <SettingsSidebarTabsListItemText>{label}</SettingsSidebarTabsListItemText>
+                            </SettingsSidebarTabsListItemButton>
+                          </SettingsSidebarTabsListItemButtonWrapper>
+                        </Link>
+                      );
+                    })}
+                  </List>
+                  <SettingsSidebarLogoutButton>
+                    <SettingsSidebarLogoutButtonIcon />
+                    <SettingsSidebarLogoutButtonText>Log out</SettingsSidebarLogoutButtonText>
+                  </SettingsSidebarLogoutButton>
+                </SettingsSidebarTabsListContainer>
+              </SettingsSidebarTabsSection>
+            </SettingsSidebarContainer>
+          </SettingsSidebar>
+          <SettingsContentBlock>{children}</SettingsContentBlock>
+        </SettingsContainer>
+      </SettingsBoardContext.Provider>
     </>
   );
 };

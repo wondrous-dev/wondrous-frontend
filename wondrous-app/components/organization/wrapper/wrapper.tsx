@@ -38,7 +38,7 @@ import {
   PlusIconWrapper,
 } from './styles';
 import { useOrgBoard } from '../../../utils/hooks';
-import { useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { GET_ORG_BY_ID } from '../../../graphql/queries/org';
 import { SafeImage } from '../../Common/Image';
 import PlusIcon from '../../Icons/plus';
@@ -81,16 +81,8 @@ const Wrapper = (props) => {
   };
   const userPermissionsContext = orgBoard?.userPermissionsContext;
   const [permissions, setPermissions] = useState(null);
-  const [orgProfile, setOrgProfile] = useState(null);
-  const { data: orgData } = useQuery(GET_ORG_BY_ID, {
-    onCompleted: (data) => {
-      const org = data?.getOrgById;
-      setOrgProfile(org);
-    },
-    variables: {
-      orgId: orgBoard?.orgId,
-    },
-  });
+  // const [orgProfile, setOrgProfile] = useState(null);
+  const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
   const [createFormModal, setCreateFormModal] = useState(false);
   const [data, setData] = useState(MOCK_ORGANIZATION_DATA);
   const [openInvite, setOpenInvite] = useState(false);
@@ -100,6 +92,7 @@ const Wrapper = (props) => {
     toggleHtmlOverflow();
     setCreateFormModal((prevState) => !prevState);
   };
+  const orgProfile = orgData?.getOrgById;
   const links = orgProfile?.links;
   const router = useRouter();
   useEffect(() => {
@@ -108,6 +101,13 @@ const Wrapper = (props) => {
       orgId: orgBoard?.orgId,
     });
 
+    if (orgBoard?.orgId) {
+      getOrgById({
+        variables: {
+          orgId: orgBoard?.orgId,
+        },
+      });
+    }
     if (
       orgPermissions?.includes(PERMISSIONS.MANAGE_MEMBER) ||
       orgPermissions?.includes(PERMISSIONS.FULL_ACCESS) ||
@@ -122,7 +122,7 @@ const Wrapper = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgBoard?.orgId, userPermissionsContext]);
-  console.log('here');
+
   return (
     <>
       <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
@@ -184,7 +184,7 @@ const Wrapper = (props) => {
                         </HeaderInviteButton>
                         <HeaderManageSettingsButton
                           onClick={() => {
-                            router.push('/organization/settings/general');
+                            router.push(`/organization/settings/${orgBoard?.orgId}/general`);
                           }}
                         >
                           Settings

@@ -1,17 +1,18 @@
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect } from 'react';
 
 import {
   IsMobileContext,
   OrgBoardContext,
   PodBoardContext,
+  SettingsBoardContext,
   SideBarContext,
   TextInputContext,
   UserBoardContext,
-} from './contexts'
+} from './contexts';
 
-export const useIsMobile = () => useContext(IsMobileContext)
+export const useIsMobile = () => useContext(IsMobileContext);
 
-export const useSideBar = () => useContext(SideBarContext)
+export const useSideBar = () => useContext(SideBarContext);
 // Hook
 export const useWindowSize = () => {
   // Initialize state with undefined width/height so server and client renders match
@@ -19,7 +20,7 @@ export const useWindowSize = () => {
   const [windowSize, setWindowSize] = useState({
     width: undefined,
     height: undefined,
-  })
+  });
 
   useEffect(() => {
     // only execute all the code below in client side
@@ -29,29 +30,31 @@ export const useWindowSize = () => {
         setWindowSize({
           width: window.innerWidth,
           height: window.innerHeight,
-        })
-      }
+        });
+      };
 
       // Add event listener
-      window.addEventListener('resize', handleResize)
+      window.addEventListener('resize', handleResize);
 
       // Call handler right away so state gets updated with initial window size
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
-      })
+      });
 
       // Remove event listener on cleanup
-      return () => window.removeEventListener('resize', handleResize)
+      return () => window.removeEventListener('resize', handleResize);
     }
-  }, []) // Empty array ensures that effect is only run on mount
-  return windowSize
-}
+  }, []); // Empty array ensures that effect is only run on mount
+  return windowSize;
+};
 
-export const useTextInput = () => useContext(TextInputContext)
+export const useTextInput = () => useContext(TextInputContext);
 
-export const useOrgBoard = () => useContext(OrgBoardContext)
+export const useOrgBoard = () => useContext(OrgBoardContext);
 
-export const usePodBoard = () => useContext(PodBoardContext)
+export const usePodBoard = () => useContext(PodBoardContext);
 
-export const useUserBoard = () => useContext(UserBoardContext)
+export const useUserBoard = () => useContext(UserBoardContext);
+
+export const useSettings = () => useContext(SettingsBoardContext);

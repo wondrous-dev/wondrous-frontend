@@ -1,37 +1,22 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useContext,
-} from 'react'
-import Modal from '@mui/material/Modal'
-import { CircularProgress } from '@material-ui/core'
+import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
+import Modal from '@mui/material/Modal';
+import { CircularProgress } from '@material-ui/core';
 
-import { format, formatDistance } from 'date-fns'
-import { useInView } from 'react-intersection-observer'
-import { GET_ORG_PODS, GET_ORG_USERS } from '../../../graphql/queries/org'
-import { GET_POD_USERS } from '../../../graphql/queries/pod'
-import { useLazyQuery } from '@apollo/client'
-import {
-  TaskModal,
-  TaskSubmissionHeaderCreatorText,
-} from '../../Common/Task/styles'
-import { TabContainer, Tab, TabContainerText, PodExplainerText } from './styles'
-import {
-  DefaultProfilePicture,
-  PodWrapper,
-  Title,
-  UserProfilePicture,
-  UserWrapper,
-} from './styles'
-import { useRouter } from 'next/router'
-import { CommentText, CommentTopFlexDiv } from '../../Comment/styles'
-import { cutString } from '../../../utils/helpers'
+import { format, formatDistance } from 'date-fns';
+import { useInView } from 'react-intersection-observer';
+import { GET_ORG_PODS, GET_ORG_USERS } from '../../../graphql/queries/org';
+import { GET_POD_USERS } from '../../../graphql/queries/pod';
+import { useLazyQuery } from '@apollo/client';
+import { TaskModal, TaskSubmissionHeaderCreatorText } from '../../Common/Task/styles';
+import { TabContainer, Tab, TabContainerText, PodExplainerText } from './styles';
+import { DefaultProfilePicture, PodWrapper, Title, UserProfilePicture, UserWrapper } from './styles';
+import { useRouter } from 'next/router';
+import { CommentText, CommentTopFlexDiv } from '../../Comment/styles';
+import { cutString } from '../../../utils/helpers';
 
 const PodItem = (props) => {
-  const router = useRouter()
-  const { pod } = props
+  const router = useRouter();
+  const { pod } = props;
   return (
     <PodWrapper onClick={() => router.push(`/pod/${pod?.id}/boards`)}>
       <TabContainerText
@@ -43,19 +28,15 @@ const PodItem = (props) => {
       </TabContainerText>
       <PodExplainerText>{cutString(pod?.description)}</PodExplainerText>
     </PodWrapper>
-  )
-}
+  );
+};
 
 const UserItem = (props) => {
-  const router = useRouter()
-  const { user } = props
+  const router = useRouter();
+  const { user } = props;
   return (
     <UserWrapper onClick={() => router.push(`/user/${user?.username}/boards`)}>
-      {user?.profilePicture ? (
-        <UserProfilePicture src={user?.profilePicture} />
-      ) : (
-        <DefaultProfilePicture />
-      )}
+      {user?.profilePicture ? <UserProfilePicture src={user?.profilePicture} /> : <DefaultProfilePicture />}
       <div
         style={{
           display: 'flex',
@@ -75,45 +56,45 @@ const UserItem = (props) => {
         <CommentText>{cutString(user?.bio)}</CommentText>
       </div>
     </UserWrapper>
-  )
-}
+  );
+};
 export const MoreInfoModal = (props) => {
-  const { orgId, podId, showUsers, showPods, open, handleClose, name } = props
-  const [displayUsers, setDisplayUsers] = useState(showUsers)
-  const [listLoading, setListLoading] = useState(true)
-  const [displayPods, setDisplayPods] = useState(showPods)
-  const [userList, setUserList] = useState([])
-  const [podList, setPodList] = useState([])
+  const { orgId, podId, showUsers, showPods, open, handleClose, name } = props;
+  const [displayUsers, setDisplayUsers] = useState(showUsers);
+  const [listLoading, setListLoading] = useState(true);
+  const [displayPods, setDisplayPods] = useState(showPods);
+  const [userList, setUserList] = useState([]);
+  const [podList, setPodList] = useState([]);
   const [getOrgPods] = useLazyQuery(GET_ORG_PODS, {
     onCompleted: (data) => {
-      const pods = data.getOrgPods
-      setPodList(pods)
-      setListLoading(false)
+      const pods = data.getOrgPods;
+      setPodList(pods);
+      setListLoading(false);
     },
-  })
+  });
   const [getOrgUsers] = useLazyQuery(GET_ORG_USERS, {
     onCompleted: (data) => {
-      const userData = data.getOrgUsers
-      const filteredData = userData?.map((userRole) => userRole.user)
-      setUserList(filteredData || [])
-      setListLoading(false)
+      const userData = data.getOrgUsers;
+      const filteredData = userData?.map((userRole) => userRole.user);
+      setUserList(filteredData || []);
+      setListLoading(false);
     },
-  })
+  });
   const [getPodUsers] = useLazyQuery(GET_POD_USERS, {
     onCompleted: (data) => {
-      const userData = data.getPodUsers
-      const filteredData = userData?.map((userRole) => userRole.user)
-      setUserList(filteredData || [])
-      setListLoading(false)
+      const userData = data.getPodUsers;
+      const filteredData = userData?.map((userRole) => userRole.user);
+      setUserList(filteredData || []);
+      setListLoading(false);
     },
-  })
+  });
 
   useEffect(() => {
     if (showUsers && !displayUsers && !displayPods) {
-      setDisplayUsers(true)
+      setDisplayUsers(true);
     }
     if (showPods && !displayUsers && !displayPods) {
-      setDisplayPods(true)
+      setDisplayPods(true);
     }
     if (orgId) {
       if (displayPods) {
@@ -121,25 +102,27 @@ export const MoreInfoModal = (props) => {
           variables: {
             orgId,
           },
-        })
+        });
       } else if (displayUsers) {
         getOrgUsers({
           variables: {
             orgId,
+            limit: 100, // TODO: paginate
           },
-        })
+        });
       }
     } else if (podId) {
       if (displayUsers) {
         getPodUsers({
           variables: {
             podId,
+            limit: 100, // TODO: paginate
           },
-        })
+        });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, podId, displayPods, displayUsers, showUsers, showPods])
+  }, [orgId, podId, displayPods, displayUsers, showUsers, showPods]);
   return (
     <Modal open={open} onClose={handleClose}>
       <TaskModal>
@@ -148,8 +131,8 @@ export const MoreInfoModal = (props) => {
           <Tab
             selected={displayUsers}
             onClick={() => {
-              setDisplayPods(false)
-              setDisplayUsers(true)
+              setDisplayPods(false);
+              setDisplayUsers(true);
             }}
           >
             <TabContainerText>Contributors</TabContainerText>
@@ -158,8 +141,8 @@ export const MoreInfoModal = (props) => {
             <Tab
               selected={displayPods}
               onClick={() => {
-                setDisplayPods(true)
-                setDisplayUsers(false)
+                setDisplayPods(true);
+                setDisplayUsers(false);
               }}
             >
               <TabContainerText>Pods</TabContainerText>
@@ -176,19 +159,9 @@ export const MoreInfoModal = (props) => {
             <CircularProgress />
           </div>
         )}
-        {displayUsers && (
-          <>
-            {userList &&
-              userList.map((user) => <UserItem key={user?.id} user={user} />)}
-          </>
-        )}
-        {displayPods && (
-          <>
-            {podList &&
-              podList.map((pod) => <PodItem key={pod?.id} pod={pod} />)}
-          </>
-        )}
+        {displayUsers && <>{userList && userList.map((user) => <UserItem key={user?.id} user={user} />)}</>}
+        {displayPods && <>{podList && podList.map((pod) => <PodItem key={pod?.id} pod={pod} />)}</>}
       </TaskModal>
     </Modal>
-  )
-}
+  );
+};

@@ -1,20 +1,16 @@
-import React, { useCallback, useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
-import { useLazyQuery, useQuery } from '@apollo/client'
+import React, { useCallback, useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useLazyQuery, useQuery } from '@apollo/client';
 
-import { useMe, withAuth } from '../../../components/Auth/withAuth'
+import { useMe, withAuth } from '../../../components/Auth/withAuth';
 import {
   GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_SUBMISSIONS,
   GET_ORG_TASK_BOARD_TASKS,
   GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
-} from '../../../graphql/queries/taskBoard'
-import Boards from '../../../components/organization/boards/boards'
-import {
-  InReview,
-  Requested,
-  Archived,
-} from '../../../components/Icons/sections'
+} from '../../../graphql/queries/taskBoard';
+import Boards from '../../../components/organization/boards/boards';
+import { InReview, Requested, Archived } from '../../../components/Icons/sections';
 import {
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
@@ -23,10 +19,10 @@ import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_ARCHIVED,
   DEFAULT_STATUS_ARR,
-} from '../../../utils/constants'
-import { GET_ORG_ID_FROM_USERNAME } from '../../../graphql/queries/org'
-import { OrgBoardContext } from '../../../utils/contexts'
-import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries'
+} from '../../../utils/constants';
+import { GET_ORG_ID_FROM_USERNAME } from '../../../graphql/queries/org';
+import { OrgBoardContext } from '../../../utils/contexts';
+import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
 
 const TO_DO = {
   status: TASK_STATUS_TODO,
@@ -44,7 +40,7 @@ const TO_DO = {
     },
     tasks: [],
   },
-}
+};
 
 const IN_PROGRESS = {
   status: TASK_STATUS_IN_PROGRESS,
@@ -62,7 +58,7 @@ const IN_PROGRESS = {
     },
     tasks: [],
   },
-}
+};
 
 const DONE = {
   status: TASK_STATUS_DONE,
@@ -80,9 +76,9 @@ const DONE = {
     },
     tasks: [],
   },
-}
+};
 
-const COLUMNS = [TO_DO, IN_PROGRESS, DONE]
+const COLUMNS = [TO_DO, IN_PROGRESS, DONE];
 
 const SELECT_OPTIONS = [
   '#copywriting (23)',
@@ -92,83 +88,69 @@ const SELECT_OPTIONS = [
   '#sales (23)',
   '#tiktok (13)',
   '#analytics (23)',
-]
+];
 
-const LIMIT = 10
+const LIMIT = 10;
 
 const BoardsPage = () => {
-  const [columns, setColumns] = useState(COLUMNS)
-  const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR)
-  const [profileOrgId, setProfileOrgId] = useState(null)
-  const router = useRouter()
-  const { username, orgId } = router.query
-  const { data: userPermissionsContext } = useQuery(
-    GET_USER_PERMISSION_CONTEXT,
-    {
-      fetchPolicy: 'cache-and-network',
-    }
-  )
-  const [orgTaskHasMore, setOrgTaskHasMore] = useState(false)
+  const [columns, setColumns] = useState(COLUMNS);
+  const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR);
+  const router = useRouter();
+  const { username, orgId } = router.query;
+  const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
+    fetchPolicy: 'cache-and-network',
+  });
+  const [orgTaskHasMore, setOrgTaskHasMore] = useState(false);
 
   const [getOrgTaskProposals] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
     onCompleted: (data) => {
-      const newColumns = [...columns]
-      const taskProposals = data?.getOrgTaskBoardProposals
-      newColumns[0].section.tasks = []
+      const newColumns = [...columns];
+      const taskProposals = data?.getOrgTaskBoardProposals;
+      newColumns[0].section.tasks = [];
       taskProposals?.forEach((taskProposal) => {
-        newColumns[0].section.tasks.push(taskProposal)
-      })
-      setColumns(newColumns)
+        newColumns[0].section.tasks.push(taskProposal);
+      });
+      setColumns(newColumns);
     },
-  })
+    fetchPolicy: 'cache-and-network',
+  });
 
   const [getOrgTaskSubmissions] = useLazyQuery(GET_ORG_TASK_BOARD_SUBMISSIONS, {
     onCompleted: (data) => {
-      const newColumns = [...columns]
-      const taskSubmissions = data?.getOrgTaskBoardSubmissions
-      newColumns[1].section.tasks = []
+      const newColumns = [...columns];
+      const taskSubmissions = data?.getOrgTaskBoardSubmissions;
+      newColumns[1].section.tasks = [];
       taskSubmissions?.forEach((taskSubmission) => {
-        newColumns[1].section.tasks.push(taskSubmission)
-      })
-      setColumns(newColumns)
+        newColumns[1].section.tasks.push(taskSubmission);
+      });
+      setColumns(newColumns);
     },
-  })
+    fetchPolicy: 'cache-and-network',
+  });
 
-  const [getOrgBoardTaskCount, { data: orgTaskCountData }] = useLazyQuery(
-    GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD
-  )
+  const [getOrgBoardTaskCount, { data: orgTaskCountData }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD);
 
-  const [getOrgTasks, { fetchMore, variables: getOrgTasksVariables }] =
-    useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
-      onCompleted: (data) => {
-        const tasks = data?.getOrgTaskBoardTasks
-        const newColumns = columns.map((column) => {
-          column.tasks = []
-          return tasks.reduce((column, task) => {
-            if (column.status === task.status) {
-              column.tasks = [...column.tasks, task]
-            }
-            return column
-          }, column)
-        })
-        setColumns(newColumns)
-        setOrgTaskHasMore(
-          data?.hasMore || data?.getOrgTaskBoardTasks.length >= LIMIT
-        )
-      },
-    })
-
-  const [
-    getOrgIdFromUsername,
-    { data: getOrgIdFromUsernameData, error: getOrgIdFromUsernameError },
-  ] = useLazyQuery(GET_ORG_ID_FROM_USERNAME, {
+  const [getOrgTasks, { fetchMore, variables: getOrgTasksVariables }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     onCompleted: (data) => {
-      if (data?.getOrgIdFromUsername?.orgId) {
-        setProfileOrgId(data?.getOrgIdFromUsername?.orgId)
-      }
+      const tasks = data?.getOrgTaskBoardTasks;
+      const newColumns = columns.map((column) => {
+        column.tasks = [];
+        return tasks.reduce((column, task) => {
+          if (column.status === task.status) {
+            column.tasks = [...column.tasks, task];
+          }
+          return column;
+        }, column);
+      });
+      setColumns(newColumns);
+      setOrgTaskHasMore(data?.hasMore || data?.getOrgTaskBoardTasks.length >= LIMIT);
     },
-  })
+    fetchPolicy: 'cache-and-network',
+  });
 
+  const [getOrgIdFromUsername, { data: getOrgIdFromUsernameData, error: getOrgIdFromUsernameError }] =
+    useLazyQuery(GET_ORG_ID_FROM_USERNAME);
+  const profileOrgId = getOrgIdFromUsernameData?.getOrgIdFromUsername?.orgId;
   useEffect(() => {
     if (orgId) {
       // get user task board tasks immediately
@@ -179,14 +161,14 @@ const BoardsPage = () => {
           offset: 0,
           limit: LIMIT,
         },
-      })
+      });
     } else if (!orgId && username) {
       // Get orgId from username
       getOrgIdFromUsername({
         variables: {
           username,
         },
-      })
+      });
     }
     if (!orgId && profileOrgId) {
       // fetch user task boards after getting orgId from username
@@ -197,7 +179,7 @@ const BoardsPage = () => {
           offset: 0,
           limit: LIMIT,
         },
-      })
+      });
       getOrgTaskProposals({
         variables: {
           orgId: profileOrgId,
@@ -205,7 +187,7 @@ const BoardsPage = () => {
           offset: 0,
           limit: LIMIT,
         },
-      })
+      });
       getOrgTaskSubmissions({
         variables: {
           orgId: profileOrgId,
@@ -213,12 +195,12 @@ const BoardsPage = () => {
           offset: 0,
           limit: LIMIT,
         },
-      })
+      });
       getOrgBoardTaskCount({
         variables: {
           orgId: profileOrgId,
         },
-      })
+      });
     }
   }, [
     username,
@@ -230,7 +212,7 @@ const BoardsPage = () => {
     getOrgTaskSubmissions,
     getOrgTaskProposals,
     getOrgBoardTaskCount,
-  ])
+  ]);
 
   const handleLoadMore = useCallback(() => {
     if (orgTaskHasMore) {
@@ -240,26 +222,23 @@ const BoardsPage = () => {
           limit: LIMIT,
         },
         updateQuery: (prev, { fetchMoreResult }) => {
-          const hasMore = fetchMoreResult.getOrgTaskBoardTasks.length >= LIMIT
+          const hasMore = fetchMoreResult.getOrgTaskBoardTasks.length >= LIMIT;
           if (!fetchMoreResult) {
-            return prev
+            return prev;
           }
           if (!hasMore) {
-            setOrgTaskHasMore(false)
+            setOrgTaskHasMore(false);
           }
           return {
             hasMore,
-            getOrgTaskBoardTasks: prev.getOrgTaskBoardTasks.concat(
-              fetchMoreResult.getOrgTaskBoardTasks
-            ),
-          }
+            getOrgTaskBoardTasks: prev.getOrgTaskBoardTasks.concat(fetchMoreResult.getOrgTaskBoardTasks),
+          };
         },
       }).catch((error) => {
-        console.error(error)
-      })
+        console.error(error);
+      });
     }
-  }, [orgTaskHasMore, columns, fetchMore])
-
+  }, [orgTaskHasMore, columns, fetchMore]);
   return (
     <OrgBoardContext.Provider
       value={{
@@ -275,15 +254,10 @@ const BoardsPage = () => {
         getOrgTasksVariables,
       }}
     >
-      <Boards
-        selectOptions={SELECT_OPTIONS}
-        columns={columns}
-        onLoadMore={handleLoadMore}
-        hasMore={orgTaskHasMore}
-      />
+      <Boards selectOptions={SELECT_OPTIONS} columns={columns} onLoadMore={handleLoadMore} hasMore={orgTaskHasMore} />
     </OrgBoardContext.Provider>
-  )
-}
+  );
+};
 
 //export default withAuth(BoardsPage)
-export default withAuth(BoardsPage)
+export default withAuth(BoardsPage);
