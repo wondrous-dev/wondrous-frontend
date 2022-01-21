@@ -38,7 +38,6 @@ const SideBarComponent = (props) => {
   }
 
   const listItems = userOrgs?.getUserOrgs
-  console.log('profile', user)
   const profilePictureStyle = {
     display: 'flex',
     margin: '0 auto',
