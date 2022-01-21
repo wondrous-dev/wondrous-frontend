@@ -1,10 +1,10 @@
-import React from 'react'
-import { IconButton } from '@material-ui/core'
+import React from 'react';
+import { IconButton } from '@material-ui/core';
 
-import CloseModalIcon from '../Icons/closeModal'
-import RightArrowIcon from '../Icons/rightArrow'
+import CloseModalIcon from '../Icons/closeModal';
+import RightArrowIcon from '../Icons/rightArrow';
 
-import { ENTITIES_TYPES } from '../../utils/constants'
+import { ENTITIES_TYPES, PERMISSIONS } from '../../utils/constants';
 
 import {
   CreateLayoutDaoIcon,
@@ -19,8 +19,12 @@ import {
   CreateLayoutsModalItemTitleBlock,
   CreateLayoutsModalTitle,
   CreateLayoutTaskIcon,
-} from './styles'
-import { useRouter } from 'next/router'
+} from './styles';
+import { useRouter } from 'next/router';
+import { GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
+import { parseUserPermissionContext } from '../../utils/helpers';
+import { useQuery } from '@apollo/client';
+import { useOrgBoard, usePodBoard } from '../../utils/hooks';
 
 export const ENTITIES_UI_ELEMENTS = {
   [ENTITIES_TYPES.TASK]: {
@@ -39,20 +43,37 @@ export const ENTITIES_UI_ELEMENTS = {
     icon: CreateLayoutDaoIcon,
     label: 'DAO',
   },
-}
+};
 
 const ChooseEntityToCreateModal = (props) => {
-  const { handleClose, setEntityType } = props
+  const { handleClose, setEntityType } = props;
 
   // TODO: remove since DAO creation will be introduced
-  const router = useRouter()
-  const onPodPage = router.pathname.includes('/pod/')
+  const router = useRouter();
+  const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
+    fetchPolicy: 'cache-and-network',
+  });
+  const orgBoard = useOrgBoard();
+  const podBoard = usePodBoard();
+  const board = orgBoard || podBoard;
+  const userPermissionsContext = userPermissionsContextData?.getUserPermissionContext
+    ? JSON.parse(userPermissionsContextData?.getUserPermissionContext)
+    : null;
+
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId: board?.orgId,
+    podId: board?.podId,
+  });
+
+  const onPodPage = router.pathname.includes('/pod/');
   const entries = Object.entries(ENTITIES_UI_ELEMENTS).filter(([key]) => {
-    const condition = onPodPage
-      ? key !== ENTITIES_TYPES.ORG && key !== ENTITIES_TYPES.POD
-      : key !== ENTITIES_TYPES.ORG
-    return condition
-  })
+    if (!permissions.includes(PERMISSIONS.FULL_ACCESS) && key === ENTITIES_TYPES.POD) {
+      return false;
+    }
+    const condition = onPodPage ? key !== ENTITIES_TYPES.ORG && key !== ENTITIES_TYPES.POD : key !== ENTITIES_TYPES.ORG;
+    return condition;
+  });
 
   return (
     <CreateLayoutsModal>
@@ -77,7 +98,7 @@ const ChooseEntityToCreateModal = (props) => {
         ))}
       </CreateLayoutsModalItemContainer>
     </CreateLayoutsModal>
-  )
-}
+  );
+};
 
-export default ChooseEntityToCreateModal
+export default ChooseEntityToCreateModal;

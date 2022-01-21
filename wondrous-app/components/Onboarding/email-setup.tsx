@@ -12,6 +12,7 @@ import {
   UsernameInput,
   ProfilePictureDiv,
   ErrorText,
+  LaterButton,
 } from './styles';
 import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
 
@@ -41,6 +42,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(null);
+  const router = useRouter();
   const buttonStyle = {
     background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
     position: 'relative',
@@ -111,7 +113,16 @@ export const InviteWelcomeBox = ({ updateUser }) => {
           display: 'flex',
         }}
       >
-        <StyledCancelButton onClick={() => {}}>Cancel</StyledCancelButton>
+        <LaterButton
+          onClick={() => {
+            router.push(`/dashboard`);
+          }}
+          buttonInnerStyle={{
+            fontFamily: 'Space Grotesk',
+          }}
+        >
+          Skip
+        </LaterButton>
         <ContinueButton
           style={buttonStyle}
           onClick={() => {
