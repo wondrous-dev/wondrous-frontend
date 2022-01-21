@@ -283,7 +283,7 @@ export const transformMediaFormat = (media) => {
 };
 
 const EditLayoutBaseModal = (props) => {
-  const { entityType, handleClose, cancelEdit, existingTask, isTaskProposal } = props;
+  const { entityType, handleClose, cancelEdit, existingTask, isTaskProposal, open } = props;
   const user = useMe();
 
   const [addDetails, setAddDetails] = useState(true);
@@ -412,29 +412,31 @@ const EditLayoutBaseModal = (props) => {
     existingTask?.userId === board?.userId;
 
   useEffect(() => {
-    if (existingTask?.orgId) {
-      // If you're only part of one dao then just set that as default
-      setOrg(existingTask?.orgId);
+    if (open) {
+      if (existingTask?.orgId) {
+        // If you're only part of one dao then just set that as default
+        setOrg(existingTask?.orgId);
+      }
+      if (org) {
+        getUserAvailablePods({
+          variables: {
+            orgId: org?.id || org,
+          },
+        });
+        getOrgUsers({
+          variables: {
+            orgId: org?.id || org,
+            limit: 100, // TODO: fix autocomplete
+          },
+        });
+        getPaymentMethods({
+          variables: {
+            orgId: org?.id || org,
+          },
+        });
+      }
     }
-    if (org) {
-      getUserAvailablePods({
-        variables: {
-          orgId: org?.id || org,
-        },
-      });
-      getOrgUsers({
-        variables: {
-          orgId: org?.id || org,
-          limit: 100, // TODO: fix autocomplete
-        },
-      });
-      getPaymentMethods({
-        variables: {
-          orgId: org?.id || org,
-        },
-      });
-    }
-  }, [userOrgs?.getUserOrgs, org, getUserAvailablePods, getOrgUsers, existingTask?.orgId, getPaymentMethods]);
+  }, [open, userOrgs?.getUserOrgs, org, getUserAvailablePods, getOrgUsers, existingTask?.orgId, getPaymentMethods]);
 
   const getPodObject = useCallback(() => {
     let justCreatedPod = null;

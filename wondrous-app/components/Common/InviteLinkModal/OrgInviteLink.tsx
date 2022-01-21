@@ -33,7 +33,26 @@ import { useMutation, useLazyQuery } from '@apollo/client';
 import { CREATE_ORG_INVITE_LINK } from '../../../graphql/mutations/org';
 import { GET_ORG_ROLES } from '../../../graphql/queries/org';
 
-const link = `https://www.wonder.io/invite/`;
+const link = `https://www.app.wonderverse.xyz/invite/`;
+
+export const putDefaultRoleOnTop = (roles) => {
+  if (!roles) return [];
+  roles = [...roles];
+  let defaultRole;
+  let defaultRoleIndex;
+  roles.forEach((role, index) => {
+    if (role?.default) {
+      defaultRole = { ...role };
+      defaultRoleIndex = index;
+    }
+  });
+
+  if (defaultRole && defaultRoleIndex) {
+    roles?.splice(defaultRoleIndex, 1);
+    roles?.unshift(defaultRole);
+  }
+  return roles;
+};
 
 export const OrgInviteLinkModal = (props) => {
   const { orgId, open, onClose } = props;
@@ -51,7 +70,12 @@ export const OrgInviteLinkModal = (props) => {
   });
   const [getOrgRoles, { data: orgRoles }] = useLazyQuery(GET_ORG_ROLES, {
     onCompleted: (data) => {
-      setRole(data?.getOrgRoles[0]?.id);
+      data?.getOrgRoles &&
+        data?.getOrgRoles?.forEach((role) => {
+          if (role?.default) {
+            setRole(role?.id);
+          }
+        });
     },
     onError: (e) => {
       console.error(e);
@@ -100,6 +124,7 @@ export const OrgInviteLinkModal = (props) => {
     }
     setCopy(false);
   }, [role, createOrgInviteLink, linkOneTimeUse, orgId, orgRoles, open, getOrgRoles]);
+  const roles = putDefaultRoleOnTop(orgRoles?.getOrgRoles);
 
   return (
     <StyledModal open={open} onClose={handleOnClose}>
@@ -120,8 +145,8 @@ export const OrgInviteLinkModal = (props) => {
           <InviteThruLinkTextField variant="outlined" value={`${inviteLink}`} disabled />
           <InviteThruLinkFormControlSelect>
             <InviteThruLinkSelect value={role} onChange={handleRoleChange}>
-              {orgRoles?.getOrgRoles &&
-                orgRoles?.getOrgRoles.map((role) => (
+              {roles &&
+                roles.map((role) => (
                   <InviteThruLinkMenuItem key={role.id} value={role.id}>
                     {role.name}
                   </InviteThruLinkMenuItem>

@@ -1,44 +1,43 @@
-import React from 'react'
+import React from 'react';
 
-import CreateLayoutBaseModal from './createEntityModal'
-import ChooseEntityToCreateModal from './chooseEntityToCreateModal'
+import CreateLayoutBaseModal from './createEntityModal';
+import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
 
-import { CreateModalOverlay } from './styles'
+import { CreateModalOverlay } from './styles';
 
 const CreateFormModal = (props) => {
-	const { open, toggleOpen } = props
+  const { open, toggleOpen } = props;
 
-	const [entityType, setEntityType] = React.useState('')
+  const [entityType, setEntityType] = React.useState('');
 
-	const ModalBody = entityType
-		? CreateLayoutBaseModal
-		: ChooseEntityToCreateModal
+  const ModalBody = entityType ? CreateLayoutBaseModal : ChooseEntityToCreateModal;
 
-	const resetEntityType = () => {
-		if (entityType) {
-			setEntityType('')
-		}
-	}
-	const handleCloseModal = () => {
-		resetEntityType()
-		toggleOpen()
-	}
+  const resetEntityType = () => {
+    if (entityType) {
+      setEntityType('');
+    }
+  };
+  const handleCloseModal = () => {
+    resetEntityType();
+    toggleOpen();
+  };
 
-	return (
-		<CreateModalOverlay
-			open={open}
-			onClose={handleCloseModal}
-			aria-labelledby="modal-modal-title"
-			aria-describedby="modal-modal-description"
-		>
-			<ModalBody
-				entityType={entityType}
-				handleClose={handleCloseModal}
-				resetEntityType={resetEntityType}
-				setEntityType={setEntityType}
-			/>
-		</CreateModalOverlay>
-	)
-}
+  return (
+    <CreateModalOverlay
+      open={open}
+      onClose={handleCloseModal}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <ModalBody
+        entityType={entityType}
+        handleClose={handleCloseModal}
+        resetEntityType={resetEntityType}
+        setEntityType={setEntityType}
+        open={open}
+      />
+    </CreateModalOverlay>
+  );
+};
 
-export default CreateFormModal
+export default CreateFormModal;

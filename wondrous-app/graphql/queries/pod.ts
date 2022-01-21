@@ -55,6 +55,8 @@ export const GET_POD_ROLES = gql`
     getPodRoles(podId: $podId) {
       id
       name
+      permissions
+      default
     }
   }
 `;

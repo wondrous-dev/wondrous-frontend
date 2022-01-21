@@ -289,7 +289,7 @@ export const filterPaymentMethods = (paymentMethods) => {
   });
 };
 const CreateLayoutBaseModal = (props) => {
-  const { entityType, handleClose, resetEntityType } = props;
+  const { entityType, handleClose, resetEntityType, open } = props;
   const user = useMe();
   const [addDetails, setAddDetails] = useState(true);
   const [descriptionText, setDescriptionText] = useState('');
@@ -414,42 +414,44 @@ const CreateLayoutBaseModal = (props) => {
     : null;
 
   useEffect(() => {
-    if (fetchedUserPermissionsContext && board?.orgId in fetchedUserPermissionsContext?.orgPermissions && !org) {
-      // If you're only part of one dao then just set that as default
-      // TODO: if you are part of the org and you're on that page it should be create on that org
-      setOrg(board?.orgId);
-    }
-    if (fetchedUserPermissionsContext && board?.podId in fetchedUserPermissionsContext?.podPermissions && !pod) {
-      // If you're only part of one dao then just set that as default
-      // TODO: if you are part of the org and you're on that page it should be create on that org
-      setPod(board?.podId);
-    }
-    if (org) {
-      if (!podsFetched) {
-        getUserAvailablePods({
-          variables: {
-            orgId: org,
-          },
-        });
+    if (open) {
+      if (fetchedUserPermissionsContext && board?.orgId in fetchedUserPermissionsContext?.orgPermissions && !org) {
+        // If you're only part of one dao then just set that as default
+        // TODO: if you are part of the org and you're on that page it should be create on that org
+        setOrg(board?.orgId);
       }
-      if (!orgUserFetched) {
-        getOrgUsers({
-          variables: {
-            orgId: org,
-            limit: 100, // TODO: fix autocomplete
-          },
-        });
+      if (fetchedUserPermissionsContext && board?.podId in fetchedUserPermissionsContext?.podPermissions && !pod) {
+        // If you're only part of one dao then just set that as default
+        // TODO: if you are part of the org and you're on that page it should be create on that org
+        setPod(board?.podId);
       }
-      if (!fetchPaymentMethod) {
-        getPaymentMethods({
-          variables: {
-            orgId: org,
-          },
-        });
+      if (org) {
+        if (!podsFetched) {
+          getUserAvailablePods({
+            variables: {
+              orgId: org,
+            },
+          });
+        }
+        if (!orgUserFetched) {
+          getOrgUsers({
+            variables: {
+              orgId: org,
+              limit: 100, // TODO: fix autocomplete
+            },
+          });
+        }
+        if (!fetchPaymentMethod) {
+          getPaymentMethods({
+            variables: {
+              orgId: org,
+            },
+          });
+        }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userOrgs?.getUserOrgs, board?.orgId, fetchedUserPermissionsContext, board?.podId, org, pod]);
+  }, [userOrgs?.getUserOrgs, board?.orgId, fetchedUserPermissionsContext, board?.podId, org, pod, open]);
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext: fetchedUserPermissionsContext,

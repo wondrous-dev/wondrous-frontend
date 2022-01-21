@@ -244,41 +244,43 @@ export const TaskListViewModal = (props) => {
 
   const listInnerRef = useRef();
   useEffect(() => {
-    if (fetchedList?.length === 0 && !hasMore) {
-      if (taskType === TASK_STATUS_REQUESTED) {
-        if (entityType === ENTITIES_TYPES.ORG) {
-          getOrgTaskProposals({
-            variables: {
-              orgId,
-            },
-          });
-        }
-      } else if (taskType === TASK_STATUS_IN_REVIEW) {
-        if (entityType === ENTITIES_TYPES.ORG) {
-          getOrgTaskSubmissions({
-            variables: {
-              orgId,
-            },
-          });
-        }
-      } else if (taskType === TASK_STATUS_ARCHIVED) {
-        if (entityType === ENTITIES_TYPES.ORG) {
-          getOrgArchivedTasks({
-            variables: {
-              orgId,
-              statuses: ['archived'],
-              offset: 0,
-              limit: LIMIT,
-            },
-          });
+    if (open) {
+      if (fetchedList?.length === 0 && !hasMore) {
+        if (taskType === TASK_STATUS_REQUESTED) {
+          if (entityType === ENTITIES_TYPES.ORG) {
+            getOrgTaskProposals({
+              variables: {
+                orgId,
+              },
+            });
+          }
+        } else if (taskType === TASK_STATUS_IN_REVIEW) {
+          if (entityType === ENTITIES_TYPES.ORG) {
+            getOrgTaskSubmissions({
+              variables: {
+                orgId,
+              },
+            });
+          }
+        } else if (taskType === TASK_STATUS_ARCHIVED) {
+          if (entityType === ENTITIES_TYPES.ORG) {
+            getOrgArchivedTasks({
+              variables: {
+                orgId,
+                statuses: ['archived'],
+                offset: 0,
+                limit: LIMIT,
+              },
+            });
+          }
         }
       }
-    }
-    if (inView && hasMore) {
-      handleLoadMore();
+      if (inView && hasMore) {
+        handleLoadMore();
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, taskType, entityType, inView]);
+  }, [orgId, taskType, entityType, inView, open]);
 
   let text = '';
   let refetch;
@@ -525,6 +527,7 @@ export const TaskViewModal = (props) => {
           }}
         >
           <EditLayoutBaseModal
+            open={open}
             entityType={ENTITIES_TYPES.TASK}
             handleClose={() => {
               setEditTask(false);
