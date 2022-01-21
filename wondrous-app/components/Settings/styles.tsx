@@ -103,8 +103,7 @@ export const SettingsSidebarTabsListItemButton = styled(ListItemButton)({
 
 export const SettingsSidebarTabsListItemIcon = styled(ListItemIcon)`
   && {
-    min-width: 0;
-    margin-right: 15px;
+    width: 10px;
   }
 `;
 
