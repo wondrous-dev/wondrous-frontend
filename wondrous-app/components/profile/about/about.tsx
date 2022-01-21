@@ -7,8 +7,11 @@ import {
 	SOCIAL_MEDIA_LINKEDIN,
 	SOCIAL_MEDIA_SPOTIFY,
 	SOCIAL_MEDIA_TWITTER,
+	SOCIAL_OPENSEA
 } from '../../../utils/constants'
+import { formatLinkDisplay } from '../../../utils/links'
 import FacebookIcon from '../../Icons/facebook'
+import OpenSeaIcon from '../../Icons/openSea'
 import LinkedInIcon from '../../Icons/linkedIn'
 import LinksIcon from '../../Icons/resume'
 import SkillsIcon from '../../Icons/skills'
@@ -47,6 +50,7 @@ const SOCIAL_MEDIA_ICONS = {
 	[SOCIAL_MEDIA_GITHUB]: LinkedInIcon,
 	[SOCIAL_MEDIA_SPOTIFY]: LinkedInIcon,
 	[SOCIAL_MEDIA_INSTAGRAM]: LinkedInIcon,
+	[SOCIAL_OPENSEA]: OpenSeaIcon,
 }
 const SOCIAL_LINKS = ['twitter', 'discord', 'instagram','github', 'linkedin', 'spotify']
 
@@ -58,10 +62,10 @@ const parseLinks = (links) => {
 		return {
 			'social': [],
 			'websites': [],
-			'main': {},		
+			'mainLink': null,		
 		}
 	}
-	let mainLink = {}
+	let mainLink = null
 	const socialLinks = []
 	const websites = []
 	for(const link of links) {
@@ -75,10 +79,17 @@ const parseLinks = (links) => {
 			mainLink = link
 		}
 	}
+	if (mainLink === null) {
+		if (websites.length > 0) {
+			mainLink = websites[0]
+		} else if ( socialLinks.length > 0) {
+			mainLink = socialLinks[0]
+		}
+	}
 	return {
 		'social': socialLinks,
 		'websites': websites,
-		'main': mainLink,		
+		'mainLink': mainLink,		
 	}
 }
 
@@ -87,9 +98,9 @@ const About = (props) => {
 		userProfileData = {},
 		loggedInUser = {}
 	} = props
-	const {social, websites, main} = parseLinks(userProfileData?.links)
+	let {social, websites, mainLink} = parseLinks(userProfileData?.links)
 	return (
-		<Wrapper userProfileData={userProfileData} loggedInUser={loggedInUser}>
+		<Wrapper userProfileData={userProfileData} loggedInUser={loggedInUser} mainLink={mainLink}>
 			<AboutSection>
 				<AboutInfoTable>
 					{/* <AboutInfoTableRow>
@@ -110,7 +121,7 @@ const About = (props) => {
 						</AboutInfoTableRowContent>
 					</AboutInfoTableRow> */}
 
-					<AboutInfoTableRow>
+					{social.length > 0 && <AboutInfoTableRow>
 						<AboutInfoTableRowNameBlock>
 							<AboutInfoTableRowTitle>
 								<SocialIcon />
@@ -121,16 +132,16 @@ const About = (props) => {
 							{social.map(({ url, type }) => {
 								const SocialMediaIcon = SOCIAL_MEDIA_ICONS[type]
 								return (
-									// href={url} as="a" target="_blank"
-									<AboutInfoTableRowContentSocialButton key={url} >
+									<AboutInfoTableRowContentSocialButton key={url}>
+										<a href={url} target="_blank" rel="noreferrer"> 
 										<SocialMediaIcon  />
+										</a>
 									</AboutInfoTableRowContentSocialButton>
 								)
 							})}
 						</AboutInfoTableRowContent>
-					</AboutInfoTableRow>
-
-					<AboutInfoTableRow>
+					</AboutInfoTableRow>}
+					{websites.length > 0 && <AboutInfoTableRow>
 						<AboutInfoTableRowNameBlock>
 							<AboutInfoTableRowTitle>
 								<LinksIcon />
@@ -138,15 +149,15 @@ const About = (props) => {
 							</AboutInfoTableRowTitle>
 						</AboutInfoTableRowNameBlock>
 						<AboutInfoTableRowContent>
-							{websites.map(({ url, displayName }) => (
-								<AboutInfoTableRowContentItem key={url}>
-									<AboutInfoTableRowContentItemLink href={url} as="a" target="_blank">
-										{displayName ? displayName: url.substring(0,20)}
+							{websites.map((link) => (
+								<AboutInfoTableRowContentItem key={link.url}>
+									<AboutInfoTableRowContentItemLink href={link.url} as="a" target="_blank">
+										{formatLinkDisplay(link)}
 									</AboutInfoTableRowContentItemLink>
 								</AboutInfoTableRowContentItem>
 							))}
 						</AboutInfoTableRowContent>
-					</AboutInfoTableRow>
+					</AboutInfoTableRow>}
 				</AboutInfoTable>
 
 				{/* <AboutInfoContainer>

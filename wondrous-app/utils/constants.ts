@@ -30,6 +30,7 @@ export const SOCIAL_MEDIA_DISCORD = 'discord';
 export const SOCIAL_MEDIA_GITHUB = 'github';
 export const SOCIAL_MEDIA_SPOTIFY = 'spotify';
 export const SOCIAL_MEDIA_INSTAGRAM = 'instagram';
+export const SOCIAL_OPENSEA = 'opensea';
 
 // Supported Chains (ETHEREUM, POLYGON)
 export const SUPPORTED_CHAINS = {
