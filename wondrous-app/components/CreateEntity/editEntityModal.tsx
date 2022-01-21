@@ -1,11 +1,11 @@
-import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react'
-import { Popper, styled, Switch, TextField } from '@material-ui/core'
-import DesktopDatePicker from '@mui/lab/DesktopDatePicker'
-import AdapterDateFns from '@mui/lab/AdapterDateFns'
-import LocalizationProvider from '@mui/lab/LocalizationProvider'
-import Autocomplete from '@mui/material/Autocomplete'
+import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
+import { Popper, styled, Switch, TextField } from '@material-ui/core';
+import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import Autocomplete from '@mui/material/Autocomplete';
 
-import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg'
+import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
 import {
   ENTITIES_TYPES,
   IMAGE_FILE_EXTENSIONS_TYPE_MAPPING,
@@ -13,23 +13,23 @@ import {
   PERMISSIONS,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   TASK_STATUS_IN_PROGRESS,
-} from '../../utils/constants'
-import CircleIcon from '../Icons/circleIcon'
-import CodeIcon from '../Icons/MediaTypesIcons/code'
-import AudioIcon from '../Icons/MediaTypesIcons/audio'
-import WonderTokenIcon from '../Icons/wonderToken'
-import PriorityIcon from '../Icons/priority'
-import CloseModalIcon from '../Icons/closeModal'
-import CreateDaoIcon from '../Icons/createDao'
-import CreatePodIcon from '../Icons/createPod'
-import ImageIcon from '../Icons/MediaTypesIcons/image'
-import VideoIcon from '../Icons/MediaTypesIcons/video'
-import InputForm from '../Common/InputForm/inputForm'
-import DropdownSelect from '../Common/DropdownSelect/dropdownSelect'
-import { ENTITIES_UI_ELEMENTS } from './chooseEntityToCreateModal'
-import MembersRow from './MembersRow/membersRow'
-import { CreateFormMembersList } from './MembersRow/styles'
-import HeaderImage from './HeaderImage/headerImage'
+} from '../../utils/constants';
+import CircleIcon from '../Icons/circleIcon';
+import CodeIcon from '../Icons/MediaTypesIcons/code';
+import AudioIcon from '../Icons/MediaTypesIcons/audio';
+import WonderTokenIcon from '../Icons/wonderToken';
+import PriorityIcon from '../Icons/priority';
+import CloseModalIcon from '../Icons/closeModal';
+import CreateDaoIcon from '../Icons/createDao';
+import CreatePodIcon from '../Icons/createPod';
+import ImageIcon from '../Icons/MediaTypesIcons/image';
+import VideoIcon from '../Icons/MediaTypesIcons/video';
+import InputForm from '../Common/InputForm/inputForm';
+import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
+import { ENTITIES_UI_ELEMENTS } from './chooseEntityToCreateModal';
+import MembersRow from './MembersRow/membersRow';
+import { CreateFormMembersList } from './MembersRow/styles';
+import HeaderImage from './HeaderImage/headerImage';
 import {
   CreateFormAddDetailsAppearBlock,
   CreateFormAddDetailsAppearBlockContainer,
@@ -75,73 +75,54 @@ import {
   AutocompleteList,
   OptionDiv,
   OptionTypography,
-} from './styles'
-import SelectDownIcon from '../Icons/selectDownIcon'
-import UploadImageIcon from '../Icons/uploadImage'
-import {
-  getFilenameAndType,
-  handleAddFile,
-  uploadMedia,
-} from '../../utils/media'
-import DatePicker from '../Common/DatePicker'
-import { MediaItem } from './MediaItem'
-import { AddFileUpload } from '../Icons/addFileUpload'
-import { TextInput } from '../TextInput'
-import { White } from '../../theme/colors'
-import { TextInputContext } from '../../utils/contexts'
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
-import {
-  GET_AUTOCOMPLETE_USERS,
-  GET_USER_ORGS,
-  GET_USER_PERMISSION_CONTEXT,
-} from '../../graphql/queries'
-import { SafeImage } from '../Common/Image'
-import {
-  GET_USER_AVAILABLE_PODS,
-  GET_USER_PODS,
-} from '../../graphql/queries/pod'
+} from './styles';
+import SelectDownIcon from '../Icons/selectDownIcon';
+import UploadImageIcon from '../Icons/uploadImage';
+import { getFilenameAndType, handleAddFile, uploadMedia } from '../../utils/media';
+import DatePicker from '../Common/DatePicker';
+import { MediaItem } from './MediaItem';
+import { AddFileUpload } from '../Icons/addFileUpload';
+import { TextInput } from '../TextInput';
+import { White } from '../../theme/colors';
+import { TextInputContext } from '../../utils/contexts';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
+import { SafeImage } from '../Common/Image';
+import { GET_USER_AVAILABLE_PODS, GET_USER_PODS } from '../../graphql/queries/pod';
 import {
   getMentionArray,
   parseUserPermissionContext,
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
-} from '../../utils/helpers'
-import { GET_ORG_USERS } from '../../graphql/queries/org'
-import {
-  ATTACH_MEDIA_TO_TASK,
-  CREATE_TASK,
-  REMOVE_MEDIA_FROM_TASK,
-  UPDATE_TASK,
-} from '../../graphql/mutations/task'
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks'
+} from '../../utils/helpers';
+import { GET_ORG_USERS } from '../../graphql/queries/org';
+import { ATTACH_MEDIA_TO_TASK, CREATE_TASK, REMOVE_MEDIA_FROM_TASK, UPDATE_TASK } from '../../graphql/mutations/task';
+import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
 import {
   ATTACH_MEDIA_TO_TASK_PROPOSAL,
   CREATE_TASK_PROPOSAL,
   REMOVE_MEDIA_FROM_TASK_PROPOSAL,
   UPDATE_TASK_PROPOSAL,
-} from '../../graphql/mutations/taskProposal'
-import { useMe } from '../Auth/withAuth'
-import Ethereum from '../Icons/ethereum'
-import { USDCoin } from '../Icons/USDCoin'
-import { TaskFragment } from '../../graphql/fragments/task'
-import { updateProposalItem } from '../../utils/board'
-import { GET_ORG_TASK_BOARD_PROPOSALS } from '../../graphql/queries/taskBoard'
-import {
-  filterOrgUsersForAutocomplete,
-  filterPaymentMethods,
-} from './createEntityModal'
-import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment'
+} from '../../graphql/mutations/taskProposal';
+import { useMe } from '../Auth/withAuth';
+import Ethereum from '../Icons/ethereum';
+import { USDCoin } from '../Icons/USDCoin';
+import { TaskFragment } from '../../graphql/fragments/task';
+import { updateProposalItem } from '../../utils/board';
+import { GET_ORG_TASK_BOARD_PROPOSALS } from '../../graphql/queries/taskBoard';
+import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './createEntityModal';
+import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment';
 
 const filterUserOptions = (options) => {
-  if (!options) return []
+  if (!options) return [];
   return options.map((option) => {
     return {
       label: option?.username,
       id: option?.id,
       profilePicture: option?.profilePicture,
-    }
-  })
-}
+    };
+  });
+};
 
 export const MEDIA_UI_ELEMENTS = {
   [MEDIA_TYPES.IMAGE]: {
@@ -170,7 +151,7 @@ export const MEDIA_UI_ELEMENTS = {
     icon: VideoIcon,
     label: 'Video',
   },
-}
+};
 
 const AndroidSwitch = styled(Switch)(({ theme }) => ({
   padding: 8,
@@ -200,10 +181,9 @@ const AndroidSwitch = styled(Switch)(({ theme }) => ({
   },
 
   '& .MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track': {
-    background:
-      'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
+    background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
   },
-}))
+}));
 
 const createPodMembersList = [
   {
@@ -226,7 +206,7 @@ const createPodMembersList = [
     name: '0xAsndros',
     admin: 'false',
   },
-]
+];
 
 const SELECT_OPTIONS = [
   {
@@ -241,7 +221,7 @@ const SELECT_OPTIONS = [
     label: 'Never',
     value: 'never',
   },
-]
+];
 
 const POD_SELECT_OPTIONS = [
   {
@@ -256,7 +236,7 @@ const POD_SELECT_OPTIONS = [
     amount: 8,
     value: 'alfa-launch',
   },
-]
+];
 
 const REWARD_SELECT_OPTIONS = [
   {
@@ -269,7 +249,7 @@ const REWARD_SELECT_OPTIONS = [
     label: 'USDC',
     value: 'USDC',
   },
-]
+];
 
 const PRIORITY_SELECT_OPTIONS = [
   {
@@ -287,7 +267,7 @@ const PRIORITY_SELECT_OPTIONS = [
     label: 'Priority 3',
     value: 'priority-3',
   },
-]
+];
 
 export const transformMediaFormat = (media) => {
   return (
@@ -297,97 +277,84 @@ export const transformMediaFormat = (media) => {
         uploadSlug: item?.slug,
         type: item?.type,
         name: item?.name,
-      }
+      };
     })
-  )
-}
+  );
+};
 
 const EditLayoutBaseModal = (props) => {
-  const { entityType, handleClose, cancelEdit, existingTask, isTaskProposal } =
-    props
-  const user = useMe()
+  const { entityType, handleClose, cancelEdit, existingTask, isTaskProposal } = props;
+  const user = useMe();
 
-  const [addDetails, setAddDetails] = useState(true)
-  const [descriptionText, setDescriptionText] = useState(
-    existingTask?.description
-  )
-  const [mediaUploads, setMediaUploads] = useState(
-    transformMediaFormat(existingTask?.media) || []
-  )
+  const [addDetails, setAddDetails] = useState(true);
+  const [descriptionText, setDescriptionText] = useState(existingTask?.description);
+  const [mediaUploads, setMediaUploads] = useState(transformMediaFormat(existingTask?.media) || []);
   const addDetailsHandleClick = () => {
-    setAddDetails(!addDetails)
-  }
+    setAddDetails(!addDetails);
+  };
 
   const [org, setOrg] = useState({
     id: existingTask?.orgId,
     profilePicture: existingTask?.orgProfilePicture,
     name: existingTask?.orgName,
-  })
+  });
 
-  const [milestone, setMilestone] = useState(null)
-  const [assigneeString, setAssigneeString] = useState(
-    existingTask?.assigneeUsername
-  )
-  const [reviewerString, setReviewerString] = useState('')
+  const [milestone, setMilestone] = useState(null);
+  const [assigneeString, setAssigneeString] = useState(existingTask?.assigneeUsername);
+  const [reviewerString, setReviewerString] = useState('');
   const [assignee, setAssignee] = useState(
     existingTask?.assigneeId && {
       value: existingTask?.assigneeId,
       profilePicture: existingTask?.assigneeProfilePicture,
       label: existingTask?.assigneeUsername,
     }
-  )
-  const [reviewerIds, setReviewerIds] = useState(
-    existingTask?.reviewers?.map((reviewer) => reviewer?.id)
-  )
+  );
+  const [reviewerIds, setReviewerIds] = useState(existingTask?.reviewers?.map((reviewer) => reviewer?.id));
   // TODO: set later
-  const initialRewards = existingTask?.rewards && existingTask?.rewards[0]
-  const initialCurrency = initialRewards?.paymentMethodId
-  const initialAmount = initialRewards?.rewardAmount
-  const [rewardsCurrency, setRewardsCurrency] = useState(initialCurrency)
-  const [rewardsAmount, setRewardsAmount] = useState(initialAmount)
-  const [title, setTitle] = useState(existingTask?.title)
-  const orgBoard = useOrgBoard()
-  const podBoard = usePodBoard()
-  const userBoard = useUserBoard()
+  const initialRewards = existingTask?.rewards && existingTask?.rewards[0];
+  const initialCurrency = initialRewards?.paymentMethodId;
+  const initialAmount = initialRewards?.rewardAmount;
+  const [rewardsCurrency, setRewardsCurrency] = useState(initialCurrency);
+  const [rewardsAmount, setRewardsAmount] = useState(initialAmount);
+  const [title, setTitle] = useState(existingTask?.title);
+  const orgBoard = useOrgBoard();
+  const podBoard = usePodBoard();
+  const userBoard = useUserBoard();
 
-  const board = orgBoard || podBoard || userBoard
+  const board = orgBoard || podBoard || userBoard;
 
-  const { data: userOrgs } = useQuery(GET_USER_ORGS)
-  const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(
-    GET_AUTOCOMPLETE_USERS
-  )
+  const { data: userOrgs } = useQuery(GET_USER_ORGS);
+  const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
 
-  const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS)
+  const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS);
 
   const descriptionTextCounter = (e) => {
-    setDescriptionText(e.target.value)
-  }
+    setDescriptionText(e.target.value);
+  };
 
   const [getUserPods] = useLazyQuery(GET_USER_PODS, {
     onCompleted: (data) => {
-      setPods(data?.getUserPods || [])
+      setPods(data?.getUserPods || []);
     },
-  })
+  });
 
   const [getUserAvailablePods] = useLazyQuery(GET_USER_AVAILABLE_PODS, {
     onCompleted: (data) => {
-      setPods(data?.getAvailableUserPods)
+      setPods(data?.getAvailableUserPods);
     },
     fetchPolicy: 'cache-and-network',
-  })
-  const [fetchPaymentMethod, setFetchPaymentMethod] = useState(false)
-  const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(
-    GET_PAYMENT_METHODS_FOR_ORG
-  )
+  });
+  const [fetchPaymentMethod, setFetchPaymentMethod] = useState(false);
+  const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG);
   // const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
-  const [pods, setPods] = useState([])
+  const [pods, setPods] = useState([]);
   const [pod, setPod] = useState(
     existingTask?.podName && {
       name: existingTask?.podName,
       id: existingTask?.podId,
     }
-  )
-  const [dueDate, setDueDate] = useState(existingTask?.dueDate)
+  );
+  const [dueDate, setDueDate] = useState(existingTask?.dueDate);
   const {
     showDeliverableRequirementsSection,
     showBountySwitchSection,
@@ -400,149 +367,134 @@ const EditLayoutBaseModal = (props) => {
     return {
       showDeliverableRequirementsSection: entityType === ENTITIES_TYPES.TASK,
       showBountySwitchSection: entityType === ENTITIES_TYPES.TASK,
-      showAppearSection:
-        entityType === ENTITIES_TYPES.TASK ||
-        entityType === ENTITIES_TYPES.MILESTONE,
+      showAppearSection: entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.MILESTONE,
       showLinkAttachmentSection: entityType === ENTITIES_TYPES.POD,
       showHeaderImagePickerSection: entityType === ENTITIES_TYPES.POD,
       showMembersSection: entityType === ENTITIES_TYPES.POD,
       showPrioritySelectSection: entityType === ENTITIES_TYPES.MILESTONE,
-    }
-  }, [entityType])
+    };
+  }, [entityType]);
 
-  const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType]
-  const inputRef: any = useRef()
+  const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType];
+  const inputRef: any = useRef();
 
-  const [attachMedia] = useMutation(ATTACH_MEDIA_TO_TASK)
-  const [removeMedia] = useMutation(REMOVE_MEDIA_FROM_TASK)
-  const [attachTaskProposalMedia] = useMutation(ATTACH_MEDIA_TO_TASK_PROPOSAL)
-  const [removeTaskProposalMedia] = useMutation(REMOVE_MEDIA_FROM_TASK_PROPOSAL)
+  const [attachMedia] = useMutation(ATTACH_MEDIA_TO_TASK);
+  const [removeMedia] = useMutation(REMOVE_MEDIA_FROM_TASK);
+  const [attachTaskProposalMedia] = useMutation(ATTACH_MEDIA_TO_TASK_PROPOSAL);
+  const [removeTaskProposalMedia] = useMutation(REMOVE_MEDIA_FROM_TASK_PROPOSAL);
 
   const filterDAOptions = useCallback((orgs) => {
     if (!orgs) {
-      return []
+      return [];
     }
     return orgs.map((org) => ({
       imageUrl: org?.profilePicture,
       label: org?.name,
       value: org?.id,
-    }))
-  }, [])
+    }));
+  }, []);
 
   const filterOrgUsers = useCallback((orgUsers) => {
     if (!orgUsers) {
-      return []
+      return [];
     }
 
     return orgUsers.map((orgUser) => ({
       profilePicture: orgUser?.user?.profilePicture,
       label: orgUser?.user?.username,
       value: orgUser?.user?.id,
-    }))
-  }, [])
+    }));
+  }, []);
 
   const onCorrectPage =
     existingTask?.orgId === board?.orgId ||
     existingTask?.podId === board?.podId ||
-    existingTask?.userId === board?.userId
+    existingTask?.userId === board?.userId;
 
   useEffect(() => {
     if (existingTask?.orgId) {
       // If you're only part of one dao then just set that as default
-      setOrg(existingTask?.orgId)
+      setOrg(existingTask?.orgId);
     }
     if (org) {
       getUserAvailablePods({
         variables: {
           orgId: org?.id || org,
         },
-      })
+      });
       getOrgUsers({
         variables: {
           orgId: org?.id || org,
+          limit: 100, // TODO: fix autocomplete
         },
-      })
+      });
       getPaymentMethods({
         variables: {
           orgId: org?.id || org,
         },
-      })
+      });
     }
-  }, [
-    userOrgs?.getUserOrgs,
-    org,
-    getUserAvailablePods,
-    getOrgUsers,
-    existingTask?.orgId,
-    getPaymentMethods,
-  ])
+  }, [userOrgs?.getUserOrgs, org, getUserAvailablePods, getOrgUsers, existingTask?.orgId, getPaymentMethods]);
 
   const getPodObject = useCallback(() => {
-    let justCreatedPod = null
+    let justCreatedPod = null;
     pods.forEach((testPod) => {
       if (testPod.id === pod) {
-        justCreatedPod = testPod
+        justCreatedPod = testPod;
       }
-    })
-    return justCreatedPod
-  }, [pods, pod])
+    });
+    return justCreatedPod;
+  }, [pods, pod]);
 
   const [updateTask] = useMutation(UPDATE_TASK, {
     onCompleted: (data) => {
-      const task = data?.updateTask
-      const justCreatedPod = getPodObject()
+      const task = data?.updateTask;
+      const justCreatedPod = getPodObject();
       if (board?.setColumns && onCorrectPage) {
-        const transformedTask = transformTaskToTaskCard(task, {})
-        let columnNumber = 0
+        const transformedTask = transformTaskToTaskCard(task, {});
+        let columnNumber = 0;
         if (task.status === TASK_STATUS_IN_PROGRESS) {
-          columnNumber = 1
+          columnNumber = 1;
         }
-        const columns = [...board?.columns]
-        columns[columnNumber].tasks = columns[columnNumber].tasks.map(
-          (existingTask) => {
-            if (transformedTask?.id === existingTask?.id) {
-              return transformedTask
-            }
-            return existingTask
+        const columns = [...board?.columns];
+        columns[columnNumber].tasks = columns[columnNumber].tasks.map((existingTask) => {
+          if (transformedTask?.id === existingTask?.id) {
+            return transformedTask;
           }
-        )
-        board.setColumns(columns)
+          return existingTask;
+        });
+        board.setColumns(columns);
       }
-      handleClose()
+      handleClose();
     },
-  })
+  });
 
   const [updateTaskProposal] = useMutation(UPDATE_TASK_PROPOSAL, {
     onCompleted: (data) => {
-      const taskProposal = data?.updateTaskProposal
-      const justCreatedPod = getPodObject()
+      const taskProposal = data?.updateTaskProposal;
+      const justCreatedPod = getPodObject();
       if (board?.setColumns && onCorrectPage) {
-        const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
-          taskProposal,
-          {
-            userProfilePicture: user?.profilePicture,
-            username: user?.username,
-            podName: justCreatedPod?.name,
-          }
-        )
+        const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
+          userProfilePicture: user?.profilePicture,
+          username: user?.username,
+          podName: justCreatedPod?.name,
+        });
 
-        const columns = [...board?.columns]
-        columns[0].section.tasks = columns[0].section.tasks.map(
-          (existingTaskProposal) => {
-            if (transformedTaskProposal?.id === existingTaskProposal.id) {
-              return transformedTaskProposal
-            }
-            return existingTaskProposal
+        const columns = [...board?.columns];
+        columns[0].section.tasks = columns[0].section.tasks.map((existingTaskProposal) => {
+          if (transformedTaskProposal?.id === existingTaskProposal.id) {
+            return transformedTaskProposal;
           }
-        )
-        board.setColumns(columns)
+          return existingTaskProposal;
+        });
+        board.setColumns(columns);
       }
-      handleClose()
+      handleClose();
     },
     refetchQueries: ['GetOrgTaskBoardProposals'],
-  })
+  });
 
-  const textFieldRef = useRef()
+  const textFieldRef = useRef();
   const submitMutation = useCallback(() => {
     switch (entityType) {
       case ENTITIES_TYPES.TASK:
@@ -572,7 +524,7 @@ const EditLayoutBaseModal = (props) => {
           reviewerIds,
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
-        }
+        };
 
         if (!isTaskProposal) {
           updateTask({
@@ -580,16 +532,16 @@ const EditLayoutBaseModal = (props) => {
               taskId: existingTask?.id,
               input: taskInput,
             },
-          })
+          });
         } else {
           updateTaskProposal({
             variables: {
               proposalId: existingTask?.id,
               input: taskInput,
             },
-          })
+          });
         }
-        break
+        break;
     }
   }, [
     title,
@@ -608,11 +560,9 @@ const EditLayoutBaseModal = (props) => {
     existingTask?.id,
     rewardsAmount,
     rewardsCurrency,
-  ])
+  ]);
 
-  const paymentMethods = filterPaymentMethods(
-    paymentMethodData?.getPaymentMethodsForOrg
-  )
+  const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   return (
     <CreateFormBaseModal>
       <CreateFormBaseModalCloseBtn onClick={handleClose}>
@@ -624,9 +574,7 @@ const EditLayoutBaseModal = (props) => {
         }}
       >
         <TitleIcon circle />
-        <CreateFormBaseModalTitle>
-          Edit {titleText.toLowerCase()}
-        </CreateFormBaseModalTitle>
+        <CreateFormBaseModalTitle>Edit {titleText.toLowerCase()}</CreateFormBaseModalTitle>
       </CreateFormBaseModalHeader>
 
       <CreateFormMainSection>
@@ -714,26 +662,21 @@ const EditLayoutBaseModal = (props) => {
                         },
                         onCompleted: () => {
                           if (board?.setColumns && onCorrectPage) {
-                            let columns = [...board?.columns]
-                            const newMedia = mediaUploads.filter(
-                              (mediaUpload) => {
-                                return (
-                                  mediaUpload?.uploadSlug !==
-                                  mediaItem?.uploadSlug
-                                )
-                              }
-                            )
+                            let columns = [...board?.columns];
+                            const newMedia = mediaUploads.filter((mediaUpload) => {
+                              return mediaUpload?.uploadSlug !== mediaItem?.uploadSlug;
+                            });
                             columns = updateProposalItem(
                               {
                                 ...existingTask,
                                 media: newMedia,
                               },
                               columns
-                            )
-                            board.setColumns(columns)
+                            );
+                            board.setColumns(columns);
                           }
                         },
-                      })
+                      });
                     } else {
                       removeMedia({
                         variables: {
@@ -742,43 +685,34 @@ const EditLayoutBaseModal = (props) => {
                         },
                         onCompleted: () => {
                           if (board?.setColumns && onCorrectPage) {
-                            const columns = [...board?.columns]
-                            let columnNumber = 0
-                            if (
-                              existingTask?.status === TASK_STATUS_IN_PROGRESS
-                            ) {
-                              columnNumber = 1
+                            const columns = [...board?.columns];
+                            let columnNumber = 0;
+                            if (existingTask?.status === TASK_STATUS_IN_PROGRESS) {
+                              columnNumber = 1;
                             }
-                            columns[columnNumber].tasks = columns[
-                              columnNumber
-                            ].tasks.map((taskItem) => {
+                            columns[columnNumber].tasks = columns[columnNumber].tasks.map((taskItem) => {
                               if (existingTask?.id === taskItem?.id) {
-                                const newMedia = mediaUploads.filter(
-                                  (mediaUpload) => {
-                                    return (
-                                      mediaUpload?.uploadSlug !==
-                                      mediaItem?.uploadSlug
-                                    )
-                                  }
-                                )
+                                const newMedia = mediaUploads.filter((mediaUpload) => {
+                                  return mediaUpload?.uploadSlug !== mediaItem?.uploadSlug;
+                                });
                                 return {
                                   ...existingTask,
                                   media: newMedia,
-                                }
+                                };
                               }
-                              return existingTask
-                            })
-                            board.setColumns(columns)
+                              return existingTask;
+                            });
+                            board.setColumns(columns);
                           }
                         },
-                      })
+                      });
                     }
                   }}
                 />
               ))}
               <AddFileUpload
                 onClick={() => {
-                  inputRef.current.click()
+                  inputRef.current.click();
                 }}
                 style={{
                   cursor: 'pointer',
@@ -797,9 +731,7 @@ const EditLayoutBaseModal = (props) => {
                   marginRight: '8px',
                 }}
               />
-              <MultiMediaUploadButtonText>
-                Upload file
-              </MultiMediaUploadButtonText>
+              <MultiMediaUploadButtonText>Upload file</MultiMediaUploadButtonText>
             </MultiMediaUploadButton>
           )}
           <input
@@ -812,7 +744,7 @@ const EditLayoutBaseModal = (props) => {
                 filePrefix: 'tmp/task/new/',
                 mediaUploads,
                 setMediaUploads,
-              })
+              });
               if (isTaskProposal) {
                 attachTaskProposalMedia({
                   variables: {
@@ -823,18 +755,18 @@ const EditLayoutBaseModal = (props) => {
                   },
                   onCompleted: () => {
                     if (board?.setColumns && onCorrectPage) {
-                      let columns = [...board?.columns]
+                      let columns = [...board?.columns];
                       columns = updateProposalItem(
                         {
                           ...existingTask,
                           media: [...mediaUploads, fileToAdd],
                         },
                         columns
-                      )
-                      board.setColumns(columns)
+                      );
+                      board.setColumns(columns);
                     }
                   },
-                })
+                });
               } else {
                 attachMedia({
                   variables: {
@@ -845,26 +777,24 @@ const EditLayoutBaseModal = (props) => {
                   },
                   onCompleted: () => {
                     if (board?.setColumns && onCorrectPage) {
-                      const columns = [...board?.columns]
-                      let columnNumber = 0
+                      const columns = [...board?.columns];
+                      let columnNumber = 0;
                       if (existingTask?.status === TASK_STATUS_IN_PROGRESS) {
-                        columnNumber = 1
+                        columnNumber = 1;
                       }
-                      columns[columnNumber].tasks = columns[
-                        columnNumber
-                      ].tasks.map((taskItem) => {
+                      columns[columnNumber].tasks = columns[columnNumber].tasks.map((taskItem) => {
                         if (existingTask?.id === taskItem?.id) {
                           return {
                             ...existingTask,
                             media: [...mediaUploads, fileToAdd],
-                          }
+                          };
                         }
-                        return existingTask
-                      })
-                      board.setColumns(columns)
+                        return existingTask;
+                      });
+                      board.setColumns(columns);
                     }
                   },
-                })
+                });
               }
             }}
           />
@@ -901,12 +831,7 @@ const EditLayoutBaseModal = (props) => {
           <CreateFormMembersSection>
             <CreateFormMainBlockTitle>Members</CreateFormMainBlockTitle>
 
-            <InputForm
-              search
-              margin
-              icon={<CircleIcon />}
-              placeholder="Search reviewers"
-            />
+            <InputForm search margin icon={<CircleIcon />} placeholder="Search reviewers" />
 
             <CreateFormMembersBlock>
               <CreateFormMembersBlockTitle>
@@ -915,11 +840,7 @@ const EditLayoutBaseModal = (props) => {
               </CreateFormMembersBlockTitle>
               <CreateFormMembersList>
                 {createPodMembersList.map((item) => (
-                  <MembersRow
-                    key={item.name}
-                    name={item.name}
-                    styledSwitch={<AndroidSwitch />}
-                  />
+                  <MembersRow key={item.name} name={item.name} styledSwitch={<AndroidSwitch />} />
                 ))}
               </CreateFormMembersList>
             </CreateFormMembersBlock>
@@ -932,9 +853,7 @@ const EditLayoutBaseModal = (props) => {
             }}
           >
             <CreateFormAddDetailsInputBlock>
-              <CreateFormAddDetailsInputLabel>
-                Assigned to
-              </CreateFormAddDetailsInputLabel>
+              <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
               <StyledAutocomplete
                 options={filterOrgUsers(orgUsersData?.getOrgUsers)}
                 renderInput={(params) => (
@@ -955,14 +874,14 @@ const EditLayoutBaseModal = (props) => {
                 value={assignee}
                 inputValue={assigneeString}
                 onInputChange={(event, newInputValue) => {
-                  setAssigneeString(newInputValue)
+                  setAssigneeString(newInputValue);
                 }}
                 renderOption={(props, option, state) => {
                   return (
                     <OptionDiv
                       onClick={(event) => {
-                        setAssignee(option)
-                        props?.onClick(event)
+                        setAssignee(option);
+                        props?.onClick(event);
                       }}
                     >
                       {option?.profilePicture && (
@@ -977,19 +896,15 @@ const EditLayoutBaseModal = (props) => {
                       )}
                       <OptionTypography>{option?.label}</OptionTypography>
                     </OptionDiv>
-                  )
+                  );
                 }}
               />
             </CreateFormAddDetailsInputBlock>
 
             <CreateFormAddDetailsInputBlock>
-              <CreateFormAddDetailsInputLabel>
-                Reviewer
-              </CreateFormAddDetailsInputLabel>
+              <CreateFormAddDetailsInputLabel>Reviewer</CreateFormAddDetailsInputLabel>
               <StyledAutocomplete
-                options={filterUserOptions(
-                  autocompleteData?.getAutocompleteUsers
-                )}
+                options={filterUserOptions(autocompleteData?.getAutocompleteUsers)}
                 renderInput={(params) => (
                   <TextField
                     style={{
@@ -1001,12 +916,12 @@ const EditLayoutBaseModal = (props) => {
                     placeholder="Enter username..."
                     InputLabelProps={{ shrink: false }}
                     onChange={(event) => {
-                      setReviewerString(event.target.value)
+                      setReviewerString(event.target.value);
                       getAutocompleteUsers({
                         variables: {
                           username: event.target.value,
                         },
-                      })
+                      });
                     }}
                     {...params}
                   />
@@ -1018,9 +933,9 @@ const EditLayoutBaseModal = (props) => {
                     <OptionDiv
                       onClick={(event) => {
                         if (reviewerIds.indexOf(option?.id) === -1) {
-                          setReviewerIds([...reviewerIds, option?.id])
+                          setReviewerIds([...reviewerIds, option?.id]);
                         }
-                        props?.onClick(event)
+                        props?.onClick(event);
                       }}
                     >
                       {option?.profilePicture && (
@@ -1036,7 +951,7 @@ const EditLayoutBaseModal = (props) => {
                       )}
                       <OptionTypography>{option?.label}</OptionTypography>
                     </OptionDiv>
-                  )
+                  );
                 }}
               />
             </CreateFormAddDetailsInputBlock>
@@ -1094,12 +1009,7 @@ const EditLayoutBaseModal = (props) => {
               <CreateFormAddDetailsAppearBlockContainer>
                 <CreateFormAddDetailsSelects>
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DatePicker
-                      title="Due date"
-                      inputFormat="MM/dd/yyyy"
-                      value={dueDate}
-                      setValue={setDueDate}
-                    />
+                    <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
                   </LocalizationProvider>
                   {/* <DropdownSelect
                     title="Connect to Milestone"
@@ -1142,14 +1052,8 @@ const EditLayoutBaseModal = (props) => {
 
             {showLinkAttachmentSection && (
               <CreateFormLinkAttachmentBlock>
-                <CreateFormLinkAttachmentLabel>
-                  Links
-                </CreateFormLinkAttachmentLabel>
-                <InputForm
-                  margin
-                  placeholder="Enter link attachment"
-                  search={false}
-                />
+                <CreateFormLinkAttachmentLabel>Links</CreateFormLinkAttachmentLabel>
+                <InputForm margin placeholder="Enter link attachment" search={false} />
               </CreateFormLinkAttachmentBlock>
             )}
           </CreateFormAddDetailsAppearBlock>
@@ -1158,16 +1062,14 @@ const EditLayoutBaseModal = (props) => {
 
       <CreateFormFooterButtons>
         <CreateFormButtonsBlock>
-          <CreateFormCancelButton onClick={cancelEdit}>
-            Cancel
-          </CreateFormCancelButton>
+          <CreateFormCancelButton onClick={cancelEdit}>Cancel</CreateFormCancelButton>
           <CreateFormPreviewButton onClick={submitMutation}>
             Update {isTaskProposal ? 'proposal' : titleText}
           </CreateFormPreviewButton>
         </CreateFormButtonsBlock>
       </CreateFormFooterButtons>
     </CreateFormBaseModal>
-  )
-}
+  );
+};
 
-export default EditLayoutBaseModal
+export default EditLayoutBaseModal;

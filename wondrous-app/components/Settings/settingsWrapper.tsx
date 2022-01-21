@@ -48,6 +48,39 @@ const SIDEBAR_LIST_ITEMS = [
   },
 ];
 
+// Full list
+//  const SETTINGS_SIDEBAR_LIST_ITEMS = [
+// 	{
+// 		icon: <GeneralSettingsIcon width={40} height={40} />,
+// 		label: 'General settings',
+// 		value: 'general',
+// 		href: `/organization/settings/general`,
+// 	},
+// 	// {
+// 	// 	icon: <ConfigurePaymentsIcon width={40} height={40} />,
+// 	// 	label: 'Configure payments',
+// 	// 	value: 'payments',
+// 	// 	href: `/organization/settings/payments`,
+// 	// },
+// 	{
+// 		icon: <CreatePodIcon width={35} height={35} />,
+// 		label: 'Pod management',
+// 		value: 'management',
+// 		href: `/organization/settings/pod`,
+// 	},
+// 	{
+// 		icon: <MembersIcon width={40} height={40} />,
+// 		label: 'Members',
+// 		value: 'members',
+// 		href: `/organization/settings/members`,
+// 	},
+// 	{
+// 		icon: <MembersIcon width={40} height={40} />,
+// 		label: 'Roles',
+// 		value: 'roles',
+// 		href: `/organization/settings/roles`,
+// 	},
+// ]
 const SETTINGS_SIDEBAR_LIST_ITEMS = [
   {
     icon: <GeneralSettingsIcon width={40} height={40} />,
@@ -92,7 +125,7 @@ export const SettingsWrapper = (props) => {
   return (
     <>
       <HeaderComponent openCreateFormModal={toggleCreateFormModal} />
-      <SideBarComponent />
+      <SideBarComponent listItems={SIDEBAR_LIST_ITEMS} />
       <CreateFormModal open={createFormModal} toggleOpen={toggleCreateFormModal} />
       <SettingsContainer>
         <SettingsSidebar>

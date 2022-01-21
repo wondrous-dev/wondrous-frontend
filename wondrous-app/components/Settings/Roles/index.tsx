@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_ROLES, GET_ORG_USERS, GET_USER_ORGS } from '../../../graphql/queries/org';
+import { useRouter } from 'next/router';
 
+import { GET_ORG_ROLES, GET_ORG_USERS, GET_USER_ORGS } from '../../../graphql/queries/org';
 import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
 import UserCheckIcon from '../../Icons/userCheckIcon';
@@ -61,18 +62,18 @@ const Roles = () => {
   });
 
   // TODO: Use selected organization in the future instead of the first one
-  const firstOrganization = userOrgs?.getUserOrgs[0];
-
+  const router = useRouter();
+  const { orgId } = router.query;
   // Get organization roles when organization is defined
   useEffect(() => {
-    if (firstOrganization) {
+    if (orgId) {
       getOrgRoles({
         variables: {
-          orgId: firstOrganization.id,
+          orgId,
         },
       });
     }
-  }, [firstOrganization, getOrgRoles]);
+  }, [orgId, getOrgRoles]);
 
   useEffect(() => {
     if (getOrgRolesData) {
@@ -90,7 +91,7 @@ const Roles = () => {
       variables: {
         input: {
           permissions: newRolePermissions,
-          orgId: firstOrganization.id,
+          orgId,
           name: newRoleName,
         },
       },

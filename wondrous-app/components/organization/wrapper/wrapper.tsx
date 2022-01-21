@@ -122,7 +122,7 @@ const Wrapper = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgBoard?.orgId, userPermissionsContext]);
-  console.log('here');
+
   return (
     <>
       <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
@@ -184,7 +184,7 @@ const Wrapper = (props) => {
                         </HeaderInviteButton>
                         <HeaderManageSettingsButton
                           onClick={() => {
-                            router.push('/organization/settings/general');
+                            router.push(`/organization/settings/${orgBoard?.orgId}/general`);
                           }}
                         >
                           Settings
