@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react'
-import { InputAdornment } from '@material-ui/core'
+import React, { useEffect, useState } from 'react';
+import { InputAdornment } from '@material-ui/core';
 
-import SearchIcon from '../../Icons/search'
-import Wrapper from '../wrapper/wrapper'
+import SearchIcon from '../../Icons/search';
+import Wrapper from '../wrapper/wrapper';
 
-import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard'
-import { ButtonGroup } from '../../Common/ButtonGroup'
+import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard';
+import { ButtonGroup } from '../../Common/ButtonGroup';
 
-import { BoardsActivity, BoardsActivityInput, BoardsContainer } from './styles'
-import Filter from '../../Common/Filter'
-import { ToDo, InProgress, Done } from '../../Icons'
-import CreatePodIcon from '../../Icons/createPod'
+import { BoardsActivity, BoardsActivityInput, BoardsContainer } from './styles';
+import Filter from '../../Common/Filter';
+import { ToDo, InProgress, Done } from '../../Icons';
+import CreatePodIcon from '../../Icons/createPod';
 
 const Boards = (props) => {
-  const { selectOptions, columns, onLoadMore, hasMore, orgData } = props
-  const [filter, setFilter] = useState([])
+  const { selectOptions, columns, onLoadMore, hasMore, orgData } = props;
+  const [filter, setFilter] = useState([]);
 
   const filterSchema = [
     {
@@ -83,12 +83,12 @@ const Boards = (props) => {
         { id: 'completed', name: 'Completed', icon: <Done />, count: 1120 },
       ],
     },
-  ]
+  ];
 
   return (
     <Wrapper orgData={orgData}>
       <BoardsContainer>
-        <BoardsActivity>
+        {/* <BoardsActivity>
           <BoardsActivityInput
             placeholder="Search people or pods..."
             InputProps={{
@@ -105,16 +105,12 @@ const Boards = (props) => {
             setFilter={setFilter}
           />
           <ButtonGroup></ButtonGroup>
-        </BoardsActivity>
+        </BoardsActivity> */}
 
-        <KanbanBoard
-          columns={columns}
-          onLoadMore={onLoadMore}
-          hasMore={hasMore}
-        />
+        <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
       </BoardsContainer>
     </Wrapper>
-  )
-}
+  );
+};
 
-export default Boards
+export default Boards;

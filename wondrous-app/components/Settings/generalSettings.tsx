@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { SettingsWrapper } from './settingsWrapper';
@@ -32,11 +32,13 @@ import LinkedInIcon from '../Icons/linkedIn';
 import OpenSeaIcon from '../Icons/openSea';
 import LinkBigIcon from '../Icons/link';
 import { Discord } from '../Icons/discord';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_BY_ID } from '../../graphql/queries';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { getFilenameAndType, uploadMedia } from '../../utils/media';
 import { SafeImage } from '../Common/Image';
+
+const LIMIT = 200;
 
 const SOCIALS_DATA = [
   {
@@ -76,7 +78,7 @@ const GeneralSettings = () => {
   const [orgProfile, setOrgProfile] = useState(null);
   const [originalOrgProfile, setOriginalOrgProfile] = useState(null);
   const [bannerImage, setBannerImage] = useState('');
-  const [orgLinks, setOrgLinks] = useState({});
+  const [orgLinks, setOrgLinks] = useState([]);
   const [descriptionText, setDescriptionText] = useState('');
   const [toast, setToast] = useState({ show: false, message: '' });
   const router = useRouter();
@@ -103,6 +105,7 @@ const GeneralSettings = () => {
 
   const [getOrganization] = useLazyQuery(GET_ORG_BY_ID, {
     onCompleted: ({ getOrgById }) => setOrganization(getOrgById),
+    fetchPolicy: 'cache-and-network',
   });
 
   useEffect(() => {
@@ -136,7 +139,7 @@ const GeneralSettings = () => {
   function handleDescriptionChange(e) {
     const { value } = e.target;
 
-    if (value.length <= 100) {
+    if (value.length <= LIMIT) {
       setDescriptionText(value);
       setOrgProfile({ ...orgProfile, description: value });
     }
@@ -195,7 +198,7 @@ const GeneralSettings = () => {
       </SettingsWrapper>
     );
   }
-
+  console.log('orgLinks', orgLinks);
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
@@ -225,7 +228,7 @@ const GeneralSettings = () => {
               onChange={(e) => handleDescriptionChange(e)}
             />
             <GeneralSettingsDAODescriptionInputCounter>
-              {descriptionText.length} / 100 characters
+              {descriptionText.length} / {LIMIT} characters
             </GeneralSettingsDAODescriptionInputCounter>
           </GeneralSettingsDAODescriptionBlock>
         </GeneralSettingsInputsBlock>
@@ -235,7 +238,7 @@ const GeneralSettings = () => {
             style={{
               width: '52px',
               height: '52px',
-              marginTop: '30px'
+              marginTop: '30px',
             }}
           />
         ) : null}
@@ -246,14 +249,14 @@ const GeneralSettings = () => {
           imageName="Logo"
           updateFilesCb={handleLogoChange}
         />
-        <ImageUpload
+        {/* <ImageUpload
           image={bannerImage}
           imageWidth={1350}
           imageHeight={259}
           imageName="Banner"
           updateFilesCb={setBannerImage}
-        />
-        <GeneralSettingsSocialsBlock>
+        /> */}
+        {/* <GeneralSettingsSocialsBlock>
           <LabelBlock>Socials</LabelBlock>
           <GeneralSettingsSocialsBlockWrapper>
             {SOCIALS_DATA.map((item) => {
@@ -267,12 +270,12 @@ const GeneralSettings = () => {
               );
             })}
           </GeneralSettingsSocialsBlockWrapper>
-        </GeneralSettingsSocialsBlock>
-        <GeneralSettingsSocialsBlock>
+        </GeneralSettingsSocialsBlock> */}
+        {/* <GeneralSettingsSocialsBlock>
           <LabelBlock>Links</LabelBlock>
           <GeneralSettingsSocialsBlockWrapper>
-            {LINKS_DATA.map((item) => {
-              const value = orgLinks[item.type] ? orgLinks[item.type].url : item.link;
+            {orgLinks && Object.keys(orgLinks).map((type) => {
+              const value = orgLinks[type] ? orgLinks[type].url : item.link;
 
               return (
                 <GeneralSettingsSocialsBlockRow key={item.type}>
@@ -283,7 +286,7 @@ const GeneralSettings = () => {
               );
             })}
           </GeneralSettingsSocialsBlockWrapper>
-        </GeneralSettingsSocialsBlock>
+        </GeneralSettingsSocialsBlock> */}
 
         {/* <GeneralSettingsIntegrationsBlock>
 					<LabelBlock>Integrations</LabelBlock>
@@ -295,7 +298,14 @@ const GeneralSettings = () => {
 
         <GeneralSettingsButtonsBlock>
           <GeneralSettingsResetButton onClick={resetChanges}>Reset changes</GeneralSettingsResetButton>
-          <GeneralSettingsSaveChangesButton onClick={saveChanges} highlighted>
+          <GeneralSettingsSaveChangesButton
+            buttonInnerStyle={{
+              fontFamily: 'Space Grotesk',
+              fontWeight: 'bold',
+            }}
+            onClick={saveChanges}
+            highlighted
+          >
             Save changes
           </GeneralSettingsSaveChangesButton>
         </GeneralSettingsButtonsBlock>

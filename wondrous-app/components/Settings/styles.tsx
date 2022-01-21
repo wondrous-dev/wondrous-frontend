@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import SnackbarComp from '@mui/material/Snackbar'
+import SnackbarComp from '@mui/material/Snackbar';
 import { Button as MuiButton, InputBase, ListItemIcon, Typography } from '@material-ui/core';
 import { ListItemButton } from '@mui/material';
 import { Button } from '../Common/button';
