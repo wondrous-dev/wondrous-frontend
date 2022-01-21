@@ -150,6 +150,7 @@ export const SettingsContentBlock = styled.div`
   padding: 140px 120px;
   background-color: #0f0f0f;
   overflow-y: auto;
+  min-height: 100vh;
 `;
 
 //headerBlock.tsx styles
