@@ -27,6 +27,8 @@ import {
 import { ErrorMessage } from 'formik'
 import { CircularProgress } from '@material-ui/core'
 
+const prod = process.env.NEXT_PUBLIC_PRODUCTION
+
 const Login = ({ csrfToken }) => {
   const wonderWeb3 = useWonderWeb3()
   const [email, setEmail] = useState('')
@@ -103,60 +105,74 @@ const Login = ({ csrfToken }) => {
         <Card>
           <CardBody>
             <SmallLogo />
-            <h1>Login</h1>
-            <Form onSubmit={handleSubmit}>
-              <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
-              {errorMessage ? <LoginError>{errorMessage}</LoginError> : ''}
-              <Field
-                type="email"
-                name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter email address"
-                icon={EmailIcon}
-                required
-              />
-              <Field
-                type="password"
-                name="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password"
-                icon={LockIcon}
-                required
-              />
-              <Button highlighted type="submit" marginTop="25px">
-                Log me in
-              </Button>
-            </Form>
-            <LineWithText>
-              <PaddedParagraph padding="0 10px" color={Grey50}>
-                or
-              </PaddedParagraph>
-            </LineWithText>
-            {wonderWeb3.connecting ? (
-              <Button disabled className="disabled">
-                <Metamask height="18" width="17" />
-                <PaddedParagraph padding="0 10px">
-                  Log in with MetaMask
-                </PaddedParagraph>
-              </Button>
-            ) : (
-              <Button onClick={connectWallet}>
-                {loading ? (
-                  <CircularProgress />
-                ) : (
-                  <>
-                    <Metamask height="18" width="17" />
-                    <PaddedParagraph padding="0 10px">
-                      Log in with MetaMask
-                    </PaddedParagraph>
-                  </>
-                )}
-              </Button>
+            {!prod && (
+              <>
+                <h1>Login</h1>
+                <Form onSubmit={handleSubmit}>
+                  <input
+                    name="csrfToken"
+                    type="hidden"
+                    defaultValue={csrfToken}
+                  />
+                  {errorMessage ? <LoginError>{errorMessage}</LoginError> : ''}
+                  <Field
+                    type="email"
+                    name="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter email address"
+                    icon={EmailIcon}
+                    required
+                  />
+                  <Field
+                    type="password"
+                    name="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter password"
+                    icon={LockIcon}
+                    required
+                  />
+                  <Button highlighted type="submit" marginTop="25px">
+                    Log me in
+                  </Button>
+                </Form>
+                <LineWithText>
+                  <PaddedParagraph padding="0 10px" color={Grey50}>
+                    or
+                  </PaddedParagraph>
+                </LineWithText>
+              </>
             )}
+            <div
+              style={{
+                marginTop: '48px',
+              }}
+            >
+              {wonderWeb3.connecting ? (
+                <Button disabled className="disabled">
+                  <Metamask height="18" width="17" />
+                  <PaddedParagraph padding="0 10px">
+                    Log in with MetaMask
+                  </PaddedParagraph>
+                </Button>
+              ) : (
+                <Button onClick={connectWallet}>
+                  {loading ? (
+                    <CircularProgress />
+                  ) : (
+                    <>
+                      <Metamask height="18" width="17" />
+                      <PaddedParagraph padding="0 10px">
+                        Log in with MetaMask
+                      </PaddedParagraph>
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
           </CardBody>
-          <CardFooter>
+          {/* <CardFooter>
             <Line size="80%" />
             <CenteredFlexRow marginTop="16px">
               Don&apos;t have an account yet?&nbsp;
@@ -168,7 +184,7 @@ const Login = ({ csrfToken }) => {
               &nbsp; or &nbsp;
               <StyledLink href="/forgot-email">email</StyledLink>?
             </CenteredFlexRow>
-          </CardFooter>
+          </CardFooter> */}
         </Card>
       </LoginWrapper>
     </AuthLayout>
