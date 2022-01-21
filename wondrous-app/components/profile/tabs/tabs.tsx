@@ -1,34 +1,34 @@
-import { Tab } from '@material-ui/core'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import React from 'react'
-import { StyledTabs } from './styles'
+import { Tab } from '@material-ui/core';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React from 'react';
+import { StyledTabs } from './styles';
 
 const Tabs = (props) => {
-	const { children } = props
+  const { children } = props;
 
-	const router = useRouter()
+  const router = useRouter();
 
-	const { pathname } = router
-	const { username } = router.query
-	const tabsLinks = [
-		{
-			href: `/profile/${username}/boards`,
-			label: 'Boards',
-		},
-		{
-			href: `/profile/${username}/activities`,
-			label: 'Activity',
-		},
-		{
-			href: `/profile/${username}/about`,
-			label: 'About',
-		},
-	]
+  const { pathname } = router;
+  const { username } = router.query;
+  const tabsLinks = [
+    {
+      href: `/profile/${username}/boards`,
+      label: 'Boards',
+    },
+    {
+      href: `/profile/${username}/activities`,
+      label: 'Activity',
+    },
+    {
+      href: `/profile/${username}/about`,
+      label: 'About',
+    },
+  ];
 
-	return (
-		<div>
-			<StyledTabs value={pathname}>
+  return (
+    <div>
+      {/* <StyledTabs value={pathname}>
 				{tabsLinks.map((tab) => (
 					<Link
 						// @ts-ignore
@@ -41,10 +41,10 @@ const Tabs = (props) => {
 						</a>
 					</Link>
 				))}
-			</StyledTabs>
-			<div>{children}</div>
-		</div>
-	)
-}
+			</StyledTabs> */}
+      <div>{children}</div>
+    </div>
+  );
+};
 
-export default Tabs
+export default Tabs;
