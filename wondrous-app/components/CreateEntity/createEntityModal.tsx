@@ -449,7 +449,7 @@ const CreateLayoutBaseModal = (props) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userOrgs?.getUserOrgs, board?.orgId, fetchedUserPermissionsContext, board?.podId, org, pod, open]);
+  }, [userOrgs?.getUserOrgs, board?.orgId, fetchedUserPermissionsContext, board?.podId, org, pod]);
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext: fetchedUserPermissionsContext,
