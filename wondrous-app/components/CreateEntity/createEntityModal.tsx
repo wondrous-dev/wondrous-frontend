@@ -512,7 +512,7 @@ const CreateLayoutBaseModal = (props) => {
   const [createPod] = useMutation(CREATE_POD, {
     onCompleted: (data) => {
       const pod = data?.createPod;
-      router.push(`/pod/${pod?.id}`);
+      router.push(`/pod/${pod?.id}/boards`);
     },
     refetchQueries: ['getOrgById'],
   });

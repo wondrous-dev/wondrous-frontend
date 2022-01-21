@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { toggleHtmlOverflow } from '../../utils/helpers';
+import { parseUserPermissionContext, toggleHtmlOverflow } from '../../utils/helpers';
 import { useRouter } from 'next/router';
 import { List } from '@mui/material';
 import Link from 'next/link';
@@ -35,6 +35,7 @@ import { SafeImage } from '../Common/Image';
 import { GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
 import { SettingsBoardContext } from '../../utils/contexts';
 import { GET_POD_BY_ID } from '../../graphql/queries/pod';
+import { PERMISSIONS } from '../../utils/constants';
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -153,6 +154,25 @@ export const SettingsWrapper = (props) => {
     }
   }, [orgId, podId]);
 
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext: parsedUserPermissionsContext,
+    orgId,
+    podId,
+  });
+
+  if (
+    !permissions.includes(
+      PERMISSIONS.MANAGE_MEMBER ||
+        permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+        permissions.includes(PERMISSIONS.APPROVE_PAYMENT)
+    )
+  ) {
+    if (podId) {
+      router.push(`/pod/${podId}/boards`);
+    } else if (org) {
+      router.push(`/organization/${org?.username}/boards`);
+    }
+  }
   return (
     <>
       <SettingsBoardContext.Provider
