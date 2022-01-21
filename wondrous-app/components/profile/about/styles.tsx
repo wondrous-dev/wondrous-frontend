@@ -122,7 +122,7 @@ export const AboutInfoContainer = styled.div`
 	width: 100%;
 	height: 100%;
 	display: flex;
-	justify-content: space-between;
+	justify-content: left;
 `
 
 export const AboutInfoBlock = styled.div`
@@ -136,6 +136,7 @@ export const AboutInfoBlock = styled.div`
 		display: flex;
 		flex-direction: column;
 		padding: 18px 14px;
+		margin-left: 30px
 	}
 
 	& > * {

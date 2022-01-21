@@ -98,7 +98,11 @@ const parseLinks = (links) => {
 const About = (props) => {
 	const {
 		userProfileData = {},
-		loggedInUser = {}
+		loggedInUser = {},
+		userOrgsData=[],
+		userPodsData=[],
+		userCompletedTasks=[],
+		tasksCompletedCount
 	} = props
 	let {social, websites, mainLink} = parseLinks(userProfileData?.links)
 	return (
@@ -162,52 +166,63 @@ const About = (props) => {
 					</AboutInfoTableRow>}
 				</AboutInfoTable>
 
-				{/* <AboutInfoContainer>
-					<AboutInfoBlock>
+				<AboutInfoContainer>
+					{userOrgsData.length > 0 && <AboutInfoBlock>
 						<AboutInfoBlockHeader>
 							<AboutInfoBlockHeaderAmount>
-								{organizations.length}
+								{userOrgsData.length}
 							</AboutInfoBlockHeaderAmount>
-							<AboutInfoBlockHeaderText>Organisations</AboutInfoBlockHeaderText>
+							<AboutInfoBlockHeaderText>Daos</AboutInfoBlockHeaderText>
 						</AboutInfoBlockHeader>
 						<AboutInfoBlockContent>
-							{organizations.map((organization) => (
-								<AboutOrganisationsCard
-									key={organizations.id}
-									{...organization}
+							{userOrgsData.map((organization) => 
+								(<AboutOrganisationsCard
+									key={organization.id}
+									thumbnailPicture={organization.thumbnailPicture}
+									profilePicture={organization.profilePicture}
+									orgId={organization.id}
+									name={organization.name}
+									description={organization.description}
 								/>
 							))}
 						</AboutInfoBlockContent>
-					</AboutInfoBlock>
-
-					<AboutInfoBlock>
+					</AboutInfoBlock>}
+					{userPodsData.length > 0 && <AboutInfoBlock>
 						<AboutInfoBlockHeader>
 							<AboutInfoBlockHeaderAmount>
-								{pods.length}
+								{userPodsData.length}
 							</AboutInfoBlockHeaderAmount>
 							<AboutInfoBlockHeaderText>Pods</AboutInfoBlockHeaderText>
 						</AboutInfoBlockHeader>
 						<AboutInfoBlockContent>
-							{pods.map((pod) => (
-								<AboutPodsCard key={pod.id} {...pod} />
+							{userPodsData.map((pod) => 
+								(<AboutPodsCard
+									key={pod.id}
+									thumbnailPicture={pod.thumbnailPicture}
+									profilePicture={pod.profilePicture}
+									org={pod.org}
+									podId={pod.id}
+									name={pod.name}
+									description={pod.description}
+								/>
 							))}
 						</AboutInfoBlockContent>
-					</AboutInfoBlock>
-					<AboutInfoBlock>
+					</AboutInfoBlock>}
+					{tasksCompletedCount> 0 && <AboutInfoBlock>
 						<AboutInfoBlockHeader>
 							<AboutInfoBlockHeaderAmount>
-								{completedTasks}
+								{tasksCompletedCount}
 							</AboutInfoBlockHeaderAmount>
 							<AboutInfoBlockHeaderText>
 								completed tasks
 							</AboutInfoBlockHeaderText>
-							<AboutInfoBlockHeaderSeeAll>See all</AboutInfoBlockHeaderSeeAll>
+							{/* <AboutInfoBlockHeaderSeeAll>See all</AboutInfoBlockHeaderSeeAll> */}
 						</AboutInfoBlockHeader>
 						<AboutInfoBlockContent>
-							<AboutCompletedCard lastCompletedTask={lastCompletedTask} />
+							<AboutCompletedCard userCompletedTasks={userCompletedTasks} />
 						</AboutInfoBlockContent>
-					</AboutInfoBlock>
-				</AboutInfoContainer> */}
+					</AboutInfoBlock>}
+				</AboutInfoContainer>
 			</AboutSection>
 		</Wrapper>
 	)

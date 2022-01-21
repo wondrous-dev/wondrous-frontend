@@ -74,6 +74,11 @@ export const GET_USER_ABOUT_PAGE_DATA = gql`
 				description
 				profilePicture
 				thumbnailPicture
+				org {
+					id
+					profilePicture
+					thumbnailPicture
+				}
 			}
 			tasksCompletedCount
 			tasksCompleted {

@@ -3,6 +3,7 @@ import { IconButton } from '@material-ui/core'
 
 import RightArrowIcon from '../../Icons/rightArrow'
 import { AvatarList } from '../../Common/AvatarList'
+import { SafeImage } from '../../Common/Image';
 
 import {
 	OrganisationsCard,
@@ -16,27 +17,35 @@ import {
 
 const AboutPodsCard = (props) => {
 	const {
-		title = '',
+		name = '',
 		description = '',
 		tasksAmount = 0,
 		goalsAmount = 0,
-		users,
+		org = {},
 	} = props
 
 	return (
 		<OrganisationsCard>
-			<OrganisationsCardHeader>
+			{/* <OrganisationsCardHeader>
 				<AvatarList users={users} />
 				<IconButton>
 					<RightArrowIcon />
 				</IconButton>
-			</OrganisationsCardHeader>
-			<PodsCardName>{title}</PodsCardName>
+			</OrganisationsCardHeader> */}
+			<PodsCardName>{name}</PodsCardName>
 			<OrganisationsCardContent>{description}</OrganisationsCardContent>
 			<PodsCardFooter>
-				<PodsCardFooterIcon />
-				<PodsCardFooterButton>{tasksAmount} tasks</PodsCardFooterButton>
-				<PodsCardFooterButton>{goalsAmount} goal</PodsCardFooterButton>
+				<SafeImage
+					src={org?.thumbnailPicture || org?.profilePicture}
+					style={{
+						width: '40px',
+						height: '40px',
+						borderRadius: '4px',
+						marginRight: '8px',
+					}}
+				/>
+				{/* <PodsCardFooterButton>{tasksAmount} tasks</PodsCardFooterButton>
+				<PodsCardFooterButton>{goalsAmount} goal</PodsCardFooterButton> */}
 			</PodsCardFooter>
 		</OrganisationsCard>
 	)
