@@ -12,22 +12,22 @@ import Switch from '../../Common/Switch';
 import permissons from './permissons';
 
 import {
-  RolesContainer,
+  Box,
   CreateRole,
   CreateRoleButton,
+  DeleteButton,
+  Error,
+  LabelBlock,
+  Permission,
+  PermissionFooter,
+  Permissions,
+  PermissionSubtitle,
+  PermissionTitle,
   RoleNameBlock,
   RoleNameInput,
+  RolesContainer,
   RolesInputsBlock,
-  Permission,
-  LabelBlock,
-  PermissionSubtitle,
-  Permissions,
-  PermissionTitle,
-  Box,
   Snackbar,
-  DeleteButton,
-  PermissionFooter,
-  Error,
 } from './styles';
 import { CREATE_ORG_ROLE, DELETE_ORG_ROLE, UPDATE_ORG_ROLE } from '../../../graphql/mutations/org';
 

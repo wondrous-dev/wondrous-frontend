@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { OrgRoleFragment } from '../fragments/org';
+import { OrgFragment, OrgRoleFragment } from '../fragments/org';
 
 export const CREATE_ORG_INVITE_LINK = gql`
   mutation createOrgInviteLink($input: OrgInviteLinkInput) {
@@ -41,4 +41,13 @@ export const UPDATE_USER_ORG_ROLE = gql`
       success
     }
   }
+`;
+
+export const UPDATE_ORG = gql`
+  mutation updateOrg($orgId: ID!, $input: OrgInput) {
+    updateOrg(orgId: $orgId, input: $input) {
+      ...OrgFragment
+    }
+  }
+  ${OrgFragment}
 `;

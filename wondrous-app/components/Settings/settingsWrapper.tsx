@@ -161,10 +161,11 @@ export const SettingsWrapper = (props) => {
   });
 
   if (
-    !permissions.includes(
-      PERMISSIONS.MANAGE_MEMBER ||
-        permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-        permissions.includes(PERMISSIONS.APPROVE_PAYMENT)
+    permissions &&
+    !(
+      permissions.includes(PERMISSIONS.MANAGE_MEMBER) ||
+      permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+      permissions.includes(PERMISSIONS.APPROVE_PAYMENT)
     )
   ) {
     if (podId) {
