@@ -412,31 +412,29 @@ const EditLayoutBaseModal = (props) => {
     existingTask?.userId === board?.userId;
 
   useEffect(() => {
-    if (open) {
-      if (existingTask?.orgId) {
-        // If you're only part of one dao then just set that as default
-        setOrg(existingTask?.orgId);
-      }
-      if (org) {
-        getUserAvailablePods({
-          variables: {
-            orgId: org?.id || org,
-          },
-        });
-        getOrgUsers({
-          variables: {
-            orgId: org?.id || org,
-            limit: 100, // TODO: fix autocomplete
-          },
-        });
-        getPaymentMethods({
-          variables: {
-            orgId: org?.id || org,
-          },
-        });
-      }
+    if (existingTask?.orgId) {
+      // If you're only part of one dao then just set that as default
+      setOrg(existingTask?.orgId);
     }
-  }, [open, userOrgs?.getUserOrgs, org, getUserAvailablePods, getOrgUsers, existingTask?.orgId, getPaymentMethods]);
+    if (org) {
+      getUserAvailablePods({
+        variables: {
+          orgId: org?.id || org,
+        },
+      });
+      getOrgUsers({
+        variables: {
+          orgId: org?.id || org,
+          limit: 100, // TODO: fix autocomplete
+        },
+      });
+      getPaymentMethods({
+        variables: {
+          orgId: org?.id || org,
+        },
+      });
+    }
+  }, [userOrgs?.getUserOrgs, org, getUserAvailablePods, getOrgUsers, existingTask?.orgId, getPaymentMethods]);
 
   const getPodObject = useCallback(() => {
     let justCreatedPod = null;
