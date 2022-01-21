@@ -99,18 +99,6 @@ export const GET_USER_FROM_USERNAME = gql`
 	${ProfileUserFragment}
 `
 
-export const GET_USER_ORGS = gql`
-	query getUserOrgs($userId: String) {
-		getUserOrgs(userId: $userId) {
-			id
-			username
-			name
-			profilePicture
-			thumbnailPicture
-		}
-	}
-`
-
 
 export const GET_USER_PODS = gql`
 	query getUserPods($userId: String) {
