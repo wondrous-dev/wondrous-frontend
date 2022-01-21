@@ -81,32 +81,6 @@ const SIDEBAR_LIST_ITEMS = [
 // 		href: `/organization/settings/roles`,
 // 	},
 // ]
-const SETTINGS_SIDEBAR_LIST_ITEMS = [
-  {
-    icon: <GeneralSettingsIcon width={40} height={40} />,
-    label: 'General settings',
-    value: 'general',
-    href: `/organization/settings/general`,
-  },
-  {
-    icon: <CreatePodIcon width={35} height={35} />,
-    label: 'Pod management',
-    value: 'management',
-    href: `/organization/settings/pod`,
-  },
-  {
-    icon: <MembersIcon width={40} height={40} />,
-    label: 'Members',
-    value: 'members',
-    href: `/organization/settings/members`,
-  },
-  {
-    icon: <MembersIcon width={40} height={40} />,
-    label: 'Roles',
-    value: 'roles',
-    href: `/organization/settings/roles`,
-  },
-];
 
 export const SettingsWrapper = (props) => {
   const { children } = props;
@@ -114,7 +88,7 @@ export const SettingsWrapper = (props) => {
   const router = useRouter();
 
   const { pathname } = router;
-
+  const { orgId } = router.query;
   const [createFormModal, setCreateFormModal] = useState(false);
 
   const toggleCreateFormModal = () => {
@@ -122,6 +96,26 @@ export const SettingsWrapper = (props) => {
     setCreateFormModal((prevState) => !prevState);
   };
 
+  const SETTINGS_SIDEBAR_LIST_ITEMS = [
+    {
+      icon: <GeneralSettingsIcon width={40} height={40} />,
+      label: 'General settings',
+      value: 'general',
+      href: `/organization/settings/${orgId}/general`,
+    },
+    {
+      icon: <MembersIcon width={40} height={40} />,
+      label: 'Members',
+      value: 'members',
+      href: `/organization/settings/${orgId}/members`,
+    },
+    {
+      icon: <MembersIcon width={40} height={40} />,
+      label: 'Roles',
+      value: 'roles',
+      href: `/organization/settings/${orgId}/roles`,
+    },
+  ];
   return (
     <>
       <HeaderComponent openCreateFormModal={toggleCreateFormModal} />
