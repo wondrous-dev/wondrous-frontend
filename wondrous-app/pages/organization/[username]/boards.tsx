@@ -164,36 +164,6 @@ const BoardsPage = () => {
       },
     });
   
-    // getOrgTasks({
-    //   variables: {
-    //     orgId,
-    //     statuses,
-    //     offset: 0,
-    //     limit: LIMIT,
-    //   },
-    // });
-    // getOrgTaskProposals({
-    //   variables: {
-    //     orgId: profileOrgId,
-    //     statuses,
-    //     offset: 0,
-    //     limit: LIMIT,
-    //   },
-    // });
-    // getOrgTaskSubmissions({
-    //   variables: {
-    //     orgId: profileOrgId,
-    //     statuses,
-    //     offset: 0,
-    //     limit: LIMIT,
-    //   },
-    // });
-    // getOrgBoardTaskCount({
-    //   variables: {
-    //     orgId: profileOrgId,
-    //   },
-    // });
-
   useEffect(() => {
     if (orgId && !orgData) {
       getOrg({variables: {
@@ -215,6 +185,42 @@ const BoardsPage = () => {
     getOrg,
     getOrgFromUsername,
   ]);
+
+  useEffect(() => {
+    if (orgId || orgData?.id) {
+      const id = orgId || orgData?.id
+      getOrgTasks({
+        variables: {
+          orgId: id,
+          statuses,
+          offset: 0,
+          limit: LIMIT,
+        },
+      });
+      getOrgTaskProposals({
+        variables: {
+          orgId: id,
+          statuses,
+          offset: 0,
+          limit: LIMIT,
+        },
+      });
+      getOrgTaskSubmissions({
+        variables: {
+          orgId: id,
+          statuses,
+          offset: 0,
+          limit: LIMIT,
+        },
+      });
+      getOrgBoardTaskCount({
+        variables: {
+          orgId: id,
+        },
+      });
+    }
+  }, [orgData, statuses, orgId, getOrgBoardTaskCount, getOrgTaskSubmissions, getOrgTaskProposals, getOrgTasks])
+
 
   const handleLoadMore = useCallback(() => {
     if (orgTaskHasMore) {
