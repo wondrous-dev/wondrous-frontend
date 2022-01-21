@@ -103,12 +103,11 @@ const GeneralSettings = () => {
 
   const [getOrganization] = useLazyQuery(GET_ORG_BY_ID, {
     onCompleted: ({ getOrgById }) => setOrganization(getOrgById),
-    variables: { orgId },
   });
 
   useEffect(() => {
     if (orgId) {
-      getOrganization();
+      getOrganization({ variables: { orgId } });
     }
   }, [orgId]);
 
