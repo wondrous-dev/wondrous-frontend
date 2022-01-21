@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import SnackbarComp from '@mui/material/Snackbar'
 import { Button as MuiButton, InputBase, ListItemIcon, Typography } from '@material-ui/core';
 import { ListItemButton } from '@mui/material';
 import { Button } from '../Common/button';
@@ -429,5 +430,12 @@ export const LinkInputField = styled(InputBase)`
     letter-spacing: 0.01em;
     text-decoration-line: underline;
     color: #00baff;
+  }
+`;
+
+export const Snackbar = styled(SnackbarComp)`
+  .MuiPaper-elevation {
+    background: rgb(0, 67, 61);
+    color: white;
   }
 `;

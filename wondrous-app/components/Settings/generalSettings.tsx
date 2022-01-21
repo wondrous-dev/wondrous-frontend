@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+
 import { SettingsWrapper } from './settingsWrapper';
 import { HeaderBlock } from './headerBlock';
 import { ImageUpload } from './imageUpload';
@@ -23,25 +25,32 @@ import {
   GeneralSettingsSocialsBlockRowLabel,
   GeneralSettingsSocialsBlockWrapper,
   LabelBlock,
+  Snackbar,
 } from './styles';
 import TwitterPurpleIcon from '../Icons/twitterPurple';
 import LinkedInIcon from '../Icons/linkedIn';
 import OpenSeaIcon from '../Icons/openSea';
 import LinkBigIcon from '../Icons/link';
 import { Discord } from '../Icons/discord';
+import { useMutation, useQuery } from '@apollo/client'
+import { GET_ORG_BY_ID } from '../../graphql/queries';
+import { UPDATE_ORG, UPDATE_ORG_ROLE } from '../../graphql/mutations/org'
 
 const SOCIALS_DATA = [
   {
     icon: <TwitterPurpleIcon />,
-    link: 'https://twitter.com/wonderverse_xyz',
+    link: 'https://twitter.com/',
+    type: 'twitter',
   },
   {
     icon: <LinkedInIcon />,
-    link: 'https://twitter.com/wonderverse_xyz',
+    link: 'https://linkedin.com/',
+    type: 'linkedin',
   },
   {
     icon: <OpenSeaIcon />,
-    link: 'https://opensea.io/wonderverse',
+    link: 'https://opensea.io/',
+    type: 'opensea',
   },
 ];
 
@@ -49,36 +58,140 @@ const LINKS_DATA = [
   {
     icon: <LinkBigIcon />,
     label: 'Pitch Deck',
-    link: 'https://opensea.io/wonderverse',
+    link: '',
+    type: 'pitchDeck',
   },
   {
     icon: <LinkBigIcon />,
     label: 'Our Manifesto',
-    link: 'https://opensea.io/wonderverse',
+    link: '',
+    type: 'ourManifesto',
   },
 ];
 
 const GeneralSettings = () => {
   const [logoImage, setLogoImage] = useState('');
+  const [orgProfile, setOrgProfile] = useState();
   const [bannerImage, setBannerImage] = useState('');
+  const [orgLinks, setOrgLinks] = useState({});
   const [descriptionText, setDescriptionText] = useState('');
+  const [toast, setToast] = useState({ show: false, message: '' });
+  const router = useRouter();
+  const { orgId } = router.query;
 
-  const handleDescriptionChange = (e) => {
+  const { data: { getOrgById: originalOrgProfile } = {} } = useQuery(GET_ORG_BY_ID, {
+    onCompleted: ({ getOrgById }) => {
+      const links = (getOrgById.links || []).reduce((acc, link) => {
+        acc[link.type] = link;
+
+        return acc;
+      }, {});
+
+      setOrgLinks(links);
+      setDescriptionText(getOrgById.description.slice(0, 3));
+      setOrgProfile(getOrgById);
+    },
+    variables: { orgId },
+  });
+
+  const [updateOrg] = useMutation(UPDATE_ORG, {
+    onCompleted: ({ updateOrg: org }) => {
+      setToast({ ...toast, message: `Organization updated successfully.`, show: true });
+    },
+  });
+
+  function handleDescriptionChange(e) {
     const { value } = e.target;
 
     if (value.length <= 100) {
       setDescriptionText(value);
+      setOrgProfile({ ...orgProfile, description: value });
     }
-  };
+  }
+
+  function resetChanges() {
+    const links = (originalOrgProfile.links || []).reduce((acc, link) => {
+      acc[link.type] = link;
+
+      return acc;
+    }, {});
+
+    setOrgLinks(links);
+    setDescriptionText(originalOrgProfile.description.slice(0, 3));
+    setOrgProfile(originalOrgProfile);
+  }
+
+  function saveChanges() {
+    if (!orgProfile) {
+      return;
+    }
+
+    updateOrg({
+      variables: {
+        input: {
+          name: orgProfile.name,
+          // username: orgProfile.username,
+          description: orgProfile.description,
+          // privacyLevel: String
+          // headerPicture: String
+          // profilePicture: String
+          links: []
+        },
+      },
+    });
+  }
+
+  function handleLinkChange(event, item) {
+    const links = { ...orgLinks };
+    let url = event.currentTarget.value;
+    if (item.link && !url.includes(item.link)) {
+      return;
+    }
+
+    if (!url.includes('http')) {
+      url = `https://${url}`;
+    }
+
+    links[item.type] = {
+      url,
+      displayName: url,
+      type: item.type,
+    };
+
+    setOrgLinks(links);
+  }
+
+  if (!orgProfile) {
+    return (
+      <SettingsWrapper>
+        <GeneralSettingsContainer>
+          <HeaderBlock title="General settings" description="Update profile page settings." />
+        </GeneralSettingsContainer>
+      </SettingsWrapper>
+    );
+  }
+
+  console.log(originalOrgProfile, '------')
 
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
+        <Snackbar
+          autoHideDuration={3000}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          open={toast.show}
+          onClose={() => setToast({ ...toast, show: false })}
+          message={toast.message}
+        />
+
         <HeaderBlock title="General settings" description="Update profile page settings." />
         <GeneralSettingsInputsBlock>
           <GeneralSettingsDAONameBlock>
             <LabelBlock>DAO Name</LabelBlock>
-            <GeneralSettingsDAONameInput />
+            <GeneralSettingsDAONameInput
+              value={orgProfile.name}
+              onChange={(e) => setOrgProfile({ ...orgProfile, name: e.target.value })}
+            />
           </GeneralSettingsDAONameBlock>
           <GeneralSettingsDAODescriptionBlock>
             <LabelBlock>DAO description</LabelBlock>
@@ -104,24 +217,32 @@ const GeneralSettings = () => {
         <GeneralSettingsSocialsBlock>
           <LabelBlock>Socials</LabelBlock>
           <GeneralSettingsSocialsBlockWrapper>
-            {SOCIALS_DATA.map((item) => (
-              <GeneralSettingsSocialsBlockRow key={item.link}>
-                <LinkSquareIcon icon={item.icon} />
-                <InputField value={item.link} />
-              </GeneralSettingsSocialsBlockRow>
-            ))}
+            {SOCIALS_DATA.map((item) => {
+              const value = orgLinks[item.type] ? orgLinks[item.type].url : item.link;
+
+              return (
+                <GeneralSettingsSocialsBlockRow key={item.type}>
+                  <LinkSquareIcon icon={item.icon} />
+                  <InputField value={value} onChange={(e) => handleLinkChange(e, item)} />
+                </GeneralSettingsSocialsBlockRow>
+              );
+            })}
           </GeneralSettingsSocialsBlockWrapper>
         </GeneralSettingsSocialsBlock>
         <GeneralSettingsSocialsBlock>
           <LabelBlock>Links</LabelBlock>
           <GeneralSettingsSocialsBlockWrapper>
-            {LINKS_DATA.map((item) => (
-              <GeneralSettingsSocialsBlockRow key={item.link}>
-                <LinkSquareIcon icon={item.icon} />
-                <GeneralSettingsSocialsBlockRowLabel>{item.label}</GeneralSettingsSocialsBlockRowLabel>
-                <InputField value={item.link} />
-              </GeneralSettingsSocialsBlockRow>
-            ))}
+            {LINKS_DATA.map((item) => {
+              const value = orgLinks[item.type] ? orgLinks[item.type].url : item.link;
+
+              return (
+                <GeneralSettingsSocialsBlockRow key={item.type}>
+                  <LinkSquareIcon icon={item.icon} />
+                  <GeneralSettingsSocialsBlockRowLabel>{item.label}</GeneralSettingsSocialsBlockRowLabel>
+                  <InputField value={value} onChange={(e) => handleLinkChange(e, item)} />
+                </GeneralSettingsSocialsBlockRow>
+              );
+            })}
           </GeneralSettingsSocialsBlockWrapper>
         </GeneralSettingsSocialsBlock>
 
@@ -134,8 +255,8 @@ const GeneralSettings = () => {
 				</GeneralSettingsIntegrationsBlock> */}
 
         <GeneralSettingsButtonsBlock>
-          <GeneralSettingsResetButton>Reset changes</GeneralSettingsResetButton>
-          <GeneralSettingsSaveChangesButton highlighted>Save changes</GeneralSettingsSaveChangesButton>
+          <GeneralSettingsResetButton onClick={resetChanges}>Reset changes</GeneralSettingsResetButton>
+          <GeneralSettingsSaveChangesButton onClick={saveChanges} highlighted>Save changes</GeneralSettingsSaveChangesButton>
         </GeneralSettingsButtonsBlock>
       </GeneralSettingsContainer>
     </SettingsWrapper>
