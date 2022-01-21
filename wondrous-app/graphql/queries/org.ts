@@ -9,12 +9,14 @@ export const GET_ORG_BY_ID = gql`
   }
   ${OrgFragment}
 `;
-export const GET_ORG_ID_FROM_USERNAME = gql`
-  query getOrgIdFromUsername($username: String!) {
-    getOrgIdFromUsername(username: $username) {
-      orgId
+
+export const GET_ORG_FROM_USERNAME = gql`
+  query getOrgFromUsername($username: String!) {
+    getOrgFromUsername(username: $username) {
+      ...OrgFragment
     }
   }
+  ${OrgFragment}
 `;
 
 export const GET_ORG_INVITE_ORG_INFO = gql`

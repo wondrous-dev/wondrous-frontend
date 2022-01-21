@@ -69,7 +69,7 @@ const MOCK_ORGANIZATION_DATA = {
 };
 
 const Wrapper = (props) => {
-  const { children } = props;
+  const { children, orgData } = props;
   const [open, setOpen] = useState(false);
   const [minimized, setMinimized] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
@@ -79,10 +79,9 @@ const Wrapper = (props) => {
     MANAGE_SETTINGS: 'manageSettings',
     CONTRIBUTOR: 'contributor',
   };
+
   const userPermissionsContext = orgBoard?.userPermissionsContext;
   const [permissions, setPermissions] = useState(null);
-  // const [orgProfile, setOrgProfile] = useState(null);
-  const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
   const [createFormModal, setCreateFormModal] = useState(false);
   const [data, setData] = useState(MOCK_ORGANIZATION_DATA);
   const [openInvite, setOpenInvite] = useState(false);
@@ -92,7 +91,7 @@ const Wrapper = (props) => {
     toggleHtmlOverflow();
     setCreateFormModal((prevState) => !prevState);
   };
-  const orgProfile = orgData?.getOrgById;
+  const orgProfile = orgData;
   const links = orgProfile?.links;
   const router = useRouter();
   useEffect(() => {
@@ -101,13 +100,6 @@ const Wrapper = (props) => {
       orgId: orgBoard?.orgId,
     });
 
-    if (orgBoard?.orgId) {
-      getOrgById({
-        variables: {
-          orgId: orgBoard?.orgId,
-        },
-      });
-    }
     if (
       orgPermissions?.includes(PERMISSIONS.MANAGE_MEMBER) ||
       orgPermissions?.includes(PERMISSIONS.FULL_ACCESS) ||
