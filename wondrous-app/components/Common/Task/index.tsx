@@ -305,10 +305,10 @@ export const Task = ({ task, setTask }) => {
               <TaskCommentIcon />
               <TaskActionAmount>{comments}</TaskActionAmount>
             </TaskAction>
-            <TaskAction key={'task-share-' + id}>
+            {/* <TaskAction key={'task-share-' + id}>
               <TaskShareIcon />
               <TaskActionAmount>{shares}</TaskActionAmount>
-            </TaskAction>
+            </TaskAction> */}
 
             {canArchive && (
               <TaskActionMenu right="true">
