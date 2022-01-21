@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/router';
 
 import { SettingsWrapper } from './settingsWrapper';
@@ -32,7 +32,7 @@ import LinkedInIcon from '../Icons/linkedIn';
 import OpenSeaIcon from '../Icons/openSea';
 import LinkBigIcon from '../Icons/link';
 import { Discord } from '../Icons/discord';
-import { useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import { GET_ORG_BY_ID } from '../../graphql/queries';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { getFilenameAndType, uploadMedia } from '../../utils/media';
@@ -101,10 +101,16 @@ const GeneralSettings = () => {
     setOrgProfile(organization);
   }
 
-  useQuery(GET_ORG_BY_ID, {
+  const [getOrganization] = useLazyQuery(GET_ORG_BY_ID, {
     onCompleted: ({ getOrgById }) => setOrganization(getOrgById),
     variables: { orgId },
   });
+
+  useEffect(() => {
+    if (orgId) {
+      getOrganization();
+    }
+  }, [orgId]);
 
   const [updateOrg] = useMutation(UPDATE_ORG, {
     onCompleted: ({ updateOrg: org }) => {
