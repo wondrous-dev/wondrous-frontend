@@ -32,8 +32,9 @@ import { CopyIcon, CopySuccessIcon } from '../../Icons/copy';
 import { useMutation, useLazyQuery } from '@apollo/client';
 import { CREATE_POD_INVITE_LINK } from '../../../graphql/mutations/pod';
 import { GET_POD_ROLES } from '../../../graphql/queries/pod';
+import { putDefaultRoleOnTop } from './OrgInviteLink';
 
-const link = `https://www.wonder.io/invite/`;
+const link = `https://www.app.wonderverse.xyz/invite/`;
 
 export const PodInviteLinkModal = (props) => {
   const { podId, open, onClose } = props;
@@ -52,7 +53,11 @@ export const PodInviteLinkModal = (props) => {
   const [getPodRoles, { data: podRoles }] = useLazyQuery(GET_POD_ROLES, {
     onCompleted: (data) => {
       if (data?.getPodRoles) {
-        setRole(data?.getPodRoles[0]?.id);
+        data?.getPodRoles?.forEach((role) => {
+          if (role?.default) {
+            setRole(role?.id);
+          }
+        });
       }
     },
     onError: (e) => {
@@ -102,6 +107,7 @@ export const PodInviteLinkModal = (props) => {
     }
     setCopy(false);
   }, [role, createPodInviteLink, linkOneTimeUse, podId, podRoles, open, getPodRoles]);
+  const roles = putDefaultRoleOnTop(podRoles?.getPodRoles);
 
   return (
     <StyledModal open={open} onClose={handleOnClose}>
@@ -122,8 +128,8 @@ export const PodInviteLinkModal = (props) => {
           <InviteThruLinkTextField variant="outlined" value={`${inviteLink}`} disabled />
           <InviteThruLinkFormControlSelect>
             <InviteThruLinkSelect value={role} onChange={handleRoleChange}>
-              {podRoles?.getPodRoles &&
-                podRoles?.getPodRoles.map((role) => (
+              {roles &&
+                roles.map((role) => (
                   <InviteThruLinkMenuItem key={role.id} value={role.id}>
                     {role.name}
                   </InviteThruLinkMenuItem>
