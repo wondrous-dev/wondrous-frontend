@@ -88,17 +88,18 @@ export const PodInviteLinkModal = (props) => {
         },
       });
     }
-    createPodInviteLink({
-      variables: {
-        input: {
-          invitorId: '',
-          type: linkOneTimeUse ? 'one_time' : 'public',
-          podId: podId,
-          podRoleId: role,
-          expiry: '',
+    if (open) {
+      createPodInviteLink({
+        variables: {
+          input: {
+            invitorId: '',
+            type: linkOneTimeUse ? 'one_time' : 'public',
+            podId: podId,
+            podRoleId: role,
+          },
         },
-      },
-    });
+      });
+    }
     setCopy(false);
   }, [role, createPodInviteLink, linkOneTimeUse, podId, podRoles, open, getPodRoles]);
 

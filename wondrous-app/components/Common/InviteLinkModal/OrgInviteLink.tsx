@@ -86,17 +86,18 @@ export const OrgInviteLinkModal = (props) => {
         },
       });
     }
-    createOrgInviteLink({
-      variables: {
-        input: {
-          invitorId: '',
-          type: linkOneTimeUse ? 'one_time' : 'public',
-          orgId: orgId,
-          orgRoleId: role,
-          expiry: '',
+    if (open) {
+      createOrgInviteLink({
+        variables: {
+          input: {
+            invitorId: '',
+            type: linkOneTimeUse ? 'one_time' : 'public',
+            orgId: orgId,
+            orgRoleId: role,
+          },
         },
-      },
-    });
+      });
+    }
     setCopy(false);
   }, [role, createOrgInviteLink, linkOneTimeUse, orgId, orgRoles, open, getOrgRoles]);
 
