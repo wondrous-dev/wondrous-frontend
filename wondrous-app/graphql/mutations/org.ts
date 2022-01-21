@@ -45,7 +45,7 @@ export const UPDATE_USER_ORG_ROLE = gql`
 
 export const UPDATE_ORG = gql`
   mutation updateOrg($orgId: ID!, $input: OrgInput) {
-    updateTask(orgId: $orgId, input: $input) {
+    updateOrg(orgId: $orgId, input: $input) {
       ...OrgFragment
     }
   }

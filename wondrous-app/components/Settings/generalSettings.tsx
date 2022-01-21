@@ -32,9 +32,9 @@ import LinkedInIcon from '../Icons/linkedIn';
 import OpenSeaIcon from '../Icons/openSea';
 import LinkBigIcon from '../Icons/link';
 import { Discord } from '../Icons/discord';
-import { useMutation, useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_BY_ID } from '../../graphql/queries';
-import { UPDATE_ORG, UPDATE_ORG_ROLE } from '../../graphql/mutations/org'
+import { UPDATE_ORG } from '../../graphql/mutations/org';
 
 const SOCIALS_DATA = [
   {
@@ -71,7 +71,8 @@ const LINKS_DATA = [
 
 const GeneralSettings = () => {
   const [logoImage, setLogoImage] = useState('');
-  const [orgProfile, setOrgProfile] = useState();
+  const [orgProfile, setOrgProfile] = useState(null);
+  const [originalOrgProfile, setOriginalOrgProfile] = useState(null);
   const [bannerImage, setBannerImage] = useState('');
   const [orgLinks, setOrgLinks] = useState({});
   const [descriptionText, setDescriptionText] = useState('');
@@ -79,24 +80,31 @@ const GeneralSettings = () => {
   const router = useRouter();
   const { orgId } = router.query;
 
-  const { data: { getOrgById: originalOrgProfile } = {} } = useQuery(GET_ORG_BY_ID, {
-    onCompleted: ({ getOrgById }) => {
-      const links = (getOrgById.links || []).reduce((acc, link) => {
-        acc[link.type] = link;
+  function setOrganization(organization) {
+    setOriginalOrgProfile(organization);
+    const links = (organization.links || []).reduce((acc, link) => {
+      acc[link.type] = {
+        displayName: link.displayName,
+        type: link.type,
+        url: link.url,
+      };
 
-        return acc;
-      }, {});
+      return acc;
+    }, {});
 
-      setOrgLinks(links);
-      setDescriptionText(getOrgById.description.slice(0, 3));
-      setOrgProfile(getOrgById);
-    },
+    setOrgLinks(links);
+    setDescriptionText(organization.description.slice(0, 3));
+    setOrgProfile(organization);
+  }
+
+  useQuery(GET_ORG_BY_ID, {
+    onCompleted: ({ getOrgById }) => setOrganization(getOrgById),
     variables: { orgId },
   });
 
   const [updateOrg] = useMutation(UPDATE_ORG, {
     onCompleted: ({ updateOrg: org }) => {
-      setToast({ ...toast, message: `Organization updated successfully.`, show: true });
+      setToast({ ...toast, message: `DAO updated successfully.`, show: true });
     },
   });
 
@@ -110,32 +118,24 @@ const GeneralSettings = () => {
   }
 
   function resetChanges() {
-    const links = (originalOrgProfile.links || []).reduce((acc, link) => {
-      acc[link.type] = link;
-
-      return acc;
-    }, {});
-
-    setOrgLinks(links);
-    setDescriptionText(originalOrgProfile.description.slice(0, 3));
-    setOrgProfile(originalOrgProfile);
+    setOrganization(originalOrgProfile);
   }
 
   function saveChanges() {
-    if (!orgProfile) {
-      return;
-    }
+    const links = Object.values(orgLinks);
 
     updateOrg({
       variables: {
+        orgId,
         input: {
+          links,
           name: orgProfile.name,
-          // username: orgProfile.username,
+          username: orgProfile.username,
           description: orgProfile.description,
-          // privacyLevel: String
-          // headerPicture: String
-          // profilePicture: String
-          links: []
+          privacyLevel: orgProfile.privacyLevel,
+          headerPicture: orgProfile.headerPicture,
+          profilePicture: orgProfile.profilePicture,
+          tags: orgProfile.tags,
         },
       },
     });
@@ -170,8 +170,6 @@ const GeneralSettings = () => {
       </SettingsWrapper>
     );
   }
-
-  console.log(originalOrgProfile, '------')
 
   return (
     <SettingsWrapper>
@@ -256,7 +254,9 @@ const GeneralSettings = () => {
 
         <GeneralSettingsButtonsBlock>
           <GeneralSettingsResetButton onClick={resetChanges}>Reset changes</GeneralSettingsResetButton>
-          <GeneralSettingsSaveChangesButton onClick={saveChanges} highlighted>Save changes</GeneralSettingsSaveChangesButton>
+          <GeneralSettingsSaveChangesButton onClick={saveChanges} highlighted>
+            Save changes
+          </GeneralSettingsSaveChangesButton>
         </GeneralSettingsButtonsBlock>
       </GeneralSettingsContainer>
     </SettingsWrapper>
