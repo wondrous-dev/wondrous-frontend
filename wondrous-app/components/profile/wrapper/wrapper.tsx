@@ -29,8 +29,12 @@ import {
   TokenHeader,
   TokenLogo,
 } from './styles'
+import { MoreInfoModal } from '../../profile/modals';
 
 const Wrapper = (props) => {
+  const [showOrgs, setShowOrgs] = useState(false);
+  const [showPods, setShowPods] = useState(false);
+
   const { children, userProfileData, loggedInUser, mainLink } = props
   let viewingSelf = false
   if (userProfileData?.id === loggedInUser?.id) {
@@ -41,7 +45,6 @@ const Wrapper = (props) => {
   const orgCount = userProfileData?.additionalInfo?.orgCount
   const podCount = userProfileData?.additionalInfo?.podCount
   const [minimized, setMinimized] = useState(false)
-  console.log(userProfileData?.profilePicture)
   return (
     <>
       <Header />

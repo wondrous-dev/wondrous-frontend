@@ -25,8 +25,8 @@ const AboutPage = () => {
   const loggedInUser = useMe();
   const [userProfileData, setUserProfileData] = useState(null);
   const [userAboutPageData, setUserAboutPageData] = useState(null);
-  const [userDaosData, setUserDaosData] = useState(null);
-  const [userPodsData, setUserPodsData] = useState(null);
+  const [userOrgsData, setUserOrgsData] = useState([]);
+  const [userPodsData, setUserPodsData] = useState([]);
   const [userCompletedTaskCount, setUserCompletedTaskCount] = useState(null);
   const [userCompletedTasks, setUserCompletedTasks] = useState(null);
   const router = useRouter();
@@ -41,6 +41,16 @@ const AboutPage = () => {
   const [getUserAboutPageData] = useLazyQuery(GET_USER_ABOUT_PAGE_DATA, {
     onCompleted: (data) => {
       setUserAboutPageData(data?.getUserAboutPageData);
+      const orgs = data?.getUserAboutPageData?.orgs
+      const pods = data?.getUserAboutPageData?.pods
+      const tasksCompleted = data?.getUserAboutPageData?.tasksCompleted
+      const tasksCompletedCount = data?.getUserAboutPageData?.tasksCompletedCount
+      if (orgs || tasksCompletedCount) {
+        setUserOrgsData(orgs)
+        setUserPodsData(pods)
+        setUserCompletedTaskCount(tasksCompletedCount)
+        setUserCompletedTasks(tasksCompleted)  
+      }
     },
   });
 
@@ -85,7 +95,7 @@ const AboutPage = () => {
     }
   }, [username, userId, userProfileData, getUser, getUserFromUsername, getUserAboutPageData]);
 
-  return <About userProfileData={userProfileData} loggedInUser={loggedInUser} />;
+  return <About userProfileData={userProfileData} loggedInUser={loggedInUser} userOrgsData={userOrgsData} userPodsData={userPodsData} userCompletedTasks={userCompletedTasks} tasksCompletedCount={userCompletedTaskCount}/>;
 };
 
 export default withAuth(AboutPage);
