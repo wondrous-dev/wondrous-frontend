@@ -27,6 +27,9 @@ export const SOCIAL_MEDIA_FACEBOOK = 'facebook'
 export const SOCIAL_MEDIA_TWITTER = 'twitter'
 export const SOCIAL_MEDIA_LINKEDIN = 'linkedin'
 export const SOCIAL_MEDIA_DISCORD = 'discord'
+export const SOCIAL_MEDIA_GITHUB = 'github'
+export const SOCIAL_MEDIA_SPOTIFY = 'spotify'
+export const SOCIAL_MEDIA_INSTAGRAM = 'instagram'
 
 // Supported Chains (ETHEREUM, POLYGON)
 export const SUPPORTED_CHAINS = {

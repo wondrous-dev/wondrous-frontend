@@ -26,7 +26,7 @@ export const OrgFragment = gql`
 		podCount
 		links {
 			url
-			name
+			displayName
 			type
 		}
 	}

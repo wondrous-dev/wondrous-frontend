@@ -21,3 +21,26 @@ export const LoggedinWaitlistUserFragment = gql`
 		phoneVerified
 	}
 `
+
+export const ProfileUserFragment = gql`
+	fragment UserProfile on User {
+		id
+		username
+		bio
+		firstName
+		lastName
+		headerPicture
+		activeEthAddress
+		profilePicture
+		thumbnailPicture
+		links {
+			url
+			displayName
+			type
+		}
+		additionalInfo {
+			orgCount
+			podCount
+		}
+	}
+`

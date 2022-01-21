@@ -24,7 +24,7 @@ import {
   TASK_STATUS_ARCHIVED,
   DEFAULT_STATUS_ARR,
 } from '../../../utils/constants'
-import { GET_USER_ID_FROM_USERNAME } from '../../../graphql/queries'
+import { GET_USER_FROM_USERNAME } from '../../../graphql/queries'
 
 const TO_DO = {
   status: TASK_STATUS_TODO,
@@ -436,10 +436,10 @@ const BoardsPage = () => {
   const [
     getUserIdFromUsername,
     { data: getUserIdFromUsernameData, error: getUserIdFromUsernameError },
-  ] = useLazyQuery(GET_USER_ID_FROM_USERNAME, {
+  ] = useLazyQuery(GET_USER_FROM_USERNAME, {
     onCompleted: (data) => {
-      if (data?.getUserIdFromUsername?.userId) {
-        setProfileUserId(data?.getUserIdFromUsername?.userId)
+      if (data?.getUserIdFromUsername?.id) {
+        setProfileUserId(data?.getUserIdFromUsername?.id)
       }
     },
   })

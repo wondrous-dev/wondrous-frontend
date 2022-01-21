@@ -2,6 +2,7 @@ import { gql } from '@apollo/client'
 import {
 	LoggedinUserFragment,
 	LoggedinWaitlistUserFragment,
+	ProfileUserFragment,
 } from '../fragments/user'
 
 export const WHOAMI = gql`
@@ -49,14 +50,79 @@ export const GET_USER_SIGNING_MESSAGE = gql`
 	}
 `
 
-export const GET_USER_ID_FROM_USERNAME = gql`
-	query getUserIdFromUsername($username: String!) {
-		getUserIdFromUsername(username: $username) {
-			userId
+
+export const GET_USER_PROFLIE = gql`
+	query getUser($userId: String!) {
+		getUser(userId: $userId) {
+			...UserProfile
+		}
+	}
+	${ProfileUserFragment}
+`
+
+export const GET_USER_ABOUT_PAGE_DATA = gql`
+	query getUserAboutPageData($userId: ID!) {
+		getUserAboutPageData(userId: $userId) {
+			orgs {
+				name
+				description
+				profilePicture
+				thumbnailPicture
+			}
+			pods {
+				name
+				description
+				profilePicture
+				thumbnailPicture
+			}
+			tasksCompletedCount
+			tasksCompleted {
+				title
+				description
+				status
+				orgProfilePicture
+				podProfilePicture
+				assigneeProfilePicture
+			}
 		}
 	}
 `
 
+
+
+export const GET_USER_FROM_USERNAME = gql`
+	query getUserFromUsername($username: String!) {
+		getUserFromUsername(username: $username) {
+			...UserProfile
+		}
+	}
+	${ProfileUserFragment}
+`
+
+export const GET_USER_ORGS = gql`
+	query getUserOrgs($userId: String) {
+		getUserOrgs(userId: $userId) {
+			id
+			username
+			name
+			profilePicture
+			thumbnailPicture
+		}
+	}
+`
+
+
+export const GET_USER_PODS = gql`
+	query getUserPods($userId: String) {
+		getUserPods(userId: $userId) {
+			id
+			username
+			name
+			profilePicture
+			thumbnailPicture
+		}
+	}
+`
 export const GET_USER_PERMISSION_CONTEXT = gql`
 	query getUserPermissionContext {
 		getUserPermissionContext
