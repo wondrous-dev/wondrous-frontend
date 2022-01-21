@@ -8,6 +8,7 @@ import { LinkIcon } from '../../Icons/linkIcon'
 export const OverviewComponent = styled.section`
 	width: 100vw;
 	height: 100%;
+	min-height: 100vh;
 	//background-color: ${Background};
 	background-color: #0f0f0f;
 	transition: 0.15s all ease;
@@ -87,7 +88,7 @@ export const HeaderButtons = styled.div`
 	width: 100%;
 	height: 100%;
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-end;
 `
 
 export const HeaderFollowButton = styled(Button)`
@@ -179,7 +180,7 @@ export const HeaderActivity = styled.div`
 	min-height: 23px;
 	height: 23px;
 	display: flex;
-	justify-content: space-between;
+	justify-content: left;
 	align-items: center;
 `
 
@@ -193,6 +194,7 @@ export const HeaderActivityLink = styled.a`
 	color: #ccbbff;
 	text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 	text-decoration-line: underline;
+	margin-right: 30px;
 `
 
 export const HeaderActivityLinkIcon = styled(LinkIcon)`
@@ -202,14 +204,15 @@ export const HeaderActivityLinkIcon = styled(LinkIcon)`
 	margin-top: 8px;
 `
 
-export const HeaderFollowers = styled.div`
+export const HeaderOrgPodCount = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	cursor: pointer;
+	margin-right: 30px;
 `
 
-export const HeaderFollowersAmount = styled(Typography)`
+export const HeaderPodCount = styled(Typography)`
 	&& {
 		font-weight: 500;
 		font-size: 15px;
@@ -222,20 +225,14 @@ export const HeaderFollowersAmount = styled(Typography)`
 	}
 `
 
-export const HeaderFollowersText = styled(HeaderFollowersAmount)`
+export const HeaderPodCountText = styled(HeaderPodCount)`
 	&& {
 		color: #6c6c6c;
 	}
 `
 
-export const HeaderFollowing = styled.div`
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	cursor: pointer;
-`
 
-export const HeaderFollowingAmount = styled(Typography)`
+export const HeaderOrgCount = styled(Typography)`
 	&& {
 		font-weight: 500;
 		font-size: 15px;
@@ -248,17 +245,7 @@ export const HeaderFollowingAmount = styled(Typography)`
 	}
 `
 
-export const HeaderFollowingText = styled(HeaderFollowingAmount)`
-	&& {
-		color: #6c6c6c;
-	}
-`
-
-export const HeaderProjects = styled(HeaderFollowers)``
-
-export const HeaderProjectsAmount = styled(HeaderFollowersAmount)``
-
-export const HeaderProjectsText = styled(HeaderFollowersAmount)`
+export const HeaderOrgCountText = styled(HeaderOrgCount)`
 	&& {
 		color: #6c6c6c;
 	}
