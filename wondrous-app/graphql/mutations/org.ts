@@ -34,3 +34,11 @@ export const DELETE_ORG_ROLE = gql`
     }
   }
 `;
+
+export const UPDATE_USER_ORG_ROLE = gql`
+  mutation updateUserOrgRole($input: UserOrgRoleUpdateInput) {
+    updateUserOrgRole(input: $input) {
+      success
+    }
+  }
+`;

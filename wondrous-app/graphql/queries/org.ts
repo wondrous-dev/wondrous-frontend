@@ -47,7 +47,9 @@ export const GET_ORG_USERS = gql`
         profilePicture
       }
       role {
+        id
         permissions
+        name
       }
     }
   }

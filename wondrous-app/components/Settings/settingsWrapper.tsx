@@ -29,6 +29,9 @@ import GeneralSettingsIcon from '../Icons/generalSettings';
 import ConfigurePaymentsIcon from '../Icons/configurePayments';
 import CreatePodIcon from '../Icons/createPod';
 import MembersIcon from '../Icons/members';
+import { useQuery } from '@apollo/client';
+import { GET_ORG_BY_ID } from '../../graphql/queries/org';
+import { SafeImage } from '../Common/Image';
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -95,7 +98,12 @@ export const SettingsWrapper = (props) => {
     toggleHtmlOverflow();
     setCreateFormModal((prevState) => !prevState);
   };
-
+  const { data: orgData } = useQuery(GET_ORG_BY_ID, {
+    variables: {
+      orgId,
+    },
+  });
+  const org = orgData?.getOrgById;
   const SETTINGS_SIDEBAR_LIST_ITEMS = [
     {
       icon: <GeneralSettingsIcon width={40} height={40} />,
@@ -116,17 +124,26 @@ export const SettingsWrapper = (props) => {
       href: `/organization/settings/${orgId}/roles`,
     },
   ];
+
   return (
     <>
       <HeaderComponent openCreateFormModal={toggleCreateFormModal} />
-      <SideBarComponent listItems={SIDEBAR_LIST_ITEMS} />
+      <SideBarComponent />
       <CreateFormModal open={createFormModal} toggleOpen={toggleCreateFormModal} />
       <SettingsContainer>
         <SettingsSidebar>
           <SettingsSidebarContainer>
             <SettingsSidebarHeader>
-              <SettingsSidebarHeaderLogo />
-              <SettingsSidebarHeaderTitle>Wonder</SettingsSidebarHeaderTitle>
+              <SafeImage
+                src={org?.profilePicture}
+                style={{
+                  width: '44px',
+                  height: '44px',
+                  borderRadius: '4px',
+                  marginRight: '14px',
+                }}
+              />
+              <SettingsSidebarHeaderTitle>{org?.name}</SettingsSidebarHeaderTitle>
             </SettingsSidebarHeader>
             <SettingsSidebarTabsSection>
               <SettingsSidebarTabsSectionLabel>Settings Overview</SettingsSidebarTabsSectionLabel>
