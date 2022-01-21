@@ -1,73 +1,96 @@
 import React, { useContext, useState } from 'react'
 import {
-	DrawerBackButton,
-	DrawerBottomBlock,
-	DrawerBottomButton,
-	DrawerComponent,
-	DrawerContainer,
-	DrawerList,
-	DrawerListItem,
-	DrawerListItemIcon,
-	DrawerTopBlock,
-	DrawerUserImage,
+  DrawerBackButton,
+  DrawerBottomBlock,
+  DrawerBottomButton,
+  DrawerComponent,
+  DrawerContainer,
+  DrawerList,
+  DrawerListItem,
+  DrawerListItemIcon,
+  DrawerTopBlock,
+  DrawerUserImage,
 } from './styles'
 import SettingsIcon from '../Icons/settings'
 import ExitIcon from '../Icons/exit'
 import BackArrowIcon from '../Icons/backArrow'
-import { logout } from '../Auth/withAuth'
+import { logout, useMe, withAuth } from '../Auth/withAuth'
 import { useSideBar } from '../../utils/hooks'
+import { useQuery } from '@apollo/client'
+import { GET_USER_ORGS } from '../../graphql/queries'
+import { SafeImage } from '../Common/Image'
+import { DefaultUserImage } from '../Common/Image/DefaultImages'
 
 const SideBarComponent = (props) => {
-	const { listItems } = props
+  const { data: userOrgs } = useQuery(GET_USER_ORGS)
+  const sidebar = useSideBar()
+  const minimized = sidebar?.minimized
+  const setMinimized = sidebar?.setMinimized
+  const user = useMe()
+  const handleMinimize = (event) => {
+    if (setMinimized) {
+      setMinimized(!minimized)
+    }
+  }
 
-	const sidebar = useSideBar()
-	const minimized = sidebar?.minimized
-	const setMinimized = sidebar?.setMinimized
+  const signOut = () => {
+    logout()
+  }
 
-	const handleMinimize = (event) => {
-		if (setMinimized) {
-			setMinimized(!minimized)
-		}
-	}
-
-	const signOut = () => {
-		logout()
-	}
-
-	return (
-		<DrawerComponent
-			variant="permanent"
-			anchor="left"
-			className={minimized ? 'active' : ''}
-		>
-			<DrawerContainer>
-				<DrawerTopBlock>
-					<DrawerUserImage src="/images/sidebar/avatar.png" />
-					<DrawerList>
-						{listItems.map((item) => (
-							<DrawerListItem button key={item.id}>
-								<DrawerListItemIcon src={item.icon} alt="" />
-							</DrawerListItem>
-						))}
-					</DrawerList>
-				</DrawerTopBlock>
-				<DrawerBottomBlock>
-					<DrawerBottomButton>
-						<SettingsIcon />
-					</DrawerBottomButton>
-					<DrawerBottomButton onClick={signOut}>
-						<ExitIcon />
-					</DrawerBottomButton>
-				</DrawerBottomBlock>
-			</DrawerContainer>
-			<DrawerBackButton
-				onClick={handleMinimize}
-				className={minimized ? 'active' : ''}
-			>
-				<BackArrowIcon />
-			</DrawerBackButton>
-		</DrawerComponent>
-	)
+  const listItems = userOrgs?.getUserOrgs
+  const profilePictureStyle = {
+    display: 'flex',
+    margin: '0 auto',
+    width: '48px',
+    height: '48px',
+    borderRadius: '24px',
+  }
+  return (
+    <DrawerComponent
+      variant="permanent"
+      anchor="left"
+      className={minimized ? 'active' : ''}
+    >
+      <DrawerContainer>
+        <DrawerTopBlock>
+          {user?.profilePicture ? (
+            <SafeImage style={profilePictureStyle} src={user?.profilePicture} />
+          ) : (
+            <DefaultUserImage style={profilePictureStyle} />
+          )}
+          <DrawerList>
+            {listItems &&
+              listItems.map((item) => (
+                <DrawerListItem button key={item.id}>
+                  <SafeImage
+                    src={item?.profilePicture}
+                    style={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '6px',
+                    }}
+                  />
+                </DrawerListItem>
+              ))}
+          </DrawerList>
+        </DrawerTopBlock>
+        <DrawerBottomBlock>
+          <DrawerBottomButton>
+            <SettingsIcon />
+          </DrawerBottomButton>
+          <DrawerBottomButton onClick={signOut}>
+            <ExitIcon />
+          </DrawerBottomButton>
+        </DrawerBottomBlock>
+      </DrawerContainer>
+      <DrawerBackButton
+        onClick={handleMinimize}
+        className={minimized ? 'active' : ''}
+      >
+        <BackArrowIcon />
+      </DrawerBackButton>
+    </DrawerComponent>
+  )
 }
 
-export default SideBarComponent
+export default withAuth(SideBarComponent)

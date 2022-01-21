@@ -40,7 +40,6 @@ import {
   TokenLogo,
   HeaderInviteButton,
   PlusIconWrapper,
-
 } from './styles'
 import { useOrgBoard } from '../../../utils/hooks'
 import { useQuery } from '@apollo/client'
@@ -49,6 +48,7 @@ import { SafeImage } from '../../Common/Image'
 import PlusIcon from '../../Icons/plus'
 import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink'
 import { MoreInfoModal } from '../../profile/modals'
+import { Router, useRouter } from 'next/router'
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -105,7 +105,7 @@ const Wrapper = (props) => {
     setCreateFormModal((prevState) => !prevState)
   }
   const links = orgProfile?.links
-
+  const router = useRouter()
   useEffect(() => {
     const orgPermissions = parseUserPermissionContext({
       userPermissionsContext,
@@ -129,7 +129,11 @@ const Wrapper = (props) => {
 
   return (
     <>
-      <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
+      <OrgInviteLinkModal
+        orgId={orgBoard?.orgId}
+        open={openInvite}
+        onClose={() => setOpenInvite(false)}
+      />
       <MoreInfoModal
         open={open && (showUsers || showPods)}
         handleClose={() => setOpen(false)}
@@ -145,7 +149,7 @@ const Wrapper = (props) => {
           setMinimized,
         }}
       >
-        <SideBarComponent listItems={SIDEBAR_LIST_ITEMS} />
+        <SideBarComponent />
         <CreateFormModal
           open={createFormModal}
           toggleOpen={toggleCreateFormModal}
@@ -186,9 +190,14 @@ const Wrapper = (props) => {
                     {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
                       <>
                         <HeaderInviteButton onClick={() => setOpenInvite(true)}>
-                          Invite <PlusIconWrapper><PlusIcon height="8" width="8" fill="#fff" /></PlusIconWrapper>
+                          Invite{' '}
+                          <PlusIconWrapper>
+                            <PlusIcon height="8" width="8" fill="#fff" />
+                          </PlusIconWrapper>
                         </HeaderInviteButton>
-                        <HeaderManageSettingsButton>
+                        <HeaderManageSettingsButton
+                          onClick={() => router.push('/organization/settings')}
+                        >
                           Settings
                         </HeaderManageSettingsButton>
                       </>
@@ -198,11 +207,11 @@ const Wrapper = (props) => {
                         Settings
                       </HeaderSettingsLockedButton>
                     )}
-                    {!permissions && (
+                    {/* {!permissions && (
                       <HeaderContributeButton>
                         Contribute
                       </HeaderContributeButton>
-                    )}
+                    )} */}
                   </HeaderButtons>
                 </HeaderMainBlock>
                 <HeaderText>{orgProfile?.description}</HeaderText>
