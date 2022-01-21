@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { SettingsWrapper } from './settingsWrapper';
@@ -35,6 +35,8 @@ import { Discord } from '../Icons/discord';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_BY_ID } from '../../graphql/queries';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
+import { getFilenameAndType, uploadMedia } from '../../utils/media';
+import { SafeImage } from '../Common/Image';
 
 const SOCIALS_DATA = [
   {
@@ -82,6 +84,7 @@ const GeneralSettings = () => {
 
   function setOrganization(organization) {
     setOriginalOrgProfile(organization);
+    setLogoImage('');
     const links = (organization.links || []).reduce((acc, link) => {
       acc[link.type] = {
         displayName: link.displayName,
@@ -93,7 +96,8 @@ const GeneralSettings = () => {
     }, {});
 
     setOrgLinks(links);
-    setDescriptionText(organization.description.slice(0, 3));
+    setDescriptionText(organization.description);
+
     setOrgProfile(organization);
   }
 
@@ -104,9 +108,25 @@ const GeneralSettings = () => {
 
   const [updateOrg] = useMutation(UPDATE_ORG, {
     onCompleted: ({ updateOrg: org }) => {
+      setOrganization(org);
       setToast({ ...toast, message: `DAO updated successfully.`, show: true });
     },
   });
+
+  async function handleLogoChange(file) {
+    setLogoImage(file);
+
+    if (file) {
+      const fileName = file?.name;
+      // get image preview
+      const { fileType, filename } = getFilenameAndType(fileName);
+      const imagePrefix = `tmp/${orgId}/`;
+      const profilePicture = imagePrefix + filename;
+      await uploadMedia({ filename: profilePicture, fileType, file });
+
+      setOrgProfile({ ...orgProfile, profilePicture });
+    }
+  }
 
   function handleDescriptionChange(e) {
     const { value } = e.target;
@@ -204,7 +224,23 @@ const GeneralSettings = () => {
             </GeneralSettingsDAODescriptionInputCounter>
           </GeneralSettingsDAODescriptionBlock>
         </GeneralSettingsInputsBlock>
-        <ImageUpload image={logoImage} imageWidth={52} imageHeight={52} imageName="Logo" updateFilesCb={setLogoImage} />
+        {orgProfile.profilePicture && !logoImage ? (
+          <SafeImage
+            src={orgProfile.profilePicture}
+            style={{
+              width: '52px',
+              height: '52px',
+              marginTop: '30px'
+            }}
+          />
+        ) : null}
+        <ImageUpload
+          image={logoImage}
+          imageWidth={52}
+          imageHeight={52}
+          imageName="Logo"
+          updateFilesCb={handleLogoChange}
+        />
         <ImageUpload
           image={bannerImage}
           imageWidth={1350}
