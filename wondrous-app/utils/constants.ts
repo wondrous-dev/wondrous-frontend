@@ -156,6 +156,7 @@ export const NOTIFICATION_VERBS = {
 export const NOTIFICATION_OBJECT_TYPES = {
   task: 'task',
   task_comment: 'task',
-  task_submission: 'task',
+  task_proposal: 'proposal',
+  task_submission: 'submission',
   comment: 'Comment',
 };
