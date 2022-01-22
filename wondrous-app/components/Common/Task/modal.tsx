@@ -379,6 +379,8 @@ export const TaskViewModal = (props) => {
   });
 
   const [getTaskProposalById] = useLazyQuery(GET_TASK_PROPOSAL_BY_ID, {
+    fetchPolicy: 'network-only',
+    nextFetchPolicy: 'network-only',
     onCompleted: (data) => {
       const taskProposalData = data?.getTaskProposalById;
       if (taskProposalData) {
@@ -450,7 +452,6 @@ export const TaskViewModal = (props) => {
     setSnackbarAlertMessage,
     handleNewStatus,
   ]);
-
   useEffect(() => {
     if (open) {
       if (isTaskProposal) {
