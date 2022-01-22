@@ -103,7 +103,6 @@ const BoardsPage = () => {
   });
   const [orgTaskHasMore, setOrgTaskHasMore] = useState(false);
 
-
   const [getOrgTaskProposals] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
     onCompleted: (data) => {
       const newColumns = [...columns];
@@ -150,25 +149,29 @@ const BoardsPage = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const [getOrgFromUsername] =
-    useLazyQuery(GET_ORG_FROM_USERNAME, {
-      onCompleted: (data) => {
-        if (data?.getOrgFromUsername) {
-          setOrgData(data?.getOrgFromUsername);
-        }
+  const [getOrgFromUsername] = useLazyQuery(GET_ORG_FROM_USERNAME, {
+    onCompleted: (data) => {
+      if (data?.getOrgFromUsername) {
+        setOrgData(data?.getOrgFromUsername);
       }
-    });
-    const [getOrg] = useLazyQuery(GET_ORG_BY_ID, {
-      onCompleted: (data) => {
-        setOrgData(data?.getOrgById);
-      },
-    });
-  
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [getOrg] = useLazyQuery(GET_ORG_BY_ID, {
+    onCompleted: (data) => {
+      setOrgData(data?.getOrgById);
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+
   useEffect(() => {
     if (orgId && !orgData) {
-      getOrg({variables: {
-        orgId
-      }})
+      getOrg({
+        variables: {
+          orgId,
+        },
+      });
       // get user task board tasks immediately
     } else if (!orgId && username && !orgData) {
       // Get orgId from username
@@ -178,17 +181,11 @@ const BoardsPage = () => {
         },
       });
     }
-  }, [
-    username,
-    orgId,
-    orgData,
-    getOrg,
-    getOrgFromUsername,
-  ]);
+  }, [username, orgId, orgData, getOrg, getOrgFromUsername]);
 
   useEffect(() => {
     if (orgId || orgData?.id) {
-      const id = orgId || orgData?.id
+      const id = orgId || orgData?.id;
       getOrgTasks({
         variables: {
           orgId: id,
@@ -219,8 +216,7 @@ const BoardsPage = () => {
         },
       });
     }
-  }, [orgData, statuses, orgId, getOrgBoardTaskCount, getOrgTaskSubmissions, getOrgTaskProposals, getOrgTasks])
-
+  }, [orgData, statuses, orgId, getOrgBoardTaskCount, getOrgTaskSubmissions, getOrgTaskProposals, getOrgTasks]);
 
   const handleLoadMore = useCallback(() => {
     if (orgTaskHasMore) {
@@ -262,7 +258,13 @@ const BoardsPage = () => {
         getOrgTasksVariables,
       }}
     >
-      <Boards selectOptions={SELECT_OPTIONS} columns={columns} onLoadMore={handleLoadMore} hasMore={orgTaskHasMore} orgData={orgData}/>
+      <Boards
+        selectOptions={SELECT_OPTIONS}
+        columns={columns}
+        onLoadMore={handleLoadMore}
+        hasMore={orgTaskHasMore}
+        orgData={orgData}
+      />
     </OrgBoardContext.Provider>
   );
 };
