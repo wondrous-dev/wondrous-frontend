@@ -19,7 +19,7 @@ import { useSideBar } from '../../utils/hooks';
 import { useQuery } from '@apollo/client';
 import { GET_USER_ORGS } from '../../graphql/queries';
 import { SafeImage } from '../Common/Image';
-import { DefaultUserImage } from '../Common/Image/DefaultImages';
+import DefaultUserImage from '../Common/Image/DefaultUserImage';
 import { useRouter } from 'next/router';
 
 const SideBarComponent = (props) => {
