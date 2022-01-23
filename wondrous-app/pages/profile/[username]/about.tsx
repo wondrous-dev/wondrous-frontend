@@ -21,7 +21,8 @@ import {
   GET_USER_ORGS,
 } from '../../../graphql/queries';
 
-const AboutPage = () => {
+const AboutPage = ({data}) => {
+  console.log(data)
   const loggedInUser = useMe();
   const [userProfileData, setUserProfileData] = useState(null);
   const [userAboutPageData, setUserAboutPageData] = useState(null);
@@ -97,5 +98,20 @@ const AboutPage = () => {
 
   return <About userProfileData={userProfileData} loggedInUser={loggedInUser} userOrgsData={userOrgsData} userPodsData={userPodsData} userCompletedTasks={userCompletedTasks} tasksCompletedCount={userCompletedTaskCount}/>;
 };
+
+export async function getServerSideProps() {
+  try {
+    // const data = await fetchHomeDataFromCMS();
+    const data = {
+      'test': 'test'
+    }
+    return {
+      props: { data },
+    };
+  } catch (error) {
+    console.error("Error fetching homepage data", error);
+  }
+}
+
 
 export default withAuth(AboutPage);

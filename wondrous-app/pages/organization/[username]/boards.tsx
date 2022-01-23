@@ -92,7 +92,8 @@ const SELECT_OPTIONS = [
 
 const LIMIT = 10;
 
-const BoardsPage = () => {
+const BoardsPage = ({data}) => {
+  console.log(data)
   const [columns, setColumns] = useState(COLUMNS);
   const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR);
   const [orgData, setOrgData] = useState(null);
@@ -272,6 +273,21 @@ const BoardsPage = () => {
     </OrgBoardContext.Provider>
   );
 };
+
+
+export async function getServerSideProps() {
+  try {
+    // const data = await fetchHomeDataFromCMS();
+    const data = {
+      'test': 'org board test'
+    }
+    return {
+      props: { data },
+    };
+  } catch (error) {
+    console.error("Error fetching homepage data", error);
+  }
+}
 
 //export default withAuth(BoardsPage)
 export default withAuth(BoardsPage);
