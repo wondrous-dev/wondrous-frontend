@@ -79,7 +79,9 @@ export const MoreInfoModal = (props) => {
       setUserList(filteredData || []);
       setListLoading(false);
     },
+    fetchPolicy: 'cache-and-network',
   });
+
   const [getPodUsers] = useLazyQuery(GET_POD_USERS, {
     onCompleted: (data) => {
       const userData = data.getPodUsers;
@@ -87,6 +89,7 @@ export const MoreInfoModal = (props) => {
       setUserList(filteredData || []);
       setListLoading(false);
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   useEffect(() => {
