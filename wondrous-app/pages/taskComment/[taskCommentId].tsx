@@ -21,11 +21,13 @@ const TaskRedirect = () => {
     fetchPolicy: 'cache-and-network',
   });
   useEffect(() => {
-    getTaskCommentById({
-      variables: {
-        taskCommentId,
-      },
-    });
+    if (taskCommentId) {
+      getTaskCommentById({
+        variables: {
+          taskCommentId,
+        },
+      });
+    }
   }, [taskCommentId]);
 
   const task = taskData?.getTaskById;

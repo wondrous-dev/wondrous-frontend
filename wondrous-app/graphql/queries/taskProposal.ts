@@ -22,7 +22,9 @@ export const GET_COMMENTS_FOR_TASK_PROPOSAL = gql`
 
 export const GET_TASK_PROPOSAL_COMMENT_BY_ID = gql`
   query getTaskProposalCommentById($proposalCommentId: ID!) {
-    ...CommentFragment
+    getTaskProposalCommentById(proposalCommentId: $proposalCommentId) {
+      ...CommentFragment
+    }
   }
   ${CommentFragment}
 `;

@@ -11,21 +11,23 @@ const TaskRedirect = () => {
   const [getTaskProposalById, { data: taskProposalData }] = useLazyQuery(GET_TASK_PROPOSAL_BY_ID);
   const [getTaskProposalCommentById] = useLazyQuery(GET_TASK_PROPOSAL_COMMENT_BY_ID, {
     onCompleted: (data) => {
-      const taskComment = data?.getTaskCommentById;
+      const taskProposalComment = data?.getTaskProposalCommentById;
       getTaskProposalById({
         variables: {
-          taskId: taskComment?.taskId,
+          proposalId: taskProposalComment?.proposalId,
         },
       });
     },
     fetchPolicy: 'cache-and-network',
   });
   useEffect(() => {
-    getTaskProposalCommentById({
-      variables: {
-        proposalCommentId: taskProposalCommentId,
-      },
-    });
+    if (taskProposalCommentId) {
+      getTaskProposalCommentById({
+        variables: {
+          proposalCommentId: taskProposalCommentId,
+        },
+      });
+    }
   }, [taskProposalCommentId]);
 
   const task = taskProposalData?.getTaskProposalById;
