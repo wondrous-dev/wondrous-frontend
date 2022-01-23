@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { formatDistance } from 'date-fns'
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { formatDistance } from 'date-fns';
 import {
   TaskDescriptionText,
   TaskSectionDisplayDiv,
@@ -22,18 +22,18 @@ import {
   TaskSubmissionLink,
   TaskLink,
   TaskMediaContainer,
-} from './styles'
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
-import { SafeImage } from '../Image'
+} from './styles';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { SafeImage } from '../Image';
 import {
   parseUserPermissionContext,
   transformTaskProposalToTaskProposalCard,
   transformTaskSubmissionToTaskSubmissionCard,
   transformTaskToTaskCard,
-} from '../../../utils/helpers'
-import { RightCaret } from '../Image/RightCaret'
-import CreatePodIcon from '../../Icons/createPod'
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks'
+} from '../../../utils/helpers';
+import { RightCaret } from '../Image/RightCaret';
+import CreatePodIcon from '../../Icons/createPod';
+import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
 import {
   BOUNTY_TYPE,
   ENTITIES_TYPES,
@@ -43,12 +43,12 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
-} from '../../../utils/constants'
-import { White } from '../../../theme/colors'
-import { useMe } from '../../Auth/withAuth'
-import { GetStatusIcon, renderMentionString } from '../../../utils/common'
-import { ImageIcon, LinkIcon, NotesIcon } from '../../Icons/taskModalIcons'
-import DefaultUserImage from '../Image/DefaultUserImage'
+} from '../../../utils/constants';
+import { White } from '../../../theme/colors';
+import { useMe } from '../../Auth/withAuth';
+import { GetStatusIcon, renderMentionString } from '../../../utils/common';
+import { ImageIcon, LinkIcon, NotesIcon } from '../../Icons/taskModalIcons';
+import { DefaultUserImage } from '../Image/DefaultImages';
 import {
   CreateFormButtonsBlock,
   CreateFormCancelButton,
@@ -58,9 +58,9 @@ import {
   MultiMediaUploadButton,
   MultiMediaUploadButtonText,
   TextInputDiv,
-} from '../../CreateEntity/styles'
-import { useRouter } from 'next/router'
-import { CircularProgress } from '@material-ui/core'
+} from '../../CreateEntity/styles';
+import { useRouter } from 'next/router';
+import { CircularProgress } from '@material-ui/core';
 import {
   APPROVE_SUBMISSION,
   ATTACH_SUBMISSION_MEDIA,
@@ -68,33 +68,29 @@ import {
   REMOVE_SUBMISSION_MEDIA,
   REQUEST_CHANGE_SUBMISSION,
   UPDATE_TASK_SUBMISSION,
-} from '../../../graphql/mutations/taskSubmission'
-import UploadImageIcon from '../../Icons/uploadImage'
-import { handleAddFile } from '../../../utils/media'
-import { MediaItem } from '../../CreateEntity/MediaItem'
-import { AddFileUpload } from '../../Icons/addFileUpload'
-import { TextInputContext } from '../../../utils/contexts'
-import { TextInput } from '../../TextInput'
-import { filterOrgUsersForAutocomplete } from '../../CreateEntity/createEntityModal'
-import { GET_ORG_USERS } from '../../../graphql/queries/org'
-import InputForm from '../InputForm/inputForm'
-import { CompletedIcon, InReviewIcon } from '../../Icons/statusIcons'
-import { RejectIcon } from '../../Icons/decisionIcons'
-import { transformMediaFormat } from '../../CreateEntity/editEntityModal'
-import { MediaLink } from './modal'
+} from '../../../graphql/mutations/taskSubmission';
+import UploadImageIcon from '../../Icons/uploadImage';
+import { handleAddFile } from '../../../utils/media';
+import { MediaItem } from '../../CreateEntity/MediaItem';
+import { AddFileUpload } from '../../Icons/addFileUpload';
+import { TextInputContext } from '../../../utils/contexts';
+import { TextInput } from '../../TextInput';
+import { filterOrgUsersForAutocomplete } from '../../CreateEntity/createEntityModal';
+import { GET_ORG_USERS } from '../../../graphql/queries/org';
+import InputForm from '../InputForm/inputForm';
+import { CompletedIcon, InReviewIcon } from '../../Icons/statusIcons';
+import { RejectIcon } from '../../Icons/decisionIcons';
+import { transformMediaFormat } from '../../CreateEntity/editEntityModal';
+import { MediaLink } from './modal';
 
 const SubmissionStatusIcon = (props) => {
-  const { submission } = props
+  const { submission } = props;
   const iconStyle = {
     width: '20px',
     height: '20px',
     marginRight: '8px',
-  }
-  if (
-    !submission?.approvedAt &&
-    !submission?.changeRequestedAt &&
-    !submission.rejectedAt
-  ) {
+  };
+  if (!submission?.approvedAt && !submission?.changeRequestedAt && !submission.rejectedAt) {
     return (
       <div
         style={{
@@ -105,7 +101,7 @@ const SubmissionStatusIcon = (props) => {
         <InReviewIcon style={iconStyle} />
         <TaskStatusHeaderText>Awaiting review</TaskStatusHeaderText>
       </div>
-    )
+    );
   } else if (submission?.changeRequestedAt || submission?.rejectedAt) {
     return (
       <div
@@ -123,7 +119,7 @@ const SubmissionStatusIcon = (props) => {
         />
         <TaskStatusHeaderText>Changes requested</TaskStatusHeaderText>
       </div>
-    )
+    );
   } else if (submission?.approvedAt) {
     return (
       <div
@@ -135,9 +131,9 @@ const SubmissionStatusIcon = (props) => {
         <CompletedIcon style={iconStyle} />
         <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
       </div>
-    )
+    );
   }
-}
+};
 
 const SubmissionItem = (props) => {
   const {
@@ -150,76 +146,68 @@ const SubmissionItem = (props) => {
     fetchedTaskSubmissions,
     setFetchedTaskSubmissions,
     handleClose,
-  } = props
-  const router = useRouter()
-  const user = useMe()
-  const mediaUploads = submission?.media
+  } = props;
+  const router = useRouter();
+  const user = useMe();
+  const mediaUploads = submission?.media;
   const imageStyle = {
     width: '40px',
     height: '40px',
     borderRadius: '20px',
     marginRight: '12px',
-  }
-  const isCreator = user?.id === submission?.createdBy
-  const orgBoard = useOrgBoard()
+  };
+  const isCreator = user?.id === submission?.createdBy;
+  const orgBoard = useOrgBoard();
 
-  const podBoard = usePodBoard()
-  const userBoard = useUserBoard()
-  const board = orgBoard || podBoard || userBoard
+  const podBoard = usePodBoard();
+  const userBoard = useUserBoard();
+  const board = orgBoard || podBoard || userBoard;
   // TODO: add user board
   const completeTask = () => {
     const newTask = {
       ...fetchedTask,
       completedAt: new Date(),
       status: TASK_STATUS_DONE,
-    }
-    const transformedTask = transformTaskToTaskCard(newTask, {})
+    };
+    const transformedTask = transformTaskToTaskCard(newTask, {});
     if (board) {
-      const columns = [...board?.columns]
-      const newInProgress = columns[1].tasks.filter(
-        (task) => task.id !== fetchedTask.id
-      )
-      const newDone = [transformedTask, ...columns[2].tasks]
-      const newInReview = (columns[1].section.tasks =
-        columns[1].section.tasks.filter(
-          (taskSubmission) => taskSubmission.id !== submission?.id
-        ))
-      columns[1].tasks = newInProgress
-      columns[1].section.tasks = newInReview
-      columns[2].tasks = newDone
-      board?.setColumns(columns)
+      const columns = [...board?.columns];
+      const newInProgress = columns[1].tasks.filter((task) => task.id !== fetchedTask.id);
+      const newDone = [transformedTask, ...columns[2].tasks];
+      const newInReview = (columns[1].section.tasks = columns[1].section.tasks.filter(
+        (taskSubmission) => taskSubmission.id !== submission?.id
+      ));
+      columns[1].tasks = newInProgress;
+      columns[1].section.tasks = newInReview;
+      columns[2].tasks = newDone;
+      board?.setColumns(columns);
     }
     //TODO: add pod board and user board
-  }
+  };
   const [approveSubmission] = useMutation(APPROVE_SUBMISSION, {
     variables: {
       submissionId: submission?.id,
     },
     onCompleted: () => {
       // Change status of submission
-      const newFetchedTaskSubmissions = fetchedTaskSubmissions.map(
-        (taskSubmission) => {
-          if (taskSubmission?.id === submission?.id) {
-            return {
-              ...taskSubmission,
-              approvedAt: new Date(),
-            }
-          }
+      const newFetchedTaskSubmissions = fetchedTaskSubmissions.map((taskSubmission) => {
+        if (taskSubmission?.id === submission?.id) {
+          return {
+            ...taskSubmission,
+            approvedAt: new Date(),
+          };
         }
-      )
-      setFetchedTaskSubmissions(newFetchedTaskSubmissions)
+      });
+      setFetchedTaskSubmissions(newFetchedTaskSubmissions);
       if (fetchedTask.type !== BOUNTY_TYPE) {
-        completeTask()
-        handleClose()
-        document.body.setAttribute('style', `position: relative;`)
-        window?.scrollTo(0, window.scrollY)
+        completeTask();
+        handleClose();
+        document.body.setAttribute('style', `position: relative;`);
+        window?.scrollTo(0, window.scrollY);
       }
     },
-    refetchQueries: [
-      'getOrgTaskBoardSubmissions',
-      'getPerStatusTaskCountForOrgBoard',
-    ],
-  })
+    refetchQueries: ['getOrgTaskBoardSubmissions', 'getPerStatusTaskCountForOrgBoard'],
+  });
   const [requestChangeSubmission] = useMutation(REQUEST_CHANGE_SUBMISSION, {
     variables: {
       submissionId: submission?.id,
@@ -227,28 +215,23 @@ const SubmissionItem = (props) => {
     onCompleted: () => {
       // Change status of submission
       // Change status of submission
-      const newFetchedTaskSubmissions = fetchedTaskSubmissions.map(
-        (taskSubmission) => {
-          if (taskSubmission?.id === submission?.id) {
-            return {
-              ...taskSubmission,
-              changeRequestedAt: new Date(),
-            }
-          }
+      const newFetchedTaskSubmissions = fetchedTaskSubmissions.map((taskSubmission) => {
+        if (taskSubmission?.id === submission?.id) {
+          return {
+            ...taskSubmission,
+            changeRequestedAt: new Date(),
+          };
         }
-      )
-      setFetchedTaskSubmissions(newFetchedTaskSubmissions)
+      });
+      setFetchedTaskSubmissions(newFetchedTaskSubmissions);
     },
     refetchQueries: ['getOrgTaskBoardSubmissions'],
-  })
+  });
   return (
     <TaskSubmissionItemDiv>
       <TaskSubmissionHeader>
         {submission?.creatorProfilePicture ? (
-          <SafeImage
-            style={imageStyle}
-            src={submission?.creatorProfilePicture}
-          />
+          <SafeImage style={imageStyle} src={submission?.creatorProfilePicture} />
         ) : (
           <DefaultUserImage style={imageStyle} />
         )}
@@ -259,9 +242,7 @@ const SubmissionItem = (props) => {
               alignItems: 'center',
             }}
           >
-            <TaskSubmissionHeaderCreatorText>
-              {submission.creatorUsername}
-            </TaskSubmissionHeaderCreatorText>
+            <TaskSubmissionHeaderCreatorText>{submission.creatorUsername}</TaskSubmissionHeaderCreatorText>
             {submission.createdAt && (
               <TaskSubmissionHeaderTimeText>
                 {formatDistance(new Date(submission.createdAt), new Date(), {
@@ -310,9 +291,7 @@ const SubmissionItem = (props) => {
           <TaskSectionDisplayText>Link </TaskSectionDisplayText>
         </TaskSectionDisplayLabel>
         {submission?.links && submission?.links[0]?.url ? (
-          <TaskSubmissionLink href={submission?.links[0]?.url}>
-            {submission?.links[0]?.url}
-          </TaskSubmissionLink>
+          <TaskSubmissionLink href={submission?.links[0]?.url}>{submission?.links[0]?.url}</TaskSubmissionLink>
         ) : (
           <>
             <TaskDescriptionText
@@ -360,8 +339,8 @@ const SubmissionItem = (props) => {
                   </CreateFormCancelButton> */}
                 <CreateFormPreviewButton
                   onClick={() => {
-                    setMakeSubmission(true)
-                    setSubmissionToEdit(submission)
+                    setMakeSubmission(true);
+                    setSubmissionToEdit(submission);
                   }}
                 >
                   Edit submission
@@ -372,14 +351,10 @@ const SubmissionItem = (props) => {
               <>
                 <CreateFormButtonsBlock>
                   {!submission.changeRequestedAt && !submission.approvedAt && (
-                    <CreateFormCancelButton onClick={requestChangeSubmission}>
-                      Request changes
-                    </CreateFormCancelButton>
+                    <CreateFormCancelButton onClick={requestChangeSubmission}>Request changes</CreateFormCancelButton>
                   )}
                   {!submission.approvedAt && (
-                    <CreateFormPreviewButton onClick={approveSubmission}>
-                      Approve
-                    </CreateFormPreviewButton>
+                    <CreateFormPreviewButton onClick={approveSubmission}>Approve</CreateFormPreviewButton>
                   )}
                 </CreateFormButtonsBlock>
               </>
@@ -388,93 +363,68 @@ const SubmissionItem = (props) => {
         </>
       )}
     </TaskSubmissionItemDiv>
-  )
-}
+  );
+};
 
 const TaskSubmissionForm = (props) => {
-  const {
-    setFetchedTaskSubmissions,
-    cancelSubmissionForm,
-    fetchedTaskSubmissions,
-    orgId,
-    taskId,
-    submissionToEdit,
-  } = props
-  const orgBoard = useOrgBoard()
-  const podBoard = usePodBoard()
-  const userBoard = useUserBoard()
-  const board = orgBoard || podBoard || userBoard
-  const [mediaUploads, setMediaUploads] = useState(
-    transformMediaFormat(submissionToEdit?.media) || []
-  )
-  const [descriptionText, setDescriptionText] = useState(
-    submissionToEdit?.description || ''
-  )
+  const { setFetchedTaskSubmissions, cancelSubmissionForm, fetchedTaskSubmissions, orgId, taskId, submissionToEdit } =
+    props;
+  const orgBoard = useOrgBoard();
+  const podBoard = usePodBoard();
+  const userBoard = useUserBoard();
+  const board = orgBoard || podBoard || userBoard;
+  const [mediaUploads, setMediaUploads] = useState(transformMediaFormat(submissionToEdit?.media) || []);
+  const [descriptionText, setDescriptionText] = useState(submissionToEdit?.description || '');
 
-  const [link, setLink] = useState(
-    (submissionToEdit?.links && submissionToEdit?.links[0]?.url) || ''
-  )
+  const [link, setLink] = useState((submissionToEdit?.links && submissionToEdit?.links[0]?.url) || '');
   const [createTaskSubmission] = useMutation(CREATE_TASK_SUBMISSION, {
     onCompleted: (data) => {
-      const taskSubmission = data?.createTaskSubmission
-      const transformedTaskSubmission =
-        transformTaskSubmissionToTaskSubmissionCard(taskSubmission, {})
-      setFetchedTaskSubmissions([
-        transformedTaskSubmission,
-        ...fetchedTaskSubmissions,
-      ])
+      const taskSubmission = data?.createTaskSubmission;
+      const transformedTaskSubmission = transformTaskSubmissionToTaskSubmissionCard(taskSubmission, {});
+      setFetchedTaskSubmissions([transformedTaskSubmission, ...fetchedTaskSubmissions]);
       if (board) {
-        const columns = board?.columns
-        const newColumns = [...columns]
-        newColumns[1].section.tasks = [
-          transformedTaskSubmission,
-          ...newColumns[1].section.tasks,
-        ]
+        const columns = board?.columns;
+        const newColumns = [...columns];
+        newColumns[1].section.tasks = [transformedTaskSubmission, ...newColumns[1].section.tasks];
         if (board?.setColumns) {
-          board?.setColumns(newColumns)
+          board?.setColumns(newColumns);
         }
       }
 
       if (cancelSubmissionForm) {
-        cancelSubmissionForm()
+        cancelSubmissionForm();
       }
     },
-    refetchQueries: [
-      'getOrgTaskBoardSubmissions',
-      'getPerStatusTaskCountForOrgBoard',
-    ],
-  })
+    refetchQueries: ['getOrgTaskBoardSubmissions', 'getPerStatusTaskCountForOrgBoard'],
+  });
   const [updateTaskSubmission] = useMutation(UPDATE_TASK_SUBMISSION, {
     onCompleted: (data) => {
-      const taskSubmission = data?.updateTaskSubmission
-      const transformedTaskSubmission =
-        transformTaskSubmissionToTaskSubmissionCard(taskSubmission, {})
-      const newFetchedTaskSubmissions = fetchedTaskSubmissions.map(
-        (fetchedTaskSubmission) => {
-          if (taskSubmission?.id === fetchedTaskSubmission?.id) {
-            return transformedTaskSubmission
-          }
-          return fetchedTaskSubmission
+      const taskSubmission = data?.updateTaskSubmission;
+      const transformedTaskSubmission = transformTaskSubmissionToTaskSubmissionCard(taskSubmission, {});
+      const newFetchedTaskSubmissions = fetchedTaskSubmissions.map((fetchedTaskSubmission) => {
+        if (taskSubmission?.id === fetchedTaskSubmission?.id) {
+          return transformedTaskSubmission;
         }
-      )
-      setFetchedTaskSubmissions(newFetchedTaskSubmissions)
+        return fetchedTaskSubmission;
+      });
+      setFetchedTaskSubmissions(newFetchedTaskSubmissions);
       if (cancelSubmissionForm) {
-        cancelSubmissionForm()
+        cancelSubmissionForm();
       }
     },
     refetchQueries: ['getOrgTaskBoardSubmissions'],
-  })
-  const [attachTaskSubmissionMedia] = useMutation(ATTACH_SUBMISSION_MEDIA)
-  const [removeTaskSubmissionMedia] = useMutation(REMOVE_SUBMISSION_MEDIA)
+  });
+  const [attachTaskSubmissionMedia] = useMutation(ATTACH_SUBMISSION_MEDIA);
+  const [removeTaskSubmissionMedia] = useMutation(REMOVE_SUBMISSION_MEDIA);
 
   const { data: orgUsersData } = useQuery(GET_ORG_USERS, {
     variables: {
       orgId,
     },
-  })
+  });
 
-  const inputRef: any = useRef()
-  let removeItem = null
+  const inputRef: any = useRef();
+  let removeItem = null;
   return (
     <>
       <TaskSectionDisplayDiv>
@@ -504,34 +454,21 @@ const TaskSubmissionForm = (props) => {
                               slug: mediaItem?.uploadSlug,
                             },
                             onCompleted: () => {
-                              const newFetchedTaskSubmissions =
-                                fetchedTaskSubmissions.map(
-                                  (fetchedTaskSubmission) => {
-                                    if (
-                                      fetchedTaskSubmission?.id ===
-                                      submissionToEdit?.id
-                                    ) {
-                                      const newMedia = mediaUploads.filter(
-                                        (mediaUpload) => {
-                                          return (
-                                            mediaUpload?.uploadSlug !==
-                                            mediaItem?.uploadSlug
-                                          )
-                                        }
-                                      )
-                                      const newTaskSubmission = {
-                                        ...fetchedTaskSubmission,
-                                        media: newMedia,
-                                      }
-                                      return newTaskSubmission
-                                    }
-                                  }
-                                )
-                              setFetchedTaskSubmissions(
-                                newFetchedTaskSubmissions
-                              )
+                              const newFetchedTaskSubmissions = fetchedTaskSubmissions.map((fetchedTaskSubmission) => {
+                                if (fetchedTaskSubmission?.id === submissionToEdit?.id) {
+                                  const newMedia = mediaUploads.filter((mediaUpload) => {
+                                    return mediaUpload?.uploadSlug !== mediaItem?.uploadSlug;
+                                  });
+                                  const newTaskSubmission = {
+                                    ...fetchedTaskSubmission,
+                                    media: newMedia,
+                                  };
+                                  return newTaskSubmission;
+                                }
+                              });
+                              setFetchedTaskSubmissions(newFetchedTaskSubmissions);
                             },
-                          })
+                          });
                         }
                       : null
                   }
@@ -539,7 +476,7 @@ const TaskSubmissionForm = (props) => {
               ))}
               <AddFileUpload
                 onClick={() => {
-                  inputRef.current.click()
+                  inputRef.current.click();
                 }}
                 style={{
                   cursor: 'pointer',
@@ -558,9 +495,7 @@ const TaskSubmissionForm = (props) => {
                   marginRight: '8px',
                 }}
               />
-              <MultiMediaUploadButtonText>
-                Upload file
-              </MultiMediaUploadButtonText>
+              <MultiMediaUploadButtonText>Upload file</MultiMediaUploadButtonText>
             </MultiMediaUploadButton>
           )}
           <input
@@ -573,7 +508,7 @@ const TaskSubmissionForm = (props) => {
                 filePrefix: 'tmp/task/new/',
                 mediaUploads,
                 setMediaUploads,
-              })
+              });
               if (submissionToEdit) {
                 attachTaskSubmissionMedia({
                   variables: {
@@ -583,21 +518,18 @@ const TaskSubmissionForm = (props) => {
                     },
                   },
                   onCompleted: () => {
-                    const newFetchedTaskSubmissions =
-                      fetchedTaskSubmissions.map((fetchedTaskSubmission) => {
-                        if (
-                          fetchedTaskSubmission?.id === submissionToEdit?.id
-                        ) {
-                          const newTaskSubmission = {
-                            ...fetchedTaskSubmission,
-                            media: [...mediaUploads, fileToAdd],
-                          }
-                          return newTaskSubmission
-                        }
-                      })
-                    setFetchedTaskSubmissions(newFetchedTaskSubmissions)
+                    const newFetchedTaskSubmissions = fetchedTaskSubmissions.map((fetchedTaskSubmission) => {
+                      if (fetchedTaskSubmission?.id === submissionToEdit?.id) {
+                        const newTaskSubmission = {
+                          ...fetchedTaskSubmission,
+                          media: [...mediaUploads, fileToAdd],
+                        };
+                        return newTaskSubmission;
+                      }
+                    });
+                    setFetchedTaskSubmissions(newFetchedTaskSubmissions);
                   },
-                })
+                });
               }
             }}
           />
@@ -674,9 +606,7 @@ const TaskSubmissionForm = (props) => {
       </TaskSectionDisplayDiv>
       <CreateFormFooterButtons>
         <CreateFormButtonsBlock>
-          <CreateFormCancelButton onClick={cancelSubmissionForm}>
-            Cancel
-          </CreateFormCancelButton>
+          <CreateFormCancelButton onClick={cancelSubmissionForm}>Cancel</CreateFormCancelButton>
           <CreateFormPreviewButton
             onClick={() => {
               if (submissionToEdit) {
@@ -693,7 +623,7 @@ const TaskSubmissionForm = (props) => {
                       ],
                     },
                   },
-                })
+                });
               } else {
                 createTaskSubmission({
                   variables: {
@@ -709,7 +639,7 @@ const TaskSubmissionForm = (props) => {
                       mediaUploads,
                     },
                   },
-                })
+                });
               }
             }}
           >
@@ -718,11 +648,11 @@ const TaskSubmissionForm = (props) => {
         </CreateFormButtonsBlock>
       </CreateFormFooterButtons>
     </>
-  )
-}
+  );
+};
 
 const MakeSubmissionBlock = (props) => {
-  const { fetchedTask, setMakeSubmission, prompt } = props
+  const { fetchedTask, setMakeSubmission, prompt } = props;
 
   return (
     <MakeSubmissionDiv>
@@ -766,15 +696,13 @@ const MakeSubmissionBlock = (props) => {
                 flex: 1,
               }}
             />
-            <CreateFormPreviewButton onClick={() => setMakeSubmission(true)}>
-              {prompt}
-            </CreateFormPreviewButton>
+            <CreateFormPreviewButton onClick={() => setMakeSubmission(true)}>{prompt}</CreateFormPreviewButton>
           </>
         )}
       </TaskSectionInfoDiv>
     </MakeSubmissionDiv>
-  )
-}
+  );
+};
 
 export const TaskSubmissionContent = (props) => {
   const {
@@ -792,17 +720,14 @@ export const TaskSubmissionContent = (props) => {
     orgId,
     setFetchedTaskSubmissions,
     handleClose,
-  } = props
+  } = props;
 
-  const [submissionToEdit, setSubmissionToEdit] = useState(null)
+  const [submissionToEdit, setSubmissionToEdit] = useState(null);
 
   if (taskSubmissionLoading) {
-    return <CircularProgress />
+    return <CircularProgress />;
   }
-  if (
-    (canSubmit || canMoveProgress) &&
-    fetchedTask?.status === TASK_STATUS_TODO
-  ) {
+  if ((canSubmit || canMoveProgress) && fetchedTask?.status === TASK_STATUS_TODO) {
     return (
       <div
       // style={{
@@ -810,9 +735,7 @@ export const TaskSubmissionContent = (props) => {
       //   alignItems: 'center',
       // }}
       >
-        <TaskTabText>
-          To submit task submissions please first move this to in progress
-        </TaskTabText>
+        <TaskTabText>To submit task submissions please first move this to in progress</TaskTabText>
         <CreateFormPreviewButton
           style={{
             marginTop: '16px',
@@ -826,39 +749,32 @@ export const TaskSubmissionContent = (props) => {
                 },
               },
               onCompleted: (data) => {
-                const task = data?.updateTaskStatus
+                const task = data?.updateTaskStatus;
                 if (board?.setColumns && task?.orgId === board?.orgId) {
-                  const transformedTask = transformTaskToTaskCard(task, {})
+                  const transformedTask = transformTaskToTaskCard(task, {});
 
-                  const columns = [...board?.columns]
+                  const columns = [...board?.columns];
                   columns[0].tasks = columns[0].tasks.filter((existingTask) => {
                     if (transformedTask?.id !== existingTask?.id) {
-                      return existingTask
+                      return existingTask;
                     }
-                  })
-                  columns[1].tasks = [transformedTask, ...columns[1].tasks]
-                  board.setColumns(columns)
+                  });
+                  columns[1].tasks = [transformedTask, ...columns[1].tasks];
+                  board.setColumns(columns);
                 }
               },
-            })
+            });
           }}
         >
           Set to in progress
         </CreateFormPreviewButton>
       </div>
-    )
+    );
   }
-  if (
-    !canSubmit &&
-    fetchedTaskSubmissions?.length === 0 &&
-    fetchedTask?.assigneeUsername
-  ) {
+  if (!canSubmit && fetchedTaskSubmissions?.length === 0 && fetchedTask?.assigneeUsername) {
     return (
-      <TaskTabText>
-        None at the moment. Only @{fetchedTask?.assigneeUsername} can create a
-        submission{' '}
-      </TaskTabText>
-    )
+      <TaskTabText>None at the moment. Only @{fetchedTask?.assigneeUsername} can create a submission </TaskTabText>
+    );
   }
   if (canSubmit && fetchedTaskSubmissions?.length === 0) {
     return (
@@ -875,10 +791,11 @@ export const TaskSubmissionContent = (props) => {
           <MakeSubmissionBlock
             fetchedTask={fetchedTask}
             prompt={'Make a submission'}
+            setMakeSubmission={setMakeSubmission}
           />
         )}
       </>
-    )
+    );
   }
   if (makeSubmission && submissionToEdit) {
     return (
@@ -886,15 +803,15 @@ export const TaskSubmissionContent = (props) => {
         setFetchedTaskSubmissions={setFetchedTaskSubmissions}
         isEdit={true}
         cancelSubmissionForm={() => {
-          setMakeSubmission(false)
-          setSubmissionToEdit(null)
+          setMakeSubmission(false);
+          setSubmissionToEdit(null);
         }}
         fetchedTaskSubmissions={fetchedTaskSubmissions}
         orgId={orgId}
         taskId={fetchedTask?.id}
         submissionToEdit={submissionToEdit}
       />
-    )
+    );
   }
 
   if (fetchedTaskSubmissions?.length > 0) {
@@ -928,17 +845,14 @@ export const TaskSubmissionContent = (props) => {
                   handleClose={handleClose}
                   setFetchedTaskSubmissions={setFetchedTaskSubmissions}
                   fetchedTaskSubmissions={fetchedTaskSubmissions}
-                  submission={transformTaskSubmissionToTaskSubmissionCard(
-                    taskSubmission,
-                    {}
-                  )}
+                  submission={transformTaskSubmissionToTaskSubmissionCard(taskSubmission, {})}
                 />
-              )
+              );
             })}
           </>
         )}
       </>
-    )
+    );
   }
-  return null
-}
+  return null;
+};

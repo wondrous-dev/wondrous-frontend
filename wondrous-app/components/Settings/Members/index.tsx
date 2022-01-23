@@ -114,11 +114,14 @@ const Members = (props) => {
   const { orgId, podId } = router.query;
   const [hasMore, setHasMore] = useState(false);
   const [users, setUsers] = useState([]);
-
+  const [firstTimeFetch, setFirstTimeFetch] = useState(false);
   const [getOrgUsers, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_USERS, {
     onCompleted: (data) => {
-      setUsers(data?.getOrgUsers);
-      setHasMore(data?.hasMore || data?.getOrgUsers.length >= LIMIT);
+      if (!firstTimeFetch) {
+        setUsers(data?.getOrgUsers);
+        setHasMore(data?.hasMore || data?.getOrgUsers.length >= LIMIT);
+        setFirstTimeFetch(true);
+      }
     },
     fetchPolicy: 'network-only',
   });
@@ -167,41 +170,34 @@ const Members = (props) => {
     if (hasMore) {
       fetchMore({
         variables: {
-          offset: roleList.length,
+          offset: users.length,
           limit: LIMIT,
         },
-        updateQuery: (prev, { fetchMoreResult }) => {
+      })
+        .then((fetchMoreResult) => {
           if (orgId) {
-            const hasMore = fetchMoreResult.getOrgUsers.length >= LIMIT;
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            if (!hasMore) {
+            const orgUsers = fetchMoreResult?.data?.getOrgUsers;
+            const hasMore = orgUsers.length >= LIMIT;
+            if (hasMore) {
+              setUsers([...users, ...orgUsers]);
+            } else {
               setHasMore(false);
             }
-            return {
-              hasMore,
-              getOrgUsers: prev.getOrgUsers.concat(fetchMoreResult.getOrgUsers),
-            };
           } else if (podId) {
-            const hasMore = fetchMoreResult.getPodUsers.length >= LIMIT;
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            if (!hasMore) {
+            const podUsers = fetchMoreResult?.data?.getPodUsers;
+            const hasMore = podUsers.length >= LIMIT;
+            if (hasMore) {
+              setUsers([...users, ...podUsers]);
+            } else {
               setHasMore(false);
             }
-            return {
-              hasMore,
-              getPodUsers: prev.getPodUsers.concat(fetchMoreResult.getPodUsers),
-            };
           }
-        },
-      }).catch((error) => {
-        console.error(error);
-      });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }
-  }, [hasMore, roleList, fetchMore, orgId, podId]);
+  }, [hasMore, users, fetchMore, orgId, podId]);
 
   return (
     <SettingsWrapper>
