@@ -96,6 +96,7 @@ const BoardsPage = () => {
   const [columns, setColumns] = useState(COLUMNS);
   const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR);
   const [orgData, setOrgData] = useState(null);
+  const [firstTimeFetch, setFirstTimeFetch] = useState(false);
   const router = useRouter();
   const { username, orgId } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
@@ -133,18 +134,21 @@ const BoardsPage = () => {
 
   const [getOrgTasks, { fetchMore, variables: getOrgTasksVariables }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     onCompleted: (data) => {
-      const tasks = data?.getOrgTaskBoardTasks;
-      const newColumns = columns.map((column) => {
-        column.tasks = [];
-        return tasks.reduce((column, task) => {
-          if (column.status === task.status) {
-            column.tasks = [...column.tasks, task];
-          }
-          return column;
-        }, column);
-      });
-      setColumns(newColumns);
-      setOrgTaskHasMore(data?.hasMore || data?.getOrgTaskBoardTasks.length >= LIMIT);
+      if (!firstTimeFetch) {
+        const tasks = data?.getOrgTaskBoardTasks;
+        const newColumns = columns.map((column) => {
+          column.tasks = [];
+          return tasks.reduce((column, task) => {
+            if (column.status === task.status) {
+              column.tasks = [...column.tasks, task];
+            }
+            return column;
+          }, column);
+        });
+        setColumns(newColumns);
+        setOrgTaskHasMore(data?.getOrgTaskBoardTasks.length >= LIMIT);
+        setFirstTimeFetch(true);
+      }
     },
     fetchPolicy: 'cache-and-network',
   });
@@ -225,21 +229,21 @@ const BoardsPage = () => {
           offset: Math.max(...columns.map(({ tasks }) => tasks.length)),
           limit: LIMIT,
         },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          const hasMore = fetchMoreResult.getOrgTaskBoardTasks.length >= LIMIT;
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          if (!hasMore) {
-            setOrgTaskHasMore(false);
-          }
-          return {
-            hasMore,
-            getOrgTaskBoardTasks: prev.getOrgTaskBoardTasks.concat(fetchMoreResult.getOrgTaskBoardTasks),
-          };
-        },
-      }).catch((error) => {
-        console.error(error);
+      }).then((fetchMoreResult) => {
+        const results = fetchMoreResult?.data?.getOrgTaskBoardTasks;
+        if (results && results?.length > 0) {
+          const newColumns = columns.map((column) => {
+            return results.reduce((column, task) => {
+              if (column.status === task.status) {
+                column.tasks = [...column.tasks, task];
+              }
+              return column;
+            }, column);
+          });
+          setColumns(newColumns);
+        } else {
+          setOrgTaskHasMore(false);
+        }
       });
     }
   }, [orgTaskHasMore, columns, fetchMore]);
