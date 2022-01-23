@@ -92,3 +92,12 @@ export const UPDATE_TASK_ASSIGNEE = gql`
   }
   ${TaskFragment}
 `;
+
+export const CREATE_MILESTONE = gql`
+  mutation createMilestone($input: TaskInput) {
+    createMilestone(input: $input) {
+      ...TaskFragment
+    }
+  }
+  ${TaskFragment}
+`;
