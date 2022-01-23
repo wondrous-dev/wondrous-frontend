@@ -83,3 +83,12 @@ export const DELETE_TASK_COMMENT = gql`
     }
   }
 `;
+
+export const CREATE_MILESTONE = gql`
+  mutation createMilestone($input: TaskInput) {
+    createMilestone(input: $input) {
+      ...TaskFragment
+    }
+  }
+  ${TaskFragment}
+`
