@@ -48,7 +48,7 @@ import { White } from '../../../theme/colors';
 import { useMe } from '../../Auth/withAuth';
 import { GetStatusIcon, renderMentionString } from '../../../utils/common';
 import { ImageIcon, LinkIcon, NotesIcon } from '../../Icons/taskModalIcons';
-import { DefaultUserImage } from '../Image/DefaultImages';
+import DefaultUserImage from '../Image/DefaultUserImage';
 import {
   CreateFormButtonsBlock,
   CreateFormCancelButton,
