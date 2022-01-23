@@ -65,7 +65,7 @@ import {
   RejectIcon,
   ReviewerIcon,
 } from '../../Icons/taskModalIcons';
-import { DefaultUserImage } from '../Image/DefaultImages';
+import DefaultUserImage from '../Image/DefaultUserImage';
 import EditLayoutBaseModal from '../../CreateEntity/editEntityModal';
 import { ArchiveTaskModal } from '../ArchiveTaskModal';
 import { SnackbarAlertContext } from '../SnackbarAlert';

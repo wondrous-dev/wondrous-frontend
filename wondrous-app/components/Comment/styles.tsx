@@ -2,7 +2,7 @@ import { Typography } from '@material-ui/core'
 import styled from 'styled-components'
 import { White } from '../../theme/colors'
 import { SafeImage } from '../Common/Image'
-import { DefaultUserImage } from '../Common/Image/DefaultImages'
+import DefaultUserImage from '../Common/Image/DefaultUserImage'
 import { CreateFormPreviewButton } from '../CreateEntity/styles'
 
 export const CommentListWrapper = styled.div`
