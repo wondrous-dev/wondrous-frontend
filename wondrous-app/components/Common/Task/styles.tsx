@@ -287,11 +287,11 @@ export const MakeSubmissionDiv = styled.div`
 
 export const TaskSubmissionItemDiv = styled.div`
   padding: 30px;
-  & :not(:last-child) {
+  &:not(:last-child) {
     border-bottom: 1px solid #363636;
   }
 
-  & :last-child {
+  & > :last-child {
     margin-bottom: 32px;
   }
 `;
