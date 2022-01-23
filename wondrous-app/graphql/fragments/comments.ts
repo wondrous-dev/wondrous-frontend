@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client'
+import { gql } from '@apollo/client';
 
 export const CommentFragment = gql`
   fragment CommentFragment on Comment {
@@ -13,5 +13,7 @@ export const CommentFragment = gql`
     userId
     actorProfilePicture
     reactionCount
+    taskId
+    proposalId
   }
-`
+`;

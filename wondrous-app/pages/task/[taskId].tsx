@@ -1,7 +1,7 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import { GET_TASK_BY_ID } from '../../graphql/queries';
+import { GET_TASK_BY_ID } from '../../graphql/queries/task';
 import AppLayout from '../../components/Common/Layout/App';
 import { CircularProgress } from '@material-ui/core';
 const TaskRedirect = () => {

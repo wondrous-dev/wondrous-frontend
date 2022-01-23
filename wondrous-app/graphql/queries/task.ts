@@ -58,3 +58,12 @@ export const GET_TASK_SUBMISSION_BY_ID = gql`
   }
   ${TaskSubmissionFragment}
 `;
+
+export const GET_TASK_COMMENT_BY_ID = gql`
+  query getTaskCommentById($taskCommentId: ID!) {
+    getTaskCommentById(taskCommentId: $taskCommentId) {
+      ...CommentFragment
+    }
+  }
+  ${CommentFragment}
+`;

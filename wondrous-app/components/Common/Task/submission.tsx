@@ -307,6 +307,8 @@ const SubmissionItem = (props) => {
       <TaskSectionDisplayDiv
         style={{
           alignItems: 'flex-start',
+          flexWrap: 'nowrap',
+          textAlign: 'left',
         }}
       >
         <TaskSectionDisplayLabel

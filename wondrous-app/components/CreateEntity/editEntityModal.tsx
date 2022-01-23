@@ -870,7 +870,6 @@ const EditLayoutBaseModal = (props) => {
                     {...params}
                   />
                 )}
-                PopperComponent={AutocompleteList}
                 value={assignee}
                 inputValue={assigneeString}
                 onInputChange={(event, newInputValue) => {

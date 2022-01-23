@@ -87,3 +87,7 @@ input::-webkit-inner-spin-button {
 input[type='number'] {
   -moz-appearance: textfield;
 }
+
+.MuiAutocomplete-listbox {
+  background: #0f0f0f !important;
+}
