@@ -20,7 +20,6 @@ export const DrawerComponent = styled(Drawer)`
 `
 
 export const DrawerContainer = styled.div`
-	min-height: 740px;
 	width: ${SIDEBAR_WIDTH};
 	display: flex;
 	flex-grow: 1;
