@@ -75,6 +75,7 @@ import {
   AutocompleteList,
   OptionDiv,
   OptionTypography,
+  EditAutocompleteList,
 } from './styles';
 import SelectDownIcon from '../Icons/selectDownIcon';
 import UploadImageIcon from '../Icons/uploadImage';
@@ -870,7 +871,6 @@ const EditLayoutBaseModal = (props) => {
                     {...params}
                   />
                 )}
-                PopperComponent={AutocompleteList}
                 value={assignee}
                 inputValue={assigneeString}
                 onInputChange={(event, newInputValue) => {
