@@ -110,6 +110,7 @@ const KanbanBoard = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasQuery, orgBoard || userBoard || podBoard]);
   const { dndArea, handleRef, html5Options } = useDndProvider();
+
   return (
     <>
       <KanbanBoardContainer ref={handleRef}>

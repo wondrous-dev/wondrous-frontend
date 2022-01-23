@@ -254,6 +254,14 @@ const BoardsPage = () => {
       });
     }
   }, [orgTaskHasMore, columns, fetchMore]);
+  if (!process.env.NEXT_PUBLIC_PRODUCTION) {
+    console.log(
+      'user permissions context',
+      userPermissionsContext?.getUserPermissionContext
+        ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+        : null
+    );
+  }
   return (
     <OrgBoardContext.Provider
       value={{

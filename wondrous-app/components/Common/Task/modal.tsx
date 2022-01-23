@@ -566,7 +566,12 @@ export const TaskViewModal = (props) => {
     fetchedTask?.createdBy === user?.id ||
     (fetchedTask?.assigneeId && fetchedTask?.assigneeId === user?.id);
   const canReview = permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.REVIEW_TASK);
-
+  if (!process.env.NEXT_PUBLIC_PRODUCTION) {
+    console.log('permission context in task modal', userPermissionsContext);
+    console.log('user permissions in task modal', permissions);
+    console.log('canEdit', canEdit);
+    console.log('can Review', canReview);
+  }
   const displayDivProfileImageStyle = {
     width: '26px',
     height: '26px',
