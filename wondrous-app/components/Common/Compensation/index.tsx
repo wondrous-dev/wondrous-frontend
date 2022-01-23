@@ -1,15 +1,10 @@
-import { ToDo } from '../../Icons'
-import { WonderCoin } from '../../Icons/wonderCoin'
-import { SafeImage } from '../Image'
-import {
-  CompensationWrapper,
-  IconContainer,
-  CompensationPill,
-  CompensationAmount,
-} from './styles'
+import { ToDo } from '../../Icons';
+import { WonderCoin } from '../../Icons/wonderCoin';
+import { SafeImage } from '../Image';
+import { CompensationWrapper, IconContainer, CompensationPill, CompensationAmount } from './styles';
 
 export const Compensation = (props) => {
-  const { icon, symbol, tokenName, rewardAmount } = props?.compensation
+  const { icon, symbol, tokenName, rewardAmount } = props?.compensation || {};
 
   return (
     <CompensationWrapper key={props.id}>
@@ -27,5 +22,5 @@ export const Compensation = (props) => {
         <CompensationAmount>{rewardAmount}</CompensationAmount>
       </CompensationPill>
     </CompensationWrapper>
-  )
-}
+  );
+};
