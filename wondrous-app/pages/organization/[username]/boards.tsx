@@ -130,7 +130,7 @@ const BoardsPage = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const [getOrgBoardTaskCount, { data: orgTaskCountData }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD);
+  const [getOrgBoardTaskCount, { data: orgTaskCountData, variables: getOrgBoardTaskCountVariables }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD);
 
   const [getOrgTasks, { fetchMore, variables: getOrgTasksVariables }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     onCompleted: (data) => {
@@ -138,7 +138,11 @@ const BoardsPage = () => {
         const tasks = data?.getOrgTaskBoardTasks;
         const newColumns = columns.map((column) => {
           column.tasks = [];
+          column.section.tasks = []
           return tasks.reduce((column, task) => {
+            if (column.status === "completed" && task.status === "archived") {
+              column.section.tasks = [...column.section.tasks, task]
+            }
             if (column.status === task.status) {
               column.tasks = [...column.tasks, task];
             }
@@ -256,10 +260,12 @@ const BoardsPage = () => {
         setColumns,
         orgId: orgData?.id,
         taskCount: orgTaskCountData?.getPerStatusTaskCountForOrgBoard,
+        getOrgBoardTaskCountVariables,
         userPermissionsContext: userPermissionsContext?.getUserPermissionContext
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
           : null,
         getOrgTasksVariables,
+        setFirstTimeFetch
       }}
     >
       <Boards
