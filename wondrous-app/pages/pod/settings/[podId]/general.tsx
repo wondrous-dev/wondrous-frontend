@@ -1,8 +1,8 @@
 import React from 'react';
-import GeneralSettings from '../../../../components/Settings/generalSettings';
+import { PodGeneralSettings } from '../../../../components/Settings/generalSettings';
 
 const GeneralSettingsPage = () => {
-  return <GeneralSettings />;
+  return <PodGeneralSettings />;
 };
 
 export default GeneralSettingsPage;

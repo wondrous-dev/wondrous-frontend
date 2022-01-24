@@ -156,7 +156,7 @@ export const SettingsWrapper = (props) => {
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext: parsedUserPermissionsContext,
-    orgId,
+    orgId: orgId || pod?.orgId,
     podId,
   });
 
@@ -168,7 +168,7 @@ export const SettingsWrapper = (props) => {
       permissions.includes(PERMISSIONS.APPROVE_PAYMENT)
     )
   ) {
-    if (podId) {
+    if (podId && pod) {
       router.push(`/pod/${podId}/boards`);
     } else if (org) {
       router.push(`/organization/${org?.username}/boards`);
