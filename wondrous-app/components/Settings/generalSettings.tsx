@@ -31,12 +31,14 @@ import TwitterPurpleIcon from '../Icons/twitterPurple';
 import LinkedInIcon from '../Icons/linkedIn';
 import OpenSeaIcon from '../Icons/openSea';
 import LinkBigIcon from '../Icons/link';
-import { Discord } from '../Icons/discord';
+import { DiscordIcon } from '../Icons/discord';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_BY_ID } from '../../graphql/queries';
+import { GET_ORG_BY_ID } from '../../graphql/queries/org';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { getFilenameAndType, uploadMedia } from '../../utils/media';
 import { SafeImage } from '../Common/Image';
+import { GET_POD_BY_ID } from '../../graphql/queries/pod';
+import { UPDATE_POD } from '../../graphql/mutations/pod';
 
 const LIMIT = 200;
 
@@ -45,6 +47,10 @@ const SOCIALS_DATA = [
     icon: <TwitterPurpleIcon />,
     link: 'https://twitter.com/',
     type: 'twitter',
+  },
+  {
+    icon: <DiscordIcon />,
+    link: 'https://discord.gg/',
   },
   {
     icon: <LinkedInIcon />,
@@ -62,16 +68,293 @@ const LINKS_DATA = [
   {
     icon: <LinkBigIcon />,
     label: 'Pitch Deck',
-    link: '',
+    link: 'link',
     type: 'pitchDeck',
   },
-  {
-    icon: <LinkBigIcon />,
-    label: 'Our Manifesto',
-    link: '',
-    type: 'ourManifesto',
-  },
 ];
+
+const GeneralSettingsComponent = ({
+  toast,
+  setToast,
+  setProfile,
+  newProfile,
+  logoImage,
+  typeText,
+  descriptionText,
+  handleDescriptionChange,
+  links,
+  handleLogoChange,
+  handleLinkChange,
+  resetChanges,
+  saveChanges,
+}) => {
+  const [newLink, setNewLink] = useState({
+    type: 'link',
+    url: '',
+    displayName: '',
+  });
+  const linkTypelinks = [];
+  Object.keys(links).map((key) => {
+    const value = links[key];
+    if (value.type === 'link') {
+      linkTypelinks.push(value);
+    }
+  });
+
+  return (
+    <SettingsWrapper>
+      <GeneralSettingsContainer>
+        <Snackbar
+          autoHideDuration={3000}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          open={toast.show}
+          onClose={() => setToast({ ...toast, show: false })}
+          message={toast.message}
+        />
+
+        <HeaderBlock title="General settings" description="Update profile page settings." />
+        <GeneralSettingsInputsBlock>
+          <GeneralSettingsDAONameBlock>
+            <LabelBlock>{typeText} Name</LabelBlock>
+            <GeneralSettingsDAONameInput
+              value={newProfile?.name}
+              onChange={(e) => setProfile({ ...newProfile, name: e.target.value })}
+            />
+          </GeneralSettingsDAONameBlock>
+          <GeneralSettingsDAODescriptionBlock>
+            <LabelBlock>Pod description</LabelBlock>
+            <GeneralSettingsDAODescriptionInput
+              multiline
+              rows={3}
+              value={descriptionText}
+              onChange={(e) => handleDescriptionChange(e)}
+            />
+            <GeneralSettingsDAODescriptionInputCounter>
+              {descriptionText.length} / {LIMIT} characters
+            </GeneralSettingsDAODescriptionInputCounter>
+          </GeneralSettingsDAODescriptionBlock>
+        </GeneralSettingsInputsBlock>
+        {newProfile?.profilePicture && !logoImage ? (
+          <SafeImage
+            src={newProfile?.profilePicture}
+            style={{
+              width: '52px',
+              height: '52px',
+              marginTop: '30px',
+            }}
+          />
+        ) : null}
+        <ImageUpload
+          image={logoImage}
+          imageWidth={52}
+          imageHeight={52}
+          imageName="Logo"
+          updateFilesCb={handleLogoChange}
+        />
+        {/* <ImageUpload
+      image={bannerImage}
+      imageWidth={1350}
+      imageHeight={259}
+      imageName="Banner"
+      updateFilesCb={setBannerImage}
+    /> */}
+        <GeneralSettingsSocialsBlock>
+          <LabelBlock>Socials</LabelBlock>
+          <GeneralSettingsSocialsBlockWrapper>
+            {SOCIALS_DATA.map((item) => {
+              const value = links[item.type] ? links[item.type].url : item.link;
+
+              return (
+                <GeneralSettingsSocialsBlockRow key={item.type}>
+                  <LinkSquareIcon icon={item.icon} />
+                  <InputField value={value} onChange={(e) => handleLinkChange(e, item)} />
+                </GeneralSettingsSocialsBlockRow>
+              );
+            })}
+          </GeneralSettingsSocialsBlockWrapper>
+        </GeneralSettingsSocialsBlock>
+        <GeneralSettingsSocialsBlock>
+          <LabelBlock>Links</LabelBlock>
+          <GeneralSettingsSocialsBlockWrapper>
+            {linkTypelinks.length > 0 ? (
+              linkTypelinks.map((link) => (
+                <GeneralSettingsSocialsBlockRow key={link.type}>
+                  <LinkSquareIcon icon={<LinkBigIcon />} />
+                  <InputField value={link.url} onChange={(e) => handleLinkChange(e, link)} />
+                </GeneralSettingsSocialsBlockRow>
+              ))
+            ) : (
+              <>
+                <GeneralSettingsSocialsBlockRow key={newLink.type}>
+                  <LinkSquareIcon icon={<LinkBigIcon />} />
+                  <InputField value={newLink.url} onChange={(e) => handleLinkChange(e, newLink)} />
+                </GeneralSettingsSocialsBlockRow>
+              </>
+            )}
+          </GeneralSettingsSocialsBlockWrapper>
+        </GeneralSettingsSocialsBlock>
+
+        {/* <GeneralSettingsIntegrationsBlock>
+      <LabelBlock>Integrations</LabelBlock>
+      <GeneralSettingsIntegrationsBlockButton highlighted>
+        <GeneralSettingsIntegrationsBlockButtonIcon />
+        Connect discord
+      </GeneralSettingsIntegrationsBlockButton>
+    </GeneralSettingsIntegrationsBlock> */}
+
+        <GeneralSettingsButtonsBlock>
+          <GeneralSettingsResetButton onClick={resetChanges}>Reset changes</GeneralSettingsResetButton>
+          <GeneralSettingsSaveChangesButton
+            buttonInnerStyle={{
+              fontFamily: 'Space Grotesk',
+              fontWeight: 'bold',
+            }}
+            onClick={saveChanges}
+            highlighted
+          >
+            Save changes
+          </GeneralSettingsSaveChangesButton>
+        </GeneralSettingsButtonsBlock>
+      </GeneralSettingsContainer>
+    </SettingsWrapper>
+  );
+};
+
+const reduceLinks = (existingLinks) => {
+  const links = (existingLinks || []).reduce((acc, link) => {
+    acc[link.type] = {
+      displayName: link.displayName,
+      type: link.type,
+      url: link.url,
+    };
+
+    return acc;
+  }, {});
+  return links;
+};
+
+const handleLinkChange = (event, item, existingLinks, setLinks) => {
+  const links = { ...existingLinks };
+  let url = event.currentTarget.value;
+  if (item.link && !url.includes(item.link)) {
+    return;
+  }
+
+  if (!url.includes('http')) {
+    url = `https://${url}`;
+  }
+
+  links[item.type] = {
+    url,
+    displayName: url,
+    type: item.type,
+  };
+
+  setLinks(links);
+};
+
+export const PodGeneralSettings = () => {
+  const router = useRouter();
+  const { podId } = router.query;
+  const [podProfile, setPodProfile] = useState(null);
+  const [originalPodProfile, setOriginalPodProfile] = useState(null);
+  const [logoImage, setLogoImage] = useState('');
+  const [getPod] = useLazyQuery(GET_POD_BY_ID, {
+    onCompleted: ({ getPodById }) => setPod(getPodById),
+    fetchPolicy: 'cache-and-network',
+  });
+  const [podLinks, setPodLinks] = useState([]);
+  const [descriptionText, setDescriptionText] = useState('');
+  const [toast, setToast] = useState({ show: false, message: '' });
+
+  function setPod(pod) {
+    setPodProfile(pod);
+    setLogoImage('');
+    const links = reduceLinks(pod.links);
+
+    setPodLinks(links);
+    setDescriptionText(pod.description);
+
+    setOriginalPodProfile(pod);
+  }
+
+  useEffect(() => {
+    if (podId) {
+      getPod({ variables: { podId } });
+    }
+  }, [podId]);
+
+  const [updatePod] = useMutation(UPDATE_POD, {
+    onCompleted: ({ updatePod: pod }) => {
+      setPodProfile(pod);
+      setToast({ ...toast, message: `Pod updated successfully.`, show: true });
+    },
+  });
+
+  async function handleLogoChange(file) {
+    setLogoImage(file);
+
+    if (file) {
+      const fileName = file?.name;
+      // get image preview
+      const { fileType, filename } = getFilenameAndType(fileName);
+      const imagePrefix = `tmp/${podId}/`;
+      const profilePicture = imagePrefix + filename;
+      await uploadMedia({ filename: profilePicture, fileType, file });
+
+      setPodProfile({ ...podProfile, profilePicture });
+    }
+  }
+
+  function handleDescriptionChange(e) {
+    const { value } = e.target;
+
+    if (value.length <= LIMIT) {
+      setDescriptionText(value);
+      setPodProfile({ ...podProfile, description: value });
+    }
+  }
+
+  function resetChanges() {
+    setPodProfile(originalPodProfile);
+  }
+
+  function saveChanges() {
+    const links = Object.values(podLinks);
+
+    updatePod({
+      variables: {
+        podId,
+        input: {
+          links,
+          name: podProfile.name,
+          description: podProfile.description,
+          privacyLevel: podProfile.privacyLevel,
+          headerPicture: podProfile.headerPicture,
+          profilePicture: podProfile.profilePicture,
+        },
+      },
+    });
+  }
+
+  return (
+    <GeneralSettingsComponent
+      toast={toast}
+      setToast={setToast}
+      descriptionText={descriptionText}
+      handleDescriptionChange={handleDescriptionChange}
+      handleLinkChange={(event, item) => handleLinkChange(event, item, { ...podLinks }, setPodLinks)}
+      links={podLinks}
+      handleLogoChange={handleLogoChange}
+      logoImage={logoImage}
+      newProfile={podProfile}
+      resetChanges={resetChanges}
+      saveChanges={saveChanges}
+      typeText="Pod"
+      setProfile={setPodProfile}
+    />
+  );
+};
 
 const GeneralSettings = () => {
   const [logoImage, setLogoImage] = useState('');
@@ -87,15 +370,7 @@ const GeneralSettings = () => {
   function setOrganization(organization) {
     setOriginalOrgProfile(organization);
     setLogoImage('');
-    const links = (organization.links || []).reduce((acc, link) => {
-      acc[link.type] = {
-        displayName: link.displayName,
-        type: link.type,
-        url: link.url,
-      };
-
-      return acc;
-    }, {});
+    const links = reduceLinks(organization.links);
 
     setOrgLinks(links);
     setDescriptionText(organization.description);
@@ -158,35 +433,13 @@ const GeneralSettings = () => {
         input: {
           links,
           name: orgProfile.name,
-          username: orgProfile.username,
           description: orgProfile.description,
           privacyLevel: orgProfile.privacyLevel,
           headerPicture: orgProfile.headerPicture,
           profilePicture: orgProfile.profilePicture,
-          tags: orgProfile.tags,
         },
       },
     });
-  }
-
-  function handleLinkChange(event, item) {
-    const links = { ...orgLinks };
-    let url = event.currentTarget.value;
-    if (item.link && !url.includes(item.link)) {
-      return;
-    }
-
-    if (!url.includes('http')) {
-      url = `https://${url}`;
-    }
-
-    links[item.type] = {
-      url,
-      displayName: url,
-      type: item.type,
-    };
-
-    setOrgLinks(links);
   }
 
   if (!orgProfile) {
@@ -200,117 +453,21 @@ const GeneralSettings = () => {
   }
 
   return (
-    <SettingsWrapper>
-      <GeneralSettingsContainer>
-        <Snackbar
-          autoHideDuration={3000}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          open={toast.show}
-          onClose={() => setToast({ ...toast, show: false })}
-          message={toast.message}
-        />
-
-        <HeaderBlock title="General settings" description="Update profile page settings." />
-        <GeneralSettingsInputsBlock>
-          <GeneralSettingsDAONameBlock>
-            <LabelBlock>DAO Name</LabelBlock>
-            <GeneralSettingsDAONameInput
-              value={orgProfile.name}
-              onChange={(e) => setOrgProfile({ ...orgProfile, name: e.target.value })}
-            />
-          </GeneralSettingsDAONameBlock>
-          <GeneralSettingsDAODescriptionBlock>
-            <LabelBlock>DAO description</LabelBlock>
-            <GeneralSettingsDAODescriptionInput
-              multiline
-              rows={3}
-              value={descriptionText}
-              onChange={(e) => handleDescriptionChange(e)}
-            />
-            <GeneralSettingsDAODescriptionInputCounter>
-              {descriptionText.length} / {LIMIT} characters
-            </GeneralSettingsDAODescriptionInputCounter>
-          </GeneralSettingsDAODescriptionBlock>
-        </GeneralSettingsInputsBlock>
-        {orgProfile.profilePicture && !logoImage ? (
-          <SafeImage
-            src={orgProfile.profilePicture}
-            style={{
-              width: '52px',
-              height: '52px',
-              marginTop: '30px',
-            }}
-          />
-        ) : null}
-        <ImageUpload
-          image={logoImage}
-          imageWidth={52}
-          imageHeight={52}
-          imageName="Logo"
-          updateFilesCb={handleLogoChange}
-        />
-        {/* <ImageUpload
-          image={bannerImage}
-          imageWidth={1350}
-          imageHeight={259}
-          imageName="Banner"
-          updateFilesCb={setBannerImage}
-        /> */}
-        {/* <GeneralSettingsSocialsBlock>
-          <LabelBlock>Socials</LabelBlock>
-          <GeneralSettingsSocialsBlockWrapper>
-            {SOCIALS_DATA.map((item) => {
-              const value = orgLinks[item.type] ? orgLinks[item.type].url : item.link;
-
-              return (
-                <GeneralSettingsSocialsBlockRow key={item.type}>
-                  <LinkSquareIcon icon={item.icon} />
-                  <InputField value={value} onChange={(e) => handleLinkChange(e, item)} />
-                </GeneralSettingsSocialsBlockRow>
-              );
-            })}
-          </GeneralSettingsSocialsBlockWrapper>
-        </GeneralSettingsSocialsBlock> */}
-        {/* <GeneralSettingsSocialsBlock>
-          <LabelBlock>Links</LabelBlock>
-          <GeneralSettingsSocialsBlockWrapper>
-            {orgLinks && Object.keys(orgLinks).map((type) => {
-              const value = orgLinks[type] ? orgLinks[type].url : item.link;
-
-              return (
-                <GeneralSettingsSocialsBlockRow key={item.type}>
-                  <LinkSquareIcon icon={item.icon} />
-                  <GeneralSettingsSocialsBlockRowLabel>{item.label}</GeneralSettingsSocialsBlockRowLabel>
-                  <InputField value={value} onChange={(e) => handleLinkChange(e, item)} />
-                </GeneralSettingsSocialsBlockRow>
-              );
-            })}
-          </GeneralSettingsSocialsBlockWrapper>
-        </GeneralSettingsSocialsBlock> */}
-
-        {/* <GeneralSettingsIntegrationsBlock>
-					<LabelBlock>Integrations</LabelBlock>
-					<GeneralSettingsIntegrationsBlockButton highlighted>
-						<GeneralSettingsIntegrationsBlockButtonIcon />
-						Connect discord
-					</GeneralSettingsIntegrationsBlockButton>
-				</GeneralSettingsIntegrationsBlock> */}
-
-        <GeneralSettingsButtonsBlock>
-          <GeneralSettingsResetButton onClick={resetChanges}>Reset changes</GeneralSettingsResetButton>
-          <GeneralSettingsSaveChangesButton
-            buttonInnerStyle={{
-              fontFamily: 'Space Grotesk',
-              fontWeight: 'bold',
-            }}
-            onClick={saveChanges}
-            highlighted
-          >
-            Save changes
-          </GeneralSettingsSaveChangesButton>
-        </GeneralSettingsButtonsBlock>
-      </GeneralSettingsContainer>
-    </SettingsWrapper>
+    <GeneralSettingsComponent
+      toast={toast}
+      setToast={setToast}
+      descriptionText={descriptionText}
+      handleDescriptionChange={handleDescriptionChange}
+      handleLinkChange={(event, item) => handleLinkChange(event, item, { ...orgLinks }, setOrgLinks)}
+      links={orgLinks}
+      handleLogoChange={handleLogoChange}
+      logoImage={logoImage}
+      newProfile={orgProfile}
+      resetChanges={resetChanges}
+      saveChanges={saveChanges}
+      typeText="DAO"
+      setProfile={setOrgProfile}
+    />
   );
 };
 
