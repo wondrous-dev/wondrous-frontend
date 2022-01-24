@@ -725,11 +725,12 @@ export const TaskSubmissionContent = (props) => {
   } = props;
 
   const [submissionToEdit, setSubmissionToEdit] = useState(null);
+  const [moveProgressButton, setMoveProgressButton] = useState(true);
 
   if (taskSubmissionLoading) {
     return <CircularProgress />;
   }
-  if ((canSubmit || canMoveProgress) && fetchedTask?.status === TASK_STATUS_TODO) {
+  if ((canSubmit || canMoveProgress) && fetchedTask?.status === TASK_STATUS_TODO && moveProgressButton) {
     return (
       <div
       // style={{
@@ -743,6 +744,7 @@ export const TaskSubmissionContent = (props) => {
             marginTop: '16px',
           }}
           onClick={() => {
+            setMoveProgressButton(false);
             updateTaskStatus({
               variables: {
                 taskId: fetchedTask?.id,
