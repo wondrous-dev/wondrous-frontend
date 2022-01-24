@@ -140,7 +140,6 @@ const BoardsPage = () => {
         const tasks = data?.getOrgTaskBoardTasks;
         const newColumns = columns.map((column) => {
           column.tasks = [];
-          column.section.tasks = [];
           return tasks.reduce((column, task) => {
             if (column.status === task.status) {
               column.tasks = [...column.tasks, task];
