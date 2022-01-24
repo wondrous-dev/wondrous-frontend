@@ -43,7 +43,7 @@ export const groupBy = (xs, key) => {
 
 export const getMentionArray = (content) => {
   if (!content) {
-    return {}
+    return []
   }
   const mentionedUsers = []
   // const mentionedProjects = []
