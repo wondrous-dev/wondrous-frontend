@@ -1,22 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
-import { GET_ORG_ROLES, GET_ORG_USERS, GET_USER_ORGS } from '../../../graphql/queries/org';
 import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
 import UserCheckIcon from '../../Icons/userCheckIcon';
 import Accordion from '../../Common/Accordion';
 import Switch from '../../Common/Switch';
 
-import permissons from './permissons';
-
 import {
   Box,
   CreateRole,
   CreateRoleButton,
   DeleteButton,
-  Error,
   LabelBlock,
   Permission,
   PermissionFooter,
@@ -29,94 +23,45 @@ import {
   RolesInputsBlock,
   Snackbar,
 } from './styles';
-import { CREATE_ORG_ROLE, DELETE_ORG_ROLE, UPDATE_ORG_ROLE } from '../../../graphql/mutations/org';
+import { Role } from '../../../types/common';
 
-const Roles = () => {
+type Props = {
+  roles: Role[];
+  permissons: Array<{
+    title: string;
+    subTitle: string;
+    permission: string;
+  }>;
+  toast: { show: boolean; message: string };
+  onCreateNewRole: (name: string, permissions: string[]) => any;
+  onDeleteRole: (role: Role) => any;
+  onPermissionsChange: (role: Role, permissions: string[]) => any;
+  onToastClose: () => any;
+};
+
+const Roles = ({
+  roles,
+  onCreateNewRole,
+  onDeleteRole,
+  onPermissionsChange,
+  toast,
+  onToastClose,
+  permissons,
+}: Props) => {
   const [newRoleName, setNewRoleName] = useState('');
   const [newRolePermissionsExpanded, setNewRolePermissionsExpanded] = useState(false);
   const [newRolePermissions, setNewRolePermissions] = useState([]);
-  const [organizationRoles, setOrganizationRoles] = useState([]);
-  const [toast, setToast] = useState({ show: false, message: '' });
-  // Get user organizations
-  const { data: userOrgs, error: userOrgsError } = useQuery(GET_USER_ORGS);
-  // Get organization roles
-  const [getOrgRoles, { data: getOrgRolesData }] = useLazyQuery(GET_ORG_ROLES);
-  const [updateOrgRole] = useMutation(UPDATE_ORG_ROLE, {
-    onCompleted: ({ updateOrgRole: role }) => {
-      setToast({ ...toast, message: `${role.name} updated successfully.`, show: true });
-    },
-  });
-
-  // Mutation to delete organization role
-  const [deleteOrgRole] = useMutation(DELETE_ORG_ROLE, {
-    onCompleted: () => {
-      setToast({ ...toast, message: `Role deleted successfully.`, show: true });
-    },
-  });
-  // Mutation to create organization role
-  const [createOrgRole] = useMutation(CREATE_ORG_ROLE, {
-    onCompleted: ({ createOrgRole: role }) => {
-      setToast({ ...toast, message: `${role.name} created successfully.`, show: true });
-      getOrgRoles();
-    },
-  });
-
-  // TODO: Use selected organization in the future instead of the first one
-  const router = useRouter();
-  const { orgId } = router.query;
-  // Get organization roles when organization is defined
-  useEffect(() => {
-    if (orgId) {
-      getOrgRoles({
-        variables: {
-          orgId,
-        },
-      });
-    }
-  }, [orgId, getOrgRoles]);
-
-  useEffect(() => {
-    if (getOrgRolesData) {
-      setOrganizationRoles(JSON.parse(JSON.stringify(getOrgRolesData?.getOrgRoles)) || []);
-    }
-  }, [getOrgRolesData]);
 
   // Creates new role
-  function createNewRole() {
-    if (!newRoleName) {
-      return;
-    }
-
-    createOrgRole({
-      variables: {
-        input: {
-          permissions: newRolePermissions,
-          orgId,
-          name: newRoleName,
-        },
-      },
-    });
-
+  function handleCreateNewRoleClick(name: string, permissions: string[]) {
     setNewRolePermissions([]);
     setNewRoleName('');
     setNewRolePermissionsExpanded(false);
+    onCreateNewRole(name, permissions);
   }
 
-  function deleteRole(orgRole) {
-    const index = organizationRoles.indexOf(orgRole);
-
-    if (index > -1) {
-      const newOrganizationRoles = [...organizationRoles];
-      newOrganizationRoles.splice(index, 1);
-
-      setOrganizationRoles(newOrganizationRoles);
-    }
-
-    deleteOrgRole({ variables: { id: orgRole.id } });
-  }
-
-  function handleOrgRolePermissionChange(orgRole, permission: string, checked: boolean) {
-    const permissions = [...orgRole.permissions];
+  function handleRolePermissionChange(role: Role, permission: string, checked: boolean) {
+    const permissions = [...role.permissions];
 
     if (checked) {
       permissions.push(permission);
@@ -124,18 +69,7 @@ const Roles = () => {
       permissions.splice(permissions.indexOf(permission), 1);
     }
 
-    orgRole.permissions = permissions;
-    setOrganizationRoles(organizationRoles);
-
-    updateOrgRole({
-      variables: {
-        input: {
-          id: orgRole.id,
-          permissions: orgRole.permissions,
-          name: orgRole.name,
-        },
-      },
-    });
+    onPermissionsChange(role, permissions);
   }
 
   function handleNewRolePermissionChange(permission: string, checked: boolean) {
@@ -150,27 +84,13 @@ const Roles = () => {
     setNewRolePermissions(permissions);
   }
 
-  if (userOrgsError) {
-    return (
-      <SettingsWrapper>
-        <HeaderBlock
-          icon={<UserCheckIcon circle />}
-          title="Roles"
-          description="Use roles to organize contributors and admins"
-        />
-
-        <Error>Error: {userOrgsError?.graphQLErrors[0].message}</Error>
-      </SettingsWrapper>
-    );
-  }
-
   return (
     <SettingsWrapper>
       <Snackbar
         autoHideDuration={3000}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={toast.show}
-        onClose={() => setToast({ ...toast, show: false })}
+        onClose={onToastClose}
         message={toast.message}
       />
 
@@ -186,7 +106,7 @@ const Roles = () => {
 
             <CreateRole>
               <RoleNameInput value={newRoleName} onChange={(e) => setNewRoleName(e.target.value)} />
-              <CreateRoleButton onClick={createNewRole} disabled={!newRoleName} highlighted={!!newRoleName}>
+              <CreateRoleButton onClick={handleCreateNewRoleClick} disabled={!newRoleName} highlighted={!!newRoleName}>
                 Create role
               </CreateRoleButton>
             </CreateRole>
@@ -215,9 +135,9 @@ const Roles = () => {
           </Permissions>
         </Accordion>
 
-        {organizationRoles.length ? <LabelBlock mt={120}>{organizationRoles.length} Existing roles</LabelBlock> : null}
+        {roles.length ? <LabelBlock mt={120}>{roles.length} Existing roles</LabelBlock> : null}
 
-        {organizationRoles.map((orgRole) => (
+        {roles.map((orgRole) => (
           <Box key={orgRole.id} mt={22}>
             <Accordion title={orgRole.name}>
               <Permissions>
@@ -230,14 +150,12 @@ const Roles = () => {
                     <Switch
                       size="medium"
                       checked={orgRole.permissions.includes(item.permission)}
-                      onChange={(e) => handleOrgRolePermissionChange(orgRole, item.permission, e.currentTarget.checked)}
+                      onChange={(e) => handleRolePermissionChange(orgRole, item.permission, e.currentTarget.checked)}
                     />
                   </Permission>
                 ))}
                 <PermissionFooter>
-                  <DeleteButton disabled onClick={() => deleteRole(orgRole)}>
-                    Delete role
-                  </DeleteButton>
+                  <DeleteButton onClick={() => onDeleteRole(orgRole)}>Delete role</DeleteButton>
                 </PermissionFooter>
               </Permissions>
             </Accordion>

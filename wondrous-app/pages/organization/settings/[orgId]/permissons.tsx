@@ -1,4 +1,4 @@
-import { PERMISSIONS } from '../../../utils/constants';
+import { PERMISSIONS } from '../../../../utils/constants';
 
 export type Permisson = {
   title: string;
