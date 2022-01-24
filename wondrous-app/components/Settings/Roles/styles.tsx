@@ -5,7 +5,7 @@ import { InputBase, Switch, Typography } from '@material-ui/core';
 import SnackbarComp from '@mui/material/Snackbar';
 
 import { Button } from '../../Common/button';
-import { Red800 } from '../../../theme/colors'
+import { Red800 } from '../../../theme/colors';
 
 export const RolesContainer = styled.div`
   height: 100vh;
@@ -63,7 +63,7 @@ export const Permission = styled.div`
   align-items: center;
   height: 85px;
 
-  &:not(:first-child) {
+  & > *:not(:first-child) {
     border-top: 1px solid #4b4b4b;
   }
 `;
@@ -122,6 +122,6 @@ export const Snackbar = styled(SnackbarComp)`
 `;
 
 export const Error = styled.h3`
-	color: ${Red800};
+  color: ${Red800};
   margin: 30px 0;
-`
+`;

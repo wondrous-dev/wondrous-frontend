@@ -1,6 +1,7 @@
-import { gql } from '@apollo/client'
-import { CommentFragment } from '../fragments/comments'
-import { TaskProposalFragment } from '../fragments/task'
+import { gql } from '@apollo/client';
+import { CommentFragment } from '../fragments/comments';
+import { MediaFragment } from '../fragments/media';
+import { TaskProposalFragment } from '../fragments/task';
 
 export const CREATE_TASK_PROPOSAL = gql`
   mutation createTaskProposal($input: TaskProposalInput) {
@@ -9,7 +10,7 @@ export const CREATE_TASK_PROPOSAL = gql`
     }
   }
   ${TaskProposalFragment}
-`
+`;
 
 export const UPDATE_TASK_PROPOSAL = gql`
   mutation updateTaskProposal($proposalId: ID!, $input: TaskProposalInput) {
@@ -18,7 +19,7 @@ export const UPDATE_TASK_PROPOSAL = gql`
     }
   }
   ${TaskProposalFragment}
-`
+`;
 
 export const DELETE_TASK_PROPOSAL = gql`
   mutation deleteProposal($taskId: String!) {
@@ -26,7 +27,7 @@ export const DELETE_TASK_PROPOSAL = gql`
       success
     }
   }
-`
+`;
 
 export const APPROVE_TASK_PROPOSAL = gql`
   mutation approveProposal($proposalId: ID!) {
@@ -34,7 +35,7 @@ export const APPROVE_TASK_PROPOSAL = gql`
       success
     }
   }
-`
+`;
 
 export const REQUEST_CHANGE_TASK_PROPOSAL = gql`
   mutation requestChangeTaskProposal($proposalId: ID!) {
@@ -42,23 +43,27 @@ export const REQUEST_CHANGE_TASK_PROPOSAL = gql`
       success
     }
   }
-`
+`;
 
 export const ATTACH_MEDIA_TO_TASK_PROPOSAL = gql`
-  mutation attachTaskMedia($proposalId: ID!, $input: AttachMediaInput) {
-    attachTaskMedia(proposalId: $proposalId, input: $input) {
-      success
+  mutation attachTaskProposalMedia($proposalId: ID!, $input: AttachMediaInput!) {
+    attachTaskProposalMedia(proposalId: $proposalId, input: $input) {
+      id
+      media {
+        ...MediaFragment
+      }
     }
   }
-`
+  ${MediaFragment}
+`;
 
 export const REMOVE_MEDIA_FROM_TASK_PROPOSAL = gql`
-  mutation removeTaskMedia($proposalId: ID!, $slug: String!) {
-    removeTaskMedia(proposalId: $proposalId, slug: $slug) {
+  mutation removeTaskProposalMedia($proposalId: ID!, $slug: String!) {
+    removeTaskProposalMedia(proposalId: $proposalId, slug: $slug) {
       success
     }
   }
-`
+`;
 
 export const CREATE_TASK_PROPOSAL_COMMENT = gql`
   mutation createTaskProposalComment($input: ProposalCommentInput) {
@@ -67,7 +72,7 @@ export const CREATE_TASK_PROPOSAL_COMMENT = gql`
     }
   }
   ${CommentFragment}
-`
+`;
 
 export const DELETE_TASK_PROPOSAL_COMMENT = gql`
   mutation deleteTaskProposalComment($proposalCommentId: String!) {
@@ -75,4 +80,4 @@ export const DELETE_TASK_PROPOSAL_COMMENT = gql`
       success
     }
   }
-`
+`;

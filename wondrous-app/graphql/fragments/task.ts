@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { MediaFragment } from './media';
 
 export const TaskFragment = gql`
   fragment TaskFragment on Task {
@@ -23,12 +24,7 @@ export const TaskFragment = gql`
     assigneeId
     userMentions
     media {
-      slug
-      name
-      type
-      muxAssetId
-      muxPlaybackId
-      videoProcessingStatus
+      ...MediaFragment
     }
     assignee {
       username
@@ -52,6 +48,7 @@ export const TaskFragment = gql`
       tokenName
     }
   }
+  ${MediaFragment}
 `;
 
 export const TaskCardFragment = gql`
@@ -92,14 +89,10 @@ export const TaskCardFragment = gql`
       type
     }
     media {
-      slug
-      name
-      type
-      muxAssetId
-      muxPlaybackId
-      videoProcessingStatus
+      ...MediaFragment
     }
   }
+  ${MediaFragment}
 `;
 // Omitting reactionCount, commentCount, share Count
 export const TaskProposalCardFragment = gql`
@@ -135,14 +128,10 @@ export const TaskProposalCardFragment = gql`
       type
     }
     media {
-      slug
-      name
-      type
-      muxAssetId
-      muxPlaybackId
-      videoProcessingStatus
+      ...MediaFragment
     }
   }
+  ${MediaFragment}
 `;
 
 export const TaskSubmissionCardFragment = gql`
@@ -171,14 +160,10 @@ export const TaskSubmissionCardFragment = gql`
       type
     }
     media {
-      slug
-      name
-      type
-      muxAssetId
-      muxPlaybackId
-      videoProcessingStatus
+      ...MediaFragment
     }
   }
+  ${MediaFragment}
 `;
 
 export const TaskSubmissionFragment = gql`
@@ -213,16 +198,12 @@ export const TaskSubmissionFragment = gql`
       profilePicture
     }
     media {
-      slug
-      name
-      type
-      muxAssetId
-      muxPlaybackId
-      videoProcessingStatus
+      ...MediaFragment
     }
     reactionCount
     commentCount
   }
+  ${MediaFragment}
 `;
 export const TaskProposalFragment = gql`
   fragment TaskProposalFragment on TaskProposal {
@@ -252,12 +233,7 @@ export const TaskProposalFragment = gql`
       profilePicture
     }
     media {
-      slug
-      name
-      type
-      muxAssetId
-      muxPlaybackId
-      videoProcessingStatus
+      ...MediaFragment
     }
     rewards {
       rewardAmount
@@ -277,4 +253,5 @@ export const TaskProposalFragment = gql`
       name
     }
   }
+  ${MediaFragment}
 `;

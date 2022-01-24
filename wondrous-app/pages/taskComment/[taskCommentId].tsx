@@ -6,6 +6,7 @@ import AppLayout from '../../components/Common/Layout/App';
 import { CircularProgress } from '@material-ui/core';
 
 const TaskRedirect = () => {
+  // TODO use getTaskForTaskComment
   const router = useRouter();
   const { taskCommentId } = router.query;
   const [getTaskById, { data: taskData }] = useLazyQuery(GET_TASK_BY_ID);

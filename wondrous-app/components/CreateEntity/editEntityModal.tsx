@@ -743,7 +743,7 @@ const EditLayoutBaseModal = (props) => {
                 event,
                 filePrefix: 'tmp/task/new/',
                 mediaUploads,
-                setMediaUploads,
+                setMediaUploads: () => {},
               });
               if (isTaskProposal) {
                 attachTaskProposalMedia({
@@ -753,13 +753,15 @@ const EditLayoutBaseModal = (props) => {
                       mediaUploads: [fileToAdd],
                     },
                   },
-                  onCompleted: () => {
+                  onCompleted: (data) => {
+                    const taskProposal = data?.attachTaskProposalMedia;
+                    setMediaUploads(transformMediaFormat(taskProposal?.media));
                     if (board?.setColumns && onCorrectPage) {
                       let columns = [...board?.columns];
                       columns = updateProposalItem(
                         {
                           ...existingTask,
-                          media: [...mediaUploads, fileToAdd],
+                          media: taskProposal?.media,
                         },
                         columns
                       );
@@ -775,7 +777,9 @@ const EditLayoutBaseModal = (props) => {
                       mediaUploads: [fileToAdd],
                     },
                   },
-                  onCompleted: () => {
+                  onCompleted: (data) => {
+                    const task = data?.attachTaskMedia;
+                    setMediaUploads(transformMediaFormat(task?.media));
                     if (board?.setColumns && onCorrectPage) {
                       const columns = [...board?.columns];
                       let columnNumber = 0;
@@ -786,7 +790,7 @@ const EditLayoutBaseModal = (props) => {
                         if (existingTask?.id === taskItem?.id) {
                           return {
                             ...existingTask,
-                            media: [...mediaUploads, fileToAdd],
+                            media: task?.media,
                           };
                         }
                         return existingTask;
