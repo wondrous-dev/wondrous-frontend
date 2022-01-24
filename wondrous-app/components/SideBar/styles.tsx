@@ -44,6 +44,14 @@ export const DrawerUserImage = styled.img`
   height: 48px;
 `;
 
+export const DrawerTopBlockItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  cursor: pointer;
+`;
+
 export const DrawerList = styled(List)`
   & {
     min-height: 152px;
@@ -84,6 +92,10 @@ export const DrawerBottomButton = styled(IconButton)`
     display: flex;
     align-items: center;
     justify-content: center;
+
+    &.active {
+      background: linear-gradient(283.63deg, rgba(75, 75, 75, 0.6) 11.03%, rgba(35, 35, 35, 0.6) 92.07%);
+    }
   }
 `;
 

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   DrawerBackButton,
   DrawerBottomBlock,
@@ -9,6 +9,7 @@ import {
   DrawerListItem,
   DrawerListItemIcon,
   DrawerTopBlock,
+  DrawerTopBlockItem,
   DrawerUserImage,
 } from './styles';
 import SettingsIcon from '../Icons/settings';
@@ -21,6 +22,7 @@ import { GET_USER_ORGS } from '../../graphql/queries';
 import { SafeImage } from '../Common/Image';
 import DefaultUserImage from '../Common/Image/DefaultUserImage';
 import { useRouter } from 'next/router';
+import GeneralSettings from '../Icons/generalSettings';
 
 const SideBarComponent = (props) => {
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
@@ -29,6 +31,7 @@ const SideBarComponent = (props) => {
   const setMinimized = sidebar?.setMinimized;
   const router = useRouter();
   const user = useMe();
+
   const handleMinimize = (event) => {
     if (setMinimized) {
       setMinimized(!minimized);
@@ -39,7 +42,14 @@ const SideBarComponent = (props) => {
     logout();
   };
 
+  const generalSettings = () => {
+    router.push('/profile/settings')
+  }
+
+  useEffect(() => { console.log(user) })
+
   const listItems = userOrgs?.getUserOrgs;
+
   const profilePictureStyle = {
     display: 'flex',
     margin: '0 auto',
@@ -51,11 +61,13 @@ const SideBarComponent = (props) => {
     <DrawerComponent variant="permanent" anchor="left" className={minimized ? 'active' : ''}>
       <DrawerContainer>
         <DrawerTopBlock>
-          {user?.profilePicture ? (
-            <SafeImage style={profilePictureStyle} src={user?.profilePicture} />
-          ) : (
-            <DefaultUserImage style={profilePictureStyle} />
-          )}
+          <DrawerTopBlockItem onClick={() => {router.push(`/profile/${user.username}/about`)}}>
+            {user?.profilePicture ? (
+              <SafeImage style={profilePictureStyle} src={user?.profilePicture} />
+            ) : (
+              <DefaultUserImage style={profilePictureStyle} />
+            )}
+          </DrawerTopBlockItem>
           <DrawerList>
             {listItems &&
               listItems.map((item) => (
@@ -77,7 +89,7 @@ const SideBarComponent = (props) => {
           </DrawerList>
         </DrawerTopBlock>
         <DrawerBottomBlock>
-          <DrawerBottomButton>
+          <DrawerBottomButton onClick={generalSettings}>
             <SettingsIcon />
           </DrawerBottomButton>
           <DrawerBottomButton onClick={signOut}>
