@@ -745,6 +745,7 @@ export const TaskSubmissionContent = (props) => {
           }}
           onClick={() => {
             setMoveProgressButton(false);
+            handleClose();
             updateTaskStatus({
               variables: {
                 taskId: fetchedTask?.id,
