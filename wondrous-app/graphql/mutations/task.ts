@@ -1,6 +1,7 @@
-import { gql } from '@apollo/client'
-import { CommentFragment } from '../fragments/comments'
-import { TaskFragment } from '../fragments/task'
+import { gql } from '@apollo/client';
+import { CommentFragment } from '../fragments/comments';
+import { MediaFragment } from '../fragments/media';
+import { TaskFragment } from '../fragments/task';
 
 export const CREATE_TASK = gql`
   mutation createTask($input: TaskInput) {
@@ -9,7 +10,7 @@ export const CREATE_TASK = gql`
     }
   }
   ${TaskFragment}
-`
+`;
 
 export const UPDATE_TASK = gql`
   mutation updateTask($taskId: ID!, $input: TaskInput) {
@@ -18,7 +19,7 @@ export const UPDATE_TASK = gql`
     }
   }
   ${TaskFragment}
-`
+`;
 
 export const COMPLETE_TASK = gql`
   mutation completeTask($taskId: ID!) {
@@ -27,7 +28,7 @@ export const COMPLETE_TASK = gql`
     }
   }
   ${TaskFragment}
-`
+`;
 
 export const DELETE_TASK = gql`
   mutation deleteTask($taskId: String!) {
@@ -35,15 +36,19 @@ export const DELETE_TASK = gql`
       success
     }
   }
-`
+`;
 
 export const ATTACH_MEDIA_TO_TASK = gql`
   mutation attachTaskMedia($taskId: ID!, $input: AttachMediaInput) {
     attachTaskMedia(taskId: $taskId, input: $input) {
-      success
+      id
+      media {
+        ...MediaFragment
+      }
     }
   }
-`
+  ${MediaFragment}
+`;
 
 export const REMOVE_MEDIA_FROM_TASK = gql`
   mutation removeTaskMedia($taskId: ID!, $slug: String!) {
@@ -51,7 +56,7 @@ export const REMOVE_MEDIA_FROM_TASK = gql`
       success
     }
   }
-`
+`;
 
 export const UPDATE_TASK_STATUS = gql`
   mutation updateTaskStatus($taskId: ID!, $input: updateTaskStatusInput!) {
@@ -60,7 +65,7 @@ export const UPDATE_TASK_STATUS = gql`
     }
   }
   ${TaskFragment}
-`
+`;
 
 export const CREATE_TASK_COMMENT = gql`
   mutation createTaskComment($input: TaskCommentInput) {
@@ -69,7 +74,7 @@ export const CREATE_TASK_COMMENT = gql`
     }
   }
   ${CommentFragment}
-`
+`;
 
 export const DELETE_TASK_COMMENT = gql`
   mutation deleteTaskComment($taskCommentId: String!) {
@@ -77,4 +82,4 @@ export const DELETE_TASK_COMMENT = gql`
       success
     }
   }
-`
+`;

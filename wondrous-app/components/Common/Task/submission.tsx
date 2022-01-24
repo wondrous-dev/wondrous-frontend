@@ -509,7 +509,7 @@ const TaskSubmissionForm = (props) => {
                 event,
                 filePrefix: 'tmp/task/new/',
                 mediaUploads,
-                setMediaUploads,
+                setMediaUploads: () => {},
               });
               if (submissionToEdit) {
                 attachTaskSubmissionMedia({
@@ -519,12 +519,14 @@ const TaskSubmissionForm = (props) => {
                       mediaUploads: [fileToAdd],
                     },
                   },
-                  onCompleted: () => {
+                  onCompleted: (data) => {
+                    const taskSubmission = data?.attachTaskSubmissionMedia;
+                    setMediaUploads(transformMediaFormat(taskSubmission?.media));
                     const newFetchedTaskSubmissions = fetchedTaskSubmissions.map((fetchedTaskSubmission) => {
                       if (fetchedTaskSubmission?.id === submissionToEdit?.id) {
                         const newTaskSubmission = {
                           ...fetchedTaskSubmission,
-                          media: [...mediaUploads, fileToAdd],
+                          media: taskSubmission?.media,
                         };
                         return newTaskSubmission;
                       }

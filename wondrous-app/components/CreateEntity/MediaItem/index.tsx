@@ -1,16 +1,10 @@
-import React from 'react'
-import { SafeImage } from '../../Common/Image'
-import DeleteIcon from '../../Icons/delete'
-import { Filename, MediaItemWrapper } from './styles'
+import React from 'react';
+import { SafeImage } from '../../Common/Image';
+import DeleteIcon from '../../Icons/delete';
+import { Filename, MediaItemWrapper } from './styles';
 
 export const MediaItem = (props) => {
-  const {
-    mediaItem,
-    setMediaUploads,
-    mediaUploads,
-    removeMediaItem,
-    viewOnly,
-  } = props
+  const { mediaItem, setMediaUploads, mediaUploads, removeMediaItem, viewOnly } = props;
   return (
     <MediaItemWrapper>
       {mediaItem?.type === 'image' && (
@@ -31,18 +25,16 @@ export const MediaItem = (props) => {
             width: '30',
           }}
           onClick={() => {
-            const newMediaUploads = mediaUploads.filter(
-              (mediaUpload) =>
-                mediaUpload.uploadSlug !== mediaItem?.uploadSlug ||
-                mediaUpload?.uploadSlug !== mediaItem?.slug
-            )
-            setMediaUploads(newMediaUploads)
+            const newMediaUploads = mediaUploads.filter((mediaUpload) => {
+              return mediaUpload.uploadSlug !== mediaItem?.uploadSlug && mediaUpload?.uploadSlug !== mediaItem?.slug;
+            });
+            setMediaUploads(newMediaUploads);
             if (removeMediaItem) {
-              removeMediaItem()
+              removeMediaItem();
             }
           }}
         />
       )}
     </MediaItemWrapper>
-  )
-}
+  );
+};

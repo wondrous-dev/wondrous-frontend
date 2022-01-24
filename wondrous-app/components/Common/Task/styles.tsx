@@ -199,8 +199,7 @@ export const TaskSectionDisplayDiv = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 12px;
-  flex-wrap: wrap;
-  &:not:first-child {
+  & > *:not:first-child {
     margin-top: -8px;
   }
 `;
@@ -237,6 +236,7 @@ export const TaskSectionInfoDiv = styled.div`
   margin-left: 12px;
   display: flex;
   align-items: center;
+  text-align: left;
   margin-top: 8px;
 `;
 
