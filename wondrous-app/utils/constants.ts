@@ -161,3 +161,8 @@ export const NOTIFICATION_OBJECT_TYPES = {
   task_submission: 'submission',
   comment: 'comment',
 };
+
+export const PRIVACY_LEVEL = {
+  public: 'public',
+  private: 'private',
+};
