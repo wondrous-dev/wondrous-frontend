@@ -49,7 +49,7 @@ import { delQuery } from '../../../utils'
 import { TaskSummaryAction } from '../TaskSummary/styles'
 import { Arrow } from '../../Icons/sections'
 import { UPDATE_TASK_STATUS } from '../../../graphql/mutations/task'
-import { OrgBoardContext } from '../../../utils/contexts'
+import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries'
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: ToDo,
@@ -101,8 +101,6 @@ export const Task = ({ task, setTask }) => {
   const snackbarContext = useContext(SnackbarAlertContext)
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage
-  const orgBoardContext = useContext(OrgBoardContext)
-  const getOrgTasksVariables = orgBoardContext?.getOrgTaskVariables
   let TaskIcon = TASK_ICONS[status]
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] =
@@ -110,8 +108,12 @@ export const Task = ({ task, setTask }) => {
       refetchQueries: () => [
         {
           query: GET_ORG_TASK_BOARD_TASKS,
-          variables: getOrgTasksVariables,
+          variables: orgBoard?.getOrgTasksVariables,
         },
+        {
+          query: GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
+          variables: orgBoard?.getOrgBoardTaskCountVariables
+        }
       ],
       onError: () => {
         console.error('Something went wrong.')
@@ -120,6 +122,7 @@ export const Task = ({ task, setTask }) => {
 
   const handleNewStatus = useCallback(
     (newStatus) => {
+      orgBoard?.setFirstTimeFetch(false)
       updateTaskStatusMutation({
         variables: {
           taskId: id,
@@ -129,7 +132,7 @@ export const Task = ({ task, setTask }) => {
         },
       })
     },
-    [id, updateTaskStatusMutation]
+    [id, updateTaskStatusMutation, orgBoard]
   )
 
   useEffect(() => {
