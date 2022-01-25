@@ -660,50 +660,12 @@ const EditLayoutBaseModal = (props) => {
                           proposalId: existingTask?.id,
                           slug: mediaItem?.uploadSlug || mediaItem?.slug,
                         },
-                        onCompleted: () => {
-                          if (board?.setColumns && onCorrectPage) {
-                            let columns = [...board?.columns];
-                            const newMedia = mediaUploads.filter((mediaUpload) => {
-                              return mediaUpload?.uploadSlug !== mediaItem?.uploadSlug;
-                            });
-                            columns = updateProposalItem(
-                              {
-                                ...existingTask,
-                                media: newMedia,
-                              },
-                              columns
-                            );
-                            board.setColumns(columns);
-                          }
-                        },
                       });
                     } else {
                       removeMedia({
                         variables: {
                           taskId: existingTask?.id,
                           slug: mediaItem?.uploadSlug || mediaItem?.slug,
-                        },
-                        onCompleted: () => {
-                          if (board?.setColumns && onCorrectPage) {
-                            const columns = [...board?.columns];
-                            let columnNumber = 0;
-                            if (existingTask?.status === TASK_STATUS_IN_PROGRESS) {
-                              columnNumber = 1;
-                            }
-                            columns[columnNumber].tasks = columns[columnNumber].tasks.map((taskItem) => {
-                              if (existingTask?.id === taskItem?.id) {
-                                const newMedia = mediaUploads.filter((mediaUpload) => {
-                                  return mediaUpload?.uploadSlug !== mediaItem?.uploadSlug;
-                                });
-                                return {
-                                  ...existingTask,
-                                  media: newMedia,
-                                };
-                              }
-                              return existingTask;
-                            });
-                            board.setColumns(columns);
-                          }
                         },
                       });
                     }
