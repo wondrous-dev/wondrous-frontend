@@ -36,6 +36,8 @@ import { GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
 import { SettingsBoardContext } from '../../utils/contexts';
 import { GET_POD_BY_ID } from '../../graphql/queries/pod';
 import { PERMISSIONS } from '../../utils/constants';
+import { useMe } from '../Auth/withAuth';
+import SettingsIcon from '../Icons/settings';
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -93,6 +95,7 @@ export const SettingsWrapper = (props) => {
   const { children } = props;
 
   const router = useRouter();
+  const user = useMe()
 
   const { pathname } = router;
   const { orgId, podId } = router.query;
@@ -106,11 +109,19 @@ export const SettingsWrapper = (props) => {
     setCreateFormModal((prevState) => !prevState);
   };
   const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
-
   const [getPodById, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
 
   const org = orgData?.getOrgById;
   const pod = podData?.getPodById;
+
+  const PROFILE_SIDEBAR_LIST_ITEMS = [
+    {
+      icon: <GeneralSettingsIcon width={40} height={40} />,
+      label: 'Profile Page Settings',
+      value: 'general',
+      href: `/profile/settings`,
+    },
+  ]
 
   const SETTINGS_SIDEBAR_LIST_ITEMS = [
     {
@@ -207,7 +218,23 @@ export const SettingsWrapper = (props) => {
                 <SettingsSidebarTabsSectionLabel>Settings Overview</SettingsSidebarTabsSectionLabel>
                 <SettingsSidebarTabsListContainer>
                   <List>
-                    {SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
+                    {(orgData || podData) && SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
+                      const { href, icon, label } = item;
+
+                      const active = pathname === href;
+
+                      return (
+                        <Link key={href} href={href}>
+                          <SettingsSidebarTabsListItemButtonWrapper active={active}>
+                            <SettingsSidebarTabsListItemButton selected={active}>
+                              <SettingsSidebarTabsListItemIcon>{icon}</SettingsSidebarTabsListItemIcon>
+                              <SettingsSidebarTabsListItemText>{label}</SettingsSidebarTabsListItemText>
+                            </SettingsSidebarTabsListItemButton>
+                          </SettingsSidebarTabsListItemButtonWrapper>
+                        </Link>
+                      );
+                    })}
+                    {(!orgData && !podData) && PROFILE_SIDEBAR_LIST_ITEMS.map((item) => {
                       const { href, icon, label } = item;
 
                       const active = pathname === href;
@@ -224,10 +251,10 @@ export const SettingsWrapper = (props) => {
                       );
                     })}
                   </List>
-                  <SettingsSidebarLogoutButton>
+                  {/* <SettingsSidebarLogoutButton>
                     <SettingsSidebarLogoutButtonIcon />
                     <SettingsSidebarLogoutButtonText>Log out</SettingsSidebarLogoutButtonText>
-                  </SettingsSidebarLogoutButton>
+                  </SettingsSidebarLogoutButton> */}
                 </SettingsSidebarTabsListContainer>
               </SettingsSidebarTabsSection>
             </SettingsSidebarContainer>

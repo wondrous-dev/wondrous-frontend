@@ -110,12 +110,16 @@ const KanbanBoard = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasQuery, orgBoard || userBoard || podBoard]);
   const { dndArea, handleRef, html5Options } = useDndProvider();
+
   return (
     <>
       <KanbanBoardContainer ref={handleRef}>
         <TaskViewModal
           open={openModal}
-          handleClose={() => setOpenModal(false)}
+          handleClose={() => {
+            document.body.setAttribute('style', '');
+            setOpenModal(false);
+          }}
           taskId={router?.query?.task || router?.query?.taskProposal}
           isTaskProposal={!!router?.query?.taskProposal}
         />

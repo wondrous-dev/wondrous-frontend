@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React from 'react';
 import {
   DrawerBackButton,
   DrawerBottomBlock,
@@ -7,9 +7,8 @@ import {
   DrawerContainer,
   DrawerList,
   DrawerListItem,
-  DrawerListItemIcon,
   DrawerTopBlock,
-  DrawerUserImage,
+  DrawerTopBlockItem,
 } from './styles';
 import SettingsIcon from '../Icons/settings';
 import ExitIcon from '../Icons/exit';
@@ -29,6 +28,7 @@ const SideBarComponent = (props) => {
   const setMinimized = sidebar?.setMinimized;
   const router = useRouter();
   const user = useMe();
+
   const handleMinimize = (event) => {
     if (setMinimized) {
       setMinimized(!minimized);
@@ -39,7 +39,12 @@ const SideBarComponent = (props) => {
     logout();
   };
 
+  const generalSettings = () => {
+    router.push('/profile/settings')
+  }
+
   const listItems = userOrgs?.getUserOrgs;
+
   const profilePictureStyle = {
     display: 'flex',
     margin: '0 auto',
@@ -51,11 +56,13 @@ const SideBarComponent = (props) => {
     <DrawerComponent variant="permanent" anchor="left" className={minimized ? 'active' : ''}>
       <DrawerContainer>
         <DrawerTopBlock>
-          {user?.profilePicture ? (
-            <SafeImage style={profilePictureStyle} src={user?.profilePicture} />
-          ) : (
-            <DefaultUserImage style={profilePictureStyle} />
-          )}
+          <DrawerTopBlockItem onClick={() => {router.push(`/profile/${user.username}/about`)}}>
+            {user?.profilePicture ? (
+              <SafeImage style={profilePictureStyle} src={user?.profilePicture} />
+            ) : (
+              <DefaultUserImage style={profilePictureStyle} />
+            )}
+          </DrawerTopBlockItem>
           <DrawerList>
             {listItems &&
               listItems.map((item) => (
@@ -77,7 +84,7 @@ const SideBarComponent = (props) => {
           </DrawerList>
         </DrawerTopBlock>
         <DrawerBottomBlock>
-          <DrawerBottomButton>
+          <DrawerBottomButton onClick={generalSettings}>
             <SettingsIcon />
           </DrawerBottomButton>
           <DrawerBottomButton onClick={signOut}>

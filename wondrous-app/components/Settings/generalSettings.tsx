@@ -39,6 +39,9 @@ import { getFilenameAndType, uploadMedia } from '../../utils/media';
 import { SafeImage } from '../Common/Image';
 import { GET_POD_BY_ID } from '../../graphql/queries/pod';
 import { UPDATE_POD } from '../../graphql/mutations/pod';
+import { CreateFormAddDetailsInputLabel, CreateFormAddDetailsSwitch } from '../CreateEntity/styles';
+import { AndroidSwitch } from '../CreateEntity/createEntityModal';
+import { PRIVACY_LEVEL } from '../../utils/constants';
 
 const LIMIT = 200;
 
@@ -73,21 +76,25 @@ const LINKS_DATA = [
   },
 ];
 
-const GeneralSettingsComponent = ({
-  toast,
-  setToast,
-  setProfile,
-  newProfile,
-  logoImage,
-  typeText,
-  descriptionText,
-  handleDescriptionChange,
-  links,
-  handleLogoChange,
-  handleLinkChange,
-  resetChanges,
-  saveChanges,
-}) => {
+const GeneralSettingsComponent = (props) => {
+  const {
+    toast,
+    setToast,
+    setProfile,
+    newProfile,
+    logoImage,
+    typeText,
+    descriptionText,
+    handleDescriptionChange,
+    links,
+    handleLogoChange,
+    handleLinkChange,
+    resetChanges,
+    saveChanges,
+    isPrivate,
+    setIsPrivate,
+  } = props;
+
   const [newLink, setNewLink] = useState({
     type: 'link',
     url: '',
@@ -100,7 +107,7 @@ const GeneralSettingsComponent = ({
       linkTypelinks.push(value);
     }
   });
-
+  const isPod = typeText === 'Pod';
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
@@ -130,7 +137,7 @@ const GeneralSettingsComponent = ({
               onChange={(e) => handleDescriptionChange(e)}
             />
             <GeneralSettingsDAODescriptionInputCounter>
-              {descriptionText.length} / {LIMIT} characters
+              {descriptionText?.length} / {LIMIT} characters
             </GeneralSettingsDAODescriptionInputCounter>
           </GeneralSettingsDAODescriptionBlock>
         </GeneralSettingsInputsBlock>
@@ -144,13 +151,15 @@ const GeneralSettingsComponent = ({
             }}
           />
         ) : null}
-        <ImageUpload
-          image={logoImage}
-          imageWidth={52}
-          imageHeight={52}
-          imageName="Logo"
-          updateFilesCb={handleLogoChange}
-        />
+        {!isPod && (
+          <ImageUpload
+            image={logoImage}
+            imageWidth={52}
+            imageHeight={52}
+            imageName="Logo"
+            updateFilesCb={handleLogoChange}
+          />
+        )}
         {/* <ImageUpload
       image={bannerImage}
       imageWidth={1350}
@@ -176,7 +185,7 @@ const GeneralSettingsComponent = ({
         <GeneralSettingsSocialsBlock>
           <LabelBlock>Links</LabelBlock>
           <GeneralSettingsSocialsBlockWrapper>
-            {linkTypelinks.length > 0 ? (
+            {linkTypelinks?.length > 0 ? (
               linkTypelinks.map((link) => (
                 <GeneralSettingsSocialsBlockRow key={link.type}>
                   <LinkSquareIcon icon={<LinkBigIcon />} />
@@ -201,6 +210,24 @@ const GeneralSettingsComponent = ({
         Connect discord
       </GeneralSettingsIntegrationsBlockButton>
     </GeneralSettingsIntegrationsBlock> */}
+
+        {isPod && (
+          <div
+            style={{
+              marginTop: '32px',
+            }}
+          >
+            <CreateFormAddDetailsSwitch>
+              <CreateFormAddDetailsInputLabel>Private Pod</CreateFormAddDetailsInputLabel>
+              <AndroidSwitch
+                checked={isPrivate}
+                onChange={(e) => {
+                  setIsPrivate(e.target.checked);
+                }}
+              />
+            </CreateFormAddDetailsSwitch>
+          </div>
+        )}
 
         <GeneralSettingsButtonsBlock>
           <GeneralSettingsResetButton onClick={resetChanges}>Reset changes</GeneralSettingsResetButton>
@@ -257,6 +284,7 @@ export const PodGeneralSettings = () => {
   const router = useRouter();
   const { podId } = router.query;
   const [podProfile, setPodProfile] = useState(null);
+  const [isPrivate, setIsPrivate] = useState(null);
   const [originalPodProfile, setOriginalPodProfile] = useState(null);
   const [logoImage, setLogoImage] = useState('');
   const [getPod] = useLazyQuery(GET_POD_BY_ID, {
@@ -274,7 +302,7 @@ export const PodGeneralSettings = () => {
 
     setPodLinks(links);
     setDescriptionText(pod.description);
-
+    setIsPrivate(pod?.privacyLevel === PRIVACY_LEVEL.private);
     setOriginalPodProfile(pod);
   }
 
@@ -329,7 +357,7 @@ export const PodGeneralSettings = () => {
           links,
           name: podProfile.name,
           description: podProfile.description,
-          privacyLevel: podProfile.privacyLevel,
+          privacyLevel: isPrivate ? PRIVACY_LEVEL.private : PRIVACY_LEVEL.public,
           headerPicture: podProfile.headerPicture,
           profilePicture: podProfile.profilePicture,
         },
@@ -352,6 +380,8 @@ export const PodGeneralSettings = () => {
       saveChanges={saveChanges}
       typeText="Pod"
       setProfile={setPodProfile}
+      isPrivate={isPrivate}
+      setIsPrivate={setIsPrivate}
     />
   );
 };

@@ -120,7 +120,10 @@ const Wrapper = (props) => {
       <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
       <MoreInfoModal
         open={open && (showUsers || showPods)}
-        handleClose={() => setOpen(false)}
+        handleClose={() => {
+          document.body.setAttribute('style', '');
+          setOpen(false);
+        }}
         showUsers={showUsers}
         showPods={showPods}
         name={orgProfile?.name}

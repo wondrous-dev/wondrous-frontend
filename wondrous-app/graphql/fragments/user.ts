@@ -4,8 +4,10 @@ export const LoggedinUserFragment = gql`
 	fragment LoggedinUser on User {
 		id
 		username
+		bio
 		activeEthAddress
 		profilePicture
+		headerPicture
 		thumbnailPicture
 	}
 `

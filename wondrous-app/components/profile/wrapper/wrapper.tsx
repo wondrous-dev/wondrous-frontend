@@ -1,13 +1,13 @@
-import React from 'react'
-import { useState } from 'react'
-import { SIDEBAR_WIDTH } from '../../../utils/constants'
-import { SideBarContext } from '../../../utils/contexts'
-import { SafeImage } from '../../Common/Image'
+import React from 'react';
+import { useState } from 'react';
+import { SIDEBAR_WIDTH } from '../../../utils/constants';
+import { SideBarContext } from '../../../utils/contexts';
+import { SafeImage } from '../../Common/Image';
 
-import Header from '../../Header'
-import SideBarComponent from '../../SideBar'
-import Tabs from '../tabs/tabs'
-import { formatLinkDisplay } from '../../../utils/links'
+import Header from '../../Header';
+import SideBarComponent from '../../SideBar';
+import Tabs from '../tabs/tabs';
+import { formatLinkDisplay } from '../../../utils/links';
 import {
   Content,
   ContentContainer,
@@ -28,23 +28,24 @@ import {
   OverviewComponent,
   TokenHeader,
   TokenLogo,
-} from './styles'
+} from './styles';
 import { MoreInfoModal } from '../../profile/modals';
+import router from 'next/router';
 
 const Wrapper = (props) => {
   const [showOrgs, setShowOrgs] = useState(false);
   const [showPods, setShowPods] = useState(false);
 
-  const { children, userProfileData, loggedInUser, mainLink } = props
-  let viewingSelf = false
+  const { children, userProfileData, loggedInUser, mainLink } = props;
+  let viewingSelf = false;
   if (userProfileData?.id === loggedInUser?.id) {
-    viewingSelf = true
+    viewingSelf = true;
   }
-  const username = userProfileData?.username
-  const bio = userProfileData?.bio
-  const orgCount = userProfileData?.additionalInfo?.orgCount
-  const podCount = userProfileData?.additionalInfo?.podCount
-  const [minimized, setMinimized] = useState(false)
+  const username = userProfileData?.username;
+  const bio = userProfileData?.bio;
+  const orgCount = userProfileData?.additionalInfo?.orgCount;
+  const podCount = userProfileData?.additionalInfo?.podCount;
+  const [minimized, setMinimized] = useState(false);
   return (
     <>
       <Header />
@@ -65,22 +66,24 @@ const Wrapper = (props) => {
             <ContentContainer>
               <TokenHeader>
                 {!userProfileData?.profilePicture && <TokenLogo />}
-                {userProfileData?.profilePicture && <SafeImage
-                  src={userProfileData?.profilePicture}
-                  style={{
-                    width: '96px',
-                    height: '96px',
-                    position: 'absolute',
-                    borderRadius: '48px',
-                    top: '-50px',
-                    border: '10px solid #0f0f0f',
-                  }}
-                />}
+                {userProfileData?.profilePicture && (
+                  <SafeImage
+                    src={userProfileData?.profilePicture}
+                    style={{
+                      width: '96px',
+                      height: '96px',
+                      position: 'absolute',
+                      borderRadius: '48px',
+                      top: '-50px',
+                      border: '10px solid #0f0f0f',
+                    }}
+                  />
+                )}
                 <HeaderMainBlock>
                   <HeaderTitle>{username}</HeaderTitle>
                   {viewingSelf && (
                     <HeaderButtons>
-                      <HeaderEditProfileButton>
+                      <HeaderEditProfileButton onClick={() => router.push(`/profile/settings`)}>
                         Edit my profile
                       </HeaderEditProfileButton>
                     </HeaderButtons>
@@ -88,20 +91,18 @@ const Wrapper = (props) => {
                 </HeaderMainBlock>
                 <HeaderText>{bio}</HeaderText>
                 <HeaderActivity>
-                  {mainLink && <HeaderActivityLink href={mainLink.url} target="_blank">
-                    <HeaderActivityLinkIcon />
-                   {formatLinkDisplay(mainLink)}
-                  </HeaderActivityLink>}       
+                  {mainLink && (
+                    <HeaderActivityLink href={mainLink.url} target="_blank">
+                      <HeaderActivityLinkIcon />
+                      {formatLinkDisplay(mainLink)}
+                    </HeaderActivityLink>
+                  )}
                   <HeaderOrgPodCount>
-                    <HeaderPodCount>
-                      {podCount || 0}
-                    </HeaderPodCount>
+                    <HeaderPodCount>{podCount || 0}</HeaderPodCount>
                     <HeaderPodCountText>Pods</HeaderPodCountText>
                   </HeaderOrgPodCount>
                   <HeaderOrgPodCount>
-                    <HeaderOrgCount>
-                      {orgCount || 0}
-                    </HeaderOrgCount>
+                    <HeaderOrgCount>{orgCount || 0}</HeaderOrgCount>
                     <HeaderOrgCountText>DAOs</HeaderOrgCountText>
                   </HeaderOrgPodCount>
                 </HeaderActivity>
@@ -113,7 +114,7 @@ const Wrapper = (props) => {
         </OverviewComponent>
       </SideBarContext.Provider>
     </>
-  )
-}
+  );
+};
 
-export default Wrapper
+export default Wrapper;

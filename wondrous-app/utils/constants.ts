@@ -32,6 +32,9 @@ export const SOCIAL_MEDIA_SPOTIFY = 'spotify';
 export const SOCIAL_MEDIA_INSTAGRAM = 'instagram';
 export const SOCIAL_OPENSEA = 'opensea';
 
+// Character Limits
+export const CHAR_LIMIT_PROFILE_BIO = 200
+
 // Supported Chains (ETHEREUM, POLYGON)
 export const SUPPORTED_CHAINS = {
   1: 'ETH',
@@ -160,4 +163,9 @@ export const NOTIFICATION_OBJECT_TYPES = {
   task_proposal_comment: 'taskProposalComment',
   task_submission: 'submission',
   comment: 'comment',
+};
+
+export const PRIVACY_LEVEL = {
+  public: 'public',
+  private: 'private',
 };
