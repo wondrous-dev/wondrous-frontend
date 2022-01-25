@@ -215,7 +215,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
             {task?.podName && (
               <PodWrapper
                 style={{
-                  marginRight: '8px',
+                  marginRight: '16px',
                 }}
                 onclick={(e) => {
                   e.preventDefault();
