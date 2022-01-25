@@ -9,6 +9,7 @@ import {
   DrawerListItem,
   DrawerTopBlock,
   DrawerTopBlockItem,
+  NoLogoDAO,
 } from './styles';
 import SettingsIcon from '../Icons/settings';
 import ExitIcon from '../Icons/exit';
@@ -20,6 +21,7 @@ import { GET_USER_ORGS } from '../../graphql/queries';
 import { SafeImage } from '../Common/Image';
 import DefaultUserImage from '../Common/Image/DefaultUserImage';
 import { useRouter } from 'next/router';
+import { DAOIcon } from '../Icons/dao';
 
 const SideBarComponent = (props) => {
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
@@ -71,14 +73,23 @@ const SideBarComponent = (props) => {
                   key={item.id}
                   onClick={() => router.push(`/organization/${item?.username}/boards`)}
                 >
-                  <SafeImage
-                    src={item?.profilePicture}
-                    style={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '6px',
-                    }}
-                  />
+                  { item?.profilePicture
+                  ? (
+                    <SafeImage
+                      src={item?.profilePicture}
+                      style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '6px',
+                      }}
+                    />
+                  )
+                  : (
+                    <NoLogoDAO>
+                      <DAOIcon />
+                    </NoLogoDAO>
+                  )
+                  }
                 </DrawerListItem>
               ))}
           </DrawerList>
