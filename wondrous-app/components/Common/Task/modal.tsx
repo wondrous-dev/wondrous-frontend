@@ -94,6 +94,8 @@ import { CompletedIcon } from '../../Icons/statusIcons';
 import { TaskListCard } from '.';
 import { LoadMore } from '../KanbanBoard/styles';
 import { CommentList } from '../../Comment';
+import { DAOIcon } from '../../Icons/dao';
+import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -590,7 +592,8 @@ export const TaskViewModal = (props) => {
       <Modal open={open} onClose={handleClose}>
         <TaskModal>
           <TaskModalHeader>
-            {fetchedTask?.orgProfilePicture && (
+            { fetchedTask?.orgProfilePicture
+            ? (
               <SafeImage
                 src={fetchedTask?.orgProfilePicture}
                 style={{
@@ -600,7 +603,13 @@ export const TaskViewModal = (props) => {
                   marginRight: '8px',
                 }}
               />
-            )}
+            )
+            : (
+              <OrganisationsCardNoLogo style={{ height: '29px', width: '28px'}}>
+                <DAOIcon />
+              </OrganisationsCardNoLogo>
+            )
+            }
             {fetchedTask?.podName && (
               <div
                 style={{
