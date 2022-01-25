@@ -23,6 +23,7 @@ import {
 import { GET_ORG_FROM_USERNAME, GET_ORG_BY_ID } from '../../../graphql/queries/org';
 import { OrgBoardContext } from '../../../utils/contexts';
 import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
+import { dedupeColumns } from '../../../utils';
 
 const TO_DO = {
   status: TASK_STATUS_TODO,
@@ -166,7 +167,7 @@ const BoardsPage = () => {
       if (!firstTimeFetch) {
         const tasks = data?.getOrgTaskBoardTasks;
         const newColumns = populateTaskColumns(tasks, columns);
-        setColumns(newColumns);
+        setColumns(dedupeColumns(newColumns));
         setOrgTaskHasMore(data?.getOrgTaskBoardTasks.length >= LIMIT);
         setFirstTimeFetch(true);
       }
@@ -254,7 +255,7 @@ const BoardsPage = () => {
         const results = fetchMoreResult?.data?.getOrgTaskBoardTasks;
         if (results && results?.length > 0) {
           const newColumns = addToTaskColumns(results, columns);
-          setColumns(newColumns);
+          setColumns(dedupeColumns(newColumns));
         } else {
           setOrgTaskHasMore(false);
         }

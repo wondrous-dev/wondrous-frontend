@@ -25,6 +25,7 @@ import { PodBoardContext } from '../../../utils/contexts';
 import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
 import { GET_POD_BY_ID } from '../../../graphql/queries/pod';
 import { addToTaskColumns, populateTaskColumns } from '../../organization/[username]/boards';
+import { dedupeColumns } from '../../../utils';
 
 const TO_DO = {
   status: TASK_STATUS_TODO,
@@ -141,7 +142,7 @@ const BoardsPage = () => {
       if (!firstTimeFetch) {
         const tasks = data?.getPodTaskBoardTasks;
         const newColumns = populateTaskColumns(tasks, columns);
-        setColumns(newColumns);
+        setColumns(dedupeColumns(newColumns));
         setPodTaskHasMore(data?.getPodTaskBoardTasks.length >= LIMIT);
         setFirstTimeFetch(true);
       }
@@ -215,7 +216,7 @@ const BoardsPage = () => {
         const results = fetchMoreResult?.data?.getPodTaskBoardTasks;
         if (results && results?.length > 0) {
           const newColumns = addToTaskColumns(results, columns);
-          setColumns(newColumns);
+          setColumns(dedupeColumns(newColumns));
         } else {
           setPodTaskHasMore(false);
         }
