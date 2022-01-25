@@ -583,21 +583,24 @@ export const TaskViewModal = (props) => {
   const dropdownItemStyle = {
     marginRight: '12px',
   };
+
   return (
     <>
       <ArchiveTaskModal open={archiveTask} onClose={() => setArchiveTask(false)} onArchive={handleNewStatus} />
       <Modal open={open} onClose={handleClose}>
         <TaskModal>
           <TaskModalHeader>
-            <SafeImage
-              src={task?.orgProfilePicture || 'seed/wonder_logo.jpg'}
-              style={{
-                width: '29px',
-                height: '28px',
-                borderRadius: '4px',
-                marginRight: '8px',
-              }}
-            />
+            {fetchedTask?.orgProfilePicture && (
+              <SafeImage
+                src={fetchedTask?.orgProfilePicture}
+                style={{
+                  width: '29px',
+                  height: '28px',
+                  borderRadius: '4px',
+                  marginRight: '8px',
+                }}
+              />
+            )}
             {fetchedTask?.podName && (
               <div
                 style={{
