@@ -53,11 +53,11 @@ const Roles = ({
   const [newRolePermissions, setNewRolePermissions] = useState([]);
 
   // Creates new role
-  function handleCreateNewRoleClick(name: string, permissions: string[]) {
+  function handleCreateNewRoleClick() {
+    onCreateNewRole(newRoleName, newRolePermissions);
     setNewRolePermissions([]);
     setNewRoleName('');
     setNewRolePermissionsExpanded(false);
-    onCreateNewRole(name, permissions);
   }
 
   function handleRolePermissionChange(role: Role, permission: string, checked: boolean) {

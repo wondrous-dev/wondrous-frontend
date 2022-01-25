@@ -60,3 +60,14 @@ export const GET_POD_ROLES = gql`
     }
   }
 `;
+
+export const GET_ORG_ROLES = gql`
+  query getOrgRoles($orgId: ID) {
+    getOrgRoles(orgId: $orgId) {
+      id
+      name
+      default
+      permissions
+    }
+  }
+`;
