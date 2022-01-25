@@ -719,7 +719,7 @@ export const TaskViewModal = (props) => {
               <TaskSectionDisplayText>Assignee</TaskSectionDisplayText>
             </TaskSectionDisplayLabel>
             <TaskSectionInfoDiv key={fetchedTask?.assigneeUsername}>
-              {fetchedTask?.assigneeUsername && (
+              {fetchedTask?.assigneeUsername ? (
                 <>
                   {fetchedTask?.assigneeProfilePicture ? (
                     <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.assigneeProfilePicture} />
@@ -728,6 +728,14 @@ export const TaskViewModal = (props) => {
                   )}
                   <TaskSectionInfoText>{fetchedTask?.assigneeUsername}</TaskSectionInfoText>
                 </>
+              ) : (
+                <TaskSectionInfoText
+                  style={{
+                    marginLeft: '4px',
+                  }}
+                >
+                  None
+                </TaskSectionInfoText>
               )}
             </TaskSectionInfoDiv>
           </TaskSectionDisplayDiv>
