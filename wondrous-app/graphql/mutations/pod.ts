@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { PodFragment } from '../fragments/pod';
+import { PodFragment, PodRoleFragment } from '../fragments/pod'
 
 export const CREATE_POD = gql`
   mutation createPod($input: PodInput) {
@@ -31,6 +31,33 @@ export const CREATE_POD_INVITE_LINK = gql`
 export const UPDATE_USER_POD_ROLE = gql`
   mutation updateUserPodRole($input: UserPodRoleUpdateInput) {
     updateUserPodRole(input: $input) {
+      success
+    }
+  }
+`;
+
+export const CREATE_POD_ROLE = gql`
+  mutation createPodRole($input: PodRoleCreateInput) {
+    createPodRole(input: $input) {
+      ...PodRoleFragment
+    }
+  }
+  ${PodRoleFragment}
+`;
+
+
+export const UPDATE_POD_ROLE = gql`
+  mutation updatePodRole($input: PodRoleUpdateInput) {
+    updatePodRole(input: $input) {
+      ...PodRoleFragment
+    }
+  }
+  ${PodRoleFragment}
+`;
+
+export const DELETE_POD_ROLE = gql`
+  mutation deletePodRole($id: ID!) {
+    deletePodRole(id: $id) {
       success
     }
   }
