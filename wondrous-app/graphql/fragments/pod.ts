@@ -23,3 +23,15 @@ export const PodFragment = gql`
     }
   }
 `
+
+export const PodRoleFragment = gql`
+	fragment PodRoleFragment on PodRole {
+		id
+		createAt
+		createdBy
+		default
+		permissions
+		podId
+		name
+	}
+`
