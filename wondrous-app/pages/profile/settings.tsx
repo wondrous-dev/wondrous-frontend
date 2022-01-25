@@ -1,8 +1,10 @@
 import React from 'react';
+import { useMe, withAuth } from '../../components/Auth/withAuth';
 import ProfileSettings from '../../components/Settings/profileSettings';
 
 const ProfileSettingsPage = () => {
-  return <ProfileSettings />;
+  const loggedInUser = useMe()
+  return <ProfileSettings loggedInUser={loggedInUser}/>;
 };
 
-export default ProfileSettingsPage;
+export default withAuth(ProfileSettingsPage);

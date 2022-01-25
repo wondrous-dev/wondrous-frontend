@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React from 'react';
 import {
   DrawerBackButton,
   DrawerBottomBlock,
@@ -7,10 +7,8 @@ import {
   DrawerContainer,
   DrawerList,
   DrawerListItem,
-  DrawerListItemIcon,
   DrawerTopBlock,
   DrawerTopBlockItem,
-  DrawerUserImage,
 } from './styles';
 import SettingsIcon from '../Icons/settings';
 import ExitIcon from '../Icons/exit';
@@ -22,7 +20,6 @@ import { GET_USER_ORGS } from '../../graphql/queries';
 import { SafeImage } from '../Common/Image';
 import DefaultUserImage from '../Common/Image/DefaultUserImage';
 import { useRouter } from 'next/router';
-import GeneralSettings from '../Icons/generalSettings';
 
 const SideBarComponent = (props) => {
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
@@ -45,8 +42,6 @@ const SideBarComponent = (props) => {
   const generalSettings = () => {
     router.push('/profile/settings')
   }
-
-  useEffect(() => { console.log(user) })
 
   const listItems = userOrgs?.getUserOrgs;
 

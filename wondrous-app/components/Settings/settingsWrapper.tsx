@@ -114,8 +114,6 @@ export const SettingsWrapper = (props) => {
   const org = orgData?.getOrgById;
   const pod = podData?.getPodById;
 
-  console.log(orgData, podData, user)
-
   const PROFILE_SIDEBAR_LIST_ITEMS = [
     {
       icon: <GeneralSettingsIcon width={40} height={40} />,
@@ -253,10 +251,10 @@ export const SettingsWrapper = (props) => {
                       );
                     })}
                   </List>
-                  <SettingsSidebarLogoutButton>
+                  {/* <SettingsSidebarLogoutButton>
                     <SettingsSidebarLogoutButtonIcon />
                     <SettingsSidebarLogoutButtonText>Log out</SettingsSidebarLogoutButtonText>
-                  </SettingsSidebarLogoutButton>
+                  </SettingsSidebarLogoutButton> */}
                 </SettingsSidebarTabsListContainer>
               </SettingsSidebarTabsSection>
             </SettingsSidebarContainer>
