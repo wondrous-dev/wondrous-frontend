@@ -107,7 +107,7 @@ const GeneralSettingsComponent = (props) => {
       linkTypelinks.push(value);
     }
   });
-
+  const isPod = typeText === 'Pod';
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
@@ -151,13 +151,15 @@ const GeneralSettingsComponent = (props) => {
             }}
           />
         ) : null}
-        <ImageUpload
-          image={logoImage}
-          imageWidth={52}
-          imageHeight={52}
-          imageName="Logo"
-          updateFilesCb={handleLogoChange}
-        />
+        {!isPod && (
+          <ImageUpload
+            image={logoImage}
+            imageWidth={52}
+            imageHeight={52}
+            imageName="Logo"
+            updateFilesCb={handleLogoChange}
+          />
+        )}
         {/* <ImageUpload
       image={bannerImage}
       imageWidth={1350}
@@ -209,7 +211,7 @@ const GeneralSettingsComponent = (props) => {
       </GeneralSettingsIntegrationsBlockButton>
     </GeneralSettingsIntegrationsBlock> */}
 
-        {typeText === 'Pod' && (
+        {isPod && (
           <div
             style={{
               marginTop: '32px',

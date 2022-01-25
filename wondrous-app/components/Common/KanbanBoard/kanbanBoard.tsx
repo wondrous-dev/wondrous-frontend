@@ -116,7 +116,10 @@ const KanbanBoard = (props) => {
       <KanbanBoardContainer ref={handleRef}>
         <TaskViewModal
           open={openModal}
-          handleClose={() => setOpenModal(false)}
+          handleClose={() => {
+            document.body.setAttribute('style', '');
+            setOpenModal(false);
+          }}
           taskId={router?.query?.task || router?.query?.taskProposal}
           isTaskProposal={!!router?.query?.taskProposal}
         />

@@ -119,7 +119,10 @@ const Wrapper = (props) => {
       <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
       <MoreInfoModal
         open={open && (showUsers || showPods)}
-        handleClose={() => setOpen(false)}
+        handleClose={() => {
+          document.body.setAttribute('style', '');
+          setOpen(false);
+        }}
         showUsers={showUsers}
         showPods={showPods}
         name={podProfile?.name}
