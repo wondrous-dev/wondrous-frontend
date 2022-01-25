@@ -90,6 +90,7 @@ const ProfileSettings = (props) => {
               onClick={() => {
                 // restart the profile picture addition
                 setProfilePictureUrl(null)
+                setProfilePicture(null)
               }}
               style={{
                 position: 'absolute',
