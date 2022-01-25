@@ -190,6 +190,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
         },
       });
   }
+
   return (
     <>
       <TaskViewModal
