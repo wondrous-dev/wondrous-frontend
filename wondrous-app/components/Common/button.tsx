@@ -12,7 +12,7 @@ const ButtonInner = styled.button`
 	justify-content: center;
 	align-items: center;
 
-	${GradientMidnightVertical}
+	${GradientMidnightVertical};
 
 	border-radius: 98px;
 	font-size: 16px;
@@ -35,8 +35,8 @@ const ButtonWrapper = styled.div`
 	border-radius: 98px;
 `
 
-export const Button = ({ children, ...props }) => (
+export const Button = ({ children, disabled = false, ...props }) => (
 	<ButtonWrapper {...props}>
-		<ButtonInner style={props?.buttonInnerStyle}>{children}</ButtonInner>
+		<ButtonInner style={props?.buttonInnerStyle} disabled={disabled}>{children}</ButtonInner>
 	</ButtonWrapper>
 )

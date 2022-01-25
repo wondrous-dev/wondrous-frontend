@@ -63,7 +63,7 @@ export const Permission = styled.div`
   align-items: center;
   height: 85px;
 
-  & > *:not(:first-child) {
+  &:not(:first-child) {
     border-top: 1px solid #4b4b4b;
   }
 `;
