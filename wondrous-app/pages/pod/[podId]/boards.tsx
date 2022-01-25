@@ -24,6 +24,7 @@ import {
 import { PodBoardContext } from '../../../utils/contexts';
 import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
 import { GET_POD_BY_ID } from '../../../graphql/queries/pod';
+import { addToTaskColumns, populateTaskColumns } from '../../organization/[username]/boards';
 
 const TO_DO = {
   status: TASK_STATUS_TODO,
@@ -91,7 +92,7 @@ const SELECT_OPTIONS = [
   '#analytics (23)',
 ];
 
-const LIMIT = 10;
+const LIMIT = 2;
 
 const BoardsPage = () => {
   const [columns, setColumns] = useState(COLUMNS);
@@ -106,7 +107,7 @@ const BoardsPage = () => {
   const [podTaskHasMore, setPodTaskHasMore] = useState(false);
   const [getPod, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
   const pod = podData?.getPodById;
-
+  const [firstTimeFetch, setFirstTimeFetch] = useState(false);
   const [getPodTaskProposals] = useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
     onCompleted: (data) => {
       const newColumns = [...columns];
@@ -137,18 +138,13 @@ const BoardsPage = () => {
 
   const [getPodTasks, { fetchMore, variables: getPodTasksVariables }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {
     onCompleted: (data) => {
-      const tasks = data?.getPodTaskBoardTasks;
-      const newColumns = columns.map((column) => {
-        column.tasks = [];
-        return tasks.reduce((column, task) => {
-          if (column.status === task.status) {
-            column.tasks = [...column.tasks, task];
-          }
-          return column;
-        }, column);
-      });
-      setColumns(newColumns);
-      setPodTaskHasMore(data?.hasMore || data?.getPodTaskBoardTasks.length >= LIMIT);
+      if (!firstTimeFetch) {
+        const tasks = data?.getPodTaskBoardTasks;
+        const newColumns = populateTaskColumns(tasks, columns);
+        setColumns(newColumns);
+        setPodTaskHasMore(data?.getPodTaskBoardTasks.length >= LIMIT);
+        setFirstTimeFetch(true);
+      }
     },
     fetchPolicy: 'cache-and-network',
   });
@@ -208,27 +204,25 @@ const BoardsPage = () => {
     if (podTaskHasMore) {
       fetchMore({
         variables: {
-          offset: Math.max(...columns.map(({ tasks }) => tasks.length)),
-          limit: LIMIT,
+          input: {
+            offset: Math.max(...columns.map(({ tasks }) => tasks.length)),
+            limit: LIMIT,
+            podId,
+            statuses,
+          },
         },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          const hasMore = fetchMoreResult.getPodTaskBoardTasks.length >= LIMIT;
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          if (!hasMore) {
-            setPodTaskHasMore(false);
-          }
-          return {
-            hasMore,
-            getPodTaskBoardTasks: prev.getPodTaskBoardTasks.concat(fetchMoreResult.getPodTaskBoardTasks),
-          };
-        },
-      }).catch((error) => {
-        console.error(error);
+      }).then((fetchMoreResult) => {
+        const results = fetchMoreResult?.data?.getPodTaskBoardTasks;
+        if (results && results?.length > 0) {
+          const newColumns = addToTaskColumns(results, columns);
+          setColumns(newColumns);
+        } else {
+          setPodTaskHasMore(false);
+        }
       });
     }
   }, [podTaskHasMore, columns, fetchMore]);
+
   return (
     <PodBoardContext.Provider
       value={{

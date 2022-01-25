@@ -1,10 +1,6 @@
-import { gql } from '@apollo/client'
+import { gql } from '@apollo/client';
 
-import {
-  TaskCardFragment,
-  TaskProposalCardFragment,
-  TaskSubmissionCardFragment,
-} from '../fragments/task'
+import { TaskCardFragment, TaskProposalCardFragment, TaskSubmissionCardFragment } from '../fragments/task';
 
 export const GET_ORG_TASK_BOARD_PROPOSALS = gql`
   query GetOrgTaskBoardProposals(
@@ -29,7 +25,7 @@ export const GET_ORG_TASK_BOARD_PROPOSALS = gql`
     }
   }
   ${TaskProposalCardFragment}
-`
+`;
 
 export const GET_ORG_TASK_BOARD_SUBMISSIONS = gql`
   query getOrgTaskBoardSubmissions(
@@ -54,7 +50,7 @@ export const GET_ORG_TASK_BOARD_SUBMISSIONS = gql`
     }
   }
   ${TaskSubmissionCardFragment}
-`
+`;
 
 export const GET_ORG_TASK_BOARD_TASKS = gql`
   query getOrgTaskBoardTasks(
@@ -79,7 +75,7 @@ export const GET_ORG_TASK_BOARD_TASKS = gql`
     }
   }
   ${TaskCardFragment}
-`
+`;
 
 export const GET_USER_TASK_BOARD_TASKS = gql`
   query getUserTaskBoardTasks(
@@ -91,20 +87,13 @@ export const GET_USER_TASK_BOARD_TASKS = gql`
     $offset: Int
   ) {
     getUserTaskBoardTasks(
-      input: {
-        userId: $userId
-        statuses: $statuses
-        orgId: $orgId
-        podIds: $podIds
-        limit: $limit
-        offset: $offset
-      }
+      input: { userId: $userId, statuses: $statuses, orgId: $orgId, podIds: $podIds, limit: $limit, offset: $offset }
     ) {
       ...TaskCardFragment
     }
   }
   ${TaskCardFragment}
-`
+`;
 
 export const GET_USER_TASK_BOARD_PROPOSALS = gql`
   query getUserTaskBoardProposals(
@@ -116,20 +105,13 @@ export const GET_USER_TASK_BOARD_PROPOSALS = gql`
     $offset: Int
   ) {
     getUserTaskBoardProposals(
-      input: {
-        userId: $userId
-        statuses: $statuses
-        orgId: $orgId
-        podIds: $podIds
-        limit: $limit
-        offset: $offset
-      }
+      input: { userId: $userId, statuses: $statuses, orgId: $orgId, podIds: $podIds, limit: $limit, offset: $offset }
     ) {
       ...TaskProposalCardFragment
     }
   }
   ${TaskProposalCardFragment}
-`
+`;
 
 export const GET_USER_TASK_BOARD_SUBMISSIONS = gql`
   query getUserTaskBoardSubmissions(
@@ -141,20 +123,13 @@ export const GET_USER_TASK_BOARD_SUBMISSIONS = gql`
     $offset: Int
   ) {
     getUserTaskBoardSubmissions(
-      input: {
-        userId: $userId
-        statuses: $statuses
-        orgId: $orgId
-        podIds: $podIds
-        limit: $limit
-        offset: $offset
-      }
+      input: { userId: $userId, statuses: $statuses, orgId: $orgId, podIds: $podIds, limit: $limit, offset: $offset }
     ) {
       ...TaskSubmissionCardFragment
     }
   }
   ${TaskSubmissionCardFragment}
-`
+`;
 
 export const GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD = gql`
   query getPerStatusTaskCountForOrgBoard($orgId: ID!) {
@@ -168,7 +143,7 @@ export const GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD = gql`
       archived
     }
   }
-`
+`;
 
 export const GET_POD_TASK_BOARD_PROPOSALS = gql`
   query getPodTaskBoardProposals($input: PodTaskBoardQueryInput) {
@@ -177,7 +152,7 @@ export const GET_POD_TASK_BOARD_PROPOSALS = gql`
     }
   }
   ${TaskProposalCardFragment}
-`
+`;
 
 export const GET_POD_TASK_BOARD_TASKS = gql`
   query getPodTaskBoardTasks($input: PodTaskBoardQueryInput) {
@@ -186,7 +161,7 @@ export const GET_POD_TASK_BOARD_TASKS = gql`
     }
   }
   ${TaskCardFragment}
-`
+`;
 
 export const GET_POD_TASK_BOARD_SUBMISSIONS = gql`
   query getPodTaskBoardSubmissions($input: PodTaskBoardQueryInput) {
@@ -195,7 +170,7 @@ export const GET_POD_TASK_BOARD_SUBMISSIONS = gql`
     }
   }
   ${TaskSubmissionCardFragment}
-`
+`;
 
 export const GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD = gql`
   query getPerStatusTaskCountForPodBoard($podId: ID!) {
@@ -209,4 +184,4 @@ export const GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD = gql`
       archived
     }
   }
-`
+`;
