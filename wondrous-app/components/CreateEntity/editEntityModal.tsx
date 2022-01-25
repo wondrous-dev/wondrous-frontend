@@ -591,7 +591,7 @@ const EditLayoutBaseModal = (props) => {
           <DropdownSelect
             title="Pod"
             labelText="Choose Pod"
-            value={pod?.id}
+            value={pod}
             setValue={setPod}
             labelIcon={<CreatePodIcon />}
             options={filterDAOptions(pods) || []}
