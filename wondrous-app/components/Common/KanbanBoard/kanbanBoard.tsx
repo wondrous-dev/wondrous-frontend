@@ -37,7 +37,10 @@ const KanbanBoard = (props) => {
     if (inView && hasMore) {
       onLoadMore();
     }
-  }, [inView, hasMore, onLoadMore]);
+    if (columns) {
+      setColumnsState(columns);
+    }
+  }, [inView, hasMore, onLoadMore, columns]);
 
   const checkPermissions = (task) => {
     const permissions = parseUserPermissionContext({

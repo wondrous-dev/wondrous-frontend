@@ -32,9 +32,9 @@ export const DrawerContainer = styled.div`
 export const DrawerTopBlock = styled.div`
   min-height: 250px;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: flex-start;
 `;
 
 export const DrawerUserImage = styled.img`

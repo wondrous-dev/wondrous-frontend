@@ -40,8 +40,8 @@ const SideBarComponent = (props) => {
   };
 
   const generalSettings = () => {
-    router.push('/profile/settings')
-  }
+    router.push('/profile/settings');
+  };
 
   const listItems = userOrgs?.getUserOrgs;
 
@@ -51,12 +51,17 @@ const SideBarComponent = (props) => {
     width: '48px',
     height: '48px',
     borderRadius: '24px',
+    marginBottom: '12px',
   };
   return (
     <DrawerComponent variant="permanent" anchor="left" className={minimized ? 'active' : ''}>
       <DrawerContainer>
         <DrawerTopBlock>
-          <DrawerTopBlockItem onClick={() => {router.push(`/profile/${user.username}/about`)}}>
+          <DrawerTopBlockItem
+            onClick={() => {
+              router.push(`/profile/${user.username}/about`);
+            }}
+          >
             {user?.profilePicture ? (
               <SafeImage style={profilePictureStyle} src={user?.profilePicture} />
             ) : (
