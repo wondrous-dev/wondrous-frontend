@@ -112,6 +112,7 @@ import { updateProposalItem } from '../../utils/board';
 import { GET_ORG_TASK_BOARD_PROPOSALS } from '../../graphql/queries/taskBoard';
 import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './createEntityModal';
 import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment';
+import { ErrorText } from '../Common';
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -345,6 +346,12 @@ const EditLayoutBaseModal = (props) => {
     fetchPolicy: 'cache-and-network',
   });
   const [fetchPaymentMethod, setFetchPaymentMethod] = useState(false);
+  const [errors, setErrors] = useState({
+    general: null,
+    title: null,
+    description: null,
+    org: null,
+  });
   const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG);
   // const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
   const [pods, setPods] = useState([]);
@@ -525,21 +532,32 @@ const EditLayoutBaseModal = (props) => {
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
-
-        if (!isTaskProposal) {
-          updateTask({
-            variables: {
-              taskId: existingTask?.id,
-              input: taskInput,
-            },
-          });
+        if (!title || !descriptionText) {
+          const newErrors = { ...errors };
+          if (!title) {
+            newErrors.title = 'Please enter a title';
+          }
+          if (!descriptionText) {
+            newErrors.description = 'Please enter a description';
+          }
+          newErrors.general = 'Please enter the necessary information above';
+          setErrors(newErrors);
         } else {
-          updateTaskProposal({
-            variables: {
-              proposalId: existingTask?.id,
-              input: taskInput,
-            },
-          });
+          if (!isTaskProposal) {
+            updateTask({
+              variables: {
+                taskId: existingTask?.id,
+                input: taskInput,
+              },
+            });
+          } else {
+            updateTaskProposal({
+              variables: {
+                proposalId: existingTask?.id,
+                input: taskInput,
+              },
+            });
+          }
         }
         break;
     }
@@ -608,6 +626,7 @@ const EditLayoutBaseModal = (props) => {
             placeholder="Enter task title"
             search={false}
           />
+          {errors.title && <ErrorText> {errors.title} </ErrorText>}
         </CreateFormMainInputBlock>
 
         <CreateFormMainInputBlock>
@@ -641,6 +660,7 @@ const EditLayoutBaseModal = (props) => {
           <CreateFormMainDescriptionInputSymbolCounter>
             {descriptionText.length}/900 characters
           </CreateFormMainDescriptionInputSymbolCounter>
+          {errors.description && <ErrorText> {errors.description} </ErrorText>}
         </CreateFormMainInputBlock>
         <CreateFormMainInputBlock>
           <CreateFormMainBlockTitle>Multi-media</CreateFormMainBlockTitle>
@@ -998,6 +1018,7 @@ const EditLayoutBaseModal = (props) => {
       </CreateFormAddDetailsSection>
 
       <CreateFormFooterButtons>
+        {errors.general && <ErrorText> {errors.general} </ErrorText>}
         <CreateFormButtonsBlock>
           <CreateFormCancelButton onClick={cancelEdit}>Cancel</CreateFormCancelButton>
           <CreateFormPreviewButton onClick={submitMutation}>
