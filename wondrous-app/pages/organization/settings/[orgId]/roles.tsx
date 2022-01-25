@@ -6,7 +6,7 @@ import Roles from '../../../../components/Settings/Roles';
 import { GET_ORG_ROLES } from '../../../../graphql/queries';
 import { CREATE_ORG_ROLE, DELETE_ORG_ROLE, UPDATE_ORG_ROLE } from '../../../../graphql/mutations/org';
 import { Role } from '../../../../types/common';
-import permissons from './permissons';
+import permissons from '../../../../utils/orgPermissions';
 
 const RolesPage = () => {
   const [roles, setRoles] = useState([]);

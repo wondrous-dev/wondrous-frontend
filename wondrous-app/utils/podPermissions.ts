@@ -1,4 +1,4 @@
-import { PERMISSIONS } from '../../../../utils/constants';
+import { PERMISSIONS } from './constants';
 
 export type Permisson = {
   title: string;
@@ -21,7 +21,8 @@ const permissons: Permisson[] = [
     title: 'Create task',
     subTitle: 'Member can create tasks.',
     permission: PERMISSIONS.CREATE_TASK,
-  },   {
+  },
+  {
     title: 'Edit task',
     subTitle: 'Member can edit tasks.',
     permission: PERMISSIONS.EDIT_TASK,
@@ -63,7 +64,7 @@ const permissons: Permisson[] = [
   {
     title: 'Payout Permissions',
     subTitle: 'Can payout members for their work.',
-    permission: PERMISSIONS.APPROVE_PAYMENT
+    permission: PERMISSIONS.APPROVE_PAYMENT,
   },
   // {
   //   title: 'Milestone approvals',
