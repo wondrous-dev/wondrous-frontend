@@ -32,9 +32,9 @@ export const DrawerContainer = styled.div`
 export const DrawerTopBlock = styled.div`
   min-height: 250px;
   display: flex;
-  align-items: flex-start;
   flex-direction: column;
-  justify-content: space-evenly;
+  align-items: center;
+  justify-content: flex-start;
 `;
 
 export const DrawerUserImage = styled.img`
@@ -53,11 +53,12 @@ export const DrawerTopBlockItem = styled.div`
 `;
 
 export const DrawerList = styled(List)`
-  & {
+  && {
     min-height: 152px;
     display: flex;
+    width: 100%;
     flex-direction: column;
-    align-content: flex-start;
+    align-content: center;
     justify-content: flex-start;
     padding: 0;
     margin: 1em auto;
@@ -66,7 +67,10 @@ export const DrawerList = styled(List)`
 export const DrawerListItem = styled(ListItem)`
   & {
     display: flex;
-    height: 36px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
     padding: 0.5em auto;
     margin: 0.5em auto;
   }
@@ -118,4 +122,16 @@ export const DrawerBackButton = styled(DrawerBottomButton)`
       transform: rotate(180deg);
     }
   }
+`;
+
+export const NoLogoDAO = styled.div`
+  display: flex;
+  width: 36px;
+  height: 36px;
+  border-radius: 36px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(0deg, #141414 0%, #474747 219.88%, rgba(20, 20, 20, 0) 219.9%);
 `;
