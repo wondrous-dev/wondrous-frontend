@@ -190,7 +190,6 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
         },
       });
   }
-  console.log('task profile picture', task?.orgProfilePicture);
   return (
     <>
       <TaskViewModal
