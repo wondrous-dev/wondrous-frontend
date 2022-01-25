@@ -756,17 +756,6 @@ const EditLayoutBaseModal = (props) => {
                   onCompleted: (data) => {
                     const taskProposal = data?.attachTaskProposalMedia;
                     setMediaUploads(transformMediaFormat(taskProposal?.media));
-                    if (board?.setColumns && onCorrectPage) {
-                      let columns = [...board?.columns];
-                      columns = updateProposalItem(
-                        {
-                          ...existingTask,
-                          media: taskProposal?.media,
-                        },
-                        columns
-                      );
-                      board.setColumns(columns);
-                    }
                   },
                 });
               } else {
@@ -780,23 +769,6 @@ const EditLayoutBaseModal = (props) => {
                   onCompleted: (data) => {
                     const task = data?.attachTaskMedia;
                     setMediaUploads(transformMediaFormat(task?.media));
-                    if (board?.setColumns && onCorrectPage) {
-                      const columns = [...board?.columns];
-                      let columnNumber = 0;
-                      if (existingTask?.status === TASK_STATUS_IN_PROGRESS) {
-                        columnNumber = 1;
-                      }
-                      columns[columnNumber].tasks = columns[columnNumber].tasks.map((taskItem) => {
-                        if (existingTask?.id === taskItem?.id) {
-                          return {
-                            ...existingTask,
-                            media: task?.media,
-                          };
-                        }
-                        return existingTask;
-                      });
-                      board.setColumns(columns);
-                    }
                   },
                 });
               }
