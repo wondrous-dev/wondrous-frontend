@@ -190,7 +190,7 @@ export const Task = ({ task, setTask }) => {
     // document.body.scroll = false
     windowOffset = window.scrollY;
     document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
-    // setModalOpen(true)
+    setModalOpen(true);
   };
 
   const goToPod = (podId) => {

@@ -82,6 +82,7 @@ import { CompletedIcon, InReviewIcon } from '../../Icons/statusIcons';
 import { RejectIcon } from '../../Icons/decisionIcons';
 import { transformMediaFormat } from '../../CreateEntity/editEntityModal';
 import { MediaLink } from './modal';
+import { delQuery } from '../../../utils';
 
 const SubmissionStatusIcon = (props) => {
   const { submission } = props;
@@ -726,6 +727,7 @@ export const TaskSubmissionContent = (props) => {
     handleClose,
   } = props;
 
+  const router = useRouter();
   const [submissionToEdit, setSubmissionToEdit] = useState(null);
   const [moveProgressButton, setMoveProgressButton] = useState(true);
 
@@ -747,6 +749,9 @@ export const TaskSubmissionContent = (props) => {
           }}
           onClick={() => {
             setMoveProgressButton(false);
+            router.push(`${delQuery(router.asPath)}`, undefined, {
+              shallow: true,
+            });
             handleClose();
             updateTaskStatus({
               variables: {
@@ -757,14 +762,16 @@ export const TaskSubmissionContent = (props) => {
               },
               onCompleted: (data) => {
                 const task = data?.updateTaskStatus;
+                handleClose();
                 if (board?.setColumns && task?.orgId === board?.orgId) {
                   const transformedTask = transformTaskToTaskCard(task, {});
 
                   const columns = [...board?.columns];
                   columns[0].tasks = columns[0].tasks.filter((existingTask) => {
                     if (transformedTask?.id !== existingTask?.id) {
-                      return existingTask;
+                      return true;
                     }
+                    return false;
                   });
                   columns[1].tasks = [transformedTask, ...columns[1].tasks];
                   board.setColumns(columns);
