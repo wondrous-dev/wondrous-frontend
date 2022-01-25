@@ -13,7 +13,9 @@ import {
   OrganisationsCardHeader,
   OrganisationsCardHeaderName,
   OrganisationsCardHeaderWonderIcon,
+  OrganisationsCardNoLogo,
 } from './styles';
+import { DAOIcon } from '../../Icons/dao';
 
 const ICONS = {
   wonder: OrganisationsCardHeaderWonderIcon,
@@ -27,17 +29,21 @@ const AboutOrganisationsCard = (props) => {
   return (
     <OrganisationsCard>
       <OrganisationsCardHeader>
-        {/* <Icon /> */}
-        <SafeImage
-          src={thumbnailPicture || profilePicture || 'seed/wonder_logo.jpg'}
-          style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '4px',
-            marginRight: '8px',
-          }}
-        />
-
+        {thumbnailPicture || profilePicture ? (
+          <SafeImage
+            src={thumbnailPicture || profilePicture}
+            style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '4px',
+              marginRight: '8px',
+            }}
+          />
+        ) : (
+          <OrganisationsCardNoLogo>
+            <DAOIcon />
+          </OrganisationsCardNoLogo>
+        )}
         <OrganisationsCardHeaderName>{name}</OrganisationsCardHeaderName>
         <IconButton>
           <RightArrowIcon />

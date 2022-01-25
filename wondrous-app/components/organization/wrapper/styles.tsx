@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, Typography, IconButton } from '@material-ui/core';
-import { Background } from '../../../theme/colors';
+import { Background, Black } from '../../../theme/colors';
 import { LogoCircle } from '../../Common/ci';
 import { LinkIcon } from '../../Icons/linkIcon';
 import { Button as BorderButton } from '../../Common/button';
@@ -44,6 +44,23 @@ export const TokenLogo = styled(LogoCircle)`
   top: -50px;
   left: -20px;
 `;
+
+export const TokenEmptyLogo = styled.div`
+  position: absolute;
+  width: 103px;
+  height: 103px;
+  top: -50px;
+  left: -20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50px;
+
+  background: ${Black};
+`
 
 export const Content = styled.div`
   width: 100%;

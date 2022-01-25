@@ -261,6 +261,18 @@ export const OrganisationsCardAuthorPosition = styled(Typography)`
 		color: #ffffff;
 	}
 `
+
+export const OrganisationsCardNoLogo = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	max-height: 40px;
+	width: 40px;
+	margin-right: 8px;
+`
+
 //about pods card
 
 export const PodsCardName = styled(Typography)`
