@@ -10,6 +10,15 @@ export const CREATE_POD = gql`
   ${PodFragment}
 `;
 
+export const UPDATE_POD = gql`
+  mutation updatePod($podId: ID!, $input: PodInput) {
+    updatePod(podId: $podId, input: $input) {
+      ...PodFragment
+    }
+  }
+  ${PodFragment}
+`;
+
 export const CREATE_POD_INVITE_LINK = gql`
   mutation createPodInviteLink($input: PodInviteLinkInput) {
     createPodInviteLink(input: $input) {
