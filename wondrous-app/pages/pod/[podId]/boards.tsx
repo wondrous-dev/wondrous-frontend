@@ -92,7 +92,7 @@ const SELECT_OPTIONS = [
   '#analytics (23)',
 ];
 
-const LIMIT = 2;
+const LIMIT = 10;
 
 const BoardsPage = () => {
   const [columns, setColumns] = useState(COLUMNS);
