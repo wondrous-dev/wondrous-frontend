@@ -43,7 +43,7 @@ export const TaskHeader = styled.div`
   width: 100%;
   text-align: left;
 
-  margin: 0 0 33px 0;
+  margin: 0 0 17px 0;
 `;
 
 export const TaskContent = styled.div`
@@ -65,6 +65,10 @@ export const TaskSeparator = styled.div`
   border-bottom: 1px solid ${Grey80};
   margin-top: 5px;
 `;
+
+export const MilestoneSeparator = styled(TaskSeparator)`
+  margin: 12px 0;
+`
 
 export const TaskTitle = styled.div`
   display: flex;

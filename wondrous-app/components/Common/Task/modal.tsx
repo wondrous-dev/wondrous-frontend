@@ -592,23 +592,23 @@ export const TaskViewModal = (props) => {
       <Modal open={open} onClose={handleClose}>
         <TaskModal>
           <TaskModalHeader>
-            { fetchedTask?.orgProfilePicture
-            ? (
-              <SafeImage
-                src={fetchedTask?.orgProfilePicture}
-                style={{
-                  width: '29px',
-                  height: '28px',
-                  borderRadius: '4px',
-                  marginRight: '8px',
-                }}
-              />
-            )
-            : (
-              <OrganisationsCardNoLogo style={{ height: '29px', width: '28px'}}>
-                <DAOIcon />
-              </OrganisationsCardNoLogo>
-            )
+            {fetchedTask?.orgProfilePicture
+              ? (
+                <SafeImage
+                  src={fetchedTask?.orgProfilePicture}
+                  style={{
+                    width: '29px',
+                    height: '28px',
+                    borderRadius: '4px',
+                    marginRight: '8px',
+                  }}
+                />
+              )
+              : (
+                <OrganisationsCardNoLogo style={{ height: '29px', width: '28px' }}>
+                  <DAOIcon />
+                </OrganisationsCardNoLogo>
+              )
             }
             {fetchedTask?.podName && (
               <div
