@@ -507,6 +507,7 @@ const EditLayoutBaseModal = (props) => {
   const submitMutation = useCallback(() => {
     switch (entityType) {
       case ENTITIES_TYPES.TASK:
+        console.log('rewardsAmount', rewardsAmount, rewardsCurrency);
         const taskInput = {
           title,
           description: descriptionText,
