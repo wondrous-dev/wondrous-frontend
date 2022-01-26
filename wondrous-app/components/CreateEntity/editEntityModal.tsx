@@ -113,6 +113,7 @@ import { GET_ORG_TASK_BOARD_PROPOSALS } from '../../graphql/queries/taskBoard';
 import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './createEntityModal';
 import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment';
 import { ErrorText } from '../Common';
+import { FileLoading } from '../Common/FileUpload/FileUpload';
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -362,6 +363,7 @@ const EditLayoutBaseModal = (props) => {
     }
   );
   const [dueDate, setDueDate] = useState(existingTask?.dueDate);
+  const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const {
     showDeliverableRequirementsSection,
     showBountySwitchSection,
@@ -703,6 +705,7 @@ const EditLayoutBaseModal = (props) => {
                   marginBottom: '8px',
                 }}
               />
+              {fileUploadLoading && <FileLoading />}
             </MediaUploadDiv>
           ) : (
             <MultiMediaUploadButton onClick={() => inputRef.current.click()}>
@@ -714,6 +717,7 @@ const EditLayoutBaseModal = (props) => {
                 }}
               />
               <MultiMediaUploadButtonText>Upload file</MultiMediaUploadButtonText>
+              {fileUploadLoading && <FileLoading />}
             </MultiMediaUploadButton>
           )}
           <input
@@ -721,6 +725,7 @@ const EditLayoutBaseModal = (props) => {
             hidden
             ref={inputRef}
             onChange={async (event) => {
+              setFileUploadLoading(true);
               const fileToAdd = await handleAddFile({
                 event,
                 filePrefix: 'tmp/task/new/',
@@ -738,6 +743,7 @@ const EditLayoutBaseModal = (props) => {
                   onCompleted: (data) => {
                     const taskProposal = data?.attachTaskProposalMedia;
                     setMediaUploads(transformMediaFormat(taskProposal?.media));
+                    setFileUploadLoading(false);
                   },
                 });
               } else {
@@ -751,6 +757,7 @@ const EditLayoutBaseModal = (props) => {
                   onCompleted: (data) => {
                     const task = data?.attachTaskMedia;
                     setMediaUploads(transformMediaFormat(task?.media));
+                    setFileUploadLoading(false);
                   },
                 });
               }

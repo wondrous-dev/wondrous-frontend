@@ -13,6 +13,7 @@ import {
   ProfilePictureDiv,
 } from './styles';
 import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
+import { FileLoading } from '../../components/Common/FileUpload/FileUpload';
 
 import { useRouter } from 'next/router';
 
@@ -37,6 +38,7 @@ export const Logo = ({ divStyle }) => {
 export const InviteWelcomeBox = ({ updateUser }) => {
   const router = useRouter();
   const [bio, setBio] = useState('');
+  const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const user = useMe();
   const [image, setImage] = useState('');
   const inputRef: any = useRef();
@@ -44,6 +46,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
     async (event) => {
       const file = event.target.files[0];
       if (file) {
+        setFileUploadLoading(true);
         const fileName = file?.name;
         // get image preview
         const { fileType, filename } = getFilenameAndType(fileName);
@@ -58,6 +61,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
             },
           },
           onCompleted: (data) => {
+            setFileUploadLoading(false);
             if (data?.updateUser?.profilePicture) {
               setImage(data?.updateUser?.profilePicture);
             }
@@ -133,12 +137,15 @@ export const InviteWelcomeBox = ({ updateUser }) => {
       <UsernameTitle
         style={{
           marginTop: '28px',
+          display: 'flex',
         }}
       >
-        Profile picture
+        <span>Profile picture</span>
+        {fileUploadLoading && <FileLoading />}
       </UsernameTitle>
 
       <UsernameDescription>(Recommended 52 x 52)</UsernameDescription>
+
       {image ? (
         <ProfilePictureDiv>
           <SafeImage

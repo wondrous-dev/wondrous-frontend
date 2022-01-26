@@ -83,6 +83,7 @@ import { RejectIcon } from '../../Icons/decisionIcons';
 import { transformMediaFormat } from '../../CreateEntity/editEntityModal';
 import { MediaLink } from './modal';
 import { delQuery } from '../../../utils';
+import { FileLoading } from '../FileUpload/FileUpload';
 
 const SubmissionStatusIcon = (props) => {
   const { submission } = props;
@@ -375,6 +376,7 @@ const TaskSubmissionForm = (props) => {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
+  const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const board = orgBoard || podBoard || userBoard;
   const [mediaUploads, setMediaUploads] = useState(transformMediaFormat(submissionToEdit?.media) || []);
   const [descriptionText, setDescriptionText] = useState(submissionToEdit?.description || '');
@@ -488,6 +490,7 @@ const TaskSubmissionForm = (props) => {
                   marginBottom: '8px',
                 }}
               />
+              {fileUploadLoading && <FileLoading />}
             </MediaUploadDiv>
           ) : (
             <MultiMediaUploadButton onClick={() => inputRef.current.click()}>
@@ -499,6 +502,7 @@ const TaskSubmissionForm = (props) => {
                 }}
               />
               <MultiMediaUploadButtonText>Upload file</MultiMediaUploadButtonText>
+              {fileUploadLoading && <FileLoading />}
             </MultiMediaUploadButton>
           )}
           <input
@@ -506,6 +510,7 @@ const TaskSubmissionForm = (props) => {
             hidden
             ref={inputRef}
             onChange={async (event) => {
+              setFileUploadLoading(true);
               const fileToAdd = await handleAddFile({
                 event,
                 filePrefix: 'tmp/task/new/',
@@ -523,6 +528,7 @@ const TaskSubmissionForm = (props) => {
                   onCompleted: (data) => {
                     const taskSubmission = data?.attachTaskSubmissionMedia;
                     setMediaUploads(transformMediaFormat(taskSubmission?.media));
+                    setFileUploadLoading(false);
                     const newFetchedTaskSubmissions = fetchedTaskSubmissions.map((fetchedTaskSubmission) => {
                       if (fetchedTaskSubmission?.id === submissionToEdit?.id) {
                         const newTaskSubmission = {

@@ -109,6 +109,7 @@ import { useRouter } from 'next/router';
 import { delQuery } from '../../utils';
 import { ErrorText } from '../Common';
 import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment';
+import { FileLoading } from '../Common/FileUpload/FileUpload';
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -315,6 +316,7 @@ const CreateLayoutBaseModal = (props) => {
   const [rewardsCurrency, setRewardsCurrency] = useState(null);
   const [rewardsAmount, setRewardsAmount] = useState(null);
   const [title, setTitle] = useState('');
+  const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
@@ -756,6 +758,7 @@ const CreateLayoutBaseModal = (props) => {
                     marginBottom: '8px',
                   }}
                 />
+                {fileUploadLoading && <FileLoading />}
               </MediaUploadDiv>
             ) : (
               <MultiMediaUploadButton onClick={() => inputRef.current.click()}>
@@ -767,6 +770,7 @@ const CreateLayoutBaseModal = (props) => {
                   }}
                 />
                 <MultiMediaUploadButtonText>Upload file</MultiMediaUploadButtonText>
+                {fileUploadLoading && <FileLoading />}
               </MultiMediaUploadButton>
             )}
             <input
@@ -779,6 +783,7 @@ const CreateLayoutBaseModal = (props) => {
                   filePrefix: 'tmp/task/new/',
                   mediaUploads,
                   setMediaUploads,
+                  setFileUploadLoading,
                 })
               }
             />
