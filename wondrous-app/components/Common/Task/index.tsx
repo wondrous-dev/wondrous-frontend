@@ -248,17 +248,6 @@ export const Task = ({ task, setTask }) => {
                 borderRadius: '4px',
               }}
             />
-            {task?.podName && (
-              <PodWrapper
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  goToPod(task?.podId);
-                }}
-              >
-                <PodName>{task?.podName}</PodName>
-              </PodWrapper>
-            )}
             <AvatarList style={{ marginLeft: '12px' }} users={userList} id={'task-' + task?.id} />
             {rewards && rewards?.length > 0 && <Compensation compensation={rewards[0]} />}
           </TaskHeader>
@@ -270,6 +259,17 @@ export const Task = ({ task, setTask }) => {
                 router,
               })}
             </p>
+            {task?.podName && (
+              <PodWrapper
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  goToPod(task?.podId);
+                }}
+              >
+                <PodName>{task?.podName}</PodName>
+              </PodWrapper>
+            )}
             {media?.length > 0 ? <TaskMedia media={media[0]} /> : <TaskSeparator />}
           </TaskContent>
           <TaskFooter>
@@ -366,17 +366,6 @@ export const TaskListCard = (props) => {
             borderRadius: '4px',
           }}
         />
-        {task?.podName && (
-          <PodWrapper
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              router.push(`/pod/${task?.podId}/boards`);
-            }}
-          >
-            <PodName>{task?.podName.slice(0, 15)}</PodName>
-          </PodWrapper>
-        )}
         <AvatarList
           style={{ marginLeft: '12px' }}
           users={[
@@ -405,6 +394,17 @@ export const TaskListCard = (props) => {
             router,
           })}
         </p>
+        {task?.podName && (
+          <PodWrapper
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              router.push(`/pod/${task?.podId}/boards`);
+            }}
+          >
+            <PodName>{task?.podName.slice(0, 15)}</PodName>
+          </PodWrapper>
+        )}
         {task?.media?.length > 0 ? <TaskMedia media={task?.media[0]} /> : <TaskSeparator />}
       </TaskContent>
       <TaskFooter>

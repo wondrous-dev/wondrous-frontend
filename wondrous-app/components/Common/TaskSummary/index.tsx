@@ -212,20 +212,6 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
         <TaskSummaryInner>
           <TaskHeader>
             <OrgProfilePicture src={task?.orgProfilePicture} />
-            {task?.podName && (
-              <PodWrapper
-                style={{
-                  marginRight: '16px',
-                }}
-                onclick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  goToPod(task?.podId);
-                }}
-              >
-                <PodName>{task?.podName.slice(0, 15)}</PodName>
-              </PodWrapper>
-            )}
             <AvatarList
               id={id}
               users={[
@@ -252,6 +238,17 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
                 router,
               })}
             </p>
+            {task?.podName && (
+              <PodWrapper
+                onclick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  goToPod(task?.podId);
+                }}
+              >
+                <PodName>{task?.podName.slice(0, 15)}</PodName>
+              </PodWrapper>
+            )}
             {task?.media?.length > 0 ? <TaskMedia media={task?.media[0]} /> : <TaskSeparator />}
           </TaskContent>
           <TaskFooter>

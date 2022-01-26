@@ -118,8 +118,9 @@ export const PodWrapper = styled.div`
   background: #363636;
   padding: 1px 8px;
   border-radius: 8px;
-  margin-left: 12px;
   cursor: pointer;
+  margin-bottom: 16px;
+  width: fit-content;
 `;
 
 export const PodName = styled(Typography)`
