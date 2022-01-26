@@ -18,8 +18,8 @@ import { ArchiveTaskModal } from '../ArchiveTaskModal';
 import { GET_ORG_TASK_BOARD_TASKS } from '../../../graphql/queries/taskBoard';
 import MilestoneIcon from '../../Icons/milestone';
 
-import * as Constants from '../../../utils/constants';
-import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
+import * as Constants from '../../../utils/constants'
+import { flexDivStyle, rejectIconStyle } from '../TaskSummary'
 import {
   TaskWrapper,
   TaskInner,
@@ -67,7 +67,7 @@ export const TASK_ICONS = {
   [Constants.TASK_STATUS_ARCHIVED]: Archived,
 };
 
-let windowOffset = 0;
+let windowOffset = 0
 export const Task = ({ task, setTask }) => {
   const {
     actions = {},
@@ -88,10 +88,10 @@ export const Task = ({ task, setTask }) => {
   const router = useRouter();
   let { likes = 0, comments = 0, shares = 0, iLiked = false, iCommented = false, iShared = false } = actions || {};
   // Need to understand context
-  const orgBoard = useOrgBoard();
-  const userBoard = useUserBoard();
-  const podBoard = usePodBoard();
-  const user = useMe();
+  const orgBoard = useOrgBoard()
+  const userBoard = useUserBoard()
+  const podBoard = usePodBoard()
+  const user = useMe()
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
   const [userList, setUserList] = useState([]);
@@ -115,15 +115,11 @@ export const Task = ({ task, setTask }) => {
         query: GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
         variables: orgBoard?.getOrgBoardTaskCountVariables,
       },
-    ],
-    onError: () => {
-      console.error('Something went wrong.');
-    },
-  });
+    })
 
   const handleNewStatus = useCallback(
     (newStatus) => {
-      orgBoard?.setFirstTimeFetch(false);
+      orgBoard?.setFirstTimeFetch(false)
       updateTaskStatusMutation({
         variables: {
           taskId: id,
@@ -131,31 +127,34 @@ export const Task = ({ task, setTask }) => {
             newStatus,
           },
         },
-      });
+      })
     },
     [id, updateTaskStatusMutation, orgBoard]
-  );
+  )
 
   useEffect(() => {
     if (!initialStatus) {
-      setInitialStatus(status);
+      setInitialStatus(status)
     }
 
-    if (updateTaskStatusMutationData?.updateTaskStatus.status === Constants.TASK_STATUS_ARCHIVED) {
-      setSnackbarAlertOpen(true);
+    if (
+      updateTaskStatusMutationData?.updateTaskStatus.status ===
+      Constants.TASK_STATUS_ARCHIVED
+    ) {
+      setSnackbarAlertOpen(true)
       setSnackbarAlertMessage(
         <>
           Task archived successfully!{' '}
           <ArchivedTaskUndo
             onClick={() => {
-              handleNewStatus(initialStatus);
-              setSnackbarAlertOpen(false);
+              handleNewStatus(initialStatus)
+              setSnackbarAlertOpen(false)
             }}
           >
             Undo
           </ArchivedTaskUndo>
         </>
-      );
+      )
     }
   }, [
     initialStatus,
@@ -165,12 +164,12 @@ export const Task = ({ task, setTask }) => {
     setSnackbarAlertOpen,
     setSnackbarAlertMessage,
     handleNewStatus,
-  ]);
+  ])
 
   const toggleLike = () => {
-    setLiked(!liked);
+    setLiked(!liked)
 
-    likes = liked ? likes - 1 : likes + 1;
+    likes = liked ? likes - 1 : likes + 1
 
     setTask({
       ...task,
@@ -178,34 +177,37 @@ export const Task = ({ task, setTask }) => {
         ...actions,
         likes,
       },
-    });
-  };
+    })
+  }
   // Parse permissions here as well
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
     orgId: task?.orgId,
     podId: task?.podId,
-  });
+  })
 
   const canArchive =
     permissions.includes(Constants.PERMISSIONS.MANAGE_BOARD) ||
     permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
-    task?.createdBy === user?.id;
+    task?.createdBy === user?.id
 
   const openModal = () => {
-    router.replace(`${delQuery(router.asPath)}?task=${task?.id}`);
+    router.replace(`${delQuery(router.asPath)}?task=${task?.id}`)
     // document.body.style.overflow = 'hidden'
     // document.body.scroll = false
-    windowOffset = window.scrollY;
-    document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
-    setModalOpen(true);
-  };
+    windowOffset = window.scrollY
+    document.body.setAttribute(
+      'style',
+      `position: fixed; top: -${windowOffset}px; left:0; right:0`
+    )
+    setModalOpen(true)
+  }
 
   const goToPod = (podId) => {
     // Filter or go to Pod Page
-    console.log('Pod tap: ', podId);
-    router.push(`/pod/${podId}/boards`);
-  };
+    console.log('Pod tap: ', podId)
+    router.push(`/pod/${podId}/boards`)
+  }
 
   useEffect(() => {
     // One assigned person.
@@ -222,9 +224,9 @@ export const Task = ({ task, setTask }) => {
             color: null,
           },
         },
-      ]);
+      ])
     } else {
-      setUserList(users);
+      setUserList(users)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assigneeUsername]);
@@ -241,12 +243,12 @@ export const Task = ({ task, setTask }) => {
         open={modalOpen}
         handleOpen={() => setModalOpen(true)}
         handleClose={() => {
-          document.body.setAttribute('style', '');
-          window?.scrollTo(0, windowOffset);
-          setModalOpen(false);
+          document.body.setAttribute('style', '')
+          window?.scrollTo(0, windowOffset)
+          setModalOpen(false)
           router.push(`${delQuery(router.asPath)}`, undefined, {
             shallow: true,
-          });
+          })
         }}
         task={task}
       />
@@ -279,9 +281,9 @@ export const Task = ({ task, setTask }) => {
             {task?.podName && (
               <PodWrapper
                 onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  goToPod(task?.podId);
+                  e.preventDefault()
+                  e.stopPropagation()
+                  goToPod(task?.podId)
                 }}
               >
                 <PodName>{task?.podName}</PodName>
@@ -310,7 +312,7 @@ export const Task = ({ task, setTask }) => {
                   <DropDownItem
                     key={'task-menu-edit-' + id}
                     onClick={() => {
-                      setArchiveTask(true);
+                      setArchiveTask(true)
                     }}
                     style={{
                       color: White,
@@ -325,8 +327,8 @@ export const Task = ({ task, setTask }) => {
         </TaskInner>
       </TaskWrapper>
     </>
-  );
-};
+  )
+}
 
 export const TaskListCard = (props) => {
   const { taskType, task } = props;
@@ -343,35 +345,39 @@ export const TaskListCard = (props) => {
     userPermissionsContext,
     orgId: task?.orgId,
     podId: task?.podId,
-  });
+  })
 
-  let canEdit, canApprove;
+  let canEdit, canApprove
   if (taskType === Constants.TASK_STATUS_REQUESTED) {
-    canEdit = permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) || task.createdBy === user?.id;
+    canEdit =
+      permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
+      task.createdBy === user?.id
     canApprove =
       permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
-      permissions.includes(Constants.PERMISSIONS.CREATE_TASK);
+      permissions.includes(Constants.PERMISSIONS.CREATE_TASK)
   } else if (taskType === Constants.TASK_STATUS_IN_REVIEW) {
-    canEdit = task.createdBy === user?.id;
+    canEdit = task.createdBy === user?.id
     canApprove =
       permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
-      permissions.includes(Constants.PERMISSIONS.REVIEW_TASK);
+      permissions.includes(Constants.PERMISSIONS.REVIEW_TASK)
   } else if (taskType === Constants.TASK_STATUS_ARCHIVED) {
-    canEdit = task.createdBy === user?.id || task.assigneeId === user?.id;
+    canEdit = task.createdBy === user?.id || task.assigneeId === user?.id
   }
   if (viewDetails) {
     return (
       <TaskViewModal
         open={true}
         handleClose={() => {
-          setViewDetails(false);
+          setViewDetails(false)
         }}
         task={taskType === Constants.TASK_STATUS_IN_REVIEW ? null : task}
-        taskId={taskType === Constants.TASK_STATUS_IN_REVIEW ? task?.taskId : task?.id}
+        taskId={
+          taskType === Constants.TASK_STATUS_IN_REVIEW ? task?.taskId : task?.id
+        }
         isTaskProposal={taskType === Constants.TASK_STATUS_REQUESTED}
         back={true}
       />
-    );
+    )
   }
 
   return (
@@ -392,10 +398,13 @@ export const TaskListCard = (props) => {
               id: task?.assigneeId || task?.createdBy,
               name: task?.assigneeUsername || task?.creatorUsername,
               initials:
-                (task?.assigneeUsername && task?.assigneeUsername[0].toUpperCase()) ||
-                (task?.creatorUsername && task?.creatorUsername[0].toUpperCase()),
+                (task?.assigneeUsername &&
+                  task?.assigneeUsername[0].toUpperCase()) ||
+                (task?.creatorUsername &&
+                  task?.creatorUsername[0].toUpperCase()),
               avatar: {
-                url: task?.assigneeProfilePicture || task?.creatorProfilePicture,
+                url:
+                  task?.assigneeProfilePicture || task?.creatorProfilePicture,
                 isOwnerOfPod: false,
                 color: null,
               },
@@ -449,5 +458,5 @@ export const TaskListCard = (props) => {
         </TaskSummaryAction>
       </TaskFooter>
     </TaskListCardWrapper>
-  );
-};
+  )
+}

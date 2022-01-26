@@ -1,5 +1,5 @@
-import React, { useRef } from 'react'
-import { useDrop } from 'react-dnd'
+import React, { useRef } from 'react';
+import { useDrop } from 'react-dnd';
 
 import {
   PERMISSIONS,
@@ -8,12 +8,12 @@ import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
   TASK_STATUS_TODO,
-  ENTITIES_TYPES
-} from '../../../../utils/constants'
+  ENTITIES_TYPES,
+} from '../../../../utils/constants';
 
-import { ToDo, InProgress, Done } from '../../../Icons'
-import DraggableCard, { ItemTypes } from './DraggableCard'
-import { ColumnSection } from '../../ColumnSection'
+import { ToDo, InProgress, Done } from '../../../Icons';
+import DraggableCard, { ItemTypes } from './DraggableCard';
+import { ColumnSection } from '../../ColumnSection';
 
 import {
   TaskColumnContainer,
@@ -22,20 +22,20 @@ import {
   TaskColumnContainerCount,
   DropMeHere,
   TaskColumnDropContainer,
-} from './styles'
-import { Task } from '../../Task'
+} from './styles';
+import { Task } from '../../Task';
 
-import { DropZone } from '../../../Icons/dropZone'
-import Milestone from '../../Milestone'
-import { useMe } from '../../../Auth/withAuth'
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../../../utils/hooks'
-import { parseUserPermissionContext } from '../../../../utils/helpers'
+import { DropZone } from '../../../Icons/dropZone';
+import Milestone from '../../Milestone';
+import { useMe } from '../../../Auth/withAuth';
+import { useOrgBoard, usePodBoard, useUserBoard } from '../../../../utils/hooks';
+import { parseUserPermissionContext } from '../../../../utils/helpers';
 
 interface ITaskColumn {
-  cardsList: Array<any>
-  moveCard: any
-  status: string
-  section: Array<any>
+  cardsList: Array<any>;
+  moveCard: any;
+  status: string;
+  section: Array<any>;
 }
 
 const TITLES = {
@@ -43,61 +43,59 @@ const TITLES = {
   [TASK_STATUS_IN_PROGRESS]: 'In-Progress',
   [TASK_STATUS_IN_REVIEW]: 'In-Review',
   [TASK_STATUS_DONE]: 'Done',
-}
+};
 
 const HEADER_ICONS = {
   [TASK_STATUS_TODO]: ToDo,
   [TASK_STATUS_IN_PROGRESS]: InProgress,
   // [TASK_STATUS_IN_REVIEW]: InReview,
   [TASK_STATUS_DONE]: Done,
-}
+};
 
 const ColumnDropZone = ({ status, moveCard, children }) => {
-  const ref = useRef(null)
-  const user = useMe()
+  const ref = useRef(null);
+  const user = useMe();
 
   // Permissions for Draggable context
-  const orgBoard = useOrgBoard()
-  const userBoard = useUserBoard()
-  const podBoard = usePodBoard()
-  const board = orgBoard || userBoard || podBoard
+  const orgBoard = useOrgBoard();
+  const userBoard = useUserBoard();
+  const podBoard = usePodBoard();
+  const board = orgBoard || userBoard || podBoard;
   const userPermissionsContext =
-    orgBoard?.userPermissionsContext ||
-    podBoard?.userPermissionsContext ||
-    userBoard?.userPermissionsContext
+    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
 
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: ItemTypes.CARD,
     drop(item: any) {
       // Return card to its place if not permitted
       if (checkPermissions(item)) {
-        moveCard(item.id, status)
+        moveCard(item.id, status);
       }
     },
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
       canDrop: !!monitor.canDrop(),
     }),
-  })
+  });
 
   const checkPermissions = (task) => {
     const permissions = parseUserPermissionContext({
       userPermissionsContext,
       orgId: task?.orgId,
       podId: task?.podId,
-    })
+    });
 
     const canEdit =
       permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
       permissions.includes(PERMISSIONS.FULL_ACCESS) ||
       task?.createdBy === user?.id ||
-      (task?.assigneeId && task?.assigneeId === user?.id)
+      (task?.assigneeId && task?.assigneeId === user?.id);
 
     // Only if user exists.
-    return canEdit && user && task
-  }
+    return canEdit && user && task;
+  };
 
-  drop(ref)
+  drop(ref);
 
   return (
     <TaskColumnDropContainer ref={ref}>
@@ -109,50 +107,48 @@ const ColumnDropZone = ({ status, moveCard, children }) => {
       )}
       {children}
     </TaskColumnDropContainer>
-  )
-}
+  );
+};
 
 const TaskColumn = (props: ITaskColumn) => {
-  const { cardsList, moveCard, status, section } = props
-  const orgBoard = useOrgBoard()
-  const userBoard = useUserBoard()
-  const podBoard = usePodBoard()
-  const board = orgBoard || userBoard || podBoard
-  const taskCount = board?.taskCount
-  const HeaderIcon = HEADER_ICONS[status]
-  let number
+  const { cardsList, moveCard, status, section } = props;
+  const orgBoard = useOrgBoard();
+  const userBoard = useUserBoard();
+  const podBoard = usePodBoard();
+  const board = orgBoard || userBoard || podBoard;
+  const taskCount = board?.taskCount;
+  const HeaderIcon = HEADER_ICONS[status];
+  let number;
 
   switch (status) {
     case TASK_STATUS_TODO:
-      number = taskCount?.created || 0
-      break
+      number = taskCount?.created || 0;
+      break;
     case TASK_STATUS_IN_PROGRESS:
-      number = taskCount?.inProgress || 0
-      break
+      number = taskCount?.inProgress || 0;
+      break;
     case TASK_STATUS_REQUESTED:
-      number = taskCount?.proposal || 0
-      break
+      number = taskCount?.proposal || 0;
+      break;
     case TASK_STATUS_DONE:
-      number = taskCount?.completed || 0
-      break
+      number = taskCount?.completed || 0;
+      break;
     case TASK_STATUS_IN_REVIEW:
-      number = taskCount?.submission || 0
-      break
+      number = taskCount?.submission || 0;
+      break;
     default:
-      number = 0
-      break
+      number = 0;
+      break;
   }
 
   return (
     <TaskColumnContainer>
       <TaskColumnContainerHeader>
         <HeaderIcon />
-        <TaskColumnContainerHeaderTitle>
-          {TITLES[status]}
-        </TaskColumnContainerHeaderTitle>
+        <TaskColumnContainerHeaderTitle>{TITLES[status]}</TaskColumnContainerHeaderTitle>
         <TaskColumnContainerCount>{number}</TaskColumnContainerCount>
       </TaskColumnContainerHeader>
-      <ColumnSection section={section} setSection={() => { }} />
+      <ColumnSection section={section} setSection={() => {}} />
 
       {cardsList.map((card) => (
         <DraggableCard
@@ -167,10 +163,10 @@ const TaskColumn = (props: ITaskColumn) => {
         >
           {card.type === ENTITIES_TYPES.MILESTONE ? (
             <Milestone>
-              <Task task={card} setTask={() => { }} />
+              <Task task={card} setTask={() => {}} />
             </Milestone>
           ) : (
-            <Task task={card} setTask={() => { }} />
+            <Task task={card} setTask={() => {}} />
           )}
         </DraggableCard>
       ))}
@@ -180,7 +176,7 @@ const TaskColumn = (props: ITaskColumn) => {
         </ColumnDropZone>
       }
     </TaskColumnContainer>
-  )
-}
+  );
+};
 
-export default TaskColumn
+export default TaskColumn;
