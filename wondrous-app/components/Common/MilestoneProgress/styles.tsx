@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 import { ProgressBar } from '../ProgressBar';
+import { ProgressBarWrapper } from '../ProgressBar/styles';
 import { Box, Typography } from '@material-ui/core';
 
 export const StyledBox = styled(Box)`
     background: #0F0F0F;
     border-radius: 6px;
-    padding: 12px 10px;
+    padding: 12px 10px 17px;
 `
 
 export const StyledTextWrapper = styled.div`
@@ -19,7 +20,7 @@ export const StyledTasksLabel = styled(Typography)`
     && {
         font-weight: 500;
         color: #c4c4c4;
-        }
+    }
 `
 
 export const StyledTasksCount = styled(Typography)`
@@ -28,8 +29,11 @@ export const StyledTasksCount = styled(Typography)`
     }
 `
 
-export const StyledProgressBar = styled(ProgressBar)`
-    && {
-        margin-top: 12px; // TODO: FIX MARGIN
+export const StyledProgressBarWrapper = styled.div`
+    ${ProgressBarWrapper} {
+        margin-top: 12px;
     }
+`
+
+export const StyledProgressBar = styled(ProgressBar)`
 `
