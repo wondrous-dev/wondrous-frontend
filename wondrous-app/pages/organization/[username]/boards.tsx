@@ -19,6 +19,7 @@ import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_ARCHIVED,
   DEFAULT_STATUS_ARR,
+  STATUS_OPEN,
 } from '../../../utils/constants';
 import { GET_ORG_FROM_USERNAME, GET_ORG_BY_ID } from '../../../graphql/queries/org';
 import { OrgBoardContext } from '../../../utils/contexts';
@@ -223,7 +224,7 @@ const BoardsPage = () => {
       getOrgTaskProposals({
         variables: {
           orgId: id,
-          statuses,
+          statuses: [STATUS_OPEN],
           offset: 0,
           limit: LIMIT,
         },
@@ -231,7 +232,7 @@ const BoardsPage = () => {
       getOrgTaskSubmissions({
         variables: {
           orgId: id,
-          statuses,
+          statuses: [STATUS_OPEN],
           offset: 0,
           limit: LIMIT,
         },
