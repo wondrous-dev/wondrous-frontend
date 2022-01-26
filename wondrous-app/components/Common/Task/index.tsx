@@ -16,6 +16,7 @@ import { RejectIcon } from '../../Icons/taskModalIcons';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import { ArchiveTaskModal } from '../ArchiveTaskModal';
 import { GET_ORG_TASK_BOARD_TASKS } from '../../../graphql/queries/taskBoard';
+import MilestoneIcon from '../../Icons/milestone';
 
 import * as Constants from '../../../utils/constants';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
@@ -35,6 +36,7 @@ import {
   TaskListCardWrapper,
   TaskStatusHeaderText,
   ArchivedTaskUndo,
+  MilestoneSeparator,
 } from './styles';
 import { renderMentionString } from '../../../utils/common';
 import { useRouter } from 'next/router';
@@ -51,6 +53,8 @@ import { Arrow, Archived } from '../../Icons/sections';
 import { UPDATE_TASK_STATUS } from '../../../graphql/mutations/task';
 import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries';
 import { OrgBoardContext } from '../../../utils/contexts';
+import { MilestoneLaunchedBy } from '../MilestoneLaunchedBy';
+import { MilestoneProgress } from '../MilestoneProgress';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -58,7 +62,7 @@ export const TASK_ICONS = {
   [Constants.TASK_STATUS_DONE]: DoneWithBorder,
   [Constants.TASK_STATUS_IN_REVIEW]: InReview,
   [Constants.TASK_STATUS_REQUESTED]: Requested,
-  [Constants.TASK_STATUS_ARCHIVED]: Archived
+  [Constants.TASK_STATUS_ARCHIVED]: Archived,
 };
 
 let windowOffset = 0;
@@ -71,12 +75,13 @@ export const Task = ({ task, setTask }) => {
     id,
     media,
     status,
-    milestone = false,
     title = '',
     assigneeId = null,
     assigneeUsername = null,
     assigneeProfilePicture = null,
     users = [],
+    type,
+    createdBy,
   } = task;
   const router = useRouter();
   let { likes = 0, comments = 0, shares = 0, iLiked = false, iCommented = false, iShared = false } = actions || {};
@@ -95,15 +100,13 @@ export const Task = ({ task, setTask }) => {
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
-  const orgBoardContext = useContext(OrgBoardContext);
-  const getOrgTaskVariables = orgBoardContext?.getOrgTaskVariables;
-  const TaskIcon = TASK_ICONS?.[status];
+  let TaskIcon = TASK_ICONS[status];
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
     refetchQueries: () => [
       {
         query: GET_ORG_TASK_BOARD_TASKS,
-        variables: getOrgTaskVariables,
+        variables: orgBoard?.getOrgTasksVariables,
       },
       {
         query: GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
@@ -239,7 +242,7 @@ export const Task = ({ task, setTask }) => {
         }}
         task={task}
       />
-      <TaskWrapper key={id} wrapped={milestone} onClick={openModal}>
+      <TaskWrapper key={id} onClick={openModal}>
         <TaskInner>
           <TaskHeader>
             <SafeImage
@@ -272,6 +275,22 @@ export const Task = ({ task, setTask }) => {
                 <PodName>{task?.podName}</PodName>
               </PodWrapper>
             )}
+            <AvatarList style={{ marginLeft: '12px' }} users={userList} id={'task-' + task?.id} />
+            {rewards && rewards?.length > 0 && <Compensation compensation={rewards[0]} />}
+            {type === Constants.ENTITIES_TYPES.MILESTONE && <MilestoneIcon />}
+          </TaskContent>
+          <MilestoneLaunchedBy type={type} router={router} createdBy={createdBy} />
+          {type === Constants.ENTITIES_TYPES.MILESTONE && <MilestoneSeparator />}
+
+          <TaskContent>
+            <TaskTitle>{title}</TaskTitle>
+            <p>
+              {renderMentionString({
+                content: description,
+                router,
+              })}
+            </p>
+            {type === Constants.ENTITIES_TYPES.MILESTONE && <MilestoneProgress milestoneId={id} />}
             {media?.length > 0 ? <TaskMedia media={media[0]} /> : <TaskSeparator />}
           </TaskContent>
           <TaskFooter>

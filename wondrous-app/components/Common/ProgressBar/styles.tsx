@@ -26,7 +26,7 @@ export const ProgressBarMain = styled.div`
 export const ProgressBarValue = styled.div`
 	display: flex;
 
-	width: ${(props) => props.width + 'px'};
+	width: ${(props) => props.width + '%'};
 	height: 5px;
 	margin-top: -1px;
 
