@@ -33,7 +33,7 @@ export const SOCIAL_MEDIA_INSTAGRAM = 'instagram';
 export const SOCIAL_OPENSEA = 'opensea';
 
 // Character Limits
-export const CHAR_LIMIT_PROFILE_BIO = 200
+export const CHAR_LIMIT_PROFILE_BIO = 200;
 
 // Supported Chains (ETHEREUM, POLYGON)
 export const SUPPORTED_CHAINS = {
@@ -158,9 +158,9 @@ export const NOTIFICATION_VERBS = {
 
 export const NOTIFICATION_OBJECT_TYPES = {
   task: 'task',
-  task_comment: 'taskComment',
-  task_proposal: 'taskProposal',
-  task_proposal_comment: 'taskProposalComment',
+  task_comment: 'task',
+  task_proposal: 'task proposal',
+  task_proposal_comment: 'task proposal',
   task_submission: 'submission',
   comment: 'comment',
 };
@@ -169,3 +169,6 @@ export const PRIVACY_LEVEL = {
   public: 'public',
   private: 'private',
 };
+
+export const snakeToCamel = (str) =>
+  str.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('-', '').replace('_', ''));

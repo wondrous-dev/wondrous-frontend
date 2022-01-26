@@ -36,6 +36,7 @@ import {
   TokenLogo,
   HeaderInviteButton,
   PlusIconWrapper,
+  TokenEmptyLogo,
 } from './styles';
 import { useOrgBoard } from '../../../utils/hooks';
 import { useLazyQuery, useQuery } from '@apollo/client';
@@ -45,6 +46,8 @@ import PlusIcon from '../../Icons/plus';
 import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink';
 import { MoreInfoModal } from '../../profile/modals';
 import { Router, useRouter } from 'next/router';
+import { NoLogoDAO } from '../../SideBar/styles';
+import { DAOEmptyIcon, DAOIcon } from '../../Icons/dao';
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -147,17 +150,25 @@ const Wrapper = (props) => {
           <Content>
             <ContentContainer>
               <TokenHeader>
-                <SafeImage
-                  src={orgProfile?.profilePicture}
-                  style={{
-                    width: '96px',
-                    height: '96px',
-                    position: 'absolute',
-                    borderRadius: '48px',
-                    top: '-50px',
-                    border: '10px solid #0f0f0f',
-                  }}
-                />
+                { orgProfile?.profilePicture 
+                ? (
+                  <SafeImage
+                    src={orgProfile?.profilePicture}
+                    style={{
+                      width: '96px',
+                      height: '96px',
+                      position: 'absolute',
+                      borderRadius: '48px',
+                      top: '-50px',
+                      border: '10px solid #0f0f0f',
+                    }}
+                  />
+                )
+                : (
+                  <TokenEmptyLogo>
+                    <DAOEmptyIcon />
+                  </TokenEmptyLogo>
+                )}
                 <HeaderMainBlock>
                   <HeaderTitle>{orgProfile?.name}</HeaderTitle>
                   <HeaderButtons>

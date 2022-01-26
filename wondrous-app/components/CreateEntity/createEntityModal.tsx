@@ -109,6 +109,7 @@ import { useRouter } from 'next/router';
 import { delQuery } from '../../utils';
 import { ErrorText } from '../Common';
 import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment';
+import { FileLoading } from '../Common/FileUpload/FileUpload';
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -298,7 +299,13 @@ const CreateLayoutBaseModal = (props) => {
     setAddDetails(!addDetails);
   };
 
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState({
+    general: null,
+    title: null,
+    description: null,
+    org: null,
+  });
+
   const [org, setOrg] = useState(null);
   const [milestone, setMilestone] = useState(null);
   const [assigneeString, setAssigneeString] = useState('');
@@ -309,6 +316,7 @@ const CreateLayoutBaseModal = (props) => {
   const [rewardsCurrency, setRewardsCurrency] = useState(null);
   const [rewardsAmount, setRewardsAmount] = useState(null);
   const [title, setTitle] = useState('');
+  const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
@@ -552,18 +560,33 @@ const CreateLayoutBaseModal = (props) => {
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
-        if (canCreateTask) {
-          createTask({
-            variables: {
-              input: taskInput,
-            },
-          });
+        if (!title || !descriptionText || !org) {
+          const newErrors = { ...errors };
+          if (!title) {
+            newErrors.title = 'Please enter a title';
+          }
+          if (!descriptionText) {
+            newErrors.description = 'Please enter a description';
+          }
+          if (!org) {
+            newErrors.org = 'Please select an orgnization';
+          }
+          newErrors.general = 'Please enter the necessary information above';
+          setErrors(newErrors);
         } else {
-          createTaskProposal({
-            variables: {
-              input: taskInput,
-            },
-          });
+          if (canCreateTask) {
+            createTask({
+              variables: {
+                input: taskInput,
+              },
+            });
+          } else {
+            createTaskProposal({
+              variables: {
+                input: taskInput,
+              },
+            });
+          }
         }
         break;
       case ENTITIES_TYPES.POD:
@@ -581,13 +604,25 @@ const CreateLayoutBaseModal = (props) => {
               },
             ],
           };
-          createPod({
-            variables: {
-              input: podInput,
-            },
-          });
+          if (!title) {
+            const newErrors = { ...errors };
+            if (!title) {
+              newErrors.title = 'Please enter a title';
+            }
+            newErrors.general = 'Please enter the necessary information above';
+            setErrors(newErrors);
+          } else {
+            createPod({
+              variables: {
+                input: podInput,
+              },
+            });
+          }
         } else {
-          setError('You need full access permissions to create a pod');
+          setErrors({
+            ...errors,
+            general: 'You need full access permissions to create a pod',
+          });
         }
         break;
     }
@@ -662,6 +697,7 @@ const CreateLayoutBaseModal = (props) => {
             placeholder={`Enter ${titleText.toLowerCase()} title`}
             search={false}
           />
+          {errors.title && <ErrorText> {errors.title} </ErrorText>}
         </CreateFormMainInputBlock>
 
         <CreateFormMainInputBlock>
@@ -695,6 +731,7 @@ const CreateLayoutBaseModal = (props) => {
           <CreateFormMainDescriptionInputSymbolCounter>
             {descriptionText.length}/{textLimit} characters
           </CreateFormMainDescriptionInputSymbolCounter>
+          {errors.description && <ErrorText> {errors.description} </ErrorText>}
         </CreateFormMainInputBlock>
         {!isPod && (
           <CreateFormMainInputBlock>
@@ -721,6 +758,7 @@ const CreateLayoutBaseModal = (props) => {
                     marginBottom: '8px',
                   }}
                 />
+                {fileUploadLoading && <FileLoading />}
               </MediaUploadDiv>
             ) : (
               <MultiMediaUploadButton onClick={() => inputRef.current.click()}>
@@ -732,6 +770,7 @@ const CreateLayoutBaseModal = (props) => {
                   }}
                 />
                 <MultiMediaUploadButtonText>Upload file</MultiMediaUploadButtonText>
+                {fileUploadLoading && <FileLoading />}
               </MultiMediaUploadButton>
             )}
             <input
@@ -744,6 +783,7 @@ const CreateLayoutBaseModal = (props) => {
                   filePrefix: 'tmp/task/new/',
                   mediaUploads,
                   setMediaUploads,
+                  setFileUploadLoading,
                 })
               }
             />
@@ -1077,7 +1117,7 @@ const CreateLayoutBaseModal = (props) => {
       </CreateFormAddDetailsSection>
 
       <CreateFormFooterButtons>
-        {error && <ErrorText>{error}</ErrorText>}
+        {errors.general && <ErrorText>{errors.general}</ErrorText>}
         <CreateFormButtonsBlock>
           <CreateFormCancelButton onClick={resetEntityType}>Cancel</CreateFormCancelButton>
           <CreateFormPreviewButton

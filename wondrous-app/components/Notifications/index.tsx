@@ -1,6 +1,6 @@
 import { Link } from '@material-ui/core';
 import React, { useMemo, useState } from 'react';
-import { NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS } from '../../utils/constants';
+import { NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from '../../utils/constants';
 import { SmallAvatar } from '../Common/AvatarList';
 import { DropDown, DropDownItem } from '../Common/dropdown';
 import { StyledLink } from '../Common/text';
@@ -66,7 +66,7 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
     const objectType = NOTIFICATION_OBJECT_TYPES[notification.objectType];
     const objectId = notification.objectId;
 
-    const object = <StyledLink href={`/${objectType}/${objectId}`}>{objectType}</StyledLink>;
+    const object = <StyledLink href={`/${snakeToCamel(notification.objectType)}/${objectId}`}>{objectType}</StyledLink>;
 
     return (
       <>
