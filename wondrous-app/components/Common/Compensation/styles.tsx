@@ -14,14 +14,6 @@ export const CompensationWrapper = styled.div`
   }
 `
 
-export const CompensationStatus = styled((props) => {
-  return (
-    <>
-      {props.taskIcon}
-    </>
-  )
-})``
-
 export const CompensationPill = styled.div`
   display: flex;
   align-items: center;
