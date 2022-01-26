@@ -19,6 +19,7 @@ import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_ARCHIVED,
   DEFAULT_STATUS_ARR,
+  STATUS_OPEN,
 } from '../../../utils/constants';
 
 import { PodBoardContext } from '../../../utils/contexts';
@@ -172,7 +173,7 @@ const BoardsPage = () => {
         variables: {
           input: {
             podId,
-            statuses,
+            statuses: [STATUS_OPEN],
             offset: 0,
             limit: LIMIT,
           },
@@ -182,7 +183,7 @@ const BoardsPage = () => {
         variables: {
           input: {
             podId,
-            statuses,
+            statuses: [STATUS_OPEN],
             offset: 0,
             limit: LIMIT,
           },
