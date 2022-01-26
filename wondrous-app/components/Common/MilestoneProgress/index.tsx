@@ -3,6 +3,7 @@ import {
     StyledTextWrapper,
     StyledTasksLabel,
     StyledTasksCount,
+    StyledProgressBarWrapper,
     StyledProgressBar
 } from "./styles"
 import { GET_TASK_FOR_MILESTONE } from "../../../graphql/queries"
@@ -32,7 +33,9 @@ export const MilestoneProgress = (props) => {
                 <StyledTasksLabel>Tasks</StyledTasksLabel>
                 <StyledTasksCount>{tasksCompleted}/{tasksTotal}</StyledTasksCount>
             </StyledTextWrapper>
-            <StyledProgressBar value={tasksCompleted} total={tasksTotal} color={color} />
+            <StyledProgressBarWrapper>
+                <StyledProgressBar value={tasksCompleted} total={tasksTotal} color={color} />
+            </StyledProgressBarWrapper>
         </StyledBox>
     )
 }
