@@ -112,6 +112,8 @@ import { updateProposalItem } from '../../utils/board';
 import { GET_ORG_TASK_BOARD_PROPOSALS } from '../../graphql/queries/taskBoard';
 import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './createEntityModal';
 import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment';
+import { ErrorText } from '../Common';
+import { FileLoading } from '../Common/FileUpload/FileUpload';
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -345,6 +347,12 @@ const EditLayoutBaseModal = (props) => {
     fetchPolicy: 'cache-and-network',
   });
   const [fetchPaymentMethod, setFetchPaymentMethod] = useState(false);
+  const [errors, setErrors] = useState({
+    general: null,
+    title: null,
+    description: null,
+    org: null,
+  });
   const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG);
   // const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
   const [pods, setPods] = useState([]);
@@ -355,6 +363,7 @@ const EditLayoutBaseModal = (props) => {
     }
   );
   const [dueDate, setDueDate] = useState(existingTask?.dueDate);
+  const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const {
     showDeliverableRequirementsSection,
     showBountySwitchSection,
@@ -525,21 +534,32 @@ const EditLayoutBaseModal = (props) => {
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
-
-        if (!isTaskProposal) {
-          updateTask({
-            variables: {
-              taskId: existingTask?.id,
-              input: taskInput,
-            },
-          });
+        if (!title || !descriptionText) {
+          const newErrors = { ...errors };
+          if (!title) {
+            newErrors.title = 'Please enter a title';
+          }
+          if (!descriptionText) {
+            newErrors.description = 'Please enter a description';
+          }
+          newErrors.general = 'Please enter the necessary information above';
+          setErrors(newErrors);
         } else {
-          updateTaskProposal({
-            variables: {
-              proposalId: existingTask?.id,
-              input: taskInput,
-            },
-          });
+          if (!isTaskProposal) {
+            updateTask({
+              variables: {
+                taskId: existingTask?.id,
+                input: taskInput,
+              },
+            });
+          } else {
+            updateTaskProposal({
+              variables: {
+                proposalId: existingTask?.id,
+                input: taskInput,
+              },
+            });
+          }
         }
         break;
     }
@@ -608,6 +628,7 @@ const EditLayoutBaseModal = (props) => {
             placeholder="Enter task title"
             search={false}
           />
+          {errors.title && <ErrorText> {errors.title} </ErrorText>}
         </CreateFormMainInputBlock>
 
         <CreateFormMainInputBlock>
@@ -641,6 +662,7 @@ const EditLayoutBaseModal = (props) => {
           <CreateFormMainDescriptionInputSymbolCounter>
             {descriptionText.length}/900 characters
           </CreateFormMainDescriptionInputSymbolCounter>
+          {errors.description && <ErrorText> {errors.description} </ErrorText>}
         </CreateFormMainInputBlock>
         <CreateFormMainInputBlock>
           <CreateFormMainBlockTitle>Multi-media</CreateFormMainBlockTitle>
@@ -683,6 +705,7 @@ const EditLayoutBaseModal = (props) => {
                   marginBottom: '8px',
                 }}
               />
+              {fileUploadLoading && <FileLoading />}
             </MediaUploadDiv>
           ) : (
             <MultiMediaUploadButton onClick={() => inputRef.current.click()}>
@@ -694,6 +717,7 @@ const EditLayoutBaseModal = (props) => {
                 }}
               />
               <MultiMediaUploadButtonText>Upload file</MultiMediaUploadButtonText>
+              {fileUploadLoading && <FileLoading />}
             </MultiMediaUploadButton>
           )}
           <input
@@ -701,6 +725,7 @@ const EditLayoutBaseModal = (props) => {
             hidden
             ref={inputRef}
             onChange={async (event) => {
+              setFileUploadLoading(true);
               const fileToAdd = await handleAddFile({
                 event,
                 filePrefix: 'tmp/task/new/',
@@ -718,6 +743,7 @@ const EditLayoutBaseModal = (props) => {
                   onCompleted: (data) => {
                     const taskProposal = data?.attachTaskProposalMedia;
                     setMediaUploads(transformMediaFormat(taskProposal?.media));
+                    setFileUploadLoading(false);
                   },
                 });
               } else {
@@ -731,6 +757,7 @@ const EditLayoutBaseModal = (props) => {
                   onCompleted: (data) => {
                     const task = data?.attachTaskMedia;
                     setMediaUploads(transformMediaFormat(task?.media));
+                    setFileUploadLoading(false);
                   },
                 });
               }
@@ -998,6 +1025,7 @@ const EditLayoutBaseModal = (props) => {
       </CreateFormAddDetailsSection>
 
       <CreateFormFooterButtons>
+        {errors.general && <ErrorText> {errors.general} </ErrorText>}
         <CreateFormButtonsBlock>
           <CreateFormCancelButton onClick={cancelEdit}>Cancel</CreateFormCancelButton>
           <CreateFormPreviewButton onClick={submitMutation}>
