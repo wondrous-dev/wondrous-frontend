@@ -812,7 +812,7 @@ export const TaskViewModal = (props) => {
                           });
                         }}
                       >
-                        Take this task
+                        Self-assign this task
                       </TakeTaskButton>
                     </>
                   ) : (
