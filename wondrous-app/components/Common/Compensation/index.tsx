@@ -19,7 +19,9 @@ export const Compensation = (props) => {
             }}
           />
         </IconContainer>
-        <CompensationAmount>{rewardAmount}</CompensationAmount>
+        <CompensationAmount>
+          {rewardAmount} {symbol}
+        </CompensationAmount>
       </CompensationPill>
     </CompensationWrapper>
   );
