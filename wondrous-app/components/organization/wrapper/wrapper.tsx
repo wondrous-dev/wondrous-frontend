@@ -125,6 +125,8 @@ const Wrapper = (props) => {
         open={open && (showUsers || showPods)}
         handleClose={() => {
           document.body.setAttribute('style', '');
+          setShowPods(false);
+          setShowUsers(false);
           setOpen(false);
         }}
         showUsers={showUsers}
