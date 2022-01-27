@@ -127,7 +127,11 @@ export const MoreInfoModal = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, podId, displayPods, displayUsers, showUsers, showPods]);
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={open} onClose={() => {
+      handleClose();
+      setDisplayUsers(false);
+      setDisplayPods(false);
+    }}>
       <TaskModal>
         <Title>{name}</Title>
         <TabContainer>
