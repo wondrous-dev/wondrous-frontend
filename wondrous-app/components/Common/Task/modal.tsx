@@ -107,7 +107,7 @@ import { LoadMore } from '../KanbanBoard/styles';
 import { CommentList } from '../../Comment';
 import { DAOIcon } from '../../Icons/dao';
 import { OrganisationsCardNoLogo } from '../../profile/about/styles';
-import { TaskList } from '../TaskList';
+import { MilestoneTaskList } from '../MilestoneTaskList';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -1035,7 +1035,7 @@ export const TaskViewModal = (props) => {
               {!submissionSelected && !isMilestone && (
                 <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
               )}
-              {!submissionSelected && isMilestone && <TaskList milestoneId={task?.id} open={!submissionSelected} />}
+              {!submissionSelected && isMilestone && <MilestoneTaskList milestoneId={task?.id} open={!submissionSelected} />}
             </TaskSectionContent>
           </TaskModalFooter>
         </TaskModal>
