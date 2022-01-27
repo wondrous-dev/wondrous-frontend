@@ -27,7 +27,7 @@ export const TASK_ICONS = {
     [Constants.TASK_STATUS_ARCHIVED]: ArchivedIcon,
 }
 
-export const TaskList = (props) => {
+export const MilestoneTaskList = (props) => {
     const { milestoneId, open } = props
     const [ref, inView] = useInView({})
     const [hasMore, setHasMore] = useState(false)
