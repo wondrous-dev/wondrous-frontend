@@ -1,7 +1,7 @@
 import { useLazyQuery } from '@apollo/client'
 import * as _ from 'lodash'
-import { useEffect, useState } from 'react'
-import { GET_TASK_FOR_MILESTONE } from '../../../graphql/queries'
+import { useEffect } from 'react'
+import { GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE } from '../../../graphql/queries'
 import * as Constants from '../../../utils/constants'
 import { AwaitingPayment, Done, InProgress, InReview, ToDo } from '../../Icons'
 import { ArchivedIcon } from '../../Icons/statusIcons'
@@ -18,33 +18,25 @@ export const TASK_ICONS_LABELS = {
 
 export const MilestoneTaskBreakdown = (props) => {
     const { milestoneId, open } = props
-    const [groupedMilestoneTask, setGroupedMilestoneTask] = useState({})
-    const [getTasksForMilestone] = useLazyQuery(GET_TASK_FOR_MILESTONE) // TODO: There should be an endpoint that only returns the task count for a milestone
-    const limit = 1000
+    const [getPerStatusTaskCountForMilestone, { data }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE)
 
     useEffect(() => {
-        if (open && Object.entries(groupedMilestoneTask).length === 0) {
-            getTasksForMilestone({
+        if (open || !data) {
+            getPerStatusTaskCountForMilestone({
                 variables: {
-                    "milestoneId": milestoneId,
-                    "limit": limit,
-                    "offset": 0
+                    "milestoneId": milestoneId
                 }
-            }).then(({ data }) => {
-                setGroupedMilestoneTask(_.groupBy(data?.getTasksForMilestone, 'status'))
-            }).catch((err) => {
-                console.log(err)
             })
         }
-    }, [getTasksForMilestone, milestoneId, open, groupedMilestoneTask])
+    }, [getPerStatusTaskCountForMilestone, milestoneId, open, data])
 
     return (
         <StyledBoxWrapper>
             {Object.keys(TASK_ICONS_LABELS).map((key, index) => {
                 const { icon: StatusIcon, label } = TASK_ICONS_LABELS[key]
-                const tasks = groupedMilestoneTask?.[key]
+                const taskCount = data?.getPerStatusTaskCountForMilestone?.[key] || 0
                 return (
-                    <StyledBox key={index}><StatusIcon /> {tasks?.length || 0} {label}</StyledBox>
+                    <StyledBox key={index}><StatusIcon /> {taskCount} {label}</StyledBox>
                 )
             })}
         </StyledBoxWrapper>
