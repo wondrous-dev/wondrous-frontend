@@ -9,6 +9,11 @@ export const TASK_STATUS_REQUESTED = 'requested';
 export const TASK_STATUS_ARCHIVED = 'archived';
 export const TASK_STATUS_AWAITING_PAYMENT = 'awaiting_payment';
 
+export const STATUS_OPEN = 'open';
+export const STATUS_WAITING_FOR_REVIEW = 'waiting_for_review';
+export const STATUS_CHANGE_REQUESTED = 'change_requested';
+export const STATUS_APPROVED = 'approved';
+export const STATUS_REJECTED = 'rejected';
 // Task types
 export const TASK_TYPE = 'task';
 export const BOUNTY_TYPE = 'bounty';

@@ -271,26 +271,9 @@ export const Task = ({ task, setTask }) => {
                 borderRadius: '4px',
               }}
             />
-            {task?.podName && (
-              <PodWrapper
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  goToPod(task?.podId)
-                }}
-              >
-                <PodName>{task?.podName}</PodName>
-              </PodWrapper>
-            )}
-            <AvatarList
-              style={{ marginLeft: '12px' }}
-              users={userList}
-              id={'task-' + task?.id}
-            />
-            {rewards && rewards?.length > 0 && (
-              <Compensation compensation={rewards[0]} />
-            )}
             {type === Constants.ENTITIES_TYPES.MILESTONE && <MilestoneIcon />}
+            <AvatarList style={{ marginLeft: '12px' }} users={userList} id={'task-' + task?.id} />
+            {rewards && rewards?.length > 0 && <Compensation compensation={rewards[0]} />}
           </TaskHeader>
           <MilestoneLaunchedBy type={type} router={router} createdBy={createdBy} />
           {type === Constants.ENTITIES_TYPES.MILESTONE && <MilestoneSeparator />}
@@ -303,13 +286,20 @@ export const Task = ({ task, setTask }) => {
                 router,
               })}
             </p>
-            {type === Constants.ENTITIES_TYPES.MILESTONE && <MilestoneProgress milestoneId={id} />}
-            {media?.length > 0 ? (
-              <TaskMedia media={media[0]} />
-            ) : (
-              <TaskSeparator />
+            {task?.podName && (
+              <PodWrapper
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  goToPod(task?.podId);
+                }}
+              >
+                <PodName>{task?.podName}</PodName>
+              </PodWrapper>
             )}
-          </TaskContent>
+            {type === Constants.ENTITIES_TYPES.MILESTONE && <MilestoneProgress milestoneId={id} />}
+            {media?.length > 0 ? <TaskMedia media={media[0]} /> : <TaskSeparator />}
+          </TaskContent >
           <TaskFooter>
             {/* <TaskAction key={'task-like-' + id} onClick={toggleLike}>
 						<TaskLikeIcon liked={liked} />
@@ -342,8 +332,8 @@ export const Task = ({ task, setTask }) => {
               </TaskActionMenu>
             )}
           </TaskFooter>
-        </TaskInner>
-      </TaskWrapper>
+        </TaskInner >
+      </TaskWrapper >
     </>
   )
 }
@@ -408,17 +398,6 @@ export const TaskListCard = (props) => {
             borderRadius: '4px',
           }}
         />
-        {task?.podName && (
-          <PodWrapper
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              router.push(`/pod/${task?.podId}/boards`)
-            }}
-          >
-            <PodName>{task?.podName.slice(0, 15)}</PodName>
-          </PodWrapper>
-        )}
         <AvatarList
           style={{ marginLeft: '12px' }}
           users={[
@@ -441,7 +420,7 @@ export const TaskListCard = (props) => {
           id={'task-' + task?.id}
         />
         <Compensation compensation={task?.compensation} icon={TaskIcon} />
-      </TaskHeader>
+      </TaskHeader >
       <TaskContent>
         <TaskTitle>{task?.title}</TaskTitle>
         <p>
@@ -450,12 +429,19 @@ export const TaskListCard = (props) => {
             router,
           })}
         </p>
-        {task?.media?.length > 0 ? (
-          <TaskMedia media={task?.media[0]} />
-        ) : (
-          <TaskSeparator />
+        {task?.podName && (
+          <PodWrapper
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              router.push(`/pod/${task?.podId}/boards`);
+            }}
+          >
+            <PodName>{task?.podName.slice(0, 15)}</PodName>
+          </PodWrapper>
         )}
-      </TaskContent>
+        {task?.media?.length > 0 ? <TaskMedia media={task?.media[0]} /> : <TaskSeparator />}
+      </TaskContent >
       <TaskFooter>
         {task?.changeRequestedAt && (
           <div style={flexDivStyle}>
@@ -478,6 +464,6 @@ export const TaskListCard = (props) => {
           />
         </TaskSummaryAction>
       </TaskFooter>
-    </TaskListCardWrapper>
+    </TaskListCardWrapper >
   )
 }

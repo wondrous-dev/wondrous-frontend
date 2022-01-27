@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import { useLazyQuery } from '@apollo/client'
-import { useRouter } from 'next/router'
+import React, { useState, useEffect } from 'react';
+import { useLazyQuery } from '@apollo/client';
+import { useRouter } from 'next/router';
 
-import Boards from '../../../components/profile/boards/boards'
+import Boards from '../../../components/profile/boards/boards';
 import {
   GET_USER_TASK_BOARD_PROPOSALS,
   GET_USER_TASK_BOARD_SUBMISSIONS,
   GET_USER_TASK_BOARD_TASKS,
-} from '../../../graphql/queries/taskBoard'
-import { useMe } from '../../../components/Auth/withAuth'
+} from '../../../graphql/queries/taskBoard';
+import { useMe } from '../../../components/Auth/withAuth';
 
-import {
-  InReview,
-  Requested,
-  Archived,
-} from '../../../components/Icons/sections'
+import { InReview, Requested, Archived } from '../../../components/Icons/sections';
 import {
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
@@ -23,9 +19,11 @@ import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_ARCHIVED,
   DEFAULT_STATUS_ARR,
-} from '../../../utils/constants'
-import { GET_USER_FROM_USERNAME } from '../../../graphql/queries'
+  STATUS_OPEN,
+} from '../../../utils/constants';
+import { GET_USER_FROM_USERNAME } from '../../../graphql/queries';
 
+const LIMIT = 10;
 const TO_DO = {
   status: TASK_STATUS_TODO,
   tasks: [],
@@ -42,7 +40,7 @@ const TO_DO = {
     },
     tasks: [],
   },
-}
+};
 
 const IN_PROGRESS = {
   status: TASK_STATUS_IN_PROGRESS,
@@ -60,7 +58,7 @@ const IN_PROGRESS = {
     },
     tasks: [],
   },
-}
+};
 
 const DONE = {
   status: TASK_STATUS_DONE,
@@ -78,9 +76,9 @@ const DONE = {
     },
     tasks: [],
   },
-}
+};
 
-const COLUMNS = [TO_DO, IN_PROGRESS, DONE]
+const COLUMNS = [TO_DO, IN_PROGRESS, DONE];
 
 const SELECT_OPTIONS = [
   '#copywriting (23)',
@@ -90,14 +88,13 @@ const SELECT_OPTIONS = [
   '#sales (23)',
   '#tiktok (13)',
   '#analytics (23)',
-]
+];
 
 const TASKS = [
   {
     id: 11,
     title: 'Task 1',
-    description:
-      'Design google sheet where we can get an open look at our twitters performance ✨🦄',
+    description: 'Design google sheet where we can get an open look at our twitters performance ✨🦄',
     status: TASK_STATUS_TODO,
     actions: {
       comments: 18,
@@ -200,8 +197,7 @@ const TASKS = [
   {
     id: 12,
     title: 'Task 2',
-    description:
-      'Design google sheet where we can get an open look at our twitters performance ✨🦄',
+    description: 'Design google sheet where we can get an open look at our twitters performance ✨🦄',
     status: TASK_STATUS_TODO,
     actions: {
       comments: 8,
@@ -230,8 +226,7 @@ const TASKS = [
   {
     id: 21,
     title: 'Task 3',
-    description:
-      'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
+    description: 'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
     status: TASK_STATUS_IN_PROGRESS,
     actions: {
       comments: 81,
@@ -270,8 +265,7 @@ const TASKS = [
   {
     id: 22,
     title: 'Task 4',
-    description:
-      'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
+    description: 'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
     status: TASK_STATUS_IN_PROGRESS,
     actions: {
       comments: 81,
@@ -305,8 +299,7 @@ const TASKS = [
   {
     id: 31,
     title: 'Get 10,000 Twitter followers',
-    description:
-      'Design google sheet where we can get an open look at our twitters performance ✨🦄 ',
+    description: 'Design google sheet where we can get an open look at our twitters performance ✨🦄 ',
     status: TASK_STATUS_DONE,
     actions: {
       comments: 8,
@@ -340,8 +333,7 @@ const TASKS = [
   {
     id: 32,
     title: 'Task 5',
-    description:
-      'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
+    description: 'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
     status: TASK_STATUS_DONE,
     actions: {
       comments: 181,
@@ -372,77 +364,74 @@ const TASKS = [
       },
     ],
   },
-]
+];
 
 const BoardsPage = () => {
-  const [columns, setColumns] = useState(COLUMNS)
-  const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR)
-  const [profileUserId, setProfileUserId] = useState(null)
-  const user = useMe()
-  const router = useRouter()
-  const { username, userId } = router.query
+  const [columns, setColumns] = useState(COLUMNS);
+  const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR);
+  const [profileUserId, setProfileUserId] = useState(null);
+  const user = useMe();
+  const router = useRouter();
+  const { username, userId } = router.query;
 
   const [getUserTaskProposals] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
     onCompleted: (data) => {
-      const newColumns = [...columns]
-      const taskProposals = data?.getUserTaskBoardProposals
-      newColumns[0].section.tasks = []
+      const newColumns = [...columns];
+      const taskProposals = data?.getUserTaskBoardProposals;
+      newColumns[0].section.tasks = [];
       taskProposals?.forEach((taskProposal) => {
-        newColumns[0].section.tasks.push(taskProposal)
-      })
-      setColumns(newColumns)
+        newColumns[0].section.tasks.push(taskProposal);
+      });
+      setColumns(newColumns);
     },
     fetchPolicy: 'cache-and-network',
-  })
-  const [getUserTaskSubmissions] = useLazyQuery(
-    GET_USER_TASK_BOARD_SUBMISSIONS,
-    {
-      onCompleted: (data) => {
-        const newColumns = [...columns]
-        const taskSubmissions = data?.getUserTaskBoardSubmissions
-        newColumns[1].section.tasks = []
-        taskSubmissions.forEach((taskSubmission) => {
-          newColumns[0].section.tasks.push(taskSubmission)
-        })
-        setColumns(newColumns)
-      },
-      fetchPolicy: 'cache-and-network',
-    }
-  )
+  });
+  const [getUserTaskSubmissions] = useLazyQuery(GET_USER_TASK_BOARD_SUBMISSIONS, {
+    onCompleted: (data) => {
+      const newColumns = [...columns];
+      const taskSubmissions = data?.getUserTaskBoardSubmissions;
+      newColumns[1].section.tasks = [];
+      taskSubmissions.forEach((taskSubmission) => {
+        newColumns[0].section.tasks.push(taskSubmission);
+      });
+      setColumns(newColumns);
+    },
+    fetchPolicy: 'cache-and-network',
+  });
 
   const [getUserTasks] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
     onCompleted: (data) => {
       // Parse task board data
-      const newColumns = [...columns]
-      const tasks = data?.getUserTaskBoardTasks
-      newColumns[0].tasks = []
-      newColumns[1].tasks = []
-      newColumns[2].tasks = []
+      const newColumns = [...columns];
+      const tasks = data?.getUserTaskBoardTasks;
+      newColumns[0].tasks = [];
+      newColumns[1].tasks = [];
+      newColumns[2].tasks = [];
       tasks.forEach((task) => {
         if (task?.status === TASK_STATUS_TODO) {
-          newColumns[0].tasks.push(task)
+          newColumns[0].tasks.push(task);
         } else if (task?.status === TASK_STATUS_IN_PROGRESS) {
-          newColumns[1].tasks.push(task)
+          newColumns[1].tasks.push(task);
         } else if (task?.status === TASK_STATUS_DONE) {
-          newColumns[2].tasks.push(task)
+          newColumns[2].tasks.push(task);
         } else if (task?.status === TASK_STATUS_ARCHIVED) {
-          newColumns[2].section.tasks.push(task)
+          newColumns[2].section.tasks.push(task);
         }
-      })
-      setColumns(newColumns)
+      });
+      setColumns(newColumns);
     },
     fetchPolicy: 'cache-and-network',
-  })
-  const [
-    getUserIdFromUsername,
-    { data: getUserIdFromUsernameData, error: getUserIdFromUsernameError },
-  ] = useLazyQuery(GET_USER_FROM_USERNAME, {
-    onCompleted: (data) => {
-      if (data?.getUserIdFromUsername?.id) {
-        setProfileUserId(data?.getUserIdFromUsername?.id)
-      }
-    },
-  })
+  });
+  const [getUserIdFromUsername, { data: getUserIdFromUsernameData, error: getUserIdFromUsernameError }] = useLazyQuery(
+    GET_USER_FROM_USERNAME,
+    {
+      onCompleted: (data) => {
+        if (data?.getUserIdFromUsername?.id) {
+          setProfileUserId(data?.getUserIdFromUsername?.id);
+        }
+      },
+    }
+  );
 
   useEffect(() => {
     if (userId) {
@@ -454,14 +443,14 @@ const BoardsPage = () => {
           offset: 0,
           limit: 10,
         },
-      })
+      });
     } else if (!userId && username) {
       // Get userId from username
       getUserIdFromUsername({
         variables: {
           username,
         },
-      })
+      });
     }
     if (!userId && profileUserId) {
       // fetch user task boards after getting userId from username
@@ -470,26 +459,26 @@ const BoardsPage = () => {
           userId: profileUserId,
           statuses,
           offset: 0,
-          limit: 2,
+          limit: LIMIT,
         },
-      })
+      });
       getUserTaskProposals({
         variables: {
           userId: profileUserId,
-          statuses,
+          statuses: [STATUS_OPEN],
           offset: 0,
-          limit: 2,
+          limit: LIMIT,
         },
-      })
+      });
 
       getUserTaskSubmissions({
         variables: {
           userId: profileUserId,
-          statuses,
+          statuses: [STATUS_OPEN],
           offset: 0,
-          limit: 2,
+          limit: LIMIT,
         },
-      })
+      });
     }
   }, [
     username,
@@ -500,11 +489,9 @@ const BoardsPage = () => {
     getUserIdFromUsername,
     getUserTaskSubmissions,
     getUserTaskProposals,
-  ])
+  ]);
 
-  return (
-    <Boards selectOptions={SELECT_OPTIONS} columns={columns} tasks={TASKS} />
-  )
-}
+  return <Boards selectOptions={SELECT_OPTIONS} columns={columns} tasks={TASKS} />;
+};
 
-export default BoardsPage
+export default BoardsPage;
