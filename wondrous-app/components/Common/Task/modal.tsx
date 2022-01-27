@@ -612,6 +612,7 @@ export const TaskViewModal = (props) => {
   const dropdownItemStyle = {
     marginRight: '12px',
   };
+  const isMilestone = task?.type === MILESTONE_TYPE;
 
   const onCorrectPage =
     fetchedTask?.orgId === board?.orgId || fetchedTask?.podId === board?.podId || fetchedTask?.userId === board?.userId;
