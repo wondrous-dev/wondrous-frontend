@@ -1,15 +1,15 @@
-import {
-    StyledBox,
-    StyledTextWrapper,
-    StyledTasksLabel,
-    StyledTasksCount,
-    StyledProgressBarWrapper,
-    StyledProgressBar
-} from "./styles"
-import { GET_TASK_FOR_MILESTONE } from "../../../graphql/queries"
 import { useLazyQuery } from "@apollo/client"
 import { useEffect } from "react"
+import { GET_TASK_FOR_MILESTONE } from "../../../graphql/queries"
 import { TASK_STATUS_DONE } from "../../../utils/constants"
+import {
+    StyledBox,
+    StyledProgressBar,
+    StyledProgressBarWrapper,
+    StyledTasksCount,
+    StyledTasksLabel,
+    StyledTextWrapper
+} from "./styles"
 
 export const MilestoneProgress = (props) => {
     const { milestoneId, color = "#396CFF" } = props

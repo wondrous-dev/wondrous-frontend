@@ -50,6 +50,7 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
+  MILESTONE_TYPE
 } from '../../../utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
@@ -96,6 +97,7 @@ import { LoadMore } from '../KanbanBoard/styles';
 import { CommentList } from '../../Comment';
 import { DAOIcon } from '../../Icons/dao';
 import { OrganisationsCardNoLogo } from '../../profile/about/styles';
+import { TaskList } from '../TaskList';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -585,6 +587,7 @@ export const TaskViewModal = (props) => {
   const dropdownItemStyle = {
     marginRight: '12px',
   };
+  const isMilestone = task?.type === MILESTONE_TYPE;
 
   return (
     <>
@@ -883,7 +886,7 @@ export const TaskViewModal = (props) => {
                   </TaskTabText>
                 </TaskSubmissionTab>
               )}
-              <TaskSubmissionTab
+              {!isMilestone && <TaskSubmissionTab
                 style={{
                   borderBottom: `2px solid ${!submissionSelected ? '#7427FF' : '#4B4B4B'}`,
                 }}
@@ -896,7 +899,21 @@ export const TaskViewModal = (props) => {
                 >
                   Discussion
                 </TaskTabText>
-              </TaskSubmissionTab>
+              </TaskSubmissionTab>}
+              {isMilestone && <TaskSubmissionTab
+                style={{
+                  borderBottom: `2px solid ${!submissionSelected ? '#7427FF' : '#4B4B4B'}`,
+                }}
+                onClick={() => setSubmissionSelected(false)}
+              >
+                <TaskTabText
+                  style={{
+                    fontWeight: `${!submissionSelected ? '500' : '400'}`,
+                  }}
+                >
+                  Tasks
+                </TaskTabText>
+              </TaskSubmissionTab>}
             </TaskSectionFooterTitleDiv>
             <TaskSectionContent>
               {submissionSelected && (
@@ -920,9 +937,10 @@ export const TaskViewModal = (props) => {
                   setFetchedTaskSubmissions={setFetchedTaskSubmissions}
                 />
               )}
-              {!submissionSelected && (
+              {!submissionSelected && !isMilestone && (
                 <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
               )}
+              {!submissionSelected && isMilestone && <TaskList milestoneId={task?.id} open={!submissionSelected} />}
             </TaskSectionContent>
           </TaskModalFooter>
         </TaskModal>
