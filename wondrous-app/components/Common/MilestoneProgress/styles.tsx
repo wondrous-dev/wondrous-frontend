@@ -1,7 +1,7 @@
+import { Box, Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { ProgressBar } from '../ProgressBar';
 import { ProgressBarWrapper } from '../ProgressBar/styles';
-import { Box, Typography } from '@material-ui/core';
 
 export const StyledBox = styled(Box)`
     background: #0F0F0F;
