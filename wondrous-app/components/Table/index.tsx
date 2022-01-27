@@ -97,7 +97,7 @@ export const Table = (props) => {
 							</StyledTableCell>
 							<StyledTableCell>
 								<DeliverableContainer>
-									{Object.entries(groupBy(task?.media, 'type')).map(
+									{Object.entries(groupBy(task?.media || [], 'type')).map(
 										([key, value]: [string, any], index) => {
 											return (
 												<DeliverableItem key={index}>
@@ -116,7 +116,7 @@ export const Table = (props) => {
 									<Reward>
 										<RewardRed />
 										<RewardAmount>
-											{shrinkNumber(task.compensation.amount)}
+											{shrinkNumber(task?.compensation?.amount)}
 										</RewardAmount>
 									</Reward>
 								</RewardContainer>
@@ -129,7 +129,7 @@ export const Table = (props) => {
 									<DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
 										<DropDownItem
 											key={'task-menu-edit-' + task.id}
-											onClick={''}
+											onClick={() => null}
 											color="#C4C4C4"
 											fontSize="13px"
 											fontWeight="normal"
@@ -138,7 +138,7 @@ export const Table = (props) => {
 										</DropDownItem>
 										<DropDownItem
 											key={'task-menu-report-' + task.id}
-											onClick={''}
+											onClick={() => null}
 											color="#C4C4C4"
 											fontSize="13px"
 											fontWeight="normal"

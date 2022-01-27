@@ -11,10 +11,14 @@ import { BoardsActivity, BoardsActivityInput, BoardsContainer } from './styles';
 import Filter from '../../Common/Filter';
 import { ToDo, InProgress, Done } from '../../Icons';
 import CreatePodIcon from '../../Icons/createPod';
+import { ToggleViewButton } from '../../Common/ToggleViewButton';
+import { Table } from '../../Table';
+import { TASK_STATUS_TODO } from '../../../utils/constants';
 
 const Boards = (props) => {
-  const { selectOptions, columns, onLoadMore, hasMore, orgData } = props;
+  const { selectOptions, columns, onLoadMore, hasMore, orgData, tasks } = props;
   const [filter, setFilter] = useState([]);
+  const [isGridView, setGridView] = useState(true);
 
   const filterSchema = [
     {
@@ -85,29 +89,47 @@ const Boards = (props) => {
     },
   ];
 
+  const listViewOptions = [
+    {
+      name: 'List',
+      action: () => setGridView(false),
+    },
+    {
+      name: 'Grid',
+      active: true,
+      action: () => setGridView(true),
+    },
+  ];
+
   return (
     <Wrapper orgData={orgData}>
       <BoardsContainer>
-        {/* <BoardsActivity>
-          <BoardsActivityInput
-            placeholder="Search people or pods..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Filter
-            filterSchema={filterSchema}
-            filter={filter}
-            setFilter={setFilter}
-          />
-          <ButtonGroup></ButtonGroup>
-        </BoardsActivity> */}
+        <BoardsActivity>
+          {/*<BoardsActivityInput*/}
+          {/*  placeholder="Search people or pods..."*/}
+          {/*  InputProps={{*/}
+          {/*    startAdornment: (*/}
+          {/*      <InputAdornment position="start">*/}
+          {/*        <SearchIcon />*/}
+          {/*      </InputAdornment>*/}
+          {/*    ),*/}
+          {/*  }}*/}
+          {/*/>*/}
+          {/*<Filter*/}
+          {/*  filterSchema={filterSchema}*/}
+          {/*  filter={filter}*/}
+          {/*  setFilter={setFilter}*/}
+          {/*/>*/}
+          {/* TODO: Remove the div below when filters will be ready */}
+          <div />
+          <ToggleViewButton options={listViewOptions} />
+        </BoardsActivity>
 
-        <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+        {isGridView ? (
+          <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+        ) : (
+          <Table tasks={tasks} />
+        )}
       </BoardsContainer>
     </Wrapper>
   );
