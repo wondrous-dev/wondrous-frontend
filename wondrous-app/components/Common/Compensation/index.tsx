@@ -2,12 +2,15 @@ import { ToDo } from '../../Icons';
 import { WonderCoin } from '../../Icons/wonderCoin';
 import { SafeImage } from '../Image';
 import { CompensationWrapper, IconContainer, CompensationPill, CompensationAmount } from './styles';
+import { shrinkNumber } from '../../../utils/helpers';
 
 export const Compensation = (props) => {
-  const { icon, symbol, tokenName, rewardAmount } = props?.compensation || {};
+  const { rewards, taskIcon } = props;
+  const { icon, rewardAmount, symbol } = rewards[0] || {};
 
   return (
     <CompensationWrapper key={props.id}>
+      {taskIcon}
       <CompensationPill>
         <IconContainer>
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -20,7 +23,7 @@ export const Compensation = (props) => {
           />
         </IconContainer>
         <CompensationAmount>
-          {rewardAmount} {symbol}
+          {shrinkNumber(rewardAmount)} {symbol && symbol.toUpperCase()}
         </CompensationAmount>
       </CompensationPill>
     </CompensationWrapper>
