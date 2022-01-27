@@ -110,6 +110,7 @@ import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { MilestoneTaskList } from '../MilestoneTaskList';
 import { MilestoneTaskBreakdown } from '../MilestoneTaskBreakdown';
 import Link from 'next/link';
+import { TaskList } from '../TaskList';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -611,6 +612,7 @@ export const TaskViewModal = (props) => {
   const dropdownItemStyle = {
     marginRight: '12px',
   };
+  const isMilestone = task?.type === MILESTONE_TYPE;
 
   const onCorrectPage =
     fetchedTask?.orgId === board?.orgId || fetchedTask?.podId === board?.podId || fetchedTask?.userId === board?.userId;
