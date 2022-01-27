@@ -98,6 +98,7 @@ import { CommentList } from '../../Comment';
 import { DAOIcon } from '../../Icons/dao';
 import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { MilestoneTaskList } from '../MilestoneTaskList';
+import { MilestoneTaskBreakdown } from '../MilestoneTaskBreakdown';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -789,6 +790,7 @@ export const TaskViewModal = (props) => {
               {fetchedTask?.dueDate ? format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy') : 'None'}
             </TaskSectionInfoText>
           </TaskSectionDisplayDiv>
+          {isMilestone && <MilestoneTaskBreakdown milestoneId={task?.id} open={open} />}
           {isTaskProposal && (
             <CreateFormFooterButtons>
               {fetchedTask?.changeRequestedAt && (

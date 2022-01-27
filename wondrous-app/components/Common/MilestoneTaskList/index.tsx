@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { GET_TASK_FOR_MILESTONE } from '../../../graphql/queries'
 import * as Constants from '../../../utils/constants'
-import { Done, InProgress, InReview, ToDo } from '../../Icons'
+import { Done, InProgress, InReview, ToDo, AwaitingPayment } from '../../Icons'
 import { ArchivedIcon } from '../../Icons/statusIcons'
 import { SmallAvatar } from '../AvatarList'
 import {
@@ -25,6 +25,7 @@ export const TASK_ICONS = {
     [Constants.TASK_STATUS_DONE]: Done,
     [Constants.TASK_STATUS_IN_REVIEW]: InReview,
     [Constants.TASK_STATUS_ARCHIVED]: ArchivedIcon,
+    [Constants.TASK_STATUS_AWAITING_PAYMENT]: AwaitingPayment
 }
 
 export const MilestoneTaskList = (props) => {

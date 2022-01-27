@@ -7,6 +7,7 @@ export const TASK_STATUS_IN_REVIEW = 'in_review';
 export const TASK_STATUS_DONE = 'completed';
 export const TASK_STATUS_REQUESTED = 'requested';
 export const TASK_STATUS_ARCHIVED = 'archived';
+export const TASK_STATUS_AWAITING_PAYMENT = 'awaiting_payment';
 
 // Task types
 export const TASK_TYPE = 'task';
