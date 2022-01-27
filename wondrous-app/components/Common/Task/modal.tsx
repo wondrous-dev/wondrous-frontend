@@ -376,7 +376,6 @@ export const TaskViewModal = (props) => {
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext || null;
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
-    nextFetchPolicy: 'network-only',
     onCompleted: (data) => {
       const taskData = data?.getTaskById;
       if (taskData) {
@@ -393,7 +392,6 @@ export const TaskViewModal = (props) => {
 
   const [getTaskProposalById] = useLazyQuery(GET_TASK_PROPOSAL_BY_ID, {
     fetchPolicy: 'network-only',
-    nextFetchPolicy: 'network-only',
     onCompleted: (data) => {
       const taskProposalData = data?.getTaskProposalById;
       if (taskProposalData) {
@@ -562,7 +560,6 @@ export const TaskViewModal = (props) => {
   }
 
   const canSubmit = fetchedTask?.assigneeId === user?.id;
-
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
     orgId: fetchedTask?.orgId,
@@ -740,95 +737,97 @@ export const TaskViewModal = (props) => {
               </TaskSectionInfoDiv>
             </TaskSectionDisplayDiv>
           )}
-          <TaskSectionDisplayDiv>
-            <TaskSectionDisplayLabel>
-              <AssigneeIcon />
-              <TaskSectionDisplayText>Assignee</TaskSectionDisplayText>
-            </TaskSectionDisplayLabel>
-            <TaskSectionInfoDiv key={fetchedTask?.assigneeUsername}>
-              {fetchedTask?.assigneeUsername ? (
-                <>
-                  {fetchedTask?.assigneeProfilePicture ? (
-                    <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.assigneeProfilePicture} />
-                  ) : (
-                    <DefaultUserImage style={displayDivProfileImageStyle} />
-                  )}
-                  <TaskSectionInfoText>{fetchedTask?.assigneeUsername}</TaskSectionInfoText>
-                </>
-              ) : (
-                <>
-                  {canCreate ? (
-                    <>
-                      <TakeTaskButton
-                        onClick={() => {
-                          if (isTaskProposal) {
-                            updateTaskProposalAssignee({
-                              variables: {
-                                proposalId: fetchedTask?.id,
-                                assigneeId: user?.id,
-                              },
-                              onCompleted: (data) => {
-                                const taskProposal = data?.updateTaskProposalAssignee;
-                                if (board?.setColumns && onCorrectPage) {
-                                  const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
-                                    taskProposal,
-                                    {}
-                                  );
-                                  let columns = [...board?.columns];
-                                  columns = updateProposalItem(transformedTaskProposal, columns);
-                                  board?.setColumns(columns);
-                                }
-                              },
-                            });
-                          } else {
-                            updateTaskAssignee({
-                              variables: {
-                                taskId: fetchedTask?.id,
-                                assigneeId: user?.id,
-                              },
-                              onCompleted: (data) => {
-                                const task = data?.updateTaskAssignee;
-                                const transformedTask = transformTaskToTaskCard(task, {});
-                                if (board?.setColumns && onCorrectPage) {
-                                  let columnNumber = 0;
-                                  if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-                                    columnNumber = 1;
+          {!isTaskProposal && (
+            <TaskSectionDisplayDiv>
+              <TaskSectionDisplayLabel>
+                <AssigneeIcon />
+                <TaskSectionDisplayText>Assignee</TaskSectionDisplayText>
+              </TaskSectionDisplayLabel>
+              <TaskSectionInfoDiv key={fetchedTask?.assigneeUsername}>
+                {fetchedTask?.assigneeUsername ? (
+                  <>
+                    {fetchedTask?.assigneeProfilePicture ? (
+                      <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.assigneeProfilePicture} />
+                    ) : (
+                      <DefaultUserImage style={displayDivProfileImageStyle} />
+                    )}
+                    <TaskSectionInfoText>{fetchedTask?.assigneeUsername}</TaskSectionInfoText>
+                  </>
+                ) : (
+                  <>
+                    {canCreate ? (
+                      <>
+                        <TakeTaskButton
+                          onClick={() => {
+                            if (isTaskProposal) {
+                              updateTaskProposalAssignee({
+                                variables: {
+                                  proposalId: fetchedTask?.id,
+                                  assigneeId: user?.id,
+                                },
+                                onCompleted: (data) => {
+                                  const taskProposal = data?.updateTaskProposalAssignee;
+                                  if (board?.setColumns && onCorrectPage) {
+                                    const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
+                                      taskProposal,
+                                      {}
+                                    );
+                                    let columns = [...board?.columns];
+                                    columns = updateProposalItem(transformedTaskProposal, columns);
+                                    board?.setColumns(columns);
                                   }
-                                  let columns = [...board?.columns];
-                                  if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-                                    columns = updateInProgressTask(transformedTask, columns);
-                                  } else if (transformedTask.status === TASK_STATUS_TODO) {
-                                    columns = updateTaskItem(transformedTask, columns);
+                                },
+                              });
+                            } else {
+                              updateTaskAssignee({
+                                variables: {
+                                  taskId: fetchedTask?.id,
+                                  assigneeId: user?.id,
+                                },
+                                onCompleted: (data) => {
+                                  const task = data?.updateTaskAssignee;
+                                  const transformedTask = transformTaskToTaskCard(task, {});
+                                  if (board?.setColumns && onCorrectPage) {
+                                    let columnNumber = 0;
+                                    if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+                                      columnNumber = 1;
+                                    }
+                                    let columns = [...board?.columns];
+                                    if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+                                      columns = updateInProgressTask(transformedTask, columns);
+                                    } else if (transformedTask.status === TASK_STATUS_TODO) {
+                                      columns = updateTaskItem(transformedTask, columns);
+                                    }
+                                    board.setColumns(columns);
                                   }
-                                  board.setColumns(columns);
-                                }
-                              },
+                                },
+                              });
+                            }
+                            setFetchedTask({
+                              ...fetchedTask,
+                              assigneeProfilePicture: user?.profilePicture,
+                              assigneeUsername: fetchedTask?.assigneeUsername,
                             });
-                          }
-                          setFetchedTask({
-                            ...fetchedTask,
-                            assigneeProfilePicture: user?.profilePicture,
-                            assigneeUsername: fetchedTask?.assigneeUsername,
-                          });
+                          }}
+                        >
+                          Self-assign this task
+                        </TakeTaskButton>
+                      </>
+                    ) : (
+                      <TaskSectionInfoText
+                        style={{
+                          marginLeft: '4px',
+                          marginTop: '8px',
                         }}
                       >
-                        Self-assign this task
-                      </TakeTaskButton>
-                    </>
-                  ) : (
-                    <TaskSectionInfoText
-                      style={{
-                        marginLeft: '4px',
-                        marginTop: '8px',
-                      }}
-                    >
-                      None
-                    </TaskSectionInfoText>
-                  )}
-                </>
-              )}
-            </TaskSectionInfoDiv>
-          </TaskSectionDisplayDiv>
+                        None
+                      </TaskSectionInfoText>
+                    )}
+                  </>
+                )}
+              </TaskSectionInfoDiv>
+            </TaskSectionDisplayDiv>
+          )}
           <TaskSectionDisplayDiv>
             <TaskSectionDisplayLabel>
               <ImageIcon />
