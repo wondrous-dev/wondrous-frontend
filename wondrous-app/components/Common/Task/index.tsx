@@ -219,7 +219,7 @@ export const Task = ({ task, setTask }) => {
       setUserList(users);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [assigneeUsername]);
 
   return (
     <>
@@ -355,6 +355,7 @@ export const TaskListCard = (props) => {
       />
     );
   }
+
   return (
     <TaskListCardWrapper onClick={() => setViewDetails(true)}>
       <TaskHeader>
