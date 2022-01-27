@@ -1,7 +1,6 @@
 import { useLazyQuery } from "@apollo/client"
-import { useEffect } from "react"
-import { GET_TASK_FOR_MILESTONE } from "../../../graphql/queries"
-import { TASK_STATUS_DONE } from "../../../utils/constants"
+import { useEffect, useState } from "react"
+import { GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE } from "../../../graphql/queries"
 import {
     StyledBox,
     StyledProgressBar,
@@ -13,19 +12,22 @@ import {
 
 export const MilestoneProgress = (props) => {
     const { milestoneId, color = "#396CFF" } = props
-    const [getTasksForMilestone, { data: getTasksForMilestoneData }] = useLazyQuery(GET_TASK_FOR_MILESTONE) // TODO: should only get the number of tasks, not the tasks themselves
-    const tasksTotal = getTasksForMilestoneData?.getTasksForMilestone?.length
-    const tasksCompleted = getTasksForMilestoneData?.getTasksForMilestone?.filter(task => task.status === TASK_STATUS_DONE).length
-
+    const [tasksTotal, setTaskTotal] = useState(0)
+    const [tasksCompleted, setTaskCompleted] = useState(0)
+    const [getPerStatusTaskCountForMilestone] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE, {
+        onCompleted: (data) => {
+            const { getPerStatusTaskCountForMilestone } = data
+            setTaskTotal(Object.values(getPerStatusTaskCountForMilestone).filter(i => typeof i === "number").reduce((a, b) => a + b, 0))
+            setTaskCompleted(getPerStatusTaskCountForMilestone?.completed + getPerStatusTaskCountForMilestone?.archived)
+        }
+    })
     useEffect(() => {
-        getTasksForMilestone({
+        getPerStatusTaskCountForMilestone({
             variables: {
-                "milestoneId": milestoneId,
-                "limit": 100,
-                "offset": 0
+                "milestoneId": milestoneId
             }
         })
-    }, [getTasksForMilestone, milestoneId])
+    }, [getPerStatusTaskCountForMilestone, milestoneId])
 
     return (
         <StyledBox>
