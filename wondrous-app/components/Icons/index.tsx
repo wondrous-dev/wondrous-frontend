@@ -458,3 +458,57 @@ export const WonderCoin = (props) => (
 		</defs>
 	</svg>
 )
+
+export const AwaitingPayment = (props) => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="29"
+		height="29"
+		fill="none"
+		viewBox="0 0 29 29"
+	>
+		<circle
+			cx="14.339"
+			cy="14.244"
+			r="13.5"
+			fill="#0F0F0F"
+			stroke="#474747"
+		></circle>
+		<circle
+			cx="14.565"
+			cy="14.243"
+			r="7.999"
+			fill="url(#paint0_linear_3018_59417)"
+		></circle>
+		<path
+			fill="url(#paint1_linear_3018_59417)"
+			fillRule="evenodd"
+			d="M11.657 11.332a.99.99 0 11-1.401-1.401.99.99 0 011.401 1.4zm7.219 7.224a.99.99 0 11-1.402-1.4.99.99 0 011.402 1.4zm-1.397-8.625a.99.99 0 101.402 1.402.99.99 0 00-1.402-1.402zm-7.226 8.624a.99.99 0 111.4-1.4.99.99 0 01-1.4 1.4zm6.734-4.298c-.008.038-.038.069-.084.084a3.287 3.287 0 00-2.231 2.223.112.112 0 01-.107.084.112.112 0 01-.106-.084 3.259 3.259 0 00-2.232-2.223c-.045-.015-.076-.046-.083-.084h-.008v-.03h.008c.007-.038.038-.069.083-.084a3.26 3.26 0 002.232-2.224.112.112 0 01.106-.083c.046 0 .091.03.107.083a3.259 3.259 0 002.23 2.224c.047.015.077.046.085.084h.007v.03h-.007z"
+			clipRule="evenodd"
+		></path>
+		<defs>
+			<linearGradient
+				id="paint0_linear_3018_59417"
+				x1="21.727"
+				x2="13.728"
+				y1="-4.147"
+				y2="22.418"
+				gradientUnits="userSpaceOnUse"
+			>
+				<stop stopColor="#474747"></stop>
+				<stop offset="1" stopColor="#181818"></stop>
+			</linearGradient>
+			<linearGradient
+				id="paint1_linear_3018_59417"
+				x1="14.567"
+				x2="14.567"
+				y1="9.64"
+				y2="18.846"
+				gradientUnits="userSpaceOnUse"
+			>
+				<stop stopColor="#fff"></stop>
+				<stop offset="1" stopColor="#06FFA5"></stop>
+			</linearGradient>
+		</defs>
+	</svg>
+);
