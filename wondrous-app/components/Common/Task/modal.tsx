@@ -51,7 +51,7 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
-  MILESTONE_TYPE
+  MILESTONE_TYPE,
   TASK_STATUS_TODO,
 } from '../../../utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
