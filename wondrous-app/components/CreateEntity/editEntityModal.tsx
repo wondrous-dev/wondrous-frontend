@@ -811,7 +811,7 @@ const EditLayoutBaseModal = (props) => {
             </CreateFormMembersBlock>
           </CreateFormMembersSection>
         )}
-        {showAppearSection && (
+        {showAppearSection && !isTaskProposal && (
           <CreateFormAddDetailsInputs
             style={{
               marginBottom: '40px',

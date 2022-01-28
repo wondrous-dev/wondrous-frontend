@@ -45,11 +45,13 @@ import {
   ENTITIES_TYPES,
   IMAGE_FILE_EXTENSIONS_TYPE_MAPPING,
   PERMISSIONS,
+  STATUS_OPEN,
   TASK_STATUS_ARCHIVED,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
+  TASK_STATUS_TODO,
 } from '../../../utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
@@ -75,9 +77,11 @@ import {
   CreateFormFooterButtons,
   CreateFormPreviewButton,
   CreateModalOverlay,
+  TakeTaskButton,
 } from '../../CreateEntity/styles';
 import { useRouter } from 'next/router';
-import { UPDATE_TASK_STATUS } from '../../../graphql/mutations/task';
+import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE } from '../../../graphql/mutations/task';
+import { UPDATE_TASK_PROPOSAL_ASSIGNEE } from '../../../graphql/mutations/taskProposal';
 import { GET_PREVIEW_FILE } from '../../../graphql/queries/media';
 import { GET_TASK_PROPOSAL_BY_ID } from '../../../graphql/queries/taskProposal';
 import { TaskSubmissionContent } from './submission';
@@ -88,7 +92,13 @@ import {
 } from '../../../graphql/queries/taskBoard';
 import { AvatarList } from '../AvatarList';
 import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from '../../../graphql/mutations/taskProposal';
-import { addTaskItem, removeProposalItem, updateProposalItem } from '../../../utils/board';
+import {
+  addTaskItem,
+  removeProposalItem,
+  updateInProgressTask,
+  updateProposalItem,
+  updateTaskItem,
+} from '../../../utils/board';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
 import { CompletedIcon } from '../../Icons/statusIcons';
 import { TaskListCard } from '.';
@@ -164,6 +174,7 @@ export const TaskListViewModal = (props) => {
             variables: {
               offset: fetchedList.length,
               limit: LIMIT,
+              statuses: [STATUS_OPEN],
             },
             updateQuery: (prev, { fetchMoreResult }) => {
               const hasMore = fetchMoreResult.getOrgTaskBoardProposals.length >= LIMIT;
@@ -190,6 +201,7 @@ export const TaskListViewModal = (props) => {
             variables: {
               offset: fetchedList.length,
               limit: LIMIT,
+              statuses: [STATUS_OPEN],
             },
             updateQuery: (prev, { fetchMoreResult }) => {
               const hasMore = fetchMoreResult.getOrgTaskBoardSubmissions.length >= LIMIT;
@@ -253,6 +265,7 @@ export const TaskListViewModal = (props) => {
             getOrgTaskProposals({
               variables: {
                 orgId,
+                statuses: [STATUS_OPEN],
               },
             });
           }
@@ -261,6 +274,7 @@ export const TaskListViewModal = (props) => {
             getOrgTaskSubmissions({
               variables: {
                 orgId,
+                statuses: [STATUS_OPEN],
               },
             });
           }
@@ -347,6 +361,8 @@ export const TaskViewModal = (props) => {
       setTaskSubmissionLoading(false);
     },
   });
+  const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
+  const [updateTaskProposalAssignee] = useMutation(UPDATE_TASK_PROPOSAL_ASSIGNEE);
   const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
@@ -551,13 +567,16 @@ export const TaskViewModal = (props) => {
   }
 
   const canSubmit = fetchedTask?.assigneeId === user?.id;
-
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
     orgId: fetchedTask?.orgId,
     podId: fetchedTask?.podId,
   });
 
+  const canCreate =
+    permissions.includes(PERMISSIONS.CREATE_TASK) ||
+    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    fetchedTask?.createdBy === user?.id;
   const canEdit =
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     fetchedTask?.createdBy === user?.id ||
@@ -586,14 +605,15 @@ export const TaskViewModal = (props) => {
     marginRight: '12px',
   };
 
+  const onCorrectPage =
+    fetchedTask?.orgId === board?.orgId || fetchedTask?.podId === board?.podId || fetchedTask?.userId === board?.userId;
   return (
     <>
       <ArchiveTaskModal open={archiveTask} onClose={() => setArchiveTask(false)} onArchive={handleNewStatus} />
       <Modal open={open} onClose={handleClose}>
         <TaskModal>
           <TaskModalHeader>
-            { fetchedTask?.orgProfilePicture
-            ? (
+            {fetchedTask?.orgProfilePicture ? (
               <SafeImage
                 src={fetchedTask?.orgProfilePicture}
                 style={{
@@ -603,13 +623,11 @@ export const TaskViewModal = (props) => {
                   marginRight: '8px',
                 }}
               />
-            )
-            : (
-              <OrganisationsCardNoLogo style={{ height: '29px', width: '28px'}}>
+            ) : (
+              <OrganisationsCardNoLogo style={{ height: '29px', width: '28px' }}>
                 <DAOIcon />
               </OrganisationsCardNoLogo>
-            )
-            }
+            )}
             {fetchedTask?.podName && (
               <div
                 style={{
@@ -717,6 +735,7 @@ export const TaskViewModal = (props) => {
                   <TaskSectionInfoText
                     style={{
                       marginLeft: '4px',
+                      marginTop: '8px',
                     }}
                   >
                     None
@@ -725,32 +744,97 @@ export const TaskViewModal = (props) => {
               </TaskSectionInfoDiv>
             </TaskSectionDisplayDiv>
           )}
-          <TaskSectionDisplayDiv>
-            <TaskSectionDisplayLabel>
-              <AssigneeIcon />
-              <TaskSectionDisplayText>Assignee</TaskSectionDisplayText>
-            </TaskSectionDisplayLabel>
-            <TaskSectionInfoDiv key={fetchedTask?.assigneeUsername}>
-              {fetchedTask?.assigneeUsername ? (
-                <>
-                  {fetchedTask?.assigneeProfilePicture ? (
-                    <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.assigneeProfilePicture} />
-                  ) : (
-                    <DefaultUserImage style={displayDivProfileImageStyle} />
-                  )}
-                  <TaskSectionInfoText>{fetchedTask?.assigneeUsername}</TaskSectionInfoText>
-                </>
-              ) : (
-                <TaskSectionInfoText
-                  style={{
-                    marginLeft: '4px',
-                  }}
-                >
-                  None
-                </TaskSectionInfoText>
-              )}
-            </TaskSectionInfoDiv>
-          </TaskSectionDisplayDiv>
+          {!isTaskProposal && (
+            <TaskSectionDisplayDiv>
+              <TaskSectionDisplayLabel>
+                <AssigneeIcon />
+                <TaskSectionDisplayText>Assignee</TaskSectionDisplayText>
+              </TaskSectionDisplayLabel>
+              <TaskSectionInfoDiv key={fetchedTask?.assigneeUsername}>
+                {fetchedTask?.assigneeUsername ? (
+                  <>
+                    {fetchedTask?.assigneeProfilePicture ? (
+                      <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.assigneeProfilePicture} />
+                    ) : (
+                      <DefaultUserImage style={displayDivProfileImageStyle} />
+                    )}
+                    <TaskSectionInfoText>{fetchedTask?.assigneeUsername}</TaskSectionInfoText>
+                  </>
+                ) : (
+                  <>
+                    {canCreate ? (
+                      <>
+                        <TakeTaskButton
+                          onClick={() => {
+                            if (isTaskProposal) {
+                              updateTaskProposalAssignee({
+                                variables: {
+                                  proposalId: fetchedTask?.id,
+                                  assigneeId: user?.id,
+                                },
+                                onCompleted: (data) => {
+                                  const taskProposal = data?.updateTaskProposalAssignee;
+                                  if (board?.setColumns && onCorrectPage) {
+                                    const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
+                                      taskProposal,
+                                      {}
+                                    );
+                                    let columns = [...board?.columns];
+                                    columns = updateProposalItem(transformedTaskProposal, columns);
+                                    board?.setColumns(columns);
+                                  }
+                                },
+                              });
+                            } else {
+                              updateTaskAssignee({
+                                variables: {
+                                  taskId: fetchedTask?.id,
+                                  assigneeId: user?.id,
+                                },
+                                onCompleted: (data) => {
+                                  const task = data?.updateTaskAssignee;
+                                  const transformedTask = transformTaskToTaskCard(task, {});
+                                  if (board?.setColumns && onCorrectPage) {
+                                    let columnNumber = 0;
+                                    if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+                                      columnNumber = 1;
+                                    }
+                                    let columns = [...board?.columns];
+                                    if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+                                      columns = updateInProgressTask(transformedTask, columns);
+                                    } else if (transformedTask.status === TASK_STATUS_TODO) {
+                                      columns = updateTaskItem(transformedTask, columns);
+                                    }
+                                    board.setColumns(columns);
+                                  }
+                                },
+                              });
+                            }
+                            setFetchedTask({
+                              ...fetchedTask,
+                              assigneeProfilePicture: user?.profilePicture,
+                              assigneeUsername: fetchedTask?.assigneeUsername,
+                            });
+                          }}
+                        >
+                          Self-assign this task
+                        </TakeTaskButton>
+                      </>
+                    ) : (
+                      <TaskSectionInfoText
+                        style={{
+                          marginLeft: '4px',
+                          marginTop: '8px',
+                        }}
+                      >
+                        None
+                      </TaskSectionInfoText>
+                    )}
+                  </>
+                )}
+              </TaskSectionInfoDiv>
+            </TaskSectionDisplayDiv>
+          )}
           <TaskSectionDisplayDiv>
             <TaskSectionDisplayLabel>
               <ImageIcon />
@@ -846,11 +930,18 @@ export const TaskViewModal = (props) => {
                         variables: {
                           proposalId: fetchedTask?.id,
                         },
-                        onCompleted: () => {
+                        onCompleted: (data) => {
+                          const taskProposal = data?.approveTaskProposal;
                           let columns = [...board?.columns];
                           // Move from proposal to task
                           columns = removeProposalItem(fetchedTask?.id, columns);
-                          columns = addTaskItem(fetchedTask, columns);
+                          columns = addTaskItem(
+                            {
+                              ...fetchedTask,
+                              id: taskProposal?.associatedTaskId,
+                            },
+                            columns
+                          );
                           board?.setColumns(columns);
                           document.body.setAttribute('style', `position: relative;`);
                           handleClose();

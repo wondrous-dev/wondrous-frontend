@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { useMutation } from '@apollo/client';
 import { LogoButton } from '../logo';
-import { ToDo, InProgress, Done, InReview } from '../../Icons';
+import { TodoWithBorder, InProgressWithBorder, DoneWithBorder, InReview, Requested } from '../../Icons';
 import { TaskLikeIcon } from '../../Icons/taskLike';
 import { TaskCommentIcon } from '../../Icons/taskComment';
 import { TaskShareIcon } from '../../Icons/taskShare';
@@ -47,16 +47,18 @@ import { TaskViewModal } from './modal';
 import { useMe } from '../../Auth/withAuth';
 import { delQuery } from '../../../utils';
 import { TaskSummaryAction } from '../TaskSummary/styles';
-import { Arrow } from '../../Icons/sections';
+import { Arrow, Archived } from '../../Icons/sections';
 import { UPDATE_TASK_STATUS } from '../../../graphql/mutations/task';
 import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries';
 import { OrgBoardContext } from '../../../utils/contexts';
 
 export const TASK_ICONS = {
-  [Constants.TASK_STATUS_TODO]: ToDo,
-  [Constants.TASK_STATUS_IN_PROGRESS]: InProgress,
-  [Constants.TASK_STATUS_DONE]: Done,
+  [Constants.TASK_STATUS_TODO]: TodoWithBorder,
+  [Constants.TASK_STATUS_IN_PROGRESS]: InProgressWithBorder,
+  [Constants.TASK_STATUS_DONE]: DoneWithBorder,
   [Constants.TASK_STATUS_IN_REVIEW]: InReview,
+  [Constants.TASK_STATUS_REQUESTED]: Requested,
+  [Constants.TASK_STATUS_ARCHIVED]: Archived
 };
 
 let windowOffset = 0;
@@ -65,7 +67,7 @@ export const Task = ({ task, setTask }) => {
     actions = {},
     description = '',
     compensation = {},
-    rewards,
+    rewards = null,
     id,
     media,
     status,
@@ -95,7 +97,7 @@ export const Task = ({ task, setTask }) => {
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const orgBoardContext = useContext(OrgBoardContext);
   const getOrgTaskVariables = orgBoardContext?.getOrgTaskVariables;
-  let TaskIcon = TASK_ICONS[status];
+  const TaskIcon = TASK_ICONS?.[status];
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
     refetchQueries: () => [
@@ -219,7 +221,7 @@ export const Task = ({ task, setTask }) => {
       setUserList(users);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [assigneeUsername]);
 
   return (
     <>
@@ -249,7 +251,7 @@ export const Task = ({ task, setTask }) => {
               }}
             />
             <AvatarList style={{ marginLeft: '12px' }} users={userList} id={'task-' + task?.id} />
-            {rewards && rewards?.length > 0 && <Compensation compensation={rewards[0]} />}
+            {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
           </TaskHeader>
           <TaskContent>
             <TaskTitle>{title}</TaskTitle>
@@ -314,7 +316,7 @@ export const TaskListCard = (props) => {
   const { taskType, task } = props;
   const router = useRouter();
   const [viewDetails, setViewDetails] = useState(false);
-  let TaskIcon = TASK_ICONS[task?.status];
+  const TaskIcon = TASK_ICONS?.[taskType];
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
@@ -355,6 +357,7 @@ export const TaskListCard = (props) => {
       />
     );
   }
+
   return (
     <TaskListCardWrapper onClick={() => setViewDetails(true)}>
       <TaskHeader>
@@ -384,7 +387,7 @@ export const TaskListCard = (props) => {
           ]}
           id={'task-' + task?.id}
         />
-        <Compensation compensation={task?.compensation} icon={TaskIcon} />
+        {task?.rewards?.length > 0 && <Compensation rewards={task?.rewards} taskIcon={<TaskIcon />} />}
       </TaskHeader>
       <TaskContent>
         <TaskTitle>{task?.title}</TaskTitle>

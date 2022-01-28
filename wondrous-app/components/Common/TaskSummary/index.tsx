@@ -125,11 +125,18 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
         variables: {
           proposalId: task?.id,
         },
-        onCompleted: () => {
+        onCompleted: (data) => {
+          const taskProposal = data?.approveTaskProposal;
           let columns = [...board?.columns];
           // Move from proposal to task
           columns = removeProposalItem(task?.id, columns);
-          columns = addTaskItem(task, columns);
+          columns = addTaskItem(
+            {
+              ...task,
+              id: taskProposal?.associatedTaskId,
+            },
+            columns
+          );
           board?.setColumns(columns);
         },
       });

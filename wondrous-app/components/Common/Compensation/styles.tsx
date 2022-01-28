@@ -7,11 +7,17 @@ export const CompensationWrapper = styled.div`
   flex-grow: 1;
   justify-content: flex-end;
   align-self: flex-end;
+
+  svg {
+    z-index: 9999;
+    height: 28px;
+  }
 `
 
 export const CompensationPill = styled.div`
   display: flex;
-  align-self: flex-end;
+  align-items: center;
+  min-width: 63px;
   flex-direction: row;
   justify-content: center;
   background: ${Grey85};
@@ -21,6 +27,7 @@ export const CompensationPill = styled.div`
   line-height: 28px;
   margin-left: -5px;
   z-index: 0;
+  height: 28px;
 `
 
 export const IconContainer = styled.div`
@@ -38,6 +45,7 @@ export const IconContainer = styled.div`
 export const CompensationAmount = styled(Typography)`
   && {
     color: ${White};
-    font-weight: bolder;
+    font-weight: 600;
+    font-size: 13px;
   }
 `
