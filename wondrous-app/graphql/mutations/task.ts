@@ -111,6 +111,7 @@ export const UPDATE_MILESTONE = gql`
   ${TaskFragment}
 `;
 
+<<<<<<< HEAD
 export const UPDATE_TASK_ORDER = gql`
   mutation updateTaskOrder($taskId: ID!, $input: updateTaskOrderInput!) {
     updateTaskOrder(taskId: $taskId, input: $input) {
@@ -118,3 +119,13 @@ export const UPDATE_TASK_ORDER = gql`
     }
   }
 `;
+=======
+export const UPDATE_MILESTONE = gql`
+  mutation updateMilestone($milestoneId: ID!, $input: TaskInput) {
+  updateMilestone(milestoneId: $milestoneId, input: $input) {
+    ...TaskFragment
+  }
+}
+  ${TaskFragment}
+`
+>>>>>>> ca3f907 (feat: update milestone)
