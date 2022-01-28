@@ -36,7 +36,8 @@ import {
   TaskListCardWrapper,
   TaskStatusHeaderText,
   ArchivedTaskUndo,
-  MilestoneSeparator
+  MilestoneSeparator,
+  MilestoneProgressWrapper
 } from './styles'
 import { renderMentionString } from '../../../utils/common'
 import { useRouter } from 'next/router'
@@ -55,6 +56,7 @@ import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/querie
 import { OrgBoardContext } from '../../../utils/contexts'
 import { MilestoneLaunchedBy } from '../MilestoneLaunchedBy'
 import { MilestoneProgress } from '../MilestoneProgress'
+import { MilestoneWrapper } from '../Milestone'
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: ToDo,
@@ -297,7 +299,9 @@ export const Task = ({ task, setTask }) => {
                 <PodName>{task?.podName}</PodName>
               </PodWrapper>
             )}
-            {type === Constants.ENTITIES_TYPES.MILESTONE && <MilestoneProgress milestoneId={id} />}
+            <MilestoneProgressWrapper>
+              {type === Constants.ENTITIES_TYPES.MILESTONE && <MilestoneProgress milestoneId={id} />}
+            </MilestoneProgressWrapper>
             {media?.length > 0 ? <TaskMedia media={media[0]} /> : <TaskSeparator />}
           </TaskContent >
           <TaskFooter>

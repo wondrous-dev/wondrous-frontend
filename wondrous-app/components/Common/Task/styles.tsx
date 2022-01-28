@@ -70,6 +70,10 @@ export const MilestoneSeparator = styled(TaskSeparator)`
   margin: 12px 0;
 `
 
+export const MilestoneProgressWrapper = styled.div`
+  margin-bottom: 12px;
+`
+
 export const TaskTitle = styled.div`
   display: flex;
   color: white;
@@ -369,9 +373,11 @@ export const TaskListCardWrapper = styled.div`
   padding: 16px;
   margin-bottom: 20px;
 `;
+
 export const ArchivedTaskUndo = styled.span`
   text-decoration: underline;
   :hover {
     cursor: pointer;
   }
 `;
+
