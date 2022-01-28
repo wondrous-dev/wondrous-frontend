@@ -348,6 +348,7 @@ export const TaskViewModal = (props) => {
   const [fetchedTaskComments, setFetchedTaskComments] = useState([]);
   const [taskSubmissionLoading, setTaskSubmissionLoading] = useState(!isTaskProposal);
   const [makeSubmission, setMakeSubmission] = useState(false);
+  const isMilestone = task?.type === MILESTONE_TYPE;
 
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
@@ -551,7 +552,7 @@ export const TaskViewModal = (props) => {
         >
           <EditLayoutBaseModal
             open={open}
-            entityType={ENTITIES_TYPES.TASK}
+            entityType={isMilestone ? ENTITIES_TYPES.MILESTONE : ENTITIES_TYPES.TASK}
             handleClose={() => {
               setEditTask(false);
               handleClose();
@@ -608,7 +609,6 @@ export const TaskViewModal = (props) => {
   const dropdownItemStyle = {
     marginRight: '12px',
   };
-  const isMilestone = task?.type === MILESTONE_TYPE;
 
   const onCorrectPage =
     fetchedTask?.orgId === board?.orgId || fetchedTask?.podId === board?.podId || fetchedTask?.userId === board?.userId;
@@ -658,7 +658,7 @@ export const TaskViewModal = (props) => {
                     onClick={() => setEditTask(true)}
                     style={dropdownItemStyle}
                   >
-                    Edit {isTaskProposal ? 'task proposal' : 'task'}
+                    Edit {isTaskProposal ? 'task proposal' : isMilestone ? 'milestone' : 'task'}
                   </DropDownItem>
                   <DropDownItem
                     key={'task-menu-archive-' + fetchedTask?.id}
@@ -667,7 +667,7 @@ export const TaskViewModal = (props) => {
                     }}
                     style={dropdownItemStyle}
                   >
-                    Archive task
+                    Archive {isMilestone ? 'milestone' : 'task'}
                   </DropDownItem>
                 </DropDown>
               </TaskActionMenu>

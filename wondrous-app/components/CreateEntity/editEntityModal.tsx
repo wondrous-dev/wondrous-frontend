@@ -96,7 +96,7 @@ import {
   transformTaskToTaskCard,
 } from '../../utils/helpers';
 import { GET_ORG_USERS } from '../../graphql/queries/org';
-import { ATTACH_MEDIA_TO_TASK, CREATE_TASK, REMOVE_MEDIA_FROM_TASK, UPDATE_TASK } from '../../graphql/mutations/task';
+import { ATTACH_MEDIA_TO_TASK, CREATE_TASK, REMOVE_MEDIA_FROM_TASK, UPDATE_TASK, UPDATE_MILESTONE } from '../../graphql/mutations/task';
 import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
 import {
   ATTACH_MEDIA_TO_TASK_PROPOSAL,
@@ -376,7 +376,7 @@ const EditLayoutBaseModal = (props) => {
     return {
       showDeliverableRequirementsSection: entityType === ENTITIES_TYPES.TASK,
       showBountySwitchSection: entityType === ENTITIES_TYPES.TASK,
-      showAppearSection: entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.MILESTONE,
+      showAppearSection: entityType === ENTITIES_TYPES.TASK,
       showLinkAttachmentSection: entityType === ENTITIES_TYPES.POD,
       showHeaderImagePickerSection: entityType === ENTITIES_TYPES.POD,
       showMembersSection: entityType === ENTITIES_TYPES.POD,
@@ -503,6 +503,29 @@ const EditLayoutBaseModal = (props) => {
     refetchQueries: ['GetOrgTaskBoardProposals'],
   });
 
+  const [updateMilestone] = useMutation(UPDATE_MILESTONE, {
+    onCompleted: (data) => {
+      console.log("data ==>", data)
+      const milestone = data?.updateMilestone;
+      if (board?.setColumns && onCorrectPage) {
+        const transformedTask = transformTaskToTaskCard(milestone, {});
+        let columnNumber = 0;
+        if (milestone.status === TASK_STATUS_IN_PROGRESS) {
+          columnNumber = 1;
+        }
+        const columns = [...board?.columns];
+        columns[columnNumber].tasks = columns[columnNumber].tasks.map((existingTask) => {
+          if (transformedTask?.id === existingTask?.id) {
+            return transformedTask;
+          }
+          return existingTask;
+        });
+        board.setColumns(columns);
+      }
+      handleClose();
+    }
+  })
+
   const textFieldRef = useRef();
   const submitMutation = useCallback(() => {
     switch (entityType) {
@@ -516,13 +539,13 @@ const EditLayoutBaseModal = (props) => {
           dueDate,
           ...(rewardsAmount &&
             rewardsCurrency && {
-              rewards: [
-                {
-                  rewardAmount: parseFloat(rewardsAmount),
-                  paymentMethodId: rewardsCurrency,
-                },
-              ],
-            }),
+            rewards: [
+              {
+                rewardAmount: parseFloat(rewardsAmount),
+                paymentMethodId: rewardsCurrency,
+              },
+            ],
+          }),
           // TODO: add links?,
           ...(!isTaskProposal && {
             assigneeId: assignee?.value,
@@ -562,6 +585,23 @@ const EditLayoutBaseModal = (props) => {
           }
         }
         break;
+      case ENTITIES_TYPES.MILESTONE: {
+        updateMilestone({
+          variables: {
+            milestoneId: existingTask?.id,
+            input: {
+              title,
+              description: descriptionText,
+              dueDate,
+              orgId: org?.id,
+              podId: pod?.id,
+              userMentions: getMentionArray(descriptionText),
+              mediaUploads,
+            },
+          },
+        });
+        break;
+      }
     }
   }, [
     title,
@@ -580,6 +620,7 @@ const EditLayoutBaseModal = (props) => {
     existingTask?.id,
     rewardsAmount,
     rewardsCurrency,
+    updateMilestone
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
@@ -730,7 +771,7 @@ const EditLayoutBaseModal = (props) => {
                 event,
                 filePrefix: 'tmp/task/new/',
                 mediaUploads,
-                setMediaUploads: () => {},
+                setMediaUploads: () => { },
               });
               if (isTaskProposal) {
                 attachTaskProposalMedia({
@@ -767,7 +808,7 @@ const EditLayoutBaseModal = (props) => {
         {/*Upload header image block*/}
         {showHeaderImagePickerSection && <HeaderImage />}
 
-        <CreateFormMainSelects>
+        {showAppearSection && (<CreateFormMainSelects>
           <DropdownSelect
             title="Reward currency"
             labelText="Choose tokens"
@@ -790,7 +831,7 @@ const EditLayoutBaseModal = (props) => {
               onChange={(e) => setRewardsAmount(e.target.value)}
             />
           </CreateRewardAmountDiv>
-        </CreateFormMainSelects>
+        </CreateFormMainSelects>)}
 
         {showMembersSection && (
           <CreateFormMembersSection>

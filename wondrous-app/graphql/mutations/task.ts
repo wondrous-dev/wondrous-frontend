@@ -101,3 +101,12 @@ export const CREATE_MILESTONE = gql`
   }
   ${TaskFragment}
 `;
+
+export const UPDATE_MILESTONE = gql`
+  mutation updateMilestone($milestoneId: ID!, $input: TaskInput) {
+  updateMilestone(milestoneId: $milestoneId, input: $input) {
+    ...TaskFragment
+  }
+}
+  ${TaskFragment}
+`
