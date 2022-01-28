@@ -49,7 +49,6 @@ const AboutPage = () => {
         },
       });
     } else if (userProfileData && userProfileData.id) {
-      console.log('3')
       getUserAboutPageData({
         variables: {
           userId: userProfileData.id,
