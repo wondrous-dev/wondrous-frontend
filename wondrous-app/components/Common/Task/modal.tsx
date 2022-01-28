@@ -51,6 +51,7 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
+  MILESTONE_TYPE,
   TASK_STATUS_TODO,
   MILESTONE_TYPE,
 } from '../../../utils/constants';
@@ -1037,7 +1038,9 @@ export const TaskViewModal = (props) => {
               {!submissionSelected && !isMilestone && (
                 <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
               )}
-              {!submissionSelected && isMilestone && <MilestoneTaskList milestoneId={task?.id} open={!submissionSelected} />}
+              {!submissionSelected && isMilestone && (
+                <MilestoneTaskList milestoneId={task?.id} open={!submissionSelected} />
+              )}
             </TaskSectionContent>
           </TaskModalFooter>
         </TaskModal>
