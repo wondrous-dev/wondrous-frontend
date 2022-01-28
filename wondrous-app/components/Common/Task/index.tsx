@@ -37,6 +37,7 @@ import {
   TaskStatusHeaderText,
   ArchivedTaskUndo,
   MilestoneSeparator,
+  MilestoneProgressWrapper,
 } from './styles';
 import { renderMentionString } from '../../../utils/common';
 import { useRouter } from 'next/router';
@@ -55,6 +56,7 @@ import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/querie
 import { OrgBoardContext } from '../../../utils/contexts';
 import { MilestoneLaunchedBy } from '../MilestoneLaunchedBy';
 import { MilestoneProgress } from '../MilestoneProgress';
+import { MilestoneWrapper } from '../Milestone';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -275,22 +277,9 @@ export const Task = ({ task, setTask }) => {
                 <PodName>{task?.podName}</PodName>
               </PodWrapper>
             )}
-            <AvatarList style={{ marginLeft: '12px' }} users={userList} id={'task-' + task?.id} />
-            {rewards && rewards?.length > 0 && <Compensation compensation={rewards[0]} />}
-            {type === Constants.ENTITIES_TYPES.MILESTONE && <MilestoneIcon />}
-          </TaskContent>
-          <MilestoneLaunchedBy type={type} router={router} createdBy={createdBy} />
-          {type === Constants.ENTITIES_TYPES.MILESTONE && <MilestoneSeparator />}
-
-          <TaskContent>
-            <TaskTitle>{title}</TaskTitle>
-            <p>
-              {renderMentionString({
-                content: description,
-                router,
-              })}
-            </p>
-            {type === Constants.ENTITIES_TYPES.MILESTONE && <MilestoneProgress milestoneId={id} />}
+            <MilestoneProgressWrapper>
+              {type === Constants.ENTITIES_TYPES.MILESTONE && <MilestoneProgress milestoneId={id} />}
+            </MilestoneProgressWrapper>
             {media?.length > 0 ? <TaskMedia media={media[0]} /> : <TaskSeparator />}
           </TaskContent>
           <TaskFooter>
