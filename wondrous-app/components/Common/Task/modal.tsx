@@ -376,6 +376,7 @@ export const TaskViewModal = (props) => {
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext || null;
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
+    nextFetchPolicy: 'network-only',
     onCompleted: (data) => {
       const taskData = data?.getTaskById;
       if (taskData) {
@@ -392,6 +393,7 @@ export const TaskViewModal = (props) => {
 
   const [getTaskProposalById] = useLazyQuery(GET_TASK_PROPOSAL_BY_ID, {
     fetchPolicy: 'network-only',
+    nextFetchPolicy: 'network-only',
     onCompleted: (data) => {
       const taskProposalData = data?.getTaskProposalById;
       if (taskProposalData) {
