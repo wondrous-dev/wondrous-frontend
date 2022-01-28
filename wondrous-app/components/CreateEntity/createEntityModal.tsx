@@ -875,7 +875,7 @@ const CreateLayoutBaseModal = (props) => {
             </CreateFormMembersBlock>
           </CreateFormMembersSection>
         )}
-        {showAppearSection && (
+        {showAppearSection && canCreateTask && (
           <CreateFormAddDetailsInputs
             style={{
               marginBottom: '40px',
@@ -928,94 +928,93 @@ const CreateLayoutBaseModal = (props) => {
                 }}
               />
             </CreateFormAddDetailsInputBlock>
-            {canCreateTask && (
-              <CreateFormAddDetailsInputBlock>
-                <CreateFormAddDetailsInputLabel>Reviewer</CreateFormAddDetailsInputLabel>
-                <StyledAutocomplete
-                  options={filterUserOptions(eligibleReviewersData?.getEligibleReviewersForOrg).filter(
-                    ({ id }) => !selectedReviewers.map(({ id }) => id).includes(id)
-                  )}
-                  multiple
-                  onChange={(event, newValue, reason) => {
-                    if ('clear' === reason) {
-                      setSelectedReviewers([]);
-                    }
-                    if (event.code === 'Backspace' && reviewerString === '') {
-                      setSelectedReviewers(selectedReviewers.slice(0, -1));
-                    }
-                  }}
-                  onOpen={() =>
-                    getEligibleReviewersForOrg({
-                      variables: {
-                        orgId: org,
-                        searchString: '',
-                      },
-                    })
+
+            <CreateFormAddDetailsInputBlock>
+              <CreateFormAddDetailsInputLabel>Reviewer</CreateFormAddDetailsInputLabel>
+              <StyledAutocomplete
+                options={filterUserOptions(eligibleReviewersData?.getEligibleReviewersForOrg).filter(
+                  ({ id }) => !selectedReviewers.map(({ id }) => id).includes(id)
+                )}
+                multiple
+                onChange={(event, newValue, reason) => {
+                  if ('clear' === reason) {
+                    setSelectedReviewers([]);
                   }
-                  renderInput={(params) => (
-                    <TextField
-                      style={{
-                        color: White,
-                        fontFamily: 'Space Grotesk',
-                        fontSize: '14px',
-                        paddingLeft: '4px',
-                      }}
-                      placeholder="Enter username..."
-                      InputLabelProps={{ shrink: false }}
-                      onChange={(event) => {
-                        setReviewerString(event.target.value);
-                        getEligibleReviewersForOrg({
-                          variables: {
-                            orgId: org,
-                            searchString: event.target.value,
-                          },
-                        });
-                      }}
-                      {...params}
-                    />
-                  )}
-                  value={selectedReviewers}
-                  renderTags={(value) =>
-                    value?.map((option, index) => {
-                      return (
-                        <StyledChip
-                          key={index}
-                          label={option?.label}
-                          onDelete={() => setSelectedReviewers(selectedReviewers.filter(({ id }) => id !== option?.id))}
-                        />
-                      );
-                    })
+                  if (event.code === 'Backspace' && reviewerString === '') {
+                    setSelectedReviewers(selectedReviewers.slice(0, -1));
                   }
-                  PopperComponent={AutocompleteList}
-                  renderOption={(props, option, state) => {
+                }}
+                onOpen={() =>
+                  getEligibleReviewersForOrg({
+                    variables: {
+                      orgId: org,
+                      searchString: '',
+                    },
+                  })
+                }
+                renderInput={(params) => (
+                  <TextField
+                    style={{
+                      color: White,
+                      fontFamily: 'Space Grotesk',
+                      fontSize: '14px',
+                      paddingLeft: '4px',
+                    }}
+                    placeholder="Enter username..."
+                    InputLabelProps={{ shrink: false }}
+                    onChange={(event) => {
+                      setReviewerString(event.target.value);
+                      getEligibleReviewersForOrg({
+                        variables: {
+                          orgId: org,
+                          searchString: event.target.value,
+                        },
+                      });
+                    }}
+                    {...params}
+                  />
+                )}
+                value={selectedReviewers}
+                renderTags={(value) =>
+                  value?.map((option, index) => {
                     return (
-                      <OptionDiv
-                        onClick={(event) => {
-                          if (selectedReviewers.map(({ id }) => id).indexOf(option?.id === -1)) {
-                            setSelectedReviewers([...selectedReviewers, option]);
-                            setReviewerString('');
-                          }
-                          props?.onClick(event);
-                        }}
-                      >
-                        {option?.profilePicture && (
-                          <SafeImage
-                            src={option?.profilePicture}
-                            style={{
-                              width: '30px',
-                              height: '30px',
-                              borderRadius: '15px',
-                              marginRight: '8px',
-                            }}
-                          />
-                        )}
-                        <OptionTypography>{option?.label}</OptionTypography>
-                      </OptionDiv>
+                      <StyledChip
+                        key={index}
+                        label={option?.label}
+                        onDelete={() => setSelectedReviewers(selectedReviewers.filter(({ id }) => id !== option?.id))}
+                      />
                     );
-                  }}
-                />
-              </CreateFormAddDetailsInputBlock>
-            )}
+                  })
+                }
+                PopperComponent={AutocompleteList}
+                renderOption={(props, option, state) => {
+                  return (
+                    <OptionDiv
+                      onClick={(event) => {
+                        if (selectedReviewers.map(({ id }) => id).indexOf(option?.id === -1)) {
+                          setSelectedReviewers([...selectedReviewers, option]);
+                          setReviewerString('');
+                        }
+                        props?.onClick(event);
+                      }}
+                    >
+                      {option?.profilePicture && (
+                        <SafeImage
+                          src={option?.profilePicture}
+                          style={{
+                            width: '30px',
+                            height: '30px',
+                            borderRadius: '15px',
+                            marginRight: '8px',
+                          }}
+                        />
+                      )}
+                      <OptionTypography>{option?.label}</OptionTypography>
+                    </OptionDiv>
+                  );
+                }}
+              />
+            </CreateFormAddDetailsInputBlock>
           </CreateFormAddDetailsInputs>
         )}
       </CreateFormMainSection>

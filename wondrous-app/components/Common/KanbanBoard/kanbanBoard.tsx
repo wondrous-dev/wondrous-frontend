@@ -16,7 +16,7 @@ import { parseUserPermissionContext } from '../../../utils/helpers';
 import { PERMISSIONS } from '../../../utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { update } from 'lodash';
-import { GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE } from '../../../graphql/queries';
+import { GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE, GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries';
 
 const KanbanBoard = (props) => {
   const user = useMe();
@@ -73,9 +73,11 @@ const KanbanBoard = (props) => {
             newStatus: taskToBeUpdated.status,
           },
         },
-        refetchQueries: () => [
-          GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE
-        ],
+        refetchQueries: [{
+          query: GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
+          variables: orgBoard?.getOrgBoardTaskCountVariables
+        },
+          GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE]
       });
 
       return true;

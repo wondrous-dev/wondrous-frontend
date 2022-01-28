@@ -532,6 +532,17 @@ export const CreateFormPreviewButton = styled(Button)`
     color: #ffffff;
   }
 `;
+
+export const TakeTaskButton = styled(CreateFormPreviewButton)`
+  && {
+    height: auto;
+    margin-left: 0px;
+    font-size: 14px;
+    padding: 8px 12px;
+    margin-top: 8px;
+  }
+`;
+
 export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
   className: 'MuiAutocomplete-root',
 }))`
