@@ -930,11 +930,18 @@ export const TaskViewModal = (props) => {
                         variables: {
                           proposalId: fetchedTask?.id,
                         },
-                        onCompleted: () => {
+                        onCompleted: (data) => {
+                          const taskProposal = data?.approveTaskProposal;
                           let columns = [...board?.columns];
                           // Move from proposal to task
                           columns = removeProposalItem(fetchedTask?.id, columns);
-                          columns = addTaskItem(fetchedTask, columns);
+                          columns = addTaskItem(
+                            {
+                              ...fetchedTask,
+                              id: taskProposal?.associatedTaskId,
+                            },
+                            columns
+                          );
                           board?.setColumns(columns);
                           document.body.setAttribute('style', `position: relative;`);
                           handleClose();
