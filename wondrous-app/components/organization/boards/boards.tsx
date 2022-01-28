@@ -105,30 +105,24 @@ const Boards = (props) => {
     <Wrapper orgData={orgData}>
       <BoardsContainer>
         <BoardsActivity>
-          {/*<BoardsActivityInput*/}
-          {/*  placeholder="Search people or pods..."*/}
-          {/*  InputProps={{*/}
-          {/*    startAdornment: (*/}
-          {/*      <InputAdornment position="start">*/}
-          {/*        <SearchIcon />*/}
-          {/*      </InputAdornment>*/}
-          {/*    ),*/}
-          {/*  }}*/}
-          {/*/>*/}
-          {/*<Filter*/}
-          {/*  filterSchema={filterSchema}*/}
-          {/*  filter={filter}*/}
-          {/*  setFilter={setFilter}*/}
-          {/*/>*/}
-          {/* TODO: Remove the div below when filters will be ready */}
-          <div />
+          <BoardsActivityInput
+            placeholder="Search people or pods..."
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Filter filterSchema={filterSchema} filter={filter} setFilter={setFilter} />
           <ToggleViewButton options={listViewOptions} />
         </BoardsActivity>
 
         {isGridView ? (
           <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
         ) : (
-          <Table tasks={tasks} />
+          <Table tasks={columns.reduce((acc, col) => [...acc, ...col.tasks], [])} />
         )}
       </BoardsContainer>
     </Wrapper>

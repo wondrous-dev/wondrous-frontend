@@ -122,7 +122,6 @@ export const addToTaskColumns = (newResults, columns) => {
 
 const BoardsPage = () => {
   const [columns, setColumns] = useState(COLUMNS);
-  const [tasks, setTasks] = useState([]);
   const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR);
   const [orgData, setOrgData] = useState(null);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
@@ -168,7 +167,6 @@ const BoardsPage = () => {
       if (!firstTimeFetch) {
         const tasks = data?.getOrgTaskBoardTasks;
         const newColumns = populateTaskColumns(tasks, columns);
-        setTasks(tasks);
         setColumns(dedupeColumns(newColumns));
         setOrgTaskHasMore(data?.getOrgTaskBoardTasks.length >= LIMIT);
         setFirstTimeFetch(true);
@@ -292,7 +290,6 @@ const BoardsPage = () => {
       <Boards
         selectOptions={SELECT_OPTIONS}
         columns={columns}
-        tasks={tasks}
         onLoadMore={handleLoadMore}
         hasMore={orgTaskHasMore}
         orgData={orgData}
