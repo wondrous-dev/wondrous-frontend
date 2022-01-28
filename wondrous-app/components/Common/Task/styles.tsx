@@ -78,6 +78,10 @@ export const MilestoneProgressWrapper = styled.div`
   margin-bottom: 12px;
 `;
 
+export const MilestoneProgressWrapper = styled.div`
+  margin-bottom: 12px;
+`
+
 export const TaskTitle = styled.div`
   display: flex;
   color: white;
@@ -386,3 +390,4 @@ export const ArchivedTaskUndo = styled.span`
     cursor: pointer;
   }
 `;
+
