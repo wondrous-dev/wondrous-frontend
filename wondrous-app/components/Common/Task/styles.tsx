@@ -238,6 +238,7 @@ export const TaskSectionInfoDiv = styled.div`
   display: flex;
   align-items: center;
   text-align: left;
+  margin-top: 8px;
 `;
 
 export const TaskModalFooter = styled.div`
