@@ -45,6 +45,7 @@ import {
   ENTITIES_TYPES,
   IMAGE_FILE_EXTENSIONS_TYPE_MAPPING,
   PERMISSIONS,
+  STATUS_OPEN,
   TASK_STATUS_ARCHIVED,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
@@ -173,6 +174,7 @@ export const TaskListViewModal = (props) => {
             variables: {
               offset: fetchedList.length,
               limit: LIMIT,
+              statuses: [STATUS_OPEN],
             },
             updateQuery: (prev, { fetchMoreResult }) => {
               const hasMore = fetchMoreResult.getOrgTaskBoardProposals.length >= LIMIT;
@@ -199,6 +201,7 @@ export const TaskListViewModal = (props) => {
             variables: {
               offset: fetchedList.length,
               limit: LIMIT,
+              statuses: [STATUS_OPEN],
             },
             updateQuery: (prev, { fetchMoreResult }) => {
               const hasMore = fetchMoreResult.getOrgTaskBoardSubmissions.length >= LIMIT;
@@ -262,6 +265,7 @@ export const TaskListViewModal = (props) => {
             getOrgTaskProposals({
               variables: {
                 orgId,
+                statuses: [STATUS_OPEN],
               },
             });
           }
@@ -270,6 +274,7 @@ export const TaskListViewModal = (props) => {
             getOrgTaskSubmissions({
               variables: {
                 orgId,
+                statuses: [STATUS_OPEN],
               },
             });
           }
