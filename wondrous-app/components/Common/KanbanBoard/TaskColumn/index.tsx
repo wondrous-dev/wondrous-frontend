@@ -8,6 +8,7 @@ import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
   TASK_STATUS_TODO,
+  ENTITIES_TYPES
 } from '../../../../utils/constants'
 
 import { ToDo, InProgress, Done } from '../../../Icons'
@@ -151,7 +152,7 @@ const TaskColumn = (props: ITaskColumn) => {
         </TaskColumnContainerHeaderTitle>
         <TaskColumnContainerCount>{number}</TaskColumnContainerCount>
       </TaskColumnContainerHeader>
-      <ColumnSection section={section} setSection={() => {}} />
+      <ColumnSection section={section} setSection={() => { }} />
 
       {cardsList.map((card) => (
         <DraggableCard
@@ -164,12 +165,12 @@ const TaskColumn = (props: ITaskColumn) => {
           status={card.status}
           moveCard={moveCard}
         >
-          {card.milestone ? (
+          {card.type === ENTITIES_TYPES.MILESTONE ? (
             <Milestone>
-              <Task task={card} setTask={() => {}} />
+              <Task task={card} setTask={() => { }} />
             </Milestone>
           ) : (
-            <Task task={card} setTask={() => {}} />
+            <Task task={card} setTask={() => { }} />
           )}
         </DraggableCard>
       ))}

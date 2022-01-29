@@ -51,6 +51,7 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
+  MILESTONE_TYPE,
   TASK_STATUS_TODO,
 } from '../../../utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
@@ -106,6 +107,8 @@ import { LoadMore } from '../KanbanBoard/styles';
 import { CommentList } from '../../Comment';
 import { DAOIcon } from '../../Icons/dao';
 import { OrganisationsCardNoLogo } from '../../profile/about/styles';
+import { MilestoneTaskList } from '../MilestoneTaskList';
+import { MilestoneTaskBreakdown } from '../MilestoneTaskBreakdown';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -344,6 +347,7 @@ export const TaskViewModal = (props) => {
   const [fetchedTaskComments, setFetchedTaskComments] = useState([]);
   const [taskSubmissionLoading, setTaskSubmissionLoading] = useState(!isTaskProposal);
   const [makeSubmission, setMakeSubmission] = useState(false);
+  const isMilestone = task?.type === MILESTONE_TYPE;
 
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
@@ -547,7 +551,7 @@ export const TaskViewModal = (props) => {
         >
           <EditLayoutBaseModal
             open={open}
-            entityType={ENTITIES_TYPES.TASK}
+            entityType={isMilestone ? ENTITIES_TYPES.MILESTONE : ENTITIES_TYPES.TASK}
             handleClose={() => {
               setEditTask(false);
               handleClose();
@@ -628,46 +632,52 @@ export const TaskViewModal = (props) => {
                 <DAOIcon />
               </OrganisationsCardNoLogo>
             )}
-            {fetchedTask?.podName && (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
-              </div>
-            )}
-            {back && (
-              <>
-                <PodNameTypography style={BackToListStyle} onClick={handleClose}>
-                  Back to list
-                </PodNameTypography>
-              </>
-            )}
-            {canEdit && fetchedTask?.status !== TASK_STATUS_DONE && (
-              <TaskActionMenu right="true">
-                <DropDown DropdownHandler={TaskMenuIcon}>
-                  <DropDownItem
-                    key={'task-menu-edit-' + fetchedTask?.id}
-                    onClick={() => setEditTask(true)}
-                    style={dropdownItemStyle}
-                  >
-                    Edit {isTaskProposal ? 'task proposal' : 'task'}
-                  </DropDownItem>
-                  <DropDownItem
-                    key={'task-menu-archive-' + fetchedTask?.id}
-                    onClick={() => {
-                      setArchiveTask(true);
-                    }}
-                    style={dropdownItemStyle}
-                  >
-                    Archive task
-                  </DropDownItem>
-                </DropDown>
-              </TaskActionMenu>
-            )}
-          </TaskModalHeader>
+            {
+              fetchedTask?.podName && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
+                </div>
+              )
+            }
+            {
+              back && (
+                <>
+                  <PodNameTypography style={BackToListStyle} onClick={handleClose}>
+                    Back to list
+                  </PodNameTypography>
+                </>
+              )
+            }
+            {
+              canEdit && fetchedTask?.status !== TASK_STATUS_DONE && (
+                <TaskActionMenu right="true">
+                  <DropDown DropdownHandler={TaskMenuIcon}>
+                    <DropDownItem
+                      key={'task-menu-edit-' + fetchedTask?.id}
+                      onClick={() => setEditTask(true)}
+                      style={dropdownItemStyle}
+                    >
+                      Edit {isTaskProposal ? 'task proposal' : isMilestone ? 'milestone' : 'task'}
+                    </DropDownItem>
+                    <DropDownItem
+                      key={'task-menu-archive-' + fetchedTask?.id}
+                      onClick={() => {
+                        setArchiveTask(true);
+                      }}
+                      style={dropdownItemStyle}
+                    >
+                      Archive {isMilestone ? "milestone" : "task"}
+                    </DropDownItem>
+                  </DropDown>
+                </TaskActionMenu>
+              )
+            }
+          </TaskModalHeader >
           <TaskTitleDiv>
             <GetStatusIcon
               status={fetchedTask?.status}
@@ -685,156 +695,162 @@ export const TaskViewModal = (props) => {
               </TaskDescriptionText>
             </TaskTitleTextDiv>
           </TaskTitleDiv>
-          {!isTaskProposal && (
-            <TaskSectionDisplayDiv>
-              <TaskSectionDisplayLabel>
-                <ReviewerIcon />
-                <TaskSectionDisplayText>Reviewer</TaskSectionDisplayText>
-              </TaskSectionDisplayLabel>
-              {reviewerData?.getTaskReviewers?.length > 0 ? (
-                reviewerData?.getTaskReviewers.map((taskReviewer) => (
-                  <TaskSectionInfoDiv key={taskReviewer?.id}>
-                    {taskReviewer?.profilePicture ? (
-                      <SafeImage style={displayDivProfileImageStyle} src={taskReviewer?.profilePicture} />
-                    ) : (
-                      <DefaultUserImage style={displayDivProfileImageStyle} />
-                    )}
-                    <TaskSectionInfoText>{taskReviewer?.username}</TaskSectionInfoText>
-                  </TaskSectionInfoDiv>
-                ))
-              ) : (
-                <TaskSectionInfoText
-                  style={{
-                    marginTop: '8px',
-                    marginLeft: '16px',
-                  }}
-                >
-                  None
-                </TaskSectionInfoText>
-              )}
-            </TaskSectionDisplayDiv>
-          )}
-          {isTaskProposal && (
-            <TaskSectionDisplayDiv>
-              <TaskSectionDisplayLabel>
-                <ProposerIcon />
-                <TaskSectionDisplayText>Proposer</TaskSectionDisplayText>
-              </TaskSectionDisplayLabel>
-              <TaskSectionInfoDiv key={fetchedTask?.creatorUsername}>
-                {fetchedTask?.creatorUsername && (
-                  <>
-                    {fetchedTask?.creatorProfilePicture ? (
-                      <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.creatorProfilePicture} />
-                    ) : (
-                      <DefaultUserImage style={displayDivProfileImageStyle} />
-                    )}
-                    <TaskSectionInfoText>{fetchedTask?.creatorUsername}</TaskSectionInfoText>
-                  </>
-                )}
-                {!fetchedTask?.creatorUsername && (
+          {
+            !isTaskProposal && (
+              <TaskSectionDisplayDiv>
+                <TaskSectionDisplayLabel>
+                  <ReviewerIcon />
+                  <TaskSectionDisplayText>Reviewer</TaskSectionDisplayText>
+                </TaskSectionDisplayLabel>
+                {reviewerData?.getTaskReviewers?.length > 0 ? (
+                  reviewerData?.getTaskReviewers.map((taskReviewer) => (
+                    <TaskSectionInfoDiv key={taskReviewer?.id}>
+                      {taskReviewer?.profilePicture ? (
+                        <SafeImage style={displayDivProfileImageStyle} src={taskReviewer?.profilePicture} />
+                      ) : (
+                        <DefaultUserImage style={displayDivProfileImageStyle} />
+                      )}
+                      <TaskSectionInfoText>{taskReviewer?.username}</TaskSectionInfoText>
+                    </TaskSectionInfoDiv>
+                  ))
+                ) : (
                   <TaskSectionInfoText
                     style={{
-                      marginLeft: '4px',
                       marginTop: '8px',
+                      marginLeft: '16px',
                     }}
                   >
                     None
                   </TaskSectionInfoText>
                 )}
-              </TaskSectionInfoDiv>
-            </TaskSectionDisplayDiv>
-          )}
-          {!isTaskProposal && (
-            <TaskSectionDisplayDiv>
-              <TaskSectionDisplayLabel>
-                <AssigneeIcon />
-                <TaskSectionDisplayText>Assignee</TaskSectionDisplayText>
-              </TaskSectionDisplayLabel>
-              <TaskSectionInfoDiv key={fetchedTask?.assigneeUsername}>
-                {fetchedTask?.assigneeUsername ? (
-                  <>
-                    {fetchedTask?.assigneeProfilePicture ? (
-                      <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.assigneeProfilePicture} />
-                    ) : (
-                      <DefaultUserImage style={displayDivProfileImageStyle} />
-                    )}
-                    <TaskSectionInfoText>{fetchedTask?.assigneeUsername}</TaskSectionInfoText>
-                  </>
-                ) : (
-                  <>
-                    {canCreate ? (
-                      <>
-                        <TakeTaskButton
-                          onClick={() => {
-                            if (isTaskProposal) {
-                              updateTaskProposalAssignee({
-                                variables: {
-                                  proposalId: fetchedTask?.id,
-                                  assigneeId: user?.id,
-                                },
-                                onCompleted: (data) => {
-                                  const taskProposal = data?.updateTaskProposalAssignee;
-                                  if (board?.setColumns && onCorrectPage) {
-                                    const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
-                                      taskProposal,
-                                      {}
-                                    );
-                                    let columns = [...board?.columns];
-                                    columns = updateProposalItem(transformedTaskProposal, columns);
-                                    board?.setColumns(columns);
-                                  }
-                                },
-                              });
-                            } else {
-                              updateTaskAssignee({
-                                variables: {
-                                  taskId: fetchedTask?.id,
-                                  assigneeId: user?.id,
-                                },
-                                onCompleted: (data) => {
-                                  const task = data?.updateTaskAssignee;
-                                  const transformedTask = transformTaskToTaskCard(task, {});
-                                  if (board?.setColumns && onCorrectPage) {
-                                    let columnNumber = 0;
-                                    if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-                                      columnNumber = 1;
+              </TaskSectionDisplayDiv>
+            )
+          }
+          {
+            isTaskProposal && (
+              <TaskSectionDisplayDiv>
+                <TaskSectionDisplayLabel>
+                  <ProposerIcon />
+                  <TaskSectionDisplayText>Proposer</TaskSectionDisplayText>
+                </TaskSectionDisplayLabel>
+                <TaskSectionInfoDiv key={fetchedTask?.creatorUsername}>
+                  {fetchedTask?.creatorUsername && (
+                    <>
+                      {fetchedTask?.creatorProfilePicture ? (
+                        <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.creatorProfilePicture} />
+                      ) : (
+                        <DefaultUserImage style={displayDivProfileImageStyle} />
+                      )}
+                      <TaskSectionInfoText>{fetchedTask?.creatorUsername}</TaskSectionInfoText>
+                    </>
+                  )}
+                  {!fetchedTask?.creatorUsername && (
+                    <TaskSectionInfoText
+                      style={{
+                        marginLeft: '4px',
+                        marginTop: '8px',
+                      }}
+                    >
+                      None
+                    </TaskSectionInfoText>
+                  )}
+                </TaskSectionInfoDiv>
+              </TaskSectionDisplayDiv>
+            )
+          }
+          {
+            !isTaskProposal && (
+              <TaskSectionDisplayDiv>
+                <TaskSectionDisplayLabel>
+                  <AssigneeIcon />
+                  <TaskSectionDisplayText>Assignee</TaskSectionDisplayText>
+                </TaskSectionDisplayLabel>
+                <TaskSectionInfoDiv key={fetchedTask?.assigneeUsername}>
+                  {fetchedTask?.assigneeUsername ? (
+                    <>
+                      {fetchedTask?.assigneeProfilePicture ? (
+                        <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.assigneeProfilePicture} />
+                      ) : (
+                        <DefaultUserImage style={displayDivProfileImageStyle} />
+                      )}
+                      <TaskSectionInfoText>{fetchedTask?.assigneeUsername}</TaskSectionInfoText>
+                    </>
+                  ) : (
+                    <>
+                      {canCreate ? (
+                        <>
+                          <TakeTaskButton
+                            onClick={() => {
+                              if (isTaskProposal) {
+                                updateTaskProposalAssignee({
+                                  variables: {
+                                    proposalId: fetchedTask?.id,
+                                    assigneeId: user?.id,
+                                  },
+                                  onCompleted: (data) => {
+                                    const taskProposal = data?.updateTaskProposalAssignee;
+                                    if (board?.setColumns && onCorrectPage) {
+                                      const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
+                                        taskProposal,
+                                        {}
+                                      );
+                                      let columns = [...board?.columns];
+                                      columns = updateProposalItem(transformedTaskProposal, columns);
+                                      board?.setColumns(columns);
                                     }
-                                    let columns = [...board?.columns];
-                                    if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-                                      columns = updateInProgressTask(transformedTask, columns);
-                                    } else if (transformedTask.status === TASK_STATUS_TODO) {
-                                      columns = updateTaskItem(transformedTask, columns);
+                                  },
+                                });
+                              } else {
+                                updateTaskAssignee({
+                                  variables: {
+                                    taskId: fetchedTask?.id,
+                                    assigneeId: user?.id,
+                                  },
+                                  onCompleted: (data) => {
+                                    const task = data?.updateTaskAssignee;
+                                    const transformedTask = transformTaskToTaskCard(task, {});
+                                    if (board?.setColumns && onCorrectPage) {
+                                      let columnNumber = 0;
+                                      if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+                                        columnNumber = 1;
+                                      }
+                                      let columns = [...board?.columns];
+                                      if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+                                        columns = updateInProgressTask(transformedTask, columns);
+                                      } else if (transformedTask.status === TASK_STATUS_TODO) {
+                                        columns = updateTaskItem(transformedTask, columns);
+                                      }
+                                      board.setColumns(columns);
                                     }
-                                    board.setColumns(columns);
-                                  }
-                                },
+                                  },
+                                });
+                              }
+                              setFetchedTask({
+                                ...fetchedTask,
+                                assigneeProfilePicture: user?.profilePicture,
+                                assigneeUsername: fetchedTask?.assigneeUsername,
                               });
-                            }
-                            setFetchedTask({
-                              ...fetchedTask,
-                              assigneeProfilePicture: user?.profilePicture,
-                              assigneeUsername: fetchedTask?.assigneeUsername,
-                            });
+                            }}
+                          >
+                            Self-assign this task
+                          </TakeTaskButton>
+                        </>
+                      ) : (
+                        <TaskSectionInfoText
+                          style={{
+                            marginLeft: '4px',
+                            marginTop: '8px',
                           }}
                         >
-                          Self-assign this task
-                        </TakeTaskButton>
-                      </>
-                    ) : (
-                      <TaskSectionInfoText
-                        style={{
-                          marginLeft: '4px',
-                          marginTop: '8px',
-                        }}
-                      >
-                        None
-                      </TaskSectionInfoText>
-                    )}
-                  </>
-                )}
-              </TaskSectionInfoDiv>
-            </TaskSectionDisplayDiv>
-          )}
+                          None
+                        </TaskSectionInfoText>
+                      )}
+                    </>
+                  )}
+                </TaskSectionInfoDiv>
+              </TaskSectionDisplayDiv>
+            )
+          }
           <TaskSectionDisplayDiv>
             <TaskSectionDisplayLabel>
               <ImageIcon />
@@ -870,6 +886,7 @@ export const TaskViewModal = (props) => {
               {fetchedTask?.dueDate ? format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy') : 'None'}
             </TaskSectionInfoText>
           </TaskSectionDisplayDiv>
+          {isMilestone && <MilestoneTaskBreakdown milestoneId={task?.id} open={open} />}
           {isTaskProposal && (
             <CreateFormFooterButtons>
               {fetchedTask?.changeRequestedAt && (
@@ -974,7 +991,7 @@ export const TaskViewModal = (props) => {
                   </TaskTabText>
                 </TaskSubmissionTab>
               )}
-              <TaskSubmissionTab
+              {!isMilestone && <TaskSubmissionTab
                 style={{
                   borderBottom: `2px solid ${!submissionSelected ? '#7427FF' : '#4B4B4B'}`,
                 }}
@@ -987,7 +1004,21 @@ export const TaskViewModal = (props) => {
                 >
                   Discussion
                 </TaskTabText>
-              </TaskSubmissionTab>
+              </TaskSubmissionTab>}
+              {isMilestone && <TaskSubmissionTab
+                style={{
+                  borderBottom: `2px solid ${!submissionSelected ? '#7427FF' : '#4B4B4B'}`,
+                }}
+                onClick={() => setSubmissionSelected(false)}
+              >
+                <TaskTabText
+                  style={{
+                    fontWeight: `${!submissionSelected ? '500' : '400'}`,
+                  }}
+                >
+                  Tasks
+                </TaskTabText>
+              </TaskSubmissionTab>}
             </TaskSectionFooterTitleDiv>
             <TaskSectionContent>
               {submissionSelected && (
@@ -1011,13 +1042,14 @@ export const TaskViewModal = (props) => {
                   setFetchedTaskSubmissions={setFetchedTaskSubmissions}
                 />
               )}
-              {!submissionSelected && (
+              {!submissionSelected && !isMilestone && (
                 <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
               )}
+              {!submissionSelected && isMilestone && <MilestoneTaskList milestoneId={task?.id} open={!submissionSelected} />}
             </TaskSectionContent>
           </TaskModalFooter>
-        </TaskModal>
-      </Modal>
+        </TaskModal >
+      </Modal >
     </>
   );
 };

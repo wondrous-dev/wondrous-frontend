@@ -97,7 +97,7 @@ import {
   transformTaskToTaskCard,
 } from '../../utils/helpers';
 import { GET_ORG_USERS } from '../../graphql/queries/org';
-import { CREATE_TASK } from '../../graphql/mutations/task';
+import { CREATE_TASK, CREATE_MILESTONE } from '../../graphql/mutations/task';
 import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
 import { CREATE_TASK_PROPOSAL } from '../../graphql/mutations/taskProposal';
 import { useMe } from '../Auth/withAuth';
@@ -378,17 +378,19 @@ const CreateLayoutBaseModal = (props) => {
     showHeaderImagePickerSection,
     showMembersSection,
     showPrioritySelectSection,
+    showDueDateSection
   } = useMemo(() => {
     return {
       showDeliverableRequirementsSection: entityType === ENTITIES_TYPES.TASK,
       showBountySwitchSection: entityType === ENTITIES_TYPES.TASK,
-      showAppearSection: entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.MILESTONE,
+      showAppearSection: entityType === ENTITIES_TYPES.TASK,
       showLinkAttachmentSection: entityType === ENTITIES_TYPES.POD,
       // TODO: add back in entityType === ENTITIES_TYPES.POD
       showHeaderImagePickerSection: false,
       // TODO: add back in entityType === ENTITIES_TYPES.POD
       showMembersSection: false,
       showPrioritySelectSection: entityType === ENTITIES_TYPES.MILESTONE,
+      showDueDateSection: entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.MILESTONE
     };
   }, [entityType]);
 
@@ -530,6 +532,25 @@ const CreateLayoutBaseModal = (props) => {
     refetchQueries: ['getOrgById'],
   });
 
+  const [createMilestone] = useMutation(CREATE_MILESTONE, {
+    onCompleted: (data) => {
+      const task = data?.createMilestone;
+      const justCreatedPod = getPodObject();
+      if (board?.setColumns && task?.orgId === board?.orgId) {
+        const transformedTask = transformTaskToTaskCard(task, {
+          orgName: board?.org?.name,
+          orgProfilePicture: board?.org?.profilePicture,
+          podName: justCreatedPod?.name,
+        });
+
+        const columns = [...board?.columns];
+        columns[0].tasks = [transformedTask, ...columns[0].tasks];
+        board.setColumns(columns);
+      }
+      handleClose();
+    }
+  })
+
   const submitMutation = useCallback(() => {
     switch (entityType) {
       case ENTITIES_TYPES.TASK:
@@ -542,13 +563,13 @@ const CreateLayoutBaseModal = (props) => {
           dueDate,
           ...(rewardsAmount &&
             rewardsCurrency && {
-              rewards: [
-                {
-                  rewardAmount: parseFloat(rewardsAmount),
-                  paymentMethodId: rewardsCurrency,
-                },
-              ],
-            }),
+            rewards: [
+              {
+                rewardAmount: parseFloat(rewardsAmount),
+                paymentMethodId: rewardsCurrency,
+              },
+            ],
+          }),
           // TODO: add links?,
           ...(canCreateTask && {
             assigneeId: assignee?.value,
@@ -625,6 +646,23 @@ const CreateLayoutBaseModal = (props) => {
           });
         }
         break;
+      case ENTITIES_TYPES.MILESTONE:
+        const milestoneInput = {
+          title,
+          description: descriptionText,
+          orgId: org,
+          podId: pod,
+          mediaUploads,
+          dueDate
+        };
+        if (canCreateTask) {
+          createMilestone({
+            variables: {
+              input: milestoneInput,
+            },
+          });
+        }
+        break;
     }
   }, [
     title,
@@ -646,6 +684,7 @@ const CreateLayoutBaseModal = (props) => {
     canCreatePod,
     rewardsAmount,
     rewardsCurrency,
+    createMilestone
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
@@ -1029,7 +1068,7 @@ const CreateLayoutBaseModal = (props) => {
         </CreateFormAddDetailsButton> */}
         {addDetails && (
           <CreateFormAddDetailsAppearBlock>
-            {showAppearSection && (
+            {showDueDateSection && (
               <CreateFormAddDetailsAppearBlockContainer>
                 <CreateFormAddDetailsSelects>
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -1123,10 +1162,10 @@ const CreateLayoutBaseModal = (props) => {
             style={{
               ...(isPod &&
                 !canCreatePod && {
-                  background: Grey700,
-                  border: `1px solid ${Grey700}`,
-                  cursor: 'default',
-                }),
+                background: Grey700,
+                border: `1px solid ${Grey700}`,
+                cursor: 'default',
+              }),
             }}
             onClick={submitMutation}
           >

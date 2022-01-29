@@ -122,3 +122,12 @@ export const GET_AUTOCOMPLETE_USERS = gql`
 		}
 	}
 `
+
+export const GET_USER = gql`
+	query getUser($userId: ID!) {
+		getUser(userId: $userId) {
+			...UserProfile
+		}
+	}
+	${ProfileUserFragment}
+`

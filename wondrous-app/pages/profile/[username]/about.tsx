@@ -49,7 +49,7 @@ const AboutPage = () => {
         setUserOrgsData(orgs)
         setUserPodsData(pods)
         setUserCompletedTaskCount(tasksCompletedCount)
-        setUserCompletedTasks(tasksCompleted)  
+        setUserCompletedTasks(tasksCompleted)
       }
     },
   });
@@ -95,7 +95,7 @@ const AboutPage = () => {
     }
   }, [username, userId, userProfileData, getUser, getUserFromUsername, getUserAboutPageData]);
 
-  return <About userProfileData={userProfileData} loggedInUser={loggedInUser} userOrgsData={userOrgsData} userPodsData={userPodsData} userCompletedTasks={userCompletedTasks} tasksCompletedCount={userCompletedTaskCount}/>;
+  return <About userProfileData={userProfileData} loggedInUser={loggedInUser} userOrgsData={userOrgsData} userPodsData={userPodsData} userCompletedTasks={userCompletedTasks} tasksCompletedCount={userCompletedTaskCount} />;
 };
 
 export default withAuth(AboutPage);
