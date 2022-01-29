@@ -374,6 +374,7 @@ const EditLayoutBaseModal = (props) => {
     showHeaderImagePickerSection,
     showMembersSection,
     showPrioritySelectSection,
+    showDueDateSection
   } = useMemo(() => {
     return {
       showDeliverableRequirementsSection: entityType === ENTITIES_TYPES.TASK,
@@ -383,6 +384,7 @@ const EditLayoutBaseModal = (props) => {
       showHeaderImagePickerSection: entityType === ENTITIES_TYPES.POD,
       showMembersSection: entityType === ENTITIES_TYPES.POD,
       showPrioritySelectSection: entityType === ENTITIES_TYPES.MILESTONE,
+      showDueDateSection: entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.MILESTONE
     };
   }, [entityType]);
 
@@ -1006,7 +1008,7 @@ const EditLayoutBaseModal = (props) => {
         </CreateFormAddDetailsButton> */}
         {addDetails && (
           <CreateFormAddDetailsAppearBlock>
-            {showAppearSection && (
+            {showDueDateSection && (
               <CreateFormAddDetailsAppearBlockContainer>
                 <CreateFormAddDetailsSelects>
                   <LocalizationProvider dateAdapter={AdapterDateFns}>

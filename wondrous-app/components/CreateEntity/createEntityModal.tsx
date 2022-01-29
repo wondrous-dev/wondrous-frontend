@@ -378,6 +378,7 @@ const CreateLayoutBaseModal = (props) => {
     showHeaderImagePickerSection,
     showMembersSection,
     showPrioritySelectSection,
+    showDueDateSection
   } = useMemo(() => {
     return {
       showDeliverableRequirementsSection: entityType === ENTITIES_TYPES.TASK,
@@ -389,6 +390,7 @@ const CreateLayoutBaseModal = (props) => {
       // TODO: add back in entityType === ENTITIES_TYPES.POD
       showMembersSection: false,
       showPrioritySelectSection: entityType === ENTITIES_TYPES.MILESTONE,
+      showDueDateSection: entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.MILESTONE
     };
   }, [entityType]);
 
@@ -651,6 +653,7 @@ const CreateLayoutBaseModal = (props) => {
           orgId: org,
           podId: pod,
           mediaUploads,
+          dueDate
         };
         if (canCreateTask) {
           createMilestone({
@@ -1065,7 +1068,7 @@ const CreateLayoutBaseModal = (props) => {
         </CreateFormAddDetailsButton> */}
         {addDetails && (
           <CreateFormAddDetailsAppearBlock>
-            {showAppearSection && (
+            {showDueDateSection && (
               <CreateFormAddDetailsAppearBlockContainer>
                 <CreateFormAddDetailsSelects>
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
