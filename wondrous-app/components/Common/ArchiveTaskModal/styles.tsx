@@ -74,8 +74,8 @@ export const StyledBody = styled(Typography)`
 export const StyledButtonsContainer = styled.div`
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin: 23px 24px 0 188px;
+    justify-content: flex-end;
+    margin: 23px 24px 0;
 `
 
 export const StyledCancelButton = styled(Button)`
@@ -100,8 +100,7 @@ export const StyledArchiveTaskButton = styled(ButtonComponent)`
     && {
         background: linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%);
         min-height: 0;
-        min-width: 0;
-        width: 144px;
+        min-width: 144px;
         height: 40px;
         display: flex;
         padding: 4px 2px;
@@ -111,9 +110,10 @@ export const StyledArchiveTaskButton = styled(ButtonComponent)`
         color: #FFFFFF;
         opacity: 0.8;
         transition: opacity 0.25s;
+        margin-left: 12px;
 
         button {
-            padding: 4px 6px;
+            padding: 4px 8px;
             background: rgba(20, 20, 20, 1);
             font-size: 15px;
             display: flex;
