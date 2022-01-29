@@ -249,6 +249,7 @@ export const Task = ({ task, setTask }) => {
         open={archiveTask}
         onClose={() => setArchiveTask(false)}
         onArchive={handleNewStatus}
+        isMilestone={isMilestone}
       />
       <TaskViewModal
         open={modalOpen}
