@@ -165,7 +165,13 @@ const TaskColumn = (props: ITaskColumn) => {
           status={card.status}
           moveCard={moveCard}
         >
-          <Task task={card} setTask={() => { }} />
+          {card.type === ENTITIES_TYPES.MILESTONE ? (
+            <Milestone>
+              <Task task={card} setTask={() => { }} />
+            </Milestone>
+          ) : (
+            <Task task={card} setTask={() => { }} />
+          )}
         </DraggableCard>
       ))}
       {
