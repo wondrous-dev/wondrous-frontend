@@ -1,4 +1,6 @@
-import { TASK_STATUS_DONE, TASK_STATUS_IN_PROGRESS, TASK_STATUS_TODO } from '../../utils/constants';
+import React, { useState } from 'react';
+
+import { ENTITIES_TYPES, TASK_STATUS_DONE, TASK_STATUS_IN_PROGRESS, TASK_STATUS_TODO } from '../../utils/constants';
 import { groupBy, shrinkNumber } from '../../utils/helpers';
 import { AvatarList } from '../Common/AvatarList';
 import { DropDown, DropDownItem } from '../Common/dropdown';
@@ -27,6 +29,12 @@ import {
   TaskDescription,
   TaskTitle,
 } from './styles';
+import { TaskViewModal } from '../Common/Task/modal';
+import { delQuery } from '../../utils';
+import { useRouter } from 'next/router';
+import * as Constants from '../../utils/constants';
+import { CreateModalOverlay } from '../CreateEntity/styles';
+import EditLayoutBaseModal from '../CreateEntity/editEntityModal';
 
 const STATUS_ICONS = {
   [TASK_STATUS_TODO]: <TodoWithBorder />,
@@ -41,11 +49,44 @@ const DELIVERABLES_ICONS = {
   video: <PlayIcon />,
 };
 
+let windowOffset = 0;
 export const Table = (props) => {
   const { tasks } = props;
-
+  const router = useRouter();
+  const [openedTask, setOpenedTask] = useState(null);
+  const [editableTask, setEditableTask] = useState(null);
+  const [archivedTask, setArchivedTask] = useState(false);
   return (
     <StyledTableContainer>
+      {openedTask ? <TaskViewModal open={true} handleClose={() => setOpenedTask(null)} task={openedTask} /> : null}
+
+      {editableTask ? (
+        <CreateModalOverlay
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+          open={open}
+          onClose={() => {
+            setEditableTask(false);
+          }}
+        >
+          <EditLayoutBaseModal
+            open={open}
+            entityType={ENTITIES_TYPES.TASK}
+            handleClose={() => {
+              setEditableTask(false);
+            }}
+            cancelEdit={() => setEditableTask(false)}
+            existingTask={
+              editableTask //&& {
+               // ...editTask,
+                // reviewers: reviewerData?.getTaskReviewers || [],
+             // }
+            }
+            isTaskProposal={editableTask.type === Constants.TASK_STATUS_REQUESTED}
+          />
+        </CreateModalOverlay>
+      ) : null}
+
       <StyledTable>
         <StyledTableHead>
           <StyledTableRow>
@@ -72,9 +113,14 @@ export const Table = (props) => {
 
         <StyledTableBody>
           {tasks.map((task, index) => (
-            <StyledTableRow key={index}>
+            <StyledTableRow key={index} onClick={() => setOpenedTask(task)}>
               <StyledTableCell align="center">
-                <WonderCoin />
+                {task.orgProfilePicture ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={task.orgProfilePicture} alt={task.orgName} width={17} height={17} />
+                ) : (
+                  <WonderCoin />
+                )}
               </StyledTableCell>
               <StyledTableCell align="center">
                 <AvatarList align="center" users={task.users} />
@@ -112,7 +158,7 @@ export const Table = (props) => {
                   <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
                     <DropDownItem
                       key={'task-menu-edit-' + task.id}
-                      onClick={() => null}
+                      onClick={() => setEditableTask(task)}
                       color="#C4C4C4"
                       fontSize="13px"
                       fontWeight="normal"
@@ -121,7 +167,9 @@ export const Table = (props) => {
                     </DropDownItem>
                     <DropDownItem
                       key={'task-menu-report-' + task.id}
-                      onClick={() => null}
+                      onClick={() => {
+                        setArchivedTask(task);
+                      }}
                       color="#C4C4C4"
                       fontSize="13px"
                       fontWeight="normal"
