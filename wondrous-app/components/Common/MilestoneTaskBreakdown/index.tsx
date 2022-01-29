@@ -9,10 +9,10 @@ import { StyledBox, StyledBoxWrapper } from './styles'
 
 export const TASK_ICONS_LABELS = {
     [Constants.TASK_STATUS_TODO]: { icon: ToDo, label: 'To Do' },
-    [Constants.TASK_STATUS_IN_PROGRESS]: { icon: InProgress, label: 'In Progress' },
-    [Constants.TASK_STATUS_IN_REVIEW]: { icon: InReview, label: 'In Review' },
+    "inProgress": { icon: InProgress, label: 'In Progress' },
+    "inReview": { icon: InReview, label: 'In Review' },
     [Constants.TASK_STATUS_DONE]: { icon: Done, label: 'Done' },
-    [Constants.TASK_STATUS_AWAITING_PAYMENT]: { icon: AwaitingPayment, label: 'Awaiting Payment' },
+    "awaitingPayment": { icon: AwaitingPayment, label: 'Awaiting Payment' },
     [Constants.TASK_STATUS_ARCHIVED]: { icon: ArchivedIcon, label: 'Archived' }
 }
 

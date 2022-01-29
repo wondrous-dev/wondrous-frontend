@@ -91,9 +91,10 @@ export const GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE = gql`
   query getPerStatusTaskCountForMilestone($milestoneId: ID!) {
   getPerStatusTaskCountForMilestone(milestoneId: $milestoneId) {
     created
-    archived
-    in_progress
-    completed
-    in_review
+		inProgress
+		completed
+		inReview
+		archived
+		awaitingPayment
 }}
 `
