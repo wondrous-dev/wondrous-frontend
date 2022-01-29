@@ -103,6 +103,7 @@ export const Task = ({ task, setTask }) => {
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   let TaskIcon = TASK_ICONS[status];
+  const isMilestone = type === Constants.ENTITIES_TYPES.MILESTONE;
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
     refetchQueries: () => [
@@ -255,9 +256,13 @@ export const Task = ({ task, setTask }) => {
                 borderRadius: '4px',
               }}
             />
+            {isMilestone && <MilestoneIcon />}
             <AvatarList style={{ marginLeft: '12px' }} users={userList} id={'task-' + task?.id} />
             {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
           </TaskHeader>
+          <MilestoneLaunchedBy type={type} router={router} createdBy={createdBy} />
+          {isMilestone && <MilestoneSeparator />}
+
           <TaskContent>
             <TaskTitle>{title}</TaskTitle>
             <p>
@@ -277,9 +282,7 @@ export const Task = ({ task, setTask }) => {
                 <PodName>{task?.podName}</PodName>
               </PodWrapper>
             )}
-            <MilestoneProgressWrapper>
-              {type === Constants.ENTITIES_TYPES.MILESTONE && <MilestoneProgress milestoneId={id} />}
-            </MilestoneProgressWrapper>
+            <MilestoneProgressWrapper>{isMilestone && <MilestoneProgress milestoneId={id} />}</MilestoneProgressWrapper>
             {media?.length > 0 ? <TaskMedia media={media[0]} /> : <TaskSeparator />}
           </TaskContent>
           <TaskFooter>
@@ -308,7 +311,7 @@ export const Task = ({ task, setTask }) => {
                       color: White,
                     }}
                   >
-                    Archive task
+                    Archive {isMilestone ? 'milestone' : 'task'}
                   </DropDownItem>
                 </DropDown>
               </TaskActionMenu>
