@@ -13,6 +13,7 @@ import {
   PERMISSIONS,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   TASK_STATUS_IN_PROGRESS,
+  TASK_STATUS_TODO
 } from '../../utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
@@ -114,6 +115,7 @@ import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './createEnt
 import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment';
 import { ErrorText } from '../Common';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
+import { updateInProgressTask, updateTaskItem } from '../../utils/board';
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -505,21 +507,15 @@ const EditLayoutBaseModal = (props) => {
 
   const [updateMilestone] = useMutation(UPDATE_MILESTONE, {
     onCompleted: (data) => {
-      console.log("data ==>", data)
       const milestone = data?.updateMilestone;
       if (board?.setColumns && onCorrectPage) {
         const transformedTask = transformTaskToTaskCard(milestone, {});
-        let columnNumber = 0;
-        if (milestone.status === TASK_STATUS_IN_PROGRESS) {
-          columnNumber = 1;
+        let columns = [...board?.columns];
+        if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+          columns = updateInProgressTask(transformedTask, columns);
+        } else if (transformedTask.status === TASK_STATUS_TODO) {
+          columns = updateTaskItem(transformedTask, columns);
         }
-        const columns = [...board?.columns];
-        columns[columnNumber].tasks = columns[columnNumber].tasks.map((existingTask) => {
-          if (transformedTask?.id === existingTask?.id) {
-            return transformedTask;
-          }
-          return existingTask;
-        });
         board.setColumns(columns);
       }
       handleClose();
