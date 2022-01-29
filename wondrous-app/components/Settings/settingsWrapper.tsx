@@ -95,7 +95,7 @@ export const SettingsWrapper = (props) => {
   const { children } = props;
 
   const router = useRouter();
-  const user = useMe()
+  const user = useMe();
 
   const { pathname } = router;
   const { orgId, podId } = router.query;
@@ -111,7 +111,7 @@ export const SettingsWrapper = (props) => {
   const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
   const [getPodById, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
 
-  const org = orgData?.getOrgById;
+  const org = orgData?.getOrgById || podData?.getPodById?.orgId;
   const pod = podData?.getPodById;
 
   const PROFILE_SIDEBAR_LIST_ITEMS = [
@@ -121,7 +121,7 @@ export const SettingsWrapper = (props) => {
       value: 'general',
       href: `/profile/settings`,
     },
-  ]
+  ];
 
   const SETTINGS_SIDEBAR_LIST_ITEMS = [
     {
@@ -185,6 +185,7 @@ export const SettingsWrapper = (props) => {
       router.push(`/organization/${org?.username}/boards`);
     }
   }
+
   return (
     <>
       <SettingsBoardContext.Provider
@@ -218,38 +219,41 @@ export const SettingsWrapper = (props) => {
                 <SettingsSidebarTabsSectionLabel>Settings Overview</SettingsSidebarTabsSectionLabel>
                 <SettingsSidebarTabsListContainer>
                   <List>
-                    {(orgData || podData) && SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
-                      const { href, icon, label } = item;
+                    {(orgData || podData) &&
+                      SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
+                        const { href, icon, label } = item;
 
-                      const active = pathname === href;
+                        const active = pathname === href;
 
-                      return (
-                        <Link key={href} href={href}>
-                          <SettingsSidebarTabsListItemButtonWrapper active={active}>
-                            <SettingsSidebarTabsListItemButton selected={active}>
-                              <SettingsSidebarTabsListItemIcon>{icon}</SettingsSidebarTabsListItemIcon>
-                              <SettingsSidebarTabsListItemText>{label}</SettingsSidebarTabsListItemText>
-                            </SettingsSidebarTabsListItemButton>
-                          </SettingsSidebarTabsListItemButtonWrapper>
-                        </Link>
-                      );
-                    })}
-                    {(!orgData && !podData) && PROFILE_SIDEBAR_LIST_ITEMS.map((item) => {
-                      const { href, icon, label } = item;
+                        return (
+                          <Link key={href} href={href}>
+                            <SettingsSidebarTabsListItemButtonWrapper active={active}>
+                              <SettingsSidebarTabsListItemButton selected={active}>
+                                <SettingsSidebarTabsListItemIcon>{icon}</SettingsSidebarTabsListItemIcon>
+                                <SettingsSidebarTabsListItemText>{label}</SettingsSidebarTabsListItemText>
+                              </SettingsSidebarTabsListItemButton>
+                            </SettingsSidebarTabsListItemButtonWrapper>
+                          </Link>
+                        );
+                      })}
+                    {!orgData &&
+                      !podData &&
+                      PROFILE_SIDEBAR_LIST_ITEMS.map((item) => {
+                        const { href, icon, label } = item;
 
-                      const active = pathname === href;
+                        const active = pathname === href;
 
-                      return (
-                        <Link key={href} href={href}>
-                          <SettingsSidebarTabsListItemButtonWrapper active={active}>
-                            <SettingsSidebarTabsListItemButton selected={active}>
-                              <SettingsSidebarTabsListItemIcon>{icon}</SettingsSidebarTabsListItemIcon>
-                              <SettingsSidebarTabsListItemText>{label}</SettingsSidebarTabsListItemText>
-                            </SettingsSidebarTabsListItemButton>
-                          </SettingsSidebarTabsListItemButtonWrapper>
-                        </Link>
-                      );
-                    })}
+                        return (
+                          <Link key={href} href={href}>
+                            <SettingsSidebarTabsListItemButtonWrapper active={active}>
+                              <SettingsSidebarTabsListItemButton selected={active}>
+                                <SettingsSidebarTabsListItemIcon>{icon}</SettingsSidebarTabsListItemIcon>
+                                <SettingsSidebarTabsListItemText>{label}</SettingsSidebarTabsListItemText>
+                              </SettingsSidebarTabsListItemButton>
+                            </SettingsSidebarTabsListItemButtonWrapper>
+                          </Link>
+                        );
+                      })}
                   </List>
                   {/* <SettingsSidebarLogoutButton>
                     <SettingsSidebarLogoutButtonIcon />

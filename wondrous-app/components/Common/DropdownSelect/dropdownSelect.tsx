@@ -27,7 +27,7 @@ const MenuProps = {
 };
 
 const DropdownSelect = (props) => {
-  const { title, labelText, labelIcon, options, name, value, setValue, formSelectStyle, disabled } = props;
+  const { title, labelText, labelIcon, options, name, value, setValue, formSelectStyle, disabled, titleStyle } = props;
 
   const handleChange = (event) => {
     setValue(event.target.value);
@@ -35,7 +35,7 @@ const DropdownSelect = (props) => {
 
   return (
     <CreateFormSelectBlock style={formSelectStyle}>
-      <CreateFormSelectBlockTitle>{title}</CreateFormSelectBlockTitle>
+      <CreateFormSelectBlockTitle style={titleStyle}>{title}</CreateFormSelectBlockTitle>
       <FormControl>
         {!value && (
           <CreateFormInputLabel id={`select-label-${name}`} shrink={false}>
