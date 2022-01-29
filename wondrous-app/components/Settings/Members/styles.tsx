@@ -9,6 +9,10 @@ export const UserInfoDiv = styled.div`
   align-items: center;
 `;
 
+export const InviteDiv = styled.div`
+  display: flex;
+  margin-top: 20px;
+`;
 const ProfilePictureStyles = {
   marginRight: '16px',
   width: '32px',

@@ -289,6 +289,19 @@ export const filterPaymentMethods = (paymentMethods) => {
     };
   });
 };
+
+export const filterOrgUsers = (orgUsers) => {
+  if (!orgUsers) {
+    return [];
+  }
+
+  return orgUsers.map((orgUser) => ({
+    profilePicture: orgUser?.user?.profilePicture,
+    label: orgUser?.user?.username,
+    value: orgUser?.user?.id,
+  }));
+};
+
 const CreateLayoutBaseModal = (props) => {
   const { entityType, handleClose, resetEntityType, open } = props;
   const user = useMe();
@@ -406,17 +419,6 @@ const CreateLayoutBaseModal = (props) => {
     }));
   }, []);
 
-  const filterOrgUsers = useCallback((orgUsers) => {
-    if (!orgUsers) {
-      return [];
-    }
-
-    return orgUsers.map((orgUser) => ({
-      profilePicture: orgUser?.user?.profilePicture,
-      label: orgUser?.user?.username,
-      value: orgUser?.user?.id,
-    }));
-  }, []);
   const fetchedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
