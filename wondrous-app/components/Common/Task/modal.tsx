@@ -887,87 +887,92 @@ export const TaskViewModal = (props) => {
             </TaskSectionInfoText>
           </TaskSectionDisplayDiv>
           {isMilestone && <MilestoneTaskBreakdown milestoneId={task?.id} open={open} />}
-          {
-            isTaskProposal && (
-              <CreateFormFooterButtons>
-                {fetchedTask?.changeRequestedAt && (
-                  <>
-                    <div style={flexDivStyle}>
-                      <RejectIcon style={rejectIconStyle} />
-                      <TaskStatusHeaderText>Change requested</TaskStatusHeaderText>
-                    </div>
-                    <div
-                      style={{
-                        flex: 1,
-                      }}
-                    />
-                  </>
-                )}
-                {fetchedTask?.approvedAt && (
-                  <>
-                    <div style={flexDivStyle}>
-                      <CompletedIcon style={rejectIconStyle} />
-                      <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
-                    </div>
-                    <div
-                      style={{
-                        flex: 1,
-                      }}
-                    />
-                  </>
-                )}
-                {canApproveProposal && !fetchedTask?.approvedAt && (
-                  <CreateFormButtonsBlock>
-                    <CreateFormCancelButton
-                      onClick={() => {
-                        requestChangeTaskProposal({
-                          variables: {
-                            proposalId: fetchedTask?.id,
-                          },
-                          onCompleted: () => {
-                            let columns = [...board?.columns];
-                            // Move from proposal to task
-                            columns = updateProposalItem(
-                              {
-                                ...fetchedTask,
-                                changeRequestedAt: new Date(),
-                              },
-                              columns
-                            );
-                            board?.setColumns(columns);
-                          },
-                          refetchQueries: ['GetOrgTaskBoardProposals'],
-                        });
-                      }}
-                    >
-                      Request changes
-                    </CreateFormCancelButton>
-                    <CreateFormPreviewButton
-                      onClick={() => {
-                        approveTaskProposal({
-                          variables: {
-                            proposalId: fetchedTask?.id,
-                          },
-                          onCompleted: () => {
-                            let columns = [...board?.columns];
-                            // Move from proposal to task
-                            columns = removeProposalItem(fetchedTask?.id, columns);
-                            columns = addTaskItem(fetchedTask, columns);
-                            board?.setColumns(columns);
-                            document.body.setAttribute('style', `position: relative;`);
-                            handleClose();
-                          },
-                          refetchQueries: ['GetOrgTaskBoardProposals', 'getPerStatusTaskCountForOrgBoard'],
-                        });
-                      }}
-                    >
-                      Approve
-                    </CreateFormPreviewButton>
-                  </CreateFormButtonsBlock>
-                )}
-              </CreateFormFooterButtons>
-            )
-          }
+          {isTaskProposal && (
+            <CreateFormFooterButtons>
+              {fetchedTask?.changeRequestedAt && (
+                <>
+                  <div style={flexDivStyle}>
+                    <RejectIcon style={rejectIconStyle} />
+                    <TaskStatusHeaderText>Change requested</TaskStatusHeaderText>
+                  </div>
+                  <div
+                    style={{
+                      flex: 1,
+                    }}
+                  />
+                </>
+              )}
+              {fetchedTask?.approvedAt && (
+                <>
+                  <div style={flexDivStyle}>
+                    <CompletedIcon style={rejectIconStyle} />
+                    <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
+                  </div>
+                  <div
+                    style={{
+                      flex: 1,
+                    }}
+                  />
+                </>
+              )}
+              {canApproveProposal && !fetchedTask?.approvedAt && (
+                <CreateFormButtonsBlock>
+                  <CreateFormCancelButton
+                    onClick={() => {
+                      requestChangeTaskProposal({
+                        variables: {
+                          proposalId: fetchedTask?.id,
+                        },
+                        onCompleted: () => {
+                          let columns = [...board?.columns];
+                          // Move from proposal to task
+                          columns = updateProposalItem(
+                            {
+                              ...fetchedTask,
+                              changeRequestedAt: new Date(),
+                            },
+                            columns
+                          );
+                          board?.setColumns(columns);
+                        },
+                        refetchQueries: ['GetOrgTaskBoardProposals'],
+                      });
+                    }}
+                  >
+                    Request changes
+                  </CreateFormCancelButton>
+                  <CreateFormPreviewButton
+                    onClick={() => {
+                      approveTaskProposal({
+                        variables: {
+                          proposalId: fetchedTask?.id,
+                        },
+                        onCompleted: (data) => {
+                          const taskProposal = data?.approveTaskProposal;
+                          let columns = [...board?.columns];
+                          // Move from proposal to task
+                          columns = removeProposalItem(fetchedTask?.id, columns);
+                          columns = addTaskItem(
+                            {
+                              ...fetchedTask,
+                              id: taskProposal?.associatedTaskId,
+                            },
+                            columns
+                          );
+                          board?.setColumns(columns);
+                          document.body.setAttribute('style', `position: relative;`);
+                          handleClose();
+                        },
+                        refetchQueries: ['GetOrgTaskBoardProposals', 'getPerStatusTaskCountForOrgBoard'],
+                      });
+                    }}
+                  >
+                    Approve
+                  </CreateFormPreviewButton>
+                </CreateFormButtonsBlock>
+              )}
+            </CreateFormFooterButtons>
+          )}
           <TaskModalFooter>
             <TaskSectionFooterTitleDiv>
               {!isTaskProposal && (
