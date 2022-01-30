@@ -745,6 +745,10 @@ export const TaskViewModal = (props) => {
     // console.log('canEdit', canEdit);
     // console.log('can Review', canReview);
   }
+  const canArchive =
+    permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
+    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    task?.createdBy === user?.id;
   const displayDivProfileImageStyle = {
     width: '26px',
     height: '26px',
@@ -838,22 +842,26 @@ export const TaskViewModal = (props) => {
               {canEdit && fetchedTask?.status !== TASK_STATUS_DONE && (
                 <TaskActionMenu right="true">
                   <DropDown DropdownHandler={TaskMenuIcon}>
-                    <DropDownItem
-                      key={'task-menu-edit-' + fetchedTask?.id}
-                      onClick={() => setEditTask(true)}
-                      style={dropdownItemStyle}
-                    >
-                      Edit {taskType}
-                    </DropDownItem>
-                    <DropDownItem
-                      key={'task-menu-archive-' + fetchedTask?.id}
-                      onClick={() => {
-                        setArchiveTask(true);
-                      }}
-                      style={dropdownItemStyle}
-                    >
-                      {isTaskProposal ? 'Delete task proposal' : `Archive ${taskType}`}
-                    </DropDownItem>
+                    {canEdit && (
+                      <DropDownItem
+                        key={'task-menu-edit-' + fetchedTask?.id}
+                        onClick={() => setEditTask(true)}
+                        style={dropdownItemStyle}
+                      >
+                        Edit {taskType}
+                      </DropDownItem>
+                    )}
+                    {canArchive && (
+                      <DropDownItem
+                        key={'task-menu-archive-' + fetchedTask?.id}
+                        onClick={() => {
+                          setArchiveTask(true);
+                        }}
+                        style={dropdownItemStyle}
+                      >
+                        Archive {taskType}
+                      </DropDownItem>
+                    )}
                   </DropDown>
                 </TaskActionMenu>
               )}
