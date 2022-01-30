@@ -31,8 +31,8 @@ export const UPDATE_TASK_PROPOSAL_ASSIGNEE = gql`
 `;
 
 export const DELETE_TASK_PROPOSAL = gql`
-  mutation deleteProposal($proposalId: ID!) {
-    deleteTaskProposal(proposalId: $proposalId) {
+  mutation deleteProposal($taskId: String!) {
+    deleteTaskProposal(taskId: $taskId) {
       success
     }
   }
