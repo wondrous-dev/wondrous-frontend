@@ -611,9 +611,12 @@ export const TaskViewModal = (props) => {
 
   const onCorrectPage =
     fetchedTask?.orgId === board?.orgId || fetchedTask?.podId === board?.podId || fetchedTask?.userId === board?.userId;
+
+  const taskType = isTaskProposal ? 'task proposal' : isMilestone ? 'milestone' : 'task'
+
   return (
     <>
-      <ArchiveTaskModal open={archiveTask} onClose={() => setArchiveTask(false)} onArchive={handleNewStatus} />
+      <ArchiveTaskModal open={archiveTask} onClose={() => setArchiveTask(false)} onArchive={handleNewStatus} taskType={taskType} />
       <Modal open={open} onClose={handleClose}>
         <TaskModal>
           <TaskModalHeader>
@@ -662,7 +665,7 @@ export const TaskViewModal = (props) => {
                       onClick={() => setEditTask(true)}
                       style={dropdownItemStyle}
                     >
-                      Edit {isTaskProposal ? 'task proposal' : isMilestone ? 'milestone' : 'task'}
+                      Edit {taskType}
                     </DropDownItem>
                     <DropDownItem
                       key={'task-menu-archive-' + fetchedTask?.id}
@@ -671,7 +674,7 @@ export const TaskViewModal = (props) => {
                       }}
                       style={dropdownItemStyle}
                     >
-                      Archive {isMilestone ? "milestone" : "task"}
+                      Archive {taskType}
                     </DropDownItem>
                   </DropDown>
                 </TaskActionMenu>
