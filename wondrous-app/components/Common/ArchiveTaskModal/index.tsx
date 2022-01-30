@@ -15,14 +15,12 @@ import {
 } from './styles'
 
 export const ArchiveTaskModal = (props) => {
-    const { open, onClose, onArchive, isMilestone } = props
+    const { open, onClose, onArchive, taskType } = props
 
     const handleArchive = () => {
         onArchive(TASK_STATUS_ARCHIVED);
         onClose();
     }
-
-    const taskType = isMilestone ? "milestone" : "task"
 
     return (
         <>
@@ -40,7 +38,7 @@ export const ArchiveTaskModal = (props) => {
                         Archive this {taskType}?
                     </StyledHeader>
                     <StyledBody>
-                        You can undo this in the archived {taskType}s in the board.
+                        You can undo this in the archived section in the board.
                     </StyledBody>
                     <StyledDivider />
                     <StyledButtonsContainer>

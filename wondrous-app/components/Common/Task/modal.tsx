@@ -759,7 +759,7 @@ export const TaskViewModal = (props) => {
 
   const onCorrectPage =
     fetchedTask?.orgId === board?.orgId || fetchedTask?.podId === board?.podId || fetchedTask?.userId === board?.userId;
-  console.log('fetchedTask', fetchedTask);
+  const taskType = isTaskProposal ? 'task proposal' : isMilestone ? 'milestone' : 'task';
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -830,19 +830,17 @@ export const TaskViewModal = (props) => {
                       onClick={() => setEditTask(true)}
                       style={dropdownItemStyle}
                     >
-                      Edit {isTaskProposal ? 'task proposal' : isMilestone ? 'milestone' : 'task'}
+                      Edit {taskType}
                     </DropDownItem>
-                    {!isTaskProposal && (
-                      <DropDownItem
-                        key={'task-menu-archive-' + fetchedTask?.id}
-                        onClick={() => {
-                          setArchiveTask(true);
-                        }}
-                        style={dropdownItemStyle}
-                      >
-                        Archive {isMilestone ? 'milestone' : 'task'}
-                      </DropDownItem>
-                    )}
+                    <DropDownItem
+                      key={'task-menu-archive-' + fetchedTask?.id}
+                      onClick={() => {
+                        setArchiveTask(true);
+                      }}
+                      style={dropdownItemStyle}
+                    >
+                      Archive {taskType}
+                    </DropDownItem>
                   </DropDown>
                 </TaskActionMenu>
               )}
