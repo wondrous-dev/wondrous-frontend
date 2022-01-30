@@ -53,6 +53,7 @@ import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
   MILESTONE_TYPE,
+  TASK_TYPE,
   TASK_STATUS_TODO,
   PAYMENT_STATUS,
 } from '../../../utils/constants';
@@ -760,6 +761,12 @@ export const TaskViewModal = (props) => {
   const onCorrectPage =
     fetchedTask?.orgId === board?.orgId || fetchedTask?.podId === board?.podId || fetchedTask?.userId === board?.userId;
   const taskType = isTaskProposal ? 'task proposal' : isMilestone ? 'milestone' : 'task';
+  const handleOnCloseArchiveTaskModal = () => {
+    setArchiveTask(false);
+    if (isTaskProposal) {
+      handleClose();
+    }
+  };
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -767,7 +774,13 @@ export const TaskViewModal = (props) => {
       }}
     >
       <>
-        <ArchiveTaskModal open={archiveTask} onClose={() => setArchiveTask(false)} onArchive={handleNewStatus} />
+        <ArchiveTaskModal
+          open={archiveTask}
+          onClose={handleOnCloseArchiveTaskModal}
+          onArchive={handleNewStatus}
+          taskType={taskType}
+          taskId={fetchedTask?.id}
+        />
         <Modal
           open={open}
           onClose={() => {
@@ -839,7 +852,7 @@ export const TaskViewModal = (props) => {
                       }}
                       style={dropdownItemStyle}
                     >
-                      Archive {taskType}
+                      {isTaskProposal ? 'Delete task proposal' : `Archive ${taskType}`}
                     </DropDownItem>
                   </DropDown>
                 </TaskActionMenu>
