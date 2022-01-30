@@ -36,7 +36,7 @@ export const StyledTableHead = styled(TableHead)`
 `;
 
 export const StyledTableRow = styled(TableRow)`
-  cursor: pointer;
+  //cursor: pointer;
   
   & .MuiTableCell-body {
     border: 1px solid #232323;

@@ -18,7 +18,7 @@ import { TASK_STATUS_TODO } from '../../../utils/constants';
 const Boards = (props) => {
   const { selectOptions, columns, onLoadMore, hasMore, orgData, tasks } = props;
   const [filter, setFilter] = useState([]);
-  const [isGridView, setGridView] = useState(true);
+  const [isGridView, setGridView] = useState(false);
 
   const filterSchema = [
     {
@@ -101,6 +101,8 @@ const Boards = (props) => {
     },
   ];
 
+  console.log(tasks, '-----------');
+
   return (
     <Wrapper orgData={orgData}>
       <BoardsContainer>
@@ -122,7 +124,7 @@ const Boards = (props) => {
         {isGridView ? (
           <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
         ) : (
-          <Table tasks={columns.reduce((acc, col) => [...acc, ...col.tasks], [])} />
+          <Table columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
         )}
       </BoardsContainer>
     </Wrapper>
