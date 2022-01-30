@@ -52,6 +52,7 @@ import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
   MILESTONE_TYPE,
+  TASK_TYPE,
   TASK_STATUS_TODO,
 } from '../../../utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
@@ -612,11 +613,18 @@ export const TaskViewModal = (props) => {
   const onCorrectPage =
     fetchedTask?.orgId === board?.orgId || fetchedTask?.podId === board?.podId || fetchedTask?.userId === board?.userId;
 
-  const taskType = isTaskProposal ? 'task proposal' : isMilestone ? 'milestone' : 'task'
+  const taskType = isTaskProposal ? 'task proposal' : isMilestone ? MILESTONE_TYPE : TASK_TYPE;
+
+  const handleOnCloseArchiveTaskModal = () => {
+    setArchiveTask(false)
+    if (isTaskProposal) {
+      handleClose();
+    }
+  }
 
   return (
     <>
-      <ArchiveTaskModal open={archiveTask} onClose={() => setArchiveTask(false)} onArchive={handleNewStatus} taskType={taskType} />
+      <ArchiveTaskModal open={archiveTask} onClose={handleOnCloseArchiveTaskModal} onArchive={handleNewStatus} taskType={taskType} taskId={fetchedTask?.id} />
       <Modal open={open} onClose={handleClose}>
         <TaskModal>
           <TaskModalHeader>
@@ -674,7 +682,7 @@ export const TaskViewModal = (props) => {
                       }}
                       style={dropdownItemStyle}
                     >
-                      Archive {taskType}
+                      {isTaskProposal ? 'Delete task proposal' : `Archive ${taskType}`}
                     </DropDownItem>
                   </DropDown>
                 </TaskActionMenu>

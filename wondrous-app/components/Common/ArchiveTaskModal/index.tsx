@@ -1,4 +1,4 @@
-import { TASK_STATUS_ARCHIVED } from '../../../utils/constants'
+import * as Constants from '../../../utils/constants'
 import CloseModalIcon from '../../Icons/closeModal'
 import { ArchivedIcon } from '../../Icons/statusIcons'
 import {
@@ -13,12 +13,45 @@ import {
     StyledDivider,
     StyledHeader
 } from './styles'
+import { useMutation } from '@apollo/client'
+import { DELETE_TASK_PROPOSAL } from '../../../graphql/mutations'
+import { GET_ORG_TASK_BOARD_TASKS } from '../../../graphql/queries'
+import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries'
+import { useOrgBoard } from '../../../utils/hooks'
+import { removeProposalItem } from '../../../utils/board'
 
 export const ArchiveTaskModal = (props) => {
-    const { open, onClose, onArchive, taskType } = props
+    const { open, onClose, onArchive, taskType, taskId = "" } = props
+    const board = useOrgBoard()
+    const [deleteTaskProposal] = useMutation(DELETE_TASK_PROPOSAL, {
+        refetchQueries: () => [
+            {
+                query: GET_ORG_TASK_BOARD_TASKS,
+                variables: board?.getOrgTasksVariables,
+            },
+            {
+                query: GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
+                variables: board?.getOrgBoardTaskCountVariables
+            }
+        ],
+    })
 
-    const handleArchive = () => {
-        onArchive(TASK_STATUS_ARCHIVED);
+    const isTaskOrMilestone = taskType === Constants.TASK_TYPE || taskType === Constants.MILESTONE_TYPE
+
+    const handleArchiveOrDelete = () => {
+        if (isTaskOrMilestone) {
+            onArchive(Constants.TASK_STATUS_ARCHIVED);
+        } else {
+            board?.setFirstTimeFetch(false)
+            deleteTaskProposal({
+                variables: { proposalId: taskId }
+            }).then(() => {
+                const updatedColumn = removeProposalItem(taskId, board.columns)
+                board.setColumns(updatedColumn)
+            }).catch((err) => {
+                console.error(err)
+            })
+        }
         onClose();
     }
 
@@ -35,10 +68,10 @@ export const ArchiveTaskModal = (props) => {
                         <CloseModalIcon />
                     </StyledCloseButton>
                     <StyledHeader>
-                        Archive this {taskType}?
+                        {isTaskOrMilestone ? `Archive this ${taskType}?` : 'Delete this task proposal?'}
                     </StyledHeader>
                     <StyledBody>
-                        You can undo this in the archived section in the board.
+                        {isTaskOrMilestone ? "You can undo this in the archived section in the board." : "You cannot undo this action."}
                     </StyledBody>
                     <StyledDivider />
                     <StyledButtonsContainer>
@@ -48,8 +81,8 @@ export const ArchiveTaskModal = (props) => {
                         </StyledCancelButton>
                         <StyledArchiveTaskButton>
                             <ArchivedIcon />
-                            <StyledArchivedLabel onClick={handleArchive}>
-                                Archive {taskType}
+                            <StyledArchivedLabel onClick={handleArchiveOrDelete}>
+                                {isTaskOrMilestone ? `Archive ${taskType}?` : 'Delete task proposal'}
                             </StyledArchivedLabel>
                         </StyledArchiveTaskButton>
                     </StyledButtonsContainer>
