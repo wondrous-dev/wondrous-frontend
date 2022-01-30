@@ -67,10 +67,10 @@ export const ArchiveTaskModal = (props) => {
                         <CloseModalIcon />
                     </StyledCloseButton>
                     <StyledHeader>
-                        {isTaskOrMilestone ? `Archive this ${taskType}?` : 'Delete this task proposal?'}
+                        Archive this {taskType}?
                     </StyledHeader>
                     <StyledBody>
-                        {isTaskOrMilestone ? "You can undo this in the archived section in the board." : "You cannot undo this action."}
+                        You can undo this in the archived section in the board.
                     </StyledBody>
                     <StyledDivider />
                     <StyledButtonsContainer>
@@ -81,7 +81,7 @@ export const ArchiveTaskModal = (props) => {
                         <StyledArchiveTaskButton>
                             <ArchivedIcon />
                             <StyledArchivedLabel onClick={handleArchiveOrDelete}>
-                                {isTaskOrMilestone ? `Archive ${taskType}?` : 'Delete task proposal'}
+                                Archive {taskType}
                             </StyledArchivedLabel>
                         </StyledArchiveTaskButton>
                     </StyledButtonsContainer>
