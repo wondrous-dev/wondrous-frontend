@@ -22,6 +22,7 @@ import {
 } from '../../../graphql/queries';
 import { ColumnsContext } from '../../../utils/contexts';
 import { useMutation } from '@apollo/client';
+import { dedupeColumns } from '../../../utils';
 
 const populateOrder = (index, tasks, field) => {
   let aboveOrder = null,
@@ -141,7 +142,7 @@ const KanbanBoard = (props) => {
         aboveOrder = populateOrder(index, newTasks, 'assigneeOrder').aboveOrder;
         belowOrder = populateOrder(index, newTasks, 'assigneeOrder').belowOrder;
       }
-      console.log('board', board);
+
       try {
         updateTaskOrder({
           variables: {
@@ -159,7 +160,7 @@ const KanbanBoard = (props) => {
         tasks: newTasks,
       };
     });
-    setColumnsState(updatedColumns);
+    setColumnsState(dedupeColumns(updatedColumns));
   };
 
   const handler = useCallback(
