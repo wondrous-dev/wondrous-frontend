@@ -38,6 +38,9 @@ export const TaskFragment = gql`
     pod {
       name
     }
+    orgOrder
+    podOrder
+    assigneeOrder
     reactionCount
     commentCount
     rewards {
@@ -76,6 +79,9 @@ export const TaskCardFragment = gql`
     reactionCount
     commentCount
     shareCount
+    orgOrder
+    podOrder
+    assigneeOrder
     rewards {
       rewardAmount
       paymentMethodId
