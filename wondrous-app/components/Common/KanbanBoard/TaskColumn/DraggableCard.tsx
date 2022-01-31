@@ -25,9 +25,8 @@ const Card = ({ children, isDragging, isSpacer, connectDragSource, connectDropTa
 const DraggableCard = DropTarget(
   ItemTypes.CARD,
   {
-    hover(props, monitor, component) {
-      const { moveCard, status: columnStatus } = props as any;
-
+    hover(props: any, monitor, component) {
+      const { moveCard, status: columnStatus, index } = props as any;
       if (!component) {
         return null;
       }
@@ -39,13 +38,9 @@ const DraggableCard = DropTarget(
       const draggableItem = monitor.getItem();
       const { id, orgId, podId, status: dragStatus } = draggableItem;
 
-      const statusesEqual = dragStatus === columnStatus;
-
-      if (statusesEqual) {
-        return;
+      if (id !== props.id) {
+        moveCard(id, columnStatus, index);
       }
-
-      moveCard(id, columnStatus);
 
       monitor.getItem().status = columnStatus;
     },

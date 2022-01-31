@@ -77,7 +77,7 @@ const KanbanBoard = (props) => {
             newStatus: taskToBeUpdated.status,
           },
         },
-        refetchQueries: () => [
+        refetchQueries: [
           {
             query: GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
             variables: orgBoard?.getOrgBoardTaskCountVariables,
@@ -92,7 +92,7 @@ const KanbanBoard = (props) => {
     }
   };
 
-  const moveCard = async (id, status) => {
+  const moveCard = async (id, status, index) => {
     const updatedColumns = columnsState.map((column) => {
       if (column.status !== status) {
         return {
@@ -109,9 +109,11 @@ const KanbanBoard = (props) => {
         updateTask(updatedTask);
       }
 
+      const filteredColumn = column.tasks.filter((task) => task.id !== id);
+      const newTasks = [...filteredColumn.slice(0, index), updatedTask, ...filteredColumn.slice(index)];
       return {
         ...column,
-        tasks: [updatedTask, ...column.tasks],
+        tasks: newTasks,
       };
     });
     setColumnsState(updatedColumns);

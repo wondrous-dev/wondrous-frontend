@@ -150,7 +150,7 @@ const TaskColumn = (props: ITaskColumn) => {
       </TaskColumnContainerHeader>
       <ColumnSection section={section} setSection={() => {}} />
 
-      {cardsList.map((card) => (
+      {cardsList.map((card, index) => (
         <DraggableCard
           key={card.id}
           id={card.id}
@@ -160,6 +160,7 @@ const TaskColumn = (props: ITaskColumn) => {
           podId={card.podId}
           status={card.status}
           moveCard={moveCard}
+          index={index}
         >
           {card.type === ENTITIES_TYPES.MILESTONE ? (
             <Milestone>

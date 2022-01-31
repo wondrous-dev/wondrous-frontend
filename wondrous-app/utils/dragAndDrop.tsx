@@ -1,4 +1,4 @@
-const SCROLL_OFFSET = 20;
+const SCROLL_OFFSET = 50;
 
 // Taken from https://codesandbox.io/s/react-dnd-example-12-forked-241x9?file=/src/Card.jsx:1067-1119 and https://github.com/react-dnd/react-dnd/issues/553
 function scrollDown() {
@@ -38,9 +38,11 @@ export default class SmoothScrollPlugin {
   };
 
   addEventListeners = () => {
-    window.addEventListener('dragover', (e) => {
-      this.data.lastMouseClientY = e.clientY;
-    });
+    if (typeof window !== 'undefined') {
+      window?.addEventListener('dragover', (e) => {
+        this.data.lastMouseClientY = e.clientY;
+      });
+    }
   };
 
   smoothscroll = () => {
@@ -53,7 +55,9 @@ export default class SmoothScrollPlugin {
           scrollUp();
         }
       }
-      window.requestAnimationFrame(this.smoothscroll);
+      if (typeof window !== 'undefined') {
+        window?.requestAnimationFrame(this.smoothscroll);
+      }
     }
   };
 }
