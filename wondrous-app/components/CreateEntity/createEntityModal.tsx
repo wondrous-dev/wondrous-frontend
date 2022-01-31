@@ -391,7 +391,7 @@ const CreateLayoutBaseModal = (props) => {
     showHeaderImagePickerSection,
     showMembersSection,
     showPrioritySelectSection,
-    showDueDateSection
+    showDueDateSection,
   } = useMemo(() => {
     return {
       showDeliverableRequirementsSection: entityType === ENTITIES_TYPES.TASK,
@@ -403,7 +403,7 @@ const CreateLayoutBaseModal = (props) => {
       // TODO: add back in entityType === ENTITIES_TYPES.POD
       showMembersSection: false,
       showPrioritySelectSection: entityType === ENTITIES_TYPES.MILESTONE,
-      showDueDateSection: entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.MILESTONE
+      showDueDateSection: entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.MILESTONE,
     };
   }, [entityType]);
 
@@ -529,6 +529,7 @@ const CreateLayoutBaseModal = (props) => {
   const [createPod] = useMutation(CREATE_POD, {
     onCompleted: (data) => {
       const pod = data?.createPod;
+      handleClose();
       router.push(`/pod/${pod?.id}/boards`);
     },
     refetchQueries: ['getOrgById'],
@@ -550,8 +551,8 @@ const CreateLayoutBaseModal = (props) => {
         board.setColumns(columns);
       }
       handleClose();
-    }
-  })
+    },
+  });
 
   const submitMutation = useCallback(() => {
     switch (entityType) {
@@ -565,13 +566,13 @@ const CreateLayoutBaseModal = (props) => {
           dueDate,
           ...(rewardsAmount &&
             rewardsCurrency && {
-            rewards: [
-              {
-                rewardAmount: parseFloat(rewardsAmount),
-                paymentMethodId: rewardsCurrency,
-              },
-            ],
-          }),
+              rewards: [
+                {
+                  rewardAmount: parseFloat(rewardsAmount),
+                  paymentMethodId: rewardsCurrency,
+                },
+              ],
+            }),
           // TODO: add links?,
           ...(canCreateTask && {
             assigneeId: assignee?.value,
@@ -655,7 +656,7 @@ const CreateLayoutBaseModal = (props) => {
           orgId: org,
           podId: pod,
           mediaUploads,
-          dueDate
+          dueDate,
         };
         if (canCreateTask) {
           createMilestone({
@@ -686,7 +687,7 @@ const CreateLayoutBaseModal = (props) => {
     canCreatePod,
     rewardsAmount,
     rewardsCurrency,
-    createMilestone
+    createMilestone,
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
@@ -1164,10 +1165,10 @@ const CreateLayoutBaseModal = (props) => {
             style={{
               ...(isPod &&
                 !canCreatePod && {
-                background: Grey700,
-                border: `1px solid ${Grey700}`,
-                cursor: 'default',
-              }),
+                  background: Grey700,
+                  border: `1px solid ${Grey700}`,
+                  cursor: 'default',
+                }),
             }}
             onClick={submitMutation}
           >
