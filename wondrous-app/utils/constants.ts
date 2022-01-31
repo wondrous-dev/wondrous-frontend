@@ -177,4 +177,4 @@ export const PRIVACY_LEVEL = {
 };
 
 export const snakeToCamel = (str) =>
-  str.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('-', '').replace('_', ''));
+  str?.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('-', '').replace('_', ''));
