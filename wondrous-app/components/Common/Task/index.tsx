@@ -81,7 +81,8 @@ export const Task = ({ task, setTask }) => {
     assigneeProfilePicture = null,
     users = [],
     type,
-    createdBy
+    createdBy,
+    commentCount
   } = task
   const router = useRouter()
   let {
@@ -313,7 +314,7 @@ export const Task = ({ task, setTask }) => {
 					</TaskAction> */}
             <TaskAction key={'task-comment-' + id}>
               <TaskCommentIcon />
-              <TaskActionAmount>{comments}</TaskActionAmount>
+              <TaskActionAmount>{commentCount}</TaskActionAmount>
             </TaskAction>
             {/* <TaskAction key={'task-share-' + id}>
               <TaskShareIcon />

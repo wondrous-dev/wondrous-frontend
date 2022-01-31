@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients';
-import { Grey80, White } from '../../../theme/colors';
+import { Grey80, Grey250, White } from '../../../theme/colors';
 import { Typography } from '@material-ui/core';
 import { BaseCard } from '../card';
 
@@ -120,6 +120,7 @@ export const TaskActionAmount = styled.div`
   flex-grow: 1;
   justify-content: flex-start;
   padding-left: 10px;
+  color: ${Grey250};
 `;
 
 export const PodWrapper = styled.div`
