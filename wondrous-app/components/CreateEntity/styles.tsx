@@ -566,7 +566,7 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
   }
 
   .MuiAutocomplete-endAdornment {
-    top: 8px;
+    top: 0;
   }
 
   .MuiAutocomplete-popper {
