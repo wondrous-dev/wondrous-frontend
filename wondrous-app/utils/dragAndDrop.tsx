@@ -1,4 +1,4 @@
-const SCROLL_OFFSET = 60;
+const SCROLL_OFFSET = 50;
 
 // Taken from https://codesandbox.io/s/react-dnd-example-12-forked-241x9?file=/src/Card.jsx:1067-1119 and https://github.com/react-dnd/react-dnd/issues/553
 function scrollDown() {

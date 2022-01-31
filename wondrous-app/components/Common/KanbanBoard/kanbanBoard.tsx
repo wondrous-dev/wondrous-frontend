@@ -134,16 +134,14 @@ const KanbanBoard = (props) => {
         belowOrder = populateOrder(index, column.tasks, 'orgOrder').belowOrder;
       } else if (podBoard) {
         board = BOARD_TYPE.pod;
-        board = BOARD_TYPE.org;
         aboveOrder = populateOrder(index, newTasks, 'podOrder').aboveOrder;
         belowOrder = populateOrder(index, newTasks, 'podOrder').belowOrder;
       } else if (userBoard) {
         board = BOARD_TYPE.assignee;
-        board = BOARD_TYPE.org;
         aboveOrder = populateOrder(index, newTasks, 'assigneeOrder').aboveOrder;
         belowOrder = populateOrder(index, newTasks, 'assigneeOrder').belowOrder;
       }
-
+      console.log('board', board);
       try {
         updateTaskOrder({
           variables: {
