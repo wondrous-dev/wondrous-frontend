@@ -1,4 +1,3 @@
-import { debounce } from 'lodash';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
 import SmoothScrollPlugin from '../../../../utils/dragAndDrop';

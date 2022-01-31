@@ -124,22 +124,24 @@ const KanbanBoard = (props) => {
         updateTask(updatedTask);
       }
 
+      const filteredColumn = column.tasks.filter((task) => task.id !== id);
+      const newTasks = [...filteredColumn.slice(0, index), updatedTask, ...filteredColumn.slice(index)];
       let aboveOrder, belowOrder;
       let board = null;
       if (orgBoard) {
         board = BOARD_TYPE.org;
-        aboveOrder = populateOrder(index, column.tasks, 'orgOrder').aboveOrder;
+        aboveOrder = populateOrder(index, newTasks, 'orgOrder').aboveOrder;
         belowOrder = populateOrder(index, column.tasks, 'orgOrder').belowOrder;
       } else if (podBoard) {
         board = BOARD_TYPE.pod;
         board = BOARD_TYPE.org;
-        aboveOrder = populateOrder(index, column.tasks, 'podOrder').aboveOrder;
-        belowOrder = populateOrder(index, column.tasks, 'podOrder').belowOrder;
+        aboveOrder = populateOrder(index, newTasks, 'podOrder').aboveOrder;
+        belowOrder = populateOrder(index, newTasks, 'podOrder').belowOrder;
       } else if (userBoard) {
         board = BOARD_TYPE.assignee;
         board = BOARD_TYPE.org;
-        aboveOrder = populateOrder(index, column.tasks, 'assigneeOrder').aboveOrder;
-        belowOrder = populateOrder(index, column.tasks, 'assigneeOrder').belowOrder;
+        aboveOrder = populateOrder(index, newTasks, 'assigneeOrder').aboveOrder;
+        belowOrder = populateOrder(index, newTasks, 'assigneeOrder').belowOrder;
       }
 
       try {
@@ -154,8 +156,6 @@ const KanbanBoard = (props) => {
           },
         });
       } catch (err) {}
-      const filteredColumn = column.tasks.filter((task) => task.id !== id);
-      const newTasks = [...filteredColumn.slice(0, index), updatedTask, ...filteredColumn.slice(index)];
       return {
         ...column,
         tasks: newTasks,
@@ -165,7 +165,7 @@ const KanbanBoard = (props) => {
   };
 
   const handler = useCallback(
-    debounce((id, status, index) => moveCard(id, status, index), 500),
+    debounce((id, status, index) => moveCard(id, status, index), 100),
     [columnsState]
   );
   const hasQuery = router?.query?.task || router?.query?.taskProposal;
