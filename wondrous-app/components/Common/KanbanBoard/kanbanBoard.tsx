@@ -152,7 +152,7 @@ const KanbanBoard = (props) => {
               board,
             },
           },
-        });
+        }).catch((e) => {});
       } catch (err) {}
       return {
         ...column,
