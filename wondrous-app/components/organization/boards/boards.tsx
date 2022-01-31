@@ -92,22 +92,21 @@ const Boards = (props) => {
   const listViewOptions = [
     {
       name: 'List',
+      active: true,
       action: () => setGridView(false),
     },
     {
       name: 'Grid',
-      active: true,
       action: () => setGridView(true),
     },
   ];
-
-  console.log(tasks, '-----------');
 
   return (
     <Wrapper orgData={orgData}>
       <BoardsContainer>
         <BoardsActivity>
           <BoardsActivityInput
+            style={{ visibility: 'hidden' }}
             placeholder="Search people or pods..."
             InputProps={{
               startAdornment: (
@@ -117,7 +116,7 @@ const Boards = (props) => {
               ),
             }}
           />
-          <Filter filterSchema={filterSchema} filter={filter} setFilter={setFilter} />
+          {/*<Filter style={{ visibility: 'hidden' }} filterSchema={filterSchema} filter={filter} setFilter={setFilter} />*/}
           <ToggleViewButton options={listViewOptions} />
         </BoardsActivity>
 

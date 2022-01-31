@@ -72,9 +72,9 @@ let windowOffset = 0;
 export const Table = ({ columns }) => {
   const router = useRouter();
   const apolloClient = useApolloClient();
-  const [openedTask, setOpenedTask] = useState(null);
   const [editableTask, setEditableTask] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [isPreviewModalOpen, setPreviewModalOpen] = useState(false);
   const [isArchiveModalOpen, setArchiveModalOpen] = useState(false);
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
@@ -85,7 +85,7 @@ export const Table = ({ columns }) => {
   const userBoard = useUserBoard();
   const board = orgBoard || podBoard || userBoard;
 
-  // console.log(columns, 'columns');
+  console.log(columns, 'columns');
 
   const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS, {
     // onCompleted: (data) => {
@@ -171,7 +171,7 @@ export const Table = ({ columns }) => {
 
   return (
     <StyledTableContainer>
-      {openedTask ? <TaskViewModal open={true} handleClose={() => setOpenedTask(null)} task={openedTask} /> : null}
+      <TaskViewModal open={isPreviewModalOpen} handleClose={() => setPreviewModalOpen(false)} task={selectedTask} />
       <ArchiveTaskModal
         open={isArchiveModalOpen}
         onClose={() => setArchiveModalOpen(false)}
@@ -211,13 +211,13 @@ export const Table = ({ columns }) => {
               Status
             </StyledTableCell>
             <StyledTableCell width="383px">Task</StyledTableCell>
-            <StyledTableCell width="190px">Deliverables</StyledTableCell>
+            {/*<StyledTableCell width="190px">Deliverables</StyledTableCell>*/}
             <StyledTableCell align="center" width="88px">
               Reward
             </StyledTableCell>
-            <StyledTableCell align="center" width="80px">
-              Decision
-            </StyledTableCell>
+            {/*<StyledTableCell align="center" width="80px">*/}
+            {/*  Decision*/}
+            {/*</StyledTableCell>*/}
             <StyledTableCell width="54px"></StyledTableCell>
           </StyledTableRow>
         </StyledTableHead>
@@ -250,22 +250,25 @@ export const Table = ({ columns }) => {
                   />
                 </StyledTableCell>
                 <StyledTableCell align="center">{STATUS_ICONS[task.status]}</StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell className="clickable" onClick={() => {
+                  setSelectedTask(task);
+                  setPreviewModalOpen(true);
+                }}>
                   <TaskTitle>{task.title}</TaskTitle>
                   <TaskDescription>{task.description}</TaskDescription>
                 </StyledTableCell>
-                <StyledTableCell>
-                  <DeliverableContainer>
-                    {Object.entries(groupBy(task?.media || [], 'type')).map(([key, value]: [string, any], index) => {
-                      return (
-                        <DeliverableItem key={index}>
-                          <DeliverablesIconContainer>{DELIVERABLES_ICONS[key]}</DeliverablesIconContainer>
-                          {value?.length}
-                        </DeliverableItem>
-                      );
-                    })}
-                  </DeliverableContainer>
-                </StyledTableCell>
+                {/*<StyledTableCell>*/}
+                {/*  <DeliverableContainer>*/}
+                {/*    {Object.entries(groupBy(task?.media || [], 'type')).map(([key, value]: [string, any], index) => {*/}
+                {/*      return (*/}
+                {/*        <DeliverableItem key={index}>*/}
+                {/*          <DeliverablesIconContainer>{DELIVERABLES_ICONS[key]}</DeliverablesIconContainer>*/}
+                {/*          {value?.length}*/}
+                {/*        </DeliverableItem>*/}
+                {/*      );*/}
+                {/*    })}*/}
+                {/*  </DeliverableContainer>*/}
+                {/*</StyledTableCell>*/}
                 <StyledTableCell>
                   <RewardContainer>
                     <Reward>
@@ -274,9 +277,9 @@ export const Table = ({ columns }) => {
                     </Reward>
                   </RewardContainer>
                 </StyledTableCell>
-                <StyledTableCell align="center">
-                  <DropDownButtonDecision />
-                </StyledTableCell>
+                {/*<StyledTableCell align="center">*/}
+                {/*  <DropDownButtonDecision />*/}
+                {/*</StyledTableCell>*/}
                 <StyledTableCell align="center">
                   <MoreOptions>
                     <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
