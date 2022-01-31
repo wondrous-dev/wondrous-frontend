@@ -9,6 +9,7 @@ import {
   TASK_STATUS_REQUESTED,
   TASK_STATUS_TODO,
   ENTITIES_TYPES,
+  BOARD_TYPE,
 } from '../../../../utils/constants';
 
 import { ToDo, InProgress, Done } from '../../../Icons';
@@ -115,6 +116,15 @@ const TaskColumn = (props: ITaskColumn) => {
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
+  let boardType = null;
+  if (orgBoard) {
+    boardType = BOARD_TYPE.org;
+  } else if (podBoard) {
+    boardType = BOARD_TYPE.pod;
+  } else if (userBoard) {
+    boardType = BOARD_TYPE.assignee;
+  }
+
   const board = orgBoard || userBoard || podBoard;
   const taskCount = board?.taskCount;
   const HeaderIcon = HEADER_ICONS[status];
@@ -161,6 +171,8 @@ const TaskColumn = (props: ITaskColumn) => {
           status={card.status}
           moveCard={moveCard}
           index={index}
+          boardType={boardType}
+          tasks={cardsList}
         >
           {card.type === ENTITIES_TYPES.MILESTONE ? (
             <Milestone>

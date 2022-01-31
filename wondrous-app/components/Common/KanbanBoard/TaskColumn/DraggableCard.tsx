@@ -1,3 +1,4 @@
+import { debounce } from 'lodash';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
 import SmoothScrollPlugin from '../../../../utils/dragAndDrop';
@@ -63,7 +64,7 @@ const DraggableCard = DropTarget(
           status: props.status,
         };
       },
-      endDrag: () => {
+      endDrag: (props) => {
         plugin.onDragEnd();
       },
     },
