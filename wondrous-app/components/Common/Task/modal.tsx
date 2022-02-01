@@ -110,6 +110,7 @@ import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { MilestoneTaskList } from '../MilestoneTaskList';
 import { MilestoneTaskBreakdown } from '../MilestoneTaskBreakdown';
 import Link from 'next/link';
+import { TaskList } from '../TaskList';
 
 export const MediaLink = (props) => {
   const { media, style } = props;

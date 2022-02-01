@@ -116,9 +116,6 @@ export const Task = ({ task, setTask }) => {
         variables: orgBoard?.getOrgBoardTaskCountVariables,
       },
     ],
-    onError: () => {
-      console.error('Something went wrong.');
-    },
   });
 
   const handleNewStatus = useCallback(
