@@ -237,7 +237,7 @@ export const HeaderText = styled(Typography)`
 `;
 
 export const HeaderActivity = styled.div`
-  flex-wrap: wrap
+  flex-wrap: wrap;
   width: 100%;
   min-height: 23px;
   height: 23px;
