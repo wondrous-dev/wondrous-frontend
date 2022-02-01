@@ -14,7 +14,7 @@ import {
 const AboutPage = () => {
   const loggedInUser = useMe();
   const [userProfileData, setUserProfileData] = useState(null);
-  const [userAboutPageData, setUserAboutPageData] = useState(null);
+  // const [userAboutPageData, setUserAboutPageData] = useState(null);
   const [userOrgsData, setUserOrgsData] = useState([]);
   const [userPodsData, setUserPodsData] = useState([]);
   const [userCompletedTaskCount, setUserCompletedTaskCount] = useState(null);
@@ -29,38 +29,9 @@ const AboutPage = () => {
   //   }
   // )
 
-  const [getUserAboutPageData] = useLazyQuery(GET_USER_ABOUT_PAGE_DATA, {
-    onCompleted: (data) => {
-      setUserAboutPageData(data?.getUserAboutPageData);
-      const orgs = data?.getUserAboutPageData?.orgs;
-      const pods = data?.getUserAboutPageData?.pods;
-      const tasksCompleted = data?.getUserAboutPageData?.tasksCompleted;
-      const tasksCompletedCount = data?.getUserAboutPageData?.tasksCompletedCount;
-      if (orgs || tasksCompletedCount) {
-        setUserOrgsData(orgs);
-        setUserPodsData(pods);
-        setUserCompletedTaskCount(tasksCompletedCount);
-        setUserCompletedTasks(tasksCompleted);
-      }
-    },
-  });
-
-  const [getUser] = useLazyQuery(GET_USER_PROFLIE, {
-    onCompleted: (data) => {
-      setUserProfileData(data?.getUser);
-    },
-  });
-
-  const [getUserFromUsername, { data: getUserFromUsernameData, error: getUserFromUsernameError }] = useLazyQuery(
-    GET_USER_FROM_USERNAME,
-    {
-      onCompleted: (data) => {
-        if (data?.getUserFromUsername) {
-          setUserProfileData(data?.getUserFromUsername);
-        }
-      },
-    }
-  );
+  const [getUserAboutPageData, { data: userAboutPageDataFromUser }] = useLazyQuery(GET_USER_ABOUT_PAGE_DATA);
+  const [getUser, { data: userProfileDataFromSession }] = useLazyQuery(GET_USER_PROFLIE);
+  const [getUserFromUsername, { data: userProfileDataFromUsername }] = useLazyQuery(GET_USER_FROM_USERNAME);
 
   useEffect(() => {
     if (userId && !userProfileData) {
@@ -85,6 +56,26 @@ const AboutPage = () => {
       });
     }
   }, [username, userId, userProfileData, getUser, getUserFromUsername, getUserAboutPageData]);
+
+  // Bind to the hook
+  useEffect(() => {
+    setUserProfileData(userProfileDataFromUsername?.getUserFromUsername || userProfileDataFromSession?.getUser);
+  }, [userProfileDataFromSession, userProfileDataFromUsername]);
+
+  useEffect(() => {
+    const data = userAboutPageDataFromUser;
+    // setUserAboutPageData(data?.getUserAboutPageData);
+    const orgs = data?.getUserAboutPageData?.orgs;
+    const pods = data?.getUserAboutPageData?.pods;
+    const tasksCompleted = data?.getUserAboutPageData?.tasksCompleted;
+    const tasksCompletedCount = data?.getUserAboutPageData?.tasksCompletedCount;
+    if (orgs || tasksCompletedCount) {
+      setUserOrgsData(orgs);
+      setUserPodsData(pods);
+      setUserCompletedTaskCount(tasksCompletedCount);
+      setUserCompletedTasks(tasksCompleted);
+    }
+  }, [userAboutPageDataFromUser]);
 
   return (
     <About

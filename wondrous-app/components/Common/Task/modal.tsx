@@ -109,6 +109,7 @@ import { DAOIcon } from '../../Icons/dao';
 import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { MilestoneTaskList } from '../MilestoneTaskList';
 import { MilestoneTaskBreakdown } from '../MilestoneTaskBreakdown';
+import Link from 'next/link';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -602,6 +603,7 @@ export const TaskViewModal = (props) => {
     height: '26px',
     borderRadius: '13px',
     marginRight: '4px',
+    cursor: 'pointer',
   };
   const canApproveProposal =
     permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK);
@@ -699,11 +701,24 @@ export const TaskViewModal = (props) => {
                 reviewerData?.getTaskReviewers.map((taskReviewer) => (
                   <TaskSectionInfoDiv key={taskReviewer?.id}>
                     {taskReviewer?.profilePicture ? (
-                      <SafeImage style={displayDivProfileImageStyle} src={taskReviewer?.profilePicture} />
+                      <Link href={`/profile/${taskReviewer?.username}/about`} passHref={true}>
+                        <SafeImage style={displayDivProfileImageStyle} src={taskReviewer?.profilePicture} />
+                      </Link>
                     ) : (
-                      <DefaultUserImage style={displayDivProfileImageStyle} />
+                      <Link href={`/profile/${taskReviewer?.username}/about`} passHref={true}>
+                        <DefaultUserImage style={displayDivProfileImageStyle} />
+                      </Link>
                     )}
-                    <TaskSectionInfoText>{taskReviewer?.username}</TaskSectionInfoText>
+                    <Link href={`/profile/${taskReviewer?.username}/about`} passHref={true}>
+                      <TaskSectionInfoText
+                        style={{
+                          textDecoration: 'underline',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {taskReviewer?.username}
+                      </TaskSectionInfoText>
+                    </Link>
                   </TaskSectionInfoDiv>
                 ))
               ) : (
@@ -758,11 +773,22 @@ export const TaskViewModal = (props) => {
                 {fetchedTask?.assigneeUsername ? (
                   <>
                     {fetchedTask?.assigneeProfilePicture ? (
-                      <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.assigneeProfilePicture} />
+                      <Link href={`/profile/${fetchedTask?.assigneeUsername}/about`} passHref={true}>
+                        <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.assigneeProfilePicture} />
+                      </Link>
                     ) : (
                       <DefaultUserImage style={displayDivProfileImageStyle} />
                     )}
-                    <TaskSectionInfoText>{fetchedTask?.assigneeUsername}</TaskSectionInfoText>
+                    <Link href={`/profile/${fetchedTask?.assigneeUsername}/about`} passHref={true}>
+                      <TaskSectionInfoText
+                        style={{
+                          textDecoration: 'underline',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {fetchedTask?.assigneeUsername}
+                      </TaskSectionInfoText>
+                    </Link>
                   </>
                 ) : (
                   <>
