@@ -60,7 +60,7 @@ export const TokenEmptyLogo = styled.div`
   border-radius: 50px;
 
   background: ${Black};
-`
+`;
 
 export const Content = styled.div`
   width: 100%;
@@ -237,7 +237,7 @@ export const HeaderText = styled(Typography)`
 `;
 
 export const HeaderActivity = styled.div`
-  max-width: 390px;
+  flex-wrap: wrap
   width: 100%;
   min-height: 23px;
   height: 23px;
@@ -255,6 +255,7 @@ export const HeaderActivityLink = styled.a`
   color: #ccbbff;
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   margin-right: 12px;
+  margin-bottom: 4px;
 `;
 
 export const HeaderActivityLinkIcon = styled(LinkIcon)`
@@ -270,6 +271,7 @@ export const HeaderContributors = styled.div`
   align-items: center;
   cursor: pointer;
   margin-right: 8px;
+  margin-bottom: 4px;
 `;
 
 export const HeaderContributorsAmount = styled(Typography)`
@@ -282,6 +284,7 @@ export const HeaderContributorsAmount = styled(Typography)`
     color: #ffffff;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     margin-right: 5px;
+    margin-bottom: 4px;
   }
 `;
 
