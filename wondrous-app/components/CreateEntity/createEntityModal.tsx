@@ -89,7 +89,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
 import { SafeImage } from '../Common/Image';
 import { GET_USER_AVAILABLE_PODS, GET_USER_PODS } from '../../graphql/queries/pod';
-import { GET_ELIGIBLE_REVIEWERS_FOR_ORG } from '../../graphql/queries/task';
+import { GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_MILESTONES_FOR_ORG } from '../../graphql/queries/task';
 import {
   getMentionArray,
   parseUserPermissionContext,
@@ -115,7 +115,7 @@ const filterUserOptions = (options) => {
   if (!options) return [];
   return options.map((option) => {
     return {
-      label: option?.username,
+      label: option?.username ?? option?.title,
       id: option?.id,
       profilePicture: option?.profilePicture,
     };
@@ -323,6 +323,7 @@ const CreateLayoutBaseModal = (props) => {
   const [milestone, setMilestone] = useState(null);
   const [assigneeString, setAssigneeString] = useState('');
   const [reviewerString, setReviewerString] = useState('');
+  const [milestoneString, setMilestoneString] = useState('')
   const [assignee, setAssignee] = useState(null);
   const [selectedReviewers, setSelectedReviewers] = useState([]);
   const [link, setLink] = useState('');
@@ -356,6 +357,8 @@ const CreateLayoutBaseModal = (props) => {
   });
 
   const [getEligibleReviewersForOrg, { data: eligibleReviewersData }] = useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_ORG);
+
+  const [getMilestonesForOrg, { data: milestonesForOrgData }] = useLazyQuery(GET_MILESTONES_FOR_ORG);
 
   const descriptionTextCounter = (e) => {
     if (e.target.value.length < textLimit) {
@@ -487,6 +490,9 @@ const CreateLayoutBaseModal = (props) => {
   }, [pods, pod]);
 
   const [createTask] = useMutation(CREATE_TASK, {
+    refetchQueries: () => [
+      "getPerStatusTaskCountForMilestone"
+    ],
     onCompleted: (data) => {
       const task = data?.createTask;
       const justCreatedPod = getPodObject();
@@ -561,18 +567,18 @@ const CreateLayoutBaseModal = (props) => {
           title,
           description: descriptionText,
           orgId: org,
-          milestoneId: milestone,
+          milestoneId: milestone?.id,
           podId: pod,
           dueDate,
           ...(rewardsAmount &&
             rewardsCurrency && {
-              rewards: [
-                {
-                  rewardAmount: parseFloat(rewardsAmount),
-                  paymentMethodId: rewardsCurrency,
-                },
-              ],
-            }),
+            rewards: [
+              {
+                rewardAmount: parseFloat(rewardsAmount),
+                paymentMethodId: rewardsCurrency,
+              },
+            ],
+          }),
           // TODO: add links?,
           ...(canCreateTask && {
             assigneeId: assignee?.value,
@@ -1021,6 +1027,51 @@ const CreateLayoutBaseModal = (props) => {
                 }}
               />
             </CreateFormAddDetailsInputBlock>
+
+            <CreateFormAddDetailsInputBlock>
+              <CreateFormAddDetailsInputLabel>Milestone</CreateFormAddDetailsInputLabel>
+              <StyledAutocomplete
+                options={filterUserOptions(milestonesForOrgData?.getMilestonesForOrg)}
+                onOpen={() =>
+                  getMilestonesForOrg({
+                    variables: {
+                      orgId: org,
+                    },
+                  })
+                }
+                renderInput={(params) => (
+                  <TextField
+                    style={{
+                      color: White,
+                      fontFamily: 'Space Grotesk',
+                      fontSize: '14px',
+                      paddingLeft: '4px',
+                    }}
+                    placeholder="Enter milestone..."
+                    InputLabelProps={{ shrink: false }}
+                    {...params}
+                  />
+                )}
+                PopperComponent={AutocompleteList}
+                value={milestone}
+                inputValue={milestoneString}
+                onInputChange={(_, newInputValue) => {
+                  setMilestoneString(newInputValue);
+                }}
+                renderOption={(props, option) => {
+                  return (
+                    <OptionDiv
+                      onClick={(event) => {
+                        setMilestone(option);
+                        props?.onClick(event);
+                      }}
+                    >
+                      <OptionTypography>{option?.label}</OptionTypography>
+                    </OptionDiv>
+                  );
+                }}
+              />
+            </CreateFormAddDetailsInputBlock>
           </CreateFormAddDetailsInputs>
         )}
       </CreateFormMainSection>
@@ -1165,10 +1216,10 @@ const CreateLayoutBaseModal = (props) => {
             style={{
               ...(isPod &&
                 !canCreatePod && {
-                  background: Grey700,
-                  border: `1px solid ${Grey700}`,
-                  cursor: 'default',
-                }),
+                background: Grey700,
+                border: `1px solid ${Grey700}`,
+                cursor: 'default',
+              }),
             }}
             onClick={submitMutation}
           >

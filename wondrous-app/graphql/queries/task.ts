@@ -98,3 +98,11 @@ export const GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE = gql`
 		awaitingPayment
 }}
 `
+export const GET_MILESTONES_FOR_ORG = gql`
+  query getMilestonesForOrg ($orgId: ID!) {
+    getMilestonesForOrg(orgId: $orgId) {
+      title
+      id
+    }
+  }
+`
