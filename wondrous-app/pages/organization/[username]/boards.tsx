@@ -171,7 +171,6 @@ const BoardsPage = () => {
         setColumns(dedupeColumns(newColumns));
         const count = data?.getOrgTaskBoardTasks.filter((task) => task.status !== Constants.TASK_STATUS_ARCHIVED).length;
         setOrgTaskHasMore(count >= LIMIT);
-        debugger;
         setFirstTimeFetch(true);
       }
     },

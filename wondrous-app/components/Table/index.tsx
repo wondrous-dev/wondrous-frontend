@@ -93,10 +93,17 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
 
   useEffect(() => {
     if (inView && hasMore) {
-      console.log('-------------');
       onLoadMore();
     }
   }, [inView, hasMore, onLoadMore]);
+
+  useEffect(() => {
+    const taskId = router?.query?.task || router?.query?.taskProposal;
+
+    if (taskId) {
+      // const task = columns.find(column => column.tasks.find(task => task.id === taskId));
+    }
+  }, []);
 
   const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS, {
     // onCompleted: (data) => {
@@ -178,6 +185,12 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
         </ArchivedTaskUndo>
       </>
     );
+  }
+
+  function openTask(task) {
+    router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view}`);
+    setSelectedTask(task);
+    setPreviewModalOpen(true);
   }
 
   return (
@@ -268,13 +281,7 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                   />
                 </StyledTableCell>
                 <StyledTableCell align="center">{STATUS_ICONS[task.status]}</StyledTableCell>
-                <StyledTableCell
-                  className="clickable"
-                  onClick={() => {
-                    setSelectedTask(task);
-                    setPreviewModalOpen(true);
-                  }}
-                >
+                <StyledTableCell className="clickable" onClick={() => openTask(task)}>
                   <TaskTitle>{task.title}</TaskTitle>
                   <TaskDescription>{task.description}</TaskDescription>
                 </StyledTableCell>

@@ -20,7 +20,9 @@ export const StyledTableBody = styled(TableBody)`
   border-radius: 3px;
 `;
 
-export const StyledTableContainer = styled(TableContainer)``;
+export const StyledTableContainer = styled(TableContainer)`
+  width: 100%;
+`;
 
 export const StyledTableHead = styled(TableHead)`
   & .MuiTableCell-head {

@@ -185,7 +185,7 @@ export const Task = ({ task, setTask }) => {
     task?.createdBy === user?.id;
 
   const openModal = () => {
-    router.replace(`${delQuery(router.asPath)}?task=${task?.id}`);
+    router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view}`);
     // document.body.style.overflow = 'hidden'
     // document.body.scroll = false
     windowOffset = window.scrollY;

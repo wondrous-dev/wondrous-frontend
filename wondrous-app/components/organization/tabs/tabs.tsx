@@ -1,20 +1,25 @@
-import React from 'react'
-import { Tab } from '@material-ui/core'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
+import React from 'react';
+import { Tab } from '@material-ui/core';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import styled from 'styled-components';
 
-import Boards from '../boards/boards'
-import About from '../about/about'
+import Boards from '../boards/boards';
+import About from '../about/about';
 
-import { StyledTabs } from './styles'
+import { StyledTabs } from './styles';
+
+const Container = styled.div`
+  width: 100%;
+`;
 
 const Tabs = (props) => {
-  const { children } = props
+  const { children } = props;
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const { pathname } = router
-  const { username } = router.query
+  const { pathname } = router;
+  const { username } = router.query;
 
   const tabsLinks = [
     {
@@ -29,9 +34,9 @@ const Tabs = (props) => {
       href: `/organization/${username}/about`,
       label: 'About',
     },
-  ]
+  ];
   return (
-    <div>
+    <Container>
       {/* <StyledTabs value={pathname}>
         {tabsLinks.map((tab) => (
           <Link
@@ -47,8 +52,8 @@ const Tabs = (props) => {
         ))}
       </StyledTabs> */}
       <div>{children}</div>
-    </div>
-  )
-}
+    </Container>
+  );
+};
 
-export default Tabs
+export default Tabs;
