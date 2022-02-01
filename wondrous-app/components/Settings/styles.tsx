@@ -8,7 +8,7 @@ import { LogoSquare } from '../Common/ci';
 import LogoutIcon from '../Icons/logout';
 import { GradientHighlightHorizontal } from '../Common/gradients';
 import { Discord } from '../Icons/discord';
-import { Black } from '../../theme/colors';
+import { Black, Black98 } from '../../theme/colors';
 
 export const SettingsContainer = styled.div`
   position: relative;
@@ -85,26 +85,24 @@ export const SettingsSidebarTabsListItemButtonWrapper = styled.div`
   background: ${(props) => (props.active ? GradientHighlightHorizontal : 'transparent')};
 `;
 
-export const SettingsSidebarTabsListItemButton = styled(ListItemButton)({
-  '&.MuiListItemButton-root': {
-    width: '100%',
-    height: 45,
-    borderRadius: 2,
-    padding: 10,
-    justifyContent: 'left',
-  },
+export const SettingsSidebarTabsListItemButton = styled(ListItemButton)`
+  && {
+    display: flex;
+    width: 100%;
+    height: 45px;
+    border-radius: 2px;
+    padding: 10px;
+    justify-content: flex-start;
 
-  '&.Mui-selected': {
-    background: '#101010 !important',
-
-    '&:hover': {
-      background: '#101010 !impotrant',
-    },
-  },
-});
+    background: ${(props) => (props.active ? `${Black98}` : 'transparent')};
+  }
+`;
 
 export const SettingsSidebarTabsListItemIcon = styled(ListItemIcon)`
   && {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 10px;
   }
 `;

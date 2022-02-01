@@ -38,6 +38,8 @@ import { GET_POD_BY_ID } from '../../graphql/queries/pod';
 import { PERMISSIONS } from '../../utils/constants';
 import { useMe } from '../Auth/withAuth';
 import SettingsIcon from '../Icons/settings';
+import LevelsIcon from '../Icons/levers';
+import CardIcon from '../Icons/card';
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -131,10 +133,22 @@ export const SettingsWrapper = (props) => {
       href: orgId ? `/organization/settings/${orgId}/general` : `/pod/settings/${podId}/general`,
     },
     {
+      icon: <LevelsIcon width={40} height={40} />,
+      label: 'Configure Payments',
+      value: 'payments',
+      href: orgId ? `/organization/settings/${orgId}/payments` : `/pod/settings/${podId}/payments`,
+    },
+    {
       icon: <MembersIcon width={40} height={40} />,
       label: 'Members',
       value: 'members',
       href: orgId ? `/organization/settings/${orgId}/members` : `/pod/settings/${podId}/members`,
+    },
+    {
+      icon: <CardIcon width={40} height={40} />,
+      label: 'Payments Ledger',
+      value: 'payouts',
+      href: orgId ? `/organization/settings/${orgId}/payouts` : `/pod/settings/${podId}/payouts`,
     },
     {
       icon: <MembersIcon width={40} height={40} />,

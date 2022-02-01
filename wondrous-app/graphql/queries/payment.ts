@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client'
-import { PaymentMethodFragment } from '../fragments/payment'
+import { gql } from '@apollo/client';
+import { PaymentMethodFragment, PayoutFragment } from '../fragments/payment';
 
 export const GET_PAYMENT_METHODS_FOR_ORG = gql`
   query getPaymentMethodsForOrg($orgId: ID!) {

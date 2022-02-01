@@ -12,3 +12,22 @@ export const PaymentMethodFragment = gql`
     decimal
   }
 `
+
+export const PayoutFragment = gql`
+  fragment PayoutFragment on Payment {
+    id
+		taskId
+		submissionId
+		orgId
+		podId
+		payeeId
+		web3AddressId
+		address
+		paymentMethodId
+		transactionHash
+		amount
+		notes
+		payedAt
+		status
+  }
+`
