@@ -20,6 +20,7 @@ import {
   GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
   GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE,
 } from '../../../graphql/queries';
+import { ColumnsContext } from '../../../utils/contexts';
 
 const KanbanBoard = (props) => {
   const user = useMe();
@@ -126,7 +127,12 @@ const KanbanBoard = (props) => {
   const { dndArea, handleRef, html5Options } = useDndProvider();
 
   return (
-    <>
+    <ColumnsContext.Provider
+      value={{
+        columns: columnsState,
+        setColumns: setColumnsState,
+      }}
+    >
       <KanbanBoardContainer ref={handleRef}>
         <TaskViewModal
           open={openModal}
@@ -149,7 +155,7 @@ const KanbanBoard = (props) => {
         )}
       </KanbanBoardContainer>
       <LoadMore ref={ref} hasMore={hasMore}></LoadMore>
-    </>
+    </ColumnsContext.Provider>
   );
 };
 

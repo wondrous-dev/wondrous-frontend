@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect } from 'react';
 
 import {
+  ColumnsContext,
   IsMobileContext,
   OrgBoardContext,
   PodBoardContext,
@@ -58,3 +59,5 @@ export const usePodBoard = () => useContext(PodBoardContext);
 export const useUserBoard = () => useContext(UserBoardContext);
 
 export const useSettings = () => useContext(SettingsBoardContext);
+
+export const useColumns = () => useContext(ColumnsContext);
