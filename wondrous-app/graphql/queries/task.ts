@@ -69,40 +69,31 @@ export const GET_TASK_COMMENT_BY_ID = gql`
 `;
 
 export const GET_TASK_FOR_MILESTONE = gql`
-  query getTasksForMilestone(
-    $milestoneId: ID!,
-    $status: String,
-    $limit: Int,
-    $offset: Int
-  ) {
-  getTasksForMilestone(
-    milestoneId: $milestoneId,
-    status: $status,
-    limit: $limit,
-    offset: $offset
-  ) {
-    ...TaskFragment
-      }
+  query getTasksForMilestone($milestoneId: ID!, $status: String, $limit: Int, $offset: Int) {
+    getTasksForMilestone(milestoneId: $milestoneId, status: $status, limit: $limit, offset: $offset) {
+      ...TaskFragment
+    }
   }
   ${TaskFragment}
-`
+`;
 
 export const GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE = gql`
   query getPerStatusTaskCountForMilestone($milestoneId: ID!) {
-  getPerStatusTaskCountForMilestone(milestoneId: $milestoneId) {
-    created
-		inProgress
-		completed
-		inReview
-		archived
-		awaitingPayment
-}}
-`
+    getPerStatusTaskCountForMilestone(milestoneId: $milestoneId) {
+      created
+      inProgress
+      completed
+      inReview
+      archived
+      awaitingPayment
+    }
+  }
+`;
 export const GET_MILESTONES_FOR_ORG = gql`
-  query getMilestonesForOrg ($orgId: ID!) {
+  query getMilestonesForOrg($orgId: ID!) {
     getMilestonesForOrg(orgId: $orgId) {
       title
       id
     }
   }
-`
+`;

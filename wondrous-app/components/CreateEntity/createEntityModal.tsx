@@ -323,7 +323,7 @@ const CreateLayoutBaseModal = (props) => {
   const [milestone, setMilestone] = useState(null);
   const [assigneeString, setAssigneeString] = useState('');
   const [reviewerString, setReviewerString] = useState('');
-  const [milestoneString, setMilestoneString] = useState('')
+  const [milestoneString, setMilestoneString] = useState('');
   const [assignee, setAssignee] = useState(null);
   const [selectedReviewers, setSelectedReviewers] = useState([]);
   const [link, setLink] = useState('');
@@ -490,9 +490,7 @@ const CreateLayoutBaseModal = (props) => {
   }, [pods, pod]);
 
   const [createTask] = useMutation(CREATE_TASK, {
-    refetchQueries: () => [
-      "getPerStatusTaskCountForMilestone"
-    ],
+    refetchQueries: () => ['getPerStatusTaskCountForMilestone'],
     onCompleted: (data) => {
       const task = data?.createTask;
       const justCreatedPod = getPodObject();
@@ -572,13 +570,13 @@ const CreateLayoutBaseModal = (props) => {
           dueDate,
           ...(rewardsAmount &&
             rewardsCurrency && {
-            rewards: [
-              {
-                rewardAmount: parseFloat(rewardsAmount),
-                paymentMethodId: rewardsCurrency,
-              },
-            ],
-          }),
+              rewards: [
+                {
+                  rewardAmount: parseFloat(rewardsAmount),
+                  paymentMethodId: rewardsCurrency,
+                },
+              ],
+            }),
           // TODO: add links?,
           ...(canCreateTask && {
             assigneeId: assignee?.value,
@@ -1216,10 +1214,10 @@ const CreateLayoutBaseModal = (props) => {
             style={{
               ...(isPod &&
                 !canCreatePod && {
-                background: Grey700,
-                border: `1px solid ${Grey700}`,
-                cursor: 'default',
-              }),
+                  background: Grey700,
+                  border: `1px solid ${Grey700}`,
+                  cursor: 'default',
+                }),
             }}
             onClick={submitMutation}
           >
