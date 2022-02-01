@@ -1,4 +1,5 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import {
   ENTITIES_TYPES,
@@ -54,6 +55,8 @@ import { SnackbarAlertContext } from '../Common/SnackbarAlert';
 import { ArchivedTaskUndo } from '../Common/Task/styles';
 import { OrgBoardContext } from '../../utils/contexts';
 import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
+import { LoadMore } from '../Common/KanbanBoard/styles';
+import { SafeImage } from '../Common/Image';
 
 const STATUS_ICONS = {
   [TASK_STATUS_TODO]: <TodoWithBorder />,
@@ -69,13 +72,14 @@ const DELIVERABLES_ICONS = {
 };
 
 let windowOffset = 0;
-export const Table = ({ columns }) => {
+export const Table = ({ columns, onLoadMore, hasMore }) => {
   const router = useRouter();
   const apolloClient = useApolloClient();
   const [editableTask, setEditableTask] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
   const [isPreviewModalOpen, setPreviewModalOpen] = useState(false);
   const [isArchiveModalOpen, setArchiveModalOpen] = useState(false);
+  const [ref, inView] = useInView({});
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
@@ -85,7 +89,14 @@ export const Table = ({ columns }) => {
   const userBoard = useUserBoard();
   const board = orgBoard || podBoard || userBoard;
 
-  console.log(columns, 'columns');
+  console.log(columns, hasMore, 'columns');
+
+  useEffect(() => {
+    if (inView && hasMore) {
+      console.log('-------------');
+      onLoadMore();
+    }
+  }, [inView, hasMore, onLoadMore]);
 
   const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS, {
     // onCompleted: (data) => {
@@ -229,7 +240,14 @@ export const Table = ({ columns }) => {
                 <StyledTableCell align="center">
                   {task.orgProfilePicture ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={task.orgProfilePicture} alt={task.orgName} width={17} height={17} />
+                    <SafeImage
+                      src={task?.orgProfilePicture}
+                      style={{
+                        width: '17px',
+                        height: '17px',
+                        borderRadius: '17px',
+                      }}
+                    />
                   ) : (
                     <WonderCoin />
                   )}
@@ -250,10 +268,13 @@ export const Table = ({ columns }) => {
                   />
                 </StyledTableCell>
                 <StyledTableCell align="center">{STATUS_ICONS[task.status]}</StyledTableCell>
-                <StyledTableCell className="clickable" onClick={() => {
-                  setSelectedTask(task);
-                  setPreviewModalOpen(true);
-                }}>
+                <StyledTableCell
+                  className="clickable"
+                  onClick={() => {
+                    setSelectedTask(task);
+                    setPreviewModalOpen(true);
+                  }}
+                >
                   <TaskTitle>{task.title}</TaskTitle>
                   <TaskDescription>{task.description}</TaskDescription>
                 </StyledTableCell>
@@ -312,6 +333,8 @@ export const Table = ({ columns }) => {
           })}
         </StyledTableBody>
       </StyledTable>
+
+      <LoadMore ref={ref} hasMore={hasMore} />
     </StyledTableContainer>
   );
 };

@@ -24,6 +24,7 @@ import { GET_ORG_FROM_USERNAME, GET_ORG_BY_ID } from '../../../graphql/queries/o
 import { OrgBoardContext } from '../../../utils/contexts';
 import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
 import { dedupeColumns } from '../../../utils';
+import * as Constants from '../../../utils/constants';
 
 const TO_DO = {
   status: TASK_STATUS_TODO,
@@ -168,7 +169,9 @@ const BoardsPage = () => {
         const tasks = data?.getOrgTaskBoardTasks;
         const newColumns = populateTaskColumns(tasks, columns);
         setColumns(dedupeColumns(newColumns));
-        setOrgTaskHasMore(data?.getOrgTaskBoardTasks.length >= LIMIT);
+        const count = data?.getOrgTaskBoardTasks.filter((task) => task.status !== Constants.TASK_STATUS_ARCHIVED).length;
+        setOrgTaskHasMore(count >= LIMIT);
+        debugger;
         setFirstTimeFetch(true);
       }
     },
