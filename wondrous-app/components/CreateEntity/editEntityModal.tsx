@@ -13,7 +13,7 @@ import {
   PERMISSIONS,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   TASK_STATUS_IN_PROGRESS,
-  TASK_STATUS_TODO
+  TASK_STATUS_TODO,
 } from '../../utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
@@ -97,8 +97,14 @@ import {
   transformTaskToTaskCard,
 } from '../../utils/helpers';
 import { GET_ORG_USERS } from '../../graphql/queries/org';
-import { ATTACH_MEDIA_TO_TASK, CREATE_TASK, REMOVE_MEDIA_FROM_TASK, UPDATE_TASK, UPDATE_MILESTONE } from '../../graphql/mutations/task';
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
+import {
+  ATTACH_MEDIA_TO_TASK,
+  CREATE_TASK,
+  REMOVE_MEDIA_FROM_TASK,
+  UPDATE_TASK,
+  UPDATE_MILESTONE,
+} from '../../graphql/mutations/task';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
 import {
   ATTACH_MEDIA_TO_TASK_PROPOSAL,
   CREATE_TASK_PROPOSAL,
@@ -326,7 +332,7 @@ const EditLayoutBaseModal = (props) => {
   const userBoard = useUserBoard();
 
   const board = orgBoard || podBoard || userBoard;
-
+  const boardColumns = useColumns();
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
   const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
 
@@ -374,7 +380,7 @@ const EditLayoutBaseModal = (props) => {
     showHeaderImagePickerSection,
     showMembersSection,
     showPrioritySelectSection,
-    showDueDateSection
+    showDueDateSection,
   } = useMemo(() => {
     return {
       showDeliverableRequirementsSection: entityType === ENTITIES_TYPES.TASK,
@@ -384,7 +390,7 @@ const EditLayoutBaseModal = (props) => {
       showHeaderImagePickerSection: entityType === ENTITIES_TYPES.POD,
       showMembersSection: entityType === ENTITIES_TYPES.POD,
       showPrioritySelectSection: entityType === ENTITIES_TYPES.MILESTONE,
-      showDueDateSection: entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.MILESTONE
+      showDueDateSection: entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.MILESTONE,
     };
   }, [entityType]);
 
@@ -463,20 +469,15 @@ const EditLayoutBaseModal = (props) => {
     onCompleted: (data) => {
       const task = data?.updateTask;
       const justCreatedPod = getPodObject();
-      if (board?.setColumns && onCorrectPage) {
+      if (boardColumns?.setColumns && onCorrectPage) {
         const transformedTask = transformTaskToTaskCard(task, {});
-        let columnNumber = 0;
-        if (task.status === TASK_STATUS_IN_PROGRESS) {
-          columnNumber = 1;
+        let columns = [...boardColumns?.columns];
+        if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+          columns = updateInProgressTask(transformedTask, columns);
+        } else if (transformedTask.status === TASK_STATUS_TODO) {
+          columns = updateTaskItem(transformedTask, columns);
         }
-        const columns = [...board?.columns];
-        columns[columnNumber].tasks = columns[columnNumber].tasks.map((existingTask) => {
-          if (transformedTask?.id === existingTask?.id) {
-            return transformedTask;
-          }
-          return existingTask;
-        });
-        board.setColumns(columns);
+        boardColumns.setColumns(columns);
       }
       handleClose();
     },
@@ -486,21 +487,21 @@ const EditLayoutBaseModal = (props) => {
     onCompleted: (data) => {
       const taskProposal = data?.updateTaskProposal;
       const justCreatedPod = getPodObject();
-      if (board?.setColumns && onCorrectPage) {
+      if (boardColumns?.setColumns && onCorrectPage) {
         const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
           userProfilePicture: user?.profilePicture,
           username: user?.username,
           podName: justCreatedPod?.name,
         });
 
-        const columns = [...board?.columns];
+        const columns = [...boardColumns?.columns];
         columns[0].section.tasks = columns[0].section.tasks.map((existingTaskProposal) => {
           if (transformedTaskProposal?.id === existingTaskProposal.id) {
             return transformedTaskProposal;
           }
           return existingTaskProposal;
         });
-        board.setColumns(columns);
+        boardColumns.setColumns(columns);
       }
       handleClose();
     },
@@ -510,19 +511,19 @@ const EditLayoutBaseModal = (props) => {
   const [updateMilestone] = useMutation(UPDATE_MILESTONE, {
     onCompleted: (data) => {
       const milestone = data?.updateMilestone;
-      if (board?.setColumns && onCorrectPage) {
+      if (boardColumns?.setColumns && onCorrectPage) {
         const transformedTask = transformTaskToTaskCard(milestone, {});
-        let columns = [...board?.columns];
+        let columns = [...boardColumns?.columns];
         if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
           columns = updateInProgressTask(transformedTask, columns);
         } else if (transformedTask.status === TASK_STATUS_TODO) {
           columns = updateTaskItem(transformedTask, columns);
         }
-        board.setColumns(columns);
+        boardColumns.setColumns(columns);
       }
       handleClose();
-    }
-  })
+    },
+  });
 
   const textFieldRef = useRef();
   const submitMutation = useCallback(() => {
@@ -537,13 +538,13 @@ const EditLayoutBaseModal = (props) => {
           dueDate,
           ...(rewardsAmount &&
             rewardsCurrency && {
-            rewards: [
-              {
-                rewardAmount: parseFloat(rewardsAmount),
-                paymentMethodId: rewardsCurrency,
-              },
-            ],
-          }),
+              rewards: [
+                {
+                  rewardAmount: parseFloat(rewardsAmount),
+                  paymentMethodId: rewardsCurrency,
+                },
+              ],
+            }),
           // TODO: add links?,
           ...(!isTaskProposal && {
             assigneeId: assignee?.value,
@@ -618,7 +619,7 @@ const EditLayoutBaseModal = (props) => {
     existingTask?.id,
     rewardsAmount,
     rewardsCurrency,
-    updateMilestone
+    updateMilestone,
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
@@ -769,7 +770,7 @@ const EditLayoutBaseModal = (props) => {
                 event,
                 filePrefix: 'tmp/task/new/',
                 mediaUploads,
-                setMediaUploads: () => { },
+                setMediaUploads: () => {},
               });
               if (isTaskProposal) {
                 attachTaskProposalMedia({
@@ -806,30 +807,32 @@ const EditLayoutBaseModal = (props) => {
         {/*Upload header image block*/}
         {showHeaderImagePickerSection && <HeaderImage />}
 
-        {showAppearSection && (<CreateFormMainSelects>
-          <DropdownSelect
-            title="Reward currency"
-            labelText="Choose tokens"
-            options={paymentMethods}
-            name="reward-currency"
-            setValue={setRewardsCurrency}
-            value={rewardsCurrency}
-          />
-          <CreateRewardAmountDiv>
-            <CreateFormMainBlockTitle>Reward amount</CreateFormMainBlockTitle>
-
-            <InputForm
-              style={{
-                marginTop: '20px',
-              }}
-              type={'number'}
-              placeholder="Enter reward amount"
-              search={false}
-              value={rewardsAmount}
-              onChange={(e) => setRewardsAmount(e.target.value)}
+        {showAppearSection && (
+          <CreateFormMainSelects>
+            <DropdownSelect
+              title="Reward currency"
+              labelText="Choose tokens"
+              options={paymentMethods}
+              name="reward-currency"
+              setValue={setRewardsCurrency}
+              value={rewardsCurrency}
             />
-          </CreateRewardAmountDiv>
-        </CreateFormMainSelects>)}
+            <CreateRewardAmountDiv>
+              <CreateFormMainBlockTitle>Reward amount</CreateFormMainBlockTitle>
+
+              <InputForm
+                style={{
+                  marginTop: '20px',
+                }}
+                type={'number'}
+                placeholder="Enter reward amount"
+                search={false}
+                value={rewardsAmount}
+                onChange={(e) => setRewardsAmount(e.target.value)}
+              />
+            </CreateRewardAmountDiv>
+          </CreateFormMainSelects>
+        )}
 
         {showMembersSection && (
           <CreateFormMembersSection>
