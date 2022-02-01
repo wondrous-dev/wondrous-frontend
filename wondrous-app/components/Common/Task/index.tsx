@@ -258,7 +258,13 @@ export const Task = ({ task, setTask }) => {
                 borderRadius: '4px',
               }}
             />
-            {isMilestone && <MilestoneIcon />}
+            {isMilestone && (
+              <MilestoneIcon
+                style={{
+                  marginLeft: '4px',
+                }}
+              />
+            )}
             <AvatarList style={{ marginLeft: '12px' }} users={userList} id={'task-' + task?.id} />
             {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
           </TaskHeader>
