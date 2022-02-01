@@ -271,7 +271,6 @@ export const HeaderContributors = styled.div`
   align-items: center;
   cursor: pointer;
   margin-right: 8px;
-  margin-bottom: 4px;
 `;
 
 export const HeaderContributorsAmount = styled(Typography)`
@@ -284,7 +283,6 @@ export const HeaderContributorsAmount = styled(Typography)`
     color: #ffffff;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     margin-right: 5px;
-    margin-bottom: 4px;
   }
 `;
 
