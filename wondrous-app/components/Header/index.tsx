@@ -71,8 +71,13 @@ const HeaderComponent = (props) => {
           <Wallet />
 
           <NotificationsBoard notifications={notifications || []} setNofications={setNotifications} />
-          {pathname.includes('/boards') && (
+          {pathname.includes('/boards') ? (
             <HeaderCreateButton highlighted="true" onClick={openCreateFormModal}>
+              <span style={{ padding: '0px 8px' }}>Create</span>
+              <CreateBtnIcon />
+            </HeaderCreateButton>
+          ) : (
+            <HeaderCreateButton highlighted="true" style={{ visibility: 'hidden' }}>
               <span style={{ padding: '0px 8px' }}>Create</span>
               <CreateBtnIcon />
             </HeaderCreateButton>
