@@ -16,7 +16,7 @@ export const SafeImage = (safeImageArgs: SafeImageArgs) => {
 
   const imgUrl = data?.getPreviewFile?.url;
   useEffect(() => {
-    if (src) {
+    if (src && !src.startsWith('http')) {
       getPreviewFile({
         variables: {
           path: src,
