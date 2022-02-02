@@ -188,12 +188,10 @@ const CommentItem = (props) => {
           </TaskSubmissionHeaderTimeText>
         </CommentTopFlexDiv>
         <CommentText>
-          {cutString(
-            renderMentionString({
-              content,
-              router,
-            })
-          )}
+          {renderMentionString({
+            content,
+            router,
+          })}
         </CommentText>
         {canEdit && (
           <DeleteText
