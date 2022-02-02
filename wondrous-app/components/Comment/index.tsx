@@ -28,6 +28,7 @@ import {
 import { TaskSubmissionHeaderCreatorText, TaskSubmissionHeaderTimeText } from '../Common/Task/styles';
 import { formatDistance } from 'date-fns';
 import { renderMentionString } from '../../utils/common';
+import { cutString } from '../../utils/helpers';
 import { useRouter } from 'next/router';
 import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
 
@@ -163,10 +164,12 @@ const CommentItem = (props) => {
           </TaskSubmissionHeaderTimeText>
         </CommentTopFlexDiv>
         <CommentText>
-          {renderMentionString({
-            content,
-            router,
-          })}
+          {cutString(
+            renderMentionString({
+              content,
+              router,
+            })
+          )}
         </CommentText>
         {canEdit && (
           <DeleteText

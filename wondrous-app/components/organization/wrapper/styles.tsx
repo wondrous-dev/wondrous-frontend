@@ -240,9 +240,9 @@ export const HeaderActivity = styled.div`
   flex-wrap: wrap;
   width: 100%;
   min-height: 23px;
-  height: 23px;
   display: flex;
   align-items: center;
+  margin-top: 8px;
 `;
 
 export const HeaderActivityLink = styled.a`

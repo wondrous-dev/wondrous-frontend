@@ -43,7 +43,7 @@ import { renderMentionString } from '../../../utils/common';
 import { useRouter } from 'next/router';
 import { Typography } from '@material-ui/core';
 import { SafeImage } from '../Image';
-import { parseUserPermissionContext } from '../../../utils/helpers';
+import { parseUserPermissionContext, cutString } from '../../../utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
 import { White } from '../../../theme/colors';
 import { TaskViewModal } from './modal';
@@ -275,7 +275,7 @@ export const Task = ({ task, setTask }) => {
             <TaskTitle>{title}</TaskTitle>
             <p>
               {renderMentionString({
-                content: description,
+                content: cutString(description),
                 router,
               })}
             </p>
@@ -412,7 +412,7 @@ export const TaskListCard = (props) => {
         <TaskTitle>{task?.title}</TaskTitle>
         <p>
           {renderMentionString({
-            content: task?.description,
+            content: cutString(task?.description),
             router,
           })}
         </p>
