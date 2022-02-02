@@ -122,7 +122,7 @@ import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment';
 import { ErrorText } from '../Common';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
 import { updateInProgressTask, updateTaskItem } from '../../utils/board';
-import { GET_MILESTONES_FOR_ORG } from '../../graphql/queries/task';
+import { GET_MILESTONES } from '../../graphql/queries/task';
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -340,7 +340,7 @@ const EditLayoutBaseModal = (props) => {
 
   const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS);
 
-  const [getMilestonesForOrg, { data: milestonesForOrgData }] = useLazyQuery(GET_MILESTONES_FOR_ORG);
+  const [getMilestones, { data: milestonesData }] = useLazyQuery(GET_MILESTONES);
 
   const descriptionTextCounter = (e) => {
     setDescriptionText(e.target.value);
@@ -661,6 +661,10 @@ const EditLayoutBaseModal = (props) => {
             labelIcon={<CreatePodIcon />}
             options={filterDAOptions(pods) || []}
             name="pod"
+            onChange={(e) => {
+              setMilestoneString('');
+              setMilestone(null);
+            }}
           />
         </CreateFormMainSelects>
 
@@ -970,11 +974,12 @@ const EditLayoutBaseModal = (props) => {
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Milestone</CreateFormAddDetailsInputLabel>
               <StyledAutocomplete
-                options={filterUserOptions(milestonesForOrgData?.getMilestonesForOrg)}
+                options={filterUserOptions(milestonesData?.getMilestones)}
                 onOpen={() =>
-                  getMilestonesForOrg({
+                  getMilestones({
                     variables: {
                       orgId: org,
+                      podId: pod,
                     },
                   })
                 }

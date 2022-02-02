@@ -90,9 +90,9 @@ export const GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE = gql`
   }
 `;
 
-export const GET_MILESTONES_FOR_ORG = gql`
-  query getMilestonesForOrg($orgId: ID!) {
-    getMilestonesForOrg(orgId: $orgId) {
+export const GET_MILESTONES = gql`
+  query getMilestones($orgId: ID!, $podId: ID) {
+    getMilestones(orgId: $orgId, podId: $podId) {
       title
       id
     }

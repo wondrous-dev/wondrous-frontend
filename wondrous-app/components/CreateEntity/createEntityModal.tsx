@@ -89,7 +89,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
 import { SafeImage } from '../Common/Image';
 import { GET_USER_AVAILABLE_PODS, GET_USER_PODS } from '../../graphql/queries/pod';
-import { GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_MILESTONES_FOR_ORG } from '../../graphql/queries/task';
+import { GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_MILESTONES } from '../../graphql/queries/task';
 import {
   getMentionArray,
   parseUserPermissionContext,
@@ -358,7 +358,7 @@ const CreateLayoutBaseModal = (props) => {
 
   const [getEligibleReviewersForOrg, { data: eligibleReviewersData }] = useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_ORG);
 
-  const [getMilestonesForOrg, { data: milestonesForOrgData }] = useLazyQuery(GET_MILESTONES_FOR_ORG);
+  const [getMilestones, { data: milestonesData }] = useLazyQuery(GET_MILESTONES);
 
   const descriptionTextCounter = (e) => {
     if (e.target.value.length < textLimit) {
@@ -730,6 +730,10 @@ const CreateLayoutBaseModal = (props) => {
               labelIcon={<CreatePodIcon />}
               options={filterDAOptions(pods) || []}
               name="pod"
+              onChange={(e) => {
+                setMilestoneString('');
+                setMilestone(null);
+              }}
             />
           )}
         </CreateFormMainSelects>
@@ -1029,11 +1033,12 @@ const CreateLayoutBaseModal = (props) => {
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Milestone</CreateFormAddDetailsInputLabel>
               <StyledAutocomplete
-                options={filterUserOptions(milestonesForOrgData?.getMilestonesForOrg)}
+                options={filterUserOptions(milestonesData?.getMilestones)}
                 onOpen={() =>
-                  getMilestonesForOrg({
+                  getMilestones({
                     variables: {
                       orgId: org,
+                      podId: pod,
                     },
                   })
                 }
