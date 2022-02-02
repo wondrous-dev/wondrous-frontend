@@ -259,7 +259,6 @@ const Wrapper = (props) => {
                             <HeaderActivityLink href={link?.url} key={link} target="_blank">
                               <SocialIcon
                                 style={{
-                                  marginLeft: '8px',
                                   width: '20px',
                                   height: '20px',
                                 }}
