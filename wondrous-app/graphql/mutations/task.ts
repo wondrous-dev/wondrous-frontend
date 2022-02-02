@@ -84,18 +84,18 @@ export const DELETE_TASK_COMMENT = gql`
   }
 `;
 
-export const UPDATE_TASK_ASSIGNEE = gql`
-  mutation updateTaskAssignee($taskId: ID!, $assigneeId: ID!) {
-    updateTaskAssignee(taskId: $taskId, assigneeId: $assigneeId) {
+export const CREATE_MILESTONE = gql`
+  mutation createMilestone($input: TaskInput) {
+    createMilestone(input: $input) {
       ...TaskFragment
     }
   }
   ${TaskFragment}
 `;
 
-export const CREATE_MILESTONE = gql`
-  mutation createMilestone($input: TaskInput) {
-    createMilestone(input: $input) {
+export const UPDATE_TASK_ASSIGNEE = gql`
+  mutation updateTaskAssignee($taskId: ID!, $assigneeId: ID!) {
+    updateTaskAssignee(taskId: $taskId, assigneeId: $assigneeId) {
       ...TaskFragment
     }
   }
