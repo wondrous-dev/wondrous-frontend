@@ -248,18 +248,21 @@ const Wrapper = (props) => {
                           SocialIcon = OpenSeaIcon;
                           break;
                       }
-                      return (
-                        <HeaderActivityLink href={link?.url} key={link} target="_blank">
-                          <SocialIcon
-                            style={{
-                              marginLeft: '8px',
-                              width: '20px',
-                              height: '20px',
-                              marginBottom: '0',
-                            }}
-                          />
-                        </HeaderActivityLink>
-                      );
+                      if (SocialIcon) {
+                        return (
+                          <HeaderActivityLink href={link?.url} key={link} target="_blank">
+                            <SocialIcon
+                              style={{
+                                marginLeft: '8px',
+                                width: '20px',
+                                height: '20px',
+                                marginBottom: '0',
+                              }}
+                            />
+                          </HeaderActivityLink>
+                        );
+                      }
+                      return null;
                     }
                   })}
                 </HeaderActivity>
