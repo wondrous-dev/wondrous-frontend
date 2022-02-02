@@ -4,7 +4,7 @@ import { GET_ORG_USERS } from '../../graphql/queries/org';
 import { CREATE_TASK_COMMENT, DELETE_TASK_COMMENT } from '../../graphql/mutations/task';
 import { CREATE_TASK_PROPOSAL_COMMENT, DELETE_TASK_PROPOSAL_COMMENT } from '../../graphql/mutations/taskProposal';
 import { PERMISSIONS, TASK_STATUS_REQUESTED } from '../../utils/constants';
-import { getMentionArray, parseUserPermissionContext } from '../../utils/helpers';
+import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard } from '../../utils/helpers';
 import { White } from '../../theme/colors';
 import { TextInputContext } from '../../utils/contexts';
 import { TextInputDiv } from '../CreateEntity/styles';
@@ -30,10 +30,15 @@ import { formatDistance } from 'date-fns';
 import { renderMentionString } from '../../utils/common';
 import { useRouter } from 'next/router';
 import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
+import { updateTask } from '../../utils/board';
 
 export const CommentBox = (props) => {
   const user = useMe();
   const { orgId, existingContent, taskType, task, previousCommenterIds } = props;
+  const orgBoard = useOrgBoard();
+  const userBoard = useUserBoard();
+  const podBoard = usePodBoard();
+  const board = orgBoard || userBoard || podBoard;
   const [comment, setComment] = useState(existingContent || '');
   const { data: orgUsersData } = useQuery(GET_ORG_USERS, {
     variables: {
@@ -41,7 +46,7 @@ export const CommentBox = (props) => {
       limit: 100, // TODO: fix autocomplete
     },
   });
-  const [createTaskComment] = useMutation(CREATE_TASK_COMMENT, {
+  const [createTaskComment, { data: taskCommentData }] = useMutation(CREATE_TASK_COMMENT, {
     refetchQueries: ['getTaskComments'],
   });
 
@@ -83,6 +88,15 @@ export const CommentBox = (props) => {
       addComment();
     }
   };
+
+  useEffect(() => {
+    if (taskCommentData?.createTaskComment) {
+      const updatedTask = { ...task, commentCount: task.commentCount + 1 };
+      const transformedTask = transformTaskToTaskCard(updatedTask, board?.columns);
+      const boardColumns = updateTask(transformedTask, board?.columns);
+      board?.setColumns(boardColumns);
+    }
+  }, [taskCommentData]);
 
   return (
     <AddCommentContainer>
