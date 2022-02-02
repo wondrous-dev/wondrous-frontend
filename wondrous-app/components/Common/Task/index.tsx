@@ -299,10 +299,12 @@ export const Task = ({ task, setTask }) => {
 						<TaskLikeIcon liked={liked} />
 						<TaskActionAmount>{likes}</TaskActionAmount>
 					</TaskAction> */}
-            <TaskAction key={'task-comment-' + id}>
-              <TaskCommentIcon />
-              <TaskActionAmount>{commentCount}</TaskActionAmount>
-            </TaskAction>
+            {!isMilestone && (
+              <TaskAction key={'task-comment-' + id}>
+                <TaskCommentIcon />
+                <TaskActionAmount>{commentCount}</TaskActionAmount>
+              </TaskAction>
+            )}
             {/* <TaskAction key={'task-share-' + id}>
               <TaskShareIcon />
               <TaskActionAmount>{shares}</TaskActionAmount>
