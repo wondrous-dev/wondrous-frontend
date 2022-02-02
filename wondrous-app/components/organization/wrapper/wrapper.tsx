@@ -231,33 +231,46 @@ const Wrapper = (props) => {
                     }
                     return null;
                   })}
-                  {links?.map((link) => {
-                    if (link.type !== 'link') {
-                      let SocialIcon = null;
-                      switch (link.type) {
-                        case SOCIAL_MEDIA_DISCORD:
-                          SocialIcon = DiscordIcon;
-                          break;
-                        case SOCIAL_MEDIA_TWITTER:
-                          SocialIcon = TwitterPurpleIcon;
-                          break;
-                        case SOCIAL_MEDIA_LINKEDIN:
-                          SocialIcon = LinkedInIcon;
-                          break;
-                        case SOCIAL_OPENSEA:
-                          SocialIcon = OpenSeaIcon;
-                          break;
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {links?.map((link) => {
+                      if (link.type !== 'link') {
+                        let SocialIcon = null;
+                        switch (link.type) {
+                          case SOCIAL_MEDIA_DISCORD:
+                            SocialIcon = DiscordIcon;
+                            break;
+                          case SOCIAL_MEDIA_TWITTER:
+                            SocialIcon = TwitterPurpleIcon;
+                            break;
+                          case SOCIAL_MEDIA_LINKEDIN:
+                            SocialIcon = LinkedInIcon;
+                            break;
+                          case SOCIAL_OPENSEA:
+                            SocialIcon = OpenSeaIcon;
+                            break;
+                        }
+                        if (SocialIcon) {
+                          return (
+                            <HeaderActivityLink href={link?.url} key={link} target="_blank">
+                              <SocialIcon
+                                style={{
+                                  marginLeft: '8px',
+                                  width: '20px',
+                                  height: '20px',
+                                }}
+                              />
+                            </HeaderActivityLink>
+                          );
+                        }
+                        return null;
                       }
-                      if (SocialIcon) {
-                        return (
-                          <HeaderActivityLink href={link?.url} key={link} target="_blank">
-                            <SocialIcon />
-                          </HeaderActivityLink>
-                        );
-                      }
-                      return null;
-                    }
-                  })}
+                    })}
+                  </div>
                 </HeaderActivity>
               </TokenHeader>
 
