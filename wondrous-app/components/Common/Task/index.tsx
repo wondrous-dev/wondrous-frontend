@@ -84,6 +84,7 @@ export const Task = ({ task, setTask }) => {
     users = [],
     type,
     createdBy,
+    commentCount,
   } = task;
   const router = useRouter();
   let { likes = 0, comments = 0, shares = 0, iLiked = false, iCommented = false, iShared = false } = actions || {};
@@ -298,10 +299,12 @@ export const Task = ({ task, setTask }) => {
 						<TaskLikeIcon liked={liked} />
 						<TaskActionAmount>{likes}</TaskActionAmount>
 					</TaskAction> */}
-            <TaskAction key={'task-comment-' + id}>
-              <TaskCommentIcon />
-              <TaskActionAmount>{comments}</TaskActionAmount>
-            </TaskAction>
+            {!isMilestone && (
+              <TaskAction key={'task-comment-' + id}>
+                <TaskCommentIcon />
+                <TaskActionAmount>{commentCount}</TaskActionAmount>
+              </TaskAction>
+            )}
             {/* <TaskAction key={'task-share-' + id}>
               <TaskShareIcon />
               <TaskActionAmount>{shares}</TaskActionAmount>

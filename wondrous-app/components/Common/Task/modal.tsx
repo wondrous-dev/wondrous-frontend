@@ -51,8 +51,8 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
-  TASK_STATUS_TODO,
   MILESTONE_TYPE,
+  TASK_STATUS_TODO,
 } from '../../../utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
@@ -755,8 +755,8 @@ export const TaskViewModal = (props) => {
                 {!fetchedTask?.creatorUsername && (
                   <TaskSectionInfoText
                     style={{
-                      marginLeft: '4px',
                       marginTop: '8px',
+                      marginLeft: '16px',
                     }}
                   >
                     None
@@ -842,11 +842,6 @@ export const TaskViewModal = (props) => {
                                 },
                               });
                             }
-                            setFetchedTask({
-                              ...fetchedTask,
-                              assigneeProfilePicture: user?.profilePicture,
-                              assigneeUsername: fetchedTask?.assigneeUsername,
-                            });
                           }}
                         >
                           Self-assign this task
