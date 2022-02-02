@@ -95,6 +95,7 @@ const SELECT_OPTIONS = [
 const LIMIT = 10;
 
 export const populateTaskColumns = (tasks, columns) => {
+  if (!columns) return [];
   const newColumns = columns.map((column) => {
     column.tasks = [];
     return tasks.reduce((column, task) => {
@@ -110,6 +111,7 @@ export const populateTaskColumns = (tasks, columns) => {
 };
 
 export const addToTaskColumns = (newResults, columns) => {
+  if (!columns) return [];
   const newColumns = columns.map((column) => {
     return newResults.reduce((column, task) => {
       if (column.status === task.status) {

@@ -176,5 +176,11 @@ export const PRIVACY_LEVEL = {
   private: 'private',
 };
 
+export const BOARD_TYPE = {
+  org: 'org',
+  pod: 'pod',
+  assignee: 'assignee',
+};
+
 export const snakeToCamel = (str) =>
-  str.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('-', '').replace('_', ''));
+  str?.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('-', '').replace('_', ''));

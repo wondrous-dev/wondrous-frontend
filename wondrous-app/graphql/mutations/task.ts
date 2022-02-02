@@ -91,7 +91,7 @@ export const CREATE_MILESTONE = gql`
     }
   }
   ${TaskFragment}
-`
+`;
 
 export const UPDATE_TASK_ASSIGNEE = gql`
   mutation updateTaskAssignee($taskId: ID!, $assigneeId: ID!) {
@@ -104,9 +104,17 @@ export const UPDATE_TASK_ASSIGNEE = gql`
 
 export const UPDATE_MILESTONE = gql`
   mutation updateMilestone($milestoneId: ID!, $input: TaskInput) {
-  updateMilestone(milestoneId: $milestoneId, input: $input) {
-    ...TaskFragment
+    updateMilestone(milestoneId: $milestoneId, input: $input) {
+      ...TaskFragment
+    }
   }
-}
   ${TaskFragment}
-`
+`;
+
+export const UPDATE_TASK_ORDER = gql`
+  mutation updateTaskOrder($taskId: ID!, $input: updateTaskOrderInput!) {
+    updateTaskOrder(taskId: $taskId, input: $input) {
+      success
+    }
+  }
+`;
