@@ -132,13 +132,23 @@ const CommentItem = (props) => {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
-  const [deleteTaskComment] = useMutation(DELETE_TASK_COMMENT, {
+  const [deleteTaskComment, { data: deleteTaskCommentData }] = useMutation(DELETE_TASK_COMMENT, {
     refetchQueries: ['getTaskComments'],
   });
 
   const [deleteTaskProposalComment] = useMutation(DELETE_TASK_PROPOSAL_COMMENT, {
     refetchQueries: ['getTaskProposalComments'],
   });
+
+  useEffect(() => {
+    if (deleteTaskCommentData?.deleteTaskComment) {
+      const updatedTask = { ...task, commentCount: task.commentCount - 1 };
+      const transformedTask = transformTaskToTaskCard(updatedTask, board?.columns);
+      const boardColumns = updateTask(transformedTask, board?.columns);
+      board?.setColumns(boardColumns);
+    }
+  }, [deleteTaskCommentData]);
+
   const board = orgBoard || podBoard || userBoard;
   if (!comment) return null;
   const {
@@ -261,7 +271,9 @@ export const CommentList = (props) => {
       />
       <CommentListContainer>
         {comments?.length > 0 &&
-          comments.map((comment) => <CommentItem key={comment?.id} comment={comment} taskType={taskType} />)}
+          comments.map((comment) => (
+            <CommentItem key={comment?.id} comment={comment} taskType={taskType} task={task} />
+          ))}
       </CommentListContainer>
     </CommentListWrapper>
   );
