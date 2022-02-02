@@ -38,6 +38,7 @@ import {
   ArchivedTaskUndo,
   MilestoneSeparator,
   MilestoneProgressWrapper,
+  MilestoneIconWrapper,
 } from './styles';
 import { renderMentionString } from '../../../utils/common';
 import { useRouter } from 'next/router';
@@ -260,11 +261,9 @@ export const Task = ({ task, setTask }) => {
               }}
             />
             {isMilestone && (
-              <MilestoneIcon
-                style={{
-                  marginLeft: '4px',
-                }}
-              />
+              <MilestoneIconWrapper withProfile={task?.orgProfilePicture}>
+                <MilestoneIcon />
+              </MilestoneIconWrapper>
             )}
             <AvatarList style={{ marginLeft: '12px' }} users={userList} id={'task-' + task?.id} />
             {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}

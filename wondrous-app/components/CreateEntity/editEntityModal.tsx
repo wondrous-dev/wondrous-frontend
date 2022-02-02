@@ -122,12 +122,13 @@ import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment';
 import { ErrorText } from '../Common';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
 import { updateInProgressTask, updateTaskItem } from '../../utils/board';
+import { GET_MILESTONES } from '../../graphql/queries/task';
 
 const filterUserOptions = (options) => {
   if (!options) return [];
   return options.map((option) => {
     return {
-      label: option?.username,
+      label: option?.username ?? option?.title,
       id: option?.id,
       profilePicture: option?.profilePicture,
     };
@@ -310,6 +311,7 @@ const EditLayoutBaseModal = (props) => {
   });
 
   const [milestone, setMilestone] = useState(null);
+  const [milestoneString, setMilestoneString] = useState('');
   const [assigneeString, setAssigneeString] = useState(existingTask?.assigneeUsername);
   const [reviewerString, setReviewerString] = useState('');
   const [assignee, setAssignee] = useState(
@@ -337,6 +339,8 @@ const EditLayoutBaseModal = (props) => {
   const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
 
   const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS);
+
+  const [getMilestones, { data: milestonesData }] = useLazyQuery(GET_MILESTONES);
 
   const descriptionTextCounter = (e) => {
     setDescriptionText(e.target.value);
@@ -466,6 +470,7 @@ const EditLayoutBaseModal = (props) => {
   }, [pods, pod]);
 
   const [updateTask] = useMutation(UPDATE_TASK, {
+    refetchQueries: () => ['getPerStatusTaskCountForMilestone'],
     onCompleted: (data) => {
       const task = data?.updateTask;
       const justCreatedPod = getPodObject();
@@ -533,7 +538,7 @@ const EditLayoutBaseModal = (props) => {
           title,
           description: descriptionText,
           orgId: org?.id,
-          milestoneId: milestone,
+          milestoneId: milestone?.id,
           podId: pod?.id,
           dueDate,
           ...(rewardsAmount &&
@@ -656,6 +661,10 @@ const EditLayoutBaseModal = (props) => {
             labelIcon={<CreatePodIcon />}
             options={filterDAOptions(pods) || []}
             name="pod"
+            onChange={(e) => {
+              setMilestoneString('');
+              setMilestone(null);
+            }}
           />
         </CreateFormMainSelects>
 
@@ -955,6 +964,52 @@ const EditLayoutBaseModal = (props) => {
                           }}
                         />
                       )}
+                      <OptionTypography>{option?.label}</OptionTypography>
+                    </OptionDiv>
+                  );
+                }}
+              />
+            </CreateFormAddDetailsInputBlock>
+
+            <CreateFormAddDetailsInputBlock>
+              <CreateFormAddDetailsInputLabel>Milestone</CreateFormAddDetailsInputLabel>
+              <StyledAutocomplete
+                options={filterUserOptions(milestonesData?.getMilestones)}
+                onOpen={() =>
+                  getMilestones({
+                    variables: {
+                      orgId: org,
+                      podId: pod,
+                    },
+                  })
+                }
+                renderInput={(params) => (
+                  <TextField
+                    style={{
+                      color: White,
+                      fontFamily: 'Space Grotesk',
+                      fontSize: '14px',
+                      paddingLeft: '4px',
+                    }}
+                    ref={textFieldRef}
+                    placeholder="Enter milestone..."
+                    InputLabelProps={{ shrink: false }}
+                    {...params}
+                  />
+                )}
+                value={milestone}
+                inputValue={milestoneString}
+                onInputChange={(_, newInputValue) => {
+                  setMilestoneString(newInputValue);
+                }}
+                renderOption={(props, option) => {
+                  return (
+                    <OptionDiv
+                      onClick={(event) => {
+                        setMilestone(option);
+                        props?.onClick(event);
+                      }}
+                    >
                       <OptionTypography>{option?.label}</OptionTypography>
                     </OptionDiv>
                   );

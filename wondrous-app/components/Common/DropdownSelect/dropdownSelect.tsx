@@ -27,10 +27,23 @@ const MenuProps = {
 };
 
 const DropdownSelect = (props) => {
-  const { title, labelText, labelIcon, options, name, value, setValue, formSelectStyle, disabled, titleStyle } = props;
+  const {
+    title,
+    labelText,
+    labelIcon,
+    options,
+    name,
+    value,
+    setValue,
+    formSelectStyle,
+    disabled,
+    titleStyle,
+    onChange,
+  } = props;
 
   const handleChange = (event) => {
     setValue(event.target.value);
+    onChange();
   };
 
   return (

@@ -66,6 +66,10 @@ export const TaskSeparator = styled.div`
   margin-top: 5px;
 `;
 
+export const MilestoneIconWrapper = styled.div`
+  margin-left: ${(props) => (props.withProfile ? '6px' : '0')};
+`;
+
 export const MilestoneSeparator = styled(TaskSeparator)`
   margin: 12px 0;
 `;
