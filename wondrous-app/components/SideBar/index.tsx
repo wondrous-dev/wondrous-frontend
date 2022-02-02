@@ -65,7 +65,7 @@ const SideBarComponent = (props) => {
             }}
           >
             {user?.profilePicture ? (
-              <SafeImage style={profilePictureStyle} src={user?.profilePicture} />
+              <SafeImage style={profilePictureStyle} src={user?.thumbnailPicture || user?.profilePicture} />
             ) : (
               <DefaultUserImage style={profilePictureStyle} />
             )}
@@ -78,23 +78,20 @@ const SideBarComponent = (props) => {
                   key={item.id}
                   onClick={() => router.push(`/organization/${item?.username}/boards`)}
                 >
-                  { item?.profilePicture
-                  ? (
+                  {item?.profilePicture ? (
                     <SafeImage
-                      src={item?.profilePicture}
+                      src={item?.thumbnailPicture || item?.profilePicture}
                       style={{
                         width: '36px',
                         height: '36px',
                         borderRadius: '6px',
                       }}
                     />
-                  )
-                  : (
+                  ) : (
                     <NoLogoDAO>
                       <DAOIcon />
                     </NoLogoDAO>
-                  )
-                  }
+                  )}
                 </DrawerListItem>
               ))}
           </DrawerList>
