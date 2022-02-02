@@ -251,14 +251,7 @@ const Wrapper = (props) => {
                       if (SocialIcon) {
                         return (
                           <HeaderActivityLink href={link?.url} key={link} target="_blank">
-                            <SocialIcon
-                              style={{
-                                marginLeft: '8px',
-                                width: '20px',
-                                height: '20px',
-                                marginBottom: '0',
-                              }}
-                            />
+                            <SocialIcon />
                           </HeaderActivityLink>
                         );
                       }

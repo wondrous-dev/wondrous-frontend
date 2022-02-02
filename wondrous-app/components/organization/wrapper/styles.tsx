@@ -255,7 +255,6 @@ export const HeaderActivityLink = styled.a`
   color: #ccbbff;
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   margin-right: 12px;
-  margin-bottom: 4px;
 `;
 
 export const HeaderActivityLinkIcon = styled(LinkIcon)`
