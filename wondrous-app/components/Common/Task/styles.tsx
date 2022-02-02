@@ -68,15 +68,15 @@ export const TaskSeparator = styled.div`
 
 export const MilestoneIconWrapper = styled.div`
   margin-left: ${(props) => (props.withProfile ? '6px' : '0')};
-`
+`;
 
 export const MilestoneSeparator = styled(TaskSeparator)`
   margin: 12px 0;
-`
+`;
 
 export const MilestoneProgressWrapper = styled.div`
   margin-bottom: 12px;
-`
+`;
 
 export const TaskTitle = styled.div`
   display: flex;
@@ -385,4 +385,3 @@ export const ArchivedTaskUndo = styled.span`
     cursor: pointer;
   }
 `;
-

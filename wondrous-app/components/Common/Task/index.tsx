@@ -117,9 +117,6 @@ export const Task = ({ task, setTask }) => {
         variables: orgBoard?.getOrgBoardTaskCountVariables,
       },
     ],
-    onError: () => {
-      console.error('Something went wrong.');
-    },
   });
 
   const handleNewStatus = useCallback(
@@ -262,7 +259,11 @@ export const Task = ({ task, setTask }) => {
                 borderRadius: '4px',
               }}
             />
-            {isMilestone && <MilestoneIconWrapper withProfile={task?.orgProfilePicture}> <MilestoneIcon /> </MilestoneIconWrapper>}
+            {isMilestone && (
+              <MilestoneIconWrapper withProfile={task?.orgProfilePicture}>
+                <MilestoneIcon />
+              </MilestoneIconWrapper>
+            )}
             <AvatarList style={{ marginLeft: '12px' }} users={userList} id={'task-' + task?.id} />
             {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
           </TaskHeader>

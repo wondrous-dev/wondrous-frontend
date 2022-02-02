@@ -10,22 +10,23 @@ export const Compensation = (props) => {
 
   return (
     <CompensationWrapper key={props.id}>
-      {taskIcon}
-      <CompensationPill>
-        <IconContainer>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <SafeImage
-            src={icon}
-            style={{
-              width: '24px',
-              height: '24px',
-            }}
-          />
-        </IconContainer>
-        <CompensationAmount>
-          {shrinkNumber(rewardAmount)} {symbol && symbol.toUpperCase()}
-        </CompensationAmount>
-      </CompensationPill>
+      {rewardAmount && (
+        <CompensationPill>
+          <IconContainer>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <SafeImage
+              src={icon}
+              style={{
+                width: '24px',
+                height: '24px',
+              }}
+            />
+          </IconContainer>
+          <CompensationAmount>
+            {rewardAmount} {symbol}
+          </CompensationAmount>
+        </CompensationPill>
+      )}
     </CompensationWrapper>
   );
 };
