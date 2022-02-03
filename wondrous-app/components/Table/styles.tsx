@@ -11,7 +11,6 @@ import { LinkIcon } from '../Icons/linkIcon';
 
 export const StyledTable = styled(Table)`
   width: 100%;
-  overflow: hidden;
   margin: 25px 0;
 `;
 

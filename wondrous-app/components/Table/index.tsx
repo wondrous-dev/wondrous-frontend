@@ -3,12 +3,13 @@ import { useInView } from 'react-intersection-observer';
 
 import {
   ENTITIES_TYPES,
+  PERMISSIONS,
   TASK_STATUS_ARCHIVED,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
 } from '../../utils/constants';
-import { groupBy, shrinkNumber } from '../../utils/helpers';
+import { groupBy, parseUserPermissionContext, shrinkNumber } from '../../utils/helpers';
 import { AvatarList } from '../Common/AvatarList';
 import { DropDown, DropDownItem } from '../Common/dropdown';
 import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton';
@@ -57,6 +58,7 @@ import { OrgBoardContext } from '../../utils/contexts';
 import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
 import { LoadMore } from '../Common/KanbanBoard/styles';
 import { SafeImage } from '../Common/Image';
+import { useMe } from '../Auth/withAuth';
 
 const STATUS_ICONS = {
   [TASK_STATUS_TODO]: <TodoWithBorder />,
@@ -87,7 +89,10 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
+  const user = useMe();
   const board = orgBoard || podBoard || userBoard;
+  const userPermissionsContext =
+    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
 
   console.log(columns, hasMore, 'columns');
 
@@ -248,95 +253,111 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
 
         <StyledTableBody>
           {columns.map((column) => {
-            return column.tasks.map((task, index) => (
-              <StyledTableRow key={index}>
-                <StyledTableCell align="center">
-                  {task.orgProfilePicture ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <SafeImage
-                      src={task?.orgProfilePicture}
-                      style={{
-                        width: '17px',
-                        height: '17px',
-                        borderRadius: '17px',
-                      }}
-                    />
-                  ) : (
-                    <WonderCoin />
-                  )}
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <AvatarList
-                    align="center"
-                    users={[
-                      {
-                        avatar: {
-                          url: task.assigneeProfilePicture,
-                        },
-                        id: task.assigneeId,
-                        goTo: function () {},
-                        initials: task.assigneeUsername,
-                      },
-                    ]}
-                  />
-                </StyledTableCell>
-                <StyledTableCell align="center">{STATUS_ICONS[task.status]}</StyledTableCell>
-                <StyledTableCell className="clickable" onClick={() => openTask(task)}>
-                  <TaskTitle>{task.title}</TaskTitle>
-                  <TaskDescription>{task.description}</TaskDescription>
-                </StyledTableCell>
-                {/*<StyledTableCell>*/}
-                {/*  <DeliverableContainer>*/}
-                {/*    {Object.entries(groupBy(task?.media || [], 'type')).map(([key, value]: [string, any], index) => {*/}
-                {/*      return (*/}
-                {/*        <DeliverableItem key={index}>*/}
-                {/*          <DeliverablesIconContainer>{DELIVERABLES_ICONS[key]}</DeliverablesIconContainer>*/}
-                {/*          {value?.length}*/}
-                {/*        </DeliverableItem>*/}
-                {/*      );*/}
-                {/*    })}*/}
-                {/*  </DeliverableContainer>*/}
-                {/*</StyledTableCell>*/}
-                <StyledTableCell>
-                  <RewardContainer>
-                    <Reward>
-                      <RewardRed />
-                      <RewardAmount>{shrinkNumber((task.rewards || [])[0]?.rewardAmount)}</RewardAmount>
-                    </Reward>
-                  </RewardContainer>
-                </StyledTableCell>
-                {/*<StyledTableCell align="center">*/}
-                {/*  <DropDownButtonDecision />*/}
-                {/*</StyledTableCell>*/}
-                <StyledTableCell align="center">
-                  <MoreOptions>
-                    <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
-                      <DropDownItem
-                        key={'task-menu-edit-' + task.id}
-                        onClick={() => editTask(task)}
-                        color="#C4C4C4"
-                        fontSize="13px"
-                        fontWeight="normal"
-                      >
-                        Edit task
-                      </DropDownItem>
-                      <DropDownItem
-                        key={'task-menu-report-' + task.id}
-                        onClick={() => {
-                          setSelectedTask(task);
-                          setArchiveModalOpen(true);
+            return column.tasks.map((task, index) => {
+              // Parse permissions here as well
+              const permissions = parseUserPermissionContext({
+                userPermissionsContext,
+                orgId: task?.orgId,
+                podId: task?.podId,
+              });
+
+              const canManageTask =
+                permissions.includes(Constants.PERMISSIONS.MANAGE_BOARD) ||
+                permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
+                task?.createdBy === user?.id;
+
+              return (
+                <StyledTableRow key={index}>
+                  <StyledTableCell align="center">
+                    {task.orgProfilePicture ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <SafeImage
+                        src={task?.orgProfilePicture}
+                        style={{
+                          width: '17px',
+                          height: '17px',
+                          borderRadius: '17px',
                         }}
-                        color="#C4C4C4"
-                        fontSize="13px"
-                        fontWeight="normal"
-                      >
-                        Archive task
-                      </DropDownItem>
-                    </DropDown>
-                  </MoreOptions>
-                </StyledTableCell>
-              </StyledTableRow>
-            ));
+                      />
+                    ) : (
+                      <WonderCoin />
+                    )}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <AvatarList
+                      align="center"
+                      users={[
+                        {
+                          avatar: {
+                            url: task.assigneeProfilePicture,
+                          },
+                          id: task.assigneeId,
+                          goTo: function () {},
+                          initials: task.assigneeUsername,
+                        },
+                      ]}
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell align="center">{STATUS_ICONS[task.status]}</StyledTableCell>
+                  <StyledTableCell className="clickable" onClick={() => openTask(task)}>
+                    <TaskTitle>{task.title}</TaskTitle>
+                    <TaskDescription>{task.description}</TaskDescription>
+                  </StyledTableCell>
+                  {/*<StyledTableCell>*/}
+                  {/*  <DeliverableContainer>*/}
+                  {/*    {Object.entries(groupBy(task?.media || [], 'type')).map(([key, value]: [string, any], index) => {*/}
+                  {/*      return (*/}
+                  {/*        <DeliverableItem key={index}>*/}
+                  {/*          <DeliverablesIconContainer>{DELIVERABLES_ICONS[key]}</DeliverablesIconContainer>*/}
+                  {/*          {value?.length}*/}
+                  {/*        </DeliverableItem>*/}
+                  {/*      );*/}
+                  {/*    })}*/}
+                  {/*  </DeliverableContainer>*/}
+                  {/*</StyledTableCell>*/}
+                  <StyledTableCell>
+                    <RewardContainer>
+                      <Reward>
+                        <RewardRed />
+                        <RewardAmount>{shrinkNumber((task.rewards || [])[0]?.rewardAmount)}</RewardAmount>
+                      </Reward>
+                    </RewardContainer>
+                  </StyledTableCell>
+                  {/*<StyledTableCell align="center">*/}
+                  {/*  <DropDownButtonDecision />*/}
+                  {/*</StyledTableCell>*/}
+                  <StyledTableCell align="center">
+                    <MoreOptions disabled={!canManageTask}>
+                      <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
+                        <DropDownItem
+                          key={'task-menu-edit-' + task.id}
+                          onClick={() => editTask(task)}
+                          color="#C4C4C4"
+                          fontSize="13px"
+                          fontWeight="normal"
+                          textAlign="left"
+                        >
+                          Edit task
+                        </DropDownItem>
+                        <DropDownItem
+                          key={'task-menu-report-' + task.id}
+                          onClick={() => {
+                            setSelectedTask(task);
+                            setArchiveModalOpen(true);
+                          }}
+                          color="#C4C4C4"
+                          fontSize="13px"
+                          fontWeight="normal"
+                          textAlign="left"
+                        >
+                          Archive task
+                        </DropDownItem>
+                      </DropDown>
+                    </MoreOptions>
+                  </StyledTableCell>
+                </StyledTableRow>
+              );
+            });
           })}
         </StyledTableBody>
       </StyledTable>

@@ -144,7 +144,7 @@ const BoardsPage = () => {
         const tasks = data?.getPodTaskBoardTasks;
         const newColumns = populateTaskColumns(tasks, columns);
         setColumns(dedupeColumns(newColumns));
-        const count = data?.getOrgTaskBoardTasks.filter((task) => task.status !== Constants.TASK_STATUS_ARCHIVED).length;
+        const count = data?.getPodTaskBoardTasks.filter((task) => task.status !== Constants.TASK_STATUS_ARCHIVED).length;
         setPodTaskHasMore(count >= LIMIT);
         setFirstTimeFetch(true);
       }
