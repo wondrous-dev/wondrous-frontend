@@ -124,41 +124,47 @@ const KanbanBoard = (props) => {
       if (updatedTask.status !== task.status) {
         updateTask(updatedTask);
       }
+      if (checkPermissions(task)) {
+        const filteredColumn = column.tasks.filter((task) => task.id !== id);
+        const newTasks = [...filteredColumn.slice(0, index), updatedTask, ...filteredColumn.slice(index)];
+        let aboveOrder, belowOrder;
+        let board = null;
+        if (orgBoard) {
+          board = BOARD_TYPE.org;
+          aboveOrder = populateOrder(index, newTasks, 'orgOrder').aboveOrder;
+          belowOrder = populateOrder(index, column.tasks, 'orgOrder').belowOrder;
+        } else if (podBoard) {
+          board = BOARD_TYPE.pod;
+          aboveOrder = populateOrder(index, newTasks, 'podOrder').aboveOrder;
+          belowOrder = populateOrder(index, newTasks, 'podOrder').belowOrder;
+        } else if (userBoard) {
+          board = BOARD_TYPE.assignee;
+          aboveOrder = populateOrder(index, newTasks, 'assigneeOrder').aboveOrder;
+          belowOrder = populateOrder(index, newTasks, 'assigneeOrder').belowOrder;
+        }
 
-      const filteredColumn = column.tasks.filter((task) => task.id !== id);
-      const newTasks = [...filteredColumn.slice(0, index), updatedTask, ...filteredColumn.slice(index)];
-      let aboveOrder, belowOrder;
-      let board = null;
-      if (orgBoard) {
-        board = BOARD_TYPE.org;
-        aboveOrder = populateOrder(index, newTasks, 'orgOrder').aboveOrder;
-        belowOrder = populateOrder(index, column.tasks, 'orgOrder').belowOrder;
-      } else if (podBoard) {
-        board = BOARD_TYPE.pod;
-        aboveOrder = populateOrder(index, newTasks, 'podOrder').aboveOrder;
-        belowOrder = populateOrder(index, newTasks, 'podOrder').belowOrder;
-      } else if (userBoard) {
-        board = BOARD_TYPE.assignee;
-        aboveOrder = populateOrder(index, newTasks, 'assigneeOrder').aboveOrder;
-        belowOrder = populateOrder(index, newTasks, 'assigneeOrder').belowOrder;
-      }
-
-      try {
-        updateTaskOrder({
-          variables: {
-            taskId: updatedTask?.id,
-            input: {
-              belowOrder,
-              aboveOrder,
-              board,
+        try {
+          updateTaskOrder({
+            variables: {
+              taskId: updatedTask?.id,
+              input: {
+                belowOrder,
+                aboveOrder,
+                board,
+              },
             },
-          },
-        }).catch((e) => {});
-      } catch (err) {}
-      return {
-        ...column,
-        tasks: newTasks,
-      };
+          }).catch((e) => {});
+        } catch (err) {}
+        return {
+          ...column,
+          tasks: newTasks,
+        };
+      } else {
+        return {
+          ...column,
+          tasks: [updatedTask, ...column.tasks],
+        };
+      }
     });
     setColumnsState(dedupeColumns(updatedColumns));
   };
