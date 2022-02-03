@@ -74,6 +74,7 @@ import {
   TextInputDiv,
   StyledAutocomplete,
   AutocompleteList,
+  StyledAutocompletePopper,
   OptionDiv,
   OptionTypography,
 } from './styles';
@@ -368,12 +369,7 @@ const EditLayoutBaseModal = (props) => {
   const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG);
   // const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
   const [pods, setPods] = useState([]);
-  const [pod, setPod] = useState(
-    existingTask?.podName && {
-      name: existingTask?.podName,
-      id: existingTask?.podId,
-    }
-  );
+  const [pod, setPod] = useState(existingTask?.podName && existingTask?.podId);
   const [dueDate, setDueDate] = useState(existingTask?.dueDate);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const {
@@ -457,7 +453,35 @@ const EditLayoutBaseModal = (props) => {
         },
       });
     }
-  }, [userOrgs?.getUserOrgs, org, getUserAvailablePods, getOrgUsers, existingTask?.orgId, getPaymentMethods]);
+    if (!milestonesData?.getMilestones) {
+      getMilestones({
+        variables: {
+          orgId: org?.id || org,
+          podId: pod?.id || pod,
+        },
+      })
+        .then((res) => {
+          const milestones = res?.data?.getMilestones;
+          const existingMilestone = milestones?.find((m) => m.id === existingTask?.milestoneId);
+          if (existingMilestone) {
+            setMilestone({
+              id: existingMilestone?.id,
+              label: existingMilestone?.title,
+            });
+          }
+        })
+        .catch((e) => console.error(e));
+    }
+  }, [
+    userOrgs?.getUserOrgs,
+    org,
+    getUserAvailablePods,
+    getOrgUsers,
+    existingTask?.orgId,
+    getPaymentMethods,
+    getMilestones,
+    milestonesData,
+  ]);
 
   const getPodObject = useCallback(() => {
     let justCreatedPod = null;
@@ -530,7 +554,6 @@ const EditLayoutBaseModal = (props) => {
     },
   });
 
-  const textFieldRef = useRef();
   const submitMutation = useCallback(() => {
     switch (entityType) {
       case ENTITIES_TYPES.TASK:
@@ -870,7 +893,7 @@ const EditLayoutBaseModal = (props) => {
           >
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
-              <StyledAutocomplete
+              <StyledAutocompletePopper
                 options={filterOrgUsers(orgUsersData?.getOrgUsers)}
                 renderInput={(params) => (
                   <TextField
@@ -880,7 +903,6 @@ const EditLayoutBaseModal = (props) => {
                       fontSize: '14px',
                       paddingLeft: '4px',
                     }}
-                    ref={textFieldRef}
                     placeholder="Enter username..."
                     InputLabelProps={{ shrink: false }}
                     {...params}
@@ -918,7 +940,7 @@ const EditLayoutBaseModal = (props) => {
 
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Reviewer</CreateFormAddDetailsInputLabel>
-              <StyledAutocomplete
+              <StyledAutocompletePopper
                 options={filterUserOptions(autocompleteData?.getAutocompleteUsers)}
                 renderInput={(params) => (
                   <TextField
@@ -942,7 +964,6 @@ const EditLayoutBaseModal = (props) => {
                   />
                 )}
                 value={reviewerString}
-                PopperComponent={AutocompleteList}
                 renderOption={(props, option, state) => {
                   return (
                     <OptionDiv
@@ -973,7 +994,7 @@ const EditLayoutBaseModal = (props) => {
 
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Milestone</CreateFormAddDetailsInputLabel>
-              <StyledAutocomplete
+              <StyledAutocompletePopper
                 options={filterUserOptions(milestonesData?.getMilestones)}
                 onOpen={() =>
                   getMilestones({
@@ -991,7 +1012,6 @@ const EditLayoutBaseModal = (props) => {
                       fontSize: '14px',
                       paddingLeft: '4px',
                     }}
-                    ref={textFieldRef}
                     placeholder="Enter milestone..."
                     InputLabelProps={{ shrink: false }}
                     {...params}
@@ -1001,6 +1021,11 @@ const EditLayoutBaseModal = (props) => {
                 inputValue={milestoneString}
                 onInputChange={(_, newInputValue) => {
                   setMilestoneString(newInputValue);
+                }}
+                onChange={(_, __, reason) => {
+                  if (reason === 'clear') {
+                    setMilestone(null);
+                  }
                 }}
                 renderOption={(props, option) => {
                   return (

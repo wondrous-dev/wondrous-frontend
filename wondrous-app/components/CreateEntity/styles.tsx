@@ -601,6 +601,20 @@ export const AutocompleteList = styled(Popper).attrs((props) => ({
   }
 `;
 
+export const StyledAutocompletePopper = styled(({ className, ...props }) => {
+  return <StyledAutocomplete {...props} classes={{ paper: className }} />;
+})`
+  && {
+    background: #0f0f0f;
+  }
+
+  & .MuiAutocomplete-noOptions {
+    font-family: 'Space Grotesk';
+    color: ${White};
+    font-size: 14px;
+  }
+`;
+
 export const OptionDiv = styled.div`
   display: flex;
   align-items: center;

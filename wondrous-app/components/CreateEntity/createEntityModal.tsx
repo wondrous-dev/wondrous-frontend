@@ -1061,6 +1061,11 @@ const CreateLayoutBaseModal = (props) => {
                 onInputChange={(_, newInputValue) => {
                   setMilestoneString(newInputValue);
                 }}
+                onChange={(_, __, reason) => {
+                  if (reason === 'clear') {
+                    setMilestone(null);
+                  }
+                }}
                 renderOption={(props, option) => {
                   return (
                     <OptionDiv
