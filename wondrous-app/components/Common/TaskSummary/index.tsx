@@ -28,7 +28,7 @@ import {
   SmallerCardActionButtons,
 } from './styles';
 import { Arrow, Media } from '../../Icons/sections';
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
 import { useRouter } from 'next/router';
 import { TaskViewModal } from '../Task/modal';
 import {
@@ -106,6 +106,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
+  const boardColumns = useColumns();
   const user = useMe();
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
@@ -127,7 +128,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
         },
         onCompleted: (data) => {
           const taskProposal = data?.approveTaskProposal;
-          let columns = [...board?.columns];
+          let columns = [...boardColumns?.columns];
           // Move from proposal to task
           columns = removeProposalItem(task?.id, columns);
           columns = addTaskItem(
@@ -137,7 +138,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
             },
             columns
           );
-          board?.setColumns(columns);
+          boardColumns?.setColumns(columns);
         },
       });
     requestChange = () =>
@@ -146,7 +147,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
           proposalId: task?.id,
         },
         onCompleted: () => {
-          let columns = [...board?.columns];
+          let columns = [...boardColumns?.columns];
           columns = updateProposalItem(
             {
               ...task,
@@ -154,7 +155,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
             },
             columns
           );
-          board?.setColumns(columns);
+          boardColumns?.setColumns(columns);
         },
       });
   } else if (taskType === TASK_STATUS_IN_REVIEW) {
@@ -165,7 +166,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
           proposalId: task?.id,
         },
         onCompleted: () => {
-          let columns = [...board?.columns];
+          let columns = [...boardColumns?.columns];
           // Move from proposal to task
           columns = updateSubmissionItem(
             {
@@ -174,7 +175,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
             },
             columns
           );
-          board?.setColumns(columns);
+          boardColumns?.setColumns(columns);
         },
       });
     requestChange = () =>
@@ -183,7 +184,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
           proposalId: task?.id,
         },
         onCompleted: () => {
-          let columns = [...board?.columns];
+          let columns = [...boardColumns?.columns];
           // Move from proposal to task
           columns = updateSubmissionItem(
             {
@@ -193,7 +194,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
             },
             columns
           );
-          board?.setColumns(columns);
+          boardColumns?.setColumns(columns);
         },
       });
   }

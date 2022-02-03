@@ -84,6 +84,15 @@ export const DELETE_TASK_COMMENT = gql`
   }
 `;
 
+export const CREATE_MILESTONE = gql`
+  mutation createMilestone($input: TaskInput) {
+    createMilestone(input: $input) {
+      ...TaskFragment
+    }
+  }
+  ${TaskFragment}
+`;
+
 export const UPDATE_TASK_ASSIGNEE = gql`
   mutation updateTaskAssignee($taskId: ID!, $assigneeId: ID!) {
     updateTaskAssignee(taskId: $taskId, assigneeId: $assigneeId) {
@@ -91,4 +100,21 @@ export const UPDATE_TASK_ASSIGNEE = gql`
     }
   }
   ${TaskFragment}
+`;
+
+export const UPDATE_MILESTONE = gql`
+  mutation updateMilestone($milestoneId: ID!, $input: TaskInput) {
+    updateMilestone(milestoneId: $milestoneId, input: $input) {
+      ...TaskFragment
+    }
+  }
+  ${TaskFragment}
+`;
+
+export const UPDATE_TASK_ORDER = gql`
+  mutation updateTaskOrder($taskId: ID!, $input: updateTaskOrderInput!) {
+    updateTaskOrder(taskId: $taskId, input: $input) {
+      success
+    }
+  }
 `;

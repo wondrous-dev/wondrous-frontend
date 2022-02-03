@@ -33,7 +33,7 @@ import {
 } from '../../../utils/helpers';
 import { RightCaret } from '../Image/RightCaret';
 import CreatePodIcon from '../../Icons/createPod';
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
 import {
   BOUNTY_TYPE,
   ENTITIES_TYPES,
@@ -164,6 +164,7 @@ const SubmissionItem = (props) => {
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
   const board = orgBoard || podBoard || userBoard;
+  const boardColumns = useColumns();
   // TODO: add user board
   const completeTask = () => {
     const newTask = {
@@ -172,8 +173,8 @@ const SubmissionItem = (props) => {
       status: TASK_STATUS_DONE,
     };
     const transformedTask = transformTaskToTaskCard(newTask, {});
-    if (board) {
-      const columns = [...board?.columns];
+    if (boardColumns) {
+      const columns = [...boardColumns?.columns];
       const newInProgress = columns[1].tasks.filter((task) => task.id !== fetchedTask.id);
       const newDone = [transformedTask, ...columns[2].tasks];
       const newInReview = (columns[1].section.tasks = columns[1].section.tasks.filter(
@@ -182,7 +183,7 @@ const SubmissionItem = (props) => {
       columns[1].tasks = newInProgress;
       columns[1].section.tasks = newInReview;
       columns[2].tasks = newDone;
-      board?.setColumns(columns);
+      boardColumns?.setColumnssetColumns(columns);
     }
     //TODO: add pod board and user board
   };
@@ -376,6 +377,7 @@ const TaskSubmissionForm = (props) => {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
+  const boardColumns = useColumns();
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const board = orgBoard || podBoard || userBoard;
   const [mediaUploads, setMediaUploads] = useState(transformMediaFormat(submissionToEdit?.media) || []);
@@ -387,12 +389,12 @@ const TaskSubmissionForm = (props) => {
       const taskSubmission = data?.createTaskSubmission;
       const transformedTaskSubmission = transformTaskSubmissionToTaskSubmissionCard(taskSubmission, {});
       setFetchedTaskSubmissions([transformedTaskSubmission, ...fetchedTaskSubmissions]);
-      if (board) {
-        const columns = board?.columns;
+      if (boardColumns) {
+        const columns = boardColumns?.columns;
         const newColumns = [...columns];
         newColumns[1].section.tasks = [transformedTaskSubmission, ...newColumns[1].section.tasks];
-        if (board?.setColumns) {
-          board?.setColumns(newColumns);
+        if (boardColumns?.setColumnssetColumns) {
+          boardColumns?.setColumnssetColumns(newColumns);
         }
       }
 
@@ -724,6 +726,7 @@ export const TaskSubmissionContent = (props) => {
     updateTaskStatus,
     fetchedTaskSubmissions,
     board,
+    boardColumns,
     canMoveProgress,
     canReview,
     setMakeSubmission,
@@ -769,10 +772,13 @@ export const TaskSubmissionContent = (props) => {
               onCompleted: (data) => {
                 const task = data?.updateTaskStatus;
                 handleClose();
-                if (board?.setColumns && task?.orgId === board?.orgId) {
+                if (
+                  boardColumns?.setColumns &&
+                  (task?.orgId === board?.orgId || task?.podId === board?.podId || task?.assigneeId === board?.userId)
+                ) {
                   const transformedTask = transformTaskToTaskCard(task, {});
 
-                  const columns = [...board?.columns];
+                  const columns = [...boardColumns?.columns];
                   columns[0].tasks = columns[0].tasks.filter((existingTask) => {
                     if (transformedTask?.id !== existingTask?.id) {
                       return true;
@@ -780,7 +786,7 @@ export const TaskSubmissionContent = (props) => {
                     return false;
                   });
                   columns[1].tasks = [transformedTask, ...columns[1].tasks];
-                  board.setColumns(columns);
+                  boardColumns.setColumns(columns);
                 }
               },
             });

@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect } from 'react';
 
 import {
+  ColumnsContext,
   IsMobileContext,
   OrgBoardContext,
   PodBoardContext,
@@ -34,7 +35,7 @@ export const useWindowSize = () => {
       };
 
       // Add event listener
-      window.addEventListener('resize', handleResize);
+      window?.addEventListener('resize', handleResize);
 
       // Call handler right away so state gets updated with initial window size
       setWindowSize({
@@ -58,3 +59,5 @@ export const usePodBoard = () => useContext(PodBoardContext);
 export const useUserBoard = () => useContext(UserBoardContext);
 
 export const useSettings = () => useContext(SettingsBoardContext);
+
+export const useColumns = () => useContext(ColumnsContext);

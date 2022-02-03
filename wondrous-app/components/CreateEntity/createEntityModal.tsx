@@ -89,7 +89,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
 import { SafeImage } from '../Common/Image';
 import { GET_USER_AVAILABLE_PODS, GET_USER_PODS } from '../../graphql/queries/pod';
-import { GET_ELIGIBLE_REVIEWERS_FOR_ORG } from '../../graphql/queries/task';
+import { GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_MILESTONES } from '../../graphql/queries/task';
 import {
   getMentionArray,
   parseUserPermissionContext,
@@ -97,7 +97,7 @@ import {
   transformTaskToTaskCard,
 } from '../../utils/helpers';
 import { GET_ORG_USERS } from '../../graphql/queries/org';
-import { CREATE_TASK } from '../../graphql/mutations/task';
+import { CREATE_TASK, CREATE_MILESTONE } from '../../graphql/mutations/task';
 import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
 import { CREATE_TASK_PROPOSAL } from '../../graphql/mutations/taskProposal';
 import { useMe } from '../Auth/withAuth';
@@ -115,7 +115,7 @@ const filterUserOptions = (options) => {
   if (!options) return [];
   return options.map((option) => {
     return {
-      label: option?.username,
+      label: option?.username ?? option?.title,
       id: option?.id,
       profilePicture: option?.profilePicture,
     };
@@ -323,6 +323,7 @@ const CreateLayoutBaseModal = (props) => {
   const [milestone, setMilestone] = useState(null);
   const [assigneeString, setAssigneeString] = useState('');
   const [reviewerString, setReviewerString] = useState('');
+  const [milestoneString, setMilestoneString] = useState('');
   const [assignee, setAssignee] = useState(null);
   const [selectedReviewers, setSelectedReviewers] = useState([]);
   const [link, setLink] = useState('');
@@ -356,6 +357,8 @@ const CreateLayoutBaseModal = (props) => {
   });
 
   const [getEligibleReviewersForOrg, { data: eligibleReviewersData }] = useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_ORG);
+
+  const [getMilestones, { data: milestonesData }] = useLazyQuery(GET_MILESTONES);
 
   const descriptionTextCounter = (e) => {
     if (e.target.value.length < textLimit) {
@@ -391,17 +394,19 @@ const CreateLayoutBaseModal = (props) => {
     showHeaderImagePickerSection,
     showMembersSection,
     showPrioritySelectSection,
+    showDueDateSection,
   } = useMemo(() => {
     return {
       showDeliverableRequirementsSection: entityType === ENTITIES_TYPES.TASK,
       showBountySwitchSection: entityType === ENTITIES_TYPES.TASK,
-      showAppearSection: entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.MILESTONE,
+      showAppearSection: entityType === ENTITIES_TYPES.TASK,
       showLinkAttachmentSection: entityType === ENTITIES_TYPES.POD,
       // TODO: add back in entityType === ENTITIES_TYPES.POD
       showHeaderImagePickerSection: false,
       // TODO: add back in entityType === ENTITIES_TYPES.POD
       showMembersSection: false,
       showPrioritySelectSection: entityType === ENTITIES_TYPES.MILESTONE,
+      showDueDateSection: entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.MILESTONE,
     };
   }, [entityType]);
 
@@ -485,6 +490,7 @@ const CreateLayoutBaseModal = (props) => {
   }, [pods, pod]);
 
   const [createTask] = useMutation(CREATE_TASK, {
+    refetchQueries: () => ['getPerStatusTaskCountForMilestone'],
     onCompleted: (data) => {
       const task = data?.createTask;
       const justCreatedPod = getPodObject();
@@ -527,9 +533,29 @@ const CreateLayoutBaseModal = (props) => {
   const [createPod] = useMutation(CREATE_POD, {
     onCompleted: (data) => {
       const pod = data?.createPod;
+      handleClose();
       router.push(`/pod/${pod?.id}/boards`);
     },
     refetchQueries: ['getOrgById'],
+  });
+
+  const [createMilestone] = useMutation(CREATE_MILESTONE, {
+    onCompleted: (data) => {
+      const task = data?.createMilestone;
+      const justCreatedPod = getPodObject();
+      if (board?.setColumns && task?.orgId === board?.orgId) {
+        const transformedTask = transformTaskToTaskCard(task, {
+          orgName: board?.org?.name,
+          orgProfilePicture: board?.org?.profilePicture,
+          podName: justCreatedPod?.name,
+        });
+
+        const columns = [...board?.columns];
+        columns[0].tasks = [transformedTask, ...columns[0].tasks];
+        board.setColumns(columns);
+      }
+      handleClose();
+    },
   });
 
   const submitMutation = useCallback(() => {
@@ -539,7 +565,7 @@ const CreateLayoutBaseModal = (props) => {
           title,
           description: descriptionText,
           orgId: org,
-          milestoneId: milestone,
+          milestoneId: milestone?.id,
           podId: pod,
           dueDate,
           ...(rewardsAmount &&
@@ -627,6 +653,23 @@ const CreateLayoutBaseModal = (props) => {
           });
         }
         break;
+      case ENTITIES_TYPES.MILESTONE:
+        const milestoneInput = {
+          title,
+          description: descriptionText,
+          orgId: org,
+          podId: pod,
+          mediaUploads,
+          dueDate,
+        };
+        if (canCreateTask) {
+          createMilestone({
+            variables: {
+              input: milestoneInput,
+            },
+          });
+        }
+        break;
     }
   }, [
     title,
@@ -648,6 +691,7 @@ const CreateLayoutBaseModal = (props) => {
     canCreatePod,
     rewardsAmount,
     rewardsCurrency,
+    createMilestone,
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
@@ -686,6 +730,10 @@ const CreateLayoutBaseModal = (props) => {
               labelIcon={<CreatePodIcon />}
               options={filterDAOptions(pods) || []}
               name="pod"
+              onChange={(e) => {
+                setMilestoneString('');
+                setMilestone(null);
+              }}
             />
           )}
         </CreateFormMainSelects>
@@ -981,6 +1029,52 @@ const CreateLayoutBaseModal = (props) => {
                 }}
               />
             </CreateFormAddDetailsInputBlock>
+
+            <CreateFormAddDetailsInputBlock>
+              <CreateFormAddDetailsInputLabel>Milestone</CreateFormAddDetailsInputLabel>
+              <StyledAutocomplete
+                options={filterUserOptions(milestonesData?.getMilestones)}
+                onOpen={() =>
+                  getMilestones({
+                    variables: {
+                      orgId: org,
+                      podId: pod,
+                    },
+                  })
+                }
+                renderInput={(params) => (
+                  <TextField
+                    style={{
+                      color: White,
+                      fontFamily: 'Space Grotesk',
+                      fontSize: '14px',
+                      paddingLeft: '4px',
+                    }}
+                    placeholder="Enter milestone..."
+                    InputLabelProps={{ shrink: false }}
+                    {...params}
+                  />
+                )}
+                PopperComponent={AutocompleteList}
+                value={milestone}
+                inputValue={milestoneString}
+                onInputChange={(_, newInputValue) => {
+                  setMilestoneString(newInputValue);
+                }}
+                renderOption={(props, option) => {
+                  return (
+                    <OptionDiv
+                      onClick={(event) => {
+                        setMilestone(option);
+                        props?.onClick(event);
+                      }}
+                    >
+                      <OptionTypography>{option?.label}</OptionTypography>
+                    </OptionDiv>
+                  );
+                }}
+              />
+            </CreateFormAddDetailsInputBlock>
           </CreateFormAddDetailsInputs>
         )}
       </CreateFormMainSection>
@@ -1031,7 +1125,7 @@ const CreateLayoutBaseModal = (props) => {
         </CreateFormAddDetailsButton> */}
         {addDetails && (
           <CreateFormAddDetailsAppearBlock>
-            {showAppearSection && (
+            {showDueDateSection && (
               <CreateFormAddDetailsAppearBlockContainer>
                 <CreateFormAddDetailsSelects>
                   <LocalizationProvider dateAdapter={AdapterDateFns}>

@@ -1,48 +1,49 @@
-import React, { useState, useEffect } from 'react'
-import { useQuery } from '@apollo/client'
-import { GET_PREVIEW_FILE } from '../../../graphql/queries/media'
+import React, { useState, useEffect } from 'react';
+import { useQuery, useLazyQuery } from '@apollo/client';
+import { GET_PREVIEW_FILE } from '../../../graphql/queries/media';
 
 interface SafeImageArgs {
-  src: string
-  style?: object
-  defaultImage?: string
-  setImage?(url: string): void
+  src: string;
+  style?: object;
+  defaultImage?: string;
+  setImage?(url: string): void;
 }
 export const SafeImage = (safeImageArgs: SafeImageArgs) => {
-  const { src, style, defaultImage, setImage } = safeImageArgs
-  const { data, loading, error } = useQuery(GET_PREVIEW_FILE, {
-    variables: {
-      path: src,
-    },
+  const { src, style, defaultImage, setImage } = safeImageArgs;
+  const [getPreviewFile, { data, loading, error }] = useLazyQuery(GET_PREVIEW_FILE, {
     fetchPolicy: 'network-only',
-  })
+  });
 
-  const imgUrl = data?.getPreviewFile?.url
+  const imgUrl = data?.getPreviewFile?.url;
   useEffect(() => {
+    if (src && !src.startsWith('http')) {
+      getPreviewFile({
+        variables: {
+          path: src,
+        },
+      });
+    }
     if (imgUrl) {
-      if (
-        setImage &&
-        !(src?.startsWith('https') || src?.startsWith('file://'))
-      ) {
-        setImage(data.getPreviewFile.url)
+      if (setImage && !(src?.startsWith('https') || src?.startsWith('file://'))) {
+        setImage(data.getPreviewFile.url);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imgUrl, src, setImage])
+  }, [imgUrl, src, setImage]);
 
   if (!src && defaultImage) {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img style={style} src={defaultImage} alt="" />
+    return <img style={style} src={defaultImage} alt="" />;
   }
 
   if (src?.startsWith('https') || src?.startsWith('file://')) {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img style={style} key={src} src={src} alt="" />
+    return <img style={style} key={src} src={src} alt="" />;
   } else if (imgUrl) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img style={style} key={src} src={imgUrl} alt="" />
-    )
+    );
   }
-  return null
-}
+  return null;
+};

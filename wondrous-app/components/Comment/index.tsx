@@ -4,7 +4,7 @@ import { GET_ORG_USERS } from '../../graphql/queries/org';
 import { CREATE_TASK_COMMENT, DELETE_TASK_COMMENT } from '../../graphql/mutations/task';
 import { CREATE_TASK_PROPOSAL_COMMENT, DELETE_TASK_PROPOSAL_COMMENT } from '../../graphql/mutations/taskProposal';
 import { PERMISSIONS, TASK_STATUS_REQUESTED } from '../../utils/constants';
-import { getMentionArray, parseUserPermissionContext } from '../../utils/helpers';
+import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard } from '../../utils/helpers';
 import { White } from '../../theme/colors';
 import { TextInputContext } from '../../utils/contexts';
 import { TextInputDiv } from '../CreateEntity/styles';
@@ -28,12 +28,18 @@ import {
 import { TaskSubmissionHeaderCreatorText, TaskSubmissionHeaderTimeText } from '../Common/Task/styles';
 import { formatDistance } from 'date-fns';
 import { renderMentionString } from '../../utils/common';
+import { cutString } from '../../utils/helpers';
 import { useRouter } from 'next/router';
 import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
+import { updateTask } from '../../utils/board';
 
 export const CommentBox = (props) => {
   const user = useMe();
   const { orgId, existingContent, taskType, task, previousCommenterIds } = props;
+  const orgBoard = useOrgBoard();
+  const userBoard = useUserBoard();
+  const podBoard = usePodBoard();
+  const board = orgBoard || userBoard || podBoard;
   const [comment, setComment] = useState(existingContent || '');
   const { data: orgUsersData } = useQuery(GET_ORG_USERS, {
     variables: {
@@ -41,7 +47,7 @@ export const CommentBox = (props) => {
       limit: 100, // TODO: fix autocomplete
     },
   });
-  const [createTaskComment] = useMutation(CREATE_TASK_COMMENT, {
+  const [createTaskComment, { data: taskCommentData }] = useMutation(CREATE_TASK_COMMENT, {
     refetchQueries: ['getTaskComments'],
   });
 
@@ -84,6 +90,15 @@ export const CommentBox = (props) => {
     }
   };
 
+  useEffect(() => {
+    if (taskCommentData?.createTaskComment) {
+      const updatedTask = { ...task, commentCount: task.commentCount + 1 };
+      const transformedTask = transformTaskToTaskCard(updatedTask, board?.columns);
+      const boardColumns = updateTask(transformedTask, board?.columns);
+      board?.setColumns(boardColumns);
+    }
+  }, [taskCommentData]);
+
   return (
     <AddCommentContainer>
       <TextInputDiv>
@@ -118,13 +133,23 @@ const CommentItem = (props) => {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
-  const [deleteTaskComment] = useMutation(DELETE_TASK_COMMENT, {
+  const [deleteTaskComment, { data: deleteTaskCommentData }] = useMutation(DELETE_TASK_COMMENT, {
     refetchQueries: ['getTaskComments'],
   });
 
   const [deleteTaskProposalComment] = useMutation(DELETE_TASK_PROPOSAL_COMMENT, {
     refetchQueries: ['getTaskProposalComments'],
   });
+
+  useEffect(() => {
+    if (deleteTaskCommentData?.deleteTaskComment) {
+      const updatedTask = { ...task, commentCount: task.commentCount - 1 };
+      const transformedTask = transformTaskToTaskCard(updatedTask, board?.columns);
+      const boardColumns = updateTask(transformedTask, board?.columns);
+      board?.setColumns(boardColumns);
+    }
+  }, [deleteTaskCommentData]);
+
   const board = orgBoard || podBoard || userBoard;
   if (!comment) return null;
   const {
@@ -247,7 +272,9 @@ export const CommentList = (props) => {
       />
       <CommentListContainer>
         {comments?.length > 0 &&
-          comments.map((comment) => <CommentItem key={comment?.id} comment={comment} taskType={taskType} />)}
+          comments.map((comment) => (
+            <CommentItem key={comment?.id} comment={comment} taskType={taskType} task={task} />
+          ))}
       </CommentListContainer>
     </CommentListWrapper>
   );

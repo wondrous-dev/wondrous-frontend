@@ -86,6 +86,11 @@ const MemberRoleDropdown = (props) => {
   });
   const userIsOwner = permissions.includes(PERMISSIONS.FULL_ACCESS);
 
+  useEffect(() => {
+    if (existingRole?.id) {
+      setRole(existingRole?.id);
+    }
+  }, [existingRole?.id]);
   return (
     <DropdownSelect
       value={role}
@@ -138,7 +143,6 @@ const InviteMember = (props) => {
     orgId,
     podId,
   });
-
   const [inviteUserToPod] = useMutation(INVITE_USER_TO_POD);
   const canInvite = permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.MANAGE_MEMBER);
   const userIsOwner = permissions.includes(PERMISSIONS.FULL_ACCESS);

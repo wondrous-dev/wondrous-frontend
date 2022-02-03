@@ -1,6 +1,6 @@
-import { Typography } from '@material-ui/core'
-import styled from 'styled-components'
-import { Grey85, White } from '../../../theme/colors'
+import { Typography } from '@material-ui/core';
+import styled from 'styled-components';
+import { Grey85, White } from '../../../theme/colors';
 
 export const CompensationWrapper = styled.div`
   display: flex;
@@ -9,10 +9,10 @@ export const CompensationWrapper = styled.div`
   align-self: flex-end;
 
   svg {
-    z-index: 9999;
+    z-index: 10;
     height: 28px;
   }
-`
+`;
 
 export const CompensationPill = styled.div`
   display: flex;
@@ -28,7 +28,7 @@ export const CompensationPill = styled.div`
   margin-left: -5px;
   z-index: 0;
   height: 28px;
-`
+`;
 
 export const IconContainer = styled.div`
   display: flex;
@@ -40,7 +40,7 @@ export const IconContainer = styled.div`
   padding: 0;
   z-index: 2;
   margin-right: 4px;
-`
+`;
 
 export const CompensationAmount = styled(Typography)`
   && {
@@ -48,4 +48,4 @@ export const CompensationAmount = styled(Typography)`
     font-weight: 600;
     font-size: 13px;
   }
-`
+`;

@@ -406,10 +406,13 @@ export const CreateFormAddDetailsAppearBlockContainer = styled.div`
   }
 `;
 
-export const CreateFormAddDetailsInputs = styled(CreateFormMainSelects)``;
+export const CreateFormAddDetailsInputs = styled(CreateFormMainSelects)`
+  flex-wrap: wrap;
+`;
 
 export const CreateFormAddDetailsInputBlock = styled.div`
   width: 262px;
+  margin-bottom: 25px;
 `;
 
 export const CreateFormAddDetailsInputLabel = styled(Typography)`

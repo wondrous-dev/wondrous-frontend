@@ -30,8 +30,8 @@ const AboutPage = () => {
   // )
 
   const [getUserAboutPageData, { data: userAboutPageDataFromUser }] = useLazyQuery(GET_USER_ABOUT_PAGE_DATA);
-  const [getUser, { data: userProfileDataFromSession } ] = useLazyQuery(GET_USER_PROFLIE);
-  const [getUserFromUsername, { data: userProfileDataFromUsername } ] = useLazyQuery(GET_USER_FROM_USERNAME);
+  const [getUser, { data: userProfileDataFromSession }] = useLazyQuery(GET_USER_PROFLIE);
+  const [getUserFromUsername, { data: userProfileDataFromUsername }] = useLazyQuery(GET_USER_FROM_USERNAME);
 
   useEffect(() => {
     if (userId && !userProfileData) {
@@ -59,25 +59,34 @@ const AboutPage = () => {
 
   // Bind to the hook
   useEffect(() => {
-    setUserProfileData(userProfileDataFromUsername?.getUserFromUsername || userProfileDataFromSession?.getUser)
-  },[userProfileDataFromSession, userProfileDataFromUsername])
+    setUserProfileData(userProfileDataFromUsername?.getUserFromUsername || userProfileDataFromSession?.getUser);
+  }, [userProfileDataFromSession, userProfileDataFromUsername]);
 
   useEffect(() => {
-    const data = userAboutPageDataFromUser
+    const data = userAboutPageDataFromUser;
     // setUserAboutPageData(data?.getUserAboutPageData);
-    const orgs = data?.getUserAboutPageData?.orgs
-    const pods = data?.getUserAboutPageData?.pods
-    const tasksCompleted = data?.getUserAboutPageData?.tasksCompleted
-    const tasksCompletedCount = data?.getUserAboutPageData?.tasksCompletedCount
+    const orgs = data?.getUserAboutPageData?.orgs;
+    const pods = data?.getUserAboutPageData?.pods;
+    const tasksCompleted = data?.getUserAboutPageData?.tasksCompleted;
+    const tasksCompletedCount = data?.getUserAboutPageData?.tasksCompletedCount;
     if (orgs || tasksCompletedCount) {
-      setUserOrgsData(orgs)
-      setUserPodsData(pods)
-      setUserCompletedTaskCount(tasksCompletedCount)
-      setUserCompletedTasks(tasksCompleted)  
+      setUserOrgsData(orgs);
+      setUserPodsData(pods);
+      setUserCompletedTaskCount(tasksCompletedCount);
+      setUserCompletedTasks(tasksCompleted);
     }
-  }, [userAboutPageDataFromUser])
+  }, [userAboutPageDataFromUser]);
 
-  return <About userProfileData={userProfileData} loggedInUser={loggedInUser} userOrgsData={userOrgsData} userPodsData={userPodsData} userCompletedTasks={userCompletedTasks} tasksCompletedCount={userCompletedTaskCount}/>;
+  return (
+    <About
+      userProfileData={userProfileData}
+      loggedInUser={loggedInUser}
+      userOrgsData={userOrgsData}
+      userPodsData={userPodsData}
+      userCompletedTasks={userCompletedTasks}
+      tasksCompletedCount={userCompletedTaskCount}
+    />
+  );
 };
 
 export default withAuth(AboutPage);
