@@ -18,7 +18,13 @@ const PodItem = (props) => {
   const router = useRouter();
   const { pod } = props;
   return (
-    <PodWrapper onClick={() => router.push(`/pod/${pod?.id}/boards`)}>
+    <PodWrapper
+      onClick={() =>
+        router.push(`/pod/${pod?.id}/boards`, undefined, {
+          shallow: true,
+        })
+      }
+    >
       <TabContainerText
         style={{
           fontWeight: 'bolder',
@@ -35,7 +41,13 @@ const UserItem = (props) => {
   const router = useRouter();
   const { user } = props;
   return (
-    <UserWrapper onClick={() => router.push(`/profile/${user?.username}/about`)}>
+    <UserWrapper
+      onClick={() =>
+        router.push(`/profile/${user?.username}/about`, undefined, {
+          shallow: true,
+        })
+      }
+    >
       {user?.profilePicture ? <UserProfilePicture src={user?.profilePicture} /> : <DefaultProfilePicture />}
       <div
         style={{
@@ -127,11 +139,14 @@ export const MoreInfoModal = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, podId, displayPods, displayUsers, showUsers, showPods]);
   return (
-    <Modal open={open} onClose={() => {
-      handleClose();
-      setDisplayUsers(false);
-      setDisplayPods(false);
-    }}>
+    <Modal
+      open={open}
+      onClose={() => {
+        handleClose();
+        setDisplayUsers(false);
+        setDisplayPods(false);
+      }}
+    >
       <TaskModal>
         <Title>{name}</Title>
         <TabContainer>

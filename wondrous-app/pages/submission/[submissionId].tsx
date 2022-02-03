@@ -18,7 +18,9 @@ const TaskRedirect = () => {
 
   const taskSubmission = submissionData?.getTaskSubmissionById;
   if (taskSubmission?.org?.username) {
-    router.push(`/organization/${taskSubmission?.org?.username}/boards?task=${taskSubmission?.taskId}`);
+    router.push(`/organization/${taskSubmission?.org?.username}/boards?task=${taskSubmission?.taskId}`, undefined, {
+      shallow: true,
+    });
   }
 
   return (

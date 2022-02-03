@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   InviteWelcomeBoxParagraph,
   InviteWelcomeBoxWrapper,
@@ -12,24 +12,21 @@ import {
   UsernameInput,
   ProfilePictureDiv,
   LaterButton,
-} from './styles'
-import WonderLogo from '../../public/images/onboarding/wonder-logo.svg'
-import DiscordLogo from '../../public/images/onboarding/discord.svg'
-import DiscordSmallLogo from '../../public/images/onboarding/discord-small.svg'
-import { useRouter } from 'next/router'
+} from './styles';
+import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
+import DiscordLogo from '../../public/images/onboarding/discord.svg';
+import DiscordSmallLogo from '../../public/images/onboarding/discord-small.svg';
+import { useRouter } from 'next/router';
 
-import {
-  SecondStep,
-  ThirdStep,
-} from '../../components/Common/Image/OnboardingProgressBar'
-import { useWonderWeb3 } from '../../services/web3'
-import { Field, FieldInput } from '../Common/field'
-import { useMe } from '../Auth/withAuth'
-import { HighlightBlue } from '../../theme/colors'
-import { getFilenameAndType, uploadMedia } from '../../utils/media'
-import { SafeImage } from '../Common/Image'
-import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg'
-import { Button } from '../Common/button'
+import { SecondStep, ThirdStep } from '../../components/Common/Image/OnboardingProgressBar';
+import { useWonderWeb3 } from '../../services/web3';
+import { Field, FieldInput } from '../Common/field';
+import { useMe } from '../Auth/withAuth';
+import { HighlightBlue } from '../../theme/colors';
+import { getFilenameAndType, uploadMedia } from '../../utils/media';
+import { SafeImage } from '../Common/Image';
+import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
+import { Button } from '../Common/button';
 
 export const Logo = ({ divStyle }) => {
   return (
@@ -37,24 +34,23 @@ export const Logo = ({ divStyle }) => {
       <WonderLogo />
       <LogoText>Wonder</LogoText>
     </LogoDiv>
-  )
-}
+  );
+};
 
 export const InviteWelcomeBox = ({ updateUser }) => {
-  const router = useRouter()
-  const [bio, setBio] = useState('')
-  const user = useMe()
+  const router = useRouter();
+  const [bio, setBio] = useState('');
+  const user = useMe();
 
   const buttonStyle = {
-    background:
-      'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
+    background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
     position: 'relative',
     marginTop: '24px',
     bottom: '0',
     right: '0',
     display: 'flex',
     alignItems: 'center',
-  }
+  };
 
   return (
     <InviteWelcomeBoxWrapper>
@@ -89,8 +85,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
           width: '100%',
         }}
       >
-        Connect your Discord to get preapproval to join DAOs you’re a Discord
-        member of.
+        Connect your Discord to get preapproval to join DAOs you’re a Discord member of.
       </InviteWelcomeBoxParagraph>
       <DiscordLogo />
       <div
@@ -104,7 +99,11 @@ export const InviteWelcomeBox = ({ updateUser }) => {
           buttonInnerStyle={{
             padding: '8px',
           }}
-          onClick={() => router.push('/onboarding/add-email')}
+          onClick={() =>
+            router.push('/onboarding/add-email', undefined, {
+              shallow: true,
+            })
+          }
         >
           <InviteWelcomeBoxParagraph>Later</InviteWelcomeBoxParagraph>
         </LaterButton>
@@ -134,5 +133,5 @@ export const InviteWelcomeBox = ({ updateUser }) => {
         </ContinueButton>
       </div>
     </InviteWelcomeBoxWrapper>
-  )
-}
+  );
+};

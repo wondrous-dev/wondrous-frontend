@@ -85,7 +85,9 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
   const goToPod = (podId) => {
     // router query into pod
     const { username } = router.query;
-    router.push(`/pod/${podId}/boards`);
+    router.push(`/pod/${podId}/boards`, undefined, {
+      shallow: true,
+    });
   };
   const openModal = () => {
     if (taskType === TASK_STATUS_REQUESTED) {

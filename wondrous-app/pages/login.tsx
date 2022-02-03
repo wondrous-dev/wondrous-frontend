@@ -1,102 +1,94 @@
-import React, { useEffect } from 'react'
-import { useRouter } from 'next/router'
-import { Card, CardBody, CardFooter } from '../components/Common/auth'
-import { Button } from '../components/Common/button'
-import AuthLayout from '../components/Common/Layout/Auth'
-import { LineWithText, Line } from '../components/Common/lines'
-import { Form } from '../components/Common/form'
-import { Field } from '../components/Common/field'
-import { PaddedParagraph, StyledLink } from '../components/Common/text'
-import {
-  SmallLogo,
-  LoginWrapper,
-  TopBubble,
-  LoginError,
-} from '../components/Pages/login'
-import { useState } from 'react'
-import { CenteredFlexRow } from '../components/Common/index'
-import { Grey50 } from '../theme/colors'
-import { Metamask } from '../components/Icons/metamask'
-import { EmailIcon, LockIcon } from '../components/Icons/userpass'
-import { useWonderWeb3 } from '../services/web3'
-import {
-  emailSignin,
-  getUserSigningMessage,
-  walletSignin,
-} from '../components/Auth/withAuth'
-import { ErrorMessage } from 'formik'
-import { CircularProgress } from '@material-ui/core'
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { Card, CardBody, CardFooter } from '../components/Common/auth';
+import { Button } from '../components/Common/button';
+import AuthLayout from '../components/Common/Layout/Auth';
+import { LineWithText, Line } from '../components/Common/lines';
+import { Form } from '../components/Common/form';
+import { Field } from '../components/Common/field';
+import { PaddedParagraph, StyledLink } from '../components/Common/text';
+import { SmallLogo, LoginWrapper, TopBubble, LoginError } from '../components/Pages/login';
+import { useState } from 'react';
+import { CenteredFlexRow } from '../components/Common/index';
+import { Grey50 } from '../theme/colors';
+import { Metamask } from '../components/Icons/metamask';
+import { EmailIcon, LockIcon } from '../components/Icons/userpass';
+import { useWonderWeb3 } from '../services/web3';
+import { emailSignin, getUserSigningMessage, walletSignin } from '../components/Auth/withAuth';
+import { ErrorMessage } from 'formik';
+import { CircularProgress } from '@material-ui/core';
 
-const prod = process.env.NEXT_PUBLIC_PRODUCTION
+const prod = process.env.NEXT_PUBLIC_PRODUCTION;
 
 const Login = ({ csrfToken }) => {
-  const wonderWeb3 = useWonderWeb3()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
-  const [loading, setLoading] = useState(null)
-  const router = useRouter()
+  const wonderWeb3 = useWonderWeb3();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(null);
+  const router = useRouter();
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    const result = await emailSignin(email, password)
+    const result = await emailSignin(email, password);
     if (result === true) {
-      router.push('/dashboard')
+      router.push('/dashboard', undefined, {
+        shallow: true,
+      });
     } else {
-      setErrorMessage(result)
+      setErrorMessage(result);
     }
-  }
+  };
 
   const connectWallet = async (event) => {
     if (wonderWeb3.address) {
-      loginWithWallet()
+      loginWithWallet();
     } else {
       // Connect Wallet first
-      await wonderWeb3.onConnect()
+      await wonderWeb3.onConnect();
     }
-  }
+  };
 
   // This happens async, so we bind it to the
   // state of the component.
   const loginWithWallet = async () => {
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
       // Retrieve Signed Message
-      const messageToSign = await getUserSigningMessage(
-        wonderWeb3.address,
-        wonderWeb3.chainName.toLowerCase()
-      )
+      const messageToSign = await getUserSigningMessage(wonderWeb3.address, wonderWeb3.chainName.toLowerCase());
 
       if (messageToSign) {
-        const signedMessage = await wonderWeb3.signMessage(messageToSign)
+        const signedMessage = await wonderWeb3.signMessage(messageToSign);
         if (signedMessage) {
           // Sign with Wallet
-          setLoading(true)
-          const result = await walletSignin(wonderWeb3.address, signedMessage)
+          setLoading(true);
+          const result = await walletSignin(wonderWeb3.address, signedMessage);
           if (result === true) {
-            router.push('/dashboard')
+            router.push('/dashboard', undefined, {
+              shallow: true,
+            });
           } else {
-            setErrorMessage(result)
+            setErrorMessage(result);
           }
-          setLoading(false)
+          setLoading(false);
         } else {
-          setErrorMessage('You need to sign the message on your Metamask')
+          setErrorMessage('You need to sign the message on your Metamask');
         }
       } else {
-        setErrorMessage('Login failed - try again.')
+        setErrorMessage('Login failed - try again.');
       }
     }
-  }
+  };
 
   useEffect(() => {
     if (wonderWeb3.wallet['address']) {
       // Wallet sign in
-      loginWithWallet()
+      loginWithWallet();
     } else {
       // Error Login Here
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wonderWeb3.wallet])
+  }, [wonderWeb3.wallet]);
 
   return (
     <AuthLayout>
@@ -109,11 +101,7 @@ const Login = ({ csrfToken }) => {
               <>
                 <h1>Login</h1>
                 <Form onSubmit={handleSubmit}>
-                  <input
-                    name="csrfToken"
-                    type="hidden"
-                    defaultValue={csrfToken}
-                  />
+                  <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
                   {errorMessage ? <LoginError>{errorMessage}</LoginError> : ''}
                   <Field
                     type="email"
@@ -152,9 +140,7 @@ const Login = ({ csrfToken }) => {
               {wonderWeb3.connecting ? (
                 <Button disabled className="disabled">
                   <Metamask height="18" width="17" />
-                  <PaddedParagraph padding="0 10px">
-                    Log in with MetaMask
-                  </PaddedParagraph>
+                  <PaddedParagraph padding="0 10px">Log in with MetaMask</PaddedParagraph>
                 </Button>
               ) : (
                 <Button onClick={connectWallet}>
@@ -163,9 +149,7 @@ const Login = ({ csrfToken }) => {
                   ) : (
                     <>
                       <Metamask height="18" width="17" />
-                      <PaddedParagraph padding="0 10px">
-                        Log in with MetaMask
-                      </PaddedParagraph>
+                      <PaddedParagraph padding="0 10px">Log in with MetaMask</PaddedParagraph>
                     </>
                   )}
                 </Button>
@@ -188,7 +172,7 @@ const Login = ({ csrfToken }) => {
         </Card>
       </LoginWrapper>
     </AuthLayout>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

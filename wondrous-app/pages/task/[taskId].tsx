@@ -18,7 +18,9 @@ const TaskRedirect = () => {
 
   const task = taskData?.getTaskById;
   if (task?.org?.username) {
-    router.push(`/organization/${task?.org?.username}/boards?task=${taskId}`);
+    router.push(`/organization/${task?.org?.username}/boards?task=${taskId}`, undefined, {
+      shallow: true,
+    });
   }
   return (
     <AppLayout banner={null}>

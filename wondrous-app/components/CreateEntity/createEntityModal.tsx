@@ -534,7 +534,9 @@ const CreateLayoutBaseModal = (props) => {
     onCompleted: (data) => {
       const pod = data?.createPod;
       handleClose();
-      router.push(`/pod/${pod?.id}/boards`);
+      router.push(`/pod/${pod?.id}/boards`, undefined, {
+        shallow: true,
+      });
     },
     refetchQueries: ['getOrgById'],
   });
