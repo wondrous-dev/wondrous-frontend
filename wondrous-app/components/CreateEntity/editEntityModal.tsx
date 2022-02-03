@@ -368,12 +368,7 @@ const EditLayoutBaseModal = (props) => {
   const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG);
   // const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
   const [pods, setPods] = useState([]);
-  const [pod, setPod] = useState(
-    existingTask?.podName && {
-      name: existingTask?.podName,
-      id: existingTask?.podId,
-    }
-  );
+  const [pod, setPod] = useState(existingTask?.podName && existingTask?.podId);
   const [dueDate, setDueDate] = useState(existingTask?.dueDate);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const {
@@ -457,7 +452,35 @@ const EditLayoutBaseModal = (props) => {
         },
       });
     }
-  }, [userOrgs?.getUserOrgs, org, getUserAvailablePods, getOrgUsers, existingTask?.orgId, getPaymentMethods]);
+    if (!milestonesData?.getMilestones) {
+      getMilestones({
+        variables: {
+          orgId: org?.id || org,
+          podId: pod?.id || pod,
+        },
+      })
+        .then((res) => {
+          const milestones = res?.data?.getMilestones;
+          const existingMilestone = milestones?.find((m) => m.id === existingTask?.milestoneId);
+          if (existingMilestone) {
+            setMilestone({
+              id: existingMilestone?.id,
+              label: existingMilestone?.title,
+            });
+          }
+        })
+        .catch((e) => console.error(e));
+    }
+  }, [
+    userOrgs?.getUserOrgs,
+    org,
+    getUserAvailablePods,
+    getOrgUsers,
+    existingTask?.orgId,
+    getPaymentMethods,
+    getMilestones,
+    milestonesData,
+  ]);
 
   const getPodObject = useCallback(() => {
     let justCreatedPod = null;
@@ -1001,6 +1024,11 @@ const EditLayoutBaseModal = (props) => {
                 inputValue={milestoneString}
                 onInputChange={(_, newInputValue) => {
                   setMilestoneString(newInputValue);
+                }}
+                onChange={(_, __, reason) => {
+                  if (reason === 'clear') {
+                    setMilestone(null);
+                  }
                 }}
                 renderOption={(props, option) => {
                   return (
