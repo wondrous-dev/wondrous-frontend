@@ -64,6 +64,7 @@ const STATUS_ICONS = {
   [TASK_STATUS_TODO]: <TodoWithBorder />,
   [TASK_STATUS_IN_PROGRESS]: <InProgressWithBorder />,
   [TASK_STATUS_DONE]: <DoneWithBorder />,
+  [TASK_STATUS_ARCHIVED]: <DoneWithBorder />,
 };
 
 const DELIVERABLES_ICONS = {
@@ -79,6 +80,7 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
   const apolloClient = useApolloClient();
   const [editableTask, setEditableTask] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [once, setOnce] = useState(false);
   const [isPreviewModalOpen, setPreviewModalOpen] = useState(false);
   const [isArchiveModalOpen, setArchiveModalOpen] = useState(false);
   const [ref, inView] = useInView({});
@@ -94,8 +96,6 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
 
-  console.log(columns, hasMore, 'columns');
-
   useEffect(() => {
     if (inView && hasMore) {
       onLoadMore();
@@ -105,10 +105,20 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
   useEffect(() => {
     const taskId = router?.query?.task || router?.query?.taskProposal;
 
-    if (taskId) {
-      // const task = columns.find(column => column.tasks.find(task => task.id === taskId));
+    if (taskId && !once) {
+      let task;
+      columns.find((column) => {
+        task = [...column.section.tasks, ...column.tasks].find((task) => task.id === taskId);
+
+        return task;
+      });
+
+      if (task) {
+        openTask(task);
+        setOnce(false);
+      }
     }
-  }, []);
+  }, [columns, router?.query?.task || router?.query?.taskProposal]);
 
   const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS, {
     // onCompleted: (data) => {
@@ -193,7 +203,8 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
   }
 
   function openTask(task) {
-    router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view}`);
+    setOnce(false);
+    router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`);
     setSelectedTask(task);
     setPreviewModalOpen(true);
   }
@@ -253,7 +264,7 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
 
         <StyledTableBody>
           {columns.map((column) => {
-            return column.tasks.map((task, index) => {
+            return [...column.section.tasks, ...column.tasks].map((task, index) => {
               // Parse permissions here as well
               const permissions = parseUserPermissionContext({
                 userPermissionsContext,
@@ -279,9 +290,7 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                           borderRadius: '17px',
                         }}
                       />
-                    ) : (
-                      <WonderCoin />
-                    )}
+                    ) : null}
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     <AvatarList

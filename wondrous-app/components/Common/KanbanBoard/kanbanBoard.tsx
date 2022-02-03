@@ -130,8 +130,16 @@ const KanbanBoard = (props) => {
           <DndProvider backend={HTML5Backend} options={html5Options}>
             {columnsState.map((column) => {
               const { status, section, tasks } = column;
+
               return (
-                <TaskColumn key={status} cardsList={tasks} moveCard={moveCard} status={status} section={section} />
+                <TaskColumn
+                  onOpen={() => setOnce(true)}
+                  key={status}
+                  cardsList={tasks}
+                  moveCard={moveCard}
+                  status={status}
+                  section={section}
+                />
               );
             })}
           </DndProvider>

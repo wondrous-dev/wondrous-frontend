@@ -169,8 +169,7 @@ const BoardsPage = () => {
         const tasks = data?.getOrgTaskBoardTasks;
         const newColumns = populateTaskColumns(tasks, columns);
         setColumns(dedupeColumns(newColumns));
-        const count = data?.getOrgTaskBoardTasks.filter((task) => task.status !== Constants.TASK_STATUS_ARCHIVED).length;
-        setOrgTaskHasMore(count >= LIMIT);
+        setOrgTaskHasMore(tasks.length >= LIMIT);
         setFirstTimeFetch(true);
       }
     },

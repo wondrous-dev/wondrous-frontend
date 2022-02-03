@@ -10,8 +10,11 @@ import { Button } from '@material-ui/core';
 import { LinkIcon } from '../Icons/linkIcon';
 
 export const StyledTable = styled(Table)`
-  width: 100%;
-  margin: 25px 0;
+  && {
+    width: 100%;
+    margin: 25px 0;
+    border-collapse: separate;
+  }
 `;
 
 export const StyledTableBody = styled(TableBody)`
