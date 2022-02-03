@@ -74,6 +74,7 @@ import {
   TextInputDiv,
   StyledAutocomplete,
   AutocompleteList,
+  StyledAutocompletePopper,
   OptionDiv,
   OptionTypography,
 } from './styles';
@@ -553,7 +554,6 @@ const EditLayoutBaseModal = (props) => {
     },
   });
 
-  const textFieldRef = useRef();
   const submitMutation = useCallback(() => {
     switch (entityType) {
       case ENTITIES_TYPES.TASK:
@@ -893,7 +893,7 @@ const EditLayoutBaseModal = (props) => {
           >
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
-              <StyledAutocomplete
+              <StyledAutocompletePopper
                 options={filterOrgUsers(orgUsersData?.getOrgUsers)}
                 renderInput={(params) => (
                   <TextField
@@ -903,7 +903,6 @@ const EditLayoutBaseModal = (props) => {
                       fontSize: '14px',
                       paddingLeft: '4px',
                     }}
-                    ref={textFieldRef}
                     placeholder="Enter username..."
                     InputLabelProps={{ shrink: false }}
                     {...params}
@@ -941,7 +940,7 @@ const EditLayoutBaseModal = (props) => {
 
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Reviewer</CreateFormAddDetailsInputLabel>
-              <StyledAutocomplete
+              <StyledAutocompletePopper
                 options={filterUserOptions(autocompleteData?.getAutocompleteUsers)}
                 renderInput={(params) => (
                   <TextField
@@ -965,7 +964,6 @@ const EditLayoutBaseModal = (props) => {
                   />
                 )}
                 value={reviewerString}
-                PopperComponent={AutocompleteList}
                 renderOption={(props, option, state) => {
                   return (
                     <OptionDiv
@@ -996,7 +994,7 @@ const EditLayoutBaseModal = (props) => {
 
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Milestone</CreateFormAddDetailsInputLabel>
-              <StyledAutocomplete
+              <StyledAutocompletePopper
                 options={filterUserOptions(milestonesData?.getMilestones)}
                 onOpen={() =>
                   getMilestones({
@@ -1014,7 +1012,6 @@ const EditLayoutBaseModal = (props) => {
                       fontSize: '14px',
                       paddingLeft: '4px',
                     }}
-                    ref={textFieldRef}
                     placeholder="Enter milestone..."
                     InputLabelProps={{ shrink: false }}
                     {...params}
