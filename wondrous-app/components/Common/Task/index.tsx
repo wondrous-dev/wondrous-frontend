@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { useMutation } from '@apollo/client';
 import { LogoButton } from '../logo';
-import { ToDo, InProgress, Done, InReview } from '../../Icons';
+import { TodoWithBorder, InProgressWithBorder, DoneWithBorder, InReview, Requested } from '../../Icons';
 import { TaskLikeIcon } from '../../Icons/taskLike';
 import { TaskCommentIcon } from '../../Icons/taskComment';
 import { TaskShareIcon } from '../../Icons/taskShare';
@@ -16,6 +16,7 @@ import { RejectIcon } from '../../Icons/taskModalIcons';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import { ArchiveTaskModal } from '../ArchiveTaskModal';
 import { GET_ORG_TASK_BOARD_TASKS } from '../../../graphql/queries/taskBoard';
+import MilestoneIcon from '../../Icons/milestone';
 
 import * as Constants from '../../../utils/constants';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
@@ -35,28 +36,36 @@ import {
   TaskListCardWrapper,
   TaskStatusHeaderText,
   ArchivedTaskUndo,
+  MilestoneSeparator,
+  MilestoneProgressWrapper,
+  MilestoneIconWrapper,
 } from './styles';
 import { renderMentionString } from '../../../utils/common';
 import { useRouter } from 'next/router';
 import { Typography } from '@material-ui/core';
 import { SafeImage } from '../Image';
-import { parseUserPermissionContext } from '../../../utils/helpers';
+import { parseUserPermissionContext, cutString } from '../../../utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
 import { White } from '../../../theme/colors';
 import { TaskViewModal } from './modal';
 import { useMe } from '../../Auth/withAuth';
 import { delQuery } from '../../../utils';
 import { TaskSummaryAction } from '../TaskSummary/styles';
-import { Arrow } from '../../Icons/sections';
+import { Arrow, Archived } from '../../Icons/sections';
 import { UPDATE_TASK_STATUS } from '../../../graphql/mutations/task';
 import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries';
 import { OrgBoardContext } from '../../../utils/contexts';
+import { MilestoneLaunchedBy } from '../MilestoneLaunchedBy';
+import { MilestoneProgress } from '../MilestoneProgress';
+import { MilestoneWrapper } from '../Milestone';
 
 export const TASK_ICONS = {
-  [Constants.TASK_STATUS_TODO]: ToDo,
-  [Constants.TASK_STATUS_IN_PROGRESS]: InProgress,
-  [Constants.TASK_STATUS_DONE]: Done,
+  [Constants.TASK_STATUS_TODO]: TodoWithBorder,
+  [Constants.TASK_STATUS_IN_PROGRESS]: InProgressWithBorder,
+  [Constants.TASK_STATUS_DONE]: DoneWithBorder,
   [Constants.TASK_STATUS_IN_REVIEW]: InReview,
+  [Constants.TASK_STATUS_REQUESTED]: Requested,
+  [Constants.TASK_STATUS_ARCHIVED]: Archived,
 };
 
 let windowOffset = 0;
@@ -65,16 +74,18 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
     actions = {},
     description = '',
     compensation = {},
-    rewards,
+    rewards = null,
     id,
     media,
     status,
-    milestone = false,
     title = '',
     assigneeId = null,
     assigneeUsername = null,
     assigneeProfilePicture = null,
     users = [],
+    type,
+    createdBy,
+    commentCount,
   } = task;
   const router = useRouter();
   let { likes = 0, comments = 0, shares = 0, iLiked = false, iCommented = false, iShared = false } = actions || {};
@@ -93,24 +104,20 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
-  const orgBoardContext = useContext(OrgBoardContext);
-  const getOrgTaskVariables = orgBoardContext?.getOrgTaskVariables;
   let TaskIcon = TASK_ICONS[status];
+  const isMilestone = type === Constants.ENTITIES_TYPES.MILESTONE;
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
     refetchQueries: () => [
       {
         query: GET_ORG_TASK_BOARD_TASKS,
-        variables: getOrgTaskVariables,
+        variables: orgBoard?.getOrgTasksVariables,
       },
       {
         query: GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
         variables: orgBoard?.getOrgBoardTaskCountVariables,
       },
     ],
-    onError: () => {
-      console.error('Something went wrong.');
-    },
   });
 
   const handleNewStatus = useCallback(
@@ -220,11 +227,16 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
       setUserList(users);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [assigneeUsername]);
 
   return (
     <>
-      <ArchiveTaskModal open={archiveTask} onClose={() => setArchiveTask(false)} onArchive={handleNewStatus} />
+      <ArchiveTaskModal
+        open={archiveTask}
+        onClose={() => setArchiveTask(false)}
+        onArchive={handleNewStatus}
+        isMilestone={isMilestone}
+      />
       <TaskViewModal
         open={modalOpen}
         handleOpen={() => setModalOpen(true)}
@@ -238,7 +250,7 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
         }}
         task={task}
       />
-      <TaskWrapper key={id} wrapped={milestone} onClick={openModal}>
+      <TaskWrapper key={id} onClick={openModal}>
         <TaskInner>
           <TaskHeader>
             <SafeImage
@@ -249,6 +261,25 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
                 borderRadius: '4px',
               }}
             />
+            {isMilestone && (
+              <MilestoneIconWrapper withProfile={task?.orgProfilePicture}>
+                <MilestoneIcon />
+              </MilestoneIconWrapper>
+            )}
+            <AvatarList style={{ marginLeft: '12px' }} users={userList} id={'task-' + task?.id} />
+            {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
+          </TaskHeader>
+          <MilestoneLaunchedBy type={type} router={router} createdBy={createdBy} />
+          {isMilestone && <MilestoneSeparator />}
+
+          <TaskContent>
+            <TaskTitle>{title}</TaskTitle>
+            <p>
+              {renderMentionString({
+                content: cutString(description),
+                router,
+              })}
+            </p>
             {task?.podName && (
               <PodWrapper
                 onClick={(e) => {
@@ -260,17 +291,7 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
                 <PodName>{task?.podName}</PodName>
               </PodWrapper>
             )}
-            <AvatarList style={{ marginLeft: '12px' }} users={userList} id={'task-' + task?.id} />
-            {rewards && rewards?.length > 0 && <Compensation compensation={rewards[0]} />}
-          </TaskHeader>
-          <TaskContent>
-            <TaskTitle>{title}</TaskTitle>
-            <p>
-              {renderMentionString({
-                content: description,
-                router,
-              })}
-            </p>
+            <MilestoneProgressWrapper>{isMilestone && <MilestoneProgress milestoneId={id} />}</MilestoneProgressWrapper>
             {media?.length > 0 ? <TaskMedia media={media[0]} /> : <TaskSeparator />}
           </TaskContent>
           <TaskFooter>
@@ -278,10 +299,12 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
 						<TaskLikeIcon liked={liked} />
 						<TaskActionAmount>{likes}</TaskActionAmount>
 					</TaskAction> */}
-            <TaskAction key={'task-comment-' + id}>
-              <TaskCommentIcon />
-              <TaskActionAmount>{comments}</TaskActionAmount>
-            </TaskAction>
+            {!isMilestone && (
+              <TaskAction key={'task-comment-' + id}>
+                <TaskCommentIcon />
+                <TaskActionAmount>{commentCount}</TaskActionAmount>
+              </TaskAction>
+            )}
             {/* <TaskAction key={'task-share-' + id}>
               <TaskShareIcon />
               <TaskActionAmount>{shares}</TaskActionAmount>
@@ -299,7 +322,7 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
                       color: White,
                     }}
                   >
-                    Archive task
+                    Archive {isMilestone ? 'milestone' : 'task'}
                   </DropDownItem>
                 </DropDown>
               </TaskActionMenu>
@@ -315,7 +338,7 @@ export const TaskListCard = (props) => {
   const { taskType, task } = props;
   const router = useRouter();
   const [viewDetails, setViewDetails] = useState(false);
-  let TaskIcon = TASK_ICONS[task?.status];
+  const TaskIcon = TASK_ICONS?.[taskType];
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
@@ -356,6 +379,7 @@ export const TaskListCard = (props) => {
       />
     );
   }
+
   return (
     <TaskListCardWrapper onClick={() => setViewDetails(true)}>
       <TaskHeader>
@@ -367,17 +391,6 @@ export const TaskListCard = (props) => {
             borderRadius: '4px',
           }}
         />
-        {task?.podName && (
-          <PodWrapper
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              router.push(`/pod/${task?.podId}/boards`);
-            }}
-          >
-            <PodName>{task?.podName.slice(0, 15)}</PodName>
-          </PodWrapper>
-        )}
         <AvatarList
           style={{ marginLeft: '12px' }}
           users={[
@@ -396,16 +409,27 @@ export const TaskListCard = (props) => {
           ]}
           id={'task-' + task?.id}
         />
-        <Compensation compensation={task?.compensation} icon={TaskIcon} />
+        {task?.rewards?.length > 0 && <Compensation rewards={task?.rewards} taskIcon={<TaskIcon />} />}
       </TaskHeader>
       <TaskContent>
         <TaskTitle>{task?.title}</TaskTitle>
         <p>
           {renderMentionString({
-            content: task?.description,
+            content: cutString(task?.description),
             router,
           })}
         </p>
+        {task?.podName && (
+          <PodWrapper
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              router.push(`/pod/${task?.podId}/boards`);
+            }}
+          >
+            <PodName>{task?.podName.slice(0, 15)}</PodName>
+          </PodWrapper>
+        )}
         {task?.media?.length > 0 ? <TaskMedia media={task?.media[0]} /> : <TaskSeparator />}
       </TaskContent>
       <TaskFooter>

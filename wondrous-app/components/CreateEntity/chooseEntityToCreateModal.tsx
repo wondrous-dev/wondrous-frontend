@@ -31,10 +31,10 @@ export const ENTITIES_UI_ELEMENTS = {
     icon: CreateLayoutTaskIcon,
     label: 'Task',
   },
-  // [ENTITIES_TYPES.MILESTONE]: {
-  //   icon: CreateLayoutMilestoneIcon,
-  //   label: 'Milestone',
-  // },
+  [ENTITIES_TYPES.MILESTONE]: {
+    icon: CreateLayoutMilestoneIcon,
+    label: 'Milestone',
+  },
   [ENTITIES_TYPES.POD]: {
     icon: CreateLayoutPodsIcon,
     label: 'Pod',

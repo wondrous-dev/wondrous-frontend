@@ -110,17 +110,16 @@ const WaitlistProfile = () => {
 						marginBottom: '16px',
 					}}
 				>
-					Claim your tokens during our launch in January
+					Claim your tokens during our public launch
 				</ProfileText>
 				<TokenEarnedDiv>
 					<YouHaveText>You have:</YouHaveText>
 					<TokenEarnedInnerDiv>
 						<WonderTokenSymbol src="/images/wonder-token.svg" />
-						<YouHaveText>
-							<TokenText>
-								{waitlistUser?.tokensEarned || '10'} $WONDER
-							</TokenText>
-						</YouHaveText>
+						{waitlistUser?.tokensEarned && (
+							<TokenText>{waitlistUser?.tokensEarned} $WONDER</TokenText>
+						)}
+						<YouHaveText></YouHaveText>
 					</TokenEarnedInnerDiv>
 				</TokenEarnedDiv>
 				<InviteButtonDiv>

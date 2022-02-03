@@ -19,6 +19,7 @@ import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_ARCHIVED,
   DEFAULT_STATUS_ARR,
+  STATUS_OPEN,
 } from '../../../utils/constants';
 import { GET_ORG_FROM_USERNAME, GET_ORG_BY_ID } from '../../../graphql/queries/org';
 import { OrgBoardContext } from '../../../utils/contexts';
@@ -95,6 +96,7 @@ const SELECT_OPTIONS = [
 const LIMIT = 10;
 
 export const populateTaskColumns = (tasks, columns) => {
+  if (!columns) return [];
   const newColumns = columns.map((column) => {
     column.tasks = [];
     return tasks.reduce((column, task) => {
@@ -110,6 +112,7 @@ export const populateTaskColumns = (tasks, columns) => {
 };
 
 export const addToTaskColumns = (newResults, columns) => {
+  if (!columns) return [];
   const newColumns = columns.map((column) => {
     return newResults.reduce((column, task) => {
       if (column.status === task.status) {
@@ -224,7 +227,7 @@ const BoardsPage = () => {
       getOrgTaskProposals({
         variables: {
           orgId: id,
-          statuses,
+          statuses: [STATUS_OPEN],
           offset: 0,
           limit: LIMIT,
         },
@@ -232,7 +235,7 @@ const BoardsPage = () => {
       getOrgTaskSubmissions({
         variables: {
           orgId: id,
-          statuses,
+          statuses: [STATUS_OPEN],
           offset: 0,
           limit: LIMIT,
         },

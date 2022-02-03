@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients';
-import { Grey80, White } from '../../../theme/colors';
+import { Grey80, Grey250, White } from '../../../theme/colors';
 import { Typography } from '@material-ui/core';
 import { BaseCard } from '../card';
 
@@ -43,7 +43,7 @@ export const TaskHeader = styled.div`
   width: 100%;
   text-align: left;
 
-  margin: 0 0 33px 0;
+  margin: 0 0 17px 0;
 `;
 
 export const TaskContent = styled.div`
@@ -64,6 +64,18 @@ export const TaskSeparator = styled.div`
   display: flex;
   border-bottom: 1px solid ${Grey80};
   margin-top: 5px;
+`;
+
+export const MilestoneIconWrapper = styled.div`
+  margin-left: ${(props) => (props.withProfile ? '6px' : '0')};
+`;
+
+export const MilestoneSeparator = styled(TaskSeparator)`
+  margin: 12px 0;
+`;
+
+export const MilestoneProgressWrapper = styled.div`
+  margin-bottom: 12px;
 `;
 
 export const TaskTitle = styled.div`
@@ -112,14 +124,16 @@ export const TaskActionAmount = styled.div`
   flex-grow: 1;
   justify-content: flex-start;
   padding-left: 10px;
+  color: ${Grey250};
 `;
 
 export const PodWrapper = styled.div`
   background: #363636;
   padding: 1px 8px;
   border-radius: 8px;
-  margin-left: 12px;
   cursor: pointer;
+  margin-bottom: 16px;
+  width: fit-content;
 `;
 
 export const PodName = styled(Typography)`
@@ -237,6 +251,7 @@ export const TaskSectionInfoDiv = styled.div`
   display: flex;
   align-items: center;
   text-align: left;
+  margin-top: 8px;
 `;
 
 export const TaskModalFooter = styled.div`
@@ -364,6 +379,7 @@ export const TaskListCardWrapper = styled.div`
   padding: 16px;
   margin-bottom: 20px;
 `;
+
 export const ArchivedTaskUndo = styled.span`
   text-decoration: underline;
   :hover {

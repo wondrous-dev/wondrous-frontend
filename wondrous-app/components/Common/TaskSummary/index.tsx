@@ -28,7 +28,7 @@ import {
   SmallerCardActionButtons,
 } from './styles';
 import { Arrow, Media } from '../../Icons/sections';
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
 import { useRouter } from 'next/router';
 import { TaskViewModal } from '../Task/modal';
 import {
@@ -106,6 +106,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
+  const boardColumns = useColumns();
   const user = useMe();
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
@@ -125,12 +126,19 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
         variables: {
           proposalId: task?.id,
         },
-        onCompleted: () => {
-          let columns = [...board?.columns];
+        onCompleted: (data) => {
+          const taskProposal = data?.approveTaskProposal;
+          let columns = [...boardColumns?.columns];
           // Move from proposal to task
           columns = removeProposalItem(task?.id, columns);
-          columns = addTaskItem(task, columns);
-          board?.setColumns(columns);
+          columns = addTaskItem(
+            {
+              ...task,
+              id: taskProposal?.associatedTaskId,
+            },
+            columns
+          );
+          boardColumns?.setColumns(columns);
         },
       });
     requestChange = () =>
@@ -139,7 +147,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
           proposalId: task?.id,
         },
         onCompleted: () => {
-          let columns = [...board?.columns];
+          let columns = [...boardColumns?.columns];
           columns = updateProposalItem(
             {
               ...task,
@@ -147,7 +155,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
             },
             columns
           );
-          board?.setColumns(columns);
+          boardColumns?.setColumns(columns);
         },
       });
   } else if (taskType === TASK_STATUS_IN_REVIEW) {
@@ -158,7 +166,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
           proposalId: task?.id,
         },
         onCompleted: () => {
-          let columns = [...board?.columns];
+          let columns = [...boardColumns?.columns];
           // Move from proposal to task
           columns = updateSubmissionItem(
             {
@@ -167,7 +175,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
             },
             columns
           );
-          board?.setColumns(columns);
+          boardColumns?.setColumns(columns);
         },
       });
     requestChange = () =>
@@ -176,7 +184,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
           proposalId: task?.id,
         },
         onCompleted: () => {
-          let columns = [...board?.columns];
+          let columns = [...boardColumns?.columns];
           // Move from proposal to task
           columns = updateSubmissionItem(
             {
@@ -186,7 +194,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
             },
             columns
           );
-          board?.setColumns(columns);
+          boardColumns?.setColumns(columns);
         },
       });
   }
@@ -212,20 +220,6 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
         <TaskSummaryInner>
           <TaskHeader>
             <OrgProfilePicture src={task?.orgProfilePicture} />
-            {task?.podName && (
-              <PodWrapper
-                style={{
-                  marginRight: '16px',
-                }}
-                onclick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  goToPod(task?.podId);
-                }}
-              >
-                <PodName>{task?.podName.slice(0, 15)}</PodName>
-              </PodWrapper>
-            )}
             <AvatarList
               id={id}
               users={[
@@ -252,6 +246,17 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
                 router,
               })}
             </p>
+            {task?.podName && (
+              <PodWrapper
+                onclick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  goToPod(task?.podId);
+                }}
+              >
+                <PodName>{task?.podName.slice(0, 15)}</PodName>
+              </PodWrapper>
+            )}
             {task?.media?.length > 0 ? <TaskMedia media={task?.media[0]} /> : <TaskSeparator />}
           </TaskContent>
           <TaskFooter>

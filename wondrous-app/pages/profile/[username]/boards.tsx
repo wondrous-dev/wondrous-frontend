@@ -19,9 +19,11 @@ import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_ARCHIVED,
   DEFAULT_STATUS_ARR,
+  STATUS_OPEN,
 } from '../../../utils/constants';
 import { GET_USER_FROM_USERNAME } from '../../../graphql/queries';
 
+const LIMIT = 10;
 const TO_DO = {
   status: TASK_STATUS_TODO,
   tasks: [],
@@ -405,8 +407,6 @@ const BoardsPage = () => {
       newColumns[0].tasks = [];
       newColumns[1].tasks = [];
       newColumns[2].tasks = [];
-
-      debugger;
       tasks.forEach((task) => {
         if (task?.status === TASK_STATUS_TODO) {
           newColumns[0].tasks.push(task);
@@ -459,24 +459,24 @@ const BoardsPage = () => {
           userId: profileUserId,
           statuses,
           offset: 0,
-          limit: 2,
+          limit: LIMIT,
         },
       });
       getUserTaskProposals({
         variables: {
           userId: profileUserId,
-          statuses,
+          statuses: [STATUS_OPEN],
           offset: 0,
-          limit: 2,
+          limit: LIMIT,
         },
       });
 
       getUserTaskSubmissions({
         variables: {
           userId: profileUserId,
-          statuses,
+          statuses: [STATUS_OPEN],
           offset: 0,
-          limit: 2,
+          limit: LIMIT,
         },
       });
     }

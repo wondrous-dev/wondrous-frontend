@@ -8,6 +8,8 @@ import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
   TASK_STATUS_TODO,
+  ENTITIES_TYPES,
+  BOARD_TYPE,
 } from '../../../../utils/constants';
 
 import { ToDo, InProgress, Done } from '../../../Icons';
@@ -115,6 +117,15 @@ const TaskColumn = (props: ITaskColumn) => {
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
+  let boardType = null;
+  if (orgBoard) {
+    boardType = BOARD_TYPE.org;
+  } else if (podBoard) {
+    boardType = BOARD_TYPE.pod;
+  } else if (userBoard) {
+    boardType = BOARD_TYPE.assignee;
+  }
+
   const board = orgBoard || userBoard || podBoard;
   const taskCount = board?.taskCount;
   const HeaderIcon = HEADER_ICONS[status];
@@ -150,7 +161,7 @@ const TaskColumn = (props: ITaskColumn) => {
       </TaskColumnContainerHeader>
       <ColumnSection section={section} setSection={() => {}} />
 
-      {cardsList.map((card) => (
+      {cardsList.map((card, index) => (
         <DraggableCard
           key={card.id}
           id={card.id}
@@ -160,8 +171,11 @@ const TaskColumn = (props: ITaskColumn) => {
           podId={card.podId}
           status={card.status}
           moveCard={moveCard}
+          index={index}
+          boardType={boardType}
+          tasks={cardsList}
         >
-          {card.milestone ? (
+          {card.type === ENTITIES_TYPES.MILESTONE ? (
             <Milestone>
               <Task onOpen={props.onOpen} task={card} setTask={() => {}} />
             </Milestone>

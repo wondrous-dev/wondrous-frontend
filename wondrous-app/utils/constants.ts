@@ -7,7 +7,13 @@ export const TASK_STATUS_IN_REVIEW = 'in_review';
 export const TASK_STATUS_DONE = 'completed';
 export const TASK_STATUS_REQUESTED = 'requested';
 export const TASK_STATUS_ARCHIVED = 'archived';
+export const TASK_STATUS_AWAITING_PAYMENT = 'awaiting_payment';
 
+export const STATUS_OPEN = 'open';
+export const STATUS_WAITING_FOR_REVIEW = 'waiting_for_review';
+export const STATUS_CHANGE_REQUESTED = 'change_requested';
+export const STATUS_APPROVED = 'approved';
+export const STATUS_REJECTED = 'rejected';
 // Task types
 export const TASK_TYPE = 'task';
 export const BOUNTY_TYPE = 'bounty';
@@ -98,13 +104,7 @@ export const MEDIA_TYPES = {
   VIDEO: 'video',
 };
 
-export const DEFAULT_STATUS_ARR = [
-  TASK_STATUS_TODO,
-  TASK_STATUS_IN_PROGRESS,
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_DONE,
-  TASK_STATUS_ARCHIVED,
-];
+export const DEFAULT_STATUS_ARR = [TASK_STATUS_TODO, TASK_STATUS_IN_PROGRESS, TASK_STATUS_DONE, TASK_STATUS_ARCHIVED];
 
 export const IMAGE_FILE_EXTENSIONS_TYPE_MAPPING = {
   gif: 'image/gif',
@@ -170,5 +170,11 @@ export const PRIVACY_LEVEL = {
   private: 'private',
 };
 
+export const BOARD_TYPE = {
+  org: 'org',
+  pod: 'pod',
+  assignee: 'assignee',
+};
+
 export const snakeToCamel = (str) =>
-  str.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('-', '').replace('_', ''));
+  str?.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('-', '').replace('_', ''));

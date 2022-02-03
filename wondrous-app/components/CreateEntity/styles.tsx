@@ -406,10 +406,13 @@ export const CreateFormAddDetailsAppearBlockContainer = styled.div`
   }
 `;
 
-export const CreateFormAddDetailsInputs = styled(CreateFormMainSelects)``;
+export const CreateFormAddDetailsInputs = styled(CreateFormMainSelects)`
+  flex-wrap: wrap;
+`;
 
 export const CreateFormAddDetailsInputBlock = styled.div`
   width: 262px;
+  margin-bottom: 25px;
 `;
 
 export const CreateFormAddDetailsInputLabel = styled(Typography)`
@@ -532,6 +535,17 @@ export const CreateFormPreviewButton = styled(Button)`
     color: #ffffff;
   }
 `;
+
+export const TakeTaskButton = styled(CreateFormPreviewButton)`
+  && {
+    height: auto;
+    margin-left: 0px;
+    font-size: 14px;
+    padding: 8px 12px;
+    margin-top: 8px;
+  }
+`;
+
 export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
   className: 'MuiAutocomplete-root',
 }))`
@@ -552,6 +566,10 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
 
   svg {
     color: #c4c4c4;
+  }
+
+  .MuiAutocomplete-endAdornment {
+    top: 0;
   }
 
   .MuiAutocomplete-popper {
@@ -580,6 +598,20 @@ export const AutocompleteList = styled(Popper).attrs((props) => ({
     font-family: Space Grotesk;
     font-size: 14px;
     color: ${White};
+  }
+`;
+
+export const StyledAutocompletePopper = styled(({ className, ...props }) => {
+  return <StyledAutocomplete {...props} classes={{ paper: className }} />;
+})`
+  && {
+    background: #0f0f0f;
+  }
+
+  & .MuiAutocomplete-noOptions {
+    font-family: 'Space Grotesk';
+    color: ${White};
+    font-size: 14px;
   }
 `;
 
