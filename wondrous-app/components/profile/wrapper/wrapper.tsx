@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { SIDEBAR_WIDTH } from '../../../utils/constants';
 import { SideBarContext } from '../../../utils/contexts';
 import { SafeImage } from '../../Common/Image';
+import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 
 import Header from '../../Header';
 import SideBarComponent from '../../SideBar';
@@ -46,6 +47,14 @@ const Wrapper = (props) => {
   const orgCount = userProfileData?.additionalInfo?.orgCount;
   const podCount = userProfileData?.additionalInfo?.podCount;
   const [minimized, setMinimized] = useState(false);
+  const style = {
+    width: '96px',
+    height: '96px',
+    position: 'absolute',
+    borderRadius: '48px',
+    top: '-50px',
+    border: '10px solid #0f0f0f',
+  };
   return (
     <>
       <Header />
@@ -65,20 +74,8 @@ const Wrapper = (props) => {
           <Content>
             <ContentContainer>
               <TokenHeader>
-                {!userProfileData?.profilePicture && <TokenLogo />}
-                {userProfileData?.profilePicture && (
-                  <SafeImage
-                    src={userProfileData?.profilePicture}
-                    style={{
-                      width: '96px',
-                      height: '96px',
-                      position: 'absolute',
-                      borderRadius: '48px',
-                      top: '-50px',
-                      border: '10px solid #0f0f0f',
-                    }}
-                  />
-                )}
+                {!userProfileData?.profilePicture && <DefaultUserImage style={style} />}
+                {userProfileData?.profilePicture && <SafeImage src={userProfileData?.profilePicture} style={style} />}
                 <HeaderMainBlock>
                   <HeaderTitle>{username}</HeaderTitle>
                   {viewingSelf && (
