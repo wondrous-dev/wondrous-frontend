@@ -7,7 +7,14 @@ import TableRow from '@material-ui/core/TableRow';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { Button } from '@material-ui/core';
+import { color } from 'styled-system';
+
 import { LinkIcon } from '../Icons/linkIcon';
+import SmartLink from '../Common/SmartLink';
+
+export const Box = styled.div`
+  ${color}
+`;
 
 export const StyledTable = styled(Table)`
   && {
@@ -41,7 +48,7 @@ export const StyledTableHead = styled(TableHead)`
 
 export const StyledTableRow = styled(TableRow)`
   //cursor: pointer;
-  
+
   & .MuiTableCell-body {
     border: 1px solid #232323;
     padding: 14px;
@@ -56,7 +63,7 @@ export const StyledTableCell = styled(TableCell)`
   &.clickable {
     cursor: pointer;
   }
-  
+
   svg {
     width: 28px;
     height: 28px;
@@ -78,6 +85,15 @@ export const TaskDescription = styled(Typography)`
     letter-spacing: 0.01em;
     color: #c4c4c4;
   }
+`;
+
+export const Initials = styled.a`
+  font-size: 14px;
+  line-height: 19px;
+  letter-spacing: 0.01em;
+  text-decoration-line: underline;
+  color: #00baff;
+  cursor: pointer;
 `;
 
 export const RewardContainer = styled.div`
@@ -104,6 +120,7 @@ export const RewardAmount = styled(Typography)`
     color: #ffffff;
     font-weight: 600;
     font-size: 13px;
+    margin-left: 8px;
   }
 `;
 

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
+import Link from 'next/link';
 
 import {
   ENTITIES_TYPES,
@@ -20,9 +21,11 @@ import PlayIcon from '../Icons/play';
 import { RewardRed } from '../Icons/reward';
 import { TaskMenuIcon } from '../Icons/taskMenu';
 import {
+  Box,
   DeliverableContainer,
   DeliverableItem,
   DeliverablesIconContainer,
+  Initials,
   MoreOptions,
   Reward,
   RewardAmount,
@@ -59,12 +62,23 @@ import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
 import { LoadMore } from '../Common/KanbanBoard/styles';
 import { SafeImage } from '../Common/Image';
 import { useMe } from '../Auth/withAuth';
+import { USDCoin } from '../Icons/USDCoin';
+import Ethereum from '../Icons/ethereum';
+import { Compensation } from '../Common/Compensation';
+import { Matic } from '../Icons/matic';
 
 const STATUS_ICONS = {
   [TASK_STATUS_TODO]: <TodoWithBorder />,
   [TASK_STATUS_IN_PROGRESS]: <InProgressWithBorder />,
   [TASK_STATUS_DONE]: <DoneWithBorder />,
   [TASK_STATUS_ARCHIVED]: <DoneWithBorder />,
+};
+
+const CURRENCY_UI_ELEMENTS = {
+  eth: { icon: <Ethereum />, label: 'ETH' },
+  wonder: { icon: <WonderCoin />, label: 'WONDER' },
+  matic: { icon: <Matic />, label: 'MATIC' },
+  usdc: { icon: <USDCoin />, label: 'USDC' },
 };
 
 const DELIVERABLES_ICONS = {
@@ -272,6 +286,9 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                 podId: task?.podId,
               });
 
+              const reward = (task.rewards || [])[0];
+              const rewardIcon = reward ? CURRENCY_UI_ELEMENTS[reward.symbol].icon : null;
+
               const canManageTask =
                 permissions.includes(Constants.PERMISSIONS.MANAGE_BOARD) ||
                 permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
@@ -293,19 +310,24 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                     ) : null}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    <AvatarList
-                      align="center"
-                      users={[
-                        {
-                          avatar: {
-                            url: task.assigneeProfilePicture,
+                    {task.assigneeProfilePicture ? (
+                      <AvatarList
+                        align="center"
+                        users={[
+                          {
+                            avatar: {
+                              url: task.assigneeProfilePicture,
+                            },
+                            id: task.assigneeUsername,
+                            initials: task.assigneeUsername,
                           },
-                          id: task.assigneeId,
-                          goTo: function () {},
-                          initials: task.assigneeUsername,
-                        },
-                      ]}
-                    />
+                        ]}
+                      />
+                    ) : (
+                      <Link passHref={true} href={`/profile/${task.assigneeUsername}/about`}>
+                        <Initials>{task.assigneeUsername}</Initials>
+                      </Link>
+                    )}
                   </StyledTableCell>
                   <StyledTableCell align="center">{STATUS_ICONS[task.status]}</StyledTableCell>
                   <StyledTableCell className="clickable" onClick={() => openTask(task)}>
@@ -326,10 +348,14 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                   {/*</StyledTableCell>*/}
                   <StyledTableCell>
                     <RewardContainer>
-                      <Reward>
-                        <RewardRed />
-                        <RewardAmount>{shrinkNumber((task.rewards || [])[0]?.rewardAmount)}</RewardAmount>
-                      </Reward>
+                      {reward ? (
+                        <Reward>
+                          {rewardIcon}
+                          <RewardAmount>{shrinkNumber(reward.rewardAmount)}</RewardAmount>
+                        </Reward>
+                      ) : (
+                        <Box color="#fff">None</Box>
+                      )}
                     </RewardContainer>
                   </StyledTableCell>
                   {/*<StyledTableCell align="center">*/}
