@@ -491,7 +491,15 @@ const BoardsPage = () => {
     getUserTaskProposals,
   ]);
 
-  return <Boards selectOptions={SELECT_OPTIONS} columns={columns} tasks={TASKS} />;
+  return (
+    <Boards
+      selectOptions={SELECT_OPTIONS}
+      columns={columns}
+      tasks={TASKS}
+      onLoadMore={() => {}}
+      hasMore={false}
+    />
+  );
 };
 
 export default BoardsPage;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { InputAdornment } from '@material-ui/core';
-
+import { useRouter } from 'next/router';
 import SearchIcon from '../../Icons/search';
 import Wrapper from '../wrapper';
 
@@ -11,10 +11,27 @@ import { BoardsActivity, BoardsActivityInput, BoardsContainer } from '../../orga
 import Filter from '../../Common/Filter';
 import { ToDo, InProgress, Done } from '../../Icons';
 import CreatePodIcon from '../../Icons/createPod';
+import { ToggleViewButton } from '../../Common/ToggleViewButton';
+import { Table } from '../../Table';
+import { delQuery } from '../../../utils';
+
+enum ViewType {
+  List = 'list',
+  Grid = 'grid',
+}
 
 const Boards = (props) => {
   const { selectOptions, columns, onLoadMore, hasMore } = props;
   const [filter, setFilter] = useState([]);
+  const router = useRouter();
+  const [view, setView] = useState(null);
+
+  useEffect(() => {
+    if (router.isReady) {
+      setView((router.query.view || ViewType.Grid) as ViewType);
+    }
+  }, [router.query.view]);
+
   const filterSchema = [
     {
       name: 'Pods',
@@ -84,11 +101,29 @@ const Boards = (props) => {
     },
   ];
 
+  const listViewOptions = [
+    {
+      name: 'List',
+      active: view === ViewType.List,
+      action: () => {
+        router.replace(`${delQuery(router.asPath)}?view=${ViewType.List}`);
+      },
+    },
+    {
+      name: 'Grid',
+      active: view === ViewType.Grid,
+      action: () => {
+        router.replace(`${delQuery(router.asPath)}?view=${ViewType.Grid}`);
+      },
+    },
+  ];
+
   return (
     <Wrapper>
       <BoardsContainer>
-        {/* <BoardsActivity>
+        <BoardsActivity>
           <BoardsActivityInput
+            style={{ visibility: 'hidden' }}
             placeholder="Search people or pods..."
             InputProps={{
               startAdornment: (
@@ -98,15 +133,19 @@ const Boards = (props) => {
               ),
             }}
           />
-          <Filter
-            filterSchema={filterSchema}
-            filter={filter}
-            setFilter={setFilter}
-          />
-          <ButtonGroup></ButtonGroup>
-        </BoardsActivity> */}
+          {/*<Filter style={{ visibility: 'hidden' }} filterSchema={filterSchema} filter={filter} setFilter={setFilter} />*/}
+          {view ? <ToggleViewButton options={listViewOptions} /> : null}
+        </BoardsActivity>
 
-        <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+        {view ? (
+          <>
+            {view === ViewType.Grid ? (
+              <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+            ) : (
+              <Table columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+            )}
+          </>
+        ) : null}
       </BoardsContainer>
     </Wrapper>
   );

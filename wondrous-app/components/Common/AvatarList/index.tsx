@@ -1,25 +1,22 @@
-import React from 'react'
-import * as Colors from '../../../theme/colors'
-import {
-  SmallAvatarWrapper,
-  SmallAvatarContainer,
-  AvatarListWrapper,
-} from './styles'
-import { AVATAR_LIST_OVERFLOW_MAX } from '../../../utils/constants'
-import { SafeImage } from '../Image'
+import React from 'react';
+import * as Colors from '../../../theme/colors';
+import { SmallAvatarWrapper, SmallAvatarContainer, AvatarListWrapper } from './styles';
+import { AVATAR_LIST_OVERFLOW_MAX } from '../../../utils/constants';
+import { SafeImage } from '../Image';
+import { useRouter } from 'next/router';
 
 export const SmallAvatar = (props) => {
-  const { avatar = {}, id, goTo, initials = '', style = {} } = props
+  const { avatar = {}, id, goTo, initials = '', style = {} } = props;
 
   //TODO: create this as a service
-  const colorValues = Object.values(Colors)
-  const randomColor = '#363636'
+  const colorValues = Object.values(Colors);
+  const randomColor = '#363636';
 
   return (
     <SmallAvatarContainer
       key={id}
       onClick={() => {
-        goTo(id)
+        goTo(id);
       }}
       style={{ ...style, zIndex: 6 - (style.zIndex || 0) }}
     >
@@ -47,34 +44,31 @@ export const SmallAvatar = (props) => {
         </SmallAvatarWrapper>
       )}
     </SmallAvatarContainer>
-  )
-}
+  );
+};
 
 export const SmallAvatarOverflow = (props) => {
-  const { index = 0, overflow = 0 } = props
+  const { index = 0, overflow = 0 } = props;
 
   return (
-    <SmallAvatarContainer
-      key={index}
-      style={{ zIndex: AVATAR_LIST_OVERFLOW_MAX + 1 }}
-    >
-      <SmallAvatarWrapper avatarURL="/images/avatar-overflow.png">
-        +{overflow}
-      </SmallAvatarWrapper>
+    <SmallAvatarContainer key={index} style={{ zIndex: AVATAR_LIST_OVERFLOW_MAX + 1 }}>
+      <SmallAvatarWrapper avatarURL="/images/avatar-overflow.png">+{overflow}</SmallAvatarWrapper>
     </SmallAvatarContainer>
-  )
-}
+  );
+};
 
 export const AvatarList = (props) => {
-  const { id = '', users = [], align = '', style = {} } = props
+  const { id = '', users = [], align = '', style = {} } = props;
+  const router = useRouter();
 
   // Siege User List to max of AVATAR_LIST_OVERFLOW_MAX
-  let usersSieged = users.slice(0, AVATAR_LIST_OVERFLOW_MAX)
-  let overflow = users.length - usersSieged.length
+  let usersSieged = users.slice(0, AVATAR_LIST_OVERFLOW_MAX);
+  let overflow = users.length - usersSieged.length;
 
   const goToUser = (userId) => {
-    console.log('User tap: ', userId)
-  }
+    console.log('User tap: ', userId);
+    router.push(`/profile/${id}/about`);
+  };
 
   return (
     <AvatarListWrapper key={id + '-list'} align={align} style={style}>
@@ -94,5 +88,5 @@ export const AvatarList = (props) => {
         ''
       )}
     </AvatarListWrapper>
-  )
-}
+  );
+};

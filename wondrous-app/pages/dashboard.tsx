@@ -608,7 +608,7 @@ const Home = () => {
       banner={<DashboardBanner />}
     >
       <CircularProgress />
-      {/* <MetricsPanel />
+      <MetricsPanel />
       <BoardsContainer>
         <DashboardActivity>
           <BoardsActivityInput
@@ -626,7 +626,7 @@ const Home = () => {
         </DashboardActivity>
 
         <KanbanBoard columns={COLUMNS} />
-      </BoardsContainer> */}
+      </BoardsContainer>
     </AppLayout>
   );
 };

@@ -37,6 +37,7 @@ interface ITaskColumn {
   moveCard: any;
   status: string;
   section: Array<any>;
+  onOpen: () => any;
 }
 
 const TITLES = {
@@ -176,10 +177,10 @@ const TaskColumn = (props: ITaskColumn) => {
         >
           {card.type === ENTITIES_TYPES.MILESTONE ? (
             <Milestone>
-              <Task task={card} setTask={() => {}} />
+              <Task onOpen={props.onOpen} task={card} setTask={() => {}} />
             </Milestone>
           ) : (
-            <Task task={card} setTask={() => {}} />
+            <Task onOpen={props.onOpen} task={card} setTask={() => {}} />
           )}
         </DraggableCard>
       ))}

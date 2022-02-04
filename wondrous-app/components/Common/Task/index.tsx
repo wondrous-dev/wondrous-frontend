@@ -69,7 +69,7 @@ export const TASK_ICONS = {
 };
 
 let windowOffset = 0;
-export const Task = ({ task, setTask }) => {
+export const Task = ({ task, setTask, onOpen = (task) => null }) => {
   const {
     actions = {},
     description = '',
@@ -192,7 +192,8 @@ export const Task = ({ task, setTask }) => {
     task?.createdBy === user?.id;
 
   const openModal = () => {
-    router.replace(`${delQuery(router.asPath)}?task=${task?.id}`);
+    onOpen(task);
+    router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`);
     // document.body.style.overflow = 'hidden'
     // document.body.scroll = false
     windowOffset = window.scrollY;
