@@ -561,8 +561,8 @@ const EditLayoutBaseModal = (props) => {
           title,
           description: descriptionText,
           orgId: org?.id,
-          milestoneId: milestone?.id,
-          podId: pod?.id,
+          milestoneId: milestone?.id ?? milestone,
+          podId: pod?.id ?? pod,
           dueDate,
           ...(rewardsAmount &&
             rewardsCurrency && {
