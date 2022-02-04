@@ -180,9 +180,13 @@ export const SettingsWrapper = (props) => {
     )
   ) {
     if (podId && pod) {
-      router.push(`/pod/${podId}/boards`);
+      router.push(`/pod/${podId}/boards`, undefined, {
+        shallow: true,
+      });
     } else if (org) {
-      router.push(`/organization/${org?.username}/boards`);
+      router.push(`/organization/${org?.username}/boards`, undefined, {
+        shallow: true,
+      });
     }
   }
 

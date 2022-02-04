@@ -1,33 +1,30 @@
-import React from 'react'
-import { useRouter } from 'next/router'
-import { Card, CardBody, CardFooter } from '../components/Common/auth'
-import { Button } from '../components/Common/button'
-import AuthLayout from '../components/Common/Layout/Auth'
-import { Line } from '../components/Common/lines'
-import { Form } from '../components/Common/form'
-import { Field } from '../components/Common/field'
-import { StyledLink } from '../components/Common/text'
-import {
-  SmallLogo,
-  LoginWrapper,
-  TopBubble,
-  LoginError,
-} from '../components/Pages/login'
-import { useState } from 'react'
-import { CenteredFlexRow } from '../components/Common/index'
-import { LockIcon } from '../components/Icons/userpass'
+import React from 'react';
+import { useRouter } from 'next/router';
+import { Card, CardBody, CardFooter } from '../components/Common/auth';
+import { Button } from '../components/Common/button';
+import AuthLayout from '../components/Common/Layout/Auth';
+import { Line } from '../components/Common/lines';
+import { Form } from '../components/Common/form';
+import { Field } from '../components/Common/field';
+import { StyledLink } from '../components/Common/text';
+import { SmallLogo, LoginWrapper, TopBubble, LoginError } from '../components/Pages/login';
+import { useState } from 'react';
+import { CenteredFlexRow } from '../components/Common/index';
+import { LockIcon } from '../components/Icons/userpass';
 
 const ResetPassword = () => {
-  const [password, setPassword] = useState('')
-  const [repassword, setRePassword] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
-  const router = useRouter()
+  const [password, setPassword] = useState('');
+  const [repassword, setRePassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const router = useRouter();
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
     // TODO: Reset Password plumbing with backend
-    router.push('/login')
-  }
+    router.push('/login', undefined, {
+      shallow: true,
+    });
+  };
 
   return (
     <AuthLayout>
@@ -72,7 +69,7 @@ const ResetPassword = () => {
         </Card>
       </LoginWrapper>
     </AuthLayout>
-  )
-}
+  );
+};
 
-export default ResetPassword
+export default ResetPassword;

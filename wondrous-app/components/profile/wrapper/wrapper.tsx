@@ -80,7 +80,13 @@ const Wrapper = (props) => {
                   <HeaderTitle>{username}</HeaderTitle>
                   {viewingSelf && (
                     <HeaderButtons>
-                      <HeaderEditProfileButton onClick={() => router.push(`/profile/settings`)}>
+                      <HeaderEditProfileButton
+                        onClick={() =>
+                          router.push(`/profile/settings`, undefined, {
+                            shallow: true,
+                          })
+                        }
+                      >
                         Edit my profile
                       </HeaderEditProfileButton>
                     </HeaderButtons>

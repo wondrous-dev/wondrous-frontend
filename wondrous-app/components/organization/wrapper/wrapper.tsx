@@ -183,7 +183,9 @@ const Wrapper = (props) => {
                         </HeaderInviteButton>
                         <HeaderManageSettingsButton
                           onClick={() => {
-                            router.push(`/organization/settings/${orgBoard?.orgId}/general`);
+                            router.push(`/organization/settings/${orgBoard?.orgId}/general`, undefined, {
+                              shallow: true,
+                            });
                           }}
                         >
                           Settings

@@ -42,7 +42,9 @@ const SideBarComponent = (props) => {
   };
 
   const generalSettings = () => {
-    router.push('/profile/settings');
+    router.push('/profile/settings', undefined, {
+      shallow: true,
+    });
   };
 
   const listItems = userOrgs?.getUserOrgs;
@@ -61,7 +63,9 @@ const SideBarComponent = (props) => {
         <DrawerTopBlock>
           <DrawerTopBlockItem
             onClick={() => {
-              router.push(`/profile/${user.username}/about`);
+              router.push(`/profile/${user.username}/about`, undefined, {
+                shallow: true,
+              });
             }}
           >
             {user?.profilePicture ? (
@@ -76,7 +80,11 @@ const SideBarComponent = (props) => {
                 <DrawerListItem
                   button
                   key={item.id}
-                  onClick={() => router.push(`/organization/${item?.username}/boards`)}
+                  onClick={() =>
+                    router.push(`/organization/${item?.username}/boards`, undefined, {
+                      shallow: true,
+                    })
+                  }
                 >
                   {item?.profilePicture ? (
                     <SafeImage

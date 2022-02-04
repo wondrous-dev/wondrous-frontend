@@ -203,7 +203,9 @@ export const Task = ({ task, setTask }) => {
   const goToPod = (podId) => {
     // Filter or go to Pod Page
     console.log('Pod tap: ', podId);
-    router.push(`/pod/${podId}/boards`);
+    router.push(`/pod/${podId}/boards`, undefined, {
+      shallow: true,
+    });
   };
 
   useEffect(() => {
@@ -423,7 +425,9 @@ export const TaskListCard = (props) => {
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              router.push(`/pod/${task?.podId}/boards`);
+              router.push(`/pod/${task?.podId}/boards`, undefined, {
+                shallow: true,
+              });
             }}
           >
             <PodName>{task?.podName.slice(0, 15)}</PodName>
