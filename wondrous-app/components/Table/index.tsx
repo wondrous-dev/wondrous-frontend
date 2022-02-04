@@ -74,13 +74,6 @@ const STATUS_ICONS = {
   [TASK_STATUS_ARCHIVED]: <DoneWithBorder />,
 };
 
-const CURRENCY_UI_ELEMENTS = {
-  eth: { icon: <Ethereum />, label: 'ETH' },
-  wonder: { icon: <WonderCoin />, label: 'WONDER' },
-  matic: { icon: <Matic />, label: 'MATIC' },
-  usdc: { icon: <USDCoin />, label: 'USDC' },
-};
-
 const DELIVERABLES_ICONS = {
   audio: <AudioIcon />,
   image: <ImageIcon />,
@@ -296,7 +289,6 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
               });
 
               const reward = (task.rewards || [])[0];
-              const rewardIcon = reward ? CURRENCY_UI_ELEMENTS[reward.symbol].icon : null;
 
               const canManageTask =
                 permissions.includes(Constants.PERMISSIONS.MANAGE_BOARD) ||
@@ -359,7 +351,13 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                     <RewardContainer>
                       {reward ? (
                         <Reward>
-                          {rewardIcon}
+                          <SafeImage
+                              src={reward.icon}
+                              style={{
+                                width: '16px',
+                                height: '16px',
+                              }}
+                          />
                           <RewardAmount>{shrinkNumber(reward.rewardAmount)}</RewardAmount>
                         </Reward>
                       ) : (

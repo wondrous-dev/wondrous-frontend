@@ -106,7 +106,6 @@ export const RewardContainer = styled.div`
 `;
 
 export const Reward = styled.div`
-  width: 60px;
   height: 28px;
   background: #1f1f1f;
   border-radius: 300px;
@@ -121,6 +120,7 @@ export const RewardAmount = styled(Typography)`
     font-weight: 600;
     font-size: 13px;
     margin-left: 8px;
+    line-height: 14px;
   }
 `;
 
