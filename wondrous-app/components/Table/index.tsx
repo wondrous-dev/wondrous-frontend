@@ -225,7 +225,16 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
 
   return (
     <StyledTableContainer>
-      <TaskViewModal open={isPreviewModalOpen} handleClose={() => setPreviewModalOpen(false)} task={selectedTask} />
+      <TaskViewModal
+        open={isPreviewModalOpen}
+        handleClose={() => {
+          setPreviewModalOpen(false);
+          router.push(`${delQuery(router.asPath)}?view=list`, undefined, {
+            shallow: true,
+          });
+        }}
+        task={selectedTask}
+      />
       <ArchiveTaskModal
         open={isArchiveModalOpen}
         onClose={() => setArchiveModalOpen(false)}

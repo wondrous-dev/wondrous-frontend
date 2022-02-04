@@ -32,7 +32,7 @@ const Boards = (props) => {
     if (router.isReady) {
       setView((router.query.view || ViewType.Grid) as ViewType);
     }
-  }, [router.query.view]);
+  }, [router.query.view, router.isReady]);
 
   const filterSchema = [
     {
