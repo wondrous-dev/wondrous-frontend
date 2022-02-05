@@ -9,6 +9,7 @@ import { BaseCard } from '../../Common/card';
 
 export const OverviewComponent = styled.section`
   width: 100vw;
+  min-height: 100vh;
   height: 100%;
   //background-color: ${Background};
   background-color: #0f0f0f;

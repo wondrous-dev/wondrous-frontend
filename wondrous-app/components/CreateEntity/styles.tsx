@@ -568,10 +568,6 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
     color: #c4c4c4;
   }
 
-  .MuiAutocomplete-endAdornment {
-    top: 0;
-  }
-
   .MuiAutocomplete-popper {
     background: #0f0f0f;
   }

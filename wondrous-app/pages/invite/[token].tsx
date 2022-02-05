@@ -18,23 +18,27 @@ const ContributorOnboardingPage = () => {
     },
   });
   const user = useMe();
-  const [redeemOrgInviteLink] = useMutation(REDEEM_ORG_INVITE_LINK, {
-    onCompleted: (data) => {
-      if (data?.redeemOrgInviteLink?.success) {
-        router.push(`/onboarding/welcome`, undefined, {
-          shallow: true,
-        });
-      }
-    },
-  });
+  const [redeemOrgInviteLink] = useMutation(REDEEM_ORG_INVITE_LINK);
   const orgInfo = data?.getInvitedOrgInfo;
   useEffect(() => {
-    if (user) {
-      router.push(`/onboarding/welcome`, undefined, {
-        shallow: true,
+    if (user && token && orgInfo) {
+      redeemOrgInviteLink({
+        variables: {
+          token,
+        },
+        onCompleted: (data) => {
+          router.push(`/organization/${orgInfo?.username}/boards`, undefined, {
+            shallow: true,
+          });
+        },
+        onError: () => {
+          router.push(`/organization/${orgInfo?.username}/boards`, undefined, {
+            shallow: true,
+          });
+        },
       });
     }
-  }, [user, router]);
+  }, [user, orgInfo, token, router]);
   return (
     <MainWrapper>
       <Logo />

@@ -77,13 +77,7 @@ export const MoreInfoModal = (props) => {
   const [displayPods, setDisplayPods] = useState(showPods);
   const [userList, setUserList] = useState([]);
   const [podList, setPodList] = useState([]);
-  const [getOrgPods] = useLazyQuery(GET_ORG_PODS, {
-    onCompleted: (data) => {
-      const pods = data.getOrgPods;
-      setPodList(pods);
-      setListLoading(false);
-    },
-  });
+  const [getOrgPods, { data: orgPodData }] = useLazyQuery(GET_ORG_PODS);
   const [getOrgUsers] = useLazyQuery(GET_ORG_USERS, {
     onCompleted: (data) => {
       const userData = data.getOrgUsers;
@@ -103,7 +97,7 @@ export const MoreInfoModal = (props) => {
     },
     fetchPolicy: 'cache-and-network',
   });
-
+  const pods = orgPodData?.getOrgPods;
   useEffect(() => {
     if (showUsers && !displayUsers && !displayPods) {
       setDisplayUsers(true);
@@ -136,8 +130,12 @@ export const MoreInfoModal = (props) => {
         });
       }
     }
+    if (pods) {
+      setPodList(pods);
+      setListLoading(false);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, podId, displayPods, displayUsers, showUsers, showPods]);
+  }, [orgId, podId, displayPods, displayUsers, showUsers, showPods, pods]);
   return (
     <Modal
       open={open}
