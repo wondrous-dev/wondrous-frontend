@@ -18,6 +18,7 @@ import { Button } from '../Common/button';
 import { PaddedParagraph } from '../Common/text';
 import { Metamask } from '../Icons/metamask';
 import { SafeImage } from '../Common/Image';
+import { ErrorText } from '../Common';
 
 export const Logo = () => {
   return (
@@ -39,7 +40,14 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
   // time.
   const connectWallet = async (event) => {
     // Connect Wallet first
+    setErrorMessage('');
     await wonderWeb3.onConnect();
+    if (!wonderWeb3.chain) {
+      setErrorMessage('No chain detected - please connect to Eth mainnet');
+    }
+    if (unsuportedChain) {
+      setErrorMessage('Unsupported chain - please use Eth mainnet');
+    }
   };
 
   const signupWithWallet = async () => {
@@ -59,23 +67,27 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
 
         if (signedMessage) {
           // Sign with Wallet
-          const result = await walletSignup(wonderWeb3.address, signedMessage, wonderWeb3.chainName.toLowerCase());
-          if (result === true) {
-            //
-            redeemOrgInviteLink({
-              variables: {
-                token,
-              },
-              onCompleted: (data) => {
-                if (data?.redeemOrgInviteLink?.success) {
-                  router.push(`/onboarding/welcome`, undefined, {
-                    shallow: true,
-                  });
-                }
-              },
-            });
-          } else {
-            setErrorMessage(result);
+          try {
+            const result = await walletSignup(wonderWeb3.address, signedMessage, wonderWeb3.chainName.toLowerCase());
+            if (result === true) {
+              //
+              redeemOrgInviteLink({
+                variables: {
+                  token,
+                },
+                onCompleted: (data) => {
+                  if (data?.redeemOrgInviteLink?.success) {
+                    router.push(`/onboarding/welcome`, undefined, {
+                      shallow: true,
+                    });
+                  }
+                },
+              });
+            } else {
+              setErrorMessage(result);
+            }
+          } catch (err) {
+            setErrorMessage(err?.message || err);
           }
         } else if (signedMessage === false) {
           setErrorMessage('Signature rejected. Try again.');
@@ -140,6 +152,7 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
           <PaddedParagraph padding="0 10px">Connect with MetaMask</PaddedParagraph>
         </MetamaskButton>
       )}
+      {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
     </InviteWelcomeBoxWrapper>
   );
 };

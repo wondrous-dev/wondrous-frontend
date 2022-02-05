@@ -62,13 +62,17 @@ const Login = ({ csrfToken }) => {
         if (signedMessage) {
           // Sign with Wallet
           setLoading(true);
-          const result = await walletSignin(wonderWeb3.address, signedMessage);
-          if (result === true) {
-            router.push('/dashboard', undefined, {
-              shallow: true,
-            });
-          } else {
-            setErrorMessage(result);
+          try {
+            const result = await walletSignin(wonderWeb3.address, signedMessage);
+            if (result === true) {
+              router.push('/dashboard', undefined, {
+                shallow: true,
+              });
+            } else {
+              setErrorMessage(result);
+            }
+          } catch (err) {
+            setErrorMessage(err?.message || err);
           }
           setLoading(false);
         } else {
