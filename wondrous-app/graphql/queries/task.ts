@@ -32,6 +32,14 @@ export const GET_ELIGIBLE_REVIEWERS_FOR_ORG = gql`
   }
 `;
 
+export const GET_ELIGIBLE_REVIEWERS_FOR_POD = gql`
+  query getEligibleReviewersForPod($podId: ID!, $searchString: String) {
+    getEligibleReviewersForPod(podId: $podId, searchString: $searchString) {
+      id
+      username
+  }
+}`
+
 export const GET_TASK_SUBMISSIONS_FOR_TASK = gql`
   query getTaskSubmissionsForTask($taskId: ID!) {
     getTaskSubmissionsForTask(taskId: $taskId) {
