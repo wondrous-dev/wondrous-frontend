@@ -170,12 +170,6 @@ const Wrapper = (props) => {
                     </HeaderFollowButton>
                     {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
                       <>
-                        <HeaderInviteButton onClick={() => setOpenInvite(true)}>
-                          Invite{' '}
-                          <PlusIconWrapper>
-                            <PlusIcon height="8" width="8" fill="#fff" />
-                          </PlusIconWrapper>
-                        </HeaderInviteButton>
                         <HeaderManageSettingsButton
                           onClick={() =>
                             router.push(`/pod/settings/${podBoard?.podId}/general`, undefined, {
@@ -201,7 +195,7 @@ const Wrapper = (props) => {
                 <HeaderActivity>
                   {links?.map((link) => (
                     <HeaderActivityLink href={link?.url} key={link}>
-                      <HeaderActivityLinkIcon />
+                      {(link?.name || link?.url) && <HeaderActivityLinkIcon />}
                       {link?.name || link?.url}
                     </HeaderActivityLink>
                   ))}
