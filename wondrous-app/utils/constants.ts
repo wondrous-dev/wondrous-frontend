@@ -170,6 +170,10 @@ export const PRIVACY_LEVEL = {
   private: 'private',
 };
 
+export const WALLET_TYPE = {
+  metamask: 'metamask',
+};
+
 export const BOARD_TYPE = {
   org: 'org',
   pod: 'pod',

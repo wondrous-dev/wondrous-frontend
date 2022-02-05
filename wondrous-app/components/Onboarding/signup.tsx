@@ -10,10 +10,10 @@ import {
   OrgProfilePicture,
 } from './styles';
 import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
-import { useWonderWeb3 } from '../../services/web3';
+import { transformWalletType, useWonderWeb3 } from '../../services/web3';
 import { getUserSigningMessage, walletSignup } from '../Auth/withAuth';
 import { useRouter } from 'next/router';
-import { SUPPORTED_CHAINS } from '../../utils/constants';
+import { SUPPORTED_CHAINS, WALLET_TYPE } from '../../utils/constants';
 import { Button } from '../Common/button';
 import { PaddedParagraph } from '../Common/text';
 import { Metamask } from '../Icons/metamask';
@@ -55,7 +55,7 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
       // Retrieve Signed Message
       const messageToSignObject = await getUserSigningMessage(
         wonderWeb3.address,
-        wonderWeb3.chainName.toLowerCase(),
+        transformWalletType(wonderWeb3.chainName.toLowerCase(), WALLET_TYPE.metamask),
         true
       );
       if (messageToSignObject?.userExists) {

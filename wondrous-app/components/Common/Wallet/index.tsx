@@ -1,11 +1,11 @@
-import { Button } from '../button'
-import React, { useCallback, useEffect, useState } from 'react'
-import { useWonderWeb3 } from '../../../services/web3'
-import Ethereum from '../../Icons/ethereum'
-import { Metamask } from '../../Icons/metamask'
-import { WonderCoin } from '../../Icons/wonderCoin'
-import { PaddedParagraph } from '../text'
-import { formatEther } from '@ethersproject/units'
+import { Button } from '../button';
+import React, { useCallback, useEffect, useState } from 'react';
+import { transformWalletType, useWonderWeb3 } from '../../../services/web3';
+import Ethereum from '../../Icons/ethereum';
+import { Metamask } from '../../Icons/metamask';
+import { WonderCoin } from '../../Icons/wonderCoin';
+import { PaddedParagraph } from '../text';
+import { formatEther } from '@ethersproject/units';
 
 import {
   WalletWrapper,
@@ -16,109 +16,104 @@ import {
   CurrencySelectorItem,
   CurrencyName,
   CurrencySymbol,
-} from './styles'
-import {
-  getUserSigningMessage,
-  linkWallet,
-  logout,
-  useMe,
-} from '../../Auth/withAuth'
-import { DropDown, DropDownItem } from '../dropdown'
-import { Matic } from '../../Icons/matic'
-import { CURRENCY_KEYS, SUPPORTED_CHAINS } from '../../../utils/constants'
-import { USDCoin } from '../../Icons/USDCoin'
+} from './styles';
+import { getUserSigningMessage, linkWallet, logout, useMe } from '../../Auth/withAuth';
+import { DropDown, DropDownItem } from '../dropdown';
+import { Matic } from '../../Icons/matic';
+import { CURRENCY_KEYS, SUPPORTED_CHAINS, WALLET_TYPE } from '../../../utils/constants';
+import { USDCoin } from '../../Icons/USDCoin';
 
 const CHAIN_LOGO = {
   '1': <Ethereum />,
   '137': <Matic />,
-}
+};
 
 const CURRENCY_SYMBOL = {
   ETH: <Ethereum />,
   WONDER: <WonderCoin />,
   MATIC: <Matic />,
   USDC: <USDCoin />,
-}
+};
 
 const CURRENCY_UI_ELEMENTS = {
   ETH: { icon: <Ethereum />, label: 'ETH' },
   WONDER: { icon: <WonderCoin />, label: 'WONDER' },
   MATIC: { icon: <Matic />, label: 'MATIC' },
   USDC: { icon: <USDCoin />, label: 'USDC' },
-}
+};
 
 const Wallet = () => {
-  const wonderWeb3 = useWonderWeb3()
-  const [connected, setConnected] = useState(false)
-  const [notSupported, setNotSupported] = useState(false)
-  const [firstConnect, setFirstConnect] = useState(true)
+  const wonderWeb3 = useWonderWeb3();
+  const [connected, setConnected] = useState(false);
+  const [notSupported, setNotSupported] = useState(false);
+  const [firstConnect, setFirstConnect] = useState(true);
   const [currency, setCurrency] = useState({
     balance: '0.000',
     symbol: 'WONDER',
-  })
-  const user = useMe()
+  });
+  const user = useMe();
 
   const connectWallet = useCallback(
     async (event = {}) => {
-      await wonderWeb3.onConnect()
-      setFirstConnect(false)
+      await wonderWeb3.onConnect();
+      setFirstConnect(false);
     },
     [wonderWeb3]
-  )
+  );
 
   const linkUserWithWallet = useCallback(async () => {
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
       const messageToSign = await getUserSigningMessage(
         wonderWeb3.address,
-        wonderWeb3.chainName.toLowerCase()
-      )
+        transformWalletType(wonderWeb3.chainName.toLowerCase(), WALLET_TYPE.metamask)
+      );
 
       if (messageToSign) {
-        const signedMessage = await wonderWeb3.signMessage(messageToSign)
+        const signedMessage = await wonderWeb3.signMessage(messageToSign);
         if (signedMessage) {
           const result = await linkWallet(
             wonderWeb3.address,
             signedMessage,
-            wonderWeb3.chainName.toLowerCase()
-          )
+            transformWalletType(wonderWeb3.chainName.toLowerCase(), WALLET_TYPE.metamask)
+          );
           if (!result) {
             // Error with wallet link. Disconnect wallet
-            await wonderWeb3.disconnect()
-            setConnected(false)
+            await wonderWeb3.disconnect();
+            setConnected(false);
           }
         }
       }
     }
-  }, [wonderWeb3])
+  }, [wonderWeb3]);
 
   const displayCurrency = (currencyCode) => {
     if (wonderWeb3.assets[currencyCode]) {
       setCurrency({
         balance: wonderWeb3.assets[currencyCode].balance,
         symbol: wonderWeb3.assets[currencyCode].symbol,
-      })
+      });
     }
-  }
+  };
 
   useEffect(() => {
     if (user && user.activeEthAddress && !wonderWeb3.subscribed) {
-      connectWallet()
+      connectWallet();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connectWallet, user])
+  }, [connectWallet, user]);
 
   // Detect Chain
   useEffect(() => {
-    setNotSupported(!SUPPORTED_CHAINS[wonderWeb3.chain])
-  }, [wonderWeb3.chain])
+    setNotSupported(!SUPPORTED_CHAINS[wonderWeb3.chain]);
+  }, [wonderWeb3.chain]);
 
   // Change Currency when the Chain changes
   useEffect(() => {
     if (wonderWeb3.assets) {
-      displayCurrency(wonderWeb3.nativeTokenSymbol)
+      displayCurrency(wonderWeb3.nativeTokenSymbol);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wonderWeb3.assets])
+  }, [wonderWeb3.assets]);
 
   // Bind to the Web3 wallet to monitor changes (i.e user unlinks wallet)
 
@@ -129,22 +124,18 @@ const Wallet = () => {
       // Enable the wallet.
       if (wonderWeb3.address) {
         // Change the UI now.
-        setConnected(true)
-        if (
-          user &&
-          user.activeEthAddress &&
-          wonderWeb3.address !== user.activeEthAddress
-        ) {
+        setConnected(true);
+        if (user && user.activeEthAddress && wonderWeb3.address !== user.activeEthAddress) {
           // Wallet has changed, and doesn't match user's
           // registered. SignOut.
-          logout()
+          logout();
         } else if (user && !user.activeEthAddress) {
           // Link the wallet to the user.
-          linkUserWithWallet()
+          linkUserWithWallet();
         }
         // Wallet disabled.
       } else if (!firstConnect) {
-        setConnected(false)
+        setConnected(false);
 
         // No wallet, maybe unlinked?
         if (!user?.email) {
@@ -156,7 +147,7 @@ const Wallet = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wonderWeb3.address])
+  }, [wonderWeb3.address]);
 
   const Balance = () => {
     return (
@@ -165,52 +156,42 @@ const Wallet = () => {
         &nbsp;
         {CURRENCY_SYMBOL[currency.symbol]}
       </WonderBalance>
-    )
-  }
+    );
+  };
 
   const CurrencyDropdownItem = ({ currency }) => {
-    const { icon: currencyIcon, label: currencyLabel } =
-      CURRENCY_UI_ELEMENTS[currency]
+    const { icon: currencyIcon, label: currencyLabel } = CURRENCY_UI_ELEMENTS[currency];
     return (
-      <DropDownItem
-        key={`wallet-currency-${currency}`}
-        onClick={() => displayCurrency(currency)}
-      >
+      <DropDownItem key={`wallet-currency-${currency}`} onClick={() => displayCurrency(currency)}>
         <CurrencySelectorItem>
           <CurrencySymbol>{currencyIcon}</CurrencySymbol>
           <CurrencyName>{currencyLabel}</CurrencyName>
         </CurrencySelectorItem>
       </DropDownItem>
-    )
-  }
+    );
+  };
 
   if (!connected) {
     return (
       <WalletWrapper>
-        <Button
-          highlighted="true"
-          onClick={connectWallet}
-          style={{ width: '270px', minHeight: '40px' }}
-        >
+        <Button highlighted="true" onClick={connectWallet} style={{ width: '270px', minHeight: '40px' }}>
           <Metamask height="18" width="17" />
           <PaddedParagraph
             style={{
               marginLeft: '8px',
             }}
           >
-            {!user?.activeEthAddress
-              ? 'Link Metamask to Account'
-              : 'Connect MetaMask'}
+            {!user?.activeEthAddress ? 'Link Metamask to Account' : 'Connect MetaMask'}
           </PaddedParagraph>
         </Button>
       </WalletWrapper>
-    )
+    );
   } else if (notSupported) {
     return (
       <WalletWrapper>
         <WalletDisplay>Chain Not Supported</WalletDisplay>
       </WalletWrapper>
-    )
+    );
   } else {
     return (
       <WalletWrapper>
@@ -219,17 +200,13 @@ const Wallet = () => {
           <DropDown DropdownHandler={Balance}>
             <CurrencyDropdownItem currency={CURRENCY_KEYS.WONDER} />
             <CurrencyDropdownItem currency={CURRENCY_KEYS.USDC} />
-            {wonderWeb3.chainName && (
-              <CurrencyDropdownItem currency={wonderWeb3.chainName} />
-            )}
+            {wonderWeb3.chainName && <CurrencyDropdownItem currency={wonderWeb3.chainName} />}
           </DropDown>
-          <WalletAddress>
-            {wonderWeb3.wallet.addressTag || 'loading...'}
-          </WalletAddress>
+          <WalletAddress>{wonderWeb3.wallet.addressTag || 'loading...'}</WalletAddress>
         </WalletDisplay>
       </WalletWrapper>
-    )
+    );
   }
-}
+};
 
-export default Wallet
+export default Wallet;

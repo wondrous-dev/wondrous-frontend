@@ -13,9 +13,9 @@ import { CenteredFlexRow } from '../components/Common/index';
 import { Grey50 } from '../theme/colors';
 import { Metamask } from '../components/Icons/metamask';
 import { EmailIcon, LockIcon } from '../components/Icons/userpass';
-import { useWonderWeb3 } from '../services/web3';
+import { transformWalletType, useWonderWeb3 } from '../services/web3';
 import { emailSignup, getUserSigningMessage, walletSignup } from '../components/Auth/withAuth';
-import { SUPPORTED_CHAINS } from '../utils/constants';
+import { SUPPORTED_CHAINS, WALLET_TYPE } from '../utils/constants';
 
 const Signup = () => {
   const wonderWeb3 = useWonderWeb3();
@@ -56,7 +56,10 @@ const Signup = () => {
   const signupWithWallet = async () => {
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
       // Retrieve Signed Message
-      const messageToSign = await getUserSigningMessage(wonderWeb3.address, wonderWeb3.chainName.toLowerCase());
+      const messageToSign = await getUserSigningMessage(
+        wonderWeb3.address,
+        transformWalletType(wonderWeb3.chainName.toLowerCase(), WALLET_TYPE.metamask)
+      );
 
       if (messageToSign) {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
