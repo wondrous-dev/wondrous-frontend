@@ -54,6 +54,7 @@ const SOCIALS_DATA = [
   {
     icon: <DiscordIcon />,
     link: 'https://discord.gg/',
+    type: 'discord',
   },
   {
     icon: <LinkedInIcon />,
@@ -263,19 +264,23 @@ const reduceLinks = (existingLinks) => {
 const handleLinkChange = (event, item, existingLinks, setLinks) => {
   const links = { ...existingLinks };
   let url = event.currentTarget.value;
-  if (item.link && !url.includes(item.link)) {
-    return;
-  }
+  const urlWithoutProtocol = url.replace(/^(https?:\/\/)/, '');
+  const linkInvalid = item.link && (url.indexOf(item.link) !== 0 || url === item.link);
+  // Case when value doesn't contain domain name
+  if (linkInvalid || !urlWithoutProtocol) {
+    delete links[item.type];
+  } else if (url) {
+    // Add protocol
+    if (!url.includes('http')) {
+      url = `https://${url}`;
+    }
 
-  if (!url.includes('http')) {
-    url = `https://${url}`;
+    links[item.type] = {
+      url,
+      displayName: url,
+      type: item.type,
+    };
   }
-
-  links[item.type] = {
-    url,
-    displayName: url,
-    type: item.type,
-  };
 
   setLinks(links);
 };
