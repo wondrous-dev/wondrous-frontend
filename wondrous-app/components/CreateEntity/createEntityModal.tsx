@@ -934,6 +934,11 @@ const CreateLayoutBaseModal = (props) => {
                 onInputChange={(event, newInputValue) => {
                   setAssigneeString(newInputValue);
                 }}
+                onChange={(_, __, reason) => {
+                  if (reason === 'clear') {
+                    setAssignee(null);
+                  }
+                }}
                 renderOption={(props, option, state) => {
                   return (
                     <OptionDiv
