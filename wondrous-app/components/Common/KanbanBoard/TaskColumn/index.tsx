@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { useDrop } from 'react-dnd';
+import { Droppable, Draggable } from 'react-beautiful-dnd';
 
 import {
   PERMISSIONS,
@@ -13,7 +13,6 @@ import {
 } from '../../../../utils/constants';
 
 import { ToDo, InProgress, Done } from '../../../Icons';
-import DraggableCard, { ItemTypes } from './DraggableCard';
 import { ColumnSection } from '../../ColumnSection';
 
 import {
@@ -23,6 +22,7 @@ import {
   TaskColumnContainerCount,
   DropMeHere,
   TaskColumnDropContainer,
+  TaskListContainer,
 } from './styles';
 import { Task } from '../../Task';
 
@@ -52,64 +52,6 @@ const HEADER_ICONS = {
   [TASK_STATUS_IN_PROGRESS]: InProgress,
   // [TASK_STATUS_IN_REVIEW]: InReview,
   [TASK_STATUS_DONE]: Done,
-};
-
-const ColumnDropZone = ({ status, moveCard, children }) => {
-  const ref = useRef(null);
-  const user = useMe();
-
-  // Permissions for Draggable context
-  const orgBoard = useOrgBoard();
-  const userBoard = useUserBoard();
-  const podBoard = usePodBoard();
-  const board = orgBoard || userBoard || podBoard;
-  const userPermissionsContext =
-    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
-
-  const [{ isOver, canDrop }, drop] = useDrop({
-    accept: ItemTypes.CARD,
-    drop(item: any) {
-      // Return card to its place if not permitted
-      if (checkPermissions(item)) {
-        moveCard(item.id, status);
-      }
-    },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-      canDrop: !!monitor.canDrop(),
-    }),
-  });
-
-  const checkPermissions = (task) => {
-    const permissions = parseUserPermissionContext({
-      userPermissionsContext,
-      orgId: task?.orgId,
-      podId: task?.podId,
-    });
-
-    const canEdit =
-      permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
-      permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-      task?.createdBy === user?.id ||
-      (task?.assigneeId && task?.assigneeId === user?.id);
-
-    // Only if user exists.
-    return canEdit && user && task;
-  };
-
-  drop(ref);
-
-  return (
-    <TaskColumnDropContainer ref={ref}>
-      {isOver && (
-        <DropMeHere>
-          <DropZone />
-          <p>Drag task here</p>
-        </DropMeHere>
-      )}
-      {children}
-    </TaskColumnDropContainer>
-  );
 };
 
 const TaskColumn = (props: ITaskColumn) => {
@@ -160,35 +102,33 @@ const TaskColumn = (props: ITaskColumn) => {
         <TaskColumnContainerCount>{number}</TaskColumnContainerCount>
       </TaskColumnContainerHeader>
       <ColumnSection section={section} setSection={() => {}} />
-
-      {cardsList.map((card, index) => (
-        <DraggableCard
-          key={card.id}
-          id={card.id}
-          assigneeId={card.assigneeId}
-          createdBy={card.createdBy}
-          orgId={card.orgId}
-          podId={card.podId}
-          status={card.status}
-          moveCard={moveCard}
-          index={index}
-          boardType={boardType}
-          tasks={cardsList}
-        >
-          {card.type === ENTITIES_TYPES.MILESTONE ? (
-            <Milestone>
-              <Task onOpen={props.onOpen} task={card} setTask={() => {}} />
-            </Milestone>
-          ) : (
-            <Task onOpen={props.onOpen} task={card} setTask={() => {}} />
-          )}
-        </DraggableCard>
-      ))}
-      {
-        <ColumnDropZone moveCard={moveCard} status={status}>
-          <div style={{ width: '325px', height: '100%' }} />
-        </ColumnDropZone>
-      }
+      <Droppable droppableId={status}>
+        {(provided) => (
+          <TaskListContainer ref={provided.innerRef} {...provided.droppableProps}>
+            {cardsList.map((card, index) => (
+              <Draggable key={card.id} draggableId={card.id} index={index}>
+                {(provided, snapshot) => (
+                  <div
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    ref={provided.innerRef}
+                    isDragging={snapshot.isDragging}
+                  >
+                    {card.type === ENTITIES_TYPES.MILESTONE ? (
+                      <Milestone>
+                        <Task onOpen={props.onOpen} task={card} setTask={() => {}} />
+                      </Milestone>
+                    ) : (
+                      <Task onOpen={props.onOpen} task={card} setTask={() => {}} />
+                    )}
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
+          </TaskListContainer>
+        )}
+      </Droppable>
     </TaskColumnContainer>
   );
 };
