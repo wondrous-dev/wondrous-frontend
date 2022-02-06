@@ -178,7 +178,7 @@ const KanbanBoard = (props) => {
   const onDragEnd = (result) => {
     moveCard(result?.draggableId, result?.destination?.droppableId, result?.destination?.index);
   };
-  console.log('columnsSTate', columnsState);
+
   return (
     <ColumnsContext.Provider
       value={{
