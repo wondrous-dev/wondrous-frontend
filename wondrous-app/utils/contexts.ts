@@ -15,3 +15,5 @@ export const PodBoardContext = createContext(null);
 export const SettingsBoardContext = createContext(null);
 
 export const ColumnsContext = createContext(null);
+
+export const ApprovedSubmissionContext = createContext(null) // for payment probably hacky

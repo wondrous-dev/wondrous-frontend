@@ -18,8 +18,6 @@ import { FileLoading } from '../../components/Common/FileUpload/FileUpload';
 import { useRouter } from 'next/router';
 
 import { SecondStep } from '../../components/Common/Image/OnboardingProgressBar';
-import { useWonderWeb3 } from '../../services/web3';
-import { Field, FieldInput } from '../Common/field';
 import { useMe } from '../Auth/withAuth';
 import { HighlightBlue } from '../../theme/colors';
 import { getFilenameAndType, uploadMedia } from '../../utils/media';

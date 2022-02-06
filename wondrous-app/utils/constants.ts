@@ -44,14 +44,18 @@ export const SOCIAL_OPENSEA = 'opensea';
 export const CHAR_LIMIT_PROFILE_BIO = 200;
 
 // Supported Chains (ETHEREUM, POLYGON)
-export const SUPPORTED_CHAINS = {
+const SUPPORTED_CHAINS = {
   1: 'ETH',
   137: 'MATIC',
 };
 
+if (!process.env.NEXT_PUBLIC_PRODUCTION) {
+  SUPPORTED_CHAINS[4] = 'RINKEBY';
+}
 export const CHAIN_IDS = {
   ETH: 1,
   MATIC: 137,
+  RINKEBY: 4,
 };
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
@@ -191,6 +195,7 @@ export const BOARD_TYPE = {
 export const snakeToCamel = (str) =>
   str?.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('-', '').replace('_', ''));
 
+<<<<<<< HEAD
 export const POD_COLOR = {
   '#B8255F': 'Ruby Red',
   '#DB4035': 'Jasper Red',
@@ -218,3 +223,6 @@ export const filteredColorOptions = Object.keys(POD_COLOR).map((key) => ({
   label: POD_COLOR[key],
   value: key,
 }));
+=======
+export { SUPPORTED_CHAINS };
+>>>>>>> 291f05e (payment frontend logic with shitty ui)

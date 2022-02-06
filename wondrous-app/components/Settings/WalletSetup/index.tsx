@@ -1,0 +1,251 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import { useQuery, useMutation } from '@apollo/client';
+
+import { SettingsWrapper } from '../settingsWrapper';
+import { HeaderBlock } from '../headerBlock';
+import {
+  StyledTable,
+  StyledTableBody,
+  StyledTableCell,
+  StyledTableContainer,
+  StyledTableHead,
+  StyledTableRow,
+} from '../../Table/styles';
+import { TableValueText, WalletAddressInput } from './styles';
+import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
+import { CreateFormPreviewButton } from '../../CreateEntity/styles';
+
+import { CircularProgress } from '@material-ui/core';
+import UserCheckIcon from '../../Icons/userCheckIcon';
+import { useRouter } from 'next/router';
+import { useLazyQuery } from '@apollo/client';
+import { WalletsContainer } from './styles';
+import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
+import { CREATE_ORG_WALLET, CREATE_POD_WALLET } from '../../../graphql/mutations/wallet';
+import WrenchIcon from '../../Icons/wrench';
+import SafeServiceClient from '@gnosis.pm/safe-service-client';
+import { useWonderWeb3 } from '../../../services/web3';
+import { ErrorText } from '../../Common';
+
+const LIMIT = 20;
+
+const SUPPORTED_PAYMENT_CHAINS = [
+  {
+    label: 'Ethereum Mainnet',
+    value: 'eth_mainnet',
+  },
+  {
+    label: 'Polygon Mainnet',
+    value: 'polygon_mainnet',
+  },
+];
+if (!process.env.NEXT_PUBLIC_PRODUCTION) {
+  SUPPORTED_PAYMENT_CHAINS.push({
+    label: 'Ethereum Rinkeby',
+    value: 'rinkeby',
+  });
+}
+
+const CHAIN_VALUE_TO_GNOSIS_CHAIN_VALUE = {
+  eth_mainnet: 'mainnet',
+  polygon_mainnet: 'polygon',
+  rinkeby: 'rinkeby',
+};
+const Wallets = (props) => {
+  const router = useRouter();
+  const wonderWeb3 = useWonderWeb3();
+  const { orgId, podId } = router.query;
+  const [wallets, setWallets] = useState([]);
+  const [selectedChain, setSelectedChain] = useState('eth_mainnet');
+  const [walletName, setWalletName] = useState('');
+  const [safeAddress, setSafeAddress] = useState('');
+  const [userAddress, setUserAddress] = useState('');
+  const emptyError = {
+    safeAddressError: null,
+  };
+  const [errors, setErrors] = useState(emptyError);
+
+  useEffect(() => {
+    if (wonderWeb3?.onConnect) {
+      wonderWeb3.onConnect();
+    }
+    setUserAddress(wonderWeb3.address);
+  }, []);
+
+  const [getOrgWallet, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_WALLET, {
+    onCompleted: (data) => {
+      setWallets(data?.getOrgWallet);
+    },
+    fetchPolicy: 'network-only',
+  });
+  const [getPodWallet] = useLazyQuery(GET_POD_WALLET, {
+    onCompleted: (data) => {
+      setWallets(data?.getPodWallet);
+    },
+    fetchPolicy: 'network-only',
+  });
+
+  const [createOrgWallet] = useMutation(CREATE_ORG_WALLET, {
+    onCompleted: (data) => {
+      console.log('completed', data);
+      setErrors(emptyError);
+      setSafeAddress('');
+      setWalletName('');
+      wallets.push(data?.createOrgWallet);
+      setWallets(wallets);
+    },
+    onError: (e) => {
+      console.error(e);
+    },
+  });
+
+  const [createPodWallet] = useMutation(CREATE_POD_WALLET, {
+    onCompleted: (data) => {
+      console.log('completed', data);
+      setErrors(emptyError);
+      setSafeAddress('');
+      setWalletName('');
+      wallets.push(data?.createPodWallet);
+      setWallets(wallets);
+    },
+    onError: (e) => {
+      console.error(e);
+    },
+  });
+
+  const handleCreateWalletClick = async () => {
+    const newError = emptyError;
+    const chain = CHAIN_VALUE_TO_GNOSIS_CHAIN_VALUE[selectedChain];
+    const safeService = new SafeServiceClient(`https://safe-transaction.${chain}.gnosis.io`);
+    let checksumAddress;
+    try {
+      checksumAddress = wonderWeb3.toChecksumAddress(safeAddress);
+    } catch (e) {
+      newError.safeAddressError = `Cannot convert to checksum address`;
+      setErrors(newError);
+      return;
+    }
+    try {
+      const safe = await safeService.getSafeInfo(checksumAddress);
+    } catch (e) {
+      if (String(e).includes('Not Found')) {
+        newError.safeAddressError = `Safe address not deployed on ${chain}`;
+      } else {
+        newError.safeAddressError = 'unknown gnosis network error';
+      }
+    }
+    if (orgId) {
+      createOrgWallet({
+        variables: {
+          input: {
+            orgId,
+            name: walletName,
+            address: checksumAddress,
+            chain: selectedChain,
+          },
+        },
+      });
+    } else if (podId) {
+      createPodWallet({
+        variables: {
+          input: {
+            podId,
+            name: walletName,
+            address: checksumAddress,
+            chain: selectedChain,
+          },
+        },
+      });
+    }
+    setErrors(newError);
+  };
+  useEffect(() => {
+    if (orgId) {
+      getOrgWallet({
+        variables: {
+          orgId,
+        },
+      });
+    } else if (podId) {
+      getPodWallet({
+        variables: {
+          podId,
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orgId, podId]);
+  console.log(wallets);
+
+  return (
+    <SettingsWrapper>
+      <WalletsContainer>
+        <HeaderBlock
+          // icon={<WrenchIcon circle />}
+          title="Configure Wallets"
+          description="Set up your multisig wallet to pay contributors"
+        />
+        <StyledTableContainer>
+          <StyledTable>
+            <StyledTableHead>
+              <StyledTableRow>
+                <StyledTableCell align="center" width="30%">
+                  Name
+                </StyledTableCell>
+                <StyledTableCell align="center" width="30%">
+                  Address
+                </StyledTableCell>
+                <StyledTableCell align="center" width="40%">
+                  Chain
+                </StyledTableCell>
+              </StyledTableRow>
+            </StyledTableHead>
+            <div
+              style={{
+                textAlign: 'center',
+              }}
+            >
+              {loading && <CircularProgress />}
+            </div>
+            <StyledTableBody>
+              {wallets &&
+                wallets.map((wallet) => {
+                  return (
+                    <StyledTableRow key={wallet?.id}>
+                      <StyledTableCell>
+                        <TableValueText>{wallet.name}</TableValueText>
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        <TableValueText>{wallet.address}</TableValueText>
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        <TableValueText>{wallet.chain}</TableValueText>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  );
+                })}
+            </StyledTableBody>
+          </StyledTable>
+        </StyledTableContainer>
+        <>
+          <WalletAddressInput placeHolder="Name" value={walletName} onChange={(e) => setWalletName(e.target.value)} />
+          <WalletAddressInput
+            placeHolder="Safe Address"
+            value={safeAddress}
+            onChange={(e) => setSafeAddress(e.target.value)}
+          />
+          {errors.safeAddressError && <ErrorText> {errors.safeAddressError} </ErrorText>}
+          <DropdownSelect
+            value={selectedChain}
+            options={SUPPORTED_PAYMENT_CHAINS}
+            setValue={setSelectedChain}
+            onChange={(e) => {}}
+          />
+          <CreateFormPreviewButton onClick={handleCreateWalletClick}>Set up wallet</CreateFormPreviewButton>
+        </>
+      </WalletsContainer>
+    </SettingsWrapper>
+  );
+};
+
+export default Wallets;
