@@ -109,6 +109,9 @@ const TaskColumn = (props: ITaskColumn) => {
               <Draggable key={card.id} draggableId={card.id} index={index}>
                 {(provided, snapshot) => (
                   <div
+                    style={{
+                      width: '100%',
+                    }}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     ref={provided.innerRef}
