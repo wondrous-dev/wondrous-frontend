@@ -17,8 +17,8 @@ export const GET_ORG_WALLET = gql`
 
 
 export const GET_POD_WALLET = gql`
-  query getOrgWallet($podId: ID!) {
-    getOrgWallet(podId: $podId) {
+  query getPodWallet($podId: ID!) {
+    getPodWallet(podId: $podId) {
 		id
 		createdAt
 		podId

@@ -35,6 +35,7 @@ export const GET_SUBMISSION_PAYMENT_INFO = gql`
     	    isEthTransfer
     	    amount
     	    recepientAddress
+          chain
         }
     }
   }

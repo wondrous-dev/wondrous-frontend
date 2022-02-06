@@ -38,6 +38,7 @@ interface PaymentData {
   isEthTransfer: Boolean;
   amount: string;
   recepientAddress: string;
+  chain: string;
 }
 
 const Multisend = () => {

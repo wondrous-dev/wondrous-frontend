@@ -1,0 +1,141 @@
+import styled from 'styled-components';
+import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients';
+import { Grey80, Grey250, White } from '../../../theme/colors';
+import { Typography } from '@material-ui/core';
+import { BaseCard } from '../card';
+import React from 'react'
+import { Tabs } from '@material-ui/core'
+
+export const PodWrapper = styled.div`
+  background: #363636;
+  padding: 1px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  width: fit-content;
+`;
+
+export const PodName = styled(Typography)`
+  && {
+    font-size: 13px;
+    color: ${White};
+  }
+`;
+
+export const PaymentModalHeader = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px !important;
+`;
+
+export const PaymentModal = styled(BaseCard)`
+  width: 680px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 60%;
+  transform: translate(-50%, -50%);
+  overflow-y: scroll;
+  z-index: 2100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgb(20, 20, 20) !important;
+
+  &:-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+`;
+
+export const PodNameTypography = styled(Typography)`
+  && {
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 17px;
+    color: ${White};
+  }
+`;
+
+export const PaymentTitleDiv = styled.div`
+  display: flex;
+  align-items: flex-start;
+`;
+
+export const PaymentTitleTextDiv = styled.div``;
+
+export const PaymentTitleText = styled(Typography)`
+  && {
+    color: ${White};
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 32px;
+    margin-bottom: 8px;
+  }
+`;
+
+export const MakeSubmissionDiv = styled.div`
+  background: #0f0f0f;
+  border-radius: 184px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+`;
+
+export const MakePaymentDiv = styled.div`
+  background: #0f0f0f;
+  border-radius: 184px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+`;
+
+export const StyledTabs = styled((props) => (
+	<Tabs
+		{...props}
+		TabIndicatorProps={{ children: <span className="MuiTabs-indicatorSpan" /> }}
+	/>
+))({
+	'&.MuiTabs-root': {
+		marginTop: 30,
+		width: '100%',
+		margin: '0 auto',
+	},
+	'& .MuiTabs-flexContainer': {
+		display: 'flex',
+		justifyContent: 'space-between',
+		maxWidth: 680,
+		margin: '0 auto',
+
+		'& a': {
+			textDecoration: 'none',
+		},
+	},
+	'& .MuiButtonBase-root': {
+		position: 'relative',
+		maxWidth: 210,
+		borderBottom: '2px solid #4B4B4B',
+
+		//text
+		fontWeight: 600,
+		fontSize: '16px',
+		lineHeight: '19px',
+		textAlign: 'center',
+		color: '#FFFFFF',
+	},
+	'& .MuiTabs-indicator': {
+		display: 'flex',
+		justifyContent: 'center',
+		backgroundColor: 'transparent',
+	},
+	'& .MuiTabs-indicatorSpan': {
+		maxWidth: 210,
+		width: '100%',
+		backgroundColor: '#7427FF',
+	},
+})
