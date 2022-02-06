@@ -9,6 +9,7 @@ import { BaseCard } from '../../Common/card';
 
 export const OverviewComponent = styled.section`
   width: 100vw;
+  min-height: 100vh;
   height: 100%;
   //background-color: ${Background};
   background-color: #0f0f0f;
@@ -60,7 +61,7 @@ export const TokenEmptyLogo = styled.div`
   border-radius: 50px;
 
   background: ${Black};
-`
+`;
 
 export const Content = styled.div`
   width: 100%;
@@ -237,12 +238,12 @@ export const HeaderText = styled(Typography)`
 `;
 
 export const HeaderActivity = styled.div`
-  max-width: 390px;
+  flex-wrap: wrap;
   width: 100%;
   min-height: 23px;
-  height: 23px;
   display: flex;
   align-items: center;
+  margin-top: 8px;
 `;
 
 export const HeaderActivityLink = styled.a`

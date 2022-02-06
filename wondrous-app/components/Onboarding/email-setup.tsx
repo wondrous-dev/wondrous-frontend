@@ -115,7 +115,9 @@ export const InviteWelcomeBox = ({ updateUser }) => {
       >
         <LaterButton
           onClick={() => {
-            router.push(`/dashboard`);
+            router.push(`/dashboard`, undefined, {
+              shallow: true,
+            });
           }}
           buttonInnerStyle={{
             fontFamily: 'Space Grotesk',

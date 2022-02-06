@@ -33,7 +33,9 @@ const TaskRedirect = () => {
   const task = taskProposalData?.getTaskProposalById;
 
   if (task?.org?.username) {
-    router.push(`/organization/${task?.org?.username}/boards?taskProposal=${task?.id}`);
+    router.push(`/organization/${task?.org?.username}/boards?taskProposal=${task?.id}`, undefined, {
+      shallow: true,
+    });
   }
 
   return (

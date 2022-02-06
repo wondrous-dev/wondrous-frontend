@@ -13,3 +13,5 @@ export const UserBoardContext = createContext(null);
 export const PodBoardContext = createContext(null);
 
 export const SettingsBoardContext = createContext(null);
+
+export const ColumnsContext = createContext(null);

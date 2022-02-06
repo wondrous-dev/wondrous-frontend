@@ -1,6 +1,6 @@
-import { Typography } from '@material-ui/core'
-import styled from 'styled-components'
-import { White } from '../../../../theme/colors'
+import { Typography } from '@material-ui/core';
+import styled from 'styled-components';
+import { White } from '../../../../theme/colors';
 export const DropMeHere = styled.div`
   margin: 1em 0 0 0;
 
@@ -19,8 +19,13 @@ export const DropMeHere = styled.div`
   border: 1px dashed #4b4b4b;
 
   color: ${White};
-`
+`;
 
+export const TaskListContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+`;
 export const TaskColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -32,14 +37,14 @@ export const TaskColumnContainer = styled.div`
   &:last-child {
     margin-right: 0;
   }
-`
+`;
 
 export const TaskColumnContainerHeader = styled.div`
   width: 100%;
   height: 24px;
   display: flex;
   align-items: center;
-`
+`;
 
 export const TaskColumnContainerHeaderTitle = styled(Typography)({
   '&.MuiTypography-body1': {
@@ -48,7 +53,7 @@ export const TaskColumnContainerHeaderTitle = styled(Typography)({
     textAlign: 'left',
     color: '#FFF',
   },
-})
+});
 
 export const TaskColumnContainerCount = styled(Typography)`
   &.MuiTypography-body1 {
@@ -56,7 +61,7 @@ export const TaskColumnContainerCount = styled(Typography)`
     margin-left: 10px;
     font-size: 14px;
   }
-`
+`;
 
 export const TaskColumnDropContainer = styled.div`
   display: flex;
@@ -64,4 +69,4 @@ export const TaskColumnDropContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-`
+`;

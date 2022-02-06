@@ -406,10 +406,13 @@ export const CreateFormAddDetailsAppearBlockContainer = styled.div`
   }
 `;
 
-export const CreateFormAddDetailsInputs = styled(CreateFormMainSelects)``;
+export const CreateFormAddDetailsInputs = styled(CreateFormMainSelects)`
+  flex-wrap: wrap;
+`;
 
 export const CreateFormAddDetailsInputBlock = styled.div`
   width: 262px;
+  margin-bottom: 25px;
 `;
 
 export const CreateFormAddDetailsInputLabel = styled(Typography)`
@@ -591,6 +594,20 @@ export const AutocompleteList = styled(Popper).attrs((props) => ({
     font-family: Space Grotesk;
     font-size: 14px;
     color: ${White};
+  }
+`;
+
+export const StyledAutocompletePopper = styled(({ className, ...props }) => {
+  return <StyledAutocomplete {...props} classes={{ paper: className }} />;
+})`
+  && {
+    background: #0f0f0f;
+  }
+
+  & .MuiAutocomplete-noOptions {
+    font-family: 'Space Grotesk';
+    color: ${White};
+    font-size: 14px;
   }
 `;
 

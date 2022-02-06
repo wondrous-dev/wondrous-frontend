@@ -28,7 +28,9 @@ export const renderMentionString = (props) => {
               ...textStyle,
             }}
             onClick={() => {
-              router.push(`/profile/${username}/about`);
+              router.push(`/profile/${username}/about`, undefined, {
+                shallow: true,
+              });
             }}
           >
             {`@${username}`}

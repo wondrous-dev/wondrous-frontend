@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { GET_TASK_FOR_MILESTONE } from '../../../graphql/queries';
 import * as Constants from '../../../utils/constants';
-import { Done, InProgress, InReview, ToDo, AwaitingPayment } from '../../Icons';
+import { Done, InProgress, InReview, ToDo } from '../../Icons';
 import { ArchivedIcon } from '../../Icons/statusIcons';
 import { SmallAvatar } from '../AvatarList';
 import {
@@ -17,7 +17,6 @@ import {
   TableCellWrapper,
   TaskDescription,
   TaskTitle,
-  StyledMilestoneEmpty,
 } from './styles';
 
 export const TASK_ICONS = {
@@ -26,10 +25,9 @@ export const TASK_ICONS = {
   [Constants.TASK_STATUS_DONE]: Done,
   [Constants.TASK_STATUS_IN_REVIEW]: InReview,
   [Constants.TASK_STATUS_ARCHIVED]: ArchivedIcon,
-  [Constants.TASK_STATUS_AWAITING_PAYMENT]: AwaitingPayment,
 };
 
-export const MilestoneTaskList = (props) => {
+export const TaskList = (props) => {
   const { milestoneId, open } = props;
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(false);
@@ -69,45 +67,40 @@ export const MilestoneTaskList = (props) => {
   }, [getTasksForMilestone, milestoneId, setHasMore, inView, hasMore, fetchMore, data, open]);
 
   return (
-    <>
-      {data?.getTasksForMilestone.length === 0 && open && <StyledMilestoneEmpty>No task yet.</StyledMilestoneEmpty>}
-      {data?.getTasksForMilestone.length > 0 && open && (
-        <StyledTableContainer>
-          <StyledTableHead>
-            <StyledTableRow>
-              <StyledTableHeadCell>Assignee</StyledTableHeadCell>
-              <StyledTableHeadCell>Status</StyledTableHeadCell>
-              <StyledTableHeadCell>Task</StyledTableHeadCell>
+    <StyledTableContainer>
+      <StyledTableHead>
+        <StyledTableRow>
+          <StyledTableHeadCell>Assignee</StyledTableHeadCell>
+          <StyledTableHeadCell>Status</StyledTableHeadCell>
+          <StyledTableHeadCell>Task</StyledTableHeadCell>
+        </StyledTableRow>
+      </StyledTableHead>
+      <StyledTableBody>
+        {data?.getTasksForMilestone.map((task) => {
+          const StatusIcon = TASK_ICONS[task.status];
+          return (
+            <StyledTableRow key={task.id}>
+              <StyledTableCell>
+                <TableCellWrapper>
+                  <SmallAvatar
+                    id={task.assigneeId}
+                    avatar={task.assignee?.profilePicture ?? {}}
+                    initials={task.assignee?.username?.slice(0, 2)}
+                  />
+                </TableCellWrapper>
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                <StatusIcon />
+              </StyledTableCell>
+              <StyledTableCell>
+                <TaskTitle>{task.title}</TaskTitle>
+                <TaskDescription>{task.description}</TaskDescription>
+              </StyledTableCell>
             </StyledTableRow>
-          </StyledTableHead>
-          <StyledTableBody>
-            {data?.getTasksForMilestone.map((task) => {
-              const StatusIcon = TASK_ICONS[task.status];
-              return (
-                <StyledTableRow key={task.id}>
-                  <StyledTableCell>
-                    <TableCellWrapper>
-                      <SmallAvatar
-                        id={task.assigneeId}
-                        avatar={task.assignee?.profilePicture ?? {}}
-                        initials={task.assignee?.username?.slice(0, 2)}
-                      />
-                    </TableCellWrapper>
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    <StatusIcon />
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <TaskTitle>{task.title}</TaskTitle>
-                    <TaskDescription>{task.description}</TaskDescription>
-                  </StyledTableCell>
-                </StyledTableRow>
-              );
-            })}
-          </StyledTableBody>
-          <LoadMore ref={ref} hasMore={hasMore}></LoadMore>
-        </StyledTableContainer>
-      )}
-    </>
+          );
+        })}
+      </StyledTableBody>
+      <LoadMore ref={ref} hasMore={hasMore}></LoadMore>
+    </StyledTableContainer>
   );
 };

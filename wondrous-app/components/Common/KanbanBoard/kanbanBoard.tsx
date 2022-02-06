@@ -1,23 +1,40 @@
 import { useRouter } from 'next/router';
-import React, { useState, useEffect } from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import React, { useState, useEffect, useCallback } from 'react';
+import { DragDropContext } from 'react-beautiful-dnd';
 import { useInView } from 'react-intersection-observer';
 import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
 import { TaskViewModal } from '../Task/modal';
 import { KanbanBoardContainer, LoadMore } from './styles';
 import TaskColumn from './TaskColumn';
-import { useDndProvider } from './DragAndDrop';
 
 // Task update (column changes)
 import apollo from '../../../services/apollo';
-import { UPDATE_TASK_STATUS } from '../../../graphql/mutations/task';
+import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from '../../../graphql/mutations/task';
 import { parseUserPermissionContext } from '../../../utils/helpers';
-import { PERMISSIONS } from '../../../utils/constants';
+import { BOARD_TYPE, PERMISSIONS } from '../../../utils/constants';
 import { useMe } from '../../Auth/withAuth';
-import { update } from 'lodash';
-import { GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE, GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries';
+import {
+  GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
+  GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE,
+} from '../../../graphql/queries';
+import { ColumnsContext } from '../../../utils/contexts';
+import { useMutation } from '@apollo/client';
+import { dedupeColumns } from '../../../utils';
 
+const populateOrder = (index, tasks, field) => {
+  let aboveOrder = null,
+    belowOrder = null;
+  if (index > 0) {
+    aboveOrder = tasks[index - 1][field];
+  }
+  if (index < tasks.length - 1) {
+    belowOrder = tasks[index + 1][field];
+  }
+  return {
+    aboveOrder,
+    belowOrder,
+  };
+};
 const KanbanBoard = (props) => {
   const user = useMe();
   const { columns, onLoadMore, hasMore } = props;
@@ -26,7 +43,7 @@ const KanbanBoard = (props) => {
   const [openModal, setOpenModal] = useState(false);
   const [once, setOnce] = useState(false);
   const router = useRouter();
-
+  const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
   // Permissions for Draggable context
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
@@ -73,11 +90,13 @@ const KanbanBoard = (props) => {
             newStatus: taskToBeUpdated.status,
           },
         },
-        refetchQueries: [{
-          query: GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
-          variables: orgBoard?.getOrgBoardTaskCountVariables
-        },
-          GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE]
+        refetchQueries: [
+          {
+            query: GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
+            variables: orgBoard?.getOrgBoardTaskCountVariables,
+          },
+          GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE,
+        ],
       });
 
       return true;
@@ -86,7 +105,7 @@ const KanbanBoard = (props) => {
     }
   };
 
-  const moveCard = async (id, status) => {
+  const moveCard = async (id, status, index) => {
     const updatedColumns = columnsState.map((column) => {
       if (column.status !== status) {
         return {
@@ -102,14 +121,51 @@ const KanbanBoard = (props) => {
       if (updatedTask.status !== task.status) {
         updateTask(updatedTask);
       }
+      if (checkPermissions(task)) {
+        const filteredColumn = column.tasks.filter((task) => task.id !== id);
+        const newTasks = [...filteredColumn.slice(0, index), updatedTask, ...filteredColumn.slice(index)];
+        let aboveOrder, belowOrder;
+        let board = null;
+        if (orgBoard) {
+          board = BOARD_TYPE.org;
+          aboveOrder = populateOrder(index, newTasks, 'orgOrder').aboveOrder;
+          belowOrder = populateOrder(index, column.tasks, 'orgOrder').belowOrder;
+        } else if (podBoard) {
+          board = BOARD_TYPE.pod;
+          aboveOrder = populateOrder(index, newTasks, 'podOrder').aboveOrder;
+          belowOrder = populateOrder(index, newTasks, 'podOrder').belowOrder;
+        } else if (userBoard) {
+          board = BOARD_TYPE.assignee;
+          aboveOrder = populateOrder(index, newTasks, 'assigneeOrder').aboveOrder;
+          belowOrder = populateOrder(index, newTasks, 'assigneeOrder').belowOrder;
+        }
 
-      return {
-        ...column,
-        tasks: [updatedTask, ...column.tasks],
-      };
+        try {
+          updateTaskOrder({
+            variables: {
+              taskId: updatedTask?.id,
+              input: {
+                belowOrder,
+                aboveOrder,
+                board,
+              },
+            },
+          }).catch((e) => {});
+        } catch (err) {}
+        return {
+          ...column,
+          tasks: newTasks,
+        };
+      } else {
+        return {
+          ...column,
+          tasks: [updatedTask, ...column.tasks],
+        };
+      }
     });
-    setColumnsState(updatedColumns);
+    setColumnsState(dedupeColumns(updatedColumns));
   };
+
   const hasQuery = router?.query?.task || router?.query?.taskProposal;
   useEffect(() => {
     if (hasQuery && !once && (orgBoard || userBoard || podBoard)) {
@@ -118,11 +174,19 @@ const KanbanBoard = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasQuery, orgBoard || userBoard || podBoard]);
-  const { dndArea, handleRef, html5Options } = useDndProvider();
+
+  const onDragEnd = (result) => {
+    moveCard(result?.draggableId, result?.destination?.droppableId, result?.destination?.index);
+  };
 
   return (
-    <>
-      <KanbanBoardContainer ref={handleRef}>
+    <ColumnsContext.Provider
+      value={{
+        columns: columnsState,
+        setColumns: setColumnsState,
+      }}
+    >
+      <KanbanBoardContainer>
         <TaskViewModal
           open={openModal}
           handleClose={() => {
@@ -132,19 +196,25 @@ const KanbanBoard = (props) => {
           taskId={router?.query?.task || router?.query?.taskProposal}
           isTaskProposal={!!router?.query?.taskProposal}
         />
-        {dndArea && (
-          <DndProvider backend={HTML5Backend} options={html5Options}>
-            {columnsState.map((column) => {
-              const { status, section, tasks } = column;
-              return (
-                <TaskColumn key={status} cardsList={tasks} moveCard={moveCard} status={status} section={section} />
-              );
-            })}
-          </DndProvider>
-        )}
+        <DragDropContext onDragEnd={onDragEnd}>
+          {columnsState.map((column) => {
+            const { status, section, tasks } = column;
+
+            return (
+              <TaskColumn
+                onOpen={() => setOnce(true)}
+                key={status}
+                cardsList={tasks}
+                moveCard={moveCard}
+                status={status}
+                section={section}
+              />
+            );
+          })}
+        </DragDropContext>
       </KanbanBoardContainer>
       <LoadMore ref={ref} hasMore={hasMore}></LoadMore>
-    </>
+    </ColumnsContext.Provider>
   );
 };
 

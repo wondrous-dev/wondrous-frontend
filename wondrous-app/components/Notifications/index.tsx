@@ -4,6 +4,7 @@ import { NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from '../
 import { SmallAvatar } from '../Common/AvatarList';
 import { DropDown, DropDownItem } from '../Common/dropdown';
 import { StyledLink } from '../Common/text';
+import { formatDistance } from 'date-fns';
 
 import { HeaderNotificationsButton, StyledBadge } from '../Header/styles';
 import NotificationsIcon from '../Icons/notifications';
@@ -21,6 +22,9 @@ import {
   NotificationsMarkRead,
   NotificationsOverlay,
 } from './styles';
+import { MARK_NOTIFICATIONS_READ } from '../../graphql/mutations/notification';
+import { useMutation } from '@apollo/client';
+import { GET_NOTIFICATIONS } from '../../graphql/queries';
 
 const NotificationsBoard = ({ notifications, setNofications }) => {
   const unreadCount = useMemo(() => {
@@ -34,7 +38,9 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
   };
 
   const calculateTimeLapse = (timestamp) => {
-    return '18 minutes ago.';
+    return formatDistance(new Date(timestamp), new Date(), {
+      addSuffix: true,
+    });
   };
 
   const handleMarkAllRead = async () => {
@@ -54,7 +60,7 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
 
     return <SmallAvatar initials={initials} avatar={avatar} />;
   };
-
+  const [markNotificationRead] = useMutation(MARK_NOTIFICATIONS_READ);
   // Construct Text of Notification
   const getNotificationText = (notification) => {
     const userName = notification.actorUsername;
@@ -103,7 +109,17 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
           </NotificationsBoardHeader>
           {notifications?.getNotifications?.length ? (
             notifications.getNotifications?.map((notification) => (
-              <NotificationsItem key={'notifications-' + notification.id}>
+              <NotificationsItem
+                key={'notifications-' + notification.id}
+                onClick={() =>
+                  markNotificationRead({
+                    variables: {
+                      notificationId: notification?.id,
+                    },
+                    refetchQueries: [GET_NOTIFICATIONS],
+                  })
+                }
+              >
                 <NotificationItemIcon>
                   {getNotificationActorIcon(notification)}
                   <NotificationItemStatus>{notification.status}</NotificationItemStatus>

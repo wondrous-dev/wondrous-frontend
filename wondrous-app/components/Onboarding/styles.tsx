@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { TextField, Typography } from '@material-ui/core';
 import Image from 'next/image';
-import { Grey250, Grey85, Red400, White } from '../../theme/colors';
+import { Grey250, Grey85, Red400, White, Background } from '../../theme/colors';
 import { Button } from '../Common/button';
 import { SafeImage } from '../Common/Image';
 
@@ -10,6 +10,7 @@ export const MainWrapper = styled.div`
   min-height: 100vh;
   height: 100%;
   background-image: url('/images/onboarding/background.png');
+  background: ${Background};
   display: flex;
   align-items: center;
   justify-content: center;

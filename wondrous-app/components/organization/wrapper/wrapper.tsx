@@ -48,24 +48,17 @@ import { MoreInfoModal } from '../../profile/modals';
 import { Router, useRouter } from 'next/router';
 import { NoLogoDAO } from '../../SideBar/styles';
 import { DAOEmptyIcon, DAOIcon } from '../../Icons/dao';
-
-const SIDEBAR_LIST_ITEMS = [
-  {
-    id: 1,
-    icon: '/images/sidebar/first.png',
-    path: '/',
-  },
-  {
-    id: 2,
-    icon: '/images/sidebar/second.png',
-    path: '/',
-  },
-  {
-    id: 3,
-    icon: '/images/sidebar/third.png',
-    path: '/',
-  },
-];
+import {
+  SOCIAL_MEDIA_DISCORD,
+  SOCIAL_MEDIA_TWITTER,
+  SOCIAL_OPENSEA,
+  SOCIAL_MEDIA_LINKEDIN,
+} from '../../../utils/constants';
+import TwitterPurpleIcon from '../../Icons/twitterPurple';
+import LinkedInIcon from '../../Icons/linkedIn';
+import OpenSeaIcon from '../../Icons/openSea';
+import LinkBigIcon from '../../Icons/link';
+import { DiscordIcon } from '../../Icons/discord';
 
 const MOCK_ORGANIZATION_DATA = {
   amount: 1234567,
@@ -152,8 +145,7 @@ const Wrapper = (props) => {
           <Content>
             <ContentContainer>
               <TokenHeader>
-                { orgProfile?.profilePicture 
-                ? (
+                {orgProfile?.profilePicture ? (
                   <SafeImage
                     src={orgProfile?.profilePicture}
                     style={{
@@ -165,8 +157,7 @@ const Wrapper = (props) => {
                       border: '10px solid #0f0f0f',
                     }}
                   />
-                )
-                : (
+                ) : (
                   <TokenEmptyLogo>
                     <DAOEmptyIcon />
                   </TokenEmptyLogo>
@@ -192,7 +183,9 @@ const Wrapper = (props) => {
                         </HeaderInviteButton>
                         <HeaderManageSettingsButton
                           onClick={() => {
-                            router.push(`/organization/settings/${orgBoard?.orgId}/general`);
+                            router.push(`/organization/settings/${orgBoard?.orgId}/general`, undefined, {
+                              shallow: true,
+                            });
                           }}
                         >
                           Settings
@@ -211,12 +204,6 @@ const Wrapper = (props) => {
                 </HeaderMainBlock>
                 <HeaderText>{orgProfile?.description}</HeaderText>
                 <HeaderActivity>
-                  {links?.map((link) => (
-                    <HeaderActivityLink href={link?.url} key={link}>
-                      <HeaderActivityLinkIcon />
-                      {link?.name || link?.url}
-                    </HeaderActivityLink>
-                  ))}
                   <HeaderContributors
                     onClick={() => {
                       setOpen(true);
@@ -235,6 +222,56 @@ const Wrapper = (props) => {
                     <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
                     <HeaderPodsText>Pods</HeaderPodsText>
                   </HeaderPods>
+                  {links?.map((link) => {
+                    if (link.type === 'link') {
+                      return (
+                        <HeaderActivityLink href={link?.url} key={link} target="_blank">
+                          <HeaderActivityLinkIcon />
+                          {link?.name || link?.url}
+                        </HeaderActivityLink>
+                      );
+                    }
+                    return null;
+                  })}
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {links?.map((link) => {
+                      if (link.type !== 'link') {
+                        let SocialIcon = null;
+                        switch (link.type) {
+                          case SOCIAL_MEDIA_DISCORD:
+                            SocialIcon = DiscordIcon;
+                            break;
+                          case SOCIAL_MEDIA_TWITTER:
+                            SocialIcon = TwitterPurpleIcon;
+                            break;
+                          case SOCIAL_MEDIA_LINKEDIN:
+                            SocialIcon = LinkedInIcon;
+                            break;
+                          case SOCIAL_OPENSEA:
+                            SocialIcon = OpenSeaIcon;
+                            break;
+                        }
+                        if (SocialIcon) {
+                          return (
+                            <HeaderActivityLink href={link?.url} key={link} target="_blank">
+                              <SocialIcon
+                                style={{
+                                  width: '20px',
+                                  height: '20px',
+                                }}
+                              />
+                            </HeaderActivityLink>
+                          );
+                        }
+                        return null;
+                      }
+                    })}
+                  </div>
                 </HeaderActivity>
               </TokenHeader>
 

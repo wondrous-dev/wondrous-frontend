@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients';
-import { Grey80, White } from '../../../theme/colors';
+import { Grey80, Grey250, White } from '../../../theme/colors';
 import { Typography } from '@material-ui/core';
 import { BaseCard } from '../card';
 
@@ -66,13 +66,17 @@ export const TaskSeparator = styled.div`
   margin-top: 5px;
 `;
 
+export const MilestoneIconWrapper = styled.div`
+  margin-left: ${(props) => (props.withProfile ? '6px' : '0')};
+`;
+
 export const MilestoneSeparator = styled(TaskSeparator)`
   margin: 12px 0;
-`
+`;
 
 export const MilestoneProgressWrapper = styled.div`
   margin-bottom: 12px;
-`
+`;
 
 export const TaskTitle = styled.div`
   display: flex;
@@ -120,6 +124,7 @@ export const TaskActionAmount = styled.div`
   flex-grow: 1;
   justify-content: flex-start;
   padding-left: 10px;
+  color: ${Grey250};
 `;
 
 export const PodWrapper = styled.div`
@@ -381,4 +386,3 @@ export const ArchivedTaskUndo = styled.span`
     cursor: pointer;
   }
 `;
-

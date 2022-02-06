@@ -203,7 +203,9 @@ export const InviteWelcomeBox = ({ updateUser }) => {
                 },
               },
               onCompleted: () => {
-                router.push('/onboarding/email-setup');
+                router.push('/onboarding/email-setup', undefined, {
+                  shallow: true,
+                });
               },
             })
           }

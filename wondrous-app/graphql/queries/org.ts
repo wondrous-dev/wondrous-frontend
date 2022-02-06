@@ -100,3 +100,14 @@ export const GET_ORG_PODS = gql`
     }
   }
 `;
+
+export const SEARCH_ORG_USERS = gql`
+  query searchOrgUsers($orgId: ID!, $queryString: String!) {
+    searchOrgUsers(orgId: $orgId, queryString: $queryString) {
+      id
+      username
+      profilePicture
+      bio
+    }
+  }
+`;

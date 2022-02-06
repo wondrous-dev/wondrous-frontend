@@ -1,13 +1,6 @@
 import styled from 'styled-components';
 import { TableContainer, TableHead, TableBody, TableRow, TableCell, Typography } from '@material-ui/core';
 
-export const StyledMilestoneEmpty = styled(Typography)`
-  && {
-    margin-top: 16px;
-    color: #fff;
-  }
-`;
-
 export const StyledTableContainer = styled(TableContainer)``;
 
 export const StyledTableHead = styled(TableHead)`

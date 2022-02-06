@@ -1,26 +1,25 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import AppLayout from '../components/Common/Layout/App'
-import { ToDo, InProgress, Done } from '../components/Icons'
-import { Archived, InReview, Requested } from '../components/Icons/sections'
-import KanbanBoard from '../components/Common/KanbanBoard/kanbanBoard'
-import * as Constants from '../utils/constants'
-import { withAuth } from '../components/Auth/withAuth'
-import {
-  BoardsActivityInput,
-  BoardsContainer,
-} from '../components/organization/boards/styles'
-import { InputAdornment } from '@material-ui/core'
-import SearchIcon from '../components/Icons/search'
-import MetricsPanel from '../components/Common/Metrics'
-import { ToggleViewButton } from '../components/Common/ToggleViewButton'
-import Filter from '../components/Common/Filter'
-import CreatePodIcon from '../components/Icons/createPod'
-import { Logo } from '../components/Icons/logo'
-import { CircularProgress } from '@mui/material'
-import { useQuery } from '@apollo/client'
-import { GET_USER_ORGS } from '../graphql/queries'
-import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import AppLayout from '../components/Common/Layout/App';
+import { ToDo, InProgress, Done } from '../components/Icons';
+import { Archived, InReview, Requested } from '../components/Icons/sections';
+import KanbanBoard from '../components/Common/KanbanBoard/kanbanBoard';
+import * as Constants from '../utils/constants';
+import { withAuth } from '../components/Auth/withAuth';
+import { BoardsActivityInput, BoardsContainer } from '../components/organization/boards/styles';
+import { InputAdornment, Typography } from '@material-ui/core';
+import SearchIcon from '../components/Icons/search';
+import MetricsPanel from '../components/Common/Metrics';
+import { ToggleViewButton } from '../components/Common/ToggleViewButton';
+import Filter from '../components/Common/Filter';
+import CreatePodIcon from '../components/Icons/createPod';
+import { Logo } from '../components/Icons/logo';
+import { CircularProgress } from '@mui/material';
+import { useQuery } from '@apollo/client';
+import { GET_USER_ORGS } from '../graphql/queries';
+import { useRouter } from 'next/router';
+import { Main } from '../components/Common/Layout/App/styles';
+import { White } from '../theme/colors';
 
 const TO_DO = {
   status: Constants.TASK_STATUS_TODO,
@@ -28,8 +27,7 @@ const TO_DO = {
     {
       id: 11,
       title: 'Task 1',
-      description:
-        'Design google sheet where we can get an open look at our twitters performance ✨🦄',
+      description: 'Design google sheet where we can get an open look at our twitters performance ✨🦄',
       status: Constants.TASK_STATUS_TODO,
       actions: {
         comments: 18,
@@ -67,8 +65,7 @@ const TO_DO = {
     {
       id: 12,
       title: 'Task 2',
-      description:
-        'Design google sheet where we can get an open look at our twitters performance ✨🦄',
+      description: 'Design google sheet where we can get an open look at our twitters performance ✨🦄',
       status: Constants.TASK_STATUS_TODO,
       actions: {
         comments: 8,
@@ -168,7 +165,7 @@ const TO_DO = {
       },
     ],
   },
-}
+};
 
 const IN_PROGRESS = {
   status: Constants.TASK_STATUS_IN_PROGRESS,
@@ -176,8 +173,7 @@ const IN_PROGRESS = {
     {
       id: 21,
       title: 'Task 3',
-      description:
-        'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
+      description: 'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
       status: Constants.TASK_STATUS_IN_PROGRESS,
       actions: {
         comments: 81,
@@ -214,8 +210,7 @@ const IN_PROGRESS = {
     {
       id: 22,
       title: 'Task 4',
-      description:
-        'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
+      description: 'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
       status: Constants.TASK_STATUS_IN_PROGRESS,
       actions: {
         comments: 81,
@@ -315,7 +310,7 @@ const IN_PROGRESS = {
       },
     ],
   },
-}
+};
 
 const DONE = {
   status: Constants.TASK_STATUS_DONE,
@@ -323,8 +318,7 @@ const DONE = {
     {
       id: 31,
       title: 'Get 10,000 Twitter followers',
-      description:
-        'Design google sheet where we can get an open look at our twitters performance ✨🦄 ',
+      description: 'Design google sheet where we can get an open look at our twitters performance ✨🦄 ',
       status: Constants.TASK_STATUS_DONE,
       actions: {
         comments: 8,
@@ -356,8 +350,7 @@ const DONE = {
     {
       id: 32,
       title: 'Task 5',
-      description:
-        'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
+      description: 'Maecenas hendrerit porttitor integer viverra lorem metus et in.',
       status: Constants.TASK_STATUS_DONE,
       milestone: true,
       actions: {
@@ -463,9 +456,9 @@ const DONE = {
       },
     ],
   },
-}
+};
 
-const COLUMNS = [TO_DO, IN_PROGRESS, DONE]
+const COLUMNS = [TO_DO, IN_PROGRESS, DONE];
 
 const DashboardBanner = styled.div`
   position: absolute;
@@ -478,7 +471,7 @@ const DashboardBanner = styled.div`
   background: url(/images/dashboard-banner.png);
   background-position: center;
   background-size: cover;
-`
+`;
 
 const DashboardActivity = styled.div`
   display: flex;
@@ -491,10 +484,10 @@ const DashboardActivity = styled.div`
   & > *:not(:first-child) {
     margin-left: 15px;
   }
-`
+`;
 
 const Home = () => {
-  const [filter, setFilter] = useState([])
+  const [filter, setFilter] = useState([]);
   const filterSchema = [
     {
       name: 'Pods',
@@ -579,67 +572,83 @@ const Home = () => {
         { id: 'completed', name: 'Completed', icon: <Done />, count: 1120 },
       ],
     },
-  ]
+  ];
 
   const listViewOptions = [
     {
       name: 'List',
       action: () => {
-        console.log('Show List View')
+        console.log('Show List View');
       },
     },
     {
       name: 'Grid',
       active: true,
       action: () => {
-        console.log('Show Grid View')
+        console.log('Show Grid View');
       },
     },
-  ]
+  ];
 
-  const { data: userOrgs } = useQuery(GET_USER_ORGS)
-  const router = useRouter()
+  const { data: userOrgs } = useQuery(GET_USER_ORGS);
+  const router = useRouter();
   useEffect(() => {
     if (userOrgs?.getUserOrgs) {
-      const firstOrg = userOrgs.getUserOrgs[0]
-      router.push(`/organization/${firstOrg?.username}/boards`)
+      const firstOrg = userOrgs.getUserOrgs[0];
+      router.push(`/organization/${firstOrg?.username}/boards`, undefined, {
+        shallow: true,
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userOrgs?.getUserOrgs])
+  }, [userOrgs?.getUserOrgs]);
 
   return (
-    <AppLayout
-      containerStyle={{
-        textAlign: 'center',
+    <Main
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
-      banner={<DashboardBanner />}
     >
       <CircularProgress />
-      {/* <MetricsPanel />
-      <BoardsContainer>
-        <DashboardActivity>
-          <BoardsActivityInput
-            placeholder="Search people or tasks..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Filter
-            filterSchema={filterSchema}
-            filter={filter}
-            setFilter={setFilter}
-          />
-          <ToggleViewButton options={listViewOptions} />
-        </DashboardActivity>
+      <Typography
+        style={{
+          marginLeft: '16px',
+          color: White,
+          fontWeight: 'bold',
+        }}
+      >
+        Initializing...
+      </Typography>
+    </Main>
+    // <AppLayout
+    //   containerStyle={{
+    //     textAlign: 'center',
+    //   }}
+    //   banner={<DashboardBanner />}
+    // >
+    //   <CircularProgress />
+    //   <MetricsPanel />
+    //   <BoardsContainer>
+    //     <DashboardActivity>
+    //       <BoardsActivityInput
+    //         placeholder="Search people or tasks..."
+    //         InputProps={{
+    //           startAdornment: (
+    //             <InputAdornment position="start">
+    //               <SearchIcon />
+    //             </InputAdornment>
+    //           ),
+    //         }}
+    //       />
+    //       <Filter filterSchema={filterSchema} filter={filter} setFilter={setFilter} />
+    //       <ToggleViewButton options={listViewOptions} />
+    //     </DashboardActivity>
 
-        <KanbanBoard columns={COLUMNS} />
-      </BoardsContainer> */}
-    </AppLayout>
-  )
-}
+    //     <KanbanBoard columns={COLUMNS} />
+    //   </BoardsContainer>
+    // </AppLayout>
+  );
+};
 
-export default withAuth(Home)
+export default withAuth(Home);
