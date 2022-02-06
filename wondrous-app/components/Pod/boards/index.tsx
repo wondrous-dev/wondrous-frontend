@@ -111,7 +111,7 @@ const Boards = (props) => {
     },
     {
       name: 'Grid',
-      active: view === ViewType.Grid,
+      active: view === ViewType.Grid || view === null,
       action: () => {
         router.replace(`${delQuery(router.asPath)}?view=${ViewType.Grid}`);
       },
@@ -134,18 +134,16 @@ const Boards = (props) => {
             }}
           />
           {/*<Filter style={{ visibility: 'hidden' }} filterSchema={filterSchema} filter={filter} setFilter={setFilter} />*/}
-          {view ? <ToggleViewButton options={listViewOptions} /> : null}
+          <ToggleViewButton options={listViewOptions} />
         </BoardsActivity>
 
-        {view ? (
-          <>
-            {view === ViewType.Grid ? (
-              <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
-            ) : (
-              <Table columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
-            )}
-          </>
-        ) : null}
+        <>
+          {view === ViewType.Grid ? (
+            <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+          ) : (
+            <Table columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+          )}
+        </>
       </BoardsContainer>
     </Wrapper>
   );
