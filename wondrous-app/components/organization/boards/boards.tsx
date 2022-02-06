@@ -16,6 +16,7 @@ import { ToggleViewButton } from '../../Common/ToggleViewButton';
 import { Table } from '../../Table';
 import { TASK_STATUS_TODO } from '../../../utils/constants';
 import { delQuery } from '../../../utils';
+import SearchTasks from '../../SearchTasks';
 
 enum ViewType {
   List = 'list',
@@ -124,18 +125,18 @@ const Boards = (props) => {
     <Wrapper orgData={orgData}>
       <BoardsContainer>
         <BoardsActivity>
-          <BoardsActivityInput
-            style={{ visibility: 'hidden' }}
-            placeholder="Search people or pods..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-          {/*<Filter style={{ visibility: 'hidden' }} filterSchema={filterSchema} filter={filter} setFilter={setFilter} />*/}
+          <SearchTasks />
+          {/*<BoardsActivityInput*/}
+          {/*  placeholder="Search people or pods..."*/}
+          {/*  InputProps={{*/}
+          {/*    startAdornment: (*/}
+          {/*      <InputAdornment position="start">*/}
+          {/*        <SearchIcon />*/}
+          {/*      </InputAdornment>*/}
+          {/*    ),*/}
+          {/*  }}*/}
+          {/*/>*/}
+          <Filter filterSchema={filterSchema} filter={filter} setFilter={setFilter} />
           {view ? <ToggleViewButton options={listViewOptions} /> : null}
         </BoardsActivity>
 
