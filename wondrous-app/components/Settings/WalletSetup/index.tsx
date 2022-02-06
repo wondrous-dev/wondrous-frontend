@@ -133,6 +133,7 @@ const Wallets = (props) => {
       } else {
         newError.safeAddressError = 'unknown gnosis network error';
       }
+      return
     }
     if (orgId) {
       createOrgWallet({
@@ -175,7 +176,6 @@ const Wallets = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, podId]);
-  console.log(wallets);
 
   return (
     <SettingsWrapper>
