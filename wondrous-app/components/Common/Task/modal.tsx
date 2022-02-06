@@ -111,6 +111,7 @@ import { MilestoneTaskList } from '../MilestoneTaskList';
 import { MilestoneTaskBreakdown } from '../MilestoneTaskBreakdown';
 import Link from 'next/link';
 import { TaskList } from '../TaskList';
+import PodIcon from '../../Icons/podIcon';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -615,6 +616,7 @@ export const TaskViewModal = (props) => {
 
   const onCorrectPage =
     fetchedTask?.orgId === board?.orgId || fetchedTask?.podId === board?.podId || fetchedTask?.userId === board?.userId;
+
   return (
     <>
       <ArchiveTaskModal open={archiveTask} onClose={() => setArchiveTask(false)} onArchive={handleNewStatus} />
@@ -622,29 +624,42 @@ export const TaskViewModal = (props) => {
         <TaskModal>
           <TaskModalHeader>
             {fetchedTask?.orgProfilePicture ? (
-              <SafeImage
-                src={fetchedTask?.orgProfilePicture}
-                style={{
-                  width: '29px',
-                  height: '28px',
-                  borderRadius: '4px',
-                  marginRight: '8px',
-                }}
-              />
+              <Link href={`/organization/${fetchedTask?.orgUsername}/boards`} passHref={true}>
+                <SafeImage
+                  src={fetchedTask?.orgProfilePicture}
+                  style={{
+                    width: '29px',
+                    height: '28px',
+                    borderRadius: '4px',
+                    marginRight: '8px',
+                  }}
+                />
+              </Link>
             ) : (
               <OrganisationsCardNoLogo style={{ height: '29px', width: '28px' }}>
                 <DAOIcon />
               </OrganisationsCardNoLogo>
             )}
             {fetchedTask?.podName && (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
-              </div>
+              <Link href={`/pod/${fetchedTask?.podId}/boards`} passHref={true}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <PodIcon
+                    style={{
+                      width: '26px',
+                      height: '26px',
+                      marginRight: '4px',
+                      marginLeft: '8px',
+                    }}
+                    color={fetchedTask?.podColor}
+                  />
+                  <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
+                </div>
+              </Link>
             )}
             {back && (
               <>

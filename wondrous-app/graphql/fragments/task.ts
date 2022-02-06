@@ -37,6 +37,7 @@ export const TaskFragment = gql`
     }
     pod {
       name
+      color
     }
     orgOrder
     podOrder
@@ -67,6 +68,7 @@ export const TaskCardFragment = gql`
     podId
     podProfilePicture
     podName
+    podColor
     title
     description
     assigneeId
@@ -115,6 +117,7 @@ export const TaskProposalCardFragment = gql`
     podId
     podProfilePicture
     podName
+    podColor
     title
     description
     approvedAt
@@ -154,6 +157,7 @@ export const TaskSubmissionCardFragment = gql`
     podId
     podProfilePicture
     podName
+    podColor
     title
     description
     approvedAt
@@ -198,6 +202,7 @@ export const TaskSubmissionFragment = gql`
     pod {
       name
       username
+      color
     }
     creator {
       username
@@ -257,6 +262,7 @@ export const TaskProposalFragment = gql`
     }
     pod {
       name
+      color
     }
   }
   ${MediaFragment}

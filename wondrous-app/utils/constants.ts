@@ -182,3 +182,31 @@ export const BOARD_TYPE = {
 
 export const snakeToCamel = (str) =>
   str?.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('-', '').replace('_', ''));
+
+export const POD_COLOR = {
+  '#B8255F': 'Ruby Red',
+  '#DB4035': 'Jasper Red',
+  '#FF9933': 'Sunstone Orange',
+  '#FAD000': 'Citrine Yellow',
+  '#B4C424': 'Peridot Green',
+  '#7ECC49': 'Lime Green',
+  '#00A86B': 'Jade Green',
+  '#76EBCA': 'Aquamarine',
+  '#158FAD': 'Gemstone Teal',
+  '#72C2D4': 'Larimar Blue',
+  '#96C3EB': 'Lace Agate Blue',
+  '#4073FF': 'Azurite Blue',
+  '#884DFF': 'Amethyst Purple',
+  '#AF38EB': 'Spirit Quartz Purple',
+  '#EB96EB': 'Lepidolite pink',
+  '#E05194': 'Magenta',
+  '#FF8D85': 'Sardonyx Salmon',
+  '#808080': 'Shungite Grey',
+  '#B8B8B8': 'Grey',
+  '#CCAC93': 'Okenite Sepia',
+};
+
+export const filteredColorOptions = Object.keys(POD_COLOR).map((key) => ({
+  label: POD_COLOR[key],
+  value: key,
+}));
