@@ -41,7 +41,8 @@ import { GET_POD_BY_ID } from '../../graphql/queries/pod';
 import { UPDATE_POD } from '../../graphql/mutations/pod';
 import { CreateFormAddDetailsInputLabel, CreateFormAddDetailsSwitch } from '../CreateEntity/styles';
 import { AndroidSwitch } from '../CreateEntity/createEntityModal';
-import { PRIVACY_LEVEL } from '../../utils/constants';
+import { filteredColorOptions, POD_COLOR, PRIVACY_LEVEL } from '../../utils/constants';
+import ColorSettings from './ColorDropdown';
 
 const LIMIT = 200;
 
@@ -83,6 +84,8 @@ const GeneralSettingsComponent = (props) => {
     setToast,
     setProfile,
     newProfile,
+    color,
+    setColor,
     logoImage,
     typeText,
     descriptionText,
@@ -168,6 +171,19 @@ const GeneralSettingsComponent = (props) => {
       imageName="Banner"
       updateFilesCb={setBannerImage}
     /> */}
+        {isPod && (
+          <GeneralSettingsInputsBlock>
+            <GeneralSettingsDAONameBlock>
+              <ColorSettings
+                title="Pod color"
+                value={color}
+                setValue={setColor}
+                labelText="Choose a color"
+                options={filteredColorOptions}
+              />
+            </GeneralSettingsDAONameBlock>
+          </GeneralSettingsInputsBlock>
+        )}
         <GeneralSettingsSocialsBlock>
           <LabelBlock>Socials</LabelBlock>
           <GeneralSettingsSocialsBlockWrapper>
@@ -292,6 +308,7 @@ export const PodGeneralSettings = () => {
   const [isPrivate, setIsPrivate] = useState(null);
   const [originalPodProfile, setOriginalPodProfile] = useState(null);
   const [logoImage, setLogoImage] = useState('');
+  const [color, setColor] = useState(null);
   const [getPod] = useLazyQuery(GET_POD_BY_ID, {
     onCompleted: ({ getPodById }) => setPod(getPodById),
     fetchPolicy: 'cache-and-network',
@@ -304,7 +321,7 @@ export const PodGeneralSettings = () => {
     setPodProfile(pod);
     setLogoImage('');
     const links = reduceLinks(pod.links);
-
+    setColor(pod?.color);
     setPodLinks(links);
     setDescriptionText(pod.description);
     setIsPrivate(pod?.privacyLevel === PRIVACY_LEVEL.private);
@@ -365,6 +382,7 @@ export const PodGeneralSettings = () => {
           privacyLevel: isPrivate ? PRIVACY_LEVEL.private : PRIVACY_LEVEL.public,
           headerPicture: podProfile.headerPicture,
           profilePicture: podProfile.profilePicture,
+          color: color,
         },
       },
     });
@@ -387,6 +405,8 @@ export const PodGeneralSettings = () => {
       setProfile={setPodProfile}
       isPrivate={isPrivate}
       setIsPrivate={setIsPrivate}
+      color={color}
+      setColor={setColor}
     />
   );
 };

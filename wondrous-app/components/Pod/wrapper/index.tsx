@@ -44,6 +44,7 @@ import { MoreInfoModal } from '../../profile/modals';
 import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
 import PlusIcon from '../../Icons/plus';
 import { useRouter } from 'next/router';
+import PodIcon from '../../Icons/podIcon';
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -146,8 +147,8 @@ const Wrapper = (props) => {
           <Content>
             <ContentContainer>
               <TokenHeader>
-                <SafeImage
-                  src={podProfile?.profilePicture}
+                <PodIcon
+                  color={podProfile?.color}
                   style={{
                     width: '96px',
                     height: '96px',
@@ -194,10 +195,14 @@ const Wrapper = (props) => {
                 <HeaderText>{podProfile?.description}</HeaderText>
                 <HeaderActivity>
                   {links?.map((link) => (
-                    <HeaderActivityLink href={link?.url} key={link}>
-                      {(link?.name || link?.url) && <HeaderActivityLinkIcon />}
-                      {link?.name || link?.url}
-                    </HeaderActivityLink>
+                    <>
+                      {link?.url ? (
+                        <HeaderActivityLink href={link?.url} key={link}>
+                          {(link?.name || link?.url) && <HeaderActivityLinkIcon />}
+                          {link?.name || link?.url}
+                        </HeaderActivityLink>
+                      ) : null}
+                    </>
                   ))}
                   <HeaderContributors
                     onClick={() => {

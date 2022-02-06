@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client'
+import { gql } from '@apollo/client';
 
 export const PodFragment = gql`
   fragment PodFragment on Pod {
@@ -14,6 +14,7 @@ export const PodFragment = gql`
     createdAt
     orgId
     tags
+    color
     contributorCount
     tasksCompletedCount
     links {
@@ -22,16 +23,16 @@ export const PodFragment = gql`
       type
     }
   }
-`
+`;
 
 export const PodRoleFragment = gql`
-	fragment PodRoleFragment on PodRole {
-		id
-		createAt
-		createdBy
-		default
-		permissions
-		podId
-		name
-	}
-`
+  fragment PodRoleFragment on PodRole {
+    id
+    createAt
+    createdBy
+    default
+    permissions
+    podId
+    name
+  }
+`;
