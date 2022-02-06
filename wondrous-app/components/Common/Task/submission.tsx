@@ -183,7 +183,7 @@ const SubmissionItem = (props) => {
       columns[1].tasks = newInProgress;
       columns[1].section.tasks = newInReview;
       columns[2].tasks = newDone;
-      boardColumns?.setColumnssetColumns(columns);
+      boardColumns?.setColumns(columns);
     }
     //TODO: add pod board and user board
   };
@@ -393,8 +393,8 @@ const TaskSubmissionForm = (props) => {
         const columns = boardColumns?.columns;
         const newColumns = [...columns];
         newColumns[1].section.tasks = [transformedTaskSubmission, ...newColumns[1].section.tasks];
-        if (boardColumns?.setColumnssetColumns) {
-          boardColumns?.setColumnssetColumns(newColumns);
+        if (boardColumns?.setColumns) {
+          boardColumns?.setColumns(newColumns);
         }
       }
 

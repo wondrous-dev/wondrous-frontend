@@ -7,7 +7,7 @@ import KanbanBoard from '../components/Common/KanbanBoard/kanbanBoard';
 import * as Constants from '../utils/constants';
 import { withAuth } from '../components/Auth/withAuth';
 import { BoardsActivityInput, BoardsContainer } from '../components/organization/boards/styles';
-import { InputAdornment } from '@material-ui/core';
+import { InputAdornment, Typography } from '@material-ui/core';
 import SearchIcon from '../components/Icons/search';
 import MetricsPanel from '../components/Common/Metrics';
 import { ToggleViewButton } from '../components/Common/ToggleViewButton';
@@ -18,6 +18,8 @@ import { CircularProgress } from '@mui/material';
 import { useQuery } from '@apollo/client';
 import { GET_USER_ORGS } from '../graphql/queries';
 import { useRouter } from 'next/router';
+import { Main } from '../components/Common/Layout/App/styles';
+import { White } from '../theme/colors';
 
 const TO_DO = {
   status: Constants.TASK_STATUS_TODO,
@@ -601,33 +603,51 @@ const Home = () => {
   }, [userOrgs?.getUserOrgs]);
 
   return (
-    <AppLayout
-      containerStyle={{
-        textAlign: 'center',
+    <Main
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
-      banner={<DashboardBanner />}
     >
       <CircularProgress />
-      {/* <MetricsPanel />
-      <BoardsContainer>
-        <DashboardActivity>
-          <BoardsActivityInput
-            placeholder="Search people or tasks..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Filter filterSchema={filterSchema} filter={filter} setFilter={setFilter} />
-          <ToggleViewButton options={listViewOptions} />
-        </DashboardActivity>
+      <Typography
+        style={{
+          marginLeft: '16px',
+          color: White,
+          fontWeight: 'bold',
+        }}
+      >
+        Initializing...
+      </Typography>
+    </Main>
+    // <AppLayout
+    //   containerStyle={{
+    //     textAlign: 'center',
+    //   }}
+    //   banner={<DashboardBanner />}
+    // >
+    //   <CircularProgress />
+    //   <MetricsPanel />
+    //   <BoardsContainer>
+    //     <DashboardActivity>
+    //       <BoardsActivityInput
+    //         placeholder="Search people or tasks..."
+    //         InputProps={{
+    //           startAdornment: (
+    //             <InputAdornment position="start">
+    //               <SearchIcon />
+    //             </InputAdornment>
+    //           ),
+    //         }}
+    //       />
+    //       <Filter filterSchema={filterSchema} filter={filter} setFilter={setFilter} />
+    //       <ToggleViewButton options={listViewOptions} />
+    //     </DashboardActivity>
 
-        <KanbanBoard columns={COLUMNS} />
-      </BoardsContainer> */}
-    </AppLayout>
+    //     <KanbanBoard columns={COLUMNS} />
+    //   </BoardsContainer>
+    // </AppLayout>
   );
 };
 

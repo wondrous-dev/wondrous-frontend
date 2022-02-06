@@ -11,8 +11,6 @@ export const ToggleViewWrapper = styled.div`
     min-width: 130px;
     height: 40px;
 
-    border; 
-
     & > *:first-child {
 		border-top-left-radius: 6px;
         border-bottom-left-radius: 6px;

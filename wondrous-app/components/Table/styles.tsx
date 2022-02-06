@@ -7,12 +7,21 @@ import TableRow from '@material-ui/core/TableRow';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { Button } from '@material-ui/core';
+import { color } from 'styled-system';
+
 import { LinkIcon } from '../Icons/linkIcon';
+import SmartLink from '../Common/SmartLink';
+
+export const Box = styled.div`
+  ${color}
+`;
 
 export const StyledTable = styled(Table)`
-  width: 100%;
-  overflow: hidden;
-  margin: 25px 0;
+  && {
+    width: 100%;
+    margin: 25px 0;
+    border-collapse: separate;
+  }
 `;
 
 export const StyledTableBody = styled(TableBody)`
@@ -20,7 +29,9 @@ export const StyledTableBody = styled(TableBody)`
   border-radius: 3px;
 `;
 
-export const StyledTableContainer = styled(TableContainer)``;
+export const StyledTableContainer = styled(TableContainer)`
+  width: 100%;
+`;
 
 export const StyledTableHead = styled(TableHead)`
   & .MuiTableCell-head {
@@ -36,6 +47,8 @@ export const StyledTableHead = styled(TableHead)`
 `;
 
 export const StyledTableRow = styled(TableRow)`
+  //cursor: pointer;
+
   & .MuiTableCell-body {
     border: 1px solid #232323;
     padding: 14px;
@@ -47,6 +60,10 @@ export const StyledTableRow = styled(TableRow)`
 `;
 
 export const StyledTableCell = styled(TableCell)`
+  &.clickable {
+    cursor: pointer;
+  }
+
   svg {
     width: 28px;
     height: 28px;
@@ -70,6 +87,15 @@ export const TaskDescription = styled(Typography)`
   }
 `;
 
+export const Initials = styled.a`
+  font-size: 14px;
+  line-height: 19px;
+  letter-spacing: 0.01em;
+  text-decoration-line: underline;
+  color: #00baff;
+  cursor: pointer;
+`;
+
 export const RewardContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -80,7 +106,6 @@ export const RewardContainer = styled.div`
 `;
 
 export const Reward = styled.div`
-  width: 60px;
   height: 28px;
   background: #1f1f1f;
   border-radius: 300px;
@@ -94,6 +119,8 @@ export const RewardAmount = styled(Typography)`
     color: #ffffff;
     font-weight: 600;
     font-size: 13px;
+    margin-left: 8px;
+    line-height: 14px;
   }
 `;
 

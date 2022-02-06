@@ -1,13 +1,11 @@
 import { useRouter } from 'next/router';
 import React, { useState, useEffect, useCallback } from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-beautiful-dnd';
 import { useInView } from 'react-intersection-observer';
 import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
 import { TaskViewModal } from '../Task/modal';
 import { KanbanBoardContainer, LoadMore } from './styles';
 import TaskColumn from './TaskColumn';
-import { useDndProvider } from './DragAndDrop';
 
 // Task update (column changes)
 import apollo from '../../../services/apollo';
@@ -15,7 +13,6 @@ import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from '../../../graphql/mutation
 import { parseUserPermissionContext } from '../../../utils/helpers';
 import { BOARD_TYPE, PERMISSIONS } from '../../../utils/constants';
 import { useMe } from '../../Auth/withAuth';
-import { debounce } from 'lodash';
 import {
   GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
   GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE,
@@ -169,10 +166,6 @@ const KanbanBoard = (props) => {
     setColumnsState(dedupeColumns(updatedColumns));
   };
 
-  const handler = useCallback(
-    debounce((id, status, index) => moveCard(id, status, index), 100),
-    [columnsState]
-  );
   const hasQuery = router?.query?.task || router?.query?.taskProposal;
   useEffect(() => {
     if (hasQuery && !once && (orgBoard || userBoard || podBoard)) {
@@ -181,7 +174,10 @@ const KanbanBoard = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasQuery, orgBoard || userBoard || podBoard]);
-  const { dndArea, handleRef, html5Options } = useDndProvider();
+
+  const onDragEnd = (result) => {
+    moveCard(result?.draggableId, result?.destination?.droppableId, result?.destination?.index);
+  };
 
   return (
     <ColumnsContext.Provider
@@ -190,7 +186,7 @@ const KanbanBoard = (props) => {
         setColumns: setColumnsState,
       }}
     >
-      <KanbanBoardContainer ref={handleRef}>
+      <KanbanBoardContainer>
         <TaskViewModal
           open={openModal}
           handleClose={() => {
@@ -200,14 +196,22 @@ const KanbanBoard = (props) => {
           taskId={router?.query?.task || router?.query?.taskProposal}
           isTaskProposal={!!router?.query?.taskProposal}
         />
-        {dndArea && (
-          <DndProvider backend={HTML5Backend} options={html5Options}>
-            {columnsState.map((column) => {
-              const { status, section, tasks } = column;
-              return <TaskColumn key={status} cardsList={tasks} moveCard={handler} status={status} section={section} />;
-            })}
-          </DndProvider>
-        )}
+        <DragDropContext onDragEnd={onDragEnd}>
+          {columnsState.map((column) => {
+            const { status, section, tasks } = column;
+
+            return (
+              <TaskColumn
+                onOpen={() => setOnce(true)}
+                key={status}
+                cardsList={tasks}
+                moveCard={moveCard}
+                status={status}
+                section={section}
+              />
+            );
+          })}
+        </DragDropContext>
       </KanbanBoardContainer>
       <LoadMore ref={ref} hasMore={hasMore}></LoadMore>
     </ColumnsContext.Provider>

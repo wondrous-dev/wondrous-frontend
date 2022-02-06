@@ -53,6 +53,7 @@ export const DropDownItem = styled.div`
   color: ${(props) => props.color};
   font-size: ${(props) => props.fontSize};
   font-weight: ${(props) => props.fontWeight};
+  ${(props) => (props.textAlign ? { textAlign: props.textAlign } : null)};
 
   cursor: pointer;
 

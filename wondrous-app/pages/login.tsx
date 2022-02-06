@@ -13,10 +13,11 @@ import { CenteredFlexRow } from '../components/Common/index';
 import { Grey50 } from '../theme/colors';
 import { Metamask } from '../components/Icons/metamask';
 import { EmailIcon, LockIcon } from '../components/Icons/userpass';
-import { useWonderWeb3 } from '../services/web3';
+import { transformWalletType, useWonderWeb3 } from '../services/web3';
 import { emailSignin, getUserSigningMessage, walletSignin } from '../components/Auth/withAuth';
 import { ErrorMessage } from 'formik';
 import { CircularProgress } from '@material-ui/core';
+import { WALLET_TYPE } from '../utils/constants';
 
 const prod = process.env.NEXT_PUBLIC_PRODUCTION;
 
@@ -55,20 +56,27 @@ const Login = ({ csrfToken }) => {
   const loginWithWallet = async () => {
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
       // Retrieve Signed Message
-      const messageToSign = await getUserSigningMessage(wonderWeb3.address, wonderWeb3.chainName.toLowerCase());
+      const messageToSign = await getUserSigningMessage(
+        wonderWeb3.address,
+        transformWalletType(wonderWeb3.chainName.toLowerCase(), WALLET_TYPE.metamask)
+      );
 
       if (messageToSign) {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
         if (signedMessage) {
           // Sign with Wallet
           setLoading(true);
-          const result = await walletSignin(wonderWeb3.address, signedMessage);
-          if (result === true) {
-            router.push('/dashboard', undefined, {
-              shallow: true,
-            });
-          } else {
-            setErrorMessage(result);
+          try {
+            const result = await walletSignin(wonderWeb3.address, signedMessage);
+            if (result === true) {
+              router.push('/dashboard', undefined, {
+                shallow: true,
+              });
+            } else {
+              setErrorMessage(result);
+            }
+          } catch (err) {
+            setErrorMessage(err?.message || err);
           }
           setLoading(false);
         } else {
