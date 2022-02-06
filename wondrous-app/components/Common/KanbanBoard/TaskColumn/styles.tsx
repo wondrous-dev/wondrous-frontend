@@ -21,7 +21,9 @@ export const DropMeHere = styled.div`
   color: ${White};
 `;
 
-export const TaskListContainer = styled.div``;
+export const TaskListContainer = styled.div`
+  width: 100%;
+`;
 export const TaskColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
