@@ -9,7 +9,6 @@ export const SectionWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   min-width: 324px;
-
   margin-top: 1em;
 
   background: ${Black92}3C;

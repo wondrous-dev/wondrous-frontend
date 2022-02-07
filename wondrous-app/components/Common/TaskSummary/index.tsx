@@ -49,6 +49,7 @@ import { TaskCommentIcon } from '../../Icons/taskComment';
 import { renderMentionString } from '../../../utils/common';
 import { TaskMedia } from '../MediaPlayer';
 import { useMe } from '../../Auth/withAuth';
+import PodIcon from '../../Icons/podIcon';
 
 let windowOffset;
 
@@ -249,15 +250,31 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
               })}
             </p>
             {task?.podName && (
-              <PodWrapper
-                onclick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  goToPod(task?.podId);
+              <div
+                style={{
+                  alignItems: 'center',
+                  display: 'flex',
                 }}
               >
-                <PodName>{task?.podName.slice(0, 15)}</PodName>
-              </PodWrapper>
+                <PodIcon
+                  color={task?.podColor}
+                  style={{
+                    width: '26px',
+                    height: '26px',
+                    marginRight: '8px',
+                    marginBottom: '16px',
+                  }}
+                />
+                <PodWrapper
+                  onclick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    goToPod(task?.podId);
+                  }}
+                >
+                  <PodName>{task?.podName.slice(0, 15)}</PodName>
+                </PodWrapper>
+              </div>
             )}
             {task?.media?.length > 0 ? <TaskMedia media={task?.media[0]} /> : <TaskSeparator />}
           </TaskContent>

@@ -58,6 +58,7 @@ import { OrgBoardContext } from '../../../utils/contexts';
 import { MilestoneLaunchedBy } from '../MilestoneLaunchedBy';
 import { MilestoneProgress } from '../MilestoneProgress';
 import { MilestoneWrapper } from '../Milestone';
+import PodIcon from '../../Icons/podIcon';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -283,15 +284,31 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
               })}
             </p>
             {task?.podName && (
-              <PodWrapper
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  goToPod(task?.podId);
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
                 }}
               >
-                <PodName>{task?.podName}</PodName>
-              </PodWrapper>
+                <PodIcon
+                  color={task?.podColor}
+                  style={{
+                    width: '26px',
+                    height: '26px',
+                    marginRight: '8px',
+                    marginBottom: '16px',
+                  }}
+                />
+                <PodWrapper
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    goToPod(task?.podId);
+                  }}
+                >
+                  <PodName>{task?.podName}</PodName>
+                </PodWrapper>
+              </div>
             )}
             <MilestoneProgressWrapper>{isMilestone && <MilestoneProgress milestoneId={id} />}</MilestoneProgressWrapper>
             {media?.length > 0 ? <TaskMedia media={media[0]} /> : <TaskSeparator />}
