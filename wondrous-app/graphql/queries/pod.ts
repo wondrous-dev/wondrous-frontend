@@ -17,6 +17,7 @@ export const GET_USER_PODS = gql`
       username
       name
       profilePicture
+      description
     }
   }
 `;

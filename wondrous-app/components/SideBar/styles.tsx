@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Drawer, IconButton, List, ListItem } from '@material-ui/core';
+import { Divider, Drawer, IconButton, List, ListItem } from '@material-ui/core';
 import { Black97 } from '../../theme/colors';
 import { SIDEBAR_WIDTH } from '../../utils/constants';
 
@@ -134,4 +134,23 @@ export const NoLogoDAO = styled.div`
   justify-content: center;
 
   background: linear-gradient(0deg, #141414 0%, #474747 219.88%, rgba(20, 20, 20, 0) 219.9%);
+`;
+
+export const StyledDivider = styled(Divider)`
+  && {
+    border: 1px solid #4b4b4b;
+    width: 36px;
+  }
+`;
+
+export const StyledDividerDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+  margin-bottom: 32px;
+`;
+
+export const PodButtonDiv = styled.div`
+  display: flex;
+  justify-content: center;
 `;
