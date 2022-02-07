@@ -103,12 +103,7 @@ export const ColumnSection = ({ section, setSection }) => {
           <Chevron />
         </SectionChevronContainer>
       </SectionHeaderContainer>
-      <SectionContainer
-        style={{
-          marginTop: isOpen ? '48px' : '0',
-        }}
-        in={isOpen}
-      >
+      <SectionContainer in={isOpen}>
         {tasks.slice(0, 2).map((task) => (
           <TaskSummary key={task.id} task={task} setTask={setTask} action={action} taskType={type} />
         ))}
