@@ -1,11 +1,8 @@
-import React from 'react'
-import styled from 'styled-components'
-import { Background, Blue800, Violet300, Grey250 } from '../../../theme/colors'
-import {
-  CreateFormButtonsBlock,
-  CreateFormPreviewButton,
-} from '../../CreateEntity/styles'
-import { SafeImage } from '../Image'
+import React from 'react';
+import styled from 'styled-components';
+import { Background, Blue800, Violet300, Grey250 } from '../../../theme/colors';
+import { CreateFormButtonsBlock, CreateFormPreviewButton } from '../../CreateEntity/styles';
+import { SafeImage } from '../Image';
 
 export const TaskSummaryWrapper = styled.div`
   display: flex;
@@ -23,7 +20,7 @@ export const TaskSummaryWrapper = styled.div`
   min-height: 170px;
   width: 296px;
   color: ${Grey250};
-`
+`;
 
 export const TaskSummaryInner = styled.div`
   display: flex;
@@ -36,7 +33,7 @@ export const TaskSummaryInner = styled.div`
   padding: 14px;
 
   padding-bottom: 18px;
-`
+`;
 
 export const TaskSummaryMedia = styled.div`
   display: flex;
@@ -50,7 +47,7 @@ export const TaskSummaryMedia = styled.div`
   margin-right: 12px;
 
   background-color: ${Blue800};
-`
+`;
 
 export const TaskSummaryFooter = styled.div`
   display: flex;
@@ -60,7 +57,7 @@ export const TaskSummaryFooter = styled.div`
   height: 42px;
   color: #00baff;
   cursor: pointer;
-`
+`;
 
 export const TaskSummaryAction = styled.div`
   display: flex;
@@ -73,7 +70,7 @@ export const TaskSummaryAction = styled.div`
 
   font-size: 16px;
   color: ${Violet300};
-`
+`;
 
 export const OrgProfilePicture = (props) => (
   <SafeImage
@@ -85,7 +82,7 @@ export const OrgProfilePicture = (props) => (
       marginRight: '16px',
     }}
   />
-)
+);
 
 export const SmallerCardActionButtons = styled(CreateFormButtonsBlock)`
   && {
@@ -96,4 +93,4 @@ export const SmallerCardActionButtons = styled(CreateFormButtonsBlock)`
     width: max-content;
     cursor: pointer;
   }
-`
+`;
