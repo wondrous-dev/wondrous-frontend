@@ -1,4 +1,5 @@
 import React from 'react';
+import { Divider } from '@material-ui/core';
 import {
   DrawerBackButton,
   DrawerBottomBlock,
@@ -10,6 +11,9 @@ import {
   DrawerTopBlock,
   DrawerTopBlockItem,
   NoLogoDAO,
+  PodButtonDiv,
+  StyledDivider,
+  StyledDividerDiv,
 } from './styles';
 import SettingsIcon from '../Icons/settings';
 import ExitIcon from '../Icons/exit';
@@ -22,6 +26,30 @@ import { SafeImage } from '../Common/Image';
 import DefaultUserImage from '../Common/Image/DefaultUserImage';
 import { useRouter } from 'next/router';
 import { DAOIcon } from '../Icons/dao';
+
+const PodButton = (props) => {
+  return (
+    <svg width="39" height="39" viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+      <circle cx="19.0977" cy="19.7314" r="18.5" stroke="url(#paint0_linear_4944_60020)" />
+      <ellipse cx="19.0974" cy="25.4193" rx="8.79659" ry="1.48668" stroke="white" strokeLinecap="round" />
+      <ellipse cx="19.0974" cy="19.7298" rx="8.79659" ry="1.48668" stroke="white" strokeLinecap="round" />
+      <ellipse cx="19.0974" cy="14.0423" rx="8.79659" ry="1.48668" stroke="white" strokeLinecap="round" />
+      <defs>
+        <linearGradient
+          id="paint0_linear_4944_60020"
+          x1="41.2799"
+          y1="19.7314"
+          x2="-0.0273436"
+          y2="19.7314"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#7427FF" />
+          <stop offset="1" stopColor="#00BAFF" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+};
 
 const SideBarComponent = (props) => {
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
@@ -102,6 +130,16 @@ const SideBarComponent = (props) => {
                   )}
                 </DrawerListItem>
               ))}
+            <StyledDividerDiv>
+              <StyledDivider />
+            </StyledDividerDiv>
+            <PodButtonDiv>
+              <PodButton
+                style={{
+                  cursor: 'pointer',
+                }}
+              />
+            </PodButtonDiv>
           </DrawerList>
         </DrawerTopBlock>
         <DrawerBottomBlock>
