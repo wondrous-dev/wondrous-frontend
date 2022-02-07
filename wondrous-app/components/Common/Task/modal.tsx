@@ -684,17 +684,15 @@ export const TaskViewModal = (props) => {
                   >
                     Edit {isTaskProposal ? 'task proposal' : isMilestone ? 'milestone' : 'task'}
                   </DropDownItem>
-                  {!isTaskProposal && (
-                    <DropDownItem
-                      key={'task-menu-archive-' + fetchedTask?.id}
-                      onClick={() => {
-                        setArchiveTask(true);
-                      }}
-                      style={dropdownItemStyle}
-                    >
-                      Archive {isMilestone ? 'milestone' : 'task'}
-                    </DropDownItem>
-                  )}
+                  <DropDownItem
+                    key={'task-menu-archive-' + fetchedTask?.id}
+                    onClick={() => {
+                      setArchiveTask(true);
+                    }}
+                    style={dropdownItemStyle}
+                  >
+                    Archive {isTaskProposal ? 'task proposal' : isMilestone ? 'milestone' : 'task'}
+                  </DropDownItem>
                 </DropDown>
               </TaskActionMenu>
             )}
