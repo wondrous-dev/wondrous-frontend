@@ -71,7 +71,11 @@ export const ArchiveTaskModal = (props) => {
             <CloseModalIcon />
           </StyledCloseButton>
           <StyledHeader>Archive this {taskType}?</StyledHeader>
-          <StyledBody>You can undo this in the archived section in the board.</StyledBody>
+          <StyledBody>
+            {isTaskProposal
+              ? 'You cannot undo this action.'
+              : 'You can undo this in the archived section in the board.'}
+          </StyledBody>
           <StyledDivider />
           <StyledButtonsContainer>
             <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
