@@ -515,7 +515,7 @@ export const TaskViewModal = (props) => {
   const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
   const user = useMe();
   const userPermissionsContext =
-    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext || null;
+    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
@@ -757,7 +757,7 @@ export const TaskViewModal = (props) => {
 
   const onCorrectPage =
     fetchedTask?.orgId === board?.orgId || fetchedTask?.podId === board?.podId || fetchedTask?.userId === board?.userId;
-
+  console.log('fetchedTask', fetchedTask);
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -862,7 +862,7 @@ export const TaskViewModal = (props) => {
                 </TaskDescriptionText>
               </TaskTitleTextDiv>
             </TaskTitleDiv>
-            {!isTaskProposal && (
+            {!isTaskProposal && !isMilestone && (
               <TaskSectionDisplayDiv>
                 <TaskSectionDisplayLabel>
                   <ReviewerIcon />
@@ -934,7 +934,7 @@ export const TaskViewModal = (props) => {
                 </TaskSectionInfoDiv>
               </TaskSectionDisplayDiv>
             )}
-            {!isTaskProposal && (
+            {!isTaskProposal && !isMilestone && (
               <TaskSectionDisplayDiv>
                 <TaskSectionDisplayLabel>
                   <AssigneeIcon />
@@ -1082,21 +1082,6 @@ export const TaskViewModal = (props) => {
                 </TaskSectionInfoDiv>
               </TaskSectionDisplayDiv>
             )}
-            <TaskSectionDisplayDiv>
-              <TaskSectionDisplayLabel>
-                <AssigneeIcon />
-                <TaskSectionDisplayText>Due date</TaskSectionDisplayText>
-              </TaskSectionDisplayLabel>
-              <TaskSectionInfoText
-                style={{
-                  marginTop: '8px',
-                  marginLeft: '16px',
-                }}
-              >
-                {fetchedTask?.dueDate ? format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy') : 'None'}
-              </TaskSectionInfoText>
-            </TaskSectionDisplayDiv>
-
             <TaskSectionDisplayDiv>
               <TaskSectionDisplayLabel>
                 <AssigneeIcon />
@@ -1360,7 +1345,7 @@ export const TaskViewModal = (props) => {
                   <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
                 )}
                 {!submissionSelected && isMilestone && (
-                  <MilestoneTaskList milestoneId={task?.id} open={!submissionSelected} />
+                  <MilestoneTaskList milestoneId={fetchedTask?.id} open={!submissionSelected} />
                 )}
               </TaskSectionContent>
             </TaskModalFooter>
