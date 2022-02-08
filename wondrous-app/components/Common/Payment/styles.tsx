@@ -168,3 +168,11 @@ export const WarningTypography = styled(Typography)`
     font-weight: bolder;
   }
 `;
+
+export const PaymentPendingTypography = styled(Typography)`
+  && {
+    font-family: Space Grotesk;
+    color: #ffff;
+    font-size: 16px;
+  }
+`;

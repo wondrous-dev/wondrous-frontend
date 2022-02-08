@@ -10,12 +10,23 @@ import { SafeTransactionDataPartial, SafeTransactionData } from '@gnosis.pm/safe
 import { useWonderWeb3 } from '../../../services/web3';
 import { ErrorText } from '..';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
+import { PaymentPendingTypography } from './styles';
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {
     return address.substring(0, 4) + '...' + address.substring(address.length - 3);
   }
 };
+
+const CHAIN_TO_GNOSIS_URL_ABBR = {
+  eth_mainnet: 'eth',
+  rinkeby: 'rin',
+  polygon_mainnet: 'matic',
+};
+
+function constructGnosisRedirectUrl(chain, safeAddress, safeTxHash) {
+  return `https://gnosis-safe.io/app/${CHAIN_TO_GNOSIS_URL_ABBR[chain]}:${safeAddress}/transactions/${safeTxHash}`;
+}
 
 const CHAIN_ID_TO_CHAIN_NAME = {
   1: 'eth_mainnet',
@@ -47,6 +58,8 @@ export const SingleWalletPayment = (props) => {
   const [notOwnerError, setNotOwnerError] = useState(null);
   const [signingError, setSigningError] = useState(null);
   const [incompatibleWalletError, setIncompatibleWalletError] = useState(null);
+  const [paymentPending, setPaymentPending] = useState(null);
+  const [safeTxHash, setSafeTxHash] = useState(null);
   const wonderWeb3 = useWonderWeb3();
   const connectWeb3 = async () => {
     await wonderWeb3.onConnect();
@@ -67,13 +80,15 @@ export const SingleWalletPayment = (props) => {
 
   const [proposeGnosisTxForSubmission] = useMutation(PROPOSE_GNOSIS_TX_FOR_SUBMISSION, {
     onCompleted: (data) => {
-      console.log('completed', data);
+      const url = constructGnosisRedirectUrl(selectedWallet?.chain, selectedWallet?.address, safeTxHash);
+      setPaymentPending(url);
     },
     onError: (e) => {
       console.error(e);
     },
   });
 
+  const reward = props?.fetchedTask?.rewards && props?.fetchedTask?.rewards[0];
   useEffect(() => {
     setWrongChainError(null);
     const chain = submissionPaymentInfo?.paymentData[0].chain;
@@ -139,6 +154,7 @@ export const SingleWalletPayment = (props) => {
     };
     const safeTransaction = await gnosisSdk.createTransaction(transaction);
     const safeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);
+    setSafeTxHash(safeTxHash);
     try {
       await gnosisSdk.signTransaction(safeTransaction);
     } catch (e) {
@@ -187,17 +203,45 @@ export const SingleWalletPayment = (props) => {
     return (
       <>
         <DropdownSelect
-          title="Wallet"
+          title="Your wallet"
           value={selectedWalletId}
           setValue={setSelectedWalletId}
           labelText="Choose wallet"
           options={walletOptions}
           onChange={(e) => {}}
+          formSelectStyle={{
+            marginTop: '20px',
+            marginBottom: '28px',
+          }}
         />
         {wrongChainError && <>{wrongChainError}</>}
         {signingError && <>{signingError}</>}
         {notOwnerError && <>{notOwnerError}</>}
-        {selectedWallet && <button onClick={handlePaymentClick}>pay</button>}
+        {selectedWallet && !paymentPending && (
+          <CreateFormPreviewButton
+            onClick={handlePaymentClick}
+            style={{
+              marginLeft: 0,
+            }}
+          >
+            Pay {reward?.rewardAmount} {reward?.symbol}
+          </CreateFormPreviewButton>
+        )}
+        {paymentPending && (
+          <PaymentPendingTypography>
+            Payment pending! Please go to{' '}
+            <a
+              style={{
+                color: '#00BAFF',
+              }}
+              href={paymentPending}
+              target="_blank"
+            >
+              your Gnosis safe
+            </a>{' '}
+            to approve the payment.
+          </PaymentPendingTypography>
+        )}
       </>
     );
   } else {
