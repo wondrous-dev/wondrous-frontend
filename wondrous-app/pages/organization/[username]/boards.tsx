@@ -274,6 +274,7 @@ const BoardsPage = () => {
         : null
     );
   }
+
   return (
     <OrgBoardContext.Provider
       value={{

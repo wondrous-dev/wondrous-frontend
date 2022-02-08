@@ -3,6 +3,7 @@ import { useInView } from 'react-intersection-observer';
 import Link from 'next/link';
 
 import {
+  COLUMN_TITLE_ARCHIVED,
   ENTITIES_TYPES,
   PERMISSIONS,
   TASK_STATUS_ARCHIVED,
@@ -281,7 +282,13 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
 
         <StyledTableBody>
           {columns.map((column) => {
-            return [...column.section.tasks, ...column.tasks].map((task, index) => {
+            let tasks = [...column.section.tasks, ...column.tasks];
+
+            if (column.section.title === COLUMN_TITLE_ARCHIVED) {
+              tasks = column.tasks;
+            }
+
+            return tasks.map((task, index) => {
               // Parse permissions here as well
               const permissions = parseUserPermissionContext({
                 userPermissionsContext,
@@ -297,7 +304,7 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                 task?.createdBy === user?.id;
 
               return (
-                <StyledTableRow key={index}>
+                <StyledTableRow key={task.id}>
                   <StyledTableCell align="center">
                     {task.orgProfilePicture ? (
                       // eslint-disable-next-line @next/next/no-img-element
