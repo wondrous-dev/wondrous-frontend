@@ -9,6 +9,7 @@ import {
   PaymentTitleDiv,
   PaymentTitleTextDiv,
   PaymentTitleText,
+  PaymentDescriptionText,
   StyledTabs,
   PaymentMethodWrapper,
   WarningTypography,
@@ -136,7 +137,7 @@ export const MakePaymentModal = (props) => {
           </PaymentModalHeader>
           <PaymentTitleDiv>
             <PaymentTitleTextDiv>
-              <PaymentTitleText>
+            <PaymentTitleText>
                 Payout to{' '}
                 <Link href={`/profile/${fetchedTask?.assigneeId}/about`}>
                   <a
@@ -151,6 +152,9 @@ export const MakePaymentModal = (props) => {
                   </a>
                 </Link>{' '}
               </PaymentTitleText>
+              <PaymentDescriptionText>
+                Task: {fetchedTask.title}
+              </PaymentDescriptionText>
             </PaymentTitleTextDiv>
           </PaymentTitleDiv>
           <StyledTabs value={selectedTab}>
