@@ -475,7 +475,7 @@ export const TaskViewModal = (props) => {
         setTaskSubmissionLoading(false);
         setSubmissionSelected(false);
       }
-      if (!task && taskId && !fetchedTask) {
+      if (!task && taskId) {
         if (isTaskProposal) {
           getTaskProposalById({
             variables: {
@@ -552,6 +552,7 @@ export const TaskViewModal = (props) => {
           open={open}
           onClose={() => {
             setEditTask(false);
+            setFetchedTask(null);
             handleClose();
           }}
         >
@@ -560,6 +561,7 @@ export const TaskViewModal = (props) => {
             entityType={isMilestone ? ENTITIES_TYPES.MILESTONE : ENTITIES_TYPES.TASK}
             handleClose={() => {
               setEditTask(false);
+              setFetchedTask(null);
               handleClose();
             }}
             cancelEdit={() => setEditTask(false)}
@@ -622,7 +624,13 @@ export const TaskViewModal = (props) => {
   return (
     <>
       <ArchiveTaskModal open={archiveTask} onClose={() => setArchiveTask(false)} onArchive={handleNewStatus} />
-      <Modal open={open} onClose={handleClose}>
+      <Modal
+        open={open}
+        onClose={() => {
+          setFetchedTask(null);
+          handleClose();
+        }}
+      >
         <TaskModal>
           <TaskModalHeader>
             {fetchedTask?.orgProfilePicture ? (
