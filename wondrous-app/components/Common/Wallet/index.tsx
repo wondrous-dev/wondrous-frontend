@@ -160,15 +160,18 @@ const Wallet = () => {
   };
 
   const CurrencyDropdownItem = ({ currency }) => {
-    const { icon: currencyIcon, label: currencyLabel } = CURRENCY_UI_ELEMENTS[currency];
-    return (
-      <DropDownItem key={`wallet-currency-${currency}`} onClick={() => displayCurrency(currency)}>
-        <CurrencySelectorItem>
-          <CurrencySymbol>{currencyIcon}</CurrencySymbol>
-          <CurrencyName>{currencyLabel}</CurrencyName>
-        </CurrencySelectorItem>
-      </DropDownItem>
-    );
+    if (currency in CURRENCY_UI_ELEMENTS) {
+      const { icon: currencyIcon, label: currencyLabel } = CURRENCY_UI_ELEMENTS[currency];
+      return (
+        <DropDownItem key={`wallet-currency-${currency}`} onClick={() => displayCurrency(currency)}>
+          <CurrencySelectorItem>
+            <CurrencySymbol>{currencyIcon}</CurrencySymbol>
+            <CurrencyName>{currencyLabel}</CurrencyName>
+          </CurrencySelectorItem>
+        </DropDownItem>
+      );
+    }
+    return null;
   };
 
   if (!connected) {
