@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import TextField from '@mui/material/TextField';
 import AutocompleteComp from '@mui/material/Autocomplete';
 
+import { HighlightBlue } from '../../theme/colors';
+
 export const Autocomplete = styled(AutocompleteComp)`
   width: 100%;
 `;
@@ -16,7 +18,7 @@ export const Input = styled(TextField)`
   }
   & .MuiOutlinedInput-root {
     padding: 0;
-  } 
+  }
   && .MuiInputBase-input {
     font-size: 14px;
     line-height: 19;
@@ -31,7 +33,7 @@ export const Input = styled(TextField)`
   & .MuiInput-underline:after {
     display: none;
   }
-  
+
   & .MuiOutlinedInput-notchedOutline {
     border: none;
   }
@@ -39,4 +41,23 @@ export const Input = styled(TextField)`
   .MuiInputAdornment-positionStart {
     margin: 0 12px;
   }
+`;
+
+export const Option = styled.li`
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  padding: 12px;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    margin-right: 12px;
+  }
+`;
+
+export const LoadMore = styled.a`
+  margin-top: 10px;
+  cursor: pointer;
+  color: ${HighlightBlue};
 `;

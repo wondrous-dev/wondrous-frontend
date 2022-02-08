@@ -1,30 +1,14 @@
 import React, { useState } from 'react';
 import { InputAdornment } from '@material-ui/core';
-import styled from 'styled-components';
 
 import SearchIcon from '../Icons/search';
-import { Autocomplete, Input } from './styles';
+import { Autocomplete, Input, LoadMore, Option } from './styles';
 import { DAOIcon } from '../Icons/dao';
-import { HighlightBlue } from '../../theme/colors';
-
-const Option = styled.li`
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  padding: 12px;
-
-  svg {
-    width: 18px;
-    height: 18px;
-    margin-right: 12px;
-  }
-`;
-
-const LoadMore = styled.a`
-  margin-top: 10px;
-  cursor: pointer;
-  color: ${HighlightBlue};
-`;
+import { useLazyQuery } from '@apollo/client';
+import { GET_ORG_TASK_BOARD_TASKS, SEARCH_TASKS_FOR_ORG_BOARD_VIEW } from '../../graphql/queries';
+import { dedupeColumns } from '../../utils';
+import { populateTaskColumns } from '../../pages/organization/[username]/boards';
+import { useRouter } from 'next/router';
 
 const tasks = [
   { title: 'Create data scrape' },
@@ -34,10 +18,22 @@ const tasks = [
 ];
 
 export default function SearchTasks() {
-  const [open, setOpen] = useState(true);
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
   const [options, setOptions] = useState(tasks);
   const [hasMore, setHasMore] = useState(true);
   const loading = open && options.length === 0;
+  const { username, orgId } = router.query;
+
+  const [searchOrgTasks, { fetchMore, variables: searchOrgTasksVariables }] = useLazyQuery(
+    SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
+    {
+      onCompleted: (data) => {
+        console.log(data);
+      },
+      fetchPolicy: 'cache-and-network',
+    }
+  );
 
   React.useEffect(() => {
     if (!open) {
@@ -59,8 +55,17 @@ export default function SearchTasks() {
         // setValue(newValue);
       }}
       onInputChange={(event, newInputValue) => {
-        console.log(newInputValue);
-        setOptions([...tasks]);
+        // console.log(newInputValue);
+        // setOptions([...tasks]);
+        searchOrgTasks({
+          variables: {
+            // orgId: '0xwonderverse',
+            limit: 10,
+            offset: 0,
+            orgId: '47594141467541505',
+            searchString: newInputValue,
+          },
+        });
       }}
       freeSolo
       isOptionEqualToValue={(option, value) => option.title === value.title}
