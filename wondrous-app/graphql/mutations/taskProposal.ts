@@ -30,9 +30,9 @@ export const UPDATE_TASK_PROPOSAL_ASSIGNEE = gql`
   ${TaskProposalFragment}
 `;
 
-export const ARCHIVE_TASK_PROPOSAL = gql`
-  mutation archiveTaskProposal($proposalId: ID!) {
-    archiveTaskProposal(proposalId: $proposalId) {
+export const CLOSE_TASK_PROPOSAL = gql`
+  mutation closeTaskProposal($proposalId: ID!) {
+    closeTaskProposal(proposalId: $proposalId) {
       success
     }
   }

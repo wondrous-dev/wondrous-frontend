@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { ARCHIVE_TASK_PROPOSAL } from '../../../graphql/mutations';
+import { CLOSE_TASK_PROPOSAL } from '../../../graphql/mutations';
 import { GET_ORG_TASK_BOARD_TASKS, GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries';
 import { removeProposalItem } from '../../../utils/board';
 import * as Constants from '../../../utils/constants';
@@ -22,7 +22,7 @@ import {
 export const ArchiveTaskModal = (props) => {
   const { open, onClose, onArchive, taskType, taskId = '' } = props;
   const board = useOrgBoard();
-  const [archiveTaskProposal] = useMutation(ARCHIVE_TASK_PROPOSAL, {
+  const [archiveTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL, {
     refetchQueries: () => [
       {
         query: GET_ORG_TASK_BOARD_TASKS,
