@@ -38,6 +38,9 @@ import { GET_POD_BY_ID } from '../../graphql/queries/pod';
 import { PERMISSIONS } from '../../utils/constants';
 import { useMe } from '../Auth/withAuth';
 import SettingsIcon from '../Icons/settings';
+import WrenchIcon from '../Icons/wrench';
+import CardIcon from '../Icons/card';
+import { pathToArray } from 'graphql/jsutils/Path';
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -129,6 +132,18 @@ export const SettingsWrapper = (props) => {
       label: 'General settings',
       value: 'general',
       href: orgId ? `/organization/settings/${orgId}/general` : `/pod/settings/${podId}/general`,
+    },
+    {
+      icon: <WrenchIcon width={40} height={40} />,
+      label: 'Configure Wallet',
+      value: 'wallet',
+      href: orgId ? `/organization/settings/${orgId}/wallet` : `/pod/settings/${podId}/wallet`,
+    },
+    {
+      icon: <CardIcon width={40} height={40} />,
+      label: 'Payments Ledger',
+      value: 'payouts',
+      href: orgId ? `/organization/settings/${orgId}/payouts` : `/pod/settings/${podId}/payouts`,
     },
     {
       icon: <MembersIcon width={40} height={40} />,
@@ -226,8 +241,11 @@ export const SettingsWrapper = (props) => {
                     {(orgData || podData) &&
                       SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
                         const { href, icon, label } = item;
-
-                        const active = pathname === href;
+                        const pathnameSplit = pathname.split('/')
+                        const hrefSplit = href.split('/')
+                        const endPathName = pathnameSplit[pathnameSplit.length-1]
+                        const endHref = hrefSplit[hrefSplit.length-1]
+                        const active = endHref === endPathName;
 
                         return (
                           <Link key={href} href={href}>

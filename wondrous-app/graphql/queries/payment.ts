@@ -9,3 +9,34 @@ export const GET_PAYMENT_METHODS_FOR_ORG = gql`
   }
   ${PaymentMethodFragment}
 `
+
+
+export const GET_SUBMISSIONS_PAYMENT_INFO = gql`
+  query getSubmissionsPaymentInfo($submissionIds: [ID]) {
+    getSubmissionsPaymentInfo(submissionIds: $submissionIds) {
+      submissionId
+      paymentData {
+        tokenAddress
+        isEthTransfer
+        amount
+        recepientAddress
+      }
+    }
+  }
+`
+
+
+export const GET_SUBMISSION_PAYMENT_INFO = gql`
+  query getSubmissionPaymentInfo($submissionId: ID!) {
+    getSubmissionPaymentInfo(submissionId: $submissionId) {
+		    submissionId
+		    paymentData {
+          tokenAddress
+    	    isEthTransfer
+    	    amount
+    	    recepientAddress
+          chain
+        }
+    }
+  }
+`
