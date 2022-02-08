@@ -92,6 +92,9 @@ import {
   GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_SUBMISSIONS,
   GET_ORG_TASK_BOARD_TASKS,
+  GET_POD_TASK_BOARD_PROPOSALS,
+  GET_POD_TASK_BOARD_SUBMISSIONS,
+  GET_POD_TASK_BOARD_TASKS,
 } from '../../../graphql/queries/taskBoard';
 import { AvatarList } from '../AvatarList';
 import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from '../../../graphql/mutations/taskProposal';
@@ -174,6 +177,32 @@ export const TaskListViewModal = (props) => {
         setHasMore(data?.hasMore || data?.getOrgTaskBoardTasks.length >= LIMIT);
       },
     });
+  const [getPodTaskProposals, { fetchMore: fetchMorePodProposals }] = useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
+    onCompleted: (data) => {
+      const tasks = data?.getPodTaskBoardProposals;
+      setFetchedList(tasks);
+      setHasMore(data?.hasMore || data?.getPodTaskBoardProposals.length >= LIMIT);
+    },
+  });
+
+  const [getPodTaskSubmissions, { fetchMore: fetchMorePodTaskSubmissions }] = useLazyQuery(
+    GET_POD_TASK_BOARD_SUBMISSIONS,
+    {
+      onCompleted: (data) => {
+        const tasks = data?.getPodTaskBoardSubmissions;
+        setFetchedList(tasks);
+        setHasMore(data?.hasMore || data?.getPodTaskBoardSubmissions?.length >= LIMIT);
+      },
+    }
+  );
+
+  const [getPodArchivedTasks, { fetchMore: fetchMorePodArchivedTasks }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {
+    onCompleted: (data) => {
+      const tasks = data?.getPodTaskBoardTasks;
+      setFetchedList(tasks);
+      setHasMore(data?.hasMore || data?.getPodTaskBoardTasks.length >= LIMIT);
+    },
+  });
 
   const handleLoadMore = useCallback(() => {
     if (hasMore) {
@@ -203,6 +232,29 @@ export const TaskListViewModal = (props) => {
           }).catch((error) => {
             console.error(error);
           });
+        } else if (entityType === ENTITIES_TYPES.POD) {
+          fetchMorePodProposals({
+            variables: {
+              offset: fetchedList.length,
+              limit: LIMIT,
+              statuses: [STATUS_OPEN],
+            },
+            updateQuery: (prev, { fetchMoreResult }) => {
+              const hasMore = fetchMoreResult.getPodTaskBoardProposals.length >= LIMIT;
+              if (!fetchMoreResult) {
+                return prev;
+              }
+              if (!hasMore) {
+                setHasMore(false);
+              }
+              return {
+                hasMore,
+                getPodTaskBoardProposals: prev.getPodTaskBoardProposals.concat(
+                  fetchMoreResult.getPodTaskBoardProposals
+                ),
+              };
+            },
+          });
         }
       } else if (taskType === TASK_STATUS_IN_REVIEW) {
         if (entityType === ENTITIES_TYPES.ORG) {
@@ -225,6 +277,30 @@ export const TaskListViewModal = (props) => {
                 hasMore,
                 getOrgTaskBoardSubmissions: prev.getOrgTaskBoardSubmissions.concat(
                   fetchMoreResult.getOrgTaskBoardSubmissions
+                ),
+              };
+            },
+          });
+        } else if (entityType === ENTITIES_TYPES.POD) {
+          fetchMorePodTaskSubmissions({
+            variables: {
+              offset: fetchedList.length,
+              limit: LIMIT,
+              statuses: [STATUS_OPEN],
+            },
+            updateQuery: (prev, { fetchMoreResult }) => {
+              const hasMore = fetchMoreResult.getPodTaskBoardSubmissions.length >= LIMIT;
+              if (!fetchMoreResult) {
+                return prev;
+              }
+              if (!hasMore) {
+                setHasMore(false);
+              }
+
+              return {
+                hasMore,
+                getPodTaskBoardSubmissions: prev.getPodTaskBoardSubmissions.concat(
+                  fetchMoreResult.getPodTaskBoardSubmissions
                 ),
               };
             },
@@ -252,6 +328,27 @@ export const TaskListViewModal = (props) => {
               };
             },
           });
+        } else if (entityType === ENTITIES_TYPES.POD) {
+          fetchMorePodArchivedTasks({
+            variables: {
+              statuses: ['archived'],
+              offset: fetchedList.length,
+              limit: LIMIT,
+            },
+            updateQuery: (prev, { fetchMoreResult }) => {
+              const hasMore = fetchMoreResult.getPodTaskBoardTasks.length >= LIMIT;
+              if (!fetchMoreResult) {
+                return prev;
+              }
+              if (!hasMore) {
+                setHasMore(false);
+              }
+              return {
+                hasMore,
+                getPodTaskBoardTasks: prev.getPodTaskBoardTasks.concat(fetchMoreResult.getPodTaskBoardTasks),
+              };
+            },
+          });
         }
       }
     }
@@ -265,7 +362,6 @@ export const TaskListViewModal = (props) => {
     fetchMoreOrgSubmissions,
   ]);
 
-  const listInnerRef = useRef();
   useEffect(() => {
     if (open) {
       if (fetchedList?.length === 0 && !hasMore) {
@@ -277,6 +373,15 @@ export const TaskListViewModal = (props) => {
                 statuses: [STATUS_OPEN],
               },
             });
+          } else if (entityType === ENTITIES_TYPES.POD) {
+            getPodTaskProposals({
+              variables: {
+                input: {
+                  podId,
+                  statuses: [STATUS_OPEN],
+                },
+              },
+            });
           }
         } else if (taskType === TASK_STATUS_IN_REVIEW) {
           if (entityType === ENTITIES_TYPES.ORG) {
@@ -284,6 +389,15 @@ export const TaskListViewModal = (props) => {
               variables: {
                 orgId,
                 statuses: [STATUS_OPEN],
+              },
+            });
+          } else if (entityType === ENTITIES_TYPES.POD) {
+            getPodTaskSubmissions({
+              variables: {
+                input: {
+                  podId,
+                  statuses: [STATUS_OPEN],
+                },
               },
             });
           }
@@ -295,6 +409,17 @@ export const TaskListViewModal = (props) => {
                 statuses: ['archived'],
                 offset: 0,
                 limit: LIMIT,
+              },
+            });
+          } else if (entityType === ENTITIES_TYPES.POD) {
+            getPodArchivedTasks({
+              variables: {
+                input: {
+                  podId,
+                  statuses: ['archived'],
+                  offset: 0,
+                  limit: LIMIT,
+                },
               },
             });
           }
@@ -311,13 +436,10 @@ export const TaskListViewModal = (props) => {
   let refetch;
   if (taskType === TASK_STATUS_REQUESTED) {
     text = 'Proposals';
-    refetch = refetchOrgProposals;
   } else if (taskType === TASK_STATUS_IN_REVIEW) {
     text = 'Submissions';
-    refetch = refetchOrgSubmissions;
   } else if (taskType === TASK_STATUS_ARCHIVED) {
     text = 'Tasks';
-    refetch = refetchOrgSubmissions;
   }
   return (
     <CreateModalOverlay
