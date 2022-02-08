@@ -1,5 +1,4 @@
-import React from 'react';
-import { Divider } from '@material-ui/core';
+import React, { useState } from 'react';
 import {
   DrawerBackButton,
   DrawerBottomBlock,
@@ -26,6 +25,7 @@ import { SafeImage } from '../Common/Image';
 import DefaultUserImage from '../Common/Image/DefaultUserImage';
 import { useRouter } from 'next/router';
 import { DAOIcon } from '../Icons/dao';
+import { PodModal } from './PodModal';
 
 const PodButton = (props) => {
   return (
@@ -58,7 +58,7 @@ const SideBarComponent = (props) => {
   const setMinimized = sidebar?.setMinimized;
   const router = useRouter();
   const user = useMe();
-
+  const [openPodModal, setOpenPodModal] = useState(false);
   const handleMinimize = (event) => {
     if (setMinimized) {
       setMinimized(!minimized);
@@ -87,6 +87,7 @@ const SideBarComponent = (props) => {
   };
   return (
     <DrawerComponent variant="permanent" anchor="left" className={minimized ? 'active' : ''}>
+      <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
       <DrawerContainer>
         <DrawerTopBlock>
           <DrawerTopBlockItem
@@ -138,6 +139,7 @@ const SideBarComponent = (props) => {
                 style={{
                   cursor: 'pointer',
                 }}
+                onClick={() => setOpenPodModal(true)}
               />
             </PodButtonDiv>
           </DrawerList>

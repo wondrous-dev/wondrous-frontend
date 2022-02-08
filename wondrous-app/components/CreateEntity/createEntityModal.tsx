@@ -88,7 +88,7 @@ import { TextInputContext } from '../../utils/contexts';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
 import { SafeImage } from '../Common/Image';
-import { GET_USER_AVAILABLE_PODS, GET_USER_PODS, GET_POD_USERS } from '../../graphql/queries/pod';
+import { GET_USER_AVAILABLE_PODS, GET_POD_USERS } from '../../graphql/queries/pod';
 import {
   GET_ELIGIBLE_REVIEWERS_FOR_ORG,
   GET_ELIGIBLE_REVIEWERS_FOR_POD,
@@ -373,12 +373,6 @@ const CreateLayoutBaseModal = (props) => {
       setDescriptionText(e.target.value);
     }
   };
-
-  const [getUserPods] = useLazyQuery(GET_USER_PODS, {
-    onCompleted: (data) => {
-      setPods(data?.getUserPods || []);
-    },
-  });
 
   const [getPodUsers, { data: podUsersData }] = useLazyQuery(GET_POD_USERS);
 

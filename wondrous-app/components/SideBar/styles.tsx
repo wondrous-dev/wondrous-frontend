@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Divider, Drawer, IconButton, List, ListItem } from '@material-ui/core';
-import { Black97 } from '../../theme/colors';
+import { Divider, Drawer, IconButton, List, ListItem, Typography } from '@material-ui/core';
+import { Black97, White } from '../../theme/colors';
 import { SIDEBAR_WIDTH } from '../../utils/constants';
 
 export const DrawerComponent = styled(Drawer)`
@@ -153,4 +153,24 @@ export const StyledDividerDiv = styled.div`
 export const PodButtonDiv = styled.div`
   display: flex;
   justify-content: center;
+`;
+
+export const PodModalFooter = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const PodModalFooterInfoWrapper = styled.div`
+  background: linear-gradient(0deg, rgba(196, 196, 196, 0.07), rgba(196, 196, 196, 0.07)), #0f0f0f;
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin-right: 8px;
+`;
+
+export const PodModalFooterInfoWrapperText = styled(Typography)`
+  && {
+    color: ${White};
+    font-size: 13px;
+  }
 `;
