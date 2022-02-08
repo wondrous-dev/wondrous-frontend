@@ -22,7 +22,7 @@ import { useRouter } from 'next/router';
 import { DAOIcon } from '../../Icons/dao';
 import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { OfflinePayment } from './OfflinePayment';
-import { WalletPayment } from './WalletPayment';
+import { SingleWalletPayment } from './SingleWalletPayment';
 
 export const MakePaymentModal = (props) => {
   const { open, handleClose, setShowPaymentModal, approvedSubmission, fetchedTask } = props;
@@ -141,7 +141,7 @@ export const MakePaymentModal = (props) => {
           </StyledTabs>
           {selectedTab === 'off_platform' && <OfflinePayment />}
           {selectedTab === 'wallet' && (
-            <WalletPayment
+            <SingleWalletPayment
               approvedSubmission={approvedSubmission}
               fetchedTask={fetchedTask}
               wallets={wallets}

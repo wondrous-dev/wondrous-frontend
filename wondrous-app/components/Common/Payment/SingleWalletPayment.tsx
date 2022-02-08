@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ethers, utils } from 'ethers';
-import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
+import DropdownSelect from '../DropdownSelect/dropdownSelect';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
 import { PROPOSE_GNOSIS_TX_FOR_SUBMISSION } from '../../../graphql/mutations/payment';
@@ -34,13 +34,18 @@ interface PaymentData {
   chain: string
 }
 
-export const WalletPayment = (props) => {
+
+export const SingleWalletPayment = (props) => {
   const { open, handleClose, setShowPaymentModal, approvedSubmission, wallets, submissionPaymentInfo } = props;
   const [currentChainId, setCurrentChainId] = useState(null) // chain id current user is on
   const [walletOptions, setWalletOptions] = useState([]) // chain associated with submission
   const [onRightChain, setOnRighChain] = useState(true)
   const [selectedWalletId, setSelectedWalletId] = useState(null);
   const [selectedWallet, setSelectedWallet] = useState(null);
+  const [wrongChainError, setWrongChainError] = useState(null);
+  const [notOwnerError, setNotOwnerError] = useState(null);
+  const [signingError, setSigningError] = useState(null);
+  const [incompatibleWalletError, setIncompatibleWalletError] = useState(null);
   const wonderWeb3 = useWonderWeb3();
   const connectWeb3 = async () => {
     await wonderWeb3.onConnect()
@@ -50,8 +55,9 @@ export const WalletPayment = (props) => {
   }, []);
 
   useEffect(() => {
+    setNotOwnerError(null)
     setCurrentChainId(wonderWeb3.chain)
-  }, [wonderWeb3.chain]);
+  }, [wonderWeb3.chain, wonderWeb3.address]);
 
   const wonderGnosis = useGnosisSdk();
   const connectSafeSdk = async (chain, safeAddress) => {
@@ -68,25 +74,34 @@ export const WalletPayment = (props) => {
   });
 
   useEffect(()=> {
+    setWrongChainError(null)
     const chain = submissionPaymentInfo?.paymentData[0].chain
     if (chain && currentChainId) {
-      setOnRighChain(chain ===CHAIN_ID_TO_CHAIN_NAME[currentChainId])
+      if (chain !==CHAIN_ID_TO_CHAIN_NAME[currentChainId]) {
+        setWrongChainError(`on the wrong chain should be on ${chain}`)
+      }
     }
   }, [currentChainId, submissionPaymentInfo])
 
   useEffect(()=> {
+    setIncompatibleWalletError(null)
     const corrctChainWallets = [];
     wallets.map((wallet) => {
-      if (wallet.chain === submissionPaymentInfo?.paymentData[0].chain) {
+      const chain = submissionPaymentInfo?.paymentData[0].chain
+      if (wallet.chain === chain) {
         const address = generateReadablePreviewForAddress(wallet.address);
         const label = `${wallet.name}:  ${address}`;
         corrctChainWallets.push({ value: wallet.id, label });
+      }
+      if (corrctChainWallets.length === 0 && wallets.length > 0) {
+        setIncompatibleWalletError( `Existing wallets are not on ${chain}`)
       }
     });
     setWalletOptions(corrctChainWallets)
   }, [submissionPaymentInfo, wallets])
 
   useEffect(() => {
+    setNotOwnerError(null)
     const wallet = wallets.filter((wallet) => wallet.id === selectedWalletId)[0];
     setSelectedWallet(wallet);
     if (selectedWallet && selectedWallet.chain) {
@@ -123,7 +138,16 @@ export const WalletPayment = (props) => {
     };
     const safeTransaction = await gnosisSdk.createTransaction(transaction);
     const safeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);
-    await gnosisSdk.signTransaction(safeTransaction);
+    try {
+      await gnosisSdk.signTransaction(safeTransaction);
+    } catch (e) {
+      if (e.message === 'Transactions can only be signed by Safe owners') {
+        setNotOwnerError(`Not a owner of multisig`)
+      } else {
+        setSigningError(`Error signing transaction`)
+      }
+      return
+    }
     let sender; // parse out sender from signature, should be checksum addr. although backend can probably just convert
     let signature; // parse out signature
     safeTransaction.signatures.forEach((value, key) => {
@@ -170,14 +194,17 @@ export const WalletPayment = (props) => {
           options={walletOptions}
           onChange={(e) => {}}
         />
-        {!onRightChain && <>on the wrong chain should be on {selectedWallet?.chain}</>}
-        <button onClick={handlePaymentClick}>pay</button>
+        {wrongChainError && <>{wrongChainError}</>}
+        {signingError && <>{signingError}</>}
+        {notOwnerError && <>{notOwnerError}</>}
+        {selectedWallet && <button onClick={handlePaymentClick}>pay</button>}
       </>
     );
   } else {
     return (
       <>
         <>No wallet found</>
+        {incompatibleWalletError && <>{incompatibleWalletError}</>}
         <button>create new wallets</button>
       </>
     );
