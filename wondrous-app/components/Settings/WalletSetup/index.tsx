@@ -133,7 +133,7 @@ const Wallets = (props) => {
       } else {
         newError.safeAddressError = 'unknown gnosis network error';
       }
-      return
+      return;
     }
     if (orgId) {
       createOrgWallet({
@@ -227,22 +227,42 @@ const Wallets = (props) => {
             </StyledTableBody>
           </StyledTable>
         </StyledTableContainer>
-        <>
-          <WalletAddressInput placeHolder="Name" value={walletName} onChange={(e) => setWalletName(e.target.value)} />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <WalletAddressInput placeholder="Name" value={walletName} onChange={(e) => setWalletName(e.target.value)} />
           <WalletAddressInput
-            placeHolder="Safe Address"
+            placeholder="Safe Address"
             value={safeAddress}
             onChange={(e) => setSafeAddress(e.target.value)}
           />
-          {errors.safeAddressError && <ErrorText> {errors.safeAddressError} </ErrorText>}
           <DropdownSelect
             value={selectedChain}
             options={SUPPORTED_PAYMENT_CHAINS}
             setValue={setSelectedChain}
             onChange={(e) => {}}
+            innerStyle={{
+              marginTop: 0,
+            }}
+            formSelectStyle={{
+              height: 'auto',
+            }}
           />
-          <CreateFormPreviewButton onClick={handleCreateWalletClick}>Set up wallet</CreateFormPreviewButton>
-        </>
+        </div>
+        {errors.safeAddressError && <ErrorText> {errors.safeAddressError} </ErrorText>}
+        <CreateFormPreviewButton
+          style={{
+            marginLeft: 0,
+            marginTop: '32px',
+          }}
+          onClick={handleCreateWalletClick}
+        >
+          Add wallet
+        </CreateFormPreviewButton>
       </WalletsContainer>
     </SettingsWrapper>
   );

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
 import Modal from '@mui/material/Modal';
+import { Typography } from '@mui/material';
 import { Tab } from '@material-ui/core';
 import {
   PodNameTypography,
@@ -9,6 +10,8 @@ import {
   PaymentTitleTextDiv,
   PaymentTitleText,
   StyledTabs,
+  PaymentMethodWrapper,
+  WarningTypography,
 } from './styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
@@ -23,6 +26,7 @@ import { DAOIcon } from '../../Icons/dao';
 import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { OfflinePayment } from './OfflinePayment';
 import { SingleWalletPayment } from './SingleWalletPayment';
+import Link from 'next/link';
 
 export const MakePaymentModal = (props) => {
   const { open, handleClose, setShowPaymentModal, approvedSubmission, fetchedTask } = props;
@@ -131,7 +135,21 @@ export const MakePaymentModal = (props) => {
           </PaymentModalHeader>
           <PaymentTitleDiv>
             <PaymentTitleTextDiv>
-              <PaymentTitleText>Payout to {fetchedTask.assigneeUsername} </PaymentTitleText>
+              <PaymentTitleText>
+                Payout to{' '}
+                <Link href={`/profile/${fetchedTask?.assigneeId}/about`}>
+                  <a
+                    style={{
+                      color: '#ffffff',
+                      textDecoration: 'underline',
+                      cursor: 'pointer',
+                    }}
+                    target=")blank"
+                  >
+                    {fetchedTask.assigneeUsername}
+                  </a>
+                </Link>{' '}
+              </PaymentTitleText>
             </PaymentTitleTextDiv>
           </PaymentTitleDiv>
           <StyledTabs value={selectedTab}>
@@ -139,15 +157,25 @@ export const MakePaymentModal = (props) => {
               <Tab value={tab.name} key={tab.name} label={tab.label} onClick={tab.action} />
             ))}
           </StyledTabs>
-          {selectedTab === 'off_platform' && <OfflinePayment />}
-          {selectedTab === 'wallet' && (
-            <SingleWalletPayment
-              approvedSubmission={approvedSubmission}
-              fetchedTask={fetchedTask}
-              wallets={wallets}
-              submissionPaymentInfo={submissionPaymentInfo}
-            />
-          )}
+          <PaymentMethodWrapper>
+            {selectedTab === 'off_platform' && (
+              <>
+                <WarningTypography>
+                  This link will only be visible to the assignee and other admins with the payment permission
+                </WarningTypography>
+                <OfflinePayment />
+              </>
+            )}
+
+            {selectedTab === 'wallet' && (
+              <SingleWalletPayment
+                approvedSubmission={approvedSubmission}
+                fetchedTask={fetchedTask}
+                wallets={wallets}
+                submissionPaymentInfo={submissionPaymentInfo}
+              />
+            )}
+          </PaymentMethodWrapper>
         </PaymentModal>
       </Modal>
     </>

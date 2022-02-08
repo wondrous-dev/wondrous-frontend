@@ -8,6 +8,8 @@ import { useGnosisSdk } from '../../../services/payment';
 import { ERC20abi } from '../../../services/contracts/erc20.abi';
 import { SafeTransactionDataPartial, SafeTransactionData } from '@gnosis.pm/safe-core-sdk-types';
 import { useWonderWeb3 } from '../../../services/web3';
+import { ErrorText } from '..';
+import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {
@@ -18,8 +20,8 @@ const generateReadablePreviewForAddress = (address: String) => {
 const CHAIN_ID_TO_CHAIN_NAME = {
   1: 'eth_mainnet',
   4: 'rinkeby',
-  137: 'polygon_mainnet'
-}
+  137: 'polygon_mainnet',
+};
 
 interface SubmissionPaymentInfo {
   submissionId: string;
@@ -31,15 +33,14 @@ interface PaymentData {
   isEthTransfer: Boolean;
   amount: string;
   recepientAddress: string;
-  chain: string
+  chain: string;
 }
-
 
 export const SingleWalletPayment = (props) => {
   const { open, handleClose, setShowPaymentModal, approvedSubmission, wallets, submissionPaymentInfo } = props;
-  const [currentChainId, setCurrentChainId] = useState(null) // chain id current user is on
-  const [walletOptions, setWalletOptions] = useState([]) // chain associated with submission
-  const [onRightChain, setOnRighChain] = useState(true)
+  const [currentChainId, setCurrentChainId] = useState(null); // chain id current user is on
+  const [walletOptions, setWalletOptions] = useState([]); // chain associated with submission
+  const [onRightChain, setOnRighChain] = useState(true);
   const [selectedWalletId, setSelectedWalletId] = useState(null);
   const [selectedWallet, setSelectedWallet] = useState(null);
   const [wrongChainError, setWrongChainError] = useState(null);
@@ -48,15 +49,15 @@ export const SingleWalletPayment = (props) => {
   const [incompatibleWalletError, setIncompatibleWalletError] = useState(null);
   const wonderWeb3 = useWonderWeb3();
   const connectWeb3 = async () => {
-    await wonderWeb3.onConnect()
-  }
+    await wonderWeb3.onConnect();
+  };
   useEffect(() => {
-    connectWeb3()
+    connectWeb3();
   }, []);
 
   useEffect(() => {
-    setNotOwnerError(null)
-    setCurrentChainId(wonderWeb3.chain)
+    setNotOwnerError(null);
+    setCurrentChainId(wonderWeb3.chain);
   }, [wonderWeb3.chain, wonderWeb3.address]);
 
   const wonderGnosis = useGnosisSdk();
@@ -66,42 +67,42 @@ export const SingleWalletPayment = (props) => {
 
   const [proposeGnosisTxForSubmission] = useMutation(PROPOSE_GNOSIS_TX_FOR_SUBMISSION, {
     onCompleted: (data) => {
-      console.log('completed', data)
+      console.log('completed', data);
     },
     onError: (e) => {
       console.error(e);
     },
   });
 
-  useEffect(()=> {
-    setWrongChainError(null)
-    const chain = submissionPaymentInfo?.paymentData[0].chain
+  useEffect(() => {
+    setWrongChainError(null);
+    const chain = submissionPaymentInfo?.paymentData[0].chain;
     if (chain && currentChainId) {
-      if (chain !==CHAIN_ID_TO_CHAIN_NAME[currentChainId]) {
-        setWrongChainError(`on the wrong chain should be on ${chain}`)
+      if (chain !== CHAIN_ID_TO_CHAIN_NAME[currentChainId]) {
+        setWrongChainError(`on the wrong chain should be on ${chain}`);
       }
     }
-  }, [currentChainId, submissionPaymentInfo])
+  }, [currentChainId, submissionPaymentInfo]);
 
-  useEffect(()=> {
-    setIncompatibleWalletError(null)
+  useEffect(() => {
+    setIncompatibleWalletError(null);
     const corrctChainWallets = [];
     wallets.map((wallet) => {
-      const chain = submissionPaymentInfo?.paymentData[0].chain
+      const chain = submissionPaymentInfo?.paymentData[0].chain;
       if (wallet.chain === chain) {
         const address = generateReadablePreviewForAddress(wallet.address);
         const label = `${wallet.name}:  ${address}`;
         corrctChainWallets.push({ value: wallet.id, label });
       }
       if (corrctChainWallets.length === 0 && wallets.length > 0) {
-        setIncompatibleWalletError( `Existing wallets are not on ${chain}`)
+        setIncompatibleWalletError(`Existing wallets are not on ${chain}`);
       }
     });
-    setWalletOptions(corrctChainWallets)
-  }, [submissionPaymentInfo, wallets])
+    setWalletOptions(corrctChainWallets);
+  }, [submissionPaymentInfo, wallets]);
 
   useEffect(() => {
-    setNotOwnerError(null)
+    setNotOwnerError(null);
     const wallet = wallets.filter((wallet) => wallet.id === selectedWalletId)[0];
     setSelectedWallet(wallet);
     if (selectedWallet && selectedWallet.chain) {
@@ -109,7 +110,7 @@ export const SingleWalletPayment = (props) => {
     }
   }, [selectedWalletId, selectedWallet?.chain, selectedWallet?.address]);
 
-  const constructAndSignTransactoinData = async () => {
+  const constructAndSignTransactionData = async () => {
     let iface = new ethers.utils.Interface(ERC20abi);
     const paymentData = submissionPaymentInfo?.paymentData[0];
     let transactionData;
@@ -142,11 +143,11 @@ export const SingleWalletPayment = (props) => {
       await gnosisSdk.signTransaction(safeTransaction);
     } catch (e) {
       if (e.message === 'Transactions can only be signed by Safe owners') {
-        setNotOwnerError(`Not a owner of multisig`)
+        setNotOwnerError(`Not a owner of multisig`);
       } else {
-        setSigningError(`Error signing transaction`)
+        setSigningError(`Error signing transaction`);
       }
-      return
+      return;
     }
     let sender; // parse out sender from signature, should be checksum addr. although backend can probably just convert
     let signature; // parse out signature
@@ -165,13 +166,12 @@ export const SingleWalletPayment = (props) => {
       variables: {
         input: {
           submissionId: approvedSubmission.id,
-          walletId: selectedWalletId, 
+          walletId: selectedWalletId,
           chain: submissionPaymentInfo?.paymentData[0].chain,
           transactionData: txData,
         },
       },
     });
-
   };
 
   const handlePaymentClick = () => {
@@ -181,7 +181,7 @@ export const SingleWalletPayment = (props) => {
     if (!wonderGnosis.isConnected()) {
       console.log('gnosis wallet not yet connected');
     }
-    constructAndSignTransactoinData()
+    constructAndSignTransactionData();
   };
   if (walletOptions && walletOptions.length > 0) {
     return (
@@ -202,11 +202,28 @@ export const SingleWalletPayment = (props) => {
     );
   } else {
     return (
-      <>
-        <>No wallet found</>
-        {incompatibleWalletError && <>{incompatibleWalletError}</>}
-        <button>create new wallets</button>
-      </>
+      <div
+        style={{
+          marginTop: '16px',
+        }}
+      >
+        {incompatibleWalletError && (
+          <ErrorText
+            style={{
+              marginBottom: '16px',
+            }}
+          >
+            {incompatibleWalletError}
+          </ErrorText>
+        )}
+        <CreateFormPreviewButton
+          style={{
+            marginLeft: 0,
+          }}
+        >
+          Create new wallets
+        </CreateFormPreviewButton>
+      </div>
     );
   }
 };

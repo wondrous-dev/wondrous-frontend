@@ -3,8 +3,8 @@ import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients
 import { Grey80, Grey250, White } from '../../../theme/colors';
 import { Typography } from '@material-ui/core';
 import { BaseCard } from '../card';
-import React from 'react'
-import { Tabs, InputBase } from '@material-ui/core'
+import React from 'react';
+import { Tabs, InputBase } from '@material-ui/core';
 
 export const PodWrapper = styled.div`
   background: #363636;
@@ -33,7 +33,7 @@ export const PaymentModal = styled(BaseCard)`
   position: absolute;
   left: 50%;
   top: 50%;
-  height: 60%;
+  height: 70%;
   transform: translate(-50%, -50%);
   overflow-y: scroll;
   z-index: 2100;
@@ -42,7 +42,7 @@ export const PaymentModal = styled(BaseCard)`
   align-items: center;
   justify-content: center;
   background: rgb(20, 20, 20) !important;
-
+  padding-bottom: 32px;
   &:-webkit-scrollbar {
     display: none;
   }
@@ -96,49 +96,48 @@ export const MakePaymentDiv = styled.div`
 `;
 
 export const StyledTabs = styled((props) => (
-	<Tabs
-		{...props}
-		TabIndicatorProps={{ children: <span className="MuiTabs-indicatorSpan" /> }}
-	/>
+  <Tabs {...props} TabIndicatorProps={{ children: <span className="MuiTabs-indicatorSpan" /> }} />
 ))({
-	'&.MuiTabs-root': {
-		marginTop: 30,
-		width: '100%',
-		margin: '0 auto',
-	},
-	'& .MuiTabs-flexContainer': {
-		display: 'flex',
-		justifyContent: 'space-between',
-		maxWidth: 680,
-		margin: '0 auto',
+  '&.MuiTabs-root': {
+    marginTop: 30,
+    width: '100%',
+    margin: '0 auto',
+  },
+  '& .MuiTabs-flexContainer': {
+    display: 'flex',
+    justifyContent: 'space-between',
+    maxWidth: 680,
+    margin: '0 auto',
 
-		'& a': {
-			textDecoration: 'none',
-		},
-	},
-	'& .MuiButtonBase-root': {
-		position: 'relative',
-		maxWidth: 210,
-		borderBottom: '2px solid #4B4B4B',
-
-		//text
-		fontWeight: 600,
-		fontSize: '16px',
-		lineHeight: '19px',
-		textAlign: 'center',
-		color: '#FFFFFF',
-	},
-	'& .MuiTabs-indicator': {
-		display: 'flex',
-		justifyContent: 'center',
-		backgroundColor: 'transparent',
-	},
-	'& .MuiTabs-indicatorSpan': {
-		maxWidth: 210,
-		width: '100%',
-		backgroundColor: '#7427FF',
-	},
-})
+    '& a': {
+      textDecoration: 'none',
+    },
+  },
+  '& .MuiButtonBase-root': {
+    position: 'relative',
+    borderBottom: '2px solid #4B4B4B',
+    flex: 1,
+    //text
+    fontWeight: 600,
+    fontSize: '16px',
+    lineHeight: '19px',
+    textAlign: 'center',
+    color: '#FFFFFF',
+    maxWidth: 'none',
+  },
+  '& .MuiButtonBase-root:first-child': {
+    marginRight: '24px',
+  },
+  '& .MuiTabs-indicator': {
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+  },
+  '& .MuiTabs-indicatorSpan': {
+    width: '100%',
+    backgroundColor: '#7427FF',
+  },
+});
 
 export const PaymentLinkInput = styled(InputBase)`
   && {
@@ -152,5 +151,20 @@ export const PaymentLinkInput = styled(InputBase)`
     letter-spacing: 0.01em;
     color: #c4c4c4;
     padding: 10px 15px;
+  }
+`;
+
+export const PaymentMethodWrapper = styled.div`
+  margin-bottom: 32px;
+`;
+
+export const WarningTypography = styled(Typography)`
+  && {
+    font-family: Space Grotesk;
+    font-size: 14px;
+    color: #ffff;
+    margin-top: 16px;
+    margin-bottom: -20px;
+    font-weight: bolder;
   }
 `;
