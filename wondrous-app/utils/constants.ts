@@ -52,6 +52,12 @@ export const CHAIN_IDS = {
   MATIC: 137,
 };
 
+export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
+  eth_mainnet: 'Ethereum Mainnet',
+  rinkeby: 'Rinkeby Testnet',
+  polygon_mainnet: 'Polygon Mainnet',
+};
+
 export const SUPPORTED_CURRENCIES = [
   {
     symbol: 'ETH',

@@ -12,6 +12,7 @@ import {
   MEDIA_TYPES,
   PERMISSIONS,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
+  CHAIN_TO_CHAIN_DIPLAY_NAME
 } from '../../utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
@@ -288,7 +289,7 @@ export const filterPaymentMethods = (paymentMethods) => {
     return {
       ...paymentMethod,
       icon: <SafeImage src={paymentMethod.icon} style={{ width: '30px', height: '30px', borderRadius: '15px' }} />,
-      label: paymentMethod.tokenName,
+      label: `${paymentMethod.tokenName}: ${CHAIN_TO_CHAIN_DIPLAY_NAME[paymentMethod.chain]}`,
       value: paymentMethod.id,
     };
   });
