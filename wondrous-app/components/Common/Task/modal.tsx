@@ -597,7 +597,7 @@ export const TaskViewModal = (props) => {
         setTaskSubmissionLoading(false);
         setSubmissionSelected(false);
       }
-      if (!task && taskId) {
+      if (!task && taskId && !fetchedTask) {
         if (isTaskProposal) {
           getTaskProposalById({
             variables: {
