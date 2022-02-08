@@ -187,7 +187,6 @@ export const BOARD_TYPE = {
 export const snakeToCamel = (str) =>
   str?.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('-', '').replace('_', ''));
 
-<<<<<<< HEAD
 export const POD_COLOR = {
   '#B8255F': 'Ruby Red',
   '#DB4035': 'Jasper Red',
@@ -215,6 +214,4 @@ export const filteredColorOptions = Object.keys(POD_COLOR).map((key) => ({
   label: POD_COLOR[key],
   value: key,
 }));
-=======
 export { SUPPORTED_CHAINS };
->>>>>>> 291f05e (payment frontend logic with shitty ui)
