@@ -30,7 +30,6 @@ import Link from 'next/link';
 
 export const MakePaymentModal = (props) => {
   const { open, handleClose, setShowPaymentModal, approvedSubmission, fetchedTask } = props;
-  console.log(approvedSubmission);
   const [selectedTab, setSelectedTab] = useState('off_platform');
   const [wallets, setWallets] = useState([]);
   const [submissionPaymentInfo, setSubmissionPaymentInfo] = useState(null);
@@ -67,6 +66,7 @@ export const MakePaymentModal = (props) => {
 
   const [getSubmissionPaymentInfo] = useLazyQuery(GET_SUBMISSION_PAYMENT_INFO, {
     onCompleted: (data) => {
+      console.log('data', data);
       setSubmissionPaymentInfo(data?.getSubmissionPaymentInfo);
     },
     fetchPolicy: 'network-only',
@@ -89,6 +89,7 @@ export const MakePaymentModal = (props) => {
   }, [fetchedTask]);
 
   useEffect(() => {
+    console.log('apporvedSubmissionid', approvedSubmission?.id);
     getSubmissionPaymentInfo({
       variables: {
         submissionId: approvedSubmission?.id,

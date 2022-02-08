@@ -171,7 +171,7 @@ const Wallet = () => {
         </DropDownItem>
       );
     }
-    return null;
+    return <></>;
   };
 
   if (!connected) {

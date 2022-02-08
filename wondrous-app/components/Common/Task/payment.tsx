@@ -1,36 +1,29 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { formatDistance } from 'date-fns';
-import {
-  TaskSectionInfoText,
-  TaskSectionInfoDiv,
-  MakePaymentDiv,
-} from './styles';
+import { TaskSectionInfoText, TaskSectionInfoDiv, MakePaymentDiv } from './styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { SafeImage } from '../Image';
 import { useMe } from '../../Auth/withAuth';
 import DefaultUserImage from '../Image/DefaultUserImage';
-import {
-  MakeSubmissionPaymentButton,
-} from '../../CreateEntity/styles';
+import { MakeSubmissionPaymentButton } from '../../CreateEntity/styles';
 import { useRouter } from 'next/router';
 import { useApprovedSubmission } from '../../../utils/hooks';
 
-
 export const MakePaymentBlock = (props) => {
-  const approvedSubmissionContext = useApprovedSubmission()
+  const approvedSubmissionContext = useApprovedSubmission();
   const { fetchedTask, taskSubmissions, setShowPaymentModal } = props;
-  const [approvedSubmission, setApprovedSubmission] = useState(null)
-  useEffect(()=>{
+  const [approvedSubmission, setApprovedSubmission] = useState(null);
+  useEffect(() => {
     taskSubmissions?.map((taskSubmission) => {
       if (taskSubmission.approvedAt) {
-        setApprovedSubmission(taskSubmission)
-        approvedSubmissionContext?.setApprovedSubmission(taskSubmission)
+        setApprovedSubmission(taskSubmission);
+        approvedSubmissionContext?.setApprovedSubmission(taskSubmission);
       }
-    })
-  }, [taskSubmissions, approvedSubmissionContext])
+    });
+  }, [taskSubmissions, approvedSubmissionContext]);
   const handleMakePaymentButtonClick = () => {
-    setShowPaymentModal(true)
-  }
+    setShowPaymentModal(true);
+  };
   return (
     <MakePaymentDiv>
       <TaskSectionInfoDiv
@@ -73,7 +66,9 @@ export const MakePaymentBlock = (props) => {
                 flex: 1,
               }}
             />
-            <MakeSubmissionPaymentButton onClick={handleMakePaymentButtonClick}>Make Payment</MakeSubmissionPaymentButton>
+            <MakeSubmissionPaymentButton onClick={handleMakePaymentButtonClick}>
+              Make Payment
+            </MakeSubmissionPaymentButton>
           </>
         )}
       </TaskSectionInfoDiv>
