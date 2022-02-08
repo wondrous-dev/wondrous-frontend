@@ -704,7 +704,7 @@ export const TaskViewModal = (props) => {
     );
   }
 
-  if (showPaymentModal) {
+  if (showPaymentModal && approvedSubmission) {
     return (
       <MakePaymentModal
         open={showPaymentModal}
