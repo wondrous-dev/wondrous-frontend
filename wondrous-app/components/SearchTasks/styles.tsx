@@ -8,12 +8,7 @@ export const Autocomplete = styled(AutocompleteComp)`
 
 export const Input = styled(TextField)`
   &.MuiTextField-root {
-    width: 100%;
-    max-width: 100%;
-    height: 40px;
-    background-color: #0f0f0f;
     border-radius: 6px;
-    padding: 10px;
     display: flex;
     justify-content: center;
     border: 1px solid #4b4b4b;
@@ -27,7 +22,7 @@ export const Input = styled(TextField)`
     line-height: 19;
     letter-spacing: 0.01em;
     color: #c4c4c4;
-    padding: 0;
+    padding: 10px;
     outline: none;
   }
   & .MuiInput-underline:before {
@@ -39,5 +34,9 @@ export const Input = styled(TextField)`
   
   & .MuiOutlinedInput-notchedOutline {
     border: none;
+  }
+
+  .MuiInputAdornment-positionStart {
+    margin: 0 12px;
   }
 `;
