@@ -1,3 +1,4 @@
+import React from 'react';
 import { Box, Typography } from '@material-ui/core';
 import styled from 'styled-components';
 
@@ -17,7 +18,7 @@ export const CountIconWrapper = styled.div`
   justify-content: space-between;
 `;
 
-export const Count = styled(Typography)`
+const CountComponent = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
     font-size: 32px;
@@ -28,6 +29,8 @@ export const Count = styled(Typography)`
     -webkit-text-fill-color: transparent;
   }
 `;
+
+export const Count = React.memo(CountComponent);
 
 export const Status = styled(Typography)`
   && {
