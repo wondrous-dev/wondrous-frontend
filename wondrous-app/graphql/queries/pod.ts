@@ -18,6 +18,13 @@ export const GET_USER_PODS = gql`
       name
       profilePicture
       description
+      color
+      org {
+        profilePicture
+      }
+      tasksIncompleteCount
+      contributorCount
+      milestoneCount
     }
   }
 `;

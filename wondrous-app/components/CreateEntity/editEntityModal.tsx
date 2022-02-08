@@ -347,12 +347,6 @@ const EditLayoutBaseModal = (props) => {
     setDescriptionText(e.target.value);
   };
 
-  const [getUserPods] = useLazyQuery(GET_USER_PODS, {
-    onCompleted: (data) => {
-      setPods(data?.getUserPods || []);
-    },
-  });
-
   const [getUserAvailablePods] = useLazyQuery(GET_USER_AVAILABLE_PODS, {
     onCompleted: (data) => {
       setPods(data?.getAvailableUserPods);

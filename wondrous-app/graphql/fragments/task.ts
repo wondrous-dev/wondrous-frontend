@@ -39,6 +39,9 @@ export const TaskFragment = gql`
       name
       color
     }
+    milestone {
+      title
+    }
     orgOrder
     podOrder
     assigneeOrder
@@ -99,6 +102,8 @@ export const TaskCardFragment = gql`
     media {
       ...MediaFragment
     }
+    milestoneId
+    milestoneTitle
   }
   ${MediaFragment}
 `;

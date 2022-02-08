@@ -63,10 +63,12 @@ import {
   AssigneeIcon,
   ImageIcon,
   LinkIcon,
+  MilestoneIcon,
   NotesIcon,
   ProposerIcon,
   RejectIcon,
   ReviewerIcon,
+  TokenIcon,
 } from '../../Icons/taskModalIcons';
 import DefaultUserImage from '../Image/DefaultUserImage';
 import EditLayoutBaseModal from '../../CreateEntity/editEntityModal';
@@ -112,6 +114,7 @@ import { MilestoneTaskBreakdown } from '../MilestoneTaskBreakdown';
 import Link from 'next/link';
 import { TaskList } from '../TaskList';
 import PodIcon from '../../Icons/podIcon';
+import { CompensationAmount, CompensationPill, IconContainer } from '../Compensation/styles';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -350,7 +353,7 @@ export const TaskViewModal = (props) => {
   const [fetchedTaskComments, setFetchedTaskComments] = useState([]);
   const [taskSubmissionLoading, setTaskSubmissionLoading] = useState(!isTaskProposal);
   const [makeSubmission, setMakeSubmission] = useState(false);
-  const isMilestone = task?.type === MILESTONE_TYPE;
+  const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
 
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
@@ -390,18 +393,6 @@ export const TaskViewModal = (props) => {
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
-    onCompleted: (data) => {
-      const taskData = data?.getTaskById;
-      if (taskData) {
-        setFetchedTask(
-          transformTaskToTaskCard(taskData, {
-            orgProfilePicture: taskData?.org?.profilePicture,
-            orgName: taskData?.org?.name,
-            podName: taskData?.pod?.name,
-          })
-        );
-      }
-    },
   });
 
   const [getTaskProposalById] = useLazyQuery(GET_TASK_PROPOSAL_BY_ID, {
@@ -484,7 +475,7 @@ export const TaskViewModal = (props) => {
         setTaskSubmissionLoading(false);
         setSubmissionSelected(false);
       }
-      if (!task && taskId) {
+      if (!task && taskId && !fetchedTask) {
         if (isTaskProposal) {
           getTaskProposalById({
             variables: {
@@ -496,9 +487,20 @@ export const TaskViewModal = (props) => {
             variables: {
               taskId,
             },
+          }).then((result) => {
+            const taskData = result?.data?.getTaskById;
+            if (taskData) {
+              setFetchedTask(
+                transformTaskToTaskCard(taskData, {
+                  orgProfilePicture: taskData?.org?.profilePicture,
+                  orgName: taskData?.org?.name,
+                  podName: taskData?.pod?.name,
+                })
+              );
+            }
           });
         }
-      } else if (task) {
+      } else if (task && !fetchedTask) {
         setFetchedTask(task);
       }
 
@@ -752,7 +754,7 @@ export const TaskViewModal = (props) => {
               )}
             </TaskSectionDisplayDiv>
           )}
-          {isTaskProposal && (
+          {isTaskProposal && !isMilestone && (
             <TaskSectionDisplayDiv>
               <TaskSectionDisplayLabel>
                 <ProposerIcon />
@@ -782,7 +784,7 @@ export const TaskViewModal = (props) => {
               </TaskSectionInfoDiv>
             </TaskSectionDisplayDiv>
           )}
-          {!isTaskProposal && (
+          {!isTaskProposal && !isMilestone && (
             <TaskSectionDisplayDiv>
               <TaskSectionDisplayLabel>
                 <AssigneeIcon />
@@ -914,7 +916,90 @@ export const TaskViewModal = (props) => {
               {fetchedTask?.dueDate ? format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy') : 'None'}
             </TaskSectionInfoText>
           </TaskSectionDisplayDiv>
-          {isMilestone && <MilestoneTaskBreakdown milestoneId={task?.id} open={open} />}
+          {fetchedTask?.rewards && fetchedTask?.rewards > 0 && (
+            <TaskSectionDisplayDiv>
+              <TaskSectionDisplayLabel>
+                <TokenIcon />
+                <TaskSectionDisplayText>Tokens</TaskSectionDisplayText>
+              </TaskSectionDisplayLabel>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginLeft: '20px',
+                  marginTop: '8px',
+                }}
+              >
+                {fetchedTask?.rewards.map((reward, index) => {
+                  const { rewardAmount, symbol, icon } = reward;
+                  return (
+                    <CompensationPill
+                      key={index}
+                      style={{
+                        background: 'none',
+                      }}
+                    >
+                      <IconContainer>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <SafeImage
+                          src={icon}
+                          style={{
+                            width: '24px',
+                            height: '24px',
+                          }}
+                        />
+                      </IconContainer>
+                      <CompensationAmount>
+                        {rewardAmount} {symbol}
+                      </CompensationAmount>
+                    </CompensationPill>
+                  );
+                })}
+              </div>
+            </TaskSectionDisplayDiv>
+          )}
+          {fetchedTask?.milestoneId && (
+            <TaskSectionDisplayDiv>
+              <TaskSectionDisplayLabel>
+                <MilestoneIcon />
+                <TaskSectionDisplayText>Milestone</TaskSectionDisplayText>
+              </TaskSectionDisplayLabel>
+              <TaskSectionInfoText
+                style={{
+                  marginTop: '8px',
+                  marginLeft: '16px',
+                  color: 'rgba(0, 186, 255, 1)',
+                  textDecoration: 'underline',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  if (fetchedTask?.milestoneId) {
+                    router.query.task = fetchedTask?.milestoneId;
+                    router.push(router);
+                    getTaskById({
+                      variables: {
+                        taskId: fetchedTask?.milestoneId,
+                      },
+                    }).then((result) => {
+                      const taskData = result?.data?.getTaskById;
+                      if (taskData) {
+                        setFetchedTask(
+                          transformTaskToTaskCard(taskData, {
+                            orgProfilePicture: taskData?.org?.profilePicture,
+                            orgName: taskData?.org?.name,
+                            podName: taskData?.pod?.name,
+                          })
+                        );
+                      }
+                    });
+                  }
+                }}
+              >
+                {fetchedTask?.milestone?.title || fetchedTask?.milestoneTitle}
+              </TaskSectionInfoText>
+            </TaskSectionDisplayDiv>
+          )}
+          {isMilestone && <MilestoneTaskBreakdown milestoneId={fetchedTask?.id} open={open} />}
           {isTaskProposal && (
             <CreateFormFooterButtons>
               {fetchedTask?.changeRequestedAt && (
