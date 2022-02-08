@@ -59,6 +59,7 @@ export const SingleWalletPayment = (props) => {
   const [signingError, setSigningError] = useState(null);
   const [incompatibleWalletError, setIncompatibleWalletError] = useState(null);
   const [paymentPending, setPaymentPending] = useState(null);
+  const [gnosisSafeTxRedirectLink, setGnosisSafeTxRedirectLink] = useState(null);
   const [safeTxHash, setSafeTxHash] = useState(null);
   const wonderWeb3 = useWonderWeb3();
   const connectWeb3 = async () => {
@@ -80,13 +81,16 @@ export const SingleWalletPayment = (props) => {
 
   const [proposeGnosisTxForSubmission] = useMutation(PROPOSE_GNOSIS_TX_FOR_SUBMISSION, {
     onCompleted: (data) => {
-      const url = constructGnosisRedirectUrl(selectedWallet?.chain, selectedWallet?.address, safeTxHash);
-      setPaymentPending(url);
+      setPaymentPending(true);
     },
     onError: (e) => {
       console.error(e);
     },
   });
+  useEffect(()=>{
+    const url = constructGnosisRedirectUrl(selectedWallet?.chain, selectedWallet?.address, safeTxHash);
+    setGnosisSafeTxRedirectLink(url)
+  }, [safeTxHash, selectedWallet])
 
   const reward = props?.fetchedTask?.rewards && props?.fetchedTask?.rewards[0];
   useEffect(() => {
@@ -234,7 +238,7 @@ export const SingleWalletPayment = (props) => {
               style={{
                 color: '#00BAFF',
               }}
-              href={paymentPending}
+              href={gnosisSafeTxRedirectLink}
               target="_blank"
             >
               your Gnosis safe

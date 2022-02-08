@@ -16,6 +16,7 @@ export const TaskFragment = gql`
     blockerTaskIds
     dueDate
     status
+    paymentStatus
     links {
       url
       displayName
@@ -87,6 +88,7 @@ export const TaskCardFragment = gql`
     orgOrder
     podOrder
     assigneeOrder
+    paymentStatus
     rewards {
       rewardAmount
       paymentMethodId
@@ -169,6 +171,7 @@ export const TaskSubmissionCardFragment = gql`
     changeRequestedAt
     rejectedAt
     lastReviewedBy
+    paymentStatus
     links {
       url
       displayName
@@ -199,6 +202,7 @@ export const TaskSubmissionFragment = gql`
     changeRequestedAt
     rejectedAt
     lastReviewedBy
+    paymentStatus
     org {
       profilePicture
       name

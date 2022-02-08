@@ -53,6 +53,7 @@ import {
   TASK_STATUS_REQUESTED,
   MILESTONE_TYPE,
   TASK_STATUS_TODO,
+  PAYMENT_STATUS
 } from '../../../utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
