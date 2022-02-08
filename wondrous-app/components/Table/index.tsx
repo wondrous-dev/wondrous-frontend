@@ -10,7 +10,7 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
 } from '../../utils/constants';
-import { groupBy, parseUserPermissionContext, shrinkNumber } from '../../utils/helpers';
+import { cutString, groupBy, parseUserPermissionContext, shrinkNumber } from '../../utils/helpers';
 import { AvatarList } from '../Common/AvatarList';
 import { DropDown, DropDownItem } from '../Common/dropdown';
 import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton';
@@ -66,6 +66,7 @@ import { USDCoin } from '../Icons/USDCoin';
 import Ethereum from '../Icons/ethereum';
 import { Compensation } from '../Common/Compensation';
 import { Matic } from '../Icons/matic';
+import { renderMentionString } from '../../utils/common';
 
 const STATUS_ICONS = {
   [TASK_STATUS_TODO]: <TodoWithBorder />,
@@ -333,7 +334,16 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                   <StyledTableCell align="center">{STATUS_ICONS[task.status]}</StyledTableCell>
                   <StyledTableCell className="clickable" onClick={() => openTask(task)}>
                     <TaskTitle>{task.title}</TaskTitle>
-                    <TaskDescription>{task.description}</TaskDescription>
+                    <TaskDescription
+                      style={{
+                        maxWidth: '600px',
+                      }}
+                    >
+                      {renderMentionString({
+                        content: cutString(task?.description),
+                        router,
+                      })}
+                    </TaskDescription>
                   </StyledTableCell>
                   {/*<StyledTableCell>*/}
                   {/*  <DeliverableContainer>*/}
@@ -352,11 +362,11 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                       {reward ? (
                         <Reward>
                           <SafeImage
-                              src={reward.icon}
-                              style={{
-                                width: '16px',
-                                height: '16px',
-                              }}
+                            src={reward.icon}
+                            style={{
+                              width: '16px',
+                              height: '16px',
+                            }}
                           />
                           <RewardAmount>{shrinkNumber(reward.rewardAmount)}</RewardAmount>
                         </Reward>
