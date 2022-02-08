@@ -30,3 +30,38 @@ export interface ITask {
 	title: string
 	users?: Array<IUser>
 }
+
+export interface TaskFragment {
+	__typename: string;
+	assigneeId: string;
+	assigneeOrder: string;
+	assigneeProfilePicture?: any;
+	assigneeUsername: string;
+	commentCount?: any;
+	completedAt: Date;
+	createdAt: Date;
+	createdBy: string;
+	description: string;
+	dueDate?: any;
+	id: string;
+	links?: any;
+	media?: any;
+	milestoneId?: any;
+	milestoneTitle?: any;
+	orgId: string;
+	orgName: string;
+	orgOrder: string;
+	orgProfilePicture?: any;
+	podColor?: any;
+	podId?: any;
+	podName?: any;
+	podOrder?: any;
+	podProfilePicture?: any;
+	priority?: any;
+	reactionCount?: any;
+	rewards?: any;
+	shareCount?: any;
+	status: string;
+	title: string;
+	type: string;
+}

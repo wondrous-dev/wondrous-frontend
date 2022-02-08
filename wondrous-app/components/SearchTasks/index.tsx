@@ -1,39 +1,35 @@
 import React, { useState } from 'react';
 import { InputAdornment } from '@material-ui/core';
+import throttle from 'lodash/throttle';
+import last from 'lodash/last';
 
 import SearchIcon from '../Icons/search';
 import { Autocomplete, Input, LoadMore, Option } from './styles';
-import { DAOIcon } from '../Icons/dao';
-import { useLazyQuery } from '@apollo/client';
-import { GET_ORG_TASK_BOARD_TASKS, SEARCH_TASKS_FOR_ORG_BOARD_VIEW } from '../../graphql/queries';
-import { dedupeColumns } from '../../utils';
-import { populateTaskColumns } from '../../pages/organization/[username]/boards';
+import TaskIcon from '../Icons/TaskTypes/task';
+import MilestoneIcon from '../Icons/TaskTypes/milestone';
+import BountyIcon from '../Icons/TaskTypes/bounty';
+
+import { TaskFragment } from '../../types/task';
+import { TASK_TYPE, BOUNTY_TYPE, MILESTONE_TYPE } from '../../utils/constants';
+import { delQuery } from '../../utils';
 import { useRouter } from 'next/router';
 
-const tasks = [
-  { title: 'Create data scrape' },
-  { title: 'Create data scrape2' },
-  { title: 'Create data scrape3' },
-  { title: 'Show more results', moreResults: true },
-];
+const TaskTypeIcons = {
+  [TASK_TYPE]: <TaskIcon />,
+  [MILESTONE_TYPE]: <MilestoneIcon />,
+  [BOUNTY_TYPE]: <BountyIcon />,
+};
 
-export default function SearchTasks() {
+type Props = {
+  onSearch: (searchString: string) => Promise<TaskFragment[]>;
+};
+
+export default function SearchTasks({ onSearch }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [options, setOptions] = useState(tasks);
-  const [hasMore, setHasMore] = useState(true);
-  const loading = open && options.length === 0;
-  const { username, orgId } = router.query;
-
-  const [searchOrgTasks, { fetchMore, variables: searchOrgTasksVariables }] = useLazyQuery(
-    SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
-    {
-      onCompleted: (data) => {
-        console.log(data);
-      },
-      fetchPolicy: 'cache-and-network',
-    }
-  );
+  const [inputValue, setInputValue] = useState('');
+  const [options, setOptions] = useState([]);
+  const [hasMore, setHasMore] = useState(false);
 
   React.useEffect(() => {
     if (!open) {
@@ -41,55 +37,55 @@ export default function SearchTasks() {
     }
   }, [open]);
 
+  const handleInputChange = throttle(async (event, searchString) => {
+    const searchResult = await onSearch(searchString);
+
+    setOptions(searchResult);
+    setHasMore(searchResult.length > 4);
+  }, 200);
+
+  function handleTaskClick(task) {
+    setInputValue('');
+    setOpen(false);
+    router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`);
+  }
+
+  function handleShowMore() {
+      setOpen(false);
+      router.replace(`${delQuery(router.asPath)}?search=${inputValue}&view=list`);
+  }
+
   return (
     <Autocomplete
       open={open}
-      onOpen={() => {
-        setOpen(true);
-      }}
-      onClose={() => {
-        setOpen(false);
-      }}
-      onChange={(event, newValue) => {
-        // setOptions(newValue ? [newValue, ...options] : options);
-        // setValue(newValue);
-      }}
-      onInputChange={(event, newInputValue) => {
-        // console.log(newInputValue);
-        // setOptions([...tasks]);
-        searchOrgTasks({
-          variables: {
-            // orgId: '0xwonderverse',
-            limit: 10,
-            offset: 0,
-            orgId: '47594141467541505',
-            searchString: newInputValue,
-          },
-        });
+      onOpen={() => setOpen(true)}
+      onClose={() => setOpen(false)}
+      inputValue={inputValue}
+      onInputChange={(event, searchString) => {
+        setInputValue(searchString);
+        handleInputChange(event, searchString);
       }}
       freeSolo
-      isOptionEqualToValue={(option, value) => option.title === value.title}
       getOptionLabel={(option) => option.title}
       options={options}
-      loading={loading}
       filterOptions={(x) => x}
-      renderOption={(props, option) => {
-        console.log(props, option);
+      renderOption={(props, task) => {
+        let content = [
+          <Option key={task.title} onClick={() => handleTaskClick(task)}>
+            {TaskTypeIcons[task.type]}
+            {task.title}
+          </Option>,
+        ];
 
-        if (option.moreResults) {
-          return (
-            <Option>
+        if (hasMore && last(options) === task) {
+          content.push(
+            <Option onClick={() => handleShowMore()}>
               <LoadMore>Show more results</LoadMore>
             </Option>
           );
         }
 
-        return (
-          <Option>
-            <DAOIcon />
-            {option.title}
-          </Option>
-        );
+        return content;
       }}
       renderInput={(params) => (
         <Input

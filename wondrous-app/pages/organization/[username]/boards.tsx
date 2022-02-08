@@ -8,6 +8,7 @@ import {
   GET_ORG_TASK_BOARD_SUBMISSIONS,
   GET_ORG_TASK_BOARD_TASKS,
   GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
+  SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
 } from '../../../graphql/queries/taskBoard';
 import Boards from '../../../components/organization/boards/boards';
 import { InReview, Requested, Archived } from '../../../components/Icons/sections';
@@ -26,6 +27,7 @@ import { OrgBoardContext } from '../../../utils/contexts';
 import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
 import { dedupeColumns } from '../../../utils';
 import * as Constants from '../../../utils/constants';
+import apollo from '../../../services/apollo';
 
 const TO_DO = {
   status: TASK_STATUS_TODO,
@@ -130,7 +132,7 @@ const BoardsPage = () => {
   const [orgData, setOrgData] = useState(null);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
   const router = useRouter();
-  const { username, orgId } = router.query;
+  const { username, orgId, search } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -248,6 +250,25 @@ const BoardsPage = () => {
     }
   }, [orgData, statuses, orgId, getOrgBoardTaskCount, getOrgTaskSubmissions, getOrgTaskProposals, getOrgTasks]);
 
+  const handleSearch = useCallback(
+    (searchString) => {
+      const id = orgId || orgData?.id;
+
+      return apollo
+        .query({
+          query: SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
+          variables: {
+            orgId: id,
+            limit: LIMIT,
+            offset: 0,
+            searchString,
+          },
+        })
+        .then((result) => result.data.searchTasksForOrgBoardView);
+    },
+    [orgId, orgData]
+  );
+
   const handleLoadMore = useCallback(() => {
     if (orgTaskHasMore) {
       fetchMore({
@@ -296,6 +317,7 @@ const BoardsPage = () => {
         selectOptions={SELECT_OPTIONS}
         columns={columns}
         onLoadMore={handleLoadMore}
+        onSearch={handleSearch}
         hasMore={orgTaskHasMore}
         orgData={orgData}
       />

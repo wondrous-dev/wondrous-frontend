@@ -48,6 +48,7 @@ export const Option = styled.li`
   align-items: center;
   font-size: 14px;
   padding: 12px;
+  cursor: pointer;
 
   svg {
     width: 18px;

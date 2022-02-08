@@ -125,7 +125,7 @@ const Boards = (props) => {
     <Wrapper orgData={orgData}>
       <BoardsContainer>
         <BoardsActivity>
-          <SearchTasks />
+          <SearchTasks onSearch={props.onSearch} />
           {/*<BoardsActivityInput*/}
           {/*  placeholder="Search people or pods..."*/}
           {/*  InputProps={{*/}
