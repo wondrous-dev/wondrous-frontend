@@ -77,6 +77,7 @@ import {
   StyledAutocompletePopper,
   OptionDiv,
   OptionTypography,
+  StyledChip,
 } from './styles';
 import SelectDownIcon from '../Icons/selectDownIcon';
 import UploadImageIcon from '../Icons/uploadImage';
@@ -90,7 +91,7 @@ import { TextInputContext } from '../../utils/contexts';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
 import { SafeImage } from '../Common/Image';
-import { GET_USER_AVAILABLE_PODS, GET_USER_PODS } from '../../graphql/queries/pod';
+import { GET_USER_AVAILABLE_PODS, GET_USER_PODS, GET_POD_USERS } from '../../graphql/queries/pod';
 import {
   getMentionArray,
   parseUserPermissionContext,
@@ -123,7 +124,11 @@ import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment';
 import { ErrorText } from '../Common';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
 import { updateInProgressTask, updateTaskItem } from '../../utils/board';
-import { GET_MILESTONES } from '../../graphql/queries/task';
+import {
+  GET_MILESTONES,
+  GET_ELIGIBLE_REVIEWERS_FOR_ORG,
+  GET_ELIGIBLE_REVIEWERS_FOR_POD,
+} from '../../graphql/queries/task';
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -315,6 +320,7 @@ const EditLayoutBaseModal = (props) => {
   const [milestoneString, setMilestoneString] = useState('');
   const [assigneeString, setAssigneeString] = useState(existingTask?.assigneeUsername);
   const [reviewerString, setReviewerString] = useState('');
+  const [selectedReviewers, setSelectedReviewers] = useState(filterUserOptions(existingTask?.reviewers));
   const [assignee, setAssignee] = useState(
     existingTask?.assigneeId && {
       value: existingTask?.assigneeId,
@@ -322,7 +328,6 @@ const EditLayoutBaseModal = (props) => {
       label: existingTask?.assigneeUsername,
     }
   );
-  const [reviewerIds, setReviewerIds] = useState(existingTask?.reviewers?.map((reviewer) => reviewer?.id));
   // TODO: set later
   const initialRewards = existingTask?.rewards && existingTask?.rewards[0];
   const initialCurrency = initialRewards?.paymentMethodId;
@@ -337,9 +342,14 @@ const EditLayoutBaseModal = (props) => {
   const board = orgBoard || podBoard || userBoard;
   const boardColumns = useColumns();
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
-  const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
 
   const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS);
+
+  const [getEligibleReviewersForOrg, { data: eligibleReviewersForOrgData }] =
+    useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_ORG);
+
+  const [getEligibleReviewersForPod, { data: eligibleReviewersForPodData }] =
+    useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_POD);
 
   const [getMilestones, { data: milestonesData }] = useLazyQuery(GET_MILESTONES);
 
@@ -352,6 +362,8 @@ const EditLayoutBaseModal = (props) => {
       setPods(data?.getUserPods || []);
     },
   });
+
+  const [getPodUsers, { data: podUsersData }] = useLazyQuery(GET_POD_USERS);
 
   const [getUserAvailablePods] = useLazyQuery(GET_USER_AVAILABLE_PODS, {
     onCompleted: (data) => {
@@ -481,6 +493,7 @@ const EditLayoutBaseModal = (props) => {
     getPaymentMethods,
     getMilestones,
     milestonesData,
+    existingTask?.reviewers,
   ]);
 
   const getPodObject = useCallback(() => {
@@ -561,8 +574,8 @@ const EditLayoutBaseModal = (props) => {
           title,
           description: descriptionText,
           orgId: org?.id,
-          milestoneId: milestone?.id,
-          podId: pod?.id,
+          milestoneId: milestone?.id ?? milestone,
+          podId: pod?.id ?? pod,
           dueDate,
           ...(rewardsAmount &&
             rewardsCurrency && {
@@ -580,7 +593,7 @@ const EditLayoutBaseModal = (props) => {
           ...(isTaskProposal && {
             proposedAssigneeId: assignee?.value,
           }),
-          reviewerIds,
+          reviewerIds: selectedReviewers.map(({ id }) => id) || [],
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
@@ -638,7 +651,6 @@ const EditLayoutBaseModal = (props) => {
     pod,
     dueDate,
     assignee,
-    reviewerIds,
     mediaUploads,
     isTaskProposal,
     updateTask,
@@ -648,6 +660,7 @@ const EditLayoutBaseModal = (props) => {
     rewardsAmount,
     rewardsCurrency,
     updateMilestone,
+    selectedReviewers,
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
@@ -687,6 +700,10 @@ const EditLayoutBaseModal = (props) => {
             onChange={(e) => {
               setMilestoneString('');
               setMilestone(null);
+              setAssigneeString('');
+              setAssignee(null);
+              setReviewerString('');
+              setSelectedReviewers([]);
             }}
           />
         </CreateFormMainSelects>
@@ -894,7 +911,17 @@ const EditLayoutBaseModal = (props) => {
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
               <StyledAutocompletePopper
-                options={filterOrgUsers(orgUsersData?.getOrgUsers)}
+                options={filterOrgUsers(podUsersData?.getPodUsers ?? orgUsersData?.getOrgUsers)}
+                onOpen={() => {
+                  if (pod) {
+                    getPodUsers({
+                      variables: {
+                        podId: pod?.id || pod,
+                        limit: 100, // TODO: fix autocomplete
+                      },
+                    });
+                  }
+                }}
                 renderInput={(params) => (
                   <TextField
                     style={{
@@ -912,6 +939,11 @@ const EditLayoutBaseModal = (props) => {
                 inputValue={assigneeString}
                 onInputChange={(event, newInputValue) => {
                   setAssigneeString(newInputValue);
+                }}
+                onChange={(_, __, reason) => {
+                  if (reason === 'clear') {
+                    setAssignee(null);
+                  }
                 }}
                 renderOption={(props, option, state) => {
                   return (
@@ -941,7 +973,36 @@ const EditLayoutBaseModal = (props) => {
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Reviewer</CreateFormAddDetailsInputLabel>
               <StyledAutocompletePopper
-                options={filterUserOptions(autocompleteData?.getAutocompleteUsers)}
+                options={filterUserOptions(
+                  eligibleReviewersForPodData?.getEligibleReviewersForPod ??
+                    eligibleReviewersForOrgData?.getEligibleReviewersForOrg
+                ).filter(({ id }) => !selectedReviewers.map(({ id }) => id).includes(id))}
+                multiple
+                onChange={(event, newValue, reason) => {
+                  if ('clear' === reason) {
+                    setSelectedReviewers([]);
+                  }
+                  if (event.code === 'Backspace' && reviewerString === '') {
+                    setSelectedReviewers(selectedReviewers.slice(0, -1));
+                  }
+                }}
+                onOpen={() => {
+                  if (pod) {
+                    getEligibleReviewersForPod({
+                      variables: {
+                        podId: pod,
+                        searchString: '',
+                      },
+                    });
+                  } else {
+                    getEligibleReviewersForOrg({
+                      variables: {
+                        orgId: org,
+                        searchString: '',
+                      },
+                    });
+                  }
+                }}
                 renderInput={(params) => (
                   <TextField
                     style={{
@@ -954,22 +1015,35 @@ const EditLayoutBaseModal = (props) => {
                     InputLabelProps={{ shrink: false }}
                     onChange={(event) => {
                       setReviewerString(event.target.value);
-                      getAutocompleteUsers({
+                      getEligibleReviewersForOrg({
                         variables: {
-                          username: event.target.value,
+                          orgId: org,
+                          searchString: event.target.value,
                         },
                       });
                     }}
                     {...params}
                   />
                 )}
-                value={reviewerString}
+                value={selectedReviewers}
+                renderTags={(value) =>
+                  value?.map((option, index) => {
+                    return (
+                      <StyledChip
+                        key={index}
+                        label={option?.label}
+                        onDelete={() => setSelectedReviewers(selectedReviewers.filter(({ id }) => id !== option?.id))}
+                      />
+                    );
+                  })
+                }
                 renderOption={(props, option, state) => {
                   return (
                     <OptionDiv
                       onClick={(event) => {
-                        if (reviewerIds.indexOf(option?.id) === -1) {
-                          setReviewerIds([...reviewerIds, option?.id]);
+                        if (selectedReviewers.map(({ id }) => id).indexOf(option?.id === -1)) {
+                          setSelectedReviewers([...selectedReviewers, option]);
+                          setReviewerString('');
                         }
                         props?.onClick(event);
                       }}
