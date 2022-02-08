@@ -9,6 +9,8 @@ export const TASK_STATUS_REQUESTED = 'requested';
 export const TASK_STATUS_ARCHIVED = 'archived';
 export const TASK_STATUS_AWAITING_PAYMENT = 'awaiting_payment';
 
+export const COLUMN_TITLE_ARCHIVED = 'Archived';
+
 export const STATUS_OPEN = 'open';
 export const STATUS_WAITING_FOR_REVIEW = 'waiting_for_review';
 export const STATUS_CHANGE_REQUESTED = 'change_requested';
