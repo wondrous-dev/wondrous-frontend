@@ -1,22 +1,17 @@
-import React from 'react'
-import { SafeImage } from '../Image'
-import { MediaLink } from '../Task/modal'
-import {
-  TaskMediaWrapper,
-  TaskImage,
-  TaskAudio,
-  TaskVideo,
-  TaskMediaUnsuported,
-} from './styles'
+import React from 'react';
+import { SafeImage } from '../Image';
+import { MediaLink } from '../Task/modal';
+import { TaskMediaWrapper, TaskImage, TaskAudio, TaskVideo, TaskMediaUnsuported } from './styles';
 
 export const TaskMedia = (props) => {
-  const { id = '', media = {} } = props
-  const { type = '', slug = '', uploadSlug = '' } = media
+  const { id = '', media = {} } = props;
+  const { type = '', slug = '', uploadSlug = '' } = media;
   const mediaContentComponents = {
     image: (
       <SafeImage
         style={{
-          width: '295px',
+          width: '100%',
+          maxWidth: '295px',
           maxHeight: '295px',
           borderRadius: '6px',
           objectFit: 'cover',
@@ -53,17 +48,13 @@ export const TaskMedia = (props) => {
       />
     ),
     file: <MediaLink media={media} />,
-  }
-  let mediaContent = null
+  };
+  let mediaContent = null;
   if (type in mediaContentComponents) {
-    mediaContent = mediaContentComponents[type]
+    mediaContent = mediaContentComponents[type];
   } else {
-    mediaContent = (
-      <TaskMediaUnsuported>Media not supported.</TaskMediaUnsuported>
-    )
+    mediaContent = <TaskMediaUnsuported>Media not supported.</TaskMediaUnsuported>;
   }
 
-  return (
-    <TaskMediaWrapper key={'media-task-' + id}>{mediaContent}</TaskMediaWrapper>
-  )
-}
+  return <TaskMediaWrapper key={'media-task-' + id}>{mediaContent}</TaskMediaWrapper>;
+};

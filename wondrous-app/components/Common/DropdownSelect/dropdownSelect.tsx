@@ -43,7 +43,9 @@ const DropdownSelect = (props) => {
 
   const handleChange = (event) => {
     setValue(event.target.value);
-    onChange();
+    if (onChange) {
+      onChange();
+    }
   };
 
   return (
