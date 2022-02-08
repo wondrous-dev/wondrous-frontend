@@ -4,7 +4,7 @@ import { Grey80, Grey250, White } from '../../../theme/colors';
 import { Typography } from '@material-ui/core';
 import { BaseCard } from '../card';
 import React from 'react'
-import { Tabs } from '@material-ui/core'
+import { Tabs, InputBase } from '@material-ui/core'
 
 export const PodWrapper = styled.div`
   background: #363636;
@@ -139,3 +139,18 @@ export const StyledTabs = styled((props) => (
 		backgroundColor: '#7427FF',
 	},
 })
+
+export const PaymentLinkInput = styled(InputBase)`
+  && {
+    width: 100%;
+    height: 40px;
+    border: 1px solid #4b4b4b;
+    border-radius: 6px;
+
+    font-size: 14px;
+    line-height: 21px;
+    letter-spacing: 0.01em;
+    color: #c4c4c4;
+    padding: 10px 15px;
+  }
+`;
