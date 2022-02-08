@@ -240,6 +240,7 @@ export const SingleWalletPayment = (props) => {
               }}
               href={gnosisSafeTxRedirectLink}
               target="_blank"
+              rel="noreferrer" 
             >
               your Gnosis safe
             </a>{' '}
