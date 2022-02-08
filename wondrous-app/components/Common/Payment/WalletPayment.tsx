@@ -3,6 +3,7 @@ import { ethers, utils } from 'ethers';
 import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
+import { PROPOSE_GNOSIS_TX_FOR_SUBMISSION } from '../../../graphql/mutations/payment';
 import { useGnosisSdk } from '../../../services/payment';
 import { ERC20abi } from '../../../services/contracts/erc20.abi';
 import { SafeTransactionDataPartial, SafeTransactionData } from '@gnosis.pm/safe-core-sdk-types';
@@ -35,13 +36,15 @@ interface PaymentData {
 
 export const WalletPayment = (props) => {
   const { open, handleClose, setShowPaymentModal, approvedSubmission, wallets, submissionPaymentInfo } = props;
-  const [currentChainId, setCurrentChainId] = useState(null)
+  const [currentChainId, setCurrentChainId] = useState(null) // chain id current user is on
+  const [walletOptions, setWalletOptions] = useState([]) // chain associated with submission
   const [onRightChain, setOnRighChain] = useState(true)
+  const [selectedWalletId, setSelectedWalletId] = useState(null);
+  const [selectedWallet, setSelectedWallet] = useState(null);
   const wonderWeb3 = useWonderWeb3();
   const connectWeb3 = async () => {
     await wonderWeb3.onConnect()
   }
-
   useEffect(() => {
     connectWeb3()
   }, []);
@@ -50,18 +53,38 @@ export const WalletPayment = (props) => {
     setCurrentChainId(wonderWeb3.chain)
   }, [wonderWeb3.chain]);
 
-  const [selectedWalletId, setSelectedWalletId] = useState(null);
-  const [selectedWallet, setSelectedWallet] = useState(null);
   const wonderGnosis = useGnosisSdk();
   const connectSafeSdk = async (chain, safeAddress) => {
     await wonderGnosis.connectSafeSdk({ chain, safeAddress });
   };
+
+  const [proposeGnosisTxForSubmission] = useMutation(PROPOSE_GNOSIS_TX_FOR_SUBMISSION, {
+    onCompleted: (data) => {
+      console.log('completed', data)
+    },
+    onError: (e) => {
+      console.error(e);
+    },
+  });
+
   useEffect(()=> {
     const chain = submissionPaymentInfo?.paymentData[0].chain
     if (chain && currentChainId) {
       setOnRighChain(chain ===CHAIN_ID_TO_CHAIN_NAME[currentChainId])
     }
   }, [currentChainId, submissionPaymentInfo])
+
+  useEffect(()=> {
+    const corrctChainWallets = [];
+    wallets.map((wallet) => {
+      if (wallet.chain === submissionPaymentInfo?.paymentData[0].chain) {
+        const address = generateReadablePreviewForAddress(wallet.address);
+        const label = `${wallet.name}:  ${address}`;
+        corrctChainWallets.push({ value: wallet.id, label });
+      }
+    });
+    setWalletOptions(corrctChainWallets)
+  }, [submissionPaymentInfo, wallets])
 
   useEffect(() => {
     const wallet = wallets.filter((wallet) => wallet.id === selectedWalletId)[0];
@@ -100,16 +123,32 @@ export const WalletPayment = (props) => {
     };
     const safeTransaction = await gnosisSdk.createTransaction(transaction);
     const safeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);
-    const owner1Signature = await gnosisSdk.signTransaction(safeTransaction);
+    await gnosisSdk.signTransaction(safeTransaction);
+    let sender; // parse out sender from signature, should be checksum addr. although backend can probably just convert
+    let signature; // parse out signature
+    safeTransaction.signatures.forEach((value, key) => {
+      sender = value.signer;
+      signature = value.data;
+    });
+
+    const txData = {
+      ...safeTransaction.data,
+      contractTransactionHash: safeTxHash,
+      sender,
+      signature,
+    };
+    proposeGnosisTxForSubmission({
+      variables: {
+        input: {
+          submissionId: approvedSubmission.id,
+          walletId: selectedWalletId, 
+          chain: submissionPaymentInfo?.paymentData[0].chain,
+          transactionData: txData,
+        },
+      },
+    });
+
   };
-  const walletOptions = [];
-  wallets.map((wallet) => {
-    if (wallet.chain === submissionPaymentInfo.paymentData[0].chain) {
-      const address = generateReadablePreviewForAddress(wallet.address);
-      const label = `${wallet.name}:  ${address}`;
-      walletOptions.push({ value: wallet.id, label });
-    }
-  });
 
   const handlePaymentClick = () => {
     if (!selectedWallet) {
@@ -118,7 +157,6 @@ export const WalletPayment = (props) => {
     if (!wonderGnosis.isConnected()) {
       console.log('gnosis wallet not yet connected');
     }
-    console.log('payy');
     constructAndSignTransactoinData()
   };
   if (walletOptions && walletOptions.length > 0) {
