@@ -24,6 +24,8 @@ type Props = {
   onSearch: (searchString: string) => Promise<TaskFragment[]>;
 };
 
+let timeout;
+
 export default function SearchTasks({ onSearch }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -44,12 +46,18 @@ export default function SearchTasks({ onSearch }: Props) {
   //   }
   // }, [options]);
 
-  const handleInputChange = throttle(async (event, searchString) => {
-    const searchResult = await onSearch(searchString);
+  // if use throttle from the lodash library, it sends request every function call
+  // and doesn't matter if you use async/await or .then
+  const handleInputChange = (event, searchString) => {
+    clearTimeout(timeout);
 
-    setOptions(searchResult);
-    setHasMore(searchResult.length > 4);
-  }, 200);
+    timeout = setTimeout(async () => {
+      const searchResult = await onSearch(searchString);
+
+      setOptions(searchResult);
+      setHasMore(searchResult.length > 4);
+    }, 200);
+  };
 
   function handleTaskClick(task) {
     setInputValue('');
@@ -69,8 +77,8 @@ export default function SearchTasks({ onSearch }: Props) {
       onClose={() => setOpen(false)}
       inputValue={inputValue}
       onInputChange={(event, searchString) => {
-        setInputValue(searchString);
         handleInputChange(event, searchString);
+        setInputValue(searchString);
       }}
       freeSolo
       getOptionLabel={(option) => option.title}

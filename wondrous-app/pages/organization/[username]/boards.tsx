@@ -305,17 +305,30 @@ const BoardsPage = () => {
     (searchString) => {
       const id = orgId || orgData?.id;
 
-      return apollo
-        .query({
-          query: SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
+      if (searchString) {
+        searchOrgTasks({
           variables: {
             orgId: id,
             limit: LIMIT,
             offset: 0,
             searchString,
           },
-        })
-        .then((result) => result.data.searchTasksForOrgBoardView);
+        });
+
+        return Promise.resolve([]);
+      } else {
+        return apollo
+          .query({
+            query: SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
+            variables: {
+              orgId: id,
+              limit: LIMIT,
+              offset: 0,
+              searchString,
+            },
+          })
+          .then((result) => result.data.searchTasksForOrgBoardView);
+      }
     },
     [orgId, orgData]
   );
