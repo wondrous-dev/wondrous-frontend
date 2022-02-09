@@ -30,12 +30,19 @@ export default function SearchTasks({ onSearch }: Props) {
   const [inputValue, setInputValue] = useState('');
   const [options, setOptions] = useState([]);
   const [hasMore, setHasMore] = useState(false);
+  const LIMIT = 5;
 
   React.useEffect(() => {
     if (!open) {
       setOptions([]);
     }
   }, [open]);
+
+  // React.useEffect(() => {
+  //   if (options.length > LIMIT) {
+  //     setHasMore(true);
+  //   }
+  // }, [options]);
 
   const handleInputChange = throttle(async (event, searchString) => {
     const searchResult = await onSearch(searchString);
@@ -51,8 +58,8 @@ export default function SearchTasks({ onSearch }: Props) {
   }
 
   function handleShowMore() {
-      setOpen(false);
-      router.replace(`${delQuery(router.asPath)}?search=${inputValue}&view=list`);
+    setOpen(false);
+    router.replace(`${delQuery(router.asPath)}?search=${inputValue}&view=list`);
   }
 
   return (

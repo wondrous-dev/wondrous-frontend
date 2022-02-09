@@ -132,7 +132,7 @@ const BoardsPage = () => {
   const [orgData, setOrgData] = useState(null);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
   const router = useRouter();
-  const { username, orgId, search } = router.query;
+  const { username, orgId, search: searchString } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -167,6 +167,35 @@ const BoardsPage = () => {
   const [getOrgBoardTaskCount, { data: orgTaskCountData, variables: getOrgBoardTaskCountVariables }] = useLazyQuery(
     GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD
   );
+
+  // const handleSearch = useCallback(
+  //   (searchString) => {
+  //     const id = orgId || orgData?.id;
+  //
+  //     return apollo
+  //       .query({
+  //         query: SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
+  //         variables: {
+  //           orgId: id,
+  //           limit: LIMIT,
+  //           offset: 0,
+  //           searchString,
+  //         },
+  //       })
+  //       .then((result) => result.data.searchTasksForOrgBoardView);
+  //   },
+  //   [orgId, orgData]
+  // );
+
+  const [searchOrgTasks] = useLazyQuery(SEARCH_TASKS_FOR_ORG_BOARD_VIEW, {
+    onCompleted: (data) => {
+      const tasks = data?.searchTasksForOrgBoardView;
+      const newColumns = populateTaskColumns(tasks, columns);
+      setColumns(dedupeColumns(newColumns));
+      setOrgTaskHasMore(tasks.length >= LIMIT);
+    },
+    fetchPolicy: 'cache-and-network',
+  });
 
   const [getOrgTasks, { fetchMore, variables: getOrgTasksVariables }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     onCompleted: (data) => {
@@ -218,37 +247,59 @@ const BoardsPage = () => {
   useEffect(() => {
     if (orgId || orgData?.id) {
       const id = orgId || orgData?.id;
-      getOrgTasks({
-        variables: {
-          orgId: id,
-          statuses,
-          offset: 0,
-          limit: LIMIT,
-        },
-      });
-      getOrgTaskProposals({
-        variables: {
-          orgId: id,
-          statuses: [STATUS_OPEN],
-          offset: 0,
-          limit: LIMIT,
-        },
-      });
-      getOrgTaskSubmissions({
-        variables: {
-          orgId: id,
-          statuses: [STATUS_OPEN],
-          offset: 0,
-          limit: LIMIT,
-        },
-      });
-      getOrgBoardTaskCount({
-        variables: {
-          orgId: id,
-        },
-      });
+
+      if (searchString) {
+        searchOrgTasks({
+          variables: {
+            orgId: id,
+            limit: LIMIT,
+            offset: 0,
+            searchString,
+          },
+        });
+      } else {
+        getOrgTasks({
+          variables: {
+            orgId: id,
+            statuses,
+            offset: 0,
+            limit: LIMIT,
+          },
+        });
+        getOrgTaskProposals({
+          variables: {
+            orgId: id,
+            statuses: [STATUS_OPEN],
+            offset: 0,
+            limit: LIMIT,
+          },
+        });
+        getOrgTaskSubmissions({
+          variables: {
+            orgId: id,
+            statuses: [STATUS_OPEN],
+            offset: 0,
+            limit: LIMIT,
+          },
+        });
+        getOrgBoardTaskCount({
+          variables: {
+            orgId: id,
+          },
+        });
+      }
     }
-  }, [orgData, statuses, orgId, getOrgBoardTaskCount, getOrgTaskSubmissions, getOrgTaskProposals, getOrgTasks]);
+  }, [
+    orgData,
+    statuses,
+    orgId,
+    getOrgBoardTaskCount,
+    getOrgTaskSubmissions,
+    getOrgTaskProposals,
+    getOrgTasks,
+    searchOrgTasks,
+    searchString,
+  ]);
 
   const handleSearch = useCallback(
     (searchString) => {
