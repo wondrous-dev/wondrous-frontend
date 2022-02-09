@@ -7,8 +7,11 @@ import {
   ENTITIES_TYPES,
   PERMISSIONS,
   TASK_STATUS_ARCHIVED,
+  TASK_STATUS_AWAITING_PAYMENT,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
+  TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_REQUESTED,
   TASK_STATUS_TODO,
 } from '../../utils/constants';
 import { cutString, groupBy, parseUserPermissionContext, shrinkNumber } from '../../utils/helpers';
@@ -71,8 +74,11 @@ import { renderMentionString } from '../../utils/common';
 
 const STATUS_ICONS = {
   [TASK_STATUS_TODO]: <TodoWithBorder />,
+  [TASK_STATUS_REQUESTED]: <TodoWithBorder />,
   [TASK_STATUS_IN_PROGRESS]: <InProgressWithBorder />,
+  [TASK_STATUS_IN_REVIEW]: <InProgressWithBorder />,
   [TASK_STATUS_DONE]: <DoneWithBorder />,
+  [TASK_STATUS_AWAITING_PAYMENT]: <DoneWithBorder />,
   [TASK_STATUS_ARCHIVED]: <DoneWithBorder />,
 };
 
@@ -284,6 +290,7 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
           {columns.map((column) => {
             let tasks = [...column.section.tasks, ...column.tasks];
 
+            // Don't show archived tasks
             if (column.section.title === COLUMN_TITLE_ARCHIVED) {
               tasks = column.tasks;
             }
@@ -302,6 +309,8 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                 permissions.includes(Constants.PERMISSIONS.MANAGE_BOARD) ||
                 permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
                 task?.createdBy === user?.id;
+
+              const statusIcon = STATUS_ICONS[task.status || column.section.filter.taskType];
 
               return (
                 <StyledTableRow key={task.id}>
@@ -338,7 +347,7 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                       </Link>
                     )}
                   </StyledTableCell>
-                  <StyledTableCell align="center">{STATUS_ICONS[task.status]}</StyledTableCell>
+                  <StyledTableCell align="center">{statusIcon}</StyledTableCell>
                   <StyledTableCell className="clickable" onClick={() => openTask(task)}>
                     <TaskTitle>{task.title}</TaskTitle>
                     <TaskDescription
