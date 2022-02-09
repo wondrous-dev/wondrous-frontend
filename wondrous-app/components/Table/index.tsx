@@ -3,6 +3,7 @@ import { useInView } from 'react-intersection-observer';
 import Link from 'next/link';
 
 import {
+  COLUMN_TITLE_ARCHIVED,
   ENTITIES_TYPES,
   PERMISSIONS,
   TASK_STATUS_ARCHIVED,
@@ -10,7 +11,7 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
 } from '../../utils/constants';
-import { groupBy, parseUserPermissionContext, shrinkNumber } from '../../utils/helpers';
+import { cutString, groupBy, parseUserPermissionContext, shrinkNumber } from '../../utils/helpers';
 import { AvatarList } from '../Common/AvatarList';
 import { DropDown, DropDownItem } from '../Common/dropdown';
 import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton';
@@ -66,6 +67,7 @@ import { USDCoin } from '../Icons/USDCoin';
 import Ethereum from '../Icons/ethereum';
 import { Compensation } from '../Common/Compensation';
 import { Matic } from '../Icons/matic';
+import { renderMentionString } from '../../utils/common';
 
 const STATUS_ICONS = {
   [TASK_STATUS_TODO]: <TodoWithBorder />,
@@ -280,7 +282,13 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
 
         <StyledTableBody>
           {columns.map((column) => {
-            return [...column.section.tasks, ...column.tasks].map((task, index) => {
+            let tasks = [...column.section.tasks, ...column.tasks];
+
+            if (column.section.title === COLUMN_TITLE_ARCHIVED) {
+              tasks = column.tasks;
+            }
+
+            return tasks.map((task, index) => {
               // Parse permissions here as well
               const permissions = parseUserPermissionContext({
                 userPermissionsContext,
@@ -296,7 +304,7 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                 task?.createdBy === user?.id;
 
               return (
-                <StyledTableRow key={index}>
+                <StyledTableRow key={task.id}>
                   <StyledTableCell align="center">
                     {task.orgProfilePicture ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -333,7 +341,16 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                   <StyledTableCell align="center">{STATUS_ICONS[task.status]}</StyledTableCell>
                   <StyledTableCell className="clickable" onClick={() => openTask(task)}>
                     <TaskTitle>{task.title}</TaskTitle>
-                    <TaskDescription>{task.description}</TaskDescription>
+                    <TaskDescription
+                      style={{
+                        maxWidth: '600px',
+                      }}
+                    >
+                      {renderMentionString({
+                        content: cutString(task?.description),
+                        router,
+                      })}
+                    </TaskDescription>
                   </StyledTableCell>
                   {/*<StyledTableCell>*/}
                   {/*  <DeliverableContainer>*/}
@@ -352,11 +369,11 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                       {reward ? (
                         <Reward>
                           <SafeImage
-                              src={reward.icon}
-                              style={{
-                                width: '16px',
-                                height: '16px',
-                              }}
+                            src={reward.icon}
+                            style={{
+                              width: '16px',
+                              height: '16px',
+                            }}
                           />
                           <RewardAmount>{shrinkNumber(reward.rewardAmount)}</RewardAmount>
                         </Reward>

@@ -67,7 +67,7 @@ export const AvatarList = (props) => {
 
   const goToUser = (userId) => {
     console.log('User tap: ', userId);
-    router.push(`/profile/${id}/about`);
+    router.push(`/profile/${userId}/about`);
   };
 
   return (

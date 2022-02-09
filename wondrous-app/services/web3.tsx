@@ -29,10 +29,10 @@ export const useWonderWeb3 = () => {
   const [assets, setAssets] = useState(null);
   const [chain, setChain] = useState(null);
   const [ensName, setENSName] = useState(null);
+  const [web3Provider, setWeb3Provider] = useState(null);
 
   const [fetching, setFetching] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
-
   const chainName = useMemo(() => {
     return SUPPORTED_CHAINS[chain] || 'none';
   }, [chain]);
@@ -51,6 +51,10 @@ export const useWonderWeb3 = () => {
       return `${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}`;
     }
   }, [address, ensName]);
+
+  const toChecksumAddress = (address: string) => {
+    return Web3.utils.toChecksumAddress(address);
+  };
 
   const wallet = useMemo(() => {
     return {
@@ -74,6 +78,7 @@ export const useWonderWeb3 = () => {
 
     try {
       const provider = await web3Modal.connect();
+      setWeb3Provider(provider);
       await subscribeProvider(provider);
       const web3 = await initWeb3(provider);
       if (web3) {
@@ -86,7 +91,6 @@ export const useWonderWeb3 = () => {
           setConnecting(false);
           return false;
         }
-
         setChain(c);
         setConnecting(false);
 
@@ -265,6 +269,8 @@ export const useWonderWeb3 = () => {
     onConnect,
     disconnect,
     signMessage,
+    web3Provider,
+    toChecksumAddress,
   };
 };
 

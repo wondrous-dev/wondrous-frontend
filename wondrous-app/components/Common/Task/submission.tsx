@@ -42,7 +42,9 @@ import {
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
+  TASK_STATUS_ARCHIVED,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
+  PAYMENT_STATUS,
 } from '../../../utils/constants';
 import { White } from '../../../theme/colors';
 import { useMe } from '../../Auth/withAuth';
@@ -84,6 +86,7 @@ import { transformMediaFormat } from '../../CreateEntity/editEntityModal';
 import { MediaLink } from './modal';
 import { delQuery } from '../../../utils';
 import { FileLoading } from '../FileUpload/FileUpload';
+import { MakePaymentBlock } from './payment';
 
 const SubmissionStatusIcon = (props) => {
   const { submission } = props;
@@ -120,6 +123,30 @@ const SubmissionStatusIcon = (props) => {
           }}
         />
         <TaskStatusHeaderText>Changes requested</TaskStatusHeaderText>
+      </div>
+    );
+  } else if (submission?.approvedAt && submission?.paymentStatus === PAYMENT_STATUS.PAID) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <CompletedIcon style={iconStyle} />
+        <TaskStatusHeaderText>Approved and Paid</TaskStatusHeaderText>
+      </div>
+    );
+  } else if (submission?.approvedAt && submission?.paymentStatus === PAYMENT_STATUS.PROCESSING) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <CompletedIcon style={iconStyle} />
+        <TaskStatusHeaderText>Approved and Processing Payment</TaskStatusHeaderText>
       </div>
     );
   } else if (submission?.approvedAt) {
@@ -734,12 +761,13 @@ export const TaskSubmissionContent = (props) => {
     orgId,
     setFetchedTaskSubmissions,
     handleClose,
+    setShowPaymentModal,
   } = props;
 
   const router = useRouter();
   const [submissionToEdit, setSubmissionToEdit] = useState(null);
   const [moveProgressButton, setMoveProgressButton] = useState(true);
-
+  const taskStatus = fetchedTask?.status;
   if (taskSubmissionLoading) {
     return <CircularProgress />;
   }
@@ -854,11 +882,20 @@ export const TaskSubmissionContent = (props) => {
           />
         ) : (
           <>
-            <MakeSubmissionBlock
-              fetchedTask={fetchedTask}
-              setMakeSubmission={setMakeSubmission}
-              prompt={'Make another submission'}
-            />
+            {taskStatus !== TASK_STATUS_DONE && taskStatus !== TASK_STATUS_ARCHIVED && (
+              <MakeSubmissionBlock
+                fetchedTask={fetchedTask}
+                setMakeSubmission={setMakeSubmission}
+                prompt={'Make another submission'}
+              />
+            )}
+            {taskStatus === TASK_STATUS_DONE && fetchedTask?.type === ENTITIES_TYPES.TASK && (
+              <MakePaymentBlock
+                fetchedTask={fetchedTask}
+                setShowPaymentModal={setShowPaymentModal}
+                taskSubmissions={fetchedTaskSubmissions}
+              />
+            )}
             {fetchedTaskSubmissions?.map((taskSubmission) => {
               return (
                 <SubmissionItem

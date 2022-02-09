@@ -39,11 +39,14 @@ const DropdownSelect = (props) => {
     disabled,
     titleStyle,
     onChange,
+    innerStyle,
   } = props;
 
   const handleChange = (event) => {
     setValue(event.target.value);
-    onChange();
+    if (onChange) {
+      onChange();
+    }
   };
 
   return (
@@ -65,6 +68,7 @@ const DropdownSelect = (props) => {
           labelId={`select-label-${name}`}
           id={`select-${name}`}
           disabled={disabled}
+          style={innerStyle}
         >
           {options.map((item) => (
             <CreateFormMenuItem key={item.value} value={item.value}>

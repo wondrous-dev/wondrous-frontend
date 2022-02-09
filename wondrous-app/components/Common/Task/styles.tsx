@@ -299,6 +299,14 @@ export const MakeSubmissionDiv = styled.div`
   align-items: center;
 `;
 
+export const MakePaymentDiv = styled.div`
+  background: #0f0f0f;
+  border-radius: 184px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+`;
+
 export const TaskSubmissionItemDiv = styled.div`
   padding: 30px;
   &:not(:last-child) {

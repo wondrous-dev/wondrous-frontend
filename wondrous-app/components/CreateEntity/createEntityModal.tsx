@@ -12,6 +12,7 @@ import {
   MEDIA_TYPES,
   PERMISSIONS,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
+  CHAIN_TO_CHAIN_DIPLAY_NAME
 } from '../../utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
@@ -88,8 +89,12 @@ import { TextInputContext } from '../../utils/contexts';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
 import { SafeImage } from '../Common/Image';
-import { GET_USER_AVAILABLE_PODS, GET_USER_PODS } from '../../graphql/queries/pod';
-import { GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_MILESTONES } from '../../graphql/queries/task';
+import { GET_USER_AVAILABLE_PODS, GET_POD_USERS } from '../../graphql/queries/pod';
+import {
+  GET_ELIGIBLE_REVIEWERS_FOR_ORG,
+  GET_ELIGIBLE_REVIEWERS_FOR_POD,
+  GET_MILESTONES,
+} from '../../graphql/queries/task';
 import {
   getMentionArray,
   parseUserPermissionContext,
@@ -284,7 +289,7 @@ export const filterPaymentMethods = (paymentMethods) => {
     return {
       ...paymentMethod,
       icon: <SafeImage src={paymentMethod.icon} style={{ width: '30px', height: '30px', borderRadius: '15px' }} />,
-      label: paymentMethod.tokenName,
+      label: `${paymentMethod.tokenName}: ${CHAIN_TO_CHAIN_DIPLAY_NAME[paymentMethod.chain]}`,
       value: paymentMethod.id,
     };
   });
@@ -356,7 +361,11 @@ const CreateLayoutBaseModal = (props) => {
     },
   });
 
-  const [getEligibleReviewersForOrg, { data: eligibleReviewersData }] = useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_ORG);
+  const [getEligibleReviewersForOrg, { data: eligibleReviewersForOrgData }] =
+    useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_ORG);
+
+  const [getEligibleReviewersForPod, { data: eligibleReviewersForPodData }] =
+    useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_POD);
 
   const [getMilestones, { data: milestonesData }] = useLazyQuery(GET_MILESTONES);
 
@@ -366,11 +375,7 @@ const CreateLayoutBaseModal = (props) => {
     }
   };
 
-  const [getUserPods] = useLazyQuery(GET_USER_PODS, {
-    onCompleted: (data) => {
-      setPods(data?.getUserPods || []);
-    },
-  });
+  const [getPodUsers, { data: podUsersData }] = useLazyQuery(GET_POD_USERS);
 
   const [podsFetched, setPodsFetched] = useState(false);
   const [getUserAvailablePods] = useLazyQuery(GET_USER_AVAILABLE_PODS, {
@@ -735,6 +740,10 @@ const CreateLayoutBaseModal = (props) => {
               onChange={(e) => {
                 setMilestoneString('');
                 setMilestone(null);
+                setAssignee('');
+                setAssignee(null);
+                setSelectedReviewers([]);
+                setReviewerString('');
               }}
             />
           )}
@@ -900,7 +909,17 @@ const CreateLayoutBaseModal = (props) => {
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
               <StyledAutocomplete
-                options={filterOrgUsers(orgUsersData?.getOrgUsers)}
+                options={filterOrgUsers(podUsersData?.getPodUsers ?? orgUsersData?.getOrgUsers)}
+                onOpen={() => {
+                  if (pod) {
+                    getPodUsers({
+                      variables: {
+                        podId: pod?.id || pod,
+                        limit: 100, // TODO: fix autocomplete
+                      },
+                    });
+                  }
+                }}
                 renderInput={(params) => (
                   <TextField
                     style={{
@@ -919,6 +938,11 @@ const CreateLayoutBaseModal = (props) => {
                 inputValue={assigneeString}
                 onInputChange={(event, newInputValue) => {
                   setAssigneeString(newInputValue);
+                }}
+                onChange={(_, __, reason) => {
+                  if (reason === 'clear') {
+                    setAssignee(null);
+                  }
                 }}
                 renderOption={(props, option, state) => {
                   return (
@@ -948,9 +972,10 @@ const CreateLayoutBaseModal = (props) => {
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Reviewer</CreateFormAddDetailsInputLabel>
               <StyledAutocomplete
-                options={filterUserOptions(eligibleReviewersData?.getEligibleReviewersForOrg).filter(
-                  ({ id }) => !selectedReviewers.map(({ id }) => id).includes(id)
-                )}
+                options={filterUserOptions(
+                  eligibleReviewersForPodData?.getEligibleReviewersForPod ??
+                    eligibleReviewersForOrgData?.getEligibleReviewersForOrg
+                ).filter(({ id }) => !selectedReviewers.map(({ id }) => id).includes(id))}
                 multiple
                 onChange={(event, newValue, reason) => {
                   if ('clear' === reason) {
@@ -960,14 +985,23 @@ const CreateLayoutBaseModal = (props) => {
                     setSelectedReviewers(selectedReviewers.slice(0, -1));
                   }
                 }}
-                onOpen={() =>
-                  getEligibleReviewersForOrg({
-                    variables: {
-                      orgId: org,
-                      searchString: '',
-                    },
-                  })
-                }
+                onOpen={() => {
+                  if (pod) {
+                    getEligibleReviewersForPod({
+                      variables: {
+                        podId: pod,
+                        searchString: '',
+                      },
+                    });
+                  } else {
+                    getEligibleReviewersForOrg({
+                      variables: {
+                        orgId: org,
+                        searchString: '',
+                      },
+                    });
+                  }
+                }}
                 renderInput={(params) => (
                   <TextField
                     style={{
