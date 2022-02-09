@@ -527,12 +527,6 @@ export const TaskViewModal = (props) => {
   const [getTaskProposalById] = useLazyQuery(GET_TASK_PROPOSAL_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
-    onCompleted: (data) => {
-      const taskProposalData = data?.getTaskProposalById;
-      if (taskProposalData) {
-        setFetchedTask(transformTaskProposalToTaskProposalCard(taskProposalData, {}));
-      }
-    },
   });
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
@@ -598,18 +592,30 @@ export const TaskViewModal = (props) => {
     setSnackbarAlertMessage,
     handleNewStatus,
   ]);
+  console.log('fetchedTask', fetchedTask);
   useEffect(() => {
     if (open) {
       if (isTaskProposal) {
         setTaskSubmissionLoading(false);
         setSubmissionSelected(false);
       }
+      console.log('taskId', taskId, fetchedTask);
       if (!task && taskId && !fetchedTask) {
         if (isTaskProposal) {
           getTaskProposalById({
             variables: {
               proposalId: taskId,
             },
+          }).then((result) => {
+            const taskProposalData = result?.data?.getTaskProposalById;
+            console.log('taskProposal DAta', taskProposalData);
+            if (taskProposalData) {
+              console.log(
+                'transformTaskProposalToTaskProposalCard(taskProposalData, {})',
+                transformTaskProposalToTaskProposalCard(taskProposalData, {})
+              );
+              setFetchedTask(transformTaskProposalToTaskProposalCard(taskProposalData, {}));
+            }
           });
         } else {
           getTaskById({
@@ -629,7 +635,8 @@ export const TaskViewModal = (props) => {
             }
           });
         }
-      } else if (!isEqual(task, fetchedTask)) {
+      } else if (task && !isEqual(task, fetchedTask)) {
+        console.log('not getting in here');
         setFetchedTask(task);
       }
 
@@ -923,36 +930,6 @@ export const TaskViewModal = (props) => {
                     None
                   </TaskSectionInfoText>
                 )}
-              </TaskSectionDisplayDiv>
-            )}
-            {isTaskProposal && (
-              <TaskSectionDisplayDiv>
-                <TaskSectionDisplayLabel>
-                  <ProposerIcon />
-                  <TaskSectionDisplayText>Proposer</TaskSectionDisplayText>
-                </TaskSectionDisplayLabel>
-                <TaskSectionInfoDiv key={fetchedTask?.creatorUsername}>
-                  {fetchedTask?.creatorUsername && (
-                    <>
-                      {fetchedTask?.creatorProfilePicture ? (
-                        <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.creatorProfilePicture} />
-                      ) : (
-                        <DefaultUserImage style={displayDivProfileImageStyle} />
-                      )}
-                      <TaskSectionInfoText>{fetchedTask?.creatorUsername}</TaskSectionInfoText>
-                    </>
-                  )}
-                  {!fetchedTask?.creatorUsername && (
-                    <TaskSectionInfoText
-                      style={{
-                        marginTop: '8px',
-                        marginLeft: '16px',
-                      }}
-                    >
-                      None
-                    </TaskSectionInfoText>
-                  )}
-                </TaskSectionInfoDiv>
               </TaskSectionDisplayDiv>
             )}
             {!isTaskProposal && !isMilestone && (
