@@ -2,6 +2,7 @@ import React, { createContext, useContext, useCallback, useEffect, useRef, useSt
 import Modal from '@mui/material/Modal';
 import { format, formatDistance } from 'date-fns';
 import { useInView } from 'react-intersection-observer';
+import { isEqual } from 'lodash';
 
 import {
   PodNameTypography,
@@ -53,7 +54,7 @@ import {
   TASK_STATUS_REQUESTED,
   MILESTONE_TYPE,
   TASK_STATUS_TODO,
-  PAYMENT_STATUS
+  PAYMENT_STATUS,
 } from '../../../utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
@@ -627,7 +628,7 @@ export const TaskViewModal = (props) => {
             }
           });
         }
-      } else if (task && !fetchedTask) {
+      } else if (!isEqual(task, fetchedTask)) {
         setFetchedTask(task);
       }
 
