@@ -232,13 +232,15 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assigneeUsername]);
 
+  const taskType = isMilestone ? 'milestone' : 'task';
+
   return (
     <>
       <ArchiveTaskModal
         open={archiveTask}
         onClose={() => setArchiveTask(false)}
         onArchive={handleNewStatus}
-        isMilestone={isMilestone}
+        taskType={taskType}
       />
       <TaskViewModal
         open={modalOpen}
@@ -341,7 +343,7 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
                       color: White,
                     }}
                   >
-                    Archive {isMilestone ? 'milestone' : 'task'}
+                    Archive {taskType}
                   </DropDownItem>
                 </DropDown>
               </TaskActionMenu>
