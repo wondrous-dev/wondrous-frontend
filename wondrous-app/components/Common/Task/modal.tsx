@@ -592,14 +592,13 @@ export const TaskViewModal = (props) => {
     setSnackbarAlertMessage,
     handleNewStatus,
   ]);
-  console.log('fetchedTask', fetchedTask);
   useEffect(() => {
     if (open) {
       if (isTaskProposal) {
         setTaskSubmissionLoading(false);
         setSubmissionSelected(false);
       }
-      console.log('taskId', taskId, fetchedTask);
+
       if (!task && taskId && !fetchedTask) {
         if (isTaskProposal) {
           getTaskProposalById({
@@ -608,12 +607,7 @@ export const TaskViewModal = (props) => {
             },
           }).then((result) => {
             const taskProposalData = result?.data?.getTaskProposalById;
-            console.log('taskProposal DAta', taskProposalData);
             if (taskProposalData) {
-              console.log(
-                'transformTaskProposalToTaskProposalCard(taskProposalData, {})',
-                transformTaskProposalToTaskProposalCard(taskProposalData, {})
-              );
               setFetchedTask(transformTaskProposalToTaskProposalCard(taskProposalData, {}));
             }
           });
