@@ -14,4 +14,4 @@ const PanelStatusCard = ({ status }) => {
   );
 };
 
-export default React.memo(PanelStatusCard);
+export default PanelStatusCard;

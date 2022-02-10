@@ -232,4 +232,4 @@ const Boards = (props) => {
   );
 };
 
-export default React.memo(Boards);
+export default Boards;
