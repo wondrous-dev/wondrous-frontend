@@ -47,7 +47,7 @@ export const PanelViewButtonLabel = styled(Typography)`
   }
 `;
 
-export const PanelStatusCardWrapper = styled.div`
+export const DashboardPanelStatusCardWrapper = styled.div`
   display: flex;
   margin-top: 17px;
 

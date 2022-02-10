@@ -6,12 +6,12 @@ import { GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT } from '../../../graphql/quer
 import { AndroidSwitch } from '../../CreateEntity/createEntityModal';
 import { AwaitingPayment, DoneWithBorder } from '../../Icons';
 import { InReviewIcon, MembershipRequestIcon, ProposalsRemainingIcon, TodoIcon } from '../../Icons/statusIcons';
-import PanelStatusCard from '../PanelStatusCard';
+import DashboardPanelStatusCard from '../DashboardPanelStatusCard';
 import {
   CircularProgressWrapper,
   HeaderTitle,
   PanelHeader,
-  PanelStatusCardWrapper,
+  DashboardPanelStatusCardWrapper,
   PanelViewButton,
   PanelViewButtonLabel,
   StyledBackground,
@@ -121,11 +121,11 @@ const DashboardPanel = (props) => {
             <CircularProgress />
           </CircularProgressWrapper>
         ) : (
-          <PanelStatusCardWrapper>
+          <DashboardPanelStatusCardWrapper>
             {activePanelStatusCards.map((status, id) => (
-              <PanelStatusCard key={id} status={status} />
+              <DashboardPanelStatusCard key={id} status={status} />
             ))}
-          </PanelStatusCardWrapper>
+          </DashboardPanelStatusCardWrapper>
         )}
       </StyledBackground>
     </StyledBorder>
