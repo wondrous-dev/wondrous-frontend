@@ -132,7 +132,7 @@ const BoardsPage = () => {
   const [orgData, setOrgData] = useState(null);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
   const router = useRouter();
-  const { username, orgId, search: searchString } = router.query;
+  const { username, orgId, search } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -167,25 +167,6 @@ const BoardsPage = () => {
   const [getOrgBoardTaskCount, { data: orgTaskCountData, variables: getOrgBoardTaskCountVariables }] = useLazyQuery(
     GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD
   );
-
-  // const handleSearch = useCallback(
-  //   (searchString) => {
-  //     const id = orgId || orgData?.id;
-  //
-  //     return apollo
-  //       .query({
-  //         query: SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
-  //         variables: {
-  //           orgId: id,
-  //           limit: LIMIT,
-  //           offset: 0,
-  //           searchString,
-  //         },
-  //       })
-  //       .then((result) => result.data.searchTasksForOrgBoardView);
-  //   },
-  //   [orgId, orgData]
-  // );
 
   const [searchOrgTasks] = useLazyQuery(SEARCH_TASKS_FOR_ORG_BOARD_VIEW, {
     onCompleted: (data) => {
@@ -248,13 +229,13 @@ const BoardsPage = () => {
     if (orgId || orgData?.id) {
       const id = orgId || orgData?.id;
 
-      if (searchString) {
+      if (search) {
         searchOrgTasks({
           variables: {
             orgId: id,
             limit: LIMIT,
             offset: 0,
-            searchString,
+            searchString: search,
           },
         });
       } else {
@@ -298,14 +279,14 @@ const BoardsPage = () => {
     getOrgTaskProposals,
     getOrgTasks,
     searchOrgTasks,
-    searchString,
+    search,
   ]);
 
   const handleSearch = useCallback(
     (searchString) => {
       const id = orgId || orgData?.id;
 
-      if (searchString) {
+      if (search) {
         searchOrgTasks({
           variables: {
             orgId: id,
