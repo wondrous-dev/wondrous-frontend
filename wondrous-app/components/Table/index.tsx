@@ -71,16 +71,7 @@ import Ethereum from '../Icons/ethereum';
 import { Compensation } from '../Common/Compensation';
 import { Matic } from '../Icons/matic';
 import { renderMentionString } from '../../utils/common';
-
-const STATUS_ICONS = {
-  [TASK_STATUS_TODO]: <TodoWithBorder />,
-  [TASK_STATUS_REQUESTED]: <TodoWithBorder />,
-  [TASK_STATUS_IN_PROGRESS]: <InProgressWithBorder />,
-  [TASK_STATUS_IN_REVIEW]: <InProgressWithBorder />,
-  [TASK_STATUS_DONE]: <DoneWithBorder />,
-  [TASK_STATUS_AWAITING_PAYMENT]: <DoneWithBorder />,
-  [TASK_STATUS_ARCHIVED]: <DoneWithBorder />,
-};
+import TaskStatus from '../Icons/TaskStatus';
 
 const DELIVERABLES_ICONS = {
   audio: <AudioIcon />,
@@ -310,8 +301,6 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                 permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
                 task?.createdBy === user?.id;
 
-              const statusIcon = STATUS_ICONS[task.status || column.section.filter.taskType];
-
               return (
                 <StyledTableRow key={task.id}>
                   <StyledTableCell align="center">
@@ -347,7 +336,9 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                       </Link>
                     )}
                   </StyledTableCell>
-                  <StyledTableCell align="center">{statusIcon}</StyledTableCell>
+                  <StyledTableCell align="center">
+                    <TaskStatus status={task.status || column.section.filter.taskType} />
+                  </StyledTableCell>
                   <StyledTableCell className="clickable" onClick={() => openTask(task)}>
                     <TaskTitle>{task.title}</TaskTitle>
                     <TaskDescription

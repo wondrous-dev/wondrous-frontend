@@ -21,8 +21,7 @@ import { useRouter } from 'next/router';
 import { FirstStep } from '../../components/Common/Image/OnboardingProgressBar';
 import { useWonderWeb3 } from '../../services/web3';
 import { Field, FieldInput } from '../Common/field';
-
-const USERNAME_REGEX = /^[A-Za-z0-9_]{3,16}$/;
+import { USERNAME_REGEX } from '../../utils/constants';
 
 export const Logo = ({ divStyle }) => {
   return (
@@ -121,7 +120,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
               },
             });
           } else {
-            setError('Please enter a valid username with 3-15 alphanumeric characters ');
+            setError('Please enter a valid username with 3-15 alphanumeric characters');
           }
         }}
         buttonInnerStyle={{
