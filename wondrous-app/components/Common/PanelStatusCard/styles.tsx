@@ -18,7 +18,7 @@ export const CountIconWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const CountComponent = styled(Typography)`
+export const Count = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
     font-size: 32px;
@@ -29,8 +29,6 @@ const CountComponent = styled(Typography)`
     -webkit-text-fill-color: transparent;
   }
 `;
-
-export const Count = React.memo(CountComponent);
 
 export const Status = styled(Typography)`
   && {
