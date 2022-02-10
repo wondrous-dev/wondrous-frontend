@@ -148,6 +148,7 @@ export const VIDEO_FILE_EXTENSIONS_TYPE_MAPPING = {
 
 export const MENTION_REGEX = /@\[(.*?)]\((.*?)\)/g;
 
+export const USERNAME_REGEX = /^[A-Za-z0-9_]{3,16}$/;
 export const PERMISSIONS = {
   CREATE_TASK: 'create_task',
   EDIT_TASK: 'edit_task', // edit task even when you are not the creator
@@ -232,3 +233,9 @@ export const filteredColorOptions = Object.keys(POD_COLOR).map((key) => ({
   value: key,
 }));
 export { SUPPORTED_CHAINS };
+export const EMAIL_REGEX =
+  /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+export const validateEmail = (email) => {
+  return email.match(EMAIL_REGEX);
+};

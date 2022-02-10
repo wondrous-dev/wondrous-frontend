@@ -21,13 +21,7 @@ import { useRouter } from 'next/router';
 import { ThirdStep } from '../../components/Common/Image/OnboardingProgressBar';
 import { CircularProgress } from '@material-ui/core';
 import { StyledCancelButton } from '../Common/ArchiveTaskModal/styles';
-
-const EMAIL_REGEX =
-  /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-const validateEmail = (email) => {
-  return email.match(EMAIL_REGEX);
-};
+import { validateEmail } from '../../utils/constants';
 
 export const Logo = ({ divStyle }) => {
   return (
