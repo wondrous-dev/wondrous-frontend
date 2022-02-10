@@ -8,13 +8,29 @@ import DefaultUserImage from '../Image/DefaultUserImage';
 import { MakeSubmissionPaymentButton } from '../../CreateEntity/styles';
 import { useRouter } from 'next/router';
 import { useApprovedSubmission } from '../../../utils/hooks';
-import { PAYMENT_STATUS } from '../../../utils/constants';
+import { PAYMENT_STATUS, PERMISSIONS } from '../../../utils/constants';
+import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
+import { parseUserPermissionContext } from '../../../utils/helpers';
 
 export const MakePaymentBlock = (props) => {
   const approvedSubmissionContext = useApprovedSubmission();
   const { fetchedTask, taskSubmissions, setShowPaymentModal } = props;
   const [approvedSubmission, setApprovedSubmission] = useState(null);
   const [showPaymentButton, setShowPaymentButton] = useState(null);
+
+  const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
+    fetchPolicy: 'cache-and-network',
+  });
+  const userPermissionsContext = userPermissionsContextData?.getUserPermissionContext
+    ? JSON.parse(userPermissionsContextData?.getUserPermissionContext)
+    : null;
+
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId: fetchedTask?.orgId,
+    podId: fetchedTask?.podId,
+  });
+  const canPay = permissions.includes(PERMISSIONS.APPROVE_PAYMENT) || permissions.includes(PERMISSIONS.FULL_ACCESS);
   useEffect(() => {
     taskSubmissions?.map((taskSubmission) => {
       if (taskSubmission.approvedAt) {
@@ -28,11 +44,12 @@ export const MakePaymentBlock = (props) => {
   };
   useEffect(() => {
     const show =
+      canPay &&
       approvedSubmission &&
       approvedSubmission.paymentStatus !== PAYMENT_STATUS.PROCESSING &&
       approvedSubmission.paymentStatus !== PAYMENT_STATUS.PAID;
     setShowPaymentButton(show);
-  }, [approvedSubmission]);
+  }, [approvedSubmission, canPay]);
   return (
     <>
       {showPaymentButton && (

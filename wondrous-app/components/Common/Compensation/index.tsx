@@ -10,6 +10,7 @@ export const Compensation = (props) => {
 
   return (
     <CompensationWrapper key={props.id}>
+      {taskIcon}
       {rewardAmount && (
         <CompensationPill>
           <IconContainer>

@@ -28,10 +28,11 @@ import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { OfflinePayment } from './OfflinePayment';
 import { SingleWalletPayment } from './SingleWalletPayment';
 import Link from 'next/link';
+import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
 
 export const MakePaymentModal = (props) => {
   const { open, handleClose, setShowPaymentModal, approvedSubmission, fetchedTask } = props;
-  const [selectedTab, setSelectedTab] = useState('off_platform');
+  const [selectedTab, setSelectedTab] = useState('wallet');
   const [wallets, setWallets] = useState([]);
   const [submissionPaymentInfo, setSubmissionPaymentInfo] = useState(null);
   const orgBoard = useOrgBoard();
@@ -40,13 +41,17 @@ export const MakePaymentModal = (props) => {
   const board = orgBoard || podBoard || userBoard;
   const router = useRouter();
   const user = useMe();
-  const userPermissionsContext =
-    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext || null;
 
+  const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
+    fetchPolicy: 'cache-and-network',
+  });
   const PAYMENT_TABS = [
-    { name: 'off_platform', label: 'Off platform', action: () => setSelectedTab('off_platform') },
     { name: 'wallet', label: 'Wallet', action: () => setSelectedTab('wallet') },
+    { name: 'off_platform', label: 'Off platform', action: () => setSelectedTab('off_platform') },
   ];
+  const userPermissionsContext = userPermissionsContextData?.getUserPermissionContext
+    ? JSON.parse(userPermissionsContextData?.getUserPermissionContext)
+    : null;
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
     orgId: fetchedTask?.orgId,
@@ -90,7 +95,6 @@ export const MakePaymentModal = (props) => {
   }, [fetchedTask]);
 
   useEffect(() => {
-    console.log('apporvedSubmissionid', approvedSubmission?.id);
     getSubmissionPaymentInfo({
       variables: {
         submissionId: approvedSubmission?.id,
@@ -137,7 +141,7 @@ export const MakePaymentModal = (props) => {
           </PaymentModalHeader>
           <PaymentTitleDiv>
             <PaymentTitleTextDiv>
-            <PaymentTitleText>
+              <PaymentTitleText>
                 Payout to{' '}
                 <Link href={`/profile/${fetchedTask?.assigneeId}/about`}>
                   <a
@@ -152,9 +156,7 @@ export const MakePaymentModal = (props) => {
                   </a>
                 </Link>{' '}
               </PaymentTitleText>
-              <PaymentDescriptionText>
-                Task: {fetchedTask.title}
-              </PaymentDescriptionText>
+              <PaymentDescriptionText>Task: {fetchedTask.title}</PaymentDescriptionText>
             </PaymentTitleTextDiv>
           </PaymentTitleDiv>
           <StyledTabs value={selectedTab}>

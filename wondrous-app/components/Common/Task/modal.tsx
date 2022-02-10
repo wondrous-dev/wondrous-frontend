@@ -2,6 +2,7 @@ import React, { createContext, useContext, useCallback, useEffect, useRef, useSt
 import Modal from '@mui/material/Modal';
 import { format, formatDistance } from 'date-fns';
 import { useInView } from 'react-intersection-observer';
+import { isEqual } from 'lodash';
 
 import {
   PodNameTypography,
@@ -52,6 +53,7 @@ import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
   MILESTONE_TYPE,
+  TASK_TYPE,
   TASK_STATUS_TODO,
   PAYMENT_STATUS,
 } from '../../../utils/constants';
@@ -647,12 +649,6 @@ export const TaskViewModal = (props) => {
   const [getTaskProposalById] = useLazyQuery(GET_TASK_PROPOSAL_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
-    onCompleted: (data) => {
-      const taskProposalData = data?.getTaskProposalById;
-      if (taskProposalData) {
-        setFetchedTask(transformTaskProposalToTaskProposalCard(taskProposalData, {}));
-      }
-    },
   });
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
@@ -720,18 +716,30 @@ export const TaskViewModal = (props) => {
     setSnackbarAlertMessage,
     handleNewStatus,
   ]);
+  console.log('fetchedTask', fetchedTask);
   useEffect(() => {
     if (open) {
       if (isTaskProposal) {
         setTaskSubmissionLoading(false);
         setSubmissionSelected(false);
       }
+      console.log('taskId', taskId, fetchedTask);
       if (!task && taskId && !fetchedTask) {
         if (isTaskProposal) {
           getTaskProposalById({
             variables: {
               proposalId: taskId,
             },
+          }).then((result) => {
+            const taskProposalData = result?.data?.getTaskProposalById;
+            console.log('taskProposal DAta', taskProposalData);
+            if (taskProposalData) {
+              console.log(
+                'transformTaskProposalToTaskProposalCard(taskProposalData, {})',
+                transformTaskProposalToTaskProposalCard(taskProposalData, {})
+              );
+              setFetchedTask(transformTaskProposalToTaskProposalCard(taskProposalData, {}));
+            }
           });
         } else {
           getTaskById({
@@ -751,7 +759,8 @@ export const TaskViewModal = (props) => {
             }
           });
         }
-      } else if (task && !fetchedTask) {
+      } else if (task && !isEqual(task, fetchedTask)) {
+        console.log('not getting in here');
         setFetchedTask(task);
       }
 
@@ -867,6 +876,10 @@ export const TaskViewModal = (props) => {
     // console.log('canEdit', canEdit);
     // console.log('can Review', canReview);
   }
+  const canArchive =
+    permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
+    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    task?.createdBy === user?.id;
   const displayDivProfileImageStyle = {
     width: '26px',
     height: '26px',
@@ -882,7 +895,13 @@ export const TaskViewModal = (props) => {
 
   const onCorrectPage =
     fetchedTask?.orgId === board?.orgId || fetchedTask?.podId === board?.podId || fetchedTask?.userId === board?.userId;
-  console.log('fetchedTask', fetchedTask);
+  const taskType = isTaskProposal ? 'task proposal' : isMilestone ? 'milestone' : 'task';
+  const handleOnCloseArchiveTaskModal = () => {
+    setArchiveTask(false);
+    if (isTaskProposal) {
+      handleClose();
+    }
+  };
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -890,7 +909,13 @@ export const TaskViewModal = (props) => {
       }}
     >
       <>
-        <ArchiveTaskModal open={archiveTask} onClose={() => setArchiveTask(false)} onArchive={handleNewStatus} />
+        <ArchiveTaskModal
+          open={archiveTask}
+          onClose={handleOnCloseArchiveTaskModal}
+          onArchive={handleNewStatus}
+          taskType={taskType}
+          taskId={fetchedTask?.id}
+        />
         <Modal
           open={open}
           onClose={() => {
@@ -948,14 +973,16 @@ export const TaskViewModal = (props) => {
               {canEdit && fetchedTask?.status !== TASK_STATUS_DONE && (
                 <TaskActionMenu right="true">
                   <DropDown DropdownHandler={TaskMenuIcon}>
-                    <DropDownItem
-                      key={'task-menu-edit-' + fetchedTask?.id}
-                      onClick={() => setEditTask(true)}
-                      style={dropdownItemStyle}
-                    >
-                      Edit {isTaskProposal ? 'task proposal' : isMilestone ? 'milestone' : 'task'}
-                    </DropDownItem>
-                    {!isTaskProposal && (
+                    {canEdit && (
+                      <DropDownItem
+                        key={'task-menu-edit-' + fetchedTask?.id}
+                        onClick={() => setEditTask(true)}
+                        style={dropdownItemStyle}
+                      >
+                        Edit {taskType}
+                      </DropDownItem>
+                    )}
+                    {canArchive && (
                       <DropDownItem
                         key={'task-menu-archive-' + fetchedTask?.id}
                         onClick={() => {
@@ -963,7 +990,7 @@ export const TaskViewModal = (props) => {
                         }}
                         style={dropdownItemStyle}
                       >
-                        Archive {isMilestone ? 'milestone' : 'task'}
+                        Archive {taskType}
                       </DropDownItem>
                     )}
                   </DropDown>
@@ -1027,36 +1054,6 @@ export const TaskViewModal = (props) => {
                     None
                   </TaskSectionInfoText>
                 )}
-              </TaskSectionDisplayDiv>
-            )}
-            {isTaskProposal && (
-              <TaskSectionDisplayDiv>
-                <TaskSectionDisplayLabel>
-                  <ProposerIcon />
-                  <TaskSectionDisplayText>Proposer</TaskSectionDisplayText>
-                </TaskSectionDisplayLabel>
-                <TaskSectionInfoDiv key={fetchedTask?.creatorUsername}>
-                  {fetchedTask?.creatorUsername && (
-                    <>
-                      {fetchedTask?.creatorProfilePicture ? (
-                        <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.creatorProfilePicture} />
-                      ) : (
-                        <DefaultUserImage style={displayDivProfileImageStyle} />
-                      )}
-                      <TaskSectionInfoText>{fetchedTask?.creatorUsername}</TaskSectionInfoText>
-                    </>
-                  )}
-                  {!fetchedTask?.creatorUsername && (
-                    <TaskSectionInfoText
-                      style={{
-                        marginTop: '8px',
-                        marginLeft: '16px',
-                      }}
-                    >
-                      None
-                    </TaskSectionInfoText>
-                  )}
-                </TaskSectionInfoDiv>
               </TaskSectionDisplayDiv>
             )}
             {!isTaskProposal && !isMilestone && (

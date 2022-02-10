@@ -604,7 +604,7 @@ const CreateLayoutBaseModal = (props) => {
             newErrors.description = 'Please enter a description';
           }
           if (!org) {
-            newErrors.org = 'Please select an orgnization';
+            newErrors.org = 'Please select an organization';
           }
           newErrors.general = 'Please enter the necessary information above';
           setErrors(newErrors);
