@@ -72,7 +72,6 @@ export const MakePaymentModal = (props) => {
 
   const [getSubmissionPaymentInfo] = useLazyQuery(GET_SUBMISSION_PAYMENT_INFO, {
     onCompleted: (data) => {
-      console.log('data', data);
       setSubmissionPaymentInfo(data?.getSubmissionPaymentInfo);
     },
     fetchPolicy: 'network-only',
