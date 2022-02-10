@@ -53,7 +53,7 @@ import {
   TASK_STATUS_REQUESTED,
   MILESTONE_TYPE,
   TASK_STATUS_TODO,
-  PAYMENT_STATUS
+  PAYMENT_STATUS,
 } from '../../../utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
@@ -96,6 +96,9 @@ import {
   GET_POD_TASK_BOARD_PROPOSALS,
   GET_POD_TASK_BOARD_SUBMISSIONS,
   GET_POD_TASK_BOARD_TASKS,
+  GET_USER_TASK_BOARD_PROPOSALS,
+  GET_USER_TASK_BOARD_SUBMISSIONS,
+  GET_USER_TASK_BOARD_TASKS,
 } from '../../../graphql/queries/taskBoard';
 import { AvatarList } from '../AvatarList';
 import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from '../../../graphql/mutations/taskProposal';
@@ -207,6 +210,36 @@ export const TaskListViewModal = (props) => {
     },
   });
 
+  const [getUserTaskBoardProposals, { fetchMore: fetchMoreUserTaskProposals }] = useLazyQuery(
+    GET_USER_TASK_BOARD_PROPOSALS,
+    {
+      onCompleted: (data) => {
+        const tasks = data?.getUserTaskBoardProposals;
+        setFetchedList(tasks);
+        setHasMore(data?.hasMore || tasks?.length >= LIMIT);
+      },
+    }
+  );
+
+  const [getUserTaskBoardSubmissions, { fetchMore: fetchMoreUserTaskSubmissions }] = useLazyQuery(
+    GET_USER_TASK_BOARD_SUBMISSIONS,
+    {
+      onCompleted: (data) => {
+        const tasks = data?.getUserTaskBoardSubmissions;
+        setFetchedList(tasks);
+        setHasMore(data?.hasMore || tasks?.length >= LIMIT);
+      },
+    }
+  );
+
+  const [getUserArchivedTasks, { fetchMore: fetchMoreUserArchivedTasks }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
+    onCompleted: (data) => {
+      const tasks = data?.getUserTaskBoardTasks;
+      setFetchedList(tasks);
+      setHasMore(data?.hasMore || tasks?.length >= LIMIT);
+    },
+  });
+
   const handleLoadMore = useCallback(() => {
     if (hasMore) {
       if (taskType === TASK_STATUS_REQUESTED) {
@@ -254,6 +287,29 @@ export const TaskListViewModal = (props) => {
                 hasMore,
                 getPodTaskBoardProposals: prev.getPodTaskBoardProposals.concat(
                   fetchMoreResult.getPodTaskBoardProposals
+                ),
+              };
+            },
+          });
+        } else if (entityType === ENTITIES_TYPES.USER) {
+          fetchMoreUserTaskProposals({
+            variables: {
+              offset: fetchedList.length,
+              limit: LIMIT,
+              statuses: [STATUS_OPEN],
+            },
+            updateQuery: (prev, { fetchMoreResult }) => {
+              const hasMore = fetchMoreResult.getUserTaskBoardProposals.length >= LIMIT;
+              if (!fetchMoreResult) {
+                return prev;
+              }
+              if (!hasMore) {
+                setHasMore(false);
+              }
+              return {
+                hasMore,
+                getUserTaskBoardProposals: prev.getUserTaskBoardProposals.concat(
+                  fetchMoreResult.getUserTaskBoardProposals
                 ),
               };
             },
@@ -308,6 +364,30 @@ export const TaskListViewModal = (props) => {
               };
             },
           });
+        } else if (entityType === ENTITIES_TYPES.USER) {
+          fetchMoreUserTaskSubmissions({
+            variables: {
+              offset: fetchedList.length,
+              limit: LIMIT,
+              statuses: [STATUS_OPEN],
+            },
+            updateQuery: (prev, { fetchMoreResult }) => {
+              const hasMore = fetchMoreResult.getUserTaskBoardSubmissions.length >= LIMIT;
+              if (!fetchMoreResult) {
+                return prev;
+              }
+              if (!hasMore) {
+                setHasMore(false);
+              }
+
+              return {
+                hasMore,
+                getUserTaskBoardSubmissions: prev.getUserTaskBoardSubmissions.concat(
+                  fetchMoreResult.getUserTaskBoardSubmissions
+                ),
+              };
+            },
+          });
         }
       } else if (taskType === TASK_STATUS_ARCHIVED) {
         if (entityType === ENTITIES_TYPES.ORG) {
@@ -352,6 +432,27 @@ export const TaskListViewModal = (props) => {
               };
             },
           });
+        } else if (entityType === ENTITIES_TYPES.USER) {
+          fetchMoreUserArchivedTasks({
+            variables: {
+              statuses: ['archived'],
+              offset: fetchedList.length,
+              limit: LIMIT,
+            },
+            updateQuery: (prev, { fetchMoreResult }) => {
+              const hasMore = fetchMoreResult.getUserTaskBoardTasks.length >= LIMIT;
+              if (!fetchMoreResult) {
+                return prev;
+              }
+              if (!hasMore) {
+                setHasMore(false);
+              }
+              return {
+                hasMore,
+                getUserTaskBoardTasks: prev.getUserTaskBoardTasks.concat(fetchMoreResult.getUserTaskBoardTasks),
+              };
+            },
+          });
         }
       }
     }
@@ -385,6 +486,12 @@ export const TaskListViewModal = (props) => {
                 },
               },
             });
+          } else if (entityType === ENTITIES_TYPES.USER) {
+            getUserTaskBoardProposals({
+              variables: {
+                statuses: [STATUS_OPEN],
+              },
+            });
           }
         } else if (taskType === TASK_STATUS_IN_REVIEW) {
           if (entityType === ENTITIES_TYPES.ORG) {
@@ -401,6 +508,12 @@ export const TaskListViewModal = (props) => {
                   podId,
                   statuses: [STATUS_OPEN],
                 },
+              },
+            });
+          } else if (entityType === ENTITIES_TYPES.USER) {
+            getUserTaskBoardSubmissions({
+              variables: {
+                statuses: [STATUS_OPEN],
               },
             });
           }
@@ -423,6 +536,15 @@ export const TaskListViewModal = (props) => {
                   offset: 0,
                   limit: LIMIT,
                 },
+              },
+            });
+          } else if (entityType === ENTITIES_TYPES.USER) {
+            console.log('archived lists');
+            getUserArchivedTasks({
+              variables: {
+                statuses: ['archived'],
+                offset: 0,
+                limit: LIMIT,
               },
             });
           }
@@ -542,6 +664,8 @@ export const TaskViewModal = (props) => {
         },
       },
       'getPerStatusTaskCountForOrgBoard',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
     ],
     onError: () => {
       console.error('Something went wrong.');

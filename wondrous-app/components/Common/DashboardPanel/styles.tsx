@@ -5,6 +5,9 @@ export const StyledBorder = styled(Box)`
   background: linear-gradient(176.18deg, rgba(75, 75, 75, 0.6) 13.53%, rgba(35, 35, 35, 0.6) 63.82%);
   min-height: 178px;
   min-width: 750px;
+  max-width: 100%;
+  width: max-content;
+  margin: 0 auto;
   padding: 1px;
   border-radius: 6px;
 `;
@@ -12,7 +15,6 @@ export const StyledBorder = styled(Box)`
 export const StyledBackground = styled(StyledBorder)`
   background: linear-gradient(180deg, #1e1e1e 10.26%, #141414 55.11%);
   height: 100%;
-  width: 100%;
   padding: 15px;
 `;
 
@@ -47,7 +49,6 @@ export const PanelViewButtonLabel = styled(Typography)`
 
 export const PanelStatusCardWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
   margin-top: 17px;
 
   div {

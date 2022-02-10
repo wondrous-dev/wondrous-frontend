@@ -118,6 +118,8 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
         query: GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
         variables: orgBoard?.getOrgBoardTaskCountVariables,
       },
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
     ],
   });
 

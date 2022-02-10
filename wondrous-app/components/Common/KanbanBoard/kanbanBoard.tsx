@@ -96,6 +96,8 @@ const KanbanBoard = (props) => {
             variables: orgBoard?.getOrgBoardTaskCountVariables,
           },
           GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE,
+          'getUserTaskBoardTasks',
+          'getPerStatusTaskCountForUserBoard',
         ],
       });
 

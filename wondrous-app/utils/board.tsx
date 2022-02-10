@@ -1,3 +1,5 @@
+import { TASK_STATUS_ARCHIVED } from './constants';
+
 export const addProposalItem = (newItem, columns) => {
   columns[0].section.tasks = [newItem, ...columns[0].section.tasks];
   return columns;
@@ -135,4 +137,33 @@ export const updateTask = (updatedTask, columns) => {
     });
     return column;
   });
+};
+
+export const populateTaskColumns = (tasks, columns) => {
+  if (!columns) return [];
+  const newColumns = columns.map((column) => {
+    column.tasks = [];
+    return tasks.reduce((column, task) => {
+      if (column.status === task.status) {
+        column.tasks = [...column.tasks, task];
+      } else if (task?.status === TASK_STATUS_ARCHIVED && column.section.filter.taskType === TASK_STATUS_ARCHIVED) {
+        column.section.tasks = [...column.section.tasks, task];
+      }
+      return column;
+    }, column);
+  });
+  return newColumns;
+};
+
+export const addToTaskColumns = (newResults, columns) => {
+  if (!columns) return [];
+  const newColumns = columns.map((column) => {
+    return newResults.reduce((column, task) => {
+      if (column.status === task.status) {
+        column.tasks = [...column.tasks, task];
+      }
+      return column;
+    }, column);
+  });
+  return newColumns;
 };
