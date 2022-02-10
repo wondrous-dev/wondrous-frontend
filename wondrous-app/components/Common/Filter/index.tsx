@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import FilterIcon from "../../Icons/filter";
-import { Chevron } from "../../Icons/sections";
-import Tabs from "../Tabs";
+import React, { useEffect, useState } from 'react';
+import FilterIcon from '../../Icons/filter';
+import { Chevron } from '../../Icons/sections';
+import Tabs from '../Tabs';
 import {
   FilterHandle,
   FilterHandleInner,
@@ -20,7 +20,7 @@ import {
   FilterItemCount,
   FilterItemListShade,
   FilterItemOrgIcon,
-} from "./styles";
+} from './styles';
 
 /**
  *
@@ -42,13 +42,13 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
 
   // Changes the display list.
   const displayList = (tabName) => {
-	  const tab = filterSchema.find(({ name }) => (name === tabName))
-	  if(tab) {
-		  setItems(tab.items)
-		  setMultichoice(tab.multiChoice)
-	  }
-	  setSelected(tabName)
-  }
+    const tab = filterSchema.find(({ name }) => name === tabName);
+    if (tab) {
+      setItems(tab.items);
+      setMultichoice(tab.multiChoice);
+    }
+    setSelected(tabName);
+  };
 
   // adds / removes an item from the filter
   const toggleInFilter = (itemId) => {
@@ -68,7 +68,7 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
     filterSchema.map((tab) => {
       tab.label = tab.name;
       tab.action = () => {
-        console.log("Tab " + tab.name + " pressed.");
+        console.log('Tab ' + tab.name + ' pressed.');
         displayList(tab.name);
       };
     });
@@ -85,12 +85,12 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
   useEffect(() => {
     setFilterList();
     displayList(filterSchema[0].name);
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   useEffect(() => {
     setFilterList();
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected]);
 
   return (
@@ -105,7 +105,7 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
             </>
           )}
         </FilterHandleContainer>
-        <FilterChevronContainer className={open ? "active" : ""}>
+        <FilterChevronContainer className={open ? 'active' : ''}>
           <Chevron />
         </FilterChevronContainer>
       </FilterHandleInner>
@@ -113,9 +113,7 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
         <FilterBoxInner>
           <Tabs tabs={filterSchema} selected={selected} />
           <FilterStatus>
-            <FilterCount>
-              {items.filter((i) => i.selected).length} selected
-            </FilterCount>
+            <FilterCount>{items.filter((i) => i.selected).length} selected</FilterCount>
             <FilterClear onClick={clearItems}>Clear</FilterClear>
           </FilterStatus>
           <FilterItemsContainer>
@@ -130,13 +128,7 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
                 >
                   <FilterItemIcon>{item.icon}</FilterItemIcon>
                   <FilterItemName>{item.name}</FilterItemName>
-                  {item.organization 
-                  ? (
-                    <FilterItemOrgIcon>
-                      {item.organization.profilePicture}
-                    </FilterItemOrgIcon>
-                  )
-                  : ''}
+                  {item.organization ? <FilterItemOrgIcon>{item.organization.profilePicture}</FilterItemOrgIcon> : ''}
                   <FilterItemCount>{item.count}</FilterItemCount>
                 </FilterItem>
               ))}

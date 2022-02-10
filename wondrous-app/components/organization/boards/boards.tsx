@@ -17,14 +17,19 @@ import { Table } from '../../Table';
 import { TASK_STATUS_TODO } from '../../../utils/constants';
 import { delQuery } from '../../../utils';
 import SearchTasks from '../../SearchTasks';
+import { OrgPod } from '../../../types/pod';
 
 enum ViewType {
   List = 'list',
   Grid = 'grid',
 }
 
-const Boards = (props) => {
-  const { selectOptions, columns, onLoadMore, hasMore, orgData, tasks } = props;
+type Props = {
+  orgPods: OrgPod[];
+};
+
+const Boards = (props: Props) => {
+  const { selectOptions, columns, onLoadMore, hasMore, orgData, tasks, orgPods } = props;
   const [filter, setFilter] = useState([]);
   const router = useRouter();
   const [view, setView] = useState(null);
@@ -39,40 +44,45 @@ const Boards = (props) => {
     {
       name: 'Pods',
       multiChoice: true,
-      items: [
-        {
-          id: 'designPod',
-          name: 'Design Pod',
-          icon: <CreatePodIcon />,
-          count: 12,
-        },
-        {
-          id: 'growthTeam',
-          name: 'Growth Team',
-          icon: <CreatePodIcon />,
-          count: 4,
-        },
-        {
-          id: 'analytics',
-          name: 'Analytics',
-          icon: <CreatePodIcon />,
-          count: 1,
-        },
-        { id: 'dataPod', name: 'Data Pod', icon: <CreatePodIcon />, count: 0 },
-        {
-          id: 'prDreamTeam',
-          name: 'PR Dream Team',
-          icon: <CreatePodIcon />,
-          count: 2,
-        },
-        {
-          id: 'twitterPod',
-          name: 'Twitter Pod',
-          icon: <CreatePodIcon />,
-          count: 10,
-        },
-        { id: 'blogPod', name: 'Blog Pod', icon: <CreatePodIcon />, count: 2 },
-      ],
+      items: orgPods.map((pod) => ({
+        ...pod,
+        icon: <CreatePodIcon />,
+        count: pod.contributorCount,
+      })),
+      // items: [
+      //   {
+      //     id: 'designPod',
+      //     name: 'Design Pod',
+      //     icon: <CreatePodIcon />,
+      //     count: 12,
+      //   },
+      //   {
+      //     id: 'growthTeam',
+      //     name: 'Growth Team',
+      //     icon: <CreatePodIcon />,
+      //     count: 4,
+      //   },
+      //   {
+      //     id: 'analytics',
+      //     name: 'Analytics',
+      //     icon: <CreatePodIcon />,
+      //     count: 1,
+      //   },
+      //   { id: 'dataPod', name: 'Data Pod', icon: <CreatePodIcon />, count: 0 },
+      //   {
+      //     id: 'prDreamTeam',
+      //     name: 'PR Dream Team',
+      //     icon: <CreatePodIcon />,
+      //     count: 2,
+      //   },
+      //   {
+      //     id: 'twitterPod',
+      //     name: 'Twitter Pod',
+      //     icon: <CreatePodIcon />,
+      //     count: 10,
+      //   },
+      //   { id: 'blogPod', name: 'Blog Pod', icon: <CreatePodIcon />, count: 2 },
+      // ],
     },
     {
       name: 'Status',
@@ -126,16 +136,6 @@ const Boards = (props) => {
       <BoardsContainer>
         <BoardsActivity>
           <SearchTasks onSearch={props.onSearch} />
-          {/*<BoardsActivityInput*/}
-          {/*  placeholder="Search people or pods..."*/}
-          {/*  InputProps={{*/}
-          {/*    startAdornment: (*/}
-          {/*      <InputAdornment position="start">*/}
-          {/*        <SearchIcon />*/}
-          {/*      </InputAdornment>*/}
-          {/*    ),*/}
-          {/*  }}*/}
-          {/*/>*/}
           <Filter filterSchema={filterSchema} filter={filter} setFilter={setFilter} />
           {view ? <ToggleViewButton options={listViewOptions} /> : null}
         </BoardsActivity>

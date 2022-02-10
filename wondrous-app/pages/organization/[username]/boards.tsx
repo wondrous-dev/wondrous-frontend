@@ -22,7 +22,7 @@ import {
   DEFAULT_STATUS_ARR,
   STATUS_OPEN,
 } from '../../../utils/constants';
-import { GET_ORG_FROM_USERNAME, GET_ORG_BY_ID } from '../../../graphql/queries/org';
+import { GET_ORG_FROM_USERNAME, GET_ORG_BY_ID, GET_ORG_PODS } from '../../../graphql/queries/org';
 import { OrgBoardContext } from '../../../utils/contexts';
 import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
 import { dedupeColumns } from '../../../utils';
@@ -99,14 +99,24 @@ const LIMIT = 10;
 
 export const populateTaskColumns = (tasks, columns) => {
   if (!columns) return [];
+
   const newColumns = columns.map((column) => {
     column.tasks = [];
+    column.statuses = {};
+
     return tasks.reduce((column, task) => {
       if (column.status === task.status) {
         column.tasks = [...column.tasks, task];
+        column.statuses = {
+          [task.status]: (column.statuses[task.status] || 0) + 1,
+        };
       } else if (task?.status === TASK_STATUS_ARCHIVED && column.section.filter.taskType === TASK_STATUS_ARCHIVED) {
         column.section.tasks = [...column.section.tasks, task];
+        column.statuses = {
+          [task.status]: (column.statuses[task.status] || 0) + 1,
+        };
       }
+
       return column;
     }, column);
   });
@@ -137,6 +147,7 @@ const BoardsPage = () => {
     fetchPolicy: 'cache-and-network',
   });
   const [orgTaskHasMore, setOrgTaskHasMore] = useState(false);
+  const [getOrgPods, { data: { getOrgPods: orgPods = [] } = {} }] = useLazyQuery(GET_ORG_PODS);
 
   const [getOrgTaskProposals] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
     onCompleted: (data) => {
@@ -228,6 +239,12 @@ const BoardsPage = () => {
   useEffect(() => {
     if (orgId || orgData?.id) {
       const id = orgId || orgData?.id;
+
+      getOrgPods({
+        variables: {
+          orgId: id,
+        },
+      });
 
       if (search) {
         searchOrgTasks({
@@ -332,6 +349,7 @@ const BoardsPage = () => {
       });
     }
   }, [orgTaskHasMore, columns, fetchMore]);
+
   if (!process.env.NEXT_PUBLIC_PRODUCTION) {
     console.log(
       'user permissions context',
@@ -340,6 +358,8 @@ const BoardsPage = () => {
         : null
     );
   }
+
+  console.log(columns, '-----');
 
   return (
     <OrgBoardContext.Provider
@@ -359,6 +379,7 @@ const BoardsPage = () => {
       }}
     >
       <Boards
+        orgPods={orgPods}
         selectOptions={SELECT_OPTIONS}
         columns={columns}
         onLoadMore={handleLoadMore}
@@ -370,5 +391,4 @@ const BoardsPage = () => {
   );
 };
 
-//export default withAuth(BoardsPage)
 export default withAuth(BoardsPage);
