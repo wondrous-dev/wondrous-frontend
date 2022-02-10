@@ -8,6 +8,7 @@ export const TASK_STATUS_DONE = 'completed';
 export const TASK_STATUS_REQUESTED = 'requested';
 export const TASK_STATUS_ARCHIVED = 'archived';
 export const TASK_STATUS_AWAITING_PAYMENT = 'awaiting_payment';
+export const TASK_STATUS_PAID = 'paid';
 
 export const COLUMN_TITLE_ARCHIVED = 'Archived';
 
@@ -47,7 +48,7 @@ export const PAYMENT_STATUS = {
   UNPAID: 'unpaid',
   PROCESSING: 'processing',
   PAID: 'paid',
-  FAILED: 'failed'
+  FAILED: 'failed',
 };
 
 // Supported Chains (ETHEREUM, POLYGON)

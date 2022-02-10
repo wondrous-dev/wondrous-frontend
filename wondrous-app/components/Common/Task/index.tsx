@@ -1,7 +1,15 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { useMutation } from '@apollo/client';
 import { LogoButton } from '../logo';
-import { TodoWithBorder, InProgressWithBorder, DoneWithBorder, InReview, Requested } from '../../Icons';
+import {
+  TodoWithBorder,
+  InProgressWithBorder,
+  DoneWithBorder,
+  InReview,
+  Requested,
+  AwaitingPayment,
+  Paid,
+} from '../../Icons';
 import { TaskLikeIcon } from '../../Icons/taskLike';
 import { TaskCommentIcon } from '../../Icons/taskComment';
 import { TaskShareIcon } from '../../Icons/taskShare';
@@ -67,6 +75,8 @@ export const TASK_ICONS = {
   [Constants.TASK_STATUS_IN_REVIEW]: InReview,
   [Constants.TASK_STATUS_REQUESTED]: Requested,
   [Constants.TASK_STATUS_ARCHIVED]: Archived,
+  [Constants.TASK_STATUS_AWAITING_PAYMENT]: AwaitingPayment,
+  [Constants.TASK_STATUS_PAID]: Paid,
 };
 
 let windowOffset = 0;
@@ -106,6 +116,12 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   let TaskIcon = TASK_ICONS[status];
+  if (task?.paymentStatus === Constants.PAYMENT_STATUS.PROCESSING) {
+    TaskIcon = TASK_ICONS[Constants.TASK_STATUS_AWAITING_PAYMENT];
+  }
+  if (task?.paymentStatus === Constants.PAYMENT_STATUS.PAID) {
+    TaskIcon = TASK_ICONS[Constants.TASK_STATUS_PAID];
+  }
   const isMilestone = type === Constants.ENTITIES_TYPES.MILESTONE;
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
@@ -359,7 +375,13 @@ export const TaskListCard = (props) => {
   const { taskType, task } = props;
   const router = useRouter();
   const [viewDetails, setViewDetails] = useState(false);
-  const TaskIcon = TASK_ICONS?.[taskType];
+  let TaskIcon = TASK_ICONS?.[taskType];
+  if (task?.paymentStatus === Constants.PAYMENT_STATUS.PROCESSING) {
+    TaskIcon = TASK_ICONS[Constants.TASK_STATUS_AWAITING_PAYMENT];
+  }
+  if (task?.paymentStatus === Constants.PAYMENT_STATUS.PAID) {
+    TaskIcon = TASK_ICONS[Constants.TASK_STATUS_PAID];
+  }
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
