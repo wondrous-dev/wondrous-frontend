@@ -10,7 +10,7 @@ import {
   GET_USER_TASK_BOARD_TASKS,
 } from '../../../graphql/queries';
 import { dedupeColumns, delQuery } from '../../../utils';
-import { populateTaskColumns, addToTaskColumns } from '../../../utils/board';
+import { updateTaskColumns } from '../../../utils/board';
 import {
   STATUS_OPEN,
   TASK_STATUS_ARCHIVED,
@@ -108,7 +108,7 @@ const Boards = (props) => {
     },
     onCompleted: (data) => {
       const tasks = data?.getUserTaskBoardTasks;
-      const newColumns = populateTaskColumns(tasks, columns.length > 0 ? columns : baseColumns);
+      const newColumns = updateTaskColumns(tasks, columns.length > 0 ? columns : baseColumns);
       setColumns(dedupeColumns(newColumns));
       setHasMoreTasks(tasks?.length >= limit);
     },
@@ -178,7 +178,7 @@ const Boards = (props) => {
         .then((fetchMoreResult) => {
           const results = fetchMoreResult?.data?.getUserTaskBoardTasks;
           if (results && results?.length > 0) {
-            const newColumns = addToTaskColumns(results, columns);
+            const newColumns = updateTaskColumns(results, columns);
             setColumns(dedupeColumns(newColumns));
           } else {
             setHasMoreTasks(false);
