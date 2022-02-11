@@ -165,7 +165,6 @@ const Boards = (props) => {
       offset: 0,
     },
     onCompleted: (data) => {
-      // TODO: @junius Extract this logic to a function
       const tasks = data?.getUserTaskBoardSubmissions;
       if (tasks?.length > 0) {
         const newColumns = columns[1]?.section ? [...columns] : [...baseColumns];
@@ -176,24 +175,18 @@ const Boards = (props) => {
   });
   const getProposalsUserCanReview = useQuery(GET_PROPOSALS_USER_CAN_REVIEW, {
     onCompleted: (data) => {
-      // TODO: @junius Extract this logic to a function
       const tasks = data?.getProposalsUserCanReview;
-      if (tasks?.length > 0) {
-        const newColumns = adminColumns[0]?.tasks ? [...adminColumns] : [...baseColumnsAdmin];
-        newColumns[0].tasks = [...tasks];
-        setAdminColumns(newColumns);
-      }
+      const newColumns = adminColumns[0]?.tasks ? [...adminColumns] : [...baseColumnsAdmin];
+      newColumns[0].tasks = [...tasks];
+      setAdminColumns(newColumns);
     },
   });
   const getSubmissionsUserCanReview = useQuery(GET_SUBMISSIONS_USER_CAN_REVIEW, {
     onCompleted: (data) => {
-      // TODO: @junius Extract this logic to a function
       const tasks = data?.getSubmissionsUserCanReview;
-      if (tasks?.length > 0) {
-        const newColumns = adminColumns[1]?.tasks ? [...adminColumns] : [...baseColumnsAdmin];
-        newColumns[1].tasks = [...tasks];
-        setAdminColumns(newColumns);
-      }
+      const newColumns = adminColumns[1]?.tasks ? [...adminColumns] : [...baseColumnsAdmin];
+      newColumns[1].tasks = [...tasks];
+      setAdminColumns(newColumns);
     },
   });
   const { data: userTaskCountData } = useQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD);
