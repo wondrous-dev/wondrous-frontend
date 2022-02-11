@@ -156,19 +156,23 @@ const PaymentItem = (props) => {
         <StyledTableCell>
           <TableCellText>{format(new Date(item.submissionApprovedAt || item.payedAt), 'MM/dd/yyyy')}</TableCellText>
         </StyledTableCell>
-        <StyledTableCell>
-          {item.paymentStatus !== 'processing' && item.paymentStatus !== 'paid' && (
-            <CreateFormPreviewButton
-              style={{
-                marginLeft: '0',
-              }}
-              onClick={() => setOpenModal(true)}
-            >
-              {' '}
-              Pay{' '}
-            </CreateFormPreviewButton>
-          )}
-        </StyledTableCell>
+        {item.paymentStatus !== 'paid' && (
+          <>
+            <StyledTableCell>
+              {item.paymentStatus !== 'processing' && (
+                <CreateFormPreviewButton
+                  style={{
+                    marginLeft: '0',
+                  }}
+                  onClick={() => setOpenModal(true)}
+                >
+                  {' '}
+                  Pay{' '}
+                </CreateFormPreviewButton>
+              )}
+            </StyledTableCell>
+          </>
+        )}
       </StyledTableRow>
     </>
   );
@@ -281,7 +285,7 @@ const Payouts = (props) => {
       />
       <StyledTableContainer
         style={{
-          marginLeft: '-8%',
+          marginLeft: '-3%',
           width: '108%',
         }}
       >
