@@ -429,7 +429,7 @@ const TaskSubmissionForm = (props) => {
         cancelSubmissionForm();
       }
     },
-    refetchQueries: ['getOrgTaskBoardSubmissions', 'getPerStatusTaskCountForOrgBoard'],
+    refetchQueries: ['getPerStatusTaskCountForOrgBoard'],
   });
   const [updateTaskSubmission] = useMutation(UPDATE_TASK_SUBMISSION, {
     onCompleted: (data) => {
