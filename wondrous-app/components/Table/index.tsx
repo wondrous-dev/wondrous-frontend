@@ -87,6 +87,7 @@ export const Table = (props) => {
   const apolloClient = useApolloClient();
   const [editableTask, setEditableTask] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [selectedTaskType, setSelectedTaskType] = useState(null);
   const [once, setOnce] = useState(false);
   const [isPreviewModalOpen, setPreviewModalOpen] = useState(false);
   const [isArchiveModalOpen, setArchiveModalOpen] = useState(false);
@@ -123,11 +124,6 @@ export const Table = (props) => {
         }
         return task.find((task) => task.id === taskId);
       });
-
-      if (task) {
-        openTask(task);
-        setOnce(false);
-      }
     }
   }, [columns, router?.query?.task || router?.query?.taskProposal]);
 
@@ -213,11 +209,11 @@ export const Table = (props) => {
     );
   }
 
-  function openTask(task) {
-    // BUG: @junius When a task is opened, the modal does not show the complete details
+  function openTask(task, taskType = '') {
     setOnce(false);
     router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`);
     setSelectedTask(task);
+    setSelectedTaskType(taskType);
     setPreviewModalOpen(true);
   }
 
@@ -232,6 +228,8 @@ export const Table = (props) => {
           });
         }}
         task={selectedTask}
+        isTaskProposal={selectedTaskType === Constants.TASK_STATUS_PROPOSAL_REQUEST}
+        taskId={selectedTask?.id}
       />
       <ArchiveTaskModal
         open={isArchiveModalOpen}
@@ -348,7 +346,7 @@ export const Table = (props) => {
                   <StyledTableCell align="center">
                     <TaskStatus status={task?.status || column?.section?.filter.taskType || column?.status} />
                   </StyledTableCell>
-                  <StyledTableCell className="clickable" onClick={() => openTask(task)}>
+                  <StyledTableCell className="clickable" onClick={() => openTask(task, column?.status)}>
                     <TaskTitle>{task.title}</TaskTitle>
                     <TaskDescription
                       style={{
