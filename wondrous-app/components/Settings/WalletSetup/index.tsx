@@ -131,6 +131,7 @@ const Wallets = (props) => {
       } else {
         newError.safeAddressError = 'unknown gnosis network error';
       }
+      setErrors(newError);
       return;
     }
     if (orgId) {
