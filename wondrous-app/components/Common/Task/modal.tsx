@@ -711,6 +711,7 @@ export const TaskViewModal = (props) => {
   if (showPaymentModal && approvedSubmission) {
     return (
       <MakePaymentModal
+        getTaskSubmissionsForTask={getTaskSubmissionsForTask}
         open={showPaymentModal}
         handleClose={handleClose}
         approvedSubmission={approvedSubmission}
