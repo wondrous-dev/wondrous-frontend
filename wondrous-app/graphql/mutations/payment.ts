@@ -15,3 +15,11 @@ export const PROPOSE_GNOSIS_TX_FOR_SUBMISSION = gql`
     }
   }
 `
+
+export const LINK_OFF_PLATFORM_PAYMENT = gql`
+  mutation linkOffPlatformPayment($input: OffPlatformPaymentInput) {
+    linkOffPlatformPayment(input: $input) {
+        success
+    }
+  }
+`
