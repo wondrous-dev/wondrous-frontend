@@ -15,8 +15,7 @@ import {
 } from '../../../graphql/queries/payment';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import { Typography } from '@material-ui/core';
-  PaymentDescriptionText,
-} from './styles';
+import { PaymentDescriptionText } from './styles';
 import { White } from '../../../theme/colors';
 
 const OFFLINE_PAYMENT_OPTIONS = [
@@ -73,8 +72,8 @@ export const OfflinePayment = (props) => {
   };
   const [linkOffPlatformPayment] = useMutation(LINK_OFF_PLATFORM_PAYMENT, {
     onCompleted: (data) => {
-      console.log(data)
-      setSubmissionPaid(true)
+      console.log(data);
+      setSubmissionPaid(true);
     },
     onError: (e) => {
       console.error(e);
@@ -107,8 +106,10 @@ export const OfflinePayment = (props) => {
           justifyContent: 'flex-end',
         }}
       >
-       {!submissionPaid && <CreateFormPreviewButton onClick={handleLinkPaymentLinkClick}>Link Payment</CreateFormPreviewButton>}
-       {submissionPaid && <PaymentDescriptionText>Paid!</PaymentDescriptionText>}
+        {!submissionPaid && (
+          <CreateFormPreviewButton onClick={handleLinkPaymentLinkClick}>Link Payment</CreateFormPreviewButton>
+        )}
+        {submissionPaid && <PaymentDescriptionText>Paid!</PaymentDescriptionText>}
       </div>
     </>
   );
