@@ -12,6 +12,7 @@ import { useWonderWeb3 } from '../../../services/web3';
 import { ErrorText } from '..';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PaymentPendingTypography } from './styles';
+import { usePaymentModal } from '../../../utils/hooks';
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {
@@ -25,9 +26,9 @@ const CHAIN_TO_GNOSIS_URL_ABBR = {
   polygon_mainnet: 'matic',
 };
 
-function constructGnosisRedirectUrl(chain, safeAddress, safeTxHash) {
+export const constructGnosisRedirectUrl = (chain, safeAddress, safeTxHash) => {
   return `https://gnosis-safe.io/app/${CHAIN_TO_GNOSIS_URL_ABBR[chain]}:${safeAddress}/transactions/${safeTxHash}`;
-}
+};
 
 const CHAIN_ID_TO_CHAIN_NAME = {
   1: 'eth_mainnet',
@@ -64,6 +65,7 @@ export const SingleWalletPayment = (props) => {
   const [safeTxHash, setSafeTxHash] = useState(null);
   const router = useRouter();
   const wonderWeb3 = useWonderWeb3();
+  const paymentModal = usePaymentModal();
   const connectWeb3 = async () => {
     await wonderWeb3.onConnect();
   };
@@ -84,6 +86,9 @@ export const SingleWalletPayment = (props) => {
   const [proposeGnosisTxForSubmission] = useMutation(PROPOSE_GNOSIS_TX_FOR_SUBMISSION, {
     onCompleted: (data) => {
       setPaymentPending(true);
+      if (paymentModal?.onPaymentComplete) {
+        paymentModal?.onPaymentComplete();
+      }
     },
     onError: (e) => {
       console.error(e);

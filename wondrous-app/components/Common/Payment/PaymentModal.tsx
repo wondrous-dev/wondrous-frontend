@@ -177,7 +177,7 @@ export const MakePaymentModal = (props) => {
                       textDecoration: 'underline',
                       cursor: 'pointer',
                     }}
-                    target=")blank"
+                    target="_blank"
                   >
                     {fetchedTask.assigneeUsername}
                   </a>
