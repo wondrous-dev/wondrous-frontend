@@ -413,7 +413,6 @@ export const Table = (props) => {
                           fontWeight="normal"
                           textAlign="left"
                         >
-                          {/* BUG: @junius When a proposal or submission was clicked, it produces an error  */}
                           Edit {dropdownItemLabel}
                         </DropDownItem>
                         <DropDownItem
