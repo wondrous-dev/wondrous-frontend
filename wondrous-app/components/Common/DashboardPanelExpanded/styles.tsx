@@ -5,9 +5,7 @@ export const StyledBorder = styled(Box)`
   background: linear-gradient(176.18deg, rgba(75, 75, 75, 0.6) 13.53%, rgba(35, 35, 35, 0.6) 63.82%);
   min-height: 178px;
   min-width: 500px;
-  max-width: 100%;
   width: max-content;
-  margin: 0 auto;
   padding: 1px;
   border-radius: 6px;
 `;

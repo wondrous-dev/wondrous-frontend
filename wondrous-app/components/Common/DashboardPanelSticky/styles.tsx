@@ -4,12 +4,10 @@ import styled from 'styled-components';
 export const StyledDropShadow = styled(Box)`
   background: linear-gradient(180deg, #0f0f0f 70.83%, rgba(15, 15, 15, 0) 100%);
   height: 220px;
-  margin: 0 auto;
   position: fixed;
   z-index: 20;
   width: 100%;
   margin-top: -30px;
-  // TODO: @junius Fix the alignment. It's a bit off-center.
 `;
 
 export const StyledBorder = styled(Box)`
