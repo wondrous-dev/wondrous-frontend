@@ -20,7 +20,6 @@ export const Content = styled.div`
 export const ContentContainer = styled.div`
   margin: 0 auto;
   width: 100%;
-  max-width: 1037px;
 `;
 
 export const Banner = styled.div`

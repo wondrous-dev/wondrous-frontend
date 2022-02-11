@@ -9,15 +9,22 @@ import {
   GET_USER_TASK_BOARD_SUBMISSIONS,
   GET_USER_TASK_BOARD_TASKS,
 } from '../../../graphql/queries';
+import {
+  GET_PROPOSALS_USER_CAN_REVIEW,
+  GET_SUBMISSIONS_USER_CAN_REVIEW,
+} from '../../../graphql/queries/workflowBoards';
 import { dedupeColumns, delQuery } from '../../../utils';
 import { updateTaskColumns } from '../../../utils/board';
 import {
   STATUS_OPEN,
   TASK_STATUS_ARCHIVED,
+  TASK_STATUS_AWAITING_PAYMENT,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_PROPOSAL_REQUEST,
   TASK_STATUS_REQUESTED,
+  TASK_STATUS_SUBMISSION_REQUEST,
   TASK_STATUS_TODO,
 } from '../../../utils/constants';
 import { UserBoardContext } from '../../../utils/contexts';
@@ -95,10 +102,35 @@ const done = {
 
 const baseColumns = [todo, inProgress, done];
 
+const proposal = {
+  status: TASK_STATUS_PROPOSAL_REQUEST,
+  tasks: [],
+};
+
+const submissions = {
+  status: TASK_STATUS_SUBMISSION_REQUEST,
+  tasks: [],
+};
+
+const awaitingPayment = {
+  // NOTE: Per Terry's instruction, payments will be hidden for now in Admin View
+  status: TASK_STATUS_AWAITING_PAYMENT,
+  tasks: [],
+};
+
+const baseColumnsAdmin = [proposal, submissions];
+
+const filterColumnsByStatus = (columns, status) => {
+  if (!status) return columns;
+  return columns.filter((column) => column.status === status);
+};
+
 const Boards = (props) => {
+  const { isAdmin, selectedStatus } = props;
   const router = useRouter();
   const [view, setView] = useState(null);
   const [columns, setColumns] = useState([]);
+  const [adminColumns, setAdminColumns] = useState([]);
   const [hasMoreTasks, setHasMoreTasks] = useState(true);
   const { fetchMore } = useQuery(GET_USER_TASK_BOARD_TASKS, {
     variables: {
@@ -133,10 +165,35 @@ const Boards = (props) => {
       offset: 0,
     },
     onCompleted: (data) => {
-      const taskSubmissions = data?.getUserTaskBoardSubmissions;
-      const newColumns = columns[1]?.section ? [...columns] : [...baseColumns];
-      newColumns[1].section.tasks = [...taskSubmissions];
-      setColumns(newColumns);
+      // TODO: @junius Extract this logic to a function
+      const tasks = data?.getUserTaskBoardSubmissions;
+      if (tasks?.length > 0) {
+        const newColumns = columns[1]?.section ? [...columns] : [...baseColumns];
+        newColumns[1].section.tasks = [...tasks];
+        setColumns(newColumns);
+      }
+    },
+  });
+  const getProposalsUserCanReview = useQuery(GET_PROPOSALS_USER_CAN_REVIEW, {
+    onCompleted: (data) => {
+      // TODO: @junius Extract this logic to a function
+      const tasks = data?.getProposalsUserCanReview;
+      if (tasks?.length > 0) {
+        const newColumns = adminColumns[0]?.tasks ? [...adminColumns] : [...baseColumnsAdmin];
+        newColumns[0].tasks = [...tasks];
+        setAdminColumns(newColumns);
+      }
+    },
+  });
+  const getSubmissionsUserCanReview = useQuery(GET_SUBMISSIONS_USER_CAN_REVIEW, {
+    onCompleted: (data) => {
+      // TODO: @junius Extract this logic to a function
+      const tasks = data?.getSubmissionsUserCanReview;
+      if (tasks?.length > 0) {
+        const newColumns = adminColumns[1]?.tasks ? [...adminColumns] : [...baseColumnsAdmin];
+        newColumns[1].tasks = [...tasks];
+        setAdminColumns(newColumns);
+      }
     },
   });
   const { data: userTaskCountData } = useQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD);
@@ -162,10 +219,13 @@ const Boards = (props) => {
   ];
 
   useEffect(() => {
-    if (router.isReady) {
+    if (router.isReady && !isAdmin) {
       setView((router.query.view || ViewType.Grid) as ViewType);
     }
-  }, [router.query.view, router.isReady]);
+    if (router.isReady && isAdmin) {
+      setView(ViewType.List as ViewType);
+    }
+  }, [router.query.view, router.isReady, isAdmin]);
 
   const handleLoadMore = useCallback(() => {
     if (hasMoreTasks) {
@@ -215,7 +275,7 @@ const Boards = (props) => {
             }}
           />
           {/*<Filter style={{ visibility: 'hidden' }} filterSchema={filterSchema} filter={filter} setFilter={setFilter} />*/}
-          {view ? <ToggleViewButton options={listViewOptions} /> : null}
+          {view && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
         </BoardsActivity>
 
         {view ? (
@@ -223,7 +283,12 @@ const Boards = (props) => {
             {view === ViewType.Grid ? (
               <KanbanBoard columns={columns} onLoadMore={handleLoadMore} hasMore={hasMoreTasks} />
             ) : (
-              <Table columns={columns} onLoadMore={handleLoadMore} hasMore={hasMoreTasks} />
+              <Table
+                columns={isAdmin ? filterColumnsByStatus(adminColumns, selectedStatus) : columns}
+                onLoadMore={handleLoadMore}
+                hasMore={hasMoreTasks}
+                isAdmin={isAdmin}
+              />
             )}
           </>
         ) : null}

@@ -81,7 +81,7 @@ const DELIVERABLES_ICONS = {
 };
 
 let windowOffset = 0;
-export const Table = ({ columns, onLoadMore, hasMore }) => {
+export const Table = ({ columns, onLoadMore, hasMore, isAdmin }) => {
   const router = useRouter();
   const apolloClient = useApolloClient();
   const [editableTask, setEditableTask] = useState(null);
@@ -114,9 +114,13 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
     if (taskId && !once) {
       let task;
       columns.find((column) => {
-        task = [...column.section.tasks, ...column.tasks].find((task) => task.id === taskId);
-
-        return task;
+        const section = column?.section?.task;
+        if (section) {
+          task = [...section, ...column.tasks];
+        } else {
+          task = [...column.tasks];
+        }
+        return task.find((task) => task.id === taskId);
       });
 
       if (task) {
@@ -209,6 +213,7 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
   }
 
   function openTask(task) {
+    // BUG: @junius When a task is opened, the modal does not show the complete details
     setOnce(false);
     router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`);
     setSelectedTask(task);
@@ -260,7 +265,7 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
               DAO
             </StyledTableCell>
             <StyledTableCell align="center" width="105px">
-              Assigned
+              {isAdmin ? 'Created by' : 'Assigned'}
             </StyledTableCell>
             <StyledTableCell align="center" width="77px">
               Status
@@ -270,19 +275,22 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
             <StyledTableCell align="center" width="88px">
               Reward
             </StyledTableCell>
-            {/*<StyledTableCell align="center" width="80px">*/}
-            {/*  Decision*/}
-            {/*</StyledTableCell>*/}
+            {isAdmin && (
+              <StyledTableCell align="center" width="80px">
+                Decision
+              </StyledTableCell>
+            )}
             <StyledTableCell width="54px"></StyledTableCell>
           </StyledTableRow>
         </StyledTableHead>
 
         <StyledTableBody>
           {columns.map((column) => {
-            let tasks = [...column.section.tasks, ...column.tasks];
+            let tasks = [...column.tasks];
+            if (column?.section?.tasks) tasks = [...tasks, ...column?.section?.tasks];
 
             // Don't show archived tasks
-            if (column.section.title === COLUMN_TITLE_ARCHIVED) {
+            if (column?.section?.title === COLUMN_TITLE_ARCHIVED) {
               tasks = column.tasks;
             }
 
@@ -331,13 +339,13 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                         ]}
                       />
                     ) : (
-                      <Link passHref={true} href={`/profile/${task.assigneeUsername}/about`}>
-                        <Initials>{task.assigneeUsername}</Initials>
+                      <Link passHref={true} href={`/profile/${task?.assigneeUsername ?? task?.creatorUsername}/about`}>
+                        <Initials>{task?.assigneeUsername ?? task?.creatorUsername}</Initials>
                       </Link>
                     )}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    <TaskStatus status={task.status || column.section.filter.taskType} />
+                    <TaskStatus status={task?.status || column?.section?.filter.taskType || column?.status} />
                   </StyledTableCell>
                   <StyledTableCell className="clickable" onClick={() => openTask(task)}>
                     <TaskTitle>{task.title}</TaskTitle>
@@ -382,9 +390,12 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                       )}
                     </RewardContainer>
                   </StyledTableCell>
-                  {/*<StyledTableCell align="center">*/}
-                  {/*  <DropDownButtonDecision />*/}
-                  {/*</StyledTableCell>*/}
+                  {isAdmin && (
+                    <StyledTableCell align="center">
+                      {/* TODO: change the design for disabled button */}
+                      <DropDownButtonDecision disabled={!canManageTask} taskId={task.id} status={column.status} />
+                    </StyledTableCell>
+                  )}
                   <StyledTableCell align="center">
                     <MoreOptions disabled={!canManageTask}>
                       <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
