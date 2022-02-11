@@ -9,10 +9,12 @@ import { StyledTabs } from './styles'
  * @returns 
  */
 
-const Tabs = ({ selected, tabs = [] }) => {
+const Tabs = ({ selected, tabs = [], onSelect }) => {
+	console.log(tabs, selected);
+
 	return (
 		<StyledTabs value={selected}>
-			{tabs.map((tab) => (<Tab value={tab.name} key={tab.name} label={tab.label} onClick={tab.action}/>)
+			{tabs.map((tab) => (<Tab value={tab.name} key={tab.name} label={tab.label} onClick={() => onSelect(tab)}/>)
 			)}
 		</StyledTabs>
 	)

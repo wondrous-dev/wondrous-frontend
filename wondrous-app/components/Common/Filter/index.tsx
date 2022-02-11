@@ -20,7 +20,10 @@ import {
   FilterItemCount,
   FilterItemListShade,
   FilterItemOrgIcon,
+  InlineText,
+  FilterValues,
 } from './styles';
+import { Blue200, Grey250 } from '../../../theme/colors';
 
 /**
  *
@@ -31,8 +34,9 @@ import {
  */
 
 const Filter = ({ filterSchema = [], filter, setFilter, onChange }) => {
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState();
   const [selectedTabItems, setSelectedTabItems] = useState({});
+  const [selectedNames, setSelectedNames] = useState([]);
   const [items, setItems] = useState([]);
   const [multiChoice, setMultichoice] = useState(true);
   const [open, setOpen] = useState(false);
@@ -56,42 +60,38 @@ const Filter = ({ filterSchema = [], filter, setFilter, onChange }) => {
 
     const newItems = [...items];
     newItems.forEach((it) => {
-      if (!multiChoice) {
-        it.selected = false;
-
-        const index = selectedItems.indexOf(it.name);
+      const deselect = () => {
+        const index = selectedItems.indexOf(it.id);
+        const nameIndex = selectedNames.indexOf(it.name);
 
         if (index > -1) {
           selectedItems.splice(index, 1);
         }
-      }
-      if (it.id === itemId) {
-        it.selected = !it.selected;
 
-        if (it.selected) {
+        if (nameIndex > -1) {
+          selectedNames.splice(index, 1);
+        }
+      };
+
+      if (it.id === itemId) {
+        const selected = selectedItems.includes(itemId);
+
+        if (!selected) {
+          selectedNames.push(it.name);
           selectedItems.push(itemId);
         } else {
-          const index = selectedItems.indexOf(itemId);
-          if (index > -1) {
-            selectedItems.splice(index, 1);
-          }
+          deselect();
         }
+      } else if (!multiChoice) {
+        deselect();
       }
     });
 
     const newSelectedTabItems = { ...selectedTabItems, [selected.name]: selectedItems };
     setItems(newItems);
     setSelectedTabItems(newSelectedTabItems);
+    setSelectedNames(selectedNames);
     onChange(newSelectedTabItems);
-  };
-
-  const setFilterList = () => {
-    filterSchema.map((tab) => {
-      tab.action = () => {
-        console.log('Tab ' + tab.name + ' pressed.');
-        displayList(tab);
-      };
-    });
   };
 
   const clearItems = () => {
@@ -101,28 +101,28 @@ const Filter = ({ filterSchema = [], filter, setFilter, onChange }) => {
     });
     setItems(newItems);
 
-    const newSelectedTabItems = { ...selectedTabItems, [selected.name]: [] };
-    setSelectedTabItems(newSelectedTabItems);
-    onChange(newSelectedTabItems);
+    setSelectedTabItems({});
+    setSelectedNames([]);
+    onChange({});
   };
 
   useEffect(() => {
-    setFilterList();
     displayList(filterSchema[0]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
-
-  useEffect(() => {
-    setFilterList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected]);
 
   return (
     <FilterHandle open={open}>
       <FilterHandleInner open={open} onClick={toggleOpen}>
         <FilterHandleContainer>
           {open ? (
-            `<Filter>`
+            !selectedNames.length ? (
+              `<Filter>`
+            ) : (
+              <FilterValues>
+                <InlineText color={Grey250}>Filter:&nbsp;</InlineText>
+                <InlineText color={Blue200}>{selectedNames.join(', ')}</InlineText>
+              </FilterValues>
+            )
           ) : (
             <>
               <FilterIcon /> &nbsp; Filter
@@ -135,27 +135,25 @@ const Filter = ({ filterSchema = [], filter, setFilter, onChange }) => {
       </FilterHandleInner>
       <FilterBox open={open}>
         <FilterBoxInner>
-          <Tabs tabs={filterSchema} selected={selected?.name} />
+          <Tabs tabs={filterSchema} selected={selected?.name} onSelect={(tab) => displayList(tab)} />
           <FilterStatus>
             <FilterCount>{items.filter((i) => i.selected).length} selected</FilterCount>
             <FilterClear onClick={clearItems}>Clear</FilterClear>
           </FilterStatus>
           <FilterItemsContainer>
             <FilterItemList>
-              {items.map((item) => (
-                <FilterItem
-                  onClick={() => {
-                    toggleInFilter(item.id);
-                  }}
-                  selected={item.selected}
-                  key={item.id}
-                >
-                  <FilterItemIcon>{item.icon}</FilterItemIcon>
-                  <FilterItemName>{item.name}</FilterItemName>
-                  {item.organization ? <FilterItemOrgIcon>{item.organization.profilePicture}</FilterItemOrgIcon> : ''}
-                  <FilterItemCount>{item.count}</FilterItemCount>
-                </FilterItem>
-              ))}
+              {items.map((item) => {
+                const isSelected = (selectedTabItems[selected?.name] || []).includes(item.id);
+
+                return (
+                  <FilterItem onClick={() => toggleInFilter(item.id)} selected={isSelected} key={item.id}>
+                    <FilterItemIcon>{item.icon}</FilterItemIcon>
+                    <FilterItemName>{item.name}</FilterItemName>
+                    {item.organization ? <FilterItemOrgIcon>{item.organization.profilePicture}</FilterItemOrgIcon> : ''}
+                    <FilterItemCount>{item.count}</FilterItemCount>
+                  </FilterItem>
+                );
+              })}
             </FilterItemList>
           </FilterItemsContainer>
         </FilterBoxInner>
