@@ -2,11 +2,30 @@ import React from 'react';
 import { Box, Typography } from '@material-ui/core';
 import styled from 'styled-components';
 
-export const Background = styled(Box)`
+export const StyledBorder = styled(Box)`
+  padding: 1px;
+  background: #0f0f0f;
+  border-radius: 3px;
+  ${({ isAdmin }) =>
+    isAdmin &&
+    `
+      &:hover {
+        cursor: pointer;
+      } ;
+  `}
+  ${({ isActive, color, isAdmin }) =>
+    isActive &&
+    isAdmin &&
+    `
+      background: ${color} ;
+  `}
+`;
+
+export const StyledBackground = styled(Box)`
   background: #0f0f0f;
   width: 241px;
   height: 107px;
-  border-radius: 3px;
+  border-radius: inherit;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

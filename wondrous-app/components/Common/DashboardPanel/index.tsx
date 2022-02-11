@@ -1,22 +1,18 @@
 import { useQuery } from '@apollo/client';
-import { CircularProgress } from '@material-ui/core';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD } from '../../../graphql/queries';
 import { GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT } from '../../../graphql/queries/workflowBoards';
-import { AndroidSwitch } from '../../CreateEntity/createEntityModal';
 import { AwaitingPayment, DoneWithBorder } from '../../Icons';
-import { InReviewIcon, MembershipRequestIcon, ProposalsRemainingIcon, TodoIcon } from '../../Icons/statusIcons';
-import DashboardPanelStatusCard from '../DashboardPanelStatusCard';
+import { InReviewIcon, ProposalsRemainingIcon, TodoIcon } from '../../Icons/statusIcons';
+import DashboardPanelExpanded from '../DashboardPanelExpanded';
+import DashboardPanelSticky from '../DashboardPanelSticky';
+import { useInView } from 'react-intersection-observer';
+import { DashboardPanelWrapper } from './styles';
 import {
-  CircularProgressWrapper,
-  HeaderTitle,
-  PanelHeader,
-  DashboardPanelStatusCardWrapper,
-  PanelViewButton,
-  PanelViewButtonLabel,
-  StyledBackground,
-  StyledBorder,
-} from './styles';
+  TASK_STATUS_AWAITING_PAYMENT,
+  TASK_STATUS_PROPOSAL_REQUEST,
+  TASK_STATUS_SUBMISSION_REQUEST,
+} from '../../../utils/constants';
 
 const panels = { contributor: 'Contributor', admin: 'Admin' };
 
@@ -45,14 +41,15 @@ const statusCardsBase = [
     panel: panels.contributor,
     dataKey: 'completed',
   },
-  {
-    Icon: MembershipRequestIcon,
-    label: 'memberships requests',
-    color: 'linear-gradient(196.76deg, #FFFFFF -48.71%, #FF6DD7 90.48%)',
-    panelPosition: 1,
-    panel: panels.admin,
-    dataKey: 'orgMembershipRequestCount',
-  },
+  // NOTE: Per Andros instruction, the membership request feature is not yet implement so this panel should not be displayed for now
+  // {
+  //   Icon: MembershipRequestIcon,
+  //   label: 'memberships requests',
+  //   color: 'linear-gradient(196.76deg, #FFFFFF -48.71%, #FF6DD7 90.48%)',
+  //   panelPosition: 1,
+  //   panel: panels.admin,
+  //   dataKey: 'orgMembershipRequestCount',
+  // },
   {
     Icon: ProposalsRemainingIcon,
     label: 'proposals remaining',
@@ -60,6 +57,7 @@ const statusCardsBase = [
     panelPosition: 2,
     panel: panels.admin,
     dataKey: 'proposalRequestCount',
+    status: TASK_STATUS_PROPOSAL_REQUEST,
   },
   {
     Icon: InReviewIcon,
@@ -68,15 +66,18 @@ const statusCardsBase = [
     panelPosition: 3,
     panel: panels.admin,
     dataKey: 'submissionRequestCount',
+    status: TASK_STATUS_SUBMISSION_REQUEST,
   },
-  {
-    Icon: AwaitingPayment,
-    label: 'tasks awaiting payment',
-    color: 'linear-gradient(180deg, #FFFFFF 0%, #06FFA5 100%)',
-    panelPosition: 4,
-    panel: panels.admin,
-    dataKey: 'paymentRequestCount',
-  },
+  // NOTE: Per Terry's instruction, payments will be hidden for now from the Admin View
+  // {
+  //   Icon: AwaitingPayment,
+  //   label: 'tasks awaiting payment',
+  //   color: 'linear-gradient(180deg, #FFFFFF 0%, #06FFA5 100%)',
+  //   panelPosition: 4,
+  //   panel: panels.admin,
+  //   dataKey: 'paymentRequestCount',
+  //   status: TASK_STATUS_AWAITING_PAYMENT,
+  // },
 ];
 
 const updateStatusCards = (data, statusData, panel) => {
@@ -92,7 +93,8 @@ const updateStatusCards = (data, statusData, panel) => {
 };
 
 const DashboardPanel = (props) => {
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { isAdmin, setIsAdmin, selectedStatus, setSelectedStatus } = props;
+  const [ref, inView] = useInView({});
   const { data: getPerStatusTaskCountData, loading: getPerStatusTaskCountLoading } = useQuery(
     GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD
   );
@@ -103,32 +105,28 @@ const DashboardPanel = (props) => {
     ? getWorkFlowBoardReviewableItemsCountData?.getWorkFlowBoardReviewableItemsCount
     : getPerStatusTaskCountData?.getPerStatusTaskCountForUserBoard;
   const activePanelStatusCards = updateStatusCards(activePanelData, statusCardsBase, activePanel);
-  const handleSwitchOnClick = useCallback(() => {
-    setIsAdmin((prevState) => !prevState);
-  }, []);
+
   return (
-    <StyledBorder>
-      <StyledBackground>
-        <PanelHeader>
-          <HeaderTitle>{activePanel} panel</HeaderTitle>
-          <PanelViewButton>
-            <PanelViewButtonLabel>Admin View</PanelViewButtonLabel>
-            <AndroidSwitch onClick={handleSwitchOnClick} />
-          </PanelViewButton>
-        </PanelHeader>
-        {getPerStatusTaskCountLoading || getWorkFlowBoardReviewableItemsCountLoading ? (
-          <CircularProgressWrapper>
-            <CircularProgress />
-          </CircularProgressWrapper>
-        ) : (
-          <DashboardPanelStatusCardWrapper>
-            {activePanelStatusCards.map((status, id) => (
-              <DashboardPanelStatusCard key={id} status={status} />
-            ))}
-          </DashboardPanelStatusCardWrapper>
-        )}
-      </StyledBackground>
-    </StyledBorder>
+    <DashboardPanelWrapper>
+      {!inView && (
+        <DashboardPanelSticky
+          activePanelStatusCards={activePanelStatusCards}
+          selectedStatus={selectedStatus}
+          setSelectedStatus={setSelectedStatus}
+          isAdmin={isAdmin}
+        />
+      )}
+      <DashboardPanelExpanded
+        activePanel={activePanel}
+        activePanelStatusCards={activePanelStatusCards}
+        onClick={() => setIsAdmin((prevState) => !prevState)}
+        loading={getPerStatusTaskCountLoading || getWorkFlowBoardReviewableItemsCountLoading}
+        selectedStatus={selectedStatus}
+        setSelectedStatus={setSelectedStatus}
+        isAdmin={isAdmin}
+      />
+      <span ref={ref} />
+    </DashboardPanelWrapper>
   );
 };
 
