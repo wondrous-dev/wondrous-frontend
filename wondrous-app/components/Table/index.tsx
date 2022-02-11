@@ -135,17 +135,20 @@ export const Table = (props) => {
     // },
   });
 
-  async function editTask(task) {
+  async function editTask(task, status = '') {
     let populatedTask = { ...task };
-    const isTaskProposal = task.type === Constants.TASK_STATUS_REQUESTED;
+    const isTaskProposal =
+      status === Constants.TASK_STATUS_REQUESTED || status === Constants.TASK_STATUS_PROPOSAL_REQUEST;
 
     if (!isTaskProposal) {
+      const isTaskSubmission =
+        status === Constants.TASK_STATUS_IN_REVIEW || status === Constants.TASK_STATUS_SUBMISSION_REQUEST;
       const {
         data: { getTaskReviewers },
       } = await apolloClient.query({
         query: GET_TASK_REVIEWERS,
         variables: {
-          taskId: task?.id,
+          taskId: !isTaskSubmission ? task?.id : task?.taskId,
         },
       });
 
@@ -294,7 +297,11 @@ export const Table = (props) => {
             }
 
             return tasks.map((task, index) => {
-              // Parse permissions here as well
+              const status = task?.status ?? column?.section?.filter?.taskType ?? column?.status;
+              const dropdownItemLabel =
+                status === Constants.TASK_STATUS_PROPOSAL_REQUEST || status === Constants.TASK_STATUS_REQUESTED
+                  ? 'task proposal'
+                  : 'task';
               const permissions = parseUserPermissionContext({
                 userPermissionsContext,
                 orgId: task?.orgId,
@@ -344,7 +351,7 @@ export const Table = (props) => {
                     )}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    <TaskStatus status={task?.status || column?.section?.filter.taskType || column?.status} />
+                    <TaskStatus status={status} />
                   </StyledTableCell>
                   <StyledTableCell className="clickable" onClick={() => openTask(task, column?.status)}>
                     <TaskTitle>{task.title}</TaskTitle>
@@ -400,13 +407,14 @@ export const Table = (props) => {
                       <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
                         <DropDownItem
                           key={'task-menu-edit-' + task.id}
-                          onClick={() => editTask(task)}
+                          onClick={() => editTask(task, status)}
                           color="#C4C4C4"
                           fontSize="13px"
                           fontWeight="normal"
                           textAlign="left"
                         >
-                          Edit task
+                          {/* BUG: @junius When a proposal or submission was clicked, it produces an error  */}
+                          Edit {dropdownItemLabel}
                         </DropDownItem>
                         <DropDownItem
                           key={'task-menu-report-' + task.id}
@@ -419,7 +427,8 @@ export const Table = (props) => {
                           fontWeight="normal"
                           textAlign="left"
                         >
-                          Archive task
+                          {/* BUG: @junius When a proposal or submission was clicked, it produces an error */}
+                          Archive {dropdownItemLabel}
                         </DropDownItem>
                       </DropDown>
                     </MoreOptions>
