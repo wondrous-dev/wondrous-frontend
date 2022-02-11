@@ -227,6 +227,9 @@ const Boards = (props) => {
           offset: Math.max(...columns.map(({ tasks }) => tasks.length)),
           limit,
         },
+        updateQuery: (prev, { fetchMoreResult }) => ({
+          getUserTaskBoardTasks: [...prev.getUserTaskBoardTasks, ...fetchMoreResult.getUserTaskBoardTasks],
+        }),
       })
         .then((fetchMoreResult) => {
           const results = fetchMoreResult?.data?.getUserTaskBoardTasks;
