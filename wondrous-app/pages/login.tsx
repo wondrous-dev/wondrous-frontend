@@ -58,7 +58,7 @@ const Login = ({ csrfToken }) => {
       // Retrieve Signed Message
       const messageToSign = await getUserSigningMessage(
         wonderWeb3.address,
-        transformWalletType(wonderWeb3.chainName.toLowerCase(), WALLET_TYPE.metamask)
+        'eth'
       );
 
       if (messageToSign) {

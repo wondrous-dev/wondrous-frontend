@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ToggleViewWrapper, ToggleViewOption } from './styles';
 
 // Toggler between views (i.e. grid vs list)
-export const ToggleViewButton = ({ options }) => {
+export const ToggleViewButton = ({ options, ...props }) => {
   const [active, setActive] = useState(0);
 
   const activateOption = (index) => {
@@ -22,7 +22,7 @@ export const ToggleViewButton = ({ options }) => {
   }, []);
 
   return (
-    <ToggleViewWrapper>
+    <ToggleViewWrapper {...props}>
       {options.map((opt, key) => (
         <ToggleViewOption
           key={'toggle-option-' + opt.name}
