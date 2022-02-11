@@ -111,7 +111,6 @@ export const MakePaymentModal = (props) => {
   }, [fetchedTask]);
 
   useEffect(() => {
-    console.log('apporvedSubmissionid', approvedSubmission?.id);
     getSubmissionPaymentInfo({
       variables: {
         submissionId: approvedSubmission?.id,
@@ -155,11 +154,11 @@ export const MakePaymentModal = (props) => {
                 <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
               </div>
             )}
-          <>
-            <PodNameTypography style={GoBackStyle} onClick={()=>setShowPaymentModal(false)}>
-              Back to Task
-            </PodNameTypography>
-          </>
+            <>
+              <PodNameTypography style={GoBackStyle} onClick={() => setShowPaymentModal(false)}>
+                Back to Task
+              </PodNameTypography>
+            </>
           </PaymentModalHeader>
           <PaymentTitleDiv>
             <PaymentTitleTextDiv>
@@ -177,7 +176,7 @@ export const MakePaymentModal = (props) => {
                       textDecoration: 'underline',
                       cursor: 'pointer',
                     }}
-                    target=")blank"
+                    target="_blank"
                   >
                     {fetchedTask.assigneeUsername}
                   </a>
