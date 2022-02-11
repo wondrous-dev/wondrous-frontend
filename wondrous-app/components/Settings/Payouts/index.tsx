@@ -64,7 +64,7 @@ const PaymentItem = (props) => {
     link = constructGnosisRedirectUrl(item.chain, item.safeAddress, item.safeTxHash);
     linkText = item.safeTxHash;
   }
-  console.log('item', item);
+
   return (
     <>
       <PaymentModalContext.Provider
@@ -133,6 +133,7 @@ const PaymentItem = (props) => {
           <Link href={taskHref}>
             <a
               target="_blank"
+              rel="noreferrer"
               style={{
                 color: White,
               }}
@@ -147,6 +148,7 @@ const PaymentItem = (props) => {
               color: White,
             }}
             target={'_blank'}
+            rel="noreferrer"
             href={link}
           >
             {cutString(linkText, 8)}
@@ -215,7 +217,6 @@ const Payouts = (props) => {
   const [paidList, setPaidList] = useState([]);
   const [unpaidList, setUnpaidList] = useState([]);
   const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
-  console.log('podId', podId, view);
   useEffect(() => {
     if (orgId) {
       getOrgById({
@@ -239,7 +240,6 @@ const Payouts = (props) => {
           podId,
         },
       }).then((result) => {
-        console.log('result', result?.data);
         const submissions = result?.data?.getUnpaidSubmissionsForPod;
         setUnpaidList(submissions || []);
       });
@@ -321,6 +321,7 @@ const Payouts = (props) => {
               <>
                 {paidList?.map((item) => (
                   <PaymentItem
+                    key={item?.id}
                     item={{
                       ...item,
                       paymentStatus: 'paid',
@@ -333,7 +334,7 @@ const Payouts = (props) => {
             ) : (
               <>
                 {unpaidList?.map((item) => (
-                  <PaymentItem item={item} org={org} podId={podId} />
+                  <PaymentItem key={item?.id} item={item} org={org} podId={podId} />
                 ))}
               </>
             )}

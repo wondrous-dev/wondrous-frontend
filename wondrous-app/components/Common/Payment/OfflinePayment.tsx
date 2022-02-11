@@ -36,9 +36,7 @@ export const OfflinePayment = (props) => {
     location.reload();
   };
   const [linkOffPlatformPayment] = useMutation(LINK_OFF_PLATFORM_PAYMENT, {
-    onCompleted: (data) => {
-      console.log(data);
-    },
+    onCompleted: (data) => {},
     onError: (e) => {
       console.error(e);
       setLinkPaymentError(e);
