@@ -27,7 +27,7 @@ import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
 import { GET_POD_BY_ID } from '../../../graphql/queries/pod';
 import { addToTaskColumns, populateTaskColumns } from '../../organization/[username]/boards';
 import { dedupeColumns } from '../../../utils';
-import * as Constants from "../../../utils/constants";
+import * as Constants from '../../../utils/constants';
 
 const TO_DO = {
   status: TASK_STATUS_TODO,
@@ -141,13 +141,10 @@ const BoardsPage = () => {
 
   const [getPodTasks, { fetchMore, variables: getPodTasksVariables }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {
     onCompleted: (data) => {
-      if (!firstTimeFetch) {
-        const tasks = data?.getPodTaskBoardTasks;
-        const newColumns = populateTaskColumns(tasks, columns);
-        setColumns(dedupeColumns(newColumns));
-        setPodTaskHasMore(tasks.length >= LIMIT);
-        setFirstTimeFetch(true);
-      }
+      const tasks = data?.getPodTaskBoardTasks;
+      const newColumns = populateTaskColumns(tasks, columns);
+      setColumns(dedupeColumns(newColumns));
+      setPodTaskHasMore(tasks.length >= LIMIT);
     },
     fetchPolicy: 'cache-and-network',
   });

@@ -24,7 +24,7 @@ import {
 import { GET_SUBMISSIONS_PAYMENT_INFO } from '../../graphql/queries';
 import { PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS } from '../../graphql/mutations';
 
-const CHAIN = 'rinkeby' // there's currently a safe set up at this address, can add people to owner of safe
+const CHAIN = 'rinkeby'; // there's currently a safe set up at this address, can add people to owner of safe
 const GNOSIS_SAFE_ADDR = '0x3c6645cf6e3D33Ec84c731972acDEf100939eE94'; // update to user wallet
 const SUBMISSION_IDS = ['46928637151150081', '46928637194141698']; // update to local list of submissions ids
 
@@ -38,6 +38,7 @@ interface PaymentData {
   isEthTransfer: Boolean;
   amount: string;
   recepientAddress: string;
+  chain: string;
 }
 
 const Multisend = () => {
@@ -45,7 +46,7 @@ const Multisend = () => {
   const [safeSdk, setSafeSdk] = useState<Safe>(null);
   const safeService = new SafeServiceClient(`https://safe-transaction.${CHAIN}.gnosis.io`);
   const configureSafeSdk = async () => {
-    // connect wallet, need to make this work with rinkeby polyon and mainnet, if gnosis safe is not deployed 
+    // connect wallet, need to make this work with rinkeby polyon and mainnet, if gnosis safe is not deployed
     // at the specified address on network, this will fail, would need to try catch
     const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
     const safeOwner = provider.getSigner(0);
@@ -57,9 +58,7 @@ const Multisend = () => {
     setSafeSdk(safe);
   };
   const [proposeGnosisMultisend] = useMutation(PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS, {
-    onCompleted: (data) => {
-      console.log('completed', data)
-    },
+    onCompleted: (data) => {},
     onError: (e) => {
       console.error(e);
     },
@@ -70,11 +69,11 @@ const Multisend = () => {
       submissionIds: SUBMISSION_IDS,
     },
   });
-  const submissionsPaymentInfo: SubmissionPaymentInfo[] = submissionsPaymentData?.getSubmissionsPaymentInfo
+  const submissionsPaymentInfo: SubmissionPaymentInfo[] = submissionsPaymentData?.getSubmissionsPaymentInfo;
 
   const constructAndSignTransaction = async () => {
     // first construct the safe transaction. better to do this on front end so people can trust the transaction generating process
-    // after we open source 
+    // after we open source
     let iface = new ethers.utils.Interface(ERC20abi);
     const transactions: MetaTransactionData[] = [];
     submissionsPaymentInfo?.map((submissionPaymentInfo) => {
@@ -109,7 +108,7 @@ const Multisend = () => {
       nonce: nextNonce,
     };
     const safeTransaction = await safeSdk.createTransaction(transactions, options); // create tx object
-    const safeTxHash = await safeSdk.getTransactionHash(safeTransaction); 
+    const safeTxHash = await safeSdk.getTransactionHash(safeTransaction);
     await safeSdk.signTransaction(safeTransaction);
     let sender; // parse out sender from signature, should be checksum addr. although backend can probably just convert
     let signature; // parse out signature
@@ -128,7 +127,7 @@ const Multisend = () => {
       variables: {
         input: {
           submissionIds: SUBMISSION_IDS,
-          safeAddress: GNOSIS_SAFE_ADDR, 
+          safeAddress: GNOSIS_SAFE_ADDR,
           chain: CHAIN,
           transactionData: txData,
         },

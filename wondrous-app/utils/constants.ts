@@ -8,6 +8,9 @@ export const TASK_STATUS_DONE = 'completed';
 export const TASK_STATUS_REQUESTED = 'requested';
 export const TASK_STATUS_ARCHIVED = 'archived';
 export const TASK_STATUS_AWAITING_PAYMENT = 'awaiting_payment';
+export const TASK_STATUS_PAID = 'paid';
+
+export const COLUMN_TITLE_ARCHIVED = 'Archived';
 
 export const STATUS_OPEN = 'open';
 export const STATUS_WAITING_FOR_REVIEW = 'waiting_for_review';
@@ -41,15 +44,33 @@ export const SOCIAL_OPENSEA = 'opensea';
 // Character Limits
 export const CHAR_LIMIT_PROFILE_BIO = 200;
 
+export const PAYMENT_STATUS = {
+  UNPAID: 'unpaid',
+  PROCESSING: 'processing',
+  PAID: 'paid',
+  FAILED: 'failed',
+};
+
 // Supported Chains (ETHEREUM, POLYGON)
-export const SUPPORTED_CHAINS = {
+const SUPPORTED_CHAINS = {
   1: 'ETH',
   137: 'MATIC',
 };
 
+if (!process.env.NEXT_PUBLIC_PRODUCTION) {
+  SUPPORTED_CHAINS[4] = 'RINKEBY';
+}
+
 export const CHAIN_IDS = {
   ETH: 1,
   MATIC: 137,
+  RINKEBY: 4,
+};
+
+export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
+  eth_mainnet: 'Ethereum Mainnet',
+  rinkeby: 'Rinkeby Testnet',
+  polygon_mainnet: 'Polygon Mainnet',
 };
 
 export const SUPPORTED_CURRENCIES = [
@@ -127,6 +148,7 @@ export const VIDEO_FILE_EXTENSIONS_TYPE_MAPPING = {
 
 export const MENTION_REGEX = /@\[(.*?)]\((.*?)\)/g;
 
+export const USERNAME_REGEX = /^[A-Za-z0-9_]{3,16}$/;
 export const PERMISSIONS = {
   CREATE_TASK: 'create_task',
   EDIT_TASK: 'edit_task', // edit task even when you are not the creator
@@ -182,3 +204,38 @@ export const BOARD_TYPE = {
 
 export const snakeToCamel = (str) =>
   str?.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('-', '').replace('_', ''));
+
+export const POD_COLOR = {
+  '#B8255F': 'Ruby Red',
+  '#DB4035': 'Jasper Red',
+  '#FF9933': 'Sunstone Orange',
+  '#FAD000': 'Citrine Yellow',
+  '#B4C424': 'Peridot Green',
+  '#7ECC49': 'Lime Green',
+  '#00A86B': 'Jade Green',
+  '#76EBCA': 'Aquamarine',
+  '#158FAD': 'Gemstone Teal',
+  '#72C2D4': 'Larimar Blue',
+  '#96C3EB': 'Lace Agate Blue',
+  '#4073FF': 'Azurite Blue',
+  '#884DFF': 'Amethyst Purple',
+  '#AF38EB': 'Spirit Quartz Purple',
+  '#EB96EB': 'Lepidolite pink',
+  '#E05194': 'Magenta',
+  '#FF8D85': 'Sardonyx Salmon',
+  '#808080': 'Shungite Grey',
+  '#B8B8B8': 'Grey',
+  '#CCAC93': 'Okenite Sepia',
+};
+
+export const filteredColorOptions = Object.keys(POD_COLOR).map((key) => ({
+  label: POD_COLOR[key],
+  value: key,
+}));
+export { SUPPORTED_CHAINS };
+export const EMAIL_REGEX =
+  /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+export const validateEmail = (email) => {
+  return email.match(EMAIL_REGEX);
+};

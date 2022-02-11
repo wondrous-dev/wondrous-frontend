@@ -16,6 +16,7 @@ export const SettingsContainer = styled.div`
   height: 100%;
   min-height: 100vh;
   display: flex;
+  background: #0f0f0f;
 `;
 
 export const SettingsSidebar = styled.div`

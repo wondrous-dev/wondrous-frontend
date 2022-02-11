@@ -16,6 +16,7 @@ export const TaskFragment = gql`
     blockerTaskIds
     dueDate
     status
+    paymentStatus
     links {
       url
       displayName
@@ -37,6 +38,10 @@ export const TaskFragment = gql`
     }
     pod {
       name
+      color
+    }
+    milestone {
+      title
     }
     orgOrder
     podOrder
@@ -67,6 +72,7 @@ export const TaskCardFragment = gql`
     podId
     podProfilePicture
     podName
+    podColor
     title
     description
     assigneeId
@@ -82,6 +88,7 @@ export const TaskCardFragment = gql`
     orgOrder
     podOrder
     assigneeOrder
+    paymentStatus
     rewards {
       rewardAmount
       paymentMethodId
@@ -97,6 +104,8 @@ export const TaskCardFragment = gql`
     media {
       ...MediaFragment
     }
+    milestoneId
+    milestoneTitle
   }
   ${MediaFragment}
 `;
@@ -115,6 +124,7 @@ export const TaskProposalCardFragment = gql`
     podId
     podProfilePicture
     podName
+    podColor
     title
     description
     approvedAt
@@ -154,12 +164,14 @@ export const TaskSubmissionCardFragment = gql`
     podId
     podProfilePicture
     podName
+    podColor
     title
     description
     approvedAt
     changeRequestedAt
     rejectedAt
     lastReviewedBy
+    paymentStatus
     links {
       url
       displayName
@@ -190,6 +202,7 @@ export const TaskSubmissionFragment = gql`
     changeRequestedAt
     rejectedAt
     lastReviewedBy
+    paymentStatus
     org {
       profilePicture
       name
@@ -198,6 +211,7 @@ export const TaskSubmissionFragment = gql`
     pod {
       name
       username
+      color
     }
     creator {
       username
@@ -257,6 +271,7 @@ export const TaskProposalFragment = gql`
     }
     pod {
       name
+      color
     }
   }
   ${MediaFragment}

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { SettingsWrapper } from './settingsWrapper';
 import { HeaderBlock } from './headerBlock';
 import { ImageUpload } from './imageUpload';
@@ -21,21 +21,35 @@ import { getFilenameAndType, uploadMedia } from '../../utils/media';
 import { ProfilePictureDiv } from '../Onboarding/styles';
 import { SafeImage } from '../Common/Image';
 import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
-import { CHAR_LIMIT_PROFILE_BIO } from '../../utils/constants';
+import { CHAR_LIMIT_PROFILE_BIO, USERNAME_REGEX, validateEmail } from '../../utils/constants';
+import { ErrorText } from '../Common';
+import { SnackbarAlertContext } from '../../components/Common/SnackbarAlert';
 
 const ProfileSettings = (props) => {
   const { loggedInUser } = props;
   const [username, setUsername] = useState(loggedInUser?.username);
+  const [email, setEmail] = useState(loggedInUser?.userInfo?.email);
   const [profilePictureUrl, setProfilePictureUrl] = useState(loggedInUser?.profilePicture);
   const [profileBannerUrl, setProfileBannerUrl] = useState(loggedInUser?.headerPicture);
   const [profilePicture, setProfilePicture] = useState(null);
   const [profileBanner, setProfileBanner] = useState(null);
   const [profileBio, setProfileBio] = useState(loggedInUser?.bio);
   const [updateUserProfile] = useMutation(UPDATE_USER);
-  
+  const snackbarContext = useContext(SnackbarAlertContext);
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const [errors, setErrors] = useState({
+    username: null,
+    email: null,
+  });
   const handleUsernameChange = (e) => {
     const { value } = e.target;
     setUsername(value);
+  };
+
+  const handleEmailChange = (e) => {
+    const { value } = e.target;
+    setEmail(value);
   };
 
   const handleProfileBioChange = (e) => {
@@ -43,51 +57,82 @@ const ProfileSettings = (props) => {
     setProfileBio(value);
   };
 
+  useEffect(() => {
+    if (loggedInUser?.username) {
+      setUsername(loggedInUser?.username);
+    }
+    if (loggedInUser?.userInfo?.email) {
+      setEmail(loggedInUser?.userInfo?.email);
+    }
+    if (loggedInUser?.bio) {
+      setProfileBio(loggedInUser?.bio);
+    }
+  }, [loggedInUser?.username, loggedInUser?.userInfo?.email, loggedInUser?.bio]);
   const handleSaveChanges = async () => {
     // Only if username is there...
-    if (username) {
-      let input = {
-        username,
-        bio: profileBio,
-      };
-
-      if (profilePicture) {
-        const file = profilePicture;
-        const fileName = profilePicture.name;
-
-        // get image preview
-        const { fileType, filename } = getFilenameAndType(fileName);
-        const imagePrefix = `tmp/${loggedInUser?.id}/`;
-        const imageUrl = imagePrefix + filename;
-
-        await uploadMedia({ filename: imageUrl, fileType, file });
-        input['profilePicture'] = imageUrl;
-      }
-
-    // ----> Backend not Ready yet...
-    //   if(profileBanner) {
-    //     const file = profileBanner;
-    //     const fileName = profileBanner.name;
-
-    //     // get image preview
-    //     const { fileType, filename } = getFilenameAndType(fileName);
-    //     const imagePrefix = `tmp/${loggedInUser?.id}/`;
-    //     const imageUrl = imagePrefix + filename;
-
-    //     await uploadMedia({ filename: imageUrl, fileType, file });
-    //     input['headerPicture'] = imageUrl;
-    //   }
-
-      updateUserProfile({
-        variables: {
-          input,
-        },
-        onCompleted: (data) => {
-          if (data?.updateUser?.profilePicture) {
-            setProfilePictureUrl(data?.updateUser?.profilePicture);
-          }
-        },
+    if (!USERNAME_REGEX.test(username)) {
+      setErrors({
+        ...errors,
+        username: 'Please enter a valid username with 3-15 alphanumeric characters',
       });
+    } else if (!validateEmail(email)) {
+      setErrors({
+        ...errors,
+        email: 'Please enter a valid email',
+      });
+    } else {
+      if (username) {
+        let input = {
+          ...(username && {
+            username,
+          }),
+          ...(profileBio && {
+            bio: profileBio,
+          }),
+        };
+        if (email !== loggedInUser?.email) {
+          input['email'] = email;
+        }
+        if (profilePicture) {
+          const file = profilePicture;
+          const fileName = profilePicture.name;
+
+          // get image preview
+          const { fileType, filename } = getFilenameAndType(fileName);
+          const imagePrefix = `tmp/${loggedInUser?.id}/`;
+          const imageUrl = imagePrefix + filename;
+
+          await uploadMedia({ filename: imageUrl, fileType, file });
+          input['profilePicture'] = imageUrl;
+        }
+
+        // ----> Backend not Ready yet...
+        //   if(profileBanner) {
+        //     const file = profileBanner;
+        //     const fileName = profileBanner.name;
+
+        //     // get image preview
+        //     const { fileType, filename } = getFilenameAndType(fileName);
+        //     const imagePrefix = `tmp/${loggedInUser?.id}/`;
+        //     const imageUrl = imagePrefix + filename;
+
+        //     await uploadMedia({ filename: imageUrl, fileType, file });
+        //     input['headerPicture'] = imageUrl;
+        //   }
+
+        updateUserProfile({
+          variables: {
+            input,
+          },
+          onCompleted: (data) => {
+            if (data?.updateUser?.profilePicture) {
+              setProfilePictureUrl(data?.updateUser?.profilePicture);
+            }
+            setSnackbarAlertOpen(true);
+            setSnackbarAlertMessage(<>User profile updated successfully</>);
+          },
+        });
+      }
     }
   };
 
@@ -99,6 +144,12 @@ const ProfileSettings = (props) => {
           <GeneralSettingsDAONameBlock>
             <LabelBlock>Username</LabelBlock>
             <GeneralSettingsDAONameInput value={username} onChange={handleUsernameChange} />
+            {errors.username && <ErrorText>{errors.username}</ErrorText>}
+          </GeneralSettingsDAONameBlock>
+          <GeneralSettingsDAONameBlock>
+            <LabelBlock>Email</LabelBlock>
+            <GeneralSettingsDAONameInput value={email} onChange={handleEmailChange} />
+            {errors.email && <ErrorText>{errors.email}</ErrorText>}
           </GeneralSettingsDAONameBlock>
           <GeneralSettingsDAODescriptionBlock>
             <LabelBlock>Description</LabelBlock>

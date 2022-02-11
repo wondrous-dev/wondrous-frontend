@@ -1,7 +1,15 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { useMutation } from '@apollo/client';
 import { LogoButton } from '../logo';
-import { TodoWithBorder, InProgressWithBorder, DoneWithBorder, InReview, Requested } from '../../Icons';
+import {
+  TodoWithBorder,
+  InProgressWithBorder,
+  DoneWithBorder,
+  InReview,
+  Requested,
+  AwaitingPayment,
+  Paid,
+} from '../../Icons';
 import { TaskLikeIcon } from '../../Icons/taskLike';
 import { TaskCommentIcon } from '../../Icons/taskComment';
 import { TaskShareIcon } from '../../Icons/taskShare';
@@ -58,6 +66,7 @@ import { OrgBoardContext } from '../../../utils/contexts';
 import { MilestoneLaunchedBy } from '../MilestoneLaunchedBy';
 import { MilestoneProgress } from '../MilestoneProgress';
 import { MilestoneWrapper } from '../Milestone';
+import PodIcon from '../../Icons/podIcon';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -66,6 +75,8 @@ export const TASK_ICONS = {
   [Constants.TASK_STATUS_IN_REVIEW]: InReview,
   [Constants.TASK_STATUS_REQUESTED]: Requested,
   [Constants.TASK_STATUS_ARCHIVED]: Archived,
+  [Constants.TASK_STATUS_AWAITING_PAYMENT]: AwaitingPayment,
+  [Constants.TASK_STATUS_PAID]: Paid,
 };
 
 let windowOffset = 0;
@@ -105,6 +116,12 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   let TaskIcon = TASK_ICONS[status];
+  if (task?.paymentStatus === Constants.PAYMENT_STATUS.PROCESSING) {
+    TaskIcon = TASK_ICONS[Constants.TASK_STATUS_AWAITING_PAYMENT];
+  }
+  if (task?.paymentStatus === Constants.PAYMENT_STATUS.PAID) {
+    TaskIcon = TASK_ICONS[Constants.TASK_STATUS_PAID];
+  }
   const isMilestone = type === Constants.ENTITIES_TYPES.MILESTONE;
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
@@ -231,13 +248,15 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assigneeUsername]);
 
+  const taskType = isMilestone ? 'milestone' : 'task';
+
   return (
     <>
       <ArchiveTaskModal
         open={archiveTask}
         onClose={() => setArchiveTask(false)}
         onArchive={handleNewStatus}
-        isMilestone={isMilestone}
+        taskType={taskType}
       />
       <TaskViewModal
         open={modalOpen}
@@ -283,15 +302,31 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
               })}
             </p>
             {task?.podName && (
-              <PodWrapper
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  goToPod(task?.podId);
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
                 }}
               >
-                <PodName>{task?.podName}</PodName>
-              </PodWrapper>
+                <PodIcon
+                  color={task?.podColor}
+                  style={{
+                    width: '26px',
+                    height: '26px',
+                    marginRight: '8px',
+                    marginBottom: '16px',
+                  }}
+                />
+                <PodWrapper
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    goToPod(task?.podId);
+                  }}
+                >
+                  <PodName>{task?.podName}</PodName>
+                </PodWrapper>
+              </div>
             )}
             <MilestoneProgressWrapper>{isMilestone && <MilestoneProgress milestoneId={id} />}</MilestoneProgressWrapper>
             {media?.length > 0 ? <TaskMedia media={media[0]} /> : <TaskSeparator />}
@@ -324,7 +359,7 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
                       color: White,
                     }}
                   >
-                    Archive {isMilestone ? 'milestone' : 'task'}
+                    Archive {taskType}
                   </DropDownItem>
                 </DropDown>
               </TaskActionMenu>
@@ -340,7 +375,13 @@ export const TaskListCard = (props) => {
   const { taskType, task } = props;
   const router = useRouter();
   const [viewDetails, setViewDetails] = useState(false);
-  const TaskIcon = TASK_ICONS?.[taskType];
+  let TaskIcon = TASK_ICONS?.[taskType];
+  if (task?.paymentStatus === Constants.PAYMENT_STATUS.PROCESSING) {
+    TaskIcon = TASK_ICONS[Constants.TASK_STATUS_AWAITING_PAYMENT];
+  }
+  if (task?.paymentStatus === Constants.PAYMENT_STATUS.PAID) {
+    TaskIcon = TASK_ICONS[Constants.TASK_STATUS_PAID];
+  }
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();

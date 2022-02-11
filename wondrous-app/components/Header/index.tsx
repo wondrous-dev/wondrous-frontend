@@ -65,6 +65,9 @@ const HeaderComponent = (props) => {
                 </InputAdornment>
               ),
             }}
+            style={{
+              visibility: 'hidden',
+            }}
           />
         </HeaderLeftBlock>
         <HeaderRightBlock>

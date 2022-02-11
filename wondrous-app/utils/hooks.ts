@@ -9,6 +9,8 @@ import {
   SideBarContext,
   TextInputContext,
   UserBoardContext,
+  ApprovedSubmissionContext,
+  PaymentModalContext,
 } from './contexts';
 
 export const useIsMobile = () => useContext(IsMobileContext);
@@ -61,3 +63,7 @@ export const useUserBoard = () => useContext(UserBoardContext);
 export const useSettings = () => useContext(SettingsBoardContext);
 
 export const useColumns = () => useContext(ColumnsContext);
+
+export const useApprovedSubmission = () => useContext(ApprovedSubmissionContext); // for payment, i think it's hacky
+
+export const usePaymentModal = () => useContext(PaymentModalContext);

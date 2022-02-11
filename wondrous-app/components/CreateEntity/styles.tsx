@@ -536,6 +536,22 @@ export const CreateFormPreviewButton = styled(Button)`
   }
 `;
 
+export const MakeSubmissionPaymentButton = styled(Button)`
+  && {
+    padding: 8px 12px;
+    height: 40px;
+    background: #0f0f0f;
+    border: 1px solid deepskyblue;
+    margin-left: 25px;
+
+    //text
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 150%;
+    color: #ffffff;
+  }
+`;
+
 export const TakeTaskButton = styled(CreateFormPreviewButton)`
   && {
     height: auto;
