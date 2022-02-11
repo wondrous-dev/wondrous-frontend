@@ -15,6 +15,8 @@ import {
 } from '../../../graphql/queries/payment';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import { Typography } from '@material-ui/core';
+  PaymentDescriptionText,
+} from './styles';
 
 const OFFLINE_PAYMENT_OPTIONS = [
   { label: 'Block Explorer Link', value: 'manual_explorer_link' },
@@ -28,6 +30,7 @@ export const OfflinePayment = (props) => {
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const [submissionPaid, setSubmissionPaid] = useState(null);
   const handleLinkPaymentLinkClick = () => {
     setLinkPaymentError(null);
     const offlineLinks = [
@@ -61,7 +64,10 @@ export const OfflinePayment = (props) => {
     );
   };
   const [linkOffPlatformPayment] = useMutation(LINK_OFF_PLATFORM_PAYMENT, {
-    onCompleted: (data) => {},
+    onCompleted: (data) => {
+      console.log(data)
+      setSubmissionPaid(true)
+    },
     onError: (e) => {
       console.error(e);
       setLinkPaymentError(e);
@@ -93,7 +99,8 @@ export const OfflinePayment = (props) => {
           justifyContent: 'flex-end',
         }}
       >
-        <CreateFormPreviewButton onClick={handleLinkPaymentLinkClick}>Link Payment</CreateFormPreviewButton>
+       {!submissionPaid && <CreateFormPreviewButton onClick={handleLinkPaymentLinkClick}>Link Payment</CreateFormPreviewButton>}
+       {submissionPaid && <PaymentDescriptionText>Paid!</PaymentDescriptionText>}
       </div>
     </>
   );
