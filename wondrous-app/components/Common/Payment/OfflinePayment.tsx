@@ -18,27 +18,30 @@ export const OfflinePayment = (props) => {
   const [offlinePaymentLink, setOfflinePaymentLink] = useState(null);
   const [linkPaymentError, setLinkPaymentError] = useState(null);
   const handleLinkPaymentLinkClick = () => {
-    setLinkPaymentError(null)
-    const offlineLinks = [{
-      type: selectedOfflineType,
-      link: offlinePaymentLink
-    }]
+    setLinkPaymentError(null);
+    const offlineLinks = [
+      {
+        type: selectedOfflineType,
+        link: offlinePaymentLink,
+      },
+    ];
     linkOffPlatformPayment({
       variables: {
         input: {
           submissionId: approvedSubmission.id,
-          offlineLinks
+          offlineLinks,
         },
       },
     });
-};
+    location.reload();
+  };
   const [linkOffPlatformPayment] = useMutation(LINK_OFF_PLATFORM_PAYMENT, {
     onCompleted: (data) => {
-      console.log(data)
+      console.log(data);
     },
     onError: (e) => {
       console.error(e);
-      setLinkPaymentError(e)
+      setLinkPaymentError(e);
     },
   });
 
@@ -47,7 +50,7 @@ export const OfflinePayment = (props) => {
       <DropdownSelect
         value={selectedOfflineType}
         setValue={setSelectedOfflineType}
-        labelText="choose a payment method"
+        labelText="Choose a payment method"
         options={OFFLINE_PAYMENT_OPTIONS}
         onChange={(e) => {}}
         formSelectStyle={{

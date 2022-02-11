@@ -33,7 +33,7 @@ export const PaymentModal = styled(BaseCard)`
   position: absolute;
   left: 50%;
   top: 50%;
-  height: 50%;
+  height: 70%;
   transform: translate(-50%, -50%);
   overflow-y: scroll;
   z-index: 2100;
@@ -88,7 +88,6 @@ export const PaymentDescriptionText = styled(Typography)`
     white-space: pre-line;
   }
 `;
-
 
 export const MakeSubmissionDiv = styled.div`
   background: #0f0f0f;

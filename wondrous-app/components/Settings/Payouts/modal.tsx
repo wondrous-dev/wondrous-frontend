@@ -118,7 +118,11 @@ export const PayModal = (props) => {
               <WarningTypography>
                 This link will only be visible to the assignee and other admins with the payment permission
               </WarningTypography>
-              <OfflinePayment />
+              <OfflinePayment
+                approvedSubmission={{
+                  id: submissionId,
+                }}
+              />
             </>
           )}
 

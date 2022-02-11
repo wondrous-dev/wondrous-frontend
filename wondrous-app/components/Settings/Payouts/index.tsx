@@ -109,7 +109,11 @@ const PaymentItem = (props) => {
             minWidth: '120px',
           }}
         >
-          <CompensationPill>
+          <CompensationPill
+            style={{
+              backGround: 'none',
+            }}
+          >
             <IconContainer>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <SafeImage
@@ -211,6 +215,7 @@ const Payouts = (props) => {
   const [paidList, setPaidList] = useState([]);
   const [unpaidList, setUnpaidList] = useState([]);
   const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
+  console.log('podId', podId, view);
   useEffect(() => {
     if (orgId) {
       getOrgById({
@@ -234,6 +239,7 @@ const Payouts = (props) => {
           podId,
         },
       }).then((result) => {
+        console.log('result', result?.data);
         const submissions = result?.data?.getUnpaidSubmissionsForPod;
         setUnpaidList(submissions || []);
       });
