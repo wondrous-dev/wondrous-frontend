@@ -281,7 +281,7 @@ const Boards = (props) => {
         {view ? (
           <>
             {view === ViewType.Grid ? (
-              <KanbanBoard columns={columns} onLoadMore={handleLoadMore} hasMore={hasMoreTasks} />
+              <KanbanBoard columns={columns} onLoadMore={handleLoadMore} hasMore={hasMoreTasks} isAdmin={isAdmin} />
             ) : (
               <Table
                 columns={isAdmin ? filterColumnsByStatus(adminColumns, selectedStatus) : columns}
