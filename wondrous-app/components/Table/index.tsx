@@ -81,7 +81,7 @@ const DELIVERABLES_ICONS = {
 };
 
 let windowOffset = 0;
-export const Table = ({ columns, onLoadMore, hasMore, isAdmin }) => {
+export const Table = ({ columns, onLoadMore, hasMore, isAdmin = false }) => {
   const router = useRouter();
   const apolloClient = useApolloClient();
   const [editableTask, setEditableTask] = useState(null);
