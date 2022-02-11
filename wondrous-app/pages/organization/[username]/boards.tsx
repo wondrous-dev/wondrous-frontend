@@ -28,6 +28,7 @@ import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
 import { dedupeColumns } from '../../../utils';
 import * as Constants from '../../../utils/constants';
 import apollo from '../../../services/apollo';
+import { TaskFilter } from '../../../types/task';
 
 const TO_DO = {
   status: TASK_STATUS_TODO,
@@ -98,7 +99,9 @@ const SELECT_OPTIONS = [
 const LIMIT = 10;
 
 export const populateTaskColumns = (tasks, columns) => {
-  if (!columns) return [];
+  if (!columns) {
+    return [];
+  }
 
   const newColumns = columns.map((column) => {
     column.tasks = [];
@@ -137,11 +140,12 @@ export const addToTaskColumns = (newResults, columns) => {
 };
 
 const BoardsPage = () => {
+  const router = useRouter();
   const [columns, setColumns] = useState(COLUMNS);
+  const [filter, setFilter] = useState({});
   const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR);
   const [orgData, setOrgData] = useState(null);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
-  const router = useRouter();
   const { username, orgId, search } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
@@ -246,58 +250,57 @@ const BoardsPage = () => {
         },
       });
 
-      if (search) {
-        searchOrgTasks({
-          variables: {
-            orgId: id,
-            limit: LIMIT,
-            offset: 0,
-            searchString: search,
-          },
-        });
-      } else {
-        getOrgTasks({
-          variables: {
-            orgId: id,
-            statuses,
-            offset: 0,
-            limit: LIMIT,
-          },
-        });
-        getOrgTaskProposals({
-          variables: {
-            orgId: id,
-            statuses: [STATUS_OPEN],
-            offset: 0,
-            limit: LIMIT,
-          },
-        });
-        getOrgTaskSubmissions({
-          variables: {
-            orgId: id,
-            statuses: [STATUS_OPEN],
-            offset: 0,
-            limit: LIMIT,
-          },
-        });
-        getOrgBoardTaskCount({
-          variables: {
-            orgId: id,
-          },
-        });
-      }
+      getOrgTasks({
+        variables: {
+          orgId: id,
+          statuses,
+          offset: 0,
+          limit: LIMIT,
+        },
+      });
+      getOrgTaskProposals({
+        variables: {
+          orgId: id,
+          statuses: [STATUS_OPEN],
+          offset: 0,
+          limit: LIMIT,
+        },
+      });
+      getOrgTaskSubmissions({
+        variables: {
+          orgId: id,
+          statuses: [STATUS_OPEN],
+          offset: 0,
+          limit: LIMIT,
+        },
+      });
+      getOrgBoardTaskCount({
+        variables: {
+          orgId: id,
+        },
+      });
     }
-  }, [
-    orgData,
-    statuses,
-    orgId,
-    getOrgBoardTaskCount,
-    getOrgTaskSubmissions,
-    getOrgTaskProposals,
-    getOrgTasks,
-    searchOrgTasks,
-    search,
-  ]);
+  }, [orgData, orgId, getOrgBoardTaskCount, getOrgTaskSubmissions, getOrgTaskProposals, getOrgTasks]);
+
+  useEffect(() => {
+    if (!firstTimeFetch) {
+      return;
+    }
+
+    if (orgId || orgData?.id) {
+      const id = orgId || orgData?.id;
+
+      searchOrgTasks({
+        variables: {
+          orgId: id,
+          limit: 100,
+          offset: 0,
+          statuses,
+          searchString: search,
+        },
+      });
+    }
+  }, [orgData, statuses, orgId, searchOrgTasks, search]);
 
   const handleSearch = useCallback(
     (searchString) => {
@@ -331,6 +334,26 @@ const BoardsPage = () => {
     [orgId, orgData]
   );
 
+  const handleFilterChange = (filter: TaskFilter) => {
+    // const id = orgId || orgData?.id;
+
+    // setFilter(filter);
+
+    if (filter.statuses) {
+      // setFirstTimeFetch(false);
+      setStatuses(filter.statuses);
+    }
+    //
+    // getOrgTasks({
+    //   variables: {
+    //     orgId: id,
+    //     offset: 0,
+    //     statuses: filter.statuses || [],
+    //     limit: LIMIT,
+    //   },
+    // });
+  };
+
   const handleLoadMore = useCallback(() => {
     if (orgTaskHasMore) {
       fetchMore({
@@ -359,8 +382,6 @@ const BoardsPage = () => {
     );
   }
 
-  console.log(columns, '-----');
-
   return (
     <OrgBoardContext.Provider
       value={{
@@ -384,6 +405,7 @@ const BoardsPage = () => {
         columns={columns}
         onLoadMore={handleLoadMore}
         onSearch={handleSearch}
+        onFilterChange={handleFilterChange}
         hasMore={orgTaskHasMore}
         orgData={orgData}
       />

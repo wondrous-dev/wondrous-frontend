@@ -94,9 +94,8 @@ export const FilterBox = styled.div`
     align-items: flex-start;
     justify-content: flex-start;
 
-    margin-top: 
     max-width: 323px;
-    height: 400px;
+    height: 420px;
 
     padding: 0px 1px 1px 1px;
 

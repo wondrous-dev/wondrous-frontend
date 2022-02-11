@@ -1,4 +1,5 @@
 import {
+  TASK_STATUS_ARCHIVED,
   TASK_STATUS_AWAITING_PAYMENT,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
@@ -15,8 +16,9 @@ import {
   InProgressWithBorder,
   InReview,
   Paid,
-  Requested,
+  MembershipRequest,
   TodoWithBorder,
+  Archived,
 } from './index';
 import { ProposalsRemainingIcon } from './statusIcons';
 
@@ -39,7 +41,7 @@ export default function TaskStatus({ status, ...rest }: Props) {
       return <DoneWithBorder {...rest} />;
 
     case TASK_STATUS_REQUESTED:
-      return <Requested {...rest} />;
+      return <MembershipRequest {...rest} />;
 
     case TASK_STATUS_AWAITING_PAYMENT:
       return <AwaitingPayment {...rest} />;
@@ -52,6 +54,9 @@ export default function TaskStatus({ status, ...rest }: Props) {
 
     case TASK_STATUS_SUBMISSION_REQUEST:
       return <InReview {...rest} />;
+
+    case TASK_STATUS_ARCHIVED:
+      return <Archived {...rest} />;
 
     default:
       return null;

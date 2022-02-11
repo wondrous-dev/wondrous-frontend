@@ -30,8 +30,9 @@ import {
  * @returns
  */
 
-const Filter = ({ filterSchema = [], filter, setFilter }) => {
+const Filter = ({ filterSchema = [], filter, setFilter, onChange }) => {
   const [selected, setSelected] = useState(null);
+  const [selectedTabItems, setSelectedTabItems] = useState({});
   const [items, setItems] = useState([]);
   const [multiChoice, setMultichoice] = useState(true);
   const [open, setOpen] = useState(false);
@@ -41,35 +42,54 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
   };
 
   // Changes the display list.
-  const displayList = (tabName) => {
-    const tab = filterSchema.find(({ name }) => name === tabName);
+  const displayList = (tab) => {
     if (tab) {
       setItems(tab.items);
       setMultichoice(tab.multiChoice);
     }
-    setSelected(tabName);
+    setSelected(tab);
   };
 
   // adds / removes an item from the filter
   const toggleInFilter = (itemId) => {
+    const selectedItems = [...(selectedTabItems[selected.name] || [])];
+
     const newItems = [...items];
-    newItems.map((it) => {
+    newItems.forEach((it) => {
       if (!multiChoice) {
         it.selected = false;
+
+        const index = selectedItems.indexOf(it.name);
+
+        if (index > -1) {
+          selectedItems.splice(index, 1);
+        }
       }
       if (it.id === itemId) {
         it.selected = !it.selected;
+
+        if (it.selected) {
+          selectedItems.push(itemId);
+        } else {
+          const index = selectedItems.indexOf(itemId);
+          if (index > -1) {
+            selectedItems.splice(index, 1);
+          }
+        }
       }
     });
+
+    const newSelectedTabItems = { ...selectedTabItems, [selected.name]: selectedItems };
     setItems(newItems);
+    setSelectedTabItems(newSelectedTabItems);
+    onChange(newSelectedTabItems);
   };
 
   const setFilterList = () => {
     filterSchema.map((tab) => {
-      tab.label = tab.name;
       tab.action = () => {
         console.log('Tab ' + tab.name + ' pressed.');
-        displayList(tab.name);
+        displayList(tab);
       };
     });
   };
@@ -80,11 +100,15 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
       it.selected = false;
     });
     setItems(newItems);
+
+    const newSelectedTabItems = { ...selectedTabItems, [selected.name]: [] };
+    setSelectedTabItems(newSelectedTabItems);
+    onChange(newSelectedTabItems);
   };
 
   useEffect(() => {
     setFilterList();
-    displayList(filterSchema[0].name);
+    displayList(filterSchema[0]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
@@ -111,7 +135,7 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
       </FilterHandleInner>
       <FilterBox open={open}>
         <FilterBoxInner>
-          <Tabs tabs={filterSchema} selected={selected} />
+          <Tabs tabs={filterSchema} selected={selected?.name} />
           <FilterStatus>
             <FilterCount>{items.filter((i) => i.selected).length} selected</FilterCount>
             <FilterClear onClick={clearItems}>Clear</FilterClear>
@@ -133,7 +157,6 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
                 </FilterItem>
               ))}
             </FilterItemList>
-            <FilterItemListShade />
           </FilterItemsContainer>
         </FilterBoxInner>
       </FilterBox>
