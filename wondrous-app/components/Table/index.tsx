@@ -227,9 +227,9 @@ export const Table = (props) => {
             shallow: true,
           });
         }}
-        task={selectedTask}
+        task={selectedTaskType !== Constants.TASK_STATUS_SUBMISSION_REQUEST && selectedTask}
         isTaskProposal={selectedTaskType === Constants.TASK_STATUS_PROPOSAL_REQUEST}
-        taskId={selectedTask?.id}
+        taskId={selectedTaskType === Constants.TASK_STATUS_SUBMISSION_REQUEST ? selectedTask?.taskId : selectedTask?.id}
       />
       <ArchiveTaskModal
         open={isArchiveModalOpen}
