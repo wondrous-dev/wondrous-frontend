@@ -17,6 +17,7 @@ import { SnackbarAlertContext } from '../SnackbarAlert';
 import { Typography } from '@material-ui/core';
   PaymentDescriptionText,
 } from './styles';
+import { White } from '../../../theme/colors';
 
 const OFFLINE_PAYMENT_OPTIONS = [
   { label: 'Block Explorer Link', value: 'manual_explorer_link' },
@@ -59,7 +60,14 @@ export const OfflinePayment = (props) => {
     setSnackbarAlertOpen(true);
     setSnackbarAlertMessage(
       <>
-        <Typography variant="body1">Payment linked</Typography>
+        <Typography
+          variant="body1"
+          style={{
+            color: White,
+          }}
+        >
+          Payment linked
+        </Typography>
       </>
     );
   };
