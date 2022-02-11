@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { ethers, utils } from 'ethers';
 import DropdownSelect from '../DropdownSelect/dropdownSelect';
 import { useQuery, useMutation } from '@apollo/client';
@@ -61,6 +62,7 @@ export const SingleWalletPayment = (props) => {
   const [paymentPending, setPaymentPending] = useState(null);
   const [gnosisSafeTxRedirectLink, setGnosisSafeTxRedirectLink] = useState(null);
   const [safeTxHash, setSafeTxHash] = useState(null);
+  const router = useRouter();
   const wonderWeb3 = useWonderWeb3();
   const connectWeb3 = async () => {
     await wonderWeb3.onConnect();
@@ -87,10 +89,10 @@ export const SingleWalletPayment = (props) => {
       console.error(e);
     },
   });
-  useEffect(()=>{
+  useEffect(() => {
     const url = constructGnosisRedirectUrl(selectedWallet?.chain, selectedWallet?.address, safeTxHash);
-    setGnosisSafeTxRedirectLink(url)
-  }, [safeTxHash, selectedWallet])
+    setGnosisSafeTxRedirectLink(url);
+  }, [safeTxHash, selectedWallet]);
 
   const reward = props?.fetchedTask?.rewards && props?.fetchedTask?.rewards[0];
   useEffect(() => {
@@ -193,6 +195,13 @@ export const SingleWalletPayment = (props) => {
       },
     });
   };
+  const handleCreateNewWalletClick = () => {
+    if (approvedSubmission.podId) {
+      router.push(`/pod/settings/${approvedSubmission.podId}/wallet`);
+    } else if (approvedSubmission.orgId) {
+      router.push(`/organization/settings/${approvedSubmission.orgId}/wallet`);
+    }
+  };
 
   const handlePaymentClick = () => {
     if (!selectedWallet) {
@@ -240,7 +249,7 @@ export const SingleWalletPayment = (props) => {
               }}
               href={gnosisSafeTxRedirectLink}
               target="_blank"
-              rel="noreferrer" 
+              rel="noreferrer"
             >
               your Gnosis safe
             </a>{' '}
@@ -269,6 +278,7 @@ export const SingleWalletPayment = (props) => {
           style={{
             marginLeft: 0,
           }}
+          onClick={handleCreateNewWalletClick}
         >
           Create new wallets
         </CreateFormPreviewButton>
