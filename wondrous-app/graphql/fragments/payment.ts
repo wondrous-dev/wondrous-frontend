@@ -33,7 +33,10 @@ export const PaymentCardFragment = gql`
     symbol
     icon
     tokenName
-    additionalData
+    additionalData {
+      manualExplorerLink
+      utopiaLink
+    }
   }
 `;
 

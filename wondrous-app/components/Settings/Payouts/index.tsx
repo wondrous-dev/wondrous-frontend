@@ -40,7 +40,7 @@ enum ViewType {
   Unpaid = 'unpaid',
 }
 
-const UnpaidItem = (props) => {
+const PaymentItem = (props) => {
   const { item, org, podId } = props;
   const [openModal, setOpenModal] = useState(false);
   const imageStyle = {
@@ -52,6 +52,19 @@ const UnpaidItem = (props) => {
   const taskHref = org
     ? `/organization/${org?.username}/boards?task=${item.taskId}`
     : `/pod/${podId}/boards?task=${item.taskId}`;
+  let link,
+    linkText = null;
+  if (item?.additionalData?.manualExplorerLink) {
+    link = item?.additionalData?.manualExplorerLink;
+    linkText = item?.additionalData?.manualExplorerLink;
+  } else if (item?.additionalData?.utopiaLink) {
+    link = item?.additionalData?.utopiaLink;
+    linkText = item?.additionalData?.utopiaLink;
+  } else if ((item.chain, item.safeAddress, item.safeTxHash)) {
+    link = constructGnosisRedirectUrl(item.chain, item.safeAddress, item.safeTxHash);
+    linkText = item.safeTxHash;
+  }
+  console.log('item', item);
   return (
     <>
       <PaymentModalContext.Provider
@@ -130,19 +143,21 @@ const UnpaidItem = (props) => {
               color: White,
             }}
             target={'_blank'}
-            href={constructGnosisRedirectUrl(item.chain, item.safeAddress, item.safeTxHash)}
+            href={link}
           >
-            {cutString(item.safeTxHash, 8)}
+            {cutString(linkText, 8)}
           </a>
         </StyledTableCell>
+        {item.paymentStatus !== 'paid' && (
+          <StyledTableCell>
+            <TableCellText>{item.paymentStatus}</TableCellText>
+          </StyledTableCell>
+        )}
         <StyledTableCell>
-          <TableCellText>{item.paymentStatus}</TableCellText>
+          <TableCellText>{format(new Date(item.submissionApprovedAt || item.payedAt), 'MM/dd/yyyy')}</TableCellText>
         </StyledTableCell>
         <StyledTableCell>
-          <TableCellText>{format(new Date(item.submissionApprovedAt), 'MM/dd/yyyy')}</TableCellText>
-        </StyledTableCell>
-        <StyledTableCell>
-          {item.paymentStatus !== 'processing' && (
+          {item.paymentStatus !== 'processing' && item.paymentStatus !== 'paid' && (
             <CreateFormPreviewButton
               style={{
                 marginLeft: '0',
@@ -158,6 +173,7 @@ const UnpaidItem = (props) => {
     </>
   );
 };
+
 const Payouts = (props) => {
   const { orgId, podId } = props;
   const [view, setView] = useState(ViewType.Unpaid);
@@ -191,7 +207,6 @@ const Payouts = (props) => {
   const [paidList, setPaidList] = useState([]);
   const [unpaidList, setUnpaidList] = useState([]);
   const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
-  console.log('orgId', view, orgId);
   useEffect(() => {
     if (orgId) {
       getOrgById({
@@ -209,7 +224,7 @@ const Payouts = (props) => {
         const submissions = result?.data?.getUnpaidSubmissionsForOrg;
         setUnpaidList(submissions || []);
       });
-    } else if (podId && view === ViewType.Paid) {
+    } else if (podId && view === ViewType.Unpaid) {
       getUnpaidSubmissionsForPod({
         variables: {
           podId,
@@ -229,7 +244,7 @@ const Payouts = (props) => {
         const payments = result?.data?.getPaymentsForOrg;
         setPaidList(payments || []);
       });
-    } else if (podId && view === ViewType.Unpaid) {
+    } else if (podId && view === ViewType.Paid) {
       getPaymentsForPod({
         variables: {
           input: {
@@ -293,11 +308,22 @@ const Payouts = (props) => {
           </StyledTableHead>
           <StyledTableBody>
             {view === ViewType.Paid ? (
-              <>{}</>
+              <>
+                {paidList?.map((item) => (
+                  <PaymentItem
+                    item={{
+                      ...item,
+                      paymentStatus: 'paid',
+                    }}
+                    org={org}
+                    podId={podId}
+                  />
+                ))}
+              </>
             ) : (
               <>
                 {unpaidList?.map((item) => (
-                  <UnpaidItem item={item} org={org} />
+                  <PaymentItem item={item} org={org} podId={podId} />
                 ))}
               </>
             )}
