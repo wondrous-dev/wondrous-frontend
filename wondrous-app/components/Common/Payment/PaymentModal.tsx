@@ -28,13 +28,24 @@ import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { OfflinePayment } from './OfflinePayment';
 import { SingleWalletPayment } from './SingleWalletPayment';
 import Link from 'next/link';
-import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
+import { White, Blue20 } from '../../../theme/colors';
+
+const GoBackStyle = {
+  color: White,
+  width: '100%',
+  textAlign: 'right',
+  marginRight: '8px',
+  textDecoration: 'underline',
+  cursor: 'pointer',
+};
 
 export const MakePaymentModal = (props) => {
   const { open, handleClose, setShowPaymentModal, approvedSubmission, fetchedTask } = props;
   const [selectedTab, setSelectedTab] = useState('wallet');
   const [wallets, setWallets] = useState([]);
   const [submissionPaymentInfo, setSubmissionPaymentInfo] = useState(null);
+  const [rewardAmount, setRewardAmount] = useState('');
+  const [tokenName, setTokenName] = useState('');
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
@@ -94,6 +105,12 @@ export const MakePaymentModal = (props) => {
   }, [fetchedTask]);
 
   useEffect(() => {
+    setRewardAmount(fetchedTask?.rewards[0].rewardAmount);
+    setTokenName(fetchedTask?.rewards[0].tokenName);
+  }, [fetchedTask]);
+
+  useEffect(() => {
+    console.log('apporvedSubmissionid', approvedSubmission?.id);
     getSubmissionPaymentInfo({
       variables: {
         submissionId: approvedSubmission?.id,
@@ -102,14 +119,14 @@ export const MakePaymentModal = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [approvedSubmission]);
 
-  const handleCloeAll = () => {
+  const handleCloseAll = () => {
     handleClose();
     setShowPaymentModal(false);
   };
   const canPay = permissions.includes(PERMISSIONS.APPROVE_PAYMENT) || permissions.includes(PERMISSIONS.FULL_ACCESS);
   return (
     <>
-      <Modal open={open} onClose={handleCloeAll}>
+      <Modal open={open} onClose={handleCloseAll}>
         <PaymentModal>
           <PaymentModalHeader>
             {fetchedTask?.orgProfilePicture ? (
@@ -137,11 +154,21 @@ export const MakePaymentModal = (props) => {
                 <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
               </div>
             )}
+          <>
+            <PodNameTypography style={GoBackStyle} onClick={()=>setShowPaymentModal(false)}>
+              Back to Task
+            </PodNameTypography>
+          </>
           </PaymentModalHeader>
           <PaymentTitleDiv>
             <PaymentTitleTextDiv>
               <PaymentTitleText>
-                Payout to{' '}
+                Payout
+                <span style={{ color: Blue20 }}>
+                  {' '}
+                  {rewardAmount} {tokenName?.toUpperCase()}{' '}
+                </span>
+                to{' '}
                 <Link href={`/profile/${fetchedTask?.assigneeId}/about`}>
                   <a
                     style={{
@@ -169,12 +196,18 @@ export const MakePaymentModal = (props) => {
                 <WarningTypography>
                   This link will only be visible to the assignee and other admins with the payment permission
                 </WarningTypography>
-                <OfflinePayment />
+                <OfflinePayment
+                  setShowPaymentModal={setShowPaymentModal}
+                  approvedSubmission={approvedSubmission}
+                  fetchedTask={fetchedTask}
+                  submissionPaymentInfo={submissionPaymentInfo}
+                />
               </>
             )}
 
             {selectedTab === 'wallet' && (
               <SingleWalletPayment
+                setShowPaymentModal={setShowPaymentModal}
                 approvedSubmission={approvedSubmission}
                 fetchedTask={fetchedTask}
                 wallets={wallets}
