@@ -87,7 +87,7 @@ export const DropDownPopper = (props) => {
         variables: {
           submissionId: id,
         },
-        refetchQueries: refetchQueries(), // BUG: When approving a submission, the table did not update
+        refetchQueries: refetchQueries(),
       });
     }
   };
