@@ -99,6 +99,7 @@ export const OrgInviteLinkModal = (props) => {
     onError: (e) => {
       console.error(e);
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   const handleOnClose = () => {
