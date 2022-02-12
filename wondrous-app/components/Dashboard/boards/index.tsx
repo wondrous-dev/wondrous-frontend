@@ -249,8 +249,8 @@ const Boards = (props) => {
   return (
     <UserBoardContext.Provider
       value={{
-        columns,
-        setColumns,
+        columns: isAdmin ? filterColumnsByStatus(adminColumns, selectedStatus) : columns,
+        setColumns: isAdmin ? setAdminColumns : setColumns,
         taskCount: userTaskCountData?.getPerStatusTaskCountForUserBoard,
         userPermissionsContext: userPermissionsContext?.getUserPermissionContext
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
