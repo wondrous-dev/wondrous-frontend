@@ -146,7 +146,7 @@ export const updateTaskColumns = (tasks, columns) => {
     return tasks.reduce((column, task) => {
       if (column.status === task.status) {
         column.tasks = [...column.tasks, task];
-      } else if (task?.status === TASK_STATUS_ARCHIVED && column.section.filter.taskType === TASK_STATUS_ARCHIVED) {
+      } else if (task?.status === TASK_STATUS_ARCHIVED && column.section?.filter?.taskType === TASK_STATUS_ARCHIVED) {
         column.section.tasks = [...column.section.tasks, task];
       }
       return column;
