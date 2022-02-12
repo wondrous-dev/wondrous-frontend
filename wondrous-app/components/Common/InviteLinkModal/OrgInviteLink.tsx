@@ -36,7 +36,9 @@ import { useOrgBoard, usePodBoard } from '../../../utils/hooks';
 import { parseUserPermissionContext } from '../../../utils/helpers';
 import { PERMISSIONS } from '../../../utils/constants';
 
-const link = `https://app.wonderverse.xyz/invite/`;
+const link = process.env.NEXT_PUBLIC_PRODUCTION
+  ? `https://app.wonderverse.xyz/invite/`
+  : 'https://wondrous-app-git-staging-wonderverse.vercel.app/';
 
 export const putDefaultRoleOnTop = (roles, permissions) => {
   if (!roles) return [];

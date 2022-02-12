@@ -107,7 +107,12 @@ const SideBarComponent = (props) => {
           <DrawerList>
             {listItems &&
               listItems.map((item) => (
-                <Link key={item.id} href={`/organization/${item?.username}/boards`}>
+                <Link
+                  key={item.id}
+                  href={`/organization/[username]/boards`}
+                  as={`/organization/${item?.username}/boards`}
+                  passHref={true}
+                >
                   <DrawerListItem button key={item.id}>
                     {item?.profilePicture ? (
                       <SafeImage
