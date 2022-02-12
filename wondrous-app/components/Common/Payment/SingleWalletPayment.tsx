@@ -65,6 +65,7 @@ export const SingleWalletPayment = (props) => {
   const [wrongChainError, setWrongChainError] = useState(null);
   const [notOwnerError, setNotOwnerError] = useState(null);
   const [signingError, setSigningError] = useState(null);
+  const [safeConnectionError, setSafeConnectionError] = useState(null);
   const [incompatibleWalletError, setIncompatibleWalletError] = useState(null);
   const [paymentPending, setPaymentPending] = useState(null);
   const [gnosisSafeTxRedirectLink, setGnosisSafeTxRedirectLink] = useState(null);
@@ -81,6 +82,7 @@ export const SingleWalletPayment = (props) => {
 
   useEffect(() => {
     setNotOwnerError(null);
+    setSafeConnectionError(null);
     setCurrentChainId(wonderWeb3.chain);
   }, [wonderWeb3.chain, wonderWeb3.address]);
 
@@ -144,9 +146,14 @@ export const SingleWalletPayment = (props) => {
     const wallet = wallets.filter((wallet) => wallet.id === selectedWalletId)[0];
     setSelectedWallet(wallet);
     if (selectedWallet && selectedWallet.chain) {
-      connectSafeSdk(selectedWallet.chain, selectedWallet.address);
+      try {
+        connectSafeSdk(selectedWallet.chain, selectedWallet.address);
+      } catch (e) {
+        console.log('error connecint to gnosis safe', selectedWallet.chain)
+        setSafeConnectionError(`selected gnosis safe not deployed on ${selectedWallet.chain}`)
+      }
     }
-  }, [selectedWalletId, selectedWallet?.chain, selectedWallet?.address]);
+  }, [selectedWalletId, selectedWallet?.chain, selectedWallet?.address, currentChainId]);
 
   const constructAndSignTransactionData = async () => {
     let iface = new ethers.utils.Interface(ERC20abi);
@@ -253,6 +260,7 @@ export const SingleWalletPayment = (props) => {
         {wrongChainError && <>{wrongChainError}</>}
         {signingError && <>{signingError}</>}
         {notOwnerError && <>{notOwnerError}</>}
+        {safeConnectionError && <>{safeConnectionError}</>}
         {selectedWallet && !paymentPending && (
           <CreateFormPreviewButton
             onClick={handlePaymentClick}
