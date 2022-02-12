@@ -165,6 +165,7 @@ const KanbanBoard = (props) => {
         };
       }
     });
+    console.log('moveCard: updatedstate', updatedColumns);
     setColumnsState(dedupeColumns(updatedColumns));
   };
 
@@ -200,6 +201,7 @@ const KanbanBoard = (props) => {
         />
         <DragDropContext onDragEnd={onDragEnd}>
           {columnsState.map((column) => {
+            console.log('moveCard: column map', column);
             const { status, section, tasks } = column;
 
             return (
