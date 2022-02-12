@@ -82,7 +82,7 @@ export const ColumnSection = ({ section, setSection }) => {
         entityType={entityType}
         orgId={orgBoard?.orgId}
         podId={podBoard?.podId}
-        userId={userBoard?.loggedInUserId}
+        loggedInUserId={userBoard?.loggedInUserId}
         open={modalOpen}
         handleClose={() => {
           document.body.setAttribute('style', '');
