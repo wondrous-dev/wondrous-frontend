@@ -48,6 +48,7 @@ const Boards = (props: Props) => {
   const [view, setView] = useState(null);
   const board = useBoard();
   const { taskCount = {} } = board;
+  const { search: searchQuery } = router.query;
 
   useEffect(() => {
     if (router.isReady) {
@@ -141,13 +142,16 @@ const Boards = (props: Props) => {
     },
   ];
 
+  console.log(columns, '-------');
+
   return (
     <Wrapper orgData={orgData}>
       <BoardsContainer>
         <BoardsActivity>
           <SearchTasks onSearch={onSearch} />
           <Filter filterSchema={filterSchema} filter={filter} onChange={onFilterChange} setFilter={setFilter} />
-          {view ? <ToggleViewButton options={listViewOptions} /> : null}
+          {/* Temporary hide list/grid selector for the search */}
+          {view && !searchQuery ? <ToggleViewButton options={listViewOptions} /> : null}
         </BoardsActivity>
 
         {view ? (

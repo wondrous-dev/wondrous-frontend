@@ -25,7 +25,7 @@ import {
 import { GET_ORG_FROM_USERNAME, GET_ORG_BY_ID, GET_ORG_PODS } from '../../../graphql/queries/org';
 import { OrgBoardContext } from '../../../utils/contexts';
 import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
-import { dedupeColumns } from '../../../utils';
+import {dedupeColumns, delQuery} from '../../../utils';
 import * as Constants from '../../../utils/constants';
 import apollo from '../../../services/apollo';
 import { TaskFilter } from '../../../types/task';
@@ -282,6 +282,8 @@ const BoardsPage = () => {
     }
   }, [orgData, orgId, getOrgBoardTaskCount, getOrgTaskSubmissions, getOrgTaskProposals, getOrgTasks]);
 
+  // EFFECT FOR SEARCH + FILTERS
+  // Update tasks when search or filters is changed
   useEffect(() => {
     if (!firstTimeFetch) {
       return;
@@ -307,14 +309,16 @@ const BoardsPage = () => {
       const id = orgId || orgData?.id;
 
       if (search) {
-        searchOrgTasks({
-          variables: {
-            orgId: id,
-            limit: LIMIT,
-            offset: 0,
-            searchString,
-          },
-        });
+        router.replace(`${delQuery(router.asPath)}?search=${searchString}&view=list`);
+
+        // searchOrgTasks({
+        //   variables: {
+        //     orgId: id,
+        //     limit: LIMIT,
+        //     offset: 0,
+        //     searchString,
+        //   },
+        // });
 
         return Promise.resolve([]);
       } else {

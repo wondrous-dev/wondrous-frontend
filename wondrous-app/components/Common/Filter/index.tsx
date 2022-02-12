@@ -34,7 +34,7 @@ import { Blue200, Grey250 } from '../../../theme/colors';
  */
 
 const Filter = ({ filterSchema = [], filter, setFilter, onChange }) => {
-  const [selected, setSelected] = useState();
+  const [selected, setSelected] = useState(filterSchema[0]);
   const [selectedTabItems, setSelectedTabItems] = useState({});
   const [selectedNames, setSelectedNames] = useState([]);
   const [items, setItems] = useState([]);
@@ -96,11 +96,8 @@ const Filter = ({ filterSchema = [], filter, setFilter, onChange }) => {
 
   const clearItems = () => {
     const newItems = [...items];
-    newItems.map((it) => {
-      it.selected = false;
-    });
-    setItems(newItems);
 
+    setItems(newItems);
     setSelectedTabItems({});
     setSelectedNames([]);
     onChange({});
@@ -137,7 +134,7 @@ const Filter = ({ filterSchema = [], filter, setFilter, onChange }) => {
         <FilterBoxInner>
           <Tabs tabs={filterSchema} selected={selected?.name} onSelect={(tab) => displayList(tab)} />
           <FilterStatus>
-            <FilterCount>{items.filter((i) => i.selected).length} selected</FilterCount>
+            <FilterCount>{selectedTabItems[selected?.name]?.length || 0} selected</FilterCount>
             <FilterClear onClick={clearItems}>Clear</FilterClear>
           </FilterStatus>
           <FilterItemsContainer>
