@@ -123,7 +123,7 @@ export const OrgInviteLinkModal = (props) => {
   };
 
   useEffect(() => {
-    if (!role) {
+    if (!role && open) {
       getOrgRoles({
         variables: {
           orgId: orgId,
