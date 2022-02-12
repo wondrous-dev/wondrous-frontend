@@ -153,7 +153,7 @@ const LIMIT = 10;
 
 export const TaskListViewModal = (props) => {
   const [fetchedList, setFetchedList] = useState([]);
-  const { taskType, entityType, orgId, podId, open, handleClose, count } = props;
+  const { taskType, entityType, orgId, podId, loggedInUserId, open, handleClose, count } = props;
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(false);
   const [getOrgTaskProposals, { refetch: refetchOrgProposals, fetchMore: fetchMoreOrgProposals }] = useLazyQuery(
@@ -491,6 +491,7 @@ export const TaskListViewModal = (props) => {
           } else if (entityType === ENTITIES_TYPES.USER) {
             getUserTaskBoardProposals({
               variables: {
+                userId: loggedInUserId,
                 statuses: [STATUS_OPEN],
               },
             });
@@ -515,6 +516,7 @@ export const TaskListViewModal = (props) => {
           } else if (entityType === ENTITIES_TYPES.USER) {
             getUserTaskBoardSubmissions({
               variables: {
+                userId: loggedInUserId,
                 statuses: [STATUS_OPEN],
               },
             });
@@ -541,9 +543,9 @@ export const TaskListViewModal = (props) => {
               },
             });
           } else if (entityType === ENTITIES_TYPES.USER) {
-            console.log('archived lists');
             getUserArchivedTasks({
               variables: {
+                userId: loggedInUserId,
                 statuses: ['archived'],
                 offset: 0,
                 limit: LIMIT,

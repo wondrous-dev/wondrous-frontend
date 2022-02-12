@@ -28,6 +28,7 @@ import {
   TASK_STATUS_TODO,
 } from '../../../utils/constants';
 import { UserBoardContext } from '../../../utils/contexts';
+import { useMe } from '../../Auth/withAuth';
 import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard';
 import { ToggleViewButton } from '../../Common/ToggleViewButton';
 import { Requested } from '../../Icons';
@@ -129,11 +130,13 @@ const Boards = (props) => {
   const { isAdmin, selectedStatus } = props;
   const router = useRouter();
   const [view, setView] = useState(null);
+  const loggedInUser = useMe();
   const [columns, setColumns] = useState([]);
   const [adminColumns, setAdminColumns] = useState([]);
   const [hasMoreTasks, setHasMoreTasks] = useState(true);
   const { fetchMore } = useQuery(GET_USER_TASK_BOARD_TASKS, {
     variables: {
+      userId: loggedInUser?.id,
       statuses: taskStatuses,
       limit,
       offset: 0,
@@ -147,6 +150,7 @@ const Boards = (props) => {
   });
   const getUserTaskBoardProposals = useQuery(GET_USER_TASK_BOARD_PROPOSALS, {
     variables: {
+      userId: loggedInUser?.id,
       statuses: [STATUS_OPEN],
       limit,
       offset: 0,
@@ -160,6 +164,7 @@ const Boards = (props) => {
   });
   const getUserTaskBoardSubmissions = useQuery(GET_USER_TASK_BOARD_SUBMISSIONS, {
     variables: {
+      userId: loggedInUser?.id,
       statuses: [STATUS_OPEN],
       limit,
       offset: 0,
@@ -189,7 +194,11 @@ const Boards = (props) => {
       setAdminColumns(newColumns);
     },
   });
-  const { data: userTaskCountData } = useQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD);
+  const { data: userTaskCountData } = useQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD, {
+    variables: {
+      userId: loggedInUser?.id,
+    },
+  });
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -255,6 +264,7 @@ const Boards = (props) => {
         userPermissionsContext: userPermissionsContext?.getUserPermissionContext
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
           : null,
+        loggedInUserId: loggedInUser?.id,
       }}
     >
       <BoardsContainer>

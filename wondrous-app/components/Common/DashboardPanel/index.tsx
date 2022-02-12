@@ -13,6 +13,7 @@ import {
   TASK_STATUS_PROPOSAL_REQUEST,
   TASK_STATUS_SUBMISSION_REQUEST,
 } from '../../../utils/constants';
+import { useMe } from '../../Auth/withAuth';
 
 const panels = { contributor: 'Contributor', admin: 'Admin' };
 
@@ -95,8 +96,14 @@ const updateStatusCards = (data, statusData, panel) => {
 const DashboardPanel = (props) => {
   const { isAdmin, setIsAdmin, selectedStatus, setSelectedStatus } = props;
   const [ref, inView] = useInView({});
+  const loggedInUser = useMe();
   const { data: getPerStatusTaskCountData, loading: getPerStatusTaskCountLoading } = useQuery(
-    GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD // BUG: @ There seems to be an error with the total tasks in-review
+    GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
+    {
+      variables: {
+        userId: loggedInUser?.id,
+      },
+    }
   );
   const { data: getWorkFlowBoardReviewableItemsCountData, loading: getWorkFlowBoardReviewableItemsCountLoading } =
     useQuery(GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT);

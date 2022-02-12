@@ -188,8 +188,8 @@ export const GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD = gql`
 `;
 
 export const GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD = gql`
-  query getPerStatusTaskCountForUserBoard {
-    getPerStatusTaskCountForUserBoard {
+  query getPerStatusTaskCountForUserBoard($userId: ID!) {
+    getPerStatusTaskCountForUserBoard(userId: $userId) {
       ...PerStatusTaskCountFragment
     }
   }
