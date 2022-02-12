@@ -434,7 +434,6 @@ export const Table = (props) => {
                           fontWeight="normal"
                           textAlign="left"
                         >
-                          {/* BUG: @ When a proposal or submission was clicked, it produces an error */}
                           Archive {dropdownItemLabel}
                         </DropDownItem>
                       </DropDown>
