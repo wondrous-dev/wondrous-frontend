@@ -25,7 +25,7 @@ import {
 import { GET_ORG_FROM_USERNAME, GET_ORG_BY_ID, GET_ORG_PODS } from '../../../graphql/queries/org';
 import { OrgBoardContext } from '../../../utils/contexts';
 import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
-import {dedupeColumns, delQuery} from '../../../utils';
+import { dedupeColumns, delQuery } from '../../../utils';
 import * as Constants from '../../../utils/constants';
 import apollo from '../../../services/apollo';
 import { TaskFilter } from '../../../types/task';
@@ -144,6 +144,7 @@ const BoardsPage = () => {
   const [columns, setColumns] = useState(COLUMNS);
   const [filter, setFilter] = useState({});
   const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR);
+  const [podIds, setPodIds] = useState([]);
   const [orgData, setOrgData] = useState(null);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
   const { username, orgId, search } = router.query;
@@ -294,15 +295,16 @@ const BoardsPage = () => {
 
       searchOrgTasks({
         variables: {
+          statuses,
+          podIds,
           orgId: id,
           limit: 100,
           offset: 0,
-          statuses,
           searchString: search,
         },
       });
     }
-  }, [orgData, statuses, orgId, searchOrgTasks, search]);
+  }, [orgData, statuses, orgId, searchOrgTasks, search, podIds]);
 
   const handleSearch = useCallback(
     (searchString) => {
@@ -338,24 +340,14 @@ const BoardsPage = () => {
     [orgId, orgData]
   );
 
-  const handleFilterChange = (filter: TaskFilter) => {
-    // const id = orgId || orgData?.id;
-
-    // setFilter(filter);
-
-    if (filter.statuses) {
-      // setFirstTimeFetch(false);
-      setStatuses(filter.statuses);
+  const handleFilterChange = ({ statuses, pods }: TaskFilter) => {
+    if (statuses) {
+      setStatuses(statuses);
     }
-    //
-    // getOrgTasks({
-    //   variables: {
-    //     orgId: id,
-    //     offset: 0,
-    //     statuses: filter.statuses || [],
-    //     limit: LIMIT,
-    //   },
-    // });
+
+    if (pods) {
+      setPodIds(pods);
+    }
   };
 
   const handleLoadMore = useCallback(() => {
