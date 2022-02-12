@@ -131,7 +131,7 @@ const Boards = (props) => {
   const router = useRouter();
   const [view, setView] = useState(null);
   const loggedInUser = useMe();
-  const [columns, setColumns] = useState([]);
+  const [contributorColumns, setContributorColumns] = useState([]);
   const [adminColumns, setAdminColumns] = useState([]);
   const [hasMoreTasks, setHasMoreTasks] = useState(true);
   const { fetchMore } = useQuery(GET_USER_TASK_BOARD_TASKS, {
@@ -143,8 +143,8 @@ const Boards = (props) => {
     },
     onCompleted: (data) => {
       const tasks = data?.getUserTaskBoardTasks;
-      const newColumns = updateTaskColumns(tasks, columns.length > 0 ? columns : baseColumns);
-      setColumns(dedupeColumns(newColumns));
+      const newColumns = updateTaskColumns(tasks, contributorColumns.length > 0 ? contributorColumns : baseColumns);
+      setContributorColumns(dedupeColumns(newColumns));
       setHasMoreTasks(tasks?.length >= limit);
     },
   });
@@ -157,9 +157,9 @@ const Boards = (props) => {
     },
     onCompleted: (data) => {
       const taskProposals = data?.getUserTaskBoardProposals;
-      const newColumns = columns[0]?.section ? [...columns] : [...baseColumns];
+      const newColumns = contributorColumns[0]?.section ? [...contributorColumns] : [...baseColumns];
       newColumns[0].section.tasks = [...taskProposals];
-      setColumns(newColumns);
+      setContributorColumns(newColumns);
     },
   });
   const getUserTaskBoardSubmissions = useQuery(GET_USER_TASK_BOARD_SUBMISSIONS, {
@@ -172,9 +172,9 @@ const Boards = (props) => {
     onCompleted: (data) => {
       const tasks = data?.getUserTaskBoardSubmissions;
       if (tasks?.length > 0) {
-        const newColumns = columns[1]?.section ? [...columns] : [...baseColumns];
+        const newColumns = contributorColumns[1]?.section ? [...contributorColumns] : [...baseColumns];
         newColumns[1].section.tasks = [...tasks];
-        setColumns(newColumns);
+        setContributorColumns(newColumns);
       }
     },
   });
@@ -233,7 +233,7 @@ const Boards = (props) => {
     if (hasMoreTasks) {
       fetchMore({
         variables: {
-          offset: Math.max(...columns.map(({ tasks }) => tasks.length)),
+          offset: Math.max(...contributorColumns.map(({ tasks }) => tasks.length)),
           limit,
         },
         updateQuery: (prev, { fetchMoreResult }) => ({
@@ -243,8 +243,8 @@ const Boards = (props) => {
         .then((fetchMoreResult) => {
           const results = fetchMoreResult?.data?.getUserTaskBoardTasks;
           if (results && results?.length > 0) {
-            const newColumns = updateTaskColumns(results, columns);
-            setColumns(dedupeColumns(newColumns));
+            const newColumns = updateTaskColumns(results, contributorColumns);
+            setContributorColumns(dedupeColumns(newColumns));
           } else {
             setHasMoreTasks(false);
           }
@@ -253,13 +253,13 @@ const Boards = (props) => {
           console.error(e);
         });
     }
-  }, [hasMoreTasks, columns, fetchMore]);
+  }, [hasMoreTasks, contributorColumns, fetchMore]);
 
   return (
     <UserBoardContext.Provider
       value={{
-        columns: isAdmin ? filterColumnsByStatus(adminColumns, selectedStatus) : columns,
-        setColumns: isAdmin ? setAdminColumns : setColumns,
+        columns: contributorColumns,
+        setColumns: setContributorColumns,
         taskCount: userTaskCountData?.getPerStatusTaskCountForUserBoard,
         userPermissionsContext: userPermissionsContext?.getUserPermissionContext
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
@@ -287,10 +287,15 @@ const Boards = (props) => {
         {view ? (
           <>
             {view === ViewType.Grid ? (
-              <KanbanBoard columns={columns} onLoadMore={handleLoadMore} hasMore={hasMoreTasks} isAdmin={isAdmin} />
+              <KanbanBoard
+                columns={contributorColumns}
+                onLoadMore={handleLoadMore}
+                hasMore={hasMoreTasks}
+                isAdmin={isAdmin}
+              />
             ) : (
               <Table
-                columns={isAdmin ? filterColumnsByStatus(adminColumns, selectedStatus) : columns}
+                columns={isAdmin ? filterColumnsByStatus(adminColumns, selectedStatus) : contributorColumns}
                 onLoadMore={handleLoadMore}
                 hasMore={hasMoreTasks}
                 isAdmin={isAdmin}
