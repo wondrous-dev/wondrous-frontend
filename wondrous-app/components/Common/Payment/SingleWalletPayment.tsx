@@ -12,6 +12,13 @@ import { useWonderWeb3 } from '../../../services/web3';
 import { ErrorText } from '..';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PaymentPendingTypography } from './styles';
+import { usePaymentModal } from '../../../utils/hooks';
+import {
+  GET_PAYMENTS_FOR_ORG,
+  GET_PAYMENTS_FOR_POD,
+  GET_UNPAID_SUBMISSIONS_FOR_ORG,
+  GET_UNPAID_SUBMISSIONS_FOR_POD,
+} from '../../../graphql/queries/payment';
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {
@@ -25,9 +32,9 @@ const CHAIN_TO_GNOSIS_URL_ABBR = {
   polygon_mainnet: 'matic',
 };
 
-function constructGnosisRedirectUrl(chain, safeAddress, safeTxHash) {
+export const constructGnosisRedirectUrl = (chain, safeAddress, safeTxHash) => {
   return `https://gnosis-safe.io/app/${CHAIN_TO_GNOSIS_URL_ABBR[chain]}:${safeAddress}/transactions/${safeTxHash}`;
-}
+};
 
 const CHAIN_ID_TO_CHAIN_NAME = {
   1: 'eth_mainnet',
@@ -64,6 +71,7 @@ export const SingleWalletPayment = (props) => {
   const [safeTxHash, setSafeTxHash] = useState(null);
   const router = useRouter();
   const wonderWeb3 = useWonderWeb3();
+  const paymentModal = usePaymentModal();
   const connectWeb3 = async () => {
     await wonderWeb3.onConnect();
   };
@@ -84,10 +92,19 @@ export const SingleWalletPayment = (props) => {
   const [proposeGnosisTxForSubmission] = useMutation(PROPOSE_GNOSIS_TX_FOR_SUBMISSION, {
     onCompleted: (data) => {
       setPaymentPending(true);
+      if (paymentModal?.onPaymentComplete) {
+        paymentModal?.onPaymentComplete();
+      }
     },
     onError: (e) => {
       console.error(e);
     },
+    refetchQueries: [
+      GET_UNPAID_SUBMISSIONS_FOR_POD,
+      GET_UNPAID_SUBMISSIONS_FOR_ORG,
+      GET_PAYMENTS_FOR_POD,
+      GET_PAYMENTS_FOR_ORG,
+    ],
   });
   useEffect(() => {
     const url = constructGnosisRedirectUrl(selectedWallet?.chain, selectedWallet?.address, safeTxHash);
@@ -193,6 +210,12 @@ export const SingleWalletPayment = (props) => {
           transactionData: txData,
         },
       },
+      refetchQueries: [
+        GET_UNPAID_SUBMISSIONS_FOR_POD,
+        GET_UNPAID_SUBMISSIONS_FOR_ORG,
+        GET_PAYMENTS_FOR_POD,
+        GET_PAYMENTS_FOR_ORG,
+      ],
     });
   };
   const handleCreateNewWalletClick = () => {

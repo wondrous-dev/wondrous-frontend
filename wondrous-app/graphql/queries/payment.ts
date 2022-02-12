@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client'
-import { PaymentMethodFragment } from '../fragments/payment'
+import { gql } from '@apollo/client';
+import { PaymentCardFragment, PaymentMethodFragment, UnpaidSubmissionFragment } from '../fragments/payment';
 
 export const GET_PAYMENT_METHODS_FOR_ORG = gql`
   query getPaymentMethodsForOrg($orgId: ID!) {
@@ -8,8 +8,7 @@ export const GET_PAYMENT_METHODS_FOR_ORG = gql`
     }
   }
   ${PaymentMethodFragment}
-`
-
+`;
 
 export const GET_SUBMISSIONS_PAYMENT_INFO = gql`
   query getSubmissionsPaymentInfo($submissionIds: [ID]) {
@@ -23,20 +22,55 @@ export const GET_SUBMISSIONS_PAYMENT_INFO = gql`
       }
     }
   }
-`
-
+`;
 
 export const GET_SUBMISSION_PAYMENT_INFO = gql`
   query getSubmissionPaymentInfo($submissionId: ID!) {
     getSubmissionPaymentInfo(submissionId: $submissionId) {
-		    submissionId
-		    paymentData {
-          tokenAddress
-    	    isEthTransfer
-    	    amount
-    	    recepientAddress
-          chain
-        }
+      submissionId
+      paymentData {
+        tokenAddress
+        isEthTransfer
+        amount
+        recepientAddress
+        chain
+      }
     }
   }
-`
+`;
+
+export const GET_PAYMENTS_FOR_ORG = gql`
+  query getPaymentsForOrg($input: OrgPaymentQueryInput) {
+    getPaymentsForOrg(input: $input) {
+      ...PaymentCardFragment
+    }
+  }
+  ${PaymentCardFragment}
+`;
+
+export const GET_PAYMENTS_FOR_POD = gql`
+  query getPaymentsForPod($input: PodPaymentQueryInput) {
+    getPaymentsForPod(input: $input) {
+      ...PaymentCardFragment
+    }
+  }
+  ${PaymentCardFragment}
+`;
+
+export const GET_UNPAID_SUBMISSIONS_FOR_ORG = gql`
+  query getUnpaidSubmissionsForOrg($orgId: ID!) {
+    getUnpaidSubmissionsForOrg(orgId: $orgId) {
+      ...UnpaidSubmissionFragment
+    }
+  }
+  ${UnpaidSubmissionFragment}
+`;
+
+export const GET_UNPAID_SUBMISSIONS_FOR_POD = gql`
+  query getUnpaidSubmissionsForPod($podId: ID!) {
+    getUnpaidSubmissionsForPod(podId: $podId) {
+      ...UnpaidSubmissionFragment
+    }
+  }
+  ${UnpaidSubmissionFragment}
+`;

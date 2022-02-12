@@ -41,7 +41,7 @@ const GoBackStyle = {
 };
 
 export const MakePaymentModal = (props) => {
-  const { open, handleClose, setShowPaymentModal, approvedSubmission, fetchedTask } = props;
+  const { open, handleClose, setShowPaymentModal, approvedSubmission, fetchedTask, getTaskSubmissionsForTask} = props;
   const [selectedTab, setSelectedTab] = useState('wallet');
   const [wallets, setWallets] = useState([]);
   const [submissionPaymentInfo, setSubmissionPaymentInfo] = useState(null);
@@ -111,7 +111,6 @@ export const MakePaymentModal = (props) => {
   }, [fetchedTask]);
 
   useEffect(() => {
-    console.log('apporvedSubmissionid', approvedSubmission?.id);
     getSubmissionPaymentInfo({
       variables: {
         submissionId: approvedSubmission?.id,
@@ -124,6 +123,16 @@ export const MakePaymentModal = (props) => {
     handleClose();
     setShowPaymentModal(false);
   };
+
+  const handleGoBackToTask = () => {
+    setShowPaymentModal(false);
+    getTaskSubmissionsForTask({
+      variables: {
+        taskId: fetchedTask?.id,
+      },
+    });
+};
+
   const canPay = permissions.includes(PERMISSIONS.APPROVE_PAYMENT) || permissions.includes(PERMISSIONS.FULL_ACCESS);
   return (
     <>
@@ -156,7 +165,7 @@ export const MakePaymentModal = (props) => {
               </div>
             )}
           <>
-            <PodNameTypography style={GoBackStyle} onClick={()=>setShowPaymentModal(false)}>
+            <PodNameTypography style={GoBackStyle} onClick={handleGoBackToTask}>
               Back to Task
             </PodNameTypography>
           </>
@@ -177,7 +186,7 @@ export const MakePaymentModal = (props) => {
                       textDecoration: 'underline',
                       cursor: 'pointer',
                     }}
-                    target=")blank"
+                    target="_blank"
                   >
                     {fetchedTask.assigneeUsername}
                   </a>
@@ -198,7 +207,7 @@ export const MakePaymentModal = (props) => {
                   This link will only be visible to the assignee and other admins with the payment permission
                 </WarningTypography>
                 <OfflinePayment
-                  setShowPaymentModal={setShowPaymentModal}
+                  handleClose={handleCloseAll}
                   approvedSubmission={approvedSubmission}
                   fetchedTask={fetchedTask}
                   submissionPaymentInfo={submissionPaymentInfo}

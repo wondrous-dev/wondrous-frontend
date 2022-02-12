@@ -71,7 +71,7 @@
 html,
 body {
   overflow-x: hidden;
-  background-color: #0d0738;
+  background-color: #0d0738 !important;
   padding: 0;
   margin: 0;
 }

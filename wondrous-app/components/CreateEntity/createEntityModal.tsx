@@ -876,6 +876,7 @@ const CreateLayoutBaseModal = (props) => {
                   marginTop: '20px',
                 }}
                 type={'number'}
+                min="0"
                 placeholder="Enter reward amount"
                 search={false}
                 value={rewardsAmount}

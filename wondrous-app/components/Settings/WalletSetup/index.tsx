@@ -87,7 +87,6 @@ const Wallets = (props) => {
 
   const [createOrgWallet] = useMutation(CREATE_ORG_WALLET, {
     onCompleted: (data) => {
-      console.log('completed', data);
       setErrors(emptyError);
       setSafeAddress('');
       setWalletName('');
@@ -101,7 +100,6 @@ const Wallets = (props) => {
 
   const [createPodWallet] = useMutation(CREATE_POD_WALLET, {
     onCompleted: (data) => {
-      console.log('completed', data);
       setErrors(emptyError);
       setSafeAddress('');
       setWalletName('');
@@ -133,6 +131,7 @@ const Wallets = (props) => {
       } else {
         newError.safeAddressError = 'unknown gnosis network error';
       }
+      setErrors(newError);
       return;
     }
     if (orgId) {

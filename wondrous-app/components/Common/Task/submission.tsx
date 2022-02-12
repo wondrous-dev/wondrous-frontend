@@ -431,7 +431,7 @@ const TaskSubmissionForm = (props) => {
         cancelSubmissionForm();
       }
     },
-    refetchQueries: ['getOrgTaskBoardSubmissions', 'getPerStatusTaskCountForOrgBoard'],
+    refetchQueries: ['getPerStatusTaskCountForOrgBoard'],
   });
   const [updateTaskSubmission] = useMutation(UPDATE_TASK_SUBMISSION, {
     onCompleted: (data) => {
@@ -448,7 +448,6 @@ const TaskSubmissionForm = (props) => {
         cancelSubmissionForm();
       }
     },
-    refetchQueries: ['getOrgTaskBoardSubmissions'],
   });
   const [attachTaskSubmissionMedia] = useMutation(ATTACH_SUBMISSION_MEDIA);
   const [removeTaskSubmissionMedia] = useMutation(REMOVE_SUBMISSION_MEDIA);
