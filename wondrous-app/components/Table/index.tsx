@@ -182,6 +182,11 @@ export const Table = (props) => {
           newStatus: TASK_STATUS_ARCHIVED,
         },
       },
+      refetchQueries: () => [
+        'getSubmissionsUserCanReview',
+        'getWorkFlowBoardReviewableItemsCount',
+        'getUserTaskBoardTasks',
+      ],
     });
 
     if (column) {
