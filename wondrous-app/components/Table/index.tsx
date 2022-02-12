@@ -161,7 +161,7 @@ export const Table = (props) => {
   async function handleNewStatus(task, status) {
     updateTaskStatusMutation({
       variables: {
-        taskId: task?.id,
+        taskId: task?.taskId ?? task?.id,
         input: {
           newStatus: status,
         },
@@ -177,7 +177,7 @@ export const Table = (props) => {
     await apolloClient.mutate({
       mutation: UPDATE_TASK_STATUS,
       variables: {
-        taskId: task?.id,
+        taskId: task?.taskId ?? task?.id,
         input: {
           newStatus: TASK_STATUS_ARCHIVED,
         },
@@ -238,6 +238,8 @@ export const Table = (props) => {
         open={isArchiveModalOpen}
         onClose={() => setArchiveModalOpen(false)}
         onArchive={() => archiveTask(selectedTask)}
+        taskId={selectedTask?.id}
+        taskType={selectedTaskType}
       />
 
       {editableTask ? (
@@ -420,13 +422,14 @@ export const Table = (props) => {
                           onClick={() => {
                             setSelectedTask(task);
                             setArchiveModalOpen(true);
+                            setSelectedTaskType(dropdownItemLabel);
                           }}
                           color="#C4C4C4"
                           fontSize="13px"
                           fontWeight="normal"
                           textAlign="left"
                         >
-                          {/* BUG: @junius When a proposal or submission was clicked, it produces an error */}
+                          {/* BUG: @ When a proposal or submission was clicked, it produces an error */}
                           Archive {dropdownItemLabel}
                         </DropDownItem>
                       </DropDown>

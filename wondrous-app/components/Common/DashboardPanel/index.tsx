@@ -96,7 +96,7 @@ const DashboardPanel = (props) => {
   const { isAdmin, setIsAdmin, selectedStatus, setSelectedStatus } = props;
   const [ref, inView] = useInView({});
   const { data: getPerStatusTaskCountData, loading: getPerStatusTaskCountLoading } = useQuery(
-    GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD // BUG: @junius. There seems to be an error with the total tasks in-review
+    GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD // BUG: @ There seems to be an error with the total tasks in-review
   );
   const { data: getWorkFlowBoardReviewableItemsCountData, loading: getWorkFlowBoardReviewableItemsCountLoading } =
     useQuery(GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT);
