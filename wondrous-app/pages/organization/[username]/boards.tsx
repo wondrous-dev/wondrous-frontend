@@ -11,6 +11,7 @@ import {
   SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
 } from '../../../graphql/queries/taskBoard';
 import Boards from '../../../components/organization/boards/boards';
+import SearchBoards from '../../../components/organization/boards/SearchBoards';
 import { InReview, Requested, Archived } from '../../../components/Icons/sections';
 import {
   TASK_STATUS_DONE,
@@ -313,15 +314,6 @@ const BoardsPage = () => {
       if (search) {
         router.replace(`${delQuery(router.asPath)}?search=${searchString}&view=list`);
 
-        // searchOrgTasks({
-        //   variables: {
-        //     orgId: id,
-        //     limit: LIMIT,
-        //     offset: 0,
-        //     searchString,
-        //   },
-        // });
-
         return Promise.resolve([]);
       } else {
         return apollo
@@ -330,6 +322,8 @@ const BoardsPage = () => {
             variables: {
               orgId: id,
               limit: LIMIT,
+              statuses,
+              podIds,
               offset: 0,
               searchString,
             },
@@ -395,16 +389,29 @@ const BoardsPage = () => {
         setFirstTimeFetch,
       }}
     >
-      <Boards
-        orgPods={orgPods}
-        selectOptions={SELECT_OPTIONS}
-        columns={columns}
-        onLoadMore={handleLoadMore}
-        onSearch={handleSearch}
-        onFilterChange={handleFilterChange}
-        hasMore={orgTaskHasMore}
-        orgData={orgData}
-      />
+      {search ? (
+        <SearchBoards
+          orgPods={orgPods}
+          selectOptions={SELECT_OPTIONS}
+          columns={columns}
+          onLoadMore={handleLoadMore}
+          onSearch={handleSearch}
+          onFilterChange={handleFilterChange}
+          hasMore={orgTaskHasMore}
+          orgData={orgData}
+        />
+      ) : (
+        <Boards
+          orgPods={orgPods}
+          selectOptions={SELECT_OPTIONS}
+          columns={columns}
+          onLoadMore={handleLoadMore}
+          onSearch={handleSearch}
+          onFilterChange={handleFilterChange}
+          hasMore={orgTaskHasMore}
+          orgData={orgData}
+        />
+      )}
     </OrgBoardContext.Provider>
   );
 };

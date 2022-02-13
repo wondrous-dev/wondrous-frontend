@@ -28,7 +28,7 @@ export const FilterHandle = styled.div`
   height: 40px;
   padding: 1px;
 
-  margin: 0 23px;
+  margin: 0 0 0 23px;
 
   ${(props) =>
     props.open ? `background: ${Grey75};` : `background: linear-gradient(180deg, ${Black80} 0%, ${Black95} 70%);`}

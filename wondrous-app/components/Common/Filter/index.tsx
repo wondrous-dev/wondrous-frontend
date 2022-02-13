@@ -111,15 +111,13 @@ const Filter = ({ filterSchema = [], filter, setFilter, onChange }) => {
     <FilterHandle open={open}>
       <FilterHandleInner open={open} onClick={toggleOpen}>
         <FilterHandleContainer>
-          {open ? (
-            !selectedNames.length ? (
-              `<Filter>`
-            ) : (
-              <FilterValues>
-                <InlineText color={Grey250}>Filter:&nbsp;</InlineText>
-                <InlineText color={Blue200}>{selectedNames.join(', ')}</InlineText>
-              </FilterValues>
-            )
+          {selectedNames.length ? (
+            <FilterValues>
+              <InlineText color={Grey250}>Filter:&nbsp;</InlineText>
+              <InlineText color={Blue200}>{selectedNames.join(', ')}</InlineText>
+            </FilterValues>
+          ) : open ? (
+            `<Filter>`
           ) : (
             <>
               <FilterIcon /> &nbsp; Filter

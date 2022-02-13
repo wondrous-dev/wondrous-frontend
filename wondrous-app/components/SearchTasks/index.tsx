@@ -32,19 +32,13 @@ export default function SearchTasks({ onSearch }: Props) {
   const [inputValue, setInputValue] = useState('');
   const [options, setOptions] = useState([]);
   const [hasMore, setHasMore] = useState(false);
-  const LIMIT = 5;
+  const LIMIT = 9;
 
   React.useEffect(() => {
     if (!open) {
       setOptions([]);
     }
   }, [open]);
-
-  // React.useEffect(() => {
-  //   if (options.length > LIMIT) {
-  //     setHasMore(true);
-  //   }
-  // }, [options]);
 
   // if use throttle from the lodash library, it sends request every function call
   // and doesn't matter if you use async/await or .then
@@ -55,7 +49,7 @@ export default function SearchTasks({ onSearch }: Props) {
       const searchResult = await onSearch(searchString);
 
       setOptions(searchResult);
-      setHasMore(searchResult.length > 4);
+      setHasMore(searchResult.length > LIMIT);
     }, 200);
   };
 
