@@ -238,7 +238,7 @@ const SubmissionItem = (props) => {
     },
     refetchQueries: ['getOrgTaskBoardSubmissions', 'getPerStatusTaskCountForOrgBoard'],
   });
-  const [requestChangeTaskSubmission] = useMutation(REQUEST_CHANGE_SUBMISSION, {
+  const [requestChangeSubmission] = useMutation(REQUEST_CHANGE_SUBMISSION, {
     variables: {
       submissionId: submission?.id,
     },
@@ -383,9 +383,7 @@ const SubmissionItem = (props) => {
               <>
                 <CreateFormButtonsBlock>
                   {!submission.changeRequestedAt && !submission.approvedAt && (
-                    <CreateFormCancelButton onClick={requestChangeTaskSubmission}>
-                      Request changes
-                    </CreateFormCancelButton>
+                    <CreateFormCancelButton onClick={requestChangeSubmission}>Request changes</CreateFormCancelButton>
                   )}
                   {!submission.approvedAt && (
                     <CreateFormPreviewButton onClick={approveSubmission}>Approve</CreateFormPreviewButton>

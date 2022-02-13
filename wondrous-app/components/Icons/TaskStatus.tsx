@@ -4,10 +4,8 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_PAID,
-  TASK_STATUS_PROPOSAL_REQUEST,
   TASK_STATUS_REQUESTED,
   TASK_STATUS_TODO,
-  TASK_STATUS_SUBMISSION_REQUEST,
 } from '../../utils/constants';
 import {
   AwaitingPayment,
@@ -18,7 +16,6 @@ import {
   Requested,
   TodoWithBorder,
 } from './index';
-import { ProposalsRemainingIcon } from './statusIcons';
 
 type Props = {
   status: string;
@@ -46,12 +43,6 @@ export default function TaskStatus({ status, ...rest }: Props) {
 
     case TASK_STATUS_PAID:
       return <Paid {...rest} />;
-
-    case TASK_STATUS_PROPOSAL_REQUEST:
-      return <ProposalsRemainingIcon {...rest} />;
-
-    case TASK_STATUS_SUBMISSION_REQUEST:
-      return <InReview {...rest} />;
 
     default:
       return null;
