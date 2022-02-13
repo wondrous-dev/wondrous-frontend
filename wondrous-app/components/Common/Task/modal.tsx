@@ -491,6 +491,7 @@ export const TaskListViewModal = (props) => {
           } else if (entityType === ENTITIES_TYPES.USER) {
             getUserTaskBoardProposals({
               variables: {
+                limit: LIMIT,
                 userId: loggedInUserId,
                 statuses: [STATUS_OPEN],
               },
@@ -516,6 +517,7 @@ export const TaskListViewModal = (props) => {
           } else if (entityType === ENTITIES_TYPES.USER) {
             getUserTaskBoardSubmissions({
               variables: {
+                limit: LIMIT,
                 userId: loggedInUserId,
                 statuses: [STATUS_OPEN],
               },
@@ -570,6 +572,8 @@ export const TaskListViewModal = (props) => {
   } else if (taskType === TASK_STATUS_ARCHIVED) {
     text = 'Tasks';
   }
+
+  console.log('debug1 hasMore: ', hasMore);
   return (
     <CreateModalOverlay
       aria-labelledby="modal-modal-title"
