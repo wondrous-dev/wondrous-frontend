@@ -18,6 +18,7 @@ export const DropDownButtonDecision = (props) => {
         <ArrowDropDownIcon />
       </StyledDropDownButton>
       <DropDownPopper
+        onClose={() => setOpen(false)}
         status={status}
         taskId={taskId}
         id={id}

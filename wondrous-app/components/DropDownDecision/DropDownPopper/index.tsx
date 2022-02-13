@@ -26,7 +26,7 @@ const DECISIONS = [
 ];
 
 export const DropDownPopper = (props) => {
-  const { taskId, status } = props;
+  const { taskId, status, onClose } = props;
   const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [rejectTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
@@ -34,7 +34,7 @@ export const DropDownPopper = (props) => {
   const [requestChangeTaskSubmission] = useMutation(REQUEST_CHANGE_SUBMISSION);
   const [rejectTaskSubmission] = useMutation(REJECT_SUBMISSION);
 
-  const handleProposalAction = (id, decision) => {
+  const handleTaskProposalDecision = (id, decision) => {
     const refetchQueries = () => ['getProposalsUserCanReview', 'getWorkFlowBoardReviewableItemsCount'];
     if (decision === DECISION_SEND_INTO_REVISION) {
       requestChangeTaskProposal({
@@ -64,7 +64,7 @@ export const DropDownPopper = (props) => {
     }
   };
 
-  const handleSubmissionAction = (id, decision) => {
+  const handleTaskSubmissionDecision = (id, decision) => {
     const refetchQueries = () => ['getSubmissionsUserCanReview', 'getWorkFlowBoardReviewableItemsCount'];
     if (decision === DECISION_SEND_INTO_REVISION) {
       requestChangeTaskSubmission({
@@ -94,11 +94,12 @@ export const DropDownPopper = (props) => {
 
   const handleOnClick = (id, decision, status) => {
     if (status === TASK_STATUS_PROPOSAL_REQUEST) {
-      handleProposalAction(id, decision);
+      handleTaskProposalDecision(id, decision);
     }
     if (status === TASK_STATUS_SUBMISSION_REQUEST) {
-      handleSubmissionAction(id, decision);
+      handleTaskSubmissionDecision(id, decision);
     }
+    onClose();
   };
 
   return (
