@@ -495,7 +495,11 @@ const CreateLayoutBaseModal = (props) => {
   }, [pods, pod]);
 
   const [createTask] = useMutation(CREATE_TASK, {
-    refetchQueries: () => ['getPerStatusTaskCountForMilestone'],
+    refetchQueries: () => [
+      'getPerStatusTaskCountForMilestone',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+    ],
     onCompleted: (data) => {
       const task = data?.createTask;
       const justCreatedPod = getPodObject();

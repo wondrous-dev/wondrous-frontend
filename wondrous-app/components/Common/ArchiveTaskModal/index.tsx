@@ -46,6 +46,7 @@ export const ArchiveTaskModal = (props) => {
       board?.setFirstTimeFetch(false);
       archiveTaskProposal({
         variables: { proposalId: taskId },
+        refetchQueries: () => ['getProposalsUserCanReview', 'getWorkFlowBoardReviewableItemsCount'],
       })
         .then(() => {
           const updatedColumn = removeProposalItem(taskId, board.columns);
