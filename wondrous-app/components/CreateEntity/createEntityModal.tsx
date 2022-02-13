@@ -12,7 +12,7 @@ import {
   MEDIA_TYPES,
   PERMISSIONS,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
-  CHAIN_TO_CHAIN_DIPLAY_NAME
+  CHAIN_TO_CHAIN_DIPLAY_NAME,
 } from '../../utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
@@ -872,6 +872,7 @@ const CreateLayoutBaseModal = (props) => {
                   marginTop: '20px',
                 }}
                 type={'number'}
+                min="0"
                 placeholder="Enter reward amount"
                 search={false}
                 value={rewardsAmount}

@@ -773,6 +773,7 @@ export const TaskViewModal = (props) => {
       handleClose();
     }
   };
+
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -1089,7 +1090,7 @@ export const TaskViewModal = (props) => {
                 {fetchedTask?.dueDate ? format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy') : 'None'}
               </TaskSectionInfoText>
             </TaskSectionDisplayDiv>
-            {fetchedTask?.rewards && fetchedTask?.rewards > 0 && (
+            {fetchedTask?.rewards && fetchedTask?.rewards?.length > 0 && (
               <TaskSectionDisplayDiv>
                 <TaskSectionDisplayLabel>
                   <TokenIcon />

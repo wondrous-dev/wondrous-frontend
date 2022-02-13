@@ -26,6 +26,7 @@ import DefaultUserImage from '../Common/Image/DefaultUserImage';
 import { useRouter } from 'next/router';
 import { DAOIcon } from '../Icons/dao';
 import { PodModal } from './PodModal';
+import Link from 'next/link';
 
 const PodButton = (props) => {
   return (
@@ -106,30 +107,29 @@ const SideBarComponent = (props) => {
           <DrawerList>
             {listItems &&
               listItems.map((item) => (
-                <DrawerListItem
-                  button
+                <Link
                   key={item.id}
-                  onClick={() =>
-                    router.push(`/organization/${item?.username}/boards`, undefined, {
-                      shallow: true,
-                    })
-                  }
+                  href={`/organization/[username]/boards`}
+                  as={`/organization/${item?.username}/boards`}
+                  passHref={true}
                 >
-                  {item?.profilePicture ? (
-                    <SafeImage
-                      src={item?.thumbnailPicture || item?.profilePicture}
-                      style={{
-                        width: '36px',
-                        height: '36px',
-                        borderRadius: '6px',
-                      }}
-                    />
-                  ) : (
-                    <NoLogoDAO>
-                      <DAOIcon />
-                    </NoLogoDAO>
-                  )}
-                </DrawerListItem>
+                  <DrawerListItem button key={item.id}>
+                    {item?.profilePicture ? (
+                      <SafeImage
+                        src={item?.thumbnailPicture || item?.profilePicture}
+                        style={{
+                          width: '36px',
+                          height: '36px',
+                          borderRadius: '6px',
+                        }}
+                      />
+                    ) : (
+                      <NoLogoDAO>
+                        <DAOIcon />
+                      </NoLogoDAO>
+                    )}
+                  </DrawerListItem>
+                </Link>
               ))}
             <StyledDividerDiv>
               <StyledDivider />

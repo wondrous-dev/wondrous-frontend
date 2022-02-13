@@ -36,7 +36,9 @@ import { useOrgBoard, usePodBoard } from '../../../utils/hooks';
 import { parseUserPermissionContext } from '../../../utils/helpers';
 import { PERMISSIONS } from '../../../utils/constants';
 
-const link = `https://app.wonderverse.xyz/invite/`;
+const link = process.env.NEXT_PUBLIC_PRODUCTION
+  ? `https://app.wonderverse.xyz/invite/`
+  : 'https://wondrous-app-git-staging-wonderverse.vercel.app/';
 
 export const putDefaultRoleOnTop = (roles, permissions) => {
   if (!roles) return [];
@@ -99,6 +101,7 @@ export const OrgInviteLinkModal = (props) => {
     onError: (e) => {
       console.error(e);
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   const handleOnClose = () => {
@@ -122,7 +125,7 @@ export const OrgInviteLinkModal = (props) => {
   };
 
   useEffect(() => {
-    if (!role) {
+    if (!role && open) {
       getOrgRoles({
         variables: {
           orgId: orgId,

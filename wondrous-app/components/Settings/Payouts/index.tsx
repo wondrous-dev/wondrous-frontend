@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { format } from 'date-fns';
 
@@ -35,11 +35,14 @@ import { White } from '../../../theme/colors';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PayModal } from './modal';
 import { PaymentModalContext } from '../../../utils/contexts';
+import { SeeMoreText } from '../Members/styles';
+
 enum ViewType {
   Paid = 'paid',
   Unpaid = 'unpaid',
 }
 
+const LIMIT = 10;
 const PaymentItem = (props) => {
   const { item, org, podId } = props;
   const [openModal, setOpenModal] = useState(false);
@@ -159,9 +162,16 @@ const PaymentItem = (props) => {
             <TableCellText>{item.paymentStatus}</TableCellText>
           </StyledTableCell>
         )}
-        <StyledTableCell>
-          <TableCellText>{format(new Date(item.submissionApprovedAt || item.payedAt), 'MM/dd/yyyy')}</TableCellText>
-        </StyledTableCell>
+        {item.submissionApprovedAt && (
+          <StyledTableCell>
+            <TableCellText>{format(new Date(item.submissionApprovedAt), 'MM/dd/yyyy')}</TableCellText>
+          </StyledTableCell>
+        )}
+        {item.payedAt && (
+          <StyledTableCell>
+            <TableCellText>{format(new Date(item.payedAt), 'MM/dd/yyyy')}</TableCellText>
+          </StyledTableCell>
+        )}
         {item.paymentStatus !== 'paid' && (
           <>
             <StyledTableCell>
@@ -189,6 +199,7 @@ const Payouts = (props) => {
   const [view, setView] = useState(ViewType.Unpaid);
   const router = useRouter();
   const { view: payView } = router.query;
+  const [hasMore, setHasMore] = useState(false);
   const listViewOptions = [
     {
       name: 'Unpaid',
@@ -206,8 +217,12 @@ const Payouts = (props) => {
     },
   ];
 
-  const [getPaymentsForOrg] = useLazyQuery(GET_PAYMENTS_FOR_ORG, { fetchPolicy: 'network-only' });
-  const [getPaymentsForPod] = useLazyQuery(GET_PAYMENTS_FOR_POD, { fetchPolicy: 'network-only' });
+  const [getPaymentsForOrg, { fetchMore: fetchMoreOrgPayments }] = useLazyQuery(GET_PAYMENTS_FOR_ORG, {
+    fetchPolicy: 'network-only',
+  });
+  const [getPaymentsForPod, { fetchMore: fetchMorePodPayments }] = useLazyQuery(GET_PAYMENTS_FOR_POD, {
+    fetchPolicy: 'network-only',
+  });
   const [getUnpaidSubmissionsForOrg] = useLazyQuery(GET_UNPAID_SUBMISSIONS_FOR_ORG, {
     fetchPolicy: 'network-only',
   });
@@ -248,22 +263,26 @@ const Payouts = (props) => {
         variables: {
           input: {
             orgId,
+            limit: LIMIT,
           },
         },
       }).then((result) => {
         const payments = result?.data?.getPaymentsForOrg;
         setPaidList(payments || []);
+        setHasMore(payments?.length >= LIMIT);
       });
     } else if (podId && view === ViewType.Paid) {
       getPaymentsForPod({
         variables: {
           input: {
             podId,
+            limit: LIMIT,
           },
         },
       }).then((result) => {
         const payments = result?.data?.getPaymentsForPod;
         setPaidList(payments || []);
+        setHasMore(payments?.length >= LIMIT);
       });
     }
     if (payView) {
@@ -275,8 +294,55 @@ const Payouts = (props) => {
     }
   }, [orgId, podId, view, payView]);
   const org = orgData?.getOrgById;
-
   const paid = view === ViewType.Paid;
+  const handleLoadMore = useCallback(() => {
+    if (hasMore) {
+      const list = paid ? paidList : unpaidList;
+      if (orgId) {
+        fetchMoreOrgPayments({
+          variables: {
+            input: {
+              offset: list?.length,
+              limit: LIMIT,
+              orgId,
+            },
+          },
+        }).then((fetchMoreResult) => {
+          const results = fetchMoreResult?.data?.getPaymentsForOrg;
+          if (results && results?.length > 0) {
+            if (paid) {
+              setPaidList([...paidList, ...results]);
+            } else {
+              setUnpaidList([...unpaidList, ...results]);
+            }
+          } else {
+            setHasMore(false);
+          }
+        });
+      } else if (podId) {
+        fetchMorePodPayments({
+          variables: {
+            input: {
+              offset: list?.length,
+              limit: LIMIT,
+              podId,
+            },
+          },
+        }).then((fetchMoreResult) => {
+          const results = fetchMoreResult?.data?.getPaymentsForPod;
+          if (results && results?.length > 0) {
+            if (paid) {
+              setPaidList([...paidList, ...results]);
+            } else {
+              setUnpaidList([...unpaidList, ...results]);
+            }
+          } else {
+            setHasMore(false);
+          }
+        });
+      }
+    }
+  }, [paidList, unpaidList, hasMore]);
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
@@ -341,6 +407,16 @@ const Payouts = (props) => {
           </StyledTableBody>
         </StyledTable>
       </StyledTableContainer>
+      {hasMore && (
+        <div
+          style={{
+            textAlign: 'center',
+          }}
+          onClick={() => handleLoadMore()}
+        >
+          <SeeMoreText>See more</SeeMoreText>
+        </div>
+      )}
     </SettingsWrapper>
   );
 };
