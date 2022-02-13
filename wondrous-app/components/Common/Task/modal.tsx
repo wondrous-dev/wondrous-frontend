@@ -573,7 +573,6 @@ export const TaskListViewModal = (props) => {
     text = 'Tasks';
   }
 
-  console.log('debug1 hasMore: ', hasMore);
   return (
     <CreateModalOverlay
       aria-labelledby="modal-modal-title"
