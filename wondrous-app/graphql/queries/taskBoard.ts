@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client';
 
 import { TaskCardFragment, TaskProposalCardFragment, TaskSubmissionCardFragment } from '../fragments/task';
+import { PerStatusTaskCountFragment } from '../fragments/taskBoard';
 
 export const GET_ORG_TASK_BOARD_PROPOSALS = gql`
   query GetOrgTaskBoardProposals(
@@ -184,4 +185,13 @@ export const GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD = gql`
       archived
     }
   }
+`;
+
+export const GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD = gql`
+  query getPerStatusTaskCountForUserBoard($userId: ID!) {
+    getPerStatusTaskCountForUserBoard(userId: $userId) {
+      ...PerStatusTaskCountFragment
+    }
+  }
+  ${PerStatusTaskCountFragment}
 `;
