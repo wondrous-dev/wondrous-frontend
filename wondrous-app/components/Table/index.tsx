@@ -80,15 +80,20 @@ const DELIVERABLES_ICONS = {
   video: <PlayIcon />,
 };
 
+const STATUS_BY_TYPENAME = {
+  TaskSubmissionCard: TASK_STATUS_IN_REVIEW,
+  TaskProposalCard: TASK_STATUS_REQUESTED,
+};
+
 let windowOffset = 0;
 export const Table = (props) => {
-  const { columns, onLoadMore, hasMore, isAdmin = false } = props;
+  const { tasks, columns, onLoadMore, hasMore, isAdmin = false } = props;
   const router = useRouter();
   const apolloClient = useApolloClient();
   const [editableTask, setEditableTask] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
   const [selectedTaskType, setSelectedTaskType] = useState(null);
-  const [once, setOnce] = useState(false);
+  const [once, setOnce] = useState(true);
   const [isPreviewModalOpen, setPreviewModalOpen] = useState(false);
   const [isArchiveModalOpen, setArchiveModalOpen] = useState(false);
   const [ref, inView] = useInView({});
@@ -125,15 +130,17 @@ export const Table = (props) => {
         return task.find((task) => task.id === taskId);
       });
     }
-  }, [columns, router?.query?.task || router?.query?.taskProposal]);
+    if (taskId && once) {
+      const task = tasks.find((task) => task.id === taskId);
 
-  const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS, {
-    // onCompleted: (data) => {
-    //   if (data.updateTaskStatus.status === TASK_STATUS_ARCHIVED) {
-    //
-    //   }
-    // },
-  });
+      if (task) {
+        openTask(task);
+        setOnce(false);
+      }
+    }
+  }, [tasks, once, router?.query?.task || router?.query?.taskProposal]);
+
+  const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS);
 
   async function editTask(task, status = '') {
     let populatedTask = { ...task };
@@ -170,7 +177,7 @@ export const Table = (props) => {
   }
 
   async function archiveTask(task) {
-    const newColumns = [...columns];
+    const newColumns = [...board.columns];
     const column = newColumns.find((column) => column.tasks.includes(task));
     let taskIndex;
 
@@ -239,13 +246,16 @@ export const Table = (props) => {
         isTaskProposal={selectedTaskType === Constants.TASK_STATUS_PROPOSAL_REQUEST}
         taskId={selectedTaskType === Constants.TASK_STATUS_SUBMISSION_REQUEST ? selectedTask?.taskId : selectedTask?.id}
       />
-      <ArchiveTaskModal
-        open={isArchiveModalOpen}
-        onClose={() => setArchiveModalOpen(false)}
-        onArchive={() => archiveTask(selectedTask)}
-        taskId={selectedTask?.id}
-        taskType={selectedTaskType}
-      />
+
+      {isArchiveModalOpen && selectedTask?.id ? (
+        <ArchiveTaskModal
+          taskId={selectedTask?.id}
+          open={isArchiveModalOpen}
+          taskType={selectedTask.type}
+          onClose={() => setArchiveModalOpen(false)}
+          onArchive={() => archiveTask(selectedTask)}
+        />
+      ) : null}
 
       {editableTask ? (
         <CreateModalOverlay
@@ -292,7 +302,6 @@ export const Table = (props) => {
             <StyledTableCell width="54px"></StyledTableCell>
           </StyledTableRow>
         </StyledTableHead>
-
         <StyledTableBody>
           {columns.map((column) => {
             let tasks = [...column.tasks];
@@ -364,7 +373,9 @@ export const Table = (props) => {
                     <TaskTitle>{task.title}</TaskTitle>
                     <TaskDescription
                       style={{
-                        maxWidth: '600px',
+                        width: '17px',
+                        height: '17px',
+                        borderRadius: '17px',
                       }}
                     >
                       {renderMentionString({

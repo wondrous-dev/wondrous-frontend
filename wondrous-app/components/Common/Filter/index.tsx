@@ -145,7 +145,7 @@ const Filter = ({ filterSchema = [], filter, setFilter, onChange }) => {
                     <FilterItemIcon>{item.icon}</FilterItemIcon>
                     <FilterItemName>{item.name}</FilterItemName>
                     {item.organization ? <FilterItemOrgIcon>{item.organization.profilePicture}</FilterItemOrgIcon> : ''}
-                    <FilterItemCount>{item.count}</FilterItemCount>
+                    {/*<FilterItemCount>{item.count}</FilterItemCount>*/}
                   </FilterItem>
                 );
               })}

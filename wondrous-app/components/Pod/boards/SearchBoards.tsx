@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { InputAdornment } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import pluralize from 'pluralize';
-import Typography from '@mui/material/Typography';
 
-import SearchIcon from '../../Icons/search';
-import Wrapper from '../wrapper/wrapper';
-
-import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard';
-import { ButtonGroup } from '../../Common/ButtonGroup';
+import Wrapper from '../wrapper';
 
 import {
   BoardsActivity,
@@ -19,11 +13,8 @@ import {
   SearchType,
   ShowAllButton,
   ShowAllSearchResults,
-} from './styles';
+} from '../../organization/boards/styles';
 import Filter from '../../Common/Filter';
-import { ToDo, InProgress, Done, Proposal } from '../../Icons';
-import CreatePodIcon from '../../Icons/createPod';
-import { ToggleViewButton } from '../../Common/ToggleViewButton';
 import { Table } from '../../Table';
 import {
   BOUNTY_TYPE,
@@ -107,16 +98,6 @@ const SearchBoards = (props: Props) => {
   }, [columns]);
 
   const filterSchema = [
-    {
-      name: 'pods',
-      label: 'Pods',
-      multiChoice: true,
-      items: orgPods.map((pod) => ({
-        ...pod,
-        icon: <CreatePodIcon />,
-        count: pod.contributorCount,
-      })),
-    },
     {
       name: 'statuses',
       label: 'Status',

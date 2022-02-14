@@ -189,6 +189,15 @@ export const GET_POD_TASK_BOARD_TASKS = gql`
   ${TaskCardFragment}
 `;
 
+export const SEARCH_TASKS_FOR_POD_BOARD_VIEW = gql`
+  query searchTasksForPodBoardView($input: PodTaskBoardQueryInput) {
+    searchTasksForPodBoardView(input: $input) {
+      ...TaskCardFragment
+    }
+  }
+  ${TaskCardFragment}
+`;
+
 export const GET_POD_TASK_BOARD_SUBMISSIONS = gql`
   query getPodTaskBoardSubmissions($input: PodTaskBoardQueryInput) {
     getPodTaskBoardSubmissions(input: $input) {

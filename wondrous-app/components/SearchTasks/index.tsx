@@ -32,7 +32,7 @@ export default function SearchTasks({ onSearch }: Props) {
   const [inputValue, setInputValue] = useState('');
   const [options, setOptions] = useState([]);
   const [hasMore, setHasMore] = useState(false);
-  const LIMIT = 9;
+  const LIMIT = 8;
 
   React.useEffect(() => {
     if (!open) {

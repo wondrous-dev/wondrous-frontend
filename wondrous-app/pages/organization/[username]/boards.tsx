@@ -299,7 +299,7 @@ const BoardsPage = () => {
           statuses,
           podIds,
           orgId: id,
-          limit: 100,
+          limit: 1000,
           offset: 0,
           searchString: search,
         },
@@ -335,13 +335,8 @@ const BoardsPage = () => {
   );
 
   const handleFilterChange = ({ statuses, pods }: TaskFilter) => {
-    if (statuses) {
-      setStatuses(statuses);
-    }
-
-    if (pods) {
-      setPodIds(pods);
-    }
+    setStatuses(statuses || []);
+    setPodIds(pods || []);
   };
 
   const handleLoadMore = useCallback(() => {

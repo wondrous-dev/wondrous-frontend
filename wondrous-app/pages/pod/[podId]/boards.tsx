@@ -8,6 +8,7 @@ import {
   GET_POD_TASK_BOARD_SUBMISSIONS,
   GET_POD_TASK_BOARD_TASKS,
   GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD,
+  SEARCH_TASKS_FOR_POD_BOARD_VIEW,
 } from '../../../graphql/queries/taskBoard';
 import Boards from '../../../components/Pod/boards';
 import { InReview, Requested, Archived } from '../../../components/Icons/sections';
@@ -26,8 +27,11 @@ import { PodBoardContext } from '../../../utils/contexts';
 import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
 import { GET_POD_BY_ID } from '../../../graphql/queries/pod';
 import { addToTaskColumns, populateTaskColumns } from '../../organization/[username]/boards';
-import { dedupeColumns } from '../../../utils';
+import { dedupeColumns, delQuery } from '../../../utils';
 import * as Constants from '../../../utils/constants';
+import apollo from '../../../services/apollo';
+import { TaskFilter } from '../../../types/task';
+import SearchBoards from "../../../components/Pod/boards/SearchBoards";
 
 const TO_DO = {
   status: TASK_STATUS_TODO,
@@ -101,7 +105,7 @@ const BoardsPage = () => {
   const [columns, setColumns] = useState(COLUMNS);
   const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR);
   const router = useRouter();
-  const { username, podId } = router.query;
+  const { username, podId, search } = router.query;
 
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
@@ -120,6 +124,7 @@ const BoardsPage = () => {
         newColumns[0].section.tasks.push(taskProposal);
       });
       setColumns(newColumns);
+      setFirstTimeFetch(true);
     },
     fetchPolicy: 'cache-and-network',
   });
@@ -148,6 +153,16 @@ const BoardsPage = () => {
         setPodTaskHasMore(tasks.length >= LIMIT);
         setFirstTimeFetch(false);
       }
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [searchPodTasks] = useLazyQuery(SEARCH_TASKS_FOR_POD_BOARD_VIEW, {
+    onCompleted: (data) => {
+      const tasks = data?.searchTasksForPodBoardView;
+      const newColumns = populateTaskColumns(tasks, columns);
+      setColumns(dedupeColumns(newColumns));
+      setPodTaskHasMore(tasks.length >= LIMIT);
     },
     fetchPolicy: 'cache-and-network',
   });
@@ -226,6 +241,56 @@ const BoardsPage = () => {
     }
   }, [podTaskHasMore, columns, fetchMore]);
 
+  // EFFECT FOR SEARCH + FILTERS
+  // Update tasks when search or filters is changed
+  useEffect(() => {
+    if (!firstTimeFetch) {
+      return;
+    }
+
+    searchPodTasks({
+      variables: {
+        input: {
+          statuses,
+          podId,
+          limit: 1000,
+          offset: 0,
+          searchString: search,
+        },
+      },
+    });
+  }, [statuses, podId, searchPodTasks, search]);
+
+  const handleSearch = useCallback(
+    (searchString) => {
+      if (search) {
+        router.replace(`${delQuery(router.asPath)}?search=${searchString}&view=list`);
+
+        return Promise.resolve([]);
+      } else {
+        return apollo
+          .query({
+            query: SEARCH_TASKS_FOR_POD_BOARD_VIEW,
+            variables: {
+              input: {
+                limit: LIMIT,
+                podId,
+                statuses,
+                offset: 0,
+                searchString,
+              },
+            },
+          })
+          .then((result) => result.data.searchTasksForPodBoardView);
+      }
+    },
+    [podId]
+  );
+
+  const handleFilterChange = ({ statuses }: TaskFilter) => {
+    setStatuses(statuses || []);
+  };
+
   return (
     <PodBoardContext.Provider
       value={{
@@ -243,7 +308,25 @@ const BoardsPage = () => {
         getPodTasksVariables,
       }}
     >
-      <Boards selectOptions={SELECT_OPTIONS} columns={columns} onLoadMore={handleLoadMore} hasMore={podTaskHasMore} />
+      {search ? (
+        <SearchBoards
+          selectOptions={SELECT_OPTIONS}
+          columns={columns}
+          onLoadMore={handleLoadMore}
+          hasMore={podTaskHasMore}
+          onSearch={handleSearch}
+          onFilterChange={handleFilterChange}
+        />
+      ) : (
+        <Boards
+          selectOptions={SELECT_OPTIONS}
+          columns={columns}
+          onLoadMore={handleLoadMore}
+          hasMore={podTaskHasMore}
+          onSearch={handleSearch}
+          onFilterChange={handleFilterChange}
+        />
+      )}
     </PodBoardContext.Provider>
   );
 };

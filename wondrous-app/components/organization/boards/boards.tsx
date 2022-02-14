@@ -1,28 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { InputAdornment } from '@material-ui/core';
 import { useRouter } from 'next/router';
-import Typography from '@mui/material/Typography';
 
-import SearchIcon from '../../Icons/search';
 import Wrapper from '../wrapper/wrapper';
 
 import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard';
-import { ButtonGroup } from '../../Common/ButtonGroup';
 
 import {
   BoardsActivity,
-  BoardsActivityInput,
   BoardsContainer,
-  ResultsCount,
-  ResultsCountRight,
-  SearchType, ShowAllButton, ShowAllSearchResults,
 } from './styles';
 import Filter from '../../Common/Filter';
-import { ToDo, InProgress, Done, Proposal } from '../../Icons';
 import CreatePodIcon from '../../Icons/createPod';
 import { ToggleViewButton } from '../../Common/ToggleViewButton';
 import { Table } from '../../Table';
 import {
+  COLUMN_TITLE_ARCHIVED,
   TASK_STATUS_ARCHIVED,
   TASK_STATUS_AWAITING_PAYMENT,
   TASK_STATUS_DONE,
@@ -30,15 +22,14 @@ import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_PAID,
   TASK_STATUS_REQUESTED,
-  TASK_STATUS_TODO, TASK_TYPE,
+  TASK_STATUS_TODO,
+  TASK_TYPE,
 } from '../../../utils/constants';
 import { delQuery } from '../../../utils';
 import SearchTasks from '../../SearchTasks';
 import { OrgPod } from '../../../types/pod';
 import TaskStatus from '../../Icons/TaskStatus';
 import { useBoard } from '../../../utils/hooks';
-import { BountyIcon, MilestoneIcon, TaskIcon, UserIcon } from '../../Icons/Search/types';
-import {Chevron} from "../../Icons/sections";
 
 enum ViewType {
   List = 'list',
@@ -52,13 +43,12 @@ type Props = {
 };
 
 const Boards = (props: Props) => {
-  const { selectOptions, columns, onLoadMore, hasMore, orgData, orgPods, onSearch, onFilterChange } = props;
+  const { columns, onLoadMore, hasMore, orgData, orgPods, onSearch, onFilterChange } = props;
   const [filter, setFilter] = useState([]);
   const router = useRouter();
   const [view, setView] = useState(null);
   const board = useBoard();
   const { taskCount = {} } = board;
-  const { search: searchQuery } = router.query;
 
   useEffect(() => {
     if (router.isReady) {
@@ -113,18 +103,18 @@ const Boards = (props: Props) => {
           icon: <TaskStatus status={TASK_STATUS_DONE} />,
           count: taskCount.completed || 0,
         },
-        {
-          id: TASK_STATUS_AWAITING_PAYMENT,
-          name: 'Awaiting payment',
-          icon: <TaskStatus status={TASK_STATUS_AWAITING_PAYMENT} />,
-          count: 0,
-        },
-        {
-          id: TASK_STATUS_PAID,
-          name: 'Completed and paid',
-          icon: <TaskStatus status={TASK_STATUS_PAID} />,
-          count: 0,
-        },
+        // {
+        //   id: TASK_STATUS_AWAITING_PAYMENT,
+        //   name: 'Awaiting payment',
+        //   icon: <TaskStatus status={TASK_STATUS_AWAITING_PAYMENT} />,
+        //   count: 0,
+        // },
+        // {
+        //   id: TASK_STATUS_PAID,
+        //   name: 'Completed and paid',
+        //   icon: <TaskStatus status={TASK_STATUS_PAID} />,
+        //   count: 0,
+        // },
         {
           id: TASK_STATUS_ARCHIVED,
           name: 'Archived',
@@ -151,14 +141,15 @@ const Boards = (props: Props) => {
       },
     },
   ];
-  //
-  // {columns.map((column) => {
-  //   let tasks = [...column.section.tasks, ...column.tasks];
-
-  console.log(columns, '-------');
 
   const tasks = columns.reduce((acc, column) => {
-    return [...acc, ...column.section.tasks, ...column.tasks]
+    let tasks = [...column.section.tasks, ...column.tasks];
+    // Don't show archived tasks
+    if (column.section.title === COLUMN_TITLE_ARCHIVED) {
+      tasks = column.tasks;
+    }
+
+    return [...acc, ...tasks];
   }, []);
 
   return (
@@ -167,8 +158,7 @@ const Boards = (props: Props) => {
         <BoardsActivity>
           <SearchTasks onSearch={onSearch} />
           <Filter filterSchema={filterSchema} filter={filter} onChange={onFilterChange} setFilter={setFilter} />
-          {/* Temporary hide list/grid selector for the search */}
-          {view && !searchQuery ? <ToggleViewButton options={listViewOptions} /> : null}
+          {view ? <ToggleViewButton options={listViewOptions} /> : null}
         </BoardsActivity>
 
         {view ? (

@@ -87,7 +87,7 @@ export const ShowAllSearchResults = styled.div`
   display: flex;
   justify-content: center;
   position: relative;
-  margin: 44px 0;
+  margin: 19px 0 44px;
   
   &::before {
     content: '';
