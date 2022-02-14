@@ -272,6 +272,7 @@ export const TaskSubmissionTab = styled.div`
   &:last-child {
     margin-right: 0;
   }
+  border-bottom: ${(props) => `2px solid ${props.isActive ? '#7427FF' : '#4B4B4B'}`};
 `;
 
 export const TaskOverviewTab = styled.div`
@@ -280,6 +281,7 @@ export const TaskOverviewTab = styled.div`
 `;
 export const TaskTabText = styled(Typography)`
   && {
+    font-weight: ${(props) => (props.isActive ? '500' : '400')};
     font-size: 16px;
     line-height: 24px;
     color: ${White};
