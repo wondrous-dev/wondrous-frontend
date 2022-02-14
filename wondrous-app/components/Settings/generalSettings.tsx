@@ -58,11 +58,6 @@ const SOCIALS_DATA = [
     type: 'discord',
   },
   {
-    icon: <LinkedInIcon />,
-    link: 'https://linkedin.com/',
-    type: 'linkedin',
-  },
-  {
     icon: <OpenSeaIcon />,
     link: 'https://opensea.io/',
     type: 'opensea',
@@ -133,7 +128,7 @@ const GeneralSettingsComponent = (props) => {
             />
           </GeneralSettingsDAONameBlock>
           <GeneralSettingsDAODescriptionBlock>
-            <LabelBlock>Pod description</LabelBlock>
+            <LabelBlock>{isPod ? 'Pod' : 'DAO'} description</LabelBlock>
             <GeneralSettingsDAODescriptionInput
               multiline
               rows={3}
@@ -188,7 +183,7 @@ const GeneralSettingsComponent = (props) => {
           <LabelBlock>Socials</LabelBlock>
           <GeneralSettingsSocialsBlockWrapper>
             {SOCIALS_DATA.map((item) => {
-              const value = links[item.type] ? links[item.type].url : item.link;
+              const value = links[item.type] ? links[item.type].url : '';
 
               return (
                 <GeneralSettingsSocialsBlockRow key={item.type}>
@@ -280,23 +275,12 @@ const reduceLinks = (existingLinks) => {
 const handleLinkChange = (event, item, existingLinks, setLinks) => {
   const links = { ...existingLinks };
   let url = event.currentTarget.value;
-  const urlWithoutProtocol = url.replace(/^(https?:\/\/)/, '');
-  const linkInvalid = item.link && (url.indexOf(item.link) !== 0 || url === item.link);
   // Case when value doesn't contain domain name
-  if (linkInvalid || !urlWithoutProtocol) {
-    delete links[item.type];
-  } else if (url) {
-    // Add protocol
-    if (!url.includes('http')) {
-      url = `https://${url}`;
-    }
-
-    links[item.type] = {
-      url,
-      displayName: url,
-      type: item.type,
-    };
-  }
+  links[item.type] = {
+    url,
+    displayName: url,
+    type: item.type,
+  };
 
   setLinks(links);
 };

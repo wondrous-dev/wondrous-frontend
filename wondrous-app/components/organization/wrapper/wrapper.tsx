@@ -222,16 +222,15 @@ const Wrapper = (props) => {
                     <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
                     <HeaderPodsText>Pods</HeaderPodsText>
                   </HeaderPods>
-                  {links?.map((link) => {
+                  {links?.map((link, index) => {
                     if (link.type === 'link') {
                       return (
-                        <HeaderActivityLink href={link?.url} key={link} target="_blank">
+                        <HeaderActivityLink href={link?.url} key={index} target="_blank">
                           <HeaderActivityLinkIcon />
                           {link?.name || link?.url}
                         </HeaderActivityLink>
                       );
                     }
-                    return null;
                   })}
                   <div
                     style={{
@@ -239,7 +238,7 @@ const Wrapper = (props) => {
                       alignItems: 'center',
                     }}
                   >
-                    {links?.map((link) => {
+                    {links?.map((link, index) => {
                       if (link.type !== 'link') {
                         let SocialIcon = null;
                         switch (link.type) {
@@ -258,7 +257,7 @@ const Wrapper = (props) => {
                         }
                         if (SocialIcon) {
                           return (
-                            <HeaderActivityLink href={link?.url} key={link} target="_blank">
+                            <HeaderActivityLink href={link?.url} key={index} target="_blank">
                               <SocialIcon
                                 style={{
                                   width: '20px',

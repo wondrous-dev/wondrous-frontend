@@ -801,7 +801,9 @@ export const TaskSubmissionContent = (props) => {
                 handleClose();
                 if (
                   boardColumns?.setColumns &&
-                  (task?.orgId === board?.orgId || task?.podId === board?.podId || task?.assigneeId === board?.userId)
+                  ((task?.orgId === board?.orgId && !board?.podId) ||
+                    task?.podId === board?.podId ||
+                    task?.assigneeId === board?.userId)
                 ) {
                   const transformedTask = transformTaskToTaskCard(task, {});
 
