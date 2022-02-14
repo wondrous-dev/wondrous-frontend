@@ -141,10 +141,13 @@ const BoardsPage = () => {
 
   const [getPodTasks, { fetchMore, variables: getPodTasksVariables }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {
     onCompleted: (data) => {
-      const tasks = data?.getPodTaskBoardTasks;
-      const newColumns = populateTaskColumns(tasks, columns);
-      setColumns(dedupeColumns(newColumns));
-      setPodTaskHasMore(tasks.length >= LIMIT);
+      if (!firstTimeFetch) {
+        const tasks = data?.getPodTaskBoardTasks;
+        const newColumns = populateTaskColumns(tasks, columns);
+        setColumns(dedupeColumns(newColumns));
+        setPodTaskHasMore(tasks.length >= LIMIT);
+        setFirstTimeFetch(false);
+      }
     },
     fetchPolicy: 'cache-and-network',
   });
