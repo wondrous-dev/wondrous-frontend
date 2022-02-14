@@ -571,6 +571,26 @@ export const TaskListViewModal = (props) => {
     </CreateModalOverlay>
   );
 };
+
+const tabs = {
+  submissions: 'Submissions',
+  subTasks: 'Sub-tasks',
+  discussion: 'Discussion',
+  tasks: 'Tasks',
+};
+
+const tabsPerType = {
+  proposalTabs: [tabs.discussion],
+  milestoneTabs: [tabs.tasks, tabs.discussion],
+  taskTabs: [tabs.submissions, tabs.subTasks, tabs.discussion],
+};
+
+const selectTabsPerType = (isTaskProposal, isMilestone) => {
+  if (isTaskProposal) return tabsPerType.proposalTabs;
+  if (isMilestone) return tabsPerType.milestoneTabs;
+  return tabsPerType.taskTabs;
+};
+
 export const TaskViewModal = (props) => {
   const { open, handleClose, task, taskId, isTaskProposal, back } = props;
   const [fetchedTask, setFetchedTask] = useState(null);
@@ -605,7 +625,7 @@ export const TaskViewModal = (props) => {
   const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
   const router = useRouter();
   const [editTask, setEditTask] = useState(false);
-  const [submissionSelected, setSubmissionSelected] = useState(isTaskProposal ? false : true);
+  const [activeTab, setActiveTab] = useState(tabs.discussion);
   const [archiveTask, setArchiveTask] = useState(false);
   const [archiveTaskAlert, setArchiveTaskAlert] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
@@ -694,7 +714,6 @@ export const TaskViewModal = (props) => {
     if (open) {
       if (isTaskProposal) {
         setTaskSubmissionLoading(false);
-        setSubmissionSelected(false);
       }
 
       if (!task && taskId && !fetchedTask) {
@@ -1369,57 +1388,17 @@ export const TaskViewModal = (props) => {
             )}
             <TaskModalFooter>
               <TaskSectionFooterTitleDiv>
-                {!isTaskProposal && (
-                  <TaskSubmissionTab
-                    style={{
-                      borderBottom: `2px solid ${submissionSelected ? '#7427FF' : '#4B4B4B'}`,
-                    }}
-                    onClick={() => setSubmissionSelected(true)}
-                  >
-                    <TaskTabText
-                      style={{
-                        fontWeight: `${submissionSelected ? '500' : '400'}`,
-                      }}
-                    >
-                      Submissions
-                    </TaskTabText>
-                  </TaskSubmissionTab>
-                )}
-                {!isMilestone && (
-                  <TaskSubmissionTab
-                    style={{
-                      borderBottom: `2px solid ${!submissionSelected ? '#7427FF' : '#4B4B4B'}`,
-                    }}
-                    onClick={() => setSubmissionSelected(false)}
-                  >
-                    <TaskTabText
-                      style={{
-                        fontWeight: `${!submissionSelected ? '500' : '400'}`,
-                      }}
-                    >
-                      Discussion
-                    </TaskTabText>
-                  </TaskSubmissionTab>
-                )}
-                {isMilestone && (
-                  <TaskSubmissionTab
-                    style={{
-                      borderBottom: `2px solid ${!submissionSelected ? '#7427FF' : '#4B4B4B'}`,
-                    }}
-                    onClick={() => setSubmissionSelected(false)}
-                  >
-                    <TaskTabText
-                      style={{
-                        fontWeight: `${!submissionSelected ? '500' : '400'}`,
-                      }}
-                    >
-                      Tasks
-                    </TaskTabText>
-                  </TaskSubmissionTab>
-                )}
+                {selectTabsPerType(isTaskProposal, isMilestone).map((tab, index) => {
+                  const active = tab === activeTab;
+                  return (
+                    <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
+                      <TaskTabText isActive={active}>{tab}</TaskTabText>
+                    </TaskSubmissionTab>
+                  );
+                })}
               </TaskSectionFooterTitleDiv>
               <TaskSectionContent>
-                {submissionSelected && (
+                {activeTab === tabs.submissions && (
                   <TaskSubmissionContent
                     taskId={fetchedTask?.id}
                     taskSubmissionLoading={taskSubmissionLoading}
@@ -1442,11 +1421,12 @@ export const TaskViewModal = (props) => {
                     setShowPaymentModal={setShowPaymentModal}
                   />
                 )}
-                {!submissionSelected && !isMilestone && (
+                {/* TODO: @ add the the subtask here */}
+                {activeTab === tabs.discussion && (
                   <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
                 )}
-                {!submissionSelected && isMilestone && (
-                  <MilestoneTaskList milestoneId={fetchedTask?.id} open={!submissionSelected} />
+                {activeTab === tabs.tasks && (
+                  <MilestoneTaskList milestoneId={fetchedTask?.id} open={activeTab === tabs.tasks} />
                 )}
               </TaskSectionContent>
             </TaskModalFooter>
