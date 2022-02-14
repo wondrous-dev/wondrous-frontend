@@ -62,7 +62,7 @@ import {
 import { SnackbarAlertContext } from '../Common/SnackbarAlert';
 import { ArchivedTaskUndo } from '../Common/Task/styles';
 import { OrgBoardContext } from '../../utils/contexts';
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
 import { LoadMore } from '../Common/KanbanBoard/styles';
 import { SafeImage } from '../Common/Image';
 import { useMe } from '../Auth/withAuth';
@@ -106,6 +106,7 @@ export const Table = (props) => {
   const userBoard = useUserBoard();
   const user = useMe();
   const board = orgBoard || podBoard || userBoard;
+  const boardColumns = useColumns();
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
 
@@ -177,7 +178,7 @@ export const Table = (props) => {
   }
 
   async function archiveTask(task) {
-    const newColumns = [...board.columns];
+    const newColumns = [...boardColumns.columns];
     const column = newColumns.find((column) => column.tasks.includes(task));
     let taskIndex;
 
@@ -199,7 +200,7 @@ export const Table = (props) => {
     if (column) {
       taskIndex = column.tasks.indexOf(selectedTask);
       column.tasks.splice(taskIndex, 1);
-      board.setColumns(newColumns);
+      boardColumns?.setColumns(newColumns);
     }
 
     setSnackbarAlertOpen(true);
@@ -214,7 +215,7 @@ export const Table = (props) => {
 
             if (taskIndex > -1) {
               column.tasks.splice(taskIndex, 0, task);
-              board.setColumns([...newColumns]);
+              boardColumns?.setColumns([...newColumns]);
             }
           }}
         >
@@ -303,157 +304,161 @@ export const Table = (props) => {
           </StyledTableRow>
         </StyledTableHead>
         <StyledTableBody>
-          {columns.map((column) => {
-            let tasks = [...column.tasks];
-            if (column?.section?.tasks) tasks = [...tasks, ...column?.section?.tasks];
+          {columns &&
+            columns.map((column) => {
+              let tasks = [...column.tasks];
+              if (column?.section?.tasks) tasks = [...tasks, ...column?.section?.tasks];
 
-            // Don't show archived tasks
-            if (column?.section?.title === COLUMN_TITLE_ARCHIVED) {
-              tasks = column.tasks;
-            }
+              // Don't show archived tasks
+              if (column?.section?.title === COLUMN_TITLE_ARCHIVED) {
+                tasks = column.tasks;
+              }
 
-            return tasks.map((task, index) => {
-              const status = task?.status ?? column?.section?.filter?.taskType ?? column?.status;
-              const dropdownItemLabel =
-                status === Constants.TASK_STATUS_PROPOSAL_REQUEST || status === Constants.TASK_STATUS_REQUESTED
-                  ? 'task proposal'
-                  : 'task';
-              const permissions = parseUserPermissionContext({
-                userPermissionsContext,
-                orgId: task?.orgId,
-                podId: task?.podId,
-              });
+              return tasks.map((task, index) => {
+                const status = task?.status ?? column?.section?.filter?.taskType ?? column?.status;
+                const dropdownItemLabel =
+                  status === Constants.TASK_STATUS_PROPOSAL_REQUEST || status === Constants.TASK_STATUS_REQUESTED
+                    ? 'task proposal'
+                    : 'task';
+                const permissions = parseUserPermissionContext({
+                  userPermissionsContext,
+                  orgId: task?.orgId,
+                  podId: task?.podId,
+                });
 
-              const reward = (task.rewards || [])[0];
+                const reward = (task.rewards || [])[0];
 
-              const canManageTask =
-                permissions.includes(Constants.PERMISSIONS.MANAGE_BOARD) ||
-                permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
-                task?.createdBy === user?.id;
+                const canManageTask =
+                  permissions.includes(Constants.PERMISSIONS.MANAGE_BOARD) ||
+                  permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
+                  task?.createdBy === user?.id;
 
-              return (
-                <StyledTableRow key={task.id}>
-                  <StyledTableCell align="center">
-                    {task.orgProfilePicture ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <SafeImage
-                        src={task?.orgProfilePicture}
+                return (
+                  <StyledTableRow key={task.id}>
+                    <StyledTableCell align="center">
+                      {task.orgProfilePicture ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <SafeImage
+                          src={task?.orgProfilePicture}
+                          style={{
+                            width: '17px',
+                            height: '17px',
+                            borderRadius: '17px',
+                          }}
+                        />
+                      ) : null}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {task.assigneeProfilePicture ? (
+                        <AvatarList
+                          align="center"
+                          users={[
+                            {
+                              avatar: {
+                                url: task.assigneeProfilePicture,
+                              },
+                              id: task.assigneeUsername,
+                              initials: task.assigneeUsername,
+                            },
+                          ]}
+                        />
+                      ) : (
+                        <Link
+                          passHref={true}
+                          href={`/profile/${task?.assigneeUsername ?? task?.creatorUsername}/about`}
+                        >
+                          <Initials>{task?.assigneeUsername ?? task?.creatorUsername}</Initials>
+                        </Link>
+                      )}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <TaskStatus status={status} />
+                    </StyledTableCell>
+                    <StyledTableCell className="clickable" onClick={() => openTask(task, column?.status)}>
+                      <TaskTitle>{task.title}</TaskTitle>
+                      <TaskDescription
                         style={{
                           width: '17px',
                           height: '17px',
                           borderRadius: '17px',
                         }}
-                      />
-                    ) : null}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {task.assigneeProfilePicture ? (
-                      <AvatarList
-                        align="center"
-                        users={[
-                          {
-                            avatar: {
-                              url: task.assigneeProfilePicture,
-                            },
-                            id: task.assigneeUsername,
-                            initials: task.assigneeUsername,
-                          },
-                        ]}
-                      />
-                    ) : (
-                      <Link passHref={true} href={`/profile/${task?.assigneeUsername ?? task?.creatorUsername}/about`}>
-                        <Initials>{task?.assigneeUsername ?? task?.creatorUsername}</Initials>
-                      </Link>
-                    )}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    <TaskStatus status={status} />
-                  </StyledTableCell>
-                  <StyledTableCell className="clickable" onClick={() => openTask(task, column?.status)}>
-                    <TaskTitle>{task.title}</TaskTitle>
-                    <TaskDescription
-                      style={{
-                        width: '17px',
-                        height: '17px',
-                        borderRadius: '17px',
-                      }}
-                    >
-                      {renderMentionString({
-                        content: cutString(task?.description),
-                        router,
-                      })}
-                    </TaskDescription>
-                  </StyledTableCell>
-                  {/*<StyledTableCell>*/}
-                  {/*  <DeliverableContainer>*/}
-                  {/*    {Object.entries(groupBy(task?.media || [], 'type')).map(([key, value]: [string, any], index) => {*/}
-                  {/*      return (*/}
-                  {/*        <DeliverableItem key={index}>*/}
-                  {/*          <DeliverablesIconContainer>{DELIVERABLES_ICONS[key]}</DeliverablesIconContainer>*/}
-                  {/*          {value?.length}*/}
-                  {/*        </DeliverableItem>*/}
-                  {/*      );*/}
-                  {/*    })}*/}
-                  {/*  </DeliverableContainer>*/}
-                  {/*</StyledTableCell>*/}
-                  <StyledTableCell>
-                    <RewardContainer>
-                      {reward ? (
-                        <Reward>
-                          <SafeImage
-                            src={reward.icon}
-                            style={{
-                              width: '16px',
-                              height: '16px',
-                            }}
-                          />
-                          <RewardAmount>{shrinkNumber(reward.rewardAmount)}</RewardAmount>
-                        </Reward>
-                      ) : (
-                        <Box color="#fff">None</Box>
-                      )}
-                    </RewardContainer>
-                  </StyledTableCell>
-                  {isAdmin && (
-                    <StyledTableCell align="center">
-                      {/* TODO: change the design for disabled button */}
-                      <DropDownButtonDecision disabled={!canManageTask} taskId={task.id} status={column.status} />
+                      >
+                        {renderMentionString({
+                          content: cutString(task?.description),
+                          router,
+                        })}
+                      </TaskDescription>
                     </StyledTableCell>
-                  )}
-                  <StyledTableCell align="center">
-                    <MoreOptions disabled={!canManageTask}>
-                      <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
-                        <DropDownItem
-                          key={'task-menu-edit-' + task.id}
-                          onClick={() => editTask(task, status)}
-                          color="#C4C4C4"
-                          fontSize="13px"
-                          fontWeight="normal"
-                          textAlign="left"
-                        >
-                          Edit {dropdownItemLabel}
-                        </DropDownItem>
-                        <DropDownItem
-                          key={'task-menu-report-' + task.id}
-                          onClick={() => {
-                            setSelectedTask(task);
-                            setArchiveModalOpen(true);
-                            setSelectedTaskType(dropdownItemLabel);
-                          }}
-                          color="#C4C4C4"
-                          fontSize="13px"
-                          fontWeight="normal"
-                          textAlign="left"
-                        >
-                          Archive {dropdownItemLabel}
-                        </DropDownItem>
-                      </DropDown>
-                    </MoreOptions>
-                  </StyledTableCell>
-                </StyledTableRow>
-              );
-            });
-          })}
+                    {/*<StyledTableCell>*/}
+                    {/*  <DeliverableContainer>*/}
+                    {/*    {Object.entries(groupBy(task?.media || [], 'type')).map(([key, value]: [string, any], index) => {*/}
+                    {/*      return (*/}
+                    {/*        <DeliverableItem key={index}>*/}
+                    {/*          <DeliverablesIconContainer>{DELIVERABLES_ICONS[key]}</DeliverablesIconContainer>*/}
+                    {/*          {value?.length}*/}
+                    {/*        </DeliverableItem>*/}
+                    {/*      );*/}
+                    {/*    })}*/}
+                    {/*  </DeliverableContainer>*/}
+                    {/*</StyledTableCell>*/}
+                    <StyledTableCell>
+                      <RewardContainer>
+                        {reward ? (
+                          <Reward>
+                            <SafeImage
+                              src={reward.icon}
+                              style={{
+                                width: '16px',
+                                height: '16px',
+                              }}
+                            />
+                            <RewardAmount>{shrinkNumber(reward.rewardAmount)}</RewardAmount>
+                          </Reward>
+                        ) : (
+                          <Box color="#fff">None</Box>
+                        )}
+                      </RewardContainer>
+                    </StyledTableCell>
+                    {isAdmin && (
+                      <StyledTableCell align="center">
+                        {/* TODO: change the design for disabled button */}
+                        <DropDownButtonDecision disabled={!canManageTask} taskId={task.id} status={column.status} />
+                      </StyledTableCell>
+                    )}
+                    <StyledTableCell align="center">
+                      <MoreOptions disabled={!canManageTask}>
+                        <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
+                          <DropDownItem
+                            key={'task-menu-edit-' + task.id}
+                            onClick={() => editTask(task, status)}
+                            color="#C4C4C4"
+                            fontSize="13px"
+                            fontWeight="normal"
+                            textAlign="left"
+                          >
+                            Edit {dropdownItemLabel}
+                          </DropDownItem>
+                          <DropDownItem
+                            key={'task-menu-report-' + task.id}
+                            onClick={() => {
+                              setSelectedTask(task);
+                              setArchiveModalOpen(true);
+                              setSelectedTaskType(dropdownItemLabel);
+                            }}
+                            color="#C4C4C4"
+                            fontSize="13px"
+                            fontWeight="normal"
+                            textAlign="left"
+                          >
+                            Archive {dropdownItemLabel}
+                          </DropDownItem>
+                        </DropDown>
+                      </MoreOptions>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                );
+              });
+            })}
         </StyledTableBody>
       </StyledTable>
 

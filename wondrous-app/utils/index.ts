@@ -27,6 +27,7 @@ export const delQuery = (asPath) => {
 
 export const dedupeColumns = (columns) => {
   const taskMap = {};
+  if (!columns) return [];
   const newColumns = columns.map((column) => {
     column.tasks = column.tasks.filter((task) => {
       if (!(task?.id in taskMap)) {

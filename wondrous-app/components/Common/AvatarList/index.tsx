@@ -66,7 +66,6 @@ export const AvatarList = (props) => {
   let overflow = users.length - usersSieged.length;
 
   const goToUser = (userId) => {
-    console.log('User tap: ', userId);
     router.push(`/profile/${userId}/about`);
   };
 

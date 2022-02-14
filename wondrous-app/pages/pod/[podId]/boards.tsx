@@ -31,7 +31,7 @@ import { dedupeColumns, delQuery } from '../../../utils';
 import * as Constants from '../../../utils/constants';
 import apollo from '../../../services/apollo';
 import { TaskFilter } from '../../../types/task';
-import SearchBoards from "../../../components/Pod/boards/SearchBoards";
+import SearchBoards from '../../../components/Pod/boards/SearchBoards';
 
 const TO_DO = {
   status: TASK_STATUS_TODO,
@@ -146,13 +146,11 @@ const BoardsPage = () => {
 
   const [getPodTasks, { fetchMore, variables: getPodTasksVariables }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {
     onCompleted: (data) => {
-      if (!firstTimeFetch) {
-        const tasks = data?.getPodTaskBoardTasks;
-        const newColumns = populateTaskColumns(tasks, columns);
-        setColumns(dedupeColumns(newColumns));
-        setPodTaskHasMore(tasks.length >= LIMIT);
-        setFirstTimeFetch(false);
-      }
+      const tasks = data?.getPodTaskBoardTasks;
+      const newColumns = populateTaskColumns(tasks, columns);
+      setColumns(dedupeColumns(newColumns));
+      setPodTaskHasMore(tasks.length >= LIMIT);
+      setFirstTimeFetch(true);
     },
     fetchPolicy: 'cache-and-network',
   });
@@ -214,9 +212,7 @@ const BoardsPage = () => {
   }, [podId, getPodTasks, statuses, getPodTaskSubmissions, getPodTaskProposals, getPodBoardTaskCount, getPod]);
 
   // Handle Column changes (tasks movements)
-  useEffect(() => {
-    console.log('Colum Changed: ', columns);
-  }, [columns]);
+  useEffect(() => {}, [columns]);
 
   const handleLoadMore = useCallback(() => {
     if (podTaskHasMore) {
@@ -288,7 +284,11 @@ const BoardsPage = () => {
   );
 
   const handleFilterChange = ({ statuses }: TaskFilter) => {
-    setStatuses(statuses || []);
+    if (statuses.length === 0) {
+      setStatuses(DEFAULT_STATUS_ARR);
+    } else {
+      setStatuses(statuses || DEFAULT_STATUS_ARR);
+    }
   };
 
   return (

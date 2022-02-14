@@ -108,21 +108,24 @@ export const populateTaskColumns = (tasks, columns) => {
     column.tasks = [];
     column.statuses = {};
 
-    return tasks.reduce((column, task) => {
-      if (column.status === task.status) {
-        column.tasks = [...column.tasks, task];
-        column.statuses = {
-          [task.status]: (column.statuses[task.status] || 0) + 1,
-        };
-      } else if (task?.status === TASK_STATUS_ARCHIVED && column.section.filter.taskType === TASK_STATUS_ARCHIVED) {
-        column.section.tasks = [...column.section.tasks, task];
-        column.statuses = {
-          [task.status]: (column.statuses[task.status] || 0) + 1,
-        };
-      }
+    return (
+      tasks &&
+      tasks.reduce((column, task) => {
+        if (column.status === task.status) {
+          column.tasks = [...column.tasks, task];
+          column.statuses = {
+            [task.status]: (column.statuses[task.status] || 0) + 1,
+          };
+        } else if (task?.status === TASK_STATUS_ARCHIVED && column.section.filter.taskType === TASK_STATUS_ARCHIVED) {
+          column.section.tasks = [...column.section.tasks, task];
+          column.statuses = {
+            [task.status]: (column.statuses[task.status] || 0) + 1,
+          };
+        }
 
-      return column;
-    }, column);
+        return column;
+      }, column)
+    );
   });
   return newColumns;
 };

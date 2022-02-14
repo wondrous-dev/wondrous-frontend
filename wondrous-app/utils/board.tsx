@@ -143,14 +143,17 @@ export const updateTaskColumns = (tasks, columns) => {
   if (!columns) return [];
   const newColumns = columns.map((column) => {
     column.tasks = column?.tasks.length > 0 ? [...column.tasks] : [];
-    return tasks.reduce((column, task) => {
-      if (column.status === task.status) {
-        column.tasks = [...column.tasks, task];
-      } else if (task?.status === TASK_STATUS_ARCHIVED && column.section?.filter?.taskType === TASK_STATUS_ARCHIVED) {
-        column.section.tasks = [...column.section.tasks, task];
-      }
-      return column;
-    }, column);
+    return (
+      tasks &&
+      tasks.reduce((column, task) => {
+        if (column.status === task.status) {
+          column.tasks = [...column.tasks, task];
+        } else if (task?.status === TASK_STATUS_ARCHIVED && column.section?.filter?.taskType === TASK_STATUS_ARCHIVED) {
+          column.section.tasks = [...column.section.tasks, task];
+        }
+        return column;
+      }, column)
+    );
   });
   return newColumns;
 };

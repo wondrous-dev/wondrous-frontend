@@ -222,7 +222,6 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
 
   const goToPod = (podId) => {
     // Filter or go to Pod Page
-    console.log('Pod tap: ', podId);
     router.push(`/pod/${podId}/boards`, undefined, {
       shallow: true,
     });
