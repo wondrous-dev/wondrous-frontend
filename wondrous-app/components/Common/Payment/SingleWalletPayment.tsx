@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ethers, utils } from 'ethers';
-import Link from 'next/link';
 import DropdownSelect from '../DropdownSelect/dropdownSelect';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
@@ -310,7 +309,6 @@ export const SingleWalletPayment = (props) => {
             {incompatibleWalletError}
           </ErrorText>
         )}
-        {/* <Link href={`/pod/settings/${approvedSubmission.podId}/wallet`}> */}
 
         <CreateFormPreviewButton
           style={{
@@ -320,7 +318,6 @@ export const SingleWalletPayment = (props) => {
         >
           Create new wallets
         </CreateFormPreviewButton>
-        {/* </Link> */}
       </div>
     );
   }
