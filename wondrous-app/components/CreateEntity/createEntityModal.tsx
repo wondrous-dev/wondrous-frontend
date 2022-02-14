@@ -503,7 +503,7 @@ const CreateLayoutBaseModal = (props) => {
     onCompleted: (data) => {
       const task = data?.createTask;
       const justCreatedPod = getPodObject();
-      if (board?.setColumns && task?.orgId === board?.orgId) {
+      if (board?.setColumns && ((task?.orgId === board?.orgId && !board?.podId) || task?.podId === board?.podId)) {
         const transformedTask = transformTaskToTaskCard(task, {
           orgName: board?.org?.name,
           orgProfilePicture: board?.org?.profilePicture,
@@ -554,7 +554,7 @@ const CreateLayoutBaseModal = (props) => {
     onCompleted: (data) => {
       const task = data?.createMilestone;
       const justCreatedPod = getPodObject();
-      if (board?.setColumns && task?.orgId === board?.orgId) {
+      if (board?.setColumns && ((task?.orgId === board?.orgId && !board?.podId) || task?.podId === board?.podId)) {
         const transformedTask = transformTaskToTaskCard(task, {
           orgName: board?.org?.name,
           orgProfilePicture: board?.org?.profilePicture,
