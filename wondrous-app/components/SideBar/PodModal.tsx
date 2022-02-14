@@ -100,7 +100,7 @@ const PodListCard = (props) => {
 export const PodModal = (props) => {
   const { open, handleClose } = props;
   const [getUserPods, { data: podData, fetchMore: fetchMorePods }] = useLazyQuery(GET_USER_PODS, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'network-only',
   });
   const [pods, setPods] = useState([]);
   const [ref, inView] = useInView({});
