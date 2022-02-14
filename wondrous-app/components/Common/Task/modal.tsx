@@ -149,7 +149,7 @@ export const MediaLink = (props) => {
   );
 };
 
-const LIMIT = 10;
+const LIMIT = 5;
 
 const TASK_LIST_VIEW_LIMIT = 5;
 
@@ -241,6 +241,36 @@ export const TaskListViewModal = (props) => {
       const tasks = data?.getUserTaskBoardTasks;
       setFetchedList(tasks);
       setHasMore(data?.hasMore || tasks?.length >= TASK_LIST_VIEW_LIMIT);
+    },
+  });
+
+  const [getUserTaskBoardProposals, { fetchMore: fetchMoreUserTaskProposals }] = useLazyQuery(
+    GET_USER_TASK_BOARD_PROPOSALS,
+    {
+      onCompleted: (data) => {
+        const tasks = data?.getUserTaskBoardProposals;
+        setFetchedList(tasks);
+        setHasMore(data?.hasMore || tasks?.length >= LIMIT);
+      },
+    }
+  );
+
+  const [getUserTaskBoardSubmissions, { fetchMore: fetchMoreUserTaskSubmissions }] = useLazyQuery(
+    GET_USER_TASK_BOARD_SUBMISSIONS,
+    {
+      onCompleted: (data) => {
+        const tasks = data?.getUserTaskBoardSubmissions;
+        setFetchedList(tasks);
+        setHasMore(data?.hasMore || tasks?.length >= LIMIT);
+      },
+    }
+  );
+
+  const [getUserArchivedTasks, { fetchMore: fetchMoreUserArchivedTasks }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
+    onCompleted: (data) => {
+      const tasks = data?.getUserTaskBoardTasks;
+      setFetchedList(tasks);
+      setHasMore(data?.hasMore || tasks?.length >= LIMIT);
     },
   });
 
