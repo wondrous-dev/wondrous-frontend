@@ -146,7 +146,7 @@ export const MediaLink = (props) => {
   );
 };
 
-const LIMIT = 10;
+const LIMIT = 5;
 
 export const TaskListViewModal = (props) => {
   const [fetchedList, setFetchedList] = useState([]);
@@ -159,7 +159,7 @@ export const TaskListViewModal = (props) => {
       onCompleted: (data) => {
         const proposals = data?.getOrgTaskBoardProposals;
         setFetchedList(proposals);
-        setHasMore(data?.hasMore || data?.getOrgTaskBoardProposals.length >= 1);
+        setHasMore(data?.hasMore || data?.getOrgTaskBoardProposals.length >= LIMIT);
       },
     }
   );
@@ -169,7 +169,7 @@ export const TaskListViewModal = (props) => {
       onCompleted: (data) => {
         const submissions = data?.getOrgTaskBoardSubmissions;
         setFetchedList(submissions);
-        setHasMore(data?.hasMore || data?.getOrgTaskBoardSubmissions.length >= 1);
+        setHasMore(data?.hasMore || data?.getOrgTaskBoardSubmissions.length >= LIMIT);
       },
     }
   );
@@ -206,6 +206,36 @@ export const TaskListViewModal = (props) => {
       const tasks = data?.getPodTaskBoardTasks;
       setFetchedList(tasks);
       setHasMore(data?.hasMore || data?.getPodTaskBoardTasks.length >= LIMIT);
+    },
+  });
+
+  const [getUserTaskBoardProposals, { fetchMore: fetchMoreUserTaskProposals }] = useLazyQuery(
+    GET_USER_TASK_BOARD_PROPOSALS,
+    {
+      onCompleted: (data) => {
+        const tasks = data?.getUserTaskBoardProposals;
+        setFetchedList(tasks);
+        setHasMore(data?.hasMore || tasks?.length >= LIMIT);
+      },
+    }
+  );
+
+  const [getUserTaskBoardSubmissions, { fetchMore: fetchMoreUserTaskSubmissions }] = useLazyQuery(
+    GET_USER_TASK_BOARD_SUBMISSIONS,
+    {
+      onCompleted: (data) => {
+        const tasks = data?.getUserTaskBoardSubmissions;
+        setFetchedList(tasks);
+        setHasMore(data?.hasMore || tasks?.length >= LIMIT);
+      },
+    }
+  );
+
+  const [getUserArchivedTasks, { fetchMore: fetchMoreUserArchivedTasks }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
+    onCompleted: (data) => {
+      const tasks = data?.getUserTaskBoardTasks;
+      setFetchedList(tasks);
+      setHasMore(data?.hasMore || tasks?.length >= LIMIT);
     },
   });
 
@@ -260,6 +290,29 @@ export const TaskListViewModal = (props) => {
               };
             },
           });
+        } else if (entityType === ENTITIES_TYPES.USER) {
+          fetchMoreUserTaskProposals({
+            variables: {
+              offset: fetchedList.length,
+              limit: LIMIT,
+              statuses: [STATUS_OPEN],
+            },
+            updateQuery: (prev, { fetchMoreResult }) => {
+              const hasMore = fetchMoreResult.getUserTaskBoardProposals.length >= LIMIT;
+              if (!fetchMoreResult) {
+                return prev;
+              }
+              if (!hasMore) {
+                setHasMore(false);
+              }
+              return {
+                hasMore,
+                getUserTaskBoardProposals: prev.getUserTaskBoardProposals.concat(
+                  fetchMoreResult.getUserTaskBoardProposals
+                ),
+              };
+            },
+          });
         }
       } else if (taskType === TASK_STATUS_IN_REVIEW) {
         if (entityType === ENTITIES_TYPES.ORG) {
@@ -310,6 +363,30 @@ export const TaskListViewModal = (props) => {
               };
             },
           });
+        } else if (entityType === ENTITIES_TYPES.USER) {
+          fetchMoreUserTaskSubmissions({
+            variables: {
+              offset: fetchedList.length,
+              limit: LIMIT,
+              statuses: [STATUS_OPEN],
+            },
+            updateQuery: (prev, { fetchMoreResult }) => {
+              const hasMore = fetchMoreResult.getUserTaskBoardSubmissions.length >= LIMIT;
+              if (!fetchMoreResult) {
+                return prev;
+              }
+              if (!hasMore) {
+                setHasMore(false);
+              }
+
+              return {
+                hasMore,
+                getUserTaskBoardSubmissions: prev.getUserTaskBoardSubmissions.concat(
+                  fetchMoreResult.getUserTaskBoardSubmissions
+                ),
+              };
+            },
+          });
         }
       } else if (taskType === TASK_STATUS_ARCHIVED) {
         if (entityType === ENTITIES_TYPES.ORG) {
@@ -351,6 +428,27 @@ export const TaskListViewModal = (props) => {
               return {
                 hasMore,
                 getPodTaskBoardTasks: prev.getPodTaskBoardTasks.concat(fetchMoreResult.getPodTaskBoardTasks),
+              };
+            },
+          });
+        } else if (entityType === ENTITIES_TYPES.USER) {
+          fetchMoreUserArchivedTasks({
+            variables: {
+              statuses: ['archived'],
+              offset: fetchedList.length,
+              limit: LIMIT,
+            },
+            updateQuery: (prev, { fetchMoreResult }) => {
+              const hasMore = fetchMoreResult.getUserTaskBoardTasks.length >= LIMIT;
+              if (!fetchMoreResult) {
+                return prev;
+              }
+              if (!hasMore) {
+                setHasMore(false);
+              }
+              return {
+                hasMore,
+                getUserTaskBoardTasks: prev.getUserTaskBoardTasks.concat(fetchMoreResult.getUserTaskBoardTasks),
               };
             },
           });
