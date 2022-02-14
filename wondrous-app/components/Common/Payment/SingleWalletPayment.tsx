@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ethers, utils } from 'ethers';
+import Link from 'next/link';
 import DropdownSelect from '../DropdownSelect/dropdownSelect';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
@@ -80,46 +81,29 @@ export const SingleWalletPayment = (props) => {
     connectWeb3();
   }, []);
 
+
+  const wonderGnosis = useGnosisSdk();
+  const connectSafeSdk = async (chain, safeAddress) => {
+    try {
+      await wonderGnosis.connectSafeSdk({ chain, safeAddress });
+    } catch (e) {
+      console.log('error connecint to gnosis safe', selectedWallet.chain)
+      setSafeConnectionError(`selected gnosis safe not deployed on ${selectedWallet.chain}`)
+    }
+  };
+
   useEffect(() => {
     setNotOwnerError(null);
     setSafeConnectionError(null);
     setCurrentChainId(wonderWeb3.chain);
   }, [wonderWeb3.chain, wonderWeb3.address]);
 
-  const wonderGnosis = useGnosisSdk();
-  const connectSafeSdk = async (chain, safeAddress) => {
-    await wonderGnosis.connectSafeSdk({ chain, safeAddress });
-  };
-
-  const [proposeGnosisTxForSubmission] = useMutation(PROPOSE_GNOSIS_TX_FOR_SUBMISSION, {
-    onCompleted: (data) => {
-      setPaymentPending(true);
-      if (paymentModal?.onPaymentComplete) {
-        paymentModal?.onPaymentComplete();
-      }
-    },
-    onError: (e) => {
-      console.error(e);
-    },
-    refetchQueries: [
-      GET_UNPAID_SUBMISSIONS_FOR_POD,
-      GET_UNPAID_SUBMISSIONS_FOR_ORG,
-      GET_PAYMENTS_FOR_POD,
-      GET_PAYMENTS_FOR_ORG,
-    ],
-  });
-  useEffect(() => {
-    const url = constructGnosisRedirectUrl(selectedWallet?.chain, selectedWallet?.address, safeTxHash);
-    setGnosisSafeTxRedirectLink(url);
-  }, [safeTxHash, selectedWallet]);
-
-  const reward = props?.fetchedTask?.rewards && props?.fetchedTask?.rewards[0];
   useEffect(() => {
     setWrongChainError(null);
     const chain = submissionPaymentInfo?.paymentData[0].chain;
     if (chain && currentChainId) {
       if (chain !== CHAIN_ID_TO_CHAIN_NAME[currentChainId]) {
-        setWrongChainError(`on the wrong chain should be on ${chain}`);
+        setWrongChainError(`currently connected to the wrong network should be on ${chain}`);
       }
     }
   }, [currentChainId, submissionPaymentInfo]);
@@ -146,14 +130,35 @@ export const SingleWalletPayment = (props) => {
     const wallet = wallets.filter((wallet) => wallet.id === selectedWalletId)[0];
     setSelectedWallet(wallet);
     if (selectedWallet && selectedWallet.chain) {
-      try {
-        connectSafeSdk(selectedWallet.chain, selectedWallet.address);
-      } catch (e) {
-        console.log('error connecint to gnosis safe', selectedWallet.chain)
-        setSafeConnectionError(`selected gnosis safe not deployed on ${selectedWallet.chain}`)
-      }
+      connectSafeSdk(selectedWallet.chain, selectedWallet.address);
     }
   }, [selectedWalletId, selectedWallet?.chain, selectedWallet?.address, currentChainId]);
+
+
+  const [proposeGnosisTxForSubmission] = useMutation(PROPOSE_GNOSIS_TX_FOR_SUBMISSION, {
+    onCompleted: (data) => {
+      setPaymentPending(true);
+      if (paymentModal?.onPaymentComplete) {
+        paymentModal?.onPaymentComplete();
+      }
+    },
+    onError: (e) => {
+      console.error(e);
+    },
+    refetchQueries: [
+      GET_UNPAID_SUBMISSIONS_FOR_POD,
+      GET_UNPAID_SUBMISSIONS_FOR_ORG,
+      GET_PAYMENTS_FOR_POD,
+      GET_PAYMENTS_FOR_ORG,
+    ],
+  });
+  useEffect(() => {
+    const url = constructGnosisRedirectUrl(selectedWallet?.chain, selectedWallet?.address, safeTxHash);
+    setGnosisSafeTxRedirectLink(url);
+  }, [safeTxHash, selectedWallet]);
+
+  const reward = props?.fetchedTask?.rewards && props?.fetchedTask?.rewards[0];
+  
 
   const constructAndSignTransactionData = async () => {
     let iface = new ethers.utils.Interface(ERC20abi);
@@ -257,10 +262,6 @@ export const SingleWalletPayment = (props) => {
             marginBottom: '28px',
           }}
         />
-        {wrongChainError && <>{wrongChainError}</>}
-        {signingError && <>{signingError}</>}
-        {notOwnerError && <>{notOwnerError}</>}
-        {safeConnectionError && <>{safeConnectionError}</>}
         {selectedWallet && !paymentPending && (
           <CreateFormPreviewButton
             onClick={handlePaymentClick}
@@ -271,6 +272,10 @@ export const SingleWalletPayment = (props) => {
             Pay {reward?.rewardAmount} {reward?.symbol}
           </CreateFormPreviewButton>
         )}
+        {wrongChainError && <ErrorText>{wrongChainError}</ErrorText>}
+        {signingError && <ErrorText>{signingError}</ErrorText>}
+        {notOwnerError && <ErrorText>{notOwnerError}</ErrorText>}
+        {safeConnectionError && <ErrorText>{safeConnectionError}</ErrorText>}
         {paymentPending && (
           <PaymentPendingTypography>
             Payment pending! Please go to{' '}
@@ -305,6 +310,8 @@ export const SingleWalletPayment = (props) => {
             {incompatibleWalletError}
           </ErrorText>
         )}
+        {/* <Link href={`/pod/settings/${approvedSubmission.podId}/wallet`}> */}
+
         <CreateFormPreviewButton
           style={{
             marginLeft: 0,
@@ -313,6 +320,7 @@ export const SingleWalletPayment = (props) => {
         >
           Create new wallets
         </CreateFormPreviewButton>
+        {/* </Link> */}
       </div>
     );
   }
