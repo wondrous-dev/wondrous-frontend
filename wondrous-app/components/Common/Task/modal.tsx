@@ -1118,6 +1118,7 @@ export const TaskViewModal = (props) => {
                                   onCompleted: (data) => {
                                     const task = data?.updateTaskAssignee;
                                     const transformedTask = transformTaskToTaskCard(task, {});
+                                    setFetchedTask(transformedTask);
                                     if (boardColumns?.setColumns && onCorrectPage) {
                                       let columnNumber = 0;
                                       if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
