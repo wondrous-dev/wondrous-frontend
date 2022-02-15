@@ -51,15 +51,16 @@ type Props = {
   orgPods: OrgPod[];
   onSearch: (searchString: string) => Promise<any>;
   onFilterChange: (searchString: string) => Promise<any>;
-  columns: Array<any>
-  onLoadMore: any,
-  orgData: any,
-  hasMore: any,
-  selectOptions: any,
+  columns: Array<any>;
+  onLoadMore: any;
+  orgData: any;
+  hasMore: any;
+  selectOptions: any;
+  searchString: string;
 };
 
 const Boards = (props: Props) => {
-  const { columns, onLoadMore, hasMore, orgData, orgPods, onSearch, onFilterChange } = props;
+  const { columns, onLoadMore, hasMore, orgData, orgPods, onSearch, onFilterChange, searchString } = props;
   const [filter, setFilter] = useState([]);
   const router = useRouter();
   const [view, setView] = useState(null);
@@ -84,6 +85,7 @@ const Boards = (props: Props) => {
 
     const createColumnsByType = (type) => {
       const cols: any = cloneDeep(columns);
+
       cols.tasksCount = 0;
 
       cols.forEach((col) => {
@@ -245,7 +247,7 @@ const Boards = (props: Props) => {
       <>
         <ResultsCount>
           <div>
-            Showing <span>{totalCount}</span> results for &apos;{searchQuery}&apos;
+            Showing <span>{totalCount}</span> results {searchString ? `for ‘${searchString}’` : null}
           </div>
           <ResultsCountRight>
             {Object.values(searchResults).map(({ name, columns }) =>

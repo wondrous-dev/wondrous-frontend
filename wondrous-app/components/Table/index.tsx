@@ -120,26 +120,19 @@ export const Table = (props) => {
   useEffect(() => {
     const taskId = router?.query?.task || router?.query?.taskProposal;
 
-    if (taskId && !once) {
+    if (taskId && once) {
       let task;
-      boardColumns.columns.find((column) => {
-        const section = column?.section?.task;
-        if (section) {
-          task = [...section, ...column.tasks];
-        } else {
-          task = [...column.tasks];
-        }
-        return task.find((task) => task.id === taskId);
+      columns.find((column) => {
+        task = [...column.section.tasks, ...column.tasks].find((task) => task.id === taskId);
+
+        return task;
       });
+
+      if (task) {
+        openTask(task);
+        setOnce(false);
+      }
     }
-    // if (taskId && once) {
-    //   const task = tasks.find((task) => task.id === taskId);
-    //
-    //   if (task) {
-    //     openTask(task);
-    //     setOnce(false);
-    //   }
-    // }
   }, [columns, once, router?.query?.task || router?.query?.taskProposal]);
 
   const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS);
@@ -228,7 +221,19 @@ export const Table = (props) => {
 
   function openTask(task, taskType = '') {
     setOnce(false);
-    router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`);
+    const urlParams: any = new URLSearchParams(window.location.search);
+    router.replace(
+      {
+        pathname: location.pathname,
+        query: {
+          search: urlParams.get('search'),
+          view: 'list',
+          [task.__typename === 'TaskProposalCard' ? 'taskProposal' : 'task']: task?.id,
+        },
+      },
+      undefined,
+      { shallow: true }
+    );
     setSelectedTask(task);
     setSelectedTaskType(taskType);
     setPreviewModalOpen(true);
@@ -240,9 +245,18 @@ export const Table = (props) => {
         open={isPreviewModalOpen}
         handleClose={() => {
           setPreviewModalOpen(false);
-          router.push(`${delQuery(router.asPath)}?view=list`, undefined, {
-            shallow: true,
-          });
+          const urlParams: any = new URLSearchParams(window.location.search);
+          router.replace(
+            {
+              pathname: location.pathname,
+              query: {
+                view: 'list',
+                search: urlParams.get('search'),
+              },
+            },
+            undefined,
+            { shallow: true }
+          );
         }}
         task={selectedTaskType !== Constants.TASK_STATUS_SUBMISSION_REQUEST && selectedTask}
         isTaskProposal={selectedTaskType === Constants.TASK_STATUS_PROPOSAL_REQUEST}

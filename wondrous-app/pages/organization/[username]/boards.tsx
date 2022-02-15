@@ -106,21 +106,14 @@ export const populateTaskColumns = (tasks, columns) => {
 
   const newColumns = columns.map((column) => {
     column.tasks = [];
-    column.statuses = {};
 
     return (
       tasks &&
       tasks.reduce((column, task) => {
         if (column.status === task.status) {
           column.tasks = [...column.tasks, task];
-          column.statuses = {
-            [task.status]: (column.statuses[task.status] || 0) + 1,
-          };
         } else if (task?.status === TASK_STATUS_ARCHIVED && column.section.filter.taskType === TASK_STATUS_ARCHIVED) {
           column.section.tasks = [...column.section.tasks, task];
-          column.statuses = {
-            [task.status]: (column.statuses[task.status] || 0) + 1,
-          };
         }
 
         return column;
@@ -196,6 +189,7 @@ const BoardsPage = () => {
       const newColumns = populateTaskColumns(tasks, columns);
       newColumns[0].section.tasks = [];
       newColumns[1].section.tasks = [];
+      newColumns[2].section.tasks = [];
 
       tasks.forEach(task => {
         if (task.status === TASK_STATUS_IN_REVIEW) {
@@ -461,6 +455,7 @@ const BoardsPage = () => {
         orgPods={orgPods}
         selectOptions={SELECT_OPTIONS}
         columns={columns}
+        searchString={searchString}
         onLoadMore={handleLoadMore}
         onSearch={handleSearch}
         onFilterChange={handleFilterChange}
