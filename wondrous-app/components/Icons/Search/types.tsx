@@ -35,6 +35,13 @@ export const UserIcon = (props) => (
   </svg>
 );
 
+export const UserIconSmall = (props) => (
+    <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <rect x="0.914062" y="0.352051" width="18" height="18" rx="9" fill="#363636"/>
+        <circle cx="9.91531" cy="9.35184" r="4.97" stroke="white" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+);
+
 export const BountyIcon = (props) => (
   <svg width={31} height={31} fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <rect x={0.117} y={0.532} width={30} height={30} rx={15} fill="#363636" />

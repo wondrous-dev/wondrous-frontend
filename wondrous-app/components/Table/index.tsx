@@ -87,7 +87,7 @@ const STATUS_BY_TYPENAME = {
 
 let windowOffset = 0;
 export const Table = (props) => {
-  const { tasks, columns, onLoadMore, hasMore, isAdmin = false } = props;
+  const { columns, onLoadMore, hasMore, isAdmin = false } = props;
   const router = useRouter();
   const apolloClient = useApolloClient();
   const [editableTask, setEditableTask] = useState(null);
@@ -121,7 +121,7 @@ export const Table = (props) => {
 
     if (taskId && !once) {
       let task;
-      columns.find((column) => {
+      boardColumns.columns.find((column) => {
         const section = column?.section?.task;
         if (section) {
           task = [...section, ...column.tasks];
@@ -139,7 +139,7 @@ export const Table = (props) => {
         setOnce(false);
       }
     }
-  }, [tasks, once, router?.query?.task || router?.query?.taskProposal]);
+  }, [columns, once, router?.query?.task || router?.query?.taskProposal]);
 
   const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS);
 
@@ -378,9 +378,7 @@ export const Table = (props) => {
                       <TaskTitle>{task.title}</TaskTitle>
                       <TaskDescription
                         style={{
-                          width: '17px',
-                          height: '17px',
-                          borderRadius: '17px',
+                          maxWidth: '600px',
                         }}
                       >
                         {renderMentionString({

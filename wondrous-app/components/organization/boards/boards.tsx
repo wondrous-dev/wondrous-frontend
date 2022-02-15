@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import pluralize from 'pluralize';
 
 import Wrapper from '../wrapper/wrapper';
-
 import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard';
 
 import {
   BoardsActivity,
   BoardsContainer,
+  ResultsCount,
+  ResultsCountRight,
+  SearchType,
+  ShowAllButton,
+  ShowAllSearchResults,
 } from './styles';
 import Filter from '../../Common/Filter';
 import CreatePodIcon from '../../Icons/createPod';
 import { ToggleViewButton } from '../../Common/ToggleViewButton';
 import { Table } from '../../Table';
 import {
+  BOUNTY_TYPE,
   COLUMN_TITLE_ARCHIVED,
+  MILESTONE_TYPE,
   TASK_STATUS_ARCHIVED,
   TASK_STATUS_AWAITING_PAYMENT,
   TASK_STATUS_DONE,
@@ -30,6 +37,9 @@ import SearchTasks from '../../SearchTasks';
 import { OrgPod } from '../../../types/pod';
 import TaskStatus from '../../Icons/TaskStatus';
 import { useBoard } from '../../../utils/hooks';
+import { Proposal } from '../../Icons';
+import { MilestoneIcon, TaskIcon, UserIcon } from '../../Icons/Search/types';
+import { Chevron } from '../../Icons/sections';
 
 enum ViewType {
   List = 'list',
@@ -47,14 +57,58 @@ const Boards = (props: Props) => {
   const [filter, setFilter] = useState([]);
   const router = useRouter();
   const [view, setView] = useState(null);
+  const [totalCount, setTotalCount] = useState(0);
+  const [searchResults, setSearchResults] = useState({});
   const board = useBoard();
   const { taskCount = {} } = board;
+  const { search: searchQuery } = router.query;
 
   useEffect(() => {
     if (router.isReady) {
       setView((router.query.view || ViewType.Grid) as ViewType);
     }
   }, [router.query.view, router.isReady]);
+
+  useEffect(() => {
+    if (!searchQuery) {
+      return;
+    }
+
+    let totalCount = 0;
+
+    const searchResults = {
+      [TASK_TYPE]: {
+        name: 'task',
+        showAll: false,
+        items: [],
+        icon: <TaskIcon />,
+      },
+      [BOUNTY_TYPE]: {
+        name: 'bounties',
+        showAll: false,
+        items: [],
+        icon: <UserIcon />,
+      },
+      [MILESTONE_TYPE]: {
+        name: 'milestone',
+        showAll: false,
+        items: [],
+        icon: <MilestoneIcon />,
+      },
+    };
+
+    columns.forEach((column) => {
+      const tasks = [...column.section.tasks, ...column.tasks];
+
+      tasks.forEach((task) => {
+        totalCount++;
+        searchResults[task.type || TASK_TYPE].items.push(task);
+      });
+    });
+
+    setTotalCount(totalCount);
+    setSearchResults(searchResults);
+  }, [columns]);
 
   const filterSchema = [
     {
@@ -72,13 +126,19 @@ const Boards = (props: Props) => {
       label: 'Status',
       multiChoice: true,
       items: [
+        // Back-end doesn't support statuses below
         // {
         //   id: TASK_STATUS_REQUESTED,
         //   name: 'Membership requests',
         //   icon: <TaskStatus status={TASK_STATUS_REQUESTED} />,
         //   count: 0,
         // },
-        // { id: 'proposals', name: 'Proposals', icon: <Proposal />, count: taskCount.proposal || 0 },
+        {
+          id: TASK_STATUS_REQUESTED,
+          name: 'Proposals',
+          icon: <Proposal />,
+          count: taskCount.proposal || 0,
+        },
         {
           id: TASK_STATUS_TODO,
           name: 'To-Do',
@@ -103,6 +163,7 @@ const Boards = (props: Props) => {
           icon: <TaskStatus status={TASK_STATUS_DONE} />,
           count: taskCount.completed || 0,
         },
+        // Back-end doesn't support statuses below
         // {
         //   id: TASK_STATUS_AWAITING_PAYMENT,
         //   name: 'Awaiting payment',
@@ -142,15 +203,71 @@ const Boards = (props: Props) => {
     },
   ];
 
-  const tasks = columns.reduce((acc, column) => {
-    let tasks = [...column.section.tasks, ...column.tasks];
-    // Don't show archived tasks
-    if (column.section.title === COLUMN_TITLE_ARCHIVED) {
-      tasks = column.tasks;
-    }
+  function renderBoard() {
+    return view ? (
+      <>
+        {view === ViewType.Grid ? (
+          <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+        ) : (
+          <Table columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+        )}
+      </>
+    ) : null;
+  }
 
-    return [...acc, ...tasks];
-  }, []);
+  function renderSearchResults() {
+    return (
+      <>
+        <ResultsCount>
+          <div>
+            Showing <span>{totalCount}</span> results for &apos;{searchQuery}&apos;
+          </div>
+          <ResultsCountRight>
+            {Object.values(searchResults).map(({ name, items }) =>
+              items.length ? (
+                <div key={name}>
+                  <span>{items.length}</span> {pluralize(name, items.length)}
+                </div>
+              ) : null
+            )}
+          </ResultsCountRight>
+        </ResultsCount>
+
+        {Object.keys(searchResults).map((type) => {
+          const { name, items, icon, showAll } = searchResults[type];
+          const slicedItems = items.slice(0, 5);
+
+          if (!items.length) {
+            return null;
+          }
+
+          return (
+            <>
+              <SearchType>
+                {icon}
+                {items.length} {pluralize(name, items.length)}
+              </SearchType>
+
+              <Table tasks={showAll ? items : slicedItems} onLoadMore={onLoadMore} hasMore={false} />
+
+              {items.length > slicedItems.length && !showAll ? (
+                <ShowAllSearchResults>
+                  <ShowAllButton
+                    onClick={() => {
+                      setSearchResults({ ...searchResults, [type]: { ...searchResults[type], showAll: true } });
+                    }}
+                  >
+                    Show all {items.length} task results
+                    <Chevron />
+                  </ShowAllButton>
+                </ShowAllSearchResults>
+              ) : null}
+            </>
+          );
+        })}
+      </>
+    );
+  }
 
   return (
     <Wrapper orgData={orgData}>
@@ -161,15 +278,7 @@ const Boards = (props: Props) => {
           {view ? <ToggleViewButton options={listViewOptions} /> : null}
         </BoardsActivity>
 
-        {view ? (
-          <>
-            {view === ViewType.Grid ? (
-              <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
-            ) : (
-              <Table tasks={tasks} onLoadMore={onLoadMore} hasMore={hasMore} />
-            )}
-          </>
-        ) : null}
+        {searchQuery ? renderSearchResults() : renderBoard()}
       </BoardsContainer>
     </Wrapper>
   );
