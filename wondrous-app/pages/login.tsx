@@ -13,11 +13,10 @@ import { CenteredFlexRow } from '../components/Common/index';
 import { Grey50 } from '../theme/colors';
 import { Metamask } from '../components/Icons/metamask';
 import { EmailIcon, LockIcon } from '../components/Icons/userpass';
-import { transformWalletType, useWonderWeb3 } from '../services/web3';
+import { useWonderWeb3 } from '../services/web4';
 import { emailSignin, getUserSigningMessage, walletSignin } from '../components/Auth/withAuth';
-import { ErrorMessage } from 'formik';
+import { ErrorText } from '../components/Common';
 import { CircularProgress } from '@material-ui/core';
-import { WALLET_TYPE } from '../utils/constants';
 
 const prod = process.env.NEXT_PUBLIC_PRODUCTION;
 
@@ -26,6 +25,7 @@ const Login = ({ csrfToken }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [notSupported, setNotSupported] = useState(false);
   const [loading, setLoading] = useState(null);
   const router = useRouter();
 
@@ -98,6 +98,10 @@ const Login = ({ csrfToken }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wonderWeb3.wallet]);
 
+  useEffect(() => {
+    setNotSupported(wonderWeb3.notSupportedChain)
+  }, [wonderWeb3.notSupportedChain]);
+
   return (
     <AuthLayout>
       <LoginWrapper>
@@ -162,6 +166,7 @@ const Login = ({ csrfToken }) => {
                   )}
                 </Button>
               )}
+              {notSupported && <ErrorText> unsupported chain</ErrorText>}
             </div>
           </CardBody>
           {/* <CardFooter>

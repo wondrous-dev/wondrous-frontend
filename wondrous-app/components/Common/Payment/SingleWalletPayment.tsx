@@ -19,6 +19,7 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from '../../../graphql/queries/payment';
+import { CHAIN_TO_GNOSIS_URL_ABBR } from '../../../utils/web3Constants';
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {
@@ -26,11 +27,6 @@ const generateReadablePreviewForAddress = (address: String) => {
   }
 };
 
-const CHAIN_TO_GNOSIS_URL_ABBR = {
-  eth_mainnet: 'eth',
-  rinkeby: 'rin',
-  polygon_mainnet: 'matic',
-};
 
 export const constructGnosisRedirectUrl = (chain, safeAddress, safeTxHash) => {
   return `https://gnosis-safe.io/app/${CHAIN_TO_GNOSIS_URL_ABBR[chain]}:${safeAddress}/transactions/${safeTxHash}`;

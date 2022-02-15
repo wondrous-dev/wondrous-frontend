@@ -10,15 +10,16 @@ import {
   OrgProfilePicture,
 } from './styles';
 import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
-import { transformWalletType, useWonderWeb3 } from '../../services/web3';
+import { useWonderWeb3 } from '../../services/web3';
 import { getUserSigningMessage, walletSignup } from '../Auth/withAuth';
 import { useRouter } from 'next/router';
-import { SUPPORTED_CHAINS, WALLET_TYPE } from '../../utils/constants';
+import { SUPPORTED_CHAINS } from '../../utils/constants';
 import { Button } from '../Common/button';
 import { PaddedParagraph } from '../Common/text';
 import { Metamask } from '../Icons/metamask';
 import { SafeImage } from '../Common/Image';
 import { ErrorText } from '../Common';
+import { SupportedChainType } from '../../utils/web3Constants';
 
 export const Logo = () => {
   return (
@@ -55,7 +56,7 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
       // Retrieve Signed Message
       const messageToSignObject = await getUserSigningMessage(
         wonderWeb3.address,
-        transformWalletType(wonderWeb3.chainName.toLowerCase(), WALLET_TYPE.metamask),
+        SupportedChainType.ETH,
         true
       );
       if (messageToSignObject?.userExists) {

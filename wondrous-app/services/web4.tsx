@@ -2,17 +2,62 @@ import Web3 from 'web3';
 import Web3Modal from 'web3modal';
 import { BigNumber, ethers } from 'ethers';
 import ENS, { getEnsAddress } from '@ensdomains/ensjs';
+import WalletConnectProvider from '@walletconnect/web3-provider';
+import WalletLink from 'walletlink';
 
 // Need Infura API Key for this one:
 // import WalletConnectProvider from '@walletconnect/web3-provider'
 import { useEffect, useMemo, useState } from 'react';
 
 import { CHAIN_IDS, SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../utils/constants';
+import { INFURA_KEY } from '../utils/web3Constants';
 
 import { ERC20abi } from './contracts/erc20.abi';
 import { formatEther } from 'ethers/lib/utils';
 import { AbiItem } from 'web3-utils';
 
+const providerOptions = {
+  // walletconnect: {
+  //   display: {},
+  //   package: WalletConnectProvider, // required
+  //   options: {
+  //     infuraId: INFURA_KEY, // required
+  //   },
+  // },
+  'custom-walletlink': {
+    display: {
+      logo: 'https://play-lh.googleusercontent.com/PjoJoG27miSglVBXoXrxBSLveV6e3EeBPpNY55aiUUBM9Q1RCETKCOqdOkX2ZydqVf0',
+      name: 'Coinbase',
+      description: 'Connect to Coinbase Wallet (not Coinbase App)',
+    },
+    options: {
+      appName: 'Coinbase', // Your app name
+      networkUrl: `https://mainnet.infura.io/v3/${INFURA_KEY}`,
+      chainId: 1,
+    },
+    package: WalletLink,
+    connector: async (_, options) => {
+      const { appName, networkUrl, chainId } = options;
+      const walletLink = new WalletLink({
+        appName,
+      });
+      const provider = walletLink.makeWeb3Provider(networkUrl, chainId);
+      await provider.enable();
+      return provider;
+    },
+  },
+};
+const Web3ModalOptions = {
+  providerOptions,
+  cacheProvider: false,
+  theme: {
+    background: 'rgb(39, 49, 56)',
+    main: 'rgb(199, 199, 199)',
+    secondary: 'rgb(136, 136, 136)',
+    border: 'rgba(195, 195, 195, 0.14)',
+    hover: 'rgb(16, 26, 32)',
+  },
+};
 // Handler of Web3 State for the app
 export const useWonderWeb3 = () => {
   // Some don't need state management
@@ -68,13 +113,13 @@ export const useWonderWeb3 = () => {
   const onConnect = async () => {
     setNotSupportedChain(false)
     setConnecting(true);
-    const web3Modal = new Web3Modal();
-
-    try {
+    const web3Modal = new Web3Modal(Web3ModalOptions);
+    try{
       const provider = await web3Modal.connect();
       setWeb3Provider(provider);
       await subscribeProvider(provider);
       const web3 = await initWeb3(provider);
+
       if (web3) {
         const a = await web3.eth.getAccounts();
         const c = await web3.eth.chainId();
@@ -90,9 +135,11 @@ export const useWonderWeb3 = () => {
         setConnecting(false);
 
         setAccounts(a);
+
       }
     } catch (e) {
       console.log('Error', e);
+      web3Modal.clearCachedProvider();
       setConnecting(false);
     }
     setConnecting(false);
@@ -111,7 +158,6 @@ export const useWonderWeb3 = () => {
           return false;
         }
         const signer = await prov.getSigner();
-
         // Now sign message
         const signedMessage = await signer.signMessage(message);
         setConnecting(false);
@@ -120,7 +166,7 @@ export const useWonderWeb3 = () => {
         console.log('Error signing message ', error);
         // Error Signed message
         setConnecting(false);
-        if (error.code && error.code == 4001) {
+        if (error?.code && error?.code == 4001) {
           return false;
         }
       }
@@ -153,6 +199,7 @@ export const useWonderWeb3 = () => {
       provider.on('chainChanged', async (chainId: number) => {
         setChain(parseInt(chainId + ''));
       });
+      console.log('setSubscribed', subscribed)
       setSubscribed(true);
     }
   };
@@ -162,7 +209,7 @@ export const useWonderWeb3 = () => {
   };
 
   const getNativeChainBalance = async () => {
-    const web3 = new Web3(window.ethereum);
+    const web3 = new Web3(web3Provider);
     const balance = await web3.eth.getBalance(address);
     const balanceFormatted = parseFloat(formatEther(balance)).toPrecision(4) + ' ';
     return balanceFormatted;
@@ -171,7 +218,7 @@ export const useWonderWeb3 = () => {
   const getTokenBalance = async (token) => {
     if (!fetching && address && chain && token.contracts[chain] !== '') {
       setFetching(true);
-      const web3 = new Web3(window.ethereum);
+      const web3 = new Web3(web3Provider);
       const usdcContract = new web3.eth.Contract(ERC20abi as AbiItem[], token.contracts[chain]);
       const balanceRaw = await usdcContract.methods.balanceOf(address).call();
       const decimals = await usdcContract.methods.decimals().call();
@@ -218,9 +265,7 @@ export const useWonderWeb3 = () => {
   // If the wallet has an ENS Name, represent it
   // instead of the address.
   const getENSName = async () => {
-    const web3Modal = new Web3Modal();
-    const provider = await web3Modal.connect();
-    const prov = new ethers.providers.Web3Provider(provider);
+    const prov = new ethers.providers.Web3Provider(web3Provider);
 
     const ens = new ENS({
       provider: prov,
@@ -266,6 +311,7 @@ export const useWonderWeb3 = () => {
     chainName,
     subscribed,
     nativeTokenSymbol,
+    notSupportedChain,
     onConnect,
     disconnect,
     signMessage,
