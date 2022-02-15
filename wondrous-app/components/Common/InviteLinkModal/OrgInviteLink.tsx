@@ -38,7 +38,7 @@ import { PERMISSIONS } from '../../../utils/constants';
 
 const link = process.env.NEXT_PUBLIC_PRODUCTION
   ? `https://app.wonderverse.xyz/invite/`
-  : 'https://wondrous-app-git-staging-wonderverse.vercel.app/';
+  : 'https://wondrous-app-git-staging-wonderverse.vercel.app/invite/';
 
 export const putDefaultRoleOnTop = (roles, permissions) => {
   if (!roles) return [];
