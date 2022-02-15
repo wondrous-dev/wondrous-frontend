@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { format } from 'date-fns';
+import Checkbox from '@mui/material/Checkbox';
 
 import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
@@ -25,15 +26,16 @@ import {
 } from '../../../graphql/queries/payment';
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
-import { TableCellText } from './styles';
+import { StyledCheckbox, TableCellText } from './styles';
 import { CompensationAmount, CompensationPill, IconContainer } from '../../Common/Compensation/styles';
 import { GET_ORG_BY_ID } from '../../../graphql/queries';
 import Link from 'next/link';
 import { cutString } from '../../../utils/helpers';
 import { constructGnosisRedirectUrl } from '../../Common/Payment/SingleWalletPayment';
-import { White } from '../../../theme/colors';
+import { White, Grey800 } from '../../../theme/colors';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PayModal } from './modal';
+import { BatchPayModal } from './BatchPayModal';
 import { PaymentModalContext } from '../../../utils/contexts';
 import { SeeMoreText } from '../Members/styles';
 
@@ -44,8 +46,13 @@ enum ViewType {
 
 const LIMIT = 10;
 const PaymentItem = (props) => {
-  const { item, org, podId } = props;
+  const { item, org, podId, chain, setChainSelected, setEnableBatchPay, paymentSelected, setPaymentsSelected } = props;
   const [openModal, setOpenModal] = useState(false);
+  const [checked, setChecked] = useState(false);
+
+  // useEffect(() => {
+  //   setChecked(chain === item?.chain);
+  // }, [chain, item?.chain]);
   const imageStyle = {
     width: '32px',
     height: '32px',
@@ -67,7 +74,7 @@ const PaymentItem = (props) => {
     link = constructGnosisRedirectUrl(item.chain, item.safeAddress, item.safeTxHash);
     linkText = item.safeTxHash;
   }
-
+  const disabled = chain && item?.chain !== chain;
   return (
     <>
       <PaymentModalContext.Provider
@@ -91,6 +98,61 @@ const PaymentItem = (props) => {
           width: '150%',
         }}
       >
+        {item.paymentStatus !== 'paid' && (
+          <StyledTableCell>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <TableCellText>
+                <Checkbox
+                  style={{
+                    border: disabled ? `1px solid ${Grey800}` : `none`,
+                    width: '24px',
+                    height: '24px',
+                  }}
+                  checked={checked}
+                  disabled={disabled}
+                  onChange={() => {
+                    if (checked) {
+                      const newObj = { ...paymentSelected };
+                      delete newObj[item.submissionId];
+                      setPaymentsSelected(newObj);
+                    } else if (!checked) {
+                      const newObj = {
+                        ...paymentSelected,
+                        [item.submissionId]: item,
+                      };
+                      setPaymentsSelected(newObj);
+                    }
+                    setChecked(!checked);
+                    setChainSelected(item.chain);
+
+                    setEnableBatchPay(true);
+                  }}
+                  inputProps={{ 'aria-label': 'controlled' }}
+                />
+              </TableCellText>
+              {item.paymentStatus !== 'paid' && (
+                <>
+                  {item.paymentStatus !== 'processing' && (
+                    <CreateFormPreviewButton
+                      style={{
+                        marginLeft: '12px',
+                      }}
+                      onClick={() => setOpenModal(true)}
+                    >
+                      {' '}
+                      Pay{' '}
+                    </CreateFormPreviewButton>
+                  )}
+                </>
+              )}
+            </div>
+          </StyledTableCell>
+        )}
         <StyledTableCell>
           <div
             style={{
@@ -154,12 +216,17 @@ const PaymentItem = (props) => {
             rel="noreferrer"
             href={link}
           >
-            {cutString(linkText, 8)}
+            {cutString(linkText, 15)}
           </a>
         </StyledTableCell>
         {item.paymentStatus !== 'paid' && (
           <StyledTableCell>
             <TableCellText>{item.paymentStatus}</TableCellText>
+          </StyledTableCell>
+        )}
+        {item.chain && (
+          <StyledTableCell>
+            <TableCellText>{item.chain}</TableCellText>
           </StyledTableCell>
         )}
         {item.submissionApprovedAt && (
@@ -172,23 +239,6 @@ const PaymentItem = (props) => {
             <TableCellText>{format(new Date(item.payedAt), 'MM/dd/yyyy')}</TableCellText>
           </StyledTableCell>
         )}
-        {item.paymentStatus !== 'paid' && (
-          <>
-            <StyledTableCell>
-              {item.paymentStatus !== 'processing' && (
-                <CreateFormPreviewButton
-                  style={{
-                    marginLeft: '0',
-                  }}
-                  onClick={() => setOpenModal(true)}
-                >
-                  {' '}
-                  Pay{' '}
-                </CreateFormPreviewButton>
-              )}
-            </StyledTableCell>
-          </>
-        )}
       </StyledTableRow>
     </>
   );
@@ -200,6 +250,10 @@ const Payouts = (props) => {
   const router = useRouter();
   const { view: payView } = router.query;
   const [hasMore, setHasMore] = useState(false);
+  const [chainSelected, setChainSelected] = useState(null);
+  const [enableBatchPay, setEnableBatchPay] = useState(null);
+  const [paymentSelected, setPaymentsSelected] = useState(null);
+  const [openBatchPayModal, setOpenBatchPayModal] = useState(false);
   const listViewOptions = [
     {
       name: 'Unpaid',
@@ -343,27 +397,54 @@ const Payouts = (props) => {
       }
     }
   }, [paidList, unpaidList, hasMore]);
+  const handleBatchPayButtonClick = () => {
+    setOpenBatchPayModal(true)
+  }
+  const paymentSelectedAmount = paymentSelected && Object.keys(paymentSelected).length;
+  console.log('payment', paymentSelectedAmount, paymentSelected);
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
         <HeaderBlock icon={<PayoutSettingsHeaderIcon />} title="Payment Ledger" description="Manage all payouts" />
       </GeneralSettingsContainer>
-      <ToggleViewButton
-        options={listViewOptions}
+      <div
         style={{
-          marginTop: '32px',
-          marginBottom: '-16px',
+          display: 'flex',
+          alignItems: 'center',
         }}
-      />
+      >
+        <ToggleViewButton
+          options={listViewOptions}
+          style={{
+            marginTop: '32px',
+            marginBottom: '-16px',
+          }}
+        />
+      </div>
       <StyledTableContainer
         style={{
           marginLeft: '-3%',
-          width: '108%',
+          width: '110%',
         }}
       >
         <StyledTable>
           <StyledTableHead>
             <StyledTableRow>
+              {!paid && (
+                <StyledTableCell width={paid ? '20%' : '16%'}>
+                  {!!paymentSelectedAmount && paymentSelectedAmount > 1 && (
+                    <CreateFormPreviewButton
+                      style={{
+                        width: '120px',
+                        marginLeft: '0',
+                      }}
+                      onClick={handleBatchPayButtonClick}
+                    >
+                      Batch pay
+                    </CreateFormPreviewButton>
+                  )}
+                </StyledTableCell>
+              )}
               <StyledTableCell align="center" width={paid ? '20%' : '16%'}>
                 Assignee
               </StyledTableCell>
@@ -377,7 +458,8 @@ const Payouts = (props) => {
                 Link
               </StyledTableCell>
               {view === ViewType.Unpaid && <StyledTableCell width="10%">Status</StyledTableCell>}
-              <StyledTableCell align="center" width="20%">
+              <StyledTableCell>Chain</StyledTableCell>
+              <StyledTableCell align="center" width="25%">
                 {view === ViewType.Paid ? 'Paid at' : 'Approved at'}
               </StyledTableCell>
             </StyledTableRow>
@@ -400,13 +482,38 @@ const Payouts = (props) => {
             ) : (
               <>
                 {unpaidList?.map((item) => (
-                  <PaymentItem key={item?.id} item={item} org={org} podId={podId} />
+                  <PaymentItem
+                    setEnableBatchPay={setEnableBatchPay}
+                    chain={chainSelected}
+                    setChainSelected={setChainSelected}
+                    key={item?.id}
+                    item={item}
+                    org={org}
+                    podId={podId}
+                    paymentSelected={paymentSelected}
+                    setPaymentsSelected={setPaymentsSelected}
+                  />
                 ))}
               </>
             )}
           </StyledTableBody>
         </StyledTable>
       </StyledTableContainer>
+      <PaymentModalContext.Provider
+        value={{
+          onPaymentComplete: () => {},
+        }}
+      >
+        <BatchPayModal
+          chain={chainSelected}
+          podId={podId}
+          orgId={orgId}
+          open={openBatchPayModal}
+          handleClose={() => setOpenBatchPayModal(false)}
+          unpaidSubmissions={paymentSelected}
+        />
+      </PaymentModalContext.Provider>
+
       {hasMore && (
         <div
           style={{

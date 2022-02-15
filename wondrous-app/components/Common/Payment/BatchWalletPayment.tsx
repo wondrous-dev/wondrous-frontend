@@ -4,10 +4,11 @@ import { ethers, utils } from 'ethers';
 import DropdownSelect from '../DropdownSelect/dropdownSelect';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
-import { PROPOSE_GNOSIS_TX_FOR_SUBMISSION } from '../../../graphql/mutations/payment';
+import { PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS } from '../../../graphql/mutations/payment';
 import { useGnosisSdk } from '../../../services/payment';
 import { ERC20abi } from '../../../services/contracts/erc20.abi';
-import { SafeTransactionDataPartial, SafeTransactionData } from '@gnosis.pm/safe-core-sdk-types';
+import { SafeTransactionDataPartial, SafeTransactionData, MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types';
+import { SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk';
 import { useWonderWeb3 } from '../../../services/web3';
 import { ErrorText } from '..';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
@@ -55,11 +56,11 @@ interface PaymentData {
   chain: string;
 }
 
-export const SingleWalletPayment = (props) => {
-  const { open, handleClose, setShowPaymentModal, approvedSubmission, wallets, submissionPaymentInfo } = props;
+export const BatchWalletPayment = (props) => {
+  const { open, handleClose, podId, orgId, unpaidSubmissions, submissionIds, wallets, submissionsPaymentInfo, chain } =
+    props;
   const [currentChainId, setCurrentChainId] = useState(null); // chain id current user is on
   const [walletOptions, setWalletOptions] = useState([]); // chain associated with submission
-  const [onRightChain, setOnRighChain] = useState(true);
   const [selectedWalletId, setSelectedWalletId] = useState(null);
   const [selectedWallet, setSelectedWallet] = useState(null);
   const [wrongChainError, setWrongChainError] = useState(null);
@@ -80,14 +81,13 @@ export const SingleWalletPayment = (props) => {
     connectWeb3();
   }, []);
 
-
   const wonderGnosis = useGnosisSdk();
   const connectSafeSdk = async (chain, safeAddress) => {
     try {
       await wonderGnosis.connectSafeSdk({ chain, safeAddress });
     } catch (e) {
-      console.log('error connecint to gnosis safe', selectedWallet.chain)
-      setSafeConnectionError(`selected gnosis safe not deployed on ${selectedWallet.chain}`)
+      console.log('error connecting to gnosis safe', selectedWallet.chain);
+      setSafeConnectionError(`selected gnosis safe not deployed on current ${CHAIN_ID_TO_CHAIN_NAME[currentChainId]}`);
     }
   };
 
@@ -98,20 +98,19 @@ export const SingleWalletPayment = (props) => {
   }, [wonderWeb3.chain, wonderWeb3.address]);
 
   useEffect(() => {
+    console.log('triggered', currentChainId, chain);
     setWrongChainError(null);
-    const chain = submissionPaymentInfo?.paymentData[0].chain;
     if (chain && currentChainId) {
       if (chain !== CHAIN_ID_TO_CHAIN_NAME[currentChainId]) {
         setWrongChainError(`currently connected to the wrong network should be on ${chain}`);
       }
     }
-  }, [currentChainId, submissionPaymentInfo]);
+  }, [currentChainId, chain]);
 
   useEffect(() => {
     setIncompatibleWalletError(null);
     const corrctChainWallets = [];
     wallets.map((wallet) => {
-      const chain = submissionPaymentInfo?.paymentData[0].chain;
       if (wallet.chain === chain) {
         const address = generateReadablePreviewForAddress(wallet.address);
         const label = `${wallet.name}:  ${address}`;
@@ -122,7 +121,7 @@ export const SingleWalletPayment = (props) => {
       }
     });
     setWalletOptions(corrctChainWallets);
-  }, [submissionPaymentInfo, wallets]);
+  }, [chain, wallets]);
 
   useEffect(() => {
     setNotOwnerError(null);
@@ -133,8 +132,7 @@ export const SingleWalletPayment = (props) => {
     }
   }, [selectedWalletId, selectedWallet?.chain, selectedWallet?.address, currentChainId]);
 
-
-  const [proposeGnosisTxForSubmission] = useMutation(PROPOSE_GNOSIS_TX_FOR_SUBMISSION, {
+  const [proposeGnosisMultisendForSubmissions] = useMutation(PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS, {
     onCompleted: (data) => {
       setPaymentPending(true);
       if (paymentModal?.onPaymentComplete) {
@@ -156,38 +154,44 @@ export const SingleWalletPayment = (props) => {
     setGnosisSafeTxRedirectLink(url);
   }, [safeTxHash, selectedWallet]);
 
-  const reward = props?.fetchedTask?.rewards && props?.fetchedTask?.rewards[0];
-  
-
   const constructAndSignTransactionData = async () => {
-    setSigningError(null)
+    setSigningError(null);
     let iface = new ethers.utils.Interface(ERC20abi);
-    const paymentData = submissionPaymentInfo?.paymentData[0];
-    let transactionData;
-    if (paymentData?.isEthTransfer) {
-      transactionData = {
-        to: paymentData.recepientAddress,
-        data: '0x00',
-        value: paymentData.amount,
-      };
-    } else {
-      const callData = iface.encodeFunctionData('transfer', [paymentData.recepientAddress, paymentData.amount]);
-      transactionData = {
-        to: paymentData.tokenAddress,
-        data: callData,
-        value: '0',
-      };
-    }
+    const transactions: MetaTransactionData[] = [];
+    submissionsPaymentInfo?.map((submissionPaymentInfo) => {
+      const paymentsData = submissionPaymentInfo.paymentData;
+      // assume one payment per submission for now
+      const paymentData = paymentsData[0];
+      let transactionData: MetaTransactionData;
+      if (paymentData?.isEthTransfer) {
+        transactionData = {
+          to: paymentData.recepientAddress,
+          data: '0x00',
+          value: paymentData.amount,
+        };
+      } else {
+        const callData = iface.encodeFunctionData('transfer', [paymentData.recepientAddress, paymentData.amount]);
+        transactionData = {
+          to: paymentData.tokenAddress,
+          data: callData,
+          value: '0',
+        };
+      }
+      transactions.push(transactionData);
+    });
+    // includes the pending nonce, better than keeping it empty which would ignore pending txs
     const gnosisClient = wonderGnosis?.safeServiceClient;
     const gnosisSdk = wonderGnosis?.safeSdk;
     const nextNonce = await gnosisClient?.getNextNonce(selectedWallet?.address);
-    const transaction: SafeTransactionDataPartial = {
-      to: wonderWeb3.toChecksumAddress(transactionData.to),
-      data: transactionData.data,
-      value: transactionData.value,
+    const options: SafeTransactionOptionalProps = {
+      // safeTxGas, // Optional
+      // baseGas, // Optional
+      // gasPrice, // Optional
+      // gasToken, // Optional
+      // refundReceiver, // Optional
       nonce: nextNonce,
     };
-    const safeTransaction = await gnosisSdk.createTransaction(transaction);
+    const safeTransaction = await gnosisSdk.createTransaction(transactions, options); // create tx object
     const safeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);
     setSafeTxHash(safeTxHash);
     try {
@@ -197,7 +201,7 @@ export const SingleWalletPayment = (props) => {
         setNotOwnerError(`Not a owner of multisig`);
       } else if (e.message.includes('User denied message')) {
         setSigningError(`User denied signature`);
-      }  else {
+      } else {
         setSigningError(`Error signing transaction`);
       }
       return;
@@ -208,35 +212,29 @@ export const SingleWalletPayment = (props) => {
       sender = value.signer;
       signature = value.data;
     });
-
+    // txData is the payload to send to gnosis tx service. but we send to backend to validate and send
     const txData = {
       ...safeTransaction.data,
       contractTransactionHash: safeTxHash,
       sender,
       signature,
     };
-    proposeGnosisTxForSubmission({
+    proposeGnosisMultisendForSubmissions({
       variables: {
         input: {
-          submissionId: approvedSubmission.id,
+          submissionIds,
           walletId: selectedWalletId,
-          chain: submissionPaymentInfo?.paymentData[0].chain,
+          chain,
           transactionData: txData,
         },
       },
-      refetchQueries: [
-        GET_UNPAID_SUBMISSIONS_FOR_POD,
-        GET_UNPAID_SUBMISSIONS_FOR_ORG,
-        GET_PAYMENTS_FOR_POD,
-        GET_PAYMENTS_FOR_ORG,
-      ],
     });
   };
   const handleCreateNewWalletClick = () => {
-    if (approvedSubmission.podId) {
-      router.push(`/pod/settings/${approvedSubmission.podId}/wallet`);
-    } else if (approvedSubmission.orgId) {
-      router.push(`/organization/settings/${approvedSubmission.orgId}/wallet`);
+    if (podId) {
+      router.push(`/pod/settings/${podId}/wallet`);
+    } else if (orgId) {
+      router.push(`/organization/settings/${orgId}/wallet`);
     }
   };
 
@@ -271,7 +269,7 @@ export const SingleWalletPayment = (props) => {
               marginLeft: 0,
             }}
           >
-            Pay {reward?.rewardAmount} {reward?.symbol}
+            Pay All
           </CreateFormPreviewButton>
         )}
         {wrongChainError && <ErrorText>{wrongChainError}</ErrorText>}
