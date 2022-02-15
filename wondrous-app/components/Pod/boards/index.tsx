@@ -121,16 +121,6 @@ const Boards = (props) => {
     },
   ];
 
-  const tasks = columns.reduce((acc, column) => {
-    let tasks = [...column.section.tasks, ...column.tasks];
-    // Don't show archived tasks
-    if (column.section.title === COLUMN_TITLE_ARCHIVED) {
-      tasks = column.tasks;
-    }
-
-    return [...acc, ...tasks];
-  }, []);
-
   return (
     <Wrapper>
       <BoardsContainer>
@@ -144,7 +134,7 @@ const Boards = (props) => {
           {view === ViewType.Grid ? (
             <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
           ) : (
-            <Table tasks={tasks} onLoadMore={onLoadMore} hasMore={hasMore} />
+            <Table columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
           )}
         </>
       </BoardsContainer>

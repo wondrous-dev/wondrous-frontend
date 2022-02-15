@@ -308,25 +308,14 @@ const BoardsPage = () => {
         getPodTasksVariables,
       }}
     >
-      {search ? (
-        <SearchBoards
+      <Boards
           selectOptions={SELECT_OPTIONS}
           columns={columns}
           onLoadMore={handleLoadMore}
           hasMore={podTaskHasMore}
           onSearch={handleSearch}
           onFilterChange={handleFilterChange}
-        />
-      ) : (
-        <Boards
-          selectOptions={SELECT_OPTIONS}
-          columns={columns}
-          onLoadMore={handleLoadMore}
-          hasMore={podTaskHasMore}
-          onSearch={handleSearch}
-          onFilterChange={handleFilterChange}
-        />
-      )}
+      />
     </PodBoardContext.Provider>
   );
 };
