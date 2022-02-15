@@ -149,6 +149,7 @@ export const SingleWalletPayment = (props) => {
   }, [selectedWalletId, selectedWallet?.chain, selectedWallet?.address]);
 
   const constructAndSignTransactionData = async () => {
+    setSigningError(null)
     let iface = new ethers.utils.Interface(ERC20abi);
     const paymentData = submissionPaymentInfo?.paymentData[0];
     let transactionData;
@@ -183,7 +184,9 @@ export const SingleWalletPayment = (props) => {
     } catch (e) {
       if (e.message === 'Transactions can only be signed by Safe owners') {
         setNotOwnerError(`Not a owner of multisig`);
-      } else {
+      } else if (e.message.includes('User denied message')) {
+        setSigningError(`User denied signature`);
+      }  else {
         setSigningError(`Error signing transaction`);
       }
       return;

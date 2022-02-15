@@ -56,10 +56,9 @@ interface PaymentData {
   chain: string;
 }
 
-
-
 export const BatchWalletPayment = (props) => {
-  const { open, handleClose, podId, orgId, unpaidSubmissions, submissionIds, wallets, submissionsPaymentInfo, chain } = props;
+  const { open, handleClose, podId, orgId, unpaidSubmissions, submissionIds, wallets, submissionsPaymentInfo, chain } =
+    props;
   const [currentChainId, setCurrentChainId] = useState(null); // chain id current user is on
   const [walletOptions, setWalletOptions] = useState([]); // chain associated with submission
   const [selectedWalletId, setSelectedWalletId] = useState(null);
@@ -82,14 +81,13 @@ export const BatchWalletPayment = (props) => {
     connectWeb3();
   }, []);
 
-
   const wonderGnosis = useGnosisSdk();
   const connectSafeSdk = async (chain, safeAddress) => {
     try {
       await wonderGnosis.connectSafeSdk({ chain, safeAddress });
     } catch (e) {
-      console.log('error connecting to gnosis safe', selectedWallet.chain)
-      setSafeConnectionError(`selected gnosis safe not deployed on current ${CHAIN_ID_TO_CHAIN_NAME[currentChainId]}`)
+      console.log('error connecting to gnosis safe', selectedWallet.chain);
+      setSafeConnectionError(`selected gnosis safe not deployed on current ${CHAIN_ID_TO_CHAIN_NAME[currentChainId]}`);
     }
   };
 
@@ -100,7 +98,7 @@ export const BatchWalletPayment = (props) => {
   }, [wonderWeb3.chain, wonderWeb3.address]);
 
   useEffect(() => {
-    console.log('triggered', currentChainId, chain)
+    console.log('triggered', currentChainId, chain);
     setWrongChainError(null);
     if (chain && currentChainId) {
       if (chain !== CHAIN_ID_TO_CHAIN_NAME[currentChainId]) {
@@ -134,7 +132,6 @@ export const BatchWalletPayment = (props) => {
     }
   }, [selectedWalletId, selectedWallet?.chain, selectedWallet?.address, currentChainId]);
 
-
   const [proposeGnosisMultisendForSubmissions] = useMutation(PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS, {
     onCompleted: (data) => {
       setPaymentPending(true);
@@ -156,9 +153,9 @@ export const BatchWalletPayment = (props) => {
     const url = constructGnosisRedirectUrl(selectedWallet?.chain, selectedWallet?.address, safeTxHash);
     setGnosisSafeTxRedirectLink(url);
   }, [safeTxHash, selectedWallet]);
-  
 
   const constructAndSignTransactionData = async () => {
+    setSigningError(null);
     let iface = new ethers.utils.Interface(ERC20abi);
     const transactions: MetaTransactionData[] = [];
     submissionsPaymentInfo?.map((submissionPaymentInfo) => {
@@ -202,6 +199,8 @@ export const BatchWalletPayment = (props) => {
     } catch (e) {
       if (e.message === 'Transactions can only be signed by Safe owners') {
         setNotOwnerError(`Not a owner of multisig`);
+      } else if (e.message.includes('User denied message')) {
+        setSigningError(`User denied signature`);
       } else {
         setSigningError(`Error signing transaction`);
       }
@@ -230,7 +229,6 @@ export const BatchWalletPayment = (props) => {
         },
       },
     });
-
   };
   const handleCreateNewWalletClick = () => {
     if (podId) {

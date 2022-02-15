@@ -14,6 +14,19 @@ import {
   PaymentMethodWrapper,
   WarningTypography,
 } from '../../Common/Payment/styles';
+import { CompensationAmount, CompensationPill, IconContainer } from '../../Common/Compensation/styles';
+import {
+  StyledTable,
+  StyledTableBody,
+  StyledTableCell,
+  StyledTableContainer,
+  StyledTableHead,
+  StyledTableRow,
+} from '../../Table/styles';
+import { SafeImage } from '../../Common/Image';
+import DefaultUserImage from '../../Common/Image/DefaultUserImage';
+import { StyledCheckbox, TableCellText } from './styles';
+import { White, Grey800 } from '../../../theme/colors';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
 import { GET_SUBMISSIONS_PAYMENT_INFO } from '../../../graphql/queries/payment';
@@ -28,12 +41,19 @@ import { OfflinePayment } from '../../Common/Payment/OfflinePayment';
 import { BatchWalletPayment } from '../../Common/Payment/BatchWalletPayment';
 import Link from 'next/link';
 import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
-import { delQuery } from '../../../utils';
+import { cutString } from '../../../utils/helpers';
 
 enum ViewType {
   Paid = 'paid',
   Unpaid = 'unpaid',
 }
+
+const imageStyle = {
+  width: '32px',
+  height: '32px',
+  borderRadius: '16px',
+  marginRight: '8px',
+};
 
 export const BatchPayModal = (props) => {
   const { podId, orgId, open, handleClose, unpaidSubmissions, chain } = props;
@@ -44,7 +64,6 @@ export const BatchPayModal = (props) => {
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
-  const PAYMENT_TABS = [{ name: 'wallet', label: 'Wallet', action: () => setSelectedTab('wallet') }];
   const [getOrgWallet, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_WALLET, {
     onCompleted: (data) => {
       setWallets(data?.getOrgWallet);
@@ -64,7 +83,7 @@ export const BatchPayModal = (props) => {
     },
     fetchPolicy: 'network-only',
   });
-  const submissionIds = unpaidSubmissions && Object.keys(unpaidSubmissions)
+  const submissionIds = unpaidSubmissions && Object.keys(unpaidSubmissions);
 
   useEffect(() => {
     if (podId) {
@@ -95,17 +114,106 @@ export const BatchPayModal = (props) => {
       <PaymentModal>
         <PaymentTitleDiv>
           <PaymentTitleTextDiv>
-            <PaymentTitleText>
-              Batch pay
-            </PaymentTitleText>
+            <PaymentTitleText>Batch pay</PaymentTitleText>
             <PaymentDescriptionText>Pay the following submissions</PaymentDescriptionText>
           </PaymentTitleTextDiv>
         </PaymentTitleDiv>
-        <StyledTabs value={selectedTab}>
-          {PAYMENT_TABS.map((tab) => (
-            <Tab value={tab.name} key={tab.name} label={tab.label} onClick={tab.action} />
-          ))}
-        </StyledTabs>
+        <StyledTableContainer
+          style={{
+            marginLeft: '-3%',
+            width: '110%',
+          }}
+        >
+          <StyledTable>
+            <StyledTableHead>
+              <StyledTableRow>
+                <StyledTableCell align="center" width={'20%'}>
+                  Receipient
+                </StyledTableCell>
+                <StyledTableCell align="center" width={'20%'}>
+                  Payout
+                </StyledTableCell>
+                <StyledTableCell align="center" width="20%">
+                  Deliverable
+                </StyledTableCell>
+              </StyledTableRow>
+            </StyledTableHead>
+            <StyledTableBody>
+              {unpaidSubmissions &&
+                Object.keys(unpaidSubmissions).map((key, index) => {
+                  const submission = unpaidSubmissions[key];
+                  const taskHref = orgId
+                    ? `/organization/${orgId}/boards?task=${submission.taskId}`
+                    : `/pod/${podId}/boards?task=${submission.taskId}`;
+
+                  return (
+                    <StyledTableRow
+                      style={{
+                        width: '150%',
+                      }}
+                      key={submission?.id}
+                    >
+                      <StyledTableCell>
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            marginLeft: '8px',
+                          }}
+                        >
+                          {submission?.payeeProfilePicture ? (
+                            <SafeImage src={submission?.payeeProfilePicture} style={imageStyle} />
+                          ) : (
+                            <DefaultUserImage style={imageStyle} />
+                          )}
+                          <TableCellText>{submission?.payeeUsername}</TableCellText>
+                        </div>
+                      </StyledTableCell>
+                      <StyledTableCell
+                        style={{
+                          minWidth: '120px',
+                        }}
+                      >
+                        <CompensationPill
+                          style={{
+                            backGround: 'none',
+                          }}
+                        >
+                          <IconContainer>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <SafeImage
+                              src={submission?.icon}
+                              style={{
+                                width: '24px',
+                                height: '24px',
+                              }}
+                            />
+                          </IconContainer>
+                          <CompensationAmount>
+                            {submission?.amount} {submission?.symbol}
+                          </CompensationAmount>
+                        </CompensationPill>
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        <Link href={taskHref}>
+                          <a
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{
+                              color: White,
+                            }}
+                          >
+                            {cutString(submission?.taskTitle, 30)}
+                          </a>
+                        </Link>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  );
+                })}
+            </StyledTableBody>
+          </StyledTable>
+        </StyledTableContainer>
+
         <PaymentMethodWrapper>
           <BatchWalletPayment
             orgId={orgId}
