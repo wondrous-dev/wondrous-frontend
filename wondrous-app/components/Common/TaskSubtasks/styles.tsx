@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import { White } from '../../../theme/colors';
 import { Button } from '../button';
 import PlusIcon from '../../Icons/plus';
+import { Task } from '../Task';
+import { TaskWrapper, TaskInner } from '../Task/styles';
+import { TaskMedia } from '../MediaPlayer';
 
 export const Subtask = styled.div`
   width: 100%;
@@ -72,4 +75,15 @@ export const CreateSubtaskIcon = styled.div`
   align-items: center;
   justify-content: center;
   margin-left: 8px;
+`;
+
+// https://www.designcise.com/web/tutorial/why-is-styled-components-styled-wrapper-not-working-with-existing-react-component
+export const SubtaskTask = styled(Task)`
+  ${TaskWrapper} {
+    padding: 0;
+  }
+  ${TaskInner} {
+    background: #0f0f0f;
+    text-align: left;
+  }
 `;
