@@ -80,7 +80,7 @@ export const TASK_ICONS = {
 };
 
 let windowOffset = 0;
-export const Task = ({ task, setTask, onOpen = (task) => null }) => {
+export const Task = ({ task, setTask, onOpen = (task) => null, className }) => {
   const {
     actions = {},
     description = '',
@@ -251,7 +251,7 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
   const taskType = isMilestone ? 'milestone' : 'task';
 
   return (
-    <>
+    <span className={className}>
       <ArchiveTaskModal
         open={archiveTask}
         onClose={() => setArchiveTask(false)}
@@ -367,7 +367,7 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
           </TaskFooter>
         </TaskInner>
       </TaskWrapper>
-    </>
+    </span>
   );
 };
 

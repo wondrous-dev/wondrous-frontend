@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { CommentFragment } from '../fragments/comments';
-import { TaskFragment, TaskSubmissionFragment } from '../fragments/task';
+import { TaskCardFragment, TaskFragment, TaskSubmissionFragment } from '../fragments/task';
 
 export const GET_TASK_BY_ID = gql`
   query getTaskById($taskId: ID!) {
@@ -115,4 +115,13 @@ export const GET_SUBTASK_COUNT_FOR_TASK = gql`
       completed
     }
   }
+`;
+
+export const GET_SUBTASKS_FOR_TASK = gql`
+  query getSubtasksForTask($taskId: ID!) {
+    getSubtasksForTask(taskId: $taskId) {
+      ...TaskCardFragment
+    }
+  }
+  ${TaskCardFragment}
 `;

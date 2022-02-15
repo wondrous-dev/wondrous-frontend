@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { GET_SUBTASK_COUNT_FOR_TASK } from '../../../graphql/queries';
+import { GET_SUBTASKS_FOR_TASK, GET_SUBTASK_COUNT_FOR_TASK } from '../../../graphql/queries';
 import { CompletedIcon } from '../../Icons/statusIcons';
 import { SubTaskIcon } from '../../Icons/subTask';
 import {
@@ -11,14 +11,22 @@ import {
   Subtask,
   SubtaskCompletedWrapper,
   SubtaskHeader,
+  SubtaskTask,
 } from './styles';
+import { TASK_STATUS_ARCHIVED } from '../../../utils/constants';
 
 export const TaskSubtasks = ({ taskId }) => {
-  const { data } = useQuery(GET_SUBTASK_COUNT_FOR_TASK, {
+  const { data: getSubtaskCountForTaskData } = useQuery(GET_SUBTASK_COUNT_FOR_TASK, {
     variables: {
       taskId,
     },
   });
+  const { data: getSubtasksForTaskData } = useQuery(GET_SUBTASKS_FOR_TASK, {
+    variables: {
+      taskId,
+    },
+  });
+
   return (
     <Subtask>
       <SubtaskHeader>
@@ -26,11 +34,12 @@ export const TaskSubtasks = ({ taskId }) => {
           <LabelWrapper>
             <SubTaskIcon />{' '}
             <Label>
-              {data?.getSubtaskCountForTask.total} subtask{data?.getSubtaskCountForTask.total > 1 && 's'}
+              {getSubtaskCountForTaskData?.getSubtaskCountForTask.total} subtask
+              {getSubtaskCountForTaskData?.getSubtaskCountForTask.total > 1 && 's'}
             </Label>
           </LabelWrapper>
           <LabelWrapper>
-            <CompletedIcon /> <Label>{data?.getSubtaskCountForTask.completed} complete</Label>
+            <CompletedIcon /> <Label>{getSubtaskCountForTaskData?.getSubtaskCountForTask.completed} complete</Label>
           </LabelWrapper>
         </SubtaskCompletedWrapper>
         <CreateSubtaskButton>
@@ -40,6 +49,9 @@ export const TaskSubtasks = ({ taskId }) => {
           </CreateSubtaskIcon>
         </CreateSubtaskButton>
       </SubtaskHeader>
+      {getSubtasksForTaskData?.getSubtasksForTask.map((subtask) => (
+        <SubtaskTask key={subtask.id} task={subtask} />
+      ))}
     </Subtask>
   );
 };
