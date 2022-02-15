@@ -46,7 +46,7 @@ import {
   ArchivedTaskUndo,
   MilestoneSeparator,
   MilestoneProgressWrapper,
-  MilestoneIconWrapper,
+  TaskHeaderIconWrapper,
 } from './styles';
 import { renderMentionString } from '../../../utils/common';
 import { useRouter } from 'next/router';
@@ -278,20 +278,18 @@ export const Task = ({ task, setTask, onOpen = (task) => null, className }) => {
       <TaskWrapper key={id} onClick={openModal}>
         <TaskInner>
           <TaskHeader>
-            <SafeImage
-              src={task?.orgProfilePicture}
-              style={{
-                width: '29px',
-                height: '28px',
-                borderRadius: '4px',
-              }}
-            />
-            {isMilestone && (
-              <MilestoneIconWrapper withProfile={task?.orgProfilePicture}>
-                <MilestoneIcon />
-              </MilestoneIconWrapper>
-            )}
-            <AvatarList style={{ marginLeft: '12px' }} users={userList} id={'task-' + task?.id} />
+            <TaskHeaderIconWrapper>
+              <SafeImage
+                src={task?.orgProfilePicture}
+                style={{
+                  width: '29px',
+                  height: '28px',
+                  borderRadius: '4px',
+                }}
+              />
+              {isMilestone && <MilestoneIcon />}
+              <AvatarList users={userList} id={'task-' + task?.id} />
+            </TaskHeaderIconWrapper>
             {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
           </TaskHeader>
           <MilestoneLaunchedBy type={type} router={router} createdBy={createdBy} />

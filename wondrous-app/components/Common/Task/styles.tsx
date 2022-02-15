@@ -46,6 +46,16 @@ export const TaskHeader = styled.div`
   margin: 0 0 17px 0;
 `;
 
+export const TaskHeaderIconWrapper = styled.div`
+  display: flex;
+  & > * {
+    margin-right: 4px;
+  }
+  & > *:last-child {
+    margin-right: 0;
+  }
+`;
+
 export const TaskContent = styled.div`
   display: flex;
   flex-grow: 1;
@@ -64,10 +74,6 @@ export const TaskSeparator = styled.div`
   display: flex;
   border-bottom: 1px solid ${Grey80};
   margin-top: 5px;
-`;
-
-export const MilestoneIconWrapper = styled.div`
-  margin-left: ${(props) => (props.withProfile ? '6px' : '0')};
 `;
 
 export const MilestoneSeparator = styled(TaskSeparator)`
