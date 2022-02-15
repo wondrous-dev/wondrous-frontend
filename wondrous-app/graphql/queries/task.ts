@@ -37,8 +37,9 @@ export const GET_ELIGIBLE_REVIEWERS_FOR_POD = gql`
     getEligibleReviewersForPod(podId: $podId, searchString: $searchString) {
       id
       username
+    }
   }
-}`
+`;
 
 export const GET_TASK_SUBMISSIONS_FOR_TASK = gql`
   query getTaskSubmissionsForTask($taskId: ID!) {
@@ -103,6 +104,15 @@ export const GET_MILESTONES = gql`
     getMilestones(orgId: $orgId, podId: $podId) {
       title
       id
+    }
+  }
+`;
+
+export const GET_SUBTASK_COUNT_FOR_TASK = gql`
+  query getSubtaskCountForTask($taskId: ID!) {
+    getSubtaskCountForTask(taskId: $taskId) {
+      total
+      completed
     }
   }
 `;

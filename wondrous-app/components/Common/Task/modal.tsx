@@ -124,6 +124,7 @@ import { CompensationAmount, CompensationPill, IconContainer } from '../Compensa
 
 import { MakePaymentModal } from '../Payment/PaymentModal';
 import { ApprovedSubmissionContext } from '../../../utils/contexts';
+import { TaskSubtasks } from '../TaskSubtasks';
 export const MediaLink = (props) => {
   const { media, style } = props;
   const [getPreviewFile, { data, loading, error }] = useLazyQuery(GET_PREVIEW_FILE, {
@@ -574,7 +575,7 @@ export const TaskListViewModal = (props) => {
 
 const tabs = {
   submissions: 'Submissions',
-  subTasks: 'Sub-tasks',
+  subTasks: 'Subtasks',
   discussion: 'Discussion',
   tasks: 'Tasks',
 };
@@ -1421,7 +1422,7 @@ export const TaskViewModal = (props) => {
                     setShowPaymentModal={setShowPaymentModal}
                   />
                 )}
-                {/* TODO: @ add the the subtask here */}
+                {activeTab === tabs.subTasks && <TaskSubtasks taskId={fetchedTask?.id} />}
                 {activeTab === tabs.discussion && (
                   <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
                 )}
