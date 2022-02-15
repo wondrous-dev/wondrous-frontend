@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useLazyQuery, useQuery } from '@apollo/client';
-import { cloneDeep } from 'lodash';
 
 import { useMe, withAuth } from '../../../components/Auth/withAuth';
 import {
@@ -12,7 +11,6 @@ import {
   SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
 } from '../../../graphql/queries/taskBoard';
 import Boards from '../../../components/organization/boards/boards';
-import SearchBoards from '../../../components/organization/boards/SearchBoards';
 import { InReview, Requested, Archived } from '../../../components/Icons/sections';
 import {
   TASK_STATUS_DONE,
@@ -354,7 +352,7 @@ const BoardsPage = () => {
     [orgId, orgData]
   );
 
-  const handleFilterChange = ({ statuses, pods }: TaskFilter) => {
+  const handleFilterChange: any = ({ statuses, pods }: TaskFilter) => {
     setStatuses(statuses || []);
     setPodIds(pods || []);
   };

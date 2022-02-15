@@ -31,7 +31,6 @@ import { dedupeColumns, delQuery } from '../../../utils';
 import * as Constants from '../../../utils/constants';
 import apollo from '../../../services/apollo';
 import { TaskFilter } from '../../../types/task';
-import SearchBoards from '../../../components/Pod/boards/SearchBoards';
 
 const TO_DO = {
   status: TASK_STATUS_TODO,

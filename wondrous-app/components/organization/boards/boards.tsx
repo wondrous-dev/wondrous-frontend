@@ -50,7 +50,12 @@ enum ViewType {
 type Props = {
   orgPods: OrgPod[];
   onSearch: (searchString: string) => Promise<any>;
-  onFiltersChange: (searchString: string) => Promise<any>;
+  onFilterChange: (searchString: string) => Promise<any>;
+  columns: Array<any>
+  onLoadMore: any,
+  orgData: any,
+  hasMore: any,
+  selectOptions: any,
 };
 
 const Boards = (props: Props) => {
@@ -78,7 +83,7 @@ const Boards = (props: Props) => {
     let totalCount = 0;
 
     const createColumnsByType = (type) => {
-      const cols = cloneDeep(columns);
+      const cols: any = cloneDeep(columns);
       cols.tasksCount = 0;
 
       cols.forEach((col) => {
