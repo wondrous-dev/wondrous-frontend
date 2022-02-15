@@ -49,9 +49,11 @@ export const TaskSubtasks = ({ taskId }) => {
           </CreateSubtaskIcon>
         </CreateSubtaskButton>
       </SubtaskHeader>
-      {getSubtasksForTaskData?.getSubtasksForTask.map((subtask) => (
-        <SubtaskTask key={subtask.id} task={subtask} />
-      ))}
+      {getSubtasksForTaskData?.getSubtasksForTask
+        .filter((i) => i.status !== TASK_STATUS_ARCHIVED)
+        .map((subtask) => (
+          <SubtaskTask key={subtask.id} task={subtask} />
+        ))}
     </Subtask>
   );
 };
