@@ -31,7 +31,7 @@ export default function SearchTasks({ onSearch }: Props) {
   const [inputValue, setInputValue] = useState('');
   const [options, setOptions] = useState([]);
   const [hasMore, setHasMore] = useState(false);
-  const LIMIT = 8;
+  const LIMIT = 5;
 
   React.useEffect(() => {
     if (!open) {
@@ -46,15 +46,18 @@ export default function SearchTasks({ onSearch }: Props) {
 
     timeout = setTimeout(async () => {
       const tasks = await onSearch(searchString);
-      setOptions(tasks);
+      setOptions(tasks.slice(LIMIT));
       setHasMore(tasks.length > LIMIT);
     }, 200);
   };
 
   function handleTaskClick(task) {
+    const isProposal = task.__typename === 'TaskProposalCard';
     setInputValue('');
     setOpen(false);
-    router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`);
+    router.replace(
+      `${delQuery(router.asPath)}?task${isProposal ? 'Proposal' : ''}=${task?.id}&view=${router.query.view || 'grid'}`
+    );
   }
 
   function handleShowMore() {

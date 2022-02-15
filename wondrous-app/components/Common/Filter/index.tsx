@@ -29,11 +29,10 @@ import { Blue200, Grey250 } from '../../../theme/colors';
  *
  * @param filterSchema ( tabs: [{ name: String, multiChoice: boolean, items: [{ id: String, name: String }] }])
  * @param filter State where this component will store the filter options in the form of { group: { item: boolean }
- * @param setFilter State setter to propagate the filter additions
  * @returns
  */
 
-const Filter = ({ filterSchema = [], filter, setFilter, onChange }) => {
+const Filter = ({ filterSchema = [], filter, onChange }) => {
   const [selected, setSelected] = useState(filterSchema[0]);
   const [selectedTabItems, setSelectedTabItems] = useState({});
   const [selectedNames, setSelectedNames] = useState([]);

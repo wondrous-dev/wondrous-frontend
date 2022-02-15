@@ -266,7 +266,7 @@ const Boards = (props: Props) => {
           }
 
           return (
-            <>
+            <div key={name}>
               <SearchType>
                 {icon}
                 {columns.tasksCount} {pluralize(name, columns.tasksCount)}
@@ -286,7 +286,7 @@ const Boards = (props: Props) => {
                   </ShowAllButton>
                 </ShowAllSearchResults>
               ) : null}
-            </>
+            </div>
           );
         })}
       </>
@@ -298,8 +298,8 @@ const Boards = (props: Props) => {
       <BoardsContainer>
         <BoardsActivity>
           <SearchTasks onSearch={onSearch} />
-          <Filter filterSchema={filterSchema} filter={filter} onChange={onFilterChange} setFilter={setFilter} />
-          {view ? <ToggleViewButton options={listViewOptions} /> : null}
+          <Filter filterSchema={filterSchema} filter={filter} onChange={onFilterChange} />
+          {view && !searchQuery ? <ToggleViewButton options={listViewOptions} /> : null}
         </BoardsActivity>
 
         {searchQuery ? renderSearchResults() : renderBoard()}

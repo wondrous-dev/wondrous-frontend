@@ -7,7 +7,7 @@ import { HighlightBlue } from '../../theme/colors';
 export const Autocomplete = styled(AutocompleteComp)`
   width: 100%;
   
-  .MuiAutocomplete-inputRoot {
+  && .MuiAutocomplete-inputRoot {
     padding: 0;
   }
 `;
