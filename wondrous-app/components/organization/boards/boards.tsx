@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import pluralize from 'pluralize';
+import { cloneDeep } from 'lodash';
 
 import Wrapper from '../wrapper/wrapper';
 import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard';
@@ -38,7 +39,7 @@ import { OrgPod } from '../../../types/pod';
 import TaskStatus from '../../Icons/TaskStatus';
 import { useBoard } from '../../../utils/hooks';
 import { Proposal } from '../../Icons';
-import { MilestoneIcon, TaskIcon, UserIcon } from '../../Icons/Search/types';
+import { BountyIcon, MilestoneIcon, TaskIcon, UserIcon } from '../../Icons/Search/types';
 import { Chevron } from '../../Icons/sections';
 
 enum ViewType {
@@ -76,35 +77,54 @@ const Boards = (props: Props) => {
 
     let totalCount = 0;
 
+    const createColumnsByType = (type) => {
+      const cols = cloneDeep(columns);
+      cols.tasksCount = 0;
+
+      cols.forEach((col) => {
+        col.tasks = col.tasks.filter((task) => {
+          if ((task.type || TASK_TYPE) === type) {
+            totalCount++;
+            cols.tasksCount++;
+            return true;
+          }
+
+          return false;
+        });
+        col.section.tasks = col.section.tasks.filter((task) => {
+          if ((task.type || TASK_TYPE) === type) {
+            totalCount++;
+            cols.tasksCount++;
+            return true;
+          }
+
+          return false;
+        });
+      });
+
+      return cols;
+    };
+
     const searchResults = {
       [TASK_TYPE]: {
         name: 'task',
         showAll: false,
-        items: [],
+        columns: createColumnsByType(TASK_TYPE),
         icon: <TaskIcon />,
       },
       [BOUNTY_TYPE]: {
         name: 'bounties',
         showAll: false,
-        items: [],
-        icon: <UserIcon />,
+        columns: createColumnsByType(BOUNTY_TYPE),
+        icon: <BountyIcon />,
       },
       [MILESTONE_TYPE]: {
         name: 'milestone',
         showAll: false,
-        items: [],
+        columns: createColumnsByType(MILESTONE_TYPE),
         icon: <MilestoneIcon />,
       },
     };
-
-    columns.forEach((column) => {
-      const tasks = [...column.section.tasks, ...column.tasks];
-
-      tasks.forEach((task) => {
-        totalCount++;
-        searchResults[task.type || TASK_TYPE].items.push(task);
-      });
-    });
 
     setTotalCount(totalCount);
     setSearchResults(searchResults);
@@ -223,10 +243,10 @@ const Boards = (props: Props) => {
             Showing <span>{totalCount}</span> results for &apos;{searchQuery}&apos;
           </div>
           <ResultsCountRight>
-            {Object.values(searchResults).map(({ name, items }) =>
-              items.length ? (
+            {Object.values(searchResults).map(({ name, columns }) =>
+              columns.tasksCount ? (
                 <div key={name}>
-                  <span>{items.length}</span> {pluralize(name, items.length)}
+                  <span>{columns.tasksCount}</span> {pluralize(name, columns.tasksCount)}
                 </div>
               ) : null
             )}
@@ -234,10 +254,9 @@ const Boards = (props: Props) => {
         </ResultsCount>
 
         {Object.keys(searchResults).map((type) => {
-          const { name, items, icon, showAll } = searchResults[type];
-          const slicedItems = items.slice(0, 5);
+          const { name, icon, columns, showAll } = searchResults[type];
 
-          if (!items.length) {
+          if (!columns.tasksCount) {
             return null;
           }
 
@@ -245,19 +264,19 @@ const Boards = (props: Props) => {
             <>
               <SearchType>
                 {icon}
-                {items.length} {pluralize(name, items.length)}
+                {columns.tasksCount} {pluralize(name, columns.tasksCount)}
               </SearchType>
 
-              <Table tasks={showAll ? items : slicedItems} onLoadMore={onLoadMore} hasMore={false} />
+              <Table columns={columns} limit={!showAll ? 5 : undefined} onLoadMore={onLoadMore} hasMore={false} />
 
-              {items.length > slicedItems.length && !showAll ? (
+              {columns.tasksCount > 5 && !showAll ? (
                 <ShowAllSearchResults>
                   <ShowAllButton
                     onClick={() => {
                       setSearchResults({ ...searchResults, [type]: { ...searchResults[type], showAll: true } });
                     }}
                   >
-                    Show all {items.length} task results
+                    Show all {columns.tasksCount} task results
                     <Chevron />
                   </ShowAllButton>
                 </ShowAllSearchResults>

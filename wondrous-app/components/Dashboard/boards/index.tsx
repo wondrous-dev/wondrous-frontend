@@ -180,7 +180,7 @@ const Boards = (props) => {
   });
   const getProposalsUserCanReview = useQuery(GET_PROPOSALS_USER_CAN_REVIEW, {
     onCompleted: (data) => {
-      const tasks = data?.getProposalsUserCanReview;
+      const tasks = data?.getProposalsUserCanReview || [];
       const newColumns = adminColumns[0]?.tasks ? [...adminColumns] : [...baseColumnsAdmin];
       newColumns[0].tasks = [...tasks];
       setAdminColumns(newColumns);

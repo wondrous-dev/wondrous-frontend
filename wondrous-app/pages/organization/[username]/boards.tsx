@@ -336,15 +336,8 @@ const BoardsPage = () => {
 
         return Promise.resolve([]);
       } else {
-        const promises = [
-          apollo.query({
-            query: SEARCH_ORG_USERS,
-            variables: {
-              orgId: id,
-              queryString: searchString,
-            },
-          }),
-          apollo.query({
+        return apollo
+          .query({
             query: SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
             variables: {
               orgId: id,
@@ -354,13 +347,8 @@ const BoardsPage = () => {
               offset: 0,
               searchString,
             },
-          }),
-        ];
-
-        return Promise.all(promises).then(([users, tasks]) => ({
-          users: users.data.searchOrgUsers,
-          tasks: tasks.data.searchTasksForOrgBoardView,
-        }));
+          })
+          .then((tasks) => tasks.data.searchTasksForOrgBoardView);
       }
     },
     [orgId, orgData]
