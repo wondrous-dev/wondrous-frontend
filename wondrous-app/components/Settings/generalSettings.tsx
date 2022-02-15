@@ -43,6 +43,7 @@ import { CreateFormAddDetailsInputLabel, CreateFormAddDetailsSwitch } from '../C
 import { AndroidSwitch } from '../CreateEntity/createEntityModal';
 import { filteredColorOptions, POD_COLOR, PRIVACY_LEVEL } from '../../utils/constants';
 import ColorSettings from './ColorDropdown';
+import { White } from '../../theme/colors';
 
 const LIMIT = 200;
 
@@ -92,6 +93,8 @@ const GeneralSettingsComponent = (props) => {
     saveChanges,
     isPrivate,
     setIsPrivate,
+    discordWebhookLink,
+    setDiscordWebhookLink,
   } = props;
 
   const [newLink, setNewLink] = useState({
@@ -214,14 +217,30 @@ const GeneralSettingsComponent = (props) => {
             )}
           </GeneralSettingsSocialsBlockWrapper>
         </GeneralSettingsSocialsBlock>
-
-        {/* <GeneralSettingsIntegrationsBlock>
-      <LabelBlock>Integrations</LabelBlock>
-      <GeneralSettingsIntegrationsBlockButton highlighted>
-        <GeneralSettingsIntegrationsBlockButtonIcon />
-        Connect discord
-      </GeneralSettingsIntegrationsBlockButton>
-    </GeneralSettingsIntegrationsBlock> */}
+        {!isPod && (
+          <GeneralSettingsIntegrationsBlock>
+            <LabelBlock>Integrations</LabelBlock>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <GeneralSettingsIntegrationsBlockButtonIcon />
+              <InputField
+                placeholder="Discord webhook link"
+                value={discordWebhookLink}
+                onChange={(e) => setDiscordWebhookLink(e.target.value)}
+                style={{
+                  textDecoration: 'none',
+                  color: White,
+                  paddingRight: '8px',
+                  paddingLeft: '12px',
+                }}
+              />
+            </div>
+          </GeneralSettingsIntegrationsBlock>
+        )}
 
         {isPod && (
           <div
@@ -405,6 +424,7 @@ const GeneralSettings = () => {
   const [toast, setToast] = useState({ show: false, message: '' });
   const router = useRouter();
   const { orgId } = router.query;
+  const [discordWebhookLink, setDiscordWebhookLink] = useState('');
 
   function setOrganization(organization) {
     setOriginalOrgProfile(organization);
@@ -415,6 +435,7 @@ const GeneralSettings = () => {
     setDescriptionText(organization.description);
 
     setOrgProfile(organization);
+    setDiscordWebhookLink(organization.publicDiscordWebhookLink);
   }
 
   const [getOrganization] = useLazyQuery(GET_ORG_BY_ID, {
@@ -476,6 +497,9 @@ const GeneralSettings = () => {
           privacyLevel: orgProfile.privacyLevel,
           headerPicture: orgProfile.headerPicture,
           profilePicture: orgProfile.profilePicture,
+          ...(discordWebhookLink && {
+            publicDiscordWebhookLink: discordWebhookLink,
+          }),
         },
       },
     });
@@ -506,6 +530,8 @@ const GeneralSettings = () => {
       saveChanges={saveChanges}
       typeText="DAO"
       setProfile={setOrgProfile}
+      setDiscordWebhookLink={setDiscordWebhookLink}
+      discordWebhookLink={discordWebhookLink}
     />
   );
 };
