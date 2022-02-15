@@ -35,6 +35,7 @@ import { constructGnosisRedirectUrl } from '../../Common/Payment/SingleWalletPay
 import { White, Grey800 } from '../../../theme/colors';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PayModal } from './modal';
+import { BatchPayModal } from './BatchPayModal';
 import { PaymentModalContext } from '../../../utils/contexts';
 import { SeeMoreText } from '../Members/styles';
 
@@ -252,6 +253,7 @@ const Payouts = (props) => {
   const [chainSelected, setChainSelected] = useState(null);
   const [enableBatchPay, setEnableBatchPay] = useState(null);
   const [paymentSelected, setPaymentsSelected] = useState(null);
+  const [openBatchPayModal, setOpenBatchPayModal] = useState(false);
   const listViewOptions = [
     {
       name: 'Unpaid',
@@ -395,6 +397,9 @@ const Payouts = (props) => {
       }
     }
   }, [paidList, unpaidList, hasMore]);
+  const handleBatchPayButtonClick = () => {
+    setOpenBatchPayModal(true)
+  }
   const paymentSelectedAmount = paymentSelected && Object.keys(paymentSelected).length;
   console.log('payment', paymentSelectedAmount, paymentSelected);
   return (
@@ -433,6 +438,7 @@ const Payouts = (props) => {
                         width: '120px',
                         marginLeft: '0',
                       }}
+                      onClick={handleBatchPayButtonClick}
                     >
                       Batch pay
                     </CreateFormPreviewButton>
@@ -493,6 +499,21 @@ const Payouts = (props) => {
           </StyledTableBody>
         </StyledTable>
       </StyledTableContainer>
+      <PaymentModalContext.Provider
+        value={{
+          onPaymentComplete: () => {},
+        }}
+      >
+        <BatchPayModal
+          chain={chainSelected}
+          podId={podId}
+          orgId={orgId}
+          open={openBatchPayModal}
+          handleClose={() => setOpenBatchPayModal(false)}
+          unpaidSubmissions={paymentSelected}
+        />
+      </PaymentModalContext.Provider>
+
       {hasMore && (
         <div
           style={{
