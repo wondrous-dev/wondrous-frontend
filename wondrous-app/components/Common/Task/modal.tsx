@@ -1163,7 +1163,15 @@ export const TaskViewModal = (props) => {
               {Array.isArray(fetchedTask?.media) && fetchedTask?.media.length > 0 ? (
                 <TaskMediaContainer>
                   {Array.isArray(fetchedTask?.media) &&
-                    fetchedTask?.media.map((mediaItem) => <MediaLink key={mediaItem?.slug} media={mediaItem} />)}
+                    fetchedTask?.media.map((mediaItem) => (
+                      <MediaLink
+                        key={mediaItem?.slug}
+                        media={mediaItem}
+                        style={{
+                          marginRight: '8px',
+                        }}
+                      />
+                    ))}
                 </TaskMediaContainer>
               ) : (
                 <TaskSectionInfoText
