@@ -28,7 +28,7 @@ let timeout;
 export default function SearchTasks({ onSearch }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(router.query.search);
   const [options, setOptions] = useState([]);
   const [hasMore, setHasMore] = useState(false);
   const LIMIT = 5;

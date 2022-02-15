@@ -222,18 +222,9 @@ export const Table = (props) => {
   function openTask(task, taskType = '') {
     setOnce(false);
     const urlParams: any = new URLSearchParams(window.location.search);
-    router.replace(
-      {
-        pathname: location.pathname,
-        query: {
-          search: urlParams.get('search'),
-          view: 'list',
-          [task.__typename === 'TaskProposalCard' ? 'taskProposal' : 'task']: task?.id,
-        },
-      },
-      undefined,
-      { shallow: true }
-    );
+    urlParams.append(task.__typename === 'TaskProposalCard' ? 'taskProposal' : 'task', task?.id);
+    history.pushState({}, '', `${delQuery(router.asPath)}?${urlParams.toString()}`);
+
     setSelectedTask(task);
     setSelectedTaskType(taskType);
     setPreviewModalOpen(true);
@@ -245,18 +236,11 @@ export const Table = (props) => {
         open={isPreviewModalOpen}
         handleClose={() => {
           setPreviewModalOpen(false);
+
           const urlParams: any = new URLSearchParams(window.location.search);
-          router.replace(
-            {
-              pathname: location.pathname,
-              query: {
-                view: 'list',
-                search: urlParams.get('search'),
-              },
-            },
-            undefined,
-            { shallow: true }
-          );
+          urlParams.delete('task');
+          urlParams.delete('taskProposal');
+          history.pushState({}, '', `${delQuery(router.asPath)}?${urlParams.toString()}`);
         }}
         task={selectedTaskType !== Constants.TASK_STATUS_SUBMISSION_REQUEST && selectedTask}
         isTaskProposal={selectedTaskType === Constants.TASK_STATUS_PROPOSAL_REQUEST}

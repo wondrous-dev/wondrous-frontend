@@ -270,8 +270,10 @@ const BoardsPage = () => {
       });
 
       if (search) {
-        setFirstTimeFetch(true);
-        setSearchString(search as string);
+        if (!firstTimeFetch) {
+          setSearchString(search as string);
+          setFirstTimeFetch(true);
+        }
       } else {
         getOrgTasks({
           variables: {
@@ -296,7 +298,6 @@ const BoardsPage = () => {
             orgId: id,
             statuses: [STATUS_OPEN],
             offset: 0,
-            searchString: search,
             limit: LIMIT,
           },
         });

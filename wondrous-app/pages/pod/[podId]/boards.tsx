@@ -9,6 +9,8 @@ import {
   GET_POD_TASK_BOARD_TASKS,
   GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD,
   SEARCH_TASKS_FOR_POD_BOARD_VIEW,
+  GET_ORG_TASK_BOARD_PROPOSALS,
+  SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
 } from '../../../graphql/queries/taskBoard';
 import Boards from '../../../components/Pod/boards';
 import { InReview, Requested, Archived } from '../../../components/Icons/sections';
@@ -21,6 +23,7 @@ import {
   TASK_STATUS_ARCHIVED,
   DEFAULT_STATUS_ARR,
   STATUS_OPEN,
+  TASK_STATUSES,
 } from '../../../utils/constants';
 
 import { PodBoardContext } from '../../../utils/contexts';
@@ -105,6 +108,7 @@ const BoardsPage = () => {
   const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR);
   const router = useRouter();
   const { username, podId, search } = router.query;
+  const [searchString, setSearchString] = useState('');
 
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
@@ -158,8 +162,27 @@ const BoardsPage = () => {
     onCompleted: (data) => {
       const tasks = data?.searchTasksForPodBoardView;
       const newColumns = populateTaskColumns(tasks, columns);
+      newColumns[0].section.tasks = [];
+      newColumns[1].section.tasks = [];
+      newColumns[2].section.tasks = [];
+
+      tasks.forEach((task) => {
+        if (task.status === TASK_STATUS_IN_REVIEW) {
+          newColumns[1].section.tasks.push(task);
+        }
+      });
+
+      if (statuses.length) {
+        newColumns.forEach((column) => {
+          if (!statuses.includes(column.section.filter.taskType)) {
+            column.section.tasks = [];
+          }
+        });
+      }
+
       setColumns(dedupeColumns(newColumns));
       setPodTaskHasMore(tasks.length >= LIMIT);
+      setFirstTimeFetch(true);
     },
     fetchPolicy: 'cache-and-network',
   });
@@ -171,47 +194,51 @@ const BoardsPage = () => {
           podId,
         },
       });
-      // fetch user task boards after getting orgId from username
-      getPodTasks({
-        variables: {
-          input: {
-            podId,
-            statuses,
-            offset: 0,
-            limit: LIMIT,
+      if (search) {
+        if (!firstTimeFetch) {
+          setSearchString(search as string);
+          setFirstTimeFetch(true);
+        }
+      } else {
+        // fetch user task boards after getting orgId from username
+        getPodTasks({
+          variables: {
+            input: {
+              podId,
+              statuses,
+              offset: 0,
+              limit: LIMIT,
+            },
           },
-        },
-      });
-      getPodTaskProposals({
-        variables: {
-          input: {
-            podId,
-            statuses: [STATUS_OPEN],
-            offset: 0,
-            limit: LIMIT,
+        });
+        getPodTaskProposals({
+          variables: {
+            input: {
+              podId,
+              statuses: [STATUS_OPEN],
+              offset: 0,
+              limit: LIMIT,
+            },
           },
-        },
-      });
-      getPodTaskSubmissions({
-        variables: {
-          input: {
-            podId,
-            statuses: [STATUS_OPEN],
-            offset: 0,
-            limit: LIMIT,
+        });
+        getPodTaskSubmissions({
+          variables: {
+            input: {
+              podId,
+              statuses: [STATUS_OPEN],
+              offset: 0,
+              limit: LIMIT,
+            },
           },
-        },
-      });
-      getPodBoardTaskCount({
-        variables: {
-          podId,
-        },
-      });
+        });
+        getPodBoardTaskCount({
+          variables: {
+            podId,
+          },
+        });
+      }
     }
   }, [podId, getPodTasks, statuses, getPodTaskSubmissions, getPodTaskProposals, getPodBoardTaskCount, getPod]);
-
-  // Handle Column changes (tasks movements)
-  useEffect(() => {}, [columns]);
 
   const handleLoadMore = useCallback(() => {
     if (podTaskHasMore) {
@@ -236,58 +263,100 @@ const BoardsPage = () => {
     }
   }, [podTaskHasMore, columns, fetchMore]);
 
-  // EFFECT FOR SEARCH + FILTERS
-  // Update tasks when search or filters is changed
-  useEffect(() => {
-    if (!firstTimeFetch) {
-      return;
-    }
+  function searchTasks(searchString: string, returnResult = false) {
+    const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
+    const searchProposals = statuses.length !== taskStatuses.length || statuses === DEFAULT_STATUS_ARR;
+    const searchTasks = !(searchProposals && statuses.length === 1);
 
-    searchPodTasks({
+    const getPodTaskProposalsArgs = {
       variables: {
         input: {
-          statuses,
+          podId,
+          statuses: [STATUS_OPEN],
+          offset: 0,
+          limit: LIMIT,
+          searchString,
+        },
+      },
+    };
+
+    const searchPodTasksArgs = {
+      variables: {
+        input: {
           podId,
           limit: 1000,
           offset: 0,
-          searchString: search,
+          // Needed to exclude proposals
+          statuses: taskStatuses.length ? taskStatuses : DEFAULT_STATUS_ARR,
+          searchString,
         },
       },
-    });
-  }, [statuses, podId, searchPodTasks, search]);
+    };
+
+    if (returnResult) {
+      const promises: any = [
+        searchProposals
+          ? apollo.query({
+              ...getPodTaskProposalsArgs,
+              query: GET_POD_TASK_BOARD_PROPOSALS,
+            })
+          : { data: { getPodTaskBoardProposals: [] } },
+
+        searchTasks
+          ? apollo.query({
+              ...searchPodTasksArgs,
+              query: SEARCH_TASKS_FOR_POD_BOARD_VIEW,
+            })
+          : { data: { searchTasksForPodBoardView: [] } },
+      ];
+
+      return Promise.all(promises).then(([proposals, tasks]: any) => [
+        ...proposals.data.getPodTaskBoardProposals,
+        ...tasks.data.searchTasksForPodBoardView,
+      ]);
+    } else {
+      if (searchTasks) {
+        searchPodTasks(searchPodTasksArgs);
+      } else {
+        const newColumns = [...columns];
+        newColumns.forEach((column) => {
+          column.tasks = [];
+          column.section.tasks = [];
+        });
+
+        setColumns(newColumns);
+      }
+
+      if (searchProposals) {
+        getPodTaskProposals(getPodTaskProposalsArgs);
+      }
+
+      return Promise.resolve([]);
+    }
+  }
+
+  useEffect(() => {
+    if (firstTimeFetch) {
+      searchTasks(searchString);
+    }
+  }, [searchString, podId, statuses, searchPodTasks, getPodTaskProposals]);
 
   const handleSearch = useCallback(
     (searchString) => {
       if (search) {
-        router.replace(`${delQuery(router.asPath)}?search=${searchString}&view=list`);
+        history.pushState({}, '', `${delQuery(router.asPath)}?search=${searchString}&view=list`);
+        setSearchString(searchString);
 
         return Promise.resolve([]);
       } else {
-        return apollo
-          .query({
-            query: SEARCH_TASKS_FOR_POD_BOARD_VIEW,
-            variables: {
-              input: {
-                limit: LIMIT,
-                podId,
-                statuses,
-                offset: 0,
-                searchString,
-              },
-            },
-          })
-          .then((result) => result.data.searchTasksForPodBoardView);
+        return searchTasks(searchString, true);
       }
     },
     [podId]
   );
 
-  const handleFilterChange = ({ statuses }: TaskFilter) => {
-    if (statuses.length === 0) {
-      setStatuses(DEFAULT_STATUS_ARR);
-    } else {
-      setStatuses(statuses || DEFAULT_STATUS_ARR);
-    }
+  const handleFilterChange: any = ({ statuses }: TaskFilter) => {
+    setStatuses(statuses || DEFAULT_STATUS_ARR);
   };
 
   return (
@@ -308,16 +377,16 @@ const BoardsPage = () => {
       }}
     >
       <Boards
-          selectOptions={SELECT_OPTIONS}
-          columns={columns}
-          onLoadMore={handleLoadMore}
-          hasMore={podTaskHasMore}
-          onSearch={handleSearch}
-          onFilterChange={handleFilterChange}
+        selectOptions={SELECT_OPTIONS}
+        searchString={searchString}
+        columns={columns}
+        onLoadMore={handleLoadMore}
+        hasMore={podTaskHasMore}
+        onSearch={handleSearch}
+        onFilterChange={handleFilterChange}
       />
     </PodBoardContext.Provider>
   );
 };
 
-//export default withAuth(BoardsPage)
 export default withAuth(BoardsPage);
