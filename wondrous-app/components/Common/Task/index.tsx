@@ -136,6 +136,8 @@ export const Task = ({ task, setTask, onOpen = (task) => null, className }) => {
       },
       'getUserTaskBoardTasks',
       'getPerStatusTaskCountForUserBoard',
+      'getSubtasksForTask',
+      'getSubtaskCountForTask',
     ],
   });
 
