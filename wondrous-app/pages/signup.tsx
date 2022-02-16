@@ -13,9 +13,9 @@ import { CenteredFlexRow } from '../components/Common/index';
 import { Grey50 } from '../theme/colors';
 import { Metamask } from '../components/Icons/metamask';
 import { EmailIcon, LockIcon } from '../components/Icons/userpass';
-import { transformWalletType, useWonderWeb3 } from '../services/web3';
+import { useWonderWeb3 } from '../services/web3';
 import { emailSignup, getUserSigningMessage, walletSignup } from '../components/Auth/withAuth';
-import { SUPPORTED_CHAINS, WALLET_TYPE } from '../utils/constants';
+import { SupportedChainType } from '../utils/web3Constants';
 
 const Signup = () => {
   const wonderWeb3 = useWonderWeb3();
@@ -58,7 +58,7 @@ const Signup = () => {
       // Retrieve Signed Message
       const messageToSign = await getUserSigningMessage(
         wonderWeb3.address,
-        transformWalletType(wonderWeb3.chainName.toLowerCase(), WALLET_TYPE.metamask)
+        SupportedChainType.ETH
       );
 
       if (messageToSign) {
@@ -91,13 +91,6 @@ const Signup = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wonderWeb3.wallet]);
-
-  useEffect(() => {
-    if (wonderWeb3.wallet.chain) {
-      setUnsuportedChain(!SUPPORTED_CHAINS[wonderWeb3.chain]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wonderWeb3.wallet.chain]);
 
   return (
     <AuthLayout>

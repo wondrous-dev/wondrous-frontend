@@ -1,6 +1,6 @@
 import { Button } from '../button';
 import React, { useCallback, useEffect, useState } from 'react';
-import { transformWalletType, useWonderWeb3 } from '../../../services/web3';
+import { useWonderWeb3 } from '../../../services/web3';
 import Ethereum from '../../Icons/ethereum';
 import { Metamask } from '../../Icons/metamask';
 import { WonderCoin } from '../../Icons/wonderCoin';
@@ -20,8 +20,9 @@ import {
 import { getUserSigningMessage, linkWallet, logout, useMe } from '../../Auth/withAuth';
 import { DropDown, DropDownItem } from '../dropdown';
 import { Matic } from '../../Icons/matic';
-import { CURRENCY_KEYS, SUPPORTED_CHAINS, WALLET_TYPE } from '../../../utils/constants';
+import { CURRENCY_KEYS, SUPPORTED_CHAINS } from '../../../utils/constants';
 import { USDCoin } from '../../Icons/USDCoin';
+import { SupportedChainType } from '../../../utils/web3Constants';
 
 const CHAIN_LOGO = {
   '1': <Ethereum />,
@@ -45,8 +46,8 @@ const CURRENCY_UI_ELEMENTS = {
 const Wallet = () => {
   const wonderWeb3 = useWonderWeb3();
   const [connected, setConnected] = useState(false);
-  const [notSupported, setNotSupported] = useState(false);
   const [firstConnect, setFirstConnect] = useState(true);
+  const [notSupported, setNotSupported] = useState(false);
   const [currency, setCurrency] = useState({
     balance: '0.000',
     symbol: 'WONDER',
@@ -65,7 +66,7 @@ const Wallet = () => {
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
       const messageToSign = await getUserSigningMessage(
         wonderWeb3.address,
-        transformWalletType(wonderWeb3.chainName.toLowerCase(), WALLET_TYPE.metamask)
+        SupportedChainType.ETH
       );
 
       if (messageToSign) {
@@ -74,7 +75,7 @@ const Wallet = () => {
           const result = await linkWallet(
             wonderWeb3.address,
             signedMessage,
-            transformWalletType(wonderWeb3.chainName.toLowerCase(), WALLET_TYPE.metamask)
+            SupportedChainType.ETH
           );
           if (!result) {
             // Error with wallet link. Disconnect wallet
@@ -94,8 +95,10 @@ const Wallet = () => {
       });
     }
   };
+  console.log(user)
 
   useEffect(() => {
+    console.log('wonderWeb3.subscribed', wonderWeb3.subscribed)
     if (user && user.activeEthAddress && !wonderWeb3.subscribed) {
       connectWallet();
     }
@@ -104,8 +107,8 @@ const Wallet = () => {
 
   // Detect Chain
   useEffect(() => {
-    setNotSupported(!SUPPORTED_CHAINS[wonderWeb3.chain]);
-  }, [wonderWeb3.chain]);
+    setNotSupported(wonderWeb3.notSupportedChain)
+  }, [wonderWeb3.notSupportedChain]);
 
   // Change Currency when the Chain changes
   useEffect(() => {
