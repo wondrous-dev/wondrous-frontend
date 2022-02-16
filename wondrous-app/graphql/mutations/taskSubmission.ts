@@ -48,17 +48,8 @@ export const APPROVE_SUBMISSION = gql`
 `;
 
 export const REQUEST_CHANGE_SUBMISSION = gql`
-  mutation requestChangeTaskSubmission($submissionId: ID!) {
+  mutation requestChangeSubmission($submissionId: ID!) {
     requestChangeTaskSubmission(submissionId: $submissionId) {
-      ...TaskSubmissionFragment
-    }
-  }
-  ${TaskSubmissionFragment}
-`;
-
-export const REJECT_SUBMISSION = gql`
-  mutation rejectTaskSubmission($submissionId: ID!, $currentTimezone: String) {
-    rejectTaskSubmission(submissionId: $submissionId, currentTimezone: $currentTimezone) {
       success
     }
   }

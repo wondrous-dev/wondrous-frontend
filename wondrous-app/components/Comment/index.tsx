@@ -30,7 +30,7 @@ import { formatDistance } from 'date-fns';
 import { renderMentionString } from '../../utils/common';
 import { cutString } from '../../utils/helpers';
 import { useRouter } from 'next/router';
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
 import { updateTask } from '../../utils/board';
 
 export const CommentBox = (props) => {
@@ -40,6 +40,7 @@ export const CommentBox = (props) => {
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
   const board = orgBoard || userBoard || podBoard;
+  const boardColumns = useColumns();
   const [comment, setComment] = useState(existingContent || '');
   const { data: orgUsersData } = useQuery(GET_ORG_USERS, {
     variables: {
@@ -93,9 +94,9 @@ export const CommentBox = (props) => {
   useEffect(() => {
     if (taskCommentData?.createTaskComment) {
       const updatedTask = { ...task, commentCount: task.commentCount + 1 };
-      const transformedTask = transformTaskToTaskCard(updatedTask, board?.columns);
-      const boardColumns = updateTask(transformedTask, board?.columns);
-      board?.setColumns(boardColumns);
+      const transformedTask = transformTaskToTaskCard(updatedTask, boardColumns?.columns);
+      const newBoardColumns = updateTask(transformedTask, boardColumns?.columns);
+      boardColumns?.setColumns(newBoardColumns);
     }
   }, [taskCommentData]);
 
@@ -133,6 +134,7 @@ const CommentItem = (props) => {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
+  const boardColumns = useColumns();
   const [deleteTaskComment, { data: deleteTaskCommentData }] = useMutation(DELETE_TASK_COMMENT, {
     refetchQueries: ['getTaskComments'],
   });
@@ -144,9 +146,9 @@ const CommentItem = (props) => {
   useEffect(() => {
     if (deleteTaskCommentData?.deleteTaskComment) {
       const updatedTask = { ...task, commentCount: task.commentCount - 1 };
-      const transformedTask = transformTaskToTaskCard(updatedTask, board?.columns);
-      const boardColumns = updateTask(transformedTask, board?.columns);
-      board?.setColumns(boardColumns);
+      const transformedTask = transformTaskToTaskCard(updatedTask, boardColumns?.columns);
+      const newBoardColumns = updateTask(transformedTask, boardColumns?.columns);
+      boardColumns?.setColumns(newBoardColumns);
     }
   }, [deleteTaskCommentData]);
 

@@ -38,7 +38,7 @@ const populateOrder = (index, tasks, field) => {
 const KanbanBoard = (props) => {
   const user = useMe();
   const { columns, onLoadMore, hasMore } = props;
-  const [columnsState, setColumnsState] = useState([]);
+  const [columnsState, setColumnsState] = useState(columns);
   const [ref, inView] = useInView({});
   const [openModal, setOpenModal] = useState(false);
   const [once, setOnce] = useState(false);
@@ -55,10 +55,10 @@ const KanbanBoard = (props) => {
     if (inView && hasMore) {
       onLoadMore();
     }
-    if (columnsState.length === 0) {
+    if (columns) {
       setColumnsState(columns);
     }
-  }, [inView, hasMore, onLoadMore, columns, columnsState]);
+  }, [inView, hasMore, onLoadMore, columns]);
 
   const checkPermissions = (task) => {
     const permissions = parseUserPermissionContext({
@@ -96,8 +96,6 @@ const KanbanBoard = (props) => {
             variables: orgBoard?.getOrgBoardTaskCountVariables,
           },
           GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE,
-          'getUserTaskBoardTasks',
-          'getPerStatusTaskCountForUserBoard',
         ],
       });
 
@@ -165,7 +163,6 @@ const KanbanBoard = (props) => {
         };
       }
     });
-    console.log('moveCard: updatedstate', updatedColumns);
     setColumnsState(dedupeColumns(updatedColumns));
   };
 
@@ -201,7 +198,6 @@ const KanbanBoard = (props) => {
         />
         <DragDropContext onDragEnd={onDragEnd}>
           {columnsState.map((column) => {
-            console.log('moveCard: column map', column);
             const { status, section, tasks } = column;
 
             return (

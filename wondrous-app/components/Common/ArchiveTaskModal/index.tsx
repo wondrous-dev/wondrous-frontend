@@ -45,7 +45,7 @@ export const ArchiveTaskModal = (props) => {
     if (isTaskProposal) {
       board?.setFirstTimeFetch(false);
       archiveTaskProposal({
-        variables: { proposalId:taskId },
+        variables: { proposalId: taskId },
         refetchQueries: () => ['getProposalsUserCanReview', 'getWorkFlowBoardReviewableItemsCount'],
       })
         .then(() => {
