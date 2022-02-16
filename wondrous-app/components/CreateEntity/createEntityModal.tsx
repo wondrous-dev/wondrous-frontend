@@ -769,7 +769,6 @@ const CreateLayoutBaseModal = (props) => {
               labelIcon={<CreatePodIcon />}
               options={filterDAOptions(pods) || []}
               name="pod"
-              disabled={isSubtask}
               onChange={(e) => {
                 setMilestoneString('');
                 setMilestone(null);
