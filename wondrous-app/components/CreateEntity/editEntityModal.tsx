@@ -500,7 +500,11 @@ const EditLayoutBaseModal = (props) => {
   }, [pods, pod]);
 
   const [updateTask] = useMutation(UPDATE_TASK, {
-    refetchQueries: () => ['getPerStatusTaskCountForMilestone'],
+    refetchQueries: () => [
+      'getPerStatusTaskCountForMilestone',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+    ],
     onCompleted: (data) => {
       const task = data?.updateTask;
       const justCreatedPod = getPodObject();

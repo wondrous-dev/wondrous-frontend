@@ -63,19 +63,12 @@ const Wallet = () => {
 
   const linkUserWithWallet = useCallback(async () => {
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
-      const messageToSign = await getUserSigningMessage(
-        wonderWeb3.address,
-        SupportedChainType.ETH
-      );
+      const messageToSign = await getUserSigningMessage(wonderWeb3.address, SupportedChainType.ETH);
 
       if (messageToSign) {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
         if (signedMessage) {
-          const result = await linkWallet(
-            wonderWeb3.address,
-            signedMessage,
-            SupportedChainType.ETH
-          );
+          const result = await linkWallet(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
           if (!result) {
             // Error with wallet link. Disconnect wallet
             await wonderWeb3.disconnect();
@@ -94,10 +87,8 @@ const Wallet = () => {
       });
     }
   };
-  console.log(user)
 
   useEffect(() => {
-    console.log('wonderWeb3.subscribed', wonderWeb3.subscribed)
     if (user && user.activeEthAddress && !wonderWeb3.subscribed) {
       connectWallet();
     }
@@ -106,7 +97,7 @@ const Wallet = () => {
 
   // Detect Chain
   useEffect(() => {
-    setNotSupported(wonderWeb3.notSupportedChain)
+    setNotSupported(wonderWeb3.notSupportedChain);
   }, [wonderWeb3.notSupportedChain]);
 
   // Change Currency when the Chain changes

@@ -7,9 +7,14 @@ import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet'
 import { PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS } from '../../../graphql/mutations/payment';
 import { useGnosisSdk } from '../../../services/payment';
 import { ERC20abi } from '../../../services/contracts/erc20.abi';
-import { SafeTransactionDataPartial, SafeTransactionData, MetaTransactionData, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types';
+import {
+  SafeTransactionDataPartial,
+  SafeTransactionData,
+  MetaTransactionData,
+  SafeTransaction,
+} from '@gnosis.pm/safe-core-sdk-types';
 import { SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk';
-import {SafeMultisigTransactionEstimateResponse} from '@gnosis.pm/safe-service-client';
+import { SafeMultisigTransactionEstimateResponse } from '@gnosis.pm/safe-service-client';
 import { useWonderWeb3 } from '../../../services/web3';
 import { ErrorText } from '..';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
@@ -28,7 +33,6 @@ const generateReadablePreviewForAddress = (address: String) => {
     return address.substring(0, 4) + '...' + address.substring(address.length - 3);
   }
 };
-
 
 export const constructGnosisRedirectUrl = (chain, safeAddress, safeTxHash) => {
   return `https://gnosis-safe.io/app/${CHAIN_TO_GNOSIS_URL_ABBR[chain]}:${safeAddress}/transactions/${safeTxHash}`;
@@ -95,7 +99,6 @@ export const BatchWalletPayment = (props) => {
   }, [wonderWeb3.chain, wonderWeb3.address]);
 
   useEffect(() => {
-    console.log('triggered', currentChainId, chain);
     setWrongChainError(null);
     if (chain && currentChainId) {
       if (chain !== CHAIN_ID_TO_CHAIN_NAME[currentChainId]) {
@@ -188,7 +191,7 @@ export const BatchWalletPayment = (props) => {
       data: safeTransaction.data.data,
       operation: 1,
     };
-    let safeTxGas
+    let safeTxGas;
 
     try {
       const estimateTx: SafeMultisigTransactionEstimateResponse = await gnosisClient.estimateSafeTransaction(

@@ -161,9 +161,11 @@ export const MediaLink = (props) => {
 
 const LIMIT = 5;
 
+const TASK_LIST_VIEW_LIMIT = 5;
+
 export const TaskListViewModal = (props) => {
   const [fetchedList, setFetchedList] = useState([]);
-  const { taskType, entityType, orgId, podId, open, handleClose, count } = props;
+  const { taskType, entityType, orgId, podId, loggedInUserId, open, handleClose, count } = props;
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(false);
   const [getOrgTaskProposals, { refetch: refetchOrgProposals, fetchMore: fetchMoreOrgProposals }] = useLazyQuery(
@@ -172,7 +174,7 @@ export const TaskListViewModal = (props) => {
       onCompleted: (data) => {
         const proposals = data?.getOrgTaskBoardProposals;
         setFetchedList(proposals);
-        setHasMore(data?.hasMore || data?.getOrgTaskBoardProposals.length >= LIMIT);
+        setHasMore(data?.hasMore || data?.getOrgTaskBoardProposals.length >= TASK_LIST_VIEW_LIMIT);
       },
     }
   );
@@ -182,7 +184,7 @@ export const TaskListViewModal = (props) => {
       onCompleted: (data) => {
         const submissions = data?.getOrgTaskBoardSubmissions;
         setFetchedList(submissions);
-        setHasMore(data?.hasMore || data?.getOrgTaskBoardSubmissions.length >= LIMIT);
+        setHasMore(data?.hasMore || data?.getOrgTaskBoardSubmissions.length >= TASK_LIST_VIEW_LIMIT);
       },
     }
   );
@@ -192,14 +194,14 @@ export const TaskListViewModal = (props) => {
       onCompleted: (data) => {
         const tasks = data?.getOrgTaskBoardTasks;
         setFetchedList(tasks);
-        setHasMore(data?.hasMore || data?.getOrgTaskBoardTasks.length >= LIMIT);
+        setHasMore(data?.hasMore || data?.getOrgTaskBoardTasks.length >= TASK_LIST_VIEW_LIMIT);
       },
     });
   const [getPodTaskProposals, { fetchMore: fetchMorePodProposals }] = useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
     onCompleted: (data) => {
       const tasks = data?.getPodTaskBoardProposals;
       setFetchedList(tasks);
-      setHasMore(data?.hasMore || data?.getPodTaskBoardProposals.length >= LIMIT);
+      setHasMore(data?.hasMore || data?.getPodTaskBoardProposals.length >= TASK_LIST_VIEW_LIMIT);
     },
   });
 
@@ -209,7 +211,7 @@ export const TaskListViewModal = (props) => {
       onCompleted: (data) => {
         const tasks = data?.getPodTaskBoardSubmissions;
         setFetchedList(tasks);
-        setHasMore(data?.hasMore || data?.getPodTaskBoardSubmissions?.length >= LIMIT);
+        setHasMore(data?.hasMore || data?.getPodTaskBoardSubmissions?.length >= TASK_LIST_VIEW_LIMIT);
       },
     }
   );
@@ -218,7 +220,7 @@ export const TaskListViewModal = (props) => {
     onCompleted: (data) => {
       const tasks = data?.getPodTaskBoardTasks;
       setFetchedList(tasks);
-      setHasMore(data?.hasMore || data?.getPodTaskBoardTasks.length >= LIMIT);
+      setHasMore(data?.hasMore || data?.getPodTaskBoardTasks.length >= TASK_LIST_VIEW_LIMIT);
     },
   });
 
@@ -228,7 +230,7 @@ export const TaskListViewModal = (props) => {
       onCompleted: (data) => {
         const tasks = data?.getUserTaskBoardProposals;
         setFetchedList(tasks);
-        setHasMore(data?.hasMore || tasks?.length >= LIMIT);
+        setHasMore(data?.hasMore || tasks?.length >= TASK_LIST_VIEW_LIMIT);
       },
     }
   );
@@ -239,7 +241,7 @@ export const TaskListViewModal = (props) => {
       onCompleted: (data) => {
         const tasks = data?.getUserTaskBoardSubmissions;
         setFetchedList(tasks);
-        setHasMore(data?.hasMore || tasks?.length >= LIMIT);
+        setHasMore(data?.hasMore || tasks?.length >= TASK_LIST_VIEW_LIMIT);
       },
     }
   );
@@ -248,7 +250,7 @@ export const TaskListViewModal = (props) => {
     onCompleted: (data) => {
       const tasks = data?.getUserTaskBoardTasks;
       setFetchedList(tasks);
-      setHasMore(data?.hasMore || tasks?.length >= LIMIT);
+      setHasMore(data?.hasMore || tasks?.length >= TASK_LIST_VIEW_LIMIT);
     },
   });
 
@@ -259,11 +261,11 @@ export const TaskListViewModal = (props) => {
           fetchMoreOrgProposals({
             variables: {
               offset: fetchedList.length,
-              limit: LIMIT,
+              limit: TASK_LIST_VIEW_LIMIT,
               statuses: [STATUS_OPEN],
             },
             updateQuery: (prev, { fetchMoreResult }) => {
-              const hasMore = fetchMoreResult.getOrgTaskBoardProposals.length >= LIMIT;
+              const hasMore = fetchMoreResult.getOrgTaskBoardProposals.length >= TASK_LIST_VIEW_LIMIT;
               if (!fetchMoreResult) {
                 return prev;
               }
@@ -284,11 +286,11 @@ export const TaskListViewModal = (props) => {
           fetchMorePodProposals({
             variables: {
               offset: fetchedList.length,
-              limit: LIMIT,
+              limit: TASK_LIST_VIEW_LIMIT,
               statuses: [STATUS_OPEN],
             },
             updateQuery: (prev, { fetchMoreResult }) => {
-              const hasMore = fetchMoreResult.getPodTaskBoardProposals.length >= LIMIT;
+              const hasMore = fetchMoreResult.getPodTaskBoardProposals.length >= TASK_LIST_VIEW_LIMIT;
               if (!fetchMoreResult) {
                 return prev;
               }
@@ -307,11 +309,11 @@ export const TaskListViewModal = (props) => {
           fetchMoreUserTaskProposals({
             variables: {
               offset: fetchedList.length,
-              limit: LIMIT,
+              limit: TASK_LIST_VIEW_LIMIT,
               statuses: [STATUS_OPEN],
             },
             updateQuery: (prev, { fetchMoreResult }) => {
-              const hasMore = fetchMoreResult.getUserTaskBoardProposals.length >= LIMIT;
+              const hasMore = fetchMoreResult.getUserTaskBoardProposals.length >= TASK_LIST_VIEW_LIMIT;
               if (!fetchMoreResult) {
                 return prev;
               }
@@ -332,11 +334,11 @@ export const TaskListViewModal = (props) => {
           fetchMoreOrgSubmissions({
             variables: {
               offset: fetchedList.length,
-              limit: LIMIT,
+              limit: TASK_LIST_VIEW_LIMIT,
               statuses: [STATUS_OPEN],
             },
             updateQuery: (prev, { fetchMoreResult }) => {
-              const hasMore = fetchMoreResult.getOrgTaskBoardSubmissions.length >= LIMIT;
+              const hasMore = fetchMoreResult.getOrgTaskBoardSubmissions.length >= TASK_LIST_VIEW_LIMIT;
               if (!fetchMoreResult) {
                 return prev;
               }
@@ -356,11 +358,11 @@ export const TaskListViewModal = (props) => {
           fetchMorePodTaskSubmissions({
             variables: {
               offset: fetchedList.length,
-              limit: LIMIT,
+              limit: TASK_LIST_VIEW_LIMIT,
               statuses: [STATUS_OPEN],
             },
             updateQuery: (prev, { fetchMoreResult }) => {
-              const hasMore = fetchMoreResult.getPodTaskBoardSubmissions.length >= LIMIT;
+              const hasMore = fetchMoreResult.getPodTaskBoardSubmissions.length >= TASK_LIST_VIEW_LIMIT;
               if (!fetchMoreResult) {
                 return prev;
               }
@@ -380,11 +382,11 @@ export const TaskListViewModal = (props) => {
           fetchMoreUserTaskSubmissions({
             variables: {
               offset: fetchedList.length,
-              limit: LIMIT,
+              limit: TASK_LIST_VIEW_LIMIT,
               statuses: [STATUS_OPEN],
             },
             updateQuery: (prev, { fetchMoreResult }) => {
-              const hasMore = fetchMoreResult.getUserTaskBoardSubmissions.length >= LIMIT;
+              const hasMore = fetchMoreResult.getUserTaskBoardSubmissions.length >= TASK_LIST_VIEW_LIMIT;
               if (!fetchMoreResult) {
                 return prev;
               }
@@ -407,10 +409,10 @@ export const TaskListViewModal = (props) => {
             variables: {
               statuses: ['archived'],
               offset: fetchedList.length,
-              limit: LIMIT,
+              limit: TASK_LIST_VIEW_LIMIT,
             },
             updateQuery: (prev, { fetchMoreResult }) => {
-              const hasMore = fetchMoreResult.getOrgTaskBoardTasks.length >= LIMIT;
+              const hasMore = fetchMoreResult.getOrgTaskBoardTasks.length >= TASK_LIST_VIEW_LIMIT;
               if (!fetchMoreResult) {
                 return prev;
               }
@@ -428,10 +430,10 @@ export const TaskListViewModal = (props) => {
             variables: {
               statuses: ['archived'],
               offset: fetchedList.length,
-              limit: LIMIT,
+              limit: TASK_LIST_VIEW_LIMIT,
             },
             updateQuery: (prev, { fetchMoreResult }) => {
-              const hasMore = fetchMoreResult.getPodTaskBoardTasks.length >= LIMIT;
+              const hasMore = fetchMoreResult.getPodTaskBoardTasks.length >= TASK_LIST_VIEW_LIMIT;
               if (!fetchMoreResult) {
                 return prev;
               }
@@ -449,10 +451,10 @@ export const TaskListViewModal = (props) => {
             variables: {
               statuses: ['archived'],
               offset: fetchedList.length,
-              limit: LIMIT,
+              limit: TASK_LIST_VIEW_LIMIT,
             },
             updateQuery: (prev, { fetchMoreResult }) => {
-              const hasMore = fetchMoreResult.getUserTaskBoardTasks.length >= LIMIT;
+              const hasMore = fetchMoreResult.getUserTaskBoardTasks.length >= TASK_LIST_VIEW_LIMIT;
               if (!fetchMoreResult) {
                 return prev;
               }
@@ -498,6 +500,13 @@ export const TaskListViewModal = (props) => {
                 },
               },
             });
+          } else if (entityType === ENTITIES_TYPES.USER) {
+            getUserTaskBoardProposals({
+              variables: {
+                userId: loggedInUserId,
+                statuses: [STATUS_OPEN],
+              },
+            });
           }
         } else if (taskType === TASK_STATUS_IN_REVIEW) {
           if (entityType === ENTITIES_TYPES.ORG) {
@@ -516,6 +525,13 @@ export const TaskListViewModal = (props) => {
                 },
               },
             });
+          } else if (entityType === ENTITIES_TYPES.USER) {
+            getUserTaskBoardSubmissions({
+              variables: {
+                userId: loggedInUserId,
+                statuses: [STATUS_OPEN],
+              },
+            });
           }
         } else if (taskType === TASK_STATUS_ARCHIVED) {
           if (entityType === ENTITIES_TYPES.ORG) {
@@ -524,7 +540,7 @@ export const TaskListViewModal = (props) => {
                 orgId,
                 statuses: ['archived'],
                 offset: 0,
-                limit: LIMIT,
+                limit: TASK_LIST_VIEW_LIMIT,
               },
             });
           } else if (entityType === ENTITIES_TYPES.POD) {
@@ -534,8 +550,17 @@ export const TaskListViewModal = (props) => {
                   podId,
                   statuses: ['archived'],
                   offset: 0,
-                  limit: LIMIT,
+                  limit: TASK_LIST_VIEW_LIMIT,
                 },
+              },
+            });
+          } else if (entityType === ENTITIES_TYPES.USER) {
+            getUserArchivedTasks({
+              variables: {
+                userId: loggedInUserId,
+                statuses: ['archived'],
+                offset: 0,
+                limit: TASK_LIST_VIEW_LIMIT,
               },
             });
           }
@@ -557,6 +582,7 @@ export const TaskListViewModal = (props) => {
   } else if (taskType === TASK_STATUS_ARCHIVED) {
     text = 'Tasks';
   }
+
   return (
     <CreateModalOverlay
       aria-labelledby="modal-modal-title"
@@ -672,6 +698,8 @@ export const TaskViewModal = (props) => {
         },
       },
       'getPerStatusTaskCountForOrgBoard',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
     ],
     onError: () => {
       console.error('Something went wrong.');
