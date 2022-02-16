@@ -49,7 +49,6 @@ const PaymentItem = (props) => {
   const { item, org, podId, chain, setChainSelected, setEnableBatchPay, paymentSelected, setPaymentsSelected } = props;
   const [openModal, setOpenModal] = useState(false);
   const [checked, setChecked] = useState(false);
-
   // useEffect(() => {
   //   setChecked(chain === item?.chain);
   // }, [chain, item?.chain]);
@@ -74,7 +73,8 @@ const PaymentItem = (props) => {
     link = constructGnosisRedirectUrl(item.chain, item.safeAddress, item.safeTxHash);
     linkText = item.safeTxHash;
   }
-  const disabled = chain && item?.chain !== chain;
+  const disabled =
+    chain && item?.chain !== chain && (item?.paymentStatus === 'processing' || item?.paymentStatus === 'paid');
   return (
     <>
       <PaymentModalContext.Provider
@@ -112,6 +112,7 @@ const PaymentItem = (props) => {
                     border: disabled ? `1px solid ${Grey800}` : `none`,
                     width: '24px',
                     height: '24px',
+                    color: disabled ? Grey800 : White,
                   }}
                   checked={checked}
                   disabled={disabled}
@@ -398,10 +399,10 @@ const Payouts = (props) => {
     }
   }, [paidList, unpaidList, hasMore]);
   const handleBatchPayButtonClick = () => {
-    setOpenBatchPayModal(true)
-  }
+    setOpenBatchPayModal(true);
+  };
   const paymentSelectedAmount = paymentSelected && Object.keys(paymentSelected).length;
-  console.log('payment', paymentSelectedAmount, paymentSelected);
+
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
