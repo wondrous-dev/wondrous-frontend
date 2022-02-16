@@ -170,7 +170,6 @@ export const SubtaskCount = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 13px;
     font-style: normal;
-    font-weight: 500;
     color: #ffffff;
   }
 `;
