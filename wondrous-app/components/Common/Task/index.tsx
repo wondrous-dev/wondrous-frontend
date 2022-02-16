@@ -85,7 +85,8 @@ export const TASK_ICONS = {
 };
 
 let windowOffset = 0;
-export const Task = ({ task, setTask, onOpen = (task) => null, className }) => {
+export const Task = (props) => {
+  const { task, setTask, onOpen = (task) => null, className } = props;
   const {
     actions = {},
     description = '',
