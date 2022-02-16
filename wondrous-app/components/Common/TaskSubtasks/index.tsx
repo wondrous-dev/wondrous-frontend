@@ -5,7 +5,7 @@ import { ENTITIES_TYPES, TASK_STATUS_ARCHIVED } from '../../../utils/constants';
 import CreateLayoutBaseModal from '../../CreateEntity/createEntityModal';
 import { CreateModalOverlay } from '../../CreateEntity/styles';
 import { CompletedIcon } from '../../Icons/statusIcons';
-import { SubTaskIcon } from '../../Icons/subTask';
+import { SubtaskLightIcon } from '../../Icons/subtask';
 import {
   CreateSubtaskButton,
   CreateSubtaskIcon,
@@ -49,7 +49,7 @@ export const TaskSubtasks = ({ taskId }) => {
         <SubtaskHeader>
           <SubtaskCompletedWrapper>
             <LabelWrapper>
-              <SubTaskIcon />{' '}
+              <SubtaskLightIcon />{' '}
               <Label>
                 {getSubtaskCountForTaskData?.getSubtaskCountForTask.total} subtask
                 {getSubtaskCountForTaskData?.getSubtaskCountForTask.total > 1 && 's'}
