@@ -118,7 +118,6 @@ export const MakePaymentModal = (props) => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [approvedSubmission]);
-
   const handleCloseAll = () => {
     handleClose();
     setShowPaymentModal(false);
@@ -222,6 +221,8 @@ export const MakePaymentModal = (props) => {
                 fetchedTask={fetchedTask}
                 wallets={wallets}
                 submissionPaymentInfo={submissionPaymentInfo}
+                orgId={approvedSubmission?.orgId}
+                podId={approvedSubmission?.podId}
               />
             )}
           </PaymentMethodWrapper>

@@ -7,20 +7,12 @@ import ENS, { getEnsAddress } from '@ensdomains/ensjs';
 // import WalletConnectProvider from '@walletconnect/web3-provider'
 import { useEffect, useMemo, useState } from 'react';
 
-import { CHAIN_IDS, SUPPORTED_CHAINS, SUPPORTED_CURRENCIES, WALLET_TYPE } from '../utils/constants';
+import { CHAIN_IDS, SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../utils/constants';
 
 import { ERC20abi } from './contracts/erc20.abi';
 import { formatEther } from 'ethers/lib/utils';
 import { AbiItem } from 'web3-utils';
 
-export const transformWalletType = (network, walletType) => {
-  if (walletType === WALLET_TYPE.metamask) {
-    if (network === SUPPORTED_CHAINS[137].toLowerCase()) {
-      return SUPPORTED_CHAINS[1].toLowerCase();
-    }
-    return network;
-  }
-};
 // Handler of Web3 State for the app
 export const useWonderWeb3 = () => {
   // Some don't need state management
@@ -30,6 +22,7 @@ export const useWonderWeb3 = () => {
   const [chain, setChain] = useState(null);
   const [ensName, setENSName] = useState(null);
   const [web3Provider, setWeb3Provider] = useState(null);
+  const [notSupportedChain, setNotSupportedChain] = useState(null);
 
   const [fetching, setFetching] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
@@ -73,6 +66,7 @@ export const useWonderWeb3 = () => {
   }, [chain]);
 
   const onConnect = async () => {
+    setNotSupportedChain(false)
     setConnecting(true);
     const web3Modal = new Web3Modal();
 
@@ -87,6 +81,7 @@ export const useWonderWeb3 = () => {
 
         // Gate Keeper for Usupported chains
         if (!SUPPORTED_CHAINS[c]) {
+          setNotSupportedChain(true)
           disconnect();
           setConnecting(false);
           return false;
@@ -107,9 +102,14 @@ export const useWonderWeb3 = () => {
     if (!connecting) {
       setConnecting(true);
       try {
-        const web3Modal = new Web3Modal();
-        const provider = await web3Modal.connect();
-        const prov = new ethers.providers.Web3Provider(provider);
+        const prov = new ethers.providers.Web3Provider(web3Provider);
+        const { chainId } = await prov.getNetwork()
+        if (!SUPPORTED_CHAINS[chainId]) {
+          setNotSupportedChain(true)
+          disconnect();
+          setConnecting(false);
+          return false;
+        }
         const signer = await prov.getSigner();
 
         // Now sign message
@@ -266,6 +266,7 @@ export const useWonderWeb3 = () => {
     chainName,
     subscribed,
     nativeTokenSymbol,
+    notSupportedChain,
     onConnect,
     disconnect,
     signMessage,

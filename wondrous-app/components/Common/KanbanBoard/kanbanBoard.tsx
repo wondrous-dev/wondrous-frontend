@@ -35,10 +35,11 @@ const populateOrder = (index, tasks, field) => {
     belowOrder,
   };
 };
+
 const KanbanBoard = (props) => {
   const user = useMe();
   const { columns, onLoadMore, hasMore } = props;
-  const [columnsState, setColumnsState] = useState(columns);
+  const [columnsState, setColumnsState] = useState([]);
   const [ref, inView] = useInView({});
   const [openModal, setOpenModal] = useState(false);
   const [once, setOnce] = useState(false);
@@ -55,10 +56,10 @@ const KanbanBoard = (props) => {
     if (inView && hasMore) {
       onLoadMore();
     }
-    if (columns) {
+    if (columnsState.length === 0) {
       setColumnsState(columns);
     }
-  }, [inView, hasMore, onLoadMore, columns]);
+  }, [inView, hasMore, onLoadMore, columns, columnsState]);
 
   const checkPermissions = (task) => {
     const permissions = parseUserPermissionContext({
@@ -96,6 +97,8 @@ const KanbanBoard = (props) => {
             variables: orgBoard?.getOrgBoardTaskCountVariables,
           },
           GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE,
+          'getUserTaskBoardTasks',
+          'getPerStatusTaskCountForUserBoard',
         ],
       });
 
@@ -163,6 +166,7 @@ const KanbanBoard = (props) => {
         };
       }
     });
+
     setColumnsState(dedupeColumns(updatedColumns));
   };
 
@@ -188,9 +192,16 @@ const KanbanBoard = (props) => {
     >
       <KanbanBoardContainer>
         <TaskViewModal
+          disableEnforceFocus
           open={openModal}
+          shouldFocusAfterRender={false}
           handleClose={() => {
+            const style = document.body.getAttribute('style');
+            const top = style.match(/(?<=top: -)(.*?)(?=px)/);
             document.body.setAttribute('style', '');
+            if (top?.length > 0) {
+              window?.scrollTo(0, Number(top[0]));
+            }
             setOpenModal(false);
           }}
           taskId={router?.query?.task || router?.query?.taskProposal}

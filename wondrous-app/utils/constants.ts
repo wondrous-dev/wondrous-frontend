@@ -9,6 +9,8 @@ export const TASK_STATUS_REQUESTED = 'requested';
 export const TASK_STATUS_ARCHIVED = 'archived';
 export const TASK_STATUS_AWAITING_PAYMENT = 'awaiting_payment';
 export const TASK_STATUS_PAID = 'paid';
+export const TASK_STATUS_PROPOSAL_REQUEST = 'proposal_request';
+export const TASK_STATUS_SUBMISSION_REQUEST = 'submission_request';
 
 export const COLUMN_TITLE_ARCHIVED = 'Archived';
 
@@ -190,10 +192,6 @@ export const NOTIFICATION_OBJECT_TYPES = {
 export const PRIVACY_LEVEL = {
   public: 'public',
   private: 'private',
-};
-
-export const WALLET_TYPE = {
-  metamask: 'metamask',
 };
 
 export const BOARD_TYPE = {
