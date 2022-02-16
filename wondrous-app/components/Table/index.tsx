@@ -81,11 +81,13 @@ const DELIVERABLES_ICONS = {
 };
 
 let windowOffset = 0;
-export const Table = ({ columns, onLoadMore, hasMore }) => {
+export const Table = (props) => {
+  const { columns, onLoadMore, hasMore, isAdmin = false } = props;
   const router = useRouter();
   const apolloClient = useApolloClient();
   const [editableTask, setEditableTask] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [selectedTaskType, setSelectedTaskType] = useState(null);
   const [once, setOnce] = useState(false);
   const [isPreviewModalOpen, setPreviewModalOpen] = useState(false);
   const [isArchiveModalOpen, setArchiveModalOpen] = useState(false);
@@ -114,15 +116,14 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
     if (taskId && !once) {
       let task;
       columns.find((column) => {
-        task = [...column.section.tasks, ...column.tasks].find((task) => task.id === taskId);
-
-        return task;
+        const section = column?.section?.task;
+        if (section) {
+          task = [...section, ...column.tasks];
+        } else {
+          task = [...column.tasks];
+        }
+        return task.find((task) => task.id === taskId);
       });
-
-      if (task) {
-        openTask(task);
-        setOnce(false);
-      }
     }
   }, [columns, router?.query?.task || router?.query?.taskProposal]);
 
@@ -134,17 +135,20 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
     // },
   });
 
-  async function editTask(task) {
+  async function editTask(task, status = '') {
     let populatedTask = { ...task };
-    const isTaskProposal = task.type === Constants.TASK_STATUS_REQUESTED;
+    const isTaskProposal =
+      status === Constants.TASK_STATUS_REQUESTED || status === Constants.TASK_STATUS_PROPOSAL_REQUEST;
 
     if (!isTaskProposal) {
+      const isTaskSubmission =
+        status === Constants.TASK_STATUS_IN_REVIEW || status === Constants.TASK_STATUS_SUBMISSION_REQUEST;
       const {
         data: { getTaskReviewers },
       } = await apolloClient.query({
         query: GET_TASK_REVIEWERS,
         variables: {
-          taskId: task?.id,
+          taskId: !isTaskSubmission ? task?.id : task?.taskId,
         },
       });
 
@@ -157,7 +161,7 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
   async function handleNewStatus(task, status) {
     updateTaskStatusMutation({
       variables: {
-        taskId: task?.id,
+        taskId: task?.taskId ?? task?.id,
         input: {
           newStatus: status,
         },
@@ -173,11 +177,16 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
     await apolloClient.mutate({
       mutation: UPDATE_TASK_STATUS,
       variables: {
-        taskId: task?.id,
+        taskId: task?.taskId ?? task?.id,
         input: {
           newStatus: TASK_STATUS_ARCHIVED,
         },
       },
+      refetchQueries: () => [
+        'getSubmissionsUserCanReview',
+        'getWorkFlowBoardReviewableItemsCount',
+        'getUserTaskBoardTasks',
+      ],
     });
 
     if (column) {
@@ -208,10 +217,11 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
     );
   }
 
-  function openTask(task) {
+  function openTask(task, taskType = '') {
     setOnce(false);
     router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`);
     setSelectedTask(task);
+    setSelectedTaskType(taskType);
     setPreviewModalOpen(true);
   }
 
@@ -225,12 +235,16 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
             shallow: true,
           });
         }}
-        task={selectedTask}
+        task={selectedTaskType !== Constants.TASK_STATUS_SUBMISSION_REQUEST && selectedTask}
+        isTaskProposal={selectedTaskType === Constants.TASK_STATUS_PROPOSAL_REQUEST}
+        taskId={selectedTaskType === Constants.TASK_STATUS_SUBMISSION_REQUEST ? selectedTask?.taskId : selectedTask?.id}
       />
       <ArchiveTaskModal
         open={isArchiveModalOpen}
         onClose={() => setArchiveModalOpen(false)}
         onArchive={() => archiveTask(selectedTask)}
+        taskId={selectedTask?.id}
+        taskType={selectedTaskType}
       />
 
       {editableTask ? (
@@ -260,7 +274,7 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
               DAO
             </StyledTableCell>
             <StyledTableCell align="center" width="105px">
-              Assigned
+              {isAdmin ? 'Created by' : 'Assigned'}
             </StyledTableCell>
             <StyledTableCell align="center" width="77px">
               Status
@@ -270,24 +284,31 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
             <StyledTableCell align="center" width="88px">
               Reward
             </StyledTableCell>
-            {/*<StyledTableCell align="center" width="80px">*/}
-            {/*  Decision*/}
-            {/*</StyledTableCell>*/}
+            {isAdmin && (
+              <StyledTableCell align="center" width="80px">
+                Decision
+              </StyledTableCell>
+            )}
             <StyledTableCell width="54px"></StyledTableCell>
           </StyledTableRow>
         </StyledTableHead>
 
         <StyledTableBody>
           {columns.map((column) => {
-            let tasks = [...column.section.tasks, ...column.tasks];
+            let tasks = [...column.tasks];
+            if (column?.section?.tasks) tasks = [...tasks, ...column?.section?.tasks];
 
             // Don't show archived tasks
-            if (column.section.title === COLUMN_TITLE_ARCHIVED) {
+            if (column?.section?.title === COLUMN_TITLE_ARCHIVED) {
               tasks = column.tasks;
             }
 
             return tasks.map((task, index) => {
-              // Parse permissions here as well
+              const status = task?.status ?? column?.section?.filter?.taskType ?? column?.status;
+              const dropdownItemLabel =
+                status === Constants.TASK_STATUS_PROPOSAL_REQUEST || status === Constants.TASK_STATUS_REQUESTED
+                  ? 'task proposal'
+                  : 'task';
               const permissions = parseUserPermissionContext({
                 userPermissionsContext,
                 orgId: task?.orgId,
@@ -331,15 +352,15 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                         ]}
                       />
                     ) : (
-                      <Link passHref={true} href={`/profile/${task.assigneeUsername}/about`}>
-                        <Initials>{task.assigneeUsername}</Initials>
+                      <Link passHref={true} href={`/profile/${task?.assigneeUsername ?? task?.creatorUsername}/about`}>
+                        <Initials>{task?.assigneeUsername ?? task?.creatorUsername}</Initials>
                       </Link>
                     )}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    <TaskStatus status={task.status || column.section.filter.taskType} />
+                    <TaskStatus status={status} />
                   </StyledTableCell>
-                  <StyledTableCell className="clickable" onClick={() => openTask(task)}>
+                  <StyledTableCell className="clickable" onClick={() => openTask(task, column?.status)}>
                     <TaskTitle>{task.title}</TaskTitle>
                     <TaskDescription
                       style={{
@@ -382,34 +403,38 @@ export const Table = ({ columns, onLoadMore, hasMore }) => {
                       )}
                     </RewardContainer>
                   </StyledTableCell>
-                  {/*<StyledTableCell align="center">*/}
-                  {/*  <DropDownButtonDecision />*/}
-                  {/*</StyledTableCell>*/}
+                  {isAdmin && (
+                    <StyledTableCell align="center">
+                      {/* TODO: change the design for disabled button */}
+                      <DropDownButtonDecision disabled={!canManageTask} taskId={task.id} status={column.status} />
+                    </StyledTableCell>
+                  )}
                   <StyledTableCell align="center">
                     <MoreOptions disabled={!canManageTask}>
                       <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
                         <DropDownItem
                           key={'task-menu-edit-' + task.id}
-                          onClick={() => editTask(task)}
+                          onClick={() => editTask(task, status)}
                           color="#C4C4C4"
                           fontSize="13px"
                           fontWeight="normal"
                           textAlign="left"
                         >
-                          Edit task
+                          Edit {dropdownItemLabel}
                         </DropDownItem>
                         <DropDownItem
                           key={'task-menu-report-' + task.id}
                           onClick={() => {
                             setSelectedTask(task);
                             setArchiveModalOpen(true);
+                            setSelectedTaskType(dropdownItemLabel);
                           }}
                           color="#C4C4C4"
                           fontSize="13px"
                           fontWeight="normal"
                           textAlign="left"
                         >
-                          Archive task
+                          Archive {dropdownItemLabel}
                         </DropDownItem>
                       </DropDown>
                     </MoreOptions>
