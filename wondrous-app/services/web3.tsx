@@ -266,6 +266,7 @@ export const useWonderWeb3 = () => {
     chainName,
     subscribed,
     nativeTokenSymbol,
+    notSupportedChain,
     onConnect,
     disconnect,
     signMessage,
