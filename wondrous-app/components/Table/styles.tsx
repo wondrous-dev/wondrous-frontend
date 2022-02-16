@@ -30,7 +30,10 @@ export const StyledTableBody = styled(TableBody)`
 `;
 
 export const StyledTableContainer = styled(TableContainer)`
-  width: 100%;
+  && {
+    width: 100%;
+    overflow-x: visible;
+  }
 `;
 
 export const StyledTableHead = styled(TableHead)`
