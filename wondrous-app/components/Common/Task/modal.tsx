@@ -130,7 +130,7 @@ import { CompensationAmount, CompensationPill, IconContainer } from '../Compensa
 
 import { MakePaymentModal } from '../Payment/PaymentModal';
 import { ApprovedSubmissionContext } from '../../../utils/contexts';
-import { TaskSubtasks } from '../TaskSubtasks';
+import { TaskSubtasks } from '../TaskSubtask';
 import { SubtaskDarkIcon, SubtaskLightIcon } from '../../Icons/subtask';
 import { CheckedBoxIcon } from '../../Icons/checkedBox';
 import RightArrowIcon from '../../Icons/rightArrow';
