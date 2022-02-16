@@ -82,7 +82,7 @@ export const MilestoneSeparator = styled(TaskSeparator)`
 `;
 
 export const MilestoneProgressWrapper = styled.div`
-  margin-bottom: 12px;
+  margin: 12px 0;
 `;
 
 export const TaskTitle = styled.div`
@@ -134,19 +134,44 @@ export const TaskActionAmount = styled.div`
   color: ${Grey250};
 `;
 
+export const TaskContentFooter = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 export const PodWrapper = styled.div`
-  background: #363636;
-  padding: 1px 8px;
-  border-radius: 8px;
   cursor: pointer;
-  margin-bottom: 16px;
-  width: fit-content;
+  display: flex;
+  align-items: flex-start;
+  margin-right: 6px;
 `;
 
 export const PodName = styled(Typography)`
   && {
+    background: #363636;
     font-size: 13px;
     color: ${White};
+    padding: 1px 8px;
+    border-radius: 190px;
+  }
+`;
+
+export const SubtaskCountWrapper = styled.div`
+  background: #0f0f0f;
+  display: flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 4px;
+  justify-content: center;
+`;
+
+export const SubtaskCount = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 500;
+    color: #ffffff;
   }
 `;
 
