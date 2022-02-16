@@ -348,7 +348,6 @@ export const Task = (props) => {
                 <SubtaskCountWrapper>
                   <SubtaskDarkIcon />
                   <SubtaskCount>
-                    {console.log('subtask count: ', getSubtaskCountForTaskData)}
                     {getSubtaskCountForTaskData?.getSubtaskCountForTask.completed}/
                     {getSubtaskCountForTaskData?.getSubtaskCountForTask.total}
                   </SubtaskCount>
