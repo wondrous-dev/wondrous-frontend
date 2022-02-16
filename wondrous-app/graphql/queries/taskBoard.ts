@@ -7,12 +7,35 @@ export const GET_ORG_TASK_BOARD_PROPOSALS = gql`
   query GetOrgTaskBoardProposals(
     $orgId: ID!
     $statuses: [String]
-    $searchString: String
     $podIds: [String]
     $limit: Int
     $offset: Int
   ) {
     getOrgTaskBoardProposals(
+      input: {
+        orgId: $orgId
+        statuses: $statuses
+        podIds: $podIds
+        limit: $limit
+        offset: $offset
+      }
+    ) {
+      ...TaskProposalCardFragment
+    }
+  }
+  ${TaskProposalCardFragment}
+`;
+
+export const SEARCH_ORG_TASK_BOARD_PROPOSALS = gql`
+  query searchProposalsForOrgBoardView(
+    $orgId: ID!
+    $statuses: [String]
+    $searchString: String
+    $podIds: [String]
+    $limit: Int
+    $offset: Int
+  ) {
+    searchProposalsForOrgBoardView(
       input: {
         orgId: $orgId
         statuses: $statuses

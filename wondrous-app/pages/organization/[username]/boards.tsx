@@ -7,7 +7,7 @@ import {
   GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_SUBMISSIONS,
   GET_ORG_TASK_BOARD_TASKS,
-  GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
+  GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD, SEARCH_ORG_TASK_BOARD_PROPOSALS,
   SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
 } from '../../../graphql/queries/taskBoard';
 import Boards from '../../../components/organization/boards/boards';
@@ -156,6 +156,19 @@ const BoardsPage = () => {
     onCompleted: (data) => {
       const newColumns = [...columns];
       const taskProposals = data?.getOrgTaskBoardProposals;
+      newColumns[0].section.tasks = [];
+      taskProposals?.forEach((taskProposal) => {
+        newColumns[0].section.tasks.push(taskProposal);
+      });
+      setColumns(newColumns);
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
+    onCompleted: (data) => {
+      const newColumns = [...columns];
+      const taskProposals = data?.searchProposalsForOrgBoardView;
       newColumns[0].section.tasks = [];
       taskProposals?.forEach((taskProposal) => {
         newColumns[0].section.tasks.push(taskProposal);
@@ -317,7 +330,7 @@ const BoardsPage = () => {
     const searchTasks = !(searchProposals && statuses.length === 1);
 
     const id = orgId || orgData?.id;
-    const getOrgTaskProposalsArgs = {
+    const searchOrgTaskProposalsArgs = {
       variables: {
         podIds,
         orgId: id,
@@ -344,10 +357,10 @@ const BoardsPage = () => {
       const promises: any = [
         searchProposals
           ? apollo.query({
-              ...getOrgTaskProposalsArgs,
-              query: GET_ORG_TASK_BOARD_PROPOSALS,
+              ...searchOrgTaskProposalsArgs,
+              query: SEARCH_ORG_TASK_BOARD_PROPOSALS,
             })
-          : { data: { getOrgTaskBoardProposals: [] } },
+          : { data: { searchOrgTaskBoardProposals: [] } },
 
         searchTasks
           ? apollo.query({
@@ -358,7 +371,7 @@ const BoardsPage = () => {
       ];
 
       return Promise.all(promises).then(([proposals, tasks]: any) => [
-        ...proposals.data.getOrgTaskBoardProposals,
+        ...proposals.data.searchProposalsForOrgBoardView,
         ...tasks.data.searchTasksForOrgBoardView,
       ]);
     } else {
@@ -375,7 +388,7 @@ const BoardsPage = () => {
       }
 
       if (searchProposals) {
-        getOrgTaskProposals(getOrgTaskProposalsArgs);
+        searchOrgTaskProposals(searchOrgTaskProposalsArgs);
       }
 
       return Promise.resolve([]);
@@ -386,7 +399,7 @@ const BoardsPage = () => {
     if (firstTimeFetch) {
       searchTasks(searchString);
     }
-  }, [searchString, podIds, statuses, searchOrgTasks, getOrgTaskProposals]);
+  }, [searchString, podIds, statuses, searchOrgTasks, searchOrgTaskProposals]);
 
   const handleSearch = useCallback(
     (searchString) => {

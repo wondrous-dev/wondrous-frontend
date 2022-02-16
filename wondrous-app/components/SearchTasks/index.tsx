@@ -46,7 +46,8 @@ export default function SearchTasks({ onSearch }: Props) {
 
     timeout = setTimeout(async () => {
       const tasks = await onSearch(searchString);
-      setOptions(tasks.slice(LIMIT));
+
+      setOptions(tasks.slice(0, LIMIT));
       setHasMore(tasks.length > LIMIT);
     }, 200);
   };
