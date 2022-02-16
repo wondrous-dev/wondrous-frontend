@@ -7,7 +7,8 @@ import {
   GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_SUBMISSIONS,
   GET_ORG_TASK_BOARD_TASKS,
-  GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD, SEARCH_ORG_TASK_BOARD_PROPOSALS,
+  GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
+  SEARCH_ORG_TASK_BOARD_PROPOSALS,
   SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
 } from '../../../graphql/queries/taskBoard';
 import Boards from '../../../components/organization/boards/boards';
@@ -152,29 +153,22 @@ const BoardsPage = () => {
   const [orgTaskHasMore, setOrgTaskHasMore] = useState(false);
   const [getOrgPods, { data: { getOrgPods: orgPods = [] } = {} }] = useLazyQuery(GET_ORG_PODS);
 
+  const bindProposalsToCols = (taskProposals) => {
+    const newColumns = [...columns];
+    newColumns[0].section.tasks = [];
+    taskProposals?.forEach((taskProposal) => {
+      newColumns[0].section.tasks.push(taskProposal);
+    });
+    setColumns(newColumns);
+  };
+
   const [getOrgTaskProposals] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
-    onCompleted: (data) => {
-      const newColumns = [...columns];
-      const taskProposals = data?.getOrgTaskBoardProposals;
-      newColumns[0].section.tasks = [];
-      taskProposals?.forEach((taskProposal) => {
-        newColumns[0].section.tasks.push(taskProposal);
-      });
-      setColumns(newColumns);
-    },
+    onCompleted: (data) => bindProposalsToCols(data?.getOrgTaskBoardProposals),
     fetchPolicy: 'cache-and-network',
   });
 
   const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
-    onCompleted: (data) => {
-      const newColumns = [...columns];
-      const taskProposals = data?.searchProposalsForOrgBoardView;
-      newColumns[0].section.tasks = [];
-      taskProposals?.forEach((taskProposal) => {
-        newColumns[0].section.tasks.push(taskProposal);
-      });
-      setColumns(newColumns);
-    },
+    onCompleted: (data) => bindProposalsToCols(data?.searchProposalsForOrgBoardView),
     fetchPolicy: 'cache-and-network',
   });
 
@@ -204,7 +198,7 @@ const BoardsPage = () => {
       newColumns[1].section.tasks = [];
       newColumns[2].section.tasks = [];
 
-      tasks.forEach(task => {
+      tasks.forEach((task) => {
         if (task.status === TASK_STATUS_IN_REVIEW) {
           newColumns[1].section.tasks.push(task);
         }

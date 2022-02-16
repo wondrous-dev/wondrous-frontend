@@ -203,6 +203,15 @@ export const GET_POD_TASK_BOARD_PROPOSALS = gql`
   ${TaskProposalCardFragment}
 `;
 
+export const SEARCH_POD_TASK_BOARD_PROPOSALS = gql`
+  query searchProposalsForPodBoardView($input: PodTaskBoardQueryInput) {
+    searchProposalsForPodBoardView(input: $input) {
+      ...TaskProposalCardFragment
+    }
+  }
+  ${TaskProposalCardFragment}
+`;
+
 export const GET_POD_TASK_BOARD_TASKS = gql`
   query getPodTaskBoardTasks($input: PodTaskBoardQueryInput) {
     getPodTaskBoardTasks(input: $input) {

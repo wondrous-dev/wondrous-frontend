@@ -10,7 +10,7 @@ import {
   GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD,
   SEARCH_TASKS_FOR_POD_BOARD_VIEW,
   GET_ORG_TASK_BOARD_PROPOSALS,
-  SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
+  SEARCH_TASKS_FOR_ORG_BOARD_VIEW, SEARCH_POD_TASK_BOARD_PROPOSALS,
 } from '../../../graphql/queries/taskBoard';
 import Boards from '../../../components/Pod/boards';
 import { InReview, Requested, Archived } from '../../../components/Icons/sections';
@@ -118,17 +118,23 @@ const BoardsPage = () => {
   const [getPod, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
   const pod = podData?.getPodById;
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
+
+  const bindProposalsToCols = (taskProposals) => {
+    const newColumns = [...columns];
+    newColumns[0].section.tasks = [];
+    taskProposals?.forEach((taskProposal) => {
+      newColumns[0].section.tasks.push(taskProposal);
+    });
+    setColumns(newColumns);
+  };
+
   const [getPodTaskProposals] = useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
-    onCompleted: (data) => {
-      const newColumns = [...columns];
-      const taskProposals = data?.getPodTaskBoardProposals;
-      newColumns[0].section.tasks = [];
-      taskProposals?.forEach((taskProposal) => {
-        newColumns[0].section.tasks.push(taskProposal);
-      });
-      setColumns(newColumns);
-      setFirstTimeFetch(true);
-    },
+    onCompleted: (data) => bindProposalsToCols(data?.getPodTaskBoardProposals),
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [searchPodTaskProposals] = useLazyQuery(SEARCH_POD_TASK_BOARD_PROPOSALS, {
+    onCompleted: (data) => bindProposalsToCols(data?.searchProposalsForPodBoardView),
     fetchPolicy: 'cache-and-network',
   });
 
@@ -298,9 +304,9 @@ const BoardsPage = () => {
         searchProposals
           ? apollo.query({
               ...getPodTaskProposalsArgs,
-              query: GET_POD_TASK_BOARD_PROPOSALS,
+              query: SEARCH_POD_TASK_BOARD_PROPOSALS,
             })
-          : { data: { getPodTaskBoardProposals: [] } },
+          : { data: { searchPodTaskProposals: [] } },
 
         searchTasks
           ? apollo.query({
@@ -311,7 +317,7 @@ const BoardsPage = () => {
       ];
 
       return Promise.all(promises).then(([proposals, tasks]: any) => [
-        ...proposals.data.getPodTaskBoardProposals,
+        ...proposals.data.searchProposalsForPodBoardView,
         ...tasks.data.searchTasksForPodBoardView,
       ]);
     } else {
@@ -328,7 +334,7 @@ const BoardsPage = () => {
       }
 
       if (searchProposals) {
-        getPodTaskProposals(getPodTaskProposalsArgs);
+        searchPodTaskProposals(getPodTaskProposalsArgs);
       }
 
       return Promise.resolve([]);
