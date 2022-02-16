@@ -104,6 +104,9 @@ import {
   GET_POD_TASK_BOARD_PROPOSALS,
   GET_POD_TASK_BOARD_SUBMISSIONS,
   GET_POD_TASK_BOARD_TASKS,
+  GET_USER_TASK_BOARD_PROPOSALS,
+  GET_USER_TASK_BOARD_SUBMISSIONS,
+  GET_USER_TASK_BOARD_TASKS,
 } from '../../../graphql/queries/taskBoard';
 import { AvatarList } from '../AvatarList';
 import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from '../../../graphql/mutations/taskProposal';
