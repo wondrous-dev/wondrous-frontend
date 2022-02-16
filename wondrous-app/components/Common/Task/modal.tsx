@@ -583,12 +583,14 @@ const tabs = {
 const tabsPerType = {
   proposalTabs: [tabs.discussion],
   milestoneTabs: [tabs.tasks, tabs.discussion],
+  subtaskTabs: [tabs.tasks, tabs.discussion],
   taskTabs: [tabs.submissions, tabs.subTasks, tabs.discussion],
 };
 
-const selectTabsPerType = (isTaskProposal, isMilestone) => {
+const selectTabsPerType = (isTaskProposal, isMilestone, isSubtask) => {
   if (isTaskProposal) return tabsPerType.proposalTabs;
   if (isMilestone) return tabsPerType.milestoneTabs;
+  if (isSubtask) return tabsPerType.subtaskTabs;
   return tabsPerType.taskTabs;
 };
 
@@ -600,6 +602,7 @@ export const TaskViewModal = (props) => {
   const [taskSubmissionLoading, setTaskSubmissionLoading] = useState(!isTaskProposal);
   const [makeSubmission, setMakeSubmission] = useState(false);
   const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
+  const isSubtask = fetchedTask?.parentTaskId !== null;
   const [approvedSubmission, setApprovedSubmission] = useState(null);
 
   const orgBoard = useOrgBoard();
@@ -1389,7 +1392,7 @@ export const TaskViewModal = (props) => {
             )}
             <TaskModalFooter>
               <TaskSectionFooterTitleDiv>
-                {selectTabsPerType(isTaskProposal, isMilestone).map((tab, index) => {
+                {selectTabsPerType(isTaskProposal, isMilestone, isSubtask).map((tab, index) => {
                   const active = tab === activeTab;
                   return (
                     <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
