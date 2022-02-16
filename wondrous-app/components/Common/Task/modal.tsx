@@ -1499,7 +1499,7 @@ export const TaskViewModal = (props) => {
                     setShowPaymentModal={setShowPaymentModal}
                   />
                 )}
-                {activeTab === tabs.subTasks && <TaskSubtasks taskId={fetchedTask?.id} />}
+                {activeTab === tabs.subTasks && <TaskSubtasks taskId={fetchedTask?.id} permissions={permissions} />}
                 {activeTab === tabs.discussion && (
                   <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
                 )}
