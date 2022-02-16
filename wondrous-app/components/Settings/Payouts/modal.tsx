@@ -147,6 +147,8 @@ export const PayModal = (props) => {
               }}
               wallets={wallets}
               submissionPaymentInfo={submissionPaymentInfo}
+              orgId={orgId}
+              podId={podId}
             />
           )}
         </PaymentMethodWrapper>

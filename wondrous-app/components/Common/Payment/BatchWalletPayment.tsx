@@ -7,8 +7,9 @@ import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet'
 import { PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS } from '../../../graphql/mutations/payment';
 import { useGnosisSdk } from '../../../services/payment';
 import { ERC20abi } from '../../../services/contracts/erc20.abi';
-import { SafeTransactionDataPartial, SafeTransactionData, MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types';
+import { SafeTransactionDataPartial, SafeTransactionData, MetaTransactionData, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types';
 import { SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk';
+import {SafeMultisigTransactionEstimateResponse} from '@gnosis.pm/safe-service-client';
 import { useWonderWeb3 } from '../../../services/web3';
 import { ErrorText } from '..';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
@@ -183,15 +184,34 @@ export const BatchWalletPayment = (props) => {
     const gnosisClient = wonderGnosis?.safeServiceClient;
     const gnosisSdk = wonderGnosis?.safeSdk;
     const nextNonce = await gnosisClient?.getNextNonce(selectedWallet?.address);
+    // first create a safe tx object for gas estimate purposes, then recreate it wit the esimated gas
+    let safeTransaction = await gnosisSdk.createTransaction(transactions); // create tx object
+    const estimateGasPayload = {
+      to: safeTransaction.data.to,
+      value: safeTransaction.data.value,
+      data: safeTransaction.data.data,
+      operation: 1,
+    };
+    let safeTxGas
+
+    try {
+      const estimateTx: SafeMultisigTransactionEstimateResponse = await gnosisClient.estimateSafeTransaction(
+        selectedWallet?.address,
+        estimateGasPayload
+      );
+      safeTxGas = estimateTx?.safeTxGas;
+    } catch (e) {
+      console.log(e);
+    }
     const options: SafeTransactionOptionalProps = {
-      // safeTxGas, // Optional
+      safeTxGas, // Optional
       // baseGas, // Optional
       // gasPrice, // Optional
       // gasToken, // Optional
       // refundReceiver, // Optional
       nonce: nextNonce,
     };
-    const safeTransaction = await gnosisSdk.createTransaction(transactions, options); // create tx object
+    safeTransaction = await gnosisSdk.createTransaction(transactions, options);
     const safeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);
     setSafeTxHash(safeTxHash);
     try {
