@@ -313,7 +313,7 @@ export const filterOrgUsers = (orgUsers) => {
 };
 
 const CreateLayoutBaseModal = (props) => {
-  const { entityType, handleClose, resetEntityType, open, parentTaskId = '' } = props;
+  const { entityType, handleClose, resetEntityType, open, parentTaskId } = props;
   const user = useMe();
   const [addDetails, setAddDetails] = useState(true);
   const [descriptionText, setDescriptionText] = useState('');
@@ -347,7 +347,7 @@ const CreateLayoutBaseModal = (props) => {
   const board = orgBoard || podBoard || userBoard;
   const isPod = entityType === ENTITIES_TYPES.POD;
   const isTask = entityType === ENTITIES_TYPES.TASK;
-  const isSubtask = parentTaskId !== '';
+  const isSubtask = parentTaskId !== undefined;
   const textLimit = isPod ? 200 : 900;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
