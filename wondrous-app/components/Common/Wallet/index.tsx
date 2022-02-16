@@ -1,6 +1,6 @@
 import { Button } from '../button';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useWonderWeb3 } from '../../../services/web4';
+import { useWonderWeb3 } from '../../../services/web3';
 import Ethereum from '../../Icons/ethereum';
 import { Metamask } from '../../Icons/metamask';
 import { WonderCoin } from '../../Icons/wonderCoin';

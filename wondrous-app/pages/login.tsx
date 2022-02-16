@@ -13,7 +13,7 @@ import { CenteredFlexRow } from '../components/Common/index';
 import { Grey50 } from '../theme/colors';
 import { Metamask } from '../components/Icons/metamask';
 import { EmailIcon, LockIcon } from '../components/Icons/userpass';
-import { useWonderWeb3 } from '../services/web4';
+import { useWonderWeb3 } from '../services/web3';
 import { emailSignin, getUserSigningMessage, walletSignin } from '../components/Auth/withAuth';
 import { ErrorText } from '../components/Common';
 import { CircularProgress } from '@material-ui/core';
