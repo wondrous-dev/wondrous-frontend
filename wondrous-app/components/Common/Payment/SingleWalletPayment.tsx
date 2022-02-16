@@ -8,6 +8,7 @@ import { PROPOSE_GNOSIS_TX_FOR_SUBMISSION } from '../../../graphql/mutations/pay
 import { useGnosisSdk } from '../../../services/payment';
 import { ERC20abi } from '../../../services/contracts/erc20.abi';
 import { SafeTransactionDataPartial, SafeTransactionData } from '@gnosis.pm/safe-core-sdk-types';
+import { SafeMultisigTransactionEstimateResponse } from '@gnosis.pm/safe-service-client';
 import { useWonderWeb3 } from '../../../services/web3';
 import { ErrorText } from '..';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
@@ -52,7 +53,7 @@ interface PaymentData {
 }
 
 export const SingleWalletPayment = (props) => {
-  const { open, handleClose, setShowPaymentModal, approvedSubmission, wallets, submissionPaymentInfo } = props;
+  const { open, handleClose, orgId, podId, approvedSubmission, wallets, submissionPaymentInfo } = props;
   const [currentChainId, setCurrentChainId] = useState(null); // chain id current user is on
   const [walletOptions, setWalletOptions] = useState([]); // chain associated with submission
   const [onRightChain, setOnRighChain] = useState(true);
@@ -76,14 +77,13 @@ export const SingleWalletPayment = (props) => {
     connectWeb3();
   }, []);
 
-
   const wonderGnosis = useGnosisSdk();
   const connectSafeSdk = async (chain, safeAddress) => {
     try {
       await wonderGnosis.connectSafeSdk({ chain, safeAddress });
     } catch (e) {
-      console.log('error connecint to gnosis safe', selectedWallet.chain)
-      setSafeConnectionError(`selected gnosis safe not deployed on ${selectedWallet.chain}`)
+      console.log('error connecint to gnosis safe', selectedWallet.chain);
+      setSafeConnectionError(`selected gnosis safe not deployed on ${selectedWallet.chain}`);
     }
   };
 
@@ -129,7 +129,6 @@ export const SingleWalletPayment = (props) => {
     }
   }, [selectedWalletId, selectedWallet?.chain, selectedWallet?.address, currentChainId]);
 
-
   const [proposeGnosisTxForSubmission] = useMutation(PROPOSE_GNOSIS_TX_FOR_SUBMISSION, {
     onCompleted: (data) => {
       setPaymentPending(true);
@@ -153,10 +152,9 @@ export const SingleWalletPayment = (props) => {
   }, [safeTxHash, selectedWallet]);
 
   const reward = props?.fetchedTask?.rewards && props?.fetchedTask?.rewards[0];
-  
 
   const constructAndSignTransactionData = async () => {
-    setSigningError(null)
+    setSigningError(null);
     let iface = new ethers.utils.Interface(ERC20abi);
     const paymentData = submissionPaymentInfo?.paymentData[0];
     let transactionData;
@@ -177,11 +175,28 @@ export const SingleWalletPayment = (props) => {
     const gnosisClient = wonderGnosis?.safeServiceClient;
     const gnosisSdk = wonderGnosis?.safeSdk;
     const nextNonce = await gnosisClient?.getNextNonce(selectedWallet?.address);
+    const estimateGasPayload = {
+      to: wonderWeb3.toChecksumAddress(transactionData.to),
+      value: transactionData.value,
+      data: transactionData.data,
+      operation: 0,
+    };
+    let safeTxGas
+    try {
+      const estimateTx: SafeMultisigTransactionEstimateResponse = await gnosisClient.estimateSafeTransaction(
+        selectedWallet?.address,
+        estimateGasPayload
+      );
+      safeTxGas = estimateTx?.safeTxGas;
+    } catch (e) {
+      console.log(e);
+    }
     const transaction: SafeTransactionDataPartial = {
       to: wonderWeb3.toChecksumAddress(transactionData.to),
       data: transactionData.data,
       value: transactionData.value,
       nonce: nextNonce,
+      safeTxGas: Number(safeTxGas),
     };
     const safeTransaction = await gnosisSdk.createTransaction(transaction);
     const safeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);
@@ -193,7 +208,7 @@ export const SingleWalletPayment = (props) => {
         setNotOwnerError(`Not a owner of multisig`);
       } else if (e.message.includes('User denied message')) {
         setSigningError(`User denied signature`);
-      }  else {
+      } else {
         setSigningError(`Error signing transaction`);
       }
       return;
@@ -229,10 +244,10 @@ export const SingleWalletPayment = (props) => {
     });
   };
   const handleCreateNewWalletClick = () => {
-    if (approvedSubmission.podId) {
-      router.push(`/pod/settings/${approvedSubmission.podId}/wallet`);
-    } else if (approvedSubmission.orgId) {
-      router.push(`/organization/settings/${approvedSubmission.orgId}/wallet`);
+    if (podId) {
+      router.push(`/pod/settings/${podId}/wallet`);
+    } else if (orgId) {
+      router.push(`/organization/settings/${orgId}/wallet`);
     }
   };
 

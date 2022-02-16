@@ -401,7 +401,6 @@ const Payouts = (props) => {
     setOpenBatchPayModal(true)
   }
   const paymentSelectedAmount = paymentSelected && Object.keys(paymentSelected).length;
-  console.log('payment', paymentSelectedAmount, paymentSelected);
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
