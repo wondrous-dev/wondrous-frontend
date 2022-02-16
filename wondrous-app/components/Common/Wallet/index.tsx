@@ -5,7 +5,6 @@ import Ethereum from '../../Icons/ethereum';
 import { Metamask } from '../../Icons/metamask';
 import { WonderCoin } from '../../Icons/wonderCoin';
 import { PaddedParagraph } from '../text';
-import { formatEther } from '@ethersproject/units';
 
 import {
   WalletWrapper,
