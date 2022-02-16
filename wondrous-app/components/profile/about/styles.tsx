@@ -263,7 +263,6 @@ export const OrganisationsCardNoLogo = styled.div`
 
   max-height: 40px;
   width: 40px;
-  margin-right: 8px;
 `;
 
 //about pods card

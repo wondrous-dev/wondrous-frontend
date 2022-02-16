@@ -3,6 +3,7 @@ import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients
 import { Grey80, Grey250, White } from '../../../theme/colors';
 import { Typography } from '@material-ui/core';
 import { BaseCard } from '../card';
+import RightArrowIcon from '../../Icons/rightArrow';
 
 export const TaskInner = styled.div`
   display: flex;
@@ -178,6 +179,13 @@ export const TaskModalHeader = styled.div`
   align-items: center;
   margin-bottom: 24px !important;
 `;
+
+export const RightArrowWrapper = styled.div`
+  margin-left: 12px;
+`;
+
+export const RightArrow = styled(RightArrowIcon)``;
+
 export const PodNameTypography = styled(Typography)`
   && {
     font-weight: 500;
@@ -186,6 +194,27 @@ export const PodNameTypography = styled(Typography)`
     color: ${White};
   }
 `;
+
+export const TaskIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 12px;
+  cursor: pointer;
+`;
+
+export const TaskIconLabel = styled(Typography)`
+  && {
+    font-size: 13px;
+    margin-left: 8px;
+    color: #fff;
+  }
+`;
+
+export const SubtaskIconWrapper = styled(TaskIconWrapper)`
+  cursor: auto;
+`;
+
+export const SubtaskIconLabel = styled(TaskIconLabel)``;
 
 export const TaskTitleDiv = styled.div`
   display: flex;

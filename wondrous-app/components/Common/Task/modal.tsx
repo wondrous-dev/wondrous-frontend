@@ -28,6 +28,12 @@ import {
   TaskListModalHeader,
   TaskStatusHeaderText,
   ArchivedTaskUndo,
+  TaskIconWrapper,
+  TaskIconLabel,
+  SubtaskIconWrapper,
+  SubtaskIconLabel,
+  RightArrow,
+  RightArrowWrapper,
 } from './styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from '../../../graphql/queries/task';
@@ -128,6 +134,9 @@ import { CompensationAmount, CompensationPill, IconContainer } from '../Compensa
 import { MakePaymentModal } from '../Payment/PaymentModal';
 import { ApprovedSubmissionContext } from '../../../utils/contexts';
 import { TaskSubtasks } from '../TaskSubtasks';
+import { SubtaskDarkIcon, SubtaskLightIcon } from '../../Icons/subtask';
+import { CheckedBoxIcon } from '../../Icons/checkedBox';
+import RightArrowIcon from '../../Icons/rightArrow';
 export const MediaLink = (props) => {
   const { media, style } = props;
   const [getPreviewFile, { data, loading, error }] = useLazyQuery(GET_PREVIEW_FILE, {
@@ -960,31 +969,66 @@ export const TaskViewModal = (props) => {
                   />
                 </Link>
               ) : (
-                <OrganisationsCardNoLogo style={{ height: '29px', width: '28px' }}>
-                  <DAOIcon />
-                </OrganisationsCardNoLogo>
+                <>
+                  <OrganisationsCardNoLogo style={{ height: '29px', width: '28px' }}>
+                    <DAOIcon />
+                  </OrganisationsCardNoLogo>
+                </>
               )}
               {fetchedTask?.podName && (
-                <Link href={`/pod/${fetchedTask?.podId}/boards`} passHref={true}>
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <PodIcon
+                <>
+                  <RightArrowWrapper>
+                    <RightArrow />
+                  </RightArrowWrapper>
+                  <Link href={`/pod/${fetchedTask?.podId}/boards`} passHref={true}>
+                    <div
                       style={{
-                        width: '26px',
-                        height: '26px',
-                        marginRight: '4px',
-                        marginLeft: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        cursor: 'pointer',
                       }}
-                      color={fetchedTask?.podColor}
-                    />
-                    <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
-                  </div>
-                </Link>
+                    >
+                      <PodIcon
+                        style={{
+                          width: '26px',
+                          height: '26px',
+                          marginRight: '4px',
+                          marginLeft: '8px',
+                        }}
+                        color={fetchedTask?.podColor}
+                      />
+                      <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
+                    </div>
+                  </Link>
+                </>
+              )}
+              {fetchedTask?.type === TASK_TYPE && (
+                <>
+                  <RightArrowWrapper>
+                    <RightArrow />
+                  </RightArrowWrapper>
+                  <Link
+                    href={`/organization/${fetchedTask?.orgUsername}/boards?task=${
+                      isSubtask ? fetchedTask?.parentTaskId : taskId
+                    }`}
+                    passHref={true}
+                  >
+                    <TaskIconWrapper>
+                      <CheckedBoxIcon />
+                      <TaskIconLabel>{!isSubtask && 'Task'}</TaskIconLabel>
+                    </TaskIconWrapper>
+                  </Link>
+                </>
+              )}
+              {isSubtask && fetchedTask?.type === TASK_TYPE && (
+                <>
+                  <RightArrowWrapper>
+                    <RightArrow />
+                  </RightArrowWrapper>
+                  <SubtaskIconWrapper>
+                    <SubtaskDarkIcon /> <SubtaskIconLabel>Subtask</SubtaskIconLabel>
+                  </SubtaskIconWrapper>
+                </>
               )}
               {back && (
                 <>
