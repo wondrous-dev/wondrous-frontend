@@ -21,7 +21,6 @@ export const TaskSubtaskList = ({ taskId }) => {
   });
 
   useEffect(() => {
-    console.log('In view: ', inView);
     if (inView) {
       fetchMore({
         variables: {
