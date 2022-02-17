@@ -118,8 +118,8 @@ export const GET_SUBTASK_COUNT_FOR_TASK = gql`
 `;
 
 export const GET_SUBTASKS_FOR_TASK = gql`
-  query getSubtasksForTask($taskId: ID!) {
-    getSubtasksForTask(taskId: $taskId) {
+  query getSubtasksForTask($taskId: ID!, $limit: Int, $offset: Int) {
+    getSubtasksForTask(taskId: $taskId, limit: $limit, offset: $offset) {
       ...TaskCardFragment
     }
   }
