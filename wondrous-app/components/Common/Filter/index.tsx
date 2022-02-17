@@ -32,7 +32,7 @@ import { Blue200, Grey250 } from '../../../theme/colors';
  * @returns
  */
 
-const Filter = ({ filterSchema = [], filter, onChange }) => {
+const Filter = ({ filterSchema = [], onChange }) => {
   const [selected, setSelected] = useState(filterSchema[0]);
   const [selectedTabItems, setSelectedTabItems] = useState({});
   const [selectedNames, setSelectedNames] = useState([]);

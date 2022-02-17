@@ -48,7 +48,6 @@ export default function SearchTasks({ onSearch }: Props) {
 
     timeout = setTimeout(async () => {
       const { users = [], proposals, tasks } = await onSearch(searchString);
-      debugger;
       const hasMore = [...tasks, ...proposals].length > LIMIT;
       const tasksWithProposals = [...tasks, ...proposals].slice(0, LIMIT);
 
@@ -76,13 +75,13 @@ export default function SearchTasks({ onSearch }: Props) {
       open={true}
       onOpen={() => setOpen(true)}
       onClose={() => setOpen(false)}
-      inputValue={inputValue}
+      // inputValue={inputValue}
       onInputChange={(event, searchString) => {
         handleInputChange(event, searchString);
         setInputValue(searchString);
       }}
       freeSolo
-      getOptionLabel={(option) => option.title}
+      getOptionLabel={(takOrUser) => takOrUser.username || takOrUser.title}
       options={options}
       filterOptions={(x) => x}
       renderOption={(props, taskOrUser) => {
