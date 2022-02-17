@@ -27,7 +27,7 @@ export const TaskSubtaskList = ({ taskId }) => {
         variables: {
           offset: getSubtasksForTaskData?.getSubtasksForTask.length,
         },
-        updateQuery: (prev, { fetchMoreResult }) => {
+        updateQuery: (prev: any, { fetchMoreResult }: any) => {
           if (!fetchMoreResult) {
             setHasMore(false);
             return prev;
