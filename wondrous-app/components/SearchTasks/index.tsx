@@ -7,6 +7,8 @@ import { Autocomplete, Input, LoadMore, Option } from './styles';
 import TaskIcon from '../Icons/TaskTypes/task';
 import MilestoneIcon from '../Icons/TaskTypes/milestone';
 import BountyIcon from '../Icons/TaskTypes/bounty';
+import { SafeImage } from '../Common/Image';
+import { UserIconSmall } from '../Icons/Search/types';
 
 import { TaskFragment } from '../../types/task';
 import { TASK_TYPE, BOUNTY_TYPE, MILESTONE_TYPE } from '../../utils/constants';
@@ -20,7 +22,7 @@ const TaskTypeIcons = {
 };
 
 type Props = {
-  onSearch: (searchString: string) => Promise<TaskFragment[]>;
+  onSearch: (searchString: string) => Promise<{ users: Array<any>; tasks: TaskFragment[]; proposals: TaskFragment[] }>;
 };
 
 let timeout;
@@ -45,10 +47,13 @@ export default function SearchTasks({ onSearch }: Props) {
     clearTimeout(timeout);
 
     timeout = setTimeout(async () => {
-      const tasks = await onSearch(searchString);
+      const { users = [], proposals, tasks } = await onSearch(searchString);
+      debugger;
+      const hasMore = [...tasks, ...proposals].length > LIMIT;
+      const tasksWithProposals = [...tasks, ...proposals].slice(0, LIMIT);
 
-      setOptions(tasks.slice(0, LIMIT));
-      setHasMore(tasks.length > LIMIT);
+      setOptions([...tasksWithProposals, ...users]);
+      setHasMore(hasMore);
     }, 200);
   };
 
@@ -80,15 +85,42 @@ export default function SearchTasks({ onSearch }: Props) {
       getOptionLabel={(option) => option.title}
       options={options}
       filterOptions={(x) => x}
-      renderOption={(props, task) => {
-        let content = [
-          <Option key={task.title} onClick={() => handleTaskClick(task)}>
-            {TaskTypeIcons[task.type]}
-            {task.title}
-          </Option>,
-        ];
+      renderOption={(props, taskOrUser) => {
+        let content = [];
 
-        if (hasMore && last(options) === task) {
+        if (taskOrUser.username) {
+          content.push(
+            <Option
+              key={taskOrUser.username}
+              onClick={() => {
+                router.push(`/profile/${taskOrUser.username}/about`);
+              }}
+            >
+              {taskOrUser.profilePicture ? (
+                <SafeImage
+                  src={taskOrUser?.profilePicture}
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    borderRadius: '4px',
+                  }}
+                />
+              ) : (
+                <UserIconSmall />
+              )}
+              {taskOrUser.username}
+            </Option>
+          );
+        } else {
+          content.push(
+            <Option key={taskOrUser.title} onClick={() => handleTaskClick(taskOrUser)}>
+              {TaskTypeIcons[taskOrUser.type]}
+              {taskOrUser.title}
+            </Option>
+          );
+        }
+
+        if (hasMore && last(options) === taskOrUser) {
           content.push(
             <Option onClick={() => handleShowMore()}>
               <LoadMore>Show more results</LoadMore>

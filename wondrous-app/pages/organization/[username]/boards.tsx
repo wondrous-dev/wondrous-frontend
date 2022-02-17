@@ -24,118 +24,14 @@ import {
   STATUS_OPEN,
   TASK_STATUSES,
 } from '../../../utils/constants';
-import { GET_ORG_FROM_USERNAME, GET_ORG_BY_ID, GET_ORG_PODS } from '../../../graphql/queries/org';
+import { GET_ORG_FROM_USERNAME, GET_ORG_BY_ID, GET_ORG_PODS, SEARCH_ORG_USERS } from '../../../graphql/queries/org';
 import { OrgBoardContext } from '../../../utils/contexts';
 import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
 import { dedupeColumns, delQuery } from '../../../utils';
 import * as Constants from '../../../utils/constants';
 import apollo from '../../../services/apollo';
 import { TaskFilter } from '../../../types/task';
-
-const TO_DO = {
-  status: TASK_STATUS_TODO,
-  tasks: [],
-  section: {
-    title: 'Proposals',
-    icon: Requested,
-    id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
-    filter: {
-      taskType: TASK_STATUS_REQUESTED,
-    },
-    expandable: true,
-    action: {
-      text: 'Proposal',
-    },
-    tasks: [],
-  },
-};
-
-const IN_PROGRESS = {
-  status: TASK_STATUS_IN_PROGRESS,
-  tasks: [],
-  section: {
-    title: 'In Review',
-    icon: InReview,
-    id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
-    filter: {
-      taskType: TASK_STATUS_IN_REVIEW,
-    },
-    expandable: true,
-    action: {
-      text: 'Review',
-    },
-    tasks: [],
-  },
-};
-
-const DONE = {
-  status: TASK_STATUS_DONE,
-  tasks: [],
-  section: {
-    title: 'Archived',
-    icon: Archived,
-    id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
-    filter: {
-      taskType: TASK_STATUS_ARCHIVED,
-    },
-    expandable: true,
-    action: {
-      text: 'Restore',
-    },
-    tasks: [],
-  },
-};
-
-const COLUMNS = [TO_DO, IN_PROGRESS, DONE];
-
-const SELECT_OPTIONS = [
-  '#copywriting (23)',
-  '#growth (23)',
-  '#design (23)',
-  '#community (11)',
-  '#sales (23)',
-  '#tiktok (13)',
-  '#analytics (23)',
-];
-
-const LIMIT = 10;
-
-export const populateTaskColumns = (tasks, columns) => {
-  if (!columns) {
-    return [];
-  }
-
-  const newColumns = columns.map((column) => {
-    column.tasks = [];
-
-    return (
-      tasks &&
-      tasks.reduce((column, task) => {
-        if (column.status === task.status) {
-          column.tasks = [...column.tasks, task];
-        } else if (task?.status === TASK_STATUS_ARCHIVED && column.section.filter.taskType === TASK_STATUS_ARCHIVED) {
-          column.section.tasks = [...column.section.tasks, task];
-        }
-
-        return column;
-      }, column)
-    );
-  });
-  return newColumns;
-};
-
-export const addToTaskColumns = (newResults, columns) => {
-  if (!columns) return [];
-  const newColumns = columns.map((column) => {
-    return newResults.reduce((column, task) => {
-      if (column.status === task.status) {
-        column.tasks = [...column.tasks, task];
-      }
-      return column;
-    }, column);
-  });
-  return newColumns;
-};
+import { COLUMNS, LIMIT, SELECT_OPTIONS, populateTaskColumns, addToTaskColumns } from '../../../services/board';
 
 const BoardsPage = () => {
   const router = useRouter();
@@ -318,10 +214,10 @@ const BoardsPage = () => {
     }
   }, [orgData, orgId, getOrgBoardTaskCount, getOrgTaskSubmissions, getOrgTaskProposals, getOrgTasks]);
 
-  function searchTasks(searchString: string, returnResult = false) {
-    const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
-    const searchProposals = statuses.length !== taskStatuses.length || statuses === DEFAULT_STATUS_ARR;
-    const searchTasks = !(searchProposals && statuses.length === 1);
+  function searchTasks(searchString: string) {
+    // const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
+    // const searchProposals = statuses.length !== taskStatuses.length || statuses === DEFAULT_STATUS_ARR;
+    // const searchTasks = !(searchProposals && statuses.length === 1);
 
     const id = orgId || orgData?.id;
     const searchOrgTaskProposalsArgs = {
@@ -342,72 +238,86 @@ const BoardsPage = () => {
         limit: 1000,
         offset: 0,
         // Needed to exclude proposals
-        statuses: taskStatuses.length ? taskStatuses : DEFAULT_STATUS_ARR,
+        statuses: DEFAULT_STATUS_ARR,
         searchString,
       },
     };
 
-    if (returnResult) {
-      const promises: any = [
-        searchProposals
-          ? apollo.query({
-              ...searchOrgTaskProposalsArgs,
-              query: SEARCH_ORG_TASK_BOARD_PROPOSALS,
-            })
-          : { data: { searchOrgTaskBoardProposals: [] } },
+    // const searchOrgTasksArgs = {
+    //   variables: {
+    //     podIds,
+    //     orgId: id,
+    //     limit: 1000,
+    //     offset: 0,
+    //     // Needed   to exclude proposals
+    //     statuses: taskStatuses.length ? taskStatuses : DEFAULT_STATUS_ARR,
+    //     searchString,
+    //   },
+    // };
 
-        searchTasks
-          ? apollo.query({
-              ...searchOrgTasksArgs,
-              query: SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
-            })
-          : { data: { searchTasksForOrgBoardView: [] } },
-      ];
+    // } else {
+    //   if (searchTasks) {
+    //     searchOrgTasks(searchOrgTasksArgs);
+    //   } else {
+    //     const newColumns = [...columns];
+    //     newColumns.forEach((column) => {
+    //       column.tasks = [];
+    //       column.section.tasks = [];
+    //     });
+    //
+    //     setColumns(newColumns);
+    //   }
+    //
+    //   if (searchProposals) {
+    //     searchOrgTaskProposals(searchOrgTaskProposalsArgs);
+    //   }
+    // }
 
-      return Promise.all(promises).then(([proposals, tasks]: any) => [
-        ...proposals.data.searchProposalsForOrgBoardView,
-        ...tasks.data.searchTasksForOrgBoardView,
-      ]);
-    } else {
-      if (searchTasks) {
-        searchOrgTasks(searchOrgTasksArgs);
-      } else {
-        const newColumns = [...columns];
-        newColumns.forEach((column) => {
-          column.tasks = [];
-          column.section.tasks = [];
-        });
+    const promises: any = [
+      apollo.query({
+        query: SEARCH_ORG_USERS,
+        variables: {
+          orgId: id,
+          queryString: searchString,
+        },
+      }),
+      apollo.query({
+        ...searchOrgTaskProposalsArgs,
+        query: SEARCH_ORG_TASK_BOARD_PROPOSALS,
+      }),
 
-        setColumns(newColumns);
-      }
+      apollo.query({
+        ...searchOrgTasksArgs,
+        query: SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
+      }),
+    ];
 
-      if (searchProposals) {
-        searchOrgTaskProposals(searchOrgTaskProposalsArgs);
-      }
-
-      return Promise.resolve([]);
-    }
+    return Promise.all(promises).then(([users, proposals, tasks]: any) => ({
+      users: users.data.searchOrgUsers,
+      proposals: proposals.data.searchProposalsForOrgBoardView,
+      tasks: tasks.data.searchTasksForOrgBoardView,
+    }));
   }
 
   useEffect(() => {
-    if (firstTimeFetch) {
-      searchTasks(searchString);
-    }
+    // if (firstTimeFetch) {
+    //   searchTasks(searchString);
+    // }
   }, [searchString, podIds, statuses, searchOrgTasks, searchOrgTaskProposals]);
 
-  const handleSearch = useCallback(
-    (searchString) => {
-      if (search) {
-        history.pushState({}, '', `${delQuery(router.asPath)}?search=${searchString}&view=list`);
-        setSearchString(searchString);
-
-        return Promise.resolve([]);
-      } else {
-        return searchTasks(searchString, true);
-      }
-    },
-    [orgId, orgData]
-  );
+  // const handleSearch = useCallback(
+  //   (searchString) => {
+  //     // if (search) {
+  //     //   history.pushState({}, '', `${delQuery(router.asPath)}?search=${searchString}&view=list`);
+  //     //   setSearchString(searchString);
+  //     //
+  //     //   return Promise.resolve([]);
+  //     // } else {
+  //     //   return searchTasks(searchString);
+  //     // }
+  //   },
+  //   [orgId, orgData]
+  // );
 
   const handleFilterChange: any = ({ statuses, pods }: TaskFilter) => {
     setStatuses(statuses || DEFAULT_STATUS_ARR);
@@ -465,7 +375,7 @@ const BoardsPage = () => {
         columns={columns}
         searchString={searchString}
         onLoadMore={handleLoadMore}
-        onSearch={handleSearch}
+        onSearch={(searchString) => searchTasks(searchString)}
         onFilterChange={handleFilterChange}
         hasMore={orgTaskHasMore}
         orgData={orgData}

@@ -41,6 +41,7 @@ import { useBoard } from '../../../utils/hooks';
 import { Proposal } from '../../Icons';
 import { BountyIcon, MilestoneIcon, TaskIcon, UserIcon } from '../../Icons/Search/types';
 import { Chevron } from '../../Icons/sections';
+import { FILTER_STATUSES, splitColsByType } from '../../../services/board';
 
 enum ViewType {
   List = 'list',
@@ -64,10 +65,22 @@ const Boards = (props: Props) => {
   const [filter, setFilter] = useState([]);
   const router = useRouter();
   const [view, setView] = useState(null);
+  const [filterSchema, setFilterSchema] = useState([
+    {
+      name: 'pods',
+      label: 'Pods',
+      multiChoice: true,
+      items: orgPods.map((pod) => ({
+        ...pod,
+        icon: <CreatePodIcon />,
+        count: pod.contributorCount,
+      })),
+    },
+    FILTER_STATUSES,
+  ]);
   const [totalCount, setTotalCount] = useState(0);
   const [searchResults, setSearchResults] = useState({});
   const board = useBoard();
-  const { taskCount = {} } = board;
   const { search: searchQuery } = router.query;
 
   useEffect(() => {
@@ -81,137 +94,22 @@ const Boards = (props: Props) => {
       return;
     }
 
-    let totalCount = 0;
-
-    const createColumnsByType = (type) => {
-      const cols: any = cloneDeep(columns);
-
-      cols.tasksCount = 0;
-
-      cols.forEach((col) => {
-        col.tasks = col.tasks.filter((task) => {
-          if ((task.type || TASK_TYPE) === type) {
-            totalCount++;
-            cols.tasksCount++;
-            return true;
-          }
-
-          return false;
-        });
-        col.section.tasks = col.section.tasks.filter((task) => {
-          if ((task.type || TASK_TYPE) === type) {
-            totalCount++;
-            cols.tasksCount++;
-            return true;
-          }
-
-          return false;
-        });
-      });
-
-      return cols;
-    };
-
-    const searchResults = {
-      [TASK_TYPE]: {
-        name: 'task',
-        showAll: false,
-        columns: createColumnsByType(TASK_TYPE),
-        icon: <TaskIcon />,
-      },
-      [BOUNTY_TYPE]: {
-        name: 'bounties',
-        showAll: false,
-        columns: createColumnsByType(BOUNTY_TYPE),
-        icon: <BountyIcon />,
-      },
-      [MILESTONE_TYPE]: {
-        name: 'milestone',
-        showAll: false,
-        columns: createColumnsByType(MILESTONE_TYPE),
-        icon: <MilestoneIcon />,
-      },
-    };
+    const { splitCols, totalCount } = splitColsByType(columns);
 
     setTotalCount(totalCount);
-    setSearchResults(searchResults);
+    setSearchResults(splitCols);
   }, [columns]);
 
-  const filterSchema = [
-    {
-      name: 'pods',
-      label: 'Pods',
-      multiChoice: true,
-      items: orgPods.map((pod) => ({
-        ...pod,
-        icon: <CreatePodIcon />,
-        count: pod.contributorCount,
-      })),
-    },
-    {
-      name: 'statuses',
-      label: 'Status',
-      multiChoice: true,
-      items: [
-        // Back-end doesn't support statuses below
-        // {
-        //   id: TASK_STATUS_REQUESTED,
-        //   name: 'Membership requests',
-        //   icon: <TaskStatus status={TASK_STATUS_REQUESTED} />,
-        //   count: 0,
-        // },
-        {
-          id: TASK_STATUS_REQUESTED,
-          name: 'Proposals',
-          icon: <Proposal />,
-          count: taskCount.proposal || 0,
-        },
-        {
-          id: TASK_STATUS_TODO,
-          name: 'To-Do',
-          icon: <TaskStatus status={TASK_STATUS_TODO} />,
-          count: taskCount.created || 0,
-        },
-        {
-          id: TASK_STATUS_IN_PROGRESS,
-          name: 'In-progress',
-          icon: <TaskStatus status={TASK_STATUS_IN_PROGRESS} />,
-          count: taskCount.inProgress || 0,
-        },
-        {
-          id: TASK_STATUS_IN_REVIEW,
-          name: 'In-review',
-          icon: <TaskStatus status={TASK_STATUS_IN_REVIEW} />,
-          count: taskCount.inReview || 0,
-        },
-        {
-          id: TASK_STATUS_DONE,
-          name: 'Completed',
-          icon: <TaskStatus status={TASK_STATUS_DONE} />,
-          count: taskCount.completed || 0,
-        },
-        // Back-end doesn't support statuses below
-        // {
-        //   id: TASK_STATUS_AWAITING_PAYMENT,
-        //   name: 'Awaiting payment',
-        //   icon: <TaskStatus status={TASK_STATUS_AWAITING_PAYMENT} />,
-        //   count: 0,
-        // },
-        // {
-        //   id: TASK_STATUS_PAID,
-        //   name: 'Completed and paid',
-        //   icon: <TaskStatus status={TASK_STATUS_PAID} />,
-        //   count: 0,
-        // },
-        {
-          id: TASK_STATUS_ARCHIVED,
-          name: 'Archived',
-          icon: <TaskStatus status={TASK_STATUS_ARCHIVED} />,
-          count: 0,
-        },
-      ],
-    },
-  ];
+  useEffect(() => {
+    const schema = [...filterSchema];
+    schema[0].items = orgPods.map((pod) => ({
+      ...pod,
+      icon: <CreatePodIcon />,
+      count: pod.contributorCount,
+    }));
+
+    setFilterSchema(schema);
+  }, [orgPods]);
 
   const listViewOptions = [
     {
