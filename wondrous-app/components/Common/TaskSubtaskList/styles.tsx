@@ -12,3 +12,5 @@ export const SubtaskTaskItem = styled(Task)`
     text-align: left;
   }
 `;
+
+export const SubtaskTaskListHasMore = styled.div``;
