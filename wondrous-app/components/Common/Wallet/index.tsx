@@ -102,7 +102,7 @@ const Wallet = () => {
       connectWallet();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connectWallet, user]);
+  }, [user]);
 
   // Detect Chain
   useEffect(() => {

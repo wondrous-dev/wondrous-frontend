@@ -220,8 +220,6 @@ export const TaskSubmissionFragment = gql`
     media {
       ...MediaFragment
     }
-    reactionCount
-    commentCount
   }
   ${MediaFragment}
 `;
