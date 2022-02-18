@@ -4,21 +4,9 @@ import { TaskCardFragment, TaskProposalCardFragment, TaskSubmissionCardFragment 
 import { PerStatusTaskCountFragment } from '../fragments/taskBoard';
 
 export const GET_ORG_TASK_BOARD_PROPOSALS = gql`
-  query GetOrgTaskBoardProposals(
-    $orgId: ID!
-    $statuses: [String]
-    $podIds: [String]
-    $limit: Int
-    $offset: Int
-  ) {
+  query GetOrgTaskBoardProposals($orgId: ID!, $statuses: [String], $podIds: [String], $limit: Int, $offset: Int) {
     getOrgTaskBoardProposals(
-      input: {
-        orgId: $orgId
-        statuses: $statuses
-        podIds: $podIds
-        limit: $limit
-        offset: $offset
-      }
+      input: { orgId: $orgId, statuses: $statuses, podIds: $podIds, limit: $limit, offset: $offset }
     ) {
       ...TaskProposalCardFragment
     }
@@ -101,6 +89,51 @@ export const GET_ORG_TASK_BOARD_TASKS = gql`
   ${TaskCardFragment}
 `;
 
+export const GET_USER_TASK_BOARD_PROPOSALS = gql`
+  query getUserTaskBoardProposals(
+    $userId: ID
+    $statuses: [String]
+    $orgId: String
+    $podIds: [String]
+    $limit: Int
+    $offset: Int
+  ) {
+    getUserTaskBoardProposals(
+      input: { userId: $userId, statuses: $statuses, orgId: $orgId, podIds: $podIds, limit: $limit, offset: $offset }
+    ) {
+      ...TaskProposalCardFragment
+    }
+  }
+  ${TaskProposalCardFragment}
+`;
+
+export const GET_TASKS_RELATED_TO_USER_IN_ORG = gql`
+  query getTasksRelatedToUserInOrg(
+    $orgId: ID!
+    $statuses: [String]
+    $searchString: String
+    $podIds: [String]
+    $userId: String
+    $limit: Int
+    $offset: Int
+  ) {
+    getTasksRelatedToUserInOrg(
+      input: {
+        orgId: $orgId
+        statuses: $statuses
+        searchString: $searchString
+        podIds: $podIds
+        userId: $userId
+        limit: $limit
+        offset: $offset
+      }
+    ) {
+      ...TaskCardFragment
+    }
+  }
+  ${TaskCardFragment}
+`;
+
 export const SEARCH_TASKS_FOR_ORG_BOARD_VIEW = gql`
   query searchTasksForOrgBoardView(
     $orgId: ID!
@@ -142,24 +175,6 @@ export const GET_USER_TASK_BOARD_TASKS = gql`
     }
   }
   ${TaskCardFragment}
-`;
-
-export const GET_USER_TASK_BOARD_PROPOSALS = gql`
-  query getUserTaskBoardProposals(
-    $userId: ID
-    $statuses: [String]
-    $orgId: String
-    $podIds: [String]
-    $limit: Int
-    $offset: Int
-  ) {
-    getUserTaskBoardProposals(
-      input: { userId: $userId, statuses: $statuses, orgId: $orgId, podIds: $podIds, limit: $limit, offset: $offset }
-    ) {
-      ...TaskProposalCardFragment
-    }
-  }
-  ${TaskProposalCardFragment}
 `;
 
 export const GET_USER_TASK_BOARD_SUBMISSIONS = gql`

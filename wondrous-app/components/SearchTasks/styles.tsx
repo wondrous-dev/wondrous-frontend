@@ -60,6 +60,10 @@ export const Option = styled.li`
     height: 18px;
     margin-right: 12px;
   }
+  
+  img {
+    margin-right: 12px;
+  }
 `;
 
 export const LoadMore = styled.a`

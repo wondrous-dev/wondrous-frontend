@@ -40,9 +40,9 @@ const BoardsPage = () => {
   const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR);
   const [podIds, setPodIds] = useState([]);
   const [orgData, setOrgData] = useState(null);
-  const [searchString, setSearchString] = useState('');
+  // const [searchString, setSearchString] = useState('');
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
-  const { username, orgId, search } = router.query;
+  const { username, orgId, search, userId } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -128,6 +128,19 @@ const BoardsPage = () => {
     fetchPolicy: 'cache-and-network',
   });
 
+  const [getTasksRelatedToUser] = useLazyQuery(GET_TASKS_RELATED_TO_USER_IN_ORG, {
+    onCompleted: (data) => {
+      if (!firstTimeFetch) {
+        const tasks = data?.getTasksRelatedToUserInOrg;
+        const newColumns = populateTaskColumns(tasks, columns);
+        setColumns(dedupeColumns(newColumns));
+        setOrgTaskHasMore(tasks.length >= LIMIT);
+        setFirstTimeFetch(true);
+      }
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+
   const [getOrgFromUsername] = useLazyQuery(GET_ORG_FROM_USERNAME, {
     onCompleted: (data) => {
       if (data?.getOrgFromUsername) {
@@ -173,10 +186,36 @@ const BoardsPage = () => {
       });
 
       if (search) {
-        if (!firstTimeFetch) {
-          setSearchString(search as string);
-          setFirstTimeFetch(true);
-        }
+        // if (!firstTimeFetch) {
+        //   setSearchString(search as string);
+        //   setFirstTimeFetch(true);
+        // }
+      } else if (userId) {
+        getTasksRelatedToUser({
+          variables: {
+            podIds,
+            userId,
+            orgId: id,
+            limit: 1000,
+            limit2: 1000,
+            offset: 0,
+            statuses: DEFAULT_STATUS_ARR,
+          },
+        });
+
+        //
+        // getTasksRelatedToUser({
+        //   variables: {
+        //     podIds,
+        //     userId,
+        //     orgId: id,
+        //     limit: 1000,
+        //     limit2: 1000,
+        //     offset: 0,
+        //     // Needed to exclude proposals
+        //     statuses: DEFAULT_STATUS_ARR,
+        //   },
+        // });
       } else {
         getOrgTasks({
           variables: {
@@ -215,7 +254,7 @@ const BoardsPage = () => {
   }, [orgData, orgId, getOrgBoardTaskCount, getOrgTaskSubmissions, getOrgTaskProposals, getOrgTasks]);
 
   function searchTasks(searchString: string) {
-    // const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
+    const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
     // const searchProposals = statuses.length !== taskStatuses.length || statuses === DEFAULT_STATUS_ARR;
     // const searchTasks = !(searchProposals && statuses.length === 1);
 
@@ -299,11 +338,11 @@ const BoardsPage = () => {
     }));
   }
 
-  useEffect(() => {
-    // if (firstTimeFetch) {
-    //   searchTasks(searchString);
-    // }
-  }, [searchString, podIds, statuses, searchOrgTasks, searchOrgTaskProposals]);
+  // useEffect(() => {
+  //   // if (firstTimeFetch) {
+  //   //   searchTasks(searchString);
+  //   // }
+  // }, [searchString, podIds, statuses, searchOrgTasks, searchOrgTaskProposals]);
 
   // const handleSearch = useCallback(
   //   (searchString) => {
@@ -373,7 +412,7 @@ const BoardsPage = () => {
         orgPods={orgPods}
         selectOptions={SELECT_OPTIONS}
         columns={columns}
-        searchString={searchString}
+        searchString=""
         onLoadMore={handleLoadMore}
         onSearch={(searchString) => searchTasks(searchString)}
         onFilterChange={handleFilterChange}
