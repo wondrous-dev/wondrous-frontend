@@ -28,7 +28,6 @@ const generateReadablePreviewForAddress = (address: String) => {
   }
 };
 
-
 export const constructGnosisRedirectUrl = (chain, safeAddress, safeTxHash) => {
   return `https://gnosis-safe.io/app/${CHAIN_TO_GNOSIS_URL_ABBR[chain]}:${safeAddress}/transactions/${safeTxHash}`;
 };
@@ -82,7 +81,7 @@ export const SingleWalletPayment = (props) => {
     try {
       await wonderGnosis.connectSafeSdk({ chain, safeAddress });
     } catch (e) {
-      console.log('error connecint to gnosis safe', selectedWallet.chain);
+      console.log('error connecting to gnosis safe', selectedWallet.chain);
       setSafeConnectionError(`selected gnosis safe not deployed on ${selectedWallet.chain}`);
     }
   };
@@ -181,7 +180,7 @@ export const SingleWalletPayment = (props) => {
       data: transactionData.data,
       operation: 0,
     };
-    let safeTxGas
+    let safeTxGas;
     try {
       const estimateTx: SafeMultisigTransactionEstimateResponse = await gnosisClient.estimateSafeTransaction(
         selectedWallet?.address,

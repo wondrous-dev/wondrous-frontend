@@ -72,6 +72,7 @@ export const PermissionTitle = styled.h5`
   font-size: 16px;
   margin-bottom: 7px;
   margin-top: 14px;
+  font-family: Space Grotesk;
 `;
 
 export const PermissionSubtitle = styled.div`
@@ -84,6 +85,7 @@ export const PermissionFooter = styled.div`
   padding: 50px 0 30px;
   display: flex;
   justify-content: flex-end;
+  font-family: Space Grotesk;
 `;
 
 export const RoleNameInput = styled(InputBase)`
@@ -98,6 +100,7 @@ export const RoleNameInput = styled(InputBase)`
     letter-spacing: 0.01em;
     color: #c4c4c4;
     padding: 10px 15px;
+    font-family: Space Grotesk;
   }
 `;
 

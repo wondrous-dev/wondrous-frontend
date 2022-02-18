@@ -433,6 +433,8 @@ const CreateLayoutBaseModal = (props) => {
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
 
+  const router = useRouter();
+  const { podId: routerPodId } = router.query;
   useEffect(() => {
     if (open) {
       if (fetchedUserPermissionsContext && board?.orgId in fetchedUserPermissionsContext?.orgPermissions && !org) {
@@ -440,10 +442,11 @@ const CreateLayoutBaseModal = (props) => {
         // TODO: if you are part of the org and you're on that page it should be create on that org
         setOrg(board?.orgId);
       }
-      if (fetchedUserPermissionsContext && board?.podId in fetchedUserPermissionsContext?.podPermissions && !pod) {
+
+      if (board?.podId && !pod) {
         // If you're only part of one dao then just set that as default
         // TODO: if you are part of the org and you're on that page it should be create on that org
-        setPod(board?.podId);
+        setPod(board?.podId || routerPodId);
       }
       if (org) {
         if (!podsFetched) {
@@ -474,7 +477,7 @@ const CreateLayoutBaseModal = (props) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [board?.orgId, fetchedUserPermissionsContext, board?.podId, org, pod, open]);
+  }, [board?.orgId, fetchedUserPermissionsContext, board?.podId, org, pod, open, routerPodId]);
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext: fetchedUserPermissionsContext,
@@ -483,7 +486,7 @@ const CreateLayoutBaseModal = (props) => {
   });
   const canCreateTask = permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK);
   const canCreatePod = permissions.includes(PERMISSIONS.FULL_ACCESS);
-  const router = useRouter();
+
   const getPodObject = useCallback(() => {
     let justCreatedPod = null;
     pods.forEach((testPod) => {
