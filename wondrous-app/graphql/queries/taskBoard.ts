@@ -184,6 +184,60 @@ export const SEARCH_TASKS_FOR_ORG_BOARD_VIEW = gql`
   ${TaskCardFragment}
 `;
 
+export const SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW = gql`
+  query searchProposalsForUserBoardView(
+    $userId: ID!
+    $orgId: String
+    $statuses: [String]
+    $searchString: String
+    $podIds: [String]
+    $limit: Int
+    $offset: Int
+  ) {
+    searchProposalsForUserBoardView(
+      input: {
+        userId: $userId
+        orgId: $orgId
+        statuses: $statuses
+        searchString: $searchString
+        podIds: $podIds
+        limit: $limit
+        offset: $offset
+      }
+    ) {
+      ...TaskProposalCardFragment
+    }
+  }
+  ${TaskProposalCardFragment}
+`;
+
+export const SEARCH_TASKS_FOR_USER_BOARD_VIEW = gql`
+  query searchTasksForUserBoardView(
+    $userId: ID!
+    $orgId: String
+    $statuses: [String]
+    $searchString: String
+    $podIds: [String]
+    $limit: Int
+    $offset: Int
+  ) {
+    searchTasksForUserBoardView(
+      input: {
+        userId: $userId
+        orgId: $orgId
+        statuses: $statuses
+        searchString: $searchString
+        podIds: $podIds
+        limit: $limit
+        offset: $offset
+      }
+    ) {
+      ...TaskCardFragment
+    }
+  }
+  ${TaskCardFragment}
+`;
+
 export const GET_USER_TASK_BOARD_TASKS = gql`
   query getUserTaskBoardTasks(
     $userId: ID
