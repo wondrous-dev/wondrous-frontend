@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import FilterIcon from '../../Icons/filter';
 import { Chevron } from '../../Icons/sections';
 import Tabs from '../Tabs';
@@ -24,6 +24,7 @@ import {
   FilterValues,
 } from './styles';
 import { Blue200, Grey250 } from '../../../theme/colors';
+import { useOutsideAlerter } from '../../../utils/hooks';
 
 const Filter = ({ filterSchema = [], onChange }) => {
   const [selected, setSelected] = useState(filterSchema[0]);
@@ -32,10 +33,13 @@ const Filter = ({ filterSchema = [], onChange }) => {
   const [items, setItems] = useState([]);
   const [multiChoice, setMultichoice] = useState(true);
   const [open, setOpen] = useState(false);
+  const wrapperRef = useRef(null);
 
   const toggleOpen = () => {
     setOpen(!open);
   };
+
+  useOutsideAlerter(wrapperRef, () => setOpen(false));
 
   // Changes the display list.
   const displayList = (tab) => {
@@ -100,7 +104,7 @@ const Filter = ({ filterSchema = [], onChange }) => {
   }, [open]);
 
   return (
-    <FilterHandle open={open}>
+    <FilterHandle ref={wrapperRef} open={open}>
       <FilterHandleInner open={open} onClick={toggleOpen}>
         <FilterHandleContainer>
           {selectedNames.length ? (
