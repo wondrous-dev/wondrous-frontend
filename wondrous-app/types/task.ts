@@ -1,4 +1,4 @@
-export type TaskFilter = { statuses?: string[]; pods?: string[] };
+export type TaskFilter = { statuses?: string[]; podIds?: string[] };
 
 export interface IUser {
   avatar: {

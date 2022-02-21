@@ -22,7 +22,7 @@ const OrgBoards = (props: Props) => {
   const { columns, onLoadMore, hasMore, orgData, orgPods, onSearch, onFilterChange, searchString } = props;
   const [filterSchema, setFilterSchema] = useState([
     {
-      name: 'pods',
+      name: 'podIds',
       label: 'Pods',
       multiChoice: true,
       items: orgPods.map((pod) => ({
