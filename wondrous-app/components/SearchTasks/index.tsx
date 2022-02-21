@@ -110,7 +110,7 @@ export default function SearchTasks({ onSearch }: Props) {
       />
 
       <Autocomplete
-        open={true}
+        open={open}
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
         // inputValue={inputValue}
