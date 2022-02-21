@@ -41,7 +41,7 @@ const GoBackStyle = {
 };
 
 export const MakePaymentModal = (props) => {
-  const { open, handleClose, setShowPaymentModal, approvedSubmission, fetchedTask, getTaskSubmissionsForTask} = props;
+  const { open, handleClose, setShowPaymentModal, approvedSubmission, fetchedTask, getTaskSubmissionsForTask } = props;
   const [selectedTab, setSelectedTab] = useState('wallet');
   const [wallets, setWallets] = useState([]);
   const [submissionPaymentInfo, setSubmissionPaymentInfo] = useState(null);
@@ -106,8 +106,8 @@ export const MakePaymentModal = (props) => {
   }, [fetchedTask]);
 
   useEffect(() => {
-    setRewardAmount(fetchedTask?.rewards[0].rewardAmount);
-    setTokenName(fetchedTask?.rewards[0].tokenName);
+    setRewardAmount(fetchedTask?.rewards[0]?.rewardAmount);
+    setTokenName(fetchedTask?.rewards[0]?.tokenName);
   }, [fetchedTask]);
 
   useEffect(() => {
@@ -130,7 +130,7 @@ export const MakePaymentModal = (props) => {
         taskId: fetchedTask?.id,
       },
     });
-};
+  };
 
   const canPay = permissions.includes(PERMISSIONS.APPROVE_PAYMENT) || permissions.includes(PERMISSIONS.FULL_ACCESS);
   return (
@@ -163,11 +163,11 @@ export const MakePaymentModal = (props) => {
                 <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
               </div>
             )}
-          <>
-            <PodNameTypography style={GoBackStyle} onClick={handleGoBackToTask}>
-              Back to Task
-            </PodNameTypography>
-          </>
+            <>
+              <PodNameTypography style={GoBackStyle} onClick={handleGoBackToTask}>
+                Back to Task
+              </PodNameTypography>
+            </>
           </PaymentModalHeader>
           <PaymentTitleDiv>
             <PaymentTitleTextDiv>

@@ -12,6 +12,7 @@ export const AccordionComp = styled(Accordion)`
     line-height: 21px;
     letter-spacing: 0.01em;
     background: transparent;
+    margin-bottom: 16px;
   }
 
   .MuiAccordionSummary-content {
@@ -46,9 +47,8 @@ export const AccordionComp = styled(Accordion)`
     svg {
       margin: auto;
     }
-    
-    &:not(.Mui-disabled) {
 
+    &:not(.Mui-disabled) {
       svg {
         path {
           fill: #ccbbff;

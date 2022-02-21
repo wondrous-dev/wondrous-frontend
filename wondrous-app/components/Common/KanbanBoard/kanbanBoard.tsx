@@ -35,6 +35,7 @@ const populateOrder = (index, tasks, field) => {
     belowOrder,
   };
 };
+
 const KanbanBoard = (props) => {
   const user = useMe();
   const { columns, onLoadMore, hasMore } = props;
@@ -165,6 +166,7 @@ const KanbanBoard = (props) => {
         };
       }
     });
+
     setColumnsState(dedupeColumns(updatedColumns));
   };
 
@@ -190,9 +192,16 @@ const KanbanBoard = (props) => {
     >
       <KanbanBoardContainer>
         <TaskViewModal
+          disableEnforceFocus
           open={openModal}
+          shouldFocusAfterRender={false}
           handleClose={() => {
+            const style = document.body.getAttribute('style');
+            const top = style.match(/(?<=top: -)(.*?)(?=px)/);
             document.body.setAttribute('style', '');
+            if (top?.length > 0) {
+              window?.scrollTo(0, Number(top[0]));
+            }
             setOpenModal(false);
           }}
           taskId={router?.query?.task || router?.query?.taskProposal}
