@@ -13,23 +13,11 @@ import {
   SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
 } from '../../../graphql/queries/taskBoard';
 import Boards from '../../../components/organization/boards/boards';
-import { InReview, Requested, Archived } from '../../../components/Icons/sections';
-import {
-  TASK_STATUS_DONE,
-  TASK_STATUS_IN_PROGRESS,
-  TASK_STATUS_TODO,
-  TASK_STATUS_REQUESTED,
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_ARCHIVED,
-  DEFAULT_STATUS_ARR,
-  STATUS_OPEN,
-  TASK_STATUSES,
-} from '../../../utils/constants';
-import { GET_ORG_FROM_USERNAME, GET_ORG_BY_ID, GET_ORG_PODS, SEARCH_ORG_USERS } from '../../../graphql/queries/org';
+import { TASK_STATUS_IN_REVIEW, DEFAULT_STATUS_ARR, STATUS_OPEN, TASK_STATUSES } from '../../../utils/constants';
+import { GET_ORG_FROM_USERNAME, GET_ORG_BY_ID, GET_ORG_PODS } from '../../../graphql/queries/org';
 import { OrgBoardContext } from '../../../utils/contexts';
 import { GET_AUTOCOMPLETE_USERS, GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
 import { dedupeColumns, delQuery } from '../../../utils';
-import * as Constants from '../../../utils/constants';
 import apollo from '../../../services/apollo';
 import { TaskFilter } from '../../../types/task';
 import { COLUMNS, LIMIT, SELECT_OPTIONS, populateTaskColumns, addToTaskColumns } from '../../../services/board';
@@ -318,13 +306,13 @@ const BoardsPage = () => {
     }));
   }
 
-  const handleFilterChange: any = ({ statuses, podIds }: TaskFilter) => {
+  const handleFilterChange: any = ({ statuses = DEFAULT_STATUS_ARR, podIds }: TaskFilter) => {
     const id = orgId || orgData?.id;
-    const taskStatuses = (statuses || DEFAULT_STATUS_ARR).filter((status) => TASK_STATUSES.includes(status));
+    const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
     const searchProposals = statuses.length !== taskStatuses.length || statuses === DEFAULT_STATUS_ARR;
     const searchTasks = !(searchProposals && statuses.length === 1);
 
-    setStatuses(statuses || DEFAULT_STATUS_ARR);
+    setStatuses(statuses);
     setPodIds(podIds || []);
 
     if (userId) {
@@ -338,7 +326,7 @@ const BoardsPage = () => {
           offset: 0,
         },
       });
-    } else if (search) {
+    } else {
       const searchOrgTaskProposalsArgs = {
         variables: {
           podIds,
