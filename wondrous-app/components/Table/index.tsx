@@ -396,7 +396,7 @@ export const Table = (props) => {
                               height: '16px',
                             }}
                           />
-                          <RewardAmount>{shrinkNumber(reward.rewardAmount)}</RewardAmount>
+                          <RewardAmount>{shrinkNumber(reward?.rewardAmount)}</RewardAmount>
                         </Reward>
                       ) : (
                         <Box color="#fff">None</Box>
