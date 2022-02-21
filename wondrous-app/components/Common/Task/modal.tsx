@@ -623,7 +623,6 @@ export const TaskViewModal = (props) => {
     },
     fetchPolicy: 'network-only',
     onError: (err) => {
-      console.log('err', err);
       setTaskSubmissionLoading(false);
     },
   });
@@ -759,7 +758,6 @@ export const TaskViewModal = (props) => {
           });
         }
       } else if (task && !isEqual(task, fetchedTask)) {
-        console.log('not getting in here');
         setFetchedTask(task);
       }
 

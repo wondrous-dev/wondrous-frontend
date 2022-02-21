@@ -26,6 +26,7 @@ export const StyledTabs = styled((props) => (
 	'& .MuiButtonBase-root': {
 		position: 'relative',
 		maxWidth: 210,
+		minWidth: 145,
 		borderBottom: '2px solid #4B4B4B',
 
 		//text

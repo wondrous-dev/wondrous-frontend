@@ -20,18 +20,15 @@ import {
   FilterItemCount,
   FilterItemListShade,
   FilterItemOrgIcon,
+  InlineText,
+  FilterValues,
 } from './styles';
+import { Blue200, Grey250 } from '../../../theme/colors';
 
-/**
- *
- * @param filterSchema ( tabs: [{ name: String, multiChoice: boolean, items: [{ id: String, name: String }] }])
- * @param filter State where this component will store the filter options in the form of { group: { item: boolean }
- * @param setFilter State setter to propagate the filter additions
- * @returns
- */
-
-const Filter = ({ filterSchema = [], filter, setFilter }) => {
-  const [selected, setSelected] = useState(null);
+const Filter = ({ filterSchema = [], onChange }) => {
+  const [selected, setSelected] = useState(filterSchema[0]);
+  const [selectedTabItems, setSelectedTabItems] = useState({});
+  const [selectedNames, setSelectedNames] = useState([]);
   const [items, setItems] = useState([]);
   const [multiChoice, setMultichoice] = useState(true);
   const [open, setOpen] = useState(false);
@@ -41,62 +38,77 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
   };
 
   // Changes the display list.
-  const displayList = (tabName) => {
-    const tab = filterSchema.find(({ name }) => name === tabName);
+  const displayList = (tab) => {
     if (tab) {
       setItems(tab.items);
       setMultichoice(tab.multiChoice);
     }
-    setSelected(tabName);
+    setSelected(tab);
   };
 
   // adds / removes an item from the filter
   const toggleInFilter = (itemId) => {
-    const newItems = [...items];
-    newItems.map((it) => {
-      if (!multiChoice) {
-        it.selected = false;
-      }
-      if (it.id === itemId) {
-        it.selected = !it.selected;
-      }
-    });
-    setItems(newItems);
-  };
+    const selectedItems = [...(selectedTabItems[selected.name] || [])];
 
-  const setFilterList = () => {
-    filterSchema.map((tab) => {
-      tab.label = tab.name;
-      tab.action = () => {
-        displayList(tab.name);
+    const newItems = [...items];
+    newItems.forEach((it) => {
+      const deselect = () => {
+        const index = selectedItems.indexOf(it.id);
+        const nameIndex = selectedNames.indexOf(it.name);
+
+        if (index > -1) {
+          selectedItems.splice(index, 1);
+        }
+
+        if (nameIndex > -1) {
+          selectedNames.splice(index, 1);
+        }
       };
+
+      if (it.id === itemId) {
+        const selected = selectedItems.includes(itemId);
+
+        if (!selected) {
+          selectedNames.push(it.name);
+          selectedItems.push(itemId);
+        } else {
+          deselect();
+        }
+      } else if (!multiChoice) {
+        deselect();
+      }
     });
+
+    const newSelectedTabItems = { ...selectedTabItems, [selected.name]: selectedItems };
+    setItems(newItems);
+    setSelectedTabItems(newSelectedTabItems);
+    setSelectedNames(selectedNames);
+    onChange(newSelectedTabItems);
   };
 
   const clearItems = () => {
     const newItems = [...items];
-    newItems.map((it) => {
-      it.selected = false;
-    });
+
     setItems(newItems);
+    setSelectedTabItems({});
+    setSelectedNames([]);
+    onChange({});
   };
 
   useEffect(() => {
-    setFilterList();
-    displayList(filterSchema[0].name);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    displayList(filterSchema[0]);
   }, [open]);
-
-  useEffect(() => {
-    setFilterList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected]);
 
   return (
     <FilterHandle open={open}>
       <FilterHandleInner open={open} onClick={toggleOpen}>
         <FilterHandleContainer>
-          {open ? (
+          {selectedNames.length ? (
+            <FilterValues>
+              <InlineText color={Grey250}>Filter:&nbsp;</InlineText>
+              <InlineText color={Blue200}>{selectedNames.join(', ')}</InlineText>
+            </FilterValues>
+          ) : open ? (
             `<Filter>`
           ) : (
             <>
@@ -110,29 +122,32 @@ const Filter = ({ filterSchema = [], filter, setFilter }) => {
       </FilterHandleInner>
       <FilterBox open={open}>
         <FilterBoxInner>
-          <Tabs tabs={filterSchema} selected={selected} />
+          <Tabs tabs={filterSchema} selected={selected?.name} onSelect={(tab) => displayList(tab)} />
           <FilterStatus>
-            <FilterCount>{items.filter((i) => i.selected).length} selected</FilterCount>
+            <FilterCount>{selectedTabItems[selected?.name]?.length || 0} selected</FilterCount>
             <FilterClear onClick={clearItems}>Clear</FilterClear>
           </FilterStatus>
           <FilterItemsContainer>
             <FilterItemList>
-              {items.map((item) => (
-                <FilterItem
-                  onClick={() => {
-                    toggleInFilter(item.id);
-                  }}
-                  selected={item.selected}
-                  key={item.id}
-                >
-                  <FilterItemIcon>{item.icon}</FilterItemIcon>
-                  <FilterItemName>{item.name}</FilterItemName>
-                  {item.organization ? <FilterItemOrgIcon>{item.organization.profilePicture}</FilterItemOrgIcon> : ''}
-                  <FilterItemCount>{item.count}</FilterItemCount>
-                </FilterItem>
-              ))}
+              {selected.renderList
+                ? selected.renderList({ selectedTab: selected, selectedTabItems, toggleInFilter, items })
+                : items.map((item) => {
+                    const isSelected = (selectedTabItems[selected?.name] || []).includes(item.id);
+
+                    return (
+                      <FilterItem onClick={() => toggleInFilter(item.id)} selected={isSelected} key={item.id}>
+                        <FilterItemIcon>{item.icon}</FilterItemIcon>
+                        <FilterItemName>{item.name}</FilterItemName>
+                        {item.organization ? (
+                          <FilterItemOrgIcon>{item.organization.profilePicture}</FilterItemOrgIcon>
+                        ) : (
+                          ''
+                        )}
+                        {/*<FilterItemCount>{item.count}</FilterItemCount>*/}
+                      </FilterItem>
+                    );
+                  })}
             </FilterItemList>
-            <FilterItemListShade />
           </FilterItemsContainer>
         </FilterBoxInner>
       </FilterBox>

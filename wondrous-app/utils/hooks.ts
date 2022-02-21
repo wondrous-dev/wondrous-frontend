@@ -60,6 +60,14 @@ export const usePodBoard = () => useContext(PodBoardContext);
 
 export const useUserBoard = () => useContext(UserBoardContext);
 
+export const useBoard = () => {
+  const orgBoard = useOrgBoard();
+  const userBoard = useUserBoard();
+  const podBoard = usePodBoard();
+
+  return orgBoard || userBoard || podBoard;
+};
+
 export const useSettings = () => useContext(SettingsBoardContext);
 
 export const useColumns = () => useContext(ColumnsContext);

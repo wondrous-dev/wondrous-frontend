@@ -1,102 +1,200 @@
 import React, { useEffect, useState } from 'react';
-import { InputAdornment } from '@material-ui/core';
 import { useRouter } from 'next/router';
-import SearchIcon from '../../Icons/search';
+import pluralize from 'pluralize';
+import { cloneDeep } from 'lodash';
+
 import Wrapper from '../wrapper';
-
 import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard';
-import { ButtonGroup } from '../../Common/ButtonGroup';
 
-import { BoardsActivity, BoardsActivityInput, BoardsContainer } from '../../organization/boards/styles';
+import {
+  BoardsActivity,
+  BoardsContainer,
+  ResultsCount,
+  ResultsCountRight,
+  SearchType,
+  ShowAllButton,
+  ShowAllSearchResults,
+} from '../../organization/boards/styles';
 import Filter from '../../Common/Filter';
-import { ToDo, InProgress, Done } from '../../Icons';
 import CreatePodIcon from '../../Icons/createPod';
 import { ToggleViewButton } from '../../Common/ToggleViewButton';
 import { Table } from '../../Table';
+import {
+  BOUNTY_TYPE,
+  COLUMN_TITLE_ARCHIVED,
+  MILESTONE_TYPE,
+  TASK_STATUS_ARCHIVED,
+  TASK_STATUS_AWAITING_PAYMENT,
+  TASK_STATUS_DONE,
+  TASK_STATUS_IN_PROGRESS,
+  TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_PAID,
+  TASK_STATUS_REQUESTED,
+  TASK_STATUS_TODO,
+  TASK_TYPE,
+} from '../../../utils/constants';
 import { delQuery } from '../../../utils';
+import SearchTasks from '../../SearchTasks';
+import TaskStatus from '../../Icons/TaskStatus';
+import { useBoard } from '../../../utils/hooks';
+import { Proposal } from '../../Icons';
+import { BountyIcon, MilestoneIcon, TaskIcon, UserIcon } from '../../Icons/Search/types';
+import { Chevron } from '../../Icons/sections';
 
 enum ViewType {
   List = 'list',
   Grid = 'grid',
 }
 
-const Boards = (props) => {
-  const { selectOptions, columns, onLoadMore, hasMore } = props;
-  const [filter, setFilter] = useState([]);
+type Props = {
+  onSearch: (searchString: string) => Promise<any>;
+  onFilterChange: (searchString: string) => Promise<any>;
+  columns: Array<any>;
+  onLoadMore: any;
+  hasMore: any;
+  selectOptions: any;
+  searchString: string;
+};
+
+const Boards = (props: Props) => {
+  const { columns, onLoadMore, hasMore,  onSearch, onFilterChange, searchString } = props;
   const router = useRouter();
   const [view, setView] = useState(null);
+  const [totalCount, setTotalCount] = useState(0);
+  const [searchResults, setSearchResults] = useState({});
+  const board = useBoard();
+  const { taskCount = {} } = board;
+  const { search: searchQuery } = router.query;
 
   useEffect(() => {
     if (router.isReady) {
       setView((router.query.view || ViewType.Grid) as ViewType);
     }
-  }, [router.query.view]);
+  }, [router.query.view, router.isReady]);
+
+  useEffect(() => {
+    if (!searchQuery) {
+      return;
+    }
+
+    let totalCount = 0;
+
+    const createColumnsByType = (type) => {
+      const cols: any = cloneDeep(columns);
+
+      cols.tasksCount = 0;
+
+      cols.forEach((col) => {
+        col.tasks = col.tasks.filter((task) => {
+          if ((task.type || TASK_TYPE) === type) {
+            totalCount++;
+            cols.tasksCount++;
+            return true;
+          }
+
+          return false;
+        });
+        col.section.tasks = col.section.tasks.filter((task) => {
+          if ((task.type || TASK_TYPE) === type) {
+            totalCount++;
+            cols.tasksCount++;
+            return true;
+          }
+
+          return false;
+        });
+      });
+
+      return cols;
+    };
+
+    const searchResults = {
+      [TASK_TYPE]: {
+        name: 'task',
+        showAll: false,
+        columns: createColumnsByType(TASK_TYPE),
+        icon: <TaskIcon />,
+      },
+      [BOUNTY_TYPE]: {
+        name: 'bounties',
+        showAll: false,
+        columns: createColumnsByType(BOUNTY_TYPE),
+        icon: <BountyIcon />,
+      },
+      [MILESTONE_TYPE]: {
+        name: 'milestone',
+        showAll: false,
+        columns: createColumnsByType(MILESTONE_TYPE),
+        icon: <MilestoneIcon />,
+      },
+    };
+
+    setTotalCount(totalCount);
+    setSearchResults(searchResults);
+  }, [columns]);
 
   const filterSchema = [
     {
-      name: 'Pods',
+      name: 'statuses',
+      label: 'Status',
       multiChoice: true,
       items: [
+        // Back-end doesn't support statuses below
+        // {
+        //   id: TASK_STATUS_REQUESTED,
+        //   name: 'Membership requests',
+        //   icon: <TaskStatus status={TASK_STATUS_REQUESTED} />,
+        //   count: 0,
+        // },
         {
-          id: 'designPod',
-          name: 'Design Pod',
-          icon: <CreatePodIcon />,
-          count: 12,
+          id: TASK_STATUS_REQUESTED,
+          name: 'Proposals',
+          icon: <Proposal />,
+          count: taskCount.proposal || 0,
         },
         {
-          id: 'growthTeam',
-          name: 'Growth Team',
-          icon: <CreatePodIcon />,
-          count: 4,
+          id: TASK_STATUS_TODO,
+          name: 'To-Do',
+          icon: <TaskStatus status={TASK_STATUS_TODO} />,
+          count: taskCount.created || 0,
         },
         {
-          id: 'analytics',
-          name: 'Analytics',
-          icon: <CreatePodIcon />,
-          count: 1,
-        },
-        { id: 'dataPod', name: 'Data Pod', icon: <CreatePodIcon />, count: 0 },
-        {
-          id: 'prDreamTeam',
-          name: 'PR Dream Team',
-          icon: <CreatePodIcon />,
-          count: 2,
+          id: TASK_STATUS_IN_PROGRESS,
+          name: 'In-progress',
+          icon: <TaskStatus status={TASK_STATUS_IN_PROGRESS} />,
+          count: taskCount.inProgress || 0,
         },
         {
-          id: 'twitterPod',
-          name: 'Twitter Pod',
-          icon: <CreatePodIcon />,
-          count: 10,
+          id: TASK_STATUS_IN_REVIEW,
+          name: 'In-review',
+          icon: <TaskStatus status={TASK_STATUS_IN_REVIEW} />,
+          count: taskCount.inReview || 0,
         },
-        { id: 'blogPod', name: 'Blog Pod', icon: <CreatePodIcon />, count: 2 },
-      ],
-    },
-    {
-      name: 'Status',
-      multiChoice: false,
-      items: [
         {
-          id: 'membershipRequests',
-          name: 'Membership requests',
-          icon: <Done />,
-          count: 4,
+          id: TASK_STATUS_DONE,
+          name: 'Completed',
+          icon: <TaskStatus status={TASK_STATUS_DONE} />,
+          count: taskCount.completed || 0,
         },
-        { id: 'proposals', name: 'Proposals', icon: <Done />, count: 22 },
-        { id: 'toDo', name: 'To-Do', icon: <ToDo />, count: 8 },
+        // Back-end doesn't support statuses below
+        // {
+        //   id: TASK_STATUS_AWAITING_PAYMENT,
+        //   name: 'Awaiting payment',
+        //   icon: <TaskStatus status={TASK_STATUS_AWAITING_PAYMENT} />,
+        //   count: 0,
+        // },
+        // {
+        //   id: TASK_STATUS_PAID,
+        //   name: 'Completed and paid',
+        //   icon: <TaskStatus status={TASK_STATUS_PAID} />,
+        //   count: 0,
+        // },
         {
-          id: 'inProgress',
-          name: 'In Progress',
-          icon: <InProgress />,
-          count: 232,
+          id: TASK_STATUS_ARCHIVED,
+          name: 'Archived',
+          icon: <TaskStatus status={TASK_STATUS_ARCHIVED} />,
+          count: 0,
         },
-        { id: 'inReview', name: 'In Review', icon: <Done />, count: 324 },
-        {
-          id: 'awaitingPayment',
-          name: 'Awaiting Payment',
-          icon: <Done />,
-          count: 340,
-        },
-        { id: 'completed', name: 'Completed', icon: <Done />, count: 1120 },
       ],
     },
   ];
@@ -111,39 +209,88 @@ const Boards = (props) => {
     },
     {
       name: 'Grid',
-      active: view === ViewType.Grid || view === null,
+      active: view === ViewType.Grid,
       action: () => {
         router.replace(`${delQuery(router.asPath)}?view=${ViewType.Grid}`);
       },
     },
   ];
 
+  function renderBoard() {
+    return view ? (
+      <>
+        {view === ViewType.Grid ? (
+          <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+        ) : (
+          <Table columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+        )}
+      </>
+    ) : null;
+  }
+
+  function renderSearchResults() {
+    return (
+      <>
+        <ResultsCount>
+          <div>
+            Showing <span>{totalCount}</span> results {searchString ? `for ‘${searchString}’` : null}
+          </div>
+          <ResultsCountRight>
+            {Object.values(searchResults).map(({ name, columns }) =>
+              columns.tasksCount ? (
+                <div key={name}>
+                  <span>{columns.tasksCount}</span> {pluralize(name, columns.tasksCount)}
+                </div>
+              ) : null
+            )}
+          </ResultsCountRight>
+        </ResultsCount>
+
+        {Object.keys(searchResults).map((type) => {
+          const { name, icon, columns, showAll } = searchResults[type];
+
+          if (!columns.tasksCount) {
+            return null;
+          }
+
+          return (
+            <div key={name}>
+              <SearchType>
+                {icon}
+                {columns.tasksCount} {pluralize(name, columns.tasksCount)}
+              </SearchType>
+
+              <Table columns={columns} limit={!showAll ? 5 : undefined} onLoadMore={onLoadMore} hasMore={false} />
+
+              {columns.tasksCount > 5 && !showAll ? (
+                <ShowAllSearchResults>
+                  <ShowAllButton
+                    onClick={() => {
+                      setSearchResults({ ...searchResults, [type]: { ...searchResults[type], showAll: true } });
+                    }}
+                  >
+                    Show all {columns.tasksCount} task results
+                    <Chevron />
+                  </ShowAllButton>
+                </ShowAllSearchResults>
+              ) : null}
+            </div>
+          );
+        })}
+      </>
+    );
+  }
+
   return (
     <Wrapper>
       <BoardsContainer>
         <BoardsActivity>
-          <BoardsActivityInput
-            style={{ visibility: 'hidden' }}
-            placeholder="Search people or pods..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-          {/*<Filter style={{ visibility: 'hidden' }} filterSchema={filterSchema} filter={filter} setFilter={setFilter} />*/}
-          <ToggleViewButton options={listViewOptions} />
+          <SearchTasks onSearch={onSearch} />
+          <Filter filterSchema={filterSchema} onChange={onFilterChange} />
+          {view && !searchQuery ? <ToggleViewButton options={listViewOptions} /> : null}
         </BoardsActivity>
 
-        <>
-          {view === ViewType.Grid ? (
-            <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
-          ) : (
-            <Table columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
-          )}
-        </>
+        {searchQuery ? renderSearchResults() : renderBoard()}
       </BoardsContainer>
     </Wrapper>
   );

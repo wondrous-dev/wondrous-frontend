@@ -49,7 +49,7 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
   };
 
   const handleNotificationsSettings = () => {
-    console.log('Tap on Notifications Settings');
+    // console.log('Tap on Notifications Settings');
   };
 
   const getNotificationActorIcon = (notification) => {
