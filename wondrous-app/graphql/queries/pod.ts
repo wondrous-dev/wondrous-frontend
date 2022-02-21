@@ -21,6 +21,7 @@ export const GET_USER_PODS = gql`
       color
       org {
         id
+        name
         username
         profilePicture
       }

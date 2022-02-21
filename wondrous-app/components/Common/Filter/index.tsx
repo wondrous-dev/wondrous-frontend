@@ -25,13 +25,6 @@ import {
 } from './styles';
 import { Blue200, Grey250 } from '../../../theme/colors';
 
-/**
- *
- * @param filterSchema ( tabs: [{ name: String, multiChoice: boolean, items: [{ id: String, name: String }] }])
- * @param filter State where this component will store the filter options in the form of { group: { item: boolean }
- * @returns
- */
-
 const Filter = ({ filterSchema = [], onChange }) => {
   const [selected, setSelected] = useState(filterSchema[0]);
   const [selectedTabItems, setSelectedTabItems] = useState({});
@@ -136,18 +129,24 @@ const Filter = ({ filterSchema = [], onChange }) => {
           </FilterStatus>
           <FilterItemsContainer>
             <FilterItemList>
-              {items.map((item) => {
-                const isSelected = (selectedTabItems[selected?.name] || []).includes(item.id);
+              {selected.renderList
+                ? selected.renderList({ selectedTab: selected, selectedTabItems, toggleInFilter, items })
+                : items.map((item) => {
+                    const isSelected = (selectedTabItems[selected?.name] || []).includes(item.id);
 
-                return (
-                  <FilterItem onClick={() => toggleInFilter(item.id)} selected={isSelected} key={item.id}>
-                    <FilterItemIcon>{item.icon}</FilterItemIcon>
-                    <FilterItemName>{item.name}</FilterItemName>
-                    {item.organization ? <FilterItemOrgIcon>{item.organization.profilePicture}</FilterItemOrgIcon> : ''}
-                    {/*<FilterItemCount>{item.count}</FilterItemCount>*/}
-                  </FilterItem>
-                );
-              })}
+                    return (
+                      <FilterItem onClick={() => toggleInFilter(item.id)} selected={isSelected} key={item.id}>
+                        <FilterItemIcon>{item.icon}</FilterItemIcon>
+                        <FilterItemName>{item.name}</FilterItemName>
+                        {item.organization ? (
+                          <FilterItemOrgIcon>{item.organization.profilePicture}</FilterItemOrgIcon>
+                        ) : (
+                          ''
+                        )}
+                        {/*<FilterItemCount>{item.count}</FilterItemCount>*/}
+                      </FilterItem>
+                    );
+                  })}
             </FilterItemList>
           </FilterItemsContainer>
         </FilterBoxInner>

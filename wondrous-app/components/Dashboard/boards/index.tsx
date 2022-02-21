@@ -44,12 +44,15 @@ import SearchIcon from '../../Icons/search';
 import { Archived } from '../../Icons/sections';
 import { InReviewIcon } from '../../Icons/statusIcons';
 import { Table } from '../../Table';
-import { BoardsActivity, BoardsActivityInput, BoardsContainer } from './styles';
+import {BoardsActivity, BoardsActivityInput, BoardsContainer, FilterItemOrgIcon, FilterOrg} from './styles';
 import Boards from '../../Common/Boards';
 import { TaskFilter } from '../../../types/task';
 import { FILTER_STATUSES, LIMIT, populateTaskColumns } from '../../../services/board';
 import apollo from '../../../services/apollo';
 import CreatePodIcon from '../../Icons/createPod';
+import Accordion from '../../Common/Accordion';
+import { FilterItem, FilterItemIcon, FilterItemName } from '../../Common/Filter/styles';
+import CreateDaoIcon from "../../Icons/createDao";
 
 enum ViewType {
   List = 'list',
@@ -144,18 +147,12 @@ const BoardsPage = (props) => {
   const { isAdmin, selectedStatus } = props;
   const router = useRouter();
   const [view, setView] = useState(null);
-  const [orgsWithPods, setOrgsWithPods] = useState({});
   const loggedInUser = useMe();
   const [contributorColumns, setContributorColumns] = useState([]);
   const [adminColumns, setAdminColumns] = useState([]);
   const [hasMoreTasks, setHasMoreTasks] = useState(true);
   const [searchString, setSearchString] = useState('');
   const { search } = router.query;
-
-  const [getUserPods, { data: podData, fetchMore: fetchMorePods }] = useLazyQuery(GET_USER_PODS, {
-    fetchPolicy: 'network-only',
-    onCompleted: (data) => {},
-  });
 
   const [getTasks, { fetchMore }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
     variables: {
@@ -216,18 +213,53 @@ const BoardsPage = (props) => {
   });
 
   const [filterSchema, setFilterSchema] = useState([
-    // {
-    //   name: 'podIds',
-    //   label: 'Pods',
-    //   multiChoice: true,
-    //   items: orgPods.map((pod) => ({
-    //     ...pod,
-    //     icon: <CreatePodIcon />,
-    //     count: pod.contributorCount,
-    //   })),
-    // },
+    {
+      name: 'podIds',
+      label: 'Orgs',
+      multiChoice: true,
+      orgPods: {},
+      renderList: ({ selectedTab, selectedTabItems, toggleInFilter, items }) => {
+        return Object.keys(selectedTab.orgPods).map((orgName) => (
+          <FilterOrg key={orgName} title={<FilterItemOrgIcon><CreateDaoIcon /> {orgName}</FilterItemOrgIcon>}>
+            {selectedTab.orgPods[orgName].map((item) => {
+              const isSelected = (selectedTabItems[selectedTab?.name] || []).includes(item.id);
+
+              return (
+                <FilterItem onClick={() => toggleInFilter(item.id)} selected={isSelected} key={item.id}>
+                  <FilterItemIcon>
+                    <CreatePodIcon />
+                  </FilterItemIcon>
+                  <FilterItemName>{item.name}</FilterItemName>
+                </FilterItem>
+              );
+            })}
+          </FilterOrg>
+        ));
+      },
+      items: [],
+    },
     FILTER_STATUSES,
   ]);
+
+  const [getUserPods] = useLazyQuery(GET_USER_PODS, {
+    fetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      const orgPods = {};
+      data.getUserPods.forEach((pod) => {
+        if (!orgPods[pod.org.name]) {
+          orgPods[pod.org.name] = [];
+        }
+
+        orgPods[pod.org.name].push(pod);
+      });
+
+      const newFilterSchema: any = [...filterSchema];
+      newFilterSchema[0].orgPods = orgPods;
+      newFilterSchema[0].items = data.getUserPods;
+
+      setFilterSchema(newFilterSchema);
+    },
+  });
 
   const [getUserTaskBoardProposals] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
     variables: {
@@ -394,8 +426,8 @@ const BoardsPage = (props) => {
 
   const handleFilterChange: any = ({ statuses, podIds }: TaskFilter) => {
     const taskStatuses = (statuses || DEFAULT_STATUS_ARR).filter((status) => TASK_STATUSES.includes(status));
-    const shouldSearchProposals = statuses.length !== taskStatuses.length || statuses === DEFAULT_STATUS_ARR;
-    const shouldSearchTasks = !(searchProposals && statuses.length === 1);
+    const shouldSearchProposals = statuses?.length !== taskStatuses.length || statuses === DEFAULT_STATUS_ARR;
+    const shouldSearchTasks = !(searchProposals && statuses?.length === 1);
 
     setStatuses(statuses || DEFAULT_STATUS_ARR);
 
@@ -403,7 +435,7 @@ const BoardsPage = (props) => {
       const searchTaskProposalsArgs = {
         variables: {
           userId: loggedInUser?.id,
-          podIds: [],
+          podIds,
           statuses: [STATUS_OPEN],
           offset: 0,
           limit: LIMIT,
@@ -414,7 +446,7 @@ const BoardsPage = (props) => {
       const searchTasksArgs = {
         variables: {
           userId: loggedInUser?.id,
-          podIds: [],
+          podIds,
           limit: LIMIT,
           offset: 0,
           // Needed to exclude proposals
