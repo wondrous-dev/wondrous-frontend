@@ -58,7 +58,6 @@ type Props = {
 
 const Boards = (props: Props) => {
   const { columns, onLoadMore, hasMore,  onSearch, onFilterChange, searchString } = props;
-  const [filter, setFilter] = useState([]);
   const router = useRouter();
   const [view, setView] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
@@ -287,7 +286,7 @@ const Boards = (props: Props) => {
       <BoardsContainer>
         <BoardsActivity>
           <SearchTasks onSearch={onSearch} />
-          <Filter filterSchema={filterSchema} filter={filter} onChange={onFilterChange} />
+          <Filter filterSchema={filterSchema} onChange={onFilterChange} />
           {view && !searchQuery ? <ToggleViewButton options={listViewOptions} /> : null}
         </BoardsActivity>
 

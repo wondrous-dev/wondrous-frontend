@@ -28,15 +28,12 @@ enum ViewType {
 }
 
 type Props = {
-  orgPods: OrgPod[];
   filterSchema: any;
   onSearch: (searchString: string) => Promise<any>;
   onFilterChange: (searchString: string) => Promise<any>;
   columns: Array<any>;
   onLoadMore: any;
-  orgData: any;
   hasMore: any;
-  selectOptions: any;
   searchString: string;
 };
 
