@@ -27,7 +27,7 @@ import {
 } from '../../../utils/constants';
 import { GET_ORG_FROM_USERNAME, GET_ORG_BY_ID, GET_ORG_PODS, SEARCH_ORG_USERS } from '../../../graphql/queries/org';
 import { OrgBoardContext } from '../../../utils/contexts';
-import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
+import { GET_AUTOCOMPLETE_USERS, GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
 import { dedupeColumns, delQuery } from '../../../utils';
 import * as Constants from '../../../utils/constants';
 import apollo from '../../../services/apollo';
@@ -189,8 +189,6 @@ const BoardsPage = () => {
 
       if (search) {
         if (!firstTimeFetch) {
-          setSearchString(search as string);
-
           const id = orgId || orgData?.id;
           const searchOrgTaskProposalsArgs = {
             variables: {
@@ -199,7 +197,7 @@ const BoardsPage = () => {
               statuses: [STATUS_OPEN],
               offset: 0,
               limit: 100,
-              search,
+              searchString: search,
             },
           };
 
@@ -211,13 +209,14 @@ const BoardsPage = () => {
               offset: 0,
               // Needed to exclude proposals
               statuses: DEFAULT_STATUS_ARR,
-              search,
+              searchString: search,
             },
           };
 
           searchOrgTasks(searchOrgTasksArgs);
           searchOrgTaskProposals(searchOrgTaskProposalsArgs);
           setFirstTimeFetch(true);
+          setSearchString(search as string);
         }
       } else if (userId) {
         const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
@@ -269,7 +268,7 @@ const BoardsPage = () => {
     }
   }, [orgData, orgId, getOrgBoardTaskCount, getOrgTaskSubmissions, getOrgTaskProposals, getOrgTasks]);
 
-  function searchTasks(searchString: string) {
+  function handleSearch(searchString: string) {
     const id = orgId || orgData?.id;
     const searchOrgTaskProposalsArgs = {
       variables: {
@@ -296,10 +295,9 @@ const BoardsPage = () => {
 
     const promises: any = [
       apollo.query({
-        query: SEARCH_ORG_USERS,
+        query: GET_AUTOCOMPLETE_USERS,
         variables: {
-          orgId: id,
-          queryString: searchString,
+          username: searchString,
         },
       }),
       apollo.query({
@@ -433,7 +431,7 @@ const BoardsPage = () => {
         columns={columns}
         searchString={searchString}
         onLoadMore={handleLoadMore}
-        onSearch={(searchString) => searchTasks(searchString)}
+        onSearch={handleSearch}
         onFilterChange={handleFilterChange}
         hasMore={orgTaskHasMore}
         orgData={orgData}

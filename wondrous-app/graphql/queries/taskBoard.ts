@@ -134,6 +134,31 @@ export const GET_TASKS_RELATED_TO_USER_IN_ORG = gql`
   ${TaskCardFragment}
 `;
 
+export const GET_TASKS_RELATED_TO_USER_IN_POD = gql`
+  query getTasksRelatedToUserInPod(
+    $podId: ID!
+    $statuses: [String]
+    $searchString: String
+    $userId: String
+    $limit: Int
+    $offset: Int
+  ) {
+    getTasksRelatedToUserInPod(
+      input: {
+        podId: $podId
+        statuses: $statuses
+        searchString: $searchString
+        userId: $userId
+        limit: $limit
+        offset: $offset
+      }
+    ) {
+      ...TaskCardFragment
+    }
+  }
+  ${TaskCardFragment}
+`;
+
 export const SEARCH_TASKS_FOR_ORG_BOARD_VIEW = gql`
   query searchTasksForOrgBoardView(
     $orgId: ID!
