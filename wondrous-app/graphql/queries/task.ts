@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { CommentFragment } from '../fragments/comments';
-import { TaskFragment, TaskSubmissionFragment } from '../fragments/task';
+import { TaskCardFragment, TaskFragment, TaskSubmissionFragment } from '../fragments/task';
 
 export const GET_TASK_BY_ID = gql`
   query getTaskById($taskId: ID!) {
@@ -37,8 +37,9 @@ export const GET_ELIGIBLE_REVIEWERS_FOR_POD = gql`
     getEligibleReviewersForPod(podId: $podId, searchString: $searchString) {
       id
       username
+    }
   }
-}`
+`;
 
 export const GET_TASK_SUBMISSIONS_FOR_TASK = gql`
   query getTaskSubmissionsForTask($taskId: ID!) {
@@ -105,4 +106,22 @@ export const GET_MILESTONES = gql`
       id
     }
   }
+`;
+
+export const GET_SUBTASK_COUNT_FOR_TASK = gql`
+  query getSubtaskCountForTask($taskId: ID!) {
+    getSubtaskCountForTask(taskId: $taskId) {
+      total
+      completed
+    }
+  }
+`;
+
+export const GET_SUBTASKS_FOR_TASK = gql`
+  query getSubtasksForTask($taskId: ID!, $limit: Int, $offset: Int) {
+    getSubtasksForTask(taskId: $taskId, limit: $limit, offset: $offset) {
+      ...TaskCardFragment
+    }
+  }
+  ${TaskCardFragment}
 `;

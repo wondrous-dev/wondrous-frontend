@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
-import { useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { LogoButton } from '../logo';
 import {
   TodoWithBorder,
@@ -46,7 +46,10 @@ import {
   ArchivedTaskUndo,
   MilestoneSeparator,
   MilestoneProgressWrapper,
-  MilestoneIconWrapper,
+  TaskHeaderIconWrapper,
+  SubtaskCountWrapper,
+  SubtaskCount,
+  TaskContentFooter,
 } from './styles';
 import { renderMentionString } from '../../../utils/common';
 import { useRouter } from 'next/router';
@@ -61,12 +64,14 @@ import { delQuery } from '../../../utils';
 import { TaskSummaryAction } from '../TaskSummary/styles';
 import { Arrow, Archived } from '../../Icons/sections';
 import { UPDATE_TASK_STATUS } from '../../../graphql/mutations/task';
-import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries';
+import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD, GET_SUBTASK_COUNT_FOR_TASK } from '../../../graphql/queries';
 import { OrgBoardContext } from '../../../utils/contexts';
 import { MilestoneLaunchedBy } from '../MilestoneLaunchedBy';
 import { MilestoneProgress } from '../MilestoneProgress';
 import { MilestoneWrapper } from '../Milestone';
 import PodIcon from '../../Icons/podIcon';
+import { SubtaskDarkIcon } from '../../Icons/subtask';
+import { CheckedBoxIcon } from '../../Icons/checkedBox';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -80,7 +85,8 @@ export const TASK_ICONS = {
 };
 
 let windowOffset = 0;
-export const Task = ({ task, setTask, onOpen = (task) => null }) => {
+export const Task = (props) => {
+  const { task, setTask, onOpen = (task) => null, className } = props;
   const {
     actions = {},
     description = '',
@@ -123,6 +129,7 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
     TaskIcon = TASK_ICONS[Constants.TASK_STATUS_PAID];
   }
   const isMilestone = type === Constants.ENTITIES_TYPES.MILESTONE;
+  const isSubtask = task?.parentTaskId !== null;
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
     refetchQueries: () => [
@@ -136,8 +143,14 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
       },
       'getUserTaskBoardTasks',
       'getPerStatusTaskCountForUserBoard',
+      'getSubtasksForTask',
+      'getSubtaskCountForTask',
     ],
   });
+
+  const [getSubtaskCountForTask, { data: getSubtaskCountForTaskData }] = useLazyQuery(GET_SUBTASK_COUNT_FOR_TASK);
+  const totalSubtask = getSubtaskCountForTaskData?.getSubtaskCountForTask.total;
+  const completedSubtask = getSubtaskCountForTaskData?.getSubtaskCountForTask.completed;
 
   const handleNewStatus = useCallback(
     (newStatus) => {
@@ -175,6 +188,14 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
         </>
       );
     }
+
+    if (!isSubtask && !getSubtaskCountForTaskData?.getSubtaskCountForTask) {
+      getSubtaskCountForTask({
+        variables: {
+          taskId: id,
+        },
+      });
+    }
   }, [
     initialStatus,
     setInitialStatus,
@@ -183,6 +204,10 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
     setSnackbarAlertOpen,
     setSnackbarAlertMessage,
     handleNewStatus,
+    isSubtask,
+    getSubtaskCountForTaskData,
+    getSubtaskCountForTask,
+    id,
   ]);
 
   const toggleLike = () => {
@@ -252,7 +277,7 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
   const taskType = isMilestone ? 'milestone' : 'task';
 
   return (
-    <>
+    <span className={className}>
       <ArchiveTaskModal
         open={archiveTask}
         onClose={() => setArchiveTask(false)}
@@ -275,20 +300,20 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
       <TaskWrapper key={id} onClick={openModal}>
         <TaskInner>
           <TaskHeader>
-            <SafeImage
-              src={task?.orgProfilePicture}
-              style={{
-                width: '29px',
-                height: '28px',
-                borderRadius: '4px',
-              }}
-            />
-            {isMilestone && (
-              <MilestoneIconWrapper withProfile={task?.orgProfilePicture}>
-                <MilestoneIcon />
-              </MilestoneIconWrapper>
-            )}
-            <AvatarList style={{ marginLeft: '12px' }} users={userList} id={'task-' + task?.id} />
+            <TaskHeaderIconWrapper>
+              <SafeImage
+                src={task?.orgProfilePicture}
+                style={{
+                  width: '29px',
+                  height: '28px',
+                  borderRadius: '4px',
+                }}
+              />
+              {isMilestone && <MilestoneIcon />}
+              <AvatarList users={userList} id={'task-' + task?.id} />
+              {isSubtask && <SubtaskDarkIcon />}
+              {!isSubtask && !isMilestone && totalSubtask > 0 && <CheckedBoxIcon />}
+            </TaskHeaderIconWrapper>
             {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
           </TaskHeader>
           <MilestoneLaunchedBy type={type} router={router} createdBy={createdBy} />
@@ -302,22 +327,8 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
                 router,
               })}
             </p>
-            {task?.podName && (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <PodIcon
-                  color={task?.podColor}
-                  style={{
-                    width: '26px',
-                    height: '26px',
-                    marginRight: '8px',
-                    marginBottom: '16px',
-                  }}
-                />
+            <TaskContentFooter>
+              {task?.podName && (
                 <PodWrapper
                   onClick={(e) => {
                     e.preventDefault();
@@ -325,10 +336,25 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
                     goToPod(task?.podId);
                   }}
                 >
+                  <PodIcon
+                    color={task?.podColor}
+                    style={{
+                      width: '26px',
+                      height: '26px',
+                    }}
+                  />
                   <PodName>{task?.podName}</PodName>
                 </PodWrapper>
-              </div>
-            )}
+              )}
+              {!isSubtask && !isMilestone && totalSubtask > 0 && (
+                <SubtaskCountWrapper>
+                  <SubtaskDarkIcon />
+                  <SubtaskCount>
+                    {completedSubtask}/{totalSubtask}
+                  </SubtaskCount>
+                </SubtaskCountWrapper>
+              )}
+            </TaskContentFooter>
             <MilestoneProgressWrapper>{isMilestone && <MilestoneProgress milestoneId={id} />}</MilestoneProgressWrapper>
             {media?.length > 0 ? <TaskMedia media={media[0]} /> : <TaskSeparator />}
           </TaskContent>
@@ -368,7 +394,7 @@ export const Task = ({ task, setTask, onOpen = (task) => null }) => {
           </TaskFooter>
         </TaskInner>
       </TaskWrapper>
-    </>
+    </span>
   );
 };
 

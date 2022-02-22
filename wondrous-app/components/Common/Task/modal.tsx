@@ -28,6 +28,12 @@ import {
   TaskListModalHeader,
   TaskStatusHeaderText,
   ArchivedTaskUndo,
+  TaskIconWrapper,
+  TaskIconLabel,
+  SubtaskIconWrapper,
+  SubtaskIconLabel,
+  RightArrow,
+  RightArrowWrapper,
 } from './styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from '../../../graphql/queries/task';
@@ -127,6 +133,10 @@ import { CompensationAmount, CompensationPill, IconContainer } from '../Compensa
 
 import { MakePaymentModal } from '../Payment/PaymentModal';
 import { ApprovedSubmissionContext } from '../../../utils/contexts';
+import { TaskSubtasks } from '../TaskSubtask';
+import { SubtaskDarkIcon, SubtaskLightIcon } from '../../Icons/subtask';
+import { CheckedBoxIcon } from '../../Icons/checkedBox';
+import RightArrowIcon from '../../Icons/rightArrow';
 export const MediaLink = (props) => {
   const { media, style } = props;
   const [getPreviewFile, { data, loading, error }] = useLazyQuery(GET_PREVIEW_FILE, {
@@ -149,7 +159,7 @@ export const MediaLink = (props) => {
   );
 };
 
-const LIMIT = 10;
+const LIMIT = 5;
 
 const TASK_LIST_VIEW_LIMIT = 5;
 
@@ -240,7 +250,7 @@ export const TaskListViewModal = (props) => {
     onCompleted: (data) => {
       const tasks = data?.getUserTaskBoardTasks;
       setFetchedList(tasks);
-      setHasMore(data?.hasMore || tasks?.length >= TASK_LIST_VIEW_LIMIT);
+      setHasMore(data?.hasMore || tasks?.length >= LIMIT);
     },
   });
 
@@ -600,6 +610,28 @@ export const TaskListViewModal = (props) => {
     </CreateModalOverlay>
   );
 };
+
+const tabs = {
+  submissions: 'Submissions',
+  subTasks: 'Subtasks',
+  discussion: 'Discussion',
+  tasks: 'Tasks',
+};
+
+const tabsPerType = {
+  proposalTabs: [tabs.discussion],
+  milestoneTabs: [tabs.tasks, tabs.discussion],
+  subtaskTabs: [tabs.tasks, tabs.discussion],
+  taskTabs: [tabs.submissions, tabs.subTasks, tabs.discussion],
+};
+
+const selectTabsPerType = (isTaskProposal, isMilestone, isSubtask) => {
+  if (isTaskProposal) return tabsPerType.proposalTabs;
+  if (isMilestone) return tabsPerType.milestoneTabs;
+  if (isSubtask) return tabsPerType.subtaskTabs;
+  return tabsPerType.taskTabs;
+};
+
 export const TaskViewModal = (props) => {
   const { open, handleClose, task, taskId, isTaskProposal, back } = props;
   const [fetchedTask, setFetchedTask] = useState(null);
@@ -608,6 +640,7 @@ export const TaskViewModal = (props) => {
   const [taskSubmissionLoading, setTaskSubmissionLoading] = useState(!isTaskProposal);
   const [makeSubmission, setMakeSubmission] = useState(false);
   const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
+  const isSubtask = fetchedTask?.parentTaskId !== null;
   const [approvedSubmission, setApprovedSubmission] = useState(null);
 
   const orgBoard = useOrgBoard();
@@ -633,7 +666,7 @@ export const TaskViewModal = (props) => {
   const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
   const router = useRouter();
   const [editTask, setEditTask] = useState(false);
-  const [submissionSelected, setSubmissionSelected] = useState(isTaskProposal ? false : true);
+  const [activeTab, setActiveTab] = useState(tabs.discussion);
   const [archiveTask, setArchiveTask] = useState(false);
   const [archiveTaskAlert, setArchiveTaskAlert] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
@@ -644,7 +677,7 @@ export const TaskViewModal = (props) => {
   const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
   const user = useMe();
   const userPermissionsContext =
-    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
+    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext || null;
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
@@ -724,7 +757,6 @@ export const TaskViewModal = (props) => {
     if (open) {
       if (isTaskProposal) {
         setTaskSubmissionLoading(false);
-        setSubmissionSelected(false);
       }
 
       if (!task && taskId && !fetchedTask) {
@@ -937,31 +969,66 @@ export const TaskViewModal = (props) => {
                   />
                 </Link>
               ) : (
-                <OrganisationsCardNoLogo style={{ height: '29px', width: '28px' }}>
-                  <DAOIcon />
-                </OrganisationsCardNoLogo>
+                <>
+                  <OrganisationsCardNoLogo style={{ height: '29px', width: '28px' }}>
+                    <DAOIcon />
+                  </OrganisationsCardNoLogo>
+                </>
               )}
               {fetchedTask?.podName && (
-                <Link href={`/pod/${fetchedTask?.podId}/boards`} passHref={true}>
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <PodIcon
+                <>
+                  <RightArrowWrapper>
+                    <RightArrow />
+                  </RightArrowWrapper>
+                  <Link href={`/pod/${fetchedTask?.podId}/boards`} passHref={true}>
+                    <div
                       style={{
-                        width: '26px',
-                        height: '26px',
-                        marginRight: '4px',
-                        marginLeft: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        cursor: 'pointer',
                       }}
-                      color={fetchedTask?.podColor}
-                    />
-                    <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
-                  </div>
-                </Link>
+                    >
+                      <PodIcon
+                        style={{
+                          width: '26px',
+                          height: '26px',
+                          marginRight: '4px',
+                          marginLeft: '8px',
+                        }}
+                        color={fetchedTask?.podColor}
+                      />
+                      <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
+                    </div>
+                  </Link>
+                </>
+              )}
+              {fetchedTask?.type === TASK_TYPE && (
+                <>
+                  <RightArrowWrapper>
+                    <RightArrow />
+                  </RightArrowWrapper>
+                  <Link
+                    href={`/organization/${fetchedTask?.orgUsername}/boards?task=${
+                      isSubtask ? fetchedTask?.parentTaskId : taskId
+                    }`}
+                    passHref={true}
+                  >
+                    <TaskIconWrapper>
+                      <CheckedBoxIcon />
+                      <TaskIconLabel>{!isSubtask && fetchedTask?.title}</TaskIconLabel>
+                    </TaskIconWrapper>
+                  </Link>
+                </>
+              )}
+              {isSubtask && fetchedTask?.type === TASK_TYPE && (
+                <>
+                  <RightArrowWrapper>
+                    <RightArrow />
+                  </RightArrowWrapper>
+                  <SubtaskIconWrapper>
+                    <SubtaskDarkIcon /> <SubtaskIconLabel>{fetchedTask?.title}</SubtaskIconLabel>
+                  </SubtaskIconWrapper>
+                </>
               )}
               {back && (
                 <>
@@ -1399,57 +1466,17 @@ export const TaskViewModal = (props) => {
             )}
             <TaskModalFooter>
               <TaskSectionFooterTitleDiv>
-                {!isTaskProposal && (
-                  <TaskSubmissionTab
-                    style={{
-                      borderBottom: `2px solid ${submissionSelected ? '#7427FF' : '#4B4B4B'}`,
-                    }}
-                    onClick={() => setSubmissionSelected(true)}
-                  >
-                    <TaskTabText
-                      style={{
-                        fontWeight: `${submissionSelected ? '500' : '400'}`,
-                      }}
-                    >
-                      Submissions
-                    </TaskTabText>
-                  </TaskSubmissionTab>
-                )}
-                {!isMilestone && (
-                  <TaskSubmissionTab
-                    style={{
-                      borderBottom: `2px solid ${!submissionSelected ? '#7427FF' : '#4B4B4B'}`,
-                    }}
-                    onClick={() => setSubmissionSelected(false)}
-                  >
-                    <TaskTabText
-                      style={{
-                        fontWeight: `${!submissionSelected ? '500' : '400'}`,
-                      }}
-                    >
-                      Discussion
-                    </TaskTabText>
-                  </TaskSubmissionTab>
-                )}
-                {isMilestone && (
-                  <TaskSubmissionTab
-                    style={{
-                      borderBottom: `2px solid ${!submissionSelected ? '#7427FF' : '#4B4B4B'}`,
-                    }}
-                    onClick={() => setSubmissionSelected(false)}
-                  >
-                    <TaskTabText
-                      style={{
-                        fontWeight: `${!submissionSelected ? '500' : '400'}`,
-                      }}
-                    >
-                      Tasks
-                    </TaskTabText>
-                  </TaskSubmissionTab>
-                )}
+                {selectTabsPerType(isTaskProposal, isMilestone, isSubtask).map((tab, index) => {
+                  const active = tab === activeTab;
+                  return (
+                    <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
+                      <TaskTabText isActive={active}>{tab}</TaskTabText>
+                    </TaskSubmissionTab>
+                  );
+                })}
               </TaskSectionFooterTitleDiv>
               <TaskSectionContent>
-                {submissionSelected && (
+                {activeTab === tabs.submissions && (
                   <TaskSubmissionContent
                     taskId={fetchedTask?.id}
                     taskSubmissionLoading={taskSubmissionLoading}
@@ -1472,11 +1499,12 @@ export const TaskViewModal = (props) => {
                     setShowPaymentModal={setShowPaymentModal}
                   />
                 )}
-                {!submissionSelected && !isMilestone && (
+                {activeTab === tabs.subTasks && <TaskSubtasks taskId={fetchedTask?.id} permissions={permissions} />}
+                {activeTab === tabs.discussion && (
                   <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
                 )}
-                {!submissionSelected && isMilestone && (
-                  <MilestoneTaskList milestoneId={fetchedTask?.id} open={!submissionSelected} />
+                {activeTab === tabs.tasks && (
+                  <MilestoneTaskList milestoneId={fetchedTask?.id} open={activeTab === tabs.tasks} />
                 )}
               </TaskSectionContent>
             </TaskModalFooter>

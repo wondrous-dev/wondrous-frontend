@@ -3,6 +3,7 @@ import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients
 import { Grey80, Grey250, White } from '../../../theme/colors';
 import { Typography } from '@material-ui/core';
 import { BaseCard } from '../card';
+import RightArrowIcon from '../../Icons/rightArrow';
 
 export const TaskInner = styled.div`
   display: flex;
@@ -46,6 +47,16 @@ export const TaskHeader = styled.div`
   margin: 0 0 17px 0;
 `;
 
+export const TaskHeaderIconWrapper = styled.div`
+  display: flex;
+  & > * {
+    margin-right: 4px;
+  }
+  & > *:last-child {
+    margin-right: 0;
+  }
+`;
+
 export const TaskContent = styled.div`
   display: flex;
   flex-grow: 1;
@@ -66,16 +77,12 @@ export const TaskSeparator = styled.div`
   margin-top: 5px;
 `;
 
-export const MilestoneIconWrapper = styled.div`
-  margin-left: ${(props) => (props.withProfile ? '6px' : '0')};
-`;
-
 export const MilestoneSeparator = styled(TaskSeparator)`
   margin: 12px 0;
 `;
 
 export const MilestoneProgressWrapper = styled.div`
-  margin-bottom: 12px;
+  margin: 12px 0;
 `;
 
 export const TaskTitle = styled.div`
@@ -127,19 +134,43 @@ export const TaskActionAmount = styled.div`
   color: ${Grey250};
 `;
 
+export const TaskContentFooter = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 export const PodWrapper = styled.div`
-  background: #363636;
-  padding: 1px 8px;
-  border-radius: 8px;
   cursor: pointer;
-  margin-bottom: 16px;
-  width: fit-content;
+  display: flex;
+  align-items: flex-start;
+  margin-right: 6px;
 `;
 
 export const PodName = styled(Typography)`
   && {
+    background: #363636;
     font-size: 13px;
     color: ${White};
+    padding: 1px 8px;
+    border-radius: 190px;
+  }
+`;
+
+export const SubtaskCountWrapper = styled.div`
+  background: #0f0f0f;
+  display: flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 4px;
+  justify-content: center;
+`;
+
+export const SubtaskCount = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 13px;
+    font-style: normal;
+    color: #ffffff;
   }
 `;
 
@@ -172,6 +203,13 @@ export const TaskModalHeader = styled.div`
   align-items: center;
   margin-bottom: 24px !important;
 `;
+
+export const RightArrowWrapper = styled.div`
+  margin-left: 12px;
+`;
+
+export const RightArrow = styled(RightArrowIcon)``;
+
 export const PodNameTypography = styled(Typography)`
   && {
     font-weight: 500;
@@ -180,6 +218,27 @@ export const PodNameTypography = styled(Typography)`
     color: ${White};
   }
 `;
+
+export const TaskIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 12px;
+  cursor: pointer;
+`;
+
+export const TaskIconLabel = styled(Typography)`
+  && {
+    font-size: 13px;
+    margin-left: 8px;
+    color: #fff;
+  }
+`;
+
+export const SubtaskIconWrapper = styled(TaskIconWrapper)`
+  cursor: auto;
+`;
+
+export const SubtaskIconLabel = styled(TaskIconLabel)``;
 
 export const TaskTitleDiv = styled.div`
   display: flex;
@@ -272,6 +331,7 @@ export const TaskSubmissionTab = styled.div`
   &:last-child {
     margin-right: 0;
   }
+  border-bottom: ${(props) => `2px solid ${props.isActive ? '#7427FF' : '#4B4B4B'}`};
 `;
 
 export const TaskOverviewTab = styled.div`
@@ -280,6 +340,7 @@ export const TaskOverviewTab = styled.div`
 `;
 export const TaskTabText = styled(Typography)`
   && {
+    font-weight: ${(props) => (props.isActive ? '500' : '400')};
     font-size: 16px;
     line-height: 24px;
     color: ${White};
