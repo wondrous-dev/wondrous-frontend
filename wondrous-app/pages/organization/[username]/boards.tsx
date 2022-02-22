@@ -14,10 +14,10 @@ import {
 } from '../../../graphql/queries/taskBoard';
 import Boards from '../../../components/organization/boards/boards';
 import { TASK_STATUS_IN_REVIEW, DEFAULT_STATUS_ARR, STATUS_OPEN, TASK_STATUSES } from '../../../utils/constants';
-import { GET_ORG_FROM_USERNAME, GET_ORG_BY_ID, GET_ORG_PODS } from '../../../graphql/queries/org';
+import { GET_ORG_FROM_USERNAME, GET_ORG_BY_ID, GET_ORG_PODS, SEARCH_ORG_USERS } from '../../../graphql/queries/org';
 import { OrgBoardContext } from '../../../utils/contexts';
-import { GET_AUTOCOMPLETE_USERS, GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
-import { dedupeColumns, delQuery } from '../../../utils';
+import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
+import { dedupeColumns } from '../../../utils';
 import apollo from '../../../services/apollo';
 import { TaskFilter } from '../../../types/task';
 import { COLUMNS, LIMIT, SELECT_OPTIONS, populateTaskColumns, addToTaskColumns } from '../../../services/board';
@@ -283,9 +283,12 @@ const BoardsPage = () => {
 
     const promises: any = [
       apollo.query({
-        query: GET_AUTOCOMPLETE_USERS,
+        query: SEARCH_ORG_USERS,
         variables: {
-          username: searchString,
+          orgId: id,
+          limit: LIMIT,
+          offset: 0,
+          queryString: searchString,
         },
       }),
       apollo.query({
@@ -300,7 +303,7 @@ const BoardsPage = () => {
     ];
 
     return Promise.all(promises).then(([users, proposals, tasks]: any) => ({
-      users: users.data.getAutocompleteUsers,
+      users: users.data.searchOrgUsers,
       proposals: proposals.data.searchProposalsForOrgBoardView,
       tasks: tasks.data.searchTasksForOrgBoardView,
     }));

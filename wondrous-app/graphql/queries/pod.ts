@@ -61,6 +61,17 @@ export const GET_POD_USERS = gql`
   }
 `;
 
+export const SEARCH_POD_USERS = gql`
+  query searchPodUsers($podId: ID!, $queryString: String!) {
+    searchPodUsers(podId: $podId, queryString: $queryString) {
+      id
+      username
+      profilePicture
+      bio
+    }
+  }
+`;
+
 export const GET_POD_ROLES = gql`
   query getPodRoles($podId: ID) {
     getPodRoles(podId: $podId) {
