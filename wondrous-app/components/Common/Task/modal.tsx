@@ -947,6 +947,7 @@ export const TaskViewModal = (props) => {
                     style={{
                       display: 'flex',
                       alignItems: 'center',
+                      cursor: 'pointer',
                     }}
                   >
                     <PodIcon
