@@ -149,6 +149,8 @@ export const Task = (props) => {
   });
 
   const [getSubtaskCountForTask, { data: getSubtaskCountForTaskData }] = useLazyQuery(GET_SUBTASK_COUNT_FOR_TASK);
+  const totalSubtask = getSubtaskCountForTaskData?.getSubtaskCountForTask.total;
+  const completedSubtask = getSubtaskCountForTaskData?.getSubtaskCountForTask.completed;
 
   const handleNewStatus = useCallback(
     (newStatus) => {
@@ -310,7 +312,7 @@ export const Task = (props) => {
               {isMilestone && <MilestoneIcon />}
               <AvatarList users={userList} id={'task-' + task?.id} />
               {isSubtask && <SubtaskDarkIcon />}
-              {!isSubtask && !isMilestone && <CheckedBoxIcon />}
+              {!isSubtask && !isMilestone && totalSubtask > 0 && <CheckedBoxIcon />}
             </TaskHeaderIconWrapper>
             {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
           </TaskHeader>
@@ -344,12 +346,11 @@ export const Task = (props) => {
                   <PodName>{task?.podName}</PodName>
                 </PodWrapper>
               )}
-              {!isSubtask && !isMilestone && (
+              {!isSubtask && !isMilestone && totalSubtask > 0 && (
                 <SubtaskCountWrapper>
                   <SubtaskDarkIcon />
                   <SubtaskCount>
-                    {getSubtaskCountForTaskData?.getSubtaskCountForTask.completed}/
-                    {getSubtaskCountForTaskData?.getSubtaskCountForTask.total}
+                    {completedSubtask}/{totalSubtask}
                   </SubtaskCount>
                 </SubtaskCountWrapper>
               )}
