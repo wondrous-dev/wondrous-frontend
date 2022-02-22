@@ -1,9 +1,21 @@
 import React from 'react';
 import styled from 'styled-components';
 import { MenuItem, TextField } from '@material-ui/core';
+import Accordion from '../../Common/Accordion';
 
 export const BoardsContainer = styled.div`
   margin-top: 42px;
+`;
+
+export const FilterOrg = styled(Accordion)`
+  width: 100%;
+  padding: 0;
+`;
+
+export const FilterItemOrgIcon = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: -10px;
 `;
 
 export const BoardsActivity = styled.div`

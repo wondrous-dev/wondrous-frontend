@@ -1,5 +1,5 @@
-import { useQuery } from '@apollo/client';
-import React, { useState } from 'react';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import React, { useEffect, useState } from 'react';
 import { GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD } from '../../../graphql/queries';
 import { GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT } from '../../../graphql/queries/workflowBoards';
 import { AwaitingPayment, DoneWithBorder } from '../../Icons';
@@ -97,14 +97,10 @@ const DashboardPanel = (props) => {
   const { isAdmin, setIsAdmin, selectedStatus, setSelectedStatus } = props;
   const [ref, inView] = useInView({});
   const loggedInUser = useMe();
-  const { data: getPerStatusTaskCountData, loading: getPerStatusTaskCountLoading } = useQuery(
-    GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
-    {
-      variables: {
-        userId: loggedInUser?.id,
-      },
-    }
-  );
+
+  const [getUserTaskCountData, { data: getPerStatusTaskCountData, loading: getPerStatusTaskCountLoading }] =
+    useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD);
+
   const { data: getWorkFlowBoardReviewableItemsCountData, loading: getWorkFlowBoardReviewableItemsCountLoading } =
     useQuery(GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT);
   const activePanel = isAdmin ? panels.admin : panels.contributor;
@@ -112,6 +108,18 @@ const DashboardPanel = (props) => {
     ? getWorkFlowBoardReviewableItemsCountData?.getWorkFlowBoardReviewableItemsCount
     : getPerStatusTaskCountData?.getPerStatusTaskCountForUserBoard;
   const activePanelStatusCards = updateStatusCards(activePanelData, statusCardsBase, activePanel);
+
+  useEffect(() => {
+    if (!loggedInUser) {
+      return;
+    }
+
+    getUserTaskCountData({
+      variables: {
+        userId: loggedInUser?.id,
+      },
+    });
+  }, [loggedInUser]);
 
   return (
     <DashboardPanelWrapper>

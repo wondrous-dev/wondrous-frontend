@@ -87,7 +87,12 @@ import { TextInput } from '../TextInput';
 import { White, Grey700 } from '../../theme/colors';
 import { TextInputContext } from '../../utils/contexts';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
+import {
+  GET_AUTOCOMPLETE_USERS,
+  GET_USER_ORGS,
+  GET_USER_PERMISSION_CONTEXT,
+  GET_TASK_BY_ID,
+} from '../../graphql/queries';
 import { SafeImage } from '../Common/Image';
 import { GET_USER_AVAILABLE_PODS, GET_POD_USERS } from '../../graphql/queries/pod';
 import {
@@ -308,7 +313,7 @@ export const filterOrgUsers = (orgUsers) => {
 };
 
 const CreateLayoutBaseModal = (props) => {
-  const { entityType, handleClose, resetEntityType, open } = props;
+  const { entityType, handleClose, resetEntityType, open, parentTaskId } = props;
   const user = useMe();
   const [addDetails, setAddDetails] = useState(true);
   const [descriptionText, setDescriptionText] = useState('');
@@ -342,6 +347,7 @@ const CreateLayoutBaseModal = (props) => {
   const board = orgBoard || podBoard || userBoard;
   const isPod = entityType === ENTITIES_TYPES.POD;
   const isTask = entityType === ENTITIES_TYPES.TASK;
+  const isSubtask = parentTaskId !== undefined;
   const textLimit = isPod ? 200 : 900;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
@@ -385,6 +391,7 @@ const CreateLayoutBaseModal = (props) => {
     },
     fetchPolicy: 'network-only',
   });
+  const [getTaskById] = useLazyQuery(GET_TASK_BY_ID);
 
   // const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
   const [pods, setPods] = useState([]);
@@ -435,6 +442,40 @@ const CreateLayoutBaseModal = (props) => {
 
   const router = useRouter();
   const { podId: routerPodId } = router.query;
+  useEffect(() => {
+    if (isSubtask) {
+      getTaskById({
+        variables: {
+          taskId: parentTaskId,
+        },
+      })
+        .then((data) => {
+          console.log({ data });
+          const task = data?.data?.getTaskById;
+          setOrg(task?.orgId);
+          setPod(task?.podId);
+        })
+        .catch((e) => console.error(e));
+    }
+  }, [parentTaskId, getTaskById, isSubtask]);
+
+  useEffect(() => {
+    if (isSubtask) {
+      getTaskById({
+        variables: {
+          taskId: parentTaskId,
+        },
+      })
+        .then((data) => {
+          console.log({ data });
+          const task = data?.data?.getTaskById;
+          setOrg(task?.orgId);
+          setPod(task?.podId);
+        })
+        .catch((e) => console.error(e));
+    }
+  }, [parentTaskId, getTaskById, isSubtask]);
+
   useEffect(() => {
     if (open) {
       if (fetchedUserPermissionsContext && board?.orgId in fetchedUserPermissionsContext?.orgPermissions && !org) {
@@ -502,6 +543,8 @@ const CreateLayoutBaseModal = (props) => {
       'getPerStatusTaskCountForMilestone',
       'getUserTaskBoardTasks',
       'getPerStatusTaskCountForUserBoard',
+      'getSubtasksForTask',
+      'getSubtaskCountForTask',
     ],
     onCompleted: (data) => {
       const task = data?.createTask;
@@ -580,6 +623,7 @@ const CreateLayoutBaseModal = (props) => {
           description: descriptionText,
           orgId: org,
           milestoneId: milestone?.id,
+          parentTaskId,
           podId: pod,
           dueDate,
           ...(rewardsAmount &&
@@ -734,6 +778,7 @@ const CreateLayoutBaseModal = (props) => {
             labelIcon={<CreateDaoIcon />}
             options={filterDAOptions(userOrgs?.getUserOrgs) || []}
             name="dao"
+            disabled={isSubtask}
           />
           {!isPod && (
             <DropdownSelect

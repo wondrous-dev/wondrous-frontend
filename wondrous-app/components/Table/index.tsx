@@ -62,7 +62,7 @@ import {
 import { SnackbarAlertContext } from '../Common/SnackbarAlert';
 import { ArchivedTaskUndo } from '../Common/Task/styles';
 import { OrgBoardContext } from '../../utils/contexts';
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
 import { LoadMore } from '../Common/KanbanBoard/styles';
 import { SafeImage } from '../Common/Image';
 import { useMe } from '../Auth/withAuth';
@@ -80,15 +80,20 @@ const DELIVERABLES_ICONS = {
   video: <PlayIcon />,
 };
 
+const STATUS_BY_TYPENAME = {
+  TaskSubmissionCard: TASK_STATUS_IN_REVIEW,
+  TaskProposalCard: TASK_STATUS_REQUESTED,
+};
+
 let windowOffset = 0;
 export const Table = (props) => {
-  const { columns, onLoadMore, hasMore, isAdmin = false } = props;
+  const { columns, onLoadMore, hasMore, allTasks, limit, isAdmin = false } = props;
   const router = useRouter();
   const apolloClient = useApolloClient();
   const [editableTask, setEditableTask] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
   const [selectedTaskType, setSelectedTaskType] = useState(null);
-  const [once, setOnce] = useState(false);
+  const [once, setOnce] = useState(true);
   const [isPreviewModalOpen, setPreviewModalOpen] = useState(false);
   const [isArchiveModalOpen, setArchiveModalOpen] = useState(false);
   const [ref, inView] = useInView({});
@@ -101,8 +106,10 @@ export const Table = (props) => {
   const userBoard = useUserBoard();
   const user = useMe();
   const board = orgBoard || podBoard || userBoard;
+  const boardColumns = useColumns();
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
+  let tasksCount = 0;
 
   useEffect(() => {
     if (inView && hasMore) {
@@ -113,27 +120,22 @@ export const Table = (props) => {
   useEffect(() => {
     const taskId = router?.query?.task || router?.query?.taskProposal;
 
-    if (taskId && !once) {
+    if (taskId && once) {
       let task;
       columns.find((column) => {
-        const section = column?.section?.task;
-        if (section) {
-          task = [...section, ...column.tasks];
-        } else {
-          task = [...column.tasks];
-        }
-        return task.find((task) => task.id === taskId);
-      });
-    }
-  }, [columns, router?.query?.task || router?.query?.taskProposal]);
+        task = [...column.section.tasks, ...column.tasks].find((task) => task.id === taskId);
 
-  const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS, {
-    // onCompleted: (data) => {
-    //   if (data.updateTaskStatus.status === TASK_STATUS_ARCHIVED) {
-    //
-    //   }
-    // },
-  });
+        return task;
+      });
+
+      if (task) {
+        openTask(task);
+        setOnce(false);
+      }
+    }
+  }, [columns, once, router?.query?.task || router?.query?.taskProposal]);
+
+  const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS);
 
   async function editTask(task, status = '') {
     let populatedTask = { ...task };
@@ -170,7 +172,7 @@ export const Table = (props) => {
   }
 
   async function archiveTask(task) {
-    const newColumns = [...columns];
+    const newColumns = [...boardColumns.columns];
     const column = newColumns.find((column) => column.tasks.includes(task));
     let taskIndex;
 
@@ -192,7 +194,7 @@ export const Table = (props) => {
     if (column) {
       taskIndex = column.tasks.indexOf(selectedTask);
       column.tasks.splice(taskIndex, 1);
-      board.setColumns(newColumns);
+      boardColumns?.setColumns(newColumns);
     }
 
     setSnackbarAlertOpen(true);
@@ -207,7 +209,7 @@ export const Table = (props) => {
 
             if (taskIndex > -1) {
               column.tasks.splice(taskIndex, 0, task);
-              board.setColumns([...newColumns]);
+              boardColumns?.setColumns([...newColumns]);
             }
           }}
         >
@@ -219,7 +221,10 @@ export const Table = (props) => {
 
   function openTask(task, taskType = '') {
     setOnce(false);
-    router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`);
+    const urlParams: any = new URLSearchParams(window.location.search);
+    urlParams.append(task.__typename === 'TaskProposalCard' ? 'taskProposal' : 'task', task?.id);
+    history.pushState({}, '', `${delQuery(router.asPath)}?${urlParams.toString()}`);
+
     setSelectedTask(task);
     setSelectedTaskType(taskType);
     setPreviewModalOpen(true);
@@ -231,21 +236,26 @@ export const Table = (props) => {
         open={isPreviewModalOpen}
         handleClose={() => {
           setPreviewModalOpen(false);
-          router.push(`${delQuery(router.asPath)}?view=list`, undefined, {
-            shallow: true,
-          });
+
+          const urlParams: any = new URLSearchParams(window.location.search);
+          urlParams.delete('task');
+          urlParams.delete('taskProposal');
+          history.pushState({}, '', `${delQuery(router.asPath)}?${urlParams.toString()}`);
         }}
         task={selectedTaskType !== Constants.TASK_STATUS_SUBMISSION_REQUEST && selectedTask}
         isTaskProposal={selectedTaskType === Constants.TASK_STATUS_PROPOSAL_REQUEST}
         taskId={selectedTaskType === Constants.TASK_STATUS_SUBMISSION_REQUEST ? selectedTask?.taskId : selectedTask?.id}
       />
-      <ArchiveTaskModal
-        open={isArchiveModalOpen}
-        onClose={() => setArchiveModalOpen(false)}
-        onArchive={() => archiveTask(selectedTask)}
-        taskId={selectedTask?.id}
-        taskType={selectedTaskType}
-      />
+
+      {isArchiveModalOpen && selectedTask?.id ? (
+        <ArchiveTaskModal
+          taskId={selectedTask?.id}
+          open={isArchiveModalOpen}
+          taskType={selectedTask.type}
+          onClose={() => setArchiveModalOpen(false)}
+          onArchive={() => archiveTask(selectedTask)}
+        />
+      ) : null}
 
       {editableTask ? (
         <CreateModalOverlay
@@ -292,9 +302,8 @@ export const Table = (props) => {
             <StyledTableCell width="54px"></StyledTableCell>
           </StyledTableRow>
         </StyledTableHead>
-
         <StyledTableBody>
-          {columns.map((column) => {
+          {columns.map((column, index) => {
             let tasks = [...column.tasks];
             if (column?.section?.tasks) tasks = [...tasks, ...column?.section?.tasks];
 
@@ -304,6 +313,11 @@ export const Table = (props) => {
             }
 
             return tasks.map((task, index) => {
+              if (limit && tasksCount >= limit) {
+                return;
+              }
+
+              tasksCount++;
               const status = task?.status ?? column?.section?.filter?.taskType ?? column?.status;
               const dropdownItemLabel =
                 status === Constants.TASK_STATUS_PROPOSAL_REQUEST || status === Constants.TASK_STATUS_REQUESTED
@@ -396,7 +410,7 @@ export const Table = (props) => {
                               height: '16px',
                             }}
                           />
-                          <RewardAmount>{shrinkNumber(reward.rewardAmount)}</RewardAmount>
+                          <RewardAmount>{shrinkNumber(reward?.rewardAmount)}</RewardAmount>
                         </Reward>
                       ) : (
                         <Box color="#fff">None</Box>

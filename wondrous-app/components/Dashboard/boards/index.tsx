@@ -1,13 +1,16 @@
-import { useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { InputAdornment } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
   GET_USER_PERMISSION_CONTEXT,
+  GET_USER_PODS,
   GET_USER_TASK_BOARD_PROPOSALS,
   GET_USER_TASK_BOARD_SUBMISSIONS,
   GET_USER_TASK_BOARD_TASKS,
+  SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
+  SEARCH_TASKS_FOR_USER_BOARD_VIEW,
 } from '../../../graphql/queries';
 import {
   GET_PROPOSALS_USER_CAN_REVIEW,
@@ -16,92 +19,24 @@ import {
 import { dedupeColumns, delQuery } from '../../../utils';
 import { updateTaskColumns } from '../../../utils/board';
 import {
+  DEFAULT_STATUS_ARR,
   STATUS_OPEN,
-  TASK_STATUS_ARCHIVED,
   TASK_STATUS_AWAITING_PAYMENT,
-  TASK_STATUS_DONE,
-  TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_PROPOSAL_REQUEST,
-  TASK_STATUS_REQUESTED,
   TASK_STATUS_SUBMISSION_REQUEST,
-  TASK_STATUS_TODO,
+  TASK_STATUSES,
 } from '../../../utils/constants';
 import { UserBoardContext } from '../../../utils/contexts';
 import { useMe } from '../../Auth/withAuth';
-import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard';
-import { ToggleViewButton } from '../../Common/ToggleViewButton';
-import { Requested } from '../../Icons';
-import SearchIcon from '../../Icons/search';
-import { Archived } from '../../Icons/sections';
-import { InReviewIcon } from '../../Icons/statusIcons';
-import { Table } from '../../Table';
-import { BoardsActivity, BoardsActivityInput, BoardsContainer } from './styles';
-
-enum ViewType {
-  List = 'list',
-  Grid = 'grid',
-}
-
-const limit = 10;
-
-const taskStatuses = [TASK_STATUS_TODO, TASK_STATUS_IN_PROGRESS, TASK_STATUS_DONE, TASK_STATUS_ARCHIVED];
-
-const todo = {
-  status: TASK_STATUS_TODO,
-  tasks: [],
-  section: {
-    title: 'Proposals',
-    icon: Requested,
-    id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
-    filter: {
-      taskType: TASK_STATUS_REQUESTED,
-    },
-    expandable: true,
-    action: {
-      text: 'Proposal',
-    },
-    tasks: [],
-  },
-};
-
-const inProgress = {
-  status: TASK_STATUS_IN_PROGRESS,
-  tasks: [],
-  section: {
-    title: 'In Review',
-    icon: InReviewIcon,
-    id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
-    filter: {
-      taskType: TASK_STATUS_IN_REVIEW,
-    },
-    expandable: true,
-    action: {
-      text: 'Review',
-    },
-    tasks: [],
-  },
-};
-
-const done = {
-  status: TASK_STATUS_DONE,
-  tasks: [],
-  section: {
-    title: 'Archived',
-    icon: Archived,
-    id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
-    filter: {
-      taskType: TASK_STATUS_ARCHIVED,
-    },
-    expandable: true,
-    action: {
-      text: 'Restore',
-    },
-    tasks: [],
-  },
-};
-
-const baseColumns = [todo, inProgress, done];
+import { FilterItemOrgIcon, FilterOrg } from './styles';
+import Boards from '../../Common/Boards';
+import { TaskFilter } from '../../../types/task';
+import { FILTER_STATUSES, populateTaskColumns, COLUMNS, SELECT_OPTIONS, LIMIT } from '../../../services/board';
+import apollo from '../../../services/apollo';
+import CreatePodIcon from '../../Icons/createPod';
+import { FilterItem, FilterItemIcon, FilterItemName } from '../../Common/Filter/styles';
+import CreateDaoIcon from '../../Icons/createDao';
 
 const proposal = {
   status: TASK_STATUS_PROPOSAL_REQUEST,
@@ -126,53 +61,157 @@ const filterColumnsByStatus = (columns, status) => {
   return columns.filter((column) => column.status === status);
 };
 
-const Boards = (props) => {
+const BoardsPage = (props) => {
+  const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR);
   const { isAdmin, selectedStatus } = props;
   const router = useRouter();
-  const [view, setView] = useState(null);
   const loggedInUser = useMe();
   const [contributorColumns, setContributorColumns] = useState([]);
   const [adminColumns, setAdminColumns] = useState([]);
   const [hasMoreTasks, setHasMoreTasks] = useState(true);
-  const { fetchMore } = useQuery(GET_USER_TASK_BOARD_TASKS, {
+  const { search } = router.query;
+
+  const [getTasks, { fetchMore }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
     variables: {
+      podIds: [],
       userId: loggedInUser?.id,
-      statuses: taskStatuses,
-      limit,
+      statuses: DEFAULT_STATUS_ARR,
+      limit: LIMIT,
       offset: 0,
     },
+    fetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
       const tasks = data?.getUserTaskBoardTasks;
-      const newColumns = updateTaskColumns(tasks, contributorColumns.length > 0 ? contributorColumns : baseColumns);
+      const newColumns = populateTaskColumns(tasks, contributorColumns.length > 0 ? contributorColumns : COLUMNS);
       setContributorColumns(dedupeColumns(newColumns));
-      setHasMoreTasks(tasks?.length >= limit);
+      setHasMoreTasks(tasks?.length >= LIMIT);
     },
   });
-  const getUserTaskBoardProposals = useQuery(GET_USER_TASK_BOARD_PROPOSALS, {
+
+  const bindProposalsToCols = (taskProposals) => {
+    const newColumns = [...contributorColumns];
+    newColumns[0].section.tasks = [];
+    taskProposals?.forEach((taskProposal) => {
+      newColumns[0].section.tasks.push(taskProposal);
+    });
+    setContributorColumns(newColumns);
+  };
+
+  const [searchTasks] = useLazyQuery(SEARCH_TASKS_FOR_USER_BOARD_VIEW, {
+    onCompleted: (data) => {
+      const tasks = data?.searchTasksForUserBoardView;
+      const newColumns = populateTaskColumns(tasks, contributorColumns.length > 0 ? contributorColumns : COLUMNS);
+      newColumns[0].section.tasks = [];
+      newColumns[1].section.tasks = [];
+      newColumns[2].section.tasks = [];
+
+      tasks.forEach((task) => {
+        if (task.status === TASK_STATUS_IN_REVIEW) {
+          newColumns[1].section.tasks.push(task);
+        }
+      });
+
+      if (statuses.length) {
+        newColumns.forEach((column) => {
+          if (!statuses.includes(column.section.filter.taskType)) {
+            column.section.tasks = [];
+          }
+        });
+      }
+
+      setContributorColumns(dedupeColumns(newColumns));
+      setHasMoreTasks(tasks.length >= LIMIT);
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [searchProposals] = useLazyQuery(SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW, {
+    onCompleted: (data) => bindProposalsToCols(data?.searchProposalsForUserBoardView),
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [filterSchema, setFilterSchema] = useState([
+    {
+      name: 'podIds',
+      label: 'Orgs',
+      multiChoice: true,
+      orgPods: {},
+      renderList: ({ selectedTab, selectedTabItems, toggleInFilter, items }) => {
+        return Object.keys(selectedTab.orgPods).map((orgName) => (
+          <FilterOrg
+            key={orgName}
+            title={
+              <FilterItemOrgIcon>
+                <CreateDaoIcon /> {orgName}
+              </FilterItemOrgIcon>
+            }
+          >
+            {selectedTab.orgPods[orgName].map((item) => {
+              const isSelected = (selectedTabItems[selectedTab?.name] || []).includes(item.id);
+
+              return (
+                <FilterItem onClick={() => toggleInFilter(item.id)} selected={isSelected} key={item.id}>
+                  <FilterItemIcon>
+                    <CreatePodIcon />
+                  </FilterItemIcon>
+                  <FilterItemName>{item.name}</FilterItemName>
+                </FilterItem>
+              );
+            })}
+          </FilterOrg>
+        ));
+      },
+      items: [],
+    },
+    FILTER_STATUSES,
+  ]);
+
+  const [getUserPods] = useLazyQuery(GET_USER_PODS, {
+    fetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      const orgPods = {};
+      data.getUserPods.forEach((pod) => {
+        if (!orgPods[pod.org.name]) {
+          orgPods[pod.org.name] = [];
+        }
+
+        orgPods[pod.org.name].push(pod);
+      });
+
+      const newFilterSchema: any = [...filterSchema];
+      newFilterSchema[0].orgPods = orgPods;
+      newFilterSchema[0].items = data.getUserPods;
+
+      setFilterSchema(newFilterSchema);
+    },
+  });
+
+  const [getUserTaskBoardProposals] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
     variables: {
       userId: loggedInUser?.id,
       statuses: [STATUS_OPEN],
-      limit,
+      limit: LIMIT,
       offset: 0,
     },
     onCompleted: (data) => {
       const taskProposals = data?.getUserTaskBoardProposals;
-      const newColumns = contributorColumns[0]?.section ? [...contributorColumns] : [...baseColumns];
+      const newColumns = contributorColumns[0]?.section ? [...contributorColumns] : [...COLUMNS];
       newColumns[0].section.tasks = [...taskProposals];
       setContributorColumns(newColumns);
     },
   });
+
   const getUserTaskBoardSubmissions = useQuery(GET_USER_TASK_BOARD_SUBMISSIONS, {
     variables: {
       userId: loggedInUser?.id,
       statuses: [STATUS_OPEN],
-      limit,
+      limit: LIMIT,
       offset: 0,
     },
     onCompleted: (data) => {
       const tasks = data?.getUserTaskBoardSubmissions;
       if (tasks?.length > 0) {
-        const newColumns = contributorColumns[1]?.section ? [...contributorColumns] : [...baseColumns];
+        const newColumns = contributorColumns[1]?.section ? [...contributorColumns] : [...COLUMNS];
         newColumns[1].section.tasks = [...tasks];
         setContributorColumns(newColumns);
       }
@@ -180,7 +219,7 @@ const Boards = (props) => {
   });
   const getProposalsUserCanReview = useQuery(GET_PROPOSALS_USER_CAN_REVIEW, {
     onCompleted: (data) => {
-      const tasks = data?.getProposalsUserCanReview;
+      const tasks = data?.getProposalsUserCanReview || [];
       const newColumns = adminColumns[0]?.tasks ? [...adminColumns] : [...baseColumnsAdmin];
       newColumns[0].tasks = [...tasks];
       setAdminColumns(newColumns);
@@ -194,47 +233,66 @@ const Boards = (props) => {
       setAdminColumns(newColumns);
     },
   });
-  const { data: userTaskCountData } = useQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD, {
-    variables: {
-      userId: loggedInUser?.id,
-    },
-  });
+  const [getUserTaskCountData, { data: userTaskCountData }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD);
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
 
-  const listViewOptions = [
-    {
-      name: 'List',
-      active: view === ViewType.List,
-      action: () => {
-        router.replace(`${delQuery(router.asPath)}?view=${ViewType.List}`);
-      },
-    },
-    {
-      name: 'Grid',
-      active: view === ViewType.Grid,
-      action: () => {
-        router.replace(`${delQuery(router.asPath)}?view=${ViewType.Grid}`);
-      },
-    },
-  ];
-
   useEffect(() => {
-    if (router.isReady && !isAdmin) {
-      setView((router.query.view || ViewType.Grid) as ViewType);
+    if (!loggedInUser) {
+      return;
     }
-    if (router.isReady && isAdmin) {
-      setView(ViewType.List as ViewType);
+
+    if (search) {
+      const searchTaskProposalsArgs = {
+        variables: {
+          userId: loggedInUser?.id,
+          podIds: [],
+          statuses: [STATUS_OPEN],
+          offset: 0,
+          limit: LIMIT,
+          searchString: search,
+        },
+      };
+
+      const searchTasksArgs = {
+        variables: {
+          userId: loggedInUser?.id,
+          podIds: [],
+          limit: LIMIT,
+          offset: 0,
+          // Needed to exclude proposals
+          statuses: DEFAULT_STATUS_ARR,
+          searchString: search,
+        },
+      };
+
+      searchTasks(searchTasksArgs);
+      searchProposals(searchTaskProposalsArgs);
+    } else {
+      getTasks();
+      getUserTaskBoardProposals();
+
+      getUserTaskCountData({
+        variables: {
+          userId: loggedInUser?.id,
+        },
+      });
     }
-  }, [router.query.view, router.isReady, isAdmin]);
+
+    getUserPods({
+      variables: {
+        userId: loggedInUser?.id,
+      },
+    });
+  }, [loggedInUser]);
 
   const handleLoadMore = useCallback(() => {
     if (hasMoreTasks) {
       fetchMore({
         variables: {
           offset: Math.max(...contributorColumns.map(({ tasks }) => tasks.length)),
-          limit,
+          limit: LIMIT,
         },
         updateQuery: (prev, { fetchMoreResult }) => ({
           getUserTaskBoardTasks: [...prev.getUserTaskBoardTasks, ...fetchMoreResult.getUserTaskBoardTasks],
@@ -255,6 +313,107 @@ const Boards = (props) => {
     }
   }, [hasMoreTasks, contributorColumns, fetchMore]);
 
+  function handleSearch(searchString: string) {
+    const searchTaskProposalsArgs = {
+      variables: {
+        userId: loggedInUser?.id,
+        podIds: [],
+        statuses: [STATUS_OPEN],
+        offset: 0,
+        limit: LIMIT,
+        searchString,
+      },
+    };
+
+    const searchTasksArgs = {
+      variables: {
+        userId: loggedInUser?.id,
+        podIds: [],
+        limit: LIMIT,
+        offset: 0,
+        // Needed to exclude proposals
+        statuses: DEFAULT_STATUS_ARR,
+        searchString,
+      },
+    };
+
+    const promises: any = [
+      apollo.query({
+        ...searchTaskProposalsArgs,
+        query: SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
+      }),
+
+      apollo.query({
+        ...searchTasksArgs,
+        query: SEARCH_TASKS_FOR_USER_BOARD_VIEW,
+      }),
+    ];
+
+    return Promise.all(promises).then(([proposals, tasks]: any) => ({
+      proposals: proposals.data.searchProposalsForUserBoardView,
+      tasks: tasks.data.searchTasksForUserBoardView,
+    }));
+  }
+
+  const handleFilterChange: any = ({ statuses = DEFAULT_STATUS_ARR, podIds }: TaskFilter) => {
+    const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
+    const shouldSearchProposals = statuses?.length !== taskStatuses.length || statuses === DEFAULT_STATUS_ARR;
+    const shouldSearchTasks = !(searchProposals && statuses?.length === 1);
+
+    setStatuses(statuses);
+
+    if (search) {
+      const searchTaskProposalsArgs = {
+        variables: {
+          userId: loggedInUser?.id,
+          podIds,
+          statuses: [STATUS_OPEN],
+          offset: 0,
+          limit: LIMIT,
+          searchString: search,
+        },
+      };
+
+      const searchTasksArgs = {
+        variables: {
+          userId: loggedInUser?.id,
+          podIds,
+          limit: LIMIT,
+          offset: 0,
+          // Needed to exclude proposals
+          statuses: taskStatuses,
+          searchString: search,
+        },
+      };
+
+      if (shouldSearchTasks) {
+        searchTasks(searchTasksArgs);
+      } else {
+        const newColumns = [...contributorColumns];
+        newColumns.forEach((column) => {
+          column.tasks = [];
+          column.section.tasks = [];
+        });
+
+        setContributorColumns(newColumns);
+      }
+
+      if (shouldSearchProposals) {
+        searchProposals(searchTaskProposalsArgs);
+      }
+    } else {
+      getTasks({
+        variables: {
+          podIds,
+          limit: LIMIT,
+          userId: loggedInUser?.id,
+          statuses: taskStatuses,
+          offset: 0,
+        },
+      });
+    }
+  };
+
   return (
     <UserBoardContext.Provider
       value={{
@@ -267,45 +426,16 @@ const Boards = (props) => {
         loggedInUserId: loggedInUser?.id,
       }}
     >
-      <BoardsContainer>
-        <BoardsActivity>
-          <BoardsActivityInput
-            style={{ visibility: 'hidden' }}
-            placeholder="Search people or pods..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-          {/*<Filter style={{ visibility: 'hidden' }} filterSchema={filterSchema} filter={filter} setFilter={setFilter} />*/}
-          {view && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
-        </BoardsActivity>
-
-        {view ? (
-          <>
-            {view === ViewType.Grid ? (
-              <KanbanBoard
-                columns={contributorColumns}
-                onLoadMore={handleLoadMore}
-                hasMore={hasMoreTasks}
-                isAdmin={isAdmin}
-              />
-            ) : (
-              <Table
-                columns={isAdmin ? filterColumnsByStatus(adminColumns, selectedStatus) : contributorColumns}
-                onLoadMore={handleLoadMore}
-                hasMore={hasMoreTasks}
-                isAdmin={isAdmin}
-              />
-            )}
-          </>
-        ) : null}
-      </BoardsContainer>
+      <Boards
+        filterSchema={filterSchema}
+        onSearch={handleSearch}
+        onFilterChange={handleFilterChange}
+        columns={isAdmin ? filterColumnsByStatus(adminColumns, selectedStatus) : contributorColumns}
+        onLoadMore={handleLoadMore}
+        hasMore={hasMoreTasks}
+      />
     </UserBoardContext.Provider>
   );
 };
 
-export default Boards;
+export default BoardsPage;

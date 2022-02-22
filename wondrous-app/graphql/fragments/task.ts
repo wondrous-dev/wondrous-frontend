@@ -9,6 +9,7 @@ export const TaskFragment = gql`
     createdBy
     description
     milestoneId
+    parentTaskId
     orgId
     podId
     type
@@ -106,6 +107,7 @@ export const TaskCardFragment = gql`
     }
     milestoneId
     milestoneTitle
+    parentTaskId
   }
   ${MediaFragment}
 `;

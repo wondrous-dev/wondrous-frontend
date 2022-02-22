@@ -20,6 +20,9 @@ export const GET_USER_PODS = gql`
       description
       color
       org {
+        id
+        name
+        username
         profilePicture
       }
       tasksIncompleteCount
@@ -54,6 +57,17 @@ export const GET_POD_USERS = gql`
         id
         name
       }
+    }
+  }
+`;
+
+export const SEARCH_POD_USERS = gql`
+  query searchPodUsers($podId: ID!, $queryString: String!) {
+    searchPodUsers(podId: $podId, queryString: $queryString) {
+      id
+      username
+      profilePicture
+      bio
     }
   }
 `;

@@ -91,14 +91,15 @@ const KanbanBoard = (props) => {
             newStatus: taskToBeUpdated.status,
           },
         },
-        refetchQueries: [
-          {
-            query: GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
-            variables: orgBoard?.getOrgBoardTaskCountVariables,
-          },
-          GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE,
+        refetchQueries: () => [
           'getUserTaskBoardTasks',
+          'getOrgTaskBoardTasks',
+          'getPodTaskBoardTasks',
+          'getPerStatusTaskCountForMilestone',
           'getPerStatusTaskCountForUserBoard',
+          'getPerStatusTaskCountForOrgBoard',
+          'getPerStatusTaskCountForPodBoard',
+          'getSubtaskCountForTask',
         ],
       });
 

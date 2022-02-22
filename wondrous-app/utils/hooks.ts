@@ -60,6 +60,14 @@ export const usePodBoard = () => useContext(PodBoardContext);
 
 export const useUserBoard = () => useContext(UserBoardContext);
 
+export const useBoard = () => {
+  const orgBoard = useOrgBoard();
+  const userBoard = useUserBoard();
+  const podBoard = usePodBoard();
+
+  return orgBoard || userBoard || podBoard;
+};
+
 export const useSettings = () => useContext(SettingsBoardContext);
 
 export const useColumns = () => useContext(ColumnsContext);
@@ -67,3 +75,26 @@ export const useColumns = () => useContext(ColumnsContext);
 export const useApprovedSubmission = () => useContext(ApprovedSubmissionContext); // for payment, i think it's hacky
 
 export const usePaymentModal = () => useContext(PaymentModalContext);
+
+/**
+ * Hook that alerts clicks outside of the passed ref
+ */
+export const useOutsideAlerter = (ref, callback) => {
+  useEffect(() => {
+    /**
+     * Alert if clicked on outside of element
+     */
+    function handleClickOutside(event) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        callback(event);
+      }
+    }
+
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [ref]);
+};
