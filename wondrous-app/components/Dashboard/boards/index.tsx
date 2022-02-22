@@ -65,7 +65,6 @@ const BoardsPage = (props) => {
   const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR);
   const { isAdmin, selectedStatus } = props;
   const router = useRouter();
-  const [view, setView] = useState(null);
   const loggedInUser = useMe();
   const [contributorColumns, setContributorColumns] = useState([]);
   const [adminColumns, setAdminColumns] = useState([]);

@@ -16,7 +16,7 @@ import Boards from '../../../components/Pod/boards';
 import { TASK_STATUS_IN_REVIEW, DEFAULT_STATUS_ARR, STATUS_OPEN, TASK_STATUSES } from '../../../utils/constants';
 
 import { PodBoardContext } from '../../../utils/contexts';
-import { GET_AUTOCOMPLETE_USERS, GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
+import { GET_USER_PERMISSION_CONTEXT, SEARCH_POD_USERS } from '../../../graphql/queries';
 import { GET_POD_BY_ID } from '../../../graphql/queries/pod';
 import { dedupeColumns } from '../../../utils';
 import apollo from '../../../services/apollo';
@@ -271,9 +271,12 @@ const BoardsPage = () => {
 
     const promises: any = [
       apollo.query({
-        query: GET_AUTOCOMPLETE_USERS,
+        query: SEARCH_POD_USERS,
         variables: {
-          username: searchString,
+          podId,
+          limit: LIMIT,
+          offset: 0,
+          queryString: searchString,
         },
       }),
       apollo.query({
@@ -288,7 +291,7 @@ const BoardsPage = () => {
     ];
 
     return Promise.all(promises).then(([users, proposals, tasks]: any) => ({
-      users: users.data.getAutocompleteUsers,
+      users: users.data.searchPodUsers,
       proposals: proposals.data.searchProposalsForPodBoardView,
       tasks: tasks.data.searchTasksForPodBoardView,
     }));
