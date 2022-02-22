@@ -52,6 +52,7 @@ export default function SearchTasks({ onSearch }: Props) {
 
     timeout = setTimeout(async () => {
       const { users = [], proposals, tasks } = await onSearch(searchString);
+
       const hasMore = [...tasks, ...proposals].length > LIMIT;
       const tasksWithProposals = [...tasks, ...proposals].slice(0, LIMIT);
 
@@ -61,25 +62,11 @@ export default function SearchTasks({ onSearch }: Props) {
   };
 
   function handleTaskClick(task) {
-    // const isProposal = task.__typename === 'TaskProposalCard';
-    // setInputValue('');
-    // setOpen(false);
-    //
-    // router.replace({
-    //   pathname: location.pathname,
-    //   query: {
-    //     [`task${isProposal ? 'Proposal' : ''}`]: task.id,
-    //     view: router.query.view,
-    //   },
-    // }, undefined, { shallow: true });
-
     const urlParams: any = new URLSearchParams(window.location.search);
     urlParams.append(task.__typename === 'TaskProposalCard' ? 'taskProposal' : 'task', task?.id);
     history.pushState({}, '', `${delQuery(router.asPath)}?${urlParams.toString()}`);
 
     setSelectedTask(task);
-    // setSelectedTaskType(taskType);
-    // setPreviewModalOpen(true);
   }
 
   function handleShowMore() {
