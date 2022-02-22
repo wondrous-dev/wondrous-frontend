@@ -300,7 +300,7 @@ const BoardsPage = () => {
     ];
 
     return Promise.all(promises).then(([users, proposals, tasks]: any) => ({
-      users: users.data.searchOrgUsers,
+      users: users.data.getAutocompleteUsers,
       proposals: proposals.data.searchProposalsForOrgBoardView,
       tasks: tasks.data.searchTasksForOrgBoardView,
     }));
