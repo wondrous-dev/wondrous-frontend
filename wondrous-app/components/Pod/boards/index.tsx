@@ -149,7 +149,7 @@ const Boards = (props: Props) => {
         {
           id: TASK_STATUS_REQUESTED,
           name: 'Proposals',
-          icon: <Proposal />,
+          icon: <TaskStatus status={TASK_STATUS_REQUESTED} />,
           count: taskCount.proposal || 0,
         },
         {

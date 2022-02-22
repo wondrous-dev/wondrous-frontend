@@ -9,32 +9,16 @@ import {
   GET_POD_TASK_BOARD_TASKS,
   GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD,
   SEARCH_TASKS_FOR_POD_BOARD_VIEW,
-  GET_ORG_TASK_BOARD_PROPOSALS,
-  SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
   SEARCH_POD_TASK_BOARD_PROPOSALS,
-  SEARCH_ORG_TASK_BOARD_PROPOSALS,
-  GET_TASKS_RELATED_TO_USER_IN_ORG,
   GET_TASKS_RELATED_TO_USER_IN_POD,
 } from '../../../graphql/queries/taskBoard';
 import Boards from '../../../components/Pod/boards';
-import { InReview, Requested, Archived } from '../../../components/Icons/sections';
-import {
-  TASK_STATUS_DONE,
-  TASK_STATUS_IN_PROGRESS,
-  TASK_STATUS_TODO,
-  TASK_STATUS_REQUESTED,
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_ARCHIVED,
-  DEFAULT_STATUS_ARR,
-  STATUS_OPEN,
-  TASK_STATUSES,
-} from '../../../utils/constants';
+import { TASK_STATUS_IN_REVIEW, DEFAULT_STATUS_ARR, STATUS_OPEN, TASK_STATUSES } from '../../../utils/constants';
 
 import { PodBoardContext } from '../../../utils/contexts';
-import { GET_AUTOCOMPLETE_USERS, GET_USER_PERMISSION_CONTEXT, SEARCH_ORG_USERS } from '../../../graphql/queries';
+import { GET_AUTOCOMPLETE_USERS, GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
 import { GET_POD_BY_ID } from '../../../graphql/queries/pod';
-import { dedupeColumns, delQuery } from '../../../utils';
-import * as Constants from '../../../utils/constants';
+import { dedupeColumns } from '../../../utils';
 import apollo from '../../../services/apollo';
 import { TaskFilter } from '../../../types/task';
 
@@ -234,7 +218,7 @@ const BoardsPage = () => {
         });
       }
     }
-  }, [podId, getPodTasks, statuses, getPodTaskSubmissions, getPodTaskProposals, getPodBoardTaskCount, getPod]);
+  }, [podId, getPodTasks, getPodTaskSubmissions, getPodTaskProposals, getPodBoardTaskCount, getPod]);
 
   const handleLoadMore = useCallback(() => {
     if (podTaskHasMore) {
@@ -259,92 +243,11 @@ const BoardsPage = () => {
     }
   }, [podTaskHasMore, columns, fetchMore]);
 
-  // function searchTasks(searchString: string, returnResult = false) {
-  //   const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
-  //   const searchProposals = statuses.length !== taskStatuses.length || statuses === DEFAULT_STATUS_ARR;
-  //   const searchTasks = !(searchProposals && statuses.length === 1);
-  //
-  //   const getPodTaskProposalsArgs = {
-  //     variables: {
-  //       input: {
-  //         podId,
-  //         statuses: [STATUS_OPEN],
-  //         offset: 0,
-  //         limit: LIMIT,
-  //         searchString,
-  //       },
-  //     },
-  //   };
-  //
-  //   const searchPodTasksArgs = {
-  //     variables: {
-  //       input: {
-  //         podId,
-  //         limit: 1000,
-  //         offset: 0,
-  //         // Needed to exclude proposals
-  //         statuses: taskStatuses.length ? taskStatuses : DEFAULT_STATUS_ARR,
-  //         searchString,
-  //       },
-  //     },
-  //   };
-  //
-  //   if (returnResult) {
-  //     const promises: any = [
-  //       searchProposals
-  //         ? apollo.query({
-  //             ...getPodTaskProposalsArgs,
-  //             query: SEARCH_POD_TASK_BOARD_PROPOSALS,
-  //           })
-  //         : { data: { searchPodTaskProposals: [] } },
-  //
-  //       searchTasks
-  //         ? apollo.query({
-  //             ...searchPodTasksArgs,
-  //             query: SEARCH_TASKS_FOR_POD_BOARD_VIEW,
-  //           })
-  //         : { data: { searchTasksForPodBoardView: [] } },
-  //     ];
-  //
-  //     return Promise.all(promises).then(([proposals, tasks]: any) => [
-  //       ...proposals.data.searchProposalsForPodBoardView,
-  //       ...tasks.data.searchTasksForPodBoardView,
-  //     ]);
-  //   } else {
-  //     if (searchTasks) {
-  //       searchPodTasks(searchPodTasksArgs);
-  //     } else {
-  //       const newColumns = [...columns];
-  //       newColumns.forEach((column) => {
-  //         column.tasks = [];
-  //         column.section.tasks = [];
-  //       });
-  //
-  //       setColumns(newColumns);
-  //     }
-  //
-  //     if (searchProposals) {
-  //       searchPodTaskProposals(getPodTaskProposalsArgs);
-  //     }
-  //
-  //     return Promise.resolve([]);
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   if (firstTimeFetch) {
-  //     searchTasks(searchString);
-  //   }
-  // }, [searchString, podId, statuses, searchPodTasks, getPodTaskProposals]);
-  //
-
   function handleSearch(searchString: string) {
-    // const id = orgId || orgData?.id;
     const searchPodTaskProposalsArgs = {
       variables: {
         input: {
           podId,
-          // orgId: id,
           statuses: [STATUS_OPEN],
           offset: 0,
           limit: LIMIT,
@@ -357,7 +260,6 @@ const BoardsPage = () => {
       variables: {
         input: {
           podId,
-          // orgId: id,
           limit: LIMIT,
           offset: 0,
           // Needed to exclude proposals
@@ -371,7 +273,6 @@ const BoardsPage = () => {
       apollo.query({
         query: GET_AUTOCOMPLETE_USERS,
         variables: {
-          // orgId: id,
           username: searchString,
         },
       }),
@@ -393,29 +294,12 @@ const BoardsPage = () => {
     }));
   }
 
-  // const handleSearch = useCallback(
-  //   (searchString) => {
-  //     // if (search) {
-  //     //   history.pushState({}, '', `${delQuery(router.asPath)}?search=${searchString}&view=list`);
-  //     //   setSearchString(searchString);
-  //     //
-  //     //   return Promise.resolve([]);
-  //     // } else {
-  //     //   return searchTasks(searchString, true);
-  //     // }
-  //   },
-  //   [podId]
-  // );
-
-  // const handleFilterChange: any = ({ statuses }: TaskFilter) => {
-  //   setStatuses(statuses || DEFAULT_STATUS_ARR);
-
-  const handleFilterChange: any = ({ statuses, podIds }: TaskFilter) => {
-    const taskStatuses = (statuses || DEFAULT_STATUS_ARR).filter((status) => TASK_STATUSES.includes(status));
+  const handleFilterChange: any = ({ statuses = DEFAULT_STATUS_ARR }: TaskFilter) => {
+    const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
     const searchProposals = statuses.length !== taskStatuses.length || statuses === DEFAULT_STATUS_ARR;
     const searchTasks = !(searchProposals && statuses.length === 1);
 
-    setStatuses(statuses || DEFAULT_STATUS_ARR);
+    setStatuses(statuses);
 
     if (userId) {
       getTasksRelatedToUser({
@@ -427,7 +311,7 @@ const BoardsPage = () => {
           offset: 0,
         },
       });
-    } else if (search) {
+    } else {
       const searchOrgTaskProposalsArgs = {
         variables: {
           input: {
@@ -468,48 +352,8 @@ const BoardsPage = () => {
       if (searchProposals) {
         searchPodTaskProposals(searchOrgTaskProposalsArgs);
       }
-
-      // const searchOrgTaskProposalsArgs = {
-      //   variables: {
-      //     podIds,
-      //     orgId: id,
-      //     statuses: [STATUS_OPEN],
-      //     offset: 0,
-      //     limit: 100,
-      //     search,
-      //   },
-      // };
-      //
-      // const searchOrgTasksArgs = {
-      //   variables: {
-      //     podIds,
-      //     orgId: id,
-      //     limit: 100,
-      //     offset: 0,
-      //     // Needed to exclude proposals
-      //     statuses: taskStatuses,
-      //     search,
-      //   },
-      // };
-      //
-      // if (searchTasks) {
-      //   searchOrgTasks(searchOrgTasksArgs);
-      // } else {
-      //   const newColumns = [...columns];
-      //   newColumns.forEach((column) => {
-      //     column.tasks = [];
-      //     column.section.tasks = [];
-      //   });
-      //
-      //   setColumns(newColumns);
-      // }
-      //
-      // if (searchProposals) {
-      //   searchOrgTaskProposals(searchOrgTaskProposalsArgs);
-      // }
     }
   };
-  // };
 
   return (
     <PodBoardContext.Provider

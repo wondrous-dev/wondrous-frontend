@@ -19,7 +19,7 @@ type Props = {
 };
 
 const OrgBoards = (props: Props) => {
-  const { columns, onLoadMore, hasMore, orgData, orgPods, onSearch, onFilterChange, searchString } = props;
+  const { columns, onLoadMore, hasMore, orgData, orgPods, onSearch, onFilterChange } = props;
   const [filterSchema, setFilterSchema] = useState([
     {
       name: 'podIds',
@@ -53,7 +53,6 @@ const OrgBoards = (props: Props) => {
         columns={columns}
         onLoadMore={onLoadMore}
         hasMore={hasMore}
-        searchString={searchString}
       />
     </Wrapper>
   );

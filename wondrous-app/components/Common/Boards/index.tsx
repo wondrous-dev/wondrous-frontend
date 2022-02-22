@@ -34,11 +34,10 @@ type Props = {
   columns: Array<any>;
   onLoadMore: any;
   hasMore: any;
-  searchString: string;
 };
 
 const Boards = (props: Props) => {
-  const { columns, onLoadMore, hasMore, filterSchema, onSearch, onFilterChange, searchString } = props;
+  const { columns, onLoadMore, hasMore, filterSchema, onSearch, onFilterChange } = props;
   const router = useRouter();
   const [view, setView] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
@@ -96,7 +95,7 @@ const Boards = (props: Props) => {
       <>
         <ResultsCount>
           <div>
-            Showing <span>{totalCount}</span> results {searchString ? `for ‘${searchString}’` : null}
+            Showing <span>{totalCount}</span> results {searchQuery ? `for ‘${searchQuery}’` : null}
           </div>
           <ResultsCountRight>
             {Object.values(searchResults).map(({ name, columns }) =>
