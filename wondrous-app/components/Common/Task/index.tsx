@@ -245,7 +245,6 @@ export const Task = (props) => {
 
   const goToPod = (podId) => {
     // Filter or go to Pod Page
-    console.log('Pod tap: ', podId);
     router.push(`/pod/${podId}/boards`, undefined, {
       shallow: true,
     });

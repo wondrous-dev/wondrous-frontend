@@ -72,7 +72,6 @@ export const OfflinePayment = (props) => {
   };
   const [linkOffPlatformPayment] = useMutation(LINK_OFF_PLATFORM_PAYMENT, {
     onCompleted: (data) => {
-      console.log(data);
       setSubmissionPaid(true);
     },
     onError: (e) => {

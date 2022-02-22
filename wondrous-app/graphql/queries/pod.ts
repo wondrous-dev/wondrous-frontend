@@ -20,6 +20,9 @@ export const GET_USER_PODS = gql`
       description
       color
       org {
+        id
+        name
+        username
         profilePicture
       }
       tasksIncompleteCount

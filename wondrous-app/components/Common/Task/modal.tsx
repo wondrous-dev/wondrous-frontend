@@ -250,7 +250,7 @@ export const TaskListViewModal = (props) => {
     onCompleted: (data) => {
       const tasks = data?.getUserTaskBoardTasks;
       setFetchedList(tasks);
-      setHasMore(data?.hasMore || tasks?.length >= TASK_LIST_VIEW_LIMIT);
+      setHasMore(data?.hasMore || tasks?.length >= LIMIT);
     },
   });
 
@@ -656,7 +656,6 @@ export const TaskViewModal = (props) => {
     },
     fetchPolicy: 'network-only',
     onError: (err) => {
-      console.log('err', err);
       setTaskSubmissionLoading(false);
     },
   });
@@ -791,7 +790,6 @@ export const TaskViewModal = (props) => {
           });
         }
       } else if (task && !isEqual(task, fetchedTask)) {
-        console.log('not getting in here');
         setFetchedTask(task);
       }
 

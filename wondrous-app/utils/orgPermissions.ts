@@ -39,7 +39,7 @@ const permissons: Permisson[] = [
   },
   {
     title: 'Manage comment',
-    subTitle: 'Member can manage_comment.',
+    subTitle: 'Member can manage comment.',
     permission: PERMISSIONS.MANAGE_COMMENT,
   },
   {
@@ -48,7 +48,7 @@ const permissons: Permisson[] = [
     permission: PERMISSIONS.MANAGE_POD,
   },
   {
-    title: 'Manage tasks order.',
+    title: 'Manage tasks order',
     subTitle: 'Member can reorder tasks.',
     permission: PERMISSIONS.REORDER_TASK,
   },

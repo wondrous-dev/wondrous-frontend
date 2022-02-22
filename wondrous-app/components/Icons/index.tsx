@@ -133,6 +133,79 @@ export const InProgress = (props) => (
   </svg>
 );
 
+export const MembershipRequest = (props) => (
+    <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14.5703" cy="14.2695" r="13.5" fill="#0F0F0F" stroke="#474747"/>
+        <circle cx="14.5703" cy="14.2695" r="8" fill="url(#paint0_linear_2374_11665)"/>
+        <circle cx="14.5727" cy="14.269" r="2.79144" stroke="url(#paint1_linear_2374_11665)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="14.5728" cy="8.6275" r="0.84625" fill="url(#paint2_linear_2374_11665)"/>
+        <circle cx="14.5728" cy="19.9112" r="0.84625" fill="url(#paint3_linear_2374_11665)"/>
+        <defs>
+            <linearGradient id="paint0_linear_2374_11665" x1="21.7339" y1="-4.1219" x2="13.7339" y2="22.4457" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#474747"/>
+                <stop offset="1" stopColor="#181818"/>
+            </linearGradient>
+            <linearGradient id="paint1_linear_2374_11665" x1="17.0723" y1="7.85166" x2="14.2808" y2="17.1219" gradientUnits="userSpaceOnUse">
+                <stop stopColor="white"/>
+                <stop offset="1" stopColor="#FF6DD7"/>
+            </linearGradient>
+            <linearGradient id="paint2_linear_2374_11665" x1="15.3306" y1="6.68203" x2="14.4843" y2="9.49239" gradientUnits="userSpaceOnUse">
+                <stop stopColor="white"/>
+                <stop offset="1" stopColor="#FF6DD7"/>
+            </linearGradient>
+            <linearGradient id="paint3_linear_2374_11665" x1="15.3306" y1="17.9657" x2="14.4843" y2="20.7761" gradientUnits="userSpaceOnUse">
+                <stop stopColor="white"/>
+                <stop offset="1" stopColor="#FF6DD7"/>
+            </linearGradient>
+        </defs>
+    </svg>
+
+);
+
+export const Proposal = (props) => (
+
+    <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14.5703" cy="14.2695" r="13.5" fill="#0F0F0F" stroke="#474747"/>
+        <circle cx="14.5703" cy="14.2698" r="8" transform="rotate(45 14.5703 14.2698)" fill="url(#paint0_linear_2374_11676)"/>
+        <path fillRule="evenodd" clipRule="evenodd" d="M15.2672 11.0994C15.2672 10.7128 14.9538 10.3994 14.5672 10.3994C14.1806 10.3994 13.8672 10.7128 13.8672 11.0994V12.2241C13.8672 12.6107 14.1806 12.9241 14.5672 12.9241C14.9538 12.9241 15.2672 12.6107 15.2672 12.2241V11.0994ZM15.2672 16.3138C15.2672 15.9272 14.9538 15.6138 14.5672 15.6138C14.1806 15.6138 13.8672 15.9272 13.8672 16.3138V17.4385C13.8672 17.8251 14.1806 18.1385 14.5672 18.1385C14.9538 18.1385 15.2672 17.8251 15.2672 17.4385V16.3138ZM11.4031 13.5693C11.0165 13.5693 10.7031 13.8827 10.7031 14.2693C10.7031 14.6559 11.0165 14.9693 11.4031 14.9693H12.5278C12.9144 14.9693 13.2278 14.6559 13.2278 14.2693C13.2278 13.8827 12.9144 13.5693 12.5278 13.5693H11.4031ZM16.6175 13.5693C16.2309 13.5693 15.9175 13.8827 15.9175 14.2693C15.9175 14.6559 16.2309 14.9693 16.6175 14.9693H17.7422C18.1288 14.9693 18.4422 14.6559 18.4422 14.2693C18.4422 13.8827 18.1288 13.5693 17.7422 13.5693H16.6175Z" fill="url(#paint1_linear_2374_11676)"/>
+        <defs>
+            <linearGradient id="paint0_linear_2374_11676" x1="21.7339" y1="-4.12167" x2="13.7339" y2="22.446" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#474747"/>
+                <stop offset="1" stopColor="#181818"/>
+            </linearGradient>
+            <linearGradient id="paint1_linear_2374_11676" x1="12.6301" y1="18.8033" x2="21.1658" y2="10.8208" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#B820FF"/>
+                <stop offset="1" stopColor="white"/>
+            </linearGradient>
+        </defs>
+    </svg>
+
+);
+
+export const Archived = (props) => (
+  <svg width={29} height={29} fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <circle cx={14.57} cy={14.27} r={13.5} fill="#0F0F0F" stroke="#474747" />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M8.43 20.975v-8.87H7.063V8.692h15.014v3.413h-1.363v8.87H8.43Z"
+      fill="url(#a)"
+    />
+    <path d="M20.715 12.102v8.872H8.43v-8.872" stroke="#7A7A7A" strokeLinecap="round" strokeLinejoin="round" />
+    <path
+      d="M16.738 14.36a.622.622 0 0 0-.428.187l-2.67 2.67-.804-.804a.622.622 0 1 0-.88.88l1.245 1.243a.622.622 0 0 0 .879 0l3.11-3.11a.621.621 0 0 0-.453-1.067Z"
+      fill="#7A7A7A"
+    />
+    <path d="M22.077 8.691H7.062v3.413h15.015V8.69Z" stroke="#7A7A7A" strokeLinecap="round" strokeLinejoin="round" />
+    <defs>
+      <linearGradient id="a" x1={21.292} y1={6.476} x2={20.872} y2={12.627} gradientUnits="userSpaceOnUse">
+        <stop stopColor="#474747" />
+        <stop offset={1} stopColor="#181818" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
 export const InProgressWithBorder = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="none" viewBox="0 0 29 29">
     <circle cx="14.695" cy="14.681" r="13.5" fill="#0F0F0F" stroke="#474747"></circle>

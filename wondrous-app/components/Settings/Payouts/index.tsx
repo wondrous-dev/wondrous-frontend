@@ -17,7 +17,7 @@ import {
 } from '../../Table/styles';
 import { delQuery } from '../../../utils';
 import { ToggleViewButton } from '../../Common/ToggleViewButton';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import {
   GET_PAYMENTS_FOR_ORG,
   GET_PAYMENTS_FOR_POD,
@@ -28,9 +28,9 @@ import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import { StyledCheckbox, TableCellText } from './styles';
 import { CompensationAmount, CompensationPill, IconContainer } from '../../Common/Compensation/styles';
-import { GET_ORG_BY_ID } from '../../../graphql/queries';
+import { GET_ORG_BY_ID, GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
 import Link from 'next/link';
-import { cutString } from '../../../utils/helpers';
+import { cutString, parseUserPermissionContext } from '../../../utils/helpers';
 import { constructGnosisRedirectUrl } from '../../Common/Payment/SingleWalletPayment';
 import { White, Grey800 } from '../../../theme/colors';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
@@ -38,6 +38,8 @@ import { PayModal } from './modal';
 import { BatchPayModal } from './BatchPayModal';
 import { PaymentModalContext } from '../../../utils/contexts';
 import { SeeMoreText } from '../Members/styles';
+import { PERMISSIONS } from '../../../utils/constants';
+import { useMe } from '../../Auth/withAuth';
 
 enum ViewType {
   Paid = 'paid',
@@ -46,7 +48,18 @@ enum ViewType {
 
 const LIMIT = 10;
 const PaymentItem = (props) => {
-  const { item, org, podId, chain, setChainSelected, setEnableBatchPay, paymentSelected, setPaymentsSelected } = props;
+  const {
+    item,
+    org,
+    podId,
+    chain,
+    setChainSelected,
+    setEnableBatchPay,
+    paymentSelected,
+    setPaymentsSelected,
+    canViewPaymentLink,
+    viewingUser,
+  } = props;
   const [openModal, setOpenModal] = useState(false);
   const [checked, setChecked] = useState(false);
   // useEffect(() => {
@@ -75,6 +88,7 @@ const PaymentItem = (props) => {
   }
   const disabled =
     chain && item?.chain !== chain && (item?.paymentStatus === 'processing' || item?.paymentStatus === 'paid');
+
   return (
     <>
       <PaymentModalContext.Provider
@@ -209,16 +223,18 @@ const PaymentItem = (props) => {
           </Link>
         </StyledTableCell>
         <StyledTableCell>
-          <a
-            style={{
-              color: White,
-            }}
-            target={'_blank'}
-            rel="noreferrer"
-            href={link}
-          >
-            {cutString(linkText, 15)}
-          </a>
+          {canViewPaymentLink && viewingUser?.id === item?.payeeId && (
+            <a
+              style={{
+                color: White,
+              }}
+              target={'_blank'}
+              rel="noreferrer"
+              href={link}
+            >
+              {cutString(linkText, 15)}
+            </a>
+          )}
         </StyledTableCell>
         {item.paymentStatus !== 'paid' && (
           <StyledTableCell>
@@ -286,6 +302,21 @@ const Payouts = (props) => {
   });
   const [paidList, setPaidList] = useState([]);
   const [unpaidList, setUnpaidList] = useState([]);
+  const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
+    fetchPolicy: 'cache-and-network',
+  });
+  const userPermissionsContext = userPermissionsContextData?.getUserPermissionContext
+    ? JSON.parse(userPermissionsContextData?.getUserPermissionContext)
+    : null;
+
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId,
+    podId,
+  });
+  const canViewPaymentLink =
+    permissions.includes(PERMISSIONS.APPROVE_PAYMENT) || permissions.includes(PERMISSIONS.FULL_ACCESS);
+  const user = useMe();
   const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
   useEffect(() => {
     if (orgId) {
@@ -476,6 +507,8 @@ const Payouts = (props) => {
                     }}
                     org={org}
                     podId={podId}
+                    canViewPaymentLink={canViewPaymentLink}
+                    viewingUser={user}
                   />
                 ))}
               </>
@@ -492,6 +525,8 @@ const Payouts = (props) => {
                     podId={podId}
                     paymentSelected={paymentSelected}
                     setPaymentsSelected={setPaymentsSelected}
+                    canViewPaymentLink={canViewPaymentLink}
+                    viewingUser={user}
                   />
                 ))}
               </>

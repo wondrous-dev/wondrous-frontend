@@ -5,7 +5,8 @@ export const ToggleViewWrapper = styled.div`
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    justify-content: stretch;
+    justify-content: stretch; 
+    margin-left: 23px;
 
     width: 130px;
     min-width: 130px;

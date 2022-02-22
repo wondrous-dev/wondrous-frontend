@@ -12,6 +12,14 @@ export const TASK_STATUS_PAID = 'paid';
 export const TASK_STATUS_PROPOSAL_REQUEST = 'proposal_request';
 export const TASK_STATUS_SUBMISSION_REQUEST = 'submission_request';
 
+export const TASK_STATUSES = [
+  TASK_STATUS_TODO,
+  TASK_STATUS_IN_PROGRESS,
+  TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_DONE,
+  TASK_STATUS_ARCHIVED,
+];
+
 export const COLUMN_TITLE_ARCHIVED = 'Archived';
 
 export const STATUS_OPEN = 'open';

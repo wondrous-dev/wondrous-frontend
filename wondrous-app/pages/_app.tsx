@@ -8,6 +8,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import { SnackbarAlertProvider } from '../components/Common/SnackbarAlert';
 
 import '../theme/stylesheets/body.css';
+import '../theme/stylesheets/globals.css';
 
 import apollo from '../services/apollo';
 import theme from '../theme/theme';
