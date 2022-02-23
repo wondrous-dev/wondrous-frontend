@@ -49,7 +49,7 @@ const Boards = (props: Props) => {
       setView((router.query.view || ViewType.Grid) as ViewType);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.query.view]);
+  }, []);
 
   useEffect(() => {
     if (!searchQuery) {
