@@ -44,6 +44,7 @@ import { SafeImage } from '../../Common/Image';
 import { filterOrgUsers } from '../../CreateEntity/createEntityModal';
 import { SnackbarAlertContext } from '../../Common/SnackbarAlert';
 import { ArchivedTaskUndo } from '../../Common/Task/styles';
+import Link from 'next/link';
 
 const LIMIT = 10;
 
@@ -409,14 +410,20 @@ const Members = (props) => {
                   return (
                     <StyledTableRow key={user?.id}>
                       <StyledTableCell>
-                        <UserInfoDiv>
-                          {user?.user?.profilePicture ? (
-                            <UserProfilePicture src={user?.user?.profilePicture} />
-                          ) : (
-                            <DefaultProfilePicture />
-                          )}
-                          <UsernameText>{user?.user?.username}</UsernameText>
-                        </UserInfoDiv>
+                        <Link href={`/profile/${user?.user?.username}/about`} passHref>
+                          <UserInfoDiv
+                            style={{
+                              cursor: 'pointer',
+                            }}
+                          >
+                            {user?.user?.profilePicture ? (
+                              <UserProfilePicture src={user?.user?.profilePicture} />
+                            ) : (
+                              <DefaultProfilePicture />
+                            )}
+                            <UsernameText>{user?.user?.username}</UsernameText>
+                          </UserInfoDiv>
+                        </Link>
                       </StyledTableCell>
                       <StyledTableCell>
                         <MemberRoleDropdown
