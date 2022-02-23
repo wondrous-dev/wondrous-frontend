@@ -84,7 +84,9 @@ const BoardsPage = (props) => {
       const tasks = data?.getUserTaskBoardTasks;
       const newColumns = populateTaskColumns(tasks, contributorColumns.length > 0 ? contributorColumns : COLUMNS);
       setContributorColumns(dedupeColumns(newColumns));
-      setHasMoreTasks(tasks?.length >= LIMIT);
+      if (!!hasMoreTasks) {
+        setHasMoreTasks(tasks?.length > LIMIT - 1);
+      }
     },
   });
 
@@ -120,7 +122,9 @@ const BoardsPage = (props) => {
       }
 
       setContributorColumns(dedupeColumns(newColumns));
-      setHasMoreTasks(tasks.length >= LIMIT);
+      if (!!hasMoreTasks) {
+        setHasMoreTasks(tasks.length > LIMIT - 1);
+      }
     },
     fetchPolicy: 'cache-and-network',
   });

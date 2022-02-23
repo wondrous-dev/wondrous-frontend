@@ -118,11 +118,7 @@ const Wallet = () => {
       if (wonderWeb3.address) {
         // Change the UI now.
         setConnected(true);
-        if (user && user.activeEthAddress && wonderWeb3.address !== user.activeEthAddress) {
-          // Wallet has changed, and doesn't match user's
-          // registered. SignOut.
-          logout();
-        } else if (user && !user.activeEthAddress) {
+        if (user && !user.activeEthAddress) {
           // Link the wallet to the user.
           linkUserWithWallet();
         }
