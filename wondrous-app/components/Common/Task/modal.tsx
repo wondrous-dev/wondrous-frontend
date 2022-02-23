@@ -621,7 +621,7 @@ const tabs = {
 const tabsPerType = {
   proposalTabs: [tabs.discussion],
   milestoneTabs: [tabs.tasks, tabs.discussion],
-  subtaskTabs: [tabs.tasks, tabs.discussion],
+  subtaskTabs: [tabs.submissions, tabs.discussion],
   taskTabs: [tabs.submissions, tabs.subTasks, tabs.discussion],
 };
 
