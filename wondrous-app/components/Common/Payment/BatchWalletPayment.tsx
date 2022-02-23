@@ -251,9 +251,13 @@ export const BatchWalletPayment = (props) => {
   };
   const handleCreateNewWalletClick = () => {
     if (podId) {
-      router.push(`/pod/settings/${podId}/wallet`);
+      router.push(`/pod/settings/${podId}/wallet`, undefined, {
+        shallow: true,
+      });
     } else if (orgId) {
-      router.push(`/organization/settings/${orgId}/wallet`);
+      router.push(`/organization/settings/${orgId}/wallet, undefined, {
+        shallow: true,
+      }`);
     }
   };
 

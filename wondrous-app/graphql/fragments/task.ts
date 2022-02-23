@@ -105,9 +105,9 @@ export const TaskCardFragment = gql`
     media {
       ...MediaFragment
     }
-    milestoneId
-    milestoneTitle
     parentTaskId
+    totalSubtaskCount
+		completedSubtaskCount
   }
   ${MediaFragment}
 `;
