@@ -64,7 +64,7 @@ import { delQuery } from '../../../utils';
 import { TaskSummaryAction } from '../TaskSummary/styles';
 import { Arrow, Archived } from '../../Icons/sections';
 import { UPDATE_TASK_STATUS } from '../../../graphql/mutations/task';
-import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD, GET_SUBTASK_COUNT_FOR_TASK } from '../../../graphql/queries';
+import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries';
 import { OrgBoardContext } from '../../../utils/contexts';
 import { MilestoneLaunchedBy } from '../MilestoneLaunchedBy';
 import { MilestoneProgress } from '../MilestoneProgress';
@@ -144,13 +144,11 @@ export const Task = (props) => {
       'getUserTaskBoardTasks',
       'getPerStatusTaskCountForUserBoard',
       'getSubtasksForTask',
-      'getSubtaskCountForTask',
     ],
   });
 
-  const [getSubtaskCountForTask, { data: getSubtaskCountForTaskData }] = useLazyQuery(GET_SUBTASK_COUNT_FOR_TASK);
-  const totalSubtask = getSubtaskCountForTaskData?.getSubtaskCountForTask.total;
-  const completedSubtask = getSubtaskCountForTaskData?.getSubtaskCountForTask.completed;
+  const totalSubtask = task?.totalSubtaskCount;
+  const completedSubtask = task?.completedSubtaskCount;
 
   const handleNewStatus = useCallback(
     (newStatus) => {
@@ -188,14 +186,6 @@ export const Task = (props) => {
         </>
       );
     }
-
-    if (!isSubtask && !getSubtaskCountForTaskData?.getSubtaskCountForTask) {
-      getSubtaskCountForTask({
-        variables: {
-          taskId: id,
-        },
-      });
-    }
   }, [
     initialStatus,
     setInitialStatus,
@@ -205,8 +195,6 @@ export const Task = (props) => {
     setSnackbarAlertMessage,
     handleNewStatus,
     isSubtask,
-    getSubtaskCountForTaskData,
-    getSubtaskCountForTask,
     id,
   ]);
 
