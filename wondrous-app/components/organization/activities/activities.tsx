@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import React from 'react';
 import { GET_ORG_FEED } from '../../../graphql/queries';
 import Wrapper from '../wrapper/wrapper';
-import { PostItem } from '../../Common/PostItem';
+import { Post } from '../../Common/Post';
 import { Feed } from './styles';
 import PostCard from './post';
 
@@ -22,7 +22,7 @@ const Activities = (props) => {
     <Wrapper orgData={orgData}>
       <Feed isMoreThanOne={isMoreThanOne}>
         {orgFeedData?.map((post) => (
-          <PostItem key={post.id} post={post} />
+          <Post key={post.id} post={post} />
         ))}
       </Feed>
       {/* TODO: @juniusfree add pagination here */}

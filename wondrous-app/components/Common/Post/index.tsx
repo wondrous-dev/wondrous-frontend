@@ -6,19 +6,19 @@ import {
   PostItemBorderDashedLastChild,
 } from './styles';
 import { PostType, PostVerbType, ObjectType } from '../../../types/post';
-import { PostItemActivity } from '../PostItemActivity';
+import { PostQuote } from '../PostQuote';
 
 // TODO: determines the post type
 const selectPostTypeComponent = (post) => {
   switch (post.type) {
-    case PostType.ACTIVITY:
-      return <PostItemActivity post={post} />;
+    case PostType.QUOTE:
+      return <PostQuote post={post} />;
     default:
       return null;
   }
 };
 
-export const PostItem = (props) => {
+export const Post = (props) => {
   const { post } = props;
   const postTypeComponent = selectPostTypeComponent(post);
   return (

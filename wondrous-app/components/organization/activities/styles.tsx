@@ -3,7 +3,7 @@ import {
   PostItemBorderDashedCircle,
   PostItemBorderDashedFirstChild,
   PostItemBorderDashedLastChild,
-} from '../../Common/PostItem/styles';
+} from '../../Common/Post/styles';
 
 export const Feed = styled.div`
   max-width: 680px;

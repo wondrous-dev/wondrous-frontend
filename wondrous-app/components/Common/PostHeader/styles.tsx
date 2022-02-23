@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import { SafeImage } from '../Image';
 import DefaultUserImage from '../Image/DefaultUserImage';
 
-export const PostActivityHeader = styled.div`
+export const PostHeaderWrapper = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 `;
 
-export const PostActivityHeaderImage = (props) => (
+export const PostHeaderImage = (props) => (
   <SafeImage
     {...props}
     style={{
@@ -18,7 +18,7 @@ export const PostActivityHeaderImage = (props) => (
   />
 );
 
-export const PostActivityDefaultUserImage = (props) => (
+export const PostHeaderDefaultUserImage = (props) => (
   <DefaultUserImage
     {...props}
     style={{
@@ -28,7 +28,7 @@ export const PostActivityDefaultUserImage = (props) => (
   />
 );
 
-export const PostActivityText = styled(Typography)`
+export const PostHeaderText = styled(Typography)`
   && {
     color: #fff;
     padding-left: 12px;

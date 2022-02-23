@@ -1,16 +1,16 @@
 import { PostVerbType } from '../../../types/post';
 import {
-  PostActivityDefaultUserImage,
-  PostActivityHeader,
-  PostActivityHeaderImage,
+  PostHeaderDefaultUserImage,
+  PostHeaderWrapper,
+  PostHeaderImage,
   PostActivityHeaderUsername,
-  PostActivityText,
+  PostHeaderText,
 } from './styles';
 
 const createHeaderText = (verb, objectType) => {
   switch (verb) {
     case PostVerbType.KUDOS:
-      return `awarded a kudos to for a completed ${objectType}`;
+      return `awarded a kudos to USER for a completed ${objectType}`;
     case PostVerbType.CREATE:
       return `created a ${objectType}`;
     case PostVerbType.COMPLETE:
@@ -20,17 +20,17 @@ const createHeaderText = (verb, objectType) => {
   }
 };
 
-export const PostItemActivityHeader = (props) => {
+export const PostHeader = (props) => {
   const { post } = props;
   const { actorUsername, verb, objectType, actorProfilePicture } = post;
   const headerText = createHeaderText(verb, objectType);
   return (
-    <PostActivityHeader>
-      {actorProfilePicture ? <PostActivityHeaderImage src={actorProfilePicture} /> : <PostActivityDefaultUserImage />}
-      <PostActivityText>
+    <PostHeaderWrapper>
+      {actorProfilePicture ? <PostHeaderImage src={actorProfilePicture} /> : <PostHeaderDefaultUserImage />}
+      <PostHeaderText>
         <PostActivityHeaderUsername as="span">{actorUsername} </PostActivityHeaderUsername>
         {headerText}
-      </PostActivityText>
-    </PostActivityHeader>
+      </PostHeaderText>
+    </PostHeaderWrapper>
   );
 };
