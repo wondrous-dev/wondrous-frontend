@@ -105,7 +105,12 @@ const KanbanBoard = (props) => {
 
       return true;
     } catch (err) {
-      console.log('Error: ', err);
+      if (err?.graphQLErrors && err?.graphQLErrors.length > 0) {
+        if (err?.graphQLErrors[0].extensions?.errorCode === 'must_go_through_submission') {
+          console.log('dfasdf')
+        } 
+      }
+      console.error(err)
     }
   };
 
