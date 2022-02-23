@@ -929,6 +929,18 @@ const CreateLayoutBaseModal = (props) => {
                 search={false}
                 value={rewardsAmount}
                 onChange={(e) => setRewardsAmount(e.target.value)}
+                endAdornment={
+                  <CloseModalIcon
+                    style={{
+                      marginRight: '8px',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      setRewardsCurrency('');
+                      setRewardsAmount(0);
+                    }}
+                  />
+                }
               />
             </CreateRewardAmountDiv>
           </CreateFormMainSelects>

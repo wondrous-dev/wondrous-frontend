@@ -406,7 +406,6 @@ const EditLayoutBaseModal = (props) => {
   const [removeMedia] = useMutation(REMOVE_MEDIA_FROM_TASK);
   const [attachTaskProposalMedia] = useMutation(ATTACH_MEDIA_TO_TASK_PROPOSAL);
   const [removeTaskProposalMedia] = useMutation(REMOVE_MEDIA_FROM_TASK_PROPOSAL);
-
   const filterDAOptions = useCallback((orgs) => {
     if (!orgs) {
       return [];
@@ -574,15 +573,12 @@ const EditLayoutBaseModal = (props) => {
           milestoneId: milestone?.id ?? milestone,
           podId: pod?.id ?? pod,
           dueDate,
-          ...(rewardsAmount &&
-            rewardsCurrency && {
-              rewards: [
-                {
-                  rewardAmount: parseFloat(rewardsAmount),
-                  paymentMethodId: rewardsCurrency,
-                },
-              ],
-            }),
+          rewards: [
+            {
+              rewardAmount: parseFloat(rewardsAmount),
+              paymentMethodId: rewardsCurrency,
+            },
+          ],
           // TODO: add links?,
           ...(!isTaskProposal && {
             assigneeId: assignee?.value,
@@ -861,7 +857,7 @@ const EditLayoutBaseModal = (props) => {
               options={paymentMethods}
               name="reward-currency"
               setValue={setRewardsCurrency}
-              value={rewardsCurrency}
+              value={rewardsCurrency || ''}
             />
             <CreateRewardAmountDiv>
               <CreateFormMainBlockTitle>Reward amount</CreateFormMainBlockTitle>
@@ -874,8 +870,20 @@ const EditLayoutBaseModal = (props) => {
                 min="0"
                 placeholder="Enter reward amount"
                 search={false}
-                value={rewardsAmount}
+                value={rewardsAmount || ''}
                 onChange={(e) => setRewardsAmount(e.target.value)}
+                endAdornment={
+                  <CloseModalIcon
+                    style={{
+                      marginRight: '8px',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      setRewardsCurrency('');
+                      setRewardsAmount(0);
+                    }}
+                  />
+                }
               />
             </CreateRewardAmountDiv>
           </CreateFormMainSelects>
