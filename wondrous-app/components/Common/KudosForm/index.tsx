@@ -48,6 +48,7 @@ export const KudosForm = (props) => {
     } else {
       await createPost({
         variables: { input },
+        refetchQueries: () => ['getOrgFeed'],
       })
         .then(() => {
           handleOnClose();
