@@ -4,7 +4,7 @@ import { DropDownPopper } from '../DropDownPopper';
 import { StyledDropDownButton } from './styles';
 
 export const DropDownButtonDecision = (props) => {
-  const { taskId, status } = props;
+  const { task, status, openKudos, setKudosTask } = props;
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
@@ -20,9 +20,11 @@ export const DropDownButtonDecision = (props) => {
       <DropDownPopper
         onClose={() => setOpen(false)}
         status={status}
-        taskId={taskId}
+        task={task}
         id={id}
         open={open}
+        openKudos={openKudos}
+        setKudosTask={setKudosTask}
         anchorEl={anchorEl}
         placement="bottom-start"
         disablePortal={true}
