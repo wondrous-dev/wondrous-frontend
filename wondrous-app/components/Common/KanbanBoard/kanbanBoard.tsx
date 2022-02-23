@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { useInView } from 'react-intersection-observer';
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
+import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
 import { TaskViewModal } from '../Task/modal';
 import { KanbanBoardContainer, LoadMore } from './styles';
 import TaskColumn from './TaskColumn';
@@ -20,6 +20,7 @@ import {
 import { ColumnsContext } from '../../../utils/contexts';
 import { useMutation } from '@apollo/client';
 import { dedupeColumns } from '../../../utils';
+import DndErrorModal from './DndErrorModal';
 
 const populateOrder = (index, tasks, field) => {
   let aboveOrder = null,
@@ -45,6 +46,7 @@ const KanbanBoard = (props) => {
   const [once, setOnce] = useState(false);
   const router = useRouter();
   const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
+  const [dndErrorModal, setDndErrorModal] = useState(false);
   // Permissions for Draggable context
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
@@ -79,6 +81,7 @@ const KanbanBoard = (props) => {
   // Updates the task status on Backend
   // TODO: Aggregate all Task mutations on one Task
   //       service.
+  const prevColumnState = usePrevious(columnsState);
   const updateTask = async (taskToBeUpdated) => {
     try {
       const {
@@ -105,7 +108,12 @@ const KanbanBoard = (props) => {
 
       return true;
     } catch (err) {
-      console.log('Error: ', err);
+      if (err?.graphQLErrors && err?.graphQLErrors.length > 0) {
+        if (err?.graphQLErrors[0].extensions?.errorCode === 'must_go_through_submission') {
+          setDndErrorModal(true);
+          setColumnsState(prevColumnState);
+        }
+      }
     }
   };
 
@@ -170,7 +178,6 @@ const KanbanBoard = (props) => {
         return column;
       }
     });
-
     setColumnsState(dedupeColumns(updatedColumns));
   };
 
@@ -195,6 +202,7 @@ const KanbanBoard = (props) => {
       }}
     >
       <KanbanBoardContainer>
+        <DndErrorModal open={dndErrorModal} handleClose={() => setDndErrorModal(false)} />
         <TaskViewModal
           disableEnforceFocus
           open={openModal}
