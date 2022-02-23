@@ -122,16 +122,16 @@ const KanbanBoard = (props) => {
       const task = columnsState.map(({ tasks }) => tasks.find((task) => task.id === id)).filter((i) => i)[0];
       // Only allow when permissions are OK
       if (task?.paymentStatus !== PAYMENT_STATUS.PAID && task?.paymentStatus !== PAYMENT_STATUS.PROCESSING) {
-        const updatedTask = checkPermissions(task) ? { ...task, status } : task;
-
-        if (updatedTask.status !== task.status) {
-          updateTask(updatedTask);
-        }
         if (column.status !== status) {
           return {
             ...column,
             tasks: column.tasks.filter((task) => task.id !== id),
           };
+        }
+        const updatedTask = checkPermissions(task) ? { ...task, status } : task;
+
+        if (updatedTask.status !== task.status) {
+          updateTask(updatedTask);
         }
         if (checkPermissions(task)) {
           const filteredColumn = column.tasks.filter((task) => task.id !== id);
