@@ -246,6 +246,9 @@ export const withAuth = (Component, noCache = false) => {
         setTokenLoading(false);
       })();
     }, [token]);
+    if(error?.graphQLErrors && error?.graphQLErrors[0].extensions.code ==='UNAUTHENTICATED') {
+      logout()
+    }
 
     if (!tokenLoading && !token) {
       // Back to the world
