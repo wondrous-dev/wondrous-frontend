@@ -18,7 +18,7 @@ import {
 import { useRouter } from 'next/router';
 
 const MyContext = React.createContext(null);
-const EXCLUDED_PATHS = ['/invite/[token]', '/organization/[username]/boards'];
+const EXCLUDED_PATHS = ['/invite/[token]', '/organization/[username]/boards', '/login'];
 
 export const useMe = () => {
   return useContext(MyContext);
@@ -132,14 +132,14 @@ export const getUserSigningMessage = async (
   includeUserExistsCheck?: boolean
 ) => {
   try {
-    const { data, loading, error } = await apollo.query({
-      query: GET_USER_SIGNING_MESSAGE,
+    const { data } = await apollo.mutate({
+      mutation: GET_USER_SIGNING_MESSAGE,
       variables: {
         web3Address,
         blockchain,
       },
-      fetchPolicy: 'network-only',
     });
+
     if (includeUserExistsCheck) {
       return data.getUserSigningMessage;
     }
