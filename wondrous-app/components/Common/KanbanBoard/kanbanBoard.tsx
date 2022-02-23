@@ -11,7 +11,7 @@ import TaskColumn from './TaskColumn';
 import apollo from '../../../services/apollo';
 import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from '../../../graphql/mutations/task';
 import { parseUserPermissionContext } from '../../../utils/helpers';
-import { BOARD_TYPE, PERMISSIONS } from '../../../utils/constants';
+import { BOARD_TYPE, PERMISSIONS, PAYMENT_STATUS } from '../../../utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import {
   GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
@@ -111,60 +111,63 @@ const KanbanBoard = (props) => {
 
   const moveCard = async (id, status, index) => {
     const updatedColumns = columnsState.map((column) => {
-      if (column.status !== status) {
-        return {
-          ...column,
-          tasks: column.tasks.filter((task) => task.id !== id),
-        };
-      }
       const task = columnsState.map(({ tasks }) => tasks.find((task) => task.id === id)).filter((i) => i)[0];
-
       // Only allow when permissions are OK
-      const updatedTask = checkPermissions(task) ? { ...task, status } : task;
-
-      if (updatedTask.status !== task.status) {
-        updateTask(updatedTask);
-      }
-      if (checkPermissions(task)) {
-        const filteredColumn = column.tasks.filter((task) => task.id !== id);
-        const newTasks = [...filteredColumn.slice(0, index), updatedTask, ...filteredColumn.slice(index)];
-        let aboveOrder, belowOrder;
-        let board = null;
-        if (orgBoard) {
-          board = BOARD_TYPE.org;
-          aboveOrder = populateOrder(index, newTasks, 'orgOrder').aboveOrder;
-          belowOrder = populateOrder(index, column.tasks, 'orgOrder').belowOrder;
-        } else if (podBoard) {
-          board = BOARD_TYPE.pod;
-          aboveOrder = populateOrder(index, newTasks, 'podOrder').aboveOrder;
-          belowOrder = populateOrder(index, newTasks, 'podOrder').belowOrder;
-        } else if (userBoard) {
-          board = BOARD_TYPE.assignee;
-          aboveOrder = populateOrder(index, newTasks, 'assigneeOrder').aboveOrder;
-          belowOrder = populateOrder(index, newTasks, 'assigneeOrder').belowOrder;
+      if (task?.paymentStatus !== PAYMENT_STATUS.PAID && task?.paymentStatus !== PAYMENT_STATUS.PROCESSING) {
+        if (column.status !== status) {
+          return {
+            ...column,
+            tasks: column.tasks.filter((task) => task.id !== id),
+          };
         }
+        const updatedTask = checkPermissions(task) ? { ...task, status } : task;
 
-        try {
-          updateTaskOrder({
-            variables: {
-              taskId: updatedTask?.id,
-              input: {
-                belowOrder,
-                aboveOrder,
-                board,
+        if (updatedTask.status !== task.status) {
+          updateTask(updatedTask);
+        }
+        if (checkPermissions(task)) {
+          const filteredColumn = column.tasks.filter((task) => task.id !== id);
+          const newTasks = [...filteredColumn.slice(0, index), updatedTask, ...filteredColumn.slice(index)];
+          let aboveOrder, belowOrder;
+          let board = null;
+          if (orgBoard) {
+            board = BOARD_TYPE.org;
+            aboveOrder = populateOrder(index, newTasks, 'orgOrder').aboveOrder;
+            belowOrder = populateOrder(index, column.tasks, 'orgOrder').belowOrder;
+          } else if (podBoard) {
+            board = BOARD_TYPE.pod;
+            aboveOrder = populateOrder(index, newTasks, 'podOrder').aboveOrder;
+            belowOrder = populateOrder(index, newTasks, 'podOrder').belowOrder;
+          } else if (userBoard) {
+            board = BOARD_TYPE.assignee;
+            aboveOrder = populateOrder(index, newTasks, 'assigneeOrder').aboveOrder;
+            belowOrder = populateOrder(index, newTasks, 'assigneeOrder').belowOrder;
+          }
+
+          try {
+            updateTaskOrder({
+              variables: {
+                taskId: updatedTask?.id,
+                input: {
+                  belowOrder,
+                  aboveOrder,
+                  board,
+                },
               },
-            },
-          }).catch((e) => {});
-        } catch (err) {}
-        return {
-          ...column,
-          tasks: newTasks,
-        };
+            }).catch((e) => {});
+          } catch (err) {}
+          return {
+            ...column,
+            tasks: newTasks,
+          };
+        } else {
+          return {
+            ...column,
+            tasks: [updatedTask, ...column.tasks],
+          };
+        }
       } else {
-        return {
-          ...column,
-          tasks: [updatedTask, ...column.tasks],
-        };
+        return column;
       }
     });
 

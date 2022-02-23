@@ -307,6 +307,7 @@ export const Task = (props) => {
                   width: '29px',
                   height: '28px',
                   borderRadius: '4px',
+                  marginRight: '8px',
                 }}
               />
               {isMilestone && <MilestoneIcon />}
@@ -341,6 +342,7 @@ export const Task = (props) => {
                     style={{
                       width: '26px',
                       height: '26px',
+                      marginRight: '8px',
                     }}
                   />
                   <PodName>{task?.podName}</PodName>
