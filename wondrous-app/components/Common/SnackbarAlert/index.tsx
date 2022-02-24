@@ -17,8 +17,6 @@ export const SnackbarAlertProvider = ({ children }) => {
     setSnackbarAlertOpen(false);
   };
 
-  console.log('SnackbarAlert open:', open);
-
   return (
     <SnackbarAlertContext.Provider
       value={{
