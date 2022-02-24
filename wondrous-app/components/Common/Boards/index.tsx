@@ -21,11 +21,7 @@ import SearchTasks from '../../SearchTasks';
 import { OrgPod } from '../../../types/pod';
 import { Chevron } from '../../Icons/sections';
 import { splitColsByType } from '../../../services/board';
-
-enum ViewType {
-  List = 'list',
-  Grid = 'grid',
-}
+import { ViewType } from '../../../types/common';
 
 type Props = {
   filterSchema: any;

@@ -1,6 +1,7 @@
 import { CircularProgress } from '@material-ui/core';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React from 'react';
+import { ViewType } from '../../../types/common';
 import { delQuery } from '../../../utils';
 import { AndroidSwitch } from '../../CreateEntity/createEntityModal';
 import DashboardPanelStatusCard from '../DashboardPanelExpandedStatusCard';
@@ -15,14 +16,12 @@ import {
   StyledBorder,
 } from './styles';
 
-const adminView = 'admin';
-
 const DashboardPanelExpanded = (props) => {
   const { activePanel, loading, activePanelStatusCards, selectedStatus, setSelectedStatus, isAdmin } = props;
   const router = useRouter();
   const handleOnClick = () => {
-    router.query.view !== adminView
-      ? router.replace(`${delQuery(router.asPath)}?view=${adminView}`)
+    router.query.view !== ViewType.Admin
+      ? router.replace(`${delQuery(router.asPath)}?view=${ViewType.Admin}`)
       : router.replace(`${delQuery(router.asPath)}`);
   };
   return (
