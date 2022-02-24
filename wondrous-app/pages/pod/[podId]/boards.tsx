@@ -35,7 +35,7 @@ const BoardsPage = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const [podTaskHasMore, setPodTaskHasMore] = useState(false);
+  const [podTaskHasMore, setPodTaskHasMore] = useState(true);
   const [getPod, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
   const pod = podData?.getPodById;
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
@@ -43,7 +43,9 @@ const BoardsPage = () => {
   const bindTasksToCols = (tasks) => {
     const newColumns = populateTaskColumns(tasks, columns);
     setColumns(dedupeColumns(newColumns));
-    setPodTaskHasMore(tasks.length >= LIMIT);
+    if (podTaskHasMore) {
+      setPodTaskHasMore(tasks.length >= LIMIT);
+    }
   };
 
   const bindProposalsToCols = (taskProposals) => {
@@ -85,7 +87,9 @@ const BoardsPage = () => {
       const tasks = data?.getPodTaskBoardTasks;
       const newColumns = populateTaskColumns(tasks, columns);
       setColumns(dedupeColumns(newColumns));
-      setPodTaskHasMore(tasks.length >= LIMIT);
+      if (podTaskHasMore) {
+        setPodTaskHasMore(tasks.length >= LIMIT);
+      }
       setFirstTimeFetch(true);
     },
     fetchPolicy: 'cache-and-network',
@@ -122,7 +126,9 @@ const BoardsPage = () => {
       }
 
       setColumns(dedupeColumns(newColumns));
-      setPodTaskHasMore(tasks.length >= LIMIT);
+      if (podTaskHasMore) {
+        setPodTaskHasMore(tasks.length >= LIMIT);
+      }
       setFirstTimeFetch(true);
     },
     fetchPolicy: 'cache-and-network',
