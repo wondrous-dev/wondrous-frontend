@@ -87,7 +87,7 @@ const STATUS_BY_TYPENAME = {
 
 let windowOffset = 0;
 export const Table = (props) => {
-  const { columns, onLoadMore, hasMore, allTasks, limit, isAdmin = false } = props;
+  const { columns, onLoadMore, hasMore, allTasks, limit, isAdmin } = props;
   const router = useRouter();
   const apolloClient = useApolloClient();
   const [editableTask, setEditableTask] = useState(null);

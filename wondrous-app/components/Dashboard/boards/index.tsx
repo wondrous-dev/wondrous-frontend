@@ -437,6 +437,7 @@ const BoardsPage = (props) => {
         columns={isAdmin ? filterColumnsByStatus(adminColumns, selectedStatus) : contributorColumns}
         onLoadMore={handleLoadMore}
         hasMore={hasMoreTasks}
+        isAdmin={isAdmin}
       />
     </UserBoardContext.Provider>
   );

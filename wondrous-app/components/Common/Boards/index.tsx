@@ -34,10 +34,11 @@ type Props = {
   columns: Array<any>;
   onLoadMore: any;
   hasMore: any;
+  isAdmin: boolean;
 };
 
 const Boards = (props: Props) => {
-  const { columns, onLoadMore, hasMore, filterSchema, onSearch, onFilterChange } = props;
+  const { columns, onLoadMore, hasMore, filterSchema, onSearch, onFilterChange, isAdmin } = props;
   const router = useRouter();
   const [view, setView] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
@@ -80,6 +81,9 @@ const Boards = (props: Props) => {
   ];
 
   function renderBoard() {
+    if (isAdmin) {
+      return <Table columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} isAdmin={isAdmin} />;
+    }
     return view ? (
       <>
         {view === ViewType.Grid ? (
@@ -149,7 +153,7 @@ const Boards = (props: Props) => {
       <BoardsActivity>
         <SearchTasks onSearch={onSearch} />
         <Filter filterSchema={filterSchema} onChange={onFilterChange} />
-        {view && !searchQuery ? <ToggleViewButton options={listViewOptions} /> : null}
+        {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
       </BoardsActivity>
 
       {searchQuery ? renderSearchResults() : renderBoard()}
