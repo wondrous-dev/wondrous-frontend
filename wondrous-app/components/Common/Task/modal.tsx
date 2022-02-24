@@ -167,14 +167,16 @@ export const TaskListViewModal = (props) => {
   const [fetchedList, setFetchedList] = useState([]);
   const { taskType, entityType, orgId, podId, loggedInUserId, open, handleClose, count } = props;
   const [ref, inView] = useInView({});
-  const [hasMore, setHasMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const [getOrgTaskProposals, { refetch: refetchOrgProposals, fetchMore: fetchMoreOrgProposals }] = useLazyQuery(
     GET_ORG_TASK_BOARD_PROPOSALS,
     {
       onCompleted: (data) => {
         const proposals = data?.getOrgTaskBoardProposals;
         setFetchedList(proposals);
-        setHasMore(data?.hasMore || data?.getOrgTaskBoardProposals.length >= TASK_LIST_VIEW_LIMIT);
+        if (hasMore) {
+          setHasMore(data?.hasMore || data?.getOrgTaskBoardProposals.length >= TASK_LIST_VIEW_LIMIT);
+        }
       },
     }
   );
@@ -184,7 +186,9 @@ export const TaskListViewModal = (props) => {
       onCompleted: (data) => {
         const submissions = data?.getOrgTaskBoardSubmissions;
         setFetchedList(submissions);
-        setHasMore(data?.hasMore || data?.getOrgTaskBoardSubmissions.length >= TASK_LIST_VIEW_LIMIT);
+        if (hasMore) {
+          setHasMore(data?.hasMore || data?.getOrgTaskBoardSubmissions.length >= TASK_LIST_VIEW_LIMIT);
+        }
       },
     }
   );
