@@ -1,5 +1,4 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
-import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD } from '../../../graphql/queries';
@@ -90,12 +89,9 @@ const updateStatusCards = (data, statusData, panel) => {
     .sort((a, b) => a.panelPosition - b.panelPosition);
 };
 
-const adminView = `admin`;
-
 const DashboardPanel = (props) => {
   const { isAdmin, selectedStatus, setSelectedStatus } = props;
   const [ref, inView] = useInView({});
-  const router = useRouter();
   const loggedInUser = useMe();
   const [getUserTaskCountData, { data: getPerStatusTaskCountData, loading: getPerStatusTaskCountLoading }] =
     useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD);
