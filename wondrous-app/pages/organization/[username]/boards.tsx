@@ -35,7 +35,7 @@ const BoardsPage = () => {
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
-  const [orgTaskHasMore, setOrgTaskHasMore] = useState(false);
+  const [orgTaskHasMore, setOrgTaskHasMore] = useState(true);
   const [getOrgPods, { data: { getOrgPods: orgPods = [] } = {} }] = useLazyQuery(GET_ORG_PODS);
 
   const bindProposalsToCols = (taskProposals) => {
@@ -50,7 +50,9 @@ const BoardsPage = () => {
   const bindTasksToCols = (tasks) => {
     const newColumns = populateTaskColumns(tasks, columns);
     setColumns(dedupeColumns(newColumns));
-    setOrgTaskHasMore(tasks.length >= LIMIT);
+    if (orgTaskHasMore) {
+      setOrgTaskHasMore(tasks.length >= LIMIT);
+    }
   };
 
   const [getOrgTaskProposals] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
@@ -104,7 +106,9 @@ const BoardsPage = () => {
       }
 
       setColumns(dedupeColumns(newColumns));
-      setOrgTaskHasMore(tasks.length >= LIMIT);
+      if (orgTaskHasMore) {
+        setOrgTaskHasMore(tasks.length >= LIMIT);
+      }
       setFirstTimeFetch(true);
     },
     fetchPolicy: 'cache-and-network',
@@ -116,7 +120,9 @@ const BoardsPage = () => {
         const tasks = data?.getOrgTaskBoardTasks;
         const newColumns = populateTaskColumns(tasks, columns);
         setColumns(dedupeColumns(newColumns));
-        setOrgTaskHasMore(tasks.length >= LIMIT);
+        if (orgTaskHasMore) {
+          setOrgTaskHasMore(tasks.length >= LIMIT);
+        }
         setFirstTimeFetch(true);
       }
     },
