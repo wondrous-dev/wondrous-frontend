@@ -9,3 +9,12 @@ export const GET_ORG_FEED = gql`
   }
   ${FeedItemFragment}
 `;
+
+export const GET_POD_FEED = gql`
+  query getPodFeed($limit: Int, $offset: Int, $podId: ID!) {
+    getPodFeed(podId: $podId, limit: $limit, offset: $offset) {
+      ...FeedItemFragment
+    }
+  }
+  ${FeedItemFragment}
+`;

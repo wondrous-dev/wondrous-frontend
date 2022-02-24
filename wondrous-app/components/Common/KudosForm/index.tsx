@@ -56,18 +56,18 @@ export const KudosForm = (props) => {
             content: input.content,
           },
         },
-        refetchQueries: ['getOrgFeed'],
+        refetchQueries: ['getOrgFeed', 'getPodFeed'],
       })
         .then(() => {
           handleOnClose();
           setSnackbarAlertOpen(true);
-          setSnackbarAlertMessage('Kudos post updated successfully.');
+          setSnackbarAlertMessage('Kudos updated successfully.');
         })
         .catch((err) => console.log(err));
     } else {
       await createPost({
         variables: { input },
-        refetchQueries: ['getOrgFeed'],
+        refetchQueries: ['getOrgFeed', 'getPodFeed'],
       })
         .then(() => {
           handleOnClose();
