@@ -1,14 +1,14 @@
 import { Box } from '@material-ui/core';
 import styled from 'styled-components';
 
-export const PostItemWrapper = styled(Box)`
+export const PostWrapper = styled(Box)`
   max-width: 680px;
   position: relative;
   border-left: 1px dashed #4b4b4b;
   display: flex;
 `;
 
-export const PostItemBorderDashedFirstChild = styled.div`
+export const PostBorderDashedFirstChild = styled.div`
   display: none; // NOTE: set in Feed styled component
   border-left: 1px dashed #4b4b4b;
   position: relative;
@@ -25,7 +25,7 @@ export const PostItemBorderDashedFirstChild = styled.div`
   }
 `;
 
-export const PostItemBorderDashedLastChild = styled.div`
+export const PostBorderDashedLastChild = styled.div`
   display: none; // NOTE: set in Feed styled component
   border-left: 1px dashed #4b4b4b;
   position: relative;
@@ -43,7 +43,7 @@ export const PostItemBorderDashedLastChild = styled.div`
   }
 `;
 
-export const PostItemBorderDashedCircle = styled.div`
+export const PostBorderDashedCircle = styled.div`
   width: 12px;
   height: 12px;
   border-radius: 100%;
@@ -54,7 +54,7 @@ export const PostItemBorderDashedCircle = styled.div`
   left: -6px; ;
 `;
 
-export const PostItemBorder = styled(Box)`
+export const PostBorder = styled(Box)`
   background: linear-gradient(169.47deg, rgba(75, 75, 75, 0.6) 7.84%, rgba(35, 35, 35, 0.6) 108.71%);
   border-radius: 6px;
   padding: 1px;
@@ -63,7 +63,7 @@ export const PostItemBorder = styled(Box)`
   width: 100%;
 `;
 
-export const PostItemBackground = styled(Box)`
+export const PostBackground = styled(Box)`
   background: #0f0f0f;
   border-radius: inherit;
 `;

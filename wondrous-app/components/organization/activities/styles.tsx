@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import {
-  PostItemBorderDashedCircle,
-  PostItemBorderDashedFirstChild,
-  PostItemBorderDashedLastChild,
+  PostBorderDashedCircle,
+  PostBorderDashedFirstChild,
+  PostBorderDashedLastChild,
 } from '../../Common/Post/styles';
 
 export const Feed = styled.div`
@@ -14,19 +14,19 @@ export const Feed = styled.div`
     props.isMoreThanOne
       ? `& > :first-child {
     border-left: 0;
-    ${PostItemBorderDashedFirstChild} {
+    ${PostBorderDashedFirstChild} {
       display: flex;
     }
-    ${PostItemBorderDashedCircle} {
+    ${PostBorderDashedCircle} {
       display: none;
     }
   }
   & > :last-child {
     border-left: 0;
-    ${PostItemBorderDashedLastChild} {
+    ${PostBorderDashedLastChild} {
       display: flex;
     }
-    ${PostItemBorderDashedCircle} {
+    ${PostBorderDashedCircle} {
       display: none;
     }
   }`
