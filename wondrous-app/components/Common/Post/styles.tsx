@@ -17,7 +17,7 @@ export const PostBorderDashedFirstChild = styled.div`
   :before {
     content: '';
     position: absolute;
-    left: -6px;
+    left: -7px;
     width: 12px;
     height: 12px;
     border-radius: 50%;
@@ -34,7 +34,7 @@ export const PostBorderDashedLastChild = styled.div`
   :before {
     content: '';
     position: absolute;
-    left: -6px;
+    left: -7px;
     width: 12px;
     height: 12px;
     top: 52px;
@@ -51,7 +51,7 @@ export const PostBorderDashedCircle = styled.div`
   display: block;
   position: absolute;
   top: 54px;
-  left: -6px; ;
+  left: -7px; ;
 `;
 
 export const PostBorder = styled(Box)`

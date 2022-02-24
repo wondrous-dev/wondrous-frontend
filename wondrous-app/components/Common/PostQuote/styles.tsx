@@ -7,6 +7,8 @@ export const PostQuoteBackground = styled(Box)`
   padding: 14px;
 `;
 
+export const PostQuoteWrapper = styled.div``;
+
 export const PostContentBorder = styled(Typography)`
   && {
     margin-left: 12px;
@@ -22,8 +24,7 @@ export const PostContentBackground = styled(Box)`
   font-size: 14px;
   font-style: normal;
   color: #c4c4c4;
-  padding-left: 28px;
-  padding-bottom: 6px;
+  padding: 14px 28px 18px 28px;
 `;
 
 export const PostReferenceBorder = styled(Box)`
@@ -37,7 +38,7 @@ export const PostReferenceBackground = styled(Box)`
   background: #1e1e1e;
   height: 100%;
   border-radius: inherit;
-  padding: 12px;
+  padding: 18px 28px;
 `;
 
 export const ReferenceTitle = styled(Typography)`

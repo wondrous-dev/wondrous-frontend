@@ -1,10 +1,9 @@
 import { useQuery } from '@apollo/client';
 import React from 'react';
 import { GET_ORG_FEED } from '../../../graphql/queries';
-import Wrapper from '../wrapper/wrapper';
 import { Post } from '../../Common/Post';
+import Wrapper from '../wrapper/wrapper';
 import { Feed } from './styles';
-import PostCard from './post';
 
 const Activities = (props) => {
   const { orgData } = props;

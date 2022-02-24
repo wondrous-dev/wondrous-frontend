@@ -39,6 +39,22 @@ export const FeedItemFragment = gql`
     additionalData {
       ...FeedAdditionaldata
     }
+    referencedObject {
+      verb
+      objectId
+      objectType
+      title
+      actorFirstName
+      actorLastName
+      actorProfilePicture
+      actorThumbnail
+      actorUsername
+      itemContent
+      media {
+        ...MediaFragment
+      }
+    }
+    sourceId
   }
   ${MediaFragment}
   ${FeedAdditionaldata}

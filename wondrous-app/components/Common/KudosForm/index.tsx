@@ -1,7 +1,8 @@
 import { useMutation } from '@apollo/client';
-import { useState } from 'react';
-import { CREATE_POST } from '../../../graphql/mutations/post';
-import { PostType, PostVerbType } from '../../../types/post';
+import { useContext, useEffect, useState } from 'react';
+import { CREATE_POST, UPDATE_POST } from '../../../graphql/mutations/post';
+import { ObjectType, PostType, PostVerbType } from '../../../types/post';
+import { SnackbarAlertContext } from '../SnackbarAlert';
 import {
   KudosFormBackground,
   KudosFormBorder,
@@ -22,11 +23,13 @@ import {
 const maxLength = 380;
 
 export const KudosForm = (props) => {
-  const { open, onClose, submission } = props;
+  const { open, onClose, submission, existingContent, id } = props;
+  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
   const [textarea, setTextarea] = useState('');
   const [characterCount, setCharacterCount] = useState(0);
   const [error, setError] = useState(false);
   const [createPost] = useMutation(CREATE_POST);
+  const [updatePost] = useMutation(UPDATE_POST);
   const handleChange = (e) => {
     if (error) {
       setError(false);
@@ -45,17 +48,43 @@ export const KudosForm = (props) => {
   const handleSubmit = async (input) => {
     if (characterCount < 1) {
       setError(true);
-    } else {
-      await createPost({
-        variables: { input },
-        refetchQueries: () => ['getOrgFeed'],
+    } else if (existingContent) {
+      await updatePost({
+        variables: {
+          input: {
+            id: input.id,
+            content: input.content,
+          },
+        },
+        refetchQueries: ['getOrgFeed'],
       })
         .then(() => {
           handleOnClose();
+          setSnackbarAlertOpen(true);
+          setSnackbarAlertMessage('Kudos post updated successfully.');
+        })
+        .catch((err) => console.log(err));
+    } else {
+      await createPost({
+        variables: { input },
+        refetchQueries: ['getOrgFeed'],
+      })
+        .then(() => {
+          handleOnClose();
+          setSnackbarAlertOpen(true);
+          setSnackbarAlertMessage('Kudos posted successfully.');
         })
         .catch((err) => console.log(err));
     }
   };
+
+  useEffect(() => {
+    if (open && existingContent) {
+      setTextarea(existingContent);
+      setCharacterCount(existingContent?.length);
+    }
+  }, [open]);
+
   return (
     <KudosFormModal open={open} fullWidth={true} maxWidth={'sm'} onClose={handleOnClose}>
       <KudosFormBorder>
@@ -83,12 +112,14 @@ export const KudosForm = (props) => {
             <KudosFormSubmitButton
               onClick={() =>
                 handleSubmit({
+                  id,
                   content: textarea,
-                  objectId: submission?.taskId,
+                  objectId: submission?.id,
                   type: PostType.QUOTE,
                   orgId: submission?.orgId,
                   podId: submission?.podId,
                   intent: PostVerbType.KUDOS,
+                  objectType: ObjectType.TASK_SUBMISSION,
                 })
               }
             >

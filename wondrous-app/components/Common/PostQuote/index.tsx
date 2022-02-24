@@ -1,33 +1,34 @@
 import { PostHeader } from '../PostHeader';
-import { PostQuoteKudos } from '../PostQuoteKudos';
 import {
-  PostQuoteBackground,
   PostContentBackground,
   PostContentBorder,
+  PostQuoteBackground,
+  PostQuoteWrapper,
   PostReferenceBackground,
   PostReferenceBorder,
-  ReferenceTitle,
   ReferenceDescription,
+  ReferenceTitle,
 } from './styles';
 
 export const PostQuote = (props) => {
+  const { post } = props;
+  const { referencedObject, itemContent } = post;
   return (
     <PostQuoteBackground>
       <PostHeader {...props} />
-      <>
+      <PostQuoteWrapper>
         <PostContentBorder>
-          <PostContentBackground>hello</PostContentBackground>
+          <PostContentBackground>{itemContent}</PostContentBackground>
         </PostContentBorder>
         <PostReferenceBorder>
           <PostReferenceBackground>
-            {/* TODO: @juniusfree Pass the reference object to the header */}
-            <PostHeader {...props} />
-            <ReferenceTitle>Task or milestone title</ReferenceTitle>
-            <ReferenceDescription>Test description</ReferenceDescription>
+            <PostHeader post={referencedObject} />
+            <ReferenceTitle>{referencedObject?.title}</ReferenceTitle>
+            <ReferenceDescription>{referencedObject?.itemContent}</ReferenceDescription>
             {/* TODO: @juniusfree Add the images here if any */}
           </PostReferenceBackground>
         </PostReferenceBorder>
-      </>
+      </PostQuoteWrapper>
     </PostQuoteBackground>
   );
 };
