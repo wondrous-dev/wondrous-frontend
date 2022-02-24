@@ -287,7 +287,7 @@ const InviteMember = (props) => {
 const Members = (props) => {
   const router = useRouter();
   const { orgId, podId } = router.query;
-  const [hasMore, setHasMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const [users, setUsers] = useState([]);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
 
@@ -300,7 +300,9 @@ const Members = (props) => {
   const [getPodUsers] = useLazyQuery(GET_POD_USERS, {
     onCompleted: (data) => {
       setUsers(data?.getPodUsers);
-      setHasMore(data?.hasMore || data?.getPodUsers.length >= LIMIT);
+      if (hasMore) {
+        setHasMore(data?.hasMore || data?.getPodUsers.length >= LIMIT);
+      }
     },
     fetchPolicy: 'network-only',
   });

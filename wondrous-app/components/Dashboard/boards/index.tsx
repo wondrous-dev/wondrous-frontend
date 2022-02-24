@@ -84,7 +84,7 @@ const BoardsPage = (props) => {
       const tasks = data?.getUserTaskBoardTasks;
       const newColumns = populateTaskColumns(tasks, contributorColumns.length > 0 ? contributorColumns : COLUMNS);
       setContributorColumns(dedupeColumns(newColumns));
-      if (!!hasMoreTasks) {
+      if (hasMoreTasks) {
         setHasMoreTasks(tasks?.length > LIMIT - 1);
       }
     },
@@ -122,7 +122,7 @@ const BoardsPage = (props) => {
       }
 
       setContributorColumns(dedupeColumns(newColumns));
-      if (!!hasMoreTasks) {
+      if (hasMoreTasks) {
         setHasMoreTasks(tasks.length > LIMIT - 1);
       }
     },
@@ -437,6 +437,7 @@ const BoardsPage = (props) => {
         columns={isAdmin ? filterColumnsByStatus(adminColumns, selectedStatus) : contributorColumns}
         onLoadMore={handleLoadMore}
         hasMore={hasMoreTasks}
+        isAdmin={isAdmin}
       />
     </UserBoardContext.Provider>
   );

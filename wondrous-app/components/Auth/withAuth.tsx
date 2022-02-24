@@ -246,10 +246,13 @@ export const withAuth = (Component, noCache = false) => {
         setTokenLoading(false);
       })();
     }, [token]);
-    if(error?.graphQLErrors && error?.graphQLErrors[0].extensions.code ==='UNAUTHENTICATED') {
-      logout()
+    if (
+      error?.graphQLErrors &&
+      error?.graphQLErrors[0].extensions.code === 'UNAUTHENTICATED' &&
+      !EXCLUDED_PATHS.includes(router.pathname)
+    ) {
+      logout();
     }
-
     if (!tokenLoading && !token) {
       // Back to the world
       if (!EXCLUDED_PATHS.includes(router.pathname)) {
