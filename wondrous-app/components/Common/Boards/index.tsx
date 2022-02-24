@@ -34,7 +34,7 @@ type Props = {
   columns: Array<any>;
   onLoadMore: any;
   hasMore: any;
-  isAdmin: boolean;
+  isAdmin?: boolean;
 };
 
 const Boards = (props: Props) => {
