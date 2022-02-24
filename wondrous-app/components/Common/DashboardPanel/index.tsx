@@ -1,19 +1,16 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
-import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD } from '../../../graphql/queries';
 import { GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT } from '../../../graphql/queries/workflowBoards';
-import { AwaitingPayment, DoneWithBorder } from '../../Icons';
+import { TASK_STATUS_PROPOSAL_REQUEST, TASK_STATUS_SUBMISSION_REQUEST } from '../../../utils/constants';
+import { useMe } from '../../Auth/withAuth';
+import { DoneWithBorder } from '../../Icons';
 import { InReviewIcon, ProposalsRemainingIcon, TodoIcon } from '../../Icons/statusIcons';
 import DashboardPanelExpanded from '../DashboardPanelExpanded';
 import DashboardPanelSticky from '../DashboardPanelSticky';
-import { useInView } from 'react-intersection-observer';
 import { DashboardPanelWrapper } from './styles';
-import {
-  TASK_STATUS_AWAITING_PAYMENT,
-  TASK_STATUS_PROPOSAL_REQUEST,
-  TASK_STATUS_SUBMISSION_REQUEST,
-} from '../../../utils/constants';
-import { useMe } from '../../Auth/withAuth';
 
 const panels = { contributor: 'Contributor', admin: 'Admin' };
 
@@ -93,14 +90,15 @@ const updateStatusCards = (data, statusData, panel) => {
     .sort((a, b) => a.panelPosition - b.panelPosition);
 };
 
-const DashboardPanel = (props) => {
-  const { isAdmin, setIsAdmin, selectedStatus, setSelectedStatus } = props;
-  const [ref, inView] = useInView({});
-  const loggedInUser = useMe();
+const adminView = `admin`;
 
+const DashboardPanel = (props) => {
+  const { isAdmin, selectedStatus, setSelectedStatus } = props;
+  const [ref, inView] = useInView({});
+  const router = useRouter();
+  const loggedInUser = useMe();
   const [getUserTaskCountData, { data: getPerStatusTaskCountData, loading: getPerStatusTaskCountLoading }] =
     useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD);
-
   const { data: getWorkFlowBoardReviewableItemsCountData, loading: getWorkFlowBoardReviewableItemsCountLoading } =
     useQuery(GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT);
   const activePanel = isAdmin ? panels.admin : panels.contributor;
@@ -134,7 +132,6 @@ const DashboardPanel = (props) => {
       <DashboardPanelExpanded
         activePanel={activePanel}
         activePanelStatusCards={activePanelStatusCards}
-        onClick={() => setIsAdmin((prevState) => !prevState)}
         loading={getPerStatusTaskCountLoading || getWorkFlowBoardReviewableItemsCountLoading}
         selectedStatus={selectedStatus}
         setSelectedStatus={setSelectedStatus}
