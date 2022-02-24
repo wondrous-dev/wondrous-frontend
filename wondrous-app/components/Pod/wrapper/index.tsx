@@ -186,7 +186,7 @@ const Wrapper = (props) => {
                 </HeaderActivity>
               </TokenHeader>
 
-              <Tabs>{children}</Tabs>
+              <Tabs page="pod">{children}</Tabs>
             </ContentContainer>
           </Content>
         </OverviewComponent>

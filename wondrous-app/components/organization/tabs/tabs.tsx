@@ -4,24 +4,25 @@ import React from 'react';
 import { Container, StyledTab, StyledTabs } from './styles';
 
 const Tabs = (props) => {
-  const { children } = props;
+  const { children, page = 'organization' } = props;
 
   const router = useRouter();
 
   const { asPath } = router;
-  const { username } = router.query;
+  const { username, podId } = router.query;
+  const user = username ?? podId;
 
   const tabsLinks = [
     {
-      href: `/organization/${username}/boards`,
+      href: `/${page}/${user}/boards`,
       label: 'Boards',
     },
     {
-      href: `/organization/${username}/activities`,
+      href: `/${page}/${user}/activities`,
       label: 'Activity',
     },
     // {
-    //   href: `/organization/${username}/about`,
+    //   href: `/${page}/${user}/about`,
     //   label: 'About',
     // },
   ];
