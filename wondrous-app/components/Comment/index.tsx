@@ -32,6 +32,7 @@ import { cutString } from '../../utils/helpers';
 import { useRouter } from 'next/router';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
 import { updateTask } from '../../utils/board';
+import { ErrorText } from '../Common';
 
 export const CommentBox = (props) => {
   const user = useMe();
@@ -42,6 +43,7 @@ export const CommentBox = (props) => {
   const board = orgBoard || userBoard || podBoard;
   const boardColumns = useColumns();
   const [comment, setComment] = useState(existingContent || '');
+  const [emptyCommentError, setEmptyCommentError] = useState(null);
   const { data: orgUsersData } = useQuery(GET_ORG_USERS, {
     variables: {
       orgId,
@@ -57,6 +59,10 @@ export const CommentBox = (props) => {
   });
 
   const addComment = () => {
+    if (!comment || comment.length === 0) {
+      setEmptyCommentError(true)
+      return
+    }
     const mentionedUsers = getMentionArray(comment);
     const createArgs = {
       ...(taskType === TASK_STATUS_REQUESTED && {
@@ -106,7 +112,10 @@ export const CommentBox = (props) => {
         <TextInputContext.Provider
           value={{
             content: comment,
-            onChange: (e) => setComment(e.target.value),
+            onChange: (e) => {
+              setEmptyCommentError(null)
+              setComment(e.target.value)
+            },
             list: filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers),
             keyDownHandler,
           }}
@@ -118,6 +127,7 @@ export const CommentBox = (props) => {
           />
         </TextInputContext.Provider>
       </TextInputDiv>
+      {emptyCommentError && <ErrorText>Empty Comment</ErrorText>}
       <AddCommentButton onClick={addComment}>Add comment</AddCommentButton>
     </AddCommentContainer>
   );
