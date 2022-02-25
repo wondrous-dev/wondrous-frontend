@@ -262,7 +262,6 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
                     width: '26px',
                     height: '26px',
                     marginRight: '8px',
-                    marginBottom: '16px',
                   }}
                 />
                 <PodWrapper
