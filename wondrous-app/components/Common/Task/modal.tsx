@@ -961,7 +961,14 @@ export const TaskViewModal = (props) => {
           <TaskModal>
             <TaskModalHeader>
               {fetchedTask?.orgProfilePicture ? (
-                <Link href={`/organization/${fetchedTask?.orgUsername}/boards`} passHref={true}>
+                <div
+                  onClick={() => {
+                    handleClose();
+                    router.push(`/organization/${fetchedTask?.orgUsername}/boards`, undefined, {
+                      shallow: true,
+                    });
+                  }}
+                >
                   <SafeImage
                     src={fetchedTask?.orgProfilePicture}
                     style={{
@@ -971,7 +978,7 @@ export const TaskViewModal = (props) => {
                       marginRight: '8px',
                     }}
                   />
-                </Link>
+                </div>
               ) : (
                 <>
                   <OrganisationsCardNoLogo style={{ height: '29px', width: '28px' }}>
@@ -984,26 +991,31 @@ export const TaskViewModal = (props) => {
                   <RightArrowWrapper>
                     <RightArrow />
                   </RightArrowWrapper>
-                  <Link href={`/pod/${fetchedTask?.podId}/boards`} passHref={true}>
-                    <div
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      handleClose();
+                      router.push(`/pod/${fetchedTask?.podId}/boards`, undefined, {
+                        shallow: true,
+                      });
+                    }}
+                  >
+                    <PodIcon
                       style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        cursor: 'pointer',
+                        width: '26px',
+                        height: '26px',
+                        marginRight: '4px',
+                        marginLeft: '8px',
                       }}
-                    >
-                      <PodIcon
-                        style={{
-                          width: '26px',
-                          height: '26px',
-                          marginRight: '4px',
-                          marginLeft: '8px',
-                        }}
-                        color={fetchedTask?.podColor}
-                      />
-                      <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
-                    </div>
-                  </Link>
+                      color={fetchedTask?.podColor}
+                    />
+                    <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
+                  </div>
                 </>
               )}
               {fetchedTask?.type === TASK_TYPE && (
@@ -1077,7 +1089,12 @@ export const TaskViewModal = (props) => {
               />
               <TaskTitleTextDiv>
                 <TaskTitleText>{fetchedTask?.title}</TaskTitleText>
-                <TaskDescriptionText>
+                <TaskDescriptionText
+                  style={{
+                    maxWidth: '600px',
+                    overflowX: 'scroll',
+                  }}
+                >
                   {renderMentionString({
                     content: fetchedTask?.description,
                     router,

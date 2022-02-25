@@ -300,9 +300,7 @@ const Members = (props) => {
   const [getPodUsers] = useLazyQuery(GET_POD_USERS, {
     onCompleted: (data) => {
       setUsers(data?.getPodUsers);
-      if (hasMore) {
-        setHasMore(data?.hasMore || data?.getPodUsers.length >= LIMIT);
-      }
+      setHasMore(data?.hasMore || data?.getPodUsers.length >= LIMIT);
     },
     fetchPolicy: 'network-only',
   });
@@ -361,17 +359,15 @@ const Members = (props) => {
           if (orgId) {
             const orgUsers = fetchMoreResult?.data?.getOrgUsers;
             const hasMore = orgUsers.length >= LIMIT;
-            if (hasMore) {
-              setUsers([...users, ...orgUsers]);
-            } else {
+            setUsers([...users, ...orgUsers]);
+            if (!hasMore) {
               setHasMore(false);
             }
           } else if (podId) {
             const podUsers = fetchMoreResult?.data?.getPodUsers;
             const hasMore = podUsers.length >= LIMIT;
-            if (hasMore) {
-              setUsers([...users, ...podUsers]);
-            } else {
+            setUsers([...users, ...podUsers]);
+            if (!hasMore) {
               setHasMore(false);
             }
           }
