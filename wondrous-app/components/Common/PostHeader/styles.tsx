@@ -63,7 +63,9 @@ export const PostHeaderUsername = styled(Typography)`
   }
 `;
 
-export const PostHeaderMoreMenuWrapper = styled.span``;
+export const PostHeaderMoreMenuWrapper = styled.span`
+  z-index: 3;
+`;
 
 export const PostHeaderMore = styled(MoreVert)`
   && {
