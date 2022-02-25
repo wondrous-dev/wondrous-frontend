@@ -1089,7 +1089,12 @@ export const TaskViewModal = (props) => {
               />
               <TaskTitleTextDiv>
                 <TaskTitleText>{fetchedTask?.title}</TaskTitleText>
-                <TaskDescriptionText>
+                <TaskDescriptionText
+                  style={{
+                    maxWidth: '600px',
+                    overflowX: 'scroll',
+                  }}
+                >
                   {renderMentionString({
                     content: fetchedTask?.description,
                     router,
