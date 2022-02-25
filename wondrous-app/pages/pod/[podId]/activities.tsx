@@ -25,7 +25,7 @@ const ActivitiesPage = () => {
           : null,
       }}
     >
-      <Activities podId={podId} />;
+      <Activities podId={podId} />
     </PodBoardContext.Provider>
   );
 };
