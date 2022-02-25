@@ -12,6 +12,7 @@ export const PostHeaderWrapper = styled.div`
 
 export const PostHeaderImageTextWrapper = styled.div`
   display: flex;
+  z-index: 2;
 `;
 
 export const PostHeaderImage = (props) => (

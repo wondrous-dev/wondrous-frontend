@@ -19,9 +19,8 @@ export const PostQuote = (props) => {
     <PostQuoteBackground>
       <PostHeader {...props} />
       <PostQuoteWrapper>
-        <PostContentBorder>
-          <PostContentBackground>{itemContent}</PostContentBackground>
-        </PostContentBorder>
+        <PostContentBorder />
+        <PostContentBackground>{itemContent}</PostContentBackground>
         <PostReferenceBorder>
           <PostReferenceBackground>
             <PostHeader post={referencedObject} />

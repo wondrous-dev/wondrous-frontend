@@ -8,14 +8,17 @@ export const PostQuoteBackground = styled(Box)`
   padding: 14px;
 `;
 
-export const PostQuoteWrapper = styled.div``;
+export const PostQuoteWrapper = styled.div`
+  position: relative;
+`;
 
-export const PostContentBorder = styled(Typography)`
-  && {
-    margin-left: 12px;
-    background: linear-gradient(180deg, #ccbbff 0%, #7427ff 47.4%, #00baff 100%);
-    padding-left: 1px;
-  }
+export const PostContentBorder = styled.div`
+  margin-left: 12px;
+  background: linear-gradient(180deg, #ccbbff 0%, #7427ff 47.4%, #00baff 100%);
+  padding-left: 1px;
+  min-height: 100%;
+  position: absolute;
+  top: -28px;
 `;
 
 export const PostContentBackground = styled(Box)`
