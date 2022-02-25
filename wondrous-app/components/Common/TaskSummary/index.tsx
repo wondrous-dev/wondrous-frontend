@@ -266,7 +266,6 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
                 />
                 <PodWrapper
                   onClick={(e) => {
-                    console.log('what the fuck');
                     e.preventDefault();
                     e.stopPropagation();
                     goToPod(task?.podId);
