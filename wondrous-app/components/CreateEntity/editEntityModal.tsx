@@ -573,12 +573,15 @@ const EditLayoutBaseModal = (props) => {
           milestoneId: milestone?.id ?? milestone,
           podId: pod?.id ?? pod,
           dueDate,
-          rewards: [
-            {
-              rewardAmount: parseFloat(rewardsAmount),
-              paymentMethodId: rewardsCurrency,
-            },
-          ],
+          ...(rewardsAmount &&
+            rewardsCurrency && {
+              rewards: [
+                {
+                  rewardAmount: parseFloat(rewardsAmount),
+                  paymentMethodId: rewardsCurrency,
+                },
+              ],
+            }),
           // TODO: add links?,
           ...(!isTaskProposal && {
             assigneeId: assignee?.value,

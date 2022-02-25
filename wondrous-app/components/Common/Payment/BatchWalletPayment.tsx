@@ -255,9 +255,9 @@ export const BatchWalletPayment = (props) => {
         shallow: true,
       });
     } else if (orgId) {
-      router.push(`/organization/settings/${orgId}/wallet, undefined, {
+      router.push(`/organization/settings/${orgId}/wallet`, undefined, {
         shallow: true,
-      }`);
+      });
     }
   };
 

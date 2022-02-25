@@ -262,12 +262,10 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
                     width: '26px',
                     height: '26px',
                     marginRight: '8px',
-                    marginBottom: '16px',
                   }}
                 />
                 <PodWrapper
                   onClick={(e) => {
-                    console.log('what the fuck');
                     e.preventDefault();
                     e.stopPropagation();
                     goToPod(task?.podId);

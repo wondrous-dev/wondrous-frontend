@@ -314,7 +314,7 @@ const SubmissionItem = (props) => {
       <TaskSectionDisplayDiv>
         <TaskSectionDisplayLabel
           style={{
-            marginRight: '8px',
+            marginRight: '20px',
           }}
         >
           <LinkIcon />
