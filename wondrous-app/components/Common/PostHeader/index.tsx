@@ -1,3 +1,4 @@
+import { ClickAwayListener } from '@material-ui/core';
 import { useState } from 'react';
 import { ObjectType, PostVerbType } from '../../../types/post';
 import { useMe } from '../../Auth/withAuth';
@@ -5,9 +6,11 @@ import { KudosForm } from '../KudosForm';
 import {
   PostHeaderDefaultUserImage,
   PostHeaderImage,
+  PostHeaderImageTextWrapper,
   PostHeaderMenu,
   PostHeaderMenuItem,
   PostHeaderMore,
+  PostHeaderMoreMenuWrapper,
   PostHeaderText,
   PostHeaderUsername,
   PostHeaderWrapper,
@@ -34,14 +37,14 @@ const createHeaderText = (verb, object, referencedUser) => {
 
 export const PostHeader = (props) => {
   const { post } = props;
-  const { sourceId, actorUsername, verb, objectType, actorProfilePicture, itemContent, referencedObject } = post;
+  const { id, sourceId, actorUsername, verb, objectType, actorProfilePicture, itemContent, referencedObject } = post;
   const [menu, setMenu] = useState(null);
   const [kudosForm, setKudosForm] = useState(null);
   const loggedInUser = useMe();
   const canEditPost = loggedInUser?.username === actorUsername && verb === PostVerbType.KUDOS;
   const headerText = createHeaderText(verb, objectType, referencedObject?.actorUsername);
   const handleMenuOnClose = () => setMenu(null);
-  const handleMenuOnOpen = (event) => setMenu(event.currentTarget);
+  const handleMenuOnClick = (event) => setMenu(menu ? null : event.currentTarget);
   const handlePostEdit = () => {
     handleMenuOnClose();
     setKudosForm(true);
@@ -51,32 +54,22 @@ export const PostHeader = (props) => {
     <>
       <KudosForm open={kudosForm} existingContent={itemContent} onClose={handlePostEditClose} id={sourceId} />
       <PostHeaderWrapper>
-        {actorProfilePicture ? <PostHeaderImage src={actorProfilePicture} /> : <PostHeaderDefaultUserImage />}
-        <PostHeaderText>
-          <PostHeaderUsername as="span">{actorUsername} </PostHeaderUsername>
-          {headerText}
-        </PostHeaderText>
+        <PostHeaderImageTextWrapper>
+          {actorProfilePicture ? <PostHeaderImage src={actorProfilePicture} /> : <PostHeaderDefaultUserImage />}
+          <PostHeaderText>
+            <PostHeaderUsername as="span">{actorUsername} </PostHeaderUsername>
+            {headerText}
+          </PostHeaderText>
+        </PostHeaderImageTextWrapper>
         {canEditPost && (
-          <>
-            <PostHeaderMore aria-controls="menu" aria-haspopup="true" onClick={handleMenuOnOpen} />
-            <PostHeaderMenu
-              id="menu"
-              open={menu}
-              anchorEl={menu}
-              keepMounted
-              onClose={handleMenuOnClose}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'center',
-              }}
-              transformOrigin={{
-                vertical: -25,
-                horizontal: 'right',
-              }}
-            >
-              <PostHeaderMenuItem onClick={handlePostEdit}>Edit Kudos</PostHeaderMenuItem>
-            </PostHeaderMenu>
-          </>
+          <ClickAwayListener onClickAway={handleMenuOnClose}>
+            <PostHeaderMoreMenuWrapper>
+              <PostHeaderMore aria-describedby={id} type="button" onClick={handleMenuOnClick} />
+              <PostHeaderMenu disablePortal={true} id={id} open={menu} anchorEl={menu} placement="bottom-end">
+                <PostHeaderMenuItem onClick={handlePostEdit}>Edit Kudos</PostHeaderMenuItem>
+              </PostHeaderMenu>
+            </PostHeaderMoreMenuWrapper>
+          </ClickAwayListener>
         )}
       </PostHeaderWrapper>
     </>

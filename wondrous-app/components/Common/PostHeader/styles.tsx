@@ -1,4 +1,4 @@
-import { Menu, MenuItem, Typography } from '@material-ui/core';
+import { MenuItem, Popper, Typography } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import styled from 'styled-components';
 import { SafeImage } from '../Image';
@@ -7,6 +7,11 @@ import DefaultUserImage from '../Image/DefaultUserImage';
 export const PostHeaderWrapper = styled.div`
   display: flex;
   align-items: flex-start;
+  justify-content: space-between;
+`;
+
+export const PostHeaderImageTextWrapper = styled.div`
+  display: flex;
 `;
 
 export const PostHeaderImage = (props) => (
@@ -45,6 +50,8 @@ export const PostHeaderUsername = styled(Typography)`
   }
 `;
 
+export const PostHeaderMoreMenuWrapper = styled.span``;
+
 export const PostHeaderMore = styled(MoreVert)`
   && {
     color: #545454;
@@ -59,15 +66,9 @@ export const PostHeaderMore = styled(MoreVert)`
   }
 `;
 
-export const PostHeaderMenu = styled(Menu)`
-  .MuiMenu-paper {
-    background-color: #0f0f0f;
-    border-radius: 2px;
-  }
-
-  .MuiList-root {
-    padding: 0;
-  }
+export const PostHeaderMenu = styled(Popper)`
+  background-color: #0f0f0f;
+  border-radius: 2px;
 `;
 
 export const PostHeaderMenuItem = styled(MenuItem)`
@@ -78,7 +79,7 @@ export const PostHeaderMenuItem = styled(MenuItem)`
     text-align: center;
 
     &:hover {
-      background-color: #1f1f1f;
+      background-color: #2f2f2f;
     }
   }
 `;
