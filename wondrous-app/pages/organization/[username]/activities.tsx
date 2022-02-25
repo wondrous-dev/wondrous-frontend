@@ -3,7 +3,8 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { withAuth } from '../../../components/Auth/withAuth';
 import Activities from '../../../components/organization/activities/activities';
-import { GET_ORG_FROM_USERNAME } from '../../../graphql/queries';
+import { GET_ORG_FROM_USERNAME, GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
+import { OrgBoardContext } from '../../../utils/contexts';
 
 const ActivitiesPage = () => {
   const router = useRouter();
@@ -11,7 +12,22 @@ const ActivitiesPage = () => {
   const { data: getOrgFromUsernameData } = useQuery(GET_ORG_FROM_USERNAME, {
     variables: { username },
   });
-  return <Activities orgData={getOrgFromUsernameData?.getOrgFromUsername} />;
+  const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
+    fetchPolicy: 'cache-and-network',
+  });
+  const org = getOrgFromUsernameData?.getOrgFromUsername;
+  return (
+    <OrgBoardContext.Provider
+      value={{
+        userPermissionsContext: userPermissionsContext?.getUserPermissionContext
+          ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+          : null,
+        orgId: org?.id,
+      }}
+    >
+      <Activities orgData={org} />
+    </OrgBoardContext.Provider>
+  );
 };
 
 export default withAuth(ActivitiesPage);
