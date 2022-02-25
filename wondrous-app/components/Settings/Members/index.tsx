@@ -292,10 +292,6 @@ const Members = (props) => {
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
 
   const [getOrgUsers, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_USERS, {
-    onCompleted: (data) => {
-      setUsers(data?.getOrgUsers);
-      setHasMore(data?.hasMore || data?.getOrgUsers.length >= LIMIT);
-    },
     fetchPolicy: 'network-only',
   });
 
@@ -321,6 +317,8 @@ const Members = (props) => {
         },
       }).then((result) => {
         if (!firstTimeFetch) {
+          setUsers(result?.data?.getOrgUsers);
+          setHasMore(result?.data?.hasMore || result?.data?.getOrgUsers.length >= LIMIT);
           setFirstTimeFetch(true);
         }
       });
@@ -361,17 +359,15 @@ const Members = (props) => {
           if (orgId) {
             const orgUsers = fetchMoreResult?.data?.getOrgUsers;
             const hasMore = orgUsers.length >= LIMIT;
-            if (hasMore) {
-              setUsers([...users, ...orgUsers]);
-            } else {
+            setUsers([...users, ...orgUsers]);
+            if (!hasMore) {
               setHasMore(false);
             }
           } else if (podId) {
             const podUsers = fetchMoreResult?.data?.getPodUsers;
             const hasMore = podUsers.length >= LIMIT;
-            if (hasMore) {
-              setUsers([...users, ...podUsers]);
-            } else {
+            setUsers([...users, ...podUsers]);
+            if (!hasMore) {
               setHasMore(false);
             }
           }
