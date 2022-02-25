@@ -43,6 +43,18 @@ export const PostHeaderText = styled(Typography)`
   }
 `;
 
+export const PostHeaderLink = styled(Typography)`
+  && {
+    color: #00baff;
+    text-decoration: underline;
+    font-weight: 700;
+
+    :hover {
+      cursor: pointer;
+    }
+  }
+`;
+
 export const PostHeaderUsername = styled(Typography)`
   && {
     color: #fff;
