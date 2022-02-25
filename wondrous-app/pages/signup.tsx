@@ -65,7 +65,7 @@ const Signup = () => {
           // Sign with Wallet
           const result = await walletSignup(wonderWeb3.address, signedMessage, wonderWeb3.chainName.toLowerCase());
           if (result === true) {
-            router.push('/dashboard', undefined, {
+            router.push(`/onboarding/welcome`, undefined, {
               shallow: true,
             });
           } else {

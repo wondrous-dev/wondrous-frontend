@@ -111,3 +111,27 @@ export const SEARCH_ORG_USERS = gql`
     }
   }
 `;
+export const GET_JOIN_ORG_REQUESTS = gql`
+  query getJoinOrgRequests($orgId: ID!, $limit: Int, $offset: Int) {
+    getJoinOrgRequests(orgId: $orgId, limit: $limit, offset: $offset) {
+      id
+      userId
+      orgId
+      approvedAt
+      rejectedAt
+      userUsername
+      userProfilePicture
+    }
+  }
+`;
+
+export const GET_USER_JOIN_ORG_REQUEST = gql`
+  query getUserJoinOrgRequest($orgId: ID!) {
+    getUserJoinOrgRequest(orgId: $orgId) {
+      id
+      orgId
+      approvedAt
+      rejectedAt
+    }
+  }
+`;

@@ -32,7 +32,7 @@ export const Logo = ({ divStyle }) => {
   );
 };
 
-export const InviteWelcomeBox = ({ updateUser }) => {
+export const InviteWelcomeBox = ({ updateUser, firstOrg }) => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(null);
@@ -100,49 +100,58 @@ export const InviteWelcomeBox = ({ updateUser }) => {
         required
       />
       {error && <ErrorText>{error}</ErrorText>}
-      <div
-        style={{
-          width: '100%',
-          justifyContent: 'end',
-          display: 'flex',
-        }}
-      >
-        <LaterButton
-          onClick={() => {
-            router.push(`/dashboard`, undefined, {
-              shallow: true,
-            });
-          }}
-          buttonInnerStyle={{
-            fontFamily: 'Space Grotesk',
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <div
+          style={{
+            width: '100%',
+            justifyContent: 'end',
+            display: 'flex',
           }}
         >
-          Skip
-        </LaterButton>
-        <ContinueButton
-          style={buttonStyle}
-          onClick={() => {
-            setLoading(true);
-            if (validateEmail(email)) {
-              updateUser({
-                variables: {
-                  input: {
-                    email,
-                  },
-                },
+          <LaterButton
+            onClick={() => {
+              if (!firstOrg) {
+                router.push('/explore', undefined, {
+                  shallow: true,
+                });
+              }
+              router.push(`/organization/${firstOrg?.username}/boards`, undefined, {
+                shallow: true,
               });
-            } else {
-              setLoading(false);
-              setError('Please enter a valid email');
-            }
-          }}
-          buttonInnerStyle={{
-            padding: '8px 16px',
-          }}
-        >
-          <InviteWelcomeBoxParagraph>{loading ? <CircularProgress /> : 'Finish'}</InviteWelcomeBoxParagraph>
-        </ContinueButton>
-      </div>
+            }}
+            buttonInnerStyle={{
+              fontFamily: 'Space Grotesk',
+            }}
+          >
+            Skip
+          </LaterButton>
+          <ContinueButton
+            style={buttonStyle}
+            onClick={() => {
+              setLoading(true);
+              if (validateEmail(email)) {
+                updateUser({
+                  variables: {
+                    input: {
+                      email,
+                    },
+                  },
+                });
+              } else {
+                setLoading(false);
+                setError('Please enter a valid email');
+              }
+            }}
+            buttonInnerStyle={{
+              padding: '8px 16px',
+            }}
+          >
+            <InviteWelcomeBoxParagraph>Finish</InviteWelcomeBoxParagraph>
+          </ContinueButton>
+        </div>
+      )}
     </InviteWelcomeBoxWrapper>
   );
 };

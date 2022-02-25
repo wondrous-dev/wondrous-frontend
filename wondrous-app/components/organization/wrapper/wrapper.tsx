@@ -39,8 +39,9 @@ import {
   TokenEmptyLogo,
 } from './styles';
 import { useOrgBoard } from '../../../utils/hooks';
-import { useLazyQuery, useQuery } from '@apollo/client';
-import { GET_ORG_BY_ID } from '../../../graphql/queries/org';
+import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
+import { GET_ORG_BY_ID, GET_USER_JOIN_ORG_REQUEST } from '../../../graphql/queries/org';
+import { CREATE_JOIN_ORG_REQUEST } from '../../../graphql/mutations/org';
 import { SafeImage } from '../../Common/Image';
 import PlusIcon from '../../Icons/plus';
 import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink';
@@ -76,13 +77,16 @@ const Wrapper = (props) => {
     CONTRIBUTOR: 'contributor',
   };
 
+  const [createJoinOrgRequest] = useMutation(CREATE_JOIN_ORG_REQUEST);
+
   const userPermissionsContext = orgBoard?.userPermissionsContext;
-  const [permissions, setPermissions] = useState(null);
+  const [permissions, setPermissions] = useState(undefined);
   const [createFormModal, setCreateFormModal] = useState(false);
   const [data, setData] = useState(MOCK_ORGANIZATION_DATA);
   const [openInvite, setOpenInvite] = useState(false);
   const { amount } = data;
-
+  const [joinRequestSent, setJoinRequestSent] = useState(false);
+  const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST);
   const toggleCreateFormModal = () => {
     toggleHtmlOverflow();
     setCreateFormModal((prevState) => !prevState);
@@ -90,6 +94,7 @@ const Wrapper = (props) => {
   const orgProfile = orgData;
   const links = orgProfile?.links;
   const router = useRouter();
+  const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
   useEffect(() => {
     const orgPermissions = parseUserPermissionContext({
       userPermissionsContext,
@@ -102,11 +107,20 @@ const Wrapper = (props) => {
       orgPermissions?.includes(PERMISSIONS.APPROVE_PAYMENT)
     ) {
       setPermissions(ORG_PERMISSIONS.MANAGE_SETTINGS);
-    } else if (userPermissionsContext && orgPermissions) {
+    } else if (
+      userPermissionsContext?.orgPermissions &&
+      orgProfile?.id in userPermissionsContext?.orgPermissions &&
+      orgPermissions
+    ) {
       // Normal contributor with no access to admin settings
       setPermissions(ORG_PERMISSIONS.CONTRIBUTOR);
-    } else if (!userPermissionsContext) {
+    } else if (userPermissionsContext && !(orgProfile?.id in userPermissionsContext?.orgPermissions)) {
       setPermissions(null);
+      getExistingJoinRequest({
+        variables: {
+          orgId: orgProfile?.id,
+        },
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgBoard?.orgId, userPermissionsContext]);
@@ -173,6 +187,35 @@ const Wrapper = (props) => {
                       <HeaderFollowButtonText>{shrinkNumber(amount)}</HeaderFollowButtonText>
                       <HeaderFollowButtonIcon src="/images/overview/icon.png" />
                     </HeaderFollowButton>
+                    {permissions === null && (
+                      <>
+                        {joinRequestSent || userJoinRequest ? (
+                          <HeaderSettingsLockedButton
+                            style={{
+                              width: 'fit-content',
+                            }}
+                          >
+                            Request sent
+                          </HeaderSettingsLockedButton>
+                        ) : (
+                          <HeaderManageSettingsButton
+                            style={{
+                              width: 'fit-content',
+                            }}
+                            onClick={() => {
+                              createJoinOrgRequest({
+                                variables: {
+                                  orgId: orgProfile?.id,
+                                },
+                              });
+                              setJoinRequestSent(true);
+                            }}
+                          >
+                            <HeaderFollowButtonText>Request to join</HeaderFollowButtonText>
+                          </HeaderManageSettingsButton>
+                        )}
+                      </>
+                    )}
                     {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
                       <>
                         <HeaderInviteButton onClick={() => setOpenInvite(true)}>
