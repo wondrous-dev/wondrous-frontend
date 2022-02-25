@@ -8,6 +8,8 @@ import {
   PostReferenceBorder,
   ReferenceDescription,
   ReferenceTitle,
+  ReferenceMedia,
+  ReferenceMediaWrapper,
 } from './styles';
 
 export const PostQuote = (props) => {
@@ -25,7 +27,12 @@ export const PostQuote = (props) => {
             <PostHeader post={referencedObject} />
             <ReferenceTitle>{referencedObject?.title}</ReferenceTitle>
             <ReferenceDescription>{referencedObject?.itemContent}</ReferenceDescription>
-            {/* TODO: @juniusfree Add the images here if any */}
+            <ReferenceMediaWrapper>
+              {referencedObject?.media &&
+                referencedObject?.media
+                  .slice(0, 2)
+                  .map((_, i) => <ReferenceMedia key={i} media={referencedObject?.media[i]} />)}
+            </ReferenceMediaWrapper>
           </PostReferenceBackground>
         </PostReferenceBorder>
       </PostQuoteWrapper>

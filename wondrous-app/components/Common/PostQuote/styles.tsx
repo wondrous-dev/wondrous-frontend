@@ -1,5 +1,6 @@
 import { Box, Typography } from '@material-ui/core';
 import styled from 'styled-components';
+import { TaskMedia } from '../MediaPlayer';
 
 export const PostQuoteBackground = styled(Box)`
   background: #1e1e1e;
@@ -58,3 +59,15 @@ export const ReferenceDescription = styled(Typography)`
     color: #c4c4c4;
   }
 `;
+
+export const ReferenceMediaWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  && > div {
+    margin-top: 12px;
+    flex-basis: 45%;
+  }
+`;
+
+export const ReferenceMedia = styled(TaskMedia)``;

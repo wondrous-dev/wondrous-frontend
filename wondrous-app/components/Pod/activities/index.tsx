@@ -34,9 +34,9 @@ const Activities = (props) => {
   return (
     <Wrapper>
       <Feed isMoreThanOne={isMoreThanOne}>
-        {feedData?.map((post) => {
-          return <Post key={post.id} post={post} />;
-        })}
+        {feedData?.map((post) => (
+          <Post key={post.id} post={post} />
+        ))}
       </Feed>
       {!loading && <FeedLoadMore ref={ref} />}
     </Wrapper>
