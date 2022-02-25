@@ -33,3 +33,5 @@ export const Feed = styled.div`
       : `
       & > :first-child {border-left: 0;}`}
 `;
+
+export const FeedLoadMore = styled.div``;

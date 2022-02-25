@@ -1,13 +1,15 @@
 import { useQuery } from '@apollo/client';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { GET_POD_FEED } from '../../../graphql/queries';
 import { Post } from '../../Common/Post';
+import { Feed, FeedLoadMore } from '../../organization/activities/styles';
 import Wrapper from '../wrapper/';
-import { Feed } from '../../organization/activities/styles';
 
 const Activities = (props) => {
   const { podId } = props;
-  const { data: getPodFeedData } = useQuery(GET_POD_FEED, {
+  const [ref, inView] = useInView({});
+  const { data, loading, fetchMore } = useQuery(GET_POD_FEED, {
     variables: {
       podId,
       offset: 0,
@@ -15,16 +17,28 @@ const Activities = (props) => {
     },
     pollInterval: 60000,
   });
-  const podFeedData = getPodFeedData?.getPodFeed;
-  const isMoreThanOne = podFeedData?.length > 1;
+  const feedData = data?.getPodFeed;
+  const feedDataLength = feedData?.length;
+  const isMoreThanOne = feedDataLength > 1;
+
+  useEffect(() => {
+    if (!loading && inView) {
+      fetchMore({
+        variables: {
+          offset: feedDataLength,
+        },
+      });
+    }
+  }, [inView, feedDataLength, fetchMore, loading]);
+
   return (
     <Wrapper>
       <Feed isMoreThanOne={isMoreThanOne}>
-        {podFeedData?.map((post) => (
-          <Post key={post.id} post={post} />
-        ))}
+        {feedData?.map((post) => {
+          return <Post key={post.id} post={post} />;
+        })}
       </Feed>
-      {/* TODO: @juniusfree add pagination here */}
+      {!loading && <FeedLoadMore ref={ref} />}
     </Wrapper>
   );
 };
