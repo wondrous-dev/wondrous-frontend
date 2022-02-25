@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { TaskMedia } from '../MediaPlayer';
 
 export const PostQuoteBackground = styled(Box)`
-  background: #1e1e1e;
+  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
   border-radius: inherit;
   padding: 14px;
 `;
@@ -22,7 +22,6 @@ export const PostContentBorder = styled.div`
 `;
 
 export const PostContentBackground = styled(Box)`
-  background: #1e1e1e;
   height: 100%;
   font-family: 'Space Grotesk';
   font-size: 14px;
@@ -39,7 +38,7 @@ export const PostReferenceBorder = styled(Box)`
 `;
 
 export const PostReferenceBackground = styled(Box)`
-  background: #1e1e1e;
+  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
   height: 100%;
   border-radius: inherit;
   padding: 18px 28px;
