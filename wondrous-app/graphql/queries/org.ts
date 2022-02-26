@@ -135,3 +135,11 @@ export const GET_USER_JOIN_ORG_REQUEST = gql`
     }
   }
 `;
+
+export const GET_ORG_JOIN_REQUEST_COUNT = gql`
+  query getOrgJoinRequestCount($orgId: ID!) {
+    getOrgJoinRequestCount(orgId: $orgId) {
+      joinOrgRequestCount
+    }
+  }
+`;

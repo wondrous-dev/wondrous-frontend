@@ -17,13 +17,22 @@ import {
 } from './styles';
 
 const DashboardPanelExpanded = (props) => {
-  const { activePanel, loading, activePanelStatusCards, selectedStatus, setSelectedStatus, isAdmin } = props;
+  const {
+    activePanel,
+    loading,
+    activePanelStatusCards,
+    selectedStatus,
+    setSelectedStatus,
+    isAdmin,
+    setSelectMembershipRequests,
+  } = props;
   const router = useRouter();
   const handleOnClick = () => {
     router.query.view !== ViewType.Admin
       ? router.replace(`${delQuery(router.asPath)}?view=${ViewType.Admin}`)
       : router.replace(`${delQuery(router.asPath)}`);
   };
+
   return (
     <StyledBorder>
       <StyledBackground>

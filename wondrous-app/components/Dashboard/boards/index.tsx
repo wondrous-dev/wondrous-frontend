@@ -70,7 +70,7 @@ const BoardsPage = (props) => {
   const [adminColumns, setAdminColumns] = useState([]);
   const [hasMoreTasks, setHasMoreTasks] = useState(true);
   const { search } = router.query;
-
+  console.log('selectedStatus', selectedStatus);
   const [getTasks, { fetchMore }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
     variables: {
       podIds: [],
