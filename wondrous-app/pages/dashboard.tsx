@@ -27,6 +27,7 @@ const Dashboard = () => {
     <Wrapper>
       <SelectMembershipContext.Provider
         value={{
+          selectMembershipRequests,
           setSelectMembershipRequests,
         }}
       >
