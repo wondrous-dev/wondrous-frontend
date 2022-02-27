@@ -23,7 +23,7 @@ import { SafeImage } from '../Common/Image';
 import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
 import { CHAR_LIMIT_PROFILE_BIO, USERNAME_REGEX, validateEmail } from '../../utils/constants';
 import { ErrorText } from '../Common';
-import { SnackbarAlertContext } from '../../components/Common/SnackbarAlert';
+import { useSnackbarAlert } from '../../components/Common/SnackbarAlert';
 
 const ProfileSettings = (props) => {
   const { loggedInUser } = props;
@@ -35,9 +35,7 @@ const ProfileSettings = (props) => {
   const [profileBanner, setProfileBanner] = useState(null);
   const [profileBio, setProfileBio] = useState(loggedInUser?.bio);
   const [updateUserProfile] = useMutation(UPDATE_USER);
-  const snackbarContext = useContext(SnackbarAlertContext);
-  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
-  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const [setSnackbarAlert] = useSnackbarAlert();
   const [errors, setErrors] = useState({
     username: null,
     email: null,
@@ -128,8 +126,10 @@ const ProfileSettings = (props) => {
             if (data?.updateUser?.profilePicture) {
               setProfilePictureUrl(data?.updateUser?.profilePicture);
             }
-            setSnackbarAlertOpen(true);
-            setSnackbarAlertMessage(<>User profile updated successfully</>);
+            setSnackbarAlert({
+              message: <>User profile updated successfully</>,
+              open: true,
+            });
           },
         });
       }

@@ -21,7 +21,7 @@ import { TaskMedia } from '../MediaPlayer';
 import { DropDown, DropDownItem } from '../dropdown';
 import { CompletedIcon } from '../../Icons/statusIcons';
 import { RejectIcon } from '../../Icons/taskModalIcons';
-import { SnackbarAlertContext } from '../SnackbarAlert';
+import { useSnackbarAlert } from '../SnackbarAlert';
 import { ArchiveTaskModal } from '../ArchiveTaskModal';
 import { GET_ORG_TASK_BOARD_TASKS } from '../../../graphql/queries/taskBoard';
 import MilestoneIcon from '../../Icons/milestone';
@@ -118,9 +118,7 @@ export const Task = (props) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [archiveTask, setArchiveTask] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
-  const snackbarContext = useContext(SnackbarAlertContext);
-  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
-  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const [setSnackbarAlert] = useSnackbarAlert();
   let TaskIcon = TASK_ICONS[status];
   if (task?.paymentStatus === Constants.PAYMENT_STATUS.PROCESSING) {
     TaskIcon = TASK_ICONS[Constants.TASK_STATUS_AWAITING_PAYMENT];
@@ -171,31 +169,32 @@ export const Task = (props) => {
     }
 
     if (updateTaskStatusMutationData?.updateTaskStatus.status === Constants.TASK_STATUS_ARCHIVED) {
-      setSnackbarAlertOpen(true);
-      setSnackbarAlertMessage(
-        <>
-          Task archived successfully!{' '}
-          <ArchivedTaskUndo
-            onClick={() => {
-              handleNewStatus(initialStatus);
-              setSnackbarAlertOpen(false);
-            }}
-          >
-            Undo
-          </ArchivedTaskUndo>
-        </>
-      );
+      setSnackbarAlert({
+        open: true,
+        message: (
+          <>
+            Task archived successfully!{' '}
+            <ArchivedTaskUndo
+              onClick={() => {
+                handleNewStatus(initialStatus);
+                setSnackbarAlert({ open: false });
+              }}
+            >
+              Undo
+            </ArchivedTaskUndo>
+          </>
+        ),
+      });
     }
   }, [
     initialStatus,
     setInitialStatus,
     status,
     updateTaskStatusMutationData,
-    setSnackbarAlertOpen,
-    setSnackbarAlertMessage,
     handleNewStatus,
     isSubtask,
     id,
+    setSnackbarAlert,
   ]);
 
   const toggleLike = () => {

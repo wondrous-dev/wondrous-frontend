@@ -13,7 +13,7 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from '../../../graphql/queries/payment';
-import { SnackbarAlertContext } from '../SnackbarAlert';
+import { useSnackbarAlert } from '../SnackbarAlert';
 import { Typography } from '@material-ui/core';
 import { PaymentDescriptionText } from './styles';
 import { White } from '../../../theme/colors';
@@ -27,9 +27,7 @@ export const OfflinePayment = (props) => {
   const [selectedOfflineType, setSelectedOfflineType] = useState(null);
   const [offlinePaymentLink, setOfflinePaymentLink] = useState(null);
   const [linkPaymentError, setLinkPaymentError] = useState(null);
-  const snackbarContext = useContext(SnackbarAlertContext);
-  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
-  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const [setSnackbarAlert] = useSnackbarAlert();
   const [submissionPaid, setSubmissionPaid] = useState(null);
   const handleLinkPaymentLinkClick = () => {
     setLinkPaymentError(null);
@@ -56,19 +54,21 @@ export const OfflinePayment = (props) => {
     if (handleClose) {
       handleClose();
     }
-    setSnackbarAlertOpen(true);
-    setSnackbarAlertMessage(
-      <>
-        <Typography
-          variant="body1"
-          style={{
-            color: White,
-          }}
-        >
-          Payment linked
-        </Typography>
-      </>
-    );
+    setSnackbarAlert({
+      open: true,
+      message: (
+        <>
+          <Typography
+            variant="body1"
+            style={{
+              color: White,
+            }}
+          >
+            Payment linked
+          </Typography>
+        </>
+      ),
+    });
   };
   const [linkOffPlatformPayment] = useMutation(LINK_OFF_PLATFORM_PAYMENT, {
     onCompleted: (data) => {

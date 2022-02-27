@@ -82,7 +82,7 @@ import {
 import DefaultUserImage from '../Image/DefaultUserImage';
 import EditLayoutBaseModal from '../../CreateEntity/editEntityModal';
 import { ArchiveTaskModal } from '../ArchiveTaskModal';
-import { SnackbarAlertContext } from '../SnackbarAlert';
+import { useSnackbarAlert } from '../SnackbarAlert';
 import {
   CreateFormButtonsBlock,
   CreateFormCancelButton,
@@ -675,9 +675,7 @@ export const TaskViewModal = (props) => {
   const [archiveTaskAlert, setArchiveTaskAlert] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const snackbarContext = useContext(SnackbarAlertContext);
-  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
-  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const [setSnackbarAlert] = useSnackbarAlert();
   const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
   const user = useMe();
   const userPermissionsContext =
@@ -733,30 +731,26 @@ export const TaskViewModal = (props) => {
     }
 
     if (updateTaskStatusMutationData?.updateTaskStatus.status === TASK_STATUS_ARCHIVED) {
-      setSnackbarAlertOpen(true);
-      setSnackbarAlertMessage(
-        <>
-          Task archived successfully!{' '}
-          <ArchivedTaskUndo
-            onClick={() => {
-              handleNewStatus(initialStatus);
-              setSnackbarAlertOpen(false);
-            }}
-          >
-            Undo
-          </ArchivedTaskUndo>
-        </>
-      );
+      setSnackbarAlert({
+        open: true,
+        message: (
+          <>
+            Task archived successfully!{' '}
+            <ArchivedTaskUndo
+              onClick={() => {
+                handleNewStatus(initialStatus);
+                setSnackbarAlert({
+                  open: false,
+                });
+              }}
+            >
+              Undo
+            </ArchivedTaskUndo>
+          </>
+        ),
+      });
     }
-  }, [
-    initialStatus,
-    setInitialStatus,
-    fetchedTask,
-    updateTaskStatusMutationData,
-    setSnackbarAlertOpen,
-    setSnackbarAlertMessage,
-    handleNewStatus,
-  ]);
+  }, [initialStatus, setInitialStatus, fetchedTask, updateTaskStatusMutationData, handleNewStatus, setSnackbarAlert]);
   useEffect(() => {
     if (open) {
       if (isTaskProposal) {

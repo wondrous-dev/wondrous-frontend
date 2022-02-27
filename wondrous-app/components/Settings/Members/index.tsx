@@ -42,7 +42,7 @@ import {
 import { White } from '../../../theme/colors';
 import { SafeImage } from '../../Common/Image';
 import { filterOrgUsers } from '../../CreateEntity/createEntityModal';
-import { SnackbarAlertContext } from '../../Common/SnackbarAlert';
+import { useSnackbarAlert } from '../../Common/SnackbarAlert';
 import { ArchivedTaskUndo } from '../../Common/Task/styles';
 import Link from 'next/link';
 
@@ -148,9 +148,7 @@ const InviteMember = (props) => {
   const canInvite = permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.MANAGE_MEMBER);
   const userIsOwner = permissions.includes(PERMISSIONS.FULL_ACCESS);
   const searchedUsers = searchOrgUserResults?.searchOrgUsers;
-  const snackbarContext = useContext(SnackbarAlertContext);
-  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
-  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const [setSnackbarAlert] = useSnackbarAlert();
   useEffect(() => {
     if (roleList) {
       const roles = filterRoles(roleList, null, userIsOwner);
@@ -271,8 +269,10 @@ const InviteMember = (props) => {
               setUsers([userPod, ...users]);
             },
           });
-          setSnackbarAlertOpen(true);
-          setSnackbarAlertMessage(<>{invitee?.username} invited!</>);
+          setSnackbarAlert({
+            open: true,
+            message: <>{invitee?.username} invited!</>,
+          });
         }}
         style={{
           marginTop: '28px',

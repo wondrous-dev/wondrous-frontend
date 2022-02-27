@@ -59,7 +59,7 @@ import {
   GET_TASK_REVIEWERS,
   GET_TASK_SUBMISSIONS_FOR_TASK,
 } from '../../graphql/queries';
-import { SnackbarAlertContext } from '../Common/SnackbarAlert';
+import { useSnackbarAlert } from '../Common/SnackbarAlert';
 import { ArchivedTaskUndo } from '../Common/Task/styles';
 import { OrgBoardContext } from '../../utils/contexts';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
@@ -97,9 +97,7 @@ export const Table = (props) => {
   const [isPreviewModalOpen, setPreviewModalOpen] = useState(false);
   const [isArchiveModalOpen, setArchiveModalOpen] = useState(false);
   const [ref, inView] = useInView({});
-  const snackbarContext = useContext(SnackbarAlertContext);
-  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
-  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
+  const [setSnackbarAlert] = useSnackbarAlert();
   const orgBoardContext = useContext(OrgBoardContext);
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
@@ -196,27 +194,30 @@ export const Table = (props) => {
       column.tasks.splice(taskIndex, 1);
       boardColumns?.setColumns(newColumns);
     }
+    setSnackbarAlert({
+      open: true,
+      message: (
+        <>
+          Task archived successfully!{' '}
+          <ArchivedTaskUndo
+            onClick={() => {
+              handleNewStatus(selectedTask, selectedTask.status);
+              setSnackbarAlert({
+                open: false,
+              });
+              setSelectedTask(null);
 
-    setSnackbarAlertOpen(true);
-    setSnackbarAlertMessage(
-      <>
-        Task archived successfully!{' '}
-        <ArchivedTaskUndo
-          onClick={() => {
-            handleNewStatus(selectedTask, selectedTask.status);
-            setSnackbarAlertOpen(false);
-            setSelectedTask(null);
-
-            if (taskIndex > -1) {
-              column.tasks.splice(taskIndex, 0, task);
-              boardColumns?.setColumns([...newColumns]);
-            }
-          }}
-        >
-          Undo
-        </ArchivedTaskUndo>
-      </>
-    );
+              if (taskIndex > -1) {
+                column.tasks.splice(taskIndex, 0, task);
+                boardColumns?.setColumns([...newColumns]);
+              }
+            }}
+          >
+            Undo
+          </ArchivedTaskUndo>
+        </>
+      ),
+    });
   }
 
   function openTask(task, taskType = '') {
