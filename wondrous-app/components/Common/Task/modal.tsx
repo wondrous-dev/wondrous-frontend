@@ -681,7 +681,7 @@ export const TaskViewModal = (props) => {
   const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
   const user = useMe();
   const userPermissionsContext =
-    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext || null;
+    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
@@ -1154,13 +1154,25 @@ export const TaskViewModal = (props) => {
                   {fetchedTask?.assigneeUsername ? (
                     <>
                       {fetchedTask?.assigneeProfilePicture ? (
-                        <Link href={`/profile/${fetchedTask?.assigneeUsername}/about`} passHref={true}>
+                        <div
+                          onClick={() => {
+                            router.push(`/profile/${fetchedTask?.assigneeUsername}/about`, undefined, {
+                              shallow: true,
+                            });
+                          }}
+                        >
                           <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.assigneeProfilePicture} />
-                        </Link>
+                        </div>
                       ) : (
                         <DefaultUserImage style={displayDivProfileImageStyle} />
                       )}
-                      <Link href={`/profile/${fetchedTask?.assigneeUsername}/about`} passHref={true}>
+                      <div
+                        onClick={() => {
+                          router.push(`/profile/${fetchedTask?.assigneeUsername}/about`, undefined, {
+                            shallow: true,
+                          });
+                        }}
+                      >
                         <TaskSectionInfoText
                           style={{
                             textDecoration: 'underline',
@@ -1169,11 +1181,11 @@ export const TaskViewModal = (props) => {
                         >
                           {fetchedTask?.assigneeUsername}
                         </TaskSectionInfoText>
-                      </Link>
+                      </div>
                     </>
                   ) : (
                     <>
-                      {canCreate ? (
+                      {fetchedTask?.orgId && fetchedTask?.orgId in userPermissionsContext?.orgPermissions ? (
                         <>
                           <TakeTaskButton
                             onClick={() => {
