@@ -45,7 +45,7 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
     setErrorMessage('');
     await wonderWeb3.onConnect();
     if (!wonderWeb3.chain) {
-      setNoChainError('No chain detected - please connect to Eth mainnet');
+      setNoChainError('No chain detected - please connect to wallet');
     }
     if (unsuportedChain) {
       setErrorMessage('Unsupported chain - please use Eth mainnet');
@@ -55,11 +55,7 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
   const signupWithWallet = async () => {
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
       // Retrieve Signed Message
-      const messageToSignObject = await getUserSigningMessage(
-        wonderWeb3.address,
-        SupportedChainType.ETH,
-        true
-      );
+      const messageToSignObject = await getUserSigningMessage(wonderWeb3.address, SupportedChainType.ETH, true);
       if (messageToSignObject?.userExists) {
         // TODO: log user into their dashboard
       }
