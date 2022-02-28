@@ -46,8 +46,8 @@ export const GET_USER_SIGNING_MESSAGE = gql`
   }
 `;
 
-export const GET_USER_PROFLIE = gql`
-  query getUser($userId: String!) {
+export const GET_USER_PROFILE = gql`
+  query getUser($userId: ID!) {
     getUser(userId: $userId) {
       ...UserProfile
     }
@@ -58,6 +58,7 @@ export const GET_USER_PROFLIE = gql`
 export const GET_USER_ABOUT_PAGE_DATA = gql`
   query getUserAboutPageData($userId: ID!) {
     getUserAboutPageData(userId: $userId) {
+      userId
       orgs {
         name
         description
