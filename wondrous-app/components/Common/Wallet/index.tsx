@@ -22,6 +22,7 @@ import { Matic } from '../../Icons/matic';
 import { CURRENCY_KEYS, SUPPORTED_CHAINS } from '../../../utils/constants';
 import { USDCoin } from '../../Icons/USDCoin';
 import { SupportedChainType } from '../../../utils/web3Constants';
+import { ErrorText } from '..';
 
 const CHAIN_LOGO = {
   '1': <Ethereum />,
@@ -47,6 +48,7 @@ const Wallet = () => {
   const [connected, setConnected] = useState(false);
   const [firstConnect, setFirstConnect] = useState(true);
   const [notSupported, setNotSupported] = useState(false);
+  const [differentAccountError, setDifferentAccountError] = useState(null);
   const [currency, setCurrency] = useState({
     balance: '0.000',
     symbol: 'WONDER',
@@ -54,7 +56,7 @@ const Wallet = () => {
   const user = useMe();
 
   const connectWallet = useCallback(
-    async (event = {}) => {
+    async () => {
       await wonderWeb3.onConnect();
       setFirstConnect(false);
     },
@@ -113,11 +115,17 @@ const Wallet = () => {
   useEffect(() => {
     // Don't listen to anything before the connection to the
     // wallet is done.
+    setDifferentAccountError(null)
     if (!wonderWeb3.connecting) {
       // Enable the wallet.
       if (wonderWeb3.address) {
         // Change the UI now.
         setConnected(true);
+        if (user && user.activeEthAddress && wonderWeb3.toChecksumAddress(wonderWeb3.address) !== wonderWeb3.toChecksumAddress(user.activeEthAddress)) {
+          // Wallet has changed, and doesn't match user's registered
+          // TODO should show a small message indicating that
+          setDifferentAccountError(true)
+        } 
         if (user && !user.activeEthAddress) {
           // Link the wallet to the user.
           linkUserWithWallet();
@@ -195,6 +203,10 @@ const Wallet = () => {
             {wonderWeb3.chainName && <CurrencyDropdownItem currency={wonderWeb3.chainName} />}
           </DropDown>
           <WalletAddress>{wonderWeb3.wallet.addressTag || 'loading...'}</WalletAddress>
+          {differentAccountError && <ErrorText style={{
+            width: '104px',
+            marginLeft: '8px'
+          }}>Not linked wallet</ErrorText>}
         </WalletDisplay>
       </WalletWrapper>
     );

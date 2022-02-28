@@ -8,7 +8,6 @@ export const WalletWrapper = styled.div`
 	align-items: center;
 	justify-content: center;
 
-	max-width: 280px;
 	margin-right: 20px;
 `
 
@@ -37,7 +36,7 @@ export const WalletDisplay = styled.div`
 	flex-direction: row;
 	align-items: center;
 	justify-content: flex-end;
-	width: 219px;
+	width: auto;
 	height: 40px;
 
 	border-radius: 3px;
