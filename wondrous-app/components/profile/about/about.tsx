@@ -129,13 +129,13 @@ const useGetUserProfile = (id, username) => {
       });
     }
   }, [getUser, getUserFromUsername, id, username]);
-  return getUserProfileData?.getUser ?? getUserFromUsernameData?.getUserFromUsername;
+  return getUserProfileData?.getUser ?? getUserFromUsernameData?.getUserFromUsername ?? {};
 };
 
 const About = (props) => {
   const router = useRouter();
   const { id, username } = router.query;
-  const userProfileData = useGetUserProfile(id, username) ?? {};
+  const userProfileData = useGetUserProfile(id, username);
   const { links, additionalInfo = {}, id: userProfileDataId } = userProfileData;
   const { social, websites, mainLink } = parseLinks(links);
   const { orgCount, podCount } = additionalInfo;
