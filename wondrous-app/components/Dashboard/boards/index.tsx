@@ -11,6 +11,7 @@ import {
   GET_USER_TASK_BOARD_TASKS,
   SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
   SEARCH_TASKS_FOR_USER_BOARD_VIEW,
+  GET_JOIN_ORG_REQUESTS,
 } from '../../../graphql/queries';
 import {
   GET_PROPOSALS_USER_CAN_REVIEW,
@@ -37,6 +38,7 @@ import apollo from '../../../services/apollo';
 import CreatePodIcon from '../../Icons/createPod';
 import { FilterItem, FilterItemIcon, FilterItemName } from '../../Common/Filter/styles';
 import CreateDaoIcon from '../../Icons/createDao';
+import { useSelectMembership } from '../../../utils/hooks';
 
 const proposal = {
   status: TASK_STATUS_PROPOSAL_REQUEST,
@@ -64,6 +66,7 @@ const filterColumnsByStatus = (columns, status) => {
 const BoardsPage = (props) => {
   const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR);
   const { isAdmin, selectedStatus, selectMembershipRequests } = props;
+  const selectMembershipHook = useSelectMembership();
   const router = useRouter();
   const loggedInUser = useMe();
   const [contributorColumns, setContributorColumns] = useState([]);
@@ -134,6 +137,7 @@ const BoardsPage = (props) => {
     fetchPolicy: 'cache-and-network',
   });
 
+  const [getJoinOrgRequests] = useLazyQuery(GET_JOIN_ORG_REQUESTS);
   const [filterSchema, setFilterSchema] = useState([
     {
       name: 'podIds',
@@ -241,47 +245,51 @@ const BoardsPage = (props) => {
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
-
+  console.log('asdfas', selectMembershipHook?.selectMembershipRequests);
   useEffect(() => {
     if (!loggedInUser) {
       return;
     }
-
-    if (search) {
-      const searchTaskProposalsArgs = {
-        variables: {
-          userId: loggedInUser?.id,
-          podIds: [],
-          statuses: [STATUS_OPEN],
-          offset: 0,
-          limit: LIMIT,
-          searchString: search,
-        },
-      };
-
-      const searchTasksArgs = {
-        variables: {
-          userId: loggedInUser?.id,
-          podIds: [],
-          limit: LIMIT,
-          offset: 0,
-          // Needed to exclude proposals
-          statuses: DEFAULT_STATUS_ARR,
-          searchString: search,
-        },
-      };
-
-      searchTasks(searchTasksArgs);
-      searchProposals(searchTaskProposalsArgs);
+    if (selectMembershipHook?.selectMembershipRequests) {
+      console.log('what the');
+      getJoinOrgRequests();
     } else {
-      getTasks();
-      getUserTaskBoardProposals();
+      if (search) {
+        const searchTaskProposalsArgs = {
+          variables: {
+            userId: loggedInUser?.id,
+            podIds: [],
+            statuses: [STATUS_OPEN],
+            offset: 0,
+            limit: LIMIT,
+            searchString: search,
+          },
+        };
 
-      getUserTaskCountData({
-        variables: {
-          userId: loggedInUser?.id,
-        },
-      });
+        const searchTasksArgs = {
+          variables: {
+            userId: loggedInUser?.id,
+            podIds: [],
+            limit: LIMIT,
+            offset: 0,
+            // Needed to exclude proposals
+            statuses: DEFAULT_STATUS_ARR,
+            searchString: search,
+          },
+        };
+
+        searchTasks(searchTasksArgs);
+        searchProposals(searchTaskProposalsArgs);
+      } else {
+        getTasks();
+        getUserTaskBoardProposals();
+
+        getUserTaskCountData({
+          variables: {
+            userId: loggedInUser?.id,
+          },
+        });
+      }
     }
 
     getUserPods({
@@ -289,7 +297,7 @@ const BoardsPage = (props) => {
         userId: loggedInUser?.id,
       },
     });
-  }, [loggedInUser]);
+  }, [loggedInUser, selectMembershipHook?.selectMembershipRequests]);
 
   const handleLoadMore = useCallback(() => {
     if (hasMoreTasks) {

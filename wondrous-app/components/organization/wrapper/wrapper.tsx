@@ -60,6 +60,7 @@ import LinkedInIcon from '../../Icons/linkedIn';
 import OpenSeaIcon from '../../Icons/openSea';
 import LinkBigIcon from '../../Icons/link';
 import { DiscordIcon } from '../../Icons/discord';
+import { MembershipRequestModal } from './RequestModal';
 
 const MOCK_ORGANIZATION_DATA = {
   amount: 1234567,
@@ -86,6 +87,7 @@ const Wrapper = (props) => {
   const [openInvite, setOpenInvite] = useState(false);
   const { amount } = data;
   const [joinRequestSent, setJoinRequestSent] = useState(false);
+  const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST);
   const toggleCreateFormModal = () => {
     toggleHtmlOverflow();
@@ -128,6 +130,13 @@ const Wrapper = (props) => {
   return (
     <>
       <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
+      <MembershipRequestModal
+        orgId={orgBoard?.orgId}
+        setJoinRequestSent={setJoinRequestSent}
+        sendRequest={createJoinOrgRequest}
+        open={openJoinRequestModal}
+        onClose={() => setOpenJoinRequestModal(false)}
+      />
       <MoreInfoModal
         open={open && (showUsers || showPods)}
         handleClose={() => {
@@ -203,12 +212,7 @@ const Wrapper = (props) => {
                               width: 'fit-content',
                             }}
                             onClick={() => {
-                              createJoinOrgRequest({
-                                variables: {
-                                  orgId: orgProfile?.id,
-                                },
-                              });
-                              setJoinRequestSent(true);
+                              setOpenJoinRequestModal(true);
                             }}
                           >
                             <HeaderFollowButtonText>Request to join</HeaderFollowButtonText>

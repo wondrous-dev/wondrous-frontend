@@ -53,8 +53,8 @@ export const UPDATE_ORG = gql`
 `;
 
 export const CREATE_JOIN_ORG_REQUEST = gql`
-  mutation createJoinOrgRequest($orgId: ID!) {
-    createJoinOrgRequest(orgId: $orgId) {
+  mutation createJoinOrgRequest($orgId: ID!, $message: String) {
+    createJoinOrgRequest(orgId: $orgId, message: $message) {
       success
     }
   }

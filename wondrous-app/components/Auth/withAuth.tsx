@@ -248,7 +248,7 @@ export const withAuth = (Component, noCache = false) => {
     }, [token]);
     if (
       error?.graphQLErrors &&
-      error?.graphQLErrors[0].extensions.code === 'UNAUTHENTICATED' &&
+      error?.graphQLErrors[0]?.extensions.code === 'UNAUTHENTICATED' &&
       !EXCLUDED_PATHS.includes(router.pathname)
     ) {
       logout();
