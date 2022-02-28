@@ -1,6 +1,7 @@
 import { Button, IconButton, Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { Background } from '../../../theme/colors';
+import { Button as ButtonComponent } from '../../Common/button';
 import { BaseCard } from '../../Common/card';
 import { ProfileImage } from '../../Common/profile';
 import { LinkIcon } from '../../Icons/linkIcon';
@@ -136,27 +137,36 @@ export const HeaderFollowButtonIcon = styled.img`
   height: 31px;
 `;
 
-export const HeaderEditProfileButton = styled(Button)`
+export const HeaderEditProfileButton = styled(ButtonComponent)`
   && {
-    background: linear-gradient(267.08deg, #ccbbff -2.92%, #7427ff 81.21%, #00baff 174.59%);
-    border-radius: 204px;
-    padding: 8px 12px;
+    background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
     width: 159px;
-    height: 40px;
+    min-height: 39px;
 
-    //button text
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 150%;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    color: #ffffff;
+    button {
+      background: #0f0f0f;
+      font-family: 'Space Grotesk';
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 600;
+    }
+  }
+`;
+
+export const HeaderUserName = styled(Typography)`
+  && {
+    margin-top: 18px;
+    font-family: 'Space Grotesk';
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    color: #c4c4c4;
   }
 `;
 
 export const HeaderText = styled(Typography)`
   && {
+    margin-top: 18px;
     font-size: 15px;
     line-height: 19px;
     letter-spacing: 0.01em;
@@ -173,6 +183,7 @@ export const HeaderActivity = styled.div`
   display: flex;
   justify-content: left;
   align-items: center;
+  margin-top: 26px;
 `;
 
 export const HeaderActivityLink = styled.a`
@@ -199,7 +210,6 @@ export const HeaderOrgPodCount = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer;
   margin-right: 30px;
 `;
 
