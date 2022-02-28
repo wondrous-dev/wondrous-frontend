@@ -102,13 +102,7 @@ const useGetUserAboutPage = (userId) => {
       });
     }
   }, [getUserAboutPage, userId]);
-  const {
-    orgs: userOrgsData = [],
-    pods: userPodsData = [],
-    taskCompleted: userCompletedTasks = [],
-    tasksCompletedCount = 0,
-  } = getUserAboutPageData?.getUserAboutPageData ?? {};
-  return { userOrgsData, userPodsData, userCompletedTasks, tasksCompletedCount };
+  return getUserAboutPageData?.getUserAboutPageData ?? {};
 };
 
 const useGetUserProfile = (id, username) => {
@@ -139,9 +133,12 @@ const About = (props) => {
   const { links, additionalInfo = {}, id: userProfileDataId } = userProfileData;
   const { social, websites, mainLink } = parseLinks(links);
   const { orgCount, podCount } = additionalInfo;
-  const { userOrgsData, userPodsData, userCompletedTasks, tasksCompletedCount } = useGetUserAboutPage(
-    id ?? userProfileDataId
-  );
+  const {
+    orgs: userOrgsData = [],
+    pods: userPodsData = [],
+    taskCompleted: userCompletedTasks = [],
+    tasksCompletedCount = 0,
+  } = useGetUserAboutPage(id ?? userProfileDataId);
   return (
     <Wrapper userProfileData={userProfileData} mainLink={mainLink}>
       <AboutSection>
