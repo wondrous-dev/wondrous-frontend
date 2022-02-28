@@ -33,6 +33,7 @@ export const Logo = () => {
 export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
   const wonderWeb3 = useWonderWeb3();
   const [errorMessage, setErrorMessage] = useState('');
+  const [noChainError, setNoChainError] = useState('');
 
   const [unsuportedChain, setUnsuportedChain] = useState(false);
   const router = useRouter();
@@ -44,7 +45,7 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
     setErrorMessage('');
     await wonderWeb3.onConnect();
     if (!wonderWeb3.chain) {
-      setErrorMessage('No chain detected - please connect to Eth mainnet');
+      setNoChainError('No chain detected - please connect to Eth mainnet');
     }
     if (unsuportedChain) {
       setErrorMessage('Unsupported chain - please use Eth mainnet');
@@ -69,7 +70,7 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
         if (signedMessage) {
           // Sign with Wallet
           try {
-            const result = await walletSignup(wonderWeb3.address, signedMessage, wonderWeb3.chainName.toLowerCase());
+            const result = await walletSignup(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
             if (result === true) {
               //
               redeemOrgInviteLink({
@@ -154,6 +155,7 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
         </MetamaskButton>
       )}
       {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
+      {!wonderWeb3.chain && noChainError && <ErrorText>{noChainError}</ErrorText>}
     </InviteWelcomeBoxWrapper>
   );
 };
