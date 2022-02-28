@@ -35,7 +35,7 @@ const Wrapper = (props) => {
   const [minimized, setMinimized] = useState(false);
   const loggedInUser = useMe();
   const { children, userProfileData = {}, mainLink } = props;
-  const { firstName, lastName, username, bio, additionalInfo = {} } = userProfileData;
+  const { firstName, lastName, username, bio, additionalInfo = {}, profilePicture } = userProfileData;
   const { orgCount, podCount } = additionalInfo;
   const viewingSelf = userProfileData?.id === loggedInUser?.id;
   const fullName = `${firstName} ${lastName}`;
@@ -47,7 +47,11 @@ const Wrapper = (props) => {
     top: '-50px',
     border: '10px solid #0f0f0f',
   };
-
+  const profileImageComponent = profilePicture ? (
+    <SafeImage src={profilePicture} style={style} />
+  ) : (
+    <DefaultUserImage style={style} />
+  );
   return (
     <>
       <Header />
@@ -67,8 +71,7 @@ const Wrapper = (props) => {
           <Content>
             <ContentContainer>
               <TokenHeader>
-                {!userProfileData?.profilePicture && <DefaultUserImage style={style} />}
-                {userProfileData?.profilePicture && <SafeImage src={userProfileData?.profilePicture} style={style} />}
+                {profileImageComponent}
                 <HeaderMainBlock>
                   <HeaderTitle>{fullName}</HeaderTitle>
                   {viewingSelf && (
