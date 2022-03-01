@@ -547,44 +547,9 @@ const CreateLayoutBaseModal = (props) => {
       'getSubtasksForTask',
       'getSubtaskCountForTask',
     ],
-    onCompleted: (data) => {
-      const task = data?.createTask;
-      const justCreatedPod = getPodObject();
-      if (board?.setColumns && ((task?.orgId === board?.orgId && !board?.podId) || task?.podId === board?.podId)) {
-        const transformedTask = transformTaskToTaskCard(task, {
-          orgName: board?.org?.name,
-          orgProfilePicture: board?.org?.profilePicture,
-          podName: justCreatedPod?.name,
-        });
-
-        const columns = [...board?.columns];
-        columns[0].tasks = [transformedTask, ...columns[0].tasks];
-        board.setColumns(columns);
-      }
-      handleClose();
-    },
   });
 
-  const [createTaskProposal] = useMutation(CREATE_TASK_PROPOSAL, {
-    onCompleted: (data) => {
-      const taskProposal = data?.createTaskProposal;
-      const justCreatedPod = getPodObject();
-      if (board?.setColumns && taskProposal?.orgId === board?.orgId) {
-        const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
-          userProfilePicture: user?.profilePicture,
-          username: user?.username,
-          orgName: board?.org?.name,
-          orgProfilePicture: board?.org?.profilePicture,
-          podName: justCreatedPod?.name,
-        });
-
-        let columns = [...board?.columns];
-        columns = addProposalItem(transformedTaskProposal, columns);
-        board.setColumns(columns);
-      }
-      handleClose();
-    },
-  });
+  const [createTaskProposal] = useMutation(CREATE_TASK_PROPOSAL);
 
   const [createPod] = useMutation(CREATE_POD, {
     onCompleted: (data) => {
@@ -597,24 +562,7 @@ const CreateLayoutBaseModal = (props) => {
     refetchQueries: ['getOrgById'],
   });
 
-  const [createMilestone] = useMutation(CREATE_MILESTONE, {
-    onCompleted: (data) => {
-      const task = data?.createMilestone;
-      const justCreatedPod = getPodObject();
-      if (board?.setColumns && ((task?.orgId === board?.orgId && !board?.podId) || task?.podId === board?.podId)) {
-        const transformedTask = transformTaskToTaskCard(task, {
-          orgName: board?.org?.name,
-          orgProfilePicture: board?.org?.profilePicture,
-          podName: justCreatedPod?.name,
-        });
-
-        const columns = [...board?.columns];
-        columns[0].tasks = [transformedTask, ...columns[0].tasks];
-        board.setColumns(columns);
-      }
-      handleClose();
-    },
-  });
+  const [createMilestone] = useMutation(CREATE_MILESTONE);
 
   const submitMutation = useCallback(() => {
     switch (entityType) {
@@ -666,12 +614,54 @@ const CreateLayoutBaseModal = (props) => {
               variables: {
                 input: taskInput,
               },
+            }).then((result) => {
+              const task = result?.data?.createTask;
+              const justCreatedPod = getPodObject();
+              if (
+                board?.setColumns &&
+                ((task?.orgId === board?.orgId && !board?.podId) ||
+                  task?.podId === board?.podId ||
+                  pod === board?.podId)
+              ) {
+                const transformedTask = transformTaskToTaskCard(task, {
+                  orgName: board?.org?.name,
+                  orgProfilePicture: board?.org?.profilePicture,
+                  podName: justCreatedPod?.name,
+                });
+
+                const columns = [...board?.columns];
+                columns[0].tasks = [transformedTask, ...columns[0].tasks];
+                board.setColumns(columns);
+              }
+              handleClose();
             });
           } else {
             createTaskProposal({
               variables: {
                 input: taskInput,
               },
+            }).then((result) => {
+              const taskProposal = result?.data?.createTaskProposal;
+              const justCreatedPod = getPodObject();
+              if (
+                board?.setColumns &&
+                ((taskProposal?.orgId === board?.orgId && !board?.podId) ||
+                  taskProposal?.podId === board?.podId ||
+                  pod === board?.podId)
+              ) {
+                const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
+                  userProfilePicture: user?.profilePicture,
+                  username: user?.username,
+                  orgName: board?.org?.name,
+                  orgProfilePicture: board?.org?.profilePicture,
+                  podName: justCreatedPod?.name,
+                });
+
+                let columns = [...board?.columns];
+                columns = addProposalItem(transformedTaskProposal, columns);
+                board.setColumns(columns);
+              }
+              handleClose();
             });
           }
         }
@@ -726,6 +716,24 @@ const CreateLayoutBaseModal = (props) => {
             variables: {
               input: milestoneInput,
             },
+          }).then((result) => {
+            const task = result?.data?.createMilestone;
+            const justCreatedPod = getPodObject();
+            if (
+              board?.setColumns &&
+              ((task?.orgId === board?.orgId && !board?.podId) || task?.podId === board?.podId || pod === board?.podId)
+            ) {
+              const transformedTask = transformTaskToTaskCard(task, {
+                orgName: board?.org?.name,
+                orgProfilePicture: board?.org?.profilePicture,
+                podName: justCreatedPod?.name,
+              });
+
+              const columns = [...board?.columns];
+              columns[0].tasks = [transformedTask, ...columns[0].tasks];
+              board.setColumns(columns);
+            }
+            handleClose();
           });
         }
         break;

@@ -312,7 +312,7 @@ export const Task = (props) => {
             <TaskTitle>{title}</TaskTitle>
             <p>
               {renderMentionString({
-                content: cutString(description),
+                content: cutString(description, 50),
                 router,
               })}
             </p>
