@@ -87,7 +87,7 @@ const STATUS_BY_TYPENAME = {
 
 let windowOffset = 0;
 export const MembershipRequestTable = (props) => {
-  const { requests, onLoadMore, hasMore, allTasks, limit, isAdmin } = props;
+  const { onLoadMore, hasMore, allTasks, limit, isAdmin } = props;
   const router = useRouter();
 
   const [ref, inView] = useInView({});
@@ -116,14 +116,17 @@ export const MembershipRequestTable = (props) => {
       <StyledTable>
         <StyledTableHead>
           <StyledTableRow>
-            <StyledTableCell align="center" width="30%">
+            <StyledTableCell align="center" width="25%">
               DAO
             </StyledTableCell>
-            <StyledTableCell align="center" width="30%">
+            <StyledTableCell align="center" width="25%">
               User
             </StyledTableCell>
+            <StyledTableCell align="center" width="25%">
+              Message
+            </StyledTableCell>
             {isAdmin && (
-              <StyledTableCell align="center" width="30%">
+              <StyledTableCell align="center" width="25%">
                 Decision
               </StyledTableCell>
             )}
@@ -131,7 +134,7 @@ export const MembershipRequestTable = (props) => {
           </StyledTableRow>
         </StyledTableHead>
         <StyledTableBody>
-          {requests.map((request, index) => {
+          {userBoard?.joinOrgRequests?.map((request, index) => {
             return (
               <StyledTableRow key={request.id}>
                 <StyledTableCell align="center">
@@ -160,9 +163,6 @@ export const MembershipRequestTable = (props) => {
                       <Initials>{request?.userUsername}</Initials>
                     </div>
                   </Link>
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <TaskStatus status={status} />
                 </StyledTableCell>
                 <StyledTableCell className="clickable">
                   <TaskDescription

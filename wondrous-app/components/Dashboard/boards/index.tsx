@@ -137,7 +137,9 @@ const BoardsPage = (props) => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const [getJoinOrgRequests] = useLazyQuery(GET_JOIN_ORG_REQUESTS);
+  const [getJoinOrgRequests, { data: getJoinOrgRequestsData }] = useLazyQuery(GET_JOIN_ORG_REQUESTS);
+  const [joinOrgRequests, setJoinOrgRequests] = useState([]);
+
   const [filterSchema, setFilterSchema] = useState([
     {
       name: 'podIds',
@@ -245,14 +247,17 @@ const BoardsPage = (props) => {
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
-  console.log('asdfas', selectMembershipHook?.selectMembershipRequests);
+
   useEffect(() => {
     if (!loggedInUser) {
       return;
     }
     if (selectMembershipHook?.selectMembershipRequests) {
-      console.log('what the');
-      getJoinOrgRequests();
+      getJoinOrgRequests().then((result) => {
+        if (result?.data?.getJoinOrgRequests) {
+          setJoinOrgRequests(result?.data?.getJoinOrgRequests);
+        }
+      });
     } else {
       if (search) {
         const searchTaskProposalsArgs = {
@@ -436,6 +441,7 @@ const BoardsPage = (props) => {
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
           : null,
         loggedInUserId: loggedInUser?.id,
+        joinOrgRequests: getJoinOrgRequestsData?.getJoinOrgRequests,
       }}
     >
       <Boards

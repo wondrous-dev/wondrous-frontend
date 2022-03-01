@@ -117,10 +117,17 @@ export const GET_JOIN_ORG_REQUESTS = gql`
       id
       userId
       orgId
+      podId
       approvedAt
+      message
       rejectedAt
       userUsername
       userProfilePicture
+      orgProfilePicture
+      orgName
+      orgUsername
+      podColor
+      podName
     }
   }
 `;
