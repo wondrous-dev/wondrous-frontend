@@ -1,61 +1,69 @@
 import { gql } from '@apollo/client';
 import { MediaFragment } from './media';
 
-export const FeedAdditionaldata = gql`
-  fragment FeedAdditionaldata on FeedAdditionaldata {
-    reviewScore
-    weekStartDate
+export const LinkFragment = gql`
+  fragment LinkFragment on Link {
+    url
+    displayName
+    type
   }
+`;
+
+export const ActorFragment = gql`
+  fragment ActorFragment on Actor {
+    id
+    username
+    profilePicture
+    thumbnail
+  }
+`;
+
+export const ReferenceObjectFragment = gql`
+  fragment ReferenceObjectFragment on ReferencedObject {
+    objectId
+    objectType
+    actor {
+      ...ActorFragment
+    }
+    title
+    content
+    media {
+      ...MediaFragment
+    }
+    links {
+      ...LinkFragment
+    }
+    taskStatus
+  }
+  ${MediaFragment}
+  ${LinkFragment}
+  ${ActorFragment}
 `;
 
 export const FeedItemFragment = gql`
   fragment FeedItemFragment on FeedItem {
-    id
+    feedId
     timestamp
-    userId
     verb
-    objectType
-    objectId
-    projectId
-    projectName
-    privacyLevel
-    actorFirstName
-    actorLastName
-    actorUsername
-    actorProfilePicture
-    actorThumbnail
-    parentCommentId
-    itemName
-    itemContent
-    commentCount
-    reactionCount
-    commentReacted
-    type
+    postId
+    postType
+    actor {
+      ...ActorFragment
+    }
+    content
+    links {
+      ...LinkFragment
+    }
     media {
       ...MediaFragment
     }
-    completedMessage
-    pinned
-    additionalData {
-      ...FeedAdditionaldata
-    }
+    commentCount
+    reactionCount
     referencedObject {
-      verb
-      objectId
-      objectType
-      title
-      actorFirstName
-      actorLastName
-      actorProfilePicture
-      actorThumbnail
-      actorUsername
-      itemContent
-      media {
-        ...MediaFragment
-      }
+      ...ReferenceObjectFragment
     }
-    sourceId
   }
   ${MediaFragment}
-  ${FeedAdditionaldata}
+  ${ActorFragment}
+  ${ReferenceObjectFragment}
 `;

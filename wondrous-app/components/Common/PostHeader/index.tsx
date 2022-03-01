@@ -1,6 +1,7 @@
 import { ClickAwayListener } from '@material-ui/core';
 import { useState } from 'react';
 import { ObjectType, PostVerbType } from '../../../types/post';
+import * as Constants from '../../../utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { KudosForm } from '../KudosForm';
 import { TaskViewModal } from '../Task/modal';
@@ -23,19 +24,19 @@ const objectTypeText = {
   [ObjectType.TASK]: 'task',
 };
 
-const createHeaderText = (verb, objectType, referencedUser, onClick) => {
+const createHeaderText = (verbOrStatus, objectType, referencedUser, onClick) => {
   const objectTypeHeaderText = objectTypeText[objectType];
-  switch (verb) {
+  switch (verbOrStatus) {
     case PostVerbType.KUDOS:
       return (
         <>
-          awarded a kudos to {referencedUser} for a completed{' '}
+          awarded a kudos {referencedUser && `to ${referencedUser}`} for a completed{' '}
           <PostHeaderLink onClick={onClick} as="span">
             {objectTypeHeaderText}
           </PostHeaderLink>
         </>
       );
-    case PostVerbType.COMPLETE:
+    case Constants.TASK_STATUS_DONE:
       return (
         <>
           completed a{' '}
@@ -51,22 +52,13 @@ const createHeaderText = (verb, objectType, referencedUser, onClick) => {
 
 export const PostHeader = (props) => {
   const { post } = props;
-  const {
-    id,
-    sourceId,
-    actorUsername,
-    verb,
-    objectType,
-    actorProfilePicture,
-    itemContent,
-    referencedObject,
-    objectId,
-  } = post;
+  const { id, postId, verb, taskStatus, objectType, content, referencedObject, objectId, actor = {} } = post;
+  const postObjectType = objectType ?? referencedObject?.objectType;
   const [menu, setMenu] = useState(null);
   const [kudosForm, setKudosForm] = useState(null);
   const [taskViewModal, setTaskViewModal] = useState(false);
   const loggedInUser = useMe();
-  const canEditPost = loggedInUser?.username === actorUsername && verb === PostVerbType.KUDOS;
+  const canEditPost = loggedInUser?.username === actor?.username && verb === PostVerbType.KUDOS;
   const taskId = referencedObject?.objectId ?? objectId;
   const handleMenuOnClose = () => setMenu(null);
   const handleMenuOnClick = (event) => setMenu(menu ? null : event.currentTarget);
@@ -81,16 +73,22 @@ export const PostHeader = (props) => {
   const handleTaskViewModalOpen = () => {
     setTaskViewModal(true);
   };
-  const headerText = createHeaderText(verb, objectType, referencedObject?.actorUsername, handleTaskViewModalOpen);
+  const verbOrStatus = verb ?? taskStatus;
+  const headerText = createHeaderText(
+    verbOrStatus,
+    postObjectType,
+    referencedObject?.actor?.username,
+    handleTaskViewModalOpen
+  );
   return (
     <>
-      <KudosForm open={kudosForm} existingContent={itemContent} onClose={handlePostEditClose} id={sourceId} />
+      <KudosForm open={kudosForm} existingContent={content} onClose={handlePostEditClose} id={postId} />
       {taskId && <TaskViewModal open={taskViewModal} taskId={taskId} handleClose={handleTaskViewModalClose} />}
       <PostHeaderWrapper>
         <PostHeaderImageTextWrapper>
-          {actorProfilePicture ? <PostHeaderImage src={actorProfilePicture} /> : <PostHeaderDefaultUserImage />}
+          {actor?.profilePicture ? <PostHeaderImage src={actor?.profilePicture} /> : <PostHeaderDefaultUserImage />}
           <PostHeaderText>
-            <PostHeaderUsername as="span">{actorUsername} </PostHeaderUsername>
+            <PostHeaderUsername as="span">{actor?.username} </PostHeaderUsername>
             {headerText}
           </PostHeaderText>
         </PostHeaderImageTextWrapper>

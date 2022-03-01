@@ -7,25 +7,25 @@ import {
   PostReferenceBackground,
   PostReferenceBorder,
   ReferenceDescription,
-  ReferenceTitle,
   ReferenceMedia,
   ReferenceMediaWrapper,
+  ReferenceTitle,
 } from './styles';
 
 export const PostQuote = (props) => {
   const { post } = props;
-  const { referencedObject, itemContent } = post;
+  const { referencedObject, content } = post;
   return (
     <PostQuoteBackground>
       <PostHeader {...props} />
       <PostQuoteWrapper>
         <PostContentBorder />
-        <PostContentBackground>{itemContent}</PostContentBackground>
+        <PostContentBackground>{content}</PostContentBackground>
         <PostReferenceBorder>
           <PostReferenceBackground>
             <PostHeader post={referencedObject} />
             <ReferenceTitle>{referencedObject?.title}</ReferenceTitle>
-            <ReferenceDescription>{referencedObject?.itemContent}</ReferenceDescription>
+            <ReferenceDescription>{referencedObject?.content}</ReferenceDescription>
             <ReferenceMediaWrapper>
               {referencedObject?.media &&
                 referencedObject?.media

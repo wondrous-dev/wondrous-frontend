@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import React, { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { GET_ORG_FEED } from '../../../graphql/queries';
@@ -6,37 +6,45 @@ import { Post } from '../../Common/Post';
 import Wrapper from '../wrapper/wrapper';
 import { Feed, FeedLoadMore } from './styles';
 
-const Activities = (props) => {
-  const { orgData } = props;
-  const [ref, inView] = useInView({});
-  const { data, loading, fetchMore } = useQuery(GET_ORG_FEED, {
-    variables: {
-      orgId: orgData?.id,
-      offset: 0,
-      limit: 15,
-    },
+const useGetOrgFeed = (orgId, inView) => {
+  const [getOrgFeed, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_FEED, {
     pollInterval: 60000,
   });
-  const feedData = data?.getOrgFeed;
-  const feedDataLength = feedData?.length;
-  const isMoreThanOne = feedDataLength > 1;
-
   useEffect(() => {
-    if (!loading && inView) {
-      fetchMore({
+    if (!data && orgId) {
+      getOrgFeed({
         variables: {
-          offset: feedDataLength,
+          orgId: orgId,
+          offset: 0,
+          limit: 15,
         },
       });
     }
-  }, [inView, feedDataLength, fetchMore, loading]);
+    if (data && !loading && inView) {
+      fetchMore({
+        variables: {
+          offset: data?.getOrgFeed?.length,
+        },
+      });
+    }
+  }, [inView, fetchMore, loading, orgId, getOrgFeed, data]);
+  return { data, loading };
+};
 
+const Activities = (props) => {
+  const { orgData = {} } = props;
+  const { id: orgId } = orgData;
+  const [ref, inView] = useInView({});
+  const { data, loading } = useGetOrgFeed(orgId, inView);
+  const feedData = data?.getOrgFeed;
+  const feedDataLength = feedData?.length;
+  const isMoreThanOne = feedDataLength > 1;
   return (
     <Wrapper orgData={orgData}>
       <Feed isMoreThanOne={isMoreThanOne}>
-        {feedData?.map((post) => {
-          return <Post key={post.id} post={post} />;
-        })}
+        {feedData?.map((post) => (
+          <Post key={post.id} post={post} />
+        ))}
       </Feed>
       {!loading && <FeedLoadMore ref={ref} />}
     </Wrapper>

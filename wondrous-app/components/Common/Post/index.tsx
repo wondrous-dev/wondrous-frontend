@@ -9,7 +9,7 @@ import {
 } from './styles';
 
 const selectPostTypeComponent = (post) => {
-  switch (post.type) {
+  switch (post.postType) {
     case PostType.QUOTE:
       return <PostQuote post={post} />;
     default:
