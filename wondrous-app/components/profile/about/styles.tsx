@@ -2,6 +2,8 @@ import { Box, Button, Dialog, IconButton, Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { LogoSquare } from '../../Common/ci';
 import { ModalCloseButton } from '../../Common/ModalCloseButton';
+import { Task } from '../../Common/Task';
+import { TaskInner, TaskWrapper } from '../../Common/Task/styles';
 import PodIcon from '../../Icons/podIcon';
 
 export const AboutSection = styled.div`
@@ -428,3 +430,16 @@ export const AboutSeeAllTextWrapper = styled.div`
 `;
 
 export const AboutSeeAllDialogCloseButton = styled(ModalCloseButton)``;
+
+export const AboutCompletedTasks = styled(Task)`
+  margin-top: 10px;
+  :first-child {
+    margin-top: 0;
+  }
+  ${TaskWrapper} {
+    margin-top: 0;
+  }
+  ${TaskInner} {
+    background: #0f0f0f;
+  }
+`;
