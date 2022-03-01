@@ -1,35 +1,35 @@
-import React from 'react';
 import { IconButton } from '@material-ui/core';
-
-import RightArrowIcon from '../../Icons/rightArrow';
-import { AvatarList } from '../../Common/AvatarList';
+import { useRouter } from 'next/router';
+import React from 'react';
 import { SafeImage } from '../../Common/Image';
-
+import { DAOIcon } from '../../Icons/dao';
+import RightArrowIcon from '../../Icons/rightArrow';
 import {
-  OrganisationsCard,
-  OrganisationsCardContent,
-  OrganisationsCardHeader,
+  CardHeader,
+  CardHeaderPodIcon,
   OrganisationsCardNoLogo,
+  OrganizationsCard,
+  OrganizationsCardContent,
   PodsCardFooter,
-  PodsCardFooterButton,
-  PodsCardFooterIcon,
+  PodsCardFooterTaskMilestoneCount,
   PodsCardName,
 } from './styles';
-import { DAOIcon } from '../../Icons/dao';
 
 const AboutPodsCard = (props) => {
-  const { name = '', description = '', tasksAmount = 0, goalsAmount = 0, org = {} } = props;
-
+  const { id, color, name = '', description = '', org = {}, tasksIncompleteCount, milestoneCount } = props;
+  const router = useRouter();
+  const handleOnClick = () => router.push(`/pod/${id}/boards`);
   return (
-    <OrganisationsCard>
-      {/* <OrganisationsCardHeader>
-				<AvatarList users={users} />
-				<IconButton>
-					<RightArrowIcon />
-				</IconButton>
-			</OrganisationsCardHeader> */}
+    <OrganizationsCard>
+      <CardHeader>
+        <CardHeaderPodIcon color={color} />
+        {/* TODO: AvatarList here */}
+        <IconButton onClick={handleOnClick}>
+          <RightArrowIcon />
+        </IconButton>
+      </CardHeader>
       <PodsCardName>{name}</PodsCardName>
-      <OrganisationsCardContent>{description}</OrganisationsCardContent>
+      <OrganizationsCardContent>{description}</OrganizationsCardContent>
       <PodsCardFooter>
         {org?.thumbnailPicture || org?.profilePicture ? (
           <SafeImage
@@ -42,14 +42,18 @@ const AboutPodsCard = (props) => {
             }}
           />
         ) : (
-		  <OrganisationsCardNoLogo style={{ height: '30px', width: '30px'}}>
-			  <DAOIcon />
-		  </OrganisationsCardNoLogo>
+          <OrganisationsCardNoLogo style={{ height: '30px', width: '30px' }}>
+            <DAOIcon />
+          </OrganisationsCardNoLogo>
         )}
-        {/* <PodsCardFooterButton>{tasksAmount} tasks</PodsCardFooterButton>
-				<PodsCardFooterButton>{goalsAmount} goal</PodsCardFooterButton> */}
+        {tasksIncompleteCount > 0 && (
+          <PodsCardFooterTaskMilestoneCount> {tasksIncompleteCount} tasks </PodsCardFooterTaskMilestoneCount>
+        )}
+        {milestoneCount > 0 && (
+          <PodsCardFooterTaskMilestoneCount> {milestoneCount} milestones </PodsCardFooterTaskMilestoneCount>
+        )}
       </PodsCardFooter>
-    </OrganisationsCard>
+    </OrganizationsCard>
   );
 };
 

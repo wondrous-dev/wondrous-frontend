@@ -2,6 +2,7 @@ import { Box, Button, Dialog, IconButton, Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { LogoSquare } from '../../Common/ci';
 import { ModalCloseButton } from '../../Common/ModalCloseButton';
+import PodIcon from '../../Icons/podIcon';
 
 export const AboutSection = styled.div`
   max-width: 1038px;
@@ -124,7 +125,7 @@ export const AboutInfoContainer = styled.div`
 
 export const AboutInfoBlock = styled.div`
   & {
-    max-width: 325px;
+    min-width: 325px;
     width: 100%;
     border-radius: 6px;
     background: linear-gradient(169.47deg, #4b4b4b 7.84%, #232323 108.71%);
@@ -220,12 +221,14 @@ export const OrganizationsCard = styled.div`
   }
 `;
 
-export const OrganizationsCardHeader = styled.div`
+export const CardHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 `;
+
+export const CardHeaderPodIcon = (props) => <PodIcon {...props} style={{ width: '24px', height: '24px' }} />;
 
 export const OrganizationsCardHeaderWonderIcon = styled(LogoSquare)`
   width: 40px;
@@ -298,18 +301,29 @@ export const PodsCardName = styled(Typography)`
 `;
 
 export const PodsCardFooter = styled.div`
-  max-width: 190px;
   width: 100%;
-  min-height: 30px;
-  height: 30px;
+  max-height: 30px;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
 `;
 
 export const PodsCardFooterIcon = styled(LogoSquare)`
   width: 30px;
   height: 30px;
-  margin-right: 10px;
+`;
+
+export const PodsCardFooterTaskMilestoneCount = styled(Typography)`
+  && {
+    background: linear-gradient(0deg, rgba(196, 196, 196, 0.07), rgba(196, 196, 196, 0.07)), #0f0f0f;
+    border-radius: 4px;
+    font-size: 13px;
+    padding: 6px 10px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+  }
 `;
 
 export const PodsCardFooterButton = styled(Button)`
