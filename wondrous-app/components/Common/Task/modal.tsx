@@ -681,7 +681,7 @@ export const TaskViewModal = (props) => {
   const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
   const user = useMe();
   const userPermissionsContext =
-    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext || null;
+    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
@@ -1112,15 +1112,36 @@ export const TaskViewModal = (props) => {
                   reviewerData?.getTaskReviewers.map((taskReviewer) => (
                     <TaskSectionInfoDiv key={taskReviewer?.id}>
                       {taskReviewer?.profilePicture ? (
-                        <Link href={`/profile/${taskReviewer?.username}/about`} passHref={true}>
+                        <div
+                          onClick={() => {
+                            handleClose();
+                            router.push(`/profile/${taskReviewer?.username}/about`, undefined, {
+                              shallow: true,
+                            });
+                          }}
+                        >
                           <SafeImage style={displayDivProfileImageStyle} src={taskReviewer?.profilePicture} />
-                        </Link>
+                        </div>
                       ) : (
-                        <Link href={`/profile/${taskReviewer?.username}/about`} passHref={true}>
+                        <div
+                          onClick={() => {
+                            handleClose();
+                            router.push(`/profile/${taskReviewer?.username}/about`, undefined, {
+                              shallow: true,
+                            });
+                          }}
+                        >
                           <DefaultUserImage style={displayDivProfileImageStyle} />
-                        </Link>
+                        </div>
                       )}
-                      <Link href={`/profile/${taskReviewer?.username}/about`} passHref={true}>
+                      <div
+                        onClick={() => {
+                          handleClose();
+                          router.push(`/profile/${taskReviewer?.username}/about`, undefined, {
+                            shallow: true,
+                          });
+                        }}
+                      >
                         <TaskSectionInfoText
                           style={{
                             textDecoration: 'underline',
@@ -1129,7 +1150,7 @@ export const TaskViewModal = (props) => {
                         >
                           {taskReviewer?.username}
                         </TaskSectionInfoText>
-                      </Link>
+                      </div>
                     </TaskSectionInfoDiv>
                   ))
                 ) : (
@@ -1154,13 +1175,36 @@ export const TaskViewModal = (props) => {
                   {fetchedTask?.assigneeUsername ? (
                     <>
                       {fetchedTask?.assigneeProfilePicture ? (
-                        <Link href={`/profile/${fetchedTask?.assigneeUsername}/about`} passHref={true}>
+                        <div
+                          onClick={() => {
+                            handleClose();
+                            router.push(`/profile/${fetchedTask?.assigneeUsername}/about`, undefined, {
+                              shallow: true,
+                            });
+                          }}
+                        >
                           <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.assigneeProfilePicture} />
-                        </Link>
+                        </div>
                       ) : (
-                        <DefaultUserImage style={displayDivProfileImageStyle} />
+                        <div
+                          onClick={() => {
+                            handleClose();
+                            router.push(`/profile/${fetchedTask?.assigneeUsername}/about`, undefined, {
+                              shallow: true,
+                            });
+                          }}
+                        >
+                          <DefaultUserImage style={displayDivProfileImageStyle} />
+                        </div>
                       )}
-                      <Link href={`/profile/${fetchedTask?.assigneeUsername}/about`} passHref={true}>
+                      <div
+                        onClick={() => {
+                          handleClose();
+                          router.push(`/profile/${fetchedTask?.assigneeUsername}/about`, undefined, {
+                            shallow: true,
+                          });
+                        }}
+                      >
                         <TaskSectionInfoText
                           style={{
                             textDecoration: 'underline',
@@ -1169,11 +1213,11 @@ export const TaskViewModal = (props) => {
                         >
                           {fetchedTask?.assigneeUsername}
                         </TaskSectionInfoText>
-                      </Link>
+                      </div>
                     </>
                   ) : (
                     <>
-                      {canCreate ? (
+                      {fetchedTask?.orgId && fetchedTask?.orgId in userPermissionsContext?.orgPermissions ? (
                         <>
                           <TakeTaskButton
                             onClick={() => {
@@ -1279,14 +1323,21 @@ export const TaskViewModal = (props) => {
                 </TaskSectionDisplayLabel>
                 <TaskSectionInfoDiv key={fetchedTask?.creatorUsername}>
                   {fetchedTask?.creatorUsername && (
-                    <>
+                    <div
+                      onClick={() => {
+                        handleClose();
+                        router.push(`/profile/${fetchedTask?.creatorUsername}/about`, undefined, {
+                          shallow: true,
+                        });
+                      }}
+                    >
                       {fetchedTask?.creatorProfilePicture ? (
                         <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.creatorProfilePicture} />
                       ) : (
                         <DefaultUserImage style={displayDivProfileImageStyle} />
                       )}
                       <TaskSectionInfoText>{fetchedTask?.creatorUsername}</TaskSectionInfoText>
-                    </>
+                    </div>
                   )}
                   {!fetchedTask?.creatorUsername && (
                     <TaskSectionInfoText
