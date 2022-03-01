@@ -8,5 +8,5 @@ export const formatLinkDisplay = (link: Link) => {
   if (!link || !link.url) {
     return '';
   }
-  return link.displayName || link.url.replace('http://', '').substring(0, 20);
+  return link.displayName || link.url.replace(/https?:\/{2}(w{3}.)?/, '');
 };
