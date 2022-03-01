@@ -1031,7 +1031,6 @@ export const TaskViewModal = (props) => {
                   >
                     <TaskIconWrapper>
                       <CheckedBoxIcon />
-                      <TaskIconLabel>{!isSubtask && fetchedTask?.title}</TaskIconLabel>
                     </TaskIconWrapper>
                   </Link>
                 </>
@@ -1042,7 +1041,7 @@ export const TaskViewModal = (props) => {
                     <RightArrow />
                   </RightArrowWrapper>
                   <SubtaskIconWrapper>
-                    <SubtaskDarkIcon /> <SubtaskIconLabel>{fetchedTask?.title}</SubtaskIconLabel>
+                    <SubtaskDarkIcon />
                   </SubtaskIconWrapper>
                 </>
               )}
