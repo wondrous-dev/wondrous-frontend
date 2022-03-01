@@ -114,12 +114,11 @@ const Wrapper = (props) => {
                 <PodIcon
                   color={podProfile?.color}
                   style={{
-                    width: '96px',
-                    height: '96px',
+                    width: '86px',
+                    height: '86px',
                     position: 'absolute',
-                    borderRadius: '48px',
+                    borderRadius: '50px',
                     top: '-50px',
-                    border: '10px solid #0f0f0f',
                   }}
                 />
                 <HeaderMainBlock>

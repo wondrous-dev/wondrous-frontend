@@ -1,9 +1,6 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
-import {
-  GradientMidnightDiagonalOposite,
-  GradientMidnightVertical,
-} from './gradients'
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { GradientMidnightDiagonalOposite, GradientMidnightVertical } from './gradients';
 
 const DropDownWrapper = styled.div`
     position: absolute;
@@ -12,7 +9,7 @@ const DropDownWrapper = styled.div`
     padding: 4px 2px;
     margin-left: -145px;
     margin-top: 9px;
-
+    width: fit-content;
     border-radius: 5px;
     background: black;
 
@@ -24,7 +21,7 @@ const DropDownWrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content; space-evenly;
-`
+`;
 
 const DropDownArrow = styled.div`
   position: absolute;
@@ -40,7 +37,7 @@ const DropDownArrow = styled.div`
 
   content: '';
   z-index: 99;
-`
+`;
 
 export const DropDownItem = styled.div`
   display: flex;
@@ -61,7 +58,7 @@ export const DropDownItem = styled.div`
     ${GradientMidnightVertical}
     border-radius: 5px;
   }
-`
+`;
 
 export const DropdownOverlay = styled.div`
   position: absolute;
@@ -71,30 +68,28 @@ export const DropdownOverlay = styled.div`
   bottom: 0;
   background: transparent;
   z-index: 97;
-`
+`;
 
 export const DropDown = (props) => {
-  const { DropdownHandler, children } = props
-  const [isOpen, setIsOpen] = useState(false)
+  const { DropdownHandler, children } = props;
+  const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropDown = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsOpen(!isOpen)
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    setIsOpen(!isOpen);
+  };
 
-  const display = isOpen ? 'block' : 'none'
+  const display = isOpen ? 'block' : 'none';
 
   return (
     <>
       <DropdownOverlay onClick={toggleDropDown} style={{ display: display }} />
       <div onClick={toggleDropDown}>
         <DropdownHandler {...props} />
-        <DropDownWrapper style={{ display: display }}>
-          {children}
-        </DropDownWrapper>
+        <DropDownWrapper style={{ display: display }}>{children}</DropDownWrapper>
         <DropDownArrow style={{ display: display }} />
       </div>
     </>
-  )
-}
+  );
+};

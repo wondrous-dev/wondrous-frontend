@@ -37,6 +37,8 @@ export const TaskWrapper = styled.div`
 
   min-width: 290px;
   min-height: 216px;
+  width: 100%;
+  flex-wrap: wrap;
 `;
 
 export const TaskHeader = styled.div`
