@@ -1,6 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GET_USER_ABOUT_PAGE_DATA, GET_USER_FROM_USERNAME, GET_USER_PROFILE } from '../../../graphql/queries';
 import {
   SOCIAL_MEDIA_DISCORD,
@@ -21,13 +21,14 @@ import SocialIcon from '../../Icons/social';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
 import Wrapper from '../wrapper/wrapper';
 import AboutCompletedCard from './aboutCompletedCard';
-import AboutOrganisationsCard from './aboutOrganisationsCard';
+import AboutOrganizationsCard from './aboutOrganizationsCard';
 import AboutPodsCard from './aboutPodsCard';
+import { AboutInfoSeeAll } from './aboutInfoSeeAll';
 import {
   AboutInfoBlock,
   AboutInfoBlockContent,
   AboutInfoBlockHeader,
-  AboutInfoBlockHeaderAmount,
+  AboutInfoBlockHeaderCount,
   AboutInfoBlockHeaderText,
   AboutInfoContainer,
   AboutInfoTable,
@@ -40,6 +41,7 @@ import {
   AboutInfoTableRowTitle,
   AboutInfoTableRowTitleText,
   AboutSection,
+  AboutInfoBlockHeaderCountText,
 } from './styles';
 
 const SOCIAL_MEDIA_ICONS = {
@@ -92,37 +94,37 @@ const parseLinks = (links) => {
 };
 
 const useGetUserAboutPage = (userId) => {
-  const [getUserAboutPage, { data: getUserAboutPageData }] = useLazyQuery(GET_USER_ABOUT_PAGE_DATA);
+  const [getUserAboutPage, { data }] = useLazyQuery(GET_USER_ABOUT_PAGE_DATA);
   useEffect(() => {
-    if (userId) {
+    if (!data && userId) {
       getUserAboutPage({
         variables: {
           userId: userId,
         },
       });
     }
-  }, [getUserAboutPage, userId]);
-  return getUserAboutPageData?.getUserAboutPageData ?? {};
+  }, [getUserAboutPage, userId, data]);
+  return data?.getUserAboutPageData ?? {};
 };
 
 const useGetUserProfile = (id, username) => {
   const [getUser, { data: getUserProfileData }] = useLazyQuery(GET_USER_PROFILE);
   const [getUserFromUsername, { data: getUserFromUsernameData }] = useLazyQuery(GET_USER_FROM_USERNAME);
   useEffect(() => {
-    if (id) {
+    if (!getUserProfileData && id) {
       getUser({
         variables: {
           userId: id,
         },
       });
-    } else if (!id && username) {
+    } else if (!getUserFromUsernameData && !id && username) {
       getUserFromUsername({
         variables: {
           username,
         },
       });
     }
-  }, [getUser, getUserFromUsername, id, username]);
+  }, [getUser, getUserFromUsername, getUserFromUsernameData, getUserProfileData, id, username]);
   return getUserProfileData?.getUser ?? getUserFromUsernameData?.getUserFromUsername ?? {};
 };
 
@@ -134,11 +136,14 @@ const About = (props) => {
   const { social, websites, mainLink } = parseLinks(links);
   const { orgCount, podCount } = additionalInfo;
   const {
-    orgs: userOrgsData = [],
-    pods: userPodsData = [],
-    taskCompleted: userCompletedTasks = [],
+    orgs = [],
+    pods = [],
+    taskCompleted = [],
     tasksCompletedCount = 0,
   } = useGetUserAboutPage(id ?? userProfileDataId);
+  const userOrgsData = orgs.map((org) => <AboutOrganizationsCard key={org.id} {...org} />);
+  const userPodsData = pods.map((pod) => <AboutPodsCard {...pod} key={pod.id} />);
+  const userCompletedTasks = taskCompleted; // TODO: @juniusfree add completed tasks
   return (
     <Wrapper userProfileData={userProfileData} mainLink={mainLink}>
       <AboutSection>
@@ -190,49 +195,38 @@ const About = (props) => {
           {orgCount > 0 && (
             <AboutInfoBlock>
               <AboutInfoBlockHeader>
-                <AboutInfoBlockHeaderAmount>{orgCount}</AboutInfoBlockHeaderAmount>
-                <AboutInfoBlockHeaderText>DAOs</AboutInfoBlockHeaderText>
+                <AboutInfoBlockHeaderCountText>
+                  <AboutInfoBlockHeaderCount>{orgCount}</AboutInfoBlockHeaderCount>
+                  <AboutInfoBlockHeaderText>DAOs</AboutInfoBlockHeaderText>
+                </AboutInfoBlockHeaderCountText>
+                <AboutInfoSeeAll count={orgCount} text="DAOs">
+                  {userOrgsData}
+                </AboutInfoSeeAll>
               </AboutInfoBlockHeader>
-              <AboutInfoBlockContent>
-                {userOrgsData.map((organization) => (
-                  <AboutOrganisationsCard
-                    key={organization.id}
-                    thumbnailPicture={organization.thumbnailPicture}
-                    profilePicture={organization.profilePicture}
-                    orgId={organization.id}
-                    name={organization.name}
-                    description={organization.description}
-                  />
-                ))}
-              </AboutInfoBlockContent>
+              <AboutInfoBlockContent>{userOrgsData.slice(0, 3)}</AboutInfoBlockContent>
             </AboutInfoBlock>
           )}
           {podCount > 0 && (
             <AboutInfoBlock>
               <AboutInfoBlockHeader>
-                <AboutInfoBlockHeaderAmount>{podCount}</AboutInfoBlockHeaderAmount>
-                <AboutInfoBlockHeaderText>Pods</AboutInfoBlockHeaderText>
+                <AboutInfoBlockHeaderCountText>
+                  <AboutInfoBlockHeaderCount>{podCount}</AboutInfoBlockHeaderCount>
+                  <AboutInfoBlockHeaderText>Pods</AboutInfoBlockHeaderText>
+                </AboutInfoBlockHeaderCountText>
+                <AboutInfoSeeAll count={podCount} text="Pods">
+                  {userPodsData}
+                </AboutInfoSeeAll>
               </AboutInfoBlockHeader>
-              <AboutInfoBlockContent>
-                {userPodsData.map((pod) => (
-                  <AboutPodsCard
-                    key={pod.id}
-                    thumbnailPicture={pod.thumbnailPicture}
-                    profilePicture={pod.profilePicture}
-                    org={pod.org}
-                    podId={pod.id}
-                    name={pod.name}
-                    description={pod.description}
-                  />
-                ))}
-              </AboutInfoBlockContent>
+              <AboutInfoBlockContent>{userPodsData.slice(0, 3)}</AboutInfoBlockContent>
             </AboutInfoBlock>
           )}
           {tasksCompletedCount > 0 && (
             <AboutInfoBlock>
               <AboutInfoBlockHeader>
-                <AboutInfoBlockHeaderAmount>{tasksCompletedCount}</AboutInfoBlockHeaderAmount>
-                <AboutInfoBlockHeaderText>completed tasks</AboutInfoBlockHeaderText>
+                <AboutInfoBlockHeaderCountText>
+                  <AboutInfoBlockHeaderCount>{tasksCompletedCount}</AboutInfoBlockHeaderCount>
+                  <AboutInfoBlockHeaderText>Completed Tasks</AboutInfoBlockHeaderText>
+                </AboutInfoBlockHeaderCountText>
                 {/* <AboutInfoBlockHeaderSeeAll>See all</AboutInfoBlockHeaderSeeAll> */}
               </AboutInfoBlockHeader>
               <AboutInfoBlockContent>
