@@ -1,4 +1,7 @@
 import { gql } from '@apollo/client';
+import { OrgFragment } from '../fragments/org';
+import { PodFragment } from '../fragments/pod';
+import { TaskCardFragment } from '../fragments/task';
 import { LoggedinUserFragment, LoggedinWaitlistUserFragment, ProfileUserFragment } from '../fragments/user';
 
 export const WHOAMI = gql`
@@ -60,34 +63,20 @@ export const GET_USER_ABOUT_PAGE_DATA = gql`
     getUserAboutPageData(userId: $userId) {
       userId
       orgs {
-        name
-        description
-        profilePicture
-        thumbnailPicture
-        username
+        ...OrgFragment
       }
       pods {
-        name
-        description
-        profilePicture
-        thumbnailPicture
-        org {
-          id
-          profilePicture
-          thumbnailPicture
-        }
+        ...PodFragment
       }
       tasksCompletedCount
       tasksCompleted {
-        title
-        description
-        status
-        orgProfilePicture
-        podProfilePicture
-        assigneeProfilePicture
+        ...TaskCardFragment
       }
     }
   }
+  ${OrgFragment}
+  ${PodFragment}
+  ${TaskCardFragment}
 `;
 
 export const GET_USER_FROM_USERNAME = gql`
