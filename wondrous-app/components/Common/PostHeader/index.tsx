@@ -46,7 +46,14 @@ const createHeaderText = (verbOrStatus, objectType, referencedUser, onClick) => 
         </>
       );
     default:
-      return null;
+      return (
+        <>
+          is doing a{' '}
+          <PostHeaderLink onClick={onClick} as="span">
+            {objectTypeHeaderText}
+          </PostHeaderLink>
+        </>
+      );
   }
 };
 
