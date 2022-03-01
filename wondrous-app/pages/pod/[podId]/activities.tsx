@@ -2,42 +2,43 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { withAuth } from '../../../components/Auth/withAuth';
-import Activities from '../../../components/organization/activities/activities';
-import { GET_ORG_FROM_USERNAME, GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
-import { OrgBoardContext } from '../../../utils/contexts';
+import Activities from '../../../components/Pod/activities';
+import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
+import { PodBoardContext } from '../../../utils/contexts';
 
-const useGetOrgFromUsername = (username) => {
-  const [getOrgFromUsername, { data }] = useLazyQuery(GET_ORG_FROM_USERNAME);
+const useGetPodById = (podId) => {
+  const [getPodById, { data }] = useLazyQuery(GET_POD_BY_ID);
   useEffect(() => {
-    if (!data && username) {
-      getOrgFromUsername({
+    if (!data && podId) {
+      getPodById({
         variables: {
-          username,
+          podId,
         },
       });
     }
-  }, [username, data, getOrgFromUsername]);
-  return data?.getOrgFromUsername;
+  }, [podId, data, getPodById]);
+  return data?.getPodById;
 };
 
 const ActivitiesPage = () => {
   const router = useRouter();
-  const { username } = router.query;
+  const { podId } = router.query;
+  const getPodById = useGetPodById(podId);
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
-  const org = useGetOrgFromUsername(username);
   return (
-    <OrgBoardContext.Provider
+    <PodBoardContext.Provider
       value={{
+        pod: getPodById,
+        podId,
         userPermissionsContext: userPermissionsContext?.getUserPermissionContext
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
           : null,
-        orgId: org?.id,
       }}
     >
-      <Activities orgData={org} />
-    </OrgBoardContext.Provider>
+      <Activities podId={podId} />
+    </PodBoardContext.Provider>
   );
 };
 

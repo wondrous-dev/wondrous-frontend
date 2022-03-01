@@ -76,6 +76,7 @@ import {
   OptionDiv,
   OptionTypography,
   StyledChip,
+  StyledAutocompletePopper,
 } from './styles';
 import SelectDownIcon from '../Icons/selectDownIcon';
 import UploadImageIcon from '../Icons/uploadImage';
@@ -973,7 +974,7 @@ const CreateLayoutBaseModal = (props) => {
           >
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
-              <StyledAutocomplete
+              <StyledAutocompletePopper
                 options={filterOrgUsers(podUsersData?.getPodUsers ?? orgUsersData?.getOrgUsers)}
                 onOpen={() => {
                   if (pod) {
@@ -998,7 +999,6 @@ const CreateLayoutBaseModal = (props) => {
                     {...params}
                   />
                 )}
-                PopperComponent={AutocompleteList}
                 value={assignee}
                 inputValue={assigneeString}
                 onInputChange={(event, newInputValue) => {
@@ -1036,7 +1036,7 @@ const CreateLayoutBaseModal = (props) => {
 
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Reviewer</CreateFormAddDetailsInputLabel>
-              <StyledAutocomplete
+              <StyledAutocompletePopper
                 options={filterUserOptions(
                   eligibleReviewersForPodData?.getEligibleReviewersForPod ??
                     eligibleReviewersForOrgData?.getEligibleReviewersForOrg
@@ -1101,7 +1101,6 @@ const CreateLayoutBaseModal = (props) => {
                     );
                   })
                 }
-                PopperComponent={AutocompleteList}
                 renderOption={(props, option, state) => {
                   return (
                     <OptionDiv
@@ -1133,7 +1132,7 @@ const CreateLayoutBaseModal = (props) => {
 
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Milestone</CreateFormAddDetailsInputLabel>
-              <StyledAutocomplete
+              <StyledAutocompletePopper
                 options={filterUserOptions(milestonesData?.getMilestones)}
                 onOpen={() =>
                   getMilestones({
@@ -1156,7 +1155,6 @@ const CreateLayoutBaseModal = (props) => {
                     {...params}
                   />
                 )}
-                PopperComponent={AutocompleteList}
                 value={milestone}
                 inputValue={milestoneString}
                 onInputChange={(_, newInputValue) => {

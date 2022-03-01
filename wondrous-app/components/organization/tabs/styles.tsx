@@ -1,47 +1,34 @@
-import React from 'react'
-import styled from 'styled-components'
-import { Tabs } from '@material-ui/core'
+import { Tab, Tabs } from '@material-ui/core';
+import styled from 'styled-components';
 
-export const StyledTabs = styled((props) => (
-	<Tabs
-		{...props}
-		TabIndicatorProps={{ children: <span className="MuiTabs-indicatorSpan" /> }}
-	/>
-))({
-	'&.MuiTabs-root': {
-		marginTop: '30px !important',
-		margin: '0 auto',
-	},
-	'& .MuiTabs-flexContainer': {
-		display: 'flex',
-		justifyContent: 'space-between',
-		maxWidth: 680,
-		margin: '0 auto',
+export const Container = styled.div`
+  width: 100%;
+`;
 
-		'& a': {
-			textDecoration: 'none',
-		},
-	},
-	'& .MuiButtonBase-root': {
-		position: 'relative',
-		width: 210,
-		borderBottom: '2px solid #4B4B4B',
+export const StyledTabs = styled(Tabs)`
+  && {
+    color: #fff;
+    margin: 30px auto;
+    width: 680px;
+  }
+  .MuiTabs-flexContainer {
+    justify-content: space-evenly;
+  }
+  .MuiTab-textColorInherit {
+    opacity: 1;
+  }
+  .MuiTabs-indicator {
+    background-color: #7427ff;
+  }
+`;
 
-		//text
-		fontWeight: 600,
-		fontSize: '16px',
-		lineHeight: '19px',
-		textAlign: 'center',
-		color: '#FFFFFF',
-	},
-	'& .MuiTabs-indicator': {
-		display: 'flex',
-		justifyContent: 'center',
-		backgroundColor: 'transparent',
-	},
-	'& .MuiTabs-indicatorSpan': {
-		maxWidth: 210,
-		width: '100%',
-		backgroundColor: '#7427FF',
-	},
-})
+export const StyledTab = styled(Tab)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 16px;
+    font-weight: 400;
+    padding: 10px;
+    border-bottom: 2px solid #4b4b4b;
+    width: 100%;
+  }
+`;
