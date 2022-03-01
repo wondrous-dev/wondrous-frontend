@@ -7,6 +7,7 @@ export const AboutSection = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  margin-top: 24px;
 `;
 
 export const AboutInfoTable = styled.div`
@@ -22,6 +23,10 @@ export const AboutInfoTableRow = styled.div`
   width: 100%;
   height: 32px;
   display: flex;
+  margin-top: 16px;
+  :first-child {
+    margin-top: 0;
+  }
 `;
 
 export const AboutInfoTableRowNameBlock = styled.div`
@@ -32,11 +37,9 @@ export const AboutInfoTableRowNameBlock = styled.div`
 `;
 
 export const AboutInfoTableRowTitle = styled.div`
-  padding: 5px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* background: linear-gradient(0deg, rgba(196, 196, 196, 0.07), rgba(196, 196, 196, 0.07)), #0F0F0F; */
   border-radius: 4px;
 `;
 
@@ -44,7 +47,6 @@ export const AboutInfoTableRowTitleText = styled(Typography)`
   && {
     margin-left: 10px;
     font-size: 14px;
-    line-height: 21px;
     color: #c4c4c4;
   }
 `;
@@ -69,9 +71,7 @@ export const AboutInfoTableRowContentItem = styled.div`
 export const AboutInfoTableRowContentItemText = styled(Typography)`
   && {
     font-size: 14px;
-    line-height: 18px;
     text-align: center;
-    letter-spacing: 0.01em;
     color: #fff;
   }
 `;
@@ -85,6 +85,9 @@ export const AboutInfoTableRowContentItemHashtag = styled(AboutInfoTableRowConte
 export const AboutInfoTableRowContentItemLink = styled(AboutInfoTableRowContentItemText)`
   && {
     color: #ccbbff;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 
