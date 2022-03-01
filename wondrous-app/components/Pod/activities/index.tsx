@@ -1,20 +1,20 @@
 import { useLazyQuery } from '@apollo/client';
 import React, { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { GET_ORG_FEED } from '../../../graphql/queries';
+import { GET_POD_FEED } from '../../../graphql/queries';
 import { Post } from '../../Common/Post';
-import Wrapper from '../wrapper/wrapper';
-import { Feed, FeedLoadMore } from './styles';
+import { Feed, FeedLoadMore } from '../../organization/activities/styles';
+import Wrapper from '../wrapper/';
 
-const useGetOrgFeed = (orgId, inView) => {
-  const [getOrgFeed, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_FEED, {
+const useGetPodFeed = (podId, inView) => {
+  const [getPodFeed, { data, loading, fetchMore }] = useLazyQuery(GET_POD_FEED, {
     pollInterval: 60000,
   });
   useEffect(() => {
-    if (!data && orgId) {
-      getOrgFeed({
+    if (!data && podId) {
+      getPodFeed({
         variables: {
-          orgId: orgId,
+          podId,
           offset: 0,
           limit: 15,
         },
@@ -23,24 +23,23 @@ const useGetOrgFeed = (orgId, inView) => {
     if (data && !loading && inView) {
       fetchMore({
         variables: {
-          offset: data?.getOrgFeed?.length,
+          offset: data?.getPodFeed?.length,
         },
       });
     }
-  }, [inView, fetchMore, loading, orgId, getOrgFeed, data]);
+  }, [inView, fetchMore, loading, podId, getPodFeed, data]);
   return { data, loading };
 };
 
 const Activities = (props) => {
-  const { orgData = {} } = props;
-  const { id: orgId } = orgData;
+  const { podId } = props;
   const [ref, inView] = useInView({});
-  const { data, loading } = useGetOrgFeed(orgId, inView);
-  const feedData = data?.getOrgFeed;
+  const { data, loading } = useGetPodFeed(podId, inView);
+  const feedData = data?.getPodFeed;
   const feedDataLength = feedData?.length;
   const isMoreThanOne = feedDataLength > 1;
   return (
-    <Wrapper orgData={orgData}>
+    <Wrapper>
       <Feed isMoreThanOne={isMoreThanOne}>
         {feedData?.map((post) => (
           <Post key={post.id} post={post} />

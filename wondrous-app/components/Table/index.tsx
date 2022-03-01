@@ -72,6 +72,7 @@ import { Compensation } from '../Common/Compensation';
 import { Matic } from '../Icons/matic';
 import { renderMentionString } from '../../utils/common';
 import TaskStatus from '../Icons/TaskStatus';
+import { KudosForm } from '../Common/KudosForm';
 
 const DELIVERABLES_ICONS = {
   audio: <AudioIcon />,
@@ -96,6 +97,8 @@ export const Table = (props) => {
   const [once, setOnce] = useState(true);
   const [isPreviewModalOpen, setPreviewModalOpen] = useState(false);
   const [isArchiveModalOpen, setArchiveModalOpen] = useState(false);
+  const [isKudosModalOpen, setKudosModalOpen] = useState(false);
+  const [kudosTask, setKudosTask] = useState(null);
   const [ref, inView] = useInView({});
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
@@ -230,6 +233,11 @@ export const Table = (props) => {
     setPreviewModalOpen(true);
   }
 
+  const handleKudosFormOnClose = () => {
+    setKudosModalOpen(false);
+    setKudosTask(null);
+  };
+
   return (
     <StyledTableContainer>
       <TaskViewModal
@@ -276,6 +284,8 @@ export const Table = (props) => {
           />
         </CreateModalOverlay>
       ) : null}
+
+      <KudosForm onClose={handleKudosFormOnClose} open={isKudosModalOpen} submission={kudosTask} />
 
       <StyledTable>
         <StyledTableHead>
@@ -419,8 +429,12 @@ export const Table = (props) => {
                   </StyledTableCell>
                   {isAdmin && (
                     <StyledTableCell align="center">
-                      {/* TODO: change the design for disabled button */}
-                      <DropDownButtonDecision disabled={!canManageTask} taskId={task.id} status={column.status} />
+                      <DropDownButtonDecision
+                        task={task}
+                        status={column.status}
+                        openKudos={setKudosModalOpen}
+                        setKudosTask={setKudosTask}
+                      />
                     </StyledTableCell>
                   )}
                   <StyledTableCell align="center">
