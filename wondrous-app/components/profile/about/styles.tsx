@@ -166,8 +166,8 @@ export const AboutInfoBlockHeader = styled.div`
 
 export const AboutInfoBlockHeaderCountText = styled.div`
   display: flex;
-  justify-content: space-between;
   font-size: 15px;
+  flex-basis: 70%;
 `;
 
 export const AboutInfoBlockHeaderCount = styled(Typography)`
@@ -187,8 +187,7 @@ export const AboutInfoBlockHeaderText = styled(Typography)`
 
 export const AboutInfoBlockHeaderSeeAll = styled.div`
   display: flex;
-  justify-content: flex-end;
-  width: 100%;
+  flex-basis: 30%;
 `;
 
 export const AboutInfoBlockHeaderSeeAllText = styled(Typography)`
@@ -198,6 +197,8 @@ export const AboutInfoBlockHeaderSeeAllText = styled(Typography)`
     text-decoration: underline;
     color: #ccbbff;
     font-weight: 700;
+    text-align: right;
+    width: 100%;
   }
 `;
 
