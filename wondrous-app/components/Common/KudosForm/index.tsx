@@ -18,6 +18,7 @@ import {
   KudosFormTextarea,
   KudosFormTextareaCharacterCount,
   KudosFormTextareaWrapper,
+  KudosFormSubmitButtonText,
 } from './styles';
 
 const maxLength = 380;
@@ -123,7 +124,7 @@ export const KudosForm = (props) => {
                 })
               }
             >
-              Post feedback to activity board
+              <KudosFormSubmitButtonText>Post feedback to activity board</KudosFormSubmitButtonText>
             </KudosFormSubmitButton>
           </KudosFormButtonWrapper>
         </KudosFormBackground>

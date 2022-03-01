@@ -116,3 +116,12 @@ export const KudosFormSubmitButton = styled(SubmitButton)`
   font-style: normal;
   font-weight: 500;
 `;
+
+export const KudosFormSubmitButtonText = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+  }
+`;
