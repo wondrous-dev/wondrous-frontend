@@ -1212,10 +1212,15 @@ export const TaskViewModal = (props) => {
                     </>
                   ) : (
                     <>
-                      {fetchedTask?.orgId && fetchedTask?.orgId in userPermissionsContext?.orgPermissions ? (
+                      {(fetchedTask?.orgId && fetchedTask?.orgId in userPermissionsContext?.orgPermissions) || fetchedTask?.privacyLevel === PRIVACY_LEVEL.public ? (
                         <>
                           <TakeTaskButton
                             onClick={() => {
+                              if (!user) {
+                                router.push('/signup', undefined, {
+                                  shallow: true
+                                })
+                              } else {
                               if (isTaskProposal) {
                                 updateTaskProposalAssignee({
                                   variables: {
@@ -1256,6 +1261,7 @@ export const TaskViewModal = (props) => {
                                     }
                                   },
                                 });
+                              }
                               }
                             }}
                           >
