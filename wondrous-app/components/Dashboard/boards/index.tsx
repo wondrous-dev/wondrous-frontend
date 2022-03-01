@@ -136,9 +136,9 @@ const BoardsPage = (props) => {
     onCompleted: (data) => bindProposalsToCols(data?.searchProposalsForUserBoardView),
     fetchPolicy: 'cache-and-network',
   });
-
-  const [getJoinOrgRequests, { data: getJoinOrgRequestsData }] = useLazyQuery(GET_JOIN_ORG_REQUESTS);
   const [joinOrgRequests, setJoinOrgRequests] = useState([]);
+  const [getJoinOrgRequests, { data: getJoinOrgRequestsData, fetchMore: fetchMoreJoinOrgRequests }] =
+    useLazyQuery(GET_JOIN_ORG_REQUESTS);
 
   const [filterSchema, setFilterSchema] = useState([
     {
@@ -253,11 +253,7 @@ const BoardsPage = (props) => {
       return;
     }
     if (selectMembershipHook?.selectMembershipRequests) {
-      getJoinOrgRequests().then((result) => {
-        if (result?.data?.getJoinOrgRequests) {
-          setJoinOrgRequests(result?.data?.getJoinOrgRequests);
-        }
-      });
+      getJoinOrgRequests();
     } else {
       if (search) {
         const searchTaskProposalsArgs = {
@@ -306,27 +302,44 @@ const BoardsPage = (props) => {
 
   const handleLoadMore = useCallback(() => {
     if (hasMoreTasks) {
-      fetchMore({
-        variables: {
-          offset: Math.max(...contributorColumns.map(({ tasks }) => tasks.length)),
-          limit: LIMIT,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => ({
-          getUserTaskBoardTasks: [...prev.getUserTaskBoardTasks, ...fetchMoreResult.getUserTaskBoardTasks],
-        }),
-      })
-        .then((fetchMoreResult) => {
-          const results = fetchMoreResult?.data?.getUserTaskBoardTasks;
-          if (results && results?.length > 0) {
-            const newColumns = updateTaskColumns(results, contributorColumns);
-            setContributorColumns(dedupeColumns(newColumns));
-          } else {
+      if (selectMembershipHook?.selectMembershipRequests) {
+        fetchMoreJoinOrgRequests({
+          variables: {
+            offset: joinOrgRequests?.length,
+            limit: LIMIT,
+          },
+          updateQuery: (prev, { fetchMoreResult }) => ({
+            getJoinOrgRequests: [...prev.getJoinOrgRequests, ...fetchMoreResult.getJoinOrgRequests],
+          }),
+        }).then((fetchMoreResult) => {
+          const results = fetchMoreResult?.data?.getJoinOrgRequests;
+          if (results && results?.length === 0) {
             setHasMoreTasks(false);
           }
-        })
-        .catch((e) => {
-          console.error(e);
         });
+      } else {
+        fetchMore({
+          variables: {
+            offset: Math.max(...contributorColumns.map(({ tasks }) => tasks.length)),
+            limit: LIMIT,
+          },
+          updateQuery: (prev, { fetchMoreResult }) => ({
+            getUserTaskBoardTasks: [...prev.getUserTaskBoardTasks, ...fetchMoreResult.getUserTaskBoardTasks],
+          }),
+        })
+          .then((fetchMoreResult) => {
+            const results = fetchMoreResult?.data?.getUserTaskBoardTasks;
+            if (results && results?.length > 0) {
+              const newColumns = updateTaskColumns(results, contributorColumns);
+              setContributorColumns(dedupeColumns(newColumns));
+            } else {
+              setHasMoreTasks(false);
+            }
+          })
+          .catch((e) => {
+            console.error(e);
+          });
+      }
     }
   }, [hasMoreTasks, contributorColumns, fetchMore]);
 

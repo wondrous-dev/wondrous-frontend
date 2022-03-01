@@ -61,7 +61,7 @@ export const MembershipRequestModal = (props) => {
               value={requestMessage}
               placeholder="Send message to admin (optional)"
               onChange={(e) => {
-                if (e.target.value < CHAR_LIMIT_PROFILE_BIO) {
+                if (e.target.value?.length < CHAR_LIMIT_PROFILE_BIO) {
                   setRequestMessage(e.target.value);
                 }
               }}
