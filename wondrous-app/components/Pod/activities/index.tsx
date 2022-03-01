@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import React, { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { GET_POD_FEED } from '../../../graphql/queries';
@@ -6,31 +6,38 @@ import { Post } from '../../Common/Post';
 import { Feed, FeedLoadMore } from '../../organization/activities/styles';
 import Wrapper from '../wrapper/';
 
-const Activities = (props) => {
-  const { podId } = props;
-  const [ref, inView] = useInView({});
-  const { data, loading, fetchMore } = useQuery(GET_POD_FEED, {
-    variables: {
-      podId,
-      offset: 0,
-      limit: 15,
-    },
+const useGetPodFeed = (podId, inView) => {
+  const [getPodFeed, { data, loading, fetchMore }] = useLazyQuery(GET_POD_FEED, {
     pollInterval: 60000,
   });
-  const feedData = data?.getPodFeed;
-  const feedDataLength = feedData?.length;
-  const isMoreThanOne = feedDataLength > 1;
-
   useEffect(() => {
-    if (!loading && inView) {
-      fetchMore({
+    if (!data && podId) {
+      getPodFeed({
         variables: {
-          offset: feedDataLength,
+          podId,
+          offset: 0,
+          limit: 15,
         },
       });
     }
-  }, [inView, feedDataLength, fetchMore, loading]);
+    if (data && !loading && inView) {
+      fetchMore({
+        variables: {
+          offset: data?.getPodFeed?.length,
+        },
+      });
+    }
+  }, [inView, fetchMore, loading, podId, getPodFeed, data]);
+  return { data, loading };
+};
 
+const Activities = (props) => {
+  const { podId } = props;
+  const [ref, inView] = useInView({});
+  const { data, loading } = useGetPodFeed(podId, inView);
+  const feedData = data?.getPodFeed;
+  const feedDataLength = feedData?.length;
+  const isMoreThanOne = feedDataLength > 1;
   return (
     <Wrapper>
       <Feed isMoreThanOne={isMoreThanOne}>
