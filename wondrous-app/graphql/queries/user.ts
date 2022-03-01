@@ -64,6 +64,7 @@ export const GET_USER_ABOUT_PAGE_DATA = gql`
         description
         profilePicture
         thumbnailPicture
+        username
       }
       pods {
         name
