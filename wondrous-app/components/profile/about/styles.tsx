@@ -1,6 +1,7 @@
-import { Button, IconButton, Typography } from '@material-ui/core';
+import { Box, Button, Dialog, IconButton, Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { LogoSquare } from '../../Common/ci';
+import { ModalCloseButton } from '../../Common/ModalCloseButton';
 
 export const AboutSection = styled.div`
   max-width: 1038px;
@@ -133,6 +134,7 @@ export const AboutInfoBlock = styled.div`
     flex-direction: column;
     padding: 18px 14px;
     margin-left: 30px;
+    height: max-content;
   }
 
   & > * {
@@ -154,36 +156,47 @@ export const AboutInfoBlock = styled.div`
 `;
 
 export const AboutInfoBlockHeader = styled.div`
-  position: relative;
   width: 100%;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   padding: 0 10px;
 `;
 
-export const AboutInfoBlockHeaderAmount = styled(Typography)`
+export const AboutInfoBlockHeaderCountText = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const AboutInfoBlockHeaderCount = styled(Typography)`
   && {
     color: #ccbbff;
     font-weight: bold;
     font-size: 18px;
-    line-height: 23px;
-    margin-right: 5px;
+    padding-right: 8px;
   }
 `;
 
-export const AboutInfoBlockHeaderText = styled(AboutInfoBlockHeaderAmount)`
+export const AboutInfoBlockHeaderText = styled(Typography)`
   && {
     color: #fff;
+    font-weight: normal;
   }
 `;
 
-export const AboutInfoBlockHeaderSeeAll = styled(AboutInfoBlockHeaderAmount)`
+export const AboutInfoBlockHeaderSeeAll = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+`;
+
+export const AboutInfoBlockHeaderSeeAllText = styled(Typography)`
   && {
-    position: absolute;
-    right: 10px;
     font-size: 15px;
-    line-height: 19px;
     cursor: pointer;
+    text-decoration: underline;
+    color: #ccbbff;
+    font-weight: 700;
   }
 `;
 
@@ -191,10 +204,10 @@ export const AboutInfoBlockContent = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  margin-top: 10px;
 `;
 
-//about organisations card
-export const OrganisationsCard = styled.div`
+export const OrganizationsCard = styled.div`
   margin-top: 10px;
   width: 100%;
   background: #0f0f0f;
@@ -202,21 +215,24 @@ export const OrganisationsCard = styled.div`
   padding: 15px;
   display: flex;
   flex-direction: column;
+  :first-child {
+    margin-top: 0;
+  }
 `;
 
-export const OrganisationsCardHeader = styled.div`
+export const OrganizationsCardHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 `;
 
-export const OrganisationsCardHeaderWonderIcon = styled(LogoSquare)`
+export const OrganizationsCardHeaderWonderIcon = styled(LogoSquare)`
   width: 40px;
   height: 40px;
 `;
 
-export const OrganisationsCardHeaderName = styled(Typography)`
+export const OrganizationsCardHeaderName = styled(Typography)`
   && {
     padding-left: 10px;
     width: 100%;
@@ -227,7 +243,7 @@ export const OrganisationsCardHeaderName = styled(Typography)`
   }
 `;
 
-export const OrganisationsCardContent = styled(Typography)`
+export const OrganizationsCardContent = styled(Typography)`
   && {
     font-size: 13px;
     line-height: 19px;
@@ -237,19 +253,19 @@ export const OrganisationsCardContent = styled(Typography)`
   }
 `;
 
-export const OrganisationsCardAuthor = styled.div`
+export const OrganizationsCardAuthor = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
 `;
 
-export const OrganisationsCardAuthorAvatar = styled.img`
+export const OrganizationsCardAuthorAvatar = styled.img`
   width: 30px;
   height: 30px;
   margin-right: 10px;
 `;
 
-export const OrganisationsCardAuthorPosition = styled(Typography)`
+export const OrganizationsCardAuthorPosition = styled(Typography)`
   && {
     font-weight: 500;
     font-size: 13px;
@@ -317,7 +333,7 @@ export const CompletedCardTitle = styled(PodsCardName)`
   }
 `;
 
-export const CompletedCardText = styled(OrganisationsCardContent)`
+export const CompletedCardText = styled(OrganizationsCardContent)`
   font-size: 14px;
   line-height: 19px;
   color: #c4c4c4;
@@ -363,3 +379,36 @@ export const CompletedCardFooterActivityAmount = styled(Typography)`
     color: #ffffff;
   }
 `;
+
+export const AboutSeeAllDialog = styled(Dialog)`
+  && .MuiPaper-root {
+    background-color: transparent;
+  }
+`;
+
+export const AboutSeeAllDialogContentBorder = styled.div`
+  background: linear-gradient(169.47deg, #4b4b4b 7.84%, #232323 108.71%);
+  padding: 2px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const AboutSeeAllDialogContent = styled(Box)`
+  border-radius: 6px;
+  width: 500px;
+  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
+  padding: 20px 20px;
+`;
+
+export const AboutSeeAllDialogHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const AboutSeeAllTextWrapper = styled.div`
+  display: flex;
+`;
+
+export const AboutSeeAllDialogCloseButton = styled(ModalCloseButton)``;
