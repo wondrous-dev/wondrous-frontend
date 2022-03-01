@@ -7,7 +7,7 @@ import RightArrowIcon from '../../Icons/rightArrow';
 import {
   OrganizationsCard,
   OrganizationsCardContent,
-  OrganizationsCardHeader,
+  CardHeader,
   OrganizationsCardHeaderName,
   OrganisationsCardNoLogo,
 } from './styles';
@@ -18,7 +18,7 @@ const AboutOrganizationsCard = (props) => {
   const handleOnClick = () => router.push(`/organization/${username}/boards`);
   return (
     <OrganizationsCard>
-      <OrganizationsCardHeader>
+      <CardHeader>
         {thumbnailPicture || profilePicture ? (
           <SafeImage
             src={thumbnailPicture || profilePicture}
@@ -38,7 +38,7 @@ const AboutOrganizationsCard = (props) => {
         <IconButton onClick={handleOnClick}>
           <RightArrowIcon />
         </IconButton>
-      </OrganizationsCardHeader>
+      </CardHeader>
       <OrganizationsCardContent>{description}</OrganizationsCardContent>
     </OrganizationsCard>
   );
