@@ -76,7 +76,7 @@ export const AvatarList = (props) => {
       {usersSieged.map((user, index) => (
         <SmallAvatar
           id={user.id}
-          username={user.username}
+          username={user.username || user?.name}
           key={'avatar-' + user.id}
           avatar={user.avatar}
           initials={user.initials}
