@@ -189,8 +189,10 @@ export const TaskModal = styled(BaseCard)`
   justify-content: center;
   background: rgb(20, 20, 20) !important;
 
-  &:-webkit-scrollbar {
+  &::-webkit-scrollbar {
     display: none;
+    width: 0;
+    height: 0;
   }
 
   /* Hide scrollbar for IE, Edge and Firefox */

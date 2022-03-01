@@ -182,7 +182,15 @@ export const CreateFormBaseModal = styled(BaseCard)`
   left: 50%;
   top: 50%;
   transform: translate(-50%, -20%);
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
 
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
   & .hbhroD > *:not(:last-child) {
     margin-bottom: 0;
   }

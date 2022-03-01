@@ -486,7 +486,7 @@ export const TaskListViewModal = (props) => {
 
   useEffect(() => {
     if (open) {
-      if (fetchedList?.length === 0 && !hasMore) {
+      if (fetchedList?.length === 0) {
         if (taskType === TASK_STATUS_REQUESTED) {
           if (entityType === ENTITIES_TYPES.ORG) {
             getOrgTaskProposals({

@@ -75,6 +75,7 @@ export const ColumnSection = ({ section, setSection }) => {
     document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
     setModalOpen(true);
   };
+
   return (
     <SectionWrapper>
       <TaskListViewModal
