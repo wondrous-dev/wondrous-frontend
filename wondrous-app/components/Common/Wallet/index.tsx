@@ -55,13 +55,10 @@ const Wallet = () => {
   });
   const user = useMe();
 
-  const connectWallet = useCallback(
-    async () => {
-      await wonderWeb3.onConnect();
-      setFirstConnect(false);
-    },
-    [wonderWeb3]
-  );
+  const connectWallet = useCallback(async () => {
+    await wonderWeb3.onConnect();
+    setFirstConnect(false);
+  }, [wonderWeb3]);
 
   const linkUserWithWallet = useCallback(async () => {
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
@@ -115,17 +112,21 @@ const Wallet = () => {
   useEffect(() => {
     // Don't listen to anything before the connection to the
     // wallet is done.
-    setDifferentAccountError(null)
+    setDifferentAccountError(null);
     if (!wonderWeb3.connecting) {
       // Enable the wallet.
       if (wonderWeb3.address) {
         // Change the UI now.
         setConnected(true);
-        if (user && user.activeEthAddress && wonderWeb3.toChecksumAddress(wonderWeb3.address) !== wonderWeb3.toChecksumAddress(user.activeEthAddress)) {
+        if (
+          user &&
+          user.activeEthAddress &&
+          wonderWeb3.toChecksumAddress(wonderWeb3.address) !== wonderWeb3.toChecksumAddress(user.activeEthAddress)
+        ) {
           // Wallet has changed, and doesn't match user's registered
           // TODO should show a small message indicating that
-          setDifferentAccountError(true)
-        } 
+          setDifferentAccountError(true);
+        }
         if (user && !user.activeEthAddress) {
           // Link the wallet to the user.
           linkUserWithWallet();
@@ -149,8 +150,13 @@ const Wallet = () => {
   const Balance = () => {
     return (
       <WonderBalance>
-        {currency ? currency.balance : 0}
-        &nbsp;
+        <span
+          style={{
+            marginRight: '4px',
+          }}
+        >
+          {currency ? currency.balance : 0}
+        </span>
         {CURRENCY_SYMBOL[currency.symbol]}
       </WonderBalance>
     );
@@ -203,10 +209,16 @@ const Wallet = () => {
             {wonderWeb3.chainName && <CurrencyDropdownItem currency={wonderWeb3.chainName} />}
           </DropDown>
           <WalletAddress>{wonderWeb3.wallet.addressTag || 'loading...'}</WalletAddress>
-          {differentAccountError && <ErrorText style={{
-            width: '104px',
-            marginLeft: '8px'
-          }}>Not linked wallet</ErrorText>}
+          {differentAccountError && (
+            <ErrorText
+              style={{
+                width: '120px',
+                marginLeft: '8px',
+              }}
+            >
+              Not linked wallet
+            </ErrorText>
+          )}
         </WalletDisplay>
       </WalletWrapper>
     );
