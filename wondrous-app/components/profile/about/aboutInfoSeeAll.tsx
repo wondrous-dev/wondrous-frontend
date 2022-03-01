@@ -34,7 +34,7 @@ export const AboutInfoSeeAll = (props) => {
         </AboutSeeAllDialogContentBorder>
       </AboutSeeAllDialog>
       <AboutInfoBlockHeaderSeeAll onClick={handleOpenDialog}>
-        <AboutInfoBlockHeaderSeeAllText>See All</AboutInfoBlockHeaderSeeAllText>
+        <AboutInfoBlockHeaderSeeAllText>See all</AboutInfoBlockHeaderSeeAllText>
       </AboutInfoBlockHeaderSeeAll>
       ;
     </>

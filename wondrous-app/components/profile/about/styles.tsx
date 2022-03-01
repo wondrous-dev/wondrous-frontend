@@ -166,14 +166,14 @@ export const AboutInfoBlockHeader = styled.div`
 export const AboutInfoBlockHeaderCountText = styled.div`
   display: flex;
   justify-content: space-between;
+  font-size: 15px;
 `;
 
 export const AboutInfoBlockHeaderCount = styled(Typography)`
   && {
     color: #ccbbff;
     font-weight: bold;
-    font-size: 18px;
-    padding-right: 8px;
+    padding-right: 4px;
   }
 `;
 
