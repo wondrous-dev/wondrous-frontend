@@ -1246,10 +1246,6 @@ export const TaskViewModal = (props) => {
                                     const transformedTask = transformTaskToTaskCard(task, {});
                                     setFetchedTask(transformedTask);
                                     if (boardColumns?.setColumns && onCorrectPage) {
-                                      let columnNumber = 0;
-                                      if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-                                        columnNumber = 1;
-                                      }
                                       let columns = [...boardColumns?.columns];
                                       if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
                                         columns = updateInProgressTask(transformedTask, columns);
