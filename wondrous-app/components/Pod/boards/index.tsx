@@ -23,6 +23,7 @@ import {
   BOUNTY_TYPE,
   COLUMN_TITLE_ARCHIVED,
   MILESTONE_TYPE,
+  PRIVACY_LEVEL,
   TASK_STATUS_ARCHIVED,
   TASK_STATUS_AWAITING_PAYMENT,
   TASK_STATUS_DONE,
@@ -40,6 +41,7 @@ import { useBoard } from '../../../utils/hooks';
 import { Proposal } from '../../Icons';
 import { BountyIcon, MilestoneIcon, TaskIcon, UserIcon } from '../../Icons/Search/types';
 import { Chevron } from '../../Icons/sections';
+import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 
 enum ViewType {
   List = 'list',
@@ -57,14 +59,14 @@ type Props = {
 };
 
 const Boards = (props: Props) => {
-  const { columns, onLoadMore, hasMore,  onSearch, onFilterChange, searchString } = props;
+  const { columns, onLoadMore, hasMore, onSearch, onFilterChange, searchString } = props;
   const router = useRouter();
   const [view, setView] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
   const [searchResults, setSearchResults] = useState({});
   const board = useBoard();
   const { taskCount = {} } = board;
-  const { search: searchQuery } = router.query;
+  const { search: searchQuery, boardType } = router.query;
 
   useEffect(() => {
     if (router.isReady) {
@@ -287,6 +289,34 @@ const Boards = (props: Props) => {
         <BoardsActivity>
           <SearchTasks onSearch={onSearch} />
           <Filter filterSchema={filterSchema} onChange={onFilterChange} />
+          <CreateFormPreviewButton
+            style={{
+              width: '230px',
+              borderRadius: '8px',
+              fontSize: '14px',
+            }}
+            onClick={() => {
+              if (boardType !== PRIVACY_LEVEL.public) {
+                router.push({
+                  pathname: router.pathname,
+                  query: {
+                    ...router.query,
+                    boardType: PRIVACY_LEVEL.public,
+                  },
+                });
+              } else {
+                router.push({
+                  pathname: router.pathname,
+                  query: {
+                    ...router.query,
+                    boardType: 'all',
+                  },
+                });
+              }
+            }}
+          >
+            {boardType === PRIVACY_LEVEL.public ? 'View all' : 'View public'}
+          </CreateFormPreviewButton>
           {view && !searchQuery ? <ToggleViewButton options={listViewOptions} /> : null}
         </BoardsActivity>
 

@@ -308,16 +308,18 @@ export const Task = (props) => {
               <AvatarList users={userList} id={'task-' + task?.id} />
               {isSubtask && <SubtaskDarkIcon />}
               {!isSubtask && !isMilestone && totalSubtask > 0 && <CheckedBoxIcon />}
-                            {
-                task?.privacyLevel === Constants.PRIVACY_LEVEL.public &&
-                  <PodWrapper >
-                  <PodName style={{
-                    borderRadius: '8px'
-                  }}>Public</PodName>
-
-                  </PodWrapper>
-                
-              }
+              {task?.privacyLevel === Constants.PRIVACY_LEVEL.public && (
+                <PodWrapper>
+                  <PodName
+                    style={{
+                      borderRadius: '8px',
+                      marginLeft: '4px',
+                    }}
+                  >
+                    Public
+                  </PodName>
+                </PodWrapper>
+              )}
             </TaskHeaderIconWrapper>
             {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
           </TaskHeader>
