@@ -24,6 +24,7 @@ import {
 } from '../../../components/profile/about/styles';
 import Wrapper from '../../../components/profile/wrapper/wrapper';
 import { GET_USER_FROM_USERNAME, GET_USER_PROFILE } from '../../../graphql/queries';
+import { parseLinks } from '../../../utils/common';
 import {
   SOCIAL_MEDIA_DISCORD,
   SOCIAL_MEDIA_FACEBOOK,
@@ -43,44 +44,6 @@ const SOCIAL_MEDIA_ICONS = {
   // [SOCIAL_MEDIA_SPOTIFY]: LinkedInIcon,
   // [SOCIAL_MEDIA_INSTAGRAM]: LinkedInIcon,
   [SOCIAL_OPENSEA]: OpenSeaIcon,
-};
-const SOCIAL_LINKS = ['twitter', 'discord', 'instagram', 'github', 'linkedin', 'spotify', 'opensea', 'facebook'];
-
-const parseLinks = (links) => {
-  /**
-   * parse links from backend into social links, websites, and main
-   */
-  if (!links) {
-    return {
-      social: [],
-      websites: [],
-      mainLink: null,
-    };
-  }
-  let mainLink = null;
-  const socialLinks = [];
-  const websites = [];
-  for (const link of links) {
-    if (!link.type || link.type === 'website') {
-      websites.push(link);
-    } else if (SOCIAL_LINKS.includes(link.type)) {
-      socialLinks.push(link);
-    } else if (link.type === 'main') {
-      mainLink = link;
-    }
-  }
-  if (mainLink === null) {
-    if (websites.length > 0) {
-      mainLink = websites[0];
-    } else if (socialLinks.length > 0) {
-      mainLink = socialLinks[0];
-    }
-  }
-  return {
-    social: socialLinks,
-    websites: websites,
-    mainLink: mainLink,
-  };
 };
 
 const useGetUserProfile = (id, username) => {
