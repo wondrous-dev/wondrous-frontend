@@ -22,6 +22,8 @@ import { OrgPod } from '../../../types/pod';
 import { Chevron } from '../../Icons/sections';
 import { splitColsByType } from '../../../services/board';
 import { ViewType } from '../../../types/common';
+import { useSelectMembership } from '../../../utils/hooks';
+import { MembershipRequestTable } from '../../Table/MembershipRequests';
 
 type Props = {
   filterSchema: any;
@@ -40,7 +42,9 @@ const Boards = (props: Props) => {
   const [totalCount, setTotalCount] = useState(0);
   const [searchResults, setSearchResults] = useState({});
   const { search: searchQuery } = router.query;
+  const selectMembershipHook = useSelectMembership();
 
+  const selectMembershipRequests = selectMembershipHook?.selectMembershipRequests;
   useEffect(() => {
     if (router.isReady) {
       setView((router.query.view || ViewType.Grid) as ViewType);
@@ -151,8 +155,10 @@ const Boards = (props: Props) => {
         <Filter filterSchema={filterSchema} onChange={onFilterChange} />
         {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
       </BoardsActivity>
-
-      {searchQuery ? renderSearchResults() : renderBoard()}
+      {selectMembershipRequests && (
+        <MembershipRequestTable isAdmin={isAdmin} requests={selectMembershipHook?.requests} />
+      )}
+      {!selectMembershipRequests && <>{searchQuery ? renderSearchResults() : renderBoard()}</>}
     </BoardsContainer>
   );
 };

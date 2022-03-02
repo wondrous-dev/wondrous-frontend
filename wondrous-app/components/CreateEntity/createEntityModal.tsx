@@ -399,6 +399,7 @@ const CreateLayoutBaseModal = (props) => {
   const [pod, setPod] = useState(null);
   const [dueDate, setDueDate] = useState(null);
   const [isPrivate, setIsPrivate] = useState(false);
+  const [publicTask, setPublicTask] = useState(false);
   const {
     showDeliverableRequirementsSection,
     showBountySwitchSection,
@@ -1243,12 +1244,27 @@ const CreateLayoutBaseModal = (props) => {
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
                   </LocalizationProvider>
-                  {/* <DropdownSelect
-                    title="Connect to Milestone"
-                    labelText="Choose Milestone"
-                    options={MILESTONE_SELECT_OPTION}
-                    name="connect-to-milestone"
-                  /> */}
+                  <CreateFormAddDetailsSwitch
+                    style={{
+                      width: '100%',
+                      marginLeft: '20px',
+                    }}
+                  >
+                    <CreateFormAddDetailsInputLabel
+                      style={{
+                        marginBottom: '16px',
+                        marginLeft: '8px',
+                      }}
+                    >
+                      Show task as public
+                    </CreateFormAddDetailsInputLabel>
+                    <AndroidSwitch
+                      checked={publicTask}
+                      onChange={(e) => {
+                        setPublicTask(e.target.checked);
+                      }}
+                    />
+                  </CreateFormAddDetailsSwitch>
                 </CreateFormAddDetailsSelects>
 
                 {/* <CreateFormAddDetailsSelects> */}
@@ -1268,13 +1284,11 @@ const CreateLayoutBaseModal = (props) => {
 
                 {/*if Suggest a task opened */}
                 {/* {showBountySwitchSection && canCreateTask && (
-                    <CreateFormAddDetailsSwitch>
-                      <CreateFormAddDetailsInputLabel>
-                        This is a bounty
-                      </CreateFormAddDetailsInputLabel>
-                      <AndroidSwitch />
-                    </CreateFormAddDetailsSwitch>
-                  )} */}
+                  <CreateFormAddDetailsSwitch>
+                    <CreateFormAddDetailsInputLabel>This is a bounty</CreateFormAddDetailsInputLabel>
+                    <AndroidSwitch />
+                  </CreateFormAddDetailsSwitch>
+                )} */}
 
                 {/*if Create a milestone opened*/}
                 {/* {showPrioritySelectSection && (

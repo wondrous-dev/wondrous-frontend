@@ -51,3 +51,27 @@ export const UPDATE_ORG = gql`
   }
   ${OrgFragment}
 `;
+
+export const CREATE_JOIN_ORG_REQUEST = gql`
+  mutation createJoinOrgRequest($orgId: ID!, $message: String) {
+    createJoinOrgRequest(orgId: $orgId, message: $message) {
+      success
+    }
+  }
+`;
+
+export const APPROVE_JOIN_ORG_REQUEST = gql`
+  mutation approveJoinOrgRequest($userId: ID!, $orgId: ID!) {
+    approveJoinOrgRequest(userId: $userId, orgId: $orgId) {
+      success
+    }
+  }
+`;
+
+export const REJECT_JOIN_ORG_REQUEST = gql`
+  mutation rejectJoinOrgRequest($userId: ID!, $orgId: ID!) {
+    rejectJoinOrgRequest(userId: $userId, orgId: $orgId) {
+      success
+    }
+  }
+`;

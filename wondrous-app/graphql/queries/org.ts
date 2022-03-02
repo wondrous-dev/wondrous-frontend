@@ -111,3 +111,42 @@ export const SEARCH_ORG_USERS = gql`
     }
   }
 `;
+export const GET_JOIN_ORG_REQUESTS = gql`
+  query getJoinOrgRequests($limit: Int, $offset: Int) {
+    getJoinOrgRequests(limit: $limit, offset: $offset) {
+      id
+      userId
+      orgId
+      podId
+      approvedAt
+      message
+      rejectedAt
+      userUsername
+      userProfilePicture
+      orgProfilePicture
+      orgName
+      orgUsername
+      podColor
+      podName
+    }
+  }
+`;
+
+export const GET_USER_JOIN_ORG_REQUEST = gql`
+  query getUserJoinOrgRequest($orgId: ID!) {
+    getUserJoinOrgRequest(orgId: $orgId) {
+      id
+      orgId
+      approvedAt
+      rejectedAt
+    }
+  }
+`;
+
+export const GET_ORG_JOIN_REQUEST_COUNT = gql`
+  query getOrgJoinRequestCount($orgId: ID!) {
+    getOrgJoinRequestCount(orgId: $orgId) {
+      joinOrgRequestCount
+    }
+  }
+`;

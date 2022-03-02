@@ -11,6 +11,7 @@ import {
   UserBoardContext,
   ApprovedSubmissionContext,
   PaymentModalContext,
+  SelectMembershipContext,
 } from './contexts';
 
 export const useIsMobile = () => useContext(IsMobileContext);
@@ -76,6 +77,7 @@ export const useApprovedSubmission = () => useContext(ApprovedSubmissionContext)
 
 export const usePaymentModal = () => useContext(PaymentModalContext);
 
+export const useSelectMembership = () => useContext(SelectMembershipContext);
 /**
  * Hook that alerts clicks outside of the passed ref
  */

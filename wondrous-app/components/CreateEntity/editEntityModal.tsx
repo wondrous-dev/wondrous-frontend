@@ -335,6 +335,7 @@ const EditLayoutBaseModal = (props) => {
   const [rewardsCurrency, setRewardsCurrency] = useState(initialCurrency);
   const [rewardsAmount, setRewardsAmount] = useState(initialAmount);
   const [title, setTitle] = useState(existingTask?.title);
+  const [publicTask, setPublicTask] = useState(existingTask?.privacyLevel === 'public');
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
@@ -1180,12 +1181,27 @@ const EditLayoutBaseModal = (props) => {
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
                   </LocalizationProvider>
-                  {/* <DropdownSelect
-                    title="Connect to Milestone"
-                    labelText="Choose Milestone"
-                    options={MILESTONE_SELECT_OPTION}
-                    name="connect-to-milestone"
-                  /> */}
+                  <CreateFormAddDetailsSwitch
+                    style={{
+                      width: '100%',
+                      marginLeft: '20px',
+                    }}
+                  >
+                    <CreateFormAddDetailsInputLabel
+                      style={{
+                        marginBottom: '16px',
+                        marginLeft: '8px',
+                      }}
+                    >
+                      Show task as public
+                    </CreateFormAddDetailsInputLabel>
+                    <AndroidSwitch
+                      checked={publicTask}
+                      onChange={(e) => {
+                        setPublicTask(e.target.checked);
+                      }}
+                    />
+                  </CreateFormAddDetailsSwitch>
                 </CreateFormAddDetailsSelects>
 
                 {/* <CreateFormAddDetailsSelects> */}

@@ -1,12 +1,12 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import React, { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD } from '../../../graphql/queries';
+import { GET_ORG_JOIN_REQUEST_COUNT, GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD } from '../../../graphql/queries';
 import { GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT } from '../../../graphql/queries/workflowBoards';
 import { TASK_STATUS_PROPOSAL_REQUEST, TASK_STATUS_SUBMISSION_REQUEST } from '../../../utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { DoneWithBorder } from '../../Icons';
-import { InReviewIcon, ProposalsRemainingIcon, TodoIcon } from '../../Icons/statusIcons';
+import { InReviewIcon, MembershipRequestIcon, ProposalsRemainingIcon, TodoIcon } from '../../Icons/statusIcons';
 import DashboardPanelExpanded from '../DashboardPanelExpanded';
 import DashboardPanelSticky from '../DashboardPanelSticky';
 import { DashboardPanelWrapper } from './styles';
@@ -38,15 +38,7 @@ const statusCardsBase = [
     panel: panels.contributor,
     dataKey: 'completed',
   },
-  // NOTE: Per Andros instruction, the membership request feature is not yet implement so this panel should not be displayed for now
-  // {
-  //   Icon: MembershipRequestIcon,
-  //   label: 'memberships requests',
-  //   color: 'linear-gradient(196.76deg, #FFFFFF -48.71%, #FF6DD7 90.48%)',
-  //   panelPosition: 1,
-  //   panel: panels.admin,
-  //   dataKey: 'orgMembershipRequestCount',
-  // },
+
   {
     Icon: ProposalsRemainingIcon,
     label: 'proposals remaining',
@@ -64,6 +56,14 @@ const statusCardsBase = [
     panel: panels.admin,
     dataKey: 'submissionRequestCount',
     status: TASK_STATUS_SUBMISSION_REQUEST,
+  },
+  {
+    Icon: MembershipRequestIcon,
+    label: 'memberships requests',
+    color: 'linear-gradient(196.76deg, #FFFFFF -48.71%, #FF6DD7 90.48%)',
+    panelPosition: 4,
+    panel: panels.admin,
+    dataKey: 'orgMembershipRequestCount',
   },
   // NOTE: Per Terry's instruction, payments will be hidden for now from the Admin View
   // {
@@ -97,12 +97,12 @@ const DashboardPanel = (props) => {
     useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD);
   const { data: getWorkFlowBoardReviewableItemsCountData, loading: getWorkFlowBoardReviewableItemsCountLoading } =
     useQuery(GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT);
+  const { data: getOrgJoinRequestCount } = useQuery(GET_ORG_JOIN_REQUEST_COUNT);
   const activePanel = isAdmin ? panels.admin : panels.contributor;
   const activePanelData = isAdmin
     ? getWorkFlowBoardReviewableItemsCountData?.getWorkFlowBoardReviewableItemsCount
     : getPerStatusTaskCountData?.getPerStatusTaskCountForUserBoard;
   const activePanelStatusCards = updateStatusCards(activePanelData, statusCardsBase, activePanel);
-
   useEffect(() => {
     if (!loggedInUser) {
       return;
