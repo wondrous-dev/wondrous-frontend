@@ -261,6 +261,9 @@ export const withAuth = (Component, noCache = false) => {
       return <Component {...props} />;
     } else {
       const user = data?.getLoggedinUser;
+      if (user && !user?.username) {
+        router.push('/onboarding/welcome');
+      }
       return (
         <MyContext.Provider value={user}>
           <Component {...props} user={user} />
