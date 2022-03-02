@@ -433,7 +433,7 @@ export const TaskSubmissionLink = styled(TaskLink)`
   && {
     margin-top: 8px;
     margin-left: 8px;
-    max-width: 600px;
+    max-width: 500px;
     overflow-x: scroll;
   }
 `;
