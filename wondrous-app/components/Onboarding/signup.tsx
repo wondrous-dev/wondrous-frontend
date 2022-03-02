@@ -11,9 +11,9 @@ import {
 } from './styles';
 import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
 import { useWonderWeb3 } from '../../services/web3';
-import { getUserSigningMessage, walletSignup } from '../Auth/withAuth';
+import { getUserSigningMessage, walletSignup, walletSignin } from '../Auth/withAuth';
 import { useRouter } from 'next/router';
-import { SUPPORTED_CHAINS } from '../../utils/constants';
+import { GRAPHQL_ERRORS, SUPPORTED_CHAINS } from '../../utils/constants';
 import { Button } from '../Common/button';
 import { PaddedParagraph } from '../Common/text';
 import { Metamask } from '../Icons/metamask';
@@ -53,6 +53,7 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
   };
 
   const signupWithWallet = async () => {
+    console.log('ping');
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
       // Retrieve Signed Message
       const messageToSignObject = await getUserSigningMessage(wonderWeb3.address, SupportedChainType.ETH, true);
@@ -62,39 +63,66 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
       const messageToSign = messageToSignObject?.signingMessage;
       if (messageToSign) {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
-
         if (signedMessage) {
           // Sign with Wallet
+          let user;
           try {
-            const result = await walletSignup(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
-            if (result === true) {
-              //
-              redeemOrgInviteLink({
-                variables: {
-                  token,
-                },
-                onCompleted: (data) => {
-                  if (data?.redeemOrgInviteLink?.success) {
+            user = await walletSignup(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
+          } catch (err) {
+            console.log('err 1', err);
+            if (
+              err?.graphQLErrors &&
+              err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.WEB3_ADDRESS_ALREADY_EXISTS
+            ) {
+              try {
+                user = await walletSignin(wonderWeb3.address, signedMessage);
+              } catch (err) {
+                setErrorMessage('Unable to log in existing user - please contact support in discord');
+              }
+              setErrorMessage('Account already exists');
+            } else {
+              setErrorMessage('Unable to join org - please contact support in discord.');
+            }
+          }
+          if (user) {
+            //
+            redeemOrgInviteLink({
+              variables: {
+                token,
+              },
+              onCompleted: (data) => {
+                if (data?.redeemOrgInviteLink?.success) {
+                  if (user?.username) {
+                    router.push('/dashboard', undefined, {
+                      shallow: true,
+                    });
+                  } else {
                     router.push(`/onboarding/welcome`, undefined, {
                       shallow: true,
                     });
                   }
-                },
-              });
-            } else {
-              setErrorMessage(result);
-            }
-          } catch (err) {
-            if (
-              err?.graphQLErrors &&
-              (err?.graphQLErrors[0]?.extensions.errorCode === 'org_invite_already_exist' ||
-                err?.graphQLErrors[0]?.extensions.errorCode === 'pod_invite_already_exist')
-            ) {
-              router.push(`/onboarding/welcome`, undefined, {
-                shallow: true,
-              });
-            }
-            setErrorMessage(err?.message || err);
+                }
+              },
+              onError: (err) => {
+                console.log('err 3', err, user);
+                if (
+                  err?.graphQLErrors &&
+                  (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.ORG_INVITE_ALREADY_EXISTS ||
+                    err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.POD_INVITE_ALREADY_EXISTS)
+                ) {
+                  if (user?.username) {
+                    router.push('/dashboard', undefined, {
+                      shallow: true,
+                    });
+                  } else {
+                    router.push(`/onboarding/welcome`, undefined, {
+                      shallow: true,
+                    });
+                  }
+                }
+                setErrorMessage('Invite already redeemed');
+              },
+            });
           }
         } else if (signedMessage === false) {
           setErrorMessage('Signature rejected. Try again.');
