@@ -423,6 +423,7 @@ export const AboutSeeAllDialogHeader = styled.div`
   display: flex;
   justify-content: space-between;
   padding-left: 15px;
+  margin-bottom: 10px;
 `;
 
 export const AboutSeeAllTextWrapper = styled.div`
