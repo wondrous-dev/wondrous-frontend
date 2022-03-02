@@ -144,6 +144,23 @@ const About = (props) => {
   const userOrgsData = orgs.map((org) => <AboutOrganizationsCard key={org.id} {...org} />);
   const userPodsData = pods.map((pod) => <AboutPodsCard {...pod} key={pod.id} />);
   const userCompletedTasks = tasksCompleted.map((task) => <AboutCompletedCard {...task} key={task.id} />);
+  const userData = [
+    {
+      name: 'DAOs',
+      count: orgCount,
+      data: userOrgsData,
+    },
+    {
+      name: 'Pods',
+      count: podCount,
+      data: userPodsData,
+    },
+    {
+      name: 'Tasks Completed',
+      count: tasksCompletedCount,
+      data: userCompletedTasks,
+    },
+  ];
   return (
     <Wrapper userProfileData={userProfileData} mainLink={mainLink}>
       <AboutSection>
@@ -192,48 +209,20 @@ const About = (props) => {
         </AboutInfoTable>
 
         <AboutInfoContainer>
-          {orgCount > 0 && (
-            <AboutInfoBlock>
+          {userData.map(({ name, count, data }, i) => (
+            <AboutInfoBlock key={i}>
               <AboutInfoBlockHeader>
                 <AboutInfoBlockHeaderCountText>
-                  <AboutInfoBlockHeaderCount>{orgCount}</AboutInfoBlockHeaderCount>
-                  <AboutInfoBlockHeaderText>DAOs</AboutInfoBlockHeaderText>
+                  <AboutInfoBlockHeaderCount>{count}</AboutInfoBlockHeaderCount>
+                  <AboutInfoBlockHeaderText>{name}</AboutInfoBlockHeaderText>
                 </AboutInfoBlockHeaderCountText>
-                <AboutInfoSeeAll count={orgCount} text="DAOs">
-                  {userOrgsData}
+                <AboutInfoSeeAll count={count} text={name}>
+                  {data}
                 </AboutInfoSeeAll>
               </AboutInfoBlockHeader>
-              <AboutInfoBlockContent>{userOrgsData.slice(0, 3)}</AboutInfoBlockContent>
+              <AboutInfoBlockContent>{data.slice(0, 3)}</AboutInfoBlockContent>
             </AboutInfoBlock>
-          )}
-          {podCount > 0 && (
-            <AboutInfoBlock>
-              <AboutInfoBlockHeader>
-                <AboutInfoBlockHeaderCountText>
-                  <AboutInfoBlockHeaderCount>{podCount}</AboutInfoBlockHeaderCount>
-                  <AboutInfoBlockHeaderText>Pods</AboutInfoBlockHeaderText>
-                </AboutInfoBlockHeaderCountText>
-                <AboutInfoSeeAll count={podCount} text="Pods">
-                  {userPodsData}
-                </AboutInfoSeeAll>
-              </AboutInfoBlockHeader>
-              <AboutInfoBlockContent>{userPodsData.slice(0, 3)}</AboutInfoBlockContent>
-            </AboutInfoBlock>
-          )}
-          {tasksCompletedCount > 0 && (
-            <AboutInfoBlock>
-              <AboutInfoBlockHeader>
-                <AboutInfoBlockHeaderCountText>
-                  <AboutInfoBlockHeaderCount>{tasksCompletedCount}</AboutInfoBlockHeaderCount>
-                  <AboutInfoBlockHeaderText>Completed Tasks</AboutInfoBlockHeaderText>
-                </AboutInfoBlockHeaderCountText>
-                <AboutInfoSeeAll count={tasksCompletedCount} text="Completed Tasks">
-                  {userCompletedTasks}
-                </AboutInfoSeeAll>
-              </AboutInfoBlockHeader>
-              <AboutInfoBlockContent>{userCompletedTasks.slice(0, 3)}</AboutInfoBlockContent>
-            </AboutInfoBlock>
-          )}
+          ))}
         </AboutInfoContainer>
       </AboutSection>
     </Wrapper>
