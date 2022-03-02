@@ -381,6 +381,7 @@ export const Table = (props) => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
+                        flexDirection: 'column',
                       }}
                     >
                       {userProfilePicture && (
