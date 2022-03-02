@@ -261,7 +261,7 @@ export const withAuth = (Component, noCache = false) => {
       return <Component {...props} />;
     } else {
       const user = data?.getLoggedinUser;
-      if (!user?.username) {
+      if (user && !user?.username) {
         router.push('/onboarding/welcome');
       }
       return (
