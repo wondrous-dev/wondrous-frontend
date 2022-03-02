@@ -360,7 +360,6 @@ export const TaskSectionContent = styled.div`
   text-align: center;
   padding-top: 16px;
   padding-bottom: 20px;
-  max-width: 630px;
 `;
 export const MakeSubmissionDiv = styled.div`
   background: #0f0f0f;
