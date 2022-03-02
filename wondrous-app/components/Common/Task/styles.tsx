@@ -276,6 +276,8 @@ export const TaskSectionDisplayDiv = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 12px;
+  max-width: 600px;
+  overflow-x: scroll;
   & > *:not:first-child {
     margin-top: -8px;
   }

@@ -344,6 +344,8 @@ const SubmissionItem = (props) => {
           alignItems: 'flex-start',
           flexWrap: 'nowrap',
           textAlign: 'left',
+          maxWidth: '600px',
+          overflowX: 'scroll',
         }}
       >
         <TaskSectionDisplayLabel
