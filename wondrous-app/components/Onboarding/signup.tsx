@@ -85,6 +85,15 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
               setErrorMessage(result);
             }
           } catch (err) {
+            if (
+              err?.graphQLErrors &&
+              (err?.graphQLErrors[0]?.extensions.errorCode === 'org_invite_already_exist' ||
+                err?.graphQLErrors[0]?.extensions.errorCode === 'pod_invite_already_exist')
+            ) {
+              router.push(`/onboarding/welcome`, undefined, {
+                shallow: true,
+              });
+            }
             setErrorMessage(err?.message || err);
           }
         } else if (signedMessage === false) {
