@@ -311,7 +311,12 @@ const SubmissionItem = (props) => {
           )}
         </TaskSectionInfoDiv>
       </TaskSectionDisplayDiv>
-      <TaskSectionDisplayDiv>
+      <TaskSectionDisplayDiv
+        style={{
+          maxWidth: '600px',
+          overflowX: 'scroll',
+        }}
+      >
         <TaskSectionDisplayLabel
           style={{
             marginRight: '20px',
