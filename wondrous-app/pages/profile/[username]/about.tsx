@@ -35,17 +35,6 @@ import {
 } from '../../../utils/constants';
 import { formatLinkDisplay } from '../../../utils/links';
 
-const SOCIAL_MEDIA_ICONS = {
-  [SOCIAL_MEDIA_FACEBOOK]: FacebookIcon,
-  [SOCIAL_MEDIA_TWITTER]: TwitterPurpleIcon,
-  [SOCIAL_MEDIA_LINKEDIN]: LinkedInIcon,
-  [SOCIAL_MEDIA_DISCORD]: DiscordIcon,
-  [SOCIAL_MEDIA_GITHUB]: githubIcon,
-  // [SOCIAL_MEDIA_SPOTIFY]: LinkedInIcon,
-  // [SOCIAL_MEDIA_INSTAGRAM]: LinkedInIcon,
-  [SOCIAL_OPENSEA]: OpenSeaIcon,
-};
-
 const useGetUserProfile = (id, username) => {
   const [getUser, { data: getUserProfileData }] = useLazyQuery(GET_USER_PROFILE);
   const [getUserFromUsername, { data: getUserFromUsernameData }] = useLazyQuery(GET_USER_FROM_USERNAME);
@@ -77,6 +66,16 @@ const About = (props) => {
     {
       label: 'Social',
       data: social.map(({ url, type }) => {
+        const SOCIAL_MEDIA_ICONS = {
+          [SOCIAL_MEDIA_FACEBOOK]: FacebookIcon,
+          [SOCIAL_MEDIA_TWITTER]: TwitterPurpleIcon,
+          [SOCIAL_MEDIA_LINKEDIN]: LinkedInIcon,
+          [SOCIAL_MEDIA_DISCORD]: DiscordIcon,
+          [SOCIAL_MEDIA_GITHUB]: githubIcon,
+          // [SOCIAL_MEDIA_SPOTIFY]: LinkedInIcon,
+          // [SOCIAL_MEDIA_INSTAGRAM]: LinkedInIcon,
+          [SOCIAL_OPENSEA]: OpenSeaIcon,
+        };
         const SocialMediaIcon = SOCIAL_MEDIA_ICONS[type];
         return (
           <AboutInfoTableRowContentSocialButton key={url}>
