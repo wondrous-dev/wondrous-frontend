@@ -269,6 +269,8 @@ export const TaskDescriptionText = styled(Typography)`
     font-size: 15px;
     line-height: 19px;
     white-space: pre-line;
+    max-width: 600px;
+    overflow-x: scroll;
   }
 `;
 
@@ -276,8 +278,6 @@ export const TaskSectionDisplayDiv = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 12px;
-  max-width: 600px;
-  overflow-x: scroll;
   & > *:not:first-child {
     margin-top: -8px;
   }
@@ -429,6 +429,8 @@ export const TaskSubmissionLink = styled(TaskLink)`
   && {
     margin-top: 8px;
     margin-left: 8px;
+    max-width: 600px;
+    overflow-x: scroll;
   }
 `;
 
