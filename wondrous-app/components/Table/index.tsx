@@ -351,9 +351,6 @@ export const Table = (props) => {
                 permissions.includes(Constants.PERMISSIONS.MANAGE_BOARD) ||
                 permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
                 task?.createdBy === user?.id;
-              if (task?.__typename === 'TaskProposalCard') {
-                console.log('task', task);
-              }
 
               const username =
                 task?.__typename === 'TaskSubmissionCard' || task?.__typename === 'TaskProposalCard'
