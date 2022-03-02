@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 import { delQuery } from '../../../utils';
-import { TaskViewModal } from '../../Common/Task/modal';
-import { AboutCompletedTasks } from './styles';
+import { TaskViewModal } from '../Task/modal';
+import { UserAboutInfoCompletedTasks } from './styles';
 
-const AboutCompletedCard = (props) => {
+const UserAboutInfoCompletedCard = (props) => {
   const router = useRouter();
   return (
     <>
@@ -26,9 +26,9 @@ const AboutCompletedCard = (props) => {
         taskId={router?.query?.task || router?.query?.taskProposal}
         isTaskProposal={!!router?.query?.taskProposal}
       />
-      <AboutCompletedTasks task={props} />
+      <UserAboutInfoCompletedTasks task={props} />
     </>
   );
 };
 
-export default AboutCompletedCard;
+export default UserAboutInfoCompletedCard;

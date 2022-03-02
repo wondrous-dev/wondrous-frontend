@@ -1,15 +1,15 @@
 import { IconButton } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { SafeImage } from '../../Common/Image';
+import { SafeImage } from '../Image';
 import { DAOIcon } from '../../Icons/dao';
 import RightArrowIcon from '../../Icons/rightArrow';
 import {
-  OrganizationsCard,
-  OrganizationsCardContent,
-  CardHeader,
-  OrganizationsCardHeaderName,
-  OrganisationsCardNoLogo,
+  UserAboutInfoCard,
+  UserAboutInfoCardContent,
+  UserAboutInfoCardHeader,
+  UserAboutInfoCardHeaderName,
+  UserAboutInfoCardNoLogo,
 } from './styles';
 
 const AboutOrganizationsCard = (props) => {
@@ -17,8 +17,8 @@ const AboutOrganizationsCard = (props) => {
   const { name, description, profilePicture, thumbnailPicture, username } = props;
   const handleOnClick = () => router.push(`/organization/${username}/boards`);
   return (
-    <OrganizationsCard>
-      <CardHeader>
+    <UserAboutInfoCard>
+      <UserAboutInfoCardHeader>
         {thumbnailPicture || profilePicture ? (
           <SafeImage
             src={thumbnailPicture || profilePicture}
@@ -30,17 +30,17 @@ const AboutOrganizationsCard = (props) => {
             }}
           />
         ) : (
-          <OrganisationsCardNoLogo>
+          <UserAboutInfoCardNoLogo>
             <DAOIcon />
-          </OrganisationsCardNoLogo>
+          </UserAboutInfoCardNoLogo>
         )}
-        <OrganizationsCardHeaderName>{name}</OrganizationsCardHeaderName>
+        <UserAboutInfoCardHeaderName>{name}</UserAboutInfoCardHeaderName>
         <IconButton onClick={handleOnClick}>
           <RightArrowIcon />
         </IconButton>
-      </CardHeader>
-      <OrganizationsCardContent>{description}</OrganizationsCardContent>
-    </OrganizationsCard>
+      </UserAboutInfoCardHeader>
+      <UserAboutInfoCardContent>{description}</UserAboutInfoCardContent>
+    </UserAboutInfoCard>
   );
 };
 

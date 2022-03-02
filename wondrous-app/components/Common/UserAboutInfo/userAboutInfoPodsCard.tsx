@@ -1,18 +1,18 @@
 import { IconButton } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { SafeImage } from '../../Common/Image';
+import { SafeImage } from '../Image';
 import { DAOIcon } from '../../Icons/dao';
 import RightArrowIcon from '../../Icons/rightArrow';
 import {
-  CardHeader,
-  CardHeaderPodIcon,
-  OrganisationsCardNoLogo,
-  OrganizationsCard,
-  OrganizationsCardContent,
-  PodsCardFooter,
-  PodsCardFooterTaskMilestoneCount,
-  PodsCardName,
+  UserAboutInfoCardHeader,
+  UserAboutInfoCardHeaderPodIcon,
+  UserAboutInfoCardNoLogo,
+  UserAboutInfoCard,
+  UserAboutInfoCardContent,
+  UserAboutInfoPodsCardFooter,
+  UserAboutInfoPodsCardFooterCount,
+  UserAboutInfoPodsCardName,
 } from './styles';
 
 const AboutPodsCard = (props) => {
@@ -20,17 +20,16 @@ const AboutPodsCard = (props) => {
   const router = useRouter();
   const handleOnClick = () => router.push(`/pod/${id}/boards`);
   return (
-    <OrganizationsCard>
-      <CardHeader>
-        <CardHeaderPodIcon color={color} />
-        {/* TODO: AvatarList here */}
+    <UserAboutInfoCard>
+      <UserAboutInfoCardHeader>
+        <UserAboutInfoCardHeaderPodIcon color={color} />
         <IconButton onClick={handleOnClick}>
           <RightArrowIcon />
         </IconButton>
-      </CardHeader>
-      <PodsCardName>{name}</PodsCardName>
-      <OrganizationsCardContent>{description}</OrganizationsCardContent>
-      <PodsCardFooter>
+      </UserAboutInfoCardHeader>
+      <UserAboutInfoPodsCardName>{name}</UserAboutInfoPodsCardName>
+      <UserAboutInfoCardContent>{description}</UserAboutInfoCardContent>
+      <UserAboutInfoPodsCardFooter>
         {org?.thumbnailPicture || org?.profilePicture ? (
           <SafeImage
             src={org?.thumbnailPicture || org?.profilePicture}
@@ -42,18 +41,18 @@ const AboutPodsCard = (props) => {
             }}
           />
         ) : (
-          <OrganisationsCardNoLogo style={{ height: '30px', width: '30px' }}>
+          <UserAboutInfoCardNoLogo style={{ height: '30px', width: '30px' }}>
             <DAOIcon />
-          </OrganisationsCardNoLogo>
+          </UserAboutInfoCardNoLogo>
         )}
         {tasksIncompleteCount > 0 && (
-          <PodsCardFooterTaskMilestoneCount> {tasksIncompleteCount} tasks </PodsCardFooterTaskMilestoneCount>
+          <UserAboutInfoPodsCardFooterCount> {tasksIncompleteCount} tasks </UserAboutInfoPodsCardFooterCount>
         )}
         {milestoneCount > 0 && (
-          <PodsCardFooterTaskMilestoneCount> {milestoneCount} milestones </PodsCardFooterTaskMilestoneCount>
+          <UserAboutInfoPodsCardFooterCount> {milestoneCount} milestones </UserAboutInfoPodsCardFooterCount>
         )}
-      </PodsCardFooter>
-    </OrganizationsCard>
+      </UserAboutInfoPodsCardFooter>
+    </UserAboutInfoCard>
   );
 };
 
