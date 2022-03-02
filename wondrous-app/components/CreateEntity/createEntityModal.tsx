@@ -13,6 +13,7 @@ import {
   PERMISSIONS,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   CHAIN_TO_CHAIN_DIPLAY_NAME,
+  PRIVACY_LEVEL,
 } from '../../utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
@@ -399,6 +400,7 @@ const CreateLayoutBaseModal = (props) => {
   const [pod, setPod] = useState(null);
   const [dueDate, setDueDate] = useState(null);
   const [isPrivate, setIsPrivate] = useState(false);
+  const [publicTask, setPublicTask] = useState(false);
   const {
     showDeliverableRequirementsSection,
     showBountySwitchSection,
@@ -591,10 +593,14 @@ const CreateLayoutBaseModal = (props) => {
           ...(!canCreateTask && {
             proposedAssigneeId: assignee?.value,
           }),
+          ...(publicTask && {
+            privacyLevel: PRIVACY_LEVEL.public,
+          }),
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
+
         if (!title || !descriptionText || !org) {
           const newErrors = { ...errors };
           if (!title) {
@@ -710,6 +716,9 @@ const CreateLayoutBaseModal = (props) => {
           podId: pod,
           mediaUploads,
           dueDate,
+          ...(publicTask && {
+            privacyLevel: PRIVACY_LEVEL.public,
+          }),
         };
         if (canCreateTask) {
           createMilestone({
@@ -1243,12 +1252,27 @@ const CreateLayoutBaseModal = (props) => {
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
                   </LocalizationProvider>
-                  {/* <DropdownSelect
-                    title="Connect to Milestone"
-                    labelText="Choose Milestone"
-                    options={MILESTONE_SELECT_OPTION}
-                    name="connect-to-milestone"
-                  /> */}
+                  <CreateFormAddDetailsSwitch
+                    style={{
+                      width: '100%',
+                      marginLeft: '20px',
+                    }}
+                  >
+                    <CreateFormAddDetailsInputLabel
+                      style={{
+                        marginBottom: '16px',
+                        marginLeft: '8px',
+                      }}
+                    >
+                      Show task as public
+                    </CreateFormAddDetailsInputLabel>
+                    <AndroidSwitch
+                      checked={publicTask}
+                      onChange={(e) => {
+                        setPublicTask(e.target.checked);
+                      }}
+                    />
+                  </CreateFormAddDetailsSwitch>
                 </CreateFormAddDetailsSelects>
 
                 {/* <CreateFormAddDetailsSelects> */}
@@ -1268,13 +1292,11 @@ const CreateLayoutBaseModal = (props) => {
 
                 {/*if Suggest a task opened */}
                 {/* {showBountySwitchSection && canCreateTask && (
-                    <CreateFormAddDetailsSwitch>
-                      <CreateFormAddDetailsInputLabel>
-                        This is a bounty
-                      </CreateFormAddDetailsInputLabel>
-                      <AndroidSwitch />
-                    </CreateFormAddDetailsSwitch>
-                  )} */}
+                  <CreateFormAddDetailsSwitch>
+                    <CreateFormAddDetailsInputLabel>This is a bounty</CreateFormAddDetailsInputLabel>
+                    <AndroidSwitch />
+                  </CreateFormAddDetailsSwitch>
+                )} */}
 
                 {/*if Create a milestone opened*/}
                 {/* {showPrioritySelectSection && (

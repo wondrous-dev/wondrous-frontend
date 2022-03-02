@@ -27,6 +27,11 @@ const ContributorBuildProfilePage = () => {
 
   useEffect(() => {
     if (redirect) {
+      if (!firstOrg) {
+        router.push('/explore', undefined, {
+          shallow: true,
+        });
+      }
       router.push(`/organization/${firstOrg?.username}/boards`, undefined, {
         shallow: true,
       });
@@ -35,7 +40,7 @@ const ContributorBuildProfilePage = () => {
   }, [redirect]);
   return (
     <MainWrapper>
-      <InviteWelcomeBox updateUser={updateUser} />
+      <InviteWelcomeBox updateUser={updateUser} firstOrg={firstOrg} />
     </MainWrapper>
   );
 };

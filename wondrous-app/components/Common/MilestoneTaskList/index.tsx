@@ -87,7 +87,7 @@ export const MilestoneTaskList = (props) => {
               return (
                 <Link
                   key={task?.id}
-                  href={`/organization/${task?.orgUsername}/boards?task=${task?.id}`}
+                  href={`/organization/${task?.orgUsername || task?.org?.username}/boards?task=${task?.id}`}
                   passHref={true}
                 >
                   <StyledTableRow

@@ -305,13 +305,7 @@ const SubmissionItem = (props) => {
               ))}
             </MediaUploadDiv>
           ) : (
-            <TaskDescriptionText
-              style={{
-                marginTop: '8px',
-              }}
-            >
-              None
-            </TaskDescriptionText>
+            <TaskDescriptionText>None</TaskDescriptionText>
           )}
         </TaskSectionInfoDiv>
       </TaskSectionDisplayDiv>

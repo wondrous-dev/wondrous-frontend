@@ -49,6 +49,7 @@ export const TaskFragment = gql`
     assigneeOrder
     reactionCount
     commentCount
+    privacyLevel
     rewards {
       rewardAmount
       paymentMethodId
@@ -90,6 +91,7 @@ export const TaskCardFragment = gql`
     podOrder
     assigneeOrder
     paymentStatus
+    privacyLevel
     rewards {
       rewardAmount
       paymentMethodId
