@@ -220,7 +220,7 @@ const About = (props) => {
                   {data}
                 </AboutInfoSeeAll>
               </AboutInfoBlockHeader>
-              <AboutInfoBlockContent>{data.slice(0, 3)}</AboutInfoBlockContent>
+              <AboutInfoBlockContent>{data.slice(0, 5)}</AboutInfoBlockContent>
             </AboutInfoBlock>
           ))}
         </AboutInfoContainer>

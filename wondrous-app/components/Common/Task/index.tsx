@@ -121,7 +121,6 @@ export const Task = (props) => {
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
   const [userList, setUserList] = useState([]);
   const [liked, setLiked] = useState(iLiked);
-  const [modalOpen, setModalOpen] = useState(false);
   const [archiveTask, setArchiveTask] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
   const snackbarContext = useContext(SnackbarAlertContext);
@@ -236,7 +235,6 @@ export const Task = (props) => {
     // document.body.scroll = false
     windowOffset = window.scrollY;
     document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
-    setModalOpen(true);
   };
 
   const goToPod = (podId) => {
@@ -277,19 +275,6 @@ export const Task = (props) => {
         onClose={() => setArchiveTask(false)}
         onArchive={handleNewStatus}
         taskType={taskType}
-      />
-      <TaskViewModal
-        open={modalOpen}
-        handleOpen={() => setModalOpen(true)}
-        handleClose={() => {
-          document.body.setAttribute('style', '');
-          window?.scrollTo(0, windowOffset);
-          setModalOpen(false);
-          router.push(`${delQuery(router.asPath)}`, undefined, {
-            shallow: true,
-          });
-        }}
-        task={task}
       />
       <TaskWrapper key={id} onClick={openModal}>
         <TaskInner>

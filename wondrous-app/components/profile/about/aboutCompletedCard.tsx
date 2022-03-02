@@ -1,35 +1,34 @@
-import React from 'react'
-import { IconButton } from '@material-ui/core'
-
-import LikeIcon from '../../Icons/like'
-import CommentsIcon from '../../Icons/comments'
-import ShareIcon from '../../Icons/share'
-import DotsIcon from '../../Icons/dots'
-import { CardHeaderCategory } from '../../CardHeaderCategory'
-import { TaskMedia } from '../../Common/MediaPlayer'
-import { TaskCardLogo } from '../../organization/about/styles'
-import { AvatarList } from '../../Common/AvatarList'
-
-import {
-	CompletedCardFooter,
-	CompletedCardFooterActivity,
-	CompletedCardFooterActivityAmount,
-	CompletedCardFooterActivityIconBtn,
-	CompletedCardFooterBlock,
-	CompletedCardText,
-	CompletedCardTitle,
-	OrganisationsCard,
-	OrganisationsCardHeader,
-} from './styles'
+import { useRouter } from 'next/router';
+import React from 'react';
+import { delQuery } from '../../../utils';
+import { TaskViewModal } from '../../Common/Task/modal';
+import { AboutCompletedTasks } from './styles';
 
 const AboutCompletedCard = (props) => {
-	const { userCompletedTasks } = props
+  const router = useRouter();
+  return (
+    <>
+      <TaskViewModal
+        disableEnforceFocus
+        open={router?.query?.task}
+        shouldFocusAfterRender={false}
+        handleClose={() => {
+          const style = document.body.getAttribute('style');
+          const top = style.match(/(?<=top: -)(.*?)(?=px)/);
+          document.body.setAttribute('style', '');
+          if (top?.length > 0) {
+            window?.scrollTo(0, Number(top[0]));
+          }
+          router.push(`${delQuery(router.asPath)}`, undefined, {
+            shallow: true,
+          });
+        }}
+        taskId={router?.query?.task || router?.query?.taskProposal}
+        isTaskProposal={!!router?.query?.taskProposal}
+      />
+      <AboutCompletedTasks task={props} />;
+    </>
+  );
+};
 
-	if (userCompletedTasks && userCompletedTasks.length === 0) {
-		return null
-	}
-
-	return null
-}
-
-export default AboutCompletedCard
+export default AboutCompletedCard;
