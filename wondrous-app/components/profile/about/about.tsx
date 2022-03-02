@@ -138,12 +138,12 @@ const About = (props) => {
   const {
     orgs = [],
     pods = [],
-    taskCompleted = [],
+    tasksCompleted = [],
     tasksCompletedCount = 0,
   } = useGetUserAboutPage(id ?? userProfileDataId);
   const userOrgsData = orgs.map((org) => <AboutOrganizationsCard key={org.id} {...org} />);
   const userPodsData = pods.map((pod) => <AboutPodsCard {...pod} key={pod.id} />);
-  const userCompletedTasks = taskCompleted; // TODO: @juniusfree add completed tasks
+  const userCompletedTasks = tasksCompleted.map((task) => <AboutCompletedCard {...task} key={task.id} />);
   return (
     <Wrapper userProfileData={userProfileData} mainLink={mainLink}>
       <AboutSection>
@@ -227,11 +227,11 @@ const About = (props) => {
                   <AboutInfoBlockHeaderCount>{tasksCompletedCount}</AboutInfoBlockHeaderCount>
                   <AboutInfoBlockHeaderText>Completed Tasks</AboutInfoBlockHeaderText>
                 </AboutInfoBlockHeaderCountText>
-                {/* <AboutInfoBlockHeaderSeeAll>See all</AboutInfoBlockHeaderSeeAll> */}
+                <AboutInfoSeeAll count={tasksCompletedCount} text="Completed Tasks">
+                  {userCompletedTasks}
+                </AboutInfoSeeAll>
               </AboutInfoBlockHeader>
-              <AboutInfoBlockContent>
-                <AboutCompletedCard userCompletedTasks={userCompletedTasks} />
-              </AboutInfoBlockContent>
+              <AboutInfoBlockContent>{userCompletedTasks.slice(0, 3)}</AboutInfoBlockContent>
             </AboutInfoBlock>
           )}
         </AboutInfoContainer>
