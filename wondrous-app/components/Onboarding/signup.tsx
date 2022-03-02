@@ -11,7 +11,7 @@ import {
 } from './styles';
 import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
 import { useWonderWeb3 } from '../../services/web3';
-import { getUserSigningMessage, walletSignup } from '../Auth/withAuth';
+import { getUserSigningMessage, walletSignup, walletSignin } from '../Auth/withAuth';
 import { useRouter } from 'next/router';
 import { SUPPORTED_CHAINS } from '../../utils/constants';
 import { Button } from '../Common/button';
@@ -65,36 +65,47 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
 
         if (signedMessage) {
           // Sign with Wallet
+          let result;
           try {
-            const result = await walletSignup(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
-            if (result === true) {
-              //
-              redeemOrgInviteLink({
-                variables: {
-                  token,
-                },
-                onCompleted: (data) => {
-                  if (data?.redeemOrgInviteLink?.success) {
-                    router.push(`/onboarding/welcome`, undefined, {
-                      shallow: true,
-                    });
-                  }
-                },
-              });
-            } else {
-              setErrorMessage(result);
-            }
+            result = await walletSignup(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
           } catch (err) {
-            if (
-              err?.graphQLErrors &&
-              (err?.graphQLErrors[0]?.extensions.errorCode === 'org_invite_already_exist' ||
-                err?.graphQLErrors[0]?.extensions.errorCode === 'pod_invite_already_exist')
-            ) {
-              router.push(`/onboarding/welcome`, undefined, {
-                shallow: true,
-              });
+            if (err?.graphQLErrors && err?.graphQLErrors[0]?.extensions.errorCode === 'web3_address_already_exist') {
+              try {
+                result = await walletSignin(wonderWeb3.address, signedMessage);
+              } catch (err) {
+                setErrorMessage(err?.message || err);
+              }
+            } else {
+              setErrorMessage(err?.message || err);
             }
-            setErrorMessage(err?.message || err);
+          }
+          if (result === true) {
+            //
+            redeemOrgInviteLink({
+              variables: {
+                token,
+              },
+              onCompleted: (data) => {
+                if (data?.redeemOrgInviteLink?.success) {
+                  router.push(`/onboarding/welcome`, undefined, {
+                    shallow: true,
+                  });
+                }
+              },
+              onError: (err) => {
+                if (
+                  err?.graphQLErrors &&
+                  (err?.graphQLErrors[0]?.extensions.errorCode === 'org_invite_already_exist' ||
+                    err?.graphQLErrors[0]?.extensions.errorCode === 'pod_invite_already_exist')
+                ) {
+                  router.push(`/onboarding/welcome`, undefined, {
+                    shallow: true,
+                  });
+                }
+              },
+            });
+          } else {
+            setErrorMessage(result);
           }
         } else if (signedMessage === false) {
           setErrorMessage('Signature rejected. Try again.');
