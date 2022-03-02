@@ -26,7 +26,7 @@ const AboutCompletedCard = (props) => {
         taskId={router?.query?.task || router?.query?.taskProposal}
         isTaskProposal={!!router?.query?.taskProposal}
       />
-      <AboutCompletedTasks task={props} />;
+      <AboutCompletedTasks task={props} />
     </>
   );
 };

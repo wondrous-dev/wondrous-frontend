@@ -205,10 +205,10 @@ export const AboutInfoBlockHeaderSeeAllText = styled(Typography)`
 `;
 
 export const AboutInfoBlockContent = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: column;
   margin-top: 10px;
+  align-content: flex-start;
 `;
 
 export const OrganizationsCard = styled.div`
