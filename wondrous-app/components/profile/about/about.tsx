@@ -1,6 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { GET_USER_ABOUT_PAGE_DATA, GET_USER_FROM_USERNAME, GET_USER_PROFILE } from '../../../graphql/queries';
 import {
   SOCIAL_MEDIA_DISCORD,
@@ -133,96 +133,90 @@ const About = (props) => {
   const { id, username } = router.query;
   const userProfileData = useGetUserProfile(id, username);
   const { links, additionalInfo = {}, id: userProfileDataId } = userProfileData;
-  const { social, websites, mainLink } = parseLinks(links);
   const { orgCount, podCount } = additionalInfo;
-  const {
-    orgs = [],
-    pods = [],
-    tasksCompleted = [],
-    tasksCompletedCount = 0,
-  } = useGetUserAboutPage(id ?? userProfileDataId);
-  const userOrgsData = orgs.map((org) => <AboutOrganizationsCard key={org.id} {...org} />);
-  const userPodsData = pods.map((pod) => <AboutPodsCard {...pod} key={pod.id} />);
-  const userCompletedTasks = tasksCompleted.map((task) => <AboutCompletedCard {...task} key={task.id} />);
+  const { orgs, pods, tasksCompleted, tasksCompletedCount = 0 } = useGetUserAboutPage(id ?? userProfileDataId);
+  const userOrgsData = orgs?.map((org) => <AboutOrganizationsCard key={org.id} {...org} />);
+  const userPodsData = pods?.map((pod) => <AboutPodsCard {...pod} key={pod.id} />);
+  const userCompletedTasks = tasksCompleted?.map((task) => <AboutCompletedCard {...task} key={task.id} />);
   const userData = [
     {
-      name: 'DAOs',
+      name: `DAO${orgCount > 1 ? 's' : ''}`,
       count: orgCount,
       data: userOrgsData,
     },
     {
-      name: 'Pods',
+      name: `Pod${podCount > 1 ? 's' : ''}`,
       count: podCount,
       data: userPodsData,
     },
     {
-      name: 'Tasks Completed',
+      name: `Task${tasksCompletedCount > 1 ? 's' : ''} Completed`,
       count: tasksCompletedCount,
       data: userCompletedTasks,
+    },
+  ];
+  const { social, websites, mainLink } = parseLinks(links);
+  const userInfo = [
+    {
+      label: 'Social',
+      data: social.map(({ url, type }) => {
+        const SocialMediaIcon = SOCIAL_MEDIA_ICONS[type];
+        return (
+          <AboutInfoTableRowContentSocialButton key={url}>
+            <a href={url} target="_blank" rel="noreferrer">
+              <SocialMediaIcon />
+            </a>
+          </AboutInfoTableRowContentSocialButton>
+        );
+      }),
+    },
+    {
+      label: 'Links',
+      data: websites.map((link) => (
+        <AboutInfoTableRowContentItem key={link.url}>
+          <AboutInfoTableRowContentItemLink href={link.url} as="a" target="_blank">
+            {formatLinkDisplay(link)}
+          </AboutInfoTableRowContentItemLink>
+        </AboutInfoTableRowContentItem>
+      )),
     },
   ];
   return (
     <Wrapper userProfileData={userProfileData} mainLink={mainLink}>
       <AboutSection>
         <AboutInfoTable>
-          {social.length > 0 && (
-            <AboutInfoTableRow>
-              <AboutInfoTableRowNameBlock>
-                <AboutInfoTableRowTitle>
-                  <SocialIcon />
-                  <AboutInfoTableRowTitleText>Social</AboutInfoTableRowTitleText>
-                </AboutInfoTableRowTitle>
-              </AboutInfoTableRowNameBlock>
-              <AboutInfoTableRowContent>
-                {social.map(({ url, type }) => {
-                  const SocialMediaIcon = SOCIAL_MEDIA_ICONS[type];
-                  return (
-                    <AboutInfoTableRowContentSocialButton key={url}>
-                      <a href={url} target="_blank" rel="noreferrer">
-                        <SocialMediaIcon />
-                      </a>
-                    </AboutInfoTableRowContentSocialButton>
-                  );
-                })}
-              </AboutInfoTableRowContent>
-            </AboutInfoTableRow>
-          )}
-          {websites.length > 0 && (
-            <AboutInfoTableRow>
-              <AboutInfoTableRowNameBlock>
-                <AboutInfoTableRowTitle>
-                  <LinksIcon />
-                  <AboutInfoTableRowTitleText>Links</AboutInfoTableRowTitleText>
-                </AboutInfoTableRowTitle>
-              </AboutInfoTableRowNameBlock>
-              <AboutInfoTableRowContent>
-                {websites.map((link) => (
-                  <AboutInfoTableRowContentItem key={link.url}>
-                    <AboutInfoTableRowContentItemLink href={link.url} as="a" target="_blank">
-                      {formatLinkDisplay(link)}
-                    </AboutInfoTableRowContentItemLink>
-                  </AboutInfoTableRowContentItem>
-                ))}
-              </AboutInfoTableRowContent>
-            </AboutInfoTableRow>
-          )}
+          {userInfo
+            .filter((i) => i.data.length > 0)
+            .map(({ label, data }, i) => (
+              <AboutInfoTableRow key={i}>
+                <AboutInfoTableRowNameBlock>
+                  <AboutInfoTableRowTitle>
+                    <SocialIcon />
+                    <AboutInfoTableRowTitleText>{label}</AboutInfoTableRowTitleText>
+                  </AboutInfoTableRowTitle>
+                </AboutInfoTableRowNameBlock>
+                <AboutInfoTableRowContent>{data}</AboutInfoTableRowContent>
+              </AboutInfoTableRow>
+            ))}
         </AboutInfoTable>
 
         <AboutInfoContainer>
-          {userData.map(({ name, count, data }, i) => (
-            <AboutInfoBlock key={i}>
-              <AboutInfoBlockHeader>
-                <AboutInfoBlockHeaderCountText>
-                  <AboutInfoBlockHeaderCount>{count}</AboutInfoBlockHeaderCount>
-                  <AboutInfoBlockHeaderText>{name}</AboutInfoBlockHeaderText>
-                </AboutInfoBlockHeaderCountText>
-                <AboutInfoSeeAll count={count} text={name}>
-                  {data}
-                </AboutInfoSeeAll>
-              </AboutInfoBlockHeader>
-              <AboutInfoBlockContent>{data.slice(0, 5)}</AboutInfoBlockContent>
-            </AboutInfoBlock>
-          ))}
+          {userData
+            .filter((i) => i.count > 0)
+            .map(({ name, count, data }, i) => (
+              <AboutInfoBlock key={i}>
+                <AboutInfoBlockHeader>
+                  <AboutInfoBlockHeaderCountText>
+                    <AboutInfoBlockHeaderCount>{count}</AboutInfoBlockHeaderCount>
+                    <AboutInfoBlockHeaderText>{name}</AboutInfoBlockHeaderText>
+                  </AboutInfoBlockHeaderCountText>
+                  <AboutInfoSeeAll count={count} text={name}>
+                    {data}
+                  </AboutInfoSeeAll>
+                </AboutInfoBlockHeader>
+                <AboutInfoBlockContent>{data?.slice(0, 5)}</AboutInfoBlockContent>
+              </AboutInfoBlock>
+            ))}
         </AboutInfoContainer>
       </AboutSection>
     </Wrapper>
