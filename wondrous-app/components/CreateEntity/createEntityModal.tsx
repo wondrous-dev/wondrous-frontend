@@ -13,6 +13,7 @@ import {
   PERMISSIONS,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   CHAIN_TO_CHAIN_DIPLAY_NAME,
+  PRIVACY_LEVEL,
 } from '../../utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
@@ -592,10 +593,14 @@ const CreateLayoutBaseModal = (props) => {
           ...(!canCreateTask && {
             proposedAssigneeId: assignee?.value,
           }),
+          ...(publicTask && {
+            privacyLevel: PRIVACY_LEVEL.public,
+          }),
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
+
         if (!title || !descriptionText || !org) {
           const newErrors = { ...errors };
           if (!title) {
@@ -711,6 +716,9 @@ const CreateLayoutBaseModal = (props) => {
           podId: pod,
           mediaUploads,
           dueDate,
+          ...(publicTask && {
+            privacyLevel: PRIVACY_LEVEL.public,
+          }),
         };
         if (canCreateTask) {
           createMilestone({

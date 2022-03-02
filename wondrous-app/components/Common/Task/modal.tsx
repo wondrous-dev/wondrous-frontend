@@ -62,6 +62,7 @@ import {
   TASK_TYPE,
   TASK_STATUS_TODO,
   PAYMENT_STATUS,
+  PRIVACY_LEVEL,
 } from '../../../utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
@@ -1178,7 +1179,13 @@ export const TaskViewModal = (props) => {
                             });
                           }}
                         >
-                          <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.assigneeProfilePicture} />
+                          <SafeImage
+                            style={{
+                              ...displayDivProfileImageStyle,
+                              marginTop: '8px',
+                            }}
+                            src={fetchedTask?.assigneeProfilePicture}
+                          />
                         </div>
                       ) : (
                         <div
@@ -1212,50 +1219,57 @@ export const TaskViewModal = (props) => {
                     </>
                   ) : (
                     <>
-                      {fetchedTask?.orgId && fetchedTask?.orgId in userPermissionsContext?.orgPermissions ? (
+                      {(fetchedTask?.orgId && fetchedTask?.orgId in userPermissionsContext?.orgPermissions) ||
+                      fetchedTask?.privacyLevel === PRIVACY_LEVEL.public ? (
                         <>
                           <TakeTaskButton
                             onClick={() => {
-                              if (isTaskProposal) {
-                                updateTaskProposalAssignee({
-                                  variables: {
-                                    proposalId: fetchedTask?.id,
-                                    assigneeId: user?.id,
-                                  },
-                                  onCompleted: (data) => {
-                                    const taskProposal = data?.updateTaskProposalAssignee;
-                                    if (boardColumns?.setColumns && onCorrectPage) {
-                                      const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
-                                        taskProposal,
-                                        {}
-                                      );
-                                      let columns = [...boardColumns?.columns];
-                                      columns = updateProposalItem(transformedTaskProposal, columns);
-                                      boardColumns?.setColumns(columns);
-                                    }
-                                  },
+                              if (!user) {
+                                router.push('/signup', undefined, {
+                                  shallow: true,
                                 });
                               } else {
-                                updateTaskAssignee({
-                                  variables: {
-                                    taskId: fetchedTask?.id,
-                                    assigneeId: user?.id,
-                                  },
-                                  onCompleted: (data) => {
-                                    const task = data?.updateTaskAssignee;
-                                    const transformedTask = transformTaskToTaskCard(task, {});
-                                    setFetchedTask(transformedTask);
-                                    if (boardColumns?.setColumns && onCorrectPage) {
-                                      let columns = [...boardColumns?.columns];
-                                      if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-                                        columns = updateInProgressTask(transformedTask, columns);
-                                      } else if (transformedTask.status === TASK_STATUS_TODO) {
-                                        columns = updateTaskItem(transformedTask, columns);
+                                if (isTaskProposal) {
+                                  updateTaskProposalAssignee({
+                                    variables: {
+                                      proposalId: fetchedTask?.id,
+                                      assigneeId: user?.id,
+                                    },
+                                    onCompleted: (data) => {
+                                      const taskProposal = data?.updateTaskProposalAssignee;
+                                      if (boardColumns?.setColumns && onCorrectPage) {
+                                        const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
+                                          taskProposal,
+                                          {}
+                                        );
+                                        let columns = [...boardColumns?.columns];
+                                        columns = updateProposalItem(transformedTaskProposal, columns);
+                                        boardColumns?.setColumns(columns);
                                       }
-                                      boardColumns.setColumns(columns);
-                                    }
-                                  },
-                                });
+                                    },
+                                  });
+                                } else {
+                                  updateTaskAssignee({
+                                    variables: {
+                                      taskId: fetchedTask?.id,
+                                      assigneeId: user?.id,
+                                    },
+                                    onCompleted: (data) => {
+                                      const task = data?.updateTaskAssignee;
+                                      const transformedTask = transformTaskToTaskCard(task, {});
+                                      setFetchedTask(transformedTask);
+                                      if (boardColumns?.setColumns && onCorrectPage) {
+                                        let columns = [...boardColumns?.columns];
+                                        if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+                                          columns = updateInProgressTask(transformedTask, columns);
+                                        } else if (transformedTask.status === TASK_STATUS_TODO) {
+                                          columns = updateTaskItem(transformedTask, columns);
+                                        }
+                                        boardColumns.setColumns(columns);
+                                      }
+                                    },
+                                  });
+                                }
                               }
                             }}
                           >
