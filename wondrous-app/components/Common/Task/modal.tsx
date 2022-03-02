@@ -919,6 +919,7 @@ export const TaskViewModal = (props) => {
     height: '26px',
     borderRadius: '13px',
     marginRight: '4px',
+    marginTop: '8px',
     cursor: 'pointer',
   };
   const canApproveProposal =
@@ -1088,12 +1089,7 @@ export const TaskViewModal = (props) => {
               />
               <TaskTitleTextDiv>
                 <TaskTitleText>{fetchedTask?.title}</TaskTitleText>
-                <TaskDescriptionText
-                  style={{
-                    maxWidth: '600px',
-                    overflowX: 'scroll',
-                  }}
-                >
+                <TaskDescriptionText>
                   {renderMentionString({
                     content: fetchedTask?.description,
                     router,
@@ -1306,7 +1302,7 @@ export const TaskViewModal = (props) => {
               ) : (
                 <TaskSectionInfoText
                   style={{
-                    marginLeft: '32px',
+                    marginLeft: '34px',
                     marginTop: '8px',
                   }}
                 >
