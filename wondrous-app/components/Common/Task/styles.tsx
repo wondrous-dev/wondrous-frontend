@@ -4,6 +4,7 @@ import { Grey80, Grey250, White } from '../../../theme/colors';
 import { Typography } from '@material-ui/core';
 import { BaseCard } from '../card';
 import RightArrowIcon from '../../Icons/rightArrow';
+import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 
 export const TaskInner = styled.div`
   display: flex;
@@ -461,5 +462,19 @@ export const ArchivedTaskUndo = styled.span`
   text-decoration: underline;
   :hover {
     cursor: pointer;
+  }
+`;
+
+export const ClaimButton = styled(CreateFormPreviewButton)`
+  && {
+    padding: 4px 8px;
+    margin-left: 0;
+    margin-right: 12px;
+    height: auto;
+
+    :hover {
+      background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+      border: 1px solid #7427ff;
+    }
   }
 `;
