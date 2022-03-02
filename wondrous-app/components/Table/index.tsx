@@ -14,7 +14,13 @@ import {
   TASK_STATUS_REQUESTED,
   TASK_STATUS_TODO,
 } from '../../utils/constants';
-import { cutString, groupBy, parseUserPermissionContext, shrinkNumber } from '../../utils/helpers';
+import {
+  cutString,
+  groupBy,
+  parseUserPermissionContext,
+  shrinkNumber,
+  transformTaskToTaskCard,
+} from '../../utils/helpers';
 import { AvatarList } from '../Common/AvatarList';
 import { DropDown, DropDownItem } from '../Common/dropdown';
 import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton';
@@ -52,7 +58,7 @@ import { CreateModalOverlay } from '../CreateEntity/styles';
 import EditLayoutBaseModal from '../CreateEntity/editEntityModal';
 import { ArchiveTaskModal } from '../Common/ArchiveTaskModal';
 import { useApolloClient, useLazyQuery, useMutation } from '@apollo/client';
-import { UPDATE_TASK_STATUS } from '../../graphql/mutations';
+import { UPDATE_TASK_ASSIGNEE, UPDATE_TASK_STATUS } from '../../graphql/mutations';
 import {
   GET_ORG_TASK_BOARD_TASKS,
   GET_TASK_BY_ID,
@@ -60,7 +66,7 @@ import {
   GET_TASK_SUBMISSIONS_FOR_TASK,
 } from '../../graphql/queries';
 import { SnackbarAlertContext } from '../Common/SnackbarAlert';
-import { ArchivedTaskUndo } from '../Common/Task/styles';
+import { ArchivedTaskUndo, ClaimButton } from '../Common/Task/styles';
 import { OrgBoardContext } from '../../utils/contexts';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
 import { LoadMore } from '../Common/KanbanBoard/styles';
@@ -73,6 +79,8 @@ import { Matic } from '../Icons/matic';
 import { renderMentionString } from '../../utils/common';
 import TaskStatus from '../Icons/TaskStatus';
 import { KudosForm } from '../Common/KudosForm';
+import { updateInProgressTask, updateTaskItem } from '../../utils/board';
+import { Claim } from '../Icons/claimTask';
 
 const DELIVERABLES_ICONS = {
   audio: <AudioIcon />,
@@ -173,7 +181,7 @@ export const Table = (props) => {
       },
     });
   }
-
+  const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
   async function archiveTask(task) {
     const newColumns = [...boardColumns.columns];
     const column = newColumns.find((column) => column.tasks.includes(task));
@@ -316,7 +324,6 @@ export const Table = (props) => {
           {columns.map((column, index) => {
             let tasks = [...column.tasks];
             if (column?.section?.tasks) tasks = [...tasks, ...column?.section?.tasks];
-
             // Don't show archived tasks
             if (column?.section?.title === COLUMN_TITLE_ARCHIVED) {
               tasks = column.tasks;
@@ -326,7 +333,6 @@ export const Table = (props) => {
               if (limit && tasksCount >= limit) {
                 return;
               }
-
               tasksCount++;
               const status = task?.status ?? column?.section?.filter?.taskType ?? column?.status;
               const dropdownItemLabel =
@@ -345,7 +351,18 @@ export const Table = (props) => {
                 permissions.includes(Constants.PERMISSIONS.MANAGE_BOARD) ||
                 permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
                 task?.createdBy === user?.id;
+              if (task?.__typename === 'TaskProposalCard') {
+                console.log('task', task);
+              }
 
+              const username =
+                task?.__typename === 'TaskSubmissionCard' || task?.__typename === 'TaskProposalCard'
+                  ? task?.creatorUsername
+                  : task.assigneeUsername;
+              const userProfilePicture =
+                task?.__typename === 'TaskSubmissionCard' || task?.__typename === 'TaskProposalCard'
+                  ? task?.creatorProfilePicture
+                  : task.assigneeProfilePicture;
               return (
                 <StyledTableRow key={task.id}>
                   <StyledTableCell align="center">
@@ -362,24 +379,71 @@ export const Table = (props) => {
                     ) : null}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {task.assigneeProfilePicture ? (
-                      <AvatarList
-                        align="center"
-                        users={[
-                          {
-                            avatar: {
-                              url: task.assigneeProfilePicture,
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      {userProfilePicture && (
+                        <AvatarList
+                          align="center"
+                          users={[
+                            {
+                              avatar: {
+                                url: userProfilePicture,
+                              },
+                              id: username,
+                              initials: username,
                             },
-                            id: task.assigneeUsername,
-                            initials: task.assigneeUsername,
-                          },
-                        ]}
-                      />
-                    ) : (
-                      <Link passHref={true} href={`/profile/${task?.assigneeUsername ?? task?.creatorUsername}/about`}>
-                        <Initials>{task?.assigneeUsername ?? task?.creatorUsername}</Initials>
+                          ]}
+                        />
+                      )}
+                      <Link passHref={true} href={`/profile/${username}/about`}>
+                        <Initials>{username}</Initials>
                       </Link>
-                    )}
+                    </div>
+                    {!task?.assigneeId &&
+                      (status === TASK_STATUS_TODO || status === TASK_STATUS_IN_PROGRESS) &&
+                      task?.type === 'task' && (
+                        <>
+                          <ClaimButton
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              updateTaskAssignee({
+                                variables: {
+                                  taskId: task?.id,
+                                  assigneeId: user?.id,
+                                },
+                                onCompleted: (data) => {
+                                  const task = data?.updateTaskAssignee;
+                                  const transformedTask = transformTaskToTaskCard(task, {});
+                                  if (board?.setColumns) {
+                                    let columns = [...board?.columns];
+                                    if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
+                                      columns = updateInProgressTask(transformedTask, columns);
+                                    } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
+                                      columns = updateTaskItem(transformedTask, columns);
+                                    }
+                                    board.setColumns(columns);
+                                  }
+                                },
+                              });
+                            }}
+                          >
+                            <Claim />
+                            <span
+                              style={{
+                                marginLeft: '4px',
+                              }}
+                            >
+                              Claim
+                            </span>
+                          </ClaimButton>
+                        </>
+                      )}
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     <TaskStatus status={status} />
