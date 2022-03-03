@@ -123,5 +123,6 @@ export const KudosFormSubmitButtonText = styled(Typography)`
     font-size: 16px;
     font-style: normal;
     font-weight: 500;
+    color: #ffffff;
   }
 `;
