@@ -38,7 +38,7 @@ const Wrapper = (props) => {
   const { firstName, lastName, username, bio, additionalInfo = {}, profilePicture } = userProfileData;
   const { orgCount, podCount } = additionalInfo;
   const viewingSelf = userProfileData?.id === loggedInUser?.id;
-  const fullName = `${firstName} ${lastName}`;
+  const fullName = firstName && lastName ? `${firstName} ${lastName}` : username;
   const style = {
     width: '96px',
     height: '96px',
