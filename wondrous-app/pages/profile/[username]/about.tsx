@@ -1,13 +1,13 @@
 import { useLazyQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
+import styled from 'styled-components';
 import { withAuth } from '../../../components/Auth/withAuth';
 import { UserAboutInfo } from '../../../components/Common/UserAboutInfo';
 import { UserLinksTable } from '../../../components/Common/UserLinksTable';
 import Wrapper from '../../../components/profile/wrapper/wrapper';
 import { GET_USER_FROM_USERNAME, GET_USER_PROFILE } from '../../../graphql/queries';
 import { parseLinks } from '../../../utils/common';
-import styled from 'styled-components';
 
 export const AboutSection = styled.div`
   max-width: 1038px;
@@ -43,11 +43,11 @@ const About = (props) => {
   const { username, id: routerId } = router.query;
   const userProfile = useGetUserProfile(routerId, username);
   const { links, id: userProfileId } = userProfile;
-  const { social, websites, mainLink } = parseLinks(links);
+  const parsedLinks = parseLinks(links);
   return (
-    <Wrapper userProfileData={userProfile} mainLink={mainLink}>
+    <Wrapper userProfileData={userProfile} mainLink={parsedLinks?.mainLink}>
       <AboutSection>
-        <UserLinksTable parsedLinks={{ social, websites }} />
+        <UserLinksTable parsedLinks={parsedLinks} />
         <UserAboutInfo id={userProfileId} />
       </AboutSection>
     </Wrapper>
