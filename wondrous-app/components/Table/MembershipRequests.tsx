@@ -59,7 +59,6 @@ import {
   GET_TASK_REVIEWERS,
   GET_TASK_SUBMISSIONS_FOR_TASK,
 } from '../../graphql/queries';
-import { SnackbarAlertContext } from '../Common/SnackbarAlert';
 import { ArchivedTaskUndo } from '../Common/Task/styles';
 import { OrgBoardContext } from '../../utils/contexts';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
@@ -91,9 +90,6 @@ export const MembershipRequestTable = (props) => {
   const router = useRouter();
 
   const [ref, inView] = useInView({});
-  const snackbarContext = useContext(SnackbarAlertContext);
-  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
-  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const orgBoardContext = useContext(OrgBoardContext);
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();

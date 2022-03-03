@@ -1,8 +1,8 @@
 import { useMutation } from '@apollo/client';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CREATE_POST, UPDATE_POST } from '../../../graphql/mutations/post';
 import { ObjectType, PostType, PostVerbType } from '../../../types/post';
-import { SnackbarAlertContext } from '../SnackbarAlert';
+import { useSnackbarAlert } from '../SnackbarAlert';
 import {
   KudosFormBackground,
   KudosFormBorder,
@@ -15,17 +15,17 @@ import {
   KudosFormHeaderText,
   KudosFormModal,
   KudosFormSubmitButton,
+  KudosFormSubmitButtonText,
   KudosFormTextarea,
   KudosFormTextareaCharacterCount,
   KudosFormTextareaWrapper,
-  KudosFormSubmitButtonText,
 } from './styles';
 
 const maxLength = 380;
 
 export const KudosForm = (props) => {
   const { open, onClose, submission, existingContent, id } = props;
-  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
+  const [setSnackbarAlert] = useSnackbarAlert();
   const [textarea, setTextarea] = useState('');
   const [characterCount, setCharacterCount] = useState(0);
   const [error, setError] = useState(false);
@@ -61,8 +61,10 @@ export const KudosForm = (props) => {
       })
         .then(() => {
           handleOnClose();
-          setSnackbarAlertOpen(true);
-          setSnackbarAlertMessage('Kudos updated successfully.');
+          setSnackbarAlert({
+            message: 'Kudos updated successfully.',
+            open: true,
+          });
         })
         .catch((err) => console.log(err));
     } else {
@@ -72,8 +74,10 @@ export const KudosForm = (props) => {
       })
         .then(() => {
           handleOnClose();
-          setSnackbarAlertOpen(true);
-          setSnackbarAlertMessage('Kudos posted successfully.');
+          setSnackbarAlert({
+            message: 'Kudos posted successfully.',
+            open: true,
+          });
         })
         .catch((err) => console.log(err));
     }
