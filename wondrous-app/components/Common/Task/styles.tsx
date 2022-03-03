@@ -72,6 +72,8 @@ export const TaskContent = styled.div`
   color: ${White};
   white-space: pre-line;
   cursor: pointer;
+  max-width: 270px;
+  overflow-x: hidden;
 `;
 
 export const TaskSeparator = styled.div`
@@ -358,6 +360,7 @@ export const TaskSectionContent = styled.div`
   text-align: center;
   padding-top: 16px;
   padding-bottom: 20px;
+  max-width: 630px;
 `;
 export const MakeSubmissionDiv = styled.div`
   background: #0f0f0f;
@@ -430,7 +433,7 @@ export const TaskSubmissionLink = styled(TaskLink)`
   && {
     margin-top: 8px;
     margin-left: 8px;
-    max-width: 600px;
+    max-width: 500px;
     overflow-x: scroll;
   }
 `;

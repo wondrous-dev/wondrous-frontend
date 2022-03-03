@@ -14,6 +14,7 @@ import {
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
+  PRIVACY_LEVEL
 } from '../../utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
@@ -436,6 +437,10 @@ const EditLayoutBaseModal = (props) => {
     existingTask?.userId === board?.userId;
 
   useEffect(() => {
+    setPublicTask(existingTask?.privacyLevel === PRIVACY_LEVEL.public)
+  }, [existingTask?.privacyLevel])
+
+  useEffect(() => {
     if (existingTask?.orgId) {
       // If you're only part of one dao then just set that as default
       setOrg(existingTask?.orgId);
@@ -590,10 +595,12 @@ const EditLayoutBaseModal = (props) => {
           ...(isTaskProposal && {
             proposedAssigneeId: assignee?.value,
           }),
+          privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
           reviewerIds: selectedReviewers.map(({ id }) => id) || [],
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
+
         if (!title || !descriptionText) {
           const newErrors = { ...errors };
           if (!title) {
@@ -629,6 +636,7 @@ const EditLayoutBaseModal = (props) => {
             input: {
               title,
               description: descriptionText,
+              privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
               dueDate,
               orgId: org?.id,
               podId: pod?.id,
@@ -658,6 +666,7 @@ const EditLayoutBaseModal = (props) => {
     rewardsCurrency,
     updateMilestone,
     selectedReviewers,
+    publicTask
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
@@ -1198,6 +1207,7 @@ const EditLayoutBaseModal = (props) => {
                     <AndroidSwitch
                       checked={publicTask}
                       onChange={(e) => {
+                        console.log('e.target', e.target.checked)
                         setPublicTask(e.target.checked);
                       }}
                     />

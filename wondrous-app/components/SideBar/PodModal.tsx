@@ -51,7 +51,11 @@ const PodListCard = (props) => {
           />
           <TaskTitle>{pod?.name}</TaskTitle>
         </TaskHeader>
-        <TaskContent>
+        <TaskContent
+          style={{
+            maxWidth: 'none',
+          }}
+        >
           <p>
             {renderMentionString({
               content: cutString(pod?.description),

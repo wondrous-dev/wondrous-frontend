@@ -295,7 +295,7 @@ const SubmissionItem = (props) => {
           }}
         >
           <ImageIcon />
-          <TaskSectionDisplayText style={textStyle}>Files</TaskSectionDisplayText>
+          <TaskSectionDisplayText>Files</TaskSectionDisplayText>
         </TaskSectionDisplayLabel>
         <TaskSectionInfoDiv>
           {mediaUploads?.length > 0 ? (
@@ -316,7 +316,7 @@ const SubmissionItem = (props) => {
           }}
         >
           <LinkIcon />
-          <TaskSectionDisplayText style={textStyle}>Link </TaskSectionDisplayText>
+          <TaskSectionDisplayText>Link </TaskSectionDisplayText>
         </TaskSectionDisplayLabel>
         {submission?.links && submission?.links[0]?.url ? (
           <TaskSubmissionLink href={submission?.links[0]?.url}>{submission?.links[0]?.url}</TaskSubmissionLink>
