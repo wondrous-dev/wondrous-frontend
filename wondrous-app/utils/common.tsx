@@ -87,3 +87,41 @@ export const GetStatusIcon = (props) => {
   }
   return null;
 };
+
+export const parseLinks = (links) => {
+  /**
+   * parse links from backend into social links, websites, and main
+   */
+  const SOCIAL_LINKS = ['twitter', 'discord', 'instagram', 'github', 'linkedin', 'spotify', 'opensea', 'facebook'];
+  if (!links) {
+    return {
+      social: [],
+      websites: [],
+      mainLink: null,
+    };
+  }
+  let mainLink = null;
+  const socialLinks = [];
+  const websites = [];
+  for (const link of links) {
+    if (!link.type || link.type === 'website') {
+      websites.push(link);
+    } else if (SOCIAL_LINKS.includes(link.type)) {
+      socialLinks.push(link);
+    } else if (link.type === 'main') {
+      mainLink = link;
+    }
+  }
+  if (mainLink === null) {
+    if (websites.length > 0) {
+      mainLink = websites[0];
+    } else if (socialLinks.length > 0) {
+      mainLink = socialLinks[0];
+    }
+  }
+  return {
+    social: socialLinks,
+    websites: websites,
+    mainLink: mainLink,
+  };
+};

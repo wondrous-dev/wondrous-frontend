@@ -35,6 +35,15 @@ export const CreateModalOverlay = styled(Modal)`
   align-items: center;
   justify-content: center;
   padding-top: 50px;
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 `;
 
 export const CreateLayoutsModal = styled(BaseCard)`

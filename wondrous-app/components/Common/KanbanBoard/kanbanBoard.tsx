@@ -215,7 +215,7 @@ const KanbanBoard = (props) => {
               window?.scrollTo(0, Number(top[0]));
             }
             setOpenModal(false);
-            router.replace(`${delQuery(router.asPath)}?view=${router?.query?.view}`);
+            router.replace(`${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}`);
           }}
           taskId={router?.query?.task || router?.query?.taskProposal}
           isTaskProposal={!!router?.query?.taskProposal}
