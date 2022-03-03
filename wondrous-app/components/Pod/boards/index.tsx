@@ -229,7 +229,8 @@ const Boards = (props: Props) => {
       </>
     ) : null;
   }
-
+  const userInOrg =
+    board?.orgId && board?.userPermissionsContext && board?.orgId in board?.userPermissionsContext?.orgPermissions;
   function renderSearchResults() {
     return (
       <>
@@ -289,34 +290,36 @@ const Boards = (props: Props) => {
         <BoardsActivity>
           <SearchTasks onSearch={onSearch} />
           <Filter filterSchema={filterSchema} onChange={onFilterChange} />
-          <CreateFormPreviewButton
-            style={{
-              width: '230px',
-              borderRadius: '8px',
-              fontSize: '14px',
-            }}
-            onClick={() => {
-              if (boardType !== PRIVACY_LEVEL.public) {
-                router.push({
-                  pathname: router.pathname,
-                  query: {
-                    ...router.query,
-                    boardType: PRIVACY_LEVEL.public,
-                  },
-                });
-              } else {
-                router.push({
-                  pathname: router.pathname,
-                  query: {
-                    ...router.query,
-                    boardType: 'all',
-                  },
-                });
-              }
-            }}
-          >
-            {boardType === PRIVACY_LEVEL.public ? 'View all' : 'View public'}
-          </CreateFormPreviewButton>
+          {userInOrg && (
+            <CreateFormPreviewButton
+              style={{
+                width: '230px',
+                borderRadius: '8px',
+                fontSize: '14px',
+              }}
+              onClick={() => {
+                if (boardType !== PRIVACY_LEVEL.public) {
+                  router.push({
+                    pathname: router.pathname,
+                    query: {
+                      podId: router.query.podId,
+                      boardType: PRIVACY_LEVEL.public,
+                    },
+                  });
+                } else {
+                  router.push({
+                    pathname: router.pathname,
+                    query: {
+                      podId: router.query.podId,
+                      boardType: 'all',
+                    },
+                  });
+                }
+              }}
+            >
+              {boardType === PRIVACY_LEVEL.public ? 'View all' : 'View public'}
+            </CreateFormPreviewButton>
+          )}
           {view && !searchQuery ? <ToggleViewButton options={listViewOptions} /> : null}
         </BoardsActivity>
 

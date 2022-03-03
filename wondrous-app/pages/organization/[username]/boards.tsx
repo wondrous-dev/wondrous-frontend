@@ -254,6 +254,9 @@ const BoardsPage = () => {
             statuses: [STATUS_OPEN],
             offset: 0,
             limit: LIMIT,
+            ...(boardType === PRIVACY_LEVEL.public && {
+              onlyPublic: true,
+            }),
           },
         });
 
@@ -263,6 +266,9 @@ const BoardsPage = () => {
             statuses: [STATUS_OPEN],
             offset: 0,
             limit: LIMIT,
+            ...(boardType === PRIVACY_LEVEL.public && {
+              onlyPublic: true,
+            }),
           },
         });
 
@@ -285,6 +291,9 @@ const BoardsPage = () => {
         offset: 0,
         limit: LIMIT,
         searchString,
+        ...(boardType === PRIVACY_LEVEL.public && {
+          onlyPublic: true,
+        }),
       },
     };
 

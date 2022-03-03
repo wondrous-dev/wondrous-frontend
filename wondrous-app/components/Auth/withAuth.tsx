@@ -18,7 +18,13 @@ import {
 import { useRouter } from 'next/router';
 
 const MyContext = React.createContext(null);
-const EXCLUDED_PATHS = ['/invite/[token]', '/organization/[username]/boards', '/login'];
+const EXCLUDED_PATHS = [
+  '/invite/[token]',
+  '/organization/[username]/boards',
+  '/organization/[username]/about',
+  '/login',
+  '/pod/[podId]/boards',
+];
 
 export const useMe = () => {
   return useContext(MyContext);

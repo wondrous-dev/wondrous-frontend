@@ -158,6 +158,9 @@ const BoardsPage = () => {
                 offset: 0,
                 limit: 100,
                 searchString: search,
+                ...(boardType === PRIVACY_LEVEL.public && {
+                  onlyPublic: true,
+                }),
               },
             },
           };
@@ -171,6 +174,9 @@ const BoardsPage = () => {
                 // Needed to exclude proposals
                 statuses: DEFAULT_STATUS_ARR,
                 searchString: search,
+                ...(boardType === PRIVACY_LEVEL.public && {
+                  onlyPublic: true,
+                }),
               },
             },
           };
@@ -214,6 +220,9 @@ const BoardsPage = () => {
               statuses: [STATUS_OPEN],
               offset: 0,
               limit: LIMIT,
+              ...(boardType === PRIVACY_LEVEL.public && {
+                onlyPublic: true,
+              }),
             },
           },
         });
@@ -224,6 +233,9 @@ const BoardsPage = () => {
               statuses: [STATUS_OPEN],
               offset: 0,
               limit: LIMIT,
+              ...(boardType === PRIVACY_LEVEL.public && {
+                onlyPublic: true,
+              }),
             },
           },
         });

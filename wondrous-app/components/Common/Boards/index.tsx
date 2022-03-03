@@ -22,7 +22,7 @@ import { OrgPod } from '../../../types/pod';
 import { Chevron } from '../../Icons/sections';
 import { splitColsByType } from '../../../services/board';
 import { ViewType } from '../../../types/common';
-import { useSelectMembership } from '../../../utils/hooks';
+import { useSelectMembership, useOrgBoard } from '../../../utils/hooks';
 import { PRIVACY_LEVEL } from '../../../utils/constants';
 import { MembershipRequestTable } from '../../Table/MembershipRequests';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
@@ -47,6 +47,7 @@ const Boards = (props: Props) => {
   const selectMembershipHook = useSelectMembership();
   const { boardType } = router.query;
   const selectMembershipRequests = selectMembershipHook?.selectMembershipRequests;
+  const orgBoard = useOrgBoard();
   useEffect(() => {
     if (router.isReady) {
       setView((router.query.view || ViewType.Grid) as ViewType);
@@ -64,6 +65,11 @@ const Boards = (props: Props) => {
     setTotalCount(totalCount);
     setSearchResults(splitCols);
   }, [columns]);
+
+  const userInOrg =
+    orgBoard?.orgId &&
+    orgBoard?.userPermissionsContext &&
+    orgBoard?.orgId in orgBoard?.userPermissionsContext?.orgPermissions;
 
   const listViewOptions = [
     {
@@ -155,34 +161,37 @@ const Boards = (props: Props) => {
       <BoardsActivity>
         <SearchTasks onSearch={onSearch} />
         <Filter filterSchema={filterSchema} onChange={onFilterChange} />
-        <CreateFormPreviewButton
-          style={{
-            width: '230px',
-            borderRadius: '8px',
-            fontSize: '14px',
-          }}
-          onClick={() => {
-            if (boardType !== PRIVACY_LEVEL.public) {
-              router.push({
-                pathname: router.pathname,
-                query: {
-                  ...router.query,
-                  boardType: PRIVACY_LEVEL.public,
-                },
-              });
-            } else {
-              router.push({
-                pathname: router.pathname,
-                query: {
-                  ...router.query,
-                  boardType: 'all',
-                },
-              });
-            }
-          }}
-        >
-          {boardType === PRIVACY_LEVEL.public ? 'View all' : 'View public'}
-        </CreateFormPreviewButton>
+        {userInOrg && orgBoard && (
+          <CreateFormPreviewButton
+            style={{
+              width: '230px',
+              borderRadius: '8px',
+              fontSize: '14px',
+            }}
+            onClick={() => {
+              if (boardType !== PRIVACY_LEVEL.public) {
+                router.push({
+                  pathname: router.pathname,
+                  query: {
+                    username: router.query.username,
+                    boardType: PRIVACY_LEVEL.public,
+                  },
+                });
+              } else {
+                router.push({
+                  pathname: router.pathname,
+                  query: {
+                    username: router.query.username,
+                    boardType: 'all',
+                  },
+                });
+              }
+            }}
+          >
+            {boardType === PRIVACY_LEVEL.public ? 'View all' : 'View public'}
+          </CreateFormPreviewButton>
+        )}
+
         {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
       </BoardsActivity>
       {selectMembershipRequests && (

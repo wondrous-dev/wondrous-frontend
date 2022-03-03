@@ -240,7 +240,13 @@ const Wrapper = (props) => {
                       </>
                     )}
                     {permissions === ORG_PERMISSIONS.CONTRIBUTOR && (
-                      <HeaderSettingsLockedButton>Settings</HeaderSettingsLockedButton>
+                      <HeaderSettingsLockedButton
+                        style={{
+                          visibility: 'hidden',
+                        }}
+                      >
+                        Settings
+                      </HeaderSettingsLockedButton>
                     )}
                     {/* {!permissions && (
                       <HeaderContributeButton>
