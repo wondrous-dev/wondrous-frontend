@@ -499,3 +499,8 @@ export const ClaimButton = styled(CreateFormPreviewButton)`
     }
   }
 `;
+
+export const TaskUserDiv = styled.div`
+  display: flex;
+  align-items: center;
+`;
