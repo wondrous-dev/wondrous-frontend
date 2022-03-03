@@ -274,6 +274,15 @@ export const TaskDescriptionText = styled(Typography)`
     white-space: pre-line;
     max-width: 600px;
     overflow-x: scroll;
+    &::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 `;
 
@@ -435,6 +444,15 @@ export const TaskSubmissionLink = styled(TaskLink)`
     margin-left: 8px;
     max-width: 500px;
     overflow-x: scroll;
+    &::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 `;
 
