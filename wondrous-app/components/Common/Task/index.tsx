@@ -50,20 +50,21 @@ import {
   SubtaskCountWrapper,
   SubtaskCount,
   TaskContentFooter,
+  ClaimButton,
 } from './styles';
 import { renderMentionString } from '../../../utils/common';
 import { useRouter } from 'next/router';
 import { Typography } from '@material-ui/core';
 import { SafeImage } from '../Image';
-import { parseUserPermissionContext, cutString } from '../../../utils/helpers';
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
+import { parseUserPermissionContext, cutString, transformTaskToTaskCard } from '../../../utils/helpers';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
 import { White } from '../../../theme/colors';
 import { TaskViewModal } from './modal';
 import { useMe } from '../../Auth/withAuth';
 import { delQuery } from '../../../utils';
 import { TaskSummaryAction } from '../TaskSummary/styles';
 import { Arrow, Archived } from '../../Icons/sections';
-import { UPDATE_TASK_STATUS } from '../../../graphql/mutations/task';
+import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE } from '../../../graphql/mutations/task';
 import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries';
 import { OrgBoardContext } from '../../../utils/contexts';
 import { MilestoneLaunchedBy } from '../MilestoneLaunchedBy';
@@ -72,6 +73,9 @@ import { MilestoneWrapper } from '../Milestone';
 import PodIcon from '../../Icons/podIcon';
 import { SubtaskDarkIcon } from '../../Icons/subtask';
 import { CheckedBoxIcon } from '../../Icons/checkedBox';
+
+import { Claim } from '../../Icons/claimTask';
+import { updateInProgressTask, updateTaskItem } from '../../../utils/board';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -105,11 +109,13 @@ export const Task = (props) => {
     commentCount,
   } = task;
   const router = useRouter();
+  const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
   let { likes = 0, comments = 0, shares = 0, iLiked = false, iCommented = false, iShared = false } = actions || {};
   // Need to understand context
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
+  const boardColumns = useColumns();
   const user = useMe();
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
@@ -147,7 +153,7 @@ export const Task = (props) => {
 
   const totalSubtask = task?.totalSubtaskCount;
   const completedSubtask = task?.completedSubtaskCount;
-
+  const [claimed, setClaimed] = useState(false);
   const handleNewStatus = useCallback(
     (newStatus) => {
       orgBoard?.setFirstTimeFetch(false);
@@ -301,6 +307,18 @@ export const Task = (props) => {
               <AvatarList users={userList} id={'task-' + task?.id} />
               {isSubtask && <SubtaskDarkIcon />}
               {!isSubtask && !isMilestone && totalSubtask > 0 && <CheckedBoxIcon />}
+              {task?.privacyLevel === Constants.PRIVACY_LEVEL.public && (
+                <PodWrapper>
+                  <PodName
+                    style={{
+                      borderRadius: '8px',
+                      marginLeft: '4px',
+                    }}
+                  >
+                    Public
+                  </PodName>
+                </PodWrapper>
+              )}
             </TaskHeaderIconWrapper>
             {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
           </TaskHeader>
@@ -311,7 +329,7 @@ export const Task = (props) => {
             <TaskTitle>{title}</TaskTitle>
             <p>
               {renderMentionString({
-                content: cutString(description),
+                content: cutString(description, 50),
                 router,
               })}
             </p>
@@ -352,6 +370,60 @@ export const Task = (props) => {
 						<TaskLikeIcon liked={liked} />
 						<TaskActionAmount>{likes}</TaskActionAmount>
 					</TaskAction> */}
+            {!assigneeId && (
+              <>
+                {claimed ? (
+                  <ClaimButton
+                    style={{
+                      background: 'linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%)',
+                      border: '1px solid #7427ff',
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                  >
+                    Claimed
+                  </ClaimButton>
+                ) : (
+                  <ClaimButton
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      updateTaskAssignee({
+                        variables: {
+                          taskId: id,
+                          assigneeId: user?.id,
+                        },
+                        onCompleted: (data) => {
+                          setClaimed(true);
+                          const task = data?.updateTaskAssignee;
+                          const transformedTask = transformTaskToTaskCard(task, {});
+                          if (boardColumns?.setColumns) {
+                            let columns = [...boardColumns?.columns];
+                            if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
+                              columns = updateInProgressTask(transformedTask, columns);
+                            } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
+                              columns = updateTaskItem(transformedTask, columns);
+                            }
+                            boardColumns.setColumns(columns);
+                          }
+                        },
+                      });
+                    }}
+                  >
+                    <Claim />
+                    <span
+                      style={{
+                        marginLeft: '4px',
+                      }}
+                    >
+                      Claim
+                    </span>
+                  </ClaimButton>
+                )}
+              </>
+            )}
             {!isMilestone && (
               <TaskAction key={'task-comment-' + id}>
                 <TaskCommentIcon />

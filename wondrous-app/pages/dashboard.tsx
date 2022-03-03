@@ -6,6 +6,7 @@ import DashboardPanel from '../components/Common/DashboardPanel';
 import Boards from '../components/Dashboard/boards';
 import Wrapper from '../components/Dashboard/wrapper';
 import { ViewType } from '../types/common';
+import { SelectMembershipContext } from '../utils/contexts';
 
 const DashboardPanelWrapper = styled.div`
   margin-top: -140px;
@@ -19,16 +20,33 @@ const BoardsWrapper = styled.div`
 
 const Dashboard = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
+  const [selectMembershipRequests, setSelectMembershipRequests] = useState(false);
   const router = useRouter();
   const isAdmin = router.query.view === ViewType.Admin;
   return (
     <Wrapper>
-      <DashboardPanelWrapper>
-        <DashboardPanel isAdmin={isAdmin} selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />
-      </DashboardPanelWrapper>
-      <BoardsWrapper>
-        <Boards isAdmin={isAdmin} selectedStatus={selectedStatus} />
-      </BoardsWrapper>
+      <SelectMembershipContext.Provider
+        value={{
+          selectMembershipRequests,
+          setSelectMembershipRequests,
+        }}
+      >
+        <DashboardPanelWrapper>
+          <DashboardPanel
+            isAdmin={isAdmin}
+            selectedStatus={selectedStatus}
+            setSelectedStatus={setSelectedStatus}
+            setSelectMembershipRequests={setSelectMembershipRequests}
+          />
+        </DashboardPanelWrapper>
+        <BoardsWrapper>
+          <Boards
+            isAdmin={isAdmin}
+            selectedStatus={selectedStatus}
+            selectMembershipRequests={selectMembershipRequests}
+          />
+        </BoardsWrapper>
+      </SelectMembershipContext.Provider>
     </Wrapper>
   );
 };

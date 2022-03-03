@@ -72,6 +72,7 @@ export const GET_ORG_TASK_BOARD_TASKS = gql`
     $podIds: [String]
     $limit: Int
     $offset: Int
+    $onlyPublic: Boolean
   ) {
     getOrgTaskBoardTasks(
       input: {
@@ -81,6 +82,7 @@ export const GET_ORG_TASK_BOARD_TASKS = gql`
         podIds: $podIds
         limit: $limit
         offset: $offset
+        onlyPublic: $onlyPublic
       }
     ) {
       ...TaskCardFragment

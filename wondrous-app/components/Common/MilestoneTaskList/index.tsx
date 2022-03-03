@@ -1,5 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';
 import { GET_TASK_FOR_MILESTONE } from '../../../graphql/queries';
 import * as Constants from '../../../utils/constants';
@@ -84,24 +85,35 @@ export const MilestoneTaskList = (props) => {
             {data?.getTasksForMilestone.map((task) => {
               const StatusIcon = TASK_ICONS[task.status];
               return (
-                <StyledTableRow key={task.id}>
-                  <StyledTableCell>
-                    <TableCellWrapper>
-                      <SmallAvatar
-                        id={task.assigneeId}
-                        avatar={task.assignee?.profilePicture ?? {}}
-                        initials={task.assignee?.username?.slice(0, 2)}
-                      />
-                    </TableCellWrapper>
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    <StatusIcon />
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <TaskTitle>{task.title}</TaskTitle>
-                    <TaskDescription>{task.description}</TaskDescription>
-                  </StyledTableCell>
-                </StyledTableRow>
+                <Link
+                  key={task?.id}
+                  href={`/organization/${task?.orgUsername || task?.org?.username}/boards?task=${task?.id}`}
+                  passHref={true}
+                >
+                  <StyledTableRow
+                    key={task.id}
+                    style={{
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <StyledTableCell>
+                      <TableCellWrapper>
+                        <SmallAvatar
+                          id={task.assigneeId}
+                          avatar={task.assignee?.profilePicture ?? {}}
+                          initials={task.assignee?.username?.slice(0, 2)}
+                        />
+                      </TableCellWrapper>
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <StatusIcon />
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <TaskTitle>{task.title}</TaskTitle>
+                      <TaskDescription>{task.description}</TaskDescription>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                </Link>
               );
             })}
           </StyledTableBody>

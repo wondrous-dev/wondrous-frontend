@@ -14,6 +14,7 @@ import {
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
+  PRIVACY_LEVEL
 } from '../../utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
@@ -335,6 +336,7 @@ const EditLayoutBaseModal = (props) => {
   const [rewardsCurrency, setRewardsCurrency] = useState(initialCurrency);
   const [rewardsAmount, setRewardsAmount] = useState(initialAmount);
   const [title, setTitle] = useState(existingTask?.title);
+  const [publicTask, setPublicTask] = useState(existingTask?.privacyLevel === 'public');
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
@@ -433,6 +435,10 @@ const EditLayoutBaseModal = (props) => {
     existingTask?.orgId === board?.orgId ||
     existingTask?.podId === board?.podId ||
     existingTask?.userId === board?.userId;
+
+  useEffect(() => {
+    setPublicTask(existingTask?.privacyLevel === PRIVACY_LEVEL.public)
+  }, [existingTask?.privacyLevel])
 
   useEffect(() => {
     if (existingTask?.orgId) {
@@ -589,10 +595,12 @@ const EditLayoutBaseModal = (props) => {
           ...(isTaskProposal && {
             proposedAssigneeId: assignee?.value,
           }),
+          privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
           reviewerIds: selectedReviewers.map(({ id }) => id) || [],
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
+
         if (!title || !descriptionText) {
           const newErrors = { ...errors };
           if (!title) {
@@ -628,6 +636,7 @@ const EditLayoutBaseModal = (props) => {
             input: {
               title,
               description: descriptionText,
+              privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
               dueDate,
               orgId: org?.id,
               podId: pod?.id,
@@ -657,6 +666,7 @@ const EditLayoutBaseModal = (props) => {
     rewardsCurrency,
     updateMilestone,
     selectedReviewers,
+    publicTask
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
@@ -1180,12 +1190,28 @@ const EditLayoutBaseModal = (props) => {
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
                   </LocalizationProvider>
-                  {/* <DropdownSelect
-                    title="Connect to Milestone"
-                    labelText="Choose Milestone"
-                    options={MILESTONE_SELECT_OPTION}
-                    name="connect-to-milestone"
-                  /> */}
+                  <CreateFormAddDetailsSwitch
+                    style={{
+                      width: '100%',
+                      marginLeft: '20px',
+                    }}
+                  >
+                    <CreateFormAddDetailsInputLabel
+                      style={{
+                        marginBottom: '16px',
+                        marginLeft: '8px',
+                      }}
+                    >
+                      Show task as public
+                    </CreateFormAddDetailsInputLabel>
+                    <AndroidSwitch
+                      checked={publicTask}
+                      onChange={(e) => {
+                        console.log('e.target', e.target.checked)
+                        setPublicTask(e.target.checked);
+                      }}
+                    />
+                  </CreateFormAddDetailsSwitch>
                 </CreateFormAddDetailsSelects>
 
                 {/* <CreateFormAddDetailsSelects> */}

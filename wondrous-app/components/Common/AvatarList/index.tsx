@@ -6,7 +6,7 @@ import { SafeImage } from '../Image';
 import { useRouter } from 'next/router';
 
 export const SmallAvatar = (props) => {
-  const { avatar = {}, id, goTo, initials = '', style = {} } = props;
+  const { avatar = {}, id, username, goTo, initials = '', style = {} } = props;
 
   //TODO: create this as a service
   const colorValues = Object.values(Colors);
@@ -16,7 +16,7 @@ export const SmallAvatar = (props) => {
     <SmallAvatarContainer
       key={id}
       onClick={() => {
-        goTo(id);
+        goTo(username);
       }}
       style={{ ...style, zIndex: 6 - (style.zIndex || 0) }}
     >
@@ -65,8 +65,10 @@ export const AvatarList = (props) => {
   let usersSieged = users.slice(0, AVATAR_LIST_OVERFLOW_MAX);
   let overflow = users.length - usersSieged.length;
 
-  const goToUser = (userId) => {
-    router.push(`/profile/${userId}/about`);
+  const goToUser = (username) => {
+    router.push(`/profile/${username}/about`, undefined, {
+      shallow: true,
+    });
   };
 
   return (
@@ -74,6 +76,7 @@ export const AvatarList = (props) => {
       {usersSieged.map((user, index) => (
         <SmallAvatar
           id={user.id}
+          username={user.username || user?.name}
           key={'avatar-' + user.id}
           avatar={user.avatar}
           initials={user.initials}

@@ -19,8 +19,9 @@ const AboutPage = () => {
   const [userPodsData, setUserPodsData] = useState([]);
   const [userCompletedTaskCount, setUserCompletedTaskCount] = useState(null);
   const [userCompletedTasks, setUserCompletedTasks] = useState(null);
+  const [userId, setUserId] = useState(null);
   const router = useRouter();
-  const { username, userId } = router.query;
+  const { username } = router.query;
 
   // const { data: userPermissionsContext } = useQuery(
   //   GET_USER_PERMISSION_CONTEXT,
@@ -59,7 +60,9 @@ const AboutPage = () => {
 
   // Bind to the hook
   useEffect(() => {
-    setUserProfileData(userProfileDataFromUsername?.getUserFromUsername || userProfileDataFromSession?.getUser);
+    if (userProfileDataFromUsername?.getUserFromUsername || userProfileDataFromSession?.getUser) {
+      setUserProfileData(userProfileDataFromUsername?.getUserFromUsername || userProfileDataFromSession?.getUser);
+    }
   }, [userProfileDataFromSession, userProfileDataFromUsername]);
 
   useEffect(() => {

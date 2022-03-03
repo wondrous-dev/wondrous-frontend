@@ -4,6 +4,7 @@ import { Grey80, Grey250, White } from '../../../theme/colors';
 import { Typography } from '@material-ui/core';
 import { BaseCard } from '../card';
 import RightArrowIcon from '../../Icons/rightArrow';
+import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 
 export const TaskInner = styled.div`
   display: flex;
@@ -37,6 +38,8 @@ export const TaskWrapper = styled.div`
 
   min-width: 290px;
   min-height: 216px;
+  width: 100%;
+  flex-wrap: wrap;
 `;
 
 export const TaskHeader = styled.div`
@@ -69,6 +72,8 @@ export const TaskContent = styled.div`
   color: ${White};
   white-space: pre-line;
   cursor: pointer;
+  max-width: 270px;
+  overflow-x: hidden;
 `;
 
 export const TaskSeparator = styled.div`
@@ -189,8 +194,10 @@ export const TaskModal = styled(BaseCard)`
   justify-content: center;
   background: rgb(20, 20, 20) !important;
 
-  &:-webkit-scrollbar {
+  &::-webkit-scrollbar {
     display: none;
+    width: 0;
+    height: 0;
   }
 
   /* Hide scrollbar for IE, Edge and Firefox */
@@ -265,6 +272,8 @@ export const TaskDescriptionText = styled(Typography)`
     font-size: 15px;
     line-height: 19px;
     white-space: pre-line;
+    max-width: 600px;
+    overflow-x: scroll;
   }
 `;
 
@@ -351,6 +360,7 @@ export const TaskSectionContent = styled.div`
   text-align: center;
   padding-top: 16px;
   padding-bottom: 20px;
+  max-width: 630px;
 `;
 export const MakeSubmissionDiv = styled.div`
   background: #0f0f0f;
@@ -423,6 +433,8 @@ export const TaskSubmissionLink = styled(TaskLink)`
   && {
     margin-top: 8px;
     margin-left: 8px;
+    max-width: 500px;
+    overflow-x: scroll;
   }
 `;
 
@@ -453,5 +465,19 @@ export const ArchivedTaskUndo = styled.span`
   text-decoration: underline;
   :hover {
     cursor: pointer;
+  }
+`;
+
+export const ClaimButton = styled(CreateFormPreviewButton)`
+  && {
+    padding: 4px 8px;
+    margin-left: 0;
+    margin-right: 12px;
+    height: auto;
+
+    :hover {
+      background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+      border: 1px solid #7427ff;
+    }
   }
 `;

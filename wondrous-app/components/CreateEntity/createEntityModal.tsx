@@ -13,6 +13,7 @@ import {
   PERMISSIONS,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   CHAIN_TO_CHAIN_DIPLAY_NAME,
+  PRIVACY_LEVEL,
 } from '../../utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
@@ -76,6 +77,7 @@ import {
   OptionDiv,
   OptionTypography,
   StyledChip,
+  StyledAutocompletePopper,
 } from './styles';
 import SelectDownIcon from '../Icons/selectDownIcon';
 import UploadImageIcon from '../Icons/uploadImage';
@@ -398,6 +400,7 @@ const CreateLayoutBaseModal = (props) => {
   const [pod, setPod] = useState(null);
   const [dueDate, setDueDate] = useState(null);
   const [isPrivate, setIsPrivate] = useState(false);
+  const [publicTask, setPublicTask] = useState(false);
   const {
     showDeliverableRequirementsSection,
     showBountySwitchSection,
@@ -546,44 +549,9 @@ const CreateLayoutBaseModal = (props) => {
       'getSubtasksForTask',
       'getSubtaskCountForTask',
     ],
-    onCompleted: (data) => {
-      const task = data?.createTask;
-      const justCreatedPod = getPodObject();
-      if (board?.setColumns && ((task?.orgId === board?.orgId && !board?.podId) || task?.podId === board?.podId)) {
-        const transformedTask = transformTaskToTaskCard(task, {
-          orgName: board?.org?.name,
-          orgProfilePicture: board?.org?.profilePicture,
-          podName: justCreatedPod?.name,
-        });
-
-        const columns = [...board?.columns];
-        columns[0].tasks = [transformedTask, ...columns[0].tasks];
-        board.setColumns(columns);
-      }
-      handleClose();
-    },
   });
 
-  const [createTaskProposal] = useMutation(CREATE_TASK_PROPOSAL, {
-    onCompleted: (data) => {
-      const taskProposal = data?.createTaskProposal;
-      const justCreatedPod = getPodObject();
-      if (board?.setColumns && taskProposal?.orgId === board?.orgId) {
-        const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
-          userProfilePicture: user?.profilePicture,
-          username: user?.username,
-          orgName: board?.org?.name,
-          orgProfilePicture: board?.org?.profilePicture,
-          podName: justCreatedPod?.name,
-        });
-
-        let columns = [...board?.columns];
-        columns = addProposalItem(transformedTaskProposal, columns);
-        board.setColumns(columns);
-      }
-      handleClose();
-    },
-  });
+  const [createTaskProposal] = useMutation(CREATE_TASK_PROPOSAL);
 
   const [createPod] = useMutation(CREATE_POD, {
     onCompleted: (data) => {
@@ -596,24 +564,7 @@ const CreateLayoutBaseModal = (props) => {
     refetchQueries: ['getOrgById'],
   });
 
-  const [createMilestone] = useMutation(CREATE_MILESTONE, {
-    onCompleted: (data) => {
-      const task = data?.createMilestone;
-      const justCreatedPod = getPodObject();
-      if (board?.setColumns && ((task?.orgId === board?.orgId && !board?.podId) || task?.podId === board?.podId)) {
-        const transformedTask = transformTaskToTaskCard(task, {
-          orgName: board?.org?.name,
-          orgProfilePicture: board?.org?.profilePicture,
-          podName: justCreatedPod?.name,
-        });
-
-        const columns = [...board?.columns];
-        columns[0].tasks = [transformedTask, ...columns[0].tasks];
-        board.setColumns(columns);
-      }
-      handleClose();
-    },
-  });
+  const [createMilestone] = useMutation(CREATE_MILESTONE);
 
   const submitMutation = useCallback(() => {
     switch (entityType) {
@@ -642,10 +593,14 @@ const CreateLayoutBaseModal = (props) => {
           ...(!canCreateTask && {
             proposedAssigneeId: assignee?.value,
           }),
+          ...(publicTask && {
+            privacyLevel: PRIVACY_LEVEL.public,
+          }),
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
+
         if (!title || !descriptionText || !org) {
           const newErrors = { ...errors };
           if (!title) {
@@ -665,12 +620,54 @@ const CreateLayoutBaseModal = (props) => {
               variables: {
                 input: taskInput,
               },
+            }).then((result) => {
+              const task = result?.data?.createTask;
+              const justCreatedPod = getPodObject();
+              if (
+                board?.setColumns &&
+                ((task?.orgId === board?.orgId && !board?.podId) ||
+                  task?.podId === board?.podId ||
+                  pod === board?.podId)
+              ) {
+                const transformedTask = transformTaskToTaskCard(task, {
+                  orgName: board?.org?.name,
+                  orgProfilePicture: board?.org?.profilePicture,
+                  podName: justCreatedPod?.name,
+                });
+
+                const columns = [...board?.columns];
+                columns[0].tasks = [transformedTask, ...columns[0].tasks];
+                board.setColumns(columns);
+              }
+              handleClose();
             });
           } else {
             createTaskProposal({
               variables: {
                 input: taskInput,
               },
+            }).then((result) => {
+              const taskProposal = result?.data?.createTaskProposal;
+              const justCreatedPod = getPodObject();
+              if (
+                board?.setColumns &&
+                ((taskProposal?.orgId === board?.orgId && !board?.podId) ||
+                  taskProposal?.podId === board?.podId ||
+                  pod === board?.podId)
+              ) {
+                const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
+                  userProfilePicture: user?.profilePicture,
+                  username: user?.username,
+                  orgName: board?.org?.name,
+                  orgProfilePicture: board?.org?.profilePicture,
+                  podName: justCreatedPod?.name,
+                });
+
+                let columns = [...board?.columns];
+                columns = addProposalItem(transformedTaskProposal, columns);
+                board.setColumns(columns);
+              }
+              handleClose();
             });
           }
         }
@@ -719,12 +716,33 @@ const CreateLayoutBaseModal = (props) => {
           podId: pod,
           mediaUploads,
           dueDate,
+          ...(publicTask && {
+            privacyLevel: PRIVACY_LEVEL.public,
+          }),
         };
         if (canCreateTask) {
           createMilestone({
             variables: {
               input: milestoneInput,
             },
+          }).then((result) => {
+            const task = result?.data?.createMilestone;
+            const justCreatedPod = getPodObject();
+            if (
+              board?.setColumns &&
+              ((task?.orgId === board?.orgId && !board?.podId) || task?.podId === board?.podId || pod === board?.podId)
+            ) {
+              const transformedTask = transformTaskToTaskCard(task, {
+                orgName: board?.org?.name,
+                orgProfilePicture: board?.org?.profilePicture,
+                podName: justCreatedPod?.name,
+              });
+
+              const columns = [...board?.columns];
+              columns[0].tasks = [transformedTask, ...columns[0].tasks];
+              board.setColumns(columns);
+            }
+            handleClose();
           });
         }
         break;
@@ -973,7 +991,7 @@ const CreateLayoutBaseModal = (props) => {
           >
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
-              <StyledAutocomplete
+              <StyledAutocompletePopper
                 options={filterOrgUsers(podUsersData?.getPodUsers ?? orgUsersData?.getOrgUsers)}
                 onOpen={() => {
                   if (pod) {
@@ -998,7 +1016,6 @@ const CreateLayoutBaseModal = (props) => {
                     {...params}
                   />
                 )}
-                PopperComponent={AutocompleteList}
                 value={assignee}
                 inputValue={assigneeString}
                 onInputChange={(event, newInputValue) => {
@@ -1036,7 +1053,7 @@ const CreateLayoutBaseModal = (props) => {
 
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Reviewer</CreateFormAddDetailsInputLabel>
-              <StyledAutocomplete
+              <StyledAutocompletePopper
                 options={filterUserOptions(
                   eligibleReviewersForPodData?.getEligibleReviewersForPod ??
                     eligibleReviewersForOrgData?.getEligibleReviewersForOrg
@@ -1101,7 +1118,6 @@ const CreateLayoutBaseModal = (props) => {
                     );
                   })
                 }
-                PopperComponent={AutocompleteList}
                 renderOption={(props, option, state) => {
                   return (
                     <OptionDiv
@@ -1133,7 +1149,7 @@ const CreateLayoutBaseModal = (props) => {
 
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Milestone</CreateFormAddDetailsInputLabel>
-              <StyledAutocomplete
+              <StyledAutocompletePopper
                 options={filterUserOptions(milestonesData?.getMilestones)}
                 onOpen={() =>
                   getMilestones({
@@ -1156,7 +1172,6 @@ const CreateLayoutBaseModal = (props) => {
                     {...params}
                   />
                 )}
-                PopperComponent={AutocompleteList}
                 value={milestone}
                 inputValue={milestoneString}
                 onInputChange={(_, newInputValue) => {
@@ -1237,12 +1252,27 @@ const CreateLayoutBaseModal = (props) => {
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
                   </LocalizationProvider>
-                  {/* <DropdownSelect
-                    title="Connect to Milestone"
-                    labelText="Choose Milestone"
-                    options={MILESTONE_SELECT_OPTION}
-                    name="connect-to-milestone"
-                  /> */}
+                  <CreateFormAddDetailsSwitch
+                    style={{
+                      width: '100%',
+                      marginLeft: '20px',
+                    }}
+                  >
+                    <CreateFormAddDetailsInputLabel
+                      style={{
+                        marginBottom: '16px',
+                        marginLeft: '8px',
+                      }}
+                    >
+                      Show task as public
+                    </CreateFormAddDetailsInputLabel>
+                    <AndroidSwitch
+                      checked={publicTask}
+                      onChange={(e) => {
+                        setPublicTask(e.target.checked);
+                      }}
+                    />
+                  </CreateFormAddDetailsSwitch>
                 </CreateFormAddDetailsSelects>
 
                 {/* <CreateFormAddDetailsSelects> */}
@@ -1262,13 +1292,11 @@ const CreateLayoutBaseModal = (props) => {
 
                 {/*if Suggest a task opened */}
                 {/* {showBountySwitchSection && canCreateTask && (
-                    <CreateFormAddDetailsSwitch>
-                      <CreateFormAddDetailsInputLabel>
-                        This is a bounty
-                      </CreateFormAddDetailsInputLabel>
-                      <AndroidSwitch />
-                    </CreateFormAddDetailsSwitch>
-                  )} */}
+                  <CreateFormAddDetailsSwitch>
+                    <CreateFormAddDetailsInputLabel>This is a bounty</CreateFormAddDetailsInputLabel>
+                    <AndroidSwitch />
+                  </CreateFormAddDetailsSwitch>
+                )} */}
 
                 {/*if Create a milestone opened*/}
                 {/* {showPrioritySelectSection && (

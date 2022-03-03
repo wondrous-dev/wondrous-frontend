@@ -26,7 +26,7 @@ const DECISIONS = [
 ];
 
 export const DropDownPopper = (props) => {
-  const { taskId, status, onClose } = props;
+  const { task, status, onClose, openKudos, setKudosTask } = props;
   const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [rejectTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
@@ -89,6 +89,8 @@ export const DropDownPopper = (props) => {
         },
         refetchQueries: refetchQueries(),
       });
+      openKudos(true);
+      setKudosTask(task);
     }
   };
 
@@ -106,7 +108,7 @@ export const DropDownPopper = (props) => {
     <StyledPopper {...props}>
       <StyledList>
         {DECISIONS.map(([decision, Icon], i) => (
-          <StyledListItem key={i} onClick={() => handleOnClick(taskId, decision, status)}>
+          <StyledListItem key={i} onClick={() => handleOnClick(task.id, decision, status)}>
             <StyledListItemIcon alignItems="center">
               <Icon />
             </StyledListItemIcon>

@@ -257,6 +257,10 @@ const SubmissionItem = (props) => {
     },
     refetchQueries: ['getOrgTaskBoardSubmissions'],
   });
+  const textStyle = {
+    marginLeft: '0',
+    maxWidth: '500px',
+  };
   return (
     <TaskSubmissionItemDiv>
       <TaskSubmissionHeader>
@@ -297,17 +301,11 @@ const SubmissionItem = (props) => {
           {mediaUploads?.length > 0 ? (
             <MediaUploadDiv>
               {mediaUploads.map((mediaItem) => (
-                <MediaLink key={mediaItem?.slug} media={mediaItem} />
+                <MediaLink style={textStyle} key={mediaItem?.slug} media={mediaItem} />
               ))}
             </MediaUploadDiv>
           ) : (
-            <TaskDescriptionText
-              style={{
-                marginTop: '8px',
-              }}
-            >
-              None
-            </TaskDescriptionText>
+            <TaskDescriptionText>None</TaskDescriptionText>
           )}
         </TaskSectionInfoDiv>
       </TaskSectionDisplayDiv>
@@ -352,6 +350,7 @@ const SubmissionItem = (props) => {
         <TaskDescriptionText
           style={{
             marginTop: '12px',
+            ...textStyle,
           }}
         >
           {renderMentionString({

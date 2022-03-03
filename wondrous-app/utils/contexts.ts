@@ -19,3 +19,5 @@ export const ColumnsContext = createContext(null);
 export const ApprovedSubmissionContext = createContext(null); // for payment probably hacky
 
 export const PaymentModalContext = createContext(null);
+
+export const SelectMembershipContext = createContext(null);

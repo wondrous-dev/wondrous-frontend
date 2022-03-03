@@ -62,6 +62,7 @@ import {
   TASK_TYPE,
   TASK_STATUS_TODO,
   PAYMENT_STATUS,
+  PRIVACY_LEVEL,
 } from '../../../utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
@@ -486,7 +487,7 @@ export const TaskListViewModal = (props) => {
 
   useEffect(() => {
     if (open) {
-      if (fetchedList?.length === 0 && !hasMore) {
+      if (fetchedList?.length === 0) {
         if (taskType === TASK_STATUS_REQUESTED) {
           if (entityType === ENTITIES_TYPES.ORG) {
             getOrgTaskProposals({
@@ -679,7 +680,7 @@ export const TaskViewModal = (props) => {
   const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
   const user = useMe();
   const userPermissionsContext =
-    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext || null;
+    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
@@ -913,6 +914,7 @@ export const TaskViewModal = (props) => {
     height: '26px',
     borderRadius: '13px',
     marginRight: '4px',
+    marginTop: '8px',
     cursor: 'pointer',
   };
   const canApproveProposal =
@@ -1025,7 +1027,6 @@ export const TaskViewModal = (props) => {
                   >
                     <TaskIconWrapper>
                       <CheckedBoxIcon />
-                      <TaskIconLabel>{!isSubtask && fetchedTask?.title}</TaskIconLabel>
                     </TaskIconWrapper>
                   </Link>
                 </>
@@ -1036,7 +1037,7 @@ export const TaskViewModal = (props) => {
                     <RightArrow />
                   </RightArrowWrapper>
                   <SubtaskIconWrapper>
-                    <SubtaskDarkIcon /> <SubtaskIconLabel>{fetchedTask?.title}</SubtaskIconLabel>
+                    <SubtaskDarkIcon />
                   </SubtaskIconWrapper>
                 </>
               )}
@@ -1083,12 +1084,7 @@ export const TaskViewModal = (props) => {
               />
               <TaskTitleTextDiv>
                 <TaskTitleText>{fetchedTask?.title}</TaskTitleText>
-                <TaskDescriptionText
-                  style={{
-                    maxWidth: '600px',
-                    overflowX: 'scroll',
-                  }}
-                >
+                <TaskDescriptionText>
                   {renderMentionString({
                     content: fetchedTask?.description,
                     router,
@@ -1106,15 +1102,36 @@ export const TaskViewModal = (props) => {
                   reviewerData?.getTaskReviewers.map((taskReviewer) => (
                     <TaskSectionInfoDiv key={taskReviewer?.id}>
                       {taskReviewer?.profilePicture ? (
-                        <Link href={`/profile/${taskReviewer?.username}/about`} passHref={true}>
+                        <div
+                          onClick={() => {
+                            handleClose();
+                            router.push(`/profile/${taskReviewer?.username}/about`, undefined, {
+                              shallow: true,
+                            });
+                          }}
+                        >
                           <SafeImage style={displayDivProfileImageStyle} src={taskReviewer?.profilePicture} />
-                        </Link>
+                        </div>
                       ) : (
-                        <Link href={`/profile/${taskReviewer?.username}/about`} passHref={true}>
+                        <div
+                          onClick={() => {
+                            handleClose();
+                            router.push(`/profile/${taskReviewer?.username}/about`, undefined, {
+                              shallow: true,
+                            });
+                          }}
+                        >
                           <DefaultUserImage style={displayDivProfileImageStyle} />
-                        </Link>
+                        </div>
                       )}
-                      <Link href={`/profile/${taskReviewer?.username}/about`} passHref={true}>
+                      <div
+                        onClick={() => {
+                          handleClose();
+                          router.push(`/profile/${taskReviewer?.username}/about`, undefined, {
+                            shallow: true,
+                          });
+                        }}
+                      >
                         <TaskSectionInfoText
                           style={{
                             textDecoration: 'underline',
@@ -1123,7 +1140,7 @@ export const TaskViewModal = (props) => {
                         >
                           {taskReviewer?.username}
                         </TaskSectionInfoText>
-                      </Link>
+                      </div>
                     </TaskSectionInfoDiv>
                   ))
                 ) : (
@@ -1148,13 +1165,42 @@ export const TaskViewModal = (props) => {
                   {fetchedTask?.assigneeUsername ? (
                     <>
                       {fetchedTask?.assigneeProfilePicture ? (
-                        <Link href={`/profile/${fetchedTask?.assigneeUsername}/about`} passHref={true}>
-                          <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.assigneeProfilePicture} />
-                        </Link>
+                        <div
+                          onClick={() => {
+                            handleClose();
+                            router.push(`/profile/${fetchedTask?.assigneeUsername}/about`, undefined, {
+                              shallow: true,
+                            });
+                          }}
+                        >
+                          <SafeImage
+                            style={{
+                              ...displayDivProfileImageStyle,
+                              marginTop: '8px',
+                            }}
+                            src={fetchedTask?.assigneeProfilePicture}
+                          />
+                        </div>
                       ) : (
-                        <DefaultUserImage style={displayDivProfileImageStyle} />
+                        <div
+                          onClick={() => {
+                            handleClose();
+                            router.push(`/profile/${fetchedTask?.assigneeUsername}/about`, undefined, {
+                              shallow: true,
+                            });
+                          }}
+                        >
+                          <DefaultUserImage style={displayDivProfileImageStyle} />
+                        </div>
                       )}
-                      <Link href={`/profile/${fetchedTask?.assigneeUsername}/about`} passHref={true}>
+                      <div
+                        onClick={() => {
+                          handleClose();
+                          router.push(`/profile/${fetchedTask?.assigneeUsername}/about`, undefined, {
+                            shallow: true,
+                          });
+                        }}
+                      >
                         <TaskSectionInfoText
                           style={{
                             textDecoration: 'underline',
@@ -1163,58 +1209,61 @@ export const TaskViewModal = (props) => {
                         >
                           {fetchedTask?.assigneeUsername}
                         </TaskSectionInfoText>
-                      </Link>
+                      </div>
                     </>
                   ) : (
                     <>
-                      {canCreate ? (
+                      {(fetchedTask?.orgId && fetchedTask?.orgId in userPermissionsContext?.orgPermissions) ||
+                      fetchedTask?.privacyLevel === PRIVACY_LEVEL.public ? (
                         <>
                           <TakeTaskButton
                             onClick={() => {
-                              if (isTaskProposal) {
-                                updateTaskProposalAssignee({
-                                  variables: {
-                                    proposalId: fetchedTask?.id,
-                                    assigneeId: user?.id,
-                                  },
-                                  onCompleted: (data) => {
-                                    const taskProposal = data?.updateTaskProposalAssignee;
-                                    if (boardColumns?.setColumns && onCorrectPage) {
-                                      const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
-                                        taskProposal,
-                                        {}
-                                      );
-                                      let columns = [...boardColumns?.columns];
-                                      columns = updateProposalItem(transformedTaskProposal, columns);
-                                      boardColumns?.setColumns(columns);
-                                    }
-                                  },
+                              if (!user) {
+                                router.push('/signup', undefined, {
+                                  shallow: true,
                                 });
                               } else {
-                                updateTaskAssignee({
-                                  variables: {
-                                    taskId: fetchedTask?.id,
-                                    assigneeId: user?.id,
-                                  },
-                                  onCompleted: (data) => {
-                                    const task = data?.updateTaskAssignee;
-                                    const transformedTask = transformTaskToTaskCard(task, {});
-                                    setFetchedTask(transformedTask);
-                                    if (boardColumns?.setColumns && onCorrectPage) {
-                                      let columnNumber = 0;
-                                      if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-                                        columnNumber = 1;
+                                if (isTaskProposal) {
+                                  updateTaskProposalAssignee({
+                                    variables: {
+                                      proposalId: fetchedTask?.id,
+                                      assigneeId: user?.id,
+                                    },
+                                    onCompleted: (data) => {
+                                      const taskProposal = data?.updateTaskProposalAssignee;
+                                      if (boardColumns?.setColumns && onCorrectPage) {
+                                        const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
+                                          taskProposal,
+                                          {}
+                                        );
+                                        let columns = [...boardColumns?.columns];
+                                        columns = updateProposalItem(transformedTaskProposal, columns);
+                                        boardColumns?.setColumns(columns);
                                       }
-                                      let columns = [...boardColumns?.columns];
-                                      if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-                                        columns = updateInProgressTask(transformedTask, columns);
-                                      } else if (transformedTask.status === TASK_STATUS_TODO) {
-                                        columns = updateTaskItem(transformedTask, columns);
+                                    },
+                                  });
+                                } else {
+                                  updateTaskAssignee({
+                                    variables: {
+                                      taskId: fetchedTask?.id,
+                                      assigneeId: user?.id,
+                                    },
+                                    onCompleted: (data) => {
+                                      const task = data?.updateTaskAssignee;
+                                      const transformedTask = transformTaskToTaskCard(task, {});
+                                      setFetchedTask(transformedTask);
+                                      if (boardColumns?.setColumns && onCorrectPage) {
+                                        let columns = [...boardColumns?.columns];
+                                        if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+                                          columns = updateInProgressTask(transformedTask, columns);
+                                        } else if (transformedTask.status === TASK_STATUS_TODO) {
+                                          columns = updateTaskItem(transformedTask, columns);
+                                        }
+                                        boardColumns.setColumns(columns);
                                       }
-                                      boardColumns.setColumns(columns);
-                                    }
-                                  },
-                                });
+                                    },
+                                  });
+                                }
                               }
                             }}
                           >
@@ -1257,7 +1306,7 @@ export const TaskViewModal = (props) => {
               ) : (
                 <TaskSectionInfoText
                   style={{
-                    marginLeft: '32px',
+                    marginLeft: '34px',
                     marginTop: '8px',
                   }}
                 >
@@ -1273,14 +1322,21 @@ export const TaskViewModal = (props) => {
                 </TaskSectionDisplayLabel>
                 <TaskSectionInfoDiv key={fetchedTask?.creatorUsername}>
                   {fetchedTask?.creatorUsername && (
-                    <>
+                    <div
+                      onClick={() => {
+                        handleClose();
+                        router.push(`/profile/${fetchedTask?.creatorUsername}/about`, undefined, {
+                          shallow: true,
+                        });
+                      }}
+                    >
                       {fetchedTask?.creatorProfilePicture ? (
                         <SafeImage style={displayDivProfileImageStyle} src={fetchedTask?.creatorProfilePicture} />
                       ) : (
                         <DefaultUserImage style={displayDivProfileImageStyle} />
                       )}
                       <TaskSectionInfoText>{fetchedTask?.creatorUsername}</TaskSectionInfoText>
-                    </>
+                    </div>
                   )}
                   {!fetchedTask?.creatorUsername && (
                     <TaskSectionInfoText
