@@ -84,7 +84,7 @@ export const KudosForm = (props) => {
       setTextarea(existingContent);
       setCharacterCount(existingContent?.length);
     }
-  }, [open]);
+  }, [existingContent, open]);
 
   return (
     <KudosFormModal open={open} fullWidth={true} maxWidth={'sm'} onClose={handleOnClose}>
