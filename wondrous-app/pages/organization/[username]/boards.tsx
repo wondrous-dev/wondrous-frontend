@@ -275,6 +275,9 @@ const BoardsPage = () => {
         getOrgBoardTaskCount({
           variables: {
             orgId: id,
+            ...(boardType === PRIVACY_LEVEL.public && {
+              onlyPublic: true,
+            }),
           },
         });
       }

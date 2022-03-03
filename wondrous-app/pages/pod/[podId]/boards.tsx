@@ -242,6 +242,9 @@ const BoardsPage = () => {
         getPodBoardTaskCount({
           variables: {
             podId,
+            ...(boardType === PRIVACY_LEVEL.public && {
+              onlyPublic: true,
+            }),
           },
         });
       }

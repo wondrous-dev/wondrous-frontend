@@ -308,8 +308,8 @@ export const GET_USER_TASK_BOARD_SUBMISSIONS = gql`
 `;
 
 export const GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD = gql`
-  query getPerStatusTaskCountForOrgBoard($orgId: ID!) {
-    getPerStatusTaskCountForOrgBoard(orgId: $orgId) {
+  query getPerStatusTaskCountForOrgBoard($orgId: ID!, $onlyPublic: Boolean) {
+    getPerStatusTaskCountForOrgBoard(orgId: $orgId, onlyPublic: $onlyPublic) {
       created
       inProgress
       completed
@@ -367,8 +367,8 @@ export const GET_POD_TASK_BOARD_SUBMISSIONS = gql`
 `;
 
 export const GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD = gql`
-  query getPerStatusTaskCountForPodBoard($podId: ID!) {
-    getPerStatusTaskCountForPodBoard(podId: $podId) {
+  query getPerStatusTaskCountForPodBoard($podId: ID!, $onlyPublic: Boolean) {
+    getPerStatusTaskCountForPodBoard(podId: $podId, onlyPublic: $onlyPublic) {
       created
       inProgress
       completed
