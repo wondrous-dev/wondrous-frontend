@@ -19,7 +19,7 @@ import {
 } from '../../../graphql/queries';
 import { ColumnsContext } from '../../../utils/contexts';
 import { useMutation } from '@apollo/client';
-import { dedupeColumns } from '../../../utils';
+import { dedupeColumns, delQuery } from '../../../utils';
 import DndErrorModal from './DndErrorModal';
 
 const populateOrder = (index, tasks, field) => {
@@ -215,6 +215,7 @@ const KanbanBoard = (props) => {
               window?.scrollTo(0, Number(top[0]));
             }
             setOpenModal(false);
+            router.replace(`${delQuery(router.asPath)}?view=${router?.query?.view}`);
           }}
           taskId={router?.query?.task || router?.query?.taskProposal}
           isTaskProposal={!!router?.query?.taskProposal}
