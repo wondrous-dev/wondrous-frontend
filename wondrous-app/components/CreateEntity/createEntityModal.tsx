@@ -4,6 +4,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { CREATE_BOUNTY } from '../../graphql/mutations/bounty';
 import { CREATE_POD } from '../../graphql/mutations/pod';
 import { CREATE_MILESTONE, CREATE_TASK } from '../../graphql/mutations/task';
 import { CREATE_TASK_PROPOSAL } from '../../graphql/mutations/taskProposal';
@@ -248,6 +249,7 @@ const CreateLayoutBaseModal = (props) => {
     title: null,
     description: null,
     org: null,
+    maxSubmissionCount: null,
   });
 
   const [org, setOrg] = useState(null);
@@ -260,7 +262,8 @@ const CreateLayoutBaseModal = (props) => {
   const [link, setLink] = useState('');
   const [rewardsCurrency, setRewardsCurrency] = useState(null);
   const [rewardsAmount, setRewardsAmount] = useState(null);
-  const [maxBountySubmission, setMaxBountySubmission] = useState(null);
+  const [maxSubmissionCount, setMaxSubmissionCount] = useState('');
+  console.log('maxSubmissionCount', maxSubmissionCount);
   const [title, setTitle] = useState('');
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const orgBoard = useOrgBoard();
@@ -472,6 +475,7 @@ const CreateLayoutBaseModal = (props) => {
       'getSubtaskCountForTask',
     ],
   });
+  const [createBounty] = useMutation(CREATE_BOUNTY);
 
   const [createTaskProposal] = useMutation(CREATE_TASK_PROPOSAL);
 
@@ -665,28 +669,148 @@ const CreateLayoutBaseModal = (props) => {
           });
         }
         break;
+      case ENTITIES_TYPES.BOUNTY:
+        const bountyInput = {
+          title,
+          description: descriptionText,
+          orgId: org,
+          milestoneId: milestone?.id,
+          parentTaskId,
+          podId: pod,
+          maxSubmissionCount: parseFloat(maxSubmissionCount),
+          dueDate,
+          ...(rewardsAmount &&
+            rewardsCurrency && {
+              rewards: [
+                {
+                  rewardAmount: parseFloat(rewardsAmount),
+                  paymentMethodId: rewardsCurrency,
+                },
+              ],
+            }),
+          // TODO: add links?,
+          ...(canCreateTask && {
+            assigneeId: assignee?.value,
+          }),
+          ...(!canCreateTask && {
+            proposedAssigneeId: assignee?.value,
+          }),
+          ...(publicTask && {
+            privacyLevel: PRIVACY_LEVEL.public,
+          }),
+          reviewerIds: selectedReviewers.map(({ id }) => id),
+          userMentions: getMentionArray(descriptionText),
+          mediaUploads,
+        };
+        console.log('bountyInput?.maxSubmissionCount', bountyInput?.maxSubmissionCount);
+        const isErrorMaxSubmissionCount =
+          bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
+        if (!title || !descriptionText || !org || isErrorMaxSubmissionCount) {
+          const newErrors = { ...errors };
+          if (!title) {
+            newErrors.title = 'Please enter a title';
+          }
+          if (!descriptionText) {
+            newErrors.description = 'Please enter a description';
+          }
+          if (!org) {
+            newErrors.org = 'Please select an organization';
+          }
+          if (isErrorMaxSubmissionCount) {
+            newErrors.maxSubmissionCount = 'The number should be from 1 to 10,000';
+          }
+          newErrors.general = 'Please enter the necessary information above';
+          setErrors(newErrors);
+        } else {
+          if (canCreateTask) {
+            createBounty({
+              variables: {
+                input: bountyInput,
+              },
+            }).then((result) => {
+              const task = result?.data?.createTask;
+              const justCreatedPod = getPodObject();
+              if (
+                board?.setColumns &&
+                ((task?.orgId === board?.orgId && !board?.podId) ||
+                  task?.podId === board?.podId ||
+                  pod === board?.podId)
+              ) {
+                const transformedTask = transformTaskToTaskCard(task, {
+                  orgName: board?.org?.name,
+                  orgProfilePicture: board?.org?.profilePicture,
+                  podName: justCreatedPod?.name,
+                });
+
+                const columns = [...board?.columns];
+                columns[0].tasks = [transformedTask, ...columns[0].tasks];
+                board.setColumns(columns);
+              }
+              handleClose();
+            });
+          } else {
+            createTaskProposal({
+              variables: {
+                input: taskInput,
+              },
+            }).then((result) => {
+              const taskProposal = result?.data?.createTaskProposal;
+              const justCreatedPod = getPodObject();
+              if (
+                board?.setColumns &&
+                ((taskProposal?.orgId === board?.orgId && !board?.podId) ||
+                  taskProposal?.podId === board?.podId ||
+                  pod === board?.podId)
+              ) {
+                const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
+                  userProfilePicture: user?.profilePicture,
+                  username: user?.username,
+                  orgName: board?.org?.name,
+                  orgProfilePicture: board?.org?.profilePicture,
+                  podName: justCreatedPod?.name,
+                });
+
+                let columns = [...board?.columns];
+                columns = addProposalItem(transformedTaskProposal, columns);
+                board.setColumns(columns);
+              }
+              handleClose();
+            });
+          }
+        }
+        break;
     }
   }, [
+    entityType,
     title,
     descriptionText,
     org,
-    milestone,
+    milestone?.id,
+    parentTaskId,
     pod,
     dueDate,
-    assignee,
+    rewardsAmount,
+    rewardsCurrency,
+    canCreateTask,
+    assignee?.value,
+    publicTask,
     selectedReviewers,
     mediaUploads,
-    canCreateTask,
+    canCreatePod,
+    maxSubmissionCount,
+    errors,
     createTask,
-    entityType,
+    getPodObject,
+    board,
+    handleClose,
     createTaskProposal,
+    user?.profilePicture,
+    user?.username,
     isPrivate,
     link,
     createPod,
-    canCreatePod,
-    rewardsAmount,
-    rewardsCurrency,
     createMilestone,
+    createBounty,
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
@@ -884,18 +1008,18 @@ const CreateLayoutBaseModal = (props) => {
             </CreateRewardAmountDiv>
             {isBounty && (
               <CreateRewardAmountDiv>
-                <CreateFormMainBlockTitle>Max. no. of submissions</CreateFormMainBlockTitle>
+                <CreateFormMainBlockTitle>Maximum no. of submissions</CreateFormMainBlockTitle>
 
                 <InputForm
                   style={{
                     marginTop: '20px',
                   }}
-                  type={'number'}
-                  min="0"
+                  min="1"
+                  max="10000"
                   placeholder="Enter the max. no. of submissions"
                   search={false}
-                  value={maxBountySubmission}
-                  onChange={(e) => setMaxBountySubmission(e.target.value)}
+                  value={maxSubmissionCount}
+                  onChange={(e) => setMaxSubmissionCount(e.target.value)}
                   endAdornment={
                     <CloseModalIcon
                       style={{
@@ -903,11 +1027,12 @@ const CreateLayoutBaseModal = (props) => {
                         cursor: 'pointer',
                       }}
                       onClick={() => {
-                        setMaxBountySubmission(0);
+                        setMaxSubmissionCount('');
                       }}
                     />
                   }
                 />
+                {errors.maxSubmissionCount && <ErrorText> {errors.maxSubmissionCount} </ErrorText>}
               </CreateRewardAmountDiv>
             )}
           </CreateFormMainSelects>
