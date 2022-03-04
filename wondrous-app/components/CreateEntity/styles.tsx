@@ -1,26 +1,17 @@
+import { Button, ButtonBase, Chip, Grid, IconButton, Modal, Popper, TextField, Typography } from '@material-ui/core';
+import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import React from 'react';
 import styled from 'styled-components';
-import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
-import {
-  Button,
-  ButtonBase,
-  Chip,
-  IconButton,
-  Modal,
-  Dialog,
-  TextField,
-  Typography,
-  Grid,
-  Popper,
-} from '@material-ui/core';
+import { White } from '../../theme/colors';
 import { BaseCard } from '../Common/card';
-import CreateTaskIcon from '../Icons/createTask';
+import { LogoSquare } from '../Common/ci';
+import BountyIcon from '../Icons/createBounty';
+import CreateDaoIcon from '../Icons/createDao';
 import CreateMilestoneIcon from '../Icons/createMilestone';
 import CreatePodIcon from '../Icons/createPod';
-import CreateDaoIcon from '../Icons/createDao';
-import { LogoSquare } from '../Common/ci';
-import { White } from '../../theme/colors';
+import CreateTaskIcon from '../Icons/createTask';
 import WonderTokenIcon from '../Icons/wonderToken';
+
 export const MediaUploadGrid = styled(Grid)`
   && {
   }
@@ -134,6 +125,10 @@ export const CreateLayoutMilestoneIcon = styled(CreateMilestoneIcon)`
 `;
 
 export const CreateLayoutPodsIcon = styled(CreatePodIcon)`
+  margin-right: 10px;
+`;
+
+export const CreateLayoutBountyIcon = styled(BountyIcon)`
   margin-right: 10px;
 `;
 
