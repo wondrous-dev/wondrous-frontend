@@ -32,7 +32,7 @@ export const Logo = ({ divStyle }) => {
   );
 };
 
-export const InviteWelcomeBox = ({ updateUser, firstOrg }) => {
+export const InviteWelcomeBox = ({ updateUser, firstOrg, firstPod }) => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(null);
@@ -112,14 +112,21 @@ export const InviteWelcomeBox = ({ updateUser, firstOrg }) => {
         >
           <LaterButton
             onClick={() => {
-              if (!firstOrg) {
+              if (!firstOrg && !firstPod) {
                 router.push('/explore', undefined, {
                   shallow: true,
                 });
+              } else {
+                if (firstPod) {
+                  router.push(`/pod/${firstPod?.id}/boards`, undefined, {
+                    shallow: true,
+                  });
+                } else if (firstOrg) {
+                  router.push(`/organization/${firstOrg?.username}/boards`, undefined, {
+                    shallow: true,
+                  });
+                }
               }
-              router.push(`/organization/${firstOrg?.username}/boards`, undefined, {
-                shallow: true,
-              });
             }}
             buttonInnerStyle={{
               fontFamily: 'Space Grotesk',

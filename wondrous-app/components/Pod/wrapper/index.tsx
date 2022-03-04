@@ -30,9 +30,12 @@ import {
   HeaderTitle,
   OverviewComponent,
   TokenHeader,
+  HeaderInviteButton,
+  PlusIconWrapper,
 } from '../../organization/wrapper/styles';
 import { MoreInfoModal } from '../../profile/modals';
 import SideBarComponent from '../../SideBar';
+import PlusIcon from '../../Icons/plus';
 
 const Wrapper = (props) => {
   const router = useRouter();
@@ -134,6 +137,12 @@ const Wrapper = (props) => {
                     </HeaderFollowButton>
                     {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
                       <>
+                        <HeaderInviteButton onClick={() => setOpenInvite(true)}>
+                          Invite{' '}
+                          <PlusIconWrapper>
+                            <PlusIcon height="8" width="8" fill="#fff" />
+                          </PlusIconWrapper>
+                        </HeaderInviteButton>
                         <HeaderManageSettingsButton
                           onClick={() =>
                             router.push(`/pod/settings/${podBoard?.podId}/general`, undefined, {

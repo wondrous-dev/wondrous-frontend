@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { PodFragment } from '../fragments/pod';
+import { PodFragment, PodInviteFragment } from '../fragments/pod';
 
 export const GET_POD_BY_ID = gql`
   query getPodById($podId: ID!) {
@@ -10,6 +10,14 @@ export const GET_POD_BY_ID = gql`
   ${PodFragment}
 `;
 
+export const GET_POD_INVITE_ORG_INFO = gql`
+  query getInvitedPodInfo($token: String!) {
+    getInvitedPodInfo(token: $token) {
+      ...PodInviteFragment
+    }
+  }
+  ${PodInviteFragment}
+`;
 export const GET_USER_PODS = gql`
   query getUserPods($userId: String) {
     getUserPods(userId: $userId) {
