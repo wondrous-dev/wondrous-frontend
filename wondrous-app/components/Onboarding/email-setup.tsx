@@ -101,7 +101,11 @@ export const InviteWelcomeBox = ({ updateUser, firstOrg, firstPod }) => {
       />
       {error && <ErrorText>{error}</ErrorText>}
       {loading ? (
-        <CircularProgress />
+        <CircularProgress
+          style={{
+            marginTop: '16px',
+          }}
+        />
       ) : (
         <div
           style={{
