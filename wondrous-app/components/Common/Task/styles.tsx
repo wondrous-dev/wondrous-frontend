@@ -441,7 +441,7 @@ export const TaskLink = styled.a`
 export const TaskSubmissionLink = styled(TaskLink)`
   && {
     margin-top: 8px;
-    margin-left: 8px;
+    margin-right: 8px;
     max-width: 500px;
     overflow-x: scroll;
     &::-webkit-scrollbar {
