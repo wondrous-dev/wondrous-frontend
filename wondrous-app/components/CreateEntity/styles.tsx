@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import { White } from '../../theme/colors';
 import { BaseCard } from '../Common/card';
 import { LogoSquare } from '../Common/ci';
+import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
+import { CreateFormSelect } from '../Common/DropdownSelect/styles';
 import BountyIcon from '../Icons/createBounty';
 import CreateDaoIcon from '../Icons/createDao';
 import CreateMilestoneIcon from '../Icons/createMilestone';
@@ -254,6 +256,7 @@ export const CreateFormMainSelects = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 25px;
+  flex-wrap: wrap;
 `;
 
 export const CreateFormMainInputBlock = styled.div`
@@ -266,9 +269,14 @@ export const CreateFormMainInputBlock = styled.div`
   }
 `;
 
+export const CreateFormRewardCurrency = styled(DropdownSelect)``;
+
 export const CreateRewardAmountDiv = styled.div`
-  width: 100%;
-  margin-left: 8px;
+  width: 50%;
+  margin-bottom: 25px;
+  :last-child {
+    margin-bottom: 0;
+  }
 `;
 
 export const CreateFormMainTitleInput = styled(TextField)({
@@ -424,17 +432,18 @@ export const CreateFormAddDetailsInputs = styled(CreateFormMainSelects)`
 
 export const CreateFormAddDetailsInputBlock = styled.div`
   width: 262px;
-  margin-bottom: 25px;
+  margin-bottom: 15px;
+  :last-child {
+    margin: 0;
+  }
 `;
 
 export const CreateFormAddDetailsInputLabel = styled(Typography)`
   && {
     font-weight: 500;
     font-size: 14px;
-    line-height: 18px;
-    letter-spacing: 0.01em;
     color: #ccbbff;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
   }
 `;
 
@@ -445,11 +454,28 @@ export const CreateFormAddDetailsInput = styled(CreateFormMainTitleInput)`
 `;
 
 export const CreateFormAddDetailsSelects = styled(CreateFormMainSelects)`
-  height: 70px;
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+export const CreateFormAddDetailsLocalizationProvider = styled.div`
+  width: 40%;
 `;
 
 export const CreateFormAddDetailsSwitch = styled.div`
-  width: 260px;
+  && {
+    flex-basis: 50%;
+  }
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
+
+export const CreateFormAddDetailsSwitchLabel = styled(CreateFormAddDetailsInputLabel)`
+  && {
+    width: 100%;
+    margin: 0 0 15px 10px;
+  }
 `;
 
 //members section
