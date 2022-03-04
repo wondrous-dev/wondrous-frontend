@@ -183,9 +183,8 @@ const KanbanBoard = (props) => {
 
   const hasQuery = router?.query?.task || router?.query?.taskProposal;
   useEffect(() => {
-    if (hasQuery && !once && (orgBoard || userBoard || podBoard)) {
+    if (hasQuery && (orgBoard || userBoard || podBoard)) {
       setOpenModal(true);
-      setOnce(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasQuery, orgBoard || userBoard || podBoard]);

@@ -210,9 +210,8 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
         handleClose={() => {
           document.body.setAttribute('style', '');
           window?.scrollTo(0, windowOffset);
-          router.push(`${delQuery(router.asPath)}`, undefined, {
-            shallow: true,
-          });
+          const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}`;
+          window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
           setModalOpen(false);
         }}
         task={taskType === TASK_STATUS_REQUESTED || taskType === TASK_STATUS_ARCHIVED ? task : null}

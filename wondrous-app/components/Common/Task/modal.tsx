@@ -672,7 +672,7 @@ export const TaskViewModal = (props) => {
   const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
   const router = useRouter();
   const [editTask, setEditTask] = useState(false);
-  const [activeTab, setActiveTab] = useState(tabs.discussion);
+  const [activeTab, setActiveTab] = useState(isMilestone ? tabs.tasks : tabs.submissions);
   const [archiveTask, setArchiveTask] = useState(false);
   const [archiveTaskAlert, setArchiveTaskAlert] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
@@ -759,6 +759,9 @@ export const TaskViewModal = (props) => {
     setSnackbarAlertMessage,
     handleNewStatus,
   ]);
+  useEffect(() => {
+    setActiveTab(tabs.tasks);
+  }, [isMilestone]);
   useEffect(() => {
     if (open) {
       if (isTaskProposal) {

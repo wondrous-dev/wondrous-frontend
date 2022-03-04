@@ -14,7 +14,7 @@ import {
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
-  PRIVACY_LEVEL
+  PRIVACY_LEVEL,
 } from '../../utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
@@ -437,8 +437,8 @@ const EditLayoutBaseModal = (props) => {
     existingTask?.userId === board?.userId;
 
   useEffect(() => {
-    setPublicTask(existingTask?.privacyLevel === PRIVACY_LEVEL.public)
-  }, [existingTask?.privacyLevel])
+    setPublicTask(existingTask?.privacyLevel === PRIVACY_LEVEL.public);
+  }, [existingTask?.privacyLevel]);
 
   useEffect(() => {
     if (existingTask?.orgId) {
@@ -601,13 +601,10 @@ const EditLayoutBaseModal = (props) => {
           mediaUploads,
         };
 
-        if (!title || !descriptionText) {
+        if (!title) {
           const newErrors = { ...errors };
           if (!title) {
             newErrors.title = 'Please enter a title';
-          }
-          if (!descriptionText) {
-            newErrors.description = 'Please enter a description';
           }
           newErrors.general = 'Please enter the necessary information above';
           setErrors(newErrors);
@@ -666,7 +663,7 @@ const EditLayoutBaseModal = (props) => {
     rewardsCurrency,
     updateMilestone,
     selectedReviewers,
-    publicTask
+    publicTask,
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
@@ -1207,7 +1204,7 @@ const EditLayoutBaseModal = (props) => {
                     <AndroidSwitch
                       checked={publicTask}
                       onChange={(e) => {
-                        console.log('e.target', e.target.checked)
+                        console.log('e.target', e.target.checked);
                         setPublicTask(e.target.checked);
                       }}
                     />

@@ -482,97 +482,97 @@ export const TaskListCard = (props) => {
   } else if (taskType === Constants.TASK_STATUS_ARCHIVED) {
     canEdit = task.createdBy === user?.id || task.assigneeId === user?.id;
   }
-  if (viewDetails) {
-    return (
+
+  return (
+    <>
       <TaskViewModal
-        open={true}
+        open={viewDetails}
         handleClose={() => {
           setViewDetails(false);
+          const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}`;
+          window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
         }}
         task={taskType === Constants.TASK_STATUS_IN_REVIEW ? null : task}
         taskId={taskType === Constants.TASK_STATUS_IN_REVIEW ? task?.taskId : task?.id}
         isTaskProposal={taskType === Constants.TASK_STATUS_REQUESTED}
         back={true}
       />
-    );
-  }
-
-  return (
-    <TaskListCardWrapper onClick={() => setViewDetails(true)}>
-      <TaskHeader>
-        <SafeImage
-          src={task?.orgProfilePicture}
-          style={{
-            width: '29px',
-            height: '28px',
-            borderRadius: '4px',
-          }}
-        />
-        <AvatarList
-          style={{ marginLeft: '12px' }}
-          users={[
-            {
-              id: task?.assigneeId || task?.createdBy,
-              name: task?.assigneeUsername || task?.creatorUsername,
-              initials:
-                (task?.assigneeUsername && task?.assigneeUsername[0].toUpperCase()) ||
-                (task?.creatorUsername && task?.creatorUsername[0].toUpperCase()),
-              avatar: {
-                url: task?.assigneeProfilePicture || task?.creatorProfilePicture,
-                isOwnerOfPod: false,
-                color: null,
-              },
-            },
-          ]}
-          id={'task-' + task?.id}
-        />
-        {task?.rewards?.length > 0 && <Compensation rewards={task?.rewards} taskIcon={<TaskIcon />} />}
-      </TaskHeader>
-      <TaskContent>
-        <TaskTitle>{task?.title}</TaskTitle>
-        <p>
-          {renderMentionString({
-            content: cutString(task?.description),
-            router,
-          })}
-        </p>
-        {task?.podName && (
-          <PodWrapper
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              router.push(`/pod/${task?.podId}/boards`, undefined, {
-                shallow: true,
-              });
-            }}
-          >
-            <PodName>{task?.podName.slice(0, 15)}</PodName>
-          </PodWrapper>
-        )}
-        {task?.media?.length > 0 ? <TaskMedia media={task?.media[0]} /> : <TaskSeparator />}
-      </TaskContent>
-      <TaskFooter>
-        {task?.changeRequestedAt && (
-          <div style={flexDivStyle}>
-            <RejectIcon style={rejectIconStyle} />
-            <TaskStatusHeaderText>Change requested</TaskStatusHeaderText>
-          </div>
-        )}
-        {task?.approvedAt && (
-          <div style={flexDivStyle}>
-            <CompletedIcon style={rejectIconStyle} />
-            <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
-          </div>
-        )}
-        <TaskSummaryAction>
-          Details
-          <Arrow
+      <TaskListCardWrapper onClick={() => setViewDetails(true)}>
+        <TaskHeader>
+          <SafeImage
+            src={task?.orgProfilePicture}
             style={{
-              marginLeft: '4px',
+              width: '29px',
+              height: '28px',
+              borderRadius: '4px',
             }}
           />
-        </TaskSummaryAction>
-      </TaskFooter>
-    </TaskListCardWrapper>
+          <AvatarList
+            style={{ marginLeft: '12px' }}
+            users={[
+              {
+                id: task?.assigneeId || task?.createdBy,
+                name: task?.assigneeUsername || task?.creatorUsername,
+                initials:
+                  (task?.assigneeUsername && task?.assigneeUsername[0].toUpperCase()) ||
+                  (task?.creatorUsername && task?.creatorUsername[0].toUpperCase()),
+                avatar: {
+                  url: task?.assigneeProfilePicture || task?.creatorProfilePicture,
+                  isOwnerOfPod: false,
+                  color: null,
+                },
+              },
+            ]}
+            id={'task-' + task?.id}
+          />
+          {task?.rewards?.length > 0 && <Compensation rewards={task?.rewards} taskIcon={<TaskIcon />} />}
+        </TaskHeader>
+        <TaskContent>
+          <TaskTitle>{task?.title}</TaskTitle>
+          <p>
+            {renderMentionString({
+              content: cutString(task?.description),
+              router,
+            })}
+          </p>
+          {task?.podName && (
+            <PodWrapper
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                router.push(`/pod/${task?.podId}/boards`, undefined, {
+                  shallow: true,
+                });
+              }}
+            >
+              <PodName>{task?.podName.slice(0, 15)}</PodName>
+            </PodWrapper>
+          )}
+          {task?.media?.length > 0 ? <TaskMedia media={task?.media[0]} /> : <TaskSeparator />}
+        </TaskContent>
+        <TaskFooter>
+          {task?.changeRequestedAt && (
+            <div style={flexDivStyle}>
+              <RejectIcon style={rejectIconStyle} />
+              <TaskStatusHeaderText>Change requested</TaskStatusHeaderText>
+            </div>
+          )}
+          {task?.approvedAt && (
+            <div style={flexDivStyle}>
+              <CompletedIcon style={rejectIconStyle} />
+              <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
+            </div>
+          )}
+          <TaskSummaryAction>
+            Details
+            <Arrow
+              style={{
+                marginLeft: '4px',
+              }}
+            />
+          </TaskSummaryAction>
+        </TaskFooter>
+      </TaskListCardWrapper>
+    </>
   );
 };
