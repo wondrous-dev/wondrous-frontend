@@ -572,6 +572,9 @@ const TaskSubmissionForm = (props) => {
                     setFetchedTaskSubmissions(newFetchedTaskSubmissions);
                   },
                 });
+              } else {
+                setMediaUploads([...mediaUploads, fileToAdd]);
+                setFileUploadLoading(false);
               }
             }}
           />
