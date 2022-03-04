@@ -672,7 +672,7 @@ export const TaskViewModal = (props) => {
   const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
   const router = useRouter();
   const [editTask, setEditTask] = useState(false);
-  const [activeTab, setActiveTab] = useState(isMilestone ? tabs.tasks : tabs.submissions);
+  const [activeTab, setActiveTab] = useState(tabs.submissions);
   const [archiveTask, setArchiveTask] = useState(false);
   const [archiveTaskAlert, setArchiveTaskAlert] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
@@ -760,7 +760,9 @@ export const TaskViewModal = (props) => {
     handleNewStatus,
   ]);
   useEffect(() => {
-    setActiveTab(tabs.tasks);
+    if (isMilestone) {
+      setActiveTab(tabs.tasks);
+    }
   }, [isMilestone]);
   useEffect(() => {
     if (open) {
