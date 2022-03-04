@@ -1258,12 +1258,12 @@ export const TaskViewModal = (props) => {
                 </TaskSectionInfoDiv>
               </TaskSectionDisplayDiv>
             )}
-            <TaskSectionDisplayDiv>
-              <TaskSectionDisplayLabel>
-                <ImageIcon />
-                <TaskSectionDisplayText>Media</TaskSectionDisplayText>
-              </TaskSectionDisplayLabel>
-              {Array.isArray(fetchedTask?.media) && fetchedTask?.media.length > 0 ? (
+            {Array.isArray(fetchedTask?.media) && fetchedTask?.media.length > 0 && (
+              <TaskSectionDisplayDiv>
+                <TaskSectionDisplayLabel>
+                  <ImageIcon />
+                  <TaskSectionDisplayText>Media</TaskSectionDisplayText>
+                </TaskSectionDisplayLabel>
                 <TaskMediaContainer>
                   {Array.isArray(fetchedTask?.media) &&
                     fetchedTask?.media.map((mediaItem) => (
@@ -1276,17 +1276,8 @@ export const TaskViewModal = (props) => {
                       />
                     ))}
                 </TaskMediaContainer>
-              ) : (
-                <TaskSectionInfoText
-                  style={{
-                    marginLeft: '34px',
-                    marginTop: '8px',
-                  }}
-                >
-                  None
-                </TaskSectionInfoText>
-              )}
-            </TaskSectionDisplayDiv>
+              </TaskSectionDisplayDiv>
+            )}
             {isTaskProposal && !isMilestone && (
               <TaskSectionDisplayDiv>
                 <TaskSectionDisplayLabel>
