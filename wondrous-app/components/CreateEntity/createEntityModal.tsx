@@ -270,6 +270,7 @@ const CreateLayoutBaseModal = (props) => {
   const isPod = entityType === ENTITIES_TYPES.POD;
   const isTask = entityType === ENTITIES_TYPES.TASK;
   const isBounty = entityType === ENTITIES_TYPES.BOUNTY;
+  const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
   const isSubtask = parentTaskId !== undefined;
   const textLimit = isPod ? 200 : 900;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
@@ -333,21 +334,18 @@ const CreateLayoutBaseModal = (props) => {
     showDueDateSection,
   } = useMemo(() => {
     return {
-      showDeliverableRequirementsSection: entityType === ENTITIES_TYPES.TASK,
-      showBountySwitchSection: entityType === ENTITIES_TYPES.TASK || ENTITIES_TYPES.BOUNTY,
-      showAppearSection: entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.BOUNTY,
-      showLinkAttachmentSection: entityType === ENTITIES_TYPES.POD,
+      showDeliverableRequirementsSection: isTask,
+      showBountySwitchSection: isTask || isBounty,
+      showAppearSection: isTask || isBounty,
+      showLinkAttachmentSection: isPod,
       // TODO: add back in entityType === ENTITIES_TYPES.POD
       showHeaderImagePickerSection: false,
       // TODO: add back in entityType === ENTITIES_TYPES.POD
       showMembersSection: false,
-      showPrioritySelectSection: entityType === ENTITIES_TYPES.MILESTONE,
-      showDueDateSection:
-        entityType === ENTITIES_TYPES.TASK ||
-        entityType === ENTITIES_TYPES.MILESTONE ||
-        entityType === ENTITIES_TYPES.BOUNTY,
+      showPrioritySelectSection: isMilestone,
+      showDueDateSection: isTask || isMilestone || isBounty,
     };
-  }, [entityType]);
+  }, [isBounty, isMilestone, isPod, isTask]);
 
   const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType];
   const inputRef: any = useRef();
