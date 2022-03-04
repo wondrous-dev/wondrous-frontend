@@ -601,13 +601,10 @@ const CreateLayoutBaseModal = (props) => {
           mediaUploads,
         };
 
-        if (!title || !descriptionText || !org) {
+        if (!title || !org) {
           const newErrors = { ...errors };
           if (!title) {
             newErrors.title = 'Please enter a title';
-          }
-          if (!descriptionText) {
-            newErrors.description = 'Please enter a description';
           }
           if (!org) {
             newErrors.org = 'Please select an organization';
