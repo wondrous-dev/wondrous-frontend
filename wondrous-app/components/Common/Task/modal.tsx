@@ -943,6 +943,8 @@ export const TaskViewModal = (props) => {
       handleClose();
     }
   };
+  const isBounty = fetchedTask?.type === BOUNTY_TYPE;
+  const showAssignee = !isTaskProposal && !isMilestone && !isBounty;
 
   return (
     <ApprovedSubmissionContext.Provider
@@ -1149,7 +1151,7 @@ export const TaskViewModal = (props) => {
                 )}
               </TaskSectionDisplayDiv>
             )}
-            {!isTaskProposal && !isMilestone && (
+            {showAssignee && (
               <TaskSectionDisplayDiv>
                 <TaskSectionDisplayLabel>
                   <AssigneeIcon />
