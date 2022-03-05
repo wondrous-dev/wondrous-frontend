@@ -4,9 +4,8 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { CREATE_BOUNTY } from '../../graphql/mutations/bounty';
 import { CREATE_POD } from '../../graphql/mutations/pod';
-import { CREATE_MILESTONE, CREATE_TASK } from '../../graphql/mutations/task';
+import { CREATE_MILESTONE, CREATE_TASK, CREATE_BOUNTY } from '../../graphql/mutations/task';
 import { CREATE_TASK_PROPOSAL } from '../../graphql/mutations/taskProposal';
 import {
   GET_AUTOCOMPLETE_USERS,
@@ -702,10 +701,9 @@ const CreateLayoutBaseModal = (props) => {
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
-        console.log('bountyInput?.maxSubmissionCount', bountyInput?.maxSubmissionCount);
         const isErrorMaxSubmissionCount =
           bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
-        if (!title || !descriptionText || !org || isErrorMaxSubmissionCount) {
+        if (!title || !descriptionText || !org || isErrorMaxSubmissionCount || !canCreateTask) {
           const newErrors = { ...errors };
           if (!title) {
             newErrors.title = 'Please enter a title';
@@ -719,7 +717,9 @@ const CreateLayoutBaseModal = (props) => {
           if (isErrorMaxSubmissionCount) {
             newErrors.maxSubmissionCount = 'The number should be from 1 to 10,000';
           }
-          newErrors.general = 'Please enter the necessary information above';
+          newErrors.general = !canCreateTask
+            ? "You can't propose a bounty"
+            : 'Please enter the necessary information above';
           setErrors(newErrors);
         } else {
           if (canCreateTask) {
@@ -1063,67 +1063,69 @@ const CreateLayoutBaseModal = (props) => {
               marginBottom: '40px',
             }}
           >
-            <CreateFormAddDetailsInputBlock>
-              <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
-              <StyledAutocompletePopper
-                options={filterOrgUsers(podUsersData?.getPodUsers ?? orgUsersData?.getOrgUsers)}
-                onOpen={() => {
-                  if (pod) {
-                    getPodUsers({
-                      variables: {
-                        podId: pod?.id || pod,
-                        limit: 100, // TODO: fix autocomplete
-                      },
-                    });
-                  }
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    style={{
-                      color: White,
-                      fontFamily: 'Space Grotesk',
-                      fontSize: '14px',
-                      paddingLeft: '4px',
-                    }}
-                    placeholder="Enter username..."
-                    InputLabelProps={{ shrink: false }}
-                    {...params}
-                  />
-                )}
-                value={assignee}
-                inputValue={assigneeString}
-                onInputChange={(event, newInputValue) => {
-                  setAssigneeString(newInputValue);
-                }}
-                onChange={(_, __, reason) => {
-                  if (reason === 'clear') {
-                    setAssignee(null);
-                  }
-                }}
-                renderOption={(props, option, state) => {
-                  return (
-                    <OptionDiv
-                      onClick={(event) => {
-                        setAssignee(option);
-                        props?.onClick(event);
+            {!isBounty && (
+              <CreateFormAddDetailsInputBlock>
+                <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
+                <StyledAutocompletePopper
+                  options={filterOrgUsers(podUsersData?.getPodUsers ?? orgUsersData?.getOrgUsers)}
+                  onOpen={() => {
+                    if (pod) {
+                      getPodUsers({
+                        variables: {
+                          podId: pod?.id || pod,
+                          limit: 100, // TODO: fix autocomplete
+                        },
+                      });
+                    }
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      style={{
+                        color: White,
+                        fontFamily: 'Space Grotesk',
+                        fontSize: '14px',
+                        paddingLeft: '4px',
                       }}
-                    >
-                      {option?.profilePicture && (
-                        <SafeImage
-                          src={option?.profilePicture}
-                          style={{
-                            width: '30px',
-                            height: '30px',
-                            borderRadius: '15px',
-                          }}
-                        />
-                      )}
-                      <OptionTypography>{option?.label}</OptionTypography>
-                    </OptionDiv>
-                  );
-                }}
-              />
-            </CreateFormAddDetailsInputBlock>
+                      placeholder="Enter username..."
+                      InputLabelProps={{ shrink: false }}
+                      {...params}
+                    />
+                  )}
+                  value={assignee}
+                  inputValue={assigneeString}
+                  onInputChange={(event, newInputValue) => {
+                    setAssigneeString(newInputValue);
+                  }}
+                  onChange={(_, __, reason) => {
+                    if (reason === 'clear') {
+                      setAssignee(null);
+                    }
+                  }}
+                  renderOption={(props, option, state) => {
+                    return (
+                      <OptionDiv
+                        onClick={(event) => {
+                          setAssignee(option);
+                          props?.onClick(event);
+                        }}
+                      >
+                        {option?.profilePicture && (
+                          <SafeImage
+                            src={option?.profilePicture}
+                            style={{
+                              width: '30px',
+                              height: '30px',
+                              borderRadius: '15px',
+                            }}
+                          />
+                        )}
+                        <OptionTypography>{option?.label}</OptionTypography>
+                      </OptionDiv>
+                    );
+                  }}
+                />
+              </CreateFormAddDetailsInputBlock>
+            )}
 
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Reviewer</CreateFormAddDetailsInputLabel>

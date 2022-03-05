@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { CommentFragment } from '../fragments/comments';
 import { MediaFragment } from '../fragments/media';
-import { TaskFragment } from '../fragments/task';
+import { BountyFragment, TaskFragment } from '../fragments/task';
 
 export const CREATE_TASK = gql`
   mutation createTask($input: TaskInput) {
@@ -117,4 +117,13 @@ export const UPDATE_TASK_ORDER = gql`
       success
     }
   }
+`;
+
+export const CREATE_BOUNTY = gql`
+  mutation createBounty($input: BountyInput) {
+    createBounty(input: $input) {
+      ...BountyFragment
+    }
+  }
+  ${BountyFragment}
 `;
