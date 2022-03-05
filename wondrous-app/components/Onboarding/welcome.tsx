@@ -33,7 +33,6 @@ export const Logo = ({ divStyle }) => {
 };
 
 export const InviteWelcomeBox = ({ updateUser }) => {
-  const router = useRouter();
   const wonderWeb3 = useWonderWeb3();
   const [username, setUsername] = useState('');
   const [error, setError] = useState('');

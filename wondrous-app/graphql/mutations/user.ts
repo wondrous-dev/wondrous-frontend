@@ -32,6 +32,14 @@ export const REDEEM_ORG_INVITE_LINK = gql`
   }
 `;
 
+export const REDEEM_POD_INVITE_LINK = gql`
+  mutation redeemPodInviteLink($token: String!) {
+    redeemPodInviteLink(token: $token) {
+      success
+    }
+  }
+`;
+
 export const UPDATE_USER = gql`
   mutation updateUser($input: UserUpdateInput!) {
     updateUser(input: $input) {

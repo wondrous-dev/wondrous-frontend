@@ -68,11 +68,13 @@ const ChooseEntityToCreateModal = (props) => {
 
   const onPodPage = router.pathname.includes('/pod/');
   const entries = Object.entries(ENTITIES_UI_ELEMENTS).filter(([key]) => {
-    if (!permissions.includes(PERMISSIONS.FULL_ACCESS) && key === ENTITIES_TYPES.POD) {
+    if (
+      (!permissions.includes(PERMISSIONS.FULL_ACCESS) || !permissions.includes(PERMISSIONS.MANAGE_POD)) &&
+      key === ENTITIES_TYPES.POD
+    ) {
       return false;
     }
-    const condition = onPodPage ? key !== ENTITIES_TYPES.ORG && key !== ENTITIES_TYPES.POD : key !== ENTITIES_TYPES.ORG;
-    return condition;
+    return key !== ENTITIES_TYPES.ORG;
   });
 
   return (
