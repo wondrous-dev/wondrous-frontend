@@ -938,7 +938,7 @@ export const TaskViewModal = (props) => {
 
   const onCorrectPage =
     fetchedTask?.orgId === board?.orgId || fetchedTask?.podId === board?.podId || fetchedTask?.userId === board?.userId;
-  const taskType = isTaskProposal ? 'task proposal' : isMilestone ? 'milestone' : 'task';
+  const taskType = isTaskProposal ? 'task proposal' : fetchedTask?.type;
   const handleOnCloseArchiveTaskModal = () => {
     setArchiveTask(false);
     if (isTaskProposal) {
