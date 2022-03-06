@@ -111,6 +111,8 @@ export const TaskCardFragment = gql`
     parentTaskId
     totalSubtaskCount
     completedSubtaskCount
+    totalSubmissionsCount
+    totalSubmissionsPaidCount
   }
   ${MediaFragment}
 `;

@@ -9,10 +9,10 @@ import {
 } from './styles';
 import pluralize from 'pluralize';
 
-export const TaskContentBounty = (props) => {
-  const {} = props;
-  const taskContentPaid = (50 / 100) * 100;
-  const entriesText = pluralize('entry', 100, true);
+export const TaskBountyOverview = (props) => {
+  const { totalSubmissionsCount = 0, totalSubmissionsPaidCount = 0 } = props;
+  const entriesText = pluralize('entry', totalSubmissionsCount, true);
+  const taskPaidPercentage = (totalSubmissionsPaidCount / totalSubmissionsCount) * 100;
   return (
     <TaskContentBountyWrapper>
       <TaskContentBountyCard>
@@ -20,10 +20,10 @@ export const TaskContentBounty = (props) => {
         <AvatarList />
       </TaskContentBountyCard>
       <TaskContentBountyCard>
-        <TaskContentHeader>500 paid out</TaskContentHeader>
+        <TaskContentHeader>{totalSubmissionsPaidCount} paid out</TaskContentHeader>
         <TaskContentPaidOutWrapper>
-          <TaskContentPaidOutPercentage>{taskContentPaid}%</TaskContentPaidOutPercentage>
-          <TaskContentPaidOut variant="determinate" value={taskContentPaid} />
+          <TaskContentPaidOutPercentage>{taskPaidPercentage.toFixed(0)}%</TaskContentPaidOutPercentage>
+          <TaskContentPaidOut variant="determinate" value={taskPaidPercentage} />
         </TaskContentPaidOutWrapper>
       </TaskContentBountyCard>
     </TaskContentBountyWrapper>

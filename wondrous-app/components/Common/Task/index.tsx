@@ -76,7 +76,7 @@ import { CheckedBoxIcon } from '../../Icons/checkedBox';
 
 import { Claim } from '../../Icons/claimTask';
 import { updateInProgressTask, updateTaskItem } from '../../../utils/board';
-import { TaskContentBounty } from '../TaskContentBounty';
+import { TaskBountyOverview } from '../TaskBountyOverview';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -348,7 +348,12 @@ export const Task = (props) => {
                 </SubtaskCountWrapper>
               )}
             </TaskContentFooter>
-            {isBounty && <TaskContentBounty />}
+            {isBounty && (
+              <TaskBountyOverview
+                totalSubmissionsCount={task?.totalSubmissionsCount}
+                totalSubmissionsPaidCount={task?.totalSubmissionsPaidCount}
+              />
+            )}
             <MilestoneProgressWrapper>{isMilestone && <MilestoneProgress milestoneId={id} />}</MilestoneProgressWrapper>
             {media?.length > 0 ? <TaskMedia media={media[0]} /> : <TaskSeparator />}
           </TaskContent>
