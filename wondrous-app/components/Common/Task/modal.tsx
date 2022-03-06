@@ -647,6 +647,8 @@ export const TaskViewModal = (props) => {
   const [makeSubmission, setMakeSubmission] = useState(false);
   const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
   const isSubtask = fetchedTask?.parentTaskId !== null;
+  const isBounty = fetchedTask?.type === BOUNTY_TYPE;
+  const showAssignee = !isTaskProposal && !isMilestone && !isBounty;
   const [approvedSubmission, setApprovedSubmission] = useState(null);
 
   const orgBoard = useOrgBoard();
@@ -858,7 +860,7 @@ export const TaskViewModal = (props) => {
         >
           <EditLayoutBaseModal
             open={open}
-            entityType={isMilestone ? ENTITIES_TYPES.MILESTONE : ENTITIES_TYPES.TASK}
+            entityType={fetchedTask?.type}
             handleClose={() => {
               setEditTask(false);
               setFetchedTask(null);
@@ -943,8 +945,6 @@ export const TaskViewModal = (props) => {
       handleClose();
     }
   };
-  const isBounty = fetchedTask?.type === BOUNTY_TYPE;
-  const showAssignee = !isTaskProposal && !isMilestone && !isBounty;
 
   return (
     <ApprovedSubmissionContext.Provider

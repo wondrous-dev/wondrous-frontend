@@ -127,3 +127,12 @@ export const CREATE_BOUNTY = gql`
   }
   ${BountyFragment}
 `;
+
+export const UPDATE_BOUNTY = gql`
+  mutation updateBounty($bountyId: ID!, $input: BountyInput) {
+    updateBounty(bountyId: $bountyId, input: $input) {
+      ...BountyFragment
+    }
+  }
+  ${BountyFragment}
+`;

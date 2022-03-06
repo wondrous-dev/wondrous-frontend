@@ -57,6 +57,7 @@ export const TaskFragment = gql`
       icon
       tokenName
     }
+    maxSubmissionCount
   }
   ${MediaFragment}
 `;
