@@ -708,7 +708,7 @@ const EditLayoutBaseModal = (props) => {
             },
           })
             .then((result) => {
-              const task = result?.data?.createTask;
+              const task = result?.data?.updateBounty;
               const justCreatedPod = getPodObject();
               if (
                 board?.setColumns &&
