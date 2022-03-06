@@ -72,7 +72,6 @@ export const TaskContent = styled.div`
   color: ${White};
   white-space: pre-line;
   cursor: pointer;
-  max-width: 270px;
   overflow-x: hidden;
 `;
 
