@@ -910,7 +910,7 @@ export const TaskViewModal = (props) => {
       />
     );
   }
-  const canSubmit = fetchedTask?.assigneeId === user?.id;
+  const canSubmit = fetchedTask?.assigneeId === user?.id || isBounty;
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
     orgId: fetchedTask?.orgId,

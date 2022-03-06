@@ -176,9 +176,9 @@ const SubmissionItem = (props) => {
     fetchedTaskSubmissions,
     setFetchedTaskSubmissions,
     handleClose,
+    user,
   } = props;
   const router = useRouter();
-  const user = useMe();
   const mediaUploads = submission?.media;
   const imageStyle = {
     width: '40px',
@@ -697,7 +697,10 @@ const TaskSubmissionForm = (props) => {
 };
 
 const MakeSubmissionBlock = (props) => {
-  const { fetchedTask, setMakeSubmission, prompt } = props;
+  const { fetchedTask, setMakeSubmission, prompt, canSubmit, loggedInUser } = props;
+  const user = fetchedTask?.assigneeId ? fetchedTask : canSubmit && loggedInUser;
+  const profilePicture = user?.assigneeProfilePicture ?? user?.profilePicture;
+  const username = user?.assigneeUsername ?? user?.username;
 
   return (
     <MakeSubmissionDiv>
@@ -707,9 +710,9 @@ const MakeSubmissionBlock = (props) => {
           width: '100%',
         }}
       >
-        {fetchedTask?.assigneeUsername && (
+        {canSubmit && (
           <>
-            {fetchedTask?.assigneeProfilePicture ? (
+            {profilePicture ? (
               <SafeImage
                 style={{
                   width: '26px',
@@ -717,7 +720,7 @@ const MakeSubmissionBlock = (props) => {
                   borderRadius: '13px',
                   marginRight: '4px',
                 }}
-                src={fetchedTask?.assigneeProfilePicture}
+                src={profilePicture}
               />
             ) : (
               <DefaultUserImage
@@ -734,7 +737,7 @@ const MakeSubmissionBlock = (props) => {
                 fontSize: '16px',
               }}
             >
-              {fetchedTask?.assigneeUsername}
+              {username}
             </TaskSectionInfoText>
             <div
               style={{
@@ -773,6 +776,7 @@ export const TaskSubmissionContent = (props) => {
   const [submissionToEdit, setSubmissionToEdit] = useState(null);
   const [moveProgressButton, setMoveProgressButton] = useState(true);
   const taskStatus = fetchedTask?.status;
+  const loggedInUser = useMe();
   if (taskSubmissionLoading) {
     return <CircularProgress />;
   }
@@ -853,6 +857,8 @@ export const TaskSubmissionContent = (props) => {
             fetchedTask={fetchedTask}
             prompt={'Make a submission'}
             setMakeSubmission={setMakeSubmission}
+            canSubmit={canSubmit}
+            loggedInUser={loggedInUser}
           />
         )}
       </>
@@ -894,6 +900,8 @@ export const TaskSubmissionContent = (props) => {
                 fetchedTask={fetchedTask}
                 setMakeSubmission={setMakeSubmission}
                 prompt={'Make another submission'}
+                canSubmit={canSubmit}
+                loggedInUser={loggedInUser}
               />
             )}
             {taskStatus === TASK_STATUS_DONE && fetchedTask?.type === ENTITIES_TYPES.TASK && (
@@ -916,6 +924,7 @@ export const TaskSubmissionContent = (props) => {
                   setFetchedTaskSubmissions={setFetchedTaskSubmissions}
                   fetchedTaskSubmissions={fetchedTaskSubmissions}
                   submission={transformTaskSubmissionToTaskSubmissionCard(taskSubmission, {})}
+                  user={loggedInUser}
                 />
               );
             })}
