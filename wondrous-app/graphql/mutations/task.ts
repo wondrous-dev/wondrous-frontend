@@ -59,7 +59,7 @@ export const REMOVE_MEDIA_FROM_TASK = gql`
 `;
 
 export const UPDATE_TASK_STATUS = gql`
-  mutation updateTaskStatus($taskId: ID!, $input: updateTaskStatusInput!) {
+  mutation updateTaskStatus($taskId: ID!, $input: updateStatusInput!) {
     updateTaskStatus(taskId: $taskId, input: $input) {
       ...TaskFragment
     }
@@ -131,6 +131,15 @@ export const CREATE_BOUNTY = gql`
 export const UPDATE_BOUNTY = gql`
   mutation updateBounty($bountyId: ID!, $input: BountyInput) {
     updateBounty(bountyId: $bountyId, input: $input) {
+      ...BountyFragment
+    }
+  }
+  ${BountyFragment}
+`;
+
+export const UPDATE_BOUNTY_STATUS = gql`
+  mutation updateBountyStatus($bountyId: ID!, $input: updateStatusInput!) {
+    updateBountyStatus(bountyId: $bountyId, input: $input) {
       ...BountyFragment
     }
   }

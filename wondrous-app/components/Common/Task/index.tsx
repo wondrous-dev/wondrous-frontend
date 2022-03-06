@@ -266,15 +266,13 @@ export const Task = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assigneeUsername]);
 
-  const taskType = isMilestone ? 'milestone' : 'task';
-
   return (
     <span className={className}>
       <ArchiveTaskModal
         open={archiveTask}
         onClose={() => setArchiveTask(false)}
         onArchive={handleNewStatus}
-        taskType={taskType}
+        taskType={type}
       />
       <TaskWrapper key={id} onClick={openModal}>
         <TaskInner>
@@ -433,7 +431,7 @@ export const Task = (props) => {
                       color: White,
                     }}
                   >
-                    Archive {taskType}
+                    Archive {type}
                   </DropDownItem>
                 </DropDown>
               </TaskActionMenu>

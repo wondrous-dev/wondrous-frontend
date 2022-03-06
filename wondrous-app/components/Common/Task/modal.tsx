@@ -94,7 +94,7 @@ import {
   TakeTaskButton,
 } from '../../CreateEntity/styles';
 import { useRouter } from 'next/router';
-import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE } from '../../../graphql/mutations/task';
+import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE, UPDATE_BOUNTY_STATUS } from '../../../graphql/mutations/task';
 import { UPDATE_TASK_PROPOSAL_ASSIGNEE } from '../../../graphql/mutations/taskProposal';
 import { GET_PREVIEW_FILE } from '../../../graphql/queries/media';
 import { GET_TASK_PROPOSAL_BY_ID } from '../../../graphql/queries/taskProposal';
@@ -716,19 +716,37 @@ export const TaskViewModal = (props) => {
       // let columns = [...boardColumns?.columns]
     },
   });
+  const [updateBountyStatus] = useMutation(UPDATE_BOUNTY_STATUS, {
+    refetchQueries: () => [
+      'getTaskById',
+      'getUserTaskBoardTasks',
+      'getOrgTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForUserBoard',
+    ],
+  });
 
   const handleNewStatus = useCallback(
     (newStatus) => {
-      updateTaskStatusMutation({
-        variables: {
-          taskId: fetchedTask?.id,
-          input: {
-            newStatus,
+      if (isBounty) {
+        updateBountyStatus({
+          variables: {
+            bountyId: fetchedTask?.id,
+            input: { newStatus },
           },
-        },
-      });
+        });
+      } else {
+        updateTaskStatusMutation({
+          variables: {
+            taskId: fetchedTask?.id,
+            input: {
+              newStatus,
+            },
+          },
+        });
+      }
     },
-    [fetchedTask, updateTaskStatusMutation]
+    [fetchedTask?.id, isBounty, updateBountyStatus, updateTaskStatusMutation]
   );
 
   useEffect(() => {
