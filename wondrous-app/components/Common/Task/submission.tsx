@@ -776,6 +776,7 @@ export const TaskSubmissionContent = (props) => {
   const [submissionToEdit, setSubmissionToEdit] = useState(null);
   const [moveProgressButton, setMoveProgressButton] = useState(true);
   const taskStatus = fetchedTask?.status;
+  const fetchedTaskSubmissionsLength = fetchedTaskSubmissions?.length;
   const loggedInUser = useMe();
   if (taskSubmissionLoading) {
     return <CircularProgress />;
@@ -836,12 +837,12 @@ export const TaskSubmissionContent = (props) => {
       </div>
     );
   }
-  if (!canSubmit && fetchedTaskSubmissions?.length === 0 && fetchedTask?.assigneeUsername) {
+  if (!canSubmit && fetchedTaskSubmissionsLength === 0 && fetchedTask?.assigneeUsername) {
     return (
       <TaskTabText>None at the moment. Only @{fetchedTask?.assigneeUsername} can create a submission </TaskTabText>
     );
   }
-  if (canSubmit && fetchedTaskSubmissions?.length === 0) {
+  if (canSubmit && fetchedTaskSubmissionsLength === 0) {
     return (
       <>
         {makeSubmission ? (
@@ -881,7 +882,7 @@ export const TaskSubmissionContent = (props) => {
     );
   }
 
-  if (fetchedTaskSubmissions?.length > 0) {
+  if (fetchedTaskSubmissionsLength > 0) {
     // display list of submissions
     return (
       <>
@@ -895,15 +896,19 @@ export const TaskSubmissionContent = (props) => {
           />
         ) : (
           <>
-            {taskStatus !== TASK_STATUS_DONE && taskStatus !== TASK_STATUS_ARCHIVED && (
-              <MakeSubmissionBlock
-                fetchedTask={fetchedTask}
-                setMakeSubmission={setMakeSubmission}
-                prompt={'Make another submission'}
-                canSubmit={canSubmit}
-                loggedInUser={loggedInUser}
-              />
-            )}
+            {taskStatus !== TASK_STATUS_DONE &&
+              taskStatus !== TASK_STATUS_ARCHIVED &&
+              (fetchedTask?.maxSubmissionCount
+                ? fetchedTaskSubmissionsLength < fetchedTask?.maxSubmissionCount
+                : fetchedTaskSubmissionsLength) && (
+                <MakeSubmissionBlock
+                  fetchedTask={fetchedTask}
+                  setMakeSubmission={setMakeSubmission}
+                  prompt={'Make another submission'}
+                  canSubmit={canSubmit}
+                  loggedInUser={loggedInUser}
+                />
+              )}
             {taskStatus === TASK_STATUS_DONE && fetchedTask?.type === ENTITIES_TYPES.TASK && (
               <MakePaymentBlock
                 fetchedTask={fetchedTask}
