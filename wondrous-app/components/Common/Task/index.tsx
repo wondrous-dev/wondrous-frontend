@@ -44,7 +44,7 @@ import {
   TaskListCardWrapper,
   TaskStatusHeaderText,
   ArchivedTaskUndo,
-  MilestoneSeparator,
+  TaskDivider,
   MilestoneProgressWrapper,
   TaskHeaderIconWrapper,
   SubtaskCountWrapper,
@@ -67,7 +67,7 @@ import { Arrow, Archived } from '../../Icons/sections';
 import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE } from '../../../graphql/mutations/task';
 import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries';
 import { OrgBoardContext } from '../../../utils/contexts';
-import { MilestoneLaunchedBy } from '../MilestoneLaunchedBy';
+import { TaskCreatedBy } from '../TaskCreatedBy';
 import { MilestoneProgress } from '../MilestoneProgress';
 import { MilestoneWrapper } from '../Milestone';
 import PodIcon from '../../Icons/podIcon';
@@ -308,8 +308,8 @@ export const Task = (props) => {
             </TaskHeaderIconWrapper>
             {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
           </TaskHeader>
-          <MilestoneLaunchedBy type={type} router={router} createdBy={createdBy} />
-          {isMilestone && <MilestoneSeparator />}
+          <TaskCreatedBy type={type} router={router} createdBy={createdBy} />
+          {(isMilestone || isBounty) && <TaskDivider />}
 
           <TaskContent>
             <TaskTitle>{title}</TaskTitle>

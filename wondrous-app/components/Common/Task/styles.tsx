@@ -81,7 +81,7 @@ export const TaskSeparator = styled.div`
   margin-top: 5px;
 `;
 
-export const MilestoneSeparator = styled(TaskSeparator)`
+export const TaskDivider = styled(TaskSeparator)`
   margin: 12px 0;
 `;
 
