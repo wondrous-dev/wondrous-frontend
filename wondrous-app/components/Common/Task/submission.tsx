@@ -88,6 +88,7 @@ import { delQuery } from '../../../utils';
 import { FileLoading } from '../FileUpload/FileUpload';
 import { MakePaymentBlock } from './payment';
 import { KudosForm } from '../KudosForm';
+import { PaymentButton } from './paymentButton';
 
 const SubmissionStatusIcon = (props) => {
   const { submission } = props;
@@ -177,6 +178,8 @@ const SubmissionItem = (props) => {
     setFetchedTaskSubmissions,
     handleClose,
     user,
+    setShowPaymentModal,
+    getTaskSubmissionsForTask,
   } = props;
   const router = useRouter();
   const mediaUploads = submission?.media;
@@ -230,7 +233,7 @@ const SubmissionItem = (props) => {
         }
       });
       setFetchedTaskSubmissions(newFetchedTaskSubmissions);
-      if (fetchedTask.type !== BOUNTY_TYPE) {
+      if (fetchedTask?.type !== BOUNTY_TYPE) {
         completeTask();
         setIsKudosForm(true);
       }
@@ -393,6 +396,16 @@ const SubmissionItem = (props) => {
                   </CreateFormButtonsBlock>
                 </>
               )}
+              {fetchedTask?.type === BOUNTY_TYPE &&
+                submission.approvedAt &&
+                submission?.paymentStatus !== PAYMENT_STATUS.PAID && (
+                  <PaymentButton
+                    fetchedTask={fetchedTask}
+                    taskSubmissions={fetchedTaskSubmissions}
+                    handleClose={handleClose}
+                    getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+                  />
+                )}
             </CreateFormFooterButtons>
           </>
         )}
@@ -770,6 +783,7 @@ export const TaskSubmissionContent = (props) => {
     setFetchedTaskSubmissions,
     handleClose,
     setShowPaymentModal,
+    getTaskSubmissionsForTask,
   } = props;
 
   const router = useRouter();
@@ -930,6 +944,8 @@ export const TaskSubmissionContent = (props) => {
                   fetchedTaskSubmissions={fetchedTaskSubmissions}
                   submission={transformTaskSubmissionToTaskSubmissionCard(taskSubmission, {})}
                   user={loggedInUser}
+                  setShowPaymentModal={setShowPaymentModal}
+                  getTaskSubmissionsForTask={getTaskSubmissionsForTask}
                 />
               );
             })}
