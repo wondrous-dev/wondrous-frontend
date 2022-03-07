@@ -716,12 +716,14 @@ export const TaskViewModal = (props) => {
       // let columns = [...boardColumns?.columns]
     },
   });
-  const [updateBountyStatus] = useMutation(UPDATE_BOUNTY_STATUS, {
+  const [updateBountyStatus, { data: updateBountyStatusData }] = useMutation(UPDATE_BOUNTY_STATUS, {
     refetchQueries: () => [
       'getTaskById',
       'getUserTaskBoardTasks',
       'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
       'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
       'getPerStatusTaskCountForUserBoard',
     ],
   });
@@ -754,7 +756,10 @@ export const TaskViewModal = (props) => {
       setInitialStatus(fetchedTask?.status);
     }
 
-    if (updateTaskStatusMutationData?.updateTaskStatus.status === TASK_STATUS_ARCHIVED) {
+    if (
+      updateTaskStatusMutationData?.updateTaskStatus.status === TASK_STATUS_ARCHIVED ||
+      updateBountyStatusData?.updateBountyStatus.status === TASK_STATUS_ARCHIVED
+    ) {
       setSnackbarAlertOpen(true);
       setSnackbarAlertMessage(
         <>
@@ -778,6 +783,7 @@ export const TaskViewModal = (props) => {
     setSnackbarAlertOpen,
     setSnackbarAlertMessage,
     handleNewStatus,
+    updateBountyStatusData,
   ]);
   useEffect(() => {
     if (isMilestone) {

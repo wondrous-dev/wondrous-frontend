@@ -140,16 +140,12 @@ export const Task = (props) => {
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
     refetchQueries: () => [
-      {
-        query: GET_ORG_TASK_BOARD_TASKS,
-        variables: orgBoard?.getOrgTasksVariables,
-      },
-      {
-        query: GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
-        variables: orgBoard?.getOrgBoardTaskCountVariables,
-      },
       'getUserTaskBoardTasks',
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
       'getPerStatusTaskCountForUserBoard',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
       'getSubtasksForTask',
     ],
   });
