@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useMutation } from '@apollo/client';
 import {
   InviteWelcomeBoxParagraph,
   InviteWelcomeBoxWrapper,
@@ -22,6 +23,7 @@ import { ThirdStep } from '../../components/Common/Image/OnboardingProgressBar';
 import { CircularProgress } from '@material-ui/core';
 import { StyledCancelButton } from '../Common/ArchiveTaskModal/styles';
 import { validateEmail } from '../../utils/constants';
+import { SET_USER_SIGNUP_COMPLETE } from '../../graphql/mutations';
 
 export const Logo = ({ divStyle }) => {
   return (
@@ -37,6 +39,7 @@ export const InviteWelcomeBox = ({ updateUser, firstOrg, firstPod }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(null);
   const router = useRouter();
+  const [setUserSignupComplete] = useMutation(SET_USER_SIGNUP_COMPLETE);
   const buttonStyle = {
     background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
     position: 'relative',
@@ -44,6 +47,10 @@ export const InviteWelcomeBox = ({ updateUser, firstOrg, firstPod }) => {
     bottom: '0',
     right: '0',
   };
+
+  useEffect(() => {
+    setUserSignupComplete();
+  }, []);
 
   return (
     <InviteWelcomeBoxWrapper>

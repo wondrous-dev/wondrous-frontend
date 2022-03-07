@@ -27,6 +27,10 @@ import { getFilenameAndType, uploadMedia } from '../../utils/media';
 import { SafeImage } from '../Common/Image';
 import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
 import { Button } from '../Common/button';
+const DISCORD_OAUTH_URL = process.env.NEXT_PUBLIC_PRODUCTION
+  ? 'https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=https%3A%2F%2Fapp.wonderverse.xyz%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify'
+  : 'https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=https%3A%2F%2Fwondrous-app-git-staging-wonderverse.vercel.app%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify';
+('https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify');
 
 export const Logo = ({ divStyle }) => {
   return (
@@ -85,7 +89,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
           width: '100%',
         }}
       >
-        Connect your Discord to get preapproval to join DAOs you’re a Discord member of.
+        Connect your Discord to get notifications from Wonder for your DAO contributions
       </InviteWelcomeBoxParagraph>
       <DiscordLogo />
       <div
@@ -109,15 +113,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
         </LaterButton>
         <ContinueButton
           style={buttonStyle}
-          onClick={() =>
-            updateUser({
-              variables: {
-                input: {
-                  bio,
-                },
-              },
-            })
-          }
+          onClick={() => (window.location.href = DISCORD_OAUTH_URL)}
           buttonInnerStyle={{
             padding: '8px 16px',
           }}

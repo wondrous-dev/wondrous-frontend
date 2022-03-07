@@ -12,6 +12,7 @@ export const LoggedinUserFragment = gql`
     userInfo {
       email
     }
+    signupCompleted
   }
 `;
 
