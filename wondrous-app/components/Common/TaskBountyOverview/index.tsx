@@ -12,7 +12,7 @@ import pluralize from 'pluralize';
 export const TaskBountyOverview = (props) => {
   const { totalSubmissionsCount = 0, totalSubmissionsPaidCount = 0 } = props;
   const entriesText = pluralize('entry', totalSubmissionsCount, true);
-  const taskPaidPercentage = (totalSubmissionsPaidCount / totalSubmissionsCount) * 100;
+  const taskPaidPercentage = (totalSubmissionsPaidCount / totalSubmissionsCount) * 100 || 0;
   return (
     <TaskContentBountyWrapper>
       <TaskContentBountyCard>
