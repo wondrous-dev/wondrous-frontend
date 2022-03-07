@@ -1,4 +1,4 @@
-import { AvatarList } from '../AvatarList';
+import pluralize from 'pluralize';
 import {
   TaskContentBountyCard,
   TaskContentBountyWrapper,
@@ -7,20 +7,17 @@ import {
   TaskContentPaidOutPercentage,
   TaskContentPaidOutWrapper,
 } from './styles';
-import pluralize from 'pluralize';
 
 export const TaskBountyOverview = (props) => {
   const { totalSubmissionsCount = 0, totalSubmissionsPaidCount = 0 } = props;
-  const entriesText = pluralize('entry', totalSubmissionsCount, true);
+  const pluralizeSubmission = pluralize('submission', totalSubmissionsPaidCount);
   const taskPaidPercentage = (totalSubmissionsPaidCount / totalSubmissionsCount) * 100 || 0;
   return (
     <TaskContentBountyWrapper>
       <TaskContentBountyCard>
-        <TaskContentHeader>{entriesText}</TaskContentHeader>
-        <AvatarList />
-      </TaskContentBountyCard>
-      <TaskContentBountyCard>
-        <TaskContentHeader>{totalSubmissionsPaidCount} paid out</TaskContentHeader>
+        <TaskContentHeader>
+          {totalSubmissionsPaidCount} of {totalSubmissionsCount} {pluralizeSubmission} paid
+        </TaskContentHeader>
         <TaskContentPaidOutWrapper>
           <TaskContentPaidOutPercentage>{taskPaidPercentage.toFixed(0)}%</TaskContentPaidOutPercentage>
           <TaskContentPaidOut variant="determinate" value={taskPaidPercentage} />

@@ -9,7 +9,7 @@ export const TaskContentBountyWrapper = styled.div`
 
 export const TaskContentBountyCard = styled.div`
   background: #0f0f0f;
-  flex-basis: 48%;
+  flex-basis: 100%;
   border-radius: 6px;
   padding: 13px 10px;
 `;
