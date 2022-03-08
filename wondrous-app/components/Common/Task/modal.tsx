@@ -723,7 +723,6 @@ export const TaskViewModal = (props) => {
       'getPodTaskBoardTasks',
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
-      'getPerStatusTaskCountForUserBoard',
     ],
   });
 

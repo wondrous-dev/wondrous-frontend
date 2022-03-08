@@ -537,7 +537,14 @@ const EditLayoutBaseModal = (props) => {
     },
   });
 
-  const [updateBounty] = useMutation(UPDATE_BOUNTY);
+  const [updateBounty] = useMutation(UPDATE_BOUNTY, {
+    refetchQueries: () => [
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+  });
 
   const [updateTaskProposal] = useMutation(UPDATE_TASK_PROPOSAL, {
     onCompleted: (data) => {
