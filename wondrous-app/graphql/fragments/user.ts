@@ -11,6 +11,7 @@ export const LoggedinUserFragment = gql`
     thumbnailPicture
     userInfo {
       email
+      discordUsername
     }
     signupCompleted
   }
