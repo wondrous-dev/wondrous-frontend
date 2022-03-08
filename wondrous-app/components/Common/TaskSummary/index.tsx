@@ -15,6 +15,7 @@ import {
   TaskAction,
   TaskActionAmount,
   TaskSeparator,
+  TaskCardDescriptionText,
 } from '../Task/styles';
 
 import { TASK_ICONS } from '../Task/index';
@@ -242,12 +243,12 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
 
           <TaskContent>
             <TaskTitle>{title}</TaskTitle>
-            <p>
+            <TaskCardDescriptionText>
               {renderMentionString({
                 content: task?.description,
                 router,
               })}
-            </p>
+            </TaskCardDescriptionText>
             {task?.podName && (
               <div
                 style={{
@@ -264,6 +265,9 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
                   }}
                 />
                 <PodWrapper
+                  style={{
+                    marginTop: '0',
+                  }}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
