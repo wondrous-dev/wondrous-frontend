@@ -45,6 +45,7 @@ import {
   TASK_STATUS_ARCHIVED,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   PAYMENT_STATUS,
+  TASK_TYPE,
 } from '../../../utils/constants';
 import { White } from '../../../theme/colors';
 import { useMe } from '../../Auth/withAuth';
@@ -70,6 +71,7 @@ import {
   REMOVE_SUBMISSION_MEDIA,
   REQUEST_CHANGE_SUBMISSION,
   UPDATE_TASK_SUBMISSION,
+  APPROVE_BOUNTY_SUBMISSION,
 } from '../../../graphql/mutations/taskSubmission';
 import UploadImageIcon from '../../Icons/uploadImage';
 import { handleAddFile } from '../../../utils/media';
@@ -219,6 +221,28 @@ const SubmissionItem = (props) => {
   };
   const [isKudosModalOpen, setIsKudosForm] = useState(false);
   const [approveSubmission] = useMutation(APPROVE_SUBMISSION, {
+    variables: {
+      submissionId: submission?.id,
+    },
+    onCompleted: () => {
+      // Change status of submission
+      const newFetchedTaskSubmissions = fetchedTaskSubmissions.map((taskSubmission) => {
+        if (taskSubmission?.id === submission?.id) {
+          return {
+            ...taskSubmission,
+            approvedAt: new Date(),
+          };
+        }
+      });
+      setFetchedTaskSubmissions(newFetchedTaskSubmissions);
+      if (fetchedTask?.type !== BOUNTY_TYPE) {
+        completeTask();
+        setIsKudosForm(true);
+      }
+    },
+    refetchQueries: ['getOrgTaskBoardSubmissions', 'getPerStatusTaskCountForOrgBoard'],
+  });
+  const [approveBountySubmission] = useMutation(APPROVE_BOUNTY_SUBMISSION, {
     variables: {
       submissionId: submission?.id,
     },
@@ -390,8 +414,11 @@ const SubmissionItem = (props) => {
                         Request changes
                       </CreateFormCancelButton>
                     )}
-                    {!submission.approvedAt && (
+                    {!submission.approvedAt && fetchedTask?.type === TASK_TYPE && (
                       <CreateFormPreviewButton onClick={approveSubmission}>Approve</CreateFormPreviewButton>
+                    )}
+                    {!submission.approvedAt && fetchedTask?.type === BOUNTY_TYPE && (
+                      <CreateFormPreviewButton onClick={approveBountySubmission}>Approve</CreateFormPreviewButton>
                     )}
                   </CreateFormButtonsBlock>
                 </>
