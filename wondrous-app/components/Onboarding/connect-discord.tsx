@@ -22,10 +22,9 @@ import { SecondStep, ThirdStep } from '../../components/Common/Image/OnboardingP
 import { useWonderWeb3 } from '../../services/web3';
 import { Field, FieldInput } from '../Common/field';
 import { useMe } from '../Auth/withAuth';
+import { getDiscordUrl } from '../../utils';
 
-const DISCORD_OAUTH_URL = process.env.NEXT_PUBLIC_PRODUCTION
-  ? 'https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=https%3A%2F%2Fapp.wonderverse.xyz%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify'
-  : 'https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=https%3A%2F%2Fwondrous-app-git-staging-wonderverse.vercel.app%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify';
+const DISCORD_OAUTH_URL = getDiscordUrl();
 
 export const Logo = ({ divStyle }) => {
   return (

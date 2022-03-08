@@ -11,6 +11,7 @@ const Callback = () => {
   const router = useRouter();
   const { code } = router.query;
   const [connectUserDiscord] = useMutation(CONNECT_USER_DISCORD);
+
   useEffect(() => {
     if (code) {
       connectUserDiscord({
@@ -19,12 +20,12 @@ const Callback = () => {
         },
       })
         .then((result) => {
-          if (user?.signupCompleted) {
+          if (user && user?.signupCompleted) {
             // Only place to change this is in settings
             router.push('/profile/settings', undefined, {
               shallow: true,
             });
-          } else {
+          } else if (user && !user?.signupCompleted) {
             router.push('/onboarding/email-setup', undefined, {
               shallow: true,
             });
