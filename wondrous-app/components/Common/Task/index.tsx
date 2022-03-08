@@ -51,6 +51,7 @@ import {
   SubtaskCount,
   TaskContentFooter,
   ClaimButton,
+  TaskCardDescriptionText,
 } from './styles';
 import { renderMentionString } from '../../../utils/common';
 import { useRouter } from 'next/router';
@@ -313,12 +314,12 @@ export const Task = (props) => {
 
           <TaskContent>
             <TaskTitle>{title}</TaskTitle>
-            <p>
+            <TaskCardDescriptionText>
               {renderMentionString({
-                content: cutString(description, 50),
+                content: description,
                 router,
               })}
-            </p>
+            </TaskCardDescriptionText>
             <TaskContentFooter>
               {task?.podName && (
                 <PodWrapper
@@ -529,12 +530,12 @@ export const TaskListCard = (props) => {
         </TaskHeader>
         <TaskContent>
           <TaskTitle>{task?.title}</TaskTitle>
-          <p>
+          <TaskCardDescriptionText>
             {renderMentionString({
-              content: cutString(task?.description),
+              content: task?.description,
               router,
             })}
-          </p>
+          </TaskCardDescriptionText>
           {task?.podName && (
             <PodWrapper
               onClick={(e) => {
