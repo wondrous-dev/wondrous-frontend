@@ -39,6 +39,18 @@ const SUPPORTED_PAYMENT_CHAINS = [
     value: 'polygon_mainnet',
   },
 ];
+
+const WALLET_OPTIONS = [
+  {
+    label: 'Metamask',
+    value: 'metamask',
+  },
+  {
+    label: 'Gnosis',
+    value: 'gnosis',
+  },
+];
+
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {
   SUPPORTED_PAYMENT_CHAINS.push({
     label: 'Ethereum Rinkeby',
@@ -57,6 +69,7 @@ const Wallets = (props) => {
   const { orgId, podId } = router.query;
   const [wallets, setWallets] = useState([]);
   const [selectedChain, setSelectedChain] = useState('eth_mainnet');
+  const [selectedWalletType, setSelectedWalletType] = useState('gnosis');
   const [walletName, setWalletName] = useState('');
   const [safeAddress, setSafeAddress] = useState('');
   const [userAddress, setUserAddress] = useState('');
@@ -159,6 +172,9 @@ const Wallets = (props) => {
     }
     setErrors(newError);
   };
+
+  const handleMetamaskWalletLinkButton = async () => {};
+
   useEffect(() => {
     if (orgId) {
       getOrgWallet({
@@ -230,6 +246,26 @@ const Wallets = (props) => {
           style={{
             display: 'flex',
             alignItems: 'center',
+          }}
+        >
+          <DropdownSelect
+            value={selectedWalletType}
+            options={WALLET_OPTIONS}
+            setValue={setSelectedWalletType}
+            onChange={(e) => {}}
+            innerStyle={{
+              marginTop: 0,
+            }}
+            formSelectStyle={{
+              height: 'auto',
+            }}
+          />
+          <TableValueText>choose type of wallet</TableValueText>
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
             justifyContent: 'space-between',
           }}
         >
@@ -260,8 +296,17 @@ const Wallets = (props) => {
           }}
           onClick={handleCreateWalletClick}
         >
-          Add wallet
+          Add gnosis wallet
         </CreateFormPreviewButton>
+        {/* <CreateFormPreviewButton
+          style={{
+            marginLeft: 10,
+            marginTop: '32px',
+          }}
+          onClick={handleMetamaskWalletLinkButton}
+        >
+          Link Metamask Wallet
+        </CreateFormPreviewButton> */}
       </WalletsContainer>
     </SettingsWrapper>
   );
