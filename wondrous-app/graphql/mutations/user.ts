@@ -56,3 +56,20 @@ export const CONFIRM_EMAIL_ADDRESS = gql`
     }
   }
 `;
+
+export const CONNECT_USER_DISCORD = gql`
+  mutation connectUserDiscord($discordAuthCode: String!) {
+    connectUserDiscord(discordAuthCode: $discordAuthCode) {
+      success
+    }
+  }
+`;
+
+export const SET_USER_SIGNUP_COMPLETE = gql`
+  mutation {
+    setUserSignupComplete {
+      ...LoggedinUser
+    }
+  }
+  ${LoggedinUserFragment}
+`;
