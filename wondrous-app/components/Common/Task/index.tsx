@@ -295,7 +295,11 @@ export const Task = (props) => {
               {isSubtask && <SubtaskDarkIcon />}
               {!isSubtask && !isMilestone && totalSubtask > 0 && <CheckedBoxIcon />}
               {task?.privacyLevel === Constants.PRIVACY_LEVEL.public && (
-                <PodWrapper>
+                <PodWrapper
+                  style={{
+                    marginTop: '0',
+                  }}
+                >
                   <PodName
                     style={{
                       borderRadius: '8px',
