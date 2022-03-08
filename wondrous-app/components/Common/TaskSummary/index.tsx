@@ -254,6 +254,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
                 style={{
                   alignItems: 'center',
                   display: 'flex',
+                  marginTop: '16px',
                 }}
               >
                 <PodIcon
