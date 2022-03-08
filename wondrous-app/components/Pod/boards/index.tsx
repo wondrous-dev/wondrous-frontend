@@ -300,7 +300,8 @@ const Boards = (props: Props) => {
                 router.push({
                   pathname: router.pathname,
                   query: {
-                    ...router.query,
+                    podId: router.query.podId,
+                    view,
                     boardType: PRIVACY_LEVEL.public,
                   },
                 });
@@ -308,7 +309,8 @@ const Boards = (props: Props) => {
                 router.push({
                   pathname: router.pathname,
                   query: {
-                    ...router.query,
+                    podId: router.query.podId,
+                    view,
                     boardType: 'all',
                   },
                 });

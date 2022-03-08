@@ -22,7 +22,7 @@ import { OrgPod } from '../../../types/pod';
 import { Chevron } from '../../Icons/sections';
 import { splitColsByType } from '../../../services/board';
 import { ViewType } from '../../../types/common';
-import { useSelectMembership } from '../../../utils/hooks';
+import { useOrgBoard, useSelectMembership } from '../../../utils/hooks';
 import { PRIVACY_LEVEL } from '../../../utils/constants';
 import { MembershipRequestTable } from '../../Table/MembershipRequests';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
@@ -40,6 +40,7 @@ type Props = {
 const Boards = (props: Props) => {
   const { columns, onLoadMore, hasMore, filterSchema, onSearch, onFilterChange, isAdmin } = props;
   const router = useRouter();
+  const orgBoard = useOrgBoard();
   const [view, setView] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
   const [searchResults, setSearchResults] = useState({});
@@ -155,34 +156,38 @@ const Boards = (props: Props) => {
       <BoardsActivity>
         <SearchTasks onSearch={onSearch} />
         <Filter filterSchema={filterSchema} onChange={onFilterChange} />
-        <CreateFormPreviewButton
-          style={{
-            width: '230px',
-            borderRadius: '8px',
-            fontSize: '14px',
-          }}
-          onClick={() => {
-            if (boardType !== PRIVACY_LEVEL.public) {
-              router.push({
-                pathname: router.pathname,
-                query: {
-                  ...router.query,
-                  boardType: PRIVACY_LEVEL.public,
-                },
-              });
-            } else {
-              router.push({
-                pathname: router.pathname,
-                query: {
-                  ...router.query,
-                  boardType: 'all',
-                },
-              });
-            }
-          }}
-        >
-          {boardType === PRIVACY_LEVEL.public ? 'View all' : 'View public'}
-        </CreateFormPreviewButton>
+        {orgBoard && (
+          <CreateFormPreviewButton
+            style={{
+              width: '230px',
+              borderRadius: '8px',
+              fontSize: '14px',
+            }}
+            onClick={() => {
+              if (boardType !== PRIVACY_LEVEL.public) {
+                router.push({
+                  pathname: router.pathname,
+                  query: {
+                    username: router.query.username,
+                    view,
+                    boardType: PRIVACY_LEVEL.public,
+                  },
+                });
+              } else {
+                router.push({
+                  pathname: router.pathname,
+                  query: {
+                    username: router.query.username,
+                    view,
+                    boardType: 'all',
+                  },
+                });
+              }
+            }}
+          >
+            {boardType === PRIVACY_LEVEL.public ? 'View all' : 'View public'}
+          </CreateFormPreviewButton>
+        )}
         {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
       </BoardsActivity>
       {selectMembershipRequests && (
