@@ -21,8 +21,13 @@ export const TaskContentHeader = styled(Typography)`
     font-style: normal;
     font-weight: 400;
     color: #c4c4c4;
+    display: flex;
+    justify-content: space-between;
   }
 `;
+
+export const TaskContentHeaderEntriesCount = styled.div``;
+export const TaskContentHeaderPaidSubmissions = styled.div``;
 
 export const TaskContentPaidOutWrapper = styled.div`
   position: relative;
