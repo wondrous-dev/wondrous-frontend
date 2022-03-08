@@ -180,13 +180,13 @@ const KanbanBoard = (props) => {
     setColumnsState(dedupeColumns(updatedColumns));
   };
 
-  const hasQuery = router?.query?.task || router?.query?.taskProposal;
   useEffect(() => {
+    const hasQuery = router?.query?.task || router?.query?.taskProposal;
     if (hasQuery && (orgBoard || userBoard || podBoard)) {
       setOpenModal(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasQuery, orgBoard || userBoard || podBoard]);
+  }, [router?.query?.task, router?.query?.taskProposal, orgBoard || userBoard || podBoard]);
 
   const onDragEnd = (result) => {
     moveCard(result?.draggableId, result?.destination?.droppableId, result?.destination?.index);
@@ -214,7 +214,7 @@ const KanbanBoard = (props) => {
             }
             setOpenModal(false);
             const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}`;
-            window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
+            router.push(newUrl, undefined, { shallow: true });
           }}
           taskId={router?.query?.task || router?.query?.taskProposal}
           isTaskProposal={!!router?.query?.taskProposal}
