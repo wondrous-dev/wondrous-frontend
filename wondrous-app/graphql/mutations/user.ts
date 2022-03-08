@@ -58,8 +58,8 @@ export const CONFIRM_EMAIL_ADDRESS = gql`
 `;
 
 export const CONNECT_USER_DISCORD = gql`
-  mutation connectUserDiscord($code: String!) {
-    connectUserDiscord(code: $code) {
+  mutation connectUserDiscord($discordAuthCode: String!) {
+    connectUserDiscord(discordAuthCode: $discordAuthCode) {
       success
     }
   }

@@ -16,7 +16,7 @@ const Callback = () => {
     if (code) {
       connectUserDiscord({
         variables: {
-          code,
+          discordAuthCode: code,
         },
       })
         .then((result) => {
