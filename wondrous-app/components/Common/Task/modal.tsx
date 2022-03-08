@@ -719,7 +719,6 @@ export const TaskViewModal = (props) => {
   const [updateBountyStatus, { data: updateBountyStatusData }] = useMutation(UPDATE_BOUNTY_STATUS, {
     refetchQueries: () => [
       'getTaskById',
-      'getUserTaskBoardTasks',
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
       'getPerStatusTaskCountForOrgBoard',
