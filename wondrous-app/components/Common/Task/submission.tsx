@@ -398,7 +398,8 @@ const SubmissionItem = (props) => {
               )}
               {fetchedTask?.type === BOUNTY_TYPE &&
                 submission.approvedAt &&
-                submission?.paymentStatus !== PAYMENT_STATUS.PAID && (
+                (submission?.paymentStatus !== PAYMENT_STATUS.PAID ||
+                  submission?.paymentStatus !== PAYMENT_STATUS.PROCESSING) && (
                   <PaymentButton
                     fetchedTask={fetchedTask}
                     taskSubmissions={fetchedTaskSubmissions}
