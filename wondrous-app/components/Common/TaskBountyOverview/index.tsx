@@ -11,19 +11,19 @@ import {
 } from './styles';
 
 export const TaskBountyOverview = (props) => {
-  const { totalSubmissionsCount = 0, totalSubmissionsPaidCount = 0 } = props;
+  const { totalSubmissionsCount = 0, approvedSubmissionsCount = 0 } = props;
   const pluralizeSubmission = pluralize('submission', totalSubmissionsCount, true);
-  const taskPaidPercentage = (totalSubmissionsPaidCount / totalSubmissionsCount) * 100 || 0;
+  const approvedSubmissionsPercentage = (approvedSubmissionsCount / totalSubmissionsCount) * 100 || 0;
   return (
     <TaskContentBountyWrapper>
       <TaskContentBountyCard>
         <TaskContentHeader>
           <TaskContentHeaderEntriesCount>{pluralizeSubmission}</TaskContentHeaderEntriesCount>
-          <TaskContentHeaderPaidSubmissions>{totalSubmissionsPaidCount} paid out</TaskContentHeaderPaidSubmissions>
+          <TaskContentHeaderPaidSubmissions>{approvedSubmissionsCount} approved</TaskContentHeaderPaidSubmissions>
         </TaskContentHeader>
         <TaskContentPaidOutWrapper>
-          <TaskContentPaidOutPercentage>{taskPaidPercentage.toFixed(0)}%</TaskContentPaidOutPercentage>
-          <TaskContentPaidOut variant="determinate" value={taskPaidPercentage} />
+          <TaskContentPaidOutPercentage>{approvedSubmissionsPercentage.toFixed(0)}%</TaskContentPaidOutPercentage>
+          <TaskContentPaidOut variant="determinate" value={approvedSubmissionsPercentage} />
         </TaskContentPaidOutWrapper>
       </TaskContentBountyCard>
     </TaskContentBountyWrapper>

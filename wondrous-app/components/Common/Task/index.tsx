@@ -348,7 +348,7 @@ export const Task = (props) => {
             {isBounty && (
               <TaskBountyOverview
                 totalSubmissionsCount={task?.totalSubmissionsCount}
-                totalSubmissionsPaidCount={task?.totalSubmissionsPaidCount}
+                approvedSubmissionsCount={task?.approvedSubmissionsCount}
               />
             )}
             <MilestoneProgressWrapper>{isMilestone && <MilestoneProgress milestoneId={id} />}</MilestoneProgressWrapper>

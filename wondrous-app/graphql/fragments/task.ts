@@ -112,7 +112,7 @@ export const TaskCardFragment = gql`
     totalSubtaskCount
     completedSubtaskCount
     totalSubmissionsCount
-    totalSubmissionsPaidCount
+    approvedSubmissionsCount
   }
   ${MediaFragment}
 `;
