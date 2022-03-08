@@ -248,7 +248,7 @@ const CreateLayoutBaseModal = (props) => {
     title: null,
     description: null,
     org: null,
-    maxSubmissionCount: null,
+    // maxSubmissionCount: null,
   });
 
   const [org, setOrg] = useState(null);
@@ -261,7 +261,7 @@ const CreateLayoutBaseModal = (props) => {
   const [link, setLink] = useState('');
   const [rewardsCurrency, setRewardsCurrency] = useState(null);
   const [rewardsAmount, setRewardsAmount] = useState(null);
-  const [maxSubmissionCount, setMaxSubmissionCount] = useState('');
+  // const [maxSubmissionCount, setMaxSubmissionCount] = useState('');
   const [title, setTitle] = useState('');
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const orgBoard = useOrgBoard();
@@ -675,7 +675,7 @@ const CreateLayoutBaseModal = (props) => {
           milestoneId: milestone?.id,
           parentTaskId,
           podId: pod,
-          maxSubmissionCount: parseFloat(maxSubmissionCount),
+          // maxSubmissionCount: parseFloat(maxSubmissionCount),
           dueDate,
           ...(rewardsAmount &&
             rewardsCurrency && {
@@ -700,9 +700,9 @@ const CreateLayoutBaseModal = (props) => {
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
-        const isErrorMaxSubmissionCount =
-          bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
-        if (!title || !descriptionText || !org || isErrorMaxSubmissionCount || !canCreateTask) {
+        // const isErrorMaxSubmissionCount =
+        //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
+        if (!title || !descriptionText || !org || !canCreateTask) {
           const newErrors = { ...errors };
           if (!title) {
             newErrors.title = 'Please enter a title';
@@ -713,9 +713,9 @@ const CreateLayoutBaseModal = (props) => {
           if (!org) {
             newErrors.org = 'Please select an organization';
           }
-          if (isErrorMaxSubmissionCount) {
-            newErrors.maxSubmissionCount = 'The number should be from 1 to 10,000';
-          }
+          // if (isErrorMaxSubmissionCount) {
+          //   newErrors.maxSubmissionCount = 'The number should be from 1 to 10,000';
+          // }
           newErrors.general = !canCreateTask
             ? "You can't propose a bounty"
             : 'Please enter the necessary information above';
@@ -772,7 +772,6 @@ const CreateLayoutBaseModal = (props) => {
     selectedReviewers,
     mediaUploads,
     canCreatePod,
-    maxSubmissionCount,
     errors,
     createTask,
     getPodObject,
@@ -981,7 +980,7 @@ const CreateLayoutBaseModal = (props) => {
                 }
               />
             </CreateRewardAmountDiv>
-            {isBounty && (
+            {/* {isBounty && (
               <CreateRewardAmountDiv>
                 <CreateFormMainBlockTitle>Maximum no. of submissions</CreateFormMainBlockTitle>
 
@@ -1009,7 +1008,7 @@ const CreateLayoutBaseModal = (props) => {
                 />
                 {errors.maxSubmissionCount && <ErrorText> {errors.maxSubmissionCount} </ErrorText>}
               </CreateRewardAmountDiv>
-            )}
+            )} */}
           </CreateFormMainSelects>
         )}
 

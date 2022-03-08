@@ -911,19 +911,15 @@ export const TaskSubmissionContent = (props) => {
           />
         ) : (
           <>
-            {taskStatus !== TASK_STATUS_DONE &&
-              taskStatus !== TASK_STATUS_ARCHIVED &&
-              (fetchedTask?.maxSubmissionCount
-                ? fetchedTaskSubmissionsLength < fetchedTask?.maxSubmissionCount
-                : fetchedTaskSubmissionsLength) && (
-                <MakeSubmissionBlock
-                  fetchedTask={fetchedTask}
-                  setMakeSubmission={setMakeSubmission}
-                  prompt={'Make another submission'}
-                  canSubmit={canSubmit}
-                  loggedInUser={loggedInUser}
-                />
-              )}
+            {taskStatus !== TASK_STATUS_DONE && taskStatus !== TASK_STATUS_ARCHIVED && (
+              <MakeSubmissionBlock
+                fetchedTask={fetchedTask}
+                setMakeSubmission={setMakeSubmission}
+                prompt={'Make another submission'}
+                canSubmit={canSubmit}
+                loggedInUser={loggedInUser}
+              />
+            )}
             {taskStatus === TASK_STATUS_DONE && fetchedTask?.type === ENTITIES_TYPES.TASK && (
               <MakePaymentBlock
                 fetchedTask={fetchedTask}
