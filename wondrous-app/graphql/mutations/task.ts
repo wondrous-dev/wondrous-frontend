@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { CommentFragment } from '../fragments/comments';
 import { MediaFragment } from '../fragments/media';
-import { TaskFragment } from '../fragments/task';
+import { BountyFragment, TaskFragment } from '../fragments/task';
 
 export const CREATE_TASK = gql`
   mutation createTask($input: TaskInput) {
@@ -59,7 +59,7 @@ export const REMOVE_MEDIA_FROM_TASK = gql`
 `;
 
 export const UPDATE_TASK_STATUS = gql`
-  mutation updateTaskStatus($taskId: ID!, $input: updateTaskStatusInput!) {
+  mutation updateTaskStatus($taskId: ID!, $input: updateStatusInput!) {
     updateTaskStatus(taskId: $taskId, input: $input) {
       ...TaskFragment
     }
@@ -117,4 +117,31 @@ export const UPDATE_TASK_ORDER = gql`
       success
     }
   }
+`;
+
+export const CREATE_BOUNTY = gql`
+  mutation createBounty($input: BountyInput) {
+    createBounty(input: $input) {
+      ...BountyFragment
+    }
+  }
+  ${BountyFragment}
+`;
+
+export const UPDATE_BOUNTY = gql`
+  mutation updateBounty($bountyId: ID!, $input: BountyInput) {
+    updateBounty(bountyId: $bountyId, input: $input) {
+      ...BountyFragment
+    }
+  }
+  ${BountyFragment}
+`;
+
+export const UPDATE_BOUNTY_STATUS = gql`
+  mutation updateBountyStatus($bountyId: ID!, $input: updateStatusInput!) {
+    updateBountyStatus(bountyId: $bountyId, input: $input) {
+      ...BountyFragment
+    }
+  }
+  ${BountyFragment}
 `;

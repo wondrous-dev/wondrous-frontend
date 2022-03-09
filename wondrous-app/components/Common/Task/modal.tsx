@@ -94,7 +94,7 @@ import {
   TakeTaskButton,
 } from '../../CreateEntity/styles';
 import { useRouter } from 'next/router';
-import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE } from '../../../graphql/mutations/task';
+import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE, UPDATE_BOUNTY_STATUS } from '../../../graphql/mutations/task';
 import { UPDATE_TASK_PROPOSAL_ASSIGNEE } from '../../../graphql/mutations/taskProposal';
 import { GET_PREVIEW_FILE } from '../../../graphql/queries/media';
 import { GET_TASK_PROPOSAL_BY_ID } from '../../../graphql/queries/taskProposal';
@@ -647,12 +647,22 @@ export const TaskViewModal = (props) => {
   const [makeSubmission, setMakeSubmission] = useState(false);
   const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
   const isSubtask = fetchedTask?.parentTaskId !== null;
+  const isBounty = fetchedTask?.type === BOUNTY_TYPE;
+  const showAssignee = !isTaskProposal && !isMilestone && !isBounty;
   const [approvedSubmission, setApprovedSubmission] = useState(null);
 
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
-  const board = orgBoard || podBoard || userBoard;
+  const getUserPermissionContext = useCallback(() => {
+    return orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
+  }, [orgBoard, userBoard, podBoard]);
+  const getBoard = useCallback(() => {
+    return orgBoard || podBoard || userBoard;
+  }, [orgBoard, userBoard, podBoard]);
+  const board = getBoard();
+
+  const userPermissionsContext = getUserPermissionContext();
   const boardColumns = useColumns();
   const [getTaskSubmissionsForTask] = useLazyQuery(GET_TASK_SUBMISSIONS_FOR_TASK, {
     onCompleted: (data) => {
@@ -682,8 +692,7 @@ export const TaskViewModal = (props) => {
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
   const user = useMe();
-  const userPermissionsContext =
-    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
+
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
@@ -714,19 +723,37 @@ export const TaskViewModal = (props) => {
       // let columns = [...boardColumns?.columns]
     },
   });
+  const [updateBountyStatus, { data: updateBountyStatusData }] = useMutation(UPDATE_BOUNTY_STATUS, {
+    refetchQueries: () => [
+      'getTaskById',
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+  });
 
   const handleNewStatus = useCallback(
     (newStatus) => {
-      updateTaskStatusMutation({
-        variables: {
-          taskId: fetchedTask?.id,
-          input: {
-            newStatus,
+      if (isBounty) {
+        updateBountyStatus({
+          variables: {
+            bountyId: fetchedTask?.id,
+            input: { newStatus },
           },
-        },
-      });
+        });
+      } else {
+        updateTaskStatusMutation({
+          variables: {
+            taskId: fetchedTask?.id,
+            input: {
+              newStatus,
+            },
+          },
+        });
+      }
     },
-    [fetchedTask, updateTaskStatusMutation]
+    [fetchedTask?.id, isBounty, updateBountyStatus, updateTaskStatusMutation]
   );
 
   useEffect(() => {
@@ -734,7 +761,10 @@ export const TaskViewModal = (props) => {
       setInitialStatus(fetchedTask?.status);
     }
 
-    if (updateTaskStatusMutationData?.updateTaskStatus.status === TASK_STATUS_ARCHIVED) {
+    if (
+      updateTaskStatusMutationData?.updateTaskStatus.status === TASK_STATUS_ARCHIVED ||
+      updateBountyStatusData?.updateBountyStatus.status === TASK_STATUS_ARCHIVED
+    ) {
       setSnackbarAlertOpen(true);
       setSnackbarAlertMessage(
         <>
@@ -758,12 +788,14 @@ export const TaskViewModal = (props) => {
     setSnackbarAlertOpen,
     setSnackbarAlertMessage,
     handleNewStatus,
+    updateBountyStatusData,
   ]);
   useEffect(() => {
     if (isMilestone) {
       setActiveTab(tabs.tasks);
     }
   }, [isMilestone]);
+
   useEffect(() => {
     if (open) {
       if (isTaskProposal) {
@@ -858,7 +890,7 @@ export const TaskViewModal = (props) => {
         >
           <EditLayoutBaseModal
             open={open}
-            entityType={isMilestone ? ENTITIES_TYPES.MILESTONE : ENTITIES_TYPES.TASK}
+            entityType={fetchedTask?.type}
             handleClose={() => {
               setEditTask(false);
               setFetchedTask(null);
@@ -890,7 +922,7 @@ export const TaskViewModal = (props) => {
       />
     );
   }
-  const canSubmit = fetchedTask?.assigneeId === user?.id;
+  const canSubmit = fetchedTask?.assigneeId === user?.id || isBounty;
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
     orgId: fetchedTask?.orgId,
@@ -936,7 +968,7 @@ export const TaskViewModal = (props) => {
 
   const onCorrectPage =
     fetchedTask?.orgId === board?.orgId || fetchedTask?.podId === board?.podId || fetchedTask?.userId === board?.userId;
-  const taskType = isTaskProposal ? 'task proposal' : isMilestone ? 'milestone' : 'task';
+  const taskType = isTaskProposal ? 'task proposal' : fetchedTask?.type;
   const handleOnCloseArchiveTaskModal = () => {
     setArchiveTask(false);
     if (isTaskProposal) {
@@ -1149,7 +1181,7 @@ export const TaskViewModal = (props) => {
                 )}
               </TaskSectionDisplayDiv>
             )}
-            {!isTaskProposal && !isMilestone && (
+            {showAssignee && (
               <TaskSectionDisplayDiv>
                 <TaskSectionDisplayLabel>
                   <AssigneeIcon />
@@ -1532,6 +1564,7 @@ export const TaskViewModal = (props) => {
                     orgId={fetchedTask?.orgId}
                     setFetchedTaskSubmissions={setFetchedTaskSubmissions}
                     setShowPaymentModal={setShowPaymentModal}
+                    getTaskSubmissionsForTask={getTaskSubmissionsForTask}
                   />
                 )}
                 {activeTab === tabs.subTasks && <TaskSubtasks taskId={fetchedTask?.id} permissions={permissions} />}

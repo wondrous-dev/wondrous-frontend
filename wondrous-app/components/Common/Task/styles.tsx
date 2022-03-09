@@ -72,7 +72,6 @@ export const TaskContent = styled.div`
   color: ${White};
   white-space: pre-line;
   cursor: pointer;
-  max-width: 270px;
   overflow-x: hidden;
 `;
 
@@ -82,7 +81,7 @@ export const TaskSeparator = styled.div`
   margin-top: 5px;
 `;
 
-export const MilestoneSeparator = styled(TaskSeparator)`
+export const TaskDivider = styled(TaskSeparator)`
   margin: 12px 0;
 `;
 

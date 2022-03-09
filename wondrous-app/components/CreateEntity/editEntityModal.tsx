@@ -79,6 +79,9 @@ import {
   OptionDiv,
   OptionTypography,
   StyledChip,
+  CreateFormRewardCurrency,
+  CreateFormAddDetailsSwitchLabel,
+  CreateFormAddDetailsLocalizationProvider,
 } from './styles';
 import SelectDownIcon from '../Icons/selectDownIcon';
 import UploadImageIcon from '../Icons/uploadImage';
@@ -106,6 +109,7 @@ import {
   REMOVE_MEDIA_FROM_TASK,
   UPDATE_TASK,
   UPDATE_MILESTONE,
+  UPDATE_BOUNTY,
 } from '../../graphql/mutations/task';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
 import {
@@ -335,6 +339,7 @@ const EditLayoutBaseModal = (props) => {
   const initialAmount = initialRewards?.rewardAmount;
   const [rewardsCurrency, setRewardsCurrency] = useState(initialCurrency);
   const [rewardsAmount, setRewardsAmount] = useState(initialAmount);
+  // const [maxSubmissionCount, setMaxSubmissionCount] = useState(existingTask?.maxSubmissionCount);
   const [title, setTitle] = useState(existingTask?.title);
   const [publicTask, setPublicTask] = useState(existingTask?.privacyLevel === 'public');
   const orgBoard = useOrgBoard();
@@ -372,6 +377,7 @@ const EditLayoutBaseModal = (props) => {
     title: null,
     description: null,
     org: null,
+    // maxSubmissionCount: null,
   });
   const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG);
   // const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
@@ -379,6 +385,10 @@ const EditLayoutBaseModal = (props) => {
   const [pod, setPod] = useState(existingTask?.podName && existingTask?.podId);
   const [dueDate, setDueDate] = useState(existingTask?.dueDate);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
+  const isBounty = entityType === ENTITIES_TYPES.BOUNTY;
+  const isTask = entityType === ENTITIES_TYPES.TASK;
+  const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
+  const isPod = entityType === ENTITIES_TYPES.POD;
   const {
     showDeliverableRequirementsSection,
     showBountySwitchSection,
@@ -390,14 +400,14 @@ const EditLayoutBaseModal = (props) => {
     showDueDateSection,
   } = useMemo(() => {
     return {
-      showDeliverableRequirementsSection: entityType === ENTITIES_TYPES.TASK,
-      showBountySwitchSection: entityType === ENTITIES_TYPES.TASK,
-      showAppearSection: entityType === ENTITIES_TYPES.TASK,
-      showLinkAttachmentSection: entityType === ENTITIES_TYPES.POD,
-      showHeaderImagePickerSection: entityType === ENTITIES_TYPES.POD,
-      showMembersSection: entityType === ENTITIES_TYPES.POD,
-      showPrioritySelectSection: entityType === ENTITIES_TYPES.MILESTONE,
-      showDueDateSection: entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.MILESTONE,
+      showDeliverableRequirementsSection: isTask,
+      showBountySwitchSection: isTask || isBounty,
+      showAppearSection: isTask || isBounty,
+      showLinkAttachmentSection: isPod,
+      showHeaderImagePickerSection: isPod,
+      showMembersSection: isPod,
+      showPrioritySelectSection: isMilestone,
+      showDueDateSection: isTask || isMilestone || isBounty,
     };
   }, [entityType]);
 
@@ -527,6 +537,15 @@ const EditLayoutBaseModal = (props) => {
     },
   });
 
+  const [updateBounty] = useMutation(UPDATE_BOUNTY, {
+    refetchQueries: () => [
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+  });
+
   const [updateTaskProposal] = useMutation(UPDATE_TASK_PROPOSAL, {
     onCompleted: (data) => {
       const taskProposal = data?.updateTaskProposal;
@@ -644,26 +663,110 @@ const EditLayoutBaseModal = (props) => {
         });
         break;
       }
+      case ENTITIES_TYPES.BOUNTY:
+        const bountyInput = {
+          title,
+          description: descriptionText,
+          orgId: org,
+          milestoneId: milestone?.id,
+          parentTaskId: existingTask?.parentTaskId,
+          podId: pod,
+          // maxSubmissionCount: parseFloat(maxSubmissionCount),
+          dueDate,
+          ...(rewardsAmount &&
+            rewardsCurrency && {
+              rewards: [
+                {
+                  rewardAmount: parseFloat(rewardsAmount),
+                  paymentMethodId: rewardsCurrency,
+                },
+              ],
+            }),
+          ...(publicTask && {
+            privacyLevel: PRIVACY_LEVEL.public,
+          }),
+          reviewerIds: selectedReviewers.map(({ id }) => id),
+          userMentions: getMentionArray(descriptionText),
+          mediaUploads,
+        };
+        // const isErrorMaxSubmissionCount =
+        //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
+        if (!title || !descriptionText || !org) {
+          const newErrors = { ...errors };
+          if (!title) {
+            newErrors.title = 'Please enter a title';
+          }
+          if (!descriptionText) {
+            newErrors.description = 'Please enter a description';
+          }
+          if (!org) {
+            newErrors.org = 'Please select an organization';
+          }
+          // if (isErrorMaxSubmissionCount) {
+          //   newErrors.maxSubmissionCount = 'The number should be from 1 to 10,000';
+          // }
+          newErrors.general = 'Please enter the necessary information above';
+          setErrors(newErrors);
+        } else {
+          updateBounty({
+            variables: {
+              bountyId: existingTask?.id,
+              input: bountyInput,
+            },
+          })
+            .then((result) => {
+              const task = result?.data?.updateBounty;
+              const justCreatedPod = getPodObject();
+              if (
+                board?.setColumns &&
+                ((task?.orgId === board?.orgId && !board?.podId) ||
+                  task?.podId === board?.podId ||
+                  pod === board?.podId)
+              ) {
+                const transformedTask = transformTaskToTaskCard(task, {
+                  orgName: board?.org?.name,
+                  orgProfilePicture: board?.org?.profilePicture,
+                  podName: justCreatedPod?.name,
+                });
+
+                const columns = [...board?.columns];
+                columns[0].tasks = [transformedTask, ...columns[0].tasks];
+                board.setColumns(columns);
+              }
+              handleClose();
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
+        break;
     }
   }, [
+    entityType,
     title,
     descriptionText,
     org,
     milestone,
     pod,
     dueDate,
-    assignee,
-    mediaUploads,
-    isTaskProposal,
-    updateTask,
-    entityType,
-    updateTaskProposal,
-    existingTask?.id,
     rewardsAmount,
     rewardsCurrency,
-    updateMilestone,
-    selectedReviewers,
+    isTaskProposal,
+    assignee?.value,
     publicTask,
+    selectedReviewers,
+    mediaUploads,
+    existingTask?.parentTaskId,
+    existingTask?.id,
+    // maxSubmissionCount,
+    errors,
+    updateTask,
+    updateTaskProposal,
+    updateMilestone,
+    updateBounty,
+    getPodObject,
+    board,
+    handleClose,
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
@@ -859,18 +962,20 @@ const EditLayoutBaseModal = (props) => {
         {/*Upload header image block*/}
         {showHeaderImagePickerSection && <HeaderImage />}
 
-        {showAppearSection && (
+        {showBountySwitchSection && (
           <CreateFormMainSelects>
-            <DropdownSelect
-              title="Reward currency"
-              labelText="Choose tokens"
-              options={paymentMethods}
-              name="reward-currency"
-              setValue={setRewardsCurrency}
-              value={rewardsCurrency || ''}
-            />
             <CreateRewardAmountDiv>
-              <CreateFormMainBlockTitle>Reward amount</CreateFormMainBlockTitle>
+              <CreateFormRewardCurrency
+                title="Reward currency"
+                labelText="Choose tokens"
+                options={paymentMethods}
+                name="reward-currency"
+                setValue={setRewardsCurrency}
+                value={rewardsCurrency}
+              />
+            </CreateRewardAmountDiv>
+            <CreateRewardAmountDiv>
+              <CreateFormMainBlockTitle>Reward amount {isBounty ? 'per submission' : ''}</CreateFormMainBlockTitle>
 
               <InputForm
                 style={{
@@ -880,7 +985,7 @@ const EditLayoutBaseModal = (props) => {
                 min="0"
                 placeholder="Enter reward amount"
                 search={false}
-                value={rewardsAmount || ''}
+                value={rewardsAmount}
                 onChange={(e) => setRewardsAmount(e.target.value)}
                 endAdornment={
                   <CloseModalIcon
@@ -896,6 +1001,35 @@ const EditLayoutBaseModal = (props) => {
                 }
               />
             </CreateRewardAmountDiv>
+            {/* {isBounty && (
+              <CreateRewardAmountDiv>
+                <CreateFormMainBlockTitle>Maximum no. of submissions</CreateFormMainBlockTitle>
+
+                <InputForm
+                  style={{
+                    marginTop: '20px',
+                  }}
+                  min="1"
+                  max="10000"
+                  placeholder="Enter the max. no. of submissions"
+                  search={false}
+                  value={maxSubmissionCount}
+                  onChange={(e) => setMaxSubmissionCount(e.target.value)}
+                  endAdornment={
+                    <CloseModalIcon
+                      style={{
+                        marginRight: '8px',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => {
+                        setMaxSubmissionCount('');
+                      }}
+                    />
+                  }
+                />
+                {errors.maxSubmissionCount && <ErrorText> {errors.maxSubmissionCount} </ErrorText>}
+              </CreateRewardAmountDiv>
+            )} */}
           </CreateFormMainSelects>
         )}
 
@@ -924,67 +1058,69 @@ const EditLayoutBaseModal = (props) => {
               marginBottom: '40px',
             }}
           >
-            <CreateFormAddDetailsInputBlock>
-              <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
-              <StyledAutocompletePopper
-                options={filterOrgUsers(podUsersData?.getPodUsers ?? orgUsersData?.getOrgUsers)}
-                onOpen={() => {
-                  if (pod) {
-                    getPodUsers({
-                      variables: {
-                        podId: pod?.id || pod,
-                        limit: 100, // TODO: fix autocomplete
-                      },
-                    });
-                  }
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    style={{
-                      color: White,
-                      fontFamily: 'Space Grotesk',
-                      fontSize: '14px',
-                      paddingLeft: '4px',
-                    }}
-                    placeholder="Enter username..."
-                    InputLabelProps={{ shrink: false }}
-                    {...params}
-                  />
-                )}
-                value={assignee}
-                inputValue={assigneeString}
-                onInputChange={(event, newInputValue) => {
-                  setAssigneeString(newInputValue);
-                }}
-                onChange={(_, __, reason) => {
-                  if (reason === 'clear') {
-                    setAssignee(null);
-                  }
-                }}
-                renderOption={(props, option, state) => {
-                  return (
-                    <OptionDiv
-                      onClick={(event) => {
-                        setAssignee(option);
-                        props?.onClick(event);
+            {!isBounty && (
+              <CreateFormAddDetailsInputBlock>
+                <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
+                <StyledAutocompletePopper
+                  options={filterOrgUsers(podUsersData?.getPodUsers ?? orgUsersData?.getOrgUsers)}
+                  onOpen={() => {
+                    if (pod) {
+                      getPodUsers({
+                        variables: {
+                          podId: pod?.id || pod,
+                          limit: 100, // TODO: fix autocomplete
+                        },
+                      });
+                    }
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      style={{
+                        color: White,
+                        fontFamily: 'Space Grotesk',
+                        fontSize: '14px',
+                        paddingLeft: '4px',
                       }}
-                    >
-                      {option?.profilePicture && (
-                        <SafeImage
-                          src={option?.profilePicture}
-                          style={{
-                            width: '30px',
-                            height: '30px',
-                            borderRadius: '15px',
-                          }}
-                        />
-                      )}
-                      <OptionTypography>{option?.label}</OptionTypography>
-                    </OptionDiv>
-                  );
-                }}
-              />
-            </CreateFormAddDetailsInputBlock>
+                      placeholder="Enter username..."
+                      InputLabelProps={{ shrink: false }}
+                      {...params}
+                    />
+                  )}
+                  value={assignee}
+                  inputValue={assigneeString}
+                  onInputChange={(event, newInputValue) => {
+                    setAssigneeString(newInputValue);
+                  }}
+                  onChange={(_, __, reason) => {
+                    if (reason === 'clear') {
+                      setAssignee(null);
+                    }
+                  }}
+                  renderOption={(props, option, state) => {
+                    return (
+                      <OptionDiv
+                        onClick={(event) => {
+                          setAssignee(option);
+                          props?.onClick(event);
+                        }}
+                      >
+                        {option?.profilePicture && (
+                          <SafeImage
+                            src={option?.profilePicture}
+                            style={{
+                              width: '30px',
+                              height: '30px',
+                              borderRadius: '15px',
+                            }}
+                          />
+                        )}
+                        <OptionTypography>{option?.label}</OptionTypography>
+                      </OptionDiv>
+                    );
+                  }}
+                />
+              </CreateFormAddDetailsInputBlock>
+            )}
 
             <CreateFormAddDetailsInputBlock>
               <CreateFormAddDetailsInputLabel>Reviewer</CreateFormAddDetailsInputLabel>
@@ -1184,27 +1320,21 @@ const EditLayoutBaseModal = (props) => {
             {showDueDateSection && (
               <CreateFormAddDetailsAppearBlockContainer>
                 <CreateFormAddDetailsSelects>
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
-                  </LocalizationProvider>
+                  <CreateFormAddDetailsLocalizationProvider>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
+                    </LocalizationProvider>
+                  </CreateFormAddDetailsLocalizationProvider>
                   <CreateFormAddDetailsSwitch
                     style={{
                       width: '100%',
                       marginLeft: '20px',
                     }}
                   >
-                    <CreateFormAddDetailsInputLabel
-                      style={{
-                        marginBottom: '16px',
-                        marginLeft: '8px',
-                      }}
-                    >
-                      Show task as public
-                    </CreateFormAddDetailsInputLabel>
+                    <CreateFormAddDetailsSwitchLabel>Show task as public</CreateFormAddDetailsSwitchLabel>
                     <AndroidSwitch
                       checked={publicTask}
                       onChange={(e) => {
-                        console.log('e.target', e.target.checked);
                         setPublicTask(e.target.checked);
                       }}
                     />
