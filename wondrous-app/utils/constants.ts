@@ -178,7 +178,7 @@ export const PERMISSIONS = {
 
 export const NOTIFICATION_VERBS = {
   task_like: 'liked a',
-  mention: 'mentioned',
+  mention: 'mentioned you in a',
   task_approve: 'approved a',
   task_deny: 'denied a',
   task_revise: 'send into revision a',
