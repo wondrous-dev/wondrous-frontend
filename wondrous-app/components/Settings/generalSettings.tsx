@@ -35,7 +35,7 @@ import OpenSeaIcon from '../Icons/openSea';
 import LinkBigIcon from '../Icons/link';
 import { DiscordIcon } from '../Icons/discord';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_BY_ID } from '../../graphql/queries/org';
+import { GET_ORG_BY_ID, GET_DISCORD_WEBHOOK_INFO_FOR_ORG } from '../../graphql/queries/org';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { getFilenameAndType, uploadMedia } from '../../utils/media';
 import { SafeImage } from '../Common/Image';
@@ -451,7 +451,6 @@ const GeneralSettings = () => {
     setDescriptionText(organization.description);
 
     setOrgProfile(organization);
-    setDiscordWebhookLink(organization.publicDiscordWebhookLink);
   }
 
   const [getOrganization] = useLazyQuery(GET_ORG_BY_ID, {
@@ -459,9 +458,19 @@ const GeneralSettings = () => {
     fetchPolicy: 'cache-and-network',
   });
 
+  const [getOrgDiscordWebhookInfo] = useLazyQuery(GET_DISCORD_WEBHOOK_INFO_FOR_ORG, {
+    onCompleted: ({ getDiscordWebhookInfoForOrg }) => {
+      console.log('getDiscordWebhookInfoForOrg', getDiscordWebhookInfoForOrg)
+      setDiscordWebhookLink(getDiscordWebhookInfoForOrg.webhookUrl)
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+
+
   useEffect(() => {
     if (orgId) {
       getOrganization({ variables: { orgId } });
+      getOrgDiscordWebhookInfo({ variables: { orgId } })
     }
   }, [orgId]);
 
@@ -514,7 +523,7 @@ const GeneralSettings = () => {
           headerPicture: orgProfile.headerPicture,
           profilePicture: orgProfile.profilePicture,
           ...(discordWebhookLink && {
-            publicDiscordWebhookLink: discordWebhookLink,
+            discordWebhookLink,
           }),
         },
       },

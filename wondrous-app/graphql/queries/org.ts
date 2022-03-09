@@ -143,10 +143,23 @@ export const GET_USER_JOIN_ORG_REQUEST = gql`
   }
 `;
 
-export const GET_ORG_JOIN_REQUEST_COUNT = gql`
-  query getOrgJoinRequestCount($orgId: ID!) {
-    getOrgJoinRequestCount(orgId: $orgId) {
+export const GET_JOIN_ORG_REQUEST_COUNT = gql`
+  query getJoinOrgRequestCount($orgId: ID!) {
+    getJoinOrgRequestCount(orgId: $orgId) {
       joinOrgRequestCount
+    }
+  }
+`;
+
+
+export const GET_DISCORD_WEBHOOK_INFO_FOR_ORG = gql`
+  query getDiscordWebhookInfoForOrg($orgId: ID!) {
+    getDiscordWebhookInfoForOrg(orgId: $orgId) {
+      id
+      orgId
+      podId
+      webhookUrl
+      privacyLevel
     }
   }
 `;
