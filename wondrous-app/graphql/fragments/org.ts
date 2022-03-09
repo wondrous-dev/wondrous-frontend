@@ -24,7 +24,6 @@ export const OrgFragment = gql`
     createdAt
     tags
     contributorCount
-    publicDiscordWebhookLink
     podCount
     links {
       url

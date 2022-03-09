@@ -451,7 +451,6 @@ const GeneralSettings = () => {
     setDescriptionText(organization.description);
 
     setOrgProfile(organization);
-    setDiscordWebhookLink(organization.publicDiscordWebhookLink);
   }
 
   const [getOrganization] = useLazyQuery(GET_ORG_BY_ID, {
