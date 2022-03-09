@@ -654,7 +654,15 @@ export const TaskViewModal = (props) => {
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
-  const board = orgBoard || podBoard || userBoard;
+  const getUserPermissionContext = useCallback(() => {
+    return orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
+  }, [orgBoard, userBoard, podBoard]);
+  const getBoard = useCallback(() => {
+    return orgBoard || podBoard || userBoard;
+  }, [orgBoard, userBoard, podBoard]);
+  const board = getBoard();
+
+  const userPermissionsContext = getUserPermissionContext();
   const boardColumns = useColumns();
   const [getTaskSubmissionsForTask] = useLazyQuery(GET_TASK_SUBMISSIONS_FOR_TASK, {
     onCompleted: (data) => {
@@ -684,8 +692,7 @@ export const TaskViewModal = (props) => {
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
   const user = useMe();
-  const userPermissionsContext =
-    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
+
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
@@ -788,6 +795,7 @@ export const TaskViewModal = (props) => {
       setActiveTab(tabs.tasks);
     }
   }, [isMilestone]);
+
   useEffect(() => {
     if (open) {
       if (isTaskProposal) {
