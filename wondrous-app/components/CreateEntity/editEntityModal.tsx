@@ -309,7 +309,7 @@ const EditLayoutBaseModal = (props) => {
   const user = useMe();
 
   const [addDetails, setAddDetails] = useState(true);
-  const [descriptionText, setDescriptionText] = useState(existingTask?.description);
+  const [descriptionText, setDescriptionText] = useState(existingTask?.description || '');
   const [mediaUploads, setMediaUploads] = useState(transformMediaFormat(existingTask?.media) || []);
   const addDetailsHandleClick = () => {
     setAddDetails(!addDetails);
@@ -455,7 +455,7 @@ const EditLayoutBaseModal = (props) => {
       // If you're only part of one dao then just set that as default
       setOrg(existingTask?.orgId);
     }
-    if (org) {
+    if (org?.id || org) {
       getUserAvailablePods({
         variables: {
           orgId: org?.id || org,
@@ -667,10 +667,10 @@ const EditLayoutBaseModal = (props) => {
         const bountyInput = {
           title,
           description: descriptionText,
-          orgId: org,
+          orgId: org?.id || org,
           milestoneId: milestone?.id,
           parentTaskId: existingTask?.parentTaskId,
-          podId: pod,
+          podId: pod?.id || pod,
           // maxSubmissionCount: parseFloat(maxSubmissionCount),
           dueDate,
           ...(rewardsAmount &&
