@@ -461,7 +461,6 @@ const GeneralSettings = () => {
 
   const [getOrgDiscordWebhookInfo] = useLazyQuery(GET_DISCORD_WEBHOOK_INFO_FOR_ORG, {
     onCompleted: ({ getDiscordWebhookInfoForOrg }) => {
-      console.log('getDiscordWebhookInfoForOrg', getDiscordWebhookInfoForOrg);
       setDiscordWebhookLink(getDiscordWebhookInfoForOrg.webhookUrl);
     },
     fetchPolicy: 'cache-and-network',
