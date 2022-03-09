@@ -21,10 +21,10 @@ export const TaskBountyOverview = (props) => {
           <TaskContentHeaderEntriesCount>{pluralizeSubmission}</TaskContentHeaderEntriesCount>
           <TaskContentHeaderPaidSubmissions>{approvedSubmissionsCount} approved</TaskContentHeaderPaidSubmissions>
         </TaskContentHeader>
-        <TaskContentPaidOutWrapper>
+        {/* <TaskContentPaidOutWrapper>
           <TaskContentPaidOutPercentage>{approvedSubmissionsPercentage.toFixed(0)}%</TaskContentPaidOutPercentage>
           <TaskContentPaidOut variant="determinate" value={approvedSubmissionsPercentage} />
-        </TaskContentPaidOutWrapper>
+        </TaskContentPaidOutWrapper> */}
       </TaskContentBountyCard>
     </TaskContentBountyWrapper>
   );
