@@ -14,6 +14,7 @@ import { ErrorText } from '..';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PaymentPendingTypography } from './styles';
 import { usePaymentModal } from '../../../utils/hooks';
+import {performance} from 'perf_hooks'
 import {
   GET_PAYMENTS_FOR_ORG,
   GET_PAYMENTS_FOR_POD,
@@ -154,6 +155,7 @@ export const SingleWalletPayment = (props) => {
 
   const constructAndSignTransactionData = async () => {
     setSigningError(null);
+    let t1 = performance.now()
     let iface = new ethers.utils.Interface(ERC20abi);
     const paymentData = submissionPaymentInfo?.paymentData[0];
     let transactionData;
@@ -171,9 +173,15 @@ export const SingleWalletPayment = (props) => {
         value: '0',
       };
     }
+    let t2 = performance.now()
+    console.log(`getting calldata took ${t2 - t1} milliseconds`)
+    t1 = performance.now()
     const gnosisClient = wonderGnosis?.safeServiceClient;
     const gnosisSdk = wonderGnosis?.safeSdk;
     const nextNonce = await gnosisClient?.getNextNonce(selectedWallet?.address);
+    t2 = performance.now()
+    console.log(`getting next nonce took ${t2 - t1} milliseconds`)
+    t1 = performance.now()
     const estimateGasPayload = {
       to: wonderWeb3.toChecksumAddress(transactionData.to),
       value: transactionData.value,
@@ -190,6 +198,10 @@ export const SingleWalletPayment = (props) => {
     } catch (e) {
       console.log(e);
     }
+    t2 = performance.now()
+    console.log(`estimate gas took ${t2 - t1} milliseconds`)
+    t1 = performance.now()
+
     const transaction: SafeTransactionDataPartial = {
       to: wonderWeb3.toChecksumAddress(transactionData.to),
       data: transactionData.data,
@@ -199,6 +211,9 @@ export const SingleWalletPayment = (props) => {
     };
     const safeTransaction = await gnosisSdk.createTransaction(transaction);
     const safeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);
+    t2 = performance.now()
+    console.log(`createTransaction and getTransactionHash took ${t2 - t1} milliseconds`)
+    t1 = performance.now()
     setSafeTxHash(safeTxHash);
     try {
       await gnosisSdk.signTransaction(safeTransaction);
@@ -212,6 +227,9 @@ export const SingleWalletPayment = (props) => {
       }
       return;
     }
+    t2 = performance.now()
+    console.log(`signTransaction took ${t2 - t1} milliseconds`)
+    t1 = performance.now()
     let sender; // parse out sender from signature, should be checksum addr. although backend can probably just convert
     let signature; // parse out signature
     safeTransaction.signatures.forEach((value, key) => {
@@ -241,6 +259,8 @@ export const SingleWalletPayment = (props) => {
         GET_PAYMENTS_FOR_ORG,
       ],
     });
+    t2 = performance.now()
+    console.log(`proposeGnosisTxForSubmission took ${t2 - t1} milliseconds`)
   };
   const handleCreateNewWalletClick = () => {
     if (podId) {
