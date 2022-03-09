@@ -125,6 +125,7 @@ export const ENTITIES_TYPES = {
   MILESTONE: 'milestone',
   POD: 'pod',
   ORG: 'org',
+  BOUNTY: 'bounty',
 };
 
 export const MEDIA_TYPES = {

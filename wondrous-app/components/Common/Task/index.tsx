@@ -44,7 +44,7 @@ import {
   TaskListCardWrapper,
   TaskStatusHeaderText,
   ArchivedTaskUndo,
-  MilestoneSeparator,
+  TaskDivider,
   MilestoneProgressWrapper,
   TaskHeaderIconWrapper,
   SubtaskCountWrapper,
@@ -68,7 +68,7 @@ import { Arrow, Archived } from '../../Icons/sections';
 import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE } from '../../../graphql/mutations/task';
 import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries';
 import { OrgBoardContext } from '../../../utils/contexts';
-import { MilestoneLaunchedBy } from '../MilestoneLaunchedBy';
+import { TaskCreatedBy } from '../TaskCreatedBy';
 import { MilestoneProgress } from '../MilestoneProgress';
 import { MilestoneWrapper } from '../Milestone';
 import PodIcon from '../../Icons/podIcon';
@@ -77,6 +77,7 @@ import { CheckedBoxIcon } from '../../Icons/checkedBox';
 
 import { Claim } from '../../Icons/claimTask';
 import { updateInProgressTask, updateTaskItem } from '../../../utils/board';
+import { TaskBountyOverview } from '../TaskBountyOverview';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -136,19 +137,16 @@ export const Task = (props) => {
   }
   const isMilestone = type === Constants.ENTITIES_TYPES.MILESTONE;
   const isSubtask = task?.parentTaskId !== null;
+  const isBounty = type === Constants.ENTITIES_TYPES.BOUNTY;
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
     refetchQueries: () => [
-      {
-        query: GET_ORG_TASK_BOARD_TASKS,
-        variables: orgBoard?.getOrgTasksVariables,
-      },
-      {
-        query: GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
-        variables: orgBoard?.getOrgBoardTaskCountVariables,
-      },
       'getUserTaskBoardTasks',
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
       'getPerStatusTaskCountForUserBoard',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
       'getSubtasksForTask',
     ],
   });
@@ -231,7 +229,7 @@ export const Task = (props) => {
 
   const openModal = () => {
     onOpen(task);
-    router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`);
+    router.push(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`);
     // document.body.style.overflow = 'hidden'
     // document.body.scroll = false
     windowOffset = window.scrollY;
@@ -267,15 +265,13 @@ export const Task = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assigneeUsername]);
 
-  const taskType = isMilestone ? 'milestone' : 'task';
-
   return (
     <span className={className}>
       <ArchiveTaskModal
         open={archiveTask}
         onClose={() => setArchiveTask(false)}
         onArchive={handleNewStatus}
-        taskType={taskType}
+        taskType={type}
       />
       <TaskWrapper key={id} onClick={openModal}>
         <TaskInner>
@@ -313,8 +309,8 @@ export const Task = (props) => {
             </TaskHeaderIconWrapper>
             {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
           </TaskHeader>
-          <MilestoneLaunchedBy type={type} router={router} createdBy={createdBy} />
-          {isMilestone && <MilestoneSeparator />}
+          <TaskCreatedBy type={type} router={router} createdBy={createdBy} />
+          {(isMilestone || isBounty) && <TaskDivider />}
 
           <TaskContent>
             <TaskTitle>{title}</TaskTitle>
@@ -353,6 +349,12 @@ export const Task = (props) => {
                 </SubtaskCountWrapper>
               )}
             </TaskContentFooter>
+            {isBounty && (
+              <TaskBountyOverview
+                totalSubmissionsCount={task?.totalSubmissionsCount}
+                approvedSubmissionsCount={task?.approvedSubmissionsCount}
+              />
+            )}
             <MilestoneProgressWrapper>{isMilestone && <MilestoneProgress milestoneId={id} />}</MilestoneProgressWrapper>
             {media?.length > 0 ? <TaskMedia media={media[0]} /> : <TaskSeparator />}
           </TaskContent>
@@ -361,7 +363,7 @@ export const Task = (props) => {
 						<TaskLikeIcon liked={liked} />
 						<TaskActionAmount>{likes}</TaskActionAmount>
 					</TaskAction> */}
-            {!assigneeId && (
+            {!assigneeId && !isBounty && (
               <>
                 {claimed ? (
                   <ClaimButton
@@ -438,7 +440,7 @@ export const Task = (props) => {
                       color: White,
                     }}
                   >
-                    Archive {taskType}
+                    Archive {type}
                   </DropDownItem>
                 </DropDown>
               </TaskActionMenu>

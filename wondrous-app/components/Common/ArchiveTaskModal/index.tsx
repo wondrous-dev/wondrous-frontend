@@ -23,19 +23,11 @@ export const ArchiveTaskModal = (props) => {
   const { open, onClose, onArchive, taskType, taskId = '' } = props;
   const board = useOrgBoard();
   const [archiveTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL, {
-    refetchQueries: () => [
-      {
-        query: GET_ORG_TASK_BOARD_TASKS,
-        variables: board?.getOrgTasksVariables,
-      },
-      {
-        query: GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
-        variables: board?.getOrgBoardTaskCountVariables,
-      },
-    ],
+    refetchQueries: () => ['getOrgTaskBoardTasks', 'getPerStatusTaskCountForOrgBoard'],
   });
 
-  const isTaskOrMilestone = taskType === Constants.TASK_TYPE || taskType === Constants.MILESTONE_TYPE;
+  const isTaskOrMilestone =
+    taskType === Constants.TASK_TYPE || taskType === Constants.MILESTONE_TYPE || taskType === Constants.BOUNTY_TYPE;
   const isTaskProposal = taskType === 'task proposal';
 
   const handleArchive = () => {

@@ -19,6 +19,7 @@ import {
   CreateLayoutsModalItemTitleBlock,
   CreateLayoutsModalTitle,
   CreateLayoutTaskIcon,
+  CreateLayoutBountyIcon,
 } from './styles';
 import { useRouter } from 'next/router';
 import { GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
@@ -42,6 +43,10 @@ export const ENTITIES_UI_ELEMENTS = {
   [ENTITIES_TYPES.ORG]: {
     icon: CreateLayoutDaoIcon,
     label: 'DAO',
+  },
+  [ENTITIES_TYPES.BOUNTY]: {
+    icon: CreateLayoutBountyIcon,
+    label: 'Bounty',
   },
 };
 

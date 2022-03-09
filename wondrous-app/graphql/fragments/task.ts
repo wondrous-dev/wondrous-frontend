@@ -57,6 +57,7 @@ export const TaskFragment = gql`
       icon
       tokenName
     }
+    maxSubmissionCount
   }
   ${MediaFragment}
 `;
@@ -109,7 +110,9 @@ export const TaskCardFragment = gql`
     }
     parentTaskId
     totalSubtaskCount
-		completedSubtaskCount
+    completedSubtaskCount
+    totalSubmissionsCount
+    approvedSubmissionsCount
   }
   ${MediaFragment}
 `;
@@ -275,6 +278,66 @@ export const TaskProposalFragment = gql`
       name
       color
     }
+  }
+  ${MediaFragment}
+`;
+
+export const BountyFragment = gql`
+  fragment BountyFragment on Bounty {
+    id
+    title
+    createdAt
+    createdBy
+    description
+    milestoneId
+    orgId
+    podId
+    type
+    priority
+    blockerTaskIds
+    dueDate
+    status
+    links {
+      url
+      displayName
+      type
+    }
+    assigneeId
+    userMentions
+    media {
+      ...MediaFragment
+    }
+    rewards {
+      rewardAmount
+      paymentMethodId
+      symbol
+      icon
+      tokenName
+    }
+    org {
+      profilePicture
+      name
+      username
+    }
+    pod {
+      name
+      color
+    }
+    milestone {
+      title
+    }
+    reviewers {
+      username
+    }
+    reactionCount
+    commentCount
+    orgOrder
+    podOrder
+    assigneeOrder
+    paymentStatus
+    parentTaskId
+    privacyLevel
+    maxSubmissionCount
   }
   ${MediaFragment}
 `;
