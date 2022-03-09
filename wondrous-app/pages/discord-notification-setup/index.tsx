@@ -39,12 +39,20 @@ const DiscordNotificationSetup = () => {
         </Paragraph>
         <Title
           style={{
-            marginTop: '16px',
+            marginTop: '20px',
             fontSize: '22px',
           }}
         >
           Adding the Wonder bot
         </Title>
+        {/* <Title
+          style={{
+            marginTop: '16px',
+            fontSize: '22px',
+          }}
+        >
+          Adding the Wonder bot
+        </Title> */}
         <Paragraph>
           To add our bot to your discord server and to send the notifications from the bot, click{' '}
           <a
@@ -66,7 +74,12 @@ const DiscordNotificationSetup = () => {
         >
           Creating a webhook
         </Title>
-        <SmallerTopParagraph>
+        <SmallerTopParagraph
+          style={{
+            fontSize: '16px',
+            fontWeight: 'bolder',
+          }}
+        >
           After adding the bot, we will need to{' '}
           <a
             style={{
@@ -107,7 +120,7 @@ const DiscordNotificationSetup = () => {
           Configuring created webhook on Wonder
         </Title>
         <SmallerTopParagraph>
-          Click on your organization's settings page by clicking the settings button on the boards page
+          Click on your organization{`'`}s settings page by clicking the settings button on the boards page
         </SmallerTopParagraph>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -117,7 +130,7 @@ const DiscordNotificationSetup = () => {
             marginTop: '8px',
             marginBottom: '12px',
           }}
-          src="/images/discord-setup-settings.png"
+          src="https://storage.googleapis.com/wondrous-media-prod/static/discord-setup-settings.png"
           alt=""
         />
         <SmallerTopParagraph>
@@ -130,7 +143,7 @@ const DiscordNotificationSetup = () => {
             maxWidth: '800px',
             marginTop: '8px',
           }}
-          src="/images/discord-setup-integrations.png"
+          src="https://storage.googleapis.com/wondrous-media-prod/static/discord-setup-integrations.png"
           alt=""
         />
         <SmallerTopParagraph>
@@ -142,4 +155,3 @@ const DiscordNotificationSetup = () => {
 };
 
 export default DiscordNotificationSetup;
-SmallerTopParagraph;
