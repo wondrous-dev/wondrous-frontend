@@ -1,5 +1,8 @@
 import { CircularProgress } from '@material-ui/core';
+import { useRouter } from 'next/router';
 import React from 'react';
+import { ViewType } from '../../../types/common';
+import { delQuery } from '../../../utils';
 import { AndroidSwitch } from '../../CreateEntity/createEntityModal';
 import DashboardPanelStatusCard from '../DashboardPanelExpandedStatusCard';
 import {
@@ -14,7 +17,22 @@ import {
 } from './styles';
 
 const DashboardPanelExpanded = (props) => {
-  const { activePanel, onClick, loading, activePanelStatusCards, selectedStatus, setSelectedStatus, isAdmin } = props;
+  const {
+    activePanel,
+    loading,
+    activePanelStatusCards,
+    selectedStatus,
+    setSelectedStatus,
+    isAdmin,
+    setSelectMembershipRequests,
+  } = props;
+  const router = useRouter();
+  const handleOnClick = () => {
+    router.query.view !== ViewType.Admin
+      ? router.replace(`${delQuery(router.asPath)}?view=${ViewType.Admin}`)
+      : router.replace(`${delQuery(router.asPath)}`);
+  };
+
   return (
     <StyledBorder>
       <StyledBackground>
@@ -22,7 +40,7 @@ const DashboardPanelExpanded = (props) => {
           <HeaderTitle>{activePanel} panel</HeaderTitle>
           <PanelViewButton>
             <PanelViewButtonLabel>Admin View</PanelViewButtonLabel>
-            <AndroidSwitch onClick={onClick} />
+            <AndroidSwitch onClick={handleOnClick} checked={isAdmin} />
           </PanelViewButton>
         </PanelHeader>
         {loading ? (

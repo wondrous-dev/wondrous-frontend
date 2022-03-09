@@ -1,13 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import { PERMISSIONS, SIDEBAR_WIDTH } from '../../../utils/constants';
 import { SideBarContext } from '../../../utils/contexts';
-
-import Header from '../../Header';
-import SideBarComponent from '../../SideBar';
-import Tabs from '../../organization/tabs/tabs';
-import CreateFormModal from '../../CreateEntity';
 import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from '../../../utils/helpers';
-
+import { usePodBoard } from '../../../utils/hooks';
+import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
+import CreateFormModal from '../../CreateEntity';
+import Header from '../../Header';
+import PodIcon from '../../Icons/podIcon';
+import Tabs from '../../organization/tabs/tabs';
 import {
   Content,
   ContentContainer,
@@ -15,7 +16,6 @@ import {
   HeaderActivityLink,
   HeaderActivityLinkIcon,
   HeaderButtons,
-  HeaderContributeButton,
   HeaderContributors,
   HeaderContributorsAmount,
   HeaderContributorsText,
@@ -25,9 +25,6 @@ import {
   HeaderImage,
   HeaderMainBlock,
   HeaderManageSettingsButton,
-  HeaderPods,
-  HeaderPodsAmount,
-  HeaderPodsText,
   HeaderSettingsLockedButton,
   HeaderText,
   HeaderTitle,
@@ -36,37 +33,9 @@ import {
   HeaderInviteButton,
   PlusIconWrapper,
 } from '../../organization/wrapper/styles';
-import { useOrgBoard, usePodBoard } from '../../../utils/hooks';
-import { useQuery } from '@apollo/client';
-import { GET_POD_BY_ID } from '../../../graphql/queries/pod';
-import { SafeImage } from '../../Common/Image';
 import { MoreInfoModal } from '../../profile/modals';
-import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
+import SideBarComponent from '../../SideBar';
 import PlusIcon from '../../Icons/plus';
-import { useRouter } from 'next/router';
-import PodIcon from '../../Icons/podIcon';
-
-const SIDEBAR_LIST_ITEMS = [
-  {
-    id: 1,
-    icon: '/images/sidebar/first.png',
-    path: '/',
-  },
-  {
-    id: 2,
-    icon: '/images/sidebar/second.png',
-    path: '/',
-  },
-  {
-    id: 3,
-    icon: '/images/sidebar/third.png',
-    path: '/',
-  },
-];
-
-const MOCK_ORGANIZATION_DATA = {
-  amount: 1234567,
-};
 
 const Wrapper = (props) => {
   const router = useRouter();
@@ -83,9 +52,7 @@ const Wrapper = (props) => {
   const userPermissionsContext = podBoard?.userPermissionsContext;
   const [permissions, setPermissions] = useState(null);
   const [createFormModal, setCreateFormModal] = useState(false);
-  const [data, setData] = useState(MOCK_ORGANIZATION_DATA);
   const [openInvite, setOpenInvite] = useState(false);
-  const { amount } = data;
   const podProfile = podBoard?.pod;
   const toggleCreateFormModal = () => {
     toggleHtmlOverflow();
@@ -150,12 +117,11 @@ const Wrapper = (props) => {
                 <PodIcon
                   color={podProfile?.color}
                   style={{
-                    width: '96px',
-                    height: '96px',
+                    width: '86px',
+                    height: '86px',
                     position: 'absolute',
-                    borderRadius: '48px',
+                    borderRadius: '50px',
                     top: '-50px',
-                    border: '10px solid #0f0f0f',
                   }}
                 />
                 <HeaderMainBlock>
@@ -166,11 +132,17 @@ const Wrapper = (props) => {
                         visibility: 'hidden',
                       }}
                     >
-                      <HeaderFollowButtonText>{shrinkNumber(amount)}</HeaderFollowButtonText>
+                      <HeaderFollowButtonText>{shrinkNumber(1234)}</HeaderFollowButtonText>
                       <HeaderFollowButtonIcon src="/images/overview/icon.png" />
                     </HeaderFollowButton>
                     {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
                       <>
+                        <HeaderInviteButton onClick={() => setOpenInvite(true)}>
+                          Invite{' '}
+                          <PlusIconWrapper>
+                            <PlusIcon height="8" width="8" fill="#fff" />
+                          </PlusIconWrapper>
+                        </HeaderInviteButton>
                         <HeaderManageSettingsButton
                           onClick={() =>
                             router.push(`/pod/settings/${podBoard?.podId}/general`, undefined, {
@@ -222,7 +194,7 @@ const Wrapper = (props) => {
                 </HeaderActivity>
               </TokenHeader>
 
-              <Tabs>{children}</Tabs>
+              <Tabs page="pod">{children}</Tabs>
             </ContentContainer>
           </Content>
         </OverviewComponent>

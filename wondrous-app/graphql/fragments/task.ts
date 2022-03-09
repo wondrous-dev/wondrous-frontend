@@ -49,6 +49,7 @@ export const TaskFragment = gql`
     assigneeOrder
     reactionCount
     commentCount
+    privacyLevel
     rewards {
       rewardAmount
       paymentMethodId
@@ -56,6 +57,7 @@ export const TaskFragment = gql`
       icon
       tokenName
     }
+    maxSubmissionCount
   }
   ${MediaFragment}
 `;
@@ -90,6 +92,7 @@ export const TaskCardFragment = gql`
     podOrder
     assigneeOrder
     paymentStatus
+    privacyLevel
     rewards {
       rewardAmount
       paymentMethodId
@@ -107,7 +110,9 @@ export const TaskCardFragment = gql`
     }
     parentTaskId
     totalSubtaskCount
-		completedSubtaskCount
+    completedSubtaskCount
+    totalSubmissionsCount
+    approvedSubmissionsCount
   }
   ${MediaFragment}
 `;
@@ -222,8 +227,6 @@ export const TaskSubmissionFragment = gql`
     media {
       ...MediaFragment
     }
-    reactionCount
-    commentCount
   }
   ${MediaFragment}
 `;
@@ -275,6 +278,66 @@ export const TaskProposalFragment = gql`
       name
       color
     }
+  }
+  ${MediaFragment}
+`;
+
+export const BountyFragment = gql`
+  fragment BountyFragment on Bounty {
+    id
+    title
+    createdAt
+    createdBy
+    description
+    milestoneId
+    orgId
+    podId
+    type
+    priority
+    blockerTaskIds
+    dueDate
+    status
+    links {
+      url
+      displayName
+      type
+    }
+    assigneeId
+    userMentions
+    media {
+      ...MediaFragment
+    }
+    rewards {
+      rewardAmount
+      paymentMethodId
+      symbol
+      icon
+      tokenName
+    }
+    org {
+      profilePicture
+      name
+      username
+    }
+    pod {
+      name
+      color
+    }
+    milestone {
+      title
+    }
+    reviewers {
+      username
+    }
+    reactionCount
+    commentCount
+    orgOrder
+    podOrder
+    assigneeOrder
+    paymentStatus
+    parentTaskId
+    privacyLevel
+    maxSubmissionCount
   }
   ${MediaFragment}
 `;

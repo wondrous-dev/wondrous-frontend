@@ -2,8 +2,16 @@ import SideBarComponent from '../../components/SideBar';
 import HeaderComponent from '../../components/Header';
 import { SettingsContainer } from '../../components/Settings/styles';
 import { HeaderBlock } from '../../components/Settings/headerBlock';
-import { Paragraph, Title, BoldParagraph, ListItem, BoldSpan, SmallerTopParagraph } from './styles';
-import { HighlightBlue } from '../../theme/colors';
+import {
+  ListType,
+  DiscordParagraph,
+  DiscordTitle,
+  BoldParagraph,
+  ListItem,
+  BoldSpan,
+  SmallerTopParagraph,
+} from './styles';
+import { HighlightBlue, White } from '../../theme/colors';
 
 const DiscordNotificationSetup = () => {
   return (
@@ -18,42 +26,35 @@ const DiscordNotificationSetup = () => {
           paddingBottom: '100px',
         }}
       >
-        <Title>Setting up Wonder notifications in a Discord channel</Title>
-        <Paragraph>
+        <DiscordTitle>Setting up Wonder notifications in a Discord channel</DiscordTitle>
+        <DiscordParagraph>
           With this integration, you can set up notifications in a specific channel on your Discord server. These will
           include:
-          <ul>
-            <li>
-              <BoldParagraph>Task proposal creation</BoldParagraph>
-            </li>
-            <ListItem>
-              <BoldParagraph>Task creation</BoldParagraph>
-            </ListItem>
-            <ListItem>
-              <BoldParagraph>Task submission creation</BoldParagraph>
-            </ListItem>
-            <ListItem>
-              <BoldParagraph>Task completion</BoldParagraph>
-            </ListItem>
-          </ul>
-        </Paragraph>
-        <Title
+        </DiscordParagraph>
+        <ListType>
+          <li>
+            <BoldParagraph>Task proposal creation</BoldParagraph>
+          </li>
+          <ListItem>
+            <BoldParagraph>Task creation</BoldParagraph>
+          </ListItem>
+          <ListItem>
+            <BoldParagraph>Task submission creation</BoldParagraph>
+          </ListItem>
+          <ListItem>
+            <BoldParagraph>Task completion</BoldParagraph>
+          </ListItem>
+        </ListType>
+        <DiscordTitle
           style={{
             marginTop: '20px',
             fontSize: '22px',
           }}
         >
           Adding the Wonder bot
-        </Title>
-        {/* <Title
-          style={{
-            marginTop: '16px',
-            fontSize: '22px',
-          }}
-        >
-          Adding the Wonder bot
-        </Title> */}
-        <Paragraph>
+        </DiscordTitle>
+
+        <DiscordParagraph>
           To add our bot to your discord server and to send the notifications from the bot, click{' '}
           <a
             style={{
@@ -65,15 +66,15 @@ const DiscordNotificationSetup = () => {
           >
             this link
           </a>
-        </Paragraph>
-        <Title
+        </DiscordParagraph>
+        <DiscordTitle
           style={{
             marginTop: '20px',
             fontSize: '22px',
           }}
         >
           Creating a webhook
-        </Title>
+        </DiscordTitle>
         <SmallerTopParagraph
           style={{
             fontSize: '16px',
@@ -111,14 +112,14 @@ const DiscordNotificationSetup = () => {
         <SmallerTopParagraph>
           7. Select <BoldSpan>Save.</BoldSpan>
         </SmallerTopParagraph>
-        <Title
+        <DiscordTitle
           style={{
             marginTop: '20px',
             fontSize: '22px',
           }}
         >
           Configuring created webhook on Wonder
-        </Title>
+        </DiscordTitle>
         <SmallerTopParagraph>
           Click on your organization{`'`}s settings page by clicking the settings button on the boards page
         </SmallerTopParagraph>

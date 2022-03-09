@@ -56,10 +56,7 @@ const Login = ({ csrfToken }) => {
   const loginWithWallet = async () => {
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
       // Retrieve Signed Message
-      const messageToSign = await getUserSigningMessage(
-        wonderWeb3.address,
-        'eth'
-      );
+      const messageToSign = await getUserSigningMessage(wonderWeb3.address, 'eth');
 
       if (messageToSign) {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
@@ -67,13 +64,19 @@ const Login = ({ csrfToken }) => {
           // Sign with Wallet
           setLoading(true);
           try {
-            const result = await walletSignin(wonderWeb3.address, signedMessage);
-            if (result === true) {
-              router.push('/dashboard', undefined, {
-                shallow: true,
-              });
+            const user = await walletSignin(wonderWeb3.address, signedMessage);
+            if (user) {
+              if (user?.username) {
+                router.push('/dashboard', undefined, {
+                  shallow: true,
+                });
+              } else {
+                router.push('/onboarding/welcome', undefined, {
+                  shallow: true,
+                });
+              }
             } else {
-              setErrorMessage(result);
+              setErrorMessage(user);
             }
           } catch (err) {
             setErrorMessage(err?.message || err);
@@ -99,7 +102,7 @@ const Login = ({ csrfToken }) => {
   }, [wonderWeb3.wallet]);
 
   useEffect(() => {
-    setNotSupported(wonderWeb3.notSupportedChain)
+    setNotSupported(wonderWeb3.notSupportedChain);
   }, [wonderWeb3.notSupportedChain]);
 
   return (

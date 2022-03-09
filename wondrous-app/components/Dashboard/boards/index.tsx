@@ -11,6 +11,7 @@ import {
   GET_USER_TASK_BOARD_TASKS,
   SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
   SEARCH_TASKS_FOR_USER_BOARD_VIEW,
+  GET_JOIN_ORG_REQUESTS,
 } from '../../../graphql/queries';
 import {
   GET_PROPOSALS_USER_CAN_REVIEW,
@@ -37,6 +38,7 @@ import apollo from '../../../services/apollo';
 import CreatePodIcon from '../../Icons/createPod';
 import { FilterItem, FilterItemIcon, FilterItemName } from '../../Common/Filter/styles';
 import CreateDaoIcon from '../../Icons/createDao';
+import { useSelectMembership } from '../../../utils/hooks';
 
 const proposal = {
   status: TASK_STATUS_PROPOSAL_REQUEST,
@@ -63,7 +65,8 @@ const filterColumnsByStatus = (columns, status) => {
 
 const BoardsPage = (props) => {
   const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR);
-  const { isAdmin, selectedStatus } = props;
+  const { isAdmin, selectedStatus, selectMembershipRequests } = props;
+  const selectMembershipHook = useSelectMembership();
   const router = useRouter();
   const loggedInUser = useMe();
   const [contributorColumns, setContributorColumns] = useState([]);
@@ -84,7 +87,7 @@ const BoardsPage = (props) => {
       const tasks = data?.getUserTaskBoardTasks;
       const newColumns = populateTaskColumns(tasks, contributorColumns.length > 0 ? contributorColumns : COLUMNS);
       setContributorColumns(dedupeColumns(newColumns));
-      if (!!hasMoreTasks) {
+      if (hasMoreTasks) {
         setHasMoreTasks(tasks?.length > LIMIT - 1);
       }
     },
@@ -122,7 +125,7 @@ const BoardsPage = (props) => {
       }
 
       setContributorColumns(dedupeColumns(newColumns));
-      if (!!hasMoreTasks) {
+      if (hasMoreTasks) {
         setHasMoreTasks(tasks.length > LIMIT - 1);
       }
     },
@@ -133,6 +136,9 @@ const BoardsPage = (props) => {
     onCompleted: (data) => bindProposalsToCols(data?.searchProposalsForUserBoardView),
     fetchPolicy: 'cache-and-network',
   });
+  const [joinOrgRequests, setJoinOrgRequests] = useState([]);
+  const [getJoinOrgRequests, { data: getJoinOrgRequestsData, fetchMore: fetchMoreJoinOrgRequests }] =
+    useLazyQuery(GET_JOIN_ORG_REQUESTS);
 
   const [filterSchema, setFilterSchema] = useState([
     {
@@ -246,42 +252,45 @@ const BoardsPage = (props) => {
     if (!loggedInUser) {
       return;
     }
-
-    if (search) {
-      const searchTaskProposalsArgs = {
-        variables: {
-          userId: loggedInUser?.id,
-          podIds: [],
-          statuses: [STATUS_OPEN],
-          offset: 0,
-          limit: LIMIT,
-          searchString: search,
-        },
-      };
-
-      const searchTasksArgs = {
-        variables: {
-          userId: loggedInUser?.id,
-          podIds: [],
-          limit: LIMIT,
-          offset: 0,
-          // Needed to exclude proposals
-          statuses: DEFAULT_STATUS_ARR,
-          searchString: search,
-        },
-      };
-
-      searchTasks(searchTasksArgs);
-      searchProposals(searchTaskProposalsArgs);
+    if (selectMembershipHook?.selectMembershipRequests) {
+      getJoinOrgRequests();
     } else {
-      getTasks();
-      getUserTaskBoardProposals();
+      if (search) {
+        const searchTaskProposalsArgs = {
+          variables: {
+            userId: loggedInUser?.id,
+            podIds: [],
+            statuses: [STATUS_OPEN],
+            offset: 0,
+            limit: LIMIT,
+            searchString: search,
+          },
+        };
 
-      getUserTaskCountData({
-        variables: {
-          userId: loggedInUser?.id,
-        },
-      });
+        const searchTasksArgs = {
+          variables: {
+            userId: loggedInUser?.id,
+            podIds: [],
+            limit: LIMIT,
+            offset: 0,
+            // Needed to exclude proposals
+            statuses: DEFAULT_STATUS_ARR,
+            searchString: search,
+          },
+        };
+
+        searchTasks(searchTasksArgs);
+        searchProposals(searchTaskProposalsArgs);
+      } else {
+        getTasks();
+        getUserTaskBoardProposals();
+
+        getUserTaskCountData({
+          variables: {
+            userId: loggedInUser?.id,
+          },
+        });
+      }
     }
 
     getUserPods({
@@ -289,31 +298,48 @@ const BoardsPage = (props) => {
         userId: loggedInUser?.id,
       },
     });
-  }, [loggedInUser]);
+  }, [loggedInUser, selectMembershipHook?.selectMembershipRequests]);
 
   const handleLoadMore = useCallback(() => {
     if (hasMoreTasks) {
-      fetchMore({
-        variables: {
-          offset: Math.max(...contributorColumns.map(({ tasks }) => tasks.length)),
-          limit: LIMIT,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => ({
-          getUserTaskBoardTasks: [...prev.getUserTaskBoardTasks, ...fetchMoreResult.getUserTaskBoardTasks],
-        }),
-      })
-        .then((fetchMoreResult) => {
-          const results = fetchMoreResult?.data?.getUserTaskBoardTasks;
-          if (results && results?.length > 0) {
-            const newColumns = updateTaskColumns(results, contributorColumns);
-            setContributorColumns(dedupeColumns(newColumns));
-          } else {
+      if (selectMembershipHook?.selectMembershipRequests) {
+        fetchMoreJoinOrgRequests({
+          variables: {
+            offset: joinOrgRequests?.length,
+            limit: LIMIT,
+          },
+          updateQuery: (prev, { fetchMoreResult }) => ({
+            getJoinOrgRequests: [...prev.getJoinOrgRequests, ...fetchMoreResult.getJoinOrgRequests],
+          }),
+        }).then((fetchMoreResult) => {
+          const results = fetchMoreResult?.data?.getJoinOrgRequests;
+          if (results && results?.length === 0) {
             setHasMoreTasks(false);
           }
-        })
-        .catch((e) => {
-          console.error(e);
         });
+      } else {
+        fetchMore({
+          variables: {
+            offset: Math.max(...contributorColumns.map(({ tasks }) => tasks.length)),
+            limit: LIMIT,
+          },
+          updateQuery: (prev, { fetchMoreResult }) => ({
+            getUserTaskBoardTasks: [...prev.getUserTaskBoardTasks, ...fetchMoreResult.getUserTaskBoardTasks],
+          }),
+        })
+          .then((fetchMoreResult) => {
+            const results = fetchMoreResult?.data?.getUserTaskBoardTasks;
+            if (results && results?.length > 0) {
+              const newColumns = updateTaskColumns(results, contributorColumns);
+              setContributorColumns(dedupeColumns(newColumns));
+            } else {
+              setHasMoreTasks(false);
+            }
+          })
+          .catch((e) => {
+            console.error(e);
+          });
+      }
     }
   }, [hasMoreTasks, contributorColumns, fetchMore]);
 
@@ -428,6 +454,7 @@ const BoardsPage = (props) => {
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
           : null,
         loggedInUserId: loggedInUser?.id,
+        joinOrgRequests: getJoinOrgRequestsData?.getJoinOrgRequests,
       }}
     >
       <Boards
@@ -437,6 +464,7 @@ const BoardsPage = (props) => {
         columns={isAdmin ? filterColumnsByStatus(adminColumns, selectedStatus) : contributorColumns}
         onLoadMore={handleLoadMore}
         hasMore={hasMoreTasks}
+        isAdmin={isAdmin}
       />
     </UserBoardContext.Provider>
   );

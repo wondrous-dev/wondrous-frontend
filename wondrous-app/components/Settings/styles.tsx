@@ -443,6 +443,13 @@ export const Snackbar = styled(SnackbarComp)`
   }
 `;
 
+export const DiscordText = styled(Typography)`
+  && {
+    font-size: 16px;
+    color: ${White};
+  }
+`;
+
 export const LabelBlockText = styled(Typography)`
   && {
     color: ${White};

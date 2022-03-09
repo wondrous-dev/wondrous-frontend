@@ -13,7 +13,13 @@ import {
   GET_TASKS_RELATED_TO_USER_IN_POD,
 } from '../../../graphql/queries/taskBoard';
 import Boards from '../../../components/Pod/boards';
-import { TASK_STATUS_IN_REVIEW, DEFAULT_STATUS_ARR, STATUS_OPEN, TASK_STATUSES } from '../../../utils/constants';
+import {
+  TASK_STATUS_IN_REVIEW,
+  DEFAULT_STATUS_ARR,
+  STATUS_OPEN,
+  TASK_STATUSES,
+  PRIVACY_LEVEL,
+} from '../../../utils/constants';
 
 import { PodBoardContext } from '../../../utils/contexts';
 import { GET_USER_PERMISSION_CONTEXT, SEARCH_POD_USERS } from '../../../graphql/queries';
@@ -28,6 +34,7 @@ const BoardsPage = () => {
   const [columns, setColumns] = useState(COLUMNS);
   const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR);
   const router = useRouter();
+  const { boardType } = router.query;
   const { username, podId, search, userId } = router.query;
   const [searchString, setSearchString] = useState('');
 
@@ -35,7 +42,7 @@ const BoardsPage = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const [podTaskHasMore, setPodTaskHasMore] = useState(false);
+  const [podTaskHasMore, setPodTaskHasMore] = useState(true);
   const [getPod, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
   const pod = podData?.getPodById;
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
@@ -43,7 +50,9 @@ const BoardsPage = () => {
   const bindTasksToCols = (tasks) => {
     const newColumns = populateTaskColumns(tasks, columns);
     setColumns(dedupeColumns(newColumns));
-    setPodTaskHasMore(tasks.length >= LIMIT);
+    if (podTaskHasMore) {
+      setPodTaskHasMore(tasks.length >= LIMIT);
+    }
   };
 
   const bindProposalsToCols = (taskProposals) => {
@@ -85,7 +94,9 @@ const BoardsPage = () => {
       const tasks = data?.getPodTaskBoardTasks;
       const newColumns = populateTaskColumns(tasks, columns);
       setColumns(dedupeColumns(newColumns));
-      setPodTaskHasMore(tasks.length >= LIMIT);
+      if (podTaskHasMore) {
+        setPodTaskHasMore(tasks.length >= LIMIT);
+      }
       setFirstTimeFetch(true);
     },
     fetchPolicy: 'cache-and-network',
@@ -122,7 +133,9 @@ const BoardsPage = () => {
       }
 
       setColumns(dedupeColumns(newColumns));
-      setPodTaskHasMore(tasks.length >= LIMIT);
+      if (podTaskHasMore) {
+        setPodTaskHasMore(tasks.length >= LIMIT);
+      }
       setFirstTimeFetch(true);
     },
     fetchPolicy: 'cache-and-network',
@@ -137,7 +150,7 @@ const BoardsPage = () => {
       });
       if (search) {
         if (!firstTimeFetch) {
-          const searchOrgTaskProposalsArgs = {
+          const searchPodTaskProposalsArgs = {
             variables: {
               input: {
                 podId,
@@ -149,7 +162,7 @@ const BoardsPage = () => {
             },
           };
 
-          const searchOrgTasksArgs = {
+          const searchPodTasksArgs = {
             variables: {
               input: {
                 podId,
@@ -162,8 +175,8 @@ const BoardsPage = () => {
             },
           };
 
-          searchPodTasks(searchOrgTasksArgs);
-          searchPodTaskProposals(searchOrgTaskProposalsArgs);
+          searchPodTasks(searchPodTasksArgs);
+          searchPodTaskProposals(searchPodTaskProposalsArgs);
           setFirstTimeFetch(true);
           setSearchString(search as string);
         }
@@ -188,6 +201,9 @@ const BoardsPage = () => {
               statuses,
               offset: 0,
               limit: LIMIT,
+              ...(boardType === PRIVACY_LEVEL.public && {
+                onlyPublic: true,
+              }),
             },
           },
         });
@@ -218,7 +234,7 @@ const BoardsPage = () => {
         });
       }
     }
-  }, [podId, getPodTasks, getPodTaskSubmissions, getPodTaskProposals, getPodBoardTaskCount, getPod]);
+  }, [podId, getPodTasks, getPodTaskSubmissions, getPodTaskProposals, getPodBoardTaskCount, getPod, boardType]);
 
   const handleLoadMore = useCallback(() => {
     if (podTaskHasMore) {
@@ -265,6 +281,9 @@ const BoardsPage = () => {
           // Needed to exclude proposals
           statuses: DEFAULT_STATUS_ARR,
           searchString,
+          ...(boardType === PRIVACY_LEVEL.public && {
+            onlyPublic: true,
+          }),
         },
       },
     };
@@ -315,7 +334,7 @@ const BoardsPage = () => {
         },
       });
     } else {
-      const searchOrgTaskProposalsArgs = {
+      const searchPodTaskProposalsArgs = {
         variables: {
           input: {
             podId,
@@ -327,7 +346,7 @@ const BoardsPage = () => {
         },
       };
 
-      const searchOrgTasksArgs = {
+      const searchPodTasksArgs = {
         variables: {
           input: {
             podId,
@@ -336,12 +355,15 @@ const BoardsPage = () => {
             // Needed to exclude proposals
             statuses: taskStatuses,
             searchString: search,
+            ...(boardType === PRIVACY_LEVEL.public && {
+              onlyPublic: true,
+            }),
           },
         },
       };
 
       if (searchTasks) {
-        searchPodTasks(searchOrgTasksArgs);
+        searchPodTasks(searchPodTasksArgs);
       } else {
         const newColumns = [...columns];
         newColumns.forEach((column) => {
@@ -353,7 +375,7 @@ const BoardsPage = () => {
       }
 
       if (searchProposals) {
-        searchPodTaskProposals(searchOrgTaskProposalsArgs);
+        searchPodTaskProposals(searchPodTaskProposalsArgs);
       }
     }
   };

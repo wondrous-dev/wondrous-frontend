@@ -63,15 +63,13 @@ export const walletSignup = async (web3Address: string, signedMessage: string, b
         blockchain,
       },
     });
-
     if (user) {
       // Set Apollo with Session
       await storeAuthHeader(token, user);
-      return true;
+      return user;
     }
-    return 'We hit a problem, please contact support.';
   } catch (err) {
-    return 'We hit a problem, please contact support.';
+    throw err;
   }
 };
 
@@ -117,12 +115,10 @@ export const walletSignin = async (web3Address: string, signedMessage: string) =
     if (user) {
       // Set Apollo with Session
       await storeAuthHeader(token, user);
-      return true;
+      return user;
     }
-    return 'Sign up with this wallet address first.';
   } catch (err) {
-    console.log(err);
-    return 'Sign up with this wallet address first.';
+    throw err;
   }
 };
 
@@ -246,7 +242,13 @@ export const withAuth = (Component, noCache = false) => {
         setTokenLoading(false);
       })();
     }, [token]);
-
+    if (
+      error?.graphQLErrors &&
+      error?.graphQLErrors[0]?.extensions.code === 'UNAUTHENTICATED' &&
+      !EXCLUDED_PATHS.includes(router.pathname)
+    ) {
+      logout();
+    }
     if (!tokenLoading && !token) {
       // Back to the world
       if (!EXCLUDED_PATHS.includes(router.pathname)) {
@@ -255,6 +257,9 @@ export const withAuth = (Component, noCache = false) => {
       return <Component {...props} />;
     } else {
       const user = data?.getLoggedinUser;
+      if (user && !user?.username && router.pathname !== '/onboarding/welcome') {
+        router.push('/onboarding/welcome');
+      }
       return (
         <MyContext.Provider value={user}>
           <Component {...props} user={user} />

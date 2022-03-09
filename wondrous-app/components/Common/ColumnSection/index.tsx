@@ -18,14 +18,19 @@ import {
   TASK_STATUS_ARCHIVED,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
+  PRIVACY_LEVEL,
 } from '../../../utils/constants';
 import { TaskListViewModal } from '../Task/modal';
+import { useRouter } from 'next/router';
 
 let windowOffset;
 export const ColumnSection = ({ section, setSection }) => {
   const { icon = Requested, title = '', tasks = [], action = {} } = section;
   const [isOpen, setIsOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const router = useRouter();
+  const { boardType } = router.query;
+  const isPublic = boardType === PRIVACY_LEVEL.public;
   const SectionIcon = icon;
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
@@ -52,7 +57,9 @@ export const ColumnSection = ({ section, setSection }) => {
   const count = tasks.length;
 
   const toggleSection = () => {
-    setIsOpen(!isOpen);
+    if (!isPublic) {
+      setIsOpen(!isOpen);
+    }
   };
 
   const setTask = (task) => {
@@ -75,6 +82,7 @@ export const ColumnSection = ({ section, setSection }) => {
     document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
     setModalOpen(true);
   };
+
   return (
     <SectionWrapper>
       <TaskListViewModal
@@ -108,7 +116,11 @@ export const ColumnSection = ({ section, setSection }) => {
         {tasks.slice(0, 2).map((task) => (
           <TaskSummary key={task.id} task={task} setTask={setTask} action={action} taskType={type} />
         ))}
-        {tasks.length >= 2 || number >= 2 ? <TaskSummaryFooter onClick={openModal}>See more</TaskSummaryFooter> : ''}
+        {(tasks.length >= 2 || number >= 2) && !isPublic ? (
+          <TaskSummaryFooter onClick={openModal}>See more</TaskSummaryFooter>
+        ) : (
+          ''
+        )}
       </SectionContainer>
     </SectionWrapper>
   );

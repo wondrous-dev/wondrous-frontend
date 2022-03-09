@@ -1,9 +1,12 @@
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { withAuth } from '../components/Auth/withAuth';
-import Boards from '../components/Dashboard/boards';
-import DashboardPanel from '../components/Common/DashboardPanel';
-import Wrapper from '../components/Dashboard/wrapper';
 import styled from 'styled-components';
+import { withAuth } from '../components/Auth/withAuth';
+import DashboardPanel from '../components/Common/DashboardPanel';
+import Boards from '../components/Dashboard/boards';
+import Wrapper from '../components/Dashboard/wrapper';
+import { ViewType } from '../types/common';
+import { SelectMembershipContext } from '../utils/contexts';
 
 const DashboardPanelWrapper = styled.div`
   margin-top: -140px;
@@ -16,21 +19,34 @@ const BoardsWrapper = styled.div`
 `;
 
 const Dashboard = () => {
-  const [isAdmin, setIsAdmin] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(null);
+  const [selectMembershipRequests, setSelectMembershipRequests] = useState(false);
+  const router = useRouter();
+  const isAdmin = router.query.view === ViewType.Admin;
   return (
     <Wrapper>
-      <DashboardPanelWrapper>
-        <DashboardPanel
-          isAdmin={isAdmin}
-          setIsAdmin={setIsAdmin}
-          selectedStatus={selectedStatus}
-          setSelectedStatus={setSelectedStatus}
-        />
-      </DashboardPanelWrapper>
-      <BoardsWrapper>
-        <Boards isAdmin={isAdmin} selectedStatus={selectedStatus} />
-      </BoardsWrapper>
+      <SelectMembershipContext.Provider
+        value={{
+          selectMembershipRequests,
+          setSelectMembershipRequests,
+        }}
+      >
+        <DashboardPanelWrapper>
+          <DashboardPanel
+            isAdmin={isAdmin}
+            selectedStatus={selectedStatus}
+            setSelectedStatus={setSelectedStatus}
+            setSelectMembershipRequests={setSelectMembershipRequests}
+          />
+        </DashboardPanelWrapper>
+        <BoardsWrapper>
+          <Boards
+            isAdmin={isAdmin}
+            selectedStatus={selectedStatus}
+            selectMembershipRequests={selectMembershipRequests}
+          />
+        </BoardsWrapper>
+      </SelectMembershipContext.Provider>
     </Wrapper>
   );
 };

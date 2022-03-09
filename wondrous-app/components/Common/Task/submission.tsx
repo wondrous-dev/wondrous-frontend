@@ -45,6 +45,7 @@ import {
   TASK_STATUS_ARCHIVED,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   PAYMENT_STATUS,
+  TASK_TYPE,
 } from '../../../utils/constants';
 import { White } from '../../../theme/colors';
 import { useMe } from '../../Auth/withAuth';
@@ -70,6 +71,7 @@ import {
   REMOVE_SUBMISSION_MEDIA,
   REQUEST_CHANGE_SUBMISSION,
   UPDATE_TASK_SUBMISSION,
+  APPROVE_BOUNTY_SUBMISSION,
 } from '../../../graphql/mutations/taskSubmission';
 import UploadImageIcon from '../../Icons/uploadImage';
 import { handleAddFile } from '../../../utils/media';
@@ -87,6 +89,8 @@ import { MediaLink } from './modal';
 import { delQuery } from '../../../utils';
 import { FileLoading } from '../FileUpload/FileUpload';
 import { MakePaymentBlock } from './payment';
+import { KudosForm } from '../KudosForm';
+import { PaymentButton } from './paymentButton';
 
 const SubmissionStatusIcon = (props) => {
   const { submission } = props;
@@ -175,9 +179,11 @@ const SubmissionItem = (props) => {
     fetchedTaskSubmissions,
     setFetchedTaskSubmissions,
     handleClose,
+    user,
+    setShowPaymentModal,
+    getTaskSubmissionsForTask,
   } = props;
   const router = useRouter();
-  const user = useMe();
   const mediaUploads = submission?.media;
   const imageStyle = {
     width: '40px',
@@ -187,7 +193,6 @@ const SubmissionItem = (props) => {
   };
   const isCreator = user?.id === submission?.createdBy;
   const orgBoard = useOrgBoard();
-
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
   const board = orgBoard || podBoard || userBoard;
@@ -214,6 +219,7 @@ const SubmissionItem = (props) => {
     }
     //TODO: add pod board and user board
   };
+  const [isKudosModalOpen, setIsKudosForm] = useState(false);
   const [approveSubmission] = useMutation(APPROVE_SUBMISSION, {
     variables: {
       submissionId: submission?.id,
@@ -229,11 +235,31 @@ const SubmissionItem = (props) => {
         }
       });
       setFetchedTaskSubmissions(newFetchedTaskSubmissions);
-      if (fetchedTask.type !== BOUNTY_TYPE) {
+      if (fetchedTask?.type !== BOUNTY_TYPE) {
         completeTask();
-        handleClose();
-        document.body.setAttribute('style', `position: relative;`);
-        window?.scrollTo(0, window.scrollY);
+        setIsKudosForm(true);
+      }
+    },
+    refetchQueries: ['getOrgTaskBoardSubmissions', 'getPerStatusTaskCountForOrgBoard'],
+  });
+  const [approveBountySubmission] = useMutation(APPROVE_BOUNTY_SUBMISSION, {
+    variables: {
+      submissionId: submission?.id,
+    },
+    onCompleted: () => {
+      // Change status of submission
+      const newFetchedTaskSubmissions = fetchedTaskSubmissions.map((taskSubmission) => {
+        if (taskSubmission?.id === submission?.id) {
+          return {
+            ...taskSubmission,
+            approvedAt: new Date(),
+          };
+        }
+      });
+      setFetchedTaskSubmissions(newFetchedTaskSubmissions);
+      if (fetchedTask?.type !== BOUNTY_TYPE) {
+        completeTask();
+        setIsKudosForm(true);
       }
     },
     refetchQueries: ['getOrgTaskBoardSubmissions', 'getPerStatusTaskCountForOrgBoard'],
@@ -257,146 +283,162 @@ const SubmissionItem = (props) => {
     },
     refetchQueries: ['getOrgTaskBoardSubmissions'],
   });
+  const textStyle = {
+    marginLeft: '0',
+    maxWidth: '500px',
+  };
   return (
-    <TaskSubmissionItemDiv>
-      <TaskSubmissionHeader>
-        {submission?.creatorProfilePicture ? (
-          <SafeImage style={imageStyle} src={submission?.creatorProfilePicture} />
-        ) : (
-          <DefaultUserImage style={imageStyle} />
-        )}
-        <TaskSubmissionHeaderTextDiv>
-          <div
+    <>
+      <KudosForm onClose={handleClose} open={isKudosModalOpen} submission={submission} />
+      <TaskSubmissionItemDiv>
+        <TaskSubmissionHeader>
+          {submission?.creatorProfilePicture ? (
+            <SafeImage style={imageStyle} src={submission?.creatorProfilePicture} />
+          ) : (
+            <DefaultUserImage style={imageStyle} />
+          )}
+          <TaskSubmissionHeaderTextDiv>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <TaskSubmissionHeaderCreatorText>{submission.creatorUsername}</TaskSubmissionHeaderCreatorText>
+              {submission.createdAt && (
+                <TaskSubmissionHeaderTimeText>
+                  {formatDistance(new Date(submission.createdAt), new Date(), {
+                    addSuffix: true,
+                  })}
+                </TaskSubmissionHeaderTimeText>
+              )}
+            </div>
+            <SubmissionStatusIcon submission={submission} />
+          </TaskSubmissionHeaderTextDiv>
+        </TaskSubmissionHeader>
+        <TaskSectionDisplayDiv>
+          <TaskSectionDisplayLabel
             style={{
-              display: 'flex',
-              alignItems: 'center',
+              marginRight: '4px',
             }}
           >
-            <TaskSubmissionHeaderCreatorText>{submission.creatorUsername}</TaskSubmissionHeaderCreatorText>
-            {submission.createdAt && (
-              <TaskSubmissionHeaderTimeText>
-                {formatDistance(new Date(submission.createdAt), new Date(), {
-                  addSuffix: true,
-                })}
-              </TaskSubmissionHeaderTimeText>
+            <ImageIcon />
+            <TaskSectionDisplayText>Files</TaskSectionDisplayText>
+          </TaskSectionDisplayLabel>
+          <TaskSectionInfoDiv>
+            {mediaUploads?.length > 0 ? (
+              <MediaUploadDiv>
+                {mediaUploads.map((mediaItem) => (
+                  <MediaLink style={textStyle} key={mediaItem?.slug} media={mediaItem} />
+                ))}
+              </MediaUploadDiv>
+            ) : (
+              <TaskDescriptionText>None</TaskDescriptionText>
             )}
-          </div>
-          <SubmissionStatusIcon submission={submission} />
-        </TaskSubmissionHeaderTextDiv>
-      </TaskSubmissionHeader>
-      <TaskSectionDisplayDiv>
-        <TaskSectionDisplayLabel
-          style={{
-            marginRight: '4px',
-          }}
-        >
-          <ImageIcon />
-          <TaskSectionDisplayText>Files</TaskSectionDisplayText>
-        </TaskSectionDisplayLabel>
-        <TaskSectionInfoDiv>
-          {mediaUploads?.length > 0 ? (
-            <MediaUploadDiv>
-              {mediaUploads.map((mediaItem) => (
-                <MediaLink key={mediaItem?.slug} media={mediaItem} />
-              ))}
-            </MediaUploadDiv>
+          </TaskSectionInfoDiv>
+        </TaskSectionDisplayDiv>
+        <TaskSectionDisplayDiv>
+          <TaskSectionDisplayLabel
+            style={{
+              marginRight: '20px',
+            }}
+          >
+            <LinkIcon />
+            <TaskSectionDisplayText>Link </TaskSectionDisplayText>
+          </TaskSectionDisplayLabel>
+          {submission?.links && submission?.links[0]?.url ? (
+            <TaskSubmissionLink href={submission?.links[0]?.url}>{submission?.links[0]?.url}</TaskSubmissionLink>
           ) : (
-            <TaskDescriptionText
-              style={{
-                marginTop: '8px',
-              }}
-            >
-              None
-            </TaskDescriptionText>
+            <>
+              <TaskDescriptionText
+                style={{
+                  marginTop: '8px',
+                }}
+              >
+                None
+              </TaskDescriptionText>
+            </>
           )}
-        </TaskSectionInfoDiv>
-      </TaskSectionDisplayDiv>
-      <TaskSectionDisplayDiv>
-        <TaskSectionDisplayLabel
+        </TaskSectionDisplayDiv>
+        <TaskSectionDisplayDiv
           style={{
-            marginRight: '8px',
+            alignItems: 'flex-start',
+            flexWrap: 'nowrap',
+            textAlign: 'left',
           }}
         >
-          <LinkIcon />
-          <TaskSectionDisplayText>Link </TaskSectionDisplayText>
-        </TaskSectionDisplayLabel>
-        {submission?.links && submission?.links[0]?.url ? (
-          <TaskSubmissionLink href={submission?.links[0]?.url}>{submission?.links[0]?.url}</TaskSubmissionLink>
-        ) : (
-          <>
-            <TaskDescriptionText
-              style={{
-                marginTop: '8px',
-              }}
-            >
-              None
-            </TaskDescriptionText>
-          </>
-        )}
-      </TaskSectionDisplayDiv>
-      <TaskSectionDisplayDiv
-        style={{
-          alignItems: 'flex-start',
-          flexWrap: 'nowrap',
-          textAlign: 'left',
-        }}
-      >
-        <TaskSectionDisplayLabel
-          style={{
-            marginRight: '8px',
-          }}
-        >
-          <NotesIcon />
-          <TaskSectionDisplayText>Notes </TaskSectionDisplayText>
-        </TaskSectionDisplayLabel>
-        <TaskDescriptionText
-          style={{
-            marginTop: '12px',
-          }}
-        >
-          {renderMentionString({
-            content: submission?.description,
-            router,
-          })}
-        </TaskDescriptionText>
-      </TaskSectionDisplayDiv>
+          <TaskSectionDisplayLabel
+            style={{
+              marginRight: '8px',
+            }}
+          >
+            <NotesIcon />
+            <TaskSectionDisplayText>Notes </TaskSectionDisplayText>
+          </TaskSectionDisplayLabel>
+          <TaskDescriptionText
+            style={{
+              marginTop: '12px',
+              ...textStyle,
+            }}
+          >
+            {renderMentionString({
+              content: submission?.description,
+              router,
+            })}
+          </TaskDescriptionText>
+        </TaskSectionDisplayDiv>
 
-      {(isCreator || canReview) && (
-        <>
-          <CreateFormFooterButtons>
-            {isCreator && !submission.approvedAt && (
-              <CreateFormButtonsBlock>
-                {/* <CreateFormCancelButton onClick={}>
+        {(isCreator || canReview) && (
+          <>
+            <CreateFormFooterButtons>
+              {isCreator && !submission.approvedAt && (
+                <CreateFormButtonsBlock>
+                  {/* <CreateFormCancelButton onClick={}>
                     TODO: this should be delete
                   </CreateFormCancelButton> */}
-                <CreateFormPreviewButton
-                  onClick={() => {
-                    setMakeSubmission(true);
-                    setSubmissionToEdit(submission);
-                  }}
-                >
-                  Edit submission
-                </CreateFormPreviewButton>
-              </CreateFormButtonsBlock>
-            )}
-            {canReview && fetchedTask?.status !== TASK_STATUS_DONE && (
-              <>
-                <CreateFormButtonsBlock>
-                  {!submission.changeRequestedAt && !submission.approvedAt && (
-                    <CreateFormCancelButton onClick={requestChangeTaskSubmission}>
-                      Request changes
-                    </CreateFormCancelButton>
-                  )}
-                  {!submission.approvedAt && (
-                    <CreateFormPreviewButton onClick={approveSubmission}>Approve</CreateFormPreviewButton>
-                  )}
+                  <CreateFormPreviewButton
+                    onClick={() => {
+                      setMakeSubmission(true);
+                      setSubmissionToEdit(submission);
+                    }}
+                  >
+                    Edit submission
+                  </CreateFormPreviewButton>
                 </CreateFormButtonsBlock>
-              </>
-            )}
-          </CreateFormFooterButtons>
-        </>
-      )}
-    </TaskSubmissionItemDiv>
+              )}
+              {canReview && fetchedTask?.status !== TASK_STATUS_DONE && (
+                <>
+                  <CreateFormButtonsBlock>
+                    {!submission.changeRequestedAt && !submission.approvedAt && (
+                      <CreateFormCancelButton onClick={requestChangeTaskSubmission}>
+                        Request changes
+                      </CreateFormCancelButton>
+                    )}
+                    {!submission.approvedAt && fetchedTask?.type === TASK_TYPE && (
+                      <CreateFormPreviewButton onClick={approveSubmission}>Approve</CreateFormPreviewButton>
+                    )}
+                    {!submission.approvedAt && fetchedTask?.type === BOUNTY_TYPE && (
+                      <CreateFormPreviewButton onClick={approveBountySubmission}>Approve</CreateFormPreviewButton>
+                    )}
+                  </CreateFormButtonsBlock>
+                </>
+              )}
+              {fetchedTask?.type === BOUNTY_TYPE &&
+                submission.approvedAt &&
+                (submission?.paymentStatus !== PAYMENT_STATUS.PAID ||
+                  submission?.paymentStatus !== PAYMENT_STATUS.PROCESSING) && (
+                  <PaymentButton
+                    fetchedTask={fetchedTask}
+                    taskSubmissions={fetchedTaskSubmissions}
+                    handleClose={handleClose}
+                    getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+                  />
+                )}
+            </CreateFormFooterButtons>
+          </>
+        )}
+      </TaskSubmissionItemDiv>
+    </>
   );
 };
 
@@ -571,6 +613,9 @@ const TaskSubmissionForm = (props) => {
                     setFetchedTaskSubmissions(newFetchedTaskSubmissions);
                   },
                 });
+              } else {
+                setMediaUploads([...mediaUploads, fileToAdd]);
+                setFileUploadLoading(false);
               }
             }}
           />
@@ -693,7 +738,10 @@ const TaskSubmissionForm = (props) => {
 };
 
 const MakeSubmissionBlock = (props) => {
-  const { fetchedTask, setMakeSubmission, prompt } = props;
+  const { fetchedTask, setMakeSubmission, prompt, canSubmit, loggedInUser } = props;
+  const user = fetchedTask?.assigneeId ? fetchedTask : canSubmit && loggedInUser;
+  const profilePicture = user?.assigneeProfilePicture ?? user?.profilePicture;
+  const username = user?.assigneeUsername ?? user?.username;
 
   return (
     <MakeSubmissionDiv>
@@ -703,9 +751,9 @@ const MakeSubmissionBlock = (props) => {
           width: '100%',
         }}
       >
-        {fetchedTask?.assigneeUsername && (
+        {canSubmit && (
           <>
-            {fetchedTask?.assigneeProfilePicture ? (
+            {profilePicture ? (
               <SafeImage
                 style={{
                   width: '26px',
@@ -713,7 +761,7 @@ const MakeSubmissionBlock = (props) => {
                   borderRadius: '13px',
                   marginRight: '4px',
                 }}
-                src={fetchedTask?.assigneeProfilePicture}
+                src={profilePicture}
               />
             ) : (
               <DefaultUserImage
@@ -730,7 +778,7 @@ const MakeSubmissionBlock = (props) => {
                 fontSize: '16px',
               }}
             >
-              {fetchedTask?.assigneeUsername}
+              {username}
             </TaskSectionInfoText>
             <div
               style={{
@@ -763,12 +811,15 @@ export const TaskSubmissionContent = (props) => {
     setFetchedTaskSubmissions,
     handleClose,
     setShowPaymentModal,
+    getTaskSubmissionsForTask,
   } = props;
 
   const router = useRouter();
   const [submissionToEdit, setSubmissionToEdit] = useState(null);
   const [moveProgressButton, setMoveProgressButton] = useState(true);
   const taskStatus = fetchedTask?.status;
+  const fetchedTaskSubmissionsLength = fetchedTaskSubmissions?.length;
+  const loggedInUser = useMe();
   if (taskSubmissionLoading) {
     return <CircularProgress />;
   }
@@ -828,12 +879,12 @@ export const TaskSubmissionContent = (props) => {
       </div>
     );
   }
-  if (!canSubmit && fetchedTaskSubmissions?.length === 0 && fetchedTask?.assigneeUsername) {
+  if (!canSubmit && fetchedTaskSubmissionsLength === 0 && fetchedTask?.assigneeUsername) {
     return (
       <TaskTabText>None at the moment. Only @{fetchedTask?.assigneeUsername} can create a submission </TaskTabText>
     );
   }
-  if (canSubmit && fetchedTaskSubmissions?.length === 0) {
+  if (canSubmit && fetchedTaskSubmissionsLength === 0) {
     return (
       <>
         {makeSubmission ? (
@@ -849,6 +900,8 @@ export const TaskSubmissionContent = (props) => {
             fetchedTask={fetchedTask}
             prompt={'Make a submission'}
             setMakeSubmission={setMakeSubmission}
+            canSubmit={canSubmit}
+            loggedInUser={loggedInUser}
           />
         )}
       </>
@@ -871,7 +924,7 @@ export const TaskSubmissionContent = (props) => {
     );
   }
 
-  if (fetchedTaskSubmissions?.length > 0) {
+  if (fetchedTaskSubmissionsLength > 0) {
     // display list of submissions
     return (
       <>
@@ -890,6 +943,8 @@ export const TaskSubmissionContent = (props) => {
                 fetchedTask={fetchedTask}
                 setMakeSubmission={setMakeSubmission}
                 prompt={'Make another submission'}
+                canSubmit={canSubmit}
+                loggedInUser={loggedInUser}
               />
             )}
             {taskStatus === TASK_STATUS_DONE && fetchedTask?.type === ENTITIES_TYPES.TASK && (
@@ -912,6 +967,9 @@ export const TaskSubmissionContent = (props) => {
                   setFetchedTaskSubmissions={setFetchedTaskSubmissions}
                   fetchedTaskSubmissions={fetchedTaskSubmissions}
                   submission={transformTaskSubmissionToTaskSubmissionCard(taskSubmission, {})}
+                  user={loggedInUser}
+                  setShowPaymentModal={setShowPaymentModal}
+                  getTaskSubmissionsForTask={getTaskSubmissionsForTask}
                 />
               );
             })}

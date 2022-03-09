@@ -2,7 +2,10 @@ import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { White } from '../../theme/colors';
 
-export const Title = styled(Typography)`
+export const ListType = styled.ul`
+  color: white;
+`;
+export const DiscordTitle = styled(Typography)`
   && {
     font-size: 24px;
     color: ${White};
@@ -10,7 +13,7 @@ export const Title = styled(Typography)`
   }
 `;
 
-export const Paragraph = styled(Typography)`
+export const DiscordParagraph = styled(Typography)`
   && {
     font-size: 16px;
     color: ${White};
@@ -19,7 +22,7 @@ export const Paragraph = styled(Typography)`
   }
 `;
 
-export const BoldParagraph = styled(Paragraph)`
+export const BoldParagraph = styled(DiscordParagraph)`
   && {
     font-weight: bolder;
   }
@@ -33,7 +36,7 @@ export const BoldSpan = styled.span`
   font-weight: bolder;
 `;
 
-export const SmallerTopParagraph = styled(Paragraph)`
+export const SmallerTopParagraph = styled(DiscordParagraph)`
   && {
     margin-top: 12px;
   }

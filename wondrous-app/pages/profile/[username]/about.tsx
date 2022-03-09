@@ -1,92 +1,57 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import About from '../../../components/profile/about/about';
-import { useRouter } from 'next/router';
 import { useLazyQuery } from '@apollo/client';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
+import styled from 'styled-components';
+import { withAuth } from '../../../components/Auth/withAuth';
+import { UserAboutInfo } from '../../../components/Common/UserAboutInfo';
+import { UserLinksTable } from '../../../components/Common/UserLinksTable';
+import Wrapper from '../../../components/profile/wrapper/wrapper';
+import { GET_USER_FROM_USERNAME, GET_USER_PROFILE } from '../../../graphql/queries';
+import { parseLinks } from '../../../utils/common';
 
-import { useMe, withAuth } from '../../../components/Auth/withAuth';
-import {
-  GET_USER_PERMISSION_CONTEXT,
-  GET_USER_PROFLIE,
-  GET_USER_FROM_USERNAME,
-  GET_USER_ABOUT_PAGE_DATA,
-} from '../../../graphql/queries';
+export const AboutSection = styled.div`
+  max-width: 1038px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+`;
 
-const AboutPage = () => {
-  const loggedInUser = useMe();
-  const [userProfileData, setUserProfileData] = useState(null);
-  // const [userAboutPageData, setUserAboutPageData] = useState(null);
-  const [userOrgsData, setUserOrgsData] = useState([]);
-  const [userPodsData, setUserPodsData] = useState([]);
-  const [userCompletedTaskCount, setUserCompletedTaskCount] = useState(null);
-  const [userCompletedTasks, setUserCompletedTasks] = useState(null);
-  const router = useRouter();
-  const { username, userId } = router.query;
-
-  // const { data: userPermissionsContext } = useQuery(
-  //   GET_USER_PERMISSION_CONTEXT,
-  //   {
-  //     fetchPolicy: 'cache-and-network',
-  //   }
-  // )
-
-  const [getUserAboutPageData, { data: userAboutPageDataFromUser }] = useLazyQuery(GET_USER_ABOUT_PAGE_DATA);
-  const [getUser, { data: userProfileDataFromSession }] = useLazyQuery(GET_USER_PROFLIE);
-  const [getUserFromUsername, { data: userProfileDataFromUsername }] = useLazyQuery(GET_USER_FROM_USERNAME);
-
+const useGetUserProfile = (id, username) => {
+  const [getUser, { data: getUserProfileData }] = useLazyQuery(GET_USER_PROFILE);
+  const [getUserFromUsername, { data: getUserFromUsernameData }] = useLazyQuery(GET_USER_FROM_USERNAME);
   useEffect(() => {
-    if (userId && !userProfileData) {
+    if (!getUserProfileData && id) {
       getUser({
         variables: {
-          userId,
+          userId: id,
         },
       });
-      // get user task board tasks immediately
-    } else if (!userId && username && !userProfileData) {
-      // Get orgId from username
+    } else if (!getUserFromUsernameData && !id && username) {
       getUserFromUsername({
         variables: {
           username,
         },
       });
-    } else if (userProfileData && userProfileData.id) {
-      getUserAboutPageData({
-        variables: {
-          userId: userProfileData.id,
-        },
-      });
     }
-  }, [username, userId, userProfileData, getUser, getUserFromUsername, getUserAboutPageData]);
+  }, [getUser, getUserFromUsername, getUserFromUsernameData, getUserProfileData, id, username]);
+  return getUserProfileData?.getUser ?? getUserFromUsernameData?.getUserFromUsername ?? {};
+};
 
-  // Bind to the hook
-  useEffect(() => {
-    setUserProfileData(userProfileDataFromUsername?.getUserFromUsername || userProfileDataFromSession?.getUser);
-  }, [userProfileDataFromSession, userProfileDataFromUsername]);
-
-  useEffect(() => {
-    const data = userAboutPageDataFromUser;
-    // setUserAboutPageData(data?.getUserAboutPageData);
-    const orgs = data?.getUserAboutPageData?.orgs;
-    const pods = data?.getUserAboutPageData?.pods;
-    const tasksCompleted = data?.getUserAboutPageData?.tasksCompleted;
-    const tasksCompletedCount = data?.getUserAboutPageData?.tasksCompletedCount;
-    if (orgs || tasksCompletedCount) {
-      setUserOrgsData(orgs);
-      setUserPodsData(pods);
-      setUserCompletedTaskCount(tasksCompletedCount);
-      setUserCompletedTasks(tasksCompleted);
-    }
-  }, [userAboutPageDataFromUser]);
-
+const About = (props) => {
+  const router = useRouter();
+  const { username, id: routerId } = router.query;
+  const userProfile = useGetUserProfile(routerId, username);
+  const { links, id: userProfileId } = userProfile;
+  const parsedLinks = parseLinks(links);
   return (
-    <About
-      userProfileData={userProfileData}
-      loggedInUser={loggedInUser}
-      userOrgsData={userOrgsData}
-      userPodsData={userPodsData}
-      userCompletedTasks={userCompletedTasks}
-      tasksCompletedCount={userCompletedTaskCount}
-    />
+    <Wrapper userProfileData={userProfile} mainLink={parsedLinks?.mainLink}>
+      <AboutSection>
+        <UserLinksTable parsedLinks={parsedLinks} />
+        <UserAboutInfo id={userProfileId} />
+      </AboutSection>
+    </Wrapper>
   );
 };
 
-export default withAuth(AboutPage);
+export default withAuth(About);

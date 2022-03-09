@@ -196,7 +196,7 @@ export const HeaderManageSettingsButton = (props) => (
     style={{
       background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
       borderRadius: '204px',
-      width: '135px',
+      width: 'fit-content',
       height: '40px',
       minHeight: '0',
     }}
@@ -212,9 +212,10 @@ export const HeaderSettingsLockedButton = (props) => (
       background: '#474747',
       cursor: 'default',
       borderRadius: '204px',
-      width: '135px',
+      width: 'fit-content',
       height: '40px',
       minHeight: '0',
+      visibility: 'hidden',
     }}
     buttonInnerStyle={{
       color: '#474747',
