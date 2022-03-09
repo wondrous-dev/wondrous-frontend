@@ -14,7 +14,6 @@ import { ErrorText } from '..';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PaymentPendingTypography } from './styles';
 import { usePaymentModal } from '../../../utils/hooks';
-import {performance} from 'perf_hooks'
 import {
   GET_PAYMENTS_FOR_ORG,
   GET_PAYMENTS_FOR_POD,
