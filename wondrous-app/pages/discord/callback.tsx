@@ -22,9 +22,7 @@ const Callback = () => {
         .then((result) => {
           if (user && user?.signupCompleted) {
             // Only place to change this is in settings
-            router.push('/profile/settings', undefined, {
-              shallow: true,
-            });
+            window.location.href = `/profile/settings`;
           } else if (user && !user?.signupCompleted) {
             router.push('/onboarding/email-setup', undefined, {
               shallow: true,

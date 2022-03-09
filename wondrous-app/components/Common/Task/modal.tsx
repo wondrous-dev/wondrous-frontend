@@ -1218,7 +1218,9 @@ export const TaskViewModal = (props) => {
                     </TaskUserDiv>
                   ) : (
                     <>
-                      {(fetchedTask?.orgId && fetchedTask?.orgId in userPermissionsContext?.orgPermissions) ||
+                      {(fetchedTask?.orgId &&
+                        userPermissionsContext?.orgPermissions &&
+                        fetchedTask?.orgId in userPermissionsContext?.orgPermissions) ||
                       fetchedTask?.privacyLevel === PRIVACY_LEVEL.public ? (
                         <>
                           <TakeTaskButton
