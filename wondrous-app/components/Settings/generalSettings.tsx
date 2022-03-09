@@ -219,7 +219,7 @@ const GeneralSettingsComponent = (props) => {
             )}
           </GeneralSettingsSocialsBlockWrapper>
         </GeneralSettingsSocialsBlock>
-        {!isPod && (
+        {/* {!isPod && (
           <GeneralSettingsIntegrationsBlock>
             <LabelBlock>Integrations</LabelBlock>
             <LabelBlockText>
@@ -256,7 +256,7 @@ const GeneralSettingsComponent = (props) => {
               />
             </div>
           </GeneralSettingsIntegrationsBlock>
-        )}
+        )} */}
 
         {isPod && (
           <div
