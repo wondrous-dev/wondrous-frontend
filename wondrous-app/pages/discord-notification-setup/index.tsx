@@ -10,7 +10,7 @@ import {
   ListItem,
   BoldSpan,
   SmallerTopParagraph,
-} from './styles';
+} from '../../components/Discord/styles';
 import { HighlightBlue, White } from '../../theme/colors';
 
 const DiscordNotificationSetup = () => {
@@ -148,7 +148,7 @@ const DiscordNotificationSetup = () => {
           alt=""
         />
         <SmallerTopParagraph>
-          Click <BoldSpan>Save changes</BoldSpan> and voila! You've now set up notifications :)
+          Click <BoldSpan>Save changes</BoldSpan> and voila! You{`'`}ve now set up notifications :)
         </SmallerTopParagraph>
       </SettingsContainer>
     </>

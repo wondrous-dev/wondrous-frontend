@@ -5,6 +5,7 @@ import { White } from '../../theme/colors';
 export const ListType = styled.ul`
   color: white;
 `;
+
 export const DiscordTitle = styled(Typography)`
   && {
     font-size: 24px;
