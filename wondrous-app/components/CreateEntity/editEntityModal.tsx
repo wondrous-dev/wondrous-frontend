@@ -855,7 +855,7 @@ const EditLayoutBaseModal = (props) => {
           </TextInputDiv>
 
           <CreateFormMainDescriptionInputSymbolCounter>
-            {descriptionText.length}/900 characters
+            {descriptionText?.length}/900 characters
           </CreateFormMainDescriptionInputSymbolCounter>
           {errors.description && <ErrorText> {errors.description} </ErrorText>}
         </CreateFormMainInputBlock>
@@ -1041,8 +1041,8 @@ const EditLayoutBaseModal = (props) => {
 
             <CreateFormMembersBlock>
               <CreateFormMembersBlockTitle>
-                {createPodMembersList.length}
-                {createPodMembersList.length > 1 ? ' members' : ' member'}
+                {createPodMembersList?.length}
+                {createPodMembersList?.length > 1 ? ' members' : ' member'}
               </CreateFormMembersBlockTitle>
               <CreateFormMembersList>
                 {createPodMembersList.map((item) => (
