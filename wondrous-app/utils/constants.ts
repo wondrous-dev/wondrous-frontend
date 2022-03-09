@@ -245,3 +245,5 @@ export const EMAIL_REGEX =
 export const validateEmail = (email) => {
   return email.match(EMAIL_REGEX);
 };
+
+export const TAGS = ['Design', 'Narration', 'Social Media', 'Copywriting', 'Create copywriting'];

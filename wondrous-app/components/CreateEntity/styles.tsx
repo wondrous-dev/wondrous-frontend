@@ -578,6 +578,11 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
     left: 8px;
     font-size: 14px;
     height: 30px;
+
+    &::placeholder {
+      color: #C4C4C4;
+      opacity: 1;
+    }
   }
 
   svg {

@@ -13,6 +13,7 @@ import {
   PERMISSIONS,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   CHAIN_TO_CHAIN_DIPLAY_NAME,
+  TAGS,
 } from '../../utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
@@ -27,6 +28,7 @@ import InputForm from '../Common/InputForm/inputForm';
 import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
 
 import { ENTITIES_UI_ELEMENTS } from './chooseEntityToCreateModal';
+import Tags from '../Tags';
 import MembersRow from './MembersRow/membersRow';
 import { CreateFormMembersList } from './MembersRow/styles';
 import HeaderImage from './HeaderImage/headerImage';
@@ -121,6 +123,9 @@ import { delQuery } from '../../utils';
 import { ErrorText } from '../Common';
 import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
+import { Input, Option } from '../SearchTasks/styles';
+import SearchIcon from '../Icons/search';
+import { UserIconSmall } from '../Icons/Search/types';
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -337,6 +342,7 @@ const CreateLayoutBaseModal = (props) => {
   const [milestoneString, setMilestoneString] = useState('');
   const [assignee, setAssignee] = useState(null);
   const [selectedReviewers, setSelectedReviewers] = useState([]);
+  const [tags, setTags] = useState([]);
   const [link, setLink] = useState('');
   const [rewardsCurrency, setRewardsCurrency] = useState(null);
   const [rewardsAmount, setRewardsAmount] = useState(null);
@@ -626,6 +632,7 @@ const CreateLayoutBaseModal = (props) => {
           milestoneId: milestone?.id,
           parentTaskId,
           podId: pod,
+          tags: ['Design', 'Copywriting', 'Data'],
           dueDate,
           ...(rewardsAmount &&
             rewardsCurrency && {
@@ -1181,6 +1188,12 @@ const CreateLayoutBaseModal = (props) => {
             </CreateFormAddDetailsInputBlock>
           </CreateFormAddDetailsInputs>
         )}
+
+        <CreateFormMainInputBlock>
+          <CreateFormMainBlockTitle>Add tags</CreateFormMainBlockTitle>
+
+          <Tags options={TAGS} value={tags} onChange={setTags} limit={4} />
+        </CreateFormMainInputBlock>
       </CreateFormMainSection>
 
       {/* {showDeliverableRequirementsSection && (

@@ -34,6 +34,7 @@ import {
   SubtaskIconLabel,
   RightArrow,
   RightArrowWrapper,
+  Tag
 } from './styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from '../../../graphql/queries/task';
@@ -646,6 +647,7 @@ export const TaskViewModal = (props) => {
   const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
   const isSubtask = fetchedTask?.parentTaskId !== null;
   const [approvedSubmission, setApprovedSubmission] = useState(null);
+  const mockTagData = ['Design', 'Copywriting', 'Data'];
 
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
@@ -1364,6 +1366,21 @@ export const TaskViewModal = (props) => {
                 }}
               >
                 {fetchedTask?.dueDate ? format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy') : 'None'}
+              </TaskSectionInfoText>
+            </TaskSectionDisplayDiv>
+            <TaskSectionDisplayDiv>
+              <TaskSectionDisplayLabel>
+                <TaskSectionDisplayText>Tags</TaskSectionDisplayText>
+              </TaskSectionDisplayLabel>
+              <TaskSectionInfoText
+                  style={{
+                    marginTop: '8px',
+                    marginLeft: '16px',
+                  }}
+              >
+                {mockTagData.map((tag) => (
+                    <Tag key={tag}>{tag}</Tag>
+                ))}
               </TaskSectionInfoText>
             </TaskSectionDisplayDiv>
             {fetchedTask?.rewards && fetchedTask?.rewards?.length > 0 && (
