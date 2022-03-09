@@ -20,6 +20,8 @@ const Callback = () => {
         },
       })
         .then((result) => {
+          console.log('result', result)
+          console.log('user', user)
           if (user && user?.signupCompleted) {
             // Only place to change this is in settings
             window.location.href = `/profile/settings`;
