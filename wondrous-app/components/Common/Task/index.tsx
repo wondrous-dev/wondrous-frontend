@@ -363,7 +363,7 @@ export const Task = (props) => {
 						<TaskLikeIcon liked={liked} />
 						<TaskActionAmount>{likes}</TaskActionAmount>
 					</TaskAction> */}
-            {!assigneeId && !isBounty && (
+            {!assigneeId && !isBounty && !isMilestone && (
               <>
                 {claimed ? (
                   <ClaimButton
