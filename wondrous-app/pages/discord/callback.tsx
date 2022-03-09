@@ -11,10 +11,8 @@ const Callback = () => {
   const router = useRouter();
   const { code } = router.query;
   const [connectUserDiscord] = useMutation(CONNECT_USER_DISCORD);
-  const [firstTimeFetched, setFirstTimeFetched] = useState(false);
   useEffect(() => {
-    if (code && !firstTimeFetched) {
-      setFirstTimeFetched(true);
+    if (code && user) {
       connectUserDiscord({
         variables: {
           discordAuthCode: code,
