@@ -47,6 +47,14 @@ export const APPROVE_SUBMISSION = gql`
   }
 `;
 
+export const APPROVE_BOUNTY_SUBMISSION = gql`
+  mutation approveBountySubmission($submissionId: ID!) {
+    approveBountySubmission(submissionId: $submissionId) {
+      success
+    }
+  }
+`;
+
 export const REQUEST_CHANGE_SUBMISSION = gql`
   mutation requestChangeTaskSubmission($submissionId: ID!) {
     requestChangeTaskSubmission(submissionId: $submissionId) {

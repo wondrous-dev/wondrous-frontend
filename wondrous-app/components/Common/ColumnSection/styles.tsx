@@ -11,7 +11,7 @@ export const SectionWrapper = styled.div`
   min-width: 324px;
   margin-top: 1em;
 
-  background: ${Black92}3C;
+  background: #1b1b1b;
   border: 1px solid ${Black92}3C;
 
   border-radius: 3px;

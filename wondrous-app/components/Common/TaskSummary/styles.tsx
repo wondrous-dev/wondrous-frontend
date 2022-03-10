@@ -19,6 +19,7 @@ export const TaskSummaryWrapper = styled.div`
   min-width: 296px;
   min-height: 170px;
   width: 296px;
+  overflow: hidden;
   color: ${Grey250};
 `;
 

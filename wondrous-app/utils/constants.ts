@@ -12,6 +12,7 @@ export const TASK_STATUS_PAID = 'paid';
 export const TASK_STATUS_PROPOSAL_REQUEST = 'proposal_request';
 export const TASK_STATUS_SUBMISSION_REQUEST = 'submission_request';
 
+export const ORG_MEMBERSHIP_REQUESTS = 'org_membership_request';
 export const TASK_STATUSES = [
   TASK_STATUS_TODO,
   TASK_STATUS_IN_PROGRESS,
@@ -124,6 +125,7 @@ export const ENTITIES_TYPES = {
   MILESTONE: 'milestone',
   POD: 'pod',
   ORG: 'org',
+  BOUNTY: 'bounty',
 };
 
 export const MEDIA_TYPES = {
@@ -176,7 +178,7 @@ export const PERMISSIONS = {
 
 export const NOTIFICATION_VERBS = {
   task_like: 'liked a',
-  mention: 'mentioned',
+  mention: 'mentioned you in a',
   task_approve: 'approved a',
   task_deny: 'denied a',
   task_revise: 'send into revision a',
@@ -244,6 +246,12 @@ export const EMAIL_REGEX =
 
 export const validateEmail = (email) => {
   return email.match(EMAIL_REGEX);
+};
+
+export const GRAPHQL_ERRORS = {
+  WEB3_ADDRESS_ALREADY_EXISTS: 'web3_address_already_exist',
+  ORG_INVITE_ALREADY_EXISTS: 'org_invite_already_exist',
+  POD_INVITE_ALREADY_EXISTS: 'pod_invite_already_exist',
 };
 
 export const TAGS = ['Design', 'Narration', 'Social Media', 'Copywriting', 'Create copywriting'];

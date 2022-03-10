@@ -11,9 +11,9 @@ import {
 } from './styles';
 import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
 import { useWonderWeb3 } from '../../services/web3';
-import { getUserSigningMessage, walletSignup } from '../Auth/withAuth';
+import { getUserSigningMessage, walletSignup, walletSignin } from '../Auth/withAuth';
 import { useRouter } from 'next/router';
-import { SUPPORTED_CHAINS } from '../../utils/constants';
+import { GRAPHQL_ERRORS, SUPPORTED_CHAINS } from '../../utils/constants';
 import { Button } from '../Common/button';
 import { PaddedParagraph } from '../Common/text';
 import { Metamask } from '../Icons/metamask';
@@ -30,14 +30,14 @@ export const Logo = () => {
   );
 };
 
-export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
+export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink, podInfo, redeemPodInviteLink }) => {
   const wonderWeb3 = useWonderWeb3();
   const [errorMessage, setErrorMessage] = useState('');
   const [noChainError, setNoChainError] = useState('');
 
   const [unsuportedChain, setUnsuportedChain] = useState(false);
   const router = useRouter();
-  const { token } = router.query;
+  const { token, type } = router.query;
   // Two stage process as wallet connection takes
   // time.
   const connectWallet = async (event) => {
@@ -62,30 +62,104 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
       const messageToSign = messageToSignObject?.signingMessage;
       if (messageToSign) {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
-
         if (signedMessage) {
           // Sign with Wallet
+          let user;
           try {
-            const result = await walletSignup(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
-            if (result === true) {
-              //
+            user = await walletSignup(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
+          } catch (err) {
+            if (
+              err?.graphQLErrors &&
+              err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.WEB3_ADDRESS_ALREADY_EXISTS
+            ) {
+              try {
+                user = await walletSignin(wonderWeb3.address, signedMessage);
+              } catch (err) {
+                setErrorMessage('Unable to log in existing user - please contact support in discord');
+              }
+              setErrorMessage('Account already exists');
+            } else {
+              setErrorMessage('Unable to join org - please contact support in discord.');
+            }
+          }
+          if (user) {
+            //
+
+            if (orgInfo) {
               redeemOrgInviteLink({
                 variables: {
                   token,
                 },
                 onCompleted: (data) => {
                   if (data?.redeemOrgInviteLink?.success) {
-                    router.push(`/onboarding/welcome`, undefined, {
-                      shallow: true,
-                    });
+                    if (user?.username) {
+                      router.push('/dashboard', undefined, {
+                        shallow: true,
+                      });
+                    } else {
+                      router.push(`/onboarding/welcome`, undefined, {
+                        shallow: true,
+                      });
+                    }
                   }
                 },
+                onError: (err) => {
+                  if (
+                    err?.graphQLErrors &&
+                    (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.ORG_INVITE_ALREADY_EXISTS ||
+                      err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.POD_INVITE_ALREADY_EXISTS)
+                  ) {
+                    if (user?.username) {
+                      router.push('/dashboard', undefined, {
+                        shallow: true,
+                      });
+                    } else {
+                      router.push(`/onboarding/welcome`, undefined, {
+                        shallow: true,
+                      });
+                    }
+                  }
+                  setErrorMessage('Invite already redeemed');
+                },
               });
-            } else {
-              setErrorMessage(result);
+            } else if (podInfo) {
+              redeemPodInviteLink({
+                variables: {
+                  token,
+                },
+                onCompleted: (data) => {
+                  if (data?.redeemPodInviteLink?.success) {
+                    if (user?.username) {
+                      router.push('/dashboard', undefined, {
+                        shallow: true,
+                      });
+                    } else {
+                      router.push(`/onboarding/welcome`, undefined, {
+                        shallow: true,
+                      });
+                    }
+                  }
+                },
+                onError: (err) => {
+                  if (
+                    err?.graphQLErrors &&
+                    (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.ORG_INVITE_ALREADY_EXISTS ||
+                      err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.POD_INVITE_ALREADY_EXISTS)
+                  ) {
+                    if (user?.username) {
+                      router.push('/dashboard', undefined, {
+                        shallow: true,
+                      });
+                    } else {
+                      router.push(`/onboarding/welcome`, undefined, {
+                        shallow: true,
+                      });
+                    }
+                  }
+                  setErrorMessage('Invite already redeemed');
+                },
+              });
             }
-          } catch (err) {
-            setErrorMessage(err?.message || err);
           }
         } else if (signedMessage === false) {
           setErrorMessage('Signature rejected. Try again.');
@@ -114,6 +188,14 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
     background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
   };
 
+  const titleSentence = podInfo
+    ? `The ${podInfo?.name} pod from ${podInfo?.org?.name} is requesting your help`
+    : `${orgInfo?.name} is requesting your help.`;
+  const contributingSentence = podInfo
+    ? `${podInfo?.contributorCount} ${podInfo?.contributorCount === 1 ? 'is' : 'are'} already contributing to the ${
+        podInfo?.name
+      } pod`
+    : `${orgInfo?.contributorCount} members are already contributing to ${orgInfo?.name}`;
   return (
     <InviteWelcomeBoxWrapper>
       <SafeImage
@@ -123,16 +205,16 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink }) => {
           borderRadius: '39px',
           marginBottom: '20px',
         }}
-        src={orgInfo?.profilePicture}
+        src={orgInfo?.profilePicture || podInfo?.org?.profilePicture}
       />
-      <InviteWelcomeBoxTitle>{orgInfo?.name} is requesting your help.</InviteWelcomeBoxTitle>
+      <InviteWelcomeBoxTitle>{titleSentence}</InviteWelcomeBoxTitle>
       <InviteWelcomeBoxParagraph>Wonder is where DAOs manage world changing projects</InviteWelcomeBoxParagraph>
       <InviteWelcomeBoxParagraph
         style={{
           fontWeight: 'normal',
         }}
       >
-        {orgInfo?.contributorCount} members are already contributing to {orgInfo?.name}
+        {contributingSentence}
       </InviteWelcomeBoxParagraph>
       {wonderWeb3.connecting ? (
         <MetamaskButton style={buttonStyle} disabled className="disabled">

@@ -25,7 +25,7 @@ export const StyledTable = styled(Table)`
 `;
 
 export const StyledTableBody = styled(TableBody)`
-  border: 1px solid #232323;
+  border: 1px solid #363636;
   border-radius: 3px;
 `;
 
@@ -33,6 +33,8 @@ export const StyledTableContainer = styled(TableContainer)`
   && {
     width: 100%;
     overflow-x: visible;
+    background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
+    border-radius: 4px;
   }
 `;
 
@@ -46,6 +48,7 @@ export const StyledTableHead = styled(TableHead)`
     font-weight: 700;
     letter-spacing: 0em;
     border-radius: 4px;
+    border: 1px solid #363636;
   }
 `;
 
@@ -53,7 +56,7 @@ export const StyledTableRow = styled(TableRow)`
   //cursor: pointer;
 
   & .MuiTableCell-body {
-    border: 1px solid #232323;
+    border: 1px solid #363636;
     padding: 14px;
   }
 

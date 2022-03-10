@@ -1,14 +1,14 @@
-import React from 'react';
-import { useState } from 'react';
+import router from 'next/router';
+import React, { useState } from 'react';
 import { SIDEBAR_WIDTH } from '../../../utils/constants';
 import { SideBarContext } from '../../../utils/contexts';
+import { formatLinkDisplay } from '../../../utils/links';
+import { useMe } from '../../Auth/withAuth';
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
-
 import Header from '../../Header';
 import SideBarComponent from '../../SideBar';
 import Tabs from '../tabs/tabs';
-import { formatLinkDisplay } from '../../../utils/links';
 import {
   Content,
   ContentContainer,
@@ -17,36 +17,28 @@ import {
   HeaderActivityLinkIcon,
   HeaderButtons,
   HeaderEditProfileButton,
+  HeaderImage,
+  HeaderMainBlock,
+  HeaderOrgCount,
+  HeaderOrgCountText,
   HeaderOrgPodCount,
   HeaderPodCount,
   HeaderPodCountText,
-  HeaderOrgCount,
-  HeaderOrgCountText,
-  HeaderImage,
-  HeaderMainBlock,
   HeaderText,
   HeaderTitle,
+  HeaderUserName,
   OverviewComponent,
   TokenHeader,
-  TokenLogo,
 } from './styles';
-import { MoreInfoModal } from '../../profile/modals';
-import router from 'next/router';
 
 const Wrapper = (props) => {
-  const [showOrgs, setShowOrgs] = useState(false);
-  const [showPods, setShowPods] = useState(false);
-
-  const { children, userProfileData, loggedInUser, mainLink } = props;
-  let viewingSelf = false;
-  if (userProfileData?.id === loggedInUser?.id) {
-    viewingSelf = true;
-  }
-  const username = userProfileData?.username;
-  const bio = userProfileData?.bio;
-  const orgCount = userProfileData?.additionalInfo?.orgCount;
-  const podCount = userProfileData?.additionalInfo?.podCount;
   const [minimized, setMinimized] = useState(false);
+  const loggedInUser = useMe();
+  const { children, userProfileData = {}, mainLink } = props;
+  const { firstName, lastName, username, bio, additionalInfo = {}, profilePicture } = userProfileData;
+  const { orgCount, podCount } = additionalInfo;
+  const viewingSelf = userProfileData?.id === loggedInUser?.id;
+  const fullName = firstName && lastName ? `${firstName} ${lastName}` : username;
   const style = {
     width: '96px',
     height: '96px',
@@ -55,6 +47,11 @@ const Wrapper = (props) => {
     top: '-50px',
     border: '10px solid #0f0f0f',
   };
+  const profileImageComponent = profilePicture ? (
+    <SafeImage src={profilePicture} style={style} />
+  ) : (
+    <DefaultUserImage style={style} />
+  );
   return (
     <>
       <Header />
@@ -74,10 +71,9 @@ const Wrapper = (props) => {
           <Content>
             <ContentContainer>
               <TokenHeader>
-                {!userProfileData?.profilePicture && <DefaultUserImage style={style} />}
-                {userProfileData?.profilePicture && <SafeImage src={userProfileData?.profilePicture} style={style} />}
+                {profileImageComponent}
                 <HeaderMainBlock>
-                  <HeaderTitle>{username}</HeaderTitle>
+                  <HeaderTitle>{fullName}</HeaderTitle>
                   {viewingSelf && (
                     <HeaderButtons>
                       <HeaderEditProfileButton
@@ -92,7 +88,8 @@ const Wrapper = (props) => {
                     </HeaderButtons>
                   )}
                 </HeaderMainBlock>
-                <HeaderText>{bio}</HeaderText>
+                <HeaderUserName>@{username}</HeaderUserName>
+                {bio && <HeaderText>{bio}</HeaderText>}
                 <HeaderActivity>
                   {mainLink && (
                     <HeaderActivityLink href={mainLink.url} target="_blank">
@@ -101,11 +98,11 @@ const Wrapper = (props) => {
                     </HeaderActivityLink>
                   )}
                   <HeaderOrgPodCount>
-                    <HeaderPodCount>{podCount || 0}</HeaderPodCount>
+                    <HeaderPodCount>{podCount}</HeaderPodCount>
                     <HeaderPodCountText>Pods</HeaderPodCountText>
                   </HeaderOrgPodCount>
                   <HeaderOrgPodCount>
-                    <HeaderOrgCount>{orgCount || 0}</HeaderOrgCount>
+                    <HeaderOrgCount>{orgCount}</HeaderOrgCount>
                     <HeaderOrgCountText>DAOs</HeaderOrgCountText>
                   </HeaderOrgPodCount>
                 </HeaderActivity>

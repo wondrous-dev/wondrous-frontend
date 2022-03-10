@@ -15,6 +15,7 @@ import {
   TaskAction,
   TaskActionAmount,
   TaskSeparator,
+  TaskCardDescriptionText,
 } from '../Task/styles';
 
 import { TASK_ICONS } from '../Task/index';
@@ -210,9 +211,8 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
         handleClose={() => {
           document.body.setAttribute('style', '');
           window?.scrollTo(0, windowOffset);
-          router.push(`${delQuery(router.asPath)}`, undefined, {
-            shallow: true,
-          });
+          const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}`;
+          window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
           setModalOpen(false);
         }}
         task={taskType === TASK_STATUS_REQUESTED || taskType === TASK_STATUS_ARCHIVED ? task : null}
@@ -243,17 +243,18 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
 
           <TaskContent>
             <TaskTitle>{title}</TaskTitle>
-            <p>
+            <TaskCardDescriptionText>
               {renderMentionString({
                 content: task?.description,
                 router,
               })}
-            </p>
+            </TaskCardDescriptionText>
             {task?.podName && (
               <div
                 style={{
                   alignItems: 'center',
                   display: 'flex',
+                  marginTop: '16px',
                 }}
               >
                 <PodIcon
@@ -265,6 +266,9 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
                   }}
                 />
                 <PodWrapper
+                  style={{
+                    marginTop: '0',
+                  }}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();

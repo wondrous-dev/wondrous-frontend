@@ -32,6 +32,14 @@ export const REDEEM_ORG_INVITE_LINK = gql`
   }
 `;
 
+export const REDEEM_POD_INVITE_LINK = gql`
+  mutation redeemPodInviteLink($token: String!) {
+    redeemPodInviteLink(token: $token) {
+      success
+    }
+  }
+`;
+
 export const UPDATE_USER = gql`
   mutation updateUser($input: UserUpdateInput!) {
     updateUser(input: $input) {
@@ -47,4 +55,21 @@ export const CONFIRM_EMAIL_ADDRESS = gql`
       success
     }
   }
+`;
+
+export const CONNECT_USER_DISCORD = gql`
+  mutation connectUserDiscord($discordAuthCode: String!) {
+    connectUserDiscord(discordAuthCode: $discordAuthCode) {
+      success
+    }
+  }
+`;
+
+export const SET_USER_SIGNUP_COMPLETE = gql`
+  mutation {
+    setUserSignupComplete {
+      ...LoggedinUser
+    }
+  }
+  ${LoggedinUserFragment}
 `;

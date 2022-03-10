@@ -48,6 +48,8 @@ const cache = new InMemoryCache({
         waitlistUsers(existingData, { args, toReference }) {
           return existingData || toReference({ __typename: 'WaitlistUser', ...args });
         },
+        getOrgFeed: offsetLimitPagination(), // NOTE: https://www.apollographql.com/docs/react/pagination/core-api/#non-paginated-read-functions
+        getPodFeed: offsetLimitPagination(),
       },
     },
   },
