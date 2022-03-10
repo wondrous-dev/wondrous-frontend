@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMe, withAuth } from '../../components/Auth/withAuth';
 import { InviteWelcomeBoxWrapper } from '../../components/Onboarding/styles';
 import { CONNECT_USER_DISCORD } from '../../graphql/mutations';
@@ -11,9 +11,8 @@ const Callback = () => {
   const router = useRouter();
   const { code } = router.query;
   const [connectUserDiscord] = useMutation(CONNECT_USER_DISCORD);
-
   useEffect(() => {
-    if (code) {
+    if (code && user) {
       connectUserDiscord({
         variables: {
           discordAuthCode: code,
