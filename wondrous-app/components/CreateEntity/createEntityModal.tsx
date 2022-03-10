@@ -628,12 +628,12 @@ const CreateLayoutBaseModal = (props) => {
       case ENTITIES_TYPES.TASK:
         const taskInput = {
           title,
+          tags,
           description: descriptionText,
           orgId: org,
           milestoneId: milestone?.id,
           parentTaskId,
           podId: pod,
-          tags: ['Design', 'Copywriting', 'Data'],
           dueDate,
           ...(rewardsAmount &&
             rewardsCurrency && {
@@ -723,6 +723,7 @@ const CreateLayoutBaseModal = (props) => {
       case ENTITIES_TYPES.MILESTONE:
         const milestoneInput = {
           title,
+          tags,
           description: descriptionText,
           orgId: org,
           podId: pod,

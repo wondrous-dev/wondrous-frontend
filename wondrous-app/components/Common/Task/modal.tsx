@@ -34,7 +34,7 @@ import {
   SubtaskIconLabel,
   RightArrow,
   RightArrowWrapper,
-  Tag
+  Tag,
 } from './styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from '../../../graphql/queries/task';
@@ -47,6 +47,7 @@ import {
 } from '../../../utils/helpers';
 import { RightCaret } from '../Image/RightCaret';
 import CreatePodIcon from '../../Icons/createPod';
+import TagsIcon from '../../Icons/tagsIcon';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
 import {
   BOUNTY_TYPE,
@@ -63,6 +64,7 @@ import {
   TASK_TYPE,
   TASK_STATUS_TODO,
   PAYMENT_STATUS,
+  TAGS,
 } from '../../../utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
@@ -647,7 +649,6 @@ export const TaskViewModal = (props) => {
   const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
   const isSubtask = fetchedTask?.parentTaskId !== null;
   const [approvedSubmission, setApprovedSubmission] = useState(null);
-  const mockTagData = ['Design', 'Copywriting', 'Data'];
 
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
@@ -1370,17 +1371,21 @@ export const TaskViewModal = (props) => {
             </TaskSectionDisplayDiv>
             <TaskSectionDisplayDiv>
               <TaskSectionDisplayLabel>
+                <TagsIcon />
                 <TaskSectionDisplayText>Tags</TaskSectionDisplayText>
               </TaskSectionDisplayLabel>
               <TaskSectionInfoText
-                  style={{
-                    marginTop: '8px',
-                    marginLeft: '16px',
-                  }}
+                as="div"
+                style={{
+                  marginTop: '8px',
+                  marginLeft: '45px',
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                }}
               >
-                {mockTagData.map((tag) => (
-                    <Tag key={tag}>{tag}</Tag>
-                ))}
+                {(fetchedTask?.tags || []).length
+                  ? (fetchedTask?.tags || []).map((tag) => <Tag key={tag}>{tag}</Tag>)
+                  : 'None'}
               </TaskSectionInfoText>
             </TaskSectionDisplayDiv>
             {fetchedTask?.rewards && fetchedTask?.rewards?.length > 0 && (

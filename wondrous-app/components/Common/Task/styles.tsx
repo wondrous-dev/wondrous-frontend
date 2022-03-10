@@ -456,9 +456,14 @@ export const ArchivedTaskUndo = styled.span`
   }
 `;
 
-export const Tag = styled.span`
-  background-color: #707070;
+export const Tag = styled.div`
+  background-color: #353535;
   border-radius: 4px;
-  padding: 4px 12px;
-  margin-right: 8px;
+  padding: 4px 6px;
+  color: white;
+  margin: 5px 0;
+  
+  &:not(:last-child) {
+    margin-right: 10px;
+  }
 `;
