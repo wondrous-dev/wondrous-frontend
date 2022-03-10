@@ -43,11 +43,13 @@ export const MakePaymentBlock = (props) => {
     setShowPaymentModal(true);
   };
   useEffect(() => {
+    console.log('fetchedTask',fetchedTask)
     const show =
       canPay &&
       approvedSubmission &&
       approvedSubmission.paymentStatus !== PAYMENT_STATUS.PROCESSING &&
-      approvedSubmission.paymentStatus !== PAYMENT_STATUS.PAID;
+      approvedSubmission.paymentStatus !== PAYMENT_STATUS.PAID && 
+      fetchedTask && fetchedTask?.rewards.length > 0;
     setShowPaymentButton(show);
   }, [approvedSubmission, canPay]);
   return (
