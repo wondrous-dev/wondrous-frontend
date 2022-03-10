@@ -34,6 +34,10 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
     color: #c4c4c4;
   }
 
+  .MuiAutocomplete-inputRoot {
+    padding: 0 40px;
+  }
+
   .MuiAutocomplete-popper {
     background: #0f0f0f;
   }
@@ -108,7 +112,6 @@ export const StyledChip = styled(Chip)`
 
 export const StyledChipTag = styled(Chip)`
   && {
-    //margin: 3px 5px 3px 0;
     color: #c4c4c4;
     background: #424141;
     border: 0;
@@ -127,4 +130,16 @@ export const StyledChipTag = styled(Chip)`
     color: #ffffff;
     font-weight: bold;
   }
+`;
+
+export const LeftInputAdornment = styled.div`
+  left: 16px;
+  position: absolute;
+  display: flex;
+`;
+
+export const RightInputAdornment = styled.div`
+  right: 16px;
+  position: absolute;
+  display: flex;
 `;

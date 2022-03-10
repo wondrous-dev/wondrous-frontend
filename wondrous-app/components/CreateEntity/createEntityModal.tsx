@@ -79,6 +79,7 @@ import {
   OptionTypography,
   StyledChip,
   StyledAutocompletePopper,
+  CreateFormAddTagsSection,
 } from './styles';
 import SelectDownIcon from '../Icons/selectDownIcon';
 import UploadImageIcon from '../Icons/uploadImage';
@@ -1188,13 +1189,15 @@ const CreateLayoutBaseModal = (props) => {
             </CreateFormAddDetailsInputBlock>
           </CreateFormAddDetailsInputs>
         )}
+      </CreateFormMainSection>
 
+      <CreateFormAddTagsSection>
         <CreateFormMainInputBlock>
           <CreateFormMainBlockTitle>Add tags</CreateFormMainBlockTitle>
 
           <Tags options={TAGS} value={tags} onChange={setTags} limit={4} />
         </CreateFormMainInputBlock>
-      </CreateFormMainSection>
+      </CreateFormAddTagsSection>
 
       {/* {showDeliverableRequirementsSection && (
 				<CreateFormTaskRequirements>

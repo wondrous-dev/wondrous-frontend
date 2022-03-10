@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { InputAdornment, TextField } from '@material-ui/core';
 
-import { StyledAutocomplete, StyledChipTag } from './styles';
+import { RightInputAdornment, StyledAutocomplete, StyledChipTag, LeftInputAdornment } from './styles';
 import { White, Grey700 } from '../../theme/colors';
 import SearchIcon from '../Icons/search';
+import TagsIcon from '../Icons/tagsIcon';
 
 type Props = {
   // Array of options.
@@ -46,26 +47,31 @@ function Tags({ options, onChange, limit, value = [] }: Props) {
       }
       renderInput={(params) => {
         return (
-          <TextField
-            style={{
-              color: White,
-              fontFamily: 'Space Grotesk',
-              fontSize: '14px',
-              paddingLeft: '4px',
-            }}
-            {...params}
-            variant="standard"
-            InputLabelProps={{ shrink: false }}
-            placeholder={value.length !== limit ? `Add tags (max ${limit})` : ''}
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
+          <>
+            <LeftInputAdornment>
+              <TagsIcon />
+            </LeftInputAdornment>
+            <TextField
+              style={{
+                color: White,
+                fontFamily: 'Space Grotesk',
+                fontSize: '14px',
+                paddingLeft: '4px',
+                paddingRight: '0',
+              }}
+              {...params}
+              variant="standard"
+              InputLabelProps={{ shrink: false }}
+              placeholder={value.length !== limit ? `Add tags (max ${limit})` : ''}
+              InputProps={{
+                  ...params.InputProps,
+                  endAdornment: null,
+              }}
+            />
+            <RightInputAdornment>
+              <SearchIcon color="white" />
+            </RightInputAdornment>
+          </>
         );
       }}
     />

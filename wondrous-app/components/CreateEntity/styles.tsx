@@ -679,3 +679,12 @@ export const CreateFormSubmitButton = styled(Button)`
 export const RewardCurrencyTokenIcon = styled(WonderTokenIcon)`
   margin-right: 12px;
 `;
+
+export const CreateFormAddTagsSection = styled.div`
+  position: relative;
+  width: 100%;
+  border-bottom: 1px solid #363636;
+  align-items: center;
+  margin: 0 auto;
+  padding: 30px 40px 10px;
+`;
