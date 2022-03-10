@@ -14,7 +14,7 @@ import {
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
-  PRIVACY_LEVEL,
+  PRIVACY_LEVEL, TAGS,
 } from '../../utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
@@ -81,7 +81,7 @@ import {
   StyledChip,
   CreateFormRewardCurrency,
   CreateFormAddDetailsSwitchLabel,
-  CreateFormAddDetailsLocalizationProvider,
+  CreateFormAddDetailsLocalizationProvider, CreateFormAddTagsSection,
 } from './styles';
 import SelectDownIcon from '../Icons/selectDownIcon';
 import UploadImageIcon from '../Icons/uploadImage';
@@ -134,6 +134,7 @@ import {
   GET_ELIGIBLE_REVIEWERS_FOR_ORG,
   GET_ELIGIBLE_REVIEWERS_FOR_POD,
 } from '../../graphql/queries/task';
+import Tags from "../Tags";
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -326,6 +327,7 @@ const EditLayoutBaseModal = (props) => {
   const [assigneeString, setAssigneeString] = useState(existingTask?.assigneeUsername);
   const [reviewerString, setReviewerString] = useState('');
   const [selectedReviewers, setSelectedReviewers] = useState(filterUserOptions(existingTask?.reviewers));
+  const [tags, setTags] = useState([]);
   const [assignee, setAssignee] = useState(
     existingTask?.assigneeId && {
       value: existingTask?.assigneeId,
@@ -593,6 +595,7 @@ const EditLayoutBaseModal = (props) => {
       case ENTITIES_TYPES.TASK:
         const taskInput = {
           title,
+          tags,
           description: descriptionText,
           orgId: org?.id,
           milestoneId: milestone?.id ?? milestone,
@@ -651,6 +654,7 @@ const EditLayoutBaseModal = (props) => {
             milestoneId: existingTask?.id,
             input: {
               title,
+              tags,
               description: descriptionText,
               privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
               dueDate,
@@ -666,6 +670,7 @@ const EditLayoutBaseModal = (props) => {
       case ENTITIES_TYPES.BOUNTY:
         const bountyInput = {
           title,
+          tags,
           description: descriptionText,
           orgId: org?.id || org,
           milestoneId: milestone?.id,
@@ -1270,6 +1275,15 @@ const EditLayoutBaseModal = (props) => {
           </CreateFormAddDetailsInputs>
         )}
       </CreateFormMainSection>
+
+      <CreateFormAddTagsSection>
+        <CreateFormMainInputBlock>
+          <CreateFormMainBlockTitle>Add tags</CreateFormMainBlockTitle>
+
+          <Tags options={TAGS} value={tags} onChange={setTags} limit={4} />
+        </CreateFormMainInputBlock>
+      </CreateFormAddTagsSection>
+
 
       {/* {showDeliverableRequirementsSection && (
 				<CreateFormTaskRequirements>

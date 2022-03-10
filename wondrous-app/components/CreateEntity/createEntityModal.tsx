@@ -676,6 +676,7 @@ const CreateLayoutBaseModal = (props) => {
       case ENTITIES_TYPES.BOUNTY:
         const bountyInput = {
           title,
+          tags,
           description: descriptionText,
           orgId: org,
           milestoneId: milestone?.id,
