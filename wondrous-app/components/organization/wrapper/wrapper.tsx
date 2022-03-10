@@ -116,11 +116,11 @@ const Wrapper = (props) => {
     ) {
       // Normal contributor with no access to admin settings
       setPermissions(ORG_PERMISSIONS.CONTRIBUTOR);
-    } else if (userPermissionsContext && !(orgProfile?.id in userPermissionsContext?.orgPermissions)) {
+    } else if (orgBoard?.orgId && userPermissionsContext && !(orgProfile?.id in userPermissionsContext?.orgPermissions)) {
       setPermissions(null);
       getExistingJoinRequest({
         variables: {
-          orgId: orgProfile?.id,
+          orgId: orgBoard?.orgId,
         },
       });
     }
@@ -198,7 +198,7 @@ const Wrapper = (props) => {
                     </HeaderFollowButton>
                     {permissions === null && (
                       <>
-                        {joinRequestSent || userJoinRequest ? (
+                        {joinRequestSent || userJoinRequest?.id ? (
                           <HeaderSettingsLockedButton
                             style={{
                               width: 'fit-content',
