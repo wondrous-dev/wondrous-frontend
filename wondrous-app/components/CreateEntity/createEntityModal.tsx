@@ -100,7 +100,6 @@ import {
   MultiMediaUploadButtonText,
   OptionDiv,
   OptionTypography,
-  StyledAutocompletePopper,
   StyledChip,
   TextInputDiv,
   StyledAutocompletePopper,
