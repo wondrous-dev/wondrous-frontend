@@ -26,6 +26,8 @@ import { useOrgBoard, useSelectMembership } from '../../../utils/hooks';
 import { PRIVACY_LEVEL } from '../../../utils/constants';
 import { MembershipRequestTable } from '../../Table/MembershipRequests';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
+import { ListViewIcon } from '../../Icons/ViewIcons/listView';
+import { GridViewIcon } from '../../Icons/ViewIcons/gridView';
 
 type Props = {
   filterSchema: any;
@@ -69,6 +71,7 @@ const Boards = (props: Props) => {
   const listViewOptions = [
     {
       name: 'List',
+      icon: <ListViewIcon />,
       active: view === ViewType.List,
       action: () => {
         router.replace(`${delQuery(router.asPath)}?view=${ViewType.List}`);
@@ -76,6 +79,7 @@ const Boards = (props: Props) => {
     },
     {
       name: 'Grid',
+      icon: <GridViewIcon />,
       active: view === ViewType.Grid,
       action: () => {
         router.replace(`${delQuery(router.asPath)}?view=${ViewType.Grid}`);

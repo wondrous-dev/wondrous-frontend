@@ -42,6 +42,8 @@ import { Proposal } from '../../Icons';
 import { BountyIcon, MilestoneIcon, TaskIcon, UserIcon } from '../../Icons/Search/types';
 import { Chevron } from '../../Icons/sections';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
+import { GridViewIcon } from '../../Icons/ViewIcons/gridView';
+import { ListViewIcon } from '../../Icons/ViewIcons/listView';
 
 enum ViewType {
   List = 'list',
@@ -204,6 +206,7 @@ const Boards = (props: Props) => {
   const listViewOptions = [
     {
       name: 'List',
+      icon: <ListViewIcon />,
       active: view === ViewType.List,
       action: () => {
         router.replace(`${delQuery(router.asPath)}?view=${ViewType.List}`);
@@ -211,6 +214,7 @@ const Boards = (props: Props) => {
     },
     {
       name: 'Grid',
+      icon: <GridViewIcon />,
       active: view === ViewType.Grid,
       action: () => {
         router.replace(`${delQuery(router.asPath)}?view=${ViewType.Grid}`);
