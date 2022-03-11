@@ -39,7 +39,7 @@ import { CircularProgress } from '@material-ui/core';
 
 const EmailVerify = () => {
   const router = useRouter();
-  const { token } = router.query;
+  const { token, userid } = router.query; // it's userid here instead of userId since it'f from the redirect
   const [loading, setLoading] = useState(true);
   const [verifyEmail, { data }] = useMutation(CONFIRM_EMAIL_ADDRESS);
   const emailAddressConfirm = data?.confirmEmailAddress?.success;
@@ -51,10 +51,13 @@ const EmailVerify = () => {
         },
       });
     }
+  }, [token, verifyEmail, loading]);
+
+  useEffect(() => {
     if (emailAddressConfirm) {
       setLoading(false);
     }
-  }, [token, verifyEmail, emailAddressConfirm, data]);
+  }, [emailAddressConfirm]);
 
   return (
     <ProfileWrapper>
