@@ -1,15 +1,17 @@
+const CompressionPlugin = require('compression-webpack-plugin');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
 
 module.exports = withBundleAnalyzer({
-  compress: true,
   reactStrictMode: true,
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
       use: ['@svgr/webpack'],
     });
+
+    config.plugins.push(new CompressionPlugin());
 
     return config;
   },
