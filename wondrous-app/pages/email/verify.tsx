@@ -65,7 +65,15 @@ const EmailVerify = () => {
         ) : (
           <>
             <JoinWaitlistHeader variant="h3">Thanks for confirming your email!</JoinWaitlistHeader>
-            <CreateFormPreviewButton>Take me home</CreateFormPreviewButton>
+            <CreateFormPreviewButton
+              onClick={() => {
+                router.push('/dashboard', undefined, {
+                  shallow: true,
+                });
+              }}
+            >
+              Take me home
+            </CreateFormPreviewButton>
           </>
         )}
       </ProfileCenteredDiv>
