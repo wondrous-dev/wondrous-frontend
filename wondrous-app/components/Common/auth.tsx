@@ -11,12 +11,12 @@ export const Card = styled(BaseCard)`
 	max-width: 578px;
 	position: relative;
 	font-size: 16px;
+    z-index: 13;
 `
 
 export const CardBody = styled.div`
 	display: flex;
 	flex-direction: column;
-	align-items: flext-start;
 	flex-grow: 1;
 `
 

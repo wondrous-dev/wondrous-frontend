@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import Image from 'next/image';
+
 import { SIDEBAR_WIDTH } from '../../../utils/constants';
 import { SideBarContext } from '../../../utils/contexts';
 import { toggleHtmlOverflow } from '../../../utils/helpers';
@@ -33,7 +35,9 @@ const Wrapper = (props) => {
             paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
           }}
         >
-          <Banner />
+          <Banner>
+            <Image alt="Dashboard" src="/images/dashboard-banner.png" layout="fill" objectFit="cover" quality={80} />
+          </Banner>
           <Content>
             <ContentContainer>{children}</ContentContainer>
           </Content>
