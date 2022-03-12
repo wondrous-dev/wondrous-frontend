@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function AnchorElTooltips() {
+export default function AnchorElTooltips({ text = ''}) {
   const classes = useStyles();
 
   const positionRef = React.useRef({
@@ -31,7 +31,7 @@ const areaRef = React.useRef(null);
           </Text>
           <HLine />
           <Text align='center'>
-            Add a subtask to break up work into smaller parts.
+            {text}
           </Text>
         </Content>}
         placement="bottom"

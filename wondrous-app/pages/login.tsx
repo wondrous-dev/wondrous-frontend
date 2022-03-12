@@ -188,7 +188,7 @@ const Login = ({ csrfToken }) => {
           </CardFooter> */}
         </Card>
       </LoginWrapper>
-      <Popover />
+      <Popover text='Add a subtask to break up work into smaller parts.'/>
     </AuthLayout>
   );
 };
