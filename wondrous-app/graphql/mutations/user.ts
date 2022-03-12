@@ -50,8 +50,8 @@ export const UPDATE_USER = gql`
 `;
 
 export const CONFIRM_EMAIL_ADDRESS = gql`
-  mutation confirmEmailAddress($token: String!) {
-    confirmEmailAddress(token: $token) {
+  mutation confirmEmailAddress($userId: ID, $token: String!) {
+    confirmEmailAddress(userId: $userId, token: $token) {
       success
     }
   }
