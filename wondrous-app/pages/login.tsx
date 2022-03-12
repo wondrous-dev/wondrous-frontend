@@ -17,6 +17,7 @@ import { useWonderWeb3 } from '../services/web3';
 import { emailSignin, getUserSigningMessage, walletSignin } from '../components/Auth/withAuth';
 import { ErrorText } from '../components/Common';
 import { CircularProgress } from '@material-ui/core';
+import Popover from '../components/Common/Popover';
 
 const prod = process.env.NEXT_PUBLIC_PRODUCTION;
 
@@ -187,6 +188,7 @@ const Login = ({ csrfToken }) => {
           </CardFooter> */}
         </Card>
       </LoginWrapper>
+      <Popover />
     </AuthLayout>
   );
 };
