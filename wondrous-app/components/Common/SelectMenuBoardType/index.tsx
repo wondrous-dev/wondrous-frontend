@@ -1,7 +1,16 @@
 import { NextRouter } from 'next/router';
 import { useState } from 'react';
 import { PRIVACY_LEVEL } from '../../../utils/constants';
-import { SelectMenuBoardTypeItem, SelectMenuBoardTypeWrapper } from './styles';
+import {
+  SelectMenuBoardTypeClickAway,
+  SelectMenuBoardTypeDiv,
+  SelectMenuBoardTypeIcon,
+  SelectMenuBoardTypeItem,
+  SelectMenuBoardTypePopper,
+  SelectMenuBoardTypePopperMenu,
+  SelectMenuBoardTypeText,
+  SelectMenuBoardTypeWrapper,
+} from './styles';
 
 interface ISelectMenuBoardType {
   router: NextRouter;
@@ -10,10 +19,13 @@ interface ISelectMenuBoardType {
 
 const SelectMenuBoardType = (props: ISelectMenuBoardType) => {
   const { router, view } = props;
-  const [open, setOpen] = useState(false);
-  const handleOnClick = () => setOpen(!open);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleOnClickButton = (e) => setAnchorEl(anchorEl ? null : e.currentTarget);
+  const handleOnClickAway = () => setAnchorEl(null);
   const handleOnChange = (e) => {
-    const boardType = e.target.value;
+    setAnchorEl(null);
+    const boardType = e.target.getAttribute('value');
     const pathQuery = router?.query?.username ? { username: router.query.username } : { podId: router.query.podId };
     router.replace(
       {
@@ -28,25 +40,30 @@ const SelectMenuBoardType = (props: ISelectMenuBoardType) => {
       { shallow: true }
     );
   };
-  const itemValue = [
-    { value: 'all', label: 'See All' },
-    { value: PRIVACY_LEVEL.public, label: 'Public' },
-    { value: PRIVACY_LEVEL.private, label: 'Private' },
-  ];
+  const menuItems = {
+    all: 'See All',
+    [PRIVACY_LEVEL.public]: 'Public',
+    [PRIVACY_LEVEL.private]: 'Private',
+  };
+  const boardType = menuItems[router?.query?.boardType ?? 'all'];
   return (
-    <SelectMenuBoardTypeWrapper
-      value={router?.query?.boardType}
-      open={open}
-      onClick={handleOnClick}
-      onChange={handleOnChange}
-      defaultValue={'all'}
-    >
-      {itemValue.map((item) => (
-        <SelectMenuBoardTypeItem value={item.value} key={item}>
-          {item.label}
-        </SelectMenuBoardTypeItem>
-      ))}
-    </SelectMenuBoardTypeWrapper>
+    <SelectMenuBoardTypeClickAway onClickAway={handleOnClickAway}>
+      <SelectMenuBoardTypeWrapper>
+        <SelectMenuBoardTypeDiv open={open} onClick={handleOnClickButton}>
+          <SelectMenuBoardTypeText open={open}>{boardType}</SelectMenuBoardTypeText>
+          <SelectMenuBoardTypeIcon open={open} />
+        </SelectMenuBoardTypeDiv>
+        <SelectMenuBoardTypePopper open={open} anchorEl={anchorEl}>
+          <SelectMenuBoardTypePopperMenu>
+            {Object.keys(menuItems).map((item) => (
+              <SelectMenuBoardTypeItem onClick={handleOnChange} value={item} key={'menu-item-' + item}>
+                {menuItems[item]}
+              </SelectMenuBoardTypeItem>
+            ))}
+          </SelectMenuBoardTypePopperMenu>
+        </SelectMenuBoardTypePopper>
+      </SelectMenuBoardTypeWrapper>
+    </SelectMenuBoardTypeClickAway>
   );
 };
 
