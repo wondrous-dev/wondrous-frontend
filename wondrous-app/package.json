@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "NODE_OPTIONS=\"--max_old_space_size=4096\" next dev",
     "build": "next build",
-    "start": "NODE_ENV=\"production\" next start",
+    "start": "next start",
     "lint": "next lint",
     "lint:write": "next lint --cache --fix",
     "format": "prettier --write './**/*.{ts,tsx}'",
