@@ -1,5 +1,6 @@
 import { Button, IconButton, Typography } from '@material-ui/core';
 import styled from 'styled-components';
+
 import { Background } from '../../../theme/colors';
 import { Button as ButtonComponent } from '../../Common/button';
 import { BaseCard } from '../../Common/card';
@@ -19,10 +20,8 @@ export const OverviewComponent = styled.section`
 export const HeaderImage = styled.div`
   width: 100%;
   height: 220px;
-  background-image: url('/images/overview/background.png');
-  //background-repeat: no-repeat;
-  background-position: center;
   margin-top: 70px;
+  position: relative;
 `;
 
 export const TokenHeader = styled.div`

@@ -1,5 +1,7 @@
 import router from 'next/router';
+import Image from 'next/image';
 import React, { useState } from 'react';
+
 import { SIDEBAR_WIDTH } from '../../../utils/constants';
 import { SideBarContext } from '../../../utils/contexts';
 import { formatLinkDisplay } from '../../../utils/links';
@@ -67,7 +69,15 @@ const Wrapper = (props) => {
             paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
           }}
         >
-          <HeaderImage />
+          <HeaderImage>
+            <Image
+              alt="Background"
+              src="/images/overview/background.png"
+              layout="fill"
+              objectFit="cover"
+              quality={80}
+            />
+          </HeaderImage>
           <Content>
             <ContentContainer>
               <TokenHeader>

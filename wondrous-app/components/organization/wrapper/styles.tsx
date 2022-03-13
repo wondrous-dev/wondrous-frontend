@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, Typography, IconButton } from '@material-ui/core';
+
 import { Background, Black } from '../../../theme/colors';
 import { LogoCircle } from '../../Common/ci';
 import { LinkIcon } from '../../Icons/linkIcon';
@@ -20,10 +21,8 @@ export const OverviewComponent = styled.section`
 export const HeaderImage = styled.div`
   width: 100%;
   height: 220px;
-  background-image: url('/images/overview/background.png');
-  //background-repeat: no-repeat;
-  background-position: center;
   margin-top: 70px;
+  position: relative;
 `;
 
 export const TokenHeader = styled.div`

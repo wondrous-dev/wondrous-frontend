@@ -1,11 +1,9 @@
-import Header from '../Header'
-import SideBarComponent from '../SideBar'
-import {
-  Content,
-  ContentContainer,
-  HeaderImage,
-  OverviewComponent,
-} from './styles'
+import Image from 'next/image';
+import React from 'react';
+
+import Header from '../Header';
+import SideBarComponent from '../SideBar';
+import { Content, ContentContainer, HeaderImage, OverviewComponent } from './styles';
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -23,7 +21,7 @@ const SIDEBAR_LIST_ITEMS = [
     icon: '/images/sidebar/third.png',
     path: '/',
   },
-]
+];
 
 const tabsLinks = [
   {
@@ -38,23 +36,25 @@ const tabsLinks = [
     href: '/profile/about',
     label: 'About',
   },
-]
+];
 
 const Wrapper = (props) => {
-  const { data, children } = props
+  const { data, children } = props;
 
   return (
     <>
       <Header />
       <SideBarComponent />
       <OverviewComponent>
-        <HeaderImage />
+        <HeaderImage>
+          <Image alt="Background" src="/images/overview/background.png" layout="fill" objectFit="cover" quality={80} />
+        </HeaderImage>
         <Content>
           <ContentContainer>{children}</ContentContainer>
         </Content>
       </OverviewComponent>
     </>
-  )
-}
+  );
+};
 
-export default Wrapper
+export default Wrapper;

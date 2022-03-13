@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { PERMISSIONS, SIDEBAR_WIDTH } from '../../../utils/constants';
 import { SideBarContext } from '../../../utils/contexts';
+import Image from 'next/image';
 
 import Header from '../../Header';
 import SideBarComponent from '../../SideBar';
@@ -168,7 +169,15 @@ const Wrapper = (props) => {
             paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
           }}
         >
-          <HeaderImage />
+          <HeaderImage>
+            <Image
+              alt="Background"
+              src="/images/overview/background.png"
+              layout="fill"
+              objectFit="cover"
+              quality={80}
+            />
+          </HeaderImage>
           <Content>
             <ContentContainer>
               <TokenHeader>
