@@ -28,8 +28,6 @@ export const FilterHandle = styled.div`
   height: 40px;
   padding: 1px;
 
-  margin: 0 0 0 23px;
-
   ${(props) =>
     props.open ? `background: ${Grey75};` : `background: linear-gradient(180deg, ${Black80} 0%, ${Black95} 70%);`}
 
@@ -273,8 +271,8 @@ export const InlineText = styled.span`
 `;
 
 export const FilterValues = styled.span`
-	text-overflow: ellipsis;
-	max-width: 260px;
-	white-space: nowrap;
-	overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
 `;
