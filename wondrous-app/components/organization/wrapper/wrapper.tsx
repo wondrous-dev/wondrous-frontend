@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { PERMISSIONS, SIDEBAR_WIDTH } from '../../../utils/constants';
+import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from '../../../utils/constants';
 import { SideBarContext } from '../../../utils/contexts';
 
 import Header from '../../Header';
@@ -37,6 +37,7 @@ import {
   HeaderInviteButton,
   PlusIconWrapper,
   TokenEmptyLogo,
+  HeaderTitleIcon,
 } from './styles';
 import { useOrgBoard } from '../../../utils/hooks';
 import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
@@ -61,6 +62,7 @@ import OpenSeaIcon from '../../Icons/openSea';
 import LinkBigIcon from '../../Icons/link';
 import { DiscordIcon } from '../../Icons/discord';
 import { MembershipRequestModal } from './RequestModal';
+import { PrivateBoardIcon } from '../../Common/PrivateBoardIcon';
 
 const MOCK_ORGANIZATION_DATA = {
   amount: 1234567,
@@ -190,7 +192,13 @@ const Wrapper = (props) => {
                   </TokenEmptyLogo>
                 )}
                 <HeaderMainBlock>
-                  <HeaderTitle>{orgProfile?.name}</HeaderTitle>
+                  <HeaderTitleIcon>
+                    <HeaderTitle>{orgProfile?.name}</HeaderTitle>
+                    <PrivateBoardIcon
+                      isPrivate={orgData?.privacyLevel === PRIVACY_LEVEL.private}
+                      tooltipTitle={'Private Org'}
+                    />
+                  </HeaderTitleIcon>
                   <HeaderButtons>
                     <HeaderFollowButton
                       style={{
