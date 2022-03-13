@@ -41,7 +41,7 @@ import { getFilenameAndType, uploadMedia } from '../../utils/media';
 import { SafeImage } from '../Common/Image';
 import { GET_POD_BY_ID } from '../../graphql/queries/pod';
 import { UPDATE_POD } from '../../graphql/mutations/pod';
-import { CreateFormAddDetailsInputLabel, CreateFormAddDetailsSwitch } from '../CreateEntity/styles';
+import { CreateFormAddDetailsInputLabel, CreateFormAddDetailsTab } from '../CreateEntity/styles';
 import { AndroidSwitch } from '../CreateEntity/createEntityModal';
 import { filteredColorOptions, POD_COLOR, PRIVACY_LEVEL } from '../../utils/constants';
 import ColorSettings from './ColorDropdown';
@@ -270,14 +270,14 @@ const GeneralSettingsComponent = (props) => {
               marginTop: '32px',
             }}
           >
-            <CreateFormAddDetailsSwitch>
+            <CreateFormAddDetailsTab>
               <CreateFormAddDetailsInputLabel>Visibility</CreateFormAddDetailsInputLabel>
               <TabsVisibility
                 options={tabsVisibilityOptions}
                 selected={tabsVisibilitySelected}
                 onChange={tabsVisibilityHandleOnChange}
               />
-            </CreateFormAddDetailsSwitch>
+            </CreateFormAddDetailsTab>
           </div>
         )}
 

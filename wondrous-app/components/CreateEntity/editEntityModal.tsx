@@ -41,7 +41,7 @@ import {
   CreateFormAddDetailsInputs,
   CreateFormAddDetailsSection,
   CreateFormAddDetailsSelects,
-  CreateFormAddDetailsSwitch,
+  CreateFormAddDetailsTab,
   CreateFormBaseModal,
   CreateFormBaseModalCloseBtn,
   CreateFormBaseModalHeader,
@@ -80,7 +80,7 @@ import {
   OptionTypography,
   StyledChip,
   CreateFormRewardCurrency,
-  CreateFormAddDetailsSwitchLabel,
+  CreateFormAddDetailsTabLabel,
   CreateFormAddDetailsLocalizationProvider,
 } from './styles';
 import SelectDownIcon from '../Icons/selectDownIcon';
@@ -1325,20 +1325,20 @@ const EditLayoutBaseModal = (props) => {
                       <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
                     </LocalizationProvider>
                   </CreateFormAddDetailsLocalizationProvider>
-                  <CreateFormAddDetailsSwitch
+                  <CreateFormAddDetailsTab
                     style={{
                       width: '100%',
                       marginLeft: '20px',
                     }}
                   >
-                    <CreateFormAddDetailsSwitchLabel>Show task as public</CreateFormAddDetailsSwitchLabel>
+                    <CreateFormAddDetailsTabLabel>Show task as public</CreateFormAddDetailsTabLabel>
                     <AndroidSwitch
                       checked={publicTask}
                       onChange={(e) => {
                         setPublicTask(e.target.checked);
                       }}
                     />
-                  </CreateFormAddDetailsSwitch>
+                  </CreateFormAddDetailsTab>
                 </CreateFormAddDetailsSelects>
 
                 {/* <CreateFormAddDetailsSelects> */}

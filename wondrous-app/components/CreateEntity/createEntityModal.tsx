@@ -46,6 +46,7 @@ import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
 import { SafeImage } from '../Common/Image';
 import InputForm from '../Common/InputForm/inputForm';
+import { TabsVisibility } from '../Common/TabsVisibility';
 import { AddFileUpload } from '../Icons/addFileUpload';
 import CircleIcon from '../Icons/circleIcon';
 import CloseModalIcon from '../Icons/closeModal';
@@ -71,8 +72,8 @@ import {
   CreateFormAddDetailsLocalizationProvider,
   CreateFormAddDetailsSection,
   CreateFormAddDetailsSelects,
-  CreateFormAddDetailsSwitch,
-  CreateFormAddDetailsSwitchLabel,
+  CreateFormAddDetailsTab,
+  CreateFormAddDetailsTabLabel,
   CreateFormBaseModal,
   CreateFormBaseModalCloseBtn,
   CreateFormBaseModalHeader,
@@ -92,6 +93,7 @@ import {
   CreateFormMembersSection,
   CreateFormPreviewButton,
   CreateFormRewardCurrency,
+  CreateFormSetPodPrivacy,
   CreateRewardAmountDiv,
   MediaUploadDiv,
   MultiMediaUploadButton,
@@ -789,6 +791,15 @@ const CreateLayoutBaseModal = (props) => {
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
 
+  const tabsVisibilityOptions = {
+    [PRIVACY_LEVEL.public]: 'Public',
+    [PRIVACY_LEVEL.private]: isPod ? 'Pod Members Only' : 'DAO Members Only',
+  };
+  const tabsVisibilitySelected = isPrivate
+    ? tabsVisibilityOptions[PRIVACY_LEVEL.private]
+    : tabsVisibilityOptions[PRIVACY_LEVEL.public];
+  const tabsVisibilityHandleOnChange = (e) => setIsPrivate(e.target.getAttribute('value') === PRIVACY_LEVEL.private);
+
   return (
     <CreateFormBaseModal isPod={isPod}>
       <CreateFormBaseModalCloseBtn onClick={handleClose}>
@@ -1296,6 +1307,7 @@ const CreateLayoutBaseModal = (props) => {
         </CreateFormAddDetailsButton> */}
         {addDetails && (
           <CreateFormAddDetailsAppearBlock>
+            {/* showDueDateSection */}
             {showDueDateSection && (
               <CreateFormAddDetailsAppearBlockContainer>
                 <CreateFormAddDetailsSelects>
@@ -1304,20 +1316,17 @@ const CreateLayoutBaseModal = (props) => {
                       <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
                     </LocalizationProvider>
                   </CreateFormAddDetailsLocalizationProvider>
-                  <CreateFormAddDetailsSwitch
-                    style={{
-                      width: '100%',
-                      marginLeft: '20px',
-                    }}
-                  >
-                    <CreateFormAddDetailsSwitchLabel>Show task as public</CreateFormAddDetailsSwitchLabel>
-                    <AndroidSwitch
-                      checked={publicTask}
-                      onChange={(e) => {
-                        setPublicTask(e.target.checked);
-                      }}
+                  <CreateFormAddDetailsTab>
+                    <CreateFormAddDetailsInputLabel>
+                      Who can see this {titleText.toLowerCase()}?
+                    </CreateFormAddDetailsInputLabel>
+                    <TabsVisibility
+                      options={tabsVisibilityOptions}
+                      selected={tabsVisibilitySelected}
+                      onChange={tabsVisibilityHandleOnChange}
+                      variant
                     />
-                  </CreateFormAddDetailsSwitch>
+                  </CreateFormAddDetailsTab>
                 </CreateFormAddDetailsSelects>
 
                 {/* <CreateFormAddDetailsSelects> */}
@@ -1356,36 +1365,35 @@ const CreateLayoutBaseModal = (props) => {
               </CreateFormAddDetailsAppearBlockContainer>
             )}
 
-            {showLinkAttachmentSection && (
-              <CreateFormLinkAttachmentBlock
-                style={{
-                  borderBottom: 'none',
-                  paddingTop: '16px',
-                }}
-              >
-                <CreateFormLinkAttachmentLabel>Link</CreateFormLinkAttachmentLabel>
-                <InputForm
-                  value={link}
-                  onChange={(e) => setLink(e.target.value)}
-                  margin
-                  placeholder="Enter link URL"
-                  search={false}
-                />
-              </CreateFormLinkAttachmentBlock>
-            )}
-            {isPod && (
-              <div>
-                <CreateFormAddDetailsSwitch>
-                  <CreateFormAddDetailsInputLabel>Private {titleText.toLowerCase()}</CreateFormAddDetailsInputLabel>
-                  <AndroidSwitch
-                    checked={isPrivate}
-                    onChange={(e) => {
-                      setIsPrivate(e.target.checked);
-                    }}
+            <CreateFormAddDetailsAppearBlockContainer>
+              {showLinkAttachmentSection && (
+                <CreateFormLinkAttachmentBlock
+                  style={{
+                    borderBottom: 'none',
+                  }}
+                >
+                  <CreateFormLinkAttachmentLabel>Link</CreateFormLinkAttachmentLabel>
+                  <InputForm
+                    value={link}
+                    onChange={(e) => setLink(e.target.value)}
+                    margin
+                    placeholder="Enter link URL"
+                    search={false}
                   />
-                </CreateFormAddDetailsSwitch>
-              </div>
-            )}
+                </CreateFormLinkAttachmentBlock>
+              )}
+              {isPod && (
+                <CreateFormSetPodPrivacy>
+                  <CreateFormAddDetailsInputLabel>Who can see this pod?</CreateFormAddDetailsInputLabel>
+                  <TabsVisibility
+                    options={tabsVisibilityOptions}
+                    selected={tabsVisibilitySelected}
+                    onChange={tabsVisibilityHandleOnChange}
+                    variant
+                  />
+                </CreateFormSetPodPrivacy>
+              )}
+            </CreateFormAddDetailsAppearBlockContainer>
           </CreateFormAddDetailsAppearBlock>
         )}
       </CreateFormAddDetailsSection>
