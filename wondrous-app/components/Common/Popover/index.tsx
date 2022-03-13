@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function AnchorElTooltips({ text = ''}) {
+export default function AnchorElTooltips({ content = '', headText = '', separator = false, key1 = '', key2 = ''}) {
   const classes = useStyles();
 
   const positionRef = React.useRef({
@@ -26,12 +26,12 @@ const areaRef = React.useRef(null);
       <Tooltip
         classes={{arrow: classes.arrow}}
         title={<Content>
+          {headText && <Text align='center'>
+            <Bold>{headText}</Bold> {key1 && <Span>{key1}</Span>}{key2 && <Span>{key2}</Span>}
+          </Text>}
+          {separator && <HLine />}
           <Text align='center'>
-            <Bold>Add subtask</Bold> <Span>Tab</Span><Span>S</Span>
-          </Text>
-          <HLine />
-          <Text align='center'>
-            {text}
+            {content}
           </Text>
         </Content>}
         placement="bottom"
