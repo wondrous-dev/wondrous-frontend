@@ -46,6 +46,7 @@ import { AndroidSwitch } from '../CreateEntity/createEntityModal';
 import { filteredColorOptions, POD_COLOR, PRIVACY_LEVEL } from '../../utils/constants';
 import ColorSettings from './ColorDropdown';
 import { White, HighlightBlue } from '../../theme/colors';
+import { TabsVisibility } from '../Common/TabsVisibility';
 
 const LIMIT = 200;
 
@@ -112,6 +113,11 @@ const GeneralSettingsComponent = (props) => {
     }
   });
   const isPod = typeText === 'Pod';
+  const tabsVisibilityOptions = { [PRIVACY_LEVEL.public]: 'Public', [PRIVACY_LEVEL.private]: 'Pod Members Only' };
+  const tabsVisibilitySelected = isPrivate
+    ? tabsVisibilityOptions[PRIVACY_LEVEL.private]
+    : tabsVisibilityOptions[PRIVACY_LEVEL.public];
+  const tabsVisibilityHandleOnChange = (e) => setIsPrivate(e.target.getAttribute('value') === PRIVACY_LEVEL.private);
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
@@ -265,12 +271,11 @@ const GeneralSettingsComponent = (props) => {
             }}
           >
             <CreateFormAddDetailsSwitch>
-              <CreateFormAddDetailsInputLabel>Private Pod</CreateFormAddDetailsInputLabel>
-              <AndroidSwitch
-                checked={isPrivate}
-                onChange={(e) => {
-                  setIsPrivate(e.target.checked);
-                }}
+              <CreateFormAddDetailsInputLabel>Visibility</CreateFormAddDetailsInputLabel>
+              <TabsVisibility
+                options={tabsVisibilityOptions}
+                selected={tabsVisibilitySelected}
+                onChange={tabsVisibilityHandleOnChange}
               />
             </CreateFormAddDetailsSwitch>
           </div>
