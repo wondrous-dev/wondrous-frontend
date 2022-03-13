@@ -15,10 +15,16 @@ import { Metamask } from '../components/Icons/metamask';
 import { EmailIcon, LockIcon } from '../components/Icons/userpass';
 import { useWonderWeb3 } from '../services/web3';
 import { emailSignin, getUserSigningMessage, walletSignin } from '../components/Auth/withAuth';
-import { ErrorText } from '../components/Common';
-import { CircularProgress } from '@material-ui/core';
+import MetaMaskConnector from '@components/WalletConnectors/MetaMask';
+import signedMessageIsString from '@services/web3/utils/signedMessageIsString';
+import WalletConnectConnector from '@components/WalletConnectors/WallectConnect';
+import styled from 'styled-components';
 
 const prod = process.env.NEXT_PUBLIC_PRODUCTION;
+
+const WalletLoginContainer = styled.div`
+  padding: 10px 0;
+`;
 
 const Login = ({ csrfToken }) => {
   const wonderWeb3 = useWonderWeb3();
@@ -42,15 +48,6 @@ const Login = ({ csrfToken }) => {
     }
   };
 
-  const connectWallet = async (event) => {
-    if (wonderWeb3.address) {
-      loginWithWallet();
-    } else {
-      // Connect Wallet first
-      await wonderWeb3.onConnect();
-    }
-  };
-
   // This happens async, so we bind it to the
   // state of the component.
   const loginWithWallet = async () => {
@@ -60,7 +57,7 @@ const Login = ({ csrfToken }) => {
 
       if (messageToSign) {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
-        if (signedMessage) {
+        if (signedMessageIsString(signedMessage)) {
           // Sign with Wallet
           setLoading(true);
           try {
@@ -83,7 +80,7 @@ const Login = ({ csrfToken }) => {
           }
           setLoading(false);
         } else {
-          setErrorMessage('You need to sign the message on your Metamask');
+          setErrorMessage('You need to sign the message on your wallet');
         }
       } else {
         setErrorMessage('Login failed - try again.');
@@ -147,30 +144,12 @@ const Login = ({ csrfToken }) => {
                 </LineWithText>
               </>
             )}
-            <div
-              style={{
-                marginTop: '48px',
-              }}
-            >
-              {wonderWeb3.connecting ? (
-                <Button disabled className="disabled">
-                  <Metamask height="18" width="17" />
-                  <PaddedParagraph padding="0 10px">Log in with MetaMask</PaddedParagraph>
-                </Button>
-              ) : (
-                <Button onClick={connectWallet}>
-                  {loading ? (
-                    <CircularProgress />
-                  ) : (
-                    <>
-                      <Metamask height="18" width="17" />
-                      <PaddedParagraph padding="0 10px">Log in with MetaMask</PaddedParagraph>
-                    </>
-                  )}
-                </Button>
-              )}
-              {notSupported && <ErrorText> unsupported chain</ErrorText>}
-            </div>
+            <WalletLoginContainer>
+              <MetaMaskConnector />
+            </WalletLoginContainer>
+            <WalletLoginContainer>
+              <WalletConnectConnector />
+            </WalletLoginContainer>
           </CardBody>
           {/* <CardFooter>
             <Line size="80%" />

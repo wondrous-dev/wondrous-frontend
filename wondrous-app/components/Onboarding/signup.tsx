@@ -20,6 +20,9 @@ import { Metamask } from '../Icons/metamask';
 import { SafeImage } from '../Common/Image';
 import { ErrorText } from '../Common';
 import { SupportedChainType } from '../../utils/web3Constants';
+import signedMessageIsString from '@services/web3/utils/signedMessageIsString';
+import MetaMaskConnector from '@components/WalletConnectors/MetaMask';
+import WalletConnectConnector from '@components/WalletConnectors/WallectConnect';
 
 export const Logo = () => {
   return (
@@ -62,7 +65,7 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink, podInfo, redeem
       const messageToSign = messageToSignObject?.signingMessage;
       if (messageToSign) {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
-        if (signedMessage) {
+        if (signedMessageIsString(signedMessage)) {
           // Sign with Wallet
           let user;
           try {
@@ -163,6 +166,7 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink, podInfo, redeem
           }
         } else if (signedMessage === false) {
           setErrorMessage('Signature rejected. Try again.');
+          wonderWeb3.disconnect();
         } else {
           setErrorMessage('There has been an issue, contact with support.');
         }
@@ -172,11 +176,11 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink, podInfo, redeem
     }
   };
   useEffect(() => {
-    if (wonderWeb3.address) {
+    if (wonderWeb3.address && wonderWeb3.active && wonderWeb3.web3Provider) {
       signupWithWallet();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wonderWeb3.wallet]);
+  }, [wonderWeb3.wallet, wonderWeb3.active, wonderWeb3.web3Provider]);
 
   useEffect(() => {
     if (wonderWeb3.wallet.chain) {
@@ -216,22 +220,9 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink, podInfo, redeem
       >
         {contributingSentence}
       </InviteWelcomeBoxParagraph>
-      {wonderWeb3.connecting ? (
-        <MetamaskButton style={buttonStyle} disabled className="disabled">
-          <Metamask height="18" width="17" />
-          <PaddedParagraph padding="0 10px">Connect with MetaMask</PaddedParagraph>
-        </MetamaskButton>
-      ) : unsuportedChain ? (
-        <MetamaskButton style={buttonStyle} disabled>
-          <Metamask height="18" width="17" />
-          <PaddedParagraph padding="0 10px">Change the Network to Mainnet or Polygon</PaddedParagraph>
-        </MetamaskButton>
-      ) : (
-        <MetamaskButton style={buttonStyle} onClick={connectWallet}>
-          <Metamask height="18" width="17" />
-          <PaddedParagraph padding="0 10px">Connect with MetaMask</PaddedParagraph>
-        </MetamaskButton>
-      )}
+      <MetaMaskConnector text="Connect with MetaMask" />
+      <WalletConnectConnector text="Connect with WalletConnect" />
+
       {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
       {!wonderWeb3.chain && noChainError && <ErrorText>{noChainError}</ErrorText>}
     </InviteWelcomeBoxWrapper>

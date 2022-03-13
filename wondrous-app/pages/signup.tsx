@@ -16,6 +16,9 @@ import { EmailIcon, LockIcon } from '../components/Icons/userpass';
 import { useWonderWeb3 } from '../services/web3';
 import { emailSignup, getUserSigningMessage, walletSignup } from '../components/Auth/withAuth';
 import { SupportedChainType } from '../utils/web3Constants';
+import MetaMaskConnector from '@components/WalletConnectors/MetaMask';
+import signedMessageIsString from '@services/web3/utils/signedMessageIsString';
+import WalletConnectConnector from '@components/WalletConnectors/WallectConnect';
 
 const Signup = () => {
   const wonderWeb3 = useWonderWeb3();
@@ -23,8 +26,6 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [repassword, setRePassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
-  const [unsuportedChain, setUnsuportedChain] = useState(false);
 
   const router = useRouter();
 
@@ -46,13 +47,6 @@ const Signup = () => {
     }
   };
 
-  // Two stage process as wallet connection takes
-  // time.
-  const connectWallet = async (event) => {
-    // Connect Wallet first
-    await wonderWeb3.onConnect();
-  };
-
   const signupWithWallet = async () => {
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
       // Retrieve Signed Message
@@ -61,7 +55,7 @@ const Signup = () => {
       if (messageToSign) {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
 
-        if (signedMessage) {
+        if (signedMessageIsString(signedMessage)) {
           // Sign with Wallet
           const result = await walletSignup(wonderWeb3.address, signedMessage, wonderWeb3.chainName.toLowerCase());
           if (result === true) {
@@ -73,6 +67,7 @@ const Signup = () => {
           }
         } else if (signedMessage === false) {
           setErrorMessage('Signature rejected. Try again.');
+          wonderWeb3.disconnect();
         } else {
           setErrorMessage('There has been an issue, contact with support.');
         }
@@ -83,11 +78,11 @@ const Signup = () => {
   };
 
   useEffect(() => {
-    if (wonderWeb3.address) {
+    if (wonderWeb3.address && wonderWeb3.active && wonderWeb3.web3Provider) {
       signupWithWallet();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wonderWeb3.wallet]);
+  }, [wonderWeb3.wallet, wonderWeb3.active, wonderWeb3.web3Provider]);
 
   return (
     <AuthLayout>
@@ -140,21 +135,8 @@ const Signup = () => {
               </>
             )}
 
-            {wonderWeb3.connecting ? (
-              <Button disabled className="disabled">
-                <PaddedParagraph padding="0 10px">Continue on your wallet</PaddedParagraph>
-              </Button>
-            ) : unsuportedChain ? (
-              <Button disabled>
-                <Metamask height="18" width="17" />
-                <PaddedParagraph padding="0 10px">Change the Network to Mainnet or Polygon</PaddedParagraph>
-              </Button>
-            ) : (
-              <Button onClick={connectWallet}>
-                <Metamask height="18" width="17" />
-                <PaddedParagraph padding="0 10px">Sign up with MetaMask</PaddedParagraph>
-              </Button>
-            )}
+            <MetaMaskConnector text="Sign up with MetaMask" />
+            <WalletConnectConnector text="Sign up with WalletConnect" />
           </CardBody>
           {/* <CardFooter>
             <Line size="80%" />
