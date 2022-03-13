@@ -14,7 +14,7 @@ import {
   SearchType,
   ShowAllButton,
   ShowAllSearchResults,
-} from '../../organization/boards/styles';
+} from '../../Common/Boards/styles';
 import Filter from '../../Common/Filter';
 import CreatePodIcon from '../../Icons/createPod';
 import { ToggleViewButton } from '../../Common/ToggleViewButton';
@@ -44,6 +44,7 @@ import { Chevron } from '../../Icons/sections';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { GridViewIcon } from '../../Icons/ViewIcons/gridView';
 import { ListViewIcon } from '../../Icons/ViewIcons/listView';
+import SelectMenuBoardType from '../../Common/SelectMenuBoardType';
 
 enum ViewType {
   List = 'list',
@@ -286,43 +287,13 @@ const Boards = (props: Props) => {
       </>
     );
   }
-
   return (
     <Wrapper>
       <BoardsContainer>
         <BoardsActivity>
           <SearchTasks onSearch={onSearch} />
           <Filter filterSchema={filterSchema} onChange={onFilterChange} />
-          <CreateFormPreviewButton
-            style={{
-              width: '230px',
-              borderRadius: '8px',
-              fontSize: '14px',
-            }}
-            onClick={() => {
-              if (boardType !== PRIVACY_LEVEL.public) {
-                router.push({
-                  pathname: router.pathname,
-                  query: {
-                    podId: router.query.podId,
-                    view,
-                    boardType: PRIVACY_LEVEL.public,
-                  },
-                });
-              } else {
-                router.push({
-                  pathname: router.pathname,
-                  query: {
-                    podId: router.query.podId,
-                    view,
-                    boardType: 'all',
-                  },
-                });
-              }
-            }}
-          >
-            {boardType === PRIVACY_LEVEL.public ? 'View all' : 'View public'}
-          </CreateFormPreviewButton>
+          <SelectMenuBoardType router={router} view={view} />
           {view && !searchQuery ? <ToggleViewButton options={listViewOptions} /> : null}
         </BoardsActivity>
 

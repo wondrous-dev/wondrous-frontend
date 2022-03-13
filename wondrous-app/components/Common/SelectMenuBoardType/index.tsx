@@ -14,11 +14,12 @@ const SelectMenuBoardType = (props: ISelectMenuBoardType) => {
   const handleOnClick = () => setOpen(!open);
   const handleOnChange = (e) => {
     const boardType = e.target.value;
+    const pathQuery = router?.query?.username ? { username: router.query.username } : { podId: router.query.podId };
     router.replace(
       {
         pathname: router.pathname,
         query: {
-          username: router.query.username,
+          ...pathQuery,
           view,
           boardType: boardType in PRIVACY_LEVEL ? boardType : 'all',
         },
