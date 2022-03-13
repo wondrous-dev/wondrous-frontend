@@ -77,7 +77,7 @@ export const GET_TASK_COMMENT_BY_ID = gql`
   ${CommentFragment}
 `;
 
-export const GET_TASK_FOR_MILESTONE = gql`
+export const GET_TASKS_FOR_MILESTONE = gql`
   query getTasksForMilestone($milestoneId: ID!, $status: String, $limit: Int, $offset: Int) {
     getTasksForMilestone(milestoneId: $milestoneId, status: $status, limit: $limit, offset: $offset) {
       ...TaskFragment

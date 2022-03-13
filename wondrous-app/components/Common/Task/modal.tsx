@@ -129,7 +129,6 @@ import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { MilestoneTaskList } from '../MilestoneTaskList';
 import { MilestoneTaskBreakdown } from '../MilestoneTaskBreakdown';
 import Link from 'next/link';
-import { TaskList } from '../TaskList';
 import PodIcon from '../../Icons/podIcon';
 import { CompensationAmount, CompensationPill, IconContainer } from '../Compensation/styles';
 
