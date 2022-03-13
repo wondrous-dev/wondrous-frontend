@@ -36,6 +36,7 @@ import {
 import { MoreInfoModal } from '../../profile/modals';
 import SideBarComponent from '../../SideBar';
 import PlusIcon from '../../Icons/plus';
+import Image from 'next/image';
 
 const Wrapper = (props) => {
   const router = useRouter();
@@ -110,7 +111,15 @@ const Wrapper = (props) => {
             paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
           }}
         >
-          <HeaderImage />
+          <HeaderImage>
+            <Image
+              alt="Background"
+              src="/images/overview/background.png"
+              layout="fill"
+              objectFit="cover"
+              quality={80}
+            />
+          </HeaderImage>
           <Content>
             <ContentContainer>
               <TokenHeader>
