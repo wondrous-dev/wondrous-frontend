@@ -43,7 +43,7 @@ const SelectMenuBoardType = (props: ISelectMenuBoardType) => {
   const menuItems = {
     all: 'See All',
     [PRIVACY_LEVEL.public]: 'Public',
-    [PRIVACY_LEVEL.private]: 'Private',
+    // [PRIVACY_LEVEL.private]: 'Private',
   };
   const boardType = menuItems[router?.query?.boardType ?? 'all'];
   return (
