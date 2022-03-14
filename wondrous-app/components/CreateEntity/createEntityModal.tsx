@@ -325,7 +325,7 @@ const CreateLayoutBaseModal = (props) => {
   const [pod, setPod] = useState(null);
   const [dueDate, setDueDate] = useState(null);
   const [isPrivate, setIsPrivate] = useState(false);
-  const [publicTask, setPublicTask] = useState(false);
+  const [isPublicEntity, setIsPublicEntity] = useState(false);
   const {
     showDeliverableRequirementsSection,
     showBountySwitchSection,
@@ -519,7 +519,7 @@ const CreateLayoutBaseModal = (props) => {
           ...(!canCreateTask && {
             proposedAssigneeId: assignee?.value,
           }),
-          privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
+          privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
@@ -600,7 +600,7 @@ const CreateLayoutBaseModal = (props) => {
             username: title?.toLowerCase().split(' ').join('_'),
             description: descriptionText,
             orgId: org,
-            privacyLevel: isPrivate ? 'private' : 'public',
+            privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
             links: [
               {
                 url: link,
@@ -637,7 +637,7 @@ const CreateLayoutBaseModal = (props) => {
           podId: pod,
           mediaUploads,
           dueDate,
-          privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
+          privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
         };
         if (canCreateTask) {
           createMilestone({
@@ -691,7 +691,7 @@ const CreateLayoutBaseModal = (props) => {
           ...(!canCreateTask && {
             proposedAssigneeId: assignee?.value,
           }),
-          privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
+          privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
@@ -764,7 +764,7 @@ const CreateLayoutBaseModal = (props) => {
     rewardsCurrency,
     canCreateTask,
     assignee?.value,
-    publicTask,
+    isPublicEntity,
     selectedReviewers,
     mediaUploads,
     canCreatePod,
@@ -789,10 +789,11 @@ const CreateLayoutBaseModal = (props) => {
     [PRIVACY_LEVEL.public]: 'Public',
     [PRIVACY_LEVEL.private]: isPod ? 'Pod Members Only' : 'DAO Members Only',
   };
-  const tabsVisibilitySelected = publicTask
+  const tabsVisibilitySelected = isPublicEntity
     ? tabsVisibilityOptions[PRIVACY_LEVEL.public]
     : tabsVisibilityOptions[PRIVACY_LEVEL.private];
-  const tabsVisibilityHandleOnChange = (e) => setPublicTask(e.target.getAttribute('value') === PRIVACY_LEVEL.public);
+  const tabsVisibilityHandleOnChange = (e) =>
+    setIsPublicEntity(e.target.getAttribute('value') === PRIVACY_LEVEL.public);
 
   return (
     <CreateFormBaseModal isPod={isPod}>
