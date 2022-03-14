@@ -408,7 +408,7 @@ const EditLayoutBaseModal = (props) => {
       showHeaderImagePickerSection: isPod,
       showMembersSection: isPod,
       showPrioritySelectSection: isMilestone,
-      showDueDateSection: isTask,
+      showDueDateSection: isTask || isBounty || isMilestone,
     };
   }, [entityType]);
 

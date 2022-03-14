@@ -346,7 +346,7 @@ const CreateLayoutBaseModal = (props) => {
       // TODO: add back in entityType === ENTITIES_TYPES.POD
       showMembersSection: false,
       showPrioritySelectSection: isMilestone,
-      showDueDateSection: isTask,
+      showDueDateSection: isTask || isBounty || isMilestone,
     };
   }, [isBounty, isMilestone, isPod, isTask]);
 
@@ -519,9 +519,7 @@ const CreateLayoutBaseModal = (props) => {
           ...(!canCreateTask && {
             proposedAssigneeId: assignee?.value,
           }),
-          ...(publicTask && {
-            privacyLevel: PRIVACY_LEVEL.public,
-          }),
+          privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
@@ -639,9 +637,7 @@ const CreateLayoutBaseModal = (props) => {
           podId: pod,
           mediaUploads,
           dueDate,
-          ...(publicTask && {
-            privacyLevel: PRIVACY_LEVEL.public,
-          }),
+          privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
         };
         if (canCreateTask) {
           createMilestone({
@@ -695,9 +691,7 @@ const CreateLayoutBaseModal = (props) => {
           ...(!canCreateTask && {
             proposedAssigneeId: assignee?.value,
           }),
-          ...(publicTask && {
-            privacyLevel: PRIVACY_LEVEL.public,
-          }),
+          privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
@@ -1307,7 +1301,6 @@ const CreateLayoutBaseModal = (props) => {
         </CreateFormAddDetailsButton> */}
         {addDetails && (
           <CreateFormAddDetailsAppearBlock>
-            {/* showDueDateSection */}
             {showDueDateSection && (
               <CreateFormAddDetailsAppearBlockContainer>
                 <CreateFormAddDetailsSelects>

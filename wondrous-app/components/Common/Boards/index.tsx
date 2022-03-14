@@ -161,7 +161,7 @@ const Boards = (props: Props) => {
       <BoardsActivity>
         <SearchTasks onSearch={onSearch} />
         <Filter filterSchema={filterSchema} onChange={onFilterChange} />
-        {orgBoard && <SelectMenuBoardType router={router} />}
+        {orgBoard && <SelectMenuBoardType router={router} view={view} />}
         {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
       </BoardsActivity>
       {selectMembershipRequests && (
