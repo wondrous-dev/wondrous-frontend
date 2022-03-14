@@ -134,6 +134,7 @@ import {
   GET_ELIGIBLE_REVIEWERS_FOR_ORG,
   GET_ELIGIBLE_REVIEWERS_FOR_POD,
 } from '../../graphql/queries/task';
+import { TabsVisibility } from '../Common/TabsVisibility';
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -407,7 +408,7 @@ const EditLayoutBaseModal = (props) => {
       showHeaderImagePickerSection: isPod,
       showMembersSection: isPod,
       showPrioritySelectSection: isMilestone,
-      showDueDateSection: isTask || isMilestone || isBounty,
+      showDueDateSection: isTask,
     };
   }, [entityType]);
 
@@ -770,6 +771,14 @@ const EditLayoutBaseModal = (props) => {
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
+  const tabsVisibilityOptions = {
+    [PRIVACY_LEVEL.public]: 'Public',
+    [PRIVACY_LEVEL.private]: isPod ? 'Pod Members Only' : 'DAO Members Only',
+  };
+  const tabsVisibilitySelected = publicTask
+    ? tabsVisibilityOptions[PRIVACY_LEVEL.public]
+    : tabsVisibilityOptions[PRIVACY_LEVEL.private];
+  const tabsVisibilityHandleOnChange = (e) => setPublicTask(e.target.getAttribute('value') === PRIVACY_LEVEL.public);
   return (
     <CreateFormBaseModal>
       <CreateFormBaseModalCloseBtn onClick={handleClose}>
@@ -1325,20 +1334,19 @@ const EditLayoutBaseModal = (props) => {
                       <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
                     </LocalizationProvider>
                   </CreateFormAddDetailsLocalizationProvider>
-                  <CreateFormAddDetailsTab
-                    style={{
-                      width: '100%',
-                      marginLeft: '20px',
-                    }}
-                  >
-                    <CreateFormAddDetailsTabLabel>Show task as public</CreateFormAddDetailsTabLabel>
-                    <AndroidSwitch
-                      checked={publicTask}
-                      onChange={(e) => {
-                        setPublicTask(e.target.checked);
-                      }}
-                    />
-                  </CreateFormAddDetailsTab>
+                  <CreateFormAddDetailsSelects>
+                    <CreateFormAddDetailsTab>
+                      <CreateFormAddDetailsInputLabel>
+                        Who can see this {titleText.toLowerCase()}?
+                      </CreateFormAddDetailsInputLabel>
+                      <TabsVisibility
+                        options={tabsVisibilityOptions}
+                        selected={tabsVisibilitySelected}
+                        onChange={tabsVisibilityHandleOnChange}
+                        variant
+                      />
+                    </CreateFormAddDetailsTab>
+                  </CreateFormAddDetailsSelects>
                 </CreateFormAddDetailsSelects>
 
                 {/* <CreateFormAddDetailsSelects> */}

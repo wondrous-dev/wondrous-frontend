@@ -346,7 +346,7 @@ const CreateLayoutBaseModal = (props) => {
       // TODO: add back in entityType === ENTITIES_TYPES.POD
       showMembersSection: false,
       showPrioritySelectSection: isMilestone,
-      showDueDateSection: isTask || isMilestone || isBounty,
+      showDueDateSection: isTask,
     };
   }, [isBounty, isMilestone, isPod, isTask]);
 
@@ -795,10 +795,10 @@ const CreateLayoutBaseModal = (props) => {
     [PRIVACY_LEVEL.public]: 'Public',
     [PRIVACY_LEVEL.private]: isPod ? 'Pod Members Only' : 'DAO Members Only',
   };
-  const tabsVisibilitySelected = isPrivate
-    ? tabsVisibilityOptions[PRIVACY_LEVEL.private]
-    : tabsVisibilityOptions[PRIVACY_LEVEL.public];
-  const tabsVisibilityHandleOnChange = (e) => setIsPrivate(e.target.getAttribute('value') === PRIVACY_LEVEL.private);
+  const tabsVisibilitySelected = publicTask
+    ? tabsVisibilityOptions[PRIVACY_LEVEL.public]
+    : tabsVisibilityOptions[PRIVACY_LEVEL.private];
+  const tabsVisibilityHandleOnChange = (e) => setPublicTask(e.target.getAttribute('value') === PRIVACY_LEVEL.public);
 
   return (
     <CreateFormBaseModal isPod={isPod}>

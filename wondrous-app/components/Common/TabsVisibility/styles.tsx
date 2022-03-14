@@ -20,6 +20,7 @@ export const TabsVisibilityWrapper = styled.div`
 
 export const TabsVisibilityButton = styled(Button)`
   && {
+    text-transform: capitalize;
     font-family: 'Space Grotesk';
     font-size: 15px;
     font-style: normal;
