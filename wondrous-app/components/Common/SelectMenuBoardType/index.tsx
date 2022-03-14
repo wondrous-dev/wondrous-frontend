@@ -45,7 +45,7 @@ const SelectMenuBoardType = (props: ISelectMenuBoardType) => {
     [PRIVACY_LEVEL.public]: 'Public',
     // [PRIVACY_LEVEL.private]: 'Private',
   };
-  const boardType = menuItems[router?.query?.boardType ?? 'all'];
+  const boardType = menuItems[String(router?.query?.boardType) ?? 'all'];
   return (
     <SelectMenuBoardTypeClickAway onClickAway={handleOnClickAway}>
       <SelectMenuBoardTypeWrapper>
