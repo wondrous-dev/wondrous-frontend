@@ -251,13 +251,11 @@ export const BatchWalletPayment = (props) => {
   };
   const handleCreateNewWalletClick = () => {
     if (podId) {
-      router.push(`/pod/settings/${podId}/wallet`, undefined, {
-        shallow: true,
-      });
+      const newUrl = `/pod/settings/${podId}/wallet`;
+      window.location.href = newUrl;
     } else if (orgId) {
-      router.push(`/organization/settings/${orgId}/wallet`, undefined, {
-        shallow: true,
-      });
+      const newUrl = `/organization/settings/${orgId}/wallet`;
+      window.location.href = newUrl;
     }
   };
 
