@@ -1,5 +1,5 @@
+import CoinbaseConnector from '@components/WalletConnectors/Coinbase';
 import MetaMaskConnector from '@components/WalletConnectors/MetaMask';
-import WalletConnectConnector from '@components/WalletConnectors/WallectConnect';
 import Modal from '@mui/material/Modal';
 import React from 'react';
 import { InnerModal, Title, Wallet } from './styles';
@@ -18,7 +18,7 @@ export default function WalletModal({ open, onClose }: { open: boolean; onClose:
           <MetaMaskConnector text="Connect with MetaMask" />
         </Wallet>
         <Wallet>
-          <WalletConnectConnector text="Connect with WalletConnect" />
+          <CoinbaseConnector text="Connect with Coinbase Wallet" />
         </Wallet>
       </InnerModal>
     </Modal>

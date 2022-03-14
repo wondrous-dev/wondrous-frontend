@@ -69,7 +69,7 @@
 }
 
 html,
-body {
+html>body {
   overflow-x: hidden;
   background-color: #0f0f0f !important;
   padding: 0;

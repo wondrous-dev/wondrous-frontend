@@ -1,28 +1,25 @@
 import { useEffect, useState } from 'react';
-import { AbstractConnector } from '@web3-react/abstract-connector';
 import { Button } from '@components/Common/button';
-import useInjectedProviderListener from '@services/web3/hooks/useInjectedProviderListener';
 import { CircularProgress } from '@material-ui/core';
-import useWeb3 from '@services/web3/hooks/useWeb3';
 import { useWonderWeb3 } from '@services/web3';
 import { PaddedParagraph } from '@components/Common/text';
+import connectors, { ConnectorName } from '@services/web3/connectors';
 
 export interface WonderAbstractConnectorProps {
-  connector: AbstractConnector;
+  connectorName: ConnectorName;
   buttonContent: React.ReactNode;
   icon?: React.ReactNode;
 }
 
 export default function WonderAbstractConnector({
-  connector: currentConnector,
+  connectorName,
   buttonContent,
   icon = null,
 }: WonderAbstractConnectorProps) {
-  const { connector, activate, error, isActivating, notSupportedChain, connecting } = useWonderWeb3();
-
-  const connected = currentConnector === connector;
+  const { connector, activateAndStore, error, isActivating, notSupportedChain, connecting } = useWonderWeb3();
 
   const disabled = !!isActivating || !!error || notSupportedChain || connecting;
+  const currentConnector = connectors[connectorName];
 
   const content = () => {
     if (notSupportedChain)
@@ -48,7 +45,7 @@ export default function WonderAbstractConnector({
   };
 
   return (
-    <Button disabled={disabled} onClick={() => activate(currentConnector)}>
+    <Button disabled={disabled} onClick={() => activateAndStore(connectorName)}>
       {isActivating ? <CircularProgress /> : <>{content()}</>}
     </Button>
   );

@@ -1,9 +1,9 @@
 import Web3 from 'web3';
 import { BigNumber, ethers } from 'ethers';
 import ENS, { getEnsAddress } from '@ensdomains/ensjs';
+import useStoredConnector from './useStoredConnector';
+import connectors, { ConnectorName } from '../connectors';
 
-// Need Infura API Key for this one:
-// import WalletConnectProvider from '@walletconnect/web3-provider'
 import { useContext, useEffect, useMemo, useState } from 'react';
 
 import { CHAIN_IDS, SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '@utils/constants';
@@ -222,6 +222,15 @@ export default function useWonderWeb3(): WonderWeb3 {
 
   const chain = chainId ? chainId : lastChainId;
 
+  const { setStoredConnector } = useStoredConnector();
+
+  const activateAndStore = (connectorName: ConnectorName) => {
+    const conn = connectors[connectorName];
+    activate(conn, () => {
+      setStoredConnector(connectorName);
+    });
+  };
+
   return {
     connecting,
     wallet,
@@ -243,6 +252,7 @@ export default function useWonderWeb3(): WonderWeb3 {
     active,
     library,
     activate,
+    activateAndStore,
   };
 }
 

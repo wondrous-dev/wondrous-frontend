@@ -119,5 +119,10 @@ export interface WonderWeb3 {
   /**
    * Activates a connector
    */
-  activate: (connector: AbstractConnector) => void;
+  activate: (connector: AbstractConnector, done?: () => void) => void;
+
+  /**
+   * Activates a connector by name and stores it to local storage to be used on session reload.
+   */
+  activateAndStore: (connectorName: string) => void;
 }

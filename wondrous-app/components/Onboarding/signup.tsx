@@ -22,7 +22,7 @@ import { ErrorText } from '../Common';
 import { SupportedChainType } from '../../utils/web3Constants';
 import signedMessageIsString from '@services/web3/utils/signedMessageIsString';
 import MetaMaskConnector from '@components/WalletConnectors/MetaMask';
-import WalletConnectConnector from '@components/WalletConnectors/WallectConnect';
+import CoinbaseConnector from '@components/WalletConnectors/Coinbase';
 
 export const Logo = () => {
   return (
@@ -221,7 +221,7 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink, podInfo, redeem
         {contributingSentence}
       </InviteWelcomeBoxParagraph>
       <MetaMaskConnector text="Connect with MetaMask" />
-      <WalletConnectConnector text="Connect with WalletConnect" />
+      <CoinbaseConnector text="Connect with Coinbase Wallet" />
 
       {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
       {!wonderWeb3.chain && noChainError && <ErrorText>{noChainError}</ErrorText>}

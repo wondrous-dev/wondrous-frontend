@@ -18,7 +18,7 @@ import { emailSignup, getUserSigningMessage, walletSignup } from '../components/
 import { SupportedChainType } from '../utils/web3Constants';
 import MetaMaskConnector from '@components/WalletConnectors/MetaMask';
 import signedMessageIsString from '@services/web3/utils/signedMessageIsString';
-import WalletConnectConnector from '@components/WalletConnectors/WallectConnect';
+import CoinbaseConnector from '@components/WalletConnectors/Coinbase';
 
 const Signup = () => {
   const wonderWeb3 = useWonderWeb3();
@@ -136,7 +136,7 @@ const Signup = () => {
             )}
 
             <MetaMaskConnector text="Sign up with MetaMask" />
-            <WalletConnectConnector text="Sign up with WalletConnect" />
+            <CoinbaseConnector text="Sign up with Coinbase Wallet" />
           </CardBody>
           {/* <CardFooter>
             <Line size="80%" />

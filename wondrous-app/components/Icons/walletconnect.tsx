@@ -3,9 +3,6 @@ import React from 'react';
 export const WalletConnect = (props) => {
   return (
     <svg width="512px" height="512px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" {...props}>
-      <title>logo</title>
-      <desc>Created with Sketch.</desc>
-      <defs></defs>
       <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
         <g id="logo">
           <rect id="base" fill="#FFFFFF" x="0" y="0" width="512" height="512" rx="256"></rect>

@@ -30,12 +30,14 @@ export default function useWeb3() {
     getProvider();
   }, [active, connector, setProvider]);
 
-  const customActivate = (connector: AbstractConnector) => {
+  const customActivate = (conn: AbstractConnector, done?: Function) => {
     setIsActivating(true);
-    activate(connector, (error) => {
+    activate(conn, (error) => {
       if (error) {
-        setIsActivating(false);
+        console.log('Error while activating web3 connector', error);
       }
+    }).then(() => {
+      done && done();
     });
   };
 

@@ -9,16 +9,14 @@ import { Field } from '../components/Common/field';
 import { PaddedParagraph, StyledLink } from '../components/Common/text';
 import { SmallLogo, LoginWrapper, TopBubble, LoginError } from '../components/Pages/login';
 import { useState } from 'react';
-import { CenteredFlexRow } from '../components/Common/index';
 import { Grey50 } from '../theme/colors';
-import { Metamask } from '../components/Icons/metamask';
 import { EmailIcon, LockIcon } from '../components/Icons/userpass';
 import { useWonderWeb3 } from '../services/web3';
 import { emailSignin, getUserSigningMessage, walletSignin } from '../components/Auth/withAuth';
 import MetaMaskConnector from '@components/WalletConnectors/MetaMask';
 import signedMessageIsString from '@services/web3/utils/signedMessageIsString';
-import WalletConnectConnector from '@components/WalletConnectors/WallectConnect';
 import styled from 'styled-components';
+import CoinbaseConnector from '@components/WalletConnectors/Coinbase';
 
 const prod = process.env.NEXT_PUBLIC_PRODUCTION;
 
@@ -89,14 +87,14 @@ const Login = ({ csrfToken }) => {
   };
 
   useEffect(() => {
-    if (wonderWeb3.wallet['address']) {
+    if (wonderWeb3.wallet['address'] && !wonderWeb3.isActivating) {
       // Wallet sign in
       loginWithWallet();
     } else {
       // Error Login Here
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wonderWeb3.wallet]);
+  }, [wonderWeb3.wallet, wonderWeb3.isActivating]);
 
   useEffect(() => {
     setNotSupported(wonderWeb3.notSupportedChain);
@@ -148,7 +146,7 @@ const Login = ({ csrfToken }) => {
               <MetaMaskConnector />
             </WalletLoginContainer>
             <WalletLoginContainer>
-              <WalletConnectConnector />
+              <CoinbaseConnector />
             </WalletLoginContainer>
           </CardBody>
           {/* <CardFooter>
