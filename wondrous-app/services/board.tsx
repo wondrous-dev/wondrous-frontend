@@ -119,11 +119,11 @@ export const FILTER_STATUSES = {
     //   name: 'Completed and paid',
     //   icon: <TaskStatus status={TASK_STATUS_PAID} />,
     // },
-    {
-      id: TASK_STATUS_ARCHIVED,
-      name: 'Archived',
-      icon: <TaskStatus status={TASK_STATUS_ARCHIVED} />,
-    },
+    // {
+    //   id: TASK_STATUS_ARCHIVED,
+    //   name: 'Archived',
+    //   icon: <TaskStatus status={TASK_STATUS_ARCHIVED} />,
+    // },
   ],
 };
 
