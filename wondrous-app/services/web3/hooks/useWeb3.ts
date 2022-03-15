@@ -34,6 +34,7 @@ export default function useWeb3() {
     setIsActivating(true);
     activate(conn, (error) => {
       if (error) {
+        setIsActivating(null);
         console.log('Error while activating web3 connector', error);
       }
     }).then(() => {
