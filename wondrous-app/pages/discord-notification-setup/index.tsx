@@ -1,3 +1,5 @@
+import React from 'react';
+import { useRouter } from 'next/router';
 import SideBarComponent from '../../components/SideBar';
 import HeaderComponent from '../../components/Header';
 import { SettingsContainer } from '../../components/Settings/styles';
@@ -12,8 +14,11 @@ import {
   SmallerTopParagraph,
 } from '../../components/Discord/styles';
 import { HighlightBlue, White } from '../../theme/colors';
+import Link from 'next/link';
 
 const DiscordNotificationSetup = () => {
+  const router = useRouter();
+  const { orgUsername } = router.query;
   return (
     <>
       <HeaderComponent />
@@ -73,7 +78,32 @@ const DiscordNotificationSetup = () => {
             fontSize: '22px',
           }}
         >
-          Creating a webhook
+          Connect your own discord account to Wonder
+        </DiscordTitle>
+
+        <DiscordParagraph>
+          To ensure only users with the correct permission can set up notification, please connect your discord account to Wonder through{' '}
+          your profile setting page
+          <Link href="profile/settings">
+            <a
+              target="_blank"
+              style={{
+                color: HighlightBlue,
+                marginLeft: '4px',
+              }}
+            >
+              your profile setting page
+            </a>
+          </Link>
+
+        </DiscordParagraph>
+        <DiscordTitle
+          style={{
+            marginTop: '20px',
+            fontSize: '22px',
+          }}
+        >
+          Configure Notification To Channel
         </DiscordTitle>
         <SmallerTopParagraph
           style={{
@@ -81,36 +111,17 @@ const DiscordNotificationSetup = () => {
             fontWeight: 'bolder',
           }}
         >
-          After adding the bot, we will need to{' '}
-          <a
-            style={{
-              color: HighlightBlue,
-            }}
-            href="https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks"
-            target="_blank"
-            rel="noreferrer"
-          >
-            create a webhook
-          </a>{' '}
-          in Discord and paste the link into your organization to send Wonder event notifications to a Discord channel.
+          After adding the bot, navigate the channel you want you want to send notifications to
+          in Discord and enter the command
         </SmallerTopParagraph>
-        <SmallerTopParagraph>
-          1. Open the Discord channel you want to receive Wonder event notifications.
-        </SmallerTopParagraph>
-        <SmallerTopParagraph>
-          2. From the channel menu, select <BoldSpan> Edit channel.</BoldSpan>
-        </SmallerTopParagraph>
-        <SmallerTopParagraph>
-          3. If there are no existing webhooks, select <BoldSpan>Create Webhook</BoldSpan> . Otherwise, select{' '}
-          <BoldSpan>View Webhooks</BoldSpan> then <BoldSpan>New Webhook.</BoldSpan>
-        </SmallerTopParagraph>
-        <SmallerTopParagraph>4. Enter the name of the bot to post the message.</SmallerTopParagraph>
-        <SmallerTopParagraph>5. Optional. Edit the avatar.</SmallerTopParagraph>
-        <SmallerTopParagraph>
-          6. Copy the URL from the <BoldSpan> WEBHOOK URL</BoldSpan> field.
-        </SmallerTopParagraph>
-        <SmallerTopParagraph>
-          7. Select <BoldSpan>Save.</BoldSpan>
+        <SmallerTopParagraph
+          style={{
+            fontSize: '16px',
+            fontWeight: 'bolder',
+            color: 'green',
+          }}
+        >
+          !wonder setup notification {orgUsername? orgUsername: '{{org_username}}'}
         </SmallerTopParagraph>
         <DiscordTitle
           style={{
@@ -118,38 +129,9 @@ const DiscordNotificationSetup = () => {
             fontSize: '22px',
           }}
         >
-          Configuring created webhook on Wonder
+          You should see the message "notification configured to this current channel!"
         </DiscordTitle>
-        <SmallerTopParagraph>
-          Click on your organization{`'`}s settings page by clicking the settings button on the boards page
-        </SmallerTopParagraph>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          style={{
-            width: '100%',
-            maxWidth: '800px',
-            marginTop: '8px',
-            marginBottom: '12px',
-          }}
-          src="https://storage.googleapis.com/wondrous-media-prod/static/discord-setup-settings.png"
-          alt=""
-        />
-        <SmallerTopParagraph>
-          You can then paste the webhook url you copied from the previous section onto the Discord Webhook URL field
-        </SmallerTopParagraph>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          style={{
-            width: '100%',
-            maxWidth: '800px',
-            marginTop: '8px',
-          }}
-          src="https://storage.googleapis.com/wondrous-media-prod/static/discord-setup-integrations.png"
-          alt=""
-        />
-        <SmallerTopParagraph>
-          Click <BoldSpan>Save changes</BoldSpan> and voila! You{`'`}ve now set up notifications :)
-        </SmallerTopParagraph>
+
       </SettingsContainer>
     </>
   );
