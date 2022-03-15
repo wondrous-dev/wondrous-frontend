@@ -23,6 +23,7 @@ import {
 } from '@gnosis.pm/safe-service-client';
 import { GET_SUBMISSIONS_PAYMENT_INFO } from '../../graphql/queries';
 import { PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS } from '../../graphql/mutations';
+import { useWonderWeb3 } from '@services/web3';
 
 const CHAIN = 'rinkeby'; // there's currently a safe set up at this address, can add people to owner of safe
 const GNOSIS_SAFE_ADDR = '0x3c6645cf6e3D33Ec84c731972acDEf100939eE94'; // update to user wallet
@@ -42,13 +43,13 @@ interface PaymentData {
 }
 
 const Multisend = () => {
-  const user = useMe();
+  const { web3Provider } = useWonderWeb3();
   const [safeSdk, setSafeSdk] = useState<Safe>(null);
   const safeService = new SafeServiceClient(`https://safe-transaction.${CHAIN}.gnosis.io`);
   const configureSafeSdk = async () => {
     // connect wallet, need to make this work with rinkeby polyon and mainnet, if gnosis safe is not deployed
     // at the specified address on network, this will fail, would need to try catch
-    const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+    const provider = new ethers.providers.Web3Provider(web3Provider, 'any');
     const safeOwner = provider.getSigner(0);
     const ethAdapterOwner1 = new EthersAdapter({
       ethers,
