@@ -92,11 +92,10 @@ const Filter = ({ filterSchema = [], onChange }) => {
 
   const clearItems = () => {
     const newItems = [...items];
-    const statuses = newItems.map((it) => it.id);
     setItems(newItems);
     setSelectedTabItems({});
     setSelectedNames([]);
-    onChange(statuses);
+    onChange({});
   };
 
   useEffect(() => {
