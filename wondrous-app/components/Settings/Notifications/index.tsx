@@ -3,7 +3,13 @@ import React, { useState } from 'react';
 import { SettingsWrapper } from '../settingsWrapper';
 import { NotificationOutlineSettings } from '../../Icons/notifications';
 import { HeaderBlock } from '../headerBlock';
-import { GeneralSettingsContainer, GeneralSettingsIntegrationsBlock, LabelBlock, LabelBlockText } from '../styles';
+import {
+  GeneralSettingsContainer,
+  GeneralSettingsIntegrationsBlock,
+  GeneralSettingsIntegrationsBlockButtonIcon,
+  LabelBlock,
+  LabelBlockText,
+} from '../styles';
 import Link from 'next/link';
 import { HighlightBlue } from '../../../theme/colors';
 
@@ -37,7 +43,20 @@ const Notifications = ({ orgId }) => {
             display: 'flex',
             alignItems: 'center',
           }}
-        ></div>
+        >
+          <GeneralSettingsIntegrationsBlockButtonIcon />
+          {/* <InputField
+                placeholder="Discord webhook link"
+                value={discordWebhookLink}
+                onChange={(e) => setDiscordWebhookLink(e.target.value)}
+                style={{
+                  textDecoration: 'none',
+                  color: White,
+                  paddingRight: '8px',
+                  paddingLeft: '12px',
+                }}
+              /> */}
+        </div>
       </GeneralSettingsIntegrationsBlock>
     </SettingsWrapper>
   );
