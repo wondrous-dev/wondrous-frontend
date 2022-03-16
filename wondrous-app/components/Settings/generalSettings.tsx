@@ -319,13 +319,13 @@ export const PodGeneralSettings = () => {
   const [originalPodProfile, setOriginalPodProfile] = useState(null);
   const [logoImage, setLogoImage] = useState('');
   const [color, setColor] = useState(null);
+  const [setSnackbarAlert] = useSnackbarAlert();
   const [getPod] = useLazyQuery(GET_POD_BY_ID, {
     onCompleted: ({ getPodById }) => setPod(getPodById),
     fetchPolicy: 'cache-and-network',
   });
   const [podLinks, setPodLinks] = useState([]);
   const [descriptionText, setDescriptionText] = useState('');
-  const [toast, setToast] = useState({ show: false, message: '' });
 
   function setPod(pod) {
     setPodProfile(pod);
@@ -347,7 +347,17 @@ export const PodGeneralSettings = () => {
   const [updatePod] = useMutation(UPDATE_POD, {
     onCompleted: ({ updatePod: pod }) => {
       setPodProfile(pod);
-      setToast({ ...toast, message: `Pod updated successfully.`, show: true });
+      setSnackbarAlert({
+        message: 'Pod updated successfully.',
+        open: true,
+      });
+    },
+    onError: () => {
+      setSnackbarAlert({
+        message: 'Pod update failed.',
+        open: true,
+        severity: 'error',
+      });
     },
   });
 
@@ -400,8 +410,6 @@ export const PodGeneralSettings = () => {
 
   return (
     <GeneralSettingsComponent
-      toast={toast}
-      setToast={setToast}
       descriptionText={descriptionText}
       handleDescriptionChange={handleDescriptionChange}
       handleLinkChange={(event, item) => handleLinkChange(event, item, { ...podLinks }, setPodLinks)}
@@ -428,7 +436,6 @@ const GeneralSettings = () => {
   const [bannerImage, setBannerImage] = useState('');
   const [orgLinks, setOrgLinks] = useState([]);
   const [descriptionText, setDescriptionText] = useState('');
-  const [toast, setToast] = useState({ show: false, message: '' });
   const [setSnackbarAlert] = useSnackbarAlert();
   const router = useRouter();
   const { orgId } = router.query;
@@ -467,7 +474,17 @@ const GeneralSettings = () => {
   const [updateOrg] = useMutation(UPDATE_ORG, {
     onCompleted: ({ updateOrg: org }) => {
       setOrganization(org);
-      setToast({ ...toast, message: `DAO updated successfully.`, show: true });
+      setSnackbarAlert({
+        message: 'DAO updated successfully.',
+        open: true,
+      });
+    },
+    onError: () => {
+      setSnackbarAlert({
+        message: 'DAO update failed.',
+        open: true,
+        severity: 'error',
+      });
     },
   });
 
@@ -517,20 +534,7 @@ const GeneralSettings = () => {
           }),
         },
       },
-    })
-      .then(() => {
-        setSnackbarAlert({
-          message: 'DAO updated successfully.',
-          open: true,
-        });
-      })
-      .catch(() => {
-        setSnackbarAlert({
-          message: 'Something went wrong.',
-          open: true,
-          severity: 'error',
-        });
-      });
+    });
   }
 
   if (!orgProfile) {
