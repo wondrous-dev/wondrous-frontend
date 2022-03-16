@@ -77,6 +77,7 @@ const MemberRoleDropdown = (props) => {
   const [updateUserOrgRole] = useMutation(UPDATE_USER_ORG_ROLE);
   const [updateUserPodRole] = useMutation(UPDATE_USER_POD_ROLE);
   const isOwner = existingRole?.permissions.includes(PERMISSIONS.FULL_ACCESS);
+  const [setSnackbarAlert] = useSnackbarAlert();
   const settings = useSettings();
   let orgId = props?.orgId || settings?.pod?.orgId;
   const loggedInUserPermissions = settings?.userPermissionsContext;
@@ -106,7 +107,20 @@ const MemberRoleDropdown = (props) => {
                 roleId,
               },
             },
-          });
+          })
+            .then(() => {
+              setSnackbarAlert({
+                message: 'Role updated successfully.',
+                open: true,
+              });
+            })
+            .catch(() => {
+              setSnackbarAlert({
+                message: 'Something went wrong.',
+                open: true,
+                severity: 'error',
+              });
+            });
         } else {
           updateUserOrgRole({
             variables: {
@@ -116,7 +130,20 @@ const MemberRoleDropdown = (props) => {
                 roleId,
               },
             },
-          });
+          })
+            .then(() => {
+              setSnackbarAlert({
+                message: 'Role updated successfully.',
+                open: true,
+              });
+            })
+            .catch(() => {
+              setSnackbarAlert({
+                message: 'Something went wrong.',
+                open: true,
+                severity: 'error',
+              });
+            });
         }
       }}
       labelText={isOwner && !role ? 'Owner' : 'Choose your role'}
