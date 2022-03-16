@@ -201,7 +201,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
                 },
               },
               onCompleted: () => {
-                router.push('/onboarding/email-setup', undefined, {
+                router.push('/onboarding/connect-discord', undefined, {
                   shallow: true,
                 });
               },

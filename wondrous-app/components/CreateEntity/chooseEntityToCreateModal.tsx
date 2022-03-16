@@ -19,6 +19,7 @@ import {
   CreateLayoutsModalItemTitleBlock,
   CreateLayoutsModalTitle,
   CreateLayoutTaskIcon,
+  CreateLayoutBountyIcon,
 } from './styles';
 import { useRouter } from 'next/router';
 import { GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
@@ -42,6 +43,10 @@ export const ENTITIES_UI_ELEMENTS = {
   [ENTITIES_TYPES.ORG]: {
     icon: CreateLayoutDaoIcon,
     label: 'DAO',
+  },
+  [ENTITIES_TYPES.BOUNTY]: {
+    icon: CreateLayoutBountyIcon,
+    label: 'Bounty',
   },
 };
 
@@ -68,11 +73,14 @@ const ChooseEntityToCreateModal = (props) => {
 
   const onPodPage = router.pathname.includes('/pod/');
   const entries = Object.entries(ENTITIES_UI_ELEMENTS).filter(([key]) => {
-    if (!permissions.includes(PERMISSIONS.FULL_ACCESS) && key === ENTITIES_TYPES.POD) {
+    if (
+      !permissions.includes(PERMISSIONS.FULL_ACCESS) &&
+      !permissions.includes(PERMISSIONS.MANAGE_POD) &&
+      key === ENTITIES_TYPES.POD
+    ) {
       return false;
     }
-    const condition = onPodPage ? key !== ENTITIES_TYPES.ORG && key !== ENTITIES_TYPES.POD : key !== ENTITIES_TYPES.ORG;
-    return condition;
+    return key !== ENTITIES_TYPES.ORG;
   });
 
   return (

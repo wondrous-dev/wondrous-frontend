@@ -40,3 +40,12 @@ export const dedupeColumns = (columns) => {
   });
   return newColumns;
 };
+
+export const getDiscordUrl = () => {
+  if (process.env.NEXT_PUBLIC_PRODUCTION) {
+    return 'https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=https%3A%2F%2Fapp.wonderverse.xyz%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify';
+  } else if (process.env.NEXT_PUBLIC_STAGING) {
+    return 'https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=https%3A%2F%2Fwondrous-app-git-staging-wonderverse.vercel.app%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify';
+  }
+  return 'https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify';
+};

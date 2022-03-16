@@ -8,7 +8,7 @@ import { LogoSquare } from '../Common/ci';
 import LogoutIcon from '../Icons/logout';
 import { GradientHighlightHorizontal } from '../Common/gradients';
 import { Discord } from '../Icons/discord';
-import { Black } from '../../theme/colors';
+import { Black, White } from '../../theme/colors';
 
 export const SettingsContainer = styled.div`
   position: relative;
@@ -440,5 +440,21 @@ export const Snackbar = styled(SnackbarComp)`
   .MuiPaper-elevation {
     background: rgb(0, 67, 61);
     color: white;
+  }
+`;
+
+export const DiscordText = styled(Typography)`
+  && {
+    font-size: 16px;
+    color: ${White};
+  }
+`;
+
+export const LabelBlockText = styled(Typography)`
+  && {
+    color: ${White};
+    font-family: Space Grotesk;
+    font-size: 14px;
+    margin-bottom: 12px;
   }
 `;

@@ -45,6 +45,7 @@ import {
   TASK_STATUS_ARCHIVED,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   PAYMENT_STATUS,
+  TASK_TYPE,
 } from '../../../utils/constants';
 import { White } from '../../../theme/colors';
 import { useMe } from '../../Auth/withAuth';
@@ -70,6 +71,7 @@ import {
   REMOVE_SUBMISSION_MEDIA,
   REQUEST_CHANGE_SUBMISSION,
   UPDATE_TASK_SUBMISSION,
+  APPROVE_BOUNTY_SUBMISSION,
 } from '../../../graphql/mutations/taskSubmission';
 import UploadImageIcon from '../../Icons/uploadImage';
 import { handleAddFile } from '../../../utils/media';
@@ -88,6 +90,7 @@ import { delQuery } from '../../../utils';
 import { FileLoading } from '../FileUpload/FileUpload';
 import { MakePaymentBlock } from './payment';
 import { KudosForm } from '../KudosForm';
+import { PaymentButton } from './paymentButton';
 
 const SubmissionStatusIcon = (props) => {
   const { submission } = props;
@@ -176,9 +179,11 @@ const SubmissionItem = (props) => {
     fetchedTaskSubmissions,
     setFetchedTaskSubmissions,
     handleClose,
+    user,
+    setShowPaymentModal,
+    getTaskSubmissionsForTask,
   } = props;
   const router = useRouter();
-  const user = useMe();
   const mediaUploads = submission?.media;
   const imageStyle = {
     width: '40px',
@@ -230,7 +235,29 @@ const SubmissionItem = (props) => {
         }
       });
       setFetchedTaskSubmissions(newFetchedTaskSubmissions);
-      if (fetchedTask.type !== BOUNTY_TYPE) {
+      if (fetchedTask?.type !== BOUNTY_TYPE) {
+        completeTask();
+        setIsKudosForm(true);
+      }
+    },
+    refetchQueries: ['getOrgTaskBoardSubmissions', 'getPerStatusTaskCountForOrgBoard'],
+  });
+  const [approveBountySubmission] = useMutation(APPROVE_BOUNTY_SUBMISSION, {
+    variables: {
+      submissionId: submission?.id,
+    },
+    onCompleted: () => {
+      // Change status of submission
+      const newFetchedTaskSubmissions = fetchedTaskSubmissions.map((taskSubmission) => {
+        if (taskSubmission?.id === submission?.id) {
+          return {
+            ...taskSubmission,
+            approvedAt: new Date(),
+          };
+        }
+      });
+      setFetchedTaskSubmissions(newFetchedTaskSubmissions);
+      if (fetchedTask?.type !== BOUNTY_TYPE) {
         completeTask();
         setIsKudosForm(true);
       }
@@ -387,12 +414,26 @@ const SubmissionItem = (props) => {
                         Request changes
                       </CreateFormCancelButton>
                     )}
-                    {!submission.approvedAt && (
+                    {!submission.approvedAt && fetchedTask?.type === TASK_TYPE && (
                       <CreateFormPreviewButton onClick={approveSubmission}>Approve</CreateFormPreviewButton>
+                    )}
+                    {!submission.approvedAt && fetchedTask?.type === BOUNTY_TYPE && (
+                      <CreateFormPreviewButton onClick={approveBountySubmission}>Approve</CreateFormPreviewButton>
                     )}
                   </CreateFormButtonsBlock>
                 </>
               )}
+              {fetchedTask?.type === BOUNTY_TYPE &&
+                submission.approvedAt &&
+                (submission?.paymentStatus !== PAYMENT_STATUS.PAID ||
+                  submission?.paymentStatus !== PAYMENT_STATUS.PROCESSING) && (
+                  <PaymentButton
+                    fetchedTask={fetchedTask}
+                    taskSubmissions={fetchedTaskSubmissions}
+                    handleClose={handleClose}
+                    getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+                  />
+                )}
             </CreateFormFooterButtons>
           </>
         )}
@@ -572,6 +613,9 @@ const TaskSubmissionForm = (props) => {
                     setFetchedTaskSubmissions(newFetchedTaskSubmissions);
                   },
                 });
+              } else {
+                setMediaUploads([...mediaUploads, fileToAdd]);
+                setFileUploadLoading(false);
               }
             }}
           />
@@ -694,7 +738,10 @@ const TaskSubmissionForm = (props) => {
 };
 
 const MakeSubmissionBlock = (props) => {
-  const { fetchedTask, setMakeSubmission, prompt } = props;
+  const { fetchedTask, setMakeSubmission, prompt, canSubmit, loggedInUser } = props;
+  const user = fetchedTask?.assigneeId ? fetchedTask : canSubmit && loggedInUser;
+  const profilePicture = user?.assigneeProfilePicture ?? user?.profilePicture;
+  const username = user?.assigneeUsername ?? user?.username;
 
   return (
     <MakeSubmissionDiv>
@@ -704,9 +751,9 @@ const MakeSubmissionBlock = (props) => {
           width: '100%',
         }}
       >
-        {fetchedTask?.assigneeUsername && (
+        {canSubmit && (
           <>
-            {fetchedTask?.assigneeProfilePicture ? (
+            {profilePicture ? (
               <SafeImage
                 style={{
                   width: '26px',
@@ -714,7 +761,7 @@ const MakeSubmissionBlock = (props) => {
                   borderRadius: '13px',
                   marginRight: '4px',
                 }}
-                src={fetchedTask?.assigneeProfilePicture}
+                src={profilePicture}
               />
             ) : (
               <DefaultUserImage
@@ -731,7 +778,7 @@ const MakeSubmissionBlock = (props) => {
                 fontSize: '16px',
               }}
             >
-              {fetchedTask?.assigneeUsername}
+              {username}
             </TaskSectionInfoText>
             <div
               style={{
@@ -764,12 +811,15 @@ export const TaskSubmissionContent = (props) => {
     setFetchedTaskSubmissions,
     handleClose,
     setShowPaymentModal,
+    getTaskSubmissionsForTask,
   } = props;
 
   const router = useRouter();
   const [submissionToEdit, setSubmissionToEdit] = useState(null);
   const [moveProgressButton, setMoveProgressButton] = useState(true);
   const taskStatus = fetchedTask?.status;
+  const fetchedTaskSubmissionsLength = fetchedTaskSubmissions?.length;
+  const loggedInUser = useMe();
   if (taskSubmissionLoading) {
     return <CircularProgress />;
   }
@@ -829,12 +879,12 @@ export const TaskSubmissionContent = (props) => {
       </div>
     );
   }
-  if (!canSubmit && fetchedTaskSubmissions?.length === 0 && fetchedTask?.assigneeUsername) {
+  if (!canSubmit && fetchedTaskSubmissionsLength === 0 && fetchedTask?.assigneeUsername) {
     return (
       <TaskTabText>None at the moment. Only @{fetchedTask?.assigneeUsername} can create a submission </TaskTabText>
     );
   }
-  if (canSubmit && fetchedTaskSubmissions?.length === 0) {
+  if (canSubmit && fetchedTaskSubmissionsLength === 0) {
     return (
       <>
         {makeSubmission ? (
@@ -850,6 +900,8 @@ export const TaskSubmissionContent = (props) => {
             fetchedTask={fetchedTask}
             prompt={'Make a submission'}
             setMakeSubmission={setMakeSubmission}
+            canSubmit={canSubmit}
+            loggedInUser={loggedInUser}
           />
         )}
       </>
@@ -872,7 +924,7 @@ export const TaskSubmissionContent = (props) => {
     );
   }
 
-  if (fetchedTaskSubmissions?.length > 0) {
+  if (fetchedTaskSubmissionsLength > 0) {
     // display list of submissions
     return (
       <>
@@ -891,6 +943,8 @@ export const TaskSubmissionContent = (props) => {
                 fetchedTask={fetchedTask}
                 setMakeSubmission={setMakeSubmission}
                 prompt={'Make another submission'}
+                canSubmit={canSubmit}
+                loggedInUser={loggedInUser}
               />
             )}
             {taskStatus === TASK_STATUS_DONE && fetchedTask?.type === ENTITIES_TYPES.TASK && (
@@ -913,6 +967,9 @@ export const TaskSubmissionContent = (props) => {
                   setFetchedTaskSubmissions={setFetchedTaskSubmissions}
                   fetchedTaskSubmissions={fetchedTaskSubmissions}
                   submission={transformTaskSubmissionToTaskSubmissionCard(taskSubmission, {})}
+                  user={loggedInUser}
+                  setShowPaymentModal={setShowPaymentModal}
+                  getTaskSubmissionsForTask={getTaskSubmissionsForTask}
                 />
               );
             })}

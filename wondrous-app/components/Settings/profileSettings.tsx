@@ -11,9 +11,12 @@ import {
   GeneralSettingsDAONameBlock,
   GeneralSettingsDAONameInput,
   GeneralSettingsInputsBlock,
+  GeneralSettingsIntegrationsBlockButton,
+  GeneralSettingsIntegrationsBlockButtonIcon,
   GeneralSettingsResetButton,
   GeneralSettingsSaveChangesButton,
   LabelBlock,
+  DiscordText,
 } from './styles';
 import { useMutation } from '@apollo/client';
 import { UPDATE_USER } from '../../graphql/mutations';
@@ -24,9 +27,13 @@ import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-ad
 import { CHAR_LIMIT_PROFILE_BIO, USERNAME_REGEX, validateEmail } from '../../utils/constants';
 import { ErrorText } from '../Common';
 import { useSnackbarAlert } from '../../components/Common/SnackbarAlert';
+import { getDiscordUrl } from '../../utils';
+
+const discordUrl = getDiscordUrl();
 
 const ProfileSettings = (props) => {
   const { loggedInUser } = props;
+  console.log('loggedin user', loggedInUser);
   const [username, setUsername] = useState(loggedInUser?.username);
   const [email, setEmail] = useState(loggedInUser?.userInfo?.email);
   const [profilePictureUrl, setProfilePictureUrl] = useState(loggedInUser?.profilePicture);
@@ -164,7 +171,11 @@ const ProfileSettings = (props) => {
             </GeneralSettingsDAODescriptionInputCounter>
           </GeneralSettingsDAODescriptionBlock>
         </GeneralSettingsInputsBlock>
-        <GeneralSettingsInputsBlock>
+        <GeneralSettingsInputsBlock
+          style={{
+            borderBottom: 'none',
+          }}
+        >
           {profilePictureUrl ? (
             <ProfilePictureDiv>
               <LabelBlock>Profile Picture</LabelBlock>
@@ -199,6 +210,42 @@ const ProfileSettings = (props) => {
             />
           )}
         </GeneralSettingsInputsBlock>
+
+        <GeneralSettingsInputsBlock>
+          <LabelBlock
+            style={{
+              marginBottom: '20px',
+            }}
+          >
+            Integrations
+          </LabelBlock>
+          <GeneralSettingsIntegrationsBlockButton
+            style={{
+              maxWidth: 'none',
+              width: 'fit-content',
+              ...(loggedInUser?.userInfo?.discordUsername && {
+                borderRadius: '8px',
+              }),
+            }}
+            buttonInnerStyle={{
+              ...(loggedInUser?.userInfo?.discordUsername && {
+                borderRadius: '8px',
+              }),
+            }}
+            highlighted
+            onClick={() => {
+              if (!loggedInUser?.userInfo?.discordUsername) {
+                window.location.href = discordUrl;
+              }
+            }}
+          >
+            <GeneralSettingsIntegrationsBlockButtonIcon />
+            {loggedInUser?.userInfo?.discordUsername
+              ? `Connected to ${loggedInUser?.userInfo?.discordUsername}`
+              : 'Connect discord'}
+          </GeneralSettingsIntegrationsBlockButton>
+        </GeneralSettingsInputsBlock>
+
         {/* <GeneralSettingsInputsBlock>
           {profileBannerUrl ? (
             <ProfilePictureDiv>

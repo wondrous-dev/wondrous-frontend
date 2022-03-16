@@ -2,7 +2,7 @@ import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';
-import { GET_TASK_FOR_MILESTONE } from '../../../graphql/queries';
+import { GET_TASKS_FOR_MILESTONE } from '../../../graphql/queries';
 import * as Constants from '../../../utils/constants';
 import { Done, InProgress, InReview, ToDo, AwaitingPayment } from '../../Icons';
 import { ArchivedIcon } from '../../Icons/statusIcons';
@@ -35,7 +35,7 @@ export const MilestoneTaskList = (props) => {
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(false);
   const limit = 10;
-  const [getTasksForMilestone, { fetchMore, data }] = useLazyQuery(GET_TASK_FOR_MILESTONE);
+  const [getTasksForMilestone, { fetchMore, data }] = useLazyQuery(GET_TASKS_FOR_MILESTONE);
 
   useEffect(() => {
     if (!data?.getTasksForMilestone && open) {
@@ -46,7 +46,7 @@ export const MilestoneTaskList = (props) => {
           offset: 0,
         },
       })
-        .then(() => {
+        .then(({ data }) => {
           setHasMore(data?.getTasksForMilestone.length >= limit);
         })
         .catch((err) => {
@@ -58,14 +58,13 @@ export const MilestoneTaskList = (props) => {
         variables: {
           offset: data?.getTasksForMilestone.length,
         },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          setHasMore(fetchMoreResult?.getTasksForMilestone.length >= limit);
-          if (!fetchMoreResult) return prev;
-          return Object.assign({}, prev, fetchMoreResult, {
-            getTasksForMilestone: [...prev.getTasksForMilestone, ...fetchMoreResult.getTasksForMilestone],
-          });
-        },
-      });
+      })
+        .then(({ data }) => {
+          setHasMore(data?.getTasksForMilestone.length >= limit);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
   }, [getTasksForMilestone, milestoneId, setHasMore, inView, hasMore, fetchMore, data, open]);
 

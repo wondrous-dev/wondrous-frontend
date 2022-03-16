@@ -259,9 +259,9 @@ export const Table = (props) => {
           urlParams.delete('taskProposal');
           history.pushState({}, '', `${delQuery(router.asPath)}?${urlParams.toString()}`);
         }}
-        task={selectedTaskType !== Constants.TASK_STATUS_SUBMISSION_REQUEST && selectedTask}
+        task={selectedTask}
         isTaskProposal={selectedTaskType === Constants.TASK_STATUS_PROPOSAL_REQUEST}
-        taskId={selectedTaskType === Constants.TASK_STATUS_SUBMISSION_REQUEST ? selectedTask?.taskId : selectedTask?.id}
+        taskId={selectedTask?.id}
       />
 
       {isArchiveModalOpen && selectedTask?.id ? (

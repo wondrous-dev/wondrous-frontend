@@ -65,7 +65,6 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
   const getNotificationText = (notification) => {
     const userName = notification.actorUsername;
     const userId = notification.actorId;
-
     const actor = <StyledLink href={`/profile/${userId}/about`}>{userName}</StyledLink>;
 
     const verb = NOTIFICATION_VERBS[notification.type];
@@ -108,28 +107,35 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
             </div>
           </NotificationsBoardHeader>
           {notifications?.getNotifications?.length ? (
-            notifications.getNotifications?.map((notification) => (
-              <NotificationsItem
-                key={'notifications-' + notification.id}
-                onClick={() =>
-                  markNotificationRead({
-                    variables: {
-                      notificationId: notification?.id,
-                    },
-                    refetchQueries: [GET_NOTIFICATIONS],
-                  })
-                }
-              >
-                <NotificationItemIcon>
-                  {getNotificationActorIcon(notification)}
-                  <NotificationItemStatus>{notification.status}</NotificationItemStatus>
-                </NotificationItemIcon>
-                <NotificationItemBody>
-                  <div style={{ paddingTop: '2px' }}>{getNotificationText(notification)}</div>
-                  <NotificationItemTimeline>{calculateTimeLapse(notification.timestamp)}</NotificationItemTimeline>
-                </NotificationItemBody>
-              </NotificationsItem>
-            ))
+            notifications.getNotifications?.map((notification) => {
+              return (
+                <NotificationsItem
+                  style={{
+                    background: notification?.viewedAt
+                      ? 'linear-gradient(142.08deg,#1E1E1E 39.8%,#141414 73.9%)'
+                      : '#363636',
+                  }}
+                  key={'notifications-' + notification.id}
+                  onClick={() =>
+                    markNotificationRead({
+                      variables: {
+                        notificationId: notification?.id,
+                      },
+                      refetchQueries: [GET_NOTIFICATIONS],
+                    })
+                  }
+                >
+                  <NotificationItemIcon>
+                    {getNotificationActorIcon(notification)}
+                    <NotificationItemStatus>{notification.status}</NotificationItemStatus>
+                  </NotificationItemIcon>
+                  <NotificationItemBody>
+                    <div style={{ paddingTop: '2px' }}>{getNotificationText(notification)}</div>
+                    <NotificationItemTimeline>{calculateTimeLapse(notification.timestamp)}</NotificationItemTimeline>
+                  </NotificationItemBody>
+                </NotificationsItem>
+              );
+            })
           ) : (
             <NotificationsItem>
               <NotificationItemIcon />

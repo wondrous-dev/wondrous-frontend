@@ -44,13 +44,14 @@ import {
   TaskListCardWrapper,
   TaskStatusHeaderText,
   ArchivedTaskUndo,
-  MilestoneSeparator,
+  TaskDivider,
   MilestoneProgressWrapper,
   TaskHeaderIconWrapper,
   SubtaskCountWrapper,
   SubtaskCount,
   TaskContentFooter,
   ClaimButton,
+  TaskCardDescriptionText,
 } from './styles';
 import { renderMentionString } from '../../../utils/common';
 import { useRouter } from 'next/router';
@@ -67,7 +68,7 @@ import { Arrow, Archived } from '../../Icons/sections';
 import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE } from '../../../graphql/mutations/task';
 import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries';
 import { OrgBoardContext } from '../../../utils/contexts';
-import { MilestoneLaunchedBy } from '../MilestoneLaunchedBy';
+import { TaskCreatedBy } from '../TaskCreatedBy';
 import { MilestoneProgress } from '../MilestoneProgress';
 import { MilestoneWrapper } from '../Milestone';
 import PodIcon from '../../Icons/podIcon';
@@ -76,6 +77,7 @@ import { CheckedBoxIcon } from '../../Icons/checkedBox';
 
 import { Claim } from '../../Icons/claimTask';
 import { updateInProgressTask, updateTaskItem } from '../../../utils/board';
+import { TaskBountyOverview } from '../TaskBountyOverview';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -121,7 +123,6 @@ export const Task = (props) => {
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
   const [userList, setUserList] = useState([]);
   const [liked, setLiked] = useState(iLiked);
-  const [modalOpen, setModalOpen] = useState(false);
   const [archiveTask, setArchiveTask] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
   const [setSnackbarAlert] = useSnackbarAlert();
@@ -134,19 +135,16 @@ export const Task = (props) => {
   }
   const isMilestone = type === Constants.ENTITIES_TYPES.MILESTONE;
   const isSubtask = task?.parentTaskId !== null;
+  const isBounty = type === Constants.ENTITIES_TYPES.BOUNTY;
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
     refetchQueries: () => [
-      {
-        query: GET_ORG_TASK_BOARD_TASKS,
-        variables: orgBoard?.getOrgTasksVariables,
-      },
-      {
-        query: GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
-        variables: orgBoard?.getOrgBoardTaskCountVariables,
-      },
       'getUserTaskBoardTasks',
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
       'getPerStatusTaskCountForUserBoard',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
       'getSubtasksForTask',
     ],
   });
@@ -230,12 +228,11 @@ export const Task = (props) => {
 
   const openModal = () => {
     onOpen(task);
-    router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`);
+    router.push(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`);
     // document.body.style.overflow = 'hidden'
     // document.body.scroll = false
     windowOffset = window.scrollY;
     document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
-    setModalOpen(true);
   };
 
   const goToPod = (podId) => {
@@ -267,28 +264,13 @@ export const Task = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assigneeUsername]);
 
-  const taskType = isMilestone ? 'milestone' : 'task';
-
   return (
     <span className={className}>
       <ArchiveTaskModal
         open={archiveTask}
         onClose={() => setArchiveTask(false)}
         onArchive={handleNewStatus}
-        taskType={taskType}
-      />
-      <TaskViewModal
-        open={modalOpen}
-        handleOpen={() => setModalOpen(true)}
-        handleClose={() => {
-          document.body.setAttribute('style', '');
-          window?.scrollTo(0, windowOffset);
-          setModalOpen(false);
-          router.push(`${delQuery(router.asPath)}`, undefined, {
-            shallow: true,
-          });
-        }}
-        task={task}
+        taskType={type}
       />
       <TaskWrapper key={id} onClick={openModal}>
         <TaskInner>
@@ -308,7 +290,11 @@ export const Task = (props) => {
               {isSubtask && <SubtaskDarkIcon />}
               {!isSubtask && !isMilestone && totalSubtask > 0 && <CheckedBoxIcon />}
               {task?.privacyLevel === Constants.PRIVACY_LEVEL.public && (
-                <PodWrapper>
+                <PodWrapper
+                  style={{
+                    marginTop: '0',
+                  }}
+                >
                   <PodName
                     style={{
                       borderRadius: '8px',
@@ -322,17 +308,17 @@ export const Task = (props) => {
             </TaskHeaderIconWrapper>
             {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
           </TaskHeader>
-          <MilestoneLaunchedBy type={type} router={router} createdBy={createdBy} />
-          {isMilestone && <MilestoneSeparator />}
+          <TaskCreatedBy type={type} router={router} createdBy={createdBy} />
+          {(isMilestone || isBounty) && <TaskDivider />}
 
           <TaskContent>
             <TaskTitle>{title}</TaskTitle>
-            <p>
+            <TaskCardDescriptionText>
               {renderMentionString({
-                content: cutString(description, 50),
+                content: description,
                 router,
               })}
-            </p>
+            </TaskCardDescriptionText>
             <TaskContentFooter>
               {task?.podName && (
                 <PodWrapper
@@ -362,6 +348,12 @@ export const Task = (props) => {
                 </SubtaskCountWrapper>
               )}
             </TaskContentFooter>
+            {isBounty && (
+              <TaskBountyOverview
+                totalSubmissionsCount={task?.totalSubmissionsCount}
+                approvedSubmissionsCount={task?.approvedSubmissionsCount}
+              />
+            )}
             <MilestoneProgressWrapper>{isMilestone && <MilestoneProgress milestoneId={id} />}</MilestoneProgressWrapper>
             {media?.length > 0 ? <TaskMedia media={media[0]} /> : <TaskSeparator />}
           </TaskContent>
@@ -370,7 +362,7 @@ export const Task = (props) => {
 						<TaskLikeIcon liked={liked} />
 						<TaskActionAmount>{likes}</TaskActionAmount>
 					</TaskAction> */}
-            {!assigneeId && (
+            {!assigneeId && !isBounty && !isMilestone && (
               <>
                 {claimed ? (
                   <ClaimButton
@@ -447,7 +439,7 @@ export const Task = (props) => {
                       color: White,
                     }}
                   >
-                    Archive {taskType}
+                    Archive {type}
                   </DropDownItem>
                 </DropDown>
               </TaskActionMenu>
@@ -496,97 +488,97 @@ export const TaskListCard = (props) => {
   } else if (taskType === Constants.TASK_STATUS_ARCHIVED) {
     canEdit = task.createdBy === user?.id || task.assigneeId === user?.id;
   }
-  if (viewDetails) {
-    return (
+
+  return (
+    <>
       <TaskViewModal
-        open={true}
+        open={viewDetails}
         handleClose={() => {
           setViewDetails(false);
+          const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}`;
+          window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
         }}
         task={taskType === Constants.TASK_STATUS_IN_REVIEW ? null : task}
         taskId={taskType === Constants.TASK_STATUS_IN_REVIEW ? task?.taskId : task?.id}
         isTaskProposal={taskType === Constants.TASK_STATUS_REQUESTED}
         back={true}
       />
-    );
-  }
-
-  return (
-    <TaskListCardWrapper onClick={() => setViewDetails(true)}>
-      <TaskHeader>
-        <SafeImage
-          src={task?.orgProfilePicture}
-          style={{
-            width: '29px',
-            height: '28px',
-            borderRadius: '4px',
-          }}
-        />
-        <AvatarList
-          style={{ marginLeft: '12px' }}
-          users={[
-            {
-              id: task?.assigneeId || task?.createdBy,
-              name: task?.assigneeUsername || task?.creatorUsername,
-              initials:
-                (task?.assigneeUsername && task?.assigneeUsername[0].toUpperCase()) ||
-                (task?.creatorUsername && task?.creatorUsername[0].toUpperCase()),
-              avatar: {
-                url: task?.assigneeProfilePicture || task?.creatorProfilePicture,
-                isOwnerOfPod: false,
-                color: null,
-              },
-            },
-          ]}
-          id={'task-' + task?.id}
-        />
-        {task?.rewards?.length > 0 && <Compensation rewards={task?.rewards} taskIcon={<TaskIcon />} />}
-      </TaskHeader>
-      <TaskContent>
-        <TaskTitle>{task?.title}</TaskTitle>
-        <p>
-          {renderMentionString({
-            content: cutString(task?.description),
-            router,
-          })}
-        </p>
-        {task?.podName && (
-          <PodWrapper
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              router.push(`/pod/${task?.podId}/boards`, undefined, {
-                shallow: true,
-              });
-            }}
-          >
-            <PodName>{task?.podName.slice(0, 15)}</PodName>
-          </PodWrapper>
-        )}
-        {task?.media?.length > 0 ? <TaskMedia media={task?.media[0]} /> : <TaskSeparator />}
-      </TaskContent>
-      <TaskFooter>
-        {task?.changeRequestedAt && (
-          <div style={flexDivStyle}>
-            <RejectIcon style={rejectIconStyle} />
-            <TaskStatusHeaderText>Change requested</TaskStatusHeaderText>
-          </div>
-        )}
-        {task?.approvedAt && (
-          <div style={flexDivStyle}>
-            <CompletedIcon style={rejectIconStyle} />
-            <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
-          </div>
-        )}
-        <TaskSummaryAction>
-          Details
-          <Arrow
+      <TaskListCardWrapper onClick={() => setViewDetails(true)}>
+        <TaskHeader>
+          <SafeImage
+            src={task?.orgProfilePicture}
             style={{
-              marginLeft: '4px',
+              width: '29px',
+              height: '28px',
+              borderRadius: '4px',
             }}
           />
-        </TaskSummaryAction>
-      </TaskFooter>
-    </TaskListCardWrapper>
+          <AvatarList
+            style={{ marginLeft: '12px' }}
+            users={[
+              {
+                id: task?.assigneeId || task?.createdBy,
+                name: task?.assigneeUsername || task?.creatorUsername,
+                initials:
+                  (task?.assigneeUsername && task?.assigneeUsername[0].toUpperCase()) ||
+                  (task?.creatorUsername && task?.creatorUsername[0].toUpperCase()),
+                avatar: {
+                  url: task?.assigneeProfilePicture || task?.creatorProfilePicture,
+                  isOwnerOfPod: false,
+                  color: null,
+                },
+              },
+            ]}
+            id={'task-' + task?.id}
+          />
+          {task?.rewards?.length > 0 && <Compensation rewards={task?.rewards} taskIcon={<TaskIcon />} />}
+        </TaskHeader>
+        <TaskContent>
+          <TaskTitle>{task?.title}</TaskTitle>
+          <TaskCardDescriptionText>
+            {renderMentionString({
+              content: task?.description,
+              router,
+            })}
+          </TaskCardDescriptionText>
+          {task?.podName && (
+            <PodWrapper
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                router.push(`/pod/${task?.podId}/boards`, undefined, {
+                  shallow: true,
+                });
+              }}
+            >
+              <PodName>{task?.podName.slice(0, 15)}</PodName>
+            </PodWrapper>
+          )}
+          {task?.media?.length > 0 ? <TaskMedia media={task?.media[0]} /> : <TaskSeparator />}
+        </TaskContent>
+        <TaskFooter>
+          {task?.changeRequestedAt && (
+            <div style={flexDivStyle}>
+              <RejectIcon style={rejectIconStyle} />
+              <TaskStatusHeaderText>Change requested</TaskStatusHeaderText>
+            </div>
+          )}
+          {task?.approvedAt && (
+            <div style={flexDivStyle}>
+              <CompletedIcon style={rejectIconStyle} />
+              <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
+            </div>
+          )}
+          <TaskSummaryAction>
+            Details
+            <Arrow
+              style={{
+                marginLeft: '4px',
+              }}
+            />
+          </TaskSummaryAction>
+        </TaskFooter>
+      </TaskListCardWrapper>
+    </>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   CreateFormInputLabel,
   CreateFormMenuItem,
@@ -49,12 +49,22 @@ const DropdownSelect = (props) => {
     }
   };
 
+  const [open, setOpen] = useState(false);
   return (
     <CreateFormSelectBlock style={formSelectStyle}>
       <CreateFormSelectBlockTitle style={titleStyle}>{title}</CreateFormSelectBlockTitle>
       <FormControl>
         {!value && (
-          <CreateFormInputLabel id={`select-label-${name}`} shrink={false}>
+          <CreateFormInputLabel
+            id={`select-label-${name}`}
+            htmlFor={`input-label-${name}`}
+            shrink={false}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setOpen(!open);
+            }}
+          >
             {labelIcon}
             {labelText}
           </CreateFormInputLabel>
@@ -62,13 +72,18 @@ const DropdownSelect = (props) => {
 
         <CreateFormSelect
           // IconComponent={CreateFormSelectArrowIcon}
-          value={value}
+          value={value || ''}
+          open={open}
+          onClick={() => {
+            setOpen(!open);
+          }}
           onChange={handleChange}
           MenuProps={MenuProps}
           labelId={`select-label-${name}`}
           id={`select-${name}`}
           disabled={disabled}
           style={innerStyle}
+          label={labelText}
         >
           {options.map((item) => (
             <CreateFormMenuItem key={item.value} value={item.value}>

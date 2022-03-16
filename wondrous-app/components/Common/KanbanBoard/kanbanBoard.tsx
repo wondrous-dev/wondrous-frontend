@@ -9,14 +9,10 @@ import TaskColumn from './TaskColumn';
 
 // Task update (column changes)
 import apollo from '../../../services/apollo';
-import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from '../../../graphql/mutations/task';
+import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER, UPDATE_BOUNTY_STATUS } from '../../../graphql/mutations/task';
 import { parseUserPermissionContext } from '../../../utils/helpers';
-import { BOARD_TYPE, PERMISSIONS, PAYMENT_STATUS } from '../../../utils/constants';
+import { BOARD_TYPE, PERMISSIONS, PAYMENT_STATUS, TASK_TYPE } from '../../../utils/constants';
 import { useMe } from '../../Auth/withAuth';
-import {
-  GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
-  GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE,
-} from '../../../graphql/queries';
 import { ColumnsContext } from '../../../utils/contexts';
 import { useMutation } from '@apollo/client';
 import { dedupeColumns, delQuery } from '../../../utils';
@@ -83,13 +79,16 @@ const KanbanBoard = (props) => {
   //       service.
   const prevColumnState = usePrevious(columnsState);
   const updateTask = async (taskToBeUpdated) => {
+    const taskType = taskToBeUpdated.type === TASK_TYPE;
+    const taskTypeMutation = taskType ? UPDATE_TASK_STATUS : UPDATE_BOUNTY_STATUS;
+    const idKey = taskType ? 'taskId' : 'bountyId';
     try {
       const {
         data: { updateTask: task },
       } = await apollo.mutate({
-        mutation: UPDATE_TASK_STATUS,
+        mutation: taskTypeMutation,
         variables: {
-          taskId: taskToBeUpdated.id,
+          [idKey]: taskToBeUpdated.id,
           input: {
             newStatus: taskToBeUpdated.status,
           },
@@ -181,14 +180,13 @@ const KanbanBoard = (props) => {
     setColumnsState(dedupeColumns(updatedColumns));
   };
 
-  const hasQuery = router?.query?.task || router?.query?.taskProposal;
   useEffect(() => {
-    if (hasQuery && !once && (orgBoard || userBoard || podBoard)) {
+    const hasQuery = router?.query?.task || router?.query?.taskProposal;
+    if (hasQuery && (orgBoard || userBoard || podBoard)) {
       setOpenModal(true);
-      setOnce(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasQuery, orgBoard || userBoard || podBoard]);
+  }, [router?.query?.task, router?.query?.taskProposal, orgBoard || userBoard || podBoard]);
 
   const onDragEnd = (result) => {
     moveCard(result?.draggableId, result?.destination?.droppableId, result?.destination?.index);
@@ -215,7 +213,8 @@ const KanbanBoard = (props) => {
               window?.scrollTo(0, Number(top[0]));
             }
             setOpenModal(false);
-            router.replace(`${delQuery(router.asPath)}?view=${router?.query?.view}`);
+            const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}`;
+            router.push(newUrl, undefined, { shallow: true });
           }}
           taskId={router?.query?.task || router?.query?.taskProposal}
           isTaskProposal={!!router?.query?.taskProposal}

@@ -1,14 +1,14 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import React, { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { GET_ORG_JOIN_REQUEST_COUNT, GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD } from '../../../graphql/queries';
+import { GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD } from '../../../graphql/queries';
 import { GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT } from '../../../graphql/queries/workflowBoards';
 import { TASK_STATUS_PROPOSAL_REQUEST, TASK_STATUS_SUBMISSION_REQUEST } from '../../../utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { DoneWithBorder } from '../../Icons';
 import { InReviewIcon, MembershipRequestIcon, ProposalsRemainingIcon, TodoIcon } from '../../Icons/statusIcons';
 import DashboardPanelExpanded from '../DashboardPanelExpanded';
-import DashboardPanelSticky from '../DashboardPanelSticky';
+// import DashboardPanelSticky from '../DashboardPanelSticky'; NOTE: hide for now
 import { DashboardPanelWrapper } from './styles';
 
 const panels = { contributor: 'Contributor', admin: 'Admin' };
@@ -97,7 +97,7 @@ const DashboardPanel = (props) => {
     useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD);
   const { data: getWorkFlowBoardReviewableItemsCountData, loading: getWorkFlowBoardReviewableItemsCountLoading } =
     useQuery(GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT);
-  const { data: getOrgJoinRequestCount } = useQuery(GET_ORG_JOIN_REQUEST_COUNT);
+
   const activePanel = isAdmin ? panels.admin : panels.contributor;
   const activePanelData = isAdmin
     ? getWorkFlowBoardReviewableItemsCountData?.getWorkFlowBoardReviewableItemsCount
@@ -117,14 +117,14 @@ const DashboardPanel = (props) => {
 
   return (
     <DashboardPanelWrapper>
-      {!inView && (
+      {/* {!inView && (
         <DashboardPanelSticky
           activePanelStatusCards={activePanelStatusCards}
           selectedStatus={selectedStatus}
           setSelectedStatus={setSelectedStatus}
           isAdmin={isAdmin}
         />
-      )}
+      )} NOTE: hide for now */}
       <DashboardPanelExpanded
         activePanel={activePanel}
         activePanelStatusCards={activePanelStatusCards}

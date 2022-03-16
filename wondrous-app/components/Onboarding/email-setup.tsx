@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useMutation } from '@apollo/client';
 import {
   InviteWelcomeBoxParagraph,
   InviteWelcomeBoxWrapper,
@@ -22,6 +23,7 @@ import { ThirdStep } from '../../components/Common/Image/OnboardingProgressBar';
 import { CircularProgress } from '@material-ui/core';
 import { StyledCancelButton } from '../Common/ArchiveTaskModal/styles';
 import { validateEmail } from '../../utils/constants';
+import { SET_USER_SIGNUP_COMPLETE } from '../../graphql/mutations';
 
 export const Logo = ({ divStyle }) => {
   return (
@@ -32,11 +34,12 @@ export const Logo = ({ divStyle }) => {
   );
 };
 
-export const InviteWelcomeBox = ({ updateUser, firstOrg }) => {
+export const InviteWelcomeBox = ({ updateUser, firstOrg, firstPod }) => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(null);
   const router = useRouter();
+  const [setUserSignupComplete] = useMutation(SET_USER_SIGNUP_COMPLETE);
   const buttonStyle = {
     background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
     position: 'relative',
@@ -44,6 +47,10 @@ export const InviteWelcomeBox = ({ updateUser, firstOrg }) => {
     bottom: '0',
     right: '0',
   };
+
+  useEffect(() => {
+    setUserSignupComplete();
+  }, []);
 
   return (
     <InviteWelcomeBoxWrapper>
@@ -101,7 +108,11 @@ export const InviteWelcomeBox = ({ updateUser, firstOrg }) => {
       />
       {error && <ErrorText>{error}</ErrorText>}
       {loading ? (
-        <CircularProgress />
+        <CircularProgress
+          style={{
+            marginTop: '16px',
+          }}
+        />
       ) : (
         <div
           style={{
@@ -112,14 +123,21 @@ export const InviteWelcomeBox = ({ updateUser, firstOrg }) => {
         >
           <LaterButton
             onClick={() => {
-              if (!firstOrg) {
+              if (!firstOrg && !firstPod) {
                 router.push('/explore', undefined, {
                   shallow: true,
                 });
+              } else {
+                if (firstPod) {
+                  router.push(`/pod/${firstPod?.id}/boards`, undefined, {
+                    shallow: true,
+                  });
+                } else if (firstOrg) {
+                  router.push(`/organization/${firstOrg?.username}/boards`, undefined, {
+                    shallow: true,
+                  });
+                }
               }
-              router.push(`/organization/${firstOrg?.username}/boards`, undefined, {
-                shallow: true,
-              });
             }}
             buttonInnerStyle={{
               fontFamily: 'Space Grotesk',

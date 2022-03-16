@@ -22,11 +22,9 @@ import { SecondStep, ThirdStep } from '../../components/Common/Image/OnboardingP
 import { useWonderWeb3 } from '../../services/web3';
 import { Field, FieldInput } from '../Common/field';
 import { useMe } from '../Auth/withAuth';
-import { HighlightBlue } from '../../theme/colors';
-import { getFilenameAndType, uploadMedia } from '../../utils/media';
-import { SafeImage } from '../Common/Image';
-import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
-import { Button } from '../Common/button';
+import { getDiscordUrl } from '../../utils';
+
+const DISCORD_OAUTH_URL = getDiscordUrl();
 
 export const Logo = ({ divStyle }) => {
   return (
@@ -85,7 +83,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
           width: '100%',
         }}
       >
-        Connect your Discord to get preapproval to join DAOs you’re a Discord member of.
+        Connect your Discord to get notifications from Wonder for your DAO contributions
       </InviteWelcomeBoxParagraph>
       <DiscordLogo />
       <div
@@ -100,7 +98,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
             padding: '8px',
           }}
           onClick={() =>
-            router.push('/onboarding/add-email', undefined, {
+            router.push('/onboarding/email-setup', undefined, {
               shallow: true,
             })
           }
@@ -109,15 +107,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
         </LaterButton>
         <ContinueButton
           style={buttonStyle}
-          onClick={() =>
-            updateUser({
-              variables: {
-                input: {
-                  bio,
-                },
-              },
-            })
-          }
+          onClick={() => (window.location.href = DISCORD_OAUTH_URL)}
           buttonInnerStyle={{
             padding: '8px 16px',
           }}

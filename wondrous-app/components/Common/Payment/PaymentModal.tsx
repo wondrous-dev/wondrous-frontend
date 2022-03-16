@@ -21,7 +21,7 @@ import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
 import { SafeImage } from '../Image';
 import { parseUserPermissionContext } from '../../../utils/helpers';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
-import { PERMISSIONS } from '../../../utils/constants';
+import { BOUNTY_TYPE, PERMISSIONS } from '../../../utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { useRouter } from 'next/router';
 import { DAOIcon } from '../../Icons/dao';
@@ -133,6 +133,12 @@ export const MakePaymentModal = (props) => {
   };
 
   const canPay = permissions.includes(PERMISSIONS.APPROVE_PAYMENT) || permissions.includes(PERMISSIONS.FULL_ACCESS);
+
+  const isBounty = fetchedTask.type === BOUNTY_TYPE;
+  const payee = {
+    userId: isBounty ? approvedSubmission?.createdBy : fetchedTask?.assigneeId,
+    username: isBounty ? approvedSubmission?.creator.username : fetchedTask.assigneeUsername,
+  };
   return (
     <>
       <Modal open={open} onClose={handleCloseAll}>
@@ -178,7 +184,7 @@ export const MakePaymentModal = (props) => {
                   {rewardAmount} {tokenName?.toUpperCase()}{' '}
                 </span>
                 to{' '}
-                <Link href={`/profile/${fetchedTask?.assigneeId}/about`}>
+                <Link href={`/profile/${payee.userId}/about`}>
                   <a
                     style={{
                       color: '#ffffff',
@@ -187,7 +193,7 @@ export const MakePaymentModal = (props) => {
                     }}
                     target="_blank"
                   >
-                    {fetchedTask.assigneeUsername}
+                    {payee.username}
                   </a>
                 </Link>{' '}
               </PaymentTitleText>

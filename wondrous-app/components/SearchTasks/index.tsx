@@ -14,8 +14,8 @@ import { TaskFragment } from '../../types/task';
 import { TASK_TYPE, BOUNTY_TYPE, MILESTONE_TYPE } from '../../utils/constants';
 import { delQuery } from '../../utils';
 import { useRouter } from 'next/router';
-import {TaskViewModal} from "../Common/Task/modal";
-import * as Constants from "../../utils/constants";
+import { TaskViewModal } from '../Common/Task/modal';
+import * as Constants from '../../utils/constants';
 
 const TaskTypeIcons = {
   [TASK_TYPE]: <TaskIcon />,
@@ -84,16 +84,16 @@ export default function SearchTasks({ onSearch }: Props) {
   return (
     <>
       <TaskViewModal
-          open={!!selectedTask}
-          handleClose={() => {
-            setSelectedTask(null);
+        open={!!selectedTask}
+        handleClose={() => {
+          setSelectedTask(null);
 
-            const urlParams: any = new URLSearchParams(window.location.search);
-            urlParams.delete('task');
-            urlParams.delete('taskProposal');
-            history.pushState({}, '', `${delQuery(router.asPath)}?${urlParams.toString()}`);
-          }}
-          task={selectedTask}
+          const urlParams: any = new URLSearchParams(window.location.search);
+          urlParams.delete('task');
+          urlParams.delete('taskProposal');
+          history.pushState({}, '', `${delQuery(router.asPath)}?${urlParams.toString()}`);
+        }}
+        task={selectedTask}
       />
 
       <Autocomplete
@@ -103,10 +103,14 @@ export default function SearchTasks({ onSearch }: Props) {
         // inputValue={inputValue}
         onInputChange={(event, searchString) => {
           handleInputChange(event, searchString);
-          setInputValue(searchString);
+          if (searchString === 'undefined') {
+            setInputValue('');
+          } else {
+            setInputValue(searchString || '');
+          }
         }}
         freeSolo
-        getOptionLabel={(takOrUser) => takOrUser.username || takOrUser.title}
+        getOptionLabel={(takOrUser) => takOrUser.username || takOrUser.title || inputValue}
         options={options}
         filterOptions={(x) => x}
         renderOption={(props, taskOrUser) => {
@@ -154,20 +158,22 @@ export default function SearchTasks({ onSearch }: Props) {
 
           return content;
         }}
-        renderInput={(params) => (
-          <Input
-            {...params}
-            placeholder="Search people or pods..."
-            InputProps={{
-              ...params.InputProps,
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        )}
+        renderInput={(params) => {
+          return (
+            <Input
+              {...params}
+              placeholder="Search people or pods..."
+              InputProps={{
+                ...params.InputProps,
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          );
+        }}
       />
     </>
   );
