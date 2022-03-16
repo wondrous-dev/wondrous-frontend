@@ -4,7 +4,7 @@ import { getMainDefinition, offsetLimitPagination } from '@apollo/client/utiliti
 import { getAuthHeader, getWaitlistAuthHeader } from '../components/Auth/withAuth';
 
 // Staging is http://34.135.9.199/graphql
-const graphqlUri = process.env.NEXT_PUBLIC_GRAPHQL_SERVER_URL || 'http://localhost:4000/graphql';
+const graphqlUri = process.env.NEXT_PUBLIC_GRAPHQL_SERVER_URL || 'https://apistaging.wonderapp.co/graphql';
 
 const wsBaseUrl = graphqlUri;
 const wsUri = wsBaseUrl.replace(/^https?/, process.env.NEXT_PUBLIC_ENV === 'dev' ? 'ws' : 'wss');
