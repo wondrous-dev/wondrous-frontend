@@ -74,8 +74,36 @@ const filterRoles = (roles, isOwner, userIsOwner) => {
 const MemberRoleDropdown = (props) => {
   const { existingRole, roleList, userId, podId, isPod } = props;
   const [role, setRole] = useState(existingRole?.id);
-  const [updateUserOrgRole] = useMutation(UPDATE_USER_ORG_ROLE);
-  const [updateUserPodRole] = useMutation(UPDATE_USER_POD_ROLE);
+  const [updateUserOrgRole] = useMutation(UPDATE_USER_ORG_ROLE, {
+    onCompleted: () => {
+      setSnackbarAlert({
+        message: 'Role updated successfully.',
+        open: true,
+      });
+    },
+    onError: () => {
+      setSnackbarAlert({
+        message: 'Something went wrong.',
+        open: true,
+        severity: 'error',
+      });
+    },
+  });
+  const [updateUserPodRole] = useMutation(UPDATE_USER_POD_ROLE, {
+    onCompleted: () => {
+      setSnackbarAlert({
+        message: 'Role updated successfully.',
+        open: true,
+      });
+    },
+    onError: () => {
+      setSnackbarAlert({
+        message: 'Something went wrong.',
+        open: true,
+        severity: 'error',
+      });
+    },
+  });
   const isOwner = existingRole?.permissions.includes(PERMISSIONS.FULL_ACCESS);
   const [setSnackbarAlert] = useSnackbarAlert();
   const settings = useSettings();
@@ -107,20 +135,7 @@ const MemberRoleDropdown = (props) => {
                 roleId,
               },
             },
-          })
-            .then(() => {
-              setSnackbarAlert({
-                message: 'Role updated successfully.',
-                open: true,
-              });
-            })
-            .catch(() => {
-              setSnackbarAlert({
-                message: 'Something went wrong.',
-                open: true,
-                severity: 'error',
-              });
-            });
+          });
         } else {
           updateUserOrgRole({
             variables: {
