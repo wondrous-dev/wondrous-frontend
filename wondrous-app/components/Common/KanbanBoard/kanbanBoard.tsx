@@ -189,7 +189,11 @@ const KanbanBoard = (props) => {
   }, [router?.query?.task, router?.query?.taskProposal, orgBoard || userBoard || podBoard]);
 
   const onDragEnd = (result) => {
-    moveCard(result?.draggableId, result?.destination?.droppableId, result?.destination?.index);
+    try {
+      moveCard(result.draggableId, result.destination.droppableId, result.destination.index);
+    } catch {
+      console.error('The card was dropped outside the context of DragDropContext.');
+    }
   };
 
   return (
