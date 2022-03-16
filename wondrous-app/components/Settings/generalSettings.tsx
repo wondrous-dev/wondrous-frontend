@@ -46,6 +46,7 @@ import { AndroidSwitch } from '../CreateEntity/createEntityModal';
 import { filteredColorOptions, POD_COLOR, PRIVACY_LEVEL } from '../../utils/constants';
 import ColorSettings from './ColorDropdown';
 import { White, HighlightBlue } from '../../theme/colors';
+import { useSnackbarAlert } from '@components/Common/SnackbarAlert';
 
 const LIMIT = 200;
 
@@ -78,8 +79,6 @@ const LINKS_DATA = [
 
 const GeneralSettingsComponent = (props) => {
   const {
-    toast,
-    setToast,
     setProfile,
     newProfile,
     color,
@@ -115,14 +114,6 @@ const GeneralSettingsComponent = (props) => {
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
-        <Snackbar
-          autoHideDuration={3000}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          open={toast.show}
-          onClose={() => setToast({ ...toast, show: false })}
-          message={toast.message}
-        />
-
         <HeaderBlock title="General settings" description="Update profile page settings." />
         <GeneralSettingsInputsBlock>
           <GeneralSettingsDAONameBlock>
@@ -438,6 +429,7 @@ const GeneralSettings = () => {
   const [orgLinks, setOrgLinks] = useState([]);
   const [descriptionText, setDescriptionText] = useState('');
   const [toast, setToast] = useState({ show: false, message: '' });
+  const [setSnackbarAlert] = useSnackbarAlert();
   const router = useRouter();
   const { orgId } = router.query;
   const [discordWebhookLink, setDiscordWebhookLink] = useState('');
@@ -525,7 +517,20 @@ const GeneralSettings = () => {
           }),
         },
       },
-    });
+    })
+      .then(() => {
+        setSnackbarAlert({
+          message: 'DAO updated successfully.',
+          open: true,
+        });
+      })
+      .catch(() => {
+        setSnackbarAlert({
+          message: 'Something went wrong.',
+          open: true,
+          severity: 'error',
+        });
+      });
   }
 
   if (!orgProfile) {
@@ -540,8 +545,6 @@ const GeneralSettings = () => {
 
   return (
     <GeneralSettingsComponent
-      toast={toast}
-      setToast={setToast}
       descriptionText={descriptionText}
       handleDescriptionChange={handleDescriptionChange}
       handleLinkChange={(event, item) => handleLinkChange(event, item, { ...orgLinks }, setOrgLinks)}
