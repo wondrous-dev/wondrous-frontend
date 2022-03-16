@@ -32,22 +32,12 @@ type Props = {
     subTitle: string;
     permission: string;
   }>;
-  toast: { show: boolean; message: string };
   onCreateNewRole: (name: string, permissions: string[]) => any;
   onDeleteRole: (role: Role) => any;
   onPermissionsChange: (role: Role, permissions: string[]) => any;
-  onToastClose: () => any;
 };
 
-const Roles = ({
-  roles,
-  onCreateNewRole,
-  onDeleteRole,
-  onPermissionsChange,
-  toast,
-  onToastClose,
-  permissons,
-}: Props) => {
+const Roles = ({ roles, onCreateNewRole, onDeleteRole, onPermissionsChange, permissons }: Props) => {
   const [newRoleName, setNewRoleName] = useState('');
   const [newRolePermissionsExpanded, setNewRolePermissionsExpanded] = useState(false);
   const [newRolePermissions, setNewRolePermissions] = useState([]);
@@ -86,14 +76,6 @@ const Roles = ({
 
   return (
     <SettingsWrapper>
-      <Snackbar
-        autoHideDuration={3000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        open={toast.show}
-        onClose={onToastClose}
-        message={toast.message}
-      />
-
       <RolesContainer>
         <HeaderBlock
           icon={<UserCheckIcon circle />}

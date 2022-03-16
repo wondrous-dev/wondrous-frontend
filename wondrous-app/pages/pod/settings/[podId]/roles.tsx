@@ -7,10 +7,11 @@ import { GET_POD_ROLES } from '../../../../graphql/queries';
 import { Role } from '../../../../types/common';
 import { CREATE_POD_ROLE, DELETE_POD_ROLE, UPDATE_POD_ROLE } from '../../../../graphql/mutations/pod';
 import permissons from '../../../../utils/podPermissions';
+import { useSnackbarAlert } from '@components/Common/SnackbarAlert';
 
 const RolesPage = () => {
   const [roles, setRoles] = useState([]);
-  const [toast, setToast] = useState({ show: false, message: '' });
+  const [setSnackbarAlert] = useSnackbarAlert();
   const router = useRouter();
   const { podId } = router.query;
   const [getPodRoles, { data: getPodRolesData }] = useLazyQuery(GET_POD_ROLES, {
@@ -21,20 +22,50 @@ const RolesPage = () => {
 
   const [createPodRole] = useMutation(CREATE_POD_ROLE, {
     onCompleted: ({ createPodRole: role }) => {
-      setToast({ ...toast, message: `${role.name} created successfully.`, show: true });
+      setSnackbarAlert({
+        message: `${role.name} role created successfully.`,
+        open: true,
+      });
       getPodRoles();
+    },
+    onError: () => {
+      setSnackbarAlert({
+        message: 'Something went wrong.',
+        open: true,
+        severity: 'error',
+      });
     },
   });
 
   const [updatePodRole] = useMutation(UPDATE_POD_ROLE, {
     onCompleted: ({ updatePodRole: role }) => {
-      setToast({ ...toast, message: `${role.name} updated successfully.`, show: true });
+      setSnackbarAlert({
+        message: `${role.name} updated successfully.`,
+        open: true,
+      });
+    },
+    onError: () => {
+      setSnackbarAlert({
+        message: 'Something went wrong.',
+        open: true,
+        severity: 'error',
+      });
     },
   });
 
   const [deletePodRole] = useMutation(DELETE_POD_ROLE, {
     onCompleted: () => {
-      setToast({ ...toast, message: 'Role deleted successfully.', show: true });
+      setSnackbarAlert({
+        message: `Role deleted successfully.`,
+        open: true,
+      });
+    },
+    onError: () => {
+      setSnackbarAlert({
+        message: 'Something went wrong.',
+        open: true,
+        severity: 'error',
+      });
     },
   });
 
@@ -95,8 +126,6 @@ const RolesPage = () => {
       }}
       onDeleteRole={deleteRole}
       onPermissionsChange={updateRolePermissions}
-      toast={toast}
-      onToastClose={() => setToast({ ...toast, show: false })}
     />
   );
 };

@@ -7,10 +7,11 @@ import { GET_ORG_ROLES } from '../../../../graphql/queries';
 import { CREATE_ORG_ROLE, DELETE_ORG_ROLE, UPDATE_ORG_ROLE } from '../../../../graphql/mutations/org';
 import { Role } from '../../../../types/common';
 import permissons from '../../../../utils/orgPermissions';
+import { useSnackbarAlert } from '@components/Common/SnackbarAlert';
 
 const RolesPage = () => {
   const [roles, setRoles] = useState([]);
-  const [toast, setToast] = useState({ show: false, message: '' });
+  const [setSnackbarAlert] = useSnackbarAlert();
   // Get organization roles
   const router = useRouter();
   const { orgId } = router.query;
@@ -22,22 +23,52 @@ const RolesPage = () => {
 
   // Mutation to create organization role
   const [createOrgRole] = useMutation(CREATE_ORG_ROLE, {
-    onCompleted: ({ createOrgRole: role }) => {
-      setToast({ ...toast, message: `${role.name} created successfully.`, show: true });
+    onCompleted: ({ createOrgRole }) => {
+      setSnackbarAlert({
+        message: `${createOrgRole.name} created successfully.`,
+        open: true,
+      });
       getOrgRoles();
+    },
+    onError: () => {
+      setSnackbarAlert({
+        message: 'Something went wrong.',
+        open: true,
+        severity: 'error',
+      });
     },
   });
 
   const [updateOrgRole] = useMutation(UPDATE_ORG_ROLE, {
-    onCompleted: ({ updateOrgRole: role }) => {
-      setToast({ ...toast, message: `${role.name} updated successfully.`, show: true });
+    onCompleted: ({ updateOrgRole }) => {
+      setSnackbarAlert({
+        message: `${updateOrgRole.name} updated successfully.`,
+        open: true,
+      });
+    },
+    onError: () => {
+      setSnackbarAlert({
+        message: 'Something went wrong.',
+        open: true,
+        severity: 'error',
+      });
     },
   });
 
   // Mutation to delete organization role
   const [deleteOrgRole] = useMutation(DELETE_ORG_ROLE, {
     onCompleted: () => {
-      setToast({ ...toast, message: 'Role deleted successfully.', show: true });
+      setSnackbarAlert({
+        message: `Role deleted successfully.`,
+        open: true,
+      });
+    },
+    onError: () => {
+      setSnackbarAlert({
+        message: 'Something went wrong.',
+        open: true,
+        severity: 'error',
+      });
     },
   });
 
@@ -99,8 +130,6 @@ const RolesPage = () => {
       }}
       onPermissionsChange={updateRolePermissions}
       onDeleteRole={deleteRole}
-      toast={toast}
-      onToastClose={() => setToast({ ...toast, show: false })}
     />
   );
 };
