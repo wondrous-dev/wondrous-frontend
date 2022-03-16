@@ -145,20 +145,7 @@ const MemberRoleDropdown = (props) => {
                 roleId,
               },
             },
-          })
-            .then(() => {
-              setSnackbarAlert({
-                message: 'Role updated successfully.',
-                open: true,
-              });
-            })
-            .catch(() => {
-              setSnackbarAlert({
-                message: 'Something went wrong.',
-                open: true,
-                severity: 'error',
-              });
-            });
+          });
         }
       }}
       labelText={isOwner && !role ? 'Owner' : 'Choose your role'}
