@@ -1,5 +1,5 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { styled, Switch, TextField } from '@material-ui/core';
+import { CircularProgress, styled, Switch, TextField } from '@material-ui/core';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { useRouter } from 'next/router';
@@ -464,7 +464,7 @@ const CreateLayoutBaseModal = (props) => {
     return justCreatedPod;
   }, [pods, pod]);
 
-  const [createTask] = useMutation(CREATE_TASK, {
+  const [createTask, { loading: createTaskLoading }] = useMutation(CREATE_TASK, {
     refetchQueries: () => [
       'getPerStatusTaskCountForMilestone',
       'getUserTaskBoardTasks',
@@ -475,7 +475,7 @@ const CreateLayoutBaseModal = (props) => {
   });
   const [createBounty] = useMutation(CREATE_BOUNTY);
 
-  const [createTaskProposal] = useMutation(CREATE_TASK_PROPOSAL);
+  const [createTaskProposal, { loading: createTaskProposalLoading }] = useMutation(CREATE_TASK_PROPOSAL);
 
   const [createPod] = useMutation(CREATE_POD, {
     onCompleted: (data) => {
@@ -488,7 +488,7 @@ const CreateLayoutBaseModal = (props) => {
     refetchQueries: ['getOrgById'],
   });
 
-  const [createMilestone] = useMutation(CREATE_MILESTONE);
+  const [createMilestone, { loading: createMilestoneLoading }] = useMutation(CREATE_MILESTONE);
 
   const submitMutation = useCallback(() => {
     switch (entityType) {
@@ -788,6 +788,7 @@ const CreateLayoutBaseModal = (props) => {
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
+  const creating = createTaskLoading || createTaskProposalLoading || createMilestoneLoading;
 
   return (
     <CreateFormBaseModal isPod={isPod}>
@@ -1403,8 +1404,10 @@ const CreateLayoutBaseModal = (props) => {
                   cursor: 'default',
                 }),
             }}
+            disabled={creating}
             onClick={submitMutation}
           >
+            {creating ? <CircularProgress size={20} /> : null}
             {canCreateTask ? 'Create' : 'Propose'} {titleText}
           </CreateFormPreviewButton>
         </CreateFormButtonsBlock>

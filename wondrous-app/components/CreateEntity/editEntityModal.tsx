@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
-import { Popper, styled, Switch, TextField } from '@material-ui/core';
+import { CircularProgress, Popper, styled, Switch, TextField } from '@material-ui/core';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -514,7 +514,7 @@ const EditLayoutBaseModal = (props) => {
     return justCreatedPod;
   }, [pods, pod]);
 
-  const [updateTask] = useMutation(UPDATE_TASK, {
+  const [updateTask, { loading: updateTaskLoading }] = useMutation(UPDATE_TASK, {
     refetchQueries: () => [
       'getPerStatusTaskCountForMilestone',
       'getUserTaskBoardTasks',
@@ -537,7 +537,7 @@ const EditLayoutBaseModal = (props) => {
     },
   });
 
-  const [updateBounty] = useMutation(UPDATE_BOUNTY, {
+  const [updateBounty, { loading: updateBountyLoading }] = useMutation(UPDATE_BOUNTY, {
     refetchQueries: () => [
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
@@ -546,7 +546,7 @@ const EditLayoutBaseModal = (props) => {
     ],
   });
 
-  const [updateTaskProposal] = useMutation(UPDATE_TASK_PROPOSAL, {
+  const [updateTaskProposal, { loading: updateTaskProposalLoading }] = useMutation(UPDATE_TASK_PROPOSAL, {
     onCompleted: (data) => {
       const taskProposal = data?.updateTaskProposal;
       const justCreatedPod = getPodObject();
@@ -571,7 +571,7 @@ const EditLayoutBaseModal = (props) => {
     refetchQueries: ['GetOrgTaskBoardProposals'],
   });
 
-  const [updateMilestone] = useMutation(UPDATE_MILESTONE, {
+  const [updateMilestone, { loading: updateMilestoneLoading }] = useMutation(UPDATE_MILESTONE, {
     onCompleted: (data) => {
       const milestone = data?.updateMilestone;
       if (boardColumns?.setColumns && onCorrectPage) {
@@ -770,6 +770,8 @@ const EditLayoutBaseModal = (props) => {
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
+  const updating = updateBountyLoading || updateTaskLoading || updateMilestoneLoading || updateTaskProposalLoading;
+
   return (
     <CreateFormBaseModal>
       <CreateFormBaseModalCloseBtn onClick={handleClose}>
@@ -1386,7 +1388,8 @@ const EditLayoutBaseModal = (props) => {
         {errors.general && <ErrorText> {errors.general} </ErrorText>}
         <CreateFormButtonsBlock>
           <CreateFormCancelButton onClick={cancelEdit}>Cancel</CreateFormCancelButton>
-          <CreateFormPreviewButton onClick={submitMutation}>
+          <CreateFormPreviewButton onClick={submitMutation} disabled={updating}>
+            {updating ? <CircularProgress size={20} /> : null}
             Update {isTaskProposal ? 'proposal' : titleText}
           </CreateFormPreviewButton>
         </CreateFormButtonsBlock>
