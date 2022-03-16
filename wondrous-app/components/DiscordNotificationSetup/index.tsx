@@ -101,8 +101,8 @@ const DiscordNotificationSetup = (props) => {
           fontWeight: 'bolder',
         }}
       >
-        After adding the bot, navigate the channel you want you want to send notifications to in Discord and enter the
-        command
+        After adding the bot (please make sure the bot is in the channel), navigate to the channel you want you want to
+        send notifications to in Discord and enter the command
       </SmallerTopParagraph>
       <SmallerTopParagraph
         style={{
