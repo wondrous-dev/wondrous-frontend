@@ -399,6 +399,7 @@ const EditLayoutBaseModal = (props) => {
     showMembersSection,
     showPrioritySelectSection,
     showDueDateSection,
+    showVisibility,
   } = useMemo(() => {
     return {
       showDeliverableRequirementsSection: isTask,
@@ -409,6 +410,7 @@ const EditLayoutBaseModal = (props) => {
       showMembersSection: isPod,
       showPrioritySelectSection: isMilestone,
       showDueDateSection: isTask || isBounty || isMilestone,
+      showVisibility: isTask || isBounty,
     };
   }, [entityType]);
 
@@ -653,7 +655,6 @@ const EditLayoutBaseModal = (props) => {
             input: {
               title,
               description: descriptionText,
-              privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
               dueDate,
               orgId: org?.id,
               podId: pod?.id,
@@ -1326,15 +1327,67 @@ const EditLayoutBaseModal = (props) => {
         </CreateFormAddDetailsButton> */}
         {addDetails && (
           <CreateFormAddDetailsAppearBlock>
-            {showDueDateSection && (
-              <CreateFormAddDetailsAppearBlockContainer>
+            <CreateFormAddDetailsAppearBlockContainer>
+              {showDueDateSection && (
                 <CreateFormAddDetailsSelects>
                   <CreateFormAddDetailsLocalizationProvider>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                       <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
                     </LocalizationProvider>
                   </CreateFormAddDetailsLocalizationProvider>
-                  <CreateFormAddDetailsSelects>
+                </CreateFormAddDetailsSelects>
+
+                // {/* <CreateFormAddDetailsSelects> */}
+                // {/* <CreateFormAddDetailsSwitch>
+                // 		<CreateFormAddDetailsInputLabel>
+                // 			Private task
+                // 		</CreateFormAddDetailsInputLabel>
+                // 		<AndroidSwitch />
+                // 	</CreateFormAddDetailsSwitch> */}
+
+                // {/*if Suggest a task opened */}
+                // {/* {showBountySwitchSection && !isTaskProposal && (
+                //     <CreateFormAddDetailsSwitch>
+                //       <CreateFormAddDetailsInputLabel>
+                //         This is a bounty
+                //       </CreateFormAddDetailsInputLabel>
+                //       <AndroidSwitch />
+                //     </CreateFormAddDetailsSwitch>
+                //   )} */}
+
+                // {/*if Create a milestone opened*/}
+                // {/* {showPrioritySelectSection && (
+                //     <DropdownSelect
+                //       title="Priority"
+                //       labelText="Choose Milestone"
+                //       options={PRIORITY_SELECT_OPTIONS}
+                //       name="priority"
+                //     />
+                //   )} */}
+                // {/* </CreateFormAddDetailsSelects> */}
+              )}
+            </CreateFormAddDetailsAppearBlockContainer>
+
+            {showLinkAttachmentSection ||
+              (showVisibility && (
+                <CreateFormAddDetailsAppearBlockContainer>
+                  {showLinkAttachmentSection && (
+                    <CreateFormLinkAttachmentBlock
+                      style={{
+                        borderBottom: 'none',
+                      }}
+                    >
+                      <CreateFormLinkAttachmentLabel>Link</CreateFormLinkAttachmentLabel>
+                      <InputForm
+                        value={link}
+                        onChange={(e) => setLink(e.target.value)}
+                        margin
+                        placeholder="Enter link URL"
+                        search={false}
+                      />
+                    </CreateFormLinkAttachmentBlock>
+                  )}
+                  {showVisibility && (
                     <CreateFormAddDetailsTab>
                       <CreateFormAddDetailsInputLabel>
                         Who can see this {titleText.toLowerCase()}?
@@ -1346,46 +1399,9 @@ const EditLayoutBaseModal = (props) => {
                         variant
                       />
                     </CreateFormAddDetailsTab>
-                  </CreateFormAddDetailsSelects>
-                </CreateFormAddDetailsSelects>
-
-                {/* <CreateFormAddDetailsSelects> */}
-                {/* <CreateFormAddDetailsSwitch>
-										<CreateFormAddDetailsInputLabel>
-											Private task
-										</CreateFormAddDetailsInputLabel>
-										<AndroidSwitch />
-									</CreateFormAddDetailsSwitch> */}
-
-                {/*if Suggest a task opened */}
-                {/* {showBountySwitchSection && !isTaskProposal && (
-                    <CreateFormAddDetailsSwitch>
-                      <CreateFormAddDetailsInputLabel>
-                        This is a bounty
-                      </CreateFormAddDetailsInputLabel>
-                      <AndroidSwitch />
-                    </CreateFormAddDetailsSwitch>
-                  )} */}
-
-                {/*if Create a milestone opened*/}
-                {/* {showPrioritySelectSection && (
-                    <DropdownSelect
-                      title="Priority"
-                      labelText="Choose Milestone"
-                      options={PRIORITY_SELECT_OPTIONS}
-                      name="priority"
-                    />
-                  )} */}
-                {/* </CreateFormAddDetailsSelects> */}
-              </CreateFormAddDetailsAppearBlockContainer>
-            )}
-
-            {showLinkAttachmentSection && (
-              <CreateFormLinkAttachmentBlock>
-                <CreateFormLinkAttachmentLabel>Links</CreateFormLinkAttachmentLabel>
-                <InputForm margin placeholder="Enter link attachment" search={false} />
-              </CreateFormLinkAttachmentBlock>
-            )}
+                  )}
+                </CreateFormAddDetailsAppearBlockContainer>
+              ))}
           </CreateFormAddDetailsAppearBlock>
         )}
       </CreateFormAddDetailsSection>

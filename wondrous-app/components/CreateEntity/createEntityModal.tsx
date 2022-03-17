@@ -335,6 +335,7 @@ const CreateLayoutBaseModal = (props) => {
     showMembersSection,
     showPrioritySelectSection,
     showDueDateSection,
+    showVisibility,
   } = useMemo(() => {
     return {
       showDeliverableRequirementsSection: isTask,
@@ -347,6 +348,7 @@ const CreateLayoutBaseModal = (props) => {
       showMembersSection: false,
       showPrioritySelectSection: isMilestone,
       showDueDateSection: isTask || isBounty || isMilestone,
+      showVisibility: isTask || isBounty || isPod,
     };
   }, [isBounty, isMilestone, isPod, isTask]);
 
@@ -637,7 +639,6 @@ const CreateLayoutBaseModal = (props) => {
           podId: pod,
           mediaUploads,
           dueDate,
-          privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
         };
         if (canCreateTask) {
           createMilestone({
@@ -1310,20 +1311,8 @@ const CreateLayoutBaseModal = (props) => {
                       <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
                     </LocalizationProvider>
                   </CreateFormAddDetailsLocalizationProvider>
-                  <CreateFormAddDetailsTab>
-                    <CreateFormAddDetailsInputLabel>
-                      Who can see this {titleText.toLowerCase()}?
-                    </CreateFormAddDetailsInputLabel>
-                    <TabsVisibility
-                      options={tabsVisibilityOptions}
-                      selected={tabsVisibilitySelected}
-                      onChange={tabsVisibilityHandleOnChange}
-                      variant
-                    />
-                  </CreateFormAddDetailsTab>
                 </CreateFormAddDetailsSelects>
-
-                {/* <CreateFormAddDetailsSelects> */}
+                {/* <CreateFormAddDetailsSelects> */}{' '}
                 {/* {isPod && (
                   <CreateFormAddDetailsSwitch>
                     <CreateFormAddDetailsInputLabel>
@@ -1337,15 +1326,13 @@ const CreateLayoutBaseModal = (props) => {
                     />
                   </CreateFormAddDetailsSwitch>
                 )} */}
-
-                {/*if Suggest a task opened */}
+                {/*if Suggest a task opened */}{' '}
                 {/* {showBountySwitchSection && canCreateTask && (
                   <CreateFormAddDetailsSwitch>
                     <CreateFormAddDetailsInputLabel>This is a bounty</CreateFormAddDetailsInputLabel>
                     <AndroidSwitch />
                   </CreateFormAddDetailsSwitch>
                 )} */}
-
                 {/*if Create a milestone opened*/}
                 {/* {showPrioritySelectSection && (
                     <DropdownSelect
@@ -1359,35 +1346,40 @@ const CreateLayoutBaseModal = (props) => {
               </CreateFormAddDetailsAppearBlockContainer>
             )}
 
-            <CreateFormAddDetailsAppearBlockContainer>
-              {showLinkAttachmentSection && (
-                <CreateFormLinkAttachmentBlock
-                  style={{
-                    borderBottom: 'none',
-                  }}
-                >
-                  <CreateFormLinkAttachmentLabel>Link</CreateFormLinkAttachmentLabel>
-                  <InputForm
-                    value={link}
-                    onChange={(e) => setLink(e.target.value)}
-                    margin
-                    placeholder="Enter link URL"
-                    search={false}
-                  />
-                </CreateFormLinkAttachmentBlock>
-              )}
-              {isPod && (
-                <CreateFormSetPodPrivacy>
-                  <CreateFormAddDetailsInputLabel>Who can see this pod?</CreateFormAddDetailsInputLabel>
-                  <TabsVisibility
-                    options={tabsVisibilityOptions}
-                    selected={tabsVisibilitySelected}
-                    onChange={tabsVisibilityHandleOnChange}
-                    variant
-                  />
-                </CreateFormSetPodPrivacy>
-              )}
-            </CreateFormAddDetailsAppearBlockContainer>
+            {showLinkAttachmentSection ||
+              (showVisibility && (
+                <CreateFormAddDetailsAppearBlockContainer>
+                  {showLinkAttachmentSection && (
+                    <CreateFormLinkAttachmentBlock
+                      style={{
+                        borderBottom: 'none',
+                      }}
+                    >
+                      <CreateFormLinkAttachmentLabel>Link</CreateFormLinkAttachmentLabel>
+                      <InputForm
+                        value={link}
+                        onChange={(e) => setLink(e.target.value)}
+                        margin
+                        placeholder="Enter link URL"
+                        search={false}
+                      />
+                    </CreateFormLinkAttachmentBlock>
+                  )}
+                  {showVisibility && (
+                    <CreateFormAddDetailsTab>
+                      <CreateFormAddDetailsInputLabel>
+                        Who can see this {titleText.toLowerCase()}?
+                      </CreateFormAddDetailsInputLabel>
+                      <TabsVisibility
+                        options={tabsVisibilityOptions}
+                        selected={tabsVisibilitySelected}
+                        onChange={tabsVisibilityHandleOnChange}
+                        variant
+                      />
+                    </CreateFormAddDetailsTab>
+                  )}
+                </CreateFormAddDetailsAppearBlockContainer>
+              ))}
           </CreateFormAddDetailsAppearBlock>
         )}
       </CreateFormAddDetailsSection>
