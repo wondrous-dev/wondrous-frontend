@@ -7,18 +7,18 @@ import {
   TASK_STATUS_PAID,
   TASK_STATUS_PROPOSAL_REQUEST,
   TASK_STATUS_REQUESTED,
-  TASK_STATUS_TODO,
   TASK_STATUS_SUBMISSION_REQUEST,
+  TASK_STATUS_TODO,
 } from '../../utils/constants';
 import {
+  Archived,
   AwaitingPayment,
   DoneWithBorder,
   InProgressWithBorder,
   InReview,
-  Paid,
   MembershipRequest,
+  Paid,
   TodoWithBorder,
-  Archived,
 } from './index';
 import { ProposalsRemainingIcon } from './statusIcons';
 

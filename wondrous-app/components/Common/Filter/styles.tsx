@@ -88,7 +88,8 @@ export const FilterBox = styled.div`
   top: 40px;
   left: 0;
 
-  display: ${(props) => (props.open ? 'flex' : 'none')};
+  display: flex;
+  opacity: ${(props) => (props.open ? 1 : 0)};
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
@@ -123,7 +124,7 @@ export const FilterBoxInner = styled.div`
 export const FilterStatus = styled.div`
   display: flex;
   flex-direction: row;
-  align-elements: center;
+  align-items: center;
   justify-content: space-evenly;
 
   width: 100%;
@@ -273,8 +274,8 @@ export const InlineText = styled.span`
 `;
 
 export const FilterValues = styled.span`
-	text-overflow: ellipsis;
-	max-width: 260px;
-	white-space: nowrap;
-	overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
 `;
