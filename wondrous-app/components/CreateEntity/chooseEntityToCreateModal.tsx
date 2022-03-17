@@ -48,6 +48,10 @@ export const ENTITIES_UI_ELEMENTS = {
     icon: CreateLayoutBountyIcon,
     label: 'Bounty',
   },
+  [ENTITIES_TYPES.PROPOSAL]: {
+    icon: CreateLayoutTaskIcon,
+    label: 'Proposal',
+  },
 };
 
 const ChooseEntityToCreateModal = (props) => {

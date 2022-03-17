@@ -410,7 +410,6 @@ const EditLayoutBaseModal = (props) => {
       showDueDateSection: isTask || isMilestone || isBounty,
     };
   }, [entityType]);
-
   const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType];
   const inputRef: any = useRef();
 
@@ -608,9 +607,6 @@ const EditLayoutBaseModal = (props) => {
               ],
             }),
           // TODO: add links?,
-          ...(!isTaskProposal && {
-            assigneeId: assignee?.value,
-          }),
           ...(isTaskProposal && {
             proposedAssigneeId: assignee?.value,
           }),
@@ -628,23 +624,56 @@ const EditLayoutBaseModal = (props) => {
           newErrors.general = 'Please enter the necessary information above';
           setErrors(newErrors);
         } else {
-          if (!isTaskProposal) {
-            updateTask({
-              variables: {
-                taskId: existingTask?.id,
-                input: taskInput,
-              },
-            });
-          } else {
-            updateTaskProposal({
-              variables: {
-                proposalId: existingTask?.id,
-                input: taskInput,
-              },
-            });
-          }
+          updateTask({
+            variables: {
+              taskId: existingTask?.id,
+              input: taskInput,
+            },
+          });
         }
         break;
+      case ENTITIES_TYPES.PROPOSAL: {
+        const proposalInput = {
+          title,
+          description: descriptionText,
+          orgId: org?.id,
+          milestoneId: milestone?.id ?? milestone,
+          podId: pod?.id ?? pod,
+          dueDate,
+          ...(rewardsAmount &&
+            rewardsCurrency && {
+              rewards: [
+                {
+                  rewardAmount: parseFloat(rewardsAmount),
+                  paymentMethodId: rewardsCurrency,
+                },
+              ],
+            }),
+          // TODO: add links?,
+          ...(isTaskProposal && {
+            proposedAssigneeId: assignee?.value,
+          }),
+          userMentions: getMentionArray(descriptionText),
+          mediaUploads,
+        };
+
+        if (!title) {
+          const newErrors = { ...errors };
+          if (!title) {
+            newErrors.title = 'Please enter a title';
+          }
+          newErrors.general = 'Please enter the necessary information above';
+          setErrors(newErrors);
+        } else {
+          updateTaskProposal({
+            variables: {
+              proposalId: existingTask?.id,
+              input: proposalInput,
+            },
+          });
+        }
+        break;
+      }
       case ENTITIES_TYPES.MILESTONE: {
         updateMilestone({
           variables: {

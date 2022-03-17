@@ -126,6 +126,7 @@ export const ENTITIES_TYPES = {
   POD: 'pod',
   ORG: 'org',
   BOUNTY: 'bounty',
+  PROPOSAL: 'proposal'
 };
 
 export const MEDIA_TYPES = {
