@@ -648,6 +648,7 @@ export const TaskViewModal = (props) => {
   const isSubtask = fetchedTask?.parentTaskId !== null;
   const isBounty = fetchedTask?.type === BOUNTY_TYPE;
   const showAssignee = !isTaskProposal && !isMilestone && !isBounty;
+  const entityType = isTaskProposal ? ENTITIES_TYPES.PROPOSAL : fetchedTask?.type;
   const [approvedSubmission, setApprovedSubmission] = useState(null);
 
   const orgBoard = useOrgBoard();
@@ -889,7 +890,7 @@ export const TaskViewModal = (props) => {
         >
           <EditLayoutBaseModal
             open={open}
-            entityType={fetchedTask?.type}
+            entityType={entityType}
             handleClose={() => {
               setEditTask(false);
               setFetchedTask(null);
