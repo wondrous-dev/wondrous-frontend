@@ -473,11 +473,11 @@ const CreateLayoutBaseModal = (props) => {
       'getSubtaskCountForTask',
     ],
   });
-  const [createBounty] = useMutation(CREATE_BOUNTY);
+  const [createBounty, { loading: createBountyLoading }] = useMutation(CREATE_BOUNTY);
 
   const [createTaskProposal, { loading: createTaskProposalLoading }] = useMutation(CREATE_TASK_PROPOSAL);
 
-  const [createPod] = useMutation(CREATE_POD, {
+  const [createPod, { loading: createPodLoading }] = useMutation(CREATE_POD, {
     onCompleted: (data) => {
       const pod = data?.createPod;
       handleClose();
@@ -788,7 +788,8 @@ const CreateLayoutBaseModal = (props) => {
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
-  const creating = createTaskLoading || createTaskProposalLoading || createMilestoneLoading;
+  const creating =
+    createTaskLoading || createTaskProposalLoading || createMilestoneLoading || createBountyLoading || createPodLoading;
 
   return (
     <CreateFormBaseModal isPod={isPod}>
