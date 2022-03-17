@@ -27,6 +27,7 @@ import {
   TASK_STATUS_PROPOSAL_REQUEST,
   TASK_STATUS_SUBMISSION_REQUEST,
   TASK_STATUSES,
+  TASK_STATUS_REQUESTED,
 } from '../../../utils/constants';
 import { UserBoardContext } from '../../../utils/contexts';
 import { useMe } from '../../Auth/withAuth';
@@ -196,7 +197,7 @@ const BoardsPage = (props) => {
     },
   });
 
-  const [getUserTaskBoardProposals] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
+  const { refetch: getUserTaskBoardProposals } = useQuery(GET_USER_TASK_BOARD_PROPOSALS, {
     variables: {
       userId: loggedInUser?.id,
       statuses: [STATUS_OPEN],
@@ -211,7 +212,7 @@ const BoardsPage = (props) => {
     },
   });
 
-  const getUserTaskBoardSubmissions = useQuery(GET_USER_TASK_BOARD_SUBMISSIONS, {
+  const { refetch: getUserTaskBoardSubmissions } = useQuery(GET_USER_TASK_BOARD_SUBMISSIONS, {
     variables: {
       userId: loggedInUser?.id,
       statuses: [STATUS_OPEN],
@@ -220,11 +221,9 @@ const BoardsPage = (props) => {
     },
     onCompleted: (data) => {
       const tasks = data?.getUserTaskBoardSubmissions;
-      if (tasks?.length > 0) {
-        const newColumns = contributorColumns[1]?.section ? [...contributorColumns] : [...COLUMNS];
-        newColumns[1].section.tasks = [...tasks];
-        setContributorColumns(newColumns);
-      }
+      const newColumns = contributorColumns[1]?.section ? [...contributorColumns] : [...COLUMNS];
+      newColumns[1].section.tasks = [...tasks];
+      setContributorColumns(newColumns);
     },
   });
   const getProposalsUserCanReview = useQuery(GET_PROPOSALS_USER_CAN_REVIEW, {
@@ -385,12 +384,15 @@ const BoardsPage = (props) => {
     }));
   }
 
-  const handleFilterChange: any = ({ statuses = DEFAULT_STATUS_ARR, podIds }: TaskFilter) => {
-    const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
-    const shouldSearchProposals = statuses?.length !== taskStatuses.length || statuses === DEFAULT_STATUS_ARR;
-    const shouldSearchTasks = !(searchProposals && statuses?.length === 1);
+  const handleFilterChange: any = ({ statuses, podIds }: TaskFilter) => {
+    const defaultStatuses = [...DEFAULT_STATUS_ARR, TASK_STATUS_REQUESTED, TASK_STATUS_IN_REVIEW];
+    const selectedStatuses = statuses?.length > 0 ? statuses : defaultStatuses;
+    const taskStatuses = selectedStatuses?.filter((status) => TASK_STATUSES.includes(status));
+    const shouldSearchProposals =
+      selectedStatuses?.length !== taskStatuses?.length || selectedStatuses === DEFAULT_STATUS_ARR;
+    const shouldSearchTasks = !(searchProposals && selectedStatuses?.length === 1);
 
-    setStatuses(statuses);
+    setStatuses(selectedStatuses);
 
     if (search) {
       const searchTaskProposalsArgs = {
@@ -440,6 +442,12 @@ const BoardsPage = (props) => {
           statuses: taskStatuses,
           offset: 0,
         },
+      });
+      getUserTaskBoardProposals({
+        limit: selectedStatuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
+      });
+      getUserTaskBoardSubmissions({
+        limit: selectedStatuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
       });
     }
   };

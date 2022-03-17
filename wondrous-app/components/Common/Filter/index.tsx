@@ -92,7 +92,6 @@ const Filter = ({ filterSchema = [], onChange }) => {
 
   const clearItems = () => {
     const newItems = [...items];
-
     setItems(newItems);
     setSelectedTabItems({});
     setSelectedNames([]);

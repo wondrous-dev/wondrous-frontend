@@ -11,16 +11,20 @@ import { Field } from '../components/Common/field';
 import { PaddedParagraph, StyledLink } from '../components/Common/text';
 import { SmallLogo, LoginWrapper, TopBubble, LoginError } from '../components/Pages/login';
 import { useState } from 'react';
-import { CenteredFlexRow } from '../components/Common/index';
 import { Grey50 } from '../theme/colors';
-import { Metamask } from '../components/Icons/metamask';
 import { EmailIcon, LockIcon } from '../components/Icons/userpass';
 import { useWonderWeb3 } from '../services/web3';
 import { emailSignin, getUserSigningMessage, walletSignin } from '../components/Auth/withAuth';
-import { ErrorText } from '../components/Common';
-import { CircularProgress } from '@material-ui/core';
+import MetaMaskConnector from '@components/WalletConnectors/MetaMask';
+import signedMessageIsString from '@services/web3/utils/signedMessageIsString';
+import styled from 'styled-components';
+import CoinbaseConnector from '@components/WalletConnectors/Coinbase';
 
 const prod = process.env.NEXT_PUBLIC_PRODUCTION;
+
+const WalletLoginContainer = styled.div`
+  padding: 10px 0;
+`;
 
 const Login = ({ csrfToken }) => {
   const wonderWeb3 = useWonderWeb3();
@@ -44,15 +48,6 @@ const Login = ({ csrfToken }) => {
     }
   };
 
-  const connectWallet = async (event) => {
-    if (wonderWeb3.address) {
-      loginWithWallet();
-    } else {
-      // Connect Wallet first
-      await wonderWeb3.onConnect();
-    }
-  };
-
   // This happens async, so we bind it to the
   // state of the component.
   const loginWithWallet = async () => {
@@ -62,7 +57,7 @@ const Login = ({ csrfToken }) => {
 
       if (messageToSign) {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
-        if (signedMessage) {
+        if (signedMessageIsString(signedMessage)) {
           // Sign with Wallet
           setLoading(true);
           try {
@@ -85,7 +80,7 @@ const Login = ({ csrfToken }) => {
           }
           setLoading(false);
         } else {
-          setErrorMessage('You need to sign the message on your Metamask');
+          setErrorMessage('You need to sign the message on your wallet');
         }
       } else {
         setErrorMessage('Login failed - try again.');
@@ -94,14 +89,14 @@ const Login = ({ csrfToken }) => {
   };
 
   useEffect(() => {
-    if (wonderWeb3.wallet['address']) {
+    if (wonderWeb3.wallet['address'] && !wonderWeb3.isActivating) {
       // Wallet sign in
       loginWithWallet();
     } else {
       // Error Login Here
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wonderWeb3.wallet]);
+  }, [wonderWeb3.wallet, wonderWeb3.isActivating]);
 
   useEffect(() => {
     setNotSupported(wonderWeb3.notSupportedChain);
@@ -158,30 +153,12 @@ const Login = ({ csrfToken }) => {
                 </LineWithText>
               </>
             )}
-            <div
-              style={{
-                marginTop: '48px',
-              }}
-            >
-              {wonderWeb3.connecting ? (
-                <Button disabled className="disabled">
-                  <Metamask height="18" width="17" />
-                  <PaddedParagraph padding="0 10px">Log in with MetaMask</PaddedParagraph>
-                </Button>
-              ) : (
-                <Button onClick={connectWallet}>
-                  {loading ? (
-                    <CircularProgress />
-                  ) : (
-                    <>
-                      <Metamask height="18" width="17" />
-                      <PaddedParagraph padding="0 10px">Log in with MetaMask</PaddedParagraph>
-                    </>
-                  )}
-                </Button>
-              )}
-              {notSupported && <ErrorText> unsupported chain</ErrorText>}
-            </div>
+            <WalletLoginContainer>
+              <MetaMaskConnector />
+            </WalletLoginContainer>
+            <WalletLoginContainer>
+              <CoinbaseConnector />
+            </WalletLoginContainer>
           </CardBody>
           {/* <CardFooter>
             <Line size="80%" />
