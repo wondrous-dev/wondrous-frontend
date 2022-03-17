@@ -348,9 +348,12 @@ const CreateLayoutBaseModal = (props) => {
       showMembersSection: false,
       showPrioritySelectSection: isMilestone,
       showDueDateSection: isTask || isBounty || isMilestone,
-      showVisibility: isTask || isBounty || isPod,
+      showVisibility:
+        (isTask || isBounty || isPod) &&
+        (orgBoard?.orgData?.privacyLevel === PRIVACY_LEVEL.public ||
+          podBoard?.pod?.privacyLevel === PRIVACY_LEVEL.public),
     };
-  }, [isBounty, isMilestone, isPod, isTask]);
+  }, [isBounty, isMilestone, isPod, isTask, orgBoard?.orgData?.privacyLevel, podBoard?.pod?.privacyLevel]);
 
   const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType];
   const inputRef: any = useRef();
@@ -521,7 +524,9 @@ const CreateLayoutBaseModal = (props) => {
           ...(!canCreateTask && {
             proposedAssigneeId: assignee?.value,
           }),
-          privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
+          ...(isPublicEntity && {
+            privacyLevel: PRIVACY_LEVEL.public,
+          }),
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
@@ -602,7 +607,9 @@ const CreateLayoutBaseModal = (props) => {
             username: title?.toLowerCase().split(' ').join('_'),
             description: descriptionText,
             orgId: org,
-            privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
+            ...(isPublicEntity && {
+              privacyLevel: PRIVACY_LEVEL.public,
+            }),
             links: [
               {
                 url: link,
@@ -795,6 +802,8 @@ const CreateLayoutBaseModal = (props) => {
     : tabsVisibilityOptions[PRIVACY_LEVEL.private];
   const tabsVisibilityHandleOnChange = (e) =>
     setIsPublicEntity(e.target.getAttribute('value') === PRIVACY_LEVEL.public);
+
+  console.log('orgBoard', orgBoard);
 
   return (
     <CreateFormBaseModal isPod={isPod}>

@@ -410,9 +410,12 @@ const EditLayoutBaseModal = (props) => {
       showMembersSection: isPod,
       showPrioritySelectSection: isMilestone,
       showDueDateSection: isTask || isBounty || isMilestone,
-      showVisibility: isTask || isBounty,
+      showVisibility:
+        (isTask || isBounty) &&
+        (orgBoard?.orgData?.privacyLevel === PRIVACY_LEVEL.public ||
+          podBoard?.pod?.privacyLevel === PRIVACY_LEVEL.public),
     };
-  }, [entityType]);
+  }, [isBounty, isMilestone, isPod, isTask, orgBoard?.orgData?.privacyLevel, podBoard?.pod?.privacyLevel]);
 
   const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType];
   const inputRef: any = useRef();
@@ -617,7 +620,9 @@ const EditLayoutBaseModal = (props) => {
           ...(isTaskProposal && {
             proposedAssigneeId: assignee?.value,
           }),
-          privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
+          ...(publicTask && {
+            privacyLevel: PRIVACY_LEVEL.public,
+          }),
           reviewerIds: selectedReviewers.map(({ id }) => id) || [],
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
@@ -1372,19 +1377,9 @@ const EditLayoutBaseModal = (props) => {
               (showVisibility && (
                 <CreateFormAddDetailsAppearBlockContainer>
                   {showLinkAttachmentSection && (
-                    <CreateFormLinkAttachmentBlock
-                      style={{
-                        borderBottom: 'none',
-                      }}
-                    >
-                      <CreateFormLinkAttachmentLabel>Link</CreateFormLinkAttachmentLabel>
-                      <InputForm
-                        value={link}
-                        onChange={(e) => setLink(e.target.value)}
-                        margin
-                        placeholder="Enter link URL"
-                        search={false}
-                      />
+                    <CreateFormLinkAttachmentBlock>
+                      <CreateFormLinkAttachmentLabel>Links</CreateFormLinkAttachmentLabel>
+                      <InputForm margin placeholder="Enter link attachment" search={false} />
                     </CreateFormLinkAttachmentBlock>
                   )}
                   {showVisibility && (

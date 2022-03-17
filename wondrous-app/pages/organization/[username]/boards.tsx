@@ -439,6 +439,7 @@ const BoardsPage = () => {
           : null,
         getOrgTasksVariables,
         setFirstTimeFetch,
+        orgData,
       }}
     >
       <Boards
