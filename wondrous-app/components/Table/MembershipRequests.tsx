@@ -48,17 +48,6 @@ import { TaskViewModal } from '../Common/Task/modal';
 import { delQuery } from '../../utils';
 import { useRouter } from 'next/router';
 import * as Constants from '../../utils/constants';
-import { CreateModalOverlay } from '../CreateEntity/styles';
-import EditLayoutBaseModal from '../CreateEntity/editEntityModal';
-import { ArchiveTaskModal } from '../Common/ArchiveTaskModal';
-import { useApolloClient, useLazyQuery, useMutation } from '@apollo/client';
-import { UPDATE_TASK_STATUS } from '../../graphql/mutations';
-import {
-  GET_ORG_TASK_BOARD_TASKS,
-  GET_TASK_BY_ID,
-  GET_TASK_REVIEWERS,
-  GET_TASK_SUBMISSIONS_FOR_TASK,
-} from '../../graphql/queries';
 import { SnackbarAlertContext } from '../Common/SnackbarAlert';
 import { ArchivedTaskUndo } from '../Common/Task/styles';
 import { OrgBoardContext } from '../../utils/contexts';
