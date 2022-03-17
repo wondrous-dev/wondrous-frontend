@@ -158,7 +158,16 @@ export const MembershipRequestTable = (props) => {
                         alignItems: 'center',
                       }}
                     >
-                      {request?.userProfilePicture && <SafeImage src={request?.userProfilePicture} />}
+                      {request?.userProfilePicture && (
+                        <SafeImage
+                          style={{
+                            width: '17px',
+                            height: '17px',
+                            borderRadius: '17px',
+                          }}
+                          src={request?.userProfilePicture}
+                        />
+                      )}
 
                       <Initials>{request?.userUsername}</Initials>
                     </div>
