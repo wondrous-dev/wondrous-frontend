@@ -153,6 +153,7 @@ export const MembershipRequestTable = (props) => {
                             width: '17px',
                             height: '17px',
                             borderRadius: '17px',
+                            marginRight: '8px',
                           }}
                           src={request?.userProfilePicture}
                         />
