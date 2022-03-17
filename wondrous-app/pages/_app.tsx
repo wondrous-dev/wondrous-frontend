@@ -6,6 +6,7 @@ import { ApolloProvider } from '@apollo/client';
 import { CssBaseline, useMediaQuery } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { SnackbarAlertProvider } from '../components/Common/SnackbarAlert';
+import { Web3Provider } from '@ethersproject/providers';
 
 import '../theme/stylesheets/body.css';
 import '../theme/stylesheets/globals.css';
@@ -14,6 +15,8 @@ import apollo from '../services/apollo';
 import theme from '../theme/theme';
 import { IsMobileContext } from '../utils/contexts';
 import { initHotjar } from '../utils/hotjar';
+import { Web3ReactProvider } from '@web3-react/core';
+import { WonderWeb3Provider } from '@services/web3/context/WonderWeb3Context';
 
 declare global {
   interface Window {
@@ -52,6 +55,13 @@ const MyApp = ({ Component, context, isAuthenticated, user, pageProps: { session
       router.events.off('routeChangeComplete', handleRouteChange);
     };
   }, [router.events]);
+
+  function getLibrary(provider): Web3Provider {
+    const library = new Web3Provider(provider);
+    library.pollingInterval = 12000;
+    return library;
+  }
+
   return (
     <>
       <Head>
@@ -65,13 +75,17 @@ const MyApp = ({ Component, context, isAuthenticated, user, pageProps: { session
             <CssBaseline />
             <ApolloProvider client={apollo}>
               <SnackbarAlertProvider>
-                <Component
-                  {...pageProps}
-                  query={context?.query}
-                  user={user}
-                  isAuthenticated={isAuthenticated}
-                  key={router.asPath}
-                />
+                <Web3ReactProvider getLibrary={getLibrary}>
+                  <WonderWeb3Provider>
+                    <Component
+                      {...pageProps}
+                      query={context?.query}
+                      user={user}
+                      isAuthenticated={isAuthenticated}
+                      key={router.asPath}
+                    />
+                  </WonderWeb3Provider>
+                </Web3ReactProvider>
               </SnackbarAlertProvider>
             </ApolloProvider>
           </ThemeProvider>

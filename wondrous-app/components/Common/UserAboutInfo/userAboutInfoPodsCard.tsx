@@ -20,7 +20,7 @@ const AboutPodsCard = (props) => {
   const router = useRouter();
   const handleOnClick = () => router.push(`/pod/${id}/boards`);
   return (
-    <UserAboutInfoCard>
+    <UserAboutInfoCard onClick={handleOnClick}>
       <UserAboutInfoCardHeader>
         <UserAboutInfoCardHeaderPodIcon color={color} />
         <IconButton onClick={handleOnClick}>
