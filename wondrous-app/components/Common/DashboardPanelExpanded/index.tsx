@@ -53,6 +53,7 @@ const DashboardPanelExpanded = (props) => {
               <DashboardPanelStatusCard
                 key={status.panelPosition}
                 status={status}
+                dataKey={status.dataKey}
                 selectedStatus={selectedStatus}
                 setSelectedStatus={setSelectedStatus}
                 isAdmin={isAdmin}

@@ -1,8 +1,14 @@
 import React from 'react';
 import { useSelectMembership } from '../../../utils/hooks';
 import { StyledBackground, Count, Status, CountIconWrapper, StyledBorder } from './styles';
+import Tooltip from '../Popover';
 
-const DashboardPanelStatusCard = ({ status, selectedStatus, isAdmin, setSelectedStatus }) => {
+const LABEL = {
+  created: 'To-Do',
+  inReview: 'In-Review',
+  completed: 'Completed',
+};
+const DashboardPanelStatusCard = ({ status, selectedStatus, isAdmin, setSelectedStatus, dataKey }) => {
   const { count = 0, label = '', Icon, color, status: panelStatus } = status;
   const selectMembership = useSelectMembership();
   const handleOnClick = () => {
@@ -25,7 +31,9 @@ const DashboardPanelStatusCard = ({ status, selectedStatus, isAdmin, setSelected
       <StyledBackground>
         <CountIconWrapper>
           <Count color={color}>{count}</Count>
-          <Icon />
+          <Tooltip content={LABEL[dataKey]} placement="bottom">
+            <Icon />
+          </Tooltip>
         </CountIconWrapper>
         <Status>{label}</Status>
       </StyledBackground>

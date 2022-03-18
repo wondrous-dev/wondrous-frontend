@@ -31,6 +31,7 @@ import Milestone from '../../Milestone';
 import { useMe } from '../../../Auth/withAuth';
 import { useOrgBoard, usePodBoard, useUserBoard } from '../../../../utils/hooks';
 import { parseUserPermissionContext } from '../../../../utils/helpers';
+import Tooltip from '../../Popover';
 
 interface ITaskColumn {
   cardsList: Array<any>;
@@ -41,10 +42,10 @@ interface ITaskColumn {
 }
 
 const TITLES = {
-  [TASK_STATUS_TODO]: 'To-do',
-  [TASK_STATUS_IN_PROGRESS]: 'In-Progress',
-  [TASK_STATUS_IN_REVIEW]: 'In-Review',
-  [TASK_STATUS_DONE]: 'Done',
+  [TASK_STATUS_TODO]: { label: 'To-do', placeholder: 'To-Do' },
+  [TASK_STATUS_IN_PROGRESS]: { label: 'In-Progress', placeholder: 'In-Progress' },
+  [TASK_STATUS_IN_REVIEW]: { label: 'In-Review', placeholder: 'In-Review' },
+  [TASK_STATUS_DONE]: { label: 'Done', placeholder: 'Completed' },
 };
 
 const HEADER_ICONS = {
@@ -97,8 +98,10 @@ const TaskColumn = (props: ITaskColumn) => {
   return (
     <TaskColumnContainer>
       <TaskColumnContainerHeader>
-        <HeaderIcon />
-        <TaskColumnContainerHeaderTitle>{TITLES[status]}</TaskColumnContainerHeaderTitle>
+        <Tooltip content={TITLES[status].placeholder}>
+          <HeaderIcon />
+        </Tooltip>
+        <TaskColumnContainerHeaderTitle>{TITLES[status].label}</TaskColumnContainerHeaderTitle>
         <TaskColumnContainerCount>{number}</TaskColumnContainerCount>
       </TaskColumnContainerHeader>
       <ColumnSection section={section} setSection={() => {}} />

@@ -27,6 +27,7 @@ import { useRouter } from 'next/router';
 import { DAOIcon } from '../Icons/dao';
 import { PodModal } from './PodModal';
 import Link from 'next/link';
+import Tooltip from '../Common/Popover';
 
 const PodButton = (props) => {
   return (
@@ -99,9 +100,13 @@ const SideBarComponent = (props) => {
             }}
           >
             {user?.profilePicture ? (
-              <SafeImage style={profilePictureStyle} src={user?.thumbnailPicture || user?.profilePicture} />
+              <Tooltip content={user ? user.username : 'User Profile'}>
+                <SafeImage style={profilePictureStyle} src={user?.thumbnailPicture || user?.profilePicture} />
+              </Tooltip>
             ) : (
-              <DefaultUserImage style={profilePictureStyle} />
+              <Tooltip content={user ? user.username : 'User Profile'}>
+                <DefaultUserImage style={profilePictureStyle} />
+              </Tooltip>
             )}
           </DrawerTopBlockItem>
           <DrawerList>
@@ -125,7 +130,9 @@ const SideBarComponent = (props) => {
                       />
                     ) : (
                       <NoLogoDAO>
-                        <DAOIcon />
+                        <Tooltip content={item.name}>
+                          <DAOIcon />
+                        </Tooltip>
                       </NoLogoDAO>
                     )}
                   </DrawerListItem>
@@ -135,21 +142,27 @@ const SideBarComponent = (props) => {
               <StyledDivider />
             </StyledDividerDiv>
             <PodButtonDiv>
-              <PodButton
-                style={{
-                  cursor: 'pointer',
-                }}
-                onClick={() => setOpenPodModal(true)}
-              />
+              <Tooltip content="Pods">
+                <PodButton
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => setOpenPodModal(true)}
+                />
+              </Tooltip>
             </PodButtonDiv>
           </DrawerList>
         </DrawerTopBlock>
         <DrawerBottomBlock>
           <DrawerBottomButton onClick={generalSettings}>
-            <SettingsIcon />
+            <Tooltip content="Profile settings">
+              <SettingsIcon />
+            </Tooltip>
           </DrawerBottomButton>
           <DrawerBottomButton onClick={signOut}>
-            <ExitIcon />
+            <Tooltip content="Logout">
+              <ExitIcon />
+            </Tooltip>
           </DrawerBottomButton>
         </DrawerBottomBlock>
       </DrawerContainer>

@@ -21,6 +21,7 @@ import {
   Archived,
 } from './index';
 import { ProposalsRemainingIcon } from './statusIcons';
+import Tooltip from '../Common/Popover';
 
 type Props = {
   status: string;
@@ -29,16 +30,32 @@ type Props = {
 export default function TaskStatus({ status, ...rest }: Props) {
   switch (status) {
     case TASK_STATUS_IN_PROGRESS:
-      return <InProgressWithBorder {...rest} />;
+      return (
+        <Tooltip content="In-Progress">
+          <InProgressWithBorder {...rest} />
+        </Tooltip>
+      );
 
     case TASK_STATUS_TODO:
-      return <TodoWithBorder {...rest} />;
+      return (
+        <Tooltip content="To-Do">
+          <TodoWithBorder {...rest} />
+        </Tooltip>
+      );
 
     case TASK_STATUS_IN_REVIEW:
-      return <InReview {...rest} />;
+      return (
+        <Tooltip content="In-Review">
+          <InReview {...rest} />
+        </Tooltip>
+      );
 
     case TASK_STATUS_DONE:
-      return <DoneWithBorder {...rest} />;
+      return (
+        <Tooltip content="Completed">
+          <DoneWithBorder {...rest} />
+        </Tooltip>
+      );
 
     case TASK_STATUS_REQUESTED:
       return <MembershipRequest {...rest} />;
@@ -50,7 +67,11 @@ export default function TaskStatus({ status, ...rest }: Props) {
       return <Paid {...rest} />;
 
     case TASK_STATUS_PROPOSAL_REQUEST:
-      return <ProposalsRemainingIcon {...rest} />;
+      return (
+        <Tooltip content="Proposals">
+          <ProposalsRemainingIcon {...rest} />
+        </Tooltip>
+      );
 
     case TASK_STATUS_SUBMISSION_REQUEST:
       return <InReview {...rest} />;
