@@ -341,7 +341,11 @@ export const Task = (props) => {
                 </PodWrapper>
               )}
               {!isSubtask && !isMilestone && totalSubtask > 0 && (
-                <SubtaskCountWrapper>
+                <SubtaskCountWrapper
+                  style={{
+                    marginTop: '24px',
+                  }}
+                >
                   <SubtaskDarkIcon />
                   <SubtaskCount>
                     {completedSubtask}/{totalSubtask}
@@ -363,7 +367,7 @@ export const Task = (props) => {
 						<TaskLikeIcon liked={liked} />
 						<TaskActionAmount>{likes}</TaskActionAmount>
 					</TaskAction> */}
-            {!assigneeId && !isBounty && (
+            {!assigneeId && !isBounty && !isMilestone && (
               <>
                 {claimed ? (
                   <ClaimButton

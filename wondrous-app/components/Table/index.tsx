@@ -1,40 +1,47 @@
+import { useApolloClient, useMutation } from '@apollo/client';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import Link from 'next/link';
-
+import { UPDATE_TASK_ASSIGNEE, UPDATE_TASK_STATUS } from '../../graphql/mutations';
+import { GET_TASK_REVIEWERS } from '../../graphql/queries';
+import { delQuery } from '../../utils';
+import { updateInProgressTask, updateTaskItem } from '../../utils/board';
+import { renderMentionString } from '../../utils/common';
+import * as Constants from '../../utils/constants';
 import {
   COLUMN_TITLE_ARCHIVED,
   ENTITIES_TYPES,
-  PERMISSIONS,
   TASK_STATUS_ARCHIVED,
-  TASK_STATUS_AWAITING_PAYMENT,
-  TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
   TASK_STATUS_TODO,
 } from '../../utils/constants';
-import {
-  cutString,
-  groupBy,
-  parseUserPermissionContext,
-  shrinkNumber,
-  transformTaskToTaskCard,
-} from '../../utils/helpers';
+import { OrgBoardContext } from '../../utils/contexts';
+import { cutString, parseUserPermissionContext, shrinkNumber, transformTaskToTaskCard } from '../../utils/helpers';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
+import { useMe } from '../Auth/withAuth';
+import { ArchiveTaskModal } from '../Common/ArchiveTaskModal';
 import { AvatarList } from '../Common/AvatarList';
 import { DropDown, DropDownItem } from '../Common/dropdown';
+import { SafeImage } from '../Common/Image';
+import { LoadMore } from '../Common/KanbanBoard/styles';
+import { KudosForm } from '../Common/KudosForm';
+import { SnackbarAlertContext } from '../Common/SnackbarAlert';
+import { TaskViewModal } from '../Common/Task/modal';
+import { ArchivedTaskUndo, ClaimButton } from '../Common/Task/styles';
+import EditLayoutBaseModal from '../CreateEntity/editEntityModal';
+import { CreateModalOverlay } from '../CreateEntity/styles';
 import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton';
-import { DoneWithBorder, InProgressWithBorder, TodoWithBorder, WonderCoin } from '../Icons';
+import { Claim } from '../Icons/claimTask';
 import ImageIcon from '../Icons/image';
 import AudioIcon from '../Icons/MediaTypesIcons/audio';
 import PlayIcon from '../Icons/play';
-import { RewardRed } from '../Icons/reward';
 import { TaskMenuIcon } from '../Icons/taskMenu';
+import TaskStatus from '../Icons/TaskStatus';
 import {
   Box,
-  DeliverableContainer,
-  DeliverableItem,
-  DeliverablesIconContainer,
   Initials,
   MoreOptions,
   Reward,
@@ -48,39 +55,9 @@ import {
   StyledTableHead,
   StyledTableRow,
   TaskDescription,
+  TaskStatusIcon,
   TaskTitle,
 } from './styles';
-import { TaskViewModal } from '../Common/Task/modal';
-import { delQuery } from '../../utils';
-import { useRouter } from 'next/router';
-import * as Constants from '../../utils/constants';
-import { CreateModalOverlay } from '../CreateEntity/styles';
-import EditLayoutBaseModal from '../CreateEntity/editEntityModal';
-import { ArchiveTaskModal } from '../Common/ArchiveTaskModal';
-import { useApolloClient, useLazyQuery, useMutation } from '@apollo/client';
-import { UPDATE_TASK_ASSIGNEE, UPDATE_TASK_STATUS } from '../../graphql/mutations';
-import {
-  GET_ORG_TASK_BOARD_TASKS,
-  GET_TASK_BY_ID,
-  GET_TASK_REVIEWERS,
-  GET_TASK_SUBMISSIONS_FOR_TASK,
-} from '../../graphql/queries';
-import { SnackbarAlertContext } from '../Common/SnackbarAlert';
-import { ArchivedTaskUndo, ClaimButton } from '../Common/Task/styles';
-import { OrgBoardContext } from '../../utils/contexts';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
-import { LoadMore } from '../Common/KanbanBoard/styles';
-import { SafeImage } from '../Common/Image';
-import { useMe } from '../Auth/withAuth';
-import { USDCoin } from '../Icons/USDCoin';
-import Ethereum from '../Icons/ethereum';
-import { Compensation } from '../Common/Compensation';
-import { Matic } from '../Icons/matic';
-import { renderMentionString } from '../../utils/common';
-import TaskStatus from '../Icons/TaskStatus';
-import { KudosForm } from '../Common/KudosForm';
-import { updateInProgressTask, updateTaskItem } from '../../utils/board';
-import { Claim } from '../Icons/claimTask';
 
 const DELIVERABLES_ICONS = {
   audio: <AudioIcon />,
@@ -258,11 +235,10 @@ export const Table = (props) => {
           urlParams.delete('taskProposal');
           history.pushState({}, '', `${delQuery(router.asPath)}?${urlParams.toString()}`);
         }}
-        task={selectedTaskType !== Constants.TASK_STATUS_SUBMISSION_REQUEST && selectedTask}
+        task={selectedTask}
         isTaskProposal={selectedTaskType === Constants.TASK_STATUS_PROPOSAL_REQUEST}
-        taskId={selectedTaskType === Constants.TASK_STATUS_SUBMISSION_REQUEST ? selectedTask?.taskId : selectedTask?.id}
+        taskId={selectedTask?.id}
       />
-
       {isArchiveModalOpen && selectedTask?.id ? (
         <ArchiveTaskModal
           taskId={selectedTask?.id}
@@ -272,7 +248,6 @@ export const Table = (props) => {
           onArchive={() => archiveTask(selectedTask)}
         />
       ) : null}
-
       {editableTask ? (
         <CreateModalOverlay
           aria-labelledby="modal-modal-title"
@@ -292,9 +267,7 @@ export const Table = (props) => {
           />
         </CreateModalOverlay>
       ) : null}
-
       <KudosForm onClose={handleKudosFormOnClose} open={isKudosModalOpen} submission={kudosTask} />
-
       <StyledTable>
         <StyledTableHead>
           <StyledTableRow>
@@ -444,7 +417,7 @@ export const Table = (props) => {
                       )}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    <TaskStatus status={status} />
+                    <TaskStatusIcon status={status} />
                   </StyledTableCell>
                   <StyledTableCell className="clickable" onClick={() => openTask(task, column?.status)}>
                     <TaskTitle>{task.title}</TaskTitle>
@@ -535,7 +508,6 @@ export const Table = (props) => {
           })}
         </StyledTableBody>
       </StyledTable>
-
       <LoadMore ref={ref} hasMore={hasMore} />
     </StyledTableContainer>
   );

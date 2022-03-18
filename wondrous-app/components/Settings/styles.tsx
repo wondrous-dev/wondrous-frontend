@@ -449,3 +449,12 @@ export const DiscordText = styled(Typography)`
     color: ${White};
   }
 `;
+
+export const LabelBlockText = styled(Typography)`
+  && {
+    color: ${White};
+    font-family: Space Grotesk;
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+`;

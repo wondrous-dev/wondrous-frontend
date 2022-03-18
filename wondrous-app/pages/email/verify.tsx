@@ -28,7 +28,7 @@ import {
 } from '../../components/profile/email/styles';
 import { Blue500, Grey800 } from '../../theme/colors';
 
-import { NewCanvas } from '../../components/Common';
+import { ErrorText, NewCanvas } from '../../components/Common';
 import { useIsMobile, useWindowSize } from '../../utils/hooks';
 import { Logo } from '../../components/Common/ci';
 import { useRouter } from 'next/router';
@@ -39,22 +39,35 @@ import { CircularProgress } from '@material-ui/core';
 
 const EmailVerify = () => {
   const router = useRouter();
-  const { token } = router.query;
+  const [verificationError, setVerificationError] = useState(null);
+  const { token, userid } = router.query; // it's userid here instead of userId since it'f from the redirect
   const [loading, setLoading] = useState(true);
-  const [verifyEmail, { data }] = useMutation(CONFIRM_EMAIL_ADDRESS);
+  const [verifyEmail, { data, error }] = useMutation(CONFIRM_EMAIL_ADDRESS, {
+    onError: (error) => {
+      if (error?.graphQLErrors[0].extensions.code === 400) {
+        setVerificationError(true);
+      }
+    },
+  });
   const emailAddressConfirm = data?.confirmEmailAddress?.success;
+  const errorVerifying = error?.graphQLErrors[0].extensions.code === 400;
+
   useEffect(() => {
     if (token && loading) {
       verifyEmail({
         variables: {
           token,
+          userId: userid,
         },
       });
     }
+  }, [token, verifyEmail, loading]);
+
+  useEffect(() => {
     if (emailAddressConfirm) {
       setLoading(false);
     }
-  }, [token, verifyEmail, emailAddressConfirm, data]);
+  }, [emailAddressConfirm]);
 
   return (
     <ProfileWrapper>
@@ -65,12 +78,21 @@ const EmailVerify = () => {
         ) : (
           <>
             <JoinWaitlistHeader variant="h3">Thanks for confirming your email!</JoinWaitlistHeader>
-            <CreateFormPreviewButton>Take me home</CreateFormPreviewButton>
+            <CreateFormPreviewButton
+              onClick={() => {
+                router.push('/dashboard', undefined, {
+                  shallow: true,
+                });
+              }}
+            >
+              Take me home
+            </CreateFormPreviewButton>
           </>
         )}
+        {verificationError && <ErrorText>Problem verifying your email please sign in and try again</ErrorText>}
       </ProfileCenteredDiv>
     </ProfileWrapper>
   );
 };
 
-export default withAuth(EmailVerify);
+export default EmailVerify;

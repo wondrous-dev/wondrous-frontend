@@ -66,9 +66,7 @@ export const AvatarList = (props) => {
   let overflow = users.length - usersSieged.length;
 
   const goToUser = (username) => {
-    router.push(`/profile/${username}/about`, undefined, {
-      shallow: true,
-    });
+    window.location.href = `/profile/${username}/about`;
   };
 
   return (

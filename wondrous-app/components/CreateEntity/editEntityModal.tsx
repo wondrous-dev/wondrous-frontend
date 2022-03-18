@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
-import { Popper, styled, Switch, TextField } from '@material-ui/core';
+import { CircularProgress, Popper, styled, Switch, TextField } from '@material-ui/core';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -309,7 +309,7 @@ const EditLayoutBaseModal = (props) => {
   const user = useMe();
 
   const [addDetails, setAddDetails] = useState(true);
-  const [descriptionText, setDescriptionText] = useState(existingTask?.description);
+  const [descriptionText, setDescriptionText] = useState(existingTask?.description || '');
   const [mediaUploads, setMediaUploads] = useState(transformMediaFormat(existingTask?.media) || []);
   const addDetailsHandleClick = () => {
     setAddDetails(!addDetails);
@@ -410,7 +410,6 @@ const EditLayoutBaseModal = (props) => {
       showDueDateSection: isTask || isMilestone || isBounty,
     };
   }, [entityType]);
-
   const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType];
   const inputRef: any = useRef();
 
@@ -455,7 +454,7 @@ const EditLayoutBaseModal = (props) => {
       // If you're only part of one dao then just set that as default
       setOrg(existingTask?.orgId);
     }
-    if (org) {
+    if (org?.id || org) {
       getUserAvailablePods({
         variables: {
           orgId: org?.id || org,
@@ -514,7 +513,7 @@ const EditLayoutBaseModal = (props) => {
     return justCreatedPod;
   }, [pods, pod]);
 
-  const [updateTask] = useMutation(UPDATE_TASK, {
+  const [updateTask, { loading: updateTaskLoading }] = useMutation(UPDATE_TASK, {
     refetchQueries: () => [
       'getPerStatusTaskCountForMilestone',
       'getUserTaskBoardTasks',
@@ -537,7 +536,7 @@ const EditLayoutBaseModal = (props) => {
     },
   });
 
-  const [updateBounty] = useMutation(UPDATE_BOUNTY, {
+  const [updateBounty, { loading: updateBountyLoading }] = useMutation(UPDATE_BOUNTY, {
     refetchQueries: () => [
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
@@ -546,7 +545,7 @@ const EditLayoutBaseModal = (props) => {
     ],
   });
 
-  const [updateTaskProposal] = useMutation(UPDATE_TASK_PROPOSAL, {
+  const [updateTaskProposal, { loading: updateTaskProposalLoading }] = useMutation(UPDATE_TASK_PROPOSAL, {
     onCompleted: (data) => {
       const taskProposal = data?.updateTaskProposal;
       const justCreatedPod = getPodObject();
@@ -571,7 +570,7 @@ const EditLayoutBaseModal = (props) => {
     refetchQueries: ['GetOrgTaskBoardProposals'],
   });
 
-  const [updateMilestone] = useMutation(UPDATE_MILESTONE, {
+  const [updateMilestone, { loading: updateMilestoneLoading }] = useMutation(UPDATE_MILESTONE, {
     onCompleted: (data) => {
       const milestone = data?.updateMilestone;
       if (boardColumns?.setColumns && onCorrectPage) {
@@ -608,9 +607,6 @@ const EditLayoutBaseModal = (props) => {
               ],
             }),
           // TODO: add links?,
-          ...(!isTaskProposal && {
-            assigneeId: assignee?.value,
-          }),
           ...(isTaskProposal && {
             proposedAssigneeId: assignee?.value,
           }),
@@ -628,23 +624,56 @@ const EditLayoutBaseModal = (props) => {
           newErrors.general = 'Please enter the necessary information above';
           setErrors(newErrors);
         } else {
-          if (!isTaskProposal) {
-            updateTask({
-              variables: {
-                taskId: existingTask?.id,
-                input: taskInput,
-              },
-            });
-          } else {
-            updateTaskProposal({
-              variables: {
-                proposalId: existingTask?.id,
-                input: taskInput,
-              },
-            });
-          }
+          updateTask({
+            variables: {
+              taskId: existingTask?.id,
+              input: taskInput,
+            },
+          });
         }
         break;
+      case ENTITIES_TYPES.PROPOSAL: {
+        const proposalInput = {
+          title,
+          description: descriptionText,
+          orgId: org?.id,
+          milestoneId: milestone?.id ?? milestone,
+          podId: pod?.id ?? pod,
+          dueDate,
+          ...(rewardsAmount &&
+            rewardsCurrency && {
+              rewards: [
+                {
+                  rewardAmount: parseFloat(rewardsAmount),
+                  paymentMethodId: rewardsCurrency,
+                },
+              ],
+            }),
+          // TODO: add links?,
+          ...(isTaskProposal && {
+            proposedAssigneeId: assignee?.value,
+          }),
+          userMentions: getMentionArray(descriptionText),
+          mediaUploads,
+        };
+
+        if (!title) {
+          const newErrors = { ...errors };
+          if (!title) {
+            newErrors.title = 'Please enter a title';
+          }
+          newErrors.general = 'Please enter the necessary information above';
+          setErrors(newErrors);
+        } else {
+          updateTaskProposal({
+            variables: {
+              proposalId: existingTask?.id,
+              input: proposalInput,
+            },
+          });
+        }
+        break;
+      }
       case ENTITIES_TYPES.MILESTONE: {
         updateMilestone({
           variables: {
@@ -667,10 +696,10 @@ const EditLayoutBaseModal = (props) => {
         const bountyInput = {
           title,
           description: descriptionText,
-          orgId: org,
+          orgId: org?.id || org,
           milestoneId: milestone?.id,
           parentTaskId: existingTask?.parentTaskId,
-          podId: pod,
+          podId: pod?.id || pod,
           // maxSubmissionCount: parseFloat(maxSubmissionCount),
           dueDate,
           ...(rewardsAmount &&
@@ -770,6 +799,8 @@ const EditLayoutBaseModal = (props) => {
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
+  const updating = updateBountyLoading || updateTaskLoading || updateMilestoneLoading || updateTaskProposalLoading;
+
   return (
     <CreateFormBaseModal>
       <CreateFormBaseModalCloseBtn onClick={handleClose}>
@@ -855,7 +886,7 @@ const EditLayoutBaseModal = (props) => {
           </TextInputDiv>
 
           <CreateFormMainDescriptionInputSymbolCounter>
-            {descriptionText.length}/900 characters
+            {descriptionText?.length}/900 characters
           </CreateFormMainDescriptionInputSymbolCounter>
           {errors.description && <ErrorText> {errors.description} </ErrorText>}
         </CreateFormMainInputBlock>
@@ -1041,8 +1072,8 @@ const EditLayoutBaseModal = (props) => {
 
             <CreateFormMembersBlock>
               <CreateFormMembersBlockTitle>
-                {createPodMembersList.length}
-                {createPodMembersList.length > 1 ? ' members' : ' member'}
+                {createPodMembersList?.length}
+                {createPodMembersList?.length > 1 ? ' members' : ' member'}
               </CreateFormMembersBlockTitle>
               <CreateFormMembersList>
                 {createPodMembersList.map((item) => (
@@ -1386,7 +1417,8 @@ const EditLayoutBaseModal = (props) => {
         {errors.general && <ErrorText> {errors.general} </ErrorText>}
         <CreateFormButtonsBlock>
           <CreateFormCancelButton onClick={cancelEdit}>Cancel</CreateFormCancelButton>
-          <CreateFormPreviewButton onClick={submitMutation}>
+          <CreateFormPreviewButton onClick={submitMutation} disabled={updating}>
+            {updating ? <CircularProgress size={20} /> : null}
             Update {isTaskProposal ? 'proposal' : titleText}
           </CreateFormPreviewButton>
         </CreateFormButtonsBlock>

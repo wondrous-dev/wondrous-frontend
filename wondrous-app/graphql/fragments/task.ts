@@ -267,7 +267,6 @@ export const TaskProposalFragment = gql`
       icon
       tokenName
     }
-    reactionCount
     commentCount
     org {
       profilePicture

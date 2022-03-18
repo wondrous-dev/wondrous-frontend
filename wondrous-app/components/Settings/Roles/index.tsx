@@ -84,6 +84,14 @@ const Roles = ({
     setNewRolePermissions(permissions);
   }
 
+  const handleRoleNameChange = (e) => {
+    const roleName = e.target.value;
+    setNewRoleName(roleName);
+    if (!roleName) {
+      setNewRolePermissionsExpanded(false);
+    }
+  };
+
   return (
     <SettingsWrapper>
       <Snackbar
@@ -105,7 +113,7 @@ const Roles = ({
             <LabelBlock>Create a new role</LabelBlock>
 
             <CreateRole>
-              <RoleNameInput value={newRoleName} onChange={(e) => setNewRoleName(e.target.value)} />
+              <RoleNameInput value={newRoleName} onChange={handleRoleNameChange} />
               <CreateRoleButton onClick={handleCreateNewRoleClick} disabled={!newRoleName} highlighted={!!newRoleName}>
                 Create role
               </CreateRoleButton>
