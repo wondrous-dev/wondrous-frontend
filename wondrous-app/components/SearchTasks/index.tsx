@@ -16,6 +16,7 @@ import { delQuery } from '../../utils';
 import { useRouter } from 'next/router';
 import { TaskViewModal } from '../Common/Task/modal';
 import * as Constants from '../../utils/constants';
+import { ViewType } from '../../types/common';
 
 const TaskTypeIcons = {
   [TASK_TYPE]: <TaskIcon />,
@@ -64,7 +65,7 @@ export default function SearchTasks({ onSearch }: Props) {
   function handleTaskClick(task) {
     const urlParams: any = new URLSearchParams(window.location.search);
     urlParams.append(task.__typename === 'TaskProposalCard' ? 'taskProposal' : 'task', task?.id);
-    history.pushState({}, '', `${delQuery(router.asPath)}?${urlParams.toString()}`);
+    router.replace(`${delQuery(router.asPath)}?${urlParams.toString()}`);
 
     setSelectedTask(task);
   }
@@ -87,13 +88,10 @@ export default function SearchTasks({ onSearch }: Props) {
         open={!!selectedTask}
         handleClose={() => {
           setSelectedTask(null);
-
-          const urlParams: any = new URLSearchParams(window.location.search);
-          urlParams.delete('task');
-          urlParams.delete('taskProposal');
-          history.pushState({}, '', `${delQuery(router.asPath)}?${urlParams.toString()}`);
+          router.replace(`${delQuery(router.asPath)}?view=${router.query.view ?? ViewType.Grid}`);
         }}
-        task={selectedTask}
+        isTaskProposal={selectedTask?.__typename === 'TaskProposalCard'}
+        taskId={selectedTask?.id}
       />
 
       <Autocomplete
