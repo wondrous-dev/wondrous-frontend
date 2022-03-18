@@ -10,20 +10,14 @@ const UserAboutInfoCompletedCard = (props) => {
     <>
       <TaskViewModal
         disableEnforceFocus
-        open={router?.query?.task}
         shouldFocusAfterRender={false}
+        open={!!router?.query?.task}
         handleClose={() => {
-          const style = document.body.getAttribute('style');
-          const top = style.match(/(?<=top: -)(.*?)(?=px)/);
-          document.body.setAttribute('style', '');
-          if (top?.length > 0) {
-            window?.scrollTo(0, Number(top[0]));
-          }
           router.push(`${delQuery(router.asPath)}`, undefined, {
             shallow: true,
           });
         }}
-        taskId={router?.query?.task || router?.query?.taskProposal}
+        taskId={(router?.query?.task || router?.query?.taskProposal)?.toString()}
         isTaskProposal={!!router?.query?.taskProposal}
       />
       <UserAboutInfoCompletedTasks task={props} />
