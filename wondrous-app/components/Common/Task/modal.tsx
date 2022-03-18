@@ -692,7 +692,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
   const router = useRouter();
   const [editTask, setEditTask] = useState(false);
-  const [activeTab, setActiveTab] = useState(tabs.submissions);
+
+  const [activeTab, setActiveTab] = useState(isTaskProposal ? tabs.discussion : tabs.submissions);
   const [archiveTask, setArchiveTask] = useState(false);
   const [archiveTaskAlert, setArchiveTaskAlert] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
