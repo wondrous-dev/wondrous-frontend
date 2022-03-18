@@ -5,6 +5,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { UPDATE_TASK_ASSIGNEE, UPDATE_TASK_STATUS } from '../../graphql/mutations';
 import { GET_TASK_REVIEWERS } from '../../graphql/queries';
+import { ViewType } from '../../types/common';
 import { delQuery } from '../../utils';
 import { updateInProgressTask, updateTaskItem } from '../../utils/board';
 import { renderMentionString } from '../../utils/common';
@@ -18,7 +19,6 @@ import {
   TASK_STATUS_REQUESTED,
   TASK_STATUS_TODO,
 } from '../../utils/constants';
-import { OrgBoardContext } from '../../utils/contexts';
 import { cutString, parseUserPermissionContext, shrinkNumber, transformTaskToTaskCard } from '../../utils/helpers';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
 import { useMe } from '../Auth/withAuth';
@@ -55,7 +55,6 @@ import {
   StyledTableHead,
   StyledTableRow,
   TaskDescription,
-  TaskStatusIcon,
   TaskTitle,
 } from './styles';
 
@@ -78,8 +77,6 @@ export const Table = (props) => {
   const apolloClient = useApolloClient();
   const [editableTask, setEditableTask] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
-  const [selectedTaskType, setSelectedTaskType] = useState(null);
-  const [once, setOnce] = useState(true);
   const [isPreviewModalOpen, setPreviewModalOpen] = useState(false);
   const [isArchiveModalOpen, setArchiveModalOpen] = useState(false);
   const [isKudosModalOpen, setKudosModalOpen] = useState(false);
@@ -88,7 +85,6 @@ export const Table = (props) => {
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
-  const orgBoardContext = useContext(OrgBoardContext);
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
@@ -104,24 +100,6 @@ export const Table = (props) => {
       onLoadMore();
     }
   }, [inView, hasMore, onLoadMore]);
-
-  useEffect(() => {
-    const taskId = router?.query?.task || router?.query?.taskProposal;
-
-    if (taskId && once) {
-      let task;
-      columns.find((column) => {
-        task = [...column.section.tasks, ...column.tasks].find((task) => task.id === taskId);
-
-        return task;
-      });
-
-      if (task) {
-        openTask(task);
-        setOnce(false);
-      }
-    }
-  }, [columns, once, router?.query?.task || router?.query?.taskProposal]);
 
   const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS);
 
@@ -207,15 +185,44 @@ export const Table = (props) => {
     );
   }
 
-  function openTask(task, taskType = '') {
-    setOnce(false);
-    const urlParams: any = new URLSearchParams(window.location.search);
-    urlParams.append(task.__typename === 'TaskProposalCard' ? 'taskProposal' : 'task', task?.id);
-    history.pushState({}, '', `${delQuery(router.asPath)}?${urlParams.toString()}`);
-
-    setSelectedTask(task);
-    setSelectedTaskType(taskType);
-    setPreviewModalOpen(true);
+  function openTask(task, status = '') {
+    if (status === TASK_STATUS_REQUESTED) {
+      router.replace(
+        {
+          pathname: router.pathname,
+          query: {
+            ...router.query,
+            taskProposal: task?.id,
+          },
+        },
+        undefined,
+        { shallow: true }
+      );
+    } else if (status === TASK_STATUS_IN_REVIEW) {
+      router.replace(
+        {
+          pathname: router.pathname,
+          query: {
+            ...router.query,
+            task: task?.taskId,
+          },
+        },
+        undefined,
+        { shallow: true }
+      );
+    } else {
+      router.replace(
+        {
+          pathname: router.pathname,
+          query: {
+            ...router.query,
+            task: task?.id,
+          },
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
   }
 
   const handleKudosFormOnClose = () => {
@@ -223,21 +230,25 @@ export const Table = (props) => {
     setKudosTask(null);
   };
 
+  useEffect(() => {
+    if ((router.query.task || router.query.taskProposal) && router.query.view == ViewType.List) {
+      setPreviewModalOpen(true);
+    } else {
+      setPreviewModalOpen(false);
+    }
+  }, [router.query.task, router.query.taskProposal, router.query.view]);
+
   return (
-    <StyledTableContainer>
+    <>
       <TaskViewModal
         open={isPreviewModalOpen}
         handleClose={() => {
-          setPreviewModalOpen(false);
-
-          const urlParams: any = new URLSearchParams(window.location.search);
-          urlParams.delete('task');
-          urlParams.delete('taskProposal');
-          history.pushState({}, '', `${delQuery(router.asPath)}?${urlParams.toString()}`);
+          router.replace(`${delQuery(router.asPath)}?view=${router.query.view ?? ViewType.Grid}`, undefined, {
+            shallow: true,
+          });
         }}
-        task={selectedTask}
-        isTaskProposal={selectedTaskType === Constants.TASK_STATUS_PROPOSAL_REQUEST}
-        taskId={selectedTask?.id}
+        isTaskProposal={!!router.query.taskProposal}
+        taskId={(router.query.taskProposal ?? router.query.task)?.toString()}
       />
       {isArchiveModalOpen && selectedTask?.id ? (
         <ArchiveTaskModal
@@ -268,247 +279,250 @@ export const Table = (props) => {
         </CreateModalOverlay>
       ) : null}
       <KudosForm onClose={handleKudosFormOnClose} open={isKudosModalOpen} submission={kudosTask} />
-      <StyledTable>
-        <StyledTableHead>
-          <StyledTableRow>
-            <StyledTableCell align="center" width="56px">
-              DAO
-            </StyledTableCell>
-            <StyledTableCell align="center" width="105px">
-              {isAdmin ? 'Created by' : 'Assigned'}
-            </StyledTableCell>
-            <StyledTableCell align="center" width="77px">
-              Status
-            </StyledTableCell>
-            <StyledTableCell width="383px">Task</StyledTableCell>
-            {/*<StyledTableCell width="190px">Deliverables</StyledTableCell>*/}
-            <StyledTableCell align="center" width="88px">
-              Reward
-            </StyledTableCell>
-            {isAdmin && (
-              <StyledTableCell align="center" width="80px">
-                Decision
+
+      <StyledTableContainer>
+        <StyledTable>
+          <StyledTableHead>
+            <StyledTableRow>
+              <StyledTableCell align="center" width="56px">
+                DAO
               </StyledTableCell>
-            )}
-            <StyledTableCell width="54px"></StyledTableCell>
-          </StyledTableRow>
-        </StyledTableHead>
-        <StyledTableBody>
-          {columns.map((column, index) => {
-            let tasks = [...column.tasks];
-            if (column?.section?.tasks) tasks = [...tasks, ...column?.section?.tasks];
-            // Don't show archived tasks
-            if (column?.section?.title === COLUMN_TITLE_ARCHIVED) {
-              tasks = column.tasks;
-            }
-
-            return tasks.map((task, index) => {
-              if (limit && tasksCount >= limit) {
-                return;
+              <StyledTableCell align="center" width="105px">
+                {isAdmin ? 'Created by' : 'Assigned'}
+              </StyledTableCell>
+              <StyledTableCell align="center" width="77px">
+                Status
+              </StyledTableCell>
+              <StyledTableCell width="383px">Task</StyledTableCell>
+              {/*<StyledTableCell width="190px">Deliverables</StyledTableCell>*/}
+              <StyledTableCell align="center" width="88px">
+                Reward
+              </StyledTableCell>
+              {isAdmin && (
+                <StyledTableCell align="center" width="80px">
+                  Decision
+                </StyledTableCell>
+              )}
+              <StyledTableCell width="54px"></StyledTableCell>
+            </StyledTableRow>
+          </StyledTableHead>
+          <StyledTableBody>
+            {columns.map((column, index) => {
+              let tasks = [...column.tasks];
+              if (column?.section?.tasks) tasks = [...tasks, ...column?.section?.tasks];
+              // Don't show archived tasks
+              if (column?.section?.title === COLUMN_TITLE_ARCHIVED) {
+                tasks = column.tasks;
               }
-              tasksCount++;
-              const status = task?.status ?? column?.section?.filter?.taskType ?? column?.status;
-              const dropdownItemLabel =
-                status === Constants.TASK_STATUS_PROPOSAL_REQUEST || status === Constants.TASK_STATUS_REQUESTED
-                  ? 'task proposal'
-                  : 'task';
-              const permissions = parseUserPermissionContext({
-                userPermissionsContext,
-                orgId: task?.orgId,
-                podId: task?.podId,
-              });
 
-              const reward = (task.rewards || [])[0];
+              return tasks.map((task, index) => {
+                if (limit && tasksCount >= limit) {
+                  return;
+                }
+                tasksCount++;
+                const status = task?.status ?? column?.section?.filter?.taskType ?? column?.status;
+                const dropdownItemLabel =
+                  status === Constants.TASK_STATUS_PROPOSAL_REQUEST || status === Constants.TASK_STATUS_REQUESTED
+                    ? 'task proposal'
+                    : 'task';
+                const permissions = parseUserPermissionContext({
+                  userPermissionsContext,
+                  orgId: task?.orgId,
+                  podId: task?.podId,
+                });
 
-              const canManageTask =
-                permissions.includes(Constants.PERMISSIONS.MANAGE_BOARD) ||
-                permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
-                task?.createdBy === user?.id;
+                const reward = (task.rewards || [])[0];
 
-              const username =
-                task?.__typename === 'TaskSubmissionCard' || task?.__typename === 'TaskProposalCard'
-                  ? task?.creatorUsername
-                  : task.assigneeUsername;
-              const userProfilePicture =
-                task?.__typename === 'TaskSubmissionCard' || task?.__typename === 'TaskProposalCard'
-                  ? task?.creatorProfilePicture
-                  : task.assigneeProfilePicture;
-              return (
-                <StyledTableRow key={task.id}>
-                  <StyledTableCell align="center">
-                    {task.orgProfilePicture ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <SafeImage
-                        src={task?.orgProfilePicture}
-                        style={{
-                          width: '17px',
-                          height: '17px',
-                          borderRadius: '17px',
-                        }}
-                      />
-                    ) : null}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexDirection: 'column',
-                      }}
-                    >
-                      {userProfilePicture && (
-                        <AvatarList
-                          align="center"
-                          users={[
-                            {
-                              avatar: {
-                                url: userProfilePicture,
-                              },
-                              id: username,
-                              initials: username,
-                            },
-                          ]}
+                const canManageTask =
+                  permissions.includes(Constants.PERMISSIONS.MANAGE_BOARD) ||
+                  permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
+                  task?.createdBy === user?.id;
+
+                const username =
+                  task?.__typename === 'TaskSubmissionCard' || task?.__typename === 'TaskProposalCard'
+                    ? task?.creatorUsername
+                    : task.assigneeUsername;
+                const userProfilePicture =
+                  task?.__typename === 'TaskSubmissionCard' || task?.__typename === 'TaskProposalCard'
+                    ? task?.creatorProfilePicture
+                    : task.assigneeProfilePicture;
+                return (
+                  <StyledTableRow key={task.id}>
+                    <StyledTableCell align="center">
+                      {task.orgProfilePicture ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <SafeImage
+                          src={task?.orgProfilePicture}
+                          style={{
+                            width: '17px',
+                            height: '17px',
+                            borderRadius: '17px',
+                          }}
                         />
-                      )}
-                      <Link passHref={true} href={`/profile/${username}/about`}>
-                        <Initials>{username}</Initials>
-                      </Link>
-                    </div>
-                    {!task?.assigneeId &&
-                      (status === TASK_STATUS_TODO || status === TASK_STATUS_IN_PROGRESS) &&
-                      task?.type === 'task' && (
-                        <>
-                          <ClaimButton
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              updateTaskAssignee({
-                                variables: {
-                                  taskId: task?.id,
-                                  assigneeId: user?.id,
+                      ) : null}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexDirection: 'column',
+                        }}
+                      >
+                        {userProfilePicture && (
+                          <AvatarList
+                            align="center"
+                            users={[
+                              {
+                                avatar: {
+                                  url: userProfilePicture,
                                 },
-                                onCompleted: (data) => {
-                                  const task = data?.updateTaskAssignee;
-                                  const transformedTask = transformTaskToTaskCard(task, {});
-                                  if (board?.setColumns) {
-                                    let columns = [...board?.columns];
-                                    if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
-                                      columns = updateInProgressTask(transformedTask, columns);
-                                    } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
-                                      columns = updateTaskItem(transformedTask, columns);
+                                id: username,
+                                initials: username,
+                              },
+                            ]}
+                          />
+                        )}
+                        <Link passHref={true} href={`/profile/${username}/about`}>
+                          <Initials>{username}</Initials>
+                        </Link>
+                      </div>
+                      {!task?.assigneeId &&
+                        (status === TASK_STATUS_TODO || status === TASK_STATUS_IN_PROGRESS) &&
+                        task?.type === 'task' && (
+                          <>
+                            <ClaimButton
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                updateTaskAssignee({
+                                  variables: {
+                                    taskId: task?.id,
+                                    assigneeId: user?.id,
+                                  },
+                                  onCompleted: (data) => {
+                                    const task = data?.updateTaskAssignee;
+                                    const transformedTask = transformTaskToTaskCard(task, {});
+                                    if (board?.setColumns) {
+                                      let columns = [...board?.columns];
+                                      if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
+                                        columns = updateInProgressTask(transformedTask, columns);
+                                      } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
+                                        columns = updateTaskItem(transformedTask, columns);
+                                      }
+                                      board.setColumns(columns);
                                     }
-                                    board.setColumns(columns);
-                                  }
-                                },
-                              });
-                            }}
-                          >
-                            <Claim />
-                            <span
-                              style={{
-                                marginLeft: '4px',
+                                  },
+                                });
                               }}
                             >
-                              Claim
-                            </span>
-                          </ClaimButton>
-                        </>
-                      )}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    <TaskStatusIcon status={status} />
-                  </StyledTableCell>
-                  <StyledTableCell className="clickable" onClick={() => openTask(task, column?.status)}>
-                    <TaskTitle>{task.title}</TaskTitle>
-                    <TaskDescription
-                      style={{
-                        maxWidth: '600px',
-                      }}
-                    >
-                      {renderMentionString({
-                        content: cutString(task?.description),
-                        router,
-                      })}
-                    </TaskDescription>
-                  </StyledTableCell>
-                  {/*<StyledTableCell>*/}
-                  {/*  <DeliverableContainer>*/}
-                  {/*    {Object.entries(groupBy(task?.media || [], 'type')).map(([key, value]: [string, any], index) => {*/}
-                  {/*      return (*/}
-                  {/*        <DeliverableItem key={index}>*/}
-                  {/*          <DeliverablesIconContainer>{DELIVERABLES_ICONS[key]}</DeliverablesIconContainer>*/}
-                  {/*          {value?.length}*/}
-                  {/*        </DeliverableItem>*/}
-                  {/*      );*/}
-                  {/*    })}*/}
-                  {/*  </DeliverableContainer>*/}
-                  {/*</StyledTableCell>*/}
-                  <StyledTableCell>
-                    <RewardContainer>
-                      {reward ? (
-                        <Reward>
-                          <SafeImage
-                            src={reward.icon}
-                            style={{
-                              width: '16px',
-                              height: '16px',
-                            }}
-                          />
-                          <RewardAmount>{shrinkNumber(reward?.rewardAmount)}</RewardAmount>
-                        </Reward>
-                      ) : (
-                        <Box color="#fff">None</Box>
-                      )}
-                    </RewardContainer>
-                  </StyledTableCell>
-                  {isAdmin && (
-                    <StyledTableCell align="center">
-                      <DropDownButtonDecision
-                        task={task}
-                        status={column.status}
-                        openKudos={setKudosModalOpen}
-                        setKudosTask={setKudosTask}
-                      />
+                              <Claim />
+                              <span
+                                style={{
+                                  marginLeft: '4px',
+                                }}
+                              >
+                                Claim
+                              </span>
+                            </ClaimButton>
+                          </>
+                        )}
                     </StyledTableCell>
-                  )}
-                  <StyledTableCell align="center">
-                    <MoreOptions disabled={!canManageTask}>
-                      <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
-                        <DropDownItem
-                          key={'task-menu-edit-' + task.id}
-                          onClick={() => editTask(task, status)}
-                          color="#C4C4C4"
-                          fontSize="13px"
-                          fontWeight="normal"
-                          textAlign="left"
-                        >
-                          Edit {dropdownItemLabel}
-                        </DropDownItem>
-                        <DropDownItem
-                          key={'task-menu-report-' + task.id}
-                          onClick={() => {
-                            setSelectedTask(task);
-                            setArchiveModalOpen(true);
-                            setSelectedTaskType(dropdownItemLabel);
-                          }}
-                          color="#C4C4C4"
-                          fontSize="13px"
-                          fontWeight="normal"
-                          textAlign="left"
-                        >
-                          Archive {dropdownItemLabel}
-                        </DropDownItem>
-                      </DropDown>
-                    </MoreOptions>
-                  </StyledTableCell>
-                </StyledTableRow>
-              );
-            });
-          })}
-        </StyledTableBody>
-      </StyledTable>
-      <LoadMore ref={ref} hasMore={hasMore} />
-    </StyledTableContainer>
+                    <StyledTableCell align="center">
+                      <TaskStatus status={status} />
+                    </StyledTableCell>
+                    <StyledTableCell className="clickable" onClick={() => openTask(task, status)}>
+                      <TaskTitle>{task.title}</TaskTitle>
+                      <TaskDescription
+                        style={{
+                          maxWidth: '600px',
+                        }}
+                      >
+                        {renderMentionString({
+                          content: cutString(task?.description),
+                          router,
+                        })}
+                      </TaskDescription>
+                    </StyledTableCell>
+                    {/*<StyledTableCell>*/}
+                    {/*  <DeliverableContainer>*/}
+                    {/*    {Object.entries(groupBy(task?.media || [], 'type')).map(([key, value]: [string, any], index) => {*/}
+                    {/*      return (*/}
+                    {/*        <DeliverableItem key={index}>*/}
+                    {/*          <DeliverablesIconContainer>{DELIVERABLES_ICONS[key]}</DeliverablesIconContainer>*/}
+                    {/*          {value?.length}*/}
+                    {/*        </DeliverableItem>*/}
+                    {/*      );*/}
+                    {/*    })}*/}
+                    {/*  </DeliverableContainer>*/}
+                    {/*</StyledTableCell>*/}
+                    <StyledTableCell>
+                      <RewardContainer>
+                        {reward ? (
+                          <Reward>
+                            <SafeImage
+                              src={reward.icon}
+                              style={{
+                                width: '16px',
+                                height: '16px',
+                              }}
+                            />
+                            <RewardAmount>{shrinkNumber(reward?.rewardAmount)}</RewardAmount>
+                          </Reward>
+                        ) : (
+                          <Box color="#fff">None</Box>
+                        )}
+                      </RewardContainer>
+                    </StyledTableCell>
+                    {isAdmin && (
+                      <StyledTableCell align="center">
+                        <DropDownButtonDecision
+                          task={task}
+                          status={column.status}
+                          openKudos={setKudosModalOpen}
+                          setKudosTask={setKudosTask}
+                        />
+                      </StyledTableCell>
+                    )}
+                    <StyledTableCell align="center">
+                      <MoreOptions disabled={!canManageTask}>
+                        <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
+                          <DropDownItem
+                            key={'task-menu-edit-' + task.id}
+                            onClick={() => editTask(task, status)}
+                            color="#C4C4C4"
+                            fontSize="13px"
+                            fontWeight="normal"
+                            textAlign="left"
+                          >
+                            Edit {dropdownItemLabel}
+                          </DropDownItem>
+                          <DropDownItem
+                            key={'task-menu-report-' + task.id}
+                            onClick={() => {
+                              setSelectedTask(task);
+                              setArchiveModalOpen(true);
+                            }}
+                            color="#C4C4C4"
+                            fontSize="13px"
+                            fontWeight="normal"
+                            textAlign="left"
+                          >
+                            Archive {dropdownItemLabel}
+                          </DropDownItem>
+                        </DropDown>
+                      </MoreOptions>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                );
+              });
+            })}
+          </StyledTableBody>
+        </StyledTable>
+
+        <LoadMore ref={ref} hasMore={hasMore} />
+      </StyledTableContainer>
+    </>
   );
 };
