@@ -643,6 +643,8 @@ interface ITaskListModalProps {
   taskId: string;
   isTaskProposal?: boolean;
   back?: boolean;
+  disableEnforceFocus?: boolean;
+  shouldFocusAfterRender?: boolean;
 }
 
 export const TaskViewModal = (props: ITaskListModalProps) => {

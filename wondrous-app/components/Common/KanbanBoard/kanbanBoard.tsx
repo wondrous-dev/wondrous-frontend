@@ -221,7 +221,7 @@ const KanbanBoard = (props) => {
             const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}`;
             router.push(newUrl, undefined, { shallow: true });
           }}
-          taskId={router?.query?.task || router?.query?.taskProposal}
+          taskId={(router?.query?.task || router?.query?.taskProposal).toString()}
           isTaskProposal={!!router?.query?.taskProposal}
         />
         <DragDropContext onDragEnd={onDragEnd}>
