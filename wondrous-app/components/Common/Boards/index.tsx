@@ -46,14 +46,8 @@ const Boards = (props: Props) => {
   const { search: searchQuery } = router.query;
   const selectMembershipHook = useSelectMembership();
   const { boardType } = router.query;
-  const [view, setView] = useState(null);
   const selectMembershipRequests = selectMembershipHook?.selectMembershipRequests;
-  useEffect(() => {
-    if (router.isReady) {
-      setView((router.query.view || ViewType.Grid) as ViewType);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.isReady]);
+  const view = router.query.view ?? ViewType.Grid;
 
   useEffect(() => {
     if (!searchQuery) {

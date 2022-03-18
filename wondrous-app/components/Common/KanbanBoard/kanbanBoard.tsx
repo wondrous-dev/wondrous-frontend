@@ -17,6 +17,7 @@ import { ColumnsContext } from '../../../utils/contexts';
 import { useMutation } from '@apollo/client';
 import { dedupeColumns, delQuery } from '../../../utils';
 import DndErrorModal from './DndErrorModal';
+import { ViewType } from '../../../types/common';
 
 const populateOrder = (index, tasks, field) => {
   let aboveOrder = null,
@@ -182,11 +183,11 @@ const KanbanBoard = (props) => {
 
   useEffect(() => {
     const hasQuery = router?.query?.task || router?.query?.taskProposal;
-    if (hasQuery && (orgBoard || userBoard || podBoard)) {
+    if (hasQuery && router?.query.view !== ViewType.List && (orgBoard || userBoard || podBoard)) {
       setOpenModal(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router?.query?.task, router?.query?.taskProposal, orgBoard || userBoard || podBoard]);
+  }, [router?.query?.task, router?.query?.taskProposal, router?.query.view, orgBoard || userBoard || podBoard]);
 
   const onDragEnd = (result) => {
     try {
