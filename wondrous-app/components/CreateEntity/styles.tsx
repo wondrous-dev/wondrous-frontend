@@ -573,6 +573,15 @@ export const CreateFormPreviewButton = styled(Button)`
     font-size: 16px;
     line-height: 150%;
     color: #ffffff;
+
+    .MuiCircularProgress-root {
+      margin-right: 10px;
+    }
+    
+    &:disabled {
+      color: #ffffff;
+      cursor: not-allowed;
+    }
   }
 `;
 

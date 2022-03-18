@@ -51,6 +51,7 @@ import { renderMentionString } from '../../../utils/common';
 import { TaskMedia } from '../MediaPlayer';
 import { useMe } from '../../Auth/withAuth';
 import PodIcon from '../../Icons/podIcon';
+import { ViewType } from '../../../types/common';
 
 let windowOffset;
 
@@ -92,12 +93,13 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
     });
   };
   const openModal = () => {
+    const view = router.query.view ?? ViewType.Grid;
     if (taskType === TASK_STATUS_REQUESTED) {
-      router.replace(`${delQuery(router.asPath)}?taskProposal=${task?.id}`);
+      router.replace(`${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`);
     } else if (taskType === TASK_STATUS_IN_REVIEW) {
-      router.replace(`${delQuery(router.asPath)}?task=${task?.taskId}`);
+      router.replace(`${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`);
     } else if (taskType === TASK_STATUS_ARCHIVED) {
-      router.replace(`${delQuery(router.asPath)}?task=${task?.id}`);
+      router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${view}`);
     }
 
     // document.body.style.overflow = 'hidden'
@@ -207,17 +209,15 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
     <>
       <TaskViewModal
         open={modalOpen}
-        handleOpen={() => setModalOpen(true)}
         handleClose={() => {
           document.body.setAttribute('style', '');
           window?.scrollTo(0, windowOffset);
-          const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}`;
+          const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || ViewType.Grid}`;
           window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
           setModalOpen(false);
         }}
-        task={taskType === TASK_STATUS_REQUESTED || taskType === TASK_STATUS_ARCHIVED ? task : null}
-        taskId={taskType === TASK_STATUS_IN_REVIEW ? task?.taskId : task?.id}
-        isTaskProposal={taskType === TASK_STATUS_REQUESTED}
+        taskId={(router?.query?.task ?? router?.query?.taskProposal)?.toString()}
+        isTaskProposal={!!router?.query?.taskProposal}
       />
       <TaskSummaryWrapper key={id} onClick={openModal}>
         <TaskSummaryInner>

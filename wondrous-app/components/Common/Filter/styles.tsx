@@ -121,7 +121,7 @@ export const FilterBoxInner = styled.div`
 export const FilterStatus = styled.div`
   display: flex;
   flex-direction: row;
-  align-elements: center;
+  align-items: center;
   justify-content: space-evenly;
 
   width: 100%;

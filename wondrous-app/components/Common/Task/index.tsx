@@ -503,7 +503,6 @@ export const TaskListCard = (props) => {
           const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}`;
           window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
         }}
-        task={taskType === Constants.TASK_STATUS_IN_REVIEW ? null : task}
         taskId={taskType === Constants.TASK_STATUS_IN_REVIEW ? task?.taskId : task?.id}
         isTaskProposal={taskType === Constants.TASK_STATUS_REQUESTED}
         back={true}

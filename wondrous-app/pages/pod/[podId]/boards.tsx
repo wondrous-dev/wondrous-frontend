@@ -1,34 +1,31 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { useLazyQuery, useQuery } from '@apollo/client';
-
-import { useMe, withAuth } from '../../../components/Auth/withAuth';
+import { useRouter } from 'next/router';
+import React, { useCallback, useEffect, useState } from 'react';
+import { withAuth } from '../../../components/Auth/withAuth';
+import Boards from '../../../components/Pod/boards';
+import { GET_USER_PERMISSION_CONTEXT, SEARCH_POD_USERS } from '../../../graphql/queries';
+import { GET_POD_BY_ID } from '../../../graphql/queries/pod';
 import {
+  GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD,
   GET_POD_TASK_BOARD_PROPOSALS,
   GET_POD_TASK_BOARD_SUBMISSIONS,
   GET_POD_TASK_BOARD_TASKS,
-  GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD,
-  SEARCH_TASKS_FOR_POD_BOARD_VIEW,
-  SEARCH_POD_TASK_BOARD_PROPOSALS,
   GET_TASKS_RELATED_TO_USER_IN_POD,
+  SEARCH_POD_TASK_BOARD_PROPOSALS,
+  SEARCH_TASKS_FOR_POD_BOARD_VIEW,
 } from '../../../graphql/queries/taskBoard';
-import Boards from '../../../components/Pod/boards';
+import apollo from '../../../services/apollo';
+import { addToTaskColumns, COLUMNS, LIMIT, populateTaskColumns, SELECT_OPTIONS } from '../../../services/board';
+import { TaskFilter } from '../../../types/task';
+import { dedupeColumns } from '../../../utils';
 import {
-  TASK_STATUS_IN_REVIEW,
   DEFAULT_STATUS_ARR,
+  PRIVACY_LEVEL,
   STATUS_OPEN,
   TASK_STATUSES,
-  PRIVACY_LEVEL,
+  TASK_STATUS_IN_REVIEW,
 } from '../../../utils/constants';
-
 import { PodBoardContext } from '../../../utils/contexts';
-import { GET_USER_PERMISSION_CONTEXT, SEARCH_POD_USERS } from '../../../graphql/queries';
-import { GET_POD_BY_ID } from '../../../graphql/queries/pod';
-import { dedupeColumns } from '../../../utils';
-import apollo from '../../../services/apollo';
-import { TaskFilter } from '../../../types/task';
-
-import { COLUMNS, LIMIT, SELECT_OPTIONS, populateTaskColumns, addToTaskColumns } from '../../../services/board';
 
 const BoardsPage = () => {
   const [columns, setColumns] = useState(COLUMNS);
