@@ -93,12 +93,13 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
     });
   };
   const openModal = () => {
+    const view = router.query.view ?? ViewType.Grid;
     if (taskType === TASK_STATUS_REQUESTED) {
-      router.replace(`${delQuery(router.asPath)}?taskProposal=${task?.id}`);
+      router.replace(`${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`);
     } else if (taskType === TASK_STATUS_IN_REVIEW) {
-      router.replace(`${delQuery(router.asPath)}?task=${task?.taskId}`);
+      router.replace(`${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`);
     } else if (taskType === TASK_STATUS_ARCHIVED) {
-      router.replace(`${delQuery(router.asPath)}?task=${task?.id}`);
+      router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${view}`);
     }
 
     // document.body.style.overflow = 'hidden'
