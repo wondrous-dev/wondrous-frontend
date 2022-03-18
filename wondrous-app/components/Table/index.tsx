@@ -188,7 +188,6 @@ export const Table = (props) => {
   }
 
   function openTask(task, status = '') {
-    console.log('tstau', status);
     if (status === TASK_STATUS_REQUESTED || status === TASK_STATUS_PROPOSAL_REQUEST) {
       router.replace(
         {
