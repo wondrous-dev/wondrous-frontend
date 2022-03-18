@@ -17,6 +17,8 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
+  TASK_STATUS_PROPOSAL_REQUEST,
+  TASK_STATUS_SUBMISSION_REQUEST,
   TASK_STATUS_TODO,
 } from '../../utils/constants';
 import { cutString, parseUserPermissionContext, shrinkNumber, transformTaskToTaskCard } from '../../utils/helpers';
@@ -186,7 +188,7 @@ export const Table = (props) => {
   }
 
   function openTask(task, status = '') {
-    if (status === TASK_STATUS_REQUESTED) {
+    if (status === TASK_STATUS_REQUESTED || status === TASK_STATUS_PROPOSAL_REQUEST) {
       router.replace(
         {
           pathname: router.pathname,
@@ -198,7 +200,7 @@ export const Table = (props) => {
         undefined,
         { shallow: true }
       );
-    } else if (status === TASK_STATUS_IN_REVIEW) {
+    } else if (status === TASK_STATUS_IN_REVIEW || status === TASK_STATUS_SUBMISSION_REQUEST) {
       router.replace(
         {
           pathname: router.pathname,
@@ -231,7 +233,10 @@ export const Table = (props) => {
   };
 
   useEffect(() => {
-    if ((router.query.task || router.query.taskProposal) && router.query.view == ViewType.List) {
+    if (
+      (router.query.task || router.query.taskProposal) &&
+      (router.query.view == ViewType.List || router.query.view == ViewType.Admin)
+    ) {
       setPreviewModalOpen(true);
     } else {
       setPreviewModalOpen(false);
