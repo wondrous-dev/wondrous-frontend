@@ -805,8 +805,6 @@ const CreateLayoutBaseModal = (props) => {
   const tabsVisibilityHandleOnChange = (e) =>
     setIsPublicEntity(e.target.getAttribute('value') === PRIVACY_LEVEL.public);
 
-  console.log('orgBoard', orgBoard);
-
   return (
     <CreateFormBaseModal isPod={isPod}>
       <CreateFormBaseModalCloseBtn onClick={handleClose}>

@@ -808,6 +808,15 @@ const EditLayoutBaseModal = (props) => {
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const updating = updateBountyLoading || updateTaskLoading || updateMilestoneLoading || updateTaskProposalLoading;
 
+  const tabsVisibilityOptions = {
+    [PRIVACY_LEVEL.public]: 'Public',
+    [PRIVACY_LEVEL.private]: isPod ? 'Pod Members Only' : 'DAO Members Only',
+  };
+  const tabsVisibilitySelected = publicTask
+    ? tabsVisibilityOptions[PRIVACY_LEVEL.public]
+    : tabsVisibilityOptions[PRIVACY_LEVEL.private];
+  const tabsVisibilityHandleOnChange = (e) => setPublicTask(e.target.getAttribute('value') === PRIVACY_LEVEL.public);
+
   return (
     <CreateFormBaseModal>
       <CreateFormBaseModalCloseBtn onClick={handleClose}>
