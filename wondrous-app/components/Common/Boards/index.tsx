@@ -50,7 +50,7 @@ const Boards = (props: Props) => {
   const selectMembershipHook = useSelectMembership();
   const { boardType } = router.query;
   const selectMembershipRequests = selectMembershipHook?.selectMembershipRequests;
-  const view = router.query.view ?? ViewType.Grid;
+  const view = String(router.query.view ?? ViewType.Grid);
 
   useEffect(() => {
     if (!searchQuery) {
