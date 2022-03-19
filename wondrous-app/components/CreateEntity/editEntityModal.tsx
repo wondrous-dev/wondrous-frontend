@@ -41,7 +41,7 @@ import {
   CreateFormAddDetailsInputs,
   CreateFormAddDetailsSection,
   CreateFormAddDetailsSelects,
-  CreateFormAddDetailsSwitch,
+  CreateFormAddDetailsTab,
   CreateFormBaseModal,
   CreateFormBaseModalCloseBtn,
   CreateFormBaseModalHeader,
@@ -80,7 +80,7 @@ import {
   OptionTypography,
   StyledChip,
   CreateFormRewardCurrency,
-  CreateFormAddDetailsSwitchLabel,
+  CreateFormAddDetailsTabLabel,
   CreateFormAddDetailsLocalizationProvider,
 } from './styles';
 import SelectDownIcon from '../Icons/selectDownIcon';
@@ -134,6 +134,7 @@ import {
   GET_ELIGIBLE_REVIEWERS_FOR_ORG,
   GET_ELIGIBLE_REVIEWERS_FOR_POD,
 } from '../../graphql/queries/task';
+import { TabsVisibility } from '../Common/TabsVisibility';
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -398,6 +399,7 @@ const EditLayoutBaseModal = (props) => {
     showMembersSection,
     showPrioritySelectSection,
     showDueDateSection,
+    showVisibility,
   } = useMemo(() => {
     return {
       showDeliverableRequirementsSection: isTask,
@@ -407,7 +409,11 @@ const EditLayoutBaseModal = (props) => {
       showHeaderImagePickerSection: isPod,
       showMembersSection: isPod,
       showPrioritySelectSection: isMilestone,
-      showDueDateSection: isTask || isMilestone || isBounty,
+      showDueDateSection: isTask || isBounty || isMilestone,
+      showVisibility:
+        (isTask || isBounty) &&
+        (orgBoard?.orgData?.privacyLevel === PRIVACY_LEVEL.public ||
+          podBoard?.pod?.privacyLevel === PRIVACY_LEVEL.public),
     };
   }, [entityType]);
   const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType];
@@ -610,7 +616,9 @@ const EditLayoutBaseModal = (props) => {
           ...(isTaskProposal && {
             proposedAssigneeId: assignee?.value,
           }),
-          privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
+          ...(publicTask && {
+            privacyLevel: PRIVACY_LEVEL.public,
+          }),
           reviewerIds: selectedReviewers.map(({ id }) => id) || [],
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
@@ -681,7 +689,6 @@ const EditLayoutBaseModal = (props) => {
             input: {
               title,
               description: descriptionText,
-              privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
               dueDate,
               orgId: org?.id,
               podId: pod?.id,
@@ -800,6 +807,15 @@ const EditLayoutBaseModal = (props) => {
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const updating = updateBountyLoading || updateTaskLoading || updateMilestoneLoading || updateTaskProposalLoading;
+
+  const tabsVisibilityOptions = {
+    [PRIVACY_LEVEL.public]: 'Public',
+    [PRIVACY_LEVEL.private]: isPod ? 'Pod Members Only' : 'DAO Members Only',
+  };
+  const tabsVisibilitySelected = publicTask
+    ? tabsVisibilityOptions[PRIVACY_LEVEL.public]
+    : tabsVisibilityOptions[PRIVACY_LEVEL.private];
+  const tabsVisibilityHandleOnChange = (e) => setPublicTask(e.target.getAttribute('value') === PRIVACY_LEVEL.public);
 
   return (
     <CreateFormBaseModal>
@@ -1348,67 +1364,71 @@ const EditLayoutBaseModal = (props) => {
         </CreateFormAddDetailsButton> */}
         {addDetails && (
           <CreateFormAddDetailsAppearBlock>
-            {showDueDateSection && (
-              <CreateFormAddDetailsAppearBlockContainer>
+            <CreateFormAddDetailsAppearBlockContainer>
+              {showDueDateSection && (
                 <CreateFormAddDetailsSelects>
                   <CreateFormAddDetailsLocalizationProvider>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                       <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
                     </LocalizationProvider>
                   </CreateFormAddDetailsLocalizationProvider>
-                  <CreateFormAddDetailsSwitch
-                    style={{
-                      width: '100%',
-                      marginLeft: '20px',
-                    }}
-                  >
-                    <CreateFormAddDetailsSwitchLabel>Show task as public</CreateFormAddDetailsSwitchLabel>
-                    <AndroidSwitch
-                      checked={publicTask}
-                      onChange={(e) => {
-                        setPublicTask(e.target.checked);
-                      }}
-                    />
-                  </CreateFormAddDetailsSwitch>
                 </CreateFormAddDetailsSelects>
 
-                {/* <CreateFormAddDetailsSelects> */}
-                {/* <CreateFormAddDetailsSwitch>
-										<CreateFormAddDetailsInputLabel>
-											Private task
-										</CreateFormAddDetailsInputLabel>
-										<AndroidSwitch />
-									</CreateFormAddDetailsSwitch> */}
+                // {/* <CreateFormAddDetailsSelects> */}
+                // {/* <CreateFormAddDetailsSwitch>
+                // 		<CreateFormAddDetailsInputLabel>
+                // 			Private task
+                // 		</CreateFormAddDetailsInputLabel>
+                // 		<AndroidSwitch />
+                // 	</CreateFormAddDetailsSwitch> */}
 
-                {/*if Suggest a task opened */}
-                {/* {showBountySwitchSection && !isTaskProposal && (
-                    <CreateFormAddDetailsSwitch>
+                // {/*if Suggest a task opened */}
+                // {/* {showBountySwitchSection && !isTaskProposal && (
+                //     <CreateFormAddDetailsSwitch>
+                //       <CreateFormAddDetailsInputLabel>
+                //         This is a bounty
+                //       </CreateFormAddDetailsInputLabel>
+                //       <AndroidSwitch />
+                //     </CreateFormAddDetailsSwitch>
+                //   )} */}
+
+                // {/*if Create a milestone opened*/}
+                // {/* {showPrioritySelectSection && (
+                //     <DropdownSelect
+                //       title="Priority"
+                //       labelText="Choose Milestone"
+                //       options={PRIORITY_SELECT_OPTIONS}
+                //       name="priority"
+                //     />
+                //   )} */}
+                // {/* </CreateFormAddDetailsSelects> */}
+              )}
+            </CreateFormAddDetailsAppearBlockContainer>
+
+            {showLinkAttachmentSection ||
+              (showVisibility && (
+                <CreateFormAddDetailsAppearBlockContainer>
+                  {showLinkAttachmentSection && (
+                    <CreateFormLinkAttachmentBlock>
+                      <CreateFormLinkAttachmentLabel>Links</CreateFormLinkAttachmentLabel>
+                      <InputForm margin placeholder="Enter link attachment" search={false} />
+                    </CreateFormLinkAttachmentBlock>
+                  )}
+                  {showVisibility && (
+                    <CreateFormAddDetailsTab>
                       <CreateFormAddDetailsInputLabel>
-                        This is a bounty
+                        Who can see this {titleText.toLowerCase()}?
                       </CreateFormAddDetailsInputLabel>
-                      <AndroidSwitch />
-                    </CreateFormAddDetailsSwitch>
-                  )} */}
-
-                {/*if Create a milestone opened*/}
-                {/* {showPrioritySelectSection && (
-                    <DropdownSelect
-                      title="Priority"
-                      labelText="Choose Milestone"
-                      options={PRIORITY_SELECT_OPTIONS}
-                      name="priority"
-                    />
-                  )} */}
-                {/* </CreateFormAddDetailsSelects> */}
-              </CreateFormAddDetailsAppearBlockContainer>
-            )}
-
-            {showLinkAttachmentSection && (
-              <CreateFormLinkAttachmentBlock>
-                <CreateFormLinkAttachmentLabel>Links</CreateFormLinkAttachmentLabel>
-                <InputForm margin placeholder="Enter link attachment" search={false} />
-              </CreateFormLinkAttachmentBlock>
-            )}
+                      <TabsVisibility
+                        options={tabsVisibilityOptions}
+                        selected={tabsVisibilitySelected}
+                        onChange={tabsVisibilityHandleOnChange}
+                        variant
+                      />
+                    </CreateFormAddDetailsTab>
+                  )}
+                </CreateFormAddDetailsAppearBlockContainer>
+              ))}
           </CreateFormAddDetailsAppearBlock>
         )}
       </CreateFormAddDetailsSection>

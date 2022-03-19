@@ -46,6 +46,7 @@ import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
 import { SafeImage } from '../Common/Image';
 import InputForm from '../Common/InputForm/inputForm';
+import { TabsVisibility } from '../Common/TabsVisibility';
 import { AddFileUpload } from '../Icons/addFileUpload';
 import CircleIcon from '../Icons/circleIcon';
 import CloseModalIcon from '../Icons/closeModal';
@@ -71,8 +72,8 @@ import {
   CreateFormAddDetailsLocalizationProvider,
   CreateFormAddDetailsSection,
   CreateFormAddDetailsSelects,
-  CreateFormAddDetailsSwitch,
-  CreateFormAddDetailsSwitchLabel,
+  CreateFormAddDetailsTab,
+  CreateFormAddDetailsTabLabel,
   CreateFormBaseModal,
   CreateFormBaseModalCloseBtn,
   CreateFormBaseModalHeader,
@@ -92,6 +93,7 @@ import {
   CreateFormMembersSection,
   CreateFormPreviewButton,
   CreateFormRewardCurrency,
+  CreateFormSetPodPrivacy,
   CreateRewardAmountDiv,
   MediaUploadDiv,
   MultiMediaUploadButton,
@@ -323,7 +325,7 @@ const CreateLayoutBaseModal = (props) => {
   const [pod, setPod] = useState(null);
   const [dueDate, setDueDate] = useState(null);
   const [isPrivate, setIsPrivate] = useState(false);
-  const [publicTask, setPublicTask] = useState(false);
+  const [isPublicEntity, setIsPublicEntity] = useState(false);
   const {
     showDeliverableRequirementsSection,
     showBountySwitchSection,
@@ -333,6 +335,7 @@ const CreateLayoutBaseModal = (props) => {
     showMembersSection,
     showPrioritySelectSection,
     showDueDateSection,
+    showVisibility,
   } = useMemo(() => {
     return {
       showDeliverableRequirementsSection: isTask,
@@ -344,9 +347,13 @@ const CreateLayoutBaseModal = (props) => {
       // TODO: add back in entityType === ENTITIES_TYPES.POD
       showMembersSection: false,
       showPrioritySelectSection: isMilestone,
-      showDueDateSection: isTask || isMilestone || isBounty,
+      showDueDateSection: isTask || isBounty || isMilestone,
+      showVisibility:
+        (isTask || isBounty || isPod) &&
+        (orgBoard?.orgData?.privacyLevel === PRIVACY_LEVEL.public ||
+          podBoard?.pod?.privacyLevel === PRIVACY_LEVEL.public),
     };
-  }, [isBounty, isMilestone, isPod, isTask]);
+  }, [isBounty, isMilestone, isPod, isTask, orgBoard?.orgData?.privacyLevel, podBoard?.pod?.privacyLevel]);
 
   const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType];
   const inputRef: any = useRef();
@@ -517,7 +524,7 @@ const CreateLayoutBaseModal = (props) => {
           ...(!canCreateTask && {
             proposedAssigneeId: assignee?.value,
           }),
-          ...(publicTask && {
+          ...(isPublicEntity && {
             privacyLevel: PRIVACY_LEVEL.public,
           }),
           reviewerIds: selectedReviewers.map(({ id }) => id),
@@ -600,7 +607,9 @@ const CreateLayoutBaseModal = (props) => {
             username: title?.toLowerCase().split(' ').join('_'),
             description: descriptionText,
             orgId: org,
-            privacyLevel: isPrivate ? 'private' : 'public',
+            ...(isPublicEntity && {
+              privacyLevel: PRIVACY_LEVEL.public,
+            }),
             links: [
               {
                 url: link,
@@ -637,9 +646,6 @@ const CreateLayoutBaseModal = (props) => {
           podId: pod,
           mediaUploads,
           dueDate,
-          ...(publicTask && {
-            privacyLevel: PRIVACY_LEVEL.public,
-          }),
         };
         if (canCreateTask) {
           createMilestone({
@@ -693,9 +699,7 @@ const CreateLayoutBaseModal = (props) => {
           ...(!canCreateTask && {
             proposedAssigneeId: assignee?.value,
           }),
-          ...(publicTask && {
-            privacyLevel: PRIVACY_LEVEL.public,
-          }),
+          privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
@@ -768,7 +772,7 @@ const CreateLayoutBaseModal = (props) => {
     rewardsCurrency,
     canCreateTask,
     assignee?.value,
-    publicTask,
+    isPublicEntity,
     selectedReviewers,
     mediaUploads,
     canCreatePod,
@@ -790,6 +794,16 @@ const CreateLayoutBaseModal = (props) => {
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const creating =
     createTaskLoading || createTaskProposalLoading || createMilestoneLoading || createBountyLoading || createPodLoading;
+
+  const tabsVisibilityOptions = {
+    [PRIVACY_LEVEL.public]: 'Public',
+    [PRIVACY_LEVEL.private]: isPod ? 'Pod Members Only' : 'DAO Members Only',
+  };
+  const tabsVisibilitySelected = isPublicEntity
+    ? tabsVisibilityOptions[PRIVACY_LEVEL.public]
+    : tabsVisibilityOptions[PRIVACY_LEVEL.private];
+  const tabsVisibilityHandleOnChange = (e) =>
+    setIsPublicEntity(e.target.getAttribute('value') === PRIVACY_LEVEL.public);
 
   return (
     <CreateFormBaseModal isPod={isPod}>
@@ -1306,23 +1320,8 @@ const CreateLayoutBaseModal = (props) => {
                       <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
                     </LocalizationProvider>
                   </CreateFormAddDetailsLocalizationProvider>
-                  <CreateFormAddDetailsSwitch
-                    style={{
-                      width: '100%',
-                      marginLeft: '20px',
-                    }}
-                  >
-                    <CreateFormAddDetailsSwitchLabel>Show task as public</CreateFormAddDetailsSwitchLabel>
-                    <AndroidSwitch
-                      checked={publicTask}
-                      onChange={(e) => {
-                        setPublicTask(e.target.checked);
-                      }}
-                    />
-                  </CreateFormAddDetailsSwitch>
                 </CreateFormAddDetailsSelects>
-
-                {/* <CreateFormAddDetailsSelects> */}
+                {/* <CreateFormAddDetailsSelects> */}{' '}
                 {/* {isPod && (
                   <CreateFormAddDetailsSwitch>
                     <CreateFormAddDetailsInputLabel>
@@ -1336,15 +1335,13 @@ const CreateLayoutBaseModal = (props) => {
                     />
                   </CreateFormAddDetailsSwitch>
                 )} */}
-
-                {/*if Suggest a task opened */}
+                {/*if Suggest a task opened */}{' '}
                 {/* {showBountySwitchSection && canCreateTask && (
                   <CreateFormAddDetailsSwitch>
                     <CreateFormAddDetailsInputLabel>This is a bounty</CreateFormAddDetailsInputLabel>
                     <AndroidSwitch />
                   </CreateFormAddDetailsSwitch>
                 )} */}
-
                 {/*if Create a milestone opened*/}
                 {/* {showPrioritySelectSection && (
                     <DropdownSelect
@@ -1358,36 +1355,40 @@ const CreateLayoutBaseModal = (props) => {
               </CreateFormAddDetailsAppearBlockContainer>
             )}
 
-            {showLinkAttachmentSection && (
-              <CreateFormLinkAttachmentBlock
-                style={{
-                  borderBottom: 'none',
-                  paddingTop: '16px',
-                }}
-              >
-                <CreateFormLinkAttachmentLabel>Link</CreateFormLinkAttachmentLabel>
-                <InputForm
-                  value={link}
-                  onChange={(e) => setLink(e.target.value)}
-                  margin
-                  placeholder="Enter link URL"
-                  search={false}
-                />
-              </CreateFormLinkAttachmentBlock>
-            )}
-            {isPod && (
-              <div>
-                <CreateFormAddDetailsSwitch>
-                  <CreateFormAddDetailsInputLabel>Private {titleText.toLowerCase()}</CreateFormAddDetailsInputLabel>
-                  <AndroidSwitch
-                    checked={isPrivate}
-                    onChange={(e) => {
-                      setIsPrivate(e.target.checked);
-                    }}
-                  />
-                </CreateFormAddDetailsSwitch>
-              </div>
-            )}
+            {showLinkAttachmentSection ||
+              (showVisibility && (
+                <CreateFormAddDetailsAppearBlockContainer>
+                  {showLinkAttachmentSection && (
+                    <CreateFormLinkAttachmentBlock
+                      style={{
+                        borderBottom: 'none',
+                      }}
+                    >
+                      <CreateFormLinkAttachmentLabel>Link</CreateFormLinkAttachmentLabel>
+                      <InputForm
+                        value={link}
+                        onChange={(e) => setLink(e.target.value)}
+                        margin
+                        placeholder="Enter link URL"
+                        search={false}
+                      />
+                    </CreateFormLinkAttachmentBlock>
+                  )}
+                  {showVisibility && (
+                    <CreateFormAddDetailsTab>
+                      <CreateFormAddDetailsInputLabel>
+                        Who can see this {titleText.toLowerCase()}?
+                      </CreateFormAddDetailsInputLabel>
+                      <TabsVisibility
+                        options={tabsVisibilityOptions}
+                        selected={tabsVisibilitySelected}
+                        onChange={tabsVisibilityHandleOnChange}
+                        variant
+                      />
+                    </CreateFormAddDetailsTab>
+                  )}
+                </CreateFormAddDetailsAppearBlockContainer>
+              ))}
           </CreateFormAddDetailsAppearBlock>
         )}
       </CreateFormAddDetailsSection>
