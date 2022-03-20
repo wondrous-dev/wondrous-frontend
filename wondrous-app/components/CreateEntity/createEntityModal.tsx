@@ -609,9 +609,7 @@ const CreateLayoutBaseModal = (props) => {
             username: title?.toLowerCase().split(' ').join('_'),
             description: descriptionText,
             orgId: org,
-            ...(isPublicEntity && {
-              privacyLevel: PRIVACY_LEVEL.public,
-            }),
+            privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
             links: [
               {
                 url: link,
@@ -790,6 +788,8 @@ const CreateLayoutBaseModal = (props) => {
     createPod,
     createMilestone,
     createBounty,
+    isPodPublic,
+    isPublicEntity,
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
