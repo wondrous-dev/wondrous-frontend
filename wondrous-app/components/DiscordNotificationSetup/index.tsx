@@ -33,9 +33,9 @@ const DiscordNotificationSetup = (props) => {
         <ListItem>
           <BoldParagraph>Task creation</BoldParagraph>
         </ListItem>
-        <ListItem>
+        {/* <ListItem>
           <BoldParagraph>Task submission creation</BoldParagraph>
-        </ListItem>
+        </ListItem> */}
         <ListItem>
           <BoldParagraph>Task completion</BoldParagraph>
         </ListItem>
