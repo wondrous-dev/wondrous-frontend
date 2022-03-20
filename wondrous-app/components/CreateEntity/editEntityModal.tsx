@@ -613,8 +613,8 @@ const EditLayoutBaseModal = (props) => {
               ],
             }),
           // TODO: add links?,
-          ...(isTaskProposal && {
-            proposedAssigneeId: assignee?.value,
+          ...(existingTask?.assigneeId !== assignee?.value && {
+            assigneeId: assignee?.value,
           }),
           ...(publicTask && {
             privacyLevel: PRIVACY_LEVEL.public,
@@ -803,6 +803,7 @@ const EditLayoutBaseModal = (props) => {
     getPodObject,
     board,
     handleClose,
+    existingTask?.assigneeId,
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
