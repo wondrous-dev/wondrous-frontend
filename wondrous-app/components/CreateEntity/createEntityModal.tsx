@@ -1,4 +1,5 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { TabsVisibilityCreateEntity } from '@components/Common/TabsVisibilityCreateEntity';
 import { CircularProgress, styled, Switch, TextField } from '@material-ui/core';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -46,7 +47,6 @@ import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
 import { SafeImage } from '../Common/Image';
 import InputForm from '../Common/InputForm/inputForm';
-import { TabsVisibility } from '../Common/TabsVisibility';
 import { AddFileUpload } from '../Icons/addFileUpload';
 import CircleIcon from '../Icons/circleIcon';
 import CloseModalIcon from '../Icons/closeModal';
@@ -796,16 +796,6 @@ const CreateLayoutBaseModal = (props) => {
   const creating =
     createTaskLoading || createTaskProposalLoading || createMilestoneLoading || createBountyLoading || createPodLoading;
 
-  const tabsVisibilityOptions = {
-    [PRIVACY_LEVEL.public]: 'Public',
-    [PRIVACY_LEVEL.private]: isPod ? 'Pod Members Only' : 'DAO Members Only',
-  };
-  const tabsVisibilitySelected = isPublicEntity
-    ? tabsVisibilityOptions[PRIVACY_LEVEL.public]
-    : tabsVisibilityOptions[PRIVACY_LEVEL.private];
-  const tabsVisibilityHandleOnChange = (e) =>
-    setIsPublicEntity(e.target.getAttribute('value') === PRIVACY_LEVEL.public);
-
   return (
     <CreateFormBaseModal isPod={isPod}>
       <CreateFormBaseModalCloseBtn onClick={handleClose}>
@@ -1379,11 +1369,10 @@ const CreateLayoutBaseModal = (props) => {
                     <CreateFormAddDetailsInputLabel>
                       Who can see this {titleText.toLowerCase()}?
                     </CreateFormAddDetailsInputLabel>
-                    <TabsVisibility
-                      options={tabsVisibilityOptions}
-                      selected={tabsVisibilitySelected}
-                      onChange={tabsVisibilityHandleOnChange}
-                      variant
+                    <TabsVisibilityCreateEntity
+                      isPod={isPod}
+                      isPublic={isPublicEntity}
+                      setIsPublic={setIsPublicEntity}
                     />
                     {errors.privacy && <ErrorText>{errors.privacy}</ErrorText>}
                   </CreateFormAddDetailsTab>

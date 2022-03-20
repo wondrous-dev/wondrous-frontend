@@ -134,7 +134,7 @@ import {
   GET_ELIGIBLE_REVIEWERS_FOR_ORG,
   GET_ELIGIBLE_REVIEWERS_FOR_POD,
 } from '../../graphql/queries/task';
-import { TabsVisibility } from '../Common/TabsVisibility';
+import { TabsVisibilityCreateEntity } from '@components/Common/TabsVisibilityCreateEntity';
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -808,15 +808,6 @@ const EditLayoutBaseModal = (props) => {
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const updating = updateBountyLoading || updateTaskLoading || updateMilestoneLoading || updateTaskProposalLoading;
 
-  const tabsVisibilityOptions = {
-    [PRIVACY_LEVEL.public]: 'Public',
-    [PRIVACY_LEVEL.private]: isPod ? 'Pod Members Only' : 'DAO Members Only',
-  };
-  const tabsVisibilitySelected = publicTask
-    ? tabsVisibilityOptions[PRIVACY_LEVEL.public]
-    : tabsVisibilityOptions[PRIVACY_LEVEL.private];
-  const tabsVisibilityHandleOnChange = (e) => setPublicTask(e.target.getAttribute('value') === PRIVACY_LEVEL.public);
-
   return (
     <CreateFormBaseModal>
       <CreateFormBaseModalCloseBtn onClick={handleClose}>
@@ -1418,12 +1409,7 @@ const EditLayoutBaseModal = (props) => {
                     <CreateFormAddDetailsInputLabel>
                       Who can see this {titleText.toLowerCase()}?
                     </CreateFormAddDetailsInputLabel>
-                    <TabsVisibility
-                      options={tabsVisibilityOptions}
-                      selected={tabsVisibilitySelected}
-                      onChange={tabsVisibilityHandleOnChange}
-                      variant
-                    />
+                    <TabsVisibilityCreateEntity isPod={isPod} isPublic={publicTask} setIsPublic={setPublicTask} />
                     {errors.privacy && <ErrorText>{errors.privacy}</ErrorText>}
                   </CreateFormAddDetailsTab>
                 )}
