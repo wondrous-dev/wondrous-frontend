@@ -1,5 +1,5 @@
 import { PRIVACY_LEVEL } from '@utils/constants';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { TabsVisibility } from '../TabsVisibility';
 
 interface ITabsVisibilityCreateEntity {
