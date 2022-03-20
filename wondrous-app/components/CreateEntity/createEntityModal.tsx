@@ -1,4 +1,5 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { TabsVisibilityCreateEntity } from '@components/Common/TabsVisibilityCreateEntity';
 import { CircularProgress, styled, Switch, TextField } from '@material-ui/core';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -71,8 +72,8 @@ import {
   CreateFormAddDetailsLocalizationProvider,
   CreateFormAddDetailsSection,
   CreateFormAddDetailsSelects,
-  CreateFormAddDetailsSwitch,
-  CreateFormAddDetailsSwitchLabel,
+  CreateFormAddDetailsTab,
+  CreateFormAddDetailsTabLabel,
   CreateFormBaseModal,
   CreateFormBaseModalCloseBtn,
   CreateFormBaseModalHeader,
@@ -92,6 +93,7 @@ import {
   CreateFormMembersSection,
   CreateFormPreviewButton,
   CreateFormRewardCurrency,
+  CreateFormSetPodPrivacy,
   CreateRewardAmountDiv,
   MediaUploadDiv,
   MultiMediaUploadButton,
@@ -248,6 +250,7 @@ const CreateLayoutBaseModal = (props) => {
     title: null,
     description: null,
     org: null,
+    privacy: null,
     // maxSubmissionCount: null,
   });
 
@@ -321,9 +324,11 @@ const CreateLayoutBaseModal = (props) => {
   // const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
   const [pods, setPods] = useState([]);
   const [pod, setPod] = useState(null);
+  const podPrivacyLevel = pods?.filter((i) => i.id === pod)[0]?.privacyLevel;
+  const isPodPublic = !podPrivacyLevel || podPrivacyLevel === 'public';
   const [dueDate, setDueDate] = useState(null);
   const [isPrivate, setIsPrivate] = useState(false);
-  const [publicTask, setPublicTask] = useState(false);
+  const [isPublicEntity, setIsPublicEntity] = useState(false);
   const {
     showDeliverableRequirementsSection,
     showBountySwitchSection,
@@ -333,6 +338,7 @@ const CreateLayoutBaseModal = (props) => {
     showMembersSection,
     showPrioritySelectSection,
     showDueDateSection,
+    showVisibility,
   } = useMemo(() => {
     return {
       showDeliverableRequirementsSection: isTask,
@@ -344,7 +350,8 @@ const CreateLayoutBaseModal = (props) => {
       // TODO: add back in entityType === ENTITIES_TYPES.POD
       showMembersSection: false,
       showPrioritySelectSection: isMilestone,
-      showDueDateSection: isTask || isMilestone || isBounty,
+      showDueDateSection: isTask || isBounty || isMilestone,
+      showVisibility: isTask || isBounty || isPod,
     };
   }, [isBounty, isMilestone, isPod, isTask]);
 
@@ -385,6 +392,14 @@ const CreateLayoutBaseModal = (props) => {
     }
   }, [parentTaskId, getTaskById, isSubtask]);
 
+  useEffect(() => {
+    console.log('orgBoard?.org', orgBoard);
+    if (orgBoard?.orgData.privacyLevel === PRIVACY_LEVEL.private) {
+      setIsPublicEntity(false);
+    } else if (orgBoard?.orgData.privacyLevel === PRIVACY_LEVEL.public) {
+      setIsPublicEntity(true);
+    }
+  }, [orgBoard?.orgData]);
   useEffect(() => {
     if (isSubtask) {
       getTaskById({
@@ -517,23 +532,24 @@ const CreateLayoutBaseModal = (props) => {
           ...(!canCreateTask && {
             proposedAssigneeId: assignee?.value,
           }),
-          ...(publicTask && {
-            privacyLevel: PRIVACY_LEVEL.public,
-          }),
+          ...(isPublicEntity &&
+            isPodPublic && {
+              privacyLevel: PRIVACY_LEVEL.public,
+            }),
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
 
-        if (!title || !org) {
-          const newErrors = { ...errors };
-          if (!title) {
-            newErrors.title = 'Please enter a title';
-          }
-          if (!org) {
-            newErrors.org = 'Please select an organization';
-          }
-          newErrors.general = 'Please enter the necessary information above';
+        const taskPodPrivacyError = !isPodPublic ? isPublicEntity : false;
+        if (!title || !org || taskPodPrivacyError) {
+          const newErrors = {
+            ...errors,
+            title: !title ? 'Please enter a title' : errors.title,
+            org: !org ? 'Please select an organization' : errors.org,
+            privacy: taskPodPrivacyError ? 'The selected pod is for members only' : errors.privacy,
+            general: 'Please enter the necessary information above',
+          };
           setErrors(newErrors);
         } else {
           if (canCreateTask) {
@@ -600,7 +616,7 @@ const CreateLayoutBaseModal = (props) => {
             username: title?.toLowerCase().split(' ').join('_'),
             description: descriptionText,
             orgId: org,
-            privacyLevel: isPrivate ? 'private' : 'public',
+            privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
             links: [
               {
                 url: link,
@@ -637,9 +653,6 @@ const CreateLayoutBaseModal = (props) => {
           podId: pod,
           mediaUploads,
           dueDate,
-          ...(publicTask && {
-            privacyLevel: PRIVACY_LEVEL.public,
-          }),
         };
         if (canCreateTask) {
           createMilestone({
@@ -693,32 +706,29 @@ const CreateLayoutBaseModal = (props) => {
           ...(!canCreateTask && {
             proposedAssigneeId: assignee?.value,
           }),
-          ...(publicTask && {
-            privacyLevel: PRIVACY_LEVEL.public,
-          }),
+          ...(isPublicEntity &&
+            isPodPublic && {
+              privacyLevel: PRIVACY_LEVEL.public,
+            }),
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
         // const isErrorMaxSubmissionCount =
         //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
-        if (!title || !descriptionText || !org || !canCreateTask) {
-          const newErrors = { ...errors };
-          if (!title) {
-            newErrors.title = 'Please enter a title';
-          }
-          if (!descriptionText) {
-            newErrors.description = 'Please enter a description';
-          }
-          if (!org) {
-            newErrors.org = 'Please select an organization';
-          }
+        const podPrivacyError = !isPodPublic ? isPublicEntity : false;
+        if (!title || !descriptionText || !org || !canCreateTask || podPrivacyError) {
+          const newErrors = {
+            ...errors,
+            title: !title ? 'Please enter a title' : errors.title,
+            description: !descriptionText ? 'Please enter a description' : errors.description,
+            org: !org ? 'Please select an organization' : errors.org,
+            privacy: podPrivacyError ? 'The selected pod is for members only' : errors.privacy,
+            general: !canCreateTask ? "You can't propose a bounty" : 'Please enter the necessary information above',
+          };
           // if (isErrorMaxSubmissionCount) {
           //   newErrors.maxSubmissionCount = 'The number should be from 1 to 10,000';
           // }
-          newErrors.general = !canCreateTask
-            ? "You can't propose a bounty"
-            : 'Please enter the necessary information above';
           setErrors(newErrors);
         } else {
           if (canCreateTask) {
@@ -768,7 +778,7 @@ const CreateLayoutBaseModal = (props) => {
     rewardsCurrency,
     canCreateTask,
     assignee?.value,
-    publicTask,
+    isPublicEntity,
     selectedReviewers,
     mediaUploads,
     canCreatePod,
@@ -785,6 +795,8 @@ const CreateLayoutBaseModal = (props) => {
     createPod,
     createMilestone,
     createBounty,
+    isPodPublic,
+    isPublicEntity,
   ]);
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
@@ -1306,23 +1318,8 @@ const CreateLayoutBaseModal = (props) => {
                       <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
                     </LocalizationProvider>
                   </CreateFormAddDetailsLocalizationProvider>
-                  <CreateFormAddDetailsSwitch
-                    style={{
-                      width: '100%',
-                      marginLeft: '20px',
-                    }}
-                  >
-                    <CreateFormAddDetailsSwitchLabel>Show task as public</CreateFormAddDetailsSwitchLabel>
-                    <AndroidSwitch
-                      checked={publicTask}
-                      onChange={(e) => {
-                        setPublicTask(e.target.checked);
-                      }}
-                    />
-                  </CreateFormAddDetailsSwitch>
                 </CreateFormAddDetailsSelects>
-
-                {/* <CreateFormAddDetailsSelects> */}
+                {/* <CreateFormAddDetailsSelects> */}{' '}
                 {/* {isPod && (
                   <CreateFormAddDetailsSwitch>
                     <CreateFormAddDetailsInputLabel>
@@ -1336,15 +1333,13 @@ const CreateLayoutBaseModal = (props) => {
                     />
                   </CreateFormAddDetailsSwitch>
                 )} */}
-
-                {/*if Suggest a task opened */}
+                {/*if Suggest a task opened */}{' '}
                 {/* {showBountySwitchSection && canCreateTask && (
                   <CreateFormAddDetailsSwitch>
                     <CreateFormAddDetailsInputLabel>This is a bounty</CreateFormAddDetailsInputLabel>
                     <AndroidSwitch />
                   </CreateFormAddDetailsSwitch>
                 )} */}
-
                 {/*if Create a milestone opened*/}
                 {/* {showPrioritySelectSection && (
                     <DropdownSelect
@@ -1358,35 +1353,38 @@ const CreateLayoutBaseModal = (props) => {
               </CreateFormAddDetailsAppearBlockContainer>
             )}
 
-            {showLinkAttachmentSection && (
-              <CreateFormLinkAttachmentBlock
-                style={{
-                  borderBottom: 'none',
-                  paddingTop: '16px',
-                }}
-              >
-                <CreateFormLinkAttachmentLabel>Link</CreateFormLinkAttachmentLabel>
-                <InputForm
-                  value={link}
-                  onChange={(e) => setLink(e.target.value)}
-                  margin
-                  placeholder="Enter link URL"
-                  search={false}
-                />
-              </CreateFormLinkAttachmentBlock>
-            )}
-            {isPod && (
-              <div>
-                <CreateFormAddDetailsSwitch>
-                  <CreateFormAddDetailsInputLabel>Private {titleText.toLowerCase()}</CreateFormAddDetailsInputLabel>
-                  <AndroidSwitch
-                    checked={isPrivate}
-                    onChange={(e) => {
-                      setIsPrivate(e.target.checked);
+            {(showLinkAttachmentSection || showVisibility) && (
+              <CreateFormAddDetailsAppearBlockContainer>
+                {showLinkAttachmentSection && (
+                  <CreateFormLinkAttachmentBlock
+                    style={{
+                      borderBottom: 'none',
                     }}
-                  />
-                </CreateFormAddDetailsSwitch>
-              </div>
+                  >
+                    <CreateFormLinkAttachmentLabel>Link</CreateFormLinkAttachmentLabel>
+                    <InputForm
+                      value={link}
+                      onChange={(e) => setLink(e.target.value)}
+                      margin
+                      placeholder="Enter link URL"
+                      search={false}
+                    />
+                  </CreateFormLinkAttachmentBlock>
+                )}
+                {showVisibility && (
+                  <CreateFormAddDetailsTab>
+                    <CreateFormAddDetailsInputLabel>
+                      Who can see this {titleText.toLowerCase()}?
+                    </CreateFormAddDetailsInputLabel>
+                    <TabsVisibilityCreateEntity
+                      isPod={isPod}
+                      isPublic={isPublicEntity}
+                      setIsPublic={setIsPublicEntity}
+                    />
+                    {errors.privacy && <ErrorText>{errors.privacy}</ErrorText>}
+                  </CreateFormAddDetailsTab>
+                )}
+              </CreateFormAddDetailsAppearBlockContainer>
             )}
           </CreateFormAddDetailsAppearBlock>
         )}
