@@ -35,7 +35,7 @@ const populateOrder = (index, tasks, field) => {
 
 const KanbanBoard = (props) => {
   const user = useMe();
-  const { columns, onLoadMore, hasMore } = props;
+  const { columns, onLoadMore, hasMore, onColumnSectionToggle } = props;
   const [columnsState, setColumnsState] = useState([]);
   const [ref, inView] = useInView({});
   const [openModal, setOpenModal] = useState(false);
@@ -229,6 +229,7 @@ const KanbanBoard = (props) => {
 
             return (
               <TaskColumn
+                onColumnSectionToggle={(isOpen) => onColumnSectionToggle(column, isOpen)}
                 onOpen={() => setOnce(true)}
                 key={status}
                 cardsList={tasks}

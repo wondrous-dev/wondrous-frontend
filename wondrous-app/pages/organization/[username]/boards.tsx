@@ -248,6 +248,7 @@ const BoardsPage = () => {
           },
         });
 
+        // TODO: Handle when section is open
         getOrgTaskSubmissions({
           variables: {
             orgId: id,
@@ -257,6 +258,7 @@ const BoardsPage = () => {
           },
         });
 
+        // TODO: Handle when section is open
         getOrgTaskProposals({
           variables: {
             orgId: id,
@@ -390,10 +392,14 @@ const BoardsPage = () => {
         setColumns(newColumns);
       }
 
+      // TODO: Handle when section is open
       if (searchProposals) {
         searchOrgTaskProposals(searchOrgTaskProposalsArgs);
       }
     }
+  };
+
+  const handleColumnSectionToggle = (column: unknown, isOpen: boolean) => {
   };
 
   const handleLoadMore = useCallback(() => {
@@ -447,6 +453,7 @@ const BoardsPage = () => {
         columns={columns}
         searchString={searchString}
         onLoadMore={handleLoadMore}
+        onColumnSectionToggle={handleColumnSectionToggle}
         onSearch={handleSearch}
         onFilterChange={handleFilterChange}
         hasMore={orgTaskHasMore}

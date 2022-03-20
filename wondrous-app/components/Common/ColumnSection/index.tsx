@@ -24,7 +24,14 @@ import { TaskListViewModal } from '../Task/modal';
 import { useRouter } from 'next/router';
 
 let windowOffset;
-export const ColumnSection = ({ section, setSection }) => {
+
+type Props = {
+  section: any,
+  setSection: any,
+  onToggle: (isOpen: boolean) => unknown,
+}
+
+export const ColumnSection = ({ section, setSection, onToggle = () => null }: Props) => {
   const { icon = Requested, title = '', tasks = [], action = {} } = section;
   const [isOpen, setIsOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -59,6 +66,7 @@ export const ColumnSection = ({ section, setSection }) => {
   const toggleSection = () => {
     if (!isPublic) {
       setIsOpen(!isOpen);
+      onToggle(!isOpen);
     }
   };
 

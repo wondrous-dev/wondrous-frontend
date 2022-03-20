@@ -12,6 +12,7 @@ type Props = {
   onFilterChange: (searchString: string) => Promise<any>;
   columns: Array<any>;
   onLoadMore: any;
+  onColumnSectionToggle: (column: object, isOpen: boolean) => unknown;
   orgData: any;
   hasMore: any;
   selectOptions: any;
@@ -19,7 +20,7 @@ type Props = {
 };
 
 const OrgBoards = (props: Props) => {
-  const { columns, onLoadMore, hasMore, orgData, orgPods, onSearch, onFilterChange } = props;
+  const { columns, onLoadMore, hasMore, orgData, orgPods, onSearch, onFilterChange, onColumnSectionToggle } = props;
   const [filterSchema, setFilterSchema] = useState([
     {
       name: 'podIds',
@@ -52,6 +53,7 @@ const OrgBoards = (props: Props) => {
         onFilterChange={onFilterChange}
         columns={columns}
         onLoadMore={onLoadMore}
+        onColumnSectionToggle={onColumnSectionToggle}
         hasMore={hasMore}
       />
     </Wrapper>

@@ -31,6 +31,7 @@ type Props = {
   filterSchema: any;
   onSearch: (searchString: string) => Promise<any>;
   onFilterChange: (searchString: string) => Promise<any>;
+  onColumnSectionToggle: (column: object, isOpen: boolean) => unknown;
   columns: Array<any>;
   onLoadMore: any;
   hasMore: any;
@@ -38,7 +39,8 @@ type Props = {
 };
 
 const Boards = (props: Props) => {
-  const { columns, onLoadMore, hasMore, filterSchema, onSearch, onFilterChange, isAdmin } = props;
+  const { columns, onLoadMore, hasMore, filterSchema, onSearch, onFilterChange, isAdmin, onColumnSectionToggle } =
+    props;
   const router = useRouter();
   const orgBoard = useOrgBoard();
   const [view, setView] = useState(null);
@@ -90,7 +92,12 @@ const Boards = (props: Props) => {
     return view ? (
       <>
         {view === ViewType.Grid ? (
-          <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+          <KanbanBoard
+            columns={columns}
+            onLoadMore={onLoadMore}
+            hasMore={hasMore}
+            onColumnSectionToggle={onColumnSectionToggle}
+          />
         ) : (
           <Table columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
         )}
