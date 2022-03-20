@@ -354,7 +354,6 @@ const CreateLayoutBaseModal = (props) => {
       showVisibility: isTask || isBounty || isPod,
     };
   }, [isBounty, isMilestone, isPod, isTask]);
-  console.log('isPod', isPod);
 
   const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType];
   const inputRef: any = useRef();
@@ -393,6 +392,14 @@ const CreateLayoutBaseModal = (props) => {
     }
   }, [parentTaskId, getTaskById, isSubtask]);
 
+  useEffect(() => {
+    console.log('orgBoard?.org', orgBoard);
+    if (orgBoard?.orgData.privacyLevel === PRIVACY_LEVEL.private) {
+      setIsPublicEntity(false);
+    } else if (orgBoard?.orgData.privacyLevel === PRIVACY_LEVEL.public) {
+      setIsPublicEntity(true);
+    }
+  }, [orgBoard?.orgData]);
   useEffect(() => {
     if (isSubtask) {
       getTaskById({
