@@ -15,7 +15,7 @@ import TaskStatus from '../components/Icons/TaskStatus';
 import React from 'react';
 import { cloneDeep } from 'lodash';
 import { BountyIcon, MilestoneIcon, TaskIcon } from '../components/Icons/Search/types';
-import { delQuery } from '../utils';
+import { dedupeColumns, delQuery } from '../utils';
 
 const TO_DO = {
   status: TASK_STATUS_TODO,
@@ -233,4 +233,21 @@ export const splitColsByType = (columns) => {
   };
 
   return { splitCols, totalCount };
+};
+
+export const bindProposalsToCols = (columns, taskProposals) => {
+  const newColumns = [...columns];
+  newColumns[0].section.tasks = [];
+  taskProposals?.forEach((taskProposal) => {
+    newColumns[0].section.tasks.push(taskProposal);
+  });
+
+  return newColumns;
+};
+
+export const bindTasksToCols = (columns, tasks) => {
+  let newColumns = populateTaskColumns(tasks, columns);
+  newColumns = dedupeColumns(newColumns);
+
+  return { newColumns, hasMore: tasks.length >= LIMIT };
 };

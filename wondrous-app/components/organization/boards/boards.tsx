@@ -5,18 +5,19 @@ import CreatePodIcon from '../../Icons/createPod';
 import Boards from '../../Common/Boards';
 import { OrgPod } from '../../../types/pod';
 import { FILTER_STATUSES } from '../../../services/board';
+import { DEFAULT_STATUS_ARR } from '@utils/constants';
+import { TaskFilter } from '../../../types/task';
 
 type Props = {
   orgPods: OrgPod[];
-  onSearch: (searchString: string) => Promise<any>;
-  onFilterChange: (searchString: string) => Promise<any>;
-  columns: Array<any>;
-  onLoadMore: any;
+  onSearch: (searchString: string) => Promise<unknown>;
+  onFilterChange: ({ statuses, podIds }: TaskFilter) => unknown;
+  columns: Array<unknown>;
+  onLoadMore: unknown;
   onColumnSectionToggle: (column: object, isOpen: boolean) => unknown;
-  orgData: any;
-  hasMore: any;
-  selectOptions: any;
-  searchString: string;
+  orgData: unknown;
+  hasMore: unknown;
+  selectOptions: unknown;
 };
 
 const OrgBoards = (props: Props) => {
