@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { PERMISSIONS, SIDEBAR_WIDTH } from '../../../utils/constants';
+import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from '../../../utils/constants';
 import { SideBarContext } from '../../../utils/contexts';
 import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from '../../../utils/helpers';
 import { usePodBoard } from '../../../utils/hooks';
@@ -32,10 +32,12 @@ import {
   TokenHeader,
   HeaderInviteButton,
   PlusIconWrapper,
+  HeaderTitleIcon,
 } from '../../organization/wrapper/styles';
 import { MoreInfoModal } from '../../profile/modals';
 import SideBarComponent from '../../SideBar';
 import PlusIcon from '../../Icons/plus';
+import { PrivateBoardIcon } from '../../Common/PrivateBoardIcon';
 
 const Wrapper = (props) => {
   const router = useRouter();
@@ -125,7 +127,13 @@ const Wrapper = (props) => {
                   }}
                 />
                 <HeaderMainBlock>
-                  <HeaderTitle>{podProfile?.name}</HeaderTitle>
+                  <HeaderTitleIcon>
+                    <HeaderTitle>{podProfile?.name}</HeaderTitle>
+                    <PrivateBoardIcon
+                      isPrivate={podBoard?.pod?.privacyLevel === PRIVACY_LEVEL.private}
+                      tooltipTitle={'Private Pod'}
+                    />
+                  </HeaderTitleIcon>
                   <HeaderButtons>
                     <HeaderFollowButton
                       style={{
