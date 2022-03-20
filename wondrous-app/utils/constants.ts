@@ -68,6 +68,13 @@ const SUPPORTED_CHAINS = {
   137: 'MATIC',
 };
 
+export const RPC_URLS: { [chainId: number]: string } = {
+  1: process.env.NEXT_PUBLIC_RPC_URL_ETH,
+  137: process.env.NEXT_PUBLIC_RPC_URL_MATIC,
+};
+
+export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId));
+
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {
   SUPPORTED_CHAINS[4] = 'RINKEBY';
 }
@@ -126,6 +133,7 @@ export const ENTITIES_TYPES = {
   POD: 'pod',
   ORG: 'org',
   BOUNTY: 'bounty',
+  PROPOSAL: 'proposal'
 };
 
 export const MEDIA_TYPES = {

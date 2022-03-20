@@ -8,7 +8,6 @@ import { Button } from '../../Common/button';
 import { Red800 } from '../../../theme/colors';
 
 export const RolesContainer = styled.div`
-  height: 100vh;
   width: 100%;
   max-width: 765px;
 `;

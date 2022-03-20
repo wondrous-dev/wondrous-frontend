@@ -17,7 +17,14 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "typeRoots": ["./types"],
-    "strict": false
+    "strict": false,
+    "baseUrl": "./",
+    "paths": {
+      "@components/*": ["components/*"],
+      "@services/*": ["services/*"],
+      "@utils/*": ["utils/*"],
+      "@types/*": ["types/*"]
+    }
   },
   "include": [
     "next-env.d.ts",

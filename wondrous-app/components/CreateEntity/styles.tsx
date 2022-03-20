@@ -409,6 +409,7 @@ export const CreateFormAddDetailsAppearBlock = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 `;
 
 export const CreateFormAddDetailsAppearBlockContainer = styled.div`
@@ -462,16 +463,18 @@ export const CreateFormAddDetailsLocalizationProvider = styled.div`
   width: 40%;
 `;
 
-export const CreateFormAddDetailsSwitch = styled.div`
-  && {
-    flex-basis: 50%;
-  }
+export const CreateFormAddDetailsTab = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  width: 100%;
+  margin-top: 20px;
 `;
 
-export const CreateFormAddDetailsSwitchLabel = styled(CreateFormAddDetailsInputLabel)`
+export const CreateFormSetPodPrivacy = styled(CreateFormAddDetailsTab)`
+  margin-top: 0;
+`;
+
+export const CreateFormAddDetailsTabLabel = styled(CreateFormAddDetailsInputLabel)`
   && {
     width: 100%;
     margin: 0 0 15px 10px;
@@ -506,7 +509,6 @@ export const CreateFormMembersBlockTitle = styled(Typography)`
 
 export const CreateFormLinkAttachmentBlock = styled.div`
   width: 100%;
-  padding: 40px 40px 0;
   border-bottom: 1px solid #363636;
 `;
 
@@ -571,6 +573,15 @@ export const CreateFormPreviewButton = styled(Button)`
     font-size: 16px;
     line-height: 150%;
     color: #ffffff;
+
+    .MuiCircularProgress-root {
+      margin-right: 10px;
+    }
+    
+    &:disabled {
+      color: #ffffff;
+      cursor: not-allowed;
+    }
   }
 `;
 

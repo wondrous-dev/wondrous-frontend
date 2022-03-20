@@ -26,6 +26,9 @@ import { useOrgBoard, useSelectMembership } from '../../../utils/hooks';
 import { PRIVACY_LEVEL } from '../../../utils/constants';
 import { MembershipRequestTable } from '../../Table/MembershipRequests';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
+import { ListViewIcon } from '../../Icons/ViewIcons/listView';
+import { GridViewIcon } from '../../Icons/ViewIcons/gridView';
+import SelectMenuBoardType from '../SelectMenuBoardType';
 
 type Props = {
   filterSchema: any;
@@ -41,19 +44,13 @@ const Boards = (props: Props) => {
   const { columns, onLoadMore, hasMore, filterSchema, onSearch, onFilterChange, isAdmin } = props;
   const router = useRouter();
   const orgBoard = useOrgBoard();
-  const [view, setView] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
   const [searchResults, setSearchResults] = useState({});
   const { search: searchQuery } = router.query;
   const selectMembershipHook = useSelectMembership();
   const { boardType } = router.query;
   const selectMembershipRequests = selectMembershipHook?.selectMembershipRequests;
-  useEffect(() => {
-    if (router.isReady) {
-      setView((router.query.view || ViewType.Grid) as ViewType);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const view = String(router.query.view ?? ViewType.Grid);
 
   useEffect(() => {
     if (!searchQuery) {
@@ -69,6 +66,7 @@ const Boards = (props: Props) => {
   const listViewOptions = [
     {
       name: 'List',
+      icon: <ListViewIcon />,
       active: view === ViewType.List,
       action: () => {
         router.replace(`${delQuery(router.asPath)}?view=${ViewType.List}`);
@@ -76,6 +74,7 @@ const Boards = (props: Props) => {
     },
     {
       name: 'Grid',
+      icon: <GridViewIcon />,
       active: view === ViewType.Grid,
       action: () => {
         router.replace(`${delQuery(router.asPath)}?view=${ViewType.Grid}`);
@@ -156,38 +155,7 @@ const Boards = (props: Props) => {
       <BoardsActivity>
         <SearchTasks onSearch={onSearch} />
         <Filter filterSchema={filterSchema} onChange={onFilterChange} />
-        {orgBoard && (
-          <CreateFormPreviewButton
-            style={{
-              width: '230px',
-              borderRadius: '8px',
-              fontSize: '14px',
-            }}
-            onClick={() => {
-              if (boardType !== PRIVACY_LEVEL.public) {
-                router.push({
-                  pathname: router.pathname,
-                  query: {
-                    username: router.query.username,
-                    view,
-                    boardType: PRIVACY_LEVEL.public,
-                  },
-                });
-              } else {
-                router.push({
-                  pathname: router.pathname,
-                  query: {
-                    username: router.query.username,
-                    view,
-                    boardType: 'all',
-                  },
-                });
-              }
-            }}
-          >
-            {boardType === PRIVACY_LEVEL.public ? 'View all' : 'View public'}
-          </CreateFormPreviewButton>
-        )}
+        {orgBoard && <SelectMenuBoardType router={router} view={view} />}
         {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
       </BoardsActivity>
       {selectMembershipRequests && (

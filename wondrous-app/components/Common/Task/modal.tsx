@@ -132,7 +132,6 @@ import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { MilestoneTaskList } from '../MilestoneTaskList';
 import { MilestoneTaskBreakdown } from '../MilestoneTaskBreakdown';
 import Link from 'next/link';
-import { TaskList } from '../TaskList';
 import PodIcon from '../../Icons/podIcon';
 import { CompensationAmount, CompensationPill, IconContainer } from '../Compensation/styles';
 
@@ -641,8 +640,18 @@ const selectTabsPerType = (isTaskProposal, isMilestone, isSubtask) => {
   return tabsPerType.taskTabs;
 };
 
-export const TaskViewModal = (props) => {
-  const { open, handleClose, task, taskId, isTaskProposal, back } = props;
+interface ITaskListModalProps {
+  open: boolean;
+  handleClose: () => any;
+  taskId: string;
+  isTaskProposal?: boolean;
+  back?: boolean;
+  disableEnforceFocus?: boolean;
+  shouldFocusAfterRender?: boolean;
+}
+
+export const TaskViewModal = (props: ITaskListModalProps) => {
+  const { open, handleClose, taskId, isTaskProposal, back } = props;
   const [fetchedTask, setFetchedTask] = useState(null);
   const [fetchedTaskSubmissions, setFetchedTaskSubmissions] = useState([]);
   const [fetchedTaskComments, setFetchedTaskComments] = useState([]);
@@ -652,6 +661,7 @@ export const TaskViewModal = (props) => {
   const isSubtask = fetchedTask?.parentTaskId !== null;
   const isBounty = fetchedTask?.type === BOUNTY_TYPE;
   const showAssignee = !isTaskProposal && !isMilestone && !isBounty;
+  const entityType = isTaskProposal ? ENTITIES_TYPES.PROPOSAL : fetchedTask?.type;
   const [approvedSubmission, setApprovedSubmission] = useState(null);
 
   const orgBoard = useOrgBoard();
@@ -685,7 +695,8 @@ export const TaskViewModal = (props) => {
   const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
   const router = useRouter();
   const [editTask, setEditTask] = useState(false);
-  const [activeTab, setActiveTab] = useState(tabs.submissions);
+
+  const [activeTab, setActiveTab] = useState(isTaskProposal ? tabs.discussion : tabs.submissions);
   const [archiveTask, setArchiveTask] = useState(false);
   const [archiveTaskAlert, setArchiveTaskAlert] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
@@ -801,42 +812,45 @@ export const TaskViewModal = (props) => {
 
   useEffect(() => {
     if (open) {
-      if (isTaskProposal) {
-        setTaskSubmissionLoading(false);
-      }
-
-      if (!task && taskId && !fetchedTask) {
+      if (taskId && !fetchedTask) {
         if (isTaskProposal) {
+          setTaskSubmissionLoading(false);
           getTaskProposalById({
             variables: {
               proposalId: taskId,
             },
-          }).then((result) => {
-            const taskProposalData = result?.data?.getTaskProposalById;
-            if (taskProposalData) {
-              setFetchedTask(transformTaskProposalToTaskProposalCard(taskProposalData, {}));
-            }
-          });
+          })
+            .then((result) => {
+              const taskProposalData = result?.data?.getTaskProposalById;
+              if (taskProposalData) {
+                setFetchedTask(transformTaskProposalToTaskProposalCard(taskProposalData, {}));
+              }
+            })
+            .catch(() => {
+              console.error('Error fetching task proposal');
+            });
         } else {
           getTaskById({
             variables: {
               taskId,
             },
-          }).then((result) => {
-            const taskData = result?.data?.getTaskById;
-            if (taskData) {
-              setFetchedTask(
-                transformTaskToTaskCard(taskData, {
-                  orgProfilePicture: taskData?.org?.profilePicture,
-                  orgName: taskData?.org?.name,
-                  podName: taskData?.pod?.name,
-                })
-              );
-            }
-          });
+          })
+            .then((result) => {
+              const taskData = result?.data?.getTaskById;
+              if (taskData) {
+                setFetchedTask(
+                  transformTaskToTaskCard(taskData, {
+                    orgProfilePicture: taskData?.org?.profilePicture,
+                    orgName: taskData?.org?.name,
+                    podName: taskData?.pod?.name,
+                  })
+                );
+              }
+            })
+            .catch(() => {
+              console.error('Error fetching task');
+            });
         }
-      } else if (task && !isEqual(task, fetchedTask)) {
-        setFetchedTask(task);
       }
 
       if (fetchedTask) {
@@ -854,12 +868,8 @@ export const TaskViewModal = (props) => {
         }
       }
     }
-    // if (boardOrg) {
-    //   setOrgBoard(boardOrg)
-    // }
   }, [
     taskId,
-    task,
     getTaskById,
     fetchedTask,
     userPermissionsContext,
@@ -893,7 +903,7 @@ export const TaskViewModal = (props) => {
         >
           <EditLayoutBaseModal
             open={open}
-            entityType={fetchedTask?.type}
+            entityType={entityType}
             handleClose={() => {
               setEditTask(false);
               setFetchedTask(null);
@@ -955,7 +965,7 @@ export const TaskViewModal = (props) => {
   const canArchive =
     permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-    task?.createdBy === user?.id;
+    fetchedTask?.createdBy === user?.id;
   const displayDivProfileImageStyle = {
     width: '26px',
     height: '26px',

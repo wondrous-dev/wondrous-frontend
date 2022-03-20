@@ -23,6 +23,9 @@ import { CURRENCY_KEYS, SUPPORTED_CHAINS } from '../../../utils/constants';
 import { USDCoin } from '../../Icons/USDCoin';
 import { SupportedChainType } from '../../../utils/web3Constants';
 import { ErrorText } from '..';
+import signedMessageIsString from '@services/web3/utils/signedMessageIsString';
+import WalletModal from './WalletModal';
+import useEagerConnect from '@services/web3/hooks/useEagerConnect';
 
 const CHAIN_LOGO = {
   '1': <Ethereum />,
@@ -45,10 +48,11 @@ const CURRENCY_UI_ELEMENTS = {
 
 const Wallet = () => {
   const wonderWeb3 = useWonderWeb3();
+  useEagerConnect();
   const [connected, setConnected] = useState(false);
   const [firstConnect, setFirstConnect] = useState(true);
-  const [notSupported, setNotSupported] = useState(false);
   const [differentAccountError, setDifferentAccountError] = useState(null);
+  const [walletModalOpen, setWalletModalOpen] = useState(false);
   const [currency, setCurrency] = useState({
     balance: '0.000',
     symbol: 'WONDER',
@@ -66,7 +70,7 @@ const Wallet = () => {
 
       if (messageToSign) {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
-        if (signedMessage) {
+        if (signedMessageIsString(signedMessage)) {
           const result = await linkWallet(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
           if (!result) {
             // Error with wallet link. Disconnect wallet
@@ -93,11 +97,6 @@ const Wallet = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
-
-  // Detect Chain
-  useEffect(() => {
-    setNotSupported(wonderWeb3.notSupportedChain);
-  }, [wonderWeb3.notSupportedChain]);
 
   // Change Currency when the Chain changes
   useEffect(() => {
@@ -180,19 +179,23 @@ const Wallet = () => {
   if (!connected) {
     return (
       <WalletWrapper>
-        <Button highlighted="true" onClick={connectWallet} style={{ width: '270px', minHeight: '40px' }}>
-          <Metamask height="18" width="17" />
+        <Button
+          highlighted="true"
+          onClick={() => setWalletModalOpen(true)}
+          style={{ width: '270px', minHeight: '40px' }}
+        >
           <PaddedParagraph
             style={{
               marginLeft: '8px',
             }}
           >
-            {!user?.activeEthAddress ? 'Link Metamask to Account' : 'Connect MetaMask'}
+            {!user?.activeEthAddress ? 'Link Wallet to Account' : 'Connect Wallet'}
           </PaddedParagraph>
         </Button>
+        <WalletModal open={walletModalOpen} onClose={() => setWalletModalOpen(false)} />
       </WalletWrapper>
     );
-  } else if (notSupported) {
+  } else if (wonderWeb3.notSupportedChain) {
     return (
       <WalletWrapper>
         <WalletDisplay>Chain Not Supported</WalletDisplay>

@@ -16,7 +16,7 @@ import {
   TaskContent,
   TaskTitle,
 } from '../Common/Task/styles';
-import { LoadMore } from '../Common/TaskList/styles';
+import { LoadMore } from '../Common/MilestoneTaskList/styles';
 import { CreateModalOverlay } from '../CreateEntity/styles';
 import PodIcon from '../Icons/podIcon';
 import { PodModalFooter, PodModalFooterInfoWrapper, PodModalFooterInfoWrapperText } from './styles';

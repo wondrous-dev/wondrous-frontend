@@ -103,6 +103,7 @@ export const UserAboutInfoCard = styled.div`
   margin-top: 10px;
   width: 100%;
   background: #0f0f0f;
+  cursor: pointer;
   border-radius: 6px;
   padding: 15px;
   display: flex;

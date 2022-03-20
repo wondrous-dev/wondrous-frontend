@@ -41,6 +41,7 @@ import SettingsIcon from '../Icons/settings';
 import WrenchIcon from '../Icons/wrench';
 import CardIcon from '../Icons/card';
 import { pathToArray } from 'graphql/jsutils/Path';
+import NotificationsIcon, { NotificationOutlineSettings } from '../Icons/notifications';
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -126,7 +127,7 @@ export const SettingsWrapper = (props) => {
     },
   ];
 
-  const SETTINGS_SIDEBAR_LIST_ITEMS = [
+  let SETTINGS_SIDEBAR_LIST_ITEMS = [
     {
       icon: <GeneralSettingsIcon width={40} height={40} />,
       label: 'General settings',
@@ -159,6 +160,14 @@ export const SettingsWrapper = (props) => {
     },
   ];
 
+  if (orgId && !podId) {
+    SETTINGS_SIDEBAR_LIST_ITEMS.push({
+      icon: <NotificationOutlineSettings />,
+      label: 'Notifications',
+      value: 'notifications',
+      href: `/organization/settings/${orgId}/notifications`,
+    });
+  }
   const parsedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
@@ -241,10 +250,10 @@ export const SettingsWrapper = (props) => {
                     {(orgData || podData) &&
                       SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
                         const { href, icon, label } = item;
-                        const pathnameSplit = pathname.split('/')
-                        const hrefSplit = href.split('/')
-                        const endPathName = pathnameSplit[pathnameSplit.length-1]
-                        const endHref = hrefSplit[hrefSplit.length-1]
+                        const pathnameSplit = pathname.split('/');
+                        const hrefSplit = href.split('/');
+                        const endPathName = pathnameSplit[pathnameSplit.length - 1];
+                        const endHref = hrefSplit[hrefSplit.length - 1];
                         const active = endHref === endPathName;
 
                         return (

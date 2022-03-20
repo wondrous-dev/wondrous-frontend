@@ -1,5 +1,7 @@
 import { ClickAwayListener } from '@material-ui/core';
-import { useState } from 'react';
+import { delQuery } from '../../../utils';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { ObjectType, PostVerbType } from '../../../types/post';
 import * as Constants from '../../../utils/constants';
 import { useMe } from '../../Auth/withAuth';
@@ -59,6 +61,7 @@ const createHeaderText = (verbOrStatus, objectType, referencedUser, onClick) => 
 
 export const PostHeader = (props) => {
   const { post } = props;
+  const router = useRouter();
   const { id, postId, verb, taskStatus, objectType, content, referencedObject, objectId, actor = {} } = post;
   const postObjectType = objectType ?? referencedObject?.objectType;
   const [menu, setMenu] = useState(null);
@@ -75,10 +78,10 @@ export const PostHeader = (props) => {
   };
   const handlePostEditClose = () => setKudosForm(false);
   const handleTaskViewModalClose = () => {
-    setTaskViewModal(false);
+    router.replace(`${delQuery(router.asPath)}`, undefined, { shallow: true });
   };
   const handleTaskViewModalOpen = () => {
-    setTaskViewModal(true);
+    router.replace(`${delQuery(router.asPath)}?task=${taskId}`, undefined, { shallow: true });
   };
   const verbOrStatus = verb ?? taskStatus;
   const headerText = createHeaderText(
@@ -87,10 +90,19 @@ export const PostHeader = (props) => {
     referencedObject?.actor?.username,
     handleTaskViewModalOpen
   );
+
+  useEffect(() => {
+    if (router?.query?.task) {
+      setTaskViewModal(true);
+    } else {
+      setTaskViewModal(false);
+    }
+  }, [router?.query?.task]);
+
   return (
     <>
       <KudosForm open={kudosForm} existingContent={content} onClose={handlePostEditClose} id={postId} />
-      {taskId && <TaskViewModal open={taskViewModal} taskId={taskId} handleClose={handleTaskViewModalClose} />}
+      <TaskViewModal open={taskViewModal} taskId={taskId} handleClose={handleTaskViewModalClose} />
       <PostHeaderWrapper>
         <PostHeaderImageTextWrapper>
           {actor?.profilePicture ? <PostHeaderImage src={actor?.profilePicture} /> : <PostHeaderDefaultUserImage />}

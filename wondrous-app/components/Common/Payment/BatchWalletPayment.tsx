@@ -88,7 +88,7 @@ export const BatchWalletPayment = (props) => {
       await wonderGnosis.connectSafeSdk({ chain, safeAddress });
     } catch (e) {
       console.log('error connecting to gnosis safe', selectedWallet.chain);
-      setSafeConnectionError(`selected gnosis safe not deployed on current ${CHAIN_ID_TO_CHAIN_NAME[currentChainId]}`);
+      setSafeConnectionError(`Cannot connect to safe, check if connected to  ${selectedWallet.chain}`);
     }
   };
 
@@ -251,13 +251,11 @@ export const BatchWalletPayment = (props) => {
   };
   const handleCreateNewWalletClick = () => {
     if (podId) {
-      router.push(`/pod/settings/${podId}/wallet`, undefined, {
-        shallow: true,
-      });
+      const newUrl = `/pod/settings/${podId}/wallet`;
+      window.location.href = newUrl;
     } else if (orgId) {
-      router.push(`/organization/settings/${orgId}/wallet`, undefined, {
-        shallow: true,
-      });
+      const newUrl = `/organization/settings/${orgId}/wallet`;
+      window.location.href = newUrl;
     }
   };
 

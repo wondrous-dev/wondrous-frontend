@@ -6,33 +6,33 @@ import Safe from '@gnosis.pm/safe-core-sdk';
 
 import SafeServiceClient from '@gnosis.pm/safe-service-client';
 
-const CHAIN_VALUE_TO_GNOSIS_CHAIN_VALUE  = {
-    eth_mainnet: 'mainnet',
-    polygon_mainnet: 'polygon',
-    rinkeby: 'rinkeby',
-  };
+const CHAIN_VALUE_TO_GNOSIS_CHAIN_VALUE = {
+  eth_mainnet: 'mainnet',
+  polygon_mainnet: 'polygon',
+  rinkeby: 'rinkeby',
+};
 
+const CHAIN_NAME_TO_DB_CHAIN_NAME = {
+  // todo refactor this to have one consistent naming probably
+  ETH: 'eth_mainnet',
+  MATIC: 'polygon_mainnet',
+  RINKEBY: 'rinkeby',
+};
 
-  const CHAIN_NAME_TO_DB_CHAIN_NAME = { // todo refactor this to have one consistent naming probably
-    ETH: 'eth_mainnet',
-    MATIC: 'polygon_mainnet',
-    RINKEBY: 'rinkeby',
-  };
-  
 export const useGnosisSdk = () => {
   const wonderWeb3 = useWonderWeb3();
   const [connected, setConnected] = useState(false);
   const [safeSdk, setSafeSdk] = useState<Safe>(null);
   const [safeServiceClient, setSafeServiceClient] = useState<SafeServiceClient>(null);
 
-  const connectSafeSdk = async ({safeAddress, chain}) => {
-    setConnected(false)
+  const connectSafeSdk = async ({ safeAddress, chain }) => {
+    setConnected(false);
     await wonderWeb3.onConnect();
     const currentChain = CHAIN_NAME_TO_DB_CHAIN_NAME[wonderWeb3.chainName];
     if (currentChain && currentChain !== chain) {
-        throw new Error('Not on the right chain');
+      throw new Error('Not on the right chain');
     }
-    const ethProvider = new ethers.providers.Web3Provider(window.ethereum);
+    const ethProvider = new ethers.providers.Web3Provider(wonderWeb3.web3Provider);
     const safeOwner = ethProvider.getSigner(0);
     const ethAdapterOwner1 = new EthersAdapter({
       ethers,
@@ -50,10 +50,8 @@ export const useGnosisSdk = () => {
     } catch (e) {
       console.log(e);
     }
-    setConnected(true)
+    setConnected(true);
   };
-
-
 
   const isConnected = () => {
     return connected;
@@ -63,6 +61,6 @@ export const useGnosisSdk = () => {
     connectSafeSdk,
     safeServiceClient,
     safeSdk,
-    isConnected
+    isConnected,
   };
 };

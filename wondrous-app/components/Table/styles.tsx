@@ -1,16 +1,14 @@
+import TaskStatus from '@components/Icons/TaskStatus';
+import { Button, Typography } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
-import { Button } from '@material-ui/core';
 import { color } from 'styled-system';
-
 import { LinkIcon } from '../Icons/linkIcon';
-import SmartLink from '../Common/SmartLink';
 
 export const Box = styled.div`
   ${color}
@@ -83,6 +81,8 @@ export const TaskTitle = styled(Typography)`
     color: #ffffff;
   }
 `;
+
+export const TaskStatusIcon = styled(TaskStatus)``;
 
 export const TaskDescription = styled(Typography)`
   && {

@@ -17,7 +17,7 @@ const AboutOrganizationsCard = (props) => {
   const { name, description, profilePicture, thumbnailPicture, username } = props;
   const handleOnClick = () => router.push(`/organization/${username}/boards`);
   return (
-    <UserAboutInfoCard>
+    <UserAboutInfoCard onClick={handleOnClick}>
       <UserAboutInfoCardHeader>
         {thumbnailPicture || profilePicture ? (
           <SafeImage
