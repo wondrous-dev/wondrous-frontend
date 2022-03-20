@@ -250,6 +250,7 @@ const CreateLayoutBaseModal = (props) => {
     title: null,
     description: null,
     org: null,
+    privacy: null,
     // maxSubmissionCount: null,
   });
 
@@ -323,6 +324,8 @@ const CreateLayoutBaseModal = (props) => {
   // const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
   const [pods, setPods] = useState([]);
   const [pod, setPod] = useState(null);
+  const podPrivacyLevel = pods?.filter((i) => i.id === pod)[0]?.privacyLevel;
+  const isPodPublic = !podPrivacyLevel || podPrivacyLevel === 'public';
   const [dueDate, setDueDate] = useState(null);
   const [isPrivate, setIsPrivate] = useState(false);
   const [isPublicEntity, setIsPublicEntity] = useState(false);
@@ -348,12 +351,10 @@ const CreateLayoutBaseModal = (props) => {
       showMembersSection: false,
       showPrioritySelectSection: isMilestone,
       showDueDateSection: isTask || isBounty || isMilestone,
-      showVisibility:
-        (isTask || isBounty || isPod) &&
-        (orgBoard?.orgData?.privacyLevel === PRIVACY_LEVEL.public ||
-          podBoard?.pod?.privacyLevel === PRIVACY_LEVEL.public),
+      showVisibility: isTask || isBounty || isPod,
     };
-  }, [isBounty, isMilestone, isPod, isTask, orgBoard?.orgData?.privacyLevel, podBoard?.pod?.privacyLevel]);
+  }, [isBounty, isMilestone, isPod, isTask]);
+  console.log('isPod', isPod);
 
   const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType];
   const inputRef: any = useRef();
@@ -524,23 +525,24 @@ const CreateLayoutBaseModal = (props) => {
           ...(!canCreateTask && {
             proposedAssigneeId: assignee?.value,
           }),
-          ...(isPublicEntity && {
-            privacyLevel: PRIVACY_LEVEL.public,
-          }),
+          ...(isPublicEntity &&
+            isPodPublic && {
+              privacyLevel: PRIVACY_LEVEL.public,
+            }),
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
 
-        if (!title || !org) {
-          const newErrors = { ...errors };
-          if (!title) {
-            newErrors.title = 'Please enter a title';
-          }
-          if (!org) {
-            newErrors.org = 'Please select an organization';
-          }
-          newErrors.general = 'Please enter the necessary information above';
+        const taskPodPrivacyError = !isPodPublic ? isPublicEntity : false;
+        if (!title || !org || taskPodPrivacyError) {
+          const newErrors = {
+            ...errors,
+            title: !title ? 'Please enter a title' : errors.title,
+            org: !org ? 'Please select an organization' : errors.org,
+            privacy: taskPodPrivacyError ? 'The selected pod is for members only' : errors.privacy,
+            general: 'Please enter the necessary information above',
+          };
           setErrors(newErrors);
         } else {
           if (canCreateTask) {
@@ -699,30 +701,29 @@ const CreateLayoutBaseModal = (props) => {
           ...(!canCreateTask && {
             proposedAssigneeId: assignee?.value,
           }),
-          privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
+          ...(isPublicEntity &&
+            isPodPublic && {
+              privacyLevel: PRIVACY_LEVEL.public,
+            }),
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
         // const isErrorMaxSubmissionCount =
         //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
-        if (!title || !descriptionText || !org || !canCreateTask) {
-          const newErrors = { ...errors };
-          if (!title) {
-            newErrors.title = 'Please enter a title';
-          }
-          if (!descriptionText) {
-            newErrors.description = 'Please enter a description';
-          }
-          if (!org) {
-            newErrors.org = 'Please select an organization';
-          }
+        const podPrivacyError = !isPodPublic ? isPublicEntity : false;
+        if (!title || !descriptionText || !org || !canCreateTask || podPrivacyError) {
+          const newErrors = {
+            ...errors,
+            title: !title ? 'Please enter a title' : errors.title,
+            description: !descriptionText ? 'Please enter a description' : errors.description,
+            org: !org ? 'Please select an organization' : errors.org,
+            privacy: podPrivacyError ? 'The selected pod is for members only' : errors.privacy,
+            general: !canCreateTask ? "You can't propose a bounty" : 'Please enter the necessary information above',
+          };
           // if (isErrorMaxSubmissionCount) {
           //   newErrors.maxSubmissionCount = 'The number should be from 1 to 10,000';
           // }
-          newErrors.general = !canCreateTask
-            ? "You can't propose a bounty"
-            : 'Please enter the necessary information above';
           setErrors(newErrors);
         } else {
           if (canCreateTask) {
@@ -1355,40 +1356,40 @@ const CreateLayoutBaseModal = (props) => {
               </CreateFormAddDetailsAppearBlockContainer>
             )}
 
-            {showLinkAttachmentSection ||
-              (showVisibility && (
-                <CreateFormAddDetailsAppearBlockContainer>
-                  {showLinkAttachmentSection && (
-                    <CreateFormLinkAttachmentBlock
-                      style={{
-                        borderBottom: 'none',
-                      }}
-                    >
-                      <CreateFormLinkAttachmentLabel>Link</CreateFormLinkAttachmentLabel>
-                      <InputForm
-                        value={link}
-                        onChange={(e) => setLink(e.target.value)}
-                        margin
-                        placeholder="Enter link URL"
-                        search={false}
-                      />
-                    </CreateFormLinkAttachmentBlock>
-                  )}
-                  {showVisibility && (
-                    <CreateFormAddDetailsTab>
-                      <CreateFormAddDetailsInputLabel>
-                        Who can see this {titleText.toLowerCase()}?
-                      </CreateFormAddDetailsInputLabel>
-                      <TabsVisibility
-                        options={tabsVisibilityOptions}
-                        selected={tabsVisibilitySelected}
-                        onChange={tabsVisibilityHandleOnChange}
-                        variant
-                      />
-                    </CreateFormAddDetailsTab>
-                  )}
-                </CreateFormAddDetailsAppearBlockContainer>
-              ))}
+            {(showLinkAttachmentSection || showVisibility) && (
+              <CreateFormAddDetailsAppearBlockContainer>
+                {showLinkAttachmentSection && (
+                  <CreateFormLinkAttachmentBlock
+                    style={{
+                      borderBottom: 'none',
+                    }}
+                  >
+                    <CreateFormLinkAttachmentLabel>Link</CreateFormLinkAttachmentLabel>
+                    <InputForm
+                      value={link}
+                      onChange={(e) => setLink(e.target.value)}
+                      margin
+                      placeholder="Enter link URL"
+                      search={false}
+                    />
+                  </CreateFormLinkAttachmentBlock>
+                )}
+                {showVisibility && (
+                  <CreateFormAddDetailsTab>
+                    <CreateFormAddDetailsInputLabel>
+                      Who can see this {titleText.toLowerCase()}?
+                    </CreateFormAddDetailsInputLabel>
+                    <TabsVisibility
+                      options={tabsVisibilityOptions}
+                      selected={tabsVisibilitySelected}
+                      onChange={tabsVisibilityHandleOnChange}
+                      variant
+                    />
+                    {errors.privacy && <ErrorText>{errors.privacy}</ErrorText>}
+                  </CreateFormAddDetailsTab>
+                )}
+              </CreateFormAddDetailsAppearBlockContainer>
+            )}
           </CreateFormAddDetailsAppearBlock>
         )}
       </CreateFormAddDetailsSection>
