@@ -47,6 +47,7 @@ export const GET_USER_AVAILABLE_PODS = gql`
       username
       name
       profilePicture
+      privacyLevel
     }
   }
 `;

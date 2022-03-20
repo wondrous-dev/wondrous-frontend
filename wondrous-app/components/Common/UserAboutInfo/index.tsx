@@ -1,10 +1,9 @@
 import { useLazyQuery } from '@apollo/client';
+import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { GET_USER_ABOUT_PAGE_DATA } from '../../../graphql/queries';
-import UserAboutInfoCompletedCard from './userAboutInfoCompletedCard';
-import { AboutInfoSeeAll } from './userAboutInfoSeeAllModal';
-import AboutOrganizationsCard from './userAboutInfoOrganizationsCard';
-import AboutPodsCard from './userAboutInfoPodsCard';
+import { delQuery } from '../../../utils';
+import { TaskViewModal } from '../Task/modal';
 import {
   UserAboutInfoBlock,
   UserAboutInfoBlockContent,
@@ -12,8 +11,12 @@ import {
   UserAboutInfoBlockHeaderCount,
   UserAboutInfoBlockHeaderCountText,
   UserAboutInfoBlockHeaderText,
+  UserAboutInfoCompletedTasks,
   UserAboutInfoContainer,
 } from './styles';
+import AboutOrganizationsCard from './userAboutInfoOrganizationsCard';
+import AboutPodsCard from './userAboutInfoPodsCard';
+import { AboutInfoSeeAll } from './userAboutInfoSeeAllModal';
 
 const useGetUserAboutPage = (userId) => {
   const [getUserAboutPage, { data }] = useLazyQuery(GET_USER_ABOUT_PAGE_DATA);
@@ -32,11 +35,12 @@ const useGetUserAboutPage = (userId) => {
 const pluralize = (str, count) => `${str}${count > 1 ? 's' : ''}`;
 
 export const UserAboutInfo = (props) => {
+  const router = useRouter();
   const { id } = props;
   const { orgs, pods, tasksCompleted, tasksCompletedCount = 0 } = useGetUserAboutPage(id);
   const userOrgsData = orgs?.map((org) => <AboutOrganizationsCard key={org.id} {...org} />);
   const userPodsData = pods?.map((pod) => <AboutPodsCard {...pod} key={pod.id} />);
-  const userCompletedTasks = tasksCompleted?.map((task) => <UserAboutInfoCompletedCard {...task} key={task.id} />);
+  const userCompletedTasks = tasksCompleted?.map((task) => <UserAboutInfoCompletedTasks task={task} key={task.id} />);
   const orgCount = orgs?.length ?? 0;
   const podCount = pods?.length ?? 0;
   const userData = [
@@ -57,23 +61,44 @@ export const UserAboutInfo = (props) => {
     },
   ];
   return (
-    <UserAboutInfoContainer>
-      {userData
-        .filter((i) => i.count > 0)
-        .map(({ name, count, data }, i) => (
-          <UserAboutInfoBlock key={i}>
-            <UserAboutInfoBlockHeader>
-              <UserAboutInfoBlockHeaderCountText>
-                <UserAboutInfoBlockHeaderCount>{count}</UserAboutInfoBlockHeaderCount>
-                <UserAboutInfoBlockHeaderText>{name}</UserAboutInfoBlockHeaderText>
-              </UserAboutInfoBlockHeaderCountText>
-              <AboutInfoSeeAll count={count} text={name}>
-                {data}
-              </AboutInfoSeeAll>
-            </UserAboutInfoBlockHeader>
-            <UserAboutInfoBlockContent>{data?.slice(0, 5)}</UserAboutInfoBlockContent>
-          </UserAboutInfoBlock>
-        ))}
-    </UserAboutInfoContainer>
+    <>
+      <TaskViewModal
+        disableEnforceFocus
+        open={Boolean(router?.query?.task)}
+        shouldFocusAfterRender={false}
+        handleClose={() => {
+          const style = document.body.getAttribute('style');
+          const top = style.match(/(?<=top: -)(.*?)(?=px)/);
+          document.body.setAttribute('style', '');
+          if (top?.length > 0) {
+            window?.scrollTo(0, Number(top[0]));
+          }
+          router.push(`${delQuery(router.asPath)}`, undefined, {
+            shallow: true,
+          });
+        }}
+        taskId={String(router?.query?.task || router?.query?.taskProposal)}
+        isTaskProposal={!!router?.query?.taskProposal}
+      />
+
+      <UserAboutInfoContainer>
+        {userData
+          .filter((i) => i.count > 0)
+          .map(({ name, count, data }, i) => (
+            <UserAboutInfoBlock key={i}>
+              <UserAboutInfoBlockHeader>
+                <UserAboutInfoBlockHeaderCountText>
+                  <UserAboutInfoBlockHeaderCount>{count}</UserAboutInfoBlockHeaderCount>
+                  <UserAboutInfoBlockHeaderText>{name}</UserAboutInfoBlockHeaderText>
+                </UserAboutInfoBlockHeaderCountText>
+                <AboutInfoSeeAll count={count} text={name}>
+                  {data}
+                </AboutInfoSeeAll>
+              </UserAboutInfoBlockHeader>
+              <UserAboutInfoBlockContent>{data?.slice(0, 5)}</UserAboutInfoBlockContent>
+            </UserAboutInfoBlock>
+          ))}
+      </UserAboutInfoContainer>
+    </>
   );
 };
