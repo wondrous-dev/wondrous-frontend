@@ -88,7 +88,7 @@ export const BatchWalletPayment = (props) => {
       await wonderGnosis.connectSafeSdk({ chain, safeAddress });
     } catch (e) {
       console.log('error connecting to gnosis safe', selectedWallet.chain);
-      setSafeConnectionError(`selected gnosis safe not deployed on current ${CHAIN_ID_TO_CHAIN_NAME[currentChainId]}`);
+      setSafeConnectionError(`Cannot connect to safe, check if connected to  ${selectedWallet.chain}`);
     }
   };
 

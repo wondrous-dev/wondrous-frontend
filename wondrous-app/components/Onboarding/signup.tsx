@@ -200,6 +200,11 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink, podInfo, redeem
         podInfo?.name
       } pod`
     : `${orgInfo?.contributorCount} members are already contributing to ${orgInfo?.name}`;
+  const buttonStyles = {
+    marginTop: '16px',
+    width: '100%',
+    maxWidth: '300px',
+  };
   return (
     <InviteWelcomeBoxWrapper>
       <SafeImage
@@ -220,8 +225,8 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink, podInfo, redeem
       >
         {contributingSentence}
       </InviteWelcomeBoxParagraph>
-      <MetaMaskConnector text="Connect with MetaMask" />
-      <CoinbaseConnector text="Connect with Coinbase Wallet" />
+      <MetaMaskConnector text="Connect with MetaMask" style={buttonStyles} />
+      <CoinbaseConnector text="Connect with Coinbase Wallet" style={buttonStyles} />
 
       {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
       {!wonderWeb3.chain && noChainError && <ErrorText>{noChainError}</ErrorText>}

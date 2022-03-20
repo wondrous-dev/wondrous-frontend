@@ -409,15 +409,19 @@ const BoardsPage = () => {
           offset: Math.max(...columns.map(({ tasks }) => tasks.length)),
           limit: LIMIT,
         },
-      }).then((fetchMoreResult) => {
-        const results = fetchMoreResult?.data?.getOrgTaskBoardTasks;
-        if (results && results?.length > 0) {
-          const newColumns = addToTaskColumns(results, columns);
-          setColumns(dedupeColumns(newColumns));
-        } else {
-          setOrgTaskHasMore(false);
-        }
-      });
+      })
+        .then((fetchMoreResult) => {
+          const results = fetchMoreResult?.data?.getOrgTaskBoardTasks;
+          if (results && results?.length > 0) {
+            const newColumns = addToTaskColumns(results, columns);
+            setColumns(dedupeColumns(newColumns));
+          } else {
+            setOrgTaskHasMore(false);
+          }
+        })
+        .catch(() => {
+          console.error('Error fetching more tasks');
+        });
     }
   }, [orgTaskHasMore, columns, fetchMore]);
 
@@ -445,6 +449,7 @@ const BoardsPage = () => {
           : null,
         getOrgTasksVariables,
         setFirstTimeFetch,
+        orgData,
       }}
     >
       <Boards

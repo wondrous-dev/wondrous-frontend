@@ -81,8 +81,8 @@ export const SingleWalletPayment = (props) => {
     try {
       await wonderGnosis.connectSafeSdk({ chain, safeAddress });
     } catch (e) {
-      console.log('error connecting to gnosis safe', selectedWallet.chain);
-      setSafeConnectionError(`selected gnosis safe not deployed on ${selectedWallet.chain}`);
+      console.log('error connecting to gnosis safe', selectedWallet.chain, e);
+      setSafeConnectionError(`Cannot connect to safe, check if connected to  ${selectedWallet.chain}`);
     }
   };
 
