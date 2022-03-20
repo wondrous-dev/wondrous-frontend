@@ -134,7 +134,7 @@ import {
   GET_ELIGIBLE_REVIEWERS_FOR_ORG,
   GET_ELIGIBLE_REVIEWERS_FOR_POD,
 } from '../../graphql/queries/task';
-import { TabsVisibility } from '../Common/TabsVisibility';
+import { TabsVisibilityCreateEntity } from '@components/Common/TabsVisibilityCreateEntity';
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -378,12 +378,15 @@ const EditLayoutBaseModal = (props) => {
     title: null,
     description: null,
     org: null,
+    privacy: null,
     // maxSubmissionCount: null,
   });
   const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG);
   // const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
   const [pods, setPods] = useState([]);
   const [pod, setPod] = useState(existingTask?.podName && existingTask?.podId);
+  const podPrivacyLevel = pods?.filter((i) => i.id === pod)[0]?.privacyLevel;
+  const isPodPublic = !podPrivacyLevel || podPrivacyLevel === 'public';
   const [dueDate, setDueDate] = useState(existingTask?.dueDate);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const isBounty = entityType === ENTITIES_TYPES.BOUNTY;
@@ -410,10 +413,7 @@ const EditLayoutBaseModal = (props) => {
       showMembersSection: isPod,
       showPrioritySelectSection: isMilestone,
       showDueDateSection: isTask || isBounty || isMilestone,
-      showVisibility:
-        (isTask || isBounty) &&
-        (orgBoard?.orgData?.privacyLevel === PRIVACY_LEVEL.public ||
-          podBoard?.pod?.privacyLevel === PRIVACY_LEVEL.public),
+      showVisibility: isTask || isBounty,
     };
   }, [entityType]);
   const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType];
@@ -616,20 +616,23 @@ const EditLayoutBaseModal = (props) => {
           ...(existingTask?.assigneeId !== assignee?.value && {
             assigneeId: assignee?.value,
           }),
-          ...(publicTask && {
-            privacyLevel: PRIVACY_LEVEL.public,
-          }),
+          ...(publicTask &&
+            isPodPublic && {
+              privacyLevel: PRIVACY_LEVEL.public,
+            }),
           reviewerIds: selectedReviewers.map(({ id }) => id) || [],
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
-
-        if (!title) {
-          const newErrors = { ...errors };
-          if (!title) {
-            newErrors.title = 'Please enter a title';
-          }
-          newErrors.general = 'Please enter the necessary information above';
+        const taskPodPrivacyError = !isPodPublic ? publicTask : false;
+        if (!title || !org || taskPodPrivacyError) {
+          const newErrors = {
+            ...errors,
+            title: !title ? 'Please enter a title' : errors.title,
+            org: !org ? 'Please select an organization' : errors.org,
+            privacy: taskPodPrivacyError ? 'The selected pod is for members only' : errors.privacy,
+            general: 'Please enter the necessary information above',
+          };
           setErrors(newErrors);
         } else {
           updateTask({
@@ -718,30 +721,27 @@ const EditLayoutBaseModal = (props) => {
                 },
               ],
             }),
-          ...(publicTask && {
-            privacyLevel: PRIVACY_LEVEL.public,
-          }),
+          ...(publicTask &&
+            isPodPublic && {
+              privacyLevel: PRIVACY_LEVEL.public,
+            }),
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
         // const isErrorMaxSubmissionCount =
         //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
-        if (!title || !descriptionText || !org) {
-          const newErrors = { ...errors };
-          if (!title) {
-            newErrors.title = 'Please enter a title';
-          }
-          if (!descriptionText) {
-            newErrors.description = 'Please enter a description';
-          }
-          if (!org) {
-            newErrors.org = 'Please select an organization';
-          }
-          // if (isErrorMaxSubmissionCount) {
-          //   newErrors.maxSubmissionCount = 'The number should be from 1 to 10,000';
-          // }
-          newErrors.general = 'Please enter the necessary information above';
+
+        const bountyPodPrivacyError = !isPodPublic ? publicTask : false;
+        if (!title || !descriptionText || !org || bountyPodPrivacyError) {
+          const newErrors = {
+            ...errors,
+            title: !title ? 'Please enter a title' : errors.title,
+            description: !descriptionText ? 'Please enter a description' : errors.description,
+            org: !org ? 'Please select an organization' : errors.org,
+            privacy: bountyPodPrivacyError ? 'The selected pod is for members only' : errors.privacy,
+            general: 'Please enter the necessary information above',
+          };
           setErrors(newErrors);
         } else {
           updateBounty({
@@ -808,15 +808,6 @@ const EditLayoutBaseModal = (props) => {
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const updating = updateBountyLoading || updateTaskLoading || updateMilestoneLoading || updateTaskProposalLoading;
-
-  const tabsVisibilityOptions = {
-    [PRIVACY_LEVEL.public]: 'Public',
-    [PRIVACY_LEVEL.private]: isPod ? 'Pod Members Only' : 'DAO Members Only',
-  };
-  const tabsVisibilitySelected = publicTask
-    ? tabsVisibilityOptions[PRIVACY_LEVEL.public]
-    : tabsVisibilityOptions[PRIVACY_LEVEL.private];
-  const tabsVisibilityHandleOnChange = (e) => setPublicTask(e.target.getAttribute('value') === PRIVACY_LEVEL.public);
 
   return (
     <CreateFormBaseModal>
@@ -1406,30 +1397,25 @@ const EditLayoutBaseModal = (props) => {
               )}
             </CreateFormAddDetailsAppearBlockContainer>
 
-            {showLinkAttachmentSection ||
-              (showVisibility && (
-                <CreateFormAddDetailsAppearBlockContainer>
-                  {showLinkAttachmentSection && (
-                    <CreateFormLinkAttachmentBlock>
-                      <CreateFormLinkAttachmentLabel>Links</CreateFormLinkAttachmentLabel>
-                      <InputForm margin placeholder="Enter link attachment" search={false} />
-                    </CreateFormLinkAttachmentBlock>
-                  )}
-                  {showVisibility && (
-                    <CreateFormAddDetailsTab>
-                      <CreateFormAddDetailsInputLabel>
-                        Who can see this {titleText.toLowerCase()}?
-                      </CreateFormAddDetailsInputLabel>
-                      <TabsVisibility
-                        options={tabsVisibilityOptions}
-                        selected={tabsVisibilitySelected}
-                        onChange={tabsVisibilityHandleOnChange}
-                        variant
-                      />
-                    </CreateFormAddDetailsTab>
-                  )}
-                </CreateFormAddDetailsAppearBlockContainer>
-              ))}
+            {(showLinkAttachmentSection || showVisibility) && (
+              <CreateFormAddDetailsAppearBlockContainer>
+                {showLinkAttachmentSection && (
+                  <CreateFormLinkAttachmentBlock>
+                    <CreateFormLinkAttachmentLabel>Links</CreateFormLinkAttachmentLabel>
+                    <InputForm margin placeholder="Enter link attachment" search={false} />
+                  </CreateFormLinkAttachmentBlock>
+                )}
+                {showVisibility && (
+                  <CreateFormAddDetailsTab>
+                    <CreateFormAddDetailsInputLabel>
+                      Who can see this {titleText.toLowerCase()}?
+                    </CreateFormAddDetailsInputLabel>
+                    <TabsVisibilityCreateEntity isPod={isPod} isPublic={publicTask} setIsPublic={setPublicTask} />
+                    {errors.privacy && <ErrorText>{errors.privacy}</ErrorText>}
+                  </CreateFormAddDetailsTab>
+                )}
+              </CreateFormAddDetailsAppearBlockContainer>
+            )}
           </CreateFormAddDetailsAppearBlock>
         )}
       </CreateFormAddDetailsSection>

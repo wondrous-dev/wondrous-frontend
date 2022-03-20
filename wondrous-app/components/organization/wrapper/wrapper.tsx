@@ -195,7 +195,7 @@ const Wrapper = (props) => {
                   <HeaderTitleIcon>
                     <HeaderTitle>{orgProfile?.name}</HeaderTitle>
                     <PrivateBoardIcon
-                      isPrivate={orgData?.privacyLevel === PRIVACY_LEVEL.private}
+                      isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
                       tooltipTitle={'Private Org'}
                     />
                   </HeaderTitleIcon>
