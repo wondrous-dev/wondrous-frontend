@@ -349,6 +349,7 @@ const Payouts = (props) => {
         variables: {
           input: {
             orgId,
+            orgOnly: false, // TODO add toggle to see pod payments, default to false
             limit: LIMIT,
           },
         },
