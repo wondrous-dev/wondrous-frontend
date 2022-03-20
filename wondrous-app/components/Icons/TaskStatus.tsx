@@ -58,7 +58,11 @@ export default function TaskStatus({ status, ...rest }: Props) {
       );
 
     case TASK_STATUS_REQUESTED:
-      return <MembershipRequest {...rest} />;
+      return (
+        <Tooltip content="Proposals">
+          <MembershipRequest {...rest} />
+        </Tooltip>
+      );
 
     case TASK_STATUS_AWAITING_PAYMENT:
       return <AwaitingPayment {...rest} />;
@@ -74,7 +78,11 @@ export default function TaskStatus({ status, ...rest }: Props) {
       );
 
     case TASK_STATUS_SUBMISSION_REQUEST:
-      return <InReview {...rest} />;
+      return (
+        <Tooltip content="InReview">
+          <InReview {...rest} />
+        </Tooltip>
+      );
 
     case TASK_STATUS_ARCHIVED:
       return <Archived {...rest} />;
