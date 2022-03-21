@@ -47,7 +47,7 @@ export default function WonderAbstractConnector({
   };
 
   return (
-    <Button style={style} disabled={disabled} onClick={() => activateAndStore(connectorName)}>
+    <Button style={style} onClick={() => activateAndStore(connectorName)}>
       {isActivating ? <CircularProgress /> : <>{content()}</>}
     </Button>
   );
