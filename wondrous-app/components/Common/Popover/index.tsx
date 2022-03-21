@@ -7,8 +7,20 @@ import ClickAwayListener from '@mui/material/ClickAwayListener';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
+  popper: {
+    opacity: 1,
+    zIndex: 999999,
+  },
+  tooltip: {
+    backgroundColor: '#1b1b1b',
+    opacity: 1,
+    zIndex: 999999,
+  },
   arrow: {
+    color: '#1b1b1b',
     fontSize: '1.3rem',
+    opacity: 1,
+    zIndex: 999999,
   },
 }));
 
@@ -32,7 +44,7 @@ export default function Tooltip({
   const areaRef = React.useRef(null);
   return (
     <MTooltip
-      classes={{ arrow: classes.arrow }}
+      classes={{ tooltip: classes.tooltip, arrow: classes.arrow, popper: classes.popper }}
       title={
         <Content>
           {headText && (
