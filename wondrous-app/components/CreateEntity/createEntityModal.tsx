@@ -281,6 +281,7 @@ const CreateLayoutBaseModal = (props) => {
     fetchPolicy: 'network-only',
   });
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
+  const selectedOrgPrivacyLevel = userOrgs?.getUserOrgs?.filter((i) => i.id === org)[0]?.privacyLevel;
   const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
   const [fetchPaymentMethod, setFetchPaymentMethod] = useState(false);
   const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG, {
@@ -324,8 +325,8 @@ const CreateLayoutBaseModal = (props) => {
   // const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
   const [pods, setPods] = useState([]);
   const [pod, setPod] = useState(null);
-  const podPrivacyLevel = pods?.filter((i) => i.id === pod)[0]?.privacyLevel;
-  const isPodPublic = !podPrivacyLevel || podPrivacyLevel === 'public';
+  const selectedPodPrivacyLevel = pods?.filter((i) => i.id === pod)[0]?.privacyLevel;
+  const isPodPublic = !selectedPodPrivacyLevel || selectedPodPrivacyLevel === 'public';
   const [dueDate, setDueDate] = useState(null);
   const [isPrivate, setIsPrivate] = useState(false);
   const [isPublicEntity, setIsPublicEntity] = useState(false);
@@ -392,14 +393,6 @@ const CreateLayoutBaseModal = (props) => {
     }
   }, [parentTaskId, getTaskById, isSubtask]);
 
-  useEffect(() => {
-    console.log('orgBoard?.org', orgBoard);
-    if (orgBoard?.orgData.privacyLevel === PRIVACY_LEVEL.private) {
-      setIsPublicEntity(false);
-    } else if (orgBoard?.orgData.privacyLevel === PRIVACY_LEVEL.public) {
-      setIsPublicEntity(true);
-    }
-  }, [orgBoard?.orgData]);
   useEffect(() => {
     if (isSubtask) {
       getTaskById({
@@ -1380,6 +1373,8 @@ const CreateLayoutBaseModal = (props) => {
                       isPod={isPod}
                       isPublic={isPublicEntity}
                       setIsPublic={setIsPublicEntity}
+                      orgPrivacyLevel={selectedOrgPrivacyLevel}
+                      podPrivacyLevel={selectedPodPrivacyLevel}
                     />
                     {errors.privacy && <ErrorText>{errors.privacy}</ErrorText>}
                   </CreateFormAddDetailsTab>

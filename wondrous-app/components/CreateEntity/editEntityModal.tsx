@@ -350,6 +350,7 @@ const EditLayoutBaseModal = (props) => {
   const board = orgBoard || podBoard || userBoard;
   const boardColumns = useColumns();
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
+  const selectedOrgPrivacyLevel = userOrgs?.getUserOrgs?.filter((i) => i.id === org)[0]?.privacyLevel;
 
   const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS);
 
@@ -385,8 +386,8 @@ const EditLayoutBaseModal = (props) => {
   // const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
   const [pods, setPods] = useState([]);
   const [pod, setPod] = useState(existingTask?.podName && existingTask?.podId);
-  const podPrivacyLevel = pods?.filter((i) => i.id === pod)[0]?.privacyLevel;
-  const isPodPublic = !podPrivacyLevel || podPrivacyLevel === 'public';
+  const selectedPodPrivacyLevel = pods?.filter((i) => i.id === pod)[0]?.privacyLevel;
+  const isPodPublic = !selectedPodPrivacyLevel || selectedPodPrivacyLevel === 'public';
   const [dueDate, setDueDate] = useState(existingTask?.dueDate);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const isBounty = entityType === ENTITIES_TYPES.BOUNTY;
@@ -450,10 +451,6 @@ const EditLayoutBaseModal = (props) => {
     existingTask?.orgId === board?.orgId ||
     existingTask?.podId === board?.podId ||
     existingTask?.userId === board?.userId;
-
-  useEffect(() => {
-    setPublicTask(existingTask?.privacyLevel === PRIVACY_LEVEL.public);
-  }, [existingTask?.privacyLevel]);
 
   useEffect(() => {
     if (existingTask?.orgId) {
@@ -1410,7 +1407,17 @@ const EditLayoutBaseModal = (props) => {
                     <CreateFormAddDetailsInputLabel>
                       Who can see this {titleText.toLowerCase()}?
                     </CreateFormAddDetailsInputLabel>
-                    <TabsVisibilityCreateEntity isPod={isPod} isPublic={publicTask} setIsPublic={setPublicTask} />
+                    <TabsVisibilityCreateEntity
+                      isPod={isPod}
+                      isPublic={publicTask}
+                      setIsPublic={setPublicTask}
+                      orgPrivacyLevel={
+                        existingTask?.orgId == org ? existingTask?.privacyLevel : selectedOrgPrivacyLevel
+                      }
+                      podPrivacyLevel={
+                        existingTask?.podId == pod ? existingTask?.privacyLevel : selectedPodPrivacyLevel
+                      }
+                    />
                     {errors.privacy && <ErrorText>{errors.privacy}</ErrorText>}
                   </CreateFormAddDetailsTab>
                 )}
