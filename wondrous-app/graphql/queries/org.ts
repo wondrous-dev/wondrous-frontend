@@ -142,15 +142,3 @@ export const GET_USER_JOIN_ORG_REQUEST = gql`
     }
   }
 `;
-
-export const GET_DISCORD_WEBHOOK_INFO_FOR_ORG = gql`
-  query getDiscordWebhookInfoForOrg($orgId: ID!) {
-    getDiscordWebhookInfoForOrg(orgId: $orgId) {
-      id
-      orgId
-      podId
-      webhookUrl
-      privacyLevel
-    }
-  }
-`;
