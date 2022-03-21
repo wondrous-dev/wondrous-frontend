@@ -124,7 +124,8 @@ export const InviteWelcomeBox = ({ updateUser, firstOrg, firstPod }) => {
           <LaterButton
             onClick={() => {
               if (!firstOrg && !firstPod) {
-                router.push('/explore', undefined, {
+                // Should go to explore but let's go to dashboard for now
+                router.push('/dashboard', undefined, {
                   shallow: true,
                 });
               } else {

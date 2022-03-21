@@ -36,6 +36,7 @@ export const GET_USER_ORGS = gql`
       name
       profilePicture
       thumbnailPicture
+      privacyLevel
     }
   }
 `;
