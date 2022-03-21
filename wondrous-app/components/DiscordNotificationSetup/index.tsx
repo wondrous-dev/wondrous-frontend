@@ -122,6 +122,10 @@ const DiscordNotificationSetup = (props) => {
         You should see the message {`"notification configured to this current channel!"`}. Refresh this page when you do
         and {`you're`} done!
       </SmallerTopParagraph>
+      <DiscordParagraph>
+      (If you don't see any message on discord, it could be that our bot doesn't have permission to send message on your channel, Please check
+        back in your org setting page to see if it's configured )
+      </DiscordParagraph>
     </>
   );
 };
