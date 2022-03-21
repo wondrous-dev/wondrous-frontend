@@ -142,7 +142,11 @@ const Login = ({ csrfToken }) => {
                 </LineWithText>
               </>
             )}
-            <WalletLoginContainer>
+            <WalletLoginContainer
+              style={{
+                marginTop: '24px',
+              }}
+            >
               <MetaMaskConnector />
             </WalletLoginContainer>
             <WalletLoginContainer>
