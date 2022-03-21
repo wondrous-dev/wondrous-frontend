@@ -51,7 +51,9 @@ export const InviteWelcomeBox = ({ updateUser }) => {
       // Check if start of address is 0x
       if (!addressTag.startsWith('0x')) {
         const splitUsernameArr = wonderWeb3?.wallet?.addressTag.split('.');
-        setUsername(splitUsernameArr[0]);
+        if (splitUsernameArr && splitUsernameArr[0]) {
+          setUsername(splitUsernameArr[0].replace(/\./g, '_'));
+        }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -119,7 +121,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
               },
             });
           } else {
-            setError('Please enter a valid username with 3-15 alphanumeric characters');
+            setError("Please enter a valid username with 3-15 alphanumeric characters with no '.'");
           }
         }}
         buttonInnerStyle={{
