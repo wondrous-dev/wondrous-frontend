@@ -92,6 +92,7 @@ export const HeaderMainBlock = styled.div`
 export const HeaderTitleIcon = styled.div`
   display: flex;
   align-items: center;
+  width: 100%;
   & > * {
     margin-left: 10px;
     :first-child {
