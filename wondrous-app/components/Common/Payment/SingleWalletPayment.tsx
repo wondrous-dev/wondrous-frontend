@@ -49,10 +49,12 @@ interface PaymentData {
   amount: string;
   recepientAddress: string;
   chain: string;
+  decimal: number;
 }
 
 export const SingleWalletPayment = (props) => {
-  const { open, handleClose, orgId, podId, approvedSubmission, wallets, submissionPaymentInfo } = props;
+  const { open, handleClose, orgId, podId, approvedSubmission, wallets, submissionPaymentInfo, changedRewardAmount } =
+    props;
   const [currentChainId, setCurrentChainId] = useState(null); // chain id current user is on
   const [walletOptions, setWalletOptions] = useState([]); // chain associated with submission
   const [onRightChain, setOnRighChain] = useState(true);
@@ -158,14 +160,22 @@ export const SingleWalletPayment = (props) => {
     let iface = new ethers.utils.Interface(ERC20abi);
     const paymentData = submissionPaymentInfo?.paymentData[0];
     let transactionData;
+    let finalAmount = paymentData.amount;
+    if (changedRewardAmount) {
+      const decimal = Number(paymentData?.decimal);
+      const bigChangedAmount = BigInt(changedRewardAmount);
+      finalAmount = bigChangedAmount * BigInt(10 ** decimal);
+      finalAmount = finalAmount.toString();
+    }
+
     if (paymentData?.isEthTransfer) {
       transactionData = {
         to: paymentData.recepientAddress,
         data: '0x00',
-        value: paymentData.amount,
+        value: finalAmount,
       };
     } else {
-      const callData = iface.encodeFunctionData('transfer', [paymentData.recepientAddress, paymentData.amount]);
+      const callData = iface.encodeFunctionData('transfer', [paymentData.recepientAddress, finalAmount]);
       transactionData = {
         to: paymentData.tokenAddress,
         data: callData,
@@ -302,7 +312,7 @@ export const SingleWalletPayment = (props) => {
               marginLeft: 0,
             }}
           >
-            Pay {reward?.rewardAmount} {reward?.symbol}
+            Pay {changedRewardAmount || reward?.rewardAmount} {reward?.symbol}
           </CreateFormPreviewButton>
         )}
         {wrongChainError && <ErrorText>{wrongChainError}</ErrorText>}

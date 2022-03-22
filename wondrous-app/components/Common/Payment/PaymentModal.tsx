@@ -13,6 +13,10 @@ import {
   StyledTabs,
   PaymentMethodWrapper,
   WarningTypography,
+  ChangePaymentButton,
+  ChangePaymentAmountDiv,
+  SaveNewRewardAmountButton,
+  CancelNewRewardAmountButton,
 } from './styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
@@ -30,6 +34,9 @@ import { OfflinePayment } from './OfflinePayment';
 import { SingleWalletPayment } from './SingleWalletPayment';
 import Link from 'next/link';
 import { White, Blue20 } from '../../../theme/colors';
+import { CreateFormPreviewButton, CreateFormRewardCurrency } from '../../CreateEntity/styles';
+import InputForm from '../InputForm/inputForm';
+import CloseModalIcon from '@components/Icons/closeModal';
 
 const GoBackStyle = {
   color: White,
@@ -46,6 +53,9 @@ export const MakePaymentModal = (props) => {
   const [wallets, setWallets] = useState([]);
   const [submissionPaymentInfo, setSubmissionPaymentInfo] = useState(null);
   const [rewardAmount, setRewardAmount] = useState('');
+  const [changeRewardAmount, setChangeRewardAmount] = useState(false);
+  const [changedRewardAmount, setChangedRewardAmount] = useState(null);
+  const [useChangedRewardAmount, setUseChangedRewardAmount] = useState(false);
   const [tokenName, setTokenName] = useState('');
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
@@ -75,6 +85,7 @@ export const MakePaymentModal = (props) => {
     },
     fetchPolicy: 'network-only',
   });
+
   const [getPodWallet] = useLazyQuery(GET_POD_WALLET, {
     onCompleted: (data) => {
       setWallets(data?.getPodWallet);
@@ -198,6 +209,55 @@ export const MakePaymentModal = (props) => {
                 </Link>{' '}
               </PaymentTitleText>
               <PaymentDescriptionText>Task: {fetchedTask.title}</PaymentDescriptionText>
+              {fetchedTask?.type === BOUNTY_TYPE && (
+                <>
+                  {changeRewardAmount ? (
+                    <ChangePaymentAmountDiv>
+                      <InputForm
+                        style={{
+                          marginTop: '12px',
+                          width: 'fit-content',
+                          paddingRight: '12px',
+                        }}
+                        type={'number'}
+                        min="0"
+                        placeholder="Enter new reward amount"
+                        search={false}
+                        value={changedRewardAmount}
+                        onChange={(e) => setChangedRewardAmount(e.target.value)}
+                      />
+                      <PaymentDescriptionText
+                        style={{
+                          marginLeft: '12px',
+                          marginTop: '12px',
+                        }}
+                      >
+                        {tokenName?.toUpperCase()}{' '}
+                      </PaymentDescriptionText>
+                      <SaveNewRewardAmountButton
+                        onClick={() => {
+                          setRewardAmount(changedRewardAmount);
+                          setChangeRewardAmount(false);
+                          setUseChangedRewardAmount(true);
+                        }}
+                      >
+                        Save changes
+                      </SaveNewRewardAmountButton>
+                      <CancelNewRewardAmountButton
+                        onClick={() => {
+                          setChangeRewardAmount(false);
+                        }}
+                      >
+                        Cancel
+                      </CancelNewRewardAmountButton>
+                    </ChangePaymentAmountDiv>
+                  ) : (
+                    <ChangePaymentButton onClick={() => setChangeRewardAmount(true)}>
+                      Change payment amount
+                    </ChangePaymentButton>
+                  )}
+                </>
+              )}
             </PaymentTitleTextDiv>
           </PaymentTitleDiv>
           <StyledTabs value={selectedTab}>
@@ -229,6 +289,7 @@ export const MakePaymentModal = (props) => {
                 submissionPaymentInfo={submissionPaymentInfo}
                 orgId={approvedSubmission?.orgId}
                 podId={approvedSubmission?.podId}
+                changedRewardAmount={useChangedRewardAmount ? rewardAmount : null}
               />
             )}
           </PaymentMethodWrapper>
