@@ -499,42 +499,38 @@ const CreateLayoutBaseModal = (props) => {
   const [createMilestone, { loading: createMilestoneLoading }] = useMutation(CREATE_MILESTONE);
 
   const submitMutation = useCallback(() => {
+    const taskInput = {
+      title,
+      description: descriptionText,
+      orgId: org,
+      milestoneId: milestone?.id,
+      parentTaskId,
+      podId: pod,
+      dueDate,
+      ...(rewardsAmount &&
+        rewardsCurrency && {
+          rewards: [
+            {
+              rewardAmount: parseFloat(rewardsAmount),
+              paymentMethodId: rewardsCurrency,
+            },
+          ],
+        }),
+      // TODO: add links?,
+      ...(canCreateTask && {
+        assigneeId: assignee?.value,
+      }),
+      ...(isPublicEntity &&
+        isPodPublic && {
+          privacyLevel: PRIVACY_LEVEL.public,
+        }),
+      reviewerIds: selectedReviewers.map(({ id }) => id),
+      userMentions: getMentionArray(descriptionText),
+      mediaUploads,
+    };
+    const taskPodPrivacyError = !isPodPublic ? isPublicEntity : false;
     switch (entityType) {
       case ENTITIES_TYPES.TASK:
-        const taskInput = {
-          title,
-          description: descriptionText,
-          orgId: org,
-          milestoneId: milestone?.id,
-          parentTaskId,
-          podId: pod,
-          dueDate,
-          ...(rewardsAmount &&
-            rewardsCurrency && {
-              rewards: [
-                {
-                  rewardAmount: parseFloat(rewardsAmount),
-                  paymentMethodId: rewardsCurrency,
-                },
-              ],
-            }),
-          // TODO: add links?,
-          ...(canCreateTask && {
-            assigneeId: assignee?.value,
-          }),
-          ...(!canCreateTask && {
-            proposedAssigneeId: assignee?.value,
-          }),
-          ...(isPublicEntity &&
-            isPodPublic && {
-              privacyLevel: PRIVACY_LEVEL.public,
-            }),
-          reviewerIds: selectedReviewers.map(({ id }) => id),
-          userMentions: getMentionArray(descriptionText),
-          mediaUploads,
-        };
-
-        const taskPodPrivacyError = !isPodPublic ? isPublicEntity : false;
         if (!title || !org || taskPodPrivacyError) {
           const newErrors = {
             ...errors,
@@ -600,6 +596,54 @@ const CreateLayoutBaseModal = (props) => {
               handleClose();
             });
           }
+        }
+        break;
+      case ENTITIES_TYPES.PROPOSAL:
+        if (!title || !org || taskPodPrivacyError) {
+          const newErrors = {
+            ...errors,
+            title: !title ? 'Please enter a title' : errors.title,
+            org: !org ? 'Please select an organization' : errors.org,
+            privacy: taskPodPrivacyError ? 'The selected pod is for members only' : errors.privacy,
+            general: 'Please enter the necessary information above',
+          };
+          setErrors(newErrors);
+        } else {
+          const refetchQueries = [];
+          if (orgBoard) {
+            refetchQueries.push('getPerStatusTaskCountForOrgBoard');
+          }
+          if (podBoard) {
+            refetchQueries.push('getPerStatusTaskCountForPodBoard');
+          }
+          createTaskProposal({
+            variables: {
+              input: taskInput,
+            },
+            refetchQueries,
+          }).then((result) => {
+            const taskProposal = result?.data?.createTaskProposal;
+            const justCreatedPod = getPodObject();
+            if (
+              board?.setColumns &&
+              ((taskProposal?.orgId === board?.orgId && !board?.podId) ||
+                taskProposal?.podId === board?.podId ||
+                pod === board?.podId)
+            ) {
+              const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
+                userProfilePicture: user?.profilePicture,
+                username: user?.username,
+                orgName: board?.org?.name,
+                orgProfilePicture: board?.org?.profilePicture,
+                podName: justCreatedPod?.name,
+              });
+
+              let columns = [...board?.columns];
+              columns = addProposalItem(transformedTaskProposal, columns);
+              board.setColumns(columns);
+            }
+            handleClose();
+          });
         }
         break;
       case ENTITIES_TYPES.POD:
