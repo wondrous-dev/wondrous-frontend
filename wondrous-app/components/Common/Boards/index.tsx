@@ -1,9 +1,20 @@
-import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import pluralize from 'pluralize';
-
+import React, { useEffect, useState } from 'react';
+import { splitColsByType } from '../../../services/board';
+import { ViewType } from '../../../types/common';
+import { delQuery } from '../../../utils';
+import { useOrgBoard, useSelectMembership } from '../../../utils/hooks';
+import Filter from '../../Common/Filter';
 import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard';
-
+import { ToggleViewButton } from '../../Common/ToggleViewButton';
+import { Chevron } from '../../Icons/sections';
+import { GridViewIcon } from '../../Icons/ViewIcons/gridView';
+import { ListViewIcon } from '../../Icons/ViewIcons/listView';
+import SearchTasks from '../../SearchTasks';
+import { Table } from '../../Table';
+import { MembershipRequestTable } from '../../Table/MembershipRequests';
+import SelectMenuBoardType from '../SelectMenuBoardType';
 import {
   BoardsActivity,
   BoardsContainer,
@@ -13,35 +24,21 @@ import {
   ShowAllButton,
   ShowAllSearchResults,
 } from './styles';
-import Filter from '../../Common/Filter';
-import { ToggleViewButton } from '../../Common/ToggleViewButton';
-import { Table } from '../../Table';
-import { delQuery } from '../../../utils';
-import SearchTasks from '../../SearchTasks';
-import { OrgPod } from '../../../types/pod';
-import { Chevron } from '../../Icons/sections';
-import { splitColsByType } from '../../../services/board';
-import { ViewType } from '../../../types/common';
-import { useOrgBoard, useSelectMembership } from '../../../utils/hooks';
-import { PRIVACY_LEVEL } from '../../../utils/constants';
-import { MembershipRequestTable } from '../../Table/MembershipRequests';
-import { CreateFormPreviewButton } from '../../CreateEntity/styles';
-import { ListViewIcon } from '../../Icons/ViewIcons/listView';
-import { GridViewIcon } from '../../Icons/ViewIcons/gridView';
-import SelectMenuBoardType from '../SelectMenuBoardType';
 
 type Props = {
   filterSchema: any;
   onSearch: (searchString: string) => Promise<any>;
-  onFilterChange: (searchString: string) => Promise<any>;
+  onFilterChange: ({}) => void;
   columns: Array<any>;
   onLoadMore: any;
   hasMore: any;
   isAdmin?: boolean;
+  statuses: String[];
+  podIds: String[];
 };
 
 const Boards = (props: Props) => {
-  const { columns, onLoadMore, hasMore, filterSchema, onSearch, onFilterChange, isAdmin } = props;
+  const { columns, onLoadMore, hasMore, filterSchema, onSearch, onFilterChange, isAdmin, statuses, podIds } = props;
   const router = useRouter();
   const orgBoard = useOrgBoard();
   const [totalCount, setTotalCount] = useState(0);
@@ -63,13 +60,16 @@ const Boards = (props: Props) => {
     setSearchResults(splitCols);
   }, [columns]);
 
+  const statusesQuery = statuses?.length ? `&statuses=${statuses.join(',')}` : '';
+  const podIdsQuery = podIds?.length ? `&podIds=${podIds.join(',')}` : '';
+
   const listViewOptions = [
     {
       name: 'List',
       icon: <ListViewIcon />,
       active: view === ViewType.List,
       action: () => {
-        router.replace(`${delQuery(router.asPath)}?view=${ViewType.List}`);
+        router.replace(`${delQuery(router.asPath)}?view=${ViewType.List}${statusesQuery}${podIdsQuery}`);
       },
     },
     {
@@ -77,7 +77,7 @@ const Boards = (props: Props) => {
       icon: <GridViewIcon />,
       active: view === ViewType.Grid,
       action: () => {
-        router.replace(`${delQuery(router.asPath)}?view=${ViewType.Grid}`);
+        router.replace(`${delQuery(router.asPath)}?view=${ViewType.Grid}${statusesQuery}${podIdsQuery}`);
       },
     },
   ];
@@ -154,7 +154,7 @@ const Boards = (props: Props) => {
     <BoardsContainer>
       <BoardsActivity>
         <SearchTasks onSearch={onSearch} />
-        <Filter filterSchema={filterSchema} onChange={onFilterChange} />
+        <Filter filterSchema={filterSchema} onChange={onFilterChange} statuses={statuses} podIds={podIds} />
         {orgBoard && <SelectMenuBoardType router={router} view={view} />}
         {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
       </BoardsActivity>
