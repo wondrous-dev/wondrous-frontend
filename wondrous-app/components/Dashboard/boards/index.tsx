@@ -31,7 +31,7 @@ import {
   TASK_STATUS_SUBMISSION_REQUEST,
 } from '../../../utils/constants';
 import { UserBoardContext } from '../../../utils/contexts';
-import { useSelectMembership } from '../../../utils/hooks';
+import { useRouterQuery, useSelectMembership } from '../../../utils/hooks';
 import { useMe } from '../../Auth/withAuth';
 import Boards from '../../Common/Boards';
 import { FilterItem, FilterItemIcon, FilterItemName } from '../../Common/Filter/styles';
@@ -225,28 +225,6 @@ const useAdminColumns = () => {
   return { adminColumns };
 };
 
-const useSetStatuses = (router) => {
-  const [statuses, setStatuses] = useState([]);
-  useEffect(() => {
-    if (router.query.statuses) {
-      setStatuses(router.query.statuses.split(','));
-    }
-  }, [router.query]);
-  return { statuses, setStatuses };
-};
-
-const useSetPodIds = (router) => {
-  const [podIds, setPodIds] = useState([]);
-  useEffect(() => {
-    if (router.query.podIds) {
-      setPodIds(router.query.podIds.split(','));
-    } else {
-      setPodIds([]);
-    }
-  }, [router.query]);
-  return { podIds, setPodIds };
-};
-
 const BoardsPage = (props) => {
   const { isAdmin, selectedStatus, selectMembershipRequests } = props;
   const selectMembershipHook = useSelectMembership();
@@ -255,8 +233,8 @@ const BoardsPage = (props) => {
   const { search } = router.query;
   const [hasMoreTasks, setHasMoreTasks] = useState(true);
   const [contributorColumns, setContributorColumns] = useState([]);
-  const { statuses, setStatuses } = useSetStatuses(router);
-  const { podIds, setPodIds } = useSetPodIds(router);
+  const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
+  const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
   const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(loggedInUser);
   const { adminColumns } = useAdminColumns();
   const { getUserTaskBoardTasksFetchMore } = useGetUserTaskBoard({
