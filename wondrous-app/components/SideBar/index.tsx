@@ -100,11 +100,11 @@ const SideBarComponent = (props) => {
             }}
           >
             {user?.profilePicture ? (
-              <Tooltip content={user ? user.username : 'User Profile'}>
+              <Tooltip content={user ? user.username : 'User Profile'} placement="right">
                 <SafeImage style={profilePictureStyle} src={user?.thumbnailPicture || user?.profilePicture} />
               </Tooltip>
             ) : (
-              <Tooltip content={user ? user.username : 'User Profile'}>
+              <Tooltip content={user ? user.username : 'User Profile'} placement="right">
                 <DefaultUserImage style={profilePictureStyle} />
               </Tooltip>
             )}
@@ -130,7 +130,7 @@ const SideBarComponent = (props) => {
                       />
                     ) : (
                       <NoLogoDAO>
-                        <Tooltip content={item.name}>
+                        <Tooltip content={item.name} placement="right">
                           <DAOIcon />
                         </Tooltip>
                       </NoLogoDAO>
@@ -142,7 +142,7 @@ const SideBarComponent = (props) => {
               <StyledDivider />
             </StyledDividerDiv>
             <PodButtonDiv>
-              <Tooltip content="Pods">
+              <Tooltip content="Pods" placement="right">
                 <PodButton
                   style={{
                     cursor: 'pointer',
@@ -155,12 +155,12 @@ const SideBarComponent = (props) => {
         </DrawerTopBlock>
         <DrawerBottomBlock>
           <DrawerBottomButton onClick={generalSettings}>
-            <Tooltip content="Profile settings">
+            <Tooltip content="Profile settings" placement="right">
               <SettingsIcon />
             </Tooltip>
           </DrawerBottomButton>
           <DrawerBottomButton onClick={signOut}>
-            <Tooltip content="Logout">
+            <Tooltip content="Logout" placement="right">
               <ExitIcon />
             </Tooltip>
           </DrawerBottomButton>

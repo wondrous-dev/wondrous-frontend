@@ -31,7 +31,7 @@ export default function Tooltip({
   separator = false,
   key1 = '',
   key2 = '',
-  placement = 'right',
+  placement = 'top',
 }) {
   const classes = useStyles();
 
