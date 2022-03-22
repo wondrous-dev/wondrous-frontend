@@ -123,8 +123,8 @@ const DiscordNotificationSetup = (props) => {
         and {`you're`} done!
       </SmallerTopParagraph>
       <DiscordParagraph>
-      (If you don't see any message on discord, it could be that our bot doesn't have permission to send message on your channel, Please check
-        back in your org setting page to see if it's configured )
+        (If you don{`'`}t see any message on discord, it could be that our bot doesn{`'`}t have permission to send
+        message on your channel, Please check back in your org setting page to see if it{`'`}s configured )
       </DiscordParagraph>
     </>
   );
