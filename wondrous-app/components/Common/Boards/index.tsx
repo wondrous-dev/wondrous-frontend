@@ -39,7 +39,7 @@ type Props = {
   onLoadMore: any;
   hasMore: any;
   isAdmin?: boolean;
-  setColumns: React.Dispatch<React.SetStateAction<[{}]>>;
+  setColumns: React.Dispatch<React.SetStateAction<[]>>;
 };
 
 const Boards = (props: Props) => {

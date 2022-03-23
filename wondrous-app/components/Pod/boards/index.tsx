@@ -11,7 +11,7 @@ type Props = {
   hasMore: any;
   selectOptions: any;
   searchString: string;
-  setColumns: React.Dispatch<React.SetStateAction<[{}]>>;
+  setColumns: React.Dispatch<React.SetStateAction<[]>>;
 };
 
 const PodBoards = (props: Props) => {
