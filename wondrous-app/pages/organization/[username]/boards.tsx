@@ -456,6 +456,7 @@ const BoardsPage = () => {
         onFilterChange={handleFilterChange}
         hasMore={orgTaskHasMore}
         orgData={orgData}
+        setColumns={setColumns}
       />
     </OrgBoardContext.Provider>
   );

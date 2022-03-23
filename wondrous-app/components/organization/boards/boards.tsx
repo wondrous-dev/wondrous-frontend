@@ -16,10 +16,11 @@ type Props = {
   hasMore: any;
   selectOptions: any;
   searchString: string;
+  setColumns: React.Dispatch<React.SetStateAction<[{}]>>;
 };
 
 const OrgBoards = (props: Props) => {
-  const { columns, onLoadMore, hasMore, orgData, orgPods, onSearch, onFilterChange } = props;
+  const { columns, onLoadMore, hasMore, orgData, orgPods, onSearch, onFilterChange, setColumns } = props;
   const [filterSchema, setFilterSchema] = useState([
     {
       name: 'podIds',
@@ -53,6 +54,7 @@ const OrgBoards = (props: Props) => {
         columns={columns}
         onLoadMore={onLoadMore}
         hasMore={hasMore}
+        setColumns={setColumns}
       />
     </Wrapper>
   );
