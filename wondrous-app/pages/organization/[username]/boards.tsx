@@ -85,9 +85,9 @@ const useGetOrgTaskBoardProposals = ({ columns, setColumns, orgId, statuses }) =
       const newColumns = bindSectionToColumns({
         columns,
         data: data?.getOrgTaskBoardProposals,
-        section: TASK_STATUS_PROPOSAL_REQUEST,
+        section: TASK_STATUS_REQUESTED,
       });
-      setColumns(newColumns);
+      setColumns(dedupeColumns(newColumns));
     },
     fetchPolicy: 'cache-and-network',
   });
@@ -109,9 +109,9 @@ const useGetOrgTaskBoardSubmissions = ({ columns, setColumns, orgId, statuses })
       const newColumns = bindSectionToColumns({
         columns,
         data: data?.getOrgTaskBoardSubmissions,
-        section: TASK_STATUS_SUBMISSION_REQUEST,
+        section: TASK_STATUS_IN_REVIEW,
       });
-      setColumns(newColumns);
+      setColumns(dedupeColumns(newColumns));
     },
     fetchPolicy: 'cache-and-network',
   });
@@ -189,9 +189,9 @@ const BoardsPage = () => {
       const newColumns = bindSectionToColumns({
         columns,
         data: data?.searchProposalsForOrgBoardView,
-        section: TASK_STATUS_PROPOSAL_REQUEST,
+        section: TASK_STATUS_REQUESTED,
       });
-      setColumns(newColumns);
+      setColumns(dedupeColumns(newColumns));
     },
     fetchPolicy: 'cache-and-network',
   });
@@ -316,7 +316,6 @@ const BoardsPage = () => {
               }),
             },
           };
-
           searchOrgTasks(searchOrgTasksArgs);
           searchOrgTaskProposals(searchOrgTaskProposalsArgs);
           setFirstTimeFetch(true);
@@ -420,7 +419,8 @@ const BoardsPage = () => {
           offset: 0,
         },
       });
-    } else {
+    }
+    if (search) {
       const searchOrgTaskProposalsArgs = {
         variables: {
           podIds,
@@ -456,7 +456,7 @@ const BoardsPage = () => {
           column.section.tasks = [];
         });
 
-        setColumns(newColumns);
+        setColumns(dedupeColumns(newColumns));
       }
 
       if (searchProposals) {

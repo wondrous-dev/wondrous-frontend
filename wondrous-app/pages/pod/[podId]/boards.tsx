@@ -82,7 +82,7 @@ const useGetPodTaskProposals = ({ setColumns, columns, podId, statuses }) => {
       const newColumns = bindSectionToColumns({
         columns,
         data: data?.getPodTaskBoardProposals,
-        section: TASK_STATUS_PROPOSAL_REQUEST,
+        section: TASK_STATUS_REQUESTED,
       });
       setColumns(newColumns);
     },
@@ -108,7 +108,7 @@ const useGetPodTaskSubmissions = ({ setColumns, columns, podId, statuses }) => {
       const newColumns = bindSectionToColumns({
         columns,
         data: data?.getPodTaskBoardSubmissions,
-        section: TASK_STATUS_SUBMISSION_REQUEST,
+        section: TASK_STATUS_IN_REVIEW,
       });
       setColumns(newColumns);
     },
@@ -193,7 +193,7 @@ const BoardsPage = () => {
       const newColumns = bindSectionToColumns({
         columns,
         data: data?.searchProposalsForPodBoardView,
-        section: TASK_STATUS_PROPOSAL_REQUEST,
+        section: TASK_STATUS_REQUESTED,
       });
       setColumns(newColumns);
     },
@@ -400,7 +400,8 @@ const BoardsPage = () => {
           offset: 0,
         },
       });
-    } else {
+    }
+    if (search) {
       const searchPodTaskProposalsArgs = {
         variables: {
           input: {

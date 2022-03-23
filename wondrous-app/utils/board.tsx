@@ -1,9 +1,6 @@
-import {
-  TASK_STATUS_ARCHIVED,
-  TASK_STATUS_PROPOSAL_REQUEST,
-  TASK_STATUS_REQUESTED,
-  TASK_STATUS_SUBMISSION_REQUEST,
-} from './constants';
+import _ from 'lodash';
+import { COLUMNS } from '../services/board';
+import { TASK_STATUS_ARCHIVED, TASK_STATUS_IN_REVIEW, TASK_STATUS_REQUESTED } from './constants';
 
 export const addProposalItem = (newItem, columns) => {
   columns[0].section.tasks = [newItem, ...columns[0].section.tasks];
@@ -165,11 +162,11 @@ export const updateTaskColumns = (tasks, columns) => {
 
 export const bindSectionToColumns = ({ columns, data, section }) => {
   const sections = {
-    [TASK_STATUS_PROPOSAL_REQUEST]: 0,
-    [TASK_STATUS_SUBMISSION_REQUEST]: 1,
+    [TASK_STATUS_REQUESTED]: 0,
+    [TASK_STATUS_IN_REVIEW]: 1,
   };
-  const column = sections[section];
-  const newColumn = [...columns];
-  newColumn[column].section.tasks = data;
-  return [...newColumn];
+  const columnIndex = sections[section];
+  const newColumns = columns[columnIndex]?.section ? _.cloneDeep(columns) : _.cloneDeep(COLUMNS);
+  newColumns[columnIndex].section.tasks = _.cloneDeep(data);
+  return newColumns;
 };

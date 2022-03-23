@@ -1,4 +1,5 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
+import { bindSectionToColumns } from '@utils/board';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -112,9 +113,11 @@ const useGetUserTaskBoardProposals = ({ contributorColumns, setContributorColumn
   const [getUserTaskBoardProposals] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
-      const taskProposals = data?.getUserTaskBoardProposals;
-      const newColumns = contributorColumns[0]?.section ? [...contributorColumns] : [...COLUMNS];
-      newColumns[0].section.tasks = taskProposals ? [...taskProposals] : [];
+      const newColumns = bindSectionToColumns({
+        columns: contributorColumns,
+        data: data?.getUserTaskBoardProposals,
+        section: TASK_STATUS_REQUESTED,
+      });
       setContributorColumns(newColumns);
     },
     onError: (error) => {
@@ -137,9 +140,11 @@ const useGetUserTaskBoardSubmissions = ({ contributorColumns, setContributorColu
   const [getUserTaskBoardSubmissions] = useLazyQuery(GET_USER_TASK_BOARD_SUBMISSIONS, {
     fetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
-      const tasks = data?.getUserTaskBoardSubmissions;
-      const newColumns = contributorColumns[1]?.section ? [...contributorColumns] : [...COLUMNS];
-      newColumns[1].section.tasks = tasks ? [...tasks] : [];
+      const newColumns = bindSectionToColumns({
+        columns: contributorColumns,
+        data: data?.getUserTaskBoardSubmissions,
+        section: TASK_STATUS_IN_REVIEW,
+      });
       setContributorColumns(newColumns);
     },
     onError: (error) => {
@@ -553,6 +558,7 @@ const BoardsPage = (props) => {
       };
 
       if (shouldSearchTasks) {
+        console.log('search dashboard');
         searchTasks(searchTasksArgs);
       } else {
         const newColumns = [...contributorColumns];
