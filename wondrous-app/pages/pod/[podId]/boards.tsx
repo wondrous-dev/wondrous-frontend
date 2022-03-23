@@ -402,6 +402,7 @@ const BoardsPage = () => {
         hasMore={podTaskHasMore}
         onSearch={handleSearch}
         onFilterChange={handleFilterChange}
+        setColumns={setColumns}
       />
     </PodBoardContext.Provider>
   );

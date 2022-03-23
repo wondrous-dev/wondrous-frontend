@@ -11,10 +11,11 @@ type Props = {
   hasMore: any;
   selectOptions: any;
   searchString: string;
+  setColumns: React.Dispatch<React.SetStateAction<[{}]>>;
 };
 
 const PodBoards = (props: Props) => {
-  const { columns, onLoadMore, hasMore, onSearch, onFilterChange } = props;
+  const { columns, onLoadMore, hasMore, onSearch, onFilterChange, setColumns } = props;
   const filterSchema = [FILTER_STATUSES];
   return (
     <Wrapper>
@@ -25,6 +26,7 @@ const PodBoards = (props: Props) => {
         columns={columns}
         onLoadMore={onLoadMore}
         hasMore={hasMore}
+        setColumns={setColumns}
       />
     </Wrapper>
   );
