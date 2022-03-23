@@ -47,14 +47,11 @@ const useGetOrgTaskBoardTasks = ({
 }) => {
   const [getOrgTasks, { fetchMore: getOrgTaskBoardTasksFetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     onCompleted: (data) => {
-      if (!firstTimeFetch) {
-        const tasks = data?.getOrgTaskBoardTasks;
-        const newColumns = populateTaskColumns(tasks, columns);
-        setColumns(dedupeColumns(newColumns));
-        if (orgTaskHasMore) {
-          setOrgTaskHasMore(tasks.length >= LIMIT);
-        }
-        setFirstTimeFetch(true);
+      const tasks = data?.getOrgTaskBoardTasks;
+      const newColumns = populateTaskColumns(tasks, columns);
+      setColumns(dedupeColumns(newColumns));
+      if (orgTaskHasMore) {
+        setOrgTaskHasMore(tasks.length >= LIMIT);
       }
     },
     fetchPolicy: 'cache-and-network',
