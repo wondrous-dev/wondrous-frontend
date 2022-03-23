@@ -1,4 +1,5 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
+import _ from 'lodash';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
@@ -17,7 +18,7 @@ import {
   GET_SUBMISSIONS_USER_CAN_REVIEW,
 } from '../../../graphql/queries/workflowBoards';
 import apollo from '../../../services/apollo';
-import { COLUMNS, FILTER_STATUSES, LIMIT, populateTaskColumns } from '../../../services/board';
+import { COLUMNS, FILTER_STATUSES, FILTER_STATUSES_ADMIN, LIMIT, populateTaskColumns } from '../../../services/board';
 import { TaskFilter } from '../../../types/task';
 import { dedupeColumns } from '../../../utils';
 import {
@@ -56,11 +57,6 @@ const awaitingPayment = {
 };
 
 const baseColumnsAdmin = [proposal, submissions];
-
-const filterColumnsByStatus = (columns, status) => {
-  if (!status) return columns;
-  return columns.filter((column) => column.status === status);
-};
 
 const useGetUserTaskBoardTasks = ({
   contributorColumns,
@@ -118,7 +114,7 @@ const useGetUserTaskBoardProposals = ({ contributorColumns, setContributorColumn
     onCompleted: (data) => {
       const taskProposals = data?.getUserTaskBoardProposals;
       const newColumns = contributorColumns[0]?.section ? [...contributorColumns] : [...COLUMNS];
-      newColumns[0].section.tasks = Array.from(taskProposals);
+      newColumns[0].section.tasks = taskProposals ? [...taskProposals] : [];
       setContributorColumns(newColumns);
     },
     onError: (error) => {
@@ -204,17 +200,19 @@ const useGetPerStatusTaskCountForUserBoard = (loggedInUser) => {
   return { data };
 };
 
-const useAdminColumns = () => {
+const useAdminColumns = ({ isAdmin, selectedStatus, statuses, setSelectedStatus, setStatuses, podIds }) => {
   const [adminColumns, setAdminColumns] = useState([]);
-  useQuery(GET_PROPOSALS_USER_CAN_REVIEW, {
+  const [getProposalsUserCanReview] = useLazyQuery(GET_PROPOSALS_USER_CAN_REVIEW, {
+    fetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
-      const tasks = data?.getProposalsUserCanReview || [];
+      const tasks = data?.getProposalsUserCanReview;
       const newColumns = adminColumns[0]?.tasks ? [...adminColumns] : [...baseColumnsAdmin];
       newColumns[0].tasks = [...tasks];
       setAdminColumns(newColumns);
     },
   });
-  useQuery(GET_SUBMISSIONS_USER_CAN_REVIEW, {
+  const [getSubmissionsUserCanReview] = useLazyQuery(GET_SUBMISSIONS_USER_CAN_REVIEW, {
+    fetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
       const tasks = data?.getSubmissionsUserCanReview;
       const newColumns = adminColumns[1]?.tasks ? [...adminColumns] : [...baseColumnsAdmin];
@@ -222,79 +220,57 @@ const useAdminColumns = () => {
       setAdminColumns(newColumns);
     },
   });
+  useEffect(() => {
+    if (isAdmin) {
+      getProposalsUserCanReview({
+        variables: {
+          podIds,
+          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
+        },
+      });
+      getSubmissionsUserCanReview({
+        variables: {
+          podIds,
+          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
+        },
+      });
+      if (statuses.length > 0) {
+        const status =
+          statuses[0] === TASK_STATUS_REQUESTED ? TASK_STATUS_PROPOSAL_REQUEST : TASK_STATUS_SUBMISSION_REQUEST;
+        setSelectedStatus(status);
+      } else {
+        setSelectedStatus(null);
+      }
+    }
+  }, [
+    getProposalsUserCanReview,
+    getSubmissionsUserCanReview,
+    isAdmin,
+    setSelectedStatus,
+    setStatuses,
+    statuses,
+    podIds,
+  ]);
+
+  useEffect(() => {
+    if (isAdmin) {
+      if (selectedStatus) {
+        const status = {
+          [TASK_STATUS_PROPOSAL_REQUEST]: TASK_STATUS_REQUESTED,
+          [TASK_STATUS_SUBMISSION_REQUEST]: TASK_STATUS_IN_REVIEW,
+        };
+        const selected = status[selectedStatus];
+        setStatuses([selected]);
+      } else {
+        setStatuses([]);
+      }
+    }
+  }, [setStatuses, selectedStatus, isAdmin]);
   return { adminColumns };
 };
 
-const BoardsPage = (props) => {
-  const { isAdmin, selectedStatus, selectMembershipRequests } = props;
-  const selectMembershipHook = useSelectMembership();
-  const router = useRouter();
-  const loggedInUser = useMe();
-  const { search } = router.query;
-  const [hasMoreTasks, setHasMoreTasks] = useState(true);
-  const [contributorColumns, setContributorColumns] = useState([]);
-  const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
-  const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
-  const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(loggedInUser);
-  const { adminColumns } = useAdminColumns();
-  const { getUserTaskBoardTasksFetchMore } = useGetUserTaskBoard({
-    statuses,
-    loggedInUser,
-    hasMoreTasks,
-    setHasMoreTasks,
-    contributorColumns,
-    setContributorColumns,
-    podIds,
-  });
-
-  const bindProposalsToCols = (taskProposals) => {
-    const newColumns = [...contributorColumns];
-    newColumns[0].section.tasks = [];
-    taskProposals?.forEach((taskProposal) => {
-      newColumns[0].section.tasks.push(taskProposal);
-    });
-    setContributorColumns(newColumns);
-  };
-
-  const [searchTasks] = useLazyQuery(SEARCH_TASKS_FOR_USER_BOARD_VIEW, {
-    onCompleted: (data) => {
-      const tasks = data?.searchTasksForUserBoardView;
-      const newColumns = populateTaskColumns(tasks, contributorColumns.length > 0 ? contributorColumns : COLUMNS);
-      newColumns[0].section.tasks = [];
-      newColumns[1].section.tasks = [];
-      newColumns[2].section.tasks = [];
-
-      tasks.forEach((task) => {
-        if (task.status === TASK_STATUS_IN_REVIEW) {
-          newColumns[1].section.tasks.push(task);
-        }
-      });
-
-      if (statuses.length) {
-        newColumns.forEach((column) => {
-          if (!statuses.includes(column.section.filter.taskType)) {
-            column.section.tasks = [];
-          }
-        });
-      }
-
-      setContributorColumns(dedupeColumns(newColumns));
-      if (hasMoreTasks) {
-        setHasMoreTasks(tasks.length > LIMIT - 1);
-      }
-    },
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const [searchProposals] = useLazyQuery(SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW, {
-    onCompleted: (data) => bindProposalsToCols(data?.searchProposalsForUserBoardView),
-    fetchPolicy: 'cache-and-network',
-  });
-  const [joinOrgRequests, setJoinOrgRequests] = useState([]);
-  const [getJoinOrgRequests, { data: getJoinOrgRequestsData, fetchMore: fetchMoreJoinOrgRequests }] =
-    useLazyQuery(GET_JOIN_ORG_REQUESTS);
-
-  const [filterSchema, setFilterSchema] = useState([
+const useFilterSchema = (loggedInUser, isAdmin) => {
+  const [filterSchema, setFilterSchema]: any = useState([
     {
       name: 'podIds',
       label: 'Orgs',
@@ -329,7 +305,6 @@ const BoardsPage = (props) => {
     },
     FILTER_STATUSES,
   ]);
-
   const [getUserPods] = useLazyQuery(GET_USER_PODS, {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
@@ -342,13 +317,103 @@ const BoardsPage = (props) => {
         orgPods[pod.org.name].push(pod);
       });
 
-      const newFilterSchema: any = [...filterSchema];
+      const newFilterSchema: any = _.cloneDeep(filterSchema);
       newFilterSchema[0].orgPods = orgPods;
       newFilterSchema[0].items = data.getUserPods;
 
       setFilterSchema(newFilterSchema);
     },
   });
+  useEffect(() => {
+    if (isAdmin) {
+      setFilterSchema([FILTER_STATUSES_ADMIN]);
+    }
+    if (!isAdmin) {
+      getUserPods({
+        variables: {
+          userId: loggedInUser?.id,
+        },
+      });
+    }
+  }, [getUserPods, isAdmin, loggedInUser?.id]);
+  return filterSchema;
+};
+
+const BoardsPage = (props) => {
+  const { isAdmin, selectedStatus, setSelectedStatus, selectMembershipRequests } = props;
+  const selectMembershipHook = useSelectMembership();
+  const router = useRouter();
+  const loggedInUser = useMe();
+  const { search } = router.query;
+  const [hasMoreTasks, setHasMoreTasks] = useState(true);
+  const [contributorColumns, setContributorColumns] = useState([]);
+  const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
+  const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
+  const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(loggedInUser);
+  const { adminColumns } = useAdminColumns({
+    isAdmin,
+    selectedStatus,
+    statuses,
+    setSelectedStatus,
+    setStatuses,
+    podIds,
+  });
+  const filterSchema = useFilterSchema(loggedInUser, isAdmin);
+  const { getUserTaskBoardTasksFetchMore } = useGetUserTaskBoard({
+    statuses,
+    loggedInUser,
+    hasMoreTasks,
+    setHasMoreTasks,
+    contributorColumns,
+    setContributorColumns,
+    podIds,
+  });
+
+  const bindProposalsToCols = (taskProposals) => {
+    const newColumns = [...contributorColumns];
+    newColumns[0].section.tasks = [];
+    taskProposals?.forEach((taskProposal) => {
+      newColumns[0].section.tasks.push(taskProposal);
+    });
+    setContributorColumns(newColumns);
+  };
+  const [searchTasks] = useLazyQuery(SEARCH_TASKS_FOR_USER_BOARD_VIEW, {
+    onCompleted: (data) => {
+      const tasks = data?.searchTasksForUserBoardView;
+      const newColumns = populateTaskColumns(tasks, contributorColumns.length > 0 ? contributorColumns : COLUMNS);
+      newColumns[0].section.tasks = [];
+      newColumns[1].section.tasks = [];
+      newColumns[2].section.tasks = [];
+
+      tasks.forEach((task) => {
+        if (task.status === TASK_STATUS_IN_REVIEW) {
+          newColumns[1].section.tasks.push(task);
+        }
+      });
+
+      if (statuses.length) {
+        newColumns.forEach((column) => {
+          if (!statuses.includes(column.section.filter.taskType)) {
+            column.section.tasks = [];
+          }
+        });
+      }
+
+      setContributorColumns(dedupeColumns(newColumns));
+      if (hasMoreTasks) {
+        setHasMoreTasks(tasks.length > LIMIT - 1);
+      }
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+  const [searchProposals] = useLazyQuery(SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW, {
+    onCompleted: (data) => bindProposalsToCols(data?.searchProposalsForUserBoardView),
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [joinOrgRequests, setJoinOrgRequests] = useState([]);
+  const [getJoinOrgRequests, { data: getJoinOrgRequestsData, fetchMore: fetchMoreJoinOrgRequests }] =
+    useLazyQuery(GET_JOIN_ORG_REQUESTS);
 
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
@@ -389,12 +454,6 @@ const BoardsPage = (props) => {
         searchProposals(searchTaskProposalsArgs);
       }
     }
-
-    getUserPods({
-      variables: {
-        userId: loggedInUser?.id,
-      },
-    });
   }, [loggedInUser, selectMembershipHook?.selectMembershipRequests]);
 
   const handleLoadMore = useCallback(() => {
@@ -510,7 +569,7 @@ const BoardsPage = (props) => {
       }
     }
   };
-
+  const activeColumns = isAdmin ? adminColumns : contributorColumns;
   return (
     <UserBoardContext.Provider
       value={{
@@ -528,7 +587,7 @@ const BoardsPage = (props) => {
         filterSchema={filterSchema}
         onSearch={handleSearch}
         onFilterChange={handleFilterChange}
-        columns={isAdmin ? filterColumnsByStatus(adminColumns, selectedStatus) : contributorColumns}
+        columns={activeColumns}
         onLoadMore={handleLoadMore}
         hasMore={hasMoreTasks}
         isAdmin={isAdmin}
