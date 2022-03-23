@@ -74,9 +74,6 @@ const useGetUserTaskBoardTasks = ({
       const tasks = data?.getUserTaskBoardTasks ?? [];
       const newColumns = populateTaskColumns(tasks, contributorColumns.length > 0 ? contributorColumns : COLUMNS);
       setContributorColumns(dedupeColumns(newColumns));
-      if (hasMoreTasks) {
-        setHasMoreTasks(tasks?.length > LIMIT - 1);
-      }
     },
     onError: (error) => {
       console.error(error);
@@ -87,11 +84,14 @@ const useGetUserTaskBoardTasks = ({
       variables: {
         offset: Math.max(...contributorColumns.map(({ tasks }) => tasks.length)),
       },
-      updateQuery: (prev, { fetchMoreResult }) => ({
-        getUserTaskBoardTasks: [...prev.getUserTaskBoardTasks, ...fetchMoreResult.getUserTaskBoardTasks],
-      }),
+      updateQuery: (prev, { fetchMoreResult }) => {
+        setHasMoreTasks(fetchMoreResult?.getUserTaskBoardTasks?.length >= LIMIT);
+        return {
+          getUserTaskBoardTasks: [...prev.getUserTaskBoardTasks, ...fetchMoreResult.getUserTaskBoardTasks],
+        };
+      },
     });
-  }, [contributorColumns, fetchMore]);
+  }, [contributorColumns, fetchMore, setHasMoreTasks]);
   useEffect(() => {
     const taskBoardStatuses =
       statuses.length > 0 ? statuses?.filter((status) => DEFAULT_STATUS_ARR.includes(status)) : DEFAULT_STATUS_ARR;
