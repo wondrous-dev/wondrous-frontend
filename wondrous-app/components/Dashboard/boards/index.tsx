@@ -558,7 +558,6 @@ const BoardsPage = (props) => {
       };
 
       if (shouldSearchTasks) {
-        console.log('search dashboard');
         searchTasks(searchTasksArgs);
       } else {
         const newColumns = [...contributorColumns];
