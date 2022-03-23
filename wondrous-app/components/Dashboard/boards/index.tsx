@@ -473,6 +473,7 @@ const BoardsPage = (props) => {
         onLoadMore={handleLoadMore}
         hasMore={hasMoreTasks}
         isAdmin={isAdmin}
+        setColumns={setContributorColumns}
       />
     </UserBoardContext.Provider>
   );

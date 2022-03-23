@@ -29,6 +29,7 @@ import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { ListViewIcon } from '../../Icons/ViewIcons/listView';
 import { GridViewIcon } from '../../Icons/ViewIcons/gridView';
 import SelectMenuBoardType from '../SelectMenuBoardType';
+import { ColumnsContext } from '@utils/contexts';
 
 type Props = {
   filterSchema: any;
@@ -38,10 +39,11 @@ type Props = {
   onLoadMore: any;
   hasMore: any;
   isAdmin?: boolean;
+  setColumns: React.Dispatch<React.SetStateAction<[{}]>>;
 };
 
 const Boards = (props: Props) => {
-  const { columns, onLoadMore, hasMore, filterSchema, onSearch, onFilterChange, isAdmin } = props;
+  const { columns, onLoadMore, hasMore, filterSchema, onSearch, onFilterChange, isAdmin, setColumns } = props;
   const router = useRouter();
   const orgBoard = useOrgBoard();
   const [totalCount, setTotalCount] = useState(0);
@@ -151,18 +153,20 @@ const Boards = (props: Props) => {
   }
 
   return (
-    <BoardsContainer>
-      <BoardsActivity>
-        <SearchTasks onSearch={onSearch} />
-        <Filter filterSchema={filterSchema} onChange={onFilterChange} />
-        {orgBoard && <SelectMenuBoardType router={router} view={view} />}
-        {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
-      </BoardsActivity>
-      {selectMembershipRequests && (
-        <MembershipRequestTable isAdmin={isAdmin} requests={selectMembershipHook?.requests} />
-      )}
-      {!selectMembershipRequests && <>{searchQuery ? renderSearchResults() : renderBoard()}</>}
-    </BoardsContainer>
+    <ColumnsContext.Provider value={{ columns, setColumns }}>
+      <BoardsContainer>
+        <BoardsActivity>
+          <SearchTasks onSearch={onSearch} />
+          <Filter filterSchema={filterSchema} onChange={onFilterChange} />
+          {orgBoard && <SelectMenuBoardType router={router} view={view} />}
+          {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
+        </BoardsActivity>
+        {selectMembershipRequests && (
+          <MembershipRequestTable isAdmin={isAdmin} requests={selectMembershipHook?.requests} />
+        )}
+        {!selectMembershipRequests && <>{searchQuery ? renderSearchResults() : renderBoard()}</>}
+      </BoardsContainer>
+    </ColumnsContext.Provider>
   );
 };
 

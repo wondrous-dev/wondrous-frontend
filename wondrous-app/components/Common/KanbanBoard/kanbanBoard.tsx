@@ -13,7 +13,6 @@ import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER, UPDATE_BOUNTY_STATUS } from '../
 import { parseUserPermissionContext } from '../../../utils/helpers';
 import { BOARD_TYPE, PERMISSIONS, PAYMENT_STATUS, TASK_TYPE } from '../../../utils/constants';
 import { useMe } from '../../Auth/withAuth';
-import { ColumnsContext } from '../../../utils/contexts';
 import { useMutation } from '@apollo/client';
 import { dedupeColumns, delQuery } from '../../../utils';
 import DndErrorModal from './DndErrorModal';
@@ -198,12 +197,7 @@ const KanbanBoard = (props) => {
   };
 
   return (
-    <ColumnsContext.Provider
-      value={{
-        columns: columnsState,
-        setColumns: setColumnsState,
-      }}
-    >
+    <>
       <KanbanBoardContainer>
         <DndErrorModal open={dndErrorModal} handleClose={() => setDndErrorModal(false)} />
         <TaskViewModal
@@ -242,7 +236,7 @@ const KanbanBoard = (props) => {
         </DragDropContext>
       </KanbanBoardContainer>
       <LoadMore ref={ref} hasMore={hasMore}></LoadMore>
-    </ColumnsContext.Provider>
+    </>
   );
 };
 
