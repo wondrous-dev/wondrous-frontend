@@ -1,4 +1,9 @@
-import { TASK_STATUS_ARCHIVED } from './constants';
+import {
+  TASK_STATUS_ARCHIVED,
+  TASK_STATUS_PROPOSAL_REQUEST,
+  TASK_STATUS_REQUESTED,
+  TASK_STATUS_SUBMISSION_REQUEST,
+} from './constants';
 
 export const addProposalItem = (newItem, columns) => {
   columns[0].section.tasks = [newItem, ...columns[0].section.tasks];
@@ -156,4 +161,15 @@ export const updateTaskColumns = (tasks, columns) => {
     );
   });
   return newColumns;
+};
+
+export const bindSectionToColumns = ({ columns, data, section }) => {
+  const sections = {
+    [TASK_STATUS_PROPOSAL_REQUEST]: 0,
+    [TASK_STATUS_SUBMISSION_REQUEST]: 1,
+  };
+  const column = sections[section];
+  const newColumn = [...columns];
+  newColumn[column].section.tasks = data;
+  return [...newColumn];
 };
