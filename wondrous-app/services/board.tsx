@@ -127,6 +127,23 @@ export const FILTER_STATUSES = {
   ],
 };
 
+export const FILTER_STATUSES_ADMIN = {
+  name: 'statuses',
+  label: 'Status',
+  items: [
+    {
+      id: TASK_STATUS_REQUESTED,
+      name: 'Proposals',
+      icon: <Proposal />,
+    },
+    {
+      id: TASK_STATUS_IN_REVIEW,
+      name: 'In-review',
+      icon: <TaskStatus status={TASK_STATUS_IN_REVIEW} />,
+    },
+  ],
+};
+
 export const COLUMNS = [TO_DO, IN_PROGRESS, DONE];
 
 export const SELECT_OPTIONS = [

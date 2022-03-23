@@ -1,4 +1,5 @@
-import { useContext, useState, useEffect, useRef } from 'react';
+import { NextRouter } from 'next/router';
+import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction } from 'react';
 
 import {
   ColumnsContext,
@@ -109,3 +110,22 @@ function usePrevious(value) {
   return ref.current; //in the end, return the current ref value.
 }
 export default usePrevious;
+
+export const useRouterQuery = ({
+  router,
+  query,
+  defaultValue = [],
+}: {
+  router: NextRouter;
+  query: string;
+  defaultValue?: string[];
+}): [string[], Dispatch<SetStateAction<string[]>>] => {
+  const [state, setState] = useState(defaultValue);
+  const routerQuery = router?.query?.[query];
+  useEffect(() => {
+    if (routerQuery) {
+      setState(routerQuery?.toString().split(','));
+    }
+  }, [routerQuery]);
+  return [state, setState];
+};

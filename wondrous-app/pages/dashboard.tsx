@@ -43,6 +43,7 @@ const Dashboard = () => {
           <Boards
             isAdmin={isAdmin}
             selectedStatus={selectedStatus}
+            setSelectedStatus={setSelectedStatus}
             selectMembershipRequests={selectMembershipRequests}
           />
         </BoardsWrapper>

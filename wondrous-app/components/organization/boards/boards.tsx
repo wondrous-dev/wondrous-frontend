@@ -9,17 +9,21 @@ import { FILTER_STATUSES } from '../../../services/board';
 type Props = {
   orgPods: OrgPod[];
   onSearch: (searchString: string) => Promise<any>;
-  onFilterChange: (searchString: string) => Promise<any>;
+  onFilterChange: ({}) => any;
   columns: Array<any>;
   onLoadMore: any;
   orgData: any;
   hasMore: any;
   selectOptions: any;
   searchString: string;
+  statuses: string[];
+  podIds: string[];
+  setColumns: React.Dispatch<React.SetStateAction<{}>>;
 };
 
 const OrgBoards = (props: Props) => {
-  const { columns, onLoadMore, hasMore, orgData, orgPods, onSearch, onFilterChange } = props;
+  const { columns, onLoadMore, hasMore, orgData, orgPods, onSearch, onFilterChange, statuses, podIds, setColumns } =
+    props;
   const [filterSchema, setFilterSchema] = useState([
     {
       name: 'podIds',
@@ -53,6 +57,9 @@ const OrgBoards = (props: Props) => {
         columns={columns}
         onLoadMore={onLoadMore}
         hasMore={hasMore}
+        statuses={statuses}
+        podIds={podIds}
+        setColumns={setColumns}
       />
     </Wrapper>
   );
