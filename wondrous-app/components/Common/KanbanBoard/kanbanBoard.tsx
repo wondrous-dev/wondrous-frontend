@@ -36,8 +36,7 @@ const populateOrder = (index, tasks, field) => {
 
 const KanbanBoard = (props) => {
   const user = useMe();
-  const { columns, onLoadMore, hasMore } = props;
-  const [columnsState, setColumnsState] = useState([]);
+  const { columns, onLoadMore, hasMore, setColumns } = props;
   const [ref, inView] = useInView({});
   const [openModal, setOpenModal] = useState(false);
   const [once, setOnce] = useState(false);
@@ -55,10 +54,7 @@ const KanbanBoard = (props) => {
     if (inView && hasMore) {
       onLoadMore();
     }
-    if (columnsState.length === 0) {
-      setColumnsState(columns);
-    }
-  }, [inView, hasMore, onLoadMore, columns, columnsState]);
+  }, [inView, hasMore, onLoadMore]);
 
   const checkPermissions = (task) => {
     const permissions = parseUserPermissionContext({
@@ -78,7 +74,7 @@ const KanbanBoard = (props) => {
   // Updates the task status on Backend
   // TODO: Aggregate all Task mutations on one Task
   //       service.
-  const prevColumnState = usePrevious(columnsState);
+  const prevColumnState = usePrevious(columns);
   const updateTask = async (taskToBeUpdated) => {
     const taskType = taskToBeUpdated.type === TASK_TYPE;
     const taskTypeMutation = taskType ? UPDATE_TASK_STATUS : UPDATE_BOUNTY_STATUS;
@@ -111,15 +107,15 @@ const KanbanBoard = (props) => {
       if (err?.graphQLErrors && err?.graphQLErrors.length > 0) {
         if (err?.graphQLErrors[0].extensions?.errorCode === 'must_go_through_submission') {
           setDndErrorModal(true);
-          setColumnsState(prevColumnState);
+          setColumns(prevColumnState);
         }
       }
     }
   };
 
   const moveCard = async (id, status, index) => {
-    const updatedColumns = columnsState.map((column) => {
-      const task = columnsState.map(({ tasks }) => tasks.find((task) => task.id === id)).filter((i) => i)[0];
+    const updatedColumns = columns.map((column) => {
+      const task = columns.map(({ tasks }) => tasks.find((task) => task.id === id)).filter((i) => i)[0];
       // Only allow when permissions are OK
       if (task?.paymentStatus !== PAYMENT_STATUS.PAID && task?.paymentStatus !== PAYMENT_STATUS.PROCESSING) {
         if (column.status !== status) {
@@ -178,7 +174,7 @@ const KanbanBoard = (props) => {
         return column;
       }
     });
-    setColumnsState(dedupeColumns(updatedColumns));
+    setColumns(dedupeColumns(updatedColumns));
   };
 
   useEffect(() => {
@@ -200,8 +196,8 @@ const KanbanBoard = (props) => {
   return (
     <ColumnsContext.Provider
       value={{
-        columns: columnsState,
-        setColumns: setColumnsState,
+        columns,
+        setColumns,
       }}
     >
       <KanbanBoardContainer>
@@ -225,7 +221,7 @@ const KanbanBoard = (props) => {
           isTaskProposal={!!router?.query?.taskProposal}
         />
         <DragDropContext onDragEnd={onDragEnd}>
-          {columnsState.map((column) => {
+          {columns.map((column) => {
             const { status, section, tasks } = column;
 
             return (

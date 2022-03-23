@@ -525,6 +525,7 @@ const BoardsPage = () => {
         orgData={orgData}
         statuses={statuses}
         podIds={podIds}
+        setColumns={setColumns}
       />
     </OrgBoardContext.Provider>
   );

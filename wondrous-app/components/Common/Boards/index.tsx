@@ -33,12 +33,24 @@ type Props = {
   onLoadMore: any;
   hasMore: any;
   isAdmin?: boolean;
-  statuses: String[];
-  podIds: String[];
+  statuses: string[];
+  podIds?: string[];
+  setColumns: React.Dispatch<React.SetStateAction<{}>>;
 };
 
 const Boards = (props: Props) => {
-  const { columns, onLoadMore, hasMore, filterSchema, onSearch, onFilterChange, isAdmin, statuses, podIds } = props;
+  const {
+    columns,
+    onLoadMore,
+    hasMore,
+    filterSchema,
+    onSearch,
+    onFilterChange,
+    isAdmin,
+    statuses,
+    podIds = [],
+    setColumns,
+  } = props;
   const router = useRouter();
   const orgBoard = useOrgBoard();
   const [totalCount, setTotalCount] = useState(0);
@@ -89,7 +101,7 @@ const Boards = (props: Props) => {
     return view ? (
       <>
         {view === ViewType.Grid ? (
-          <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+          <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} setColumns={setColumns} />
         ) : (
           <Table columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
         )}

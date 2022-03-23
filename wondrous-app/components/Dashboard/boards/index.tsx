@@ -534,6 +534,7 @@ const BoardsPage = (props) => {
         isAdmin={isAdmin}
         statuses={statuses}
         podIds={podIds}
+        setColumns={setContributorColumns}
       />
     </UserBoardContext.Provider>
   );

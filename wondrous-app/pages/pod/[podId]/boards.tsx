@@ -472,6 +472,7 @@ const BoardsPage = () => {
           onFilterChange={handleFilterChange}
           statuses={statuses}
           filterSchema={[FILTER_STATUSES]}
+          setColumns={setColumns}
         />
       </Wrapper>
     </PodBoardContext.Provider>
