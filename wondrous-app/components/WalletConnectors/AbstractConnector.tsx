@@ -9,12 +9,14 @@ export interface WonderAbstractConnectorProps {
   connectorName: ConnectorName;
   buttonContent: React.ReactNode;
   icon?: React.ReactNode;
+  style?: any;
 }
 
 export default function WonderAbstractConnector({
   connectorName,
   buttonContent,
   icon = null,
+  style,
 }: WonderAbstractConnectorProps) {
   const { connector, activateAndStore, error, isActivating, notSupportedChain, connecting } = useWonderWeb3();
 
@@ -45,7 +47,7 @@ export default function WonderAbstractConnector({
   };
 
   return (
-    <Button disabled={disabled} onClick={() => activateAndStore(connectorName)}>
+    <Button style={style} onClick={() => activateAndStore(connectorName)}>
       {isActivating ? <CircularProgress /> : <>{content()}</>}
     </Button>
   );

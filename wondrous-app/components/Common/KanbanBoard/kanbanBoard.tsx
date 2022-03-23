@@ -17,6 +17,7 @@ import { ColumnsContext } from '../../../utils/contexts';
 import { useMutation } from '@apollo/client';
 import { dedupeColumns, delQuery } from '../../../utils';
 import DndErrorModal from './DndErrorModal';
+import { ViewType } from '../../../types/common';
 
 const populateOrder = (index, tasks, field) => {
   let aboveOrder = null,
@@ -182,14 +183,18 @@ const KanbanBoard = (props) => {
 
   useEffect(() => {
     const hasQuery = router?.query?.task || router?.query?.taskProposal;
-    if (hasQuery && (orgBoard || userBoard || podBoard)) {
+    if (hasQuery && router?.query.view !== ViewType.List && (orgBoard || userBoard || podBoard)) {
       setOpenModal(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router?.query?.task, router?.query?.taskProposal, orgBoard || userBoard || podBoard]);
+  }, [router?.query?.task, router?.query?.taskProposal, router?.query.view, orgBoard || userBoard || podBoard]);
 
   const onDragEnd = (result) => {
-    moveCard(result?.draggableId, result?.destination?.droppableId, result?.destination?.index);
+    try {
+      moveCard(result.draggableId, result.destination.droppableId, result.destination.index);
+    } catch {
+      console.error('The card was dropped outside the context of DragDropContext.');
+    }
   };
 
   return (
@@ -216,7 +221,7 @@ const KanbanBoard = (props) => {
             const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}`;
             router.push(newUrl, undefined, { shallow: true });
           }}
-          taskId={router?.query?.task || router?.query?.taskProposal}
+          taskId={(router?.query?.task || router?.query?.taskProposal)?.toString()}
           isTaskProposal={!!router?.query?.taskProposal}
         />
         <DragDropContext onDragEnd={onDragEnd}>

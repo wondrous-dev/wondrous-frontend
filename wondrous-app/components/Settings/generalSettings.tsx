@@ -41,12 +41,13 @@ import { getFilenameAndType, uploadMedia } from '../../utils/media';
 import { SafeImage } from '../Common/Image';
 import { GET_POD_BY_ID } from '../../graphql/queries/pod';
 import { UPDATE_POD } from '../../graphql/mutations/pod';
-import { CreateFormAddDetailsInputLabel, CreateFormAddDetailsSwitch } from '../CreateEntity/styles';
+import { CreateFormAddDetailsInputLabel, CreateFormAddDetailsTab } from '../CreateEntity/styles';
 import { AndroidSwitch } from '../CreateEntity/createEntityModal';
 import { filteredColorOptions, POD_COLOR, PRIVACY_LEVEL } from '../../utils/constants';
 import ColorSettings from './ColorDropdown';
 import { White, HighlightBlue } from '../../theme/colors';
 import { useSnackbarAlert } from '@components/Common/SnackbarAlert';
+import { TabsVisibility } from '../Common/TabsVisibility';
 
 const LIMIT = 200;
 
@@ -111,6 +112,11 @@ const GeneralSettingsComponent = (props) => {
     }
   });
   const isPod = typeText === 'Pod';
+  const tabsVisibilityOptions = { [PRIVACY_LEVEL.public]: 'Public', [PRIVACY_LEVEL.private]: 'Pod Members Only' };
+  const tabsVisibilitySelected = isPrivate
+    ? tabsVisibilityOptions[PRIVACY_LEVEL.private]
+    : tabsVisibilityOptions[PRIVACY_LEVEL.public];
+  const tabsVisibilityHandleOnChange = (e) => setIsPrivate(e.target.getAttribute('value') === PRIVACY_LEVEL.private);
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
@@ -255,15 +261,14 @@ const GeneralSettingsComponent = (props) => {
               marginTop: '32px',
             }}
           >
-            <CreateFormAddDetailsSwitch>
-              <CreateFormAddDetailsInputLabel>Private Pod</CreateFormAddDetailsInputLabel>
-              <AndroidSwitch
-                checked={isPrivate}
-                onChange={(e) => {
-                  setIsPrivate(e.target.checked);
-                }}
+            <CreateFormAddDetailsTab>
+              <CreateFormAddDetailsInputLabel>Visibility</CreateFormAddDetailsInputLabel>
+              <TabsVisibility
+                options={tabsVisibilityOptions}
+                selected={tabsVisibilitySelected}
+                onChange={tabsVisibilityHandleOnChange}
               />
-            </CreateFormAddDetailsSwitch>
+            </CreateFormAddDetailsTab>
           </div>
         )}
 

@@ -33,9 +33,9 @@ const DiscordNotificationSetup = (props) => {
         <ListItem>
           <BoldParagraph>Task creation</BoldParagraph>
         </ListItem>
-        <ListItem>
+        {/* <ListItem>
           <BoldParagraph>Task submission creation</BoldParagraph>
-        </ListItem>
+        </ListItem> */}
         <ListItem>
           <BoldParagraph>Task completion</BoldParagraph>
         </ListItem>
@@ -101,8 +101,8 @@ const DiscordNotificationSetup = (props) => {
           fontWeight: 'bolder',
         }}
       >
-        After adding the bot, navigate the channel you want you want to send notifications to in Discord and enter the
-        command
+        After adding the bot, navigate to the channel you want to send notifications to in Discord. Please make sure the
+        bot is in the channel and that the bot can embed links. Then enter the command
       </SmallerTopParagraph>
       <SmallerTopParagraph
         style={{
@@ -122,6 +122,10 @@ const DiscordNotificationSetup = (props) => {
         You should see the message {`"notification configured to this current channel!"`}. Refresh this page when you do
         and {`you're`} done!
       </SmallerTopParagraph>
+      <DiscordParagraph>
+        (If you don{`'`}t see any message on discord, it could be that our bot doesn{`'`}t have permission to send
+        message on your channel, Please check back in your org setting page to see if it{`'`}s configured )
+      </DiscordParagraph>
     </>
   );
 };

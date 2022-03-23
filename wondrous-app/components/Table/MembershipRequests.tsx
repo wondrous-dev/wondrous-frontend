@@ -1,39 +1,19 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
 import Link from 'next/link';
-
-import {
-  COLUMN_TITLE_ARCHIVED,
-  ENTITIES_TYPES,
-  PERMISSIONS,
-  TASK_STATUS_ARCHIVED,
-  TASK_STATUS_AWAITING_PAYMENT,
-  TASK_STATUS_DONE,
-  TASK_STATUS_IN_PROGRESS,
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_REQUESTED,
-  TASK_STATUS_TODO,
-} from '../../utils/constants';
-import { cutString, groupBy, parseUserPermissionContext, shrinkNumber } from '../../utils/helpers';
-import { AvatarList } from '../Common/AvatarList';
-import { DropDown, DropDownItem } from '../Common/dropdown';
+import { useRouter } from 'next/router';
+import React, { useContext, useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { TASK_STATUS_IN_REVIEW, TASK_STATUS_REQUESTED } from '../../utils/constants';
+import { OrgBoardContext } from '../../utils/contexts';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
+import { useMe } from '../Auth/withAuth';
+import { SafeImage } from '../Common/Image';
+import { LoadMore } from '../Common/KanbanBoard/styles';
 import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton/MembershipRequest';
-import { DoneWithBorder, InProgressWithBorder, TodoWithBorder, WonderCoin } from '../Icons';
 import ImageIcon from '../Icons/image';
 import AudioIcon from '../Icons/MediaTypesIcons/audio';
 import PlayIcon from '../Icons/play';
-import { RewardRed } from '../Icons/reward';
-import { TaskMenuIcon } from '../Icons/taskMenu';
 import {
-  Box,
-  DeliverableContainer,
-  DeliverableItem,
-  DeliverablesIconContainer,
   Initials,
-  MoreOptions,
-  Reward,
-  RewardAmount,
-  RewardContainer,
   StyledLinkIcon,
   StyledTable,
   StyledTableBody,
@@ -42,35 +22,7 @@ import {
   StyledTableHead,
   StyledTableRow,
   TaskDescription,
-  TaskTitle,
 } from './styles';
-import { TaskViewModal } from '../Common/Task/modal';
-import { delQuery } from '../../utils';
-import { useRouter } from 'next/router';
-import * as Constants from '../../utils/constants';
-import { CreateModalOverlay } from '../CreateEntity/styles';
-import EditLayoutBaseModal from '../CreateEntity/editEntityModal';
-import { ArchiveTaskModal } from '../Common/ArchiveTaskModal';
-import { useApolloClient, useLazyQuery, useMutation } from '@apollo/client';
-import { UPDATE_TASK_STATUS } from '../../graphql/mutations';
-import {
-  GET_ORG_TASK_BOARD_TASKS,
-  GET_TASK_BY_ID,
-  GET_TASK_REVIEWERS,
-  GET_TASK_SUBMISSIONS_FOR_TASK,
-} from '../../graphql/queries';
-import { ArchivedTaskUndo } from '../Common/Task/styles';
-import { OrgBoardContext } from '../../utils/contexts';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
-import { LoadMore } from '../Common/KanbanBoard/styles';
-import { SafeImage } from '../Common/Image';
-import { useMe } from '../Auth/withAuth';
-import { USDCoin } from '../Icons/USDCoin';
-import Ethereum from '../Icons/ethereum';
-import { Compensation } from '../Common/Compensation';
-import { Matic } from '../Icons/matic';
-import { renderMentionString } from '../../utils/common';
-import TaskStatus from '../Icons/TaskStatus';
 
 const DELIVERABLES_ICONS = {
   audio: <AudioIcon />,
@@ -154,7 +106,17 @@ export const MembershipRequestTable = (props) => {
                         alignItems: 'center',
                       }}
                     >
-                      {request?.userProfilePicture && <SafeImage src={request?.userProfilePicture} />}
+                      {request?.userProfilePicture && (
+                        <SafeImage
+                          style={{
+                            width: '17px',
+                            height: '17px',
+                            borderRadius: '17px',
+                            marginRight: '8px',
+                          }}
+                          src={request?.userProfilePicture}
+                        />
+                      )}
 
                       <Initials>{request?.userUsername}</Initials>
                     </div>

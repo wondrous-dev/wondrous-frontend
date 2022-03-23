@@ -1,11 +1,11 @@
+import { Button, IconButton, Typography } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Typography, IconButton } from '@material-ui/core';
 import { Background, Black } from '../../../theme/colors';
-import { LogoCircle } from '../../Common/ci';
-import { LinkIcon } from '../../Icons/linkIcon';
 import { Button as BorderButton } from '../../Common/button';
 import { BaseCard } from '../../Common/card';
+import { LogoCircle } from '../../Common/ci';
+import { LinkIcon } from '../../Icons/linkIcon';
 
 export const OverviewComponent = styled.section`
   width: 100vw;
@@ -87,6 +87,18 @@ export const HeaderMainBlock = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+export const HeaderTitleIcon = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  & > * {
+    margin-left: 10px;
+    :first-child {
+      margin-left: 0;
+    }
+  }
 `;
 
 export const HeaderTitle = styled(Typography)`
