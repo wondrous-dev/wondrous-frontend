@@ -248,9 +248,8 @@ export const Table = (props) => {
       <TaskViewModal
         open={isPreviewModalOpen}
         handleClose={() => {
-          router.replace(`${delQuery(router.asPath)}?view=${router.query.view ?? ViewType.Grid}`, undefined, {
-            shallow: true,
-          });
+          const newUrl = `${delQuery(router.asPath)}?view=${router.query.view ?? ViewType.Grid}`;
+          window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
         }}
         isTaskProposal={!!router.query.taskProposal}
         taskId={(router.query.taskProposal ?? router.query.task)?.toString()}
