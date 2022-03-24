@@ -94,14 +94,15 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
   };
   const openModal = () => {
     const view = router.query.view ?? ViewType.Grid;
+    let newUrl = '';
     if (taskType === TASK_STATUS_REQUESTED) {
-      router.replace(`${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`);
+      newUrl = `${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`;
     } else if (taskType === TASK_STATUS_IN_REVIEW) {
-      router.replace(`${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`);
+      newUrl = `${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`;
     } else if (taskType === TASK_STATUS_ARCHIVED) {
-      router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${view}`);
+      newUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${view}`;
     }
-
+    window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
     // document.body.style.overflow = 'hidden'
     // document.body.scroll = false
     windowOffset = window.scrollY;

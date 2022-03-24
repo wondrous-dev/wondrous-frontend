@@ -215,7 +215,7 @@ const KanbanBoard = (props) => {
             }
             setOpenModal(false);
             const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}`;
-            router.push(newUrl, undefined, { shallow: true });
+            window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
           }}
           taskId={(router?.query?.task || router?.query?.taskProposal)?.toString()}
           isTaskProposal={!!router?.query?.taskProposal}
