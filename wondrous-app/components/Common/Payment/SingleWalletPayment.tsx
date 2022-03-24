@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ethers, utils } from 'ethers';
+import { BigNumber } from 'bignumber.js';
 import DropdownSelect from '../DropdownSelect/dropdownSelect';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
@@ -163,8 +164,9 @@ export const SingleWalletPayment = (props) => {
     let finalAmount = paymentData.amount;
     if (changedRewardAmount) {
       const decimal = Number(paymentData?.decimal);
-      const bigChangedAmount = BigInt(changedRewardAmount);
-      finalAmount = bigChangedAmount * BigInt(10 ** decimal);
+      const bigChangedAmount = new BigNumber(changedRewardAmount);
+      const newDecimal = new BigNumber(10 ** decimal);
+      finalAmount = bigChangedAmount.times(newDecimal);
       finalAmount = finalAmount.toString();
     }
 
