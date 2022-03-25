@@ -232,7 +232,7 @@ export const Task = (props) => {
   const openModal = (e) => {
     onOpen(task);
     const newUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`;
-    location.replace(newUrl);
+    location.push(newUrl);
     // document.body.style.overflow = 'hidden'
     // document.body.scroll = false
     windowOffset = window.scrollY;

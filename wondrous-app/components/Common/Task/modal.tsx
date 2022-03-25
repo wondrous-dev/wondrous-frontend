@@ -834,7 +834,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
 
   useEffect(() => {
     if (open) {
-      if (!fetchedTask) {
+      if (!fetchedTask || fetchedTask.id !== taskId) {
         if (isTaskProposal) {
           setTaskSubmissionLoading(false);
           getTaskProposalById({
