@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState, useContext } from 'rea
 import Modal from '@mui/material/Modal';
 import { Typography } from '@mui/material';
 import { Tab } from '@material-ui/core';
+import { BigNumber } from 'bignumber.js';
 import {
   PodNameTypography,
   PaymentModal,
@@ -37,6 +38,7 @@ import { White, Blue20 } from '../../../theme/colors';
 import { CreateFormPreviewButton, CreateFormRewardCurrency } from '../../CreateEntity/styles';
 import InputForm from '../InputForm/inputForm';
 import CloseModalIcon from '@components/Icons/closeModal';
+import { ErrorText } from '@components/Onboarding/styles';
 
 const GoBackStyle = {
   color: White,
@@ -60,6 +62,7 @@ export const MakePaymentModal = (props) => {
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
+  const [changeRewardErrorText, setChangeRewardErrorText] = useState('');
   const board = orgBoard || podBoard || userBoard;
   const router = useRouter();
   const user = useMe();
@@ -212,45 +215,54 @@ export const MakePaymentModal = (props) => {
               {fetchedTask?.type === BOUNTY_TYPE && (
                 <>
                   {changeRewardAmount ? (
-                    <ChangePaymentAmountDiv>
-                      <InputForm
-                        style={{
-                          marginTop: '12px',
-                          width: 'fit-content',
-                          paddingRight: '12px',
-                        }}
-                        type={'number'}
-                        min="0"
-                        placeholder="Enter new reward amount"
-                        search={false}
-                        value={changedRewardAmount}
-                        onChange={(e) => setChangedRewardAmount(e.target.value)}
-                      />
-                      <PaymentDescriptionText
-                        style={{
-                          marginLeft: '12px',
-                          marginTop: '12px',
-                        }}
-                      >
-                        {tokenName?.toUpperCase()}{' '}
-                      </PaymentDescriptionText>
-                      <SaveNewRewardAmountButton
-                        onClick={() => {
-                          setRewardAmount(changedRewardAmount);
-                          setChangeRewardAmount(false);
-                          setUseChangedRewardAmount(true);
-                        }}
-                      >
-                        Save changes
-                      </SaveNewRewardAmountButton>
-                      <CancelNewRewardAmountButton
-                        onClick={() => {
-                          setChangeRewardAmount(false);
-                        }}
-                      >
-                        Cancel
-                      </CancelNewRewardAmountButton>
-                    </ChangePaymentAmountDiv>
+                    <>
+                      <ChangePaymentAmountDiv>
+                        <InputForm
+                          style={{
+                            marginTop: '12px',
+                            width: 'fit-content',
+                            paddingRight: '12px',
+                          }}
+                          type={'number'}
+                          min="0"
+                          placeholder="Enter new reward amount"
+                          search={false}
+                          value={changedRewardAmount}
+                          onChange={(e) => setChangedRewardAmount(e.target.value)}
+                        />
+                        <PaymentDescriptionText
+                          style={{
+                            marginLeft: '12px',
+                            marginTop: '12px',
+                          }}
+                        >
+                          {tokenName?.toUpperCase()}{' '}
+                        </PaymentDescriptionText>
+                        <SaveNewRewardAmountButton
+                          onClick={() => {
+                            const bigChangedRewardAmount = new BigNumber(changedRewardAmount);
+                            const initialBigRewardAmount = new BigNumber(fetchedTask?.rewards[0]?.rewardAmount);
+                            if (bigChangedRewardAmount.isLessThan(initialBigRewardAmount)) {
+                              setChangeRewardErrorText('New reward must be greater than minimum');
+                            } else {
+                              setRewardAmount(changedRewardAmount);
+                              setChangeRewardAmount(false);
+                              setUseChangedRewardAmount(true);
+                            }
+                          }}
+                        >
+                          Save changes
+                        </SaveNewRewardAmountButton>
+                        <CancelNewRewardAmountButton
+                          onClick={() => {
+                            setChangeRewardAmount(false);
+                          }}
+                        >
+                          Cancel
+                        </CancelNewRewardAmountButton>
+                      </ChangePaymentAmountDiv>
+                      <ErrorText>{changeRewardErrorText}</ErrorText>
+                    </>
                   ) : (
                     <ChangePaymentButton onClick={() => setChangeRewardAmount(true)}>
                       Change payment amount
