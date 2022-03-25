@@ -46,6 +46,9 @@ export function useLocation() {
     setLocation(getCurrentLocation());
   }
 
+  useEffect(() => {
+    setLocation(getCurrentLocation());
+  }, []);
   /**
    * @param {string} url
    */
