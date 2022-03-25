@@ -38,7 +38,6 @@ const useGetPodTaskBoardTasks = ({ columns, setColumns, setPodTaskHasMore, podId
       const newColumns = populateTaskColumns(tasks, columns);
       setColumns(dedupeColumns(newColumns));
     },
-    fetchPolicy: 'cache-and-network',
     onError: (error) => {
       console.log(error);
     },
@@ -78,7 +77,8 @@ const useGetPodTaskBoardTasks = ({ columns, setColumns, setPodTaskHasMore, podId
         },
       },
     });
-  }, [getPodTaskBoardTasks, podId, statuses, boardType]);
+    setPodTaskHasMore(true);
+  }, [getPodTaskBoardTasks, podId, statuses, boardType, setPodTaskHasMore]);
   return { getPodTaskBoardTasksFetchMore };
 };
 
@@ -92,7 +92,9 @@ const useGetPodTaskProposals = ({ setColumns, columns, podId, statuses }) => {
       });
       setColumns(newColumns);
     },
-    fetchPolicy: 'cache-and-network',
+    onError: (error) => {
+      console.log(error);
+    },
   });
   useEffect(() => {
     getPodTaskProposals({
@@ -118,7 +120,9 @@ const useGetPodTaskSubmissions = ({ setColumns, columns, podId, statuses }) => {
       });
       setColumns(newColumns);
     },
-    fetchPolicy: 'cache-and-network',
+    onError: (error) => {
+      console.log(error);
+    },
   });
   useEffect(() => {
     getPodTaskSubmissions({

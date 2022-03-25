@@ -37,7 +37,6 @@ const useGetOrgTaskBoardTasks = ({ columns, setColumns, setOrgTaskHasMore, statu
       const newColumns = populateTaskColumns(tasks, columns);
       setColumns(dedupeColumns(newColumns));
     },
-    fetchPolicy: 'cache-and-network',
     onError: (error) => {
       console.log(error);
     },
@@ -71,7 +70,8 @@ const useGetOrgTaskBoardTasks = ({ columns, setColumns, setOrgTaskHasMore, statu
         }),
       },
     });
-  }, [boardType, getOrgTaskBoardTasks, orgId, statuses, podIds]);
+    setOrgTaskHasMore(true);
+  }, [boardType, getOrgTaskBoardTasks, orgId, statuses, podIds, setOrgTaskHasMore]);
   return { getOrgTaskBoardTasksFetchMore };
 };
 
@@ -85,7 +85,9 @@ const useGetOrgTaskBoardProposals = ({ columns, setColumns, orgId, statuses }) =
       });
       setColumns(dedupeColumns(newColumns));
     },
-    fetchPolicy: 'cache-and-network',
+    onError: (error) => {
+      console.log(error);
+    },
   });
   useEffect(() => {
     getOrgTaskProposals({
@@ -109,7 +111,9 @@ const useGetOrgTaskBoardSubmissions = ({ columns, setColumns, orgId, statuses })
       });
       setColumns(dedupeColumns(newColumns));
     },
-    fetchPolicy: 'cache-and-network',
+    onError: (error) => {
+      console.log(error);
+    },
   });
   useEffect(() => {
     getOrgTaskSubmissions({

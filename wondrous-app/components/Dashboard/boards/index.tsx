@@ -69,7 +69,6 @@ const useGetUserTaskBoardTasks = ({
   podIds,
 }) => {
   const [getUserTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
-    fetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
       const tasks = data?.getUserTaskBoardTasks ?? [];
       const newColumns = populateTaskColumns(tasks, contributorColumns.length > 0 ? contributorColumns : COLUMNS);
@@ -105,13 +104,13 @@ const useGetUserTaskBoardTasks = ({
         offset: 0,
       },
     });
-  }, [getUserTaskBoardTasks, loggedInUser?.id, podIds, statuses]);
+    setHasMoreTasks(true);
+  }, [getUserTaskBoardTasks, loggedInUser?.id, podIds, statuses, setHasMoreTasks]);
   return { getUserTaskBoardTasksFetchMore };
 };
 
 const useGetUserTaskBoardProposals = ({ contributorColumns, setContributorColumns, loggedInUser, statuses }) => {
   const [getUserTaskBoardProposals] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
-    fetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
       const newColumns = bindSectionToColumns({
         columns: contributorColumns,
@@ -138,7 +137,6 @@ const useGetUserTaskBoardProposals = ({ contributorColumns, setContributorColumn
 
 const useGetUserTaskBoardSubmissions = ({ contributorColumns, setContributorColumns, loggedInUser, statuses }) => {
   const [getUserTaskBoardSubmissions] = useLazyQuery(GET_USER_TASK_BOARD_SUBMISSIONS, {
-    fetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
       const newColumns = bindSectionToColumns({
         columns: contributorColumns,
