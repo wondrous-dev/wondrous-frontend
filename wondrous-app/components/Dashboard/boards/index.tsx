@@ -89,6 +89,8 @@ const useGetUserTaskBoardTasks = ({
           getUserTaskBoardTasks: [...prev.getUserTaskBoardTasks, ...fetchMoreResult.getUserTaskBoardTasks],
         };
       },
+    }).catch((error) => {
+      console.log(error);
     });
   }, [contributorColumns, fetchMore, setHasMoreTasks]);
   useEffect(() => {

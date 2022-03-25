@@ -58,6 +58,8 @@ const useGetPodTaskBoardTasks = ({ columns, setColumns, setPodTaskHasMore, podId
           getPodTaskBoardTasks: [...prev.getPodTaskBoardTasks, ...fetchMoreResult.getPodTaskBoardTasks],
         };
       },
+    }).catch((error) => {
+      console.log(error);
     });
   }, [columns, fetchMore, setPodTaskHasMore, variables]);
   useEffect(() => {

@@ -52,6 +52,8 @@ const useGetOrgTaskBoardTasks = ({ columns, setColumns, setOrgTaskHasMore, statu
           getOrgTaskBoardTasks: [...prev.getOrgTaskBoardTasks, ...fetchMoreResult.getOrgTaskBoardTasks],
         };
       },
+    }).catch((error) => {
+      console.log(error);
     });
   }, [columns, fetchMore, setOrgTaskHasMore]);
   useEffect(() => {
