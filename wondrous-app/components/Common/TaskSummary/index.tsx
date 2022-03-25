@@ -52,6 +52,7 @@ import { TaskMedia } from '../MediaPlayer';
 import { useMe } from '../../Auth/withAuth';
 import PodIcon from '../../Icons/podIcon';
 import { ViewType } from '../../../types/common';
+import { useLocation } from '@utils/useLocation';
 
 let windowOffset;
 
@@ -83,6 +84,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
   const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
   const [approveTaskSubmission] = useMutation(APPROVE_SUBMISSION);
   const [requestChangeTaskSubmission] = useMutation(REQUEST_CHANGE_SUBMISSION);
+  const location = useLocation();
 
   const router = useRouter();
   const goToPod = (podId) => {
@@ -93,15 +95,16 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
     });
   };
   const openModal = () => {
-    const view = router.query.view ?? ViewType.Grid;
+    const view = location.params.view ?? ViewType.Grid;
+    let newUrl = '';
     if (taskType === TASK_STATUS_REQUESTED) {
-      router.replace(`${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`);
+      newUrl = `${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`;
     } else if (taskType === TASK_STATUS_IN_REVIEW) {
-      router.replace(`${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`);
+      newUrl = `${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`;
     } else if (taskType === TASK_STATUS_ARCHIVED) {
-      router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${view}`);
+      newUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${view}`;
     }
-
+    location.replace(newUrl);
     // document.body.style.overflow = 'hidden'
     // document.body.scroll = false
     windowOffset = window.scrollY;
@@ -207,18 +210,6 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
 
   return (
     <>
-      <TaskViewModal
-        open={modalOpen}
-        handleClose={() => {
-          document.body.setAttribute('style', '');
-          window?.scrollTo(0, windowOffset);
-          const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || ViewType.Grid}`;
-          window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
-          setModalOpen(false);
-        }}
-        taskId={(router?.query?.task ?? router?.query?.taskProposal)?.toString()}
-        isTaskProposal={!!router?.query?.taskProposal}
-      />
       <TaskSummaryWrapper key={id} onClick={openModal}>
         <TaskSummaryInner>
           <TaskHeader>

@@ -17,6 +17,7 @@ import {
 import AboutOrganizationsCard from './userAboutInfoOrganizationsCard';
 import AboutPodsCard from './userAboutInfoPodsCard';
 import { AboutInfoSeeAll } from './userAboutInfoSeeAllModal';
+import { useLocation } from '../../../utils/useLocation';
 
 const useGetUserAboutPage = (userId) => {
   const [getUserAboutPage, { data }] = useLazyQuery(GET_USER_ABOUT_PAGE_DATA);
@@ -36,6 +37,7 @@ const pluralize = (str, count) => `${str}${count > 1 ? 's' : ''}`;
 
 export const UserAboutInfo = (props) => {
   const router = useRouter();
+  const location = useLocation();
   const { id } = props;
   const { orgs, pods, tasksCompleted, tasksCompletedCount = 0 } = useGetUserAboutPage(id);
   const userOrgsData = orgs?.map((org) => <AboutOrganizationsCard key={org.id} {...org} />);
@@ -64,7 +66,7 @@ export const UserAboutInfo = (props) => {
     <>
       <TaskViewModal
         disableEnforceFocus
-        open={Boolean(router?.query?.task)}
+        open={Boolean(location?.params?.task || location?.params.taskProposal)}
         shouldFocusAfterRender={false}
         handleClose={() => {
           const style = document.body.getAttribute('style');
@@ -73,12 +75,10 @@ export const UserAboutInfo = (props) => {
           if (top?.length > 0) {
             window?.scrollTo(0, Number(top[0]));
           }
-          router.push(`${delQuery(router.asPath)}`, undefined, {
-            shallow: true,
-          });
+          location.push(`${delQuery(router.asPath)}`);
         }}
-        taskId={String(router?.query?.task || router?.query?.taskProposal)}
-        isTaskProposal={!!router?.query?.taskProposal}
+        taskId={String(location?.params?.task || location?.params.taskProposal)}
+        isTaskProposal={!!location?.params.taskProposal}
       />
 
       <UserAboutInfoContainer>
