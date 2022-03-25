@@ -114,6 +114,8 @@ const useGetUserTaskBoardTasks = ({
 
 const useGetUserTaskBoardProposals = ({ contributorColumns, setContributorColumns, loggedInUser, statuses }) => {
   const [getUserTaskBoardProposals] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
       const newColumns = bindSectionToColumns({
         columns: contributorColumns,
@@ -140,6 +142,8 @@ const useGetUserTaskBoardProposals = ({ contributorColumns, setContributorColumn
 
 const useGetUserTaskBoardSubmissions = ({ contributorColumns, setContributorColumns, loggedInUser, statuses }) => {
   const [getUserTaskBoardSubmissions] = useLazyQuery(GET_USER_TASK_BOARD_SUBMISSIONS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
       const newColumns = bindSectionToColumns({
         columns: contributorColumns,
@@ -528,10 +532,10 @@ const BoardsPage = (props) => {
     setStatuses(statuses);
     setPodIds(podIds);
 
-    const taskStatuses = statuses?.filter((status) => TASK_STATUSES.includes(status));
-    const shouldSearchProposals = statuses?.length !== taskStatuses?.length || statuses === DEFAULT_STATUS_ARR;
-    const shouldSearchTasks = !(searchProposals && statuses?.length === 1);
     if (search) {
+      const taskStatuses = statuses?.filter((status) => TASK_STATUSES.includes(status));
+      const shouldSearchProposals = statuses?.length !== taskStatuses?.length || statuses === DEFAULT_STATUS_ARR;
+      const shouldSearchTasks = !(searchProposals && statuses?.length === 1);
       const searchTaskProposalsArgs = {
         variables: {
           userId: loggedInUser?.id,

@@ -88,6 +88,8 @@ const useGetPodTaskBoardTasks = ({ columns, setColumns, setPodTaskHasMore, podId
 
 const useGetPodTaskProposals = ({ setColumns, columns, podId, statuses }) => {
   const [getPodTaskProposals] = useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
       const newColumns = bindSectionToColumns({
         columns,
@@ -116,6 +118,8 @@ const useGetPodTaskProposals = ({ setColumns, columns, podId, statuses }) => {
 
 const useGetPodTaskSubmissions = ({ setColumns, columns, podId, statuses }) => {
   const [getPodTaskSubmissions] = useLazyQuery(GET_POD_TASK_BOARD_SUBMISSIONS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
       const newColumns = bindSectionToColumns({
         columns,
