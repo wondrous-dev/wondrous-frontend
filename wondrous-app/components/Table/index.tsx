@@ -23,6 +23,7 @@ import {
 } from '../../utils/constants';
 import { cutString, parseUserPermissionContext, shrinkNumber, transformTaskToTaskCard } from '../../utils/helpers';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
+import { useLocation } from '../../utils/useLocation';
 import { useMe } from '../Auth/withAuth';
 import { ArchiveTaskModal } from '../Common/ArchiveTaskModal';
 import { AvatarList } from '../Common/AvatarList';
@@ -96,6 +97,7 @@ export const Table = (props) => {
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
   let tasksCount = 0;
+  const location = useLocation();
 
   useEffect(() => {
     if (inView && hasMore) {
@@ -188,42 +190,13 @@ export const Table = (props) => {
   }
 
   function openTask(task, status = '') {
+    const view = location.params.view ?? ViewType.List;
     if (status === TASK_STATUS_REQUESTED || status === TASK_STATUS_PROPOSAL_REQUEST) {
-      router.replace(
-        {
-          pathname: router.pathname,
-          query: {
-            ...router.query,
-            taskProposal: task?.id,
-          },
-        },
-        undefined,
-        { shallow: true }
-      );
+      location.replace(`${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`);
     } else if (status === TASK_STATUS_IN_REVIEW || status === TASK_STATUS_SUBMISSION_REQUEST) {
-      router.replace(
-        {
-          pathname: router.pathname,
-          query: {
-            ...router.query,
-            task: task?.taskId,
-          },
-        },
-        undefined,
-        { shallow: true }
-      );
+      location.replace(`${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`);
     } else {
-      router.replace(
-        {
-          pathname: router.pathname,
-          query: {
-            ...router.query,
-            task: task?.id,
-          },
-        },
-        undefined,
-        { shallow: true }
-      );
+      location.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${view}`);
     }
   }
 
@@ -234,25 +207,24 @@ export const Table = (props) => {
 
   useEffect(() => {
     if (
-      (router.query.task || router.query.taskProposal) &&
-      (router.query.view == ViewType.List || router.query.view == ViewType.Admin)
+      (location.params.task || location.params.taskProposal) &&
+      (location.params.view == ViewType.List || location.params.view == ViewType.Admin)
     ) {
       setPreviewModalOpen(true);
     } else {
       setPreviewModalOpen(false);
     }
-  }, [router.query.task, router.query.taskProposal, router.query.view]);
+  }, [location.params.task, location.params.taskProposal, location.params.view]);
 
   return (
     <>
       <TaskViewModal
         open={isPreviewModalOpen}
         handleClose={() => {
-          const newUrl = `${delQuery(router.asPath)}?view=${router.query.view ?? ViewType.Grid}`;
-          window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
+          location.replace(`${delQuery(router.asPath)}?view=${location.params.view ?? ViewType.Grid}`);
         }}
-        isTaskProposal={!!router.query.taskProposal}
-        taskId={(router.query.taskProposal ?? router.query.task)?.toString()}
+        isTaskProposal={!!location.params.taskProposal}
+        taskId={(location.params.taskProposal ?? location.params.task)?.toString()}
       />
       {isArchiveModalOpen && selectedTask?.id ? (
         <ArchiveTaskModal

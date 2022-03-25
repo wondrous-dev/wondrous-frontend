@@ -706,7 +706,21 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
 
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
-    nextFetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      const taskData = data?.getTaskById;
+      if (taskData) {
+        setFetchedTask(
+          transformTaskToTaskCard(taskData, {
+            orgProfilePicture: taskData?.org?.profilePicture,
+            orgName: taskData?.org?.name,
+            podName: taskData?.pod?.name,
+          })
+        );
+      }
+    },
+    onError: () => {
+      console.error('Error fetching task');
+    },
   });
 
   const [getTaskProposalById] = useLazyQuery(GET_TASK_PROPOSAL_BY_ID, {
@@ -831,22 +845,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
             variables: {
               taskId,
             },
-          })
-            .then((result) => {
-              const taskData = result?.data?.getTaskById;
-              if (taskData) {
-                setFetchedTask(
-                  transformTaskToTaskCard(taskData, {
-                    orgProfilePicture: taskData?.org?.profilePicture,
-                    orgName: taskData?.org?.name,
-                    podName: taskData?.pod?.name,
-                  })
-                );
-              }
-            })
-            .catch(() => {
-              console.error('Error fetching task');
-            });
+          });
         }
       }
 
