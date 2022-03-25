@@ -210,18 +210,6 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
 
   return (
     <>
-      <TaskViewModal
-        open={modalOpen}
-        handleClose={() => {
-          document.body.setAttribute('style', '');
-          window?.scrollTo(0, windowOffset);
-          const newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || ViewType.Grid}`;
-          location.replace(newUrl);
-          setModalOpen(false);
-        }}
-        taskId={(location?.params?.task ?? location?.params?.taskProposal)?.toString()}
-        isTaskProposal={!!location?.params?.taskProposal}
-      />
       <TaskSummaryWrapper key={id} onClick={openModal}>
         <TaskSummaryInner>
           <TaskHeader>
