@@ -79,7 +79,7 @@ const useGetOrgTaskBoardTasks = ({ columns, setColumns, setOrgTaskHasMore, statu
   return { getOrgTaskBoardTasksFetchMore };
 };
 
-const useGetOrgTaskBoardProposals = ({ columns, setColumns, orgId, statuses }) => {
+const useGetOrgTaskBoardProposals = ({ columns, setColumns, orgId, statuses, podIds }) => {
   const [getOrgTaskProposals] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
@@ -98,16 +98,17 @@ const useGetOrgTaskBoardProposals = ({ columns, setColumns, orgId, statuses }) =
   useEffect(() => {
     getOrgTaskProposals({
       variables: {
+        podIds,
         orgId,
         statuses: [STATUS_OPEN],
         offset: 0,
         limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
       },
     });
-  }, [getOrgTaskProposals, orgId, statuses]);
+  }, [getOrgTaskProposals, orgId, statuses, podIds]);
 };
 
-const useGetOrgTaskBoardSubmissions = ({ columns, setColumns, orgId, statuses }) => {
+const useGetOrgTaskBoardSubmissions = ({ columns, setColumns, orgId, statuses, podIds }) => {
   const [getOrgTaskSubmissions] = useLazyQuery(GET_ORG_TASK_BOARD_SUBMISSIONS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
@@ -126,13 +127,14 @@ const useGetOrgTaskBoardSubmissions = ({ columns, setColumns, orgId, statuses })
   useEffect(() => {
     getOrgTaskSubmissions({
       variables: {
+        podIds,
         orgId,
         statuses: [STATUS_OPEN],
         offset: 0,
         limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
       },
     });
-  }, [getOrgTaskSubmissions, orgId, statuses]);
+  }, [getOrgTaskSubmissions, orgId, statuses, podIds]);
 };
 
 const useGetOrgTaskBoard = ({ columns, setColumns, setOrgTaskHasMore, boardType, orgId, statuses, podIds }) => {
@@ -145,8 +147,8 @@ const useGetOrgTaskBoard = ({ columns, setColumns, setOrgTaskHasMore, boardType,
     statuses,
     podIds,
   });
-  useGetOrgTaskBoardProposals({ columns, setColumns, orgId, statuses });
-  useGetOrgTaskBoardSubmissions({ columns, setColumns, orgId, statuses });
+  useGetOrgTaskBoardProposals({ columns, setColumns, orgId, statuses, podIds });
+  useGetOrgTaskBoardSubmissions({ columns, setColumns, orgId, statuses, podIds });
   return { getOrgTaskBoardTasksFetchMore };
 };
 
