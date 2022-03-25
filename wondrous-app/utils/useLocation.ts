@@ -37,7 +37,9 @@ export function useLocation() {
 
   useEffect(() => {
     listeners.push(handleChange);
-    return () => listeners.splice(listeners.indexOf(handleChange), 1);
+    return () => {
+      listeners.splice(listeners.indexOf(handleChange), 1);
+    };
   }, []);
 
   function handleChange() {
