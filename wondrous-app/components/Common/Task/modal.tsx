@@ -631,7 +631,6 @@ const tabsPerType = {
 };
 
 const selectTabsPerType = (isTaskProposal, isMilestone, isSubtask) => {
-  console.log('selectTabsPerType', isTaskProposal, isMilestone, isSubtask);
   if (isTaskProposal) return tabsPerType.proposalTabs;
   if (isMilestone) return tabsPerType.milestoneTabs;
   if (isSubtask) return tabsPerType.subtaskTabs;
@@ -649,7 +648,6 @@ interface ITaskListModalProps {
 }
 
 export const TaskViewModal = (props: ITaskListModalProps) => {
-  console.log('TaskViewModal props', props);
   const { open, handleClose, taskId, isTaskProposal, back } = props;
   const [fetchedTask, setFetchedTask] = useState(null);
   const [fetchedTaskSubmissions, setFetchedTaskSubmissions] = useState([]);
@@ -657,9 +655,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const [taskSubmissionLoading, setTaskSubmissionLoading] = useState(!isTaskProposal);
   const [makeSubmission, setMakeSubmission] = useState(false);
   const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
-  console.log('TaskViewModal fetchedTask', fetchedTask);
   const isSubtask = fetchedTask?.parentTaskId !== null;
-  console.log('TaskViewModal isSubtask', isSubtask);
   const isBounty = fetchedTask?.type === BOUNTY_TYPE;
   const showAssignee = !isTaskProposal && !isMilestone && !isBounty;
   const entityType = isTaskProposal ? ENTITIES_TYPES.PROPOSAL : fetchedTask?.type;
@@ -732,7 +728,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
-      console.log('getTaskProposalById data', data);
       const taskProposalData = data?.getTaskProposalById;
       if (taskProposalData) {
         setFetchedTask(transformTaskProposalToTaskProposalCard(taskProposalData, {}));
