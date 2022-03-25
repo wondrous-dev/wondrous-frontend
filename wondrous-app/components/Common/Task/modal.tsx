@@ -705,7 +705,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const user = useMe();
 
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
       const taskData = data?.getTaskById;
       if (taskData) {
@@ -724,8 +724,16 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   });
 
   const [getTaskProposalById] = useLazyQuery(GET_TASK_PROPOSAL_BY_ID, {
-    fetchPolicy: 'network-only',
-    nextFetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      console.log('getTaskProposalById data', data);
+      const taskProposalData = data?.getTaskProposalById;
+      if (taskProposalData) {
+        setFetchedTask(transformTaskProposalToTaskProposalCard(taskProposalData, {}));
+      }
+    },
+    onError: () => {
+      console.error('Error fetching task proposal');
+    },
   });
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
@@ -823,23 +831,14 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
 
   useEffect(() => {
     if (open) {
-      if (taskId && !fetchedTask) {
+      if (!fetchedTask) {
         if (isTaskProposal) {
           setTaskSubmissionLoading(false);
           getTaskProposalById({
             variables: {
               proposalId: taskId,
             },
-          })
-            .then((result) => {
-              const taskProposalData = result?.data?.getTaskProposalById;
-              if (taskProposalData) {
-                setFetchedTask(transformTaskProposalToTaskProposalCard(taskProposalData, {}));
-              }
-            })
-            .catch(() => {
-              console.error('Error fetching task proposal');
-            });
+          });
         } else {
           getTaskById({
             variables: {
@@ -849,19 +848,17 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
         }
       }
 
-      if (fetchedTask) {
-        if (!isTaskProposal) {
-          getReviewers({
-            variables: {
-              taskId: fetchedTask?.id,
-            },
-          });
-          getTaskSubmissionsForTask({
-            variables: {
-              taskId: fetchedTask?.id,
-            },
-          });
-        }
+      if (fetchedTask && !isTaskProposal) {
+        getReviewers({
+          variables: {
+            taskId: fetchedTask?.id,
+          },
+        });
+        getTaskSubmissionsForTask({
+          variables: {
+            taskId: fetchedTask?.id,
+          },
+        });
       }
     }
   }, [
@@ -876,6 +873,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     getTaskProposalById,
     open,
   ]);
+
   const BackToListStyle = {
     color: White,
     width: '100%',
@@ -984,7 +982,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       handleClose();
     }
   };
-
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -1436,17 +1433,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                         variables: {
                           taskId: fetchedTask?.milestoneId,
                         },
-                      }).then((result) => {
-                        const taskData = result?.data?.getTaskById;
-                        if (taskData) {
-                          setFetchedTask(
-                            transformTaskToTaskCard(taskData, {
-                              orgProfilePicture: taskData?.org?.profilePicture,
-                              orgName: taskData?.org?.name,
-                              podName: taskData?.pod?.name,
-                            })
-                          );
-                        }
                       });
                     }
                   }}

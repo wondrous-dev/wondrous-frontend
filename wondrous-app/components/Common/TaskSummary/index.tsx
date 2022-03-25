@@ -210,7 +210,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
 
   return (
     <>
-      <TaskViewModal
+      {/* <TaskViewModal
         open={modalOpen}
         handleClose={() => {
           document.body.setAttribute('style', '');
@@ -221,7 +221,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
         }}
         taskId={(location?.params?.task ?? location?.params?.taskProposal)?.toString()}
         isTaskProposal={!!location?.params?.taskProposal}
-      />
+      /> */}
       <TaskSummaryWrapper key={id} onClick={openModal}>
         <TaskSummaryInner>
           <TaskHeader>
