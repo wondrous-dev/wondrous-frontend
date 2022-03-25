@@ -94,7 +94,7 @@ export const CREATE_MILESTONE = gql`
 `;
 
 export const UPDATE_TASK_ASSIGNEE = gql`
-  mutation updateTaskAssignee($taskId: ID!, $assigneeId: ID!) {
+  mutation updateTaskAssignee($taskId: ID!, $assigneeId: ID) {
     updateTaskAssignee(taskId: $taskId, assigneeId: $assigneeId) {
       ...TaskFragment
     }

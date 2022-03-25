@@ -4,6 +4,7 @@ import { format, formatDistance } from 'date-fns';
 import { useInView } from 'react-intersection-observer';
 import { isEqual } from 'lodash';
 
+import CloseModalIcon from '../../Icons/closeModal';
 import {
   PodNameTypography,
   TaskActionMenu,
@@ -658,7 +659,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const isSubtask = fetchedTask?.parentTaskId !== null;
   const isBounty = fetchedTask?.type === BOUNTY_TYPE;
   const showAssignee = !isTaskProposal && !isMilestone && !isBounty;
-  const entityType = isTaskProposal ? ENTITIES_TYPES.PROPOSAL : fetchedTask?.type;
+
   const [approvedSubmission, setApprovedSubmission] = useState(null);
 
   const orgBoard = useOrgBoard();
@@ -885,6 +886,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     textDecoration: 'underline',
     cursor: 'pointer',
   };
+  const entityType = isTaskProposal ? ENTITIES_TYPES.PROPOSAL : fetchedTask?.type;
   if (editTask) {
     return (
       <>
@@ -985,6 +987,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       handleClose();
     }
   };
+  const isAssignee = fetchedTask?.assigneeId === user?.id;
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -1199,6 +1202,13 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 <TaskSectionInfoDiv key={fetchedTask?.assigneeUsername}>
                   {fetchedTask?.assigneeUsername ? (
                     <TaskUserDiv
+                      style={
+                        isAssignee && {
+                          background: '#353535',
+                          borderRadius: '8px',
+                          padding: '4px 10px',
+                        }
+                      }
                       onClick={() => {
                         handleClose();
                         router.push(`/profile/${fetchedTask?.assigneeUsername}/about`, undefined, {
@@ -1224,6 +1234,40 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                       >
                         {fetchedTask?.assigneeUsername}
                       </TaskSectionInfoText>
+                      {isAssignee && (
+                        <CloseModalIcon
+                          fill="#ccbbff"
+                          style={{
+                            marginLeft: '8px',
+                            cursor: 'pointer',
+                            marginTop: '2px',
+                          }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            updateTaskAssignee({
+                              variables: {
+                                taskId: fetchedTask?.id,
+                                assigneeId: null,
+                              },
+                              onCompleted: (data) => {
+                                const task = data?.updateTaskAssignee;
+                                const transformedTask = transformTaskToTaskCard(task, {});
+                                setFetchedTask(transformedTask);
+                                if (boardColumns?.setColumns && onCorrectPage) {
+                                  let columns = [...boardColumns?.columns];
+                                  if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+                                    columns = updateInProgressTask(transformedTask, columns);
+                                  } else if (transformedTask.status === TASK_STATUS_TODO) {
+                                    columns = updateTaskItem(transformedTask, columns);
+                                  }
+                                  boardColumns.setColumns(columns);
+                                }
+                              },
+                            });
+                          }}
+                        />
+                      )}
                     </TaskUserDiv>
                   ) : (
                     <>
