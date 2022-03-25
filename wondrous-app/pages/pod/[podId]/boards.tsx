@@ -33,12 +33,13 @@ import { PodBoardContext } from '../../../utils/contexts';
 
 const useGetPodTaskBoardTasks = ({ columns, setColumns, setPodTaskHasMore, podId, statuses, boardType }) => {
   const [getPodTaskBoardTasks, { variables, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
       const tasks = data?.getPodTaskBoardTasks;
       const newColumns = populateTaskColumns(tasks, columns);
       setColumns(dedupeColumns(newColumns));
     },
-    fetchPolicy: 'cache-and-network',
     onError: (error) => {
       console.log(error);
     },
@@ -59,6 +60,8 @@ const useGetPodTaskBoardTasks = ({ columns, setColumns, setPodTaskHasMore, podId
           getPodTaskBoardTasks: [...prev.getPodTaskBoardTasks, ...fetchMoreResult.getPodTaskBoardTasks],
         };
       },
+    }).catch((error) => {
+      console.log(error);
     });
   }, [columns, fetchMore, setPodTaskHasMore, variables]);
   useEffect(() => {
@@ -78,12 +81,15 @@ const useGetPodTaskBoardTasks = ({ columns, setColumns, setPodTaskHasMore, podId
         },
       },
     });
-  }, [getPodTaskBoardTasks, podId, statuses, boardType]);
+    setPodTaskHasMore(true);
+  }, [getPodTaskBoardTasks, podId, statuses, boardType, setPodTaskHasMore]);
   return { getPodTaskBoardTasksFetchMore };
 };
 
 const useGetPodTaskProposals = ({ setColumns, columns, podId, statuses }) => {
   const [getPodTaskProposals] = useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
       const newColumns = bindSectionToColumns({
         columns,
@@ -92,7 +98,9 @@ const useGetPodTaskProposals = ({ setColumns, columns, podId, statuses }) => {
       });
       setColumns(newColumns);
     },
-    fetchPolicy: 'cache-and-network',
+    onError: (error) => {
+      console.log(error);
+    },
   });
   useEffect(() => {
     getPodTaskProposals({
@@ -110,6 +118,8 @@ const useGetPodTaskProposals = ({ setColumns, columns, podId, statuses }) => {
 
 const useGetPodTaskSubmissions = ({ setColumns, columns, podId, statuses }) => {
   const [getPodTaskSubmissions] = useLazyQuery(GET_POD_TASK_BOARD_SUBMISSIONS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
       const newColumns = bindSectionToColumns({
         columns,
@@ -118,7 +128,9 @@ const useGetPodTaskSubmissions = ({ setColumns, columns, podId, statuses }) => {
       });
       setColumns(newColumns);
     },
-    fetchPolicy: 'cache-and-network',
+    onError: (error) => {
+      console.log(error);
+    },
   });
   useEffect(() => {
     getPodTaskSubmissions({

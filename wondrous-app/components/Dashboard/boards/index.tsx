@@ -63,13 +63,13 @@ const useGetUserTaskBoardTasks = ({
   contributorColumns,
   setContributorColumns,
   setHasMoreTasks,
-  hasMoreTasks,
   loggedInUser,
   statuses,
   podIds,
 }) => {
   const [getUserTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
       const tasks = data?.getUserTaskBoardTasks ?? [];
       const newColumns = populateTaskColumns(tasks, contributorColumns.length > 0 ? contributorColumns : COLUMNS);
@@ -90,6 +90,8 @@ const useGetUserTaskBoardTasks = ({
           getUserTaskBoardTasks: [...prev.getUserTaskBoardTasks, ...fetchMoreResult.getUserTaskBoardTasks],
         };
       },
+    }).catch((error) => {
+      console.log(error);
     });
   }, [contributorColumns, fetchMore, setHasMoreTasks]);
   useEffect(() => {
@@ -105,13 +107,15 @@ const useGetUserTaskBoardTasks = ({
         offset: 0,
       },
     });
-  }, [getUserTaskBoardTasks, loggedInUser?.id, podIds, statuses]);
+    setHasMoreTasks(true);
+  }, [getUserTaskBoardTasks, loggedInUser?.id, podIds, statuses, setHasMoreTasks]);
   return { getUserTaskBoardTasksFetchMore };
 };
 
 const useGetUserTaskBoardProposals = ({ contributorColumns, setContributorColumns, loggedInUser, statuses }) => {
   const [getUserTaskBoardProposals] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
       const newColumns = bindSectionToColumns({
         columns: contributorColumns,
@@ -139,6 +143,7 @@ const useGetUserTaskBoardProposals = ({ contributorColumns, setContributorColumn
 const useGetUserTaskBoardSubmissions = ({ contributorColumns, setContributorColumns, loggedInUser, statuses }) => {
   const [getUserTaskBoardSubmissions] = useLazyQuery(GET_USER_TASK_BOARD_SUBMISSIONS, {
     fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
       const newColumns = bindSectionToColumns({
         columns: contributorColumns,
@@ -166,7 +171,6 @@ const useGetUserTaskBoardSubmissions = ({ contributorColumns, setContributorColu
 const useGetUserTaskBoard = ({
   statuses,
   loggedInUser,
-  hasMoreTasks,
   setHasMoreTasks,
   contributorColumns,
   setContributorColumns,
@@ -176,7 +180,6 @@ const useGetUserTaskBoard = ({
     contributorColumns,
     setContributorColumns,
     setHasMoreTasks,
-    hasMoreTasks,
     loggedInUser,
     statuses,
     podIds,
@@ -367,7 +370,6 @@ const BoardsPage = (props) => {
   const { getUserTaskBoardTasksFetchMore } = useGetUserTaskBoard({
     statuses,
     loggedInUser,
-    hasMoreTasks,
     setHasMoreTasks,
     contributorColumns,
     setContributorColumns,
@@ -530,10 +532,10 @@ const BoardsPage = (props) => {
     setStatuses(statuses);
     setPodIds(podIds);
 
-    const taskStatuses = statuses?.filter((status) => TASK_STATUSES.includes(status));
-    const shouldSearchProposals = statuses?.length !== taskStatuses?.length || statuses === DEFAULT_STATUS_ARR;
-    const shouldSearchTasks = !(searchProposals && statuses?.length === 1);
     if (search) {
+      const taskStatuses = statuses?.filter((status) => TASK_STATUSES.includes(status));
+      const shouldSearchProposals = statuses?.length !== taskStatuses?.length || statuses === DEFAULT_STATUS_ARR;
+      const shouldSearchTasks = !(searchProposals && statuses?.length === 1);
       const searchTaskProposalsArgs = {
         variables: {
           userId: loggedInUser?.id,
@@ -558,7 +560,6 @@ const BoardsPage = (props) => {
       };
 
       if (shouldSearchTasks) {
-        console.log('search dashboard');
         searchTasks(searchTasksArgs);
       } else {
         const newColumns = [...contributorColumns];

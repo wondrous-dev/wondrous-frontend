@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { useInView } from 'react-intersection-observer';
 import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
+import { useLocation } from '../../../utils/useLocation';
 import { TaskViewModal } from '../Task/modal';
 import { KanbanBoardContainer, LoadMore } from './styles';
 import TaskColumn from './TaskColumn';
@@ -176,14 +177,13 @@ const KanbanBoard = (props) => {
     });
     setColumns(dedupeColumns(updatedColumns));
   };
-
+  const location = useLocation();
   useEffect(() => {
-    const hasQuery = router?.query?.task || router?.query?.taskProposal;
-    if (hasQuery && router?.query.view !== ViewType.List && (orgBoard || userBoard || podBoard)) {
+    const params = location.params;
+    if ((params.task || params.taskProposal) && (orgBoard || userBoard || podBoard)) {
       setOpenModal(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router?.query?.task, router?.query?.taskProposal, router?.query.view, orgBoard || userBoard || podBoard]);
+  }, [orgBoard, podBoard, userBoard, location]);
 
   const onDragEnd = (result) => {
     try {
@@ -214,11 +214,11 @@ const KanbanBoard = (props) => {
               window?.scrollTo(0, Number(top[0]));
             }
             setOpenModal(false);
-            const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}`;
-            window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
+            const newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}`;
+            location.push(newUrl);
           }}
-          taskId={(router?.query?.task || router?.query?.taskProposal)?.toString()}
-          isTaskProposal={!!router?.query?.taskProposal}
+          taskId={(location?.params?.task || location?.params?.taskProposal)?.toString()}
+          isTaskProposal={!!location?.params?.taskProposal}
         />
         <DragDropContext onDragEnd={onDragEnd}>
           {columns.map((column) => {

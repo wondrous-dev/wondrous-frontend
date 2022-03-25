@@ -32,12 +32,13 @@ import { OrgBoardContext } from '../../../utils/contexts';
 
 const useGetOrgTaskBoardTasks = ({ columns, setColumns, setOrgTaskHasMore, statuses, orgId, boardType, podIds }) => {
   const [getOrgTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
       const tasks = data?.getOrgTaskBoardTasks;
       const newColumns = populateTaskColumns(tasks, columns);
       setColumns(dedupeColumns(newColumns));
     },
-    fetchPolicy: 'cache-and-network',
     onError: (error) => {
       console.log(error);
     },
@@ -53,6 +54,8 @@ const useGetOrgTaskBoardTasks = ({ columns, setColumns, setOrgTaskHasMore, statu
           getOrgTaskBoardTasks: [...prev.getOrgTaskBoardTasks, ...fetchMoreResult.getOrgTaskBoardTasks],
         };
       },
+    }).catch((error) => {
+      console.log(error);
     });
   }, [columns, fetchMore, setOrgTaskHasMore]);
   useEffect(() => {
@@ -71,12 +74,15 @@ const useGetOrgTaskBoardTasks = ({ columns, setColumns, setOrgTaskHasMore, statu
         }),
       },
     });
-  }, [boardType, getOrgTaskBoardTasks, orgId, statuses, podIds]);
+    setOrgTaskHasMore(true);
+  }, [boardType, getOrgTaskBoardTasks, orgId, statuses, podIds, setOrgTaskHasMore]);
   return { getOrgTaskBoardTasksFetchMore };
 };
 
 const useGetOrgTaskBoardProposals = ({ columns, setColumns, orgId, statuses }) => {
   const [getOrgTaskProposals] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
       const newColumns = bindSectionToColumns({
         columns,
@@ -85,7 +91,9 @@ const useGetOrgTaskBoardProposals = ({ columns, setColumns, orgId, statuses }) =
       });
       setColumns(dedupeColumns(newColumns));
     },
-    fetchPolicy: 'cache-and-network',
+    onError: (error) => {
+      console.log(error);
+    },
   });
   useEffect(() => {
     getOrgTaskProposals({
@@ -101,6 +109,8 @@ const useGetOrgTaskBoardProposals = ({ columns, setColumns, orgId, statuses }) =
 
 const useGetOrgTaskBoardSubmissions = ({ columns, setColumns, orgId, statuses }) => {
   const [getOrgTaskSubmissions] = useLazyQuery(GET_ORG_TASK_BOARD_SUBMISSIONS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
       const newColumns = bindSectionToColumns({
         columns,
@@ -109,7 +119,9 @@ const useGetOrgTaskBoardSubmissions = ({ columns, setColumns, orgId, statuses })
       });
       setColumns(dedupeColumns(newColumns));
     },
-    fetchPolicy: 'cache-and-network',
+    onError: (error) => {
+      console.log(error);
+    },
   });
   useEffect(() => {
     getOrgTaskSubmissions({

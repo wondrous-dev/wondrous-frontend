@@ -693,7 +693,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const router = useRouter();
   const [editTask, setEditTask] = useState(false);
 
-  const [activeTab, setActiveTab] = useState(isTaskProposal ? tabs.discussion : tabs.submissions);
+  const [activeTab, setActiveTab] = useState(null);
   const [archiveTask, setArchiveTask] = useState(false);
   const [archiveTaskAlert, setArchiveTaskAlert] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
@@ -706,12 +706,36 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
 
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
-    nextFetchPolicy: 'network-only',
+    nextFetchPolicy: 'cache-and-network',
+    onCompleted: (data) => {
+      const taskData = data?.getTaskById;
+      if (taskData) {
+        setFetchedTask(
+          transformTaskToTaskCard(taskData, {
+            orgProfilePicture: taskData?.org?.profilePicture,
+            orgName: taskData?.org?.name,
+            podName: taskData?.pod?.name,
+          })
+        );
+      }
+    },
+    onError: () => {
+      console.error('Error fetching task');
+    },
   });
 
   const [getTaskProposalById] = useLazyQuery(GET_TASK_PROPOSAL_BY_ID, {
     fetchPolicy: 'network-only',
-    nextFetchPolicy: 'network-only',
+    nextFetchPolicy: 'cache-and-network',
+    onCompleted: (data) => {
+      const taskProposalData = data?.getTaskProposalById;
+      if (taskProposalData) {
+        setFetchedTask(transformTaskProposalToTaskProposalCard(taskProposalData, {}));
+      }
+    },
+    onError: () => {
+      console.error('Error fetching task proposal');
+    },
   });
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
@@ -809,60 +833,35 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
 
   useEffect(() => {
     if (open) {
-      if (taskId && !fetchedTask) {
+      setActiveTab(isTaskProposal ? tabs.discussion : tabs.submissions);
+      if (!fetchedTask || fetchedTask.id !== taskId) {
         if (isTaskProposal) {
           setTaskSubmissionLoading(false);
           getTaskProposalById({
             variables: {
               proposalId: taskId,
             },
-          })
-            .then((result) => {
-              const taskProposalData = result?.data?.getTaskProposalById;
-              if (taskProposalData) {
-                setFetchedTask(transformTaskProposalToTaskProposalCard(taskProposalData, {}));
-              }
-            })
-            .catch(() => {
-              console.error('Error fetching task proposal');
-            });
-        } else {
+          });
+        } else if (!isTaskProposal && taskId) {
           getTaskById({
             variables: {
               taskId,
             },
-          })
-            .then((result) => {
-              const taskData = result?.data?.getTaskById;
-              if (taskData) {
-                setFetchedTask(
-                  transformTaskToTaskCard(taskData, {
-                    orgProfilePicture: taskData?.org?.profilePicture,
-                    orgName: taskData?.org?.name,
-                    podName: taskData?.pod?.name,
-                  })
-                );
-              }
-            })
-            .catch(() => {
-              console.error('Error fetching task');
-            });
+          });
         }
       }
 
-      if (fetchedTask) {
-        if (!isTaskProposal) {
-          getReviewers({
-            variables: {
-              taskId: fetchedTask?.id,
-            },
-          });
-          getTaskSubmissionsForTask({
-            variables: {
-              taskId: fetchedTask?.id,
-            },
-          });
-        }
+      if (fetchedTask && !isTaskProposal) {
+        getReviewers({
+          variables: {
+            taskId: fetchedTask?.id,
+          },
+        });
+        getTaskSubmissionsForTask({
+          variables: {
+            taskId: fetchedTask?.id,
+          },
+        });
       }
     }
   }, [
@@ -877,6 +876,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     getTaskProposalById,
     open,
   ]);
+
   const BackToListStyle = {
     color: White,
     width: '100%',
@@ -985,7 +985,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       handleClose();
     }
   };
-
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -1437,17 +1436,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                         variables: {
                           taskId: fetchedTask?.milestoneId,
                         },
-                      }).then((result) => {
-                        const taskData = result?.data?.getTaskById;
-                        if (taskData) {
-                          setFetchedTask(
-                            transformTaskToTaskCard(taskData, {
-                              orgProfilePicture: taskData?.org?.profilePicture,
-                              orgName: taskData?.org?.name,
-                              podName: taskData?.pod?.name,
-                            })
-                          );
-                        }
                       });
                     }
                   }}
