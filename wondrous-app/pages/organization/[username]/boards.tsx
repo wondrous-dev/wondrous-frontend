@@ -32,6 +32,8 @@ import { OrgBoardContext } from '../../../utils/contexts';
 
 const useGetOrgTaskBoardTasks = ({ columns, setColumns, setOrgTaskHasMore, statuses, orgId, boardType, podIds }) => {
   const [getOrgTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
       const tasks = data?.getOrgTaskBoardTasks;
       const newColumns = populateTaskColumns(tasks, columns);

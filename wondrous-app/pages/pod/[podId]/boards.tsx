@@ -33,6 +33,8 @@ import { PodBoardContext } from '../../../utils/contexts';
 
 const useGetPodTaskBoardTasks = ({ columns, setColumns, setPodTaskHasMore, podId, statuses, boardType }) => {
   const [getPodTaskBoardTasks, { variables, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
       const tasks = data?.getPodTaskBoardTasks;
       const newColumns = populateTaskColumns(tasks, columns);
