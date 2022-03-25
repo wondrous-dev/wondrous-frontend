@@ -215,7 +215,7 @@ const KanbanBoard = (props) => {
             }
             setOpenModal(false);
             const newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}`;
-            location.replace(newUrl);
+            location.push(newUrl);
           }}
           taskId={(location?.params?.task || location?.params?.taskProposal)?.toString()}
           isTaskProposal={!!location?.params?.taskProposal}
