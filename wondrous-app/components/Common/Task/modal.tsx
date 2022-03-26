@@ -684,7 +684,7 @@ const CreatorBlock = ({ profilePicture, username, createdAt, isTaskProposal }) =
           )}
           <TaskSectionInfoText
             style={{
-              fontSize: '16px',
+              fontSize: '14px',
               color: White,
               fontWeight: 'regular',
             }}
