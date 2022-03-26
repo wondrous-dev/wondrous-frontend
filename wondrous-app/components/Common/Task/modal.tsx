@@ -652,7 +652,7 @@ const CreatorBlock = ({ profilePicture, username, createdAt, isTaskProposal }) =
   return (
     <MakeSubmissionDiv
       style={{
-        marignTop: '16px',
+        marginBottom: '16px',
       }}
     >
       <TaskSectionInfoDiv
@@ -703,9 +703,10 @@ const CreatorBlock = ({ profilePicture, username, createdAt, isTaskProposal }) =
                 color: '#c4c4c4',
               }}
             >
-              {formatDistance(new Date(createdAt), new Date(), {
-                addSuffix: true,
-              })}
+              {createdAt &&
+                formatDistance(new Date(createdAt), new Date(), {
+                  addSuffix: true,
+                })}
             </span>
           </TaskSectionInfoText>
         </>
@@ -1597,6 +1598,12 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
               </CreateFormFooterButtons>
             )}
             <TaskModalFooter>
+              <CreatorBlock
+                profilePicture={fetchedTask?.creatorProfilePicture}
+                username={fetchedTask?.creatorUsername}
+                createdAt={fetchedTask?.createdAt}
+                isTaskProposal={isTaskProposal}
+              />
               <TaskSectionFooterTitleDiv>
                 {selectTabsPerType(isTaskProposal, isMilestone, isSubtask).map((tab, index) => {
                   const active = tab === activeTab;
@@ -1639,12 +1646,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 {activeTab === tabs.tasks && (
                   <MilestoneTaskList milestoneId={fetchedTask?.id} open={activeTab === tabs.tasks} />
                 )}
-                <CreatorBlock
-                  profilePicture={fetchedTask?.creatorProfilePicture}
-                  username={fetchedTask?.creatorUsername}
-                  createdAt={fetchedTask?.createdAt}
-                  isTaskProposal={isTaskProposal}
-                />
               </TaskSectionContent>
             </TaskModalFooter>
           </TaskModal>

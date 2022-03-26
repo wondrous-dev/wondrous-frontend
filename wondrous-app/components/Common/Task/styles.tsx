@@ -341,7 +341,7 @@ export const TaskSectionInfoDiv = styled.div`
 `;
 
 export const TaskModalFooter = styled.div`
-  margin-top: 24px;
+  margin-top: 16px;
 `;
 
 export const TaskSectionFooterTitleDiv = styled.div`
