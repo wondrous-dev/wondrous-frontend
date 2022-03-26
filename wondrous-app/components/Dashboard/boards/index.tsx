@@ -112,7 +112,13 @@ const useGetUserTaskBoardTasks = ({
   return { getUserTaskBoardTasksFetchMore };
 };
 
-const useGetUserTaskBoardProposals = ({ contributorColumns, setContributorColumns, loggedInUser, statuses }) => {
+const useGetUserTaskBoardProposals = ({
+  contributorColumns,
+  setContributorColumns,
+  loggedInUser,
+  statuses,
+  podIds,
+}) => {
   const [getUserTaskBoardProposals] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
@@ -131,16 +137,23 @@ const useGetUserTaskBoardProposals = ({ contributorColumns, setContributorColumn
   useEffect(() => {
     getUserTaskBoardProposals({
       variables: {
+        podIds,
         userId: loggedInUser?.id,
         statuses: [STATUS_OPEN],
         limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
         offset: 0,
       },
     });
-  }, [loggedInUser, getUserTaskBoardProposals, statuses]);
+  }, [loggedInUser, getUserTaskBoardProposals, statuses, podIds]);
 };
 
-const useGetUserTaskBoardSubmissions = ({ contributorColumns, setContributorColumns, loggedInUser, statuses }) => {
+const useGetUserTaskBoardSubmissions = ({
+  contributorColumns,
+  setContributorColumns,
+  loggedInUser,
+  statuses,
+  podIds,
+}) => {
   const [getUserTaskBoardSubmissions] = useLazyQuery(GET_USER_TASK_BOARD_SUBMISSIONS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
@@ -159,13 +172,14 @@ const useGetUserTaskBoardSubmissions = ({ contributorColumns, setContributorColu
   useEffect(() => {
     getUserTaskBoardSubmissions({
       variables: {
+        podIds,
         userId: loggedInUser?.id,
         statuses: [STATUS_OPEN],
         limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
         offset: 0,
       },
     });
-  }, [loggedInUser, getUserTaskBoardSubmissions, statuses]);
+  }, [loggedInUser, getUserTaskBoardSubmissions, statuses, podIds]);
 };
 
 const useGetUserTaskBoard = ({
@@ -184,12 +198,13 @@ const useGetUserTaskBoard = ({
     statuses,
     podIds,
   });
-  useGetUserTaskBoardProposals({ contributorColumns, setContributorColumns, loggedInUser, statuses });
+  useGetUserTaskBoardProposals({ contributorColumns, setContributorColumns, loggedInUser, statuses, podIds });
   useGetUserTaskBoardSubmissions({
     contributorColumns,
     setContributorColumns,
     loggedInUser,
     statuses,
+    podIds,
   });
   return {
     getUserTaskBoardTasksFetchMore,

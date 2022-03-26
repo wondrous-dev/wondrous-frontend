@@ -19,6 +19,7 @@ export const GET_SUBMISSIONS_PAYMENT_INFO = gql`
         isEthTransfer
         amount
         recepientAddress
+        decimal
       }
     }
   }
@@ -34,6 +35,7 @@ export const GET_SUBMISSION_PAYMENT_INFO = gql`
         amount
         recepientAddress
         chain
+        decimal
       }
     }
   }

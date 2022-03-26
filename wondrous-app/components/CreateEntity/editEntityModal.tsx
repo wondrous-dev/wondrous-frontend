@@ -1011,7 +1011,9 @@ const EditLayoutBaseModal = (props) => {
               />
             </CreateRewardAmountDiv>
             <CreateRewardAmountDiv>
-              <CreateFormMainBlockTitle>Reward amount {isBounty ? 'per submission' : ''}</CreateFormMainBlockTitle>
+              <CreateFormMainBlockTitle>
+                {isBounty ? 'Minimum reward per submission' : 'Reward amount'}
+              </CreateFormMainBlockTitle>
 
               <InputForm
                 style={{

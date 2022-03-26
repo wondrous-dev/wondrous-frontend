@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState, useContext } from 'rea
 import Modal from '@mui/material/Modal';
 import { Typography } from '@mui/material';
 import { Tab } from '@material-ui/core';
+import { BigNumber } from 'bignumber.js';
 import {
   PodNameTypography,
   PaymentModal,
@@ -13,6 +14,10 @@ import {
   StyledTabs,
   PaymentMethodWrapper,
   WarningTypography,
+  ChangePaymentButton,
+  ChangePaymentAmountDiv,
+  SaveNewRewardAmountButton,
+  CancelNewRewardAmountButton,
 } from './styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
@@ -30,6 +35,10 @@ import { OfflinePayment } from './OfflinePayment';
 import { SingleWalletPayment } from './SingleWalletPayment';
 import Link from 'next/link';
 import { White, Blue20 } from '../../../theme/colors';
+import { CreateFormPreviewButton, CreateFormRewardCurrency } from '../../CreateEntity/styles';
+import InputForm from '../InputForm/inputForm';
+import CloseModalIcon from '@components/Icons/closeModal';
+import { ErrorText } from '@components/Onboarding/styles';
 
 const GoBackStyle = {
   color: White,
@@ -46,10 +55,14 @@ export const MakePaymentModal = (props) => {
   const [wallets, setWallets] = useState([]);
   const [submissionPaymentInfo, setSubmissionPaymentInfo] = useState(null);
   const [rewardAmount, setRewardAmount] = useState('');
+  const [changeRewardAmount, setChangeRewardAmount] = useState(false);
+  const [changedRewardAmount, setChangedRewardAmount] = useState(null);
+  const [useChangedRewardAmount, setUseChangedRewardAmount] = useState(false);
   const [tokenName, setTokenName] = useState('');
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
+  const [changeRewardErrorText, setChangeRewardErrorText] = useState('');
   const board = orgBoard || podBoard || userBoard;
   const router = useRouter();
   const user = useMe();
@@ -75,6 +88,7 @@ export const MakePaymentModal = (props) => {
     },
     fetchPolicy: 'network-only',
   });
+
   const [getPodWallet] = useLazyQuery(GET_POD_WALLET, {
     onCompleted: (data) => {
       setWallets(data?.getPodWallet);
@@ -198,6 +212,64 @@ export const MakePaymentModal = (props) => {
                 </Link>{' '}
               </PaymentTitleText>
               <PaymentDescriptionText>Task: {fetchedTask.title}</PaymentDescriptionText>
+              {fetchedTask?.type === BOUNTY_TYPE && (
+                <>
+                  {changeRewardAmount ? (
+                    <>
+                      <ChangePaymentAmountDiv>
+                        <InputForm
+                          style={{
+                            marginTop: '12px',
+                            width: 'fit-content',
+                            paddingRight: '12px',
+                          }}
+                          type={'number'}
+                          min="0"
+                          placeholder="Enter new reward amount"
+                          search={false}
+                          value={changedRewardAmount}
+                          onChange={(e) => setChangedRewardAmount(e.target.value)}
+                        />
+                        <PaymentDescriptionText
+                          style={{
+                            marginLeft: '12px',
+                            marginTop: '12px',
+                          }}
+                        >
+                          {tokenName?.toUpperCase()}{' '}
+                        </PaymentDescriptionText>
+                        <SaveNewRewardAmountButton
+                          onClick={() => {
+                            const bigChangedRewardAmount = new BigNumber(changedRewardAmount);
+                            const initialBigRewardAmount = new BigNumber(fetchedTask?.rewards[0]?.rewardAmount);
+                            if (bigChangedRewardAmount.isLessThan(initialBigRewardAmount)) {
+                              setChangeRewardErrorText('New reward must be greater than minimum');
+                            } else {
+                              setRewardAmount(changedRewardAmount);
+                              setChangeRewardAmount(false);
+                              setUseChangedRewardAmount(true);
+                            }
+                          }}
+                        >
+                          Save changes
+                        </SaveNewRewardAmountButton>
+                        <CancelNewRewardAmountButton
+                          onClick={() => {
+                            setChangeRewardAmount(false);
+                          }}
+                        >
+                          Cancel
+                        </CancelNewRewardAmountButton>
+                      </ChangePaymentAmountDiv>
+                      <ErrorText>{changeRewardErrorText}</ErrorText>
+                    </>
+                  ) : (
+                    <ChangePaymentButton onClick={() => setChangeRewardAmount(true)}>
+                      Change payment amount
+                    </ChangePaymentButton>
+                  )}
+                </>
+              )}
             </PaymentTitleTextDiv>
           </PaymentTitleDiv>
           <StyledTabs value={selectedTab}>
@@ -229,6 +301,7 @@ export const MakePaymentModal = (props) => {
                 submissionPaymentInfo={submissionPaymentInfo}
                 orgId={approvedSubmission?.orgId}
                 podId={approvedSubmission?.podId}
+                changedRewardAmount={useChangedRewardAmount ? rewardAmount : null}
               />
             )}
           </PaymentMethodWrapper>
