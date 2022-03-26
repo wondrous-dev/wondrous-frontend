@@ -18,12 +18,24 @@ type Props = {
   searchString: string;
   statuses: string[];
   podIds: string[];
+  handleCardOpening?: (section: any, isOpen: boolean) => any;
   setColumns: React.Dispatch<React.SetStateAction<{}>>;
 };
 
 const OrgBoards = (props: Props) => {
-  const { columns, onLoadMore, hasMore, orgData, orgPods, onSearch, onFilterChange, statuses, podIds, setColumns } =
-    props;
+  const {
+    handleCardOpening,
+    columns,
+    onLoadMore,
+    hasMore,
+    orgData,
+    orgPods,
+    onSearch,
+    onFilterChange,
+    statuses,
+    podIds,
+    setColumns,
+  } = props;
   const [filterSchema, setFilterSchema] = useState([
     {
       name: 'podIds',
@@ -52,6 +64,7 @@ const OrgBoards = (props: Props) => {
     <Wrapper orgData={orgData}>
       <Boards
         filterSchema={filterSchema}
+        handleCardOpening={handleCardOpening}
         onSearch={onSearch}
         onFilterChange={onFilterChange}
         columns={columns}

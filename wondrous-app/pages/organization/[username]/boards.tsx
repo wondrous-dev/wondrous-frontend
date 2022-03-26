@@ -79,7 +79,7 @@ const useGetOrgTaskBoardTasks = ({ columns, setColumns, setOrgTaskHasMore, statu
   return { getOrgTaskBoardTasksFetchMore };
 };
 
-const useGetOrgTaskBoardProposals = ({ columns, setColumns, orgId, statuses, podIds }) => {
+const useGetOrgTaskBoardProposals = ({ isProposalCardOpen, columns, setColumns, orgId, statuses, podIds }) => {
   const [getOrgTaskProposals] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
@@ -96,19 +96,20 @@ const useGetOrgTaskBoardProposals = ({ columns, setColumns, orgId, statuses, pod
     },
   });
   useEffect(() => {
-    getOrgTaskProposals({
-      variables: {
-        podIds,
-        orgId,
-        statuses: [STATUS_OPEN],
-        offset: 0,
-        limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
-      },
-    });
-  }, [getOrgTaskProposals, orgId, statuses, podIds]);
+    if (isProposalCardOpen)
+      getOrgTaskProposals({
+        variables: {
+          podIds,
+          orgId,
+          statuses: [STATUS_OPEN],
+          offset: 0,
+          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
+        },
+      });
+  }, [isProposalCardOpen, getOrgTaskProposals, orgId, statuses, podIds]);
 };
 
-const useGetOrgTaskBoardSubmissions = ({ columns, setColumns, orgId, statuses, podIds }) => {
+const useGetOrgTaskBoardSubmissions = ({ isSubmissionCardOpen, columns, setColumns, orgId, statuses, podIds }) => {
   const [getOrgTaskSubmissions] = useLazyQuery(GET_ORG_TASK_BOARD_SUBMISSIONS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
@@ -125,19 +126,30 @@ const useGetOrgTaskBoardSubmissions = ({ columns, setColumns, orgId, statuses, p
     },
   });
   useEffect(() => {
-    getOrgTaskSubmissions({
-      variables: {
-        podIds,
-        orgId,
-        statuses: [STATUS_OPEN],
-        offset: 0,
-        limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
-      },
-    });
-  }, [getOrgTaskSubmissions, orgId, statuses, podIds]);
+    if (isSubmissionCardOpen) {
+      getOrgTaskSubmissions({
+        variables: {
+          podIds,
+          orgId,
+          statuses: [STATUS_OPEN],
+          offset: 0,
+          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
+        },
+      });
+    }
+  }, [isSubmissionCardOpen, getOrgTaskSubmissions, orgId, statuses, podIds]);
 };
 
-const useGetOrgTaskBoard = ({ columns, setColumns, setOrgTaskHasMore, boardType, orgId, statuses, podIds }) => {
+const useGetOrgTaskBoard = ({
+  currentCard,
+  columns,
+  setColumns,
+  setOrgTaskHasMore,
+  boardType,
+  orgId,
+  statuses,
+  podIds,
+}) => {
   const { getOrgTaskBoardTasksFetchMore } = useGetOrgTaskBoardTasks({
     columns,
     setColumns,
@@ -147,8 +159,10 @@ const useGetOrgTaskBoard = ({ columns, setColumns, setOrgTaskHasMore, boardType,
     statuses,
     podIds,
   });
-  useGetOrgTaskBoardProposals({ columns, setColumns, orgId, statuses, podIds });
-  useGetOrgTaskBoardSubmissions({ columns, setColumns, orgId, statuses, podIds });
+  const isProposalCardOpen = currentCard === TASK_STATUS_REQUESTED;
+  const isSubmissionCardOpen = currentCard === TASK_STATUS_IN_REVIEW;
+  useGetOrgTaskBoardProposals({ isProposalCardOpen, columns, setColumns, orgId, statuses, podIds });
+  useGetOrgTaskBoardSubmissions({ isSubmissionCardOpen, columns, setColumns, orgId, statuses, podIDs });
   return { getOrgTaskBoardTasksFetchMore };
 };
 
@@ -160,6 +174,7 @@ const BoardsPage = () => {
   const [orgData, setOrgData] = useState(null);
   const [searchString, setSearchString] = useState('');
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
+  const [currentCard, setCurrentCard] = useState('');
   const { username, orgId, search, userId, boardType } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
@@ -168,6 +183,7 @@ const BoardsPage = () => {
   const [getOrgPods, { data: { getOrgPods: orgPods = [] } = {} }] = useLazyQuery(GET_ORG_PODS);
 
   const { getOrgTaskBoardTasksFetchMore } = useGetOrgTaskBoard({
+    currentCard,
     columns,
     setColumns,
     setOrgTaskHasMore,
@@ -467,6 +483,13 @@ const BoardsPage = () => {
     );
   }
 
+  const handleCardOpening = (section, isOpen) => {
+    const taskToSection = [TASK_STATUS_REQUESTED, TASK_STATUS_IN_REVIEW].find(
+      (taskType) => taskType === section?.filter?.taskType
+    );
+    if (taskToSection && taskToSection !== currentCard && isOpen) setCurrentCard(taskToSection);
+  };
+
   return (
     <OrgBoardContext.Provider
       value={{
@@ -485,6 +508,7 @@ const BoardsPage = () => {
     >
       <Boards
         orgPods={orgPods}
+        handleCardOpening={handleCardOpening}
         selectOptions={SELECT_OPTIONS}
         columns={columns}
         searchString={searchString}
