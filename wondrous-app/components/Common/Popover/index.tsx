@@ -9,30 +9,22 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
   popper: {
     opacity: 1,
-    zIndex: 999999,
+    zIndex: 201,
   },
   tooltip: {
-    backgroundColor: '#1b1b1b',
+    backgroundColor: '#1b1b1b!important',
     opacity: 1,
-    zIndex: 999999,
+    zIndex: 201,
   },
   arrow: {
-    color: '#1b1b1b',
+    color: '#1b1b1b!important',
     fontSize: '1.3rem',
     opacity: 1,
-    zIndex: 999999,
+    zIndex: 201,
   },
 }));
 
-export default function Tooltip({
-  children = null,
-  content = '',
-  headText = '',
-  separator = false,
-  key1 = '',
-  key2 = '',
-  placement = 'top',
-}) {
+export default function Tooltip(props) {
   const classes = useStyles();
 
   const positionRef = React.useRef({
@@ -47,20 +39,20 @@ export default function Tooltip({
       classes={{ tooltip: classes.tooltip, arrow: classes.arrow, popper: classes.popper }}
       title={
         <Content>
-          {headText && (
+          {props.headText && (
             <Text align="center">
-              <Bold>{headText}</Bold> {key1 && <Span>{key1}</Span>}
-              {key2 && <Span>{key2}</Span>}
+              <Bold>{props.headText}</Bold> {props.key1 && <Span>{props.key1}</Span>}
+              {props.key2 && <Span>{props.key2}</Span>}
             </Text>
           )}
-          {separator && <HLine />}
-          <Text align="center">{content}</Text>
+          {props.separator && <HLine />}
+          <Text align="center">{props.content}</Text>
         </Content>
       }
-      placement={placement}
+      placement={props.placement}
       arrow
     >
-      <span>{children}</span>
+      <span>{props.children}</span>
     </MTooltip>
   );
 }

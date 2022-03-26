@@ -98,7 +98,7 @@ const TaskColumn = (props: ITaskColumn) => {
   return (
     <TaskColumnContainer>
       <TaskColumnContainerHeader>
-        <Tooltip content={TITLES[status].placeholder}>
+        <Tooltip content={TITLES[status].placeholder} placement="top">
           <HeaderIcon />
         </Tooltip>
         <TaskColumnContainerHeaderTitle>{TITLES[status].label}</TaskColumnContainerHeaderTitle>

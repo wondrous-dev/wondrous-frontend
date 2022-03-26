@@ -44,7 +44,7 @@ export const TaskColumnContainerHeader = styled.div`
   height: 24px;
   display: flex;
   align-items: flex-start;
-  z-index: 99999;
+  z-index: 202;
 `;
 
 export const TaskColumnContainerHeaderTitle = styled(Typography)({
