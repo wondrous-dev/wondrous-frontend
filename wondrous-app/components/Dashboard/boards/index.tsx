@@ -59,6 +59,7 @@ const awaitingPayment = {
 const baseColumnsAdmin = [proposal, submissions];
 
 const useGetUserTaskBoardTasks = ({
+  isAdmin,
   contributorColumns,
   setContributorColumns,
   setHasMoreTasks,
@@ -97,15 +98,17 @@ const useGetUserTaskBoardTasks = ({
     const taskBoardStatuses =
       statuses.length > 0 ? statuses?.filter((status) => DEFAULT_STATUS_ARR.includes(status)) : DEFAULT_STATUS_ARR;
     const taskBoardStatusesIsNotEmpty = taskBoardStatuses.length > 0;
-    getUserTaskBoardTasks({
-      variables: {
-        podIds,
-        userId: loggedInUser?.id,
-        statuses: taskBoardStatuses,
-        limit: taskBoardStatusesIsNotEmpty ? LIMIT : 0,
-        offset: 0,
-      },
-    });
+    if (!isAdmin && loggedInUser?.id) {
+      getUserTaskBoardTasks({
+        variables: {
+          podIds,
+          userId: loggedInUser?.id,
+          statuses: taskBoardStatuses,
+          limit: taskBoardStatusesIsNotEmpty ? LIMIT : 0,
+          offset: 0,
+        },
+      });
+    }
     setHasMoreTasks(true);
   }, [getUserTaskBoardTasks, loggedInUser?.id, podIds, statuses, setHasMoreTasks]);
   return { getUserTaskBoardTasksFetchMore };
@@ -200,6 +203,7 @@ const useGetUserTaskBoard = ({
   podIds,
 }) => {
   const { getUserTaskBoardTasksFetchMore } = useGetUserTaskBoardTasks({
+    isAdmin,
     contributorColumns,
     setContributorColumns,
     setHasMoreTasks,
@@ -403,6 +407,7 @@ const BoardsPage = (props) => {
     setStatuses,
     podIds,
   });
+
   const filterSchema = useFilterSchema(loggedInUser, isAdmin);
   const { getUserTaskBoardTasksFetchMore } = useGetUserTaskBoard({
     section,
@@ -536,7 +541,7 @@ const BoardsPage = (props) => {
           }
         });
       } else {
-        getUserTaskBoardTasksFetchMore();
+        !isAdmin && getUserTaskBoardTasksFetchMore();
       }
     }
   }, [hasMoreTasks, contributorColumns, getUserTaskBoardTasksFetchMore]);
@@ -632,6 +637,7 @@ const BoardsPage = (props) => {
     }
   };
   const activeColumns = isAdmin ? adminColumns : contributorColumns;
+
   return (
     <UserBoardContext.Provider
       value={{
