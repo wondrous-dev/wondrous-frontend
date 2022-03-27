@@ -104,7 +104,13 @@ export const PostHeader = (props) => {
       <KudosForm open={kudosForm} existingContent={content} onClose={handlePostEditClose} id={postId} />
       <TaskViewModal open={taskViewModal} taskId={taskId} handleClose={handleTaskViewModalClose} />
       <PostHeaderWrapper>
-        <PostHeaderImageTextWrapper>
+        <PostHeaderImageTextWrapper
+          onClick={() => {
+            router.push(`/profile/${actor?.username}/about`, undefined, {
+              shallow: true,
+            });
+          }}
+        >
           {actor?.profilePicture ? <PostHeaderImage src={actor?.profilePicture} /> : <PostHeaderDefaultUserImage />}
           <PostHeaderText>
             <PostHeaderUsername as="span">{actor?.username} </PostHeaderUsername>
