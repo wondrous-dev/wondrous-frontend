@@ -35,6 +35,7 @@ import {
   RightArrow,
   RightArrowWrapper,
   TaskUserDiv,
+  MakeSubmissionDiv,
 } from './styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from '../../../graphql/queries/task';
@@ -647,6 +648,72 @@ interface ITaskListModalProps {
   shouldFocusAfterRender?: boolean;
 }
 
+const CreatorBlock = ({ profilePicture, username, createdAt, isTaskProposal }) => {
+  return (
+    <MakeSubmissionDiv
+      style={{
+        marginBottom: '16px',
+      }}
+    >
+      <TaskSectionInfoDiv
+        style={{
+          marginTop: 0,
+          width: '100%',
+        }}
+      >
+        <>
+          {profilePicture ? (
+            <SafeImage
+              style={{
+                width: '26px',
+                height: '26px',
+                borderRadius: '13px',
+                marginRight: '4px',
+              }}
+              src={profilePicture}
+            />
+          ) : (
+            <DefaultUserImage
+              style={{
+                width: '26px',
+                height: '26px',
+                borderRadius: '13px',
+                marginRight: '4px',
+              }}
+            />
+          )}
+          <TaskSectionInfoText
+            style={{
+              fontSize: '14px',
+              color: White,
+              fontWeight: 'regular',
+            }}
+          >
+            <span
+              style={{
+                fontWeight: 'bold',
+              }}
+            >
+              {username}
+            </span>{' '}
+            created this task{isTaskProposal && ' proposal'}
+            <span
+              style={{
+                marginLeft: '16px',
+                color: '#c4c4c4',
+              }}
+            >
+              {createdAt &&
+                formatDistance(new Date(createdAt), new Date(), {
+                  addSuffix: true,
+                })}
+            </span>
+          </TaskSectionInfoText>
+        </>
+      </TaskSectionInfoDiv>
+    </MakeSubmissionDiv>
+  );
+};
 export const TaskViewModal = (props: ITaskListModalProps) => {
   const { open, handleClose, taskId, isTaskProposal, back } = props;
   const [fetchedTask, setFetchedTask] = useState(null);
@@ -660,7 +727,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const showAssignee = !isTaskProposal && !isMilestone && !isBounty;
   const entityType = isTaskProposal ? ENTITIES_TYPES.PROPOSAL : fetchedTask?.type;
   const [approvedSubmission, setApprovedSubmission] = useState(null);
-
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
@@ -828,12 +894,15 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   useEffect(() => {
     if (isMilestone) {
       setActiveTab(tabs.tasks);
+    } else if (isTaskProposal) {
+      setActiveTab(tabs.discussion);
+    } else {
+      setActiveTab(tabs.submissions);
     }
-  }, [isMilestone]);
+  }, [isMilestone, isTaskProposal]);
 
   useEffect(() => {
     if (open) {
-      setActiveTab(isTaskProposal ? tabs.discussion : tabs.submissions);
       if (!fetchedTask || fetchedTask.id !== taskId) {
         if (isTaskProposal) {
           setTaskSubmissionLoading(false);
@@ -1531,7 +1600,17 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 )}
               </CreateFormFooterButtons>
             )}
-            <TaskModalFooter>
+            <TaskModalFooter
+              style={{
+                marginTop: '0',
+              }}
+            >
+              <CreatorBlock
+                profilePicture={fetchedTask?.creatorProfilePicture}
+                username={fetchedTask?.creatorUsername}
+                createdAt={fetchedTask?.createdAt}
+                isTaskProposal={isTaskProposal}
+              />
               <TaskSectionFooterTitleDiv>
                 {selectTabsPerType(isTaskProposal, isMilestone, isSubtask).map((tab, index) => {
                   const active = tab === activeTab;

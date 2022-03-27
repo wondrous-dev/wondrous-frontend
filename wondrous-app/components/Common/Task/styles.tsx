@@ -37,7 +37,6 @@ export const TaskWrapper = styled.div`
   border-radius: ${(props) => (props.wrapped ? '0px' : '6px')};
 
   min-width: 290px;
-  min-height: 216px;
   width: 100%;
   flex-wrap: wrap;
 `;
@@ -342,7 +341,7 @@ export const TaskSectionInfoDiv = styled.div`
 `;
 
 export const TaskModalFooter = styled.div`
-  margin-top: 24px;
+  margin-top: 16px;
 `;
 
 export const TaskSectionFooterTitleDiv = styled.div`
@@ -383,7 +382,7 @@ export const TaskSectionContent = styled.div`
 `;
 export const MakeSubmissionDiv = styled.div`
   background: #0f0f0f;
-  border-radius: 184px;
+  border-radius: 8px;
   padding: 12px;
   display: flex;
   align-items: center;
