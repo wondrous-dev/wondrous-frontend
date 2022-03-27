@@ -286,6 +286,7 @@ const SubmissionItem = (props) => {
   const textStyle = {
     marginLeft: '0',
     maxWidth: '500px',
+    textAlign: 'left',
   };
   return (
     <>
@@ -347,7 +348,9 @@ const SubmissionItem = (props) => {
             <TaskSectionDisplayText>Link </TaskSectionDisplayText>
           </TaskSectionDisplayLabel>
           {submission?.links && submission?.links[0]?.url ? (
-            <TaskSubmissionLink href={submission?.links[0]?.url}>{submission?.links[0]?.url}</TaskSubmissionLink>
+            <TaskSubmissionLink href={submission?.links[0]?.url} target="_blank">
+              {submission?.links[0]?.url}
+            </TaskSubmissionLink>
           ) : (
             <>
               <TaskDescriptionText
