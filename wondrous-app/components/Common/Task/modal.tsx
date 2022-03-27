@@ -1597,7 +1597,11 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 )}
               </CreateFormFooterButtons>
             )}
-            <TaskModalFooter>
+            <TaskModalFooter
+              style={{
+                marginTop: '0',
+              }}
+            >
               <CreatorBlock
                 profilePicture={fetchedTask?.creatorProfilePicture}
                 username={fetchedTask?.creatorUsername}
