@@ -648,7 +648,7 @@ interface ITaskListModalProps {
   shouldFocusAfterRender?: boolean;
 }
 
-const CreatorBlock = ({ profilePicture, username, createdAt, isTaskProposal }) => {
+const CreatorBlock = ({ profilePicture, username, createdAt, isTaskProposal, handleClose, router }) => {
   return (
     <MakeSubmissionDiv
       style={{
@@ -659,6 +659,13 @@ const CreatorBlock = ({ profilePicture, username, createdAt, isTaskProposal }) =
         style={{
           marginTop: 0,
           width: '100%',
+          cursor: 'pointer',
+        }}
+        onClick={() => {
+          handleClose();
+          router.push(`/profile/${username}/about`, undefined, {
+            shallow: true,
+          });
         }}
       >
         <>
@@ -1610,6 +1617,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 username={fetchedTask?.creatorUsername}
                 createdAt={fetchedTask?.createdAt}
                 isTaskProposal={isTaskProposal}
+                handleClose={handleClose}
+                router={router}
               />
               <TaskSectionFooterTitleDiv>
                 {selectTabsPerType(isTaskProposal, isMilestone, isSubtask).map((tab, index) => {
