@@ -894,12 +894,15 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   useEffect(() => {
     if (isMilestone) {
       setActiveTab(tabs.tasks);
+    } else if (isTaskProposal) {
+      setActiveTab(tabs.discussion);
+    } else {
+      setActiveTab(tabs.submissions);
     }
-  }, [isMilestone]);
+  }, [isMilestone, isTaskProposal]);
 
   useEffect(() => {
     if (open) {
-      setActiveTab(isTaskProposal ? tabs.discussion : tabs.submissions);
       if (!fetchedTask || fetchedTask.id !== taskId) {
         if (isTaskProposal) {
           setTaskSubmissionLoading(false);
