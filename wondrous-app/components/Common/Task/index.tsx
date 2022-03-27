@@ -59,6 +59,7 @@ import { Typography } from '@material-ui/core';
 import { SafeImage } from '../Image';
 import { parseUserPermissionContext, cutString, transformTaskToTaskCard } from '../../../utils/helpers';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
+import { useLocation } from '../../../utils/useLocation';
 import { White } from '../../../theme/colors';
 import { TaskViewModal } from './modal';
 import { useMe } from '../../Auth/withAuth';
@@ -138,6 +139,7 @@ export const Task = (props) => {
   const isMilestone = type === Constants.ENTITIES_TYPES.MILESTONE;
   const isSubtask = task?.parentTaskId !== null;
   const isBounty = type === Constants.ENTITIES_TYPES.BOUNTY;
+  const location = useLocation();
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
     refetchQueries: () => [
@@ -227,9 +229,10 @@ export const Task = (props) => {
     permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
     task?.createdBy === user?.id;
 
-  const openModal = () => {
+  const openModal = (e) => {
     onOpen(task);
-    router.push(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`);
+    const newUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`;
+    location.push(newUrl);
     // document.body.style.overflow = 'hidden'
     // document.body.scroll = false
     windowOffset = window.scrollY;
