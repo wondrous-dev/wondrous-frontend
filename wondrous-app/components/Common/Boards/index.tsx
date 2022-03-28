@@ -1,3 +1,4 @@
+import { ColumnsContext } from '@utils/contexts';
 import { useRouter } from 'next/router';
 import pluralize from 'pluralize';
 import React, { useEffect, useState } from 'react';
@@ -171,18 +172,20 @@ const Boards = (props: Props) => {
   }
 
   return (
-    <BoardsContainer>
-      <BoardsActivity>
-        <SearchTasks onSearch={onSearch} />
-        <Filter filterSchema={filterSchema} onChange={onFilterChange} statuses={statuses} podIds={podIds} />
-        {orgBoard && <SelectMenuBoardType router={router} view={view} />}
-        {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
-      </BoardsActivity>
-      {selectMembershipRequests && (
-        <MembershipRequestTable isAdmin={isAdmin} requests={selectMembershipHook?.requests} />
-      )}
-      {!selectMembershipRequests && <>{searchQuery ? renderSearchResults() : renderBoard()}</>}
-    </BoardsContainer>
+    <ColumnsContext.Provider value={{ columns, setColumns }}>
+      <BoardsContainer>
+        <BoardsActivity>
+          <SearchTasks onSearch={onSearch} />
+          <Filter filterSchema={filterSchema} onChange={onFilterChange} statuses={statuses} podIds={podIds} />
+          {orgBoard && <SelectMenuBoardType router={router} view={view} />}
+          {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
+        </BoardsActivity>
+        {selectMembershipRequests && (
+          <MembershipRequestTable isAdmin={isAdmin} requests={selectMembershipHook?.requests} />
+        )}
+        {!selectMembershipRequests && <>{searchQuery ? renderSearchResults() : renderBoard()}</>}
+      </BoardsContainer>
+    </ColumnsContext.Provider>
   );
 };
 

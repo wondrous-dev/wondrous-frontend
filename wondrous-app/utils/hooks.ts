@@ -72,7 +72,13 @@ export const useBoard = () => {
 
 export const useSettings = () => useContext(SettingsBoardContext);
 
-export const useColumns = () => useContext(ColumnsContext);
+export const useColumns = () => {
+  const context = useContext(ColumnsContext);
+  if (!context) {
+    throw new Error('useColumns must be used within a ColumnsContext Provider');
+  }
+  return context;
+};
 
 export const useApprovedSubmission = () => useContext(ApprovedSubmissionContext); // for payment, i think it's hacky
 
