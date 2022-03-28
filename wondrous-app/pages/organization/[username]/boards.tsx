@@ -162,7 +162,7 @@ const useGetOrgTaskBoard = ({
   const isProposalCardOpen = currentCard === TASK_STATUS_REQUESTED;
   const isSubmissionCardOpen = currentCard === TASK_STATUS_IN_REVIEW;
   useGetOrgTaskBoardProposals({ isProposalCardOpen, columns, setColumns, orgId, statuses, podIds });
-  useGetOrgTaskBoardSubmissions({ isSubmissionCardOpen, columns, setColumns, orgId, statuses, podIDs });
+  useGetOrgTaskBoardSubmissions({ isSubmissionCardOpen, columns, setColumns, orgId, statuses, podIds });
   return { getOrgTaskBoardTasksFetchMore };
 };
 
