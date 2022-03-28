@@ -561,6 +561,7 @@ const BoardsPage = () => {
         statuses={statuses}
         podIds={podIds}
         setColumns={setColumns}
+        userId={userId?.toString()}
       />
     </OrgBoardContext.Provider>
   );

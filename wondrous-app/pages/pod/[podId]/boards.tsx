@@ -470,6 +470,7 @@ const BoardsPage = () => {
           statuses={statuses}
           filterSchema={[FILTER_STATUSES]}
           setColumns={setColumns}
+          userId={userId?.toString()}
         />
       </Wrapper>
     </PodBoardContext.Provider>
