@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TaskSummary } from '../TaskSummary';
 import { Requested, Chevron } from '../../Icons/sections';
 
@@ -24,7 +24,7 @@ import { TaskListViewModal } from '../Task/modal';
 import { useRouter } from 'next/router';
 
 let windowOffset;
-export const ColumnSection = ({ section, setSection }) => {
+export const ColumnSection = ({ section, setSection, onOpenCallback = (section, isOpen) => {} }) => {
   const { icon = Requested, title = '', tasks = [], action = {} } = section;
   const [isOpen, setIsOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -61,6 +61,10 @@ export const ColumnSection = ({ section, setSection }) => {
       setIsOpen(!isOpen);
     }
   };
+
+  useEffect(() => {
+    onOpenCallback(section, isOpen);
+  }, [isOpen]);
 
   const setTask = (task) => {
     tasks.filter((t) => t.id === task.id)[0] = task;

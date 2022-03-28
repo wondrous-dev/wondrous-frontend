@@ -113,6 +113,7 @@ const useGetUserTaskBoardTasks = ({
 };
 
 const useGetUserTaskBoardProposals = ({
+  isProposalCardOpen,
   contributorColumns,
   setContributorColumns,
   loggedInUser,
@@ -135,19 +136,22 @@ const useGetUserTaskBoardProposals = ({
     },
   });
   useEffect(() => {
-    getUserTaskBoardProposals({
-      variables: {
-        podIds,
-        userId: loggedInUser?.id,
-        statuses: [STATUS_OPEN],
-        limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
-        offset: 0,
-      },
-    });
-  }, [loggedInUser, getUserTaskBoardProposals, statuses, podIds]);
+    if (isProposalCardOpen) {
+      getUserTaskBoardProposals({
+        variables: {
+          podIds,
+          userId: loggedInUser?.id,
+          statuses: [STATUS_OPEN],
+          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
+          offset: 0,
+        },
+      });
+    }
+  }, [isProposalCardOpen, loggedInUser, getUserTaskBoardProposals, statuses, podIds]);
 };
 
 const useGetUserTaskBoardSubmissions = ({
+  isSubmissionCardOpen,
   contributorColumns,
   setContributorColumns,
   loggedInUser,
@@ -170,19 +174,21 @@ const useGetUserTaskBoardSubmissions = ({
     },
   });
   useEffect(() => {
-    getUserTaskBoardSubmissions({
-      variables: {
-        podIds,
-        userId: loggedInUser?.id,
-        statuses: [STATUS_OPEN],
-        limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
-        offset: 0,
-      },
-    });
-  }, [loggedInUser, getUserTaskBoardSubmissions, statuses, podIds]);
+    if (isSubmissionCardOpen)
+      getUserTaskBoardSubmissions({
+        variables: {
+          podIds,
+          userId: loggedInUser?.id,
+          statuses: [STATUS_OPEN],
+          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
+          offset: 0,
+        },
+      });
+  }, [isSubmissionCardOpen, loggedInUser, getUserTaskBoardSubmissions, statuses, podIds]);
 };
 
 const useGetUserTaskBoard = ({
+  currentCard,
   statuses,
   loggedInUser,
   setHasMoreTasks,
@@ -198,14 +204,25 @@ const useGetUserTaskBoard = ({
     statuses,
     podIds,
   });
-  useGetUserTaskBoardProposals({ contributorColumns, setContributorColumns, loggedInUser, statuses, podIds });
-  useGetUserTaskBoardSubmissions({
+  const isProposalCardOpen = currentCard === TASK_STATUS_REQUESTED;
+  const isSubmissionCardOpen = currentCard === TASK_STATUS_IN_REVIEW;
+  useGetUserTaskBoardProposals({
+    isProposalCardOpen,
     contributorColumns,
     setContributorColumns,
     loggedInUser,
     statuses,
     podIds,
   });
+  useGetUserTaskBoardSubmissions({
+    isSubmissionCardOpen,
+    contributorColumns,
+    setContributorColumns,
+    loggedInUser,
+    statuses,
+    podIds,
+  });
+
   return {
     getUserTaskBoardTasksFetchMore,
   };
@@ -372,6 +389,7 @@ const BoardsPage = (props) => {
   const [contributorColumns, setContributorColumns] = useState([]);
   const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
   const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
+  const [currentCard, setCurrentCard] = useState('');
   const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(loggedInUser);
   const { adminColumns } = useAdminColumns({
     isAdmin,
@@ -383,6 +401,7 @@ const BoardsPage = (props) => {
   });
   const filterSchema = useFilterSchema(loggedInUser, isAdmin);
   const { getUserTaskBoardTasksFetchMore } = useGetUserTaskBoard({
+    currentCard,
     statuses,
     loggedInUser,
     setHasMoreTasks,
@@ -390,6 +409,13 @@ const BoardsPage = (props) => {
     setContributorColumns,
     podIds,
   });
+
+  const handleCardOpening = (section, isOpen) => {
+    const taskToSection = [TASK_STATUS_REQUESTED, TASK_STATUS_IN_REVIEW].find(
+      (taskType) => taskType === section?.filter?.taskType
+    );
+    if (taskToSection && taskToSection !== currentCard && isOpen) setCurrentCard(taskToSection);
+  };
 
   const bindProposalsToCols = (taskProposals) => {
     const newColumns = [...contributorColumns];
@@ -616,6 +642,7 @@ const BoardsPage = (props) => {
         statuses={statuses}
         podIds={podIds}
         setColumns={setContributorColumns}
+        handleCardOpening={handleCardOpening}
       />
     </UserBoardContext.Provider>
   );

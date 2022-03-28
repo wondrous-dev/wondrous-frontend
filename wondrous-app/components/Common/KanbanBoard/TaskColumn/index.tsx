@@ -38,6 +38,7 @@ interface ITaskColumn {
   status: string;
   section: Array<any>;
   onOpen: () => any;
+  onCardOpeningCallback: () => any;
 }
 
 const TITLES = {
@@ -55,7 +56,7 @@ const HEADER_ICONS = {
 };
 
 const TaskColumn = (props: ITaskColumn) => {
-  const { cardsList, moveCard, status, section } = props;
+  const { cardsList, moveCard, status, section, onCardOpeningCallback } = props;
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
@@ -93,7 +94,6 @@ const TaskColumn = (props: ITaskColumn) => {
       number = 0;
       break;
   }
-
   return (
     <TaskColumnContainer>
       <TaskColumnContainerHeader>
@@ -101,7 +101,7 @@ const TaskColumn = (props: ITaskColumn) => {
         <TaskColumnContainerHeaderTitle>{TITLES[status]}</TaskColumnContainerHeaderTitle>
         <TaskColumnContainerCount>{number}</TaskColumnContainerCount>
       </TaskColumnContainerHeader>
-      <ColumnSection section={section} setSection={() => {}} />
+      <ColumnSection section={section} setSection={() => {}} onOpenCallback={onCardOpeningCallback} />
       <Droppable droppableId={status}>
         {(provided) => (
           <TaskListContainer ref={provided.innerRef} {...provided.droppableProps}>

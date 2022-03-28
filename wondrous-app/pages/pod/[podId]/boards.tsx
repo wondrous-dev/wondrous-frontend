@@ -86,7 +86,7 @@ const useGetPodTaskBoardTasks = ({ columns, setColumns, setPodTaskHasMore, podId
   return { getPodTaskBoardTasksFetchMore };
 };
 
-const useGetPodTaskProposals = ({ setColumns, columns, podId, statuses }) => {
+const useGetPodTaskProposals = ({ isProposalCardOpen, setColumns, columns, podId, statuses }) => {
   const [getPodTaskProposals] = useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
@@ -103,20 +103,21 @@ const useGetPodTaskProposals = ({ setColumns, columns, podId, statuses }) => {
     },
   });
   useEffect(() => {
-    getPodTaskProposals({
-      variables: {
-        input: {
-          podId,
-          statuses: [STATUS_OPEN],
-          offset: 0,
-          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
+    if (isProposalCardOpen)
+      getPodTaskProposals({
+        variables: {
+          input: {
+            podId,
+            statuses: [STATUS_OPEN],
+            offset: 0,
+            limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
+          },
         },
-      },
-    });
-  }, [getPodTaskProposals, podId, statuses]);
+      });
+  }, [isProposalCardOpen, getPodTaskProposals, podId, statuses]);
 };
 
-const useGetPodTaskSubmissions = ({ setColumns, columns, podId, statuses }) => {
+const useGetPodTaskSubmissions = ({ isSubmissionCardOpen, setColumns, columns, podId, statuses }) => {
   const [getPodTaskSubmissions] = useLazyQuery(GET_POD_TASK_BOARD_SUBMISSIONS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
@@ -133,22 +134,25 @@ const useGetPodTaskSubmissions = ({ setColumns, columns, podId, statuses }) => {
     },
   });
   useEffect(() => {
-    getPodTaskSubmissions({
-      variables: {
-        input: {
-          podId,
-          statuses: [STATUS_OPEN],
-          offset: 0,
-          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
+    if (isSubmissionCardOpen)
+      getPodTaskSubmissions({
+        variables: {
+          input: {
+            podId,
+            statuses: [STATUS_OPEN],
+            offset: 0,
+            limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
+          },
         },
-      },
-    });
-  }, [getPodTaskSubmissions, podId, statuses]);
+      });
+  }, [isSubmissionCardOpen, getPodTaskSubmissions, podId, statuses]);
 };
 
-const useGetPodTaskBoard = ({ columns, setColumns, setPodTaskHasMore, podId, statuses, boardType }) => {
-  useGetPodTaskSubmissions({ setColumns, columns, podId, statuses });
-  useGetPodTaskProposals({ setColumns, columns, podId, statuses });
+const useGetPodTaskBoard = ({ currentCard, columns, setColumns, setPodTaskHasMore, podId, statuses, boardType }) => {
+  const isProposalCardOpen = currentCard === TASK_STATUS_REQUESTED;
+  const isSubmissionCardOpen = currentCard === TASK_STATUS_IN_REVIEW;
+  useGetPodTaskSubmissions({ isSubmissionCardOpen, setColumns, columns, podId, statuses });
+  useGetPodTaskProposals({ isProposalCardOpen, setColumns, columns, podId, statuses });
   const { getPodTaskBoardTasksFetchMore } = useGetPodTaskBoardTasks({
     columns,
     setColumns,
@@ -165,6 +169,7 @@ const BoardsPage = () => {
   const [columns, setColumns] = useState(COLUMNS);
   const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
   const { boardType } = router.query;
+  const [currentCard, setCurrentCard] = useState('');
   const { username, podId, search, userId } = router.query;
   const [searchString, setSearchString] = useState('');
 
@@ -177,6 +182,7 @@ const BoardsPage = () => {
   const pod = podData?.getPodById;
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
   const { getPodTaskBoardTasksFetchMore } = useGetPodTaskBoard({
+    currentCard,
     columns,
     setColumns,
     setPodTaskHasMore,
@@ -366,6 +372,13 @@ const BoardsPage = () => {
     }));
   }
 
+  const handleCardOpening = (section, isOpen) => {
+    const taskToSection = [TASK_STATUS_REQUESTED, TASK_STATUS_IN_REVIEW].find(
+      (taskType) => taskType === section?.filter?.taskType
+    );
+    if (taskToSection && taskToSection !== currentCard && isOpen) setCurrentCard(taskToSection);
+  };
+
   const handleFilterChange: any = ({ statuses = [] }: TaskFilter) => {
     setStatuses(statuses);
 
@@ -450,6 +463,7 @@ const BoardsPage = () => {
         <Boards
           columns={columns}
           onLoadMore={getPodTaskBoardTasksFetchMore}
+          handleCardOpening={handleCardOpening}
           hasMore={podTaskHasMore}
           onSearch={handleSearch}
           onFilterChange={handleFilterChange}
