@@ -26,3 +26,11 @@ export const GET_ORG_DISCORD_NOTIFICATION_CONFIGS = gql`
     }
   }
 `;
+
+export const GET_DISCORD_GUILD_FROM_INVITE_CODE = gql`
+  query getDiscordGuildFromInviteCode($inviteCode: String!) {
+    getDiscordGuildFromInviteCode(inviteCode: $inviteCode) {
+      guildId
+    }
+  }
+`;

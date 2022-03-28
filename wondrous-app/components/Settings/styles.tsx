@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import SnackbarComp from '@mui/material/Snackbar';
-import { Button as MuiButton, InputBase, ListItemIcon, Typography } from '@material-ui/core';
+import { Button as MuiButton, ButtonBase, InputBase, ListItemIcon, Typography } from '@material-ui/core';
 import { ListItemButton } from '@mui/material';
 import { Button } from '../Common/button';
 import { LogoSquare } from '../Common/ci';
@@ -447,6 +447,7 @@ export const DiscordText = styled(Typography)`
   && {
     font-size: 16px;
     color: ${White};
+    margin-bottom: 8px;
   }
 `;
 
@@ -456,5 +457,17 @@ export const LabelBlockText = styled(Typography)`
     font-family: Space Grotesk;
     font-size: 14px;
     margin-bottom: 12px;
+  }
+`;
+
+export const AddGuildButton = styled(ButtonBase)`
+  && {
+    background: #4b4b51;
+    border-radius: 8px;
+    width: 100%;
+    padding: 8px;
+    height: 40px;
+    display: flex;
+    align-items: center;
   }
 `;

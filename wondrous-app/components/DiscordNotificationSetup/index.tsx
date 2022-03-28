@@ -16,7 +16,7 @@ import {
 import { HighlightBlue, White } from '../../theme/colors';
 import Link from 'next/link';
 
-const BOT_URL = `https://discord.com/api/oauth2/authorize?client_id=917630803314352208&permissions=268437504&scope=bot`;
+export const BOT_URL = `https://discord.com/api/oauth2/authorize?client_id=917630803314352208&permissions=268437504&scope=bot`;
 const DiscordNotificationSetup = (props) => {
   const orgUsername = props?.orgUsername;
   return (

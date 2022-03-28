@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
-import { GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_ORG_BY_ID } from '../../../graphql/queries';
+import {
+  GET_ORG_DISCORD_NOTIFICATION_CONFIGS,
+  GET_ORG_BY_ID,
+  GET_DISCORD_GUILD_FROM_INVITE_CODE,
+} from '../../../graphql/queries';
 import {
   DISABLE_ORG_DISCORD_NOTIFICATION_CONFIG,
   ENABLE_ORG_DISCORD_NOTIFICATION_CONFIG,
@@ -9,7 +13,7 @@ import {
 import { SettingsWrapper } from '../settingsWrapper';
 import { NotificationOutlineSettings } from '../../Icons/notifications';
 import { HeaderBlock } from '../headerBlock';
-import { ConnectDiscordButton, TableValueText } from './styles';
+import { ConnectDiscordButton, DiscordCard, DiscordCardElement, DiscordCardElementDiv, TableValueText } from './styles';
 import CheckMarkIcon from '../../Icons/checkMark';
 import Switch from '../../Common/Switch';
 import {
@@ -20,8 +24,10 @@ import {
   StyledTableHead,
   StyledTableRow,
 } from '../../Table/styles';
-import DiscordNotificationSetup from '../../../components/DiscordNotificationSetup';
+import DiscordNotificationSetup, { BOT_URL } from '../../../components/DiscordNotificationSetup';
 import {
+  AddGuildButton,
+  DiscordText,
   GeneralSettingsContainer,
   GeneralSettingsIntegrationsBlock,
   GeneralSettingsIntegrationsBlockButtonIcon,
@@ -29,8 +35,10 @@ import {
   LabelBlockText,
 } from '../styles';
 import Link from 'next/link';
-import { HighlightBlue } from '../../../theme/colors';
+import { Grey800, HighlightBlue, White } from '../../../theme/colors';
 import { ErrorText } from '../../Common';
+import InputForm from '@components/Common/InputForm/inputForm';
+import DropdownSelect from '@components/Common/DropdownSelect/dropdownSelect';
 
 const CurrentNotificationSetting = ({ discordNotificationConfigData, orgId }) => {
   const notificationEnabled = discordNotificationConfigData?.disabledAt === null;
@@ -41,20 +49,20 @@ const CurrentNotificationSetting = ({ discordNotificationConfigData, orgId }) =>
   const [mutationError, setMutationError] = useState(null);
   const [enableDiscordNotification] = useMutation(ENABLE_ORG_DISCORD_NOTIFICATION_CONFIG, {
     onCompleted: (data) => {
-      setNotificationOn(true)
+      setNotificationOn(true);
     },
     onError: (e) => {
       console.error(e);
-      setMutationError('error enabling notifications')
+      setMutationError('error enabling notifications');
     },
   });
   const [disableDiscordNotification] = useMutation(DISABLE_ORG_DISCORD_NOTIFICATION_CONFIG, {
     onCompleted: (data) => {
-      setNotificationOn(false)
+      setNotificationOn(false);
     },
     onError: (e) => {
       console.error(e);
-      setMutationError('error disabling notifications')
+      setMutationError('error disabling notifications');
     },
   });
 
@@ -73,7 +81,7 @@ const CurrentNotificationSetting = ({ discordNotificationConfigData, orgId }) =>
     }
   }, [discordNotificationConfigData]);
   const handleEnableDisableSwitch = async () => {
-    setMutationError(null)
+    setMutationError(null);
     if (notificationOn) {
       const confirmed = confirm('Are you sure you want to disable discord channel notfications?');
       if (!confirmed) {
@@ -149,14 +157,19 @@ const CurrentNotificationSetting = ({ discordNotificationConfigData, orgId }) =>
             </StyledTableRow>
           </StyledTableBody>
         </StyledTable>
-        {mutationError && <ErrorText>{mutationError}</ErrorText> }
+        {mutationError && <ErrorText>{mutationError}</ErrorText>}
       </StyledTableContainer>
     </>
   );
 };
-
+let timeout;
 const Notifications = ({ orgId }) => {
   const [showInstructionPage, setShowInstructionPage] = useState(false);
+  const [discordInviteLink, setDiscordInviteLink] = useState('');
+  const [discordInviteLinkError, setDiscordInviteLinkError] = useState('');
+  const [discordChannels, setDiscordChannels] = useState([]);
+  const [getDiscordGuildFromInviteCode] = useLazyQuery(GET_DISCORD_GUILD_FROM_INVITE_CODE);
+  const [guildId, setGuildId] = useState(null);
   const { data } = useQuery(GET_ORG_DISCORD_NOTIFICATION_CONFIGS, {
     variables: {
       orgId,
@@ -170,6 +183,34 @@ const Notifications = ({ orgId }) => {
 
   const discordNotificationConfigData = data?.getOrgDiscordNotificationConfig;
 
+  useEffect(() => {
+    clearTimeout(timeout);
+    timeout = setTimeout(async () => {
+      const inviteCodeArr = discordInviteLink.split('/');
+      const inviteCode = inviteCodeArr[inviteCodeArr.length - 1];
+      if (discordInviteLink) {
+        if (inviteCode) {
+          try {
+            const guildData = await getDiscordGuildFromInviteCode({
+              variables: {
+                inviteCode,
+              },
+            });
+            if (guildData?.error) {
+              setDiscordInviteLinkError('Invalid invite link');
+            } else if (guildData?.data) {
+              setGuildId(guildData?.data?.getDiscordGuildFromInviteCode?.guildId);
+            }
+          } catch (err) {
+            console.log('err', err);
+            setDiscordInviteLinkError('Invalid invite link');
+          }
+        } else {
+          setDiscordInviteLinkError('Invalid invite link');
+        }
+      }
+    }, 1000);
+  }, [discordInviteLink]);
   return (
     <SettingsWrapper>
       <HeaderBlock
@@ -180,10 +221,81 @@ const Notifications = ({ orgId }) => {
       <GeneralSettingsContainer></GeneralSettingsContainer>
       <GeneralSettingsIntegrationsBlock>
         <LabelBlock>Discord Integration</LabelBlock>
+        <DiscordCard container spacing={2}>
+          <DiscordCardElement sm={4}>
+            <DiscordCardElementDiv>
+              <DiscordText>1. Paste invite link</DiscordText>
+              <InputForm
+                style={{
+                  background: '#272729',
+                }}
+                value={discordInviteLink}
+                onChange={(e) => setDiscordInviteLink(e.target.value)}
+              />
+              {!!discordInviteLinkError && <ErrorText>{discordInviteLinkError}</ErrorText>}
+            </DiscordCardElementDiv>
+          </DiscordCardElement>
+          <DiscordCardElement sm={4}>
+            <DiscordCardElementDiv>
+              <DiscordText>2. Add bot</DiscordText>
+              {guildId ? (
+                <>
+                  <AddGuildButton
+                    style={{
+                      border: '1px solid deepskyblue',
+                      backgroundColor: '#272729',
+                    }}
+                    href={`${BOT_URL}&guild_id=${guildId}`}
+                    target="_blank"
+                  >
+                    <DiscordText
+                      style={{
+                        color: White,
+                        fontSize: '14px',
+                        marginBottom: '0',
+                      }}
+                    >
+                      Add Wonder bot
+                    </DiscordText>
+                  </AddGuildButton>
+                </>
+              ) : (
+                <>
+                  <AddGuildButton disabled>
+                    <DiscordText
+                      style={{
+                        color: '#8b8b8c',
+                        fontSize: '14px',
+                        marginBottom: '0',
+                      }}
+                    >
+                      Add Wonder bot
+                    </DiscordText>
+                  </AddGuildButton>
+                </>
+              )}
+            </DiscordCardElementDiv>
+          </DiscordCardElement>
+          <DiscordCardElement sm={4}>
+            <DiscordCardElementDiv>
+              <DiscordText>3. Set channel</DiscordText>
+              <DropdownSelect
+                formSelectStyle={{
+                  height: 'auto',
+                }}
+                innerStyle={{
+                  marginTop: '0',
+                  background: '#272729',
+                }}
+                options={discordChannels}
+              ></DropdownSelect>
+            </DiscordCardElementDiv>
+          </DiscordCardElement>
+        </DiscordCard>
         {discordNotificationConfigData?.channelId && (
           <CurrentNotificationSetting discordNotificationConfigData={discordNotificationConfigData} orgId={orgId} />
         )}
-        <ConnectDiscordButton
+        {/* <ConnectDiscordButton
           style={{
             maxWidth: 'none',
             width: 'fit-content',
@@ -203,7 +315,7 @@ const Notifications = ({ orgId }) => {
             <br />
             <DiscordNotificationSetup orgUsername={orgData?.getOrgById?.username} />
           </>
-        )}
+        )} */}
       </GeneralSettingsIntegrationsBlock>
     </SettingsWrapper>
   );
