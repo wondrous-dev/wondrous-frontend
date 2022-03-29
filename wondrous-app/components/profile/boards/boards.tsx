@@ -117,4 +117,4 @@ import { delQuery } from '../../../utils';
 //   );
 // };
 
-export default Boards;
+// export default Boards;
