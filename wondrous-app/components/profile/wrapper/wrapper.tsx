@@ -18,6 +18,7 @@ import {
   HeaderActivity,
   HeaderActivityLink,
   HeaderActivityLinkIcon,
+  HeaderActivityLinkText,
   HeaderActivitySocialIcon,
   HeaderButtons,
   HeaderEditProfileButton,
@@ -118,13 +119,14 @@ const Wrapper = (props: IWrapperProps) => {
                     <HeaderOrgCount>{orgCount}</HeaderOrgCount>
                     <HeaderOrgCountText>DAOs</HeaderOrgCountText>
                   </HeaderOrgPodCount>
-                  {mainLink && (
+                  {mainLink?.url && (
                     <HeaderActivityLink href={mainLink.url} target="_blank">
                       <HeaderActivityLinkIcon />
-                      {formatLinkDisplay(mainLink)}
+                      <HeaderActivityLinkText>{formatLinkDisplay(mainLink)}</HeaderActivityLinkText>
                     </HeaderActivityLink>
                   )}
                   {social.map(({ url, type }) => {
+                    if (!url) return null;
                     const SocialIcon = socialIcons[type];
                     return (
                       <HeaderActivityLink key={url} href={url} target="_blank">

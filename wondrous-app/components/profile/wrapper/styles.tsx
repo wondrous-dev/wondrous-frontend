@@ -172,7 +172,6 @@ export const HeaderText = styled(Typography)`
 `;
 
 export const HeaderActivity = styled.div`
-  max-width: 447px;
   width: 100%;
   flex-wrap: wrap;
   display: flex;
@@ -192,6 +191,13 @@ export const HeaderActivityLink = styled.a`
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   text-decoration-line: underline;
   margin-right: 12px;
+`;
+
+export const HeaderActivityLinkText = styled.span`
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const HeaderActivitySocialIcon = styled(({ Component, ...props }) => {
