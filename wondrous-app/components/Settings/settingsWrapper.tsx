@@ -7,8 +7,7 @@ import {
   SettingsContainer,
   SettingsContentBlock,
   SettingsSidebar,
-  SettingsSidebarContainer,
-  SettingsSidebarHeader,
+  SettingsSidebarContainer, SettingsSidebarHeader,
   SettingsSidebarHeaderLogo,
   SettingsSidebarHeaderTitle,
   SettingsSidebarLogoutButton,
@@ -139,6 +138,12 @@ export const SettingsWrapper = (props) => {
       label: 'Configure Wallet',
       value: 'wallet',
       href: orgId ? `/organization/settings/${orgId}/wallet` : `/pod/settings/${podId}/wallet`,
+    },
+    {
+      icon: <WrenchIcon width={40} height={40} />,
+      label: 'Integrations',
+      value: 'integrations',
+      href: orgId ? `/organization/settings/${orgId}/integrations` : `/pod/settings/${podId}/integrations`,
     },
     {
       icon: <CardIcon width={40} height={40} />,
