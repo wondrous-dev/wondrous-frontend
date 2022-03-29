@@ -58,25 +58,48 @@ const socialsData = [
   },
 ];
 
-const SettingsLinks = ({ links, setLinks }) => {
+const setLinkTypeWebsite = (links) => {
   const defaultTypeLink = [
     {
-      type: 'link',
+      type: 'website',
       url: '',
       displayName: '',
     },
   ];
-  const linkTypeLinks = links?.filter((i) => i.type === 'link') ?? defaultTypeLink;
+  const linkTypeLinks = links?.filter((i) => i.type === 'website') ?? defaultTypeLink;
   const linkTypeData = linkTypeLinks?.length > 0 ? linkTypeLinks : defaultTypeLink;
+  return linkTypeData;
+};
+
+const updateLinks = ({ links, url, item }) => {
+  const unchangedLinks = _.cloneDeep(links)?.filter((link) => link.type !== item.type) ?? [];
+  const updatedLink = {
+    url,
+    displayName: url,
+    type: item.type,
+  };
+  const updatedLinks = unchangedLinks.concat(updatedLink).filter((i) => i.url !== '');
+  return updatedLinks;
+};
+
+const useLoggedInUserLinks = (userLinks) => {
+  const [links, setLinks] = useState();
+  useEffect(() => {
+    setLinks(
+      // NOTE: __typename needs to be removed from the links because it will cause an error during the mutation
+      userLinks?.map(({ __typename, ...userLinks }) => {
+        return { ...userLinks };
+      })
+    );
+  }, [userLinks]);
+  return [links, setLinks];
+};
+
+const SettingsLinks = ({ links, setLinks }) => {
+  const linkTypeWebsite = setLinkTypeWebsite(links);
   const handleLinkChange = (event, item) => {
     const url = event.currentTarget.value;
-    const unchangedLinks = _.cloneDeep(links).filter((link) => link.type !== item.type);
-    const updatedLink = {
-      url,
-      displayName: url,
-      type: item.type,
-    };
-    setLinks([...unchangedLinks, updatedLink]);
+    setLinks(updateLinks({ links, url, item }));
   };
   return (
     <>
@@ -84,7 +107,7 @@ const SettingsLinks = ({ links, setLinks }) => {
         <LabelBlock>Socials</LabelBlock>
         <GeneralSettingsSocialsBlockWrapper>
           {socialsData.map((item) => {
-            const value = links?.filter((i) => i.type === item.type)[0].url;
+            const value = links?.filter((i) => i.type === item.type)[0]?.url;
             return (
               <GeneralSettingsSocialsBlockRow key={item.type}>
                 <LinkSquareIcon icon={item.icon} />
@@ -97,7 +120,7 @@ const SettingsLinks = ({ links, setLinks }) => {
       <GeneralSettingsSocialsBlock>
         <LabelBlock>Links</LabelBlock>
         <GeneralSettingsSocialsBlockWrapper>
-          {linkTypeData.map((link) => (
+          {linkTypeWebsite.map((link) => (
             <GeneralSettingsSocialsBlockRow key={link.type}>
               <LinkSquareIcon icon={<LinkBigIcon />} />
               <InputField value={link.url} onChange={(e) => handleLinkChange(e, link)} />
@@ -107,18 +130,6 @@ const SettingsLinks = ({ links, setLinks }) => {
       </GeneralSettingsSocialsBlock>
     </>
   );
-};
-
-const useLoggedInUserLinks = (userLinks) => {
-  const [links, setLinks] = useState();
-  useEffect(() => {
-    setLinks(
-      userLinks.map(({ __typename, ...userLinks }) => {
-        return { ...userLinks };
-      })
-    );
-  }, [userLinks]);
-  return [links, setLinks];
 };
 
 const ProfileSettings = (props) => {
