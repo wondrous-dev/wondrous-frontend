@@ -167,7 +167,6 @@ const ProfileSettings = (props) => {
   };
 
   useEffect(() => {
-    console.log('loggedInUser', loggedInUser);
     if (loggedInUser?.username) {
       setUsername(loggedInUser?.username);
     }
