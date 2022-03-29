@@ -34,3 +34,20 @@ export const GET_DISCORD_GUILD_FROM_INVITE_CODE = gql`
     }
   }
 `;
+
+export const CHECK_DISCORD_BOT_ADDED = gql`
+  query checkDiscordBotAdded($guildId: String!) {
+    checkDiscordBotAdded(guildId: $guildId) {
+      botAdded
+    }
+  }
+`;
+
+export const GET_CHANNELS_FROM_DISCORD = gql`
+  query getAvailableChannelsForDiscordGuild($guildId: String!) {
+    getAvailableChannelsForDiscordGuild(guildId: $guildId) {
+      id
+      name
+    }
+  }
+`;

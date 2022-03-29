@@ -4,6 +4,8 @@ import {
   GET_ORG_DISCORD_NOTIFICATION_CONFIGS,
   GET_ORG_BY_ID,
   GET_DISCORD_GUILD_FROM_INVITE_CODE,
+  CHECK_DISCORD_BOT_ADDED,
+  GET_CHANNELS_FROM_DISCORD,
 } from '../../../graphql/queries';
 import {
   DISABLE_ORG_DISCORD_NOTIFICATION_CONFIG,
@@ -43,6 +45,7 @@ import DropdownSelect from '@components/Common/DropdownSelect/dropdownSelect';
 const CurrentNotificationSetting = ({ discordNotificationConfigData, orgId }) => {
   const notificationEnabled = discordNotificationConfigData?.disabledAt === null;
   const [notificationOn, setNotificationOn] = useState(notificationEnabled);
+
   const [configurationError, setConfigurationError] = useState(null);
   const [channelDeletedError, setChannelDeletedError] = useState(null);
   const [serverDisconnectedError, setServerDisconnectedError] = useState(null);
@@ -65,10 +68,7 @@ const CurrentNotificationSetting = ({ discordNotificationConfigData, orgId }) =>
       setMutationError('error disabling notifications');
     },
   });
-
   useEffect(() => {
-    setConfigurationError(null);
-    setConfigurationError(null);
     setConfigurationError(null);
     const channelName = discordNotificationConfigData?.channelInfo?.channelName;
     const guildName = discordNotificationConfigData?.channelInfo?.guildName;
@@ -167,9 +167,18 @@ const Notifications = ({ orgId }) => {
   const [showInstructionPage, setShowInstructionPage] = useState(false);
   const [discordInviteLink, setDiscordInviteLink] = useState('');
   const [discordInviteLinkError, setDiscordInviteLinkError] = useState('');
-  const [discordChannels, setDiscordChannels] = useState([]);
   const [getDiscordGuildFromInviteCode] = useLazyQuery(GET_DISCORD_GUILD_FROM_INVITE_CODE);
+  const [getChannelsFromDiscord, { data: discordChannelData }] = useLazyQuery(GET_CHANNELS_FROM_DISCORD);
   const [guildId, setGuildId] = useState(null);
+  const [selectedChannel, setSelectedChannel] = useState(null);
+  const [checkDiscordBotAdded, { data: discordBotAdded, startPolling, stopPolling }] = useLazyQuery(
+    CHECK_DISCORD_BOT_ADDED,
+    {
+      variables: {
+        guildId,
+      },
+    }
+  );
   const { data } = useQuery(GET_ORG_DISCORD_NOTIFICATION_CONFIGS, {
     variables: {
       orgId,
@@ -182,6 +191,29 @@ const Notifications = ({ orgId }) => {
   });
 
   const discordNotificationConfigData = data?.getOrgDiscordNotificationConfig;
+
+  useEffect(() => {
+    if (guildId) {
+      checkDiscordBotAdded({
+        variables: {
+          guildId,
+        },
+      });
+      startPolling(1000);
+    }
+  }, [guildId]);
+
+  useEffect(() => {
+    if (discordBotAdded?.checkDiscordBotAdded?.botAdded) {
+      // #fetch channels
+      getChannelsFromDiscord({
+        variables: {
+          guildId,
+        },
+      });
+      stopPolling();
+    }
+  }, [discordBotAdded]);
 
   useEffect(() => {
     clearTimeout(timeout);
@@ -211,6 +243,12 @@ const Notifications = ({ orgId }) => {
       }
     }, 1000);
   }, [discordInviteLink]);
+  const discordChannels = discordChannelData?.getAvailableChannelsForDiscordGuild || [];
+  const filteredDiscordChannels = discordChannels.map((channel) => ({
+    value: channel.id,
+    label: channel.name,
+  }));
+
   return (
     <SettingsWrapper>
       <HeaderBlock
@@ -238,7 +276,7 @@ const Notifications = ({ orgId }) => {
           <DiscordCardElement sm={4}>
             <DiscordCardElementDiv>
               <DiscordText>2. Add bot</DiscordText>
-              {guildId ? (
+              {guildId && !discordBotAdded?.checkDiscordBotAdded?.botAdded ? (
                 <>
                   <AddGuildButton
                     style={{
@@ -269,7 +307,7 @@ const Notifications = ({ orgId }) => {
                         marginBottom: '0',
                       }}
                     >
-                      Add Wonder bot
+                      {discordBotAdded?.checkDiscordBotAdded?.botAdded ? 'Wonder bot added' : 'Add Wonder bot'}
                     </DiscordText>
                   </AddGuildButton>
                 </>
@@ -280,6 +318,8 @@ const Notifications = ({ orgId }) => {
             <DiscordCardElementDiv>
               <DiscordText>3. Set channel</DiscordText>
               <DropdownSelect
+                value={selectedChannel}
+                setValue={setSelectedChannel}
                 formSelectStyle={{
                   height: 'auto',
                 }}
@@ -287,7 +327,7 @@ const Notifications = ({ orgId }) => {
                   marginTop: '0',
                   background: '#272729',
                 }}
-                options={discordChannels}
+                options={filteredDiscordChannels}
               ></DropdownSelect>
             </DiscordCardElementDiv>
           </DiscordCardElement>
