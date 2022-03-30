@@ -436,7 +436,6 @@ export const PodGeneralSettings = () => {
 const GeneralSettings = () => {
   const [logoImage, setLogoImage] = useState('');
   const [orgProfile, setOrgProfile] = useState(null);
-  const [originalOrgProfile, setOriginalOrgProfile] = useState(null);
   const [headerImage, setHeaderImage] = useState('');
   const [orgLinks, setOrgLinks] = useState([]);
   const [descriptionText, setDescriptionText] = useState('');
@@ -446,7 +445,6 @@ const GeneralSettings = () => {
   const [discordWebhookLink, setDiscordWebhookLink] = useState('');
 
   function setOrganization(organization) {
-    setOriginalOrgProfile(organization);
     setLogoImage('');
     const links = reduceLinks(organization.links);
 
@@ -456,7 +454,7 @@ const GeneralSettings = () => {
     setOrgProfile(organization);
   }
 
-  const [getOrganization] = useLazyQuery(GET_ORG_BY_ID, {
+  const [getOrgById, { data: getOrgByIdData }] = useLazyQuery(GET_ORG_BY_ID, {
     onCompleted: ({ getOrgById }) => setOrganization(getOrgById),
     fetchPolicy: 'cache-and-network',
   });
@@ -470,7 +468,7 @@ const GeneralSettings = () => {
 
   useEffect(() => {
     if (orgId) {
-      getOrganization({ variables: { orgId } });
+      getOrgById({ variables: { orgId } });
       getOrgDiscordWebhookInfo({ variables: { orgId } });
     }
   }, [orgId]);
@@ -502,14 +500,14 @@ const GeneralSettings = () => {
         orgProfileKey: 'profilePicture',
       },
     };
-    const imageTypeForUpdate = type[imageType];
-    imageTypeForUpdate.setState(file);
+    const { setState, orgProfileKey } = type[imageType];
+    setState(file);
     const imageFile = handleImageFile(file);
-    await uploadMedia(imageFile);
     setOrgProfile({
       ...orgProfile,
-      [imageTypeForUpdate.orgProfileKey]: imageFile.filename ?? originalOrgProfile[imageTypeForUpdate.orgProfileKey],
+      [orgProfileKey]: imageFile.filename ?? getOrgByIdData?.getOrgById[orgProfileKey],
     });
+    imageFile.filename && (await uploadMedia(imageFile));
   }
 
   function handleDescriptionChange(e) {
@@ -522,7 +520,7 @@ const GeneralSettings = () => {
   }
 
   function resetChanges() {
-    setOrganization(originalOrgProfile);
+    setOrganization(getOrgByIdData?.getOrgById);
   }
 
   function saveChanges() {
