@@ -21,7 +21,7 @@ export const OverviewComponent = styled.section`
 
 export const HeaderImageWrapper = styled.div`
   width: 100%;
-  height: 150px;
+  height: 270px;
   margin-top: 70px;
   overflow: hidden;
   position: relative;

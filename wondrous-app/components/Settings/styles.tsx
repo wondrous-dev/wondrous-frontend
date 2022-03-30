@@ -280,6 +280,7 @@ export const GeneralSettingsDAOProfileImage = styled((props) => (
     }}
   />
 ))``;
+
 export const GeneralSettingsDAOHeaderImage = styled((props) => (
   <SafeImage
     {...props}

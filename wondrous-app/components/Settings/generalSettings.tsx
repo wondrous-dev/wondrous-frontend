@@ -169,7 +169,7 @@ const GeneralSettingsComponent = (props) => {
         {!isPod && (
           <ImageUpload
             image={headerImage}
-            imageWidth="1035"
+            imageWidth="1350"
             imageHeight="200"
             imageName="Header"
             updateFilesCb={(file) => handleImageChange(file, 'header')}
