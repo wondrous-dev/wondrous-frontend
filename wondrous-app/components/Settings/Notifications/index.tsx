@@ -10,6 +10,7 @@ import {
 import {
   DISABLE_ORG_DISCORD_NOTIFICATION_CONFIG,
   ENABLE_ORG_DISCORD_NOTIFICATION_CONFIG,
+  MANUAL_DISCORD_ORG_SETUP,
 } from '../../../graphql/mutations';
 
 import { SettingsWrapper } from '../settingsWrapper';
@@ -41,11 +42,11 @@ import { Grey800, HighlightBlue, White } from '../../../theme/colors';
 import { ErrorText } from '../../Common';
 import InputForm from '@components/Common/InputForm/inputForm';
 import DropdownSelect from '@components/Common/DropdownSelect/dropdownSelect';
+import { CreateFormPreviewButton } from '@components/CreateEntity/styles';
 
 const CurrentNotificationSetting = ({ discordNotificationConfigData, orgId }) => {
   const notificationEnabled = discordNotificationConfigData?.disabledAt === null;
   const [notificationOn, setNotificationOn] = useState(notificationEnabled);
-
   const [configurationError, setConfigurationError] = useState(null);
   const [channelDeletedError, setChannelDeletedError] = useState(null);
   const [serverDisconnectedError, setServerDisconnectedError] = useState(null);
@@ -168,6 +169,7 @@ const Notifications = ({ orgId }) => {
   const [discordInviteLink, setDiscordInviteLink] = useState('');
   const [discordInviteLinkError, setDiscordInviteLinkError] = useState('');
   const [getDiscordGuildFromInviteCode] = useLazyQuery(GET_DISCORD_GUILD_FROM_INVITE_CODE);
+  const [manualDiscordOrgSetup, { error: saveDiscordOrgError }] = useMutation(MANUAL_DISCORD_ORG_SETUP);
   const [getChannelsFromDiscord, { data: discordChannelData }] = useLazyQuery(GET_CHANNELS_FROM_DISCORD);
   const [guildId, setGuildId] = useState(null);
   const [selectedChannel, setSelectedChannel] = useState(null);
@@ -257,81 +259,117 @@ const Notifications = ({ orgId }) => {
         description="Manage notifications"
       />
       <GeneralSettingsContainer></GeneralSettingsContainer>
-      <GeneralSettingsIntegrationsBlock>
+      <GeneralSettingsIntegrationsBlock
+        style={{
+          borderBottom: 'none',
+        }}
+      >
         <LabelBlock>Discord Integration</LabelBlock>
-        <DiscordCard container spacing={2}>
-          <DiscordCardElement sm={4}>
-            <DiscordCardElementDiv>
-              <DiscordText>1. Paste invite link</DiscordText>
-              <InputForm
-                style={{
-                  background: '#272729',
-                }}
-                value={discordInviteLink}
-                onChange={(e) => setDiscordInviteLink(e.target.value)}
-              />
-              {!!discordInviteLinkError && <ErrorText>{discordInviteLinkError}</ErrorText>}
-            </DiscordCardElementDiv>
-          </DiscordCardElement>
-          <DiscordCardElement sm={4}>
-            <DiscordCardElementDiv>
-              <DiscordText>2. Add bot</DiscordText>
-              {guildId && !discordBotAdded?.checkDiscordBotAdded?.botAdded ? (
-                <>
-                  <AddGuildButton
+        <DiscordText>For private channels, please ensure that the bot is added as a role</DiscordText>
+        {!discordNotificationConfigData?.channelId && (
+          <>
+            <DiscordCard container spacing={2}>
+              <DiscordCardElement sm={4}>
+                <DiscordCardElementDiv>
+                  <DiscordText>1. Paste invite link</DiscordText>
+                  <InputForm
                     style={{
-                      border: '1px solid deepskyblue',
-                      backgroundColor: '#272729',
+                      background: '#272729',
                     }}
-                    href={`${BOT_URL}&guild_id=${guildId}`}
-                    target="_blank"
-                  >
-                    <DiscordText
-                      style={{
-                        color: White,
-                        fontSize: '14px',
-                        marginBottom: '0',
-                      }}
-                    >
-                      Add Wonder bot
-                    </DiscordText>
-                  </AddGuildButton>
-                </>
-              ) : (
-                <>
-                  <AddGuildButton disabled>
-                    <DiscordText
-                      style={{
-                        color: '#8b8b8c',
-                        fontSize: '14px',
-                        marginBottom: '0',
-                      }}
-                    >
-                      {discordBotAdded?.checkDiscordBotAdded?.botAdded ? 'Wonder bot added' : 'Add Wonder bot'}
-                    </DiscordText>
-                  </AddGuildButton>
-                </>
-              )}
-            </DiscordCardElementDiv>
-          </DiscordCardElement>
-          <DiscordCardElement sm={4}>
-            <DiscordCardElementDiv>
-              <DiscordText>3. Set channel</DiscordText>
-              <DropdownSelect
-                value={selectedChannel}
-                setValue={setSelectedChannel}
-                formSelectStyle={{
-                  height: 'auto',
-                }}
-                innerStyle={{
-                  marginTop: '0',
-                  background: '#272729',
-                }}
-                options={filteredDiscordChannels}
-              ></DropdownSelect>
-            </DiscordCardElementDiv>
-          </DiscordCardElement>
-        </DiscordCard>
+                    value={discordInviteLink}
+                    onChange={(e) => setDiscordInviteLink(e.target.value)}
+                  />
+                  {!!discordInviteLinkError && <ErrorText>{discordInviteLinkError}</ErrorText>}
+                </DiscordCardElementDiv>
+              </DiscordCardElement>
+              <DiscordCardElement sm={4}>
+                <DiscordCardElementDiv>
+                  <DiscordText>2. Add bot</DiscordText>
+                  {guildId && !discordBotAdded?.checkDiscordBotAdded?.botAdded ? (
+                    <>
+                      <AddGuildButton
+                        style={{
+                          border: '1px solid deepskyblue',
+                          backgroundColor: '#272729',
+                        }}
+                        href={`${BOT_URL}&guild_id=${guildId}`}
+                        target="_blank"
+                      >
+                        <DiscordText
+                          style={{
+                            color: White,
+                            fontSize: '14px',
+                            marginBottom: '0',
+                          }}
+                        >
+                          Add Wonder bot
+                        </DiscordText>
+                      </AddGuildButton>
+                    </>
+                  ) : (
+                    <>
+                      <AddGuildButton disabled>
+                        <DiscordText
+                          style={{
+                            color: '#8b8b8c',
+                            fontSize: '14px',
+                            marginBottom: '0',
+                          }}
+                        >
+                          {discordBotAdded?.checkDiscordBotAdded?.botAdded ? 'Wonder bot added' : 'Add Wonder bot'}
+                        </DiscordText>
+                      </AddGuildButton>
+                    </>
+                  )}
+                </DiscordCardElementDiv>
+              </DiscordCardElement>
+              <DiscordCardElement sm={4}>
+                <DiscordCardElementDiv>
+                  <DiscordText>3. Set channel</DiscordText>
+                  <DropdownSelect
+                    value={selectedChannel}
+                    setValue={setSelectedChannel}
+                    formSelectStyle={{
+                      height: 'auto',
+                    }}
+                    innerStyle={{
+                      marginTop: '0',
+                      background: '#272729',
+                    }}
+                    options={filteredDiscordChannels}
+                  ></DropdownSelect>
+                </DiscordCardElementDiv>
+              </DiscordCardElement>
+            </DiscordCard>
+            {selectedChannel && (
+              <>
+                <CreateFormPreviewButton
+                  style={{
+                    float: 'right',
+                    marginTop: '24px',
+                  }}
+                  onClick={() => {
+                    manualDiscordOrgSetup({
+                      variables: {
+                        guildId,
+                        orgId,
+                        channelId: selectedChannel,
+                      },
+                      refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS],
+                    });
+                  }}
+                >
+                  Save changes
+                </CreateFormPreviewButton>
+                {saveDiscordOrgError && (
+                  <ErrorText>
+                    Failed to set up Discord for organization: {saveDiscordOrgError?.message || saveDiscordOrgError}
+                  </ErrorText>
+                )}
+              </>
+            )}
+          </>
+        )}
         {discordNotificationConfigData?.channelId && (
           <CurrentNotificationSetting discordNotificationConfigData={discordNotificationConfigData} orgId={orgId} />
         )}

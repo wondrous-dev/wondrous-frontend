@@ -445,7 +445,7 @@ export const Snackbar = styled(SnackbarComp)`
 
 export const DiscordText = styled(Typography)`
   && {
-    font-size: 16px;
+    font-size: 14px;
     color: ${White};
     margin-bottom: 8px;
   }
