@@ -286,6 +286,7 @@ export const GeneralSettingsDAOHeaderImage = styled((props) => (
     style={{
       width: '100%',
       height: 'auto',
+      objectFit: 'contain',
       marginTop: '30px',
     }}
   />
@@ -415,6 +416,7 @@ export const ImageUploadBlockInputLabel = styled.label`
 export const ImageUploadBlockUploadedImg = styled.img`
   margin: 20px 0 10px;
   border-radius: 4px;
+  object-fit: contain;
 `;
 
 export const ImageUploadBlockRemoveButton = styled(MuiButton)`
