@@ -165,9 +165,7 @@ const GeneralSettingsComponent = (props) => {
             updateFilesCb={(file) => handleImageChange(file, 'profile')}
           />
         )}
-        {newProfile?.headerPicture && !headerImage ? (
-          <GeneralSettingsDAOHeaderImage src={newProfile?.headerPicture} />
-        ) : null}
+        {newProfile?.headerPicture && !headerImage && <GeneralSettingsDAOHeaderImage src={newProfile?.headerPicture} />}
         {!isPod && (
           <ImageUpload
             image={headerImage}
@@ -484,6 +482,15 @@ const GeneralSettings = () => {
     },
   });
 
+  function handleImageFile(file) {
+    if (!file) return { filename: null, fileType: null, file: null };
+    const fileName = file?.name;
+    // get image preview
+    const { fileType, filename } = getFilenameAndType(fileName);
+    const imageFile = `tmp/${orgId}/` + filename;
+    return { filename: imageFile, fileType, file };
+  }
+
   async function handleImageChange(file, imageType) {
     const type = {
       header: {
@@ -497,15 +504,12 @@ const GeneralSettings = () => {
     };
     const imageTypeForUpdate = type[imageType];
     imageTypeForUpdate.setState(file);
-    if (file) {
-      const fileName = file?.name;
-      // get image preview
-      const { fileType, filename } = getFilenameAndType(fileName);
-      const imagePrefix = `tmp/${orgId}/`;
-      const imageFile = imagePrefix + filename;
-      await uploadMedia({ filename: imageFile, fileType, file });
-      setOrgProfile({ ...orgProfile, [imageTypeForUpdate.orgProfileKey]: imageFile });
-    }
+    const imageFile = handleImageFile(file);
+    await uploadMedia(imageFile);
+    setOrgProfile({
+      ...orgProfile,
+      [imageTypeForUpdate.orgProfileKey]: imageFile.filename ?? originalOrgProfile[imageTypeForUpdate.orgProfileKey],
+    });
   }
 
   function handleDescriptionChange(e) {
