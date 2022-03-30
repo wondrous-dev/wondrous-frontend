@@ -28,6 +28,8 @@ import {
   LabelBlock,
   Snackbar,
   LabelBlockText,
+  GeneralSettingsDAOProfileImage,
+  GeneralSettingsDAOHeaderImage,
 } from './styles';
 import TwitterPurpleIcon from '../Icons/twitterPurple';
 import LinkedInIcon from '../Icons/linkedIn';
@@ -38,7 +40,6 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_BY_ID, GET_DISCORD_WEBHOOK_INFO_FOR_ORG } from '../../graphql/queries/org';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { getFilenameAndType, uploadMedia } from '../../utils/media';
-import { SafeImage } from '../Common/Image';
 import { GET_POD_BY_ID } from '../../graphql/queries/pod';
 import { UPDATE_POD } from '../../graphql/mutations/pod';
 import { CreateFormAddDetailsInputLabel, CreateFormAddDetailsTab } from '../CreateEntity/styles';
@@ -90,7 +91,6 @@ const GeneralSettingsComponent = (props) => {
     descriptionText,
     handleDescriptionChange,
     links,
-    handleLogoChange,
     handleLinkChange,
     resetChanges,
     saveChanges,
@@ -98,6 +98,8 @@ const GeneralSettingsComponent = (props) => {
     setIsPrivate,
     discordWebhookLink,
     setDiscordWebhookLink,
+    headerImage,
+    handleImageChange,
   } = props;
 
   const [newLink, setNewLink] = useState({
@@ -152,14 +154,7 @@ const GeneralSettingsComponent = (props) => {
           </GeneralSettingsDAODescriptionBlock>
         </GeneralSettingsInputsBlock>
         {newProfile?.profilePicture && !logoImage ? (
-          <SafeImage
-            src={newProfile?.profilePicture}
-            style={{
-              width: '52px',
-              height: '52px',
-              marginTop: '30px',
-            }}
-          />
+          <GeneralSettingsDAOProfileImage src={newProfile?.profilePicture} />
         ) : null}
         {!isPod && (
           <ImageUpload
@@ -167,16 +162,21 @@ const GeneralSettingsComponent = (props) => {
             imageWidth={52}
             imageHeight={52}
             imageName="Logo"
-            updateFilesCb={handleLogoChange}
+            updateFilesCb={(file) => handleImageChange(file, 'profile')}
           />
         )}
-        {/* <ImageUpload
-      image={bannerImage}
-      imageWidth={1350}
-      imageHeight={259}
-      imageName="Banner"
-      updateFilesCb={setBannerImage}
-    /> */}
+        {newProfile?.headerPicture && !headerImage ? (
+          <GeneralSettingsDAOHeaderImage src={newProfile?.headerPicture} />
+        ) : null}
+        {!isPod && (
+          <ImageUpload
+            image={headerImage}
+            imageWidth="1035"
+            imageHeight="200"
+            imageName="Header"
+            updateFilesCb={(file) => handleImageChange(file, 'header')}
+          />
+        )}
         {isPod && (
           <GeneralSettingsInputsBlock>
             <GeneralSettingsDAONameBlock>
@@ -439,7 +439,7 @@ const GeneralSettings = () => {
   const [logoImage, setLogoImage] = useState('');
   const [orgProfile, setOrgProfile] = useState(null);
   const [originalOrgProfile, setOriginalOrgProfile] = useState(null);
-  const [bannerImage, setBannerImage] = useState('');
+  const [headerImage, setHeaderImage] = useState('');
   const [orgLinks, setOrgLinks] = useState([]);
   const [descriptionText, setDescriptionText] = useState('');
   const [toast, setToast] = useState({ show: false, message: '' });
@@ -484,18 +484,27 @@ const GeneralSettings = () => {
     },
   });
 
-  async function handleLogoChange(file) {
-    setLogoImage(file);
-
+  async function handleImageChange(file, imageType) {
+    const type = {
+      header: {
+        setState: (file) => setHeaderImage(file),
+        orgProfileKey: 'headerPicture',
+      },
+      profile: {
+        setState: (file) => setLogoImage(file),
+        orgProfileKey: 'profilePicture',
+      },
+    };
+    const imageTypeForUpdate = type[imageType];
+    imageTypeForUpdate.setState(file);
     if (file) {
       const fileName = file?.name;
       // get image preview
       const { fileType, filename } = getFilenameAndType(fileName);
       const imagePrefix = `tmp/${orgId}/`;
-      const profilePicture = imagePrefix + filename;
-      await uploadMedia({ filename: profilePicture, fileType, file });
-
-      setOrgProfile({ ...orgProfile, profilePicture });
+      const imageFile = imagePrefix + filename;
+      await uploadMedia({ filename: imageFile, fileType, file });
+      setOrgProfile({ ...orgProfile, [imageTypeForUpdate.orgProfileKey]: imageFile });
     }
   }
 
@@ -551,7 +560,6 @@ const GeneralSettings = () => {
       handleDescriptionChange={handleDescriptionChange}
       handleLinkChange={(event, item) => handleLinkChange(event, item, { ...orgLinks }, setOrgLinks)}
       links={orgLinks}
-      handleLogoChange={handleLogoChange}
       logoImage={logoImage}
       newProfile={orgProfile}
       resetChanges={resetChanges}
@@ -560,6 +568,8 @@ const GeneralSettings = () => {
       setProfile={setOrgProfile}
       setDiscordWebhookLink={setDiscordWebhookLink}
       discordWebhookLink={discordWebhookLink}
+      headerImage={headerImage}
+      handleImageChange={handleImageChange}
     />
   );
 };

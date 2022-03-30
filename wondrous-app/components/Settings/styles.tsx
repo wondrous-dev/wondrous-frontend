@@ -9,6 +9,7 @@ import LogoutIcon from '../Icons/logout';
 import { GradientHighlightHorizontal } from '../Common/gradients';
 import { Discord } from '../Icons/discord';
 import { Black, White } from '../../theme/colors';
+import { SafeImage } from '@components/Common/Image';
 
 export const SettingsContainer = styled.div`
   position: relative;
@@ -268,6 +269,27 @@ export const GeneralSettingsDAODescriptionInputCounter = styled(Typography)`
     color: #7a7a7a;
   }
 `;
+
+export const GeneralSettingsDAOProfileImage = styled((props) => (
+  <SafeImage
+    {...props}
+    style={{
+      width: '52px',
+      height: '52px',
+      marginTop: '30px',
+    }}
+  />
+))``;
+export const GeneralSettingsDAOHeaderImage = styled((props) => (
+  <SafeImage
+    {...props}
+    style={{
+      width: '100%',
+      height: 'auto',
+      marginTop: '30px',
+    }}
+  />
+))``;
 
 //socials block
 export const GeneralSettingsSocialsBlock = styled.div`
