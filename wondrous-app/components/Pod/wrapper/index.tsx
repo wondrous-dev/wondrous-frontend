@@ -22,7 +22,7 @@ import {
   HeaderFollowButton,
   HeaderFollowButtonIcon,
   HeaderFollowButtonText,
-  HeaderImage,
+  HeaderImageDefault,
   HeaderMainBlock,
   HeaderManageSettingsButton,
   HeaderSettingsLockedButton,
@@ -33,6 +33,7 @@ import {
   HeaderInviteButton,
   PlusIconWrapper,
   HeaderTitleIcon,
+  HeaderImageWrapper,
 } from '../../organization/wrapper/styles';
 import { MoreInfoModal } from '../../profile/modals';
 import SideBarComponent from '../../SideBar';
@@ -112,7 +113,9 @@ const Wrapper = (props) => {
             paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
           }}
         >
-          <HeaderImage />
+          <HeaderImageWrapper>
+            <HeaderImageDefault />
+          </HeaderImageWrapper>
           <Content>
             <ContentContainer>
               <TokenHeader>
