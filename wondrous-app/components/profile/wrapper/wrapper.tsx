@@ -17,7 +17,6 @@ import {
   HeaderActivityLinkIcon,
   HeaderButtons,
   HeaderEditProfileButton,
-  HeaderImage,
   HeaderMainBlock,
   HeaderOrgCount,
   HeaderOrgCountText,
@@ -29,6 +28,8 @@ import {
   HeaderUserName,
   OverviewComponent,
   TokenHeader,
+  HeaderImageDefault,
+  HeaderImageWrapper,
 } from './styles';
 
 const Wrapper = (props) => {
@@ -67,7 +68,9 @@ const Wrapper = (props) => {
             paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
           }}
         >
-          <HeaderImage />
+          <HeaderImageWrapper>
+            <HeaderImageDefault />
+          </HeaderImageWrapper>
           <Content>
             <ContentContainer>
               <TokenHeader>

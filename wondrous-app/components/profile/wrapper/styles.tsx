@@ -1,4 +1,5 @@
 import { Button, IconButton, Typography } from '@material-ui/core';
+import Image from 'next/image';
 import styled from 'styled-components';
 import { Background } from '../../../theme/colors';
 import { Button as ButtonComponent } from '../../Common/button';
@@ -16,14 +17,17 @@ export const OverviewComponent = styled.section`
   padding-bottom: 40px;
 `;
 
-export const HeaderImage = styled.div`
+export const HeaderImageWrapper = styled.div`
   width: 100%;
-  height: 220px;
-  background-image: url('/images/overview/background.png');
-  //background-repeat: no-repeat;
-  background-position: center;
+  height: 200px;
   margin-top: 70px;
+  overflow: hidden;
+  position: relative;
 `;
+
+export const HeaderImageDefault = styled(() => (
+  <Image src="/images/overview/background.png" layout="fill" objectFit="cover" alt="header-image" />
+))``;
 
 export const TokenHeader = styled.div`
   position: relative;
