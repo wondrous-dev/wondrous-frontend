@@ -1,9 +1,10 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
-import { bindSectionToColumns } from '@utils/board';
+import { ViewType } from '../../../types/common';
+import { bindSectionToColumns, sectionOpeningReducer } from '@utils/board';
 import { useRouterQuery } from '@utils/hooks';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { withAuth } from '../../../components/Auth/withAuth';
 import Boards from '../../../components/organization/boards/boards';
 import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
@@ -144,8 +145,8 @@ const useGetTaskRelatedToUser = ({ podIds, userId, orgId, statuses, setColumns, 
   return { fetchMore: getTasksRelatedToUserFetchMore };
 };
 
-const useGetOrgTaskBoardProposals = ({ isProposalCardOpen, columns, setColumns, orgId, statuses, podIds }) => {
-  const [getOrgTaskProposals] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
+const useGetOrgTaskBoardProposals = ({ listView, section, columns, setColumns, orgId, statuses, podIds }) => {
+  const [getOrgTaskProposals, { data }] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
@@ -161,7 +162,7 @@ const useGetOrgTaskBoardProposals = ({ isProposalCardOpen, columns, setColumns, 
     },
   });
   useEffect(() => {
-    if (isProposalCardOpen)
+    if (section === TASK_STATUS_REQUESTED || listView || data)
       getOrgTaskProposals({
         variables: {
           podIds,
@@ -171,11 +172,11 @@ const useGetOrgTaskBoardProposals = ({ isProposalCardOpen, columns, setColumns, 
           limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
         },
       });
-  }, [isProposalCardOpen, getOrgTaskProposals, orgId, statuses, podIds]);
+  }, [getOrgTaskProposals, orgId, statuses, podIds, section, listView, data]);
 };
 
-const useGetOrgTaskBoardSubmissions = ({ isSubmissionCardOpen, columns, setColumns, orgId, statuses, podIds }) => {
-  const [getOrgTaskSubmissions] = useLazyQuery(GET_ORG_TASK_BOARD_SUBMISSIONS, {
+const useGetOrgTaskBoardSubmissions = ({ listView, section, columns, setColumns, orgId, statuses, podIds }) => {
+  const [getOrgTaskSubmissions, { data }] = useLazyQuery(GET_ORG_TASK_BOARD_SUBMISSIONS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
@@ -191,7 +192,7 @@ const useGetOrgTaskBoardSubmissions = ({ isSubmissionCardOpen, columns, setColum
     },
   });
   useEffect(() => {
-    if (isSubmissionCardOpen) {
+    if (section === TASK_STATUS_IN_REVIEW || listView || data) {
       getOrgTaskSubmissions({
         variables: {
           podIds,
@@ -202,11 +203,11 @@ const useGetOrgTaskBoardSubmissions = ({ isSubmissionCardOpen, columns, setColum
         },
       });
     }
-  }, [isSubmissionCardOpen, getOrgTaskSubmissions, orgId, statuses, podIds]);
+  }, [getOrgTaskSubmissions, orgId, statuses, podIds, section, listView, data]);
 };
 
 const useGetOrgTaskBoard = ({
-  currentCard,
+  section,
   columns,
   setColumns,
   setOrgTaskHasMore,
@@ -215,6 +216,7 @@ const useGetOrgTaskBoard = ({
   statuses,
   podIds,
   userId,
+  view,
 }) => {
   const board = {
     [userId]: useGetTaskRelatedToUser({
@@ -239,10 +241,9 @@ const useGetOrgTaskBoard = ({
   };
   const { fetchMore } = userId ? board[userId] : board.withoutUserId;
 
-  const isProposalCardOpen = currentCard === TASK_STATUS_REQUESTED;
-  const isSubmissionCardOpen = currentCard === TASK_STATUS_IN_REVIEW;
-  useGetOrgTaskBoardProposals({ isProposalCardOpen, columns, setColumns, orgId, statuses, podIds });
-  useGetOrgTaskBoardSubmissions({ isSubmissionCardOpen, columns, setColumns, orgId, statuses, podIds });
+  const listView = view === ViewType.List;
+  useGetOrgTaskBoardProposals({ listView, section, columns, setColumns, orgId, statuses, podIds });
+  useGetOrgTaskBoardSubmissions({ listView, section, columns, setColumns, orgId, statuses, podIds });
   return { fetchMore };
 };
 
@@ -254,8 +255,8 @@ const BoardsPage = () => {
   const [orgData, setOrgData] = useState(null);
   const [searchString, setSearchString] = useState('');
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
-  const [currentCard, setCurrentCard] = useState('');
-  const { username, orgId, search, userId, boardType } = router.query;
+  const [section, setSection] = useReducer(sectionOpeningReducer, '');
+  const { username, orgId, search, userId, boardType, view } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -263,7 +264,8 @@ const BoardsPage = () => {
   const [getOrgPods, { data: { getOrgPods: orgPods = [] } = {} }] = useLazyQuery(GET_ORG_PODS);
 
   const { fetchMore } = useGetOrgTaskBoard({
-    currentCard,
+    view,
+    section,
     columns,
     setColumns,
     setOrgTaskHasMore,
@@ -524,13 +526,6 @@ const BoardsPage = () => {
     );
   }
 
-  const handleCardOpening = (section, isOpen) => {
-    const taskToSection = [TASK_STATUS_REQUESTED, TASK_STATUS_IN_REVIEW].find(
-      (taskType) => taskType === section?.filter?.taskType
-    );
-    if (taskToSection && taskToSection !== currentCard && isOpen) setCurrentCard(taskToSection);
-  };
-
   return (
     <OrgBoardContext.Provider
       value={{
@@ -545,11 +540,11 @@ const BoardsPage = () => {
           : null,
         setFirstTimeFetch,
         orgData,
+        setSection,
       }}
     >
       <Boards
         orgPods={orgPods}
-        handleCardOpening={handleCardOpening}
         selectOptions={SELECT_OPTIONS}
         columns={columns}
         searchString={searchString}

@@ -170,3 +170,10 @@ export const bindSectionToColumns = ({ columns, data, section }) => {
   newColumns[columnIndex].section.tasks = _.cloneDeep(data);
   return newColumns;
 };
+
+export const sectionOpeningReducer = (currentCard, { section, isOpen }) => {
+  const taskToSection = [TASK_STATUS_REQUESTED, TASK_STATUS_IN_REVIEW].find(
+    (taskType) => taskType === section?.filter?.taskType
+  );
+  if (taskToSection && taskToSection !== currentCard && isOpen) return taskToSection;
+};

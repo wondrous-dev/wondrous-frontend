@@ -56,7 +56,7 @@ const HEADER_ICONS = {
 };
 
 const TaskColumn = (props: ITaskColumn) => {
-  const { cardsList, moveCard, status, section, onCardOpeningCallback } = props;
+  const { cardsList, moveCard, status, section } = props;
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
@@ -101,7 +101,7 @@ const TaskColumn = (props: ITaskColumn) => {
         <TaskColumnContainerHeaderTitle>{TITLES[status]}</TaskColumnContainerHeaderTitle>
         <TaskColumnContainerCount>{number}</TaskColumnContainerCount>
       </TaskColumnContainerHeader>
-      <ColumnSection section={section} setSection={() => {}} onOpenCallback={onCardOpeningCallback} />
+      <ColumnSection section={section} setSection={() => {}} />
       <Droppable droppableId={status}>
         {(provided) => (
           <TaskListContainer ref={provided.innerRef} {...provided.droppableProps}>
