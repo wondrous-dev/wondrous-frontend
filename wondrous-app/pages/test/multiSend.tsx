@@ -23,7 +23,7 @@ import {
 } from '@gnosis.pm/safe-service-client';
 import { GET_SUBMISSIONS_PAYMENT_INFO } from '../../graphql/queries';
 import { PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS } from '../../graphql/mutations';
-import { useWonderWeb3 } from '@services/web3';
+import { useWonderWeb3 } from 'services/web3';
 
 const CHAIN = 'rinkeby'; // there's currently a safe set up at this address, can add people to owner of safe
 const GNOSIS_SAFE_ADDR = '0x3c6645cf6e3D33Ec84c731972acDEf100939eE94'; // update to user wallet

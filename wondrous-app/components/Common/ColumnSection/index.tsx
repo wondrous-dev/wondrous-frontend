@@ -54,7 +54,7 @@ export const ColumnSection = ({ section, setSection }) => {
       break;
   }
   // TODO get counts for proposals
-  const count = tasks.length;
+  const count = tasks?.length;
 
   const toggleSection = () => {
     if (!isPublic) {
@@ -117,10 +117,10 @@ export const ColumnSection = ({ section, setSection }) => {
         </SectionChevronContainer>
       </SectionHeaderContainer>
       <SectionContainer in={isOpen}>
-        {tasks.slice(0, 2).map((task) => (
+        {tasks?.slice(0, 2).map((task) => (
           <TaskSummary key={task.id} task={task} setTask={setTask} action={action} taskType={type} />
         ))}
-        {(tasks.length >= 2 || number >= 2) && !isPublic ? (
+        {(tasks?.length >= 2 || number >= 2) && !isPublic ? (
           <TaskSummaryFooter onClick={openModal}>See more</TaskSummaryFooter>
         ) : (
           ''

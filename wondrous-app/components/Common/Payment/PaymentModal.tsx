@@ -37,8 +37,8 @@ import Link from 'next/link';
 import { White, Blue20 } from '../../../theme/colors';
 import { CreateFormPreviewButton, CreateFormRewardCurrency } from '../../CreateEntity/styles';
 import InputForm from '../InputForm/inputForm';
-import CloseModalIcon from '@components/Icons/closeModal';
-import { ErrorText } from '@components/Onboarding/styles';
+import CloseModalIcon from 'components/Icons/closeModal';
+import { ErrorText } from 'components/Onboarding/styles';
 
 const GoBackStyle = {
   color: White,

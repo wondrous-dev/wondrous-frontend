@@ -1,4 +1,4 @@
-import { PRIVACY_LEVEL } from '@utils/constants';
+import { PRIVACY_LEVEL } from 'utils/constants';
 import { useEffect } from 'react';
 import { TabsVisibility } from '../TabsVisibility';
 

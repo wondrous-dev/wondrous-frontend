@@ -1,6 +1,6 @@
-import { PaddedParagraph } from '@components/Common/text';
+import { PaddedParagraph } from 'components/Common/text';
 import WonderAbstractConnector from './AbstractConnector';
-import { WalletConnect } from '@components/Icons/walletconnect';
+import { WalletConnect } from 'components/Icons/walletconnect';
 
 export default function WalletConnectConnector({ text = 'Log in with WalletConnect' }: { text?: string }) {
   return (

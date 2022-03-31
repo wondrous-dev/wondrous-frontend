@@ -1,6 +1,6 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
-import { ViewType } from '../../../types/common';
-import { bindSectionToColumns, sectionOpeningReducer } from '@utils/board';
+import { ViewType } from 'types/common';
+import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';

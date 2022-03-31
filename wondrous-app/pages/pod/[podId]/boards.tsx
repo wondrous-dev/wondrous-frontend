@@ -1,11 +1,11 @@
-import { useLazyQuery, useQuery } from '@apollo/client';
-import Boards from '@components/Common/Boards';
-import Wrapper from '@components/Pod/wrapper';
-import { ViewType } from '../../../types/common';
-import { bindSectionToColumns, sectionOpeningReducer } from '@utils/board';
-import { useRouterQuery } from '@utils/hooks';
-import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { ViewType } from 'types/common';
+import Boards from 'components/Common/Boards';
+import Wrapper from 'components/Pod/wrapper';
+import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
+import { useRouterQuery } from 'utils/hooks';
+import { useRouter } from 'next/router';
 import { withAuth } from '../../../components/Auth/withAuth';
 import { GET_USER_PERMISSION_CONTEXT, SEARCH_POD_USERS } from '../../../graphql/queries';
 import { GET_POD_BY_ID } from '../../../graphql/queries/pod';

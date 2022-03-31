@@ -134,7 +134,7 @@ import {
   GET_ELIGIBLE_REVIEWERS_FOR_ORG,
   GET_ELIGIBLE_REVIEWERS_FOR_POD,
 } from '../../graphql/queries/task';
-import { TabsVisibilityCreateEntity } from '@components/Common/TabsVisibilityCreateEntity';
+import { TabsVisibilityCreateEntity } from 'components/Common/TabsVisibilityCreateEntity';
 
 const filterUserOptions = (options) => {
   if (!options) return [];

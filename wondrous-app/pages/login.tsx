@@ -13,10 +13,10 @@ import { Grey50 } from '../theme/colors';
 import { EmailIcon, LockIcon } from '../components/Icons/userpass';
 import { useWonderWeb3 } from '../services/web3';
 import { emailSignin, getUserSigningMessage, walletSignin } from '../components/Auth/withAuth';
-import MetaMaskConnector from '@components/WalletConnectors/MetaMask';
-import signedMessageIsString from '@services/web3/utils/signedMessageIsString';
+import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
+import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import styled from 'styled-components';
-import CoinbaseConnector from '@components/WalletConnectors/Coinbase';
+import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 
 const prod = process.env.NEXT_PUBLIC_PRODUCTION;
 

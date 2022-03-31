@@ -16,7 +16,7 @@ import theme from '../theme/theme';
 import { IsMobileContext } from '../utils/contexts';
 import { initHotjar } from '../utils/hotjar';
 import { Web3ReactProvider } from '@web3-react/core';
-import { WonderWeb3Provider } from '@services/web3/context/WonderWeb3Context';
+import { WonderWeb3Provider } from 'services/web3/context/WonderWeb3Context';
 
 declare global {
   interface Window {
