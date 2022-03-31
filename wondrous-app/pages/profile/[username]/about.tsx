@@ -10,11 +10,7 @@ import { GET_USER_FROM_USERNAME, GET_USER_PROFILE } from '../../../graphql/queri
 import { parseLinks } from '../../../utils/common';
 
 export const AboutSection = styled.div`
-  max-width: 1038px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  margin-top: 24px;
+  margin-top: 32px;
 `;
 
 const useGetUserProfile = (id, username) => {
@@ -38,16 +34,14 @@ const useGetUserProfile = (id, username) => {
   return getUserProfileData?.getUser ?? getUserFromUsernameData?.getUserFromUsername ?? {};
 };
 
-const About = (props) => {
+const About = () => {
   const router = useRouter();
   const { username, id: routerId } = router.query;
   const userProfile = useGetUserProfile(routerId, username);
-  const { links, id: userProfileId } = userProfile;
-  const parsedLinks = parseLinks(links);
+  const { id: userProfileId } = userProfile;
   return (
-    <Wrapper userProfileData={userProfile} mainLink={parsedLinks?.mainLink}>
+    <Wrapper userProfileData={userProfile}>
       <AboutSection>
-        <UserLinksTable parsedLinks={parsedLinks} />
         <UserAboutInfo id={userProfileId} />
       </AboutSection>
     </Wrapper>

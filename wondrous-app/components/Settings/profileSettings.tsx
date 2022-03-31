@@ -1,7 +1,24 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { SettingsWrapper } from './settingsWrapper';
+import { useMutation } from '@apollo/client';
+import { DiscordIcon } from '@components/Icons/discord';
+import LinkBigIcon from '@components/Icons/link';
+import OpenSeaIcon from '@components/Icons/openSea';
+import TwitterPurpleIcon from '@components/Icons/twitterPurple';
+import _ from 'lodash';
+import React, { useContext, useEffect, useState } from 'react';
+import { SnackbarAlertContext } from '../../components/Common/SnackbarAlert';
+import { UPDATE_USER } from '../../graphql/mutations';
+import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
+import { getDiscordUrl } from '../../utils';
+import { CHAR_LIMIT_PROFILE_BIO, USERNAME_REGEX, validateEmail } from '../../utils/constants';
+import { getFilenameAndType, uploadMedia } from '../../utils/media';
+import { ErrorText } from '../Common';
+import { SafeImage } from '../Common/Image';
+import { ProfilePictureDiv } from '../Onboarding/styles';
 import { HeaderBlock } from './headerBlock';
 import { ImageUpload } from './imageUpload';
+import { InputField } from './inputField';
+import { LinkSquareIcon } from './linkSquareIcon';
+import { SettingsWrapper } from './settingsWrapper';
 import {
   GeneralSettingsButtonsBlock,
   GeneralSettingsContainer,
@@ -15,21 +32,105 @@ import {
   GeneralSettingsIntegrationsBlockButtonIcon,
   GeneralSettingsResetButton,
   GeneralSettingsSaveChangesButton,
+  GeneralSettingsSocialsBlock,
+  GeneralSettingsSocialsBlockRow,
+  GeneralSettingsSocialsBlockWrapper,
   LabelBlock,
-  DiscordText,
 } from './styles';
-import { useMutation } from '@apollo/client';
-import { UPDATE_USER } from '../../graphql/mutations';
-import { getFilenameAndType, uploadMedia } from '../../utils/media';
-import { ProfilePictureDiv } from '../Onboarding/styles';
-import { SafeImage } from '../Common/Image';
-import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
-import { CHAR_LIMIT_PROFILE_BIO, USERNAME_REGEX, validateEmail } from '../../utils/constants';
-import { ErrorText } from '../Common';
-import { SnackbarAlertContext } from '../../components/Common/SnackbarAlert';
-import { getDiscordUrl } from '../../utils';
 
 const discordUrl = getDiscordUrl();
+
+const socialsData = [
+  {
+    icon: <TwitterPurpleIcon />,
+    link: 'https://twitter.com/',
+    type: 'twitter',
+  },
+  {
+    icon: <DiscordIcon />,
+    link: 'https://discord.gg/',
+    type: 'discord',
+  },
+  {
+    icon: <OpenSeaIcon />,
+    link: 'https://opensea.io/',
+    type: 'opensea',
+  },
+];
+
+const setLinkTypeWebsite = (links) => {
+  const defaultTypeLink = [
+    {
+      type: 'website',
+      url: '',
+      displayName: '',
+    },
+  ];
+  const linkTypeLinks = links?.filter((i) => i.type === 'website') ?? defaultTypeLink;
+  const linkTypeData = linkTypeLinks?.length > 0 ? linkTypeLinks : defaultTypeLink;
+  return linkTypeData;
+};
+
+const updateLinks = ({ links, url, item }) => {
+  const unchangedLinks = _.cloneDeep(links)?.filter((link) => link.type !== item.type) ?? [];
+  const updatedLink = {
+    url,
+    displayName: url,
+    type: item.type,
+  };
+  const updatedLinks = unchangedLinks.concat(updatedLink).filter((i) => i.url !== '');
+  return updatedLinks;
+};
+
+const useLoggedInUserLinks = (userLinks) => {
+  const [links, setLinks] = useState();
+  useEffect(() => {
+    setLinks(
+      // NOTE: __typename needs to be removed from the links because it will cause an error during the mutation
+      userLinks?.map(({ __typename, ...userLinks }) => {
+        return { ...userLinks };
+      })
+    );
+  }, [userLinks]);
+  return [links, setLinks];
+};
+
+const SettingsLinks = ({ links, setLinks }) => {
+  const linkTypeWebsite = setLinkTypeWebsite(links);
+  const handleLinkChange = (event, item) => {
+    const url = event.currentTarget.value;
+    setLinks(updateLinks({ links, url, item }));
+  };
+  return (
+    <>
+      <GeneralSettingsSocialsBlock>
+        <LabelBlock>Socials</LabelBlock>
+        <GeneralSettingsSocialsBlockWrapper>
+          {socialsData.map((item) => {
+            const value = links?.filter((i) => i.type === item.type)[0]?.url;
+            return (
+              <GeneralSettingsSocialsBlockRow key={item.type}>
+                <LinkSquareIcon icon={item.icon} />
+                <InputField value={value} onChange={(e) => handleLinkChange(e, item)} />
+              </GeneralSettingsSocialsBlockRow>
+            );
+          })}
+        </GeneralSettingsSocialsBlockWrapper>
+      </GeneralSettingsSocialsBlock>
+      <GeneralSettingsSocialsBlock>
+        <LabelBlock>Links</LabelBlock>
+        <GeneralSettingsSocialsBlockWrapper>
+          {linkTypeWebsite.map((link) => (
+            <GeneralSettingsSocialsBlockRow key={link.type}>
+              <LinkSquareIcon icon={<LinkBigIcon />} />
+              <InputField value={link.url} onChange={(e) => handleLinkChange(e, link)} />
+            </GeneralSettingsSocialsBlockRow>
+          ))}
+        </GeneralSettingsSocialsBlockWrapper>
+      </GeneralSettingsSocialsBlock>
+    </>
+  );
+};
 
 const ProfileSettings = (props) => {
   const { loggedInUser } = props;
@@ -49,6 +150,7 @@ const ProfileSettings = (props) => {
     username: null,
     email: null,
   });
+  const [links, setLinks] = useLoggedInUserLinks(loggedInUser?.links);
   const handleUsernameChange = (e) => {
     const { value } = e.target;
     setUsername(value);
@@ -96,6 +198,7 @@ const ProfileSettings = (props) => {
           ...(profileBio && {
             bio: profileBio,
           }),
+          links,
         };
         if (email !== loggedInUser?.email) {
           input['email'] = email;
@@ -210,6 +313,8 @@ const ProfileSettings = (props) => {
             />
           )}
         </GeneralSettingsInputsBlock>
+
+        <SettingsLinks links={links} setLinks={setLinks} />
 
         <GeneralSettingsInputsBlock>
           <LabelBlock

@@ -14,6 +14,11 @@ export const LoggedinUserFragment = gql`
       discordUsername
     }
     signupCompleted
+    links {
+      url
+      displayName
+      type
+    }
   }
 `;
 
