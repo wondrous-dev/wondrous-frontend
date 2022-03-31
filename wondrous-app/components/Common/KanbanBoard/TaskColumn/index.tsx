@@ -38,7 +38,6 @@ interface ITaskColumn {
   status: string;
   section: Array<any>;
   onOpen: () => any;
-  onCardOpeningCallback: () => any;
 }
 
 const TITLES = {
