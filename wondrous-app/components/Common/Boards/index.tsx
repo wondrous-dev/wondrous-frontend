@@ -37,7 +37,6 @@ type Props = {
   statuses: string[];
   podIds?: string[];
   userId?: string;
-  handleCardOpening?: (section, isOpen) => any;
   setColumns: React.Dispatch<React.SetStateAction<{}>>;
 };
 
@@ -53,7 +52,6 @@ const Boards = (props: Props) => {
     statuses,
     podIds = [],
     setColumns,
-    handleCardOpening,
     userId,
   } = props;
   const router = useRouter();
@@ -107,13 +105,7 @@ const Boards = (props: Props) => {
     return view ? (
       <>
         {view === ViewType.Grid ? (
-          <KanbanBoard
-            columns={columns}
-            handleCardOpening={handleCardOpening}
-            onLoadMore={onLoadMore}
-            hasMore={hasMore}
-            setColumns={setColumns}
-          />
+          <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} setColumns={setColumns} />
         ) : (
           <Table columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
         )}
