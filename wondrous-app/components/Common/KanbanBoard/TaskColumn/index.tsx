@@ -93,7 +93,6 @@ const TaskColumn = (props: ITaskColumn) => {
       number = 0;
       break;
   }
-
   return (
     <TaskColumnContainer>
       <TaskColumnContainerHeader>

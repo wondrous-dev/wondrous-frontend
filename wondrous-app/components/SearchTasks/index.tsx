@@ -119,7 +119,10 @@ export default function SearchTasks({ onSearch }: Props) {
               <Option
                 key={taskOrUser.username}
                 onClick={() => {
-                  router.push({ pathname: location.pathname, query: { userId: taskOrUser.id } });
+                  router.push({
+                    pathname: location.pathname,
+                    query: { userId: taskOrUser.id, view: router.query.view ?? ViewType.Grid },
+                  });
                 }}
               >
                 {taskOrUser.profilePicture ? (

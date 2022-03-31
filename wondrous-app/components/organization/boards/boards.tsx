@@ -19,11 +19,23 @@ type Props = {
   statuses: string[];
   podIds: string[];
   setColumns: React.Dispatch<React.SetStateAction<{}>>;
+  userId?: string;
 };
 
 const OrgBoards = (props: Props) => {
-  const { columns, onLoadMore, hasMore, orgData, orgPods, onSearch, onFilterChange, statuses, podIds, setColumns } =
-    props;
+  const {
+    columns,
+    onLoadMore,
+    hasMore,
+    orgData,
+    orgPods,
+    onSearch,
+    onFilterChange,
+    statuses,
+    podIds,
+    setColumns,
+    userId,
+  } = props;
   const [filterSchema, setFilterSchema] = useState([
     {
       name: 'podIds',
@@ -60,6 +72,7 @@ const OrgBoards = (props: Props) => {
         statuses={statuses}
         podIds={podIds}
         setColumns={setColumns}
+        userId={userId}
       />
     </Wrapper>
   );

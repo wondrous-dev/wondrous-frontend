@@ -1,8 +1,9 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
-import { bindSectionToColumns } from '@utils/board';
+import { ViewType } from '../../../types/common';
+import { bindSectionToColumns, sectionOpeningReducer } from '@utils/board';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import {
   GET_JOIN_ORG_REQUESTS,
   GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
@@ -113,13 +114,15 @@ const useGetUserTaskBoardTasks = ({
 };
 
 const useGetUserTaskBoardProposals = ({
+  listView,
+  section,
   contributorColumns,
   setContributorColumns,
   loggedInUser,
   statuses,
   podIds,
 }) => {
-  const [getUserTaskBoardProposals] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
+  const [getUserTaskBoardProposals, { data }] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
@@ -135,26 +138,30 @@ const useGetUserTaskBoardProposals = ({
     },
   });
   useEffect(() => {
-    getUserTaskBoardProposals({
-      variables: {
-        podIds,
-        userId: loggedInUser?.id,
-        statuses: [STATUS_OPEN],
-        limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
-        offset: 0,
-      },
-    });
-  }, [loggedInUser, getUserTaskBoardProposals, statuses, podIds]);
+    if (section === TASK_STATUS_REQUESTED || listView || data) {
+      getUserTaskBoardProposals({
+        variables: {
+          podIds,
+          userId: loggedInUser?.id,
+          statuses: [STATUS_OPEN],
+          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
+          offset: 0,
+        },
+      });
+    }
+  }, [getUserTaskBoardProposals, listView, loggedInUser?.id, podIds, section, statuses, data]);
 };
 
 const useGetUserTaskBoardSubmissions = ({
+  listView,
+  section,
   contributorColumns,
   setContributorColumns,
   loggedInUser,
   statuses,
   podIds,
 }) => {
-  const [getUserTaskBoardSubmissions] = useLazyQuery(GET_USER_TASK_BOARD_SUBMISSIONS, {
+  const [getUserTaskBoardSubmissions, { data }] = useLazyQuery(GET_USER_TASK_BOARD_SUBMISSIONS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
@@ -170,19 +177,23 @@ const useGetUserTaskBoardSubmissions = ({
     },
   });
   useEffect(() => {
-    getUserTaskBoardSubmissions({
-      variables: {
-        podIds,
-        userId: loggedInUser?.id,
-        statuses: [STATUS_OPEN],
-        limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
-        offset: 0,
-      },
-    });
-  }, [loggedInUser, getUserTaskBoardSubmissions, statuses, podIds]);
+    if (section === TASK_STATUS_IN_REVIEW || listView || data) {
+      getUserTaskBoardSubmissions({
+        variables: {
+          podIds,
+          userId: loggedInUser?.id,
+          statuses: [STATUS_OPEN],
+          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
+          offset: 0,
+        },
+      });
+    }
+  }, [loggedInUser, getUserTaskBoardSubmissions, statuses, podIds, section, listView, data]);
 };
 
 const useGetUserTaskBoard = ({
+  view,
+  section,
   statuses,
   loggedInUser,
   setHasMoreTasks,
@@ -198,14 +209,26 @@ const useGetUserTaskBoard = ({
     statuses,
     podIds,
   });
-  useGetUserTaskBoardProposals({ contributorColumns, setContributorColumns, loggedInUser, statuses, podIds });
-  useGetUserTaskBoardSubmissions({
+  const listView = view === ViewType.List;
+  useGetUserTaskBoardProposals({
+    listView,
+    section,
     contributorColumns,
     setContributorColumns,
     loggedInUser,
     statuses,
     podIds,
   });
+  useGetUserTaskBoardSubmissions({
+    listView,
+    section,
+    contributorColumns,
+    setContributorColumns,
+    loggedInUser,
+    statuses,
+    podIds,
+  });
+
   return {
     getUserTaskBoardTasksFetchMore,
   };
@@ -367,11 +390,12 @@ const BoardsPage = (props) => {
   const selectMembershipHook = useSelectMembership();
   const router = useRouter();
   const loggedInUser = useMe();
-  const { search } = router.query;
+  const { search, view } = router.query;
   const [hasMoreTasks, setHasMoreTasks] = useState(true);
   const [contributorColumns, setContributorColumns] = useState([]);
   const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
   const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
+  const [section, setSection] = useReducer(sectionOpeningReducer, '');
   const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(loggedInUser);
   const { adminColumns } = useAdminColumns({
     isAdmin,
@@ -383,12 +407,14 @@ const BoardsPage = (props) => {
   });
   const filterSchema = useFilterSchema(loggedInUser, isAdmin);
   const { getUserTaskBoardTasksFetchMore } = useGetUserTaskBoard({
+    section,
     statuses,
     loggedInUser,
     setHasMoreTasks,
     contributorColumns,
     setContributorColumns,
     podIds,
+    view,
   });
 
   const bindProposalsToCols = (taskProposals) => {
@@ -603,6 +629,7 @@ const BoardsPage = (props) => {
           : null,
         loggedInUserId: loggedInUser?.id,
         joinOrgRequests: getJoinOrgRequestsData?.getJoinOrgRequests,
+        setSection,
       }}
     >
       <Boards

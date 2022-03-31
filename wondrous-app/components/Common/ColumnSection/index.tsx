@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TaskSummary } from '../TaskSummary';
 import { Requested, Chevron } from '../../Icons/sections';
 
@@ -61,6 +61,10 @@ export const ColumnSection = ({ section, setSection }) => {
       setIsOpen(!isOpen);
     }
   };
+
+  useEffect(() => {
+    board.setSection({ section, isOpen });
+  }, [board, isOpen, section]);
 
   const setTask = (task) => {
     tasks.filter((t) => t.id === task.id)[0] = task;

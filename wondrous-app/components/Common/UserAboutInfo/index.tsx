@@ -1,4 +1,5 @@
 import { useLazyQuery } from '@apollo/client';
+import { ColumnsContext } from '@utils/contexts';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { GET_USER_ABOUT_PAGE_DATA } from '../../../graphql/queries';
@@ -63,7 +64,7 @@ export const UserAboutInfo = (props) => {
     },
   ];
   return (
-    <>
+    <ColumnsContext.Provider value={{}}>
       <TaskViewModal
         disableEnforceFocus
         open={Boolean(location?.params?.task || location?.params.taskProposal)}
@@ -99,6 +100,6 @@ export const UserAboutInfo = (props) => {
             </UserAboutInfoBlock>
           ))}
       </UserAboutInfoContainer>
-    </>
+    </ColumnsContext.Provider>
   );
 };
