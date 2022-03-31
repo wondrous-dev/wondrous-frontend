@@ -36,6 +36,7 @@ type Props = {
   isAdmin?: boolean;
   statuses: string[];
   podIds?: string[];
+  userId?: string;
   handleCardOpening?: (section, isOpen) => any;
   setColumns: React.Dispatch<React.SetStateAction<{}>>;
 };
@@ -53,6 +54,7 @@ const Boards = (props: Props) => {
     podIds = [],
     setColumns,
     handleCardOpening,
+    userId,
   } = props;
   const router = useRouter();
   const orgBoard = useOrgBoard();
@@ -77,6 +79,7 @@ const Boards = (props: Props) => {
 
   const statusesQuery = statuses?.length ? `&statuses=${statuses.join(',')}` : '';
   const podIdsQuery = podIds?.length ? `&podIds=${podIds.join(',')}` : '';
+  const userIdQuery = userId ? `&userId=${userId}` : '';
 
   const listViewOptions = [
     {
@@ -84,7 +87,7 @@ const Boards = (props: Props) => {
       icon: <ListViewIcon />,
       active: view === ViewType.List,
       action: () => {
-        router.replace(`${delQuery(router.asPath)}?view=${ViewType.List}${statusesQuery}${podIdsQuery}`);
+        router.replace(`${delQuery(router.asPath)}?view=${ViewType.List}${statusesQuery}${podIdsQuery}${userIdQuery}`);
       },
     },
     {
@@ -92,7 +95,7 @@ const Boards = (props: Props) => {
       icon: <GridViewIcon />,
       active: view === ViewType.Grid,
       action: () => {
-        router.replace(`${delQuery(router.asPath)}?view=${ViewType.Grid}${statusesQuery}${podIdsQuery}`);
+        router.replace(`${delQuery(router.asPath)}?view=${ViewType.Grid}${statusesQuery}${podIdsQuery}${userIdQuery}`);
       },
     },
   ];
