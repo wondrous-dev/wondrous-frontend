@@ -1,19 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { parseUserPermissionContext, toggleHtmlOverflow } from '../../utils/helpers';
-import { useRouter } from 'next/router';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { List } from '@mui/material';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import { GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
+import { GET_ORG_BY_ID } from '../../graphql/queries/org';
+import { GET_POD_BY_ID } from '../../graphql/queries/pod';
+import { PERMISSIONS } from '../../utils/constants';
+import { SettingsBoardContext } from '../../utils/contexts';
+import { parseUserPermissionContext, toggleHtmlOverflow } from '../../utils/helpers';
+import { useMe } from '../Auth/withAuth';
+import CreateFormModal from '../CreateEntity';
+import HeaderComponent from '../Header';
+import CardIcon from '../Icons/card';
+import GeneralSettingsIcon from '../Icons/generalSettings';
+import MembersIcon from '../Icons/members';
+import { NotificationOutlineSettings } from '../Icons/notifications';
+import WrenchIcon from '../Icons/wrench';
+import SideBarComponent from '../SideBar';
 import {
   SettingsContainer,
   SettingsContentBlock,
   SettingsSidebar,
   SettingsSidebarContainer,
   SettingsSidebarHeader,
-  SettingsSidebarHeaderLogo,
-  SettingsSidebarHeaderTitle,
-  SettingsSidebarLogoutButton,
-  SettingsSidebarLogoutButtonIcon,
-  SettingsSidebarLogoutButtonText,
+  SettingsSidebarHeaderBackButton,
+  SettingsSidebarHeaderBackIcon,
+  SettingsSidebarHeaderBackIconWrapper,
+  SettingsSidebarHeaderBackLabel,
   SettingsSidebarTabsListContainer,
   SettingsSidebarTabsListItemButton,
   SettingsSidebarTabsListItemButtonWrapper,
@@ -22,26 +36,6 @@ import {
   SettingsSidebarTabsSection,
   SettingsSidebarTabsSectionLabel,
 } from './styles';
-import SideBarComponent from '../SideBar';
-import HeaderComponent from '../Header';
-import CreateFormModal from '../CreateEntity';
-import GeneralSettingsIcon from '../Icons/generalSettings';
-import ConfigurePaymentsIcon from '../Icons/configurePayments';
-import CreatePodIcon from '../Icons/createPod';
-import MembersIcon from '../Icons/members';
-import { useQuery, useLazyQuery } from '@apollo/client';
-import { GET_ORG_BY_ID } from '../../graphql/queries/org';
-import { SafeImage } from '../Common/Image';
-import { GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
-import { SettingsBoardContext } from '../../utils/contexts';
-import { GET_POD_BY_ID } from '../../graphql/queries/pod';
-import { PERMISSIONS } from '../../utils/constants';
-import { useMe } from '../Auth/withAuth';
-import SettingsIcon from '../Icons/settings';
-import WrenchIcon from '../Icons/wrench';
-import CardIcon from '../Icons/card';
-import { pathToArray } from 'graphql/jsutils/Path';
-import NotificationsIcon, { NotificationOutlineSettings } from '../Icons/notifications';
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -214,6 +208,22 @@ export const SettingsWrapper = (props) => {
     }
   }
 
+  const backButton = {
+    [org?.username]: {
+      path: `/organization/${org?.username}/boards`,
+      label: 'DAO',
+    },
+    [String(podId)]: {
+      path: `/pod/${podId}/boards`,
+      label: 'Pod',
+    },
+    ['']: {
+      path: `/profile/${user?.username}/about`,
+      label: 'Profile',
+    },
+  };
+  const backButtonActive = backButton?.[String(org?.username ?? podId ?? '')];
+
   return (
     <>
       <SettingsBoardContext.Provider
@@ -230,18 +240,14 @@ export const SettingsWrapper = (props) => {
           <SettingsSidebar>
             <SettingsSidebarContainer>
               <SettingsSidebarHeader>
-                {org && (
-                  <SafeImage
-                    src={org?.profilePicture}
-                    style={{
-                      width: '44px',
-                      height: '44px',
-                      borderRadius: '4px',
-                      marginRight: '14px',
-                    }}
-                  />
-                )}
-                <SettingsSidebarHeaderTitle>{pod?.name || org?.name}</SettingsSidebarHeaderTitle>
+                <Link href={backButtonActive?.path} passHref>
+                  <SettingsSidebarHeaderBackButton>
+                    <SettingsSidebarHeaderBackIconWrapper>
+                      <SettingsSidebarHeaderBackIcon />
+                    </SettingsSidebarHeaderBackIconWrapper>
+                    <SettingsSidebarHeaderBackLabel>Back to {backButtonActive.label}</SettingsSidebarHeaderBackLabel>
+                  </SettingsSidebarHeaderBackButton>
+                </Link>
               </SettingsSidebarHeader>
               <SettingsSidebarTabsSection>
                 <SettingsSidebarTabsSectionLabel>Settings Overview</SettingsSidebarTabsSectionLabel>

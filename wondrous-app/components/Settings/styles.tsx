@@ -1,14 +1,13 @@
+import LeftArrowIcon from '@components/Icons/leftArrow';
+import { Button as MuiButton, InputBase, ListItemIcon, Typography } from '@material-ui/core';
+import { ButtonBase, ListItemButton } from '@mui/material';
+import SnackbarComp from '@mui/material/Snackbar';
 import React from 'react';
 import styled from 'styled-components';
-import SnackbarComp from '@mui/material/Snackbar';
-import { Button as MuiButton, InputBase, ListItemIcon, Typography } from '@material-ui/core';
-import { ListItemButton } from '@mui/material';
+import { White } from '../../theme/colors';
 import { Button } from '../Common/button';
-import { LogoSquare } from '../Common/ci';
-import LogoutIcon from '../Icons/logout';
 import { GradientHighlightHorizontal } from '../Common/gradients';
 import { Discord } from '../Icons/discord';
-import { Black, White } from '../../theme/colors';
 
 export const SettingsContainer = styled.div`
   position: relative;
@@ -39,20 +38,51 @@ export const SettingsSidebarHeader = styled.div`
   align-items: center;
 `;
 
-export const SettingsSidebarHeaderLogo = styled(LogoSquare)`
+export const SettingsSidebarHeaderBackButton = styled(ButtonBase)`
   && {
-    width: 44px;
-    height: 44px;
-    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 4px;
+    width: 100%;
+    padding: 4px;
+    :hover {
+      cursor: pointer;
+      background: linear-gradient(270deg, #262626 0%, #1c1c1c 100%);
+      outline: 1px solid #313131;
+    }
+    > * {
+      margin-left: 10px;
+    }
+    > :first-child {
+      margin-left: 0;
+    }
   }
 `;
 
-export const SettingsSidebarHeaderTitle = styled(Typography)`
+export const SettingsSidebarHeaderBackIconWrapper = styled.div`
+  background: #0f0f0f;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const SettingsSidebarHeaderBackIcon = styled((props) => <LeftArrowIcon {...props} />)`
+  ${SettingsSidebarHeaderBackButton}:hover & {
+    path {
+      stroke: #30c7ff;
+    }
+  }
+`;
+
+export const SettingsSidebarHeaderBackLabel = styled(Typography)`
   && {
-    font-weight: bold;
-    font-size: 18px;
-    line-height: 23px;
-    color: #ffffff;
+    color: ${White};
+    text-decoration: none;
+    font-size: 15px;
   }
 `;
 
@@ -116,32 +146,6 @@ export const SettingsSidebarTabsListItemText = styled(Typography)`
     line-height: 19px;
     letter-spacing: 0.01em;
     color: #ffffff;
-  }
-`;
-
-export const SettingsSidebarLogoutButton = styled(MuiButton)`
-  && {
-    width: 100%;
-    height: 45px;
-    border-radius: 2px;
-    padding: 0;
-    justify-content: left;
-
-    &:hover {
-      background: #101010;
-    }
-  }
-`;
-
-export const SettingsSidebarLogoutButtonIcon = styled(LogoutIcon)`
-  && {
-    margin-right: 15px;
-  }
-`;
-
-export const SettingsSidebarLogoutButtonText = styled(SettingsSidebarTabsListItemText)`
-  && {
-    margin-left: 15px;
   }
 `;
 

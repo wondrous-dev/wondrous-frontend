@@ -473,7 +473,7 @@ const GeneralSettings = () => {
   useEffect(() => {
     if (orgId) {
       getOrganization({ variables: { orgId } });
-      getOrgDiscordWebhookInfo({ variables: { orgId } });
+      // getOrgDiscordWebhookInfo({ variables: { orgId } });
     }
   }, [orgId]);
 
