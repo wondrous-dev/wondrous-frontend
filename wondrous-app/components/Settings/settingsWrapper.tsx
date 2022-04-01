@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
 import { GET_ORG_BY_ID } from '../../graphql/queries/org';
 import { GET_POD_BY_ID } from '../../graphql/queries/pod';
+import { SettingsPage } from '../../types/common';
 import { PERMISSIONS } from '../../utils/constants';
 import { SettingsBoardContext } from '../../utils/contexts';
 import { parseUserPermissionContext, toggleHtmlOverflow } from '../../utils/helpers';
@@ -113,56 +114,58 @@ export const SettingsWrapper = (props) => {
   const org = orgData?.getOrgById || podData?.getPodById?.orgId;
   const pod = podData?.getPodById;
 
-  const PROFILE_SIDEBAR_LIST_ITEMS = [
+  const SETTINGS_SIDEBAR_LIST_ITEMS = [
     {
       icon: <GeneralSettingsIcon width={40} height={40} />,
       label: 'Profile Page Settings',
       value: 'general',
       href: `/profile/settings`,
+      page: [SettingsPage.Profile],
     },
-  ];
-
-  let SETTINGS_SIDEBAR_LIST_ITEMS = [
     {
       icon: <GeneralSettingsIcon width={40} height={40} />,
       label: 'General Settings',
       value: 'general',
       href: orgId ? `/organization/settings/${orgId}/general` : `/pod/settings/${podId}/general`,
+      page: [SettingsPage.Org, SettingsPage.Pod],
     },
     {
       icon: <WrenchIcon width={40} height={40} />,
       label: 'Configure Wallet',
       value: 'wallet',
       href: orgId ? `/organization/settings/${orgId}/wallet` : `/pod/settings/${podId}/wallet`,
+      page: [SettingsPage.Org, SettingsPage.Pod],
     },
     {
       icon: <CardIcon width={40} height={40} />,
       label: 'Payments Ledger',
       value: 'payouts',
       href: orgId ? `/organization/settings/${orgId}/payouts` : `/pod/settings/${podId}/payouts`,
+      page: [SettingsPage.Org, SettingsPage.Pod],
     },
     {
       icon: <MembersIcon />,
       label: 'Members',
       value: 'members',
       href: orgId ? `/organization/settings/${orgId}/members` : `/pod/settings/${podId}/members`,
+      page: [SettingsPage.Org, SettingsPage.Pod],
     },
     {
       icon: <RolesIcon />,
       label: 'Roles',
       value: 'roles',
       href: orgId ? `/organization/settings/${orgId}/roles` : `/pod/settings/${podId}/roles`,
+      page: [SettingsPage.Org, SettingsPage.Pod],
     },
-  ];
-
-  if (orgId && !podId) {
-    SETTINGS_SIDEBAR_LIST_ITEMS.push({
+    {
       icon: <NotificationOutlineSettings />,
       label: 'Notifications',
       value: 'notifications',
       href: `/organization/settings/${orgId}/notifications`,
-    });
-  }
+      page: [SettingsPage.Org],
+    },
+  ];
+
   const parsedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
@@ -209,21 +212,24 @@ export const SettingsWrapper = (props) => {
     }
   }
 
-  const backButton = {
+  const settingsPageConfig = {
     [String(orgId)]: {
+      page: SettingsPage.Org,
       path: `/organization/${org?.username}/boards`,
       label: 'DAO',
     },
     [String(podId)]: {
+      page: SettingsPage.Pod,
       path: `/pod/${podId}/boards`,
       label: 'Pod',
     },
     ['']: {
+      page: SettingsPage.Profile,
       path: `/profile/${user?.username}/about`,
       label: 'Profile',
     },
   };
-  const backButtonActive = backButton?.[String(podId ?? orgId ?? '')];
+  const activeSettingsPage = settingsPageConfig?.[String(podId ?? orgId ?? '')];
   return (
     <>
       <SettingsBoardContext.Provider
@@ -240,52 +246,37 @@ export const SettingsWrapper = (props) => {
           <SettingsSidebar>
             <SettingsSidebarContainer>
               <SettingsSidebarHeader>
-                <Link href={backButtonActive?.path} passHref>
+                <Link href={activeSettingsPage?.path} passHref>
                   <SettingsSidebarTabsListItem>
                     <SettingsSidebarTabsListItemIcon>
                       <LeftArrowIcon />
                     </SettingsSidebarTabsListItemIcon>
-                    <SettingsSidebarTabsListItemText>Back to {backButtonActive.label}</SettingsSidebarTabsListItemText>
+                    <SettingsSidebarTabsListItemText>
+                      Back to {activeSettingsPage.label}
+                    </SettingsSidebarTabsListItemText>
                   </SettingsSidebarTabsListItem>
                 </Link>
               </SettingsSidebarHeader>
               <SettingsSidebarTabsSection>
-                <SettingsSidebarTabsSectionLabel>{backButtonActive.label} Settings</SettingsSidebarTabsSectionLabel>
+                <SettingsSidebarTabsSectionLabel>{activeSettingsPage.label} Settings</SettingsSidebarTabsSectionLabel>
                 <SettingsSidebarTabsListContainer>
-                  {(orgData || podData) &&
-                    SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
-                      const { href, icon, label } = item;
-                      const pathnameSplit = pathname.split('/');
-                      const hrefSplit = href.split('/');
-                      const endPathName = pathnameSplit[pathnameSplit.length - 1];
-                      const endHref = hrefSplit[hrefSplit.length - 1];
-                      const active = endHref === endPathName;
-
-                      return (
-                        <Link key={href} href={href} passHref>
-                          <SettingsSidebarTabsListItem active={active}>
-                            <SettingsSidebarTabsListItemIcon active={active}>{icon}</SettingsSidebarTabsListItemIcon>
-                            <SettingsSidebarTabsListItemText active={active}>{label}</SettingsSidebarTabsListItemText>
-                          </SettingsSidebarTabsListItem>
-                        </Link>
-                      );
-                    })}
-                  {!orgData &&
-                    !podData &&
-                    PROFILE_SIDEBAR_LIST_ITEMS.map((item) => {
-                      const { href, icon, label } = item;
-
-                      const active = pathname === href;
-
-                      return (
-                        <Link key={href} href={href} passHref>
-                          <SettingsSidebarTabsListItem active={active}>
-                            <SettingsSidebarTabsListItemIcon active={active}>{icon}</SettingsSidebarTabsListItemIcon>
-                            <SettingsSidebarTabsListItemText active={active}>{label}</SettingsSidebarTabsListItemText>
-                          </SettingsSidebarTabsListItem>
-                        </Link>
-                      );
-                    })}
+                  {SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
+                    if (!item.page.includes(activeSettingsPage.page)) return null;
+                    const { href, icon, label } = item;
+                    const pathnameSplit = pathname.split('/');
+                    const hrefSplit = href.split('/');
+                    const endPathName = pathnameSplit[pathnameSplit.length - 1];
+                    const endHref = hrefSplit[hrefSplit.length - 1];
+                    const active = endHref === endPathName;
+                    return (
+                      <Link key={href} href={href} passHref>
+                        <SettingsSidebarTabsListItem active={active}>
+                          <SettingsSidebarTabsListItemIcon active={active}>{icon}</SettingsSidebarTabsListItemIcon>
+                          <SettingsSidebarTabsListItemText active={active}>{label}</SettingsSidebarTabsListItemText>
+                        </SettingsSidebarTabsListItem>
+                      </Link>
+                    );
+                  })}
                   {/* <SettingsSidebarLogoutButton>
                     <SettingsSidebarLogoutButtonIcon />
                     <SettingsSidebarLogoutButtonText>Log out</SettingsSidebarLogoutButtonText>

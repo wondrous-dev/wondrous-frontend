@@ -16,3 +16,9 @@ export interface Link {
   url: string;
   type: string;
 }
+
+export enum SettingsPage {
+  Profile,
+  Org,
+  Pod,
+}
