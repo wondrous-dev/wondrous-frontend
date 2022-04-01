@@ -44,28 +44,6 @@ export const SettingsSidebarHeader = styled.div`
   align-items: center;
 `;
 
-export const SettingsSidebarHeaderBackButton = styled(ButtonBase)`
-  && {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    border-radius: 4px;
-    width: 100%;
-    padding: 4px;
-    :hover {
-      cursor: pointer;
-      background: linear-gradient(270deg, #262626 0%, #1c1c1c 100%);
-      outline: 1px solid #313131;
-    }
-    > * {
-      margin-left: 10px;
-    }
-    > :first-child {
-      margin-left: 0;
-    }
-  }
-`;
-
 export const SettingsSidebarTabsSection = styled.div`
   height: 100%;
   padding-top: 50px;
