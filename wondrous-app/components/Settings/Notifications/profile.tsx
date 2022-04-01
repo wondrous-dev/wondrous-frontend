@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { SettingsWrapper } from './settingsWrapper';
-import { HeaderBlock } from './headerBlock';
-import { ImageUpload } from './imageUpload';
+import { SettingsWrapper } from '../settingsWrapper';
+import { HeaderBlock } from '../headerBlock';
+import { ImageUpload } from '../imageUpload';
 import {
   GeneralSettingsButtonsBlock,
   GeneralSettingsContainer,
@@ -17,17 +17,20 @@ import {
   GeneralSettingsSaveChangesButton,
   LabelBlock,
   DiscordText,
-} from './styles';
-import { useMutation } from '@apollo/client';
-import { UPDATE_USER } from '../../graphql/mutations';
-import { getFilenameAndType, uploadMedia } from '../../utils/media';
-import { ProfilePictureDiv } from '../Onboarding/styles';
-import { SafeImage } from '../Common/Image';
-import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
-import { CHAR_LIMIT_PROFILE_BIO, USERNAME_REGEX, validateEmail } from '../../utils/constants';
-import { ErrorText } from '../Common';
-import { SnackbarAlertContext } from '../../components/Common/SnackbarAlert';
-import { getDiscordUrl } from '../../utils';
+} from '../styles';
+import { useMutation, useQuery } from '@apollo/client';
+import { UPDATE_USER } from '../../../graphql/mutations';
+import { getFilenameAndType, uploadMedia } from '../../../utils/media';
+import { ProfilePictureDiv } from '../../Onboarding/styles';
+import { SafeImage } from '../../Common/Image';
+import { CHAR_LIMIT_PROFILE_BIO, USERNAME_REGEX, validateEmail } from '../../../utils/constants';
+import { ErrorText } from '../../Common';
+import Switch from '../../Common/Switch';
+import { SnackbarAlertContext } from '../../../components/Common/SnackbarAlert';
+import { getDiscordUrl } from '../../../utils';
+import { GET_USER_DISCORD_NOTIFICATION_CONFIGS } from 'graphql/queries';
+import { ENABLE_USER_DISCORD_NOTIFICATION_CONFIG, DISABLE_USER_DISCORD_NOTIFICATION_CONFIG } from 'graphql/mutations';
+import { UserDiscordNotificationSettingsDiv, UserDiscordNotificationSettingsText } from './styles';
 
 const discordUrl = getDiscordUrl();
 
@@ -37,10 +40,13 @@ const ProfileSettings = (props) => {
   const [email, setEmail] = useState(loggedInUser?.userInfo?.email);
   const [profilePictureUrl, setProfilePictureUrl] = useState(loggedInUser?.profilePicture);
   const [profileBannerUrl, setProfileBannerUrl] = useState(loggedInUser?.headerPicture);
+  const [notificationOn, setNotificationOn] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
   const [profileBanner, setProfileBanner] = useState(null);
+  const [mutationError, setMutationError] = useState(null);
   const [profileBio, setProfileBio] = useState(loggedInUser?.bio);
   const [updateUserProfile] = useMutation(UPDATE_USER);
+  const { data: userNotificationConfigData } = useQuery(GET_USER_DISCORD_NOTIFICATION_CONFIGS);
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
@@ -48,19 +54,48 @@ const ProfileSettings = (props) => {
     username: null,
     email: null,
   });
-  const handleUsernameChange = (e) => {
-    const { value } = e.target;
-    setUsername(value);
-  };
+  const [enableDiscordNotification] = useMutation(ENABLE_USER_DISCORD_NOTIFICATION_CONFIG, {
+    onCompleted: (data) => {
+      setNotificationOn(true);
+    },
+    onError: (e) => {
+      console.error(e);
+      setMutationError('error enabling notifications');
+    },
+  });
+  const [disableDiscordNotification] = useMutation(DISABLE_USER_DISCORD_NOTIFICATION_CONFIG, {
+    onCompleted: (data) => {
+      setNotificationOn(false);
+    },
+    onError: (e) => {
+      console.error(e);
+      setMutationError('error disabling notifications');
+    },
+  });
 
-  const handleEmailChange = (e) => {
-    const { value } = e.target;
-    setEmail(value);
-  };
+  useEffect(() => {
+    if (userNotificationConfigData) {
+      if (userNotificationConfigData?.disabledAt === null) {
+        setNotificationOn(true);
+      }
+    }
+  }, [userNotificationConfigData]);
 
-  const handleProfileBioChange = (e) => {
-    const { value } = e.target;
-    setProfileBio(value);
+  const handleEnableDisableSwitch = async () => {
+    setMutationError(null);
+    if (notificationOn) {
+      const confirmed = confirm('Are you sure you want to disable discord channel notfications?');
+      if (!confirmed) {
+        return;
+      }
+    }
+    if (notificationOn) {
+      disableDiscordNotification();
+    }
+
+    if (!notificationOn) {
+      enableDiscordNotification();
+    }
   };
 
   useEffect(() => {
@@ -145,79 +180,13 @@ const ProfileSettings = (props) => {
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
-        <HeaderBlock title="Profile page overview" description="Update profile page settings." />
-        <GeneralSettingsInputsBlock>
-          <GeneralSettingsDAONameBlock>
-            <LabelBlock>Username</LabelBlock>
-            <GeneralSettingsDAONameInput value={username} onChange={handleUsernameChange} />
-            {errors.username && <ErrorText>{errors.username}</ErrorText>}
-          </GeneralSettingsDAONameBlock>
-          <GeneralSettingsDAONameBlock>
-            <LabelBlock>Email</LabelBlock>
-            <GeneralSettingsDAONameInput value={email} onChange={handleEmailChange} />
-            {errors.email && <ErrorText>{errors.email}</ErrorText>}
-          </GeneralSettingsDAONameBlock>
-          <GeneralSettingsDAODescriptionBlock>
-            <LabelBlock>Description</LabelBlock>
-            <GeneralSettingsDAODescriptionInput
-              multiline
-              rows={3}
-              value={profileBio}
-              onChange={(e) => handleProfileBioChange(e)}
-            />
-            <GeneralSettingsDAODescriptionInputCounter>
-              {profileBio?.length} / {CHAR_LIMIT_PROFILE_BIO} characters
-            </GeneralSettingsDAODescriptionInputCounter>
-          </GeneralSettingsDAODescriptionBlock>
-        </GeneralSettingsInputsBlock>
-        <GeneralSettingsInputsBlock
-          style={{
-            borderBottom: 'none',
-          }}
-        >
-          {profilePictureUrl ? (
-            <ProfilePictureDiv>
-              <LabelBlock>Profile Picture</LabelBlock>
-              <SafeImage
-                src={profilePictureUrl}
-                style={{
-                  width: '52px',
-                  height: '52px',
-                  borderRadius: '26px',
-                }}
-              />
-              <ProfilePictureAdd
-                onClick={() => {
-                  // restart the profile picture addition
-                  setProfilePictureUrl(null);
-                  setProfilePicture(null);
-                }}
-                style={{
-                  position: 'absolute',
-                  marginLeft: '-16px',
-                  cursor: 'pointer',
-                }}
-              />
-            </ProfilePictureDiv>
-          ) : (
-            <ImageUpload
-              image={profilePicture}
-              imageWidth={52}
-              imageHeight={52}
-              imageName="Profile Picture"
-              updateFilesCb={setProfilePicture}
-            />
-          )}
-        </GeneralSettingsInputsBlock>
+        <HeaderBlock title="Notification settings" description="Update Notification settings." />
 
         <GeneralSettingsInputsBlock>
-          <LabelBlock
-            style={{
-              marginBottom: '20px',
-            }}
-          >
-            Integrations
-          </LabelBlock>
+          <UserDiscordNotificationSettingsDiv>
+            <UserDiscordNotificationSettingsText>Discord Notifications</UserDiscordNotificationSettingsText>
+            <Switch checked={notificationOn} onChange={(e) => handleEnableDisableSwitch()} />
+          </UserDiscordNotificationSettingsDiv>
           <GeneralSettingsIntegrationsBlockButton
             style={{
               maxWidth: 'none',

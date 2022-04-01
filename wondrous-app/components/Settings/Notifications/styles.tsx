@@ -44,3 +44,19 @@ export const DiscordCardText = styled(Typography)`
     margin-bottom: 8px;
   }
 `;
+
+export const UserDiscordNotificationSettingsDiv = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+  justify-content: space-between;
+`;
+
+export const UserDiscordNotificationSettingsText = styled(Typography)`
+  && {
+    font-family: Space Grotesk;
+    color: ${White};
+    font-size: 20px;
+    font-weight: bold;
+  }
+`;
