@@ -75,7 +75,7 @@ export const useSettings = () => useContext(SettingsBoardContext);
 export const useColumns = () => {
   const context = useContext(ColumnsContext);
   if (!context) {
-    throw new Error('useColumns must be used within a ColumnsContext Provider');
+    console.log('useColumns must be used within a ColumnsContext Provider');
   }
   return context;
 };
