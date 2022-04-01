@@ -1,5 +1,6 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
-import { List } from '@mui/material';
+import LeftArrowIcon from '@components/Icons/leftArrow';
+import RolesIcon from '@components/Icons/roles';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -24,13 +25,8 @@ import {
   SettingsSidebar,
   SettingsSidebarContainer,
   SettingsSidebarHeader,
-  SettingsSidebarHeaderBackButton,
-  SettingsSidebarHeaderBackIcon,
-  SettingsSidebarHeaderBackIconWrapper,
-  SettingsSidebarHeaderBackLabel,
   SettingsSidebarTabsListContainer,
-  SettingsSidebarTabsListItemButton,
-  SettingsSidebarTabsListItemButtonWrapper,
+  SettingsSidebarTabsListItem,
   SettingsSidebarTabsListItemIcon,
   SettingsSidebarTabsListItemText,
   SettingsSidebarTabsSection,
@@ -124,7 +120,7 @@ export const SettingsWrapper = (props) => {
   let SETTINGS_SIDEBAR_LIST_ITEMS = [
     {
       icon: <GeneralSettingsIcon width={40} height={40} />,
-      label: 'General settings',
+      label: 'General Settings',
       value: 'general',
       href: orgId ? `/organization/settings/${orgId}/general` : `/pod/settings/${podId}/general`,
     },
@@ -141,13 +137,13 @@ export const SettingsWrapper = (props) => {
       href: orgId ? `/organization/settings/${orgId}/payouts` : `/pod/settings/${podId}/payouts`,
     },
     {
-      icon: <MembersIcon width={40} height={40} />,
+      icon: <MembersIcon />,
       label: 'Members',
       value: 'members',
       href: orgId ? `/organization/settings/${orgId}/members` : `/pod/settings/${podId}/members`,
     },
     {
-      icon: <MembersIcon width={40} height={40} />,
+      icon: <RolesIcon />,
       label: 'Roles',
       value: 'roles',
       href: orgId ? `/organization/settings/${orgId}/roles` : `/pod/settings/${podId}/roles`,
@@ -241,57 +237,51 @@ export const SettingsWrapper = (props) => {
             <SettingsSidebarContainer>
               <SettingsSidebarHeader>
                 <Link href={backButtonActive?.path} passHref>
-                  <SettingsSidebarHeaderBackButton>
-                    <SettingsSidebarHeaderBackIconWrapper>
-                      <SettingsSidebarHeaderBackIcon />
-                    </SettingsSidebarHeaderBackIconWrapper>
-                    <SettingsSidebarHeaderBackLabel>Back to {backButtonActive.label}</SettingsSidebarHeaderBackLabel>
-                  </SettingsSidebarHeaderBackButton>
+                  <SettingsSidebarTabsListItem>
+                    <SettingsSidebarTabsListItemIcon>
+                      <LeftArrowIcon />
+                    </SettingsSidebarTabsListItemIcon>
+                    <SettingsSidebarTabsListItemText>Back to {backButtonActive.label}</SettingsSidebarTabsListItemText>
+                  </SettingsSidebarTabsListItem>
                 </Link>
               </SettingsSidebarHeader>
               <SettingsSidebarTabsSection>
-                <SettingsSidebarTabsSectionLabel>Settings Overview</SettingsSidebarTabsSectionLabel>
+                <SettingsSidebarTabsSectionLabel>{backButtonActive.label} Settings</SettingsSidebarTabsSectionLabel>
                 <SettingsSidebarTabsListContainer>
-                  <List>
-                    {(orgData || podData) &&
-                      SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
-                        const { href, icon, label } = item;
-                        const pathnameSplit = pathname.split('/');
-                        const hrefSplit = href.split('/');
-                        const endPathName = pathnameSplit[pathnameSplit.length - 1];
-                        const endHref = hrefSplit[hrefSplit.length - 1];
-                        const active = endHref === endPathName;
+                  {(orgData || podData) &&
+                    SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
+                      const { href, icon, label } = item;
+                      const pathnameSplit = pathname.split('/');
+                      const hrefSplit = href.split('/');
+                      const endPathName = pathnameSplit[pathnameSplit.length - 1];
+                      const endHref = hrefSplit[hrefSplit.length - 1];
+                      const active = endHref === endPathName;
 
-                        return (
-                          <Link key={href} href={href}>
-                            <SettingsSidebarTabsListItemButtonWrapper active={active}>
-                              <SettingsSidebarTabsListItemButton selected={active}>
-                                <SettingsSidebarTabsListItemIcon>{icon}</SettingsSidebarTabsListItemIcon>
-                                <SettingsSidebarTabsListItemText>{label}</SettingsSidebarTabsListItemText>
-                              </SettingsSidebarTabsListItemButton>
-                            </SettingsSidebarTabsListItemButtonWrapper>
-                          </Link>
-                        );
-                      })}
-                    {!orgData &&
-                      !podData &&
-                      PROFILE_SIDEBAR_LIST_ITEMS.map((item) => {
-                        const { href, icon, label } = item;
+                      return (
+                        <Link key={href} href={href} passHref>
+                          <SettingsSidebarTabsListItem active={active}>
+                            <SettingsSidebarTabsListItemIcon active={active}>{icon}</SettingsSidebarTabsListItemIcon>
+                            <SettingsSidebarTabsListItemText active={active}>{label}</SettingsSidebarTabsListItemText>
+                          </SettingsSidebarTabsListItem>
+                        </Link>
+                      );
+                    })}
+                  {!orgData &&
+                    !podData &&
+                    PROFILE_SIDEBAR_LIST_ITEMS.map((item) => {
+                      const { href, icon, label } = item;
 
-                        const active = pathname === href;
+                      const active = pathname === href;
 
-                        return (
-                          <Link key={href} href={href}>
-                            <SettingsSidebarTabsListItemButtonWrapper active={active}>
-                              <SettingsSidebarTabsListItemButton selected={active}>
-                                <SettingsSidebarTabsListItemIcon>{icon}</SettingsSidebarTabsListItemIcon>
-                                <SettingsSidebarTabsListItemText>{label}</SettingsSidebarTabsListItemText>
-                              </SettingsSidebarTabsListItemButton>
-                            </SettingsSidebarTabsListItemButtonWrapper>
-                          </Link>
-                        );
-                      })}
-                  </List>
+                      return (
+                        <Link key={href} href={href} passHref>
+                          <SettingsSidebarTabsListItem active={active}>
+                            <SettingsSidebarTabsListItemIcon active={active}>{icon}</SettingsSidebarTabsListItemIcon>
+                            <SettingsSidebarTabsListItemText active={active}>{label}</SettingsSidebarTabsListItemText>
+                          </SettingsSidebarTabsListItem>
+                        </Link>
+                      );
+                    })}
                   {/* <SettingsSidebarLogoutButton>
                     <SettingsSidebarLogoutButtonIcon />
                     <SettingsSidebarLogoutButtonText>Log out</SettingsSidebarLogoutButtonText>

@@ -1,12 +1,8 @@
-import LeftArrowIcon from '@components/Icons/leftArrow';
-import { Button as MuiButton, InputBase, ListItemIcon, Typography } from '@material-ui/core';
-import { ButtonBase, ListItemButton } from '@mui/material';
+import { Button as MuiButton, ButtonBase, InputBase, List, ListItem, ListItemIcon, Typography } from '@mui/material';
 import SnackbarComp from '@mui/material/Snackbar';
-import React from 'react';
 import styled from 'styled-components';
 import { White } from '../../theme/colors';
 import { Button } from '../Common/button';
-import { GradientHighlightHorizontal } from '../Common/gradients';
 import { Discord } from '../Icons/discord';
 
 export const SettingsContainer = styled.div`
@@ -60,32 +56,6 @@ export const SettingsSidebarHeaderBackButton = styled(ButtonBase)`
   }
 `;
 
-export const SettingsSidebarHeaderBackIconWrapper = styled.div`
-  background: #0f0f0f;
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const SettingsSidebarHeaderBackIcon = styled((props) => <LeftArrowIcon {...props} />)`
-  ${SettingsSidebarHeaderBackButton}:hover & {
-    path {
-      stroke: #30c7ff;
-    }
-  }
-`;
-
-export const SettingsSidebarHeaderBackLabel = styled(Typography)`
-  && {
-    color: ${White};
-    text-decoration: none;
-    font-size: 15px;
-  }
-`;
-
 export const SettingsSidebarTabsSection = styled.div`
   height: 100%;
   padding-top: 50px;
@@ -98,54 +68,70 @@ export const SettingsSidebarTabsSectionLabel = styled(Typography)`
     line-height: 18px;
     letter-spacing: 0.01em;
     color: #ccbbff;
-    margin-bottom: 25px;
   }
 `;
 
-export const SettingsSidebarTabsListContainer = styled.div`
-  height: 100%;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
+export const SettingsSidebarTabsListContainer = styled(List)`
+  && {
+    margin-top: 20px;
+  }
+  & > li {
+    margin-top: 2px;
+  }
 `;
 
-export const SettingsSidebarTabsListItemButtonWrapper = styled.div`
-  width: 100%;
-  padding: 2px;
-  border-radius: 2px;
-  background: ${(props) => (props.active ? GradientHighlightHorizontal : 'transparent')};
+export const SettingsSidebarTabsListItem = styled(ListItem)`
+  && {
+    background: ${(props) => props.active && '#313131'};
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 4px;
+    width: 100%;
+    height: 40px;
+    padding: 4px;
+    :hover {
+      cursor: pointer;
+      background: linear-gradient(270deg, #262626 0%, #1c1c1c 100%);
+      outline: 1px solid #313131;
+    }
+    > * {
+      margin-left: 10px;
+    }
+    > :first-child {
+      margin-left: 0;
+    }
+  }
 `;
-
-export const SettingsSidebarTabsListItemButton = styled(ListItemButton)({
-  '&.MuiListItemButton-root': {
-    width: '100%',
-    height: 45,
-    borderRadius: 2,
-    padding: 10,
-    justifyContent: 'left',
-  },
-
-  '&.Mui-selected': {
-    background: '#101010 !important',
-
-    '&:hover': {
-      background: '#101010 !impotrant',
-    },
-  },
-});
 
 export const SettingsSidebarTabsListItemIcon = styled(ListItemIcon)`
   && {
-    width: 10px;
+    min-width: 0;
+    width: 32px;
+    height: 32px;
+    background: #0f0f0f;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  & path {
+    stroke: ${(props) => props.active && '#30c7ff'};
+  }
+  ${SettingsSidebarTabsListItem}:hover & {
+    path {
+      stroke: #30c7ff;
+    }
   }
 `;
 
 export const SettingsSidebarTabsListItemText = styled(Typography)`
   && {
+    font-family: 'Space Grotesk';
+    color: ${White};
+    text-decoration: none;
     font-size: 15px;
-    line-height: 19px;
-    letter-spacing: 0.01em;
-    color: #ffffff;
+    font-weight: ${(props) => (props.active ? '600' : '400')};
   }
 `;
 
