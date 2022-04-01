@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { White } from '../../../theme/colors';
 import { Button as MuiButton, InputBase, ListItemIcon, Typography } from '@material-ui/core';
 
+// Integrations General CSS
+
 export const IntegrationsContainer = styled.div`
   height: 100vh;
   width: 100%;
@@ -36,6 +38,8 @@ export const IntegrationsInputsBlock = styled.div`
   border-bottom: 1px solid #363636;
 `;
 
+// Snapshot Tab CSS
+
 export const IntegrationsSnapshotBlock = styled.div`
   width: 100%;
   height: min-content;
@@ -52,12 +56,12 @@ export const IntegrationsSnapshotSubBlock = styled.div`
   justify-content: space-between;
 `
 export const IntegrationsSnapshotInputSubBlock = styled.div`
-  width: calc(100% - 180px);
+  width: calc(100% - 200px);
   min-width: 200px;
   display: flex;
   flex-direction: column;
 
-  @media (max-width: 1056px) {
+  @media (max-width: 1076px) {
     width: 100%;
   }
 `
@@ -82,6 +86,16 @@ export const IntegrationsSnapshotHelperText = styled(Typography)`
     font-size: 12px;
     line-height: 15px;
     color: #c4c4c4;
+    margin-bottom: 6px;
+  }
+`;
+
+export const IntegrationsSnapshotValidText = styled(Typography)`
+  && {
+    font-size: 12px;
+    line-height: 15px;
+    color: cyan;
+    margin-top: 4px;
     margin-bottom: 6px;
   }
 `;
@@ -111,12 +125,15 @@ export const IntegrationsSnapshotButton = styled(MuiButton)`
       cursor: not-allowed;
     }
 
-    @media (max-width: 1056px) {
+    @media (max-width: 1076px) {
       margin-top: 10px;
       margin-left: 0;
     }
   }
 `;
+
+
+// Misc
 
 export const LabelBlock = styled(Typography)`
   && {

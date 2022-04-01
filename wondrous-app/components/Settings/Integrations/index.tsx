@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useQuery, useMutation, useLazyQuery, gql, ApolloClient, InMemoryCache } from '@apollo/client';
+import { useQuery, useMutation, useLazyQuery, ApolloClient, InMemoryCache } from '@apollo/client';
+import ENS, { getEnsAddress } from '@ensdomains/ensjs'
 
 import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
@@ -20,6 +21,7 @@ import {
   IntegrationsSnapshotSubBlock,
   IntegrationsSnapshotInputSubBlock,
   IntegrationsSnapshotHelperText,
+  IntegrationsSnapshotValidText,
   IntegrationsSnapshotButton,
   LabelBlock,
   LabelBlockText
@@ -35,52 +37,16 @@ import { CREATE_ORG_WALLET, CREATE_POD_WALLET } from '../../../graphql/mutations
 import WrenchIcon from '../../Icons/wrench';
 import SafeServiceClient from '@gnosis.pm/safe-service-client';
 import { useWonderWeb3 } from '../../../services/web3';
+import { getSnapshotUrl, useSnapshot } from '../../../services/snapshot';
 import { ErrorText } from '../../Common';
 
 import { ethers } from 'ethers';
-import snapshot from '@snapshot-labs/snapshot.js';
 
-// config to use proper snapshot hub address
-const isTestSnapshot = true;
-const hub = isTestSnapshot
-  ? 'https://testnet.snapshot.org'
-  : 'https://hub.snapshot.org'
-const client = new snapshot.Client712(hub);
-
-// snapshot graphql API
-const snapshotAPI = isTestSnapshot
-  ? 'https://testnet.snapshot.org/graphql'
-  : 'https://hub.snapshot.org/graphql'
-
-const cache = new InMemoryCache();
-const snapshotClient = new ApolloClient({
-  cache: cache,
-  uri: snapshotAPI
-});
-
-const GET_SPACE = gql`
-  query Space($id: String!) {
-    space(id: $id) {
-      id
-      name
-      about
-      network
-      symbol
-      strategies {
-        name
-        network
-        params
-      }
-      admins
-      members
-      filters {
-        minScore
-        onlyMembers
-      }
-      plugins
-    }
-  }
-`
+const CHAIN_VALUE_TO_GNOSIS_CHAIN_VALUE = {
+  eth_mainnet: 'mainnet',
+  polygon_mainnet: 'polygon',
+  rinkeby: 'rinkeby',
+};
 
 const SUPPORTED_PAYMENT_CHAINS = [
   {
@@ -99,44 +65,6 @@ if (!process.env.NEXT_PUBLIC_PRODUCTION) {
   });
 }
 
-interface ISnapshotSpace {
-  name: string;
-  skin?: string;
-  about?: string;
-  admins?: string[];
-  avatar?: string;
-  github?: string;
-  symbol?: string;
-  filters?: any;
-  members?: string[];
-  network?: string;
-  plugins?: any;
-  twitter?: string;
-  strategies?: any[];
-  validation?: any;
-}
-
-const useSnapshot = () => {
-  const [snapshotChecked, setSnapshotChecked] = useState(false)
-  const [snapshotConnected, setSnapshotConnected] = useState(false)
-  const [snapshotSpace, setSnapshotSpace] = useState({ name: '' })
-
-  return {
-    snapshotChecked,
-    setSnapshotChecked,
-    snapshotConnected,
-    setSnapshotConnected,
-    snapshotSpace,
-    setSnapshotSpace
-  }
-}
-
-
-const CHAIN_VALUE_TO_GNOSIS_CHAIN_VALUE = {
-  eth_mainnet: 'mainnet',
-  polygon_mainnet: 'polygon',
-  rinkeby: 'rinkeby',
-};
 const Integrations = (props) => {
   const router = useRouter();
   const wonderWeb3 = useWonderWeb3();
@@ -146,44 +74,24 @@ const Integrations = (props) => {
   const [walletName, setWalletName] = useState('');
   const [safeAddress, setSafeAddress] = useState('');
   const [userAddress, setUserAddress] = useState('');
-  const [errorMessage, setErrorMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('');
 
   // snapshot state
-  const [snapshotName, setSnapshotName] = useState('')
   const {
-    snapshotChecked,
-    setSnapshotChecked,
+    EMPTY_SPACE,
+    snapshotName,
+    setSnapshotName,
+    snapshotValid,
+    setSnapshotValid,
     snapshotConnected,
-    setSnapshotConnected,
     snapshotSpace,
-    setSnapshotSpace
-  } = useSnapshot()
+    setSnapshotSpace,
+    snapshotError,
+    getSpace,
+    checkSnapshot,
+    connectSnapshot
+  } = useSnapshot();
 
-  // snapshot api to retrieve space data
-  const [getSpace] = useLazyQuery(GET_SPACE, {
-    client: snapshotClient,
-    onCompleted: data => {
-      // check to see if data is returned from query
-      if (data.space) {
-        console.log(data.space)
-        // check if queried space includes User's address
-        console.log(data.space.admins)
-        if (data.space.admins.includes(wonderWeb3.address)) {
-          setSnapshotSpace(data.space)
-          setSnapshotChecked(true)
-          setErrorMessage('')
-        } else {
-          setErrorMessage(`User is not an admin of '${data.space.id}'`)
-        }
-      } else {
-        setErrorMessage(`'${snapshotSpace.name}' not found. Please enter a valid Snapshot Space ENS.`)
-      }
-    },
-    onError: error => {
-      console.error(error)
-    },
-    fetchPolicy: 'cache-and-network'
-  })
 
   const emptyError = {
     safeAddressError: null,
@@ -210,17 +118,27 @@ const Integrations = (props) => {
     fetchPolicy: 'network-only',
   });
 
-  const handleConnectSnapshotClick = () => {
-    console.log(snapshotSpace)
+  const handleCheckSnapshot = async () => {
+    const wallet = wonderWeb3.wallet;
+    const provider = new ethers.providers.Web3Provider(wonderWeb3.web3Provider);
+
+    console.log(await provider.resolveName(snapshotName));
+    const ens = new ENS({ provider, ensAddress: getEnsAddress(`${provider._network.chainId}`) });
+    const name = await ens.name(snapshotName)
+
+    await checkSnapshot({ variables: { id: snapshotName }})
+    setSnapshotSpace({ ...snapshotSpace, id: snapshotName})
   }
 
-  const handleCheckSnapshotClick = async () => {
-    const wallet = wonderWeb3.wallet
-    const provider = new ethers.providers.Web3Provider(wonderWeb3.web3Provider)
-    console.log(snapshotSpace.name)
-    console.log(wonderWeb3.wallet)
-    console.log(await provider.resolveName(snapshotSpace.name))
-    await getSpace({ variables: { id: snapshotSpace.name }})
+  const handleConnectSnapshot = async () => {
+    console.log('connect snapshot')
+    console.log(orgId)
+    console.log(snapshotName)
+    await connectSnapshot({ variables: {
+      orgId,
+      displayName: snapshotSpace.name,
+      url: getSnapshotUrl(snapshotName)
+    }})
   }
 
   useEffect(() => {
@@ -240,6 +158,14 @@ const Integrations = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, podId]);
 
+  useEffect(async () => {
+    if (snapshotValid) {
+      console.log('valid!')
+      setSnapshotValid(false)
+      setSnapshotSpace(EMPTY_SPACE)
+    }
+  }, [snapshotName])
+
   return (
     <SettingsWrapper>
       <IntegrationsContainer>
@@ -251,7 +177,7 @@ const Integrations = (props) => {
         <IntegrationsInputsBlock>
           <IntegrationsSnapshotBlock>
             <LabelBlock>Snapshot Settings</LabelBlock>
-            { !snapshotChecked
+            { !snapshotConnected
                 ? <>
                     <IntegrationsSnapshotHelperText>
                       Enter ENS Domain to connect
@@ -259,21 +185,33 @@ const Integrations = (props) => {
                     <IntegrationsSnapshotSubBlock>
                       <IntegrationsSnapshotInputSubBlock>
                         <IntegrationsSnapshotENSInput
-                          value={snapshotSpace?.name}
+                          value={snapshotName}
                           placeholder="ENS domain"
-                          onChange={(e) => setSnapshotSpace({ ...snapshotSpace, name: e.target.value })}
+                          onChange={e => setSnapshotName(e.target.value)}
                         />
-                        {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
+                        {snapshotError && <ErrorText>{snapshotError}</ErrorText>}
+                        {snapshotValid && (
+                          <IntegrationsSnapshotValidText>
+                            User is admin of '{snapshotSpace.id}'. Ready to connect.
+                          </IntegrationsSnapshotValidText>
+                        )}
                       </IntegrationsSnapshotInputSubBlock>
-                      <IntegrationsSnapshotButton
-                        onClick={handleCheckSnapshotClick}
-                      >
-                        Check Snapshot
-                      </IntegrationsSnapshotButton>
+                      { !snapshotValid
+                          ? <IntegrationsSnapshotButton
+                              onClick={handleCheckSnapshot}
+                            >
+                              Check Snapshot
+                            </IntegrationsSnapshotButton>
+                          : <IntegrationsSnapshotButton
+                              onClick={handleConnectSnapshot}
+                            >
+                              Connect Snapshot
+                            </IntegrationsSnapshotButton>
+                      }
                     </IntegrationsSnapshotSubBlock>
                   </>
                 : <IntegrationsSnapshotButton
-                    onClick={handleConnectSnapshotClick}
+                    onClick={handleConnectSnapshot}
                   >
                     Connect Snapshot
                   </IntegrationsSnapshotButton>

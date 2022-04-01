@@ -35,7 +35,7 @@
     "@web3-react/injected-connector": "6.0.7",
     "@web3-react/walletconnect-connector": "^6.2.13",
     "@web3-react/walletlink-connector": "6.2.13",
-    "axios": "^0.24.0",
+    "axios": "^0.26.1",
     "cross-env": "^7.0.3",
     "date-fns": "^2.28.0",
     "ethers": "^5.5.2",
