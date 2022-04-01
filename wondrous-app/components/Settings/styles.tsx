@@ -1,4 +1,14 @@
-import { Button as MuiButton, ButtonBase, InputBase, List, ListItem, ListItemIcon, Typography } from '@mui/material';
+import { SafeImage } from '@components/Common/Image';
+import {
+  Box,
+  Button as MuiButton,
+  ButtonBase,
+  InputBase,
+  List,
+  ListItem,
+  ListItemIcon,
+  Typography,
+} from '@mui/material';
 import SnackbarComp from '@mui/material/Snackbar';
 import styled from 'styled-components';
 import { White } from '../../theme/colors';
@@ -142,6 +152,53 @@ export const SettingsContentBlock = styled.div`
   background-color: #0f0f0f;
   overflow-y: auto;
   min-height: 100vh;
+`;
+
+export const SettingsDaoPodIndicator = styled(Box)`
+  && {
+    display: ${({ pod }) => (pod ? 'flex' : 'none')};
+    background: #1c1c1c;
+    max-width: fit-content;
+    align-items: center;
+    padding: 8px;
+    border-radius: 4px;
+    > * {
+      margin-left: 12px;
+    }
+    > :first-child {
+      margin-left: 0;
+    }
+    margin-bottom: 32px;
+  }
+`;
+
+export const SettingsDaoPodIndicatorOrgProfile = styled((props) => (
+  <SafeImage
+    style={{
+      width: '24px',
+      height: '24px',
+    }}
+    {...props}
+  />
+))``;
+
+export const SettingsDaoPodIndicatorText = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 16px;
+    font-weight: 400;
+    color: #ffffff;
+  }
+`;
+
+export const SettingsDaoPodIndicatorIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: ${({ color }) => (color ? color : '#0f0f0f')};
+  width: 24px;
+  height: 24px;
 `;
 
 //headerBlock.tsx styles

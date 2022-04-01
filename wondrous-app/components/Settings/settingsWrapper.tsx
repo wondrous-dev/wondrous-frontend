@@ -1,5 +1,6 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import LeftArrowIcon from '@components/Icons/leftArrow';
+import PodIcon from '@components/Icons/podIcon';
 import RolesIcon from '@components/Icons/roles';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -22,6 +23,10 @@ import SideBarComponent from '../SideBar';
 import {
   SettingsContainer,
   SettingsContentBlock,
+  SettingsDaoPodIndicator,
+  SettingsDaoPodIndicatorIconWrapper,
+  SettingsDaoPodIndicatorOrgProfile,
+  SettingsDaoPodIndicatorText,
   SettingsSidebar,
   SettingsSidebarContainer,
   SettingsSidebarHeader,
@@ -163,10 +168,10 @@ export const SettingsWrapper = (props) => {
     : null;
 
   useEffect(() => {
-    if (orgId) {
+    if (orgId || org) {
       getOrgById({
         variables: {
-          orgId,
+          orgId: orgId ?? org,
         },
       });
     }
@@ -177,7 +182,7 @@ export const SettingsWrapper = (props) => {
         },
       });
     }
-  }, [orgId, podId]);
+  }, [getOrgById, getPodById, org, orgId, podId]);
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext: parsedUserPermissionsContext,
@@ -205,7 +210,7 @@ export const SettingsWrapper = (props) => {
   }
 
   const backButton = {
-    [org?.username]: {
+    [String(orgId)]: {
       path: `/organization/${org?.username}/boards`,
       label: 'DAO',
     },
@@ -218,8 +223,7 @@ export const SettingsWrapper = (props) => {
       label: 'Profile',
     },
   };
-  const backButtonActive = backButton?.[String(org?.username ?? podId ?? '')];
-
+  const backButtonActive = backButton?.[String(podId ?? orgId ?? '')];
   return (
     <>
       <SettingsBoardContext.Provider
@@ -290,7 +294,16 @@ export const SettingsWrapper = (props) => {
               </SettingsSidebarTabsSection>
             </SettingsSidebarContainer>
           </SettingsSidebar>
-          <SettingsContentBlock>{children}</SettingsContentBlock>
+          <SettingsContentBlock>
+            <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>
+              <SettingsDaoPodIndicatorOrgProfile src={orgData?.getOrgById?.profilePicture} />
+              <SettingsDaoPodIndicatorIconWrapper color={podData?.getPodById.color}>
+                <PodIcon />
+              </SettingsDaoPodIndicatorIconWrapper>
+              <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
+            </SettingsDaoPodIndicator>
+            {children}
+          </SettingsContentBlock>
         </SettingsContainer>
       </SettingsBoardContext.Provider>
     </>
