@@ -134,7 +134,6 @@ const SettingsLinks = ({ links, setLinks }) => {
 
 const ProfileSettings = (props) => {
   const { loggedInUser } = props;
-  console.log('loggedin user', loggedInUser);
   const [username, setUsername] = useState(loggedInUser?.username);
   const [email, setEmail] = useState(loggedInUser?.userInfo?.email);
   const [profilePictureUrl, setProfilePictureUrl] = useState(loggedInUser?.profilePicture);

@@ -32,6 +32,22 @@ export const DISABLE_ORG_DISCORD_NOTIFICATION_CONFIG = gql`
   }
 `;
 
+export const ENABLE_USER_DISCORD_NOTIFICATION_CONFIG = gql`
+  mutation enableUserDiscordNotification {
+    enableUserDiscordNotification {
+      success
+    }
+  }
+`;
+
+export const DISABLE_USER_DISCORD_NOTIFICATION_CONFIG = gql`
+  mutation disableUserDiscordNotification {
+    disableUserDiscordNotification {
+      success
+    }
+  }
+`;
+
 export const MANUAL_DISCORD_ORG_SETUP = gql`
   mutation manualDiscordOrgSetup($orgId: ID!, $guildId: String!, $channelId: String!) {
     manualDiscordOrgSetup(orgId: $orgId, guildId: $guildId, channelId: $channelId) {

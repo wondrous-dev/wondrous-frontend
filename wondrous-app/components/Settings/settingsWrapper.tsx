@@ -125,6 +125,12 @@ export const SettingsWrapper = (props) => {
       value: 'general',
       href: `/profile/settings`,
     },
+    {
+      icon: <NotificationOutlineSettings />,
+      label: 'Notifications',
+      value: 'notifications',
+      href: `/profile/notifications`,
+    },
   ];
 
   let SETTINGS_SIDEBAR_LIST_ITEMS = [

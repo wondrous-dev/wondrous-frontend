@@ -129,7 +129,7 @@ const theme = createTheme({
       color: Colors.Grey100,
       letterSpacing: '0.25%',
     },
-    fontFamily: '"Space Grotesk", sans-serif',
+    fontFamily: 'Space Grotesk, sans-serif',
   },
   props: {
     MuiWithWidth: {
