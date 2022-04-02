@@ -24,7 +24,7 @@ import { TaskListViewModal } from '../Task/modal';
 import { useRouter } from 'next/router';
 
 let windowOffset;
-export const ColumnSection = ({ section, setSection, onOpenCallback = (section, isOpen) => {} }) => {
+export const ColumnSection = ({ section, setSection }) => {
   const { icon = Requested, title = '', tasks = [], action = {} } = section;
   const [isOpen, setIsOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -63,8 +63,8 @@ export const ColumnSection = ({ section, setSection, onOpenCallback = (section, 
   };
 
   useEffect(() => {
-    onOpenCallback(section, isOpen);
-  }, [isOpen]);
+    board.setSection({ section, isOpen });
+  }, [board, isOpen, section]);
 
   const setTask = (task) => {
     tasks.filter((t) => t.id === task.id)[0] = task;

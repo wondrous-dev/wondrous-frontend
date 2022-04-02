@@ -1,8 +1,9 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
-import { bindSectionToColumns } from '@utils/board';
+import { ViewType } from '../../../types/common';
+import { bindSectionToColumns, sectionOpeningReducer } from '@utils/board';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import {
   GET_JOIN_ORG_REQUESTS,
   GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
@@ -113,14 +114,15 @@ const useGetUserTaskBoardTasks = ({
 };
 
 const useGetUserTaskBoardProposals = ({
-  isProposalCardOpen,
+  listView,
+  section,
   contributorColumns,
   setContributorColumns,
   loggedInUser,
   statuses,
   podIds,
 }) => {
-  const [getUserTaskBoardProposals] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
+  const [getUserTaskBoardProposals, { data }] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
@@ -136,7 +138,7 @@ const useGetUserTaskBoardProposals = ({
     },
   });
   useEffect(() => {
-    if (isProposalCardOpen) {
+    if (section === TASK_STATUS_REQUESTED || listView || data) {
       getUserTaskBoardProposals({
         variables: {
           podIds,
@@ -147,18 +149,19 @@ const useGetUserTaskBoardProposals = ({
         },
       });
     }
-  }, [isProposalCardOpen, loggedInUser, getUserTaskBoardProposals, statuses, podIds]);
+  }, [getUserTaskBoardProposals, listView, loggedInUser?.id, podIds, section, statuses, data]);
 };
 
 const useGetUserTaskBoardSubmissions = ({
-  isSubmissionCardOpen,
+  listView,
+  section,
   contributorColumns,
   setContributorColumns,
   loggedInUser,
   statuses,
   podIds,
 }) => {
-  const [getUserTaskBoardSubmissions] = useLazyQuery(GET_USER_TASK_BOARD_SUBMISSIONS, {
+  const [getUserTaskBoardSubmissions, { data }] = useLazyQuery(GET_USER_TASK_BOARD_SUBMISSIONS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
@@ -174,7 +177,7 @@ const useGetUserTaskBoardSubmissions = ({
     },
   });
   useEffect(() => {
-    if (isSubmissionCardOpen)
+    if (section === TASK_STATUS_IN_REVIEW || listView || data) {
       getUserTaskBoardSubmissions({
         variables: {
           podIds,
@@ -184,11 +187,13 @@ const useGetUserTaskBoardSubmissions = ({
           offset: 0,
         },
       });
-  }, [isSubmissionCardOpen, loggedInUser, getUserTaskBoardSubmissions, statuses, podIds]);
+    }
+  }, [loggedInUser, getUserTaskBoardSubmissions, statuses, podIds, section, listView, data]);
 };
 
 const useGetUserTaskBoard = ({
-  currentCard,
+  view,
+  section,
   statuses,
   loggedInUser,
   setHasMoreTasks,
@@ -204,10 +209,10 @@ const useGetUserTaskBoard = ({
     statuses,
     podIds,
   });
-  const isProposalCardOpen = currentCard === TASK_STATUS_REQUESTED;
-  const isSubmissionCardOpen = currentCard === TASK_STATUS_IN_REVIEW;
+  const listView = view === ViewType.List;
   useGetUserTaskBoardProposals({
-    isProposalCardOpen,
+    listView,
+    section,
     contributorColumns,
     setContributorColumns,
     loggedInUser,
@@ -215,7 +220,8 @@ const useGetUserTaskBoard = ({
     podIds,
   });
   useGetUserTaskBoardSubmissions({
-    isSubmissionCardOpen,
+    listView,
+    section,
     contributorColumns,
     setContributorColumns,
     loggedInUser,
@@ -384,12 +390,12 @@ const BoardsPage = (props) => {
   const selectMembershipHook = useSelectMembership();
   const router = useRouter();
   const loggedInUser = useMe();
-  const { search } = router.query;
+  const { search, view } = router.query;
   const [hasMoreTasks, setHasMoreTasks] = useState(true);
   const [contributorColumns, setContributorColumns] = useState([]);
   const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
   const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
-  const [currentCard, setCurrentCard] = useState('');
+  const [section, setSection] = useReducer(sectionOpeningReducer, '');
   const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(loggedInUser);
   const { adminColumns } = useAdminColumns({
     isAdmin,
@@ -401,21 +407,15 @@ const BoardsPage = (props) => {
   });
   const filterSchema = useFilterSchema(loggedInUser, isAdmin);
   const { getUserTaskBoardTasksFetchMore } = useGetUserTaskBoard({
-    currentCard,
+    section,
     statuses,
     loggedInUser,
     setHasMoreTasks,
     contributorColumns,
     setContributorColumns,
     podIds,
+    view,
   });
-
-  const handleCardOpening = (section, isOpen) => {
-    const taskToSection = [TASK_STATUS_REQUESTED, TASK_STATUS_IN_REVIEW].find(
-      (taskType) => taskType === section?.filter?.taskType
-    );
-    if (taskToSection && taskToSection !== currentCard && isOpen) setCurrentCard(taskToSection);
-  };
 
   const bindProposalsToCols = (taskProposals) => {
     const newColumns = [...contributorColumns];
@@ -629,6 +629,7 @@ const BoardsPage = (props) => {
           : null,
         loggedInUserId: loggedInUser?.id,
         joinOrgRequests: getJoinOrgRequestsData?.getJoinOrgRequests,
+        setSection,
       }}
     >
       <Boards
@@ -642,7 +643,6 @@ const BoardsPage = (props) => {
         statuses={statuses}
         podIds={podIds}
         setColumns={setContributorColumns}
-        handleCardOpening={handleCardOpening}
       />
     </UserBoardContext.Provider>
   );

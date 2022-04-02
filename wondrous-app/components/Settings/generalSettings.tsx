@@ -35,7 +35,7 @@ import OpenSeaIcon from '../Icons/openSea';
 import LinkBigIcon from '../Icons/link';
 import { DiscordIcon } from '../Icons/discord';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_BY_ID, GET_DISCORD_WEBHOOK_INFO_FOR_ORG } from '../../graphql/queries/org';
+import { GET_ORG_BY_ID } from '../../graphql/queries/org';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { getFilenameAndType, uploadMedia } from '../../utils/media';
 import { SafeImage } from '../Common/Image';
@@ -96,8 +96,6 @@ const GeneralSettingsComponent = (props) => {
     saveChanges,
     isPrivate,
     setIsPrivate,
-    discordWebhookLink,
-    setDiscordWebhookLink,
   } = props;
 
   const [newLink, setNewLink] = useState({
@@ -225,44 +223,6 @@ const GeneralSettingsComponent = (props) => {
             )}
           </GeneralSettingsSocialsBlockWrapper>
         </GeneralSettingsSocialsBlock>
-        {/* {!isPod && (
-          <GeneralSettingsIntegrationsBlock>
-            <LabelBlock>Integrations</LabelBlock>
-            <LabelBlockText>
-              To post notifications in your Discord server, follow
-              <Link href="/discord-notification-setup">
-                <a
-                  target="_blank"
-                  style={{
-                    color: HighlightBlue,
-                    marginLeft: '4px',
-                  }}
-                >
-                  these instructions
-                </a>
-              </Link>
-            </LabelBlockText>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <GeneralSettingsIntegrationsBlockButtonIcon />
-              <InputField
-                placeholder="Discord webhook link"
-                value={discordWebhookLink}
-                onChange={(e) => setDiscordWebhookLink(e.target.value)}
-                style={{
-                  textDecoration: 'none',
-                  color: White,
-                  paddingRight: '8px',
-                  paddingLeft: '12px',
-                }}
-              />
-            </div>
-          </GeneralSettingsIntegrationsBlock>
-        )} */}
 
         {isPod && (
           <div
@@ -445,7 +405,6 @@ const GeneralSettings = () => {
   const [toast, setToast] = useState({ show: false, message: '' });
   const router = useRouter();
   const { orgId } = router.query;
-  const [discordWebhookLink, setDiscordWebhookLink] = useState('');
 
   function setOrganization(organization) {
     setOriginalOrgProfile(organization);
@@ -473,7 +432,6 @@ const GeneralSettings = () => {
   useEffect(() => {
     if (orgId) {
       getOrganization({ variables: { orgId } });
-      getOrgDiscordWebhookInfo({ variables: { orgId } });
     }
   }, [orgId]);
 
@@ -525,9 +483,6 @@ const GeneralSettings = () => {
           privacyLevel: orgProfile.privacyLevel,
           headerPicture: orgProfile.headerPicture,
           profilePicture: orgProfile.profilePicture,
-          ...(discordWebhookLink && {
-            discordWebhookLink,
-          }),
         },
       },
     });
@@ -558,8 +513,6 @@ const GeneralSettings = () => {
       saveChanges={saveChanges}
       typeText="DAO"
       setProfile={setOrgProfile}
-      setDiscordWebhookLink={setDiscordWebhookLink}
-      discordWebhookLink={discordWebhookLink}
     />
   );
 };
