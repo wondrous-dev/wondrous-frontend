@@ -30,7 +30,14 @@ import { SnackbarAlertContext } from '../../../components/Common/SnackbarAlert';
 import { getDiscordUrl } from '../../../utils';
 import { GET_USER_DISCORD_NOTIFICATION_CONFIGS } from 'graphql/queries';
 import { ENABLE_USER_DISCORD_NOTIFICATION_CONFIG, DISABLE_USER_DISCORD_NOTIFICATION_CONFIG } from 'graphql/mutations';
-import { UserDiscordNotificationSettingsDiv, UserDiscordNotificationSettingsText } from './styles';
+import {
+  UserDiscordNotificationSettingsDiv,
+  UserDiscordNotificationSettingsText,
+  LoggedInDiscordUserText,
+  ExplanationText,
+} from './styles';
+import Link from 'next/link';
+import { White } from 'theme/colors';
 
 const discordUrl = getDiscordUrl();
 
@@ -74,10 +81,8 @@ const ProfileSettings = (props) => {
   });
 
   useEffect(() => {
-    if (userNotificationConfigData) {
-      if (userNotificationConfigData?.disabledAt === null) {
-        setNotificationOn(true);
-      }
+    if (userNotificationConfigData?.getUserNotificationSetting?.discordEnabled) {
+      setNotificationOn(true);
     }
   }, [userNotificationConfigData]);
 
@@ -94,7 +99,9 @@ const ProfileSettings = (props) => {
     }
 
     if (!notificationOn) {
-      enableDiscordNotification();
+      enableDiscordNotification({
+        variables: {},
+      });
     }
   };
 
@@ -185,33 +192,25 @@ const ProfileSettings = (props) => {
         <GeneralSettingsInputsBlock>
           <UserDiscordNotificationSettingsDiv>
             <UserDiscordNotificationSettingsText>Discord Notifications</UserDiscordNotificationSettingsText>
-            <Switch checked={notificationOn} onChange={(e) => handleEnableDisableSwitch()} />
+            {loggedInUser?.userInfo?.discordUsername && (
+              <Switch checked={notificationOn} onChange={(e) => handleEnableDisableSwitch()} />
+            )}
           </UserDiscordNotificationSettingsDiv>
-          <GeneralSettingsIntegrationsBlockButton
-            style={{
-              maxWidth: 'none',
-              width: 'fit-content',
-              ...(loggedInUser?.userInfo?.discordUsername && {
-                borderRadius: '8px',
-              }),
-            }}
-            buttonInnerStyle={{
-              ...(loggedInUser?.userInfo?.discordUsername && {
-                borderRadius: '8px',
-              }),
-            }}
-            highlighted
-            onClick={() => {
-              if (!loggedInUser?.userInfo?.discordUsername) {
-                window.location.href = discordUrl;
-              }
-            }}
-          >
-            <GeneralSettingsIntegrationsBlockButtonIcon />
-            {loggedInUser?.userInfo?.discordUsername
-              ? `Connected to ${loggedInUser?.userInfo?.discordUsername}`
-              : 'Connect discord'}
-          </GeneralSettingsIntegrationsBlockButton>
+          {loggedInUser?.userInfo?.discordUsername ? (
+            <LoggedInDiscordUserText>{loggedInUser?.userInfo?.discordUsername}</LoggedInDiscordUserText>
+          ) : (
+            <LoggedInDiscordUserText
+              style={{
+                color: White,
+              }}
+            >
+              {' '}
+              Please connect your discord <Link href="/profile/settings">here</Link> first
+            </LoggedInDiscordUserText>
+          )}
+          <ExplanationText>
+            Currently you will receive payment, task assignment, and review request notifications
+          </ExplanationText>
         </GeneralSettingsInputsBlock>
 
         {/* <GeneralSettingsInputsBlock>
@@ -249,12 +248,19 @@ const ProfileSettings = (props) => {
             />
           )}
         </GeneralSettingsInputsBlock> */}
-        <GeneralSettingsButtonsBlock>
+        {/* <GeneralSettingsButtonsBlock>
           <GeneralSettingsResetButton>Reset changes</GeneralSettingsResetButton>
-          <GeneralSettingsSaveChangesButton highlighted onClick={handleSaveChanges}>
+          <GeneralSettingsSaveChangesButton
+            buttonInnerStyle={{
+              fontFamily: 'Space Grotesk',
+              fontWeight: 'bold',
+            }}
+            highlighted
+            onClick={handleSaveChanges}
+          >
             Save changes
           </GeneralSettingsSaveChangesButton>
-        </GeneralSettingsButtonsBlock>
+        </GeneralSettingsButtonsBlock> */}
       </GeneralSettingsContainer>
     </SettingsWrapper>
   );

@@ -34,13 +34,17 @@ export const DISABLE_ORG_DISCORD_NOTIFICATION_CONFIG = gql`
 
 export const ENABLE_USER_DISCORD_NOTIFICATION_CONFIG = gql`
   mutation enableUserDiscordNotification {
-    success
+    enableUserDiscordNotification {
+      success
+    }
   }
 `;
 
 export const DISABLE_USER_DISCORD_NOTIFICATION_CONFIG = gql`
   mutation disableUserDiscordNotification {
-    success
+    disableUserDiscordNotification {
+      success
+    }
   }
 `;
 

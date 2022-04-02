@@ -29,13 +29,11 @@ export const GET_ORG_DISCORD_NOTIFICATION_CONFIGS = gql`
 
 export const GET_USER_DISCORD_NOTIFICATION_CONFIGS = gql`
   query getUserNotificationSetting {
-    id
-    channelId
-    guildId
-    disabledAt
-    channelInfo {
-      channelName
-      guildName
+    getUserNotificationSetting {
+      id
+      enabled
+      discordEnabled
+      emailEnabled
     }
   }
 `;

@@ -345,6 +345,7 @@ export const GeneralSettingsSaveChangesButton = styled(Button)`
   && {
     width: 160px;
     margin-left: 22px;
+    font-family: Space Grotesk;
   }
 `;
 

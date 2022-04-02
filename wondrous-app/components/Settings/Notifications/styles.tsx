@@ -48,7 +48,7 @@ export const DiscordCardText = styled(Typography)`
 export const UserDiscordNotificationSettingsDiv = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 4px;
   justify-content: space-between;
 `;
 
@@ -58,5 +58,22 @@ export const UserDiscordNotificationSettingsText = styled(Typography)`
     color: ${White};
     font-size: 20px;
     font-weight: bold;
+  }
+`;
+
+export const LoggedInDiscordUserText = styled(Typography)`
+  && {
+    color: #06ffa5;
+    font-size: 16px;
+    font-family: Space Grotesk;
+  }
+`;
+
+export const ExplanationText = styled(Typography)`
+  && {
+    color: rgba(196, 196, 196, 1);
+    font-size: 14px;
+    line-height: 20px;
+    margin-top: 8px;
   }
 `;
