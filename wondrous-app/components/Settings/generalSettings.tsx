@@ -422,13 +422,6 @@ const GeneralSettings = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const [getOrgDiscordWebhookInfo] = useLazyQuery(GET_DISCORD_WEBHOOK_INFO_FOR_ORG, {
-    onCompleted: ({ getDiscordWebhookInfoForOrg }) => {
-      setDiscordWebhookLink(getDiscordWebhookInfoForOrg?.webhookUrl);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
-
   useEffect(() => {
     if (orgId) {
       getOrganization({ variables: { orgId } });
