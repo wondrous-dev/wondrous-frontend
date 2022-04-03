@@ -164,6 +164,13 @@ export const SettingsWrapper = (props) => {
       href: `/organization/settings/${orgId}/notifications`,
       page: [SettingsPage.Org],
     },
+    {
+      icon: <NotificationOutlineSettings />,
+      label: 'Notifications',
+      value: 'notifications',
+      href: `/profile/notifications`,
+      page: [SettingsPage.Profile],
+    },
   ];
 
   const parsedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
