@@ -330,6 +330,7 @@ const Payouts = (props) => {
       getUnpaidSubmissionsForOrg({
         variables: {
           orgId,
+          orgOnly: false,
         },
       }).then((result) => {
         const submissions = result?.data?.getUnpaidSubmissionsForOrg;
