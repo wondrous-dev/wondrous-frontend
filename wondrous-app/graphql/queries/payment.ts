@@ -60,8 +60,8 @@ export const GET_PAYMENTS_FOR_POD = gql`
 `;
 
 export const GET_UNPAID_SUBMISSIONS_FOR_ORG = gql`
-  query getUnpaidSubmissionsForOrg($orgId: ID!) {
-    getUnpaidSubmissionsForOrg(orgId: $orgId) {
+  query getUnpaidSubmissionsForOrg($input: OrgPaymentQueryInput) {
+    getUnpaidSubmissionsForOrg(input: $input) {
       ...UnpaidSubmissionFragment
     }
   }
@@ -69,8 +69,8 @@ export const GET_UNPAID_SUBMISSIONS_FOR_ORG = gql`
 `;
 
 export const GET_UNPAID_SUBMISSIONS_FOR_POD = gql`
-  query getUnpaidSubmissionsForPod($podId: ID!) {
-    getUnpaidSubmissionsForPod(podId: $podId) {
+  query getUnpaidSubmissionsForPod($input: PodPaymentQueryInput) {
+    getUnpaidSubmissionsForPod(input: $input) {
       ...UnpaidSubmissionFragment
     }
   }
