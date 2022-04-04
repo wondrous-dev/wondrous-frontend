@@ -60,8 +60,8 @@ export const GET_PAYMENTS_FOR_POD = gql`
 `;
 
 export const GET_UNPAID_SUBMISSIONS_FOR_ORG = gql`
-  query getUnpaidSubmissionsForOrg($orgId: ID!) {
-    getUnpaidSubmissionsForOrg(orgId: $orgId) {
+  query getUnpaidSubmissionsForOrg($orgId: ID!, $orgOnly: Boolean) {
+    getUnpaidSubmissionsForOrg(orgId: $orgId, orgOnly: $orgOnly) {
       ...UnpaidSubmissionFragment
     }
   }
