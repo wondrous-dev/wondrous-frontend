@@ -1,16 +1,17 @@
 import React from 'react';
 
 import Divider from '@material-ui/core/Divider';
-import MuiTooltip from '@material-ui/core/Tooltip';
+import MuiTooltip, { TooltipProps } from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 type Props = {
   children?: any;
   title?: string;
   description?: string;
+  placement?: TooltipProps['placement'];
 };
 
-const Tooltip = ({ title, description, children }: Props) => {
+const Tooltip = ({ title, description, children, placement }: Props) => {
   if (!title) {
     return children;
   }
@@ -28,7 +29,7 @@ const Tooltip = ({ title, description, children }: Props) => {
   );
 
   return (
-    <MuiTooltip arrow title={tooltipTitle}>
+    <MuiTooltip arrow title={tooltipTitle} placement={placement}>
       {children}
     </MuiTooltip>
   );
