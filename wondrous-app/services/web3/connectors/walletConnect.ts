@@ -1,4 +1,4 @@
-import { RPC_URLS, SUPPORTED_CHAIN_IDS } from '@utils/constants';
+import { RPC_URLS, SUPPORTED_CHAIN_IDS } from 'utils/constants';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 
 export const walletConnect = new WalletConnectConnector({

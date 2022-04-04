@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
@@ -18,20 +14,15 @@
     "jsx": "preserve",
     "typeRoots": ["./types"],
     "strict": false,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
-      "@components/*": ["components/*"],
-      "@services/*": ["services/*"],
-      "@utils/*": ["utils/*"],
-      "@types/*": ["types/*"]
+      "components/*": ["components/*"],
+      "services/*": ["services/*"],
+      "utils/*": ["utils/*"],
+      "types/*": ["types/*"],
+      "graphql/*": ["graphql/*"]
     }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }

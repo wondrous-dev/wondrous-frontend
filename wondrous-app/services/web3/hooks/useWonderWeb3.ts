@@ -6,9 +6,9 @@ import connectors, { ConnectorName } from '../connectors';
 
 import { useContext, useEffect, useMemo, useState } from 'react';
 
-import { CHAIN_IDS, SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '@utils/constants';
+import { CHAIN_IDS, SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from 'utils/constants';
 
-import { ERC20abi } from '@services/contracts/erc20.abi';
+import { ERC20abi } from 'services/contracts/erc20.abi';
 import { formatEther } from 'ethers/lib/utils';
 import { AbiItem } from 'web3-utils';
 import useWeb3 from '../hooks/useWeb3';

@@ -20,6 +20,26 @@ const theme = createTheme({
     },
   },
   overrides: {
+    MuiTooltip: {
+      popper: {
+        '& p': {
+          color: Colors.White
+        }
+      },
+      tooltip: {
+        backgroundColor: Colors.Grey800
+      },
+      arrow: {
+        '&:before': {
+          backgroundColor: Colors.Grey800
+        }
+      }
+    },
+    MuiDivider: {
+      root: {
+        backgroundColor: Colors.White
+      }
+    },
     MuiTextField: {
       root: {
         color: Colors.Grey700,

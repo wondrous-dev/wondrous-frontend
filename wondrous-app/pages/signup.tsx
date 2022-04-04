@@ -16,9 +16,9 @@ import { EmailIcon, LockIcon } from '../components/Icons/userpass';
 import { useWonderWeb3 } from '../services/web3';
 import { emailSignup, getUserSigningMessage, walletSignup } from '../components/Auth/withAuth';
 import { SupportedChainType } from '../utils/web3Constants';
-import MetaMaskConnector from '@components/WalletConnectors/MetaMask';
-import signedMessageIsString from '@services/web3/utils/signedMessageIsString';
-import CoinbaseConnector from '@components/WalletConnectors/Coinbase';
+import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
+import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
+import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 
 const Signup = () => {
   const wonderWeb3 = useWonderWeb3();

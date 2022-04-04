@@ -1,5 +1,5 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { TabsVisibilityCreateEntity } from '@components/Common/TabsVisibilityCreateEntity';
+import { TabsVisibilityCreateEntity } from 'components/Common/TabsVisibilityCreateEntity';
 import { CircularProgress, styled, Switch, TextField } from '@material-ui/core';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';

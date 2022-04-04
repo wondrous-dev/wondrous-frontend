@@ -52,7 +52,7 @@ import { TaskMedia } from '../MediaPlayer';
 import { useMe } from '../../Auth/withAuth';
 import PodIcon from '../../Icons/podIcon';
 import { ViewType } from '../../../types/common';
-import { useLocation } from '@utils/useLocation';
+import { useLocation } from 'utils/useLocation';
 
 let windowOffset;
 

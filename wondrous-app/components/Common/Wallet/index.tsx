@@ -23,9 +23,9 @@ import { CURRENCY_KEYS, SUPPORTED_CHAINS } from '../../../utils/constants';
 import { USDCoin } from '../../Icons/USDCoin';
 import { SupportedChainType } from '../../../utils/web3Constants';
 import { ErrorText } from '..';
-import signedMessageIsString from '@services/web3/utils/signedMessageIsString';
+import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import WalletModal from './WalletModal';
-import useEagerConnect from '@services/web3/hooks/useEagerConnect';
+import useEagerConnect from 'services/web3/hooks/useEagerConnect';
 
 const CHAIN_LOGO = {
   '1': <Ethereum />,
