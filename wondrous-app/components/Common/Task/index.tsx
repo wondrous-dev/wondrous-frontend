@@ -553,9 +553,8 @@ export const TaskListCard = (props) => {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                router.push(`/pod/${task?.podId}/boards`, undefined, {
-                  shallow: true,
-                });
+                const newUrl = `/pod/${task?.podId}/boards`;
+                window.location.href = newUrl;
               }}
             >
               <PodName>{task?.podName.slice(0, 15)}</PodName>
