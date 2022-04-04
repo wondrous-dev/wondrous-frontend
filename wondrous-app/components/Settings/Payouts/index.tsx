@@ -329,8 +329,10 @@ const Payouts = (props) => {
     if (orgId && view === ViewType.Unpaid) {
       getUnpaidSubmissionsForOrg({
         variables: {
-          orgId,
-          orgOnly: false,
+          input: {
+            orgId,
+            orgOnly: false,
+          },
         },
       }).then((result) => {
         const submissions = result?.data?.getUnpaidSubmissionsForOrg;
@@ -339,7 +341,9 @@ const Payouts = (props) => {
     } else if (podId && view === ViewType.Unpaid) {
       getUnpaidSubmissionsForPod({
         variables: {
-          podId,
+          input: {
+            podId,
+          },
         },
       }).then((result) => {
         const submissions = result?.data?.getUnpaidSubmissionsForPod;
