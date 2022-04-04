@@ -86,7 +86,8 @@ export const FilterBox = styled.div`
   top: 40px;
   left: 0;
 
-  display: ${(props) => (props.open ? 'flex' : 'none')};
+  display: flex;
+  opacity: ${(props) => (props.open ? 1 : 0)};
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
