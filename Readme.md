@@ -1,5 +1,5 @@
 [![twitter](https://img.shields.io/twitter/follow/wonderverse_xyz?label=Follow&style=social)](https://twitter.com/wonderverse_xyz)
-[![discord](https://img.shields.io/discord/907435897568505866?label=discord&logo=Discord)](https://discord.gg/FDHpxKz2)
+[![discord](https://img.shields.io/discord/907435897568505866?label=discord&logo=Discord)](https://discord.gg/PZSQZNhp6d)
 
 ## Wonder front end
 
@@ -14,7 +14,7 @@ If you plan to collaborate, go to the appropriate folder and setup the local env
 
 ### Discord
 
-Click [Here](https://discord.gg/FDHpxKz2) to access the Discord server.
+Click [Here](https://discord.gg/PZSQZNhp6d) to access the Discord server.
 
 ### Presale
 
