@@ -55,7 +55,6 @@
     "regexify-string": "^1.0.17",
     "styled-components": "^5.3.0",
     "styled-system": "^5.1.5",
-    "web3": "^1.6.1",
     "yup": "^0.32.9"
   },
   "devDependencies": {
