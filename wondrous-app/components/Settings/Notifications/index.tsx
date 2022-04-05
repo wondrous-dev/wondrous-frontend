@@ -40,9 +40,9 @@ import {
 import Link from 'next/link';
 import { Grey800, HighlightBlue, White } from '../../../theme/colors';
 import { ErrorText } from '../../Common';
-import InputForm from '@components/Common/InputForm/inputForm';
-import DropdownSelect from '@components/Common/DropdownSelect/dropdownSelect';
-import { CreateFormPreviewButton } from '@components/CreateEntity/styles';
+import InputForm from 'components/Common/InputForm/inputForm';
+import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
+import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 
 const CurrentNotificationSetting = ({ discordNotificationConfigData, orgId }) => {
   const notificationEnabled = discordNotificationConfigData?.disabledAt === null;

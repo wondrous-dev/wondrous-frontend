@@ -1,8 +1,8 @@
 import { useMutation } from '@apollo/client';
-import { DiscordIcon } from '@components/Icons/discord';
-import LinkBigIcon from '@components/Icons/link';
-import OpenSeaIcon from '@components/Icons/openSea';
-import TwitterPurpleIcon from '@components/Icons/twitterPurple';
+import { DiscordIcon } from 'components/Icons/discord';
+import LinkBigIcon from 'components/Icons/link';
+import OpenSeaIcon from 'components/Icons/openSea';
+import TwitterPurpleIcon from 'components/Icons/twitterPurple';
 import _ from 'lodash';
 import React, { useContext, useEffect, useState } from 'react';
 import { SnackbarAlertContext } from '../../components/Common/SnackbarAlert';

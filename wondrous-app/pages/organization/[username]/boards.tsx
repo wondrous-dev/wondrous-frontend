@@ -3,7 +3,7 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import { ViewType } from 'types/common';
 import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
 import { useRouterQuery } from 'utils/hooks';
-import uniqBy from 'lodash/uniqBy';
+import _ from 'lodash';
 import { useRouter } from 'next/router';
 import { withAuth } from '../../../components/Auth/withAuth';
 import Boards from '../../../components/organization/boards/boards';
