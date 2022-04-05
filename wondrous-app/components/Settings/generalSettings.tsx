@@ -1,53 +1,43 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
-
-import { SettingsWrapper } from './settingsWrapper';
+import React, { useEffect, useState } from 'react';
+import { UPDATE_ORG } from '../../graphql/mutations/org';
+import { UPDATE_POD } from '../../graphql/mutations/pod';
+import { GET_ORG_BY_ID } from '../../graphql/queries/org';
+import { GET_POD_BY_ID } from '../../graphql/queries/pod';
+import { filteredColorOptions, PRIVACY_LEVEL } from '../../utils/constants';
+import { getFilenameAndType, uploadMedia } from '../../utils/media';
+import { TabsVisibility } from '../Common/TabsVisibility';
+import { CreateFormAddDetailsInputLabel, CreateFormAddDetailsTab } from '../CreateEntity/styles';
+import { DiscordIcon } from '../Icons/discord';
+import LinkBigIcon from '../Icons/link';
+import OpenSeaIcon from '../Icons/openSea';
+import TwitterPurpleIcon from '../Icons/twitterPurple';
+import ColorSettings from './ColorDropdown';
 import { HeaderBlock } from './headerBlock';
 import { ImageUpload } from './imageUpload';
-import { LinkSquareIcon } from './linkSquareIcon';
 import { InputField } from './inputField';
+import { LinkSquareIcon } from './linkSquareIcon';
+import { SettingsWrapper } from './settingsWrapper';
 import {
   GeneralSettingsButtonsBlock,
   GeneralSettingsContainer,
   GeneralSettingsDAODescriptionBlock,
   GeneralSettingsDAODescriptionInput,
   GeneralSettingsDAODescriptionInputCounter,
+  GeneralSettingsDAOHeaderImage,
   GeneralSettingsDAONameBlock,
   GeneralSettingsDAONameInput,
+  GeneralSettingsDAOProfileImage,
   GeneralSettingsInputsBlock,
-  GeneralSettingsIntegrationsBlock,
-  GeneralSettingsIntegrationsBlockButton,
-  GeneralSettingsIntegrationsBlockButtonIcon,
   GeneralSettingsResetButton,
   GeneralSettingsSaveChangesButton,
   GeneralSettingsSocialsBlock,
   GeneralSettingsSocialsBlockRow,
-  GeneralSettingsSocialsBlockRowLabel,
   GeneralSettingsSocialsBlockWrapper,
   LabelBlock,
   Snackbar,
-  LabelBlockText,
-  GeneralSettingsDAOProfileImage,
-  GeneralSettingsDAOHeaderImage,
 } from './styles';
-import TwitterPurpleIcon from '../Icons/twitterPurple';
-import LinkedInIcon from '../Icons/linkedIn';
-import OpenSeaIcon from '../Icons/openSea';
-import LinkBigIcon from '../Icons/link';
-import { DiscordIcon } from '../Icons/discord';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_BY_ID, GET_DISCORD_WEBHOOK_INFO_FOR_ORG } from '../../graphql/queries/org';
-import { UPDATE_ORG } from '../../graphql/mutations/org';
-import { getFilenameAndType, uploadMedia } from '../../utils/media';
-import { GET_POD_BY_ID } from '../../graphql/queries/pod';
-import { UPDATE_POD } from '../../graphql/mutations/pod';
-import { CreateFormAddDetailsInputLabel, CreateFormAddDetailsTab } from '../CreateEntity/styles';
-import { AndroidSwitch } from '../CreateEntity/createEntityModal';
-import { filteredColorOptions, POD_COLOR, PRIVACY_LEVEL } from '../../utils/constants';
-import ColorSettings from './ColorDropdown';
-import { White, HighlightBlue } from '../../theme/colors';
-import { TabsVisibility } from '../Common/TabsVisibility';
 
 const LIMIT = 200;
 
@@ -223,44 +213,6 @@ const GeneralSettingsComponent = (props) => {
             )}
           </GeneralSettingsSocialsBlockWrapper>
         </GeneralSettingsSocialsBlock>
-        {/* {!isPod && (
-          <GeneralSettingsIntegrationsBlock>
-            <LabelBlock>Integrations</LabelBlock>
-            <LabelBlockText>
-              To post notifications in your Discord server, follow
-              <Link href="/discord-notification-setup">
-                <a
-                  target="_blank"
-                  style={{
-                    color: HighlightBlue,
-                    marginLeft: '4px',
-                  }}
-                >
-                  these instructions
-                </a>
-              </Link>
-            </LabelBlockText>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <GeneralSettingsIntegrationsBlockButtonIcon />
-              <InputField
-                placeholder="Discord webhook link"
-                value={discordWebhookLink}
-                onChange={(e) => setDiscordWebhookLink(e.target.value)}
-                style={{
-                  textDecoration: 'none',
-                  color: White,
-                  paddingRight: '8px',
-                  paddingLeft: '12px',
-                }}
-              />
-            </div>
-          </GeneralSettingsIntegrationsBlock>
-        )} */}
 
         {isPod && (
           <div
@@ -442,7 +394,6 @@ const GeneralSettings = () => {
   const [toast, setToast] = useState({ show: false, message: '' });
   const router = useRouter();
   const { orgId } = router.query;
-  const [discordWebhookLink, setDiscordWebhookLink] = useState('');
 
   function setOrganization(organization) {
     setLogoImage('');
@@ -459,17 +410,9 @@ const GeneralSettings = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const [getOrgDiscordWebhookInfo] = useLazyQuery(GET_DISCORD_WEBHOOK_INFO_FOR_ORG, {
-    onCompleted: ({ getDiscordWebhookInfoForOrg }) => {
-      setDiscordWebhookLink(getDiscordWebhookInfoForOrg.webhookUrl);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
-
   useEffect(() => {
     if (orgId) {
       getOrgById({ variables: { orgId } });
-      getOrgDiscordWebhookInfo({ variables: { orgId } });
     }
   }, [orgId]);
 
@@ -536,9 +479,6 @@ const GeneralSettings = () => {
           privacyLevel: orgProfile.privacyLevel,
           headerPicture: orgProfile.headerPicture,
           profilePicture: orgProfile.profilePicture,
-          ...(discordWebhookLink && {
-            discordWebhookLink,
-          }),
         },
       },
     });
@@ -568,8 +508,6 @@ const GeneralSettings = () => {
       saveChanges={saveChanges}
       typeText="DAO"
       setProfile={setOrgProfile}
-      setDiscordWebhookLink={setDiscordWebhookLink}
-      discordWebhookLink={discordWebhookLink}
       headerImage={headerImage}
       handleImageChange={handleImageChange}
     />

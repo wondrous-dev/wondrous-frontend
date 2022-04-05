@@ -20,6 +20,26 @@ const theme = createTheme({
     },
   },
   overrides: {
+    MuiTooltip: {
+      popper: {
+        '& p': {
+          color: Colors.White
+        }
+      },
+      tooltip: {
+        backgroundColor: Colors.Grey800
+      },
+      arrow: {
+        '&:before': {
+          backgroundColor: Colors.Grey800
+        }
+      }
+    },
+    MuiDivider: {
+      root: {
+        backgroundColor: Colors.White
+      }
+    },
     MuiTextField: {
       root: {
         color: Colors.Grey700,
@@ -129,7 +149,7 @@ const theme = createTheme({
       color: Colors.Grey100,
       letterSpacing: '0.25%',
     },
-    fontFamily: '"Space Grotesk", sans-serif',
+    fontFamily: 'Space Grotesk, sans-serif',
   },
   props: {
     MuiWithWidth: {

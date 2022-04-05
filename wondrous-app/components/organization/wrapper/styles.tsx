@@ -109,7 +109,7 @@ export const HeaderTitleIcon = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  flex-wrap: wrap;
+  margin-bottom: 8px;
   & > * {
     margin-left: 10px;
     :first-child {

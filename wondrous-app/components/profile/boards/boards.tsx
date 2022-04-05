@@ -83,7 +83,7 @@ const Boards = (props) => {
   ];
 
   return (
-    <Wrapper>
+    <Wrapper userProfileData={{}}>
       <BoardsContainer>
         <BoardsActivity>
           <BoardsActivityInput

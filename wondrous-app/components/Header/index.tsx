@@ -1,13 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
+import React from 'react';
+import { useRouter } from 'next/router';
+import { useMutation, useQuery } from '@apollo/client';
 import { InputAdornment } from '@material-ui/core';
 
-import HomeIcon from '../Icons/home';
-import SearchIcon from '../Icons/search';
-import { StatusArchived, StatusAssigned, StatusLiked } from '../Icons/notifications';
-import CreateBtnIcon from '../Icons/createBtn';
+import Link from 'next/link';
 
-import Wallet from '../Common/Wallet';
+import { GET_NOTIFICATIONS } from 'graphql/queries';
+import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
+
+import NotificationsBoard from 'components/Notifications';
+import HomeIcon from 'components/Icons/home';
+import SearchIcon from 'components/Icons/search';
+import CreateBtnIcon from 'components/Icons/createBtn';
+import Tooltip from 'components/Tooltip';
+import Wallet from 'components/Common/Wallet';
 
 import {
   Header,
@@ -19,11 +25,6 @@ import {
   HeaderContainer,
   HeaderCreateButton,
 } from './styles';
-import NotificationsBoard from '../Notifications';
-import { GET_NOTIFICATIONS } from '../../graphql/queries';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from '../../graphql/mutations/notification';
-import { useRouter } from 'next/router';
 
 const HeaderComponent = (props) => {
   // Grab Notifications from Backend
@@ -52,10 +53,13 @@ const HeaderComponent = (props) => {
         <HeaderLeftBlock>
           <HeaderLogo />
           <Link passHref href="/dashboard">
-            <HeaderHomeButton>
-              <HomeIcon />
-            </HeaderHomeButton>
+            <Tooltip title="Dashboard">
+              <HeaderHomeButton>
+                <HomeIcon />
+              </HeaderHomeButton>
+            </Tooltip>
           </Link>
+
           <HeaderInput
             placeholder="Search wonder..."
             InputProps={{

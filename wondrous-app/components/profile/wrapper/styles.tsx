@@ -33,13 +33,10 @@ export const TokenHeader = styled.div`
   position: relative;
   max-width: 680px;
   width: 100%;
-  min-height: 190px;
-  height: 190px;
   padding-top: 65px;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  margin-bottom: 30px;
 `;
 
 export const TokenLogo = styled(ProfileImage)`
@@ -179,15 +176,12 @@ export const HeaderText = styled(Typography)`
 `;
 
 export const HeaderActivity = styled.div`
-  max-width: 447px;
   width: 100%;
   flex-wrap: wrap;
-  min-height: 23px;
-  height: 23px;
   display: flex;
   justify-content: left;
   align-items: center;
-  margin-top: 26px;
+  margin-top: 18px;
 `;
 
 export const HeaderActivityLink = styled.a`
@@ -200,7 +194,21 @@ export const HeaderActivityLink = styled.a`
   color: #ccbbff;
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   text-decoration-line: underline;
-  margin-right: 30px;
+  margin-right: 12px;
+`;
+
+export const HeaderActivityLinkText = styled.span`
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+export const HeaderActivitySocialIcon = styled(({ Component, ...props }) => {
+  return <Component {...props} />;
+})`
+  width: 20px;
+  height: 20px;
 `;
 
 export const HeaderActivityLinkIcon = styled(LinkIcon)`
@@ -214,7 +222,7 @@ export const HeaderOrgPodCount = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-right: 30px;
+  margin-right: 12px;
 `;
 
 export const HeaderPodCount = styled(Typography)`

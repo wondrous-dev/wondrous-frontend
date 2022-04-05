@@ -5,11 +5,7 @@ import { Button, Typography } from '@material-ui/core';
 import { BaseCard } from '../card';
 import React from 'react';
 import { Tabs, InputBase } from '@material-ui/core';
-import {
-  CreateFormCancelButton,
-  CreateFormMainSelects,
-  CreateFormPreviewButton,
-} from '@components/CreateEntity/styles';
+import { CreateFormCancelButton, CreateFormMainSelects, CreateFormPreviewButton } from 'components/CreateEntity/styles';
 
 export const PodWrapper = styled.div`
   background: #363636;

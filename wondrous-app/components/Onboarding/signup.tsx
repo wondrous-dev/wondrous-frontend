@@ -20,9 +20,9 @@ import { Metamask } from '../Icons/metamask';
 import { SafeImage } from '../Common/Image';
 import { ErrorText } from '../Common';
 import { SupportedChainType } from '../../utils/web3Constants';
-import signedMessageIsString from '@services/web3/utils/signedMessageIsString';
-import MetaMaskConnector from '@components/WalletConnectors/MetaMask';
-import CoinbaseConnector from '@components/WalletConnectors/Coinbase';
+import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
+import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
+import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 
 export const Logo = () => {
   return (

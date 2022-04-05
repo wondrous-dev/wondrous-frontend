@@ -24,7 +24,7 @@ import { TaskListViewModal } from '../Task/modal';
 import { useRouter } from 'next/router';
 
 let windowOffset;
-export const ColumnSection = ({ section, setSection, onOpenCallback = (section, isOpen) => {} }) => {
+export const ColumnSection = ({ section, setSection }) => {
   const { icon = Requested, title = '', tasks = [], action = {} } = section;
   const [isOpen, setIsOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -54,7 +54,7 @@ export const ColumnSection = ({ section, setSection, onOpenCallback = (section, 
       break;
   }
   // TODO get counts for proposals
-  const count = tasks.length;
+  const count = tasks?.length;
 
   const toggleSection = () => {
     if (!isPublic) {
@@ -63,8 +63,8 @@ export const ColumnSection = ({ section, setSection, onOpenCallback = (section, 
   };
 
   useEffect(() => {
-    onOpenCallback(section, isOpen);
-  }, [isOpen]);
+    board.setSection({ section, isOpen });
+  }, [board, isOpen, section]);
 
   const setTask = (task) => {
     tasks.filter((t) => t.id === task.id)[0] = task;
@@ -117,10 +117,10 @@ export const ColumnSection = ({ section, setSection, onOpenCallback = (section, 
         </SectionChevronContainer>
       </SectionHeaderContainer>
       <SectionContainer in={isOpen}>
-        {tasks.slice(0, 2).map((task) => (
+        {tasks?.slice(0, 2).map((task) => (
           <TaskSummary key={task.id} task={task} setTask={setTask} action={action} taskType={type} />
         ))}
-        {(tasks.length >= 2 || number >= 2) && !isPublic ? (
+        {(tasks?.length >= 2 || number >= 2) && !isPublic ? (
           <TaskSummaryFooter onClick={openModal}>See more</TaskSummaryFooter>
         ) : (
           ''

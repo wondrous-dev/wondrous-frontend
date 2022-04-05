@@ -1,10 +1,11 @@
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { useLazyQuery, useQuery } from '@apollo/client';
-import Boards from '@components/Common/Boards';
-import Wrapper from '@components/Pod/wrapper';
-import { bindSectionToColumns } from '@utils/board';
-import { useRouterQuery } from '@utils/hooks';
+import { ViewType } from 'types/common';
+import Boards from 'components/Common/Boards';
+import Wrapper from 'components/Pod/wrapper';
+import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
+import { useRouterQuery } from 'utils/hooks';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useState } from 'react';
 import { withAuth } from '../../../components/Auth/withAuth';
 import { GET_USER_PERMISSION_CONTEXT, SEARCH_POD_USERS } from '../../../graphql/queries';
 import { GET_POD_BY_ID } from '../../../graphql/queries/pod';
@@ -86,8 +87,8 @@ const useGetPodTaskBoardTasks = ({ columns, setColumns, setPodTaskHasMore, podId
   return { getPodTaskBoardTasksFetchMore };
 };
 
-const useGetPodTaskProposals = ({ isProposalCardOpen, setColumns, columns, podId, statuses }) => {
-  const [getPodTaskProposals] = useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
+const useGetPodTaskProposals = ({ listView, section, setColumns, columns, podId, statuses }) => {
+  const [getPodTaskProposals, { data }] = useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
@@ -103,7 +104,7 @@ const useGetPodTaskProposals = ({ isProposalCardOpen, setColumns, columns, podId
     },
   });
   useEffect(() => {
-    if (isProposalCardOpen)
+    if (section === TASK_STATUS_REQUESTED || listView || data)
       getPodTaskProposals({
         variables: {
           input: {
@@ -114,11 +115,11 @@ const useGetPodTaskProposals = ({ isProposalCardOpen, setColumns, columns, podId
           },
         },
       });
-  }, [isProposalCardOpen, getPodTaskProposals, podId, statuses]);
+  }, [getPodTaskProposals, podId, statuses, section, listView, data]);
 };
 
-const useGetPodTaskSubmissions = ({ isSubmissionCardOpen, setColumns, columns, podId, statuses }) => {
-  const [getPodTaskSubmissions] = useLazyQuery(GET_POD_TASK_BOARD_SUBMISSIONS, {
+const useGetPodTaskSubmissions = ({ listView, section, setColumns, columns, podId, statuses }) => {
+  const [getPodTaskSubmissions, { data }] = useLazyQuery(GET_POD_TASK_BOARD_SUBMISSIONS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
@@ -134,7 +135,7 @@ const useGetPodTaskSubmissions = ({ isSubmissionCardOpen, setColumns, columns, p
     },
   });
   useEffect(() => {
-    if (isSubmissionCardOpen)
+    if (section === TASK_STATUS_IN_REVIEW || listView || data)
       getPodTaskSubmissions({
         variables: {
           input: {
@@ -145,14 +146,13 @@ const useGetPodTaskSubmissions = ({ isSubmissionCardOpen, setColumns, columns, p
           },
         },
       });
-  }, [isSubmissionCardOpen, getPodTaskSubmissions, podId, statuses]);
+  }, [getPodTaskSubmissions, podId, statuses, section, listView, data]);
 };
 
-const useGetPodTaskBoard = ({ currentCard, columns, setColumns, setPodTaskHasMore, podId, statuses, boardType }) => {
-  const isProposalCardOpen = currentCard === TASK_STATUS_REQUESTED;
-  const isSubmissionCardOpen = currentCard === TASK_STATUS_IN_REVIEW;
-  useGetPodTaskSubmissions({ isSubmissionCardOpen, setColumns, columns, podId, statuses });
-  useGetPodTaskProposals({ isProposalCardOpen, setColumns, columns, podId, statuses });
+const useGetPodTaskBoard = ({ view, section, columns, setColumns, setPodTaskHasMore, podId, statuses, boardType }) => {
+  const listView = view === ViewType.List;
+  useGetPodTaskSubmissions({ listView, section, setColumns, columns, podId, statuses });
+  useGetPodTaskProposals({ listView, section, setColumns, columns, podId, statuses });
   const { getPodTaskBoardTasksFetchMore } = useGetPodTaskBoardTasks({
     columns,
     setColumns,
@@ -168,9 +168,8 @@ const BoardsPage = () => {
   const router = useRouter();
   const [columns, setColumns] = useState(COLUMNS);
   const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
-  const { boardType } = router.query;
-  const [currentCard, setCurrentCard] = useState('');
-  const { username, podId, search, userId } = router.query;
+  const [section, setSection] = useReducer(sectionOpeningReducer, '');
+  const { username, podId, search, userId, view, boardType } = router.query;
   const [searchString, setSearchString] = useState('');
 
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
@@ -182,7 +181,8 @@ const BoardsPage = () => {
   const pod = podData?.getPodById;
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
   const { getPodTaskBoardTasksFetchMore } = useGetPodTaskBoard({
-    currentCard,
+    section,
+    view,
     columns,
     setColumns,
     setPodTaskHasMore,
@@ -372,13 +372,6 @@ const BoardsPage = () => {
     }));
   }
 
-  const handleCardOpening = (section, isOpen) => {
-    const taskToSection = [TASK_STATUS_REQUESTED, TASK_STATUS_IN_REVIEW].find(
-      (taskType) => taskType === section?.filter?.taskType
-    );
-    if (taskToSection && taskToSection !== currentCard && isOpen) setCurrentCard(taskToSection);
-  };
-
   const handleFilterChange: any = ({ statuses = [] }: TaskFilter) => {
     setStatuses(statuses);
 
@@ -446,6 +439,7 @@ const BoardsPage = () => {
   return (
     <PodBoardContext.Provider
       value={{
+        setSection,
         statuses,
         setStatuses,
         columns,
@@ -463,13 +457,13 @@ const BoardsPage = () => {
         <Boards
           columns={columns}
           onLoadMore={getPodTaskBoardTasksFetchMore}
-          handleCardOpening={handleCardOpening}
           hasMore={podTaskHasMore}
           onSearch={handleSearch}
           onFilterChange={handleFilterChange}
           statuses={statuses}
           filterSchema={[FILTER_STATUSES]}
           setColumns={setColumns}
+          userId={userId?.toString()}
         />
       </Wrapper>
     </PodBoardContext.Provider>
