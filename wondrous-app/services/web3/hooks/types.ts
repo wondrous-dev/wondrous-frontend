@@ -79,7 +79,7 @@ export interface WonderWeb3 {
 
   /**
    * Method to reactivate a connection to a connector. Do not call before activating a connector (using method active).
-   * To activate a connector, you can use the helper components at @components/WalletConnectors.
+   * To activate a connector, you can use the helper components at components/WalletConnectors.
    */
   onConnect: () => void;
 

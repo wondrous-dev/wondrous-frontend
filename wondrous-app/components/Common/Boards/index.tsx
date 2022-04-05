@@ -1,4 +1,4 @@
-import { ColumnsContext } from '@utils/contexts';
+import { ColumnsContext } from 'utils/contexts';
 import { useRouter } from 'next/router';
 import pluralize from 'pluralize';
 import React, { useEffect, useState } from 'react';

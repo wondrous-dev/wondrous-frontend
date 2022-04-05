@@ -3,7 +3,6 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import { ViewType } from 'types/common';
 import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
 import { useRouterQuery } from 'utils/hooks';
-import uniqBy from 'lodash/uniqBy';
 import { useRouter } from 'next/router';
 import { withAuth } from '../../../components/Auth/withAuth';
 import Boards from '../../../components/organization/boards/boards';
@@ -31,6 +30,7 @@ import {
   TASK_STATUS_REQUESTED,
 } from '../../../utils/constants';
 import { OrgBoardContext } from '../../../utils/contexts';
+import _ from 'lodash';
 
 const useGetOrgTaskBoardTasks = ({
   columns,

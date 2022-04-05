@@ -1,4 +1,4 @@
-import { SafeImage } from '@components/Common/Image';
+import { SafeImage } from 'components/Common/Image';
 import { Button, IconButton, Typography } from '@material-ui/core';
 import Image from 'next/image';
 import React from 'react';

@@ -1,7 +1,7 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
-import LeftArrowIcon from '@components/Icons/leftArrow';
-import PodIcon from '@components/Icons/podIcon';
-import RolesIcon from '@components/Icons/roles';
+import LeftArrowIcon from 'components/Icons/leftArrow';
+import PodIcon from 'components/Icons/podIcon';
+import RolesIcon from 'components/Icons/roles';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
