@@ -1,3 +1,6 @@
+[![twitter](https://img.shields.io/twitter/follow/wonderverse_xyz?label=Follow&style=social)](https://twitter.com/wonderverse_xyz)
+[![discord](https://img.shields.io/discord/907435897568505866?label=discord&logo=Discord)](https://discord.gg/FDHpxKz2)
+
 ## Wonder front end
 
 Each directory represents a different front end app for Wonder:
