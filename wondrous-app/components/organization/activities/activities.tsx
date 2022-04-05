@@ -1,7 +1,7 @@
 import { useLazyQuery } from '@apollo/client';
 import React, { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { GET_ORG_FEED } from '../../../graphql/queries';
+import { GET_ORG_FEED } from 'graphql/queries';
 import { Post } from '../../Common/Post';
 import Wrapper from '../wrapper/wrapper';
 import { Feed, FeedLoadMore } from './styles';

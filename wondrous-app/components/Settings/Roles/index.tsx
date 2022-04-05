@@ -23,7 +23,7 @@ import {
   RolesInputsBlock,
   Snackbar,
 } from './styles';
-import { Role } from '../../../types/common';
+import { Role } from 'types/common';
 
 type Props = {
   roles: Role[];

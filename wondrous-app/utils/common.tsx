@@ -2,7 +2,7 @@ import React from 'react';
 import regexifyString from 'regexify-string';
 import { Typography } from '@material-ui/core';
 import { HighlightBlue } from '../theme/colors';
-import { TodoIcon, ArchivedIcon, CompletedIcon, InProgressIcon, InReviewIcon } from '../components/Icons/statusIcons';
+import { TodoIcon, ArchivedIcon, CompletedIcon, InProgressIcon, InReviewIcon } from 'components/Icons/statusIcons';
 
 export const renderMentionString = (props) => {
   const { content, textStyle, simple, router } = props;

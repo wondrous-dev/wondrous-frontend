@@ -25,8 +25,8 @@ import {
   FilterBoxPortal,
 } from './styles';
 import { Blue200, Grey250 } from '../../../theme/colors';
-import { useOutsideAlerter } from '../../../utils/hooks';
-import { TaskFilter } from '../../../types/task';
+import { useOutsideAlerter } from 'utils/hooks';
+import { TaskFilter } from 'types/task';
 
 interface IFilterProps {
   filterSchema: any;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { SIDEBAR_WIDTH } from '../../../utils/constants';
-import { SideBarContext } from '../../../utils/contexts';
-import { toggleHtmlOverflow } from '../../../utils/helpers';
+import { SIDEBAR_WIDTH } from 'utils/constants';
+import { SideBarContext } from 'utils/contexts';
+import { toggleHtmlOverflow } from 'utils/helpers';
 import CreateFormModal from '../../CreateEntity';
 import Header from '../../Header';
 import SideBarComponent from '../../SideBar';

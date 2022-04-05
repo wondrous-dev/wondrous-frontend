@@ -8,7 +8,7 @@ import {
   CreateFormSelectArrowIcon,
   CreateFormSelectBlock,
   CreateFormSelectBlockTitle,
-} from '../../components/Common/DropdownSelect/styles';
+} from 'components/Common/DropdownSelect/styles';
 import { FormControl } from '@material-ui/core';
 
 const MenuProps = {

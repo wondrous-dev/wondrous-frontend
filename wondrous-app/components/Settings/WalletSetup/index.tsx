@@ -20,11 +20,11 @@ import UserCheckIcon from '../../Icons/userCheckIcon';
 import { useRouter } from 'next/router';
 import { useLazyQuery } from '@apollo/client';
 import { WalletsContainer } from './styles';
-import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
-import { CREATE_ORG_WALLET, CREATE_POD_WALLET } from '../../../graphql/mutations/wallet';
+import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { CREATE_ORG_WALLET, CREATE_POD_WALLET } from 'graphql/mutations/wallet';
 import WrenchIcon from '../../Icons/wrench';
 import SafeServiceClient from '@gnosis.pm/safe-service-client';
-import { useWonderWeb3 } from '../../../services/web3';
+import { useWonderWeb3 } from 'services/web3';
 import { ErrorText } from '../../Common';
 
 const LIMIT = 20;

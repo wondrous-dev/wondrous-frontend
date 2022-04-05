@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from '../../../utils/constants';
-import { SideBarContext } from '../../../utils/contexts';
-import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from '../../../utils/helpers';
-import { usePodBoard } from '../../../utils/hooks';
+import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from 'utils/constants';
+import { SideBarContext } from 'utils/contexts';
+import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from 'utils/helpers';
+import { usePodBoard } from 'utils/hooks';
 import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
 import CreateFormModal from '../../CreateEntity';
 import Header from '../../Header';

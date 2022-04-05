@@ -22,9 +22,9 @@ import SettingsIcon from '../Icons/settings';
 import ExitIcon from '../Icons/exit';
 import BackArrowIcon from '../Icons/backArrow';
 import { logout, useMe, withAuth } from '../Auth/withAuth';
-import { useSideBar } from '../../utils/hooks';
+import { useSideBar } from 'utils/hooks';
 import { useQuery } from '@apollo/client';
-import { GET_USER_ORGS } from '../../graphql/queries';
+import { GET_USER_ORGS } from 'graphql/queries';
 import { SafeImage } from '../Common/Image';
 import DefaultUserImage from '../Common/Image/DefaultUserImage';
 import { useRouter } from 'next/router';
@@ -112,13 +112,13 @@ const SideBarComponent = (props) => {
           <DrawerList>
             {listItems &&
               listItems.map((item) => (
-                <Link
-                  key={item.id}
-                  href={`/organization/[username]/boards`}
-                  as={`/organization/${item?.username}/boards`}
-                  passHref={true}
-                >
-                  <Tooltip title={`${item?.username} Board`}>
+                <Tooltip key={item.id} title={`${item?.username} Board`}>
+                  <Link
+                    key={item.id}
+                    href={`/organization/[username]/boards`}
+                    as={`/organization/${item?.username}/boards`}
+                    passHref={true}
+                  >
                     <DrawerListItem button key={item.id}>
                       {item?.profilePicture ? (
                         <SafeImage
@@ -135,8 +135,8 @@ const SideBarComponent = (props) => {
                         </NoLogoDAO>
                       )}
                     </DrawerListItem>
-                  </Tooltip>
-                </Link>
+                  </Link>
+                </Tooltip>
               ))}
             <StyledDividerDiv>
               <StyledDivider />

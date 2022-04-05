@@ -1,9 +1,9 @@
 import { useLazyQuery } from '@apollo/client';
-import { ColumnsContext } from '../../../utils/contexts';
+import { ColumnsContext } from 'utils/contexts';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import { GET_USER_ABOUT_PAGE_DATA } from '../../../graphql/queries';
-import { delQuery } from '../../../utils';
+import { GET_USER_ABOUT_PAGE_DATA } from 'graphql/queries';
+import { delQuery } from 'utils';
 import { TaskViewModal } from '../Task/modal';
 import {
   UserAboutInfoBlock,
@@ -18,7 +18,7 @@ import {
 import AboutOrganizationsCard from './userAboutInfoOrganizationsCard';
 import AboutPodsCard from './userAboutInfoPodsCard';
 import { AboutInfoSeeAll } from './userAboutInfoSeeAllModal';
-import { useLocation } from '../../../utils/useLocation';
+import { useLocation } from 'utils/useLocation';
 
 const useGetUserAboutPage = (userId) => {
   const [getUserAboutPage, { data }] = useLazyQuery(GET_USER_ABOUT_PAGE_DATA);

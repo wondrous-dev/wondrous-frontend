@@ -3,13 +3,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { UPDATE_TASK_ASSIGNEE, UPDATE_TASK_STATUS } from '../../graphql/mutations';
-import { GET_TASK_REVIEWERS } from '../../graphql/queries';
-import { ViewType } from '../../types/common';
-import { delQuery } from '../../utils';
-import { updateInProgressTask, updateTaskItem } from '../../utils/board';
-import { renderMentionString } from '../../utils/common';
-import * as Constants from '../../utils/constants';
+import { UPDATE_TASK_ASSIGNEE, UPDATE_TASK_STATUS } from 'graphql/mutations';
+import { GET_TASK_REVIEWERS } from 'graphql/queries';
+import { ViewType } from 'types/common';
+import { delQuery } from 'utils';
+import { updateInProgressTask, updateTaskItem } from 'utils/board';
+import { renderMentionString } from 'utils/common';
+import * as Constants from 'utils/constants';
 import {
   COLUMN_TITLE_ARCHIVED,
   ENTITIES_TYPES,
@@ -20,10 +20,10 @@ import {
   TASK_STATUS_PROPOSAL_REQUEST,
   TASK_STATUS_SUBMISSION_REQUEST,
   TASK_STATUS_TODO,
-} from '../../utils/constants';
-import { cutString, parseUserPermissionContext, shrinkNumber, transformTaskToTaskCard } from '../../utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
-import { useLocation } from '../../utils/useLocation';
+} from 'utils/constants';
+import { cutString, parseUserPermissionContext, shrinkNumber, transformTaskToTaskCard } from 'utils/helpers';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useLocation } from 'utils/useLocation';
 import { useMe } from '../Auth/withAuth';
 import { ArchiveTaskModal } from '../Common/ArchiveTaskModal';
 import { AvatarList } from '../Common/AvatarList';

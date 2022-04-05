@@ -1,6 +1,6 @@
-import { renderMentionString } from '../../../utils/common';
-import { ENTITIES_TYPES } from '../../../utils/constants';
-import { GET_USER } from '../../../graphql/queries';
+import { renderMentionString } from 'utils/common';
+import { ENTITIES_TYPES } from 'utils/constants';
+import { GET_USER } from 'graphql/queries';
 import { useLazyQuery } from '@apollo/client';
 import { useEffect } from 'react';
 import { Typography } from '@material-ui/core';

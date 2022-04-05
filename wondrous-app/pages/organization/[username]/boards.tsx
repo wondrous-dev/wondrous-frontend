@@ -5,10 +5,10 @@ import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
 import { useRouterQuery } from 'utils/hooks';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
-import { withAuth } from '../../../components/Auth/withAuth';
-import Boards from '../../../components/organization/boards/boards';
-import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
-import { GET_ORG_BY_ID, GET_ORG_FROM_USERNAME, GET_ORG_PODS, SEARCH_ORG_USERS } from '../../../graphql/queries/org';
+import { withAuth } from 'components/Auth/withAuth';
+import Boards from 'components/organization/boards/boards';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GET_ORG_BY_ID, GET_ORG_FROM_USERNAME, GET_ORG_PODS, SEARCH_ORG_USERS } from 'graphql/queries/org';
 import {
   GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_SUBMISSIONS,
@@ -17,11 +17,11 @@ import {
   GET_TASKS_RELATED_TO_USER_IN_ORG,
   SEARCH_ORG_TASK_BOARD_PROPOSALS,
   SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
-} from '../../../graphql/queries/taskBoard';
-import apollo from '../../../services/apollo';
-import { COLUMNS, LIMIT, populateTaskColumns, SELECT_OPTIONS } from '../../../services/board';
-import { TaskFilter } from '../../../types/task';
-import { dedupeColumns } from '../../../utils';
+} from 'graphql/queries/taskBoard';
+import apollo from 'services/apollo';
+import { COLUMNS, LIMIT, populateTaskColumns, SELECT_OPTIONS } from 'services/board';
+import { TaskFilter } from 'types/task';
+import { dedupeColumns } from 'utils';
 import {
   DEFAULT_STATUS_ARR,
   PRIVACY_LEVEL,
@@ -29,8 +29,8 @@ import {
   TASK_STATUSES,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
-} from '../../../utils/constants';
-import { OrgBoardContext } from '../../../utils/contexts';
+} from 'utils/constants';
+import { OrgBoardContext } from 'utils/contexts';
 
 const useGetOrgTaskBoardTasks = ({
   columns,

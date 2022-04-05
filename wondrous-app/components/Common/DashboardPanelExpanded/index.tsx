@@ -1,8 +1,8 @@
 import { CircularProgress } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { ViewType } from '../../../types/common';
-import { delQuery } from '../../../utils';
+import { ViewType } from 'types/common';
+import { delQuery } from 'utils';
 import { AndroidSwitch } from '../../CreateEntity/createEntityModal';
 import DashboardPanelStatusCard from '../DashboardPanelExpandedStatusCard';
 import {

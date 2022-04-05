@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
-import { GET_SUBTASK_COUNT_FOR_TASK } from '../../../graphql/queries';
-import { PERMISSIONS } from '../../../utils/constants';
+import { GET_SUBTASK_COUNT_FOR_TASK } from 'graphql/queries';
+import { PERMISSIONS } from 'utils/constants';
 import { CompletedIcon } from '../../Icons/statusIcons';
 import { SubtaskLightIcon } from '../../Icons/subtask';
 import {

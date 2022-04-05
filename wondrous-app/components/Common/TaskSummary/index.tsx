@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { LogoButton } from '../logo';
 import { AvatarList } from '../AvatarList';
 import { Compensation } from '../Compensation';
-import { delQuery } from '../../../utils';
+import { delQuery } from 'utils';
 
 import {
   TaskHeader,
@@ -29,29 +29,24 @@ import {
   SmallerCardActionButtons,
 } from './styles';
 import { Arrow, Media } from '../../Icons/sections';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { useRouter } from 'next/router';
 import { TaskViewModal } from '../Task/modal';
-import {
-  PERMISSIONS,
-  TASK_STATUS_ARCHIVED,
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_REQUESTED,
-} from '../../../utils/constants';
-import { parseUserPermissionContext } from '../../../utils/helpers';
+import { PERMISSIONS, TASK_STATUS_ARCHIVED, TASK_STATUS_IN_REVIEW, TASK_STATUS_REQUESTED } from 'utils/constants';
+import { parseUserPermissionContext } from 'utils/helpers';
 import { CreateFormButtonsBlock, CreateFormFooterButtons, CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { useMutation } from '@apollo/client';
-import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from '../../../graphql/mutations/taskProposal';
-import { APPROVE_SUBMISSION, REQUEST_CHANGE_SUBMISSION } from '../../../graphql/mutations/taskSubmission';
+import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { APPROVE_SUBMISSION, REQUEST_CHANGE_SUBMISSION } from 'graphql/mutations/taskSubmission';
 import { RejectIcon } from '../../Icons/taskModalIcons';
 import { CompletedIcon } from '../../Icons/statusIcons';
-import { addTaskItem, removeProposalItem, updateProposalItem, updateSubmissionItem } from '../../../utils/board';
+import { addTaskItem, removeProposalItem, updateProposalItem, updateSubmissionItem } from 'utils/board';
 import { TaskCommentIcon } from '../../Icons/taskComment';
-import { renderMentionString } from '../../../utils/common';
+import { renderMentionString } from 'utils/common';
 import { TaskMedia } from '../MediaPlayer';
 import { useMe } from '../../Auth/withAuth';
 import PodIcon from '../../Icons/podIcon';
-import { ViewType } from '../../../types/common';
+import { ViewType } from 'types/common';
 import { useLocation } from 'utils/useLocation';
 
 let windowOffset;
