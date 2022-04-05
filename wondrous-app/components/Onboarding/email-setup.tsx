@@ -19,11 +19,11 @@ import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
 
 import { useRouter } from 'next/router';
 
-import { ThirdStep } from '../../components/Common/Image/OnboardingProgressBar';
+import { ThirdStep } from 'components/Common/Image/OnboardingProgressBar';
 import { CircularProgress } from '@material-ui/core';
 import { StyledCancelButton } from '../Common/ArchiveTaskModal/styles';
-import { validateEmail } from '../../utils/constants';
-import { SET_USER_SIGNUP_COMPLETE } from '../../graphql/mutations';
+import { validateEmail } from 'utils/constants';
+import { SET_USER_SIGNUP_COMPLETE } from 'graphql/mutations';
 
 export const Logo = ({ divStyle }) => {
   return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useLazyQuery } from '@apollo/client';
-import { GET_PREVIEW_FILE } from '../../../graphql/queries/media';
+import { GET_PREVIEW_FILE } from 'graphql/queries/media';
 
 interface SafeImageArgs {
   src: string;

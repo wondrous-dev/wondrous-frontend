@@ -19,15 +19,15 @@ import {
   DiscordText,
 } from '../styles';
 import { useMutation, useQuery } from '@apollo/client';
-import { UPDATE_USER } from '../../../graphql/mutations';
-import { getFilenameAndType, uploadMedia } from '../../../utils/media';
+import { UPDATE_USER } from 'graphql/mutations';
+import { getFilenameAndType, uploadMedia } from 'utils/media';
 import { ProfilePictureDiv } from '../../Onboarding/styles';
 import { SafeImage } from '../../Common/Image';
-import { CHAR_LIMIT_PROFILE_BIO, USERNAME_REGEX, validateEmail } from '../../../utils/constants';
+import { CHAR_LIMIT_PROFILE_BIO, USERNAME_REGEX, validateEmail } from 'utils/constants';
 import { ErrorText } from '../../Common';
 import Switch from '../../Common/Switch';
-import { SnackbarAlertContext } from '../../../components/Common/SnackbarAlert';
-import { getDiscordUrl } from '../../../utils';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { getDiscordUrl } from 'utils';
 import { GET_USER_DISCORD_NOTIFICATION_CONFIGS } from 'graphql/queries';
 import { ENABLE_USER_DISCORD_NOTIFICATION_CONFIG, DISABLE_USER_DISCORD_NOTIFICATION_CONFIG } from 'graphql/mutations';
 import {

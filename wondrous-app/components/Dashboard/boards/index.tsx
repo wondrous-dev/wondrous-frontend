@@ -14,15 +14,12 @@ import {
   GET_USER_TASK_BOARD_TASKS,
   SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
   SEARCH_TASKS_FOR_USER_BOARD_VIEW,
-} from '../../../graphql/queries';
-import {
-  GET_PROPOSALS_USER_CAN_REVIEW,
-  GET_SUBMISSIONS_USER_CAN_REVIEW,
-} from '../../../graphql/queries/workflowBoards';
-import apollo from '../../../services/apollo';
-import { COLUMNS, FILTER_STATUSES, FILTER_STATUSES_ADMIN, LIMIT, populateTaskColumns } from '../../../services/board';
-import { TaskFilter } from '../../../types/task';
-import { dedupeColumns } from '../../../utils';
+} from 'graphql/queries';
+import { GET_PROPOSALS_USER_CAN_REVIEW, GET_SUBMISSIONS_USER_CAN_REVIEW } from 'graphql/queries/workflowBoards';
+import apollo from 'services/apollo';
+import { COLUMNS, FILTER_STATUSES, FILTER_STATUSES_ADMIN, LIMIT, populateTaskColumns } from 'services/board';
+import { TaskFilter } from 'types/task';
+import { dedupeColumns } from 'utils';
 import {
   DEFAULT_STATUS_ARR,
   STATUS_OPEN,
@@ -32,9 +29,9 @@ import {
   TASK_STATUS_PROPOSAL_REQUEST,
   TASK_STATUS_REQUESTED,
   TASK_STATUS_SUBMISSION_REQUEST,
-} from '../../../utils/constants';
-import { UserBoardContext } from '../../../utils/contexts';
-import { useRouterQuery, useSelectMembership } from '../../../utils/hooks';
+} from 'utils/constants';
+import { UserBoardContext } from 'utils/contexts';
+import { useRouterQuery, useSelectMembership } from 'utils/hooks';
 import { useMe } from '../../Auth/withAuth';
 import Boards from '../../Common/Boards';
 import { FilterItem, FilterItemIcon, FilterItemName } from '../../Common/Filter/styles';

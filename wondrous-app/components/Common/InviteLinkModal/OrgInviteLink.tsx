@@ -30,11 +30,11 @@ import {
 import PersonAddIcon from '../../Icons/personAdd';
 import { CopyIcon, CopySuccessIcon } from '../../Icons/copy';
 import { useMutation, useLazyQuery } from '@apollo/client';
-import { CREATE_ORG_INVITE_LINK } from '../../../graphql/mutations/org';
-import { GET_ORG_ROLES } from '../../../graphql/queries/org';
-import { useOrgBoard, usePodBoard } from '../../../utils/hooks';
-import { parseUserPermissionContext } from '../../../utils/helpers';
-import { PERMISSIONS } from '../../../utils/constants';
+import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
+import { GET_ORG_ROLES } from 'graphql/queries/org';
+import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { PERMISSIONS } from 'utils/constants';
 
 const link = process.env.NEXT_PUBLIC_PRODUCTION
   ? `https://app.wonderverse.xyz/invite/`

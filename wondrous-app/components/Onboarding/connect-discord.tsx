@@ -18,11 +18,11 @@ import DiscordLogo from '../../public/images/onboarding/discord.svg';
 import DiscordSmallLogo from '../../public/images/onboarding/discord-small.svg';
 import { useRouter } from 'next/router';
 
-import { SecondStep, ThirdStep } from '../../components/Common/Image/OnboardingProgressBar';
-import { useWonderWeb3 } from '../../services/web3';
+import { SecondStep, ThirdStep } from 'components/Common/Image/OnboardingProgressBar';
+import { useWonderWeb3 } from 'services/web3';
 import { Field, FieldInput } from '../Common/field';
 import { useMe } from '../Auth/withAuth';
-import { getDiscordUrl } from '../../utils';
+import { getDiscordUrl } from 'utils';
 
 const DISCORD_OAUTH_URL = getDiscordUrl();
 

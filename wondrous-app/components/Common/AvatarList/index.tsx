@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Colors from '../../../theme/colors';
 import { SmallAvatarWrapper, SmallAvatarContainer, AvatarListWrapper } from './styles';
-import { AVATAR_LIST_OVERFLOW_MAX } from '../../../utils/constants';
+import { AVATAR_LIST_OVERFLOW_MAX } from 'utils/constants';
 import { SafeImage } from '../Image';
 import { useRouter } from 'next/router';
 

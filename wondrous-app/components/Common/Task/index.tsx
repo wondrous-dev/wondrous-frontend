@@ -23,10 +23,10 @@ import { CompletedIcon } from '../../Icons/statusIcons';
 import { RejectIcon } from '../../Icons/taskModalIcons';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import { ArchiveTaskModal } from '../ArchiveTaskModal';
-import { GET_ORG_TASK_BOARD_TASKS } from '../../../graphql/queries/taskBoard';
+import { GET_ORG_TASK_BOARD_TASKS } from 'graphql/queries/taskBoard';
 import MilestoneIcon from '../../Icons/milestone';
 
-import * as Constants from '../../../utils/constants';
+import * as Constants from 'utils/constants';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
 import {
   TaskWrapper,
@@ -53,22 +53,22 @@ import {
   ClaimButton,
   TaskCardDescriptionText,
 } from './styles';
-import { renderMentionString } from '../../../utils/common';
+import { renderMentionString } from 'utils/common';
 import { useRouter } from 'next/router';
 import { Typography } from '@material-ui/core';
 import { SafeImage } from '../Image';
-import { parseUserPermissionContext, cutString, transformTaskToTaskCard } from '../../../utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
-import { useLocation } from '../../../utils/useLocation';
+import { parseUserPermissionContext, cutString, transformTaskToTaskCard } from 'utils/helpers';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useLocation } from 'utils/useLocation';
 import { White } from '../../../theme/colors';
 import { TaskViewModal } from './modal';
 import { useMe } from '../../Auth/withAuth';
-import { delQuery } from '../../../utils';
+import { delQuery } from 'utils';
 import { TaskSummaryAction } from '../TaskSummary/styles';
 import { Arrow, Archived } from '../../Icons/sections';
-import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE } from '../../../graphql/mutations/task';
-import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries';
-import { OrgBoardContext } from '../../../utils/contexts';
+import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE } from 'graphql/mutations/task';
+import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from 'graphql/queries';
+import { OrgBoardContext } from 'utils/contexts';
 import { TaskCreatedBy } from '../TaskCreatedBy';
 import { MilestoneProgress } from '../MilestoneProgress';
 import { MilestoneWrapper } from '../Milestone';
@@ -77,7 +77,7 @@ import { SubtaskDarkIcon } from '../../Icons/subtask';
 import { CheckedBoxIcon } from '../../Icons/checkedBox';
 
 import { Claim } from '../../Icons/claimTask';
-import { updateInProgressTask, updateTaskItem } from '../../../utils/board';
+import { updateInProgressTask, updateTaskItem } from 'utils/board';
 import { TaskBountyOverview } from '../TaskBountyOverview';
 
 export const TASK_ICONS = {

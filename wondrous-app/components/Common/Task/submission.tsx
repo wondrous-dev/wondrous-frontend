@@ -30,10 +30,10 @@ import {
   transformTaskProposalToTaskProposalCard,
   transformTaskSubmissionToTaskSubmissionCard,
   transformTaskToTaskCard,
-} from '../../../utils/helpers';
+} from 'utils/helpers';
 import { RightCaret } from '../Image/RightCaret';
 import CreatePodIcon from '../../Icons/createPod';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   BOUNTY_TYPE,
   ENTITIES_TYPES,
@@ -46,10 +46,10 @@ import {
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   PAYMENT_STATUS,
   TASK_TYPE,
-} from '../../../utils/constants';
+} from 'utils/constants';
 import { White } from '../../../theme/colors';
 import { useMe } from '../../Auth/withAuth';
-import { GetStatusIcon, renderMentionString } from '../../../utils/common';
+import { GetStatusIcon, renderMentionString } from 'utils/common';
 import { ImageIcon, LinkIcon, NotesIcon } from '../../Icons/taskModalIcons';
 import DefaultUserImage from '../Image/DefaultUserImage';
 import {
@@ -72,21 +72,21 @@ import {
   REQUEST_CHANGE_SUBMISSION,
   UPDATE_TASK_SUBMISSION,
   APPROVE_BOUNTY_SUBMISSION,
-} from '../../../graphql/mutations/taskSubmission';
+} from 'graphql/mutations/taskSubmission';
 import UploadImageIcon from '../../Icons/uploadImage';
-import { handleAddFile } from '../../../utils/media';
+import { handleAddFile } from 'utils/media';
 import { MediaItem } from '../../CreateEntity/MediaItem';
 import { AddFileUpload } from '../../Icons/addFileUpload';
-import { TextInputContext } from '../../../utils/contexts';
+import { TextInputContext } from 'utils/contexts';
 import { TextInput } from '../../TextInput';
 import { filterOrgUsersForAutocomplete } from '../../CreateEntity/createEntityModal';
-import { GET_ORG_USERS } from '../../../graphql/queries/org';
+import { GET_ORG_USERS } from 'graphql/queries/org';
 import InputForm from '../InputForm/inputForm';
 import { CompletedIcon, InReviewIcon } from '../../Icons/statusIcons';
 import { RejectIcon } from '../../Icons/decisionIcons';
 import { transformMediaFormat } from '../../CreateEntity/editEntityModal';
 import { MediaLink } from './modal';
-import { delQuery } from '../../../utils';
+import { delQuery } from 'utils';
 import { FileLoading } from '../FileUpload/FileUpload';
 import { MakePaymentBlock } from './payment';
 import { KudosForm } from '../KudosForm';

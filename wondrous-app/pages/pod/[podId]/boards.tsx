@@ -6,9 +6,9 @@ import Wrapper from 'components/Pod/wrapper';
 import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
 import { useRouterQuery } from 'utils/hooks';
 import { useRouter } from 'next/router';
-import { withAuth } from '../../../components/Auth/withAuth';
-import { GET_USER_PERMISSION_CONTEXT, SEARCH_POD_USERS } from '../../../graphql/queries';
-import { GET_POD_BY_ID } from '../../../graphql/queries/pod';
+import { withAuth } from 'components/Auth/withAuth';
+import { GET_USER_PERMISSION_CONTEXT, SEARCH_POD_USERS } from 'graphql/queries';
+import { GET_POD_BY_ID } from 'graphql/queries/pod';
 import {
   GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD,
   GET_POD_TASK_BOARD_PROPOSALS,
@@ -17,11 +17,11 @@ import {
   GET_TASKS_RELATED_TO_USER_IN_POD,
   SEARCH_POD_TASK_BOARD_PROPOSALS,
   SEARCH_TASKS_FOR_POD_BOARD_VIEW,
-} from '../../../graphql/queries/taskBoard';
-import apollo from '../../../services/apollo';
-import { COLUMNS, FILTER_STATUSES, LIMIT, populateTaskColumns } from '../../../services/board';
-import { TaskFilter } from '../../../types/task';
-import { dedupeColumns } from '../../../utils';
+} from 'graphql/queries/taskBoard';
+import apollo from 'services/apollo';
+import { COLUMNS, FILTER_STATUSES, LIMIT, populateTaskColumns } from 'services/board';
+import { TaskFilter } from 'types/task';
+import { dedupeColumns } from 'utils';
 import {
   DEFAULT_STATUS_ARR,
   PRIVACY_LEVEL,
@@ -29,8 +29,8 @@ import {
   TASK_STATUSES,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
-} from '../../../utils/constants';
-import { PodBoardContext } from '../../../utils/contexts';
+} from 'utils/constants';
+import { PodBoardContext } from 'utils/contexts';
 
 const useGetPodTaskBoardTasks = ({ columns, setColumns, setPodTaskHasMore, podId, statuses, boardType }) => {
   const [getPodTaskBoardTasks, { variables, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {

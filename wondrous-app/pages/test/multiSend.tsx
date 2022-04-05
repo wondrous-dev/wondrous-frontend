@@ -1,7 +1,7 @@
 import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react';
-import AppLayout from '../../components/Common/Layout/App';
+import AppLayout from 'components/Common/Layout/App';
 import { ethers, utils } from 'ethers';
 import { EthersAdapter, SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk';
 import { SafeTransactionDataPartial, SafeTransactionData, MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types';
@@ -9,8 +9,8 @@ import Safe from '@gnosis.pm/safe-core-sdk';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import axios from 'axios';
-import { ERC20abi } from '../../services/contracts/erc20.abi';
-import { useMe, withAuth } from '../../components/Auth/withAuth';
+import { ERC20abi } from 'services/contracts/erc20.abi';
+import { useMe, withAuth } from 'components/Auth/withAuth';
 
 import SafeServiceClient from '@gnosis.pm/safe-service-client';
 import {
@@ -21,8 +21,8 @@ import {
   SafeMultisigTransactionResponse,
   SafeInfoResponse,
 } from '@gnosis.pm/safe-service-client';
-import { GET_SUBMISSIONS_PAYMENT_INFO } from '../../graphql/queries';
-import { PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS } from '../../graphql/mutations';
+import { GET_SUBMISSIONS_PAYMENT_INFO } from 'graphql/queries';
+import { PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS } from 'graphql/mutations';
 import { useWonderWeb3 } from 'services/web3';
 
 const CHAIN = 'rinkeby'; // there's currently a safe set up at this address, can add people to owner of safe

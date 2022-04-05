@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import Wrapper from '../wrapper/wrapper';
 import CreatePodIcon from '../../Icons/createPod';
 import Boards from '../../Common/Boards';
-import { OrgPod } from '../../../types/pod';
-import { FILTER_STATUSES } from '../../../services/board';
+import { OrgPod } from 'types/pod';
+import { FILTER_STATUSES } from 'services/board';
 
 type Props = {
   orgPods: OrgPod[];

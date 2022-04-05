@@ -10,16 +10,16 @@ import {
   OrgProfilePicture,
 } from './styles';
 import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
-import { useWonderWeb3 } from '../../services/web3';
+import { useWonderWeb3 } from 'services/web3';
 import { getUserSigningMessage, walletSignup, walletSignin } from '../Auth/withAuth';
 import { useRouter } from 'next/router';
-import { GRAPHQL_ERRORS, SUPPORTED_CHAINS } from '../../utils/constants';
+import { GRAPHQL_ERRORS, SUPPORTED_CHAINS } from 'utils/constants';
 import { Button } from '../Common/button';
 import { PaddedParagraph } from '../Common/text';
 import { Metamask } from '../Icons/metamask';
 import { SafeImage } from '../Common/Image';
 import { ErrorText } from '../Common';
-import { SupportedChainType } from '../../utils/web3Constants';
+import { SupportedChainType } from 'utils/web3Constants';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
