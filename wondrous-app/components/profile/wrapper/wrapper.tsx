@@ -1,7 +1,7 @@
-import { DiscordIcon } from '@components/Icons/discord';
-import OpenSeaIcon from '@components/Icons/openSea';
-import TwitterPurpleIcon from '@components/Icons/twitterPurple';
-import { parseLinks } from '@utils/common';
+import { DiscordIcon } from 'components/Icons/discord';
+import OpenSeaIcon from 'components/Icons/openSea';
+import TwitterPurpleIcon from 'components/Icons/twitterPurple';
+import { parseLinks } from 'utils/common';
 import router from 'next/router';
 import React, { useState } from 'react';
 import { SIDEBAR_WIDTH, SOCIAL_MEDIA_DISCORD, SOCIAL_MEDIA_TWITTER, SOCIAL_OPENSEA } from '../../../utils/constants';

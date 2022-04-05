@@ -1,4 +1,4 @@
-import { SafeImage } from '@components/Common/Image';
+import { SafeImage } from 'components/Common/Image';
 import {
   Box,
   Button as MuiButton,
