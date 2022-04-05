@@ -25,6 +25,7 @@ import {
   GeneralSettingsDAODescriptionBlock,
   GeneralSettingsDAODescriptionInput,
   GeneralSettingsDAODescriptionInputCounter,
+  GeneralSettingsDAODescriptionInputWrapper,
   GeneralSettingsDAONameBlock,
   GeneralSettingsDAONameInput,
   GeneralSettingsInputsBlock,
@@ -148,6 +149,7 @@ const ProfileSettings = (props) => {
   const [errors, setErrors] = useState({
     username: null,
     email: null,
+    description: null,
   });
   const [links, setLinks] = useLoggedInUserLinks(loggedInUser?.links);
   const handleUsernameChange = (e) => {
@@ -162,6 +164,7 @@ const ProfileSettings = (props) => {
 
   const handleProfileBioChange = (e) => {
     const { value } = e.target;
+    if (value.length <= 200) setErrors({ ...errors, description: null });
     setProfileBio(value);
   };
 
@@ -187,6 +190,11 @@ const ProfileSettings = (props) => {
       setErrors({
         ...errors,
         email: 'Please enter a valid email',
+      });
+    } else if (profileBio.length > 200) {
+      setErrors({
+        ...errors,
+        description: 'The description should not exceed 200 characters',
       });
     } else {
       if (username) {
@@ -262,15 +270,18 @@ const ProfileSettings = (props) => {
           </GeneralSettingsDAONameBlock>
           <GeneralSettingsDAODescriptionBlock>
             <LabelBlock>Description</LabelBlock>
-            <GeneralSettingsDAODescriptionInput
-              multiline
-              rows={3}
-              value={profileBio}
-              onChange={(e) => handleProfileBioChange(e)}
-            />
-            <GeneralSettingsDAODescriptionInputCounter>
-              {profileBio?.length} / {CHAR_LIMIT_PROFILE_BIO} characters
-            </GeneralSettingsDAODescriptionInputCounter>
+            <GeneralSettingsDAODescriptionInputWrapper>
+              <GeneralSettingsDAODescriptionInput
+                multiline
+                rows={4}
+                value={profileBio}
+                onChange={(e) => handleProfileBioChange(e)}
+              />
+              <GeneralSettingsDAODescriptionInputCounter>
+                {profileBio?.length || 0} / {CHAR_LIMIT_PROFILE_BIO} characters
+              </GeneralSettingsDAODescriptionInputCounter>
+            </GeneralSettingsDAODescriptionInputWrapper>
+            {errors.description && <ErrorText>{errors.description}</ErrorText>}
           </GeneralSettingsDAODescriptionBlock>
         </GeneralSettingsInputsBlock>
         <GeneralSettingsInputsBlock

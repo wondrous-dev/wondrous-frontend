@@ -270,6 +270,12 @@ export const GeneralSettingsDAODescriptionBlock = styled.div`
   position: relative;
 `;
 
+export const GeneralSettingsDAODescriptionInputWrapper = styled.div`
+  border: 1px solid pink;
+  border: 1px solid #4b4b4b;
+  border-radius: 6px;
+`;
+
 export const GeneralSettingsDAODescriptionInput = styled(GeneralSettingsDAONameInput)`
   && {
     height: 80px;
@@ -278,19 +284,17 @@ export const GeneralSettingsDAODescriptionInput = styled(GeneralSettingsDAONameI
     letter-spacing: 0.01em;
     color: #c4c4c4;
     padding: 10px 15px;
+    border: none;
   }
 `;
 
 export const GeneralSettingsDAODescriptionInputCounter = styled(Typography)`
   && {
-    position: absolute;
-    bottom: 10px;
-    right: 20px;
-
     font-size: 12px;
-    line-height: 19px;
-    letter-spacing: 0.01em;
     color: #7a7a7a;
+    width: 100%;
+    text-align: right;
+    padding: 8px;
   }
 `;
 
