@@ -112,13 +112,13 @@ const SideBarComponent = (props) => {
           <DrawerList>
             {listItems &&
               listItems.map((item) => (
-                <Link
-                  key={item.id}
-                  href={`/organization/[username]/boards`}
-                  as={`/organization/${item?.username}/boards`}
-                  passHref={true}
-                >
-                  <Tooltip title={`${item?.username} Board`}>
+                <Tooltip key={item.id} title={`${item?.username} Board`}>
+                  <Link
+                    key={item.id}
+                    href={`/organization/[username]/boards`}
+                    as={`/organization/${item?.username}/boards`}
+                    passHref={true}
+                  >
                     <DrawerListItem button key={item.id}>
                       {item?.profilePicture ? (
                         <SafeImage
@@ -135,8 +135,8 @@ const SideBarComponent = (props) => {
                         </NoLogoDAO>
                       )}
                     </DrawerListItem>
-                  </Tooltip>
-                </Link>
+                  </Link>
+                </Tooltip>
               ))}
             <StyledDividerDiv>
               <StyledDivider />
