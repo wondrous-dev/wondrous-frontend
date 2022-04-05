@@ -1,5 +1,5 @@
 import React from 'react';
-import Wallets from '../../../../components/Settings/WalletSetup';
+import Wallets from 'components/Settings/WalletSetup';
 
 const GeneralSettingsPage = () => {
   return <Wallets />;

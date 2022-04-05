@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import Payouts from '../../../../components/Settings/Payouts';
+import Payouts from 'components/Settings/Payouts';
 
 const PayoutsPage = () => {
   const router = useRouter();

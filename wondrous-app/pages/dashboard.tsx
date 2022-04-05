@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { withAuth } from '../components/Auth/withAuth';
-import DashboardPanel from '../components/Common/DashboardPanel';
-import Boards from '../components/Dashboard/boards';
-import Wrapper from '../components/Dashboard/wrapper';
-import { ViewType } from '../types/common';
-import { SelectMembershipContext } from '../utils/contexts';
+import { withAuth } from 'components/Auth/withAuth';
+import DashboardPanel from 'components/Common/DashboardPanel';
+import Boards from 'components/Dashboard/boards';
+import Wrapper from 'components/Dashboard/wrapper';
+import { ViewType } from 'types/common';
+import { SelectMembershipContext } from 'utils/contexts';
 
 const DashboardPanelWrapper = styled.div`
   margin-top: -140px;

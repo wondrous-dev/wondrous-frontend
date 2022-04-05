@@ -28,11 +28,11 @@ import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import { StyledCheckbox, TableCellText } from './styles';
 import { White, Grey800 } from '../../../theme/colors';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
-import { GET_SUBMISSIONS_PAYMENT_INFO } from '../../../graphql/queries/payment';
-import { parseUserPermissionContext } from '../../../utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
-import { PERMISSIONS } from '../../../utils/constants';
+import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { GET_SUBMISSIONS_PAYMENT_INFO } from 'graphql/queries/payment';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { PERMISSIONS } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { useRouter } from 'next/router';
 import { DAOIcon } from '../../Icons/dao';
@@ -40,8 +40,8 @@ import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { OfflinePayment } from '../../Common/Payment/OfflinePayment';
 import { BatchWalletPayment } from '../../Common/Payment/BatchWalletPayment';
 import Link from 'next/link';
-import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
-import { cutString } from '../../../utils/helpers';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { cutString } from 'utils/helpers';
 
 enum ViewType {
   Paid = 'paid',

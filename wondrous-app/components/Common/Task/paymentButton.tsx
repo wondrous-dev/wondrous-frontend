@@ -1,9 +1,9 @@
 import { useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
-import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
-import { PAYMENT_STATUS, PERMISSIONS } from '../../../utils/constants';
-import { parseUserPermissionContext } from '../../../utils/helpers';
-import { useApprovedSubmission } from '../../../utils/hooks';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { PAYMENT_STATUS, PERMISSIONS } from 'utils/constants';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useApprovedSubmission } from 'utils/hooks';
 import { MakeSubmissionPaymentButton } from '../../CreateEntity/styles';
 import { MakePaymentModal } from '../Payment/PaymentModal';
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import { useMe, withAuth } from '../../components/Auth/withAuth';
-import ProfileSettings from '../../components/Settings/Notifications/profile';
+import { useMe, withAuth } from 'components/Auth/withAuth';
+import ProfileSettings from 'components/Settings/Notifications/profile';
 
 const NotificationsSettingsPage = () => {
   const loggedInUser = useMe();

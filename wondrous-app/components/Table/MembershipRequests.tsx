@@ -13,8 +13,8 @@ import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
   TASK_STATUS_TODO,
-} from '../../utils/constants';
-import { cutString, groupBy, parseUserPermissionContext, shrinkNumber } from '../../utils/helpers';
+} from 'utils/constants';
+import { cutString, groupBy, parseUserPermissionContext, shrinkNumber } from 'utils/helpers';
 import { AvatarList } from '../Common/AvatarList';
 import { DropDown, DropDownItem } from '../Common/dropdown';
 import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton/MembershipRequest';
@@ -45,13 +45,13 @@ import {
   TaskTitle,
 } from './styles';
 import { TaskViewModal } from '../Common/Task/modal';
-import { delQuery } from '../../utils';
+import { delQuery } from 'utils';
 import { useRouter } from 'next/router';
-import * as Constants from '../../utils/constants';
+import * as Constants from 'utils/constants';
 import { SnackbarAlertContext } from '../Common/SnackbarAlert';
 import { ArchivedTaskUndo } from '../Common/Task/styles';
-import { OrgBoardContext } from '../../utils/contexts';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
+import { OrgBoardContext } from 'utils/contexts';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { LoadMore } from '../Common/KanbanBoard/styles';
 import { SafeImage } from '../Common/Image';
 import { useMe } from '../Auth/withAuth';
@@ -59,7 +59,7 @@ import { USDCoin } from '../Icons/USDCoin';
 import Ethereum from '../Icons/ethereum';
 import { Compensation } from '../Common/Compensation';
 import { Matic } from '../Icons/matic';
-import { renderMentionString } from '../../utils/common';
+import { renderMentionString } from 'utils/common';
 import TaskStatus from '../Icons/TaskStatus';
 
 const DELIVERABLES_ICONS = {

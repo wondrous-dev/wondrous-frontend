@@ -1,6 +1,6 @@
 import { NextRouter } from 'next/router';
 import { useState } from 'react';
-import { PRIVACY_LEVEL } from '../../../utils/constants';
+import { PRIVACY_LEVEL } from 'utils/constants';
 import {
   SelectMenuBoardTypeClickAway,
   SelectMenuBoardTypeDiv,

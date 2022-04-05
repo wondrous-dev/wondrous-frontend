@@ -6,12 +6,12 @@ import {
   GET_DISCORD_GUILD_FROM_INVITE_CODE,
   CHECK_DISCORD_BOT_ADDED,
   GET_CHANNELS_FROM_DISCORD,
-} from '../../../graphql/queries';
+} from 'graphql/queries';
 import {
   DISABLE_ORG_DISCORD_NOTIFICATION_CONFIG,
   ENABLE_ORG_DISCORD_NOTIFICATION_CONFIG,
   MANUAL_DISCORD_ORG_SETUP,
-} from '../../../graphql/mutations';
+} from 'graphql/mutations';
 
 import { SettingsWrapper } from '../settingsWrapper';
 import { NotificationOutlineSettings } from '../../Icons/notifications';
@@ -27,7 +27,7 @@ import {
   StyledTableHead,
   StyledTableRow,
 } from '../../Table/styles';
-import DiscordNotificationSetup, { BOT_URL } from '../../../components/DiscordNotificationSetup';
+import DiscordNotificationSetup, { BOT_URL } from 'components/DiscordNotificationSetup';
 import {
   AddGuildButton,
   DiscordText,

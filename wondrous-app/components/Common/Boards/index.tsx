@@ -1,11 +1,11 @@
-import { ColumnsContext } from '../../../utils/contexts';
+import { ColumnsContext } from 'utils/contexts';
 import { useRouter } from 'next/router';
 import pluralize from 'pluralize';
 import React, { useEffect, useState } from 'react';
-import { splitColsByType } from '../../../services/board';
-import { ViewType } from '../../../types/common';
-import { delQuery } from '../../../utils';
-import { useOrgBoard, useSelectMembership } from '../../../utils/hooks';
+import { splitColsByType } from 'services/board';
+import { ViewType } from 'types/common';
+import { delQuery } from 'utils';
+import { useOrgBoard, useSelectMembership } from 'utils/hooks';
 import Filter from '../../Common/Filter';
 import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard';
 import { ToggleViewButton } from '../../Common/ToggleViewButton';

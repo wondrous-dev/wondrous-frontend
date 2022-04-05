@@ -1,31 +1,31 @@
-import { MentionsInput, Mention } from 'react-mentions'
-import React, { useCallback, useEffect, useState } from 'react'
-import { useTextInput } from '../../utils/hooks'
-import { UserSuggestionTypography, UserSuggestionWrapper } from './styles'
-import { SafeImage } from '../Common/Image'
-import { Blue400, White } from '../../theme/colors'
+import { MentionsInput, Mention } from 'react-mentions';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useTextInput } from 'utils/hooks';
+import { UserSuggestionTypography, UserSuggestionWrapper } from './styles';
+import { SafeImage } from '../Common/Image';
+import { Blue400, White } from '../../theme/colors';
 
 export const TextInput = (props) => {
-  const [name, setName] = useState('')
-  const inputProps = useTextInput()
+  const [name, setName] = useState('');
+  const inputProps = useTextInput();
 
   const handleChange = useCallback(
     (event) => {
       if (inputProps?.onChange) {
-        inputProps?.onChange(event)
+        inputProps?.onChange(event);
       }
     },
     [inputProps]
-  )
+  );
 
   useEffect(() => {
     if (inputProps?.orgId) {
     }
-  }, [inputProps?.orgId])
+  }, [inputProps?.orgId]);
 
   const fetchData = (query) => {
-    return inputProps?.list.filter((user) => user?.username?.startsWith(query))
-  }
+    return inputProps?.list.filter((user) => user?.username?.startsWith(query));
+  };
 
   const style = {
     textarea: {
@@ -49,7 +49,7 @@ export const TextInput = (props) => {
       },
       item: {},
     },
-  }
+  };
 
   return (
     <MentionsInput
@@ -87,12 +87,10 @@ export const TextInput = (props) => {
                 borderRadius: '15px',
               }}
             />
-            <UserSuggestionTypography>
-              {suggestion?.username}
-            </UserSuggestionTypography>
+            <UserSuggestionTypography>{suggestion?.username}</UserSuggestionTypography>
           </UserSuggestionWrapper>
         )}
       />
     </MentionsInput>
-  )
-}
+  );
+};

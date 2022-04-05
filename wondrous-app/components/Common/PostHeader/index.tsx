@@ -1,9 +1,9 @@
 import { ClickAwayListener } from '@material-ui/core';
-import { delQuery } from '../../../utils';
+import { delQuery } from 'utils';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { ObjectType, PostVerbType } from '../../../types/post';
-import * as Constants from '../../../utils/constants';
+import { ObjectType, PostVerbType } from 'types/post';
+import * as Constants from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { KudosForm } from '../KudosForm';
 import { TaskViewModal } from '../Task/modal';

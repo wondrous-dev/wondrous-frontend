@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Divider, Drawer, IconButton, List, ListItem, Typography } from '@material-ui/core';
 import { Black97, White } from '../../theme/colors';
-import { SIDEBAR_WIDTH } from '../../utils/constants';
+import { SIDEBAR_WIDTH } from 'utils/constants';
 
 export const DrawerComponent = styled(Drawer)`
   && {

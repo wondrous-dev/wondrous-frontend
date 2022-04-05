@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { COLUMNS } from '../services/board';
+import { COLUMNS } from 'services/board';
 import { TASK_STATUS_ARCHIVED, TASK_STATUS_IN_REVIEW, TASK_STATUS_REQUESTED } from './constants';
 
 export const addProposalItem = (newItem, columns) => {

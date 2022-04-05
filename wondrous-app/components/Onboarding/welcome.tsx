@@ -18,10 +18,10 @@ import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
 
 import { useRouter } from 'next/router';
 
-import { FirstStep } from '../../components/Common/Image/OnboardingProgressBar';
-import { useWonderWeb3 } from '../../services/web3';
+import { FirstStep } from 'components/Common/Image/OnboardingProgressBar';
+import { useWonderWeb3 } from 'services/web3';
 import { Field, FieldInput } from '../Common/field';
-import { USERNAME_REGEX } from '../../utils/constants';
+import { USERNAME_REGEX } from 'utils/constants';
 
 export const Logo = ({ divStyle }) => {
   return (

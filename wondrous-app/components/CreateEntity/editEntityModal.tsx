@@ -15,7 +15,7 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
   PRIVACY_LEVEL,
-} from '../../utils/constants';
+} from 'utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
 import AudioIcon from '../Icons/MediaTypesIcons/audio';
@@ -85,24 +85,24 @@ import {
 } from './styles';
 import SelectDownIcon from '../Icons/selectDownIcon';
 import UploadImageIcon from '../Icons/uploadImage';
-import { getFilenameAndType, handleAddFile, uploadMedia } from '../../utils/media';
+import { getFilenameAndType, handleAddFile, uploadMedia } from 'utils/media';
 import DatePicker from '../Common/DatePicker';
 import { MediaItem } from './MediaItem';
 import { AddFileUpload } from '../Icons/addFileUpload';
 import { TextInput } from '../TextInput';
 import { White } from '../../theme/colors';
-import { TextInputContext } from '../../utils/contexts';
+import { TextInputContext } from 'utils/contexts';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
+import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { SafeImage } from '../Common/Image';
-import { GET_USER_AVAILABLE_PODS, GET_USER_PODS, GET_POD_USERS } from '../../graphql/queries/pod';
+import { GET_USER_AVAILABLE_PODS, GET_USER_PODS, GET_POD_USERS } from 'graphql/queries/pod';
 import {
   getMentionArray,
   parseUserPermissionContext,
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
-} from '../../utils/helpers';
-import { GET_ORG_USERS } from '../../graphql/queries/org';
+} from 'utils/helpers';
+import { GET_ORG_USERS } from 'graphql/queries/org';
 import {
   ATTACH_MEDIA_TO_TASK,
   CREATE_TASK,
@@ -110,30 +110,26 @@ import {
   UPDATE_TASK,
   UPDATE_MILESTONE,
   UPDATE_BOUNTY,
-} from '../../graphql/mutations/task';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
+} from 'graphql/mutations/task';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   ATTACH_MEDIA_TO_TASK_PROPOSAL,
   CREATE_TASK_PROPOSAL,
   REMOVE_MEDIA_FROM_TASK_PROPOSAL,
   UPDATE_TASK_PROPOSAL,
-} from '../../graphql/mutations/taskProposal';
+} from 'graphql/mutations/taskProposal';
 import { useMe } from '../Auth/withAuth';
 import Ethereum from '../Icons/ethereum';
 import { USDCoin } from '../Icons/USDCoin';
-import { TaskFragment } from '../../graphql/fragments/task';
-import { updateProposalItem } from '../../utils/board';
-import { GET_ORG_TASK_BOARD_PROPOSALS } from '../../graphql/queries/taskBoard';
+import { TaskFragment } from 'graphql/fragments/task';
+import { updateProposalItem } from 'utils/board';
+import { GET_ORG_TASK_BOARD_PROPOSALS } from 'graphql/queries/taskBoard';
 import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './createEntityModal';
-import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment';
+import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { ErrorText } from '../Common';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
-import { updateInProgressTask, updateTaskItem } from '../../utils/board';
-import {
-  GET_MILESTONES,
-  GET_ELIGIBLE_REVIEWERS_FOR_ORG,
-  GET_ELIGIBLE_REVIEWERS_FOR_POD,
-} from '../../graphql/queries/task';
+import { updateInProgressTask, updateTaskItem } from 'utils/board';
+import { GET_MILESTONES, GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_FOR_POD } from 'graphql/queries/task';
 import { TabsVisibilityCreateEntity } from 'components/Common/TabsVisibilityCreateEntity';
 
 const filterUserOptions = (options) => {

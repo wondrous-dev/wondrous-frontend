@@ -1,6 +1,6 @@
 import { Link } from '@material-ui/core';
 import React, { useMemo, useState } from 'react';
-import { NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from '../../utils/constants';
+import { NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from 'utils/constants';
 import { SmallAvatar } from '../Common/AvatarList';
 import { DropDown, DropDownItem } from '../Common/dropdown';
 import { StyledLink } from '../Common/text';
@@ -22,9 +22,9 @@ import {
   NotificationsMarkRead,
   NotificationsOverlay,
 } from './styles';
-import { MARK_NOTIFICATIONS_READ } from '../../graphql/mutations/notification';
+import { MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
 import { useMutation } from '@apollo/client';
-import { GET_NOTIFICATIONS } from '../../graphql/queries';
+import { GET_NOTIFICATIONS } from 'graphql/queries';
 
 const NotificationsBoard = ({ notifications, setNofications }) => {
   const unreadCount = useMemo(() => {

@@ -12,14 +12,14 @@ import {
   SectionContainer,
 } from './styles';
 import { TaskSummaryFooter } from '../TaskSummary/styles';
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
+import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   ENTITIES_TYPES,
   TASK_STATUS_ARCHIVED,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
   PRIVACY_LEVEL,
-} from '../../../utils/constants';
+} from 'utils/constants';
 import { TaskListViewModal } from '../Task/modal';
 import { useRouter } from 'next/router';
 
