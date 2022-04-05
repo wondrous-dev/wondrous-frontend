@@ -56,12 +56,12 @@ export const IntegrationsSnapshotSubBlock = styled.div`
   justify-content: space-between;
 `
 export const IntegrationsSnapshotInputSubBlock = styled.div`
-  width: calc(100% - 200px);
+  width: calc(100% - 220px);
   min-width: 200px;
   display: flex;
   flex-direction: column;
 
-  @media (max-width: 1076px) {
+  @media (max-width: 1096px) {
     width: 100%;
   }
 `
@@ -77,6 +77,10 @@ export const IntegrationsSnapshotENSInput = styled(InputBase)`
     letter-spacing: 0.01em;
     color: #c4c4c4;
     padding: 10px 15px;
+
+    .Mui-disabled {
+      color: #ffffff;
+    }
   }
 `;
 
@@ -120,12 +124,11 @@ export const IntegrationsSnapshotButton = styled(MuiButton)`
       margin-right: 10px;
     }
 
-    &:disabled {
+    .Mui-disabled {
       color: #ffffff;
-      cursor: not-allowed;
     }
 
-    @media (max-width: 1076px) {
+    @media (max-width: 1096px) {
       margin-top: 10px;
       margin-left: 0;
     }

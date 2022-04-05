@@ -475,7 +475,11 @@ const CreateLayoutBaseModal = (props) => {
   });
   const [createBounty, { loading: createBountyLoading }] = useMutation(CREATE_BOUNTY);
 
-  const [createTaskProposal, { loading: createTaskProposalLoading }] = useMutation(CREATE_TASK_PROPOSAL);
+  const [createTaskProposal, { loading: createTaskProposalLoading }] = useMutation(CREATE_TASK_PROPOSAL, {
+    onCompleted: data => {
+      console.log('Task created')
+    },
+  });
 
   const [createPod, { loading: createPodLoading }] = useMutation(CREATE_POD, {
     onCompleted: (data) => {

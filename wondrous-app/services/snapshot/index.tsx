@@ -14,6 +14,7 @@ import {
 } from './types';
 import {
   GET_SPACE,
+  GET_SNAPSHOT,
   SET_SPACE
 } from './gql';
 import { isValidSpace } from './helpers';
@@ -36,9 +37,7 @@ const hub = isTestSnapshot
 const client = new snapshot.Client712(hub);
 
 // snapshot graphql API
-const snapshotAPI = isTestSnapshot
-  ? 'https://testnet.snapshot.org/graphql'
-  : 'https://hub.snapshot.org/graphql'
+const snapshotAPI = `${hub}/graphql`
 
 const cache = new InMemoryCache();
 const snapshotClient = new ApolloClient({
@@ -46,10 +45,9 @@ const snapshotClient = new ApolloClient({
   uri: snapshotAPI
 });
 
-
 export const getSnapshotUrl = (name: string): string => (
   `https://${isTestSnapshot ? `testnet` : `hub`}.snapshot.org/api/spaces/${name}/`
-)
+);
 
 export const useSnapshot = () => {
   const EMPTY_SPACE = {
@@ -60,33 +58,34 @@ export const useSnapshot = () => {
       strategies: [],
   }
 
+  const [snapshot, setSnapshot] = useState(null)
   const [snapshotValid, setSnapshotValid] = useState(false);
   const [snapshotConnected, setSnapshotConnected] = useState(false);
-  const [snapshotName, setSnapshotName] = useState('') // used to cache names
-  const [snapshotSpace, setSnapshotSpace] = useState(EMPTY_SPACE)
-  const [snapshotError, setSnapshotError] = useState(null)
+  const [snapshotName, setSnapshotName] = useState(''); // used to cache names
+  const [snapshotSpace, setSnapshotSpace] = useState(EMPTY_SPACE);
+  const [snapshotError, setSnapshotError] = useState(null);
   const wonderWeb3 = useWonderWeb3();
 
   // snapshot api to retrieve space data
-  const [getSpace] = useLazyQuery(GET_SPACE, {
+  const [getSnapshotSpace] = useLazyQuery(GET_SPACE, {
     client: snapshotClient,
     onCompleted: data => {
       // check to see if data is returned from query
       if (data.space) {
-        console.log(data.space)
+        //console.log(data.space);
         // check if queried space includes User's address
-        console.log(data.space.admins)
+        //console.log(data.space.admins);
         if (data.space.admins.includes(wonderWeb3.address)) {
-          setSnapshotSpace(data.space)
-          setSnapshotValid(true)
-          setSnapshotError('')
+          setSnapshotSpace(data.space);
+          setSnapshotValid(true);
+          setSnapshotError('');
         } else {
-          setSnapshotValid(false)
-          setSnapshotError(`User is not an admin of '${data.space.id}'`)
+          setSnapshotValid(false);
+          setSnapshotError(`User is not an admin of '${data.space.id}'`);
         }
       } else {
-        setSnapshotValid(false)
-        setSnapshotError(`'${snapshotSpace.id}' not found. Please enter a valid Snapshot Space ENS.`)
+        setSnapshotValid(false);
+        setSnapshotError(`'${snapshotSpace.id}' not found. Please enter a valid Snapshot Space ENS.`);
       }
     },
     onError: error => {
@@ -95,12 +94,13 @@ export const useSnapshot = () => {
     fetchPolicy: 'cache-and-network'
   });
 
-  const [checkSnapshot] = useLazyQuery(GET_SPACE, {
+  const [checkSnapshotSpace] = useLazyQuery(GET_SPACE, {
     client: snapshotClient,
-    onCompleted: async (data) => {
+    onCompleted: (data) => {
       if (data.space !== null) {
         // check if queried space includes User's address
         if (data.space.admins.includes(wonderWeb3.address)) {
+          console.log(data.space)
           setSnapshotSpace(data.space);
           setSnapshotValid(true);
           handleOnboardingError(data.space.id, Onboarding.Ready);
@@ -119,6 +119,25 @@ export const useSnapshot = () => {
     fetchPolicy: 'cache-and-network'
   });
 
+  const [getSnapshot] = useLazyQuery(GET_SNAPSHOT, {
+    onCompleted: data => {
+      const snapshot = data.getOrgById.integrations
+        ? data.getOrgById.integrations[0]
+        : null
+      //console.log(snapshot)
+      setSnapshot(snapshot)
+      if (snapshot.key && snapshot.url && snapshot.displayName) {
+        //console.log(snapshot.key)
+        setSnapshotName(snapshot.key)
+        setSnapshotConnected(true)
+      }
+    },
+    onError: error => {
+      console.error(error)
+    },
+    fetchPolicy: 'network-only'
+  });
+
   const [connectSnapshot] = useMutation(SET_SPACE, {
     onCompleted: data => {
       //console.log(data)
@@ -127,7 +146,17 @@ export const useSnapshot = () => {
     onError: error => {
       console.error(error)
     },
-  })
+  });
+
+  const [disconnectSnapshot] = useMutation(SET_SPACE, {
+    onCompleted: data => {
+      //console.log(data)
+      setSnapshotConnected(false)
+    },
+    onError: error => {
+      console.error(error)
+    },
+  });
 
   const handleOnboardingError = (id: string, onboarding: Onboarding): void => {
     if (onboarding !== Onboarding.Ready) {
@@ -150,7 +179,6 @@ export const useSnapshot = () => {
     }
   }
 
-
   return {
     EMPTY_SPACE,
     snapshotName,
@@ -163,9 +191,13 @@ export const useSnapshot = () => {
     setSnapshotSpace,
     snapshotError,
     setSnapshotError,
-    getSpace,
-    checkSnapshot,
-    connectSnapshot
+    getSnapshotSpace,
+    checkSnapshotSpace,
+    snapshot,
+    setSnapshot,
+    getSnapshot,
+    connectSnapshot,
+    disconnectSnapshot
   }
 }
 

@@ -18,6 +18,15 @@ export const GET_POD_INVITE_ORG_INFO = gql`
   }
   ${PodInviteFragment}
 `;
+
+export const GET_POD_ORG_ID = gql`
+  query getPodById($podId: ID!) {
+    getPodById(podId: $podId) {
+      orgId
+    }
+  }
+`;
+
 export const GET_USER_PODS = gql`
   query getUserPods($userId: String) {
     getUserPods(userId: $userId) {

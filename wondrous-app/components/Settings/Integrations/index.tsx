@@ -2,8 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useQuery, useMutation, useLazyQuery, ApolloClient, InMemoryCache } from '@apollo/client';
 import ENS, { getEnsAddress } from '@ensdomains/ensjs'
 
-import { SettingsWrapper } from '../settingsWrapper';
-import { HeaderBlock } from '../headerBlock';
+import { SettingsWrapper } from '../settingsWrapper'; import { HeaderBlock } from '../headerBlock';
 import {
   StyledTable,
   StyledTableBody,
@@ -32,8 +31,7 @@ import { CircularProgress } from '@material-ui/core';
 import UserCheckIcon from '../../Icons/userCheckIcon';
 import { useRouter } from 'next/router';
 import { IntegrationsContainer } from './styles';
-import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
-import { CREATE_ORG_WALLET, CREATE_POD_WALLET } from '../../../graphql/mutations/wallet';
+import { GET_POD_ORG_ID } from '../../../graphql/queries/pod';
 import WrenchIcon from '../../Icons/wrench';
 import SafeServiceClient from '@gnosis.pm/safe-service-client';
 import { useWonderWeb3 } from '../../../services/web3';
@@ -79,6 +77,7 @@ const Integrations = (props) => {
   // snapshot state
   const {
     EMPTY_SPACE,
+    snapshot,
     snapshotName,
     setSnapshotName,
     snapshotValid,
@@ -87,9 +86,10 @@ const Integrations = (props) => {
     snapshotSpace,
     setSnapshotSpace,
     snapshotError,
-    getSpace,
-    checkSnapshot,
-    connectSnapshot
+    checkSnapshotSpace,
+    getSnapshot,
+    connectSnapshot,
+    disconnectSnapshot
   } = useSnapshot();
 
 
@@ -105,62 +105,76 @@ const Integrations = (props) => {
     setUserAddress(wonderWeb3.address);
   }, []);
 
-  const [getOrgWallet] = useLazyQuery(GET_ORG_WALLET, {
-    onCompleted: (data) => {
-      setWallets(data?.getOrgWallet);
-    },
-    fetchPolicy: 'network-only',
-  });
-  const [getPodWallet] = useLazyQuery(GET_POD_WALLET, {
-    onCompleted: (data) => {
-      setWallets(data?.getPodWallet);
-    },
-    fetchPolicy: 'network-only',
+  const [getOrgId] = useLazyQuery(GET_POD_ORG_ID, {
+    onError: error => {
+      console.error(error)
+    }
   });
 
-  const handleCheckSnapshot = async () => {
+  const handleCheckSnapshotSpace = async () => {
     const wallet = wonderWeb3.wallet;
     const provider = new ethers.providers.Web3Provider(wonderWeb3.web3Provider);
 
-    console.log(await provider.resolveName(snapshotName));
-    const ens = new ENS({ provider, ensAddress: getEnsAddress(`${provider._network.chainId}`) });
-    const name = await ens.name(snapshotName)
+    await provider.resolveName(snapshotName);
 
-    await checkSnapshot({ variables: { id: snapshotName }})
-    setSnapshotSpace({ ...snapshotSpace, id: snapshotName})
+    const ens = new ENS({ provider, ensAddress: getEnsAddress(`${await provider._network.chainId}`) });
+    const name = await ens.name(snapshotName);
+
+    const { data } = await checkSnapshotSpace({ variables: { id: snapshotName }});
+    console.log('result', data);
+    //const snapshotSpace = data;
+    setSnapshotSpace({ ...data, id: snapshotName})
   }
 
   const handleConnectSnapshot = async () => {
-    console.log('connect snapshot')
-    console.log(orgId)
-    console.log(snapshotName)
+    //console.log('connect snapshot')
     await connectSnapshot({ variables: {
       orgId,
+      key: snapshotSpace.id,
+      url: getSnapshotUrl(snapshotName),
       displayName: snapshotSpace.name,
-      url: getSnapshotUrl(snapshotName)
     }})
   }
 
-  useEffect(() => {
+  const handleDisconnectSnapshot = async () => {
+    //console.log('disconnect snapshot')
+    await disconnectSnapshot({ variables: {
+      orgId,
+      key: '',
+      url: '',
+      displayName: ''
+    }})
+  }
+
+  useEffect(async () => {
     if (orgId) {
-      getOrgWallet({
+      //console.log('getting snapshot')
+      getSnapshot({
         variables: {
           orgId,
         },
-      });
+      })
     } else if (podId) {
-      getPodWallet({
+      const { data } = await getOrgId({
         variables: {
           podId,
         },
-      });
+      })
+      const orgId = await data.getPodById.orgId
+      console.log(orgId)
+
+      getSnapshot({
+        variables: {
+          orgId
+        },
+      })
+
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, podId]);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (snapshotValid) {
-      console.log('valid!')
       setSnapshotValid(false)
       setSnapshotSpace(EMPTY_SPACE)
     }
@@ -188,6 +202,7 @@ const Integrations = (props) => {
                           value={snapshotName}
                           placeholder="ENS domain"
                           onChange={e => setSnapshotName(e.target.value)}
+                          disabled={podId ? true : false}
                         />
                         {snapshotError && <ErrorText>{snapshotError}</ErrorText>}
                         {snapshotValid && (
@@ -198,23 +213,39 @@ const Integrations = (props) => {
                       </IntegrationsSnapshotInputSubBlock>
                       { !snapshotValid
                           ? <IntegrationsSnapshotButton
-                              onClick={handleCheckSnapshot}
+                              onClick={handleCheckSnapshotSpace}
+                              disabled={podId ? true : false}
                             >
                               Check Snapshot
                             </IntegrationsSnapshotButton>
                           : <IntegrationsSnapshotButton
                               onClick={handleConnectSnapshot}
+                              disabled={podId ? true : false}
                             >
                               Connect Snapshot
                             </IntegrationsSnapshotButton>
                       }
                     </IntegrationsSnapshotSubBlock>
                   </>
-                : <IntegrationsSnapshotButton
-                    onClick={handleConnectSnapshot}
-                  >
-                    Connect Snapshot
-                  </IntegrationsSnapshotButton>
+                : <>
+                    <IntegrationsSnapshotHelperText>
+                      Snapshot connected:
+                    </IntegrationsSnapshotHelperText>
+                    <IntegrationsSnapshotSubBlock>
+                      <IntegrationsSnapshotInputSubBlock>
+                        <IntegrationsSnapshotENSInput
+                          value={snapshot.key}
+                          disabled
+                        />
+                      </IntegrationsSnapshotInputSubBlock>
+                      <IntegrationsSnapshotButton
+                        onClick={handleDisconnectSnapshot}
+                        disabled={podId ? true : false}
+                      >
+                        Disconnect Snapshot
+                      </IntegrationsSnapshotButton>
+                    </IntegrationsSnapshotSubBlock>
+                  </>
             }
           </IntegrationsSnapshotBlock>
         </IntegrationsInputsBlock>

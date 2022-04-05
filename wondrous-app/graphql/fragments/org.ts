@@ -30,6 +30,12 @@ export const OrgFragment = gql`
       displayName
       type
     }
+    integrations {
+      key
+      url
+      displayName
+      type
+    }
   }
 `;
 

@@ -158,7 +158,7 @@ export const SettingsContentBlock = styled.div`
 export const SettingsHeaderBlock = styled.div`
   position: relative;
   width: 100%;
-  height: 70px;
+  height: min-content;
   display: flex;
   align-items: center;
 `;

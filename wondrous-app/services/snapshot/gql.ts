@@ -27,23 +27,39 @@ export const GET_SPACE = gql`
 export const SET_SPACE = gql`
   mutation SetSpace(
     $orgId: ID!,
+    $key: String!,
     $url: String!,
-    $displayName: String
+    $displayName: String!
   ) {
     updateOrg(
       orgId: $orgId,
       input: {
         integrations: {
-          displayName: $displayName
-          url: $url
           type: "snapshot"
+          key: $key
+          url: $url
+          displayName: $displayName
         }
       }
     ) {
       integrations {
+        key
         type
-        displayName
         url
+        displayName
+      }
+    }
+  }
+`;
+
+export const GET_SNAPSHOT = gql`
+  query GetSnapshot ($orgId: ID!) {
+    getOrgById(orgId: $orgId) {
+      integrations {
+        key
+        type
+        url
+        displayName
       }
     }
   }
