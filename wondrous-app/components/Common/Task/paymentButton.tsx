@@ -43,7 +43,8 @@ export const PaymentButton = (props) => {
       canPay &&
       approvedSubmission &&
       approvedSubmission.paymentStatus !== PAYMENT_STATUS.PROCESSING &&
-      approvedSubmission.paymentStatus !== PAYMENT_STATUS.PAID;
+      approvedSubmission.paymentStatus !== PAYMENT_STATUS.PAID &&
+      fetchedTask?.rewards.length > 0;
     setShowPaymentButton(show);
   }, [approvedSubmission, canPay]);
   return (
