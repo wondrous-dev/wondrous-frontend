@@ -52,13 +52,13 @@ const HeaderComponent = (props) => {
       <HeaderContainer>
         <HeaderLeftBlock>
           <HeaderLogo />
-          <Link passHref href="/dashboard">
-            <Tooltip title="Dashboard">
+          <Tooltip title="Dashboard">
+            <Link passHref href="/dashboard">
               <HeaderHomeButton>
                 <HomeIcon />
               </HeaderHomeButton>
-            </Tooltip>
-          </Link>
+            </Link>
+          </Tooltip>
 
           <HeaderInput
             placeholder="Search wonder..."
