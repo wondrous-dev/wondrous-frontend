@@ -1,4 +1,3 @@
-import { SafeImage } from 'components/Common/Image';
 import {
   Box,
   Button as MuiButton,
@@ -10,6 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import SnackbarComp from '@mui/material/Snackbar';
+import { SafeImage } from 'components/Common/Image';
 import styled from 'styled-components';
 import { White } from '../../theme/colors';
 import { Button } from '../Common/button';
@@ -294,6 +294,29 @@ export const GeneralSettingsDAODescriptionInputCounter = styled(Typography)`
   }
 `;
 
+export const GeneralSettingsDAOProfileImage = styled((props) => (
+  <SafeImage
+    {...props}
+    style={{
+      width: '52px',
+      height: '52px',
+      marginTop: '30px',
+    }}
+  />
+))``;
+
+export const GeneralSettingsDAOHeaderImage = styled((props) => (
+  <SafeImage
+    {...props}
+    style={{
+      width: '100%',
+      height: 'auto',
+      objectFit: 'contain',
+      marginTop: '30px',
+    }}
+  />
+))``;
+
 //socials block
 export const GeneralSettingsSocialsBlock = styled.div`
   padding: 30px 0 15px;
@@ -419,6 +442,7 @@ export const ImageUploadBlockInputLabel = styled.label`
 export const ImageUploadBlockUploadedImg = styled.img`
   margin: 20px 0 10px;
   border-radius: 4px;
+  object-fit: contain;
 `;
 
 export const ImageUploadBlockRemoveButton = styled(MuiButton)`

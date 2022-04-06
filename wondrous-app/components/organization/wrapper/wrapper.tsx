@@ -22,7 +22,7 @@ import {
   HeaderFollowButton,
   HeaderFollowButtonIcon,
   HeaderFollowButtonText,
-  HeaderImage,
+  HeaderImageDefault,
   HeaderMainBlock,
   HeaderManageSettingsButton,
   HeaderPods,
@@ -38,6 +38,8 @@ import {
   PlusIconWrapper,
   TokenEmptyLogo,
   HeaderTitleIcon,
+  HeaderImage,
+  HeaderImageWrapper,
 } from './styles';
 import { useOrgBoard } from 'utils/hooks';
 import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
@@ -165,7 +167,10 @@ const Wrapper = (props) => {
             paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
           }}
         >
-          <HeaderImage />
+          <HeaderImageWrapper>
+            {orgProfile?.headerPicture ? <HeaderImage src={orgProfile?.headerPicture} /> : <HeaderImageDefault />}
+          </HeaderImageWrapper>
+
           <Content>
             <ContentContainer>
               <TokenHeader>

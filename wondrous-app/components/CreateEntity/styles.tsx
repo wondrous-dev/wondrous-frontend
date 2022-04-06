@@ -11,8 +11,9 @@ import BountyIcon from '../Icons/createBounty';
 import CreateDaoIcon from '../Icons/createDao';
 import CreateMilestoneIcon from '../Icons/createMilestone';
 import CreatePodIcon from '../Icons/createPod';
-import CreateTaskIcon from '../Icons/createTask';
+import CreateTaskIcon from '../Icons/createTask.svg';
 import WonderTokenIcon from '../Icons/wonderToken';
+import CreateProposalIcon from '../Icons/createProposal.svg';
 
 export const MediaUploadGrid = styled(Grid)`
   && {
@@ -137,6 +138,8 @@ export const CreateLayoutBountyIcon = styled(BountyIcon)`
 export const CreateLayoutDaoIcon = styled(CreateDaoIcon)`
   margin-right: 10px;
 `;
+
+export const CreateLayoutProposalIcon = styled(CreateProposalIcon)``;
 
 export const CreateLayoutDaoMenuItemIcon = styled(LogoSquare)`
   width: 20px;
@@ -577,7 +580,7 @@ export const CreateFormPreviewButton = styled(Button)`
     .MuiCircularProgress-root {
       margin-right: 10px;
     }
-    
+
     &:disabled {
       color: #ffffff;
       cursor: not-allowed;
