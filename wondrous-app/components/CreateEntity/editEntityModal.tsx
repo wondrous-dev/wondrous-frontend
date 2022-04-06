@@ -1097,17 +1097,7 @@ const EditLayoutBaseModal = (props) => {
               <CreateFormAddDetailsInputBlock>
                 <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
                 <StyledAutocompletePopper
-                  options={filterOrgUsers(podUsersData?.getPodUsers ?? orgUsersData?.getOrgUsers)}
-                  onOpen={() => {
-                    if (pod) {
-                      getPodUsers({
-                        variables: {
-                          podId: pod?.id || pod,
-                          limit: 100, // TODO: fix autocomplete
-                        },
-                      });
-                    }
-                  }}
+                  options={filterOrgUsers(orgUsersData?.getOrgUsers)}
                   renderInput={(params) => (
                     <TextField
                       style={{
