@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { APPROVE_JOIN_ORG_REQUEST, REJECT_JOIN_ORG_REQUEST } from '../../../graphql/mutations/org';
+import { APPROVE_JOIN_ORG_REQUEST, REJECT_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
 import {
   DECISION_APPROVE_AND_PAY,
   DECISION_APPROVE_ONLY,
@@ -7,7 +7,7 @@ import {
   DECISION_SEND_INTO_REVISION,
   TASK_STATUS_PROPOSAL_REQUEST,
   TASK_STATUS_SUBMISSION_REQUEST,
-} from '../../../utils/constants';
+} from 'utils/constants';
 import { ApproveAndPayIcon, ApproveOnlyIcon, RejectIcon, SendIntoRevisionIcon } from '../../Icons/decisionIcons';
 import { StyledList, StyledListItem, StyledListItemIcon, StyledListItemText, StyledPopper } from './styles';
 

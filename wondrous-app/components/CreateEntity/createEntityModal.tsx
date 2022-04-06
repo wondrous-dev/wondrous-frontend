@@ -5,41 +5,26 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { CREATE_POD } from '../../graphql/mutations/pod';
-import { CREATE_MILESTONE, CREATE_TASK, CREATE_BOUNTY } from '../../graphql/mutations/task';
-import { CREATE_TASK_PROPOSAL } from '../../graphql/mutations/taskProposal';
-import {
-  GET_AUTOCOMPLETE_USERS,
-  GET_TASK_BY_ID,
-  GET_USER_ORGS,
-  GET_USER_PERMISSION_CONTEXT,
-} from '../../graphql/queries';
-import { GET_ORG_USERS } from '../../graphql/queries/org';
-import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment';
-import { GET_POD_USERS, GET_USER_AVAILABLE_PODS } from '../../graphql/queries/pod';
-import {
-  GET_ELIGIBLE_REVIEWERS_FOR_ORG,
-  GET_ELIGIBLE_REVIEWERS_FOR_POD,
-  GET_MILESTONES,
-} from '../../graphql/queries/task';
+import { CREATE_POD } from 'graphql/mutations/pod';
+import { CREATE_MILESTONE, CREATE_TASK, CREATE_BOUNTY } from 'graphql/mutations/task';
+import { CREATE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { GET_AUTOCOMPLETE_USERS, GET_TASK_BY_ID, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GET_ORG_USERS } from 'graphql/queries/org';
+import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
+import { GET_POD_USERS, GET_USER_AVAILABLE_PODS } from 'graphql/queries/pod';
+import { GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_FOR_POD, GET_MILESTONES } from 'graphql/queries/task';
 import { Grey700, White } from '../../theme/colors';
-import { addProposalItem } from '../../utils/board';
-import {
-  CHAIN_TO_CHAIN_DIPLAY_NAME,
-  ENTITIES_TYPES,
-  MEDIA_TYPES,
-  PERMISSIONS,
-  PRIVACY_LEVEL,
-} from '../../utils/constants';
-import { TextInputContext } from '../../utils/contexts';
+import { addProposalItem } from 'utils/board';
+import { CHAIN_TO_CHAIN_DIPLAY_NAME, ENTITIES_TYPES, MEDIA_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
+import { TextInputContext } from 'utils/contexts';
 import {
   getMentionArray,
   parseUserPermissionContext,
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
-} from '../../utils/helpers';
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
-import { handleAddFile } from '../../utils/media';
+} from 'utils/helpers';
+import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { handleAddFile } from 'utils/media';
 import { useMe } from '../Auth/withAuth';
 import { ErrorText } from '../Common';
 import DatePicker from '../Common/DatePicker';
@@ -271,6 +256,7 @@ const CreateLayoutBaseModal = (props) => {
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
   const board = orgBoard || podBoard || userBoard;
+  const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
   const isPod = entityType === ENTITIES_TYPES.POD;
   const isTask = entityType === ENTITIES_TYPES.TASK;
   const isBounty = entityType === ENTITIES_TYPES.BOUNTY;
@@ -343,7 +329,7 @@ const CreateLayoutBaseModal = (props) => {
   } = useMemo(() => {
     return {
       showDeliverableRequirementsSection: isTask,
-      showBountySwitchSection: isTask || isBounty,
+      showBountySwitchSection: isTask || isBounty || isProposal,
       showAppearSection: isTask || isBounty,
       showLinkAttachmentSection: isPod,
       // TODO: add back in entityType === ENTITIES_TYPES.POD

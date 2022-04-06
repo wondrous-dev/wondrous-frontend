@@ -1,9 +1,9 @@
 import { useMutation } from '@apollo/client';
-import { CLOSE_TASK_PROPOSAL } from '../../../graphql/mutations';
-import { GET_ORG_TASK_BOARD_TASKS, GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries';
-import { removeProposalItem } from '../../../utils/board';
-import * as Constants from '../../../utils/constants';
-import { useOrgBoard } from '../../../utils/hooks';
+import { CLOSE_TASK_PROPOSAL } from 'graphql/mutations';
+import { GET_ORG_TASK_BOARD_TASKS, GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from 'graphql/queries';
+import { removeProposalItem } from 'utils/board';
+import * as Constants from 'utils/constants';
+import { useOrgBoard } from 'utils/hooks';
 import CloseModalIcon from '../../Icons/closeModal';
 import { ArchivedIcon } from '../../Icons/statusIcons';
 import {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Confetti from 'react-confetti';
 
-import { useMe, withAuth, withWaitlistAuth } from '../../components/Auth/withAuth';
+import { useMe, withAuth, withWaitlistAuth } from 'components/Auth/withAuth';
 import {
   JoinWaitlistHeader,
   ProfileWrapper,
@@ -25,16 +25,16 @@ import {
   InviteButton,
   InviteButtonDiv,
   ProfileCenteredDiv,
-} from '../../components/profile/email/styles';
+} from 'components/profile/email/styles';
 import { Blue500, Grey800 } from '../../theme/colors';
 
-import { ErrorText, NewCanvas } from '../../components/Common';
-import { useIsMobile, useWindowSize } from '../../utils/hooks';
-import { Logo } from '../../components/Common/ci';
+import { ErrorText, NewCanvas } from 'components/Common';
+import { useIsMobile, useWindowSize } from 'utils/hooks';
+import { Logo } from 'components/Common/ci';
 import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
-import { CONFIRM_EMAIL_ADDRESS } from '../../graphql/mutations';
-import { CreateFormPreviewButton } from '../../components/CreateEntity/styles';
+import { CONFIRM_EMAIL_ADDRESS } from 'graphql/mutations';
+import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import { CircularProgress } from '@material-ui/core';
 
 const EmailVerify = () => {
@@ -45,19 +45,19 @@ const EmailVerify = () => {
   const [verifyEmail, { data, error }] = useMutation(CONFIRM_EMAIL_ADDRESS, {
     onError: (error) => {
       if (error?.graphQLErrors[0].extensions.code === 400) {
-        setVerificationError(true)
+        setVerificationError(true);
       }
     },
   });
   const emailAddressConfirm = data?.confirmEmailAddress?.success;
-  const errorVerifying = error?.graphQLErrors[0].extensions.code === 400
+  const errorVerifying = error?.graphQLErrors[0].extensions.code === 400;
 
   useEffect(() => {
     if (token && loading) {
       verifyEmail({
         variables: {
           token,
-          userId: userid
+          userId: userid,
         },
       });
     }
@@ -89,7 +89,7 @@ const EmailVerify = () => {
             </CreateFormPreviewButton>
           </>
         )}
-        {verificationError &&  <ErrorText>Problem verifying your email please sign in and try again</ErrorText>}
+        {verificationError && <ErrorText>Problem verifying your email please sign in and try again</ErrorText>}
       </ProfileCenteredDiv>
     </ProfileWrapper>
   );

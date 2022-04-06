@@ -38,17 +38,17 @@ import {
   MakeSubmissionDiv,
 } from './styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from '../../../graphql/queries/task';
+import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
 import { SafeImage } from '../Image';
 import {
   parseUserPermissionContext,
   transformTaskProposalToTaskProposalCard,
   transformTaskSubmissionToTaskSubmissionCard,
   transformTaskToTaskCard,
-} from '../../../utils/helpers';
+} from 'utils/helpers';
 import { RightCaret } from '../Image/RightCaret';
 import CreatePodIcon from '../../Icons/createPod';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   BOUNTY_TYPE,
   ENTITIES_TYPES,
@@ -65,12 +65,12 @@ import {
   TASK_STATUS_TODO,
   PAYMENT_STATUS,
   PRIVACY_LEVEL,
-} from '../../../utils/constants';
+} from 'utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
 import { White } from '../../../theme/colors';
 import { useMe } from '../../Auth/withAuth';
-import { GetStatusIcon, renderMentionString } from '../../../utils/common';
+import { GetStatusIcon, renderMentionString } from 'utils/common';
 import {
   AssigneeIcon,
   ImageIcon,
@@ -95,10 +95,10 @@ import {
   TakeTaskButton,
 } from '../../CreateEntity/styles';
 import { useRouter } from 'next/router';
-import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE, UPDATE_BOUNTY_STATUS } from '../../../graphql/mutations/task';
-import { UPDATE_TASK_PROPOSAL_ASSIGNEE } from '../../../graphql/mutations/taskProposal';
-import { GET_PREVIEW_FILE } from '../../../graphql/queries/media';
-import { GET_TASK_PROPOSAL_BY_ID } from '../../../graphql/queries/taskProposal';
+import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE, UPDATE_BOUNTY_STATUS } from 'graphql/mutations/task';
+import { UPDATE_TASK_PROPOSAL_ASSIGNEE } from 'graphql/mutations/taskProposal';
+import { GET_PREVIEW_FILE } from 'graphql/queries/media';
+import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 import { TaskSubmissionContent } from './submission';
 import {
   GET_ORG_TASK_BOARD_PROPOSALS,
@@ -110,16 +110,10 @@ import {
   GET_USER_TASK_BOARD_PROPOSALS,
   GET_USER_TASK_BOARD_SUBMISSIONS,
   GET_USER_TASK_BOARD_TASKS,
-} from '../../../graphql/queries/taskBoard';
+} from 'graphql/queries/taskBoard';
 import { AvatarList } from '../AvatarList';
-import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from '../../../graphql/mutations/taskProposal';
-import {
-  addTaskItem,
-  removeProposalItem,
-  updateInProgressTask,
-  updateProposalItem,
-  updateTaskItem,
-} from '../../../utils/board';
+import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { addTaskItem, removeProposalItem, updateInProgressTask, updateProposalItem, updateTaskItem } from 'utils/board';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
 import { CompletedIcon } from '../../Icons/statusIcons';
 import { TaskListCard } from '.';
@@ -134,7 +128,7 @@ import PodIcon from '../../Icons/podIcon';
 import { CompensationAmount, CompensationPill, IconContainer } from '../Compensation/styles';
 
 import { MakePaymentModal } from '../Payment/PaymentModal';
-import { ApprovedSubmissionContext } from '../../../utils/contexts';
+import { ApprovedSubmissionContext } from 'utils/contexts';
 import { TaskSubtasks } from '../TaskSubtask';
 import { SubtaskDarkIcon, SubtaskLightIcon } from '../../Icons/subtask';
 import { CheckedBoxIcon } from '../../Icons/checkedBox';
@@ -812,16 +806,14 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   });
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
-    refetchQueries: () => [
-      {
-        query: GET_TASK_BY_ID,
-        variables: {
-          taskId: fetchedTask?.id,
-        },
-      },
-      'getPerStatusTaskCountForOrgBoard',
+    refetchQueries: [
+      'getTaskById',
       'getUserTaskBoardTasks',
       'getPerStatusTaskCountForUserBoard',
+      'getOrgTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForPodBoard',
     ],
     onError: () => {
       console.error('Something went wrong.');

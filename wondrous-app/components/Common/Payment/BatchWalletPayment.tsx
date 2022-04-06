@@ -3,10 +3,10 @@ import { useRouter } from 'next/router';
 import { ethers, utils } from 'ethers';
 import DropdownSelect from '../DropdownSelect/dropdownSelect';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
-import { PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS } from '../../../graphql/mutations/payment';
-import { useGnosisSdk } from '../../../services/payment';
-import { ERC20abi } from '../../../services/contracts/erc20.abi';
+import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS } from 'graphql/mutations/payment';
+import { useGnosisSdk } from 'services/payment';
+import { ERC20abi } from 'services/contracts/erc20.abi';
 import {
   SafeTransactionDataPartial,
   SafeTransactionData,
@@ -15,18 +15,18 @@ import {
 } from '@gnosis.pm/safe-core-sdk-types';
 import { SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk';
 import { SafeMultisigTransactionEstimateResponse } from '@gnosis.pm/safe-service-client';
-import { useWonderWeb3 } from '../../../services/web3';
+import { useWonderWeb3 } from 'services/web3';
 import { ErrorText } from '..';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PaymentPendingTypography } from './styles';
-import { usePaymentModal } from '../../../utils/hooks';
+import { usePaymentModal } from 'utils/hooks';
 import {
   GET_PAYMENTS_FOR_ORG,
   GET_PAYMENTS_FOR_POD,
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
-} from '../../../graphql/queries/payment';
-import { CHAIN_TO_GNOSIS_URL_ABBR } from '../../../utils/web3Constants';
+} from 'graphql/queries/payment';
+import { CHAIN_TO_GNOSIS_URL_ABBR } from 'utils/web3Constants';
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {

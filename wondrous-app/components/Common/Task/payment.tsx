@@ -7,10 +7,10 @@ import { useMe } from '../../Auth/withAuth';
 import DefaultUserImage from '../Image/DefaultUserImage';
 import { MakeSubmissionPaymentButton } from '../../CreateEntity/styles';
 import { useRouter } from 'next/router';
-import { useApprovedSubmission } from '../../../utils/hooks';
-import { PAYMENT_STATUS, PERMISSIONS } from '../../../utils/constants';
-import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
-import { parseUserPermissionContext } from '../../../utils/helpers';
+import { useApprovedSubmission } from 'utils/hooks';
+import { PAYMENT_STATUS, PERMISSIONS } from 'utils/constants';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { parseUserPermissionContext } from 'utils/helpers';
 
 export const MakePaymentBlock = (props) => {
   const approvedSubmissionContext = useApprovedSubmission();

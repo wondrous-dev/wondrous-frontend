@@ -8,14 +8,14 @@ import {
   TASK_STATUS_REQUESTED,
   TASK_STATUS_TODO,
   TASK_TYPE,
-} from '../utils/constants';
-import { Archived, InReview, Requested } from '../components/Icons/sections';
-import { Proposal } from '../components/Icons';
-import TaskStatus from '../components/Icons/TaskStatus';
+} from 'utils/constants';
+import { Archived, InReview, Requested } from 'components/Icons/sections';
+import { Proposal } from 'components/Icons';
+import TaskStatus from 'components/Icons/TaskStatus';
 import React from 'react';
 import { cloneDeep } from 'lodash';
-import { BountyIcon, MilestoneIcon, TaskIcon } from '../components/Icons/Search/types';
-import { delQuery } from '../utils';
+import { BountyIcon, MilestoneIcon, TaskIcon } from 'components/Icons/Search/types';
+import { delQuery } from 'utils';
 
 const TO_DO = {
   status: TASK_STATUS_TODO,

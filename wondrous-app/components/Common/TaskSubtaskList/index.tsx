@@ -1,8 +1,8 @@
 import { useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { GET_SUBTASKS_FOR_TASK } from '../../../graphql/queries';
-import { TASK_STATUS_ARCHIVED } from '../../../utils/constants';
+import { GET_SUBTASKS_FOR_TASK } from 'graphql/queries';
+import { TASK_STATUS_ARCHIVED } from 'utils/constants';
 import { SubtaskTaskItem, SubtaskTaskListHasMore } from './styles';
 
 export const TaskSubtaskList = ({ taskId }) => {

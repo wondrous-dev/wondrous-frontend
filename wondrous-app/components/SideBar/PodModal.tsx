@@ -3,9 +3,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { GET_USER_PODS } from '../../graphql/queries';
-import { renderMentionString } from '../../utils/common';
-import { cutString } from '../../utils/helpers';
+import { GET_USER_PODS } from 'graphql/queries';
+import { renderMentionString } from 'utils/common';
+import { cutString } from 'utils/helpers';
 import { useMe } from '../Auth/withAuth';
 import { SafeImage } from '../Common/Image';
 import {

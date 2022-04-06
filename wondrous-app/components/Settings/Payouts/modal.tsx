@@ -15,11 +15,11 @@ import {
   WarningTypography,
 } from '../../Common/Payment/styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
-import { GET_SUBMISSION_PAYMENT_INFO } from '../../../graphql/queries/payment';
-import { parseUserPermissionContext } from '../../../utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
-import { PERMISSIONS } from '../../../utils/constants';
+import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { GET_SUBMISSION_PAYMENT_INFO } from 'graphql/queries/payment';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { PERMISSIONS } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { useRouter } from 'next/router';
 import { DAOIcon } from '../../Icons/dao';
@@ -27,8 +27,8 @@ import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { OfflinePayment } from '../../Common/Payment/OfflinePayment';
 import { SingleWalletPayment } from '../../Common/Payment/SingleWalletPayment';
 import Link from 'next/link';
-import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
-import { delQuery } from '../../../utils';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { delQuery } from 'utils';
 
 enum ViewType {
   Paid = 'paid',

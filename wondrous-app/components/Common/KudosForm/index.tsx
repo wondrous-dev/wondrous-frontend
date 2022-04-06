@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { useContext, useEffect, useState } from 'react';
-import { CREATE_POST, UPDATE_POST } from '../../../graphql/mutations/post';
-import { ObjectType, PostType, PostVerbType } from '../../../types/post';
+import { CREATE_POST, UPDATE_POST } from 'graphql/mutations/post';
+import { ObjectType, PostType, PostVerbType } from 'types/post';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import {
   KudosFormBackground,

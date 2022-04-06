@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
 
-import { InviteWelcomeBox } from '../../../components/Onboarding/email-setup';
-import { MainWrapper } from '../../../components/Onboarding/styles';
-import { UPDATE_USER } from '../../../graphql/mutations';
-import { withAuth } from '../../../components/Auth/withAuth';
-import { GET_USER_ORGS } from '../../../graphql/queries/org';
-import { GET_USER_PODS } from '../../../graphql/queries';
+import { InviteWelcomeBox } from 'components/Onboarding/email-setup';
+import { MainWrapper } from 'components/Onboarding/styles';
+import { UPDATE_USER } from 'graphql/mutations';
+import { withAuth } from 'components/Auth/withAuth';
+import { GET_USER_ORGS } from 'graphql/queries/org';
+import { GET_USER_PODS } from 'graphql/queries';
 
 const ContributorBuildProfilePage = () => {
   const router = useRouter();

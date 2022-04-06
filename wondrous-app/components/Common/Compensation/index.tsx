@@ -2,7 +2,7 @@ import { ToDo } from '../../Icons';
 import { WonderCoin } from '../../Icons/wonderCoin';
 import { SafeImage } from '../Image';
 import { CompensationWrapper, IconContainer, CompensationPill, CompensationAmount } from './styles';
-import { shrinkNumber } from '../../../utils/helpers';
+import { shrinkNumber } from 'utils/helpers';
 
 export const Compensation = (props) => {
   const { rewards, taskIcon } = props;

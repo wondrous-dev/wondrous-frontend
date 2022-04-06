@@ -1,9 +1,9 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_ROLES, GET_ORG_USERS, GET_USER_ORGS } from '../../../graphql/queries/org';
-import { GET_POD_BY_ID } from '../../../graphql/queries/pod';
-import { SEARCH_ORG_USERS } from '../../../graphql/queries/org';
-import { UPDATE_USER_ORG_ROLE } from '../../../graphql/mutations/org';
+import { GET_ORG_ROLES, GET_ORG_USERS, GET_USER_ORGS } from 'graphql/queries/org';
+import { GET_POD_BY_ID } from 'graphql/queries/pod';
+import { SEARCH_ORG_USERS } from 'graphql/queries/org';
+import { UPDATE_USER_ORG_ROLE } from 'graphql/mutations/org';
 import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
 import UserCheckIcon from '../../Icons/userCheckIcon';
@@ -25,11 +25,11 @@ import { DefaultProfilePicture, InviteDiv, SeeMoreText, UserInfoDiv, UsernameTex
 import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
 import CreatePodIcon from '../../Icons/createPod';
 import { CircularProgress, TextField } from '@material-ui/core';
-import { PERMISSIONS } from '../../../utils/constants';
-import { useSettings } from '../../../utils/hooks';
-import { parseUserPermissionContext } from '../../../utils/helpers';
-import { INVITE_USER_TO_POD, UPDATE_USER_POD_ROLE } from '../../../graphql/mutations/pod';
-import { GET_POD_ROLES, GET_POD_USERS } from '../../../graphql/queries/pod';
+import { PERMISSIONS } from 'utils/constants';
+import { useSettings } from 'utils/hooks';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { INVITE_USER_TO_POD, UPDATE_USER_POD_ROLE } from 'graphql/mutations/pod';
+import { GET_POD_ROLES, GET_POD_USERS } from 'graphql/queries/pod';
 import {
   AutocompleteList,
   CreateFormAddDetailsInputBlock,

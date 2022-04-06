@@ -2,22 +2,22 @@ import { useRouter } from 'next/router';
 import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { useInView } from 'react-intersection-observer';
-import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
-import { useLocation } from '../../../utils/useLocation';
+import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useLocation } from 'utils/useLocation';
 import { TaskViewModal } from '../Task/modal';
 import { KanbanBoardContainer, LoadMore } from './styles';
 import TaskColumn from './TaskColumn';
 
 // Task update (column changes)
-import apollo from '../../../services/apollo';
-import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER, UPDATE_BOUNTY_STATUS } from '../../../graphql/mutations/task';
-import { parseUserPermissionContext } from '../../../utils/helpers';
-import { BOARD_TYPE, PERMISSIONS, PAYMENT_STATUS, TASK_TYPE } from '../../../utils/constants';
+import apollo from 'services/apollo';
+import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER, UPDATE_BOUNTY_STATUS } from 'graphql/mutations/task';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { BOARD_TYPE, PERMISSIONS, PAYMENT_STATUS, TASK_TYPE } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { useMutation } from '@apollo/client';
-import { dedupeColumns, delQuery } from '../../../utils';
+import { dedupeColumns, delQuery } from 'utils';
 import DndErrorModal from './DndErrorModal';
-import { ViewType } from '../../../types/common';
+import { ViewType } from 'types/common';
 
 const populateOrder = (index, tasks, field) => {
   let aboveOrder = null,
