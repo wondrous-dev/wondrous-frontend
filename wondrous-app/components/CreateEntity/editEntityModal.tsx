@@ -390,6 +390,7 @@ const EditLayoutBaseModal = (props) => {
   const isTask = entityType === ENTITIES_TYPES.TASK;
   const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
   const isPod = entityType === ENTITIES_TYPES.POD;
+  const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
   const {
     showDeliverableRequirementsSection,
     showBountySwitchSection,
@@ -403,7 +404,7 @@ const EditLayoutBaseModal = (props) => {
   } = useMemo(() => {
     return {
       showDeliverableRequirementsSection: isTask,
-      showBountySwitchSection: isTask || isBounty,
+      showBountySwitchSection: isTask || isBounty || isProposal,
       showAppearSection: isTask || isBounty,
       showLinkAttachmentSection: isPod,
       showHeaderImagePickerSection: isPod,

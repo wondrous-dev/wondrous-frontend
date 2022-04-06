@@ -256,6 +256,7 @@ const CreateLayoutBaseModal = (props) => {
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
   const board = orgBoard || podBoard || userBoard;
+  const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
   const isPod = entityType === ENTITIES_TYPES.POD;
   const isTask = entityType === ENTITIES_TYPES.TASK;
   const isBounty = entityType === ENTITIES_TYPES.BOUNTY;
@@ -328,7 +329,7 @@ const CreateLayoutBaseModal = (props) => {
   } = useMemo(() => {
     return {
       showDeliverableRequirementsSection: isTask,
-      showBountySwitchSection: isTask || isBounty,
+      showBountySwitchSection: isTask || isBounty || isProposal,
       showAppearSection: isTask || isBounty,
       showLinkAttachmentSection: isPod,
       // TODO: add back in entityType === ENTITIES_TYPES.POD
