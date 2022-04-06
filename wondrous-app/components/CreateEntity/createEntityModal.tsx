@@ -1080,16 +1080,16 @@ const CreateLayoutBaseModal = (props) => {
               <CreateFormAddDetailsInputBlock>
                 <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
                 <StyledAutocompletePopper
-                  options={filterOrgUsers(podUsersData?.getPodUsers ?? orgUsersData?.getOrgUsers)}
+                  options={filterOrgUsers(orgUsersData?.getOrgUsers)}
                   onOpen={() => {
-                    if (pod) {
-                      getPodUsers({
-                        variables: {
-                          podId: pod?.id || pod,
-                          limit: 100, // TODO: fix autocomplete
-                        },
-                      });
-                    }
+                    // if (pod) {
+                    //   getPodUsers({
+                    //     variables: {
+                    //       podId: pod?.id || pod,
+                    //       limit: 100, // TODO: fix autocomplete
+                    //     },
+                    //   });
+                    // }
                   }}
                   renderInput={(params) => (
                     <TextField
