@@ -20,6 +20,7 @@ import {
   CreateLayoutsModalTitle,
   CreateLayoutTaskIcon,
   CreateLayoutBountyIcon,
+  CreateLayoutProposalIcon,
 } from './styles';
 import { useRouter } from 'next/router';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
@@ -49,7 +50,7 @@ export const ENTITIES_UI_ELEMENTS = {
     label: 'Bounty',
   },
   [ENTITIES_TYPES.PROPOSAL]: {
-    icon: CreateLayoutTaskIcon,
+    icon: CreateLayoutProposalIcon,
     label: 'Proposal',
   },
 };
