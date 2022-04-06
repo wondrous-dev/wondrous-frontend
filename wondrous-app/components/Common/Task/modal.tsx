@@ -806,16 +806,14 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   });
 
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
-    refetchQueries: () => [
-      {
-        query: GET_TASK_BY_ID,
-        variables: {
-          taskId: fetchedTask?.id,
-        },
-      },
-      'getPerStatusTaskCountForOrgBoard',
+    refetchQueries: [
+      'getTaskById',
       'getUserTaskBoardTasks',
       'getPerStatusTaskCountForUserBoard',
+      'getOrgTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForPodBoard',
     ],
     onError: () => {
       console.error('Something went wrong.');
