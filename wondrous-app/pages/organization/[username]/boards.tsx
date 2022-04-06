@@ -1,10 +1,4 @@
-import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { useLazyQuery, useQuery } from '@apollo/client';
-import { ViewType } from 'types/common';
-import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
-import { useRouterQuery } from 'utils/hooks';
-import _ from 'lodash';
-import { useRouter } from 'next/router';
 import { withAuth } from 'components/Auth/withAuth';
 import Boards from 'components/organization/boards/boards';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
@@ -18,10 +12,15 @@ import {
   SEARCH_ORG_TASK_BOARD_PROPOSALS,
   SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
 } from 'graphql/queries/taskBoard';
+import _ from 'lodash';
+import { useRouter } from 'next/router';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import apollo from 'services/apollo';
 import { COLUMNS, LIMIT, populateTaskColumns, SELECT_OPTIONS } from 'services/board';
+import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
+import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
 import {
   DEFAULT_STATUS_ARR,
   PRIVACY_LEVEL,
@@ -31,6 +30,7 @@ import {
   TASK_STATUS_REQUESTED,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
+import { useRouterQuery } from 'utils/hooks';
 
 const useGetOrgTaskBoardTasks = ({
   columns,

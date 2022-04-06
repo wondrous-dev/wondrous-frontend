@@ -1,52 +1,43 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
-
-import { SettingsWrapper } from './settingsWrapper';
+import React, { useEffect, useState } from 'react';
+import { UPDATE_ORG } from '../../graphql/mutations/org';
+import { UPDATE_POD } from '../../graphql/mutations/pod';
+import { GET_ORG_BY_ID } from '../../graphql/queries/org';
+import { GET_POD_BY_ID } from '../../graphql/queries/pod';
+import { filteredColorOptions, PRIVACY_LEVEL } from '../../utils/constants';
+import { getFilenameAndType, uploadMedia } from '../../utils/media';
+import { TabsVisibility } from '../Common/TabsVisibility';
+import { CreateFormAddDetailsInputLabel, CreateFormAddDetailsTab } from '../CreateEntity/styles';
+import { DiscordIcon } from '../Icons/discord';
+import LinkBigIcon from '../Icons/link';
+import OpenSeaIcon from '../Icons/openSea';
+import TwitterPurpleIcon from '../Icons/twitterPurple';
+import ColorSettings from './ColorDropdown';
 import { HeaderBlock } from './headerBlock';
 import { ImageUpload } from './imageUpload';
-import { LinkSquareIcon } from './linkSquareIcon';
 import { InputField } from './inputField';
+import { LinkSquareIcon } from './linkSquareIcon';
+import { SettingsWrapper } from './settingsWrapper';
 import {
   GeneralSettingsButtonsBlock,
   GeneralSettingsContainer,
   GeneralSettingsDAODescriptionBlock,
   GeneralSettingsDAODescriptionInput,
   GeneralSettingsDAODescriptionInputCounter,
+  GeneralSettingsDAOHeaderImage,
   GeneralSettingsDAONameBlock,
   GeneralSettingsDAONameInput,
+  GeneralSettingsDAOProfileImage,
   GeneralSettingsInputsBlock,
-  GeneralSettingsIntegrationsBlock,
-  GeneralSettingsIntegrationsBlockButton,
-  GeneralSettingsIntegrationsBlockButtonIcon,
   GeneralSettingsResetButton,
   GeneralSettingsSaveChangesButton,
   GeneralSettingsSocialsBlock,
   GeneralSettingsSocialsBlockRow,
-  GeneralSettingsSocialsBlockRowLabel,
   GeneralSettingsSocialsBlockWrapper,
   LabelBlock,
   Snackbar,
-  LabelBlockText,
 } from './styles';
-import TwitterPurpleIcon from '../Icons/twitterPurple';
-import LinkedInIcon from '../Icons/linkedIn';
-import OpenSeaIcon from '../Icons/openSea';
-import LinkBigIcon from '../Icons/link';
-import { DiscordIcon } from '../Icons/discord';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_BY_ID } from 'graphql/queries/org';
-import { UPDATE_ORG } from 'graphql/mutations/org';
-import { getFilenameAndType, uploadMedia } from 'utils/media';
-import { SafeImage } from '../Common/Image';
-import { GET_POD_BY_ID } from 'graphql/queries/pod';
-import { UPDATE_POD } from 'graphql/mutations/pod';
-import { CreateFormAddDetailsInputLabel, CreateFormAddDetailsTab } from '../CreateEntity/styles';
-import { AndroidSwitch } from '../CreateEntity/createEntityModal';
-import { filteredColorOptions, POD_COLOR, PRIVACY_LEVEL } from 'utils/constants';
-import ColorSettings from './ColorDropdown';
-import { White, HighlightBlue } from '../../theme/colors';
-import { TabsVisibility } from '../Common/TabsVisibility';
 
 const LIMIT = 200;
 
@@ -90,12 +81,15 @@ const GeneralSettingsComponent = (props) => {
     descriptionText,
     handleDescriptionChange,
     links,
-    handleLogoChange,
     handleLinkChange,
     resetChanges,
     saveChanges,
     isPrivate,
     setIsPrivate,
+    discordWebhookLink,
+    setDiscordWebhookLink,
+    headerImage,
+    handleImageChange,
   } = props;
 
   const [newLink, setNewLink] = useState({
@@ -150,14 +144,7 @@ const GeneralSettingsComponent = (props) => {
           </GeneralSettingsDAODescriptionBlock>
         </GeneralSettingsInputsBlock>
         {newProfile?.profilePicture && !logoImage ? (
-          <SafeImage
-            src={newProfile?.profilePicture}
-            style={{
-              width: '52px',
-              height: '52px',
-              marginTop: '30px',
-            }}
-          />
+          <GeneralSettingsDAOProfileImage src={newProfile?.profilePicture} />
         ) : null}
         {!isPod && (
           <ImageUpload
@@ -165,16 +152,19 @@ const GeneralSettingsComponent = (props) => {
             imageWidth={52}
             imageHeight={52}
             imageName="Logo"
-            updateFilesCb={handleLogoChange}
+            updateFilesCb={(file) => handleImageChange(file, 'profile')}
           />
         )}
-        {/* <ImageUpload
-      image={bannerImage}
-      imageWidth={1350}
-      imageHeight={259}
-      imageName="Banner"
-      updateFilesCb={setBannerImage}
-    /> */}
+        {newProfile?.headerPicture && !headerImage && <GeneralSettingsDAOHeaderImage src={newProfile?.headerPicture} />}
+        {!isPod && (
+          <ImageUpload
+            image={headerImage}
+            imageWidth="1350"
+            imageHeight="200"
+            imageName="Header"
+            updateFilesCb={(file) => handleImageChange(file, 'header')}
+          />
+        )}
         {isPod && (
           <GeneralSettingsInputsBlock>
             <GeneralSettingsDAONameBlock>
@@ -398,8 +388,7 @@ export const PodGeneralSettings = () => {
 const GeneralSettings = () => {
   const [logoImage, setLogoImage] = useState('');
   const [orgProfile, setOrgProfile] = useState(null);
-  const [originalOrgProfile, setOriginalOrgProfile] = useState(null);
-  const [bannerImage, setBannerImage] = useState('');
+  const [headerImage, setHeaderImage] = useState('');
   const [orgLinks, setOrgLinks] = useState([]);
   const [descriptionText, setDescriptionText] = useState('');
   const [toast, setToast] = useState({ show: false, message: '' });
@@ -407,7 +396,6 @@ const GeneralSettings = () => {
   const { orgId } = router.query;
 
   function setOrganization(organization) {
-    setOriginalOrgProfile(organization);
     setLogoImage('');
     const links = reduceLinks(organization.links);
 
@@ -417,14 +405,14 @@ const GeneralSettings = () => {
     setOrgProfile(organization);
   }
 
-  const [getOrganization] = useLazyQuery(GET_ORG_BY_ID, {
+  const [getOrgById, { data: getOrgByIdData }] = useLazyQuery(GET_ORG_BY_ID, {
     onCompleted: ({ getOrgById }) => setOrganization(getOrgById),
     fetchPolicy: 'cache-and-network',
   });
 
   useEffect(() => {
     if (orgId) {
-      getOrganization({ variables: { orgId } });
+      getOrgById({ variables: { orgId } });
     }
   }, [orgId]);
 
@@ -435,19 +423,34 @@ const GeneralSettings = () => {
     },
   });
 
-  async function handleLogoChange(file) {
-    setLogoImage(file);
+  function handleImageFile(file) {
+    if (!file) return { filename: null, fileType: null, file: null };
+    const fileName = file?.name;
+    // get image preview
+    const { fileType, filename } = getFilenameAndType(fileName);
+    const imageFile = `tmp/${orgId}/` + filename;
+    return { filename: imageFile, fileType, file };
+  }
 
-    if (file) {
-      const fileName = file?.name;
-      // get image preview
-      const { fileType, filename } = getFilenameAndType(fileName);
-      const imagePrefix = `tmp/${orgId}/`;
-      const profilePicture = imagePrefix + filename;
-      await uploadMedia({ filename: profilePicture, fileType, file });
-
-      setOrgProfile({ ...orgProfile, profilePicture });
-    }
+  async function handleImageChange(file, imageType) {
+    const type = {
+      header: {
+        setState: (file) => setHeaderImage(file),
+        orgProfileKey: 'headerPicture',
+      },
+      profile: {
+        setState: (file) => setLogoImage(file),
+        orgProfileKey: 'profilePicture',
+      },
+    };
+    const { setState, orgProfileKey } = type[imageType];
+    setState(file);
+    const imageFile = handleImageFile(file);
+    setOrgProfile({
+      ...orgProfile,
+      [orgProfileKey]: imageFile.filename ?? getOrgByIdData?.getOrgById[orgProfileKey],
+    });
+    imageFile.filename && (await uploadMedia(imageFile));
   }
 
   function handleDescriptionChange(e) {
@@ -460,7 +463,7 @@ const GeneralSettings = () => {
   }
 
   function resetChanges() {
-    setOrganization(originalOrgProfile);
+    setOrganization(getOrgByIdData?.getOrgById);
   }
 
   function saveChanges() {
@@ -499,13 +502,14 @@ const GeneralSettings = () => {
       handleDescriptionChange={handleDescriptionChange}
       handleLinkChange={(event, item) => handleLinkChange(event, item, { ...orgLinks }, setOrgLinks)}
       links={orgLinks}
-      handleLogoChange={handleLogoChange}
       logoImage={logoImage}
       newProfile={orgProfile}
       resetChanges={resetChanges}
       saveChanges={saveChanges}
       typeText="DAO"
       setProfile={setOrgProfile}
+      headerImage={headerImage}
+      handleImageChange={handleImageChange}
     />
   );
 };
