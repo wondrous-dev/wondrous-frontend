@@ -595,7 +595,7 @@ const CreateLayoutBaseModal = (props) => {
           };
           setErrors(newErrors);
         } else {
-          const refetchQueries = [];
+          const refetchQueries = ['getPerStatusTaskCountForUserBoard'];
           if (orgBoard) {
             refetchQueries.push('getPerStatusTaskCountForOrgBoard');
           }
