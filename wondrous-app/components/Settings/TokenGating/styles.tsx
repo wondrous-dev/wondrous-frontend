@@ -1,6 +1,7 @@
 import { PopperUnstyled } from '@mui/base';
-import { Autocomplete, Box, ButtonBase, InputBase, InputLabel, Typography } from '@mui/material';
+import { Autocomplete, Box, ButtonBase, InputBase, InputLabel, List, ListItem, Typography } from '@mui/material';
 import { Button } from 'components/Common/button';
+import { SafeImage } from 'components/Common/Image';
 import ArrowDropDownIcon from 'components/Icons/arrowDropDown';
 import styled from 'styled-components';
 import { Background, Black92, Blue20, Grey100, Grey250, Grey57, Grey85, Grey90, White } from 'theme/colors';
@@ -150,11 +151,11 @@ export const TokenGatingAutocompletePopper = styled(PopperUnstyled)`
   }
 `;
 
-export const TokenGatingAutocompleteListBox = styled(Box)`
+export const TokenGatingAutocompleteList = styled(List)`
   && {
-    background: ${Grey100} !important; // There's a global background with '!important', so we need to override it
-    max-height: 224px;
     overflow-y: auto;
+    margin: 0;
+    padding: 0;
     ::-webkit-scrollbar {
       width: 10px;
     }
@@ -165,16 +166,35 @@ export const TokenGatingAutocompleteListBox = styled(Box)`
       background: ${Grey57};
       border-radius: 50px;
     }
-    > .MuiAutocomplete-option {
-      :hover {
-        background: #474747 !important;
-      }
-    }
-    > .MuiAutocomplete-option[aria-selected='true'] {
+  }
+`;
+
+export const TokenGatingAutocompleteListItem = styled(ListItem)`
+  && {
+    background: ${Grey100} !important; // There's a global background with '!important', so we need to override it
+    height: 32px;
+    font-family: 'Space Grotesk';
+    font-size: 14px;
+    font-weight: 400;
+    :hover {
       background: #474747 !important;
+      cursor: pointer;
+    }
+    svg {
+      margin-right: 8px;
     }
   }
 `;
+
+export const TokenGatingInputImage = styled((props) => (
+  <SafeImage
+    {...props}
+    style={{
+      width: '24px',
+      marginRight: '8px',
+    }}
+  />
+))``;
 
 export const TokenGatingInputWrapper = styled.div``;
 
