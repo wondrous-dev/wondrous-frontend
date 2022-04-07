@@ -1,7 +1,8 @@
+import { PopperUnstyled } from '@mui/base';
 import { Autocomplete, Box, ButtonBase, InputBase, InputLabel, Typography } from '@mui/material';
 import ArrowDropDownIcon from 'components/Icons/arrowDropDown';
 import styled from 'styled-components';
-import { Background, Black92, Blue20, Grey250, Grey85, White } from 'theme/colors';
+import { Background, Black92, Blue20, Grey100, Grey250, Grey57, Grey85, Grey90, White } from 'theme/colors';
 
 export const TokenGatingHeaderText = styled(Typography)`
   && {
@@ -101,3 +102,36 @@ export const TokenGatingAutocompleteTextfieldButton = styled(ButtonBase)`
 `;
 
 export const TokenGatingAutocompleteTextfieldIcon = styled(ArrowDropDownIcon)``;
+
+export const TokenGatingAutocompletePopper = styled(PopperUnstyled)`
+  && {
+    border-radius: 6px;
+    border: 1px solid #9b9b9b;
+  }
+`;
+
+export const TokenGatingAutocompleteListBox = styled(Box)`
+  && {
+    background: ${Grey100} !important; // There's a global background with '!important', so we need to override it
+    max-height: 224px;
+    overflow-y: auto;
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: ${Grey90};
+    }
+    ::-webkit-scrollbar-thumb {
+      background: ${Grey57};
+      border-radius: 50px;
+    }
+    > .MuiAutocomplete-option {
+      :hover {
+        background: #474747 !important;
+      }
+    }
+    > .MuiAutocomplete-option[aria-selected='true'] {
+      background: #474747 !important;
+    }
+  }
+`;
