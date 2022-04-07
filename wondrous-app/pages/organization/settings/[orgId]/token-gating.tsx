@@ -1,7 +1,7 @@
-import { SettingsWrapper } from 'components/Settings/settingsWrapper';
+import TokenGatingSettings from 'components/Settings/TokenGating';
 
 const TokenGatingPage = () => {
-  return <SettingsWrapper></SettingsWrapper>;
+  return <TokenGatingSettings />;
 };
 
 export default TokenGatingPage;
