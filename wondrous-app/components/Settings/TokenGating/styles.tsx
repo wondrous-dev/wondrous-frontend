@@ -1,8 +1,14 @@
 import { PopperUnstyled } from '@mui/base';
 import { Autocomplete, Box, ButtonBase, InputBase, InputLabel, Typography } from '@mui/material';
+import { Button } from 'components/Common/button';
 import ArrowDropDownIcon from 'components/Icons/arrowDropDown';
 import styled from 'styled-components';
 import { Background, Black92, Blue20, Grey100, Grey250, Grey57, Grey85, Grey90, White } from 'theme/colors';
+
+export const TokenGatingWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+`;
 
 export const TokenGatingHeaderText = styled(Typography)`
   && {
@@ -72,7 +78,11 @@ export const TokenGatingAutocompleteTextfieldWrapper = styled(Box)`
   }
 `;
 
-export const TokenGatingAutocompleteTextfieldInput = styled(InputBase)`
+export const TokenGatingTextfieldInputWrapper = styled.div`
+  margin-top: 12px;
+`;
+
+export const TokenGatingTextfieldInput = styled(InputBase)`
   && {
     background: ${Background};
     border-radius: 6px;
@@ -90,18 +100,48 @@ export const TokenGatingAutocompleteTextfieldInput = styled(InputBase)`
   }
 `;
 
-export const TokenGatingAutocompleteTextfieldButton = styled(ButtonBase)`
+export const TokenGatingTextfieldButton = styled(ButtonBase)`
   && {
     background: ${Black92};
     height: 100%;
     width: 34px;
     margin-top: 0px;
+  }
+`;
+
+export const TokenGatingAutocompleteTextfieldButton = styled(TokenGatingTextfieldButton)`
+  && {
     border-radius: 0 5px 5px 0;
     border-left: 1px solid ${Grey85};
   }
 `;
 
-export const TokenGatingAutocompleteTextfieldIcon = styled(ArrowDropDownIcon)``;
+export const TokenGatingTextfieldButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 100%;
+  align-items: center;
+`;
+
+export const TokenGatingTextfieldButtonUp = styled(TokenGatingTextfieldButton)`
+  && {
+    transform: rotate(180deg);
+    border-radius: 0 0 0 6px;
+    border-top: 1px solid ${Grey85};
+    border-right: 1px solid ${Grey85};
+  }
+`;
+
+export const TokenGatingTextfieldButtonDown = styled(TokenGatingTextfieldButton)`
+  && {
+    border-radius: 0 0 6px 0;
+    border-top: 1px solid ${Grey85};
+    border-left: 1px solid ${Grey85};
+  }
+`;
+
+export const TokenGatingAutocompleteTextfieldDownIcon = styled(ArrowDropDownIcon)``;
 
 export const TokenGatingAutocompletePopper = styled(PopperUnstyled)`
   && {
@@ -133,5 +173,24 @@ export const TokenGatingAutocompleteListBox = styled(Box)`
     > .MuiAutocomplete-option[aria-selected='true'] {
       background: #474747 !important;
     }
+  }
+`;
+
+export const TokenGatingInputWrapper = styled.div``;
+
+export const TokenGatingTokenAmountWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const TokenGatingButton = styled(Button)`
+  width: 109px;
+  margin-top: 28px;
+  background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+  button {
+    background: ${Background};
+    font-family: 'Space Grotesk';
+    font-size: 16px;
+    font-weight: 500;
   }
 `;
