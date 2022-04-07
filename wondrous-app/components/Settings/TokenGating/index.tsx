@@ -2,6 +2,8 @@ import { SettingsWrapper } from '../settingsWrapper';
 import {
   TokenGatingAutocomplete,
   TokenGatingAutocompleteLabel,
+  TokenGatingAutocompleteListBox,
+  TokenGatingAutocompletePopper,
   TokenGatingAutocompleteTextfieldButton,
   TokenGatingAutocompleteTextfieldIcon,
   TokenGatingAutocompleteTextfieldInput,
@@ -13,8 +15,6 @@ import {
   TokenGatingHeaderTextSecondary,
   TokenGatingSubheading,
 } from './styles';
-
-const options = ['abcd', 'xyz'];
 
 const TokenGatingSettings = () => {
   return (
@@ -31,6 +31,7 @@ const TokenGatingSettings = () => {
         </TokenGatingFormHeader>
         <TokenGatingAutocompleteLabel>Chain</TokenGatingAutocompleteLabel>
         <TokenGatingAutocomplete
+          disablePortal
           options={options}
           renderInput={(params) => (
             <TokenGatingAutocompleteTextfieldWrapper ref={params.InputProps.ref}>
@@ -44,8 +45,8 @@ const TokenGatingSettings = () => {
               />
             </TokenGatingAutocompleteTextfieldWrapper>
           )}
-          popupIcon={<TokenGatingAutocompleteTextfieldIcon />}
-          openOnFocus={true}
+          ListboxComponent={TokenGatingAutocompleteListBox}
+          PopperComponent={TokenGatingAutocompletePopper}
         />
       </TokenGatingFormWrapper>
     </SettingsWrapper>
