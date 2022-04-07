@@ -66,7 +66,6 @@ export const MakePaymentModal = (props) => {
   const board = orgBoard || podBoard || userBoard;
   const router = useRouter();
   const user = useMe();
-
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -90,9 +89,6 @@ export const MakePaymentModal = (props) => {
   });
 
   const [getPodWallet] = useLazyQuery(GET_POD_WALLET, {
-    onCompleted: (data) => {
-      setWallets(data?.getPodWallet);
-    },
     fetchPolicy: 'network-only',
   });
 
@@ -108,6 +104,17 @@ export const MakePaymentModal = (props) => {
         variables: {
           podId: fetchedTask?.podId,
         },
+      }).then((result) => {
+        const wallets = result?.data?.getPodWallet;
+        if (!wallets || wallets?.length === 0) {
+          getOrgWallet({
+            variables: {
+              orgId: fetchedTask?.orgId,
+            },
+          });
+        } else {
+          setWallets(wallets);
+        }
       });
     } else if (fetchedTask?.orgId) {
       getOrgWallet({

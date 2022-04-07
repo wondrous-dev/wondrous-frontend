@@ -40,7 +40,7 @@ import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { OfflinePayment } from '../../Common/Payment/OfflinePayment';
 import { BatchWalletPayment } from '../../Common/Payment/BatchWalletPayment';
 import Link from 'next/link';
-import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { cutString } from 'utils/helpers';
 
 enum ViewType {
@@ -71,12 +71,48 @@ export const BatchPayModal = (props) => {
     fetchPolicy: 'network-only',
   });
   const [getPodWallet] = useLazyQuery(GET_POD_WALLET, {
-    onCompleted: (data) => {
-      setWallets(data?.getPodWallet);
-    },
     fetchPolicy: 'network-only',
   });
 
+  const [getPodById] = useLazyQuery(GET_POD_BY_ID);
+  const getWallets = useCallback(
+    async (podId, orgId) => {
+      if (podId) {
+        try {
+          const result = await getPodWallet({
+            variables: {
+              podId,
+            },
+          });
+          const wallets = result?.data?.getPodWallet;
+          if (!wallets || wallets?.length === 0) {
+            const podResult = await getPodById({
+              variables: {
+                podId: podId,
+              },
+            });
+            const pod = podResult?.data?.getPodById;
+            getOrgWallet({
+              variables: {
+                orgId: pod?.orgId,
+              },
+            });
+          } else {
+            setWallets(wallets);
+          }
+        } catch (err) {
+          console.error('failed to fetch wallet: ' + err?.message);
+        }
+      } else if (orgId) {
+        getOrgWallet({
+          variables: {
+            orgId,
+          },
+        });
+      }
+    },
+    [podId, orgId]
+  );
   const [getSubmissionsPaymentInfo] = useLazyQuery(GET_SUBMISSIONS_PAYMENT_INFO, {
     onCompleted: (data) => {
       setSubmissionsPaymentInfo(data?.getSubmissionsPaymentInfo);
@@ -86,19 +122,7 @@ export const BatchPayModal = (props) => {
   const submissionIds = unpaidSubmissions && Object.keys(unpaidSubmissions);
 
   useEffect(() => {
-    if (podId) {
-      getPodWallet({
-        variables: {
-          podId,
-        },
-      });
-    } else if (orgId) {
-      getOrgWallet({
-        variables: {
-          orgId,
-        },
-      });
-    }
+    getWallets(podId, orgId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [podId, orgId]);
   useEffect(() => {
