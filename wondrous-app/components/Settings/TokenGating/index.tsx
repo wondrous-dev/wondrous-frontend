@@ -62,37 +62,36 @@ const OuterElementType = React.forwardRef<HTMLDivElement>(function OuterElementT
   return <TokenGatingAutocompleteList ref={ref} {...props} {...outerProps} />;
 });
 
-const ListboxComponent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLElement>>(function ListboxComponent(
-  props,
-  ref
-) {
-  const { children, ...other } = props;
-  const itemData: React.ReactChild[] = (children as React.ReactChild[]).flatMap(
-    (item: React.ReactChild & { children?: React.ReactChild[] }) => [item, ...(item.children || [])]
-  );
-  const itemCount = itemData.length;
-  const itemSize = 50;
-  const maxNoOfItemsToDisplay = 5;
-  const height = itemCount > maxNoOfItemsToDisplay ? itemSize * maxNoOfItemsToDisplay : itemCount * itemSize;
-  return (
-    <div ref={ref}>
-      <OuterElementContext.Provider value={other}>
-        <FixedSizeList
-          itemData={itemData}
-          height={height}
-          width="100%"
-          outerElementType={OuterElementType}
-          innerElementType="ul"
-          itemSize={itemSize}
-          overscanCount={20}
-          itemCount={itemCount}
-        >
-          {renderRow}
-        </FixedSizeList>
-      </OuterElementContext.Provider>
-    </div>
-  );
-});
+const TokenListboxVirtualized = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLElement>>(
+  function ListboxComponent(props, ref) {
+    const { children, ...other } = props;
+    const itemData: React.ReactChild[] = (children as React.ReactChild[]).flatMap(
+      (item: React.ReactChild & { children?: React.ReactChild[] }) => [item, ...(item.children || [])]
+    );
+    const itemCount = itemData.length;
+    const itemSize = 50;
+    const maxNoOfItemsToDisplay = 5;
+    const height = itemCount > maxNoOfItemsToDisplay ? itemSize * maxNoOfItemsToDisplay : itemCount * itemSize;
+    return (
+      <div ref={ref}>
+        <OuterElementContext.Provider value={other}>
+          <FixedSizeList
+            itemData={itemData}
+            height={height}
+            width="100%"
+            outerElementType={OuterElementType}
+            innerElementType="ul"
+            itemSize={itemSize}
+            overscanCount={20}
+            itemCount={itemCount}
+          >
+            {renderRow}
+          </FixedSizeList>
+        </OuterElementContext.Provider>
+      </div>
+    );
+  }
+);
 
 const TokenGatingSettings = () => {
   const [chain, setChain] = useState(chainOptions[0]);
@@ -128,8 +127,6 @@ const TokenGatingSettings = () => {
     };
     getTokenList();
   }, []);
-
-  console.log(ListboxComponent);
 
   return (
     <SettingsWrapper>
@@ -194,7 +191,7 @@ const TokenGatingSettings = () => {
                     />
                   </TokenGatingAutocompleteTextfieldWrapper>
                 )}
-                ListboxComponent={ListboxComponent}
+                ListboxComponent={TokenListboxVirtualized}
                 PopperComponent={TokenGatingAutocompletePopper}
                 renderOption={(props, option) => [props, option]}
                 renderGroup={(params) => params}
