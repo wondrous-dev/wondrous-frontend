@@ -607,9 +607,7 @@ const EditLayoutBaseModal = (props) => {
               ],
             }),
           // TODO: add links?,
-          ...(existingTask?.assigneeId !== assignee?.value && {
-            assigneeId: assignee?.value,
-          }),
+          assigneeId: assignee?.value,
           ...(publicTask &&
             isPodPublic && {
               privacyLevel: PRIVACY_LEVEL.public,
