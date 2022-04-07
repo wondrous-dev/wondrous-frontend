@@ -172,6 +172,7 @@ export const HeaderText = styled(Typography)`
     line-height: 19px;
     letter-spacing: 0.01em;
     color: #ffffff;
+    word-wrap: break-word;
   }
 `;
 
