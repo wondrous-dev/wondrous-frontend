@@ -148,6 +148,14 @@ export const TokenGatingAutocompletePopper = styled(PopperUnstyled)`
   && {
     border-radius: 6px;
     border: 1px solid #9b9b9b;
+    .MuiAutocomplete-noOptions {
+      font-family: 'Space Grotesk';
+      font-size: 14px;
+      font-weight: 400;
+      background: ${Grey100};
+      color: ${White};
+      height: 50px;
+    }
   }
 `;
 
@@ -172,10 +180,11 @@ export const TokenGatingAutocompleteList = styled(List)`
 export const TokenGatingAutocompleteListItem = styled(ListItem)`
   && {
     background: ${Grey100} !important; // There's a global background with '!important', so we need to override it
-    height: 32px;
+    height: 50px;
     font-family: 'Space Grotesk';
     font-size: 14px;
     font-weight: 400;
+    color: ${White};
     :hover {
       background: #474747 !important;
       cursor: pointer;
