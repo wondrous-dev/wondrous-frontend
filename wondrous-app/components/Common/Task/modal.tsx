@@ -1579,10 +1579,16 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                             // Move from proposal to task
                             columns = removeProposalItem(fetchedTask?.id, columns);
                             columns = addTaskItem(
-                              {
-                                ...fetchedTask,
-                                id: taskProposal?.associatedTaskId,
-                              },
+                              transformTaskToTaskCard(
+                                {
+                                  ...fetchedTask,
+                                  id: taskProposal?.associatedTaskId,
+                                  __typename: 'TaskCard',
+                                  type: 'task',
+                                  parentTaskId: null,
+                                },
+                                {}
+                              ),
                               columns
                             );
                             boardColumns?.setColumns(columns);
