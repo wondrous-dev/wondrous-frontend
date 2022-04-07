@@ -6,14 +6,13 @@ import { White } from '../../theme/colors';
 import { BaseCard } from '../Common/card';
 import { LogoSquare } from '../Common/ci';
 import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
-import { CreateFormSelect } from '../Common/DropdownSelect/styles';
-import BountyIcon from '../Icons/createBounty';
+import BountyIcon from '../Icons/createBounty.svg';
 import CreateDaoIcon from '../Icons/createDao';
-import CreateMilestoneIcon from '../Icons/createMilestone';
-import CreatePodIcon from '../Icons/createPod';
+import CreateMilestoneIcon from '../Icons/createMilestone.svg';
+import CreatePodIcon from '../Icons/createPod.svg';
+import CreateProposalIcon from '../Icons/createProposal.svg';
 import CreateTaskIcon from '../Icons/createTask.svg';
 import WonderTokenIcon from '../Icons/wonderToken';
-import CreateProposalIcon from '../Icons/createProposal.svg';
 
 export const MediaUploadGrid = styled(Grid)`
   && {
