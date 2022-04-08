@@ -1,5 +1,15 @@
 import { PopperUnstyled } from '@mui/base';
-import { Autocomplete, Box, ButtonBase, InputBase, InputLabel, List, ListItem, Typography } from '@mui/material';
+import {
+  Autocomplete,
+  Box,
+  ButtonBase,
+  FormHelperText,
+  InputBase,
+  InputLabel,
+  List,
+  ListItem,
+  Typography,
+} from '@mui/material';
 import { Button } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
 import ArrowDropDownIcon from 'components/Icons/arrowDropDown';
@@ -81,6 +91,20 @@ export const TokenGatingAutocompleteTextfieldWrapper = styled(Box)`
 
 export const TokenGatingTextfieldInputWrapper = styled.div`
   margin-top: 12px;
+`;
+
+export const TokenGatingTextfieldTextHelperWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+  visibility: ${({ visibility }) => (visibility ? 'visible' : 'hidden')};
+`;
+
+export const TokenGatingTextfieldTextHelper = styled(FormHelperText)`
+  font-family: 'Space Grotesk';
+  font-size: 12px;
+  font-weight: 400;
+  color: #f93701;
 `;
 
 export const TokenGatingTextfieldInput = styled(InputBase)`

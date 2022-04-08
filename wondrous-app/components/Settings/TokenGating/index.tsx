@@ -1,3 +1,4 @@
+import ErrorFieldIcon from 'components/Icons/errorField.svg';
 import Ethereum from 'components/Icons/ethereum';
 import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
 import React, { useEffect, useState } from 'react';
@@ -26,6 +27,8 @@ import {
   TokenGatingTextfieldButtonWrapper,
   TokenGatingTextfieldInput,
   TokenGatingTextfieldInputWrapper,
+  TokenGatingTextfieldTextHelper,
+  TokenGatingTextfieldTextHelperWrapper,
   TokenGatingTokenAmountWrapper,
   TokenGatingWrapper,
 } from './styles';
@@ -98,13 +101,19 @@ const TokenGatingSettings = () => {
   const [tokenList, setTokenList] = useState(null);
   const [selectedToken, setSelectedToken] = useState(null);
   const [minAmount, setMinAmount] = useState(0);
+  const [minAmountError, setMinAmountError] = useState(false);
   const handleMinAmountOnChange = (event) => {
     const { value } = event.target;
-    if (!/^\d+$/.test(value)) return;
     setMinAmount(Number(value));
   };
   const handleMinAmountOnClick = (change) => {
-    setMinAmount(Number(minAmount + change));
+    const newMinAmount = minAmount + change;
+    if (newMinAmount < 0) return;
+    setMinAmount(newMinAmount);
+  };
+  const handleOnSubmit = () => {
+    if (minAmount <= 0) setMinAmountError(true);
+    console.log('submit');
   };
 
   useEffect(() => {
@@ -201,6 +210,8 @@ const TokenGatingSettings = () => {
               <TokenGatingAutocompleteLabel>Min. amount to hold</TokenGatingAutocompleteLabel>
               <TokenGatingTextfieldInputWrapper>
                 <TokenGatingTextfieldInput
+                  type={'number'}
+                  min="0"
                   value={minAmount}
                   onChange={handleMinAmountOnChange}
                   endAdornment={
@@ -214,10 +225,14 @@ const TokenGatingSettings = () => {
                     </TokenGatingTextfieldButtonWrapper>
                   }
                 />
+                <TokenGatingTextfieldTextHelperWrapper visibility={minAmountError}>
+                  <ErrorFieldIcon />
+                  <TokenGatingTextfieldTextHelper>Please enter an amount</TokenGatingTextfieldTextHelper>
+                </TokenGatingTextfieldTextHelperWrapper>
               </TokenGatingTextfieldInputWrapper>
             </TokenGatingInputWrapper>
           </TokenGatingTokenAmountWrapper>
-          <TokenGatingButton>Confirm</TokenGatingButton>
+          <TokenGatingButton onClick={handleOnSubmit}>Confirm</TokenGatingButton>
         </TokenGatingFormWrapper>
       </TokenGatingWrapper>
     </SettingsWrapper>
