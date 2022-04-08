@@ -49,7 +49,6 @@ const chainOptions = [
 const renderRow = (props: ListChildComponentProps) => {
   const { data, index, style } = props;
   const dataSet = data[index];
-  console.log(props);
   return (
     <TokenGatingAutocompleteListItem {...props} {...dataSet[0]} value={dataSet[1].value} style={style}>
       <TokenGatingInputImage src={dataSet[1]?.icon} />
