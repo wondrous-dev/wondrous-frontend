@@ -7,6 +7,13 @@ export const TokenGatingConditionFragment = gql`
     podId
     name
     booleanLogic
-    accessCondition
+    accessCondition {
+      contracAddress
+      type
+      chain
+      method
+      minValue
+      tokenIds
+    }
   }
 `;
