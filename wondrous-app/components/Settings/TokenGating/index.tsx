@@ -46,7 +46,7 @@ const chainOptions = [
   },
 ];
 
-const renderRow = (props: ListChildComponentProps) => {
+const tokenListItemVirtualized = (props: ListChildComponentProps) => {
   const { data, index, style } = props;
   const dataSet = data[index];
   return (
@@ -87,7 +87,7 @@ const TokenListboxVirtualized = React.forwardRef<HTMLDivElement, React.HTMLAttri
             overscanCount={20}
             itemCount={itemCount}
           >
-            {renderRow}
+            {tokenListItemVirtualized}
           </FixedSizeList>
         </OuterElementContext.Provider>
       </div>
