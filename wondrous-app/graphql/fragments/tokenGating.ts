@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const TokenGatingConditionFragment = gql`
-  fragment TokenGatingConditionFragment on TokenGatingCondition {
+  fragment TokenGatingConditionFragment on TokenGatinCondition {
     id
     orgId
     podId

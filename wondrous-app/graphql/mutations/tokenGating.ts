@@ -10,8 +10,10 @@ export const CREATE_LIT_SIGNATURE = gql`
 `;
 
 export const CREATE_TOKEN_GATING_CONDITION_FOR_ORG = gql`
-  mutation createTokenGatingConditionForOrg($input: TokenGatingConditionInput!) {
-    ...TokenGatingConditionFragment
+  mutation createTokenGatingConditionForOrg($input: TokenGatinConditionInput!) {
+    createTokenGatingConditionForOrg(input: $input) {
+      ...TokenGatingConditionFragment
+    }
   }
   ${TokenGatingConditionFragment}
 `;
@@ -26,19 +28,25 @@ export const DELETE_TOKEN_GATING_CONDITION = gql`
 
 export const UPDATE_TOKEN_GATING_CONDITION = gql`
   mutation updateTokenGatingCondition($tokenGatingConditionId: ID!, $input: TokenGatinConditionInput!) {
-    ...TokenGatingConditionFragment
+    updateTokenGatingCondition(tokenGatingConditionId: $tokenGatingConditionId, input: $input) {
+      ...TokenGatingConditionFragment
+    }
   }
   ${TokenGatingConditionFragment}
 `;
 
 export const ACTIVATE_TOKEN_GATING_CONDITION_FOR_ORG = gql`
   mutation activateTokenGatingConditionForOrg($tokenGatingConditionId: ID!, $orgId: ID!) {
-    success
+    activateTokenGatingConditionForOrg(tokenGatingConditionId: $tokenGatingConditionId, orgId: $orgId) {
+      success
+    }
   }
 `;
 
 export const DEACTIVATE_TOKEN_GATING_CONDITION_FOR_ORG = gql`
   mutation deactivateTokenGatingConditionForOrg($tokenGatingConditionId: ID!, $orgId: ID!) {
-    success
+    deactivateTokenGatingConditionForOrg(tokenGatingConditionId: $tokenGatingConditionId, orgId: $orgId) {
+      success
+    }
   }
 `;
