@@ -11,18 +11,21 @@ import { SmallLogo, LoginWrapper, TopBubble, LoginError } from 'components/Pages
 import { useState } from 'react';
 import { Grey50 } from '../theme/colors';
 import { EmailIcon, LockIcon } from 'components/Icons/userpass';
+import { DiscordIcon } from 'components/Icons/discord';
 import { useWonderWeb3 } from 'services/web3';
 import { emailSignin, getUserSigningMessage, walletSignin } from 'components/Auth/withAuth';
 import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import styled from 'styled-components';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
+import { getDiscordUrl } from 'utils';
 
 const prod = process.env.NEXT_PUBLIC_PRODUCTION;
 
 const WalletLoginContainer = styled.div`
   padding: 10px 0;
 `;
+const DISCORD_OAUTH_URL = getDiscordUrl();
 
 const Login = ({ csrfToken }) => {
   const wonderWeb3 = useWonderWeb3();
@@ -151,6 +154,18 @@ const Login = ({ csrfToken }) => {
             </WalletLoginContainer>
             <WalletLoginContainer>
               <CoinbaseConnector />
+            </WalletLoginContainer>
+            <WalletLoginContainer>
+              <Button onClick={() => (window.location.href = DISCORD_OAUTH_URL)}>
+                <DiscordIcon />
+                <PaddedParagraph
+                  style={{
+                    marginLeft: '12px',
+                  }}
+                >
+                  Log in with Discord
+                </PaddedParagraph>
+              </Button>
             </WalletLoginContainer>
           </CardBody>
           {/* <CardFooter>

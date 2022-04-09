@@ -13,7 +13,13 @@ import {
 import { useRouter } from 'next/router';
 
 const MyContext = React.createContext(null);
-const EXCLUDED_PATHS = ['/invite/[token]', '/organization/[username]/boards', '/login'];
+const EXCLUDED_PATHS = [
+  '/invite/[token]',
+  '/organization/[username]/boards',
+  '/login',
+  '/discord/callback',
+  '/onboarding/welcome',
+];
 
 export const useMe = () => {
   return useContext(MyContext);

@@ -23,6 +23,8 @@ import { SupportedChainType } from 'utils/web3Constants';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
+import { getDiscordUrl } from 'utils';
+import { DiscordIcon } from 'components/Icons/discord';
 
 export const Logo = () => {
   return (
@@ -227,6 +229,32 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink, podInfo, redeem
       </InviteWelcomeBoxParagraph>
       <MetaMaskConnector text="Connect with MetaMask" style={buttonStyles} />
       <CoinbaseConnector text="Connect with Coinbase Wallet" style={buttonStyles} />
+      <Button
+        style={buttonStyles}
+        onClick={() => {
+          const url = getDiscordUrl();
+          let type = null;
+          if (orgInfo) {
+            type = 'org';
+          } else if (podInfo) {
+            type = 'pod';
+          }
+          const state = JSON.stringify({
+            token,
+            type,
+          });
+          window.location.href = `${url}&state=${state}`;
+        }}
+      >
+        <DiscordIcon />
+        <span
+          style={{
+            marginLeft: '12px',
+          }}
+        >
+          Connect with Discord
+        </span>
+      </Button>
 
       {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
       {!wonderWeb3.chain && noChainError && <ErrorText>{noChainError}</ErrorText>}

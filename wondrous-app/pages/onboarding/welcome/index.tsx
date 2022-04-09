@@ -21,9 +21,9 @@ const ContributorOnboardingPage = () => {
 
   return (
     <MainWrapper>
-      <InviteWelcomeBox updateUser={updateUser} />
+      <InviteWelcomeBox updateUser={updateUser} user={user} />
     </MainWrapper>
   );
 };
 
-export default ContributorOnboardingPage;
+export default withAuth(ContributorOnboardingPage);
