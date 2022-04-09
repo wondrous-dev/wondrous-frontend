@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 
+// Snapshot GraphQL API
 export const GET_SPACE = gql`
   query Space($id: String!) {
     space(id: $id) {
@@ -23,6 +24,8 @@ export const GET_SPACE = gql`
     }
   }
 `;
+
+// Wonder GraphQL API
 
 export const SET_SPACE = gql`
   mutation SetSpace(
@@ -61,6 +64,19 @@ export const GET_SNAPSHOT = gql`
         url
         displayName
       }
+    }
+  }
+`
+
+export const SET_SNAPSHOT_PROPOSAL = gql`
+  mutation SetSnapshotProposal(
+    $proposalId: ID!,
+    $snapshotProposal: String!
+  ) {
+    updateTaskProposal(proposalId: $proposalId, input:{
+      snapshotProposal: $snapshotProposal
+    }) {
+      snapshotProposal
     }
   }
 `

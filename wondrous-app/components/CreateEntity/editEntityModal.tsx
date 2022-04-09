@@ -82,6 +82,8 @@ import {
   CreateFormRewardCurrency,
   CreateFormAddDetailsSwitchLabel,
   CreateFormAddDetailsLocalizationProvider,
+  SnapshotButtonBlock,
+  SnapshotButton
 } from './styles';
 import SelectDownIcon from '../Icons/selectDownIcon';
 import UploadImageIcon from '../Icons/uploadImage';
@@ -134,6 +136,11 @@ import {
   GET_ELIGIBLE_REVIEWERS_FOR_ORG,
   GET_ELIGIBLE_REVIEWERS_FOR_POD,
 } from '../../graphql/queries/task';
+
+// snapshot imports
+import { ethers } from 'ethers'
+import { useWonderWeb3 } from '@services/web3'
+import { useSnapshot } from '@services/snapshot'
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -427,6 +434,18 @@ const EditLayoutBaseModal = (props) => {
       value: org?.id,
     }));
   }, []);
+
+  // web3 hooks
+  const wonderWeb3 = useWonderWeb3()
+
+  // snapshot integration
+  const {
+    snapshot,
+    snapshotConnected,
+    validateSnapshot,
+    snapshotLoading,
+    exportTaskProposal
+  } = useSnapshot()
 
   const filterOrgUsers = useCallback((orgUsers) => {
     if (!orgUsers) {
@@ -798,8 +817,258 @@ const EditLayoutBaseModal = (props) => {
     handleClose,
   ]);
 
+  const [updateTaskProposalNoClose, { loading: updateTaskProposalNoCloseLoading}] = useMutation(UPDATE_TASK_PROPOSAL, {
+    onCompleted: (data) => {
+      const taskProposal = data?.updateTaskProposal;
+      const justCreatedPod = getPodObject();
+      if (boardColumns?.setColumns && onCorrectPage) {
+        const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
+          userProfilePicture: user?.profilePicture,
+          username: user?.username,
+          podName: justCreatedPod?.name,
+        });
+
+        const columns = [...boardColumns?.columns];
+        columns[0].section.tasks = columns[0].section.tasks.map((existingTaskProposal) => {
+          if (transformedTaskProposal?.id === existingTaskProposal.id) {
+            return transformedTaskProposal;
+          }
+          return existingTaskProposal;
+        });
+        boardColumns.setColumns(columns);
+      }
+    },
+    refetchQueries: ['GetOrgTaskBoardProposals'],
+  });
+
+  const submitMutationNoClose = useCallback(() => {
+    switch (entityType) {
+      case ENTITIES_TYPES.TASK:
+        const taskInput = {
+          title,
+          description: descriptionText,
+          orgId: org?.id,
+          milestoneId: milestone?.id ?? milestone,
+          podId: pod?.id ?? pod,
+          dueDate,
+          ...(rewardsAmount &&
+            rewardsCurrency && {
+              rewards: [
+                {
+                  rewardAmount: parseFloat(rewardsAmount),
+                  paymentMethodId: rewardsCurrency,
+                },
+              ],
+            }),
+          // TODO: add links?,
+          ...(isTaskProposal && {
+            proposedAssigneeId: assignee?.value,
+          }),
+          privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
+          reviewerIds: selectedReviewers.map(({ id }) => id) || [],
+          userMentions: getMentionArray(descriptionText),
+          mediaUploads,
+        };
+
+        if (!title) {
+          const newErrors = { ...errors };
+          if (!title) {
+            newErrors.title = 'Please enter a title';
+          }
+          newErrors.general = 'Please enter the necessary information above';
+          setErrors(newErrors);
+        } else {
+          updateTask({
+            variables: {
+              taskId: existingTask?.id,
+              input: taskInput,
+            },
+          });
+        }
+        break;
+      case ENTITIES_TYPES.PROPOSAL: {
+        const proposalInput = {
+          title,
+          description: descriptionText,
+          orgId: org?.id,
+          milestoneId: milestone?.id ?? milestone,
+          podId: pod?.id ?? pod,
+          dueDate,
+          ...(rewardsAmount &&
+            rewardsCurrency && {
+              rewards: [
+                {
+                  rewardAmount: parseFloat(rewardsAmount),
+                  paymentMethodId: rewardsCurrency,
+                },
+              ],
+            }),
+          // TODO: add links?,
+          ...(isTaskProposal && {
+            proposedAssigneeId: assignee?.value,
+          }),
+          userMentions: getMentionArray(descriptionText),
+          mediaUploads,
+        };
+
+        if (!title) {
+          const newErrors = { ...errors };
+          if (!title) {
+            newErrors.title = 'Please enter a title';
+          }
+          newErrors.general = 'Please enter the necessary information above';
+          setErrors(newErrors);
+        } else {
+          updateTaskProposalNoClose({
+            variables: {
+              proposalId: existingTask?.id,
+              input: proposalInput,
+            },
+          });
+        }
+        break;
+      }
+      case ENTITIES_TYPES.MILESTONE: {
+        updateMilestone({
+          variables: {
+            milestoneId: existingTask?.id,
+            input: {
+              title,
+              description: descriptionText,
+              privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
+              dueDate,
+              orgId: org?.id,
+              podId: pod?.id,
+              userMentions: getMentionArray(descriptionText),
+              mediaUploads,
+            },
+          },
+        });
+        break;
+      }
+      case ENTITIES_TYPES.BOUNTY:
+        const bountyInput = {
+          title,
+          description: descriptionText,
+          orgId: org?.id || org,
+          milestoneId: milestone?.id,
+          parentTaskId: existingTask?.parentTaskId,
+          podId: pod?.id || pod,
+          // maxSubmissionCount: parseFloat(maxSubmissionCount),
+          dueDate,
+          ...(rewardsAmount &&
+            rewardsCurrency && {
+              rewards: [
+                {
+                  rewardAmount: parseFloat(rewardsAmount),
+                  paymentMethodId: rewardsCurrency,
+                },
+              ],
+            }),
+          ...(publicTask && {
+            privacyLevel: PRIVACY_LEVEL.public,
+          }),
+          reviewerIds: selectedReviewers.map(({ id }) => id),
+          userMentions: getMentionArray(descriptionText),
+          mediaUploads,
+        };
+        // const isErrorMaxSubmissionCount =
+        //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
+        if (!title || !descriptionText || !org) {
+          const newErrors = { ...errors };
+          if (!title) {
+            newErrors.title = 'Please enter a title';
+          }
+          if (!descriptionText) {
+            newErrors.description = 'Please enter a description';
+          }
+          if (!org) {
+            newErrors.org = 'Please select an organization';
+          }
+          // if (isErrorMaxSubmissionCount) {
+          //   newErrors.maxSubmissionCount = 'The number should be from 1 to 10,000';
+          // }
+          newErrors.general = 'Please enter the necessary information above';
+          setErrors(newErrors);
+        } else {
+          updateBounty({
+            variables: {
+              bountyId: existingTask?.id,
+              input: bountyInput,
+            },
+          })
+            .then((result) => {
+              const task = result?.data?.updateBounty;
+              const justCreatedPod = getPodObject();
+              if (
+                board?.setColumns &&
+                ((task?.orgId === board?.orgId && !board?.podId) ||
+                  task?.podId === board?.podId ||
+                  pod === board?.podId)
+              ) {
+                const transformedTask = transformTaskToTaskCard(task, {
+                  orgName: board?.org?.name,
+                  orgProfilePicture: board?.org?.profilePicture,
+                  podName: justCreatedPod?.name,
+                });
+
+                const columns = [...board?.columns];
+                columns[0].tasks = [transformedTask, ...columns[0].tasks];
+                board.setColumns(columns);
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
+        break;
+    }
+  }, [
+    entityType,
+    title,
+    descriptionText,
+    org,
+    milestone,
+    pod,
+    dueDate,
+    rewardsAmount,
+    rewardsCurrency,
+    isTaskProposal,
+    assignee?.value,
+    publicTask,
+    selectedReviewers,
+    mediaUploads,
+    existingTask?.parentTaskId,
+    existingTask?.id,
+    // maxSubmissionCount,
+    errors,
+    updateTask,
+    updateTaskProposalNoClose,
+    updateMilestone,
+    updateBounty,
+    getPodObject,
+    board
+  ]);
+
+  // check for snapshot
+  useEffect(() => {
+    if (org) {
+      console.log('Validating snapshot...')
+      validateSnapshot({
+        variables: { orgId: org }
+      })
+    }
+  }, [org, snapshot])
+
+  // attempt to export proposal to snapshot
+  const exportProposalToSnapshot = async () => {
+    console.log(existingTask)
+    submitMutation()
+    //exportTaskProposal()
+  }
+
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
-  const updating = updateBountyLoading || updateTaskLoading || updateMilestoneLoading || updateTaskProposalLoading;
+  const updating = updateBountyLoading || updateTaskLoading || updateMilestoneLoading || updateTaskProposalLoading || updateTaskProposalNoCloseLoading;
 
   return (
     <CreateFormBaseModal>
@@ -813,7 +1082,15 @@ const EditLayoutBaseModal = (props) => {
       >
         <TitleIcon circle />
         <CreateFormBaseModalTitle>Edit {titleText.toLowerCase()}</CreateFormBaseModalTitle>
-      </CreateFormBaseModalHeader>
+        { snapshotConnected && (
+            <SnapshotButtonBlock>
+              <SnapshotButton onClick={exportProposalToSnapshot} disabled={snapshotLoading}>
+                {/*snapshotLoading ? <CircularProgress size={20} /> : null*/}
+                Export to Snapshot
+              </SnapshotButton>
+            </SnapshotButtonBlock>
+        )}
+        </CreateFormBaseModalHeader>
 
       <CreateFormMainSection>
         <CreateFormMainSelects>

@@ -575,7 +575,7 @@ export const CreateFormPreviewButton = styled(Button)`
     .MuiCircularProgress-root {
       margin-right: 10px;
     }
-    
+
     &:disabled {
       color: #ffffff;
       cursor: not-allowed;
@@ -720,4 +720,38 @@ export const CreateFormSubmitButton = styled(Button)`
 
 export const RewardCurrencyTokenIcon = styled(WonderTokenIcon)`
   margin-right: 12px;
+`;
+
+// Snapshot buttons
+export const SnapshotButtonBlock = styled.div`
+  height: 40px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-left: auto;
+`;
+
+export const SnapshotButton = styled(Button)`
+  && {
+    padding: 8px 12px;
+    height: 40px;
+    background: #0f0f0f;
+    border: 1px solid gold;
+    margin-left: 25px;
+
+    //text
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 150%;
+    color: #ffffff;
+
+    .MuiCircularProgress-root {
+      margin-right: 10px;
+    }
+
+    &:disabled {
+      color: #ffffff;
+      cursor: not-allowed;
+    }
+  }
 `;

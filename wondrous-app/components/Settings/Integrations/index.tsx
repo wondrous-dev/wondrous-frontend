@@ -67,10 +67,6 @@ const Integrations = (props) => {
   const router = useRouter();
   const wonderWeb3 = useWonderWeb3();
   const { orgId, podId } = router.query;
-  const [wallets, setWallets] = useState([]);
-  const [selectedChain, setSelectedChain] = useState('eth_mainnet');
-  const [walletName, setWalletName] = useState('');
-  const [safeAddress, setSafeAddress] = useState('');
   const [userAddress, setUserAddress] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -85,24 +81,24 @@ const Integrations = (props) => {
     snapshotConnected,
     snapshotSpace,
     setSnapshotSpace,
-    snapshotError,
-    checkSnapshotSpace,
-    getSnapshot,
-    connectSnapshot,
-    disconnectSnapshot
+    snapshotErrorHTML,
+    validateSnapshotSpace,
+    validateSnapshot,
+    connectSnapshotSpace,
+    disconnectSnapshotSpace
   } = useSnapshot();
 
 
   const emptyError = {
     safeAddressError: null,
   };
+
   const [errors, setErrors] = useState(emptyError);
 
   useEffect(() => {
     if (wonderWeb3?.onConnect) {
       wonderWeb3.onConnect();
     }
-    setUserAddress(wonderWeb3.address);
   }, []);
 
   const [getOrgId] = useLazyQuery(GET_POD_ORG_ID, {
@@ -120,15 +116,19 @@ const Integrations = (props) => {
     const ens = new ENS({ provider, ensAddress: getEnsAddress(`${await provider._network.chainId}`) });
     const name = await ens.name(snapshotName);
 
-    const { data } = await checkSnapshotSpace({ variables: { id: snapshotName }});
-    console.log('result', data);
-    //const snapshotSpace = data;
-    setSnapshotSpace({ ...data, id: snapshotName})
+    const { data } = await validateSnapshotSpace({ variables: { id: snapshotName }});
+    // console.log('result', data);
+    setSnapshotSpace({ ...data.space, id: snapshotName})
   }
 
-  const handleConnectSnapshot = async () => {
+  const handleConnectSnapshotSpace = async () => {
     //console.log('connect snapshot')
-    await connectSnapshot({ variables: {
+    //console.log(orgId)
+    //console.log(snapshotSpace)
+    //console.log(snapshotSpace.id)
+    //console.log(getSnapshotUrl(snapshotName))
+    //console.log(snapshotSpace.name)
+    await connectSnapshotSpace({ variables: {
       orgId,
       key: snapshotSpace.id,
       url: getSnapshotUrl(snapshotName),
@@ -136,20 +136,24 @@ const Integrations = (props) => {
     }})
   }
 
-  const handleDisconnectSnapshot = async () => {
+  const handleDisconnectSnapshotSpace = async () => {
     //console.log('disconnect snapshot')
-    await disconnectSnapshot({ variables: {
+    await disconnectSnapshotSpace({ variables: {
       orgId,
       key: '',
       url: '',
       displayName: ''
     }})
+    //console.log(orgId)
+    //console.log(snapshotSpace.id)
+    //console.log(getSnapshotUrl(snapshotName))
+    //console.log(snapshotSpace.name)
   }
 
   useEffect(async () => {
     if (orgId) {
       //console.log('getting snapshot')
-      getSnapshot({
+      validateSnapshot({
         variables: {
           orgId,
         },
@@ -163,7 +167,7 @@ const Integrations = (props) => {
       const orgId = await data.getPodById.orgId
       console.log(orgId)
 
-      getSnapshot({
+      validateSnapshot({
         variables: {
           orgId
         },
@@ -171,7 +175,7 @@ const Integrations = (props) => {
 
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, podId]);
+  }, [orgId, podId, snapshot]);
 
   useEffect(() => {
     if (snapshotValid) {
@@ -204,7 +208,7 @@ const Integrations = (props) => {
                           onChange={e => setSnapshotName(e.target.value)}
                           disabled={podId ? true : false}
                         />
-                        {snapshotError && <ErrorText>{snapshotError}</ErrorText>}
+                        {snapshotErrorHTML && <ErrorText>{snapshotErrorHTML}</ErrorText>}
                         {snapshotValid && (
                           <IntegrationsSnapshotValidText>
                             User is admin of '{snapshotSpace.id}'. Ready to connect.
@@ -219,7 +223,7 @@ const Integrations = (props) => {
                               Check Snapshot
                             </IntegrationsSnapshotButton>
                           : <IntegrationsSnapshotButton
-                              onClick={handleConnectSnapshot}
+                              onClick={handleConnectSnapshotSpace}
                               disabled={podId ? true : false}
                             >
                               Connect Snapshot
@@ -239,7 +243,7 @@ const Integrations = (props) => {
                         />
                       </IntegrationsSnapshotInputSubBlock>
                       <IntegrationsSnapshotButton
-                        onClick={handleDisconnectSnapshot}
+                        onClick={handleDisconnectSnapshotSpace}
                         disabled={podId ? true : false}
                       >
                         Disconnect Snapshot
