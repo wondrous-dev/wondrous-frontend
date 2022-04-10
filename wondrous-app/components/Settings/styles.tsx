@@ -390,6 +390,8 @@ export const GeneralSettingsResetButton = styled(MuiButton)`
     font-size: 16px;
     line-height: 150%;
     color: #ffffff;
+    text-transform: none;
+    font-family: Space Grotesk;
   }
 `;
 

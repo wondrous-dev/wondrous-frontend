@@ -19,6 +19,7 @@ import {
   SaveNewRewardAmountButton,
   CancelNewRewardAmountButton,
 } from './styles';
+import { GRAPHQL_ERRORS } from 'utils/constants';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
 import { GET_SUBMISSION_PAYMENT_INFO } from 'graphql/queries/payment';
@@ -58,6 +59,7 @@ export const MakePaymentModal = (props) => {
   const [changeRewardAmount, setChangeRewardAmount] = useState(false);
   const [changedRewardAmount, setChangedRewardAmount] = useState(null);
   const [useChangedRewardAmount, setUseChangedRewardAmount] = useState(false);
+  const [submissionPaymentError, setSubmissionPaymentError] = useState(null);
   const [tokenName, setTokenName] = useState('');
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
@@ -95,6 +97,13 @@ export const MakePaymentModal = (props) => {
   const [getSubmissionPaymentInfo] = useLazyQuery(GET_SUBMISSION_PAYMENT_INFO, {
     onCompleted: (data) => {
       setSubmissionPaymentInfo(data?.getSubmissionPaymentInfo);
+    },
+    onError: (err) => {
+      if (err?.graphQLErrors[0].extensions?.message === GRAPHQL_ERRORS.NO_RECIPIENT_WEB_3_ADDRESS) {
+        setSubmissionPaymentError(
+          'Recipient has no active wallet. Please inform them to connect their wallet to their account'
+        );
+      }
     },
     fetchPolicy: 'network-only',
   });
@@ -160,6 +169,7 @@ export const MakePaymentModal = (props) => {
     userId: isBounty ? approvedSubmission?.createdBy : fetchedTask?.assigneeId,
     username: isBounty ? approvedSubmission?.creator.username : fetchedTask.assigneeUsername,
   };
+
   return (
     <>
       <Modal open={open} onClose={handleCloseAll}>
@@ -309,6 +319,7 @@ export const MakePaymentModal = (props) => {
                 orgId={approvedSubmission?.orgId}
                 podId={approvedSubmission?.podId}
                 changedRewardAmount={useChangedRewardAmount ? rewardAmount : null}
+                parentError={submissionPaymentError}
               />
             )}
           </PaymentMethodWrapper>
