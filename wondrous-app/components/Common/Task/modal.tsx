@@ -773,6 +773,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
 
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
+    nextFetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
       const taskData = data?.getTaskById;
       if (taskData) {
