@@ -40,6 +40,9 @@ export const HeaderLeftBlock = styled.div`
 export const HeaderLogo = styled(Logo)`
   width: 41px;
   height: 31px;
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 export const HeaderHomeButton = styled(IconButton)`
