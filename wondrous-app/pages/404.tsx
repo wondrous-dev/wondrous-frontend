@@ -4,7 +4,7 @@ import Wrapper from 'components/Wrapper';
 import Image from 'next/image';
 import Link from 'next/link';
 import styled from 'styled-components';
-import { Background } from 'theme/colors';
+import { Background, White } from 'theme/colors';
 
 const Custom404Background = styled.div`
   background-image: url(/images/404/404-background.webp);
@@ -48,16 +48,16 @@ const Custom404Heading = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 32px;
     font-weight: 500;
-    color: #ffffff;
+    color: ${White};
   }
 `;
 
 const Custom404SubHeading = styled(Typography)`
   && {
-    font-family: Space Grotesk;
+    font-family: 'Space Grotesk';
     font-size: 16px;
     font-weight: 400;
-    color: #ffffff;
+    color: ${White};
     margin-top: 16px;
   }
 `;
