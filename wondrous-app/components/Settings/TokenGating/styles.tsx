@@ -62,16 +62,20 @@ export const TokenGatingDescription = styled(Typography)`
 `;
 
 export const TokenGatingFormWrapper = styled(Box)`
-  background: #1b1b1b;
-  border-radius: 6px;
-  margin-top: 48px;
+  && {
+    background: #1b1b1b;
+    border-radius: 6px;
+    margin-top: 48px;
+  }
 `;
 
 export const TokenGatingElementWrapper = styled(Box)`
-  background: #1b1b1b;
-  border-radius: 6px;
-  padding: 24px;
-  margin-top: 24px;
+  && {
+    background: #1b1b1b;
+    border-radius: 6px;
+    padding: 24px;
+    margin-top: 24px;
+  }
 `;
 
 export const TokenGatingFormHeader = styled(Typography)`
@@ -90,16 +94,20 @@ export const TokenGatingFormHeaderSecondary = styled(Typography)`
 `;
 
 export const TokenGatingAutocompleteLabel = styled(InputLabel)`
-  font-family: 'Space Grotesk';
-  font-size: 14px;
-  font-weight: 500;
-  color: ${Blue20};
-  margin-left: 8px;
-  margin-top: 28px;
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 14px;
+    font-weight: 500;
+    color: ${Blue20};
+    margin-left: 8px;
+    margin-top: 28px;
+  }
 `;
 
 export const TokenGatingAutocomplete = styled(Autocomplete)`
-  margin-top: 12px;
+  && {
+    margin-top: 12px;
+  }
 `;
 
 export const TokenGatingAutocompleteTextfieldWrapper = styled(Box)`
@@ -121,10 +129,12 @@ export const TokenGatingTextfieldTextHelperWrapper = styled.div`
 `;
 
 export const TokenGatingTextfieldTextHelper = styled(FormHelperText)`
-  font-family: 'Space Grotesk';
-  font-size: 12px;
-  font-weight: 400;
-  color: #f93701;
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 12px;
+    font-weight: 400;
+    color: #f93701;
+  }
 `;
 
 export const TokenGatingTextfieldInput = styled(InputBase)`
@@ -257,38 +267,44 @@ export const TokenGatingTokenAmountWrapper = styled.div`
 `;
 
 export const TokenGatingButton = styled(Button)`
-  width: 100%;
-  margin-top: 28px;
-  background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
-  button {
-    background: ${Background};
-    font-family: 'Space Grotesk';
-    font-size: 16px;
-    font-weight: 500;
+  && {
+    width: 100%;
+    margin-top: 28px;
+    background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+    button {
+      background: ${Background};
+      font-family: 'Space Grotesk';
+      font-size: 16px;
+      font-weight: 500;
+    }
   }
 `;
 
 export const TokenGatingDisabledButton = styled(Button)`
-  width: 100%;
-  margin-top: 28px;
-  background: ${Grey100};
-  button {
-    background: ${Background};
-    font-family: 'Space Grotesk';
-    font-size: 16px;
-    font-weight: 500;
+  && {
+    width: 100%;
+    margin-top: 28px;
+    background: ${Grey100};
+    button {
+      background: ${Background};
+      font-family: 'Space Grotesk';
+      font-size: 16px;
+      font-weight: 500;
+    }
   }
 `;
 
 export const NewTokenGatingButton = styled(Button)`
-  width: 200px;
-  margin-top: 20px;
-  background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
-  button {
-    background: ${Background};
-    font-family: 'Space Grotesk';
-    font-size: 16px;
-    font-weight: 500;
+  && {
+    width: 200px;
+    margin-top: 20px;
+    background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+    button {
+      background: ${Background};
+      font-family: 'Space Grotesk';
+      font-size: 16px;
+      font-weight: 500;
+    }
   }
 `;
 
@@ -301,28 +317,30 @@ export const TableValueText = styled(Typography)`
 `;
 
 export const TokenGatingConfigModal = styled(BaseCard)`
-  width: 680px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  height: 90%;
-  transform: translate(-50%, -50%);
-  overflow-y: scroll;
-  z-index: 2100;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: rgb(20, 20, 20) !important;
-  padding-bottom: 32px;
-  &::-webkit-scrollbar {
-    display: none;
-    width: 0;
-    height: 0;
+  && {
+    width: 680px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 90%;
+    transform: translate(-50%, -50%);
+    overflow-y: scroll;
+    z-index: 2100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgb(20, 20, 20) !important;
+    padding-bottom: 32px;
+    &::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
-  /* Hide scrollbar for IE, Edge and Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
 `;
 
 export const TokenGateActionMenu = styled.div`
