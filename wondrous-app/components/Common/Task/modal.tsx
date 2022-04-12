@@ -857,28 +857,31 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   );
 
   useEffect(() => {
-    if (!initialStatus) {
-      setInitialStatus(fetchedTask?.status);
-    }
-
-    if (
-      updateTaskStatusMutationData?.updateTaskStatus.status === TASK_STATUS_ARCHIVED ||
-      updateBountyStatusData?.updateBountyStatus.status === TASK_STATUS_ARCHIVED
-    ) {
-      setSnackbarAlertOpen(true);
-      setSnackbarAlertMessage(
-        <>
-          Task archived successfully!{' '}
-          <ArchivedTaskUndo
-            onClick={() => {
-              handleNewStatus(initialStatus);
-              setSnackbarAlertOpen(false);
-            }}
-          >
-            Undo
-          </ArchivedTaskUndo>
-        </>
-      );
+    if (open) {
+      if (initialStatus !== TASK_STATUS_ARCHIVED) {
+        setInitialStatus(fetchedTask?.status);
+      }
+      const archived = [
+        updateTaskStatusMutationData?.updateTaskStatus.status,
+        updateBountyStatusData?.updateBountyStatus.status,
+      ].some((i) => i?.includes(TASK_STATUS_ARCHIVED));
+      if (archived) {
+        handleClose();
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage(
+          <>
+            Task archived successfully!{' '}
+            <ArchivedTaskUndo
+              onClick={() => {
+                handleNewStatus(initialStatus);
+                setSnackbarAlertOpen(false);
+              }}
+            >
+              Undo
+            </ArchivedTaskUndo>
+          </>
+        );
+      }
     }
   }, [
     initialStatus,
@@ -889,7 +892,10 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     setSnackbarAlertMessage,
     handleNewStatus,
     updateBountyStatusData,
+    handleClose,
+    open,
   ]);
+
   useEffect(() => {
     if (isMilestone) {
       setActiveTab(tabs.tasks);
