@@ -225,7 +225,6 @@ export const Table = (props) => {
     }
   }, [location.params.task, location.params.taskProposal, location.params.view]);
 
-  console.log('selectedTask', selectedTask);
   return (
     <>
       <TaskViewModal
