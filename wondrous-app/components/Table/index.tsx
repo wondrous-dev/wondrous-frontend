@@ -200,6 +200,15 @@ export const Table = (props) => {
     }
   }
 
+  const taskType = (selectedTask) => {
+    const typeName = selectedTask?.__typename;
+    const taskType = {
+      TaskProposalCard: 'task proposal',
+      TaskSubmissionCard: 'task',
+    };
+    return taskType[typeName] ?? selectedTask?.type;
+  };
+
   const handleKudosFormOnClose = () => {
     setKudosModalOpen(false);
     setKudosTask(null);
@@ -230,7 +239,7 @@ export const Table = (props) => {
         <ArchiveTaskModal
           taskId={selectedTask?.id}
           open={isArchiveModalOpen}
-          taskType={selectedTask.type}
+          taskType={taskType(selectedTask)}
           onClose={() => setArchiveModalOpen(false)}
           onArchive={() => archiveTask(selectedTask)}
         />

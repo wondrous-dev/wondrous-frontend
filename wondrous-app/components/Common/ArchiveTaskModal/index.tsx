@@ -19,7 +19,15 @@ import {
   StyledHeader,
 } from './styles';
 
-export const ArchiveTaskModal = (props) => {
+interface IArchiveTaskModalProps {
+  open: boolean;
+  onClose: () => void;
+  onArchive: (string) => void;
+  taskType: string;
+  taskId: string;
+}
+
+export const ArchiveTaskModal = (props: IArchiveTaskModalProps) => {
   const { open, onClose, onArchive, taskType, taskId = '' } = props;
   const board = useOrgBoard();
   const [archiveTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL, {
@@ -38,7 +46,19 @@ export const ArchiveTaskModal = (props) => {
       board?.setFirstTimeFetch(false);
       archiveTaskProposal({
         variables: { proposalId: taskId },
-        refetchQueries: () => ['getProposalsUserCanReview', 'getWorkFlowBoardReviewableItemsCount'],
+        refetchQueries: () => [
+          'getProposalsUserCanReview',
+          'getWorkFlowBoardReviewableItemsCount',
+          'getUserTaskBoardProposals',
+          'getOrgTaskBoardProposals',
+          'getPodTaskBoardProposals',
+          'getUserTaskBoardSubmissions',
+          'getOrgTaskBoardSubmissions',
+          'getPodTaskBoardSubmissions',
+          'getPerStatusTaskCountForUserBoard',
+          'getPerStatusTaskCountForOrgBoard',
+          'getPerStatusTaskCountForPodBoard',
+        ],
       })
         .then(() => {
           const updatedColumn = removeProposalItem(taskId, board.columns);
