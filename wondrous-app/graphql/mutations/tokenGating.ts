@@ -10,7 +10,7 @@ export const CREATE_LIT_SIGNATURE = gql`
 `;
 
 export const CREATE_TOKEN_GATING_CONDITION_FOR_ORG = gql`
-  mutation createTokenGatingConditionForOrg($input: TokenGatinConditionInput!) {
+  mutation createTokenGatingConditionForOrg($input: TokenGatingConditionInput!) {
     createTokenGatingConditionForOrg(input: $input) {
       ...TokenGatingConditionFragment
     }
@@ -27,7 +27,7 @@ export const DELETE_TOKEN_GATING_CONDITION = gql`
 `;
 
 export const UPDATE_TOKEN_GATING_CONDITION = gql`
-  mutation updateTokenGatingCondition($tokenGatingConditionId: ID!, $input: TokenGatinConditionInput!) {
+  mutation updateTokenGatingCondition($tokenGatingConditionId: ID!, $input: TokenGatingConditionInput!) {
     updateTokenGatingCondition(tokenGatingConditionId: $tokenGatingConditionId, input: $input) {
       ...TokenGatingConditionFragment
     }

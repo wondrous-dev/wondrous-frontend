@@ -15,13 +15,14 @@ import { SafeImage } from 'components/Common/Image';
 import ArrowDropDownIcon from 'components/Icons/arrowDropDown';
 import styled from 'styled-components';
 import { Background, Black92, Blue20, Grey100, Grey250, Grey57, Grey85, Grey90, White } from 'theme/colors';
+import { BaseCard } from 'components/Common/card';
 
 export const TokenGatingWrapper = styled.div`
   width: 100%;
   height: 100%;
 `;
 
-export const TokenGatingHeaderText = styled(Typography)`
+export const TokenGatingHeader = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
     font-size: 28px;
@@ -30,13 +31,23 @@ export const TokenGatingHeaderText = styled(Typography)`
   }
 `;
 
-export const TokenGatingHeaderTextSecondary = styled(Typography)`
+export const TokenGatingSubHeader = styled(InputLabel)`
+  font-family: 'Space Grotesk';
+  font-size: 20px;
+  font-weight: 500;
+  color: ${Blue20};
+  margin-left: 8px;
+  margin-top: 28px;
+`;
+
+
+export const TokenGatingNameHeader = styled(Typography)`
   && {
     color: ${Grey250};
   }
 `;
 
-export const TokenGatingSubheading = styled(Typography)`
+export const TokenGatingDescription = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
     font-size: 14px;
@@ -52,6 +63,14 @@ export const TokenGatingFormWrapper = styled(Box)`
   border-radius: 6px;
   padding: 24px;
   margin-top: 48px;
+`;
+
+export const TokenGatingElementWrapper = styled(Box)`
+  background: #1b1b1b;
+  width: 558px;
+  border-radius: 6px;
+  padding: 24px;
+  margin-top: 24px;
 `;
 
 export const TokenGatingFormHeader = styled(Typography)`
@@ -237,7 +256,7 @@ export const TokenGatingTokenAmountWrapper = styled.div`
 `;
 
 export const TokenGatingButton = styled(Button)`
-  width: 109px;
+  width: 100%;
   margin-top: 28px;
   background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
   button {
@@ -246,4 +265,69 @@ export const TokenGatingButton = styled(Button)`
     font-size: 16px;
     font-weight: 500;
   }
+`;
+
+export const TokenGatingDisabledButton = styled(Button)`
+  width: 100%;
+  margin-top: 28px;
+  background: ${Grey100};
+  button {
+    background: ${Background};
+    font-family: 'Space Grotesk';
+    font-size: 16px;
+    font-weight: 500;
+  }
+`;
+
+export const NewTokenGatingButton = styled(Button)`
+  width: 200px;
+  margin-top: 20px;
+  background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+  button {
+    background: ${Background};
+    font-family: 'Space Grotesk';
+    font-size: 16px;
+    font-weight: 500;
+  }
+`;
+
+export const TableValueText = styled(Typography)`
+  && {
+    color: #c4c4c4;
+    font-size: 14px;
+    font-height: 22px;
+  }
+`;
+
+export const TokenGatingConfigModal = styled(BaseCard)`
+  width: 680px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 70%;
+  transform: translate(-50%, -50%);
+  overflow-y: scroll;
+  z-index: 2100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgb(20, 20, 20) !important;
+  padding-bottom: 32px;
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+`;
+
+export const TokenGateActionMenu = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  justify-content: flex-end;
+  height: 24px;
 `;

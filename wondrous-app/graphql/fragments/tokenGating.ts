@@ -1,14 +1,14 @@
 import { gql } from '@apollo/client';
 
 export const TokenGatingConditionFragment = gql`
-  fragment TokenGatingConditionFragment on TokenGatinCondition {
+  fragment TokenGatingConditionFragment on TokenGatingCondition {
     id
     orgId
     podId
     name
     booleanLogic
     accessCondition {
-      contracAddress
+      contractAddress
       type
       chain
       method
