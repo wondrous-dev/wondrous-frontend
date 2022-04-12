@@ -32,12 +32,14 @@ export const TokenGatingHeader = styled(Typography)`
 `;
 
 export const TokenGatingSubHeader = styled(InputLabel)`
-  font-family: 'Space Grotesk';
-  font-size: 20px;
-  font-weight: 500;
-  color: ${Blue20};
-  margin-left: 8px;
-  margin-top: 28px;
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 20px;
+    font-weight: 500;
+    color: ${Blue20};
+    margin-left: 8px;
+    margin-top: 28px;
+  }
 `;
 
 export const TokenGatingNameHeader = styled(Typography)`
