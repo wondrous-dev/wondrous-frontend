@@ -217,6 +217,11 @@ const TokenGatingConfigForm = (props) => {
         icon: token.logoURI,
       };
     });
+    formatted.push({
+      label: 'crypto coven',
+      value: '0x5180db8f5c931aae63c74266b211f580155ecac8',
+      icon: 'https://assets.coingecko.com/nft_contracts/images/256/small/cryptocoven.png?1643339060',
+    })
     setNftList(formatted);
     return formatted;
   }
