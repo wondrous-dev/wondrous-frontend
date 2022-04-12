@@ -91,6 +91,7 @@ import { FileLoading } from '../FileUpload/FileUpload';
 import { MakePaymentBlock } from './payment';
 import { KudosForm } from '../KudosForm';
 import { PaymentButton } from './paymentButton';
+import FileIcon from 'components/Icons/files.svg';
 
 const SubmissionStatusIcon = (props) => {
   const { submission } = props;
@@ -323,7 +324,7 @@ const SubmissionItem = (props) => {
               marginRight: '4px',
             }}
           >
-            <ImageIcon />
+            <FileIcon />
             <TaskSectionDisplayText>Files</TaskSectionDisplayText>
           </TaskSectionDisplayLabel>
           <TaskSectionInfoDiv>
@@ -513,7 +514,7 @@ const TaskSubmissionForm = (props) => {
             marginRight: '4px',
           }}
         >
-          <ImageIcon />
+          <FileIcon />
           <TaskSectionDisplayText>Files</TaskSectionDisplayText>
         </TaskSectionDisplayLabel>
         <TaskSectionInfoDiv>
