@@ -40,10 +40,12 @@ export const TokenGatingSubHeader = styled(InputLabel)`
   margin-top: 28px;
 `;
 
-
 export const TokenGatingNameHeader = styled(Typography)`
   && {
-    color: ${Grey250};
+    color: ${White};
+    font-family: 'Space Grotesk';
+    font-weight: 500;
+    font-size: 15px;
   }
 `;
 
@@ -59,15 +61,12 @@ export const TokenGatingDescription = styled(Typography)`
 
 export const TokenGatingFormWrapper = styled(Box)`
   background: #1b1b1b;
-  width: 558px;
   border-radius: 6px;
-  padding: 24px;
   margin-top: 48px;
 `;
 
 export const TokenGatingElementWrapper = styled(Box)`
   background: #1b1b1b;
-  width: 558px;
   border-radius: 6px;
   padding: 24px;
   margin-top: 24px;
@@ -304,7 +303,7 @@ export const TokenGatingConfigModal = styled(BaseCard)`
   position: absolute;
   left: 50%;
   top: 50%;
-  height: 70%;
+  height: 90%;
   transform: translate(-50%, -50%);
   overflow-y: scroll;
   z-index: 2100;
@@ -330,4 +329,23 @@ export const TokenGateActionMenu = styled.div`
   flex-grow: 1;
   justify-content: flex-end;
   height: 24px;
+`;
+
+export const TokenGateListDiv = styled.div`
+  align-items: center;
+  display: flex;
+  margin-top: 16px;
+`;
+
+export const TokenGateListItemDiv = styled.div`
+  align-items: center;
+  display: flex;
+  margin-right: 16px;
+`;
+
+export const TokenGatingHeaderLabel = styled(TokenGatingNameHeader)`
+  && {
+    color: ${Grey250};
+    margin-right: 8px;
+  }
 `;

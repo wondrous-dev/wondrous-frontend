@@ -15,7 +15,15 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import { DropDown, DropDownItem } from '../../Common/dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
 
-import { TokenGatingNameHeader, TokenGatingElementWrapper, TokenGateActionMenu } from './styles';
+import {
+  TokenGatingNameHeader,
+  TokenGatingElementWrapper,
+  TokenGateActionMenu,
+  TokenGateListDiv,
+  TokenGateListItemDiv,
+  TokenGatingHeaderLabel,
+} from './styles';
+import { White } from 'theme/colors';
 
 interface TokenGatingCondition {
   id: string;
@@ -58,6 +66,7 @@ const TokenGatingConditionDisplay = (props) => {
   const { tokenGatingCondition } = props;
   const dropdownItemStyle = {
     marginRight: '12px',
+    color: White,
   };
 
   return (
@@ -83,9 +92,30 @@ const TokenGatingConditionDisplay = (props) => {
           </DropDown>
         </TokenGateActionMenu>
       </div>
-      <TokenGatingNameHeader>{tokenGatingCondition?.accessCondition[0].chain}</TokenGatingNameHeader>
-      <TokenGatingNameHeader>{tokenGatingCondition?.accessCondition[0].minValue}</TokenGatingNameHeader>
-      <TokenGatingNameHeader>{tokenGatingCondition?.accessCondition[0].contractAddress}</TokenGatingNameHeader>
+      <TokenGateListDiv>
+        <TokenGateListItemDiv>
+          <TokenGatingHeaderLabel>Chain:</TokenGatingHeaderLabel>
+          <TokenGatingNameHeader>
+            <span
+              style={{
+                textTransform: 'capitalize',
+              }}
+            >
+              {tokenGatingCondition?.accessCondition[0].chain}
+            </span>
+          </TokenGatingNameHeader>
+        </TokenGateListItemDiv>
+        <TokenGateListItemDiv>
+          <TokenGatingHeaderLabel>Token:</TokenGatingHeaderLabel>
+          <TokenGatingNameHeader>
+            <span>{tokenGatingCondition?.accessCondition[0].contractAddress}</span>
+          </TokenGatingNameHeader>
+        </TokenGateListItemDiv>
+        <TokenGateListItemDiv>
+          <TokenGatingHeaderLabel>Min. amount to hold:</TokenGatingHeaderLabel>
+          <TokenGatingNameHeader>{tokenGatingCondition?.accessCondition[0].minValue}</TokenGatingNameHeader>
+        </TokenGateListItemDiv>
+      </TokenGateListDiv>
     </TokenGatingElementWrapper>
   );
 };
