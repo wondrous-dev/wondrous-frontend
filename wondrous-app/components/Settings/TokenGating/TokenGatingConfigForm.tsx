@@ -34,6 +34,7 @@ import {
   TokenGatingTokenAmountWrapper,
 } from './styles';
 import { CREATE_TOKEN_GATING_CONDITION_FOR_ORG } from '../../../graphql/mutations/tokenGating';
+import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries/tokenGating';
 
 const chainOptions = [
   {
@@ -109,7 +110,7 @@ const TokenListboxVirtualized = React.forwardRef<HTMLDivElement, React.HTMLAttri
 );
 
 const TokenGatingConfigForm = (props) => {
-  const { orgId, open, setShowConfigModal, tokenGatingCondition } = props;
+  const { orgId, org, open, setShowConfigModal, tokenGatingCondition } = props;
   const [chain, setChain] = useState(chainOptions[0].value);
   const [name, setName] = useState('');
   const [accessConditionType, setAccessConditionType] = useState('ERC20');
@@ -120,33 +121,34 @@ const TokenGatingConfigForm = (props) => {
   const [minAmountError, setMinAmountError] = useState(false);
   const [nameError, setNameError] = useState(null);
   const [ceationError, setCreationError] = useState(null);
-  useEffect(()=>{
+  const [openChainSelection, setOpenChainSelection] = useState(false);
+  useEffect(() => {
     if (tokenGatingCondition) {
-      setName(tokenGatingCondition.name)
+      setName(tokenGatingCondition.name);
     }
-  }, [tokenGatingCondition])
+  }, [tokenGatingCondition]);
   const clearErrors = () => {
-    setNameError(null)
-    setCreationError(null)
-    setMinAmountError(null)
-  }
+    setNameError(null);
+    setCreationError(null);
+    setMinAmountError(null);
+  };
   const clearSelection = () => {
-    setName('')
-    setAccessConditionType('ERC20')
-    setSelectedToken(null)
-    setMinAmount(0)
-  }
+    setName('');
+    setAccessConditionType('ERC20');
+    setSelectedToken(null);
+    setMinAmount(0);
+  };
   const handleMinAmountOnChange = (event) => {
     const { value } = event.target;
     setMinAmount(Number(value));
   };
   const [createTokenGatingConditionForOrg] = useMutation(CREATE_TOKEN_GATING_CONDITION_FOR_ORG, {
     onCompleted: (data) => {
-      clearErrors()
-      clearSelection()
+      clearErrors();
+      clearSelection();
       setShowConfigModal(false);
-
     },
+    refetchQueries: [GET_TOKEN_GATING_CONDITIONS_FOR_ORG],
     onError: (e) => {
       console.error(e);
       setCreationError('Error creating token gating condition');
@@ -169,7 +171,7 @@ const TokenGatingConfigForm = (props) => {
       setNameError(true);
       return;
     }
-    clearErrors()
+    clearErrors();
     const contractAddress = selectedToken?.value;
     createTokenGatingConditionForOrg({
       variables: {
@@ -242,13 +244,14 @@ const TokenGatingConfigForm = (props) => {
       <TokenGatingConfigModal>
         <TokenGatingFormWrapper>
           <TokenGatingFormHeader>
-            Token gating for <TokenGatingFormHeaderSecondary as="span">Wonder</TokenGatingFormHeaderSecondary>
+            Token gating for{' '}
+            <TokenGatingFormHeaderSecondary as="span">{org?.username || ''}</TokenGatingFormHeaderSecondary>
           </TokenGatingFormHeader>
           <TokenGatingAutocompleteLabel>Chain</TokenGatingAutocompleteLabel>
           <TokenGatingAutocomplete
-            disablePortal
             options={chainOptions}
             value={chain}
+            open={openChainSelection}
             onChange={(event, newValue) => setChain(newValue.value)}
             renderInput={(params) => {
               return (
@@ -256,7 +259,9 @@ const TokenGatingConfigForm = (props) => {
                   <TokenGatingTextfieldInput
                     {...params.inputProps}
                     endAdornment={
-                      <TokenGatingAutocompleteTextfieldButton>
+                      <TokenGatingAutocompleteTextfieldButton
+                        onClick={() => setOpenChainSelection(!openChainSelection)}
+                      >
                         <TokenGatingAutocompleteTextfieldDownIcon />
                       </TokenGatingAutocompleteTextfieldButton>
                     }
@@ -320,6 +325,8 @@ const TokenGatingConfigForm = (props) => {
                   type={'number'}
                   value={minAmount.toString()}
                   onChange={handleMinAmountOnChange}
+                  open={openChainSelection}
+                  onWheel={(e) => e.target.blur()}
                   endAdornment={
                     <TokenGatingTextfieldButtonWrapper>
                       <TokenGatingTextfieldButtonUp onClick={() => handleMinAmountOnClick(1)}>

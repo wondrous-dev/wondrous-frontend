@@ -2,6 +2,7 @@ import ErrorFieldIcon from 'components/Icons/errorField.svg';
 import Ethereum from 'components/Icons/ethereum';
 import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
 import React, { useEffect, useState } from 'react';
+import { useQuery } from '@apollo/client';
 import { SettingsWrapper } from '../settingsWrapper';
 import {
   TokenGatingHeader,
@@ -13,6 +14,7 @@ import {
 } from './styles';
 import TokenGatingConditionList from './TokenGatingConditionList';
 import TokenGatingConfigForm from './TokenGatingConfigForm';
+import { GET_ORG_BY_ID } from 'graphql/queries/org';
 
 const chainOptions = [
   {
@@ -41,7 +43,13 @@ const SUPPORTED_ACCESS_CONDITION_TYPES = [
 const TokenGatingSettings = (props) => {
   const { orgId } = props;
   const [showConfigModal, setShowConfigModal] = useState(null);
-  console.log('showConfigModal', showConfigModal);
+  const { data: orgData } = useQuery(GET_ORG_BY_ID, {
+    variables: {
+      orgId: orgId,
+    },
+  });
+  const org = orgData?.getOrgById;
+
   return (
     <SettingsWrapper>
       <TokenGatingWrapper>
@@ -52,10 +60,10 @@ const TokenGatingSettings = (props) => {
             Define token gates by specifying acess criteria for different levels of the org. Go to the roles settings
             page to apply them to a role.
           </TokenGatingDescription>
-          <NewTokenGatingButton onClick={() => setShowConfigModal(true)}>new token gate </NewTokenGatingButton>
+          <NewTokenGatingButton onClick={() => setShowConfigModal(true)}>New Token gate </NewTokenGatingButton>
         </TokenGatingElementWrapper>
-        <TokenGatingConfigForm orgId={orgId} open={showConfigModal} setShowConfigModal={setShowConfigModal} />
-        <TokenGatingConditionList orgId={orgId} />
+        <TokenGatingConfigForm org={org} orgId={orgId} open={showConfigModal} setShowConfigModal={setShowConfigModal} />
+        <TokenGatingConditionList org={org} orgId={orgId} />
       </TokenGatingWrapper>
     </SettingsWrapper>
   );
