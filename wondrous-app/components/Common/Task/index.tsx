@@ -275,6 +275,7 @@ export const Task = (props) => {
         onClose={() => setArchiveTask(false)}
         onArchive={handleNewStatus}
         taskType={type}
+        taskId={task?.id}
       />
       <TaskWrapper key={id} onClick={openModal}>
         <TaskInner>
