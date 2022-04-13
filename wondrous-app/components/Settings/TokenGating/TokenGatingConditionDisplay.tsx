@@ -24,6 +24,7 @@ import {
   TokenGatingHeaderLabel,
 } from './styles';
 import { White } from 'theme/colors';
+import { useEditTokenGatingCondition } from 'utils/hooks';
 
 interface TokenGatingCondition {
   id: string;
@@ -80,14 +81,16 @@ const HARD_CODED_ADDRESS_TO_NAME = {
   '0x6b175474e89094c44da98b954eedeac495271d0f': 'DAI',
   '0xde30da39c46104798bb5aa3fe8b9e0e1f348163f': 'GTC',
   '0xbd3531da5cf5857e7cfaa92426877b022e612cf8': 'Pudgy Penguin',
-  '0x5180db8f5c931aae63c74266b211f580155ecac8': 'Crypto Coven'
-}
+  '0x5180db8f5c931aae63c74266b211f580155ecac8': 'Crypto Coven',
+};
 
 const TokenGatingConditionDisplay = (props) => {
   const router = useRouter();
   const [showDetails, setShowDetails] = useState(false);
   const [tokenName, setTokenName] = useState(null);
   const wonderWeb3 = useWonderWeb3();
+  const editTokenGatingCondition = useEditTokenGatingCondition();
+
   const { tokenGatingCondition } = props;
   const dropdownItemStyle = {
     marginRight: '12px',
@@ -97,10 +100,10 @@ const TokenGatingConditionDisplay = (props) => {
 
   useEffect(() => {
     const getTokenInfo = async () => {
-      const hardCodedName = HARD_CODED_ADDRESS_TO_NAME[contractAddress]
+      const hardCodedName = HARD_CODED_ADDRESS_TO_NAME[contractAddress];
       if (hardCodedName) {
         setTokenName(hardCodedName);
-        return
+        return;
       }
       const info = await getTokenInfoByAddress(tokenGatingCondition?.accessCondition[0].chain, contractAddress);
       setTokenName(info?.name);
@@ -120,13 +123,28 @@ const TokenGatingConditionDisplay = (props) => {
         <TokenGatingNameHeader>{tokenGatingCondition.name}</TokenGatingNameHeader>
         <TokenGateActionMenu right="true">
           <DropDown DropdownHandler={TaskMenuIcon}>
-            <DropDownItem key={tokenGatingCondition?.id} onClick={() => {}} style={dropdownItemStyle}>
+            <DropDownItem
+              key={'token-gate-edit' + tokenGatingCondition?.id}
+              onClick={() => {
+                editTokenGatingCondition?.setSelectedTokenGatingCondition(tokenGatingCondition);
+                editTokenGatingCondition?.setShowConfigModal(true);
+              }}
+              style={dropdownItemStyle}
+            >
               Edit
             </DropDownItem>
-            <DropDownItem key={tokenGatingCondition?.id} onClick={() => {}} style={dropdownItemStyle}>
+            <DropDownItem
+              key={'token-gate-activate' + tokenGatingCondition?.id}
+              onClick={() => {}}
+              style={dropdownItemStyle}
+            >
               Activate
             </DropDownItem>
-            <DropDownItem key={tokenGatingCondition?.id} onClick={() => {}} style={dropdownItemStyle}>
+            <DropDownItem
+              key={'token-gate-delete' + tokenGatingCondition?.id}
+              onClick={() => {}}
+              style={dropdownItemStyle}
+            >
               Delete
             </DropDownItem>
           </DropDown>
@@ -148,7 +166,7 @@ const TokenGatingConditionDisplay = (props) => {
         <TokenGateListItemDiv>
           <TokenGatingHeaderLabel>Token:</TokenGatingHeaderLabel>
           <TokenGatingNameHeader>
-            <span>{tokenName? tokenName: tokenGatingCondition?.accessCondition[0].contractAddress}</span>
+            <span>{tokenName ? tokenName : tokenGatingCondition?.accessCondition[0].contractAddress}</span>
           </TokenGatingNameHeader>
         </TokenGateListItemDiv>
         <TokenGateListItemDiv>

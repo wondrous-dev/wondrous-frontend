@@ -15,34 +15,13 @@ import {
 import TokenGatingConditionList from './TokenGatingConditionList';
 import TokenGatingConfigForm from './TokenGatingConfigForm';
 import { GET_ORG_BY_ID } from 'graphql/queries/org';
-
-const chainOptions = [
-  {
-    label: 'Ethereum',
-    icon: <Ethereum />,
-    value: 'ethereum',
-  },
-  {
-    label: 'Polygon',
-    icon: <PolygonIcon />,
-    value: 'polygon',
-  },
-];
-
-const SUPPORTED_ACCESS_CONDITION_TYPES = [
-  {
-    label: 'ERC20',
-    value: 'ERC20',
-  },
-  {
-    label: 'ERC721',
-    value: 'ERC721',
-  },
-];
+import { EditTokenGatingConditionContext } from 'utils/contexts';
 
 const TokenGatingSettings = (props) => {
   const { orgId } = props;
   const [showConfigModal, setShowConfigModal] = useState(null);
+  const [selectedTokenGatingCondition, setSelectedTokenGatingCondition] = useState(null);
+
   const { data: orgData } = useQuery(GET_ORG_BY_ID, {
     variables: {
       orgId: orgId,
@@ -62,8 +41,22 @@ const TokenGatingSettings = (props) => {
           </TokenGatingDescription>
           <NewTokenGatingButton onClick={() => setShowConfigModal(true)}>New Token gate </NewTokenGatingButton>
         </TokenGatingElementWrapper>
-        <TokenGatingConfigForm org={org} orgId={orgId} open={showConfigModal} setShowConfigModal={setShowConfigModal} />
-        <TokenGatingConditionList org={org} orgId={orgId} />
+        <EditTokenGatingConditionContext.Provider
+          value={{
+            setSelectedTokenGatingCondition,
+            setShowConfigModal,
+          }}
+        >
+          <TokenGatingConfigForm
+            org={org}
+            orgId={orgId}
+            open={showConfigModal}
+            setShowConfigModal={setShowConfigModal}
+            selectedTokenGatingCondition={selectedTokenGatingCondition}
+            setSelectedTokenGatingCondition={setSelectedTokenGatingCondition}
+          />
+          <TokenGatingConditionList org={org} orgId={orgId} />
+        </EditTokenGatingConditionContext.Provider>
       </TokenGatingWrapper>
     </SettingsWrapper>
   );
