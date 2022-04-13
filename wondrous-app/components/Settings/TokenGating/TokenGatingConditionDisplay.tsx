@@ -134,13 +134,6 @@ const TokenGatingConditionDisplay = (props) => {
               Edit
             </DropDownItem>
             <DropDownItem
-              key={'token-gate-activate' + tokenGatingCondition?.id}
-              onClick={() => {}}
-              style={dropdownItemStyle}
-            >
-              Activate
-            </DropDownItem>
-            <DropDownItem
               key={'token-gate-delete' + tokenGatingCondition?.id}
               onClick={() => {}}
               style={dropdownItemStyle}

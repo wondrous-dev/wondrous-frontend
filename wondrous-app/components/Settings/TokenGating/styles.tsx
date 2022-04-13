@@ -259,7 +259,6 @@ export const TokenGatingInputImage = styled((props) => (
   />
 ))``;
 
-export const TokenGatingInputWrapper = styled.div``;
 
 export const TokenGatingTokenAmountWrapper = styled.div`
   display: flex;

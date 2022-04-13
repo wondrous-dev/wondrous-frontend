@@ -19,11 +19,9 @@ import {
   TokenGatingAutocompleteTextfieldWrapper,
   TokenGatingButton,
   TokenGatingFormHeader,
-  TokenGatingDisabledButton,
   TokenGatingFormHeaderSecondary,
   TokenGatingFormWrapper,
   TokenGatingInputImage,
-  TokenGatingInputWrapper,
   TokenGatingTextfieldButtonDown,
   TokenGatingTextfieldButtonUp,
   TokenGatingTextfieldButtonWrapper,
@@ -35,6 +33,7 @@ import {
 } from './styles';
 import { CREATE_TOKEN_GATING_CONDITION_FOR_ORG } from '../../../graphql/mutations/tokenGating';
 import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries/tokenGating';
+import PlusIcon from '../../Icons/plus';
 
 const chainOptions = [
   {
@@ -109,8 +108,15 @@ const TokenListboxVirtualized = React.forwardRef<HTMLDivElement, React.HTMLAttri
   }
 );
 
+function searchSelectedTokenInList(contractAddress, tokenList) {
+  for (const tokenInfo of tokenList) {
+    if (contractAddress === tokenInfo.value) {
+      return tokenInfo;
+    }
+  }
+}
 const TokenGatingConfigForm = (props) => {
-  const { orgId, org, open, setShowConfigModal, selectedTokenGatingCondition, setSelectedTokenGatingCondition} = props;
+  const { orgId, org, open, setShowConfigModal, selectedTokenGatingCondition, setSelectedTokenGatingCondition } = props;
   const [chain, setChain] = useState(chainOptions[0].value);
   const [name, setName] = useState('');
   const [accessConditionType, setAccessConditionType] = useState('ERC20');
@@ -128,7 +134,11 @@ const TokenGatingConfigForm = (props) => {
       setName(selectedTokenGatingCondition.name);
       setChain(selectedTokenGatingCondition.accessCondition[0]?.chain);
       setMinAmount(selectedTokenGatingCondition.accessCondition[0]?.minValue);
-      // setSelectedToken(selectedTokenGatingCondition.accessCondition[0]?.contractAddress);
+      const selectedContractAddress = selectedTokenGatingCondition.accessCondition[0]?.contractAddress;
+      if (selectedContractAddress) {
+        const selectedTokenInfo = searchSelectedTokenInList(selectedContractAddress.toLowerCase(), tokenList);
+        setSelectedToken(selectedTokenInfo);
+      }
     }
   }, [selectedTokenGatingCondition]);
   const clearErrors = () => {
@@ -195,7 +205,7 @@ const TokenGatingConfigForm = (props) => {
     });
   };
   const getTokenList = async () => {
-    const erc20Url = 'https://tokens.1inch.eth.link/';
+    const erc20Url = 'https://tokens.coingecko.com/uniswap/all.json';
     const erc20Promise = fetch(erc20Url).then((r2) => r2.json());
     const [erc20s] = await Promise.all([erc20Promise]);
     const sorted = [...erc20s.tokens].sort((a, b) => (a.name > b.name ? 1 : -1));
@@ -226,7 +236,7 @@ const TokenGatingConfigForm = (props) => {
       label: 'crypto coven',
       value: '0x5180db8f5c931aae63c74266b211f580155ecac8',
       icon: 'https://assets.coingecko.com/nft_contracts/images/256/small/cryptocoven.png?1643339060',
-    })
+    });
     setNftList(formatted);
     return formatted;
   }
@@ -248,8 +258,8 @@ const TokenGatingConfigForm = (props) => {
     <Modal
       open={open}
       onClose={() => {
-        clearErrors()
-        clearSelection()
+        clearErrors();
+        clearSelection();
         setShowConfigModal(false);
       }}
     >
@@ -305,7 +315,7 @@ const TokenGatingConfigForm = (props) => {
             }}
           />
           <TokenGatingTokenAmountWrapper>
-            <TokenGatingInputWrapper>
+            <div>
               <TokenGatingAutocompleteLabel>Token</TokenGatingAutocompleteLabel>
               <TokenGatingAutocomplete
                 disablePortal
@@ -329,8 +339,9 @@ const TokenGatingConfigForm = (props) => {
                 renderOption={(props, option) => [props, option]}
                 renderGroup={(params) => params}
               />
-            </TokenGatingInputWrapper>
-            <TokenGatingInputWrapper>
+            </div>
+
+            <div>
               <TokenGatingAutocompleteLabel>Min. amount to hold</TokenGatingAutocompleteLabel>
               <TokenGatingTextfieldInputWrapper>
                 <TokenGatingTextfieldInput
@@ -355,7 +366,7 @@ const TokenGatingConfigForm = (props) => {
                   <TokenGatingTextfieldTextHelper>Please enter an amount</TokenGatingTextfieldTextHelper>
                 </TokenGatingTextfieldTextHelperWrapper>
               </TokenGatingTextfieldInputWrapper>
-            </TokenGatingInputWrapper>
+            </div>
           </TokenGatingTokenAmountWrapper>
           <TokenGatingAutocompleteLabel
             style={{
