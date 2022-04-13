@@ -110,7 +110,7 @@ const TokenListboxVirtualized = React.forwardRef<HTMLDivElement, React.HTMLAttri
 );
 
 const TokenGatingConfigForm = (props) => {
-  const { orgId, org, open, setShowConfigModal, tokenGatingCondition } = props;
+  const { orgId, org, open, setShowConfigModal, selectedTokenGatingCondition, setSelectedTokenGatingCondition} = props;
   const [chain, setChain] = useState(chainOptions[0].value);
   const [name, setName] = useState('');
   const [accessConditionType, setAccessConditionType] = useState('ERC20');
@@ -123,10 +123,14 @@ const TokenGatingConfigForm = (props) => {
   const [ceationError, setCreationError] = useState(null);
   const [openChainSelection, setOpenChainSelection] = useState(false);
   useEffect(() => {
-    if (tokenGatingCondition) {
-      setName(tokenGatingCondition.name);
+    if (selectedTokenGatingCondition && selectedTokenGatingCondition?.accessCondition) {
+      setAccessConditionType(selectedTokenGatingCondition.accessCondition[0]?.type);
+      setName(selectedTokenGatingCondition.name);
+      setChain(selectedTokenGatingCondition.accessCondition[0]?.chain);
+      setMinAmount(selectedTokenGatingCondition.accessCondition[0]?.minValue);
+      // setSelectedToken(selectedTokenGatingCondition.accessCondition[0]?.contractAddress);
     }
-  }, [tokenGatingCondition]);
+  }, [selectedTokenGatingCondition]);
   const clearErrors = () => {
     setNameError(null);
     setCreationError(null);
@@ -137,6 +141,7 @@ const TokenGatingConfigForm = (props) => {
     setAccessConditionType('ERC20');
     setSelectedToken(null);
     setMinAmount(0);
+    setSelectedTokenGatingCondition(chainOptions[0].value);
   };
   const handleMinAmountOnChange = (event) => {
     const { value } = event.target;
@@ -243,6 +248,8 @@ const TokenGatingConfigForm = (props) => {
     <Modal
       open={open}
       onClose={() => {
+        clearErrors()
+        clearSelection()
         setShowConfigModal(false);
       }}
     >
