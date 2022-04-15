@@ -32,15 +32,21 @@ export const Logo = ({ divStyle }) => {
   );
 };
 
-export const InviteWelcomeBox = ({ updateUser }) => {
+export const InviteWelcomeBox = ({ updateUser, user }) => {
   const wonderWeb3 = useWonderWeb3();
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(user?.username);
   const [error, setError] = useState('');
   // Two stage process as wallet connection takes
   // time.
   const buttonStyle = {
     background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
   };
+
+  useEffect(() => {
+    if (user?.username) {
+      setUsername(user?.username);
+    }
+  }, [user?.username]);
 
   useEffect(() => {
     if (wonderWeb3?.onConnect) {

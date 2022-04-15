@@ -68,7 +68,7 @@ import {
 } from 'utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
-import { White } from '../../../theme/colors';
+import { Red400, White } from '../../../theme/colors';
 import { useMe } from '../../Auth/withAuth';
 import { GetStatusIcon, renderMentionString } from 'utils/common';
 import {
@@ -1624,6 +1624,18 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 handleClose={handleClose}
                 router={router}
               />
+              {user && !user.activeEthAddress && (
+                <TaskSectionInfoText
+                  style={{
+                    marginTop: '-8px',
+                    marginBottom: '16px',
+                    color: Red400,
+                  }}
+                >
+                  Your wallet is not connected. Please link your wallet to receive payment for completeting tasks and
+                  bounties.
+                </TaskSectionInfoText>
+              )}
               <TaskSectionFooterTitleDiv>
                 {selectTabsPerType(isTaskProposal, isMilestone, isSubtask).map((tab, index) => {
                   const active = tab === activeTab;

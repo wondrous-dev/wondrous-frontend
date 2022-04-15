@@ -54,8 +54,17 @@ interface PaymentData {
 }
 
 export const SingleWalletPayment = (props) => {
-  const { open, handleClose, orgId, podId, approvedSubmission, wallets, submissionPaymentInfo, changedRewardAmount } =
-    props;
+  const {
+    open,
+    handleClose,
+    orgId,
+    podId,
+    approvedSubmission,
+    wallets,
+    submissionPaymentInfo,
+    changedRewardAmount,
+    parentError,
+  } = props;
   const [currentChainId, setCurrentChainId] = useState(null); // chain id current user is on
   const [walletOptions, setWalletOptions] = useState([]); // chain associated with submission
   const [onRightChain, setOnRighChain] = useState(true);
@@ -317,10 +326,16 @@ export const SingleWalletPayment = (props) => {
             Pay {changedRewardAmount || reward?.rewardAmount} {reward?.symbol}
           </CreateFormPreviewButton>
         )}
-        {wrongChainError && <ErrorText>{wrongChainError}</ErrorText>}
-        {signingError && <ErrorText>{signingError}</ErrorText>}
-        {notOwnerError && <ErrorText>{notOwnerError}</ErrorText>}
-        {safeConnectionError && <ErrorText>{safeConnectionError}</ErrorText>}
+        {parentError ? (
+          <ErrorText>{parentError}</ErrorText>
+        ) : (
+          <>
+            {wrongChainError && <ErrorText>{wrongChainError}</ErrorText>}
+            {signingError && <ErrorText>{signingError}</ErrorText>}
+            {notOwnerError && <ErrorText>{notOwnerError}</ErrorText>}
+            {safeConnectionError && <ErrorText>{safeConnectionError}</ErrorText>}
+          </>
+        )}
         {paymentPending && (
           <PaymentPendingTypography>
             Payment pending! Please go to{' '}
@@ -346,14 +361,26 @@ export const SingleWalletPayment = (props) => {
           marginTop: '16px',
         }}
       >
-        {incompatibleWalletError && (
+        {parentError ? (
           <ErrorText
             style={{
               marginBottom: '16px',
             }}
           >
-            {incompatibleWalletError}
+            {parentError}
           </ErrorText>
+        ) : (
+          <>
+            {incompatibleWalletError && (
+              <ErrorText
+                style={{
+                  marginBottom: '16px',
+                }}
+              >
+                {incompatibleWalletError}
+              </ErrorText>
+            )}
+          </>
         )}
 
         <CreateFormPreviewButton
