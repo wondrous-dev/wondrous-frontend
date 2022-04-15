@@ -22,9 +22,11 @@ import {
   TokenGateListDiv,
   TokenGateListItemDiv,
   TokenGatingHeaderLabel,
+  TokenLogoDisplay
 } from './styles';
 import { White } from 'theme/colors';
 import { useEditTokenGatingCondition } from 'utils/hooks';
+import { GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
 
 interface TokenGatingCondition {
   id: string;
@@ -43,51 +45,18 @@ interface AccessCondition {
   type: string;
 }
 
-async function getTokenInfoFromEVMChain(chainId, contractAddress) {
-  return {
-    symbol: 'usdc',
-    name: 'usdc',
-    decimal: '18',
-  };
-}
-
 const CHAIN_NAME_TO_CHAIN_ID = {
   ethereum: 1,
   rinkeby: 4,
   polygon: 137,
 };
 
-import axios from 'axios';
-
-async function getTokenInfoByAddress(chain, address) {
-  // look at https://github.com/trustwallet/assets/tree/master/blockchains for list of possible chains
-  const url = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${chain}/assets/${address}/info.json`;
-  let info;
-  try {
-    info = await axios.get(url);
-  } catch (e) {
-    console.error(e);
-    return;
-  }
-  return info.data;
-}
-
-function getTokenLogoURLByAddress(chain, address) {
-  // look at https://github.com/trustwallet/assets/tree/master/blockchains for list of possible chains
-  return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${chain}/assets/${address}/logo.png`;
-}
-const HARD_CODED_ADDRESS_TO_NAME = {
-  '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 'USDC',
-  '0x6b175474e89094c44da98b954eedeac495271d0f': 'DAI',
-  '0xde30da39c46104798bb5aa3fe8b9e0e1f348163f': 'GTC',
-  '0xbd3531da5cf5857e7cfaa92426877b022e612cf8': 'Pudgy Penguin',
-  '0x5180db8f5c931aae63c74266b211f580155ecac8': 'Crypto Coven',
-};
 
 const TokenGatingConditionDisplay = (props) => {
   const router = useRouter();
   const [showDetails, setShowDetails] = useState(false);
   const [tokenName, setTokenName] = useState(null);
+  const [tokenLogo, setTokenLogo] = useState(null);
   const wonderWeb3 = useWonderWeb3();
   const editTokenGatingCondition = useEditTokenGatingCondition();
 
@@ -96,20 +65,49 @@ const TokenGatingConditionDisplay = (props) => {
     marginRight: '12px',
     color: White,
   };
+  const [getTokenInfo, { loading: getTokenInfoLoading }] = useLazyQuery(GET_TOKEN_INFO, {
+    onCompleted: (data) => {
+      setTokenName(data?.getTokenInfo.name);
+      if (data?.getTokenInfo) {
+        setTokenName(data?.getTokenInfo.name)
+        setTokenLogo(data?.getTokenInfo.logoUrl)
+      }
+    },
+    fetchPolicy: 'network-only',
+  });
+
+  const [getNFTInfo, { loading: getNFTInfoLoading }] = useLazyQuery(GET_NFT_INFO, {
+    onCompleted: (data) => {
+      if (data?.getNFTInfo) {
+        setTokenName(data?.getNFTInfo.name)
+        setTokenLogo(data?.getNFTInfo.logoUrl)
+      }
+    },
+    fetchPolicy: 'network-only',
+  });
   const contractAddress = tokenGatingCondition?.accessCondition[0].contractAddress;
 
   useEffect(() => {
-    const getTokenInfo = async () => {
-      const hardCodedName = HARD_CODED_ADDRESS_TO_NAME[contractAddress];
-      if (hardCodedName) {
-        setTokenName(hardCodedName);
-        return;
+    const getTokenDisplayInfo = async () => {
+      const type = tokenGatingCondition?.accessCondition[0].type
+      if (type === 'ERC20') {
+        getTokenInfo({
+          variables: {
+            contractAddress,
+            chain: tokenGatingCondition?.accessCondition[0].chain
+          },
+        })
       }
-      const info = await getTokenInfoByAddress(tokenGatingCondition?.accessCondition[0].chain, contractAddress);
-      setTokenName(info?.name);
+      if (type === 'ERC721') {
+        getNFTInfo({
+          variables: {
+            contractAddress,
+          },
+        })
+      }
     };
 
-    getTokenInfo();
+    getTokenDisplayInfo();
   }, [tokenGatingCondition?.accessCondition[0].contractAddress]);
 
   return (
@@ -158,6 +156,7 @@ const TokenGatingConditionDisplay = (props) => {
         </TokenGateListItemDiv>
         <TokenGateListItemDiv>
           <TokenGatingHeaderLabel>Token:</TokenGatingHeaderLabel>
+          <TokenLogoDisplay src={tokenLogo}/>
           <TokenGatingNameHeader>
             <span>{tokenName ? tokenName : tokenGatingCondition?.accessCondition[0].contractAddress}</span>
           </TokenGatingNameHeader>
