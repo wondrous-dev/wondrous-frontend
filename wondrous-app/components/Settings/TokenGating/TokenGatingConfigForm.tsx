@@ -139,7 +139,7 @@ const TokenGatingConfigForm = (props) => {
   const [getNFTInfo, { loading: getNFTInfoLoading }] = useLazyQuery(GET_NFT_INFO, {
     onCompleted: (data) => {
       if (data?.getNFTInfo) {
-        if (data?.getNFTInfo.type !== 'ERC721' || data?.getNFTInfo.type !== 'ERC1155') {
+        if (data?.getNFTInfo.type !== 'ERC721' && data?.getNFTInfo.type !== 'ERC1155') {
           return;
         }
         const formattedOption = {
@@ -244,7 +244,9 @@ const TokenGatingConfigForm = (props) => {
       } else if (accessConditionType === 'ERC721') {
         foundToken = searchSelectedTokenInList(value, nftList, chain);
       }
-      setSelectedToken(foundToken);
+      if (foundToken) {
+        setSelectedToken(foundToken);
+      }
     }
   };
 
