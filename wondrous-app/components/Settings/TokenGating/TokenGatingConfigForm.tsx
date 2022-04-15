@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation, useLazyQuery } from '@apollo/client';
 import ErrorFieldIcon from 'components/Icons/errorField.svg';
 import Ethereum from 'components/Icons/ethereum';
 import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
@@ -19,11 +19,9 @@ import {
   TokenGatingAutocompleteTextfieldWrapper,
   TokenGatingButton,
   TokenGatingFormHeader,
-  TokenGatingDisabledButton,
   TokenGatingFormHeaderSecondary,
   TokenGatingFormWrapper,
   TokenGatingInputImage,
-  TokenGatingInputWrapper,
   TokenGatingTextfieldButtonDown,
   TokenGatingTextfieldButtonUp,
   TokenGatingTextfieldButtonWrapper,
@@ -34,7 +32,8 @@ import {
   TokenGatingTokenAmountWrapper,
 } from './styles';
 import { CREATE_TOKEN_GATING_CONDITION_FOR_ORG } from '../../../graphql/mutations/tokenGating';
-import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries/tokenGating';
+import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG, GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
+import { NFT_LIST } from '../../../utils/tokenList';
 
 const chainOptions = [
   {
@@ -42,11 +41,11 @@ const chainOptions = [
     icon: <Ethereum />,
     value: 'ethereum',
   },
-  {
-    label: 'Polygon',
-    icon: <PolygonIcon />,
-    value: 'polygon',
-  },
+  // {
+  //   label: 'Polygon',
+  //   icon: <PolygonIcon />,
+  //   value: 'polygon',
+  // },
 ];
 
 const SUPPORTED_ACCESS_CONDITION_TYPES = [
@@ -110,8 +109,8 @@ const TokenListboxVirtualized = React.forwardRef<HTMLDivElement, React.HTMLAttri
 );
 
 const TokenGatingConfigForm = (props) => {
-  const { orgId, org, open, setShowConfigModal, selectedTokenGatingCondition, setSelectedTokenGatingCondition} = props;
-  const [chain, setChain] = useState(chainOptions[0].value);
+  const { orgId, org, open, setShowConfigModal, selectedTokenGatingCondition, setSelectedTokenGatingCondition } = props;
+  const [chain, setChain] = useState(chainOptions[0]);
   const [name, setName] = useState('');
   const [accessConditionType, setAccessConditionType] = useState('ERC20');
   const [tokenList, setTokenList] = useState([]);
@@ -122,15 +121,87 @@ const TokenGatingConfigForm = (props) => {
   const [nameError, setNameError] = useState(null);
   const [ceationError, setCreationError] = useState(null);
   const [openChainSelection, setOpenChainSelection] = useState(false);
+  const [getTokenInfo, { loading: getTokenInfoLoading }] = useLazyQuery(GET_TOKEN_INFO, {
+    onCompleted: (data) => {
+      if (data?.getTokenInfo) {
+        const formattedOption = {
+          label: data?.getTokenInfo.name,
+          value: data?.getTokenInfo.contractAddress,
+          icon: data?.getTokenInfo.logoUrl,
+        };
+        setSelectedToken(formattedOption);
+        setTokenList((oldArray) => [...oldArray, formattedOption]);
+      }
+    },
+    fetchPolicy: 'network-only',
+  });
+
+  const [getNFTInfo, { loading: getNFTInfoLoading }] = useLazyQuery(GET_NFT_INFO, {
+    onCompleted: (data) => {
+      if (data?.getNFTInfo) {
+        if (data?.getNFTInfo.type !== 'ERC721' || data?.getNFTInfo.type !== 'ERC1155') {
+          return;
+        }
+        const formattedOption = {
+          label: data?.getNFTInfo.name,
+          value: data?.getNFTInfo.contractAddress,
+          icon: data?.getNFTInfo.logoUrl,
+        };
+        setSelectedToken(formattedOption);
+        console.log('formattedOption', formattedOption);
+        setNftList((oldArray) => [...oldArray, formattedOption]);
+      }
+    },
+    fetchPolicy: 'network-only',
+  });
+  console.log(nftList);
+  const searchSelectedTokenInList = (contractAddress, tokenList, chain) => {
+    contractAddress = contractAddress.toLowerCase();
+    for (const tokenInfo of tokenList) {
+      if (contractAddress === tokenInfo.value) {
+        return tokenInfo;
+      }
+    }
+    if (accessConditionType === 'ERC20') {
+      getTokenInfo({
+        variables: {
+          contractAddress,
+          chain,
+        },
+      });
+    }
+    if (accessConditionType === 'ERC721') {
+      getNFTInfo({
+        variables: {
+          contractAddress,
+        },
+      });
+    }
+  };
+
   useEffect(() => {
+    // this is for edit only, prepopulating
     if (selectedTokenGatingCondition && selectedTokenGatingCondition?.accessCondition) {
       setAccessConditionType(selectedTokenGatingCondition.accessCondition[0]?.type);
       setName(selectedTokenGatingCondition.name);
       setChain(selectedTokenGatingCondition.accessCondition[0]?.chain);
       setMinAmount(selectedTokenGatingCondition.accessCondition[0]?.minValue);
-      // setSelectedToken(selectedTokenGatingCondition.accessCondition[0]?.contractAddress);
+      const selectedContractAddress = selectedTokenGatingCondition.accessCondition[0]?.contractAddress;
+      if (selectedContractAddress) {
+        let selectedTokenInfo;
+        if (accessConditionType === 'ERC20') {
+          selectedTokenInfo = searchSelectedTokenInList(selectedContractAddress, tokenList, chain);
+        }
+        if (accessConditionType === 'ERC721') {
+          selectedTokenInfo = searchSelectedTokenInList(selectedContractAddress, nftList, chain);
+        }
+        if (selectedTokenInfo) {
+          setSelectedToken(selectedTokenInfo);
+        }
+      }
     }
   }, [selectedTokenGatingCondition]);
+
   const clearErrors = () => {
     setNameError(null);
     setCreationError(null);
@@ -161,10 +232,22 @@ const TokenGatingConfigForm = (props) => {
   });
 
   const handleMinAmountOnClick = (change) => {
-    const newMinAmount = minAmount + change;
+    const newMinAmount = Number(minAmount) + change;
     if (newMinAmount < 0) return;
-    setMinAmount(newMinAmount);
+    setMinAmount(newMinAmount.toString());
   };
+  const handleSelectedTokenInputChange = (event, value) => {
+    let foundToken;
+    if (value && value.length === 42 && value.startsWith('0x')) {
+      if (accessConditionType === 'ERC20') {
+        foundToken = searchSelectedTokenInList(value, tokenList, chain);
+      } else if (accessConditionType === 'ERC721') {
+        foundToken = searchSelectedTokenInList(value, nftList, chain);
+      }
+      setSelectedToken(foundToken);
+    }
+  };
+
   const handleOnSubmit = () => {
     setMinAmountError(false);
     setNameError(false);
@@ -195,7 +278,7 @@ const TokenGatingConfigForm = (props) => {
     });
   };
   const getTokenList = async () => {
-    const erc20Url = 'https://tokens.1inch.eth.link/';
+    const erc20Url = 'https://tokens.coingecko.com/uniswap/all.json';
     const erc20Promise = fetch(erc20Url).then((r2) => r2.json());
     const [erc20s] = await Promise.all([erc20Promise]);
     const sorted = [...erc20s.tokens].sort((a, b) => (a.name > b.name ? 1 : -1));
@@ -211,10 +294,7 @@ const TokenGatingConfigForm = (props) => {
   };
 
   async function getNFTList() {
-    const erc721Url = 'https://raw.githubusercontent.com/0xsequence/token-directory/main/index/mainnet/erc721.json';
-    const erc721Promise = fetch(erc721Url).then((r2) => r2.json());
-    const [erc721s] = await Promise.all([erc721Promise]);
-    const sorted = [...erc721s.tokens].sort((a, b) => (a.name > b.name ? 1 : -1));
+    const sorted = NFT_LIST.sort((a, b) => (a.name > b.name ? 1 : -1));
     const formatted = sorted.map((token) => {
       return {
         label: token.name,
@@ -222,11 +302,6 @@ const TokenGatingConfigForm = (props) => {
         icon: token.logoURI,
       };
     });
-    formatted.push({
-      label: 'crypto coven',
-      value: '0x5180db8f5c931aae63c74266b211f580155ecac8',
-      icon: 'https://assets.coingecko.com/nft_contracts/images/256/small/cryptocoven.png?1643339060',
-    })
     setNftList(formatted);
     return formatted;
   }
@@ -234,12 +309,12 @@ const TokenGatingConfigForm = (props) => {
   useEffect(() => {
     if (accessConditionType === 'ERC20') {
       if (tokenList && tokenList.length === 0) {
-        const formatted = getTokenList();
+        getTokenList();
       }
     }
     if (accessConditionType === 'ERC721') {
       if (nftList && nftList.length === 0) {
-        const formatted = getNFTList();
+        getNFTList();
       }
     }
   }, [accessConditionType]);
@@ -248,8 +323,8 @@ const TokenGatingConfigForm = (props) => {
     <Modal
       open={open}
       onClose={() => {
-        clearErrors()
-        clearSelection()
+        clearErrors();
+        clearSelection();
         setShowConfigModal(false);
       }}
     >
@@ -296,7 +371,6 @@ const TokenGatingConfigForm = (props) => {
             value={accessConditionType}
             options={SUPPORTED_ACCESS_CONDITION_TYPES}
             setValue={setAccessConditionType}
-            onChange={(e) => {}}
             innerStyle={{
               marginTop: 10,
             }}
@@ -305,12 +379,13 @@ const TokenGatingConfigForm = (props) => {
             }}
           />
           <TokenGatingTokenAmountWrapper>
-            <TokenGatingInputWrapper>
+            <div>
               <TokenGatingAutocompleteLabel>Token</TokenGatingAutocompleteLabel>
               <TokenGatingAutocomplete
                 disablePortal
                 options={accessConditionType === 'ERC20' ? tokenList : nftList}
                 value={selectedToken}
+                onInputChange={handleSelectedTokenInputChange}
                 onChange={(event, newValue) => setSelectedToken(newValue)}
                 renderInput={(params) => (
                   <TokenGatingAutocompleteTextfieldWrapper ref={params.InputProps.ref}>
@@ -329,8 +404,9 @@ const TokenGatingConfigForm = (props) => {
                 renderOption={(props, option) => [props, option]}
                 renderGroup={(params) => params}
               />
-            </TokenGatingInputWrapper>
-            <TokenGatingInputWrapper>
+            </div>
+
+            <div>
               <TokenGatingAutocompleteLabel>Min. amount to hold</TokenGatingAutocompleteLabel>
               <TokenGatingTextfieldInputWrapper>
                 <TokenGatingTextfieldInput
@@ -355,7 +431,7 @@ const TokenGatingConfigForm = (props) => {
                   <TokenGatingTextfieldTextHelper>Please enter an amount</TokenGatingTextfieldTextHelper>
                 </TokenGatingTextfieldTextHelperWrapper>
               </TokenGatingTextfieldInputWrapper>
-            </TokenGatingInputWrapper>
+            </div>
           </TokenGatingTokenAmountWrapper>
           <TokenGatingAutocompleteLabel
             style={{
