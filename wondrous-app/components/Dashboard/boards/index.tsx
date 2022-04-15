@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import {
   GET_JOIN_ORG_REQUESTS,
+  GET_JOIN_POD_REQUESTS,
   GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
   GET_USER_PERMISSION_CONTEXT,
   GET_USER_PODS,
@@ -352,7 +353,7 @@ const useFilterSchema = (loggedInUser, isAdmin) => {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
       const orgPods = {};
-      data.getUserPods.forEach((pod) => {
+      data?.getUserPods?.forEach((pod) => {
         if (!orgPods[pod.org.name]) {
           orgPods[pod.org.name] = [];
         }
@@ -459,7 +460,8 @@ const BoardsPage = (props) => {
   const [joinOrgRequests, setJoinOrgRequests] = useState([]);
   const [getJoinOrgRequests, { data: getJoinOrgRequestsData, fetchMore: fetchMoreJoinOrgRequests }] =
     useLazyQuery(GET_JOIN_ORG_REQUESTS);
-
+  const [getJoinPodRequests, { data: getJoinPodRequestsData, fetchMore: fetchMoreJoinPodRequests }] =
+    useLazyQuery(GET_JOIN_POD_REQUESTS);
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -470,6 +472,7 @@ const BoardsPage = (props) => {
     }
     if (selectMembershipHook?.selectMembershipRequests) {
       getJoinOrgRequests();
+      getJoinPodRequests();
     } else {
       if (search) {
         const searchTaskProposalsArgs = {
@@ -506,7 +509,7 @@ const BoardsPage = (props) => {
       if (selectMembershipHook?.selectMembershipRequests) {
         fetchMoreJoinOrgRequests({
           variables: {
-            offset: joinOrgRequests?.length,
+            offset: getJoinOrgRequestsData?.getJoinOrgRequests?.length,
             limit: LIMIT,
           },
           updateQuery: (prev, { fetchMoreResult }) => ({
@@ -514,6 +517,20 @@ const BoardsPage = (props) => {
           }),
         }).then((fetchMoreResult) => {
           const results = fetchMoreResult?.data?.getJoinOrgRequests;
+          if (results && results?.length === 0) {
+            setHasMoreTasks(false);
+          }
+        });
+        fetchMoreJoinPodRequests({
+          variables: {
+            offset: getJoinPodRequestsData?.getJoinPodRequests?.length,
+            limit: LIMIT,
+          },
+          updateQuery: (prev, { fetchMoreResult }) => ({
+            getJoinPodRequestsData: [...prev.getJoinPodRequests, ...fetchMoreResult.getJoinPodRequests],
+          }),
+        }).then((fetchMoreResult) => {
+          const results = fetchMoreResult?.data?.getJoinPodRequests;
           if (results && results?.length === 0) {
             setHasMoreTasks(false);
           }

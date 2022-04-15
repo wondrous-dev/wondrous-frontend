@@ -39,6 +39,10 @@ import { MoreInfoModal } from '../../profile/modals';
 import SideBarComponent from '../../SideBar';
 import PlusIcon from '../../Icons/plus';
 import { PrivateBoardIcon } from '../../Common/PrivateBoardIcon';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { GET_USER_JOIN_POD_REQUEST } from 'graphql/queries';
+import { MembershipRequestModal } from 'components/organization/wrapper/RequestModal';
+import { CREATE_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
 
 const Wrapper = (props) => {
   const router = useRouter();
@@ -47,13 +51,18 @@ const Wrapper = (props) => {
   const [showUsers, setShowUsers] = useState(false);
   const [showPods, setShowPods] = useState(false);
   const [open, setOpen] = useState(false);
+  const [joinRequestSent, setJoinRequestSent] = useState(false);
+  const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_POD_REQUEST);
+  const [createJoinPodRequest] = useMutation(CREATE_JOIN_POD_REQUEST);
+  const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
+  const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
   const podBoard = usePodBoard();
   const ORG_PERMISSIONS = {
     MANAGE_SETTINGS: 'manageSettings',
     CONTRIBUTOR: 'contributor',
   };
   const userPermissionsContext = podBoard?.userPermissionsContext;
-  const [permissions, setPermissions] = useState(null);
+  const [permissions, setPermissions] = useState(undefined);
   const [createFormModal, setCreateFormModal] = useState(false);
   const [openInvite, setOpenInvite] = useState(false);
   const podProfile = podBoard?.pod;
@@ -79,8 +88,17 @@ const Wrapper = (props) => {
     } else if (userPermissionsContext && orgPermissions) {
       // Normal contributor with no access to admin settings
       setPermissions(ORG_PERMISSIONS.CONTRIBUTOR);
-    } else if (!userPermissionsContext) {
+    } else if (
+      podBoard?.podId &&
+      userPermissionsContext &&
+      !(podProfile?.id in userPermissionsContext?.podPermissions)
+    ) {
       setPermissions(null);
+      getExistingJoinRequest({
+        variables: {
+          podId: podBoard?.podId,
+        },
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [podBoard?.orgId, userPermissionsContext]);
@@ -88,6 +106,13 @@ const Wrapper = (props) => {
   return (
     <>
       <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
+      <MembershipRequestModal
+        podId={podBoard?.orgId}
+        setJoinRequestSent={setJoinRequestSent}
+        sendRequest={createJoinPodRequest}
+        open={openJoinRequestModal}
+        onClose={() => setOpenJoinRequestModal(false)}
+      />
       <MoreInfoModal
         open={open && (showUsers || showPods)}
         handleClose={() => {
@@ -146,6 +171,31 @@ const Wrapper = (props) => {
                       <HeaderFollowButtonText>{shrinkNumber(1234)}</HeaderFollowButtonText>
                       <HeaderFollowButtonIcon src="/images/overview/icon.png" />
                     </HeaderFollowButton>
+                    {permissions === null && (
+                      <>
+                        {joinRequestSent || userJoinRequest?.id ? (
+                          <HeaderSettingsLockedButton
+                            style={{
+                              width: 'fit-content',
+                              visibility: 'visible',
+                            }}
+                          >
+                            Request sent
+                          </HeaderSettingsLockedButton>
+                        ) : (
+                          <HeaderManageSettingsButton
+                            style={{
+                              width: 'fit-content',
+                            }}
+                            onClick={() => {
+                              setOpenJoinRequestModal(true);
+                            }}
+                          >
+                            <HeaderFollowButtonText>Join pod</HeaderFollowButtonText>
+                          </HeaderManageSettingsButton>
+                        )}
+                      </>
+                    )}
                     {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
                       <>
                         <HeaderInviteButton onClick={() => setOpenInvite(true)}>
