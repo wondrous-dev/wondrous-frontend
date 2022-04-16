@@ -48,7 +48,7 @@ export const MembershipRequestModal = (props) => {
               marginLeft: 0,
             }}
           >
-            DAO membership request{' '}
+            {orgId ? 'DAO' : 'Pod'} membership request{' '}
           </StyledHeader>
           <StyledBody
             style={{

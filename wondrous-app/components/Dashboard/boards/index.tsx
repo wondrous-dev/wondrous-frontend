@@ -643,6 +643,7 @@ const BoardsPage = (props) => {
           : null,
         loggedInUserId: loggedInUser?.id,
         joinOrgRequests: getJoinOrgRequestsData?.getJoinOrgRequests,
+        joinPodRequests: getJoinPodRequestsData?.getJoinPodRequests,
         setSection,
       }}
     >

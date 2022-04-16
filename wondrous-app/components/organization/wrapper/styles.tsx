@@ -245,6 +245,7 @@ export const HeaderSettingsLockedButton = (props) => (
       height: '40px',
       minHeight: '0',
       visibility: 'hidden',
+      ...props?.style,
     }}
     buttonInnerStyle={{
       color: '#474747',

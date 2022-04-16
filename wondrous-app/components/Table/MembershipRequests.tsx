@@ -87,35 +87,39 @@ export const MembershipRequestTable = (props) => {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
-  const user = useMe();
-  const board = orgBoard || podBoard || userBoard;
-  const boardColumns = useColumns();
-  const userPermissionsContext =
-    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
-  let tasksCount = 0;
 
   useEffect(() => {
     if (inView && hasMore) {
       onLoadMore();
     }
   }, [inView, hasMore, onLoadMore]);
-
+  let requests = [];
+  if (userBoard?.joinOrgRequests) {
+    requests = [...requests, ...userBoard?.joinOrgRequests];
+  }
+  if (userBoard?.joinPodRequests) {
+    requests = [...requests, ...userBoard.joinPodRequests];
+  }
+  requests = requests.sort((a, b) => b.createdAt - a.createdAt);
   return (
     <StyledTableContainer>
       <StyledTable>
         <StyledTableHead>
           <StyledTableRow>
-            <StyledTableCell align="center" width="25%">
+            <StyledTableCell align="center" width="20%">
               DAO
             </StyledTableCell>
-            <StyledTableCell align="center" width="25%">
+            <StyledTableCell align="center" width="20%">
+              Pod
+            </StyledTableCell>
+            <StyledTableCell align="center" width="20%">
               User
             </StyledTableCell>
-            <StyledTableCell align="center" width="25%">
+            <StyledTableCell align="center" width="20%">
               Message
             </StyledTableCell>
             {isAdmin && (
-              <StyledTableCell align="center" width="25%">
+              <StyledTableCell align="center" width="20%">
                 Decision
               </StyledTableCell>
             )}
@@ -123,20 +127,58 @@ export const MembershipRequestTable = (props) => {
           </StyledTableRow>
         </StyledTableHead>
         <StyledTableBody>
-          {userBoard?.joinOrgRequests?.map((request, index) => {
+          {requests?.map((request, index) => {
             return (
               <StyledTableRow key={request.id}>
                 <StyledTableCell align="center">
-                  {request.orgProfilePicture ? (
+                  {(request.orgProfilePicture || request.orgUsername) && (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <SafeImage
-                      src={request?.orgProfilePicture}
+                    <div
                       style={{
-                        width: '17px',
-                        height: '17px',
-                        borderRadius: '17px',
+                        alignItems: 'center',
+                        display: 'flex',
+                        justifyContent: 'center',
                       }}
-                    />
+                    >
+                      <SafeImage
+                        src={request?.orgProfilePicture}
+                        style={{
+                          width: '17px',
+                          height: '17px',
+                          borderRadius: '17px',
+                          marginRight: '4px',
+                        }}
+                      />
+                      <Link passHref={true} href={`/organization/${request?.orgUsername}/boards`}>
+                        <a target="_blank" rel="noopener noreferrer">
+                          <TaskDescription
+                            style={{
+                              textDecoration: 'underline',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            {request?.orgUsername}
+                          </TaskDescription>
+                        </a>
+                      </Link>
+                    </div>
+                  )}
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {request?.podName ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <Link passHref={true} href={`/pod/${request?.podId}/boards`}>
+                      <a target="_blank" rel="noopener noreferrer">
+                        <TaskDescription
+                          style={{
+                            textDecoration: 'underline',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          {request?.podName}
+                        </TaskDescription>
+                      </a>
+                    </Link>
                   ) : null}
                 </StyledTableCell>
                 <StyledTableCell align="center">
@@ -187,7 +229,7 @@ export const MembershipRequestTable = (props) => {
                 {isAdmin && (
                   <StyledTableCell align="center">
                     {/* TODO: change the design for disabled button */}
-                    <DropDownButtonDecision userId={request?.userId} orgId={request?.orgId} />
+                    <DropDownButtonDecision userId={request?.userId} orgId={request?.orgId} podId={request?.podId} />
                   </StyledTableCell>
                 )}
                 {/* <StyledTableCell align="center">

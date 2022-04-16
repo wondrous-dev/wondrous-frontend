@@ -96,8 +96,8 @@ export const APPROVE_JOIN_POD_REQUEST = gql`
   }
 `;
 
-export const REJECT_JOIN_ORG_REQUEST = gql`
-  mutation rejectJoinPodRequest($userId: ID!, $PodId: ID!) {
+export const REJECT_JOIN_POD_REQUEST = gql`
+  mutation rejectJoinPodRequest($userId: ID!, $podId: ID!) {
     rejectJoinPodRequest(userId: $userId, podId: $podId) {
       success
     }

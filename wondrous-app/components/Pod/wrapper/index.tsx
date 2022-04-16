@@ -55,7 +55,7 @@ const Wrapper = (props) => {
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_POD_REQUEST);
   const [createJoinPodRequest] = useMutation(CREATE_JOIN_POD_REQUEST);
   const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
-  const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
+  const userJoinRequest = getUserJoinRequestData?.getUserJoinPodRequest;
   const podBoard = usePodBoard();
   const ORG_PERMISSIONS = {
     MANAGE_SETTINGS: 'manageSettings',
@@ -73,19 +73,24 @@ const Wrapper = (props) => {
   const links = podProfile?.links;
 
   useEffect(() => {
-    const orgPermissions = parseUserPermissionContext({
+    const podPermissions = parseUserPermissionContext({
       userPermissionsContext,
       podId: podBoard?.podId,
       orgId: podBoard?.orgId,
     });
 
     if (
-      orgPermissions?.includes(PERMISSIONS.MANAGE_MEMBER) ||
-      orgPermissions?.includes(PERMISSIONS.FULL_ACCESS) ||
-      orgPermissions?.includes(PERMISSIONS.APPROVE_PAYMENT)
+      podPermissions?.includes(PERMISSIONS.MANAGE_MEMBER) ||
+      podPermissions?.includes(PERMISSIONS.FULL_ACCESS) ||
+      podPermissions?.includes(PERMISSIONS.APPROVE_PAYMENT)
     ) {
       setPermissions(ORG_PERMISSIONS.MANAGE_SETTINGS);
-    } else if (userPermissionsContext && orgPermissions) {
+    } else if (
+      userPermissionsContext &&
+      podProfile?.id in userPermissionsContext?.podPermissions &&
+      podPermissions &&
+      podPermissions
+    ) {
       // Normal contributor with no access to admin settings
       setPermissions(ORG_PERMISSIONS.CONTRIBUTOR);
     } else if (
@@ -102,12 +107,12 @@ const Wrapper = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [podBoard?.orgId, userPermissionsContext]);
-
+  console.log('asdf', joinRequestSent || userJoinRequest?.id, permissions);
   return (
     <>
       <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
       <MembershipRequestModal
-        podId={podBoard?.orgId}
+        podId={podBoard?.podId}
         setJoinRequestSent={setJoinRequestSent}
         sendRequest={createJoinPodRequest}
         open={openJoinRequestModal}
