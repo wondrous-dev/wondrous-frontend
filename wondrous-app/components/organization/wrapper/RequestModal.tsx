@@ -22,7 +22,7 @@ import {
 import { GeneralSettingsDAODescriptionInput } from '../../Settings/styles';
 
 export const MembershipRequestModal = (props) => {
-  const { open, onClose, sendRequest, orgId, setJoinRequestSent } = props;
+  const { open, onClose, sendRequest, orgId, podId, setJoinRequestSent } = props;
   const board = useOrgBoard();
   const [requestMessage, setRequestMessage] = useState('');
   return (
@@ -48,7 +48,7 @@ export const MembershipRequestModal = (props) => {
               marginLeft: 0,
             }}
           >
-            DAO membership request{' '}
+            {orgId ? 'DAO' : 'Pod'} membership request{' '}
           </StyledHeader>
           <StyledBody
             style={{
@@ -83,14 +83,25 @@ export const MembershipRequestModal = (props) => {
               <ArchivedIcon />
               <StyledArchivedLabel
                 onClick={() => {
-                  sendRequest({
-                    variables: {
-                      orgId,
-                      ...(requestMessage && {
-                        message: requestMessage,
-                      }),
-                    },
-                  });
+                  if (orgId) {
+                    sendRequest({
+                      variables: {
+                        orgId,
+                        ...(requestMessage && {
+                          message: requestMessage,
+                        }),
+                      },
+                    });
+                  } else if (podId) {
+                    sendRequest({
+                      variables: {
+                        podId,
+                        ...(requestMessage && {
+                          message: requestMessage,
+                        }),
+                      },
+                    });
+                  }
                   setJoinRequestSent(true);
                   onClose();
                 }}
