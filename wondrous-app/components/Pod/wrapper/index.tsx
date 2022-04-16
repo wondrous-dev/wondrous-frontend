@@ -43,6 +43,7 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_USER_JOIN_POD_REQUEST } from 'graphql/queries';
 import { MembershipRequestModal } from 'components/organization/wrapper/RequestModal';
 import { CREATE_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
+import { TokenGatedRoleModal } from 'components/organization/wrapper/TokenGatedRoleModal';
 
 const Wrapper = (props) => {
   const router = useRouter();
@@ -55,6 +56,7 @@ const Wrapper = (props) => {
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_POD_REQUEST);
   const [createJoinPodRequest] = useMutation(CREATE_JOIN_POD_REQUEST);
   const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
+  const [openGatedRoleModal, setOpenGatedRoleModal] = useState(false);
   const userJoinRequest = getUserJoinRequestData?.getUserJoinPodRequest;
   const podBoard = usePodBoard();
   const ORG_PERMISSIONS = {
@@ -107,7 +109,7 @@ const Wrapper = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [podBoard?.orgId, userPermissionsContext]);
-  console.log('asdf', joinRequestSent || userJoinRequest?.id, permissions);
+
   return (
     <>
       <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
@@ -118,6 +120,7 @@ const Wrapper = (props) => {
         open={openJoinRequestModal}
         onClose={() => setOpenJoinRequestModal(false)}
       />
+      <TokenGatedRoleModal open={openGatedRoleModal} onClose={() => setOpenGatedRoleModal(false)} />
       <MoreInfoModal
         open={open && (showUsers || showPods)}
         handleClose={() => {
