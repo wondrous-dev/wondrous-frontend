@@ -81,7 +81,7 @@ const Integrations = (props) => {
     snapshotConnected,
     snapshotSpace,
     setSnapshotSpace,
-    snapshotErrorHTML,
+    snapshotErrorElement,
     validateSnapshotSpace,
     validateSnapshot,
     connectSnapshotSpace,
@@ -208,7 +208,7 @@ const Integrations = (props) => {
                           onChange={e => setSnapshotName(e.target.value)}
                           disabled={podId ? true : false}
                         />
-                        {snapshotErrorHTML && <ErrorText>{snapshotErrorHTML}</ErrorText>}
+                        {snapshotErrorElement && <ErrorText>{snapshotErrorElement}</ErrorText>}
                         {snapshotValid && (
                           <IntegrationsSnapshotValidText>
                             User is admin of '{snapshotSpace.id}'. Ready to connect.

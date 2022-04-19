@@ -83,6 +83,7 @@ import {
   CreateFormAddDetailsSwitchLabel,
   CreateFormAddDetailsLocalizationProvider,
   SnapshotButtonBlock,
+  SnapshotErrorText,
   SnapshotButton
 } from './styles';
 import SelectDownIcon from '../Icons/selectDownIcon';
@@ -442,7 +443,10 @@ const EditLayoutBaseModal = (props) => {
   const {
     snapshot,
     snapshotConnected,
+    snapshotSpace,
     validateSnapshot,
+    validateSnapshotSpace,
+    snapshotErrorElement,
     snapshotLoading,
     exportTaskProposal
   } = useSnapshot()
@@ -841,230 +845,109 @@ const EditLayoutBaseModal = (props) => {
     refetchQueries: ['GetOrgTaskBoardProposals'],
   });
 
-  const submitMutationNoClose = useCallback(() => {
-    switch (entityType) {
-      case ENTITIES_TYPES.TASK:
-        const taskInput = {
-          title,
-          description: descriptionText,
-          orgId: org?.id,
-          milestoneId: milestone?.id ?? milestone,
-          podId: pod?.id ?? pod,
-          dueDate,
-          ...(rewardsAmount &&
-            rewardsCurrency && {
-              rewards: [
-                {
-                  rewardAmount: parseFloat(rewardsAmount),
-                  paymentMethodId: rewardsCurrency,
-                },
-              ],
-            }),
-          // TODO: add links?,
-          ...(isTaskProposal && {
-            proposedAssigneeId: assignee?.value,
+  const preExportToSnapshot = async () => {
+    if (entityType === ENTITIES_TYPES.TASK) {
+      const taskInput = {
+        title,
+        description: descriptionText,
+        orgId: org?.id,
+        milestoneId: milestone?.id ?? milestone,
+        podId: pod?.id ?? pod,
+        dueDate,
+        ...(rewardsAmount &&
+          rewardsCurrency && {
+            rewards: [
+              {
+                rewardAmount: parseFloat(rewardsAmount),
+                paymentMethodId: rewardsCurrency,
+              },
+            ],
           }),
-          privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
-          reviewerIds: selectedReviewers.map(({ id }) => id) || [],
-          userMentions: getMentionArray(descriptionText),
-          mediaUploads,
-        };
+        // TODO: add links?,
+        ...(isTaskProposal && {
+          proposedAssigneeId: assignee?.value,
+        }),
+        privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
+        reviewerIds: selectedReviewers.map(({ id }) => id) || [],
+        userMentions: getMentionArray(descriptionText),
+        mediaUploads,
+      };
 
+      if (!title) {
+        const newErrors = { ...errors };
         if (!title) {
-          const newErrors = { ...errors };
-          if (!title) {
-            newErrors.title = 'Please enter a title';
-          }
-          newErrors.general = 'Please enter the necessary information above';
-          setErrors(newErrors);
-        } else {
-          updateTask({
-            variables: {
-              taskId: existingTask?.id,
-              input: taskInput,
-            },
-          });
+          newErrors.title = 'Please enter a title';
         }
-        break;
-      case ENTITIES_TYPES.PROPOSAL: {
-        const proposalInput = {
-          title,
-          description: descriptionText,
-          orgId: org?.id,
-          milestoneId: milestone?.id ?? milestone,
-          podId: pod?.id ?? pod,
-          dueDate,
-          ...(rewardsAmount &&
-            rewardsCurrency && {
-              rewards: [
-                {
-                  rewardAmount: parseFloat(rewardsAmount),
-                  paymentMethodId: rewardsCurrency,
-                },
-              ],
-            }),
-          // TODO: add links?,
-          ...(isTaskProposal && {
-            proposedAssigneeId: assignee?.value,
-          }),
-          userMentions: getMentionArray(descriptionText),
-          mediaUploads,
-        };
-
-        if (!title) {
-          const newErrors = { ...errors };
-          if (!title) {
-            newErrors.title = 'Please enter a title';
-          }
-          newErrors.general = 'Please enter the necessary information above';
-          setErrors(newErrors);
-        } else {
-          updateTaskProposalNoClose({
-            variables: {
-              proposalId: existingTask?.id,
-              input: proposalInput,
-            },
-          });
-        }
-        break;
-      }
-      case ENTITIES_TYPES.MILESTONE: {
-        updateMilestone({
+        newErrors.general = 'Please enter the necessary information above';
+        setErrors(newErrors);
+      } else {
+        return updateTask({
           variables: {
-            milestoneId: existingTask?.id,
-            input: {
-              title,
-              description: descriptionText,
-              privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
-              dueDate,
-              orgId: org?.id,
-              podId: pod?.id,
-              userMentions: getMentionArray(descriptionText),
-              mediaUploads,
-            },
+            taskId: existingTask?.id,
+            input: taskInput,
           },
         });
-        break;
       }
-      case ENTITIES_TYPES.BOUNTY:
-        const bountyInput = {
-          title,
-          description: descriptionText,
-          orgId: org?.id || org,
-          milestoneId: milestone?.id,
-          parentTaskId: existingTask?.parentTaskId,
-          podId: pod?.id || pod,
-          // maxSubmissionCount: parseFloat(maxSubmissionCount),
-          dueDate,
-          ...(rewardsAmount &&
-            rewardsCurrency && {
-              rewards: [
-                {
-                  rewardAmount: parseFloat(rewardsAmount),
-                  paymentMethodId: rewardsCurrency,
-                },
-              ],
-            }),
-          ...(publicTask && {
-            privacyLevel: PRIVACY_LEVEL.public,
+    } else if (entityType === ENTITIES_TYPES.PROPOSAL) {
+      const proposalInput = {
+        title,
+        description: descriptionText,
+        orgId: org?.id,
+        milestoneId: milestone?.id ?? milestone,
+        podId: pod?.id ?? pod,
+        dueDate,
+        ...(rewardsAmount &&
+          rewardsCurrency && {
+            rewards: [
+              {
+                rewardAmount: parseFloat(rewardsAmount),
+                paymentMethodId: rewardsCurrency,
+              },
+            ],
           }),
-          reviewerIds: selectedReviewers.map(({ id }) => id),
-          userMentions: getMentionArray(descriptionText),
-          mediaUploads,
-        };
-        // const isErrorMaxSubmissionCount =
-        //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
-        if (!title || !descriptionText || !org) {
-          const newErrors = { ...errors };
-          if (!title) {
-            newErrors.title = 'Please enter a title';
-          }
-          if (!descriptionText) {
-            newErrors.description = 'Please enter a description';
-          }
-          if (!org) {
-            newErrors.org = 'Please select an organization';
-          }
-          // if (isErrorMaxSubmissionCount) {
-          //   newErrors.maxSubmissionCount = 'The number should be from 1 to 10,000';
-          // }
-          newErrors.general = 'Please enter the necessary information above';
-          setErrors(newErrors);
-        } else {
-          updateBounty({
-            variables: {
-              bountyId: existingTask?.id,
-              input: bountyInput,
-            },
-          })
-            .then((result) => {
-              const task = result?.data?.updateBounty;
-              const justCreatedPod = getPodObject();
-              if (
-                board?.setColumns &&
-                ((task?.orgId === board?.orgId && !board?.podId) ||
-                  task?.podId === board?.podId ||
-                  pod === board?.podId)
-              ) {
-                const transformedTask = transformTaskToTaskCard(task, {
-                  orgName: board?.org?.name,
-                  orgProfilePicture: board?.org?.profilePicture,
-                  podName: justCreatedPod?.name,
-                });
+        // TODO: add links?,
+        ...(isTaskProposal && {
+          proposedAssigneeId: assignee?.value,
+        }),
+        userMentions: getMentionArray(descriptionText),
+        mediaUploads,
+      };
 
-                const columns = [...board?.columns];
-                columns[0].tasks = [transformedTask, ...columns[0].tasks];
-                board.setColumns(columns);
-              }
-            })
-            .catch((error) => {
-              console.error(error);
-            });
+      if (!title) {
+        const newErrors = { ...errors };
+        if (!title) {
+          newErrors.title = 'Please enter a title';
         }
-        break;
+        newErrors.general = 'Please enter the necessary information above';
+        setErrors(newErrors);
+      } else {
+        return updateTaskProposalNoClose({
+          variables: {
+            proposalId: existingTask?.id,
+            input: proposalInput,
+          },
+        });
+      }
     }
-  }, [
-    entityType,
-    title,
-    descriptionText,
-    org,
-    milestone,
-    pod,
-    dueDate,
-    rewardsAmount,
-    rewardsCurrency,
-    isTaskProposal,
-    assignee?.value,
-    publicTask,
-    selectedReviewers,
-    mediaUploads,
-    existingTask?.parentTaskId,
-    existingTask?.id,
-    // maxSubmissionCount,
-    errors,
-    updateTask,
-    updateTaskProposalNoClose,
-    updateMilestone,
-    updateBounty,
-    getPodObject,
-    board
-  ]);
+  }
 
-  // check for snapshot
+  // check for snapshot upon load
   useEffect(() => {
     if (org) {
-      console.log('Validating snapshot...')
       validateSnapshot({
         variables: { orgId: org }
       })
     }
-  }, [org, snapshot])
+  }, [org, snapshot]);
 
   // attempt to export proposal to snapshot
   const exportProposalToSnapshot = async () => {
-    console.log(existingTask)
-    submitMutation()
-    //exportTaskProposal()
+    await preExportToSnapshot()
+      .then(async (result) => {
+        // update proposal, and if successful, initiate transaction to export to snapshot
+        if (result.data.updateTaskProposal) await exportTaskProposal(result.data.updateTaskProposal);
+        else throw Error ('Error exportProposalToSnapshot(): invalid proposal for snapshot export');
+      });
   }
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
@@ -1082,12 +965,15 @@ const EditLayoutBaseModal = (props) => {
       >
         <TitleIcon circle />
         <CreateFormBaseModalTitle>Edit {titleText.toLowerCase()}</CreateFormBaseModalTitle>
-        { snapshotConnected && (
+        { snapshotConnected && isTaskProposal && (
             <SnapshotButtonBlock>
               <SnapshotButton onClick={exportProposalToSnapshot} disabled={snapshotLoading}>
                 {/*snapshotLoading ? <CircularProgress size={20} /> : null*/}
                 Export to Snapshot
               </SnapshotButton>
+              <SnapshotErrorText>
+                {snapshotErrorElement && (snapshotErrorElement.map(elem => (<ErrorText>{elem}</ErrorText>)))}
+              </SnapshotErrorText>
             </SnapshotButtonBlock>
         )}
         </CreateFormBaseModalHeader>

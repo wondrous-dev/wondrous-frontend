@@ -206,6 +206,7 @@ export const CreateFormBaseModalHeader = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
+  height: min-content;
   padding: 0 40px 25px;
 
   & svg {
@@ -726,10 +727,19 @@ export const RewardCurrencyTokenIcon = styled(WonderTokenIcon)`
 export const SnapshotButtonBlock = styled.div`
   height: 40px;
   display: flex;
-  justify-content: space-evenly;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
   margin-left: auto;
 `;
+
+export const SnapshotErrorText = styled.div`
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  line-height: 10px;
+`
 
 export const SnapshotButton = styled(Button)`
   && {
