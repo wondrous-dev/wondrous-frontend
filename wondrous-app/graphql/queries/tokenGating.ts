@@ -20,8 +20,8 @@ export const GET_TOKEN_GATING_CONDITIONS_FOR_ORG = gql`
 `;
 
 export const LIT_SIGNATURE_EXIST = gql`
-  query litSignatureExist($litSignature: String!) {
-    litSignatureExist(litSignature: $litSignature) {
+  query litSignatureExist {
+    litSignatureExist {
       exist
     }
   }
@@ -35,16 +35,71 @@ export const CHECK_ORG_TOKEN_GATING_CONDITION = gql`
   }
 `;
 
+export const CHECK_ORG_ROLE_TOKEN_GATING_CONDITION = gql`
+  query checkOrgRoleTokenGatingCondition($orgRoleId: ID!, $userId: ID!) {
+    checkOrgTokenGatingCondition(orgRoleId: $orgRoleId, userId: $userId) {
+      success
+    }
+  }
+`;
 
+export const CHECK_POD_ROLE_TOKEN_GATING_CONDITION = gql`
+  query checkPodRoleTokenGatingCondition($podRoleId: ID!, $userId: ID!) {
+    checkPodRoleTokenGatingCondition(podRoleId: $podRoleId, userId: $userId) {
+      success
+    }
+  }
+`;
+
+export const GET_TOKEN_GATED_ROLES_FOR_ORG = gql`
+  query getTokenGatedRolesForOrg($orgId: ID!) {
+    getTokenGatedRolesForOrg(orgId: $orgId) {
+      id
+      default
+      permissions
+      name
+      orgId
+      ...TokenGatingConditionFragment
+    }
+  }
+  ${TokenGatingConditionFragment}
+`;
+
+export const GET_TOKEN_GATED_ROLES_FOR_POD = gql`
+  query getTokenGatedRolesForPod($podId: ID!) {
+    getTokenGatedRolesForPod(podId: $podId) {
+      id
+      default
+      permissions
+      name
+      podId
+      tokenGatingCondition {
+        id
+        orgId
+        podId
+        name
+        booleanLogic
+        accessCondition {
+          contractAddress
+          type
+          chain
+          method
+          minValue
+          tokenIds
+        }
+      }
+    }
+  }
+`;
 
 export const GET_TOKEN_INFO = gql`
   query getTokenInfo($contractAddress: String!, $chain: String) {
     getTokenInfo(contractAddress: $contractAddress, chain: $chain) {
       contractAddress
       decimals
-		  logoUrl
-		  name
-		  symbol
+      logoUrl
+      name
+      symbol
     }
   }
 `;
@@ -54,10 +109,9 @@ export const GET_NFT_INFO = gql`
     getNFTInfo(contractAddress: $contractAddress) {
       contractAddress
       type
-		  logoUrl
-		  name
-		  symbol
+      logoUrl
+      name
+      symbol
     }
   }
 `;
-

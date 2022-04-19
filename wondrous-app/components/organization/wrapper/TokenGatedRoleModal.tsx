@@ -20,11 +20,15 @@ import {
   StyledHeader,
 } from '../../Common/ArchiveTaskModal/styles';
 import { GeneralSettingsDAODescriptionInput } from '../../Settings/styles';
+import TokenGatedRoleDisplay from './TokenGatedRoleDisplay';
 
 export const TokenGatedRoleModal = (props) => {
-  const { open, onClose, sendRequest, orgId, podId, setJoinRequestSent } = props;
+  const { open, onClose, sendRequest, orgId, podId, setJoinRequestSent, tokenGatedRoles, setOpenJoinRequestModal } = props;
   const board = useOrgBoard();
   const [requestMessage, setRequestMessage] = useState('');
+  if (!open) {
+    return <></>
+  }
   return (
     <>
       <StyledDialog
@@ -55,6 +59,7 @@ export const TokenGatedRoleModal = (props) => {
               marginLeft: 0,
             }}
           ></StyledBody>
+          {tokenGatedRoles && tokenGatedRoles.map((role)=> <TokenGatedRoleDisplay key={role.id} role={role}/>)}
           <StyledDivider
             style={{
               marginLeft: 0,
@@ -68,8 +73,7 @@ export const TokenGatedRoleModal = (props) => {
           >
             <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
             <StyledArchiveTaskButton>
-              <ArchivedIcon />
-              <StyledArchivedLabel>Send request</StyledArchivedLabel>
+              <StyledArchivedLabel onClick={()=>setOpenJoinRequestModal(true)}>Request To Join</StyledArchivedLabel>
             </StyledArchiveTaskButton>
           </StyledButtonsContainer>
         </StyledBox>

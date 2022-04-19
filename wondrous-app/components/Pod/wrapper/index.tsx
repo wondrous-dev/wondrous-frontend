@@ -1,6 +1,8 @@
 import { useRouter } from 'next/router';
+import apollo from 'services/apollo';
 import React, { useEffect, useState } from 'react';
 import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from 'utils/constants';
+import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
 import { SideBarContext } from 'utils/contexts';
 import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from 'utils/helpers';
 import { usePodBoard } from 'utils/hooks';
@@ -9,6 +11,7 @@ import CreateFormModal from '../../CreateEntity';
 import Header from '../../Header';
 import PodIcon from '../../Icons/podIcon';
 import Tabs from '../../organization/tabs/tabs';
+import { useWonderWeb3 } from 'services/web3';
 import {
   Content,
   ContentContainer,
@@ -40,13 +43,14 @@ import SideBarComponent from '../../SideBar';
 import PlusIcon from '../../Icons/plus';
 import { PrivateBoardIcon } from '../../Common/PrivateBoardIcon';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { GET_USER_JOIN_POD_REQUEST } from 'graphql/queries';
+import { GET_USER_JOIN_POD_REQUEST, GET_TOKEN_GATED_ROLES_FOR_POD, LIT_SIGNATURE_EXIST } from 'graphql/queries';
 import { MembershipRequestModal } from 'components/organization/wrapper/RequestModal';
 import { CREATE_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
 import { TokenGatedRoleModal } from 'components/organization/wrapper/TokenGatedRoleModal';
 
 const Wrapper = (props) => {
   const router = useRouter();
+  const wonderWeb3 = useWonderWeb3();
   const { children } = props;
   const [minimized, setMinimized] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
@@ -67,13 +71,55 @@ const Wrapper = (props) => {
   const [permissions, setPermissions] = useState(undefined);
   const [createFormModal, setCreateFormModal] = useState(false);
   const [openInvite, setOpenInvite] = useState(false);
+  const [tokenGatedRoles, setTokenGatedRoles] = useState([]);
   const podProfile = podBoard?.pod;
   const toggleCreateFormModal = () => {
     toggleHtmlOverflow();
     setCreateFormModal((prevState) => !prevState);
   };
   const links = podProfile?.links;
-
+  const handleJoinPodButtonClick = async () => {
+    let apolloResult;
+    try {
+      apolloResult = await apollo.query({
+        query: GET_TOKEN_GATED_ROLES_FOR_POD,
+        variables: {
+          podId: podBoard?.podId,
+        },
+      });
+    } catch (e) {
+      console.error(e);
+      setOpenJoinRequestModal(true);
+      return;
+    }
+    const roles = apolloResult?.data?.getTokenGatedRolesForPod;
+    if (!roles || roles?.length === 0) {
+      setOpenJoinRequestModal(true);
+      return;
+    }
+    let litSignatureExistResult;
+    try {
+      litSignatureExistResult = await apollo.query({
+        query: LIT_SIGNATURE_EXIST,
+      });
+    } catch (e) {
+      console.error(e);
+      setOpenJoinRequestModal(true);
+      return;
+    }
+    const litSignatureExist = litSignatureExistResult?.data?.litSignatureExist;
+    if (!litSignatureExist?.exist) {
+      // FIXME make sure the account is the correct account
+      const signedMessage = await wonderWeb3.signMessage(LIT_PROTOCOL_MESSAGE);
+    }
+    setTokenGatedRoles(roles);
+    setOpenGatedRoleModal(true);
+  };
+  useEffect(() => {
+    if (joinRequestSent) {
+      setOpenGatedRoleModal(false);
+    }
+  }, [joinRequestSent])
   useEffect(() => {
     const podPermissions = parseUserPermissionContext({
       userPermissionsContext,
@@ -120,7 +166,12 @@ const Wrapper = (props) => {
         open={openJoinRequestModal}
         onClose={() => setOpenJoinRequestModal(false)}
       />
-      <TokenGatedRoleModal open={openGatedRoleModal} onClose={() => setOpenGatedRoleModal(false)} />
+      <TokenGatedRoleModal
+        open={openGatedRoleModal}
+        onClose={() => setOpenGatedRoleModal(false)}
+        tokenGatedRoles={tokenGatedRoles}
+        setOpenJoinRequestModal={setOpenJoinRequestModal}
+      />
       <MoreInfoModal
         open={open && (showUsers || showPods)}
         handleClose={() => {
@@ -195,9 +246,7 @@ const Wrapper = (props) => {
                             style={{
                               width: 'fit-content',
                             }}
-                            onClick={() => {
-                              setOpenJoinRequestModal(true);
-                            }}
+                            onClick={handleJoinPodButtonClick}
                           >
                             <HeaderFollowButtonText>Join pod</HeaderFollowButtonText>
                           </HeaderManageSettingsButton>

@@ -35,17 +35,17 @@ export const UPDATE_TOKEN_GATING_CONDITION = gql`
   ${TokenGatingConditionFragment}
 `;
 
-export const ACTIVATE_TOKEN_GATING_CONDITION_FOR_ORG = gql`
-  mutation activateTokenGatingConditionForOrg($tokenGatingConditionId: ID!, $orgId: ID!) {
-    activateTokenGatingConditionForOrg(tokenGatingConditionId: $tokenGatingConditionId, orgId: $orgId) {
+export const CLAIM_ORG_ROLE = gql`
+  mutation claimOrgRole($orgRoleId: ID!) {
+    claimOrgRole(orgRoleId: $orgRoleId) {
       success
     }
   }
 `;
 
-export const DEACTIVATE_TOKEN_GATING_CONDITION_FOR_ORG = gql`
-  mutation deactivateTokenGatingConditionForOrg($tokenGatingConditionId: ID!, $orgId: ID!) {
-    deactivateTokenGatingConditionForOrg(tokenGatingConditionId: $tokenGatingConditionId, orgId: $orgId) {
+export const CLAIM_POD_ROLE = gql`
+  mutation claimPodRole($podRoleId: ID!) {
+    claimPodRole(podRoleId: $podRoleId) {
       success
     }
   }
