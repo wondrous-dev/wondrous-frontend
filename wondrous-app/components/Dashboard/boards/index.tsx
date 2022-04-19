@@ -115,6 +115,7 @@ const useGetUserTaskBoardTasks = ({
 };
 
 const useGetUserTaskBoardProposals = ({
+  isAdmin,
   listView,
   section,
   contributorColumns,
@@ -139,21 +140,24 @@ const useGetUserTaskBoardProposals = ({
     },
   });
   useEffect(() => {
-    if (section === TASK_STATUS_REQUESTED || listView || data) {
-      getUserTaskBoardProposals({
-        variables: {
-          podIds,
-          userId: loggedInUser?.id,
-          statuses: [STATUS_OPEN],
-          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
-          offset: 0,
-        },
-      });
+    if (!isAdmin && loggedInUser?.id) {
+      if (section === TASK_STATUS_REQUESTED || listView || data) {
+        getUserTaskBoardProposals({
+          variables: {
+            podIds,
+            userId: loggedInUser?.id,
+            statuses: [STATUS_OPEN],
+            limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
+            offset: 0,
+          },
+        });
+      }
     }
-  }, [getUserTaskBoardProposals, listView, loggedInUser?.id, podIds, section, statuses, data]);
+  }, [getUserTaskBoardProposals, isAdmin, listView, loggedInUser?.id, podIds, section, statuses, data]);
 };
 
 const useGetUserTaskBoardSubmissions = ({
+  isAdmin,
   listView,
   section,
   contributorColumns,
@@ -178,21 +182,24 @@ const useGetUserTaskBoardSubmissions = ({
     },
   });
   useEffect(() => {
-    if (section === TASK_STATUS_IN_REVIEW || listView || data) {
-      getUserTaskBoardSubmissions({
-        variables: {
-          podIds,
-          userId: loggedInUser?.id,
-          statuses: [STATUS_OPEN],
-          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
-          offset: 0,
-        },
-      });
+    if (!isAdmin && loggedInUser?.id) {
+      if (section === TASK_STATUS_IN_REVIEW || listView || data) {
+        getUserTaskBoardSubmissions({
+          variables: {
+            podIds,
+            userId: loggedInUser?.id,
+            statuses: [STATUS_OPEN],
+            limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
+            offset: 0,
+          },
+        });
+      }
     }
-  }, [loggedInUser, getUserTaskBoardSubmissions, statuses, podIds, section, listView, data]);
+  }, [isAdmin, loggedInUser, getUserTaskBoardSubmissions, statuses, podIds, section, listView, data]);
 };
 
 const useGetUserTaskBoard = ({
+  isAdmin,
   view,
   section,
   statuses,
@@ -213,6 +220,7 @@ const useGetUserTaskBoard = ({
   });
   const listView = view === ViewType.List;
   useGetUserTaskBoardProposals({
+    isAdmin,
     listView,
     section,
     contributorColumns,
@@ -222,6 +230,7 @@ const useGetUserTaskBoard = ({
     podIds,
   });
   useGetUserTaskBoardSubmissions({
+    isAdmin,
     listView,
     section,
     contributorColumns,
@@ -410,6 +419,7 @@ const BoardsPage = (props) => {
 
   const filterSchema = useFilterSchema(loggedInUser, isAdmin);
   const { getUserTaskBoardTasksFetchMore } = useGetUserTaskBoard({
+    isAdmin,
     section,
     statuses,
     loggedInUser,
