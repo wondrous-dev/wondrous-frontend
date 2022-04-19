@@ -117,7 +117,7 @@ const TokenListboxVirtualized = React.forwardRef<HTMLDivElement, React.HTMLAttri
 const TokenGatingConfigForm = (props) => {
   const router = useRouter();
   const { orgId, org, open, setShowConfigModal, selectedTokenGatingCondition, setSelectedTokenGatingCondition } = props;
-  const [chain, setChain] = useState(chainOptions[0]);
+  const [chain, setChain] = useState(chainOptions[0].value);
   const [name, setName] = useState('');
   const [accessConditionType, setAccessConditionType] = useState('ERC20');
   const [tokenList, setTokenList] = useState([]);
