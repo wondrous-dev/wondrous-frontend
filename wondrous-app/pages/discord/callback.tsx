@@ -161,7 +161,7 @@ const Callback = () => {
           console.log('Error updating discord');
         });
     }
-  }, [user?.signupCompleted, code]);
+  }, [user, user?.signupCompleted, code]);
   return (
     <InviteWelcomeBoxWrapper
       style={{
