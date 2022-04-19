@@ -1,4 +1,7 @@
 import { useMutation, useLazyQuery } from '@apollo/client';
+import apollo from 'services/apollo';
+import { useRouter } from 'next/router';
+
 import ErrorFieldIcon from 'components/Icons/errorField.svg';
 import Ethereum from 'components/Icons/ethereum';
 import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
@@ -31,7 +34,10 @@ import {
   TokenGatingTextfieldTextHelperWrapper,
   TokenGatingTokenAmountWrapper,
 } from './styles';
-import { CREATE_TOKEN_GATING_CONDITION_FOR_ORG } from '../../../graphql/mutations/tokenGating';
+import {
+  CREATE_TOKEN_GATING_CONDITION_FOR_ORG,
+  UPDATE_TOKEN_GATING_CONDITION,
+} from '../../../graphql/mutations/tokenGating';
 import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG, GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
 import { NFT_LIST } from '../../../utils/tokenList';
 
@@ -109,6 +115,7 @@ const TokenListboxVirtualized = React.forwardRef<HTMLDivElement, React.HTMLAttri
 );
 
 const TokenGatingConfigForm = (props) => {
+  const router = useRouter();
   const { orgId, org, open, setShowConfigModal, selectedTokenGatingCondition, setSelectedTokenGatingCondition } = props;
   const [chain, setChain] = useState(chainOptions[0]);
   const [name, setName] = useState('');
@@ -212,7 +219,7 @@ const TokenGatingConfigForm = (props) => {
     setAccessConditionType('ERC20');
     setSelectedToken(null);
     setMinAmount(0);
-    setSelectedTokenGatingCondition(chainOptions[0].value);
+    setSelectedTokenGatingCondition(null);
   };
   const handleMinAmountOnChange = (event) => {
     const { value } = event.target;
@@ -249,8 +256,45 @@ const TokenGatingConfigForm = (props) => {
       }
     }
   };
+  const handleUpdateTokenGate = async () => {
+    setMinAmountError(false);
+    setNameError(false);
+    if (minAmount <= 0) {
+      setMinAmountError(true);
+      return;
+    }
+    if (name === '') {
+      setNameError(true);
+      return;
+    }
+    clearErrors();
+    const contractAddress = selectedToken?.value;
+    try {
+      await apollo.mutate({
+        mutation: UPDATE_TOKEN_GATING_CONDITION,
+        variables: {
+          tokenGatingConditionId: selectedTokenGatingCondition?.id,
+          input: {
+            name,
+            accessCondition: {
+              contractAddress,
+              type: accessConditionType,
+              chain,
+              method: 'balanceOf', // fixme this is wrong, should figure out what the method is
+              minValue: minAmount.toString(),
+            },
+          },
+        },
+      });
+    } catch (e) {
+      console.error(e);
+    }
+    clearErrors();
+    clearSelection();
+    setShowConfigModal(false);
+  };
 
-  const handleOnSubmit = () => {
+  const handleCreateTokenGate = () => {
     setMinAmountError(false);
     setNameError(false);
     if (minAmount <= 0) {
@@ -449,12 +493,11 @@ const TokenGatingConfigForm = (props) => {
               marginTop: 12,
             }}
           ></TokenGatingTextfieldInput>
-          <TokenGatingButton onClick={handleOnSubmit}>Create Token Gate </TokenGatingButton>
-          {/* {creationComplete && (
-            <TokenGatingDisabledButton onClick={handleOnSubmit} disabled={creationComplete}>
-              Created!
-            </TokenGatingDisabledButton>
-          )} */}
+          {selectedTokenGatingCondition ? (
+            <TokenGatingButton onClick={handleUpdateTokenGate}>Update Token Gate </TokenGatingButton>
+          ) : (
+            <TokenGatingButton onClick={handleCreateTokenGate}>Create Token Gate </TokenGatingButton>
+          )}
         </TokenGatingFormWrapper>
       </TokenGatingConfigModal>
     </Modal>

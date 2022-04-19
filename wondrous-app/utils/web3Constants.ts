@@ -62,3 +62,4 @@ export enum SupportedETHChainId {
     [SupportedETHChainId.POLYGON_MUMBAI]: `https://polygon-mumbai.infura.io/v3/${INFURA_KEY}`,
   }
   
+  export const LIT_PROTOCOL_MESSAGE = 'signature verification to token gating'
