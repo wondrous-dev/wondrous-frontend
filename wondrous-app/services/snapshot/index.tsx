@@ -196,36 +196,19 @@ export const useSnapshot = () => {
       params: strat.params
     }))
 
-    // validates via Snapshot.utils.validateSchema, but doesn't sign-- returns error:
-    //    TypeError: Cannot read properties of undefined (reading 'length')
     const formattedProposal = {
-      name: proposal.title,
-      body: proposal.description,
-      choices: ['For', 'Against', 'Abstain'],
-      start: Math.floor(Date.now() / 1000),
-      end: Math.floor(Date.parse(proposal.dueDate) / 1000), snapshot: await provider.getBlockNumber(),
-      type: 'single-choice',
-      discussion: '',
-      metadata: {
-        network: JSON.stringify(data.space.network),
-        strategies: JSON.stringify(strategies),
-        plugins: JSON.stringify(data.space.plugins),
-      }
-    }
-    // doesn't validate via Snapshot.utils.validateSchema, but DOES sign
-    // after signing, returns error:
-    //     { error: 'unauthorized', error_description: 'validation failed' }
-    const formattedProposal2 = {
       space: snapshot.key,
       title: proposal.title,
       body: proposal.description,
       choices: ['For', 'Against', 'Abstain'],
+      timestamp: Math.floor(Date.now() / 1000),
       start: Math.floor(Date.now() / 1000),
       end: Math.floor(Date.parse(proposal.dueDate) / 1000),
       snapshot: await provider.getBlockNumber(),
       type: 'single-choice',
       network: data.space.network,
       discussion: '',
+      from: account,
       strategies: JSON.stringify(strategies),
       plugins: data.space.plugins
         ? typeof data.space.plugins === 'string'
@@ -239,48 +222,12 @@ export const useSnapshot = () => {
         : '{}'
     }
 
-    // succeeds
-    //const valid2 = null;
-    const testProposal = {
-      space: 'myssynglynx.eth',
-      type: 'single-choice',
-      title: 'Test proposal using Snapshot.js',
-      body: '',
-      discussion: '',
-      choices: ['For', 'Against', 'Abstain'],
-      start: Math.floor(Date.now() / 1000),
-      end: Math.floor(Date.parse(proposal.dueDate) / 1000),
-      snapshot: await provider.getBlockNumber(),
-      network: '3',
-      strategies: JSON.stringify({}),
-      plugins: JSON.stringify({}),
-      metadata: JSON.stringify({})
-    }
-    console.log(testProposal)
-    //const valid = validateProposal(formattedProposal);
-    // fails
-    //const valid = null;
-    //const valid = validateProposal(formattedProposal2);
-
-
-    // fails w/ first error flag described (line 200)
-    //const signature = await snapshotClient.proposal(provider, account, formattedProposal2).catch(err => console.error(err))
-    // fails with second error flag described (line 217)
-
-    //const receipt = await snapshotClient.proposal(provider, account, formattedProposal2).catch(err => console.error(err))
-
-    /*
-    if (valid) {
-      const receipt = await snapshotClient.proposal(provider, account, formattedProposal).catch(err => console.error(err))
-      console.log(receipt)
-    }
-    */
-    //if (valid) {
-      const receipt = await snapshotClient.proposal(provider, account, testProposal).catch(err => console.error(err))
-      console.log(receipt)
-    //}
+    const receipt = await snapshotClient.proposal(provider, account, formattedProposal).catch(err => console.error(err))
+    console.log(receipt)
   }
 
+  // unused because snapshot's validation function doesn't work for proposals
+  /*
   const validateProposal = (proposal: any): boolean => {
     const valid = Snapshot.utils.validateSchema(Snapshot.schemas.proposal, proposal)
     if (typeof valid !== 'boolean' && valid !== true) {
@@ -298,6 +245,7 @@ export const useSnapshot = () => {
       return true
     }
   }
+   */
 
   // error switching function
   // takes in Enum, returns JSX element w/ corresponding Error text
