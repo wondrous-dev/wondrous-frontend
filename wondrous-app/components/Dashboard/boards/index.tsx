@@ -59,6 +59,7 @@ const awaitingPayment = {
 const baseColumnsAdmin = [proposal, submissions];
 
 const useGetUserTaskBoardTasks = ({
+  isAdmin,
   contributorColumns,
   setContributorColumns,
   setHasMoreTasks,
@@ -97,21 +98,24 @@ const useGetUserTaskBoardTasks = ({
     const taskBoardStatuses =
       statuses.length > 0 ? statuses?.filter((status) => DEFAULT_STATUS_ARR.includes(status)) : DEFAULT_STATUS_ARR;
     const taskBoardStatusesIsNotEmpty = taskBoardStatuses.length > 0;
-    getUserTaskBoardTasks({
-      variables: {
-        podIds,
-        userId: loggedInUser?.id,
-        statuses: taskBoardStatuses,
-        limit: taskBoardStatusesIsNotEmpty ? LIMIT : 0,
-        offset: 0,
-      },
-    });
+    if (!isAdmin && loggedInUser?.id) {
+      getUserTaskBoardTasks({
+        variables: {
+          podIds,
+          userId: loggedInUser?.id,
+          statuses: taskBoardStatuses,
+          limit: taskBoardStatusesIsNotEmpty ? LIMIT : 0,
+          offset: 0,
+        },
+      });
+    }
     setHasMoreTasks(true);
   }, [getUserTaskBoardTasks, loggedInUser?.id, podIds, statuses, setHasMoreTasks]);
   return { getUserTaskBoardTasksFetchMore };
 };
 
 const useGetUserTaskBoardProposals = ({
+  isAdmin,
   listView,
   section,
   contributorColumns,
@@ -136,21 +140,24 @@ const useGetUserTaskBoardProposals = ({
     },
   });
   useEffect(() => {
-    if (section === TASK_STATUS_REQUESTED || listView || data) {
-      getUserTaskBoardProposals({
-        variables: {
-          podIds,
-          userId: loggedInUser?.id,
-          statuses: [STATUS_OPEN],
-          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
-          offset: 0,
-        },
-      });
+    if (!isAdmin && loggedInUser?.id) {
+      if (section === TASK_STATUS_REQUESTED || listView || data) {
+        getUserTaskBoardProposals({
+          variables: {
+            podIds,
+            userId: loggedInUser?.id,
+            statuses: [STATUS_OPEN],
+            limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
+            offset: 0,
+          },
+        });
+      }
     }
-  }, [getUserTaskBoardProposals, listView, loggedInUser?.id, podIds, section, statuses, data]);
+  }, [getUserTaskBoardProposals, isAdmin, listView, loggedInUser?.id, podIds, section, statuses, data]);
 };
 
 const useGetUserTaskBoardSubmissions = ({
+  isAdmin,
   listView,
   section,
   contributorColumns,
@@ -175,21 +182,24 @@ const useGetUserTaskBoardSubmissions = ({
     },
   });
   useEffect(() => {
-    if (section === TASK_STATUS_IN_REVIEW || listView || data) {
-      getUserTaskBoardSubmissions({
-        variables: {
-          podIds,
-          userId: loggedInUser?.id,
-          statuses: [STATUS_OPEN],
-          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
-          offset: 0,
-        },
-      });
+    if (!isAdmin && loggedInUser?.id) {
+      if (section === TASK_STATUS_IN_REVIEW || listView || data) {
+        getUserTaskBoardSubmissions({
+          variables: {
+            podIds,
+            userId: loggedInUser?.id,
+            statuses: [STATUS_OPEN],
+            limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
+            offset: 0,
+          },
+        });
+      }
     }
-  }, [loggedInUser, getUserTaskBoardSubmissions, statuses, podIds, section, listView, data]);
+  }, [isAdmin, loggedInUser, getUserTaskBoardSubmissions, statuses, podIds, section, listView, data]);
 };
 
 const useGetUserTaskBoard = ({
+  isAdmin,
   view,
   section,
   statuses,
@@ -200,6 +210,7 @@ const useGetUserTaskBoard = ({
   podIds,
 }) => {
   const { getUserTaskBoardTasksFetchMore } = useGetUserTaskBoardTasks({
+    isAdmin,
     contributorColumns,
     setContributorColumns,
     setHasMoreTasks,
@@ -209,6 +220,7 @@ const useGetUserTaskBoard = ({
   });
   const listView = view === ViewType.List;
   useGetUserTaskBoardProposals({
+    isAdmin,
     listView,
     section,
     contributorColumns,
@@ -218,6 +230,7 @@ const useGetUserTaskBoard = ({
     podIds,
   });
   useGetUserTaskBoardSubmissions({
+    isAdmin,
     listView,
     section,
     contributorColumns,
@@ -403,8 +416,10 @@ const BoardsPage = (props) => {
     setStatuses,
     podIds,
   });
+
   const filterSchema = useFilterSchema(loggedInUser, isAdmin);
   const { getUserTaskBoardTasksFetchMore } = useGetUserTaskBoard({
+    isAdmin,
     section,
     statuses,
     loggedInUser,
@@ -536,7 +551,7 @@ const BoardsPage = (props) => {
           }
         });
       } else {
-        getUserTaskBoardTasksFetchMore();
+        !isAdmin && getUserTaskBoardTasksFetchMore();
       }
     }
   }, [hasMoreTasks, contributorColumns, getUserTaskBoardTasksFetchMore]);
@@ -632,6 +647,7 @@ const BoardsPage = (props) => {
     }
   };
   const activeColumns = isAdmin ? adminColumns : contributorColumns;
+
   return (
     <UserBoardContext.Provider
       value={{
