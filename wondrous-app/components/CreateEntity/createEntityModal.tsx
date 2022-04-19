@@ -370,7 +370,6 @@ const CreateLayoutBaseModal = (props) => {
         },
       })
         .then((data) => {
-          console.log({ data });
           const task = data?.data?.getTaskById;
           setOrg(task?.orgId);
           setPod(task?.podId);
@@ -387,7 +386,6 @@ const CreateLayoutBaseModal = (props) => {
         },
       })
         .then((data) => {
-          console.log({ data });
           const task = data?.data?.getTaskById;
           setOrg(task?.orgId);
           setPod(task?.podId);

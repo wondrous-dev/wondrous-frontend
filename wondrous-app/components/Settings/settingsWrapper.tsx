@@ -2,12 +2,12 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import PodIcon from 'components/Icons/podIcon';
 import RolesIcon from 'components/Icons/roles';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_ORG_BY_ID } from 'graphql/queries/org';
 import { GET_POD_BY_ID } from 'graphql/queries/pod';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import { SettingsPage } from 'types/common';
 import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
@@ -19,6 +19,7 @@ import CardIcon from '../Icons/card';
 import GeneralSettingsIcon from '../Icons/generalSettings';
 import MembersIcon from '../Icons/members';
 import { NotificationOutlineSettings } from '../Icons/notifications';
+import TokenGatingIcon from '../Icons/tokenGating.svg';
 import WrenchIcon from '../Icons/wrench';
 import SideBarComponent from '../SideBar';
 import {
@@ -135,6 +136,13 @@ export const SettingsWrapper = (props) => {
       value: 'wallet',
       href: orgId ? `/organization/settings/${orgId}/wallet` : `/pod/settings/${podId}/wallet`,
       page: [SettingsPage.Org, SettingsPage.Pod],
+    },
+    {
+      icon: <TokenGatingIcon />,
+      label: 'Token Gating',
+      value: 'token-gating',
+      href: `/organization/settings/${orgId}/token-gating`,
+      page: [SettingsPage.Org],
     },
     {
       icon: <CardIcon width={40} height={40} />,

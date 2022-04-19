@@ -228,7 +228,7 @@ const Wrapper = (props) => {
                               setOpenJoinRequestModal(true);
                             }}
                           >
-                            <HeaderFollowButtonText>Request to join</HeaderFollowButtonText>
+                            <HeaderFollowButtonText>Join org</HeaderFollowButtonText>
                           </HeaderManageSettingsButton>
                         )}
                       </>

@@ -20,11 +20,15 @@ import {
   StyledHeader,
 } from '../../Common/ArchiveTaskModal/styles';
 import { GeneralSettingsDAODescriptionInput } from '../../Settings/styles';
+import TokenGatedRoleDisplay from './TokenGatedRoleDisplay';
 
-export const MembershipRequestModal = (props) => {
-  const { open, onClose, sendRequest, orgId, podId, setJoinRequestSent } = props;
+export const TokenGatedRoleModal = (props) => {
+  const { open, onClose, sendRequest, orgId, podId, setJoinRequestSent, tokenGatedRoles, setOpenJoinRequestModal } = props;
   const board = useOrgBoard();
   const [requestMessage, setRequestMessage] = useState('');
+  if (!open) {
+    return <></>
+  }
   return (
     <>
       <StyledDialog
@@ -48,25 +52,14 @@ export const MembershipRequestModal = (props) => {
               marginLeft: 0,
             }}
           >
-            {orgId ? 'DAO' : 'Pod'} membership request{' '}
+            Token gated roles
           </StyledHeader>
           <StyledBody
             style={{
               marginLeft: 0,
             }}
-          >
-            <GeneralSettingsDAODescriptionInput
-              multiline
-              rows={3}
-              value={requestMessage}
-              placeholder="Send message to admin (optional)"
-              onChange={(e) => {
-                if (e.target.value?.length < CHAR_LIMIT_PROFILE_BIO) {
-                  setRequestMessage(e.target.value);
-                }
-              }}
-            />
-          </StyledBody>
+          ></StyledBody>
+          {tokenGatedRoles && tokenGatedRoles.map((role)=> <TokenGatedRoleDisplay key={role.id} role={role}/>)}
           <StyledDivider
             style={{
               marginLeft: 0,
@@ -80,34 +73,7 @@ export const MembershipRequestModal = (props) => {
           >
             <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
             <StyledArchiveTaskButton>
-              <ArchivedIcon />
-              <StyledArchivedLabel
-                onClick={() => {
-                  if (orgId) {
-                    sendRequest({
-                      variables: {
-                        orgId,
-                        ...(requestMessage && {
-                          message: requestMessage,
-                        }),
-                      },
-                    });
-                  } else if (podId) {
-                    sendRequest({
-                      variables: {
-                        podId,
-                        ...(requestMessage && {
-                          message: requestMessage,
-                        }),
-                      },
-                    });
-                  }
-                  setJoinRequestSent(true);
-                  onClose();
-                }}
-              >
-                Send request
-              </StyledArchivedLabel>
+              <StyledArchivedLabel onClick={()=>setOpenJoinRequestModal(true)}>Request To Join</StyledArchivedLabel>
             </StyledArchiveTaskButton>
           </StyledButtonsContainer>
         </StyledBox>

@@ -1,5 +1,5 @@
 import { SafeImage } from 'components/Common/Image';
-import { Button, IconButton, Typography } from '@material-ui/core';
+import { Button, IconButton, Typography, Box } from '@material-ui/core';
 import Image from 'next/image';
 import React from 'react';
 import styled from 'styled-components';
@@ -8,6 +8,7 @@ import { Button as BorderButton } from '../../Common/button';
 import { BaseCard } from '../../Common/card';
 import { LogoCircle } from '../../Common/ci';
 import { LinkIcon } from '../../Icons/linkIcon';
+import { Button as ButtonComponent } from 'components/Common/button'
 
 export const OverviewComponent = styled.section`
   width: 100vw;
@@ -245,6 +246,7 @@ export const HeaderSettingsLockedButton = (props) => (
       height: '40px',
       minHeight: '0',
       visibility: 'hidden',
+      ...props?.style,
     }}
     buttonInnerStyle={{
       color: '#474747',
@@ -560,3 +562,91 @@ export const PostActivityIcon = styled.img`
 
 export const PostComments = styled(PostLikes)``;
 export const PostShares = styled(PostLikes)``;
+
+// token gated related components TODO move elsewhere
+export const TokenGatedRoleWrapper = styled(Box)`
+  && {
+    background: #0f0f0f;
+    border-radius: 6px;
+    padding: 24px;
+    margin-top: 24px;
+  }
+`;
+
+export const TokenGatedRoleTitle = styled(Typography)`
+  && {
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 36px;
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+`;
+
+export const TokenGatedRoleDescription = styled(Typography)`
+  && {
+    font-weight: 200;
+    font-size: 15px;
+    line-height: 36px;
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+`;
+
+export const TokenLogoDisplay = (props) => (
+  <SafeImage
+    src={props?.src}
+    style={{
+      width: '29px',
+      height: '28px',
+      borderRadius: '4px',
+      marginRight: '5px',
+    }}
+  />
+);
+
+
+export const ClaimRoleButton = styled(ButtonComponent)`
+    && {
+        background: linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%);
+        min-height: 0;
+        min-width: 0;
+        height: 40px;
+        display: flex;
+        padding: 4px 2px;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+        color: #FFFFFF;
+        opacity: 0.8;
+        transition: opacity 0.25s;
+        button {
+            padding: 4px 8px;
+            background: rgba(20, 20, 20, 1);
+            font-size: 15px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        :hover {
+            opacity: 1;
+        }
+
+        
+    }
+`
+
+export const ClaimRoleLabel = styled(Typography)`
+    && {
+        margin-left: 6px;
+        color: #fff;
+        font-weight: 600;
+        font-size: 15px;
+        letter-spacing: -1%;
+    }
+`

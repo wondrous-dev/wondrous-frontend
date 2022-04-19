@@ -129,6 +129,7 @@ export const GET_JOIN_ORG_REQUESTS = gql`
       orgUsername
       podColor
       podName
+      createdAt
     }
   }
 `;

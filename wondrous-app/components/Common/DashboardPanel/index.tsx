@@ -12,7 +12,7 @@ import DashboardPanelExpanded from '../DashboardPanelExpanded';
 import { DashboardPanelWrapper } from './styles';
 
 const panels = { contributor: 'Contributor', admin: 'Admin' };
-
+export const MEMBERSHIP_REQUEST_COUNT = 'membershipRequestCount';
 const statusCardsBase = [
   {
     Icon: TodoIcon,
@@ -63,7 +63,7 @@ const statusCardsBase = [
     color: 'linear-gradient(196.76deg, #FFFFFF -48.71%, #FF6DD7 90.48%)',
     panelPosition: 4,
     panel: panels.admin,
-    dataKey: 'orgMembershipRequestCount',
+    dataKey: MEMBERSHIP_REQUEST_COUNT,
   },
   // NOTE: Per Terry's instruction, payments will be hidden for now from the Admin View
   // {
@@ -81,6 +81,19 @@ const updateStatusCards = (data, statusData, panel) => {
   return statusData
     .filter((i) => panel === i.panel)
     .map((status) => {
+      if (status?.dataKey === MEMBERSHIP_REQUEST_COUNT) {
+        let count = 0;
+        if (data?.orgMembershipRequestCount) {
+          count = count + Number(data?.orgMembershipRequestCount);
+        }
+        if (data?.podMembershipRequestCount) {
+          count = count + Number(data?.podMembershipRequestCount);
+        }
+        return {
+          ...status,
+          count: count,
+        };
+      }
       return {
         ...status,
         count: data?.[status?.dataKey] ?? 0,
@@ -103,6 +116,7 @@ const DashboardPanel = (props) => {
     ? getWorkFlowBoardReviewableItemsCountData?.getWorkFlowBoardReviewableItemsCount
     : getPerStatusTaskCountData?.getPerStatusTaskCountForUserBoard;
   const activePanelStatusCards = updateStatusCards(activePanelData, statusCardsBase, activePanel);
+
   useEffect(() => {
     if (!loggedInUser) {
       return;
