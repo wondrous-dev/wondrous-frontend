@@ -68,10 +68,12 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
     const objectId = notification.objectId;
 
     const object = (
-      <NotificationsLink href={`/${snakeToCamel(notification.objectType)}/${objectId}`}>
-        {objectType}
+      <span>
+        <NotificationsLink href={`/${snakeToCamel(notification.objectType)}/${objectId}`}>
+          {objectType}
+        </NotificationsLink>
         <NotificationItemTimeline>{calculateTimeLapse(notification.timestamp)}</NotificationItemTimeline>
-      </NotificationsLink>
+      </span>
     );
 
     return (
