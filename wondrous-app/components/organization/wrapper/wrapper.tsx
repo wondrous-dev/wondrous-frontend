@@ -333,7 +333,6 @@ const Wrapper = (props) => {
                   </div>
                 </HeaderActivity>
               </TokenHeader>
-
               <Tabs>{children}</Tabs>
             </ContentContainer>
           </Content>
