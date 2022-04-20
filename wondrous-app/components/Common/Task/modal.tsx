@@ -1463,8 +1463,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   flexWrap: 'wrap',
                 }}
               >
-                {(fetchedTask?.tags || []).length
-                  ? (fetchedTask?.tags || []).map((tag) => <Tag key={tag}>{tag}</Tag>)
+                {fetchedTask?.tags && fetchedTask?.tags.length
+                  ? fetchedTask?.tags.map((tag) => <Tag key={tag}>{tag}</Tag>)
                   : 'None'}
               </TaskSectionInfoText>
             </TaskSectionDisplayDiv>
