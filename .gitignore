@@ -4,4 +4,8 @@ node_modules/**/*
 .env
 yarn-error.log
 .idea
+<<<<<<< HEAD
 .DS_STORE
+=======
+.DS_Store
+>>>>>>> 542d3a15 (Create Docs tab page)
