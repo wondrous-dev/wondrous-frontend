@@ -4,7 +4,7 @@ import apollo from 'services/apollo';
 
 import { Button, CircularProgress } from '@material-ui/core';
 import CheckMarkIcon from '../../Icons/checkMark';
-import RedXIcon from '../../Icons/redX.svg';
+import RedXIcon from '../../Icons/redx';
 import { useRouter } from 'next/router';
 import {
   CHECK_ORG_ROLE_TOKEN_GATING_CONDITION,
@@ -24,6 +24,7 @@ import {
   TokenLogoDisplay,
   ClaimRoleButton,
   ClaimRoleLabel,
+  RoleActionWrapper,
 } from './styles';
 import { White } from 'theme/colors';
 import { useEditTokenGatingCondition } from 'utils/hooks';
@@ -122,6 +123,7 @@ const TokenGatedRoleDisplay = (props) => {
         });
       }
     };
+    setCanClaimRole(false);
     checkUserCanObtainRole();
   }, [role, user]);
 
@@ -147,6 +149,7 @@ const TokenGatedRoleDisplay = (props) => {
 
     getTokenDisplayInfo();
   }, [role?.tokenGatingCondition?.accessCondition[0].contractAddress]);
+
   const handleClaimRoleClick = async () => {
     try {
       if (role?.orgId) {
@@ -168,47 +171,73 @@ const TokenGatedRoleDisplay = (props) => {
     } catch (e) {
       console.error(e);
     }
-    router.reload()
+    router.reload();
   };
   return (
     <TokenGatedRoleWrapper>
-      <TokenGatedRoleTitle>{role?.name}</TokenGatedRoleTitle>
+      <div>
+        <TokenGatedRoleTitle>{role?.name}</TokenGatedRoleTitle>
 
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <TokenLogoDisplay src={tokenLogo} />
-        <TokenGatedRoleDescription>{tokenName ? tokenName : contractAddress}</TokenGatedRoleDescription>
-      </div>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <TokenGatedRoleDescription>Min. amount to hold:</TokenGatedRoleDescription>
-        <TokenGatedRoleDescription>{role?.tokenGatingCondition?.accessCondition[0].minValue}</TokenGatedRoleDescription>
-      </div>
-      {checkOrgRoleAccessLoading || checkPodRoleAccessLoading ? (
-        <CircularProgress
+        <div
           style={{
-            width: '20px',
-            height: '20px',
+            display: 'flex',
+            alignItems: 'center',
           }}
-        />
-      ) : canClaimRole ? (
-        <CheckMarkIcon />
-      ) : (
-        <RedXIcon />
-      )}
-      {canClaimRole && (
-        <ClaimRoleButton onClick={handleClaimRoleClick}> 
-          <ClaimRoleLabel >Claim Role</ClaimRoleLabel>
-        </ClaimRoleButton>
-      )}
+        >
+          <TokenLogoDisplay src={tokenLogo} />
+          <TokenGatedRoleDescription>{tokenName ? tokenName : contractAddress}</TokenGatedRoleDescription>
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <TokenGatedRoleDescription>Min. amount to hold:</TokenGatedRoleDescription>
+          <TokenGatedRoleDescription>
+            {role?.tokenGatingCondition?.accessCondition[0].minValue}
+          </TokenGatedRoleDescription>
+        </div>
+      </div>
+      <RoleActionWrapper>
+        {checkOrgRoleAccessLoading || checkPodRoleAccessLoading ? (
+          <CircularProgress
+            style={{
+              width: '30px',
+              height: '30px',
+            }}
+          />
+        ) : canClaimRole ? (
+          <div>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+              }}
+            >
+              <CheckMarkIcon
+                style={{
+                  width: '30',
+                  height: '30',
+                }}
+              />
+            </div>
+
+            {canClaimRole && (
+              <ClaimRoleButton onClick={handleClaimRoleClick}>
+                <ClaimRoleLabel>Claim Role</ClaimRoleLabel>
+              </ClaimRoleButton>
+            )}
+          </div>
+        ) : (
+              <RedXIcon
+                style={{
+                  width: '30',
+                  height: '30',
+                }}
+              />
+        )}
+      </RoleActionWrapper>
     </TokenGatedRoleWrapper>
   );
 };
