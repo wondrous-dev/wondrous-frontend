@@ -518,7 +518,7 @@ export const TaskUserDiv = styled.div`
 export const Tag = styled.div`
   background-color: #353535;
   border-radius: 4px;
-  padding: 4px 6px;
+  padding: 2px 6px;
   color: white;
   margin: 5px 0;
   
