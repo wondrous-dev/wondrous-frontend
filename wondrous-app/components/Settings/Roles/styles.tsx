@@ -127,3 +127,18 @@ export const Error = styled.h3`
   color: ${Red800};
   margin: 30px 0;
 `;
+
+export const TokenGatingButton = styled(Button)`
+  min-width: 87px;
+  max-width: 166px;
+  height: 40px;
+  min-height: 40px;
+`;
+
+export const PermissionTitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  > * {
+    margin-right: 10px;
+  }
+`;
