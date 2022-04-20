@@ -14,6 +14,7 @@ import { FormControl } from '@material-ui/core';
 const MenuProps = {
   PaperProps: {
     style: {
+      maxHeight: '250px',
       width: '100%',
       maxWidth: 260,
       background: 'linear-gradient(180deg, #1E1E1E 0%, #141414 109.19%)',
