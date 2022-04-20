@@ -23,7 +23,7 @@ import {
   RolesInputsBlock,
   Snackbar,
   TokenGatingButton,
-  PermissionTitleWrapper,
+  TitleLockIconWrapper,
 } from './styles';
 import { Role } from 'types/common';
 import RoleLockIcon from '../../Icons/rolesLock.svg';
@@ -150,10 +150,17 @@ const Roles = ({
 
         {roles.map((orgRole) => (
           <Box key={orgRole.id} mt={22}>
-            <Accordion title={orgRole.name}>
+            <Accordion
+              title={
+                <TitleLockIconWrapper>
+                  <p>orgRole.name</p>
+                  {true ? <RoleLockIcon /> : null}
+                </TitleLockIconWrapper>
+              }
+            >
               <Permissions>
                 <Permission>
-                  <PermissionTitleWrapper>
+                  <TitleLockIconWrapper>
                     {true ? (
                       <>
                         <PermissionTitle>Active Token Gate: 20 ETH</PermissionTitle>
@@ -162,7 +169,7 @@ const Roles = ({
                     ) : (
                       <PermissionTitle>Token Gating: Inactive</PermissionTitle>
                     )}
-                  </PermissionTitleWrapper>
+                  </TitleLockIconWrapper>
                   <TokenGatingButton highlighted={true}>{true ? 'Edit' : 'Add token gate'}</TokenGatingButton>
                 </Permission>
                 {permissons.map((item) => (

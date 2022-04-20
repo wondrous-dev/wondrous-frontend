@@ -135,7 +135,7 @@ export const TokenGatingButton = styled(Button)`
   min-height: 40px;
 `;
 
-export const PermissionTitleWrapper = styled.div`
+export const TitleLockIconWrapper = styled.div`
   display: flex;
   align-items: center;
   > * {
