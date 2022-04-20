@@ -153,15 +153,15 @@ const Roles = ({
             <Accordion
               title={
                 <TitleLockIconWrapper>
-                  <p>orgRole.name</p>
-                  {true ? <RoleLockIcon /> : null}
+                  <p>{orgRole.name}</p>
+                  {false ? <RoleLockIcon /> : null}
                 </TitleLockIconWrapper>
               }
             >
               <Permissions>
                 <Permission>
                   <TitleLockIconWrapper>
-                    {true ? (
+                    {false ? (
                       <>
                         <PermissionTitle>Active Token Gate: 20 ETH</PermissionTitle>
                         <RoleLockIcon />
@@ -170,7 +170,7 @@ const Roles = ({
                       <PermissionTitle>Token Gating: Inactive</PermissionTitle>
                     )}
                   </TitleLockIconWrapper>
-                  <TokenGatingButton highlighted={true}>{true ? 'Edit' : 'Add token gate'}</TokenGatingButton>
+                  <TokenGatingButton highlighted={true}>{false ? 'Edit' : 'Add token gate'}</TokenGatingButton>
                 </Permission>
                 {permissons.map((item) => (
                   <Permission key={item.permission}>
