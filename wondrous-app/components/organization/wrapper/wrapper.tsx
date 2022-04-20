@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from '../../../utils/constants';
-import { SideBarContext } from '../../../utils/contexts';
+import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from 'utils/constants';
+import { SideBarContext } from 'utils/contexts';
 
 import Header from '../../Header';
 import SideBarComponent from '../../SideBar';
 import Tabs from '../tabs/tabs';
 import CreateFormModal from '../../CreateEntity';
-import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from '../../../utils/helpers';
+import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from 'utils/helpers';
 
 import {
   Content,
@@ -22,7 +22,7 @@ import {
   HeaderFollowButton,
   HeaderFollowButtonIcon,
   HeaderFollowButtonText,
-  HeaderImage,
+  HeaderImageDefault,
   HeaderMainBlock,
   HeaderManageSettingsButton,
   HeaderPods,
@@ -38,11 +38,13 @@ import {
   PlusIconWrapper,
   TokenEmptyLogo,
   HeaderTitleIcon,
+  HeaderImage,
+  HeaderImageWrapper,
 } from './styles';
-import { useOrgBoard } from '../../../utils/hooks';
+import { useOrgBoard } from 'utils/hooks';
 import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
-import { GET_ORG_BY_ID, GET_USER_JOIN_ORG_REQUEST } from '../../../graphql/queries/org';
-import { CREATE_JOIN_ORG_REQUEST } from '../../../graphql/mutations/org';
+import { GET_ORG_BY_ID, GET_USER_JOIN_ORG_REQUEST } from 'graphql/queries/org';
+import { CREATE_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
 import { SafeImage } from '../../Common/Image';
 import PlusIcon from '../../Icons/plus';
 import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink';
@@ -50,12 +52,7 @@ import { MoreInfoModal } from '../../profile/modals';
 import { Router, useRouter } from 'next/router';
 import { NoLogoDAO } from '../../SideBar/styles';
 import { DAOEmptyIcon, DAOIcon } from '../../Icons/dao';
-import {
-  SOCIAL_MEDIA_DISCORD,
-  SOCIAL_MEDIA_TWITTER,
-  SOCIAL_OPENSEA,
-  SOCIAL_MEDIA_LINKEDIN,
-} from '../../../utils/constants';
+import { SOCIAL_MEDIA_DISCORD, SOCIAL_MEDIA_TWITTER, SOCIAL_OPENSEA, SOCIAL_MEDIA_LINKEDIN } from 'utils/constants';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
 import LinkedInIcon from '../../Icons/linkedIn';
 import OpenSeaIcon from '../../Icons/openSea';
@@ -170,7 +167,10 @@ const Wrapper = (props) => {
             paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
           }}
         >
-          <HeaderImage />
+          <HeaderImageWrapper>
+            {orgProfile?.headerPicture ? <HeaderImage src={orgProfile?.headerPicture} /> : <HeaderImageDefault />}
+          </HeaderImageWrapper>
+
           <Content>
             <ContentContainer>
               <TokenHeader>
@@ -228,7 +228,7 @@ const Wrapper = (props) => {
                               setOpenJoinRequestModal(true);
                             }}
                           >
-                            <HeaderFollowButtonText>Request to join</HeaderFollowButtonText>
+                            <HeaderFollowButtonText>Join org</HeaderFollowButtonText>
                           </HeaderManageSettingsButton>
                         )}
                       </>

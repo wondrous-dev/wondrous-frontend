@@ -79,3 +79,27 @@ export const INVITE_USER_TO_POD = gql`
     }
   }
 `;
+
+export const CREATE_JOIN_POD_REQUEST = gql`
+  mutation createJoinPodRequest($podId: ID!, $message: String) {
+    createJoinPodRequest(podId: $podId, message: $message) {
+      success
+    }
+  }
+`;
+
+export const APPROVE_JOIN_POD_REQUEST = gql`
+  mutation approveJoinPodRequest($userId: ID!, $podId: ID!) {
+    approveJoinPodRequest(userId: $userId, podId: $podId) {
+      success
+    }
+  }
+`;
+
+export const REJECT_JOIN_POD_REQUEST = gql`
+  mutation rejectJoinPodRequest($userId: ID!, $podId: ID!) {
+    rejectJoinPodRequest(userId: $userId, podId: $podId) {
+      success
+    }
+  }
+`;

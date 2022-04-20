@@ -15,6 +15,7 @@ const InputForm = (props) => {
         onChange={onChange}
         startAdornment={<SearchInputIcon position="start">{icon}</SearchInputIcon>}
         endAdornment={endAdornment}
+        onWheel={(e) => e.target.blur()}
       />
       {search && (
         <SearchInputIconButton>

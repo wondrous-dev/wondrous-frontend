@@ -13,14 +13,14 @@ import {
   ProfilePictureDiv,
 } from './styles';
 import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
-import { FileLoading } from '../../components/Common/FileUpload/FileUpload';
+import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 
 import { useRouter } from 'next/router';
 
-import { SecondStep } from '../../components/Common/Image/OnboardingProgressBar';
+import { SecondStep } from 'components/Common/Image/OnboardingProgressBar';
 import { useMe } from '../Auth/withAuth';
 import { HighlightBlue } from '../../theme/colors';
-import { getFilenameAndType, uploadMedia } from '../../utils/media';
+import { getFilenameAndType, uploadMedia } from 'utils/media';
 import { SafeImage } from '../Common/Image';
 import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
 

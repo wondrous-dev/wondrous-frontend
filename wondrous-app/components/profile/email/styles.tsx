@@ -17,8 +17,8 @@ import {
   White,
   Yellow400,
 } from '../../../theme/colors';
-import { createSpacingUnit } from '../../../utils';
-import { device } from '../../../utils/device';
+import { createSpacingUnit } from 'utils';
+import { device } from 'utils/device';
 
 import ClearIcon from '@material-ui/icons/Clear';
 import { CenteredFlexRow } from '../../Common';

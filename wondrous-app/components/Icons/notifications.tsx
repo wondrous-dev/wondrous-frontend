@@ -70,26 +70,14 @@ export const StatusFlag = () => {
 export const NotificationOutlineSettings = (props) => {
   const { width, height } = props;
   return (
-    <svg
-      width={width || '16'}
-      height={height || '18'}
-      viewBox="0 0 16 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 20 20" {...props}>
       <path
-        d="M9.41903 18.3347C9.28401 18.5675 9.0902 18.7607 8.85702 18.895C8.62384 19.0293 8.35947 19.1 8.09038 19.1C7.82128 19.1 7.55691 19.0293 7.32373 18.895C7.09055 18.7607 6.89674 18.5675 6.76172 18.3347"
         stroke="#7A7A7A"
         strokeLinecap="round"
         strokeLinejoin="round"
-      />
-      <path
-        d="M12.6998 8.35049C12.6998 7.12836 12.2143 5.95628 11.3502 5.0921C10.486 4.22792 9.31391 3.74243 8.09178 3.74243C6.86964 3.74243 5.69757 4.22792 4.83339 5.0921C3.96921 5.95628 3.48372 7.12836 3.48372 8.35049C3.48372 13.7266 1.17969 15.2626 1.17969 15.2626H15.0039C15.0039 15.2626 12.6998 13.7266 12.6998 8.35049Z"
-        stroke="#7A7A7A"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle cx="8.38597" cy="3.13402" r="2.05003" fill="#7A7A7A" stroke="#0F0F0F" strokeWidth="2" />
+        strokeWidth="1"
+        d="M15.294 6.74a5.4 5.4 0 00-10.798 0c0 6.298-2.7 8.098-2.7 8.098h16.198s-2.7-1.8-2.7-8.099zM11.45 18.438a1.8 1.8 0 01-3.114 0"
+      ></path>
     </svg>
   );
 };

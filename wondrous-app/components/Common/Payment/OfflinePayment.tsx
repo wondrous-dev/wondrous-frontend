@@ -2,8 +2,8 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ethers, utils } from 'ethers';
 import DropdownSelect from '../DropdownSelect/dropdownSelect';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
-import { LINK_OFF_PLATFORM_PAYMENT } from '../../../graphql/mutations/payment';
+import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { LINK_OFF_PLATFORM_PAYMENT } from 'graphql/mutations/payment';
 import { PaymentLinkInput, WarningTypography } from './styles';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { ErrorText } from '../../Common';
@@ -12,7 +12,7 @@ import {
   GET_PAYMENTS_FOR_POD,
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
-} from '../../../graphql/queries/payment';
+} from 'graphql/queries/payment';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import { Typography } from '@material-ui/core';
 import { PaymentDescriptionText } from './styles';

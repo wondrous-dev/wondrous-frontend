@@ -10,7 +10,7 @@ import {
   TASK_STATUS_TODO,
   ENTITIES_TYPES,
   BOARD_TYPE,
-} from '../../../../utils/constants';
+} from 'utils/constants';
 
 import { ToDo, InProgress, Done } from '../../../Icons';
 import { ColumnSection } from '../../ColumnSection';
@@ -29,8 +29,8 @@ import { Task } from '../../Task';
 import { DropZone } from '../../../Icons/dropZone';
 import Milestone from '../../Milestone';
 import { useMe } from '../../../Auth/withAuth';
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../../../utils/hooks';
-import { parseUserPermissionContext } from '../../../../utils/helpers';
+import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { parseUserPermissionContext } from 'utils/helpers';
 
 interface ITaskColumn {
   cardsList: Array<any>;
@@ -93,7 +93,6 @@ const TaskColumn = (props: ITaskColumn) => {
       number = 0;
       break;
   }
-
   return (
     <TaskColumnContainer>
       <TaskColumnContainerHeader>

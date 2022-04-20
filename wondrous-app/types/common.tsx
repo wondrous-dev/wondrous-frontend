@@ -10,3 +10,15 @@ export enum ViewType {
   Grid = 'grid',
   Admin = 'admin',
 }
+
+export interface Link {
+  displayName: string;
+  url: string;
+  type: string;
+}
+
+export enum SettingsPage {
+  Profile,
+  Org,
+  Pod,
+}

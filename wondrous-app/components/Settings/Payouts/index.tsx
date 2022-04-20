@@ -15,7 +15,7 @@ import {
   StyledTableHead,
   StyledTableRow,
 } from '../../Table/styles';
-import { delQuery } from '../../../utils';
+import { delQuery } from 'utils';
 import { ToggleViewButton } from '../../Common/ToggleViewButton';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import {
@@ -23,22 +23,22 @@ import {
   GET_PAYMENTS_FOR_POD,
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
-} from '../../../graphql/queries/payment';
+} from 'graphql/queries/payment';
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import { StyledCheckbox, TableCellText } from './styles';
 import { CompensationAmount, CompensationPill, IconContainer } from '../../Common/Compensation/styles';
-import { GET_ORG_BY_ID, GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
+import { GET_ORG_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import Link from 'next/link';
-import { cutString, parseUserPermissionContext } from '../../../utils/helpers';
+import { cutString, parseUserPermissionContext } from 'utils/helpers';
 import { constructGnosisRedirectUrl } from '../../Common/Payment/SingleWalletPayment';
 import { White, Grey800 } from '../../../theme/colors';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PayModal } from './modal';
 import { BatchPayModal } from './BatchPayModal';
-import { PaymentModalContext } from '../../../utils/contexts';
+import { PaymentModalContext } from 'utils/contexts';
 import { SeeMoreText } from '../Members/styles';
-import { PERMISSIONS } from '../../../utils/constants';
+import { PERMISSIONS } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 
 enum ViewType {
@@ -329,7 +329,10 @@ const Payouts = (props) => {
     if (orgId && view === ViewType.Unpaid) {
       getUnpaidSubmissionsForOrg({
         variables: {
-          orgId,
+          input: {
+            orgId,
+            orgOnly: false,
+          },
         },
       }).then((result) => {
         const submissions = result?.data?.getUnpaidSubmissionsForOrg;
@@ -338,7 +341,9 @@ const Payouts = (props) => {
     } else if (podId && view === ViewType.Unpaid) {
       getUnpaidSubmissionsForPod({
         variables: {
-          podId,
+          input: {
+            podId,
+          },
         },
       }).then((result) => {
         const submissions = result?.data?.getUnpaidSubmissionsForPod;

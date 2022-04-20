@@ -3,13 +3,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { UPDATE_TASK_ASSIGNEE, UPDATE_TASK_STATUS } from '../../graphql/mutations';
-import { GET_TASK_REVIEWERS } from '../../graphql/queries';
-import { ViewType } from '../../types/common';
-import { delQuery } from '../../utils';
-import { updateInProgressTask, updateTaskItem } from '../../utils/board';
-import { renderMentionString } from '../../utils/common';
-import * as Constants from '../../utils/constants';
+import { UPDATE_TASK_ASSIGNEE, UPDATE_TASK_STATUS } from 'graphql/mutations';
+import { GET_TASK_REVIEWERS } from 'graphql/queries';
+import { ViewType } from 'types/common';
+import { delQuery } from 'utils';
+import { updateInProgressTask, updateTaskItem } from 'utils/board';
+import { renderMentionString } from 'utils/common';
+import * as Constants from 'utils/constants';
 import {
   COLUMN_TITLE_ARCHIVED,
   ENTITIES_TYPES,
@@ -20,9 +20,10 @@ import {
   TASK_STATUS_PROPOSAL_REQUEST,
   TASK_STATUS_SUBMISSION_REQUEST,
   TASK_STATUS_TODO,
-} from '../../utils/constants';
-import { cutString, parseUserPermissionContext, shrinkNumber, transformTaskToTaskCard } from '../../utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
+} from 'utils/constants';
+import { cutString, parseUserPermissionContext, shrinkNumber, transformTaskToTaskCard } from 'utils/helpers';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useLocation } from 'utils/useLocation';
 import { useMe } from '../Auth/withAuth';
 import { ArchiveTaskModal } from '../Common/ArchiveTaskModal';
 import { AvatarList } from '../Common/AvatarList';
@@ -96,6 +97,7 @@ export const Table = (props) => {
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
   let tasksCount = 0;
+  const location = useLocation();
 
   useEffect(() => {
     if (inView && hasMore) {
@@ -188,44 +190,24 @@ export const Table = (props) => {
   }
 
   function openTask(task, status = '') {
+    const view = location.params.view ?? ViewType.List;
     if (status === TASK_STATUS_REQUESTED || status === TASK_STATUS_PROPOSAL_REQUEST) {
-      router.replace(
-        {
-          pathname: router.pathname,
-          query: {
-            ...router.query,
-            taskProposal: task?.id,
-          },
-        },
-        undefined,
-        { shallow: true }
-      );
+      location.replace(`${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`);
     } else if (status === TASK_STATUS_IN_REVIEW || status === TASK_STATUS_SUBMISSION_REQUEST) {
-      router.replace(
-        {
-          pathname: router.pathname,
-          query: {
-            ...router.query,
-            task: task?.taskId,
-          },
-        },
-        undefined,
-        { shallow: true }
-      );
+      location.replace(`${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`);
     } else {
-      router.replace(
-        {
-          pathname: router.pathname,
-          query: {
-            ...router.query,
-            task: task?.id,
-          },
-        },
-        undefined,
-        { shallow: true }
-      );
+      location.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${view}`);
     }
   }
+
+  const taskType = (selectedTask) => {
+    const typeName = selectedTask?.__typename;
+    const taskType = {
+      TaskProposalCard: 'task proposal',
+      TaskSubmissionCard: 'task',
+    };
+    return taskType[typeName] ?? selectedTask?.type;
+  };
 
   const handleKudosFormOnClose = () => {
     setKudosModalOpen(false);
@@ -234,32 +216,30 @@ export const Table = (props) => {
 
   useEffect(() => {
     if (
-      (router.query.task || router.query.taskProposal) &&
-      (router.query.view == ViewType.List || router.query.view == ViewType.Admin)
+      (location.params.task || location.params.taskProposal) &&
+      (location.params.view == ViewType.List || location.params.view == ViewType.Admin)
     ) {
       setPreviewModalOpen(true);
     } else {
       setPreviewModalOpen(false);
     }
-  }, [router.query.task, router.query.taskProposal, router.query.view]);
+  }, [location.params.task, location.params.taskProposal, location.params.view]);
 
   return (
     <>
       <TaskViewModal
         open={isPreviewModalOpen}
         handleClose={() => {
-          router.replace(`${delQuery(router.asPath)}?view=${router.query.view ?? ViewType.Grid}`, undefined, {
-            shallow: true,
-          });
+          location.replace(`${delQuery(router.asPath)}?view=${location.params.view ?? ViewType.Grid}`);
         }}
-        isTaskProposal={!!router.query.taskProposal}
-        taskId={(router.query.taskProposal ?? router.query.task)?.toString()}
+        isTaskProposal={!!location.params.taskProposal}
+        taskId={(location.params.taskProposal ?? location.params.task)?.toString()}
       />
       {isArchiveModalOpen && selectedTask?.id ? (
         <ArchiveTaskModal
           taskId={selectedTask?.id}
           open={isArchiveModalOpen}
-          taskType={selectedTask.type}
+          taskType={taskType(selectedTask)}
           onClose={() => setArchiveModalOpen(false)}
           onArchive={() => archiveTask(selectedTask)}
         />

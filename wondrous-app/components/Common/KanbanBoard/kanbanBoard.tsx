@@ -2,22 +2,22 @@ import { useRouter } from 'next/router';
 import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { useInView } from 'react-intersection-observer';
-import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
+import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useLocation } from 'utils/useLocation';
 import { TaskViewModal } from '../Task/modal';
 import { KanbanBoardContainer, LoadMore } from './styles';
 import TaskColumn from './TaskColumn';
 
 // Task update (column changes)
-import apollo from '../../../services/apollo';
-import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER, UPDATE_BOUNTY_STATUS } from '../../../graphql/mutations/task';
-import { parseUserPermissionContext } from '../../../utils/helpers';
-import { BOARD_TYPE, PERMISSIONS, PAYMENT_STATUS, TASK_TYPE } from '../../../utils/constants';
+import apollo from 'services/apollo';
+import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER, UPDATE_BOUNTY_STATUS } from 'graphql/mutations/task';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { BOARD_TYPE, PERMISSIONS, PAYMENT_STATUS, TASK_TYPE } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
-import { ColumnsContext } from '../../../utils/contexts';
 import { useMutation } from '@apollo/client';
-import { dedupeColumns, delQuery } from '../../../utils';
+import { dedupeColumns, delQuery } from 'utils';
 import DndErrorModal from './DndErrorModal';
-import { ViewType } from '../../../types/common';
+import { ViewType } from 'types/common';
 
 const populateOrder = (index, tasks, field) => {
   let aboveOrder = null,
@@ -36,8 +36,7 @@ const populateOrder = (index, tasks, field) => {
 
 const KanbanBoard = (props) => {
   const user = useMe();
-  const { columns, onLoadMore, hasMore } = props;
-  const [columnsState, setColumnsState] = useState([]);
+  const { columns, onLoadMore, hasMore, setColumns } = props;
   const [ref, inView] = useInView({});
   const [openModal, setOpenModal] = useState(false);
   const [once, setOnce] = useState(false);
@@ -55,10 +54,7 @@ const KanbanBoard = (props) => {
     if (inView && hasMore) {
       onLoadMore();
     }
-    if (columnsState.length === 0) {
-      setColumnsState(columns);
-    }
-  }, [inView, hasMore, onLoadMore, columns, columnsState]);
+  }, [inView, hasMore, onLoadMore]);
 
   const checkPermissions = (task) => {
     const permissions = parseUserPermissionContext({
@@ -78,7 +74,7 @@ const KanbanBoard = (props) => {
   // Updates the task status on Backend
   // TODO: Aggregate all Task mutations on one Task
   //       service.
-  const prevColumnState = usePrevious(columnsState);
+  const prevColumnState = usePrevious(columns);
   const updateTask = async (taskToBeUpdated) => {
     const taskType = taskToBeUpdated.type === TASK_TYPE;
     const taskTypeMutation = taskType ? UPDATE_TASK_STATUS : UPDATE_BOUNTY_STATUS;
@@ -111,15 +107,15 @@ const KanbanBoard = (props) => {
       if (err?.graphQLErrors && err?.graphQLErrors.length > 0) {
         if (err?.graphQLErrors[0].extensions?.errorCode === 'must_go_through_submission') {
           setDndErrorModal(true);
-          setColumnsState(prevColumnState);
+          setColumns(prevColumnState);
         }
       }
     }
   };
 
   const moveCard = async (id, status, index) => {
-    const updatedColumns = columnsState.map((column) => {
-      const task = columnsState.map(({ tasks }) => tasks.find((task) => task.id === id)).filter((i) => i)[0];
+    const updatedColumns = columns.map((column) => {
+      const task = columns.map(({ tasks }) => tasks.find((task) => task.id === id)).filter((i) => i)[0];
       // Only allow when permissions are OK
       if (task?.paymentStatus !== PAYMENT_STATUS.PAID && task?.paymentStatus !== PAYMENT_STATUS.PROCESSING) {
         if (column.status !== status) {
@@ -178,16 +174,15 @@ const KanbanBoard = (props) => {
         return column;
       }
     });
-    setColumnsState(dedupeColumns(updatedColumns));
+    setColumns(dedupeColumns(updatedColumns));
   };
-
+  const location = useLocation();
   useEffect(() => {
-    const hasQuery = router?.query?.task || router?.query?.taskProposal;
-    if (hasQuery && router?.query.view !== ViewType.List && (orgBoard || userBoard || podBoard)) {
+    const params = location.params;
+    if ((params.task || params.taskProposal) && (orgBoard || userBoard || podBoard)) {
       setOpenModal(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router?.query?.task, router?.query?.taskProposal, router?.query.view, orgBoard || userBoard || podBoard]);
+  }, [orgBoard, podBoard, userBoard, location]);
 
   const onDragEnd = (result) => {
     try {
@@ -198,12 +193,7 @@ const KanbanBoard = (props) => {
   };
 
   return (
-    <ColumnsContext.Provider
-      value={{
-        columns: columnsState,
-        setColumns: setColumnsState,
-      }}
-    >
+    <>
       <KanbanBoardContainer>
         <DndErrorModal open={dndErrorModal} handleClose={() => setDndErrorModal(false)} />
         <TaskViewModal
@@ -218,14 +208,14 @@ const KanbanBoard = (props) => {
               window?.scrollTo(0, Number(top[0]));
             }
             setOpenModal(false);
-            const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}`;
-            router.push(newUrl, undefined, { shallow: true });
+            const newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}`;
+            location.push(newUrl);
           }}
-          taskId={(router?.query?.task || router?.query?.taskProposal)?.toString()}
-          isTaskProposal={!!router?.query?.taskProposal}
+          taskId={(location?.params?.task || location?.params?.taskProposal)?.toString()}
+          isTaskProposal={!!location?.params?.taskProposal}
         />
         <DragDropContext onDragEnd={onDragEnd}>
-          {columnsState.map((column) => {
+          {columns.map((column) => {
             const { status, section, tasks } = column;
 
             return (
@@ -242,7 +232,7 @@ const KanbanBoard = (props) => {
         </DragDropContext>
       </KanbanBoardContainer>
       <LoadMore ref={ref} hasMore={hasMore}></LoadMore>
-    </ColumnsContext.Provider>
+    </>
   );
 };
 

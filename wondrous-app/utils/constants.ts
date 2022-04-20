@@ -133,7 +133,7 @@ export const ENTITIES_TYPES = {
   POD: 'pod',
   ORG: 'org',
   BOUNTY: 'bounty',
-  PROPOSAL: 'proposal'
+  PROPOSAL: 'proposal',
 };
 
 export const MEDIA_TYPES = {
@@ -260,6 +260,7 @@ export const GRAPHQL_ERRORS = {
   WEB3_ADDRESS_ALREADY_EXISTS: 'web3_address_already_exist',
   ORG_INVITE_ALREADY_EXISTS: 'org_invite_already_exist',
   POD_INVITE_ALREADY_EXISTS: 'pod_invite_already_exist',
+  NO_RECIPIENT_WEB_3_ADDRESS: 'recipient has no web3 address',
 };
 
 export const TAGS = ['Design', 'Narration', 'Social Media', 'Copywriting', 'Create copywriting'];

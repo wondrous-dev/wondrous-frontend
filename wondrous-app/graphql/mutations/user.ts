@@ -73,3 +73,15 @@ export const SET_USER_SIGNUP_COMPLETE = gql`
   }
   ${LoggedinUserFragment}
 `;
+
+export const USER_DISOCRD_SIGNUP_LOGIN = gql`
+  mutation discordSignupLogin($discordAuthCode: String!) {
+    discordSignupLogin(discordAuthCode: $discordAuthCode) {
+      user {
+        ...LoggedinUser
+      }
+      token
+    }
+  }
+  ${LoggedinUserFragment}
+`;

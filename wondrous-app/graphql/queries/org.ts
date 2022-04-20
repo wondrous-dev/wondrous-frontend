@@ -36,6 +36,7 @@ export const GET_USER_ORGS = gql`
       name
       profilePicture
       thumbnailPicture
+      privacyLevel
     }
   }
 `;
@@ -128,6 +129,7 @@ export const GET_JOIN_ORG_REQUESTS = gql`
       orgUsername
       podColor
       podName
+      createdAt
     }
   }
 `;
@@ -139,18 +141,6 @@ export const GET_USER_JOIN_ORG_REQUEST = gql`
       orgId
       approvedAt
       rejectedAt
-    }
-  }
-`;
-
-export const GET_DISCORD_WEBHOOK_INFO_FOR_ORG = gql`
-  query getDiscordWebhookInfoForOrg($orgId: ID!) {
-    getDiscordWebhookInfoForOrg(orgId: $orgId) {
-      id
-      orgId
-      podId
-      webhookUrl
-      privacyLevel
     }
   }
 `;

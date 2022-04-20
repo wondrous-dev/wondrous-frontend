@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { GET_ORG_INVITE_ORG_INFO } from '../../graphql/queries/org';
+import { GET_ORG_INVITE_ORG_INFO } from 'graphql/queries/org';
 
-import { InviteWelcomeBox, Logo } from '../../components/Onboarding/signup';
-import { MainWrapper } from '../../components/Onboarding/styles';
-import { REDEEM_ORG_INVITE_LINK, REDEEM_POD_INVITE_LINK } from '../../graphql/mutations';
-import { withAuth, useMe } from '../../components/Auth/withAuth';
-import { GET_POD_INVITE_ORG_INFO } from '../../graphql/queries';
+import { InviteWelcomeBox, Logo } from 'components/Onboarding/signup';
+import { MainWrapper } from 'components/Onboarding/styles';
+import { REDEEM_ORG_INVITE_LINK, REDEEM_POD_INVITE_LINK } from 'graphql/mutations';
+import { withAuth, useMe } from 'components/Auth/withAuth';
+import { GET_POD_INVITE_ORG_INFO } from 'graphql/queries';
 
 const ContributorOnboardingPage = () => {
   const router = useRouter();

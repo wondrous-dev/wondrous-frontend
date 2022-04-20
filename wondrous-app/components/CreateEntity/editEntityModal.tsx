@@ -14,7 +14,8 @@ import {
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
-  PRIVACY_LEVEL, TAGS,
+  PRIVACY_LEVEL,
+  TAGS,
 } from '../../utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
@@ -86,24 +87,24 @@ import {
 } from './styles';
 import SelectDownIcon from '../Icons/selectDownIcon';
 import UploadImageIcon from '../Icons/uploadImage';
-import { getFilenameAndType, handleAddFile, uploadMedia } from '../../utils/media';
+import { getFilenameAndType, handleAddFile, uploadMedia } from 'utils/media';
 import DatePicker from '../Common/DatePicker';
 import { MediaItem } from './MediaItem';
 import { AddFileUpload } from '../Icons/addFileUpload';
 import { TextInput } from '../TextInput';
 import { White } from '../../theme/colors';
-import { TextInputContext } from '../../utils/contexts';
+import { TextInputContext } from 'utils/contexts';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
+import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { SafeImage } from '../Common/Image';
-import { GET_USER_AVAILABLE_PODS, GET_USER_PODS, GET_POD_USERS } from '../../graphql/queries/pod';
+import { GET_USER_AVAILABLE_PODS, GET_USER_PODS, GET_POD_USERS } from 'graphql/queries/pod';
 import {
   getMentionArray,
   parseUserPermissionContext,
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
-} from '../../utils/helpers';
-import { GET_ORG_USERS } from '../../graphql/queries/org';
+} from 'utils/helpers';
+import { GET_ORG_USERS } from 'graphql/queries/org';
 import {
   ATTACH_MEDIA_TO_TASK,
   CREATE_TASK,
@@ -111,32 +112,28 @@ import {
   UPDATE_TASK,
   UPDATE_MILESTONE,
   UPDATE_BOUNTY,
-} from '../../graphql/mutations/task';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
+} from 'graphql/mutations/task';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   ATTACH_MEDIA_TO_TASK_PROPOSAL,
   CREATE_TASK_PROPOSAL,
   REMOVE_MEDIA_FROM_TASK_PROPOSAL,
   UPDATE_TASK_PROPOSAL,
-} from '../../graphql/mutations/taskProposal';
+} from 'graphql/mutations/taskProposal';
 import { useMe } from '../Auth/withAuth';
 import Ethereum from '../Icons/ethereum';
 import { USDCoin } from '../Icons/USDCoin';
-import { TaskFragment } from '../../graphql/fragments/task';
-import { updateProposalItem } from '../../utils/board';
-import { GET_ORG_TASK_BOARD_PROPOSALS } from '../../graphql/queries/taskBoard';
+import { TaskFragment } from 'graphql/fragments/task';
+import { updateProposalItem } from 'utils/board';
+import { GET_ORG_TASK_BOARD_PROPOSALS } from 'graphql/queries/taskBoard';
 import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './createEntityModal';
-import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment';
+import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { ErrorText } from '../Common';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
-import { updateInProgressTask, updateTaskItem } from '../../utils/board';
-import {
-  GET_MILESTONES,
-  GET_ELIGIBLE_REVIEWERS_FOR_ORG,
-  GET_ELIGIBLE_REVIEWERS_FOR_POD,
-} from '../../graphql/queries/task';
-import { TabsVisibilityCreateEntity } from '@components/Common/TabsVisibilityCreateEntity';
-import Tags from "../Tags";
+import { updateInProgressTask, updateTaskItem } from 'utils/board';
+import { GET_MILESTONES, GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_FOR_POD } from 'graphql/queries/task';
+import { TabsVisibilityCreateEntity } from 'components/Common/TabsVisibilityCreateEntity';
+import Tags from '../Tags';
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -353,6 +350,7 @@ const EditLayoutBaseModal = (props) => {
   const board = orgBoard || podBoard || userBoard;
   const boardColumns = useColumns();
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
+  const selectedOrgPrivacyLevel = userOrgs?.getUserOrgs?.filter((i) => i.id === org)[0]?.privacyLevel;
 
   const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS);
 
@@ -388,14 +386,15 @@ const EditLayoutBaseModal = (props) => {
   // const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
   const [pods, setPods] = useState([]);
   const [pod, setPod] = useState(existingTask?.podName && existingTask?.podId);
-  const podPrivacyLevel = pods?.filter((i) => i.id === pod)[0]?.privacyLevel;
-  const isPodPublic = !podPrivacyLevel || podPrivacyLevel === 'public';
+  const selectedPodPrivacyLevel = pods?.filter((i) => i.id === pod)[0]?.privacyLevel;
+  const isPodPublic = !selectedPodPrivacyLevel || selectedPodPrivacyLevel === 'public';
   const [dueDate, setDueDate] = useState(existingTask?.dueDate);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const isBounty = entityType === ENTITIES_TYPES.BOUNTY;
   const isTask = entityType === ENTITIES_TYPES.TASK;
   const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
   const isPod = entityType === ENTITIES_TYPES.POD;
+  const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
   const {
     showDeliverableRequirementsSection,
     showBountySwitchSection,
@@ -409,7 +408,7 @@ const EditLayoutBaseModal = (props) => {
   } = useMemo(() => {
     return {
       showDeliverableRequirementsSection: isTask,
-      showBountySwitchSection: isTask || isBounty,
+      showBountySwitchSection: isTask || isBounty || isProposal,
       showAppearSection: isTask || isBounty,
       showLinkAttachmentSection: isPod,
       showHeaderImagePickerSection: isPod,
@@ -453,10 +452,6 @@ const EditLayoutBaseModal = (props) => {
     existingTask?.orgId === board?.orgId ||
     existingTask?.podId === board?.podId ||
     existingTask?.userId === board?.userId;
-
-  useEffect(() => {
-    setPublicTask(existingTask?.privacyLevel === PRIVACY_LEVEL.public);
-  }, [existingTask?.privacyLevel]);
 
   useEffect(() => {
     if (existingTask?.orgId) {
@@ -617,9 +612,7 @@ const EditLayoutBaseModal = (props) => {
               ],
             }),
           // TODO: add links?,
-          ...(existingTask?.assigneeId !== assignee?.value && {
-            assigneeId: assignee?.value,
-          }),
+          assigneeId: assignee?.value,
           ...(publicTask &&
             isPodPublic && {
               privacyLevel: PRIVACY_LEVEL.public,
@@ -1020,7 +1013,9 @@ const EditLayoutBaseModal = (props) => {
               />
             </CreateRewardAmountDiv>
             <CreateRewardAmountDiv>
-              <CreateFormMainBlockTitle>Reward amount {isBounty ? 'per submission' : ''}</CreateFormMainBlockTitle>
+              <CreateFormMainBlockTitle>
+                {isBounty ? 'Minimum reward per submission' : 'Reward amount'}
+              </CreateFormMainBlockTitle>
 
               <InputForm
                 style={{
@@ -1107,17 +1102,7 @@ const EditLayoutBaseModal = (props) => {
               <CreateFormAddDetailsInputBlock>
                 <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
                 <StyledAutocompletePopper
-                  options={filterOrgUsers(podUsersData?.getPodUsers ?? orgUsersData?.getOrgUsers)}
-                  onOpen={() => {
-                    if (pod) {
-                      getPodUsers({
-                        variables: {
-                          podId: pod?.id || pod,
-                          limit: 100, // TODO: fix autocomplete
-                        },
-                      });
-                    }
-                  }}
+                  options={filterOrgUsers(orgUsersData?.getOrgUsers)}
                   renderInput={(params) => (
                     <TextField
                       style={{
@@ -1425,7 +1410,17 @@ const EditLayoutBaseModal = (props) => {
                     <CreateFormAddDetailsInputLabel>
                       Who can see this {titleText.toLowerCase()}?
                     </CreateFormAddDetailsInputLabel>
-                    <TabsVisibilityCreateEntity isPod={isPod} isPublic={publicTask} setIsPublic={setPublicTask} />
+                    <TabsVisibilityCreateEntity
+                      isPod={isPod}
+                      isPublic={publicTask}
+                      setIsPublic={setPublicTask}
+                      orgPrivacyLevel={
+                        existingTask?.orgId == org ? existingTask?.privacyLevel : selectedOrgPrivacyLevel
+                      }
+                      podPrivacyLevel={
+                        existingTask?.podId == pod ? existingTask?.privacyLevel : selectedPodPrivacyLevel
+                      }
+                    />
                     {errors.privacy && <ErrorText>{errors.privacy}</ErrorText>}
                   </CreateFormAddDetailsTab>
                 )}

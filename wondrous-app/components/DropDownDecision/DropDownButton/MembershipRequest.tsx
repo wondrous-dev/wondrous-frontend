@@ -4,7 +4,7 @@ import { DropDownPopper } from '../DropDownPopper/MembershipRequest';
 import { StyledDropDownButton } from './styles';
 
 export const DropDownButtonDecision = (props) => {
-  const { userId, orgId, status } = props;
+  const { userId, orgId, podId, status } = props;
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
@@ -23,6 +23,7 @@ export const DropDownButtonDecision = (props) => {
         open={open}
         userId={userId}
         orgId={orgId}
+        podId={podId}
         anchorEl={anchorEl}
         placement="bottom-start"
         disablePortal={true}
