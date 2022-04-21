@@ -8,7 +8,7 @@ import { Button as BorderButton } from '../../Common/button';
 import { BaseCard } from '../../Common/card';
 import { LogoCircle } from '../../Common/ci';
 import { LinkIcon } from '../../Icons/linkIcon';
-import { Button as ButtonComponent } from 'components/Common/button'
+import { Button as ButtonComponent } from 'components/Common/button';
 
 export const OverviewComponent = styled.section`
   width: 100vw;
@@ -570,6 +570,8 @@ export const TokenGatedRoleWrapper = styled(Box)`
     border-radius: 6px;
     padding: 24px;
     margin-top: 24px;
+    display: flex;
+    justify-content: space-between;
   }
 `;
 
@@ -592,7 +594,7 @@ export const TokenGatedRoleDescription = styled(Typography)`
     line-height: 36px;
     display: flex;
     align-items: center;
-    color: #ffffff;
+    color: #ccbbff;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 `;
@@ -609,44 +611,47 @@ export const TokenLogoDisplay = (props) => (
   />
 );
 
-
 export const ClaimRoleButton = styled(ButtonComponent)`
-    && {
-        background: linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%);
-        min-height: 0;
-        min-width: 0;
-        height: 40px;
-        display: flex;
-        padding: 4px 2px;
-        justify-content: space-between;
-        align-items: center;
-        text-align: center;
-        color: #FFFFFF;
-        opacity: 0.8;
-        transition: opacity 0.25s;
-        button {
-            padding: 4px 8px;
-            background: rgba(20, 20, 20, 1);
-            font-size: 15px;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-        }
-
-        :hover {
-            opacity: 1;
-        }
-
-        
+  && {
+    background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+    min-height: 0;
+    min-width: 0;
+    height: 40px;
+    display: flex;
+    padding: 4px 2px;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    color: #ffffff;
+    opacity: 0.8;
+    transition: opacity 0.25s;
+    button {
+      padding: 4px 8px;
+      background: rgba(20, 20, 20, 1);
+      font-size: 15px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
     }
-`
+
+    :hover {
+      opacity: 1;
+    }
+  }
+`;
 
 export const ClaimRoleLabel = styled(Typography)`
-    && {
-        margin-left: 6px;
-        color: #fff;
-        font-weight: 600;
-        font-size: 15px;
-        letter-spacing: -1%;
-    }
-`
+  && {
+    margin-left: 6px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: -1%;
+  }
+`;
+
+
+export const RoleActionWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;

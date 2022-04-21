@@ -1,14 +1,8 @@
-import { Link } from '@material-ui/core';
 import React, { useMemo, useState } from 'react';
 import { NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from 'utils/constants';
 import { SmallAvatar } from '../Common/AvatarList';
-import { DropDown, DropDownItem } from '../Common/dropdown';
-import { StyledLink } from '../Common/text';
-import { formatDistance } from 'date-fns';
-
 import { HeaderNotificationsButton, StyledBadge } from '../Header/styles';
 import NotificationsIcon from '../Icons/notifications';
-import { TaskMenuIcon } from '../Icons/taskMenu';
 import {
   NotificationItemBody,
   NotificationItemIcon,
@@ -21,10 +15,18 @@ import {
   NotificationsItem,
   NotificationsMarkRead,
   NotificationsOverlay,
+  NotificationsLink,
+  NotificationItemInner,
+  NotificationWrapper,
+  NotificationsContentPreview,
+  NotificationsDot,
+  NotificationsTitle,
 } from './styles';
 import { MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
 import { useMutation } from '@apollo/client';
 import { GET_NOTIFICATIONS } from 'graphql/queries';
+import calculateTimeLapse from 'utils/calculateTimeLapse';
+import Link from 'next/link';
 
 const NotificationsBoard = ({ notifications, setNofications }) => {
   const unreadCount = useMemo(() => {
@@ -35,12 +37,6 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
 
   const toggleNotifications = () => {
     setIsOpen(!isOpen);
-  };
-
-  const calculateTimeLapse = (timestamp) => {
-    return formatDistance(new Date(timestamp), new Date(), {
-      addSuffix: true,
-    });
   };
 
   const handleMarkAllRead = async () => {
@@ -65,19 +61,37 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
   const getNotificationText = (notification) => {
     const userName = notification.actorUsername;
     const userId = notification.actorId;
-    const actor = <StyledLink href={`/profile/${userId}/about`}>{userName}</StyledLink>;
+    const actor = <NotificationsLink href={`/profile/${userId}/about`}>{userName}</NotificationsLink>;
 
     const verb = NOTIFICATION_VERBS[notification.type];
     const objectType = NOTIFICATION_OBJECT_TYPES[notification.objectType];
     const objectId = notification.objectId;
 
-    const object = <StyledLink href={`/${snakeToCamel(notification.objectType)}/${objectId}`}>{objectType}</StyledLink>;
+    const object = (
+      <span>
+        <NotificationsLink href={`/${snakeToCamel(notification.objectType)}/${objectId}`}>
+          {objectType}
+        </NotificationsLink>
+        <NotificationItemTimeline>{calculateTimeLapse(notification.timestamp)}</NotificationItemTimeline>
+      </span>
+    );
 
     return (
       <>
         {actor} {verb} {object}
       </>
     );
+  };
+
+  const getContentPreview = (notification) => {
+    if (notification?.additionalData?.contentPreview) {
+      let contentPreview = notification.additionalData.contentPreview.substring(0, 30);
+      contentPreview.length < notification.additionalData.contentPreview.length
+        ? (contentPreview = contentPreview + '...')
+        : undefined;
+      return contentPreview;
+    }
+    return null;
   };
 
   const display = isOpen ? 'block' : 'none';
@@ -93,53 +107,48 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
         </StyledBadge>
         <NotificationsBoardWrapper style={{ display: display }}>
           <NotificationsBoardHeader>
-            <NotificationsMarkRead enabled={notifications?.getNofications?.length}>
-              <span style={{ cursor: 'pointer' }} onClick={handleMarkAllRead}>
-                Mark all as read
-              </span>
+            <NotificationsTitle>Notifications</NotificationsTitle>
+            <NotificationsMarkRead enabled={unreadCount > 0}>
+              <span onClick={handleMarkAllRead}>Mark all as read</span>
             </NotificationsMarkRead>
-            <div style={{ lineHeight: '12px' }}>
-              <DropDown DropdownHandler={TaskMenuIcon}>
-                <DropDownItem key={'notifications-menu-clean'} onClick={handleMarkAllRead}>
-                  Mark all read
-                </DropDownItem>
-              </DropDown>
-            </div>
           </NotificationsBoardHeader>
           {notifications?.getNotifications?.length ? (
             notifications.getNotifications?.map((notification) => {
+              const isNotificationViewed = notification?.viewedAt;
               return (
-                <NotificationsItem
-                  style={{
-                    background: notification?.viewedAt
-                      ? 'linear-gradient(142.08deg,#1E1E1E 39.8%,#141414 73.9%)'
-                      : '#363636',
-                  }}
+                <Link
                   key={'notifications-' + notification.id}
-                  onClick={() =>
-                    markNotificationRead({
-                      variables: {
-                        notificationId: notification?.id,
-                      },
-                      refetchQueries: [GET_NOTIFICATIONS],
-                    })
-                  }
+                  href={`/${snakeToCamel(notification.objectType)}/${notification.objectId}`}
                 >
-                  <NotificationItemIcon>
-                    {getNotificationActorIcon(notification)}
-                    <NotificationItemStatus>{notification.status}</NotificationItemStatus>
-                  </NotificationItemIcon>
-                  <NotificationItemBody>
-                    <div style={{ paddingTop: '2px' }}>{getNotificationText(notification)}</div>
-                    <NotificationItemTimeline>{calculateTimeLapse(notification.timestamp)}</NotificationItemTimeline>
-                  </NotificationItemBody>
-                </NotificationsItem>
+                  <NotificationsItem
+                    isNotificationViewed={isNotificationViewed}
+                    onClick={() =>
+                      markNotificationRead({
+                        variables: {
+                          notificationId: notification?.id,
+                        },
+                        refetchQueries: [GET_NOTIFICATIONS],
+                      })
+                    }
+                  >
+                    <NotificationItemIcon>
+                      {getNotificationActorIcon(notification)}
+                      <NotificationItemStatus>{notification.status}</NotificationItemStatus>
+                    </NotificationItemIcon>
+                    <NotificationWrapper>
+                      <NotificationItemBody>
+                        <NotificationItemInner>{getNotificationText(notification)}</NotificationItemInner>
+                      </NotificationItemBody>
+                      <NotificationsContentPreview>{getContentPreview(notification)}</NotificationsContentPreview>
+                    </NotificationWrapper>
+                    {!isNotificationViewed && <NotificationsDot />}
+                  </NotificationsItem>
+                </Link>
               );
             })
           ) : (
-            <NotificationsItem>
-              <NotificationItemIcon />
-              <NotificationItemBody>No notifications</NotificationItemBody>
+            <NotificationsItem emptyNotifications={true}>
+              <NotificationItemBody emptyNotifications={true}>No notifications</NotificationItemBody>
             </NotificationsItem>
           )}
         </NotificationsBoardWrapper>

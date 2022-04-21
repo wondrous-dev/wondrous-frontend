@@ -9,11 +9,10 @@ import { MakePaymentModal } from '../Payment/PaymentModal';
 
 export const PaymentButton = (props) => {
   const approvedSubmissionContext = useApprovedSubmission();
-  const { fetchedTask, taskSubmissions, handleClose, getTaskSubmissionsForTask } = props;
+  const { fetchedTask, taskSubmissions, handleClose, getTaskSubmissionsForTask, submission } = props;
   const [approvedSubmission, setApprovedSubmission] = useState(null);
   const [showPaymentButton, setShowPaymentButton] = useState(null);
   const [showPaymentModal, setShowPaymentModal] = useState(null);
-
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -28,13 +27,11 @@ export const PaymentButton = (props) => {
   });
   const canPay = permissions.includes(PERMISSIONS.APPROVE_PAYMENT) || permissions.includes(PERMISSIONS.FULL_ACCESS);
   useEffect(() => {
-    taskSubmissions?.map((taskSubmission) => {
-      if (taskSubmission?.approvedAt) {
-        setApprovedSubmission(taskSubmission);
-        approvedSubmissionContext?.setApprovedSubmission(taskSubmission);
-      }
-    });
-  }, [taskSubmissions, approvedSubmissionContext]);
+    if (submission && submission?.approvedAt && !approvedSubmission) {
+      setApprovedSubmission(submission);
+      approvedSubmissionContext?.setApprovedSubmission(submission);
+    }
+  }, [submission]);
   const handleMakePaymentButtonClick = () => {
     setShowPaymentModal(true);
   };
@@ -45,6 +42,7 @@ export const PaymentButton = (props) => {
       approvedSubmission.paymentStatus !== PAYMENT_STATUS.PROCESSING &&
       approvedSubmission.paymentStatus !== PAYMENT_STATUS.PAID &&
       fetchedTask?.rewards.length > 0;
+
     setShowPaymentButton(show);
   }, [approvedSubmission, canPay]);
   return (

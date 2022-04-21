@@ -289,6 +289,7 @@ const SubmissionItem = (props) => {
     maxWidth: '500px',
     textAlign: 'left',
   };
+
   return (
     <>
       <KudosForm onClose={handleClose} open={isKudosModalOpen} submission={submission} />
@@ -436,6 +437,7 @@ const SubmissionItem = (props) => {
                     taskSubmissions={fetchedTaskSubmissions}
                     handleClose={handleClose}
                     getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+                    submission={submission}
                   />
                 )}
             </CreateFormFooterButtons>
