@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { GET_ORG_DOCS } from 'graphql/queries/documents';
 
@@ -9,6 +9,7 @@ import GridItem from 'components/GridItem';
 import ListLayout from 'components/ListLayout';
 import ListItem from 'components/ListItem';
 import PermissionTag from 'components/PermissionTag';
+import AddDocumentDialog from 'components/AddDocumentDialog';
 
 import Wrapper from '../wrapper/wrapper';
 import { SectionTitleTypography, DocsButton } from './docsStyles';
@@ -39,6 +40,11 @@ const SAMPLE_DATA = {
   url: 'https://www.notion.so',
 };
 
+const SAMPLE_CATEGORIES = {
+  PINNED: { value: 'pinned', label: 'Pinned' },
+  FINANCIAL: { value: 'financial', label: 'Financial Resources' },
+};
+
 const Docs = (props) => {
   const { orgData = {} } = props;
   const { id: orgId } = orgData;
@@ -46,7 +52,18 @@ const Docs = (props) => {
 
   const { data, loading } = useGetOrgDocs(orgId);
 
-  console.log(data);
+  const [showDialog, setShowDialog] = useState(false);
+  const [docCategory, setDocCategory] = useState({ value: '', label: '' });
+
+  const handleDialogOpen = (category) => {
+    setShowDialog(true);
+    setDocCategory(category);
+  };
+
+  const handleCloseDialog = () => {
+    setShowDialog(false);
+    setDocCategory({ value: '', label: '' });
+  };
 
   return (
     <Wrapper orgData={orgData}>
@@ -60,7 +77,7 @@ const Docs = (props) => {
           <PermissionTag>Contributors</PermissionTag>
           <Box flex="1" />
 
-          <DocsButton color="secondary">
+          <DocsButton color="secondary" onClick={() => handleDialogOpen(SAMPLE_CATEGORIES.PINNED)}>
             <Box mr={1}>
               <Image src="/images/icons/addDoc.png" alt="folder icon" width={11} height={14} />
             </Box>
@@ -113,7 +130,7 @@ const Docs = (props) => {
 
         <Box mr={2} />
 
-        <DocsButton color="secondary">
+        <DocsButton color="secondary" onClick={() => handleDialogOpen(SAMPLE_CATEGORIES.FINANCIAL)}>
           <Box mr={1}>
             <Image src="/images/icons/addDoc.png" alt="folder icon" width={11} height={14} />
           </Box>
@@ -147,6 +164,7 @@ const Docs = (props) => {
           permission="Admin Only"
         />
       </ListLayout>
+      <AddDocumentDialog open={showDialog} onClose={handleCloseDialog} title={docCategory.label} />
     </Wrapper>
   );
 };

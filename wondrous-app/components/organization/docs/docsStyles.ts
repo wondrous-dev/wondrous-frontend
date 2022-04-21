@@ -5,7 +5,8 @@ import Button from '@mui/material/Button';
 
 import { Blue20, Blue800 } from 'theme/colors';
 
-export const SectionTitleTypography = styled(Typography)`
+export const SectionTitleTypography = styled(Typography)
+  `
   && {
     font-family: 'Space Grotesk';
     font-style: normal;
