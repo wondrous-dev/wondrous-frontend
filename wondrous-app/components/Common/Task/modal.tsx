@@ -36,8 +36,10 @@ import {
   RightArrowWrapper,
   TaskUserDiv,
 } from './styles';
+import { SnapshotButton } from '../../CreateEntity/styles'
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from '../../../graphql/queries/task';
+import { GET_POD_ORG_ID } from '../../../graphql/queries/pod';
 import { SafeImage } from '../Image';
 import {
   parseUserPermissionContext,
@@ -138,6 +140,10 @@ import { TaskSubtasks } from '../TaskSubtask';
 import { SubtaskDarkIcon, SubtaskLightIcon } from '../../Icons/subtask';
 import { CheckedBoxIcon } from '../../Icons/checkedBox';
 import RightArrowIcon from '../../Icons/rightArrow';
+
+// snapshot hook
+import { useSnapshot } from '../../../services/snapshot';
+
 export const MediaLink = (props) => {
   const { media, style } = props;
   const [getPreviewFile, { data, loading, error }] = useLazyQuery(GET_PREVIEW_FILE, {
@@ -169,6 +175,7 @@ export const TaskListViewModal = (props) => {
   const { taskType, entityType, orgId, podId, loggedInUserId, open, handleClose, count } = props;
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(true);
+
   const [getOrgTaskProposals, { refetch: refetchOrgProposals, fetchMore: fetchMoreOrgProposals }] = useLazyQuery(
     GET_ORG_TASK_BOARD_PROPOSALS,
     {
@@ -704,6 +711,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
   const user = useMe();
 
+  const { isTest, snapshot, validateSnapshot } = useSnapshot();
+
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
@@ -877,6 +886,45 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     getTaskProposalById,
     open,
   ]);
+
+  const [getOrgId] = useLazyQuery(GET_POD_ORG_ID, {
+    onError: error => {
+      console.error(error)
+    }
+  });
+
+  // get snapshot data
+  useEffect(() => {
+    if (fetchedTask?.orgId) {
+      const validate = async () => {
+        await validateSnapshot({
+          variables: {
+            orgId: fetchedTask.orgId,
+          },
+        });
+      }
+      validate();
+    } else if (fetchedTask?.podId) {
+      const validate = async () => {
+        const { data } = await getOrgId({
+          variables: {
+            podId: fetchedTask.podId,
+          },
+        });
+        const orgId = await data.getPodById.orgId;
+        await validateSnapshot({
+          variables: {
+            orgId
+          },
+        });
+      }
+      validate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => null
+  }, [fetchedTask?.orgId, fetchedTask?.podId, snapshot]);
+
+
   const BackToListStyle = {
     color: White,
     width: '100%',
@@ -985,6 +1033,18 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       handleClose();
     }
   };
+
+  // assemble Snapshot URL & open window w/ proposal
+  const openSnapshot = async () => {
+    try {
+      const space = snapshot.key
+      const proposal = fetchedTask?.snapshotProposal
+      const url = `https://${isTest && 'demo'}.snapshot.org/#/${space}/proposal/${proposal}`
+      window.open(url)
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   return (
     <ApprovedSubmissionContext.Provider
@@ -1144,6 +1204,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   })}
                 </TaskDescriptionText>
               </TaskTitleTextDiv>
+              { fetchedTask?.snapshotProposal && <SnapshotButton onClick={openSnapshot}>Snapshot Proposal</SnapshotButton> }
             </TaskTitleDiv>
             {!isTaskProposal && !isMilestone && (
               <TaskSectionDisplayDiv>

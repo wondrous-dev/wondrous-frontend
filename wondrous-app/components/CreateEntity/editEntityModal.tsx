@@ -439,6 +439,8 @@ const EditLayoutBaseModal = (props) => {
   // web3 hooks
   const wonderWeb3 = useWonderWeb3()
 
+  const [snapshotProposal, setSnapshotProposal] = useState(existingTask?.snapshotProposal)
+
   // snapshot integration
   const {
     snapshot,
@@ -448,7 +450,8 @@ const EditLayoutBaseModal = (props) => {
     validateSnapshotSpace,
     snapshotErrorElement,
     snapshotLoading,
-    exportTaskProposal
+    exportTaskProposal,
+    cancelProposal
   } = useSnapshot()
 
   const filterOrgUsers = useCallback((orgUsers) => {
@@ -523,7 +526,7 @@ const EditLayoutBaseModal = (props) => {
     getPaymentMethods,
     getMilestones,
     milestonesData,
-    existingTask?.reviewers,
+    existingTask?.reviewers
   ]);
 
   const getPodObject = useCallback(() => {
@@ -678,6 +681,7 @@ const EditLayoutBaseModal = (props) => {
           }),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
+          snapshotProposal
         };
 
         if (!title) {
@@ -810,6 +814,7 @@ const EditLayoutBaseModal = (props) => {
     mediaUploads,
     existingTask?.parentTaskId,
     existingTask?.id,
+    snapshotProposal,
     // maxSubmissionCount,
     errors,
     updateTask,
@@ -845,6 +850,8 @@ const EditLayoutBaseModal = (props) => {
     refetchQueries: ['GetOrgTaskBoardProposals'],
   });
 
+  // submitMutation but without handleClose() -- copy/pasted code just to make sure nothing breaks. Might be redundant, probably
+  // a better possible workaround to submit changes without closing modal, just didn't want to break anything.
   const preExportToSnapshot = async () => {
     if (entityType === ENTITIES_TYPES.TASK) {
       const taskInput = {
@@ -866,6 +873,7 @@ const EditLayoutBaseModal = (props) => {
         // TODO: add links?,
         ...(isTaskProposal && {
           proposedAssigneeId: assignee?.value,
+          snapshotProposal
         }),
         privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
         reviewerIds: selectedReviewers.map(({ id }) => id) || [],
@@ -911,6 +919,7 @@ const EditLayoutBaseModal = (props) => {
         }),
         userMentions: getMentionArray(descriptionText),
         mediaUploads,
+        snapshotProposal
       };
 
       if (!title) {
@@ -940,13 +949,37 @@ const EditLayoutBaseModal = (props) => {
     }
   }, [org, snapshot]);
 
+  // sends change in snapshot proposal to db
+  useEffect(() => {
+    if (snapshotProposal !== existingTask.snapshotProposal) {
+      // have to perform full mutation because all columns except snapshotProposal are deleted when only updating task proposal
+      submitMutation()
+    }
+  }, [snapshotProposal])
+
   // attempt to export proposal to snapshot
   const exportProposalToSnapshot = async () => {
+    // update proposal, and if successful, initiate transaction to export to snapshot
     await preExportToSnapshot()
       .then(async (result) => {
-        // update proposal, and if successful, initiate transaction to export to snapshot
-        if (result.data.updateTaskProposal) await exportTaskProposal(result.data.updateTaskProposal);
-        else throw Error ('Error exportProposalToSnapshot(): invalid proposal for snapshot export');
+        if (!result.data.updateTaskProposal) {
+          throw Error ('Error exportProposalToSnapshot(): invalid proposal for snapshot export');
+        }
+        return await exportTaskProposal(result.data.updateTaskProposal);
+      })
+      .then(async (receipt) => {
+        console.log(receipt?.id)
+        setSnapshotProposal(receipt?.id);
+      })
+      .catch(error => console.error(error));
+  }
+
+  // cancel snapshot proposal
+  const cancelSnapshotProposal = async () => {
+    await cancelProposal(existingTask.snapshotProposal)
+      .then((receipt) => {
+        console.log(receipt);
+        setSnapshotProposal(null);
       });
   }
 
@@ -967,13 +1000,21 @@ const EditLayoutBaseModal = (props) => {
         <CreateFormBaseModalTitle>Edit {titleText.toLowerCase()}</CreateFormBaseModalTitle>
         { snapshotConnected && isTaskProposal && (
             <SnapshotButtonBlock>
-              <SnapshotButton onClick={exportProposalToSnapshot} disabled={snapshotLoading}>
-                {/*snapshotLoading ? <CircularProgress size={20} /> : null*/}
-                Export to Snapshot
-              </SnapshotButton>
-              <SnapshotErrorText>
-                {snapshotErrorElement && (snapshotErrorElement.map(elem => (<ErrorText>{elem}</ErrorText>)))}
-              </SnapshotErrorText>
+              { !existingTask.snapshotProposal
+                ? <SnapshotButton onClick={exportProposalToSnapshot} disabled={snapshotLoading}>
+                    { snapshotLoading ? <CircularProgress size={20} /> : null }
+                    Export to Snapshot
+                  </SnapshotButton>
+                : <SnapshotButton onClick={cancelSnapshotProposal} disabled={snapshotLoading}>
+                    { snapshotLoading ? <CircularProgress size={20} /> : null }
+                    Cancel Snapshot Proposal
+                  </SnapshotButton>
+              }
+              { snapshotErrorElement && (
+                <SnapshotErrorText>
+                  {snapshotErrorElement.map(elem => (<ErrorText>{elem}</ErrorText>))}
+                </SnapshotErrorText>
+              )}
             </SnapshotButtonBlock>
         )}
         </CreateFormBaseModalHeader>
@@ -1586,7 +1627,7 @@ const EditLayoutBaseModal = (props) => {
           </CreateFormPreviewButton>
         </CreateFormButtonsBlock>
       </CreateFormFooterButtons>
-    </CreateFormBaseModal>
+      )    </CreateFormBaseModal>
   );
 };
 

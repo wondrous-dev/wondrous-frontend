@@ -69,8 +69,9 @@ export const useSnapshot = () => {
     strategies: [],
   }
 
+  const isTest = isTestSnapshot;
   // an object representing the 'integrations' field of Wonder 'Org'
-  const [snapshot, setSnapshot] = useState(null)
+  const [snapshot, setSnapshot] = useState(null);
   // a boolean value representing whether snapshot is valid, to be used in validation
   const [snapshotValid, setSnapshotValid] = useState(false);
   // a boolean value representing whether the snapshot space has been connected to Wonder Org in db
@@ -83,6 +84,8 @@ export const useSnapshot = () => {
   const [snapshotLoading, setSnapshotLoading] = useState(false)
   // a JSX element presenting an error message extrapolated from an enum object
   const [snapshotErrorElement, setSnapshotErrorElement] = useState(null);
+  // loading state for proposal submission
+  const [submittingProposal, setSubmittingProposal] = useState(false);
   // wonder's web3 hook
   const wonderWeb3 = useWonderWeb3();
 
@@ -177,15 +180,16 @@ export const useSnapshot = () => {
   // update Task Proposal's snapshot_proposal field
   const [updateSnapshotProposal, { loading: updateSnapshotProposalLoading }] = useMutation(SET_SNAPSHOT_PROPOSAL, {
     onError: error => {
-      console.error(`error updateTaskProposal(): ${error}`);
+      console.error(`error updateSnapshotProposal(): ${error}`);
     }
   });
 
   // creates transaction to export proposal to snapshot, throws error if exporter doesn't have credentials or invalid proposal
   // HAVING ISSUES, trying to solve w/ Snapshot team
-  const exportTaskProposal = async (proposal: any): Promise<void> => {
+  const exportTaskProposal = async (proposal: any): Promise<object | void> => {
+    setSubmittingProposal(true)
     //const web3 = wonderWeb3.web3Provider;
-    const provider = new ethers.providers.Web3Provider(wonderWeb3.web3Provider)
+    const provider = new ethers.providers.Web3Provider(wonderWeb3.web3Provider);
     const account = ethers.utils.getAddress(wonderWeb3.address);
     const { data } = await getSnapshotSpace({ variables: { id: snapshot.key } });
 
@@ -196,19 +200,38 @@ export const useSnapshot = () => {
       params: strat.params
     }))
 
-    const formattedProposal = {
+    const proposalToValidate = {
+      name: proposal.title,
+      body: proposal.description,
+      choices: ['For', 'Against', 'Abstain'],
+      start: Math.floor(Date.now() / 1000),
+      end: Math.floor(Date.parse(proposal.dueDate) / 1000),
+      snapshot: await provider.getBlockNumber(),
+      type: 'single-choice',
+      discussion: '',
+      metadata: {
+        strategies: JSON.stringify(strategies),
+        plugins: data.space.plugins
+          ? typeof data.space.plugins === 'string'
+              ? data.space.plugins
+              : JSON.stringify(data.space.plugins)
+          : '{}',
+      }
+    }
+
+    const proposalToSubmit = {
       space: snapshot.key,
       title: proposal.title,
       body: proposal.description,
       choices: ['For', 'Against', 'Abstain'],
-      timestamp: Math.floor(Date.now() / 1000),
+      //timestamp: Math.floor(Date.now() / 1000),
       start: Math.floor(Date.now() / 1000),
       end: Math.floor(Date.parse(proposal.dueDate) / 1000),
       snapshot: await provider.getBlockNumber(),
       type: 'single-choice',
       network: data.space.network,
       discussion: '',
-      from: account,
+      //from: account,
       strategies: JSON.stringify(strategies),
       plugins: data.space.plugins
         ? typeof data.space.plugins === 'string'
@@ -222,12 +245,28 @@ export const useSnapshot = () => {
         : '{}'
     }
 
-    const receipt = await snapshotClient.proposal(provider, account, formattedProposal).catch(err => console.error(err))
-    console.log(receipt)
+    const valid = validateProposal(proposalToValidate)
+    //console.log(Snapshot.utils.validateSchema(Snapshot.schemas.proposal, formattedProposal))
+
+    if (valid) {
+      const receipt: any = await snapshotClient.proposal(provider, account, proposalToSubmit).catch(err => console.error(err));
+      console.log(receipt);
+      setSubmittingProposal(false);
+      return receipt;
+    }
+    setSubmittingProposal(false);
   }
 
-  // unused because snapshot's validation function doesn't work for proposals
-  /*
+  const cancelProposal = async (proposalId: string) => {
+    const provider = new ethers.providers.Web3Provider(wonderWeb3.web3Provider);
+    const account = ethers.utils.getAddress(wonderWeb3.address);
+
+    return await snapshotClient.cancelProposal(provider, account, {
+      space: snapshot.key,
+      proposal: proposalId
+    });
+  }
+
   const validateProposal = (proposal: any): boolean => {
     const valid = Snapshot.utils.validateSchema(Snapshot.schemas.proposal, proposal)
     if (typeof valid !== 'boolean' && valid !== true) {
@@ -245,7 +284,6 @@ export const useSnapshot = () => {
       return true
     }
   }
-   */
 
   // error switching function
   // takes in Enum, returns JSX element w/ corresponding Error text
@@ -282,13 +320,13 @@ export const useSnapshot = () => {
   const loading = getSnapshotSpaceLoading ||
     validateSnapshotLoading || getSnapshotLoading ||
     validateSnapshotLoading || connectSnapshotSpaceLoading ||
-    disconnectSnapshotSpaceLoading || updateSnapshotProposalLoading
+    disconnectSnapshotSpaceLoading || updateSnapshotProposalLoading ||
+    submittingProposal
 
   useEffect(() => {
     setSnapshotLoading(loading)
     return () => void setSnapshotLoading(false)
   }, [loading])
-
 
   return {
     EMPTY_SPACE,
@@ -313,7 +351,9 @@ export const useSnapshot = () => {
     disconnectSnapshotSpace,
     updateSnapshotProposal,
     exportTaskProposal,
-    snapshotLoading
+    cancelProposal,
+    snapshotLoading,
+    isTest // for testing purposes
   }
 }
 

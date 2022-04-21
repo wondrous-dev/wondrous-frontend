@@ -117,63 +117,56 @@ const Integrations = (props) => {
     const name = await ens.name(snapshotName);
 
     const { data } = await validateSnapshotSpace({ variables: { id: snapshotName }});
-    // console.log('result', data);
-    setSnapshotSpace({ ...data.space, id: snapshotName})
+    setSnapshotSpace({ ...data.space, id: snapshotName});
   }
 
   const handleConnectSnapshotSpace = async () => {
-    //console.log('connect snapshot')
-    //console.log(orgId)
-    //console.log(snapshotSpace)
-    //console.log(snapshotSpace.id)
-    //console.log(getSnapshotUrl(snapshotName))
-    //console.log(snapshotSpace.name)
     await connectSnapshotSpace({ variables: {
       orgId,
       key: snapshotSpace.id,
       url: getSnapshotUrl(snapshotName),
       displayName: snapshotSpace.name,
-    }})
+    }});
   }
 
   const handleDisconnectSnapshotSpace = async () => {
-    //console.log('disconnect snapshot')
     await disconnectSnapshotSpace({ variables: {
       orgId,
       key: '',
       url: '',
       displayName: ''
-    }})
-    //console.log(orgId)
-    //console.log(snapshotSpace.id)
-    //console.log(getSnapshotUrl(snapshotName))
-    //console.log(snapshotSpace.name)
+    }});
   }
 
-  useEffect(async () => {
+  // get snapshot data
+  useEffect(() => {
     if (orgId) {
-      //console.log('getting snapshot')
-      validateSnapshot({
-        variables: {
-          orgId,
-        },
-      })
+      const validate = async () => {
+        await validateSnapshot({
+          variables: {
+            orgId,
+          },
+        });
+      }
+      validate();
     } else if (podId) {
-      const { data } = await getOrgId({
-        variables: {
-          podId,
-        },
-      })
-      const orgId = await data.getPodById.orgId
-      console.log(orgId)
+      const validate = async () => {
+        const { data } = await getOrgId({
+          variables: {
+            podId,
+          },
+        });
+        const orgId = await data.getPodById.orgId;
 
-      validateSnapshot({
-        variables: {
-          orgId
-        },
-      })
-
+        await validateSnapshot({
+          variables: {
+            orgId
+          },
+        });
+      }
+      validate();
     }
+    return () => null
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, podId, snapshot]);
 

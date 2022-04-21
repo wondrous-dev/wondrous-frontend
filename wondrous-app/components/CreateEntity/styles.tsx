@@ -724,13 +724,15 @@ export const RewardCurrencyTokenIcon = styled(WonderTokenIcon)`
 `;
 
 // Snapshot buttons
-export const SnapshotButtonBlock = styled.div`
+export const SnapshotButtonBlock = styled(CreateFormButtonsBlock)`
+  && {
   height: 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin-left: auto;
+  }
 `;
 
 export const SnapshotErrorText = styled.div`
@@ -741,27 +743,13 @@ export const SnapshotErrorText = styled.div`
   line-height: 10px;
 `
 
-export const SnapshotButton = styled(Button)`
+export const SnapshotButton = styled(CreateFormPreviewButton)`
   && {
-    padding: 8px 12px;
-    height: 40px;
-    background: #0f0f0f;
     border: 1px solid gold;
-    margin-left: 25px;
 
-    //text
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 150%;
-    color: #ffffff;
-
-    .MuiCircularProgress-root {
-      margin-right: 10px;
-    }
-
-    &:disabled {
-      color: #ffffff;
-      cursor: not-allowed;
+    .MuiCircularProgress-svg {
+      width: 100%;
+      height: 100%;
     }
   }
 `;
