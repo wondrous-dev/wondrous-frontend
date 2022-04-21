@@ -580,6 +580,7 @@ const EditLayoutBaseModal = (props) => {
           userProfilePicture: user?.profilePicture,
           username: user?.username,
           podName: justCreatedPod?.name,
+          snapshotProposal
         });
 
         const columns = [...boardColumns?.columns];

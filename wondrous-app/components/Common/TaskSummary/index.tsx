@@ -242,7 +242,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
           </TaskHeader>
 
           <TaskContent>
-            <TaskTitle>hello{title}</TaskTitle>
+            <TaskTitle>{title}</TaskTitle>
             <TaskCardDescriptionText>
               {renderMentionString({
                 content: task?.description,
@@ -301,7 +301,6 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
                 </div>
               </TaskSummaryAction>
             )}
-
             {action && !task?.approvedAt ? (
               <TaskSummaryAction>
                 {task?.changeRequestedAt ? (
