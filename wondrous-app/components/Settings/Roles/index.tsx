@@ -24,6 +24,7 @@ import {
   Snackbar,
   TokenGatingButton,
   TitleLockIconWrapper,
+  TokenGatingButtonText,
 } from './styles';
 import { Role } from 'types/common';
 import RoleLockIcon from '../../Icons/rolesLock.svg';
@@ -170,7 +171,9 @@ const Roles = ({
                       <PermissionTitle>Token Gating: Inactive</PermissionTitle>
                     )}
                   </TitleLockIconWrapper>
-                  <TokenGatingButton highlighted={true}>{false ? 'Edit' : 'Add token gate'}</TokenGatingButton>
+                  <TokenGatingButton highlighted={true}>
+                    <TokenGatingButtonText>{false ? 'Edit' : 'Add token gate'}</TokenGatingButtonText>
+                  </TokenGatingButton>
                 </Permission>
                 {permissons.map((item) => (
                   <Permission key={item.permission}>
