@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import Modal from '@mui/material/Modal';
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
+import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries/tokenGating';
 
 import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
@@ -24,11 +28,30 @@ import {
   Snackbar,
   TokenGatingButton,
   TitleLockIconWrapper,
+  RoleTokenGatingWrapper,
+  TokenGatedRoleModal,
+  TokenGatedRoleModalTitle,
 } from './styles';
+import {
+  TokenGatingNameHeader,
+  TokenGatingElementWrapper,
+  TokenGateActionMenu,
+  TokenGateListDiv,
+  TokenGateListItemDiv,
+  TokenGatingHeaderLabel,
+  TokenLogoDisplay,
+} from 'components/Settings/TokenGating/styles';
+import { TaskMenuIcon } from '../../Icons/taskMenu';
+import { DropDown, DropDownItem } from '../../Common/dropdown';
+import { White } from 'theme/colors';
+
 import { Role } from 'types/common';
 import RoleLockIcon from '../../Icons/rolesLock.svg';
+import { GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
 
 type Props = {
+  orgId: String;
+  podId?: String;
   roles: Role[];
   permissons: Array<{
     title: string;
@@ -43,6 +66,8 @@ type Props = {
 };
 
 const Roles = ({
+  orgId,
+  podId,
   roles,
   onCreateNewRole,
   onDeleteRole,
@@ -51,9 +76,11 @@ const Roles = ({
   onToastClose,
   permissons,
 }: Props) => {
+  console.log(roles);
   const [newRoleName, setNewRoleName] = useState('');
   const [newRolePermissionsExpanded, setNewRolePermissionsExpanded] = useState(false);
   const [newRolePermissions, setNewRolePermissions] = useState([]);
+  const [tokenGatedRoleModalOpen, setTokenGatedRoleModalOpen] = useState(false);
 
   // Creates new role
   function handleCreateNewRoleClick() {
@@ -94,6 +121,9 @@ const Roles = ({
       setNewRolePermissionsExpanded(false);
     }
   };
+  const handleCloseModal = () => {
+    setTokenGatedRoleModalOpen(false);
+  };
 
   return (
     <SettingsWrapper>
@@ -103,6 +133,12 @@ const Roles = ({
         open={toast.show}
         onClose={onToastClose}
         message={toast.message}
+      />
+      <TokenGateRoleConfigModal
+        open={tokenGatedRoleModalOpen}
+        handleClose={handleCloseModal}
+        orgId={orgId}
+        podId={podId}
       />
 
       <RolesContainer>
@@ -154,24 +190,15 @@ const Roles = ({
               title={
                 <TitleLockIconWrapper>
                   <p>{orgRole.name}</p>
-                  {false ? <RoleLockIcon /> : null}
+                  {orgRole.tokenGatingCondition ? <RoleLockIcon /> : null}
                 </TitleLockIconWrapper>
               }
             >
               <Permissions>
-                <Permission>
-                  <TitleLockIconWrapper>
-                    {false ? (
-                      <>
-                        <PermissionTitle>Active Token Gate: 20 ETH</PermissionTitle>
-                        <RoleLockIcon />
-                      </>
-                    ) : (
-                      <PermissionTitle>Token Gating: Inactive</PermissionTitle>
-                    )}
-                  </TitleLockIconWrapper>
-                  <TokenGatingButton highlighted={true}>{false ? 'Edit' : 'Add token gate'}</TokenGatingButton>
-                </Permission>
+                <TokenGatingOnRoleDisplay
+                  tokenGatingCondition={orgRole.tokenGatingCondition}
+                  setTokenGatedRoleModalOpen={setTokenGatedRoleModalOpen}
+                />
                 {permissons.map((item) => (
                   <Permission key={item.permission}>
                     <div>
@@ -197,4 +224,199 @@ const Roles = ({
   );
 };
 
+const TokenGatingOnRoleDisplay = ({ tokenGatingCondition, setTokenGatedRoleModalOpen }) => {
+  return (
+    <RoleTokenGatingWrapper>
+      <TitleLockIconWrapper>
+        {tokenGatingCondition ? (
+          <>
+            <PermissionTitle>Active Token Gate: {tokenGatingCondition?.name}</PermissionTitle>
+            <RoleLockIcon />
+          </>
+        ) : (
+          <PermissionTitle>Token Gating: Inactive</PermissionTitle>
+        )}
+      </TitleLockIconWrapper>
+      <TokenGatingButton onClick={() => setTokenGatedRoleModalOpen(true)} highlighted={true}>
+        {tokenGatingCondition ? 'Edit' : 'Add token gate'}
+      </TokenGatingButton>
+    </RoleTokenGatingWrapper>
+  );
+};
+
+const TokenGateRoleConfigModal = (props) => {
+  const router = useRouter();
+  const { open, handleClose, orgId, podId } = props;
+  console.log('orgId', orgId);
+  console.log('podId', podId);
+  const [tokenGatingConditions, setTokenGatingConditions] = useState([]);
+  const [getTokenGatingConditionsForOrg, { data, loading, fetchMore }] = useLazyQuery(
+    GET_TOKEN_GATING_CONDITIONS_FOR_ORG,
+    {
+      onCompleted: (data) => {
+        setTokenGatingConditions(data?.getTokenGatingConditionsForOrg);
+      },
+      fetchPolicy: 'network-only',
+    }
+  );
+  console.log('tokenGatingConditions', tokenGatingConditions);
+  useEffect(() => {
+    if (orgId && open) {
+      getTokenGatingConditionsForOrg({
+        variables: {
+          orgId,
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orgId, open]);
+
+  return (
+    <>
+      <Modal open={open} onClose={handleClose}>
+        <TokenGatedRoleModal>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <TokenGatedRoleModalTitle>Select the condition to apply to role </TokenGatedRoleModalTitle>
+            <div
+            style={{
+              display: 'flex',
+              gap: '10px',
+              alignItems: 'center',
+            }}
+          >
+            <TokenGatingButton onClick={() => {}} highlighted={false}>
+              remove
+            </TokenGatingButton>
+            <TokenGatingButton onClick={() => {
+              router.replace(`organization/settings/${orgId}/token-gating`);
+              }} highlighted={true}>
+              create
+            </TokenGatingButton>
+            </div>
+          </div>
+          {tokenGatingConditions.map((tokenGatingCondition) => {
+            return <TokenGatingMoalElement key={tokenGatingCondition.id} tokenGatingCondition={tokenGatingCondition} />;
+          })}
+        </TokenGatedRoleModal>
+      </Modal>
+    </>
+  );
+};
+
+const TokenGatingMoalElement = (props) => {
+  const [tokenName, setTokenName] = useState(null);
+  const [tokenLogo, setTokenLogo] = useState(null);
+  const { tokenGatingCondition } = props;
+  const [getTokenInfo, { loading: getTokenInfoLoading }] = useLazyQuery(GET_TOKEN_INFO, {
+    onCompleted: (data) => {
+      if (data?.getTokenInfo) {
+        setTokenName(data?.getTokenInfo.name);
+        setTokenLogo(data?.getTokenInfo.logoUrl);
+      }
+    },
+    fetchPolicy: 'network-only',
+  });
+
+  const [getNFTInfo, { loading: getNFTInfoLoading }] = useLazyQuery(GET_NFT_INFO, {
+    onCompleted: (data) => {
+      if (data?.getNFTInfo) {
+        setTokenName(data?.getNFTInfo.name);
+        setTokenLogo(data?.getNFTInfo.logoUrl);
+      }
+    },
+    fetchPolicy: 'network-only',
+  });
+  const contractAddress = tokenGatingCondition?.accessCondition[0].contractAddress;
+  const dropdownItemStyle = {
+    marginRight: '12px',
+    color: White,
+  };
+
+  useEffect(() => {
+    const getTokenDisplayInfo = async () => {
+      const type = tokenGatingCondition?.accessCondition[0].type;
+      if (type === 'ERC20') {
+        getTokenInfo({
+          variables: {
+            contractAddress,
+            chain: tokenGatingCondition?.accessCondition[0].chain,
+          },
+        });
+      }
+      if (type === 'ERC721') {
+        getNFTInfo({
+          variables: {
+            contractAddress,
+          },
+        });
+      }
+    };
+
+    getTokenDisplayInfo();
+  }, [tokenGatingCondition?.accessCondition[0].contractAddress]);
+  const handleElementClick = async ()=>{
+    console.log('asdf')
+  }
+  return (
+    <TokenGatingElementWrapper onClick={handleElementClick}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <TokenGatingNameHeader>{tokenGatingCondition?.name}</TokenGatingNameHeader>
+        <TokenGateActionMenu right="true">
+          <DropDown DropdownHandler={TaskMenuIcon}>
+            <DropDownItem
+              key={'token-gate-edit' + tokenGatingCondition?.id}
+              onClick={() => {}}
+              style={dropdownItemStyle}
+            >
+              Edit
+            </DropDownItem>
+            {/* <DropDownItem
+              key={'token-gate-delete' + tokenGatingCondition?.id}
+              onClick={() => {}}
+              style={dropdownItemStyle}
+            >
+              Remove
+            </DropDownItem> */}
+          </DropDown>
+        </TokenGateActionMenu>
+      </div>
+      <TokenGateListDiv>
+        <TokenGateListItemDiv>
+          <TokenGatingHeaderLabel>Chain:</TokenGatingHeaderLabel>
+          <TokenGatingNameHeader>
+            <span
+              style={{
+                textTransform: 'capitalize',
+              }}
+            >
+              {tokenGatingCondition?.accessCondition[0].chain}
+            </span>
+          </TokenGatingNameHeader>
+        </TokenGateListItemDiv>
+        <TokenGateListItemDiv>
+          <TokenGatingHeaderLabel>Token:</TokenGatingHeaderLabel>
+          <TokenLogoDisplay src={tokenLogo} />
+          <TokenGatingNameHeader>
+            <span>{tokenName ? tokenName : tokenGatingCondition?.accessCondition[0].contractAddress}</span>
+          </TokenGatingNameHeader>
+        </TokenGateListItemDiv>
+        <TokenGateListItemDiv>
+          <TokenGatingHeaderLabel>Min. amount to hold:</TokenGatingHeaderLabel>
+          <TokenGatingNameHeader>{tokenGatingCondition?.accessCondition[0].minValue}</TokenGatingNameHeader>
+        </TokenGateListItemDiv>
+      </TokenGateListDiv>
+    </TokenGatingElementWrapper>
+  );
+};
 export default Roles;

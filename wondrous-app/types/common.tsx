@@ -3,6 +3,7 @@ export type Role = {
   name: string;
   default: boolean;
   permissions: string[];
+  tokenGatingCondition: any;
 };
 
 export enum ViewType {

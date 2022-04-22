@@ -5,6 +5,7 @@ import { InputBase, Switch, Typography } from '@material-ui/core';
 import SnackbarComp from '@mui/material/Snackbar';
 
 import { Button } from '../../Common/button';
+import { BaseCard } from '../../Common/card';
 import { Red800 } from '../../../theme/colors';
 
 export const RolesContainer = styled.div`
@@ -56,6 +57,18 @@ export const Permissions = styled.div`
 `;
 
 export const Permission = styled.div`
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 85px;
+
+  &:not(:first-child) {
+    border-top: 1px solid #4b4b4b;
+  }
+`;
+
+export const RoleTokenGatingWrapper = styled.div`
   color: white;
   display: flex;
   justify-content: space-between;
@@ -140,5 +153,42 @@ export const TitleLockIconWrapper = styled.div`
   align-items: center;
   > * {
     margin-right: 10px;
+  }
+`;
+
+export const TokenGatedRoleModal = styled(BaseCard)`
+  width: 680px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 70%;
+  transform: translate(-50%, -50%);
+  overflow-y: scroll;
+  z-index: 2100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgb(20, 20, 20) !important;
+  padding-bottom: 32px;
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+`;
+
+
+
+export const TokenGatedRoleModalTitle = styled(Typography)`
+  && {
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 18px;
+    letter-spacing: 0.01em;
+    color: #ccbbff;
   }
 `;

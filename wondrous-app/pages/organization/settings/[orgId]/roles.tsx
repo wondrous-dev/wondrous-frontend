@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation } from '@apollo/client';
 
 import Roles from 'components/Settings/Roles';
-import { GET_ORG_ROLES } from 'graphql/queries';
+import { GET_ORG_ROLES_WITH_TOKEN_GATE } from 'graphql/queries';
 import { CREATE_ORG_ROLE, DELETE_ORG_ROLE, UPDATE_ORG_ROLE } from 'graphql/mutations/org';
 import { Role } from 'types/common';
 import permissons from 'utils/orgPermissions';
@@ -14,7 +14,7 @@ const RolesPage = () => {
   // Get organization roles
   const router = useRouter();
   const { orgId } = router.query;
-  const [getOrgRoles, { data: getOrgRolesData }] = useLazyQuery(GET_ORG_ROLES, {
+  const [getOrgRolesWithTokenGate, { data: getOrgRolesData }] = useLazyQuery(GET_ORG_ROLES_WITH_TOKEN_GATE, {
     variables: {
       orgId,
     },
@@ -24,7 +24,7 @@ const RolesPage = () => {
   const [createOrgRole] = useMutation(CREATE_ORG_ROLE, {
     onCompleted: ({ createOrgRole: role }) => {
       setToast({ ...toast, message: `${role.name} created successfully.`, show: true });
-      getOrgRoles();
+      getOrgRolesWithTokenGate();
     },
   });
 
@@ -44,9 +44,9 @@ const RolesPage = () => {
   // Get organization roles when organization is defined
   useEffect(() => {
     if (orgId) {
-      getOrgRoles();
+      getOrgRolesWithTokenGate();
     }
-  }, [orgId, getOrgRoles]);
+  }, [orgId, getOrgRolesWithTokenGate]);
 
   useEffect(() => {
     if (getOrgRolesData) {
@@ -84,8 +84,9 @@ const RolesPage = () => {
 
   return (
     <Roles
-      roles={roles}
-      permissons={permissons}
+    roles={roles}
+    orgId={orgId}
+    permissons={permissons}
       onCreateNewRole={(name: string, permissions: string[]) => {
         createOrgRole({
           variables: {

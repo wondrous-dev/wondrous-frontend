@@ -68,7 +68,6 @@ const TokenGatedRoleDisplay = (props) => {
   const { role } = props;
   const [getTokenInfo, { loading: getTokenInfoLoading }] = useLazyQuery(GET_TOKEN_INFO, {
     onCompleted: (data) => {
-      setTokenName(data?.getTokenInfo.name);
       if (data?.getTokenInfo) {
         setTokenName(data?.getTokenInfo.name);
         setTokenLogo(data?.getTokenInfo.logoUrl);
