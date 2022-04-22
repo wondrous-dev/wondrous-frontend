@@ -1174,7 +1174,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   </PodNameTypography>
                 </>
               )}
-              {canEdit && fetchedTask?.status !== TASK_STATUS_DONE && (
+              {canEdit && (
                 <TaskActionMenu right="true">
                   <DropDown DropdownHandler={TaskMenuIcon}>
                     {canEdit && (

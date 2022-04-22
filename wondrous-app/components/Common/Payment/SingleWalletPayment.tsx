@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { CircularProgress } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import { ethers, utils } from 'ethers';
 import { BigNumber } from 'bignumber.js';
@@ -74,6 +75,7 @@ export const SingleWalletPayment = (props) => {
   const [notOwnerError, setNotOwnerError] = useState(null);
   const [signingError, setSigningError] = useState(null);
   const [safeConnectionError, setSafeConnectionError] = useState(null);
+  const [gnosisTransactionLoading, setGnosisTransactionLoading] = useState(false);
   const [incompatibleWalletError, setIncompatibleWalletError] = useState(null);
   const [paymentPending, setPaymentPending] = useState(null);
   const [gnosisSafeTxRedirectLink, setGnosisSafeTxRedirectLink] = useState(null);
@@ -166,6 +168,7 @@ export const SingleWalletPayment = (props) => {
 
   const constructAndSignTransactionData = async () => {
     setSigningError(null);
+    setGnosisTransactionLoading(true);
     let t1 = performance.now();
     let iface = new ethers.utils.Interface(ERC20abi);
     const paymentData = submissionPaymentInfo?.paymentData[0];
@@ -238,6 +241,7 @@ export const SingleWalletPayment = (props) => {
     try {
       await gnosisSdk.signTransaction(safeTransaction);
     } catch (e) {
+      setGnosisTransactionLoading(false);
       if (e.message === 'Transactions can only be signed by Safe owners') {
         setNotOwnerError(`Not a owner of multisig`);
       } else if (e.message.includes('User denied message')) {
@@ -281,6 +285,7 @@ export const SingleWalletPayment = (props) => {
     });
     t2 = performance.now();
     console.log(`proposeGnosisTxForSubmission took ${t2 - t1} milliseconds`);
+    setGnosisTransactionLoading(false);
   };
   const handleCreateNewWalletClick = () => {
     if (podId) {
@@ -317,14 +322,20 @@ export const SingleWalletPayment = (props) => {
           }}
         />
         {selectedWallet && !paymentPending && (
-          <CreateFormPreviewButton
-            onClick={handlePaymentClick}
-            style={{
-              marginLeft: 0,
-            }}
-          >
-            Pay {changedRewardAmount || reward?.rewardAmount} {reward?.symbol}
-          </CreateFormPreviewButton>
+          <>
+            {gnosisTransactionLoading ? (
+              <CircularProgress />
+            ) : (
+              <CreateFormPreviewButton
+                onClick={handlePaymentClick}
+                style={{
+                  marginLeft: 0,
+                }}
+              >
+                Pay {changedRewardAmount || reward?.rewardAmount} {reward?.symbol}
+              </CreateFormPreviewButton>
+            )}
+          </>
         )}
         {parentError ? (
           <ErrorText>{parentError}</ErrorText>
