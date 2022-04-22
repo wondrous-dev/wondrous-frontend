@@ -138,10 +138,11 @@ export const SettingsWrapper = (props) => {
       page: [SettingsPage.Org, SettingsPage.Pod],
     },
     {
-      icon: <WrenchIcon width={40} height={40} />,
-      label: 'Integrations',
+      icon: <GeneralSettingsIcon width={40} height={40} />,
+      label: 'Integrations Settings',
       value: 'integrations',
       href: orgId ? `/organization/settings/${orgId}/integrations` : `/pod/settings/${podId}/integrations`,
+      page: [SettingsPage.Org, SettingsPage.Pod],
     },
     {
       icon: <TokenGatingIcon />,
