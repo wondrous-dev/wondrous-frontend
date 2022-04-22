@@ -9,12 +9,8 @@ module.exports = withBundleAnalyzer({
       test: /\.svg$/,
       use: ['@svgr/webpack'],
     });
-
+    // config.optimization.minimizer = [];
     return config;
   },
   swcMinify: true,
-  experimental: {
-    // ssr and displayName are configured by default
-    styledComponents: true,
-  },
 });

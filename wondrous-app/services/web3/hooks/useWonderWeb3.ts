@@ -1,4 +1,3 @@
-import Web3 from 'web3';
 import { BigNumber, ethers } from 'ethers';
 import ENS, { getEnsAddress } from '@ensdomains/ensjs';
 import useStoredConnector from './useStoredConnector';
@@ -6,15 +5,13 @@ import connectors, { ConnectorName } from '../connectors';
 
 import { useContext, useEffect, useMemo, useState } from 'react';
 
-import { CHAIN_IDS, SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '@utils/constants';
+import { CHAIN_IDS, SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from 'utils/constants';
 
-import { ERC20abi } from '@services/contracts/erc20.abi';
+import { ERC20abi } from 'services/contracts/erc20.abi';
 import { formatEther } from 'ethers/lib/utils';
-import { AbiItem } from 'web3-utils';
 import useWeb3 from '../hooks/useWeb3';
 import { WonderWeb3, WonderWeb3AssetMap } from './types';
 import { WonderWeb3Context } from '../context/WonderWeb3Context';
-
 /**
  * High level hook for Web3. Uses our react-web3 hook wrapper and adds some additional business functionality.
  */
@@ -59,7 +56,7 @@ export default function useWonderWeb3(): WonderWeb3 {
   }, [address, ensName]);
 
   const toChecksumAddress = (address: string) => {
-    return Web3.utils.toChecksumAddress(address);
+    return ethers.utils.getAddress(address);
   };
 
   const wallet = useMemo(() => {
@@ -128,8 +125,8 @@ export default function useWonderWeb3(): WonderWeb3 {
   };
 
   const getNativeChainBalance = async () => {
-    const web3 = new Web3(provider);
-    const balance = await web3.eth.getBalance(address);
+    const ethersProvider = new ethers.providers.Web3Provider(provider);
+    const balance = await ethersProvider.getBalance(address);
     const balanceFormatted = parseFloat(formatEther(balance)).toPrecision(4) + ' ';
     return balanceFormatted;
   };
@@ -137,10 +134,10 @@ export default function useWonderWeb3(): WonderWeb3 {
   const getTokenBalance = async (token) => {
     if (!fetching && address && chainId && token.contracts[chainId] !== '') {
       setFetching(true);
-      const web3 = new Web3(provider);
-      const usdcContract = new web3.eth.Contract(ERC20abi as AbiItem[], token.contracts[chainId]);
-      const balanceRaw = await usdcContract.methods.balanceOf(address).call();
-      const decimals = await usdcContract.methods.decimals().call();
+      const ethersProvider = new ethers.providers.Web3Provider(provider);
+      const usdcContract = new ethers.Contract(token.contracts[chainId], ERC20abi, ethersProvider);
+      const balanceRaw = await usdcContract.balanceOf(address);
+      const decimals = await usdcContract.decimals();
       const bnBalance = await BigNumber.from(balanceRaw);
       const balance = bnBalance.div(10 ** decimals);
       setFetching(false);
@@ -160,7 +157,6 @@ export default function useWonderWeb3(): WonderWeb3 {
 
       const chainAssets = await currencies.reduce(async (acc, currency) => {
         const { contracts, symbol } = currency;
-
         const balance = contracts ? await getTokenBalance(currency) : await getNativeChainBalance();
 
         // Promise
@@ -254,21 +250,4 @@ export default function useWonderWeb3(): WonderWeb3 {
     activate,
     activateAndStore,
   };
-}
-
-// TODO: TO helpers
-function initWeb3(provider: any) {
-  const web3: any = new Web3(provider);
-
-  web3.eth.extend({
-    methods: [
-      {
-        name: 'chainId',
-        call: 'eth_chainId',
-        outputFormatter: web3.utils.hexToNumber,
-      },
-    ],
-  });
-
-  return web3;
 }

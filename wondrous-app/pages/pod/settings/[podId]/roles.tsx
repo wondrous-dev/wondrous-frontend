@@ -2,11 +2,11 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation } from '@apollo/client';
 
-import Roles from '../../../../components/Settings/Roles';
-import { GET_POD_ROLES } from '../../../../graphql/queries';
-import { Role } from '../../../../types/common';
-import { CREATE_POD_ROLE, DELETE_POD_ROLE, UPDATE_POD_ROLE } from '../../../../graphql/mutations/pod';
-import permissons from '../../../../utils/podPermissions';
+import Roles from 'components/Settings/Roles';
+import { GET_POD_ROLES } from 'graphql/queries';
+import { Role } from 'types/common';
+import { CREATE_POD_ROLE, DELETE_POD_ROLE, UPDATE_POD_ROLE } from 'graphql/mutations/pod';
+import permissons from 'utils/podPermissions';
 
 const RolesPage = () => {
   const [roles, setRoles] = useState([]);

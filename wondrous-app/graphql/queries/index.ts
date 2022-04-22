@@ -9,3 +9,4 @@ export * from './user';
 export * from './payment';
 export * from './wallet';
 export * from './feed';
+export * from './tokenGating';

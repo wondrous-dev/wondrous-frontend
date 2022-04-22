@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
+
+import Tooltip from 'components/Tooltip';
 import {
   DrawerBackButton,
   DrawerBottomBlock,
@@ -14,19 +17,19 @@ import {
   StyledDivider,
   StyledDividerDiv,
 } from './styles';
+
 import SettingsIcon from '../Icons/settings';
 import ExitIcon from '../Icons/exit';
 import BackArrowIcon from '../Icons/backArrow';
 import { logout, useMe, withAuth } from '../Auth/withAuth';
-import { useSideBar } from '../../utils/hooks';
+import { useSideBar } from 'utils/hooks';
 import { useQuery } from '@apollo/client';
-import { GET_USER_ORGS } from '../../graphql/queries';
+import { GET_USER_ORGS } from 'graphql/queries';
 import { SafeImage } from '../Common/Image';
 import DefaultUserImage from '../Common/Image/DefaultUserImage';
 import { useRouter } from 'next/router';
 import { DAOIcon } from '../Icons/dao';
 import { PodModal } from './PodModal';
-import Link from 'next/link';
 
 const PodButton = (props) => {
   return (
@@ -91,45 +94,49 @@ const SideBarComponent = (props) => {
       <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
       <DrawerContainer>
         <DrawerTopBlock>
-          <DrawerTopBlockItem
-            onClick={() => {
-              router.push(`/profile/${user.username}/about`, undefined, {
-                shallow: true,
-              });
-            }}
-          >
-            {user?.profilePicture ? (
-              <SafeImage style={profilePictureStyle} src={user?.thumbnailPicture || user?.profilePicture} />
-            ) : (
-              <DefaultUserImage style={profilePictureStyle} />
-            )}
-          </DrawerTopBlockItem>
+          <Tooltip title="Profile">
+            <DrawerTopBlockItem
+              onClick={() => {
+                router.push(`/profile/${user.username}/about`, undefined, {
+                  shallow: true,
+                });
+              }}
+            >
+              {user?.profilePicture ? (
+                <SafeImage style={profilePictureStyle} src={user?.thumbnailPicture || user?.profilePicture} />
+              ) : (
+                <DefaultUserImage style={profilePictureStyle} />
+              )}
+            </DrawerTopBlockItem>
+          </Tooltip>
           <DrawerList>
             {listItems &&
               listItems.map((item) => (
-                <Link
-                  key={item.id}
-                  href={`/organization/[username]/boards`}
-                  as={`/organization/${item?.username}/boards`}
-                  passHref={true}
-                >
-                  <DrawerListItem button key={item.id}>
-                    {item?.profilePicture ? (
-                      <SafeImage
-                        src={item?.thumbnailPicture || item?.profilePicture}
-                        style={{
-                          width: '36px',
-                          height: '36px',
-                          borderRadius: '6px',
-                        }}
-                      />
-                    ) : (
-                      <NoLogoDAO>
-                        <DAOIcon />
-                      </NoLogoDAO>
-                    )}
-                  </DrawerListItem>
-                </Link>
+                <Tooltip key={item.id} title={`${item?.username} Board`}>
+                  <Link
+                    key={item.id}
+                    href={`/organization/[username]/boards`}
+                    as={`/organization/${item?.username}/boards`}
+                    passHref={true}
+                  >
+                    <DrawerListItem button key={item.id}>
+                      {item?.profilePicture ? (
+                        <SafeImage
+                          src={item?.thumbnailPicture || item?.profilePicture}
+                          style={{
+                            width: '36px',
+                            height: '36px',
+                            borderRadius: '6px',
+                          }}
+                        />
+                      ) : (
+                        <NoLogoDAO>
+                          <DAOIcon />
+                        </NoLogoDAO>
+                      )}
+                    </DrawerListItem>
+                  </Link>
+                </Tooltip>
               ))}
             <StyledDividerDiv>
               <StyledDivider />

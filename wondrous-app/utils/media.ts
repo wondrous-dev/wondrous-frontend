@@ -1,5 +1,5 @@
-import apollo from '../services/apollo';
-import { GET_PRESIGNED_IMAGE_URL } from '../graphql/queries/media';
+import apollo from 'services/apollo';
+import { GET_PRESIGNED_IMAGE_URL } from 'graphql/queries/media';
 import { IMAGE_FILE_EXTENSIONS_TYPE_MAPPING, VIDEO_FILE_EXTENSIONS_TYPE_MAPPING } from './constants';
 
 export const uploadMedia = async ({ filename, fileType, file }) => {

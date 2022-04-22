@@ -1,23 +1,27 @@
+import { DiscordIcon } from 'components/Icons/discord';
+import OpenSeaIcon from 'components/Icons/openSea';
+import TwitterPurpleIcon from 'components/Icons/twitterPurple';
+import { parseLinks } from 'utils/common';
 import router from 'next/router';
 import React, { useState } from 'react';
-import { SIDEBAR_WIDTH } from '../../../utils/constants';
-import { SideBarContext } from '../../../utils/contexts';
-import { formatLinkDisplay } from '../../../utils/links';
+import { SIDEBAR_WIDTH, SOCIAL_MEDIA_DISCORD, SOCIAL_MEDIA_TWITTER, SOCIAL_OPENSEA } from 'utils/constants';
+import { SideBarContext } from 'utils/contexts';
+import { formatLinkDisplay } from 'utils/links';
 import { useMe } from '../../Auth/withAuth';
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import Header from '../../Header';
 import SideBarComponent from '../../SideBar';
-import Tabs from '../tabs/tabs';
 import {
   Content,
   ContentContainer,
   HeaderActivity,
   HeaderActivityLink,
   HeaderActivityLinkIcon,
+  HeaderActivityLinkText,
+  HeaderActivitySocialIcon,
   HeaderButtons,
   HeaderEditProfileButton,
-  HeaderImage,
   HeaderMainBlock,
   HeaderOrgCount,
   HeaderOrgCountText,
@@ -29,12 +33,29 @@ import {
   HeaderUserName,
   OverviewComponent,
   TokenHeader,
+  HeaderImageDefault,
+  HeaderImageWrapper,
 } from './styles';
 
-const Wrapper = (props) => {
+const socialIcons = {
+  [SOCIAL_MEDIA_TWITTER]: TwitterPurpleIcon,
+  [SOCIAL_MEDIA_DISCORD]: DiscordIcon,
+  [SOCIAL_OPENSEA]: OpenSeaIcon,
+};
+
+interface IWrapperProps {
+  userProfileData: {
+    [key: string]: any;
+  };
+  children: React.ReactNode;
+}
+
+const Wrapper = (props: IWrapperProps) => {
   const [minimized, setMinimized] = useState(false);
   const loggedInUser = useMe();
-  const { children, userProfileData = {}, mainLink } = props;
+  const { children, userProfileData = {} } = props;
+  const { links } = userProfileData;
+  const { mainLink, social, websites } = parseLinks(links);
   const { firstName, lastName, username, bio, additionalInfo = {}, profilePicture } = userProfileData;
   const { orgCount, podCount } = additionalInfo;
   const viewingSelf = userProfileData?.id === loggedInUser?.id;
@@ -67,7 +88,9 @@ const Wrapper = (props) => {
             paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
           }}
         >
-          <HeaderImage />
+          <HeaderImageWrapper>
+            <HeaderImageDefault />
+          </HeaderImageWrapper>
           <Content>
             <ContentContainer>
               <TokenHeader>
@@ -91,12 +114,6 @@ const Wrapper = (props) => {
                 <HeaderUserName>@{username}</HeaderUserName>
                 {bio && <HeaderText>{bio}</HeaderText>}
                 <HeaderActivity>
-                  {mainLink && (
-                    <HeaderActivityLink href={mainLink.url} target="_blank">
-                      <HeaderActivityLinkIcon />
-                      {formatLinkDisplay(mainLink)}
-                    </HeaderActivityLink>
-                  )}
                   <HeaderOrgPodCount>
                     <HeaderPodCount>{podCount}</HeaderPodCount>
                     <HeaderPodCountText>Pods</HeaderPodCountText>
@@ -105,10 +122,25 @@ const Wrapper = (props) => {
                     <HeaderOrgCount>{orgCount}</HeaderOrgCount>
                     <HeaderOrgCountText>DAOs</HeaderOrgCountText>
                   </HeaderOrgPodCount>
+                  {mainLink?.url && (
+                    <HeaderActivityLink href={mainLink.url} target="_blank">
+                      <HeaderActivityLinkIcon />
+                      <HeaderActivityLinkText>{formatLinkDisplay(mainLink)}</HeaderActivityLinkText>
+                    </HeaderActivityLink>
+                  )}
+                  {social.map(({ url, type }) => {
+                    if (!url) return null;
+                    const SocialIcon = socialIcons[type];
+                    return (
+                      <HeaderActivityLink key={url} href={url} target="_blank">
+                        <HeaderActivitySocialIcon Component={SocialIcon} />
+                      </HeaderActivityLink>
+                    );
+                  })}
                 </HeaderActivity>
               </TokenHeader>
 
-              <Tabs>{children}</Tabs>
+              {children}
             </ContentContainer>
           </Content>
         </OverviewComponent>

@@ -30,7 +30,7 @@ import { useWonderWeb3 } from '../web3';
 
 import { SupportedChainType } from '../../utils/web3Constants';
 import { getUserSigningMessage } from '../../components/Auth/withAuth';
-import signedMessageIsString from '@services/web3/utils/signedMessageIsString';
+import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 
 const SNAPSHOT_DOCS = "https://docs.snapshot.org/spaces/create";
 

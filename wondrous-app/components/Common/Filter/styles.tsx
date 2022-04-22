@@ -1,13 +1,12 @@
+import { Button, Portal } from '@mui/material';
 import styled from 'styled-components';
 import { color } from 'styled-system';
-import { Button } from '@material-ui/core';
 import {
   Black70,
   Black80,
   Black95,
   Black97,
   Black98,
-  Blue20,
   Grey250,
   Grey57,
   Grey65,
@@ -27,8 +26,6 @@ export const FilterHandle = styled.div`
   min-width: 323px;
   height: 40px;
   padding: 1px;
-
-  margin: 0 0 0 23px;
 
   ${(props) =>
     props.open ? `background: ${Grey75};` : `background: linear-gradient(180deg, ${Black80} 0%, ${Black95} 70%);`}
@@ -83,12 +80,14 @@ export const FilterHandleContainer = styled.div`
   justify-content: flex-start;
 `;
 
+export const FilterBoxPortal = styled(Portal)``;
+
 export const FilterBox = styled.div`
   position: absolute;
   top: 40px;
   left: 0;
 
-  display: ${(props) => (props.open ? 'flex' : 'none')};
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;

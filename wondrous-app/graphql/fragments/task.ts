@@ -32,6 +32,10 @@ export const TaskFragment = gql`
       username
       profilePicture
     }
+    creator {
+      username
+      profilePicture
+    }
     org {
       profilePicture
       name
@@ -153,7 +157,6 @@ export const TaskProposalCardFragment = gql`
     media {
       ...MediaFragment
     }
-    snapshotProposal
   }
   ${MediaFragment}
 `;

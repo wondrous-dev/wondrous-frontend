@@ -1,24 +1,25 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 
-import apollo from '../../services/apollo';
-import {
-  GET_LOGGED_IN_USER,
-  GET_LOGGED_IN_WAITLIST_USER,
-  GET_USER_SIGNING_MESSAGE,
-  WHOAMI,
-} from '../../graphql/queries';
+import apollo from 'services/apollo';
+import { GET_LOGGED_IN_USER, GET_LOGGED_IN_WAITLIST_USER, GET_USER_SIGNING_MESSAGE, WHOAMI } from 'graphql/queries';
 import {
   CONNECT_USER_WALLET,
   CREATE_USER,
   CREATE_WALLET_USER,
   LOGIN_MUTATION,
   LOGIN_WALLET_MUTATION,
-} from '../../graphql/mutations';
+} from 'graphql/mutations';
 import { useRouter } from 'next/router';
 
 const MyContext = React.createContext(null);
-const EXCLUDED_PATHS = ['/invite/[token]', '/organization/[username]/boards', '/login'];
+const EXCLUDED_PATHS = [
+  '/invite/[token]',
+  '/organization/[username]/boards',
+  '/login',
+  '/discord/callback',
+  '/onboarding/welcome',
+];
 
 export const useMe = () => {
   return useContext(MyContext);

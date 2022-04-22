@@ -15,7 +15,7 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
   PRIVACY_LEVEL,
-} from '../../utils/constants';
+} from 'utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
 import AudioIcon from '../Icons/MediaTypesIcons/audio';
@@ -41,7 +41,7 @@ import {
   CreateFormAddDetailsInputs,
   CreateFormAddDetailsSection,
   CreateFormAddDetailsSelects,
-  CreateFormAddDetailsSwitch,
+  CreateFormAddDetailsTab,
   CreateFormBaseModal,
   CreateFormBaseModalCloseBtn,
   CreateFormBaseModalHeader,
@@ -80,7 +80,7 @@ import {
   OptionTypography,
   StyledChip,
   CreateFormRewardCurrency,
-  CreateFormAddDetailsSwitchLabel,
+  CreateFormAddDetailsTabLabel,
   CreateFormAddDetailsLocalizationProvider,
   SnapshotButtonBlock,
   SnapshotErrorText,
@@ -88,24 +88,24 @@ import {
 } from './styles';
 import SelectDownIcon from '../Icons/selectDownIcon';
 import UploadImageIcon from '../Icons/uploadImage';
-import { getFilenameAndType, handleAddFile, uploadMedia } from '../../utils/media';
+import { getFilenameAndType, handleAddFile, uploadMedia } from 'utils/media';
 import DatePicker from '../Common/DatePicker';
 import { MediaItem } from './MediaItem';
 import { AddFileUpload } from '../Icons/addFileUpload';
 import { TextInput } from '../TextInput';
 import { White } from '../../theme/colors';
-import { TextInputContext } from '../../utils/contexts';
+import { TextInputContext } from 'utils/contexts';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
+import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { SafeImage } from '../Common/Image';
-import { GET_USER_AVAILABLE_PODS, GET_USER_PODS, GET_POD_USERS } from '../../graphql/queries/pod';
+import { GET_USER_AVAILABLE_PODS, GET_USER_PODS, GET_POD_USERS } from 'graphql/queries/pod';
 import {
   getMentionArray,
   parseUserPermissionContext,
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
-} from '../../utils/helpers';
-import { GET_ORG_USERS } from '../../graphql/queries/org';
+} from 'utils/helpers';
+import { GET_ORG_USERS } from 'graphql/queries/org';
 import {
   ATTACH_MEDIA_TO_TASK,
   CREATE_TASK,
@@ -113,35 +113,32 @@ import {
   UPDATE_TASK,
   UPDATE_MILESTONE,
   UPDATE_BOUNTY,
-} from '../../graphql/mutations/task';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
+} from 'graphql/mutations/task';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   ATTACH_MEDIA_TO_TASK_PROPOSAL,
   CREATE_TASK_PROPOSAL,
   REMOVE_MEDIA_FROM_TASK_PROPOSAL,
   UPDATE_TASK_PROPOSAL,
-} from '../../graphql/mutations/taskProposal';
+} from 'graphql/mutations/taskProposal';
 import { useMe } from '../Auth/withAuth';
 import Ethereum from '../Icons/ethereum';
 import { USDCoin } from '../Icons/USDCoin';
-import { TaskFragment } from '../../graphql/fragments/task';
-import { updateProposalItem } from '../../utils/board';
-import { GET_ORG_TASK_BOARD_PROPOSALS } from '../../graphql/queries/taskBoard';
+import { TaskFragment } from 'graphql/fragments/task';
+import { updateProposalItem } from 'utils/board';
+import { GET_ORG_TASK_BOARD_PROPOSALS } from 'graphql/queries/taskBoard';
 import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './createEntityModal';
-import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment';
+import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { ErrorText } from '../Common';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
-import { updateInProgressTask, updateTaskItem } from '../../utils/board';
-import {
-  GET_MILESTONES,
-  GET_ELIGIBLE_REVIEWERS_FOR_ORG,
-  GET_ELIGIBLE_REVIEWERS_FOR_POD,
-} from '../../graphql/queries/task';
+import { updateInProgressTask, updateTaskItem } from 'utils/board';
+import { GET_MILESTONES, GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_FOR_POD } from 'graphql/queries/task';
+import { TabsVisibilityCreateEntity } from 'components/Common/TabsVisibilityCreateEntity';
 
 // snapshot imports
-import { ethers } from 'ethers'
-import { useWonderWeb3 } from '@services/web3'
-import { useSnapshot } from '@services/snapshot'
+import { ethers } from 'ethers';
+import { useWonderWeb3 } from 'services/web3';
+import { useSnapshot } from 'services/snapshot';
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -357,6 +354,7 @@ const EditLayoutBaseModal = (props) => {
   const board = orgBoard || podBoard || userBoard;
   const boardColumns = useColumns();
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
+  const selectedOrgPrivacyLevel = userOrgs?.getUserOrgs?.filter((i) => i.id === org)[0]?.privacyLevel;
 
   const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS);
 
@@ -385,18 +383,22 @@ const EditLayoutBaseModal = (props) => {
     title: null,
     description: null,
     org: null,
+    privacy: null,
     // maxSubmissionCount: null,
   });
   const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG);
   // const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
   const [pods, setPods] = useState([]);
   const [pod, setPod] = useState(existingTask?.podName && existingTask?.podId);
+  const selectedPodPrivacyLevel = pods?.filter((i) => i.id === pod)[0]?.privacyLevel;
+  const isPodPublic = !selectedPodPrivacyLevel || selectedPodPrivacyLevel === 'public';
   const [dueDate, setDueDate] = useState(existingTask?.dueDate);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const isBounty = entityType === ENTITIES_TYPES.BOUNTY;
   const isTask = entityType === ENTITIES_TYPES.TASK;
   const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
   const isPod = entityType === ENTITIES_TYPES.POD;
+  const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
   const {
     showDeliverableRequirementsSection,
     showBountySwitchSection,
@@ -406,16 +408,18 @@ const EditLayoutBaseModal = (props) => {
     showMembersSection,
     showPrioritySelectSection,
     showDueDateSection,
+    showVisibility,
   } = useMemo(() => {
     return {
       showDeliverableRequirementsSection: isTask,
-      showBountySwitchSection: isTask || isBounty,
+      showBountySwitchSection: isTask || isBounty || isProposal,
       showAppearSection: isTask || isBounty,
       showLinkAttachmentSection: isPod,
       showHeaderImagePickerSection: isPod,
       showMembersSection: isPod,
       showPrioritySelectSection: isMilestone,
-      showDueDateSection: isTask || isMilestone || isBounty,
+      showDueDateSection: isTask || isBounty || isMilestone,
+      showVisibility: isTask || isBounty,
     };
   }, [entityType]);
   const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType];
@@ -470,10 +474,6 @@ const EditLayoutBaseModal = (props) => {
     existingTask?.orgId === board?.orgId ||
     existingTask?.podId === board?.podId ||
     existingTask?.userId === board?.userId;
-
-  useEffect(() => {
-    setPublicTask(existingTask?.privacyLevel === PRIVACY_LEVEL.public);
-  }, [existingTask?.privacyLevel]);
 
   useEffect(() => {
     if (existingTask?.orgId) {
@@ -634,21 +634,24 @@ const EditLayoutBaseModal = (props) => {
               ],
             }),
           // TODO: add links?,
-          ...(isTaskProposal && {
-            proposedAssigneeId: assignee?.value,
-          }),
-          privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
+          assigneeId: assignee?.value,
+          ...(publicTask &&
+            isPodPublic && {
+              privacyLevel: PRIVACY_LEVEL.public,
+            }),
           reviewerIds: selectedReviewers.map(({ id }) => id) || [],
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
-
-        if (!title) {
-          const newErrors = { ...errors };
-          if (!title) {
-            newErrors.title = 'Please enter a title';
-          }
-          newErrors.general = 'Please enter the necessary information above';
+        const taskPodPrivacyError = !isPodPublic ? publicTask : false;
+        if (!title || !org || taskPodPrivacyError) {
+          const newErrors = {
+            ...errors,
+            title: !title ? 'Please enter a title' : errors.title,
+            org: !org ? 'Please select an organization' : errors.org,
+            privacy: taskPodPrivacyError ? 'The selected pod is for members only' : errors.privacy,
+            general: 'Please enter the necessary information above',
+          };
           setErrors(newErrors);
         } else {
           updateTask({
@@ -709,7 +712,6 @@ const EditLayoutBaseModal = (props) => {
             input: {
               title,
               description: descriptionText,
-              privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
               dueDate,
               orgId: org?.id,
               podId: pod?.id,
@@ -739,30 +741,27 @@ const EditLayoutBaseModal = (props) => {
                 },
               ],
             }),
-          ...(publicTask && {
-            privacyLevel: PRIVACY_LEVEL.public,
-          }),
+          ...(publicTask &&
+            isPodPublic && {
+              privacyLevel: PRIVACY_LEVEL.public,
+            }),
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
         };
         // const isErrorMaxSubmissionCount =
         //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
-        if (!title || !descriptionText || !org) {
-          const newErrors = { ...errors };
-          if (!title) {
-            newErrors.title = 'Please enter a title';
-          }
-          if (!descriptionText) {
-            newErrors.description = 'Please enter a description';
-          }
-          if (!org) {
-            newErrors.org = 'Please select an organization';
-          }
-          // if (isErrorMaxSubmissionCount) {
-          //   newErrors.maxSubmissionCount = 'The number should be from 1 to 10,000';
-          // }
-          newErrors.general = 'Please enter the necessary information above';
+
+        const bountyPodPrivacyError = !isPodPublic ? publicTask : false;
+        if (!title || !descriptionText || !org || bountyPodPrivacyError) {
+          const newErrors = {
+            ...errors,
+            title: !title ? 'Please enter a title' : errors.title,
+            description: !descriptionText ? 'Please enter a description' : errors.description,
+            org: !org ? 'Please select an organization' : errors.org,
+            privacy: bountyPodPrivacyError ? 'The selected pod is for members only' : errors.privacy,
+            general: 'Please enter the necessary information above',
+          };
           setErrors(newErrors);
         } else {
           updateBounty({
@@ -825,6 +824,7 @@ const EditLayoutBaseModal = (props) => {
     getPodObject,
     board,
     handleClose,
+    existingTask?.assigneeId,
   ]);
 
   const [updateTaskProposalNoClose, { loading: updateTaskProposalNoCloseLoading}] = useMutation(UPDATE_TASK_PROPOSAL, {
@@ -1212,7 +1212,9 @@ const EditLayoutBaseModal = (props) => {
               />
             </CreateRewardAmountDiv>
             <CreateRewardAmountDiv>
-              <CreateFormMainBlockTitle>Reward amount {isBounty ? 'per submission' : ''}</CreateFormMainBlockTitle>
+              <CreateFormMainBlockTitle>
+                {isBounty ? 'Minimum reward per submission' : 'Reward amount'}
+              </CreateFormMainBlockTitle>
 
               <InputForm
                 style={{
@@ -1299,17 +1301,7 @@ const EditLayoutBaseModal = (props) => {
               <CreateFormAddDetailsInputBlock>
                 <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
                 <StyledAutocompletePopper
-                  options={filterOrgUsers(podUsersData?.getPodUsers ?? orgUsersData?.getOrgUsers)}
-                  onOpen={() => {
-                    if (pod) {
-                      getPodUsers({
-                        variables: {
-                          podId: pod?.id || pod,
-                          limit: 100, // TODO: fix autocomplete
-                        },
-                      });
-                    }
-                  }}
+                  options={filterOrgUsers(orgUsersData?.getOrgUsers)}
                   renderInput={(params) => (
                     <TextField
                       style={{
@@ -1554,66 +1546,75 @@ const EditLayoutBaseModal = (props) => {
         </CreateFormAddDetailsButton> */}
         {addDetails && (
           <CreateFormAddDetailsAppearBlock>
-            {showDueDateSection && (
-              <CreateFormAddDetailsAppearBlockContainer>
+            <CreateFormAddDetailsAppearBlockContainer>
+              {showDueDateSection && (
                 <CreateFormAddDetailsSelects>
                   <CreateFormAddDetailsLocalizationProvider>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                       <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
                     </LocalizationProvider>
                   </CreateFormAddDetailsLocalizationProvider>
-                  <CreateFormAddDetailsSwitch
-                    style={{
-                      width: '100%',
-                      marginLeft: '20px',
-                    }}
-                  >
-                    <CreateFormAddDetailsSwitchLabel>Show task as public</CreateFormAddDetailsSwitchLabel>
-                    <AndroidSwitch
-                      checked={publicTask}
-                      onChange={(e) => {
-                        setPublicTask(e.target.checked);
-                      }}
-                    />
-                  </CreateFormAddDetailsSwitch>
                 </CreateFormAddDetailsSelects>
 
-                {/* <CreateFormAddDetailsSelects> */}
-                {/* <CreateFormAddDetailsSwitch>
-										<CreateFormAddDetailsInputLabel>
-											Private task
-										</CreateFormAddDetailsInputLabel>
-										<AndroidSwitch />
-									</CreateFormAddDetailsSwitch> */}
+                // {/* <CreateFormAddDetailsSelects> */}
+                // {/* <CreateFormAddDetailsSwitch>
+                // 		<CreateFormAddDetailsInputLabel>
+                // 			Private task
+                // 		</CreateFormAddDetailsInputLabel>
+                // 		<AndroidSwitch />
+                // 	</CreateFormAddDetailsSwitch> */}
 
-                {/*if Suggest a task opened */}
-                {/* {showBountySwitchSection && !isTaskProposal && (
-                    <CreateFormAddDetailsSwitch>
-                      <CreateFormAddDetailsInputLabel>
-                        This is a bounty
-                      </CreateFormAddDetailsInputLabel>
-                      <AndroidSwitch />
-                    </CreateFormAddDetailsSwitch>
-                  )} */}
+                // {/*if Suggest a task opened */}
+                // {/* {showBountySwitchSection && !isTaskProposal && (
+                //     <CreateFormAddDetailsSwitch>
+                //       <CreateFormAddDetailsInputLabel>
+                //         This is a bounty
+                //       </CreateFormAddDetailsInputLabel>
+                //       <AndroidSwitch />
+                //     </CreateFormAddDetailsSwitch>
+                //   )} */}
 
-                {/*if Create a milestone opened*/}
-                {/* {showPrioritySelectSection && (
-                    <DropdownSelect
-                      title="Priority"
-                      labelText="Choose Milestone"
-                      options={PRIORITY_SELECT_OPTIONS}
-                      name="priority"
+                // {/*if Create a milestone opened*/}
+                // {/* {showPrioritySelectSection && (
+                //     <DropdownSelect
+                //       title="Priority"
+                //       labelText="Choose Milestone"
+                //       options={PRIORITY_SELECT_OPTIONS}
+                //       name="priority"
+                //     />
+                //   )} */}
+                // {/* </CreateFormAddDetailsSelects> */}
+              )}
+            </CreateFormAddDetailsAppearBlockContainer>
+
+            {(showLinkAttachmentSection || showVisibility) && (
+              <CreateFormAddDetailsAppearBlockContainer>
+                {showLinkAttachmentSection && (
+                  <CreateFormLinkAttachmentBlock>
+                    <CreateFormLinkAttachmentLabel>Links</CreateFormLinkAttachmentLabel>
+                    <InputForm margin placeholder="Enter link attachment" search={false} />
+                  </CreateFormLinkAttachmentBlock>
+                )}
+                {showVisibility && (
+                  <CreateFormAddDetailsTab>
+                    <CreateFormAddDetailsInputLabel>
+                      Who can see this {titleText.toLowerCase()}?
+                    </CreateFormAddDetailsInputLabel>
+                    <TabsVisibilityCreateEntity
+                      isPod={isPod}
+                      isPublic={publicTask}
+                      setIsPublic={setPublicTask}
+                      orgPrivacyLevel={
+                        existingTask?.orgId == org ? existingTask?.privacyLevel : selectedOrgPrivacyLevel
+                      }
+                      podPrivacyLevel={
+                        existingTask?.podId == pod ? existingTask?.privacyLevel : selectedPodPrivacyLevel
+                      }
                     />
-                  )} */}
-                {/* </CreateFormAddDetailsSelects> */}
+                    {errors.privacy && <ErrorText>{errors.privacy}</ErrorText>}
+                  </CreateFormAddDetailsTab>
+                )}
               </CreateFormAddDetailsAppearBlockContainer>
-            )}
-
-            {showLinkAttachmentSection && (
-              <CreateFormLinkAttachmentBlock>
-                <CreateFormLinkAttachmentLabel>Links</CreateFormLinkAttachmentLabel>
-                <InputForm margin placeholder="Enter link attachment" search={false} />
-              </CreateFormLinkAttachmentBlock>
             )}
           </CreateFormAddDetailsAppearBlock>
         )}

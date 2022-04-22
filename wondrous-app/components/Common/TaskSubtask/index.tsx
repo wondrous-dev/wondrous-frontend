@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ENTITIES_TYPES } from '../../../utils/constants';
+import { ENTITIES_TYPES } from 'utils/constants';
 import CreateLayoutBaseModal from '../../CreateEntity/createEntityModal';
 import { CreateModalOverlay } from '../../CreateEntity/styles';
 import { TaskSubtaskHeader } from '../TaskSubtaskHeader';

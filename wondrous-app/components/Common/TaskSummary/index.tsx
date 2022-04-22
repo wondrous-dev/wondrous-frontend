@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { LogoButton } from '../logo';
 import { AvatarList } from '../AvatarList';
 import { Compensation } from '../Compensation';
-import { delQuery } from '../../../utils';
+import { delQuery } from 'utils';
 
 import {
   TaskHeader,
@@ -29,29 +29,25 @@ import {
   SmallerCardActionButtons,
 } from './styles';
 import { Arrow, Media } from '../../Icons/sections';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { useRouter } from 'next/router';
 import { TaskViewModal } from '../Task/modal';
-import {
-  PERMISSIONS,
-  TASK_STATUS_ARCHIVED,
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_REQUESTED,
-} from '../../../utils/constants';
-import { parseUserPermissionContext } from '../../../utils/helpers';
+import { PERMISSIONS, TASK_STATUS_ARCHIVED, TASK_STATUS_IN_REVIEW, TASK_STATUS_REQUESTED } from 'utils/constants';
+import { parseUserPermissionContext } from 'utils/helpers';
 import { CreateFormButtonsBlock, CreateFormFooterButtons, CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { useMutation } from '@apollo/client';
-import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from '../../../graphql/mutations/taskProposal';
-import { APPROVE_SUBMISSION, REQUEST_CHANGE_SUBMISSION } from '../../../graphql/mutations/taskSubmission';
+import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { APPROVE_SUBMISSION, REQUEST_CHANGE_SUBMISSION } from 'graphql/mutations/taskSubmission';
 import { RejectIcon } from '../../Icons/taskModalIcons';
 import { CompletedIcon } from '../../Icons/statusIcons';
-import { addTaskItem, removeProposalItem, updateProposalItem, updateSubmissionItem } from '../../../utils/board';
+import { addTaskItem, removeProposalItem, updateProposalItem, updateSubmissionItem } from 'utils/board';
 import { TaskCommentIcon } from '../../Icons/taskComment';
-import { renderMentionString } from '../../../utils/common';
+import { renderMentionString } from 'utils/common';
 import { TaskMedia } from '../MediaPlayer';
 import { useMe } from '../../Auth/withAuth';
 import PodIcon from '../../Icons/podIcon';
-import { ViewType } from '../../../types/common';
+import { ViewType } from 'types/common';
+import { useLocation } from 'utils/useLocation';
 
 let windowOffset;
 
@@ -83,6 +79,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
   const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
   const [approveTaskSubmission] = useMutation(APPROVE_SUBMISSION);
   const [requestChangeTaskSubmission] = useMutation(REQUEST_CHANGE_SUBMISSION);
+  const location = useLocation();
 
   const router = useRouter();
   const goToPod = (podId) => {
@@ -93,15 +90,16 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
     });
   };
   const openModal = () => {
-    const view = router.query.view ?? ViewType.Grid;
+    const view = location.params.view ?? ViewType.Grid;
+    let newUrl = '';
     if (taskType === TASK_STATUS_REQUESTED) {
-      router.replace(`${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`);
+      newUrl = `${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`;
     } else if (taskType === TASK_STATUS_IN_REVIEW) {
-      router.replace(`${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`);
+      newUrl = `${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`;
     } else if (taskType === TASK_STATUS_ARCHIVED) {
-      router.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${view}`);
+      newUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${view}`;
     }
-
+    location.replace(newUrl);
     // document.body.style.overflow = 'hidden'
     // document.body.scroll = false
     windowOffset = window.scrollY;
@@ -207,18 +205,6 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
 
   return (
     <>
-      <TaskViewModal
-        open={modalOpen}
-        handleClose={() => {
-          document.body.setAttribute('style', '');
-          window?.scrollTo(0, windowOffset);
-          const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || ViewType.Grid}`;
-          window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
-          setModalOpen(false);
-        }}
-        taskId={(router?.query?.task ?? router?.query?.taskProposal)?.toString()}
-        isTaskProposal={!!router?.query?.taskProposal}
-      />
       <TaskSummaryWrapper key={id} onClick={openModal}>
         <TaskSummaryInner>
           <TaskHeader>
