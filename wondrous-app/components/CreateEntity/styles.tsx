@@ -6,12 +6,12 @@ import { White } from '../../theme/colors';
 import { BaseCard } from '../Common/card';
 import { LogoSquare } from '../Common/ci';
 import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
-import { CreateFormSelect } from '../Common/DropdownSelect/styles';
-import BountyIcon from '../Icons/createBounty';
+import BountyIcon from '../Icons/createBounty.svg';
 import CreateDaoIcon from '../Icons/createDao';
-import CreateMilestoneIcon from '../Icons/createMilestone';
-import CreatePodIcon from '../Icons/createPod';
-import CreateTaskIcon from '../Icons/createTask';
+import CreateMilestoneIcon from '../Icons/createMilestone.svg';
+import CreatePodIcon from '../Icons/createPod.svg';
+import CreateProposalIcon from '../Icons/createProposal.svg';
+import CreateTaskIcon from '../Icons/createTask.svg';
 import WonderTokenIcon from '../Icons/wonderToken';
 
 export const MediaUploadGrid = styled(Grid)`
@@ -137,6 +137,8 @@ export const CreateLayoutBountyIcon = styled(BountyIcon)`
 export const CreateLayoutDaoIcon = styled(CreateDaoIcon)`
   margin-right: 10px;
 `;
+
+export const CreateLayoutProposalIcon = styled(CreateProposalIcon)``;
 
 export const CreateLayoutDaoMenuItemIcon = styled(LogoSquare)`
   width: 20px;
@@ -410,6 +412,7 @@ export const CreateFormAddDetailsAppearBlock = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 `;
 
 export const CreateFormAddDetailsAppearBlockContainer = styled.div`
@@ -463,16 +466,18 @@ export const CreateFormAddDetailsLocalizationProvider = styled.div`
   width: 40%;
 `;
 
-export const CreateFormAddDetailsSwitch = styled.div`
-  && {
-    flex-basis: 50%;
-  }
+export const CreateFormAddDetailsTab = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  width: 100%;
+  margin-top: 20px;
 `;
 
-export const CreateFormAddDetailsSwitchLabel = styled(CreateFormAddDetailsInputLabel)`
+export const CreateFormSetPodPrivacy = styled(CreateFormAddDetailsTab)`
+  margin-top: 0;
+`;
+
+export const CreateFormAddDetailsTabLabel = styled(CreateFormAddDetailsInputLabel)`
   && {
     width: 100%;
     margin: 0 0 15px 10px;
@@ -507,7 +512,6 @@ export const CreateFormMembersBlockTitle = styled(Typography)`
 
 export const CreateFormLinkAttachmentBlock = styled.div`
   width: 100%;
-  padding: 40px 40px 0;
   border-bottom: 1px solid #363636;
 `;
 

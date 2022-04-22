@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 
-import Boards from '../../../components/profile/boards/boards';
+import Boards from 'components/profile/boards/boards';
 import {
   GET_USER_TASK_BOARD_PROPOSALS,
   GET_USER_TASK_BOARD_SUBMISSIONS,
   GET_USER_TASK_BOARD_TASKS,
-} from '../../../graphql/queries/taskBoard';
-import { useMe } from '../../../components/Auth/withAuth';
+} from 'graphql/queries/taskBoard';
+import { useMe } from 'components/Auth/withAuth';
 
-import { InReview, Requested, Archived } from '../../../components/Icons/sections';
+import { InReview, Requested, Archived } from 'components/Icons/sections';
 import {
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
@@ -20,8 +20,8 @@ import {
   TASK_STATUS_ARCHIVED,
   DEFAULT_STATUS_ARR,
   STATUS_OPEN,
-} from '../../../utils/constants';
-import { GET_USER_FROM_USERNAME } from '../../../graphql/queries';
+} from 'utils/constants';
+import { GET_USER_FROM_USERNAME } from 'graphql/queries';
 
 const LIMIT = 10;
 const TO_DO = {
@@ -492,13 +492,7 @@ const BoardsPage = () => {
   ]);
 
   return (
-    <Boards
-      selectOptions={SELECT_OPTIONS}
-      columns={columns}
-      tasks={TASKS}
-      onLoadMore={() => {}}
-      hasMore={false}
-    />
+    <Boards selectOptions={SELECT_OPTIONS} columns={columns} tasks={TASKS} onLoadMore={() => {}} hasMore={false} />
   );
 };
 

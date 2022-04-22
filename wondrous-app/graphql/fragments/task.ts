@@ -32,6 +32,10 @@ export const TaskFragment = gql`
       username
       profilePicture
     }
+    creator {
+      username
+      profilePicture
+    }
     org {
       profilePicture
       name

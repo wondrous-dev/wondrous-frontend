@@ -9,8 +9,8 @@
 // // import WalletConnectProvider from '@walletconnect/web3-provider'
 // import { useEffect, useMemo, useState } from 'react';
 
-// import { CHAIN_IDS, SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from '../utils/constants';
-// import { INFURA_KEY } from '../utils/web3Constants';
+// import { CHAIN_IDS, SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from 'utils/constants';
+// import { INFURA_KEY } from 'utils/web3Constants';
 
 // import { ERC20abi } from './contracts/erc20.abi';
 // import { formatEther } from 'ethers/lib/utils';
@@ -336,4 +336,4 @@
 
 //   return web3;
 // }
-export {}
+export {};

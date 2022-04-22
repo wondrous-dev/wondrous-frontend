@@ -1,4 +1,5 @@
-import { useContext, useState, useEffect, useRef } from 'react';
+import { NextRouter } from 'next/router';
+import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction } from 'react';
 
 import {
   ColumnsContext,
@@ -12,6 +13,7 @@ import {
   ApprovedSubmissionContext,
   PaymentModalContext,
   SelectMembershipContext,
+  EditTokenGatingConditionContext,
 } from './contexts';
 
 export const useIsMobile = () => useContext(IsMobileContext);
@@ -71,13 +73,21 @@ export const useBoard = () => {
 
 export const useSettings = () => useContext(SettingsBoardContext);
 
-export const useColumns = () => useContext(ColumnsContext);
+export const useColumns = () => {
+  const context = useContext(ColumnsContext);
+  if (!context) {
+    console.log('useColumns must be used within a ColumnsContext Provider');
+  }
+  return context;
+};
 
 export const useApprovedSubmission = () => useContext(ApprovedSubmissionContext); // for payment, i think it's hacky
 
 export const usePaymentModal = () => useContext(PaymentModalContext);
 
 export const useSelectMembership = () => useContext(SelectMembershipContext);
+
+export const useEditTokenGatingCondition = () => useContext(EditTokenGatingConditionContext);
 /**
  * Hook that alerts clicks outside of the passed ref
  */
@@ -109,3 +119,22 @@ function usePrevious(value) {
   return ref.current; //in the end, return the current ref value.
 }
 export default usePrevious;
+
+export const useRouterQuery = ({
+  router,
+  query,
+  defaultValue = [],
+}: {
+  router: NextRouter;
+  query: string;
+  defaultValue?: string[];
+}): [string[], Dispatch<SetStateAction<string[]>>] => {
+  const [state, setState] = useState(defaultValue);
+  const routerQuery = router?.query?.[query];
+  useEffect(() => {
+    if (routerQuery) {
+      setState(routerQuery?.toString().split(','));
+    }
+  }, [routerQuery]);
+  return [state, setState];
+};

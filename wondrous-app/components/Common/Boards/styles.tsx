@@ -15,6 +15,12 @@ export const BoardsActivity = styled.div`
   align-items: center;
   max-width: 1038px;
   margin: 0 auto;
+  & > div {
+    margin-left: 18px;
+    :first-child {
+      margin: 0;
+    }
+  }
 `;
 
 export const BoardsActivityInput = styled(TextField)({
@@ -88,7 +94,6 @@ export const ShowAllSearchResults = styled.div`
   justify-content: center;
   position: relative;
   margin: 19px 0 44px;
-  
   &::before {
     content: '';
     position: absolute;
@@ -104,13 +109,13 @@ export const ShowAllButton = styled(Button)`
     color: white;
     font-weight: 500;
     font-size: 14px;
-    background: linear-gradient(180deg, #1E1E1E 0%, #141414 100%);
+    background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
     width: 228px;
     height: 39px;
     padding: 7px 14px;
     display: flex;
     justify-content: space-between;
-    
+
     svg {
       transform: rotate(270deg);
     }

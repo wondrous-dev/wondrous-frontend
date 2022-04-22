@@ -15,7 +15,7 @@ import { ToDo, InProgress, Done } from '../../Icons';
 import CreatePodIcon from '../../Icons/createPod';
 import Filter from '../../Common/Filter';
 import { ToggleViewButton } from '../../Common/ToggleViewButton';
-import { delQuery } from '../../../utils';
+import { delQuery } from 'utils';
 
 enum ViewType {
   List = 'list',
@@ -83,7 +83,7 @@ const Boards = (props) => {
   ];
 
   return (
-    <Wrapper>
+    <Wrapper userProfileData={{}}>
       <BoardsContainer>
         <BoardsActivity>
           <BoardsActivityInput

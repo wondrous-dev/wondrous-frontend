@@ -1,5 +1,5 @@
-import CoinbaseConnector from '@components/WalletConnectors/Coinbase';
-import MetaMaskConnector from '@components/WalletConnectors/MetaMask';
+import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
+import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
 import Modal from '@mui/material/Modal';
 import React from 'react';
 import { InnerModal, Title, Wallet } from './styles';

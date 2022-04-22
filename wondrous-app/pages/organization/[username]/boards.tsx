@@ -1,8 +1,8 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { useLazyQuery, useQuery } from '@apollo/client';
-
-import { useMe, withAuth } from '../../../components/Auth/withAuth';
+import { withAuth } from 'components/Auth/withAuth';
+import Boards from 'components/organization/boards/boards';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GET_ORG_BY_ID, GET_ORG_FROM_USERNAME, GET_ORG_PODS, SEARCH_ORG_USERS } from 'graphql/queries/org';
 import {
   GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_SUBMISSIONS,
@@ -11,84 +11,284 @@ import {
   GET_TASKS_RELATED_TO_USER_IN_ORG,
   SEARCH_ORG_TASK_BOARD_PROPOSALS,
   SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
-} from '../../../graphql/queries/taskBoard';
-import Boards from '../../../components/organization/boards/boards';
+} from 'graphql/queries/taskBoard';
+import _ from 'lodash';
+import { useRouter } from 'next/router';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import apollo from 'services/apollo';
+import { COLUMNS, LIMIT, populateTaskColumns, SELECT_OPTIONS } from 'services/board';
+import { ViewType } from 'types/common';
+import { TaskFilter } from 'types/task';
+import { dedupeColumns } from 'utils';
+import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
 import {
-  TASK_STATUS_IN_REVIEW,
   DEFAULT_STATUS_ARR,
+  PRIVACY_LEVEL,
   STATUS_OPEN,
   TASK_STATUSES,
-  PRIVACY_LEVEL,
-} from '../../../utils/constants';
-import { GET_ORG_FROM_USERNAME, GET_ORG_BY_ID, GET_ORG_PODS, SEARCH_ORG_USERS } from '../../../graphql/queries/org';
-import { OrgBoardContext } from '../../../utils/contexts';
-import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
-import { dedupeColumns } from '../../../utils';
-import apollo from '../../../services/apollo';
-import { TaskFilter } from '../../../types/task';
-import { COLUMNS, LIMIT, SELECT_OPTIONS, populateTaskColumns, addToTaskColumns } from '../../../services/board';
+  TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_REQUESTED,
+} from 'utils/constants';
+import { OrgBoardContext } from 'utils/contexts';
+import { useRouterQuery } from 'utils/hooks';
+
+const useGetOrgTaskBoardTasks = ({
+  columns,
+  setColumns,
+  setOrgTaskHasMore,
+  statuses,
+  orgId,
+  boardType,
+  podIds,
+  userId,
+}) => {
+  const [getOrgTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    onCompleted: ({ getOrgTaskBoardTasks }) => {
+      const newColumns = populateTaskColumns(getOrgTaskBoardTasks, columns);
+      setColumns(dedupeColumns(newColumns));
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+  const getOrgTaskBoardTasksFetchMore = useCallback(() => {
+    fetchMore({
+      variables: {
+        offset: Math.max(...columns.map(({ tasks }) => tasks.length)),
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        setOrgTaskHasMore(fetchMoreResult?.getOrgTaskBoardTasks.length > LIMIT);
+        return {
+          getOrgTaskBoardTasks: [...prev.getOrgTaskBoardTasks, ...fetchMoreResult.getOrgTaskBoardTasks],
+        };
+      },
+    }).catch((error) => {
+      console.log(error);
+    });
+  }, [columns, fetchMore, setOrgTaskHasMore]);
+  useEffect(() => {
+    if (!userId) {
+      const taskBoardStatuses =
+        statuses.length > 0 ? statuses?.filter((status) => DEFAULT_STATUS_ARR.includes(status)) : DEFAULT_STATUS_ARR;
+      const taskBoardLimit = taskBoardStatuses.length > 0 ? LIMIT : 0;
+      getOrgTaskBoardTasks({
+        variables: {
+          orgId,
+          podIds,
+          offset: 0,
+          statuses: taskBoardStatuses,
+          limit: taskBoardLimit,
+          ...(boardType === PRIVACY_LEVEL.public && {
+            onlyPublic: true,
+          }),
+        },
+      });
+      setOrgTaskHasMore(true);
+    }
+  }, [boardType, getOrgTaskBoardTasks, orgId, statuses, podIds, setOrgTaskHasMore, userId]);
+  return { fetchMore: getOrgTaskBoardTasksFetchMore };
+};
+
+const useGetTaskRelatedToUser = ({ podIds, userId, orgId, statuses, setColumns, columns, setOrgTaskHasMore }) => {
+  const [getTasksRelatedToUserInOrg, { fetchMore }] = useLazyQuery(GET_TASKS_RELATED_TO_USER_IN_ORG, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    onCompleted: ({ getTasksRelatedToUserInOrg }) => {
+      const newColumns = populateTaskColumns(getTasksRelatedToUserInOrg, columns);
+      setColumns(newColumns);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const getTasksRelatedToUserFetchMore = useCallback(() => {
+    fetchMore({
+      variables: {
+        offset: Math.max(...columns.map(({ tasks }) => tasks.length)),
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        setOrgTaskHasMore(fetchMoreResult?.getTasksRelatedToUserInOrg.length >= LIMIT);
+        const getTasksRelatedToUserInOrg = _.uniqBy(
+          [...prev.getTasksRelatedToUserInOrg, ...fetchMoreResult.getTasksRelatedToUserInOrg],
+          'id'
+        );
+        return {
+          getTasksRelatedToUserInOrg,
+        };
+      },
+    }).catch((error) => {
+      console.log(error);
+    });
+  }, [columns, fetchMore, setOrgTaskHasMore]);
+
+  useEffect(() => {
+    if (userId) {
+      const taskBoardStatuses =
+        statuses.length > 0 ? statuses?.filter((status) => DEFAULT_STATUS_ARR.includes(status)) : DEFAULT_STATUS_ARR;
+      const taskBoardLimit = taskBoardStatuses.length > 0 ? LIMIT : 0;
+      getTasksRelatedToUserInOrg({
+        variables: {
+          podIds: podIds || [],
+          userId,
+          orgId,
+          statuses: taskBoardStatuses,
+          limit: taskBoardLimit,
+          offset: 0,
+        },
+      });
+      setOrgTaskHasMore(true);
+    }
+  }, [getTasksRelatedToUserInOrg, orgId, podIds, statuses, userId, setOrgTaskHasMore]);
+  return { fetchMore: getTasksRelatedToUserFetchMore };
+};
+
+const useGetOrgTaskBoardProposals = ({ listView, section, columns, setColumns, orgId, statuses, podIds }) => {
+  const [getOrgTaskProposals, { data }] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    onCompleted: (data) => {
+      const newColumns = bindSectionToColumns({
+        columns,
+        data: data?.getOrgTaskBoardProposals,
+        section: TASK_STATUS_REQUESTED,
+      });
+      setColumns(dedupeColumns(newColumns));
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+  useEffect(() => {
+    if (section === TASK_STATUS_REQUESTED || listView || data)
+      getOrgTaskProposals({
+        variables: {
+          podIds,
+          orgId,
+          statuses: [STATUS_OPEN],
+          offset: 0,
+          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
+        },
+      });
+  }, [getOrgTaskProposals, orgId, statuses, podIds, section, listView, data]);
+};
+
+const useGetOrgTaskBoardSubmissions = ({ listView, section, columns, setColumns, orgId, statuses, podIds }) => {
+  const [getOrgTaskSubmissions, { data }] = useLazyQuery(GET_ORG_TASK_BOARD_SUBMISSIONS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    onCompleted: (data) => {
+      const newColumns = bindSectionToColumns({
+        columns,
+        data: data?.getOrgTaskBoardSubmissions,
+        section: TASK_STATUS_IN_REVIEW,
+      });
+      setColumns(dedupeColumns(newColumns));
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+  useEffect(() => {
+    if (section === TASK_STATUS_IN_REVIEW || listView || data) {
+      getOrgTaskSubmissions({
+        variables: {
+          podIds,
+          orgId,
+          statuses: [STATUS_OPEN],
+          offset: 0,
+          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
+        },
+      });
+    }
+  }, [getOrgTaskSubmissions, orgId, statuses, podIds, section, listView, data]);
+};
+
+const useGetOrgTaskBoard = ({
+  section,
+  columns,
+  setColumns,
+  setOrgTaskHasMore,
+  boardType,
+  orgId,
+  statuses,
+  podIds,
+  userId,
+  view,
+}) => {
+  const board = {
+    [userId]: useGetTaskRelatedToUser({
+      columns,
+      setColumns,
+      setOrgTaskHasMore,
+      podIds,
+      userId,
+      orgId,
+      statuses,
+    }),
+    withoutUserId: useGetOrgTaskBoardTasks({
+      columns,
+      setColumns,
+      setOrgTaskHasMore,
+      boardType,
+      orgId,
+      statuses,
+      podIds,
+      userId,
+    }),
+  };
+  const { fetchMore } = userId ? board[userId] : board.withoutUserId;
+
+  const listView = view === ViewType.List;
+  useGetOrgTaskBoardProposals({ listView, section, columns, setColumns, orgId, statuses, podIds });
+  useGetOrgTaskBoardSubmissions({ listView, section, columns, setColumns, orgId, statuses, podIds });
+  return { fetchMore };
+};
 
 const BoardsPage = () => {
   const router = useRouter();
   const [columns, setColumns] = useState(COLUMNS);
-  const [submissions, setSubmissions] = useState([]);
-  const [statuses, setStatuses] = useState(DEFAULT_STATUS_ARR);
-  const [podIds, setPodIds] = useState([]);
+  const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
+  const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
   const [orgData, setOrgData] = useState(null);
   const [searchString, setSearchString] = useState('');
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
-  const { username, orgId, search, userId } = router.query;
+  const [section, setSection] = useReducer(sectionOpeningReducer, '');
+  const { username, orgId, search, userId, boardType, view } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
   const [orgTaskHasMore, setOrgTaskHasMore] = useState(true);
   const [getOrgPods, { data: { getOrgPods: orgPods = [] } = {} }] = useLazyQuery(GET_ORG_PODS);
 
-  const { boardType } = router.query;
-  const bindProposalsToCols = (taskProposals) => {
-    const newColumns = [...columns];
-    newColumns[0].section.tasks = [];
-    taskProposals?.forEach((taskProposal) => {
-      newColumns[0].section.tasks.push(taskProposal);
-    });
-    setColumns(newColumns);
-  };
-
-  const bindTasksToCols = (tasks) => {
-    const newColumns = populateTaskColumns(tasks, columns);
-    setColumns(dedupeColumns(newColumns));
-    if (orgTaskHasMore) {
-      setOrgTaskHasMore(tasks.length >= LIMIT);
-    }
-  };
-
-  const [getOrgTaskProposals] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
-    onCompleted: (data) => bindProposalsToCols(data?.getOrgTaskBoardProposals),
-    fetchPolicy: 'cache-and-network',
+  const { fetchMore } = useGetOrgTaskBoard({
+    view,
+    section,
+    columns,
+    setColumns,
+    setOrgTaskHasMore,
+    boardType,
+    orgId: orgId ?? orgData?.id,
+    statuses,
+    podIds,
+    userId,
   });
 
   const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
-    onCompleted: (data) => bindProposalsToCols(data?.searchProposalsForOrgBoardView),
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const [getOrgTaskSubmissions] = useLazyQuery(GET_ORG_TASK_BOARD_SUBMISSIONS, {
     onCompleted: (data) => {
-      const newColumns = [...columns];
-      const taskSubmissions = data?.getOrgTaskBoardSubmissions;
-      newColumns[1].section.tasks = [];
-      taskSubmissions?.forEach((taskSubmission) => {
-        newColumns[1].section.tasks.push(taskSubmission);
+      const newColumns = bindSectionToColumns({
+        columns,
+        data: data?.searchProposalsForOrgBoardView,
+        section: TASK_STATUS_REQUESTED,
       });
-      setSubmissions(taskSubmissions);
-      setColumns(newColumns);
+      setColumns(dedupeColumns(newColumns));
     },
     fetchPolicy: 'cache-and-network',
   });
 
-  const [getOrgBoardTaskCount, { data: orgTaskCountData, variables: getOrgBoardTaskCountVariables }] = useLazyQuery(
-    GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD
-  );
+  const [getOrgBoardTaskCount, { data: orgTaskCountData }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD);
 
   const [searchOrgTasks] = useLazyQuery(SEARCH_TASKS_FOR_ORG_BOARD_VIEW, {
     onCompleted: (data) => {
@@ -116,29 +316,6 @@ const BoardsPage = () => {
       if (orgTaskHasMore) {
         setOrgTaskHasMore(tasks.length >= LIMIT);
       }
-      setFirstTimeFetch(true);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const [getOrgTasks, { fetchMore, variables: getOrgTasksVariables }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
-    onCompleted: (data) => {
-      if (!firstTimeFetch) {
-        const tasks = data?.getOrgTaskBoardTasks;
-        const newColumns = populateTaskColumns(tasks, columns);
-        setColumns(dedupeColumns(newColumns));
-        if (orgTaskHasMore) {
-          setOrgTaskHasMore(tasks.length >= LIMIT);
-        }
-        setFirstTimeFetch(true);
-      }
-    },
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const [getTasksRelatedToUser] = useLazyQuery(GET_TASKS_RELATED_TO_USER_IN_ORG, {
-    onCompleted: (data) => {
-      bindTasksToCols(data?.getTasksRelatedToUserInOrg);
       setFirstTimeFetch(true);
     },
     fetchPolicy: 'cache-and-network',
@@ -216,56 +393,12 @@ const BoardsPage = () => {
               }),
             },
           };
-
           searchOrgTasks(searchOrgTasksArgs);
           searchOrgTaskProposals(searchOrgTaskProposalsArgs);
           setFirstTimeFetch(true);
           setSearchString(search as string);
         }
-      } else if (userId) {
-        const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
-
-        getTasksRelatedToUser({
-          variables: {
-            podIds,
-            userId,
-            orgId: id,
-            limit: 1000,
-            offset: 0,
-            statuses: taskStatuses,
-          },
-        });
       } else {
-        getOrgTasks({
-          variables: {
-            orgId: id,
-            statuses,
-            offset: 0,
-            limit: LIMIT,
-            ...(boardType === PRIVACY_LEVEL.public && {
-              onlyPublic: true,
-            }),
-          },
-        });
-
-        getOrgTaskSubmissions({
-          variables: {
-            orgId: id,
-            statuses: [STATUS_OPEN],
-            offset: 0,
-            limit: LIMIT,
-          },
-        });
-
-        getOrgTaskProposals({
-          variables: {
-            orgId: id,
-            statuses: [STATUS_OPEN],
-            offset: 0,
-            limit: LIMIT,
-          },
-        });
-
         getOrgBoardTaskCount({
           variables: {
             orgId: id,
@@ -273,7 +406,7 @@ const BoardsPage = () => {
         });
       }
     }
-  }, [orgData, orgId, getOrgBoardTaskCount, getOrgTaskSubmissions, getOrgTaskProposals, getOrgTasks, boardType]);
+  }, [orgData, orgId, getOrgBoardTaskCount, boardType]);
 
   function handleSearch(searchString: string) {
     const id = orgId || orgData?.id;
@@ -331,27 +464,15 @@ const BoardsPage = () => {
     }));
   }
 
-  const handleFilterChange: any = ({ statuses = DEFAULT_STATUS_ARR, podIds }: TaskFilter) => {
-    const id = orgId || orgData?.id;
-    const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
-    const searchProposals = statuses.length !== taskStatuses.length || statuses === DEFAULT_STATUS_ARR;
-    const searchTasks = !(searchProposals && statuses.length === 1);
-
+  const handleFilterChange: any = ({ statuses = [], podIds = [] }: TaskFilter) => {
     setStatuses(statuses);
-    setPodIds(podIds || []);
+    setPodIds(podIds);
 
-    if (userId) {
-      getTasksRelatedToUser({
-        variables: {
-          podIds: podIds || [],
-          userId,
-          orgId: id,
-          statuses: taskStatuses,
-          limit: 1000,
-          offset: 0,
-        },
-      });
-    } else {
+    if (search) {
+      const id = orgId || orgData?.id;
+      const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
+      const searchProposals = statuses.length !== taskStatuses.length || statuses === DEFAULT_STATUS_ARR;
+      const searchTasks = !(searchProposals && statuses.length === 1);
       const searchOrgTaskProposalsArgs = {
         variables: {
           podIds,
@@ -387,7 +508,7 @@ const BoardsPage = () => {
           column.section.tasks = [];
         });
 
-        setColumns(newColumns);
+        setColumns(dedupeColumns(newColumns));
       }
 
       if (searchProposals) {
@@ -395,29 +516,6 @@ const BoardsPage = () => {
       }
     }
   };
-
-  const handleLoadMore = useCallback(() => {
-    if (orgTaskHasMore) {
-      fetchMore({
-        variables: {
-          offset: Math.max(...columns.map(({ tasks }) => tasks.length)),
-          limit: LIMIT,
-        },
-      })
-        .then((fetchMoreResult) => {
-          const results = fetchMoreResult?.data?.getOrgTaskBoardTasks;
-          if (results && results?.length > 0) {
-            const newColumns = addToTaskColumns(results, columns);
-            setColumns(dedupeColumns(newColumns));
-          } else {
-            setOrgTaskHasMore(false);
-          }
-        })
-        .catch(() => {
-          console.error('Error fetching more tasks');
-        });
-    }
-  }, [orgTaskHasMore, columns, fetchMore]);
 
   if (!process.env.NEXT_PUBLIC_PRODUCTION) {
     console.log(
@@ -437,12 +535,12 @@ const BoardsPage = () => {
         setColumns,
         orgId: orgData?.id,
         taskCount: orgTaskCountData?.getPerStatusTaskCountForOrgBoard,
-        getOrgBoardTaskCountVariables,
         userPermissionsContext: userPermissionsContext?.getUserPermissionContext
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
           : null,
-        getOrgTasksVariables,
         setFirstTimeFetch,
+        orgData,
+        setSection,
       }}
     >
       <Boards
@@ -450,11 +548,15 @@ const BoardsPage = () => {
         selectOptions={SELECT_OPTIONS}
         columns={columns}
         searchString={searchString}
-        onLoadMore={handleLoadMore}
+        onLoadMore={fetchMore}
         onSearch={handleSearch}
         onFilterChange={handleFilterChange}
         hasMore={orgTaskHasMore}
         orgData={orgData}
+        statuses={statuses}
+        podIds={podIds}
+        setColumns={setColumns}
+        userId={userId?.toString()}
       />
     </OrgBoardContext.Provider>
   );

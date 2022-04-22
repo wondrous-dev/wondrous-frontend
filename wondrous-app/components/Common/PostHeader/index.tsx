@@ -1,9 +1,9 @@
 import { ClickAwayListener } from '@material-ui/core';
-import { delQuery } from '../../../utils';
+import { delQuery } from 'utils';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { ObjectType, PostVerbType } from '../../../types/post';
-import * as Constants from '../../../utils/constants';
+import { ObjectType, PostVerbType } from 'types/post';
+import * as Constants from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { KudosForm } from '../KudosForm';
 import { TaskViewModal } from '../Task/modal';
@@ -104,7 +104,13 @@ export const PostHeader = (props) => {
       <KudosForm open={kudosForm} existingContent={content} onClose={handlePostEditClose} id={postId} />
       <TaskViewModal open={taskViewModal} taskId={taskId} handleClose={handleTaskViewModalClose} />
       <PostHeaderWrapper>
-        <PostHeaderImageTextWrapper>
+        <PostHeaderImageTextWrapper
+          onClick={() => {
+            router.push(`/profile/${actor?.username}/about`, undefined, {
+              shallow: true,
+            });
+          }}
+        >
           {actor?.profilePicture ? <PostHeaderImage src={actor?.profilePicture} /> : <PostHeaderDefaultUserImage />}
           <PostHeaderText>
             <PostHeaderUsername as="span">{actor?.username} </PostHeaderUsername>

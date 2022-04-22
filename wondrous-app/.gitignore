@@ -1,6 +1,12 @@
-node_modules/**/*
+# dependencies
+/node_modules
 .eslintcache
 .next/
-.env
 yarn-error.log
+
+# misc
+.DS_Store
+.env
+/.vscode
+
 .idea

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import SideBarComponent from '../../components/SideBar';
-import HeaderComponent from '../../components/Header';
-import { SettingsContainer } from '../../components/Settings/styles';
-import { HeaderBlock } from '../../components/Settings/headerBlock';
+import SideBarComponent from 'components/SideBar';
+import HeaderComponent from 'components/Header';
+import { SettingsContainer } from 'components/Settings/styles';
+import { HeaderBlock } from 'components/Settings/headerBlock';
 import {
   ListType,
   DiscordParagraph,
@@ -12,11 +12,11 @@ import {
   ListItem,
   BoldSpan,
   SmallerTopParagraph,
-} from '../../components/Discord/styles';
+} from 'components/Discord/styles';
 import { HighlightBlue, White } from '../../theme/colors';
 import Link from 'next/link';
 
-const BOT_URL = `https://discord.com/api/oauth2/authorize?client_id=917630803314352208&permissions=268437504&scope=bot`;
+export const BOT_URL = `https://discord.com/api/oauth2/authorize?client_id=917630803314352208&permissions=8&scope=bot`;
 const DiscordNotificationSetup = (props) => {
   const orgUsername = props?.orgUsername;
   return (
@@ -33,9 +33,9 @@ const DiscordNotificationSetup = (props) => {
         <ListItem>
           <BoldParagraph>Task creation</BoldParagraph>
         </ListItem>
-        <ListItem>
+        {/* <ListItem>
           <BoldParagraph>Task submission creation</BoldParagraph>
-        </ListItem>
+        </ListItem> */}
         <ListItem>
           <BoldParagraph>Task completion</BoldParagraph>
         </ListItem>
@@ -122,6 +122,10 @@ const DiscordNotificationSetup = (props) => {
         You should see the message {`"notification configured to this current channel!"`}. Refresh this page when you do
         and {`you're`} done!
       </SmallerTopParagraph>
+      <DiscordParagraph>
+        (If you don{`'`}t see any message on discord, it could be that our bot doesn{`'`}t have permission to send
+        message on your channel, Please check back in your org setting page to see if it{`'`}s configured )
+      </DiscordParagraph>
     </>
   );
 };

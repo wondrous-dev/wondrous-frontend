@@ -1,14 +1,7 @@
 export const ReviewerIcon = (props) => {
-  const { style } = props
+  const { style } = props;
   return (
-    <svg
-      style={style}
-      width="14"
-      height="11"
-      viewBox="0 0 14 11"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg style={style} width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M9.45057 10.3566V9.26573C9.45057 8.68709 9.22071 8.13216 8.81155 7.723C8.4024 7.31385 7.84746 7.08398 7.26883 7.08398H3.45078C2.87215 7.08398 2.31722 7.31385 1.90806 7.723C1.4989 8.13216 1.26904 8.68709 1.26904 9.26573V10.3566"
         stroke="#CCBBFF"
@@ -28,20 +21,13 @@ export const ReviewerIcon = (props) => {
         strokeLinejoin="round"
       />
     </svg>
-  )
-}
+  );
+};
 
 export const ProposerIcon = (props) => {
-  const { style } = props
+  const { style } = props;
   return (
-    <svg
-      style={style}
-      width="11"
-      height="14"
-      viewBox="0 0 11 14"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg style={style} width="11" height="14" viewBox="0 0 11 14" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M7.80485 9.91272H3.26562C3.26562 10.187 3.26562 10.6828 3.26562 10.6828C3.26562 11.7461 4.28165 12.6079 5.53524 12.6079C6.78882 12.6079 7.80485 11.7461 7.80485 10.6828C7.80485 10.6828 7.80485 10.187 7.80485 9.91272Z"
         stroke="#CCBBFF"
@@ -54,33 +40,16 @@ export const ProposerIcon = (props) => {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path
-        d="M5.53125 3.62366V6.89627"
-        stroke="#CCBBFF"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M7.17105 5.25989H3.89844"
-        stroke="#CCBBFF"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M5.53125 3.62366V6.89627" stroke="#CCBBFF" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M7.17105 5.25989H3.89844" stroke="#CCBBFF" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
-  )
-}
+  );
+};
 
 export const AssigneeIcon = (props) => {
-  const { style } = props
+  const { style } = props;
   return (
-    <svg
-      style={style}
-      width="14"
-      height="11"
-      viewBox="0 0 14 11"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg style={style} width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M9.45057 10.3566V9.26573C9.45057 8.68709 9.22071 8.13216 8.81155 7.723C8.4024 7.31385 7.84746 7.08398 7.26883 7.08398H3.45078C2.87215 7.08398 2.31722 7.31385 1.90806 7.723C1.4989 8.13216 1.26904 8.68709 1.26904 9.26573V10.3566"
         stroke="#CCBBFF"
@@ -93,72 +62,33 @@ export const AssigneeIcon = (props) => {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path
-        d="M11.6284 3.26562V6.53824"
-        stroke="#CCBBFF"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M13.2682 4.90186H9.99561"
-        stroke="#CCBBFF"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M11.6284 3.26562V6.53824" stroke="#CCBBFF" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M13.2682 4.90186H9.99561" stroke="#CCBBFF" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
-  )
-}
+  );
+};
 
 export const DueDateIcon = (props) => {
-  const { style } = props
+  const { style } = props;
   return (
-    <svg
-      style={style}
-      width="13"
-      height="15"
-      viewBox="0 0 13 15"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg style={style} width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M11.0468 2.55908H2.49127C1.81625 2.55908 1.26904 3.10629 1.26904 3.7813V12.3369C1.26904 13.0119 1.81625 13.5591 2.49127 13.5591H11.0468C11.7218 13.5591 12.269 13.0119 12.269 12.3369V3.7813C12.269 3.10629 11.7218 2.55908 11.0468 2.55908Z"
         stroke="#CCBBFF"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path
-        d="M9.21436 1.33691V3.78136"
-        stroke="#CCBBFF"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M4.32373 1.33691V3.78136"
-        stroke="#CCBBFF"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M1.26904 6.22559H12.269"
-        stroke="#CCBBFF"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M9.21436 1.33691V3.78136" stroke="#CCBBFF" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M4.32373 1.33691V3.78136" stroke="#CCBBFF" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M1.26904 6.22559H12.269" stroke="#CCBBFF" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
-  )
-}
+  );
+};
 
 export const TokenIcon = (props) => {
-  const { style } = props
+  const { style } = props;
   return (
-    <svg
-      style={style}
-      width="14"
-      height="15"
-      viewBox="0 0 14 15"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg style={style} width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M7.26904 4.78125C10.5828 4.78125 13.269 3.88582 13.269 2.78125C13.269 1.67668 10.5828 0.78125 7.26904 0.78125C3.95533 0.78125 1.26904 1.67668 1.26904 2.78125C1.26904 3.88582 3.95533 4.78125 7.26904 4.78125Z"
         stroke="#CCBBFF"
@@ -178,26 +108,14 @@ export const TokenIcon = (props) => {
         strokeLinejoin="round"
       />
     </svg>
-  )
-}
+  );
+};
 
 export const MilestoneIcon = (props) => {
-  const { style } = props
+  const { style } = props;
   return (
-    <svg
-      style={style}
-      width="13"
-      height="15"
-      viewBox="0 0 13 15"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M1.26904 13.5579V10.0511V1.33789"
-        stroke="#CCBBFF"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <svg style={style} width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1.26904 13.5579V10.0511V1.33789" stroke="#CCBBFF" strokeLinecap="round" strokeLinejoin="round" />
       <path
         d="M12.269 5.22357C8.60228 4.64929 4.9358 9.63731 1.26904 9.0646V1.33789C4.9358 4.48722 8.60228 2.07393 12.269 5.22357Z"
         stroke="#CCBBFF"
@@ -205,20 +123,13 @@ export const MilestoneIcon = (props) => {
         strokeLinejoin="round"
       />
     </svg>
-  )
-}
+  );
+};
 
 export const LinkIcon = (props) => {
-  const { style } = props
+  const { style } = props;
   return (
-    <svg
-      style={style}
-      width="13"
-      height="13"
-      viewBox="0 0 13 13"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg style={style} width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M5.65967 7.0009C5.89721 7.31847 6.20028 7.58124 6.54831 7.77138C6.89634 7.96153 7.2812 8.0746 7.67677 8.10293C8.07234 8.13126 8.46938 8.07419 8.84096 7.93558C9.21253 7.79697 9.54995 7.58007 9.83033 7.29959L11.4897 5.64018C11.9935 5.11856 12.2723 4.41994 12.266 3.69478C12.2597 2.96963 11.9688 2.27596 11.4561 1.76318C10.9433 1.2504 10.2496 0.959531 9.52445 0.95323C8.79929 0.946928 8.10067 1.22569 7.57906 1.72949L6.62766 2.67535"
         stroke="#CCBBFF"
@@ -232,85 +143,64 @@ export const LinkIcon = (props) => {
         strokeLinejoin="round"
       />
     </svg>
-  )
-}
+  );
+};
 
 export const ImageIcon = (props) => {
-  const { style } = props
+  const { style } = props;
   return (
-    <svg
-      style={style}
-      width="15"
-      height="15"
-      viewBox="0 0 15 15"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg style={style} width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M12.6704 1.23901H2.55963C1.76191 1.23901 1.11523 1.88571 1.11523 2.68346V12.7946C1.11523 13.5923 1.76191 14.239 2.55963 14.239H12.6704C13.4682 14.239 14.1148 13.5923 14.1148 12.7946V2.68346C14.1148 1.88571 13.4682 1.23901 12.6704 1.23901Z"
-        stroke="#7A7A7A"
+        stroke="#CCBBFF"
         strokeWidth="1.128"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M5.08818 6.29338C5.68647 6.29338 6.17148 5.80835 6.17148 5.21004C6.17148 4.61173 5.68647 4.12671 5.08818 4.12671C4.48989 4.12671 4.00488 4.61173 4.00488 5.21004C4.00488 5.80835 4.48989 6.29338 5.08818 6.29338Z"
-        stroke="#7A7A7A"
+        stroke="#CCBBFF"
         strokeWidth="1.128"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M14.1148 9.90506L10.5038 6.29395L2.55957 14.2384"
-        stroke="#7A7A7A"
+        stroke="#CCBBFF"
         strokeWidth="1.128"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
     </svg>
-  )
-}
+  );
+};
 
 export const NotesIcon = (props) => {
-  const { style } = props
+  const { style } = props;
   return (
-    <svg
-      style={style}
-      width="13"
-      height="13"
-      viewBox="0 0 13 13"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg style={style} width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M1.96365 0.823975C1.22944 0.823975 0.634766 1.41865 0.634766 2.15286V11.4551C0.634766 12.1893 1.22944 12.784 1.96365 12.784H8.6081L12.5948 8.79731V2.15286C12.5948 1.41865 12.0001 0.823975 11.2659 0.823975H1.96365ZM1.96365 2.15286H11.2659V8.13286H7.94365V11.4551H1.96365V2.15286ZM3.29254 3.48175V4.81064H9.93699V3.48175H3.29254ZM3.29254 6.13953V7.46842H6.61477V6.13953H3.29254Z"
-        fill="#828282"
+        fill="#CCBBFF"
       />
     </svg>
-  )
-}
+  );
+};
 
 export const ClockIcon = (props) => {
-  const { style } = props
+  const { style } = props;
   return (
-    <svg
-      style={style}
-      width="15"
-      height="15"
-      viewBox="0 0 15 15"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg style={style} width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M7.48391 0.9729C3.70408 0.9729 0.628906 4.04808 0.628906 7.8279C0.628906 11.6077 3.70408 14.6829 7.48391 14.6829C11.2637 14.6829 14.3389 11.6077 14.3389 7.8279C14.3389 4.04808 11.2637 0.9729 7.48391 0.9729ZM7.48391 2.00115C10.708 2.00115 13.3107 4.60379 13.3107 7.8279C13.3107 11.052 10.708 13.6547 7.48391 13.6547C4.25979 13.6547 1.65716 11.052 1.65716 7.8279C1.65716 4.60379 4.25979 2.00115 7.48391 2.00115ZM6.96175 3.70754C6.82551 3.70967 6.69569 3.76578 6.6008 3.86356C6.5059 3.96134 6.4537 4.09279 6.45566 4.22903V7.99928C6.45568 8.13562 6.50986 8.26637 6.60628 8.36278L8.32003 10.0765C8.3674 10.1259 8.42415 10.1653 8.48694 10.1924C8.54972 10.2195 8.6173 10.2339 8.6857 10.2346C8.7541 10.2353 8.82195 10.2223 8.88527 10.1964C8.9486 10.1706 9.00613 10.1324 9.0545 10.084C9.10287 10.0356 9.1411 9.9781 9.16695 9.91477C9.19281 9.85144 9.20577 9.78359 9.20507 9.71519C9.20438 9.64679 9.19004 9.57922 9.1629 9.51643C9.13577 9.45364 9.09638 9.3969 9.04703 9.34952L7.48391 7.7864V4.22903C7.48489 4.16021 7.47206 4.0919 7.44616 4.02814C7.42026 3.96438 7.38182 3.90647 7.33313 3.85784C7.28443 3.80921 7.22647 3.77085 7.16268 3.74503C7.09889 3.71921 7.03056 3.70646 6.96175 3.70754Z"
         fill="#7A7A7A"
       />
     </svg>
-  )
-}
+  );
+};
 
 export const RejectIcon = (props) => {
-  const { style, onClick } = props
+  const { style, onClick } = props;
   return (
     <svg
       style={style}
@@ -326,5 +216,5 @@ export const RejectIcon = (props) => {
         fill="#F93701"
       />
     </svg>
-  )
-}
+  );
+};

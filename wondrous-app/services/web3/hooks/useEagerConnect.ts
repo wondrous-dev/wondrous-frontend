@@ -1,6 +1,6 @@
 import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
-import { useMe } from '@components/Auth/withAuth';
+import { useMe } from 'components/Auth/withAuth';
 import useStoredConnector from './useStoredConnector';
 import connectors from '../connectors';
 
