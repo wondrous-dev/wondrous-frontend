@@ -23,8 +23,9 @@ import Snapshot from '@snapshot-labs/snapshot.js';
 import ENS, { getEnsAddress } from '@ensdomains/ensjs';
 import styled from 'styled-components'
 
+// import specific Web3Provider snapshot is using
+import { Web3Provider } from '@snapshot-labs/snapshot.js/node_modules/@ethersproject/providers'
 import { ethers } from 'ethers';
-import { Web3Provider } from '@ethersproject/providers';
 import { useWonderWeb3 } from '../web3';
 
 import { SupportedChainType } from '../../utils/web3Constants';
@@ -185,11 +186,10 @@ export const useSnapshot = () => {
   });
 
   // creates transaction to export proposal to snapshot, throws error if exporter doesn't have credentials or invalid proposal
-  // HAVING ISSUES, trying to solve w/ Snapshot team
-  const exportTaskProposal = async (proposal: any): Promise<object | void> => {
+  const exportTaskProposal = async (proposal: any): Promise<any> => {
     setSubmittingProposal(true)
     //const web3 = wonderWeb3.web3Provider;
-    const provider = new ethers.providers.Web3Provider(wonderWeb3.web3Provider);
+    const provider = new Web3Provider(wonderWeb3.web3Provider);
     const account = ethers.utils.getAddress(wonderWeb3.address);
     const { data } = await getSnapshotSpace({ variables: { id: snapshot.key } });
 
@@ -246,11 +246,10 @@ export const useSnapshot = () => {
     }
 
     const valid = validateProposal(proposalToValidate)
-    //console.log(Snapshot.utils.validateSchema(Snapshot.schemas.proposal, formattedProposal))
 
     if (valid) {
-      const receipt: any = await snapshotClient.proposal(provider, account, proposalToSubmit).catch(err => console.error(err));
-      console.log(receipt);
+      const receipt: any = await snapshotClient.proposal(provider, account, proposalToSubmit)
+      console.log('proposal:', receipt);
       setSubmittingProposal(false);
       return receipt;
     }
@@ -258,7 +257,7 @@ export const useSnapshot = () => {
   }
 
   const cancelProposal = async (proposalId: string) => {
-    const provider = new ethers.providers.Web3Provider(wonderWeb3.web3Provider);
+    const provider = new Web3Provider(wonderWeb3.web3Provider)
     const account = ethers.utils.getAddress(wonderWeb3.address);
 
     return await snapshotClient.cancelProposal(provider, account, {
@@ -269,7 +268,7 @@ export const useSnapshot = () => {
 
   const validateProposal = (proposal: any): boolean => {
     const valid = Snapshot.utils.validateSchema(Snapshot.schemas.proposal, proposal)
-    if (typeof valid !== 'boolean' && valid !== true) {
+    if (typeof valid !== 'boolean' && !valid) {
       const errors = []
       valid.forEach(err => {
         const field = err.instancePath.slice(1)

@@ -969,8 +969,9 @@ const EditLayoutBaseModal = (props) => {
         return await exportTaskProposal(result.data.updateTaskProposal);
       })
       .then(async (receipt) => {
-        console.log(receipt?.id)
-        setSnapshotProposal(receipt?.id);
+        if (receipt?.id) {
+          setSnapshotProposal(receipt?.id);
+        }
       })
       .catch(error => console.error(error));
   }
@@ -1013,7 +1014,7 @@ const EditLayoutBaseModal = (props) => {
               }
               { snapshotErrorElement && (
                 <SnapshotErrorText>
-                  {snapshotErrorElement.map(elem => (<ErrorText>{elem}</ErrorText>))}
+                  {snapshotErrorElement.map((elem,i) => (<ErrorText key={i}>{elem}</ErrorText>))}
                 </SnapshotErrorText>
               )}
             </SnapshotButtonBlock>

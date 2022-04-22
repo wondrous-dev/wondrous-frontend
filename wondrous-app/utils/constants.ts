@@ -65,7 +65,6 @@ export const PAYMENT_STATUS = {
 // Supported Chains (ETHEREUM, POLYGON)
 const SUPPORTED_CHAINS = {
   1: 'ETH',
-  3: 'ETH', // REMOVE BEFORE COMMIT
   137: 'MATIC',
 };
 
@@ -84,13 +83,11 @@ export const CHAIN_IDS = {
   ETH: 1,
   MATIC: 137,
   RINKEBY: 4,
-  ROPSTEN: 3, // REMOVE BEFORE COMMIT
 };
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
   eth_mainnet: 'Ethereum Mainnet',
   rinkeby: 'Rinkeby Testnet',
-  ropsten: 'Ropsten Testnet', // REMOVE BEFORE COMMIT
   polygon_mainnet: 'Polygon Mainnet',
 };
 

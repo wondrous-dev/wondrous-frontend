@@ -204,7 +204,7 @@ const Integrations = (props) => {
                         {snapshotErrorElement && <ErrorText>{snapshotErrorElement}</ErrorText>}
                         {snapshotValid && (
                           <IntegrationsSnapshotValidText>
-                            User is admin of '{snapshotSpace.id}'. Ready to connect.
+                            {`User is admin of '${snapshotSpace.id}'. Ready to connect.`}
                           </IntegrationsSnapshotValidText>
                         )}
                       </IntegrationsSnapshotInputSubBlock>
