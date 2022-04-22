@@ -153,6 +153,7 @@ export const TaskProposalCardFragment = gql`
     media {
       ...MediaFragment
     }
+    snapshotProposal
   }
   ${MediaFragment}
 `;
