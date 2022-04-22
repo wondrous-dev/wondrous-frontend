@@ -31,6 +31,7 @@ import {
   RoleTokenGatingWrapper,
   TokenGatedRoleModal,
   TokenGatedRoleModalTitle,
+  TokenGatingButtonText,
 } from './styles';
 import {
   TokenGatingNameHeader,

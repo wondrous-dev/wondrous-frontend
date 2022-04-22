@@ -6,7 +6,7 @@ import SnackbarComp from '@mui/material/Snackbar';
 
 import { Button } from '../../Common/button';
 import { BaseCard } from '../../Common/card';
-import { Red800 } from '../../../theme/colors';
+import { Red800, White } from '../../../theme/colors';
 
 export const RolesContainer = styled.div`
   width: 100%;
@@ -146,6 +146,15 @@ export const TokenGatingButton = styled(Button)`
   max-width: 166px;
   height: 40px;
   min-height: 40px;
+`;
+
+export const TokenGatingButtonText = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 15px;
+    font-weight: 600;
+    color: ${White};
+  }
 `;
 
 export const TitleLockIconWrapper = styled.div`
