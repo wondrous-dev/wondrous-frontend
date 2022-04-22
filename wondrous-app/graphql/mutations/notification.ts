@@ -55,3 +55,11 @@ export const MANUAL_DISCORD_ORG_SETUP = gql`
     }
   }
 `;
+
+export const SET_USER_NOTIFICATION_SETTINGS = gql`
+  mutation setUserNotificationSettings($settings: NotificationSettings) {
+    setUserNotificationSettings(settings: $settings) {
+      success
+    }
+  }
+`;
