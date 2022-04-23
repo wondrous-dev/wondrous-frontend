@@ -136,6 +136,7 @@ const ProfileSettings = (props) => {
   const [enableDiscordNotification] = useMutation(ENABLE_USER_DISCORD_NOTIFICATION_CONFIG, {
     onCompleted: (data) => {
       setNotificationOn(true);
+      setInitialSettings();
     },
     onError: (e) => {
       console.error(e);
@@ -323,7 +324,7 @@ const ProfileSettings = (props) => {
         <NotificationSettingsHeaderWrapper>
           <NotificationSettingsHeader>Notifications</NotificationSettingsHeader>
           <NotificationSettingsHeaderText>
-            We'll always let you know about important changes, but you pick what else you want to hear about
+            {"We'll always let you know about important changes, but you pick what else you want to hear about"}
           </NotificationSettingsHeaderText>
         </NotificationSettingsHeaderWrapper>
         <UserDiscordNotificationSettingsContainer>
@@ -397,7 +398,7 @@ const ProfileSettings = (props) => {
             />
           )}
         </GeneralSettingsInputsBlock> */}
-        {isSettingChanged && (
+        {isSettingChanged && isDiscordConnected && notificationOn && (
           <NotificationSettingsButtonsBlock>
             <GeneralSettingsResetButton onClick={setInitialSettings}>Reset changes</GeneralSettingsResetButton>
             <GeneralSettingsSaveChangesButton

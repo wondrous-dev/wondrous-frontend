@@ -1,7 +1,7 @@
 import { Switch } from '@material-ui/core';
 import styled from 'styled-components';
 
-export default styled(Switch)(({ theme, ...props }) => ({
+export default styled(Switch)(({ theme }) => ({
   padding: 8,
   '& .MuiSwitch-track': {
     borderRadius: 22 / 2,
