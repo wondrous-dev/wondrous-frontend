@@ -51,7 +51,7 @@ import RoleLockIcon from '../../Icons/rolesLock.svg';
 import { GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
 
 type Props = {
-  orgId: String;
+  orgId: any;
   podId?: String;
   roles: Role[];
   permissons: Array<{
