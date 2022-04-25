@@ -92,6 +92,33 @@ export const GET_POD_ROLES = gql`
   }
 `;
 
+export const GET_POD_ROLES_WITH_TOKEN_GATE = gql`
+  query getPodRolesWithTokenGate($podId: ID) {
+    getPodRoles(podId: $podId) {
+      id
+      name
+      permissions
+      default
+      tokenGatingCondition {
+        id
+        orgId
+        podId
+        name
+        booleanLogic
+        accessCondition {
+          contractAddress
+          type
+          chain
+          method
+          minValue
+          tokenIds
+        }
+      }
+    }
+  }
+`;
+
+
 export const GET_USER_JOIN_POD_REQUEST = gql`
   query getUserJoinPodRequest($podId: ID!) {
     getUserJoinPodRequest(podId: $podId) {
