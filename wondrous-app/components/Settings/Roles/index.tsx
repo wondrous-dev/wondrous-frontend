@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Modal from '@mui/material/Modal';
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
-import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries/tokenGating';
+import apollo from 'services/apollo';
 
 import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
@@ -48,7 +48,16 @@ import { White } from 'theme/colors';
 
 import { Role } from 'types/common';
 import RoleLockIcon from '../../Icons/rolesLock.svg';
-import { GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
+import { GET_TOKEN_INFO, GET_NFT_INFO, GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries/tokenGating';
+import { GET_ORG_ROLES_WITH_TOKEN_GATE } from 'graphql/queries/org';
+import { GET_POD_ROLES_WITH_TOKEN_GATE } from 'graphql/queries/pod';
+import {
+  APPLY_TOKEN_GATING_TO_ORG_ROLE,
+  APPLY_TOKEN_GATING_TO_POD_ROLE,
+  REMOVE_TOKEN_GATING_FROM_ORG_ROLE,
+  REMOVE_TOKEN_GATING_FROM_POD_ROLE,
+} from 'graphql/mutations/tokenGating';
+import { delQuery } from 'utils';
 
 type Props = {
   orgId: any;
@@ -77,11 +86,11 @@ const Roles = ({
   onToastClose,
   permissons,
 }: Props) => {
-  console.log(roles);
   const [newRoleName, setNewRoleName] = useState('');
   const [newRolePermissionsExpanded, setNewRolePermissionsExpanded] = useState(false);
   const [newRolePermissions, setNewRolePermissions] = useState([]);
   const [tokenGatedRoleModalOpen, setTokenGatedRoleModalOpen] = useState(false);
+  const [selectedRoleForTokenGate, setSelectedRoleForTokenGate] = useState(null);
 
   // Creates new role
   function handleCreateNewRoleClick() {
@@ -140,6 +149,7 @@ const Roles = ({
         handleClose={handleCloseModal}
         orgId={orgId}
         podId={podId}
+        selectedRoleForTokenGate={selectedRoleForTokenGate}
       />
 
       <RolesContainer>
@@ -185,47 +195,58 @@ const Roles = ({
 
         {roles.length ? <LabelBlock mt={120}>{roles.length} Existing roles</LabelBlock> : null}
 
-        {roles.map((orgRole) => (
-          <Box key={orgRole.id} mt={22}>
-            <Accordion
-              title={
-                <TitleLockIconWrapper>
-                  <p>{orgRole.name}</p>
-                  {orgRole.tokenGatingCondition ? <RoleLockIcon /> : null}
-                </TitleLockIconWrapper>
-              }
-            >
-              <Permissions>
-                <TokenGatingOnRoleDisplay
-                  tokenGatingCondition={orgRole.tokenGatingCondition}
-                  setTokenGatedRoleModalOpen={setTokenGatedRoleModalOpen}
-                />
-                {permissons.map((item) => (
-                  <Permission key={item.permission}>
-                    <div>
-                      <PermissionTitle>{item.title}</PermissionTitle>
-                      <PermissionSubtitle>{item.subTitle}</PermissionSubtitle>
-                    </div>
-                    <Switch
-                      size="medium"
-                      checked={orgRole.permissions.includes(item.permission)}
-                      onChange={(e) => handleRolePermissionChange(orgRole, item.permission, e.currentTarget.checked)}
-                    />
-                  </Permission>
-                ))}
-                <PermissionFooter>
-                  <DeleteButton onClick={() => onDeleteRole(orgRole)}>Delete role</DeleteButton>
-                </PermissionFooter>
-              </Permissions>
-            </Accordion>
-          </Box>
-        ))}
+        {roles.map(
+          (
+            orgRole // this isn't org role, i think it's both
+          ) => (
+            <Box key={orgRole.id} mt={22}>
+              <Accordion
+                title={
+                  <TitleLockIconWrapper>
+                    <p>{orgRole.name}</p>
+                    {orgRole.tokenGatingCondition ? <RoleLockIcon /> : null}
+                  </TitleLockIconWrapper>
+                }
+              >
+                <Permissions>
+                  <TokenGatingOnRoleDisplay
+                    tokenGatingCondition={orgRole.tokenGatingCondition}
+                    setTokenGatedRoleModalOpen={setTokenGatedRoleModalOpen}
+                    role={orgRole}
+                    setSelectedRoleForTokenGate={setSelectedRoleForTokenGate}
+                  />
+                  {permissons.map((item) => (
+                    <Permission key={item.permission}>
+                      <div>
+                        <PermissionTitle>{item.title}</PermissionTitle>
+                        <PermissionSubtitle>{item.subTitle}</PermissionSubtitle>
+                      </div>
+                      <Switch
+                        size="medium"
+                        checked={orgRole.permissions.includes(item.permission)}
+                        onChange={(e) => handleRolePermissionChange(orgRole, item.permission, e.currentTarget.checked)}
+                      />
+                    </Permission>
+                  ))}
+                  <PermissionFooter>
+                    <DeleteButton onClick={() => onDeleteRole(orgRole)}>Delete role</DeleteButton>
+                  </PermissionFooter>
+                </Permissions>
+              </Accordion>
+            </Box>
+          )
+        )}
       </RolesContainer>
     </SettingsWrapper>
   );
 };
 
-const TokenGatingOnRoleDisplay = ({ tokenGatingCondition, setTokenGatedRoleModalOpen }) => {
+const TokenGatingOnRoleDisplay = (props) => {
+  const { tokenGatingCondition, setTokenGatedRoleModalOpen, role, setSelectedRoleForTokenGate } = props;
+  const handleEditClick = () => {
+    setSelectedRoleForTokenGate(role);
+    setTokenGatedRoleModalOpen(true);
+  };
   return (
     <RoleTokenGatingWrapper>
       <TitleLockIconWrapper>
@@ -238,7 +259,7 @@ const TokenGatingOnRoleDisplay = ({ tokenGatingCondition, setTokenGatedRoleModal
           <PermissionTitle>Token Gating: Inactive</PermissionTitle>
         )}
       </TitleLockIconWrapper>
-      <TokenGatingButton onClick={() => setTokenGatedRoleModalOpen(true)} highlighted={true}>
+      <TokenGatingButton onClick={handleEditClick} highlighted={true}>
         {tokenGatingCondition ? 'Edit' : 'Add token gate'}
       </TokenGatingButton>
     </RoleTokenGatingWrapper>
@@ -247,9 +268,7 @@ const TokenGatingOnRoleDisplay = ({ tokenGatingCondition, setTokenGatedRoleModal
 
 const TokenGateRoleConfigModal = (props) => {
   const router = useRouter();
-  const { open, handleClose, orgId, podId } = props;
-  console.log('orgId', orgId);
-  console.log('podId', podId);
+  const { open, handleClose, orgId, podId, selectedRoleForTokenGate } = props;
   const [tokenGatingConditions, setTokenGatingConditions] = useState([]);
   const [getTokenGatingConditionsForOrg, { data, loading, fetchMore }] = useLazyQuery(
     GET_TOKEN_GATING_CONDITIONS_FOR_ORG,
@@ -272,6 +291,32 @@ const TokenGateRoleConfigModal = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, open]);
 
+  const handleRemoveTokenGateFromRole = async () => {
+    try {
+      if (selectedRoleForTokenGate?.__typename === 'OrgRole') {
+        await apollo.mutate({
+          mutation: REMOVE_TOKEN_GATING_FROM_ORG_ROLE,
+          variables: {
+            orgRoleId: selectedRoleForTokenGate?.id,
+          },
+        });
+      }
+
+      if (selectedRoleForTokenGate?.__typename === 'PodRole') {
+        await apollo.mutate({
+          mutation: REMOVE_TOKEN_GATING_FROM_POD_ROLE,
+          variables: {
+            orgRoleId: selectedRoleForTokenGate?.id,
+          },
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      return;
+    }
+    handleClose();
+  };
+
   return (
     <>
       <Modal open={open} onClose={handleClose}>
@@ -283,26 +328,39 @@ const TokenGateRoleConfigModal = (props) => {
               alignItems: 'center',
             }}
           >
-            <TokenGatedRoleModalTitle>Select the condition to apply to role </TokenGatedRoleModalTitle>
+            <TokenGatedRoleModalTitle>Token gating for {selectedRoleForTokenGate?.name} role</TokenGatedRoleModalTitle>
             <div
-            style={{
-              display: 'flex',
-              gap: '10px',
-              alignItems: 'center',
-            }}
-          >
-            <TokenGatingButton onClick={() => {}} highlighted={false}>
-              remove
-            </TokenGatingButton>
-            <TokenGatingButton onClick={() => {
-              router.replace(`organization/settings/${orgId}/token-gating`);
-              }} highlighted={true}>
-              create
-            </TokenGatingButton>
+              style={{
+                display: 'flex',
+                gap: '10px',
+                alignItems: 'center',
+              }}
+            >
+              <TokenGatingButton onClick={handleRemoveTokenGateFromRole} highlighted={false}>
+                remove
+              </TokenGatingButton>
+              <TokenGatingButton
+                onClick={() => {
+                  router.push(`/organization/settings/${orgId}/token-gating`, undefined, {
+                    shallow: true,
+                  });
+                }}
+                highlighted={true}
+              >
+                create new
+              </TokenGatingButton>
             </div>
           </div>
           {tokenGatingConditions.map((tokenGatingCondition) => {
-            return <TokenGatingMoalElement key={tokenGatingCondition.id} tokenGatingCondition={tokenGatingCondition} />;
+            return (
+              <TokenGatingModalElement
+                key={tokenGatingCondition.id}
+                tokenGatingCondition={tokenGatingCondition}
+                selectedRoleForTokenGate={selectedRoleForTokenGate}
+                handleClose={handleClose}
+                orgId={orgId}
+              />
+            );
           })}
         </TokenGatedRoleModal>
       </Modal>
@@ -310,10 +368,11 @@ const TokenGateRoleConfigModal = (props) => {
   );
 };
 
-const TokenGatingMoalElement = (props) => {
+const TokenGatingModalElement = (props) => {
   const [tokenName, setTokenName] = useState(null);
   const [tokenLogo, setTokenLogo] = useState(null);
-  const { tokenGatingCondition } = props;
+  const { tokenGatingCondition, selectedRoleForTokenGate, handleClose, orgId } = props;
+  const router = useRouter();
   const [getTokenInfo, { loading: getTokenInfoLoading }] = useLazyQuery(GET_TOKEN_INFO, {
     onCompleted: (data) => {
       if (data?.getTokenInfo) {
@@ -361,11 +420,41 @@ const TokenGatingMoalElement = (props) => {
 
     getTokenDisplayInfo();
   }, [tokenGatingCondition?.accessCondition[0].contractAddress]);
-  const handleElementClick = async ()=>{
-    console.log('asdf')
-  }
+  const handleWrapperElementClick = async () => {
+    const confirmed = confirm(`Apply ${tokenGatingCondition?.name} to role?`);
+    if (!confirmed) {
+      return;
+    }
+    try {
+      if (selectedRoleForTokenGate?.__typename === 'OrgRole') {
+        await apollo.mutate({
+          mutation: APPLY_TOKEN_GATING_TO_ORG_ROLE,
+          variables: {
+            tokenGatingConditionId: tokenGatingCondition?.id,
+            orgRoleId: selectedRoleForTokenGate?.id,
+          },
+          // refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE],
+        });
+      }
+
+      if (selectedRoleForTokenGate?.__typename === 'PodRole') {
+        await apollo.mutate({
+          mutation: APPLY_TOKEN_GATING_TO_POD_ROLE,
+          variables: {
+            tokenGatingConditionId: tokenGatingCondition?.id,
+            orgRoleId: selectedRoleForTokenGate?.id,
+          },
+          // refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE],
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      return;
+    }
+    handleClose();
+  };
   return (
-    <TokenGatingElementWrapper onClick={handleElementClick}>
+    <TokenGatingElementWrapper onClick={handleWrapperElementClick}>
       <div
         style={{
           display: 'flex',
@@ -377,7 +466,11 @@ const TokenGatingMoalElement = (props) => {
           <DropDown DropdownHandler={TaskMenuIcon}>
             <DropDownItem
               key={'token-gate-edit' + tokenGatingCondition?.id}
-              onClick={() => {}}
+              onClick={() => {
+                router.push(`/organization/settings/${orgId}/token-gating`, undefined, {
+                  shallow: true,
+                });
+              }}
               style={dropdownItemStyle}
             >
               Edit
