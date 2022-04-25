@@ -279,7 +279,6 @@ const TokenGateRoleConfigModal = (props) => {
       fetchPolicy: 'network-only',
     }
   );
-  console.log('tokenGatingConditions', tokenGatingConditions);
   useEffect(() => {
     if (orgId && open) {
       getTokenGatingConditionsForOrg({
