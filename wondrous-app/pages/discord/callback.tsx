@@ -30,11 +30,11 @@ const Callback = () => {
       },
       onCompleted: (data) => {
         if (data?.redeemOrgInviteLink?.success) {
-          if (user?.username) {
+          if (user && user?.username) {
             router.push('/dashboard', undefined, {
               shallow: true,
             });
-          } else {
+          } else if (user && !user?.username) {
             router.push(`/onboarding/welcome`, undefined, {
               shallow: true,
             });
@@ -47,11 +47,11 @@ const Callback = () => {
           (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.ORG_INVITE_ALREADY_EXISTS ||
             err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.POD_INVITE_ALREADY_EXISTS)
         ) {
-          if (user?.username) {
+          if (user && user?.username) {
             router.push('/dashboard', undefined, {
               shallow: true,
             });
-          } else {
+          } else if (user && !user?.username) {
             router.push(`/onboarding/welcome`, undefined, {
               shallow: true,
             });
@@ -68,14 +68,15 @@ const Callback = () => {
       },
       onCompleted: (data) => {
         if (data?.redeemPodInviteLink?.success) {
-          if (user?.username) {
+          if (user && user?.username) {
             router.push('/dashboard', undefined, {
               shallow: true,
             });
-          } else {
+          } else if (user && !user?.username) {
             router.push(`/onboarding/welcome`, undefined, {
               shallow: true,
             });
+          } else if (!user) {
           }
         }
       },
@@ -85,11 +86,11 @@ const Callback = () => {
           (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.ORG_INVITE_ALREADY_EXISTS ||
             err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.POD_INVITE_ALREADY_EXISTS)
         ) {
-          if (user?.username) {
+          if (user && user?.username) {
             router.push('/dashboard', undefined, {
               shallow: true,
             });
-          } else {
+          } else if (user && !user?.username) {
             router.push(`/onboarding/welcome`, undefined, {
               shallow: true,
             });
@@ -145,12 +146,12 @@ const Callback = () => {
               redeemOrgInvite(inviteToken);
             }
           } else {
-            if (user?.signupCompleted) {
+            if (user && user?.signupCompleted) {
               // Only place to change this is in settings
               router.push('/dashboard', undefined, {
                 shallow: true,
               });
-            } else {
+            } else if (user && !user?.signupCompleted) {
               router.push('/onboarding/welcome', undefined, {
                 shallow: true,
               });
@@ -161,7 +162,7 @@ const Callback = () => {
           console.log('Error updating discord');
         });
     }
-  }, [user, user?.signupCompleted, code]);
+  }, [user, user?.signupCompleted, code, state]);
   return (
     <InviteWelcomeBoxWrapper
       style={{
