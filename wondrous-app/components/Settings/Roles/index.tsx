@@ -73,6 +73,8 @@ type Props = {
   onDeleteRole: (role: Role) => any;
   onPermissionsChange: (role: Role, permissions: string[]) => any;
   onToastClose: () => any;
+  getOrgRolesWithTokenGate?: () => any;
+  getPodRolesWithTokenGate?: () => any;
 };
 
 const Roles = ({
@@ -85,6 +87,8 @@ const Roles = ({
   toast,
   onToastClose,
   permissons,
+  getOrgRolesWithTokenGate,
+  getPodRolesWithTokenGate,
 }: Props) => {
   const [newRoleName, setNewRoleName] = useState('');
   const [newRolePermissionsExpanded, setNewRolePermissionsExpanded] = useState(false);
@@ -150,6 +154,8 @@ const Roles = ({
         orgId={orgId}
         podId={podId}
         selectedRoleForTokenGate={selectedRoleForTokenGate}
+        getOrgRolesWithTokenGate={getOrgRolesWithTokenGate}
+        getPodRolesWithTokenGate={getPodRolesWithTokenGate}
       />
 
       <RolesContainer>
@@ -268,7 +274,15 @@ const TokenGatingOnRoleDisplay = (props) => {
 
 const TokenGateRoleConfigModal = (props) => {
   const router = useRouter();
-  const { open, handleClose, orgId, podId, selectedRoleForTokenGate } = props;
+  const {
+    open,
+    handleClose,
+    orgId,
+    podId,
+    selectedRoleForTokenGate,
+    getOrgRolesWithTokenGate,
+    getPodRolesWithTokenGate,
+  } = props;
   const [tokenGatingConditions, setTokenGatingConditions] = useState([]);
   const [getTokenGatingConditionsForOrg, { data, loading, fetchMore }] = useLazyQuery(
     GET_TOKEN_GATING_CONDITIONS_FOR_ORG,
@@ -293,12 +307,13 @@ const TokenGateRoleConfigModal = (props) => {
   const handleRemoveTokenGateFromRole = async () => {
     try {
       if (selectedRoleForTokenGate?.__typename === 'OrgRole') {
-        await apollo.mutate({
+        const orgRoles = await apollo.mutate({
           mutation: REMOVE_TOKEN_GATING_FROM_ORG_ROLE,
           variables: {
             orgRoleId: selectedRoleForTokenGate?.id,
           },
         });
+        getOrgRolesWithTokenGate();
       }
 
       if (selectedRoleForTokenGate?.__typename === 'PodRole') {
@@ -308,6 +323,7 @@ const TokenGateRoleConfigModal = (props) => {
             orgRoleId: selectedRoleForTokenGate?.id,
           },
         });
+        getPodRolesWithTokenGate();
       }
     } catch (e) {
       console.error(e);
@@ -358,6 +374,8 @@ const TokenGateRoleConfigModal = (props) => {
                 selectedRoleForTokenGate={selectedRoleForTokenGate}
                 handleClose={handleClose}
                 orgId={orgId}
+                getOrgRolesWithTokenGate={getOrgRolesWithTokenGate}
+                getPodRolesWithTokenGate={getPodRolesWithTokenGate}
               />
             );
           })}
@@ -370,7 +388,7 @@ const TokenGateRoleConfigModal = (props) => {
 const TokenGatingModalElement = (props) => {
   const [tokenName, setTokenName] = useState(null);
   const [tokenLogo, setTokenLogo] = useState(null);
-  const { tokenGatingCondition, selectedRoleForTokenGate, handleClose, orgId } = props;
+  const { tokenGatingCondition, selectedRoleForTokenGate, handleClose, orgId, getOrgRolesWithTokenGate, getPodRolesWithTokenGate } = props;
   const router = useRouter();
   const [getTokenInfo, { loading: getTokenInfoLoading }] = useLazyQuery(GET_TOKEN_INFO, {
     onCompleted: (data) => {
@@ -432,8 +450,8 @@ const TokenGatingModalElement = (props) => {
             tokenGatingConditionId: tokenGatingCondition?.id,
             orgRoleId: selectedRoleForTokenGate?.id,
           },
-          // refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE],
         });
+        getOrgRolesWithTokenGate();
       }
 
       if (selectedRoleForTokenGate?.__typename === 'PodRole') {
@@ -443,8 +461,8 @@ const TokenGatingModalElement = (props) => {
             tokenGatingConditionId: tokenGatingCondition?.id,
             orgRoleId: selectedRoleForTokenGate?.id,
           },
-          // refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE],
         });
+        getPodRolesWithTokenGate();
       }
     } catch (e) {
       console.error(e);

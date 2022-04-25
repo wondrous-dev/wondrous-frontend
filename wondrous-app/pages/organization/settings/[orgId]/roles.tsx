@@ -18,6 +18,9 @@ const RolesPage = () => {
     variables: {
       orgId,
     },
+    onCompleted: (data) => {
+      setRoles(JSON.parse(JSON.stringify(data?.getOrgRoles)) || []);
+    },
   });
 
   // Mutation to create organization role
@@ -47,12 +50,6 @@ const RolesPage = () => {
       getOrgRolesWithTokenGate();
     }
   }, [orgId, getOrgRolesWithTokenGate]);
-
-  useEffect(() => {
-    if (getOrgRolesData) {
-      setRoles(JSON.parse(JSON.stringify(getOrgRolesData?.getOrgRoles)) || []);
-    }
-  }, [getOrgRolesData]);
 
   function deleteRole(role: Role) {
     const index = roles.indexOf(role);
@@ -84,9 +81,9 @@ const RolesPage = () => {
 
   return (
     <Roles
-    roles={roles}
-    orgId={orgId}
-    permissons={permissons}
+      roles={roles}
+      orgId={orgId}
+      permissons={permissons}
       onCreateNewRole={(name: string, permissions: string[]) => {
         createOrgRole({
           variables: {
@@ -102,6 +99,7 @@ const RolesPage = () => {
       onDeleteRole={deleteRole}
       toast={toast}
       onToastClose={() => setToast({ ...toast, show: false })}
+      getOrgRolesWithTokenGate={getOrgRolesWithTokenGate}
     />
   );
 };
