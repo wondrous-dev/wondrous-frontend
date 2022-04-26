@@ -90,12 +90,6 @@ export const CommentBox = (props) => {
     }
     setComment('');
   };
-  const keyDownHandler = (e) => {
-    if (e.keyCode === 13) {
-      e.preventDefault();
-      addComment();
-    }
-  };
 
   useEffect(() => {
     if (taskCommentData?.createTaskComment) {
@@ -117,7 +111,6 @@ export const CommentBox = (props) => {
               setComment(e.target.value);
             },
             list: filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers),
-            keyDownHandler,
           }}
         >
           <TextInput
