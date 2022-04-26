@@ -70,6 +70,32 @@ export const GET_ORG_ROLES = gql`
   }
 `;
 
+export const GET_ORG_ROLES_WITH_TOKEN_GATE = gql`
+  query getOrgRolesWithTokenGate($orgId: ID) {
+    getOrgRoles(orgId: $orgId) {
+      id
+      name
+      default
+      permissions
+      tokenGatingCondition {
+        id
+        orgId
+        podId
+        name
+        booleanLogic
+        accessCondition {
+          contractAddress
+          type
+          chain
+          method
+          minValue
+          tokenIds
+        }
+      }
+    }
+  }
+`;
+
 export const GET_ORG_REVIEWERS = gql`
   query getOrgReviewers($orgId: String!) {
     getOrgReviewers(orgId: $orgId) {
