@@ -34,7 +34,7 @@ export const PaymentModal = styled(BaseCard)`
   position: absolute;
   left: 50%;
   top: 50%;
-  height: 70%;
+  min-height: 70%;
   transform: translate(-50%, -50%);
   overflow-y: scroll;
   z-index: 2100;
@@ -43,7 +43,6 @@ export const PaymentModal = styled(BaseCard)`
   align-items: center;
   justify-content: center;
   background: rgb(20, 20, 20) !important;
-  padding-bottom: 32px;
   &::-webkit-scrollbar {
     display: none;
     width: 0;
@@ -150,21 +149,6 @@ export const StyledTabs = styled((props) => (
     backgroundColor: '#7427FF',
   },
 });
-
-export const PaymentLinkInput = styled(InputBase)`
-  && {
-    width: 100%;
-    height: 40px;
-    border: 1px solid #4b4b4b;
-    border-radius: 6px;
-
-    font-size: 14px;
-    line-height: 21px;
-    letter-spacing: 0.01em;
-    color: #c4c4c4;
-    padding: 10px 15px;
-  }
-`;
 
 export const PaymentMethodWrapper = styled.div`
   margin-bottom: 32px;

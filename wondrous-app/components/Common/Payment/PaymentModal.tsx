@@ -32,7 +32,7 @@ import { useMe } from '../../Auth/withAuth';
 import { useRouter } from 'next/router';
 import { DAOIcon } from '../../Icons/dao';
 import { OrganisationsCardNoLogo } from '../../profile/about/styles';
-import { OfflinePayment } from './OfflinePayment';
+import { OfflinePayment } from './OfflinePayment/OfflinePayment';
 import { SingleWalletPayment } from './SingleWalletPayment';
 import Link from 'next/link';
 import { White, Blue20 } from '../../../theme/colors';
@@ -296,19 +296,13 @@ export const MakePaymentModal = (props) => {
           </StyledTabs>
           <PaymentMethodWrapper>
             {selectedTab === 'off_platform' && (
-              <>
-                <WarningTypography>
-                  This link will only be visible to the assignee and other admins with the payment permission
-                </WarningTypography>
-                <OfflinePayment
-                  handleClose={handleCloseAll}
-                  approvedSubmission={approvedSubmission}
-                  fetchedTask={fetchedTask}
-                  submissionPaymentInfo={submissionPaymentInfo}
-                />
-              </>
+              <OfflinePayment
+                handleClose={handleCloseAll}
+                approvedSubmission={approvedSubmission}
+                fetchedTask={fetchedTask}
+                submissionPaymentInfo={submissionPaymentInfo}
+              />
             )}
-
             {selectedTab === 'wallet' && (
               <SingleWalletPayment
                 setShowPaymentModal={setShowPaymentModal}
