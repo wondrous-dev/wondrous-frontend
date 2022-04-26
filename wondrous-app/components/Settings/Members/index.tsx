@@ -1,14 +1,15 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_ROLES, GET_ORG_USERS, GET_USER_ORGS } from 'graphql/queries/org';
+import { uniq } from 'lodash';
+import Link from 'next/link';
+
+import { GET_ORG_BY_ID, GET_ORG_ROLES, GET_ORG_USERS, GET_USER_ORGS } from 'graphql/queries/org';
 import { GET_POD_BY_ID } from 'graphql/queries/pod';
 import { SEARCH_ORG_USERS } from 'graphql/queries/org';
 import { UPDATE_USER_ORG_ROLE } from 'graphql/mutations/org';
 import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
-import UserCheckIcon from '../../Icons/userCheckIcon';
-import Accordion from '../../Common/Accordion';
-import Switch from '../../Common/Switch';
+import MembersIcon from '../../Icons/membersSettings';
 import { RolesContainer } from '../Roles/styles';
 import {
   StyledTable,
@@ -17,13 +18,10 @@ import {
   StyledTableContainer,
   StyledTableHead,
   StyledTableRow,
-  TaskDescription,
-  TaskTitle,
 } from '../../Table/styles';
 import { useRouter } from 'next/router';
 import { DefaultProfilePicture, InviteDiv, SeeMoreText, UserInfoDiv, UsernameText, UserProfilePicture } from './styles';
 import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
-import CreatePodIcon from '../../Icons/createPod';
 import { CircularProgress, TextField } from '@material-ui/core';
 import { PERMISSIONS } from 'utils/constants';
 import { useSettings } from 'utils/hooks';
@@ -41,10 +39,9 @@ import {
 } from '../../CreateEntity/styles';
 import { White } from '../../../theme/colors';
 import { SafeImage } from '../../Common/Image';
-import { filterOrgUsers } from '../../CreateEntity/createEntityModal';
+import MemberRoles from './MemberRoles';
 import { SnackbarAlertContext } from '../../Common/SnackbarAlert';
-import { ArchivedTaskUndo } from '../../Common/Task/styles';
-import Link from 'next/link';
+import { Text } from 'components/styled';
 
 const LIMIT = 10;
 
@@ -289,6 +286,7 @@ const Members = (props) => {
   const { orgId, podId } = router.query;
   const [hasMore, setHasMore] = useState(true);
   const [users, setUsers] = useState([]);
+  const [userRoles, setUserRoles] = useState([]);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
 
   const [getOrgUsers, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_USERS, {
@@ -296,9 +294,13 @@ const Members = (props) => {
   });
 
   const [getPod, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
+  const [getOrg, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
 
   const [getPodUsers] = useLazyQuery(GET_POD_USERS, {
     onCompleted: (data) => {
+      const userRoles = uniq(users.map((user) => user?.role?.name));
+
+      setUserRoles(userRoles);
       setUsers(data?.getPodUsers);
       setHasMore(data?.hasMore || data?.getPodUsers.length >= LIMIT);
     },
@@ -310,6 +312,12 @@ const Members = (props) => {
   const roleList = podRoleData?.getPodRoles || orgRoleData?.getOrgRoles;
   useEffect(() => {
     if (orgId) {
+      getOrg({
+        variables: {
+          orgId,
+        },
+      });
+
       getOrgUsers({
         variables: {
           orgId,
@@ -317,7 +325,11 @@ const Members = (props) => {
         },
       }).then((result) => {
         if (!firstTimeFetch) {
-          setUsers(result?.data?.getOrgUsers);
+          const users = result?.data?.getOrgUsers;
+          const userRoles = users ? uniq(users.map((user) => user?.role?.name)) : [];
+
+          setUserRoles(userRoles);
+          setUsers(users);
           setHasMore(result?.data?.hasMore || result?.data?.getOrgUsers.length >= LIMIT);
           setFirstTimeFetch(true);
         }
@@ -378,11 +390,32 @@ const Members = (props) => {
     }
   }, [hasMore, users, fetchMore, orgId, podId]);
 
+  const orgOrPodName = orgData?.getOrgById?.name || podData?.getPodById?.name;
+
   return (
     <SettingsWrapper>
       <RolesContainer>
-        <HeaderBlock icon={<UserCheckIcon circle />} title="Members" description="View and edit roles of members" />
+        <HeaderBlock
+          icon={<MembersIcon circle />}
+          title={
+            <>
+              Members&nbsp;
+              {orgOrPodName ? (
+                <Text as="span">
+                  {' '}of {' '}
+                  <Text as="span" color="#CCBBFF">
+                    {orgOrPodName}
+                  </Text>
+                </Text>
+              ) : null}
+            </>
+          }
+          description="Use roles to organize contributors and admins"
+        />
         {podId && <InviteMember users={users} setUsers={setUsers} orgId={orgId} podId={podId} roleList={roleList} />}
+
+        <MemberRoles userRoles={userRoles} isDAO={!!orgId} />
+
         <StyledTableContainer>
           <StyledTable>
             <StyledTableHead>

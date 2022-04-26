@@ -197,15 +197,13 @@ export const SettingsHeaderContent = styled.div`
   margin-left: 27px;
 `;
 
-export const SettingsHeaderTitle = styled(Typography)`
-  && {
-    font-weight: 500;
-    font-size: 28px;
-    line-height: 36px;
-    display: flex;
-    align-items: center;
-    color: #ffffff;
-  }
+export const SettingsHeaderTitle = styled.div`
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 36px;
+  display: flex;
+  align-items: center;
+  color: #ffffff;
 `;
 
 export const SettingsHeaderText = styled(Typography)`
