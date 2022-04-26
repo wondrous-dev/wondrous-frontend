@@ -1,22 +1,32 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { ethers, utils } from 'ethers';
-import DropdownSelect from '../DropdownSelect/dropdownSelect';
-import { useQuery, useMutation } from '@apollo/client';
-import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { useMutation } from '@apollo/client';
+import { Typography } from '@material-ui/core';
+import CopyIcon from 'components/Icons/copy';
 import { LINK_OFF_PLATFORM_PAYMENT } from 'graphql/mutations/payment';
-import { PaymentLinkInput, WarningTypography } from './styles';
-import { CreateFormPreviewButton } from '../../CreateEntity/styles';
-import { ErrorText } from '../../Common';
 import {
   GET_PAYMENTS_FOR_ORG,
   GET_PAYMENTS_FOR_POD,
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
-import { SnackbarAlertContext } from '../SnackbarAlert';
-import { Typography } from '@material-ui/core';
-import { PaymentDescriptionText } from './styles';
-import { White } from '../../../theme/colors';
+import React, { useContext, useState } from 'react';
+import { ErrorText } from '../..';
+import { White } from '../../../../theme/colors';
+import { CreateFormPreviewButton } from '../../../CreateEntity/styles';
+import { SnackbarAlertContext } from '../../SnackbarAlert';
+import {
+  OfflinePaymentButtonWrapper,
+  OfflinePaymentDescriptionText,
+  OfflinePaymentDropdown,
+  OfflinePaymentDropdownWrapper,
+  OfflinePaymentInputLabel,
+  OfflinePaymentLinkInput,
+  OfflinePaymentWallet,
+  OfflinePaymentWalletButton,
+  OfflinePaymentWalletButtonText,
+  OfflinePaymentWalletWrapper,
+  OfflinePaymentWarningTypography,
+  OfflinePaymentWrapper,
+} from './styles';
 
 const OFFLINE_PAYMENT_OPTIONS = [
   { label: 'Block Explorer Link', value: 'manual_explorer_link' },
@@ -24,6 +34,7 @@ const OFFLINE_PAYMENT_OPTIONS = [
 ];
 export const OfflinePayment = (props) => {
   const { handleClose, approvedSubmission, fetchedTask, submissionPaymentInfo } = props;
+  const recipientAddress = submissionPaymentInfo?.paymentData?.[0]?.recepientAddress;
   const [selectedOfflineType, setSelectedOfflineType] = useState(null);
   const [offlinePaymentLink, setOfflinePaymentLink] = useState(null);
   const [linkPaymentError, setLinkPaymentError] = useState(null);
@@ -79,37 +90,48 @@ export const OfflinePayment = (props) => {
       setLinkPaymentError(e);
     },
   });
+  const handleCopyAddress = () => {
+    navigator.clipboard.writeText(`${recipientAddress}`);
+    setSnackbarAlertOpen(true);
+    setSnackbarAlertMessage('Address copied to clipboard');
+  };
 
   return (
-    <>
-      <DropdownSelect
-        value={selectedOfflineType}
-        setValue={setSelectedOfflineType}
-        labelText="Choose a payment method"
-        options={OFFLINE_PAYMENT_OPTIONS}
-        onChange={(e) => {}}
-        formSelectStyle={{
-          marginBottom: '16px',
-        }}
-      />
-      <PaymentLinkInput
+    <OfflinePaymentWrapper>
+      <OfflinePaymentWarningTypography>
+        This link will only be visible to the assignee and other admins with the payment permission.
+      </OfflinePaymentWarningTypography>
+      <OfflinePaymentInputLabel>Platform</OfflinePaymentInputLabel>
+      <OfflinePaymentDropdownWrapper>
+        <OfflinePaymentDropdown
+          value={selectedOfflineType}
+          setValue={setSelectedOfflineType}
+          labelText="Choose a payment method"
+          options={OFFLINE_PAYMENT_OPTIONS}
+          onChange={(e) => {}}
+        />
+      </OfflinePaymentDropdownWrapper>
+      <OfflinePaymentInputLabel>User Wallet</OfflinePaymentInputLabel>
+      <OfflinePaymentWalletWrapper>
+        <OfflinePaymentWallet disabled value={recipientAddress} />
+        <OfflinePaymentWalletButton highlighted onClick={handleCopyAddress}>
+          <OfflinePaymentWalletButtonText>Copy Address</OfflinePaymentWalletButtonText>
+          <CopyIcon />
+        </OfflinePaymentWalletButton>
+      </OfflinePaymentWalletWrapper>
+      <OfflinePaymentInputLabel>Link</OfflinePaymentInputLabel>
+      <OfflinePaymentLinkInput
         placeholder="Proof of payment link"
         value={offlinePaymentLink}
         onChange={(e) => setOfflinePaymentLink(e.target.value)}
       />
       {linkPaymentError && <ErrorText>error linking payments</ErrorText>}
-      <div
-        style={{
-          marginTop: '16px',
-          display: 'flex',
-          justifyContent: 'flex-end',
-        }}
-      >
+      <OfflinePaymentButtonWrapper>
         {!submissionPaid && (
           <CreateFormPreviewButton onClick={handleLinkPaymentLinkClick}>Link Payment</CreateFormPreviewButton>
         )}
-        {submissionPaid && <PaymentDescriptionText>Paid!</PaymentDescriptionText>}
-      </div>
-    </>
+        {submissionPaid && <OfflinePaymentDescriptionText>Paid!</OfflinePaymentDescriptionText>}
+      </OfflinePaymentButtonWrapper>
+    </OfflinePaymentWrapper>
   );
 };
