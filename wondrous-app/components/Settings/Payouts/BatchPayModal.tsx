@@ -37,7 +37,7 @@ import { useMe } from '../../Auth/withAuth';
 import { useRouter } from 'next/router';
 import { DAOIcon } from '../../Icons/dao';
 import { OrganisationsCardNoLogo } from '../../profile/about/styles';
-import { OfflinePayment } from '../../Common/Payment/OfflinePayment';
+import { OfflinePayment } from '../../Common/Payment/OfflinePayment/OfflinePayment';
 import { BatchWalletPayment } from '../../Common/Payment/BatchWalletPayment';
 import Link from 'next/link';
 import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
