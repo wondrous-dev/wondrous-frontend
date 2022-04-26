@@ -33,7 +33,6 @@ const OFFLINE_PAYMENT_OPTIONS = [
   { label: 'Utopia labs Link', value: 'utopia_link' },
 ];
 export const OfflinePayment = (props) => {
-  console.log(props);
   const { handleClose, approvedSubmission, fetchedTask, submissionPaymentInfo } = props;
   const recipientAddress = submissionPaymentInfo?.paymentData?.[0]?.recepientAddress;
   const [selectedOfflineType, setSelectedOfflineType] = useState(null);
