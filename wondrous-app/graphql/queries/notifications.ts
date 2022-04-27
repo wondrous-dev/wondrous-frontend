@@ -39,10 +39,9 @@ export const GET_USER_DISCORD_NOTIFICATION_CONFIGS = gql`
       taskStatusUpdate
       deliverablesSignOff
       rejectionsAndApprovals
-      assigneeStatus
+      submissionStatus
       taskClaimByOthers
       paymentReceived
-      paymentRequest
     }
   }
 `;

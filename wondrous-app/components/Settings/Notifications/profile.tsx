@@ -88,7 +88,7 @@ const notificationsConfig = [
     label: 'Review work',
     settings: [
       {
-        id: 'assigneeStatus',
+        id: 'submissionStatus',
         label: 'Assignee rejection and approval',
       },
       {
@@ -103,10 +103,6 @@ const notificationsConfig = [
       {
         label: 'New payment',
         id: 'paymentReceived',
-      },
-      {
-        label: 'Payment request',
-        id: 'paymentRequest',
       },
     ],
   },
@@ -170,10 +166,9 @@ const ProfileSettings = (props) => {
     taskStatusUpdate,
     deliverablesSignOff,
     rejectionsAndApprovals,
-    assigneeStatus,
+    submissionStatus,
     taskClaimByOthers,
     paymentReceived,
-    paymentRequest,
   } = userNotificationConfigData?.getUserNotificationSetting || {};
 
   const initialSettings = {
@@ -182,10 +177,9 @@ const ProfileSettings = (props) => {
     taskStatusUpdate,
     deliverablesSignOff,
     rejectionsAndApprovals,
-    assigneeStatus,
+    submissionStatus,
     taskClaimByOthers,
     paymentReceived,
-    paymentRequest,
   };
   const setInitialSettings = () => {
     if (userNotificationConfigData?.getUserNotificationSetting) {
