@@ -82,7 +82,6 @@ export const DrawerListItemIcon = styled.img`
 `;
 
 export const DrawerBottomBlock = styled.div`
-  min-height: 85px;
   display: flex;
   align-items: center;
   justify-content: space-between;
