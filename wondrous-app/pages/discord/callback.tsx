@@ -23,13 +23,14 @@ const Callback = () => {
   const [redeemOrgInviteLink] = useMutation(REDEEM_ORG_INVITE_LINK);
   const [redeemPodInviteLink] = useMutation(REDEEM_POD_INVITE_LINK);
 
-  const redeemOrgInvite = async (token) => {
+  const redeemOrgInvite = async (token, user) => {
     redeemOrgInviteLink({
       variables: {
         token,
       },
-      onCompleted: (data) => {
-        if (data?.redeemOrgInviteLink?.success) {
+    })
+      .then((result) => {
+        if (result?.data?.redeemOrgInviteLink?.success) {
           if (user && user?.username) {
             router.push('/dashboard', undefined, {
               shallow: true,
@@ -40,8 +41,8 @@ const Callback = () => {
             });
           }
         }
-      },
-      onError: (err) => {
+      })
+      .catch((err) => {
         if (
           err?.graphQLErrors &&
           (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.ORG_INVITE_ALREADY_EXISTS ||
@@ -57,17 +58,17 @@ const Callback = () => {
             });
           }
         }
-      },
-    });
+      });
   };
 
-  const redeemPodInvite = async (token) => {
+  const redeemPodInvite = async (token, user) => {
     redeemPodInviteLink({
       variables: {
         token,
       },
-      onCompleted: (data) => {
-        if (data?.redeemPodInviteLink?.success) {
+    })
+      .then((result) => {
+        if (result?.data?.redeemPodInviteLink?.success) {
           if (user && user?.username) {
             router.push('/dashboard', undefined, {
               shallow: true,
@@ -79,8 +80,8 @@ const Callback = () => {
           } else if (!user) {
           }
         }
-      },
-      onError: (err) => {
+      })
+      .catch((err) => {
         if (
           err?.graphQLErrors &&
           (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.ORG_INVITE_ALREADY_EXISTS ||
@@ -96,11 +97,11 @@ const Callback = () => {
             });
           }
         }
-      },
-    });
+      });
   };
   useEffect(() => {
-    if (code && user) {
+    const token = localStorage.getItem('wonderToken') || null;
+    if (code && token) {
       connectUserDiscord({
         variables: {
           discordAuthCode: code,
@@ -119,7 +120,7 @@ const Callback = () => {
         .catch((err) => {
           console.log('Error updating discord');
         });
-    } else if (code && !user) {
+    } else if (code && !token) {
       // Sign them up or log them in
       discordSignupLogin({
         variables: {
@@ -141,9 +142,9 @@ const Callback = () => {
           if (inviteToken) {
             // Either redeem pod invite or org invite
             if (inviteType === 'pod') {
-              redeemPodInvite(inviteToken);
+              redeemPodInvite(inviteToken, user);
             } else {
-              redeemOrgInvite(inviteToken);
+              redeemOrgInvite(inviteToken, user);
             }
           } else {
             if (user && user?.signupCompleted) {
