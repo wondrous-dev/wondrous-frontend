@@ -527,3 +527,7 @@ export const AddGuildButton = styled(ButtonBase)`
     align-items: center;
   }
 `;
+
+export const SettingsSignOutWrapper = styled.div`
+  margin-top: 70%;
+`;

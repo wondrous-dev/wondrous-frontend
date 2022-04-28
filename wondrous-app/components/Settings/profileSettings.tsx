@@ -254,7 +254,7 @@ const ProfileSettings = (props) => {
   };
 
   return (
-    <SettingsWrapper>
+    <SettingsWrapper showLogoutButton>
       <GeneralSettingsContainer>
         <HeaderBlock title="Profile page overview" description="Update profile page settings." />
         <GeneralSettingsInputsBlock>

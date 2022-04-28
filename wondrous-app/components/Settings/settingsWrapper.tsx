@@ -12,7 +12,7 @@ import { SettingsPage } from 'types/common';
 import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
-import { useMe } from '../Auth/withAuth';
+import { useMe, logout } from '../Auth/withAuth';
 import CreateFormModal from '../CreateEntity';
 import HeaderComponent from '../Header';
 import CardIcon from '../Icons/card';
@@ -21,6 +21,7 @@ import MembersIcon from '../Icons/members';
 import { NotificationOutlineSettings } from '../Icons/notifications';
 import TokenGatingIcon from '../Icons/tokenGating.svg';
 import WrenchIcon from '../Icons/wrench';
+import ExitIcon from '../Icons/exit';
 import SideBarComponent from '../SideBar';
 import {
   SettingsContainer,
@@ -38,6 +39,7 @@ import {
   SettingsSidebarTabsListItemText,
   SettingsSidebarTabsSection,
   SettingsSidebarTabsSectionLabel,
+  SettingsSignOutWrapper,
 } from './styles';
 
 const SIDEBAR_LIST_ITEMS = [
@@ -93,7 +95,7 @@ const SIDEBAR_LIST_ITEMS = [
 // ]
 
 export const SettingsWrapper = (props) => {
-  const { children } = props;
+  const { children, showLogoutButton = false } = props;
 
   const router = useRouter();
   const user = useMe();
@@ -292,10 +294,16 @@ export const SettingsWrapper = (props) => {
                       </Link>
                     );
                   })}
-                  {/* <SettingsSidebarLogoutButton>
-                    <SettingsSidebarLogoutButtonIcon />
-                    <SettingsSidebarLogoutButtonText>Log out</SettingsSidebarLogoutButtonText>
-                  </SettingsSidebarLogoutButton> */}
+                  {showLogoutButton && (
+                    <SettingsSignOutWrapper>
+                      <SettingsSidebarTabsListItem onClick={logout}>
+                        <SettingsSidebarTabsListItemIcon>
+                          <ExitIcon />
+                        </SettingsSidebarTabsListItemIcon>
+                        <SettingsSidebarTabsListItemText>Log out</SettingsSidebarTabsListItemText>
+                      </SettingsSidebarTabsListItem>
+                    </SettingsSignOutWrapper>
+                  )}
                 </SettingsSidebarTabsListContainer>
               </SettingsSidebarTabsSection>
             </SettingsSidebarContainer>
