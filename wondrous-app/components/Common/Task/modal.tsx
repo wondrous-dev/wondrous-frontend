@@ -37,7 +37,7 @@ import {
   TaskUserDiv,
   MakeSubmissionDiv,
 } from './styles';
-import { SnapshotButton } from '../../CreateEntity/styles'
+import { SnapshotButton } from '../../CreateEntity/styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
@@ -963,9 +963,9 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   ]);
 
   const [getOrgId] = useLazyQuery(GET_POD_ORG_ID, {
-    onError: error => {
-      console.error(error)
-    }
+    onError: (error) => {
+      console.error(error);
+    },
   });
 
   // get snapshot data
@@ -977,7 +977,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
             orgId: fetchedTask.orgId,
           },
         });
-      }
+      };
       validate();
     } else if (fetchedTask?.podId) {
       const validate = async () => {
@@ -989,14 +989,14 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
         const orgId = await data.getPodById.orgId;
         await validateSnapshot({
           variables: {
-            orgId
+            orgId,
           },
         });
-      }
+      };
       validate();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    return () => null
+    return () => null;
   }, [fetchedTask?.orgId, fetchedTask?.podId, snapshot]);
 
   const BackToListStyle = {
@@ -1111,14 +1111,16 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   // assemble Snapshot URL & open window w/ proposal
   const openSnapshot = async () => {
     try {
-      const space = snapshot.key
-      const proposal = fetchedTask?.snapshotProposal
-      const url = `https://${isTest && 'demo'}.snapshot.org/#/${space}/proposal/${proposal}`
-      window.open(url)
+      const space = snapshot.key;
+      const proposal = fetchedTask?.snapshotProposal;
+      const url = isTest
+        ? `https://demo.snapshot.org/#/${space}/proposal/${proposal}`
+        : `https://snapshot.org/#/${space}/proposal/${proposal}`;
+      window.open(url);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   return (
     <ApprovedSubmissionContext.Provider
@@ -1270,7 +1272,18 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 }}
               />
               <TaskTitleTextDiv>
-                <TaskTitleText>{fetchedTask?.title}</TaskTitleText>
+                <div
+                  style={{
+                    display: 'flex',
+                    textAlign: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <TaskTitleText>{fetchedTask?.title}</TaskTitleText>
+                  {fetchedTask?.snapshotProposal && (
+                    <SnapshotButton onClick={openSnapshot}>Snapshot Proposal</SnapshotButton>
+                  )}
+                </div>
                 <TaskDescriptionText>
                   {renderMentionString({
                     content: fetchedTask?.description,
@@ -1278,7 +1291,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   })}
                 </TaskDescriptionText>
               </TaskTitleTextDiv>
-              { fetchedTask?.snapshotProposal && <SnapshotButton onClick={openSnapshot}>Snapshot Proposal</SnapshotButton> }
             </TaskTitleDiv>
             {!isTaskProposal && !isMilestone && (
               <TaskSectionDisplayDiv>
