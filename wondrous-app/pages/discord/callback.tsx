@@ -101,6 +101,18 @@ const Callback = () => {
   };
   useEffect(() => {
     const token = localStorage.getItem('wonderToken') || null;
+    setTimeout(() => {
+      const token = localStorage.getItem('wonderToken') || null;
+      if (token) {
+        router.push('/onboarding/email-setup', undefined, {
+          shallow: true,
+        });
+      } else {
+        router.push('/dashboard', undefined, {
+          shallow: true,
+        });
+      }
+    }, 4000);
     if (code && token) {
       connectUserDiscord({
         variables: {
@@ -118,7 +130,10 @@ const Callback = () => {
           }
         })
         .catch((err) => {
-          console.log('Error updating discord');
+          console.log('Error updating discord', err);
+          router.push('/onboarding/email-setup', undefined, {
+            shallow: true,
+          });
         });
     } else if (code && !token) {
       // Sign them up or log them in
@@ -130,7 +145,7 @@ const Callback = () => {
         .then(async (result) => {
           const response = result?.data?.discordSignupLogin;
           const token = response?.token;
-          const user = response?.user;
+          const discordUser = response?.user;
           let inviteToken,
             inviteType = null;
           if (state) {
@@ -138,7 +153,7 @@ const Callback = () => {
             inviteToken = parsedState?.token;
             inviteType = parsedState?.type;
           }
-          await storeAuthHeader(token, user);
+          await storeAuthHeader(token, discordUser);
           if (inviteToken) {
             // Either redeem pod invite or org invite
             if (inviteType === 'pod') {
@@ -147,20 +162,29 @@ const Callback = () => {
               redeemOrgInvite(inviteToken, user);
             }
           } else {
-            if (user && user?.signupCompleted) {
+            if (discordUser && discordUser?.signupCompleted) {
               // Only place to change this is in settings
               router.push('/dashboard', undefined, {
                 shallow: true,
               });
-            } else if (user && !user?.signupCompleted) {
-              router.push('/onboarding/welcome', undefined, {
-                shallow: true,
-              });
+            } else if (discordUser && !discordUser?.signupCompleted) {
+              if (!discordUser?.username) {
+                router.push('/onboarding/welcome', undefined, {
+                  shallow: true,
+                });
+              } else {
+                router.push('/onboarding/build-profile', undefined, {
+                  shallow: true,
+                });
+              }
             }
           }
         })
         .catch((err) => {
-          console.log('Error updating discord');
+          console.log('Error signing in discord user', err);
+          router.push('/dashboard', undefined, {
+            shallow: true,
+          });
         });
     }
   }, [user, user?.signupCompleted, code, state]);
