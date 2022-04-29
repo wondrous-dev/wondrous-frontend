@@ -1,3 +1,5 @@
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { styled } from '@mui/material/styles';
@@ -11,10 +13,12 @@ import DialogContent from '@mui/material/DialogContent';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
+import { CREATE_ORG_DOCUMENT } from 'graphql/mutations/documents';
+import { GET_ORG_DOCS } from 'graphql/queries/documents';
+import { URL_REGEX } from 'utils/constants';
+
 import ImageUploader from 'components/ImageUploader';
 import DocPermissionSelect from 'components/DocPermissionSelect';
-
-import { URL_REGEX } from 'utils/constants';
 
 import styles, { labelStyles, inputStyles, cancelStyles, addDocStyles } from './AddDocumentDialogStyles';
 
@@ -24,14 +28,38 @@ const CancelButton = styled(Button)(cancelStyles);
 const AddDocButton = styled(Button)(addDocStyles);
 
 const AddDocumentDialog = ({ open, onClose, title }) => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
+  const { orgId } = router.query;
+
+  const [getOrgDocs, { data, loading }] = useLazyQuery(GET_ORG_DOCS, {
+    variables: {
+      orgId,
+    },
+  });
+
+  // Mutation to create organization role
+  const [createOrgDocument] = useMutation(CREATE_ORG_DOCUMENT, {
+    // onCompleted: ({ createOrgDocument: doc }) => {
+    //   getOrgDocs();
+    // },
+  });
+
   const onSubmit = (data) => {
     // TODO: integrate with BE
+    console.log(data);
+    createOrgDocument({
+      variables: {
+        input: {
+          ...data,
+        },
+      },
+    });
   };
 
   return (
@@ -74,22 +102,22 @@ const AddDocumentDialog = ({ open, onClose, title }) => {
           <Box mb={3.5}>
             <LabelTypography>Document title</LabelTypography>
             <StyledTextField
-              name="docTitle"
+              name="title"
               placeholder="Enter title"
-              {...register('docTitle', {
+              {...register('title', {
                 required: 'title is required',
               })}
               fullWidth
-              helperText={errors.docTitle && errors.docTitle.message}
-              error={errors.docTitle}
+              helperText={errors.title && errors.title.message}
+              error={errors.title}
             />
           </Box>
           <Box mb={3.5}>
             <LabelTypography>Document description</LabelTypography>
             <StyledTextField
-              name="docDescription"
+              name="description"
               placeholder="Enter description"
-              {...register('docDescription', {
+              {...register('description', {
                 required: 'description is required',
               })}
               fullWidth
@@ -101,10 +129,10 @@ const AddDocumentDialog = ({ open, onClose, title }) => {
           <Box>
             <LabelTypography>Image preview</LabelTypography>
             <ImageUploader
-              register={register('file', {
-                required: 'file is required',
-              })}
-              errors={errors}
+            // register={register('file', {
+            //   required: 'file is required',
+            // })}
+            // errors={errors}
             />
           </Box>
 
@@ -113,8 +141,8 @@ const AddDocumentDialog = ({ open, onClose, title }) => {
             <LabelTypography>Who can see this doc</LabelTypography>
 
             <DocPermissionSelect
-              register={register('permission', {
-                required: 'permission is required',
+              register={register('visibility', {
+                required: 'visibility is required',
               })}
               errors={errors}
             />

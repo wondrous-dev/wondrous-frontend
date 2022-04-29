@@ -8,7 +8,7 @@ import { inputStyles, menuItemStyles } from './DocPermissionSelectStyles';
 const SAMPLE_PERMISSIONS = [
   {
     label: 'Admin Only',
-    value: 'admin-only',
+    value: 'admin',
   },
   {
     label: 'Collaborators',

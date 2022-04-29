@@ -17,15 +17,14 @@ import Image from 'next/image';
 
 const useGetOrgDocs = (orgId) => {
   const [getOrgDocs, { data, loading }] = useLazyQuery(GET_ORG_DOCS, {
-    pollInterval: 60000,
+    variables: {
+      orgId,
+    },
   });
+
   useEffect(() => {
     if (!data && orgId) {
-      getOrgDocs({
-        variables: {
-          orgId: orgId,
-        },
-      });
+      getOrgDocs();
     }
   }, [loading, orgId, getOrgDocs, data]);
   return { data, loading };
@@ -51,6 +50,8 @@ const Docs = (props) => {
   const doc = SAMPLE_DATA;
 
   const { data, loading } = useGetOrgDocs(orgId);
+
+  console.log(data);
 
   const [showDialog, setShowDialog] = useState(false);
   const [docCategory, setDocCategory] = useState({ value: '', label: '' });
