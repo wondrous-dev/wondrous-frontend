@@ -59,7 +59,7 @@ const notificationsConfig = [
     settings: [
       {
         label: 'Comment',
-        id: 'comment',
+        id: 'onComment',
       },
     ],
   },
@@ -68,19 +68,15 @@ const notificationsConfig = [
     settings: [
       {
         label: 'Assignments',
-        id: 'taskAssign',
-      },
-      {
-        label: 'Changing task status',
-        id: 'taskStatusUpdate',
+        id: 'onTaskAssign',
       },
       {
         label: 'Signed off deliverables',
-        id: 'deliverablesSignOff',
+        id: 'onSubmissionsToReview',
       },
       {
-        id: 'rejectionsAndApprovals',
-        label: 'Rejections and approvals',
+        id: 'onProposalSubmissionStatus',
+        label: 'Approvals and Rejections',
       },
     ],
   },
@@ -88,11 +84,7 @@ const notificationsConfig = [
     label: 'Review work',
     settings: [
       {
-        id: 'submissionStatus',
-        label: 'Assignee rejection and approval',
-      },
-      {
-        id: 'taskClaimByOthers',
+        id: 'onTaskClaim',
         label: 'Others claiming your tasks',
       },
     ],
@@ -102,7 +94,7 @@ const notificationsConfig = [
     settings: [
       {
         label: 'New payment',
-        id: 'paymentReceived',
+        id: 'onPayment',
       },
     ],
   },
@@ -160,26 +152,16 @@ const ProfileSettings = (props) => {
     },
   });
 
-  const {
-    comment,
-    taskAssign,
-    taskStatusUpdate,
-    deliverablesSignOff,
-    rejectionsAndApprovals,
-    submissionStatus,
-    taskClaimByOthers,
-    paymentReceived,
-  } = userNotificationConfigData?.getUserNotificationSetting || {};
+  const { onComment, onTaskAssign, onSubmissionsToReview, onProposalSubmissionStatus, onTaskClaim, onPayment } =
+    userNotificationConfigData?.getUserNotificationSetting || {};
 
   const initialSettings = {
-    comment,
-    taskAssign,
-    taskStatusUpdate,
-    deliverablesSignOff,
-    rejectionsAndApprovals,
-    submissionStatus,
-    taskClaimByOthers,
-    paymentReceived,
+    onComment,
+    onTaskAssign,
+    onSubmissionsToReview,
+    onProposalSubmissionStatus,
+    onTaskClaim,
+    onPayment,
   };
   const setInitialSettings = () => {
     if (userNotificationConfigData?.getUserNotificationSetting) {
