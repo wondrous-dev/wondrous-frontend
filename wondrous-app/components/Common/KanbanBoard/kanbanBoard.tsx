@@ -99,6 +99,9 @@ const KanbanBoard = (props) => {
           'getPerStatusTaskCountForOrgBoard',
           'getPerStatusTaskCountForPodBoard',
           'getSubtaskCountForTask',
+          'getUserTaskBoardSubmissions',
+          'getOrgTaskBoardSubmissions',
+          'getPodTaskBoardSubmissions',
         ],
       });
 

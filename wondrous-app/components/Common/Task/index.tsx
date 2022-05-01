@@ -150,6 +150,9 @@ export const Task = (props) => {
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
       'getSubtasksForTask',
+      'getUserTaskBoardSubmissions',
+      'getOrgTaskBoardSubmissions',
+      'getPodTaskBoardSubmissions',
     ],
   });
 

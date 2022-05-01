@@ -105,7 +105,18 @@ export const Table = (props) => {
     }
   }, [inView, hasMore, onLoadMore]);
 
-  const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS);
+  const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS, {
+    refetchQueries: () => [
+      'getSubmissionsUserCanReview',
+      'getWorkFlowBoardReviewableItemsCount',
+      'getUserTaskBoardTasks',
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
+      'getUserTaskBoardSubmissions',
+      'getOrgTaskBoardSubmissions',
+      'getPodTaskBoardSubmissions',
+    ],
+  });
 
   async function editTask(task, status = '') {
     let populatedTask = { ...task };
@@ -158,6 +169,11 @@ export const Table = (props) => {
         'getSubmissionsUserCanReview',
         'getWorkFlowBoardReviewableItemsCount',
         'getUserTaskBoardTasks',
+        'getOrgTaskBoardTasks',
+        'getPodTaskBoardTasks',
+        'getUserTaskBoardSubmissions',
+        'getOrgTaskBoardSubmissions',
+        'getPodTaskBoardSubmissions',
       ],
     });
 

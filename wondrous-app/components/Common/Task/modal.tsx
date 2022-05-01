@@ -809,10 +809,13 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     refetchQueries: [
       'getTaskById',
       'getUserTaskBoardTasks',
-      'getPerStatusTaskCountForUserBoard',
       'getOrgTaskBoardTasks',
-      'getPerStatusTaskCountForOrgBoard',
       'getPodTaskBoardTasks',
+      'getUserTaskBoardSubmissions',
+      'getOrgTaskBoardSubmissions',
+      'getPodTaskBoardSubmissions',
+      'getPerStatusTaskCountForUserBoard',
+      'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
     ],
     onError: () => {
