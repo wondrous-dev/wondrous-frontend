@@ -223,7 +223,7 @@ const PaymentItem = (props) => {
           </Link>
         </StyledTableCell>
         <StyledTableCell>
-          {canViewPaymentLink && viewingUser?.id === item?.payeeId && (
+          {(canViewPaymentLink || viewingUser?.id === item?.payeeId) && (
             <a
               style={{
                 color: White,
