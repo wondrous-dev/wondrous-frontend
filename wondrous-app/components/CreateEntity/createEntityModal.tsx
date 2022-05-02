@@ -1089,19 +1089,38 @@ const CreateLayoutBaseModal = (props) => {
                     //   });
                     // }
                   }}
-                  renderInput={(params) => (
-                    <TextField
-                      style={{
-                        color: White,
-                        fontFamily: 'Space Grotesk',
-                        fontSize: '14px',
-                        paddingLeft: '4px',
-                      }}
-                      placeholder="Enter username..."
-                      InputLabelProps={{ shrink: false }}
-                      {...params}
-                    />
-                  )}
+                  renderInput={(params) => {
+                    const InputProps = {
+                      ...params?.InputProps,
+                      type: 'autocomplete',
+                      startAdornment:
+                        assignee && assigneeString ? (
+                          <StyledChip label={assigneeString} onDelete={() => setAssignee(null)} />
+                        ) : (
+                          ''
+                        ),
+                    };
+                    return (
+                      <TextField
+                        {...params}
+                        style={{
+                          color: White,
+                          fontFamily: 'Space Grotesk',
+                          fontSize: '1px',
+                          paddingLeft: '4px',
+                        }}
+                        placeholder="Enter username..."
+                        InputLabelProps={{ shrink: false }}
+                        InputProps={InputProps}
+                        inputProps={{
+                          ...params?.inputProps,
+                          style: {
+                            opacity: assignee ? '0' : '1',
+                          },
+                        }}
+                      />
+                    );
+                  }}
                   value={assignee}
                   inputValue={assigneeString}
                   onInputChange={(event, newInputValue) => {

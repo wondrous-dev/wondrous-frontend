@@ -28,6 +28,7 @@ export const GET_ELIGIBLE_REVIEWERS_FOR_ORG = gql`
     getEligibleReviewersForOrg(orgId: $orgId, searchString: $searchString) {
       id
       username
+      profilePicture
     }
   }
 `;
@@ -37,6 +38,7 @@ export const GET_ELIGIBLE_REVIEWERS_FOR_POD = gql`
     getEligibleReviewersForPod(podId: $podId, searchString: $searchString) {
       id
       username
+      profilePicture
     }
   }
 `;
