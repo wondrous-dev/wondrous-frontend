@@ -126,13 +126,15 @@ export const BatchPayModal = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [podId, orgId]);
   useEffect(() => {
-    getSubmissionsPaymentInfo({
-      variables: {
-        submissionIds,
-      },
-    });
+    if (submissionIds) {
+      getSubmissionsPaymentInfo({
+        variables: {
+          submissionIds,
+        },
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unpaidSubmissions]);
+  }, [unpaidSubmissions, submissionIds]);
   return (
     <Modal open={open} onClose={handleClose}>
       <PaymentModal>

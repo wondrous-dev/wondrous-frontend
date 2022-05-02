@@ -97,16 +97,18 @@ const PaymentItem = (props) => {
           onPaymentComplete: () => {},
         }}
       >
-        <PayModal
-          podId={podId}
-          orgId={org?.id}
-          open={openModal}
-          handleClose={() => setOpenModal(false)}
-          assigneeId={item.payeeId}
-          assigneeUsername={item.payeeUsername}
-          taskTitle={item.taskTitle}
-          submissionId={item.submissionId}
-        />
+        {openModal && (
+          <PayModal
+            podId={podId}
+            orgId={org?.id}
+            open={openModal}
+            handleClose={() => setOpenModal(false)}
+            assigneeId={item.payeeId}
+            assigneeUsername={item.payeeUsername}
+            taskTitle={item.taskTitle}
+            submissionId={item.submissionId}
+          />
+        )}
       </PaymentModalContext.Provider>
       <StyledTableRow
         style={{
