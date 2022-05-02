@@ -86,6 +86,7 @@ const PaymentItem = (props) => {
     link = constructGnosisRedirectUrl(item.chain, item.safeAddress, item.safeTxHash);
     linkText = item.safeTxHash;
   }
+
   const disabled =
     chain && item?.chain !== chain && (item?.paymentStatus === 'processing' || item?.paymentStatus === 'paid');
 
