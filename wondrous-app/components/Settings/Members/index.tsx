@@ -3,7 +3,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_ROLES, GET_ORG_USERS, GET_USER_ORGS } from 'graphql/queries/org';
 import { GET_POD_BY_ID } from 'graphql/queries/pod';
 import { SEARCH_ORG_USERS } from 'graphql/queries/org';
-import { UPDATE_USER_ORG_ROLE } from 'graphql/mutations/org';
+import { KICK_ORG_USER, UPDATE_USER_ORG_ROLE } from 'graphql/mutations/org';
 import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
 import UserCheckIcon from '../../Icons/userCheckIcon';
@@ -21,14 +21,23 @@ import {
   TaskTitle,
 } from '../../Table/styles';
 import { useRouter } from 'next/router';
-import { DefaultProfilePicture, InviteDiv, SeeMoreText, UserInfoDiv, UsernameText, UserProfilePicture } from './styles';
+import {
+  DefaultProfilePicture,
+  InviteDiv,
+  SeeMoreText,
+  UserInfoDiv,
+  UsernameText,
+  UserProfilePicture,
+  MemberDropdown,
+  MemberDropdownItem,
+} from './styles';
 import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
 import CreatePodIcon from '../../Icons/createPod';
 import { CircularProgress, TextField } from '@material-ui/core';
 import { PERMISSIONS } from 'utils/constants';
 import { useSettings } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { INVITE_USER_TO_POD, UPDATE_USER_POD_ROLE } from 'graphql/mutations/pod';
+import { INVITE_USER_TO_POD, KICK_POD_USER, UPDATE_USER_POD_ROLE } from 'graphql/mutations/pod';
 import { GET_POD_ROLES, GET_POD_USERS } from 'graphql/queries/pod';
 import {
   AutocompleteList,
@@ -45,6 +54,7 @@ import { filterOrgUsers } from '../../CreateEntity/createEntityModal';
 import { SnackbarAlertContext } from '../../Common/SnackbarAlert';
 import { ArchivedTaskUndo } from '../../Common/Task/styles';
 import Link from 'next/link';
+import { TaskMenuIcon } from 'components/Icons/taskMenu';
 
 const LIMIT = 10;
 
@@ -125,6 +135,9 @@ const MemberRoleDropdown = (props) => {
       formSelectStyle={{
         height: 'auto',
         marginTop: '-20px',
+      }}
+      innerStyle={{
+        zIndex: '0',
       }}
     />
   );
@@ -284,6 +297,40 @@ const InviteMember = (props) => {
   );
 };
 
+const useKickMember = (orgId, podId, users, setUsers) => {
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
+  const kickMemberSuccessful = () => {
+    setSnackbarAlertOpen(true);
+    setSnackbarAlertMessage(<>Member kicked successfully!</>);
+  };
+  const [kickOrgUser] = useMutation(KICK_ORG_USER, {
+    onCompleted: kickMemberSuccessful,
+  });
+  const [kickPodUser] = useMutation(KICK_POD_USER, {
+    onCompleted: kickMemberSuccessful,
+  });
+  const handleKickMember = (userId) => {
+    setUsers(users.filter((user) => user?.user?.id !== userId));
+    if (orgId) {
+      kickOrgUser({
+        variables: {
+          orgId,
+          userId,
+        },
+      });
+    }
+    if (podId) {
+      kickPodUser({
+        variables: {
+          podId,
+          userId,
+        },
+      });
+    }
+  };
+  return handleKickMember;
+};
+
 const Members = (props) => {
   const router = useRouter();
   const { orgId, podId } = router.query;
@@ -378,6 +425,8 @@ const Members = (props) => {
     }
   }, [hasMore, users, fetchMore, orgId, podId]);
 
+  const handleKickMember = useKickMember(orgId, podId, users, setUsers);
+
   return (
     <SettingsWrapper>
       <RolesContainer>
@@ -393,6 +442,9 @@ const Members = (props) => {
                 <StyledTableCell align="center" width="30%">
                   Role
                 </StyledTableCell>
+                <StyledTableCell align="center" width="1%">
+                  Edit
+                </StyledTableCell>
               </StyledTableRow>
             </StyledTableHead>
             <div
@@ -405,8 +457,9 @@ const Members = (props) => {
             <StyledTableBody>
               {users &&
                 users.map((user) => {
+                  const userId = user?.user?.id;
                   return (
-                    <StyledTableRow key={user?.id}>
+                    <StyledTableRow key={userId}>
                       <StyledTableCell>
                         <Link href={`/profile/${user?.user?.username}/about`} passHref>
                           <UserInfoDiv
@@ -425,13 +478,26 @@ const Members = (props) => {
                       </StyledTableCell>
                       <StyledTableCell>
                         <MemberRoleDropdown
-                          userId={user?.user?.id}
+                          userId={userId}
                           orgId={orgId}
                           podId={podId}
                           existingRole={user?.role}
                           roleList={roleList}
                           username={user?.user?.username}
                         />
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        <MemberDropdown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
+                          <MemberDropdownItem
+                            color="#C4C4C4"
+                            fontSize="13px"
+                            fontWeight="normal"
+                            textAlign="left"
+                            onClick={() => handleKickMember(userId)}
+                          >
+                            Kick Member
+                          </MemberDropdownItem>
+                        </MemberDropdown>
                       </StyledTableCell>
                     </StyledTableRow>
                   );
