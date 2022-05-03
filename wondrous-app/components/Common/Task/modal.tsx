@@ -139,6 +139,7 @@ import { TaskSubtasks } from '../TaskSubtask';
 import { SubtaskDarkIcon, SubtaskLightIcon } from '../../Icons/subtask';
 import { CheckedBoxIcon } from '../../Icons/checkedBox';
 import RightArrowIcon from '../../Icons/rightArrow';
+
 export const MediaLink = (props) => {
   const { media, style } = props;
   const [getPreviewFile, { data, loading, error }] = useLazyQuery(GET_PREVIEW_FILE, {
@@ -876,7 +877,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       'getPerStatusTaskCountForPodBoard',
     ],
   });
-
   const handleNewStatus = useCallback(
     (newStatus) => {
       if (newStatus === TASK_STATUS_ARCHIVED) {
@@ -884,6 +884,26 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
           variables: {
             taskId: fetchedTask?.id,
           },
+        }).then((result) => {
+          handleClose();
+          setSnackbarAlertOpen(true);
+          setSnackbarAlertMessage(
+            <>
+              Task archived successfully!{' '}
+              <ArchivedTaskUndo
+                onClick={() => {
+                  setSnackbarAlertOpen(false);
+                  unarchiveTaskMutation({
+                    variables: {
+                      taskId: fetchedTask?.id,
+                    },
+                  });
+                }}
+              >
+                Undo
+              </ArchivedTaskUndo>
+            </>
+          );
         });
       } else {
         if (isBounty) {
@@ -905,35 +925,23 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
         }
       }
     },
-    [fetchedTask?.id, isBounty, updateBountyStatus, updateTaskStatusMutation, archiveTaskMutation]
+    [
+      fetchedTask?.id,
+      isBounty,
+      updateBountyStatus,
+      updateTaskStatusMutation,
+      archiveTaskMutation,
+      handleClose,
+      setSnackbarAlertOpen,
+      unarchiveTaskMutation,
+      setSnackbarAlertMessage,
+    ]
   );
 
   useEffect(() => {
     if (open) {
       if (initialStatus !== TASK_STATUS_ARCHIVED) {
         setInitialStatus(fetchedTask?.status);
-      }
-
-      if (archiveTaskData?.archiveTask) {
-        handleClose();
-        setSnackbarAlertOpen(true);
-        setSnackbarAlertMessage(
-          <>
-            Task archived successfully!{' '}
-            <ArchivedTaskUndo
-              onClick={() => {
-                unarchiveTaskMutation({
-                  variables: {
-                    taskId: fetchedTask?.id,
-                  },
-                });
-                setSnackbarAlertOpen(false);
-              }}
-            >
-              Undo
-            </ArchivedTaskUndo>
-          </>
-        );
       }
     }
   }, [
