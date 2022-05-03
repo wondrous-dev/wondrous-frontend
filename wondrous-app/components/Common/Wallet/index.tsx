@@ -19,7 +19,7 @@ import {
 import { getUserSigningMessage, linkWallet, logout, useMe } from '../../Auth/withAuth';
 import { DropDown, DropDownItem } from '../dropdown';
 import { Matic } from '../../Icons/matic';
-import { CURRENCY_KEYS, SUPPORTED_CHAINS } from 'utils/constants';
+import { CURRENCY_KEYS } from 'utils/constants';
 import { USDCoin } from '../../Icons/USDCoin';
 import { SupportedChainType } from 'utils/web3Constants';
 import { ErrorText } from '..';
