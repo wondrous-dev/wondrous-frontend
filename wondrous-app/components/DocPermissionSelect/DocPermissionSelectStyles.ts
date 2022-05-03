@@ -17,8 +17,28 @@ export const inputStyles = ({ theme }) => ({
   },
 });
 
-export const menuItemStyles = ({ theme }) => ({
+export const menuItemStyles = () => ({
   '&&': {
     display: 'block',
+    padding: 8,
+    fontFamily: 'Space Grotesk',
+    fontSize: 16,
+    color: 'white',
+
+    '&:hover': {
+      background: 'linear-gradient(180deg, #1E1E1E 0%, #141414 100%)',
+      borderRadius: 6,
+    },
   },
 });
+
+const styles = {
+  menuList: {
+    background: '#474747',
+    '&.MuiList-root': {
+      padding: 1,
+    },
+  },
+};
+
+export default styles;

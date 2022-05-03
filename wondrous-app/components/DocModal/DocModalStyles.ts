@@ -1,32 +1,4 @@
-export const labelStyles = ({ theme }) => ({
-  '&&': {
-    fontWeight: 500,
-    fontSize: 14,
-    lineHeight: '18px',
-    letterSpacing: '0.01em',
-    color: ' #CCBBFF',
-    marginBottom: theme.spacing(1.25),
-    marginLeft: theme.spacing(1),
-  },
-});
-
-export const inputStyles = ({ theme }) => ({
-  '&&': {
-    '& .MuiInputBase-input': {
-      color: 'white',
-      padding: theme.spacing(1.5),
-      backgroundColor: '#0F0F0F',
-      borderRadius: '6px',
-    },
-    '& .MuiOutlinedInput-root': {
-      '&.Mui-focused fieldset': {
-        borderColor: '#7427FF',
-      },
-    },
-  },
-});
-
-export const cancelStyles = ({ theme }) => ({
+export const cancelStyles = () => ({
   '&&': {
     backgroundColor: '#232323',
     color: 'white',
@@ -34,7 +6,7 @@ export const cancelStyles = ({ theme }) => ({
   },
 });
 
-export const addDocStyles = ({ theme }) => ({
+export const submitStyles = () => ({
   '&&': {
     background: 'linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%)',
     color: 'white',
@@ -49,6 +21,14 @@ export const addDocStyles = ({ theme }) => ({
       padding: '6px 24px',
       borderRadius: '64px',
     },
+  },
+});
+
+export const deleteStyles = () => ({
+  '&&': {
+    color: 'white',
+    border: '1px solid #CB3340',
+    padding: '6px 24px',
   },
 });
 
@@ -69,9 +49,10 @@ const styles = {
     justifyContent: 'center',
     marginRight: 1.5,
   },
-  category: {
+  highlightedText: {
     color: '#ccbbff',
     ml: 0.5,
+    textTransform: 'capitalize',
   },
   dialogTitle: {
     py: 3,

@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 
-import { inputStyles, menuItemStyles } from './DocPermissionSelectStyles';
+import styles, { inputStyles, menuItemStyles } from './DocPermissionSelectStyles';
 
 const SAMPLE_PERMISSIONS = [
   {
@@ -24,8 +24,9 @@ const DocPermissionSelect = ({ register, errors }) => (
     select
     {...register}
     fullWidth
-    helperText={errors.permission && errors.permission.message}
-    error={errors.permission}
+    helperText={errors.visibility && errors.visibility.message}
+    error={errors.visibility}
+    SelectProps={{ MenuProps: { MenuListProps: { sx: { ...styles.menuList } } } }}
   >
     {SAMPLE_PERMISSIONS.map((option) => (
       <StyledMenuItem key={option.value} value={option.value}>

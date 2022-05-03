@@ -18,8 +18,6 @@ const useGetOrgFromUsername = (username) => {
     }
   }, [username, data, getOrgFromUsername]);
   return data?.getOrgFromUsername;
-
-  console.log(data);
 };
 
 const DocsPage = () => {

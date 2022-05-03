@@ -32,10 +32,25 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     color: 'primary.contrastText',
+    ':hover': {
+      background: '#353434',
+      'p:after': {
+        background: '#353434',
+      },
+    },
   },
   imageContainer: {
     position: 'relative',
     height: 170,
+    // display: 'flex',
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // overflow: 'hidden',
+    img: {
+      // flexShrink: 0,
+      // minWidth: ' 100%',
+      // minHeight: '100%',
+    },
   },
   description: {
     overflow: 'hidden',

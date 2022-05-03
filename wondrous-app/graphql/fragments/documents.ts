@@ -9,12 +9,13 @@ export const DocFragment = gql`
     title
     description
     visibility
-    previewPicure
+    previewPicture
     pinned
     link
     googleDriveLink
     notionPageId
     documentCategory {
+      id
       orgId
       podId
       name
@@ -22,17 +23,11 @@ export const DocFragment = gql`
   }
 `;
 
-export const documentInputFragment = gql`
-  fragment documentInputFragment on DocumentInput {
+export const DocCategoryFragment = gql`
+  fragment DocCategoryFragment on DocumentCategory {
     orgId
-    categoryId
-    title
-    description
-    visibility
-    previewPicure
-    pinned
-    link
-    googleDriveLink
-    notionPageId
+    podId
+    name
+    id
   }
 `;

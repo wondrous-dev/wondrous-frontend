@@ -43,15 +43,20 @@ export const DescriptionTypography = styled(Typography)`
   }
 `;
 
-export default {
+const styles = {
   listItem: {
     padding: 1.5,
     backgroundColor: Blue800,
     borderRadius: '3px',
     display: 'flex',
+    ':hover': {
+      background: '#353434',
+    },
   },
   imageContainer: {
     position: 'relative',
     minWidth: 220,
   },
 };
+
+export default styles;

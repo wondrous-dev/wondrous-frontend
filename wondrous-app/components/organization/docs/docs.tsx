@@ -1,108 +1,188 @@
 import React, { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
-import { GET_ORG_DOCS } from 'graphql/queries/documents';
+import { GET_ORG_DOCS, GET_ORG_DOCS_CATEGORIES } from 'graphql/queries/documents';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { isEmpty } from 'lodash';
 
 import Box from '@mui/material/Box';
 
-import ListLayout from 'components/ListLayout';
-import ListItem from 'components/ListItem';
+import Tooltip from 'components/Tooltip';
+
+import DocItemsMenu from 'components/DocItemsMenu';
+import DeleteDocDialog from 'components/DeleteDocDialog';
+
 import AddDocumentDialog from 'components/AddDocumentDialog';
+import PinnedDocsSection from 'components/PinnedDocsSection';
+import DocCategoriesSection from 'components/DocCategoriesSection';
+import DocCategoriesDialog from 'components/DocCategoriesDialog/DocCategoriesDialog';
 
 import Wrapper from '../wrapper/wrapper';
-import { SectionTitleTypography, DocsButton } from './docsStyles';
-import PinnedDocsSection from 'components/PinnedDocsSection';
-import { SAMPLE_CATEGORIES, SAMPLE_DOCS } from 'utils/sampleData';
+import styles from './docsStyles';
 
 const useGetOrgDocs = (orgId) => {
-  const router = useRouter();
-
-  const [getOrgDocs, { data, loading }] = useLazyQuery(GET_ORG_DOCS, {
+  const [getOrgDocs, { data: docData, loading: loadingDocs }] = useLazyQuery(GET_ORG_DOCS, {
     variables: {
       orgId,
     },
   });
 
+  const [getOrgDocsCategories, { data: categoriesData, loading: loadingCategories }] = useLazyQuery(
+    GET_ORG_DOCS_CATEGORIES,
+    {
+      variables: {
+        orgId,
+      },
+    }
+  );
+
+  const loading = loadingDocs || loadingCategories;
+
   useEffect(() => {
-    if (!data && orgId) {
+    if (!docData && orgId) {
       getOrgDocs();
     }
-  }, [loading, orgId, getOrgDocs, data]);
-  return { data: data?.getOrgDocuments, loading };
+  }, [loadingDocs, orgId, getOrgDocs, docData]);
+
+  useEffect(() => {
+    if (!categoriesData && orgId) {
+      getOrgDocsCategories();
+    }
+  }, [loadingCategories, orgId, getOrgDocsCategories, categoriesData]);
+
+  return {
+    docData: docData?.getOrgDocuments,
+    categoriesData: categoriesData?.getOrgDocumentCategories,
+    loading,
+  };
 };
 
 const Docs = (props) => {
   const { orgData = {} } = props;
   const { id: orgId } = orgData;
+  const router = useRouter();
 
-  const { data } = useGetOrgDocs(orgId);
+  const { docData, categoriesData } = useGetOrgDocs(orgId);
 
-  const [showDialog, setShowDialog] = useState(false);
-  const [docCategory, setDocCategory] = useState({ value: '', label: '' });
+  const [showDocDialog, setDocShowDialog] = useState(false);
+  const [showDeleteDocDialog, setDeleteDocDialog] = useState(false);
+  const [showCategoriesDialog, setShowCategoriesDialog] = useState(false);
+  const [docCategory, setDocCategory] = useState({ name: '' });
+  const [selectedDoc, setSelectedDoc] = useState({});
+  const [pinned, setPinned] = useState(false);
 
-  const handleDialogOpen = (category) => {
-    setShowDialog(true);
+  const [menuAnchor, setMenuAnchor] = useState(null);
+  const openMenu = Boolean(menuAnchor);
+
+  const handleItemClick = (event, doc) => {
+    setMenuAnchor(event.currentTarget);
+    setSelectedDoc(doc);
+  };
+  const handleMenuClose = () => {
+    setMenuAnchor(null);
+    setSelectedDoc({});
+  };
+
+  const handleOpenDocDialog = (category) => {
+    setDocShowDialog(true);
+    setDocCategory(category);
+    setSelectedDoc({});
+  };
+
+  const handleOpenDocDialogPinned = () => {
+    setDocShowDialog(true);
+    setPinned(true);
+    setSelectedDoc({});
+  };
+
+  const handleOpenEditDocDialog = () => {
+    setDocShowDialog(true);
+  };
+
+  const handleCloseDocDialog = () => {
+    setDocShowDialog(false);
+    setDocCategory({ name: '' });
+    setPinned(false);
+    handleMenuClose();
+  };
+
+  const handleOpenCategoriesDialog = (category) => {
+    setShowCategoriesDialog(true);
     setDocCategory(category);
   };
 
-  const handleCloseDialog = () => {
-    setShowDialog(false);
-    setDocCategory({ value: '', label: '' });
+  const handleCloseCategoriesDialog = () => {
+    setShowCategoriesDialog(false);
+    setDocCategory({ name: '' });
   };
 
-  // TODO: change !doc.pinned to doc.pinned when pinned works || When trying to set up pinned = true I'm always getting pinned false
+  const handleOpenDeleteDialog = () => {
+    setDeleteDocDialog(true);
+  };
+  const handleCloseDeleteDialog = () => {
+    setDeleteDocDialog(false);
+    handleCloseDocDialog();
+  };
 
-  const pinnedDocs = data?.filter((doc) => !doc.pinned);
+  const pinnedDocs = docData?.filter((doc) => doc.pinned);
 
   return (
     <Wrapper orgData={orgData}>
-      {!isEmpty(pinnedDocs) && (
-        <PinnedDocsSection onDialogOpen={() => handleDialogOpen(SAMPLE_CATEGORIES.PINNED)} pinnedDocs={pinnedDocs} />
-      )}
-      <Box display="flex" alignItems="center" mb={2.5} mt={8}>
-        <Box mr={1}>
-          <Image src="/images/icons/folder.png" alt="folder icon" width={16} height={14} />
+      <Tooltip title="Create new doc category" placement="top">
+        <Box sx={styles.categoryButtonContainer}>
+          <Box sx={styles.categoryButton} onClick={() => setShowCategoriesDialog(true)}>
+            <Image src="/images/icons/plus.svg" alt="plus icon" width={16} height={16} />
+          </Box>
         </Box>
-        {/* TODO integrate category */}
-        <SectionTitleTypography>WonderDAO Category</SectionTitleTypography>
-        <Box mr={1} />
-        <Box flex="1" />
-        <DocsButton color="secondary">
-          <Box mr={1}>
-            <Image src="/images/icons/editFolder.png" alt="folder icon" width={18} height={14} />
-          </Box>
-          Edit Category
-        </DocsButton>
-        <Box mr={2} />
-        <DocsButton color="secondary" onClick={() => handleDialogOpen(SAMPLE_CATEGORIES.FINANCIAL)}>
-          <Box mr={1}>
-            <Image src="/images/icons/addDoc.png" alt="folder icon" width={11} height={14} />
-          </Box>
-          Add Doc
-        </DocsButton>
-      </Box>
+      </Tooltip>
 
-      <ListLayout>
-        {data?.map((doc) => (
-          <ListItem
-            key={doc.link}
-            title={doc.title}
-            description={doc.description}
-            icon={doc.icon}
-            media={doc.media || SAMPLE_DOCS.media}
-            url={doc.link}
-            permission={doc.visibility}
-          />
-        ))}
-      </ListLayout>
+      {!isEmpty(pinnedDocs) && (
+        <PinnedDocsSection
+          onDialogOpen={handleOpenDocDialogPinned}
+          pinnedDocs={pinnedDocs}
+          onItemClick={handleItemClick}
+        />
+      )}
+
+      {categoriesData?.map((category) => (
+        <DocCategoriesSection
+          key={category.name}
+          category={category}
+          onItemClick={handleItemClick}
+          onOpenDocDialog={handleOpenDocDialog}
+          onCategoryDialogOpen={handleOpenCategoriesDialog}
+          docs={docData}
+        />
+      ))}
+
+      <DocItemsMenu
+        open={openMenu}
+        anchorEl={menuAnchor}
+        onClose={handleMenuClose}
+        onDelete={handleOpenDeleteDialog}
+        onEdit={handleOpenEditDocDialog}
+      />
       <AddDocumentDialog
-        open={showDialog}
-        onClose={handleCloseDialog}
-        title={docCategory.label}
+        open={showDocDialog}
+        onClose={handleCloseDocDialog}
+        title={docCategory.name}
         orgId={orgId}
         category={docCategory}
+        document={selectedDoc}
+        pinned={pinned}
+      />
+      <DocCategoriesDialog
+        open={showCategoriesDialog}
+        onClose={handleCloseCategoriesDialog}
+        orgName={router.query.username}
+        orgId={orgId}
+        category={docCategory}
+      />
+      <DeleteDocDialog
+        open={showDeleteDocDialog}
+        onClose={handleCloseDeleteDialog}
+        selectedDoc={selectedDoc}
+        orgId={orgId}
       />
     </Wrapper>
   );
