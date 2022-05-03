@@ -11,16 +11,28 @@ import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
 import MembersIcon from '../../Icons/membersSettings';
 import { RolesContainer } from '../Roles/styles';
+import MoreIcon from '../../Icons/more';
 import {
-  StyledTable,
-  StyledTableBody,
+  // StyledTable,
+  // StyledTableBody,
   StyledTableCell,
   StyledTableContainer,
   StyledTableHead,
   StyledTableRow,
 } from '../../Table/styles';
 import { useRouter } from 'next/router';
-import { DefaultProfilePicture, InviteDiv, SeeMoreText, UserInfoDiv, UsernameText, UserProfilePicture } from './styles';
+import {
+  DefaultProfilePicture,
+  InviteDiv,
+  SeeMoreText,
+  UserInfoDiv,
+  UsernameText,
+  UserProfilePicture,
+  StyledTableHeaderCell,
+  StyledTable,
+  StyledTableBody,
+  PodsCount,
+} from './styles';
 import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
 import { CircularProgress, TextField } from '@material-ui/core';
 import { PERMISSIONS } from 'utils/constants';
@@ -42,6 +54,8 @@ import { SafeImage } from '../../Common/Image';
 import MemberRoles from './MemberRoles';
 import { SnackbarAlertContext } from '../../Common/SnackbarAlert';
 import { Text } from 'components/styled';
+import { IconButton } from '@mui/material';
+import Grid from '@mui/material/Grid';
 
 const LIMIT = 10;
 
@@ -392,6 +406,8 @@ const Members = (props) => {
 
   const orgOrPodName = orgData?.getOrgById?.name || podData?.getPodById?.name;
 
+  console.log(users);
+
   return (
     <SettingsWrapper>
       <RolesContainer>
@@ -402,7 +418,8 @@ const Members = (props) => {
               Members&nbsp;
               {orgOrPodName ? (
                 <Text as="span">
-                  {' '}of {' '}
+                  {' '}
+                  of{' '}
                   <Text as="span" color="#CCBBFF">
                     {orgOrPodName}
                   </Text>
@@ -420,41 +437,55 @@ const Members = (props) => {
           <StyledTable>
             <StyledTableHead>
               <StyledTableRow>
-                <StyledTableCell align="center" width="30%">
-                  User
-                </StyledTableCell>
-                <StyledTableCell align="center" width="30%">
-                  Role
-                </StyledTableCell>
+                <StyledTableHeaderCell width="40%">Currency</StyledTableHeaderCell>
+                <StyledTableHeaderCell width="25%">Role</StyledTableHeaderCell>
+                <StyledTableHeaderCell width="15%">Pods</StyledTableHeaderCell>
+                <StyledTableHeaderCell width="15%">Last Active</StyledTableHeaderCell>
+                <StyledTableHeaderCell width="5%">Edit</StyledTableHeaderCell>
               </StyledTableRow>
             </StyledTableHead>
-            <div
-              style={{
-                textAlign: 'center',
-              }}
-            >
-              {loading && <CircularProgress />}
-            </div>
+            {/* FIXME */}
+            {/*<div*/}
+            {/*  style={{*/}
+            {/*    textAlign: 'center',*/}
+            {/*  }}*/}
+            {/*>*/}
+            {/*  {loading && <CircularProgress />}*/}
+            {/*</div>*/}
             <StyledTableBody>
               {users &&
                 users.map((user) => {
                   return (
                     <StyledTableRow key={user?.id}>
                       <StyledTableCell>
-                        <Link href={`/profile/${user?.user?.username}/about`} passHref>
-                          <UserInfoDiv
+                        <Grid container direction="row" alignItems="center">
+                          <SafeImage
+                            src={user?.user?.profilePicture}
                             style={{
-                              cursor: 'pointer',
+                              width: '40px',
+                              height: '40px',
+                              borderRadius: '50%',
+                              marginRight: '10px',
                             }}
-                          >
-                            {user?.user?.profilePicture ? (
-                              <UserProfilePicture src={user?.user?.profilePicture} />
-                            ) : (
-                              <DefaultProfilePicture />
-                            )}
-                            <UsernameText>{user?.user?.username}</UsernameText>
-                          </UserInfoDiv>
-                        </Link>
+                          />
+                          <Text color="white" fontSize={15} fontWeight={700}>
+                            {user?.user?.username}
+                          </Text>
+                        </Grid>
+
+                        {/*<Link href={`/profile/${user?.user?.username}/about`} passHref>*/}
+                        {/*  <UserInfoDiv*/}
+                        {/*    style={{*/}
+                        {/*      cursor: 'pointer',*/}
+                        {/*    }}*/}
+                        {/*  >*/}
+                        {/*    {user?.user?.profilePicture ? (*/}
+                        {/*      <UserProfilePicture src={user?.user?.profilePicture} />*/}
+                        {/*    ) : (*/}
+                        {/*      <DefaultProfilePicture />*/}
+                        {/*    )}*/}
+                        {/*  </UserInfoDiv>*/}
+                        {/*</Link>*/}
                       </StyledTableCell>
                       <StyledTableCell>
                         <MemberRoleDropdown
@@ -465,6 +496,19 @@ const Members = (props) => {
                           roleList={roleList}
                           username={user?.user?.username}
                         />
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        <PodsCount>3 Pods</PodsCount>
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        <Text color="white" fontSize="14px">
+                          11/2/2021
+                        </Text>
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        <IconButton aria-label="more" color="default">
+                          <MoreIcon />
+                        </IconButton>
                       </StyledTableCell>
                     </StyledTableRow>
                   );
