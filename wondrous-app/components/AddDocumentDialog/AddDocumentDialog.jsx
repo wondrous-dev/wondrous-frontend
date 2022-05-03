@@ -1,5 +1,4 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { styled } from '@mui/material/styles';
@@ -27,35 +26,31 @@ const StyledTextField = styled(TextField)(inputStyles);
 const CancelButton = styled(Button)(cancelStyles);
 const AddDocButton = styled(Button)(addDocStyles);
 
-const AddDocumentDialog = ({ open, onClose, title }) => {
-  const router = useRouter();
+const AddDocumentDialog = ({ open, onClose, title, orgId, category }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const { orgId } = router.query;
-
-  const [getOrgDocs, { data, loading }] = useLazyQuery(GET_ORG_DOCS, {
+  const [getOrgDocs] = useLazyQuery(GET_ORG_DOCS, {
     variables: {
       orgId,
     },
   });
 
-  // Mutation to create organization role
   const [createOrgDocument] = useMutation(CREATE_ORG_DOCUMENT, {
-    // onCompleted: ({ createOrgDocument: doc }) => {
-    //   getOrgDocs();
-    // },
+    onCompleted: () => {
+      getOrgDocs();
+    },
   });
 
   const onSubmit = (data) => {
-    // TODO: integrate with BE
-    console.log(data);
     createOrgDocument({
       variables: {
         input: {
+          pinned: category.value === SAMPLE_CATEGORIES.PINNED.value, // TODO: remove SAMPLE_CATEGORIES || When trying to set up pinned = true I'm always getting pinned false
+          orgId: orgId,
           ...data,
         },
       },
@@ -129,6 +124,8 @@ const AddDocumentDialog = ({ open, onClose, title }) => {
           <Box>
             <LabelTypography>Image preview</LabelTypography>
             <ImageUploader
+
+            //TODO: right now we cant upload files to the server, only string urls, see graphql docs
             // register={register('file', {
             //   required: 'file is required',
             // })}

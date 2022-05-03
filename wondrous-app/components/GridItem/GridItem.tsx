@@ -20,7 +20,7 @@ const GridItem = ({ title, description, media, url, icon, permission }) => (
       <DescriptionTypography sx={styles.description}>{description}</DescriptionTypography>
       <Box flex={1} />
       <Box my={1.5} display="flex" alignItems="center">
-        <Box>{getIcon(icon)}</Box>
+        <Box>{getIcon(icon || url)}</Box>
         <TextLink href={url} label={null} />
       </Box>
       <Box sx={styles.imageContainer}>

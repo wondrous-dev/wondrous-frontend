@@ -23,7 +23,7 @@ const ListItem = ({ title, description, media, url, icon, permission }) => (
         <Box mt={1.5} />
         <DescriptionTypography>{description}</DescriptionTypography>
         <Box my={1.5} display="flex" alignItems="center">
-          <Box>{getIcon(icon)}</Box>
+          <Box>{getIcon(icon || url)}</Box>
           <TextLink href={url} label={null} />
         </Box>
         <PermissionTag>{permission}</PermissionTag>
