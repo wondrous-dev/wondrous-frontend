@@ -163,7 +163,7 @@ export default function SearchTasks({ onSearch }: Props) {
           return (
             <Input
               {...params}
-              placeholder="Search people or pods..."
+              placeholder="Search tasks or people..."
               InputProps={{
                 ...params.InputProps,
                 startAdornment: (

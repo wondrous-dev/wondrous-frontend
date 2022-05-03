@@ -109,7 +109,7 @@ export const KudosForm = (props) => {
           {error && <KudosFormError>This field is required.</KudosFormError>}
           <KudosFormDivider />
           <KudosFormButtonWrapper>
-            <KudosFormCancelButton onClick={handleOnClose}>Maybe Later</KudosFormCancelButton>
+            <KudosFormCancelButton onClick={handleOnClose}>Approve without kudos </KudosFormCancelButton>
             <KudosFormSubmitButton
               onClick={() =>
                 handleSubmit({
@@ -124,7 +124,7 @@ export const KudosForm = (props) => {
                 })
               }
             >
-              <KudosFormSubmitButtonText>Post feedback to activity board</KudosFormSubmitButtonText>
+              <KudosFormSubmitButtonText>Approve and give kudos</KudosFormSubmitButtonText>
             </KudosFormSubmitButton>
           </KudosFormButtonWrapper>
         </KudosFormBackground>
