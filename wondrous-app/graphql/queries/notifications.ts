@@ -34,6 +34,14 @@ export const GET_USER_DISCORD_NOTIFICATION_CONFIGS = gql`
       enabled
       discordEnabled
       emailEnabled
+      taskAssign
+      comment
+      taskStatusUpdate
+      deliverablesSignOff
+      rejectionsAndApprovals
+      submissionStatus
+      taskClaimByOthers
+      paymentReceived
     }
   }
 `;
