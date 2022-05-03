@@ -12,9 +12,10 @@ import { SettingsPage } from 'types/common';
 import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
-import { useMe } from '../Auth/withAuth';
+import { logout, useMe } from '../Auth/withAuth';
 import CreateFormModal from '../CreateEntity';
 import HeaderComponent from '../Header';
+import ExitIcon from 'components/Icons/exit';
 import CardIcon from '../Icons/card';
 import GeneralSettingsIcon from '../Icons/generalSettings';
 import MembersIcon from '../Icons/members';
@@ -202,6 +203,10 @@ export const SettingsWrapper = (props) => {
     }
   }, [getOrgById, getPodById, org, orgId, podId]);
 
+  const signOut = () => {
+    logout();
+  };
+
   const permissions = parseUserPermissionContext({
     userPermissionsContext: parsedUserPermissionsContext,
     orgId: orgId || pod?.orgId,
@@ -292,10 +297,12 @@ export const SettingsWrapper = (props) => {
                       </Link>
                     );
                   })}
-                  {/* <SettingsSidebarLogoutButton>
-                    <SettingsSidebarLogoutButtonIcon />
-                    <SettingsSidebarLogoutButtonText>Log out</SettingsSidebarLogoutButtonText>
-                  </SettingsSidebarLogoutButton> */}
+                  <SettingsSidebarTabsListItem onClick={signOut}>
+                    <SettingsSidebarTabsListItemIcon>
+                      <ExitIcon />
+                    </SettingsSidebarTabsListItemIcon>
+                    <SettingsSidebarTabsListItemText>Log out</SettingsSidebarTabsListItemText>
+                  </SettingsSidebarTabsListItem>
                 </SettingsSidebarTabsListContainer>
               </SettingsSidebarTabsSection>
             </SettingsSidebarContainer>
