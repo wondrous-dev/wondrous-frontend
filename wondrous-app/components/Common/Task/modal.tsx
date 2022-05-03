@@ -95,7 +95,13 @@ import {
   TakeTaskButton,
 } from '../../CreateEntity/styles';
 import { useRouter } from 'next/router';
-import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE, UPDATE_BOUNTY_STATUS } from 'graphql/mutations/task';
+import {
+  UPDATE_TASK_STATUS,
+  UPDATE_TASK_ASSIGNEE,
+  UPDATE_BOUNTY_STATUS,
+  ARCHIVE_TASK,
+  UNARCHIVE_TASK,
+} from 'graphql/mutations/task';
 import { UPDATE_TASK_PROPOSAL_ASSIGNEE } from 'graphql/mutations/taskProposal';
 import { GET_PREVIEW_FILE } from 'graphql/queries/media';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
@@ -805,7 +811,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     },
   });
 
-  const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
+  const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS, {
     refetchQueries: [
       'getTaskById',
       'getUserTaskBoardTasks',
@@ -823,7 +829,45 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       // let columns = [...boardColumns?.columns]
     },
   });
-  const [updateBountyStatus, { data: updateBountyStatusData }] = useMutation(UPDATE_BOUNTY_STATUS, {
+
+  const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
+    refetchQueries: [
+      'getTaskById',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getOrgTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+    onError: () => {
+      console.error('Something went wrong with archiving tasks');
+    },
+    onCompleted: () => {
+      // TODO: Move columns
+      // let columns = [...boardColumns?.columns]
+    },
+  });
+  const [unarchiveTaskMutation, { data: unarchiveTaskData }] = useMutation(UNARCHIVE_TASK, {
+    refetchQueries: [
+      'getTaskById',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getOrgTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+    onError: () => {
+      console.error('Something went wrong unarchiving tasks');
+    },
+    onCompleted: () => {
+      // TODO: Move columns
+      // let columns = [...boardColumns?.columns]
+    },
+  });
+
+  const [updateBountyStatus] = useMutation(UPDATE_BOUNTY_STATUS, {
     refetchQueries: () => [
       'getTaskById',
       'getOrgTaskBoardTasks',
@@ -835,25 +879,33 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
 
   const handleNewStatus = useCallback(
     (newStatus) => {
-      if (isBounty) {
-        updateBountyStatus({
+      if (newStatus === TASK_STATUS_ARCHIVED) {
+        archiveTaskMutation({
           variables: {
-            bountyId: fetchedTask?.id,
-            input: { newStatus },
+            taskId: fetchedTask?.id,
           },
         });
       } else {
-        updateTaskStatusMutation({
-          variables: {
-            taskId: fetchedTask?.id,
-            input: {
-              newStatus,
+        if (isBounty) {
+          updateBountyStatus({
+            variables: {
+              bountyId: fetchedTask?.id,
+              input: { newStatus },
             },
-          },
-        });
+          });
+        } else {
+          updateTaskStatusMutation({
+            variables: {
+              taskId: fetchedTask?.id,
+              input: {
+                newStatus,
+              },
+            },
+          });
+        }
       }
     },
-    [fetchedTask?.id, isBounty, updateBountyStatus, updateTaskStatusMutation]
+    [fetchedTask?.id, isBounty, updateBountyStatus, updateTaskStatusMutation, archiveTaskMutation]
   );
 
   useEffect(() => {
@@ -861,11 +913,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       if (initialStatus !== TASK_STATUS_ARCHIVED) {
         setInitialStatus(fetchedTask?.status);
       }
-      const archived = [
-        updateTaskStatusMutationData?.updateTaskStatus.status,
-        updateBountyStatusData?.updateBountyStatus.status,
-      ].some((i) => i?.includes(TASK_STATUS_ARCHIVED));
-      if (archived) {
+
+      if (archiveTaskData?.archiveTask) {
         handleClose();
         setSnackbarAlertOpen(true);
         setSnackbarAlertMessage(
@@ -873,7 +922,11 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
             Task archived successfully!{' '}
             <ArchivedTaskUndo
               onClick={() => {
-                handleNewStatus(initialStatus);
+                unarchiveTaskMutation({
+                  variables: {
+                    taskId: fetchedTask?.id,
+                  },
+                });
                 setSnackbarAlertOpen(false);
               }}
             >
@@ -887,11 +940,10 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     initialStatus,
     setInitialStatus,
     fetchedTask,
-    updateTaskStatusMutationData,
     setSnackbarAlertOpen,
     setSnackbarAlertMessage,
     handleNewStatus,
-    updateBountyStatusData,
+    archiveTaskData,
     handleClose,
     open,
   ]);
