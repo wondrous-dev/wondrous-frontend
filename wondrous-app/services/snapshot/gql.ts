@@ -71,12 +71,12 @@ export const GET_SNAPSHOT = gql`
 export const SET_SNAPSHOT_PROPOSAL = gql`
   mutation SetSnapshotProposal(
     $proposalId: ID!,
-    $snapshotProposal: String!
+    $snapshotId: String!
   ) {
     updateTaskProposal(proposalId: $proposalId, input:{
-      snapshotProposal: $snapshotProposal
+      snapshotId: $snapshotId
     }) {
-      snapshotProposal
+      snapshotId
     }
   }
 `

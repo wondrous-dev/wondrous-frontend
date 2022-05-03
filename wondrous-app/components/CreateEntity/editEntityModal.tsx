@@ -443,7 +443,7 @@ const EditLayoutBaseModal = (props) => {
   // web3 hooks
   const wonderWeb3 = useWonderWeb3()
 
-  const [snapshotProposal, setSnapshotProposal] = useState(existingTask?.snapshotProposal)
+  const [snapshotId, setSnapshotProposal] = useState(existingTask?.snapshotId)
 
   // snapshot integration
   const {
@@ -580,7 +580,7 @@ const EditLayoutBaseModal = (props) => {
           userProfilePicture: user?.profilePicture,
           username: user?.username,
           podName: justCreatedPod?.name,
-          snapshotProposal
+          snapshotId
         });
 
         const columns = [...boardColumns?.columns];
@@ -685,7 +685,7 @@ const EditLayoutBaseModal = (props) => {
           }),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
-          snapshotProposal
+          snapshotId
         };
 
         if (!title) {
@@ -814,7 +814,7 @@ const EditLayoutBaseModal = (props) => {
     mediaUploads,
     existingTask?.parentTaskId,
     existingTask?.id,
-    snapshotProposal,
+    snapshotId,
     // maxSubmissionCount,
     errors,
     updateTask,
@@ -874,7 +874,7 @@ const EditLayoutBaseModal = (props) => {
         // TODO: add links?,
         ...(isTaskProposal && {
           proposedAssigneeId: assignee?.value,
-          snapshotProposal
+          snapshotId
         }),
         privacyLevel: publicTask ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
         reviewerIds: selectedReviewers.map(({ id }) => id) || [],
@@ -920,7 +920,7 @@ const EditLayoutBaseModal = (props) => {
         }),
         userMentions: getMentionArray(descriptionText),
         mediaUploads,
-        snapshotProposal
+        snapshotId
       };
 
       if (!title) {
@@ -952,11 +952,11 @@ const EditLayoutBaseModal = (props) => {
 
   // sends change in snapshot proposal to db
   useEffect(() => {
-    if (snapshotProposal !== existingTask.snapshotProposal) {
-      // have to perform full mutation because all columns except snapshotProposal are deleted when only updating task proposal
+    if (snapshotId !== existingTask.snapshotId) {
+      // have to perform full mutation because all columns except snapshotId are deleted when only updating task proposal
       submitMutation()
     }
-  }, [snapshotProposal])
+  }, [snapshotId])
 
   // attempt to export proposal to snapshot
   const exportProposalToSnapshot = async () => {
@@ -978,7 +978,7 @@ const EditLayoutBaseModal = (props) => {
 
   // cancel snapshot proposal
   const cancelSnapshotProposal = async () => {
-    await cancelProposal(existingTask.snapshotProposal)
+    await cancelProposal(existingTask.snapshotId)
       .then((receipt) => {
         console.log(receipt);
         setSnapshotProposal(null);
@@ -1002,7 +1002,7 @@ const EditLayoutBaseModal = (props) => {
         <CreateFormBaseModalTitle>Edit {titleText.toLowerCase()}</CreateFormBaseModalTitle>
         { snapshotConnected && isTaskProposal && (
             <SnapshotButtonBlock>
-              { !existingTask.snapshotProposal
+              { !existingTask.snapshotId
                 ? <SnapshotButton onClick={exportProposalToSnapshot} disabled={snapshotLoading}>
                     { snapshotLoading ? <CircularProgress size={20} /> : null }
                     Export to Snapshot

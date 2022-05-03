@@ -1112,7 +1112,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const openSnapshot = async () => {
     try {
       const space = snapshot.key;
-      const proposal = fetchedTask?.snapshotProposal;
+      const proposal = fetchedTask?.snapshotId;
       const url = isTest
         ? `https://demo.snapshot.org/#/${space}/proposal/${proposal}`
         : `https://snapshot.org/#/${space}/proposal/${proposal}`;
@@ -1280,7 +1280,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   }}
                 >
                   <TaskTitleText>{fetchedTask?.title}</TaskTitleText>
-                  {fetchedTask?.snapshotProposal && (
+                  {fetchedTask?.snapshotId && (
                     <SnapshotButton onClick={openSnapshot}>Snapshot Proposal</SnapshotButton>
                   )}
                 </div>

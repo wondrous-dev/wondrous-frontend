@@ -98,7 +98,7 @@ export const transformTaskProposalToTaskProposalCard = (taskProposal, extraData)
     orgUsername: extraData?.orgUsername || taskProposal?.org?.username,
     podName: extraData?.podName || taskProposal?.pod?.name,
     podColor: extraData?.podColor || taskProposal?.pod?.color,
-    snapshotProposal: extraData?.snapshotProposal || (taskProposal?.snapshotProposal && taskProposal.snapshotProposal)
+    snapshotId: extraData?.snapshotId || (taskProposal?.snapshotId && taskProposal.snapshotId)
   };
 };
 
