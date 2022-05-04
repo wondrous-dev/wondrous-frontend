@@ -64,6 +64,19 @@ const notificationsConfig = [
     ],
   },
   {
+    label: 'Membership requests',
+    settings: [
+      {
+        label: 'New requests',
+        id: 'onJoinRequest',
+      },
+      {
+        label: 'Request status change',
+        id: 'onJoinRequestStatus',
+      },
+    ],
+  },
+  {
     label: 'Assigned work',
     settings: [
       {
@@ -95,19 +108,6 @@ const notificationsConfig = [
       {
         label: 'New payment',
         id: 'onPayment',
-      },
-    ],
-  },
-  {
-    label: 'Join requests',
-    settings: [
-      {
-        label: 'New join request',
-        id: 'onJoinRequest',
-      },
-      {
-        label: 'Join request status',
-        id: 'onJoinRequestStatus',
       },
     ],
   },
