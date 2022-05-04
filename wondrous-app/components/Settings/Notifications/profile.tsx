@@ -98,6 +98,19 @@ const notificationsConfig = [
       },
     ],
   },
+  {
+    label: 'Join requests',
+    settings: [
+      {
+        label: 'New join request',
+        id: 'onJoinRequest',
+      },
+      {
+        label: 'Join request status',
+        id: 'onJoinRequestStatus',
+      },
+    ],
+  },
 ];
 
 const ProfileSettings = (props) => {
@@ -152,8 +165,16 @@ const ProfileSettings = (props) => {
     },
   });
 
-  const { onComment, onTaskAssign, onSubmissionsToReview, onProposalSubmissionStatus, onTaskClaim, onPayment } =
-    userNotificationConfigData?.getUserNotificationSetting || {};
+  const {
+    onComment,
+    onTaskAssign,
+    onSubmissionsToReview,
+    onProposalSubmissionStatus,
+    onTaskClaim,
+    onPayment,
+    onJoinRequest,
+    onJoinRequestStatus,
+  } = userNotificationConfigData?.getUserNotificationSetting || {};
 
   const initialSettings = {
     onComment,
@@ -162,6 +183,8 @@ const ProfileSettings = (props) => {
     onProposalSubmissionStatus,
     onTaskClaim,
     onPayment,
+    onJoinRequest,
+    onJoinRequestStatus,
   };
   const setInitialSettings = () => {
     if (userNotificationConfigData?.getUserNotificationSetting) {
