@@ -7,10 +7,13 @@ import SnackbarComp from '@mui/material/Snackbar';
 import { Button } from '../../Common/button';
 import { BaseCard } from '../../Common/card';
 import { Red800, White } from '../../../theme/colors';
+import { newDropdownStyles } from 'components/Common/DropdownSelect/styles';
 
 export const RolesContainer = styled.div`
   width: 100%;
   max-width: 765px;
+
+  ${newDropdownStyles}
 `;
 
 export const Box = styled.div`
@@ -189,8 +192,6 @@ export const TokenGatedRoleModal = styled(BaseCard)`
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 `;
-
-
 
 export const TokenGatedRoleModalTitle = styled(Typography)`
   && {

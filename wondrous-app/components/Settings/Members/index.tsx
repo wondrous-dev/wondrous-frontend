@@ -2,9 +2,8 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { uniq } from 'lodash';
 import Link from 'next/link';
-
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
+import pluralize from 'pluralize';
+import { format } from 'date-fns';
 
 import { GET_ORG_BY_ID, GET_ORG_ROLES, GET_ORG_USERS, GET_USER_ORGS } from 'graphql/queries/org';
 import { GET_POD_BY_ID } from 'graphql/queries/pod';
@@ -14,23 +13,12 @@ import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
 import MembersIcon from '../../Icons/membersSettings';
 import { RolesContainer } from '../Roles/styles';
-import MoreIcon from '../../Icons/more';
-import {
-  // StyledTable,
-  // StyledTableBody,
-  StyledTableCell,
-  StyledTableContainer,
-  StyledTableHead,
-  StyledTableRow,
-} from '../../Table/styles';
+import { StyledTableCell, StyledTableContainer, StyledTableHead, StyledTableRow } from '../../Table/styles';
 import { useRouter } from 'next/router';
 import {
   DefaultProfilePicture,
   InviteDiv,
   SeeMoreText,
-  // UserInfoDiv,
-  // UserProfilePicture,
-  RoleDropdown,
   StyledTableHeaderCell,
   StyledTable,
   StyledTableBody,
@@ -54,12 +42,13 @@ import {
 } from '../../CreateEntity/styles';
 import { White } from '../../../theme/colors';
 import { SafeImage } from '../../Common/Image';
-import Dropdown from '../../Common/Dropdown/index';
 import MemberRoles from './MemberRoles';
 import { SnackbarAlertContext } from '../../Common/SnackbarAlert';
 import { Text } from 'components/styled';
-import { IconButton } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import { TaskMenuIcon } from 'components/Icons/taskMenu';
+import { DropDown, DropDownItem } from 'components/Common/dropdown';
+import ArrowDropDownIcon from 'components/Icons/arrowDropDown';
 
 const LIMIT = 10;
 
@@ -103,6 +92,26 @@ const MemberRoleDropdown = (props) => {
   });
   const userIsOwner = permissions.includes(PERMISSIONS.FULL_ACCESS);
 
+  const MenuProps = {
+    disableScrollLock: true,
+    PaperProps: {
+      style: {
+        // background: '#0F0F0F',
+        borderRadius: '6px',
+        border: '1px solid #6A6A6A',
+        // maxHeight: '250px',
+        // width: '100%',
+        // maxWidth: 260,
+        background: 'linear-gradient(180deg, #1E1E1E 0%, #141414 109.19%)',
+        padding: '0 7px',
+        //
+        // '*::-webkit-scrollbar': {
+        //   width: 100,
+        // },
+      },
+    },
+  };
+
   useEffect(() => {
     if (existingRole?.id) {
       setRole(existingRole?.id);
@@ -136,6 +145,8 @@ const MemberRoleDropdown = (props) => {
           });
         }
       }}
+      MenuProps={MenuProps}
+      IconComponent={() => <ArrowDropDownIcon style={{ height: '7px' }} fill="#CCBBFF" />}
       labelText={isOwner && !role ? 'Owner' : 'Choose your role'}
       options={filterRoles(roleList, isOwner, userIsOwner)}
       disabled={isOwner}
@@ -411,8 +422,7 @@ const Members = (props) => {
   }, [hasMore, users, fetchMore, orgId, podId]);
 
   const orgOrPodName = orgData?.getOrgById?.name || podData?.getPodById?.name;
-
-  console.log(users);
+  const canRemoveUsers = false;
 
   return (
     <SettingsWrapper>
@@ -447,28 +457,20 @@ const Members = (props) => {
                 <StyledTableHeaderCell width="25%">Role</StyledTableHeaderCell>
                 <StyledTableHeaderCell width="15%">Pods</StyledTableHeaderCell>
                 <StyledTableHeaderCell width="15%">Last Active</StyledTableHeaderCell>
-                <StyledTableHeaderCell width="5%">Edit</StyledTableHeaderCell>
+                {canRemoveUsers ? <StyledTableHeaderCell width="5%">Edit</StyledTableHeaderCell> : null}
               </StyledTableRow>
             </StyledTableHead>
-            {/* FIXME */}
-            {/*<div*/}
-            {/*  style={{*/}
-            {/*    textAlign: 'center',*/}
-            {/*  }}*/}
-            {/*>*/}
-            {/*  {loading && <CircularProgress />}*/}
-            {/*</div>*/}
             <StyledTableBody>
-              {users &&
-                users.map((user) => {
+              {users ? (
+                users.map(({ user, role }) => {
                   return (
-                    <StyledTableRow key={user?.id}>
+                    <StyledTableRow key={user?.username}>
                       <StyledTableCell>
-                        <Link href={`/profile/${user?.user?.username}/about`} passHref>
+                        <Link href={`/profile/${user?.username}/about`} passHref>
                           <Grid container direction="row" alignItems="center" style={{ cursor: 'pointer' }}>
-                            {user?.user?.thumbnailPicture ? (
+                            {user?.thumbnailPicture ? (
                               <SafeImage
-                                src={user?.user?.thumbnailPicture}
+                                src={user?.thumbnailPicture}
                                 style={{
                                   width: '40px',
                                   height: '40px',
@@ -482,11 +484,11 @@ const Members = (props) => {
 
                             <Grid direction="column" alignItems="center">
                               <Text color="white" fontSize={15} fontWeight={700} lineHeight="20px">
-                                {user?.user?.firstName} {user?.user?.lastName}
+                                {user?.firstName} {user?.lastName}
                               </Text>
 
                               <Text color="#C4C4C4" fontSize={12} lineHeight="17px">
-                                @{user?.user?.username}
+                                @{user?.username}
                               </Text>
                             </Grid>
                           </Grid>
@@ -494,30 +496,51 @@ const Members = (props) => {
                       </StyledTableCell>
                       <StyledTableCell>
                         <MemberRoleDropdown
-                          userId={user?.user?.id}
+                          userId={user?.id}
                           orgId={orgId}
                           podId={podId}
-                          existingRole={user?.role}
+                          existingRole={role}
                           roleList={roleList}
-                          username={user?.user?.username}
+                          username={user?.username}
                         />
                       </StyledTableCell>
                       <StyledTableCell align="center">
-                        <PodsCount>3 Pods</PodsCount>
+                        <PodsCount>
+                          {user?.additionalInfo?.podCount || 'N/A'} {pluralize('Pod', user?.additionalInfo?.podCount)}{' '}
+                        </PodsCount>
                       </StyledTableCell>
                       <StyledTableCell align="center">
                         <Text color="white" fontSize="14px">
-                          11/2/2021
+                          {user?.additionalInfo?.streak?.lastActiveAt
+                            ? format(new Date(user?.additionalInfo?.streak?.lastActiveAt), 'MM/dd/yyyy')
+                            : 'None'}
                         </Text>
                       </StyledTableCell>
-                      <StyledTableCell>
-                        <IconButton aria-label="more" color="default">
-                          <MoreIcon />
-                        </IconButton>
-                      </StyledTableCell>
+
+                      {canRemoveUsers ? (
+                        <StyledTableCell>
+                          <DropDown DropdownHandler={TaskMenuIcon}>
+                            <DropDownItem
+                              onClick={() => {}}
+                              style={{
+                                color: White,
+                              }}
+                            >
+                              Remove Member
+                            </DropDownItem>
+                          </DropDown>
+                        </StyledTableCell>
+                      ) : null}
                     </StyledTableRow>
                   );
-                })}
+                })
+              ) : (
+                <StyledTableRow>
+                  <StyledTableCell colspan={5} align="center">
+                    <CircularProgress />
+                  </StyledTableCell>
+                </StyledTableRow>
+              )}
             </StyledTableBody>
           </StyledTable>
         </StyledTableContainer>

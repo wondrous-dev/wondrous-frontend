@@ -26,6 +26,7 @@ export const GET_USER_PODS = gql`
       name
       profilePicture
       description
+      lastActivityAt
       color
       org {
         id
@@ -60,6 +61,7 @@ export const GET_POD_USERS = gql`
         username
         profilePicture
         thumbnailPicture
+        additionalInfo
         firstName
         lastName
         bio

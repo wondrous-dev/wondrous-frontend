@@ -49,6 +49,12 @@ export const GET_ORG_USERS = gql`
         username
         profilePicture
         thumbnailPicture
+        additionalInfo {
+          podCount
+          streak {
+            lastActivityAt
+          }
+        }
         firstName
         lastName
         bio

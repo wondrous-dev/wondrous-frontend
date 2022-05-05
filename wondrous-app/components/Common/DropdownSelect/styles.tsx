@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { FormControl, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
 import SelectDownIcon from '../../Icons/selectDownIcon';
 
@@ -10,10 +10,6 @@ export const CreateFormSelectBlock = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-
-  .MuiInput-underline::after {
-    display: none;
-  }
 `;
 
 export const CreateFormSelectBlockTitle = styled(Typography)`
@@ -77,7 +73,7 @@ export const CreateFormSelect = styled(Select)`
     line-height: 19px;
     letter-spacing: 0.01em;
     color: #c4c4c4;
-    margin-top: 20px;
+    //margin-top: 20px;
     z-index: 100;
     cursor: pointer;
 
@@ -127,6 +123,11 @@ export const CreateFormMenuItem = styled(MenuItem)`
     border-radius: 4px;
     margin-bottom: 4px;
     padding-left: 0;
+
+    &.Mui-selected {
+      background: #000000;
+      border: 1px solid #7427FF;
+    }
     
     &.Mui-selected {
       background: #000000;
@@ -150,4 +151,28 @@ export const CreateFormMenuItemIcon = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+`;
+
+// The styles below will make styles for dropdown
+// for the new design
+export const newDropdownStyles = css`
+  ${CreateFormSelectBlock} {
+    margin-top: 0 !important;
+
+    .MuiInput-underline::after {
+      display: none;
+    }
+  }
+
+  ${CreateFormSelect} {
+    margin-top: 0;
+    z-index: 100;
+    cursor: pointer;
+  }
+
+  ${CreateFormSelect} {
+    margin-top: 0;
+    z-index: 100;
+    cursor: pointer;
+  }
 `;
