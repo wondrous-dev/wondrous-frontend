@@ -398,7 +398,7 @@ const ProfileSettings = (props) => {
           )}
         </GeneralSettingsInputsBlock> */}
         <GeneralSettingsButtonsBlock>
-          <GeneralSettingsResetButton>Reset changes</GeneralSettingsResetButton>
+          <GeneralSettingsResetButton>Cancel changes</GeneralSettingsResetButton>
           <GeneralSettingsSaveChangesButton highlighted onClick={handleSaveChanges}>
             Save changes
           </GeneralSettingsSaveChangesButton>
