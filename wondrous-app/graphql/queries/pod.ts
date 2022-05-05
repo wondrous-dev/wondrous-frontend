@@ -61,7 +61,12 @@ export const GET_POD_USERS = gql`
         username
         profilePicture
         thumbnailPicture
-        additionalInfo
+        additionalInfo {
+          podCount
+          streak {
+            lastActivityAt
+          }
+        }
         firstName
         lastName
         bio

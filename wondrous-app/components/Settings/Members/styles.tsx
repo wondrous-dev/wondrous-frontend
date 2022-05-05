@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import { White } from '../../../theme/colors';
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
-import TableCell from "@material-ui/core/TableCell";
-import TableBody from "@material-ui/core/TableBody";
-import Table from "@material-ui/core/Table";
+import TableCell from '@material-ui/core/TableCell';
+import TableBody from '@material-ui/core/TableBody';
+import Table from '@material-ui/core/Table';
 
 import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
+import { newDropdownStyles } from 'components/Common/DropdownSelect/styles';
 
 // export const UserInfoDiv = styled.div`
 //   display: flex;
@@ -17,6 +18,8 @@ import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
 export const InviteDiv = styled.div`
   display: flex;
   margin-top: 20px;
+
+  ${newDropdownStyles}
 `;
 
 const ProfilePictureStyles = {
@@ -54,7 +57,7 @@ export const SeeMoreText = styled(Typography)`
 export const StyledTableBody = styled(TableBody)`
   //border: 1px solid #353535;
   //border-radius: 6px;
-  background: linear-gradient(90deg, #1E1E1E -2.3%, #141414 101.76%);
+  background: linear-gradient(90deg, #1e1e1e -2.3%, #141414 101.76%);
   //
   //tr:first-child td:first-child {
   //  border-top-left-radius: 6px;
@@ -96,16 +99,9 @@ export const PodsCount = styled.div`
   padding: 8px;
   font-weight: 700;
   font-size: 14px;
-  background: #0F0F0F;
+  background: #0f0f0f;
   border-radius: 6px;
   color: white;
   text-align: center;
   display: inline-block;
 `;
-
-
-// export const RoleDropdown = styled(DropdownSelect)`
-//   .MuiInput-underline::after {
-//     display: none;
-//   }
-// `;

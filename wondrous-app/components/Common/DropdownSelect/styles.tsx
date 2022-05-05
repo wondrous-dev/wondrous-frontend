@@ -159,7 +159,8 @@ export const newDropdownStyles = css`
   ${CreateFormSelectBlock} {
     margin-top: 0 !important;
 
-    .MuiInput-underline::after {
+    .MuiInput-underline::after,
+    .MuiInput-underline:before {
       display: none;
     }
   }

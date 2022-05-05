@@ -13,6 +13,7 @@ import CreatePodIcon from '../Icons/createPod.svg';
 import CreateProposalIcon from '../Icons/createProposal.svg';
 import CreateTaskIcon from '../Icons/createTask.svg';
 import WonderTokenIcon from '../Icons/wonderToken';
+import SearchIcon from 'components/Icons/search';
 
 export const MediaUploadGrid = styled(Grid)`
   && {
@@ -436,6 +437,8 @@ export const CreateFormAddDetailsInputs = styled(CreateFormMainSelects)`
 export const CreateFormAddDetailsInputBlock = styled.div`
   width: 262px;
   margin-bottom: 15px;
+  margin-right: 18px;
+  
   :last-child {
     margin: 0;
   }
@@ -446,7 +449,7 @@ export const CreateFormAddDetailsInputLabel = styled(Typography)`
     font-weight: 500;
     font-size: 14px;
     color: #ccbbff;
-    margin-bottom: 15px;
+    margin-bottom: 3px;
   }
 `;
 
@@ -581,7 +584,8 @@ export const CreateFormPreviewButton = styled(Button)`
     }
 
     &:disabled {
-      color: #ffffff;
+      color: #7A7A7A;
+      border-color: #7A7A7A;
       cursor: not-allowed;
     }
   }
@@ -622,6 +626,12 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
   border-radius: 6px;
   min-height: 40px;
   color: ${White};
+  position: relative;
+  padding-right: 0;
+  
+  .MuiInputBase-adornedStart {
+    padding-right: 10px !important;
+  }
 
   input {
     color: #c4c4c4;
@@ -629,6 +639,21 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
     left: 8px;
     font-size: 14px;
     height: 30px;
+    
+    ::placeholder {
+      color: white;
+    }
+  }
+  
+  .search-icon {
+    right: 10px;
+    height: 11px;
+    position: absolute;
+  } 
+  
+  .roles-icon2 {
+    position: absolute;
+    left: 10px;
   }
 
   svg {
@@ -714,7 +739,6 @@ export const CreateFormSubmitButton = styled(Button)`
     min-height: 40px;
     margin-left: 25px;
 
-    //text
     font-weight: 500;
     font-size: 16px;
     line-height: 150%;

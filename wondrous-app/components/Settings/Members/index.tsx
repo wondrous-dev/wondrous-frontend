@@ -42,6 +42,9 @@ import {
 } from '../../CreateEntity/styles';
 import { White } from '../../../theme/colors';
 import { SafeImage } from '../../Common/Image';
+import InviteMember from './InviteMember';
+import { filterRoles } from './helpers';
+import MemberRoleDropdown from './MemberRoleDropdown';
 import MemberRoles from './MemberRoles';
 import { SnackbarAlertContext } from '../../Common/SnackbarAlert';
 import { Text } from 'components/styled';
@@ -52,272 +55,11 @@ import ArrowDropDownIcon from 'components/Icons/arrowDropDown';
 
 const LIMIT = 10;
 
-const filterRoles = (roles, isOwner, userIsOwner) => {
-  if (!roles) {
-    return [];
-  }
-  return roles
-    .filter((role) => {
-      if (isOwner) {
-        return true;
-      }
-      const hasOwnerPermissions = role?.permissions?.includes(PERMISSIONS.FULL_ACCESS);
-      if (hasOwnerPermissions) {
-        if (userIsOwner) {
-          return true;
-        }
-        return false;
-      } else {
-        return true;
-      }
-    })
-    .map((role) => {
-      return { label: role?.name, value: role?.id };
-    });
-};
-
-const MemberRoleDropdown = (props) => {
-  const { existingRole, roleList, userId, podId, isPod } = props;
-  const [role, setRole] = useState(existingRole?.id);
-  const [updateUserOrgRole] = useMutation(UPDATE_USER_ORG_ROLE);
-  const [updateUserPodRole] = useMutation(UPDATE_USER_POD_ROLE);
-  const isOwner = existingRole?.permissions.includes(PERMISSIONS.FULL_ACCESS);
-  const settings = useSettings();
-  let orgId = props?.orgId || settings?.pod?.orgId;
-  const loggedInUserPermissions = settings?.userPermissionsContext;
-  const permissions = parseUserPermissionContext({
-    userPermissionsContext: loggedInUserPermissions,
-    orgId,
-    podId,
-  });
-  const userIsOwner = permissions.includes(PERMISSIONS.FULL_ACCESS);
-
-  const MenuProps = {
-    disableScrollLock: true,
-    PaperProps: {
-      style: {
-        // background: '#0F0F0F',
-        borderRadius: '6px',
-        border: '1px solid #6A6A6A',
-        // maxHeight: '250px',
-        // width: '100%',
-        // maxWidth: 260,
-        background: 'linear-gradient(180deg, #1E1E1E 0%, #141414 109.19%)',
-        padding: '0 7px',
-        //
-        // '*::-webkit-scrollbar': {
-        //   width: 100,
-        // },
-      },
-    },
-  };
-
-  useEffect(() => {
-    if (existingRole?.id) {
-      setRole(existingRole?.id);
-    }
-  }, [existingRole?.id]);
-
-  return (
-    <DropdownSelect
-      value={role}
-      setValue={(roleId) => {
-        setRole(roleId);
-        if (podId) {
-          updateUserPodRole({
-            variables: {
-              input: {
-                userId,
-                podId,
-                roleId,
-              },
-            },
-          });
-        } else {
-          updateUserOrgRole({
-            variables: {
-              input: {
-                userId,
-                orgId,
-                roleId,
-              },
-            },
-          });
-        }
-      }}
-      MenuProps={MenuProps}
-      IconComponent={() => <ArrowDropDownIcon style={{ height: '7px' }} fill="#CCBBFF" />}
-      labelText={isOwner && !role ? 'Owner' : 'Choose your role'}
-      options={filterRoles(roleList, isOwner, userIsOwner)}
-      disabled={isOwner}
-      formSelectStyle={{
-        height: 'auto',
-        marginTop: '-20px',
-      }}
-    />
-  );
-};
-
-const InviteMember = (props) => {
-  const { podId, roleList, setUsers, users } = props;
-  const [inviteeRole, setInviteeRole] = useState(null);
-  const [invitee, setInvitee] = useState(null);
-  const [inviteeString, setInviteeString] = useState('');
-  const settings = useSettings();
-  let orgId = props?.orgId || settings?.pod?.orgId;
-  const [searchOrgUsers, { data: searchOrgUserResults }] = useLazyQuery(SEARCH_ORG_USERS);
-  const loggedInUserPermissions = settings?.userPermissionsContext;
-  const permissions = parseUserPermissionContext({
-    userPermissionsContext: loggedInUserPermissions,
-    orgId,
-    podId,
-  });
-  const [inviteUserToPod] = useMutation(INVITE_USER_TO_POD);
-  const canInvite = permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.MANAGE_MEMBER);
-  const userIsOwner = permissions.includes(PERMISSIONS.FULL_ACCESS);
-  const searchedUsers = searchOrgUserResults?.searchOrgUsers;
-  const snackbarContext = useContext(SnackbarAlertContext);
-  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
-  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
-  useEffect(() => {
-    if (roleList) {
-      const roles = filterRoles(roleList, null, userIsOwner);
-      setInviteeRole(roles[0].value);
-    }
-  }, [roleList]);
-
-  if (!canInvite) {
-    return null;
-  }
-
-  const userIds = users.map((user) => user?.user?.id);
-
-  const filterOrgUsersForAutocomplete = (users) => {
-    if (!users) {
-      return [];
-    }
-    return users
-      .filter((user) => {
-        if (userIds.includes(user?.id)) {
-          return false;
-        }
-        return true;
-      })
-      .map((user) => ({
-        ...user,
-        profilePicture: user?.profilePicture,
-        label: user?.username,
-        value: user?.id,
-      }));
-  };
-
-  return (
-    <InviteDiv>
-      <CreateFormAddDetailsInputBlock
-        style={{
-          width: 'auto',
-          flex: 1,
-        }}
-      >
-        <CreateFormAddDetailsInputLabel>Username</CreateFormAddDetailsInputLabel>
-        <StyledAutocomplete
-          options={filterOrgUsersForAutocomplete(searchedUsers) || []}
-          renderInput={(params) => (
-            <TextField
-              style={{
-                color: White,
-                fontFamily: 'Space Grotesk',
-                fontSize: '14px',
-                paddingLeft: '4px',
-              }}
-              placeholder="Enter username..."
-              InputLabelProps={{ shrink: false }}
-              {...params}
-            />
-          )}
-          PopperComponent={AutocompleteList}
-          value={invitee}
-          inputValue={inviteeString}
-          onInputChange={(event, newInputValue) => {
-            searchOrgUsers({
-              variables: {
-                orgId,
-                queryString: newInputValue,
-              },
-            });
-            setInviteeString(newInputValue);
-          }}
-          renderOption={(props, option, state) => {
-            return (
-              <OptionDiv
-                onClick={(event) => {
-                  setInvitee(option);
-                  props?.onClick(event);
-                }}
-              >
-                {option?.profilePicture && (
-                  <SafeImage
-                    src={option?.profilePicture}
-                    style={{
-                      width: '30px',
-                      height: '30px',
-                      borderRadius: '15px',
-                    }}
-                  />
-                )}
-                <OptionTypography>{option?.label}</OptionTypography>
-              </OptionDiv>
-            );
-          }}
-        />
-      </CreateFormAddDetailsInputBlock>
-      <DropdownSelect
-        title="Role"
-        titleStyle={{
-          marginBottom: '-8px',
-        }}
-        value={inviteeRole}
-        setValue={setInviteeRole}
-        labelText="Choose Role"
-        options={filterRoles(roleList, null, userIsOwner)}
-        formSelectStyle={{
-          width: 'auto',
-          flex: 1,
-          maxWidth: 'none',
-        }}
-      />
-      <CreateFormPreviewButton
-        onClick={() => {
-          inviteUserToPod({
-            variables: {
-              userId: invitee?.id,
-              roleId: inviteeRole,
-              podId,
-            },
-            onCompleted: (data) => {
-              const userPod = data?.inviteUserToPod;
-              setUsers([userPod, ...users]);
-            },
-          });
-          setSnackbarAlertOpen(true);
-          setSnackbarAlertMessage(<>{invitee?.username} invited!</>);
-        }}
-        style={{
-          marginTop: '28px',
-        }}
-      >
-        Invite Member
-      </CreateFormPreviewButton>
-    </InviteDiv>
-  );
-};
-
 const Members = (props) => {
   const router = useRouter();
   const { orgId, podId } = router.query;
   const [hasMore, setHasMore] = useState(true);
   const [users, setUsers] = useState([]);
-  const [userRoles, setUserRoles] = useState([]);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
 
   const [getOrgUsers, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_USERS, {
@@ -329,9 +71,6 @@ const Members = (props) => {
 
   const [getPodUsers] = useLazyQuery(GET_POD_USERS, {
     onCompleted: (data) => {
-      const userRoles = uniq(users.map((user) => user?.role?.name));
-
-      setUserRoles(userRoles);
       setUsers(data?.getPodUsers);
       setHasMore(data?.hasMore || data?.getPodUsers.length >= LIMIT);
     },
@@ -357,9 +96,6 @@ const Members = (props) => {
       }).then((result) => {
         if (!firstTimeFetch) {
           const users = result?.data?.getOrgUsers;
-          const userRoles = users ? uniq(users.map((user) => user?.role?.name)) : [];
-
-          setUserRoles(userRoles);
           setUsers(users);
           setHasMore(result?.data?.hasMore || result?.data?.getOrgUsers.length >= LIMIT);
           setFirstTimeFetch(true);
@@ -425,7 +161,7 @@ const Members = (props) => {
   const canRemoveUsers = false;
 
   return (
-    <SettingsWrapper>
+    <SettingsWrapper showPodIcon={false}>
       <RolesContainer>
         <HeaderBlock
           icon={<MembersIcon circle />}
@@ -445,9 +181,12 @@ const Members = (props) => {
           }
           description="Use roles to organize contributors and admins"
         />
-        {podId && <InviteMember users={users} setUsers={setUsers} orgId={orgId} podId={podId} roleList={roleList} />}
 
-        <MemberRoles userRoles={userRoles} isDAO={!!orgId} />
+        <MemberRoles users={users} roleList={roleList} isDAO={!!orgId} />
+
+        {podId ? (
+          <InviteMember users={users} setUsers={setUsers} orgId={orgId} podId={podId} roleList={roleList} />
+        ) : null}
 
         <StyledTableContainer>
           <StyledTable>
@@ -513,7 +252,7 @@ const Members = (props) => {
                         <Text color="white" fontSize="14px">
                           {user?.additionalInfo?.streak?.lastActiveAt
                             ? format(new Date(user?.additionalInfo?.streak?.lastActiveAt), 'MM/dd/yyyy')
-                            : 'None'}
+                            : 'N/A'}
                         </Text>
                       </StyledTableCell>
 

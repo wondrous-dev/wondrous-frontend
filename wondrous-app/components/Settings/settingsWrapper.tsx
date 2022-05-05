@@ -302,8 +302,8 @@ export const SettingsWrapper = (props) => {
             </SettingsSidebarContainer>
           </SettingsSidebar>
 
-          {showPodIcon ? (
-            <SettingsContentBlock>
+          <SettingsContentBlock>
+            {showPodIcon ? (
               <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>
                 <SettingsDaoPodIndicatorOrgProfile src={orgData?.getOrgById?.profilePicture} />
                 <SettingsDaoPodIndicatorIconWrapper color={podData?.getPodById.color}>
@@ -311,9 +311,9 @@ export const SettingsWrapper = (props) => {
                 </SettingsDaoPodIndicatorIconWrapper>
                 <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
               </SettingsDaoPodIndicator>
-              {children}
-            </SettingsContentBlock>
-          ) : null}
+            ) : null}
+            {children}
+          </SettingsContentBlock>
         </SettingsContainer>
       </SettingsBoardContext.Provider>
     </>
