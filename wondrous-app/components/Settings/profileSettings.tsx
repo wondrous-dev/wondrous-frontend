@@ -211,15 +211,20 @@ const ProfileSettings = (props) => {
           input['email'] = email;
         }
         if (profilePicture) {
+          console.log('updating profile picture')
           const file = profilePicture;
           const fileName = profilePicture.name;
-
+          console.log('filename', fileName)
           // get image preview
           const { fileType, filename } = getFilenameAndType(fileName);
+          console.log(fileType, filename)
+
           const imagePrefix = `tmp/${loggedInUser?.id}/`;
           const imageUrl = imagePrefix + filename;
+          console.log(imagePrefix, imageUrl)
 
           await uploadMedia({ filename: imageUrl, fileType, file });
+          console.log('here')
           input['profilePicture'] = imageUrl;
         }
 
