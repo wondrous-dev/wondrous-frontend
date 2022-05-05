@@ -180,18 +180,17 @@ const ProfileSettings = (props) => {
     }
   }, [loggedInUser?.username, loggedInUser?.userInfo?.email, loggedInUser?.bio]);
   const handleSaveChanges = async () => {
-    // Only if username is there...
     if (!USERNAME_REGEX.test(username)) {
       setErrors({
         ...errors,
         username: 'Please enter a valid username with 3-15 alphanumeric characters',
       });
-    } else if (!validateEmail(email)) {
+    } else if (email && !validateEmail(email)) {
       setErrors({
         ...errors,
         email: 'Please enter a valid email',
       });
-    } else if (profileBio.length > 200) {
+    } else if (profileBio && profileBio.length > 200) {
       setErrors({
         ...errors,
         description: 'The description should not exceed 200 characters',
@@ -211,7 +210,6 @@ const ProfileSettings = (props) => {
           input['email'] = email;
         }
         if (profilePicture) {
-          console.log('updating profile picture')
           const file = profilePicture;
           const fileName = profilePicture.name;
           console.log('filename', fileName)
@@ -221,10 +219,8 @@ const ProfileSettings = (props) => {
 
           const imagePrefix = `tmp/${loggedInUser?.id}/`;
           const imageUrl = imagePrefix + filename;
-          console.log(imagePrefix, imageUrl)
 
           await uploadMedia({ filename: imageUrl, fileType, file });
-          console.log('here')
           input['profilePicture'] = imageUrl;
         }
 
