@@ -59,6 +59,9 @@ export const GET_POD_USERS = gql`
         id
         username
         profilePicture
+        thumbnailPicture
+        firstName
+        lastName
         bio
       }
       role {

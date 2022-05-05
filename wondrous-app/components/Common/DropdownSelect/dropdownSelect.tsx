@@ -10,19 +10,23 @@ import {
 } from './styles';
 import { SafeImage } from '../Image';
 import { FormControl } from '@material-ui/core';
+import ArrowDropDownIcon from "components/Icons/arrowDropDown";
 
 const MenuProps = {
   PaperProps: {
     style: {
-      maxHeight: '250px',
-      width: '100%',
-      maxWidth: 260,
+      // background: '#0F0F0F',
+      borderRadius: '6px',
+      border: '1px solid #6A6A6A',
+      // maxHeight: '250px',
+      // width: '100%',
+      // maxWidth: 260,
       background: 'linear-gradient(180deg, #1E1E1E 0%, #141414 109.19%)',
-      padding: '15px',
-
-      '*::-webkit-scrollbar': {
-        width: 100,
-      },
+      padding: '0 7px',
+      //
+      // '*::-webkit-scrollbar': {
+      //   width: 100,
+      // },
     },
   },
 };
@@ -30,6 +34,7 @@ const MenuProps = {
 const DropdownSelect = (props) => {
   const {
     title,
+    className,
     labelText,
     labelIcon,
     options,
@@ -52,7 +57,7 @@ const DropdownSelect = (props) => {
 
   const [open, setOpen] = useState(false);
   return (
-    <CreateFormSelectBlock style={formSelectStyle}>
+    <CreateFormSelectBlock style={formSelectStyle} className={className}>
       <CreateFormSelectBlockTitle style={titleStyle}>{title}</CreateFormSelectBlockTitle>
       <FormControl>
         {!value && (
@@ -78,6 +83,7 @@ const DropdownSelect = (props) => {
           onClick={() => {
             setOpen(!open);
           }}
+          IconComponent={() => <ArrowDropDownIcon style={{ height: '7px' }} fill="#CCBBFF" />}
           onChange={handleChange}
           MenuProps={MenuProps}
           labelId={`select-label-${name}`}

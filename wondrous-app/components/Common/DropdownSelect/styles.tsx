@@ -10,6 +10,10 @@ export const CreateFormSelectBlock = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
+
+  .MuiInput-underline::after {
+    display: none;
+  }
 `;
 
 export const CreateFormSelectBlockTitle = styled(Typography)`
@@ -74,12 +78,14 @@ export const CreateFormSelect = styled(Select)`
     letter-spacing: 0.01em;
     color: #c4c4c4;
     margin-top: 20px;
+    z-index: 100;
+    cursor: pointer;
+
     .MuiSelect-select.MuiSelect-select {
       display: flex;
       align-items: center;
     }
 
-    z-index: 100;
 
     & svg {
       position: absolute;
@@ -115,11 +121,17 @@ export const CreateFormMenuItem = styled(MenuItem)`
     font-size: 14px;
     line-height: 19px;
     letter-spacing: 0.01em;
-    color: #c4c4c4;
+    color: #C4C4C4;
     display: flex;
     align-items: center;
-    border-radius: 3px;
-    margin-bottom: 5px;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    padding-left: 0;
+    
+    &.Mui-selected {
+      background: #000000;
+      border: 1px solid #7427FF;
+    }
 
     &:hover {
       background: #121212;

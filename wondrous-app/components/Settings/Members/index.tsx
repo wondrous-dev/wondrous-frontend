@@ -3,6 +3,9 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { uniq } from 'lodash';
 import Link from 'next/link';
 
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+
 import { GET_ORG_BY_ID, GET_ORG_ROLES, GET_ORG_USERS, GET_USER_ORGS } from 'graphql/queries/org';
 import { GET_POD_BY_ID } from 'graphql/queries/pod';
 import { SEARCH_ORG_USERS } from 'graphql/queries/org';
@@ -25,9 +28,9 @@ import {
   DefaultProfilePicture,
   InviteDiv,
   SeeMoreText,
-  UserInfoDiv,
-  UsernameText,
-  UserProfilePicture,
+  // UserInfoDiv,
+  // UserProfilePicture,
+  RoleDropdown,
   StyledTableHeaderCell,
   StyledTable,
   StyledTableBody,
@@ -51,6 +54,7 @@ import {
 } from '../../CreateEntity/styles';
 import { White } from '../../../theme/colors';
 import { SafeImage } from '../../Common/Image';
+import Dropdown from '../../Common/Dropdown/index';
 import MemberRoles from './MemberRoles';
 import { SnackbarAlertContext } from '../../Common/SnackbarAlert';
 import { Text } from 'components/styled';
@@ -82,6 +86,7 @@ const filterRoles = (roles, isOwner, userIsOwner) => {
       return { label: role?.name, value: role?.id };
     });
 };
+
 const MemberRoleDropdown = (props) => {
   const { existingRole, roleList, userId, podId, isPod } = props;
   const [role, setRole] = useState(existingRole?.id);
@@ -103,6 +108,7 @@ const MemberRoleDropdown = (props) => {
       setRole(existingRole?.id);
     }
   }, [existingRole?.id]);
+
   return (
     <DropdownSelect
       value={role}
@@ -458,34 +464,33 @@ const Members = (props) => {
                   return (
                     <StyledTableRow key={user?.id}>
                       <StyledTableCell>
-                        <Grid container direction="row" alignItems="center">
-                          <SafeImage
-                            src={user?.user?.profilePicture}
-                            style={{
-                              width: '40px',
-                              height: '40px',
-                              borderRadius: '50%',
-                              marginRight: '10px',
-                            }}
-                          />
-                          <Text color="white" fontSize={15} fontWeight={700}>
-                            {user?.user?.username}
-                          </Text>
-                        </Grid>
+                        <Link href={`/profile/${user?.user?.username}/about`} passHref>
+                          <Grid container direction="row" alignItems="center" style={{ cursor: 'pointer' }}>
+                            {user?.user?.thumbnailPicture ? (
+                              <SafeImage
+                                src={user?.user?.thumbnailPicture}
+                                style={{
+                                  width: '40px',
+                                  height: '40px',
+                                  borderRadius: '50%',
+                                  marginRight: '10px',
+                                }}
+                              />
+                            ) : (
+                              <DefaultProfilePicture />
+                            )}
 
-                        {/*<Link href={`/profile/${user?.user?.username}/about`} passHref>*/}
-                        {/*  <UserInfoDiv*/}
-                        {/*    style={{*/}
-                        {/*      cursor: 'pointer',*/}
-                        {/*    }}*/}
-                        {/*  >*/}
-                        {/*    {user?.user?.profilePicture ? (*/}
-                        {/*      <UserProfilePicture src={user?.user?.profilePicture} />*/}
-                        {/*    ) : (*/}
-                        {/*      <DefaultProfilePicture />*/}
-                        {/*    )}*/}
-                        {/*  </UserInfoDiv>*/}
-                        {/*</Link>*/}
+                            <Grid direction="column" alignItems="center">
+                              <Text color="white" fontSize={15} fontWeight={700} lineHeight="20px">
+                                {user?.user?.firstName} {user?.user?.lastName}
+                              </Text>
+
+                              <Text color="#C4C4C4" fontSize={12} lineHeight="17px">
+                                @{user?.user?.username}
+                              </Text>
+                            </Grid>
+                          </Grid>
+                        </Link>
                       </StyledTableCell>
                       <StyledTableCell>
                         <MemberRoleDropdown

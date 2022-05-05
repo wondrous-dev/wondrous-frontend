@@ -7,10 +7,12 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import Table from "@material-ui/core/Table";
 
-export const UserInfoDiv = styled.div`
-  display: flex;
-  align-items: center;
-`;
+import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
+
+// export const UserInfoDiv = styled.div`
+//   display: flex;
+//   align-items: center;
+// `;
 
 export const InviteDiv = styled.div`
   display: flex;
@@ -23,9 +25,9 @@ const ProfilePictureStyles = {
   borderRadius: '16px',
 };
 
-export const UserProfilePicture = (props) => {
-  return <SafeImage src={props?.src} style={ProfilePictureStyles} />;
-};
+// export const UserProfilePicture = (props) => {
+//   return <SafeImage src={props?.src} style={ProfilePictureStyles} />;
+// };
 
 export const DefaultProfilePicture = (props) => {
   return <DefaultUserImage style={ProfilePictureStyles} />;
@@ -100,3 +102,9 @@ export const PodsCount = styled.div`
   display: inline-block;
 `;
 
+
+// export const RoleDropdown = styled(DropdownSelect)`
+//   .MuiInput-underline::after {
+//     display: none;
+//   }
+// `;
