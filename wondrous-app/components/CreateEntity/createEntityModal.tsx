@@ -1432,7 +1432,7 @@ const CreateLayoutBaseModal = (props) => {
             onClick={submitMutation}
           >
             {creating ? <CircularProgress size={20} /> : null}
-            {canCreateTask ? 'Create' : 'Propose'} {titleText}
+            {canCreateTask ? 'Create' : isProposal ? 'Create': 'Propose'} {titleText}
           </CreateFormPreviewButton>
         </CreateFormButtonsBlock>
       </CreateFormFooterButtons>
