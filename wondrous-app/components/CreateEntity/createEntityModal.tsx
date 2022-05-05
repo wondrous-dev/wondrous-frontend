@@ -17,6 +17,7 @@ import { Grey700, White } from '../../theme/colors';
 import { addProposalItem } from 'utils/board';
 import { CHAIN_TO_CHAIN_DIPLAY_NAME, ENTITIES_TYPES, MEDIA_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { TextInputContext } from 'utils/contexts';
+
 import {
   getMentionArray,
   parseUserPermissionContext,
@@ -483,6 +484,8 @@ const CreateLayoutBaseModal = (props) => {
   const [createMilestone, { loading: createMilestoneLoading }] = useMutation(CREATE_MILESTONE);
 
   const submitMutation = useCallback(() => {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
     const taskInput = {
       title,
       description: descriptionText,
@@ -511,6 +514,7 @@ const CreateLayoutBaseModal = (props) => {
       reviewerIds: selectedReviewers.map(({ id }) => id),
       userMentions: getMentionArray(descriptionText),
       mediaUploads,
+      timezone
     };
     const taskPodPrivacyError = !isPodPublic ? isPublicEntity : false;
     switch (entityType) {
@@ -674,6 +678,7 @@ const CreateLayoutBaseModal = (props) => {
           podId: pod,
           mediaUploads,
           dueDate,
+          timezone,
         };
         if (canCreateTask) {
           createMilestone({
@@ -734,6 +739,7 @@ const CreateLayoutBaseModal = (props) => {
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
+          timezone
         };
         // const isErrorMaxSubmissionCount =
         //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
