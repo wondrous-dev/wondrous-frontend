@@ -91,6 +91,10 @@ const notificationsConfig = [
         id: 'onProposalSubmissionStatus',
         label: 'Approvals and Rejections',
       },
+      {
+        id: 'onDueDate',
+        label: 'Due date reminders',
+      },
     ],
   },
   {
@@ -174,6 +178,7 @@ const ProfileSettings = (props) => {
     onPayment,
     onJoinRequest,
     onJoinRequestStatus,
+    onDueDate,
   } = userNotificationConfigData?.getUserNotificationSetting || {};
 
   const initialSettings = {
@@ -185,6 +190,7 @@ const ProfileSettings = (props) => {
     onPayment,
     onJoinRequest,
     onJoinRequestStatus,
+    onDueDate,
   };
   const setInitialSettings = () => {
     if (userNotificationConfigData?.getUserNotificationSetting) {

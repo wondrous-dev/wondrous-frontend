@@ -42,6 +42,7 @@ export const GET_USER_DISCORD_NOTIFICATION_CONFIGS = gql`
       onPayment
       onJoinRequest
       onJoinRequestStatus
+      onDueDate
     }
   }
 `;
