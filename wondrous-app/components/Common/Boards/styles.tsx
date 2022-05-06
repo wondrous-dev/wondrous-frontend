@@ -13,7 +13,6 @@ export const BoardsActivity = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1038px;
   margin: 0 auto;
   & > div {
     margin-left: 18px;
