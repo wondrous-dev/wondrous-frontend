@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { Container, StyledTab, StyledTabs } from './styles';
+import { Container, StyledTab, StyledTabs, ChildrenWrapper } from './styles';
 
 const Tabs = (props) => {
   const { children, page = 'organization' } = props;
@@ -63,7 +63,7 @@ const Tabs = (props) => {
           </Link>
         ))}
       </StyledTabs>
-      <div>{children}</div>
+      <ChildrenWrapper>{children}</ChildrenWrapper>
     </Container>
   );
 };

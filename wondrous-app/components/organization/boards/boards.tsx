@@ -66,7 +66,7 @@ const OrgBoards = (props: Props) => {
         filterSchema={filterSchema}
         onSearch={onSearch}
         onFilterChange={onFilterChange}
-        columns={columns}
+        columns={[...columns, columns[0]]}
         onLoadMore={onLoadMore}
         hasMore={hasMore}
         statuses={statuses}

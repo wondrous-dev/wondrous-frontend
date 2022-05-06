@@ -27,7 +27,7 @@ import {
   HeaderFollowButtonText,
   HeaderImageDefault,
   HeaderMainBlock,
-  HeaderManageSettingsButton,
+  HeaderButton,
   HeaderPods,
   HeaderPodsAmount,
   HeaderPodsText,
@@ -43,6 +43,7 @@ import {
   HeaderTitleIcon,
   HeaderImage,
   HeaderImageWrapper,
+  HeaderTag,
 } from './styles';
 import { useOrgBoard } from 'utils/hooks';
 import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
@@ -64,7 +65,7 @@ import OpenSeaIcon from '../../Icons/openSea';
 import LinkBigIcon from '../../Icons/link';
 import { DiscordIcon } from '../../Icons/discord';
 import { MembershipRequestModal } from './RequestModal';
-import { PrivateBoardIcon } from '../../Common/PrivateBoardIcon';
+import { PrivateBoardIcon, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import { GET_TOKEN_GATED_ROLES_FOR_ORG, LIT_SIGNATURE_EXIST } from 'graphql/queries';
 import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { TokenGatedRoleModal } from 'components/organization/wrapper/TokenGatedRoleModal';
@@ -260,40 +261,44 @@ const Wrapper = (props) => {
           <Content>
             <ContentContainer>
               <TokenHeader>
-                {orgProfile?.profilePicture ? (
-                  <SafeImage
-                    src={orgProfile?.profilePicture}
-                    style={{
-                      width: '96px',
-                      height: '96px',
-                      position: 'absolute',
-                      borderRadius: '48px',
-                      top: '-50px',
-                      border: '10px solid #0f0f0f',
-                    }}
-                  />
-                ) : (
-                  <TokenEmptyLogo>
-                    <DAOEmptyIcon />
-                  </TokenEmptyLogo>
-                )}
                 <HeaderMainBlock>
+                  {orgProfile?.profilePicture ? (
+                    <SafeImage
+                      src={orgProfile?.profilePicture}
+                      style={{
+                        width: '60px',
+                        height: '60px',
+                        borderRadius: '6px',
+                      }}
+                    />
+                  ) : (
+                    <TokenEmptyLogo>
+                      <DAOEmptyIcon />
+                    </TokenEmptyLogo>
+                  )}
                   <HeaderTitleIcon>
                     <HeaderTitle>{orgProfile?.name}</HeaderTitle>
-                    <PrivateBoardIcon
-                      isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
-                      tooltipTitle={'Private Org'}
-                    />
+                    <HeaderTag>@{orgProfile?.username}</HeaderTag>
                   </HeaderTitleIcon>
                   <HeaderButtons>
-                    <HeaderFollowButton
+                    <PrivateBoardIcon
+                      isPrivate={true}
+                      // isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
+                      tooltipTitle={'Private Org'}
+                    />
+                    {/* TODO check privacy */}
+                    {/* <ToggleBoardPrivacyIcon
+                      isPrivate={true}
+                      tooltipTitle={orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
+                    /> */}
+                    {/* <HeaderFollowButton
                       style={{
                         visibility: 'hidden',
                       }}
                     >
                       <HeaderFollowButtonText>{shrinkNumber(amount)}</HeaderFollowButtonText>
                       <HeaderFollowButtonIcon src="/images/overview/icon.png" />
-                    </HeaderFollowButton>
+                    </HeaderFollowButton> */}
                     {permissions === null && (
                       <>
                         {joinRequestSent || userJoinRequest?.id ? (
@@ -306,26 +311,21 @@ const Wrapper = (props) => {
                             Request sent
                           </HeaderSettingsLockedButton>
                         ) : (
-                          <HeaderManageSettingsButton
+                          <HeaderButton
                             style={{
                               width: 'fit-content',
                             }}
+                            reversed
                             onClick={handleJoinOrgButtonClick}
                           >
                             <HeaderFollowButtonText>Join org</HeaderFollowButtonText>
-                          </HeaderManageSettingsButton>
+                          </HeaderButton>
                         )}
                       </>
                     )}
                     {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
                       <>
-                        <HeaderInviteButton onClick={() => setOpenInvite(true)}>
-                          Invite{' '}
-                          <PlusIconWrapper>
-                            <PlusIcon height="8" width="8" fill="#fff" />
-                          </PlusIconWrapper>
-                        </HeaderInviteButton>
-                        <HeaderManageSettingsButton
+                        <HeaderButton
                           onClick={() => {
                             router.push(`/organization/settings/${orgBoard?.orgId}/general`, undefined, {
                               shallow: true,
@@ -333,11 +333,11 @@ const Wrapper = (props) => {
                           }}
                         >
                           Settings
-                        </HeaderManageSettingsButton>
+                        </HeaderButton>
+                        <HeaderButton reversed onClick={() => setOpenInvite(true)}>
+                          Invite{' '}
+                        </HeaderButton>
                       </>
-                    )}
-                    {permissions === ORG_PERMISSIONS.CONTRIBUTOR && (
-                      <HeaderSettingsLockedButton>Settings</HeaderSettingsLockedButton>
                     )}
                     {/* {!permissions && (
                       <HeaderContributeButton>

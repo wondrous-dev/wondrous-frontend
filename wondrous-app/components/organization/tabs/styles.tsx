@@ -2,7 +2,7 @@ import { Tab, Tabs } from '@material-ui/core';
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  width: 100%;
+  width: 95%;
 `;
 
 export const StyledTabs = styled(Tabs)`
@@ -32,3 +32,5 @@ export const StyledTab = styled(Tab)`
     margin-right: 16px;
   }
 `;
+
+export const ChildrenWrapper = styled.div``;

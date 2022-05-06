@@ -3,7 +3,7 @@ import { Button, IconButton, Typography, Box } from '@material-ui/core';
 import Image from 'next/image';
 import React from 'react';
 import styled from 'styled-components';
-import { Background, Black } from '../../../theme/colors';
+import { Background, Black, Grey250, HighlightPurple, White } from '../../../theme/colors';
 import { Button as BorderButton } from '../../Common/button';
 import { BaseCard } from '../../Common/card';
 import { LogoCircle } from '../../Common/ci';
@@ -43,10 +43,11 @@ export const HeaderImageDefault = styled(() => (
   <Image src="/images/overview/background.png" layout="fill" objectFit="cover" alt="header-image" />
 ))``;
 
+//TODO remove commented
 export const TokenHeader = styled.div`
   position: relative;
-  max-width: 680px;
-  width: 100%;
+  // max-width: 680px;
+  width: 95%;
   min-height: 190px;
   height: 190px;
   padding-top: 65px;
@@ -87,9 +88,11 @@ export const Content = styled.div`
   justify-content: center;
 `;
 
+//TODO remove commented
 export const ContentContainer = styled.div`
   //max-width: 680px;
-  max-width: 1037px;
+  // max-width: 1037px;
+  max-width: 100%;
   display: flex;
   //justify-content: center;
   align-items: center;
@@ -122,18 +125,30 @@ export const HeaderTitleIcon = styled.div`
 export const HeaderTitle = styled(Typography)`
   && {
     font-weight: 500;
-    font-size: 28px;
+    font-size: 26px;
     line-height: 36px;
     display: flex;
     align-items: center;
     color: #ffffff;
+    margin-left: 20px;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 `;
 
+export const HeaderTag = styled(Typography)`
+  && {
+    color: ${Grey250};
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 18px;
+    margin-left: 20px;
+  }
+`;
+
 export const HeaderButtons = styled.div`
-  max-width: 352px;
-  width: 100%;
+  width: 22%;
   height: 100%;
   display: flex;
   justify-content: space-between;
@@ -221,20 +236,40 @@ export const HeaderContributeButton = styled(Button)`
   }
 `;
 
-export const HeaderManageSettingsButton = (props) => (
-  <BorderButton
-    style={{
-      background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
-      borderRadius: '204px',
-      width: 'fit-content',
-      height: '40px',
-      minHeight: '0',
-    }}
-    onClick={props?.onClick}
-  >
-    {props.children}
-  </BorderButton>
-);
+// export const HeaderManageSettingsButton = (props) => (
+//   <BorderButton
+//     style={{
+//       background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
+//       borderRadius: '204px',
+//       width: 'fit-content',
+//       height: '40px',
+//       minHeight: '0',
+//     }}
+//     onClick={props?.onClick}
+//   >
+//     {props.children}
+//   </BorderButton>
+// );
+
+export const HeaderButton = styled.button`
+  border-radius: 6px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  width: 80px;
+  ${({ reversed }) => (reversed ? `background: ${HighlightPurple}` : `background: transparent`)};
+  border: 1px solid ${HighlightPurple};
+  cursor: pointer;
+  color: ${White};
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 150%;
+  margin-right: 10px;
+`;
 
 export const HeaderSettingsLockedButton = (props) => (
   <BorderButton
@@ -261,11 +296,11 @@ export const HeaderSettingsLockedButton = (props) => (
 export const HeaderText = styled(Typography)`
   && {
     font-size: 15px;
+    margin-top: 3%;
     line-height: 22px;
     letter-spacing: 0.01em;
     color: #ffffff;
     margin-bottom: 8px;
-    margin-top: 8px;
   }
 `;
 
@@ -649,7 +684,6 @@ export const ClaimRoleLabel = styled(Typography)`
     letter-spacing: -1%;
   }
 `;
-
 
 export const RoleActionWrapper = styled.div`
   display: flex;
