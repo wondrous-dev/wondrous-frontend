@@ -18,11 +18,12 @@ import {
   StyledDialog,
   StyledDivider,
   StyledHeader,
+  StyledWarningMessage,
 } from '../../Common/ArchiveTaskModal/styles';
 import { GeneralSettingsDAODescriptionInput } from '../../Settings/styles';
 
 export const MembershipRequestModal = (props) => {
-  const { open, onClose, sendRequest, orgId, podId, setJoinRequestSent } = props;
+  const { open, onClose, sendRequest, orgId, podId, setJoinRequestSent, notLinkedWalletError, linkedWallet } = props;
   const board = useOrgBoard();
   const [requestMessage, setRequestMessage] = useState('');
   return (
@@ -40,6 +41,13 @@ export const MembershipRequestModal = (props) => {
             padding: '20px',
           }}
         >
+         {notLinkedWalletError && <StyledWarningMessage
+            style={{
+              marginLeft: 0,
+            }}
+          >
+            {`To join via token gated role, switch to linked wallet ${linkedWallet?.slice(0,7)}...`}
+          </StyledWarningMessage>}
           <StyledCloseButton onClick={onClose}>
             <CloseModalIcon />
           </StyledCloseButton>

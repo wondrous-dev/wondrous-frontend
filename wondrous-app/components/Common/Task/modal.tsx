@@ -1692,7 +1692,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     color: Red400,
                   }}
                 >
-                  Your wallet is not connected. Please link your wallet to receive payment for completeting tasks and
+                  Your wallet is not connected. Please link your wallet to receive payment for completing tasks and
                   bounties.
                 </TaskSectionInfoText>
               )}
