@@ -1,4 +1,5 @@
 import React from 'react';
+import pluralize from 'pluralize';
 
 import { Tag, Text } from 'components/styled';
 import { Role } from 'types/common';
@@ -18,6 +19,10 @@ function MemberRoles({ roleList = [], users = [], isDAO }: Props) {
   const overlapLeft = 5;
   const containerWidth = users.length * width - overlapLeft * (users.length - 1) + 2;
 
+  if (!users.length) {
+    return null;
+  }
+
   return (
     <Container withPodMembers={!isDAO}>
       {!isDAO ? (
@@ -25,7 +30,7 @@ function MemberRoles({ roleList = [], users = [], isDAO }: Props) {
           <div>
             {users.length + ' '}
             <Text as="span" color="#6C6C6C">
-              pod members
+              pod {pluralize('member', users.length)}
             </Text>
           </div>
           <PodIconWithoutBg />
@@ -49,7 +54,7 @@ function MemberRoles({ roleList = [], users = [], isDAO }: Props) {
       <div>
         {roleList.length + ' '}
         <Text as="span" color="#6C6C6C" marginRight="8px">
-          roles in {isDAO ? 'DAO' : 'POD'}
+          {pluralize('role', roleList.length)} in {isDAO ? 'DAO' : 'POD'}
         </Text>
         {roleList.map((role) => (
           <Tag key={role.name}>{role.name}</Tag>

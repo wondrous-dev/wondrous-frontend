@@ -219,7 +219,7 @@ const Members = (props) => {
             <StyledTableBody>
               {users ? (
                 users.map(({ user, role }) => {
-                  const userId = user?.user?.id;
+                  const userId = user?.id;
 
                   return (
                     <StyledTableRow key={userId}>

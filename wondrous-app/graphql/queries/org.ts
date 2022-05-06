@@ -143,6 +143,15 @@ export const SEARCH_ORG_USERS = gql`
       id
       username
       profilePicture
+      thumbnailPicture
+      additionalInfo {
+        podCount
+        streak {
+          lastActivityAt
+        }
+      }
+      firstName
+      lastName
       bio
     }
   }

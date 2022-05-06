@@ -438,7 +438,7 @@ export const CreateFormAddDetailsInputBlock = styled.div`
   width: 262px;
   margin-bottom: 15px;
   margin-right: 18px;
-  
+
   :last-child {
     margin: 0;
   }
@@ -584,8 +584,8 @@ export const CreateFormPreviewButton = styled(Button)`
     }
 
     &:disabled {
-      color: #7A7A7A;
-      border-color: #7A7A7A;
+      color: #7a7a7a;
+      border-color: #7a7a7a;
       cursor: not-allowed;
     }
   }
@@ -628,7 +628,7 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
   color: ${White};
   position: relative;
   padding-right: 0;
-  
+
   .MuiInputBase-adornedStart {
     padding-right: 10px !important;
   }
@@ -639,18 +639,18 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
     left: 8px;
     font-size: 14px;
     height: 30px;
-    
+
     ::placeholder {
       color: white;
     }
   }
-  
+
   .search-icon {
     right: 10px;
     height: 11px;
     position: absolute;
-  } 
-  
+  }
+
   .roles-icon2 {
     position: absolute;
     left: 10px;
@@ -707,11 +707,20 @@ export const StyledAutocompletePopper = styled(({ className, ...props }) => {
   }
 `;
 
-export const OptionDiv = styled.div`
+export const OptionDiv = styled.li`
   display: flex;
   align-items: center;
   cursor: pointer;
-  margin-bottom: 8px;
+
+  &:hover {
+    background-color: #474747;
+  }
+
+  img {
+    width: 18px;
+    height: 18px;
+    margin: 8px;
+  }
 `;
 
 export const OptionTypography = styled(Typography)`
@@ -719,7 +728,10 @@ export const OptionTypography = styled(Typography)`
     font-family: Space Grotesk;
     font-size: 14px;
     color: ${White};
-    margin-left: 8px;
+
+    span {
+      color: #c4c4c4;
+    }
   }
 `;
 

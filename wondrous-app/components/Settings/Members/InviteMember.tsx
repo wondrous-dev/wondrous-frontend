@@ -2,12 +2,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useSettings } from 'utils/hooks';
 import styled from 'styled-components';
 import { useLazyQuery, useMutation } from '@apollo/client';
+
 import { SEARCH_ORG_USERS } from 'graphql/queries';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { INVITE_USER_TO_POD } from 'graphql/mutations/pod';
 import { PERMISSIONS } from 'utils/constants';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { InviteDiv } from 'components/Settings/Members/styles';
+import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import {
   AutocompleteList,
   CreateFormAddDetailsInputBlock,
@@ -36,6 +38,7 @@ const InviteMember = (props) => {
   const { podId, roleList, setUsers, users } = props;
   const [inviteeRole, setInviteeRole] = useState(null);
   const [invitee, setInvitee] = useState(null);
+  const [touched, setTouched] = useState(false);
   const [inviteeString, setInviteeString] = useState('');
   const settings = useSettings();
   let orgId = props?.orgId || settings?.pod?.orgId;
@@ -146,6 +149,17 @@ const InviteMember = (props) => {
           PopperComponent={AutocompleteList}
           value={invitee}
           inputValue={inviteeString}
+          onOpen={() => {
+            // prefetch users to not display dropdown with text `No Data`
+            if (!touched) {
+              searchOrgUsers({
+                variables: {
+                  orgId,
+                  queryString: '',
+                },
+              });
+            }
+          }}
           onInputChange={(event, newInputValue) => {
             searchOrgUsers({
               variables: {
@@ -163,17 +177,22 @@ const InviteMember = (props) => {
                   props?.onClick(event);
                 }}
               >
-                {option?.profilePicture && (
+                {option?.thumbnailPicture ? (
                   <SafeImage
-                    src={option?.profilePicture}
+                    src={option?.thumbnailPicture}
                     style={{
-                      width: '30px',
-                      height: '30px',
-                      borderRadius: '15px',
+                      width: '18px',
+                      height: '18px',
+                      borderRadius: '50%',
                     }}
                   />
+                ) : (
+                  <DefaultUserImage />
                 )}
-                <OptionTypography>{option?.label}</OptionTypography>
+
+                <OptionTypography>
+                  {option?.firstName} <span>@{option?.username}</span>
+                </OptionTypography>
               </OptionDiv>
             );
           }}
