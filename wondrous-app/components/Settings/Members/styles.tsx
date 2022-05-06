@@ -1,19 +1,12 @@
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { White } from '../../../theme/colors';
-import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import Table from '@material-ui/core/Table';
 
-import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
 import { newDropdownStyles } from 'components/Common/DropdownSelect/styles';
-
-// export const UserInfoDiv = styled.div`
-//   display: flex;
-//   align-items: center;
-// `;
 
 export const InviteDiv = styled.div`
   display: flex;
@@ -29,21 +22,10 @@ const ProfilePictureStyles = {
   borderRadius: '16px',
 };
 
-// export const UserProfilePicture = (props) => {
-//   return <SafeImage src={props?.src} style={ProfilePictureStyles} />;
-// };
-
 export const DefaultProfilePicture = (props) => {
   return <DefaultUserImage style={ProfilePictureStyles} />;
 };
-//
-// export const UsernameText = styled(Typography)`
-//   && {
-//     color: #c4c4c4;
-//     font-size: 14px;
-//     font-height: 22px;
-//   }
-// `;
+
 
 export const SeeMoreText = styled(Typography)`
   && {
@@ -55,25 +37,7 @@ export const SeeMoreText = styled(Typography)`
 `;
 
 export const StyledTableBody = styled(TableBody)`
-  //border: 1px solid #353535;
-  //border-radius: 6px;
   background: linear-gradient(90deg, #1e1e1e -2.3%, #141414 101.76%);
-  //
-  //tr:first-child td:first-child {
-  //  border-top-left-radius: 6px;
-  //}
-  //
-  // tr:first-child td:last-child {
-  //  border-top-right-radius: 6px;
-  //}
-  //
-  //tr:last-child td:first-child {
-  //  border-bottom-left-radius: 6px;
-  //}
-  //
-  //tr:last-child td:last-child {
-  //  border-bottom-right-radius: 6px;
-  //}
 `;
 
 export const StyledTableHeaderCell = styled(TableCell)`
@@ -82,7 +46,6 @@ export const StyledTableHeaderCell = styled(TableCell)`
     padding: 16px;
     height: auto;
     border: none;
-    //background: #0f0f0f;
   }
 `;
 

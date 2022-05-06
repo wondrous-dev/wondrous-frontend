@@ -1,14 +1,11 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { uniq } from 'lodash';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useLazyQuery } from '@apollo/client';
 import Link from 'next/link';
 import pluralize from 'pluralize';
 import { format } from 'date-fns';
 
-import { GET_ORG_BY_ID, GET_ORG_ROLES, GET_ORG_USERS, GET_USER_ORGS } from 'graphql/queries/org';
+import { GET_ORG_BY_ID, GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_POD_BY_ID } from 'graphql/queries/pod';
-import { SEARCH_ORG_USERS } from 'graphql/queries/org';
-import { UPDATE_USER_ORG_ROLE } from 'graphql/mutations/org';
 import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
 import MembersIcon from '../../Icons/membersSettings';
@@ -24,34 +21,17 @@ import {
   StyledTableBody,
   PodsCount,
 } from './styles';
-import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
-import { CircularProgress, TextField } from '@material-ui/core';
-import { PERMISSIONS } from 'utils/constants';
-import { useSettings } from 'utils/hooks';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { INVITE_USER_TO_POD, UPDATE_USER_POD_ROLE } from 'graphql/mutations/pod';
+import { CircularProgress } from '@material-ui/core';
 import { GET_POD_ROLES, GET_POD_USERS } from 'graphql/queries/pod';
-import {
-  AutocompleteList,
-  CreateFormAddDetailsInputBlock,
-  CreateFormAddDetailsInputLabel,
-  CreateFormPreviewButton,
-  OptionDiv,
-  OptionTypography,
-  StyledAutocomplete,
-} from '../../CreateEntity/styles';
 import { White } from '../../../theme/colors';
 import { SafeImage } from '../../Common/Image';
 import InviteMember from './InviteMember';
-import { filterRoles } from './helpers';
 import MemberRoleDropdown from './MemberRoleDropdown';
-import MemberRoles from './MemberRoles';
-import { SnackbarAlertContext } from '../../Common/SnackbarAlert';
+import MemberRoles from '../MemberRoles';
 import { Text } from 'components/styled';
 import Grid from '@mui/material/Grid';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import { DropDown, DropDownItem } from 'components/Common/dropdown';
-import ArrowDropDownIcon from 'components/Icons/arrowDropDown';
 
 const LIMIT = 10;
 

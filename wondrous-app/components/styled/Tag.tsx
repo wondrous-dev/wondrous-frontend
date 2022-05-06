@@ -6,6 +6,7 @@ export const Tag = styled.div`
   padding: 2px 6px;
   color: white;
   margin: 5px 0;
+  display: inline-block;
   
   &:not(:last-child) {
     margin-right: 10px;
