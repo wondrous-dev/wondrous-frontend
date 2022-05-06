@@ -66,7 +66,7 @@ import { useMe } from '../../Auth/withAuth';
 import { delQuery } from 'utils';
 import { TaskSummaryAction } from '../TaskSummary/styles';
 import { Arrow, Archived } from '../../Icons/sections';
-import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE } from 'graphql/mutations/task';
+import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
 import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from 'graphql/queries';
 import { OrgBoardContext } from 'utils/contexts';
 import { TaskCreatedBy } from '../TaskCreatedBy';
@@ -93,7 +93,7 @@ export const TASK_ICONS = {
 
 let windowOffset = 0;
 export const Task = (props) => {
-  const { task, setTask, onOpen = (task) => null, className } = props;
+  const { task, setTask, className } = props;
   const {
     actions = {},
     description = '',
@@ -141,6 +141,42 @@ export const Task = (props) => {
   const isBounty = type === Constants.ENTITIES_TYPES.BOUNTY;
   const location = useLocation();
 
+  const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
+    refetchQueries: [
+      'getTaskById',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getOrgTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+    onError: () => {
+      console.error('Something went wrong with archiving tasks');
+    },
+    onCompleted: () => {
+      // TODO: Move columns
+      // let columns = [...boardColumns?.columns]
+    },
+  });
+  const [unarchiveTaskMutation, { data: unarchiveTaskData }] = useMutation(UNARCHIVE_TASK, {
+    refetchQueries: [
+      'getTaskById',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getOrgTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+    onError: () => {
+      console.error('Something went wrong unarchiving tasks');
+    },
+    onCompleted: () => {
+      // TODO: Move columns
+      // let columns = [...boardColumns?.columns]
+    },
+  });
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
     refetchQueries: () => [
       'getUserTaskBoardTasks',
@@ -159,50 +195,58 @@ export const Task = (props) => {
   const handleNewStatus = useCallback(
     (newStatus) => {
       orgBoard?.setFirstTimeFetch(false);
-      updateTaskStatusMutation({
-        variables: {
-          taskId: id,
-          input: {
-            newStatus,
+      if (newStatus === Constants.TASK_STATUS_ARCHIVED) {
+        archiveTaskMutation({
+          variables: {
+            taskId: id,
           },
-        },
-      });
+        }).then((result) => {
+          setSnackbarAlertOpen(true);
+          setSnackbarAlertMessage(
+            <>
+              Task archived successfully!{' '}
+              <ArchivedTaskUndo
+                onClick={() => {
+                  setSnackbarAlertOpen(false);
+                  unarchiveTaskMutation({
+                    variables: {
+                      taskId: id,
+                    },
+                  });
+                }}
+              >
+                Undo
+              </ArchivedTaskUndo>
+            </>
+          );
+        });
+      } else {
+        updateTaskStatusMutation({
+          variables: {
+            taskId: id,
+            input: {
+              newStatus,
+            },
+          },
+        });
+      }
     },
-    [id, updateTaskStatusMutation, orgBoard]
+    [
+      id,
+      updateTaskStatusMutation,
+      orgBoard,
+      archiveTaskMutation,
+      setSnackbarAlertMessage,
+      setSnackbarAlertOpen,
+      unarchiveTaskMutation,
+    ]
   );
 
   useEffect(() => {
     if (!initialStatus) {
       setInitialStatus(status);
     }
-
-    if (updateTaskStatusMutationData?.updateTaskStatus.status === Constants.TASK_STATUS_ARCHIVED) {
-      setSnackbarAlertOpen(true);
-      setSnackbarAlertMessage(
-        <>
-          Task archived successfully!{' '}
-          <ArchivedTaskUndo
-            onClick={() => {
-              handleNewStatus(initialStatus);
-              setSnackbarAlertOpen(false);
-            }}
-          >
-            Undo
-          </ArchivedTaskUndo>
-        </>
-      );
-    }
-  }, [
-    initialStatus,
-    setInitialStatus,
-    status,
-    updateTaskStatusMutationData,
-    setSnackbarAlertOpen,
-    setSnackbarAlertMessage,
-    handleNewStatus,
-    isSubtask,
-    id,
-  ]);
+  }, [initialStatus, setInitialStatus, status]);
 
   const toggleLike = () => {
     setLiked(!liked);
@@ -230,7 +274,6 @@ export const Task = (props) => {
     task?.createdBy === user?.id;
 
   const openModal = (e) => {
-    onOpen(task);
     const newUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`;
     location.push(newUrl);
     // document.body.style.overflow = 'hidden'
@@ -511,7 +554,11 @@ export const TaskListCard = (props) => {
         isTaskProposal={taskType === Constants.TASK_STATUS_REQUESTED}
         back={true}
       />
-      <TaskListCardWrapper onClick={() => setViewDetails(true)}>
+      <TaskListCardWrapper
+        onClick={() => {
+          setViewDetails(true);
+        }}
+      >
         <TaskHeader>
           <SafeImage
             src={task?.orgProfilePicture}

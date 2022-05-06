@@ -232,7 +232,7 @@ const GeneralSettingsComponent = (props) => {
         )}
 
         <GeneralSettingsButtonsBlock>
-          <GeneralSettingsResetButton onClick={resetChanges}>Reset changes</GeneralSettingsResetButton>
+          <GeneralSettingsResetButton onClick={resetChanges}>Cancel changes</GeneralSettingsResetButton>
           <GeneralSettingsSaveChangesButton
             buttonInnerStyle={{
               fontFamily: 'Space Grotesk',

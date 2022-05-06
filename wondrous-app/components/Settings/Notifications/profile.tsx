@@ -29,17 +29,76 @@ import Switch from '../../Common/Switch';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { getDiscordUrl } from 'utils';
 import { GET_USER_DISCORD_NOTIFICATION_CONFIGS } from 'graphql/queries';
-import { ENABLE_USER_DISCORD_NOTIFICATION_CONFIG, DISABLE_USER_DISCORD_NOTIFICATION_CONFIG } from 'graphql/mutations';
+import {
+  ENABLE_USER_DISCORD_NOTIFICATION_CONFIG,
+  DISABLE_USER_DISCORD_NOTIFICATION_CONFIG,
+  SET_USER_NOTIFICATION_SETTINGS,
+} from 'graphql/mutations';
 import {
   UserDiscordNotificationSettingsDiv,
   UserDiscordNotificationSettingsText,
   LoggedInDiscordUserText,
   ExplanationText,
+  StyledCheckbox,
+  NotificationSettingsCategoryLabel,
+  NotificationSettingLabel,
+  NotificationSettingListItem,
+  NotificationSettingsHeader,
+  NotificationSettingsHeaderText,
+  NotificationSettingsHeaderWrapper,
+  DiscordLink,
+  UserDiscordNotificationSettingsContainer,
+  NotificationSettingsButtonsBlock,
 } from './styles';
-import Link from 'next/link';
-import { White } from 'theme/colors';
-
 const discordUrl = getDiscordUrl();
+import { isEqual } from 'lodash';
+
+const notificationsConfig = [
+  {
+    label: 'Discussions',
+    settings: [
+      {
+        label: 'Comment',
+        id: 'onComment',
+      },
+    ],
+  },
+  {
+    label: 'Assigned work',
+    settings: [
+      {
+        label: 'Assignments',
+        id: 'onTaskAssign',
+      },
+      {
+        label: 'Signed off deliverables',
+        id: 'onSubmissionsToReview',
+      },
+      {
+        id: 'onProposalSubmissionStatus',
+        label: 'Approvals and Rejections',
+      },
+    ],
+  },
+  {
+    label: 'Review work',
+    settings: [
+      {
+        id: 'onTaskClaim',
+        label: 'Others claiming your tasks',
+      },
+    ],
+  },
+  {
+    label: 'Financial',
+    settings: [
+      {
+        label: 'New payment',
+        id: 'onPayment',
+      },
+    ],
+  },
+];
 
 const ProfileSettings = (props) => {
   const { loggedInUser } = props;
@@ -53,7 +112,8 @@ const ProfileSettings = (props) => {
   const [mutationError, setMutationError] = useState(null);
   const [profileBio, setProfileBio] = useState(loggedInUser?.bio);
   const [updateUserProfile] = useMutation(UPDATE_USER);
-  const { data: userNotificationConfigData } = useQuery(GET_USER_DISCORD_NOTIFICATION_CONFIGS);
+  const [discordNotificationSettings, setDiscordNotificationSettings] = useState({});
+  const { data: userNotificationConfigData, refetch } = useQuery(GET_USER_DISCORD_NOTIFICATION_CONFIGS);
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
@@ -64,10 +124,22 @@ const ProfileSettings = (props) => {
   const [enableDiscordNotification] = useMutation(ENABLE_USER_DISCORD_NOTIFICATION_CONFIG, {
     onCompleted: (data) => {
       setNotificationOn(true);
+      setInitialSettings();
     },
     onError: (e) => {
       console.error(e);
       setMutationError('error enabling notifications');
+    },
+  });
+  const [setUserNotificationSettings] = useMutation(SET_USER_NOTIFICATION_SETTINGS, {
+    onCompleted: (data) => {
+      refetch();
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage(<>Notification settings updated successfully</>);
+    },
+    onError: (e) => {
+      console.error(e);
+      setMutationError('error setting notification settings');
     },
   });
   const [disableDiscordNotification] = useMutation(DISABLE_USER_DISCORD_NOTIFICATION_CONFIG, {
@@ -80,9 +152,27 @@ const ProfileSettings = (props) => {
     },
   });
 
+  const { onComment, onTaskAssign, onSubmissionsToReview, onProposalSubmissionStatus, onTaskClaim, onPayment } =
+    userNotificationConfigData?.getUserNotificationSetting || {};
+
+  const initialSettings = {
+    onComment,
+    onTaskAssign,
+    onSubmissionsToReview,
+    onProposalSubmissionStatus,
+    onTaskClaim,
+    onPayment,
+  };
+  const setInitialSettings = () => {
+    if (userNotificationConfigData?.getUserNotificationSetting) {
+      setDiscordNotificationSettings(initialSettings);
+    }
+  };
+
   useEffect(() => {
     if (userNotificationConfigData?.getUserNotificationSetting?.discordEnabled) {
       setNotificationOn(true);
+      setInitialSettings();
     }
   }, [userNotificationConfigData]);
 
@@ -184,34 +274,70 @@ const ProfileSettings = (props) => {
     }
   };
 
+  const handleNotificationSettingsChange = (setting) =>
+    setDiscordNotificationSettings({
+      ...discordNotificationSettings,
+      [setting]: !discordNotificationSettings[setting],
+    });
+
+  const saveNotificationSettings = () => {
+    setUserNotificationSettings({
+      variables: {
+        settings: discordNotificationSettings,
+      },
+    });
+  };
+
+  const isDiscordConnected = loggedInUser?.userInfo?.discordUsername;
+
+  const isSettingChanged = !isEqual(discordNotificationSettings, initialSettings);
+
+  const canChangeSettings = !!Object.keys(discordNotificationSettings).length && notificationOn && isDiscordConnected;
+
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
-        <HeaderBlock title="Notification settings" description="Update Notification settings." />
-
-        <GeneralSettingsInputsBlock>
+        <NotificationSettingsHeaderWrapper>
+          <NotificationSettingsHeader>Notifications</NotificationSettingsHeader>
+          <NotificationSettingsHeaderText>
+            {"We'll always let you know about important changes, but you pick what else you want to hear about"}
+          </NotificationSettingsHeaderText>
+        </NotificationSettingsHeaderWrapper>
+        <UserDiscordNotificationSettingsContainer>
           <UserDiscordNotificationSettingsDiv>
             <UserDiscordNotificationSettingsText>Discord Notifications</UserDiscordNotificationSettingsText>
-            {loggedInUser?.userInfo?.discordUsername && (
-              <Switch checked={notificationOn} onChange={(e) => handleEnableDisableSwitch()} />
-            )}
+            <Switch
+              checked={!!(isDiscordConnected && notificationOn)}
+              disabled={!isDiscordConnected}
+              onChange={(e) => handleEnableDisableSwitch()}
+            />
           </UserDiscordNotificationSettingsDiv>
-          {loggedInUser?.userInfo?.discordUsername ? (
-            <LoggedInDiscordUserText>{loggedInUser?.userInfo?.discordUsername}</LoggedInDiscordUserText>
+          {isDiscordConnected ? (
+            <LoggedInDiscordUserText>@{isDiscordConnected}</LoggedInDiscordUserText>
           ) : (
-            <LoggedInDiscordUserText
-              style={{
-                color: White,
-              }}
-            >
-              {' '}
-              Please connect your discord <Link href="/profile/settings">here</Link> first
-            </LoggedInDiscordUserText>
+            <DiscordLink href={discordUrl}>Connect your Discord</DiscordLink>
           )}
-          <ExplanationText>
-            Currently you will receive payment, task assignment, and review request notifications
-          </ExplanationText>
-        </GeneralSettingsInputsBlock>
+          <div>
+            {canChangeSettings &&
+              notificationsConfig.map((category, idx) => (
+                <div key={idx}>
+                  <NotificationSettingsCategoryLabel>{category.label}</NotificationSettingsCategoryLabel>
+                  {category.settings.map((setting) =>
+                    typeof discordNotificationSettings[setting.id] === 'undefined' ? null : (
+                      <NotificationSettingListItem key={setting?.id}>
+                        <StyledCheckbox
+                          checked={discordNotificationSettings[setting.id]}
+                          onChange={() => handleNotificationSettingsChange(setting.id)}
+                          inputProps={{ 'aria-label': 'controlled' }}
+                        />
+                        <NotificationSettingLabel>{setting?.label}</NotificationSettingLabel>
+                      </NotificationSettingListItem>
+                    )
+                  )}
+                </div>
+              ))}
+          </div>
+        </UserDiscordNotificationSettingsContainer>
 
         {/* <GeneralSettingsInputsBlock>
           {profileBannerUrl ? (
@@ -248,19 +374,21 @@ const ProfileSettings = (props) => {
             />
           )}
         </GeneralSettingsInputsBlock> */}
-        {/* <GeneralSettingsButtonsBlock>
-          <GeneralSettingsResetButton>Reset changes</GeneralSettingsResetButton>
-          <GeneralSettingsSaveChangesButton
-            buttonInnerStyle={{
-              fontFamily: 'Space Grotesk',
-              fontWeight: 'bold',
-            }}
-            highlighted
-            onClick={handleSaveChanges}
-          >
-            Save changes
-          </GeneralSettingsSaveChangesButton>
-        </GeneralSettingsButtonsBlock> */}
+        {isSettingChanged && isDiscordConnected && notificationOn && (
+          <NotificationSettingsButtonsBlock>
+            <GeneralSettingsResetButton onClick={setInitialSettings}>Reset changes</GeneralSettingsResetButton>
+            <GeneralSettingsSaveChangesButton
+              buttonInnerStyle={{
+                fontFamily: 'Space Grotesk',
+                fontWeight: 'bold',
+              }}
+              highlighted
+              onClick={saveNotificationSettings}
+            >
+              Save changes
+            </GeneralSettingsSaveChangesButton>
+          </NotificationSettingsButtonsBlock>
+        )}
       </GeneralSettingsContainer>
     </SettingsWrapper>
   );

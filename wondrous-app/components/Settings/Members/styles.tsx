@@ -1,4 +1,5 @@
 import { Typography } from '@material-ui/core';
+import { DropDown, DropDownItem } from 'components/Common/dropdown';
 import styled from 'styled-components';
 import { White } from '../../../theme/colors';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
@@ -26,6 +27,13 @@ export const DefaultProfilePicture = (props) => {
   return <DefaultUserImage style={ProfilePictureStyles} />;
 };
 
+export const UsernameText = styled(Typography)`
+  && {
+    color: #c4c4c4;
+    font-size: 14px;
+    line-height: 22px;
+  }
+`;
 
 export const SeeMoreText = styled(Typography)`
   && {
@@ -68,3 +76,7 @@ export const PodsCount = styled.div`
   text-align: center;
   display: inline-block;
 `;
+
+export const MemberDropdown = styled(DropDown)``;
+
+export const MemberDropdownItem = styled(DropDownItem)``;

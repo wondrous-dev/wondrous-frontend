@@ -17,6 +17,7 @@ import { Grey700, White } from '../../theme/colors';
 import { addProposalItem } from 'utils/board';
 import { CHAIN_TO_CHAIN_DIPLAY_NAME, ENTITIES_TYPES, MEDIA_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { TextInputContext } from 'utils/contexts';
+
 import {
   getMentionArray,
   parseUserPermissionContext,
@@ -483,6 +484,8 @@ const CreateLayoutBaseModal = (props) => {
   const [createMilestone, { loading: createMilestoneLoading }] = useMutation(CREATE_MILESTONE);
 
   const submitMutation = useCallback(() => {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
     const taskInput = {
       title,
       description: descriptionText,
@@ -1432,7 +1435,7 @@ const CreateLayoutBaseModal = (props) => {
             onClick={submitMutation}
           >
             {creating ? <CircularProgress size={20} /> : null}
-            {canCreateTask ? 'Create' : 'Propose'} {titleText}
+            {canCreateTask ? 'Create' : isProposal ? 'Create': 'Propose'} {titleText}
           </CreateFormPreviewButton>
         </CreateFormButtonsBlock>
       </CreateFormFooterButtons>

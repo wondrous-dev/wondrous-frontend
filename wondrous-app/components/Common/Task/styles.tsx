@@ -212,6 +212,11 @@ export const TaskModal = styled(BaseCard)`
   /* Hide scrollbar for IE, Edge and Firefox */
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+
+  @media (max-width: 680px) {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 export const TaskModalHeader = styled.div`

@@ -180,18 +180,17 @@ const ProfileSettings = (props) => {
     }
   }, [loggedInUser?.username, loggedInUser?.userInfo?.email, loggedInUser?.bio]);
   const handleSaveChanges = async () => {
-    // Only if username is there...
     if (!USERNAME_REGEX.test(username)) {
       setErrors({
         ...errors,
         username: 'Please enter a valid username with 3-15 alphanumeric characters',
       });
-    } else if (!validateEmail(email)) {
+    } else if (email && !validateEmail(email)) {
       setErrors({
         ...errors,
         email: 'Please enter a valid email',
       });
-    } else if (profileBio.length > 200) {
+    } else if (profileBio && profileBio.length > 200) {
       setErrors({
         ...errors,
         description: 'The description should not exceed 200 characters',
@@ -213,9 +212,11 @@ const ProfileSettings = (props) => {
         if (profilePicture) {
           const file = profilePicture;
           const fileName = profilePicture.name;
-
+          console.log('filename', fileName)
           // get image preview
           const { fileType, filename } = getFilenameAndType(fileName);
+          console.log(fileType, filename)
+
           const imagePrefix = `tmp/${loggedInUser?.id}/`;
           const imageUrl = imagePrefix + filename;
 
@@ -397,7 +398,7 @@ const ProfileSettings = (props) => {
           )}
         </GeneralSettingsInputsBlock> */}
         <GeneralSettingsButtonsBlock>
-          <GeneralSettingsResetButton>Reset changes</GeneralSettingsResetButton>
+          <GeneralSettingsResetButton>Cancel changes</GeneralSettingsResetButton>
           <GeneralSettingsSaveChangesButton highlighted onClick={handleSaveChanges}>
             Save changes
           </GeneralSettingsSaveChangesButton>

@@ -75,3 +75,11 @@ export const REJECT_JOIN_ORG_REQUEST = gql`
     }
   }
 `;
+
+export const KICK_ORG_USER = gql`
+  mutation kickOrgUser($userId: ID!, $orgId: ID!) {
+    kickOrgUser(userId: $userId, orgId: $orgId) {
+      success
+    }
+  }
+`;

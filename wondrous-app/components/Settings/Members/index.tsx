@@ -32,8 +32,45 @@ import { Text } from 'components/styled';
 import Grid from '@mui/material/Grid';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import { DropDown, DropDownItem } from 'components/Common/dropdown';
+import { TaskMenuIcon } from 'components/Icons/taskMenu';
 
 const LIMIT = 10;
+
+
+const useKickMember = (orgId, podId, users, setUsers) => {
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
+  const kickMemberSuccessful = () => {
+    setSnackbarAlertOpen(true);
+    setSnackbarAlertMessage(<>Member kicked successfully!</>);
+  };
+  const [kickOrgUser] = useMutation(KICK_ORG_USER, {
+    onCompleted: kickMemberSuccessful,
+  });
+  const [kickPodUser] = useMutation(KICK_POD_USER, {
+    onCompleted: kickMemberSuccessful,
+  });
+  const handleKickMember = (userId) => {
+    setUsers(users.filter((user) => user?.user?.id !== userId));
+    if (orgId) {
+      kickOrgUser({
+        variables: {
+          orgId,
+          userId,
+        },
+      });
+    }
+    if (podId) {
+      kickPodUser({
+        variables: {
+          podId,
+          userId,
+        },
+      });
+    }
+  };
+  return handleKickMember;
+};
+
 
 const Members = (props) => {
   const router = useRouter();
@@ -139,6 +176,7 @@ const Members = (props) => {
 
   const orgOrPodName = orgData?.getOrgById?.name || podData?.getPodById?.name;
   const canRemoveUsers = false;
+  const handleKickMember = useKickMember(orgId, podId, users, setUsers);
 
   return (
     <SettingsWrapper showPodIcon={false}>
@@ -182,8 +220,10 @@ const Members = (props) => {
             <StyledTableBody>
               {users ? (
                 users.map(({ user, role }) => {
+                  const userId = user?.user?.id;
+
                   return (
-                    <StyledTableRow key={user?.username}>
+                    <StyledTableRow key={userId}>
                       <StyledTableCell>
                         <Link href={`/profile/${user?.username}/about`} passHref>
                           <Grid container direction="row" alignItems="center" style={{ cursor: 'pointer' }}>
@@ -215,7 +255,7 @@ const Members = (props) => {
                       </StyledTableCell>
                       <StyledTableCell>
                         <MemberRoleDropdown
-                          userId={user?.id}
+                          userId={userId}
                           orgId={orgId}
                           podId={podId}
                           existingRole={role}
@@ -238,6 +278,18 @@ const Members = (props) => {
 
                       {canRemoveUsers ? (
                         <StyledTableCell>
+                          <MemberDropdown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
+                            <MemberDropdownItem
+                                color="#C4C4C4"
+                                fontSize="13px"
+                                fontWeight="normal"
+                                textAlign="left"
+                                onClick={() => handleKickMember(userId)}
+                            >
+                              Kick Member
+                            </MemberDropdownItem>
+                          </MemberDropdown>
+
                           <DropDown DropdownHandler={TaskMenuIcon}>
                             <DropDownItem
                               onClick={() => {}}
