@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useLazyQuery } from '@apollo/client';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import Link from 'next/link';
 import pluralize from 'pluralize';
 import { format } from 'date-fns';
@@ -30,12 +30,13 @@ import MemberRoleDropdown from './MemberRoleDropdown';
 import MemberRoles from '../MemberRoles';
 import { Text } from 'components/styled';
 import Grid from '@mui/material/Grid';
-import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import { DropDown, DropDownItem } from 'components/Common/dropdown';
-import { TaskMenuIcon } from 'components/Icons/taskMenu';
+import { KICK_ORG_USER } from 'graphql/mutations/org';
+import { KICK_POD_USER } from 'graphql/mutations/pod';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import {TaskMenuIcon} from "components/Icons/taskMenu";
 
 const LIMIT = 10;
-
 
 const useKickMember = (orgId, podId, users, setUsers) => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
@@ -70,7 +71,6 @@ const useKickMember = (orgId, podId, users, setUsers) => {
   };
   return handleKickMember;
 };
-
 
 const Members = (props) => {
   const router = useRouter();
@@ -175,7 +175,6 @@ const Members = (props) => {
   }, [hasMore, users, fetchMore, orgId, podId]);
 
   const orgOrPodName = orgData?.getOrgById?.name || podData?.getPodById?.name;
-  const canRemoveUsers = false;
   const handleKickMember = useKickMember(orgId, podId, users, setUsers);
 
   return (
@@ -213,8 +212,8 @@ const Members = (props) => {
                 <StyledTableHeaderCell width="40%">Currency</StyledTableHeaderCell>
                 <StyledTableHeaderCell width="25%">Role</StyledTableHeaderCell>
                 <StyledTableHeaderCell width="15%">Pods</StyledTableHeaderCell>
-                <StyledTableHeaderCell width="15%">Last Active</StyledTableHeaderCell>
-                {canRemoveUsers ? <StyledTableHeaderCell width="5%">Edit</StyledTableHeaderCell> : null}
+                <StyledTableHeaderCell width="10%">Last Active</StyledTableHeaderCell>
+                <StyledTableHeaderCell width="5%">Edit</StyledTableHeaderCell> : null
               </StyledTableRow>
             </StyledTableHead>
             <StyledTableBody>
@@ -276,32 +275,18 @@ const Members = (props) => {
                         </Text>
                       </StyledTableCell>
 
-                      {canRemoveUsers ? (
-                        <StyledTableCell>
-                          <MemberDropdown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
-                            <MemberDropdownItem
-                                color="#C4C4C4"
-                                fontSize="13px"
-                                fontWeight="normal"
-                                textAlign="left"
-                                onClick={() => handleKickMember(userId)}
-                            >
-                              Kick Member
-                            </MemberDropdownItem>
-                          </MemberDropdown>
-
-                          <DropDown DropdownHandler={TaskMenuIcon}>
-                            <DropDownItem
-                              onClick={() => {}}
-                              style={{
-                                color: White,
-                              }}
-                            >
-                              Remove Member
-                            </DropDownItem>
-                          </DropDown>
-                        </StyledTableCell>
-                      ) : null}
+                      <StyledTableCell>
+                        <DropDown DropdownHandler={TaskMenuIcon}>
+                          <DropDownItem
+                            onClick={() => handleKickMember(userId)}
+                            style={{
+                              color: White,
+                            }}
+                          >
+                            Remove Member
+                          </DropDownItem>
+                        </DropDown>
+                      </StyledTableCell>
                     </StyledTableRow>
                   );
                 })
