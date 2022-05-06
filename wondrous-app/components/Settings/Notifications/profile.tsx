@@ -64,6 +64,19 @@ const notificationsConfig = [
     ],
   },
   {
+    label: 'Membership requests',
+    settings: [
+      {
+        label: 'New requests',
+        id: 'onJoinRequest',
+      },
+      {
+        label: 'Request status change',
+        id: 'onJoinRequestStatus',
+      },
+    ],
+  },
+  {
     label: 'Assigned work',
     settings: [
       {
@@ -77,6 +90,10 @@ const notificationsConfig = [
       {
         id: 'onProposalSubmissionStatus',
         label: 'Approvals and Rejections',
+      },
+      {
+        id: 'onDueDate',
+        label: 'Due date reminders',
       },
     ],
   },
@@ -152,8 +169,17 @@ const ProfileSettings = (props) => {
     },
   });
 
-  const { onComment, onTaskAssign, onSubmissionsToReview, onProposalSubmissionStatus, onTaskClaim, onPayment } =
-    userNotificationConfigData?.getUserNotificationSetting || {};
+  const {
+    onComment,
+    onTaskAssign,
+    onSubmissionsToReview,
+    onProposalSubmissionStatus,
+    onTaskClaim,
+    onPayment,
+    onJoinRequest,
+    onJoinRequestStatus,
+    onDueDate,
+  } = userNotificationConfigData?.getUserNotificationSetting || {};
 
   const initialSettings = {
     onComment,
@@ -162,6 +188,9 @@ const ProfileSettings = (props) => {
     onProposalSubmissionStatus,
     onTaskClaim,
     onPayment,
+    onJoinRequest,
+    onJoinRequestStatus,
+    onDueDate,
   };
   const setInitialSettings = () => {
     if (userNotificationConfigData?.getUserNotificationSetting) {

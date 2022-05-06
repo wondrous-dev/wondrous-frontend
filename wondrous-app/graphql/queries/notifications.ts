@@ -40,6 +40,9 @@ export const GET_USER_DISCORD_NOTIFICATION_CONFIGS = gql`
       onSubmissionsToReview
       onTaskClaim
       onPayment
+      onJoinRequest
+      onJoinRequestStatus
+      onDueDate
     }
   }
 `;
