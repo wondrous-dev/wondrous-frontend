@@ -216,6 +216,9 @@ export const TaskModal = styled(BaseCard)`
   @media (max-width: 680px) {
     width: 100%;
     height: 100%;
+    left: 0;
+    top: 0;
+    transform: none;
   }
 `;
 
