@@ -36,6 +36,7 @@ import {
   RightArrowWrapper,
   TaskUserDiv,
   MakeSubmissionDiv,
+  TaskListModalContentWrapper,
 } from './styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
@@ -603,16 +604,12 @@ export const TaskListViewModal = (props) => {
         <TaskListModalHeader>
           {count} {text}
         </TaskListModalHeader>
-        <div
-          style={{
-            paddingBottom: '30px',
-          }}
-        >
+        <TaskListModalContentWrapper>
           {fetchedList?.map((task, index) => {
             return <TaskListCard key={task?.id} taskType={taskType} task={task} />;
           })}
           <LoadMore ref={ref} hasMore={hasMore}></LoadMore>
-        </div>
+        </TaskListModalContentWrapper>
       </TaskModal>
     </CreateModalOverlay>
   );
