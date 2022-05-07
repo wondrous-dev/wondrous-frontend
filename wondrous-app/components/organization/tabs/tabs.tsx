@@ -18,13 +18,17 @@ const Tabs = (props) => {
       label: 'Boards',
     },
     {
+      href: `/${page}/${user}/docs`,
+      label: 'Docs',
+    },
+    // {
+    //   href: `/${page}/${user}/treasury`,
+    //   label: 'Treasury',
+    // },
+    {
       href: `/${page}/${user}/activities`,
       label: 'Activity',
     },
-    // {
-    //   href: `/${page}/${user}/about`,
-    //   label: 'About',
-    // },
   ];
 
   return (
@@ -36,9 +40,9 @@ const Tabs = (props) => {
             value={tab.href}
             key={tab.href}
             href={tab.href}
-            passHref={true}
+            passHref
           >
-            <StyledTab label={tab.label} />
+            <StyledTab isActive={tab.href === asPath} label={tab.label} />
           </Link>
         ))}
       </StyledTabs>
