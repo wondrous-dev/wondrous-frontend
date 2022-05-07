@@ -57,9 +57,9 @@ const Tabs = (props) => {
             value={tab.href}
             key={tab.href}
             href={tab.href}
-            passHref={true}
+            passHref
           >
-            <StyledTab label={tab.label} />
+            <StyledTab isActive={tab.href === asPath} label={tab.label} />
           </Link>
         ))}
       </StyledTabs>

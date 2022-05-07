@@ -8,6 +8,7 @@ import Image from 'next/image';
 import Header from '../../Header';
 import SideBarComponent from '../../SideBar';
 import Tabs from '../tabs/tabs';
+import Stats from '../stats/stats';
 import CreateFormModal from '../../CreateEntity';
 import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from 'utils/helpers';
 
@@ -417,7 +418,10 @@ const Wrapper = (props) => {
                   </div>
                 </HeaderActivity>
               </TokenHeader>
-              <Tabs>{children}</Tabs>
+              <Tabs>
+                <Stats />
+                {children}
+              </Tabs>
             </ContentContainer>
           </Content>
         </OverviewComponent>
