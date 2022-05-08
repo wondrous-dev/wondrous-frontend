@@ -711,9 +711,6 @@ export const OptionDiv = styled.li`
   display: flex;
   align-items: center;
   cursor: pointer;
-  margin-bottom: 8px;
-  margin-left: 10px;
-  margin-top: 4px;
   
   &:hover {
     background-color: #474747;
