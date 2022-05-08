@@ -34,6 +34,7 @@ export const TaskSummaryInner = styled.div`
   padding: 14px;
 
   padding-bottom: 18px;
+  width: 100%;
 `;
 
 export const TaskSummaryMedia = styled.div`

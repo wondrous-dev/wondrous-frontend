@@ -90,6 +90,7 @@ export const MilestoneProgressWrapper = styled.div`
 
 export const TaskCardDescriptionText = styled.p`
   overflow: hidden;
+  overflow-wrap: break-word;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -207,6 +208,10 @@ export const TaskModal = styled(BaseCard)`
     display: none;
     width: 0;
     height: 0;
+  }
+
+  & > div {
+    width: 100%;
   }
 
   /* Hide scrollbar for IE, Edge and Firefox */
@@ -488,6 +493,10 @@ export const TaskListModalHeader = styled(Typography)`
     margin-bottom: 20px;
     color: ${White};
   }
+`;
+
+export const TaskListModalContentWrapper = styled.div`
+  padding-bottom: 30px;
 `;
 
 export const TaskListCardWrapper = styled.div`

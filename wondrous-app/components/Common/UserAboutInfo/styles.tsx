@@ -196,6 +196,11 @@ export const UserAboutInfoPodsCardFooterCount = styled(Typography)`
 export const UserAboutInfoSeeAllDialog = styled(Dialog)`
   && .MuiPaper-root {
     background-color: transparent;
+    ::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
   }
 `;
 

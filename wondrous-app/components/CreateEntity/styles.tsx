@@ -22,7 +22,7 @@ export const CreateModalOverlay = styled(Modal)`
   position: absolute;
   width: 100%;
   overflow-y: scroll;
-  height: 100%;
+  height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -186,14 +186,15 @@ export const CreateLayoutsModalItemTitle = styled(Typography)`
 
 export const CreateFormBaseModal = styled(BaseCard)`
   width: 680px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -20%);
+  height: 100%;
+  overflow-y: scroll;
   &::-webkit-scrollbar {
     display: none;
     width: 0;
     height: 0;
+  }
+  && > div:first-child {
+    min-height: inherit;
   }
 
   /* Hide scrollbar for IE, Edge and Firefox */
@@ -687,6 +688,8 @@ export const OptionDiv = styled.div`
   align-items: center;
   cursor: pointer;
   margin-bottom: 8px;
+  margin-left: 10px;
+  margin-top: 4px;
 `;
 
 export const OptionTypography = styled(Typography)`
@@ -694,7 +697,7 @@ export const OptionTypography = styled(Typography)`
     font-family: Space Grotesk;
     font-size: 14px;
     color: ${White};
-    margin-left: 8px;
+    margin-left: 6px;
   }
 `;
 
@@ -704,6 +707,11 @@ export const StyledChip = styled(Chip)`
     color: #c4c4c4;
     background: #0f0f0f;
     border: 1px solid rgb(116, 39, 255);
+    & .MuiSvgIcon-root {
+      :hover {
+        color: ${White};
+      }
+    }
   }
 `;
 
