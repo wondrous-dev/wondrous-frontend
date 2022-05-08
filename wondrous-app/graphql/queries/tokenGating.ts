@@ -37,7 +37,7 @@ export const CHECK_ORG_TOKEN_GATING_CONDITION = gql`
 
 export const CHECK_ORG_ROLE_TOKEN_GATING_CONDITION = gql`
   query checkOrgRoleTokenGatingCondition($orgRoleId: ID!, $userId: ID!) {
-    checkOrgTokenGatingCondition(orgRoleId: $orgRoleId, userId: $userId) {
+    checkOrgRoleTokenGatingCondition(orgRoleId: $orgRoleId, userId: $userId) {
       success
     }
   }

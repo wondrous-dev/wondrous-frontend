@@ -91,7 +91,7 @@ const TokenGatedRoleDisplay = (props) => {
     if (checkPodRoleAccessData?.checkPodRoleTokenGatingCondition?.success) {
       setCanClaimRole(true);
     }
-    if (checkPodRoleAccessData?.checkRoleRoleTokenGatingCondition?.success) {
+    if (checkOrgRoleAccessData?.checkOrgRoleTokenGatingCondition?.success) {
       setCanClaimRole(true);
     }
     if (checkOrgRoleAccessLoading || checkPodRoleAccessLoading) {
@@ -114,6 +114,7 @@ const TokenGatedRoleDisplay = (props) => {
           },
         });
       } else if (role.orgId) {
+        console.log("checkkinng")
         checkOrgRoleTokenGatingCondition({
           variables: {
             orgRoleId: role.id,

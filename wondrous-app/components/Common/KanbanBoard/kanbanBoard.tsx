@@ -202,10 +202,10 @@ const KanbanBoard = (props) => {
           shouldFocusAfterRender={false}
           handleClose={() => {
             const style = document.body.getAttribute('style');
-            const top = style.match(/(?<=top: -)(.*?)(?=px)/);
+            const top = style.match(/(top: -)(.*?)(?=px)/);
             document.body.setAttribute('style', '');
             if (top?.length > 0) {
-              window?.scrollTo(0, Number(top[0]));
+              window?.scrollTo(0, Number(top[2]));
             }
             const newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}`;
             location.push(newUrl);

@@ -41,7 +41,7 @@ const MyApp = ({ Component, context, isAuthenticated, user, pageProps: { session
   // perform automatic static optimization, causing every page in your app to
   // be server-side rendered.
   const router = useRouter();
-  const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
   useEffect(() => {
     initHotjar();

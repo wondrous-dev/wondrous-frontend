@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from 'utils/constants';
 import { SideBarContext } from 'utils/contexts';
 import apollo from 'services/apollo';
+import { useMe } from '../../Auth/withAuth';
 
 import Header from '../../Header';
 import SideBarComponent from '../../SideBar';
@@ -64,6 +65,7 @@ import { DiscordIcon } from '../../Icons/discord';
 import { MembershipRequestModal } from './RequestModal';
 import { PrivateBoardIcon } from '../../Common/PrivateBoardIcon';
 import { GET_TOKEN_GATED_ROLES_FOR_ORG, LIT_SIGNATURE_EXIST } from 'graphql/queries';
+import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { TokenGatedRoleModal } from 'components/organization/wrapper/TokenGatedRoleModal';
 
 const MOCK_ORGANIZATION_DATA = {
@@ -73,6 +75,7 @@ const MOCK_ORGANIZATION_DATA = {
 const Wrapper = (props) => {
   const { children, orgData } = props;
   const wonderWeb3 = useWonderWeb3();
+  const loggedInUser = useMe();
   const [open, setOpen] = useState(false);
   const [minimized, setMinimized] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
@@ -94,6 +97,7 @@ const Wrapper = (props) => {
   const { amount } = data;
   const [joinRequestSent, setJoinRequestSent] = useState(false);
   const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
+  const [notLinkedWalletError, setNotLinkedWalletError] = useState(false);
   const [openGatedRoleModal, setOpenGatedRoleModal] = useState(false);
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST);
   const toggleCreateFormModal = () => {
@@ -105,6 +109,9 @@ const Wrapper = (props) => {
   const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
   const handleJoinOrgButtonClick = async () => {
+    if (loggedInUser && !loggedInUser?.activeEthAddress) {
+      setOpenJoinRequestModal(true);
+    }
     let apolloResult;
     try {
       apolloResult = await apollo.query({
@@ -119,9 +126,17 @@ const Wrapper = (props) => {
       return;
     }
     const roles = apolloResult?.data?.getTokenGatedRolesForOrg;
-    console.log('roless', roles)
     if (!roles || roles?.length === 0) {
       setOpenJoinRequestModal(true);
+      return;
+    }
+    if (
+      wonderWeb3.address &&
+      loggedInUser?.activeEthAddress &&
+      wonderWeb3.toChecksumAddress(wonderWeb3.address) != wonderWeb3.toChecksumAddress(loggedInUser?.activeEthAddress)
+    ) {
+      setOpenJoinRequestModal(true);
+      setNotLinkedWalletError(true);
       return;
     }
     let litSignatureExistResult;
@@ -136,8 +151,23 @@ const Wrapper = (props) => {
     }
     const litSignatureExist = litSignatureExistResult?.data?.litSignatureExist;
     if (!litSignatureExist?.exist) {
-      // FIXME make sure the account is the correct account
-      const signedMessage = await wonderWeb3.signMessage(LIT_PROTOCOL_MESSAGE);
+      // FIXME make sure  account is the correct account
+      try {
+        const signedMessage = await wonderWeb3.signMessage(LIT_PROTOCOL_MESSAGE);
+        await apollo.mutate({
+          mutation: CREATE_LIT_SIGNATURE,
+          variables: {
+            input: {
+              signature: signedMessage,
+              signingAddress: wonderWeb3.address,
+            },
+          },
+        });
+      } catch (e) {
+        console.error(e);
+        setOpenJoinRequestModal(true);
+        return;
+      }
     }
     setTokenGatedRoles(roles);
     setOpenGatedRoleModal(true);
@@ -186,6 +216,8 @@ const Wrapper = (props) => {
         sendRequest={createJoinOrgRequest}
         open={openJoinRequestModal}
         onClose={() => setOpenJoinRequestModal(false)}
+        notLinkedWalletError={notLinkedWalletError}
+        linkedWallet={loggedInUser?.activeEthAddress}
       />
       <TokenGatedRoleModal
         open={openGatedRoleModal}

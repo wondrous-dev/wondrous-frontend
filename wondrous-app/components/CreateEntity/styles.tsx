@@ -711,7 +711,10 @@ export const OptionDiv = styled.li`
   display: flex;
   align-items: center;
   cursor: pointer;
-
+  margin-bottom: 8px;
+  margin-left: 10px;
+  margin-top: 4px;
+  
   &:hover {
     background-color: #474747;
   }
@@ -728,6 +731,7 @@ export const OptionTypography = styled(Typography)`
     font-family: Space Grotesk;
     font-size: 14px;
     color: ${White};
+    margin-left: 6px;
 
     span {
       color: #c4c4c4;
@@ -741,6 +745,12 @@ export const StyledChip = styled(Chip)`
     color: #c4c4c4;
     background: #0f0f0f;
     border: 1px solid rgb(116, 39, 255);
+    
+    & .MuiSvgIcon-root {
+      :hover {
+        color: ${White};
+      }
+    }
   }
 `;
 
