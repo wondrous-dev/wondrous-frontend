@@ -23,7 +23,7 @@ export const CreateModalOverlay = styled(Modal)`
   position: absolute;
   width: 100%;
   overflow-y: scroll;
-  height: 100%;
+  height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -187,14 +187,15 @@ export const CreateLayoutsModalItemTitle = styled(Typography)`
 
 export const CreateFormBaseModal = styled(BaseCard)`
   width: 680px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -20%);
+  height: 100%;
+  overflow-y: scroll;
   &::-webkit-scrollbar {
     display: none;
     width: 0;
     height: 0;
+  }
+  && > div:first-child {
+    min-height: inherit;
   }
 
   /* Hide scrollbar for IE, Edge and Firefox */
