@@ -209,11 +209,10 @@ const Members = (props) => {
           <StyledTable>
             <StyledTableHead>
               <StyledTableRow>
-                <StyledTableHeaderCell width="40%">Currency</StyledTableHeaderCell>
-                <StyledTableHeaderCell width="25%">Role</StyledTableHeaderCell>
+                <StyledTableHeaderCell width="50%">Currency</StyledTableHeaderCell>
+                <StyledTableHeaderCell width="30%">Role</StyledTableHeaderCell>
                 <StyledTableHeaderCell width="15%">Pods</StyledTableHeaderCell>
-                <StyledTableHeaderCell width="10%">Last Active</StyledTableHeaderCell>
-                <StyledTableHeaderCell width="5%">Edit</StyledTableHeaderCell> : null
+                <StyledTableHeaderCell width="5%">Edit</StyledTableHeaderCell>
               </StyledTableRow>
             </StyledTableHead>
             <StyledTableBody>
@@ -266,13 +265,6 @@ const Members = (props) => {
                         <PodsCount>
                           {user?.additionalInfo?.podCount || 'N/A'} {pluralize('Pod', user?.additionalInfo?.podCount)}{' '}
                         </PodsCount>
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        <Text color="white" fontSize="14px">
-                          {user?.additionalInfo?.streak?.lastActiveAt
-                            ? format(new Date(user?.additionalInfo?.streak?.lastActiveAt), 'MM/dd/yyyy')
-                            : 'N/A'}
-                        </Text>
                       </StyledTableCell>
 
                       <StyledTableCell>

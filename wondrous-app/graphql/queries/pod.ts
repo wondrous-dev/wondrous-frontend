@@ -63,9 +63,6 @@ export const GET_POD_USERS = gql`
         thumbnailPicture
         additionalInfo {
           podCount
-          streak {
-            lastActivityAt
-          }
         }
         firstName
         lastName

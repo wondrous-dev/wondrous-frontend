@@ -51,9 +51,6 @@ export const GET_ORG_USERS = gql`
         thumbnailPicture
         additionalInfo {
           podCount
-          streak {
-            lastActivityAt
-          }
         }
         firstName
         lastName
@@ -146,9 +143,6 @@ export const SEARCH_ORG_USERS = gql`
       thumbnailPicture
       additionalInfo {
         podCount
-        streak {
-          lastActivityAt
-        }
       }
       firstName
       lastName
