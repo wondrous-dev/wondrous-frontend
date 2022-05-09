@@ -28,7 +28,7 @@ const PinnedDocsSection = ({ pinnedDocs, onDialogOpen, onItemClick }) => (
     <GridLayout>
       {pinnedDocs?.map((doc) => (
         <DocumentGridItem
-          key={doc.link}
+          key={doc.id}
           title={doc.title}
           description={doc.description}
           icon={doc.icon}

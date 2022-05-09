@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import isEmpty from 'lodash/isEmpty';
@@ -14,7 +14,6 @@ import {
   DELETE_ORG_DOCUMENT_CATEGORY,
   UPDATE_ORG_DOCUMENT_CATEGORY,
 } from 'graphql/mutations/documents';
-import { GET_ORG_DOCS_CATEGORIES } from 'graphql/queries/documents';
 
 import DocPermissionSelect from 'components/DocPermissionSelect';
 import DocModal from 'components/DocModal';
@@ -37,28 +36,16 @@ const DocCategoriesDialog = ({ open, onClose, orgName, orgId, category }) => {
     onClose();
   };
 
-  const [getOrgDocsCategories] = useLazyQuery(GET_ORG_DOCS_CATEGORIES, {
-    variables: {
-      orgId,
-    },
-  });
-
   const [createOrgDocumentCategory] = useMutation(CREATE_ORG_DOCUMENT_CATEGORY, {
-    onCompleted: () => {
-      getOrgDocsCategories();
-    },
+    refetchQueries: ['getOrgDocumentCategories'],
   });
 
   const [deleteDocumentCategory] = useMutation(DELETE_ORG_DOCUMENT_CATEGORY, {
-    onCompleted: () => {
-      getOrgDocsCategories();
-    },
+    refetchQueries: ['getOrgDocumentCategories'],
   });
 
   const [updateDocumentCategory] = useMutation(UPDATE_ORG_DOCUMENT_CATEGORY, {
-    onCompleted: () => {
-      getOrgDocsCategories();
-    },
+    refetchQueries: ['getOrgDocumentCategories'],
   });
 
   const handleDelete = () => {
@@ -67,6 +54,7 @@ const DocCategoriesDialog = ({ open, onClose, orgName, orgId, category }) => {
         documentCategoryId: category.id,
       },
     });
+    handleClose();
   };
 
   const onSubmitForm = (data) => {
@@ -127,7 +115,7 @@ const DocCategoriesDialog = ({ open, onClose, orgName, orgId, category }) => {
               required: 'name is required',
             })}
             fullWidth
-            helperText={errors.name && errors.name.message}
+            helperText={errors.name?.message}
             error={errors.name}
           />
         </Box>
@@ -136,8 +124,8 @@ const DocCategoriesDialog = ({ open, onClose, orgName, orgId, category }) => {
           <LabelTypography>Who can see this category</LabelTypography>
           {/* // TODO: Permission not included on documentCategoryInput at the BE */}
           <DocPermissionSelect
-            register={register('permission', {
-              required: 'permission is required',
+            register={register('visibility', {
+              required: 'visibility is required',
             })}
             errors={errors}
           />

@@ -67,7 +67,7 @@ const Docs = (props) => {
   const [showDocDialog, setDocShowDialog] = useState(false);
   const [showDeleteDocDialog, setDeleteDocDialog] = useState(false);
   const [showCategoriesDialog, setShowCategoriesDialog] = useState(false);
-  const [docCategory, setDocCategory] = useState({ name: '' });
+  const [docCategory, setDocCategory] = useState({});
   const [selectedDoc, setSelectedDoc] = useState({});
   const [pinned, setPinned] = useState(false);
 
@@ -101,7 +101,7 @@ const Docs = (props) => {
 
   const handleCloseDocDialog = () => {
     setDocShowDialog(false);
-    setDocCategory({ name: '' });
+    setDocCategory({});
     setPinned(false);
     handleMenuClose();
   };
@@ -113,7 +113,7 @@ const Docs = (props) => {
 
   const handleCloseCategoriesDialog = () => {
     setShowCategoriesDialog(false);
-    setDocCategory({ name: '' });
+    setDocCategory({});
   };
 
   const handleOpenDeleteDialog = () => {
@@ -146,7 +146,7 @@ const Docs = (props) => {
 
       {categoriesData?.map((category) => (
         <DocCategoriesSection
-          key={category.name}
+          key={category.id}
           category={category}
           onItemClick={handleItemClick}
           onOpenDocDialog={handleOpenDocDialog}
@@ -178,12 +178,7 @@ const Docs = (props) => {
         orgId={orgId}
         category={docCategory}
       />
-      <DeleteDocDialog
-        open={showDeleteDocDialog}
-        onClose={handleCloseDeleteDialog}
-        selectedDoc={selectedDoc}
-        orgId={orgId}
-      />
+      <DeleteDocDialog open={showDeleteDocDialog} onClose={handleCloseDeleteDialog} selectedDoc={selectedDoc} />
     </Wrapper>
   );
 };

@@ -6,6 +6,4 @@ const TextLink = ({ href, label }) => (
   </StyledLink>
 );
 
-TextLink.propTypes = {};
-
 export default TextLink;

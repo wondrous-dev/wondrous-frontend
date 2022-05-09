@@ -1,10 +1,9 @@
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import Image from 'next/image';
 import { styled } from '@mui/material/styles';
 
 import Typography from '@mui/material/Typography';
 
-import { GET_ORG_DOCS } from 'graphql/queries/documents';
 import { DELETE_ORG_DOCUMENT } from 'graphql/mutations/documents';
 
 import DocModal from 'components/DocModal';
@@ -13,17 +12,9 @@ import { textStyles } from './DeleteDocDialogStyles';
 
 const StyledText = styled(Typography)(textStyles);
 
-const DeleteDocDialog = ({ open, onClose, selectedDoc, orgId }) => {
-  const [getOrgDocs] = useLazyQuery(GET_ORG_DOCS, {
-    variables: {
-      orgId,
-    },
-  });
-
+const DeleteDocDialog = ({ open, onClose, selectedDoc }) => {
   const [deleteDocument] = useMutation(DELETE_ORG_DOCUMENT, {
-    onCompleted: () => {
-      getOrgDocs();
-    },
+    refetchQueries: ['getOrgDocs'],
   });
 
   const handleDelete = () => {
@@ -48,7 +39,5 @@ const DeleteDocDialog = ({ open, onClose, selectedDoc, orgId }) => {
     </DocModal>
   );
 };
-
-DeleteDocDialog.propTypes = {};
 
 export default DeleteDocDialog;

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import head from 'lodash/head';
 import Image from 'next/image';
 import { styled } from '@mui/material/styles';
@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
 import { handleAddFile } from 'utils/media';
+import { URL_REGEX } from 'utils/constants';
 
 import styles, {
   inputStyles,
@@ -15,6 +16,8 @@ import styles, {
   deleteButtonStyles,
   whiteTypographyStyles,
 } from './ImageUploaderStyles';
+import { useLazyQuery } from '@apollo/client';
+import { GET_PREVIEW_FILE } from 'graphql/queries';
 
 const HiddenInput = styled('input')(inputStyles);
 const UploadButton = styled(Button)(uploadButtonStyles);
@@ -26,6 +29,22 @@ const ImageUploader = ({ errors, setValue, value }) => {
   const hiddenFileInput = useRef(null);
   const [mediaUploads, setMediaUploads] = useState([]);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
+
+  const [getPreviewFile, { data }] = useLazyQuery(GET_PREVIEW_FILE, {
+    fetchPolicy: 'network-only',
+  });
+
+  const imgUrl = data?.getPreviewFile?.url;
+
+  useEffect(() => {
+    if (file && typeof file !== 'object') {
+      getPreviewFile({
+        variables: {
+          path: file,
+        },
+      });
+    }
+  }, [imgUrl, file]);
 
   const triggerUpload = () => {
     hiddenFileInput.current.click();
@@ -52,19 +71,17 @@ const ImageUploader = ({ errors, setValue, value }) => {
     setFile(null);
   };
 
+  const fileIsUrl = URL_REGEX.test(file);
+
   return (
     <Box display="flex">
       <HiddenInput type="file" ref={hiddenFileInput} onChange={handleFormUpload} />
       <Box position="relative" width={214} height={100} sx={styles.imageContainer}>
-        {file ? (
-          <Image
-            src={file && typeof file === 'string' ? file : URL.createObjectURL(file)}
-            alt="preview"
-            layout="fill"
-            objectFit="cover"
-          />
-        ) : (
-          <Box sx={styles.imagePlaceholder}>Upload a image to see the preview</Box>
+        {/* {renderImageDisplayer(file)} */}
+        {!file && <Box sx={styles.imagePlaceholder}>Upload a image to see the preview</Box>}
+        {file && imgUrl && <Image src={imgUrl} alt="preview" layout="fill" objectFit="cover" />}
+        {file && typeof file === 'object' && (
+          <Image src={URL.createObjectURL(file)} alt="preview" layout="fill" objectFit="cover" />
         )}
       </Box>
       <Box>
@@ -76,7 +93,7 @@ const ImageUploader = ({ errors, setValue, value }) => {
         <WhiteTypography>Max file size: 10mb</WhiteTypography>
         {fileUploadLoading && <WhiteTypography>Loading</WhiteTypography>}
       </Box>
-      {errors?.file && <Typography>{errors.file && errors.file.message}</Typography>}
+      {errors?.file && <Typography>{errors.file?.message}</Typography>}
     </Box>
   );
 };

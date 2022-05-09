@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import Image from 'next/image';
 import isEmpty from 'lodash/isEmpty';
 import { useForm } from 'react-hook-form';
@@ -10,7 +10,6 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 
 import { CREATE_ORG_DOCUMENT, UPDATE_ORG_DOCUMENT } from 'graphql/mutations/documents';
-import { GET_ORG_DOCS } from 'graphql/queries/documents';
 import { URL_REGEX } from 'utils/constants';
 
 import DocModal from 'components/DocModal';
@@ -38,22 +37,12 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, category, document, pi
     onClose();
   };
 
-  const [getOrgDocs] = useLazyQuery(GET_ORG_DOCS, {
-    variables: {
-      orgId,
-    },
-  });
-
   const [createOrgDocument] = useMutation(CREATE_ORG_DOCUMENT, {
-    onCompleted: () => {
-      getOrgDocs();
-    },
+    refetchQueries: ['getOrgDocs'],
   });
 
   const [updateDocument] = useMutation(UPDATE_ORG_DOCUMENT, {
-    onCompleted: () => {
-      getOrgDocs();
-    },
+    refetchQueries: ['getOrgDocs'],
   });
 
   const onSubmitForm = (data) => {
@@ -80,7 +69,7 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, category, document, pi
         input: {
           ...data,
           orgId: orgId,
-          categoryId: category.id,
+          ...(category?.id && { categoryId: category.id }),
           ...(pinned && { pinned: pinned }),
         },
       },
@@ -113,7 +102,7 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, category, document, pi
               pattern: { value: URL_REGEX, message: 'Please enter a valid link' },
             })}
             fullWidth
-            helperText={errors.link && errors.link.message}
+            helperText={errors.link?.message}
             error={errors.link}
           />
         </Box>
@@ -126,7 +115,7 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, category, document, pi
               required: 'title is required',
             })}
             fullWidth
-            helperText={errors.title && errors.title.message}
+            helperText={errors.title?.message}
             error={errors.title}
           />
         </Box>
@@ -139,8 +128,8 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, category, document, pi
               required: 'description is required',
             })}
             fullWidth
-            helperText={errors.docDescription && errors.docDescription.message}
-            error={errors.docDescription}
+            helperText={errors.description?.message}
+            error={errors.description}
           />
         </Box>
 
@@ -164,7 +153,5 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, category, document, pi
     </DocModal>
   );
 };
-
-AddDocumentDialog.propTypes = {};
 
 export default AddDocumentDialog;

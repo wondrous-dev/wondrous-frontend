@@ -24,7 +24,7 @@ const DocPermissionSelect = ({ register, errors }) => (
     select
     {...register}
     fullWidth
-    helperText={errors.visibility && errors.visibility.message}
+    helperText={errors.visibility?.message}
     error={errors.visibility}
     SelectProps={{ MenuProps: { MenuListProps: { sx: { ...styles.menuList } } } }}
   >

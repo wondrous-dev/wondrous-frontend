@@ -42,7 +42,7 @@ const DocCategoriesSection = ({ onItemClick, onOpenDocDialog, docs, category, on
       <ListLayout>
         {docsByCategory?.map((doc, idx) => (
           <DocumentListItem
-            key={idx}
+            key={doc.id}
             title={doc.title}
             description={doc.description}
             icon={doc.icon}

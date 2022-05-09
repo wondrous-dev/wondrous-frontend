@@ -8,6 +8,4 @@ const GridLayout = ({ children }) => {
   );
 };
 
-GridLayout.propTypes = {};
-
 export default GridLayout;

@@ -93,6 +93,4 @@ const DocModal = ({
   );
 };
 
-DocModal.propTypes = {};
-
 export default DocModal;

@@ -42,7 +42,6 @@ const DocumentGridItem = ({ title, description, media, url, icon, permission, on
           <TextLink href={url} label={null} />
         </Box>
         <Box sx={styles.imageContainer}>
-          {/* <SafeImage src={media} /> */}
           {imgUrl && (
             <Image
               src={imgUrl}
@@ -59,7 +58,5 @@ const DocumentGridItem = ({ title, description, media, url, icon, permission, on
     </Grid>
   );
 };
-
-DocumentGridItem.propTypes = {};
 
 export default DocumentGridItem;
