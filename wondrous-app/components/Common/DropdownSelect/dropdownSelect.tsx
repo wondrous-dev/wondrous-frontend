@@ -11,7 +11,7 @@ import {
 import { SafeImage } from '../Image';
 import { FormControl } from '@material-ui/core';
 
-const MenuProps = {
+const DefaultMenuProps = {
   PaperProps: {
     style: {
       maxHeight: '250px',
@@ -30,9 +30,12 @@ const MenuProps = {
 const DropdownSelect = (props) => {
   const {
     title,
+    className,
     labelText,
     labelIcon,
     options,
+    MenuProps = DefaultMenuProps,
+    IconComponent,
     name,
     value,
     setValue,
@@ -52,7 +55,7 @@ const DropdownSelect = (props) => {
 
   const [open, setOpen] = useState(false);
   return (
-    <CreateFormSelectBlock style={formSelectStyle}>
+    <CreateFormSelectBlock style={formSelectStyle} className={className}>
       <CreateFormSelectBlockTitle style={titleStyle}>{title}</CreateFormSelectBlockTitle>
       <FormControl>
         {!value && (
@@ -72,7 +75,7 @@ const DropdownSelect = (props) => {
         )}
 
         <CreateFormSelect
-          // IconComponent={CreateFormSelectArrowIcon}
+          IconComponent={IconComponent}
           value={value || ''}
           open={open}
           onClick={() => {

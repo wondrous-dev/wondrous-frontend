@@ -26,6 +26,7 @@ export const GET_USER_PODS = gql`
       name
       profilePicture
       description
+      lastActivityAt
       color
       org {
         id
@@ -59,6 +60,12 @@ export const GET_POD_USERS = gql`
         id
         username
         profilePicture
+        thumbnailPicture
+        additionalInfo {
+          podCount
+        }
+        firstName
+        lastName
         bio
       }
       role {
