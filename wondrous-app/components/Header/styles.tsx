@@ -81,7 +81,7 @@ export const HeaderRightBlock = styled.div`
   max-width: 480px;
   width: 100%;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: flex-end;
 `;
 
@@ -127,4 +127,16 @@ export const HeaderCreateButton = styled(Button)`
       padding-right: 2px;
     }
   }
+`;
+
+export const TutorialButton = styled(Button)`
+  && {
+    min-height: 40px;
+    margin-right: 16px;
+    width: 160px;
+  }
+`;
+
+export const TutorialText = styled.span`
+  font-family: Space Grotesk;
 `;
