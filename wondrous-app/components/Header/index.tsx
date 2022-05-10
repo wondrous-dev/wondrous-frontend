@@ -79,7 +79,7 @@ const HeaderComponent = (props) => {
         <HeaderRightBlock>
           <a
             style={{
-              textDecoration: 'none !important',
+              textDecoration: 'none',
             }}
             href="https://linktr.ee/wonderverse"
             target="_blank"
