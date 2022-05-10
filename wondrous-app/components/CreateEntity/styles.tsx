@@ -13,6 +13,7 @@ import CreatePodIcon from '../Icons/createPod.svg';
 import CreateProposalIcon from '../Icons/createProposal.svg';
 import CreateTaskIcon from '../Icons/createTask.svg';
 import WonderTokenIcon from '../Icons/wonderToken';
+import SearchIcon from 'components/Icons/search';
 
 export const MediaUploadGrid = styled(Grid)`
   && {
@@ -212,8 +213,6 @@ export const CreateFormBaseModalHeader = styled.div`
   padding: 0 40px 25px;
 
   & svg {
-    width: 60px;
-    height: 60px;
     margin-right: 10px;
   }
 `;
@@ -437,6 +436,8 @@ export const CreateFormAddDetailsInputs = styled(CreateFormMainSelects)`
 export const CreateFormAddDetailsInputBlock = styled.div`
   width: 262px;
   margin-bottom: 15px;
+  margin-right: 18px;
+
   :last-child {
     margin: 0;
   }
@@ -447,7 +448,7 @@ export const CreateFormAddDetailsInputLabel = styled(Typography)`
     font-weight: 500;
     font-size: 14px;
     color: #ccbbff;
-    margin-bottom: 15px;
+    margin-bottom: 3px;
   }
 `;
 
@@ -582,7 +583,8 @@ export const CreateFormPreviewButton = styled(Button)`
     }
 
     &:disabled {
-      color: #ffffff;
+      color: #7a7a7a;
+      border-color: #7a7a7a;
       cursor: not-allowed;
     }
   }
@@ -623,6 +625,12 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
   border-radius: 6px;
   min-height: 40px;
   color: ${White};
+  position: relative;
+  padding-right: 0;
+
+  .MuiInputBase-adornedStart {
+    padding-right: 10px !important;
+  }
 
   input {
     color: #c4c4c4;
@@ -630,6 +638,21 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
     left: 8px;
     font-size: 14px;
     height: 30px;
+
+    ::placeholder {
+      color: white;
+    }
+  }
+
+  .search-icon {
+    right: 10px;
+    height: 11px;
+    position: absolute;
+  }
+
+  .roles-icon2 {
+    position: absolute;
+    left: 10px;
   }
 
   svg {
@@ -683,13 +706,20 @@ export const StyledAutocompletePopper = styled(({ className, ...props }) => {
   }
 `;
 
-export const OptionDiv = styled.div`
+export const OptionDiv = styled.li`
   display: flex;
   align-items: center;
   cursor: pointer;
-  margin-bottom: 8px;
-  margin-left: 10px;
-  margin-top: 4px;
+
+  &:hover {
+    background-color: #474747;
+  }
+
+  img {
+    width: 18px;
+    height: 18px;
+    margin: 8px;
+  }
 `;
 
 export const OptionTypography = styled(Typography)`
@@ -698,6 +728,10 @@ export const OptionTypography = styled(Typography)`
     font-size: 14px;
     color: ${White};
     margin-left: 6px;
+
+    span {
+      color: #c4c4c4;
+    }
   }
 `;
 
@@ -707,6 +741,7 @@ export const StyledChip = styled(Chip)`
     color: #c4c4c4;
     background: #0f0f0f;
     border: 1px solid rgb(116, 39, 255);
+
     & .MuiSvgIcon-root {
       :hover {
         color: ${White};
@@ -722,7 +757,6 @@ export const CreateFormSubmitButton = styled(Button)`
     min-height: 40px;
     margin-left: 25px;
 
-    //text
     font-weight: 500;
     font-size: 16px;
     line-height: 150%;

@@ -94,7 +94,7 @@ const SIDEBAR_LIST_ITEMS = [
 // ]
 
 export const SettingsWrapper = (props) => {
-  const { children } = props;
+  const { children, showPodIcon = true } = props;
 
   const router = useRouter();
   const user = useMe();
@@ -110,10 +110,11 @@ export const SettingsWrapper = (props) => {
     toggleHtmlOverflow();
     setCreateFormModal((prevState) => !prevState);
   };
+
   const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
   const [getPodById, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
 
-  const org = orgData?.getOrgById || podData?.getPodById?.orgId;
+  const org = podData?.getPodById?.orgId;
   const pod = podData?.getPodById;
 
   const SETTINGS_SIDEBAR_LIST_ITEMS = [
@@ -307,14 +308,17 @@ export const SettingsWrapper = (props) => {
               </SettingsSidebarTabsSection>
             </SettingsSidebarContainer>
           </SettingsSidebar>
+
           <SettingsContentBlock>
-            <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>
-              <SettingsDaoPodIndicatorOrgProfile src={orgData?.getOrgById?.profilePicture} />
-              <SettingsDaoPodIndicatorIconWrapper color={podData?.getPodById.color}>
-                <PodIcon />
-              </SettingsDaoPodIndicatorIconWrapper>
-              <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
-            </SettingsDaoPodIndicator>
+            {showPodIcon ? (
+              <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>
+                <SettingsDaoPodIndicatorOrgProfile src={orgData?.getOrgById?.profilePicture} />
+                <SettingsDaoPodIndicatorIconWrapper color={podData?.getPodById.color}>
+                  <PodIcon />
+                </SettingsDaoPodIndicatorIconWrapper>
+                <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
+              </SettingsDaoPodIndicator>
+            ) : null}
             {children}
           </SettingsContentBlock>
         </SettingsContainer>

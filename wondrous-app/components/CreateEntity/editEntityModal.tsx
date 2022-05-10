@@ -588,6 +588,7 @@ const EditLayoutBaseModal = (props) => {
   });
 
   const submitMutation = useCallback(() => {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
     switch (entityType) {
       case ENTITIES_TYPES.TASK:
         const taskInput = {
@@ -615,6 +616,7 @@ const EditLayoutBaseModal = (props) => {
           reviewerIds: selectedReviewers.map(({ id }) => id) || [],
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
+          timezone
         };
         const taskPodPrivacyError = !isPodPublic ? publicTask : false;
         if (!title || !org || taskPodPrivacyError) {
@@ -658,6 +660,7 @@ const EditLayoutBaseModal = (props) => {
           }),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
+          timezone
         };
 
         if (!title) {
@@ -689,6 +692,7 @@ const EditLayoutBaseModal = (props) => {
               podId: pod?.id,
               userMentions: getMentionArray(descriptionText),
               mediaUploads,
+              timezone
             },
           },
         });
@@ -720,6 +724,7 @@ const EditLayoutBaseModal = (props) => {
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
+          timezone
         };
         // const isErrorMaxSubmissionCount =
         //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
