@@ -18,6 +18,10 @@ const Tabs = (props) => {
       label: 'Boards',
     },
     {
+      href: `/${page}/${user}/docs`,
+      label: 'Docs',
+    },
+    {
       href: `/${page}/${user}/activities`,
       label: 'Activity',
     },

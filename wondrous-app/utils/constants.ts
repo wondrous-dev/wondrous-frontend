@@ -66,11 +66,13 @@ export const PAYMENT_STATUS = {
 const SUPPORTED_CHAINS = {
   1: 'ETH',
   137: 'MATIC',
+  1666600000: 'HARMONY',
 };
 
 export const RPC_URLS: { [chainId: number]: string } = {
   1: process.env.NEXT_PUBLIC_RPC_URL_ETH,
   137: process.env.NEXT_PUBLIC_RPC_URL_MATIC,
+  1666600000: process.env.NEXT_PUBLIC_RPC_URL_HARMONY,
 };
 
 export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId));
@@ -83,12 +85,14 @@ export const CHAIN_IDS = {
   ETH: 1,
   MATIC: 137,
   RINKEBY: 4,
+  HARMONY: 1666600000,
 };
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
   eth_mainnet: 'Ethereum Mainnet',
   rinkeby: 'Rinkeby Testnet',
   polygon_mainnet: 'Polygon Mainnet',
+  harmony: 'Harmony Mainnet',
 };
 
 export const SUPPORTED_CURRENCIES = [
@@ -99,6 +103,10 @@ export const SUPPORTED_CURRENCIES = [
   {
     symbol: 'MATIC',
     chains: [137],
+  },
+  {
+    symbol: 'ONE',
+    chains: [1666600000],
   },
   {
     symbol: 'WONDER',
@@ -114,6 +122,7 @@ export const SUPPORTED_CURRENCIES = [
     contracts: {
       1: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       137: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
+      1666600000: '0x44cED87b9F1492Bf2DCf5c16004832569f7f6cBa'
     },
   },
 ];
@@ -123,6 +132,7 @@ export const CURRENCY_KEYS = {
   WONDER: 'WONDER',
   MATIC: 'MATIC',
   USDC: 'USDC',
+  ONE: 'ONE',
 };
 
 export const SIDEBAR_WIDTH = '80px';
@@ -251,7 +261,8 @@ export const filteredColorOptions = Object.keys(POD_COLOR).map((key) => ({
 export { SUPPORTED_CHAINS };
 export const EMAIL_REGEX =
   /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
+export const URL_REGEX =
+  /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi;
 export const validateEmail = (email) => {
   return email.match(EMAIL_REGEX);
 };
