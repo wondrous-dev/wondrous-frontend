@@ -436,7 +436,6 @@ export const CreateFormAddDetailsInputs = styled(CreateFormMainSelects)`
 export const CreateFormAddDetailsInputBlock = styled.div`
   width: 262px;
   margin-bottom: 15px;
-  margin-right: 18px;
 
   :last-child {
     margin: 0;
