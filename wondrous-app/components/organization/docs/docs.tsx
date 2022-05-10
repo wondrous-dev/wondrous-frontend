@@ -15,7 +15,7 @@ import DeleteDocDialog from 'components/DeleteDocDialog';
 import AddDocumentDialog from 'components/AddDocumentDialog';
 import PinnedDocsSection from 'components/PinnedDocsSection';
 import DocCategoriesSection from 'components/DocCategoriesSection';
-import DocCategoriesDialog from 'components/DocCategoriesDialog/DocCategoriesDialog';
+import DocCategoriesDialog from 'components/DocCategoriesDialog';
 
 import Wrapper from '../wrapper/wrapper';
 import styles from './docsStyles';
