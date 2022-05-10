@@ -114,7 +114,7 @@ export const SettingsWrapper = (props) => {
   const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
   const [getPodById, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
 
-  const org = podData?.getPodById?.orgId;
+  const org = orgData?.getOrgById;
   const pod = podData?.getPodById;
 
   const SETTINGS_SIDEBAR_LIST_ITEMS = [
@@ -251,6 +251,7 @@ export const SettingsWrapper = (props) => {
     },
   };
   const activeSettingsPage = settingsPageConfig?.[String(podId ?? orgId ?? '')];
+
   return (
     <>
       <SettingsBoardContext.Provider
