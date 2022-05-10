@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients';
 import { Grey80, Grey250, White } from '../../../theme/colors';
-import { Typography } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import { BaseCard } from '../card';
 import React from 'react';
 import { Tabs, InputBase } from '@material-ui/core';
+import { CreateFormCancelButton, CreateFormMainSelects, CreateFormPreviewButton } from 'components/CreateEntity/styles';
 
 export const PodWrapper = styled.div`
   background: #363636;
@@ -33,7 +34,7 @@ export const PaymentModal = styled(BaseCard)`
   position: absolute;
   left: 50%;
   top: 50%;
-  height: 70%;
+  min-height: 70%;
   transform: translate(-50%, -50%);
   overflow-y: scroll;
   z-index: 2100;
@@ -42,11 +43,11 @@ export const PaymentModal = styled(BaseCard)`
   align-items: center;
   justify-content: center;
   background: rgb(20, 20, 20) !important;
-  padding-bottom: 32px;
-  &:-webkit-scrollbar {
+  &::-webkit-scrollbar {
     display: none;
+    width: 0;
+    height: 0;
   }
-
   /* Hide scrollbar for IE, Edge and Firefox */
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
@@ -149,21 +150,6 @@ export const StyledTabs = styled((props) => (
   },
 });
 
-export const PaymentLinkInput = styled(InputBase)`
-  && {
-    width: 100%;
-    height: 40px;
-    border: 1px solid #4b4b4b;
-    border-radius: 6px;
-
-    font-size: 14px;
-    line-height: 21px;
-    letter-spacing: 0.01em;
-    color: #c4c4c4;
-    padding: 10px 15px;
-  }
-`;
-
 export const PaymentMethodWrapper = styled.div`
   margin-bottom: 32px;
 `;
@@ -184,5 +170,36 @@ export const PaymentPendingTypography = styled(Typography)`
     font-family: Space Grotesk;
     color: #ffff;
     font-size: 16px;
+  }
+`;
+
+export const ChangePaymentButton = styled(Button)`
+  && {
+    border: 1px solid #4b4b4b;
+    border-radius: 4px;
+    color: ${White};
+    margin-top: 12px;
+    font-size: 14px;
+  }
+`;
+
+export const ChangePaymentAmountDiv = styled(CreateFormMainSelects)`
+  && {
+    margin-bottom: 0;
+    align-items: center;
+    justify-content: flex-start;
+  }
+`;
+
+export const SaveNewRewardAmountButton = styled(CreateFormPreviewButton)`
+  && {
+    margin-top: 12px;
+  }
+`;
+
+export const CancelNewRewardAmountButton = styled(CreateFormCancelButton)`
+  && {
+    margin-left: 8px;
+    margin-top: 12px;
   }
 `;

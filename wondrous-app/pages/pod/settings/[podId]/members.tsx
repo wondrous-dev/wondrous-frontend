@@ -1,5 +1,5 @@
 import React from 'react';
-import Members from '../../../../components/Settings/Members';
+import Members from 'components/Settings/Members';
 
 const MembersPage = () => {
   return <Members />;

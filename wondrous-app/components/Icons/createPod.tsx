@@ -1,11 +1,7 @@
-import React from 'react'
+import React from 'react';
 
-export default function CreatePodIcon({
-  circle = false,
-  ellipseColor = '#7A7A7A',
-  ...props
-}) {
-  const { style } = props
+export default function CreatePodIcon({ circle = false, ellipseColor = '#CCBBFF', ...props }) {
+  const { style } = props;
   return (
     <svg
       style={style}
@@ -44,5 +40,5 @@ export default function CreatePodIcon({
         strokeLinejoin="round"
       />
     </svg>
-  )
+  );
 }

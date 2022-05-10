@@ -36,6 +36,7 @@ export const GET_USER_ORGS = gql`
       name
       profilePicture
       thumbnailPicture
+      privacyLevel
     }
   }
 `;
@@ -47,6 +48,12 @@ export const GET_ORG_USERS = gql`
         id
         username
         profilePicture
+        thumbnailPicture
+        additionalInfo {
+          podCount
+        }
+        firstName
+        lastName
         bio
       }
       role {
@@ -65,6 +72,32 @@ export const GET_ORG_ROLES = gql`
       name
       default
       permissions
+    }
+  }
+`;
+
+export const GET_ORG_ROLES_WITH_TOKEN_GATE = gql`
+  query getOrgRolesWithTokenGate($orgId: ID) {
+    getOrgRoles(orgId: $orgId) {
+      id
+      name
+      default
+      permissions
+      tokenGatingCondition {
+        id
+        orgId
+        podId
+        name
+        booleanLogic
+        accessCondition {
+          contractAddress
+          type
+          chain
+          method
+          minValue
+          tokenIds
+        }
+      }
     }
   }
 `;
@@ -107,6 +140,12 @@ export const SEARCH_ORG_USERS = gql`
       id
       username
       profilePicture
+      thumbnailPicture
+      additionalInfo {
+        podCount
+      }
+      firstName
+      lastName
       bio
     }
   }
@@ -128,6 +167,7 @@ export const GET_JOIN_ORG_REQUESTS = gql`
       orgUsername
       podColor
       podName
+      createdAt
     }
   }
 `;
@@ -139,18 +179,6 @@ export const GET_USER_JOIN_ORG_REQUEST = gql`
       orgId
       approvedAt
       rejectedAt
-    }
-  }
-`;
-
-export const GET_DISCORD_WEBHOOK_INFO_FOR_ORG = gql`
-  query getDiscordWebhookInfoForOrg($orgId: ID!) {
-    getDiscordWebhookInfoForOrg(orgId: $orgId) {
-      id
-      orgId
-      podId
-      webhookUrl
-      privacyLevel
     }
   }
 `;

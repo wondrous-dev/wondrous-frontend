@@ -23,10 +23,10 @@ import { CompletedIcon } from '../../Icons/statusIcons';
 import { RejectIcon } from '../../Icons/taskModalIcons';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import { ArchiveTaskModal } from '../ArchiveTaskModal';
-import { GET_ORG_TASK_BOARD_TASKS } from '../../../graphql/queries/taskBoard';
+import { GET_ORG_TASK_BOARD_TASKS } from 'graphql/queries/taskBoard';
 import MilestoneIcon from '../../Icons/milestone';
 
-import * as Constants from '../../../utils/constants';
+import * as Constants from 'utils/constants';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
 import {
   TaskWrapper,
@@ -53,21 +53,22 @@ import {
   ClaimButton,
   TaskCardDescriptionText,
 } from './styles';
-import { renderMentionString } from '../../../utils/common';
+import { renderMentionString } from 'utils/common';
 import { useRouter } from 'next/router';
 import { Typography } from '@material-ui/core';
 import { SafeImage } from '../Image';
-import { parseUserPermissionContext, cutString, transformTaskToTaskCard } from '../../../utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
+import { parseUserPermissionContext, cutString, transformTaskToTaskCard } from 'utils/helpers';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useLocation } from 'utils/useLocation';
 import { White } from '../../../theme/colors';
 import { TaskViewModal } from './modal';
 import { useMe } from '../../Auth/withAuth';
-import { delQuery } from '../../../utils';
+import { delQuery } from 'utils';
 import { TaskSummaryAction } from '../TaskSummary/styles';
 import { Arrow, Archived } from '../../Icons/sections';
-import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE } from '../../../graphql/mutations/task';
-import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries';
-import { OrgBoardContext } from '../../../utils/contexts';
+import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
+import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD, GET_TASK_REVIEWERS } from 'graphql/queries';
+import { OrgBoardContext } from 'utils/contexts';
 import { TaskCreatedBy } from '../TaskCreatedBy';
 import { MilestoneProgress } from '../MilestoneProgress';
 import { MilestoneWrapper } from '../Milestone';
@@ -76,8 +77,10 @@ import { SubtaskDarkIcon } from '../../Icons/subtask';
 import { CheckedBoxIcon } from '../../Icons/checkedBox';
 
 import { Claim } from '../../Icons/claimTask';
-import { updateInProgressTask, updateTaskItem } from '../../../utils/board';
+import { updateInProgressTask, updateTaskItem } from 'utils/board';
 import { TaskBountyOverview } from '../TaskBountyOverview';
+import { CreateModalOverlay } from 'components/CreateEntity/styles';
+import EditLayoutBaseModal from 'components/CreateEntity/editEntityModal';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -90,9 +93,23 @@ export const TASK_ICONS = {
   [Constants.TASK_STATUS_PAID]: Paid,
 };
 
+const useGetReviewers = (editTask, task) => {
+  const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
+  useEffect(() => {
+    if (editTask && !reviewerData?.getTaskReviewers?.length) {
+      getReviewers({
+        variables: {
+          taskId: task?.id,
+        },
+      });
+    }
+  }, [editTask, getReviewers, reviewerData?.getTaskReviewers?.length, task?.id]);
+  return reviewerData?.getTaskReviewers;
+};
+
 let windowOffset = 0;
 export const Task = (props) => {
-  const { task, setTask, onOpen = (task) => null, className } = props;
+  const { task, setTask, className } = props;
   const {
     actions = {},
     description = '',
@@ -125,6 +142,7 @@ export const Task = (props) => {
   const [liked, setLiked] = useState(iLiked);
   const [archiveTask, setArchiveTask] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
+  const [editTask, setEditTask] = useState(false);
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
@@ -138,7 +156,44 @@ export const Task = (props) => {
   const isMilestone = type === Constants.ENTITIES_TYPES.MILESTONE;
   const isSubtask = task?.parentTaskId !== null;
   const isBounty = type === Constants.ENTITIES_TYPES.BOUNTY;
+  const location = useLocation();
 
+  const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
+    refetchQueries: [
+      'getTaskById',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getOrgTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+    onError: () => {
+      console.error('Something went wrong with archiving tasks');
+    },
+    onCompleted: () => {
+      // TODO: Move columns
+      // let columns = [...boardColumns?.columns]
+    },
+  });
+  const [unarchiveTaskMutation, { data: unarchiveTaskData }] = useMutation(UNARCHIVE_TASK, {
+    refetchQueries: [
+      'getTaskById',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getOrgTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+    onError: () => {
+      console.error('Something went wrong unarchiving tasks');
+    },
+    onCompleted: () => {
+      // TODO: Move columns
+      // let columns = [...boardColumns?.columns]
+    },
+  });
   const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
     refetchQueries: () => [
       'getUserTaskBoardTasks',
@@ -150,6 +205,7 @@ export const Task = (props) => {
       'getSubtasksForTask',
     ],
   });
+  const reviewerData = useGetReviewers(editTask, task);
 
   const totalSubtask = task?.totalSubtaskCount;
   const completedSubtask = task?.completedSubtaskCount;
@@ -157,50 +213,58 @@ export const Task = (props) => {
   const handleNewStatus = useCallback(
     (newStatus) => {
       orgBoard?.setFirstTimeFetch(false);
-      updateTaskStatusMutation({
-        variables: {
-          taskId: id,
-          input: {
-            newStatus,
+      if (newStatus === Constants.TASK_STATUS_ARCHIVED) {
+        archiveTaskMutation({
+          variables: {
+            taskId: id,
           },
-        },
-      });
+        }).then((result) => {
+          setSnackbarAlertOpen(true);
+          setSnackbarAlertMessage(
+            <>
+              Task archived successfully!{' '}
+              <ArchivedTaskUndo
+                onClick={() => {
+                  setSnackbarAlertOpen(false);
+                  unarchiveTaskMutation({
+                    variables: {
+                      taskId: id,
+                    },
+                  });
+                }}
+              >
+                Undo
+              </ArchivedTaskUndo>
+            </>
+          );
+        });
+      } else {
+        updateTaskStatusMutation({
+          variables: {
+            taskId: id,
+            input: {
+              newStatus,
+            },
+          },
+        });
+      }
     },
-    [id, updateTaskStatusMutation, orgBoard]
+    [
+      id,
+      updateTaskStatusMutation,
+      orgBoard,
+      archiveTaskMutation,
+      setSnackbarAlertMessage,
+      setSnackbarAlertOpen,
+      unarchiveTaskMutation,
+    ]
   );
 
   useEffect(() => {
     if (!initialStatus) {
       setInitialStatus(status);
     }
-
-    if (updateTaskStatusMutationData?.updateTaskStatus.status === Constants.TASK_STATUS_ARCHIVED) {
-      setSnackbarAlertOpen(true);
-      setSnackbarAlertMessage(
-        <>
-          Task archived successfully!{' '}
-          <ArchivedTaskUndo
-            onClick={() => {
-              handleNewStatus(initialStatus);
-              setSnackbarAlertOpen(false);
-            }}
-          >
-            Undo
-          </ArchivedTaskUndo>
-        </>
-      );
-    }
-  }, [
-    initialStatus,
-    setInitialStatus,
-    status,
-    updateTaskStatusMutationData,
-    setSnackbarAlertOpen,
-    setSnackbarAlertMessage,
-    handleNewStatus,
-    isSubtask,
-    id,
-  ]);
+  }, [initialStatus, setInitialStatus, status]);
 
   const toggleLike = () => {
     setLiked(!liked);
@@ -227,9 +291,9 @@ export const Task = (props) => {
     permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
     task?.createdBy === user?.id;
 
-  const openModal = () => {
-    onOpen(task);
-    router.push(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`);
+  const openModal = (e) => {
+    const newUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`;
+    location.push(newUrl);
     // document.body.style.overflow = 'hidden'
     // document.body.scroll = false
     windowOffset = window.scrollY;
@@ -267,11 +331,34 @@ export const Task = (props) => {
 
   return (
     <span className={className}>
+      <CreateModalOverlay
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        open={editTask}
+        onClose={() => {
+          setEditTask(false);
+        }}
+      >
+        <EditLayoutBaseModal
+          open={open}
+          entityType={task?.type}
+          handleClose={() => {
+            setEditTask(false);
+          }}
+          cancelEdit={() => setEditTask(false)}
+          existingTask={{
+            ...task,
+            reviewers: reviewerData || [],
+          }}
+          isTaskProposal={false}
+        />
+      </CreateModalOverlay>
       <ArchiveTaskModal
         open={archiveTask}
         onClose={() => setArchiveTask(false)}
         onArchive={handleNewStatus}
         taskType={type}
+        taskId={task?.id}
       />
       <TaskWrapper key={id} onClick={openModal}>
         <TaskInner>
@@ -438,11 +525,18 @@ export const Task = (props) => {
                   <DropDownItem
                     key={'task-menu-edit-' + id}
                     onClick={() => {
+                      setEditTask(true);
+                    }}
+                    color={White}
+                  >
+                    Edit {type}
+                  </DropDownItem>
+                  <DropDownItem
+                    key={'task-menu-edit-' + id}
+                    onClick={() => {
                       setArchiveTask(true);
                     }}
-                    style={{
-                      color: White,
-                    }}
+                    color={White}
                   >
                     Archive {type}
                   </DropDownItem>
@@ -507,7 +601,11 @@ export const TaskListCard = (props) => {
         isTaskProposal={taskType === Constants.TASK_STATUS_REQUESTED}
         back={true}
       />
-      <TaskListCardWrapper onClick={() => setViewDetails(true)}>
+      <TaskListCardWrapper
+        onClick={() => {
+          setViewDetails(true);
+        }}
+      >
         <TaskHeader>
           <SafeImage
             src={task?.orgProfilePicture}
@@ -550,9 +648,8 @@ export const TaskListCard = (props) => {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                router.push(`/pod/${task?.podId}/boards`, undefined, {
-                  shallow: true,
-                });
+                const newUrl = `/pod/${task?.podId}/boards`;
+                window.location.href = newUrl;
               }}
             >
               <PodName>{task?.podName.slice(0, 15)}</PodName>

@@ -21,3 +21,5 @@ export const ApprovedSubmissionContext = createContext(null); // for payment pro
 export const PaymentModalContext = createContext(null);
 
 export const SelectMembershipContext = createContext(null);
+
+export const EditTokenGatingConditionContext = createContext(null);

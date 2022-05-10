@@ -37,7 +37,6 @@ export const TaskWrapper = styled.div`
   border-radius: ${(props) => (props.wrapped ? '0px' : '6px')};
 
   min-width: 290px;
-  min-height: 216px;
   width: 100%;
   flex-wrap: wrap;
 `;
@@ -91,6 +90,7 @@ export const MilestoneProgressWrapper = styled.div`
 
 export const TaskCardDescriptionText = styled.p`
   overflow: hidden;
+  overflow-wrap: break-word;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -210,9 +210,21 @@ export const TaskModal = styled(BaseCard)`
     height: 0;
   }
 
+  & > div {
+    width: 100%;
+  }
+
   /* Hide scrollbar for IE, Edge and Firefox */
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+
+  @media (max-width: 680px) {
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    transform: none;
+  }
 `;
 
 export const TaskModalHeader = styled.div`
@@ -342,7 +354,7 @@ export const TaskSectionInfoDiv = styled.div`
 `;
 
 export const TaskModalFooter = styled.div`
-  margin-top: 24px;
+  margin-top: 16px;
 `;
 
 export const TaskSectionFooterTitleDiv = styled.div`
@@ -383,7 +395,7 @@ export const TaskSectionContent = styled.div`
 `;
 export const MakeSubmissionDiv = styled.div`
   background: #0f0f0f;
-  border-radius: 184px;
+  border-radius: 8px;
   padding: 12px;
   display: flex;
   align-items: center;
@@ -454,6 +466,7 @@ export const TaskSubmissionLink = styled(TaskLink)`
     margin-right: 8px;
     max-width: 500px;
     overflow-x: scroll;
+    text-align: left;
     &::-webkit-scrollbar {
       display: none;
       width: 0;
@@ -480,6 +493,10 @@ export const TaskListModalHeader = styled(Typography)`
     margin-bottom: 20px;
     color: ${White};
   }
+`;
+
+export const TaskListModalContentWrapper = styled.div`
+  padding-bottom: 30px;
 `;
 
 export const TaskListCardWrapper = styled.div`

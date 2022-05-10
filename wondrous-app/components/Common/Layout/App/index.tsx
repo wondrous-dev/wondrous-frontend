@@ -1,9 +1,9 @@
-import Header from '../../../Header'
-import { Main, Footer, Container } from './styles'
-import SideBarComponent from '../../../SideBar'
-import { useState } from 'react'
-import { SideBarContext } from '../../../../utils/contexts'
-import { SIDEBAR_WIDTH } from '../../../../utils/constants'
+import Header from '../../../Header';
+import { Main, Footer, Container } from './styles';
+import SideBarComponent from '../../../SideBar';
+import { useState } from 'react';
+import { SideBarContext } from 'utils/contexts';
+import { SIDEBAR_WIDTH } from 'utils/constants';
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -21,10 +21,10 @@ const SIDEBAR_LIST_ITEMS = [
     icon: '/images/sidebar/third.png',
     path: '/',
   },
-]
+];
 
 const AppLayout = ({ banner, children, ...props }) => {
-  const [minimized, setMinimized] = useState(false)
+  const [minimized, setMinimized] = useState(false);
   return (
     <>
       <Header />
@@ -46,7 +46,7 @@ const AppLayout = ({ banner, children, ...props }) => {
       </SideBarContext.Provider>
       <Footer />
     </>
-  )
-}
+  );
+};
 
-export default AppLayout
+export default AppLayout;

@@ -1,26 +1,28 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { CircularProgress } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import { ethers, utils } from 'ethers';
+import { BigNumber } from 'bignumber.js';
 import DropdownSelect from '../DropdownSelect/dropdownSelect';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
-import { PROPOSE_GNOSIS_TX_FOR_SUBMISSION } from '../../../graphql/mutations/payment';
-import { useGnosisSdk } from '../../../services/payment';
-import { ERC20abi } from '../../../services/contracts/erc20.abi';
+import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { PROPOSE_GNOSIS_TX_FOR_SUBMISSION } from 'graphql/mutations/payment';
+import { useGnosisSdk } from 'services/payment';
+import { ERC20abi } from 'services/contracts/erc20.abi';
 import { SafeTransactionDataPartial, SafeTransactionData } from '@gnosis.pm/safe-core-sdk-types';
 import { SafeMultisigTransactionEstimateResponse } from '@gnosis.pm/safe-service-client';
-import { useWonderWeb3 } from '../../../services/web3';
+import { useWonderWeb3 } from 'services/web3';
 import { ErrorText } from '..';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PaymentPendingTypography } from './styles';
-import { usePaymentModal } from '../../../utils/hooks';
+import { usePaymentModal } from 'utils/hooks';
 import {
   GET_PAYMENTS_FOR_ORG,
   GET_PAYMENTS_FOR_POD,
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
-} from '../../../graphql/queries/payment';
-import { CHAIN_TO_GNOSIS_URL_ABBR } from '../../../utils/web3Constants';
+} from 'graphql/queries/payment';
+import { CHAIN_TO_GNOSIS_URL_ABBR } from 'utils/web3Constants';
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {
@@ -49,10 +51,21 @@ interface PaymentData {
   amount: string;
   recepientAddress: string;
   chain: string;
+  decimal: number;
 }
 
 export const SingleWalletPayment = (props) => {
-  const { open, handleClose, orgId, podId, approvedSubmission, wallets, submissionPaymentInfo } = props;
+  const {
+    open,
+    handleClose,
+    orgId,
+    podId,
+    approvedSubmission,
+    wallets,
+    submissionPaymentInfo,
+    changedRewardAmount,
+    parentError,
+  } = props;
   const [currentChainId, setCurrentChainId] = useState(null); // chain id current user is on
   const [walletOptions, setWalletOptions] = useState([]); // chain associated with submission
   const [onRightChain, setOnRighChain] = useState(true);
@@ -62,6 +75,7 @@ export const SingleWalletPayment = (props) => {
   const [notOwnerError, setNotOwnerError] = useState(null);
   const [signingError, setSigningError] = useState(null);
   const [safeConnectionError, setSafeConnectionError] = useState(null);
+  const [gnosisTransactionLoading, setGnosisTransactionLoading] = useState(false);
   const [incompatibleWalletError, setIncompatibleWalletError] = useState(null);
   const [paymentPending, setPaymentPending] = useState(null);
   const [gnosisSafeTxRedirectLink, setGnosisSafeTxRedirectLink] = useState(null);
@@ -154,18 +168,28 @@ export const SingleWalletPayment = (props) => {
 
   const constructAndSignTransactionData = async () => {
     setSigningError(null);
+    setGnosisTransactionLoading(true);
     let t1 = performance.now();
     let iface = new ethers.utils.Interface(ERC20abi);
     const paymentData = submissionPaymentInfo?.paymentData[0];
     let transactionData;
+    let finalAmount = paymentData.amount;
+    if (changedRewardAmount) {
+      const decimal = Number(paymentData?.decimal);
+      const bigChangedAmount = new BigNumber(changedRewardAmount);
+      const newDecimal = new BigNumber(10 ** decimal);
+      finalAmount = bigChangedAmount.times(newDecimal);
+      finalAmount = finalAmount.toString();
+    }
+
     if (paymentData?.isEthTransfer) {
       transactionData = {
         to: paymentData.recepientAddress,
         data: '0x00',
-        value: paymentData.amount,
+        value: finalAmount,
       };
     } else {
-      const callData = iface.encodeFunctionData('transfer', [paymentData.recepientAddress, paymentData.amount]);
+      const callData = iface.encodeFunctionData('transfer', [paymentData.recepientAddress, finalAmount]);
       transactionData = {
         to: paymentData.tokenAddress,
         data: callData,
@@ -217,6 +241,7 @@ export const SingleWalletPayment = (props) => {
     try {
       await gnosisSdk.signTransaction(safeTransaction);
     } catch (e) {
+      setGnosisTransactionLoading(false);
       if (e.message === 'Transactions can only be signed by Safe owners') {
         setNotOwnerError(`Not a owner of multisig`);
       } else if (e.message.includes('User denied message')) {
@@ -260,6 +285,7 @@ export const SingleWalletPayment = (props) => {
     });
     t2 = performance.now();
     console.log(`proposeGnosisTxForSubmission took ${t2 - t1} milliseconds`);
+    setGnosisTransactionLoading(false);
   };
   const handleCreateNewWalletClick = () => {
     if (podId) {
@@ -296,19 +322,31 @@ export const SingleWalletPayment = (props) => {
           }}
         />
         {selectedWallet && !paymentPending && (
-          <CreateFormPreviewButton
-            onClick={handlePaymentClick}
-            style={{
-              marginLeft: 0,
-            }}
-          >
-            Pay {reward?.rewardAmount} {reward?.symbol}
-          </CreateFormPreviewButton>
+          <>
+            {gnosisTransactionLoading ? (
+              <CircularProgress />
+            ) : (
+              <CreateFormPreviewButton
+                onClick={handlePaymentClick}
+                style={{
+                  marginLeft: 0,
+                }}
+              >
+                Pay {changedRewardAmount || reward?.rewardAmount} {reward?.symbol}
+              </CreateFormPreviewButton>
+            )}
+          </>
         )}
-        {wrongChainError && <ErrorText>{wrongChainError}</ErrorText>}
-        {signingError && <ErrorText>{signingError}</ErrorText>}
-        {notOwnerError && <ErrorText>{notOwnerError}</ErrorText>}
-        {safeConnectionError && <ErrorText>{safeConnectionError}</ErrorText>}
+        {parentError ? (
+          <ErrorText>{parentError}</ErrorText>
+        ) : (
+          <>
+            {wrongChainError && <ErrorText>{wrongChainError}</ErrorText>}
+            {signingError && <ErrorText>{signingError}</ErrorText>}
+            {notOwnerError && <ErrorText>{notOwnerError}</ErrorText>}
+            {safeConnectionError && <ErrorText>{safeConnectionError}</ErrorText>}
+          </>
+        )}
         {paymentPending && (
           <PaymentPendingTypography>
             Payment pending! Please go to{' '}
@@ -334,14 +372,26 @@ export const SingleWalletPayment = (props) => {
           marginTop: '16px',
         }}
       >
-        {incompatibleWalletError && (
+        {parentError ? (
           <ErrorText
             style={{
               marginBottom: '16px',
             }}
           >
-            {incompatibleWalletError}
+            {parentError}
           </ErrorText>
+        ) : (
+          <>
+            {incompatibleWalletError && (
+              <ErrorText
+                style={{
+                  marginBottom: '16px',
+                }}
+              >
+                {incompatibleWalletError}
+              </ErrorText>
+            )}
+          </>
         )}
 
         <CreateFormPreviewButton

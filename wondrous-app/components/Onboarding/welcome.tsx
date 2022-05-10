@@ -18,10 +18,10 @@ import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
 
 import { useRouter } from 'next/router';
 
-import { FirstStep } from '../../components/Common/Image/OnboardingProgressBar';
-import { useWonderWeb3 } from '../../services/web3';
+import { FirstStep } from 'components/Common/Image/OnboardingProgressBar';
+import { useWonderWeb3 } from 'services/web3';
 import { Field, FieldInput } from '../Common/field';
-import { USERNAME_REGEX } from '../../utils/constants';
+import { USERNAME_REGEX } from 'utils/constants';
 
 export const Logo = ({ divStyle }) => {
   return (
@@ -32,15 +32,22 @@ export const Logo = ({ divStyle }) => {
   );
 };
 
-export const InviteWelcomeBox = ({ updateUser }) => {
+export const InviteWelcomeBox = ({ updateUser, user }) => {
   const wonderWeb3 = useWonderWeb3();
-  const [username, setUsername] = useState('');
+  const router = useRouter();
+  const [username, setUsername] = useState(user?.username);
   const [error, setError] = useState('');
   // Two stage process as wallet connection takes
   // time.
   const buttonStyle = {
     background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
   };
+
+  useEffect(() => {
+    if (user?.username) {
+      setUsername(user?.username);
+    }
+  }, [user?.username]);
 
   useEffect(() => {
     if (wonderWeb3?.onConnect) {
@@ -51,7 +58,9 @@ export const InviteWelcomeBox = ({ updateUser }) => {
       // Check if start of address is 0x
       if (!addressTag.startsWith('0x')) {
         const splitUsernameArr = wonderWeb3?.wallet?.addressTag.split('.');
-        setUsername(splitUsernameArr[0]);
+        if (splitUsernameArr && splitUsernameArr[0]) {
+          setUsername(splitUsernameArr[0].replace(/\./g, '_'));
+        }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -107,19 +116,26 @@ export const InviteWelcomeBox = ({ updateUser }) => {
       <ContinueButton
         style={buttonStyle}
         onClick={() => {
-          if (USERNAME_REGEX.test(username)) {
-            updateUser({
-              variables: {
-                input: {
-                  username,
-                },
-              },
-              onError: (e) => {
-                setError(e.message);
-              },
+          if (username && user?.username === username) {
+            // No change
+            router.push('/onboarding/build-profile', undefined, {
+              shallow: true,
             });
           } else {
-            setError('Please enter a valid username with 3-15 alphanumeric characters');
+            if (USERNAME_REGEX.test(username)) {
+              updateUser({
+                variables: {
+                  input: {
+                    username,
+                  },
+                },
+                onError: (e) => {
+                  setError(e.message);
+                },
+              });
+            } else {
+              setError("Please enter a valid username with 3-15 alphanumeric characters with no '.'");
+            }
           }
         }}
         buttonInnerStyle={{

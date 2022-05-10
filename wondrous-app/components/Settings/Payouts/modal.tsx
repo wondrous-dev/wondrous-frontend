@@ -15,20 +15,20 @@ import {
   WarningTypography,
 } from '../../Common/Payment/styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
-import { GET_SUBMISSION_PAYMENT_INFO } from '../../../graphql/queries/payment';
-import { parseUserPermissionContext } from '../../../utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
-import { PERMISSIONS } from '../../../utils/constants';
+import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { GET_SUBMISSION_PAYMENT_INFO } from 'graphql/queries/payment';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { PERMISSIONS } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { useRouter } from 'next/router';
 import { DAOIcon } from '../../Icons/dao';
 import { OrganisationsCardNoLogo } from '../../profile/about/styles';
-import { OfflinePayment } from '../../Common/Payment/OfflinePayment';
+import { OfflinePayment } from '../../Common/Payment/OfflinePayment/OfflinePayment';
 import { SingleWalletPayment } from '../../Common/Payment/SingleWalletPayment';
 import Link from 'next/link';
-import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
-import { delQuery } from '../../../utils';
+import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { delQuery } from 'utils';
 
 enum ViewType {
   Paid = 'paid',
@@ -55,33 +55,56 @@ export const PayModal = (props) => {
     fetchPolicy: 'network-only',
   });
   const [getPodWallet] = useLazyQuery(GET_POD_WALLET, {
-    onCompleted: (data) => {
-      setWallets(data?.getPodWallet);
-    },
     fetchPolicy: 'network-only',
   });
-
+  const [getPodById] = useLazyQuery(GET_POD_BY_ID);
   const [getSubmissionPaymentInfo] = useLazyQuery(GET_SUBMISSION_PAYMENT_INFO, {
     onCompleted: (data) => {
       setSubmissionPaymentInfo(data?.getSubmissionPaymentInfo);
     },
     fetchPolicy: 'network-only',
   });
+  const getWallets = useCallback(
+    async (podId, orgId) => {
+      if (podId) {
+        try {
+          const result = await getPodWallet({
+            variables: {
+              podId,
+            },
+          });
+          const wallets = result?.data?.getPodWallet;
+          if (!wallets || wallets?.length === 0) {
+            const podResult = await getPodById({
+              variables: {
+                podId: podId,
+              },
+            });
+            const pod = podResult?.data?.getPodById;
+            getOrgWallet({
+              variables: {
+                orgId: pod?.orgId,
+              },
+            });
+          } else {
+            setWallets(wallets);
+          }
+        } catch (err) {
+          console.error('failed to fetch wallet: ' + err?.message);
+        }
+      } else if (orgId) {
+        getOrgWallet({
+          variables: {
+            orgId,
+          },
+        });
+      }
+    },
+    [podId, orgId]
+  );
   useEffect(() => {
-    if (podId) {
-      getPodWallet({
-        variables: {
-          podId,
-        },
-      });
-    } else if (orgId) {
-      getOrgWallet({
-        variables: {
-          orgId,
-        },
-      });
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    getWallets(podId, orgId);
   }, [podId, orgId]);
   useEffect(() => {
     getSubmissionPaymentInfo({
@@ -126,6 +149,7 @@ export const PayModal = (props) => {
                 This link will only be visible to the assignee and other admins with the payment permission
               </WarningTypography>
               <OfflinePayment
+                submissionPaymentInfo={submissionPaymentInfo}
                 approvedSubmission={{
                   id: submissionId,
                 }}

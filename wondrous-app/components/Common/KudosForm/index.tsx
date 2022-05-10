@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { useContext, useEffect, useState } from 'react';
-import { CREATE_POST, UPDATE_POST } from '../../../graphql/mutations/post';
-import { ObjectType, PostType, PostVerbType } from '../../../types/post';
+import { CREATE_POST, UPDATE_POST } from 'graphql/mutations/post';
+import { ObjectType, PostType, PostVerbType } from 'types/post';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import {
   KudosFormBackground,
@@ -109,7 +109,7 @@ export const KudosForm = (props) => {
           {error && <KudosFormError>This field is required.</KudosFormError>}
           <KudosFormDivider />
           <KudosFormButtonWrapper>
-            <KudosFormCancelButton onClick={handleOnClose}>Maybe Later</KudosFormCancelButton>
+            <KudosFormCancelButton onClick={handleOnClose}>Approve without kudos </KudosFormCancelButton>
             <KudosFormSubmitButton
               onClick={() =>
                 handleSubmit({
@@ -124,7 +124,7 @@ export const KudosForm = (props) => {
                 })
               }
             >
-              <KudosFormSubmitButtonText>Post feedback to activity board</KudosFormSubmitButtonText>
+              <KudosFormSubmitButtonText>Approve and give kudos</KudosFormSubmitButtonText>
             </KudosFormSubmitButton>
           </KudosFormButtonWrapper>
         </KudosFormBackground>

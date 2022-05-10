@@ -4,15 +4,15 @@ import { CircularProgress } from '@material-ui/core';
 
 import { format, formatDistance } from 'date-fns';
 import { useInView } from 'react-intersection-observer';
-import { GET_ORG_PODS, GET_ORG_USERS } from '../../../graphql/queries/org';
-import { GET_POD_USERS } from '../../../graphql/queries/pod';
+import { GET_ORG_PODS, GET_ORG_USERS } from 'graphql/queries/org';
+import { GET_POD_USERS } from 'graphql/queries/pod';
 import { useLazyQuery } from '@apollo/client';
 import { TaskModal, TaskSubmissionHeaderCreatorText } from '../../Common/Task/styles';
 import { TabContainer, Tab, TabContainerText, PodExplainerText } from './styles';
 import { DefaultProfilePicture, PodWrapper, Title, UserProfilePicture, UserWrapper } from './styles';
 import { useRouter } from 'next/router';
 import { CommentText, CommentTopFlexDiv } from '../../Comment/styles';
-import { cutString } from '../../../utils/helpers';
+import { cutString } from 'utils/helpers';
 
 const PodItem = (props) => {
   const router = useRouter();

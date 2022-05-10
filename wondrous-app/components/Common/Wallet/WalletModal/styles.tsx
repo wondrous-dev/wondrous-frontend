@@ -1,4 +1,4 @@
-import { BaseCard } from '@components/Common/card';
+import { BaseCard } from 'components/Common/card';
 import styled from 'styled-components';
 
 export const InnerModal = styled(BaseCard)`

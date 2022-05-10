@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
 
-import { InviteWelcomeBox } from '../../../components/Onboarding/welcome';
-import { MainWrapper } from '../../../components/Onboarding/styles';
-import { UPDATE_USER } from '../../../graphql/mutations';
-import { useMe, withAuth } from '../../../components/Auth/withAuth';
+import { InviteWelcomeBox } from 'components/Onboarding/welcome';
+import { MainWrapper } from 'components/Onboarding/styles';
+import { UPDATE_USER } from 'graphql/mutations';
+import { useMe, withAuth } from 'components/Auth/withAuth';
 
 const ContributorOnboardingPage = () => {
   const router = useRouter();
@@ -21,9 +21,9 @@ const ContributorOnboardingPage = () => {
 
   return (
     <MainWrapper>
-      <InviteWelcomeBox updateUser={updateUser} />
+      <InviteWelcomeBox updateUser={updateUser} user={user} />
     </MainWrapper>
   );
 };
 
-export default ContributorOnboardingPage;
+export default withAuth(ContributorOnboardingPage);

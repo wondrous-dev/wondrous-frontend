@@ -1,101 +1,105 @@
-import { IconButton } from '@material-ui/core'
-import styled from 'styled-components'
-import { Background, Black95 } from '../../../theme/colors'
+import { IconButton } from '@material-ui/core';
+import styled from 'styled-components';
+import { Background, Black95 } from '../../../theme/colors';
 
 export const WalletWrapper = styled.div`
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 
-	margin-right: 20px;
-`
+  margin-right: 20px;
+`;
 
 export const ChainWrapper = styled(IconButton)`
-	&& {
-		width: 40px;
-		height: 40px;
-		background: #1e1e1e;
-		border-radius: 4px;
-		margin-right: 20px;
-	}
-`
+  && {
+    width: 40px;
+    height: 40px;
+    background: #1e1e1e;
+    border-radius: 4px;
+    margin-right: 20px;
+  }
+`;
 
 export const WalletConnectButton = styled(IconButton)`
-	&& {
-		width: 200px;
-		height: 40px;
-		background: #1e1e1e;
-		border-radius: 4px;
-		margin-right: 20px;
-	}
-`
+  && {
+    width: 200px;
+    height: 40px;
+    background: #1e1e1e;
+    border-radius: 4px;
+    margin-right: 20px;
+  }
+`;
 
 export const WalletDisplay = styled.div`
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: flex-end;
-	width: auto;
-	height: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  width: auto;
+  height: 40px;
 
-	border-radius: 3px;
+  border-radius: 3px;
 
-	padding: 0 4px;
+  padding: 0 4px;
 
-	background: ${Black95};
-`
+  background: ${Black95};
+`;
 
 export const WonderBalance = styled.div`
-	display: flex;
-	flex-grow: 1;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	min-width: 65px;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  min-width: 65px;
 
-	cursor: pointer;
+  cursor: pointer;
 
-	margin-right: 10px;
-`
+  margin-right: 10px;
+`;
 
 export const WalletAddress = styled.div`
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 
-	width: 126px;
-	height: 32px;
+  max-width: 400px;
+  height: 32px;
 
-	border-radius: 3px;
+  border-radius: 3px;
 
-	background: ${Background};
+  background: ${Background};
 
-	font-size: 14px;
-	font-weight: 600;
-`
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  padding-left: 4px;
+  padding-right: 4px;
+  overflow-x: hidden;
+`;
 
 export const CurrencySelectorItem = styled.div`
-	display: flex;
-	flex-direction: row;
-	align-items: flex-start;
-	justify-content: flex-start;
-`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+`;
 
 export const CurrencySymbol = styled.div`
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-	width: 30px;
-	height: 32px;
-`
+  width: 30px;
+  height: 32px;
+`;
 
 export const CurrencyName = styled.div`
-	display: flex;
-	flex-grow: 1;
-	flext-direction: column;
-	align-items: center;
-`
+  display: flex;
+  flex-grow: 1;
+  flext-direction: column;
+  align-items: center;
+`;

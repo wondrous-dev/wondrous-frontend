@@ -10,19 +10,21 @@ import {
   OrgProfilePicture,
 } from './styles';
 import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
-import { useWonderWeb3 } from '../../services/web3';
+import { useWonderWeb3 } from 'services/web3';
 import { getUserSigningMessage, walletSignup, walletSignin } from '../Auth/withAuth';
 import { useRouter } from 'next/router';
-import { GRAPHQL_ERRORS, SUPPORTED_CHAINS } from '../../utils/constants';
+import { GRAPHQL_ERRORS, SUPPORTED_CHAINS } from 'utils/constants';
 import { Button } from '../Common/button';
 import { PaddedParagraph } from '../Common/text';
 import { Metamask } from '../Icons/metamask';
 import { SafeImage } from '../Common/Image';
 import { ErrorText } from '../Common';
-import { SupportedChainType } from '../../utils/web3Constants';
-import signedMessageIsString from '@services/web3/utils/signedMessageIsString';
-import MetaMaskConnector from '@components/WalletConnectors/MetaMask';
-import CoinbaseConnector from '@components/WalletConnectors/Coinbase';
+import { SupportedChainType } from 'utils/web3Constants';
+import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
+import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
+import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
+import { getDiscordUrl } from 'utils';
+import { DiscordIcon } from 'components/Icons/discord';
 
 export const Logo = () => {
   return (
@@ -227,6 +229,32 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink, podInfo, redeem
       </InviteWelcomeBoxParagraph>
       <MetaMaskConnector text="Connect with MetaMask" style={buttonStyles} />
       <CoinbaseConnector text="Connect with Coinbase Wallet" style={buttonStyles} />
+      <Button
+        style={buttonStyles}
+        onClick={() => {
+          const url = getDiscordUrl();
+          let type = null;
+          if (orgInfo) {
+            type = 'org';
+          } else if (podInfo) {
+            type = 'pod';
+          }
+          const state = JSON.stringify({
+            token,
+            type,
+          });
+          window.location.href = `${url}&state=${state}`;
+        }}
+      >
+        <DiscordIcon />
+        <span
+          style={{
+            marginLeft: '12px',
+          }}
+        >
+          Connect with Discord
+        </span>
+      </Button>
 
       {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
       {!wonderWeb3.chain && noChainError && <ErrorText>{noChainError}</ErrorText>}

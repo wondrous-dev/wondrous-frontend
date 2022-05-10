@@ -1,6 +1,6 @@
 import { Button } from '../button';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useWonderWeb3 } from '../../../services/web3';
+import { useWonderWeb3 } from 'services/web3';
 import Ethereum from '../../Icons/ethereum';
 import { Metamask } from '../../Icons/metamask';
 import { WonderCoin } from '../../Icons/wonderCoin';
@@ -19,13 +19,13 @@ import {
 import { getUserSigningMessage, linkWallet, logout, useMe } from '../../Auth/withAuth';
 import { DropDown, DropDownItem } from '../dropdown';
 import { Matic } from '../../Icons/matic';
-import { CURRENCY_KEYS, SUPPORTED_CHAINS } from '../../../utils/constants';
+import { CURRENCY_KEYS } from 'utils/constants';
 import { USDCoin } from '../../Icons/USDCoin';
-import { SupportedChainType } from '../../../utils/web3Constants';
+import { SupportedChainType } from 'utils/web3Constants';
 import { ErrorText } from '..';
-import signedMessageIsString from '@services/web3/utils/signedMessageIsString';
+import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import WalletModal from './WalletModal';
-import useEagerConnect from '@services/web3/hooks/useEagerConnect';
+import useEagerConnect from 'services/web3/hooks/useEagerConnect';
 
 const CHAIN_LOGO = {
   '1': <Ethereum />,

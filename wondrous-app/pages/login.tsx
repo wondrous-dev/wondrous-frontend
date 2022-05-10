@@ -2,29 +2,32 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
-import { Card, CardBody, CardFooter } from '../components/Common/auth';
-import { Button } from '../components/Common/button';
-import AuthLayout from '../components/Common/Layout/Auth';
-import { LineWithText, Line } from '../components/Common/lines';
-import { Form } from '../components/Common/form';
-import { Field } from '../components/Common/field';
-import { PaddedParagraph, StyledLink } from '../components/Common/text';
-import { SmallLogo, LoginWrapper, TopBubble, LoginError } from '../components/Pages/login';
+import { Card, CardBody, CardFooter } from 'components/Common/auth';
+import { Button } from 'components/Common/button';
+import AuthLayout from 'components/Common/Layout/Auth';
+import { LineWithText, Line } from 'components/Common/lines';
+import { Form } from 'components/Common/form';
+import { Field } from 'components/Common/field';
+import { PaddedParagraph, StyledLink } from 'components/Common/text';
+import { SmallLogo, LoginWrapper, TopBubble, LoginError } from 'components/Pages/login';
 import { useState } from 'react';
 import { Grey50 } from '../theme/colors';
-import { EmailIcon, LockIcon } from '../components/Icons/userpass';
-import { useWonderWeb3 } from '../services/web3';
-import { emailSignin, getUserSigningMessage, walletSignin } from '../components/Auth/withAuth';
-import MetaMaskConnector from '@components/WalletConnectors/MetaMask';
-import signedMessageIsString from '@services/web3/utils/signedMessageIsString';
+import { EmailIcon, LockIcon } from 'components/Icons/userpass';
+import { DiscordIcon } from 'components/Icons/discord';
+import { useWonderWeb3 } from 'services/web3';
+import { emailSignin, getUserSigningMessage, walletSignin } from 'components/Auth/withAuth';
+import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
+import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import styled from 'styled-components';
-import CoinbaseConnector from '@components/WalletConnectors/Coinbase';
+import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
+import { getDiscordUrl } from 'utils';
 
 const prod = process.env.NEXT_PUBLIC_PRODUCTION;
 
 const WalletLoginContainer = styled.div`
   padding: 10px 0;
 `;
+const DISCORD_OAUTH_URL = getDiscordUrl();
 
 const Login = ({ csrfToken }) => {
   const wonderWeb3 = useWonderWeb3();
@@ -105,15 +108,6 @@ const Login = ({ csrfToken }) => {
   return (
     <AuthLayout>
       <LoginWrapper>
-        <Image
-          alt="Background"
-          className="auth-background"
-          src="/images/login/background.png"
-          layout="fill"
-          objectFit="cover"
-          quality={80}
-        />
-        <Image alt="Background" src="/images/login/background-blur.png" layout="fill" objectFit="cover" quality={80} />
         <TopBubble src="/images/login/top-floater-bubble.png" alt="" />
         <Card>
           <CardBody>
@@ -153,11 +147,27 @@ const Login = ({ csrfToken }) => {
                 </LineWithText>
               </>
             )}
-            <WalletLoginContainer>
+            <WalletLoginContainer
+              style={{
+                marginTop: '24px',
+              }}
+            >
               <MetaMaskConnector />
             </WalletLoginContainer>
             <WalletLoginContainer>
               <CoinbaseConnector />
+            </WalletLoginContainer>
+            <WalletLoginContainer>
+              <Button onClick={() => (window.location.href = DISCORD_OAUTH_URL)}>
+                <DiscordIcon />
+                <PaddedParagraph
+                  style={{
+                    marginLeft: '12px',
+                  }}
+                >
+                  Log in with Discord
+                </PaddedParagraph>
+              </Button>
             </WalletLoginContainer>
           </CardBody>
           {/* <CardFooter>

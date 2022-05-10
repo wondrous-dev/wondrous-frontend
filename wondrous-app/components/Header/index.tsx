@@ -1,29 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
+import { InputAdornment, Typography } from '@material-ui/core';
+import Wallet from 'components/Common/Wallet';
+import CreateBtnIcon from 'components/Icons/createBtn';
+import HomeIcon from 'components/Icons/home';
+import SearchIcon from 'components/Icons/search';
+import NotificationsBoard from 'components/Notifications';
+import Tooltip from 'components/Tooltip';
+import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
+import { GET_NOTIFICATIONS } from 'graphql/queries';
 import Link from 'next/link';
-import { InputAdornment } from '@material-ui/core';
-
-import HomeIcon from '../Icons/home';
-import SearchIcon from '../Icons/search';
-import { StatusArchived, StatusAssigned, StatusLiked } from '../Icons/notifications';
-import CreateBtnIcon from '../Icons/createBtn';
-
-import Wallet from '../Common/Wallet';
-
+import { useRouter } from 'next/router';
+import React from 'react';
 import {
   Header,
+  HeaderContainer,
+  HeaderCreateButton,
   HeaderHomeButton,
   HeaderInput,
   HeaderLeftBlock,
   HeaderLogo,
   HeaderRightBlock,
-  HeaderContainer,
-  HeaderCreateButton,
+  TutorialButton,
+  TutorialText,
 } from './styles';
-import NotificationsBoard from '../Notifications';
-import { GET_NOTIFICATIONS } from '../../graphql/queries';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from '../../graphql/mutations/notification';
-import { useRouter } from 'next/router';
 
 const HeaderComponent = (props) => {
   // Grab Notifications from Backend
@@ -46,16 +45,23 @@ const HeaderComponent = (props) => {
   };
 
   const { pathname } = useRouter();
+  const urlsWithCreateButton = ['/boards', '/dashboard', '/activities'];
+  const showCreateButton = urlsWithCreateButton.some((url) => pathname.includes(url));
   return (
     <Header>
       <HeaderContainer>
         <HeaderLeftBlock>
-          <HeaderLogo />
           <Link passHref href="/dashboard">
-            <HeaderHomeButton>
-              <HomeIcon />
-            </HeaderHomeButton>
+            <HeaderLogo />
           </Link>
+          <Tooltip title="Dashboard">
+            <Link passHref href="/dashboard">
+              <HeaderHomeButton>
+                <HomeIcon />
+              </HeaderHomeButton>
+            </Link>
+          </Tooltip>
+
           <HeaderInput
             placeholder="Search wonder..."
             InputProps={{
@@ -71,20 +77,32 @@ const HeaderComponent = (props) => {
           />
         </HeaderLeftBlock>
         <HeaderRightBlock>
+          <a
+            style={{
+              textDecoration: 'none',
+            }}
+            href="https://linktr.ee/wonderverse"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <TutorialButton
+              style={{
+                borderRadius: '8px',
+              }}
+              buttonInnerStyle={{
+                borderRadius: '7px',
+              }}
+            >
+              <TutorialText>Wonder Tutorials</TutorialText>
+            </TutorialButton>
+          </a>
           <Wallet />
 
           <NotificationsBoard notifications={notifications || []} setNofications={setNotifications} />
-          {pathname.includes('/boards') || pathname.includes('/dashboard') ? (
-            <HeaderCreateButton highlighted="true" onClick={openCreateFormModal}>
-              <span style={{ padding: '0px 8px' }}>Create</span>
-              <CreateBtnIcon />
-            </HeaderCreateButton>
-          ) : (
-            <HeaderCreateButton highlighted="true" style={{ visibility: 'hidden' }}>
-              <span style={{ padding: '0px 8px' }}>Create</span>
-              <CreateBtnIcon />
-            </HeaderCreateButton>
-          )}
+          <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
+            <span style={{ padding: '0px 8px' }}>Create</span>
+            <CreateBtnIcon />
+          </HeaderCreateButton>
         </HeaderRightBlock>
       </HeaderContainer>
     </Header>

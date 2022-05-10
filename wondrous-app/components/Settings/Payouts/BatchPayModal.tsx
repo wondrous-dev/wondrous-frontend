@@ -28,20 +28,20 @@ import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import { StyledCheckbox, TableCellText } from './styles';
 import { White, Grey800 } from '../../../theme/colors';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
-import { GET_SUBMISSIONS_PAYMENT_INFO } from '../../../graphql/queries/payment';
-import { parseUserPermissionContext } from '../../../utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
-import { PERMISSIONS } from '../../../utils/constants';
+import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { GET_SUBMISSIONS_PAYMENT_INFO } from 'graphql/queries/payment';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { PERMISSIONS } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { useRouter } from 'next/router';
 import { DAOIcon } from '../../Icons/dao';
 import { OrganisationsCardNoLogo } from '../../profile/about/styles';
-import { OfflinePayment } from '../../Common/Payment/OfflinePayment';
+import { OfflinePayment } from '../../Common/Payment/OfflinePayment/OfflinePayment';
 import { BatchWalletPayment } from '../../Common/Payment/BatchWalletPayment';
 import Link from 'next/link';
-import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
-import { cutString } from '../../../utils/helpers';
+import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { cutString } from 'utils/helpers';
 
 enum ViewType {
   Paid = 'paid',
@@ -71,12 +71,48 @@ export const BatchPayModal = (props) => {
     fetchPolicy: 'network-only',
   });
   const [getPodWallet] = useLazyQuery(GET_POD_WALLET, {
-    onCompleted: (data) => {
-      setWallets(data?.getPodWallet);
-    },
     fetchPolicy: 'network-only',
   });
 
+  const [getPodById] = useLazyQuery(GET_POD_BY_ID);
+  const getWallets = useCallback(
+    async (podId, orgId) => {
+      if (podId) {
+        try {
+          const result = await getPodWallet({
+            variables: {
+              podId,
+            },
+          });
+          const wallets = result?.data?.getPodWallet;
+          if (!wallets || wallets?.length === 0) {
+            const podResult = await getPodById({
+              variables: {
+                podId: podId,
+              },
+            });
+            const pod = podResult?.data?.getPodById;
+            getOrgWallet({
+              variables: {
+                orgId: pod?.orgId,
+              },
+            });
+          } else {
+            setWallets(wallets);
+          }
+        } catch (err) {
+          console.error('failed to fetch wallet: ' + err?.message);
+        }
+      } else if (orgId) {
+        getOrgWallet({
+          variables: {
+            orgId,
+          },
+        });
+      }
+    },
+    [podId, orgId]
+  );
   const [getSubmissionsPaymentInfo] = useLazyQuery(GET_SUBMISSIONS_PAYMENT_INFO, {
     onCompleted: (data) => {
       setSubmissionsPaymentInfo(data?.getSubmissionsPaymentInfo);
@@ -86,29 +122,19 @@ export const BatchPayModal = (props) => {
   const submissionIds = unpaidSubmissions && Object.keys(unpaidSubmissions);
 
   useEffect(() => {
-    if (podId) {
-      getPodWallet({
+    getWallets(podId, orgId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [podId, orgId]);
+  useEffect(() => {
+    if (submissionIds) {
+      getSubmissionsPaymentInfo({
         variables: {
-          podId,
-        },
-      });
-    } else if (orgId) {
-      getOrgWallet({
-        variables: {
-          orgId,
+          submissionIds,
         },
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [podId, orgId]);
-  useEffect(() => {
-    getSubmissionsPaymentInfo({
-      variables: {
-        submissionIds,
-      },
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unpaidSubmissions]);
+  }, [unpaidSubmissions, submissionIds]);
   return (
     <Modal open={open} onClose={handleClose}>
       <PaymentModal>

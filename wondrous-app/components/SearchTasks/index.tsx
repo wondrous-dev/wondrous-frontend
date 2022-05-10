@@ -10,13 +10,13 @@ import BountyIcon from '../Icons/TaskTypes/bounty';
 import { SafeImage } from '../Common/Image';
 import { UserIconSmall } from '../Icons/Search/types';
 
-import { TaskFragment } from '../../types/task';
-import { TASK_TYPE, BOUNTY_TYPE, MILESTONE_TYPE } from '../../utils/constants';
-import { delQuery } from '../../utils';
+import { TaskFragment } from 'types/task';
+import { TASK_TYPE, BOUNTY_TYPE, MILESTONE_TYPE } from 'utils/constants';
+import { delQuery } from 'utils';
 import { useRouter } from 'next/router';
 import { TaskViewModal } from '../Common/Task/modal';
-import * as Constants from '../../utils/constants';
-import { ViewType } from '../../types/common';
+import * as Constants from 'utils/constants';
+import { ViewType } from 'types/common';
 
 const TaskTypeIcons = {
   [TASK_TYPE]: <TaskIcon />,
@@ -119,7 +119,10 @@ export default function SearchTasks({ onSearch }: Props) {
               <Option
                 key={taskOrUser.username}
                 onClick={() => {
-                  router.push({ pathname: location.pathname, query: { userId: taskOrUser.id } });
+                  router.push({
+                    pathname: location.pathname,
+                    query: { userId: taskOrUser.id, view: router.query.view ?? ViewType.Grid },
+                  });
                 }}
               >
                 {taskOrUser.profilePicture ? (
@@ -160,7 +163,7 @@ export default function SearchTasks({ onSearch }: Props) {
           return (
             <Input
               {...params}
-              placeholder="Search people or pods..."
+              placeholder="Search tasks or people..."
               InputProps={{
                 ...params.InputProps,
                 startAdornment: (

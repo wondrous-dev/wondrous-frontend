@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { GradientMidnightDiagonalOposite, GradientMidnightVertical } from './gradients';
+import { useOutsideAlerter } from 'utils/hooks';
 
 const DropDownWrapper = styled.div`
     position: absolute;
@@ -73,6 +74,9 @@ export const DropdownOverlay = styled.div`
 export const DropDown = (props) => {
   const { DropdownHandler, children } = props;
   const [isOpen, setIsOpen] = useState(false);
+  const DropdownWrapperRef = useRef(null);
+
+  useOutsideAlerter(DropdownWrapperRef, () => setIsOpen(false));
 
   const toggleDropDown = (e) => {
     e.preventDefault();
@@ -87,7 +91,9 @@ export const DropDown = (props) => {
       <DropdownOverlay onClick={toggleDropDown} style={{ display: display }} />
       <div onClick={toggleDropDown}>
         <DropdownHandler {...props} />
-        <DropDownWrapper style={{ display: display }}>{children}</DropDownWrapper>
+        <DropDownWrapper ref={DropdownWrapperRef} style={{ display: display }}>
+          {children}
+        </DropDownWrapper>
         <DropDownArrow style={{ display: display }} />
       </div>
     </>

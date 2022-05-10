@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState, useContext } from 'rea
 import Modal from '@mui/material/Modal';
 import { Typography } from '@mui/material';
 import { Tab } from '@material-ui/core';
+import { BigNumber } from 'bignumber.js';
 import {
   PodNameTypography,
   PaymentModal,
@@ -13,23 +14,32 @@ import {
   StyledTabs,
   PaymentMethodWrapper,
   WarningTypography,
+  ChangePaymentButton,
+  ChangePaymentAmountDiv,
+  SaveNewRewardAmountButton,
+  CancelNewRewardAmountButton,
 } from './styles';
+import { GRAPHQL_ERRORS } from 'utils/constants';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_WALLET, GET_POD_WALLET } from '../../../graphql/queries/wallet';
-import { GET_SUBMISSION_PAYMENT_INFO } from '../../../graphql/queries/payment';
-import { GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
+import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { GET_SUBMISSION_PAYMENT_INFO } from 'graphql/queries/payment';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { SafeImage } from '../Image';
-import { parseUserPermissionContext } from '../../../utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
-import { BOUNTY_TYPE, PERMISSIONS } from '../../../utils/constants';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { BOUNTY_TYPE, PERMISSIONS } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { useRouter } from 'next/router';
 import { DAOIcon } from '../../Icons/dao';
 import { OrganisationsCardNoLogo } from '../../profile/about/styles';
-import { OfflinePayment } from './OfflinePayment';
+import { OfflinePayment } from './OfflinePayment/OfflinePayment';
 import { SingleWalletPayment } from './SingleWalletPayment';
 import Link from 'next/link';
 import { White, Blue20 } from '../../../theme/colors';
+import { CreateFormPreviewButton, CreateFormRewardCurrency } from '../../CreateEntity/styles';
+import InputForm from '../InputForm/inputForm';
+import CloseModalIcon from 'components/Icons/closeModal';
+import { ErrorText } from 'components/Onboarding/styles';
 
 const GoBackStyle = {
   color: White,
@@ -46,14 +56,18 @@ export const MakePaymentModal = (props) => {
   const [wallets, setWallets] = useState([]);
   const [submissionPaymentInfo, setSubmissionPaymentInfo] = useState(null);
   const [rewardAmount, setRewardAmount] = useState('');
+  const [changeRewardAmount, setChangeRewardAmount] = useState(false);
+  const [changedRewardAmount, setChangedRewardAmount] = useState(null);
+  const [useChangedRewardAmount, setUseChangedRewardAmount] = useState(false);
+  const [submissionPaymentError, setSubmissionPaymentError] = useState(null);
   const [tokenName, setTokenName] = useState('');
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
+  const [changeRewardErrorText, setChangeRewardErrorText] = useState('');
   const board = orgBoard || podBoard || userBoard;
   const router = useRouter();
   const user = useMe();
-
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -75,16 +89,21 @@ export const MakePaymentModal = (props) => {
     },
     fetchPolicy: 'network-only',
   });
+
   const [getPodWallet] = useLazyQuery(GET_POD_WALLET, {
-    onCompleted: (data) => {
-      setWallets(data?.getPodWallet);
-    },
     fetchPolicy: 'network-only',
   });
 
   const [getSubmissionPaymentInfo] = useLazyQuery(GET_SUBMISSION_PAYMENT_INFO, {
     onCompleted: (data) => {
       setSubmissionPaymentInfo(data?.getSubmissionPaymentInfo);
+    },
+    onError: (err) => {
+      if (err?.graphQLErrors[0].extensions?.message === GRAPHQL_ERRORS.NO_RECIPIENT_WEB_3_ADDRESS) {
+        setSubmissionPaymentError(
+          'Recipient has no active wallet. Please inform them to connect their wallet to their account'
+        );
+      }
     },
     fetchPolicy: 'network-only',
   });
@@ -94,6 +113,17 @@ export const MakePaymentModal = (props) => {
         variables: {
           podId: fetchedTask?.podId,
         },
+      }).then((result) => {
+        const wallets = result?.data?.getPodWallet;
+        if (!wallets || wallets?.length === 0) {
+          getOrgWallet({
+            variables: {
+              orgId: fetchedTask?.orgId,
+            },
+          });
+        } else {
+          setWallets(wallets);
+        }
       });
     } else if (fetchedTask?.orgId) {
       getOrgWallet({
@@ -139,6 +169,7 @@ export const MakePaymentModal = (props) => {
     userId: isBounty ? approvedSubmission?.createdBy : fetchedTask?.assigneeId,
     username: isBounty ? approvedSubmission?.creator.username : fetchedTask.assigneeUsername,
   };
+
   return (
     <>
       <Modal open={open} onClose={handleCloseAll}>
@@ -198,6 +229,64 @@ export const MakePaymentModal = (props) => {
                 </Link>{' '}
               </PaymentTitleText>
               <PaymentDescriptionText>Task: {fetchedTask.title}</PaymentDescriptionText>
+              {fetchedTask?.type === BOUNTY_TYPE && (
+                <>
+                  {changeRewardAmount ? (
+                    <>
+                      <ChangePaymentAmountDiv>
+                        <InputForm
+                          style={{
+                            marginTop: '12px',
+                            width: 'fit-content',
+                            paddingRight: '12px',
+                          }}
+                          type={'number'}
+                          min="0"
+                          placeholder="Enter new reward amount"
+                          search={false}
+                          value={changedRewardAmount}
+                          onChange={(e) => setChangedRewardAmount(e.target.value)}
+                        />
+                        <PaymentDescriptionText
+                          style={{
+                            marginLeft: '12px',
+                            marginTop: '12px',
+                          }}
+                        >
+                          {tokenName?.toUpperCase()}{' '}
+                        </PaymentDescriptionText>
+                        <SaveNewRewardAmountButton
+                          onClick={() => {
+                            const bigChangedRewardAmount = new BigNumber(changedRewardAmount);
+                            const initialBigRewardAmount = new BigNumber(fetchedTask?.rewards[0]?.rewardAmount);
+                            if (bigChangedRewardAmount.isLessThan(initialBigRewardAmount)) {
+                              setChangeRewardErrorText('New reward must be greater than minimum');
+                            } else {
+                              setRewardAmount(changedRewardAmount);
+                              setChangeRewardAmount(false);
+                              setUseChangedRewardAmount(true);
+                            }
+                          }}
+                        >
+                          Save changes
+                        </SaveNewRewardAmountButton>
+                        <CancelNewRewardAmountButton
+                          onClick={() => {
+                            setChangeRewardAmount(false);
+                          }}
+                        >
+                          Cancel
+                        </CancelNewRewardAmountButton>
+                      </ChangePaymentAmountDiv>
+                      <ErrorText>{changeRewardErrorText}</ErrorText>
+                    </>
+                  ) : (
+                    <ChangePaymentButton onClick={() => setChangeRewardAmount(true)}>
+                      Change payment amount
+                    </ChangePaymentButton>
+                  )}
+                </>
+              )}
             </PaymentTitleTextDiv>
           </PaymentTitleDiv>
           <StyledTabs value={selectedTab}>
@@ -207,19 +296,13 @@ export const MakePaymentModal = (props) => {
           </StyledTabs>
           <PaymentMethodWrapper>
             {selectedTab === 'off_platform' && (
-              <>
-                <WarningTypography>
-                  This link will only be visible to the assignee and other admins with the payment permission
-                </WarningTypography>
-                <OfflinePayment
-                  handleClose={handleCloseAll}
-                  approvedSubmission={approvedSubmission}
-                  fetchedTask={fetchedTask}
-                  submissionPaymentInfo={submissionPaymentInfo}
-                />
-              </>
+              <OfflinePayment
+                handleClose={handleCloseAll}
+                approvedSubmission={approvedSubmission}
+                fetchedTask={fetchedTask}
+                submissionPaymentInfo={submissionPaymentInfo}
+              />
             )}
-
             {selectedTab === 'wallet' && (
               <SingleWalletPayment
                 setShowPaymentModal={setShowPaymentModal}
@@ -229,6 +312,8 @@ export const MakePaymentModal = (props) => {
                 submissionPaymentInfo={submissionPaymentInfo}
                 orgId={approvedSubmission?.orgId}
                 podId={approvedSubmission?.podId}
+                changedRewardAmount={useChangedRewardAmount ? rewardAmount : null}
+                parentError={submissionPaymentError}
               />
             )}
           </PaymentMethodWrapper>

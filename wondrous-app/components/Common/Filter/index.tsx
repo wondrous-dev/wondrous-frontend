@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import FilterIcon from '../../Icons/filter';
 import { Chevron } from '../../Icons/sections';
 import Tabs from '../Tabs';
@@ -22,11 +22,21 @@ import {
   FilterItemOrgIcon,
   InlineText,
   FilterValues,
+  FilterBoxPortal,
 } from './styles';
 import { Blue200, Grey250 } from '../../../theme/colors';
-import { useOutsideAlerter } from '../../../utils/hooks';
+import { useOutsideAlerter } from 'utils/hooks';
+import { TaskFilter } from 'types/task';
 
-const Filter = ({ filterSchema = [], onChange }) => {
+interface IFilterProps {
+  filterSchema: any;
+  onChange: ({}: TaskFilter) => void;
+  statuses: String[];
+  podIds: String[];
+}
+
+const Filter = (props: IFilterProps) => {
+  const { filterSchema = [], onChange, statuses = [], podIds = [] } = props;
   const [selected, setSelected] = useState(filterSchema[0]);
   const [selectedTabItems, setSelectedTabItems] = useState({});
   const [selectedNames, setSelectedNames] = useState([]);
@@ -95,12 +105,26 @@ const Filter = ({ filterSchema = [], onChange }) => {
     setItems(newItems);
     setSelectedTabItems({});
     setSelectedNames([]);
-    onChange({});
+    onChange({
+      statuses: [],
+      podIds: [],
+    });
   };
 
   useEffect(() => {
     displayList(filterSchema[0]);
   }, [open]);
+
+  useEffect(() => {
+    setSelectedTabItems({
+      statuses,
+      podIds,
+    });
+    const selectedNames = filterSchema
+      .flatMap((item) => item.items.filter((it) => [...podIds, ...statuses].includes(it.id)))
+      .map((i) => i.name);
+    setSelectedNames(selectedNames);
+  }, [filterSchema, statuses, podIds]);
 
   return (
     <FilterHandle ref={wrapperRef} open={open}>
@@ -123,37 +147,41 @@ const Filter = ({ filterSchema = [], onChange }) => {
           <Chevron />
         </FilterChevronContainer>
       </FilterHandleInner>
-      <FilterBox open={open}>
-        <FilterBoxInner>
-          <Tabs tabs={filterSchema} selected={selected?.name} onSelect={(tab) => displayList(tab)} />
-          <FilterStatus>
-            <FilterCount>{selectedTabItems[selected?.name]?.length || 0} selected</FilterCount>
-            <FilterClear onClick={clearItems}>Clear</FilterClear>
-          </FilterStatus>
-          <FilterItemsContainer>
-            <FilterItemList>
-              {selected.renderList
-                ? selected.renderList({ selectedTab: selected, selectedTabItems, toggleInFilter, items })
-                : items.map((item) => {
-                    const isSelected = (selectedTabItems[selected?.name] || []).includes(item.id);
+      {open && (
+        <FilterBoxPortal container={wrapperRef.current}>
+          <FilterBox>
+            <FilterBoxInner>
+              <Tabs tabs={filterSchema} selected={selected?.name} onSelect={(tab) => displayList(tab)} />
+              <FilterStatus>
+                <FilterCount>{selectedTabItems[selected?.name]?.length || 0} selected</FilterCount>
+                <FilterClear onClick={clearItems}>Clear</FilterClear>
+              </FilterStatus>
+              <FilterItemsContainer>
+                <FilterItemList>
+                  {selected.renderList
+                    ? selected.renderList({ selectedTab: selected, selectedTabItems, toggleInFilter, items })
+                    : items.map((item) => {
+                        const isSelected = (selectedTabItems[selected?.name] || []).includes(item.id);
 
-                    return (
-                      <FilterItem onClick={() => toggleInFilter(item.id)} selected={isSelected} key={item.id}>
-                        <FilterItemIcon>{item.icon}</FilterItemIcon>
-                        <FilterItemName>{item.name}</FilterItemName>
-                        {item.organization ? (
-                          <FilterItemOrgIcon>{item.organization.profilePicture}</FilterItemOrgIcon>
-                        ) : (
-                          ''
-                        )}
-                        {/*<FilterItemCount>{item.count}</FilterItemCount>*/}
-                      </FilterItem>
-                    );
-                  })}
-            </FilterItemList>
-          </FilterItemsContainer>
-        </FilterBoxInner>
-      </FilterBox>
+                        return (
+                          <FilterItem onClick={() => toggleInFilter(item.id)} selected={isSelected} key={item.id}>
+                            <FilterItemIcon>{item.icon}</FilterItemIcon>
+                            <FilterItemName>{item.name}</FilterItemName>
+                            {item.organization ? (
+                              <FilterItemOrgIcon>{item.organization.profilePicture}</FilterItemOrgIcon>
+                            ) : (
+                              ''
+                            )}
+                            {/*<FilterItemCount>{item.count}</FilterItemCount>*/}
+                          </FilterItem>
+                        );
+                      })}
+                </FilterItemList>
+              </FilterItemsContainer>
+            </FilterBoxInner>
+          </FilterBox>
+        </FilterBoxPortal>
+      )}
     </FilterHandle>
   );
 };

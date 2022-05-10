@@ -1,12 +1,14 @@
+import { SafeImage } from 'components/Common/Image';
+import { Button, IconButton, Typography, Box } from '@material-ui/core';
+import Image from 'next/image';
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Typography, IconButton } from '@material-ui/core';
-
 import { Background, Black } from '../../../theme/colors';
 import { Button as BorderButton } from '../../Common/button';
 import { BaseCard } from '../../Common/card';
 import { LogoCircle } from '../../Common/ci';
 import { LinkIcon } from '../../Icons/linkIcon';
+import { Button as ButtonComponent } from 'components/Common/button';
 
 export const OverviewComponent = styled.section`
   width: 100vw;
@@ -18,12 +20,28 @@ export const OverviewComponent = styled.section`
   padding-bottom: 40px;
 `;
 
-export const HeaderImage = styled.div`
+export const HeaderImageWrapper = styled.div`
   width: 100%;
-  height: 220px;
+  height: 200px;
   margin-top: 70px;
+  overflow: hidden;
   position: relative;
 `;
+
+export const HeaderImage = styled((props) => (
+  <SafeImage
+    {...props}
+    style={{
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+    }}
+  />
+))``;
+
+export const HeaderImageDefault = styled(() => (
+  <Image src="/images/overview/background.png" layout="fill" objectFit="cover" alt="header-image" />
+))``;
 
 export const TokenHeader = styled.div`
   position: relative;
@@ -91,6 +109,8 @@ export const HeaderMainBlock = styled.div`
 export const HeaderTitleIcon = styled.div`
   display: flex;
   align-items: center;
+  width: 100%;
+  margin-bottom: 8px;
   & > * {
     margin-left: 10px;
     :first-child {
@@ -226,6 +246,7 @@ export const HeaderSettingsLockedButton = (props) => (
       height: '40px',
       minHeight: '0',
       visibility: 'hidden',
+      ...props?.style,
     }}
     buttonInnerStyle={{
       color: '#474747',
@@ -541,3 +562,96 @@ export const PostActivityIcon = styled.img`
 
 export const PostComments = styled(PostLikes)``;
 export const PostShares = styled(PostLikes)``;
+
+// token gated related components TODO move elsewhere
+export const TokenGatedRoleWrapper = styled(Box)`
+  && {
+    background: #0f0f0f;
+    border-radius: 6px;
+    padding: 24px;
+    margin-top: 24px;
+    display: flex;
+    justify-content: space-between;
+  }
+`;
+
+export const TokenGatedRoleTitle = styled(Typography)`
+  && {
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 36px;
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+`;
+
+export const TokenGatedRoleDescription = styled(Typography)`
+  && {
+    font-weight: 200;
+    font-size: 15px;
+    line-height: 36px;
+    display: flex;
+    align-items: center;
+    color: #ccbbff;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+`;
+
+export const TokenLogoDisplay = (props) => (
+  <SafeImage
+    src={props?.src}
+    style={{
+      width: '29px',
+      height: '28px',
+      borderRadius: '4px',
+      marginRight: '5px',
+    }}
+  />
+);
+
+export const ClaimRoleButton = styled(ButtonComponent)`
+  && {
+    background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+    min-height: 0;
+    min-width: 0;
+    height: 40px;
+    display: flex;
+    padding: 4px 2px;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    color: #ffffff;
+    opacity: 0.8;
+    transition: opacity 0.25s;
+    button {
+      padding: 4px 8px;
+      background: rgba(20, 20, 20, 1);
+      font-size: 15px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    :hover {
+      opacity: 1;
+    }
+  }
+`;
+
+export const ClaimRoleLabel = styled(Typography)`
+  && {
+    margin-left: 6px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: -1%;
+  }
+`;
+
+
+export const RoleActionWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;

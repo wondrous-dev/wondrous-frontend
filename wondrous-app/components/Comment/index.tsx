@@ -1,18 +1,18 @@
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import { GET_ORG_USERS } from '../../graphql/queries/org';
-import { CREATE_TASK_COMMENT, DELETE_TASK_COMMENT } from '../../graphql/mutations/task';
-import { CREATE_TASK_PROPOSAL_COMMENT, DELETE_TASK_PROPOSAL_COMMENT } from '../../graphql/mutations/taskProposal';
-import { PERMISSIONS, TASK_STATUS_REQUESTED } from '../../utils/constants';
-import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard } from '../../utils/helpers';
+import { GET_ORG_USERS } from 'graphql/queries/org';
+import { CREATE_TASK_COMMENT, DELETE_TASK_COMMENT } from 'graphql/mutations/task';
+import { CREATE_TASK_PROPOSAL_COMMENT, DELETE_TASK_PROPOSAL_COMMENT } from 'graphql/mutations/taskProposal';
+import { PERMISSIONS, TASK_STATUS_REQUESTED } from 'utils/constants';
+import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
 import { White } from '../../theme/colors';
-import { TextInputContext } from '../../utils/contexts';
+import { TextInputContext } from 'utils/contexts';
 import { TextInputDiv } from '../CreateEntity/styles';
 import { TextInput } from '../TextInput';
 import { filterOrgUsersForAutocomplete } from '../CreateEntity/createEntityModal';
 import { useMe } from '../Auth/withAuth';
-import { GET_COMMENTS_FOR_TASK } from '../../graphql/queries/task';
-import { GET_COMMENTS_FOR_TASK_PROPOSAL } from '../../graphql/queries/taskProposal';
+import { GET_COMMENTS_FOR_TASK } from 'graphql/queries/task';
+import { GET_COMMENTS_FOR_TASK_PROPOSAL } from 'graphql/queries/taskProposal';
 import {
   AddCommentButton,
   CommentItemContainer,
@@ -27,11 +27,11 @@ import {
 } from './styles';
 import { TaskSubmissionHeaderCreatorText, TaskSubmissionHeaderTimeText } from '../Common/Task/styles';
 import { formatDistance } from 'date-fns';
-import { renderMentionString } from '../../utils/common';
-import { cutString } from '../../utils/helpers';
+import { renderMentionString } from 'utils/common';
+import { cutString } from 'utils/helpers';
 import { useRouter } from 'next/router';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
-import { updateTask } from '../../utils/board';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { updateTask } from 'utils/board';
 import { ErrorText } from '../Common';
 
 export const CommentBox = (props) => {
@@ -60,8 +60,8 @@ export const CommentBox = (props) => {
 
   const addComment = () => {
     if (!comment || comment.length === 0) {
-      setEmptyCommentError(true)
-      return
+      setEmptyCommentError(true);
+      return;
     }
     const mentionedUsers = getMentionArray(comment);
     const createArgs = {
@@ -90,12 +90,6 @@ export const CommentBox = (props) => {
     }
     setComment('');
   };
-  const keyDownHandler = (e) => {
-    if (e.keyCode === 13) {
-      e.preventDefault();
-      addComment();
-    }
-  };
 
   useEffect(() => {
     if (taskCommentData?.createTaskComment) {
@@ -113,11 +107,10 @@ export const CommentBox = (props) => {
           value={{
             content: comment,
             onChange: (e) => {
-              setEmptyCommentError(null)
-              setComment(e.target.value)
+              setEmptyCommentError(null);
+              setComment(e.target.value);
             },
             list: filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers),
-            keyDownHandler,
           }}
         >
           <TextInput

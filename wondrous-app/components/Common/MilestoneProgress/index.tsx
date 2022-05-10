@@ -1,6 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import { GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE } from '../../../graphql/queries';
+import { GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE } from 'graphql/queries';
 import {
   StyledBox,
   StyledProgressBar,
