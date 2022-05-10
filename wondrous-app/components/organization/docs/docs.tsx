@@ -67,7 +67,7 @@ const Docs = (props) => {
   const [showDocDialog, setDocShowDialog] = useState(false);
   const [showDeleteDocDialog, setDeleteDocDialog] = useState(false);
   const [showCategoriesDialog, setShowCategoriesDialog] = useState(false);
-  const [docCategory, setDocCategory] = useState({});
+  const [docCategory, setDocCategory] = useState(null);
   const [selectedDoc, setSelectedDoc] = useState({});
   const [pinned, setPinned] = useState(false);
 
@@ -165,7 +165,7 @@ const Docs = (props) => {
       <AddDocumentDialog
         open={showDocDialog}
         onClose={handleCloseDocDialog}
-        title={docCategory.name}
+        title={docCategory?.name}
         orgId={orgId}
         category={docCategory}
         document={selectedDoc}
