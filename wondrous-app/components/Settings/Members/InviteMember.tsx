@@ -108,6 +108,7 @@ const InviteMember = (props) => {
         style={{
           width: 'auto',
           flex: 1,
+          marginRight: '18px',
         }}
       >
         <CreateFormAddDetailsInputLabel>Username</CreateFormAddDetailsInputLabel>
