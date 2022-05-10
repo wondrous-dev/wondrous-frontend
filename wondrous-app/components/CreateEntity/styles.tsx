@@ -213,8 +213,6 @@ export const CreateFormBaseModalHeader = styled.div`
   padding: 0 40px 25px;
 
   & svg {
-    width: 60px;
-    height: 60px;
     margin-right: 10px;
   }
 `;
@@ -712,7 +710,7 @@ export const OptionDiv = styled.li`
   display: flex;
   align-items: center;
   cursor: pointer;
-  
+
   &:hover {
     background-color: #474747;
   }
@@ -743,7 +741,7 @@ export const StyledChip = styled(Chip)`
     color: #c4c4c4;
     background: #0f0f0f;
     border: 1px solid rgb(116, 39, 255);
-    
+
     & .MuiSvgIcon-root {
       :hover {
         color: ${White};
