@@ -23,7 +23,7 @@ export const CreateModalOverlay = styled(Modal)`
   position: absolute;
   width: 100%;
   overflow-y: scroll;
-  height: 90vh;
+  height: 95vh;
   display: flex;
   flex-direction: column;
   align-items: center;
