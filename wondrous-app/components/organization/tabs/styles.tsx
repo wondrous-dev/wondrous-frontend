@@ -9,7 +9,6 @@ export const StyledTabs = styled(Tabs)`
   && {
     color: #fff;
     margin: 30px auto;
-    width: 680px;
   }
   .MuiTabs-flexContainer {
     justify-content: space-evenly;
