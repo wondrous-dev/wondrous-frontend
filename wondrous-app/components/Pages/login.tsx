@@ -52,8 +52,7 @@ export const LoginError = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-
-  height: 40px;
+  padding: 8px;
   margin: 1em 0;
 
   background: ${Red800};
