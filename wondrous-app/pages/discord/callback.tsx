@@ -1,7 +1,7 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { storeAuthHeader, useMe, withAuth } from 'components/Auth/withAuth';
 import { InviteWelcomeBoxWrapper } from 'components/Onboarding/styles';
 import {
@@ -23,6 +23,28 @@ const Callback = () => {
   const [redeemOrgInviteLink] = useMutation(REDEEM_ORG_INVITE_LINK);
   const [redeemPodInviteLink] = useMutation(REDEEM_POD_INVITE_LINK);
 
+  const returnToPage = useCallback(() => {
+    let inviteToken,
+      inviteType = null;
+    if (state) {
+      const parsedState = JSON.parse(state);
+      inviteToken = parsedState?.token;
+      inviteType = parsedState?.type;
+    }
+    if (inviteToken) {
+      const url =
+        inviteType === 'pod'
+          ? `/invite/${inviteToken}?type=pod&discordConnectError=true`
+          : `/invite/${inviteToken}?discordConnectError=true`;
+      router.push(url, undefined, {
+        shallow: true,
+      });
+    } else {
+      router.push('/login?discordConnectError=true', undefined, {
+        shallow: true,
+      });
+    }
+  }, [state, router]);
   const redeemOrgInvite = async (token, user) => {
     redeemOrgInviteLink({
       variables: {
@@ -108,9 +130,13 @@ const Callback = () => {
           shallow: true,
         });
       } else {
-        router.push('/dashboard', undefined, {
-          shallow: true,
-        });
+        if (user) {
+          router.push('/dashboard', undefined, {
+            shallow: true,
+          });
+        } else {
+          returnToPage();
+        }
       }
     }, 4000);
     if (code && token) {
@@ -182,26 +208,7 @@ const Callback = () => {
         })
         .catch((err) => {
           console.log('Error signing in discord user', err);
-          let inviteToken,
-            inviteType = null;
-          if (state) {
-            const parsedState = JSON.parse(state);
-            inviteToken = parsedState?.token;
-            inviteType = parsedState?.type;
-          }
-          if (inviteToken) {
-            const url =
-              inviteType === 'pod'
-                ? `/invite/${inviteToken}?type=pod&discordConnectError=true`
-                : `/invite/${inviteToken}?discordConnectError=true`;
-            router.push(url, undefined, {
-              shallow: true,
-            });
-          } else {
-            router.push('/login?discordConnectError=true', undefined, {
-              shallow: true,
-            });
-          }
+          returnToPage();
         });
     }
   }, [user, user?.signupCompleted, code, state]);
