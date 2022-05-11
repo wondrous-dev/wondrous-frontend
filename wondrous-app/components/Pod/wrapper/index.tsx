@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import apollo from 'services/apollo';
+import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { useMe } from '../../Auth/withAuth';
 import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from 'utils/constants';
