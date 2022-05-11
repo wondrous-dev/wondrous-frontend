@@ -182,9 +182,26 @@ const Callback = () => {
         })
         .catch((err) => {
           console.log('Error signing in discord user', err);
-          router.push('/dashboard', undefined, {
-            shallow: true,
-          });
+          let inviteToken,
+            inviteType = null;
+          if (state) {
+            const parsedState = JSON.parse(state);
+            inviteToken = parsedState?.token;
+            inviteType = parsedState?.type;
+          }
+          if (inviteToken) {
+            const url =
+              inviteType === 'pod'
+                ? `/invite/${inviteToken}?type=pod&discordConnectError=true`
+                : `/invite/${inviteToken}?discordConnectError=true`;
+            router.push(url, undefined, {
+              shallow: true,
+            });
+          } else {
+            router.push('/login?discordConnectError=true', undefined, {
+              shallow: true,
+            });
+          }
         });
     }
   }, [user, user?.signupCompleted, code, state]);

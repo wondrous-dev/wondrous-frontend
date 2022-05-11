@@ -42,7 +42,7 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink, podInfo, redeem
 
   const [unsuportedChain, setUnsuportedChain] = useState(false);
   const router = useRouter();
-  const { token, type } = router.query;
+  const { token, type, discordConnectError } = router.query;
   // Two stage process as wallet connection takes
   // time.
   const connectWallet = async (event) => {
@@ -177,6 +177,11 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink, podInfo, redeem
       }
     }
   };
+  useEffect(() => {
+    if (discordConnectError) {
+      setErrorMessage('Error connecting your Discord. Please try again or connect with Metamask instead.');
+    }
+  }, [discordConnectError]);
   useEffect(() => {
     if (wonderWeb3.address && wonderWeb3.active && wonderWeb3.web3Provider) {
       signupWithWallet();
