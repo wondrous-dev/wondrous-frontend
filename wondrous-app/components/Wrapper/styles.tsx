@@ -20,9 +20,8 @@ export const ContentContainer = styled.div`
 export const HeaderImage = styled.div`
   width: 100%;
   height: 220px;
-  background-image: url('/images/overview/background.png');
-  background-position: center;
   margin-top: 70px;
+  position: relative;
 `;
 
 export const OverviewComponent = styled.section`
