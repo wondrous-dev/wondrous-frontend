@@ -60,7 +60,7 @@ import { SafeImage } from '../Image';
 import { parseUserPermissionContext, cutString, transformTaskToTaskCard } from 'utils/helpers';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { useLocation } from 'utils/useLocation';
-import { White } from '../../../theme/colors';
+import { White, Red800 } from '../../../theme/colors';
 import { TaskViewModal } from './modal';
 import { useMe } from '../../Auth/withAuth';
 import { delQuery } from 'utils';
@@ -81,6 +81,7 @@ import { updateInProgressTask, updateTaskItem } from 'utils/board';
 import { TaskBountyOverview } from '../TaskBountyOverview';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import EditLayoutBaseModal from 'components/CreateEntity/editEntityModal';
+import { DeleteTaskModal } from '../DeleteTaskModal';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -141,6 +142,7 @@ export const Task = (props) => {
   const [userList, setUserList] = useState([]);
   const [liked, setLiked] = useState(iLiked);
   const [archiveTask, setArchiveTask] = useState(false);
+  const [deleteTask, setDeleteTask] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
   const [editTask, setEditTask] = useState(false);
   const snackbarContext = useContext(SnackbarAlertContext);
@@ -360,6 +362,18 @@ export const Task = (props) => {
         taskType={type}
         taskId={task?.id}
       />
+      <DeleteTaskModal
+        open={deleteTask}
+        onClose={() => {
+          setDeleteTask(false);
+        }}
+        taskType={type}
+        taskId={task?.id}
+        onDelete={() => {
+          setSnackbarAlertOpen(true);
+          setSnackbarAlertMessage(`Deleted successfully!`);
+        }}
+      />
       <TaskWrapper key={id} onClick={openModal}>
         <TaskInner>
           <TaskHeader>
@@ -539,6 +553,15 @@ export const Task = (props) => {
                     color={White}
                   >
                     Archive {type}
+                  </DropDownItem>
+                  <DropDownItem
+                    key={'task-menu-delete-' + id}
+                    onClick={() => {
+                      setDeleteTask(true);
+                    }}
+                    color={Red800}
+                  >
+                    Delete {type}
                   </DropDownItem>
                 </DropDown>
               </TaskActionMenu>
