@@ -1095,6 +1095,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     fetchedTask?.createdBy === user?.id;
+  const canDelete =
+    canArchive && (fetchedTask?.type === ENTITIES_TYPES.TASK || fetchedTask?.type === ENTITIES_TYPES.MILESTONE);
   const displayDivProfileImageStyle = {
     width: '26px',
     height: '26px',
@@ -1267,7 +1269,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                         Archive {taskType}
                       </DropDownItem>
                     )}
-                    {canArchive && (
+                    {canDelete && (
                       <DropDownItem
                         key={'task-menu-delete-' + fetchedTask?.id}
                         onClick={() => {

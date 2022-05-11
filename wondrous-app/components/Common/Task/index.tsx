@@ -293,6 +293,9 @@ export const Task = (props) => {
     permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
     task?.createdBy === user?.id;
 
+  const canDelete =
+    canArchive && (task?.type === Constants.ENTITIES_TYPES.TASK || task?.type === Constants.ENTITIES_TYPES.MILESTONE);
+
   const openModal = (e) => {
     const newUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`;
     location.push(newUrl);
@@ -554,15 +557,17 @@ export const Task = (props) => {
                   >
                     Archive {type}
                   </DropDownItem>
-                  <DropDownItem
-                    key={'task-menu-delete-' + id}
-                    onClick={() => {
-                      setDeleteTask(true);
-                    }}
-                    color={Red800}
-                  >
-                    Delete {type}
-                  </DropDownItem>
+                  {canDelete && (
+                    <DropDownItem
+                      key={'task-menu-delete-' + id}
+                      onClick={() => {
+                        setDeleteTask(true);
+                      }}
+                      color={Red800}
+                    >
+                      Delete {type}
+                    </DropDownItem>
+                  )}
                 </DropDown>
               </TaskActionMenu>
             )}
