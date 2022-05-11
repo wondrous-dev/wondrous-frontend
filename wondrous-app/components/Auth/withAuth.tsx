@@ -166,6 +166,7 @@ export const linkWallet = async (web3Address: string, signedMessage: string, blo
         signedMessage,
         blockchain,
       },
+      refetchQueries: [GET_LOGGED_IN_USER],
     });
 
     if (user) {
