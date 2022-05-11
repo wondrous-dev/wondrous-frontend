@@ -25,7 +25,5 @@ export const ContentContainer = styled.div`
 export const Banner = styled.div`
   width: 100vw;
   height: 230px;
-  background: url(/images/dashboard-banner.png);
-  background-position: center;
-  background-size: cover;
+  position: relative;
 `;

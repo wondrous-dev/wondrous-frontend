@@ -11,7 +11,7 @@ export const StyledTabs = styled(Tabs)`
     margin: 30px auto;
   }
   .MuiTabs-flexContainer {
-    justify-content: space-evenly;
+    justify-content: center;
   }
   .MuiTab-textColorInherit {
     opacity: 1;
@@ -29,5 +29,6 @@ export const StyledTab = styled(Tab)`
     padding: 10px;
     border-bottom: 2px solid #4b4b4b;
     width: 100%;
+    margin-right: 16px;
   }
 `;
