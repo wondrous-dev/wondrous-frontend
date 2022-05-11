@@ -37,6 +37,7 @@ const Login = ({ csrfToken }) => {
   const [notSupported, setNotSupported] = useState(false);
   const [loading, setLoading] = useState(null);
   const router = useRouter();
+  const { discordConnectError } = router.query;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -92,6 +93,11 @@ const Login = ({ csrfToken }) => {
   };
 
   useEffect(() => {
+    if (discordConnectError) {
+      setErrorMessage('Error connecting your Discord. Please try again or connect with Metamask instead.');
+    }
+  }, [discordConnectError]);
+  useEffect(() => {
     if (wonderWeb3.wallet['address'] && !wonderWeb3.isActivating) {
       // Wallet sign in
       loginWithWallet();
@@ -109,12 +115,12 @@ const Login = ({ csrfToken }) => {
     <AuthLayout>
       <LoginWrapper>
         <Image
-            alt="Background"
-            className="auth-background"
-            src="/images/login/background.png"
-            layout="fill"
-            objectFit="cover"
-            quality={80}
+          alt="Background"
+          className="auth-background"
+          src="/images/login/background.png"
+          layout="fill"
+          objectFit="cover"
+          quality={80}
         />
         <Image alt="Background" src="/images/login/background-blur.png" layout="fill" objectFit="cover" quality={80} />
         <TopBubble src="/images/login/top-floater-bubble.png" alt="" />
