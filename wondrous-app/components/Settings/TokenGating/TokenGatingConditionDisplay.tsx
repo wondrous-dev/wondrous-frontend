@@ -8,6 +8,7 @@ import UserCheckIcon from '../../Icons/userCheckIcon';
 import { useRouter } from 'next/router';
 import { useLazyQuery } from '@apollo/client';
 import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries/tokenGating';
+import { DELETE_TOKEN_GATING_CONDITION } from 'graphql/mutations/tokenGating';
 import { useWonderWeb3 } from 'services/web3';
 import { ErrorText } from '../../Common';
 import Accordion from '../../Common/Accordion';
@@ -22,11 +23,12 @@ import {
   TokenGateListDiv,
   TokenGateListItemDiv,
   TokenGatingHeaderLabel,
-  TokenLogoDisplay
+  TokenLogoDisplay,
 } from './styles';
 import { White } from 'theme/colors';
 import { useEditTokenGatingCondition } from 'utils/hooks';
 import { GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
+import apollo from 'services/apollo';
 
 interface TokenGatingCondition {
   id: string;
@@ -51,12 +53,12 @@ const CHAIN_NAME_TO_CHAIN_ID = {
   polygon: 137,
 };
 
-
 const TokenGatingConditionDisplay = (props) => {
   const router = useRouter();
   const [showDetails, setShowDetails] = useState(false);
   const [tokenName, setTokenName] = useState(null);
   const [tokenLogo, setTokenLogo] = useState(null);
+  const [deleteError, setDeleteError] = useState(null);
   const wonderWeb3 = useWonderWeb3();
   const editTokenGatingCondition = useEditTokenGatingCondition();
 
@@ -67,10 +69,9 @@ const TokenGatingConditionDisplay = (props) => {
   };
   const [getTokenInfo, { loading: getTokenInfoLoading }] = useLazyQuery(GET_TOKEN_INFO, {
     onCompleted: (data) => {
-      setTokenName(data?.getTokenInfo.name);
       if (data?.getTokenInfo) {
-        setTokenName(data?.getTokenInfo.name)
-        setTokenLogo(data?.getTokenInfo.logoUrl)
+        setTokenName(data?.getTokenInfo.name);
+        setTokenLogo(data?.getTokenInfo.logoUrl);
       }
     },
     fetchPolicy: 'network-only',
@@ -79,8 +80,8 @@ const TokenGatingConditionDisplay = (props) => {
   const [getNFTInfo, { loading: getNFTInfoLoading }] = useLazyQuery(GET_NFT_INFO, {
     onCompleted: (data) => {
       if (data?.getNFTInfo) {
-        setTokenName(data?.getNFTInfo.name)
-        setTokenLogo(data?.getNFTInfo.logoUrl)
+        setTokenName(data?.getNFTInfo.name);
+        setTokenLogo(data?.getNFTInfo.logoUrl);
       }
     },
     fetchPolicy: 'network-only',
@@ -89,27 +90,41 @@ const TokenGatingConditionDisplay = (props) => {
 
   useEffect(() => {
     const getTokenDisplayInfo = async () => {
-      const type = tokenGatingCondition?.accessCondition[0].type
+      const type = tokenGatingCondition?.accessCondition[0].type;
       if (type === 'ERC20') {
         getTokenInfo({
           variables: {
             contractAddress,
-            chain: tokenGatingCondition?.accessCondition[0].chain
+            chain: tokenGatingCondition?.accessCondition[0].chain,
           },
-        })
+        });
       }
       if (type === 'ERC721') {
         getNFTInfo({
           variables: {
             contractAddress,
           },
-        })
+        });
       }
     };
 
     getTokenDisplayInfo();
   }, [tokenGatingCondition?.accessCondition[0].contractAddress]);
-
+  const handleDelete = async () => {
+    if (tokenGatingCondition) {
+      try {
+        await apollo.mutate({
+          mutation: DELETE_TOKEN_GATING_CONDITION,
+          variables: {
+            tokenGatingConditionId: tokenGatingCondition?.id,
+          },
+        });
+        router.reload();
+      } catch (e) {
+        setDeleteError(true);
+      }
+    }
+  };
   return (
     <TokenGatingElementWrapper>
       <div
@@ -133,8 +148,8 @@ const TokenGatingConditionDisplay = (props) => {
             </DropDownItem>
             <DropDownItem
               key={'token-gate-delete' + tokenGatingCondition?.id}
-              onClick={() => {}}
               style={dropdownItemStyle}
+              onClick={handleDelete}
             >
               Delete
             </DropDownItem>
@@ -156,7 +171,7 @@ const TokenGatingConditionDisplay = (props) => {
         </TokenGateListItemDiv>
         <TokenGateListItemDiv>
           <TokenGatingHeaderLabel>Token:</TokenGatingHeaderLabel>
-          <TokenLogoDisplay src={tokenLogo}/>
+          <TokenLogoDisplay src={tokenLogo} />
           <TokenGatingNameHeader>
             <span>{tokenName ? tokenName : tokenGatingCondition?.accessCondition[0].contractAddress}</span>
           </TokenGatingNameHeader>
@@ -166,6 +181,7 @@ const TokenGatingConditionDisplay = (props) => {
           <TokenGatingNameHeader>{tokenGatingCondition?.accessCondition[0].minValue}</TokenGatingNameHeader>
         </TokenGateListItemDiv>
       </TokenGateListDiv>
+      {deleteError && <ErrorText>There are roles associated with this condition</ErrorText>}
     </TokenGatingElementWrapper>
   );
 };

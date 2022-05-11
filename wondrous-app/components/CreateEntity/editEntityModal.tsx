@@ -615,6 +615,7 @@ const EditLayoutBaseModal = (props) => {
   });
 
   const submitMutation = useCallback(() => {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
     switch (entityType) {
       case ENTITIES_TYPES.TASK:
         const taskInput = {
@@ -642,6 +643,7 @@ const EditLayoutBaseModal = (props) => {
           reviewerIds: selectedReviewers.map(({ id }) => id) || [],
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
+          timezone
         };
         const taskPodPrivacyError = !isPodPublic ? publicTask : false;
         if (!title || !org || taskPodPrivacyError) {
@@ -685,7 +687,8 @@ const EditLayoutBaseModal = (props) => {
           }),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
-          snapshotId
+          snapshotId,
+          timezone
         };
 
         if (!title) {
@@ -717,6 +720,7 @@ const EditLayoutBaseModal = (props) => {
               podId: pod?.id,
               userMentions: getMentionArray(descriptionText),
               mediaUploads,
+              timezone
             },
           },
         });
@@ -748,6 +752,7 @@ const EditLayoutBaseModal = (props) => {
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
+          timezone
         };
         // const isErrorMaxSubmissionCount =
         //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
@@ -1302,19 +1307,38 @@ const EditLayoutBaseModal = (props) => {
                 <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
                 <StyledAutocompletePopper
                   options={filterOrgUsers(orgUsersData?.getOrgUsers)}
-                  renderInput={(params) => (
-                    <TextField
-                      style={{
-                        color: White,
-                        fontFamily: 'Space Grotesk',
-                        fontSize: '14px',
-                        paddingLeft: '4px',
-                      }}
-                      placeholder="Enter username..."
-                      InputLabelProps={{ shrink: false }}
-                      {...params}
-                    />
-                  )}
+                  renderInput={(params) => {
+                    const InputProps = {
+                      ...params?.InputProps,
+                      type: 'autocomplete',
+                      startAdornment:
+                        assignee && assigneeString ? (
+                          <StyledChip label={assigneeString} onDelete={() => setAssignee(null)} />
+                        ) : (
+                          ''
+                        ),
+                    };
+                    return (
+                      <TextField
+                        {...params}
+                        style={{
+                          color: White,
+                          fontFamily: 'Space Grotesk',
+                          fontSize: '14px',
+                          paddingLeft: '4px',
+                        }}
+                        placeholder="Enter username..."
+                        InputLabelProps={{ shrink: false }}
+                        InputProps={InputProps}
+                        inputProps={{
+                          ...params?.inputProps,
+                          style: {
+                            opacity: assignee ? '0' : '1',
+                          },
+                        }}
+                      />
+                    );
+                  }}
                   value={assignee}
                   inputValue={assigneeString}
                   onInputChange={(event, newInputValue) => {

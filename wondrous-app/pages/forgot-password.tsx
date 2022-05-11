@@ -1,4 +1,6 @@
 import React from 'react';
+import Image from 'next/image';
+
 import { useRouter } from 'next/router';
 import { Card, CardBody, CardFooter } from 'components/Common/auth';
 import { Button } from 'components/Common/button';
@@ -26,6 +28,15 @@ const ForgotPassword = () => {
   return (
     <AuthLayout>
       <LoginWrapper>
+        <Image
+          alt="Background"
+          className="auth-background"
+          src="/images/login/background.png"
+          layout="fill"
+          objectFit="cover"
+          quality={80}
+        />
+        <Image alt="Background" src="/images/login/background-blur.png" layout="fill" objectFit="cover" quality={80} />
         <TopBubble src="/images/login/top-floater-bubble.png" alt="" />
         <Card>
           <CardBody>

@@ -5,7 +5,8 @@ export const NotificationsBoardWrapper = styled.div`
   position: absolute;
   width: 320px;
   min-height: 30px;
-
+  overflow-y: scroll;
+  max-height: 60vh;
   padding: 0px;
   margin-left: -143px;
   margin-top: 20px;

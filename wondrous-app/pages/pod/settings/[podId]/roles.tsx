@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/router';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
 import Roles from 'components/Settings/Roles';
-import { GET_POD_ROLES } from 'graphql/queries';
+import { GET_POD_ROLES_WITH_TOKEN_GATE, GET_POD_BY_ID } from 'graphql/queries';
 import { Role } from 'types/common';
 import { CREATE_POD_ROLE, DELETE_POD_ROLE, UPDATE_POD_ROLE } from 'graphql/mutations/pod';
 import permissons from 'utils/podPermissions';
@@ -11,9 +11,23 @@ import permissons from 'utils/podPermissions';
 const RolesPage = () => {
   const [roles, setRoles] = useState([]);
   const [toast, setToast] = useState({ show: false, message: '' });
+  const [pod, setPod] = useState(null);
   const router = useRouter();
   const { podId } = router.query;
-  const [getPodRoles, { data: getPodRolesData }] = useLazyQuery(GET_POD_ROLES, {
+  const [getPodRolesWithTokenGate, { data: getPodRolesData }] = useLazyQuery(GET_POD_ROLES_WITH_TOKEN_GATE, {
+    variables: {
+      podId,
+    },
+    onCompleted: (data) => {
+      setRoles(JSON.parse(JSON.stringify(getPodRolesData?.getPodRoles)) || []);
+    },
+  });
+  const { data: getPodData, loading } = useQuery(GET_POD_BY_ID, {
+    onCompleted: (data) => {
+      if (data?.getPodById) {
+        setPod(data?.getPodById);
+      }
+    },
     variables: {
       podId,
     },
@@ -22,7 +36,7 @@ const RolesPage = () => {
   const [createPodRole] = useMutation(CREATE_POD_ROLE, {
     onCompleted: ({ createPodRole: role }) => {
       setToast({ ...toast, message: `${role.name} created successfully.`, show: true });
-      getPodRoles();
+      getPodRolesWithTokenGate();
     },
   });
 
@@ -40,15 +54,10 @@ const RolesPage = () => {
 
   useEffect(() => {
     if (podId) {
-      getPodRoles();
+      getPodRolesWithTokenGate();
     }
-  }, [podId, getPodRoles]);
+  }, [podId, getPodRolesWithTokenGate]);
 
-  useEffect(() => {
-    if (getPodRolesData) {
-      setRoles(JSON.parse(JSON.stringify(getPodRolesData?.getPodRoles)) || []);
-    }
-  }, [getPodRolesData]);
 
   function updateRolePermissions(role: Role, permissions: string[]) {
     role.permissions = permissions;
@@ -80,6 +89,8 @@ const RolesPage = () => {
 
   return (
     <Roles
+      orgId={pod?.orgId}
+      podId={pod?.id}
       roles={roles}
       permissons={permissons}
       onCreateNewRole={(name: string, permissions: string[]) => {
@@ -97,6 +108,7 @@ const RolesPage = () => {
       onPermissionsChange={updateRolePermissions}
       toast={toast}
       onToastClose={() => setToast({ ...toast, show: false })}
+      getPodRolesWithTokenGate={getPodRolesWithTokenGate}
     />
   );
 };

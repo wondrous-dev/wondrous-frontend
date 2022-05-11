@@ -5,11 +5,15 @@ import { InputBase, Switch, Typography } from '@material-ui/core';
 import SnackbarComp from '@mui/material/Snackbar';
 
 import { Button } from '../../Common/button';
-import { Red800 } from '../../../theme/colors';
+import { BaseCard } from '../../Common/card';
+import { Red800, White } from '../../../theme/colors';
+import { newDropdownStyles } from 'components/Common/DropdownSelect/styles';
 
 export const RolesContainer = styled.div`
   width: 100%;
   max-width: 765px;
+
+  ${newDropdownStyles}
 `;
 
 export const Box = styled.div`
@@ -56,6 +60,18 @@ export const Permissions = styled.div`
 `;
 
 export const Permission = styled.div`
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 85px;
+
+  &:not(:first-child) {
+    border-top: 1px solid #4b4b4b;
+  }
+`;
+
+export const RoleTokenGatingWrapper = styled.div`
   color: white;
   display: flex;
   justify-content: space-between;
@@ -126,4 +142,63 @@ export const Snackbar = styled(SnackbarComp)`
 export const Error = styled.h3`
   color: ${Red800};
   margin: 30px 0;
+`;
+
+export const TokenGatingButton = styled(Button)`
+  min-width: 87px;
+  max-width: 166px;
+  height: 40px;
+  min-height: 40px;
+`;
+
+export const TokenGatingButtonText = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 15px;
+    font-weight: 600;
+    color: ${White};
+  }
+`;
+
+export const TitleLockIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  > * {
+    margin-right: 10px;
+  }
+`;
+
+export const TokenGatedRoleModal = styled(BaseCard)`
+  width: 680px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 70%;
+  transform: translate(-50%, -50%);
+  overflow-y: scroll;
+  z-index: 2100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgb(20, 20, 20) !important;
+  padding-bottom: 32px;
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+`;
+
+export const TokenGatedRoleModalTitle = styled(Typography)`
+  && {
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 18px;
+    letter-spacing: 0.01em;
+    color: #ccbbff;
+  }
 `;

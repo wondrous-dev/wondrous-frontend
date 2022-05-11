@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { InputAdornment } from '@material-ui/core';
+import { InputAdornment, Typography } from '@material-ui/core';
 import Wallet from 'components/Common/Wallet';
 import CreateBtnIcon from 'components/Icons/createBtn';
 import HomeIcon from 'components/Icons/home';
@@ -20,6 +20,8 @@ import {
   HeaderLeftBlock,
   HeaderLogo,
   HeaderRightBlock,
+  TutorialButton,
+  TutorialText,
 } from './styles';
 
 const HeaderComponent = (props) => {
@@ -75,6 +77,25 @@ const HeaderComponent = (props) => {
           />
         </HeaderLeftBlock>
         <HeaderRightBlock>
+          <a
+            style={{
+              textDecoration: 'none',
+            }}
+            href="https://linktr.ee/wonderverse"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <TutorialButton
+              style={{
+                borderRadius: '8px',
+              }}
+              buttonInnerStyle={{
+                borderRadius: '7px',
+              }}
+            >
+              <TutorialText>Wonder Tutorials</TutorialText>
+            </TutorialButton>
+          </a>
           <Wallet />
 
           <NotificationsBoard notifications={notifications || []} setNofications={setNotifications} />

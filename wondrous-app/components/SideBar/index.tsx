@@ -19,9 +19,8 @@ import {
 } from './styles';
 
 import SettingsIcon from '../Icons/settings';
-import ExitIcon from '../Icons/exit';
 import BackArrowIcon from '../Icons/backArrow';
-import { logout, useMe, withAuth } from '../Auth/withAuth';
+import { useMe, withAuth } from '../Auth/withAuth';
 import { useSideBar } from 'utils/hooks';
 import { useQuery } from '@apollo/client';
 import { GET_USER_ORGS } from 'graphql/queries';
@@ -67,10 +66,6 @@ const SideBarComponent = (props) => {
     if (setMinimized) {
       setMinimized(!minimized);
     }
-  };
-
-  const signOut = () => {
-    logout();
   };
 
   const generalSettings = () => {
@@ -154,9 +149,6 @@ const SideBarComponent = (props) => {
         <DrawerBottomBlock>
           <DrawerBottomButton onClick={generalSettings}>
             <SettingsIcon />
-          </DrawerBottomButton>
-          <DrawerBottomButton onClick={signOut}>
-            <ExitIcon />
           </DrawerBottomButton>
         </DrawerBottomBlock>
       </DrawerContainer>

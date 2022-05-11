@@ -4,7 +4,7 @@ import * as Colors from './colors';
 const theme = createTheme({
   palette: {
     primary: {
-      main: Colors.Orange,
+      main: '#161616',
       contrastText: Colors.White,
     },
     secondary: {
@@ -23,22 +23,22 @@ const theme = createTheme({
     MuiTooltip: {
       popper: {
         '& p': {
-          color: Colors.White
-        }
+          color: Colors.White,
+        },
       },
       tooltip: {
-        backgroundColor: Colors.Grey800
+        backgroundColor: Colors.Grey800,
       },
       arrow: {
         '&:before': {
-          backgroundColor: Colors.Grey800
-        }
-      }
+          backgroundColor: Colors.Grey800,
+        },
+      },
     },
     MuiDivider: {
       root: {
-        backgroundColor: Colors.White
-      }
+        backgroundColor: Colors.White,
+      },
     },
     MuiTextField: {
       root: {
@@ -82,6 +82,7 @@ const theme = createTheme({
         color: Colors.Grey100,
       },
     },
+    MuiCircularProgress: { circle: { color: Colors.Orange } },
   },
   typography: {
     button: {

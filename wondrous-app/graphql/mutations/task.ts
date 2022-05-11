@@ -67,6 +67,24 @@ export const UPDATE_TASK_STATUS = gql`
   ${TaskFragment}
 `;
 
+export const ARCHIVE_TASK = gql`
+  mutation archiveTask($taskId: ID!) {
+    archiveTask(taskId: $taskId) {
+      ...TaskFragment
+    }
+  }
+  ${TaskFragment}
+`;
+
+export const UNARCHIVE_TASK = gql`
+  mutation unarchiveTask($taskId: ID!) {
+    unarchiveTask(taskId: $taskId) {
+      ...TaskFragment
+    }
+  }
+  ${TaskFragment}
+`;
+
 export const CREATE_TASK_COMMENT = gql`
   mutation createTaskComment($input: TaskCommentInput) {
     createTaskComment(input: $input) {

@@ -202,14 +202,14 @@ const KanbanBoard = (props) => {
           shouldFocusAfterRender={false}
           handleClose={() => {
             const style = document.body.getAttribute('style');
-            const top = style.match(/(?<=top: -)(.*?)(?=px)/);
+            const top = style.match(/(top: -)(.*?)(?=px)/);
             document.body.setAttribute('style', '');
             if (top?.length > 0) {
-              window?.scrollTo(0, Number(top[0]));
+              window?.scrollTo(0, Number(top[2]));
             }
-            setOpenModal(false);
             const newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}`;
             location.push(newUrl);
+            setOpenModal(false);
           }}
           taskId={(location?.params?.task || location?.params?.taskProposal)?.toString()}
           isTaskProposal={!!location?.params?.taskProposal}
@@ -218,16 +218,7 @@ const KanbanBoard = (props) => {
           {columns.map((column) => {
             const { status, section, tasks } = column;
 
-            return (
-              <TaskColumn
-                onOpen={() => setOnce(true)}
-                key={status}
-                cardsList={tasks}
-                moveCard={moveCard}
-                status={status}
-                section={section}
-              />
-            );
+            return <TaskColumn key={status} cardsList={tasks} moveCard={moveCard} status={status} section={section} />;
           })}
         </DragDropContext>
       </KanbanBoardContainer>

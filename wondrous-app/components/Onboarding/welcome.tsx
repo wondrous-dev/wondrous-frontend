@@ -34,6 +34,7 @@ export const Logo = ({ divStyle }) => {
 
 export const InviteWelcomeBox = ({ updateUser, user }) => {
   const wonderWeb3 = useWonderWeb3();
+  const router = useRouter();
   const [username, setUsername] = useState(user?.username);
   const [error, setError] = useState('');
   // Two stage process as wallet connection takes
@@ -115,19 +116,26 @@ export const InviteWelcomeBox = ({ updateUser, user }) => {
       <ContinueButton
         style={buttonStyle}
         onClick={() => {
-          if (USERNAME_REGEX.test(username)) {
-            updateUser({
-              variables: {
-                input: {
-                  username,
-                },
-              },
-              onError: (e) => {
-                setError(e.message);
-              },
+          if (username && user?.username === username) {
+            // No change
+            router.push('/onboarding/build-profile', undefined, {
+              shallow: true,
             });
           } else {
-            setError("Please enter a valid username with 3-15 alphanumeric characters with no '.'");
+            if (USERNAME_REGEX.test(username)) {
+              updateUser({
+                variables: {
+                  input: {
+                    username,
+                  },
+                },
+                onError: (e) => {
+                  setError(e.message);
+                },
+              });
+            } else {
+              setError("Please enter a valid username with 3-15 alphanumeric characters with no '.'");
+            }
           }
         }}
         buttonInnerStyle={{

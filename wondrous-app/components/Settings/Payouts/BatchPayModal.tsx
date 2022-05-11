@@ -37,7 +37,7 @@ import { useMe } from '../../Auth/withAuth';
 import { useRouter } from 'next/router';
 import { DAOIcon } from '../../Icons/dao';
 import { OrganisationsCardNoLogo } from '../../profile/about/styles';
-import { OfflinePayment } from '../../Common/Payment/OfflinePayment';
+import { OfflinePayment } from '../../Common/Payment/OfflinePayment/OfflinePayment';
 import { BatchWalletPayment } from '../../Common/Payment/BatchWalletPayment';
 import Link from 'next/link';
 import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
@@ -126,13 +126,15 @@ export const BatchPayModal = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [podId, orgId]);
   useEffect(() => {
-    getSubmissionsPaymentInfo({
-      variables: {
-        submissionIds,
-      },
-    });
+    if (submissionIds) {
+      getSubmissionsPaymentInfo({
+        variables: {
+          submissionIds,
+        },
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unpaidSubmissions]);
+  }, [unpaidSubmissions, submissionIds]);
   return (
     <Modal open={open} onClose={handleClose}>
       <PaymentModal>
