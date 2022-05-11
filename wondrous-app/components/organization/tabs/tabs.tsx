@@ -11,25 +11,42 @@ const Tabs = (props) => {
   const { asPath } = router;
   const { username, podId } = router.query;
   const user = username ?? podId;
-
-  const tabsLinks = [
-    {
-      href: `/${page}/${user}/boards`,
-      label: 'Boards',
-    },
-    {
-      href: `/${page}/${user}/docs`,
-      label: 'Docs',
-    },
-    {
-      href: `/${page}/${user}/activities`,
-      label: 'Activity',
-    },
-    // {
-    //   href: `/${page}/${user}/about`,
-    //   label: 'About',
-    // },
-  ];
+  let tabsLinks = [];
+  if (page === 'organization') {
+    tabsLinks = [
+      {
+        href: `/${page}/${user}/boards`,
+        label: 'Boards',
+      },
+      {
+        href: `/${page}/${user}/docs`,
+        label: 'Docs',
+      },
+      {
+        href: `/${page}/${user}/activities`,
+        label: 'Activity',
+      },
+      // {
+      //   href: `/${page}/${user}/about`,
+      //   label: 'About',
+      // },
+    ];
+  } else if (page === 'pod') {
+    tabsLinks = [
+      {
+        href: `/${page}/${user}/boards`,
+        label: 'Boards',
+      },
+      {
+        href: `/${page}/${user}/activities`,
+        label: 'Activity',
+      },
+      // {
+      //   href: `/${page}/${user}/about`,
+      //   label: 'About',
+      // },
+    ];
+  }
 
   return (
     <Container>
