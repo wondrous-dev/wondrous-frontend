@@ -60,7 +60,7 @@ import { SafeImage } from '../Image';
 import { parseUserPermissionContext, cutString, transformTaskToTaskCard } from 'utils/helpers';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { useLocation } from 'utils/useLocation';
-import { White } from '../../../theme/colors';
+import { White, Red800 } from '../../../theme/colors';
 import { TaskViewModal } from './modal';
 import { useMe } from '../../Auth/withAuth';
 import { delQuery } from 'utils';
@@ -81,6 +81,7 @@ import { updateInProgressTask, updateTaskItem } from 'utils/board';
 import { TaskBountyOverview } from '../TaskBountyOverview';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import EditLayoutBaseModal from 'components/CreateEntity/editEntityModal';
+import { DeleteTaskModal } from '../DeleteTaskModal';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -141,6 +142,7 @@ export const Task = (props) => {
   const [userList, setUserList] = useState([]);
   const [liked, setLiked] = useState(iLiked);
   const [archiveTask, setArchiveTask] = useState(false);
+  const [deleteTask, setDeleteTask] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
   const [editTask, setEditTask] = useState(false);
   const snackbarContext = useContext(SnackbarAlertContext);
@@ -291,6 +293,9 @@ export const Task = (props) => {
     permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
     task?.createdBy === user?.id;
 
+  const canDelete =
+    canArchive && (task?.type === Constants.ENTITIES_TYPES.TASK || task?.type === Constants.ENTITIES_TYPES.MILESTONE);
+
   const openModal = (e) => {
     const newUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`;
     location.push(newUrl);
@@ -359,6 +364,18 @@ export const Task = (props) => {
         onArchive={handleNewStatus}
         taskType={type}
         taskId={task?.id}
+      />
+      <DeleteTaskModal
+        open={deleteTask}
+        onClose={() => {
+          setDeleteTask(false);
+        }}
+        taskType={type}
+        taskId={task?.id}
+        onDelete={() => {
+          setSnackbarAlertOpen(true);
+          setSnackbarAlertMessage(`Deleted successfully!`);
+        }}
       />
       <TaskWrapper key={id} onClick={openModal}>
         <TaskInner>
@@ -540,6 +557,17 @@ export const Task = (props) => {
                   >
                     Archive {type}
                   </DropDownItem>
+                  {canDelete && (
+                    <DropDownItem
+                      key={'task-menu-delete-' + id}
+                      onClick={() => {
+                        setDeleteTask(true);
+                      }}
+                      color={Red800}
+                    >
+                      Delete {type}
+                    </DropDownItem>
+                  )}
                 </DropDown>
               </TaskActionMenu>
             )}

@@ -31,7 +31,7 @@ export const COMPLETE_TASK = gql`
 `;
 
 export const DELETE_TASK = gql`
-  mutation deleteTask($taskId: String!) {
+  mutation deleteTask($taskId: ID!) {
     deleteTask(taskId: $taskId) {
       success
     }
@@ -109,6 +109,14 @@ export const CREATE_MILESTONE = gql`
     }
   }
   ${TaskFragment}
+`;
+
+export const DELETE_MILESTONE = gql`
+  mutation deleteMilestone($milestoneId: ID!) {
+    deleteMilestone(milestoneId: $milestoneId) {
+      success
+    }
+  }
 `;
 
 export const UPDATE_TASK_ASSIGNEE = gql`
