@@ -89,12 +89,13 @@ const Wallets = (props) => {
       setErrors(emptyError);
       setSafeAddress('');
       setWalletName('');
-      wallets.push(data?.createOrgWallet);
-      setWallets(wallets);
+      // wallets.push(data?.createOrgWallet);
+      // setWallets(wallets);
     },
     onError: (e) => {
       console.error(e);
     },
+    refetchQueries: ['getOrgWallet']
   });
 
   const [createPodWallet] = useMutation(CREATE_POD_WALLET, {
@@ -102,12 +103,13 @@ const Wallets = (props) => {
       setErrors(emptyError);
       setSafeAddress('');
       setWalletName('');
-      wallets.push(data?.createPodWallet);
-      setWallets(wallets);
+      // wallets.push(data?.createPodWallet);
+      // setWallets(wallets);
     },
     onError: (e) => {
       console.error(e);
     },
+    refetchQueries: ['getPodWallet']
   });
 
   const handleCreateWalletClick = async () => {
