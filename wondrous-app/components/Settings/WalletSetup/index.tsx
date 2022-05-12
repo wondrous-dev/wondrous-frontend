@@ -38,6 +38,10 @@ const SUPPORTED_PAYMENT_CHAINS = [
     label: 'Polygon Mainnet',
     value: 'polygon_mainnet',
   },
+  {
+    label: 'Harmony Mainnet',
+    value: 'harmony',
+  },
 ];
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {
   SUPPORTED_PAYMENT_CHAINS.push({
