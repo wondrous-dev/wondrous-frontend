@@ -282,7 +282,7 @@ const Members = (props) => {
                       </StyledTableCell>
                       <StyledTableCell align="center">
                         <PodsCount>
-                          {user?.additionalInfo?.podCount || 'N/A'} {pluralize('Pod', user?.additionalInfo?.podCount)}{' '}
+                          {user?.additionalInfo?.podCount || 0} {pluralize('Pod', user?.additionalInfo?.podCount || 0)}{' '}
                         </PodsCount>
                       </StyledTableCell>
 
