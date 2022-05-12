@@ -71,12 +71,7 @@ const Wallet = () => {
       if (messageToSign) {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
         if (signedMessageIsString(signedMessage)) {
-          const result = await linkWallet(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
-          if (!result) {
-            // Error with wallet link. Disconnect wallet
-            await wonderWeb3.disconnect();
-            setConnected(false);
-          }
+          await linkWallet(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
         }
       }
     }
