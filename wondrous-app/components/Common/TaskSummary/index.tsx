@@ -48,6 +48,7 @@ import { useMe } from '../../Auth/withAuth';
 import PodIcon from '../../Icons/podIcon';
 import { ViewType } from 'types/common';
 import { useLocation } from 'utils/useLocation';
+import Link from "next/link";
 
 let windowOffset;
 
@@ -89,22 +90,17 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
       shallow: true,
     });
   };
-  const openModal = () => {
-    const view = location.params.view ?? ViewType.Grid;
-    let newUrl = '';
-    if (taskType === TASK_STATUS_REQUESTED) {
-      newUrl = `${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`;
-    } else if (taskType === TASK_STATUS_IN_REVIEW) {
-      newUrl = `${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`;
-    } else if (taskType === TASK_STATUS_ARCHIVED) {
-      newUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${view}`;
+  const openModal = (e, viewUrl) => {
+    const isCommandKeyPressed = e.metaKey || e.ctrlKey;
+
+    if (!isCommandKeyPressed) {
+      location.replace(viewUrl);
+      // document.body.style.overflow = 'hidden'
+      // document.body.scroll = false
+      windowOffset = window.scrollY;
+      document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+      setModalOpen(true);
     }
-    location.replace(newUrl);
-    // document.body.style.overflow = 'hidden'
-    // document.body.scroll = false
-    windowOffset = window.scrollY;
-    document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
-    setModalOpen(true);
   };
 
   const orgBoard = useOrgBoard();
@@ -203,9 +199,19 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
       });
   }
 
+  const view = location.params.view ?? ViewType.Grid;
+
+  let viewUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${view}`;
+
+  if (taskType === TASK_STATUS_REQUESTED) {
+    viewUrl = `${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`;
+  } else if (taskType === TASK_STATUS_IN_REVIEW) {
+    viewUrl = `${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`;
+  }
+
   return (
     <>
-      <TaskSummaryWrapper key={id} onClick={openModal}>
+      <TaskSummaryWrapper key={id} onClick={(e) => openModal(e, viewUrl)}>
         <TaskSummaryInner>
           <TaskHeader>
             <OrgProfilePicture src={task?.orgProfilePicture} />
@@ -228,7 +234,9 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
           </TaskHeader>
 
           <TaskContent>
-            <TaskTitle>{title}</TaskTitle>
+            <TaskTitle>
+              <Link href={viewUrl}>{title}</Link>
+            </TaskTitle>
             <TaskCardDescriptionText>
               {renderMentionString({
                 content: task?.description,

@@ -104,6 +104,15 @@ export const TaskTitle = styled.div`
   color: white;
   font-size: 16px;
   font-weight: bold;
+  
+  a {
+    color: white;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 `;
 
 export const TaskDescription = styled.p`

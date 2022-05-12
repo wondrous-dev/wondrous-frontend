@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
+import Link from 'next/link';
+
 import { LogoButton } from '../logo';
 import {
   TodoWithBorder,
@@ -297,12 +299,16 @@ export const Task = (props) => {
     canArchive && (task?.type === Constants.ENTITIES_TYPES.TASK || task?.type === Constants.ENTITIES_TYPES.MILESTONE);
 
   const openModal = (e) => {
-    const newUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`;
-    location.push(newUrl);
-    // document.body.style.overflow = 'hidden'
-    // document.body.scroll = false
-    windowOffset = window.scrollY;
-    document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+    const isCommandKeyPressed = e.metaKey || e.ctrlKey;
+
+    if (!isCommandKeyPressed) {
+      const newUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`;
+      location.push(newUrl);
+      // document.body.style.overflow = 'hidden'
+      // document.body.scroll = false
+      windowOffset = window.scrollY;
+      document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+    }
   };
 
   const goToPod = (podId) => {
@@ -333,6 +339,8 @@ export const Task = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assigneeUsername]);
+
+  const viewUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`;
 
   return (
     <span className={className}>
@@ -417,7 +425,9 @@ export const Task = (props) => {
           {(isMilestone || isBounty) && <TaskDivider />}
 
           <TaskContent>
-            <TaskTitle>{title}</TaskTitle>
+            <TaskTitle>
+              <Link href={viewUrl}>{title}</Link>
+            </TaskTitle>
             <TaskCardDescriptionText>
               {renderMentionString({
                 content: description,

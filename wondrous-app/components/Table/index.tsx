@@ -192,14 +192,11 @@ export const Table = (props) => {
     );
   }
 
-  function openTask(task, status = '') {
-    const view = location.params.view ?? ViewType.List;
-    if (status === TASK_STATUS_REQUESTED || status === TASK_STATUS_PROPOSAL_REQUEST) {
-      location.replace(`${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`);
-    } else if (status === TASK_STATUS_IN_REVIEW || status === TASK_STATUS_SUBMISSION_REQUEST) {
-      location.replace(`${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`);
-    } else {
-      location.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${view}`);
+  function openTask(e, taskUrl) {
+    const isCommandKeyPressed = e.metaKey || e.ctrlKey;
+
+    if (!isCommandKeyPressed) {
+      location.replace(taskUrl);
     }
   }
 
@@ -346,6 +343,16 @@ export const Table = (props) => {
                   task?.__typename === 'TaskSubmissionCard' || task?.__typename === 'TaskProposalCard'
                     ? task?.creatorProfilePicture
                     : task.assigneeProfilePicture;
+
+                const view = location.params.view ?? ViewType.List;
+                let taskUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${view}`;
+
+                if (status === TASK_STATUS_REQUESTED || status === TASK_STATUS_PROPOSAL_REQUEST) {
+                  taskUrl = `${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`;
+                } else if (status === TASK_STATUS_IN_REVIEW || status === TASK_STATUS_SUBMISSION_REQUEST) {
+                  taskUrl = `${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`;
+                }
+
                 return (
                   <StyledTableRow key={task.id}>
                     <StyledTableCell align="center">
@@ -432,8 +439,10 @@ export const Table = (props) => {
                     <StyledTableCell align="center">
                       <TaskStatus status={status} />
                     </StyledTableCell>
-                    <StyledTableCell className="clickable" onClick={() => openTask(task, status)}>
-                      <TaskTitle>{task.title}</TaskTitle>
+                    <StyledTableCell className="clickable" onClick={(e) => openTask(e, taskUrl)}>
+                      <TaskTitle>
+                        <Link href={taskUrl}>{task.title}</Link>
+                      </TaskTitle>
                       <TaskDescription
                         style={{
                           maxWidth: '600px',
