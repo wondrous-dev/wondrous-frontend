@@ -14,10 +14,10 @@ export default function useEagerConnect() {
   const { storedConnector } = useStoredConnector();
   console.log('useEagerConnect', storedConnector)
   useEffect(() => {
-    // if (storedConnector) { //  === 'injected' FIXME this is hacky, not sure how to resolve
-    //   activate(connectors[storedConnector], undefined, true).catch((err) => {
-    //     console.log('Error while activating stored connector', err);
-    //   });
-    // }
+    if (storedConnector && user?.activeEthAddress) { // FIXME this is hacky, not sure how to resolve
+      activate(connectors[storedConnector], undefined, true).catch((err) => {
+        console.log('Error while activating stored connector', err);
+      });
+    }
   }, [user?.activeEthAddress, storedConnector, activate]);
 }
