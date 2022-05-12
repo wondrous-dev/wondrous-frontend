@@ -26,7 +26,7 @@ import WrenchIcon from '../../Icons/wrench';
 import SafeServiceClient from '@gnosis.pm/safe-service-client';
 import { useWonderWeb3 } from 'services/web3';
 import { ErrorText } from '../../Common';
-
+import { CHAIN_VALUE_TO_GNOSIS_CHAIN_VALUE, CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL } from '../../../utils/constants';
 const LIMIT = 20;
 
 const SUPPORTED_PAYMENT_CHAINS = [
@@ -50,11 +50,6 @@ if (!process.env.NEXT_PUBLIC_PRODUCTION) {
   });
 }
 
-const CHAIN_VALUE_TO_GNOSIS_CHAIN_VALUE = {
-  eth_mainnet: 'mainnet',
-  polygon_mainnet: 'polygon',
-  rinkeby: 'rinkeby',
-};
 const Wallets = (props) => {
   const router = useRouter();
   const wonderWeb3 = useWonderWeb3();
@@ -118,7 +113,8 @@ const Wallets = (props) => {
   const handleCreateWalletClick = async () => {
     const newError = emptyError;
     const chain = CHAIN_VALUE_TO_GNOSIS_CHAIN_VALUE[selectedChain];
-    const safeService = new SafeServiceClient(`https://safe-transaction.${chain}.gnosis.io`);
+    const safeServiceUrl = CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL[selectedChain];
+    const safeService = new SafeServiceClient(safeServiceUrl);
     let checksumAddress;
     try {
       checksumAddress = wonderWeb3.toChecksumAddress(safeAddress);
