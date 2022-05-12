@@ -76,7 +76,7 @@ const TokenGatedRoleDisplay = (props) => {
     },
     fetchPolicy: 'network-only',
   });
-  console.log('rolerole', role);
+
   const [getNFTInfo, { loading: getNFTInfoLoading }] = useLazyQuery(GET_NFT_INFO, {
     onCompleted: (data) => {
       if (data?.getNFTInfo) {
@@ -114,7 +114,6 @@ const TokenGatedRoleDisplay = (props) => {
           },
         });
       } else if (role.orgId) {
-        console.log("checkkinng")
         checkOrgRoleTokenGatingCondition({
           variables: {
             orgRoleId: role.id,
@@ -230,12 +229,12 @@ const TokenGatedRoleDisplay = (props) => {
             )}
           </div>
         ) : (
-              <RedXIcon
-                style={{
-                  width: '30',
-                  height: '30',
-                }}
-              />
+          <RedXIcon
+            style={{
+              width: '30',
+              height: '30',
+            }}
+          />
         )}
       </RoleActionWrapper>
     </TokenGatedRoleWrapper>
