@@ -26,7 +26,6 @@ export const GET_USER_PODS = gql`
       name
       profilePicture
       description
-      lastActivityAt
       color
       org {
         id

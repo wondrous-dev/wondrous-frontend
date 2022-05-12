@@ -69,7 +69,7 @@ import {
 } from 'utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
-import { Red400, White } from '../../../theme/colors';
+import { Red400, Red800, White } from '../../../theme/colors';
 import { useMe } from '../../Auth/withAuth';
 import { GetStatusIcon, renderMentionString } from 'utils/common';
 import {
@@ -140,6 +140,7 @@ import { TaskSubtasks } from '../TaskSubtask';
 import { SubtaskDarkIcon, SubtaskLightIcon } from '../../Icons/subtask';
 import { CheckedBoxIcon } from '../../Icons/checkedBox';
 import RightArrowIcon from '../../Icons/rightArrow';
+import { DeleteTaskModal } from '../DeleteTaskModal';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -766,7 +767,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
 
   const [activeTab, setActiveTab] = useState(null);
   const [archiveTask, setArchiveTask] = useState(false);
-  const [archiveTaskAlert, setArchiveTaskAlert] = useState(false);
+  const [deleteTask, setDeleteTask] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const snackbarContext = useContext(SnackbarAlertContext);
@@ -1094,6 +1095,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     fetchedTask?.createdBy === user?.id;
+  const canDelete =
+    canArchive && (fetchedTask?.type === ENTITIES_TYPES.TASK || fetchedTask?.type === ENTITIES_TYPES.MILESTONE);
   const displayDivProfileImageStyle = {
     width: '26px',
     height: '26px',
@@ -1112,6 +1115,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const taskType = isTaskProposal ? 'task proposal' : fetchedTask?.type;
   const handleOnCloseArchiveTaskModal = () => {
     setArchiveTask(false);
+    setDeleteTask(false);
     if (isTaskProposal) {
       handleClose();
     }
@@ -1129,6 +1133,17 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
           onArchive={handleNewStatus}
           taskType={taskType}
           taskId={fetchedTask?.id}
+        />
+        <DeleteTaskModal
+          open={deleteTask}
+          onClose={() => setDeleteTask(false)}
+          taskType={taskType}
+          taskId={fetchedTask?.id}
+          onDelete={() => {
+            handleClose();
+            setSnackbarAlertOpen(true);
+            setSnackbarAlertMessage(`Deleted successfully!`);
+          }}
         />
         <Modal
           open={open}
@@ -1252,6 +1267,18 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                         style={dropdownItemStyle}
                       >
                         Archive {taskType}
+                      </DropDownItem>
+                    )}
+                    {canDelete && (
+                      <DropDownItem
+                        key={'task-menu-delete-' + fetchedTask?.id}
+                        onClick={() => {
+                          setDeleteTask(true);
+                        }}
+                        style={dropdownItemStyle}
+                        color={Red800}
+                      >
+                        Delete {taskType}
                       </DropDownItem>
                     )}
                   </DropDown>

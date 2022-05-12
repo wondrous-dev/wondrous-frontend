@@ -3,6 +3,7 @@ import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from 'utils/constants';
 import { SideBarContext } from 'utils/contexts';
 import apollo from 'services/apollo';
 import { useMe } from '../../Auth/withAuth';
+import Image from 'next/image';
 
 import Header from '../../Header';
 import SideBarComponent from '../../SideBar';
@@ -416,7 +417,6 @@ const Wrapper = (props) => {
                   </div>
                 </HeaderActivity>
               </TokenHeader>
-
               <Tabs>{children}</Tabs>
             </ContentContainer>
           </Content>
