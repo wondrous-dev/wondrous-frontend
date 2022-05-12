@@ -12,7 +12,7 @@ export default function useEagerConnect() {
   const user = useMe();
   const { activate } = useWeb3React();
   const { storedConnector } = useStoredConnector();
-  console.log('useEagerConnect', storedConnector)
+
   useEffect(() => {
     // if (storedConnector) { //  === 'injected' FIXME this is hacky, not sure how to resolve
     //   activate(connectors[storedConnector], undefined, true).catch((err) => {
