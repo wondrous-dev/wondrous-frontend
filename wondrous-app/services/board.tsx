@@ -8,6 +8,7 @@ import {
   TASK_STATUS_REQUESTED,
   TASK_STATUS_TODO,
   TASK_TYPE,
+  COLUMNS_CONFIGURATION,
 } from 'utils/constants';
 import { Archived, InReview, Requested } from 'components/Icons/sections';
 import { Proposal } from 'components/Icons';
@@ -17,58 +18,87 @@ import { cloneDeep } from 'lodash';
 import { BountyIcon, MilestoneIcon, TaskIcon } from 'components/Icons/Search/types';
 import { delQuery } from 'utils';
 
-const TO_DO = {
-  status: TASK_STATUS_TODO,
-  tasks: [],
-  section: {
-    title: 'Proposals',
-    icon: Requested,
-    id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
-    filter: {
-      taskType: TASK_STATUS_REQUESTED,
-    },
-    expandable: true,
-    action: {
-      text: 'Proposal',
-    },
-    tasks: [],
-  },
+const TO_DO = (withSection: boolean = true) => {
+  let config = { status: TASK_STATUS_TODO, tasks: [] };
+  if (withSection) {
+    config = {
+      ...config,
+      ...{
+        section: {
+          title: 'Proposals',
+          icon: Requested,
+          id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
+          filter: {
+            taskType: TASK_STATUS_REQUESTED,
+          },
+          expandable: true,
+          action: {
+            text: 'Proposal',
+          },
+          tasks: [],
+        },
+      },
+    };
+  }
+  return config;
 };
 
-const IN_PROGRESS = {
-  status: TASK_STATUS_IN_PROGRESS,
-  tasks: [],
-  section: {
-    title: 'In Review',
-    icon: InReview,
-    id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
-    filter: {
-      taskType: TASK_STATUS_IN_REVIEW,
-    },
-    expandable: true,
-    action: {
-      text: 'Review',
-    },
-    tasks: [],
-  },
+const IN_PROGRESS = (withSection: boolean = true) => {
+  let config = { status: TASK_STATUS_IN_PROGRESS, tasks: [] };
+  if (withSection) {
+    config = {
+      ...config,
+      ...{
+        section: {
+          title: 'In Review',
+          icon: InReview,
+          id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
+          filter: {
+            taskType: TASK_STATUS_IN_REVIEW,
+          },
+          expandable: true,
+          action: {
+            text: 'Review',
+          },
+          tasks: [],
+        },
+      },
+    };
+  }
+  return config;
 };
 
-const DONE = {
-  status: TASK_STATUS_DONE,
+const IN_REVIEW = () => ({
+  status: TASK_STATUS_IN_REVIEW,
   tasks: [],
-  section: {
-    title: 'Archived',
-    icon: Archived,
-    id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
-    filter: {
-      taskType: TASK_STATUS_ARCHIVED,
-    },
-    expandable: true,
-    action: {
-      text: 'Restore',
-    },
+});
+
+const DONE = (withSection: boolean = true) => {
+  let config = {
+    status: TASK_STATUS_DONE,
     tasks: [],
-  },
+  };
+  if (withSection) {
+    config = {
+      ...config,
+      ...{
+        section: {
+          title: 'Archived',
+          icon: Archived,
+          id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
+          filter: {
+            taskType: TASK_STATUS_ARCHIVED,
+          },
+          expandable: true,
+          action: {
+            text: 'Restore',
+          },
+          tasks: [],
+        },
+      },
+    };
+  }
+  return config;
 };
 
 export const FILTER_STATUSES = {
@@ -144,7 +174,19 @@ export const FILTER_STATUSES_ADMIN = {
   ],
 };
 
-export const COLUMNS = [TO_DO, IN_PROGRESS, DONE];
+const generateColumns = (withSection: boolean, type: string) => {
+  let todoColumn = TO_DO(withSection);
+  let inProgressColumn = IN_PROGRESS(withSection);
+  let doneColumn = DONE(withSection);
+  let inReviewColumn = IN_REVIEW();
+  if (type === COLUMNS_CONFIGURATION.ASSIGNEE) {
+    return [todoColumn, inProgressColumn, doneColumn];
+  } else return [todoColumn, inProgressColumn, inReviewColumn, doneColumn];
+};
+
+export const COLUMNS = generateColumns(true, COLUMNS_CONFIGURATION.ASSIGNEE);
+
+export const ORG_POD_COLUMNS = generateColumns(false, COLUMNS_CONFIGURATION.ORG);
 
 export const SELECT_OPTIONS = [
   '#copywriting (23)',
@@ -171,7 +213,7 @@ export const populateTaskColumns = (tasks, columns) => {
       tasks.reduce((column, task) => {
         if (column.status === task.status) {
           column.tasks = [...column.tasks, task];
-        } else if (task?.status === TASK_STATUS_ARCHIVED && column.section.filter.taskType === TASK_STATUS_ARCHIVED) {
+        } else if (task?.status === TASK_STATUS_ARCHIVED && column.section?.filter?.taskType === TASK_STATUS_ARCHIVED) {
           column.section.tasks = [...column.section.tasks, task];
         }
 

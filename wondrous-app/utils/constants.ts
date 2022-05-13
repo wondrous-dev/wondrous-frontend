@@ -62,6 +62,12 @@ export const PAYMENT_STATUS = {
   FAILED: 'failed',
 };
 
+// board columns configuration
+export const COLUMNS_CONFIGURATION = {
+  ORG: 'org',
+  ASSIGNEE: 'assignee',
+};
+
 // Supported Chains (ETHEREUM, POLYGON)
 const SUPPORTED_CHAINS = {
   1: 'ETH',
@@ -175,8 +181,13 @@ export const MEDIA_TYPES = {
   VIDEO: 'video',
 };
 
-export const DEFAULT_STATUS_ARR = [TASK_STATUS_TODO, TASK_STATUS_IN_PROGRESS, TASK_STATUS_DONE, TASK_STATUS_ARCHIVED];
-
+export const DEFAULT_STATUS_ARR = [
+  TASK_STATUS_TODO,
+  TASK_STATUS_IN_PROGRESS,
+  TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_DONE,
+  TASK_STATUS_ARCHIVED,
+];
 export const IMAGE_FILE_EXTENSIONS_TYPE_MAPPING = {
   gif: 'image/gif',
   jpeg: 'image/jpeg',

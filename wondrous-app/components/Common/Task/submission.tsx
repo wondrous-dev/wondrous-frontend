@@ -46,6 +46,7 @@ import {
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   PAYMENT_STATUS,
   TASK_TYPE,
+  TASK_STATUS_IN_REVIEW,
 } from 'utils/constants';
 import { White } from '../../../theme/colors';
 import { useMe } from '../../Auth/withAuth';
@@ -463,6 +464,12 @@ const TaskSubmissionForm = (props) => {
   const [descriptionText, setDescriptionText] = useState(submissionToEdit?.description || '');
 
   const [link, setLink] = useState((submissionToEdit?.links && submissionToEdit?.links[0]?.url) || '');
+
+  const isValidIndex = (index) => {
+    if (index >= 0) return index;
+    return false;
+  };
+
   const [createTaskSubmission] = useMutation(CREATE_TASK_SUBMISSION, {
     onCompleted: (data) => {
       const taskSubmission = data?.createTaskSubmission;
@@ -471,7 +478,22 @@ const TaskSubmissionForm = (props) => {
       if (boardColumns) {
         const columns = boardColumns?.columns;
         const newColumns = [...columns];
-        newColumns[1].section.tasks = [transformedTaskSubmission, ...newColumns[1].section.tasks];
+        const inReviewColumnIndex =
+          isValidIndex(newColumns.findIndex((column) => column.status === TASK_STATUS_IN_REVIEW)) ||
+          isValidIndex(newColumns.findIndex((column) => column.section?.filter?.taskType === TASK_STATUS_IN_REVIEW));
+
+        const inReviewColumn = newColumns[inReviewColumnIndex];
+        if (typeof inReviewColumn.section !== 'undefined') {
+          newColumns[inReviewColumnIndex] = {
+            ...inReviewColumn,
+            section: { ...inReviewColumn.section, tasks: [transformedTaskSubmission, ...inReviewColumn.section.tasks] },
+          };
+        } else {
+          newColumns[inReviewColumnIndex] = {
+            ...inReviewColumn,
+            tasks: [transformedTaskSubmission, ...inReviewColumn.tasks],
+          };
+        }
         if (boardColumns?.setColumns) {
           boardColumns?.setColumns(newColumns);
         }

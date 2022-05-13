@@ -182,3 +182,14 @@ export const GET_USER_JOIN_ORG_REQUEST = gql`
     }
   }
 `;
+
+export const GET_TASKS_PER_TYPE = gql`
+  query getPerTypeTaskCountForOrgBoard($orgId: ID!) {
+    getPerTypeTaskCountForOrgBoard(orgId: $orgId) {
+      bountyCount
+      taskCount
+      proposalCount
+      milestoneCount
+    }
+  }
+`;

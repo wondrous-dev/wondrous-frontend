@@ -48,7 +48,7 @@ import {
 } from './styles';
 import { useOrgBoard } from 'utils/hooks';
 import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
-import { GET_ORG_BY_ID, GET_USER_JOIN_ORG_REQUEST } from 'graphql/queries/org';
+import { GET_ORG_BY_ID, GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
 import { CREATE_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
 import { SafeImage } from '../../Common/Image';
 import PlusIcon from '../../Icons/plus';
@@ -90,7 +90,7 @@ const Wrapper = (props) => {
   };
 
   const [createJoinOrgRequest] = useMutation(CREATE_JOIN_ORG_REQUEST);
-
+  const [getPerTypeTaskCountForOrgBoard, { data: tasksPerTypeMetadata }] = useLazyQuery(GET_TASKS_PER_TYPE);
   const userPermissionsContext = orgBoard?.userPermissionsContext;
   const [permissions, setPermissions] = useState(undefined);
   const [createFormModal, setCreateFormModal] = useState(false);
@@ -209,6 +209,16 @@ const Wrapper = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgBoard?.orgId, userPermissionsContext]);
+
+  useEffect(() => {
+    if (orgBoard?.orgId) {
+      getPerTypeTaskCountForOrgBoard({
+        variables: {
+          orgId: orgBoard?.orgId,
+        },
+      });
+    }
+  }, [orgBoard?.orgId]);
 
   return (
     <>
@@ -419,7 +429,7 @@ const Wrapper = (props) => {
                 </HeaderActivity>
               </TokenHeader>
               <Tabs>
-                <Stats />
+                <Stats tasksPerTypeData={tasksPerTypeMetadata?.getPerTypeTaskCountForOrgBoard} />
                 {children}
               </Tabs>
             </ContentContainer>

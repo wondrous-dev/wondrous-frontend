@@ -39,7 +39,7 @@ import { FilterItem, FilterItemIcon, FilterItemName } from '../../Common/Filter/
 import CreateDaoIcon from '../../Icons/createDao';
 import CreatePodIcon from '../../Icons/createPod';
 import { FilterItemOrgIcon, FilterOrg } from './styles';
-
+import BoardsActivity from 'components/Common/BoardsActivity';
 const proposal = {
   status: TASK_STATUS_PROPOSAL_REQUEST,
   tasks: [],
@@ -667,16 +667,19 @@ const BoardsPage = (props) => {
         setSection,
       }}
     >
-      <Boards
-        filterSchema={filterSchema}
+      <BoardsActivity
         onSearch={handleSearch}
+        filterSchema={filterSchema}
         onFilterChange={handleFilterChange}
+        statuses={statuses}
+        podIds={podIds}
+        isAdmin={isAdmin}
+      />
+      <Boards
         columns={activeColumns}
         onLoadMore={handleLoadMore}
         hasMore={hasMoreTasks}
         isAdmin={isAdmin}
-        statuses={statuses}
-        podIds={podIds}
         setColumns={setContributorColumns}
       />
     </UserBoardContext.Provider>
