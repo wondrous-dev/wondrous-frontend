@@ -9,7 +9,6 @@ import {
   MilestoneCardPrice,
   MilestoneBodyTitle,
   MilestoneBodyDescription,
-  MilestoneProgress,
   MilestoneIcon,
   MilestoneSubheader,
 } from './styles';
@@ -18,7 +17,10 @@ import { USDCoin } from 'components/Icons/USDCoin';
 import { WonderCoin } from 'components/Icons/wonderCoin';
 import { Matic } from 'components/Icons/matic';
 import CommentsIcon from 'components/Icons/comments';
-
+import { PRIVACY_LEVEL } from 'utils/constants';
+import { useRouter } from 'next/router';
+import { MilestoneProgress } from 'components/Common/MilestoneProgress';
+import { MilestoneWrapper } from 'components/Common/Milestone/index';
 const CURRENCY_SYMBOL = {
   ETH: <Ethereum />,
   WONDER: <WonderCoin />,
@@ -26,116 +28,52 @@ const CURRENCY_SYMBOL = {
   USDC: <USDCoin />,
 };
 
-const MOCK_DATA = [
-  {
-    title: 'Successfull beta launch',
-    desc: 'Placerat sit nisl tempus, bibendum egestas. Nibh risus vel enim sapien sagittis, massa lectus leo. Integer...',
-    complete: '33',
-    comments: '876',
-    members: true,
-    price: '3.504',
-    currency: 'ETH',
-  },
-  {
-    title: 'Successfull beta launch',
-    desc: 'Placerat sit nisl tempus.',
-    complete: '33',
-    comments: '876',
-    members: true,
-    price: '3.504',
-    currency: 'WONDER',
-  },
-  {
-    title: 'Successfull beta launch',
-    desc: 'Placerat sit nisl tempus, bibendum egestas. Nibh risus vel enim sapien sagittis, massa lectus leo. Integer...',
-    complete: '33',
-    comments: '876',
-    members: true,
-    price: '3.504',
-    currency: 'USDC',
-  },
-  {
-    title: 'Successfull beta launch',
-    desc: 'Placerat sit nisl tempus, bibendum egestas. Nibh risus vel enim sapien sagittis, massa lectus leo. Integer...',
-    complete: '33',
-    comments: '876',
-    members: true,
-    price: '3.504',
-    currency: 'Matic',
-  },
-  {
-    title: 'Successfull beta launch',
-    desc: 'Placerat sit nisl tempus, bibendum egestas. Nibh risus vel enim sapien sagittis, massa lectus leo. Integer...',
-    complete: '33',
-    comments: '876',
-    members: true,
-    price: '3.504',
-    currency: 'ETH',
-  },
-  {
-    title: 'Successfull beta launch',
-    desc: 'Placerat sit nisl tempus, bibendum egestas. Nibh risus vel enim sapien sagittis, massa lectus leo. Integer...',
-    complete: '33',
-    comments: '876',
-    members: true,
-    price: '3.504',
-    currency: 'ETH',
-  },
-  {
-    title: 'Successfull beta launch',
-    desc: 'Placerat sit nisl tempus, bibendum egestas. Nibh risus vel enim sapien sagittis, massa lectus leo. Integer...',
-    complete: '33',
-    comments: '876',
-    members: true,
-    price: '3.504',
-    currency: 'ETH',
-  },
-  {
-    title: 'Successfull beta launch',
-    desc: 'Placerat sit nisl tempus, bibendum egestas. Nibh risus vel enim sapien sagittis, massa lectus leo. Integer...',
-    complete: '33',
-    comments: '876',
-    members: true,
-    price: '3.504',
-    currency: 'ETH',
-  },
-  {
-    title: 'Successfull beta launch',
-    desc: 'Placerat sit nisl tempus, bibendum egestas. Nibh risus vel enim sapien sagittis, massa lectus leo. Integer...',
-    complete: '33',
-    comments: '876',
-    members: true,
-    price: '3.504',
-    currency: 'ETH',
-  },
-];
+type Props = {
+  columns: Array<any>;
+  onLoadMore: any;
+  hasMore: any;
+  isAdmin?: boolean;
+  setColumns: React.Dispatch<React.SetStateAction<{}>>;
+};
 
 export default function MilestonesBoard({
-  milestones = MOCK_DATA,
+  columns = [],
   onLoadMore = () => {},
-  hasMore = true,
+  hasMore,
   setColumns = () => {},
-}) {
+}: Props) {
+  const router = useRouter();
+
+  const handleClick = (milestone) => {
+    // router.push(`/organization/${taskProposal?.org?.username}/boards?taskProposal=${taskProposal?.id}`, undefined, {
+    //   shallow: true,
+    // });
+  };
   return (
     <MilestonesContainer>
-      {milestones.map((milestone, idx) => (
-        <MilestoneCard key={idx}>
+      {columns.map((milestone) => (
+        <MilestoneCard onClick={() => handleClick(milestone)} key={milestone.id}>
           {/* top */}
           <MilestoneCardHeader>
             <MilestoneSubheader>
               <MilestoneIcon />
               <MilestoneCardTitle>Milestone</MilestoneCardTitle>
-              <MilestonePrivacyType>Members</MilestonePrivacyType>
+              <MilestonePrivacyType>
+                {PRIVACY_LEVEL[milestone.privacyLevel] === PRIVACY_LEVEL.private ? 'Members' : 'Public'}
+              </MilestonePrivacyType>
             </MilestoneSubheader>
             <MilestoneCardPrice>
               {CURRENCY_SYMBOL[milestone.currency] || CURRENCY_SYMBOL.ETH}
-              {milestone.price}
+              {/* {milestone.price} */}
+              3.24
             </MilestoneCardPrice>
           </MilestoneCardHeader>
           <MilestoneCardBody>
             <MilestoneBodyTitle>{milestone.title}</MilestoneBodyTitle>
-            <MilestoneBodyDescription>{milestone.desc}</MilestoneBodyDescription>
-            {/* <MilestoneProgress /> */}
+            <MilestoneBodyDescription>{milestone.description}</MilestoneBodyDescription>
+            <MilestoneWrapper>
+              <MilestoneProgress milestoneId={milestone.id} />
+            </MilestoneWrapper>
           </MilestoneCardBody>
           <MilestoneCardFooter>
             <CommentsIcon />

@@ -484,7 +484,7 @@ const CreateLayoutBaseModal = (props) => {
   const [createMilestone, { loading: createMilestoneLoading }] = useMutation(CREATE_MILESTONE);
 
   const submitMutation = useCallback(() => {
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     const taskInput = {
       title,
@@ -548,8 +548,12 @@ const CreateLayoutBaseModal = (props) => {
                   podName: justCreatedPod?.name,
                 });
 
-                const columns = [...board?.columns];
-                columns[0].tasks = [transformedTask, ...columns[0].tasks];
+                let columns = [...board?.columns];
+                if (columns[0].tasks) {
+                  columns[0].tasks = [transformedTask, ...columns[0].tasks];
+                } else {
+                  columns = [transformedTask, ...columns];
+                }
                 board.setColumns(columns);
               }
               handleClose();
@@ -696,8 +700,12 @@ const CreateLayoutBaseModal = (props) => {
                 podName: justCreatedPod?.name,
               });
 
-              const columns = [...board?.columns];
-              columns[0].tasks = [transformedTask, ...columns[0].tasks];
+              let columns = [...board?.columns];
+              if (columns[0].tasks) {
+                columns[0].tasks = [transformedTask, ...columns[0].tasks];
+              } else {
+                columns = [transformedTask, ...columns];
+              }
               board.setColumns(columns);
             }
             handleClose();
@@ -776,8 +784,12 @@ const CreateLayoutBaseModal = (props) => {
                     podName: justCreatedPod?.name,
                   });
 
-                  const columns = [...board?.columns];
-                  columns[0].tasks = [transformedTask, ...columns[0].tasks];
+                  let columns = [...board?.columns];
+                  if (columns[0].tasks) {
+                    columns = [transformedTask, ...columns[0].tasks];
+                  } else {
+                    columns = [transformedTask, ...columns];
+                  }
                   board.setColumns(columns);
                 }
                 handleClose();
@@ -1435,7 +1447,7 @@ const CreateLayoutBaseModal = (props) => {
             onClick={submitMutation}
           >
             {creating ? <CircularProgress size={20} /> : null}
-            {canCreateTask ? 'Create' : isProposal ? 'Create': 'Propose'} {titleText}
+            {canCreateTask ? 'Create' : isProposal ? 'Create' : 'Propose'} {titleText}
           </CreateFormPreviewButton>
         </CreateFormButtonsBlock>
       </CreateFormFooterButtons>
