@@ -1,7 +1,9 @@
 import { useLazyQuery } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';
+
 import { GET_TASKS_FOR_MILESTONE } from 'graphql/queries';
 import * as Constants from 'utils/constants';
 import { Done, InProgress, InReview, ToDo, AwaitingPayment } from '../../Icons';
@@ -34,6 +36,7 @@ export const MilestoneTaskList = (props) => {
   const { milestoneId, open } = props;
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(false);
+  const router = useRouter();
   const limit = 10;
   const [getTasksForMilestone, { fetchMore, data }] = useLazyQuery(GET_TASKS_FOR_MILESTONE);
 
@@ -83,36 +86,40 @@ export const MilestoneTaskList = (props) => {
           <StyledTableBody>
             {data?.getTasksForMilestone.map((task) => {
               const StatusIcon = TASK_ICONS[task.status];
+              const viewUrl = `/organization/${task?.orgUsername || task?.org?.username}/boards?task=${task?.id}`;
+
               return (
-                <Link
-                  key={task?.id}
-                  href={`/organization/${task?.orgUsername || task?.org?.username}/boards?task=${task?.id}`}
-                  passHref={true}
+                <StyledTableRow
+                  key={task.id}
+                  onClick={(e) => {
+                    // if Command or Ctrl key wasn't pressed
+                    if (!(e.metaKey || e.ctrlKey)) {
+                      router.push(viewUrl);
+                    }
+                  }}
+                  style={{
+                    cursor: 'pointer',
+                  }}
                 >
-                  <StyledTableRow
-                    key={task.id}
-                    style={{
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <StyledTableCell>
-                      <TableCellWrapper>
-                        <SmallAvatar
-                          id={task.assigneeId}
-                          avatar={task.assignee?.profilePicture ?? {}}
-                          initials={task.assignee?.username?.slice(0, 2)}
-                        />
-                      </TableCellWrapper>
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      <StatusIcon />
-                    </StyledTableCell>
-                    <StyledTableCell>
-                      <TaskTitle>{task.title}</TaskTitle>
-                      <TaskDescription>{task.description}</TaskDescription>
-                    </StyledTableCell>
-                  </StyledTableRow>
-                </Link>
+                  <StyledTableCell>
+                    <TableCellWrapper>
+                      <SmallAvatar
+                        id={task.assigneeId}
+                        avatar={task.assignee?.profilePicture ?? {}}
+                        initials={task.assignee?.username?.slice(0, 2)}
+                      />
+                    </TableCellWrapper>
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <StatusIcon />
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <TaskTitle>
+                      <Link href={viewUrl}>{task.title}</Link>
+                    </TaskTitle>
+                    <TaskDescription>{task.description}</TaskDescription>
+                  </StyledTableCell>
+                </StyledTableRow>
               );
             })}
           </StyledTableBody>

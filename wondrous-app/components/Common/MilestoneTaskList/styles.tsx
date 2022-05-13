@@ -84,6 +84,15 @@ export const TaskTitle = styled(Typography)`
     font-weight: 700;
     font-size: 16px;
     color: #ffffff;
+
+    a {
+      color: white;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 `;
 
