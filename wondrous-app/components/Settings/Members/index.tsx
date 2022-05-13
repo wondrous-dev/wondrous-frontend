@@ -2,10 +2,9 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import Link from 'next/link';
 import pluralize from 'pluralize';
-import { format } from 'date-fns';
 
 import { GET_ORG_BY_ID, GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries/org';
-import { GET_POD_BY_ID } from 'graphql/queries/pod';
+import { GET_POD_BY_ID, GET_POD_ROLES, GET_POD_USERS } from 'graphql/queries/pod';
 import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
 import MembersIcon from '../../Icons/membersSettings';
@@ -14,15 +13,13 @@ import { StyledTableCell, StyledTableContainer, StyledTableHead, StyledTableRow 
 import { useRouter } from 'next/router';
 import {
   DefaultProfilePicture,
-  InviteDiv,
+  PodsCount,
   SeeMoreText,
-  StyledTableHeaderCell,
   StyledTable,
   StyledTableBody,
-  PodsCount,
+  StyledTableHeaderCell,
 } from './styles';
 import { CircularProgress } from '@material-ui/core';
-import { GET_POD_ROLES, GET_POD_USERS } from 'graphql/queries/pod';
 import { White } from '../../../theme/colors';
 import { SafeImage } from '../../Common/Image';
 import InviteMember from './InviteMember';
@@ -34,7 +31,8 @@ import { DropDown, DropDownItem } from 'components/Common/dropdown';
 import { KICK_ORG_USER } from 'graphql/mutations/org';
 import { KICK_POD_USER } from 'graphql/mutations/pod';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import {TaskMenuIcon} from "components/Icons/taskMenu";
+import { TaskMenuIcon } from 'components/Icons/taskMenu';
+import ConfirmModal, { SubmitButtonStyle } from 'components/Common/ConfirmModal';
 
 const LIMIT = 10;
 
@@ -76,6 +74,7 @@ const Members = (props) => {
   const router = useRouter();
   const { orgId, podId } = router.query;
   const [hasMore, setHasMore] = useState(true);
+  const [userToRemove, setUserToRemove] = useState(null);
   const [users, setUsers] = useState([]);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
 
@@ -180,6 +179,26 @@ const Members = (props) => {
   return (
     <SettingsWrapper showPodIcon={false}>
       <RolesContainer>
+        <ConfirmModal
+          open={!!userToRemove}
+          onClose={() => setUserToRemove(null)}
+          onSubmit={() => {
+            handleKickMember(userToRemove.id);
+            setUserToRemove(null);
+          }}
+          title="Remove user from Wonder?"
+          submitLabel="Remove user"
+          submitButtonStyle={SubmitButtonStyle.Delete}
+        >
+          <Text color="#C4C4C4" fontSize="16px">
+            This will remove the user ‘
+            <Text color="white" as="strong">
+              {userToRemove?.firstName} {userToRemove?.lastName}
+            </Text>
+            ‘ from this DAO. This action cannot be undone.
+          </Text>
+        </ConfirmModal>
+
         <HeaderBlock
           icon={<MembersIcon circle />}
           title={
@@ -263,14 +282,14 @@ const Members = (props) => {
                       </StyledTableCell>
                       <StyledTableCell align="center">
                         <PodsCount>
-                          {user?.additionalInfo?.podCount || 'N/A'} {pluralize('Pod', user?.additionalInfo?.podCount)}{' '}
+                          {user?.additionalInfo?.podCount || 0} {pluralize('Pod', user?.additionalInfo?.podCount || 0)}{' '}
                         </PodsCount>
                       </StyledTableCell>
 
                       <StyledTableCell>
                         <DropDown DropdownHandler={TaskMenuIcon}>
                           <DropDownItem
-                            onClick={() => handleKickMember(userId)}
+                            onClick={() => setUserToRemove(user)}
                             style={{
                               color: White,
                             }}

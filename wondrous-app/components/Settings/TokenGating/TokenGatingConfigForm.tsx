@@ -155,13 +155,12 @@ const TokenGatingConfigForm = (props) => {
           icon: data?.getNFTInfo.logoUrl,
         };
         setSelectedToken(formattedOption);
-        console.log('formattedOption', formattedOption);
         setNftList((oldArray) => [...oldArray, formattedOption]);
       }
     },
     fetchPolicy: 'network-only',
   });
-  console.log(nftList);
+
   const searchSelectedTokenInList = (contractAddress, tokenList, chain) => {
     contractAddress = contractAddress.toLowerCase();
     for (const tokenInfo of tokenList) {
