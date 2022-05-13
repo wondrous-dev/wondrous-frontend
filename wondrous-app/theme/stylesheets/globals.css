@@ -1,5 +1,6 @@
 /* Styles for the mui autocomplete */
 .MuiAutocomplete-loading,
+.MuiAutocomplete-noOptions,
 .MuiAutocomplete-listbox {
   background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
   box-shadow: 0px 34px 84px rgb(0 0 0 / 55%);
@@ -7,4 +8,10 @@
   color: #ffffff;
   border: 1px solid #4b4b4b;
   padding: 0;
+}
+
+.MuiAutocomplete-loading,
+.MuiAutocomplete-noOptions {
+  padding: 12px;
+  font-size: 14px;
 }
