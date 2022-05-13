@@ -1,5 +1,5 @@
 import { Button } from '../button';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { useWonderWeb3 } from 'services/web3';
 import Ethereum from '../../Icons/ethereum';
 import { Metamask } from '../../Icons/metamask';
@@ -26,6 +26,7 @@ import { ErrorText } from '..';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import WalletModal from './WalletModal';
 import useEagerConnect from 'services/web3/hooks/useEagerConnect';
+import { WonderWeb3Context } from 'services/web3/context/WonderWeb3Context';
 
 const CHAIN_LOGO = {
   '1': <Ethereum />,
@@ -48,6 +49,7 @@ const CURRENCY_UI_ELEMENTS = {
 
 const Wallet = () => {
   const wonderWeb3 = useWonderWeb3();
+  const { provider } = useContext(WonderWeb3Context);
   useEagerConnect();
   const [connected, setConnected] = useState(false);
   const [firstConnect, setFirstConnect] = useState(true);
@@ -121,7 +123,7 @@ const Wallet = () => {
           // TODO should show a small message indicating that
           setDifferentAccountError(true);
         }
-        if (user && !user.activeEthAddress) {
+        if (user && !user.activeEthAddress && provider) {
           // Link the wallet to the user.
           linkUserWithWallet();
         }
@@ -139,7 +141,7 @@ const Wallet = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wonderWeb3.address]);
+  }, [wonderWeb3.address, provider]);
 
   const Balance = () => {
     return (
