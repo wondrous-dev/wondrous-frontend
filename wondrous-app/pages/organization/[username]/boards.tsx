@@ -16,7 +16,7 @@ import _ from 'lodash';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import apollo from 'services/apollo';
-import { COLUMNS, LIMIT, populateTaskColumns, SELECT_OPTIONS } from 'services/board';
+import { COLUMNS, LIMIT, populateTaskColumns, SELECT_OPTIONS, ORG_POD_COLUMNS } from 'services/board';
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
@@ -28,6 +28,7 @@ import {
   TASK_STATUSES,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
+  ENTITIES_TYPES,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
 import { useRouterQuery } from 'utils/hooks';
@@ -41,6 +42,7 @@ const useGetOrgTaskBoardTasks = ({
   boardType,
   podIds,
   userId,
+  entityType,
 }) => {
   const [getOrgTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
@@ -80,6 +82,7 @@ const useGetOrgTaskBoardTasks = ({
           offset: 0,
           statuses: taskBoardStatuses,
           limit: taskBoardLimit,
+          types: [entityType],
           ...(boardType === PRIVACY_LEVEL.public && {
             onlyPublic: true,
           }),
@@ -87,11 +90,20 @@ const useGetOrgTaskBoardTasks = ({
       });
       setOrgTaskHasMore(true);
     }
-  }, [boardType, getOrgTaskBoardTasks, orgId, statuses, podIds, setOrgTaskHasMore, userId]);
+  }, [boardType, getOrgTaskBoardTasks, orgId, statuses, podIds, setOrgTaskHasMore, userId, entityType]);
   return { fetchMore: getOrgTaskBoardTasksFetchMore };
 };
 
-const useGetTaskRelatedToUser = ({ podIds, userId, orgId, statuses, setColumns, columns, setOrgTaskHasMore }) => {
+const useGetTaskRelatedToUser = ({
+  podIds,
+  userId,
+  orgId,
+  statuses,
+  setColumns,
+  columns,
+  setOrgTaskHasMore,
+  entityType,
+}) => {
   const [getTasksRelatedToUserInOrg, { fetchMore }] = useLazyQuery(GET_TASKS_RELATED_TO_USER_IN_ORG, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
@@ -217,6 +229,7 @@ const useGetOrgTaskBoard = ({
   podIds,
   userId,
   view,
+  entityType,
 }) => {
   const board = {
     [userId]: useGetTaskRelatedToUser({
@@ -227,6 +240,7 @@ const useGetOrgTaskBoard = ({
       userId,
       orgId,
       statuses,
+      entityType,
     }),
     withoutUserId: useGetOrgTaskBoardTasks({
       columns,
@@ -237,6 +251,7 @@ const useGetOrgTaskBoard = ({
       statuses,
       podIds,
       userId,
+      entityType,
     }),
   };
   const { fetchMore } = userId ? board[userId] : board.withoutUserId;
@@ -249,11 +264,12 @@ const useGetOrgTaskBoard = ({
 
 const BoardsPage = () => {
   const router = useRouter();
-  const [columns, setColumns] = useState(COLUMNS);
+  const [columns, setColumns] = useState(ORG_POD_COLUMNS);
   const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
   const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
   const [orgData, setOrgData] = useState(null);
   const [searchString, setSearchString] = useState('');
+  const [entityType, setEntityType] = useState(ENTITIES_TYPES.TASK);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
   const { username, orgId, search, userId, boardType, view } = router.query;
@@ -274,6 +290,7 @@ const BoardsPage = () => {
     statuses,
     podIds,
     userId,
+    entityType,
   });
 
   const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
@@ -505,7 +522,6 @@ const BoardsPage = () => {
         const newColumns = [...columns];
         newColumns.forEach((column) => {
           column.tasks = [];
-          column.section.tasks = [];
         });
 
         setColumns(dedupeColumns(newColumns));
@@ -541,6 +557,8 @@ const BoardsPage = () => {
         setFirstTimeFetch,
         orgData,
         setSection,
+        entityType,
+        setEntityType,
       }}
     >
       <Boards

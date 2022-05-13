@@ -5,6 +5,7 @@ import CreatePodIcon from '../../Icons/createPod';
 import Boards from '../../Common/Boards';
 import { OrgPod } from 'types/pod';
 import { FILTER_STATUSES } from 'services/board';
+import BoardsActivity from 'components/Common/BoardsActivity';
 
 type Props = {
   orgPods: OrgPod[];
@@ -62,18 +63,15 @@ const OrgBoards = (props: Props) => {
 
   return (
     <Wrapper orgData={orgData}>
-      <Boards
-        filterSchema={filterSchema}
+      <BoardsActivity
         onSearch={onSearch}
+        filterSchema={filterSchema}
         onFilterChange={onFilterChange}
-        columns={[...columns, columns[0]]}
-        onLoadMore={onLoadMore}
-        hasMore={hasMore}
         statuses={statuses}
         podIds={podIds}
-        setColumns={setColumns}
         userId={userId}
       />
+      <Boards columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} setColumns={setColumns} />
     </Wrapper>
   );
 };

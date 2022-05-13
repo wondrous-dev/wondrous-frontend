@@ -12,7 +12,7 @@ import {
   BOARD_TYPE,
 } from 'utils/constants';
 
-import { ToDo, InProgress, Done } from '../../../Icons';
+import { ToDo, InProgress, Done, InReview } from '../../../Icons';
 import { ColumnSection } from '../../ColumnSection';
 
 import {
@@ -49,7 +49,7 @@ const TITLES = {
 const HEADER_ICONS = {
   [TASK_STATUS_TODO]: ToDo,
   [TASK_STATUS_IN_PROGRESS]: InProgress,
-  // [TASK_STATUS_IN_REVIEW]: InReview,
+  [TASK_STATUS_IN_REVIEW]: InReview,
   [TASK_STATUS_DONE]: Done,
 };
 
@@ -99,7 +99,7 @@ const TaskColumn = (props: ITaskColumn) => {
         <TaskColumnContainerHeaderTitle>{TITLES[status]}</TaskColumnContainerHeaderTitle>
         <TaskColumnContainerCount>{number}</TaskColumnContainerCount>
       </TaskColumnContainerHeader>
-      <ColumnSection section={section} setSection={() => {}} />
+      {section && <ColumnSection section={section} setSection={() => {}} />}
       <Droppable droppableId={status}>
         {(provided) => (
           <TaskListContainer ref={provided.innerRef} {...provided.droppableProps}>
