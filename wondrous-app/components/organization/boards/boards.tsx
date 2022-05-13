@@ -6,6 +6,15 @@ import Boards from '../../Common/Boards';
 import { OrgPod } from 'types/pod';
 import { FILTER_STATUSES } from 'services/board';
 import BoardsActivity from 'components/Common/BoardsActivity';
+import { ENTITIES_TYPES } from 'utils/constants';
+import MilestoneBoard from 'components/Common/MilestoneBoard';
+
+const BOARDS_MAP = {
+  [ENTITIES_TYPES.TASK]: Boards,
+  [ENTITIES_TYPES.MILESTONE]: MilestoneBoard,
+  [ENTITIES_TYPES.PROPOSAL]: Boards,
+  [ENTITIES_TYPES.BOUNTY]: Boards,
+};
 
 type Props = {
   orgPods: OrgPod[];
@@ -21,6 +30,8 @@ type Props = {
   podIds: string[];
   setColumns: React.Dispatch<React.SetStateAction<{}>>;
   userId?: string;
+  entityType: string;
+  loading: boolean;
 };
 
 const OrgBoards = (props: Props) => {
@@ -36,7 +47,10 @@ const OrgBoards = (props: Props) => {
     podIds,
     setColumns,
     userId,
+    entityType,
+    loading,
   } = props;
+
   const [filterSchema, setFilterSchema] = useState([
     {
       name: 'podIds',
@@ -61,6 +75,8 @@ const OrgBoards = (props: Props) => {
     setFilterSchema(schema);
   }, [orgPods]);
 
+  const ActiveBoard = BOARDS_MAP[entityType];
+
   return (
     <Wrapper orgData={orgData}>
       <BoardsActivity
@@ -71,7 +87,7 @@ const OrgBoards = (props: Props) => {
         podIds={podIds}
         userId={userId}
       />
-      <Boards columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} setColumns={setColumns} />
+      {!loading && <ActiveBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} setColumns={setColumns} />}
     </Wrapper>
   );
 };
