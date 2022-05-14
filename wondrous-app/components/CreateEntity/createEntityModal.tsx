@@ -264,6 +264,8 @@ const CreateLayoutBaseModal = (props) => {
   const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
   const isSubtask = parentTaskId !== undefined;
   const textLimit = isPod ? 200 : 900;
+
+  console.log(board, 'BOARD==');
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
   });
@@ -535,27 +537,28 @@ const CreateLayoutBaseModal = (props) => {
                 input: taskInput,
               },
             }).then((result) => {
-              const task = result?.data?.createTask;
-              const justCreatedPod = getPodObject();
-              if (
-                board?.setColumns &&
-                ((task?.orgId === board?.orgId && !board?.podId) ||
-                  task?.podId === board?.podId ||
-                  pod === board?.podId)
-              ) {
-                const transformedTask = transformTaskToTaskCard(task, {
-                  orgName: board?.org?.name,
-                  orgProfilePicture: board?.org?.profilePicture,
-                  podName: justCreatedPod?.name,
-                });
+              //checking if it's pod or org to use pod/org entity type else we assume it's the userBoard and we use the normal flow
+              if (board?.entityType === ENTITIES_TYPES.TASK || !board?.entityType) {
+                const task = result?.data?.createTask;
+                const justCreatedPod = getPodObject();
+                if (
+                  board?.setColumns &&
+                  ((task?.orgId === board?.orgId && !board?.podId) ||
+                    task?.podId === board?.podId ||
+                    pod === board?.podId)
+                ) {
+                  const transformedTask = transformTaskToTaskCard(task, {
+                    orgName: board?.org?.name,
+                    orgProfilePicture: board?.org?.profilePicture,
+                    podName: justCreatedPod?.name,
+                  });
 
-                let columns = [...board?.columns];
-                if (columns[0].tasks) {
+                  const columns = [...board?.columns];
                   columns[0].tasks = [transformedTask, ...columns[0].tasks];
-                } else {
-                  columns = [transformedTask, ...columns];
+                  board.setColumns(columns);
                 }
-                board.setColumns(columns);
+              } else {
+                orgBoard?.setEntityType(ENTITIES_TYPES.TASK);
               }
               handleClose();
             });
@@ -690,25 +693,31 @@ const CreateLayoutBaseModal = (props) => {
               input: milestoneInput,
             },
           }).then((result) => {
-            const task = result?.data?.createMilestone;
-            const justCreatedPod = getPodObject();
-            if (
-              board?.setColumns &&
-              ((task?.orgId === board?.orgId && !board?.podId) || task?.podId === board?.podId || pod === board?.podId)
-            ) {
-              const transformedTask = transformTaskToTaskCard(task, {
-                orgName: board?.org?.name,
-                orgProfilePicture: board?.org?.profilePicture,
-                podName: justCreatedPod?.name,
-              });
+            if (board?.entityType === ENTITIES_TYPES.MILESTONE || !board?.entityType) {
+              const task = result?.data?.createMilestone;
+              const justCreatedPod = getPodObject();
+              if (
+                board?.setColumns &&
+                ((task?.orgId === board?.orgId && !board?.podId) ||
+                  task?.podId === board?.podId ||
+                  pod === board?.podId)
+              ) {
+                const transformedTask = transformTaskToTaskCard(task, {
+                  orgName: board?.org?.name,
+                  orgProfilePicture: board?.org?.profilePicture,
+                  podName: justCreatedPod?.name,
+                });
 
-              let columns = [...board?.columns];
-              if (columns[0].tasks) {
-                columns[0].tasks = [transformedTask, ...columns[0].tasks];
-              } else {
-                columns = [transformedTask, ...columns];
+                let columns = [...board?.columns];
+                if (columns[0].tasks) {
+                  columns[0].tasks = [transformedTask, ...columns[0].tasks];
+                } else {
+                  columns = [transformedTask, ...columns];
+                }
+                board.setColumns(columns);
               }
-              board.setColumns(columns);
+            } else {
+              board?.setEntityType(ENTITIES_TYPES.MILESTONE);
             }
             handleClose();
           });

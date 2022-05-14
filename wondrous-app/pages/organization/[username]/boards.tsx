@@ -22,7 +22,7 @@ import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
 import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
 import {
-  DEFAULT_STATUS_ARR,
+  STATUSES_ON_ENTITY_TYPES,
   PRIVACY_LEVEL,
   STATUS_OPEN,
   TASK_STATUSES,
@@ -45,7 +45,7 @@ const useGetOrgTaskBoardTasks = ({
   entityType,
   setIsLoading,
 }) => {
-  const [getOrgTaskBoardTasks, { fetchMore, loading }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
+  const [getOrgTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     onCompleted: ({ getOrgTaskBoardTasks }) => {
@@ -65,10 +65,13 @@ const useGetOrgTaskBoardTasks = ({
   const getOrgTaskBoardTasksFetchMore = useCallback(() => {
     fetchMore({
       variables: {
-        offset: Math.max(...columns.map(({ tasks }) => tasks.length)),
+        offset:
+          entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.BOUNTY
+            ? Math.max(...columns.map(({ tasks }) => tasks.length))
+            : columns.length,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
-        setOrgTaskHasMore(fetchMoreResult?.getOrgTaskBoardTasks.length > LIMIT);
+        setOrgTaskHasMore(fetchMoreResult?.getOrgTaskBoardTasks.length >= LIMIT);
         return {
           getOrgTaskBoardTasks: [...prev.getOrgTaskBoardTasks, ...fetchMoreResult.getOrgTaskBoardTasks],
         };
@@ -80,7 +83,10 @@ const useGetOrgTaskBoardTasks = ({
   useEffect(() => {
     if (!userId) {
       const taskBoardStatuses =
-        statuses.length > 0 ? statuses?.filter((status) => DEFAULT_STATUS_ARR.includes(status)) : DEFAULT_STATUS_ARR;
+        statuses.length > 0
+          ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))
+          : //double check in case we add new stuff and have no valid entityType.
+            STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
       const taskBoardLimit = taskBoardStatuses.length > 0 ? LIMIT : 0;
       getOrgTaskBoardTasks({
         variables: {
@@ -98,7 +104,7 @@ const useGetOrgTaskBoardTasks = ({
       setOrgTaskHasMore(true);
     }
   }, [boardType, getOrgTaskBoardTasks, orgId, statuses, podIds, setOrgTaskHasMore, userId, entityType]);
-  return { fetchMore: getOrgTaskBoardTasksFetchMore, loading };
+  return { fetchMore: getOrgTaskBoardTasksFetchMore };
 };
 
 const useGetTaskRelatedToUser = ({
@@ -153,7 +159,9 @@ const useGetTaskRelatedToUser = ({
   useEffect(() => {
     if (userId) {
       const taskBoardStatuses =
-        statuses.length > 0 ? statuses?.filter((status) => DEFAULT_STATUS_ARR.includes(status)) : DEFAULT_STATUS_ARR;
+        statuses.length > 0
+          ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))
+          : STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
       const taskBoardLimit = taskBoardStatuses.length > 0 ? LIMIT : 0;
       getTasksRelatedToUserInOrg({
         variables: {
@@ -306,6 +314,7 @@ const useGetOrgTaskBoard = ({
 
 const BoardsPage = () => {
   const router = useRouter();
+  const { username, orgId, search, userId, boardType, view } = router.query;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
   const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
   const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
@@ -314,8 +323,8 @@ const BoardsPage = () => {
   const [entityType, setEntityType] = useState(ENTITIES_TYPES.TASK);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeView, setActiveView] = useState(view);
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
-  const { username, orgId, search, userId, boardType, view } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -323,7 +332,7 @@ const BoardsPage = () => {
   const [getOrgPods, { data: { getOrgPods: orgPods = [] } = {} }] = useLazyQuery(GET_ORG_PODS);
 
   const { fetchMore } = useGetOrgTaskBoard({
-    view,
+    view: activeView,
     section,
     columns,
     setColumns,
@@ -451,7 +460,7 @@ const BoardsPage = () => {
               limit: 100,
               offset: 0,
               // Needed to exclude proposals
-              statuses: DEFAULT_STATUS_ARR,
+              statuses: STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
               searchString: search,
               ...(boardType === PRIVACY_LEVEL.public && {
                 onlyPublic: true,
@@ -493,7 +502,7 @@ const BoardsPage = () => {
         limit: LIMIT,
         offset: 0,
         // Needed to exclude proposals
-        statuses: DEFAULT_STATUS_ARR,
+        statuses: STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
         searchString,
         ...(boardType === PRIVACY_LEVEL.public && {
           onlyPublic: true,
@@ -536,7 +545,9 @@ const BoardsPage = () => {
     if (search) {
       const id = orgId || orgData?.id;
       const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
-      const searchProposals = statuses.length !== taskStatuses.length || statuses === DEFAULT_STATUS_ARR;
+      const searchProposals =
+        statuses.length !== taskStatuses.length ||
+        statuses === (STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT);
       const searchTasks = !(searchProposals && statuses.length === 1);
       const searchOrgTaskProposalsArgs = {
         variables: {
@@ -607,6 +618,8 @@ const BoardsPage = () => {
         setSection,
         entityType,
         setEntityType: handleEntityTypeChange,
+        activeView,
+        setActiveView,
       }}
     >
       <Boards
@@ -625,6 +638,7 @@ const BoardsPage = () => {
         loading={isLoading}
         entityType={entityType}
         userId={userId?.toString()}
+        activeView={activeView}
       />
     </OrgBoardContext.Provider>
   );

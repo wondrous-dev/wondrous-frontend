@@ -20,9 +20,13 @@ export const MilestoneIcon = () => (
 );
 
 export const MilestonesContainer = styled.div`
-  display: grid;
+  ${({ isFullWidth }) =>
+    isFullWidth
+      ? `display: block; width: 100%;`
+      : `display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 18px;
+  ;`};
   margin-top: 32px;
 `;
 
@@ -70,6 +74,7 @@ export const MilestoneSubheader = styled.div`
 export const MilestoneCardBody = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
 export const MilestoneCardFooter = styled.div`
@@ -153,4 +158,6 @@ export const MilestoneBodyDescription = styled(Typography)`
   }
 `;
 
-export const MilestoneProgress = styled.div``;
+export const MilestoneProgressWrapper = styled.div`
+  margin-top: 10px;
+`;

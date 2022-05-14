@@ -32,6 +32,7 @@ type Props = {
   userId?: string;
   entityType: string;
   loading: boolean;
+  activeView: string
 };
 
 const OrgBoards = (props: Props) => {
@@ -49,9 +50,10 @@ const OrgBoards = (props: Props) => {
     userId,
     entityType,
     loading,
+    activeView,
   } = props;
 
-  const [filterSchema, setFilterSchema] = useState([
+  const defaultFilterSchema: any = [
     {
       name: 'podIds',
       label: 'Pods',
@@ -62,8 +64,11 @@ const OrgBoards = (props: Props) => {
         count: pod.contributorCount,
       })),
     },
-    FILTER_STATUSES,
-  ]);
+  ];
+
+  entityType === ENTITIES_TYPES.TASK && defaultFilterSchema.push(FILTER_STATUSES);
+
+  const [filterSchema, setFilterSchema] = useState(defaultFilterSchema);
 
   useEffect(() => {
     const schema = [...filterSchema];
@@ -87,7 +92,15 @@ const OrgBoards = (props: Props) => {
         podIds={podIds}
         userId={userId}
       />
-      {!loading && <ActiveBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} setColumns={setColumns} />}
+      {!loading && (
+        <ActiveBoard
+          activeView={activeView}
+          columns={columns}
+          onLoadMore={onLoadMore}
+          hasMore={hasMore}
+          setColumns={setColumns}
+        />
+      )}
     </Wrapper>
   );
 };

@@ -27,17 +27,18 @@ type Props = {
   hasMore: any;
   isAdmin?: boolean;
   setColumns: React.Dispatch<React.SetStateAction<{}>>;
+  activeView?: string;
 };
 
 const Boards = (props: Props) => {
-  const { columns, onLoadMore, hasMore, isAdmin, setColumns } = props;
+  const { columns, onLoadMore, hasMore, isAdmin, setColumns, activeView } = props;
   const router = useRouter();
   const [totalCount, setTotalCount] = useState(0);
   const [searchResults, setSearchResults] = useState({});
   const { search: searchQuery } = router.query;
   const selectMembershipHook = useSelectMembership();
   const selectMembershipRequests = selectMembershipHook?.selectMembershipRequests;
-  const view = String(router.query.view ?? ViewType.Grid);
+  const view = activeView || String(router.query.view ?? ViewType.Grid);
 
   useEffect(() => {
     if (!searchQuery) {

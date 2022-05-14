@@ -128,7 +128,7 @@ import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './createEnt
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { ErrorText } from '../Common';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
-import { updateInProgressTask, updateTaskItem } from 'utils/board';
+import { updateInProgressTask, updateTaskItem, updateTaskItemOnEntityType } from 'utils/board';
 import { GET_MILESTONES, GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_FOR_POD } from 'graphql/queries/task';
 import { TabsVisibilityCreateEntity } from 'components/Common/TabsVisibilityCreateEntity';
 
@@ -578,8 +578,11 @@ const EditLayoutBaseModal = (props) => {
         let columns = [...boardColumns?.columns];
         if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
           columns = updateInProgressTask(transformedTask, columns);
-        } else if (transformedTask.status === TASK_STATUS_TODO) {
+          //if there's no entityType we assume it's the userBoard and keeping the old logic
+        } else if (transformedTask.status === TASK_STATUS_TODO && !board?.entityType) {
           columns = updateTaskItem(transformedTask, columns);
+        } else if (transformedTask.status === TASK_STATUS_TODO && board?.entityType) {
+          columns = updateTaskItemOnEntityType(transformedTask, columns);
         }
         boardColumns.setColumns(columns);
       }

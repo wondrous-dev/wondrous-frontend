@@ -38,6 +38,12 @@ export const updateTaskItem = (updatedItem, columns) => {
   return columns;
 };
 
+export const updateTaskItemOnEntityType = (updatedItem, columns) => {
+  const columnToUpdate = columns.findIndex((column) => column.id === updatedItem.id);
+  columns[columnToUpdate] = updatedItem;
+  return columns;
+};
+
 export const removeTaskItem = (itemId, columns) => {
   columns[0].tasks = columns[0].tasks.filter((task) => task.id !== itemId);
   return columns;
