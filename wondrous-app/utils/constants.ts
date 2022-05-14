@@ -75,6 +75,26 @@ export const RPC_URLS: { [chainId: number]: string } = {
   1666600000: process.env.NEXT_PUBLIC_RPC_URL_HARMONY,
 };
 
+export const CHAIN_VALUE_TO_GNOSIS_CHAIN_VALUE = {
+  eth_mainnet: 'mainnet',
+  polygon_mainnet: 'polygon',
+  rinkeby: 'rinkeby',
+  harmony: 'harmony',
+};
+
+export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
+  eth_mainnet: 'https://safe-transaction.mainnet.gnosis.io',
+  polygon_mainnet: 'https://safe-transaction.polygon.gnosis.io',
+  rinkeby: 'https://safe-transaction.rinkeby.gnosis.io',
+  harmony: 'https://multisig.t.hmny.io',
+};
+
+export const HARMONY_MULTI_SEND_ADDR = '0x998739BFdAAdde7C933B942a68053933098f9EDa'
+export const HARMONY_SAFE_MASTER_COPY = '0x69f4D1788e39c87893C980c06EdF4b7f686e2938'
+export const HARMONY_SAFE_MASTER_COPY2 = '0xfb1bffC9d739B8D520DaF37dF666da4C687191EA'
+export const HARMONY_PROXY_FACTORY = '0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC'
+
+
 export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId));
 
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {

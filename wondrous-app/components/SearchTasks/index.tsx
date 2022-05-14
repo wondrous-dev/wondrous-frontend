@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { InputAdornment } from '@material-ui/core';
 import last from 'lodash/last';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import SearchIcon from '../Icons/search';
 import { Autocomplete, Input, LoadMore, Option } from './styles';
@@ -34,6 +35,7 @@ export default function SearchTasks({ onSearch }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isPreviewModalOpen, setPreviewModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [inputValue, setInputValue] = useState(router.query.search);
   const [options, setOptions] = useState([]);
@@ -50,15 +52,24 @@ export default function SearchTasks({ onSearch }: Props) {
   // and doesn't matter if you use async/await or .then
   const handleInputChange = (event, searchString) => {
     clearTimeout(timeout);
+    setIsLoading(true);
 
     timeout = setTimeout(async () => {
-      const { users = [], proposals, tasks } = await onSearch(searchString);
+      // Reset if field is empty
+      if (!searchString) {
+        setOptions([]);
+        setHasMore(false);
+      } else {
+        const { users = [], proposals, tasks } = await onSearch(searchString);
 
-      const hasMore = [...tasks, ...proposals].length > LIMIT;
-      const tasksWithProposals = [...tasks, ...proposals].slice(0, LIMIT);
+        const hasMore = [...tasks, ...proposals].length > LIMIT;
+        const tasksWithProposals = [...tasks, ...proposals].slice(0, LIMIT);
 
-      setOptions([...tasksWithProposals, ...users]);
-      setHasMore(hasMore);
+        setOptions([...tasksWithProposals, ...users]);
+        setHasMore(hasMore);
+      }
+
+      setIsLoading(false);
     }, 200);
   };
 
@@ -98,7 +109,6 @@ export default function SearchTasks({ onSearch }: Props) {
         open={open}
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
-        // inputValue={inputValue}
         onInputChange={(event, searchString) => {
           handleInputChange(event, searchString);
           if (searchString === 'undefined') {
@@ -107,8 +117,10 @@ export default function SearchTasks({ onSearch }: Props) {
             setInputValue(searchString || '');
           }
         }}
-        freeSolo
+        disableClearable
+        freeSolo={!inputValue || isLoading}
         getOptionLabel={(takOrUser) => takOrUser.username || takOrUser.title || inputValue}
+        noOptionsText="No result"
         options={options}
         filterOptions={(x) => x}
         renderOption={(props, taskOrUser) => {
@@ -169,6 +181,12 @@ export default function SearchTasks({ onSearch }: Props) {
                 startAdornment: (
                   <InputAdornment position="start">
                     <SearchIcon />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    {isLoading ? <CircularProgress color="secondary" size={20} sx={{ marginRight: '12px' }} /> : null}
+                    {params.InputProps.endAdornment}
                   </InputAdornment>
                 ),
               }}

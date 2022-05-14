@@ -31,6 +31,9 @@ const generateReadablePreviewForAddress = (address: String) => {
 };
 
 export const constructGnosisRedirectUrl = (chain, safeAddress, safeTxHash) => {
+  if (chain=== 'harmony') {
+    return `https://multisig.harmony.one/#/safes/${safeAddress}/transactions/`
+  }
   return `https://gnosis-safe.io/app/${CHAIN_TO_GNOSIS_URL_ABBR[chain]}:${safeAddress}/transactions/${safeTxHash}`;
 };
 
@@ -38,6 +41,7 @@ const CHAIN_ID_TO_CHAIN_NAME = {
   1: 'eth_mainnet',
   4: 'rinkeby',
   137: 'polygon_mainnet',
+  1666600000: 'harmony',
 };
 
 interface SubmissionPaymentInfo {
@@ -230,7 +234,7 @@ export const SingleWalletPayment = (props) => {
       data: transactionData.data,
       value: transactionData.value,
       nonce: nextNonce,
-      safeTxGas: Number(safeTxGas),
+      safeTxGas: safeTxGas ? Number(safeTxGas): 0,
     };
     const safeTransaction = await gnosisSdk.createTransaction(transaction);
     const safeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);

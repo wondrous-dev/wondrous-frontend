@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ethers, utils } from 'ethers';
 import DropdownSelect from '../DropdownSelect/dropdownSelect';
+import { CircularProgress } from '@material-ui/core';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
 import { PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS } from 'graphql/mutations/payment';
@@ -35,6 +36,9 @@ const generateReadablePreviewForAddress = (address: String) => {
 };
 
 export const constructGnosisRedirectUrl = (chain, safeAddress, safeTxHash) => {
+  if (chain === 'harmony') {
+    return `https://multisig.harmony.one/#/safes/${safeAddress}/transactions/`;
+  }
   return `https://gnosis-safe.io/app/${CHAIN_TO_GNOSIS_URL_ABBR[chain]}:${safeAddress}/transactions/${safeTxHash}`;
 };
 
@@ -42,6 +46,7 @@ const CHAIN_ID_TO_CHAIN_NAME = {
   1: 'eth_mainnet',
   4: 'rinkeby',
   137: 'polygon_mainnet',
+  1666600000: 'harmony',
 };
 
 interface SubmissionPaymentInfo {
@@ -71,6 +76,7 @@ export const BatchWalletPayment = (props) => {
   const [incompatibleWalletError, setIncompatibleWalletError] = useState(null);
   const [paymentPending, setPaymentPending] = useState(null);
   const [gnosisSafeTxRedirectLink, setGnosisSafeTxRedirectLink] = useState(null);
+  const [gnosisTransactionLoading, setGnosisTransactionLoading] = useState(false);
   const [safeTxHash, setSafeTxHash] = useState(null);
   const router = useRouter();
   const wonderWeb3 = useWonderWeb3();
@@ -156,6 +162,7 @@ export const BatchWalletPayment = (props) => {
 
   const constructAndSignTransactionData = async () => {
     setSigningError(null);
+    setGnosisTransactionLoading(true);
     let iface = new ethers.utils.Interface(ERC20abi);
     const transactions: MetaTransactionData[] = [];
     submissionsPaymentInfo?.map((submissionPaymentInfo) => {
@@ -200,10 +207,11 @@ export const BatchWalletPayment = (props) => {
       );
       safeTxGas = estimateTx?.safeTxGas;
     } catch (e) {
+      setGnosisTransactionLoading(false);
       console.log(e);
     }
     const options: SafeTransactionOptionalProps = {
-      safeTxGas, // Optional
+      safeTxGas: safeTxGas ? safeTxGas : 0,
       // baseGas, // Optional
       // gasPrice, // Optional
       // gasToken, // Optional
@@ -225,6 +233,7 @@ export const BatchWalletPayment = (props) => {
       }
       return;
     }
+    setGnosisTransactionLoading(false);
     let sender; // parse out sender from signature, should be checksum addr. although backend can probably just convert
     let signature; // parse out signature
     safeTransaction.signatures.forEach((value, key) => {
@@ -283,7 +292,7 @@ export const BatchWalletPayment = (props) => {
             marginBottom: '28px',
           }}
         />
-        {selectedWallet && !paymentPending && (
+        {selectedWallet && !paymentPending && !gnosisTransactionLoading && (
           <CreateFormPreviewButton
             onClick={handlePaymentClick}
             style={{
@@ -293,6 +302,7 @@ export const BatchWalletPayment = (props) => {
             Pay All
           </CreateFormPreviewButton>
         )}
+        {gnosisTransactionLoading && <CircularProgress />}
         {wrongChainError && <ErrorText>{wrongChainError}</ErrorText>}
         {signingError && <ErrorText>{signingError}</ErrorText>}
         {notOwnerError && <ErrorText>{notOwnerError}</ErrorText>}
