@@ -78,7 +78,7 @@ const Login = ({ csrfToken }) => {
                 });
               }
             } else {
-              setErrorMessage(user); // this feels wrong?
+              setErrorMessage('no user found'); // this feels like it will never happen?
             }
           } catch (err) {
             if (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.NO_WEB3_ADDRESS_FOUND) {
