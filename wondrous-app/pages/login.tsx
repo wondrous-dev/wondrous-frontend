@@ -21,6 +21,7 @@ import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import styled from 'styled-components';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 import { getDiscordUrl } from 'utils';
+import { GRAPHQL_ERRORS } from 'utils/constants';
 
 const prod = process.env.NEXT_PUBLIC_PRODUCTION;
 
@@ -38,7 +39,6 @@ const Login = ({ csrfToken }) => {
   const [loading, setLoading] = useState(null);
   const router = useRouter();
   const { discordConnectError } = router.query;
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -55,6 +55,7 @@ const Login = ({ csrfToken }) => {
   // This happens async, so we bind it to the
   // state of the component.
   const loginWithWallet = async () => {
+    setErrorMessage(null);
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
       // Retrieve Signed Message
       const messageToSign = await getUserSigningMessage(wonderWeb3.address, 'eth');
@@ -77,14 +78,20 @@ const Login = ({ csrfToken }) => {
                 });
               }
             } else {
-              setErrorMessage(user);
+              setErrorMessage('no user found'); // this feels like it will never happen?
             }
           } catch (err) {
-            setErrorMessage(err?.message || err);
+            if (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.NO_WEB3_ADDRESS_FOUND) {
+              setErrorMessage('No account found, check if connected to the correct address');
+            } else {
+              setErrorMessage(err?.message || err);
+            }
           }
           setLoading(false);
         } else {
-          setErrorMessage('You need to sign the message on your wallet');
+          if (signedMessage !== undefined) {
+            setErrorMessage('You need to sign the message on your wallet');
+          }
         }
       } else {
         setErrorMessage('Login failed - try again.');
