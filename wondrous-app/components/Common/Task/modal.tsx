@@ -1545,7 +1545,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   }}
                 >
                   {fetchedTask?.rewards.map((reward, index) => {
-                    const { rewardAmount, symbol, icon } = reward;
+                    const { rewardAmount, symbol, icon, chain } = reward;
                     return (
                       <CompensationPill
                         key={index}
@@ -1564,7 +1564,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                           />
                         </IconContainer>
                         <CompensationAmount>
-                          {rewardAmount} {symbol}
+                          {rewardAmount} {symbol} paid on {chain}
                         </CompensationAmount>
                       </CompensationPill>
                     );

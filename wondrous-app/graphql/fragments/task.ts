@@ -60,6 +60,7 @@ export const TaskFragment = gql`
       symbol
       icon
       tokenName
+      chain
     }
     maxSubmissionCount
   }
