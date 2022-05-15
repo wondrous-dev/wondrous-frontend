@@ -411,66 +411,6 @@ export const Task = (props) => {
                 </PodWrapper>
               )}
             </TaskHeaderIconWrapper>
-            {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
-          </TaskHeader>
-          <TaskCreatedBy type={type} router={router} createdBy={createdBy} />
-          {(isMilestone || isBounty) && <TaskDivider />}
-
-          <TaskContent>
-            <TaskTitle>{title}</TaskTitle>
-            <TaskCardDescriptionText>
-              {renderMentionString({
-                content: description,
-                router,
-              })}
-            </TaskCardDescriptionText>
-            <TaskContentFooter>
-              {task?.podName && (
-                <PodWrapper
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    goToPod(task?.podId);
-                  }}
-                >
-                  <PodIcon
-                    color={task?.podColor}
-                    style={{
-                      width: '26px',
-                      height: '26px',
-                      marginRight: '8px',
-                    }}
-                  />
-                  <PodName>{task?.podName}</PodName>
-                </PodWrapper>
-              )}
-              {!isSubtask && !isMilestone && totalSubtask > 0 && (
-                <SubtaskCountWrapper
-                  style={{
-                    marginTop: '24px',
-                  }}
-                >
-                  <SubtaskDarkIcon />
-                  <SubtaskCount>
-                    {completedSubtask}/{totalSubtask}
-                  </SubtaskCount>
-                </SubtaskCountWrapper>
-              )}
-            </TaskContentFooter>
-            {isBounty && (
-              <TaskBountyOverview
-                totalSubmissionsCount={task?.totalSubmissionsCount}
-                approvedSubmissionsCount={task?.approvedSubmissionsCount}
-              />
-            )}
-            <MilestoneProgressWrapper>{isMilestone && <MilestoneProgress milestoneId={id} />}</MilestoneProgressWrapper>
-            {media?.length > 0 ? <TaskMedia media={media[0]} /> : <TaskSeparator />}
-          </TaskContent>
-          <TaskFooter>
-            {/* <TaskAction key={'task-like-' + id} onClick={toggleLike}>
-						<TaskLikeIcon liked={liked} />
-						<TaskActionAmount>{likes}</TaskActionAmount>
-					</TaskAction> */}
             {!assigneeId && !isBounty && !isMilestone && (
               <>
                 {claimed ? (
@@ -525,53 +465,63 @@ export const Task = (props) => {
                 )}
               </>
             )}
-            {!isMilestone && (
-              <TaskAction key={'task-comment-' + id}>
-                <TaskCommentIcon />
-                <TaskActionAmount>{commentCount}</TaskActionAmount>
-              </TaskAction>
-            )}
-            {/* <TaskAction key={'task-share-' + id}>
-              <TaskShareIcon />
-              <TaskActionAmount>{shares}</TaskActionAmount>
-            </TaskAction> */}
+            {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
+          </TaskHeader>
+          <TaskCreatedBy type={type} router={router} createdBy={createdBy} />
 
-            {canArchive && (
-              <TaskActionMenu right="true">
-                <DropDown DropdownHandler={TaskMenuIcon}>
-                  <DropDownItem
-                    key={'task-menu-edit-' + id}
-                    onClick={() => {
-                      setEditTask(true);
+          <TaskContent>
+            <TaskTitle>{title}</TaskTitle>
+            {/* <TaskCardDescriptionText>
+              {renderMentionString({
+                content: description,
+                router,
+              })}
+            </TaskCardDescriptionText> */}
+            <TaskContentFooter>
+              {task?.podName && (
+                <PodWrapper
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    goToPod(task?.podId);
+                  }}
+                >
+                  <PodIcon
+                    color={task?.podColor}
+                    style={{
+                      width: '26px',
+                      height: '26px',
+                      marginRight: '8px',
                     }}
-                    color={White}
-                  >
-                    Edit {type}
-                  </DropDownItem>
-                  <DropDownItem
-                    key={'task-menu-edit-' + id}
-                    onClick={() => {
-                      setArchiveTask(true);
-                    }}
-                    color={White}
-                  >
-                    Archive {type}
-                  </DropDownItem>
-                  {canDelete && (
-                    <DropDownItem
-                      key={'task-menu-delete-' + id}
-                      onClick={() => {
-                        setDeleteTask(true);
-                      }}
-                      color={Red800}
-                    >
-                      Delete {type}
-                    </DropDownItem>
-                  )}
-                </DropDown>
-              </TaskActionMenu>
+                  />
+                  <PodName>{task?.podName}</PodName>
+                </PodWrapper>
+              )}
+              {!isSubtask && !isMilestone && totalSubtask > 0 && (
+                <SubtaskCountWrapper
+                  style={{
+                    marginTop: '24px',
+                  }}
+                >
+                  <SubtaskDarkIcon />
+                  <SubtaskCount>
+                    {completedSubtask}/{totalSubtask}
+                  </SubtaskCount>
+                </SubtaskCountWrapper>
+              )}
+            </TaskContentFooter>
+            {isBounty && (
+              <TaskBountyOverview
+                totalSubmissionsCount={task?.totalSubmissionsCount}
+                approvedSubmissionsCount={task?.approvedSubmissionsCount}
+              />
             )}
-          </TaskFooter>
+            {isMilestone && (
+              <MilestoneProgressWrapper>
+                <MilestoneProgress milestoneId={id} />
+              </MilestoneProgressWrapper>
+            )}
+          </TaskContent>
         </TaskInner>
       </TaskWrapper>
     </span>
@@ -683,7 +633,6 @@ export const TaskListCard = (props) => {
               <PodName>{task?.podName.slice(0, 15)}</PodName>
             </PodWrapper>
           )}
-          {task?.media?.length > 0 ? <TaskMedia media={task?.media[0]} /> : <TaskSeparator />}
         </TaskContent>
         <TaskFooter>
           {task?.changeRequestedAt && (

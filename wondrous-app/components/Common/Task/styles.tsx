@@ -158,7 +158,7 @@ export const PodWrapper = styled.div`
   display: flex;
   align-items: flex-start;
   margin-right: 6px;
-  margin-top: 24px;
+  margin-top: 16px;
 `;
 
 export const PodName = styled(Typography)`
