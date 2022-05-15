@@ -1,6 +1,6 @@
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
-import { Grey85, White } from '../../../theme/colors';
+import { Grey250, Grey85 } from '../../../theme/colors';
 
 export const CompensationWrapper = styled.div`
   display: flex;
@@ -44,7 +44,7 @@ export const IconContainer = styled.div`
 
 export const CompensationAmount = styled(Typography)`
   && {
-    color: ${White};
+    color: ${Grey250};
     font-weight: 600;
     font-size: 13px;
   }
