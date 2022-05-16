@@ -27,7 +27,7 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
-import { CHAIN_TO_GNOSIS_URL_ABBR } from 'utils/web3Constants';
+import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME } from 'utils/web3Constants';
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {
@@ -40,13 +40,6 @@ export const constructGnosisRedirectUrl = (chain, safeAddress, safeTxHash) => {
     return `https://multisig.harmony.one/#/safes/${safeAddress}/transactions/`;
   }
   return `https://gnosis-safe.io/app/${CHAIN_TO_GNOSIS_URL_ABBR[chain]}:${safeAddress}/transactions/${safeTxHash}`;
-};
-
-const CHAIN_ID_TO_CHAIN_NAME = {
-  1: 'eth_mainnet',
-  4: 'rinkeby',
-  137: 'polygon_mainnet',
-  1666600000: 'harmony',
 };
 
 interface SubmissionPaymentInfo {
