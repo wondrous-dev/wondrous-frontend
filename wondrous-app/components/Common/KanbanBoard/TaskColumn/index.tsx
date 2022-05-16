@@ -11,6 +11,9 @@ import {
   TASK_STATUS_TODO,
   ENTITIES_TYPES,
   BOARD_TYPE,
+  STATUS_OPEN,
+  STATUS_APPROVED,
+  STATUS_REJECTED,
 } from 'utils/constants';
 
 import { ToDo, InProgress, Done, InReview } from '../../../Icons';
@@ -48,6 +51,10 @@ const TITLES = {
   [TASK_STATUS_IN_PROGRESS]: 'In-Progress',
   [TASK_STATUS_IN_REVIEW]: 'In-Review',
   [TASK_STATUS_DONE]: 'Done',
+  //PROPOSALS
+  [STATUS_OPEN]: 'Open',
+  [STATUS_APPROVED]: 'Approved',
+  [STATUS_REJECTED]: 'Rejected',
 };
 
 const HEADER_ICONS = {
@@ -55,6 +62,9 @@ const HEADER_ICONS = {
   [TASK_STATUS_IN_PROGRESS]: InProgress,
   [TASK_STATUS_IN_REVIEW]: InReview,
   [TASK_STATUS_DONE]: Done,
+  [STATUS_OPEN]: ToDo,
+  [STATUS_APPROVED]: InProgress,
+  [STATUS_REJECTED]: Done,
 };
 
 const TaskColumn = (props: ITaskColumn) => {
@@ -64,6 +74,7 @@ const TaskColumn = (props: ITaskColumn) => {
   const podBoard = usePodBoard();
   const [openTaskModal, setOpenTaskModal] = useState(false);
   let boardType = null;
+  console.log(props, 'props=');
   if (orgBoard) {
     boardType = BOARD_TYPE.org;
   } else if (podBoard) {

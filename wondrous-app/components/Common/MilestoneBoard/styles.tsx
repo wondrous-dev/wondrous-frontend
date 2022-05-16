@@ -55,54 +55,6 @@ export const MilestoneCard = styled.div`
   }
 `;
 
-export const MilestoneCardHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-direction: row;
-  width: 100%;
-`;
-
-export const MilestoneSubheader = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 18px;
-`;
-
-export const MilestoneCardBody = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-`;
-
-export const MilestoneCardFooter = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-`;
-
-export const MilestonePrivacyType = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 8px;
-  gap: 10px;
-  font-family: 'Space Grotesk';
-  font-style: normal;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 12px;
-  display: flex;
-  align-items: center;
-  background: #363636;
-  border-radius: 4px;
-  color: ${White};
-`;
-
 export const MilestoneCardTitle = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
@@ -115,46 +67,6 @@ export const MilestoneCardTitle = styled(Typography)`
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-fill-color: transparent;
-  }
-`;
-
-export const MilestoneCardPrice = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 4px 8px;
-  gap: 6px;
-  background: #363636;
-  border-radius: 35px;
-  font-family: 'Space Grotesk';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 13px;
-  line-height: 14px;
-  color: ${White};
-  letter-spacing: 0.01em;
-`;
-
-export const MilestoneBodyTitle = styled(Typography)`
-  && {
-    color: ${White};
-    font-family: 'Space Grotesk';
-    font-style: normal;
-    font-weight: 700;
-    font-size: 16px;
-    line-height: 23px;
-  }
-`;
-
-export const MilestoneBodyDescription = styled(Typography)`
-  && {
-    font-family: 'Space Grotesk';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 15px;
-    line-height: 20px;
-    letter-spacing: 0.01em;
-    color: #828282;
   }
 `;
 

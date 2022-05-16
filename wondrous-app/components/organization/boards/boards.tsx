@@ -8,12 +8,14 @@ import { FILTER_STATUSES } from 'services/board';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { ENTITIES_TYPES } from 'utils/constants';
 import MilestoneBoard from 'components/Common/MilestoneBoard';
+import BountyBoard from 'components/Common/BountyBoard';
+import withCardsLayout from 'components/Common/Boards/withCardsLayout';
 
 const BOARDS_MAP = {
   [ENTITIES_TYPES.TASK]: Boards,
-  [ENTITIES_TYPES.MILESTONE]: MilestoneBoard,
+  [ENTITIES_TYPES.MILESTONE]: withCardsLayout(MilestoneBoard, 3),
   [ENTITIES_TYPES.PROPOSAL]: Boards,
-  [ENTITIES_TYPES.BOUNTY]: Boards,
+  [ENTITIES_TYPES.BOUNTY]: withCardsLayout(BountyBoard, 4),
 };
 
 type Props = {
@@ -32,7 +34,7 @@ type Props = {
   userId?: string;
   entityType: string;
   loading: boolean;
-  activeView: string
+  activeView: string | string[];
 };
 
 const OrgBoards = (props: Props) => {
@@ -94,7 +96,7 @@ const OrgBoards = (props: Props) => {
       />
       {!loading && (
         <ActiveBoard
-          activeView={activeView}
+          activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
           columns={columns}
           onLoadMore={onLoadMore}
           hasMore={hasMore}

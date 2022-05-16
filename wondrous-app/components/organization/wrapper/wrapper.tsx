@@ -429,7 +429,9 @@ const Wrapper = (props) => {
                 </HeaderActivity>
               </TokenHeader>
               <Tabs>
-                <Stats tasksPerTypeData={tasksPerTypeMetadata?.getPerTypeTaskCountForOrgBoard} />
+                {orgBoard?.setEntityType && (
+                  <Stats tasksPerTypeData={tasksPerTypeMetadata?.getPerTypeTaskCountForOrgBoard} />
+                )}
                 {children}
               </Tabs>
             </ContentContainer>

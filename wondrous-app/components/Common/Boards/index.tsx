@@ -40,6 +40,8 @@ const Boards = (props: Props) => {
   const selectMembershipRequests = selectMembershipHook?.selectMembershipRequests;
   const view = activeView || String(router.query.view ?? ViewType.Grid);
 
+  console.log(columns, 'COLS');
+
   useEffect(() => {
     if (!searchQuery) {
       return;

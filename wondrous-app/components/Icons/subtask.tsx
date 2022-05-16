@@ -1,7 +1,7 @@
-export const SubtaskLightIcon = (props) => {
+export const SubtaskLightIcon = ({ stroke = '#C4C4C4', fill = '#353535' }) => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="none" viewBox="0 0 25 25">
-      <path fill="#353535" d="M.354 4.756a4 4 0 014-4h16a4 4 0 014 4v16a4 4 0 01-4 4h-16a4 4 0 01-4-4v-16z"></path>
+      <path fill={fill} d="M.354 4.756a4 4 0 014-4h16a4 4 0 014 4v16a4 4 0 01-4 4h-16a4 4 0 01-4-4v-16z"></path>
       <path
         stroke="#C4C4C4"
         strokeLinecap="round"
@@ -29,10 +29,10 @@ export const SubtaskLightIcon = (props) => {
   );
 };
 
-export const SubtaskDarkIcon = (props) => {
+export const SubtaskDarkIcon = ({ fill = '#0F0F0F', width = '25', height = '25' }) => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="none" viewBox="0 0 25 25">
-      <path fill="#0F0F0F" d="M.06 4.6a4 4 0 014-4h16a4 4 0 014 4v16a4 4 0 01-4 4h-16a4 4 0 01-4-4v-16z"></path>
+    <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill="none" viewBox="0 0 25 25">
+      <path fill={fill} d="M.06 4.6a4 4 0 014-4h16a4 4 0 014 4v16a4 4 0 01-4 4h-16a4 4 0 01-4-4v-16z"></path>
       <path
         stroke="#707070"
         strokeLinecap="round"

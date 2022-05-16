@@ -9,6 +9,9 @@ import {
   TASK_STATUS_TODO,
   TASK_TYPE,
   COLUMNS_CONFIGURATION,
+  STATUS_OPEN,
+  STATUS_APPROVED,
+  STATUS_REJECTED,
 } from 'utils/constants';
 import { Archived, InReview, Requested } from 'components/Icons/sections';
 import { Proposal } from 'components/Icons';
@@ -101,6 +104,24 @@ const DONE = (withSection: boolean = true) => {
   return config;
 };
 
+const PROPOSAL_OPEN = {
+  title: 'Open',
+  tasks: [],
+  status: STATUS_OPEN,
+};
+
+const PROPOSAL_APPROVED = {
+  title: 'Approved',
+  tasks: [],
+  status: STATUS_APPROVED,
+};
+
+const PROPOSAL_REJECTED = {
+  title: 'Rejected',
+  tasks: [],
+  status: STATUS_REJECTED,
+};
+
 export const FILTER_STATUSES = {
   name: 'statuses',
   label: 'Status',
@@ -188,6 +209,8 @@ export const COLUMNS = generateColumns(true, COLUMNS_CONFIGURATION.ASSIGNEE);
 
 export const ORG_POD_COLUMNS = generateColumns(false, COLUMNS_CONFIGURATION.ORG);
 
+export const ORG_POD_PROPOSAL_COLUMNS = [PROPOSAL_OPEN, PROPOSAL_APPROVED, PROPOSAL_REJECTED];
+
 export const SELECT_OPTIONS = [
   '#copywriting (23)',
   '#growth (23)',
@@ -222,6 +245,30 @@ export const populateTaskColumns = (tasks, columns) => {
     );
   });
   return newColumns;
+};
+
+export const populateProposalColumns = (proposals, columns) => {
+  if (!columns) {
+    return [];
+  }
+
+  const proposalsMap = {
+    [STATUS_OPEN]: [],
+    [STATUS_APPROVED]: [],
+    // changes requested
+    [STATUS_REJECTED]: [],
+  };
+  proposals?.forEach((proposal) => {
+    if (proposal.approvedAt) proposalsMap[STATUS_APPROVED].push(proposal);
+    if (!proposal.approvedAt && !proposal.changeRequestedAt) proposalsMap[STATUS_OPEN].push(proposal);
+    if (proposal.changeRequestedAt && !proposal.approvedAt) proposalsMap[STATUS_REJECTED].push(proposal);
+  });
+  return columns.map((column) => {
+    return {
+      ...column,
+      tasks: [...column.tasks, ...proposalsMap[column.status]],
+    };
+  });
 };
 
 export const addToTaskColumns = (newResults, columns) => {

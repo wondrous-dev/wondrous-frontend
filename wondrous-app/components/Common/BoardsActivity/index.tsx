@@ -21,7 +21,6 @@ export default function BoardsActivity(props) {
   const podIdsQuery = podIds?.length ? `&podIds=${podIds.join(',')}` : '';
   const userIdQuery = userId ? `&userId=${userId}` : '';
   const setActiveView = board?.setActiveView;
-  console.log(orgBoard, board, 'board');
   const listViewOptions = [
     {
       name: 'List',

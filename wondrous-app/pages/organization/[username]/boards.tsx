@@ -5,7 +5,6 @@ import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_ORG_BY_ID, GET_ORG_FROM_USERNAME, GET_ORG_PODS, SEARCH_ORG_USERS } from 'graphql/queries/org';
 import {
   GET_ORG_TASK_BOARD_PROPOSALS,
-  GET_ORG_TASK_BOARD_SUBMISSIONS,
   GET_ORG_TASK_BOARD_TASKS,
   GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
   GET_TASKS_RELATED_TO_USER_IN_ORG,
@@ -16,7 +15,14 @@ import _ from 'lodash';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import apollo from 'services/apollo';
-import { LIMIT, populateTaskColumns, SELECT_OPTIONS, ORG_POD_COLUMNS } from 'services/board';
+import {
+  LIMIT,
+  populateTaskColumns,
+  populateProposalColumns,
+  SELECT_OPTIONS,
+  ORG_POD_COLUMNS,
+  ORG_POD_PROPOSAL_COLUMNS,
+} from 'services/board';
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
@@ -66,7 +72,7 @@ const useGetOrgTaskBoardTasks = ({
     fetchMore({
       variables: {
         offset:
-          entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.BOUNTY
+          entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.PROPOSAL
             ? Math.max(...columns.map(({ tasks }) => tasks.length))
             : columns.length,
       },
@@ -81,7 +87,7 @@ const useGetOrgTaskBoardTasks = ({
     });
   }, [columns, fetchMore, setOrgTaskHasMore]);
   useEffect(() => {
-    if (!userId) {
+    if (!userId && entityType !== ENTITIES_TYPES.PROPOSAL) {
       const taskBoardStatuses =
         statuses.length > 0
           ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))
@@ -157,7 +163,7 @@ const useGetTaskRelatedToUser = ({
   }, [columns, fetchMore, setOrgTaskHasMore]);
 
   useEffect(() => {
-    if (userId) {
+    if (userId && entityType !== ENTITIES_TYPES.PROPOSAL) {
       const taskBoardStatuses =
         statuses.length > 0
           ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))
@@ -188,19 +194,22 @@ const useGetOrgTaskBoardProposals = ({
   statuses,
   podIds,
   entityType,
+  setIsLoading,
 }) => {
   const [getOrgTaskProposals, { data }] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
-      setColumns(data?.getOrgTaskBoardProposals);
+      const newColumns = populateProposalColumns(data?.getOrgTaskBoardProposals, ORG_POD_PROPOSAL_COLUMNS);
+      setColumns(newColumns);
+      setIsLoading(false);
     },
     onError: (error) => {
       console.log(error);
     },
   });
   useEffect(() => {
-    if ((section === TASK_STATUS_REQUESTED || listView || data) && entityType === ENTITIES_TYPES.PROPOSAL)
+    if (entityType === ENTITIES_TYPES.PROPOSAL)
       getOrgTaskProposals({
         variables: {
           podIds,
@@ -211,48 +220,6 @@ const useGetOrgTaskBoardProposals = ({
         },
       });
   }, [getOrgTaskProposals, orgId, statuses, podIds, section, listView, data, entityType]);
-};
-
-const useGetOrgTaskBoardSubmissions = ({
-  listView,
-  section,
-  columns,
-  setColumns,
-  orgId,
-  statuses,
-  podIds,
-  entityType,
-  setIsLoading,
-}) => {
-  const [getOrgTaskSubmissions, { data }] = useLazyQuery(GET_ORG_TASK_BOARD_SUBMISSIONS, {
-    fetchPolicy: 'cache-and-network',
-    nextFetchPolicy: 'cache-first',
-    onCompleted: (data) => {
-      const newColumns = bindSectionToColumns({
-        columns,
-        data: data?.getOrgTaskBoardSubmissions,
-        section: TASK_STATUS_IN_REVIEW,
-      });
-      setColumns(dedupeColumns(newColumns));
-      setIsLoading(false);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-  });
-  useEffect(() => {
-    if ((section === TASK_STATUS_IN_REVIEW || listView || data) && entityType === ENTITIES_TYPES.TASK) {
-      getOrgTaskSubmissions({
-        variables: {
-          podIds,
-          orgId,
-          statuses: [STATUS_OPEN],
-          offset: 0,
-          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
-        },
-      });
-    }
-  }, [getOrgTaskSubmissions, orgId, statuses, podIds, section, listView, data, entityType]);
 };
 
 const useGetOrgTaskBoard = ({
@@ -297,7 +264,7 @@ const useGetOrgTaskBoard = ({
   const { fetchMore } = userId ? board[userId] : board.withoutUserId;
 
   const listView = view === ViewType.List;
-  useGetOrgTaskBoardSubmissions({
+  useGetOrgTaskBoardProposals({
     listView,
     section,
     columns,
@@ -308,13 +275,12 @@ const useGetOrgTaskBoard = ({
     entityType,
     setIsLoading,
   });
-  useGetOrgTaskBoardProposals({ listView, section, columns, setColumns, orgId, statuses, podIds, entityType });
   return { fetchMore };
 };
 
 const BoardsPage = () => {
   const router = useRouter();
-  const { username, orgId, search, userId, boardType, view } = router.query;
+  const { username, orgId, search, userId, boardType, view = ViewType.Grid } = router.query;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
   const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
   const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
