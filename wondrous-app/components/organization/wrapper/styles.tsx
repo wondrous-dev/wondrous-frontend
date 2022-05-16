@@ -236,20 +236,20 @@ export const HeaderContributeButton = styled(Button)`
   }
 `;
 
-// export const HeaderManageSettingsButton = (props) => (
-//   <BorderButton
-//     style={{
-//       background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
-//       borderRadius: '204px',
-//       width: 'fit-content',
-//       height: '40px',
-//       minHeight: '0',
-//     }}
-//     onClick={props?.onClick}
-//   >
-//     {props.children}
-//   </BorderButton>
-// );
+export const HeaderManageSettingsButton = (props) => (
+  <BorderButton
+    style={{
+      background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
+      borderRadius: '204px',
+      width: 'fit-content',
+      height: '40px',
+      minHeight: '0',
+    }}
+    onClick={props?.onClick}
+  >
+    {props.children}
+  </BorderButton>
+);
 
 export const HeaderButton = styled.button`
   border-radius: 6px;
