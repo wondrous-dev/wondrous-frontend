@@ -1,6 +1,6 @@
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
-import { White } from '../../theme/colors';
+import { Grey250, White } from '../../theme/colors';
 import { SafeImage } from '../Common/Image';
 import DefaultUserImage from '../Common/Image/DefaultUserImage';
 import { CreateFormPreviewButton } from '../CreateEntity/styles';
@@ -17,6 +17,22 @@ export const CommentItemContainer = styled.div`
   display: flex;
   align-items: flex-start;
   margin-bottom: 16px;
+  ${({ highlight }) =>
+    highlight &&
+    `
+    @keyframes highlightComment {
+    from {
+      background: ${Grey250};
+   }
+    to {
+      background: transparent;
+    }
+  }
+    animation-name: highlightComment;
+    animation-duration: 2s;
+    padding: 2px;
+    border-radius: 4px
+  `}
 `;
 
 export const CommentProfilePicture = (props) => (

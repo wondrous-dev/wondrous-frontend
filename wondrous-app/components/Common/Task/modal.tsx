@@ -957,12 +957,12 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   useEffect(() => {
     if (isMilestone) {
       setActiveTab(tabs.tasks);
-    } else if (isTaskProposal) {
+    } else if (isTaskProposal || router?.query?.taskCommentId) {
       setActiveTab(tabs.discussion);
     } else {
       setActiveTab(tabs.submissions);
     }
-  }, [isMilestone, isTaskProposal]);
+  }, [isMilestone, isTaskProposal, router?.query?.taskCommentId]);
 
   useEffect(() => {
     if (open) {
