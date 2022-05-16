@@ -29,14 +29,18 @@ const TaskRedirect = () => {
         },
       });
     }
-  }, [taskCommentId]);
+  }, [getTaskCommentById, taskCommentId]);
 
   const task = taskData?.getTaskById;
 
   if (task?.org?.username) {
-    router.push(`/organization/${task?.org?.username}/boards?task=${task?.id}`, undefined, {
-      shallow: true,
-    });
+    router.push(
+      `/organization/${task?.org?.username}/boards?task=${task?.id}&taskCommentId=${taskCommentId}`,
+      undefined,
+      {
+        shallow: true,
+      }
+    );
   }
   return (
     <AppLayout banner={null}>

@@ -119,6 +119,7 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
                 <Link
                   key={'notifications-' + notification.id}
                   href={`/${snakeToCamel(notification.objectType)}/${notification.objectId}`}
+                  passHref
                 >
                   <NotificationsItem
                     isNotificationViewed={isNotificationViewed}

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { GET_ORG_USERS } from 'graphql/queries/org';
 import { CREATE_TASK_COMMENT, DELETE_TASK_COMMENT } from 'graphql/mutations/task';
 import { CREATE_TASK_PROPOSAL_COMMENT, DELETE_TASK_PROPOSAL_COMMENT } from 'graphql/mutations/taskProposal';
@@ -126,18 +126,26 @@ export const CommentBox = (props) => {
   );
 };
 
+const useScrollIntoView = (isElementToScroll) => {
+  const elementRef = useRef(null);
+  useEffect(() => {
+    if (isElementToScroll) {
+      elementRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [elementRef, isElementToScroll]);
+  return elementRef;
+};
+
 const CommentItem = (props) => {
-  const comment = props?.comment;
-  const task = props?.task;
-  const taskType = props?.taskType;
-  const list = props?.list;
-  const setList = props?.setList;
+  const { comment, task, taskType, list, setList } = props;
   const loggedInUser = useMe();
   const router = useRouter();
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
   const boardColumns = useColumns();
+  const isOpenedFromNotification = router?.query.taskCommentId === comment.id;
+  const commentRef = useScrollIntoView(isOpenedFromNotification);
   const [deleteTaskComment, { data: deleteTaskCommentData }] = useMutation(DELETE_TASK_COMMENT, {
     refetchQueries: ['getTaskComments'],
   });
@@ -181,7 +189,7 @@ const CommentItem = (props) => {
     userId === loggedInUser?.id;
 
   return (
-    <CommentItemContainer>
+    <CommentItemContainer ref={commentRef} highlight={isOpenedFromNotification}>
       {actorProfilePicture ? <CommentProfilePicture src={actorProfilePicture} /> : <DefaultCommentProfilePicture />}
       <div>
         <CommentTopFlexDiv>
