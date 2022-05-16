@@ -1,30 +1,25 @@
 import { useMemo, useState, useEffect } from 'react';
 import { DayPickerRangeController } from 'react-dates';
-import moment, { weekdays } from 'moment';
+import moment from 'moment';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
-import { DATEPICKER_FIELDS, DATEPICKER_OPTIONS, DEFAULT_DATEPICKER_VALUE } from 'utils/constants';
+import {
+  DATEPICKER_FIELDS,
+  DATEPICKER_OPTIONS,
+  MONTH_DAY_FULL_YEAR,
+  DAY_STRING_MONTH_SHORT_YEAR,
+  DEFAULT_DATEPICKER_VALUE,
+  WEEK_DAYS,
+} from 'utils/constants';
+
 import DatePickerRecurringUtilities from 'components/DatePickerRecurringUtilities';
+import CalendarDay from 'components/CalendarDay';
 
 import styles from './DateRangePickerStyles';
-import { getDayOfYear } from 'date-fns';
-
-const MONTH_DAY_FULL_YEAR = 'MM/DD/YYYY';
-const DAY_STRING_MONTH_SHORT_YEAR = 'DD/MMM/YY';
-
-const WEEK_DAYS = {
-  monday: false,
-  tuesday: false,
-  wednesday: false,
-  thursday: false,
-  friday: false,
-  saturday: false,
-  sunday: false,
-};
 
 const DateRangePicker = ({}) => {
   const [dateRange, setDateRange] = useState(DEFAULT_DATEPICKER_VALUE);
@@ -34,13 +29,15 @@ const DateRangePicker = ({}) => {
   const [repeatValue, setRepeatValue] = useState();
   const [weekDaysSelected, setWeekDaysSelected] = useState(WEEK_DAYS);
 
+  moment.updateLocale('en', {
+    week: {
+      dow: 1,
+    },
+  });
+
   const parsedWeekDays = Object.values(weekDaysSelected)
-    .map((item, idx) => (item ? idx + 1 : null))
-    .filter((item) => item);
-
-  console.log(parsedWeekDays);
-
-  console.log(weekDaysSelected);
+    .map((item, idx) => (item ? idx : null))
+    .filter((item) => item || item === 0);
 
   const handleWeekDaysChange = (event) => {
     setWeekDaysSelected({
@@ -74,6 +71,10 @@ const DateRangePicker = ({}) => {
   };
 
   const highlightDay = (day) => {
+    const initialDate = dateRange.startDate || todayMoment;
+    const dayOfyear = day.dayOfYear();
+    const initialDayOfYear = initialDate.dayOfYear();
+
     if (repeatType === DATEPICKER_OPTIONS.DAILY) {
       setFocusedInput(DATEPICKER_FIELDS.START_DATE);
       return day.isSameOrAfter(dateRange.startDate || todayMoment);
@@ -81,30 +82,20 @@ const DateRangePicker = ({}) => {
     if (repeatType === DATEPICKER_OPTIONS.WEEKLY) {
       setFocusedInput(DATEPICKER_FIELDS.START_DATE);
 
-      const initialDate = dateRange.startDate || todayMoment;
-      const dayOfyear = day.dayOfYear();
-      const initialDayOfYear = initialDate.dayOfYear();
-
-      return parsedWeekDays.includes(day.isoWeekday()) && dayOfyear > initialDayOfYear;
+      return parsedWeekDays.includes(day.weekday()) && dayOfyear > initialDayOfYear;
     }
     if (repeatType === DATEPICKER_OPTIONS.MONTHLY) {
       setFocusedInput(DATEPICKER_FIELDS.START_DATE);
-      return day.date() === repeatValue;
+      return day.date() === repeatValue && dayOfyear > initialDayOfYear;
     }
     if (repeatType === DATEPICKER_OPTIONS.PERIODICALLY) {
       setFocusedInput(DATEPICKER_FIELDS.START_DATE);
-
-      const initialDate = dateRange.startDate || todayMoment;
-      const initialDayOfYear = initialDate.dayOfYear();
-
-      const dayOfyear = day.dayOfYear();
 
       const rest = (dayOfyear + initialDayOfYear) % Number(repeatValue);
 
       return rest === 0 && dayOfyear > initialDayOfYear;
     }
-
-    // return day.dayOfYear() === moment().dayOfYear() ? true : false;
+    return false;
   };
 
   useEffect(() => {
@@ -118,8 +109,6 @@ const DateRangePicker = ({}) => {
       setDateAtStartDate();
     }
   }, [repeatType]);
-
-  console.log(displayValue);
 
   return (
     <Box mt={4} display="flex" flexDirection="column" maxWidth={300}>
@@ -143,6 +132,7 @@ const DateRangePicker = ({}) => {
                 readOnly: true,
               }}
               placeholder="Start Date"
+              onClick={() => setFocusedInput(DATEPICKER_FIELDS.START_DATE)}
             />
             <TextField
               type="text"
@@ -152,6 +142,7 @@ const DateRangePicker = ({}) => {
                 readOnly: true,
               }}
               placeholder="End Date"
+              onClick={() => setFocusedInput(DATEPICKER_FIELDS.END_DATE)}
             />
           </Box>
           <Box sx={styles.root}>
@@ -165,14 +156,16 @@ const DateRangePicker = ({}) => {
               onFocusChange={(focusedInput) => focusedInput && setFocusedInput(focusedInput)}
               numberOfMonths={1}
               displayFormat="MM/DD/yyyy"
+              onOutsideClick={() => {
+                console.log('outside');
+              }}
               daySize={36}
               minimumNights={0}
               enableOutsideDays
-              // appendToBody
               customArrowIcon={<></>}
               isDayHighlighted={(day) => highlightDay(day)}
               isDayBlocked={(day) => day.isBefore(todayMoment)}
-              // renderCalendarDay={(props) => <CustomizableCalendarDay {...props} {...customDayStyles} />}
+              renderCalendarDay={(props) => <CalendarDay {...props} />}
               // Reference component => https://github.com/react-dates/react-dates/blob/master/src/components/CustomizableCalendarDay.jsx
               renderCalendarInfo={() => (
                 <DatePickerRecurringUtilities

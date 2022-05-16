@@ -6,12 +6,34 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 
-import { DATEPICKER_OPTIONS, DEFAULT_DATEPICKER_VALUE, DATEPICKER_OPTIONS_ARR } from 'utils/constants';
+import {
+  DATEPICKER_OPTIONS,
+  DEFAULT_DATEPICKER_VALUE,
+  DEFAULT_SINGLE_DATEPICKER_VALUE,
+  DATEPICKER_OPTIONS_ARR,
+} from 'utils/constants';
 
 import DaySelector from 'components/DaySelector';
 import WeekDaySelector from 'components/WeekDaySelector';
 
+interface DatePickerRecurringUtilitiesProps {
+  date?: any;
+  setDate?: any;
+  dateRange?: any;
+  setDateRange?: any;
+  showOptions: any;
+  setShowOptions: any;
+  setRepeatType: any;
+  repeatType: any;
+  setRepeatValue: any;
+  todayMoment: any;
+  onWeekDaysChange: any;
+  weekDaysSelected: any;
+}
+
 const DatePickerRecurringUtilities = ({
+  date,
+  setDate,
   dateRange,
   setDateRange,
   showOptions,
@@ -22,9 +44,10 @@ const DatePickerRecurringUtilities = ({
   todayMoment,
   onWeekDaysChange,
   weekDaysSelected,
-}) => {
+}: DatePickerRecurringUtilitiesProps) => {
   const clearAll = () => {
-    setDateRange(DEFAULT_DATEPICKER_VALUE);
+    setDate && setDate(DEFAULT_SINGLE_DATEPICKER_VALUE);
+    setDateRange && setDateRange(DEFAULT_DATEPICKER_VALUE);
     setRepeatType();
     setRepeatValue();
     setShowOptions();
