@@ -120,7 +120,7 @@ export default function SearchTasks({ onSearch }: Props) {
         disableClearable
         freeSolo={!inputValue || isLoading}
         getOptionLabel={(takOrUser) => takOrUser.username || takOrUser.title || inputValue}
-        noOptionsText="No result"
+        noOptionsText="no results found"
         options={options}
         filterOptions={(x) => x}
         renderOption={(props, taskOrUser) => {
@@ -186,7 +186,6 @@ export default function SearchTasks({ onSearch }: Props) {
                 endAdornment: (
                   <InputAdornment position="end">
                     {isLoading ? <CircularProgress color="secondary" size={20} sx={{ marginRight: '12px' }} /> : null}
-                    {params.InputProps.endAdornment}
                   </InputAdornment>
                 ),
               }}
