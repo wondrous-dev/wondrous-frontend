@@ -206,11 +206,17 @@ export const CreateFormBaseModal = styled(BaseCard)`
   }
 `;
 
+export const CreateFormBaseModalHeaderWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px 25px;
+`;
+
 export const CreateFormBaseModalHeader = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 0 40px 25px;
 
   & svg {
     margin-right: 10px;
@@ -219,9 +225,9 @@ export const CreateFormBaseModalHeader = styled.div`
 
 export const CreateFormBaseModalCloseBtn = styled(IconButton)`
   && {
-    position: absolute;
+    /* position: absolute;
     right: 20px;
-    top: 20px;
+    top: 20px; */
     width: 35px;
     height: 35px;
     background: #0f0f0f;
