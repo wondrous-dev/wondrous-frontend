@@ -3,8 +3,8 @@
   background: transparent !important;
 }
 
-.MuiAutocomplete-noOptions,
-.MuiAutocomplete-listbox {
+.MuiAutocomplete-paper .MuiAutocomplete-noOptions,
+.MuiAutocomplete-paper .MuiAutocomplete-listbox {
   background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%) !important;
   border-radius: 6px;
   border: 1px solid #4b4b4b;
@@ -12,8 +12,8 @@
   padding: 0;
 }
 
-.MuiAutocomplete-noOptions {
-  padding: 10px 12px !important;
+.MuiAutocomplete-paper .MuiAutocomplete-noOptions {
+  padding: 10px 12px;
   font-size: 14px;
-  color: #c4c4c4 !important;
+  color: #c4c4c4;
 }
