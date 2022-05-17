@@ -127,3 +127,29 @@ export const GET_SUBTASKS_FOR_TASK = gql`
   }
   ${TaskCardFragment}
 `;
+
+export const GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD = gql`
+  query getCompletedTasksBetweenPeriods($fromTime: String!, $toTime: String!, $orgId: ID, $podId: ID) {
+    getCompletedTasksBetweenPeriods(fromTime: $fromTime, toTime: $toTime, orgId: $orgId, podId: $podId) {
+      assigneeId
+      assigneeUsername
+      assigneeProfilePicture
+      tasks {
+        title
+        description
+        pod {
+          name
+          color
+        }
+        rewards {
+          rewardAmount
+          paymentMethodId
+          symbol
+          icon
+          tokenName
+          chain
+        }
+      }
+    }
+  }
+`;
