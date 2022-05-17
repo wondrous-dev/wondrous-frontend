@@ -28,6 +28,11 @@ type Props = {
   isAdmin?: boolean;
   setColumns: React.Dispatch<React.SetStateAction<{}>>;
   activeView?: string;
+  onSearch?: any;
+  onFilterChange?: any;
+  statuses?: any;
+  filterSchema?: any;
+  userId?: string;
 };
 
 const Boards = (props: Props) => {

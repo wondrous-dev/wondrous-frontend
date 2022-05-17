@@ -422,7 +422,7 @@ const BoardsPage = () => {
         searchPodTasks(searchPodTasksArgs);
       } else {
         const newColumns = [...columns];
-        newColumns.forEach((column) => {
+        newColumns.forEach((column: any) => {
           column.tasks = [];
           column.section.tasks = [];
         });
