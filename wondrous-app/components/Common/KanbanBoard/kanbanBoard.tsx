@@ -192,7 +192,6 @@ const KanbanBoard = (props) => {
     }
   };
 
-  console.log(columns, 'COL1');
   return (
     <>
       <KanbanBoardContainer>

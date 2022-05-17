@@ -3,7 +3,7 @@ import { Blue20, Background, White } from 'theme/colors';
 import StarIcon from 'components/Icons/starIcon';
 import { Typography } from '@material-ui/core';
 
-const IconWrapper = styled.div`
+export const IconWrapper = styled.div`
   border-radius: 180px;
   display: flex;
   justify-content: center;

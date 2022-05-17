@@ -258,10 +258,13 @@ export const populateProposalColumns = (proposals, columns) => {
     // changes requested
     [STATUS_REJECTED]: [],
   };
+  //temporary flag until we add a flag on BE?
   proposals?.forEach((proposal) => {
-    if (proposal.approvedAt) proposalsMap[STATUS_APPROVED].push(proposal);
-    if (!proposal.approvedAt && !proposal.changeRequestedAt) proposalsMap[STATUS_OPEN].push(proposal);
-    if (proposal.changeRequestedAt && !proposal.approvedAt) proposalsMap[STATUS_REJECTED].push(proposal);
+    if (proposal.approvedAt) proposalsMap[STATUS_APPROVED].push({ ...proposal, isProposal: true });
+    if (!proposal.approvedAt && !proposal.changeRequestedAt)
+      proposalsMap[STATUS_OPEN].push({ ...proposal, isProposal: true });
+    if (proposal.changeRequestedAt && !proposal.approvedAt)
+      proposalsMap[STATUS_REJECTED].push({ ...proposal, isProposal: true });
   });
   return columns.map((column) => {
     return {

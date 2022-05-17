@@ -73,21 +73,13 @@ const TaskColumn = (props: ITaskColumn) => {
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
   const [openTaskModal, setOpenTaskModal] = useState(false);
-  let boardType = null;
-  console.log(props, 'props=');
-  if (orgBoard) {
-    boardType = BOARD_TYPE.org;
-  } else if (podBoard) {
-    boardType = BOARD_TYPE.pod;
-  } else if (userBoard) {
-    boardType = BOARD_TYPE.assignee;
-  }
 
   const board = orgBoard || userBoard || podBoard;
   const taskCount = board?.taskCount;
   const HeaderIcon = HEADER_ICONS[status];
   let number;
 
+  console.log(board);
   switch (status) {
     case TASK_STATUS_TODO:
       number = taskCount?.created || 0;
@@ -110,7 +102,7 @@ const TaskColumn = (props: ITaskColumn) => {
   }
 
   return (
-    <TaskColumnContainer>
+    <TaskColumnContainer activeEntityType={board?.entityType || ''}>
       <CreateModalOverlay
         style={{
           height: '95vh',
@@ -164,7 +156,7 @@ const TaskColumn = (props: ITaskColumn) => {
                     ref={provided.innerRef}
                     isDragging={snapshot.isDragging}
                   >
-                    {card.type === ENTITIES_TYPES.MILESTONE ? (
+                    {card.type === ENTITIES_TYPES.MILESTONE && !card.isProposal ? (
                       <Milestone>
                         <Task task={card} setTask={() => {}} />
                       </Milestone>

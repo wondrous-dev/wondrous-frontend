@@ -265,7 +265,6 @@ const CreateLayoutBaseModal = (props) => {
   const isSubtask = parentTaskId !== undefined;
   const textLimit = isPod ? 200 : 900;
 
-  console.log(board, 'BOARD==');
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
   });
@@ -516,7 +515,7 @@ const CreateLayoutBaseModal = (props) => {
       reviewerIds: selectedReviewers.map(({ id }) => id),
       userMentions: getMentionArray(descriptionText),
       mediaUploads,
-      timezone
+      timezone,
     };
     const taskPodPrivacyError = !isPodPublic ? isPublicEntity : false;
     switch (entityType) {
@@ -756,7 +755,7 @@ const CreateLayoutBaseModal = (props) => {
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
-          timezone
+          timezone,
         };
         // const isErrorMaxSubmissionCount =
         //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;

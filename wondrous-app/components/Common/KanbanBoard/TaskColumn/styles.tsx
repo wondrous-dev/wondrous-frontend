@@ -1,6 +1,14 @@
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { White } from '../../../../theme/colors';
+import { ENTITIES_TYPES } from 'utils/constants';
+
+export const entityStyling = {
+  [ENTITIES_TYPES.PROPOSAL]: {
+    style: 'min-width: 31%',
+  },
+};
+
 export const DropMeHere = styled.div`
   margin: 1em 0 0 0;
 
@@ -37,6 +45,7 @@ export const TaskColumnContainer = styled.div`
   &:last-child {
     margin-right: 0;
   }
+  ${({ activeEntityType }) => activeEntityType && entityStyling[activeEntityType]?.style}
 `;
 
 export const TaskColumnContainerHeader = styled.div`
