@@ -10,6 +10,7 @@ import { ENTITIES_TYPES } from 'utils/constants';
 import MilestoneBoard from 'components/Common/MilestoneBoard';
 import BountyBoard from 'components/Common/BountyBoard';
 import withCardsLayout from 'components/Common/Boards/withCardsLayout';
+import { ColumnsContext } from 'utils/contexts';
 
 const BOARDS_MAP = {
   [ENTITIES_TYPES.TASK]: Boards,
@@ -94,15 +95,17 @@ const OrgBoards = (props: Props) => {
         podIds={podIds}
         userId={userId}
       />
-      {!loading && (
-        <ActiveBoard
-          activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
-          columns={columns}
-          onLoadMore={onLoadMore}
-          hasMore={hasMore}
-          setColumns={setColumns}
-        />
-      )}
+      <ColumnsContext.Provider value={{ columns, setColumns }}>
+        {!loading && (
+          <ActiveBoard
+            activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
+            columns={columns}
+            onLoadMore={onLoadMore}
+            hasMore={hasMore}
+            setColumns={setColumns}
+          />
+        )}
+      </ColumnsContext.Provider>
     </Wrapper>
   );
 };

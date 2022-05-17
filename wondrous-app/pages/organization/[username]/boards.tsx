@@ -54,6 +54,8 @@ const useGetOrgTaskBoardTasks = ({
   const [getOrgTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
+    // set notifyOnNetworkStatusChange to true if you want to trigger a rerender whenever the request status updates
+    notifyOnNetworkStatusChange: true,
     onCompleted: ({ getOrgTaskBoardTasks }) => {
       if (entityType === ENTITIES_TYPES.MILESTONE || entityType === ENTITIES_TYPES.BOUNTY) {
         setColumns(getOrgTaskBoardTasks);
@@ -72,9 +74,7 @@ const useGetOrgTaskBoardTasks = ({
     fetchMore({
       variables: {
         offset:
-          entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.PROPOSAL
-            ? Math.max(...columns.map(({ tasks }) => tasks.length))
-            : columns.length,
+          entityType === ENTITIES_TYPES.TASK ? Math.max(...columns.map(({ tasks }) => tasks.length)) : columns.length,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         setOrgTaskHasMore(fetchMoreResult?.getOrgTaskBoardTasks.length >= LIMIT);
@@ -127,6 +127,7 @@ const useGetTaskRelatedToUser = ({
   const [getTasksRelatedToUserInOrg, { fetchMore }] = useLazyQuery(GET_TASKS_RELATED_TO_USER_IN_ORG, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
     onCompleted: ({ getTasksRelatedToUserInOrg }) => {
       if (entityType === ENTITIES_TYPES.MILESTONE || entityType === ENTITIES_TYPES.BOUNTY) {
         setColumns(getTasksRelatedToUserInOrg);
@@ -145,7 +146,8 @@ const useGetTaskRelatedToUser = ({
   const getTasksRelatedToUserFetchMore = useCallback(() => {
     fetchMore({
       variables: {
-        offset: Math.max(...columns.map(({ tasks }) => tasks.length)),
+        offset:
+          entityType === ENTITIES_TYPES.TASK ? Math.max(...columns.map(({ tasks }) => tasks.length)) : columns.length,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         setOrgTaskHasMore(fetchMoreResult?.getTasksRelatedToUserInOrg.length >= LIMIT);
@@ -195,21 +197,44 @@ const useGetOrgTaskBoardProposals = ({
   podIds,
   entityType,
   setIsLoading,
+  setOrgTaskHasMore,
 }) => {
-  const [getOrgTaskProposals, { data }] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
+  const [getOrgTaskProposals, { data, fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
       const newColumns = populateProposalColumns(data?.getOrgTaskBoardProposals, ORG_POD_PROPOSAL_COLUMNS);
       setColumns(newColumns);
       setIsLoading(false);
     },
     onError: (error) => {
-      console.log(error);
+      console.log(error, 'err=');
     },
   });
+
+  const getProposalsFetchMore = useCallback(() => {
+    fetchMore({
+      variables: {
+        offset: Math.max(...columns.map(({ tasks }) => tasks.length)),
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        setOrgTaskHasMore(fetchMoreResult?.getOrgTaskBoardProposals.length >= LIMIT);
+        const getOrgTaskBoardProposals = _.uniqBy(
+          [...prev.getOrgTaskBoardProposals, ...fetchMoreResult.getOrgTaskBoardProposals],
+          'id'
+        );
+        return {
+          getOrgTaskBoardProposals,
+        };
+      },
+    }).catch((error) => {
+      console.log(error);
+    });
+  }, [columns, fetchMore, setOrgTaskHasMore]);
+
   useEffect(() => {
-    if (entityType === ENTITIES_TYPES.PROPOSAL)
+    if (entityType === ENTITIES_TYPES.PROPOSAL) {
       getOrgTaskProposals({
         variables: {
           podIds,
@@ -219,7 +244,9 @@ const useGetOrgTaskBoardProposals = ({
           limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
         },
       });
+    }
   }, [getOrgTaskProposals, orgId, statuses, podIds, section, listView, data, entityType]);
+  return { fetchMore: getProposalsFetchMore };
 };
 
 const useGetOrgTaskBoard = ({
@@ -236,6 +263,8 @@ const useGetOrgTaskBoard = ({
   entityType,
   setIsLoading,
 }) => {
+  const listView = view === ViewType.List;
+
   const board = {
     [userId]: useGetTaskRelatedToUser({
       columns,
@@ -260,21 +289,22 @@ const useGetOrgTaskBoard = ({
       entityType,
       setIsLoading,
     }),
+    proposals: useGetOrgTaskBoardProposals({
+      listView,
+      section,
+      columns,
+      setColumns,
+      setOrgTaskHasMore,
+      orgId,
+      statuses,
+      podIds,
+      entityType,
+      setIsLoading,
+    }),
   };
-  const { fetchMore } = userId ? board[userId] : board.withoutUserId;
+  const { fetchMore } =
+    entityType === ENTITIES_TYPES.PROPOSAL ? board.proposals : userId ? board[userId] : board.withoutUserId;
 
-  const listView = view === ViewType.List;
-  useGetOrgTaskBoardProposals({
-    listView,
-    section,
-    columns,
-    setColumns,
-    orgId,
-    statuses,
-    podIds,
-    entityType,
-    setIsLoading,
-  });
   return { fetchMore };
 };
 

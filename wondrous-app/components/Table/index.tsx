@@ -88,6 +88,7 @@ export const Table = (props) => {
   const boardColumns = useColumns();
   const location = useLocation();
 
+  console.log(boardColumns, 'boardColumns');
   useEffect(() => {
     if (inView && hasMore) {
       onLoadMore();

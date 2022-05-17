@@ -6,11 +6,9 @@ import { LoadMore } from 'components/Common/KanbanBoard/styles';
 import { delQuery } from 'utils';
 import { useLocation } from 'utils/useLocation';
 import { TaskViewModal } from '../Task/modal';
-import { ColumnsContext } from 'utils/contexts';
 import { Table } from 'components/Table';
 import { ViewType } from 'types/common';
 import { CardsContainer } from './styles';
-import { Masonry } from '@mui/lab';
 let windowOffset = 0;
 
 export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
@@ -52,25 +50,23 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
     };
     return (
       <>
-        <ColumnsContext.Provider value={{ columns, setColumns }}>
-          {/* <CardsContainer isFullWidth={activeView === ViewType.List} numberOfColumns={numberOfColumns}> */}
-          <CardsContainer numberOfColumns={numberOfColumns} isFullWidth={activeView === ViewType.List}>
-            <TaskViewModal
-              disableEnforceFocus
-              open={openModal}
-              shouldFocusAfterRender={false}
-              handleClose={handleModalClose}
-              taskId={(location?.params?.task || location?.params?.taskProposal)?.toString()}
-              isTaskProposal={!!location?.params?.taskProposal}
-            />
-            {activeView === ViewType.Grid ? (
-              <WrappedBoard tasks={columns} handleCardClick={handleCardClick} />
-            ) : (
-              <Table tasks={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
-            )}
-          </CardsContainer>
-          {/* </CardsContainer> */}
-        </ColumnsContext.Provider>
+        {/* <CardsContainer isFullWidth={activeView === ViewType.List} numberOfColumns={numberOfColumns}> */}
+        <CardsContainer numberOfColumns={numberOfColumns} isFullWidth={activeView === ViewType.List}>
+          <TaskViewModal
+            disableEnforceFocus
+            open={openModal}
+            shouldFocusAfterRender={false}
+            handleClose={handleModalClose}
+            taskId={(location?.params?.task || location?.params?.taskProposal)?.toString()}
+            isTaskProposal={!!location?.params?.taskProposal}
+          />
+          {activeView === ViewType.Grid ? (
+            <WrappedBoard tasks={columns} handleCardClick={handleCardClick} />
+          ) : (
+            <Table tasks={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+          )}
+        </CardsContainer>
+        {/* </CardsContainer> */}
         <LoadMore ref={ref} hasMore={hasMore}></LoadMore>
       </>
     );
