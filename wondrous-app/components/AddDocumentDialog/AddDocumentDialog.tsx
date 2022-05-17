@@ -89,7 +89,7 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, category, document, pi
       highlightedText={title}
       titleIcon={<Image src="/images/icons/addDoc.png" alt="folder icon" width={16} height={20} />}
       onSubmit={handleSubmit(onSubmitForm)}
-      submitLabel={isEdit ? 'Edit Doc' : 'Add Doc'}
+      submitLabel={isEdit ? 'Update Doc' : 'Add Doc'}
     >
       <form>
         <Box mb={3.5}>
