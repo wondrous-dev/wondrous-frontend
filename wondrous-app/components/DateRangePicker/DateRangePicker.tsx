@@ -161,6 +161,7 @@ const DateRangePicker = ({}) => {
               }}
               daySize={36}
               minimumNights={0}
+              hideKeyboardShortcutsPanel
               enableOutsideDays
               customArrowIcon={<></>}
               isDayHighlighted={(day) => highlightDay(day)}

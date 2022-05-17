@@ -61,7 +61,7 @@ const DatePickerRecurringUtilities = ({
     <Box p={2}>
       <Box>
         {showOptions && (
-          <Box borderTop="1px dotted black">
+          <Box borderTop="1px dotted black" pt={1}>
             <Box display="flex" alignItems="center">
               <Typography>Repeats</Typography>
               <Box flex="1" />
@@ -85,7 +85,7 @@ const DatePickerRecurringUtilities = ({
               <WeekDaySelector onWeekDaysChange={onWeekDaysChange} weekDaysSelected={weekDaysSelected} />
             )}
             {repeatType === DATEPICKER_OPTIONS.MONTHLY && (
-              <Box display="flex">
+              <Box display="flex" mt={1}>
                 <Typography>On Day</Typography>
                 <Box flex="1" />
                 <Box>
@@ -94,7 +94,7 @@ const DatePickerRecurringUtilities = ({
               </Box>
             )}
             {repeatType === DATEPICKER_OPTIONS.PERIODICALLY && (
-              <Box display="flex">
+              <Box display="flex" mt={1} alignItems="center">
                 <Typography>Days after completion</Typography>
                 <Box flex="1" />
                 <Box>
@@ -105,7 +105,7 @@ const DatePickerRecurringUtilities = ({
           </Box>
         )}
       </Box>
-      <Box display="flex" borderTop="1px dotted black">
+      <Box display="flex" borderTop="1px dotted black" mt={1}>
         <Button onClick={() => setShowOptions(true)}>Recurring</Button>
         <Box flex="1" />
         <Button onClick={clearAll}>Clear all</Button>
