@@ -957,12 +957,12 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   useEffect(() => {
     if (isMilestone) {
       setActiveTab(tabs.tasks);
-    } else if (isTaskProposal) {
+    } else if (isTaskProposal || router?.query?.taskCommentId) {
       setActiveTab(tabs.discussion);
     } else {
       setActiveTab(tabs.submissions);
     }
-  }, [isMilestone, isTaskProposal]);
+  }, [isMilestone, isTaskProposal, router?.query?.taskCommentId]);
 
   useEffect(() => {
     if (open) {
@@ -1545,7 +1545,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   }}
                 >
                   {fetchedTask?.rewards.map((reward, index) => {
-                    const { rewardAmount, symbol, icon } = reward;
+                    const { rewardAmount, symbol, icon, chain } = reward;
                     return (
                       <CompensationPill
                         key={index}
@@ -1564,7 +1564,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                           />
                         </IconContainer>
                         <CompensationAmount>
-                          {rewardAmount} {symbol}
+                          {rewardAmount} {symbol} paid on {chain}
                         </CompensationAmount>
                       </CompensationPill>
                     );
