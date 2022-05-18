@@ -117,7 +117,7 @@ export const TaskFooter = styled.div`
   display: flex;
   align-self: flex-end;
   align-items: center;
-
+  z-index: 100;
   margin-top: 22px;
 
   width: 100%;

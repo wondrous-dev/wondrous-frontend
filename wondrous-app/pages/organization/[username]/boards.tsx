@@ -181,11 +181,12 @@ const useGetTaskRelatedToUser = ({
           statuses: taskBoardStatuses,
           limit: taskBoardLimit,
           offset: 0,
+          types: [entityType],
         },
       });
       setOrgTaskHasMore(true);
     }
-  }, [getTasksRelatedToUserInOrg, orgId, podIds, statuses, userId, setOrgTaskHasMore]);
+  }, [getTasksRelatedToUserInOrg, orgId, podIds, statuses, userId, setOrgTaskHasMore, entityType]);
   return { fetchMore: getTasksRelatedToUserFetchMore };
 };
 

@@ -45,11 +45,17 @@ import SideBarComponent from '../../SideBar';
 import PlusIcon from '../../Icons/plus';
 import { PrivateBoardIcon } from '../../Common/PrivateBoardIcon';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { GET_USER_JOIN_POD_REQUEST, GET_TOKEN_GATED_ROLES_FOR_POD, LIT_SIGNATURE_EXIST } from 'graphql/queries';
+import {
+  GET_USER_JOIN_POD_REQUEST,
+  GET_TOKEN_GATED_ROLES_FOR_POD,
+  LIT_SIGNATURE_EXIST,
+  GET_TASKS_PER_TYPE_FOR_POD,
+} from 'graphql/queries';
 import { MembershipRequestModal } from 'components/organization/wrapper/RequestModal';
 import { CREATE_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
 import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { TokenGatedRoleModal } from 'components/organization/wrapper/TokenGatedRoleModal';
+import TypeSelector from 'components/TypeSelector';
 
 const Wrapper = (props) => {
   const router = useRouter();
@@ -62,6 +68,7 @@ const Wrapper = (props) => {
   const [open, setOpen] = useState(false);
   const [joinRequestSent, setJoinRequestSent] = useState(false);
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_POD_REQUEST);
+  const [getPerTypeTaskCountForPodBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE_FOR_POD);
   const [createJoinPodRequest] = useMutation(CREATE_JOIN_POD_REQUEST);
   const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
   const [notLinkedWalletError, setNotLinkedWalletError] = useState(false);
@@ -150,7 +157,7 @@ const Wrapper = (props) => {
     if (joinRequestSent) {
       setOpenGatedRoleModal(false);
     }
-  }, [joinRequestSent])
+  }, [joinRequestSent]);
   useEffect(() => {
     const podPermissions = parseUserPermissionContext({
       userPermissionsContext,
@@ -186,6 +193,16 @@ const Wrapper = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [podBoard?.orgId, userPermissionsContext]);
+
+  useEffect(() => {
+    if (podBoard?.podId) {
+      getPerTypeTaskCountForPodBoard({
+        variables: {
+          podId: podBoard.podId,
+        },
+      });
+    }
+  }, [podBoard?.podId]);
 
   return (
     <>
@@ -345,7 +362,10 @@ const Wrapper = (props) => {
                 </HeaderActivity>
               </TokenHeader>
 
-              <Tabs page="pod">{children}</Tabs>
+              <Tabs page="pod">
+                <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForPodBoard} />
+                {children}
+              </Tabs>
             </ContentContainer>
           </Content>
         </OverviewComponent>

@@ -1,7 +1,7 @@
 import { Wrapper, StatItem, IconWrapper, StatValue, StatTitle } from './styles';
 import { CheckedBoxIcon } from 'components/Icons/checkedBox';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { useOrgBoard } from 'utils/hooks';
+import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import FlagIcon from 'components/Icons/createMilestone';
 import BountyIcon from 'components/Icons/TaskTypes/bounty';
 interface TasksPerType {
@@ -21,9 +21,11 @@ const config = [
   { key: 'proposalCount', icon: FlagIcon, title: 'proposals', type: ENTITIES_TYPES.PROPOSAL },
 ];
 
-export default function Stats({ tasksPerTypeData }: Props) {
+export default function TaskTypeSelector({ tasksPerTypeData }: Props) {
   const orgBoard = useOrgBoard();
-  const { entityType, setEntityType } = orgBoard;
+  const podBoard = usePodBoard();
+  const board = orgBoard || podBoard;
+  const { entityType, setEntityType } = board;
 
   return (
     <Wrapper>

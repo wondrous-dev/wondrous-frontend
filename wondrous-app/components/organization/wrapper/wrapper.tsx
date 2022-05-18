@@ -8,7 +8,7 @@ import Image from 'next/image';
 import Header from '../../Header';
 import SideBarComponent from '../../SideBar';
 import Tabs from '../tabs/tabs';
-import Stats from '../stats/stats';
+import TypeSelector from 'components/TypeSelector';
 import CreateFormModal from '../../CreateEntity';
 import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from 'utils/helpers';
 
@@ -90,7 +90,7 @@ const Wrapper = (props) => {
   };
 
   const [createJoinOrgRequest] = useMutation(CREATE_JOIN_ORG_REQUEST);
-  const [getPerTypeTaskCountForOrgBoard, { data: tasksPerTypeMetadata }] = useLazyQuery(GET_TASKS_PER_TYPE);
+  const [getPerTypeTaskCountForOrgBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE);
   const userPermissionsContext = orgBoard?.userPermissionsContext;
   const [permissions, setPermissions] = useState(undefined);
   const [createFormModal, setCreateFormModal] = useState(false);
@@ -430,7 +430,7 @@ const Wrapper = (props) => {
               </TokenHeader>
               <Tabs>
                 {orgBoard?.setEntityType && (
-                  <Stats tasksPerTypeData={tasksPerTypeMetadata?.getPerTypeTaskCountForOrgBoard} />
+                  <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
                 )}
                 {children}
               </Tabs>

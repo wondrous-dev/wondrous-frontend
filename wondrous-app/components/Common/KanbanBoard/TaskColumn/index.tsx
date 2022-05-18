@@ -72,6 +72,7 @@ const TaskColumn = (props: ITaskColumn) => {
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
   const [openTaskModal, setOpenTaskModal] = useState(false);
+  const [isAddButtonVisible, setIsAddButtonVisible] = useState(false);
 
   const board = orgBoard || userBoard || podBoard;
   const taskCount = board?.taskCount;
@@ -101,7 +102,11 @@ const TaskColumn = (props: ITaskColumn) => {
   }
 
   return (
-    <TaskColumnContainer activeEntityType={board?.entityType || ''}>
+    <TaskColumnContainer
+      onMouseEnter={() => status === TASK_STATUS_TODO && setIsAddButtonVisible(true)}
+      onMouseLeave={() => status === TASK_STATUS_TODO && setIsAddButtonVisible(false)}
+      activeEntityType={board?.entityType || ''}
+    >
       <CreateModalOverlay
         style={{
           height: '95vh',
@@ -127,7 +132,7 @@ const TaskColumn = (props: ITaskColumn) => {
             flex: 1,
           }}
         />
-        {status === TASK_STATUS_TODO && (
+        {status === TASK_STATUS_TODO && isAddButtonVisible && (
           <CreateBtnIconDark
             onClick={() => setOpenTaskModal(true)}
             width="26"

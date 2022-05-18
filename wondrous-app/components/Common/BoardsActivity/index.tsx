@@ -16,7 +16,7 @@ export default function BoardsActivity(props) {
   const router = useRouter();
   const view = board?.activeView || String(router.query.view ?? ViewType.Grid);
   const { search: searchQuery } = router.query;
-  const { onSearch, filterSchema, onFilterChange, statuses, podIds, isAdmin, userId } = props;
+  const { onSearch, filterSchema, onFilterChange, statuses, podIds = [], isAdmin, userId } = props;
   const statusesQuery = statuses?.length ? `&statuses=${statuses.join(',')}` : '';
   const podIdsQuery = podIds?.length ? `&podIds=${podIds.join(',')}` : '';
   const userIdQuery = userId ? `&userId=${userId}` : '';

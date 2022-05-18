@@ -193,3 +193,14 @@ export const GET_TASKS_PER_TYPE = gql`
     }
   }
 `;
+
+export const GET_TASKS_PER_TYPE_FOR_POD = gql`
+  query getPerTypeTaskCountForPodBoard($podId: ID!) {
+    getPerTypeTaskCountForPodBoard(podId: $podId) {
+      bountyCount
+      taskCount
+      proposalCount
+      milestoneCount
+    }
+  }
+`;

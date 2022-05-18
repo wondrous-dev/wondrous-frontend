@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { TaskCommentIcon } from '../../Icons/taskComment';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
 import { DropDown, DropDownItem } from '../dropdown';
@@ -109,11 +109,16 @@ export const TaskCard = ({
   const boardColumns = useColumns();
   const [claimed, setClaimed] = useState(false);
   const totalSubtask = task?.totalSubtaskCount;
-  const completedSubtask = task?.completedSubtaskCount;
+  const [displayActions, setDisplayActions] = useState(false);
 
   const router = useRouter();
+
   return (
-    <ProposalCardWrapper onClick={openModal}>
+    <ProposalCardWrapper
+      onClick={openModal}
+      onMouseEnter={() => canArchive && setDisplayActions(true)}
+      onMouseLeave={() => canArchive && setDisplayActions(false)}
+    >
       <TaskInner>
         <TaskHeader>
           <TaskHeaderIconWrapper>
@@ -265,12 +270,7 @@ export const TaskCard = ({
               <SubtaskCount>{totalSubtask}</SubtaskCount>
             </SubtaskCountWrapper>
           )}
-          {/* <TaskAction key={'task-share-' + id}>
-        <TaskShareIcon />
-        <TaskActionAmount>{shares}</TaskActionAmount>
-      </TaskAction> */}
-
-          {canArchive && (
+          {canArchive && displayActions && (
             <TaskActionMenu right="true">
               <DropDown DropdownHandler={TaskMenuIcon}>
                 <DropDownItem

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { HighlightBlue, HighlightPurple, White } from '../../../theme/colors';
+import { HighlightBlue, HighlightPurple, White } from 'theme/colors';
 export const Wrapper = styled.div`
   display: flex;
 `;

@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { ViewType } from 'types/common';
-import Boards from 'components/Common/Boards';
-import Wrapper from 'components/Pod/wrapper';
+import Boards from 'components/Pod/boards';
 import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
 import { useRouterQuery } from 'utils/hooks';
 import { useRouter } from 'next/router';
@@ -19,7 +18,7 @@ import {
   SEARCH_TASKS_FOR_POD_BOARD_VIEW,
 } from 'graphql/queries/taskBoard';
 import apollo from 'services/apollo';
-import { COLUMNS, FILTER_STATUSES, LIMIT, populateTaskColumns } from 'services/board';
+import { ORG_POD_COLUMNS, FILTER_STATUSES, LIMIT, populateTaskColumns } from 'services/board';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
 import {
@@ -29,17 +28,34 @@ import {
   TASK_STATUSES,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
+  ENTITIES_TYPES,
 } from 'utils/constants';
 import { PodBoardContext } from 'utils/contexts';
+import _ from 'lodash';
 
-const useGetPodTaskBoardTasks = ({ columns, setColumns, setPodTaskHasMore, podId, statuses, boardType }) => {
+const useGetPodTaskBoardTasks = ({
+  columns,
+  setColumns,
+  setPodTaskHasMore,
+  podId,
+  statuses,
+  boardType,
+  entityType,
+  setIsLoading,
+}) => {
   const [getPodTaskBoardTasks, { variables, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
-      const tasks = data?.getPodTaskBoardTasks;
-      const newColumns = populateTaskColumns(tasks, columns);
+      if (entityType === ENTITIES_TYPES.MILESTONE || entityType === ENTITIES_TYPES.BOUNTY) {
+        setColumns(data?.getPodTaskBoardTasks);
+        setIsLoading(false);
+        return;
+      }
+      const newColumns = populateTaskColumns(data?.getPodTaskBoardTasks, ORG_POD_COLUMNS);
       setColumns(dedupeColumns(newColumns));
+      setIsLoading(false);
     },
     onError: (error) => {
       console.log(error);
@@ -50,7 +66,8 @@ const useGetPodTaskBoardTasks = ({ columns, setColumns, setPodTaskHasMore, podId
       ...variables,
       input: {
         ...variables.input,
-        offset: Math.max(...columns.map(({ tasks }) => tasks.length)),
+        offset:
+          entityType === ENTITIES_TYPES.TASK ? Math.max(...columns.map(({ tasks }) => tasks.length)) : columns.length,
       },
     };
     fetchMore({
@@ -66,31 +83,45 @@ const useGetPodTaskBoardTasks = ({ columns, setColumns, setPodTaskHasMore, podId
     });
   }, [columns, fetchMore, setPodTaskHasMore, variables]);
   useEffect(() => {
-    const taskBoardStatuses =
-      statuses.length > 0 ? statuses?.filter((status) => DEFAULT_STATUS_ARR.includes(status)) : DEFAULT_STATUS_ARR;
-    const taskBoardStatusesIsNotEmpty = taskBoardStatuses.length > 0;
-    getPodTaskBoardTasks({
-      variables: {
-        input: {
-          podId,
-          statuses: taskBoardStatuses,
-          limit: taskBoardStatusesIsNotEmpty ? LIMIT : 0,
-          offset: 0,
-          ...(boardType === PRIVACY_LEVEL.public && {
-            onlyPublic: true,
-          }),
+    if (entityType !== ENTITIES_TYPES.PROPOSAL && podId) {
+      const taskBoardStatuses =
+        statuses.length > 0 ? statuses?.filter((status) => DEFAULT_STATUS_ARR.includes(status)) : DEFAULT_STATUS_ARR;
+      const taskBoardStatusesIsNotEmpty = taskBoardStatuses.length > 0;
+      getPodTaskBoardTasks({
+        variables: {
+          input: {
+            podId,
+            statuses: taskBoardStatuses,
+            limit: taskBoardStatusesIsNotEmpty ? LIMIT : 0,
+            offset: 0,
+            types: [entityType],
+            ...(boardType === PRIVACY_LEVEL.public && {
+              onlyPublic: true,
+            }),
+          },
         },
-      },
-    });
-    setPodTaskHasMore(true);
-  }, [getPodTaskBoardTasks, podId, statuses, boardType, setPodTaskHasMore]);
-  return { getPodTaskBoardTasksFetchMore };
+      });
+      setPodTaskHasMore(true);
+    }
+  }, [getPodTaskBoardTasks, podId, statuses, boardType, setPodTaskHasMore, entityType]);
+  return { fetchMore: getPodTaskBoardTasksFetchMore };
 };
 
-const useGetPodTaskProposals = ({ listView, section, setColumns, columns, podId, statuses }) => {
-  const [getPodTaskProposals, { data }] = useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
+const useGetPodTaskProposals = ({
+  listView,
+  section,
+  setColumns,
+  columns,
+  podId,
+  statuses,
+  entityType,
+  setIsLoading,
+  setPodTaskHasMore,
+}) => {
+  const [getPodTaskProposals, { data, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
       const newColumns = bindSectionToColumns({
         columns,
@@ -98,13 +129,35 @@ const useGetPodTaskProposals = ({ listView, section, setColumns, columns, podId,
         section: TASK_STATUS_REQUESTED,
       });
       setColumns(newColumns);
+      setIsLoading(false);
     },
     onError: (error) => {
       console.log(error);
     },
   });
+
+  const getProposalsFetchMore = useCallback(() => {
+    fetchMore({
+      variables: {
+        offset: Math.max(...columns.map(({ tasks }) => tasks.length)),
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        setPodTaskHasMore(fetchMoreResult?.getPodTaskBoardProposals.length >= LIMIT);
+        const getPodTaskBoardProposals = _.uniqBy(
+          [...prev.getOrgTaskBoardProposals, ...fetchMoreResult.getOrgTaskBoardProposals],
+          'id'
+        );
+        return {
+          getPodTaskBoardProposals,
+        };
+      },
+    }).catch((error) => {
+      console.log(error);
+    });
+  }, [columns, fetchMore, setPodTaskHasMore]);
+
   useEffect(() => {
-    if (section === TASK_STATUS_REQUESTED || listView || data)
+    if (entityType === ENTITIES_TYPES.PROPOSAL)
       getPodTaskProposals({
         variables: {
           input: {
@@ -115,63 +168,60 @@ const useGetPodTaskProposals = ({ listView, section, setColumns, columns, podId,
           },
         },
       });
-  }, [getPodTaskProposals, podId, statuses, section, listView, data]);
+  }, [getPodTaskProposals, podId, statuses, section, listView, data, entityType]);
+  return { fetchMore: getProposalsFetchMore };
 };
 
-const useGetPodTaskSubmissions = ({ listView, section, setColumns, columns, podId, statuses }) => {
-  const [getPodTaskSubmissions, { data }] = useLazyQuery(GET_POD_TASK_BOARD_SUBMISSIONS, {
-    fetchPolicy: 'cache-and-network',
-    nextFetchPolicy: 'cache-first',
-    onCompleted: (data) => {
-      const newColumns = bindSectionToColumns({
-        columns,
-        data: data?.getPodTaskBoardSubmissions,
-        section: TASK_STATUS_IN_REVIEW,
-      });
-      setColumns(newColumns);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-  });
-  useEffect(() => {
-    if (section === TASK_STATUS_IN_REVIEW || listView || data)
-      getPodTaskSubmissions({
-        variables: {
-          input: {
-            podId,
-            statuses: [STATUS_OPEN],
-            offset: 0,
-            limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
-          },
-        },
-      });
-  }, [getPodTaskSubmissions, podId, statuses, section, listView, data]);
-};
-
-const useGetPodTaskBoard = ({ view, section, columns, setColumns, setPodTaskHasMore, podId, statuses, boardType }) => {
+const useGetPodTaskBoard = ({
+  view,
+  section,
+  columns,
+  setColumns,
+  setPodTaskHasMore,
+  podId,
+  statuses,
+  boardType,
+  entityType,
+  setIsLoading,
+}) => {
   const listView = view === ViewType.List;
-  useGetPodTaskSubmissions({ listView, section, setColumns, columns, podId, statuses });
-  useGetPodTaskProposals({ listView, section, setColumns, columns, podId, statuses });
-  const { getPodTaskBoardTasksFetchMore } = useGetPodTaskBoardTasks({
-    columns,
-    setColumns,
-    setPodTaskHasMore,
-    podId,
-    statuses,
-    boardType,
-  });
-  return { getPodTaskBoardTasksFetchMore };
+  const board = {
+    tasks: useGetPodTaskBoardTasks({
+      columns,
+      setColumns,
+      setPodTaskHasMore,
+      podId,
+      statuses,
+      boardType,
+      entityType,
+      setIsLoading,
+    }),
+    proposals: useGetPodTaskProposals({
+      listView,
+      section,
+      setColumns,
+      columns,
+      podId,
+      statuses,
+      entityType,
+      setIsLoading,
+      setPodTaskHasMore,
+    }),
+  };
+  const { fetchMore } = entityType === ENTITIES_TYPES.PROPOSAL ? board.proposals : board.tasks;
+  return { fetchMore };
 };
 
 const BoardsPage = () => {
   const router = useRouter();
-  const [columns, setColumns] = useState(COLUMNS);
+  const { username, podId, search, userId, view = ViewType.Grid, boardType } = router.query;
+  const [columns, setColumns] = useState(ORG_POD_COLUMNS);
+  const [entityType, setEntityType] = useState(ENTITIES_TYPES.TASK);
   const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
-  const { username, podId, search, userId, view, boardType } = router.query;
   const [searchString, setSearchString] = useState('');
-
+  const [activeView, setActiveView] = useState(view);
+  const [isLoading, setIsLoading] = useState(true);
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -180,15 +230,17 @@ const BoardsPage = () => {
   const [getPod, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
   const pod = podData?.getPodById;
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
-  const { getPodTaskBoardTasksFetchMore } = useGetPodTaskBoard({
+  const { fetchMore } = useGetPodTaskBoard({
     section,
-    view,
+    view: activeView,
     columns,
     setColumns,
     setPodTaskHasMore,
     podId,
     statuses,
     boardType,
+    entityType,
+    setIsLoading,
   });
 
   const bindTasksToCols = (tasks) => {
@@ -197,6 +249,11 @@ const BoardsPage = () => {
     if (podTaskHasMore) {
       setPodTaskHasMore(tasks.length >= LIMIT);
     }
+  };
+
+  const handleEntityTypeChange = (type) => {
+    setIsLoading(true);
+    setEntityType(type);
   };
 
   const [searchPodTaskProposals] = useLazyQuery(SEARCH_POD_TASK_BOARD_PROPOSALS, {
@@ -451,21 +508,24 @@ const BoardsPage = () => {
         userPermissionsContext: userPermissionsContext?.getUserPermissionContext
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
           : null,
+        entityType,
+        setEntityType: handleEntityTypeChange,
       }}
     >
-      <Wrapper>
-        <Boards
-          columns={columns}
-          onLoadMore={getPodTaskBoardTasksFetchMore}
-          hasMore={podTaskHasMore}
-          onSearch={handleSearch}
-          onFilterChange={handleFilterChange}
-          statuses={statuses}
-          filterSchema={[FILTER_STATUSES]}
-          setColumns={setColumns}
-          userId={userId?.toString()}
-        />
-      </Wrapper>
+      <Boards
+        columns={columns}
+        onLoadMore={fetchMore}
+        hasMore={podTaskHasMore}
+        onSearch={handleSearch}
+        searchString={searchString}
+        onFilterChange={handleFilterChange}
+        statuses={statuses}
+        setColumns={setColumns}
+        loading={false}
+        entityType={entityType}
+        userId={userId?.toString()}
+        activeView={activeView}
+      />
     </PodBoardContext.Provider>
   );
 };
