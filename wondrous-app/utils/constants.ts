@@ -69,22 +69,20 @@ const SUPPORTED_CHAINS = {
   1666600000: 'HARMONY',
 };
 
+if (!process.env.NEXT_PUBLIC_PRODUCTION) {
+  SUPPORTED_CHAINS[4] = 'RINKEBY';
+}
+
 export const RPC_URLS: { [chainId: number]: string } = {
   1: process.env.NEXT_PUBLIC_RPC_URL_ETH,
   137: process.env.NEXT_PUBLIC_RPC_URL_MATIC,
   1666600000: process.env.NEXT_PUBLIC_RPC_URL_HARMONY,
 };
 
-export const CHAIN_VALUE_TO_GNOSIS_CHAIN_VALUE = {
-  eth_mainnet: 'mainnet',
-  polygon_mainnet: 'polygon',
-  rinkeby: 'rinkeby',
-  harmony: 'harmony',
-};
 
 export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
-  eth_mainnet: 'https://safe-transaction.mainnet.gnosis.io',
-  polygon_mainnet: 'https://safe-transaction.polygon.gnosis.io',
+  ethereum: 'https://safe-transaction.mainnet.gnosis.io',
+  polygon: 'https://safe-transaction.polygon.gnosis.io',
   rinkeby: 'https://safe-transaction.rinkeby.gnosis.io',
   harmony: 'https://multisig.t.hmny.io',
 };
@@ -97,9 +95,6 @@ export const HARMONY_PROXY_FACTORY = '0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC
 
 export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId));
 
-if (!process.env.NEXT_PUBLIC_PRODUCTION) {
-  SUPPORTED_CHAINS[4] = 'RINKEBY';
-}
 
 export const CHAIN_IDS = {
   ETH: 1,
@@ -109,9 +104,9 @@ export const CHAIN_IDS = {
 };
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
-  eth_mainnet: 'Ethereum Mainnet',
+  ethereum: 'Ethereum Mainnet',
   rinkeby: 'Rinkeby Testnet',
-  polygon_mainnet: 'Polygon Mainnet',
+  polygon: 'Polygon Mainnet',
   harmony: 'Harmony Mainnet',
 };
 

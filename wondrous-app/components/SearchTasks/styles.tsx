@@ -20,6 +20,7 @@ export const Input = styled(TextField)`
     border: 1px solid #4b4b4b;
     margin-right: 8px;
     padding: 0;
+    background: #1b1b1b;
   }
   & .MuiOutlinedInput-root {
     padding: 0;

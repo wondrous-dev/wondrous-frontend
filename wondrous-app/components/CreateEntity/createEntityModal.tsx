@@ -89,6 +89,7 @@ import {
   StyledAutocompletePopper,
   StyledChip,
   TextInputDiv,
+  CreateFormBaseModalHeaderWrapper,
 } from './styles';
 
 const filterUserOptions = (options) => {
@@ -484,7 +485,7 @@ const CreateLayoutBaseModal = (props) => {
   const [createMilestone, { loading: createMilestoneLoading }] = useMutation(CREATE_MILESTONE);
 
   const submitMutation = useCallback(() => {
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     const taskInput = {
       title,
@@ -514,7 +515,7 @@ const CreateLayoutBaseModal = (props) => {
       reviewerIds: selectedReviewers.map(({ id }) => id),
       userMentions: getMentionArray(descriptionText),
       mediaUploads,
-      timezone
+      timezone,
     };
     const taskPodPrivacyError = !isPodPublic ? isPublicEntity : false;
     switch (entityType) {
@@ -739,7 +740,7 @@ const CreateLayoutBaseModal = (props) => {
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
-          timezone
+          timezone,
         };
         // const isErrorMaxSubmissionCount =
         //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
@@ -832,17 +833,19 @@ const CreateLayoutBaseModal = (props) => {
 
   return (
     <CreateFormBaseModal isPod={isPod}>
-      <CreateFormBaseModalCloseBtn onClick={handleClose}>
-        <CloseModalIcon />
-      </CreateFormBaseModalCloseBtn>
-      <CreateFormBaseModalHeader
-        style={{
-          marginBottom: '0',
-        }}
-      >
-        <TitleIcon circle />
-        <CreateFormBaseModalTitle>Create a {titleText.toLowerCase()}</CreateFormBaseModalTitle>
-      </CreateFormBaseModalHeader>
+      <CreateFormBaseModalHeaderWrapper>
+        <CreateFormBaseModalHeader
+          style={{
+            marginBottom: '0',
+          }}
+        >
+          <TitleIcon circle />
+          <CreateFormBaseModalTitle>Create a {titleText.toLowerCase()}</CreateFormBaseModalTitle>
+        </CreateFormBaseModalHeader>
+        <CreateFormBaseModalCloseBtn onClick={handleClose}>
+          <CloseModalIcon />
+        </CreateFormBaseModalCloseBtn>
+      </CreateFormBaseModalHeaderWrapper>
 
       <CreateFormMainSection>
         <CreateFormMainSelects>
@@ -1457,7 +1460,7 @@ const CreateLayoutBaseModal = (props) => {
             onClick={submitMutation}
           >
             {creating ? <CircularProgress size={20} /> : null}
-            {canCreateTask ? 'Create' : isProposal ? 'Create': 'Propose'} {titleText}
+            {canCreateTask ? 'Create' : isProposal ? 'Create' : 'Propose'} {titleText}
           </CreateFormPreviewButton>
         </CreateFormButtonsBlock>
       </CreateFormFooterButtons>
