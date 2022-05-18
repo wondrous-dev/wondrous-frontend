@@ -4,7 +4,6 @@ import { TaskMenuIcon } from '../../Icons/taskMenu';
 import { DropDown, DropDownItem } from '../dropdown';
 import MilestoneIcon from '../../Icons/milestone';
 import {
-  TaskWrapper,
   TaskInner,
   TaskHeader,
   TaskContent,
@@ -22,15 +21,16 @@ import {
   SubtaskCountWrapper,
   SubtaskCount,
   TaskContentFooter,
-  ClaimButton,
+  ActionButton,
   TaskCardDescriptionText,
+  CheckedIconWrapper,
 } from './styles';
 import { transformTaskToTaskCard } from 'utils/helpers';
 import { White, Red800 } from '../../../theme/colors';
 import { TaskCreatedBy } from '../TaskCreatedBy';
 import { MilestoneProgress } from '../MilestoneProgress';
 import PodIcon from '../../Icons/podIcon';
-import { SubtaskDarkIcon } from '../../Icons/subtask';
+import { SubtaskDarkIcon, SubtaskLightIcon } from '../../Icons/subtask';
 import { CheckedBoxIcon } from '../../Icons/checkedBox';
 import { Compensation } from '../Compensation';
 import { Claim } from '../../Icons/claimTask';
@@ -49,6 +49,8 @@ import {
   Requested,
   AwaitingPayment,
   Paid,
+  Approved,
+  Rejected,
 } from '../../Icons';
 import { Archived } from '../../Icons/sections';
 import { TaskMedia } from '../MediaPlayer';
@@ -61,16 +63,11 @@ import {
   BoardsCardBodyTitle,
   BoardsPrivacyLabel,
   BoardsCardMedia,
+  BoardsCardFooter,
 } from 'components/Common/Boards/styles';
-import {
-  ProposalCardWrapper,
-  ProposalCardType,
-  ProposalCardIcon,
-  ProposalFooterButton,
-  ProposalCardFooter,
-} from './styles';
+import { ProposalCardWrapper, ProposalCardType, ProposalCardIcon, ProposalFooterButton } from './styles';
 import { PRIVACY_LEVEL } from 'utils/constants';
-import { Red300, Green800 } from 'theme/colors';
+import { Red300, Green800, Grey57 } from 'theme/colors';
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
   [Constants.TASK_STATUS_IN_PROGRESS]: InProgressWithBorder,
@@ -116,7 +113,7 @@ export const TaskCard = ({
 
   const router = useRouter();
   return (
-    <TaskWrapper key={id} onClick={openModal}>
+    <ProposalCardWrapper onClick={openModal}>
       <TaskInner>
         <TaskHeader>
           <TaskHeaderIconWrapper>
@@ -131,8 +128,13 @@ export const TaskCard = ({
             />
             {isMilestone && <MilestoneIcon />}
             <AvatarList users={userList} id={'task-' + task?.id} />
-            {isSubtask && <SubtaskDarkIcon />}
-            {!isSubtask && !isMilestone && totalSubtask > 0 && <CheckedBoxIcon />}
+            {isSubtask && <SubtaskLightIcon stroke="white" />}
+            {!isSubtask && !isMilestone && totalSubtask > 0 && (
+              <CheckedIconWrapper>
+                {' '}
+                <CheckedBoxIcon stroke="white" pathFill="none" />
+              </CheckedIconWrapper>
+            )}
             {task?.privacyLevel === Constants.PRIVACY_LEVEL.public && (
               <PodWrapper
                 style={{
@@ -183,18 +185,6 @@ export const TaskCard = ({
                 <PodName>{task?.podName}</PodName>
               </PodWrapper>
             )}
-            {!isSubtask && !isMilestone && totalSubtask > 0 && (
-              <SubtaskCountWrapper
-                style={{
-                  marginTop: '24px',
-                }}
-              >
-                <SubtaskDarkIcon />
-                <SubtaskCount>
-                  {completedSubtask}/{totalSubtask}
-                </SubtaskCount>
-              </SubtaskCountWrapper>
-            )}
           </TaskContentFooter>
           {isBounty && (
             <TaskBountyOverview
@@ -213,20 +203,16 @@ export const TaskCard = ({
           {!assigneeId && !isBounty && !isMilestone && (
             <>
               {claimed ? (
-                <ClaimButton
-                  style={{
-                    borderColor: 'linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%)',
-                    border: '1px solid #7427ff',
-                  }}
+                <ActionButton
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                   }}
                 >
                   Claimed
-                </ClaimButton>
+                </ActionButton>
               ) : (
-                <ClaimButton
+                <ActionButton
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -260,15 +246,24 @@ export const TaskCard = ({
                   >
                     Claim
                   </span>
-                </ClaimButton>
+                </ActionButton>
               )}
             </>
+          )}
+          {!isBounty && !isMilestone && task?.status === Constants.TASK_STATUS_IN_REVIEW && (
+            <ActionButton onClick={openModal}>Review</ActionButton>
           )}
           {!isMilestone && (
             <TaskAction key={'task-comment-' + id}>
               <TaskCommentIcon />
               <TaskActionAmount>{commentCount}</TaskActionAmount>
             </TaskAction>
+          )}
+          {!isSubtask && !isMilestone && totalSubtask > 0 && (
+            <SubtaskCountWrapper>
+              <SubtaskLightIcon fill="none" stroke={Grey57} />
+              <SubtaskCount>{totalSubtask}</SubtaskCount>
+            </SubtaskCountWrapper>
           )}
           {/* <TaskAction key={'task-share-' + id}>
         <TaskShareIcon />
@@ -312,12 +307,12 @@ export const TaskCard = ({
           )}
         </TaskFooter>
       </TaskInner>
-    </TaskWrapper>
+    </ProposalCardWrapper>
   );
 };
 
 const PROPOSAL_STATUS_MAP = {
-  approved: {
+  [Constants.STATUS_APPROVED]: {
     labelsAndActions: [
       {
         title: 'Approved',
@@ -326,7 +321,7 @@ const PROPOSAL_STATUS_MAP = {
       },
     ],
   },
-  open: {
+  [Constants.STATUS_OPEN]: {
     labelsAndActions: [
       {
         title: 'Open',
@@ -337,7 +332,7 @@ const PROPOSAL_STATUS_MAP = {
       },
     ],
   },
-  rejected: {
+  [Constants.STATUS_CHANGE_REQUESTED]: {
     labelsAndActions: [
       {
         title: 'Rejected',
@@ -348,25 +343,30 @@ const PROPOSAL_STATUS_MAP = {
   },
 };
 
+const STATUS_ICONS = {
+  [Constants.STATUS_APPROVED]: Approved,
+  [Constants.STATUS_CHANGE_REQUESTED]: Rejected,
+};
+
 export function ProposalCard({ openModal, title, description, task }) {
   let proposalStatus = '';
 
-  if (task.approvedAt) proposalStatus = 'approved';
-  if (!task.approvedAt && !task.changeRequested) proposalStatus = 'open';
-  if (task.changeRequestedAt) proposalStatus = 'rejected';
+  if (task.approvedAt) proposalStatus = Constants.STATUS_APPROVED;
+  if (!task.approvedAt && !task.changeRequested) proposalStatus = Constants.STATUS_OPEN;
+  if (task.changeRequestedAt) proposalStatus = Constants.STATUS_CHANGE_REQUESTED;
 
   const labelsAndActions = PROPOSAL_STATUS_MAP[proposalStatus]?.labelsAndActions;
 
+  const HeaderIcon = STATUS_ICONS[proposalStatus];
   return (
     <ProposalCardWrapper onClick={openModal}>
       <BoardsCardHeader>
         <BoardsCardSubheader>
           <ProposalCardIcon />
           <ProposalCardType>Proposal</ProposalCardType>
-          <BoardsPrivacyLabel>
-            {PRIVACY_LEVEL[task.privacyLevel] === PRIVACY_LEVEL.private ? 'Members' : 'Public'}
-          </BoardsPrivacyLabel>
+          <BoardsPrivacyLabel>{task?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}</BoardsPrivacyLabel>
         </BoardsCardSubheader>
+        {HeaderIcon ? <HeaderIcon /> : null}
       </BoardsCardHeader>
       <BoardsCardBody>
         <BoardsCardBodyTitle>{title}</BoardsCardBodyTitle>
@@ -380,7 +380,7 @@ export function ProposalCard({ openModal, title, description, task }) {
           </BoardsCardMedia>
         ) : null}
       </BoardsCardBody>
-      <ProposalCardFooter>
+      <BoardsCardFooter style={{ paddingBottom: '7px' }}>
         {labelsAndActions?.map((label, idx) => (
           <ProposalFooterButton
             isAction={!!label.action}
@@ -392,7 +392,7 @@ export function ProposalCard({ openModal, title, description, task }) {
             {label?.title}
           </ProposalFooterButton>
         ))}
-      </ProposalCardFooter>
+      </BoardsCardFooter>
     </ProposalCardWrapper>
   );
 }

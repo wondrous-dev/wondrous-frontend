@@ -3,17 +3,30 @@ import { COLUMNS } from 'services/board';
 import { TASK_STATUS_ARCHIVED, TASK_STATUS_IN_REVIEW, TASK_STATUS_REQUESTED } from './constants';
 
 export const addProposalItem = (newItem, columns) => {
-  columns[0].section.tasks = [newItem, ...columns[0].section.tasks];
+  if (columns[0].section) {
+    columns[0].section.tasks = [newItem, ...columns[0].section.tasks];
+    return columns;
+  }
+  columns[0].tasks = [newItem, ...columns[0].tasks];
   return columns;
 };
 
 export const updateProposalItem = (updatedItem, columns) => {
-  columns[0].section.tasks = columns[0].section.tasks.map((task) => {
-    if (task.id === updatedItem.id) {
-      return updatedItem;
-    }
-    return task;
-  });
+  if (columns[0].section) {
+    columns[0].section.tasks = columns[0].section.tasks.map((task) => {
+      if (task.id === updatedItem.id) {
+        return updatedItem;
+      }
+      return task;
+    });
+  } else {
+    columns[0].tasks = columns[0].tasks.map((task) => {
+      if (task.id === updatedItem.id) {
+        return updatedItem;
+      }
+      return task;
+    });
+  }
   return columns;
 };
 

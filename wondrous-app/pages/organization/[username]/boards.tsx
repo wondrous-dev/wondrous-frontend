@@ -35,6 +35,8 @@ import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
   ENTITIES_TYPES,
+  STATUS_APPROVED,
+  STATUS_CHANGE_REQUESTED,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
 import { useRouterQuery } from 'utils/hooks';
@@ -239,7 +241,7 @@ const useGetOrgTaskBoardProposals = ({
         variables: {
           podIds,
           orgId,
-          statuses: [STATUS_OPEN],
+          statuses: [STATUS_OPEN, STATUS_CHANGE_REQUESTED, STATUS_APPROVED],
           offset: 0,
           limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
         },

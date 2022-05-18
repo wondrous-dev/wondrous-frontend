@@ -209,16 +209,26 @@ const SubmissionItem = (props) => {
     };
     const transformedTask = transformTaskToTaskCard(newTask, {});
 
+    //TODO refactor this
     if (boardColumns) {
       const columns = [...boardColumns?.columns];
       const newInProgress = columns[1].tasks.filter((task) => task.id !== fetchedTask.id);
       const newDone = [transformedTask, ...columns[2].tasks];
-      const newInReview = (columns[1].section.tasks = columns[1].section.tasks.filter(
-        (taskSubmission) => taskSubmission.id !== submission?.id
-      ));
-      columns[1].tasks = newInProgress;
-      columns[1].section.tasks = newInReview;
-      columns[2].tasks = newDone;
+      if (columns[1].section) {
+        const newInReview = (columns[1].section.tasks = columns[1].section.tasks.filter(
+          (taskSubmission) => taskSubmission.id !== submission?.id
+        ));
+        columns[1].tasks = newInProgress;
+        columns[1].section.tasks = newInReview;
+        columns[2].tasks = newDone;
+      } else {
+        const newInReview = (columns[2].tasks = columns[2].tasks.filter(
+          (taskSubmission) => taskSubmission.id !== submission?.id
+        ));
+        columns[1].tasks = newInProgress;
+        columns[2].tasks = newInReview;
+        columns[3].tasks = newDone;
+      }
       boardColumns?.setColumns(columns);
     }
     //TODO: add pod board and user board

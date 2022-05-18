@@ -8,7 +8,7 @@ import { LogoSquare } from '../Common/ci';
 import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
 import BountyIcon from '../Icons/createBounty.svg';
 import CreateDaoIcon from '../Icons/createDao';
-import CreateMilestoneIcon from '../Icons/createMilestone.svg';
+import CreateMilestoneIcon from '../Icons/createMilestone';
 import CreatePodIcon from '../Icons/createPod.svg';
 import CreateProposalIcon from '../Icons/createProposal.svg';
 import CreateTaskIcon from '../Icons/createTask.svg';

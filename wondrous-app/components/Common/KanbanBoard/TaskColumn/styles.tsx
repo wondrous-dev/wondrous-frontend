@@ -38,12 +38,15 @@ export const TaskColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  max-width: 325px;
+  border-right: 1px solid #1b1b1b;
   width: 100%;
-  margin-right: 12px;
+  padding: 0px 6px 0px 6px;
+  &:first-child {
+    padding-left: 0px;
+  }
   &:last-child {
-    margin-right: 0;
+    padding-right: 0px;
+    border-right: 0;
   }
   ${({ activeEntityType }) => activeEntityType && entityStyling[activeEntityType]?.style}
 `;
@@ -61,6 +64,7 @@ export const TaskColumnContainerHeaderTitle = styled(Typography)({
     fontSize: 14,
     textAlign: 'left',
     color: '#FFF',
+    marginLeft: '10px',
   },
 });
 

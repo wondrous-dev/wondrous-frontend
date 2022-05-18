@@ -22,9 +22,9 @@ export const CompensationPill = styled.div`
   justify-content: center;
   background: ${Grey85};
   border-radius: 25px;
-  padding: 2px 8px;
-  padding-right: 12px;
   line-height: 28px;
+  padding: 1px 1px 1px 8px;
+  gap: 6px;
   margin-left: -5px;
   z-index: 0;
   height: 28px;
@@ -47,5 +47,10 @@ export const CompensationAmount = styled(Typography)`
     color: ${Grey250};
     font-weight: 600;
     font-size: 13px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 3px;
   }
 `;

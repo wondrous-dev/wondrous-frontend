@@ -22,10 +22,10 @@ export default function Board({ tasks, handleCardClick }) {
               <MilestoneIcon />
               <MilestoneCardTitle>Milestone</MilestoneCardTitle>
               <BoardsPrivacyLabel>
-                {PRIVACY_LEVEL[milestone.privacyLevel] === PRIVACY_LEVEL.private ? 'Members' : 'Public'}
+                {milestone?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
               </BoardsPrivacyLabel>
             </BoardsCardSubheader>
-            {/*  TODO we don't have price on milestones yet */}
+            {/*  we don't have price on milestones yet */}
             {/* <BoardsRewardLabel>
                 {CURRENCY_SYMBOL[milestone.currency] || CURRENCY_SYMBOL.ETH}
                 3.24

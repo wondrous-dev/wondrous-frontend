@@ -73,7 +73,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {} }) {
                 <BountyIcon />
                 <BountyCardType>Bounty</BountyCardType>
                 <BoardsPrivacyLabel>
-                  {PRIVACY_LEVEL[bounty.privacyLevel] === PRIVACY_LEVEL.private ? 'Members' : 'Public'}
+                  {bounty?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
                 </BoardsPrivacyLabel>
               </BoardsCardSubheader>
               <BoardsRewardLabel>

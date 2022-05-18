@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, MenuItem, TextField } from '@material-ui/core';
-import { Black92, White } from '../../../theme/colors';
+import { Black92, White, Grey85 } from '../../../theme/colors';
 import { Typography } from '@material-ui/core';
 import { Masonry } from '@mui/lab';
 export const BoardsContainer = styled.div`
@@ -187,9 +187,13 @@ export const BoardsPrivacyLabel = styled.div`
 
 export const BoardsCardFooter = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: 10px;
+  width: 100%;
+  padding-top: 10px;
+  border-top: 1px solid ${Grey85};
+  padding-bottom: 15px;
 `;
 
 export const BoardsCardBodyTitle = styled(Typography)`
@@ -225,7 +229,7 @@ export const CardsContainer = ({ isFullWidth, numberOfColumns, children }) => {
       {isFullWidth ? (
         <div>{children}</div>
       ) : (
-        <Masonry spacing={2} columns={{ xs: 2, lg: numberOfColumns }}>
+        <Masonry spacing={2} columns={{ xs: 1, sm: 2, lg: numberOfColumns }}>
           {children}
         </Masonry>
       )}

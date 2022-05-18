@@ -13,12 +13,11 @@ import {
   BOARD_TYPE,
   STATUS_OPEN,
   STATUS_APPROVED,
-  STATUS_REJECTED,
+  STATUS_CHANGE_REQUESTED,
 } from 'utils/constants';
 
-import { ToDo, InProgress, Done, InReview } from '../../../Icons';
+import { ToDo, InProgress, Done, InReview, Proposal, Approved, Rejected } from '../../../Icons';
 import { ColumnSection } from '../../ColumnSection';
-
 import {
   TaskColumnContainer,
   TaskColumnContainerHeader,
@@ -54,7 +53,7 @@ const TITLES = {
   //PROPOSALS
   [STATUS_OPEN]: 'Open',
   [STATUS_APPROVED]: 'Approved',
-  [STATUS_REJECTED]: 'Rejected',
+  [STATUS_CHANGE_REQUESTED]: 'Rejected',
 };
 
 const HEADER_ICONS = {
@@ -62,9 +61,9 @@ const HEADER_ICONS = {
   [TASK_STATUS_IN_PROGRESS]: InProgress,
   [TASK_STATUS_IN_REVIEW]: InReview,
   [TASK_STATUS_DONE]: Done,
-  [STATUS_OPEN]: ToDo,
-  [STATUS_APPROVED]: InProgress,
-  [STATUS_REJECTED]: Done,
+  [STATUS_OPEN]: Proposal,
+  [STATUS_APPROVED]: Approved,
+  [STATUS_CHANGE_REQUESTED]: Rejected,
 };
 
 const TaskColumn = (props: ITaskColumn) => {
@@ -79,7 +78,6 @@ const TaskColumn = (props: ITaskColumn) => {
   const HeaderIcon = HEADER_ICONS[status];
   let number;
 
-  console.log(board);
   switch (status) {
     case TASK_STATUS_TODO:
       number = taskCount?.created || 0;
@@ -94,7 +92,8 @@ const TaskColumn = (props: ITaskColumn) => {
       number = taskCount?.completed || 0;
       break;
     case TASK_STATUS_IN_REVIEW:
-      number = taskCount?.submission || 0;
+      // TODO fix me
+      number = taskCount?.submission || taskCount?.inReview || 0;
       break;
     default:
       number = 0;

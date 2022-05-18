@@ -11,7 +11,7 @@ import {
   COLUMNS_CONFIGURATION,
   STATUS_OPEN,
   STATUS_APPROVED,
-  STATUS_REJECTED,
+  STATUS_CHANGE_REQUESTED,
 } from 'utils/constants';
 import { Archived, InReview, Requested } from 'components/Icons/sections';
 import { Proposal } from 'components/Icons';
@@ -119,7 +119,7 @@ const PROPOSAL_APPROVED = {
 const PROPOSAL_REJECTED = {
   title: 'Rejected',
   tasks: [],
-  status: STATUS_REJECTED,
+  status: STATUS_CHANGE_REQUESTED,
 };
 
 export const FILTER_STATUSES = {
@@ -256,7 +256,7 @@ export const populateProposalColumns = (proposals, columns) => {
     [STATUS_OPEN]: [],
     [STATUS_APPROVED]: [],
     // changes requested
-    [STATUS_REJECTED]: [],
+    [STATUS_CHANGE_REQUESTED]: [],
   };
   //temporary flag until we add a flag on BE?
   proposals?.forEach((proposal) => {
@@ -264,7 +264,7 @@ export const populateProposalColumns = (proposals, columns) => {
     if (!proposal.approvedAt && !proposal.changeRequestedAt)
       proposalsMap[STATUS_OPEN].push({ ...proposal, isProposal: true });
     if (proposal.changeRequestedAt && !proposal.approvedAt)
-      proposalsMap[STATUS_REJECTED].push({ ...proposal, isProposal: true });
+      proposalsMap[STATUS_CHANGE_REQUESTED].push({ ...proposal, isProposal: true });
   });
   return columns.map((column) => {
     return {

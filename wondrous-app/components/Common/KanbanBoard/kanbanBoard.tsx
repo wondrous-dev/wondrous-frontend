@@ -7,17 +7,24 @@ import { useLocation } from 'utils/useLocation';
 import { TaskViewModal } from '../Task/modal';
 import { KanbanBoardContainer, LoadMore } from './styles';
 import TaskColumn from './TaskColumn';
-
+import { ENTITIES_TYPES } from 'utils/constants';
 // Task update (column changes)
 import apollo from 'services/apollo';
 import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER, UPDATE_BOUNTY_STATUS } from 'graphql/mutations/task';
+import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { BOARD_TYPE, PERMISSIONS, PAYMENT_STATUS, TASK_TYPE } from 'utils/constants';
+import {
+  BOARD_TYPE,
+  PERMISSIONS,
+  PAYMENT_STATUS,
+  TASK_TYPE,
+  STATUS_APPROVED,
+  STATUS_CHANGE_REQUESTED,
+} from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { useMutation } from '@apollo/client';
 import { dedupeColumns, delQuery } from 'utils';
 import DndErrorModal from './DndErrorModal';
-import { ViewType } from 'types/common';
 
 const populateOrder = (index, tasks, field) => {
   let aboveOrder = null,
@@ -43,10 +50,14 @@ const KanbanBoard = (props) => {
   const router = useRouter();
   const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
   const [dndErrorModal, setDndErrorModal] = useState(false);
+  const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
+  const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
   // Permissions for Draggable context
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
+  const board = orgBoard || userBoard || podBoard;
+  const isProposalEntity = board?.entityType === ENTITIES_TYPES.PROPOSAL;
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
 
@@ -113,7 +124,8 @@ const KanbanBoard = (props) => {
     }
   };
 
-  const moveCard = async (id, status, index) => {
+  const moveCard = async (id, status, index, source) => {
+    //TODO get rid of nested loop
     const updatedColumns = columns.map((column) => {
       const task = columns.map(({ tasks }) => tasks.find((task) => task.id === id)).filter((i) => i)[0];
       // Only allow when permissions are OK
@@ -176,6 +188,49 @@ const KanbanBoard = (props) => {
     });
     setColumns(dedupeColumns(updatedColumns));
   };
+
+  const moveProposal = async (id, destinationStatus, destinationIndex, { index, droppableId }) => {
+    const boardColumns = [...columns];
+    const sourceColumn = boardColumns.findIndex((column) => column.status === droppableId);
+    const taskToUpdate = boardColumns[sourceColumn]?.tasks[index];
+
+    if (checkPermissions(taskToUpdate)) {
+      if (destinationStatus !== droppableId) {
+        if (destinationStatus === STATUS_APPROVED) {
+          debugger;
+          approveTaskProposal({
+            variables: {
+              proposalId: id,
+            },
+            onCompleted: (data) => {
+              boardColumns[sourceColumn]?.tasks?.splice(index, 1);
+              const destinationColumn = boardColumns.findIndex((column) => column.status === destinationStatus);
+              boardColumns[destinationColumn]?.tasks?.unshift(taskToUpdate);
+              setColumns(dedupeColumns(boardColumns));
+            },
+            refetchQueries: ['GetOrgTaskBoardProposals'],
+          });
+          return;
+        }
+        if (destinationStatus === STATUS_CHANGE_REQUESTED) {
+          requestChangeTaskProposal({
+            variables: {
+              proposalId: id,
+            },
+            onCompleted: (data) => {
+              boardColumns[sourceColumn]?.tasks?.splice(index, 1);
+              const destinationColumn = boardColumns.findIndex((column) => column.status === destinationStatus);
+              const updatedTask = { ...taskToUpdate, changeRequestedAt: new Date() };
+              boardColumns[destinationColumn]?.tasks?.unshift(updatedTask);
+              setColumns(dedupeColumns(boardColumns));
+            },
+            refetchQueries: ['GetOrgTaskBoardProposals'],
+          });
+        }
+      }
+    }
+  };
+
   const location = useLocation();
   useEffect(() => {
     const params = location.params;
@@ -185,8 +240,10 @@ const KanbanBoard = (props) => {
   }, [orgBoard, podBoard, userBoard, location]);
 
   const onDragEnd = (result) => {
+    const moveAction = isProposalEntity ? moveProposal : moveCard;
+    console.log(result, 'result');
     try {
-      moveCard(result.draggableId, result.destination.droppableId, result.destination.index);
+      moveAction(result.draggableId, result.destination.droppableId, result.destination.index, result.source);
     } catch {
       console.error('The card was dropped outside the context of DragDropContext.');
     }

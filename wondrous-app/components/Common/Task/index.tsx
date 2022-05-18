@@ -264,7 +264,8 @@ export const Task = (props) => {
     canArchive && (task?.type === Constants.ENTITIES_TYPES.TASK || task?.type === Constants.ENTITIES_TYPES.MILESTONE);
 
   const openModal = (e) => {
-    const newUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`;
+    const type = task?.isProposal ? 'taskProposal' : 'task';
+    const newUrl = `${delQuery(router.asPath)}?${type}=${task?.id}&view=${router.query.view || 'grid'}`;
     location.push(newUrl);
     // document.body.style.overflow = 'hidden'
     // document.body.scroll = false

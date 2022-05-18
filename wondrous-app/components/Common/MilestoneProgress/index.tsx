@@ -56,7 +56,7 @@ export const MilestoneProgress = (props) => {
         <StyledTasksCount>{progress}%</StyledTasksCount>
       </StyledTextWrapper>
       <StyledProgressBarWrapper>
-        <StyledProgressBar value={tasksCompleted} total={tasksTotal} color={color} />
+        <StyledProgressBar value={tasksCompleted} total={tasksTotal} />
       </StyledProgressBarWrapper>
     </StyledBox>
   );

@@ -8,7 +8,7 @@ const Tabs = (props) => {
 
   const router = useRouter();
 
-  const { asPath } = router;
+  const asPathWithoutQueries = router.asPath.split('?')[0];
   const { username, podId } = router.query;
   const user = username ?? podId;
   let tabsLinks = [];
@@ -50,7 +50,7 @@ const Tabs = (props) => {
 
   return (
     <Container>
-      <StyledTabs value={asPath} variant={'fullWidth'}>
+      <StyledTabs value={asPathWithoutQueries} variant={'fullWidth'}>
         {tabsLinks.map((tab) => (
           <Link
             // @ts-ignore
@@ -59,7 +59,7 @@ const Tabs = (props) => {
             href={tab.href}
             passHref
           >
-            <StyledTab isActive={tab.href === asPath} label={tab.label} />
+            <StyledTab isActive={tab.href === asPathWithoutQueries} label={tab.label} />
           </Link>
         ))}
       </StyledTabs>

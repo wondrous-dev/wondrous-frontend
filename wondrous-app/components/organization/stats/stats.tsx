@@ -1,8 +1,9 @@
 import { Wrapper, StatItem, IconWrapper, StatValue, StatTitle } from './styles';
-import { CheckedBoxIcon } from '../../../components/Icons/checkedBox';
+import { CheckedBoxIcon } from 'components/Icons/checkedBox';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useOrgBoard } from 'utils/hooks';
-
+import FlagIcon from 'components/Icons/createMilestone';
+import BountyIcon from 'components/Icons/TaskTypes/bounty';
 interface TasksPerType {
   taskCount: number;
   milestoneCount: number;
@@ -14,10 +15,10 @@ interface Props {
 }
 
 const config = [
-  { key: 'taskCount', icon: null, title: 'tasks', type: ENTITIES_TYPES.TASK },
-  { key: 'milestoneCount', icon: null, title: 'milestones', type: ENTITIES_TYPES.MILESTONE },
-  { key: 'bountyCount', icon: null, title: 'bounties', type: ENTITIES_TYPES.BOUNTY },
-  { key: 'proposalCount', icon: null, title: 'proposals', type: ENTITIES_TYPES.PROPOSAL },
+  { key: 'taskCount', icon: CheckedBoxIcon, title: 'tasks', type: ENTITIES_TYPES.TASK },
+  { key: 'milestoneCount', icon: FlagIcon, title: 'milestones', type: ENTITIES_TYPES.MILESTONE },
+  { key: 'bountyCount', icon: BountyIcon, title: 'bounties', type: ENTITIES_TYPES.BOUNTY },
+  { key: 'proposalCount', icon: FlagIcon, title: 'proposals', type: ENTITIES_TYPES.PROPOSAL },
 ];
 
 export default function Stats({ tasksPerTypeData }: Props) {
@@ -28,11 +29,12 @@ export default function Stats({ tasksPerTypeData }: Props) {
     <Wrapper>
       {config.map((stat) => {
         const isActive = entityType === stat.type;
+        const Icon = stat.icon;
         return (
           <>
             <StatItem key={stat.key} onClick={() => setEntityType(stat.type)} isActive={isActive}>
               <IconWrapper isActive={isActive}>
-                <CheckedBoxIcon displayBackground={false} fill={'transparent'} stroke={'white'} />
+                <Icon displayBackground={false} fill={'transparent'} stroke={'white'} width="25" height="25" />
               </IconWrapper>
               <StatValue>{tasksPerTypeData?.[stat.key] || 0}</StatValue>
               <StatTitle isActive={isActive}>{stat.title}</StatTitle>

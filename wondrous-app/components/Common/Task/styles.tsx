@@ -45,12 +45,15 @@ export const TaskHeader = styled.div`
   display: flex;
   width: 100%;
   text-align: left;
-
+  justify-content: flex-start;
+  align-items: center;
   margin: 0 0 17px 0;
 `;
 
 export const TaskHeaderIconWrapper = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
   & > * {
     margin-right: 4px;
   }
@@ -129,7 +132,6 @@ export const TaskAction = styled.div`
   flex-direction: row;
   flext-content: flex-start;
   align-content: space-between;
-  margin-right: 30px;
 `;
 
 export const TaskActionMenu = styled.div`
@@ -172,7 +174,6 @@ export const PodName = styled(Typography)`
 `;
 
 export const SubtaskCountWrapper = styled.div`
-  background: #0f0f0f;
   display: flex;
   align-items: center;
   padding: 2px 6px;
@@ -513,16 +514,26 @@ export const ArchivedTaskUndo = styled.span`
   }
 `;
 
-export const ClaimButton = styled(CreateFormPreviewButton)`
+export const ActionButton = styled(CreateFormPreviewButton)`
   && {
-    padding: 4px 8px;
+    padding: 4px 16px;
     margin-left: 0;
     margin-right: 12px;
     height: auto;
-
+    border: 1px solid transparent;
     :hover {
       background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
-      border: 1px solid #7427ff;
+    }
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      padding: 1px;
+      border-radius: 180px;
     }
   }
 `;
@@ -573,6 +584,11 @@ export const ProposalIconBackground = styled.div`
   border-radius: 180px;
 `;
 
+export const CheckedIconWrapper = styled.div`
+  display: flex;
+  background: ${Grey85};
+  border-radius: 6px;
+`;
 const IconWrapper = styled.div`
   border-radius: 180px;
   display: flex;
