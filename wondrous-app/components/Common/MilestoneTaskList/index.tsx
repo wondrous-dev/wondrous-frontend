@@ -22,6 +22,7 @@ import {
   TaskTitle,
   StyledMilestoneEmpty,
 } from './styles';
+import { skipForCommandKey } from 'utils/links';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: ToDo,
@@ -91,12 +92,7 @@ export const MilestoneTaskList = (props) => {
               return (
                 <StyledTableRow
                   key={task.id}
-                  onClick={(e) => {
-                    // if Command or Ctrl key wasn't pressed
-                    if (!(e.metaKey || e.ctrlKey)) {
-                      router.push(viewUrl);
-                    }
-                  }}
+                  onClick={skipForCommandKey(() => router.push(viewUrl))}
                   style={{
                     cursor: 'pointer',
                   }}

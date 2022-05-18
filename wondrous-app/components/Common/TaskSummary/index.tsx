@@ -3,6 +3,7 @@ import { LogoButton } from '../logo';
 import { AvatarList } from '../AvatarList';
 import { Compensation } from '../Compensation';
 import { delQuery } from 'utils';
+import Link from 'next/link';
 
 import {
   TaskHeader,
@@ -48,7 +49,7 @@ import { useMe } from '../../Auth/withAuth';
 import PodIcon from '../../Icons/podIcon';
 import { ViewType } from 'types/common';
 import { useLocation } from 'utils/useLocation';
-import Link from "next/link";
+import { skipForCommandKey } from 'utils/links';
 
 let windowOffset;
 
@@ -90,17 +91,14 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
       shallow: true,
     });
   };
-  const openModal = (e, viewUrl) => {
-    const isCommandKeyPressed = e.metaKey || e.ctrlKey;
 
-    if (!isCommandKeyPressed) {
-      location.replace(viewUrl);
-      // document.body.style.overflow = 'hidden'
-      // document.body.scroll = false
-      windowOffset = window.scrollY;
-      document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
-      setModalOpen(true);
-    }
+  const openModal = (viewUrl) => {
+    location.replace(viewUrl);
+    // document.body.style.overflow = 'hidden'
+    // document.body.scroll = false
+    windowOffset = window.scrollY;
+    document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+    setModalOpen(true);
   };
 
   const orgBoard = useOrgBoard();
@@ -211,7 +209,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
 
   return (
     <>
-      <TaskSummaryWrapper key={id} onClick={(e) => openModal(e, viewUrl)}>
+      <TaskSummaryWrapper key={id} onClick={skipForCommandKey(() => openModal(viewUrl))}>
         <TaskSummaryInner>
           <TaskHeader>
             <OrgProfilePicture src={task?.orgProfilePicture} />
