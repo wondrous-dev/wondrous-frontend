@@ -37,7 +37,7 @@ export const CHECK_ORG_TOKEN_GATING_CONDITION = gql`
 
 export const CHECK_ORG_ROLE_TOKEN_GATING_CONDITION = gql`
   query checkOrgRoleTokenGatingCondition($orgRoleId: ID!, $userId: ID!) {
-    checkOrgTokenGatingCondition(orgRoleId: $orgRoleId, userId: $userId) {
+    checkOrgRoleTokenGatingCondition(orgRoleId: $orgRoleId, userId: $userId) {
       success
     }
   }
@@ -59,10 +59,23 @@ export const GET_TOKEN_GATED_ROLES_FOR_ORG = gql`
       permissions
       name
       orgId
-      ...TokenGatingConditionFragment
+      tokenGatingCondition {
+        id
+        orgId
+        podId
+        name
+        booleanLogic
+        accessCondition {
+          contractAddress
+          type
+          chain
+          method
+          minValue
+          tokenIds
+        }
+      }
     }
   }
-  ${TokenGatingConditionFragment}
 `;
 
 export const GET_TOKEN_GATED_ROLES_FOR_POD = gql`

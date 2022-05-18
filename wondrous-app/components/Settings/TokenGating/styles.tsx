@@ -14,7 +14,7 @@ import { Button } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
 import ArrowDropDownIcon from 'components/Icons/arrowDropDown';
 import styled from 'styled-components';
-import { Background, Black92, Blue20, Grey100, Grey250, Grey57, Grey85, Grey90, White } from 'theme/colors';
+import { Background, Black92, Blue20, Grey100, Grey250, Grey57, Grey85, Grey90, White, Black90 } from 'theme/colors';
 import { BaseCard } from 'components/Common/card';
 
 export const TokenGatingWrapper = styled.div`
@@ -71,10 +71,14 @@ export const TokenGatingFormWrapper = styled(Box)`
 
 export const TokenGatingElementWrapper = styled(Box)`
   && {
-    background: #1b1b1b;
+    background: ${Black90};
     border-radius: 6px;
     padding: 24px;
     margin-top: 24px;
+    :hover {
+      background: #474747 !important;
+      cursor: pointer;
+    }
   }
 `;
 

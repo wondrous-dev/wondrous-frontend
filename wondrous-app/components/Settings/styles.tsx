@@ -197,15 +197,13 @@ export const SettingsHeaderContent = styled.div`
   margin-left: 27px;
 `;
 
-export const SettingsHeaderTitle = styled(Typography)`
-  && {
-    font-weight: 500;
-    font-size: 28px;
-    line-height: 36px;
-    display: flex;
-    align-items: center;
-    color: #ffffff;
-  }
+export const SettingsHeaderTitle = styled.div`
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 36px;
+  display: flex;
+  align-items: center;
+  color: #ffffff;
 `;
 
 export const SettingsHeaderText = styled(Typography)`
@@ -239,7 +237,6 @@ export const GeneralSettingsDAONameBlock = styled.div`
   justify-content: space-between;
   margin-bottom: 28px;
 `;
-
 export const LabelBlock = styled(Typography)`
   && {
     font-weight: 500;
@@ -379,9 +376,8 @@ export const GeneralSettingsButtonsBlock = styled.div`
 
 export const GeneralSettingsResetButton = styled(MuiButton)`
   && {
-    width: 177px;
-    //height: 40px;
-    height: 50px;
+    width: 191px;
+    height: 40px;
     background: #232323;
     border-radius: 234px;
 
@@ -397,9 +393,11 @@ export const GeneralSettingsResetButton = styled(MuiButton)`
 
 export const GeneralSettingsSaveChangesButton = styled(Button)`
   && {
-    width: 160px;
+    width: 191px;
     margin-left: 22px;
+    height: 40px;
     font-family: Space Grotesk;
+    min-height: 40px;
   }
 `;
 

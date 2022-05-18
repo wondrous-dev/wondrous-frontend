@@ -92,6 +92,7 @@ import { MakePaymentBlock } from './payment';
 import { KudosForm } from '../KudosForm';
 import { PaymentButton } from './paymentButton';
 import FileIcon from 'components/Icons/files.svg';
+import { GET_TASK_BY_ID } from 'graphql/queries';
 
 const SubmissionStatusIcon = (props) => {
   const { submission } = props;
@@ -206,6 +207,7 @@ const SubmissionItem = (props) => {
       status: TASK_STATUS_DONE,
     };
     const transformedTask = transformTaskToTaskCard(newTask, {});
+
     if (boardColumns) {
       const columns = [...boardColumns?.columns];
       const newInProgress = columns[1].tasks.filter((task) => task.id !== fetchedTask.id);
@@ -241,7 +243,7 @@ const SubmissionItem = (props) => {
         setIsKudosForm(true);
       }
     },
-    refetchQueries: ['getOrgTaskBoardSubmissions', 'getPerStatusTaskCountForOrgBoard'],
+    refetchQueries: ['getOrgTaskBoardSubmissions', 'getPerStatusTaskCountForOrgBoard', GET_TASK_BY_ID],
   });
   const [approveBountySubmission] = useMutation(APPROVE_BOUNTY_SUBMISSION, {
     variables: {
@@ -289,6 +291,7 @@ const SubmissionItem = (props) => {
     maxWidth: '500px',
     textAlign: 'left',
   };
+
   return (
     <>
       <KudosForm onClose={handleClose} open={isKudosModalOpen} submission={submission} />
@@ -436,6 +439,7 @@ const SubmissionItem = (props) => {
                     taskSubmissions={fetchedTaskSubmissions}
                     handleClose={handleClose}
                     getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+                    submission={submission}
                   />
                 )}
             </CreateFormFooterButtons>

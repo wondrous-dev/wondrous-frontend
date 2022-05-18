@@ -1,293 +1,80 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_ROLES, GET_ORG_USERS, GET_USER_ORGS } from 'graphql/queries/org';
-import { GET_POD_BY_ID } from 'graphql/queries/pod';
-import { SEARCH_ORG_USERS } from 'graphql/queries/org';
-import { UPDATE_USER_ORG_ROLE } from 'graphql/mutations/org';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import Link from 'next/link';
+import pluralize from 'pluralize';
+
+import { GET_ORG_BY_ID, GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries/org';
+import { GET_POD_BY_ID, GET_POD_ROLES, GET_POD_USERS } from 'graphql/queries/pod';
 import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
-import UserCheckIcon from '../../Icons/userCheckIcon';
-import Accordion from '../../Common/Accordion';
-import Switch from '../../Common/Switch';
+import MembersIcon from '../../Icons/membersSettings';
 import { RolesContainer } from '../Roles/styles';
+import { StyledTableCell, StyledTableContainer, StyledTableHead, StyledTableRow } from '../../Table/styles';
+import { useRouter } from 'next/router';
 import {
+  DefaultProfilePicture,
+  PodsCount,
+  SeeMoreText,
   StyledTable,
   StyledTableBody,
-  StyledTableCell,
-  StyledTableContainer,
-  StyledTableHead,
-  StyledTableRow,
-  TaskDescription,
-  TaskTitle,
-} from '../../Table/styles';
-import { useRouter } from 'next/router';
-import { DefaultProfilePicture, InviteDiv, SeeMoreText, UserInfoDiv, UsernameText, UserProfilePicture } from './styles';
-import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
-import CreatePodIcon from '../../Icons/createPod';
-import { CircularProgress, TextField } from '@material-ui/core';
-import { PERMISSIONS } from 'utils/constants';
-import { useSettings } from 'utils/hooks';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { INVITE_USER_TO_POD, UPDATE_USER_POD_ROLE } from 'graphql/mutations/pod';
-import { GET_POD_ROLES, GET_POD_USERS } from 'graphql/queries/pod';
-import {
-  AutocompleteList,
-  CreateFormAddDetailsInputBlock,
-  CreateFormAddDetailsInputLabel,
-  CreateFormPreviewButton,
-  OptionDiv,
-  OptionTypography,
-  StyledAutocomplete,
-} from '../../CreateEntity/styles';
+  StyledTableHeaderCell,
+} from './styles';
+import { CircularProgress } from '@material-ui/core';
 import { White } from '../../../theme/colors';
 import { SafeImage } from '../../Common/Image';
-import { filterOrgUsers } from '../../CreateEntity/createEntityModal';
-import { SnackbarAlertContext } from '../../Common/SnackbarAlert';
-import { ArchivedTaskUndo } from '../../Common/Task/styles';
-import Link from 'next/link';
+import InviteMember from './InviteMember';
+import MemberRoleDropdown from './MemberRoleDropdown';
+import MemberRoles from '../MemberRoles';
+import { Text } from 'components/styled';
+import Grid from '@mui/material/Grid';
+import { DropDown, DropDownItem } from 'components/Common/dropdown';
+import { KICK_ORG_USER } from 'graphql/mutations/org';
+import { KICK_POD_USER } from 'graphql/mutations/pod';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { TaskMenuIcon } from 'components/Icons/taskMenu';
+import ConfirmModal, { SubmitButtonStyle } from 'components/Common/ConfirmModal';
 
 const LIMIT = 10;
 
-const filterRoles = (roles, isOwner, userIsOwner) => {
-  if (!roles) {
-    return [];
-  }
-  return roles
-    .filter((role) => {
-      if (isOwner) {
-        return true;
-      }
-      const hasOwnerPermissions = role?.permissions?.includes(PERMISSIONS.FULL_ACCESS);
-      if (hasOwnerPermissions) {
-        if (userIsOwner) {
-          return true;
-        }
-        return false;
-      } else {
-        return true;
-      }
-    })
-    .map((role) => {
-      return { label: role?.name, value: role?.id };
-    });
-};
-const MemberRoleDropdown = (props) => {
-  const { existingRole, roleList, userId, podId, isPod } = props;
-  const [role, setRole] = useState(existingRole?.id);
-  const [updateUserOrgRole] = useMutation(UPDATE_USER_ORG_ROLE);
-  const [updateUserPodRole] = useMutation(UPDATE_USER_POD_ROLE);
-  const isOwner = existingRole?.permissions.includes(PERMISSIONS.FULL_ACCESS);
-  const settings = useSettings();
-  let orgId = props?.orgId || settings?.pod?.orgId;
-  const loggedInUserPermissions = settings?.userPermissionsContext;
-  const permissions = parseUserPermissionContext({
-    userPermissionsContext: loggedInUserPermissions,
-    orgId,
-    podId,
-  });
-  const userIsOwner = permissions.includes(PERMISSIONS.FULL_ACCESS);
-
-  useEffect(() => {
-    if (existingRole?.id) {
-      setRole(existingRole?.id);
-    }
-  }, [existingRole?.id]);
-  return (
-    <DropdownSelect
-      value={role}
-      setValue={(roleId) => {
-        setRole(roleId);
-        if (podId) {
-          updateUserPodRole({
-            variables: {
-              input: {
-                userId,
-                podId,
-                roleId,
-              },
-            },
-          });
-        } else {
-          updateUserOrgRole({
-            variables: {
-              input: {
-                userId,
-                orgId,
-                roleId,
-              },
-            },
-          });
-        }
-      }}
-      labelText={isOwner && !role ? 'Owner' : 'Choose your role'}
-      options={filterRoles(roleList, isOwner, userIsOwner)}
-      disabled={isOwner}
-      formSelectStyle={{
-        height: 'auto',
-        marginTop: '-20px',
-      }}
-    />
-  );
-};
-
-const InviteMember = (props) => {
-  const { podId, roleList, setUsers, users } = props;
-  const [inviteeRole, setInviteeRole] = useState(null);
-  const [invitee, setInvitee] = useState(null);
-  const [inviteeString, setInviteeString] = useState('');
-  const settings = useSettings();
-  let orgId = props?.orgId || settings?.pod?.orgId;
-  const [searchOrgUsers, { data: searchOrgUserResults }] = useLazyQuery(SEARCH_ORG_USERS);
-  const loggedInUserPermissions = settings?.userPermissionsContext;
-  const permissions = parseUserPermissionContext({
-    userPermissionsContext: loggedInUserPermissions,
-    orgId,
-    podId,
-  });
-  const [inviteUserToPod] = useMutation(INVITE_USER_TO_POD);
-  const canInvite = permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.MANAGE_MEMBER);
-  const userIsOwner = permissions.includes(PERMISSIONS.FULL_ACCESS);
-  const searchedUsers = searchOrgUserResults?.searchOrgUsers;
-  const snackbarContext = useContext(SnackbarAlertContext);
-  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
-  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
-  useEffect(() => {
-    if (roleList) {
-      const roles = filterRoles(roleList, null, userIsOwner);
-      setInviteeRole(roles[0].value);
-    }
-  }, [roleList]);
-
-  if (!canInvite) {
-    return null;
-  }
-
-  const userIds = users.map((user) => user?.user?.id);
-
-  const filterOrgUsersForAutocomplete = (users) => {
-    if (!users) {
-      return [];
-    }
-    return users
-      .filter((user) => {
-        if (userIds.includes(user?.id)) {
-          return false;
-        }
-        return true;
-      })
-      .map((user) => ({
-        ...user,
-        profilePicture: user?.profilePicture,
-        label: user?.username,
-        value: user?.id,
-      }));
+const useKickMember = (orgId, podId, users, setUsers) => {
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
+  const kickMemberSuccessful = () => {
+    setSnackbarAlertOpen(true);
+    setSnackbarAlertMessage(<>Member kicked successfully!</>);
   };
-
-  return (
-    <InviteDiv>
-      <CreateFormAddDetailsInputBlock
-        style={{
-          width: 'auto',
-          flex: 1,
-        }}
-      >
-        <CreateFormAddDetailsInputLabel>Username</CreateFormAddDetailsInputLabel>
-        <StyledAutocomplete
-          options={filterOrgUsersForAutocomplete(searchedUsers) || []}
-          renderInput={(params) => (
-            <TextField
-              style={{
-                color: White,
-                fontFamily: 'Space Grotesk',
-                fontSize: '14px',
-                paddingLeft: '4px',
-              }}
-              placeholder="Enter username..."
-              InputLabelProps={{ shrink: false }}
-              {...params}
-            />
-          )}
-          PopperComponent={AutocompleteList}
-          value={invitee}
-          inputValue={inviteeString}
-          onInputChange={(event, newInputValue) => {
-            searchOrgUsers({
-              variables: {
-                orgId,
-                queryString: newInputValue,
-              },
-            });
-            setInviteeString(newInputValue);
-          }}
-          renderOption={(props, option, state) => {
-            return (
-              <OptionDiv
-                onClick={(event) => {
-                  setInvitee(option);
-                  props?.onClick(event);
-                }}
-              >
-                {option?.profilePicture && (
-                  <SafeImage
-                    src={option?.profilePicture}
-                    style={{
-                      width: '30px',
-                      height: '30px',
-                      borderRadius: '15px',
-                    }}
-                  />
-                )}
-                <OptionTypography>{option?.label}</OptionTypography>
-              </OptionDiv>
-            );
-          }}
-        />
-      </CreateFormAddDetailsInputBlock>
-      <DropdownSelect
-        title="Role"
-        titleStyle={{
-          marginBottom: '-8px',
-        }}
-        value={inviteeRole}
-        setValue={setInviteeRole}
-        labelText="Choose Role"
-        options={filterRoles(roleList, null, userIsOwner)}
-        formSelectStyle={{
-          width: 'auto',
-          flex: 1,
-          maxWidth: 'none',
-        }}
-      />
-      <CreateFormPreviewButton
-        onClick={() => {
-          inviteUserToPod({
-            variables: {
-              userId: invitee?.id,
-              roleId: inviteeRole,
-              podId,
-            },
-            onCompleted: (data) => {
-              const userPod = data?.inviteUserToPod;
-              setUsers([userPod, ...users]);
-            },
-          });
-          setSnackbarAlertOpen(true);
-          setSnackbarAlertMessage(<>{invitee?.username} invited!</>);
-        }}
-        style={{
-          marginTop: '28px',
-        }}
-      >
-        Invite Member
-      </CreateFormPreviewButton>
-    </InviteDiv>
-  );
+  const [kickOrgUser] = useMutation(KICK_ORG_USER, {
+    onCompleted: kickMemberSuccessful,
+  });
+  const [kickPodUser] = useMutation(KICK_POD_USER, {
+    onCompleted: kickMemberSuccessful,
+  });
+  const handleKickMember = (userId) => {
+    setUsers(users.filter((user) => user?.user?.id !== userId));
+    if (orgId) {
+      kickOrgUser({
+        variables: {
+          orgId,
+          userId,
+        },
+      });
+    }
+    if (podId) {
+      kickPodUser({
+        variables: {
+          podId,
+          userId,
+        },
+      });
+    }
+  };
+  return handleKickMember;
 };
 
 const Members = (props) => {
   const router = useRouter();
   const { orgId, podId } = router.query;
   const [hasMore, setHasMore] = useState(true);
+  const [userToRemove, setUserToRemove] = useState(null);
   const [users, setUsers] = useState([]);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
 
@@ -296,6 +83,7 @@ const Members = (props) => {
   });
 
   const [getPod, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
+  const [getOrg, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
 
   const [getPodUsers] = useLazyQuery(GET_POD_USERS, {
     onCompleted: (data) => {
@@ -310,6 +98,12 @@ const Members = (props) => {
   const roleList = podRoleData?.getPodRoles || orgRoleData?.getOrgRoles;
   useEffect(() => {
     if (orgId) {
+      getOrg({
+        variables: {
+          orgId,
+        },
+      });
+
       getOrgUsers({
         variables: {
           orgId,
@@ -317,7 +111,8 @@ const Members = (props) => {
         },
       }).then((result) => {
         if (!firstTimeFetch) {
-          setUsers(result?.data?.getOrgUsers);
+          const users = result?.data?.getOrgUsers;
+          setUsers(users);
           setHasMore(result?.data?.hasMore || result?.data?.getOrgUsers.length >= LIMIT);
           setFirstTimeFetch(true);
         }
@@ -378,64 +173,141 @@ const Members = (props) => {
     }
   }, [hasMore, users, fetchMore, orgId, podId]);
 
+  const orgOrPodName = orgData?.getOrgById?.name || podData?.getPodById?.name;
+  const handleKickMember = useKickMember(orgId, podId, users, setUsers);
+
   return (
-    <SettingsWrapper>
+    <SettingsWrapper showPodIcon={false}>
       <RolesContainer>
-        <HeaderBlock icon={<UserCheckIcon circle />} title="Members" description="View and edit roles of members" />
-        {podId && <InviteMember users={users} setUsers={setUsers} orgId={orgId} podId={podId} roleList={roleList} />}
+        <ConfirmModal
+          open={!!userToRemove}
+          onClose={() => setUserToRemove(null)}
+          onSubmit={() => {
+            handleKickMember(userToRemove.id);
+            setUserToRemove(null);
+          }}
+          title="Remove user from Wonder?"
+          submitLabel="Remove user"
+          submitButtonStyle={SubmitButtonStyle.Delete}
+        >
+          <Text color="#C4C4C4" fontSize="16px">
+            This will remove the user ‘
+            <Text color="white" as="strong">
+              {userToRemove?.firstName} {userToRemove?.lastName}
+            </Text>
+            ‘ from this DAO. This action cannot be undone.
+          </Text>
+        </ConfirmModal>
+
+        <HeaderBlock
+          icon={<MembersIcon circle />}
+          title={
+            <>
+              Members&nbsp;
+              {orgOrPodName ? (
+                <Text as="span">
+                  {' '}
+                  of{' '}
+                  <Text as="span" color="#CCBBFF">
+                    {orgOrPodName}
+                  </Text>
+                </Text>
+              ) : null}
+            </>
+          }
+          description="Use roles to organize contributors and admins"
+        />
+
+        <MemberRoles users={users} roleList={roleList} isDAO={!!orgId} />
+
+        {podId ? (
+          <InviteMember users={users} setUsers={setUsers} orgId={orgId} podId={podId} roleList={roleList} />
+        ) : null}
+
         <StyledTableContainer>
           <StyledTable>
             <StyledTableHead>
               <StyledTableRow>
-                <StyledTableCell align="center" width="30%">
-                  User
-                </StyledTableCell>
-                <StyledTableCell align="center" width="30%">
-                  Role
-                </StyledTableCell>
+                <StyledTableHeaderCell width="50%">Currency</StyledTableHeaderCell>
+                <StyledTableHeaderCell width="30%">Role</StyledTableHeaderCell>
+                <StyledTableHeaderCell width="15%">Pods</StyledTableHeaderCell>
+                <StyledTableHeaderCell width="5%">Edit</StyledTableHeaderCell>
               </StyledTableRow>
             </StyledTableHead>
-            <div
-              style={{
-                textAlign: 'center',
-              }}
-            >
-              {loading && <CircularProgress />}
-            </div>
             <StyledTableBody>
-              {users &&
-                users.map((user) => {
+              {users ? (
+                users.map(({ user, role }) => {
+                  const userId = user?.id;
+
                   return (
-                    <StyledTableRow key={user?.id}>
+                    <StyledTableRow key={userId}>
                       <StyledTableCell>
-                        <Link href={`/profile/${user?.user?.username}/about`} passHref>
-                          <UserInfoDiv
-                            style={{
-                              cursor: 'pointer',
-                            }}
-                          >
-                            {user?.user?.profilePicture ? (
-                              <UserProfilePicture src={user?.user?.profilePicture} />
+                        <Link href={`/profile/${user?.username}/about`} passHref>
+                          <Grid container direction="row" alignItems="center" style={{ cursor: 'pointer' }}>
+                            {user?.thumbnailPicture ? (
+                              <SafeImage
+                                src={user?.thumbnailPicture}
+                                style={{
+                                  width: '40px',
+                                  height: '40px',
+                                  borderRadius: '50%',
+                                  marginRight: '10px',
+                                }}
+                              />
                             ) : (
                               <DefaultProfilePicture />
                             )}
-                            <UsernameText>{user?.user?.username}</UsernameText>
-                          </UserInfoDiv>
+
+                            <Grid direction="column" alignItems="center">
+                              <Text color="white" fontSize={15} fontWeight={700} lineHeight="20px">
+                                {user?.firstName} {user?.lastName}
+                              </Text>
+
+                              <Text color="#C4C4C4" fontSize={12} lineHeight="17px">
+                                @{user?.username}
+                              </Text>
+                            </Grid>
+                          </Grid>
                         </Link>
                       </StyledTableCell>
                       <StyledTableCell>
                         <MemberRoleDropdown
-                          userId={user?.user?.id}
+                          userId={userId}
                           orgId={orgId}
                           podId={podId}
-                          existingRole={user?.role}
+                          existingRole={role}
                           roleList={roleList}
-                          username={user?.user?.username}
+                          username={user?.username}
                         />
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        <PodsCount>
+                          {user?.additionalInfo?.podCount || 0} {pluralize('Pod', user?.additionalInfo?.podCount || 0)}{' '}
+                        </PodsCount>
+                      </StyledTableCell>
+
+                      <StyledTableCell>
+                        <DropDown DropdownHandler={TaskMenuIcon}>
+                          <DropDownItem
+                            onClick={() => setUserToRemove(user)}
+                            style={{
+                              color: White,
+                            }}
+                          >
+                            Remove Member
+                          </DropDownItem>
+                        </DropDown>
                       </StyledTableCell>
                     </StyledTableRow>
                   );
-                })}
+                })
+              ) : (
+                <StyledTableRow>
+                  <StyledTableCell colspan={5} align="center">
+                    <CircularProgress />
+                  </StyledTableCell>
+                </StyledTableRow>
+              )}
             </StyledTableBody>
           </StyledTable>
         </StyledTableContainer>

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { CircularProgress } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import { ethers, utils } from 'ethers';
 import { BigNumber } from 'bignumber.js';
@@ -21,7 +22,7 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
-import { CHAIN_TO_GNOSIS_URL_ABBR } from 'utils/web3Constants';
+import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME} from 'utils/web3Constants';
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {
@@ -30,13 +31,10 @@ const generateReadablePreviewForAddress = (address: String) => {
 };
 
 export const constructGnosisRedirectUrl = (chain, safeAddress, safeTxHash) => {
+  if (chain=== 'harmony') {
+    return `https://multisig.harmony.one/#/safes/${safeAddress}/transactions/`
+  }
   return `https://gnosis-safe.io/app/${CHAIN_TO_GNOSIS_URL_ABBR[chain]}:${safeAddress}/transactions/${safeTxHash}`;
-};
-
-const CHAIN_ID_TO_CHAIN_NAME = {
-  1: 'eth_mainnet',
-  4: 'rinkeby',
-  137: 'polygon_mainnet',
 };
 
 interface SubmissionPaymentInfo {
@@ -74,6 +72,7 @@ export const SingleWalletPayment = (props) => {
   const [notOwnerError, setNotOwnerError] = useState(null);
   const [signingError, setSigningError] = useState(null);
   const [safeConnectionError, setSafeConnectionError] = useState(null);
+  const [gnosisTransactionLoading, setGnosisTransactionLoading] = useState(false);
   const [incompatibleWalletError, setIncompatibleWalletError] = useState(null);
   const [paymentPending, setPaymentPending] = useState(null);
   const [gnosisSafeTxRedirectLink, setGnosisSafeTxRedirectLink] = useState(null);
@@ -166,6 +165,7 @@ export const SingleWalletPayment = (props) => {
 
   const constructAndSignTransactionData = async () => {
     setSigningError(null);
+    setGnosisTransactionLoading(true);
     let t1 = performance.now();
     let iface = new ethers.utils.Interface(ERC20abi);
     const paymentData = submissionPaymentInfo?.paymentData[0];
@@ -227,7 +227,7 @@ export const SingleWalletPayment = (props) => {
       data: transactionData.data,
       value: transactionData.value,
       nonce: nextNonce,
-      safeTxGas: Number(safeTxGas),
+      safeTxGas: safeTxGas ? Number(safeTxGas): 0,
     };
     const safeTransaction = await gnosisSdk.createTransaction(transaction);
     const safeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);
@@ -238,6 +238,7 @@ export const SingleWalletPayment = (props) => {
     try {
       await gnosisSdk.signTransaction(safeTransaction);
     } catch (e) {
+      setGnosisTransactionLoading(false);
       if (e.message === 'Transactions can only be signed by Safe owners') {
         setNotOwnerError(`Not a owner of multisig`);
       } else if (e.message.includes('User denied message')) {
@@ -281,6 +282,7 @@ export const SingleWalletPayment = (props) => {
     });
     t2 = performance.now();
     console.log(`proposeGnosisTxForSubmission took ${t2 - t1} milliseconds`);
+    setGnosisTransactionLoading(false);
   };
   const handleCreateNewWalletClick = () => {
     if (podId) {
@@ -317,14 +319,20 @@ export const SingleWalletPayment = (props) => {
           }}
         />
         {selectedWallet && !paymentPending && (
-          <CreateFormPreviewButton
-            onClick={handlePaymentClick}
-            style={{
-              marginLeft: 0,
-            }}
-          >
-            Pay {changedRewardAmount || reward?.rewardAmount} {reward?.symbol}
-          </CreateFormPreviewButton>
+          <>
+            {gnosisTransactionLoading ? (
+              <CircularProgress />
+            ) : (
+              <CreateFormPreviewButton
+                onClick={handlePaymentClick}
+                style={{
+                  marginLeft: 0,
+                }}
+              >
+                Pay {changedRewardAmount || reward?.rewardAmount} {reward?.symbol}
+              </CreateFormPreviewButton>
+            )}
+          </>
         )}
         {parentError ? (
           <ErrorText>{parentError}</ErrorText>

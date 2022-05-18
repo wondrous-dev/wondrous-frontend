@@ -86,6 +86,7 @@ const PaymentItem = (props) => {
     link = constructGnosisRedirectUrl(item.chain, item.safeAddress, item.safeTxHash);
     linkText = item.safeTxHash;
   }
+
   const disabled =
     chain && item?.chain !== chain && (item?.paymentStatus === 'processing' || item?.paymentStatus === 'paid');
 
@@ -96,16 +97,18 @@ const PaymentItem = (props) => {
           onPaymentComplete: () => {},
         }}
       >
-        <PayModal
-          podId={podId}
-          orgId={org?.id}
-          open={openModal}
-          handleClose={() => setOpenModal(false)}
-          assigneeId={item.payeeId}
-          assigneeUsername={item.payeeUsername}
-          taskTitle={item.taskTitle}
-          submissionId={item.submissionId}
-        />
+        {openModal && (
+          <PayModal
+            podId={podId}
+            orgId={org?.id}
+            open={openModal}
+            handleClose={() => setOpenModal(false)}
+            assigneeId={item.payeeId}
+            assigneeUsername={item.payeeUsername}
+            taskTitle={item.taskTitle}
+            submissionId={item.submissionId}
+          />
+        )}
       </PaymentModalContext.Provider>
       <StyledTableRow
         style={{
@@ -223,7 +226,7 @@ const PaymentItem = (props) => {
           </Link>
         </StyledTableCell>
         <StyledTableCell>
-          {canViewPaymentLink && viewingUser?.id === item?.payeeId && (
+          {(canViewPaymentLink || viewingUser?.id === item?.payeeId) && (
             <a
               style={{
                 color: White,

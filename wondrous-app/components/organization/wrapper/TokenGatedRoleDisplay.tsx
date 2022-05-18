@@ -69,7 +69,6 @@ const TokenGatedRoleDisplay = (props) => {
   const { role } = props;
   const [getTokenInfo, { loading: getTokenInfoLoading }] = useLazyQuery(GET_TOKEN_INFO, {
     onCompleted: (data) => {
-      setTokenName(data?.getTokenInfo.name);
       if (data?.getTokenInfo) {
         setTokenName(data?.getTokenInfo.name);
         setTokenLogo(data?.getTokenInfo.logoUrl);
@@ -77,7 +76,7 @@ const TokenGatedRoleDisplay = (props) => {
     },
     fetchPolicy: 'network-only',
   });
-  console.log('rolerole', role);
+
   const [getNFTInfo, { loading: getNFTInfoLoading }] = useLazyQuery(GET_NFT_INFO, {
     onCompleted: (data) => {
       if (data?.getNFTInfo) {
@@ -92,7 +91,7 @@ const TokenGatedRoleDisplay = (props) => {
     if (checkPodRoleAccessData?.checkPodRoleTokenGatingCondition?.success) {
       setCanClaimRole(true);
     }
-    if (checkPodRoleAccessData?.checkRoleRoleTokenGatingCondition?.success) {
+    if (checkOrgRoleAccessData?.checkOrgRoleTokenGatingCondition?.success) {
       setCanClaimRole(true);
     }
     if (checkOrgRoleAccessLoading || checkPodRoleAccessLoading) {
@@ -230,12 +229,12 @@ const TokenGatedRoleDisplay = (props) => {
             )}
           </div>
         ) : (
-              <RedXIcon
-                style={{
-                  width: '30',
-                  height: '30',
-                }}
-              />
+          <RedXIcon
+            style={{
+              width: '30',
+              height: '30',
+            }}
+          />
         )}
       </RoleActionWrapper>
     </TokenGatedRoleWrapper>

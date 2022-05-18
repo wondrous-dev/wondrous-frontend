@@ -60,6 +60,8 @@ import {
   TaskDescription,
   TaskTitle,
 } from './styles';
+import { Red800 } from 'theme/colors';
+import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
 
 const DELIVERABLES_ICONS = {
   audio: <AudioIcon />,
@@ -82,6 +84,7 @@ export const Table = (props) => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [isPreviewModalOpen, setPreviewModalOpen] = useState(false);
   const [isArchiveModalOpen, setArchiveModalOpen] = useState(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isKudosModalOpen, setKudosModalOpen] = useState(false);
   const [kudosTask, setKudosTask] = useState(null);
   const [ref, inView] = useInView({});
@@ -242,6 +245,18 @@ export const Table = (props) => {
           taskType={taskType(selectedTask)}
           onClose={() => setArchiveModalOpen(false)}
           onArchive={() => archiveTask(selectedTask)}
+        />
+      ) : null}
+      {isDeleteModalOpen && selectedTask?.id ? (
+        <DeleteTaskModal
+          taskId={selectedTask?.id}
+          open={isDeleteModalOpen}
+          taskType={taskType(selectedTask)}
+          onClose={() => setDeleteModalOpen(false)}
+          onDelete={() => {
+            setSnackbarAlertMessage('Deleted successfully!');
+            setSnackbarAlertOpen(true);
+          }}
         />
       ) : null}
       {editableTask ? (
@@ -496,6 +511,21 @@ export const Table = (props) => {
                           >
                             Archive {dropdownItemLabel}
                           </DropDownItem>
+                          {(task?.type === Constants.TASK_TYPE || task?.type === Constants.MILESTONE_TYPE) && (
+                            <DropDownItem
+                              key={'task-menu-delete-' + task.id}
+                              onClick={() => {
+                                setSelectedTask(task);
+                                setDeleteModalOpen(true);
+                              }}
+                              color={Red800}
+                              fontSize="13px"
+                              fontWeight="normal"
+                              textAlign="left"
+                            >
+                              Delete {dropdownItemLabel}
+                            </DropDownItem>
+                          )}
                         </DropDown>
                       </MoreOptions>
                     </StyledTableCell>

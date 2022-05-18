@@ -103,3 +103,11 @@ export const REJECT_JOIN_POD_REQUEST = gql`
     }
   }
 `;
+
+export const KICK_POD_USER = gql`
+  mutation kickPodUser($userId: ID!, $podId: ID!) {
+    kickPodUser(userId: $userId, podId: $podId) {
+      success
+    }
+  }
+`;

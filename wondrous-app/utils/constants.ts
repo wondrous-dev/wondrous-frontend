@@ -66,29 +66,48 @@ export const PAYMENT_STATUS = {
 const SUPPORTED_CHAINS = {
   1: 'ETH',
   137: 'MATIC',
+  1666600000: 'HARMONY',
 };
-
-export const RPC_URLS: { [chainId: number]: string } = {
-  1: process.env.NEXT_PUBLIC_RPC_URL_ETH,
-  137: process.env.NEXT_PUBLIC_RPC_URL_MATIC,
-};
-
-export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId));
 
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {
   SUPPORTED_CHAINS[4] = 'RINKEBY';
 }
 
+export const RPC_URLS: { [chainId: number]: string } = {
+  1: process.env.NEXT_PUBLIC_RPC_URL_ETH,
+  137: process.env.NEXT_PUBLIC_RPC_URL_MATIC,
+  1666600000: process.env.NEXT_PUBLIC_RPC_URL_HARMONY,
+};
+
+
+export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
+  ethereum: 'https://safe-transaction.mainnet.gnosis.io',
+  polygon: 'https://safe-transaction.polygon.gnosis.io',
+  rinkeby: 'https://safe-transaction.rinkeby.gnosis.io',
+  harmony: 'https://multisig.t.hmny.io',
+};
+
+export const HARMONY_MULTI_SEND_ADDR = '0x998739BFdAAdde7C933B942a68053933098f9EDa'
+export const HARMONY_SAFE_MASTER_COPY = '0x69f4D1788e39c87893C980c06EdF4b7f686e2938'
+export const HARMONY_SAFE_MASTER_COPY2 = '0xfb1bffC9d739B8D520DaF37dF666da4C687191EA'
+export const HARMONY_PROXY_FACTORY = '0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC'
+
+
+export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId));
+
+
 export const CHAIN_IDS = {
   ETH: 1,
   MATIC: 137,
   RINKEBY: 4,
+  HARMONY: 1666600000,
 };
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
-  eth_mainnet: 'Ethereum Mainnet',
+  ethereum: 'Ethereum Mainnet',
   rinkeby: 'Rinkeby Testnet',
-  polygon_mainnet: 'Polygon Mainnet',
+  polygon: 'Polygon Mainnet',
+  harmony: 'Harmony Mainnet',
 };
 
 export const SUPPORTED_CURRENCIES = [
@@ -99,6 +118,10 @@ export const SUPPORTED_CURRENCIES = [
   {
     symbol: 'MATIC',
     chains: [137],
+  },
+  {
+    symbol: 'ONE',
+    chains: [1666600000],
   },
   {
     symbol: 'WONDER',
@@ -114,6 +137,7 @@ export const SUPPORTED_CURRENCIES = [
     contracts: {
       1: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       137: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
+      1666600000: '0x44cED87b9F1492Bf2DCf5c16004832569f7f6cBa'
     },
   },
 ];
@@ -123,6 +147,7 @@ export const CURRENCY_KEYS = {
   WONDER: 'WONDER',
   MATIC: 'MATIC',
   USDC: 'USDC',
+  ONE: 'ONE',
 };
 
 export const SIDEBAR_WIDTH = '80px';
@@ -251,7 +276,8 @@ export const filteredColorOptions = Object.keys(POD_COLOR).map((key) => ({
 export { SUPPORTED_CHAINS };
 export const EMAIL_REGEX =
   /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
+export const URL_REGEX =
+  /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi;
 export const validateEmail = (email) => {
   return email.match(EMAIL_REGEX);
 };
@@ -261,6 +287,7 @@ export const GRAPHQL_ERRORS = {
   ORG_INVITE_ALREADY_EXISTS: 'org_invite_already_exist',
   POD_INVITE_ALREADY_EXISTS: 'pod_invite_already_exist',
   NO_RECIPIENT_WEB_3_ADDRESS: 'recipient has no web3 address',
+  NO_WEB3_ADDRESS_FOUND: 'no_web3_address_found',
 };
 
 export const TAGS = ['Design', 'Narration', 'Social Media', 'Copywriting', 'Create copywriting'];

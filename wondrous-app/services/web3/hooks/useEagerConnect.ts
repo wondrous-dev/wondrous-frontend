@@ -14,7 +14,7 @@ export default function useEagerConnect() {
   const { storedConnector } = useStoredConnector();
 
   useEffect(() => {
-    if (storedConnector) {
+    if (storedConnector && user?.activeEthAddress) { // FIXME this is hacky, not sure how to resolve
       activate(connectors[storedConnector], undefined, true).catch((err) => {
         console.log('Error while activating stored connector', err);
       });

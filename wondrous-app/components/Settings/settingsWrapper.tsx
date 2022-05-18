@@ -12,9 +12,10 @@ import { SettingsPage } from 'types/common';
 import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
-import { useMe } from '../Auth/withAuth';
+import { logout, useMe } from '../Auth/withAuth';
 import CreateFormModal from '../CreateEntity';
 import HeaderComponent from '../Header';
+import ExitIcon from 'components/Icons/exit';
 import CardIcon from '../Icons/card';
 import GeneralSettingsIcon from '../Icons/generalSettings';
 import MembersIcon from '../Icons/members';
@@ -93,7 +94,7 @@ const SIDEBAR_LIST_ITEMS = [
 // ]
 
 export const SettingsWrapper = (props) => {
-  const { children } = props;
+  const { children, showPodIcon = true } = props;
 
   const router = useRouter();
   const user = useMe();
@@ -109,10 +110,11 @@ export const SettingsWrapper = (props) => {
     toggleHtmlOverflow();
     setCreateFormModal((prevState) => !prevState);
   };
+
   const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
   const [getPodById, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
 
-  const org = orgData?.getOrgById || podData?.getPodById?.orgId;
+  const org = orgData?.getOrgById;
   const pod = podData?.getPodById;
 
   const SETTINGS_SIDEBAR_LIST_ITEMS = [
@@ -202,6 +204,10 @@ export const SettingsWrapper = (props) => {
     }
   }, [getOrgById, getPodById, org, orgId, podId]);
 
+  const signOut = () => {
+    logout();
+  };
+
   const permissions = parseUserPermissionContext({
     userPermissionsContext: parsedUserPermissionsContext,
     orgId: orgId || pod?.orgId,
@@ -245,6 +251,7 @@ export const SettingsWrapper = (props) => {
     },
   };
   const activeSettingsPage = settingsPageConfig?.[String(podId ?? orgId ?? '')];
+
   return (
     <>
       <SettingsBoardContext.Provider
@@ -292,22 +299,27 @@ export const SettingsWrapper = (props) => {
                       </Link>
                     );
                   })}
-                  {/* <SettingsSidebarLogoutButton>
-                    <SettingsSidebarLogoutButtonIcon />
-                    <SettingsSidebarLogoutButtonText>Log out</SettingsSidebarLogoutButtonText>
-                  </SettingsSidebarLogoutButton> */}
+                  <SettingsSidebarTabsListItem onClick={signOut}>
+                    <SettingsSidebarTabsListItemIcon>
+                      <ExitIcon />
+                    </SettingsSidebarTabsListItemIcon>
+                    <SettingsSidebarTabsListItemText>Log out</SettingsSidebarTabsListItemText>
+                  </SettingsSidebarTabsListItem>
                 </SettingsSidebarTabsListContainer>
               </SettingsSidebarTabsSection>
             </SettingsSidebarContainer>
           </SettingsSidebar>
+
           <SettingsContentBlock>
-            <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>
-              <SettingsDaoPodIndicatorOrgProfile src={orgData?.getOrgById?.profilePicture} />
-              <SettingsDaoPodIndicatorIconWrapper color={podData?.getPodById.color}>
-                <PodIcon />
-              </SettingsDaoPodIndicatorIconWrapper>
-              <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
-            </SettingsDaoPodIndicator>
+            {showPodIcon ? (
+              <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>
+                <SettingsDaoPodIndicatorOrgProfile src={orgData?.getOrgById?.profilePicture} />
+                <SettingsDaoPodIndicatorIconWrapper color={podData?.getPodById.color}>
+                  <PodIcon />
+                </SettingsDaoPodIndicatorIconWrapper>
+                <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
+              </SettingsDaoPodIndicator>
+            ) : null}
             {children}
           </SettingsContentBlock>
         </SettingsContainer>

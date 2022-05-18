@@ -17,6 +17,7 @@ import { Grey700, White } from '../../theme/colors';
 import { addProposalItem } from 'utils/board';
 import { CHAIN_TO_CHAIN_DIPLAY_NAME, ENTITIES_TYPES, MEDIA_TYPES, PERMISSIONS, PRIVACY_LEVEL, TAGS } from 'utils/constants';
 import { TextInputContext } from 'utils/contexts';
+
 import {
   getMentionArray,
   parseUserPermissionContext,
@@ -90,6 +91,7 @@ import {
   CreateFormAddTagsSection,
   StyledChip,
   TextInputDiv,
+  CreateFormBaseModalHeaderWrapper,
 } from './styles';
 
 const filterUserOptions = (options) => {
@@ -486,6 +488,8 @@ const CreateLayoutBaseModal = (props) => {
   const [createMilestone, { loading: createMilestoneLoading }] = useMutation(CREATE_MILESTONE);
 
   const submitMutation = useCallback(() => {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
     const taskInput = {
       title,
       tags,
@@ -515,6 +519,7 @@ const CreateLayoutBaseModal = (props) => {
       reviewerIds: selectedReviewers.map(({ id }) => id),
       userMentions: getMentionArray(descriptionText),
       mediaUploads,
+      timezone,
     };
     const taskPodPrivacyError = !isPodPublic ? isPublicEntity : false;
     switch (entityType) {
@@ -679,6 +684,7 @@ const CreateLayoutBaseModal = (props) => {
           podId: pod,
           mediaUploads,
           dueDate,
+          timezone,
         };
         if (canCreateTask) {
           createMilestone({
@@ -740,6 +746,7 @@ const CreateLayoutBaseModal = (props) => {
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
+          timezone,
         };
         // const isErrorMaxSubmissionCount =
         //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
@@ -832,17 +839,19 @@ const CreateLayoutBaseModal = (props) => {
 
   return (
     <CreateFormBaseModal isPod={isPod}>
-      <CreateFormBaseModalCloseBtn onClick={handleClose}>
-        <CloseModalIcon />
-      </CreateFormBaseModalCloseBtn>
-      <CreateFormBaseModalHeader
-        style={{
-          marginBottom: '0',
-        }}
-      >
-        <TitleIcon circle />
-        <CreateFormBaseModalTitle>Create a {titleText.toLowerCase()}</CreateFormBaseModalTitle>
-      </CreateFormBaseModalHeader>
+      <CreateFormBaseModalHeaderWrapper>
+        <CreateFormBaseModalHeader
+          style={{
+            marginBottom: '0',
+          }}
+        >
+          <TitleIcon circle />
+          <CreateFormBaseModalTitle>Create a {titleText.toLowerCase()}</CreateFormBaseModalTitle>
+        </CreateFormBaseModalHeader>
+        <CreateFormBaseModalCloseBtn onClick={handleClose}>
+          <CloseModalIcon />
+        </CreateFormBaseModalCloseBtn>
+      </CreateFormBaseModalHeaderWrapper>
 
       <CreateFormMainSection>
         <CreateFormMainSelects>
@@ -1095,19 +1104,38 @@ const CreateLayoutBaseModal = (props) => {
                     //   });
                     // }
                   }}
-                  renderInput={(params) => (
-                    <TextField
-                      style={{
-                        color: White,
-                        fontFamily: 'Space Grotesk',
-                        fontSize: '14px',
-                        paddingLeft: '4px',
-                      }}
-                      placeholder="Enter username..."
-                      InputLabelProps={{ shrink: false }}
-                      {...params}
-                    />
-                  )}
+                  renderInput={(params) => {
+                    const InputProps = {
+                      ...params?.InputProps,
+                      type: 'autocomplete',
+                      startAdornment:
+                        assignee && assigneeString ? (
+                          <StyledChip label={assigneeString} onDelete={() => setAssignee(null)} />
+                        ) : (
+                          ''
+                        ),
+                    };
+                    return (
+                      <TextField
+                        {...params}
+                        style={{
+                          color: White,
+                          fontFamily: 'Space Grotesk',
+                          fontSize: '1px',
+                          paddingLeft: '4px',
+                        }}
+                        placeholder="Enter username..."
+                        InputLabelProps={{ shrink: false }}
+                        InputProps={InputProps}
+                        inputProps={{
+                          ...params?.inputProps,
+                          style: {
+                            opacity: assignee ? '0' : '1',
+                          },
+                        }}
+                      />
+                    );
+                  }}
                   value={assignee}
                   inputValue={assigneeString}
                   onInputChange={(event, newInputValue) => {
@@ -1446,7 +1474,7 @@ const CreateLayoutBaseModal = (props) => {
             onClick={submitMutation}
           >
             {creating ? <CircularProgress size={20} /> : null}
-            {canCreateTask ? 'Create' : 'Propose'} {titleText}
+            {canCreateTask ? 'Create' : isProposal ? 'Create' : 'Propose'} {titleText}
           </CreateFormPreviewButton>
         </CreateFormButtonsBlock>
       </CreateFormFooterButtons>

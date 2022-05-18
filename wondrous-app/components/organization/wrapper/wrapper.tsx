@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from 'utils/constants';
 import { SideBarContext } from 'utils/contexts';
+import apollo from 'services/apollo';
+import { useMe } from '../../Auth/withAuth';
+import Image from 'next/image';
 
 import Header from '../../Header';
 import SideBarComponent from '../../SideBar';
@@ -53,6 +56,8 @@ import { Router, useRouter } from 'next/router';
 import { NoLogoDAO } from '../../SideBar/styles';
 import { DAOEmptyIcon, DAOIcon } from '../../Icons/dao';
 import { SOCIAL_MEDIA_DISCORD, SOCIAL_MEDIA_TWITTER, SOCIAL_OPENSEA, SOCIAL_MEDIA_LINKEDIN } from 'utils/constants';
+import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
+import { useWonderWeb3 } from 'services/web3';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
 import LinkedInIcon from '../../Icons/linkedIn';
 import OpenSeaIcon from '../../Icons/openSea';
@@ -60,6 +65,9 @@ import LinkBigIcon from '../../Icons/link';
 import { DiscordIcon } from '../../Icons/discord';
 import { MembershipRequestModal } from './RequestModal';
 import { PrivateBoardIcon } from '../../Common/PrivateBoardIcon';
+import { GET_TOKEN_GATED_ROLES_FOR_ORG, LIT_SIGNATURE_EXIST } from 'graphql/queries';
+import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
+import { TokenGatedRoleModal } from 'components/organization/wrapper/TokenGatedRoleModal';
 
 const MOCK_ORGANIZATION_DATA = {
   amount: 1234567,
@@ -67,6 +75,8 @@ const MOCK_ORGANIZATION_DATA = {
 
 const Wrapper = (props) => {
   const { children, orgData } = props;
+  const wonderWeb3 = useWonderWeb3();
+  const loggedInUser = useMe();
   const [open, setOpen] = useState(false);
   const [minimized, setMinimized] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
@@ -83,10 +93,13 @@ const Wrapper = (props) => {
   const [permissions, setPermissions] = useState(undefined);
   const [createFormModal, setCreateFormModal] = useState(false);
   const [data, setData] = useState(MOCK_ORGANIZATION_DATA);
+  const [tokenGatedRoles, setTokenGatedRoles] = useState([]);
   const [openInvite, setOpenInvite] = useState(false);
   const { amount } = data;
   const [joinRequestSent, setJoinRequestSent] = useState(false);
   const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
+  const [notLinkedWalletError, setNotLinkedWalletError] = useState(false);
+  const [openGatedRoleModal, setOpenGatedRoleModal] = useState(false);
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST);
   const toggleCreateFormModal = () => {
     toggleHtmlOverflow();
@@ -96,6 +109,71 @@ const Wrapper = (props) => {
   const links = orgProfile?.links;
   const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
+  const handleJoinOrgButtonClick = async () => {
+    if (loggedInUser && !loggedInUser?.activeEthAddress) {
+      setOpenJoinRequestModal(true);
+    }
+    let apolloResult;
+    try {
+      apolloResult = await apollo.query({
+        query: GET_TOKEN_GATED_ROLES_FOR_ORG,
+        variables: {
+          orgId: orgBoard?.orgId,
+        },
+      });
+    } catch (e) {
+      console.error(e);
+      setOpenJoinRequestModal(true);
+      return;
+    }
+    const roles = apolloResult?.data?.getTokenGatedRolesForOrg;
+    if (!roles || roles?.length === 0) {
+      setOpenJoinRequestModal(true);
+      return;
+    }
+    if (
+      wonderWeb3.address &&
+      loggedInUser?.activeEthAddress &&
+      wonderWeb3.toChecksumAddress(wonderWeb3.address) != wonderWeb3.toChecksumAddress(loggedInUser?.activeEthAddress)
+    ) {
+      setOpenJoinRequestModal(true);
+      setNotLinkedWalletError(true);
+      return;
+    }
+    let litSignatureExistResult;
+    try {
+      litSignatureExistResult = await apollo.query({
+        query: LIT_SIGNATURE_EXIST,
+      });
+    } catch (e) {
+      console.error(e);
+      setOpenJoinRequestModal(true);
+      return;
+    }
+    const litSignatureExist = litSignatureExistResult?.data?.litSignatureExist;
+    if (!litSignatureExist?.exist) {
+      // FIXME make sure  account is the correct account
+      try {
+        const signedMessage = await wonderWeb3.signMessage(LIT_PROTOCOL_MESSAGE);
+        await apollo.mutate({
+          mutation: CREATE_LIT_SIGNATURE,
+          variables: {
+            input: {
+              signature: signedMessage,
+              signingAddress: wonderWeb3.address,
+            },
+          },
+        });
+      } catch (e) {
+        console.error(e);
+        setOpenJoinRequestModal(true);
+        return;
+      }
+    }
+    setTokenGatedRoles(roles);
+    setOpenGatedRoleModal(true);
+  };
+
   useEffect(() => {
     const orgPermissions = parseUserPermissionContext({
       userPermissionsContext,
@@ -139,6 +217,14 @@ const Wrapper = (props) => {
         sendRequest={createJoinOrgRequest}
         open={openJoinRequestModal}
         onClose={() => setOpenJoinRequestModal(false)}
+        notLinkedWalletError={notLinkedWalletError}
+        linkedWallet={loggedInUser?.activeEthAddress}
+      />
+      <TokenGatedRoleModal
+        open={openGatedRoleModal}
+        onClose={() => setOpenGatedRoleModal(false)}
+        tokenGatedRoles={tokenGatedRoles}
+        setOpenJoinRequestModal={setOpenJoinRequestModal}
       />
       <MoreInfoModal
         open={open && (showUsers || showPods)}
@@ -224,9 +310,7 @@ const Wrapper = (props) => {
                             style={{
                               width: 'fit-content',
                             }}
-                            onClick={() => {
-                              setOpenJoinRequestModal(true);
-                            }}
+                            onClick={handleJoinOrgButtonClick}
                           >
                             <HeaderFollowButtonText>Join org</HeaderFollowButtonText>
                           </HeaderManageSettingsButton>
@@ -333,7 +417,6 @@ const Wrapper = (props) => {
                   </div>
                 </HeaderActivity>
               </TokenHeader>
-
               <Tabs>{children}</Tabs>
             </ContentContainer>
           </Content>

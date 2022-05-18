@@ -24,8 +24,6 @@ import TokenGatedRoleDisplay from './TokenGatedRoleDisplay';
 
 export const TokenGatedRoleModal = (props) => {
   const { open, onClose, sendRequest, orgId, podId, setJoinRequestSent, tokenGatedRoles, setOpenJoinRequestModal } = props;
-  const board = useOrgBoard();
-  const [requestMessage, setRequestMessage] = useState('');
   if (!open) {
     return <></>
   }

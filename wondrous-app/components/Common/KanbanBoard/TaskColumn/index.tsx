@@ -1,5 +1,6 @@
-import React, { useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
+import CreateBtnIcon from 'components/Icons/createBtn';
 
 import {
   PERMISSIONS,
@@ -31,13 +32,15 @@ import Milestone from '../../Milestone';
 import { useMe } from '../../../Auth/withAuth';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
+import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
+import CreateLayoutBaseModal from 'components/CreateEntity/createEntityModal';
+import { CreateModalOverlay } from 'components/CreateEntity/styles';
 
 interface ITaskColumn {
   cardsList: Array<any>;
   moveCard: any;
   status: string;
   section: Array<any>;
-  onOpen: () => any;
 }
 
 const TITLES = {
@@ -59,6 +62,7 @@ const TaskColumn = (props: ITaskColumn) => {
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
+  const [openTaskModal, setOpenTaskModal] = useState(false);
   let boardType = null;
   if (orgBoard) {
     boardType = BOARD_TYPE.org;
@@ -93,12 +97,45 @@ const TaskColumn = (props: ITaskColumn) => {
       number = 0;
       break;
   }
+
   return (
     <TaskColumnContainer>
+      <CreateModalOverlay
+        style={{
+          height: '95vh',
+        }}
+        open={openTaskModal}
+        onClose={() => setOpenTaskModal(false)}
+      >
+        <CreateLayoutBaseModal
+          entityType={ENTITIES_TYPES.TASK}
+          handleClose={() => setOpenTaskModal(false)}
+          resetEntityType={() => {}}
+          setEntityType={() => {}}
+          open={openTaskModal}
+        />
+      </CreateModalOverlay>
+
       <TaskColumnContainerHeader>
         <HeaderIcon />
         <TaskColumnContainerHeaderTitle>{TITLES[status]}</TaskColumnContainerHeaderTitle>
         <TaskColumnContainerCount>{number}</TaskColumnContainerCount>
+        <div
+          style={{
+            flex: 1,
+          }}
+        />
+        {status === TASK_STATUS_TODO && (
+          <CreateBtnIconDark
+            onClick={() => setOpenTaskModal(true)}
+            width="26"
+            height="28"
+            style={{
+              marginLeft: '16px',
+              cursor: 'pointer',
+            }}
+          />
+        )}
       </TaskColumnContainerHeader>
       <ColumnSection section={section} setSection={() => {}} />
       <Droppable droppableId={status}>
@@ -118,10 +155,10 @@ const TaskColumn = (props: ITaskColumn) => {
                   >
                     {card.type === ENTITIES_TYPES.MILESTONE ? (
                       <Milestone>
-                        <Task onOpen={props.onOpen} task={card} setTask={() => {}} />
+                        <Task task={card} setTask={() => {}} />
                       </Milestone>
                     ) : (
-                      <Task onOpen={props.onOpen} task={card} setTask={() => {}} />
+                      <Task task={card} setTask={() => {}} />
                     )}
                   </div>
                 )}

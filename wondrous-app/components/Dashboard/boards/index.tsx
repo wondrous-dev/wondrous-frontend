@@ -247,13 +247,17 @@ const useGetUserTaskBoard = ({
 
 const useGetPerStatusTaskCountForUserBoard = (loggedInUser) => {
   const [getPerStatusTaskCountForUserBoard, { data }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD);
+
   useEffect(() => {
-    getPerStatusTaskCountForUserBoard({
-      variables: {
-        userId: loggedInUser?.id,
-      },
-    });
+    if (loggedInUser) {
+      getPerStatusTaskCountForUserBoard({
+        variables: {
+          userId: loggedInUser?.id,
+        },
+      });
+    }
   }, [loggedInUser, getPerStatusTaskCountForUserBoard]);
+
   return { data };
 };
 

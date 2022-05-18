@@ -36,6 +36,7 @@ import {
   RightArrowWrapper,
   TaskUserDiv,
   MakeSubmissionDiv,
+  TaskListModalContentWrapper,
   Tag,
 } from './styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
@@ -71,7 +72,7 @@ import {
 } from 'utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
-import { Red400, White } from '../../../theme/colors';
+import { Red400, Red800, White } from '../../../theme/colors';
 import { useMe } from '../../Auth/withAuth';
 import { GetStatusIcon, renderMentionString } from 'utils/common';
 import {
@@ -98,7 +99,13 @@ import {
   TakeTaskButton,
 } from '../../CreateEntity/styles';
 import { useRouter } from 'next/router';
-import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE, UPDATE_BOUNTY_STATUS } from 'graphql/mutations/task';
+import {
+  UPDATE_TASK_STATUS,
+  UPDATE_TASK_ASSIGNEE,
+  UPDATE_BOUNTY_STATUS,
+  ARCHIVE_TASK,
+  UNARCHIVE_TASK,
+} from 'graphql/mutations/task';
 import { UPDATE_TASK_PROPOSAL_ASSIGNEE } from 'graphql/mutations/taskProposal';
 import { GET_PREVIEW_FILE } from 'graphql/queries/media';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
@@ -136,6 +143,8 @@ import { TaskSubtasks } from '../TaskSubtask';
 import { SubtaskDarkIcon, SubtaskLightIcon } from '../../Icons/subtask';
 import { CheckedBoxIcon } from '../../Icons/checkedBox';
 import RightArrowIcon from '../../Icons/rightArrow';
+import { DeleteTaskModal } from '../DeleteTaskModal';
+
 export const MediaLink = (props) => {
   const { media, style } = props;
   const [getPreviewFile, { data, loading, error }] = useLazyQuery(GET_PREVIEW_FILE, {
@@ -599,16 +608,12 @@ export const TaskListViewModal = (props) => {
         <TaskListModalHeader>
           {count} {text}
         </TaskListModalHeader>
-        <div
-          style={{
-            paddingBottom: '30px',
-          }}
-        >
+        <TaskListModalContentWrapper>
           {fetchedList?.map((task, index) => {
             return <TaskListCard key={task?.id} taskType={taskType} task={task} />;
           })}
           <LoadMore ref={ref} hasMore={hasMore}></LoadMore>
-        </div>
+        </TaskListModalContentWrapper>
       </TaskModal>
     </CreateModalOverlay>
   );
@@ -765,7 +770,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
 
   const [activeTab, setActiveTab] = useState(null);
   const [archiveTask, setArchiveTask] = useState(false);
-  const [archiveTaskAlert, setArchiveTaskAlert] = useState(false);
+  const [deleteTask, setDeleteTask] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const snackbarContext = useContext(SnackbarAlertContext);
@@ -808,7 +813,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     },
   });
 
-  const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
+  const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS, {
     refetchQueries: [
       'getTaskById',
       'getUserTaskBoardTasks',
@@ -826,7 +831,45 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       // let columns = [...boardColumns?.columns]
     },
   });
-  const [updateBountyStatus, { data: updateBountyStatusData }] = useMutation(UPDATE_BOUNTY_STATUS, {
+
+  const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
+    refetchQueries: [
+      'getTaskById',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getOrgTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+    onError: () => {
+      console.error('Something went wrong with archiving tasks');
+    },
+    onCompleted: () => {
+      // TODO: Move columns
+      // let columns = [...boardColumns?.columns]
+    },
+  });
+  const [unarchiveTaskMutation, { data: unarchiveTaskData }] = useMutation(UNARCHIVE_TASK, {
+    refetchQueries: [
+      'getTaskById',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getOrgTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+    onError: () => {
+      console.error('Something went wrong unarchiving tasks');
+    },
+    onCompleted: () => {
+      // TODO: Move columns
+      // let columns = [...boardColumns?.columns]
+    },
+  });
+
+  const [updateBountyStatus] = useMutation(UPDATE_BOUNTY_STATUS, {
     refetchQueries: () => [
       'getTaskById',
       'getOrgTaskBoardTasks',
@@ -835,28 +878,65 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       'getPerStatusTaskCountForPodBoard',
     ],
   });
-
   const handleNewStatus = useCallback(
     (newStatus) => {
-      if (isBounty) {
-        updateBountyStatus({
-          variables: {
-            bountyId: fetchedTask?.id,
-            input: { newStatus },
-          },
-        });
-      } else {
-        updateTaskStatusMutation({
+      if (newStatus === TASK_STATUS_ARCHIVED) {
+        archiveTaskMutation({
           variables: {
             taskId: fetchedTask?.id,
-            input: {
-              newStatus,
-            },
           },
+        }).then((result) => {
+          handleClose();
+          setSnackbarAlertOpen(true);
+          setSnackbarAlertMessage(
+            <>
+              Task archived successfully!{' '}
+              <ArchivedTaskUndo
+                onClick={() => {
+                  setSnackbarAlertOpen(false);
+                  unarchiveTaskMutation({
+                    variables: {
+                      taskId: fetchedTask?.id,
+                    },
+                  });
+                }}
+              >
+                Undo
+              </ArchivedTaskUndo>
+            </>
+          );
         });
+      } else {
+        if (isBounty) {
+          updateBountyStatus({
+            variables: {
+              bountyId: fetchedTask?.id,
+              input: { newStatus },
+            },
+          });
+        } else {
+          updateTaskStatusMutation({
+            variables: {
+              taskId: fetchedTask?.id,
+              input: {
+                newStatus,
+              },
+            },
+          });
+        }
       }
     },
-    [fetchedTask?.id, isBounty, updateBountyStatus, updateTaskStatusMutation]
+    [
+      fetchedTask?.id,
+      isBounty,
+      updateBountyStatus,
+      updateTaskStatusMutation,
+      archiveTaskMutation,
+      handleClose,
+      setSnackbarAlertOpen,
+      unarchiveTaskMutation,
+      setSnackbarAlertMessage,
+    ]
   );
 
   useEffect(() => {
@@ -864,37 +944,15 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       if (initialStatus !== TASK_STATUS_ARCHIVED) {
         setInitialStatus(fetchedTask?.status);
       }
-      const archived = [
-        updateTaskStatusMutationData?.updateTaskStatus.status,
-        updateBountyStatusData?.updateBountyStatus.status,
-      ].some((i) => i?.includes(TASK_STATUS_ARCHIVED));
-      if (archived) {
-        handleClose();
-        setSnackbarAlertOpen(true);
-        setSnackbarAlertMessage(
-          <>
-            Task archived successfully!{' '}
-            <ArchivedTaskUndo
-              onClick={() => {
-                handleNewStatus(initialStatus);
-                setSnackbarAlertOpen(false);
-              }}
-            >
-              Undo
-            </ArchivedTaskUndo>
-          </>
-        );
-      }
     }
   }, [
     initialStatus,
     setInitialStatus,
     fetchedTask,
-    updateTaskStatusMutationData,
     setSnackbarAlertOpen,
     setSnackbarAlertMessage,
     handleNewStatus,
-    updateBountyStatusData,
+    archiveTaskData,
     handleClose,
     open,
   ]);
@@ -902,12 +960,12 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   useEffect(() => {
     if (isMilestone) {
       setActiveTab(tabs.tasks);
-    } else if (isTaskProposal) {
+    } else if (isTaskProposal || router?.query?.taskCommentId) {
       setActiveTab(tabs.discussion);
     } else {
       setActiveTab(tabs.submissions);
     }
-  }, [isMilestone, isTaskProposal]);
+  }, [isMilestone, isTaskProposal, router?.query?.taskCommentId]);
 
   useEffect(() => {
     if (open) {
@@ -1040,6 +1098,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     fetchedTask?.createdBy === user?.id;
+  const canDelete =
+    canArchive && (fetchedTask?.type === ENTITIES_TYPES.TASK || fetchedTask?.type === ENTITIES_TYPES.MILESTONE);
   const displayDivProfileImageStyle = {
     width: '26px',
     height: '26px',
@@ -1058,6 +1118,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const taskType = isTaskProposal ? 'task proposal' : fetchedTask?.type;
   const handleOnCloseArchiveTaskModal = () => {
     setArchiveTask(false);
+    setDeleteTask(false);
     if (isTaskProposal) {
       handleClose();
     }
@@ -1075,6 +1136,17 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
           onArchive={handleNewStatus}
           taskType={taskType}
           taskId={fetchedTask?.id}
+        />
+        <DeleteTaskModal
+          open={deleteTask}
+          onClose={() => setDeleteTask(false)}
+          taskType={taskType}
+          taskId={fetchedTask?.id}
+          onDelete={() => {
+            handleClose();
+            setSnackbarAlertOpen(true);
+            setSnackbarAlertMessage(`Deleted successfully!`);
+          }}
         />
         <Modal
           open={open}
@@ -1177,7 +1249,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   </PodNameTypography>
                 </>
               )}
-              {canEdit && fetchedTask?.status !== TASK_STATUS_DONE && (
+              {canEdit && (
                 <TaskActionMenu right="true">
                   <DropDown DropdownHandler={TaskMenuIcon}>
                     {canEdit && (
@@ -1198,6 +1270,18 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                         style={dropdownItemStyle}
                       >
                         Archive {taskType}
+                      </DropDownItem>
+                    )}
+                    {canDelete && (
+                      <DropDownItem
+                        key={'task-menu-delete-' + fetchedTask?.id}
+                        onClick={() => {
+                          setDeleteTask(true);
+                        }}
+                        style={dropdownItemStyle}
+                        color={Red800}
+                      >
+                        Delete {taskType}
                       </DropDownItem>
                     )}
                   </DropDown>
@@ -1483,7 +1567,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   }}
                 >
                   {fetchedTask?.rewards.map((reward, index) => {
-                    const { rewardAmount, symbol, icon } = reward;
+                    const { rewardAmount, symbol, icon, chain } = reward;
                     return (
                       <CompensationPill
                         key={index}
@@ -1502,7 +1586,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                           />
                         </IconContainer>
                         <CompensationAmount>
-                          {rewardAmount} {symbol}
+                          {rewardAmount} {symbol} paid on {chain}
                         </CompensationAmount>
                       </CompensationPill>
                     );
@@ -1654,7 +1738,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     color: Red400,
                   }}
                 >
-                  Your wallet is not connected. Please link your wallet to receive payment for completeting tasks and
+                  Your wallet is not connected. Please link your wallet to receive payment for completing tasks and
                   bounties.
                 </TaskSectionInfoText>
               )}

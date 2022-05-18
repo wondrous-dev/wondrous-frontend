@@ -24,7 +24,7 @@ import { useMe } from '../../Auth/withAuth';
 import { useRouter } from 'next/router';
 import { DAOIcon } from '../../Icons/dao';
 import { OrganisationsCardNoLogo } from '../../profile/about/styles';
-import { OfflinePayment } from '../../Common/Payment/OfflinePayment';
+import { OfflinePayment } from '../../Common/Payment/OfflinePayment/OfflinePayment';
 import { SingleWalletPayment } from '../../Common/Payment/SingleWalletPayment';
 import Link from 'next/link';
 import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
@@ -149,6 +149,7 @@ export const PayModal = (props) => {
                 This link will only be visible to the assignee and other admins with the payment permission
               </WarningTypography>
               <OfflinePayment
+                submissionPaymentInfo={submissionPaymentInfo}
                 approvedSubmission={{
                   id: submissionId,
                 }}
