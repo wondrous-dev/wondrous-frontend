@@ -19,10 +19,9 @@ const CalendarDay = ({
       role="button"
       component="td"
       sx={{
-        px: 0.75,
-        ...(isOutsideDay && { opacity: 0.5 }),
-        ...(modifiers?.has('blocked') && { opacity: 0.5 }),
-        display: 'inline-block',
+        ...styles.root,
+        ...(isOutsideDay && styles.lowOpacity),
+        ...(modifiers?.has('blocked') && styles.lowOpacity),
       }}
       onMouseEnter={(e) => {
         onDayMouseEnter(day, e);
@@ -41,22 +40,14 @@ const CalendarDay = ({
       <Box
         component="span"
         sx={{
-          width: 24,
-          display: 'block',
-          mt: '5px',
-          borderRadius: 1,
-          ...(isFocused && { background: ' #7427FF', color: 'white' }),
-          ...(modifiers?.has('highlighted-calendar') && { background: ' #7427FF', color: 'white' }),
+          ...styles.content,
+          ...(isFocused && styles.highlighted),
+          ...(modifiers?.has('highlighted-calendar') && styles.highlighted),
           ...(modifiers?.has('hovered-span') && { background: ' #472289', color: 'white' }),
-          ...(modifiers?.has('selected-span') && { background: ' #472289', color: 'white' }),
-          ...(modifiers?.has('selected-start') && { background: ' #7427FF', color: 'white' }),
-          ...(modifiers?.has('selected-end') && { background: ' #7427FF', color: 'white' }),
-          ...(modifiers?.has('selected') && { background: ' #7427FF', color: 'white' }),
-
-          ':hover': {
-            background: ' #7427FF',
-            color: 'white',
-          },
+          ...(modifiers?.has('selected-span') && styles.selected),
+          ...(modifiers?.has('selected-start') && styles.highlighted),
+          ...(modifiers?.has('selected-end') && styles.highlighted),
+          ...(modifiers?.has('selected') && styles.highlighted),
         }}
       >
         {day.date()}

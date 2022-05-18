@@ -17,11 +17,12 @@ import {
 } from 'utils/constants';
 
 import DatePickerRecurringUtilities from 'components/DatePickerRecurringUtilities';
+import DatePickerNavButton from 'components/DatePickerNavButton';
 import CalendarDay from 'components/CalendarDay';
 
 import styles from './DateRangePickerStyles';
 
-const DateRangePicker = ({}) => {
+const DateRangePicker = ({ sx }) => {
   const [dateRange, setDateRange] = useState(DEFAULT_DATEPICKER_VALUE);
   const [focusedInput, setFocusedInput] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
@@ -145,7 +146,7 @@ const DateRangePicker = ({}) => {
               onClick={() => setFocusedInput(DATEPICKER_FIELDS.END_DATE)}
             />
           </Box>
-          <Box sx={styles.root}>
+          <Box sx={{ ...sx }}>
             <DayPickerRangeController
               startDate={dateRange.startDate}
               startDateId="your_unique_start_date_id"
@@ -163,11 +164,12 @@ const DateRangePicker = ({}) => {
               minimumNights={0}
               hideKeyboardShortcutsPanel
               enableOutsideDays
+              navPrev={<DatePickerNavButton prev />}
+              navNext={<DatePickerNavButton next />}
               customArrowIcon={<></>}
               isDayHighlighted={(day) => highlightDay(day)}
               isDayBlocked={(day) => day.isBefore(todayMoment)}
               renderCalendarDay={(props) => <CalendarDay {...props} />}
-              // Reference component => https://github.com/react-dates/react-dates/blob/master/src/components/CustomizableCalendarDay.jsx
               renderCalendarInfo={() => (
                 <DatePickerRecurringUtilities
                   showOptions={showOptions}

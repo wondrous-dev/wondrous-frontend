@@ -8,7 +8,6 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
 import {
-  DATEPICKER_FIELDS,
   DATEPICKER_OPTIONS,
   DEFAULT_SINGLE_DATEPICKER_VALUE,
   WEEK_DAYS,
@@ -17,11 +16,12 @@ import {
 } from 'utils/constants';
 
 import DatePickerRecurringUtilities from 'components/DatePickerRecurringUtilities';
+import DatePickerNavButton from 'components/DatePickerNavButton';
 import CalendarDay from 'components/CalendarDay';
 
 import styles from './SingleDatePickerStyles';
 
-const SingleDatePicker = ({}) => {
+const SingleDatePicker = ({ sx }) => {
   const [date, setDate] = useState(DEFAULT_SINGLE_DATEPICKER_VALUE);
   const [focusedInput, setFocusedInput] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
@@ -88,19 +88,23 @@ const SingleDatePicker = ({}) => {
         }}
         value={displayValue}
         onClick={() => setFocusedInput(true)}
+        sx={styles.mainTextfield}
       />
 
       {focusedInput && (
-        <Box>
-          <TextField
-            value={startDateString}
-            InputProps={{
-              readOnly: true,
-            }}
-            fullWidth
-            placeholder="Start Date"
-          />
-          <Box sx={styles.root}>
+        <Box sx={styles.mainContainer}>
+          <Box sx={{ ...sx }}>
+            <Box sx={styles.inputContainer}>
+              <TextField
+                value={startDateString}
+                InputProps={{
+                  readOnly: true,
+                }}
+                fullWidth
+                placeholder="Start Date"
+                sx={styles.darkTextfield}
+              />
+            </Box>
             <DayPickerSingleDateController
               date={date}
               initialDate={date}
@@ -116,9 +120,11 @@ const SingleDatePicker = ({}) => {
               }}
               numberOfMonths={1}
               displayFormat="MM/DD/yyyy"
-              daySize={36}
+              daySize={35.9}
               minimumNights={0}
               enableOutsideDays
+              navPrev={<DatePickerNavButton prev />}
+              navNext={<DatePickerNavButton next />}
               customArrowIcon={<></>}
               isDayHighlighted={(day) => highlightDay(day)}
               isDayBlocked={(day) => day.isBefore(todayMoment)}

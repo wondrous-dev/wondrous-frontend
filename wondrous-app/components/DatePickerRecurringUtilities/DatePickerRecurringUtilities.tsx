@@ -1,4 +1,6 @@
 import moment from 'moment';
+import Image from 'next/image';
+import { styled } from '@mui/material/styles';
 
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -15,6 +17,9 @@ import {
 
 import DaySelector from 'components/DaySelector';
 import WeekDaySelector from 'components/WeekDaySelector';
+
+import styles from './DatePickerRecurringUtilitiesStyles';
+import DatePickerSelect from 'components/DatePickerSelect';
 
 interface DatePickerRecurringUtilitiesProps {
   date?: any;
@@ -58,16 +63,17 @@ const DatePickerRecurringUtilities = ({
   };
 
   return (
-    <Box p={2}>
+    <Box mt={-8}>
       <Box>
         {showOptions && (
-          <Box borderTop="1px dotted black" pt={1}>
+          <Box sx={styles.borderContainer}>
             <Box display="flex" alignItems="center">
-              <Typography>Repeats</Typography>
+              Repeats
               <Box flex="1" />
-              <TextField
+              <DatePickerSelect
                 id="repeat-id"
                 select
+                sx={{ width: 130 }}
                 onChange={(e) => {
                   const type = e.target.value;
                   if (type === DATEPICKER_OPTIONS.DAILY) setRepeatValue(1);
@@ -79,14 +85,14 @@ const DatePickerRecurringUtilities = ({
                     {option}
                   </MenuItem>
                 ))}
-              </TextField>
+              </DatePickerSelect>
             </Box>
             {repeatType === DATEPICKER_OPTIONS.WEEKLY && (
               <WeekDaySelector onWeekDaysChange={onWeekDaysChange} weekDaysSelected={weekDaysSelected} />
             )}
             {repeatType === DATEPICKER_OPTIONS.MONTHLY && (
               <Box display="flex" mt={1}>
-                <Typography>On Day</Typography>
+                On Day
                 <Box flex="1" />
                 <Box>
                   <DaySelector dateRange={dateRange} todayMoment={todayMoment} onChange={handleDayChange} />
@@ -95,7 +101,7 @@ const DatePickerRecurringUtilities = ({
             )}
             {repeatType === DATEPICKER_OPTIONS.PERIODICALLY && (
               <Box display="flex" mt={1} alignItems="center">
-                <Typography>Days after completion</Typography>
+                Days after completion
                 <Box flex="1" />
                 <Box>
                   <DaySelector dateRange={dateRange} todayMoment={todayMoment} onChange={handleDayChange} />
@@ -105,10 +111,16 @@ const DatePickerRecurringUtilities = ({
           </Box>
         )}
       </Box>
-      <Box display="flex" borderTop="1px dotted black" mt={1}>
-        <Button onClick={() => setShowOptions(true)}>Recurring</Button>
+      <Box display="flex" sx={styles.borderContainer}>
+        <Button onClick={() => setShowOptions(true)} sx={styles.recurringButton}>
+          <Image src="/images/icons/recurring.svg" width={14} height={16} alt="Recurring button" />
+          <Box ml={1.25} />
+          Recurring
+        </Button>
         <Box flex="1" />
-        <Button onClick={clearAll}>Clear all</Button>
+        <Button onClick={clearAll} sx={styles.clearButton}>
+          Clear all
+        </Button>
       </Box>
     </Box>
   );

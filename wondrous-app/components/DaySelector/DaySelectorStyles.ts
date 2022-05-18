@@ -1,3 +1,17 @@
-const styles = {};
+const styles = {
+  menuItem: {
+    // '&.MuiMenuItem-root': {
+    display: 'block',
+    padding: '8px',
+    fontFamily: 'Space Grotesk',
+    fontSize: 16,
+    color: 'white',
+    // },
+    ':hover': {
+      background: 'linear-gradient(180deg, #1E1E1E 0%, #141414 100%)',
+      borderRadius: '6px',
+    },
+  },
+};
 
 export default styles;
