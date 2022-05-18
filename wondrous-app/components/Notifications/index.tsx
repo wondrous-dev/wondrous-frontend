@@ -26,7 +26,7 @@ import { MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
 import { useMutation } from '@apollo/client';
 import { GET_NOTIFICATIONS } from 'graphql/queries';
 import calculateTimeLapse from 'utils/calculateTimeLapse';
-import Link from 'next/link';
+import SmartLink from 'components/Common/SmartLink';
 
 const NotificationsBoard = ({ notifications, setNofications }) => {
   const unreadCount = useMemo(() => {
@@ -116,22 +116,19 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
             notifications.getNotifications?.map((notification) => {
               const isNotificationViewed = notification?.viewedAt;
               return (
-                <Link
+                <SmartLink
                   key={'notifications-' + notification.id}
                   href={`/${snakeToCamel(notification.objectType)}/${notification.objectId}`}
-                  passHref
+                  onClick={() => {
+                    markNotificationRead({
+                      variables: {
+                        notificationId: notification?.id,
+                      },
+                      refetchQueries: [GET_NOTIFICATIONS],
+                    });
+                  }}
                 >
-                  <NotificationsItem
-                    isNotificationViewed={isNotificationViewed}
-                    onClick={() =>
-                      markNotificationRead({
-                        variables: {
-                          notificationId: notification?.id,
-                        },
-                        refetchQueries: [GET_NOTIFICATIONS],
-                      })
-                    }
-                  >
+                  <NotificationsItem isNotificationViewed={isNotificationViewed}>
                     <NotificationItemIcon>
                       {getNotificationActorIcon(notification)}
                       <NotificationItemStatus>{notification.status}</NotificationItemStatus>
@@ -144,7 +141,7 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
                     </NotificationWrapper>
                     {!isNotificationViewed && <NotificationsDot />}
                   </NotificationsItem>
-                </Link>
+                </SmartLink>
               );
             })
           ) : (

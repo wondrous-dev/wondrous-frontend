@@ -23,6 +23,7 @@ import {
   StyledMilestoneEmpty,
 } from './styles';
 import { skipForCommandKey } from 'utils/links';
+import SmartLink from 'components/Common/SmartLink';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: ToDo,
@@ -90,32 +91,32 @@ export const MilestoneTaskList = (props) => {
               const viewUrl = `/organization/${task?.orgUsername || task?.org?.username}/boards?task=${task?.id}`;
 
               return (
-                <StyledTableRow
-                  key={task.id}
-                  onClick={skipForCommandKey(() => router.push(viewUrl))}
-                  style={{
-                    cursor: 'pointer',
-                  }}
-                >
-                  <StyledTableCell>
-                    <TableCellWrapper>
-                      <SmallAvatar
-                        id={task.assigneeId}
-                        avatar={task.assignee?.profilePicture ?? {}}
-                        initials={task.assignee?.username?.slice(0, 2)}
-                      />
-                    </TableCellWrapper>
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    <StatusIcon />
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <TaskTitle>
-                      <Link href={viewUrl}>{task.title}</Link>
-                    </TaskTitle>
-                    <TaskDescription>{task.description}</TaskDescription>
-                  </StyledTableCell>
-                </StyledTableRow>
+                <SmartLink href={viewUrl} key={task.id}>
+                  <StyledTableRow
+                    style={{
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <StyledTableCell>
+                      <TableCellWrapper>
+                        <SmallAvatar
+                          id={task.assigneeId}
+                          avatar={task.assignee?.profilePicture ?? {}}
+                          initials={task.assignee?.username?.slice(0, 2)}
+                        />
+                      </TableCellWrapper>
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <StatusIcon />
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <TaskTitle>
+                        <Link href={viewUrl}>{task.title}</Link>
+                      </TaskTitle>
+                      <TaskDescription>{task.description}</TaskDescription>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                </SmartLink>
               );
             })}
           </StyledTableBody>

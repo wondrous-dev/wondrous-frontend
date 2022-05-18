@@ -1,53 +1,49 @@
-import React, { ReactNode } from 'react'
-import Link from 'next/link'
+import React, { MouseEvent, ReactNode } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+
+interface Props {
+  href: string;
+  as?: string;
+  children: ReactNode;
+  asLink?: boolean;
+  onClick?: (event: MouseEvent<HTMLElement>) => unknown;
+}
 
 /**
  * SmartLink is smart because it can trigger the onClick from the wrapped
  * Link component upon left click, and still allow the context menu to show
  * up upon right click.
  *
- * Note that this component currently does not support opening link in new tab
- * when the command key (e.metaKey) is pressed while left clicking.
+ * NOTE: Don't add onClick prop to the inner component
  */
-export default function SmartLink({ children, href, as }: Props) {
-	return (
-		<Link href={href} as={as} passHref={true}>
-			<SmartLinkInner aHref={as}>{children}</SmartLinkInner>
-		</Link>
-	)
-}
+export default function SmartLink({ children, href, as, onClick = () => null, asLink = false }: Props) {
+  const destinationUrl = as || href;
+  const router = useRouter();
 
-function SmartLinkInner(props: InnerProps) {
-	const onClickFromNextLink = props.onClick
+  const handleClick = (event: MouseEvent<HTMLElement>) => {
+    onClick(event);
 
-	const childrenWithProps = React.Children.map(props.children, (child) => {
-		// checking isValidElement is the safe way and avoids a typescript error too
-		if (React.isValidElement(child)) {
-			return React.cloneElement(child, { onClick: onClickFromNextLink })
-		}
-		return child
-	})
+    // if click was by link with href attribute
+    if (!(event.target as HTMLLinkElement)?.href) {
+      router.push(destinationUrl);
+    }
+  };
 
-	return (
-		<a
-			href={props.aHref}
-			onClick={(e) => {
-				e.preventDefault()
-			}}
-		>
-			{childrenWithProps}
-		</a>
-	)
-}
+  const childrenWithProps = React.Children.map(children, (child) => {
+    // checking isValidElement is the safe way and avoids a typescript error too
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child, { onClick: handleClick });
+    }
 
-interface Props {
-	href: string
-	as: string
-	children: ReactNode
-}
+    return child;
+  });
 
-interface InnerProps {
-	aHref: string
-	onClick?: () => void
-	children: ReactNode
+  return asLink ? (
+    <Link href={href} as={destinationUrl} passHref>
+      <a href={destinationUrl}>{children}</a>
+    </Link>
+  ) : (
+    <>{childrenWithProps}</>
+  );
 }
