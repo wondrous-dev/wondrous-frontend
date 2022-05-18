@@ -135,6 +135,7 @@ export const GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD = gql`
       assigneeUsername
       assigneeProfilePicture
       tasks {
+        id
         title
         description
         pod {

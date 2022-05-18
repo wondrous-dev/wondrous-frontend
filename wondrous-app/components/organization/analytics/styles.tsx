@@ -56,14 +56,13 @@ export const StyledTextField = styled(TextField)`
     background: #191919;
     border-radius: 6px;
     height: 40px;
-    width: 150px;
+    width: 170px;
     padding: 0 8px;
     position: relative;
     font-size: 14px;
     line-height: 19px;
     letter-spacing: 0.01em;
     color: #c4c4c4 !important;
-    margin-top: 6px;
     margin-left: 8px;
     margin-right: 8px;
     border-bottom: none !important;
@@ -115,5 +114,17 @@ export const TaskCountText = styled(Typography)`
   && {
     color: ${White};
     font-size: 13px;
+  }
+`;
+
+export const TasksWrapper = styled.div``;
+
+export const TaskRow = styled.div`
+  display: flex;
+  align-items: center;
+  padding-top: 8px;
+  :not(:last-child) {
+    border-bottom: 0.5px dashed #4b4b4b;
+    padding-bottom: 8px;
   }
 `;
