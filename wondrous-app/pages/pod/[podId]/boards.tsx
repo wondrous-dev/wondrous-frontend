@@ -48,6 +48,7 @@ const useGetPodTaskBoardTasks = ({
     nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
+      debugger;
       if (entityType === ENTITIES_TYPES.MILESTONE || entityType === ENTITIES_TYPES.BOUNTY) {
         setColumns(data?.getPodTaskBoardTasks);
         setIsLoading(false);
@@ -521,7 +522,7 @@ const BoardsPage = () => {
         onFilterChange={handleFilterChange}
         statuses={statuses}
         setColumns={setColumns}
-        loading={false}
+        loading={isLoading}
         entityType={entityType}
         userId={userId?.toString()}
         activeView={activeView}
