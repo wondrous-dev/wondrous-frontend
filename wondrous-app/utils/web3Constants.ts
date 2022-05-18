@@ -7,6 +7,7 @@ export const CHAIN_ID_TO_CHAIN_NAME = {
   4: 'rinkeby',
   137: 'polygon',
   1666600000: 'harmony',
+  42161: 'arbitrum',
 };
 
 
@@ -33,19 +34,6 @@ export enum SupportedETHChainId {
     POLYGON_MUMBAI = 80001,
   }
   
-  export const ETH_CHAIN_IDS_TO_NAMES = {
-    [SupportedETHChainId.MAINNET]: 'mainnet',
-    [SupportedETHChainId.ROPSTEN]: 'ropsten',
-    [SupportedETHChainId.RINKEBY]: 'rinkeby',
-    [SupportedETHChainId.GOERLI]: 'goerli',
-    [SupportedETHChainId.KOVAN]: 'kovan',
-    [SupportedETHChainId.POLYGON]: 'polygon',
-    [SupportedETHChainId.POLYGON_MUMBAI]: 'polygon_mumbai',
-    [SupportedETHChainId.ARBITRUM_ONE]: 'arbitrum',
-    [SupportedETHChainId.ARBITRUM_RINKEBY]: 'arbitrum_rinkeby',
-    [SupportedETHChainId.OPTIMISM]: 'optimism',
-    [SupportedETHChainId.OPTIMISTIC_KOVAN]: 'optimistic_kovan',
-  }
   
   export const ALL_SUPPORTED_ETH_CHAIN_IDS: SupportedETHChainId[] = Object.values(SupportedETHChainId).filter(
     (id) => typeof id === 'number'

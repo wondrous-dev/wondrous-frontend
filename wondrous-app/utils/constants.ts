@@ -67,7 +67,16 @@ const SUPPORTED_CHAINS = {
   1: 'ETH',
   137: 'MATIC',
   1666600000: 'HARMONY',
+  42161: 'ARBITRUM',
 };
+
+export const NATIVE_TOKEN_SYMBOL = {
+  1: 'ETH',
+  137: 'MATIC',
+  1666600000: 'ONE',
+  42161: 'AETH',
+};
+
 
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {
   SUPPORTED_CHAINS[4] = 'RINKEBY';
@@ -77,6 +86,7 @@ export const RPC_URLS: { [chainId: number]: string } = {
   1: process.env.NEXT_PUBLIC_RPC_URL_ETH,
   137: process.env.NEXT_PUBLIC_RPC_URL_MATIC,
   1666600000: process.env.NEXT_PUBLIC_RPC_URL_HARMONY,
+  42161: process.env.NEXT_PUBLIC_RPC_URL_ARBITRUM,
 };
 
 
@@ -84,6 +94,7 @@ export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
   ethereum: 'https://safe-transaction.mainnet.gnosis.io',
   polygon: 'https://safe-transaction.polygon.gnosis.io',
   rinkeby: 'https://safe-transaction.rinkeby.gnosis.io',
+  arbitrum: 'https://safe-transaction.arbitrum.gnosis.io',
   harmony: 'https://multisig.t.hmny.io',
 };
 
@@ -101,6 +112,7 @@ export const CHAIN_IDS = {
   MATIC: 137,
   RINKEBY: 4,
   HARMONY: 1666600000,
+  ARBITRUM: 42161
 };
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
@@ -108,6 +120,7 @@ export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
   rinkeby: 'Rinkeby Testnet',
   polygon: 'Polygon Mainnet',
   harmony: 'Harmony Mainnet',
+  arbitrum: 'Arbitrum One',
 };
 
 export const SUPPORTED_CURRENCIES = [
@@ -124,20 +137,27 @@ export const SUPPORTED_CURRENCIES = [
     chains: [1666600000],
   },
   {
+    symbol: 'AETH',
+    chains: [42161],
+  },
+  {
     symbol: 'WONDER',
-    chains: [1, 137],
+    chains: [1, 137, 1666600000, 42161],
     contracts: {
       1: '',
       137: '',
+      1666600000: '',
+      42161: '',
     },
   },
   {
     symbol: 'USDC',
-    chains: [1, 137],
+    chains: [1, 137, 1666600000, 42161],
     contracts: {
       1: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       137: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
-      1666600000: '0x44cED87b9F1492Bf2DCf5c16004832569f7f6cBa'
+      1666600000: '0x44cED87b9F1492Bf2DCf5c16004832569f7f6cBa',
+      42161: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8'
     },
   },
 ];
@@ -148,6 +168,7 @@ export const CURRENCY_KEYS = {
   MATIC: 'MATIC',
   USDC: 'USDC',
   ONE: 'ONE',
+  AETH: 'AETH',
 };
 
 export const SIDEBAR_WIDTH = '80px';
