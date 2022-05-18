@@ -13,7 +13,7 @@ import { useMe } from '../Auth/withAuth';
 import { AvatarList } from '../Common/AvatarList';
 import { DropDown, DropDownItem } from '../Common/dropdown';
 import { SafeImage } from '../Common/Image';
-import { ClaimButton } from '../Common/Task/styles';
+import { ActionButton as ClaimButton } from '../Common/Task/styles';
 import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton';
 import { Claim } from '../Icons/claimTask';
 import { TaskMenuIcon } from '../Icons/taskMenu';
