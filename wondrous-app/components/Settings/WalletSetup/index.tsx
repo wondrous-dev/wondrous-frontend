@@ -26,17 +26,17 @@ import WrenchIcon from '../../Icons/wrench';
 import SafeServiceClient from '@gnosis.pm/safe-service-client';
 import { useWonderWeb3 } from 'services/web3';
 import { ErrorText } from '../../Common';
-import { CHAIN_VALUE_TO_GNOSIS_CHAIN_VALUE, CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL } from '../../../utils/constants';
+import { CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL } from '../../../utils/constants';
 const LIMIT = 20;
 
 const SUPPORTED_PAYMENT_CHAINS = [
   {
     label: 'Ethereum Mainnet',
-    value: 'eth_mainnet',
+    value: 'ethereum',
   },
   {
     label: 'Polygon Mainnet',
-    value: 'polygon_mainnet',
+    value: 'polygon',
   },
   {
     label: 'Harmony Mainnet',
@@ -55,7 +55,7 @@ const Wallets = (props) => {
   const wonderWeb3 = useWonderWeb3();
   const { orgId, podId } = router.query;
   const [wallets, setWallets] = useState([]);
-  const [selectedChain, setSelectedChain] = useState('eth_mainnet');
+  const [selectedChain, setSelectedChain] = useState('ethereum');
   const [walletName, setWalletName] = useState('');
   const [safeAddress, setSafeAddress] = useState('');
   const [userAddress, setUserAddress] = useState('');
@@ -114,7 +114,6 @@ const Wallets = (props) => {
 
   const handleCreateWalletClick = async () => {
     const newError = emptyError;
-    const chain = CHAIN_VALUE_TO_GNOSIS_CHAIN_VALUE[selectedChain];
     const safeServiceUrl = CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL[selectedChain];
     const safeService = new SafeServiceClient(safeServiceUrl);
     let checksumAddress;
@@ -129,7 +128,7 @@ const Wallets = (props) => {
       const safe = await safeService.getSafeInfo(checksumAddress);
     } catch (e) {
       if (String(e).includes('Not Found')) {
-        newError.safeAddressError = `Safe address not deployed on ${chain}`;
+        newError.safeAddressError = `Safe address not deployed on ${selectedChain}`;
       } else {
         newError.safeAddressError = 'unknown gnosis network error';
       }

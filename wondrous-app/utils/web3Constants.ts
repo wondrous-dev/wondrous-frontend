@@ -2,10 +2,18 @@ export enum SupportedChainType {
   ETH = 'eth' // should be evm
 }
 
+export const CHAIN_ID_TO_CHAIN_NAME = {
+  1: 'ethereum',
+  4: 'rinkeby',
+  137: 'polygon',
+  1666600000: 'harmony',
+};
+
+
 export const CHAIN_TO_GNOSIS_URL_ABBR = {
-  eth_mainnet: 'eth',
+  ethereum: 'eth',
   rinkeby: 'rin',
-  polygon_mainnet: 'matic',
+  polygon: 'matic',
 };
 
 export enum SupportedETHChainId {
