@@ -6,7 +6,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { format } from 'date-fns';
 import { GET_AUTOCOMPLETE_USERS, GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD, GET_ORG_USERS } from 'graphql/queries';
 import { Post } from '../../Common/Post';
-import Wrapper from '../wrapper/wrapper';
+import Wrapper from '../wrapper';
 import {
   ContributorRow,
   ContributorDiv,
@@ -19,7 +19,7 @@ import {
   TaskCountWrapper,
   TasksWrapper,
   TaskRow,
-} from './styles';
+} from 'components/organization/analytics/styles';
 import { SafeImage } from 'components/Common/Image';
 import { DefaultProfilePicture, UserProfilePicture } from 'components/profile/modals/styles';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
@@ -150,8 +150,6 @@ const UserRow = ({ contributorTask }) => {
         <TasksWrapper>
           {contributorTask?.tasks?.map((task) => {
             const reward = (task.rewards || [])[0];
-            const podName = task?.podName || task?.pod?.name;
-            const podColor = task?.podColor || task?.podColor;
             return (
               <TaskRow
                 key={task?.id}
@@ -175,41 +173,6 @@ const UserRow = ({ contributorTask }) => {
                   }}
                 />
                 <RewardContainer>
-                  {/* <Reward>
-                    <SafeImage
-                      src={'https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=018'}
-                      style={{
-                        width: '16px',
-                        height: '16px',
-                      }}
-                    />
-                    <RewardAmount
-                      style={{
-                        marginLeft: '4px',
-                        fontWeight: 'normal',
-                      }}
-                    >
-                      {100}
-                    </RewardAmount>
-                  </Reward> */}
-                  {podName && (
-                    <PodWrapper
-                      style={{
-                        marginTop: '0',
-                        marginRight: '8px',
-                      }}
-                    >
-                      <PodIcon
-                        color={podColor}
-                        style={{
-                          width: '26px',
-                          height: '26px',
-                          marginRight: '4px',
-                        }}
-                      />
-                      <PodName>{podName}</PodName>
-                    </PodWrapper>
-                  )}
                   {reward && (
                     <Reward>
                       <SafeImage
@@ -229,28 +192,28 @@ const UserRow = ({ contributorTask }) => {
                       </RewardAmount>
                     </Reward>
                   )}
-                  <RewardContainer
+                </RewardContainer>
+                <RewardContainer
+                  style={{
+                    alignItems: 'center',
+                    marginRight: '8px',
+                  }}
+                >
+                  <TaskStatus
                     style={{
-                      alignItems: 'center',
-                      marginRight: '8px',
+                      width: '29px',
+                      height: '29px',
+                    }}
+                    status={task?.status}
+                  />
+                  <RewardAmount
+                    style={{
+                      marginLeft: '4px',
+                      fontWeight: 'normal',
                     }}
                   >
-                    <TaskStatus
-                      style={{
-                        width: '29px',
-                        height: '29px',
-                      }}
-                      status={task?.status}
-                    />
-                    <RewardAmount
-                      style={{
-                        marginLeft: '4px',
-                        fontWeight: 'normal',
-                      }}
-                    >
-                      {format(new Date(task?.completedAt), 'MM/dd/yyyy')}
-                    </RewardAmount>
-                  </RewardContainer>
+                    {format(new Date(task?.completedAt), 'MM/dd/yyyy')}
+                  </RewardAmount>
                 </RewardContainer>
               </TaskRow>
             );
@@ -273,8 +236,8 @@ const filterUsers = (users) => {
   }));
 };
 const Analytics = (props) => {
-  const { orgData = {} } = props;
-  const { id: orgId } = orgData;
+  const { podData = {} } = props;
+  const { id: podId, orgId } = podData;
   const [ref, inView] = useInView({});
   const [assignee, setAssignee] = useState(null);
   const [assigneeString, setAssigneeString] = useState('');
@@ -290,14 +253,14 @@ const Analytics = (props) => {
   const [toTime, setToTime] = useState(today);
   const [fromTime, setFromTime] = useState(lastTwoWeek);
   const [getCompletedTasksBetweenPeriods, { data, loading }] = useLazyQuery(GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD, {
-    fetchPolicy: 'network-only'
+    fetchPolicy: 'network-only',
   });
   const contributorTaskData = data?.getCompletedTasksBetweenPeriods;
   useEffect(() => {
-    if (orgId && fromTime && toTime) {
+    if (podId && fromTime && toTime) {
       getCompletedTasksBetweenPeriods({
         variables: {
-          orgId,
+          podId,
           toTime: format(toTime, 'yyyy-MM-dd'),
           fromTime: format(fromTime, 'yyyy-MM-dd'),
           ...(assignee && {
@@ -309,7 +272,7 @@ const Analytics = (props) => {
   }, [orgId, fromTime, toTime, assignee?.value]);
 
   return (
-    <Wrapper orgData={orgData}>
+    <Wrapper>
       <HeaderWrapper>
         <HeaderText>Completed work from</HeaderText>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
