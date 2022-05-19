@@ -4,7 +4,7 @@ import { useInView } from 'react-intersection-observer';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { format } from 'date-fns';
-import { GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD } from 'graphql/queries';
+import { GET_AUTOCOMPLETE_USERS, GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD } from 'graphql/queries';
 import { Post } from '../../Common/Post';
 import Wrapper from '../wrapper/wrapper';
 import {
@@ -31,6 +31,10 @@ import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
 import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
+import { TextField } from '@material-ui/core';
+import { OptionDiv, OptionTypography, StyledAutocompletePopper, StyledChip } from 'components/CreateEntity/styles';
+import { White } from 'theme/colors';
+import { filterOrgUsers } from 'components/CreateEntity/createEntityModal';
 
 const UserRowPictureStyles = {
   width: '30px',
@@ -204,6 +208,7 @@ const UserRow = ({ contributorTask }) => {
                   <RewardAmount
                     style={{
                       marginLeft: '4px',
+                      fontWeight: 'normal',
                     }}
                   >
                     {format(new Date(task?.completedAt), 'MM/dd/yyyy')}
@@ -221,6 +226,7 @@ const UserRow = ({ contributorTask }) => {
                     <RewardAmount
                       style={{
                         marginLeft: '4px',
+                        fontWeight: 'normal',
                       }}
                     >
                       {100}
@@ -248,10 +254,24 @@ const UserRow = ({ contributorTask }) => {
   );
 };
 
+const filterUsers = (users) => {
+  if (!users) {
+    return [];
+  }
+
+  return users.map((user) => ({
+    profilePicture: user?.profilePicture,
+    label: user?.username,
+    value: user?.id,
+  }));
+};
 const Analytics = (props) => {
   const { orgData = {} } = props;
   const { id: orgId } = orgData;
   const [ref, inView] = useInView({});
+  const [assignee, setAssignee] = useState(null);
+  const [assigneeString, setAssigneeString] = useState('');
+  const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
   const today = new Date();
   const lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
   const [toTime, setToTime] = useState(today);
@@ -293,6 +313,93 @@ const Analytics = (props) => {
             renderInput={(params) => <StyledTextField {...params} />}
           />
         </LocalizationProvider>
+        <HeaderText>by</HeaderText>
+        <StyledAutocompletePopper
+          options={filterUsers(autocompleteData?.getAutocompleteUsers)}
+          onOpen={() => {
+            // if (pod) {
+            //   getPodUsers({
+            //     variables: {
+            //       podId: pod?.id || pod,
+            //       limit: 100, // TODO: fix autocomplete
+            //     },
+            //   });
+            // }
+          }}
+          renderInput={(params) => {
+            const InputProps = {
+              ...params?.InputProps,
+              type: 'autocomplete',
+              startAdornment:
+                assignee && assigneeString ? (
+                  <StyledChip label={assigneeString} onDelete={() => setAssignee(null)} />
+                ) : (
+                  ''
+                ),
+            };
+            return (
+              <TextField
+                {...params}
+                style={{
+                  color: White,
+                  fontFamily: 'Space Grotesk',
+                  fontSize: '1px',
+                  paddingLeft: '4px',
+                  width: '200px',
+                  background: '#191919',
+                  borderRadius: '8px',
+                  marginLeft: '8px',
+                }}
+                placeholder="Enter username..."
+                InputLabelProps={{ shrink: false }}
+                InputProps={InputProps}
+                inputProps={{
+                  ...params?.inputProps,
+                  style: {
+                    opacity: assignee ? '0' : '1',
+                  },
+                }}
+              />
+            );
+          }}
+          value={assignee}
+          inputValue={assigneeString}
+          onInputChange={(event, newInputValue) => {
+            setAssigneeString(newInputValue);
+            getAutocompleteUsers({
+              variables: {
+                username: newInputValue,
+              },
+            });
+          }}
+          onChange={(_, __, reason) => {
+            if (reason === 'clear') {
+              setAssignee(null);
+            }
+          }}
+          renderOption={(props, option, state) => {
+            return (
+              <OptionDiv
+                onClick={(event) => {
+                  setAssignee(option);
+                  props?.onClick(event);
+                }}
+              >
+                {option?.profilePicture && (
+                  <SafeImage
+                    src={option?.profilePicture}
+                    style={{
+                      width: '30px',
+                      height: '30px',
+                      borderRadius: '15px',
+                    }}
+                  />
+                )}
+                <OptionTypography>{option?.label}</OptionTypography>
+              </OptionDiv>
+            );
+          }}
+        />
       </HeaderWrapper>
       {contributorTaskData?.length === 0 && (
         <HeaderText
