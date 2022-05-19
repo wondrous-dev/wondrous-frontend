@@ -28,7 +28,7 @@ type StyleProps = {
 };
 type Props = {
   status: string;
-  style: StyleProps;
+  style?: StyleProps;
 };
 
 export default function TaskStatus({ status, ...rest }: Props) {

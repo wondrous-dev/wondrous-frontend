@@ -291,10 +291,13 @@ const Analytics = (props) => {
           orgId,
           toTime: format(toTime, 'yyyy-MM-dd'),
           fromTime: format(fromTime, 'yyyy-MM-dd'),
+          ...(assignee && {
+            assigneeId: assignee?.value,
+          }),
         },
       });
     }
-  }, [orgId, fromTime, toTime]);
+  }, [orgId, fromTime, toTime, assignee?.value]);
 
   return (
     <Wrapper orgData={orgData}>
@@ -385,6 +388,13 @@ const Analytics = (props) => {
           onChange={(_, __, reason) => {
             if (reason === 'clear') {
               setAssignee(null);
+              getCompletedTasksBetweenPeriods({
+                variables: {
+                  orgId,
+                  toTime: format(toTime, 'yyyy-MM-dd'),
+                  fromTime: format(fromTime, 'yyyy-MM-dd'),
+                },
+              });
             }
           }}
           renderOption={(props, option, state) => {
