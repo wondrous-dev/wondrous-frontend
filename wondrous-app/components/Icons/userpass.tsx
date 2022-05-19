@@ -20,8 +20,20 @@ export const LockIcon = (props) => (
   </svg>
 );
 
+export const LockedIconOutline = (props) => (
+  <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M3.86523 3.70947C3.86523 2.05262 5.20838 0.709473 6.86523 0.709473V0.709473C8.52209 0.709473 9.86523 2.05262 9.86523 3.70947V5.70947H3.86523V3.70947Z"
+      stroke="#F93701"
+      strokeLinecap="round"
+    />
+    <path d="M8.99023 8.70947L4.86523 11.7095" stroke="#F93701" strokeLinecap="round" />
+    <path d="M4.86523 8.70947L8.99023 11.7095" stroke="#F93701" strokeLinecap="round" />
+    <rect x="0.865234" y="5.70947" width="12" height="9" rx="2" stroke="#F93701" strokeLinecap="round" />
+  </svg>
+);
 export const LockIconOutline = (props) => (
-  <svg width="24" height="24" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M4.33594 5.65723V3.43625C4.33518 2.74777 4.61369 2.0836 5.11738 1.57266C5.62107 1.06172 6.31402 0.740479 7.0617 0.671288C7.80938 0.602097 8.55845 0.789897 9.1635 1.19823C9.76854 1.60656 10.1864 2.20629 10.3359 2.881"
       stroke="#06FFA5"
@@ -36,8 +48,24 @@ export const LockIconOutline = (props) => (
   </svg>
 );
 
-export const EyeIcon = (props) => (
-  <svg width="34" height="34" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+export const PublicEyeIcon = (props) => (
+  <svg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M0.5 6.22083C0.5 6.22083 3.22727 0.720825 8 0.720825C12.7727 0.720825 15.5 6.22083 15.5 6.22083C15.5 6.22083 12.7727 11.7208 8 11.7208C3.22727 11.7208 0.5 6.22083 0.5 6.22083Z"
+      stroke="#CCBBFF"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M8.00639 8.28333C9.13607 8.28333 10.0518 7.35991 10.0518 6.22083C10.0518 5.08174 9.13607 4.15833 8.00639 4.15833C6.87672 4.15833 5.96094 5.08174 5.96094 6.22083C5.96094 7.35991 6.87672 8.28333 8.00639 8.28333Z"
+      stroke="#CCBBFF"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+export const PrivateEyeIcon = (props) => (
+  <svg width="22" height="18" viewBox="0 0 26 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g filter="url(#filter0_d_9081_245173)">
       <path
         d="M12.0442 3.9503C12.6253 3.81429 13.2202 3.7463 13.817 3.7477C19.7261 3.7477 23.1027 10.5009 23.1027 10.5009C22.5903 11.4596 21.9792 12.3621 21.2793 13.1938M15.6066 12.2906C15.3747 12.5394 15.0951 12.7389 14.7845 12.8774C14.4738 13.0158 14.1385 13.0902 13.7985 13.0962C13.4584 13.1022 13.1207 13.0396 12.8053 12.9123C12.49 12.7849 12.2035 12.5953 11.9631 12.3548C11.7226 12.1144 11.533 11.8279 11.4056 11.5126C11.2783 11.1972 11.2157 10.8595 11.2217 10.5194C11.2277 10.1794 11.3021 9.84407 11.4406 9.53342C11.579 9.22277 11.7785 8.94318 12.0274 8.71134M18.8312 15.5152C17.3882 16.6152 15.6311 17.2245 13.817 17.2542C7.90787 17.2542 4.53125 10.5009 4.53125 10.5009C5.58129 8.54411 7.03766 6.83445 8.80268 5.48666L18.8312 15.5152Z"

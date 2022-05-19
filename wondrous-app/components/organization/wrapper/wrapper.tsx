@@ -46,7 +46,7 @@ import {
   HeaderImageWrapper,
   HeaderTag,
 } from './styles';
-import { useOrgBoard } from 'utils/hooks';
+import { useOrgBoard, useTokenGating } from 'utils/hooks';
 import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
 import { GET_ORG_BY_ID, GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
 import { CREATE_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
@@ -66,7 +66,7 @@ import OpenSeaIcon from '../../Icons/openSea';
 import LinkBigIcon from '../../Icons/link';
 import { DiscordIcon } from '../../Icons/discord';
 import { MembershipRequestModal } from './RequestModal';
-import { PrivateBoardIcon, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
+import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import { GET_TOKEN_GATED_ROLES_FOR_ORG, LIT_SIGNATURE_EXIST } from 'graphql/queries';
 import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { TokenGatedRoleModal } from 'components/organization/wrapper/TokenGatedRoleModal';
@@ -103,6 +103,8 @@ const Wrapper = (props) => {
   const [notLinkedWalletError, setNotLinkedWalletError] = useState(false);
   const [openGatedRoleModal, setOpenGatedRoleModal] = useState(false);
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST);
+  const [tokenGatingConditions, isLoading] = useTokenGating(orgBoard?.orgId);
+
   const toggleCreateFormModal = () => {
     toggleHtmlOverflow();
     setCreateFormModal((prevState) => !prevState);
@@ -293,24 +295,16 @@ const Wrapper = (props) => {
                     <HeaderTag>@{orgProfile?.username}</HeaderTag>
                   </HeaderTitleIcon>
                   <HeaderButtons>
-                    <PrivateBoardIcon
-                      isPrivate={true}
-                      // isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
-                      tooltipTitle={'Private Org'}
-                    />
-                    {/* TODO check privacy */}
-                    {/* <ToggleBoardPrivacyIcon
-                      isPrivate={true}
+                    {!isLoading && (
+                      <TokenGatedBoard
+                        isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
+                        tooltipTitle={'Token gating'}
+                      />
+                    )}
+                    <ToggleBoardPrivacyIcon
+                      isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
                       tooltipTitle={orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
-                    /> */}
-                    {/* <HeaderFollowButton
-                      style={{
-                        visibility: 'hidden',
-                      }}
-                    >
-                      <HeaderFollowButtonText>{shrinkNumber(amount)}</HeaderFollowButtonText>
-                      <HeaderFollowButtonIcon src="/images/overview/icon.png" />
-                    </HeaderFollowButton> */}
+                    />
                     {permissions === null && (
                       <>
                         {joinRequestSent || userJoinRequest?.id ? (
@@ -351,11 +345,6 @@ const Wrapper = (props) => {
                         </HeaderButton>
                       </>
                     )}
-                    {/* {!permissions && (
-                      <HeaderContributeButton>
-                        Contribute
-                      </HeaderContributeButton>
-                    )} */}
                   </HeaderButtons>
                 </HeaderMainBlock>
                 <HeaderText>{orgProfile?.description}</HeaderText>

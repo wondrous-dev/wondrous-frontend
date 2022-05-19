@@ -18,7 +18,14 @@ import {
   SEARCH_TASKS_FOR_POD_BOARD_VIEW,
 } from 'graphql/queries/taskBoard';
 import apollo from 'services/apollo';
-import { ORG_POD_COLUMNS, FILTER_STATUSES, LIMIT, populateTaskColumns } from 'services/board';
+import {
+  ORG_POD_COLUMNS,
+  FILTER_STATUSES,
+  LIMIT,
+  populateTaskColumns,
+  ORG_POD_PROPOSAL_COLUMNS,
+  populateProposalColumns,
+} from 'services/board';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
 import {
@@ -123,11 +130,7 @@ const useGetPodTaskProposals = ({
     nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
-      const newColumns = bindSectionToColumns({
-        columns,
-        data: data?.getPodTaskBoardProposals,
-        section: TASK_STATUS_REQUESTED,
-      });
+      const newColumns = populateProposalColumns(data?.getPodTaskBoardProposals, ORG_POD_PROPOSAL_COLUMNS);
       setColumns(newColumns);
       setIsLoading(false);
     },

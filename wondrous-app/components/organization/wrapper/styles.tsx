@@ -43,10 +43,8 @@ export const HeaderImageDefault = styled(() => (
   <Image src="/images/overview/background.png" layout="fill" objectFit="cover" alt="header-image" />
 ))``;
 
-//TODO remove commented
 export const TokenHeader = styled.div`
   position: relative;
-  // max-width: 680px;
   width: 95%;
   min-height: 190px;
   height: 190px;
@@ -88,13 +86,9 @@ export const Content = styled.div`
   justify-content: center;
 `;
 
-//TODO remove commented
 export const ContentContainer = styled.div`
-  //max-width: 680px;
-  // max-width: 1037px;
   max-width: 100%;
   display: flex;
-  //justify-content: center;
   align-items: center;
   flex-direction: column;
   width: 100%;

@@ -520,6 +520,7 @@ export const ActionButton = styled(CreateFormPreviewButton)`
     margin-left: 0;
     margin-right: 12px;
     height: auto;
+    z-index: 100;
     border: 1px solid transparent;
     :hover {
       background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);

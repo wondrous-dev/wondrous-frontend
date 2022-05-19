@@ -15,6 +15,9 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
   PRIVACY_LEVEL,
+  STATUS_OPEN,
+  STATUS_APPROVED,
+  STATUS_CHANGE_REQUESTED,
 } from 'utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
@@ -555,14 +558,32 @@ const EditLayoutBaseModal = (props) => {
           username: user?.username,
           podName: justCreatedPod?.name,
         });
-
         const columns = [...boardColumns?.columns];
-        columns[0].section.tasks = columns[0].section.tasks.map((existingTaskProposal) => {
-          if (transformedTaskProposal?.id === existingTaskProposal.id) {
-            return transformedTaskProposal;
+
+        if (board?.entityType === ENTITIES_TYPES.PROPOSAL) {
+          let statusColumnIndex;
+          if (taskProposal.approvedAt) statusColumnIndex = columns.findIndex((column) => column.status === STATUS_OPEN);
+          if (!taskProposal.approvedAt && !taskProposal.changeRequested)
+            statusColumnIndex = columns.findIndex((column) => column.status === STATUS_APPROVED);
+          if (taskProposal.changeRequestedAt)
+            statusColumnIndex = columns.findIndex((column) => column.status === STATUS_CHANGE_REQUESTED);
+
+          if (statusColumnIndex) {
+            columns[statusColumnIndex].tasks = columns[statusColumnIndex].tasks.map((task) => {
+              if (task?.id === transformedTaskProposal?.id) {
+                return transformedTaskProposal;
+              }
+              return task;
+            });
           }
-          return existingTaskProposal;
-        });
+        } else {
+          columns[0].section.tasks = columns[0].section.tasks.map((existingTaskProposal) => {
+            if (transformedTaskProposal?.id === existingTaskProposal.id) {
+              return transformedTaskProposal;
+            }
+            return existingTaskProposal;
+          });
+        }
         boardColumns.setColumns(columns);
       }
       handleClose();
@@ -591,7 +612,7 @@ const EditLayoutBaseModal = (props) => {
   });
 
   const submitMutation = useCallback(() => {
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     switch (entityType) {
       case ENTITIES_TYPES.TASK:
         const taskInput = {
@@ -619,7 +640,7 @@ const EditLayoutBaseModal = (props) => {
           reviewerIds: selectedReviewers.map(({ id }) => id) || [],
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
-          timezone
+          timezone,
         };
         const taskPodPrivacyError = !isPodPublic ? publicTask : false;
         if (!title || !org || taskPodPrivacyError) {
@@ -663,7 +684,7 @@ const EditLayoutBaseModal = (props) => {
           }),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
-          timezone
+          timezone,
         };
 
         if (!title) {
@@ -695,7 +716,7 @@ const EditLayoutBaseModal = (props) => {
               podId: pod?.id,
               userMentions: getMentionArray(descriptionText),
               mediaUploads,
-              timezone
+              timezone,
             },
           },
         });
@@ -727,7 +748,7 @@ const EditLayoutBaseModal = (props) => {
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
-          timezone
+          timezone,
         };
         // const isErrorMaxSubmissionCount =
         //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;

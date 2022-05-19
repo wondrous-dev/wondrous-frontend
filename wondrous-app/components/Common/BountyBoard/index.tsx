@@ -26,6 +26,9 @@ import { PRIVACY_LEVEL } from 'utils/constants';
 import CommentsIcon from 'components/Icons/comments';
 import { SafeImage } from 'components/Common/Image';
 import { SubtaskDarkIcon } from 'components/Icons/subtask';
+import { PodName, PodWrapper } from 'components/Common/Task/styles';
+import PodIcon from 'components/Icons/podIcon';
+import { useRouter } from 'next/router';
 
 const CURRENCY_SYMBOL = {
   eth: <Ethereum />,
@@ -60,6 +63,13 @@ export const SubmissionsCount = ({ total, approved }) => {
   );
 };
 export default function Board({ tasks, handleCardClick = (bounty) => {} }) {
+  const router = useRouter();
+  const goToPod = (podId) => {
+    router.push(`/pod/${podId}/boards`, undefined, {
+      shallow: true,
+    });
+  };
+
   return (
     <>
       {tasks.map((bounty) => {
@@ -93,6 +103,25 @@ export default function Board({ tasks, handleCardClick = (bounty) => {} }) {
                 </BoardsCardMedia>
               ) : null}
               <SubmissionsCount total={bounty.totalSubmissionsCount} approved={bounty.approvedSubmissionsCount} />
+              {bounty?.podName && (
+                <PodWrapper
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    goToPod(bounty?.podId);
+                  }}
+                >
+                  <PodIcon
+                    color={bounty?.podColor}
+                    style={{
+                      width: '26px',
+                      height: '26px',
+                      marginRight: '8px',
+                    }}
+                  />
+                  <PodName>{bounty?.podName}</PodName>
+                </PodWrapper>
+              )}
             </BoardsCardBody>
             <BoardsCardFooter>
               {Number.isInteger(bounty.totalSubtaskCount) && (

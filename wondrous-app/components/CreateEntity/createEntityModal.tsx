@@ -535,6 +535,9 @@ const CreateLayoutBaseModal = (props) => {
             if (orgBoard) {
               refetchQueries.push('getPerTypeTaskCountForOrgBoard');
             }
+            if (podBoard) {
+              refetchQueries.push('getPerTypeTaskCountForPodBoard');
+            }
 
             createTask({
               variables: {
@@ -572,7 +575,9 @@ const CreateLayoutBaseModal = (props) => {
             if (orgBoard) {
               refetchQueries.push('getPerTypeTaskCountForOrgBoard');
             }
-
+            if (podBoard) {
+              refetchQueries.push('getPerTypeTaskCountForPodBoard');
+            }
             createTaskProposal({
               variables: {
                 input: taskInput,
@@ -625,7 +630,7 @@ const CreateLayoutBaseModal = (props) => {
             refetchQueries.push('getPerStatusTaskCountForOrgBoard', 'getPerTypeTaskCountForOrgBoard');
           }
           if (podBoard) {
-            refetchQueries.push('getPerStatusTaskCountForPodBoard');
+            refetchQueries.push('getPerTypeTaskCountForPodBoard');
           }
           createTaskProposal({
             variables: {
@@ -712,6 +717,9 @@ const CreateLayoutBaseModal = (props) => {
             refetchQueries.push('getPerTypeTaskCountForOrgBoard');
           }
 
+          if (podBoard) {
+            refetchQueries.push('getPerTypeTaskCountForPodBoard');
+          }
           createMilestone({
             variables: {
               input: milestoneInput,
@@ -804,6 +812,9 @@ const CreateLayoutBaseModal = (props) => {
             const refetchQueries = [];
             if (orgBoard) {
               refetchQueries.push('getPerTypeTaskCountForOrgBoard');
+            }
+            if (podBoard) {
+              refetchQueries.push('getPerTypeTaskCountForPodBoard');
             }
 
             createBounty({

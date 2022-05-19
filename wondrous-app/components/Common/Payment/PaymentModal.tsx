@@ -149,6 +149,7 @@ export const MakePaymentModal = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [approvedSubmission]);
   const handleCloseAll = () => {
+    debugger;
     handleClose();
     setShowPaymentModal(false);
   };

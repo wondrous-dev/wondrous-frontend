@@ -49,6 +49,7 @@ import { GET_TASK_REVIEWERS } from 'graphql/queries';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import EditLayoutBaseModal from 'components/CreateEntity/editEntityModal';
 import { DeleteTaskModal } from '../DeleteTaskModal';
+import { REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -103,6 +104,7 @@ export const Task = (props) => {
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
+  const board = orgBoard || podBoard || userBoard;
   const user = useMe();
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
@@ -126,6 +128,7 @@ export const Task = (props) => {
   const isSubtask = task?.parentTaskId !== null;
   const isBounty = type === Constants.ENTITIES_TYPES.BOUNTY;
   const location = useLocation();
+  const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
 
   const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
     refetchQueries: [
@@ -175,6 +178,26 @@ export const Task = (props) => {
     ],
   });
   const reviewerData = useGetReviewers(editTask, task);
+
+  const proposalRequestChange = (id, status) => {
+    requestChangeTaskProposal({
+      variables: {
+        proposalId: id,
+      },
+      onCompleted: () => {
+        let columns = [...board?.columns];
+        const columnToChange = columns.findIndex((column) => column.status === status);
+        if (Number.isInteger(columnToChange)) {
+          columns[columnToChange].tasks = columns[columnToChange].tasks.filter((task) => task.id !== id);
+          columns[columns.length - 1].tasks = [
+            { ...task, changeRequestedAt: new Date() },
+            ...columns[columns.length - 1].tasks,
+          ];
+        }
+        board?.setColumns(columns);
+      },
+    });
+  };
 
   const totalSubtask = task?.totalSubtaskCount;
   const completedSubtask = task?.completedSubtaskCount;
@@ -373,6 +396,7 @@ export const Task = (props) => {
         setArchiveTask={setArchiveTask}
         canDelete={canDelete}
         setDeleteTask={setDeleteTask}
+        proposalRequestChange={proposalRequestChange}
       />
     </span>
   );

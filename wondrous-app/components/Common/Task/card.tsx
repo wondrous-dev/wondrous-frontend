@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { TaskCommentIcon } from '../../Icons/taskComment';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
 import { DropDown, DropDownItem } from '../dropdown';
@@ -68,6 +68,13 @@ import {
 import { ProposalCardWrapper, ProposalCardType, ProposalCardIcon, ProposalFooterButton } from './styles';
 import { PRIVACY_LEVEL } from 'utils/constants';
 import { Red300, Green800, Grey57 } from 'theme/colors';
+import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
+import { GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { PERMISSIONS } from 'utils/constants';
+
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
   [Constants.TASK_STATUS_IN_PROGRESS]: InProgressWithBorder,
@@ -110,15 +117,77 @@ export const TaskCard = ({
   const [claimed, setClaimed] = useState(false);
   const totalSubtask = task?.totalSubtaskCount;
   const [displayActions, setDisplayActions] = useState(false);
-
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [isTaskSubmissionLoading, setTaskSubmissionLoading] = useState(false);
+  const [approvedSubmission, setApprovedSubmission] = useState(null);
   const router = useRouter();
+  const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const userPermissionsContext = userPermissionsContextData?.getUserPermissionContext
+    ? JSON.parse(userPermissionsContextData?.getUserPermissionContext)
+    : null;
+
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId: task?.orgId,
+    podId: task?.podId,
+  });
+
+  const hasPermissionToPay =
+    permissions.includes(PERMISSIONS.APPROVE_PAYMENT) || permissions.includes(PERMISSIONS.FULL_ACCESS);
+  const [getTaskSubmissionsForTask] = useLazyQuery(GET_TASK_SUBMISSIONS_FOR_TASK, {
+    onCompleted: (data) => {
+      const taskSubmissions = data?.getTaskSubmissionsForTask;
+      taskSubmissions?.map((taskSubmission) => {
+        if (taskSubmission?.approvedAt) {
+          setApprovedSubmission(taskSubmission);
+        }
+      });
+      setTaskSubmissionLoading(false);
+      setShowPaymentModal(true);
+    },
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
+    onError: (err) => {
+      setTaskSubmissionLoading(false);
+    },
+  });
+
+  //refactor this. move this logic in a separate hook
+  const displayPayButton =
+    !!task?.approvedSubmissionsCount &&
+    task?.status === Constants.TASK_STATUS_DONE &&
+    hasPermissionToPay &&
+    (!task.paymentStatus || task.paymentStatus === 'unpaid') &&
+    task?.rewards?.length > 0;
+
+  const handlePaymentModal = () => {
+    getTaskSubmissionsForTask({
+      variables: {
+        taskId: task?.id,
+      },
+    });
+  };
 
   return (
     <ProposalCardWrapper
-      onClick={openModal}
+      onClick={() => !showPaymentModal && openModal()}
       onMouseEnter={() => canArchive && setDisplayActions(true)}
       onMouseLeave={() => canArchive && setDisplayActions(false)}
     >
+      {showPaymentModal && !isTaskSubmissionLoading ? (
+        <MakePaymentModal
+          getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+          open={showPaymentModal}
+          approvedSubmission={approvedSubmission}
+          handleClose={() => {}}
+          setShowPaymentModal={setShowPaymentModal}
+          fetchedTask={task}
+        />
+      ) : null}
       <TaskInner>
         <TaskHeader>
           <TaskHeaderIconWrapper>
@@ -140,6 +209,7 @@ export const TaskCard = ({
                 <CheckedBoxIcon stroke="white" pathFill="none" />
               </CheckedIconWrapper>
             )}
+
             {task?.privacyLevel === Constants.PRIVACY_LEVEL.public && (
               <PodWrapper
                 style={{
@@ -258,6 +328,16 @@ export const TaskCard = ({
           {!isBounty && !isMilestone && task?.status === Constants.TASK_STATUS_IN_REVIEW && (
             <ActionButton onClick={openModal}>Review</ActionButton>
           )}
+          {displayPayButton && (
+            <ActionButton
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePaymentModal();
+              }}
+            >
+              Pay
+            </ActionButton>
+          )}
           {!isMilestone && (
             <TaskAction key={'task-comment-' + id}>
               <TaskCommentIcon />
@@ -311,50 +391,53 @@ export const TaskCard = ({
   );
 };
 
-const PROPOSAL_STATUS_MAP = {
-  [Constants.STATUS_APPROVED]: {
-    labelsAndActions: [
-      {
-        title: 'Approved',
-        borderColor: Green800,
-        color: Green800,
-      },
-    ],
-  },
-  [Constants.STATUS_OPEN]: {
-    labelsAndActions: [
-      {
-        title: 'Open',
-      },
-      {
-        title: 'Request edit',
-        action: () => {},
-      },
-    ],
-  },
-  [Constants.STATUS_CHANGE_REQUESTED]: {
-    labelsAndActions: [
-      {
-        title: 'Rejected',
-        borderColor: Red300,
-        color: Red300,
-      },
-    ],
-  },
-};
-
 const STATUS_ICONS = {
   [Constants.STATUS_APPROVED]: Approved,
   [Constants.STATUS_CHANGE_REQUESTED]: Rejected,
 };
 
-export function ProposalCard({ openModal, title, description, task }) {
+export function ProposalCard({ openModal, title, description, task, goToPod, proposalRequestChange }) {
   let proposalStatus = '';
 
   if (task.approvedAt) proposalStatus = Constants.STATUS_APPROVED;
   if (!task.approvedAt && !task.changeRequested) proposalStatus = Constants.STATUS_OPEN;
   if (task.changeRequestedAt) proposalStatus = Constants.STATUS_CHANGE_REQUESTED;
 
+  const PROPOSAL_STATUS_MAP = {
+    [Constants.STATUS_APPROVED]: {
+      labelsAndActions: [
+        {
+          title: 'Approved',
+          borderColor: Green800,
+          color: Green800,
+        },
+      ],
+    },
+    [Constants.STATUS_OPEN]: {
+      labelsAndActions: [
+        {
+          title: 'Open',
+        },
+        {
+          title: 'Request edit',
+          action: () => {
+            if (proposalRequestChange) {
+              proposalRequestChange(task.id, proposalStatus);
+            }
+          },
+        },
+      ],
+    },
+    [Constants.STATUS_CHANGE_REQUESTED]: {
+      labelsAndActions: [
+        {
+          title: 'Rejected',
+          borderColor: Red300,
+          color: Red300,
+        },
+      ],
+    },
+  };
   const labelsAndActions = PROPOSAL_STATUS_MAP[proposalStatus]?.labelsAndActions;
 
   const HeaderIcon = STATUS_ICONS[proposalStatus];
@@ -379,16 +462,39 @@ export function ProposalCard({ openModal, title, description, task }) {
             />
           </BoardsCardMedia>
         ) : null}
+        {task?.podName && (
+          <PodWrapper
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              goToPod(task?.podId);
+            }}
+          >
+            <PodIcon
+              color={task?.podColor}
+              style={{
+                width: '26px',
+                height: '26px',
+                marginRight: '8px',
+              }}
+            />
+            <PodName>{task?.podName}</PodName>
+          </PodWrapper>
+        )}
       </BoardsCardBody>
       <BoardsCardFooter style={{ paddingBottom: '7px' }}>
         {labelsAndActions?.map((label, idx) => (
           <ProposalFooterButton
             isAction={!!label.action}
-            onClick={(label) => label.action ?? label.action()}
+            onClick={(e) => {
+              e.stopPropagation();
+              label.action && label.action();
+            }}
             borderColor={label?.borderColor}
             key={idx}
             color={label?.color}
           >
+            {console.log(label)}
             {label?.title}
           </ProposalFooterButton>
         ))}
@@ -398,6 +504,5 @@ export function ProposalCard({ openModal, title, description, task }) {
 }
 export default function Card(props) {
   const { task } = props;
-
   return task.isProposal ? <ProposalCard {...props} /> : <TaskCard {...props} />;
 }

@@ -10,9 +10,21 @@ import {
   BoardsCardHeader,
   BoardsCardBodyDescription,
   BoardsCardBodyTitle,
+  BoardsCardMedia,
 } from 'components/Common/Boards/styles';
-
+import { SafeImage } from '../Image';
+import { PodName, PodWrapper } from 'components/Common/Task/styles';
+import PodIcon from 'components/Icons/podIcon';
+import { useRouter } from 'next/router';
 export default function Board({ tasks, handleCardClick }) {
+  const router = useRouter();
+
+  const goToPod = (podId) => {
+    router.push(`/pod/${podId}/boards`, undefined, {
+      shallow: true,
+    });
+  };
+
   return (
     <>
       {tasks.map((milestone) => (
@@ -25,11 +37,6 @@ export default function Board({ tasks, handleCardClick }) {
                 {milestone?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
               </BoardsPrivacyLabel>
             </BoardsCardSubheader>
-            {/*  we don't have price on milestones yet */}
-            {/* <BoardsRewardLabel>
-                {CURRENCY_SYMBOL[milestone.currency] || CURRENCY_SYMBOL.ETH}
-                3.24
-              </BoardsRewardLabel> */}
           </BoardsCardHeader>
           <BoardsCardBody>
             <BoardsCardBodyTitle>{milestone.title}</BoardsCardBodyTitle>
@@ -37,6 +44,33 @@ export default function Board({ tasks, handleCardClick }) {
             <MilestoneProgressWrapper>
               <MilestoneProgress milestoneId={milestone.id} />
             </MilestoneProgressWrapper>
+            {milestone?.media?.[0] ? (
+              <BoardsCardMedia>
+                <SafeImage
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+                  src={milestone?.media[0].slug}
+                />
+              </BoardsCardMedia>
+            ) : null}
+            {milestone?.podName && (
+              <PodWrapper
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  goToPod(milestone?.podId);
+                }}
+              >
+                <PodIcon
+                  color={milestone?.podColor}
+                  style={{
+                    width: '26px',
+                    height: '26px',
+                    marginRight: '8px',
+                  }}
+                />
+                <PodName>{milestone?.podName}</PodName>
+              </PodWrapper>
+            )}
           </BoardsCardBody>
           <BoardsCardFooter>
             <CommentsIcon />
