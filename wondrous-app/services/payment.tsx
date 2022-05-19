@@ -14,6 +14,8 @@ const CHAIN_NAME_TO_DB_CHAIN_NAME = {
   ETH: 'ethereum',
   MATIC: 'polygon',
   RINKEBY: 'rinkeby',
+  ARBITRUM: 'arbitrum',
+  BOBA: 'boba',
 };
 
 export const useGnosisSdk = () => {
