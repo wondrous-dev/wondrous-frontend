@@ -494,7 +494,6 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
             key={idx}
             color={label?.color}
           >
-            {console.log(label)}
             {label?.title}
           </ProposalFooterButton>
         ))}

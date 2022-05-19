@@ -97,7 +97,6 @@ const Wrapper = (props) => {
     }
   }, [podBoard?.orgId]);
 
-  console.log(orgData);
   const ORG_PERMISSIONS = {
     MANAGE_SETTINGS: 'manageSettings',
     CONTRIBUTOR: 'contributor',
@@ -228,7 +227,6 @@ const Wrapper = (props) => {
     }
   }, [podBoard?.podId]);
 
-  console.log(podBoard);
   return (
     <>
       <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
