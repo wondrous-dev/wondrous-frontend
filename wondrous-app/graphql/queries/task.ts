@@ -147,7 +147,11 @@ export const GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD = gql`
         status
         description
         completedAt
+        org {
+          username
+        }
         pod {
+          id
           name
           color
         }

@@ -19,6 +19,8 @@ import {
   TaskCountWrapper,
   TasksWrapper,
   TaskRow,
+  ExportCSVButton,
+  ExportCSVButtonText,
 } from 'components/organization/analytics/styles';
 import { SafeImage } from 'components/Common/Image';
 import { DefaultProfilePicture, UserProfilePicture } from 'components/profile/modals/styles';
@@ -32,9 +34,17 @@ import PodIcon from 'components/Icons/podIcon';
 import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
 import { TextField } from '@material-ui/core';
-import { OptionDiv, OptionTypography, StyledAutocompletePopper, StyledChip } from 'components/CreateEntity/styles';
+import {
+  CreateModalOverlay,
+  OptionDiv,
+  OptionTypography,
+  StyledAutocompletePopper,
+  StyledChip,
+} from 'components/CreateEntity/styles';
 import { White } from 'theme/colors';
 import { filterOrgUsers } from 'components/CreateEntity/createEntityModal';
+import CSVModal from 'components/organization/analytics/CSVModal';
+import { exportContributorTaskCSV } from 'components/organization/analytics';
 
 const UserRowPictureStyles = {
   width: '30px',
@@ -239,6 +249,7 @@ const Analytics = (props) => {
   const { podData = {} } = props;
   const { id: podId, orgId } = podData;
   const [ref, inView] = useInView({});
+  const [csvModal, setCSVModal] = useState(false);
   const [assignee, setAssignee] = useState(null);
   const [assigneeString, setAssigneeString] = useState('');
   const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
@@ -273,6 +284,22 @@ const Analytics = (props) => {
 
   return (
     <Wrapper>
+      <CreateModalOverlay
+        open={csvModal}
+        onClose={() => setCSVModal(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <CSVModal
+          open={csvModal}
+          handleClose={() => setCSVModal(false)}
+          fromTime={fromTime}
+          toTime={toTime}
+          exportContributorTaskCSV={exportContributorTaskCSV}
+          contributorTaskData={contributorTaskData}
+          isPod={true}
+        />
+      </CreateModalOverlay>
       <HeaderWrapper>
         <HeaderText>Completed work from</HeaderText>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -392,6 +419,19 @@ const Analytics = (props) => {
             );
           }}
         />
+        <ExportCSVButton
+          style={{
+            borderRadius: '8px',
+            height: '40px',
+            marginLeft: '12px',
+          }}
+          buttonInnerStyle={{
+            borderRadius: '7px',
+          }}
+          onClick={() => setCSVModal(true)}
+        >
+          <ExportCSVButtonText>Export CSV</ExportCSVButtonText>
+        </ExportCSVButton>
       </HeaderWrapper>
       {contributorTaskData?.length === 0 && (
         <HeaderText

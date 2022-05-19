@@ -41,7 +41,7 @@ export const ENTITIES_UI_ELEMENTS = {
 };
 
 const CSVModal = (props) => {
-  const { handleClose, fromTime, toTime, exportContributorTaskCSV, contributorTaskData } = props;
+  const { handleClose, fromTime, toTime, exportContributorTaskCSV, contributorTaskData, isPod } = props;
 
   return (
     <CreateLayoutsModal>
@@ -61,9 +61,21 @@ const CSVModal = (props) => {
             key={key}
             onClick={() => {
               if (key === PAYMENT_OPTIONS.UTOPIA) {
-                exportContributorTaskCSV(contributorTaskData, PAYMENT_OPTIONS.UTOPIA, fromTime, toTime);
+                exportContributorTaskCSV({
+                  contributorTaskData,
+                  paymentMethod: PAYMENT_OPTIONS.UTOPIA,
+                  fromTime,
+                  toTime,
+                  isPod,
+                });
               } else {
-                exportContributorTaskCSV(contributorTaskData, PAYMENT_OPTIONS.PARCEL, fromTime, toTime);
+                exportContributorTaskCSV({
+                  contributorTaskData,
+                  paymentMethod: PAYMENT_OPTIONS.PARCEL,
+                  fromTime,
+                  toTime,
+                  isPod,
+                });
               }
             }}
           >

@@ -45,8 +45,8 @@ import { White } from 'theme/colors';
 import { filterOrgUsers } from 'components/CreateEntity/createEntityModal';
 import CSVModal, { PAYMENT_OPTIONS } from './CSVModal';
 
-const exportContributorTaskCSV = (contributorTaskData, paymentMethod, fromTime, toTime) => {
-  let headers = ['username', 'taskTitle', 'taskLink', 'Amount'];
+export const exportContributorTaskCSV = ({ contributorTaskData, paymentMethod, fromTime, toTime, isPod = false }) => {
+  let headers = [];
 
   if (paymentMethod === PAYMENT_OPTIONS.UTOPIA) {
     headers = ['username', 'Wallet', 'taskTitle', 'taskLink', 'points', 'Amount', 'Pay-out Token'];
@@ -62,7 +62,9 @@ const exportContributorTaskCSV = (contributorTaskData, paymentMethod, fromTime, 
       const link = process.env.NEXT_PUBLIC_PRODUCTION
         ? `https://app.wonderverse.xyz/invite/`
         : 'https://wondrous-app-git-staging-wonderverse.vercel.app/invite/';
-      const finalLink = `${link}organization/${task?.org?.username}/boards?task=${task?.id}`;
+      const finalLink = isPod
+        ? `${link}pod/${task?.pod?.id}/boards?task=${task?.id}`
+        : `${link}organization/${task?.org?.username}/boards?task=${task?.id}`;
       const reward = (task.rewards || [])[0];
       let newRow = [
         assigneeUsername,
@@ -383,6 +385,7 @@ const Analytics = (props) => {
           toTime={toTime}
           exportContributorTaskCSV={exportContributorTaskCSV}
           contributorTaskData={contributorTaskData}
+          isPod={false}
         />
       </CreateModalOverlay>
 
