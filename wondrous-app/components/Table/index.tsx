@@ -88,7 +88,6 @@ export const Table = (props) => {
   const boardColumns = useColumns();
   const location = useLocation();
 
-  console.log(boardColumns, 'boardColumns');
   useEffect(() => {
     if (inView && hasMore) {
       onLoadMore();
@@ -216,6 +215,7 @@ export const Table = (props) => {
 
   const tableTasks = tasks || createTasksFromColumns(columns);
 
+  console.log(columns);
   return (
     <>
       <TaskViewModal

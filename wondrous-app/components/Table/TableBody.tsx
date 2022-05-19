@@ -32,7 +32,6 @@ import {
   TaskTitle,
 } from './styles';
 
-let tasksCount = 0;
 import { Red800 } from 'theme/colors';
 import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
 
@@ -60,13 +59,10 @@ export default function TableBody({
 
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
 
+  const tasksToLimit = limit && tasks?.length >= limit ? tasks.slice(0, limit) : tasks;
   return (
     <StyledTableBody>
-      {tasks.map((task, index) => {
-        if (limit && tasksCount >= limit) {
-          return;
-        }
-        tasksCount++;
+      {tasksToLimit.map((task, index) => {
         const status = task?.status;
         const dropdownItemLabel =
           status === Constants.TASK_STATUS_PROPOSAL_REQUEST || status === Constants.TASK_STATUS_REQUESTED

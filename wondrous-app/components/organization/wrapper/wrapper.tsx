@@ -111,6 +111,7 @@ const Wrapper = (props) => {
   const links = orgProfile?.links;
   const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
+  const { search } = router.query;
   const handleJoinOrgButtonClick = async () => {
     if (loggedInUser && !loggedInUser?.activeEthAddress) {
       setOpenJoinRequestModal(true);
@@ -429,7 +430,7 @@ const Wrapper = (props) => {
                 </HeaderActivity>
               </TokenHeader>
               <Tabs>
-                {orgBoard?.setEntityType && (
+                {orgBoard?.setEntityType && !search && (
                   <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
                 )}
                 {children}

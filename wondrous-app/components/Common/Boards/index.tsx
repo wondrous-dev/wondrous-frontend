@@ -50,7 +50,6 @@ const Boards = (props: Props) => {
       return;
     }
     const { splitCols, totalCount } = splitColsByType(columns);
-    debugger;
     setTotalCount(totalCount);
     setSearchResults(splitCols);
   }, [columns]);

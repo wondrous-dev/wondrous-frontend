@@ -52,6 +52,7 @@ const useGetOrgTaskBoardTasks = ({
   userId,
   entityType,
   setIsLoading,
+  search,
 }) => {
   const [getOrgTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
@@ -89,7 +90,7 @@ const useGetOrgTaskBoardTasks = ({
     });
   }, [columns, fetchMore, setOrgTaskHasMore]);
   useEffect(() => {
-    if (!userId && entityType !== ENTITIES_TYPES.PROPOSAL) {
+    if (!userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search) {
       const taskBoardStatuses =
         statuses.length > 0
           ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))
@@ -125,6 +126,7 @@ const useGetTaskRelatedToUser = ({
   setOrgTaskHasMore,
   entityType,
   setIsLoading,
+  search,
 }) => {
   const [getTasksRelatedToUserInOrg, { fetchMore }] = useLazyQuery(GET_TASKS_RELATED_TO_USER_IN_ORG, {
     fetchPolicy: 'cache-and-network',
@@ -167,7 +169,7 @@ const useGetTaskRelatedToUser = ({
   }, [columns, fetchMore, setOrgTaskHasMore]);
 
   useEffect(() => {
-    if (userId && entityType !== ENTITIES_TYPES.PROPOSAL) {
+    if (userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search) {
       const taskBoardStatuses =
         statuses.length > 0
           ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))
@@ -201,6 +203,7 @@ const useGetOrgTaskBoardProposals = ({
   entityType,
   setIsLoading,
   setOrgTaskHasMore,
+  search,
 }) => {
   const [getOrgTaskProposals, { data, fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
@@ -237,7 +240,7 @@ const useGetOrgTaskBoardProposals = ({
   }, [columns, fetchMore, setOrgTaskHasMore]);
 
   useEffect(() => {
-    if (entityType === ENTITIES_TYPES.PROPOSAL) {
+    if (entityType === ENTITIES_TYPES.PROPOSAL && !search) {
       getOrgTaskProposals({
         variables: {
           podIds,
@@ -265,6 +268,7 @@ const useGetOrgTaskBoard = ({
   view,
   entityType,
   setIsLoading,
+  search,
 }) => {
   const listView = view === ViewType.List;
 
@@ -279,6 +283,7 @@ const useGetOrgTaskBoard = ({
       statuses,
       entityType,
       setIsLoading,
+      search,
     }),
     withoutUserId: useGetOrgTaskBoardTasks({
       columns,
@@ -291,6 +296,7 @@ const useGetOrgTaskBoard = ({
       userId,
       entityType,
       setIsLoading,
+      search,
     }),
     proposals: useGetOrgTaskBoardProposals({
       listView,
@@ -303,6 +309,7 @@ const useGetOrgTaskBoard = ({
       podIds,
       entityType,
       setIsLoading,
+      search,
     }),
   };
   const { fetchMore } =
@@ -343,6 +350,7 @@ const BoardsPage = () => {
     userId,
     entityType,
     setIsLoading,
+    search,
   });
 
   const handleEntityTypeChange = (type) => {
@@ -357,6 +365,7 @@ const BoardsPage = () => {
         section: TASK_STATUS_REQUESTED,
       });
       setColumns(dedupeColumns(newColumns));
+      setIsLoading(false);
     },
     fetchPolicy: 'cache-and-network',
   });
@@ -367,25 +376,8 @@ const BoardsPage = () => {
     onCompleted: (data) => {
       const tasks = data?.searchTasksForOrgBoardView;
       const newColumns = populateTaskColumns(tasks, ORG_POD_COLUMNS);
-      newColumns[0].tasks = [];
-      newColumns[1].tasks = [];
-      newColumns[2].tasks = [];
-      newColumns[3].tasks = [];
-      tasks.forEach((task) => {
-        if (task.status === TASK_STATUS_IN_REVIEW) {
-          newColumns[1].tasks.push(task);
-        }
-      });
-
-      if (statuses.length) {
-        newColumns.forEach((column) => {
-          if (!statuses.includes(column.filter.taskType)) {
-            column.tasks = [];
-          }
-        });
-      }
-
       setColumns(dedupeColumns(newColumns));
+      setIsLoading(false);
       if (orgTaskHasMore) {
         setOrgTaskHasMore(tasks.length >= LIMIT);
       }
@@ -583,10 +575,12 @@ const BoardsPage = () => {
         });
 
         setColumns(dedupeColumns(newColumns));
+        setIsLoading(false);
       }
 
       if (searchProposals) {
         searchOrgTaskProposals(searchOrgTaskProposalsArgs);
+        setIsLoading(false);
       }
     }
   };
@@ -599,7 +593,6 @@ const BoardsPage = () => {
         : null
     );
   }
-
   return (
     <OrgBoardContext.Provider
       value={{

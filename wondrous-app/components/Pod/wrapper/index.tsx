@@ -89,6 +89,7 @@ const Wrapper = (props) => {
     toggleHtmlOverflow();
     setCreateFormModal((prevState) => !prevState);
   };
+  const { search } = router.query;
   const links = podProfile?.links;
   const handleJoinPodButtonClick = async () => {
     if (loggedInUser && !loggedInUser?.activeEthAddress) {
@@ -363,7 +364,9 @@ const Wrapper = (props) => {
               </TokenHeader>
 
               <Tabs page="pod">
-                <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForPodBoard} />
+                {!search && !!podBoard?.setEntityType && (
+                  <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForPodBoard} />
+                )}
                 {children}
               </Tabs>
             </ContentContainer>
