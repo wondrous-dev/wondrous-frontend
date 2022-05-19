@@ -30,6 +30,7 @@ import { Reward, RewardAmount, RewardContainer, TaskTitle } from 'components/Tab
 import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
 import { cutString, shrinkNumber } from 'utils/helpers';
+import TaskStatus from 'components/Icons/TaskStatus';
 
 const UserRowPictureStyles = {
   width: '30px',
@@ -187,6 +188,27 @@ const UserRow = ({ contributorTask }) => {
                     flex: 1,
                   }}
                 />
+                <RewardContainer
+                  style={{
+                    alignItems: 'center',
+                    marginRight: '8px',
+                  }}
+                >
+                  <TaskStatus
+                    style={{
+                      width: '29px',
+                      height: '29px',
+                    }}
+                    status={task?.status}
+                  />
+                  <RewardAmount
+                    style={{
+                      marginLeft: '4px',
+                    }}
+                  >
+                    {format(new Date(task?.completedAt), 'MM/dd/yyyy')}
+                  </RewardAmount>
+                </RewardContainer>
                 <RewardContainer>
                   <Reward>
                     <SafeImage
@@ -196,7 +218,13 @@ const UserRow = ({ contributorTask }) => {
                         height: '16px',
                       }}
                     />
-                    <RewardAmount>{100}</RewardAmount>
+                    <RewardAmount
+                      style={{
+                        marginLeft: '4px',
+                      }}
+                    >
+                      {100}
+                    </RewardAmount>
                   </Reward>
                   {/* {reward && (
                     <Reward>

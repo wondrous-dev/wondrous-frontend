@@ -7,6 +7,7 @@ export const TaskFragment = gql`
     title
     createdAt
     createdBy
+    completedAt
     description
     milestoneId
     parentTaskId

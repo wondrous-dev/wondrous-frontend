@@ -485,7 +485,14 @@ export const Done = (props) => (
 );
 
 export const DoneWithBorder = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="none" viewBox="0 0 29 29">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={props?.style?.width || '29'}
+    height={props?.style?.height || '29'}
+    fill="none"
+    viewBox="0 0 29 29"
+    style={props?.style}
+  >
     <path
       fill="#0F0F0F"
       stroke="#474747"
