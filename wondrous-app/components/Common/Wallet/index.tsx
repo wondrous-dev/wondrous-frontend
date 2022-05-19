@@ -19,8 +19,11 @@ import {
 import { getUserSigningMessage, linkWallet, logout, useMe } from '../../Auth/withAuth';
 import { DropDown, DropDownItem } from '../dropdown';
 import { Matic } from '../../Icons/matic';
-import { CURRENCY_KEYS } from 'utils/constants';
 import { USDCoin } from '../../Icons/USDCoin';
+import Arbitrum from '../../Icons/arbitrum';
+import Harmony from '../../Icons/harmony';
+import Binance from '../../Icons/binace';
+import Boba from '../../Icons/Boba';
 import { SupportedChainType } from 'utils/web3Constants';
 import { ErrorText } from '..';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
@@ -30,7 +33,12 @@ import { WonderWeb3Context } from 'services/web3/context/WonderWeb3Context';
 
 const CHAIN_LOGO = {
   '1': <Ethereum />,
+  '4': <Ethereum />,
   '137': <Matic />,
+  '1666600000': <Harmony />,
+  '42161': <Arbitrum />,
+  '56': <Binance />,
+  '288': <Boba />,
 };
 
 const CURRENCY_SYMBOL = {
@@ -38,6 +46,9 @@ const CURRENCY_SYMBOL = {
   WONDER: <WonderCoin />,
   MATIC: <Matic />,
   USDC: <USDCoin />,
+  ONE: <Harmony />,
+  AETH: <Arbitrum />,
+  BNB: <Binance />,
 };
 
 const CURRENCY_UI_ELEMENTS = {
@@ -45,6 +56,9 @@ const CURRENCY_UI_ELEMENTS = {
   WONDER: { icon: <WonderCoin />, label: 'WONDER' },
   MATIC: { icon: <Matic />, label: 'MATIC' },
   USDC: { icon: <USDCoin />, label: 'USDC' },
+  ONE: { icon: <Harmony />, label: 'ONE' },
+  AETH: { icon: <Arbitrum />, label: 'AETH' },
+  BNB: { icon: <Binance />, label: 'BNB' },
 };
 
 const Wallet = () => {
@@ -204,9 +218,9 @@ const Wallet = () => {
         <ChainWrapper>{CHAIN_LOGO[wonderWeb3.wallet.chain]}</ChainWrapper>
         <WalletDisplay>
           <DropDown DropdownHandler={Balance}>
-            <CurrencyDropdownItem currency={CURRENCY_KEYS.WONDER} />
-            <CurrencyDropdownItem currency={CURRENCY_KEYS.USDC} />
-            {wonderWeb3.chainName && <CurrencyDropdownItem currency={wonderWeb3.chainName} />}
+            <CurrencyDropdownItem currency={'WONDER'} />
+            <CurrencyDropdownItem currency={'USDC'} />
+            {wonderWeb3.nativeTokenSymbol && <CurrencyDropdownItem currency={wonderWeb3.nativeTokenSymbol} />}
           </DropDown>
           <WalletAddress>{wonderWeb3.wallet.addressTag || 'loading...'}</WalletAddress>
           {differentAccountError && (

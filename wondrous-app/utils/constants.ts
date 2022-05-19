@@ -67,7 +67,21 @@ const SUPPORTED_CHAINS = {
   1: 'ETH',
   137: 'MATIC',
   1666600000: 'HARMONY',
+  42161: 'ARBITRUM',
+  56: 'BSC',
+  288: 'BOBA'
 };
+
+export const NATIVE_TOKEN_SYMBOL = {
+  1: 'ETH',
+  4: 'ETH',
+  137: 'MATIC',
+  1666600000: 'ONE',
+  42161: 'AETH',
+  56: 'BNB',
+  288: 'ETH',
+};
+
 
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {
   SUPPORTED_CHAINS[4] = 'RINKEBY';
@@ -75,16 +89,22 @@ if (!process.env.NEXT_PUBLIC_PRODUCTION) {
 
 export const RPC_URLS: { [chainId: number]: string } = {
   1: process.env.NEXT_PUBLIC_RPC_URL_ETH,
+  4: process.env.NEXT_PUBLIC_RPC_URL_RINKEBY,
   137: process.env.NEXT_PUBLIC_RPC_URL_MATIC,
   1666600000: process.env.NEXT_PUBLIC_RPC_URL_HARMONY,
+  42161: process.env.NEXT_PUBLIC_RPC_URL_ARBITRUM,
+  56: process.env.NEXT_PUBLIC_RPC_URL_BSC,
+  288: process.env.NEXT_PUBLIC_RPC_URL_BOBA,
 };
 
 
 export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
   ethereum: 'https://safe-transaction.mainnet.gnosis.io',
-  polygon: 'https://safe-transaction.polygon.gnosis.io',
   rinkeby: 'https://safe-transaction.rinkeby.gnosis.io',
+  polygon: 'https://safe-transaction.polygon.gnosis.io',
   harmony: 'https://multisig.t.hmny.io',
+  arbitrum: 'https://safe-transaction.arbitrum.gnosis.io',
+  bsc: 'https://safe-transaction.bsc.gnosis.io',
 };
 
 export const HARMONY_MULTI_SEND_ADDR = '0x998739BFdAAdde7C933B942a68053933098f9EDa'
@@ -101,6 +121,9 @@ export const CHAIN_IDS = {
   MATIC: 137,
   RINKEBY: 4,
   HARMONY: 1666600000,
+  ARBITRUM: 42161,
+  BSC: 56,
+  BOBA: 288,
 };
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
@@ -108,12 +131,15 @@ export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
   rinkeby: 'Rinkeby Testnet',
   polygon: 'Polygon Mainnet',
   harmony: 'Harmony Mainnet',
+  arbitrum: 'Arbitrum One',
+  bsc: 'BNB smart chain',
+  boba: 'Boba Mainnet',
 };
 
 export const SUPPORTED_CURRENCIES = [
   {
     symbol: 'ETH',
-    chains: [1],
+    chains: [1, 4, 288],
   },
   {
     symbol: 'MATIC',
@@ -124,31 +150,38 @@ export const SUPPORTED_CURRENCIES = [
     chains: [1666600000],
   },
   {
+    symbol: 'AETH',
+    chains: [42161],
+  },
+  {
+    symbol: 'BNB',
+    chains: [56],
+  },
+  {
     symbol: 'WONDER',
-    chains: [1, 137],
+    chains: [1, 137, 1666600000, 42161, 56, 288],
     contracts: {
       1: '',
       137: '',
+      1666600000: '',
+      42161: '',
+      56: '',
+      288: '',
     },
   },
   {
     symbol: 'USDC',
-    chains: [1, 137],
+    chains: [1, 137, 1666600000, 42161],
     contracts: {
       1: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       137: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
-      1666600000: '0x44cED87b9F1492Bf2DCf5c16004832569f7f6cBa'
+      1666600000: '0x44cED87b9F1492Bf2DCf5c16004832569f7f6cBa',
+      42161: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
+      56: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+      288: '0x66a2A913e447d6b4BF33EFbec43aAeF87890FBbc'
     },
   },
 ];
-
-export const CURRENCY_KEYS = {
-  ETH: 'ETH',
-  WONDER: 'WONDER',
-  MATIC: 'MATIC',
-  USDC: 'USDC',
-  ONE: 'ONE',
-};
 
 export const SIDEBAR_WIDTH = '80px';
 export const ENTITIES_TYPES = {
