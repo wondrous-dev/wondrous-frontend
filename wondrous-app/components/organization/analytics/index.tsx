@@ -19,6 +19,8 @@ import {
   TaskCountWrapper,
   TasksWrapper,
   TaskRow,
+  ExportCSVButton,
+  ExportCSVButtonText,
 } from './styles';
 import { SafeImage } from 'components/Common/Image';
 import { DefaultProfilePicture, UserProfilePicture } from 'components/profile/modals/styles';
@@ -32,10 +34,66 @@ import PodIcon from 'components/Icons/podIcon';
 import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
 import { TextField } from '@material-ui/core';
-import { OptionDiv, OptionTypography, StyledAutocompletePopper, StyledChip } from 'components/CreateEntity/styles';
+import {
+  CreateModalOverlay,
+  OptionDiv,
+  OptionTypography,
+  StyledAutocompletePopper,
+  StyledChip,
+} from 'components/CreateEntity/styles';
 import { White } from 'theme/colors';
 import { filterOrgUsers } from 'components/CreateEntity/createEntityModal';
+import CSVModal, { PAYMENT_OPTIONS } from './CSVModal';
 
+const exportContributorTaskCSV = (contributorTaskData, paymentMethod, fromTime, toTime) => {
+  let headers = ['username', 'taskTitle', 'taskLink', 'Amount'];
+
+  if (paymentMethod === PAYMENT_OPTIONS.UTOPIA) {
+    headers = ['username', 'Wallet', 'taskTitle', 'taskLink', 'points', 'Amount', 'Pay-out Token'];
+  } else {
+    headers = ['username', 'Address/ENS', 'taskTitle', 'taskLink', 'points', 'Amount', 'Token Address/Token Symbol'];
+  }
+  const rows = [[headers]];
+  contributorTaskData.forEach((contributorTask) => {
+    const assigneeUsername = contributorTask?.assigneeUsername || '';
+    const wallet = contributorTask?.assigneeWallet;
+    const tasks = contributorTask?.tasks;
+    tasks?.forEach((task) => {
+      const link = process.env.NEXT_PUBLIC_PRODUCTION
+        ? `https://app.wonderverse.xyz/invite/`
+        : 'https://wondrous-app-git-staging-wonderverse.vercel.app/invite/';
+      const finalLink = `${link}organization/${task?.org?.username}/boards?task=${task?.id}`;
+      const reward = (task.rewards || [])[0];
+      let newRow = [
+        assigneeUsername,
+        wallet,
+        task?.title,
+        finalLink,
+        task?.points || '',
+        reward ? reward?.rewardAmount : '',
+        reward ? reward?.symbol : '',
+      ];
+      rows.push(newRow);
+    });
+  });
+  let csvContent = 'data:text/csv;charset=utf-8,';
+  rows.forEach(function (rowArray) {
+    let row = rowArray.join(',');
+    csvContent += row + '\r\n';
+  });
+  var encodedUri = encodeURI(csvContent);
+  var link = document.createElement('a');
+  link.setAttribute('href', encodedUri);
+  link.setAttribute(
+    'download',
+    `wonderverse_contributor_data_${format(new Date(fromTime), 'MM/dd/yyyy')}_to_${format(
+      new Date(toTime),
+      'MM/dd/yyyy'
+    )}.csv`
+  );
+  document.body.appendChild(link); // Required for FF
+  link.click();
+};
 const UserRowPictureStyles = {
   width: '30px',
   height: '30px',
@@ -277,6 +335,7 @@ const Analytics = (props) => {
   const { id: orgId } = orgData;
   const [ref, inView] = useInView({});
   const [assignee, setAssignee] = useState(null);
+  const [csvModal, setCSVModal] = useState(false);
   const [assigneeString, setAssigneeString] = useState('');
   const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
   const { data: orgUsersData } = useQuery(GET_ORG_USERS, {
@@ -290,9 +349,10 @@ const Analytics = (props) => {
   const [toTime, setToTime] = useState(today);
   const [fromTime, setFromTime] = useState(lastTwoWeek);
   const [getCompletedTasksBetweenPeriods, { data, loading }] = useLazyQuery(GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD, {
-    fetchPolicy: 'network-only'
+    fetchPolicy: 'network-only',
   });
   const contributorTaskData = data?.getCompletedTasksBetweenPeriods;
+
   useEffect(() => {
     if (orgId && fromTime && toTime) {
       getCompletedTasksBetweenPeriods({
@@ -310,6 +370,22 @@ const Analytics = (props) => {
 
   return (
     <Wrapper orgData={orgData}>
+      <CreateModalOverlay
+        open={csvModal}
+        onClose={() => setCSVModal(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <CSVModal
+          open={csvModal}
+          handleClose={() => setCSVModal(false)}
+          fromTime={fromTime}
+          toTime={toTime}
+          exportContributorTaskCSV={exportContributorTaskCSV}
+          contributorTaskData={contributorTaskData}
+        />
+      </CreateModalOverlay>
+
       <HeaderWrapper>
         <HeaderText>Completed work from</HeaderText>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -429,6 +505,19 @@ const Analytics = (props) => {
             );
           }}
         />
+        <ExportCSVButton
+          style={{
+            borderRadius: '8px',
+            height: '40px',
+            marginLeft: '12px',
+          }}
+          buttonInnerStyle={{
+            borderRadius: '7px',
+          }}
+          onClick={() => setCSVModal(true)}
+        >
+          <ExportCSVButtonText>Export CSV</ExportCSVButtonText>
+        </ExportCSVButton>
       </HeaderWrapper>
       {contributorTaskData?.length === 0 && (
         <HeaderText

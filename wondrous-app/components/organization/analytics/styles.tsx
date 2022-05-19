@@ -5,6 +5,7 @@ import { GradientMidnightDiagonal, GradientMidnightVertical } from 'components/C
 import { TextField, Typography } from '@material-ui/core';
 import { White } from 'theme/colors';
 import { StyledDatePicker } from 'components/Common/DatePicker/styles';
+import { Button } from 'components/Common/button';
 
 export const CardWrapper = styled.div`
   display: flex;
@@ -126,5 +127,13 @@ export const TaskRow = styled.div`
   :not(:last-child) {
     border-bottom: 0.5px dashed #4b4b4b;
     padding-bottom: 8px;
+  }
+`;
+
+export const ExportCSVButton = styled(Button)``;
+
+export const ExportCSVButtonText = styled(Typography)`
+  && {
+    color: ${White};
   }
 `;

@@ -140,6 +140,7 @@ export const GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD = gql`
       assigneeId
       assigneeUsername
       assigneeProfilePicture
+      assigneeWallet
       tasks {
         id
         title
