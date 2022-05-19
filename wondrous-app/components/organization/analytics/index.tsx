@@ -1,10 +1,10 @@
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { format } from 'date-fns';
-import { GET_AUTOCOMPLETE_USERS, GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD } from 'graphql/queries';
+import { GET_AUTOCOMPLETE_USERS, GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD, GET_ORG_USERS } from 'graphql/queries';
 import { Post } from '../../Common/Post';
 import Wrapper from '../wrapper/wrapper';
 import {
@@ -272,6 +272,12 @@ const Analytics = (props) => {
   const [assignee, setAssignee] = useState(null);
   const [assigneeString, setAssigneeString] = useState('');
   const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
+  const { data: orgUsersData } = useQuery(GET_ORG_USERS, {
+    variables: {
+      orgId,
+    },
+  });
+
   const today = new Date();
   const lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
   const [toTime, setToTime] = useState(today);
@@ -315,7 +321,11 @@ const Analytics = (props) => {
         </LocalizationProvider>
         <HeaderText>by</HeaderText>
         <StyledAutocompletePopper
-          options={filterUsers(autocompleteData?.getAutocompleteUsers)}
+          options={
+            assigneeString
+              ? filterUsers(autocompleteData?.getAutocompleteUsers)
+              : filterOrgUsers(orgUsersData?.getOrgUsers)
+          }
           onOpen={() => {
             // if (pod) {
             //   getPodUsers({
@@ -343,7 +353,7 @@ const Analytics = (props) => {
                 style={{
                   color: White,
                   fontFamily: 'Space Grotesk',
-                  fontSize: '1px',
+                  fontSize: '16px',
                   paddingLeft: '4px',
                   width: '200px',
                   background: '#191919',
