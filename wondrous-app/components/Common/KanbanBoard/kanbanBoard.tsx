@@ -197,7 +197,6 @@ const KanbanBoard = (props) => {
     if (checkPermissions(taskToUpdate)) {
       if (destinationStatus !== droppableId) {
         if (destinationStatus === STATUS_APPROVED) {
-          debugger;
           approveTaskProposal({
             variables: {
               proposalId: id,
@@ -241,7 +240,6 @@ const KanbanBoard = (props) => {
 
   const onDragEnd = (result) => {
     const moveAction = isProposalEntity ? moveProposal : moveCard;
-    console.log(result, 'result');
     try {
       moveAction(result.draggableId, result.destination.droppableId, result.destination.index, result.source);
     } catch {

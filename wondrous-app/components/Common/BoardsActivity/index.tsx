@@ -1,7 +1,7 @@
 import { BoardsActivityWrapper } from './styles';
 import SearchTasks from 'components/SearchTasks';
 import Filter from 'components/Common/Filter';
-import { useOrgBoard, useSelectMembership } from 'utils/hooks';
+import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import SelectMenuBoardType from 'components/Common/SelectMenuBoardType';
 import { useRouter } from 'next/router';
 import { ViewType } from 'types/common';
@@ -12,7 +12,8 @@ import { ListViewIcon } from 'components/Icons/ViewIcons/listView';
 
 export default function BoardsActivity(props) {
   const orgBoard = useOrgBoard();
-  const board = orgBoard;
+  const podBoard = usePodBoard();
+  const board = orgBoard || podBoard;
   const router = useRouter();
   const view = board?.activeView || String(router.query.view ?? ViewType.Grid);
   const { search: searchQuery } = router.query;

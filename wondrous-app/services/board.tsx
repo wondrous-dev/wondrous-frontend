@@ -306,15 +306,17 @@ export const splitColsByType = (columns) => {
 
         return false;
       });
-      col.section.tasks = col.section.tasks.filter((task) => {
-        if ((task.type || TASK_TYPE) === type) {
-          totalCount++;
-          cols.tasksCount++;
-          return true;
-        }
+      if (col.section) {
+        col.section.tasks = col.section.tasks.filter((task) => {
+          if ((task.type || TASK_TYPE) === type) {
+            totalCount++;
+            cols.tasksCount++;
+            return true;
+          }
 
-        return false;
-      });
+          return false;
+        });
+      }
     });
 
     return cols;

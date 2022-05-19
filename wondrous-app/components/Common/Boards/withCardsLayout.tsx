@@ -50,7 +50,6 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
     };
     return (
       <>
-        {/* <CardsContainer isFullWidth={activeView === ViewType.List} numberOfColumns={numberOfColumns}> */}
         <CardsContainer numberOfColumns={numberOfColumns} isFullWidth={activeView === ViewType.List}>
           <TaskViewModal
             disableEnforceFocus
@@ -66,7 +65,6 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
             <Table tasks={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
           )}
         </CardsContainer>
-        {/* </CardsContainer> */}
         <LoadMore ref={ref} hasMore={hasMore}></LoadMore>
       </>
     );

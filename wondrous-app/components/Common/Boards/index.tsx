@@ -49,9 +49,8 @@ const Boards = (props: Props) => {
     if (!searchQuery) {
       return;
     }
-
     const { splitCols, totalCount } = splitColsByType(columns);
-
+    debugger;
     setTotalCount(totalCount);
     setSearchResults(splitCols);
   }, [columns]);

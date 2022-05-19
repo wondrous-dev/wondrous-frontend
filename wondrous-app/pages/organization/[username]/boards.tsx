@@ -367,20 +367,20 @@ const BoardsPage = () => {
     onCompleted: (data) => {
       const tasks = data?.searchTasksForOrgBoardView;
       const newColumns = populateTaskColumns(tasks, ORG_POD_COLUMNS);
-      newColumns[0].section.tasks = [];
-      newColumns[1].section.tasks = [];
-      newColumns[2].section.tasks = [];
-
+      newColumns[0].tasks = [];
+      newColumns[1].tasks = [];
+      newColumns[2].tasks = [];
+      newColumns[3].tasks = [];
       tasks.forEach((task) => {
         if (task.status === TASK_STATUS_IN_REVIEW) {
-          newColumns[1].section.tasks.push(task);
+          newColumns[1].tasks.push(task);
         }
       });
 
       if (statuses.length) {
         newColumns.forEach((column) => {
-          if (!statuses.includes(column.section.filter.taskType)) {
-            column.section.tasks = [];
+          if (!statuses.includes(column.filter.taskType)) {
+            column.tasks = [];
           }
         });
       }

@@ -48,7 +48,6 @@ const useGetPodTaskBoardTasks = ({
     nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
-      debugger;
       if (entityType === ENTITIES_TYPES.MILESTONE || entityType === ENTITIES_TYPES.BOUNTY) {
         setColumns(data?.getPodTaskBoardTasks);
         setIsLoading(false);
