@@ -5,7 +5,7 @@ import { SIDEBAR_WIDTH } from 'utils/constants';
 import { SideBarContext } from 'utils/contexts';
 import { toggleHtmlOverflow } from 'utils/helpers';
 import CreateFormModal from '../../CreateEntity';
-import Header from '../../Header';
+import HeaderComponent from '../../Header';
 import SideBarComponent from '../../SideBar';
 import { Banner, Content, ContentContainer, OverviewComponent } from './styles';
 
@@ -21,7 +21,7 @@ const Wrapper = (props) => {
 
   return (
     <>
-      <Header openCreateFormModal={toggleCreateFormModal} />
+      <HeaderComponent openCreateFormModal={toggleCreateFormModal} />
       <SideBarContext.Provider
         value={{
           minimized,

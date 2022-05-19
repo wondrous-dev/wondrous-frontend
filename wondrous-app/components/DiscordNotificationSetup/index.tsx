@@ -1,7 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import SideBarComponent from 'components/SideBar';
-import HeaderComponent from 'components/Header';
 import { SettingsContainer } from 'components/Settings/styles';
 import { HeaderBlock } from 'components/Settings/headerBlock';
 import {
