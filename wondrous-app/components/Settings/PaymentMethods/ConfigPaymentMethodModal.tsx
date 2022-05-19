@@ -19,6 +19,10 @@ import {
   PaymentMethodNameHeader,
 } from './styles';
 import { USDCoin } from '../../Icons/USDCoin';
+import DaiIcon from '../../Icons/dai';
+import Arbitrum from '../../Icons/arbitrum';
+import Harmony from '../../Icons/harmony';
+import Binance from '../../Icons/binace';
 import PlusIcon from '../../Icons/plus';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_TOKEN_INFO } from 'graphql/queries/tokenGating';
@@ -38,6 +42,21 @@ const chainOptions = [
     icon: <PolygonIcon />,
     value: 'polygon',
   },
+  // {
+  //   label: 'Harmony',
+  //   icon: <Harmony />,
+  //   value: 'harmony',
+  // },
+  {
+    label: 'Arbitrum One',
+    icon: <Arbitrum />,
+    value: 'arbitrum',
+  },
+  // {
+  //   label: 'BNB Smart Chain',
+  //   icon: <Binance />,
+  //   value: 'bsc',
+  // },
 ];
 
 const PresetTokens = [
@@ -45,6 +64,11 @@ const PresetTokens = [
     label: 'USDC',
     icon: <USDCoin />,
     value: 'USDC',
+  },
+  {
+    label: 'DAI',
+    icon: <DaiIcon />,
+    value: 'DAI',
   },
   {
     label: 'Add Custom',
@@ -57,7 +81,18 @@ const CHAIN_TO_USDC_ADDR = {
   ethereum: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
   polygon: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   harmony: '0x44cED87b9F1492Bf2DCf5c16004832569f7f6cBa',
+  arbitrum: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
+  bsc: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
 };
+
+const CHAIN_TO_DAI_ADDR = {
+  ethereum: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+  polygon: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+  harmony: '0xEf977d2f931C1978Db5F6747666fa1eACB0d0339',
+  arbitrum: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
+  bsc: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3',
+};
+
 const ConfigPaymentMethodModal = (props) => {
   const router = useRouter();
   const { orgId, org, open, setShowConfigModal } = props;
@@ -114,6 +149,10 @@ const ConfigPaymentMethodModal = (props) => {
       tokenAddress = CHAIN_TO_USDC_ADDR[chain];
       tokenName = 'USD Coin';
       symbol = 'USDC';
+    } else if (selectedToken === 'DAI') {
+      tokenAddress = CHAIN_TO_DAI_ADDR[chain];
+      tokenName = 'Dai';
+      symbol = 'DAI';
     } else if (selectedToken === 'custom') {
       tokenAddress = customToken?.contractAddress;
       tokenName = customToken?.name;

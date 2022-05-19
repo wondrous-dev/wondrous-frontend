@@ -28,6 +28,7 @@ const PaymentMethods = (props) => {
       getPaymentMethods({
         variables: {
           orgId,
+          includeDeactivated: true
         },
       });
     }

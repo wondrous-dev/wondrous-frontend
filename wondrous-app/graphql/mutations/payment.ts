@@ -18,6 +18,40 @@ export const CREATE_PAYMENT_METHOD = gql`
   }
 `;
 
+export const ACTIVATE_PAYMENT_METHOD = gql`
+  mutation activatePaymentMethod($paymentMethodId: ID!) {
+    activatePaymentMethod(paymentMethodId: $paymentMethodId) {
+      id
+      orgId
+		  tokenAddress
+		  chain
+		  tokenName
+		  symbol
+		  icon
+		  decimal
+		  maxPayout
+		  notes
+    }
+  }
+`;
+
+export const DEACTIVATE_PAYMENT_METHOD = gql`
+  mutation deactivatePaymentMethod($paymentMethodId: ID!) {
+    deactivatePaymentMethod(paymentMethodId: $paymentMethodId) {
+      id
+      orgId
+		  tokenAddress
+		  chain
+		  tokenName
+		  symbol
+		  icon
+		  decimal
+		  maxPayout
+		  notes
+    }
+  }
+`;
+
 export const PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS = gql`
   mutation proposeGnosisMultisendForSubmissions($input: GnosisBatchPaymentInput) {
     proposeGnosisMultisendForSubmissions(input: $input) {

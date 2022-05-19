@@ -159,3 +159,11 @@ export const PaymentConfigModal = styled(BaseCard)`
     scrollbar-width: none; /* Firefox */
   }
 `;
+
+export const PaymentMethodActionMenu = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  justify-content: flex-end;
+  height: 24px;
+`;

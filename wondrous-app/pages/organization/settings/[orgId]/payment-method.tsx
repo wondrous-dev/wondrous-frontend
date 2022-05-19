@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import PaymentMethods from 'components/Settings/PaymentMethods';
+import { withAuth } from 'components/Auth/withAuth';
 
 const PaymentMethodPage = () => {
   const router = useRouter();
@@ -10,4 +11,4 @@ const PaymentMethodPage = () => {
   return <PaymentMethods orgId={orgId} />;
 };
 
-export default PaymentMethodPage;
+export default withAuth(PaymentMethodPage);
