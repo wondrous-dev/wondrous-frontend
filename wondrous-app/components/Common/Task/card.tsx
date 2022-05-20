@@ -233,12 +233,12 @@ export const TaskCard = ({
 
       <TaskContent>
         <TaskTitle>{title}</TaskTitle>
-        <TaskCardDescriptionText>
+        {/* <TaskCardDescriptionText>
           {renderMentionString({
             content: description,
             router,
           })}
-        </TaskCardDescriptionText>
+        </TaskCardDescriptionText> */}
         <TaskContentFooter>
           {task?.podName && (
             <PodWrapper
