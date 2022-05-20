@@ -1,5 +1,4 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import _ from 'lodash';
 import { TabsVisibilityCreateEntity } from 'components/Common/TabsVisibilityCreateEntity';
 import { CircularProgress, styled, Switch, TextField } from '@material-ui/core';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
@@ -25,7 +24,6 @@ import { Grey700, White } from '../../theme/colors';
 import { addProposalItem } from 'utils/board';
 import {
   CHAIN_TO_CHAIN_DIPLAY_NAME,
-  ColorTypes,
   ENTITIES_TYPES,
   MEDIA_TYPES,
   PERMISSIONS,
@@ -63,7 +61,7 @@ import { TextInput } from '../TextInput';
 import { ENTITIES_UI_ELEMENTS } from './chooseEntityToCreateModal';
 import HeaderImage from './HeaderImage/headerImage';
 import { MediaItem } from './MediaItem';
-import Tags from '../Tags';
+import Tags, { Option as Label } from '../Tags';
 import MembersRow from './MembersRow/membersRow';
 import { CreateFormMembersList } from './MembersRow/styles';
 import {
@@ -864,26 +862,21 @@ const CreateLayoutBaseModal = (props) => {
     isPublicEntity,
   ]);
 
-  const handleTagsChange = async (tags) => {
-    const lastTag = tags[tags.length - 1];
-
-    if (!lastTag.id) {
-      // Pick random color
-      const color = _.sample(Object.values(ColorTypes)) as ColorTypes;
-
-      const { data: { createLabel: newLabel } } = await createLabel({
-        variables: {
-          input: {
-            color,
-            orgId: org,
-            name: lastTag.name,
-          },
+  const handleCreateLabel = async (label: Label) => {
+    const {
+      data: { createLabel: newLabel },
+    } = await createLabel({
+      variables: {
+        input: {
+          orgId: org,
+          name: label.name,
+          color: label.color,
         },
-      });
+      },
+    });
 
-
-      setLabelIds([]);
-  }
+    setLabelIds([...labelIds, newLabel.id]);
+  };
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const creating =
@@ -1377,7 +1370,13 @@ const CreateLayoutBaseModal = (props) => {
         <CreateFormMainInputBlock>
           <CreateFormMainBlockTitle>Add tags</CreateFormMainBlockTitle>
 
-          <Tags options={orgLabelsData?.getOrgLabels || ['efa']} value={tags} onChange={handleTagsChange} limit={4} />
+          <Tags
+            options={orgLabelsData?.getOrgLabels || []}
+            ids={labelIds}
+            onChange={setLabelIds}
+            onCreate={handleCreateLabel}
+            limit={4}
+          />
         </CreateFormMainInputBlock>
       </CreateFormAddTagsSection>
 

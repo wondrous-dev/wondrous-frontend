@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { TextField } from '@material-ui/core';
 import { createFilterOptions } from '@material-ui/lab';
+import _ from 'lodash';
 
 import { RightInputAdornment, StyledAutocomplete, StyledChipTag, LeftInputAdornment, OptionItem } from './styles';
 import { White } from '../../theme/colors';
 import SearchIcon from '../Icons/search';
 import TagsIcon from '../Icons/tagsIcon';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
+import { ColorTypes } from 'utils/constants';
 
-type Option = {
+export type Option = {
   id: string;
   createdAt: string;
   orgId: string;
@@ -20,11 +22,12 @@ type Props = {
   // Array of options.
   options: Option[];
   // The value of the autocomplete.
-  value?: Array<string>;
+  ids: string[];
   // The maximum number of labels
   limit: number;
   // Callback fired when the value changes
-  onChange?: (value: Array<string>) => any;
+  onChange?: (ids: string[]) => unknown;
+  onCreate?: (option: Option) => unknown;
 };
 
 const filter = createFilterOptions({
@@ -32,26 +35,50 @@ const filter = createFilterOptions({
   stringify: (option: Option) => option.name || '',
 });
 
-function Tags({ options, onChange, limit, value = [] }: Props) {
+function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
   const [openTags, setOpenTags] = useState(false);
+  const [randomColor, setRandomColor] = useState(_.sample(Object.values(ColorTypes)));
 
   return (
     <StyledAutocomplete
+      clearOnBlur
+      multiple
+      filterSelectedOptions
+      freeSolo
       open={openTags}
       onOpen={() => setOpenTags(true)}
       onClose={() => setOpenTags(false)}
-      onChange={(e, value) => {
-        if (value.length <= limit) {
-          onChange(value);
+      onChange={(e, tags) => {
+        if (tags.length > limit) {
+          return;
         }
+
+        const lastTagOrNewTagName = tags[tags.length - 1];
+
+        if (lastTagOrNewTagName) {
+          const randomColor = _.sample(Object.values(ColorTypes));
+
+          if (typeof lastTagOrNewTagName === 'string') {
+            onCreate({
+              name: lastTagOrNewTagName,
+            } as Option);
+            return setRandomColor(randomColor);
+          } else if (!lastTagOrNewTagName.id) {
+            onCreate(lastTagOrNewTagName);
+            return setRandomColor(randomColor);
+          }
+        }
+
+        onChange(tags.map((tag) => tag.id));
       }}
       getOptionLabel={(option) => option.name}
       filterOptions={(options, params) => {
         const filtered = filter(options, params);
 
-        if (!filtered.length && params.inputValue !== '') {
+        if (!filtered.length && ids.length < limit && params.inputValue.length.trim()) {
           filtered.push({
             name: params.inputValue,
+            color: randomColor,
           } as Option);
         }
 
@@ -60,7 +87,7 @@ function Tags({ options, onChange, limit, value = [] }: Props) {
       renderOption={(props, option) => {
         if (!option.id) {
           return (
-            <OptionItem {...props}>
+            <OptionItem {...props} color={option.color}>
               <CreateBtnIconDark style={{ marginRight: '16px' }} /> Create tag for &quot;{option.name}&quot;
             </OptionItem>
           );
@@ -72,17 +99,12 @@ function Tags({ options, onChange, limit, value = [] }: Props) {
           </OptionItem>
         );
       }}
-      clearOnBlur
-      multiple
-      filterSelectedOptions
-      freeSolo
-      value={value}
-      options={value.length !== limit ? options : []}
+      disabled={ids.length === limit}
+      value={ids.map((id) => options.find((label) => label.id === id)).filter((v) => !!v)}
+      options={ids.length !== limit ? options : []}
       renderTags={(value, getLabelProps) => {
         return value?.map((option, index) => {
           const props = getLabelProps({ index });
-
-          debugger;
 
           return (
             <StyledChipTag
@@ -90,6 +112,7 @@ function Tags({ options, onChange, limit, value = [] }: Props) {
               icon={<span>&times;</span>}
               onClick={props.onDelete}
               label={option.name}
+              bgColor={option.color}
               variant="outlined"
             />
           );
@@ -112,7 +135,7 @@ function Tags({ options, onChange, limit, value = [] }: Props) {
               {...params}
               variant="standard"
               InputLabelProps={{ shrink: false }}
-              placeholder={value.length !== limit ? `Add tags (max ${limit})` : ''}
+              placeholder={ids.length !== limit ? `Add tags (max ${limit})` : ''}
               InputProps={{
                 ...params.InputProps,
                 endAdornment: null,
