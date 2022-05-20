@@ -1,25 +1,65 @@
 import _ from 'lodash';
 import { COLUMNS } from 'services/board';
-import { TASK_STATUS_ARCHIVED, TASK_STATUS_IN_REVIEW, TASK_STATUS_REQUESTED } from './constants';
+import {
+  TASK_STATUS_ARCHIVED,
+  TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_REQUESTED,
+  STATUS_APPROVED,
+  STATUS_OPEN,
+  STATUS_CHANGE_REQUESTED,
+} from './constants';
 
 export const addProposalItem = (newItem, columns) => {
-  columns[0].section.tasks = [newItem, ...columns[0].section.tasks];
+  if (columns[0].section) {
+    columns[0].section.tasks = [newItem, ...columns[0].section.tasks];
+    return columns;
+  }
+  columns[0].tasks = [newItem, ...columns[0].tasks];
   return columns;
 };
 
 export const updateProposalItem = (updatedItem, columns) => {
-  columns[0].section.tasks = columns[0].section.tasks.map((task) => {
-    if (task.id === updatedItem.id) {
-      return updatedItem;
-    }
-    return task;
-  });
+  if (columns[0].section) {
+    columns[0].section.tasks = columns[0].section.tasks.map((task) => {
+      if (task.id === updatedItem.id) {
+        return updatedItem;
+      }
+      return task;
+    });
+  } else {
+    columns[0].tasks = columns[0].tasks.map((task) => {
+      if (task.id === updatedItem.id) {
+        return updatedItem;
+      }
+      return task;
+    });
+  }
   return columns;
 };
 
-export const removeProposalItem = (itemId, columns) => {
-  columns[0].section.tasks = columns[0].section.tasks.filter((task) => task.id !== itemId);
+export const getProposalStatus = (proposal) => {
+  let proposalStatus = '';
 
+  if (proposal.approvedAt) proposalStatus = STATUS_APPROVED;
+  if (!proposal.approvedAt && !proposal.changeRequested) proposalStatus = STATUS_OPEN;
+  if (proposal.changeRequestedAt) proposalStatus = STATUS_CHANGE_REQUESTED;
+  return proposalStatus;
+};
+
+export const removeProposalItem = (itemId, columns) => {
+  if (columns[0]?.section) {
+    columns[0].section.tasks = columns[0].section.tasks.filter((task) => task.id !== itemId);
+  } else {
+    let allItems = _.map(columns, 'tasks').flat();
+    const item = allItems.find((task) => task.id === itemId);
+    if (item) {
+      let status = getProposalStatus(item);
+      const columnIdx = status ? columns.findIndex((column) => column.status === status) : false;
+      if (Number.isInteger(columnIdx)) {
+        columns[columnIdx].tasks = columns[columnIdx].tasks.filter((task) => task.id !== itemId);
+      }
+    }
+  }
   return columns;
 };
 
@@ -35,6 +75,12 @@ export const updateTaskItem = (updatedItem, columns) => {
     }
     return task;
   });
+  return columns;
+};
+
+export const updateTaskItemOnEntityType = (updatedItem, columns) => {
+  const columnToUpdate = columns.findIndex((column) => column.id === updatedItem.id);
+  columns[columnToUpdate] = updatedItem;
   return columns;
 };
 
@@ -125,12 +171,14 @@ export const removeCompletedItem = (itemId, columns) => {
 
 export const updateTask = (updatedTask, columns) => {
   return columns.map((column) => {
-    column.section.tasks = column.section.tasks.map((task) => {
-      if (task.id === (updatedTask?.taskId ?? updatedTask.id)) {
-        return updatedTask;
-      }
-      return task;
-    });
+    if (column.section) {
+      column.section.tasks = column.section.tasks.map((task) => {
+        if (task.id === (updatedTask?.taskId ?? updatedTask.id)) {
+          return updatedTask;
+        }
+        return task;
+      });
+    }
     column.tasks = column.tasks.map((task) => {
       if (task.id === updatedTask.id) {
         return updatedTask;

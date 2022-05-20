@@ -265,6 +265,7 @@ const CreateLayoutBaseModal = (props) => {
   const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
   const isSubtask = parentTaskId !== undefined;
   const textLimit = isPod ? 200 : 900;
+
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
   });
@@ -531,56 +532,83 @@ const CreateLayoutBaseModal = (props) => {
           setErrors(newErrors);
         } else {
           if (canCreateTask) {
+            const refetchQueries = [];
+            if (orgBoard) {
+              refetchQueries.push('getPerTypeTaskCountForOrgBoard');
+            }
+            if (podBoard) {
+              refetchQueries.push('getPerTypeTaskCountForPodBoard');
+            }
+
             createTask({
               variables: {
                 input: taskInput,
               },
+              refetchQueries,
             }).then((result) => {
-              const task = result?.data?.createTask;
-              const justCreatedPod = getPodObject();
-              if (
-                board?.setColumns &&
-                ((task?.orgId === board?.orgId && !board?.podId) ||
-                  task?.podId === board?.podId ||
-                  pod === board?.podId)
-              ) {
-                const transformedTask = transformTaskToTaskCard(task, {
-                  orgName: board?.org?.name,
-                  orgProfilePicture: board?.org?.profilePicture,
-                  podName: justCreatedPod?.name,
-                });
+              //checking if it's pod or org to use pod/org entity type else we assume it's the userBoard and we use the normal flow
+              if (board?.entityType === ENTITIES_TYPES.TASK || !board?.entityType) {
+                const task = result?.data?.createTask;
+                const justCreatedPod = getPodObject();
+                if (
+                  board?.setColumns &&
+                  ((task?.orgId === board?.orgId && !board?.podId) ||
+                    task?.podId === board?.podId ||
+                    pod === board?.podId)
+                ) {
+                  const transformedTask = transformTaskToTaskCard(task, {
+                    orgName: board?.org?.name,
+                    orgProfilePicture: board?.org?.profilePicture,
+                    podName: justCreatedPod?.name,
+                  });
 
-                const columns = [...board?.columns];
-                columns[0].tasks = [transformedTask, ...columns[0].tasks];
-                board.setColumns(columns);
+                  const columns = [...board?.columns];
+                  columns[0].tasks = [transformedTask, ...columns[0].tasks];
+                  board.setColumns(columns);
+                }
+              } else {
+                board?.setEntityType(ENTITIES_TYPES.TASK);
               }
               handleClose();
             });
           } else {
+            const refetchQueries = [];
+            if (orgBoard) {
+              refetchQueries.push('getPerTypeTaskCountForOrgBoard');
+            }
+            if (podBoard) {
+              refetchQueries.push('getPerTypeTaskCountForPodBoard');
+            }
             createTaskProposal({
               variables: {
                 input: taskInput,
               },
+              refetchQueries,
             }).then((result) => {
-              const taskProposal = result?.data?.createTaskProposal;
-              const justCreatedPod = getPodObject();
-              if (
-                board?.setColumns &&
-                ((taskProposal?.orgId === board?.orgId && !board?.podId) ||
-                  taskProposal?.podId === board?.podId ||
-                  pod === board?.podId)
-              ) {
-                const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
-                  userProfilePicture: user?.profilePicture,
-                  username: user?.username,
-                  orgName: board?.org?.name,
-                  orgProfilePicture: board?.org?.profilePicture,
-                  podName: justCreatedPod?.name,
-                });
+              if (board?.entityType === ENTITIES_TYPES.TASK || !board?.entityType) {
+                const taskProposal = result?.data?.createTaskProposal;
+                const justCreatedPod = getPodObject();
+                // TODO: refactor this condition
+                if (
+                  board?.setColumns &&
+                  ((taskProposal?.orgId === board?.orgId && !board?.podId) ||
+                    taskProposal?.podId === board?.podId ||
+                    pod === board?.podId)
+                ) {
+                  const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
+                    userProfilePicture: user?.profilePicture,
+                    username: user?.username,
+                    orgName: board?.org?.name,
+                    orgProfilePicture: board?.org?.profilePicture,
+                    podName: justCreatedPod?.name,
+                  });
 
-                let columns = [...board?.columns];
-                columns = addProposalItem(transformedTaskProposal, columns);
-                board.setColumns(columns);
+                  let columns = [...board?.columns];
+                  columns = addProposalItem(transformedTaskProposal, columns);
+                  board?.setColumns(columns);
+                }
+              } else {
+                board?.setEntityType(ENTITIES_TYPES.PROPOSAL);
               }
               handleClose();
             });
@@ -600,10 +628,10 @@ const CreateLayoutBaseModal = (props) => {
         } else {
           const refetchQueries = ['getPerStatusTaskCountForUserBoard'];
           if (orgBoard) {
-            refetchQueries.push('getPerStatusTaskCountForOrgBoard');
+            refetchQueries.push('getPerStatusTaskCountForOrgBoard', 'getPerTypeTaskCountForOrgBoard');
           }
           if (podBoard) {
-            refetchQueries.push('getPerStatusTaskCountForPodBoard');
+            refetchQueries.push('getPerTypeTaskCountForPodBoard');
           }
           createTaskProposal({
             variables: {
@@ -611,25 +639,28 @@ const CreateLayoutBaseModal = (props) => {
             },
             refetchQueries,
           }).then((result) => {
-            const taskProposal = result?.data?.createTaskProposal;
-            const justCreatedPod = getPodObject();
-            if (
-              board?.setColumns &&
-              ((taskProposal?.orgId === board?.orgId && !board?.podId) ||
-                taskProposal?.podId === board?.podId ||
-                pod === board?.podId)
-            ) {
-              const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
-                userProfilePicture: user?.profilePicture,
-                username: user?.username,
-                orgName: board?.org?.name,
-                orgProfilePicture: board?.org?.profilePicture,
-                podName: justCreatedPod?.name,
-              });
-
-              let columns = [...board?.columns];
-              columns = addProposalItem(transformedTaskProposal, columns);
-              board.setColumns(columns);
+            if (board?.entityType === ENTITIES_TYPES.PROPOSAL || !board?.entityType) {
+              const taskProposal = result?.data?.createTaskProposal;
+              const justCreatedPod = getPodObject();
+              if (
+                board?.setColumns &&
+                ((taskProposal?.orgId === board?.orgId && !board?.podId) ||
+                  taskProposal?.podId === board?.podId ||
+                  pod === board?.podId)
+              ) {
+                const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
+                  userProfilePicture: user?.profilePicture,
+                  username: user?.username,
+                  orgName: board?.org?.name,
+                  orgProfilePicture: board?.org?.profilePicture,
+                  podName: justCreatedPod?.name,
+                });
+                let columns = [...board?.columns];
+                columns = addProposalItem(transformedTaskProposal, columns);
+                board?.setColumns(columns);
+              }
+            } else {
+              board?.setEntityType(ENTITIES_TYPES.PROPOSAL);
             }
             handleClose();
           });
@@ -682,26 +713,45 @@ const CreateLayoutBaseModal = (props) => {
           timezone,
         };
         if (canCreateTask) {
+          const refetchQueries = [];
+          if (orgBoard) {
+            refetchQueries.push('getPerTypeTaskCountForOrgBoard');
+          }
+
+          if (podBoard) {
+            refetchQueries.push('getPerTypeTaskCountForPodBoard');
+          }
           createMilestone({
             variables: {
               input: milestoneInput,
             },
+            refetchQueries,
           }).then((result) => {
-            const task = result?.data?.createMilestone;
-            const justCreatedPod = getPodObject();
-            if (
-              board?.setColumns &&
-              ((task?.orgId === board?.orgId && !board?.podId) || task?.podId === board?.podId || pod === board?.podId)
-            ) {
-              const transformedTask = transformTaskToTaskCard(task, {
-                orgName: board?.org?.name,
-                orgProfilePicture: board?.org?.profilePicture,
-                podName: justCreatedPod?.name,
-              });
+            if (board?.entityType === ENTITIES_TYPES.MILESTONE || !board?.entityType) {
+              const task = result?.data?.createMilestone;
+              const justCreatedPod = getPodObject();
+              if (
+                board?.setColumns &&
+                ((task?.orgId === board?.orgId && !board?.podId) ||
+                  task?.podId === board?.podId ||
+                  pod === board?.podId)
+              ) {
+                const transformedTask = transformTaskToTaskCard(task, {
+                  orgName: board?.org?.name,
+                  orgProfilePicture: board?.org?.profilePicture,
+                  podName: justCreatedPod?.name,
+                });
 
-              const columns = [...board?.columns];
-              columns[0].tasks = [transformedTask, ...columns[0].tasks];
-              board.setColumns(columns);
+                let columns = [...board?.columns];
+                if (columns[0]?.tasks) {
+                  columns[0].tasks = [transformedTask, ...columns[0].tasks];
+                } else {
+                  columns = [transformedTask, ...columns];
+                }
+                board.setColumns(columns);
+              }
+            } else {
+              board?.setEntityType(ENTITIES_TYPES.MILESTONE);
             }
             handleClose();
           });
@@ -760,29 +810,46 @@ const CreateLayoutBaseModal = (props) => {
           setErrors(newErrors);
         } else {
           if (canCreateTask) {
+            const refetchQueries = [];
+            if (orgBoard) {
+              refetchQueries.push('getPerTypeTaskCountForOrgBoard');
+            }
+            if (podBoard) {
+              refetchQueries.push('getPerTypeTaskCountForPodBoard');
+            }
+
             createBounty({
               variables: {
                 input: bountyInput,
               },
+              refetchQueries,
             })
               .then((result) => {
-                const task = result?.data?.createBounty;
-                const justCreatedPod = getPodObject();
-                if (
-                  board?.setColumns &&
-                  ((task?.orgId === board?.orgId && !board?.podId) ||
-                    task?.podId === board?.podId ||
-                    pod === board?.podId)
-                ) {
-                  const transformedTask = transformTaskToTaskCard(task, {
-                    orgName: board?.org?.name,
-                    orgProfilePicture: board?.org?.profilePicture,
-                    podName: justCreatedPod?.name,
-                  });
+                if (board?.entityType === ENTITIES_TYPES.BOUNTY || !board?.entityType) {
+                  const task = result?.data?.createBounty;
+                  const justCreatedPod = getPodObject();
+                  if (
+                    board?.setColumns &&
+                    ((task?.orgId === board?.orgId && !board?.podId) ||
+                      task?.podId === board?.podId ||
+                      pod === board?.podId)
+                  ) {
+                    const transformedTask = transformTaskToTaskCard(task, {
+                      orgName: board?.org?.name,
+                      orgProfilePicture: board?.org?.profilePicture,
+                      podName: justCreatedPod?.name,
+                    });
 
-                  const columns = [...board?.columns];
-                  columns[0].tasks = [transformedTask, ...columns[0].tasks];
-                  board.setColumns(columns);
+                    let columns = [...board?.columns];
+                    if (columns[0]?.tasks) {
+                      columns = [transformedTask, ...columns[0].tasks];
+                    } else {
+                      columns = [transformedTask, ...columns];
+                    }
+                    board?.setColumns(columns);
+                  }
+                } else {
+                  board?.setEntityType(ENTITIES_TYPES.BOUNTY);
                 }
                 handleClose();
               })

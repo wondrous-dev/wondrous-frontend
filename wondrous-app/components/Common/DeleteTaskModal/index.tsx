@@ -33,6 +33,8 @@ export const DeleteTaskModal = (props: IArchiveTaskModalProps) => {
     'getPerStatusTaskCountForOrgBoard',
     'getPerStatusTaskCountForPodBoard',
     'getSubtasksForTask',
+    'getPerTypeTaskCountForOrgBoard',
+    'getPerTypeTaskCountForPodBoard',
   ];
   const [deleteTask] = useMutation(DELETE_TASK, {
     variables: { taskId },

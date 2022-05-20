@@ -8,6 +8,7 @@ import Image from 'next/image';
 import Header from '../../Header';
 import SideBarComponent from '../../SideBar';
 import Tabs from '../tabs/tabs';
+import TypeSelector from 'components/TypeSelector';
 import CreateFormModal from '../../CreateEntity';
 import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from 'utils/helpers';
 
@@ -27,7 +28,7 @@ import {
   HeaderFollowButtonText,
   HeaderImageDefault,
   HeaderMainBlock,
-  HeaderManageSettingsButton,
+  HeaderButton,
   HeaderPods,
   HeaderPodsAmount,
   HeaderPodsText,
@@ -43,10 +44,11 @@ import {
   HeaderTitleIcon,
   HeaderImage,
   HeaderImageWrapper,
+  HeaderTag,
 } from './styles';
-import { useOrgBoard } from 'utils/hooks';
+import { useOrgBoard, useTokenGating } from 'utils/hooks';
 import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
-import { GET_ORG_BY_ID, GET_USER_JOIN_ORG_REQUEST } from 'graphql/queries/org';
+import { GET_ORG_BY_ID, GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
 import { CREATE_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
 import { SafeImage } from '../../Common/Image';
 import PlusIcon from '../../Icons/plus';
@@ -64,7 +66,7 @@ import OpenSeaIcon from '../../Icons/openSea';
 import LinkBigIcon from '../../Icons/link';
 import { DiscordIcon } from '../../Icons/discord';
 import { MembershipRequestModal } from './RequestModal';
-import { PrivateBoardIcon } from '../../Common/PrivateBoardIcon';
+import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import { GET_TOKEN_GATED_ROLES_FOR_ORG, LIT_SIGNATURE_EXIST } from 'graphql/queries';
 import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { TokenGatedRoleModal } from 'components/organization/wrapper/TokenGatedRoleModal';
@@ -88,7 +90,7 @@ const Wrapper = (props) => {
   };
 
   const [createJoinOrgRequest] = useMutation(CREATE_JOIN_ORG_REQUEST);
-
+  const [getPerTypeTaskCountForOrgBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE);
   const userPermissionsContext = orgBoard?.userPermissionsContext;
   const [permissions, setPermissions] = useState(undefined);
   const [createFormModal, setCreateFormModal] = useState(false);
@@ -101,6 +103,8 @@ const Wrapper = (props) => {
   const [notLinkedWalletError, setNotLinkedWalletError] = useState(false);
   const [openGatedRoleModal, setOpenGatedRoleModal] = useState(false);
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST);
+  const [tokenGatingConditions, isLoading] = useTokenGating(orgBoard?.orgId);
+
   const toggleCreateFormModal = () => {
     toggleHtmlOverflow();
     setCreateFormModal((prevState) => !prevState);
@@ -109,6 +113,7 @@ const Wrapper = (props) => {
   const links = orgProfile?.links;
   const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
+  const { search } = router.query;
   const handleJoinOrgButtonClick = async () => {
     if (loggedInUser && !loggedInUser?.activeEthAddress) {
       setOpenJoinRequestModal(true);
@@ -208,6 +213,16 @@ const Wrapper = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgBoard?.orgId, userPermissionsContext]);
 
+  useEffect(() => {
+    if (orgBoard?.orgId) {
+      getPerTypeTaskCountForOrgBoard({
+        variables: {
+          orgId: orgBoard?.orgId,
+        },
+      });
+    }
+  }, [orgBoard?.orgId]);
+
   return (
     <>
       <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
@@ -260,72 +275,50 @@ const Wrapper = (props) => {
           <Content>
             <ContentContainer>
               <TokenHeader>
-                {orgProfile?.profilePicture ? (
-                  <SafeImage
-                    src={orgProfile?.profilePicture}
-                    style={{
-                      width: '96px',
-                      height: '96px',
-                      position: 'absolute',
-                      borderRadius: '48px',
-                      top: '-50px',
-                      border: '10px solid #0f0f0f',
-                    }}
-                  />
-                ) : (
-                  <TokenEmptyLogo>
-                    <DAOEmptyIcon />
-                  </TokenEmptyLogo>
-                )}
                 <HeaderMainBlock>
+                  {orgProfile?.profilePicture ? (
+                    <SafeImage
+                      src={orgProfile?.profilePicture}
+                      style={{
+                        width: '60px',
+                        height: '60px',
+                        borderRadius: '6px',
+                      }}
+                    />
+                  ) : (
+                    <TokenEmptyLogo>
+                      <DAOEmptyIcon />
+                    </TokenEmptyLogo>
+                  )}
                   <HeaderTitleIcon>
                     <HeaderTitle>{orgProfile?.name}</HeaderTitle>
-                    <PrivateBoardIcon
-                      isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
-                      tooltipTitle={'Private Org'}
-                    />
+                    <HeaderTag>@{orgProfile?.username}</HeaderTag>
                   </HeaderTitleIcon>
                   <HeaderButtons>
-                    <HeaderFollowButton
-                      style={{
-                        visibility: 'hidden',
-                      }}
-                    >
-                      <HeaderFollowButtonText>{shrinkNumber(amount)}</HeaderFollowButtonText>
-                      <HeaderFollowButtonIcon src="/images/overview/icon.png" />
-                    </HeaderFollowButton>
+                    {!isLoading && (
+                      <TokenGatedBoard
+                        isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
+                        tooltipTitle={'Token gating'}
+                      />
+                    )}
+                    <ToggleBoardPrivacyIcon
+                      isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
+                      tooltipTitle={orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
+                    />
                     {permissions === null && (
                       <>
                         {joinRequestSent || userJoinRequest?.id ? (
-                          <HeaderSettingsLockedButton
-                            style={{
-                              width: 'fit-content',
-                              visibility: 'visible',
-                            }}
-                          >
-                            Request sent
-                          </HeaderSettingsLockedButton>
+                          <HeaderButton style={{ pointerEvents: 'none' }}>Request sent</HeaderButton>
                         ) : (
-                          <HeaderManageSettingsButton
-                            style={{
-                              width: 'fit-content',
-                            }}
-                            onClick={handleJoinOrgButtonClick}
-                          >
-                            <HeaderFollowButtonText>Join org</HeaderFollowButtonText>
-                          </HeaderManageSettingsButton>
+                          <HeaderButton reversed onClick={handleJoinOrgButtonClick}>
+                            Join org
+                          </HeaderButton>
                         )}
                       </>
                     )}
                     {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
                       <>
-                        <HeaderInviteButton onClick={() => setOpenInvite(true)}>
-                          Invite{' '}
-                          <PlusIconWrapper>
-                            <PlusIcon height="8" width="8" fill="#fff" />
-                          </PlusIconWrapper>
-                        </HeaderInviteButton>
-                        <HeaderManageSettingsButton
+                        <HeaderButton
                           onClick={() => {
                             router.push(`/organization/settings/${orgBoard?.orgId}/general`, undefined, {
                               shallow: true,
@@ -333,17 +326,12 @@ const Wrapper = (props) => {
                           }}
                         >
                           Settings
-                        </HeaderManageSettingsButton>
+                        </HeaderButton>
+                        <HeaderButton reversed onClick={() => setOpenInvite(true)}>
+                          Invite{' '}
+                        </HeaderButton>
                       </>
                     )}
-                    {permissions === ORG_PERMISSIONS.CONTRIBUTOR && (
-                      <HeaderSettingsLockedButton>Settings</HeaderSettingsLockedButton>
-                    )}
-                    {/* {!permissions && (
-                      <HeaderContributeButton>
-                        Contribute
-                      </HeaderContributeButton>
-                    )} */}
                   </HeaderButtons>
                 </HeaderMainBlock>
                 <HeaderText>{orgProfile?.description}</HeaderText>
@@ -417,7 +405,12 @@ const Wrapper = (props) => {
                   </div>
                 </HeaderActivity>
               </TokenHeader>
-              <Tabs>{children}</Tabs>
+              <Tabs>
+                {orgBoard?.setEntityType && !search && (
+                  <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
+                )}
+                {children}
+              </Tabs>
             </ContentContainer>
           </Content>
         </OverviewComponent>

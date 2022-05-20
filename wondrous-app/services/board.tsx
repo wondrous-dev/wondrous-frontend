@@ -8,6 +8,10 @@ import {
   TASK_STATUS_REQUESTED,
   TASK_STATUS_TODO,
   TASK_TYPE,
+  COLUMNS_CONFIGURATION,
+  STATUS_OPEN,
+  STATUS_APPROVED,
+  STATUS_CHANGE_REQUESTED,
 } from 'utils/constants';
 import { Archived, InReview, Requested } from 'components/Icons/sections';
 import { Proposal } from 'components/Icons';
@@ -17,58 +21,105 @@ import { cloneDeep } from 'lodash';
 import { BountyIcon, MilestoneIcon, TaskIcon } from 'components/Icons/Search/types';
 import { delQuery } from 'utils';
 
-const TO_DO = {
-  status: TASK_STATUS_TODO,
-  tasks: [],
-  section: {
-    title: 'Proposals',
-    icon: Requested,
-    id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
-    filter: {
-      taskType: TASK_STATUS_REQUESTED,
-    },
-    expandable: true,
-    action: {
-      text: 'Proposal',
-    },
-    tasks: [],
-  },
+const TO_DO = (withSection: boolean = true) => {
+  let config = { status: TASK_STATUS_TODO, tasks: [] };
+  if (withSection) {
+    config = {
+      ...config,
+      ...{
+        section: {
+          title: 'Proposals',
+          icon: Requested,
+          id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
+          filter: {
+            taskType: TASK_STATUS_REQUESTED,
+          },
+          expandable: true,
+          action: {
+            text: 'Proposal',
+          },
+          tasks: [],
+        },
+      },
+    };
+  }
+  return config;
 };
 
-const IN_PROGRESS = {
-  status: TASK_STATUS_IN_PROGRESS,
-  tasks: [],
-  section: {
-    title: 'In Review',
-    icon: InReview,
-    id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
-    filter: {
-      taskType: TASK_STATUS_IN_REVIEW,
-    },
-    expandable: true,
-    action: {
-      text: 'Review',
-    },
-    tasks: [],
-  },
+const IN_PROGRESS = (withSection: boolean = true) => {
+  let config = { status: TASK_STATUS_IN_PROGRESS, tasks: [] };
+  if (withSection) {
+    config = {
+      ...config,
+      ...{
+        section: {
+          title: 'In Review',
+          icon: InReview,
+          id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
+          filter: {
+            taskType: TASK_STATUS_IN_REVIEW,
+          },
+          expandable: true,
+          action: {
+            text: 'Review',
+          },
+          tasks: [],
+        },
+      },
+    };
+  }
+  return config;
 };
 
-const DONE = {
-  status: TASK_STATUS_DONE,
+const IN_REVIEW = () => ({
+  status: TASK_STATUS_IN_REVIEW,
   tasks: [],
-  section: {
-    title: 'Archived',
-    icon: Archived,
-    id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
-    filter: {
-      taskType: TASK_STATUS_ARCHIVED,
-    },
-    expandable: true,
-    action: {
-      text: 'Restore',
-    },
+});
+
+const DONE = (withSection: boolean = true) => {
+  let config = {
+    status: TASK_STATUS_DONE,
     tasks: [],
-  },
+  };
+  if (withSection) {
+    config = {
+      ...config,
+      ...{
+        section: {
+          title: 'Archived',
+          icon: Archived,
+          id: '337d2b80-65fd-48ca-bb17-3c0155162a62',
+          filter: {
+            taskType: TASK_STATUS_ARCHIVED,
+          },
+          expandable: true,
+          action: {
+            text: 'Restore',
+          },
+          tasks: [],
+        },
+      },
+    };
+  }
+  return config;
+};
+
+const PROPOSAL_OPEN = {
+  title: 'Open',
+  tasks: [],
+  status: STATUS_OPEN,
+};
+
+const PROPOSAL_APPROVED = {
+  title: 'Approved',
+  tasks: [],
+  status: STATUS_APPROVED,
+};
+
+const PROPOSAL_REJECTED = {
+  title: 'Rejected',
+  tasks: [],
+  status: STATUS_CHANGE_REQUESTED,
 };
 
 export const FILTER_STATUSES = {
@@ -144,7 +195,21 @@ export const FILTER_STATUSES_ADMIN = {
   ],
 };
 
-export const COLUMNS = [TO_DO, IN_PROGRESS, DONE];
+const generateColumns = (withSection: boolean, type: string) => {
+  let todoColumn = TO_DO(withSection);
+  let inProgressColumn = IN_PROGRESS(withSection);
+  let doneColumn = DONE(withSection);
+  let inReviewColumn = IN_REVIEW();
+  if (type === COLUMNS_CONFIGURATION.ASSIGNEE) {
+    return [todoColumn, inProgressColumn, doneColumn];
+  } else return [todoColumn, inProgressColumn, inReviewColumn, doneColumn];
+};
+
+export const COLUMNS = generateColumns(true, COLUMNS_CONFIGURATION.ASSIGNEE);
+
+export const ORG_POD_COLUMNS = generateColumns(false, COLUMNS_CONFIGURATION.ORG);
+
+export const ORG_POD_PROPOSAL_COLUMNS = [PROPOSAL_OPEN, PROPOSAL_APPROVED, PROPOSAL_REJECTED];
 
 export const SELECT_OPTIONS = [
   '#copywriting (23)',
@@ -171,7 +236,7 @@ export const populateTaskColumns = (tasks, columns) => {
       tasks.reduce((column, task) => {
         if (column.status === task.status) {
           column.tasks = [...column.tasks, task];
-        } else if (task?.status === TASK_STATUS_ARCHIVED && column.section.filter.taskType === TASK_STATUS_ARCHIVED) {
+        } else if (task?.status === TASK_STATUS_ARCHIVED && column.section?.filter?.taskType === TASK_STATUS_ARCHIVED) {
           column.section.tasks = [...column.section.tasks, task];
         }
 
@@ -180,6 +245,33 @@ export const populateTaskColumns = (tasks, columns) => {
     );
   });
   return newColumns;
+};
+
+export const populateProposalColumns = (proposals, columns) => {
+  if (!columns) {
+    return [];
+  }
+
+  const proposalsMap = {
+    [STATUS_OPEN]: [],
+    [STATUS_APPROVED]: [],
+    // changes requested
+    [STATUS_CHANGE_REQUESTED]: [],
+  };
+  //temporary flag until we add a flag on BE?
+  proposals?.forEach((proposal) => {
+    if (proposal.approvedAt) proposalsMap[STATUS_APPROVED].push({ ...proposal, isProposal: true });
+    if (!proposal.approvedAt && !proposal.changeRequestedAt)
+      proposalsMap[STATUS_OPEN].push({ ...proposal, isProposal: true });
+    if (proposal.changeRequestedAt && !proposal.approvedAt)
+      proposalsMap[STATUS_CHANGE_REQUESTED].push({ ...proposal, isProposal: true });
+  });
+  return columns.map((column) => {
+    return {
+      ...column,
+      tasks: [...column.tasks, ...proposalsMap[column.status]],
+    };
+  });
 };
 
 export const addToTaskColumns = (newResults, columns) => {
@@ -214,15 +306,17 @@ export const splitColsByType = (columns) => {
 
         return false;
       });
-      col.section.tasks = col.section.tasks.filter((task) => {
-        if ((task.type || TASK_TYPE) === type) {
-          totalCount++;
-          cols.tasksCount++;
-          return true;
-        }
+      if (col.section) {
+        col.section.tasks = col.section.tasks.filter((task) => {
+          if ((task.type || TASK_TYPE) === type) {
+            totalCount++;
+            cols.tasksCount++;
+            return true;
+          }
 
-        return false;
-      });
+          return false;
+        });
+      }
     });
 
     return cols;

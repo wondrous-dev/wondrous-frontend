@@ -87,6 +87,9 @@ export const ColumnSection = ({ section, setSection }) => {
     setModalOpen(true);
   };
 
+  if (!section) {
+    return null;
+  }
   return (
     <SectionWrapper>
       <TaskListViewModal

@@ -3,7 +3,7 @@ import { Button, IconButton, Typography, Box } from '@material-ui/core';
 import Image from 'next/image';
 import React from 'react';
 import styled from 'styled-components';
-import { Background, Black } from '../../../theme/colors';
+import { Background, Black, Grey250, HighlightPurple, White } from '../../../theme/colors';
 import { Button as BorderButton } from '../../Common/button';
 import { BaseCard } from '../../Common/card';
 import { LogoCircle } from '../../Common/ci';
@@ -22,7 +22,7 @@ export const OverviewComponent = styled.section`
 
 export const HeaderImageWrapper = styled.div`
   width: 100%;
-  height: 200px;
+  height: 100px;
   margin-top: 70px;
   overflow: hidden;
   position: relative;
@@ -45,13 +45,9 @@ export const HeaderImageDefault = styled(() => (
 
 export const TokenHeader = styled.div`
   position: relative;
-  max-width: 680px;
-  width: 100%;
-  min-height: 190px;
-  height: 190px;
-  padding-top: 65px;
+  width: 95%;
+  padding-top: 30px;
   display: flex;
-  justify-content: space-between;
   flex-direction: column;
 `;
 
@@ -64,12 +60,8 @@ export const TokenLogo = styled(LogoCircle)`
 `;
 
 export const TokenEmptyLogo = styled.div`
-  position: absolute;
-  width: 103px;
-  height: 103px;
-  top: -50px;
-  left: -20px;
-
+  width: 70px;
+  height: 70px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -88,10 +80,8 @@ export const Content = styled.div`
 `;
 
 export const ContentContainer = styled.div`
-  //max-width: 680px;
-  max-width: 1037px;
+  max-width: 100%;
   display: flex;
-  //justify-content: center;
   align-items: center;
   flex-direction: column;
   width: 100%;
@@ -122,18 +112,30 @@ export const HeaderTitleIcon = styled.div`
 export const HeaderTitle = styled(Typography)`
   && {
     font-weight: 500;
-    font-size: 28px;
+    font-size: 26px;
     line-height: 36px;
     display: flex;
     align-items: center;
     color: #ffffff;
+    margin-left: 20px;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 `;
 
+export const HeaderTag = styled(Typography)`
+  && {
+    color: ${Grey250};
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 18px;
+    margin-left: 20px;
+  }
+`;
+
 export const HeaderButtons = styled.div`
-  max-width: 352px;
-  width: 100%;
+  width: fit-content;
   height: 100%;
   display: flex;
   justify-content: space-between;
@@ -154,6 +156,7 @@ export const HeaderFollowButtonText = styled(Typography)`
     font-weight: 500;
     font-size: 16px;
     line-height: 150%;
+    width: fit-content;
     display: flex;
     align-items: center;
     color: #ffffff;
@@ -236,6 +239,26 @@ export const HeaderManageSettingsButton = (props) => (
   </BorderButton>
 );
 
+export const HeaderButton = styled.button`
+  border-radius: 6px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  width: max-content;
+  ${({ reversed }) => (reversed ? `background: ${HighlightPurple}` : `background: transparent`)};
+  border: 1px solid ${HighlightPurple};
+  cursor: pointer;
+  color: ${White};
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 150%;
+  margin-right: 10px;
+`;
+
 export const HeaderSettingsLockedButton = (props) => (
   <BorderButton
     style={{
@@ -260,12 +283,12 @@ export const HeaderSettingsLockedButton = (props) => (
 
 export const HeaderText = styled(Typography)`
   && {
-    font-size: 15px;
+    font-size: 15px;    
     line-height: 22px;
     letter-spacing: 0.01em;
     color: #ffffff;
     margin-bottom: 8px;
-    margin-top: 8px;
+    margin-top: 24px;
   }
 `;
 
@@ -649,7 +672,6 @@ export const ClaimRoleLabel = styled(Typography)`
     letter-spacing: -1%;
   }
 `;
-
 
 export const RoleActionWrapper = styled.div`
   display: flex;

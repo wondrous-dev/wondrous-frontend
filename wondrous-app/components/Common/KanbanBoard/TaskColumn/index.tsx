@@ -11,11 +11,13 @@ import {
   TASK_STATUS_TODO,
   ENTITIES_TYPES,
   BOARD_TYPE,
+  STATUS_OPEN,
+  STATUS_APPROVED,
+  STATUS_CHANGE_REQUESTED,
 } from 'utils/constants';
 
-import { ToDo, InProgress, Done } from '../../../Icons';
+import { ToDo, InProgress, Done, InReview, Proposal, Approved, Rejected } from '../../../Icons';
 import { ColumnSection } from '../../ColumnSection';
-
 import {
   TaskColumnContainer,
   TaskColumnContainerHeader,
@@ -48,13 +50,20 @@ const TITLES = {
   [TASK_STATUS_IN_PROGRESS]: 'In-Progress',
   [TASK_STATUS_IN_REVIEW]: 'In-Review',
   [TASK_STATUS_DONE]: 'Done',
+  //PROPOSALS
+  [STATUS_OPEN]: 'Open',
+  [STATUS_APPROVED]: 'Approved',
+  [STATUS_CHANGE_REQUESTED]: 'Rejected',
 };
 
 const HEADER_ICONS = {
   [TASK_STATUS_TODO]: ToDo,
   [TASK_STATUS_IN_PROGRESS]: InProgress,
-  // [TASK_STATUS_IN_REVIEW]: InReview,
+  [TASK_STATUS_IN_REVIEW]: InReview,
   [TASK_STATUS_DONE]: Done,
+  [STATUS_OPEN]: Proposal,
+  [STATUS_APPROVED]: Approved,
+  [STATUS_CHANGE_REQUESTED]: Rejected,
 };
 
 const TaskColumn = (props: ITaskColumn) => {
@@ -63,14 +72,7 @@ const TaskColumn = (props: ITaskColumn) => {
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
   const [openTaskModal, setOpenTaskModal] = useState(false);
-  let boardType = null;
-  if (orgBoard) {
-    boardType = BOARD_TYPE.org;
-  } else if (podBoard) {
-    boardType = BOARD_TYPE.pod;
-  } else if (userBoard) {
-    boardType = BOARD_TYPE.assignee;
-  }
+  const [isAddButtonVisible, setIsAddButtonVisible] = useState(false);
 
   const board = orgBoard || userBoard || podBoard;
   const taskCount = board?.taskCount;
@@ -91,7 +93,17 @@ const TaskColumn = (props: ITaskColumn) => {
       number = taskCount?.completed || 0;
       break;
     case TASK_STATUS_IN_REVIEW:
-      number = taskCount?.submission || 0;
+      // TODO fix me
+      number = taskCount?.submission || taskCount?.inReview || 0;
+      break;
+    case STATUS_OPEN:
+      number = taskCount?.proposalOpen || 0;
+      break;
+    case STATUS_APPROVED:
+      number = taskCount?.proposalApproved || 0;
+      break;
+    case STATUS_CHANGE_REQUESTED:
+      number = taskCount?.proposalChangeRequested || 0;
       break;
     default:
       number = 0;
@@ -99,7 +111,11 @@ const TaskColumn = (props: ITaskColumn) => {
   }
 
   return (
-    <TaskColumnContainer>
+    <TaskColumnContainer
+      onMouseEnter={() => status === TASK_STATUS_TODO && setIsAddButtonVisible(true)}
+      onMouseLeave={() => status === TASK_STATUS_TODO && setIsAddButtonVisible(false)}
+      activeEntityType={board?.entityType || ''}
+    >
       <CreateModalOverlay
         style={{
           height: '95vh',
@@ -125,7 +141,7 @@ const TaskColumn = (props: ITaskColumn) => {
             flex: 1,
           }}
         />
-        {status === TASK_STATUS_TODO && (
+        {status === TASK_STATUS_TODO && isAddButtonVisible && (
           <CreateBtnIconDark
             onClick={() => setOpenTaskModal(true)}
             width="26"
@@ -137,7 +153,7 @@ const TaskColumn = (props: ITaskColumn) => {
           />
         )}
       </TaskColumnContainerHeader>
-      <ColumnSection section={section} setSection={() => {}} />
+      {section && <ColumnSection section={section} setSection={() => {}} />}
       <Droppable droppableId={status}>
         {(provided) => (
           <TaskListContainer ref={provided.innerRef} {...provided.droppableProps}>
@@ -153,7 +169,7 @@ const TaskColumn = (props: ITaskColumn) => {
                     ref={provided.innerRef}
                     isDragging={snapshot.isDragging}
                   >
-                    {card.type === ENTITIES_TYPES.MILESTONE ? (
+                    {card.type === ENTITIES_TYPES.MILESTONE && !card.isProposal ? (
                       <Milestone>
                         <Task task={card} setTask={() => {}} />
                       </Milestone>
