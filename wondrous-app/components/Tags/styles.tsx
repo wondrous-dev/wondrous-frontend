@@ -47,68 +47,78 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
   }
 `;
 
-export const AutocompleteList = styled(Popper).attrs((props) => ({
-  className: `${autocompleteClasses.listbox}`,
-}))`
-  .MuiPaper-root {
-    background: #0f0f0f !important;
-    top: auto;
-    bottom: auto;
-  }
+// export const AutocompleteList = styled(Popper).attrs((props) => ({
+//   className: `${autocompleteClasses.listbox}`,
+// }))`
+//   .MuiPaper-root {
+//     background: #0f0f0f !important;
+//     top: auto;
+//     bottom: auto;
+//   }
+//
+//   li {
+//     font-family: Space Grotesk;
+//     font-size: 14px;
+//     color: ${White};
+//     display: flex;
+//     align-items: center;
+//   }
+//
+//   .MuiAutocomplete-noOptions {
+//     font-family: Space Grotesk;
+//     font-size: 14px;
+//     color: ${White};
+//   }
+// `;
+//
+// export const StyledAutocompletePopper = styled(({ className, ...props }) => {
+//   return <StyledAutocomplete {...props} classes={{ paper: className }} />;
+// })`
+//   && {
+//     background: #0f0f0f;
+//   }
+//
+//   & .MuiAutocomplete-noOptions {
+//     font-family: 'Space Grotesk';
+//     color: ${White};
+//     font-size: 14px;
+//   }
+// `;
+//
+export const OptionItem = styled.li`
+  position: relative;
 
-  li {
-    font-family: Space Grotesk;
-    font-size: 14px;
-    color: ${White};
-    display: flex;
-    align-items: center;
+  &:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: ${props => props.color || 'transparent'};
   }
-
-  .MuiAutocomplete-noOptions {
-    font-family: Space Grotesk;
-    font-size: 14px;
-    color: ${White};
-  }
+  //display: flex;
+  //align-items: center;
+  //cursor: pointer;
+  //margin-bottom: 8px;
 `;
 
-export const StyledAutocompletePopper = styled(({ className, ...props }) => {
-  return <StyledAutocomplete {...props} classes={{ paper: className }} />;
-})`
-  && {
-    background: #0f0f0f;
-  }
+// export const OptionTypography = styled(Typography)`
+//   && {
+//     font-family: Space Grotesk;
+//     font-size: 14px;
+//     color: ${White};
+//     margin-left: 8px;
+//   }
+// `;
 
-  & .MuiAutocomplete-noOptions {
-    font-family: 'Space Grotesk';
-    color: ${White};
-    font-size: 14px;
-  }
-`;
-
-export const OptionDiv = styled.div`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  margin-bottom: 8px;
-`;
-
-export const OptionTypography = styled(Typography)`
-  && {
-    font-family: Space Grotesk;
-    font-size: 14px;
-    color: ${White};
-    margin-left: 8px;
-  }
-`;
-
-export const StyledChip = styled(Chip)`
-  && {
-    margin: 3px 5px 3px 0;
-    color: #c4c4c4;
-    background: #0f0f0f;
-    border: 1px solid rgb(116, 39, 255);
-  }
-`;
+// export const StyledChip = styled(Chip)`
+//   && {
+//     margin: 3px 5px 3px 0;
+//     color: #c4c4c4;
+//     background: #0f0f0f;
+//     border: 1px solid rgb(116, 39, 255);
+//   }
+// `;
 
 export const StyledChipTag = styled(Chip)`
   && {

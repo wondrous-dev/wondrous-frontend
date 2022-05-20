@@ -182,3 +182,14 @@ export const GET_USER_JOIN_ORG_REQUEST = gql`
     }
   }
 `;
+
+
+export const GET_ORG_LABELS = gql`
+  query getOrgLabels($orgId: ID!) {
+    getOrgLabels(orgId: $orgId) {
+      id
+      name
+      color
+    }
+  }
+`;

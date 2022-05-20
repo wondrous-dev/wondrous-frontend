@@ -1,4 +1,5 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import _ from 'lodash';
 import { TabsVisibilityCreateEntity } from 'components/Common/TabsVisibilityCreateEntity';
 import { CircularProgress, styled, Switch, TextField } from '@material-ui/core';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
@@ -8,14 +9,29 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CREATE_POD } from 'graphql/mutations/pod';
 import { CREATE_MILESTONE, CREATE_TASK, CREATE_BOUNTY } from 'graphql/mutations/task';
 import { CREATE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { GET_AUTOCOMPLETE_USERS, GET_TASK_BY_ID, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { CREATE_LABEL } from 'graphql/mutations/org';
+import {
+  GET_AUTOCOMPLETE_USERS,
+  GET_ORG_LABELS,
+  GET_TASK_BY_ID,
+  GET_USER_ORGS,
+  GET_USER_PERMISSION_CONTEXT,
+} from 'graphql/queries';
 import { GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_POD_USERS, GET_USER_AVAILABLE_PODS } from 'graphql/queries/pod';
 import { GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_FOR_POD, GET_MILESTONES } from 'graphql/queries/task';
 import { Grey700, White } from '../../theme/colors';
 import { addProposalItem } from 'utils/board';
-import { CHAIN_TO_CHAIN_DIPLAY_NAME, ENTITIES_TYPES, MEDIA_TYPES, PERMISSIONS, PRIVACY_LEVEL, TAGS } from 'utils/constants';
+import {
+  CHAIN_TO_CHAIN_DIPLAY_NAME,
+  ColorTypes,
+  ENTITIES_TYPES,
+  MEDIA_TYPES,
+  PERMISSIONS,
+  PRIVACY_LEVEL,
+  TAGS,
+} from 'utils/constants';
 import { TextInputContext } from 'utils/contexts';
 
 import {
@@ -250,7 +266,7 @@ const CreateLayoutBaseModal = (props) => {
   const [milestoneString, setMilestoneString] = useState('');
   const [assignee, setAssignee] = useState(null);
   const [selectedReviewers, setSelectedReviewers] = useState([]);
-  const [tags, setTags] = useState([]);
+  const [labelIds, setLabelIds] = useState([]);
   const [link, setLink] = useState('');
   const [rewardsCurrency, setRewardsCurrency] = useState(null);
   const [rewardsAmount, setRewardsAmount] = useState(null);
@@ -285,6 +301,14 @@ const CreateLayoutBaseModal = (props) => {
     onCompleted: () => {
       setOrgUserFetched(true);
     },
+  });
+
+  const [getOrgLabels, { data: orgLabelsData }] = useLazyQuery(GET_ORG_LABELS, {
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [createLabel] = useMutation(CREATE_LABEL, {
+    refetchQueries: () => ['getOrgLabels'],
   });
 
   const [getEligibleReviewersForOrg, { data: eligibleReviewersForOrgData }] =
@@ -414,6 +438,13 @@ const CreateLayoutBaseModal = (props) => {
       }
       if (org) {
         if (!podsFetched) {
+          // FIXME
+          getOrgLabels({
+            variables: {
+              orgId: org,
+            },
+          });
+
           getUserAvailablePods({
             variables: {
               orgId: org,
@@ -492,7 +523,7 @@ const CreateLayoutBaseModal = (props) => {
 
     const taskInput = {
       title,
-      tags,
+      labelIds,
       description: descriptionText,
       orgId: org,
       milestoneId: milestone?.id,
@@ -678,7 +709,7 @@ const CreateLayoutBaseModal = (props) => {
       case ENTITIES_TYPES.MILESTONE:
         const milestoneInput = {
           title,
-          tags,
+          labelIds,
           description: descriptionText,
           orgId: org,
           podId: pod,
@@ -715,7 +746,7 @@ const CreateLayoutBaseModal = (props) => {
       case ENTITIES_TYPES.BOUNTY:
         const bountyInput = {
           title,
-          tags,
+          labelIds,
           description: descriptionText,
           orgId: org,
           milestoneId: milestone?.id,
@@ -832,6 +863,27 @@ const CreateLayoutBaseModal = (props) => {
     isPodPublic,
     isPublicEntity,
   ]);
+
+  const handleTagsChange = async (tags) => {
+    const lastTag = tags[tags.length - 1];
+
+    if (!lastTag.id) {
+      // Pick random color
+      const color = _.sample(Object.values(ColorTypes)) as ColorTypes;
+
+      const { data: { createLabel: newLabel } } = await createLabel({
+        variables: {
+          input: {
+            color,
+            orgId: org,
+            name: lastTag.name,
+          },
+        },
+      });
+
+
+      setLabelIds([]);
+  }
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const creating =
@@ -1325,7 +1377,7 @@ const CreateLayoutBaseModal = (props) => {
         <CreateFormMainInputBlock>
           <CreateFormMainBlockTitle>Add tags</CreateFormMainBlockTitle>
 
-          <Tags options={TAGS} value={tags} onChange={setTags} limit={4} />
+          <Tags options={orgLabelsData?.getOrgLabels || ['efa']} value={tags} onChange={handleTagsChange} limit={4} />
         </CreateFormMainInputBlock>
       </CreateFormAddTagsSection>
 

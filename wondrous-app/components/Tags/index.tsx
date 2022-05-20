@@ -1,21 +1,36 @@
 import React, { useState } from 'react';
-import { InputAdornment, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
+import { createFilterOptions } from '@material-ui/lab';
 
-import { RightInputAdornment, StyledAutocomplete, StyledChipTag, LeftInputAdornment } from './styles';
-import { White, Grey700 } from '../../theme/colors';
+import { RightInputAdornment, StyledAutocomplete, StyledChipTag, LeftInputAdornment, OptionItem } from './styles';
+import { White } from '../../theme/colors';
 import SearchIcon from '../Icons/search';
 import TagsIcon from '../Icons/tagsIcon';
+import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
+
+type Option = {
+  id: string;
+  createdAt: string;
+  orgId: string;
+  name: string;
+  color: string;
+};
 
 type Props = {
   // Array of options.
-  options: Array<string>;
+  options: Option[];
   // The value of the autocomplete.
   value?: Array<string>;
-  // The maximum number of tags
+  // The maximum number of labels
   limit: number;
   // Callback fired when the value changes
   onChange?: (value: Array<string>) => any;
 };
+
+const filter = createFilterOptions({
+  matchFrom: 'start',
+  stringify: (option: Option) => option.name || '',
+});
 
 function Tags({ options, onChange, limit, value = [] }: Props) {
   const [openTags, setOpenTags] = useState(false);
@@ -25,26 +40,61 @@ function Tags({ options, onChange, limit, value = [] }: Props) {
       open={openTags}
       onOpen={() => setOpenTags(true)}
       onClose={() => setOpenTags(false)}
-      onChange={(e, value) => onChange(value)}
+      onChange={(e, value) => {
+        if (value.length <= limit) {
+          onChange(value);
+        }
+      }}
+      getOptionLabel={(option) => option.name}
+      filterOptions={(options, params) => {
+        const filtered = filter(options, params);
+
+        if (!filtered.length && params.inputValue !== '') {
+          filtered.push({
+            name: params.inputValue,
+          } as Option);
+        }
+
+        return filtered;
+      }}
+      renderOption={(props, option) => {
+        if (!option.id) {
+          return (
+            <OptionItem {...props}>
+              <CreateBtnIconDark style={{ marginRight: '16px' }} /> Create tag for &quot;{option.name}&quot;
+            </OptionItem>
+          );
+        }
+
+        return (
+          <OptionItem {...props} color={option.color}>
+            {option.name}
+          </OptionItem>
+        );
+      }}
+      clearOnBlur
       multiple
       filterSelectedOptions
+      freeSolo
       value={value}
       options={value.length !== limit ? options : []}
-      renderTags={(value, getTagProps) =>
-        value?.map((option, index) => {
-          const props = getTagProps({ index });
+      renderTags={(value, getLabelProps) => {
+        return value?.map((option, index) => {
+          const props = getLabelProps({ index });
+
+          debugger;
 
           return (
             <StyledChipTag
               key={index}
               icon={<span>&times;</span>}
               onClick={props.onDelete}
-              label={option}
+              label={option.name}
               variant="outlined"
             />
           );
-        })
-      }
+        });
+      }}
       renderInput={(params) => {
         return (
           <>
@@ -64,8 +114,8 @@ function Tags({ options, onChange, limit, value = [] }: Props) {
               InputLabelProps={{ shrink: false }}
               placeholder={value.length !== limit ? `Add tags (max ${limit})` : ''}
               InputProps={{
-                  ...params.InputProps,
-                  endAdornment: null,
+                ...params.InputProps,
+                endAdornment: null,
               }}
             />
             <RightInputAdornment>
