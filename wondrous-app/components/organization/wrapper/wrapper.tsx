@@ -308,23 +308,10 @@ const Wrapper = (props) => {
                     {permissions === null && (
                       <>
                         {joinRequestSent || userJoinRequest?.id ? (
-                          <HeaderSettingsLockedButton
-                            style={{
-                              width: 'fit-content',
-                              visibility: 'visible',
-                            }}
-                          >
-                            Request sent
-                          </HeaderSettingsLockedButton>
+                          <HeaderButton style={{ pointerEvents: 'none' }}>Request sent</HeaderButton>
                         ) : (
-                          <HeaderButton
-                            style={{
-                              width: 'fit-content',
-                            }}
-                            reversed
-                            onClick={handleJoinOrgButtonClick}
-                          >
-                            <HeaderFollowButtonText>Join org</HeaderFollowButtonText>
+                          <HeaderButton reversed onClick={handleJoinOrgButtonClick}>
+                            Join org
                           </HeaderButton>
                         )}
                       </>

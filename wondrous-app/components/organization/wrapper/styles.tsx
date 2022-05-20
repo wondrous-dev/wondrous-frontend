@@ -138,7 +138,7 @@ export const HeaderTag = styled(Typography)`
 `;
 
 export const HeaderButtons = styled.div`
-  width: 22%;
+  width: fit-content;
   height: 100%;
   display: flex;
   justify-content: space-between;
@@ -159,6 +159,7 @@ export const HeaderFollowButtonText = styled(Typography)`
     font-weight: 500;
     font-size: 16px;
     line-height: 150%;
+    width: fit-content;
     display: flex;
     align-items: center;
     color: #ffffff;
@@ -248,7 +249,7 @@ export const HeaderButton = styled.button`
   justify-content: center;
   align-items: center;
   padding: 10px;
-  width: 80px;
+  width: max-content;
   ${({ reversed }) => (reversed ? `background: ${HighlightPurple}` : `background: transparent`)};
   border: 1px solid ${HighlightPurple};
   cursor: pointer;

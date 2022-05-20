@@ -323,22 +323,10 @@ const Wrapper = (props) => {
                     {permissions === null && (
                       <>
                         {joinRequestSent || userJoinRequest?.id ? (
-                          <HeaderSettingsLockedButton
-                            style={{
-                              width: 'fit-content',
-                              visibility: 'visible',
-                            }}
-                          >
-                            Request sent
-                          </HeaderSettingsLockedButton>
+                          <HeaderButton style={{ pointerEvents: 'none' }}>Request sent</HeaderButton>
                         ) : (
-                          <HeaderButton
-                            style={{
-                              width: 'fit-content',
-                            }}
-                            onClick={handleJoinPodButtonClick}
-                          >
-                            <HeaderFollowButtonText>Join pod</HeaderFollowButtonText>
+                          <HeaderButton reversed onClick={handleJoinPodButtonClick}>
+                            Join pod
                           </HeaderButton>
                         )}
                       </>
