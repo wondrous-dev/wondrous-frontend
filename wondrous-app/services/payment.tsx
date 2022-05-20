@@ -5,15 +5,17 @@ import { EthersAdapter, SafeTransactionOptionalProps } from '@gnosis.pm/safe-cor
 import Safe from '@gnosis.pm/safe-core-sdk';
 
 import SafeServiceClient from '@gnosis.pm/safe-service-client';
-import {CHAIN_VALUE_TO_GNOSIS_CHAIN_VALUE, CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL} from '../utils/constants'
+import { CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL} from '../utils/constants'
 import {HARMONY_MULTI_SEND_ADDR, HARMONY_PROXY_FACTORY, HARMONY_SAFE_MASTER_COPY, HARMONY_SAFE_MASTER_COPY2} from '../utils/constants'
 
 
 const CHAIN_NAME_TO_DB_CHAIN_NAME = {
   // todo refactor this to have one consistent naming probably
-  ETH: 'eth_mainnet',
-  MATIC: 'polygon_mainnet',
+  ETH: 'ethereum',
+  MATIC: 'polygon',
   RINKEBY: 'rinkeby',
+  ARBITRUM: 'arbitrum',
+  BOBA: 'boba',
 };
 
 export const useGnosisSdk = () => {
@@ -46,10 +48,9 @@ export const useGnosisSdk = () => {
 
     const safe: Safe = await Safe.create({ ethAdapter: ethAdapterOwner1, safeAddress: safeAddress, contractNetworks });
     setSafeSdk(safe);
-    if (!(chain in CHAIN_VALUE_TO_GNOSIS_CHAIN_VALUE)) {
+    if (!(chain in CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL)) {
       throw new Error('Invalid chain value');
     }
-    const gnosisChainName = CHAIN_VALUE_TO_GNOSIS_CHAIN_VALUE[chain];
     try {
       const safeServiceUrl = CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL[chain];
       const client = new SafeServiceClient(safeServiceUrl);  

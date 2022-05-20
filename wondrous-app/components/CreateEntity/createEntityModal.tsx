@@ -89,6 +89,7 @@ import {
   StyledAutocompletePopper,
   StyledChip,
   TextInputDiv,
+  CreateFormBaseModalHeaderWrapper,
 } from './styles';
 
 const filterUserOptions = (options) => {
@@ -899,17 +900,19 @@ const CreateLayoutBaseModal = (props) => {
 
   return (
     <CreateFormBaseModal isPod={isPod}>
-      <CreateFormBaseModalCloseBtn onClick={handleClose}>
-        <CloseModalIcon />
-      </CreateFormBaseModalCloseBtn>
-      <CreateFormBaseModalHeader
-        style={{
-          marginBottom: '0',
-        }}
-      >
-        <TitleIcon circle />
-        <CreateFormBaseModalTitle>Create a {titleText.toLowerCase()}</CreateFormBaseModalTitle>
-      </CreateFormBaseModalHeader>
+      <CreateFormBaseModalHeaderWrapper>
+        <CreateFormBaseModalHeader
+          style={{
+            marginBottom: '0',
+          }}
+        >
+          <TitleIcon circle />
+          <CreateFormBaseModalTitle>Create a {titleText.toLowerCase()}</CreateFormBaseModalTitle>
+        </CreateFormBaseModalHeader>
+        <CreateFormBaseModalCloseBtn onClick={handleClose}>
+          <CloseModalIcon />
+        </CreateFormBaseModalCloseBtn>
+      </CreateFormBaseModalHeaderWrapper>
 
       <CreateFormMainSection>
         <CreateFormMainSelects>
