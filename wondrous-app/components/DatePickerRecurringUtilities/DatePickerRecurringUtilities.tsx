@@ -1,10 +1,6 @@
-import moment from 'moment';
 import Image from 'next/image';
-import { styled } from '@mui/material/styles';
 
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 
@@ -34,6 +30,7 @@ interface DatePickerRecurringUtilitiesProps {
   todayMoment: any;
   onWeekDaysChange: any;
   weekDaysSelected: any;
+  monthInView: any;
 }
 
 const DatePickerRecurringUtilities = ({
@@ -47,6 +44,7 @@ const DatePickerRecurringUtilities = ({
   repeatType,
   setRepeatValue,
   todayMoment,
+  monthInView,
   onWeekDaysChange,
   weekDaysSelected,
 }: DatePickerRecurringUtilitiesProps) => {
@@ -95,7 +93,13 @@ const DatePickerRecurringUtilities = ({
                 On Day
                 <Box flex="1" />
                 <Box>
-                  <DaySelector dateRange={dateRange} todayMoment={todayMoment} onChange={handleDayChange} />
+                  <DaySelector
+                    dateRange={dateRange}
+                    date={date}
+                    monthInView={monthInView}
+                    todayMoment={todayMoment}
+                    onChange={handleDayChange}
+                  />
                 </Box>
               </Box>
             )}
@@ -104,7 +108,13 @@ const DatePickerRecurringUtilities = ({
                 Days after completion
                 <Box flex="1" />
                 <Box>
-                  <DaySelector dateRange={dateRange} todayMoment={todayMoment} onChange={handleDayChange} />
+                  <DaySelector
+                    dateRange={dateRange}
+                    date={date}
+                    monthInView={monthInView}
+                    todayMoment={todayMoment}
+                    onChange={handleDayChange}
+                  />
                 </Box>
               </Box>
             )}
