@@ -10,7 +10,7 @@ export const WalletsContainer = styled.div`
 
 export const TableValueText = styled(Typography)`
   && {
-    color: #c4c4c4;
+    color: ${White};
     font-size: 14px;
     font-height: 22px;
   }
@@ -26,7 +26,7 @@ export const WalletAddressInput = styled(InputBase)`
     font-size: 14px;
     line-height: 21px;
     letter-spacing: 0.01em;
-    color: #c4c4c4;
+    color: ${White};
     padding: 10px 15px;
   }
 `;
