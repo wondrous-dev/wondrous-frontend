@@ -115,6 +115,9 @@ const TaskColumn = (props: ITaskColumn) => {
       onMouseEnter={() => status === TASK_STATUS_TODO && setIsAddButtonVisible(true)}
       onMouseLeave={() => status === TASK_STATUS_TODO && setIsAddButtonVisible(false)}
       activeEntityType={board?.entityType || ''}
+      style={{
+        width: userBoard ? '100%' : '25%'
+      }}
     >
       <CreateModalOverlay
         style={{

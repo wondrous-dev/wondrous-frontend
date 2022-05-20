@@ -61,7 +61,7 @@ const KanbanBoard = (props) => {
   const isProposalEntity = board?.entityType === ENTITIES_TYPES.PROPOSAL;
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
-
+  
   useEffect(() => {
     if (inView && hasMore) {
       onLoadMore();

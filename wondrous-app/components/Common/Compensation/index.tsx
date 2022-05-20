@@ -36,7 +36,7 @@ export const Compensation = (props) => {
               </IconContainer>
             )}
             <CompensationAmount>
-              {CURRENCY_SYMBOL[symbol?.toUpperCase()] || symbol} {rewardAmount}
+              {rewardAmount}  {symbol}
             </CompensationAmount>
           </>
         )}
