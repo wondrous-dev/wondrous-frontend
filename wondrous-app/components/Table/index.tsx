@@ -99,7 +99,9 @@ export const Table = (props) => {
   async function editTask(task, status = '') {
     let populatedTask = { ...task };
     const isTaskProposal =
-      status === Constants.TASK_STATUS_REQUESTED || status === Constants.TASK_STATUS_PROPOSAL_REQUEST;
+      status === Constants.TASK_STATUS_REQUESTED ||
+      status === Constants.TASK_STATUS_PROPOSAL_REQUEST ||
+      task.isProposal;
 
     if (!isTaskProposal) {
       const isTaskSubmission =
@@ -179,7 +181,7 @@ export const Table = (props) => {
 
   function openTask(task, status = '') {
     const view = location.params.view ?? ViewType.List;
-    if (status === TASK_STATUS_REQUESTED || status === TASK_STATUS_PROPOSAL_REQUEST) {
+    if (status === TASK_STATUS_REQUESTED || status === TASK_STATUS_PROPOSAL_REQUEST || task?.isProposal) {
       location.replace(`${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`);
     } else if (status === TASK_STATUS_IN_REVIEW || status === TASK_STATUS_SUBMISSION_REQUEST) {
       location.replace(`${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`);
@@ -215,7 +217,6 @@ export const Table = (props) => {
 
   const tableTasks = tasks || createTasksFromColumns(columns);
 
-  console.log(columns);
   return (
     <>
       <TaskViewModal
@@ -258,7 +259,7 @@ export const Table = (props) => {
         >
           <EditLayoutBaseModal
             open={open}
-            entityType={ENTITIES_TYPES.TASK}
+            entityType={editableTask?.isProposal ? ENTITIES_TYPES.PROPOSAL : editableTask?.type || ENTITIES_TYPES.TASK}
             handleClose={() => setEditableTask(false)}
             cancelEdit={() => setEditableTask(false)}
             existingTask={editableTask}

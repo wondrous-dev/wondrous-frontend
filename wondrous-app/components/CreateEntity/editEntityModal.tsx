@@ -125,7 +125,7 @@ import { useMe } from '../Auth/withAuth';
 import Ethereum from '../Icons/ethereum';
 import { USDCoin } from '../Icons/USDCoin';
 import { TaskFragment } from 'graphql/fragments/task';
-import { updateProposalItem } from 'utils/board';
+import { getProposalStatus } from 'utils/board';
 import { GET_ORG_TASK_BOARD_PROPOSALS } from 'graphql/queries/taskBoard';
 import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './createEntityModal';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
@@ -561,13 +561,8 @@ const EditLayoutBaseModal = (props) => {
         const columns = [...boardColumns?.columns];
 
         if (board?.entityType === ENTITIES_TYPES.PROPOSAL) {
-          let statusColumnIndex;
-          if (taskProposal.approvedAt) statusColumnIndex = columns.findIndex((column) => column.status === STATUS_OPEN);
-          if (!taskProposal.approvedAt && !taskProposal.changeRequested)
-            statusColumnIndex = columns.findIndex((column) => column.status === STATUS_APPROVED);
-          if (taskProposal.changeRequestedAt)
-            statusColumnIndex = columns.findIndex((column) => column.status === STATUS_CHANGE_REQUESTED);
-
+          let proposalStatus = getProposalStatus(taskProposal);
+          const statusColumnIndex = columns.findIndex((column) => column.status === proposalStatus);
           if (statusColumnIndex) {
             columns[statusColumnIndex].tasks = columns[statusColumnIndex].tasks.map((task) => {
               if (task?.id === transformedTaskProposal?.id) {

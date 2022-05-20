@@ -66,6 +66,7 @@ import {
   TASK_STATUS_TODO,
   PAYMENT_STATUS,
   PRIVACY_LEVEL,
+  STATUS_APPROVED,
 } from 'utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
@@ -120,7 +121,14 @@ import {
 } from 'graphql/queries/taskBoard';
 import { AvatarList } from '../AvatarList';
 import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { addTaskItem, removeProposalItem, updateInProgressTask, updateProposalItem, updateTaskItem } from 'utils/board';
+import {
+  addTaskItem,
+  removeProposalItem,
+  updateInProgressTask,
+  updateProposalItem,
+  updateTaskItem,
+  getProposalStatus,
+} from 'utils/board';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
 import { CompletedIcon } from '../../Icons/statusIcons';
 import { TaskListCard } from '.';
@@ -1120,6 +1128,72 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       handleClose();
     }
   };
+
+  const approveProposal = () => {
+    approveTaskProposal({
+      variables: {
+        proposalId: fetchedTask?.id,
+      },
+      onCompleted: (data) => {
+        const taskProposal = data?.approveTaskProposal;
+
+        const fetchedTaskProposalStatus = getProposalStatus(fetchedTask);
+        let columns = [...boardColumns?.columns];
+        if (board?.entityType) {
+          const prevStatusIndex = columns.findIndex((column) => column.status === fetchedTaskProposalStatus);
+          const approvedColumnIndex = columns.findIndex((column) => column.status === STATUS_APPROVED);
+          columns[prevStatusIndex].tasks = columns[prevStatusIndex].tasks.filter((task) => task.id !== taskProposal.id);
+          columns[approvedColumnIndex].tasks = [
+            { ...taskProposal, apporvedAt: new Date() },
+            ...columns[approvedColumnIndex].tasks,
+          ];
+        } else {
+          // keep it for userboard
+          // Move from proposal to task
+          columns = removeProposalItem(fetchedTask?.id, columns);
+          columns = addTaskItem(
+            transformTaskToTaskCard(
+              {
+                ...fetchedTask,
+                id: taskProposal?.associatedTaskId,
+                __typename: 'TaskCard',
+                type: 'task',
+                parentTaskId: null,
+              },
+              {}
+            ),
+            columns
+          );
+        }
+        boardColumns?.setColumns(columns);
+        document.body.setAttribute('style', `position: relative;`);
+        handleClose();
+      },
+    });
+  };
+
+  const requestProposalChanges = () => {
+    requestChangeTaskProposal({
+      variables: {
+        proposalId: fetchedTask?.id,
+      },
+      onCompleted: () => {
+        let columns = [...board?.columns];
+        // Move from proposal to task
+        columns = updateProposalItem(
+          {
+            ...fetchedTask,
+            changeRequestedAt: new Date(),
+          },
+          columns
+        );
+        boardColumns?.setColumns(columns);
+      },
+      refetchQueries: ['GetOrgTaskBoardProposals'],
+    });
+    document.body.setAttribute('style', `position: relative;`);
+    handleClose();
+  };
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -1633,64 +1707,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 )}
                 {canApproveProposal && !fetchedTask?.approvedAt && (
                   <CreateFormButtonsBlock>
-                    <CreateFormCancelButton
-                      onClick={() => {
-                        requestChangeTaskProposal({
-                          variables: {
-                            proposalId: fetchedTask?.id,
-                          },
-                          onCompleted: () => {
-                            let columns = [...boardColumns?.columns];
-                            // Move from proposal to task
-                            columns = updateProposalItem(
-                              {
-                                ...fetchedTask,
-                                changeRequestedAt: new Date(),
-                              },
-                              columns
-                            );
-                            boardColumns?.setColumns(columns);
-                          },
-                          refetchQueries: ['GetOrgTaskBoardProposals'],
-                        });
-                      }}
-                    >
-                      Request changes
-                    </CreateFormCancelButton>
-                    <CreateFormPreviewButton
-                      onClick={() => {
-                        approveTaskProposal({
-                          variables: {
-                            proposalId: fetchedTask?.id,
-                          },
-                          onCompleted: (data) => {
-                            const taskProposal = data?.approveTaskProposal;
-                            let columns = [...boardColumns?.columns];
-                            // Move from proposal to task
-                            columns = removeProposalItem(fetchedTask?.id, columns);
-                            columns = addTaskItem(
-                              transformTaskToTaskCard(
-                                {
-                                  ...fetchedTask,
-                                  id: taskProposal?.associatedTaskId,
-                                  __typename: 'TaskCard',
-                                  type: 'task',
-                                  parentTaskId: null,
-                                },
-                                {}
-                              ),
-                              columns
-                            );
-                            boardColumns?.setColumns(columns);
-                            document.body.setAttribute('style', `position: relative;`);
-                            handleClose();
-                          },
-                          refetchQueries: ['GetOrgTaskBoardProposals', 'getPerStatusTaskCountForOrgBoard'],
-                        });
-                      }}
-                    >
-                      Approve
-                    </CreateFormPreviewButton>
+                    <CreateFormCancelButton onClick={requestProposalChanges}>Request changes</CreateFormCancelButton>
+                    <CreateFormPreviewButton onClick={approveProposal}>Approve</CreateFormPreviewButton>
                   </CreateFormButtonsBlock>
                 )}
               </CreateFormFooterButtons>

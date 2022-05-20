@@ -742,7 +742,7 @@ const CreateLayoutBaseModal = (props) => {
                 });
 
                 let columns = [...board?.columns];
-                if (columns[0].tasks) {
+                if (columns[0]?.tasks) {
                   columns[0].tasks = [transformedTask, ...columns[0].tasks];
                 } else {
                   columns = [transformedTask, ...columns];
@@ -840,7 +840,7 @@ const CreateLayoutBaseModal = (props) => {
                     });
 
                     let columns = [...board?.columns];
-                    if (columns[0].tasks) {
+                    if (columns[0]?.tasks) {
                       columns = [transformedTask, ...columns[0].tasks];
                     } else {
                       columns = [transformedTask, ...columns];

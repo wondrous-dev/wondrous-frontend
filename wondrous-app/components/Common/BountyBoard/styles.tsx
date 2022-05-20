@@ -39,6 +39,7 @@ export const BountyCardWrapper = styled.div`
   flex-direction: column;
   color: ${White};
   padding: 10px;
+  cursor: pointer;
   border-radius: 3px;
   background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
   gap: 14px;

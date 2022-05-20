@@ -123,6 +123,7 @@ export const BoardsCardMedia = styled.div`
   overflow: hidden;
   height: 100%;
   width: 100%;
+  margin-top: 12px;
 `;
 // BOARDS CARD SHARED UI COMPONENTS
 
@@ -229,7 +230,7 @@ export const CardsContainer = ({ isFullWidth, numberOfColumns, children }) => {
       {isFullWidth ? (
         <div>{children}</div>
       ) : (
-        <Masonry spacing={2} columns={{ xs: 1, sm: 2, lg: numberOfColumns }}>
+        <Masonry style={{ alignContent: 'flex-start' }} spacing={2} columns={{ xs: 1, sm: 2, lg: numberOfColumns }}>
           {children}
         </Masonry>
       )}

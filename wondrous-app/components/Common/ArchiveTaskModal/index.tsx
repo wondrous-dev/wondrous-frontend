@@ -30,9 +30,7 @@ interface IArchiveTaskModalProps {
 export const ArchiveTaskModal = (props: IArchiveTaskModalProps) => {
   const { open, onClose, onArchive, taskType, taskId = '' } = props;
   const board = useOrgBoard();
-  const [archiveTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL, {
-    refetchQueries: () => ['getOrgTaskBoardTasks', 'getPerStatusTaskCountForOrgBoard'],
-  });
+  const [archiveTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
 
   const isTaskOrMilestone =
     taskType === Constants.TASK_TYPE || taskType === Constants.MILESTONE_TYPE || taskType === Constants.BOUNTY_TYPE;
@@ -58,6 +56,8 @@ export const ArchiveTaskModal = (props: IArchiveTaskModalProps) => {
           'getPerStatusTaskCountForUserBoard',
           'getPerStatusTaskCountForOrgBoard',
           'getPerStatusTaskCountForPodBoard',
+          'getPerTypeTaskCountForOrgBoard',
+          'getPerTypeTaskCountForPodBoard',
         ],
       })
         .then(() => {

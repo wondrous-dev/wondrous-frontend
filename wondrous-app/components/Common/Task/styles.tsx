@@ -14,9 +14,7 @@ export const TaskInner = styled.div`
   align-items: stretch;
 
   border-radius: 5px;
-  padding: 14px;
-
-  padding-bottom: 18px;
+  padding: 4px;
   width: 100%;
   overflow: clip;
 
@@ -47,7 +45,6 @@ export const TaskHeader = styled.div`
   text-align: left;
   justify-content: flex-start;
   align-items: center;
-  margin: 0 0 17px 0;
 `;
 
 export const TaskHeaderIconWrapper = styled.div`
@@ -132,6 +129,7 @@ export const TaskAction = styled.div`
   flex-direction: row;
   flext-content: flex-start;
   align-content: space-between;
+  align-items: center;
 `;
 
 export const TaskActionMenu = styled.div`
@@ -140,6 +138,7 @@ export const TaskActionMenu = styled.div`
   flex-grow: 1;
   justify-content: flex-end;
   height: 24px;
+  z-index: 100;
 `;
 
 export const TaskActionAmount = styled.div`
@@ -160,7 +159,7 @@ export const PodWrapper = styled.div`
   display: flex;
   align-items: flex-start;
   margin-right: 6px;
-  margin-top: 24px;
+  margin-top: 12px;
 `;
 
 export const PodName = styled(Typography)`
@@ -548,7 +547,7 @@ export const ProposalCardWrapper = styled.div`
   display: flex;
   flex-direction: column;
   color: ${White};
-  padding: 10px;
+  padding: 14px;
   margin: ${(props) => (props.wrapped ? '0' : '1em 0 0 0')};
   border-radius: 3px;
   background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);

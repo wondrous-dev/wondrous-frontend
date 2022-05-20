@@ -34,7 +34,7 @@ import { SubtaskDarkIcon, SubtaskLightIcon } from '../../Icons/subtask';
 import { CheckedBoxIcon } from '../../Icons/checkedBox';
 import { Compensation } from '../Compensation';
 import { Claim } from '../../Icons/claimTask';
-import { updateInProgressTask, updateTaskItem } from 'utils/board';
+import { updateInProgressTask, updateTaskItem, getProposalStatus } from 'utils/board';
 import { TaskBountyOverview } from '../TaskBountyOverview';
 import { SafeImage } from '../Image';
 import * as Constants from 'utils/constants';
@@ -188,205 +188,210 @@ export const TaskCard = ({
           fetchedTask={task}
         />
       ) : null}
-      <TaskInner>
-        <TaskHeader>
-          <TaskHeaderIconWrapper>
-            <SafeImage
-              src={task?.orgProfilePicture}
-              style={{
-                width: '29px',
-                height: '28px',
-                borderRadius: '4px',
-                marginRight: '8px',
-              }}
-            />
-            {isMilestone && <MilestoneIcon />}
-            <AvatarList users={userList} id={'task-' + task?.id} />
-            {isSubtask && <SubtaskLightIcon stroke="white" />}
-            {!isSubtask && !isMilestone && totalSubtask > 0 && (
-              <CheckedIconWrapper>
-                {' '}
-                <CheckedBoxIcon stroke="white" pathFill="none" />
-              </CheckedIconWrapper>
-            )}
+      <TaskHeader>
+        <TaskHeaderIconWrapper>
+          <SafeImage
+            src={task?.orgProfilePicture}
+            style={{
+              width: '29px',
+              height: '28px',
+              borderRadius: '4px',
+              marginRight: '8px',
+            }}
+          />
+          {isMilestone && <MilestoneIcon />}
+          <AvatarList users={userList} id={'task-' + task?.id} />
+          {isSubtask && <SubtaskLightIcon stroke="white" />}
+          {!isSubtask && !isMilestone && totalSubtask > 0 && (
+            <CheckedIconWrapper>
+              {' '}
+              <CheckedBoxIcon stroke="white" pathFill="none" />
+            </CheckedIconWrapper>
+          )}
 
-            {task?.privacyLevel === Constants.PRIVACY_LEVEL.public && (
-              <PodWrapper
+          {task?.privacyLevel === Constants.PRIVACY_LEVEL.public && (
+            <PodWrapper
+              style={{
+                marginTop: '0',
+              }}
+            >
+              <PodName
                 style={{
-                  marginTop: '0',
+                  borderRadius: '8px',
+                  marginLeft: '4px',
                 }}
               >
-                <PodName
-                  style={{
-                    borderRadius: '8px',
-                    marginLeft: '4px',
-                  }}
-                >
-                  Public
-                </PodName>
-              </PodWrapper>
-            )}
-          </TaskHeaderIconWrapper>
-          {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
-        </TaskHeader>
-        <TaskCreatedBy type={type} router={router} createdBy={createdBy} />
-        {(isMilestone || isBounty) && <TaskDivider />}
+                Public
+              </PodName>
+            </PodWrapper>
+          )}
+        </TaskHeaderIconWrapper>
+        {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
+      </TaskHeader>
+      <TaskCreatedBy type={type} router={router} createdBy={createdBy} />
+      {(isMilestone || isBounty) && <TaskDivider />}
 
-        <TaskContent>
-          <TaskTitle>{title}</TaskTitle>
-          <TaskCardDescriptionText>
-            {renderMentionString({
-              content: description,
-              router,
-            })}
-          </TaskCardDescriptionText>
-          <TaskContentFooter>
-            {task?.podName && (
-              <PodWrapper
+      <TaskContent>
+        <TaskTitle>{title}</TaskTitle>
+        <TaskCardDescriptionText>
+          {renderMentionString({
+            content: description,
+            router,
+          })}
+        </TaskCardDescriptionText>
+        <TaskContentFooter>
+          {task?.podName && (
+            <PodWrapper
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                goToPod(task?.podId);
+              }}
+            >
+              <PodIcon
+                color={task?.podColor}
+                style={{
+                  width: '26px',
+                  height: '26px',
+                  marginRight: '8px',
+                }}
+              />
+              <PodName>{task?.podName}</PodName>
+            </PodWrapper>
+          )}
+        </TaskContentFooter>
+        {isBounty && (
+          <TaskBountyOverview
+            totalSubmissionsCount={task?.totalSubmissionsCount}
+            approvedSubmissionsCount={task?.approvedSubmissionsCount}
+          />
+        )}
+        {isMilestone && (
+          <MilestoneProgressWrapper>
+            <MilestoneProgress milestoneId={id} />
+          </MilestoneProgressWrapper>
+        )}
+        {task?.media?.[0] ? (
+          <BoardsCardMedia>
+            <SafeImage
+              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+              src={task?.media[0].slug}
+            />
+          </BoardsCardMedia>
+        ) : null}
+      </TaskContent>
+      <BoardsCardFooter style={{ paddingBottom: '0' }}>
+        {!assigneeId && !isBounty && !isMilestone && (
+          <>
+            {claimed ? (
+              <ActionButton
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  goToPod(task?.podId);
                 }}
               >
-                <PodIcon
-                  color={task?.podColor}
-                  style={{
-                    width: '26px',
-                    height: '26px',
-                    marginRight: '8px',
-                  }}
-                />
-                <PodName>{task?.podName}</PodName>
-              </PodWrapper>
-            )}
-          </TaskContentFooter>
-          {isBounty && (
-            <TaskBountyOverview
-              totalSubmissionsCount={task?.totalSubmissionsCount}
-              approvedSubmissionsCount={task?.approvedSubmissionsCount}
-            />
-          )}
-          <MilestoneProgressWrapper>{isMilestone && <MilestoneProgress milestoneId={id} />}</MilestoneProgressWrapper>
-          {media?.length > 0 ? <TaskMedia media={media[0]} /> : <TaskSeparator />}
-        </TaskContent>
-        <TaskFooter>
-          {/* <TaskAction key={'task-like-' + id} onClick={toggleLike}>
-      <TaskLikeIcon liked={liked} />
-      <TaskActionAmount>{likes}</TaskActionAmount>
-    </TaskAction> */}
-          {!assigneeId && !isBounty && !isMilestone && (
-            <>
-              {claimed ? (
-                <ActionButton
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                >
-                  Claimed
-                </ActionButton>
-              ) : (
-                <ActionButton
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    updateTaskAssignee({
-                      variables: {
-                        taskId: id,
-                        assigneeId: user?.id,
-                      },
-                      onCompleted: (data) => {
-                        setClaimed(true);
-                        const task = data?.updateTaskAssignee;
-                        const transformedTask = transformTaskToTaskCard(task, {});
-                        if (boardColumns?.setColumns) {
-                          let columns = [...boardColumns?.columns];
-                          if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
-                            columns = updateInProgressTask(transformedTask, columns);
-                          } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
-                            columns = updateTaskItem(transformedTask, columns);
-                          }
-                          boardColumns.setColumns(columns);
+                Claimed
+              </ActionButton>
+            ) : (
+              <ActionButton
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  updateTaskAssignee({
+                    variables: {
+                      taskId: id,
+                      assigneeId: user?.id,
+                    },
+                    onCompleted: (data) => {
+                      setClaimed(true);
+                      const task = data?.updateTaskAssignee;
+                      const transformedTask = transformTaskToTaskCard(task, {});
+                      if (boardColumns?.setColumns) {
+                        let columns = [...boardColumns?.columns];
+                        if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
+                          columns = updateInProgressTask(transformedTask, columns);
+                        } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
+                          columns = updateTaskItem(transformedTask, columns);
                         }
-                      },
-                    });
+                        boardColumns.setColumns(columns);
+                      }
+                    },
+                  });
+                }}
+              >
+                <Claim />
+                <span
+                  style={{
+                    marginLeft: '4px',
                   }}
                 >
-                  <Claim />
-                  <span
-                    style={{
-                      marginLeft: '4px',
-                    }}
-                  >
-                    Claim
-                  </span>
-                </ActionButton>
+                  Claim
+                </span>
+              </ActionButton>
+            )}
+          </>
+        )}
+        {!isBounty && !isMilestone && task?.status === Constants.TASK_STATUS_IN_REVIEW && (
+          <ActionButton onClick={openModal}>Review</ActionButton>
+        )}
+        {displayPayButton && (
+          <ActionButton
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePaymentModal();
+            }}
+          >
+            Pay
+          </ActionButton>
+        )}
+        {!isMilestone && (
+          <TaskAction key={'task-comment-' + id}>
+            <TaskCommentIcon />
+            <TaskActionAmount>{commentCount}</TaskActionAmount>
+          </TaskAction>
+        )}
+        {!isSubtask && !isMilestone && totalSubtask > 0 && (
+          <SubtaskCountWrapper>
+            <SubtaskLightIcon fill="none" stroke={Grey57} />
+            <SubtaskCount>{totalSubtask}</SubtaskCount>
+          </SubtaskCountWrapper>
+        )}
+        {canArchive && displayActions && (
+          <TaskActionMenu right="true">
+            <DropDown DropdownHandler={TaskMenuIcon}>
+              <DropDownItem
+                key={'task-menu-edit-' + id}
+                onClick={() => {
+                  setEditTask(true);
+                }}
+                color={White}
+              >
+                Edit {type}
+              </DropDownItem>
+              <DropDownItem
+                key={'task-menu-edit-' + id}
+                onClick={() => {
+                  setArchiveTask(true);
+                }}
+                color={White}
+              >
+                Archive {type}
+              </DropDownItem>
+              {canDelete && (
+                <DropDownItem
+                  key={'task-menu-delete-' + id}
+                  onClick={() => {
+                    setDeleteTask(true);
+                  }}
+                  color={Red800}
+                >
+                  Delete {type}
+                </DropDownItem>
               )}
-            </>
-          )}
-          {!isBounty && !isMilestone && task?.status === Constants.TASK_STATUS_IN_REVIEW && (
-            <ActionButton onClick={openModal}>Review</ActionButton>
-          )}
-          {displayPayButton && (
-            <ActionButton
-              onClick={(e) => {
-                e.stopPropagation();
-                handlePaymentModal();
-              }}
-            >
-              Pay
-            </ActionButton>
-          )}
-          {!isMilestone && (
-            <TaskAction key={'task-comment-' + id}>
-              <TaskCommentIcon />
-              <TaskActionAmount>{commentCount}</TaskActionAmount>
-            </TaskAction>
-          )}
-          {!isSubtask && !isMilestone && totalSubtask > 0 && (
-            <SubtaskCountWrapper>
-              <SubtaskLightIcon fill="none" stroke={Grey57} />
-              <SubtaskCount>{totalSubtask}</SubtaskCount>
-            </SubtaskCountWrapper>
-          )}
-          {canArchive && displayActions && (
-            <TaskActionMenu right="true">
-              <DropDown DropdownHandler={TaskMenuIcon}>
-                <DropDownItem
-                  key={'task-menu-edit-' + id}
-                  onClick={() => {
-                    setEditTask(true);
-                  }}
-                  color={White}
-                >
-                  Edit {type}
-                </DropDownItem>
-                <DropDownItem
-                  key={'task-menu-edit-' + id}
-                  onClick={() => {
-                    setArchiveTask(true);
-                  }}
-                  color={White}
-                >
-                  Archive {type}
-                </DropDownItem>
-                {canDelete && (
-                  <DropDownItem
-                    key={'task-menu-delete-' + id}
-                    onClick={() => {
-                      setDeleteTask(true);
-                    }}
-                    color={Red800}
-                  >
-                    Delete {type}
-                  </DropDownItem>
-                )}
-              </DropDown>
-            </TaskActionMenu>
-          )}
-        </TaskFooter>
-      </TaskInner>
+            </DropDown>
+          </TaskActionMenu>
+        )}
+      </BoardsCardFooter>
     </ProposalCardWrapper>
   );
 };
@@ -397,12 +402,7 @@ const STATUS_ICONS = {
 };
 
 export function ProposalCard({ openModal, title, description, task, goToPod, proposalRequestChange }) {
-  let proposalStatus = '';
-
-  if (task.approvedAt) proposalStatus = Constants.STATUS_APPROVED;
-  if (!task.approvedAt && !task.changeRequested) proposalStatus = Constants.STATUS_OPEN;
-  if (task.changeRequestedAt) proposalStatus = Constants.STATUS_CHANGE_REQUESTED;
-
+  const proposalStatus = getProposalStatus(task);
   const PROPOSAL_STATUS_MAP = {
     [Constants.STATUS_APPROVED]: {
       labelsAndActions: [

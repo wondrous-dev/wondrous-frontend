@@ -1,6 +1,13 @@
 import _ from 'lodash';
 import { COLUMNS } from 'services/board';
-import { TASK_STATUS_ARCHIVED, TASK_STATUS_IN_REVIEW, TASK_STATUS_REQUESTED } from './constants';
+import {
+  TASK_STATUS_ARCHIVED,
+  TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_REQUESTED,
+  STATUS_APPROVED,
+  STATUS_OPEN,
+  STATUS_CHANGE_REQUESTED,
+} from './constants';
 
 export const addProposalItem = (newItem, columns) => {
   if (columns[0].section) {
@@ -30,9 +37,29 @@ export const updateProposalItem = (updatedItem, columns) => {
   return columns;
 };
 
-export const removeProposalItem = (itemId, columns) => {
-  columns[0].section.tasks = columns[0].section.tasks.filter((task) => task.id !== itemId);
+export const getProposalStatus = (proposal) => {
+  let proposalStatus = '';
 
+  if (proposal.approvedAt) proposalStatus = STATUS_APPROVED;
+  if (!proposal.approvedAt && !proposal.changeRequested) proposalStatus = STATUS_OPEN;
+  if (proposal.changeRequestedAt) proposalStatus = STATUS_CHANGE_REQUESTED;
+  return proposalStatus;
+};
+
+export const removeProposalItem = (itemId, columns) => {
+  if (columns[0]?.section) {
+    columns[0].section.tasks = columns[0].section.tasks.filter((task) => task.id !== itemId);
+  } else {
+    let allItems = _.map(columns, 'tasks').flat();
+    const item = allItems.find((task) => task.id === itemId);
+    if (item) {
+      let status = getProposalStatus(item);
+      const columnIdx = status ? columns.findIndex((column) => column.status === status) : false;
+      if (Number.isInteger(columnIdx)) {
+        columns[columnIdx].tasks = columns[columnIdx].tasks.filter((task) => task.id !== itemId);
+      }
+    }
+  }
   return columns;
 };
 

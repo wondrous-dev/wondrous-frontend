@@ -37,6 +37,7 @@ export const MilestoneCard = styled.div`
   gap: 18px;
   flex-grow: 0;
   color: ${White};
+  cursor: pointer;
   padding: 14px;
   height: fit-content;
   background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);

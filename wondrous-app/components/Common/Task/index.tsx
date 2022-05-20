@@ -139,6 +139,8 @@ export const Task = (props) => {
       'getPerStatusTaskCountForOrgBoard',
       'getPodTaskBoardTasks',
       'getPerStatusTaskCountForPodBoard',
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
     ],
     onError: () => {
       console.error('Something went wrong with archiving tasks');
@@ -175,6 +177,8 @@ export const Task = (props) => {
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
       'getSubtasksForTask',
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
     ],
   });
   const reviewerData = useGetReviewers(editTask, task);
@@ -196,6 +200,7 @@ export const Task = (props) => {
         }
         board?.setColumns(columns);
       },
+      refetchQueries: ['getPerStatusTaskCountForOrgBoard'],
     });
   };
 

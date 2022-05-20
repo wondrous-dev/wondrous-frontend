@@ -96,6 +96,15 @@ const TaskColumn = (props: ITaskColumn) => {
       // TODO fix me
       number = taskCount?.submission || taskCount?.inReview || 0;
       break;
+    case STATUS_OPEN:
+      number = taskCount?.proposalOpen || 0;
+      break;
+    case STATUS_APPROVED:
+      number = taskCount?.proposalApproved || 0;
+      break;
+    case STATUS_CHANGE_REQUESTED:
+      number = taskCount?.proposalChangeRequested || 0;
+      break;
     default:
       number = 0;
       break;

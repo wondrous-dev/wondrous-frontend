@@ -60,14 +60,12 @@ export default function TableBody({
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
 
   const tasksToLimit = limit && tasks?.length >= limit ? tasks.slice(0, limit) : tasks;
+
   return (
     <StyledTableBody>
       {tasksToLimit.map((task, index) => {
         const status = task?.status;
-        const dropdownItemLabel =
-          status === Constants.TASK_STATUS_PROPOSAL_REQUEST || status === Constants.TASK_STATUS_REQUESTED
-            ? 'task proposal'
-            : 'task';
+        const dropdownItemLabel = status ? task.type : 'task proposal';
         const permissions = parseUserPermissionContext({
           userPermissionsContext,
           orgId: task?.orgId,
@@ -89,6 +87,7 @@ export default function TableBody({
           task?.__typename === 'TaskSubmissionCard' || task?.__typename === 'TaskProposalCard'
             ? task?.creatorProfilePicture
             : task.assigneeProfilePicture;
+
         return (
           <StyledTableRow key={task.id}>
             <StyledTableCell align="center">
@@ -254,21 +253,22 @@ export default function TableBody({
                   >
                     Archive {dropdownItemLabel}
                   </DropDownItem>
-                  {(task?.type === Constants.TASK_TYPE || task?.type === Constants.MILESTONE_TYPE) && (
-                    <DropDownItem
-                      key={'task-menu-delete-' + task.id}
-                      onClick={() => {
-                        setSelectedTask(task);
-                        setDeleteModalOpen(true);
-                      }}
-                      color={Red800}
-                      fontSize="13px"
-                      fontWeight="normal"
-                      textAlign="left"
-                    >
-                      Delete {dropdownItemLabel}
-                    </DropDownItem>
-                  )}
+                  {(task?.type === Constants.TASK_TYPE || task?.type === Constants.MILESTONE_TYPE) &&
+                    !task?.isProposal && (
+                      <DropDownItem
+                        key={'task-menu-delete-' + task.id}
+                        onClick={() => {
+                          setSelectedTask(task);
+                          setDeleteModalOpen(true);
+                        }}
+                        color={Red800}
+                        fontSize="13px"
+                        fontWeight="normal"
+                        textAlign="left"
+                      >
+                        Delete {dropdownItemLabel}
+                      </DropDownItem>
+                    )}
                 </DropDown>
               </MoreOptions>
             </StyledTableCell>

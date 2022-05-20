@@ -20,6 +20,7 @@ import {
   TASK_TYPE,
   STATUS_APPROVED,
   STATUS_CHANGE_REQUESTED,
+  STATUS_OPEN,
 } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { useMutation } from '@apollo/client';
@@ -193,7 +194,11 @@ const KanbanBoard = (props) => {
     const boardColumns = [...columns];
     const sourceColumn = boardColumns.findIndex((column) => column.status === droppableId);
     const taskToUpdate = boardColumns[sourceColumn]?.tasks[index];
+    const destinationColumn = boardColumns.findIndex((column) => column.status === destinationStatus);
 
+    if (droppableId === STATUS_APPROVED) {
+      return;
+    }
     if (checkPermissions(taskToUpdate)) {
       if (destinationStatus !== droppableId) {
         if (destinationStatus === STATUS_APPROVED) {
@@ -203,11 +208,10 @@ const KanbanBoard = (props) => {
             },
             onCompleted: (data) => {
               boardColumns[sourceColumn]?.tasks?.splice(index, 1);
-              const destinationColumn = boardColumns.findIndex((column) => column.status === destinationStatus);
               boardColumns[destinationColumn]?.tasks?.unshift(taskToUpdate);
               setColumns(dedupeColumns(boardColumns));
             },
-            refetchQueries: ['GetOrgTaskBoardProposals'],
+            refetchQueries: ['GetOrgTaskBoardProposals', 'getPerStatusTaskCountForOrgBoard'],
           });
           return;
         }
@@ -218,12 +222,11 @@ const KanbanBoard = (props) => {
             },
             onCompleted: (data) => {
               boardColumns[sourceColumn]?.tasks?.splice(index, 1);
-              const destinationColumn = boardColumns.findIndex((column) => column.status === destinationStatus);
               const updatedTask = { ...taskToUpdate, changeRequestedAt: new Date() };
               boardColumns[destinationColumn]?.tasks?.unshift(updatedTask);
               setColumns(dedupeColumns(boardColumns));
             },
-            refetchQueries: ['GetOrgTaskBoardProposals'],
+            refetchQueries: ['GetOrgTaskBoardProposals', 'getPerStatusTaskCountForOrgBoard'],
           });
         }
       }

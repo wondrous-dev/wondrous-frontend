@@ -359,12 +359,13 @@ const BoardsPage = () => {
   };
   const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
     onCompleted: (data) => {
-      const newColumns = bindSectionToColumns({
-        columns,
-        data: data?.searchProposalsForOrgBoardView,
-        section: TASK_STATUS_REQUESTED,
-      });
-      setColumns(dedupeColumns(newColumns));
+      const boardColumns = [...columns];
+      boardColumns[0].tasks = [...boardColumns[0].tasks, ...data?.searchProposalsForOrgBoardView];
+      setColumns(boardColumns);
+      setIsLoading(false);
+    },
+    onError: (error) => {
+      console.log(error);
       setIsLoading(false);
     },
     fetchPolicy: 'cache-and-network',
@@ -372,12 +373,23 @@ const BoardsPage = () => {
 
   const [getOrgBoardTaskCount, { data: orgTaskCountData }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD);
 
+  const searchOrgTaskProposalsArgs = {
+    variables: {
+      podIds,
+      orgId: orgId || orgData?.id,
+      statuses: [STATUS_OPEN],
+      offset: 0,
+      limit: 100,
+      searchString: search,
+    },
+  };
+
   const [searchOrgTasks] = useLazyQuery(SEARCH_TASKS_FOR_ORG_BOARD_VIEW, {
     onCompleted: (data) => {
       const tasks = data?.searchTasksForOrgBoardView;
       const newColumns = populateTaskColumns(tasks, ORG_POD_COLUMNS);
       setColumns(dedupeColumns(newColumns));
-      setIsLoading(false);
+      searchOrgTaskProposals(searchOrgTaskProposalsArgs);
       if (orgTaskHasMore) {
         setOrgTaskHasMore(tasks.length >= LIMIT);
       }
@@ -433,16 +445,6 @@ const BoardsPage = () => {
       if (search) {
         if (!firstTimeFetch) {
           const id = orgId || orgData?.id;
-          const searchOrgTaskProposalsArgs = {
-            variables: {
-              podIds,
-              orgId: id,
-              statuses: [STATUS_OPEN],
-              offset: 0,
-              limit: 100,
-              searchString: search,
-            },
-          };
 
           const searchOrgTasksArgs = {
             variables: {
@@ -459,7 +461,6 @@ const BoardsPage = () => {
             },
           };
           searchOrgTasks(searchOrgTasksArgs);
-          searchOrgTaskProposals(searchOrgTaskProposalsArgs);
           setFirstTimeFetch(true);
           setSearchString(search as string);
         }
@@ -475,17 +476,6 @@ const BoardsPage = () => {
 
   function handleSearch(searchString: string) {
     const id = orgId || orgData?.id;
-    const searchOrgTaskProposalsArgs = {
-      variables: {
-        podIds,
-        orgId: id,
-        statuses: [STATUS_OPEN],
-        offset: 0,
-        limit: LIMIT,
-        searchString,
-      },
-    };
-
     const searchOrgTasksArgs = {
       variables: {
         podIds,
@@ -512,7 +502,7 @@ const BoardsPage = () => {
         },
       }),
       apollo.query({
-        ...searchOrgTaskProposalsArgs,
+        ...{ ...searchOrgTaskProposalsArgs, limit: LIMIT },
         query: SEARCH_ORG_TASK_BOARD_PROPOSALS,
       }),
 
@@ -540,16 +530,6 @@ const BoardsPage = () => {
         statuses.length !== taskStatuses.length ||
         statuses === (STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT);
       const searchTasks = !(searchProposals && statuses.length === 1);
-      const searchOrgTaskProposalsArgs = {
-        variables: {
-          podIds,
-          orgId: id,
-          statuses: [STATUS_OPEN],
-          offset: 0,
-          limit: 100,
-          search,
-        },
-      };
 
       const searchOrgTasksArgs = {
         variables: {
@@ -579,7 +559,11 @@ const BoardsPage = () => {
       }
 
       if (searchProposals) {
-        searchOrgTaskProposals(searchOrgTaskProposalsArgs);
+        const proposalArgs = {
+          ...searchOrgTaskProposalsArgs,
+          podIds,
+        };
+        searchOrgTaskProposals(proposalArgs);
         setIsLoading(false);
       }
     }

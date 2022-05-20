@@ -275,8 +275,19 @@ const SubmissionItem = (props) => {
         completeTask();
         setIsKudosForm(true);
       }
+      if (fetchedTask?.type === BOUNTY_TYPE && (orgBoard || podBoard)) {
+        const columns = board?.columns.map((col) =>
+          col.id === submission.taskId
+            ? {
+                ...col,
+                approvedSubmissionsCount:
+                  (Number.isInteger(col.approvedSubmissionsCount) ? col.approvedSubmissionsCount : 0) + 1,
+              }
+            : col
+        );
+        board?.setColumns(columns);
+      }
     },
-    refetchQueries: ['getOrgTaskBoardSubmissions', 'getPerStatusTaskCountForOrgBoard'],
   });
   const [requestChangeTaskSubmission] = useMutation(REQUEST_CHANGE_SUBMISSION, {
     variables: {
@@ -294,8 +305,13 @@ const SubmissionItem = (props) => {
         }
       });
       setFetchedTaskSubmissions(newFetchedTaskSubmissions);
+      if (fetchedTask?.type === BOUNTY_TYPE && (orgBoard || podBoard)) {
+        const columns = board?.columns.map((col) =>
+          col.id === submission.taskId ? { ...col, approvedSubmissionsCount: col.approvedSubmissionsCount + 1 } : col
+        );
+        board?.setColumns(columns);
+      }
     },
-    refetchQueries: ['getOrgTaskBoardSubmissions'],
   });
   const textStyle = {
     marginLeft: '0',
@@ -485,7 +501,7 @@ const TaskSubmissionForm = (props) => {
       const taskSubmission = data?.createTaskSubmission;
       const transformedTaskSubmission = transformTaskSubmissionToTaskSubmissionCard(taskSubmission, {});
       setFetchedTaskSubmissions([transformedTaskSubmission, ...fetchedTaskSubmissions]);
-      if (boardColumns) {
+      if (boardColumns && (!board?.entityType || board?.entityType !== ENTITIES_TYPES.BOUNTY)) {
         const columns = boardColumns?.columns;
         const newColumns = [...columns];
         const inReviewColumnIndex =
@@ -508,7 +524,18 @@ const TaskSubmissionForm = (props) => {
           boardColumns?.setColumns(newColumns);
         }
       }
-
+      if (boardColumns && board?.entityType === ENTITIES_TYPES.BOUNTY) {
+        const newColumns = board?.columns.map((col) =>
+          col.id === transformedTaskSubmission.taskId
+            ? {
+                ...col,
+                totalSubmissionsCount:
+                  (Number.isInteger(col.totalSubmissionsCount) ? col.totalSubmissionsCount : 0) + 1,
+              }
+            : col
+        );
+        boardColumns?.setColumns(newColumns);
+      }
       if (cancelSubmissionForm) {
         cancelSubmissionForm();
       }
@@ -860,6 +887,46 @@ export const TaskSubmissionContent = (props) => {
   const taskStatus = fetchedTask?.status;
   const fetchedTaskSubmissionsLength = fetchedTaskSubmissions?.length;
   const loggedInUser = useMe();
+
+  const handleTaskProgressStatus = () => {
+    setMoveProgressButton(false);
+    router.push(`${delQuery(router.asPath)}`, undefined, {
+      shallow: true,
+    });
+    handleClose();
+    updateTaskStatus({
+      variables: {
+        taskId: fetchedTask?.id,
+        input: {
+          newStatus: TASK_STATUS_IN_PROGRESS,
+        },
+      },
+      onCompleted: (data) => {
+        const task = data?.updateTaskStatus;
+        handleClose();
+        if (boardColumns?.setColumns) {
+          const transformedTask = transformTaskToTaskCard(task, {});
+          if (board?.entityType && board?.entityType === ENTITIES_TYPES.BOUNTY) {
+            const newColumns = boardColumns?.columns.map((col) =>
+              col.id === transformedTask.id ? transformedTask : col
+            );
+            boardColumns?.setColumns(newColumns);
+            return;
+          }
+          const columns = [...boardColumns?.columns];
+          columns[0].tasks = columns[0].tasks.filter((existingTask) => {
+            if (transformedTask?.id !== existingTask?.id) {
+              return true;
+            }
+            return false;
+          });
+          columns[1].tasks = [transformedTask, ...columns[1].tasks];
+          boardColumns?.setColumns(columns);
+        }
+      },
+    });
+  };
+
   if (taskSubmissionLoading) {
     return <CircularProgress />;
   }
@@ -876,43 +943,7 @@ export const TaskSubmissionContent = (props) => {
           style={{
             marginTop: '16px',
           }}
-          onClick={() => {
-            setMoveProgressButton(false);
-            router.push(`${delQuery(router.asPath)}`, undefined, {
-              shallow: true,
-            });
-            handleClose();
-            updateTaskStatus({
-              variables: {
-                taskId: fetchedTask?.id,
-                input: {
-                  newStatus: TASK_STATUS_IN_PROGRESS,
-                },
-              },
-              onCompleted: (data) => {
-                const task = data?.updateTaskStatus;
-                handleClose();
-                if (
-                  boardColumns?.setColumns &&
-                  ((task?.orgId === board?.orgId && !board?.podId) ||
-                    task?.podId === board?.podId ||
-                    task?.assigneeId === board?.userId)
-                ) {
-                  const transformedTask = transformTaskToTaskCard(task, {});
-
-                  const columns = [...boardColumns?.columns];
-                  columns[0].tasks = columns[0].tasks.filter((existingTask) => {
-                    if (transformedTask?.id !== existingTask?.id) {
-                      return true;
-                    }
-                    return false;
-                  });
-                  columns[1].tasks = [transformedTask, ...columns[1].tasks];
-                  boardColumns.setColumns(columns);
-                }
-              },
-            });
-          }}
+          onClick={handleTaskProgressStatus}
         >
           Set to in progress
         </CreateFormPreviewButton>
