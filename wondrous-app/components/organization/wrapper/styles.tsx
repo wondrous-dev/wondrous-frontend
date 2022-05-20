@@ -63,12 +63,8 @@ export const TokenLogo = styled(LogoCircle)`
 `;
 
 export const TokenEmptyLogo = styled.div`
-  position: absolute;
-  width: 103px;
-  height: 103px;
-  top: -50px;
-  left: -20px;
-
+  width: 70px;
+  height: 70px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -290,7 +286,7 @@ export const HeaderSettingsLockedButton = (props) => (
 export const HeaderText = styled(Typography)`
   && {
     font-size: 15px;
-    margin-top: 3%;
+    margin-top: 2%;
     line-height: 22px;
     letter-spacing: 0.01em;
     color: #ffffff;
