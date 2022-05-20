@@ -1366,19 +1366,21 @@ const CreateLayoutBaseModal = (props) => {
         )}
       </CreateFormMainSection>
 
-      <CreateFormAddTagsSection>
-        <CreateFormMainInputBlock>
-          <CreateFormMainBlockTitle>Add tags</CreateFormMainBlockTitle>
+`      {org ? (
+        <CreateFormAddTagsSection>
+          <CreateFormMainInputBlock>
+            <CreateFormMainBlockTitle>Add tags</CreateFormMainBlockTitle>
 
-          <Tags
-            options={orgLabelsData?.getOrgLabels || []}
-            ids={labelIds}
-            onChange={setLabelIds}
-            onCreate={handleCreateLabel}
-            limit={4}
-          />
-        </CreateFormMainInputBlock>
-      </CreateFormAddTagsSection>
+            <Tags
+              options={orgLabelsData?.getOrgLabels || []}
+              ids={labelIds}
+              onChange={setLabelIds}
+              onCreate={handleCreateLabel}
+              limit={4}
+            />
+          </CreateFormMainInputBlock>
+        </CreateFormAddTagsSection>
+      ) : null}
 
       {/* {showDeliverableRequirementsSection && (
 				<CreateFormTaskRequirements>
