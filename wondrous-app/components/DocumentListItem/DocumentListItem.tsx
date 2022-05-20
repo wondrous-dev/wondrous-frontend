@@ -31,7 +31,7 @@ const DocumentListItem = ({ title, description, media, url, icon, permission, on
   }, [imgUrl, media]);
 
   return (
-    <Grid item xs={12} onClick={onClick}>
+    <Grid item xs={4} onClick={onClick}>
       <Box sx={styles.listItem}>
         <Box sx={styles.imageContainer}>
           {imgUrl && (

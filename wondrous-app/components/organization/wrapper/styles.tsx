@@ -22,7 +22,7 @@ export const OverviewComponent = styled.section`
 
 export const HeaderImageWrapper = styled.div`
   width: 100%;
-  height: 200px;
+  height: 100px;
   margin-top: 70px;
   overflow: hidden;
   position: relative;
@@ -46,11 +46,8 @@ export const HeaderImageDefault = styled(() => (
 export const TokenHeader = styled.div`
   position: relative;
   width: 95%;
-  min-height: 190px;
-  height: 190px;
-  padding-top: 65px;
+  padding-top: 30px;
   display: flex;
-  justify-content: space-between;
   flex-direction: column;
 `;
 
@@ -286,12 +283,12 @@ export const HeaderSettingsLockedButton = (props) => (
 
 export const HeaderText = styled(Typography)`
   && {
-    font-size: 15px;
-    margin-top: 2%;
+    font-size: 15px;    
     line-height: 22px;
     letter-spacing: 0.01em;
     color: #ffffff;
     margin-bottom: 8px;
+    margin-top: 24px;
   }
 `;
 

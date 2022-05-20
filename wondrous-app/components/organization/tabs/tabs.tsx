@@ -50,7 +50,9 @@ const Tabs = (props) => {
 
   return (
     <Container>
-      <StyledTabs value={asPathWithoutQueries} variant={'fullWidth'}>
+      <StyledTabs value={asPathWithoutQueries} variant={'fullWidth'} style={{
+        marginTop: '16px'
+      }}>
         {tabsLinks.map((tab) => (
           <Link
             // @ts-ignore
