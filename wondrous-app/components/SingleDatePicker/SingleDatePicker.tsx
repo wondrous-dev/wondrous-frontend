@@ -6,6 +6,8 @@ import 'react-dates/lib/css/_datepicker.css';
 
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
 
 import {
   DATEPICKER_OPTIONS,
@@ -20,6 +22,7 @@ import DatePickerNavButton from 'components/DatePickerNavButton';
 import CalendarDay from 'components/CalendarDay';
 
 import styles from './SingleDatePickerStyles';
+import Image from 'next/image';
 
 const SingleDatePicker = ({ sx }) => {
   const [date, setDate] = useState(DEFAULT_SINGLE_DATEPICKER_VALUE);
@@ -79,12 +82,37 @@ const SingleDatePicker = ({ sx }) => {
     return false;
   };
 
+  const reset = () => {
+    setDate(DEFAULT_SINGLE_DATEPICKER_VALUE);
+    setRepeatType(null);
+    setRepeatValue(null);
+    setShowOptions(null);
+  };
+
   return (
     <Box mt={4} display="flex" flexDirection="column" maxWidth={300}>
       <TextField
         placeholder="Choose date"
         InputProps={{
           readOnly: true,
+          startAdornment: (
+            <InputAdornment position="start" sx={styles.calendarIcon}>
+              <Image src="/images/icons/calendar.svg" width={12} height={12} alt="calendar icon" />
+            </InputAdornment>
+          ),
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setFocusedInput(false);
+                }}
+              >
+                <Image src="/images/icons/cancel.svg" width={9} height={9} alt="calendar icon" />
+              </IconButton>
+            </InputAdornment>
+          ),
         }}
         value={displayValue}
         onClick={() => setFocusedInput(true)}
@@ -99,6 +127,13 @@ const SingleDatePicker = ({ sx }) => {
                 value={startDateString}
                 InputProps={{
                   readOnly: true,
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={reset}>
+                        <Image src="/images/icons/cancel.svg" width={9} height={9} alt="calendar icon" />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
                 }}
                 fullWidth
                 placeholder="Start Date"
@@ -111,13 +146,7 @@ const SingleDatePicker = ({ sx }) => {
               id="your_unique_id"
               onDateChange={(date) => setDate(date)}
               focusedInput={focusedInput}
-              onFocusChange={(prop) => {
-                console.log();
-                // setFocusedInput(focused);
-              }}
-              onOutsideClick={() => {
-                console.log('outside');
-              }}
+              onFocusChange={() => {}}
               numberOfMonths={1}
               displayFormat="MM/DD/yyyy"
               daySize={35.9}

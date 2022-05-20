@@ -91,7 +91,7 @@ const DatePickerRecurringUtilities = ({
               <WeekDaySelector onWeekDaysChange={onWeekDaysChange} weekDaysSelected={weekDaysSelected} />
             )}
             {repeatType === DATEPICKER_OPTIONS.MONTHLY && (
-              <Box display="flex" mt={1}>
+              <Box display="flex" mt={1} alignItems="center">
                 On Day
                 <Box flex="1" />
                 <Box>

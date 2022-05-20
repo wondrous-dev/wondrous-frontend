@@ -1,4 +1,5 @@
 import moment from 'moment';
+import last from 'lodash/last';
 
 import MenuItem from '@mui/material/MenuItem';
 import DatePickerSelect from 'components/DatePickerSelect';
@@ -11,12 +12,14 @@ const DaySelector = ({ dateRange, todayMoment, onChange }) => {
     (_, i) => i + 1
   );
 
+  const lastDay = last(daysInMonth);
+  console.log(daysInMonth);
+
   return (
     <DatePickerSelect select onChange={onChange}>
-      {daysInMonth?.map((_, idx) => (
-        // TODO: style this
-        <MenuItem key={idx + 1} value={idx + 1} sx={styles.menuItem}>
-          {idx + 1}
+      {daysInMonth?.map((day) => (
+        <MenuItem key={day} value={day} sx={styles.menuItem}>
+          {day === lastDay ? 'Last' : day}
         </MenuItem>
       ))}
     </DatePickerSelect>

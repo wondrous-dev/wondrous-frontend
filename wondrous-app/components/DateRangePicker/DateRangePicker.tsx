@@ -157,9 +157,6 @@ const DateRangePicker = ({ sx }) => {
               onFocusChange={(focusedInput) => focusedInput && setFocusedInput(focusedInput)}
               numberOfMonths={1}
               displayFormat="MM/DD/yyyy"
-              onOutsideClick={() => {
-                console.log('outside');
-              }}
               daySize={36}
               minimumNights={0}
               hideKeyboardShortcutsPanel
