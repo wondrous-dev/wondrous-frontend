@@ -79,6 +79,10 @@ const TaskColumn = (props: ITaskColumn) => {
   const HeaderIcon = HEADER_ICONS[status];
   let number;
 
+  let taskColumnWidth = '100%';
+  if (!userBoard) {
+    taskColumnWidth = '25%';
+  }
   switch (status) {
     case TASK_STATUS_TODO:
       number = taskCount?.created || 0;
@@ -98,12 +102,15 @@ const TaskColumn = (props: ITaskColumn) => {
       break;
     case STATUS_OPEN:
       number = taskCount?.proposalOpen || 0;
+      taskColumnWidth = '33.3%';
       break;
     case STATUS_APPROVED:
       number = taskCount?.proposalApproved || 0;
+      taskColumnWidth = '33.3%';
       break;
     case STATUS_CHANGE_REQUESTED:
       number = taskCount?.proposalChangeRequested || 0;
+      taskColumnWidth = '33.3%';
       break;
     default:
       number = 0;
@@ -116,7 +123,7 @@ const TaskColumn = (props: ITaskColumn) => {
       onMouseLeave={() => status === TASK_STATUS_TODO && setIsAddButtonVisible(false)}
       activeEntityType={board?.entityType || ''}
       style={{
-        width: userBoard ? '100%' : '25%'
+        width: taskColumnWidth,
       }}
     >
       <CreateModalOverlay
