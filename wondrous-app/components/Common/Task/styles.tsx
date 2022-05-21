@@ -127,7 +127,7 @@ export const TaskFooter = styled.div`
 export const TaskAction = styled.div`
   display: flex;
   flex-direction: row;
-  flext-content: flex-start;
+  justify-content: flex-start;
   align-content: space-between;
   align-items: center;
 `;
@@ -139,6 +139,10 @@ export const TaskActionMenu = styled.div`
   justify-content: flex-end;
   height: 24px;
   z-index: 100;
+  align-items: center;
+  > * {
+    margin-left: 12px;
+  }
 `;
 
 export const TaskActionAmount = styled.div`

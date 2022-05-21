@@ -74,6 +74,7 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { PERMISSIONS } from 'utils/constants';
+import { Share } from '../Share';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -110,6 +111,7 @@ export const TaskCard = ({
   setArchiveTask,
   canDelete,
   setDeleteTask,
+  url,
 }) => {
   let TaskIcon = TASK_ICONS[task.status];
 
@@ -120,7 +122,7 @@ export const TaskCard = ({
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isTaskSubmissionLoading, setTaskSubmissionLoading] = useState(false);
   const [approvedSubmission, setApprovedSubmission] = useState(null);
-  const coverMedia = task?.media?.find(media => media.type === 'image')
+  const coverMedia = task?.media?.find((media) => media.type === 'image');
 
   const router = useRouter();
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
@@ -358,6 +360,7 @@ export const TaskCard = ({
             <SubtaskCount>{totalSubtask}</SubtaskCount>
           </SubtaskCountWrapper>
         )}
+        <Share url={`${Constants.LINK}${url}`} />
         {canArchive && displayActions && (
           <TaskActionMenu right="true">
             <DropDown DropdownHandler={TaskMenuIcon}>
@@ -405,7 +408,7 @@ const STATUS_ICONS = {
 
 export function ProposalCard({ openModal, title, description, task, goToPod, proposalRequestChange }) {
   const router = useRouter();
-  const coverMedia = task?.media?.find(media => media.type === 'image')
+  const coverMedia = task?.media?.find((media) => media.type === 'image');
 
   const proposalStatus = getProposalStatus(task);
   const PROPOSAL_STATUS_MAP = {

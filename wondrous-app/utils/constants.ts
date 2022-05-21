@@ -345,3 +345,7 @@ export const GRAPHQL_ERRORS = {
   NO_RECIPIENT_WEB_3_ADDRESS: 'recipient has no web3 address',
   NO_WEB3_ADDRESS_FOUND: 'no_web3_address_found',
 };
+
+export const LINK = process.env.NEXT_PUBLIC_PRODUCTION
+? `https://app.wonderverse.xyz`
+: 'https://wondrous-app-git-staging-wonderverse.vercel.app';

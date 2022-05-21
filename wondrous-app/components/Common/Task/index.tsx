@@ -291,9 +291,9 @@ export const Task = (props) => {
   const canDelete =
     canArchive && (task?.type === Constants.ENTITIES_TYPES.TASK || task?.type === Constants.ENTITIES_TYPES.MILESTONE);
 
+  const taskType = task?.isProposal ? 'taskProposal' : 'task';
+  const newUrl = `${delQuery(router.asPath)}?${taskType}=${task?.id}&view=${router.query.view || 'grid'}`;
   const openModal = (e) => {
-    const type = task?.isProposal ? 'taskProposal' : 'task';
-    const newUrl = `${delQuery(router.asPath)}?${type}=${task?.id}&view=${router.query.view || 'grid'}`;
     location.push(newUrl);
     // document.body.style.overflow = 'hidden'
     // document.body.scroll = false
@@ -402,6 +402,7 @@ export const Task = (props) => {
         canDelete={canDelete}
         setDeleteTask={setDeleteTask}
         proposalRequestChange={proposalRequestChange}
+        url={newUrl}
       />
     </span>
   );

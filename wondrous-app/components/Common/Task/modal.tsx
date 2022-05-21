@@ -67,6 +67,7 @@ import {
   PAYMENT_STATUS,
   PRIVACY_LEVEL,
   STATUS_APPROVED,
+  LINK,
 } from 'utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
@@ -151,6 +152,7 @@ import { SubtaskDarkIcon, SubtaskLightIcon } from '../../Icons/subtask';
 import { CheckedBoxIcon } from '../../Icons/checkedBox';
 import RightArrowIcon from '../../Icons/rightArrow';
 import { DeleteTaskModal } from '../DeleteTaskModal';
+import { Share } from '../Share';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -1321,44 +1323,51 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   </PodNameTypography>
                 </>
               )}
-              {canEdit && (
-                <TaskActionMenu right="true">
-                  <DropDown DropdownHandler={TaskMenuIcon}>
-                    {canEdit && (
-                      <DropDownItem
-                        key={'task-menu-edit-' + fetchedTask?.id}
-                        onClick={() => setEditTask(true)}
-                        style={dropdownItemStyle}
-                      >
-                        Edit {taskType}
-                      </DropDownItem>
-                    )}
-                    {canArchive && (
-                      <DropDownItem
-                        key={'task-menu-archive-' + fetchedTask?.id}
-                        onClick={() => {
-                          setArchiveTask(true);
-                        }}
-                        style={dropdownItemStyle}
-                      >
-                        Archive {taskType}
-                      </DropDownItem>
-                    )}
-                    {canDelete && (
-                      <DropDownItem
-                        key={'task-menu-delete-' + fetchedTask?.id}
-                        onClick={() => {
-                          setDeleteTask(true);
-                        }}
-                        style={dropdownItemStyle}
-                        color={Red800}
-                      >
-                        Delete {taskType}
-                      </DropDownItem>
-                    )}
-                  </DropDown>
-                </TaskActionMenu>
-              )}
+              <TaskActionMenu right="true">
+                <Share
+                  url={`${LINK}/organization/${fetchedTask?.orgUsername}/boards?task=${
+                    isSubtask ? fetchedTask?.parentTaskId : taskId
+                  }`}
+                />
+                {canEdit && (
+                  <>
+                    <DropDown DropdownHandler={TaskMenuIcon}>
+                      {canEdit && (
+                        <DropDownItem
+                          key={'task-menu-edit-' + fetchedTask?.id}
+                          onClick={() => setEditTask(true)}
+                          style={dropdownItemStyle}
+                        >
+                          Edit {taskType}
+                        </DropDownItem>
+                      )}
+                      {canArchive && (
+                        <DropDownItem
+                          key={'task-menu-archive-' + fetchedTask?.id}
+                          onClick={() => {
+                            setArchiveTask(true);
+                          }}
+                          style={dropdownItemStyle}
+                        >
+                          Archive {taskType}
+                        </DropDownItem>
+                      )}
+                      {canDelete && (
+                        <DropDownItem
+                          key={'task-menu-delete-' + fetchedTask?.id}
+                          onClick={() => {
+                            setDeleteTask(true);
+                          }}
+                          style={dropdownItemStyle}
+                          color={Red800}
+                        >
+                          Delete {taskType}
+                        </DropDownItem>
+                      )}
+                    </DropDown>
+                  </>
+                )}
+              </TaskActionMenu>
             </TaskModalHeader>
             <TaskTitleDiv>
               <GetStatusIcon
