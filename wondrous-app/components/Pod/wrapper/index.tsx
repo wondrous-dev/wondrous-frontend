@@ -61,7 +61,7 @@ import { TokenGatedRoleModal } from 'components/organization/wrapper/TokenGatedR
 import TypeSelector from 'components/TypeSelector';
 import { SafeImage } from 'components/Common/Image';
 import { DAOEmptyIcon } from '../../Icons/dao';
-import { LogoWrapper } from './styles';
+import { LogoWrapper, OrgLogoWrapper } from './styles';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { Grey58 } from 'theme/colors';
 const Wrapper = (props) => {
@@ -279,20 +279,27 @@ const Wrapper = (props) => {
                 <HeaderMainBlock>
                   {!isTokenGatingInfoLoading && (
                     <LogoWrapper>
-                      {orgData?.getOrgById?.profilePicture ? (
-                        <SafeImage
-                          src={orgData?.getOrgById?.profilePicture}
-                          style={{
-                            width: '60px',
-                            height: '60px',
-                            borderRadius: '6px',
-                          }}
-                        />
-                      ) : (
-                        <TokenEmptyLogo>
-                          <DAOEmptyIcon />
-                        </TokenEmptyLogo>
-                      )}
+                      <OrgLogoWrapper
+                        onClick={() => {
+                          router.push(`/organization/${orgData?.getOrgById?.username}/boards`);
+                        }}
+                      >
+                        {orgData?.getOrgById?.profilePicture ? (
+                          <SafeImage
+                            src={orgData?.getOrgById?.profilePicture}
+                            style={{
+                              width: '60px',
+                              height: '60px',
+                              borderRadius: '6px',
+                            }}
+                          />
+                        ) : (
+                          <TokenEmptyLogo>
+                            <DAOEmptyIcon />
+                          </TokenEmptyLogo>
+                        )}
+                      </OrgLogoWrapper>
+
                       <ArrowForwardIosIcon style={{ color: Grey58, marginLeft: '5px' }} />
                       <PodIcon
                         color={podProfile?.color}

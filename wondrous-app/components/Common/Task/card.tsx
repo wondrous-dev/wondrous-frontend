@@ -120,6 +120,8 @@ export const TaskCard = ({
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isTaskSubmissionLoading, setTaskSubmissionLoading] = useState(false);
   const [approvedSubmission, setApprovedSubmission] = useState(null);
+  const coverMedia = task?.media?.find(media => media.type === 'image')
+
   const router = useRouter();
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
@@ -271,11 +273,11 @@ export const TaskCard = ({
             <MilestoneProgress milestoneId={id} />
           </MilestoneProgressWrapper>
         )}
-        {task?.media?.[0] ? (
+        {coverMedia ? (
           <BoardsCardMedia>
             <SafeImage
               style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
-              src={task?.media[0].slug}
+              src={coverMedia.slug}
             />
           </BoardsCardMedia>
         ) : null}
@@ -402,6 +404,9 @@ const STATUS_ICONS = {
 };
 
 export function ProposalCard({ openModal, title, description, task, goToPod, proposalRequestChange }) {
+  const router = useRouter();
+  const coverMedia = task?.media?.find(media => media.type === 'image')
+
   const proposalStatus = getProposalStatus(task);
   const PROPOSAL_STATUS_MAP = {
     [Constants.STATUS_APPROVED]: {
@@ -415,9 +420,6 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
     },
     [Constants.STATUS_OPEN]: {
       labelsAndActions: [
-        {
-          title: 'Open',
-        },
         {
           title: 'Request edit',
           action: () => {
@@ -439,7 +441,6 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
     },
   };
   const labelsAndActions = PROPOSAL_STATUS_MAP[proposalStatus]?.labelsAndActions;
-
   const HeaderIcon = STATUS_ICONS[proposalStatus];
   return (
     <ProposalCardWrapper onClick={openModal}>
@@ -453,12 +454,17 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
       </BoardsCardHeader>
       <BoardsCardBody>
         <BoardsCardBodyTitle>{title}</BoardsCardBodyTitle>
-        <BoardsCardBodyDescription>{description}</BoardsCardBodyDescription>
-        {task?.media?.[0] ? (
+        <BoardsCardBodyDescription>
+          {renderMentionString({
+            content: description,
+            router,
+          })}
+        </BoardsCardBodyDescription>
+        {coverMedia ? (
           <BoardsCardMedia>
             <SafeImage
               style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
-              src={task?.media[0].slug}
+              src={coverMedia.slug}
             />
           </BoardsCardMedia>
         ) : null}
