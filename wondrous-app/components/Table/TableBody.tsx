@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/client';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { UPDATE_TASK_ASSIGNEE, UPDATE_TASK_STATUS } from 'graphql/mutations';
+import { UPDATE_TASK_ASSIGNEE } from 'graphql/mutations';
 import { updateCompletedItem, updateInProgressTask, updateInReviewItem, updateTaskItem } from 'utils/board';
 import { renderMentionString } from 'utils/common';
 import * as Constants from 'utils/constants';
