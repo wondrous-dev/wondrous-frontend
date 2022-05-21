@@ -12,6 +12,7 @@ import {
   BoardsCardBodyTitle,
   BoardsCardMedia,
 } from 'components/Common/Boards/styles';
+import { renderMentionString } from 'utils/common';
 import { SafeImage } from '../Image';
 import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
@@ -40,7 +41,12 @@ export default function Board({ tasks, handleCardClick }) {
           </BoardsCardHeader>
           <BoardsCardBody>
             <BoardsCardBodyTitle>{milestone.title}</BoardsCardBodyTitle>
-            <BoardsCardBodyDescription>{milestone.description}</BoardsCardBodyDescription>
+            <BoardsCardBodyDescription>
+              {renderMentionString({
+                content: milestone.description,
+                router,
+              })}
+            </BoardsCardBodyDescription>
             <MilestoneProgressWrapper>
               <MilestoneProgress milestoneId={milestone.id} />
             </MilestoneProgressWrapper>

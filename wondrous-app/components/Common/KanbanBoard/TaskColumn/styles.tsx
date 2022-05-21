@@ -39,7 +39,6 @@ export const TaskColumnContainer = styled.div`
   flex-direction: column;
   align-items: center;
   border-right: 1px solid #1b1b1b;
-  width: 100%;
   padding: 0px 6px 0px 6px;
   &:first-child {
     padding-left: 0px;

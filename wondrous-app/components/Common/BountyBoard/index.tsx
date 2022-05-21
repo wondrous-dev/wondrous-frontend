@@ -7,6 +7,7 @@ import {
   SubmissionCount,
   SubtasksWrapper,
 } from './styles';
+import { renderMentionString } from 'utils/common';
 import {
   BoardsCardSubheader,
   BoardsCardHeader,
@@ -93,7 +94,12 @@ export default function Board({ tasks, handleCardClick = (bounty) => {} }) {
             </BoardsCardHeader>
             <BoardsCardBody>
               <BoardsCardBodyTitle>{bounty.title}</BoardsCardBodyTitle>
-              <BoardsCardBodyDescription>{bounty.description}</BoardsCardBodyDescription>
+              <BoardsCardBodyDescription>
+                {renderMentionString({
+                  content: bounty.description,
+                  router,
+                })}
+              </BoardsCardBodyDescription>
               {bounty?.media?.[0] ? (
                 <BoardsCardMedia>
                   <SafeImage
