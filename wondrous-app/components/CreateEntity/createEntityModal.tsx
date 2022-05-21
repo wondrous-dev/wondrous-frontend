@@ -436,13 +436,6 @@ const CreateLayoutBaseModal = (props) => {
       }
       if (org) {
         if (!podsFetched) {
-          // FIXME
-          getOrgLabels({
-            variables: {
-              orgId: org,
-            },
-          });
-
           getUserAvailablePods({
             variables: {
               orgId: org,
@@ -878,7 +871,17 @@ const CreateLayoutBaseModal = (props) => {
     setLabelIds([...labelIds, newLabel.id]);
   };
 
-  const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
+  const handleOrgChange = (org) => {
+    setOrg(org);
+
+    getOrgLabels({
+      variables: {
+        orgId: org,
+      },
+    });
+  };
+
+    const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const creating =
     createTaskLoading || createTaskProposalLoading || createMilestoneLoading || createBountyLoading || createPodLoading;
 
@@ -897,13 +900,12 @@ const CreateLayoutBaseModal = (props) => {
           <CloseModalIcon />
         </CreateFormBaseModalCloseBtn>
       </CreateFormBaseModalHeaderWrapper>
-
       <CreateFormMainSection>
         <CreateFormMainSelects>
           <DropdownSelect
             title="DAO"
             value={org}
-            setValue={setOrg}
+            setValue={handleOrgChange}
             labelText="Choose DAO"
             labelIcon={<CreateDaoIcon />}
             options={filterDAOptions(userOrgs?.getUserOrgs) || []}
@@ -1366,7 +1368,7 @@ const CreateLayoutBaseModal = (props) => {
         )}
       </CreateFormMainSection>
 
-`      {org ? (
+      {org ? (
         <CreateFormAddTagsSection>
           <CreateFormMainInputBlock>
             <CreateFormMainBlockTitle>Add tags</CreateFormMainBlockTitle>
@@ -1381,7 +1383,6 @@ const CreateLayoutBaseModal = (props) => {
           </CreateFormMainInputBlock>
         </CreateFormAddTagsSection>
       ) : null}
-
       {/* {showDeliverableRequirementsSection && (
 				<CreateFormTaskRequirements>
 					<CreateFormTaskRequirementsTitle>
@@ -1401,7 +1402,6 @@ const CreateLayoutBaseModal = (props) => {
 					</CreateFormTaskRequirementsContainer>
 				</CreateFormTaskRequirements>
 			)} */}
-
       <CreateFormAddDetailsSection>
         {/* <CreateFormAddDetailsButton onClick={() => addDetailsHandleClick()}>
           {!addDetails ? (
@@ -1509,7 +1509,6 @@ const CreateLayoutBaseModal = (props) => {
           </CreateFormAddDetailsAppearBlock>
         )}
       </CreateFormAddDetailsSection>
-
       <CreateFormFooterButtons>
         {errors.general && <ErrorText>{errors.general}</ErrorText>}
         <CreateFormButtonsBlock>

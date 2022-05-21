@@ -75,7 +75,7 @@ function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
       filterOptions={(options, params) => {
         const filtered = filter(options, params);
 
-        if (!filtered.length && ids.length < limit && params.inputValue.length.trim()) {
+        if (!filtered.length && ids.length < limit && params.inputValue.trim().length) {
           filtered.push({
             name: params.inputValue,
             color: randomColor,
