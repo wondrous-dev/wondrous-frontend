@@ -34,7 +34,7 @@ const populateOrder = (index, tasks, field) => {
     aboveOrder = tasks[index - 1][field];
   }
   if (index < tasks.length - 1) {
-    belowOrder = tasks[index + 1][field];
+    belowOrder = tasks[index][field];
   }
   return {
     aboveOrder,
@@ -61,7 +61,7 @@ const KanbanBoard = (props) => {
   const isProposalEntity = board?.entityType === ENTITIES_TYPES.PROPOSAL;
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
-  
+
   useEffect(() => {
     if (inView && hasMore) {
       onLoadMore();
@@ -87,7 +87,17 @@ const KanbanBoard = (props) => {
   // TODO: Aggregate all Task mutations on one Task
   //       service.
   const prevColumnState = usePrevious(columns);
-  const updateTask = async (taskToBeUpdated) => {
+  const updateTaskStatus = async (taskToBeUpdated, aboveOrder, belowOrder) => {
+    let currentBoard: String;
+    if (orgBoard) {
+      currentBoard = 'org';
+    }
+    if (podBoard) {
+      currentBoard = 'pod';
+    }
+    if (userBoard) {
+      currentBoard = 'assignee';
+    }
     try {
       const {
         data: { updateTask: task },
@@ -97,6 +107,9 @@ const KanbanBoard = (props) => {
           taskId: taskToBeUpdated.id,
           input: {
             newStatus: taskToBeUpdated.status,
+            board: currentBoard,
+            aboveOrder,
+            belowOrder
           },
         },
         refetchQueries: () => [
@@ -107,7 +120,6 @@ const KanbanBoard = (props) => {
           'getPerStatusTaskCountForUserBoard',
           'getPerStatusTaskCountForOrgBoard',
           'getPerStatusTaskCountForPodBoard',
-          'getSubtaskCountForTask',
         ],
       });
 
@@ -135,10 +147,6 @@ const KanbanBoard = (props) => {
           };
         }
         const updatedTask = checkPermissions(task) ? { ...task, status } : task;
-
-        if (updatedTask.status !== task.status) {
-          updateTask(updatedTask);
-        }
         if (checkPermissions(task)) {
           const filteredColumn = column.tasks.filter((task) => task.id !== id);
           const newTasks = [...filteredColumn.slice(0, index), updatedTask, ...filteredColumn.slice(index)];
@@ -159,16 +167,20 @@ const KanbanBoard = (props) => {
           }
 
           try {
-            updateTaskOrder({
-              variables: {
-                taskId: updatedTask?.id,
-                input: {
-                  belowOrder,
-                  aboveOrder,
-                  board,
+            if (updatedTask.status !== task.status) {
+              updateTaskStatus(updatedTask, aboveOrder, belowOrder);
+            } else {
+              updateTaskOrder({
+                variables: {
+                  taskId: updatedTask?.id,
+                  input: {
+                    belowOrder,
+                    aboveOrder,
+                    board,
+                  },
                 },
-              },
-            }).catch((e) => {});
+              }).catch((e) => {});
+            }
           } catch (err) {}
           return {
             ...column,
