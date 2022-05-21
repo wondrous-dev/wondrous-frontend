@@ -7,6 +7,7 @@ import {
   STATUS_APPROVED,
   STATUS_OPEN,
   STATUS_CHANGE_REQUESTED,
+  ENTITIES_TYPES,
 } from './constants';
 
 export const addProposalItem = (newItem, columns) => {
@@ -199,13 +200,20 @@ export const updateTask = (updatedTask, columns) => {
         return task;
       });
     }
-    column.tasks = column.tasks.map((task) => {
-      if (task.id === updatedTask.id) {
+    if (column?.type === ENTITIES_TYPES.MILESTONE) {
+      if (column?.id === updatedTask?.id) {
         return updatedTask;
       }
-      return task;
-    });
-    return column;
+      return column;
+    } else {
+      column.tasks = column.tasks.map((task) => {
+        if (task.id === updatedTask.id) {
+          return updatedTask;
+        }
+        return task;
+      });
+      return column;
+    }
   });
 };
 
