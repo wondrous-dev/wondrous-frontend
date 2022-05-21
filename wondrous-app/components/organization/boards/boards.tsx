@@ -27,7 +27,6 @@ type Props = {
   onLoadMore: any;
   orgData: any;
   hasMore: any;
-  selectOptions: any;
   searchString: string;
   statuses: string[];
   podIds: string[];

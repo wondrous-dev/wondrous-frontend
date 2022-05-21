@@ -211,15 +211,6 @@ export const ORG_POD_COLUMNS = generateColumns(false, COLUMNS_CONFIGURATION.ORG)
 
 export const ORG_POD_PROPOSAL_COLUMNS = [PROPOSAL_OPEN, PROPOSAL_APPROVED, PROPOSAL_REJECTED];
 
-export const SELECT_OPTIONS = [
-  '#copywriting (23)',
-  '#growth (23)',
-  '#design (23)',
-  '#community (11)',
-  '#sales (23)',
-  '#tiktok (13)',
-  '#analytics (23)',
-];
 
 export const LIMIT = 10;
 
