@@ -879,6 +879,7 @@ export const TaskSubmissionContent = (props) => {
     handleClose,
     setShowPaymentModal,
     getTaskSubmissionsForTask,
+    isBounty
   } = props;
 
   const router = useRouter();
@@ -930,7 +931,7 @@ export const TaskSubmissionContent = (props) => {
   if (taskSubmissionLoading) {
     return <CircularProgress />;
   }
-  if ((canSubmit || canMoveProgress) && fetchedTask?.status === TASK_STATUS_TODO && moveProgressButton) {
+  if ((canSubmit || canMoveProgress) && fetchedTask?.status === TASK_STATUS_TODO && moveProgressButton && !isBounty) {
     return (
       <div
       // style={{
@@ -938,7 +939,7 @@ export const TaskSubmissionContent = (props) => {
       //   alignItems: 'center',
       // }}
       >
-        <TaskTabText>To submit task submissions please first move this to in progress</TaskTabText>
+        <TaskTabText>To submit tasask submissions please first move this to in progress</TaskTabText>
         <CreateFormPreviewButton
           style={{
             marginTop: '16px',

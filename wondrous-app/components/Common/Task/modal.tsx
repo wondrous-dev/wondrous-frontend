@@ -1776,6 +1776,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     setFetchedTaskSubmissions={setFetchedTaskSubmissions}
                     setShowPaymentModal={setShowPaymentModal}
                     getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+                    isBounty={isBounty}
                   />
                 )}
                 {activeTab === tabs.subTasks && <TaskSubtasks taskId={fetchedTask?.id} permissions={permissions} />}
