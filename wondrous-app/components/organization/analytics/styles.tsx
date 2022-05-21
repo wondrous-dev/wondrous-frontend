@@ -6,6 +6,8 @@ import { TextField, Typography } from '@material-ui/core';
 import { White } from 'theme/colors';
 import { StyledDatePicker } from 'components/Common/DatePicker/styles';
 import { Button } from 'components/Common/button';
+import { PaymentModal } from 'components/Common/Payment/styles';
+import { CreateFormRewardCurrency } from 'components/CreateEntity/styles';
 
 export const CardWrapper = styled.div`
   display: flex;
@@ -135,5 +137,25 @@ export const ExportCSVButton = styled(Button)``;
 export const ExportCSVButtonText = styled(Typography)`
   && {
     color: ${White};
+  }
+`;
+
+export const PayoutPaymentModal = styled(PaymentModal)`
+  && {
+    width: 70%;
+    min-width: 680px;
+    height: 90%;
+  }
+`;
+
+export const ContributorTaskModalRow = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 0px !important;
+`;
+
+export const FormRewardCurrency = styled(CreateFormRewardCurrency)`
+  && {
+    margin-top: 0;
   }
 `;

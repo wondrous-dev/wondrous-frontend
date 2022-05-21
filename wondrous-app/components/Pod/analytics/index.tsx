@@ -424,13 +424,22 @@ const Analytics = (props) => {
             borderRadius: '8px',
             height: '40px',
             marginLeft: '12px',
+            minHeight: '40px',
           }}
           buttonInnerStyle={{
             borderRadius: '7px',
           }}
-          onClick={() => setCSVModal(true)}
+          onClick={() =>
+            exportContributorTaskCSV({
+              contributorTaskData,
+              paymentMethod: null,
+              fromTime,
+              toTime,
+              isPod: true,
+            })
+          }
         >
-          <ExportCSVButtonText>Export CSV</ExportCSVButtonText>
+          <ExportCSVButtonText>Export Tasks</ExportCSVButtonText>
         </ExportCSVButton>
       </HeaderWrapper>
       {contributorTaskData?.length === 0 && (

@@ -44,6 +44,9 @@ import {
 import { White } from 'theme/colors';
 import { filterOrgUsers } from 'components/CreateEntity/createEntityModal';
 import CSVModal, { PAYMENT_OPTIONS } from './CSVModal';
+import { PayoutModal } from './PayoutModal';
+
+export const exportTaskCSV = () => {};
 
 export const exportContributorTaskCSV = ({ contributorTaskData, paymentMethod, fromTime, toTime, isPod = false }) => {
   let headers = [];
@@ -96,7 +99,7 @@ export const exportContributorTaskCSV = ({ contributorTaskData, paymentMethod, f
   document.body.appendChild(link); // Required for FF
   link.click();
 };
-const UserRowPictureStyles = {
+export const UserRowPictureStyles = {
   width: '30px',
   height: '30px',
   borderRadius: '15px',
@@ -107,7 +110,7 @@ const CaretStyle = {
   marginRight: '12px',
 };
 
-const calculatePoints = (tasks) => {
+export const calculatePoints = (tasks) => {
   let points = 0;
   tasks.forEach((task) => {
     if (task?.points) {
@@ -338,6 +341,7 @@ const Analytics = (props) => {
   const [ref, inView] = useInView({});
   const [assignee, setAssignee] = useState(null);
   const [csvModal, setCSVModal] = useState(false);
+  const [payoutModal, setPayoutModal] = useState(false);
   const [assigneeString, setAssigneeString] = useState('');
   const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
   const { data: orgUsersData } = useQuery(GET_ORG_USERS, {
@@ -388,7 +392,14 @@ const Analytics = (props) => {
           isPod={false}
         />
       </CreateModalOverlay>
-
+      <PayoutModal
+        open={payoutModal}
+        handleClose={() => setPayoutModal(false)}
+        orgId={orgId}
+        fromTime={fromTime}
+        toTime={toTime}
+        contributorTaskData={contributorTaskData}
+      />
       <HeaderWrapper>
         <HeaderText>Completed work from</HeaderText>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -508,18 +519,49 @@ const Analytics = (props) => {
             );
           }}
         />
+        <div
+          style={{
+            flex: 1,
+          }}
+        />
         <ExportCSVButton
           style={{
             borderRadius: '8px',
             height: '40px',
             marginLeft: '12px',
+            minHeight: '40px',
           }}
           buttonInnerStyle={{
             borderRadius: '7px',
           }}
-          onClick={() => setCSVModal(true)}
+          onClick={() =>
+            exportContributorTaskCSV({
+              contributorTaskData,
+              paymentMethod: null,
+              fromTime,
+              toTime,
+              isPod: false,
+            })
+          }
         >
-          <ExportCSVButtonText>Export CSV</ExportCSVButtonText>
+          <ExportCSVButtonText>Export Tasks</ExportCSVButtonText>
+        </ExportCSVButton>
+        <ExportCSVButton
+          style={{
+            borderRadius: '8px',
+            height: '40px',
+            minHeight: '40px',
+            marginLeft: '8px',
+            border: '1px solid deepskyblue',
+          }}
+          buttonInnerStyle={{
+            borderRadius: '7px',
+          }}
+          onClick={() => {
+            setPayoutModal(true);
+          }}
+        >
+          <ExportCSVButtonText>Pay out</ExportCSVButtonText>
         </ExportCSVButton>
       </HeaderWrapper>
       {contributorTaskData?.length === 0 && (
