@@ -205,6 +205,10 @@ export const BoardsCardBodyTitle = styled(Typography)`
     font-weight: 700;
     font-size: 16px;
     line-height: 23px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
   }
 `;
 
@@ -217,6 +221,10 @@ export const BoardsCardBodyDescription = styled(Typography)`
     line-height: 20px;
     letter-spacing: 0.01em;
     color: #828282;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
   }
 `;
 

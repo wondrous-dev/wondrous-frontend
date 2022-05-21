@@ -120,16 +120,7 @@ export const TaskCard = ({
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isTaskSubmissionLoading, setTaskSubmissionLoading] = useState(false);
   const [approvedSubmission, setApprovedSubmission] = useState(null);
-  const [coverMedia, setCoverMedia] = useState(null)
-  useEffect(()=>{
-    if(task?.media) {
-      task?.media.forEach(media => {
-        if (media?.type === 'image') {
-          setCoverMedia(media)
-        }
-      });
-    }
-  },[task])
+  const coverMedia = task?.media.find(media => media.type === 'image')
 
   const router = useRouter();
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
@@ -413,16 +404,9 @@ const STATUS_ICONS = {
 };
 
 export function ProposalCard({ openModal, title, description, task, goToPod, proposalRequestChange }) {
-  const [coverMedia, setCoverMedia] = useState(null)
-  useEffect(()=>{
-    if(task?.media) {
-      task?.media.forEach(media => {
-        if (media?.type === 'image') {
-          setCoverMedia(media)
-        }
-      });
-    }
-  },[task])
+  const router = useRouter();
+  const coverMedia = task?.media.find(media => media.type === 'image')
+
   const proposalStatus = getProposalStatus(task);
   const PROPOSAL_STATUS_MAP = {
     [Constants.STATUS_APPROVED]: {
@@ -470,7 +454,12 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
       </BoardsCardHeader>
       <BoardsCardBody>
         <BoardsCardBodyTitle>{title}</BoardsCardBodyTitle>
-        <BoardsCardBodyDescription>{description}</BoardsCardBodyDescription>
+        <BoardsCardBodyDescription>
+          {renderMentionString({
+            content: description,
+            router,
+          })}
+        </BoardsCardBodyDescription>
         {coverMedia ? (
           <BoardsCardMedia>
             <SafeImage
