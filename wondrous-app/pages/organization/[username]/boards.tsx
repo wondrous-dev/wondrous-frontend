@@ -19,7 +19,6 @@ import {
   LIMIT,
   populateTaskColumns,
   populateProposalColumns,
-  SELECT_OPTIONS,
   ORG_POD_COLUMNS,
   ORG_POD_PROPOSAL_COLUMNS,
 } from 'services/board';
@@ -354,9 +353,12 @@ const BoardsPage = () => {
   });
 
   const handleEntityTypeChange = (type) => {
-    setIsLoading(true);
+    if (type !== entityType) {
+      setIsLoading(true);
+    }
     setEntityType(type);
   };
+
   const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
     onCompleted: (data) => {
       const boardColumns = [...columns];
@@ -600,7 +602,6 @@ const BoardsPage = () => {
     >
       <Boards
         orgPods={orgPods}
-        selectOptions={SELECT_OPTIONS}
         columns={columns}
         searchString={searchString}
         onLoadMore={fetchMore}
