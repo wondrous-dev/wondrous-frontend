@@ -19,6 +19,7 @@ import {
   BoardsCardBodyDescription,
   BoardsCardMedia,
 } from 'components/Common/Boards/styles';
+import { Compensation } from '../Compensation';
 import Ethereum from 'components/Icons/ethereum';
 import { USDCoin } from 'components/Icons/USDCoin';
 import { WonderCoin } from 'components/Icons/wonderCoin';
@@ -30,6 +31,7 @@ import { SubtaskDarkIcon } from 'components/Icons/subtask';
 import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
 import { useRouter } from 'next/router';
+import { TASK_ICONS } from 'components/Common/Task/index';
 
 const CURRENCY_SYMBOL = {
   eth: <Ethereum />,
@@ -77,6 +79,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {} }) {
         const reward = bounty?.rewards?.[0];
         const rewardSymbol = reward?.symbol?.toLowerCase() || 'eth';
         const rewardAmount = reward?.rewardAmount || null;
+        let BountyStatusIcon = TASK_ICONS[bounty?.status];
         return (
           <BountyCardWrapper onClick={() => handleCardClick(bounty)} key={bounty.id}>
             <BoardsCardHeader>
@@ -87,10 +90,11 @@ export default function Board({ tasks, handleCardClick = (bounty) => {} }) {
                   {bounty?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
                 </BoardsPrivacyLabel>
               </BoardsCardSubheader>
-              <BoardsRewardLabel>
+              {bounty?.rewards && bounty?.rewards?.length > 0 && <Compensation rewards={bounty?.rewards} taskIcon={<BountyStatusIcon />} />}
+              {/* <BoardsRewardLabel>
                 {CURRENCY_SYMBOL[rewardSymbol]}
                 {rewardAmount}
-              </BoardsRewardLabel>
+              </BoardsRewardLabel> */}
             </BoardsCardHeader>
             <BoardsCardBody>
               <BoardsCardBodyTitle>{bounty.title}</BoardsCardBodyTitle>
