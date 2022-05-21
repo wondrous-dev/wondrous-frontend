@@ -2,7 +2,7 @@ import { useApolloClient, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { UPDATE_TASK_STATUS } from 'graphql/mutations';
+import { UPDATE_TASK_STATUS, ARCHIVE_TASK } from 'graphql/mutations';
 import { GET_TASK_REVIEWERS } from 'graphql/queries';
 import { ViewType } from 'types/common';
 import { delQuery } from 'utils';
@@ -137,12 +137,9 @@ export const Table = (props) => {
     let taskIndex;
 
     await apolloClient.mutate({
-      mutation: UPDATE_TASK_STATUS,
+      mutation: ARCHIVE_TASK,
       variables: {
         taskId: task?.taskId ?? task?.id,
-        input: {
-          newStatus: TASK_STATUS_ARCHIVED,
-        },
       },
       refetchQueries: () => [
         'getSubmissionsUserCanReview',
