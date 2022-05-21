@@ -8,6 +8,12 @@ export const WhiteTypography = styled(Typography)`
     font-weight: 700;
     font-size: 15px;
     line-height: 19px;
+    flex-wrap: wrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; // max nb lines to show
+    -webkit-box-orient: vertical;
   }
 `;
 
