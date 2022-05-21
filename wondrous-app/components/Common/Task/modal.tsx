@@ -1144,13 +1144,12 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
           const approvedColumnIndex = columns.findIndex((column) => column.status === STATUS_APPROVED);
           columns[prevStatusIndex].tasks = columns[prevStatusIndex].tasks.filter((task) => task.id !== taskProposal.id);
           columns[approvedColumnIndex].tasks = [
-            { ...taskProposal, apporvedAt: new Date() },
+            { ...taskProposal, approvedAt: new Date(), __typename: 'TaskProposalCard', isProposal: true },
             ...columns[approvedColumnIndex].tasks,
           ];
         } else {
           // keep it for userboard
           // Move from proposal to task
-          columns = removeProposalItem(fetchedTask?.id, columns);
           columns = addTaskItem(
             transformTaskToTaskCard(
               {

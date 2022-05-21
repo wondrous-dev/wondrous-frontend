@@ -85,7 +85,11 @@ const ChooseEntityToCreateModal = (props) => {
     ) {
       return false;
     }
-    if (!permissions.includes(PERMISSIONS.CREATE_TASK) && key === ENTITIES_TYPES.MILESTONE) {
+    if (
+      !permissions.includes(PERMISSIONS.FULL_ACCESS) &&
+      !permissions.includes(PERMISSIONS.CREATE_TASK) &&
+      key === ENTITIES_TYPES.MILESTONE
+    ) {
       return false;
     }
     return key !== ENTITIES_TYPES.ORG;
