@@ -141,7 +141,7 @@ export const Table = (props) => {
 
   async function archiveTask(task) {
     const newColumns = [...boardColumns.columns];
-    const column = newColumns.find((column) => column.tasks.includes(task));
+    const column = newColumns.find((column) => column.tasks?.includes(task));
     let taskIndex;
 
     await apolloClient.mutate({
