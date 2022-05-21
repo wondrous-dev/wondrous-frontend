@@ -18,6 +18,8 @@ import {
   STATUS_OPEN,
   STATUS_APPROVED,
   STATUS_CHANGE_REQUESTED,
+  TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_DONE,
 } from 'utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
@@ -125,7 +127,7 @@ import { useMe } from '../Auth/withAuth';
 import Ethereum from '../Icons/ethereum';
 import { USDCoin } from '../Icons/USDCoin';
 import { TaskFragment } from 'graphql/fragments/task';
-import { getProposalStatus } from 'utils/board';
+import { getProposalStatus, updateCompletedItem, updateInReviewItem } from 'utils/board';
 import { GET_ORG_TASK_BOARD_PROPOSALS } from 'graphql/queries/taskBoard';
 import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './createEntityModal';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
@@ -528,10 +530,14 @@ const EditLayoutBaseModal = (props) => {
       if (boardColumns?.setColumns && onCorrectPage) {
         const transformedTask = transformTaskToTaskCard(task, {});
         let columns = [...boardColumns?.columns];
-        if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+        if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
+          columns = updateInReviewItem(transformedTask, columns);
+        } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
           columns = updateInProgressTask(transformedTask, columns);
         } else if (transformedTask.status === TASK_STATUS_TODO) {
           columns = updateTaskItem(transformedTask, columns);
+        } else if (transformedTask.status === TASK_STATUS_DONE) {
+          columns = updateCompletedItem(transformedTask, columns);
         }
         boardColumns.setColumns(columns);
       }
@@ -592,13 +598,17 @@ const EditLayoutBaseModal = (props) => {
       if (boardColumns?.setColumns && onCorrectPage) {
         const transformedTask = transformTaskToTaskCard(milestone, {});
         let columns = [...boardColumns?.columns];
-        if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+        if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
+          columns = updateInReviewItem(transformedTask, columns);
+        } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
           columns = updateInProgressTask(transformedTask, columns);
           //if there's no entityType we assume it's the userBoard and keeping the old logic
         } else if (transformedTask.status === TASK_STATUS_TODO && !board?.entityType) {
           columns = updateTaskItem(transformedTask, columns);
         } else if (transformedTask.status === TASK_STATUS_TODO && board?.entityType) {
           columns = updateTaskItemOnEntityType(transformedTask, columns);
+        } else if (transformedTask.status === TASK_STATUS_DONE) {
+          columns = updateCompletedItem(transformedTask, columns);
         }
         boardColumns.setColumns(columns);
       }

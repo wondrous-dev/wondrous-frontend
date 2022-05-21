@@ -128,6 +128,8 @@ import {
   updateProposalItem,
   updateTaskItem,
   getProposalStatus,
+  updateInReviewItem,
+  updateCompletedItem,
 } from 'utils/board';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
 import { CompletedIcon } from '../../Icons/statusIcons';
@@ -1501,10 +1503,14 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                                       setFetchedTask(transformedTask);
                                       if (boardColumns?.setColumns && onCorrectPage) {
                                         let columns = [...boardColumns?.columns];
-                                        if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+                                        if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
+                                          columns = updateInReviewItem(transformedTask, columns);
+                                        } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
                                           columns = updateInProgressTask(transformedTask, columns);
                                         } else if (transformedTask.status === TASK_STATUS_TODO) {
                                           columns = updateTaskItem(transformedTask, columns);
+                                        } else if (transformedTask.status === TASK_STATUS_DONE) {
+                                          columns = updateCompletedItem(transformedTask, columns);
                                         }
                                         boardColumns.setColumns(columns);
                                       }

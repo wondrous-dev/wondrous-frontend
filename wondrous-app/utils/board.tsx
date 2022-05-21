@@ -130,12 +130,12 @@ export const removeInProgressTask = (itemId, columns) => {
 };
 
 export const addArchiveItem = (newItem, columns) => {
-  columns[2].section.tasks = [newItem, ...columns[2].section.tasks];
+  columns[3].section.tasks = [newItem, ...columns[3].section.tasks];
   return columns;
 };
 
 export const updateArchiveItem = (updatedItem, columns) => {
-  columns[2].section.tasks = columns[2].section.tasks.map((task) => {
+  columns[3].section.tasks = columns[3].section.tasks.map((task) => {
     if (task.id === updatedItem.id) {
       return updatedItem;
     }
@@ -145,16 +145,16 @@ export const updateArchiveItem = (updatedItem, columns) => {
 };
 
 export const removeArchiveItem = (itemId, columns) => {
-  columns[2].section.tasks = columns[2].section.tasks.filter((task) => task.id !== itemId);
+  columns[3].section.tasks = columns[3].section.tasks.filter((task) => task.id !== itemId);
   return columns;
 };
 
-export const addCompletedItem = (newItem, columns) => {
+export const addInReviewItem = (newItem, columns) => {
   columns[2].tasks = [newItem, ...columns[2].tasks];
   return columns;
 };
 
-export const updateCompletedItem = (updatedItem, columns) => {
+export const updateInReviewItem = (updatedItem, columns) => {
   columns[2].tasks = columns[2].tasks.map((task) => {
     if (task.id === updatedItem.id) {
       return updatedItem;
@@ -164,8 +164,28 @@ export const updateCompletedItem = (updatedItem, columns) => {
   return columns;
 };
 
-export const removeCompletedItem = (itemId, columns) => {
+export const removeInReviewItem = (itemId, columns) => {
   columns[2].tasks = columns[2].tasks.filter((task) => task.id !== itemId);
+  return columns;
+};
+
+export const addCompletedItem = (newItem, columns) => {
+  columns[3].tasks = [newItem, ...columns[3].tasks];
+  return columns;
+};
+
+export const updateCompletedItem = (updatedItem, columns) => {
+  columns[3].tasks = columns[3].tasks.map((task) => {
+    if (task.id === updatedItem.id) {
+      return updatedItem;
+    }
+    return task;
+  });
+  return columns;
+};
+
+export const removeCompletedItem = (itemId, columns) => {
+  columns[3].tasks = columns[3].tasks.filter((task) => task.id !== itemId);
   return columns;
 };
 

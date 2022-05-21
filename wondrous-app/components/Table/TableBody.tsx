@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { UPDATE_TASK_ASSIGNEE, UPDATE_TASK_STATUS } from 'graphql/mutations';
-import { updateInProgressTask, updateTaskItem } from 'utils/board';
+import { updateCompletedItem, updateInProgressTask, updateInReviewItem, updateTaskItem } from 'utils/board';
 import { renderMentionString } from 'utils/common';
 import * as Constants from 'utils/constants';
 import { TASK_STATUS_IN_PROGRESS, TASK_STATUS_TODO } from 'utils/constants';
@@ -148,10 +148,14 @@ export default function TableBody({
                             const transformedTask = transformTaskToTaskCard(task, {});
                             if (board?.setColumns) {
                               let columns = [...board?.columns];
-                              if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
+                              if (transformedTask.status === Constants.TASK_STATUS_IN_REVIEW) {
+                                columns = updateInReviewItem(transformedTask, columns);
+                              } else if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
                                 columns = updateInProgressTask(transformedTask, columns);
                               } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
                                 columns = updateTaskItem(transformedTask, columns);
+                              } else if (transformedTask.status === Constants.TASK_STATUS_DONE) {
+                                columns = updateCompletedItem(transformedTask, columns);
                               }
                               board.setColumns(columns);
                             }
