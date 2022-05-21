@@ -22,7 +22,7 @@ import {
 interface IArchiveTaskModalProps {
   open: boolean;
   onClose: () => void;
-  onArchive: (string) => void;
+  onArchive: () => void;
   taskType: string;
   taskId: string;
 }
