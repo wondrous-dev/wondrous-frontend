@@ -162,12 +162,3 @@ export const UPDATE_BOUNTY = gql`
   }
   ${BountyFragment}
 `;
-
-export const UPDATE_BOUNTY_STATUS = gql`
-  mutation updateBountyStatus($bountyId: ID!, $input: updateStatusInput!) {
-    updateBountyStatus(bountyId: $bountyId, input: $input) {
-      ...BountyFragment
-    }
-  }
-  ${BountyFragment}
-`;

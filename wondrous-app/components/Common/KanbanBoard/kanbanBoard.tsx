@@ -10,7 +10,7 @@ import TaskColumn from './TaskColumn';
 import { ENTITIES_TYPES } from 'utils/constants';
 // Task update (column changes)
 import apollo from 'services/apollo';
-import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER, UPDATE_BOUNTY_STATUS } from 'graphql/mutations/task';
+import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
 import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { parseUserPermissionContext } from 'utils/helpers';
 import {
@@ -88,16 +88,13 @@ const KanbanBoard = (props) => {
   //       service.
   const prevColumnState = usePrevious(columns);
   const updateTask = async (taskToBeUpdated) => {
-    const taskType = taskToBeUpdated.type === TASK_TYPE;
-    const taskTypeMutation = taskType ? UPDATE_TASK_STATUS : UPDATE_BOUNTY_STATUS;
-    const idKey = taskType ? 'taskId' : 'bountyId';
     try {
       const {
         data: { updateTask: task },
       } = await apollo.mutate({
-        mutation: taskTypeMutation,
+        mutation: UPDATE_TASK_STATUS,
         variables: {
-          [idKey]: taskToBeUpdated.id,
+          taskId: taskToBeUpdated.id,
           input: {
             newStatus: taskToBeUpdated.status,
           },

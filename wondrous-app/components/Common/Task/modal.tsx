@@ -100,7 +100,6 @@ import { useRouter } from 'next/router';
 import {
   UPDATE_TASK_STATUS,
   UPDATE_TASK_ASSIGNEE,
-  UPDATE_BOUNTY_STATUS,
   ARCHIVE_TASK,
   UNARCHIVE_TASK,
 } from 'graphql/mutations/task';
@@ -820,25 +819,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     },
   });
 
-  const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS, {
-    refetchQueries: [
-      'getTaskById',
-      'getUserTaskBoardTasks',
-      'getPerStatusTaskCountForUserBoard',
-      'getOrgTaskBoardTasks',
-      'getPerStatusTaskCountForOrgBoard',
-      'getPodTaskBoardTasks',
-      'getPerStatusTaskCountForPodBoard',
-    ],
-    onError: () => {
-      console.error('Something went wrong.');
-    },
-    onCompleted: () => {
-      // TODO: Move columns
-      // let columns = [...boardColumns?.columns]
-    },
-  });
-
   const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
     refetchQueries: [
       'getTaskById',
@@ -876,75 +856,40 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     },
   });
 
-  const [updateBountyStatus] = useMutation(UPDATE_BOUNTY_STATUS, {
-    refetchQueries: () => [
-      'getTaskById',
-      'getOrgTaskBoardTasks',
-      'getPodTaskBoardTasks',
-      'getPerStatusTaskCountForOrgBoard',
-      'getPerStatusTaskCountForPodBoard',
-    ],
-  });
-  const handleNewStatus = useCallback(
-    (newStatus) => {
-      if (newStatus === TASK_STATUS_ARCHIVED) {
-        archiveTaskMutation({
-          variables: {
-            taskId: fetchedTask?.id,
-          },
-        }).then((result) => {
-          handleClose();
-          setSnackbarAlertOpen(true);
-          setSnackbarAlertMessage(
-            <>
-              Task archived successfully!{' '}
-              <ArchivedTaskUndo
-                onClick={() => {
-                  setSnackbarAlertOpen(false);
-                  unarchiveTaskMutation({
-                    variables: {
-                      taskId: fetchedTask?.id,
-                    },
-                  });
-                }}
-              >
-                Undo
-              </ArchivedTaskUndo>
-            </>
-          );
-        });
-      } else {
-        if (isBounty) {
-          updateBountyStatus({
-            variables: {
-              bountyId: fetchedTask?.id,
-              input: { newStatus },
-            },
-          });
-        } else {
-          updateTaskStatusMutation({
-            variables: {
-              taskId: fetchedTask?.id,
-              input: {
-                newStatus,
-              },
-            },
-          });
-        }
-      }
-    },
-    [
-      fetchedTask?.id,
-      isBounty,
-      updateBountyStatus,
-      updateTaskStatusMutation,
-      archiveTaskMutation,
-      handleClose,
-      setSnackbarAlertOpen,
-      unarchiveTaskMutation,
-      setSnackbarAlertMessage,
-    ]
-  );
+  const handleOnArchive = useCallback(() => {
+    archiveTaskMutation({
+      variables: {
+        taskId: fetchedTask?.id,
+      },
+    }).then((result) => {
+      handleClose();
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage(
+        <>
+          Task archived successfully!{' '}
+          <ArchivedTaskUndo
+            onClick={() => {
+              setSnackbarAlertOpen(false);
+              unarchiveTaskMutation({
+                variables: {
+                  taskId: fetchedTask?.id,
+                },
+              });
+            }}
+          >
+            Undo
+          </ArchivedTaskUndo>
+        </>
+      );
+    });
+  }, [
+    fetchedTask?.id,
+    archiveTaskMutation,
+    handleClose,
+    setSnackbarAlertOpen,
+    unarchiveTaskMutation,
+    setSnackbarAlertMessage,
+  ]);
 
   useEffect(() => {
     if (open) {
@@ -958,7 +903,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     fetchedTask,
     setSnackbarAlertOpen,
     setSnackbarAlertMessage,
-    handleNewStatus,
     archiveTaskData,
     handleClose,
     open,
@@ -1205,7 +1149,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
         <ArchiveTaskModal
           open={archiveTask}
           onClose={handleOnCloseArchiveTaskModal}
-          onArchive={handleNewStatus}
+          onArchive={handleOnArchive}
           taskType={taskType}
           taskId={fetchedTask?.id}
         />
@@ -1712,7 +1656,9 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 )}
                 {canApproveProposal && !fetchedTask?.approvedAt && (
                   <CreateFormButtonsBlock>
-                    {!fetchedTask?.changeRequestedAt && <CreateFormCancelButton onClick={requestProposalChanges}>Reject</CreateFormCancelButton>}
+                    {!fetchedTask?.changeRequestedAt && (
+                      <CreateFormCancelButton onClick={requestProposalChanges}>Reject</CreateFormCancelButton>
+                    )}
                     <CreateFormPreviewButton onClick={approveProposal}>Approve</CreateFormPreviewButton>
                   </CreateFormButtonsBlock>
                 )}

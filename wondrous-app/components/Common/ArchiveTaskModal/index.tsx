@@ -32,13 +32,13 @@ export const ArchiveTaskModal = (props: IArchiveTaskModalProps) => {
   const board = useOrgBoard();
   const [archiveTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
 
-  const isTaskOrMilestone =
+  const isTaskOrMilestoneOrBounty =
     taskType === Constants.TASK_TYPE || taskType === Constants.MILESTONE_TYPE || taskType === Constants.BOUNTY_TYPE;
   const isTaskProposal = taskType === 'task proposal';
 
   const handleArchive = () => {
-    if (isTaskOrMilestone) {
-      onArchive(Constants.TASK_STATUS_ARCHIVED);
+    if (isTaskOrMilestoneOrBounty) {
+      onArchive();
     }
     if (isTaskProposal) {
       board?.setFirstTimeFetch(false);
