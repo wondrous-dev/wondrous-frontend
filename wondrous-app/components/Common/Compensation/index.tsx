@@ -7,13 +7,6 @@ import Ethereum from '../../Icons/ethereum';
 import { Matic } from '../../Icons/matic';
 import { USDCoin } from '../../Icons/USDCoin';
 
-const CURRENCY_SYMBOL = {
-  ETH: <Ethereum />,
-  WONDER: <WonderCoin />,
-  MATIC: <Matic />,
-  USDC: <USDCoin />,
-};
-
 export const Compensation = (props) => {
   const { rewards, taskIcon } = props;
   const { icon, rewardAmount, symbol } = rewards[0] || {};
