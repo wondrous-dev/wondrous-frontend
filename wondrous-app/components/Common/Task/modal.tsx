@@ -1333,7 +1333,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                         Edit {taskType}
                       </DropDownItem>
                     )}
-                    {canArchive && (
+                    {canArchive && !isTaskProposal && (
                       <DropDownItem
                         key={'task-menu-archive-' + fetchedTask?.id}
                         onClick={() => {
@@ -1688,7 +1688,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   <>
                     <div style={flexDivStyle}>
                       <RejectIcon style={rejectIconStyle} />
-                      <TaskStatusHeaderText>Change requested</TaskStatusHeaderText>
+                      <TaskStatusHeaderText>Rejected</TaskStatusHeaderText>
                     </div>
                     <div
                       style={{
@@ -1712,7 +1712,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 )}
                 {canApproveProposal && !fetchedTask?.approvedAt && (
                   <CreateFormButtonsBlock>
-                    <CreateFormCancelButton onClick={requestProposalChanges}>Request changes</CreateFormCancelButton>
+                    {!fetchedTask?.changeRequestedAt && <CreateFormCancelButton onClick={requestProposalChanges}>Reject</CreateFormCancelButton>}
                     <CreateFormPreviewButton onClick={approveProposal}>Approve</CreateFormPreviewButton>
                   </CreateFormButtonsBlock>
                 )}
