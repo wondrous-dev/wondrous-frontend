@@ -1,6 +1,6 @@
 import { MilestoneCard, MilestoneCardTitle, MilestoneIcon, MilestoneProgressWrapper } from './styles';
 import CommentsIcon from 'components/Icons/comments';
-import { PRIVACY_LEVEL } from 'utils/constants';
+import { PRIVACY_LEVEL, TASK_STATUS_DONE } from 'utils/constants';
 import { MilestoneProgress } from 'components/Common/MilestoneProgress';
 import {
   BoardsCardSubheader,
@@ -17,6 +17,7 @@ import { SafeImage } from '../Image';
 import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
 import { useRouter } from 'next/router';
+import { CompletedIcon } from 'components/Icons/statusIcons';
 export default function Board({ tasks, handleCardClick }) {
   const router = useRouter();
 
@@ -37,6 +38,7 @@ export default function Board({ tasks, handleCardClick }) {
               <BoardsPrivacyLabel>
                 {milestone?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
               </BoardsPrivacyLabel>
+              {milestone?.status === TASK_STATUS_DONE && <CompletedIcon />}
             </BoardsCardSubheader>
           </BoardsCardHeader>
           <BoardsCardBody>

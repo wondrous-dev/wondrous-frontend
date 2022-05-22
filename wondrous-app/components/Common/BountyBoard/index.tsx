@@ -24,7 +24,7 @@ import Ethereum from 'components/Icons/ethereum';
 import { USDCoin } from 'components/Icons/USDCoin';
 import { WonderCoin } from 'components/Icons/wonderCoin';
 import { Matic } from 'components/Icons/matic';
-import { PRIVACY_LEVEL } from 'utils/constants';
+import { PRIVACY_LEVEL, TASK_STATUS_DONE } from 'utils/constants';
 import CommentsIcon from 'components/Icons/comments';
 import { SafeImage } from 'components/Common/Image';
 import { SubtaskDarkIcon } from 'components/Icons/subtask';
@@ -32,6 +32,7 @@ import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
 import { useRouter } from 'next/router';
 import { TASK_ICONS } from 'components/Common/Task/index';
+import { CompletedIcon } from 'components/Icons/statusIcons';
 
 const CURRENCY_SYMBOL = {
   eth: <Ethereum />,
@@ -90,7 +91,9 @@ export default function Board({ tasks, handleCardClick = (bounty) => {} }) {
                   {bounty?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
                 </BoardsPrivacyLabel>
               </BoardsCardSubheader>
-              {bounty?.rewards && bounty?.rewards?.length > 0 && <Compensation rewards={bounty?.rewards} taskIcon={<BountyStatusIcon />} />}
+              {bounty?.rewards && bounty?.rewards?.length > 0 && (
+                <Compensation rewards={bounty?.rewards} taskIcon={<BountyStatusIcon />} />
+              )}
               {/* <BoardsRewardLabel>
                 {CURRENCY_SYMBOL[rewardSymbol]}
                 {rewardAmount}
