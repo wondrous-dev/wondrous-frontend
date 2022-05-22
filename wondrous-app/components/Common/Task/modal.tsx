@@ -1021,7 +1021,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     fetchedTask,
     setSnackbarAlertOpen,
     setSnackbarAlertMessage,
-    handleNewStatus,
     archiveTaskData,
     handleClose,
     open,
