@@ -776,30 +776,6 @@ const EditLayoutBaseModal = (props) => {
               input: bountyInput,
             },
           })
-            .then((result) => {
-              const task = result?.data?.updateBounty;
-              const justCreatedPod = getPodObject();
-              if (
-                board?.setColumns &&
-                ((task?.orgId === board?.orgId && !board?.podId) ||
-                  task?.podId === board?.podId ||
-                  pod === board?.podId)
-              ) {
-                const transformedTask = transformTaskToTaskCard(task, {
-                  orgName: board?.org?.name,
-                  orgProfilePicture: board?.org?.profilePicture,
-                  podName: justCreatedPod?.name,
-                });
-
-                const columns = [...board?.columns];
-                columns[0].tasks = [transformedTask, ...columns[0].tasks];
-                board.setColumns(columns);
-              }
-              handleClose();
-            })
-            .catch((error) => {
-              console.error(error);
-            });
         }
         break;
     }
