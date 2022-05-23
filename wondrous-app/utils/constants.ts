@@ -344,4 +344,5 @@ export const GRAPHQL_ERRORS = {
   POD_INVITE_ALREADY_EXISTS: 'pod_invite_already_exist',
   NO_RECIPIENT_WEB_3_ADDRESS: 'recipient has no web3 address',
   NO_WEB3_ADDRESS_FOUND: 'no_web3_address_found',
+  PAYMENT_METHOD_EXIST: 'payment_method_exist',
 };
