@@ -372,3 +372,27 @@ export const WEEK_DAYS = {
   saturday: false,
   sunday: false,
 };
+
+// Taken from back-end src/constants/colors.py
+export enum ColorTypes {
+  RubyRed = '#B8255F',
+  JasperRed = '#DB4035',
+  SunstoneOrange = '#FF9933',
+  CitrineYellow = '#FAD000',
+  PeridotGreen = '#B4C424',
+  LimeGreen = '#7ECC49',
+  JadeGreen = '#00A86B',
+  Aquamarine = '#76EBCA',
+  GemstoneTeal = '#158FAD',
+  LarimarBlue = '#72C2D4',
+  LaceAgateBlue = '#96C3EB',
+  AzuriteBlue = '#4073FF',
+  AmethystPurple = '#884DFF',
+  SpiritQuartzPurple = '#AF38EB',
+  LepidolitePink = '#EB96EB',
+  Magenta = '#E05194',
+  SardonyxSalmon = '#FF8D85',
+  ShungiteGrey = '#808080',
+  Grey = '#B8B8B8',
+  OkeniteSepia = '#CCAC93',
+}
