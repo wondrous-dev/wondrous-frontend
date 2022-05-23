@@ -9,6 +9,7 @@ import { TaskViewModal } from '../Task/modal';
 import { Table } from 'components/Table';
 import { ViewType } from 'types/common';
 import { CardsContainer } from './styles';
+import { ENTITIES_TYPES } from 'utils/constants';
 let windowOffset = 0;
 
 export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
@@ -19,7 +20,9 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
     const [openModal, setOpenModal] = useState(false);
 
     const handleCardClick = (milestone) => {
-      const newUrl = `${delQuery(router.asPath)}?task=${milestone?.id}&view=${router.query.view || 'grid'}`;
+      const newUrl = `${delQuery(router.asPath)}?task=${milestone?.id}&view=${router.query.view || 'grid'}&entity=${
+        location?.params?.entity || ENTITIES_TYPES.TASK
+      }`;
       location.push(newUrl);
       windowOffset = window.scrollY;
       document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
@@ -44,7 +47,9 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
       if (top?.length > 0) {
         window?.scrollTo(0, Number(top[0]));
       }
-      const newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}`;
+      let newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}&entity=${
+        location?.params?.entity || ENTITIES_TYPES.TASK
+      }`;
       location.push(newUrl);
       setOpenModal(false);
     };
