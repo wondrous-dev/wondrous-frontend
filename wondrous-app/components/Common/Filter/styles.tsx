@@ -15,6 +15,10 @@ import {
   HighlightPurple,
   White,
 } from '../../../theme/colors';
+import Checkbox from '@material-ui/core/Checkbox';
+import CircleChecked from '@material-ui/icons/CheckCircleOutline';
+import CircleCheckedFilled from '@material-ui/icons/CheckCircle';
+import CircleUnchecked from '@material-ui/icons/RadioButtonUnchecked';
 
 export const FilterHandle = styled.div`
   display: flex;
@@ -26,7 +30,7 @@ export const FilterHandle = styled.div`
   min-width: 323px;
   height: 40px;
   padding: 1px;
-
+  background: ${Grey75};
   ${(props) =>
     props.open ? `background: ${Grey75};` : `background: linear-gradient(180deg, ${Black80} 0%, ${Black95} 70%);`}
 
@@ -48,7 +52,7 @@ export const FilterHandleInner = styled.div`
 
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
-
+  background: ${Black95};
   cursor: pointer;
 
   ${(props) =>
@@ -93,7 +97,7 @@ export const FilterBox = styled.div`
   justify-content: flex-start;
 
   max-width: 323px;
-  height: 420px;
+  height: fit-content;
 
   padding: 0px 1px 1px 1px;
 
@@ -104,19 +108,18 @@ export const FilterBox = styled.div`
 
 export const FilterBoxInner = styled.div`
   position: relative;
-
+  gap: 16px;
   display: flex;
-  flex: 1 0 0;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
 
-  padding: 15px;
+  padding: 12px 12px 16px;
   width: 321px;
-  height: 400px;
+  height: fit-content;
   overflow: hidden;
 
-  background: linear-gradient(270.93deg, ${Black95} 3.85%, ${Black97} 101.76%);
+  background: ${Black95};
 `;
 
 export const FilterStatus = styled.div`
@@ -178,8 +181,6 @@ export const FilterItemList = styled.div`
   max-height: 286px;
 
   overflow-y: auto;
-  padding-right: 15px;
-
   scrollbar-color: ${HighlightPurple};
 `;
 
@@ -190,12 +191,12 @@ export const FilterItem = styled.div`
   justify-content: flex-start;
 
   width: 100%;
-  height: 35px;
+  height: 40px;
 
   background: ${Black98};
   border-radius: 4px;
   margin: 4px 0;
-  padding: 7px;
+  padding: 8px;
 
   cursor: pointer;
 
@@ -211,10 +212,8 @@ export const FilterItemIcon = styled.div`
   margin-right: 7px;
 
   & svg {
-    border-radius: 20px;
-    width: 19px;
-    height: 19px;
-    border: 1px solid #474747;
+    width: 24px;
+    height: 24px;
   }
 `;
 
@@ -239,7 +238,13 @@ export const FilterItemName = styled.div`
   align-items: center;
   justify-content: flex-start;
 
-  color: ${White};
+  color: ${({ isSelected }) => (isSelected ? White : '#C4C4C4')};
+
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
 `;
 
 export const FilterItemCount = styled.div`
@@ -277,3 +282,40 @@ export const FilterValues = styled.span`
   white-space: nowrap;
   overflow: hidden;
 `;
+
+export const FilterButton = styled.button`
+  border-radius: 6px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  width: max-content;
+  background: ${({ bgColor }) => bgColor || HighlightPurple};
+  border: 1px solid ${({ bgColor }) => bgColor || HighlightPurple};
+  cursor: pointer;
+  color: ${({ color }) => color || White};
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 15px;
+  margin-right: 10px;
+`;
+
+export const ButtonsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border-top: 0.5px dashed #4b4b4b;
+  padding-top: 12px;
+`;
+
+export const FilterCheckbox = ({ checked }) => (
+  <Checkbox
+    checked={checked}
+    icon={<CircleUnchecked style={{ width: '20px', height: '20px', color: '#474747' }} />}
+    checkedIcon={<CircleChecked style={{ color: '#7427FF', width: '20px', height: '20px' }} />}
+  />
+);

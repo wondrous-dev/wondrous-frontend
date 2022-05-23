@@ -36,6 +36,7 @@ import {
   ENTITIES_TYPES,
   STATUS_APPROVED,
   STATUS_CHANGE_REQUESTED,
+  PROPOSAL_STATUS_LIST,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
 import { useRouterQuery } from 'utils/hooks';
@@ -93,7 +94,7 @@ const useGetOrgTaskBoardTasks = ({
     if (!userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search) {
       const taskBoardStatuses =
         statuses.length > 0
-          ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))
+          ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
           : //double check in case we add new stuff and have no valid entityType.
             STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
       const taskBoardLimit = taskBoardStatuses.length > 0 ? LIMIT : 0;
@@ -172,7 +173,7 @@ const useGetTaskRelatedToUser = ({
     if (userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search) {
       const taskBoardStatuses =
         statuses.length > 0
-          ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))
+          ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
           : STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
       const taskBoardLimit = taskBoardStatuses.length > 0 ? LIMIT : 0;
       getTasksRelatedToUserInOrg({
@@ -241,11 +242,16 @@ const useGetOrgTaskBoardProposals = ({
 
   useEffect(() => {
     if (entityType === ENTITIES_TYPES.PROPOSAL && !search) {
+      const proposalBoardStatuses =
+        statuses.length > 0
+          ? statuses?.filter((status) => PROPOSAL_STATUS_LIST.includes(status))
+          : [STATUS_OPEN, STATUS_CHANGE_REQUESTED, STATUS_APPROVED];
+
       getOrgTaskProposals({
         variables: {
           podIds,
           orgId,
-          statuses: [STATUS_OPEN, STATUS_CHANGE_REQUESTED, STATUS_APPROVED],
+          statuses: proposalBoardStatuses,
           offset: 0,
           limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
         },

@@ -12,6 +12,7 @@ import {
   STATUS_OPEN,
   STATUS_APPROVED,
   STATUS_CHANGE_REQUESTED,
+  ENTITIES_TYPES,
 } from 'utils/constants';
 import { Archived, InReview, Requested } from 'components/Icons/sections';
 import { Proposal } from 'components/Icons';
@@ -122,10 +123,102 @@ const PROPOSAL_REJECTED = {
   status: STATUS_CHANGE_REQUESTED,
 };
 
-export const FILTER_STATUSES = {
+const SHARED_FILTER_STATUSES_DATA = {
   name: 'statuses',
   label: 'Status',
   multiChoice: true,
+};
+
+export const ENTITIES_TYPES_FILTER_STATUSES = {
+  [ENTITIES_TYPES.TASK]: {
+    ...SHARED_FILTER_STATUSES_DATA,
+    items: [
+      {
+        id: TASK_STATUS_TODO,
+        name: 'To-Do',
+        icon: <TaskStatus status={TASK_STATUS_TODO} />,
+      },
+      {
+        id: TASK_STATUS_IN_PROGRESS,
+        name: 'In-progress',
+        icon: <TaskStatus status={TASK_STATUS_IN_PROGRESS} />,
+      },
+      {
+        id: TASK_STATUS_IN_REVIEW,
+        name: 'In-review',
+        icon: <TaskStatus status={TASK_STATUS_IN_REVIEW} />,
+      },
+      {
+        id: TASK_STATUS_DONE,
+        name: 'Completed',
+        icon: <TaskStatus status={TASK_STATUS_DONE} />,
+      },
+      {
+        id: TASK_STATUS_ARCHIVED,
+        name: 'Archived',
+        icon: <TaskStatus status={TASK_STATUS_ARCHIVED} />,
+      },
+    ],
+  },
+  [ENTITIES_TYPES.MILESTONE]: {
+    ...SHARED_FILTER_STATUSES_DATA,
+    items: [
+      {
+        id: TASK_STATUS_TODO,
+        name: 'Open milestones',
+        icon: <TaskStatus status={TASK_STATUS_TODO} />,
+      },
+      {
+        id: TASK_STATUS_DONE,
+        name: 'Completed milestones',
+        icon: <TaskStatus status={TASK_STATUS_DONE} />,
+      },
+      {
+        id: TASK_STATUS_ARCHIVED,
+        name: 'Archived milestones',
+        icon: <TaskStatus status={TASK_STATUS_ARCHIVED} />,
+      },
+    ],
+  },
+  [ENTITIES_TYPES.BOUNTY]: {
+    ...SHARED_FILTER_STATUSES_DATA,
+    items: [
+      {
+        id: TASK_STATUS_TODO,
+        name: 'Open bounties',
+        icon: <TaskStatus status={TASK_STATUS_TODO} />,
+      },
+      {
+        id: TASK_STATUS_DONE,
+        name: 'Completed bounties',
+        icon: <TaskStatus status={TASK_STATUS_DONE} />,
+      },
+      {
+        id: TASK_STATUS_ARCHIVED,
+        name: 'Archived bounties',
+        icon: <TaskStatus status={TASK_STATUS_ARCHIVED} />,
+      },
+    ],
+  },
+  [ENTITIES_TYPES.PROPOSAL]: {
+    ...SHARED_FILTER_STATUSES_DATA,
+    items: [
+      {
+        id: TASK_STATUS_TODO,
+        name: 'Open proposals',
+        icon: <TaskStatus status={TASK_STATUS_TODO} />,
+      },
+      {
+        id: TASK_STATUS_DONE,
+        name: 'Resolved proposals',
+        icon: <TaskStatus status={TASK_STATUS_DONE} />,
+      },
+    ],
+  },
+};
+
+export const FILTER_STATUSES = {
+  ...SHARED_FILTER_STATUSES_DATA,
   items: [
     // Back-end doesn't support statuses below
     // {
@@ -210,7 +303,6 @@ export const COLUMNS = generateColumns(true, COLUMNS_CONFIGURATION.ASSIGNEE);
 export const ORG_POD_COLUMNS = generateColumns(false, COLUMNS_CONFIGURATION.ORG);
 
 export const ORG_POD_PROPOSAL_COLUMNS = [PROPOSAL_OPEN, PROPOSAL_APPROVED, PROPOSAL_REJECTED];
-
 
 export const LIMIT = 10;
 

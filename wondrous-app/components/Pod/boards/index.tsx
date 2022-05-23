@@ -2,7 +2,7 @@ import React from 'react';
 
 import Wrapper from '../wrapper';
 import Boards from '../../Common/Boards';
-import { FILTER_STATUSES } from 'services/board';
+import { FILTER_STATUSES, ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { ENTITIES_TYPES } from 'utils/constants';
 import MilestoneBoard from 'components/Common/MilestoneBoard';
@@ -49,11 +49,13 @@ const OrgBoards = (props: Props) => {
 
   const ActiveBoard = BOARDS_MAP[entityType];
 
+  const entityTypeFilters = ENTITIES_TYPES_FILTER_STATUSES[entityType] || FILTER_STATUSES;
+
   return (
     <Wrapper>
       <BoardsActivity
         onSearch={onSearch}
-        filterSchema={[FILTER_STATUSES]}
+        filterSchema={entityTypeFilters}
         onFilterChange={onFilterChange}
         statuses={statuses}
         userId={userId}

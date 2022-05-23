@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import FilterIcon from '../../Icons/filter';
 import { Chevron } from '../../Icons/sections';
-import Tabs from '../Tabs';
+import Tabs from './Tabs';
 import {
   FilterHandle,
   FilterHandleInner,
@@ -23,6 +23,9 @@ import {
   InlineText,
   FilterValues,
   FilterBoxPortal,
+  FilterButton,
+  ButtonsWrapper,
+  FilterCheckbox,
 } from './styles';
 import { Blue200, Grey250 } from '../../../theme/colors';
 import { useOutsideAlerter } from 'utils/hooks';
@@ -63,7 +66,6 @@ const Filter = (props: IFilterProps) => {
   // adds / removes an item from the filter
   const toggleInFilter = (itemId) => {
     const selectedItems = [...(selectedTabItems[selected.name] || [])];
-
     const newItems = [...items];
     newItems.forEach((it) => {
       const deselect = () => {
@@ -97,7 +99,6 @@ const Filter = (props: IFilterProps) => {
     setItems(newItems);
     setSelectedTabItems(newSelectedTabItems);
     setSelectedNames(selectedNames);
-    onChange(newSelectedTabItems);
   };
 
   const clearItems = () => {
@@ -110,6 +111,21 @@ const Filter = (props: IFilterProps) => {
       podIds: [],
     });
   };
+
+  const applyFilters = () => onChange(selectedTabItems);
+
+  const FILTER_BUTTONS_CONFIG = [
+    {
+      label: 'Reset',
+      action: () => clearItems(),
+      color: Grey250,
+      bgColor: '#313131',
+    },
+    {
+      label: 'Apply Filter',
+      action: applyFilters,
+    },
+  ];
 
   useEffect(() => {
     displayList(filterSchema[0]);
@@ -152,10 +168,7 @@ const Filter = (props: IFilterProps) => {
           <FilterBox>
             <FilterBoxInner>
               <Tabs tabs={filterSchema} selected={selected?.name} onSelect={(tab) => displayList(tab)} />
-              <FilterStatus>
-                <FilterCount>{selectedTabItems[selected?.name]?.length || 0} selected</FilterCount>
-                <FilterClear onClick={clearItems}>Clear</FilterClear>
-              </FilterStatus>
+
               <FilterItemsContainer>
                 <FilterItemList>
                   {selected.renderList
@@ -173,11 +186,19 @@ const Filter = (props: IFilterProps) => {
                               ''
                             )}
                             {/*<FilterItemCount>{item.count}</FilterItemCount>*/}
+                            <FilterCheckbox checked={isSelected} />
                           </FilterItem>
                         );
                       })}
                 </FilterItemList>
               </FilterItemsContainer>
+              <ButtonsWrapper>
+                {FILTER_BUTTONS_CONFIG.map((button, idx) => (
+                  <FilterButton type="button" key={idx} onClick={button.action} {...button}>
+                    {button.label}
+                  </FilterButton>
+                ))}
+              </ButtonsWrapper>
             </FilterBoxInner>
           </FilterBox>
         </FilterBoxPortal>
