@@ -28,7 +28,6 @@ import {
   MEDIA_TYPES,
   PERMISSIONS,
   PRIVACY_LEVEL,
-  TAGS,
 } from 'utils/constants';
 import { TextInputContext } from 'utils/contexts';
 

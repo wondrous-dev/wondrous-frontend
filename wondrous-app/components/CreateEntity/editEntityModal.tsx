@@ -20,7 +20,6 @@ import {
   STATUS_CHANGE_REQUESTED,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_DONE,
-  TAGS,
 } from 'utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';

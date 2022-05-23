@@ -69,7 +69,6 @@ import {
   PAYMENT_STATUS,
   PRIVACY_LEVEL,
   STATUS_APPROVED,
-  TAGS,
 } from 'utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
