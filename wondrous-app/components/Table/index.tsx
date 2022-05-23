@@ -62,7 +62,13 @@ import TableBody from './TableBody';
 
 const createTasksFromColumns = (columns) => {
   return columns.reduce((acc, column) => {
-    acc = [...acc, ...column.tasks];
+    const newColumnTasks = column?.tasks?.map((task) => {
+      return {
+        ...task,
+        status: task?.status || column?.status,
+      };
+    });
+    acc = [...acc, ...newColumnTasks];
     if (column?.section?.tasks) {
       acc = [...acc, ...column?.section?.tasks];
     }
@@ -137,7 +143,6 @@ export const Table = (props) => {
 
     setEditableTask(populatedTask);
   }
-
 
   async function archiveTask(task) {
     const newColumns = [...boardColumns.columns];
