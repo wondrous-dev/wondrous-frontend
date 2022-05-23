@@ -29,6 +29,7 @@ const DateRangePicker = ({ sx }) => {
   const [repeatType, setRepeatType] = useState();
   const [repeatValue, setRepeatValue] = useState();
   const [weekDaysSelected, setWeekDaysSelected] = useState(WEEK_DAYS);
+  const [monthInView, setMonthInView] = useState();
 
   moment.updateLocale('en', {
     week: {
@@ -163,6 +164,12 @@ const DateRangePicker = ({ sx }) => {
               enableOutsideDays
               navPrev={<DatePickerNavButton prev />}
               navNext={<DatePickerNavButton next />}
+              onPrevMonthClick={(month) => {
+                setMonthInView(month);
+              }}
+              onNextMonthClick={(month) => {
+                setMonthInView(month);
+              }}
               customArrowIcon={<></>}
               isDayHighlighted={(day) => highlightDay(day)}
               isDayBlocked={(day) => day.isBefore(todayMoment)}
@@ -179,6 +186,7 @@ const DateRangePicker = ({ sx }) => {
                   todayMoment={todayMoment}
                   onWeekDaysChange={handleWeekDaysChange}
                   weekDaysSelected={weekDaysSelected}
+                  monthInView={monthInView}
                 />
               )}
             />

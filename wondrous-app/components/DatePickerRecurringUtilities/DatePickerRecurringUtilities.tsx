@@ -95,7 +95,6 @@ const DatePickerRecurringUtilities = ({
                 <Box>
                   <DaySelector
                     dateRange={dateRange}
-                    date={date}
                     monthInView={monthInView}
                     todayMoment={todayMoment}
                     onChange={handleDayChange}

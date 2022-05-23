@@ -71,14 +71,14 @@ const SingleDatePicker = ({ sx }) => {
       return day.isSameOrAfter(initialDate);
     }
     if (repeatType === DATEPICKER_OPTIONS.WEEKLY) {
-      return parsedWeekDays.includes(day.weekday()) && dayOfyear > initialDayOfYear;
+      return parsedWeekDays.includes(day.weekday()) && day.isAfter(initialDayOfYear);
     }
     if (repeatType === DATEPICKER_OPTIONS.MONTHLY) {
-      return day.date() === repeatValue && dayOfyear > initialDayOfYear;
+      return day.date() === repeatValue && day.isAfter(initialDayOfYear);
     }
     if (repeatType === DATEPICKER_OPTIONS.PERIODICALLY) {
       const rest = (dayOfyear + initialDayOfYear) % Number(repeatValue);
-      return rest === 0 && dayOfyear > initialDayOfYear;
+      return rest === 0 && day.isAfter(initialDayOfYear);
     }
     return false;
   };
