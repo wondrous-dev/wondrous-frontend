@@ -920,7 +920,20 @@ const CreateLayoutBaseModal = (props) => {
     createBounty,
     isPodPublic,
     isPublicEntity,
+    labelIds,
   ]);
+
+  useEffect(() => {
+    if (org) {
+      getOrgLabels({
+        variables: {
+          orgId: org,
+        },
+      });
+    } else {
+      setLabelIds([]);
+    }
+  }, [org]);
 
   const handleCreateLabel = async (label: Label) => {
     const {
@@ -938,17 +951,7 @@ const CreateLayoutBaseModal = (props) => {
     setLabelIds([...labelIds, newLabel.id]);
   };
 
-  const handleOrgChange = (org) => {
-    setOrg(org);
-
-    getOrgLabels({
-      variables: {
-        orgId: org,
-      },
-    });
-  };
-
-    const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
+  const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const creating =
     createTaskLoading || createTaskProposalLoading || createMilestoneLoading || createBountyLoading || createPodLoading;
 
@@ -972,7 +975,7 @@ const CreateLayoutBaseModal = (props) => {
           <DropdownSelect
             title="DAO"
             value={org}
-            setValue={handleOrgChange}
+            setValue={setOrg}
             labelText="Choose DAO"
             labelIcon={<CreateDaoIcon />}
             options={filterDAOptions(userOrgs?.getUserOrgs) || []}

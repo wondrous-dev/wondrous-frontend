@@ -18,6 +18,7 @@ export const TaskFragment = gql`
     dueDate
     status
     paymentStatus
+    labelIds
     links {
       url
       displayName

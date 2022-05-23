@@ -35,9 +35,18 @@ const filter = createFilterOptions({
   stringify: (option: Option) => option.name || '',
 });
 
+const colors = _.shuffle(Object.values(ColorTypes));
+
 function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
+  const getRandomColor = (): string => {
+    return options.length <= colors.length
+      ? // pick random color that doesn't exist in the option
+        colors.find((color) => !options.some((option) => option.color === color))
+      : colors[0];
+  };
+
   const [openTags, setOpenTags] = useState(false);
-  const [randomColor, setRandomColor] = useState(_.sample(Object.values(ColorTypes)));
+  const [randomColor, setRandomColor] = useState(getRandomColor());
 
   return (
     <StyledAutocomplete
@@ -53,19 +62,19 @@ function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
           return;
         }
 
-        const lastTagOrNewTagName = tags[tags.length - 1];
+        const tagOrNewTagName = tags[tags.length - 1];
 
-        if (lastTagOrNewTagName) {
-          const randomColor = _.sample(Object.values(ColorTypes));
-
-          if (typeof lastTagOrNewTagName === 'string') {
+        if (tagOrNewTagName) {
+          if (typeof tagOrNewTagName === 'string') {
             onCreate({
-              name: lastTagOrNewTagName,
+              name: tagOrNewTagName,
+              color: randomColor,
             } as Option);
             return setRandomColor(randomColor);
-          } else if (!lastTagOrNewTagName.id) {
-            onCreate(lastTagOrNewTagName);
-            return setRandomColor(randomColor);
+          } else if (!tagOrNewTagName.id) {
+            onCreate(tagOrNewTagName);
+
+            return setRandomColor(getRandomColor());
           }
         }
 

@@ -88,7 +88,7 @@ import {
   CreateFormRewardCurrency,
   CreateFormAddDetailsTabLabel,
   CreateFormAddDetailsLocalizationProvider,
-  CreateFormAddTagsSection
+  CreateFormAddTagsSection,
 } from './styles';
 import SelectDownIcon from '../Icons/selectDownIcon';
 import UploadImageIcon from '../Icons/uploadImage';
@@ -100,7 +100,7 @@ import { TextInput } from '../TextInput';
 import { White } from '../../theme/colors';
 import { TextInputContext } from 'utils/contexts';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GET_AUTOCOMPLETE_USERS, GET_ORG_LABELS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { SafeImage } from '../Common/Image';
 import { GET_USER_AVAILABLE_PODS, GET_USER_PODS, GET_POD_USERS } from 'graphql/queries/pod';
 import {
@@ -138,7 +138,8 @@ import { FileLoading } from '../Common/FileUpload/FileUpload';
 import { updateInProgressTask, updateTaskItem, updateTaskItemOnEntityType } from 'utils/board';
 import { GET_MILESTONES, GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_FOR_POD } from 'graphql/queries/task';
 import { TabsVisibilityCreateEntity } from 'components/Common/TabsVisibilityCreateEntity';
-import Tags from '../Tags';
+import Tags, { Option as Label } from '../Tags';
+import { CREATE_LABEL } from 'graphql/mutations/org';
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -316,6 +317,7 @@ const EditLayoutBaseModal = (props) => {
   const [addDetails, setAddDetails] = useState(true);
   const [descriptionText, setDescriptionText] = useState(existingTask?.description || '');
   const [mediaUploads, setMediaUploads] = useState(transformMediaFormat(existingTask?.media) || []);
+  const [labelIds, setLabelIds] = useState(existingTask?.labelIds || []);
   const addDetailsHandleClick = () => {
     setAddDetails(!addDetails);
   };
@@ -358,6 +360,14 @@ const EditLayoutBaseModal = (props) => {
   const selectedOrgPrivacyLevel = userOrgs?.getUserOrgs?.filter((i) => i.id === org)[0]?.privacyLevel;
 
   const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS);
+
+  const [getOrgLabels, { data: orgLabelsData }] = useLazyQuery(GET_ORG_LABELS, {
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [createLabel] = useMutation(CREATE_LABEL, {
+    refetchQueries: () => ['getOrgLabels'],
+  });
 
   const [getEligibleReviewersForOrg, { data: eligibleReviewersForOrgData }] =
     useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_ORG);
@@ -782,7 +792,7 @@ const EditLayoutBaseModal = (props) => {
               bountyId: existingTask?.id,
               input: bountyInput,
             },
-          })
+          });
         }
         break;
     }
@@ -814,6 +824,34 @@ const EditLayoutBaseModal = (props) => {
     handleClose,
     existingTask?.assigneeId,
   ]);
+
+  useEffect(() => {
+    if (org) {
+      getOrgLabels({
+        variables: {
+          orgId: org,
+        },
+      });
+    } else {
+      setLabelIds([]);
+    }
+  }, [org]);
+
+  const handleCreateLabel = async (label: Label) => {
+    const {
+      data: { createLabel: newLabel },
+    } = await createLabel({
+      variables: {
+        input: {
+          orgId: org,
+          name: label.name,
+          color: label.color,
+        },
+      },
+    });
+
+    setLabelIds([...labelIds, newLabel.id]);
+  };
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const updating = updateBountyLoading || updateTaskLoading || updateMilestoneLoading || updateTaskProposalLoading;
@@ -1334,10 +1372,15 @@ const EditLayoutBaseModal = (props) => {
         <CreateFormMainInputBlock>
           <CreateFormMainBlockTitle>Add tags</CreateFormMainBlockTitle>
 
-          <Tags options={TAGS} value={tags} onChange={setTags} limit={4} />
+          <Tags
+            options={orgLabelsData?.getOrgLabels || []}
+            ids={labelIds}
+            onChange={setLabelIds}
+            onCreate={handleCreateLabel}
+            limit={4}
+          />
         </CreateFormMainInputBlock>
       </CreateFormAddTagsSection>
-
 
       {/* {showDeliverableRequirementsSection && (
 				<CreateFormTaskRequirements>

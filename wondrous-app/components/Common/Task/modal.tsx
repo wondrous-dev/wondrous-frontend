@@ -156,6 +156,7 @@ import { CheckedBoxIcon } from '../../Icons/checkedBox';
 import RightArrowIcon from '../../Icons/rightArrow';
 import { DeleteTaskModal } from '../DeleteTaskModal';
 import { CompleteModal } from '../CompleteModal';
+import { GET_ORG_LABELS } from 'graphql/queries';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -186,6 +187,7 @@ const TASK_LIST_VIEW_LIMIT = 5;
 export const TaskListViewModal = (props) => {
   const [fetchedList, setFetchedList] = useState([]);
   const { taskType, entityType, orgId, podId, loggedInUserId, open, handleClose, count } = props;
+
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(true);
   const [getOrgTaskProposals, { refetch: refetchOrgProposals, fetchMore: fetchMoreOrgProposals }] = useLazyQuery(
@@ -212,6 +214,17 @@ export const TaskListViewModal = (props) => {
       },
     }
   );
+  //
+  //
+  // const {
+  //   data: orgLabelsData,
+  //   variables: { orgId },
+  // } = useQuery(GET_ORG_LABELS, {
+  //   onCompleted: (data) => {
+  //     debugger;
+  //   },
+  //   fetchPolicy: 'cache-and-network',
+  // });
 
   const [getOrgArchivedTasks, { refetch: refetchOrgArchivedTasks, fetchMore: fetchMoreOrgArchivedTasks }] =
     useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
@@ -806,7 +819,11 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const [taskLabels, setTaskLabels] = useState([]);
   const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
+  const [getOrgLabels, { data: orgLabelsData }] = useLazyQuery(GET_ORG_LABELS, {
+    fetchPolicy: 'cache-and-network',
+  });
   const user = useMe();
 
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
@@ -842,6 +859,26 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       console.error('Error fetching task proposal');
     },
   });
+
+  useEffect(() => {
+    if (fetchedTask) {
+      getOrgLabels({
+        variables: {
+          orgId: fetchedTask.orgId,
+        },
+      });
+    }
+  }, [fetchedTask]);
+
+  useEffect(() => {
+    if (fetchedTask?.labelIds && orgLabelsData?.getOrgLabels && fetchedTask.labelIds.length) {
+      const labels = fetchedTask.labelIds.map((labelId) => {
+        return orgLabelsData?.getOrgLabels.find((label) => label.id === labelId);
+      });
+
+      setTaskLabels(labels);
+    }
+  }, [fetchedTask?.labelIds, orgLabelsData?.getOrgLabels]);
 
   const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
     refetchQueries: [
@@ -1659,8 +1696,14 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   flexWrap: 'wrap',
                 }}
               >
-                {fetchedTask?.tags && fetchedTask?.tags.length
-                  ? fetchedTask?.tags.map((tag) => <Tag key={tag}>{tag}</Tag>)
+                {taskLabels.length
+                  ? taskLabels.map((label) => {
+                      return label ? (
+                        <Tag color={label.color} key={label.id}>
+                          {label.name}
+                        </Tag>
+                      ) : null;
+                    })
                   : 'None'}
               </TaskSectionInfoText>
             </TaskSectionDisplayDiv>
