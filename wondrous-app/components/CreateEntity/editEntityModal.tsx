@@ -316,7 +316,7 @@ const EditLayoutBaseModal = (props) => {
   const [addDetails, setAddDetails] = useState(true);
   const [descriptionText, setDescriptionText] = useState(existingTask?.description || '');
   const [mediaUploads, setMediaUploads] = useState(transformMediaFormat(existingTask?.media) || []);
-  const [labelIds, setLabelIds] = useState(existingTask?.labelIds || []);
+  const [labelIds, setLabelIds] = useState(existingTask?.labels?.map((label) => label.id) || []);
   const addDetailsHandleClick = () => {
     setAddDetails(!addDetails);
   };
@@ -332,7 +332,6 @@ const EditLayoutBaseModal = (props) => {
   const [assigneeString, setAssigneeString] = useState(existingTask?.assigneeUsername);
   const [reviewerString, setReviewerString] = useState('');
   const [selectedReviewers, setSelectedReviewers] = useState(filterUserOptions(existingTask?.reviewers));
-  const [tags, setTags] = useState([]);
   const [assignee, setAssignee] = useState(
     existingTask?.assigneeId && {
       value: existingTask?.assigneeId,

@@ -807,7 +807,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
-  const [taskLabels, setTaskLabels] = useState([]);
   const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
   const [getOrgLabels, { data: orgLabelsData }] = useLazyQuery(GET_ORG_LABELS, {
     fetchPolicy: 'cache-and-network',
@@ -857,16 +856,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       });
     }
   }, [fetchedTask]);
-
-  useEffect(() => {
-    if (fetchedTask?.labelIds && orgLabelsData?.getOrgLabels && fetchedTask.labelIds.length) {
-      const labels = fetchedTask.labelIds.map((labelId) => {
-        return orgLabelsData?.getOrgLabels.find((label) => label.id === labelId);
-      });
-
-      setTaskLabels(labels);
-    }
-  }, [fetchedTask?.labelIds, orgLabelsData?.getOrgLabels]);
 
   const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
     refetchQueries: [
@@ -1684,8 +1673,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   flexWrap: 'wrap',
                 }}
               >
-                {taskLabels.length
-                  ? taskLabels.map((label) => {
+                {fetchedTask?.labels?.length
+                  ? fetchedTask.labels.map((label) => {
                       return label ? (
                         <Tag color={label.color} key={label.id}>
                           {label.name}
