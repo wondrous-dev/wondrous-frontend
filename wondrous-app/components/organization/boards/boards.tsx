@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import Wrapper from '../wrapper/wrapper';
 import CreatePodIcon from '../../Icons/createPod';
 import Boards from '../../Common/Boards';
 import { OrgPod } from 'types/pod';
-import { FILTER_STATUSES } from 'services/board';
+import { FILTER_STATUSES, ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { ENTITIES_TYPES } from 'utils/constants';
 import MilestoneBoard from 'components/Common/MilestoneBoard';
@@ -55,7 +55,9 @@ const OrgBoards = (props: Props) => {
     activeView,
   } = props;
 
-  const defaultFilterSchema: any = [
+  const entityTypeFilters = ENTITIES_TYPES_FILTER_STATUSES[entityType] || FILTER_STATUSES;
+  const filterSchema: any = [
+    { ...entityTypeFilters },
     {
       name: 'podIds',
       label: 'Pods',
@@ -67,20 +69,6 @@ const OrgBoards = (props: Props) => {
       })),
     },
   ];
-
-  entityType === ENTITIES_TYPES.TASK && defaultFilterSchema.push(FILTER_STATUSES);
-
-  const [filterSchema, setFilterSchema] = useState(defaultFilterSchema);
-
-  useEffect(() => {
-    const schema = [...filterSchema];
-    schema[0].items = orgPods.map((pod) => ({
-      ...pod,
-      icon: <CreatePodIcon />,
-    }));
-
-    setFilterSchema(schema);
-  }, [orgPods]);
 
   const ActiveBoard = BOARDS_MAP[entityType];
 
