@@ -270,8 +270,8 @@ export const Task = (props) => {
   const openModal = (e) => {
     const type = task?.isProposal ? 'taskProposal' : 'task';
     let newUrl = `${delQuery(router.asPath)}?${type}=${task?.id}&view=${router.query.view || 'grid'}`;
-    if (router.query.entity) {
-      newUrl = newUrl + `&entity=${router.query.entity}`;
+    if (board?.entityType) {
+      newUrl = newUrl + `&entity=${board?.entityType}`;
     }
     location.push(newUrl);
     windowOffset = window.scrollY;
