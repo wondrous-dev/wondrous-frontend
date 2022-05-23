@@ -347,8 +347,7 @@ export const GRAPHQL_ERRORS = {
   PAYMENT_METHOD_EXIST: 'payment_method_exist',
 };
 
-export const TAGS = ['Design', 'Narration', 'Social Media', 'Copywriting', 'Create copywriting'];
-
+// Taken from back-end src/constants/colors.py
 export enum ColorTypes {
   RubyRed = '#B8255F',
   JasperRed = '#DB4035',

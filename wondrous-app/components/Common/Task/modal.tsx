@@ -214,17 +214,6 @@ export const TaskListViewModal = (props) => {
       },
     }
   );
-  //
-  //
-  // const {
-  //   data: orgLabelsData,
-  //   variables: { orgId },
-  // } = useQuery(GET_ORG_LABELS, {
-  //   onCompleted: (data) => {
-  //     debugger;
-  //   },
-  //   fetchPolicy: 'cache-and-network',
-  // });
 
   const [getOrgArchivedTasks, { refetch: refetchOrgArchivedTasks, fetchMore: fetchMoreOrgArchivedTasks }] =
     useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
