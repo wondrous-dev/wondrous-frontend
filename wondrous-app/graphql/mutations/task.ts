@@ -105,10 +105,10 @@ export const DELETE_TASK_COMMENT = gql`
 export const CREATE_MILESTONE = gql`
   mutation createMilestone($input: TaskInput) {
     createMilestone(input: $input) {
-      ...TaskFragment
+      ...MilestoneFragment
     }
   }
-  ${TaskFragment}
+  ${MilestoneFragment}
 `;
 
 export const DELETE_MILESTONE = gql`
@@ -131,10 +131,10 @@ export const UPDATE_TASK_ASSIGNEE = gql`
 export const UPDATE_MILESTONE = gql`
   mutation updateMilestone($milestoneId: ID!, $input: TaskInput) {
     updateMilestone(milestoneId: $milestoneId, input: $input) {
-      ...TaskFragment
+      ...MilestoneFragment
     }
   }
-  ${TaskFragment}
+  ${MilestoneFragment}
 `;
 
 export const UPDATE_TASK_ORDER = gql`

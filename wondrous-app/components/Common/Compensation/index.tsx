@@ -29,7 +29,7 @@ export const Compensation = (props) => {
               </IconContainer>
             )}
             <CompensationAmount>
-              {rewardAmount}  {symbol}
+              {rewardAmount} {icon ? null : symbol}
             </CompensationAmount>
           </>
         )}

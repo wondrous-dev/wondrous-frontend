@@ -255,7 +255,12 @@ const SubmissionItem = (props) => {
         setIsKudosForm(true);
       }
     },
-    refetchQueries: ['getOrgTaskBoardSubmissions', 'getPerStatusTaskCountForOrgBoard', GET_TASK_BY_ID],
+    refetchQueries: [
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      GET_TASK_BY_ID,
+    ],
   });
   const [approveBountySubmission] = useMutation(APPROVE_BOUNTY_SUBMISSION, {
     variables: {
@@ -541,7 +546,7 @@ const TaskSubmissionForm = (props) => {
         cancelSubmissionForm();
       }
     },
-    refetchQueries: ['getPerStatusTaskCountForOrgBoard'],
+    refetchQueries: ['getPerStatusTaskCountForOrgBoard', 'getOrgTaskBoardTasks', 'getPodTaskBoardTasks'],
   });
   const [updateTaskSubmission] = useMutation(UPDATE_TASK_SUBMISSION, {
     onCompleted: (data) => {
@@ -880,7 +885,7 @@ export const TaskSubmissionContent = (props) => {
     handleClose,
     setShowPaymentModal,
     getTaskSubmissionsForTask,
-    isBounty
+    isBounty,
   } = props;
 
   const router = useRouter();

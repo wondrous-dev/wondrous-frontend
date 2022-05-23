@@ -259,6 +259,21 @@ const KanbanBoard = (props) => {
     }
   };
 
+  const handleClose = () => {
+    const style = document.body.getAttribute('style');
+    const top = style.match(/(top: -)(.*?)(?=px)/);
+    document.body.setAttribute('style', '');
+    if (top?.length > 0) {
+      window?.scrollTo(0, Number(top[2]));
+    }
+    let newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}`;
+    if (board?.entityType) {
+      newUrl = newUrl + `&entity=${board?.entityType}`;
+    }
+    location.push(newUrl);
+    setOpenModal(false);
+  };
+
   return (
     <>
       <KanbanBoardContainer>
@@ -267,17 +282,7 @@ const KanbanBoard = (props) => {
           disableEnforceFocus
           open={openModal}
           shouldFocusAfterRender={false}
-          handleClose={() => {
-            const style = document.body.getAttribute('style');
-            const top = style.match(/(top: -)(.*?)(?=px)/);
-            document.body.setAttribute('style', '');
-            if (top?.length > 0) {
-              window?.scrollTo(0, Number(top[2]));
-            }
-            const newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}`;
-            location.push(newUrl);
-            setOpenModal(false);
-          }}
+          handleClose={handleClose}
           taskId={(location?.params?.task || location?.params?.taskProposal)?.toString()}
           isTaskProposal={!!location?.params?.taskProposal}
         />

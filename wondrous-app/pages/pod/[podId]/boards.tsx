@@ -39,6 +39,7 @@ import {
 } from 'utils/constants';
 import { PodBoardContext } from 'utils/contexts';
 import _ from 'lodash';
+import { insertUrlParam } from 'utils';
 
 const useGetPodTaskBoardTasks = ({
   columns,
@@ -177,7 +178,7 @@ const useGetPodTaskProposals = ({
           },
         },
       });
-  }, [getPodTaskProposals, podId, statuses, section, listView, data, entityType]);
+  }, [getPodTaskProposals, podId, statuses, entityType]);
   return { fetchMore: getProposalsFetchMore };
 };
 
@@ -226,9 +227,10 @@ const useGetPodTaskBoard = ({
 
 const BoardsPage = () => {
   const router = useRouter();
-  const { username, podId, search, userId, view = ViewType.Grid, boardType } = router.query;
+  const { username, podId, search, userId, view = ViewType.Grid, boardType, entity } = router.query;
+  const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
-  const [entityType, setEntityType] = useState(ENTITIES_TYPES.TASK);
+  const [entityType, setEntityType] = useState(activeEntityFromQuery);
   const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
   const [searchString, setSearchString] = useState('');
@@ -257,7 +259,10 @@ const BoardsPage = () => {
   });
 
   const handleEntityTypeChange = (type) => {
-    setIsLoading(true);
+    if (type !== entityType) {
+      setIsLoading(true);
+    }
+    insertUrlParam('entity', type);
     setEntityType(type);
   };
 
