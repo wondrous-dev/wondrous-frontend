@@ -635,7 +635,7 @@ const EditLayoutBaseModal = (props) => {
       case ENTITIES_TYPES.TASK:
         const taskInput = {
           title,
-          tags,
+          labelIds,
           description: descriptionText,
           orgId: org?.id,
           milestoneId: milestone?.id ?? milestone,
@@ -683,6 +683,7 @@ const EditLayoutBaseModal = (props) => {
       case ENTITIES_TYPES.PROPOSAL: {
         const proposalInput = {
           title,
+          labelIds,
           description: descriptionText,
           orgId: org?.id,
           milestoneId: milestone?.id ?? milestone,
@@ -729,7 +730,7 @@ const EditLayoutBaseModal = (props) => {
             milestoneId: existingTask?.id,
             input: {
               title,
-              tags,
+              labelIds,
               description: descriptionText,
               dueDate,
               orgId: org?.id,
@@ -745,7 +746,7 @@ const EditLayoutBaseModal = (props) => {
       case ENTITIES_TYPES.BOUNTY:
         const bountyInput = {
           title,
-          tags,
+          labelIds,
           description: descriptionText,
           orgId: org?.id || org,
           milestoneId: milestone?.id,
@@ -798,6 +799,7 @@ const EditLayoutBaseModal = (props) => {
   }, [
     entityType,
     title,
+    labelIds,
     descriptionText,
     org,
     milestone,
