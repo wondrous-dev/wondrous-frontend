@@ -17,12 +17,14 @@ import {
   PaymentMethodFormWrapper,
   PaymentMethodSubHeader,
   PaymentMethodNameHeader,
+  PaymentMethodDescription
 } from './styles';
 import { USDCoin } from '../../Icons/USDCoin';
 import DaiIcon from '../../Icons/dai';
 import Arbitrum from '../../Icons/arbitrum';
 import Harmony from '../../Icons/harmony';
 import Binance from '../../Icons/binace';
+import Boba from '../../Icons/Boba';
 import PlusIcon from '../../Icons/plus';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_TOKEN_INFO } from 'graphql/queries/tokenGating';
@@ -42,21 +44,21 @@ const chainOptions = [
     icon: <PolygonIcon />,
     value: 'polygon',
   },
-  // {
-  //   label: 'Harmony',
-  //   icon: <Harmony />,
-  //   value: 'harmony',
-  // },
+  {
+    label: 'Harmony',
+    icon: <Harmony />,
+    value: 'harmony',
+  },
   {
     label: 'Arbitrum One',
     icon: <Arbitrum />,
     value: 'arbitrum',
   },
-  // {
-  //   label: 'BNB Smart Chain',
-  //   icon: <Binance />,
-  //   value: 'bsc',
-  // },
+  {
+    label: 'Boba',
+    icon: <Boba />,
+    value: 'boba',
+  },
 ];
 
 const PresetTokens = [
@@ -77,12 +79,51 @@ const PresetTokens = [
   },
 ];
 
+const HarmonyPresetTokens = [
+  {
+    label: 'USDC',
+    icon: <USDCoin />,
+    value: 'USDC',
+  },
+  {
+    label: 'DAI',
+    icon: <DaiIcon />,
+    value: 'DAI',
+  },
+  {
+    label: 'One',
+    icon: <Harmony />,
+    value: 'one',
+  },
+];
+
+const BobaPresetTokens = [
+  {
+    label: 'USDC',
+    icon: <USDCoin />,
+    value: 'USDC',
+  },
+  {
+    label: 'DAI',
+    icon: <DaiIcon />,
+    value: 'DAI',
+  },
+];
+
+const PresetTokenPerChain = {
+  ethereum: PresetTokens,
+  polygon: PresetTokens,
+  arbitrum: PresetTokens,
+  boba: BobaPresetTokens,
+  harmony: HarmonyPresetTokens,
+}
 const CHAIN_TO_USDC_ADDR = {
   ethereum: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
   polygon: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   harmony: '0x44cED87b9F1492Bf2DCf5c16004832569f7f6cBa',
   arbitrum: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
   bsc: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+  boba: '0x66a2A913e447d6b4BF33EFbec43aAeF87890FBbc'
 };
 
 const CHAIN_TO_DAI_ADDR = {
@@ -91,6 +132,7 @@ const CHAIN_TO_DAI_ADDR = {
   harmony: '0xEf977d2f931C1978Db5F6747666fa1eACB0d0339',
   arbitrum: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
   bsc: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3',
+  boba: '0xf74195Bb8a5cf652411867c5C2C5b8C2a402be35'
 };
 
 const ConfigPaymentMethodModal = (props) => {
@@ -129,6 +171,8 @@ const ConfigPaymentMethodModal = (props) => {
           contractAddress: customTokenAddress,
           chain: chain,
         },
+      }).catch((e) => {
+        setTokenNotFoundError('Token not found');
       });
     } else {
       setCustomToken(null);
@@ -143,6 +187,7 @@ const ConfigPaymentMethodModal = (props) => {
     setTokenNotFoundError(null)
   }
 
+
   const handleAddPaymentMethodClick = async () => {
     let tokenAddress, tokenName, symbol, icon, decimals;
     if (selectedToken === 'USDC') {
@@ -153,10 +198,17 @@ const ConfigPaymentMethodModal = (props) => {
       tokenAddress = CHAIN_TO_DAI_ADDR[chain];
       tokenName = 'Dai';
       symbol = 'DAI';
+    } else if (selectedToken === 'one') {
+      tokenAddress = '0x0000000000000000000000000000000000000000';
+      tokenName = 'One';
+      symbol = 'ONE';
     } else if (selectedToken === 'custom') {
       tokenAddress = customToken?.contractAddress;
       tokenName = customToken?.name;
       symbol = customToken?.symbol;
+    } else {
+      setCreateError('invalid selection')
+      return
     }
     try {
       await apollo.mutate({
@@ -210,6 +262,7 @@ const ConfigPaymentMethodModal = (props) => {
             options={chainOptions}
             name="chain"
           />
+          <PaymentMethodDescription>for BNB and Boba chain please contact support@wonderverse.xyz</PaymentMethodDescription>
           <PaymentMethodSubHeader>Token </PaymentMethodSubHeader>
           <DropdownSelect
             value={selectedToken}
@@ -220,7 +273,7 @@ const ConfigPaymentMethodModal = (props) => {
             formSelectStyle={{
               height: 'auto',
             }}
-            options={PresetTokens}
+            options={PresetTokenPerChain[chain] || []}
             name="Preset Token"
           />
           {selectedToken === 'custom' && (
@@ -231,6 +284,7 @@ const ConfigPaymentMethodModal = (props) => {
                 onChange={(e) => setCustomTokenAddress(e.target.value)}
               />
               {tokenNotFoundError && <ErrorText>Custom token not found, check if the chain is correct</ErrorText>}
+              {tokenNotFoundError && <PaymentMethodDescription>Please contact support@wonderverse.xyz to add your token</PaymentMethodDescription>}
               {customToken && (
                 <>
                   <TokenLogoDisplay src={customToken?.icon} />
