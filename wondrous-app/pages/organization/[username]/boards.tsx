@@ -39,6 +39,7 @@ import {
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
 import { useRouterQuery } from 'utils/hooks';
+import { insertUrlParam } from 'utils';
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -208,8 +209,8 @@ const useGetOrgTaskBoardProposals = ({
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
-    onCompleted: (data) => {
-      const newColumns = populateProposalColumns(data?.getOrgTaskBoardProposals, ORG_POD_PROPOSAL_COLUMNS);
+    onCompleted: ({ getOrgTaskBoardProposals }) => {
+      const newColumns = populateProposalColumns(getOrgTaskBoardProposals, ORG_POD_PROPOSAL_COLUMNS);
       setColumns(newColumns);
       setIsLoading(false);
     },
@@ -225,10 +226,10 @@ const useGetOrgTaskBoardProposals = ({
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         setOrgTaskHasMore(fetchMoreResult?.getOrgTaskBoardProposals.length >= LIMIT);
-        const getOrgTaskBoardProposals = _.uniqBy(
-          [...prev.getOrgTaskBoardProposals, ...fetchMoreResult.getOrgTaskBoardProposals],
-          'id'
-        );
+        const getOrgTaskBoardProposals = [
+          ...prev.getOrgTaskBoardProposals,
+          ...fetchMoreResult.getOrgTaskBoardProposals,
+        ];
         return {
           getOrgTaskBoardProposals,
         };
@@ -250,7 +251,7 @@ const useGetOrgTaskBoardProposals = ({
         },
       });
     }
-  }, [getOrgTaskProposals, orgId, statuses, podIds, section, listView, data, entityType]);
+  }, [getOrgTaskProposals, orgId, statuses, podIds, setOrgTaskHasMore, entityType]);
   return { fetchMore: getProposalsFetchMore };
 };
 
@@ -319,13 +320,14 @@ const useGetOrgTaskBoard = ({
 
 const BoardsPage = () => {
   const router = useRouter();
-  const { username, orgId, search, userId, boardType, view = ViewType.Grid } = router.query;
+  const { username, orgId, search, userId, boardType, view = ViewType.Grid, entity } = router.query;
+  const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
   const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
   const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
   const [orgData, setOrgData] = useState(null);
   const [searchString, setSearchString] = useState('');
-  const [entityType, setEntityType] = useState(ENTITIES_TYPES.TASK);
+  const [entityType, setEntityType] = useState(activeEntityFromQuery);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [activeView, setActiveView] = useState(view);
@@ -356,6 +358,7 @@ const BoardsPage = () => {
     if (type !== entityType) {
       setIsLoading(true);
     }
+    insertUrlParam('entity', type);
     setEntityType(type);
   };
 

@@ -346,3 +346,29 @@ export const GRAPHQL_ERRORS = {
   NO_WEB3_ADDRESS_FOUND: 'no_web3_address_found',
   PAYMENT_METHOD_EXIST: 'payment_method_exist',
 };
+
+export const DATEPICKER_OPTIONS = {
+  DAILY: 'Daily',
+  WEEKLY: 'Weekly',
+  MONTHLY: 'Monthly',
+  PERIODICALLY: 'Periodically',
+};
+export const DATEPICKER_OPTIONS_ARR = Object.values(DATEPICKER_OPTIONS);
+
+export const DATEPICKER_FIELDS = { END_DATE: 'endDate', START_DATE: 'startDate' };
+
+export const DEFAULT_DATEPICKER_VALUE = { startDate: null, endDate: null };
+export const DEFAULT_SINGLE_DATEPICKER_VALUE = null;
+
+export const MONTH_DAY_FULL_YEAR = 'MM/DD/YYYY';
+export const DAY_STRING_MONTH_SHORT_YEAR = 'DD/MMM/YY';
+
+export const WEEK_DAYS = {
+  monday: false,
+  tuesday: false,
+  wednesday: false,
+  thursday: false,
+  friday: false,
+  saturday: false,
+  sunday: false,
+};
