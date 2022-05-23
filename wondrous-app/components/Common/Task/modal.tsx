@@ -68,6 +68,7 @@ import {
   TASK_STATUS_TODO,
   PAYMENT_STATUS,
   PRIVACY_LEVEL,
+  STATUS_APPROVED,
   TAGS,
 } from 'utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
@@ -102,9 +103,10 @@ import { useRouter } from 'next/router';
 import {
   UPDATE_TASK_STATUS,
   UPDATE_TASK_ASSIGNEE,
-  UPDATE_BOUNTY_STATUS,
   ARCHIVE_TASK,
   UNARCHIVE_TASK,
+  COMPLETE_MILESTONE,
+  COMPLETE_BOUNTY,
 } from 'graphql/mutations/task';
 import { UPDATE_TASK_PROPOSAL_ASSIGNEE } from 'graphql/mutations/taskProposal';
 import { GET_PREVIEW_FILE } from 'graphql/queries/media';
@@ -123,7 +125,16 @@ import {
 } from 'graphql/queries/taskBoard';
 import { AvatarList } from '../AvatarList';
 import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { addTaskItem, removeProposalItem, updateInProgressTask, updateProposalItem, updateTaskItem } from 'utils/board';
+import {
+  addTaskItem,
+  removeProposalItem,
+  updateInProgressTask,
+  updateProposalItem,
+  updateTaskItem,
+  getProposalStatus,
+  updateInReviewItem,
+  updateCompletedItem,
+} from 'utils/board';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
 import { CompletedIcon } from '../../Icons/statusIcons';
 import { TaskListCard } from '.';
@@ -144,6 +155,7 @@ import { SubtaskDarkIcon, SubtaskLightIcon } from '../../Icons/subtask';
 import { CheckedBoxIcon } from '../../Icons/checkedBox';
 import RightArrowIcon from '../../Icons/rightArrow';
 import { DeleteTaskModal } from '../DeleteTaskModal';
+import { CompleteModal } from '../CompleteModal';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -733,7 +745,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
   const isSubtask = fetchedTask?.parentTaskId !== null;
   const isBounty = fetchedTask?.type === BOUNTY_TYPE;
-  const showAssignee = !isTaskProposal && !isMilestone && !isBounty;
   const entityType = isTaskProposal ? ENTITIES_TYPES.PROPOSAL : fetchedTask?.type;
   const [approvedSubmission, setApprovedSubmission] = useState(null);
   const orgBoard = useOrgBoard();
@@ -765,6 +776,25 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
+  const [completeMilestone] = useMutation(COMPLETE_MILESTONE, {
+    refetchQueries: () => [
+      'getTaskById',
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+  });
+  const [completeBounty] = useMutation(COMPLETE_BOUNTY, {
+    refetchQueries: () => [
+      'getTaskById',
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+  });
+  const [completeModal, setCompleteModal] = useState(false);
   const router = useRouter();
   const [editTask, setEditTask] = useState(false);
 
@@ -813,25 +843,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     },
   });
 
-  const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS, {
-    refetchQueries: [
-      'getTaskById',
-      'getUserTaskBoardTasks',
-      'getPerStatusTaskCountForUserBoard',
-      'getOrgTaskBoardTasks',
-      'getPerStatusTaskCountForOrgBoard',
-      'getPodTaskBoardTasks',
-      'getPerStatusTaskCountForPodBoard',
-    ],
-    onError: () => {
-      console.error('Something went wrong.');
-    },
-    onCompleted: () => {
-      // TODO: Move columns
-      // let columns = [...boardColumns?.columns]
-    },
-  });
-
   const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
     refetchQueries: [
       'getTaskById',
@@ -869,75 +880,65 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     },
   });
 
-  const [updateBountyStatus] = useMutation(UPDATE_BOUNTY_STATUS, {
-    refetchQueries: () => [
-      'getTaskById',
-      'getOrgTaskBoardTasks',
-      'getPodTaskBoardTasks',
-      'getPerStatusTaskCountForOrgBoard',
-      'getPerStatusTaskCountForPodBoard',
-    ],
-  });
-  const handleNewStatus = useCallback(
-    (newStatus) => {
-      if (newStatus === TASK_STATUS_ARCHIVED) {
-        archiveTaskMutation({
-          variables: {
-            taskId: fetchedTask?.id,
-          },
-        }).then((result) => {
-          handleClose();
-          setSnackbarAlertOpen(true);
-          setSnackbarAlertMessage(
-            <>
-              Task archived successfully!{' '}
-              <ArchivedTaskUndo
-                onClick={() => {
-                  setSnackbarAlertOpen(false);
-                  unarchiveTaskMutation({
-                    variables: {
-                      taskId: fetchedTask?.id,
-                    },
-                  });
-                }}
-              >
-                Undo
-              </ArchivedTaskUndo>
-            </>
-          );
-        });
-      } else {
-        if (isBounty) {
-          updateBountyStatus({
-            variables: {
-              bountyId: fetchedTask?.id,
-              input: { newStatus },
-            },
-          });
-        } else {
-          updateTaskStatusMutation({
-            variables: {
-              taskId: fetchedTask?.id,
-              input: {
-                newStatus,
-              },
-            },
-          });
-        }
-      }
-    },
-    [
-      fetchedTask?.id,
-      isBounty,
-      updateBountyStatus,
-      updateTaskStatusMutation,
-      archiveTaskMutation,
-      handleClose,
-      setSnackbarAlertOpen,
-      unarchiveTaskMutation,
-      setSnackbarAlertMessage,
-    ]
-  );
+  const completeCallback = useCallback(() => {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (isMilestone) {
+      completeMilestone({
+        variables: {
+          milestoneId: taskId,
+          timezone,
+        },
+      }).then(() => {
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage(<>Milestone marked as complete :)</>);
+      });
+    } else if (isBounty) {
+      completeBounty({
+        variables: {
+          bountyId: taskId,
+          timezone,
+        },
+      }).then(() => {
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage(<>Bounty marked as complete :)</>);
+      });
+    }
+  }, [taskId, isMilestone, isBounty, setSnackbarAlertOpen, setSnackbarAlertMessage]);
+
+  const handleOnArchive = useCallback(() => {
+    archiveTaskMutation({
+      variables: {
+        taskId: fetchedTask?.id,
+      },
+    }).then((result) => {
+      handleClose();
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage(
+        <>
+          Task archived successfully!{' '}
+          <ArchivedTaskUndo
+            onClick={() => {
+              setSnackbarAlertOpen(false);
+              unarchiveTaskMutation({
+                variables: {
+                  taskId: fetchedTask?.id,
+                },
+              });
+            }}
+          >
+            Undo
+          </ArchivedTaskUndo>
+        </>
+      );
+    });
+  }, [
+    fetchedTask?.id,
+    archiveTaskMutation,
+    handleClose,
+    setSnackbarAlertOpen,
+    unarchiveTaskMutation,
+    setSnackbarAlertMessage,
+  ]);
 
   useEffect(() => {
     if (open) {
@@ -951,7 +952,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     fetchedTask,
     setSnackbarAlertOpen,
     setSnackbarAlertMessage,
-    handleNewStatus,
     archiveTaskData,
     handleClose,
     open,
@@ -1011,6 +1011,33 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     getTaskProposalById,
     open,
   ]);
+
+  useEffect(() => {
+    if (open) {
+      if (initialStatus !== TASK_STATUS_ARCHIVED) {
+        setInitialStatus(fetchedTask?.status);
+      }
+    }
+  }, [
+    initialStatus,
+    setInitialStatus,
+    fetchedTask,
+    setSnackbarAlertOpen,
+    setSnackbarAlertMessage,
+    archiveTaskData,
+    handleClose,
+    open,
+  ]);
+
+  useEffect(() => {
+    if (isMilestone) {
+      setActiveTab(tabs.tasks);
+    } else if (isTaskProposal || router?.query?.taskCommentId) {
+      setActiveTab(tabs.discussion);
+    } else {
+      setActiveTab(tabs.submissions);
+    }
+  }, [isMilestone, isTaskProposal, router?.query?.taskCommentId]);
 
   const BackToListStyle = {
     color: White,
@@ -1094,6 +1121,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     // console.log('canEdit', canEdit);
     // console.log('can Review', canReview);
   }
+  const showAssignee = !isTaskProposal && !isMilestone && !isBounty;
   const canArchive =
     permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
@@ -1123,6 +1151,72 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       handleClose();
     }
   };
+
+  const approveProposal = () => {
+    approveTaskProposal({
+      variables: {
+        proposalId: fetchedTask?.id,
+      },
+      onCompleted: (data) => {
+        const taskProposal = data?.approveTaskProposal;
+
+        const fetchedTaskProposalStatus = getProposalStatus(fetchedTask);
+        let columns = [...boardColumns?.columns];
+        if (board?.entityType) {
+          const prevStatusIndex = columns.findIndex((column) => column.status === fetchedTaskProposalStatus);
+          const approvedColumnIndex = columns.findIndex((column) => column.status === STATUS_APPROVED);
+          columns[prevStatusIndex].tasks = columns[prevStatusIndex].tasks.filter((task) => task.id !== taskProposal.id);
+          columns[approvedColumnIndex].tasks = [
+            { ...taskProposal, approvedAt: new Date(), __typename: 'TaskProposalCard', isProposal: true },
+            ...columns[approvedColumnIndex].tasks,
+          ];
+        } else {
+          // keep it for userboard
+          // Move from proposal to task
+          columns = addTaskItem(
+            transformTaskToTaskCard(
+              {
+                ...fetchedTask,
+                id: taskProposal?.associatedTaskId,
+                __typename: 'TaskCard',
+                type: 'task',
+                parentTaskId: null,
+              },
+              {}
+            ),
+            columns
+          );
+        }
+        boardColumns?.setColumns(columns);
+        document.body.setAttribute('style', `position: relative;`);
+        handleClose();
+      },
+    });
+  };
+
+  const requestProposalChanges = () => {
+    requestChangeTaskProposal({
+      variables: {
+        proposalId: fetchedTask?.id,
+      },
+      onCompleted: () => {
+        let columns = [...board?.columns];
+        // Move from proposal to task
+        columns = updateProposalItem(
+          {
+            ...fetchedTask,
+            changeRequestedAt: new Date(),
+          },
+          columns
+        );
+        boardColumns?.setColumns(columns);
+      },
+      refetchQueries: ['GetOrgTaskBoardProposals'],
+    });
+    document.body.setAttribute('style', `position: relative;`);
+    handleClose();
+  };
+
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -1130,10 +1224,19 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       }}
     >
       <>
+        <CompleteModal
+          open={completeModal}
+          onClose={() => {
+            setCompleteModal(false);
+          }}
+          taskType={taskType}
+          taskId={fetchedTask?.id}
+          onComplete={completeCallback}
+        />
         <ArchiveTaskModal
           open={archiveTask}
           onClose={handleOnCloseArchiveTaskModal}
-          onArchive={handleNewStatus}
+          onArchive={handleOnArchive}
           taskType={taskType}
           taskId={fetchedTask?.id}
         />
@@ -1252,6 +1355,11 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
               {canEdit && (
                 <TaskActionMenu right="true">
                   <DropDown DropdownHandler={TaskMenuIcon}>
+                    {canEdit && (isMilestone || isBounty) && (
+                      <DropDownItem style={dropdownItemStyle} onClick={() => setCompleteModal(true)}>
+                        Complete {taskType}
+                      </DropDownItem>
+                    )}
                     {canEdit && (
                       <DropDownItem
                         key={'task-menu-edit-' + fetchedTask?.id}
@@ -1261,7 +1369,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                         Edit {taskType}
                       </DropDownItem>
                     )}
-                    {canArchive && (
+                    {canArchive && !isTaskProposal && (
                       <DropDownItem
                         key={'task-menu-archive-' + fetchedTask?.id}
                         onClick={() => {
@@ -1431,10 +1539,14 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                                       setFetchedTask(transformedTask);
                                       if (boardColumns?.setColumns && onCorrectPage) {
                                         let columns = [...boardColumns?.columns];
-                                        if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+                                        if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
+                                          columns = updateInReviewItem(transformedTask, columns);
+                                        } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
                                           columns = updateInProgressTask(transformedTask, columns);
                                         } else if (transformedTask.status === TASK_STATUS_TODO) {
                                           columns = updateTaskItem(transformedTask, columns);
+                                        } else if (transformedTask.status === TASK_STATUS_DONE) {
+                                          columns = updateCompletedItem(transformedTask, columns);
                                         }
                                         boardColumns.setColumns(columns);
                                       }
@@ -1631,7 +1743,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   <>
                     <div style={flexDivStyle}>
                       <RejectIcon style={rejectIconStyle} />
-                      <TaskStatusHeaderText>Change requested</TaskStatusHeaderText>
+                      <TaskStatusHeaderText>Rejected</TaskStatusHeaderText>
                     </div>
                     <div
                       style={{
@@ -1655,64 +1767,10 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 )}
                 {canApproveProposal && !fetchedTask?.approvedAt && (
                   <CreateFormButtonsBlock>
-                    <CreateFormCancelButton
-                      onClick={() => {
-                        requestChangeTaskProposal({
-                          variables: {
-                            proposalId: fetchedTask?.id,
-                          },
-                          onCompleted: () => {
-                            let columns = [...boardColumns?.columns];
-                            // Move from proposal to task
-                            columns = updateProposalItem(
-                              {
-                                ...fetchedTask,
-                                changeRequestedAt: new Date(),
-                              },
-                              columns
-                            );
-                            boardColumns?.setColumns(columns);
-                          },
-                          refetchQueries: ['GetOrgTaskBoardProposals'],
-                        });
-                      }}
-                    >
-                      Request changes
-                    </CreateFormCancelButton>
-                    <CreateFormPreviewButton
-                      onClick={() => {
-                        approveTaskProposal({
-                          variables: {
-                            proposalId: fetchedTask?.id,
-                          },
-                          onCompleted: (data) => {
-                            const taskProposal = data?.approveTaskProposal;
-                            let columns = [...boardColumns?.columns];
-                            // Move from proposal to task
-                            columns = removeProposalItem(fetchedTask?.id, columns);
-                            columns = addTaskItem(
-                              transformTaskToTaskCard(
-                                {
-                                  ...fetchedTask,
-                                  id: taskProposal?.associatedTaskId,
-                                  __typename: 'TaskCard',
-                                  type: 'task',
-                                  parentTaskId: null,
-                                },
-                                {}
-                              ),
-                              columns
-                            );
-                            boardColumns?.setColumns(columns);
-                            document.body.setAttribute('style', `position: relative;`);
-                            handleClose();
-                          },
-                          refetchQueries: ['GetOrgTaskBoardProposals', 'getPerStatusTaskCountForOrgBoard'],
-                        });
-                      }}
-                    >
-                      Approve
-                    </CreateFormPreviewButton>
+                    {!fetchedTask?.changeRequestedAt && (
+                      <CreateFormCancelButton onClick={requestProposalChanges}>Reject</CreateFormCancelButton>
+                    )}
+                    <CreateFormPreviewButton onClick={approveProposal}>Approve</CreateFormPreviewButton>
                   </CreateFormButtonsBlock>
                 )}
               </CreateFormFooterButtons>
@@ -1775,6 +1833,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     setFetchedTaskSubmissions={setFetchedTaskSubmissions}
                     setShowPaymentModal={setShowPaymentModal}
                     getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+                    isBounty={isBounty}
                   />
                 )}
                 {activeTab === tabs.subTasks && <TaskSubtasks taskId={fetchedTask?.id} permissions={permissions} />}

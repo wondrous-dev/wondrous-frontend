@@ -5,7 +5,7 @@ import connectors, { ConnectorName } from '../connectors';
 
 import { useContext, useEffect, useMemo, useState } from 'react';
 
-import { CHAIN_IDS, SUPPORTED_CHAINS, SUPPORTED_CURRENCIES } from 'utils/constants';
+import { CHAIN_IDS, SUPPORTED_CHAINS, SUPPORTED_CURRENCIES, NATIVE_TOKEN_SYMBOL } from 'utils/constants';
 
 import { ERC20abi } from 'services/contracts/erc20.abi';
 import { formatEther } from 'ethers/lib/utils';
@@ -70,7 +70,7 @@ export default function useWonderWeb3(): WonderWeb3 {
   }, [account, address, addressTag, assets, chainId]);
 
   const nativeTokenSymbol = useMemo(() => {
-    return SUPPORTED_CHAINS[chainId];
+    return NATIVE_TOKEN_SYMBOL[chainId];
   }, [chainId]);
 
   const onConnect = () => {
@@ -139,7 +139,7 @@ export default function useWonderWeb3(): WonderWeb3 {
       const balanceRaw = await usdcContract.balanceOf(address);
       const decimals = await usdcContract.decimals();
       const bnBalance = await BigNumber.from(balanceRaw);
-      const balance = bnBalance.div(10 ** decimals);
+      const balance = bnBalance.div((10 ** decimals).toString());
       setFetching(false);
       return parseFloat(balance.toString()).toPrecision(4);
     }
@@ -154,7 +154,7 @@ export default function useWonderWeb3(): WonderWeb3 {
 
       // Get supported currencies for this chain
       const currencies = await getChainCurrencies();
-
+    
       const chainAssets = await currencies.reduce(async (acc, currency) => {
         const { contracts, symbol } = currency;
         const balance = contracts ? await getTokenBalance(currency) : await getNativeChainBalance();
@@ -170,7 +170,7 @@ export default function useWonderWeb3(): WonderWeb3 {
           },
         };
       }, {});
-
+    
       // Reset Assets based on Chain
       setAssets(chainAssets);
       setFetching(false);

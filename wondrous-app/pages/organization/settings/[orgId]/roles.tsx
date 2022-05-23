@@ -7,6 +7,7 @@ import { GET_ORG_ROLES_WITH_TOKEN_GATE } from 'graphql/queries';
 import { CREATE_ORG_ROLE, DELETE_ORG_ROLE, UPDATE_ORG_ROLE } from 'graphql/mutations/org';
 import { Role } from 'types/common';
 import permissons from 'utils/orgPermissions';
+import { withAuth } from 'components/Auth/withAuth';
 
 const RolesPage = () => {
   const [roles, setRoles] = useState([]);
@@ -104,4 +105,4 @@ const RolesPage = () => {
   );
 };
 
-export default RolesPage;
+export default withAuth(RolesPage);

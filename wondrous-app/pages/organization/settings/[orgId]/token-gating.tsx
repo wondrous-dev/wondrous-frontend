@@ -1,5 +1,6 @@
 import TokenGatingSettings from 'components/Settings/TokenGating';
 import { useRouter } from 'next/router';
+import { withAuth } from 'components/Auth/withAuth';
 
 const TokenGatingPage = () => {
   const router = useRouter();
@@ -9,4 +10,4 @@ const TokenGatingPage = () => {
   return <TokenGatingSettings orgId={orgId}/>;
 };
 
-export default TokenGatingPage;
+export default withAuth(TokenGatingPage);

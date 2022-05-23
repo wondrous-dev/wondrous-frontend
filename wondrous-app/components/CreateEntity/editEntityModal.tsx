@@ -15,8 +15,13 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
   PRIVACY_LEVEL,
+  STATUS_OPEN,
+  STATUS_APPROVED,
+  STATUS_CHANGE_REQUESTED,
+  TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_DONE,
   TAGS,
-} from '../../utils/constants';
+} from 'utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
 import AudioIcon from '../Icons/MediaTypesIcons/audio';
@@ -124,13 +129,13 @@ import { useMe } from '../Auth/withAuth';
 import Ethereum from '../Icons/ethereum';
 import { USDCoin } from '../Icons/USDCoin';
 import { TaskFragment } from 'graphql/fragments/task';
-import { updateProposalItem } from 'utils/board';
+import { getProposalStatus, updateCompletedItem, updateInReviewItem } from 'utils/board';
 import { GET_ORG_TASK_BOARD_PROPOSALS } from 'graphql/queries/taskBoard';
 import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './createEntityModal';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { ErrorText } from '../Common';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
-import { updateInProgressTask, updateTaskItem } from 'utils/board';
+import { updateInProgressTask, updateTaskItem, updateTaskItemOnEntityType } from 'utils/board';
 import { GET_MILESTONES, GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_FOR_POD } from 'graphql/queries/task';
 import { TabsVisibilityCreateEntity } from 'components/Common/TabsVisibilityCreateEntity';
 import Tags from '../Tags';
@@ -529,10 +534,14 @@ const EditLayoutBaseModal = (props) => {
       if (boardColumns?.setColumns && onCorrectPage) {
         const transformedTask = transformTaskToTaskCard(task, {});
         let columns = [...boardColumns?.columns];
-        if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+        if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
+          columns = updateInReviewItem(transformedTask, columns);
+        } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
           columns = updateInProgressTask(transformedTask, columns);
         } else if (transformedTask.status === TASK_STATUS_TODO) {
           columns = updateTaskItem(transformedTask, columns);
+        } else if (transformedTask.status === TASK_STATUS_DONE) {
+          columns = updateCompletedItem(transformedTask, columns);
         }
         boardColumns.setColumns(columns);
       }
@@ -559,14 +568,27 @@ const EditLayoutBaseModal = (props) => {
           username: user?.username,
           podName: justCreatedPod?.name,
         });
-
         const columns = [...boardColumns?.columns];
-        columns[0].section.tasks = columns[0].section.tasks.map((existingTaskProposal) => {
-          if (transformedTaskProposal?.id === existingTaskProposal.id) {
-            return transformedTaskProposal;
+
+        if (board?.entityType === ENTITIES_TYPES.PROPOSAL) {
+          let proposalStatus = getProposalStatus(taskProposal);
+          const statusColumnIndex = columns.findIndex((column) => column.status === proposalStatus);
+          if (statusColumnIndex) {
+            columns[statusColumnIndex].tasks = columns[statusColumnIndex].tasks.map((task) => {
+              if (task?.id === transformedTaskProposal?.id) {
+                return transformedTaskProposal;
+              }
+              return task;
+            });
           }
-          return existingTaskProposal;
-        });
+        } else {
+          columns[0].section.tasks = columns[0].section.tasks.map((existingTaskProposal) => {
+            if (transformedTaskProposal?.id === existingTaskProposal.id) {
+              return transformedTaskProposal;
+            }
+            return existingTaskProposal;
+          });
+        }
         boardColumns.setColumns(columns);
       }
       handleClose();
@@ -580,10 +602,17 @@ const EditLayoutBaseModal = (props) => {
       if (boardColumns?.setColumns && onCorrectPage) {
         const transformedTask = transformTaskToTaskCard(milestone, {});
         let columns = [...boardColumns?.columns];
-        if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+        if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
+          columns = updateInReviewItem(transformedTask, columns);
+        } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
           columns = updateInProgressTask(transformedTask, columns);
-        } else if (transformedTask.status === TASK_STATUS_TODO) {
+          //if there's no entityType we assume it's the userBoard and keeping the old logic
+        } else if (transformedTask.status === TASK_STATUS_TODO && !board?.entityType) {
           columns = updateTaskItem(transformedTask, columns);
+        } else if (transformedTask.status === TASK_STATUS_TODO && board?.entityType) {
+          columns = updateTaskItemOnEntityType(transformedTask, columns);
+        } else if (transformedTask.status === TASK_STATUS_DONE) {
+          columns = updateCompletedItem(transformedTask, columns);
         }
         boardColumns.setColumns(columns);
       }
@@ -592,7 +621,7 @@ const EditLayoutBaseModal = (props) => {
   });
 
   const submitMutation = useCallback(() => {
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     switch (entityType) {
       case ENTITIES_TYPES.TASK:
         const taskInput = {
@@ -621,7 +650,7 @@ const EditLayoutBaseModal = (props) => {
           reviewerIds: selectedReviewers.map(({ id }) => id) || [],
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
-          timezone
+          timezone,
         };
         const taskPodPrivacyError = !isPodPublic ? publicTask : false;
         if (!title || !org || taskPodPrivacyError) {
@@ -665,7 +694,7 @@ const EditLayoutBaseModal = (props) => {
           }),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
-          timezone
+          timezone,
         };
 
         if (!title) {
@@ -698,7 +727,7 @@ const EditLayoutBaseModal = (props) => {
               podId: pod?.id,
               userMentions: getMentionArray(descriptionText),
               mediaUploads,
-              timezone
+              timezone,
             },
           },
         });
@@ -731,7 +760,7 @@ const EditLayoutBaseModal = (props) => {
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
-          timezone
+          timezone,
         };
         // const isErrorMaxSubmissionCount =
         //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
@@ -754,30 +783,6 @@ const EditLayoutBaseModal = (props) => {
               input: bountyInput,
             },
           })
-            .then((result) => {
-              const task = result?.data?.updateBounty;
-              const justCreatedPod = getPodObject();
-              if (
-                board?.setColumns &&
-                ((task?.orgId === board?.orgId && !board?.podId) ||
-                  task?.podId === board?.podId ||
-                  pod === board?.podId)
-              ) {
-                const transformedTask = transformTaskToTaskCard(task, {
-                  orgName: board?.org?.name,
-                  orgProfilePicture: board?.org?.profilePicture,
-                  podName: justCreatedPod?.name,
-                });
-
-                const columns = [...board?.columns];
-                columns[0].tasks = [transformedTask, ...columns[0].tasks];
-                board.setColumns(columns);
-              }
-              handleClose();
-            })
-            .catch((error) => {
-              console.error(error);
-            });
         }
         break;
     }

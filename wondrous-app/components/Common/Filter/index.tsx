@@ -124,7 +124,7 @@ const Filter = (props: IFilterProps) => {
       .flatMap((item) => item.items.filter((it) => [...podIds, ...statuses].includes(it.id)))
       .map((i) => i.name);
     setSelectedNames(selectedNames);
-  }, [filterSchema, statuses, podIds]);
+  }, [statuses, podIds, filterSchema]);
 
   return (
     <FilterHandle ref={wrapperRef} open={open}>

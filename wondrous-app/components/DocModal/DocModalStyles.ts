@@ -3,6 +3,7 @@ export const cancelStyles = () => ({
     backgroundColor: '#232323',
     color: 'white',
     padding: '6px 24px',
+    fontFamily: 'Space Grotesk',
   },
 });
 
@@ -11,7 +12,7 @@ export const submitStyles = () => ({
     background: 'linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%)',
     color: 'white',
     padding: '1px 1px',
-
+    borderRadius: '64px',
     '& .MuiBox-root': {
       background: '#0f0f0f',
       fontFamily: 'Space Grotesk',

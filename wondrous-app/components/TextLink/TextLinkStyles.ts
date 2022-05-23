@@ -13,5 +13,7 @@ export const StyledLink = styled.a`
     font-size: 12px;
     line-height: 16px;
     color: ${Blue20};
+    position: relative;
+    z-index: 5;
   }
 `;
