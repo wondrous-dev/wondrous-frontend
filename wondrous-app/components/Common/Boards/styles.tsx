@@ -154,17 +154,6 @@ export const BoardsRewardLabel = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 4px 8px;
-  gap: 6px;
-  background: #363636;
-  border-radius: 35px;
-  font-family: 'Space Grotesk';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 13px;
-  line-height: 14px;
-  color: ${White};
-  letter-spacing: 0.01em;
 `;
 
 export const BoardsPrivacyLabel = styled.div`
@@ -207,7 +196,7 @@ export const BoardsCardBodyTitle = styled(Typography)`
     line-height: 23px;
     display: -webkit-box;
     -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;  
+    -webkit-box-orient: vertical;
     overflow: hidden;
   }
 `;
@@ -223,7 +212,7 @@ export const BoardsCardBodyDescription = styled(Typography)`
     color: #828282;
     display: -webkit-box;
     -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;  
+    -webkit-box-orient: vertical;
     overflow: hidden;
   }
 `;
@@ -238,7 +227,11 @@ export const CardsContainer = ({ isFullWidth, numberOfColumns, children }) => {
       {isFullWidth ? (
         <div>{children}</div>
       ) : (
-        <Masonry style={{ alignContent: 'flex-start' }} spacing={2} columns={{ xs: 1, sm: 2, lg: numberOfColumns }}>
+        <Masonry
+          style={{ alignContent: 'flex-start' }}
+          spacing={2}
+          columns={{ xs: 1, sm: 2, md: 3, lg: numberOfColumns }}
+        >
           {children}
         </Masonry>
       )}

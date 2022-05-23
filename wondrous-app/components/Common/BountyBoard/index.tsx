@@ -92,12 +92,10 @@ export default function Board({ tasks, handleCardClick = (bounty) => {} }) {
                 </BoardsPrivacyLabel>
               </BoardsCardSubheader>
               {bounty?.rewards && bounty?.rewards?.length > 0 && (
-                <Compensation rewards={bounty?.rewards} taskIcon={<BountyStatusIcon />} />
+                <BoardsRewardLabel>
+                  <Compensation rewards={bounty?.rewards} taskIcon={<BountyStatusIcon />} />
+                </BoardsRewardLabel>
               )}
-              {/* <BoardsRewardLabel>
-                {CURRENCY_SYMBOL[rewardSymbol]}
-                {rewardAmount}
-              </BoardsRewardLabel> */}
             </BoardsCardHeader>
             <BoardsCardBody>
               <BoardsCardBodyTitle>{bounty.title}</BoardsCardBodyTitle>
