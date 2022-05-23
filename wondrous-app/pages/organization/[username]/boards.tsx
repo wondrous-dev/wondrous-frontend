@@ -209,8 +209,8 @@ const useGetOrgTaskBoardProposals = ({
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
-    onCompleted: (data) => {
-      const newColumns = populateProposalColumns(data?.getOrgTaskBoardProposals, ORG_POD_PROPOSAL_COLUMNS);
+    onCompleted: ({ getOrgTaskBoardProposals }) => {
+      const newColumns = populateProposalColumns(getOrgTaskBoardProposals, ORG_POD_PROPOSAL_COLUMNS);
       setColumns(newColumns);
       setIsLoading(false);
     },
@@ -226,10 +226,10 @@ const useGetOrgTaskBoardProposals = ({
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         setOrgTaskHasMore(fetchMoreResult?.getOrgTaskBoardProposals.length >= LIMIT);
-        const getOrgTaskBoardProposals = _.uniqBy(
-          [...prev.getOrgTaskBoardProposals, ...fetchMoreResult.getOrgTaskBoardProposals],
-          'id'
-        );
+        const getOrgTaskBoardProposals = [
+          ...prev.getOrgTaskBoardProposals,
+          ...fetchMoreResult.getOrgTaskBoardProposals,
+        ];
         return {
           getOrgTaskBoardProposals,
         };
@@ -251,7 +251,7 @@ const useGetOrgTaskBoardProposals = ({
         },
       });
     }
-  }, [getOrgTaskProposals, orgId, statuses, podIds, section, listView, data, entityType]);
+  }, [getOrgTaskProposals, orgId, statuses, podIds, setOrgTaskHasMore, entityType]);
   return { fetchMore: getProposalsFetchMore };
 };
 

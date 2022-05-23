@@ -178,7 +178,7 @@ const useGetPodTaskProposals = ({
           },
         },
       });
-  }, [getPodTaskProposals, podId, statuses, section, listView, data, entityType]);
+  }, [getPodTaskProposals, podId, statuses, entityType]);
   return { fetchMore: getProposalsFetchMore };
 };
 
