@@ -28,7 +28,6 @@ import {
 
 const HeaderComponent = (props) => {
   const user = useMe();
-  console.log('user', user);
   // Grab Notifications from Backend
   const { data: notifications, refetch } = useQuery(GET_NOTIFICATIONS);
   const [markAllNotificationsRead] = useMutation(MARK_ALL_NOTIFICATIONS_READ);
@@ -117,7 +116,9 @@ const HeaderComponent = (props) => {
               style={{
                 width: '100px',
               }}
-              onClick={()=>{router.push('/login');}}
+              onClick={() => {
+                router.push('/login');
+              }}
             >
               Sign in
             </Button>

@@ -10,7 +10,7 @@ export const SectionWrapper = styled.div`
   justify-content: center;
   min-width: 324px;
   margin-top: 1em;
-
+  width: 100%;
   background: #1b1b1b;
   border: 1px solid ${Black92}3C;
 

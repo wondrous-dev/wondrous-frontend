@@ -2,8 +2,8 @@ import { gql } from '@apollo/client';
 import { PaymentCardFragment, PaymentMethodFragment, UnpaidSubmissionFragment } from '../fragments/payment';
 
 export const GET_PAYMENT_METHODS_FOR_ORG = gql`
-  query getPaymentMethodsForOrg($orgId: ID!) {
-    getPaymentMethodsForOrg(orgId: $orgId) {
+  query getPaymentMethodsForOrg($orgId: ID!, $includeDeactivated: Boolean) {
+    getPaymentMethodsForOrg(orgId: $orgId, includeDeactivated: $includeDeactivated) {
       ...PaymentMethodFragment
     }
   }

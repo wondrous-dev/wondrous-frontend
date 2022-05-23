@@ -73,6 +73,7 @@ export const GET_ORG_TASK_BOARD_TASKS = gql`
     $limit: Int
     $offset: Int
     $onlyPublic: Boolean
+    $types: [String]
   ) {
     getOrgTaskBoardTasks(
       input: {
@@ -83,6 +84,7 @@ export const GET_ORG_TASK_BOARD_TASKS = gql`
         limit: $limit
         offset: $offset
         onlyPublic: $onlyPublic
+        types: $types
       }
     ) {
       ...TaskCardFragment
@@ -118,6 +120,7 @@ export const GET_TASKS_RELATED_TO_USER_IN_ORG = gql`
     $userId: String
     $limit: Int
     $offset: Int
+    $types: [String]
   ) {
     getTasksRelatedToUserInOrg(
       input: {
@@ -128,6 +131,7 @@ export const GET_TASKS_RELATED_TO_USER_IN_ORG = gql`
         userId: $userId
         limit: $limit
         offset: $offset
+        types: $types
       }
     ) {
       ...TaskCardFragment
@@ -282,10 +286,10 @@ export const GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD = gql`
       created
       inProgress
       completed
-      proposal
-      submission
       inReview
-      archived
+      proposalOpen
+      proposalApproved
+      proposalChangeRequested
     }
   }
 `;
@@ -341,10 +345,10 @@ export const GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD = gql`
       created
       inProgress
       completed
-      proposal
-      submission
       inReview
-      archived
+      proposalOpen
+      proposalApproved
+      proposalChangeRequested
     }
   }
 `;

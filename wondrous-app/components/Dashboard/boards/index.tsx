@@ -22,7 +22,7 @@ import { COLUMNS, FILTER_STATUSES, FILTER_STATUSES_ADMIN, LIMIT, populateTaskCol
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
 import {
-  DEFAULT_STATUS_ARR,
+  DEFAULT_STATUSES,
   STATUS_OPEN,
   TASK_STATUSES,
   TASK_STATUS_AWAITING_PAYMENT,
@@ -39,7 +39,7 @@ import { FilterItem, FilterItemIcon, FilterItemName } from '../../Common/Filter/
 import CreateDaoIcon from '../../Icons/createDao';
 import CreatePodIcon from '../../Icons/createPod';
 import { FilterItemOrgIcon, FilterOrg } from './styles';
-
+import BoardsActivity from 'components/Common/BoardsActivity';
 const proposal = {
   status: TASK_STATUS_PROPOSAL_REQUEST,
   tasks: [],
@@ -96,7 +96,7 @@ const useGetUserTaskBoardTasks = ({
   }, [contributorColumns, fetchMore, setHasMoreTasks]);
   useEffect(() => {
     const taskBoardStatuses =
-      statuses.length > 0 ? statuses?.filter((status) => DEFAULT_STATUS_ARR.includes(status)) : DEFAULT_STATUS_ARR;
+      statuses.length > 0 ? statuses?.filter((status) => DEFAULT_STATUSES.includes(status)) : DEFAULT_STATUSES;
     const taskBoardStatusesIsNotEmpty = taskBoardStatuses.length > 0;
     if (!isAdmin && loggedInUser?.id) {
       getUserTaskBoardTasks({
@@ -512,7 +512,7 @@ const BoardsPage = (props) => {
             limit: LIMIT,
             offset: 0,
             // Needed to exclude proposals
-            statuses: DEFAULT_STATUS_ARR,
+            statuses: DEFAULT_STATUSES,
             searchString: search,
           },
         };
@@ -579,7 +579,7 @@ const BoardsPage = (props) => {
         limit: LIMIT,
         offset: 0,
         // Needed to exclude proposals
-        statuses: DEFAULT_STATUS_ARR,
+        statuses: DEFAULT_STATUSES,
         searchString,
       },
     };
@@ -608,7 +608,7 @@ const BoardsPage = (props) => {
 
     if (search) {
       const taskStatuses = statuses?.filter((status) => TASK_STATUSES.includes(status));
-      const shouldSearchProposals = statuses?.length !== taskStatuses?.length || statuses === DEFAULT_STATUS_ARR;
+      const shouldSearchProposals = statuses?.length !== taskStatuses?.length || statuses === DEFAULT_STATUSES;
       const shouldSearchTasks = !(searchProposals && statuses?.length === 1);
       const searchTaskProposalsArgs = {
         variables: {
@@ -667,16 +667,19 @@ const BoardsPage = (props) => {
         setSection,
       }}
     >
-      <Boards
-        filterSchema={filterSchema}
+      <BoardsActivity
         onSearch={handleSearch}
+        filterSchema={filterSchema}
         onFilterChange={handleFilterChange}
+        statuses={statuses}
+        podIds={podIds}
+        isAdmin={isAdmin}
+      />
+      <Boards
         columns={activeColumns}
         onLoadMore={handleLoadMore}
         hasMore={hasMoreTasks}
         isAdmin={isAdmin}
-        statuses={statuses}
-        podIds={podIds}
         setColumns={setContributorColumns}
       />
     </UserBoardContext.Provider>
