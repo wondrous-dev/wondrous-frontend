@@ -65,7 +65,7 @@ const createTasksFromColumns = (columns) => {
     const newColumnTasks = column?.tasks?.map((task) => {
       return {
         ...task,
-        status: column?.status,
+        status: task?.status || column?.status,
       };
     });
     acc = [...acc, ...newColumnTasks];
