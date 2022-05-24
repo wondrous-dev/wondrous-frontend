@@ -644,8 +644,9 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
     font-size: 14px;
     height: 30px;
 
-    ::placeholder {
-      color: white;
+    &::placeholder {
+      color: #C4C4C4;
+      opacity: 1;
     }
   }
 
@@ -653,11 +654,6 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
     right: 10px;
     height: 11px;
     position: absolute;
-  }
-
-  .roles-icon2 {
-    position: absolute;
-    left: 10px;
   }
 
   svg {
@@ -771,4 +767,13 @@ export const CreateFormSubmitButton = styled(Button)`
 
 export const RewardCurrencyTokenIcon = styled(WonderTokenIcon)`
   margin-right: 12px;
+`;
+
+export const CreateFormAddTagsSection = styled.div`
+  position: relative;
+  width: 100%;
+  border-bottom: 1px solid #363636;
+  align-items: center;
+  margin: 0 auto;
+  padding: 30px 40px 10px;
 `;

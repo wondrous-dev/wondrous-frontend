@@ -424,7 +424,7 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
     [Constants.STATUS_OPEN]: {
       labelsAndActions: [
         {
-          title: 'Request edit',
+          title: 'Reject',
           action: () => {
             if (proposalRequestChange) {
               proposalRequestChange(task.id, proposalStatus);

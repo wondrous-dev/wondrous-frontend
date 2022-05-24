@@ -44,7 +44,7 @@ import { useMe } from '../../Auth/withAuth';
 import { delQuery } from 'utils';
 import { TaskSummaryAction } from '../TaskSummary/styles';
 import { Arrow, Archived } from '../../Icons/sections';
-import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
+import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
 import { GET_TASK_REVIEWERS } from 'graphql/queries';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import EditLayoutBaseModal from 'components/CreateEntity/editEntityModal';
@@ -168,19 +168,7 @@ export const Task = (props) => {
       // let columns = [...boardColumns?.columns]
     },
   });
-  const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
-    refetchQueries: () => [
-      'getUserTaskBoardTasks',
-      'getOrgTaskBoardTasks',
-      'getPodTaskBoardTasks',
-      'getPerStatusTaskCountForUserBoard',
-      'getPerStatusTaskCountForOrgBoard',
-      'getPerStatusTaskCountForPodBoard',
-      'getSubtasksForTask',
-      'getPerTypeTaskCountForOrgBoard',
-      'getPerTypeTaskCountForPodBoard',
-    ],
-  });
+
   const reviewerData = useGetReviewers(editTask, task);
 
   const proposalRequestChange = (id, status) => {
@@ -207,55 +195,33 @@ export const Task = (props) => {
   const totalSubtask = task?.totalSubtaskCount;
   const completedSubtask = task?.completedSubtaskCount;
   const [claimed, setClaimed] = useState(false);
-  const handleNewStatus = useCallback(
-    (newStatus) => {
-      orgBoard?.setFirstTimeFetch(false);
-      if (newStatus === Constants.TASK_STATUS_ARCHIVED) {
-        archiveTaskMutation({
-          variables: {
-            taskId: id,
-          },
-        }).then((result) => {
-          setSnackbarAlertOpen(true);
-          setSnackbarAlertMessage(
-            <>
-              Task archived successfully!{' '}
-              <ArchivedTaskUndo
-                onClick={() => {
-                  setSnackbarAlertOpen(false);
-                  unarchiveTaskMutation({
-                    variables: {
-                      taskId: id,
-                    },
-                  });
-                }}
-              >
-                Undo
-              </ArchivedTaskUndo>
-            </>
-          );
-        });
-      } else {
-        updateTaskStatusMutation({
-          variables: {
-            taskId: id,
-            input: {
-              newStatus,
-            },
-          },
-        });
-      }
-    },
-    [
-      id,
-      updateTaskStatusMutation,
-      orgBoard,
-      archiveTaskMutation,
-      setSnackbarAlertMessage,
-      setSnackbarAlertOpen,
-      unarchiveTaskMutation,
-    ]
-  );
+  const handleOnArchive = useCallback(() => {
+    orgBoard?.setFirstTimeFetch(false);
+    archiveTaskMutation({
+      variables: {
+        taskId: id,
+      },
+    }).then((result) => {
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage(
+        <>
+          Task archived successfully!{' '}
+          <ArchivedTaskUndo
+            onClick={() => {
+              setSnackbarAlertOpen(false);
+              unarchiveTaskMutation({
+                variables: {
+                  taskId: id,
+                },
+              });
+            }}
+          >
+            Undo
+          </ArchivedTaskUndo>
+        </>
+      );
+    });
+  }, [id, orgBoard, archiveTaskMutation, setSnackbarAlertMessage, setSnackbarAlertOpen, unarchiveTaskMutation]);
 
   useEffect(() => {
     if (!initialStatus) {
@@ -295,8 +261,6 @@ export const Task = (props) => {
   const newUrl = `${delQuery(router.asPath)}?${taskType}=${task?.id}&view=${router.query.view || 'grid'}`;
   const openModal = (e) => {
     location.push(newUrl);
-    // document.body.style.overflow = 'hidden'
-    // document.body.scroll = false
     windowOffset = window.scrollY;
     document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
   };
@@ -357,7 +321,7 @@ export const Task = (props) => {
       <ArchiveTaskModal
         open={archiveTask}
         onClose={() => setArchiveTask(false)}
-        onArchive={handleNewStatus}
+        onArchive={handleOnArchive}
         taskType={type}
         taskId={task?.id}
       />

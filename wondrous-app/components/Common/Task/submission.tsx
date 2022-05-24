@@ -94,6 +94,7 @@ import { KudosForm } from '../KudosForm';
 import { PaymentButton } from './paymentButton';
 import FileIcon from 'components/Icons/files.svg';
 import { GET_TASK_BY_ID } from 'graphql/queries';
+import { addInReviewItem, removeInProgressTask } from 'utils/board';
 
 const SubmissionStatusIcon = (props) => {
   const { submission } = props;
@@ -254,7 +255,12 @@ const SubmissionItem = (props) => {
         setIsKudosForm(true);
       }
     },
-    refetchQueries: ['getOrgTaskBoardSubmissions', 'getPerStatusTaskCountForOrgBoard', GET_TASK_BY_ID],
+    refetchQueries: [
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      GET_TASK_BY_ID,
+    ],
   });
   const [approveBountySubmission] = useMutation(APPROVE_BOUNTY_SUBMISSION, {
     variables: {
@@ -503,23 +509,23 @@ const TaskSubmissionForm = (props) => {
       setFetchedTaskSubmissions([transformedTaskSubmission, ...fetchedTaskSubmissions]);
       if (boardColumns && (!board?.entityType || board?.entityType !== ENTITIES_TYPES.BOUNTY)) {
         const columns = boardColumns?.columns;
-        const newColumns = [...columns];
-        const inReviewColumnIndex =
-          isValidIndex(newColumns.findIndex((column) => column.status === TASK_STATUS_IN_REVIEW)) ||
-          isValidIndex(newColumns.findIndex((column) => column.section?.filter?.taskType === TASK_STATUS_IN_REVIEW));
+        let newColumns = [...columns];
 
-        const inReviewColumn = newColumns[inReviewColumnIndex];
-        if (typeof inReviewColumn.section !== 'undefined') {
-          newColumns[inReviewColumnIndex] = {
-            ...inReviewColumn,
-            section: { ...inReviewColumn.section, tasks: [transformedTaskSubmission, ...inReviewColumn.section.tasks] },
-          };
-        } else {
-          newColumns[inReviewColumnIndex] = {
-            ...inReviewColumn,
-            tasks: [transformedTaskSubmission, ...inReviewColumn.tasks],
-          };
-        }
+        const inProgressColumnIndex =
+          isValidIndex(newColumns.findIndex((column) => column.status === TASK_STATUS_IN_PROGRESS)) ||
+          isValidIndex(newColumns.findIndex((column) => column.section?.filter?.taskType === TASK_STATUS_IN_PROGRESS));
+
+        const inProgressColumn = newColumns[inProgressColumnIndex];
+
+        const taskSubmissionTask = inProgressColumn?.tasks.find((element) => element?.id === taskSubmission?.taskId);
+        newColumns = addInReviewItem(
+          {
+            ...taskSubmissionTask,
+            status: TASK_STATUS_IN_REVIEW,
+          },
+          columns
+        );
+        newColumns = removeInProgressTask(taskSubmissionTask?.id, columns);
         if (boardColumns?.setColumns) {
           boardColumns?.setColumns(newColumns);
         }
@@ -540,7 +546,7 @@ const TaskSubmissionForm = (props) => {
         cancelSubmissionForm();
       }
     },
-    refetchQueries: ['getPerStatusTaskCountForOrgBoard'],
+    refetchQueries: ['getPerStatusTaskCountForOrgBoard', 'getOrgTaskBoardTasks', 'getPodTaskBoardTasks'],
   });
   const [updateTaskSubmission] = useMutation(UPDATE_TASK_SUBMISSION, {
     onCompleted: (data) => {
@@ -879,6 +885,7 @@ export const TaskSubmissionContent = (props) => {
     handleClose,
     setShowPaymentModal,
     getTaskSubmissionsForTask,
+    isBounty,
   } = props;
 
   const router = useRouter();
@@ -930,7 +937,7 @@ export const TaskSubmissionContent = (props) => {
   if (taskSubmissionLoading) {
     return <CircularProgress />;
   }
-  if ((canSubmit || canMoveProgress) && fetchedTask?.status === TASK_STATUS_TODO && moveProgressButton) {
+  if ((canSubmit || canMoveProgress) && fetchedTask?.status === TASK_STATUS_TODO && moveProgressButton && !isBounty) {
     return (
       <div
       // style={{
@@ -938,7 +945,7 @@ export const TaskSubmissionContent = (props) => {
       //   alignItems: 'center',
       // }}
       >
-        <TaskTabText>To submit task submissions please first move this to in progress</TaskTabText>
+        <TaskTabText>To submit tasask submissions please first move this to in progress</TaskTabText>
         <CreateFormPreviewButton
           style={{
             marginTop: '16px',

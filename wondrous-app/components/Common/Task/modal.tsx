@@ -37,6 +37,7 @@ import {
   TaskUserDiv,
   MakeSubmissionDiv,
   TaskListModalContentWrapper,
+  Tag,
 } from './styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
@@ -49,6 +50,7 @@ import {
 } from 'utils/helpers';
 import { RightCaret } from '../Image/RightCaret';
 import CreatePodIcon from '../../Icons/createPod';
+import TagsIcon from '../../Icons/tagsIcon';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   BOUNTY_TYPE,
@@ -101,9 +103,10 @@ import { useRouter } from 'next/router';
 import {
   UPDATE_TASK_STATUS,
   UPDATE_TASK_ASSIGNEE,
-  UPDATE_BOUNTY_STATUS,
   ARCHIVE_TASK,
   UNARCHIVE_TASK,
+  COMPLETE_MILESTONE,
+  COMPLETE_BOUNTY,
 } from 'graphql/mutations/task';
 import { UPDATE_TASK_PROPOSAL_ASSIGNEE } from 'graphql/mutations/taskProposal';
 import { GET_PREVIEW_FILE } from 'graphql/queries/media';
@@ -153,6 +156,8 @@ import { CheckedBoxIcon } from '../../Icons/checkedBox';
 import RightArrowIcon from '../../Icons/rightArrow';
 import { DeleteTaskModal } from '../DeleteTaskModal';
 import { Share } from '../Share';
+import { CompleteModal } from '../CompleteModal';
+import { GET_ORG_LABELS } from 'graphql/queries';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -183,6 +188,7 @@ const TASK_LIST_VIEW_LIMIT = 5;
 export const TaskListViewModal = (props) => {
   const [fetchedList, setFetchedList] = useState([]);
   const { taskType, entityType, orgId, podId, loggedInUserId, open, handleClose, count } = props;
+
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(true);
   const [getOrgTaskProposals, { refetch: refetchOrgProposals, fetchMore: fetchMoreOrgProposals }] = useLazyQuery(
@@ -742,7 +748,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
   const isSubtask = fetchedTask?.parentTaskId !== null;
   const isBounty = fetchedTask?.type === BOUNTY_TYPE;
-  const showAssignee = !isTaskProposal && !isMilestone && !isBounty;
   const entityType = isTaskProposal ? ENTITIES_TYPES.PROPOSAL : fetchedTask?.type;
   const [approvedSubmission, setApprovedSubmission] = useState(null);
   const orgBoard = useOrgBoard();
@@ -774,6 +779,25 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
+  const [completeMilestone] = useMutation(COMPLETE_MILESTONE, {
+    refetchQueries: () => [
+      'getTaskById',
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+  });
+  const [completeBounty] = useMutation(COMPLETE_BOUNTY, {
+    refetchQueries: () => [
+      'getTaskById',
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+  });
+  const [completeModal, setCompleteModal] = useState(false);
   const router = useRouter();
   const [editTask, setEditTask] = useState(false);
 
@@ -786,6 +810,9 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
+  const [getOrgLabels, { data: orgLabelsData }] = useLazyQuery(GET_ORG_LABELS, {
+    fetchPolicy: 'cache-and-network',
+  });
   const user = useMe();
 
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
@@ -822,24 +849,15 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     },
   });
 
-  const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS, {
-    refetchQueries: [
-      'getTaskById',
-      'getUserTaskBoardTasks',
-      'getPerStatusTaskCountForUserBoard',
-      'getOrgTaskBoardTasks',
-      'getPerStatusTaskCountForOrgBoard',
-      'getPodTaskBoardTasks',
-      'getPerStatusTaskCountForPodBoard',
-    ],
-    onError: () => {
-      console.error('Something went wrong.');
-    },
-    onCompleted: () => {
-      // TODO: Move columns
-      // let columns = [...boardColumns?.columns]
-    },
-  });
+  useEffect(() => {
+    if (fetchedTask) {
+      getOrgLabels({
+        variables: {
+          orgId: fetchedTask.orgId,
+        },
+      });
+    }
+  }, [fetchedTask]);
 
   const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
     refetchQueries: [
@@ -878,75 +896,65 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     },
   });
 
-  const [updateBountyStatus] = useMutation(UPDATE_BOUNTY_STATUS, {
-    refetchQueries: () => [
-      'getTaskById',
-      'getOrgTaskBoardTasks',
-      'getPodTaskBoardTasks',
-      'getPerStatusTaskCountForOrgBoard',
-      'getPerStatusTaskCountForPodBoard',
-    ],
-  });
-  const handleNewStatus = useCallback(
-    (newStatus) => {
-      if (newStatus === TASK_STATUS_ARCHIVED) {
-        archiveTaskMutation({
-          variables: {
-            taskId: fetchedTask?.id,
-          },
-        }).then((result) => {
-          handleClose();
-          setSnackbarAlertOpen(true);
-          setSnackbarAlertMessage(
-            <>
-              Task archived successfully!{' '}
-              <ArchivedTaskUndo
-                onClick={() => {
-                  setSnackbarAlertOpen(false);
-                  unarchiveTaskMutation({
-                    variables: {
-                      taskId: fetchedTask?.id,
-                    },
-                  });
-                }}
-              >
-                Undo
-              </ArchivedTaskUndo>
-            </>
-          );
-        });
-      } else {
-        if (isBounty) {
-          updateBountyStatus({
-            variables: {
-              bountyId: fetchedTask?.id,
-              input: { newStatus },
-            },
-          });
-        } else {
-          updateTaskStatusMutation({
-            variables: {
-              taskId: fetchedTask?.id,
-              input: {
-                newStatus,
-              },
-            },
-          });
-        }
-      }
-    },
-    [
-      fetchedTask?.id,
-      isBounty,
-      updateBountyStatus,
-      updateTaskStatusMutation,
-      archiveTaskMutation,
-      handleClose,
-      setSnackbarAlertOpen,
-      unarchiveTaskMutation,
-      setSnackbarAlertMessage,
-    ]
-  );
+  const completeCallback = useCallback(() => {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (isMilestone) {
+      completeMilestone({
+        variables: {
+          milestoneId: taskId,
+          timezone,
+        },
+      }).then(() => {
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage(<>Milestone marked as complete :)</>);
+      });
+    } else if (isBounty) {
+      completeBounty({
+        variables: {
+          bountyId: taskId,
+          timezone,
+        },
+      }).then(() => {
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage(<>Bounty marked as complete :)</>);
+      });
+    }
+  }, [taskId, isMilestone, isBounty, setSnackbarAlertOpen, setSnackbarAlertMessage]);
+
+  const handleOnArchive = useCallback(() => {
+    archiveTaskMutation({
+      variables: {
+        taskId: fetchedTask?.id,
+      },
+    }).then((result) => {
+      handleClose();
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage(
+        <>
+          Task archived successfully!{' '}
+          <ArchivedTaskUndo
+            onClick={() => {
+              setSnackbarAlertOpen(false);
+              unarchiveTaskMutation({
+                variables: {
+                  taskId: fetchedTask?.id,
+                },
+              });
+            }}
+          >
+            Undo
+          </ArchivedTaskUndo>
+        </>
+      );
+    });
+  }, [
+    fetchedTask?.id,
+    archiveTaskMutation,
+    handleClose,
+    setSnackbarAlertOpen,
+    unarchiveTaskMutation,
+    setSnackbarAlertMessage,
+  ]);
 
   useEffect(() => {
     if (open) {
@@ -960,7 +968,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     fetchedTask,
     setSnackbarAlertOpen,
     setSnackbarAlertMessage,
-    handleNewStatus,
     archiveTaskData,
     handleClose,
     open,
@@ -1020,6 +1027,33 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     getTaskProposalById,
     open,
   ]);
+
+  useEffect(() => {
+    if (open) {
+      if (initialStatus !== TASK_STATUS_ARCHIVED) {
+        setInitialStatus(fetchedTask?.status);
+      }
+    }
+  }, [
+    initialStatus,
+    setInitialStatus,
+    fetchedTask,
+    setSnackbarAlertOpen,
+    setSnackbarAlertMessage,
+    archiveTaskData,
+    handleClose,
+    open,
+  ]);
+
+  useEffect(() => {
+    if (isMilestone) {
+      setActiveTab(tabs.tasks);
+    } else if (isTaskProposal || router?.query?.taskCommentId) {
+      setActiveTab(tabs.discussion);
+    } else {
+      setActiveTab(tabs.submissions);
+    }
+  }, [isMilestone, isTaskProposal, router?.query?.taskCommentId]);
 
   const BackToListStyle = {
     color: White,
@@ -1103,6 +1137,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     // console.log('canEdit', canEdit);
     // console.log('can Review', canReview);
   }
+  const showAssignee = !isTaskProposal && !isMilestone && !isBounty;
   const canArchive =
     permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
@@ -1197,6 +1232,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     document.body.setAttribute('style', `position: relative;`);
     handleClose();
   };
+
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -1204,10 +1240,19 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       }}
     >
       <>
+        <CompleteModal
+          open={completeModal}
+          onClose={() => {
+            setCompleteModal(false);
+          }}
+          taskType={taskType}
+          taskId={fetchedTask?.id}
+          onComplete={completeCallback}
+        />
         <ArchiveTaskModal
           open={archiveTask}
           onClose={handleOnCloseArchiveTaskModal}
-          onArchive={handleNewStatus}
+          onArchive={handleOnArchive}
           taskType={taskType}
           taskId={fetchedTask?.id}
         />
@@ -1329,44 +1374,45 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     isSubtask ? fetchedTask?.parentTaskId : taskId
                   }`}
                 />
-                {canEdit && (
-                  <>
-                    <DropDown DropdownHandler={TaskMenuIcon}>
-                      {canEdit && (
-                        <DropDownItem
-                          key={'task-menu-edit-' + fetchedTask?.id}
-                          onClick={() => setEditTask(true)}
-                          style={dropdownItemStyle}
-                        >
-                          Edit {taskType}
-                        </DropDownItem>
-                      )}
-                      {canArchive && (
-                        <DropDownItem
-                          key={'task-menu-archive-' + fetchedTask?.id}
-                          onClick={() => {
-                            setArchiveTask(true);
-                          }}
-                          style={dropdownItemStyle}
-                        >
-                          Archive {taskType}
-                        </DropDownItem>
-                      )}
-                      {canDelete && (
-                        <DropDownItem
-                          key={'task-menu-delete-' + fetchedTask?.id}
-                          onClick={() => {
-                            setDeleteTask(true);
-                          }}
-                          style={dropdownItemStyle}
-                          color={Red800}
-                        >
-                          Delete {taskType}
-                        </DropDownItem>
-                      )}
-                    </DropDown>
-                  </>
-                )}
+                <DropDown DropdownHandler={TaskMenuIcon}>
+                  {canEdit && (isMilestone || isBounty) && (
+                    <DropDownItem style={dropdownItemStyle} onClick={() => setCompleteModal(true)}>
+                      Complete {taskType}
+                    </DropDownItem>
+                  )}
+                  {canEdit && (
+                    <DropDownItem
+                      key={'task-menu-edit-' + fetchedTask?.id}
+                      onClick={() => setEditTask(true)}
+                      style={dropdownItemStyle}
+                    >
+                      Edit {taskType}
+                    </DropDownItem>
+                  )}
+                  {canArchive && !isTaskProposal && (
+                    <DropDownItem
+                      key={'task-menu-archive-' + fetchedTask?.id}
+                      onClick={() => {
+                        setArchiveTask(true);
+                      }}
+                      style={dropdownItemStyle}
+                    >
+                      Archive {taskType}
+                    </DropDownItem>
+                  )}
+                  {canDelete && (
+                    <DropDownItem
+                      key={'task-menu-delete-' + fetchedTask?.id}
+                      onClick={() => {
+                        setDeleteTask(true);
+                      }}
+                      style={dropdownItemStyle}
+                      color={Red800}
+                    >
+                      Delete {taskType}
+                    </DropDownItem>
+                  )}
+                </DropDown>
               </TaskActionMenu>
             </TaskModalHeader>
             <TaskTitleDiv>
@@ -1618,6 +1664,31 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 {fetchedTask?.dueDate ? format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy') : 'None'}
               </TaskSectionInfoText>
             </TaskSectionDisplayDiv>
+            <TaskSectionDisplayDiv>
+              <TaskSectionDisplayLabel>
+                <TagsIcon />
+                <TaskSectionDisplayText>Tags</TaskSectionDisplayText>
+              </TaskSectionDisplayLabel>
+              <TaskSectionInfoText
+                as="div"
+                style={{
+                  marginTop: '8px',
+                  marginLeft: '45px',
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                }}
+              >
+                {fetchedTask?.labels?.length
+                  ? fetchedTask.labels.map((label) => {
+                      return label ? (
+                        <Tag color={label.color} key={label.id}>
+                          {label.name}
+                        </Tag>
+                      ) : null;
+                    })
+                  : 'None'}
+              </TaskSectionInfoText>
+            </TaskSectionDisplayDiv>
             {fetchedTask?.rewards && fetchedTask?.rewards?.length > 0 && (
               <TaskSectionDisplayDiv>
                 <TaskSectionDisplayLabel>
@@ -1697,7 +1768,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   <>
                     <div style={flexDivStyle}>
                       <RejectIcon style={rejectIconStyle} />
-                      <TaskStatusHeaderText>Change requested</TaskStatusHeaderText>
+                      <TaskStatusHeaderText>Rejected</TaskStatusHeaderText>
                     </div>
                     <div
                       style={{
@@ -1721,7 +1792,9 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 )}
                 {canApproveProposal && !fetchedTask?.approvedAt && (
                   <CreateFormButtonsBlock>
-                    <CreateFormCancelButton onClick={requestProposalChanges}>Request changes</CreateFormCancelButton>
+                    {!fetchedTask?.changeRequestedAt && (
+                      <CreateFormCancelButton onClick={requestProposalChanges}>Reject</CreateFormCancelButton>
+                    )}
                     <CreateFormPreviewButton onClick={approveProposal}>Approve</CreateFormPreviewButton>
                   </CreateFormButtonsBlock>
                 )}
@@ -1785,6 +1858,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     setFetchedTaskSubmissions={setFetchedTaskSubmissions}
                     setShowPaymentModal={setShowPaymentModal}
                     getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+                    isBounty={isBounty}
                   />
                 )}
                 {activeTab === tabs.subTasks && <TaskSubtasks taskId={fetchedTask?.id} permissions={permissions} />}

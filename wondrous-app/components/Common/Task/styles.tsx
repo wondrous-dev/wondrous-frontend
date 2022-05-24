@@ -6,6 +6,7 @@ import { BaseCard } from '../card';
 import RightArrowIcon from '../../Icons/rightArrow';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import ProposalIcon from 'components/Icons/proposalIcon';
+import { getContrastYIQ } from 'utils/colors';
 export const TaskInner = styled.div`
   display: flex;
   flex: 1 1 auto;
@@ -556,7 +557,8 @@ export const ProposalCardWrapper = styled.div`
   border-radius: 3px;
   background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
   gap: 14px;
-  border: 1px solid transparent;
+  border: 0px solid transparent;
+  border-radius: 5px;
   position: relative;
   height: fit-content;
   align-items: flex-start;
@@ -658,4 +660,16 @@ export const ProposalCardFooter = styled.div`
   padding-top: 10px;
   border-top: 1px solid ${Grey85};
   padding-bottom: 15px;
+`;
+
+export const Tag = styled.div`
+  color: ${(props) => getContrastYIQ(props.color)};
+  background: ${(props) => props.color};
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin: 5px 0;
+
+  &:not(:last-child) {
+    margin-right: 10px;
+  }
 `;

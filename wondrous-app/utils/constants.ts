@@ -344,8 +344,59 @@ export const GRAPHQL_ERRORS = {
   POD_INVITE_ALREADY_EXISTS: 'pod_invite_already_exist',
   NO_RECIPIENT_WEB_3_ADDRESS: 'recipient has no web3 address',
   NO_WEB3_ADDRESS_FOUND: 'no_web3_address_found',
+  PAYMENT_METHOD_EXIST: 'payment_method_exist',
 };
 
 export const LINK = process.env.NEXT_PUBLIC_PRODUCTION
-? `https://app.wonderverse.xyz`
-: 'https://wondrous-app-git-staging-wonderverse.vercel.app';
+  ? `https://app.wonderverse.xyz`
+  : 'https://wondrous-app-git-staging-wonderverse.vercel.app';
+
+export const DATEPICKER_OPTIONS = {
+  DAILY: 'Daily',
+  WEEKLY: 'Weekly',
+  MONTHLY: 'Monthly',
+  PERIODICALLY: 'Periodically',
+};
+export const DATEPICKER_OPTIONS_ARR = Object.values(DATEPICKER_OPTIONS);
+
+export const DATEPICKER_FIELDS = { END_DATE: 'endDate', START_DATE: 'startDate' };
+
+export const DEFAULT_DATEPICKER_VALUE = { startDate: null, endDate: null };
+export const DEFAULT_SINGLE_DATEPICKER_VALUE = null;
+
+export const MONTH_DAY_FULL_YEAR = 'MM/DD/YYYY';
+export const DAY_STRING_MONTH_SHORT_YEAR = 'DD/MMM/YY';
+
+export const WEEK_DAYS = {
+  monday: false,
+  tuesday: false,
+  wednesday: false,
+  thursday: false,
+  friday: false,
+  saturday: false,
+  sunday: false,
+};
+
+// Taken from back-end src/constants/colors.py
+export enum ColorTypes {
+  RubyRed = '#B8255F',
+  JasperRed = '#DB4035',
+  SunstoneOrange = '#FF9933',
+  CitrineYellow = '#FAD000',
+  PeridotGreen = '#B4C424',
+  LimeGreen = '#7ECC49',
+  JadeGreen = '#00A86B',
+  Aquamarine = '#76EBCA',
+  GemstoneTeal = '#158FAD',
+  LarimarBlue = '#72C2D4',
+  LaceAgateBlue = '#96C3EB',
+  AzuriteBlue = '#4073FF',
+  AmethystPurple = '#884DFF',
+  SpiritQuartzPurple = '#AF38EB',
+  LepidolitePink = '#EB96EB',
+  Magenta = '#E05194',
+  SardonyxSalmon = '#FF8D85',
+  ShungiteGrey = '#808080',
+  Grey = '#B8B8B8',
+  OkeniteSepia = '#CCAC93',
+}

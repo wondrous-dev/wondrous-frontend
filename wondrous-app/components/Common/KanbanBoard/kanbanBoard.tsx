@@ -10,7 +10,7 @@ import TaskColumn from './TaskColumn';
 import { ENTITIES_TYPES } from 'utils/constants';
 // Task update (column changes)
 import apollo from 'services/apollo';
-import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER, UPDATE_BOUNTY_STATUS } from 'graphql/mutations/task';
+import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
 import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { parseUserPermissionContext } from 'utils/helpers';
 import {
@@ -34,7 +34,7 @@ const populateOrder = (index, tasks, field) => {
     aboveOrder = tasks[index - 1][field];
   }
   if (index < tasks.length - 1) {
-    belowOrder = tasks[index + 1][field];
+    belowOrder = tasks[index][field];
   }
   return {
     aboveOrder,
@@ -61,7 +61,7 @@ const KanbanBoard = (props) => {
   const isProposalEntity = board?.entityType === ENTITIES_TYPES.PROPOSAL;
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
-  
+
   useEffect(() => {
     if (inView && hasMore) {
       onLoadMore();
@@ -87,19 +87,29 @@ const KanbanBoard = (props) => {
   // TODO: Aggregate all Task mutations on one Task
   //       service.
   const prevColumnState = usePrevious(columns);
-  const updateTask = async (taskToBeUpdated) => {
-    const taskType = taskToBeUpdated.type === TASK_TYPE;
-    const taskTypeMutation = taskType ? UPDATE_TASK_STATUS : UPDATE_BOUNTY_STATUS;
-    const idKey = taskType ? 'taskId' : 'bountyId';
+  const updateTaskStatus = async (taskToBeUpdated, aboveOrder, belowOrder) => {
+    let currentBoard: String;
+    if (orgBoard) {
+      currentBoard = 'org';
+    }
+    if (podBoard) {
+      currentBoard = 'pod';
+    }
+    if (userBoard) {
+      currentBoard = 'assignee';
+    }
     try {
       const {
         data: { updateTask: task },
       } = await apollo.mutate({
-        mutation: taskTypeMutation,
+        mutation: UPDATE_TASK_STATUS,
         variables: {
-          [idKey]: taskToBeUpdated.id,
+          taskId: taskToBeUpdated.id,
           input: {
             newStatus: taskToBeUpdated.status,
+            board: currentBoard,
+            aboveOrder,
+            belowOrder
           },
         },
         refetchQueries: () => [
@@ -110,7 +120,6 @@ const KanbanBoard = (props) => {
           'getPerStatusTaskCountForUserBoard',
           'getPerStatusTaskCountForOrgBoard',
           'getPerStatusTaskCountForPodBoard',
-          'getSubtaskCountForTask',
         ],
       });
 
@@ -138,10 +147,6 @@ const KanbanBoard = (props) => {
           };
         }
         const updatedTask = checkPermissions(task) ? { ...task, status } : task;
-
-        if (updatedTask.status !== task.status) {
-          updateTask(updatedTask);
-        }
         if (checkPermissions(task)) {
           const filteredColumn = column.tasks.filter((task) => task.id !== id);
           const newTasks = [...filteredColumn.slice(0, index), updatedTask, ...filteredColumn.slice(index)];
@@ -162,16 +167,20 @@ const KanbanBoard = (props) => {
           }
 
           try {
-            updateTaskOrder({
-              variables: {
-                taskId: updatedTask?.id,
-                input: {
-                  belowOrder,
-                  aboveOrder,
-                  board,
+            if (updatedTask.status !== task.status) {
+              updateTaskStatus(updatedTask, aboveOrder, belowOrder);
+            } else {
+              updateTaskOrder({
+                variables: {
+                  taskId: updatedTask?.id,
+                  input: {
+                    belowOrder,
+                    aboveOrder,
+                    board,
+                  },
                 },
-              },
-            }).catch((e) => {});
+              }).catch((e) => {});
+            }
           } catch (err) {}
           return {
             ...column,
@@ -250,6 +259,21 @@ const KanbanBoard = (props) => {
     }
   };
 
+  const handleClose = () => {
+    const style = document.body.getAttribute('style');
+    const top = style.match(/(top: -)(.*?)(?=px)/);
+    document.body.setAttribute('style', '');
+    if (top?.length > 0) {
+      window?.scrollTo(0, Number(top[2]));
+    }
+    let newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}`;
+    if (board?.entityType) {
+      newUrl = newUrl + `&entity=${board?.entityType}`;
+    }
+    location.push(newUrl);
+    setOpenModal(false);
+  };
+
   return (
     <>
       <KanbanBoardContainer>
@@ -258,17 +282,7 @@ const KanbanBoard = (props) => {
           disableEnforceFocus
           open={openModal}
           shouldFocusAfterRender={false}
-          handleClose={() => {
-            const style = document.body.getAttribute('style');
-            const top = style.match(/(top: -)(.*?)(?=px)/);
-            document.body.setAttribute('style', '');
-            if (top?.length > 0) {
-              window?.scrollTo(0, Number(top[2]));
-            }
-            const newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}`;
-            location.push(newUrl);
-            setOpenModal(false);
-          }}
+          handleClose={handleClose}
           taskId={(location?.params?.task || location?.params?.taskProposal)?.toString()}
           isTaskProposal={!!location?.params?.taskProposal}
         />

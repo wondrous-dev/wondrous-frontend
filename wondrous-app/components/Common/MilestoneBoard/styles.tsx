@@ -42,12 +42,13 @@ export const MilestoneCard = styled.div`
   height: fit-content;
   background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
   position: relative;
-  border: 1px solid transparent;
+  border: 0px solid transparent;
+  border-radius: 5px;
   &::before {
+    border-radius: 5px;
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 5px;
     background: linear-gradient(132.7deg, #00baff 0%, #7000ff 98.92%);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;

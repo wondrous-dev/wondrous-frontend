@@ -8,14 +8,27 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CREATE_POD } from 'graphql/mutations/pod';
 import { CREATE_MILESTONE, CREATE_TASK, CREATE_BOUNTY } from 'graphql/mutations/task';
 import { CREATE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { GET_AUTOCOMPLETE_USERS, GET_TASK_BY_ID, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { CREATE_LABEL } from 'graphql/mutations/org';
+import {
+  GET_AUTOCOMPLETE_USERS,
+  GET_ORG_LABELS,
+  GET_TASK_BY_ID,
+  GET_USER_ORGS,
+  GET_USER_PERMISSION_CONTEXT,
+} from 'graphql/queries';
 import { GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_POD_USERS, GET_USER_AVAILABLE_PODS } from 'graphql/queries/pod';
 import { GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_FOR_POD, GET_MILESTONES } from 'graphql/queries/task';
 import { Grey700, White } from '../../theme/colors';
 import { addProposalItem } from 'utils/board';
-import { CHAIN_TO_CHAIN_DIPLAY_NAME, ENTITIES_TYPES, MEDIA_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
+import {
+  CHAIN_TO_CHAIN_DIPLAY_NAME,
+  ENTITIES_TYPES,
+  MEDIA_TYPES,
+  PERMISSIONS,
+  PRIVACY_LEVEL,
+} from 'utils/constants';
 import { TextInputContext } from 'utils/contexts';
 
 import {
@@ -47,6 +60,7 @@ import { TextInput } from '../TextInput';
 import { ENTITIES_UI_ELEMENTS } from './chooseEntityToCreateModal';
 import HeaderImage from './HeaderImage/headerImage';
 import { MediaItem } from './MediaItem';
+import Tags, { Option as Label } from '../Tags';
 import MembersRow from './MembersRow/membersRow';
 import { CreateFormMembersList } from './MembersRow/styles';
 import {
@@ -87,6 +101,7 @@ import {
   OptionDiv,
   OptionTypography,
   StyledAutocompletePopper,
+  CreateFormAddTagsSection,
   StyledChip,
   TextInputDiv,
   CreateFormBaseModalHeaderWrapper,
@@ -248,6 +263,7 @@ const CreateLayoutBaseModal = (props) => {
   const [milestoneString, setMilestoneString] = useState('');
   const [assignee, setAssignee] = useState(null);
   const [selectedReviewers, setSelectedReviewers] = useState([]);
+  const [labelIds, setLabelIds] = useState([]);
   const [link, setLink] = useState('');
   const [rewardsCurrency, setRewardsCurrency] = useState(null);
   const [rewardsAmount, setRewardsAmount] = useState(null);
@@ -283,6 +299,14 @@ const CreateLayoutBaseModal = (props) => {
     onCompleted: () => {
       setOrgUserFetched(true);
     },
+  });
+
+  const [getOrgLabels, { data: orgLabelsData }] = useLazyQuery(GET_ORG_LABELS, {
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [createLabel] = useMutation(CREATE_LABEL, {
+    refetchQueries: () => ['getOrgLabels'],
   });
 
   const [getEligibleReviewersForOrg, { data: eligibleReviewersForOrgData }] =
@@ -490,6 +514,7 @@ const CreateLayoutBaseModal = (props) => {
 
     const taskInput = {
       title,
+      labelIds,
       description: descriptionText,
       orgId: org,
       milestoneId: milestone?.id,
@@ -705,6 +730,7 @@ const CreateLayoutBaseModal = (props) => {
       case ENTITIES_TYPES.MILESTONE:
         const milestoneInput = {
           title,
+          labelIds,
           description: descriptionText,
           orgId: org,
           podId: pod,
@@ -760,6 +786,7 @@ const CreateLayoutBaseModal = (props) => {
       case ENTITIES_TYPES.BOUNTY:
         const bountyInput = {
           title,
+          labelIds,
           description: descriptionText,
           orgId: org,
           milestoneId: milestone?.id,
@@ -892,7 +919,36 @@ const CreateLayoutBaseModal = (props) => {
     createBounty,
     isPodPublic,
     isPublicEntity,
+    labelIds,
   ]);
+
+  useEffect(() => {
+    if (org) {
+      getOrgLabels({
+        variables: {
+          orgId: org,
+        },
+      });
+    } else {
+      setLabelIds([]);
+    }
+  }, [org]);
+
+  const handleCreateLabel = async (label: Label) => {
+    const {
+      data: { createLabel: newLabel },
+    } = await createLabel({
+      variables: {
+        input: {
+          orgId: org,
+          name: label.name,
+          color: label.color,
+        },
+      },
+    });
+
+    setLabelIds([...labelIds, newLabel.id]);
+  };
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const creating =
@@ -913,7 +969,6 @@ const CreateLayoutBaseModal = (props) => {
           <CloseModalIcon />
         </CreateFormBaseModalCloseBtn>
       </CreateFormBaseModalHeaderWrapper>
-
       <CreateFormMainSection>
         <CreateFormMainSelects>
           <DropdownSelect
@@ -1382,6 +1437,21 @@ const CreateLayoutBaseModal = (props) => {
         )}
       </CreateFormMainSection>
 
+      {org ? (
+        <CreateFormAddTagsSection>
+          <CreateFormMainInputBlock>
+            <CreateFormMainBlockTitle>Add tags</CreateFormMainBlockTitle>
+
+            <Tags
+              options={orgLabelsData?.getOrgLabels || []}
+              ids={labelIds}
+              onChange={setLabelIds}
+              onCreate={handleCreateLabel}
+              limit={4}
+            />
+          </CreateFormMainInputBlock>
+        </CreateFormAddTagsSection>
+      ) : null}
       {/* {showDeliverableRequirementsSection && (
 				<CreateFormTaskRequirements>
 					<CreateFormTaskRequirementsTitle>
@@ -1401,7 +1471,6 @@ const CreateLayoutBaseModal = (props) => {
 					</CreateFormTaskRequirementsContainer>
 				</CreateFormTaskRequirements>
 			)} */}
-
       <CreateFormAddDetailsSection>
         {/* <CreateFormAddDetailsButton onClick={() => addDetailsHandleClick()}>
           {!addDetails ? (
@@ -1509,7 +1578,6 @@ const CreateLayoutBaseModal = (props) => {
           </CreateFormAddDetailsAppearBlock>
         )}
       </CreateFormAddDetailsSection>
-
       <CreateFormFooterButtons>
         {errors.general && <ErrorText>{errors.general}</ErrorText>}
         <CreateFormButtonsBlock>

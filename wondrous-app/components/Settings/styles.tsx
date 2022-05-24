@@ -258,7 +258,7 @@ export const GeneralSettingsDAONameInput = styled(InputBase)`
     font-size: 14px;
     line-height: 21px;
     letter-spacing: 0.01em;
-    color: #c4c4c4;
+    color: ${White};
     padding: 10px 15px;
   }
 `;
@@ -279,7 +279,7 @@ export const GeneralSettingsDAODescriptionInput = styled(GeneralSettingsDAONameI
     font-size: 14px;
     line-height: 21px;
     letter-spacing: 0.01em;
-    color: #c4c4c4;
+    color: ${White};
     padding: 10px 15px;
     border: none;
   }
@@ -412,7 +412,7 @@ export const ImageUploadRecommendText = styled(Typography)`
   && {
     font-size: 12px;
     line-height: 15px;
-    color: #c4c4c4;
+    color: ${White};
     margin-bottom: 6px;
   }
 `;

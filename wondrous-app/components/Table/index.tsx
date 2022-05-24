@@ -2,7 +2,7 @@ import { useApolloClient, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { UPDATE_TASK_STATUS, ARCHIVE_TASK } from 'graphql/mutations';
+import { UNARCHIVE_TASK, ARCHIVE_TASK } from 'graphql/mutations';
 import { GET_TASK_REVIEWERS } from 'graphql/queries';
 import { ViewType } from 'types/common';
 import { delQuery } from 'utils';
@@ -62,7 +62,13 @@ import TableBody from './TableBody';
 
 const createTasksFromColumns = (columns) => {
   return columns.reduce((acc, column) => {
-    acc = [...acc, ...column.tasks];
+    const newColumnTasks = column?.tasks?.map((task) => {
+      return {
+        ...task,
+        status: task?.status || column?.status,
+      };
+    });
+    acc = [...acc, ...newColumnTasks];
     if (column?.section?.tasks) {
       acc = [...acc, ...column?.section?.tasks];
     }
@@ -94,7 +100,24 @@ export const Table = (props) => {
     }
   }, [inView, hasMore, onLoadMore]);
 
-  const [updateTaskStatusMutation] = useMutation(UPDATE_TASK_STATUS);
+  const [unarchiveTaskMutation, { data: unarchiveTaskData }] = useMutation(UNARCHIVE_TASK, {
+    refetchQueries: [
+      'getTaskById',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getOrgTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+    onError: () => {
+      console.error('Something went wrong unarchiving tasks');
+    },
+    onCompleted: () => {
+      // TODO: Move columns
+      // let columns = [...boardColumns?.columns]
+    },
+  });
 
   async function editTask(task, status = '') {
     let populatedTask = { ...task };
@@ -121,19 +144,9 @@ export const Table = (props) => {
     setEditableTask(populatedTask);
   }
 
-  async function handleNewStatus(task, status) {
-    updateTaskStatusMutation({
-      variables: {
-        taskId: task?.taskId ?? task?.id,
-        input: {
-          newStatus: status,
-        },
-      },
-    });
-  }
   async function archiveTask(task) {
     const newColumns = [...boardColumns.columns];
-    const column = newColumns.find((column) => column.tasks.includes(task));
+    const column = newColumns.find((column) => column.tasks?.includes(task));
     let taskIndex;
 
     await apolloClient.mutate({
@@ -160,7 +173,11 @@ export const Table = (props) => {
         Task archived successfully!{' '}
         <ArchivedTaskUndo
           onClick={() => {
-            handleNewStatus(selectedTask, selectedTask.status);
+            unarchiveTaskMutation({
+              variables: {
+                taskId: task?.taskId ?? task?.id,
+              },
+            });
             setSnackbarAlertOpen(false);
             setSelectedTask(null);
 
