@@ -257,9 +257,12 @@ export const Task = (props) => {
   const canDelete =
     canArchive && (task?.type === Constants.ENTITIES_TYPES.TASK || task?.type === Constants.ENTITIES_TYPES.MILESTONE);
 
-  const taskType = task?.isProposal ? 'taskProposal' : 'task';
-  const newUrl = `${delQuery(router.asPath)}?${taskType}=${task?.id}&view=${router.query.view || 'grid'}`;
   const openModal = (e) => {
+    const type = task?.isProposal ? 'taskProposal' : 'task';
+    let newUrl = `${delQuery(router.asPath)}?${type}=${task?.id}&view=${router.query.view || 'grid'}`;
+    if (board?.entityType) {
+      newUrl = newUrl + `&entity=${board?.entityType}`;
+    }
     location.push(newUrl);
     windowOffset = window.scrollY;
     document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
@@ -366,7 +369,6 @@ export const Task = (props) => {
         canDelete={canDelete}
         setDeleteTask={setDeleteTask}
         proposalRequestChange={proposalRequestChange}
-        url={newUrl}
       />
     </span>
   );

@@ -74,7 +74,6 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { PERMISSIONS } from 'utils/constants';
-import { Share } from '../Share';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -111,7 +110,6 @@ export const TaskCard = ({
   setArchiveTask,
   canDelete,
   setDeleteTask,
-  url,
 }) => {
   let TaskIcon = TASK_ICONS[task.status];
 
@@ -360,7 +358,6 @@ export const TaskCard = ({
             <SubtaskCount>{totalSubtask}</SubtaskCount>
           </SubtaskCountWrapper>
         )}
-        <Share url={`${Constants.LINK}${url}`} />
         {canArchive && displayActions && (
           <TaskActionMenu right="true">
             <DropDown DropdownHandler={TaskMenuIcon}>
