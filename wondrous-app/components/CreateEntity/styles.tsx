@@ -8,7 +8,7 @@ import { LogoSquare } from '../Common/ci';
 import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
 import BountyIcon from '../Icons/createBounty.svg';
 import CreateDaoIcon from '../Icons/createDao';
-import CreateMilestoneIcon from '../Icons/createMilestone.svg';
+import CreateMilestoneIcon from '../Icons/createMilestone';
 import CreatePodIcon from '../Icons/createPod.svg';
 import CreateProposalIcon from '../Icons/createProposal.svg';
 import CreateTaskIcon from '../Icons/createTask.svg';
@@ -206,11 +206,17 @@ export const CreateFormBaseModal = styled(BaseCard)`
   }
 `;
 
+export const CreateFormBaseModalHeaderWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px 25px;
+`;
+
 export const CreateFormBaseModalHeader = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 0 40px 25px;
 
   & svg {
     margin-right: 10px;
@@ -219,9 +225,9 @@ export const CreateFormBaseModalHeader = styled.div`
 
 export const CreateFormBaseModalCloseBtn = styled(IconButton)`
   && {
-    position: absolute;
+    /* position: absolute;
     right: 20px;
-    top: 20px;
+    top: 20px; */
     width: 35px;
     height: 35px;
     background: #0f0f0f;
@@ -638,8 +644,9 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
     font-size: 14px;
     height: 30px;
 
-    ::placeholder {
-      color: white;
+    &::placeholder {
+      color: #C4C4C4;
+      opacity: 1;
     }
   }
 
@@ -647,11 +654,6 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
     right: 10px;
     height: 11px;
     position: absolute;
-  }
-
-  .roles-icon2 {
-    position: absolute;
-    left: 10px;
   }
 
   svg {
@@ -765,4 +767,13 @@ export const CreateFormSubmitButton = styled(Button)`
 
 export const RewardCurrencyTokenIcon = styled(WonderTokenIcon)`
   margin-right: 12px;
+`;
+
+export const CreateFormAddTagsSection = styled.div`
+  position: relative;
+  width: 100%;
+  border-bottom: 1px solid #363636;
+  align-items: center;
+  margin: 0 auto;
+  padding: 30px 40px 10px;
 `;

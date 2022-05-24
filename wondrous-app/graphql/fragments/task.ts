@@ -18,6 +18,11 @@ export const TaskFragment = gql`
     dueDate
     status
     paymentStatus
+    labels {
+      id
+      name
+      color
+    }
     links {
       url
       displayName
@@ -247,6 +252,11 @@ export const TaskProposalFragment = gql`
     podId
     priority
     dueDate
+    labels {
+      id
+      name
+      color
+    }
     links {
       url
       displayName
@@ -344,4 +354,45 @@ export const BountyFragment = gql`
     maxSubmissionCount
   }
   ${MediaFragment}
+`;
+
+export const MilestoneFragment = gql`
+  fragment MilestoneFragment on Milestone {
+    id
+    title
+    createdAt
+    createdBy
+    description
+    orgId
+    podId
+    type
+    priority
+    dueDate
+    status
+    links {
+      url
+      displayName
+      type
+    }
+    userMentions
+    creator {
+      username
+      profilePicture
+    }
+    org {
+      profilePicture
+      name
+      username
+    }
+    pod {
+      name
+      color
+    }
+    orgOrder
+    podOrder
+    assigneeOrder
+    reactionCount
+    commentCount
+    privacyLevel
+  }
 `;

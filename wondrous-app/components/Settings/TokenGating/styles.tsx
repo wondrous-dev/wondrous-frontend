@@ -283,20 +283,6 @@ export const TokenGatingButton = styled(Button)`
   }
 `;
 
-export const TokenGatingDisabledButton = styled(Button)`
-  && {
-    width: 100%;
-    margin-top: 28px;
-    background: ${Grey100};
-    button {
-      background: ${Background};
-      font-family: 'Space Grotesk';
-      font-size: 16px;
-      font-weight: 500;
-    }
-  }
-`;
-
 export const NewTokenGatingButton = styled(Button)`
   && {
     width: 200px;

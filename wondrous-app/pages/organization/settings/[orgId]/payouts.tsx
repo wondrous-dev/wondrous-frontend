@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import Payouts from 'components/Settings/Payouts';
+import { withAuth } from 'components/Auth/withAuth';
 
 const PayoutsPage = () => {
   const router = useRouter();
@@ -10,4 +11,4 @@ const PayoutsPage = () => {
   return <Payouts orgId={orgId} />;
 };
 
-export default PayoutsPage;
+export default withAuth(PayoutsPage);

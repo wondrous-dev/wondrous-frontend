@@ -7,6 +7,7 @@ import { GET_POD_ROLES_WITH_TOKEN_GATE, GET_POD_BY_ID } from 'graphql/queries';
 import { Role } from 'types/common';
 import { CREATE_POD_ROLE, DELETE_POD_ROLE, UPDATE_POD_ROLE } from 'graphql/mutations/pod';
 import permissons from 'utils/podPermissions';
+import { withAuth } from 'components/Auth/withAuth';
 
 const RolesPage = () => {
   const [roles, setRoles] = useState([]);
@@ -113,4 +114,4 @@ const RolesPage = () => {
   );
 };
 
-export default RolesPage;
+export default withAuth(RolesPage);

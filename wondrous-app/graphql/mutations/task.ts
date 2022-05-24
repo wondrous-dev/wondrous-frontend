@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { CommentFragment } from '../fragments/comments';
 import { MediaFragment } from '../fragments/media';
-import { BountyFragment, TaskFragment } from '../fragments/task';
+import { BountyFragment, MilestoneFragment, TaskFragment } from '../fragments/task';
 
 export const CREATE_TASK = gql`
   mutation createTask($input: TaskInput) {
@@ -105,10 +105,10 @@ export const DELETE_TASK_COMMENT = gql`
 export const CREATE_MILESTONE = gql`
   mutation createMilestone($input: TaskInput) {
     createMilestone(input: $input) {
-      ...TaskFragment
+      ...MilestoneFragment
     }
   }
-  ${TaskFragment}
+  ${MilestoneFragment}
 `;
 
 export const DELETE_MILESTONE = gql`
@@ -131,10 +131,10 @@ export const UPDATE_TASK_ASSIGNEE = gql`
 export const UPDATE_MILESTONE = gql`
   mutation updateMilestone($milestoneId: ID!, $input: TaskInput) {
     updateMilestone(milestoneId: $milestoneId, input: $input) {
-      ...TaskFragment
+      ...MilestoneFragment
     }
   }
-  ${TaskFragment}
+  ${MilestoneFragment}
 `;
 
 export const UPDATE_TASK_ORDER = gql`
@@ -166,6 +166,24 @@ export const UPDATE_BOUNTY = gql`
 export const UPDATE_BOUNTY_STATUS = gql`
   mutation updateBountyStatus($bountyId: ID!, $input: updateStatusInput!) {
     updateBountyStatus(bountyId: $bountyId, input: $input) {
+      ...BountyFragment
+    }
+  }
+  ${BountyFragment}
+`;
+
+export const COMPLETE_MILESTONE = gql`
+  mutation completeMilestone($milestoneId: ID!, $timezone: String) {
+    completeMilestone(milestoneId: $milestoneId, timezone: $timezone) {
+      ...MilestoneFragment
+    }
+  }
+  ${MilestoneFragment}
+`;
+
+export const COMPLETE_BOUNTY = gql`
+  mutation completeBounty($bountyId: ID!, $timezone: String) {
+    completeBounty(bountyId: $bountyId, timezone: $timezone) {
       ...BountyFragment
     }
   }

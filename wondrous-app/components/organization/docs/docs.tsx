@@ -131,6 +131,7 @@ const Docs = (props) => {
 
   return (
     <Wrapper orgData={orgData}>
+
       <Tooltip title="Create new doc category" placement="top">
         <Box sx={styles.categoryButtonContainer}>
           <Box sx={styles.categoryButton} onClick={() => setShowCategoriesDialog(true)}>

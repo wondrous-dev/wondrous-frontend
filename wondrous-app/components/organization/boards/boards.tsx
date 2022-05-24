@@ -5,6 +5,19 @@ import CreatePodIcon from '../../Icons/createPod';
 import Boards from '../../Common/Boards';
 import { OrgPod } from 'types/pod';
 import { FILTER_STATUSES } from 'services/board';
+import BoardsActivity from 'components/Common/BoardsActivity';
+import { ENTITIES_TYPES } from 'utils/constants';
+import MilestoneBoard from 'components/Common/MilestoneBoard';
+import BountyBoard from 'components/Common/BountyBoard';
+import withCardsLayout from 'components/Common/Boards/withCardsLayout';
+import { ColumnsContext } from 'utils/contexts';
+
+const BOARDS_MAP = {
+  [ENTITIES_TYPES.TASK]: Boards,
+  [ENTITIES_TYPES.MILESTONE]: withCardsLayout(MilestoneBoard, 3),
+  [ENTITIES_TYPES.PROPOSAL]: Boards,
+  [ENTITIES_TYPES.BOUNTY]: withCardsLayout(BountyBoard, 4),
+};
 
 type Props = {
   orgPods: OrgPod[];
@@ -14,12 +27,14 @@ type Props = {
   onLoadMore: any;
   orgData: any;
   hasMore: any;
-  selectOptions: any;
   searchString: string;
   statuses: string[];
   podIds: string[];
   setColumns: React.Dispatch<React.SetStateAction<{}>>;
   userId?: string;
+  entityType: string;
+  loading: boolean;
+  activeView: string | string[];
 };
 
 const OrgBoards = (props: Props) => {
@@ -35,8 +50,12 @@ const OrgBoards = (props: Props) => {
     podIds,
     setColumns,
     userId,
+    entityType,
+    loading,
+    activeView,
   } = props;
-  const [filterSchema, setFilterSchema] = useState([
+
+  const defaultFilterSchema: any = [
     {
       name: 'podIds',
       label: 'Pods',
@@ -47,8 +66,11 @@ const OrgBoards = (props: Props) => {
         count: pod.contributorCount,
       })),
     },
-    FILTER_STATUSES,
-  ]);
+  ];
+
+  entityType === ENTITIES_TYPES.TASK && defaultFilterSchema.push(FILTER_STATUSES);
+
+  const [filterSchema, setFilterSchema] = useState(defaultFilterSchema);
 
   useEffect(() => {
     const schema = [...filterSchema];
@@ -60,20 +82,29 @@ const OrgBoards = (props: Props) => {
     setFilterSchema(schema);
   }, [orgPods]);
 
+  const ActiveBoard = BOARDS_MAP[entityType];
+
   return (
     <Wrapper orgData={orgData}>
-      <Boards
-        filterSchema={filterSchema}
+      <BoardsActivity
         onSearch={onSearch}
+        filterSchema={filterSchema}
         onFilterChange={onFilterChange}
-        columns={columns}
-        onLoadMore={onLoadMore}
-        hasMore={hasMore}
         statuses={statuses}
         podIds={podIds}
-        setColumns={setColumns}
         userId={userId}
       />
+      <ColumnsContext.Provider value={{ columns, setColumns }}>
+        {!loading && (
+          <ActiveBoard
+            activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
+            columns={columns}
+            onLoadMore={onLoadMore}
+            hasMore={hasMore}
+            setColumns={setColumns}
+          />
+        )}
+      </ColumnsContext.Provider>
     </Wrapper>
   );
 };

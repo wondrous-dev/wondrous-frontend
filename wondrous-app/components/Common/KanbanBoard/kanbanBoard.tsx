@@ -7,17 +7,25 @@ import { useLocation } from 'utils/useLocation';
 import { TaskViewModal } from '../Task/modal';
 import { KanbanBoardContainer, LoadMore } from './styles';
 import TaskColumn from './TaskColumn';
-
+import { ENTITIES_TYPES } from 'utils/constants';
 // Task update (column changes)
 import apollo from 'services/apollo';
-import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER, UPDATE_BOUNTY_STATUS } from 'graphql/mutations/task';
+import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
+import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { BOARD_TYPE, PERMISSIONS, PAYMENT_STATUS, TASK_TYPE } from 'utils/constants';
+import {
+  BOARD_TYPE,
+  PERMISSIONS,
+  PAYMENT_STATUS,
+  TASK_TYPE,
+  STATUS_APPROVED,
+  STATUS_CHANGE_REQUESTED,
+  STATUS_OPEN,
+} from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { useMutation } from '@apollo/client';
 import { dedupeColumns, delQuery } from 'utils';
 import DndErrorModal from './DndErrorModal';
-import { ViewType } from 'types/common';
 
 const populateOrder = (index, tasks, field) => {
   let aboveOrder = null,
@@ -26,7 +34,7 @@ const populateOrder = (index, tasks, field) => {
     aboveOrder = tasks[index - 1][field];
   }
   if (index < tasks.length - 1) {
-    belowOrder = tasks[index + 1][field];
+    belowOrder = tasks[index][field];
   }
   return {
     aboveOrder,
@@ -43,10 +51,14 @@ const KanbanBoard = (props) => {
   const router = useRouter();
   const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
   const [dndErrorModal, setDndErrorModal] = useState(false);
+  const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
+  const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
   // Permissions for Draggable context
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
+  const board = orgBoard || userBoard || podBoard;
+  const isProposalEntity = board?.entityType === ENTITIES_TYPES.PROPOSAL;
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
 
@@ -75,19 +87,29 @@ const KanbanBoard = (props) => {
   // TODO: Aggregate all Task mutations on one Task
   //       service.
   const prevColumnState = usePrevious(columns);
-  const updateTask = async (taskToBeUpdated) => {
-    const taskType = taskToBeUpdated.type === TASK_TYPE;
-    const taskTypeMutation = taskType ? UPDATE_TASK_STATUS : UPDATE_BOUNTY_STATUS;
-    const idKey = taskType ? 'taskId' : 'bountyId';
+  const updateTaskStatus = async (taskToBeUpdated, aboveOrder, belowOrder) => {
+    let currentBoard: String;
+    if (orgBoard) {
+      currentBoard = 'org';
+    }
+    if (podBoard) {
+      currentBoard = 'pod';
+    }
+    if (userBoard) {
+      currentBoard = 'assignee';
+    }
     try {
       const {
         data: { updateTask: task },
       } = await apollo.mutate({
-        mutation: taskTypeMutation,
+        mutation: UPDATE_TASK_STATUS,
         variables: {
-          [idKey]: taskToBeUpdated.id,
+          taskId: taskToBeUpdated.id,
           input: {
             newStatus: taskToBeUpdated.status,
+            board: currentBoard,
+            aboveOrder,
+            belowOrder
           },
         },
         refetchQueries: () => [
@@ -98,7 +120,6 @@ const KanbanBoard = (props) => {
           'getPerStatusTaskCountForUserBoard',
           'getPerStatusTaskCountForOrgBoard',
           'getPerStatusTaskCountForPodBoard',
-          'getSubtaskCountForTask',
         ],
       });
 
@@ -113,7 +134,8 @@ const KanbanBoard = (props) => {
     }
   };
 
-  const moveCard = async (id, status, index) => {
+  const moveCard = async (id, status, index, source) => {
+    //TODO get rid of nested loop
     const updatedColumns = columns.map((column) => {
       const task = columns.map(({ tasks }) => tasks.find((task) => task.id === id)).filter((i) => i)[0];
       // Only allow when permissions are OK
@@ -125,10 +147,6 @@ const KanbanBoard = (props) => {
           };
         }
         const updatedTask = checkPermissions(task) ? { ...task, status } : task;
-
-        if (updatedTask.status !== task.status) {
-          updateTask(updatedTask);
-        }
         if (checkPermissions(task)) {
           const filteredColumn = column.tasks.filter((task) => task.id !== id);
           const newTasks = [...filteredColumn.slice(0, index), updatedTask, ...filteredColumn.slice(index)];
@@ -149,16 +167,20 @@ const KanbanBoard = (props) => {
           }
 
           try {
-            updateTaskOrder({
-              variables: {
-                taskId: updatedTask?.id,
-                input: {
-                  belowOrder,
-                  aboveOrder,
-                  board,
+            if (updatedTask.status !== task.status) {
+              updateTaskStatus(updatedTask, aboveOrder, belowOrder);
+            } else {
+              updateTaskOrder({
+                variables: {
+                  taskId: updatedTask?.id,
+                  input: {
+                    belowOrder,
+                    aboveOrder,
+                    board,
+                  },
                 },
-              },
-            }).catch((e) => {});
+              }).catch((e) => {});
+            }
           } catch (err) {}
           return {
             ...column,
@@ -176,6 +198,50 @@ const KanbanBoard = (props) => {
     });
     setColumns(dedupeColumns(updatedColumns));
   };
+
+  const moveProposal = async (id, destinationStatus, destinationIndex, { index, droppableId }) => {
+    const boardColumns = [...columns];
+    const sourceColumn = boardColumns.findIndex((column) => column.status === droppableId);
+    const taskToUpdate = boardColumns[sourceColumn]?.tasks[index];
+    const destinationColumn = boardColumns.findIndex((column) => column.status === destinationStatus);
+
+    if (droppableId === STATUS_APPROVED) {
+      return;
+    }
+    if (checkPermissions(taskToUpdate)) {
+      if (destinationStatus !== droppableId) {
+        if (destinationStatus === STATUS_APPROVED) {
+          approveTaskProposal({
+            variables: {
+              proposalId: id,
+            },
+            onCompleted: (data) => {
+              boardColumns[sourceColumn]?.tasks?.splice(index, 1);
+              boardColumns[destinationColumn]?.tasks?.unshift(taskToUpdate);
+              setColumns(dedupeColumns(boardColumns));
+            },
+            refetchQueries: ['GetOrgTaskBoardProposals', 'getPerStatusTaskCountForOrgBoard'],
+          });
+          return;
+        }
+        if (destinationStatus === STATUS_CHANGE_REQUESTED) {
+          requestChangeTaskProposal({
+            variables: {
+              proposalId: id,
+            },
+            onCompleted: (data) => {
+              boardColumns[sourceColumn]?.tasks?.splice(index, 1);
+              const updatedTask = { ...taskToUpdate, changeRequestedAt: new Date() };
+              boardColumns[destinationColumn]?.tasks?.unshift(updatedTask);
+              setColumns(dedupeColumns(boardColumns));
+            },
+            refetchQueries: ['GetOrgTaskBoardProposals', 'getPerStatusTaskCountForOrgBoard'],
+          });
+        }
+      }
+    }
+  };
+
   const location = useLocation();
   useEffect(() => {
     const params = location.params;
@@ -185,11 +251,27 @@ const KanbanBoard = (props) => {
   }, [orgBoard, podBoard, userBoard, location]);
 
   const onDragEnd = (result) => {
+    const moveAction = isProposalEntity ? moveProposal : moveCard;
     try {
-      moveCard(result.draggableId, result.destination.droppableId, result.destination.index);
+      moveAction(result.draggableId, result.destination.droppableId, result.destination.index, result.source);
     } catch {
       console.error('The card was dropped outside the context of DragDropContext.');
     }
+  };
+
+  const handleClose = () => {
+    const style = document.body.getAttribute('style');
+    const top = style.match(/(top: -)(.*?)(?=px)/);
+    document.body.setAttribute('style', '');
+    if (top?.length > 0) {
+      window?.scrollTo(0, Number(top[2]));
+    }
+    let newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}`;
+    if (board?.entityType) {
+      newUrl = newUrl + `&entity=${board?.entityType}`;
+    }
+    location.push(newUrl);
+    setOpenModal(false);
   };
 
   return (
@@ -200,17 +282,7 @@ const KanbanBoard = (props) => {
           disableEnforceFocus
           open={openModal}
           shouldFocusAfterRender={false}
-          handleClose={() => {
-            const style = document.body.getAttribute('style');
-            const top = style.match(/(top: -)(.*?)(?=px)/);
-            document.body.setAttribute('style', '');
-            if (top?.length > 0) {
-              window?.scrollTo(0, Number(top[2]));
-            }
-            const newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}`;
-            location.push(newUrl);
-            setOpenModal(false);
-          }}
+          handleClose={handleClose}
           taskId={(location?.params?.task || location?.params?.taskProposal)?.toString()}
           isTaskProposal={!!location?.params?.taskProposal}
         />

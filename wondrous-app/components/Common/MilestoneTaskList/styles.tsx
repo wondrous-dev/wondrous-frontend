@@ -84,6 +84,7 @@ export const TaskTitle = styled(Typography)`
     font-weight: 700;
     font-size: 16px;
     color: #ffffff;
+    width: calc(100% - 76px);
 
     a {
       color: white;
@@ -102,6 +103,7 @@ export const TaskDescription = styled(Typography)`
     font-size: 14px;
     line-height: 1.5;
     margin-top: 12px;
+    width: calc(100% - 76px);
   }
 `;
 

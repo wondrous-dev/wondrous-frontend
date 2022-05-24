@@ -15,6 +15,8 @@ import {
   SelectMembershipContext,
   EditTokenGatingConditionContext,
 } from './contexts';
+import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries';
+import { useLazyQuery } from '@apollo/client';
 
 export const useIsMobile = () => useContext(IsMobileContext);
 
@@ -137,4 +139,21 @@ export const useRouterQuery = ({
     }
   }, [routerQuery]);
   return [state, setState];
+};
+
+export const useTokenGating = (orgId) => {
+  const [getTokenGatingConditionsForOrg, { data, loading }] = useLazyQuery(GET_TOKEN_GATING_CONDITIONS_FOR_ORG, {
+    fetchPolicy: 'network-only',
+  });
+  useEffect(() => {
+    if (orgId) {
+      getTokenGatingConditionsForOrg({
+        variables: {
+          orgId,
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orgId]);
+  return [data, loading];
 };

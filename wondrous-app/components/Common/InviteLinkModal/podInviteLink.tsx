@@ -35,10 +35,7 @@ import { GET_POD_ROLES } from 'graphql/queries/pod';
 import { putDefaultRoleOnTop } from './OrgInviteLink';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
-
-const link = process.env.NEXT_PUBLIC_PRODUCTION
-  ? `https://app.wonderverse.xyz/invite/`
-  : 'https://wondrous-app-git-staging-wonderverse.vercel.app/invite/';
+import { LINK } from 'utils/constants';
 
 export const PodInviteLinkModal = (props) => {
   const { podId, open, onClose } = props;
@@ -57,7 +54,7 @@ export const PodInviteLinkModal = (props) => {
   });
   const [createPodInviteLink] = useMutation(CREATE_POD_INVITE_LINK, {
     onCompleted: (data) => {
-      setInviteLink(`${link}${data?.createPodInviteLink.token}?type=pod`);
+      setInviteLink(`${LINK}/invite/${data?.createPodInviteLink.token}?type=pod`);
     },
     onError: (e) => {
       console.error(e);

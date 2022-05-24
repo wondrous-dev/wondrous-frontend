@@ -154,6 +154,13 @@ export const SettingsWrapper = (props) => {
       page: [SettingsPage.Org, SettingsPage.Pod],
     },
     {
+      icon: <CardIcon width={40} height={40} />,
+      label: 'Payment Method',
+      value: 'payment-method',
+      href: `/organization/settings/${orgId}/payment-method`,
+      page: [SettingsPage.Org],
+    },
+    {
       icon: <MembersIcon />,
       label: 'Members',
       value: 'members',

@@ -31,7 +31,14 @@ const DocumentListItem = ({ title, description, media, url, icon, permission, on
   }, [imgUrl, media]);
 
   return (
-    <Grid item xs={12} onClick={onClick}>
+    <Grid
+      item
+      xs={6}
+      onClick={onClick}
+      style={{
+        cursor: 'pointer',
+      }}
+    >
       <Box sx={styles.listItem}>
         <Box sx={styles.imageContainer}>
           {imgUrl && (
@@ -40,11 +47,15 @@ const DocumentListItem = ({ title, description, media, url, icon, permission, on
               alt={`media for ${title}`}
               layout="fill"
               objectFit="cover"
-              style={{ borderRadius: '3px' }}
             />
           )}
         </Box>
-        <Box ml={1.75}>
+        <Box
+          ml={1.75}
+          style={{
+            width: 'calc(100% - 228px)',
+          }}
+        >
           <WhiteTypography variant="subtitle1">{title}</WhiteTypography>
           <Box mt={1.5} />
           <DescriptionTypography>{description}</DescriptionTypography>
