@@ -5,7 +5,7 @@ export default function FilterTabs({ tabs, onSelect, selected }) {
     <>
       <StyledTabs value={selected} withMargin={false} withBorder={false}>
         {tabs.map((tab, idx) => (
-          <StyledTab value={tab.name} key={tab.name} label={tab.label} onClick={() => onSelect(tab)} />
+          <StyledTab value={tab.name} key={idx} label={tab.label} onClick={() => onSelect(tab)} />
         ))}
       </StyledTabs>
     </>
