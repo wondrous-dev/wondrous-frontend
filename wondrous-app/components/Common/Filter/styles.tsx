@@ -176,7 +176,7 @@ export const FilterItemList = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-
+  gap: 6px;
   width: 100%;
   max-height: 286px;
 
@@ -197,10 +197,23 @@ export const FilterItem = styled.div`
   border-radius: 4px;
   margin: 4px 0;
   padding: 8px;
-
+  position: relative;
   cursor: pointer;
 
-  ${(props) => (props.selected ? `border: 1px solid ${HighlightBlue};` : `border: 1px solid transparent;`)}
+  ${({ selected, gradient }) =>
+    selected
+      ? `&::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 4px;
+    background: ${gradient || ''};
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 0.8px;
+  }`
+      : ''};
 `;
 
 export const FilterItemIcon = styled.div`
@@ -242,7 +255,7 @@ export const FilterItemName = styled.div`
 
   font-family: 'Space Grotesk';
   font-style: normal;
-  font-weight: 400;
+  font-weight: ${({ isSelected }) => (isSelected ? '500' : '400')};
   font-size: 14px;
   line-height: 18px;
 `;
@@ -315,7 +328,7 @@ export const ButtonsWrapper = styled.div`
 export const FilterCheckbox = ({ checked }) => (
   <Checkbox
     checked={checked}
-    icon={<CircleUnchecked style={{ width: '20px', height: '20px', color: '#474747' }} />}
-    checkedIcon={<CircleChecked style={{ color: '#7427FF', width: '20px', height: '20px' }} />}
+    icon={<CircleUnchecked style={{ width: '17px', height: '17px', color: '#474747' }} />}
+    checkedIcon={<CircleChecked style={{ color: '#7427FF', width: '17px', height: '17px' }} />}
   />
 );

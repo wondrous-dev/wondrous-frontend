@@ -177,9 +177,14 @@ const Filter = (props: IFilterProps) => {
                         const isSelected = (selectedTabItems[selected?.name] || []).includes(item.id);
 
                         return (
-                          <FilterItem onClick={() => toggleInFilter(item.id)} selected={isSelected} key={item.id}>
+                          <FilterItem
+                            gradient={item?.gradient}
+                            onClick={() => toggleInFilter(item.id)}
+                            selected={isSelected}
+                            key={item.id}
+                          >
                             <FilterItemIcon>{item.icon}</FilterItemIcon>
-                            <FilterItemName>{item.name}</FilterItemName>
+                            <FilterItemName isSelected={isSelected}>{item.name}</FilterItemName>
                             {item.organization ? (
                               <FilterItemOrgIcon>{item.organization.profilePicture}</FilterItemOrgIcon>
                             ) : (
