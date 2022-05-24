@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextField } from '@material-ui/core';
 import { createFilterOptions } from '@material-ui/lab';
 import _ from 'lodash';
@@ -35,18 +35,23 @@ const filter = createFilterOptions({
   stringify: (option: Option) => option.name || '',
 });
 
-const colors = _.shuffle(Object.values(ColorTypes));
+const colors = Object.values(ColorTypes);
+const randomColors = _.shuffle(colors);
 
 function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
-  const getRandomColor = (): string => {
-    return options.length <= colors.length
+  const [openTags, setOpenTags] = useState(false);
+  const [randomColor, setRandomColor] = useState(randomColors[0]);
+
+  const generateRandomColor = () => {
+    return options.length <  colors.length
       ? // pick random color that doesn't exist in the option
         colors.find((color) => !options.some((option) => option.color === color))
-      : colors[0];
+      : _.shuffle(colors)[0];
   };
 
-  const [openTags, setOpenTags] = useState(false);
-  const [randomColor, setRandomColor] = useState(getRandomColor());
+  useEffect(() => {
+    setRandomColor(generateRandomColor());
+  }, [options]);
 
   return (
     <StyledAutocomplete
@@ -66,15 +71,22 @@ function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
 
         if (tagOrNewTagName) {
           if (typeof tagOrNewTagName === 'string') {
-            onCreate({
-              name: tagOrNewTagName,
-              color: randomColor,
-            } as Option);
-            return setRandomColor(randomColor);
+            const option = options.find((option) => option.name === tagOrNewTagName);
+
+            if (option) {
+              const selected = ids.find((id) => option.id === id);
+
+              if (!selected) {
+                tags.push(option);
+              }
+            } else {
+              onCreate({
+                name: tagOrNewTagName,
+                color: randomColor,
+              } as Option);
+            }
           } else if (!tagOrNewTagName.id) {
             onCreate(tagOrNewTagName);
-
-            return setRandomColor(getRandomColor());
           }
         }
 
