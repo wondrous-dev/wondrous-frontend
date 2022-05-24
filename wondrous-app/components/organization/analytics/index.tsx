@@ -546,7 +546,7 @@ const Analytics = (props) => {
         >
           <ExportCSVButtonText>Export Tasks</ExportCSVButtonText>
         </ExportCSVButton>
-        <ExportCSVButton
+        {/* <ExportCSVButton
           style={{
             borderRadius: '8px',
             height: '40px',
@@ -562,7 +562,7 @@ const Analytics = (props) => {
           }}
         >
           <ExportCSVButtonText>Pay out</ExportCSVButtonText>
-        </ExportCSVButton>
+        </ExportCSVButton> */}
       </HeaderWrapper>
       {contributorTaskData?.length === 0 && (
         <HeaderText
