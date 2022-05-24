@@ -43,7 +43,7 @@ function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
   const [randomColor, setRandomColor] = useState(randomColors[0]);
 
   const generateRandomColor = () => {
-    return options.length <  colors.length
+    return options.length < colors.length
       ? // pick random color that doesn't exist in the option
         colors.find((color) => !options.some((option) => option.color === color))
       : _.shuffle(colors)[0];
@@ -69,28 +69,33 @@ function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
 
         const tagOrNewTagName = tags[tags.length - 1];
 
-        if (tagOrNewTagName) {
-          if (typeof tagOrNewTagName === 'string') {
-            const option = options.find((option) => option.name === tagOrNewTagName);
+        if (!tagOrNewTagName) {
+          onChange([]);
 
-            if (option) {
-              const selected = ids.find((id) => option.id === id);
-
-              if (!selected) {
-                tags.push(option);
-              }
-            } else {
-              onCreate({
-                name: tagOrNewTagName,
-                color: randomColor,
-              } as Option);
-            }
-          } else if (!tagOrNewTagName.id) {
-            onCreate(tagOrNewTagName);
-          }
+          return;
         }
 
-        onChange(tags.map((tag) => tag.id));
+        if (typeof tagOrNewTagName === 'string') {
+          const option = options.find((option) => option.name === tagOrNewTagName);
+
+          if (option) {
+            const selected = ids.find((id) => option.id === id);
+
+            if (!selected) {
+              tags[tags.length - 1] = option;
+              onChange(tags.map((tag) => tag.id));
+            }
+          } else {
+            onCreate({
+              name: tagOrNewTagName,
+              color: randomColor,
+            } as Option);
+          }
+        } else if (tagOrNewTagName.id) {
+          onChange(tags.map((tag) => tag.id));
+        } else {
+          onCreate(tagOrNewTagName);
+        }
       }}
       getOptionLabel={(option) => option.name}
       filterOptions={(options, params) => {
@@ -133,7 +138,7 @@ function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
               icon={<span>&times;</span>}
               onClick={props.onDelete}
               label={option.name}
-              bgColor={option.color}
+              background={option.color}
               variant="outlined"
             />
           );

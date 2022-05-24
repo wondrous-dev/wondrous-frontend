@@ -62,19 +62,19 @@ export const OptionItem = styled.li`
 
 export const StyledChipTag = styled(Chip)`
   &&& {
-    color: ${props => getContrastYIQ(props.bgColor)};
-    background: ${props => props.bgColor};
+    color: ${props => getContrastYIQ(props.background)};
+    background: ${props => props.background};
     border: 0;
     border-radius: 6px;
     height: 25px;
     margin-right: 6px;
     
     > span {
-      color: ${props => getContrastYIQ(props.bgColor)};
+      color: ${props => getContrastYIQ(props.background)};
     }
     
     &:hover {
-      background: ${props => props.bgColor};
+      background: ${props => props.background};
       opacity: 0.8;
     }
   }
