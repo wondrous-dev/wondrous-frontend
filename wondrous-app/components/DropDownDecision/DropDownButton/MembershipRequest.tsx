@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ArrowDropDownIcon from '../../Icons/arrowDropDown';
 import { DropDownPopper } from '../DropDownPopper/MembershipRequest';
-import { StyledDropDownButton } from './styles';
+import { StyledDropDownButton, StyledDropDownButtonWrapper } from './styles';
 
 export const DropDownButtonDecision = (props) => {
   const { userId, orgId, podId, status } = props;
@@ -13,7 +13,7 @@ export const DropDownButtonDecision = (props) => {
   };
   const id = open ? 'simple-Popper' : undefined;
   return (
-    <>
+    <StyledDropDownButtonWrapper>
       <StyledDropDownButton aria-describedby={id} onClick={handleClick} className={open ? 'active' : ''} {...props}>
         <ArrowDropDownIcon />
       </StyledDropDownButton>
@@ -37,6 +37,6 @@ export const DropDownButtonDecision = (props) => {
           },
         }}
       />
-    </>
+    </StyledDropDownButtonWrapper>
   );
 };
