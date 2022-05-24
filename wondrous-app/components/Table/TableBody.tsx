@@ -6,7 +6,14 @@ import { UPDATE_TASK_ASSIGNEE } from 'graphql/mutations';
 import { updateCompletedItem, updateInProgressTask, updateInReviewItem, updateTaskItem } from 'utils/board';
 import { renderMentionString } from 'utils/common';
 import * as Constants from 'utils/constants';
-import { TASK_STATUS_IN_PROGRESS, TASK_STATUS_TODO } from 'utils/constants';
+import {
+  TASK_STATUS_IN_PROGRESS,
+  TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_PROPOSAL_REQUEST,
+  TASK_STATUS_REQUESTED,
+  TASK_STATUS_SUBMISSION_REQUEST,
+  TASK_STATUS_TODO,
+} from 'utils/constants';
 import { cutString, parseUserPermissionContext, shrinkNumber, transformTaskToTaskCard } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { useMe } from '../Auth/withAuth';
@@ -34,11 +41,14 @@ import {
 
 import { Red800 } from 'theme/colors';
 import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
+import SmartLink from 'components/Common/SmartLink';
+import { ViewType } from 'types/common';
+import { delQuery } from 'utils/index';
+import { useLocation } from 'utils/useLocation';
 
 export default function TableBody({
   tasks,
   limit,
-  openTask,
   isAdmin,
   setKudosTask,
   setKudosModalOpen,
@@ -53,13 +63,14 @@ export default function TableBody({
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
   const board = orgBoard || podBoard || userBoard;
+  const location = useLocation();
 
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
 
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
-
   const tasksToLimit = limit && tasks?.length >= limit ? tasks.slice(0, limit) : tasks;
+  const view = location.params.view ?? ViewType.List;
 
   return (
     <StyledTableBody>
@@ -71,6 +82,14 @@ export default function TableBody({
           orgId: task?.orgId,
           podId: task?.podId,
         });
+
+        let viewUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${view}`;
+
+        if (status === TASK_STATUS_REQUESTED || status === TASK_STATUS_PROPOSAL_REQUEST || task?.isProposal) {
+          viewUrl = `${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`;
+        } else if (status === TASK_STATUS_IN_REVIEW || status === TASK_STATUS_SUBMISSION_REQUEST) {
+          viewUrl = `${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`;
+        }
 
         const reward = (task.rewards || [])[0];
 
@@ -178,19 +197,24 @@ export default function TableBody({
             <StyledTableCell align="center">
               <TaskStatus status={status} />
             </StyledTableCell>
-            <StyledTableCell className="clickable" onClick={() => openTask(task, status)}>
-              <TaskTitle>{task.title}</TaskTitle>
-              <TaskDescription
-                style={{
-                  maxWidth: '600px',
-                }}
-              >
-                {renderMentionString({
-                  content: cutString(task?.description),
-                  router,
-                })}
-              </TaskDescription>
-            </StyledTableCell>
+            <SmartLink href={viewUrl} onNavigate={url => location.replace(url)}>
+              <StyledTableCell className="clickable">
+                <TaskTitle>
+                  <Link href={viewUrl}>{task.title}</Link>
+                </TaskTitle>
+                <TaskDescription
+                  style={{
+                    maxWidth: '600px',
+                  }}
+                >
+                  {renderMentionString({
+                    content: cutString(task?.description),
+                    router,
+                  })}
+                </TaskDescription>
+              </StyledTableCell>
+            </SmartLink>
+
             {/*<StyledTableCell>*/}
             {/*  <DeliverableContainer>*/}
             {/*    {Object.entries(groupBy(task?.media || [], 'type')).map(([key, value]: [string, any], index) => {*/}

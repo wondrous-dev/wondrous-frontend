@@ -193,17 +193,6 @@ export const Table = (props) => {
     );
   }
 
-  function openTask(task, status = '') {
-    const view = location.params.view ?? ViewType.List;
-    if (status === TASK_STATUS_REQUESTED || status === TASK_STATUS_PROPOSAL_REQUEST || task?.isProposal) {
-      location.replace(`${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`);
-    } else if (status === TASK_STATUS_IN_REVIEW || status === TASK_STATUS_SUBMISSION_REQUEST) {
-      location.replace(`${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`);
-    } else {
-      location.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${view}`);
-    }
-  }
-
   const taskType = (selectedTask) => {
     const typeName = selectedTask?.__typename;
     const taskType = {
@@ -219,15 +208,12 @@ export const Table = (props) => {
   };
 
   useEffect(() => {
-    if (
+    const viewModal =
       (location.params.task || location.params.taskProposal) &&
-      (location.params.view == ViewType.List || location.params.view == ViewType.Admin)
-    ) {
-      setPreviewModalOpen(true);
-    } else {
-      setPreviewModalOpen(false);
-    }
-  }, [location.params.task, location.params.taskProposal, location.params.view]);
+      (location.params.view == ViewType.List || location.params.view == ViewType.Admin);
+
+    setPreviewModalOpen(viewModal);
+  }, [location.params]);
 
   const tableTasks = tasks || createTasksFromColumns(columns);
 
@@ -311,7 +297,6 @@ export const Table = (props) => {
           </StyledTableHead>
           <TableBody
             limit={limit}
-            openTask={openTask}
             isAdmin={isAdmin}
             setKudosTask={setKudosTask}
             setKudosModalOpen={setKudosModalOpen}
