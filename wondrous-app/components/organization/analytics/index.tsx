@@ -156,7 +156,7 @@ const UserRow = ({ contributorTask }) => {
           {contributorTask?.assigneeId ? (
             <>
               {contributorTask?.profilePicture ? (
-                <SafeImage src={contributorTask?.profilePicture} style={UserRowPictureStyles} />
+                <SafeImage src={contributorTask?.assigneeProfilePicture} style={UserRowPictureStyles} />
               ) : (
                 <DefaultUserImage style={UserRowPictureStyles} />
               )}
