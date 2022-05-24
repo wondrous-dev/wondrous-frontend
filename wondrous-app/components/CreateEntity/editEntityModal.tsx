@@ -564,6 +564,9 @@ const EditLayoutBaseModal = (props) => {
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
     ],
+    onCompleted: () => {
+      handleClose();
+    },
   });
 
   const [updateTaskProposal, { loading: updateTaskProposalLoading }] = useMutation(UPDATE_TASK_PROPOSAL, {
