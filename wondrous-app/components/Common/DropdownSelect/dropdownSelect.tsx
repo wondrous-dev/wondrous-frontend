@@ -44,6 +44,8 @@ const DropdownSelect = (props) => {
     titleStyle,
     onChange,
     innerStyle,
+    hideLabel,
+    labelStyle,
   } = props;
 
   const handleChange = (event) => {
@@ -56,10 +58,15 @@ const DropdownSelect = (props) => {
   const [open, setOpen] = useState(false);
   return (
     <CreateFormSelectBlock style={formSelectStyle} className={className}>
-      <CreateFormSelectBlockTitle style={titleStyle}>{title}</CreateFormSelectBlockTitle>
+      {!hideLabel && (
+        <>
+          <CreateFormSelectBlockTitle style={titleStyle}>{title}</CreateFormSelectBlockTitle>
+        </>
+      )}
       <FormControl>
         {!value && (
           <CreateFormInputLabel
+            style={labelStyle}
             id={`select-label-${name}`}
             htmlFor={`input-label-${name}`}
             shrink={false}

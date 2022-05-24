@@ -79,7 +79,7 @@
 }
 
 html,
-html>body {
+html > body {
   overflow-x: hidden;
   background-color: #0f0f0f !important;
   padding: 0;
@@ -100,4 +100,14 @@ input[type='number'] {
 
 .MuiAutocomplete-listbox {
   background: #0f0f0f !important;
+}
+
+.MuiCalendarPicker-root {
+  background: #3d3d3d;
+  color: white !important;
+  font-family: 'Space Grotesk';
+}
+
+.MuiCalendarPicker-root .MuiTypography-caption {
+  color: white !important;
 }
