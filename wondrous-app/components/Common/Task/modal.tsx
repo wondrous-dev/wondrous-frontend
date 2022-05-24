@@ -69,6 +69,7 @@ import {
   PAYMENT_STATUS,
   PRIVACY_LEVEL,
   STATUS_APPROVED,
+  LINK,
 } from 'utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
@@ -154,6 +155,7 @@ import { SubtaskDarkIcon, SubtaskLightIcon } from '../../Icons/subtask';
 import { CheckedBoxIcon } from '../../Icons/checkedBox';
 import RightArrowIcon from '../../Icons/rightArrow';
 import { DeleteTaskModal } from '../DeleteTaskModal';
+import { Share } from '../Share';
 import { CompleteModal } from '../CompleteModal';
 import { GET_ORG_LABELS } from 'graphql/queries';
 
@@ -1366,8 +1368,13 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   </PodNameTypography>
                 </>
               )}
-              {canEdit && (
-                <TaskActionMenu right="true">
+              <TaskActionMenu right="true">
+                <Share
+                  url={`${LINK}/organization/${fetchedTask?.orgUsername}/boards?task=${
+                    isSubtask ? fetchedTask?.parentTaskId : taskId
+                  }`}
+                />
+                {canEdit && (
                   <DropDown DropdownHandler={TaskMenuIcon}>
                     {canEdit && (isMilestone || isBounty) && (
                       <DropDownItem style={dropdownItemStyle} onClick={() => setCompleteModal(true)}>
@@ -1407,8 +1414,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                       </DropDownItem>
                     )}
                   </DropDown>
-                </TaskActionMenu>
-              )}
+                )}
+              </TaskActionMenu>
             </TaskModalHeader>
             <TaskTitleDiv>
               <GetStatusIcon

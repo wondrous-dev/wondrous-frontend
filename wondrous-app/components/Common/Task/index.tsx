@@ -195,43 +195,33 @@ export const Task = (props) => {
   const totalSubtask = task?.totalSubtaskCount;
   const completedSubtask = task?.completedSubtaskCount;
   const [claimed, setClaimed] = useState(false);
-  const handleOnArchive = useCallback(
-    () => {
-      orgBoard?.setFirstTimeFetch(false);
-        archiveTaskMutation({
-          variables: {
-            taskId: id,
-          },
-        }).then((result) => {
-          setSnackbarAlertOpen(true);
-          setSnackbarAlertMessage(
-            <>
-              Task archived successfully!{' '}
-              <ArchivedTaskUndo
-                onClick={() => {
-                  setSnackbarAlertOpen(false);
-                  unarchiveTaskMutation({
-                    variables: {
-                      taskId: id,
-                    },
-                  });
-                }}
-              >
-                Undo
-              </ArchivedTaskUndo>
-            </>
-          );
-        });
+  const handleOnArchive = useCallback(() => {
+    orgBoard?.setFirstTimeFetch(false);
+    archiveTaskMutation({
+      variables: {
+        taskId: id,
       },
-    [
-      id,
-      orgBoard,
-      archiveTaskMutation,
-      setSnackbarAlertMessage,
-      setSnackbarAlertOpen,
-      unarchiveTaskMutation,
-    ]
-  );
+    }).then((result) => {
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage(
+        <>
+          Task archived successfully!{' '}
+          <ArchivedTaskUndo
+            onClick={() => {
+              setSnackbarAlertOpen(false);
+              unarchiveTaskMutation({
+                variables: {
+                  taskId: id,
+                },
+              });
+            }}
+          >
+            Undo
+          </ArchivedTaskUndo>
+        </>
+      );
+    });
+  }, [id, orgBoard, archiveTaskMutation, setSnackbarAlertMessage, setSnackbarAlertOpen, unarchiveTaskMutation]);
 
   useEffect(() => {
     if (!initialStatus) {

@@ -347,6 +347,10 @@ export const GRAPHQL_ERRORS = {
   PAYMENT_METHOD_EXIST: 'payment_method_exist',
 };
 
+export const LINK = process.env.NEXT_PUBLIC_PRODUCTION
+  ? `https://app.wonderverse.xyz`
+  : 'https://wondrous-app-git-staging-wonderverse.vercel.app';
+
 export const DATEPICKER_OPTIONS = {
   DAILY: 'Daily',
   WEEKLY: 'Weekly',
