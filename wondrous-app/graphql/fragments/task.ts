@@ -18,6 +18,11 @@ export const TaskFragment = gql`
     dueDate
     status
     paymentStatus
+    labels {
+      id
+      name
+      color
+    }
     links {
       url
       displayName
@@ -247,6 +252,11 @@ export const TaskProposalFragment = gql`
     podId
     priority
     dueDate
+    labels {
+      id
+      name
+      color
+    }
     links {
       url
       displayName

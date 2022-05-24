@@ -37,6 +37,7 @@ import {
   TaskUserDiv,
   MakeSubmissionDiv,
   TaskListModalContentWrapper,
+  Tag,
 } from './styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
@@ -49,6 +50,7 @@ import {
 } from 'utils/helpers';
 import { RightCaret } from '../Image/RightCaret';
 import CreatePodIcon from '../../Icons/createPod';
+import TagsIcon from '../../Icons/tagsIcon';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   BOUNTY_TYPE,
@@ -67,6 +69,7 @@ import {
   PAYMENT_STATUS,
   PRIVACY_LEVEL,
   STATUS_APPROVED,
+  LINK,
 } from 'utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
@@ -152,7 +155,9 @@ import { SubtaskDarkIcon, SubtaskLightIcon } from '../../Icons/subtask';
 import { CheckedBoxIcon } from '../../Icons/checkedBox';
 import RightArrowIcon from '../../Icons/rightArrow';
 import { DeleteTaskModal } from '../DeleteTaskModal';
+import { Share } from '../Share';
 import { CompleteModal } from '../CompleteModal';
+import { GET_ORG_LABELS } from 'graphql/queries';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -183,6 +188,7 @@ const TASK_LIST_VIEW_LIMIT = 5;
 export const TaskListViewModal = (props) => {
   const [fetchedList, setFetchedList] = useState([]);
   const { taskType, entityType, orgId, podId, loggedInUserId, open, handleClose, count } = props;
+
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(true);
   const [getOrgTaskProposals, { refetch: refetchOrgProposals, fetchMore: fetchMoreOrgProposals }] = useLazyQuery(
@@ -804,6 +810,9 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
+  const [getOrgLabels, { data: orgLabelsData }] = useLazyQuery(GET_ORG_LABELS, {
+    fetchPolicy: 'cache-and-network',
+  });
   const user = useMe();
 
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
@@ -839,6 +848,16 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       console.error('Error fetching task proposal');
     },
   });
+
+  useEffect(() => {
+    if (fetchedTask) {
+      getOrgLabels({
+        variables: {
+          orgId: fetchedTask.orgId,
+        },
+      });
+    }
+  }, [fetchedTask]);
 
   const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
     refetchQueries: [
@@ -1349,8 +1368,13 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   </PodNameTypography>
                 </>
               )}
-              {canEdit && (
-                <TaskActionMenu right="true">
+              <TaskActionMenu right="true">
+                <Share
+                  url={`${LINK}/organization/${fetchedTask?.orgUsername}/boards?task=${
+                    isSubtask ? fetchedTask?.parentTaskId : taskId
+                  }`}
+                />
+                {canEdit && (
                   <DropDown DropdownHandler={TaskMenuIcon}>
                     {canEdit && (isMilestone || isBounty) && (
                       <DropDownItem style={dropdownItemStyle} onClick={() => setCompleteModal(true)}>
@@ -1390,8 +1414,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                       </DropDownItem>
                     )}
                   </DropDown>
-                </TaskActionMenu>
-              )}
+                )}
+              </TaskActionMenu>
             </TaskModalHeader>
             <TaskTitleDiv>
               <GetStatusIcon
@@ -1640,6 +1664,31 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 }}
               >
                 {fetchedTask?.dueDate ? format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy') : 'None'}
+              </TaskSectionInfoText>
+            </TaskSectionDisplayDiv>
+            <TaskSectionDisplayDiv>
+              <TaskSectionDisplayLabel>
+                <TagsIcon />
+                <TaskSectionDisplayText>Tags</TaskSectionDisplayText>
+              </TaskSectionDisplayLabel>
+              <TaskSectionInfoText
+                as="div"
+                style={{
+                  marginTop: '8px',
+                  marginLeft: '45px',
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                }}
+              >
+                {fetchedTask?.labels?.length
+                  ? fetchedTask.labels.map((label) => {
+                      return label ? (
+                        <Tag color={label.color} key={label.id}>
+                          {label.name}
+                        </Tag>
+                      ) : null;
+                    })
+                  : 'None'}
               </TaskSectionInfoText>
             </TaskSectionDisplayDiv>
             {fetchedTask?.rewards && fetchedTask?.rewards?.length > 0 && (

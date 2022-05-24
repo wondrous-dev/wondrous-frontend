@@ -204,3 +204,14 @@ export const GET_TASKS_PER_TYPE_FOR_POD = gql`
     }
   }
 `;
+
+
+export const GET_ORG_LABELS = gql`
+    query getOrgLabels($orgId: ID!) {
+        getOrgLabels(orgId: $orgId) {
+            id
+            name
+            color
+        }
+    }
+`;
