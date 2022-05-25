@@ -46,11 +46,19 @@ export const PostReferenceBackground = styled(Box)`
 
 export const ReferenceTitle = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
-    font-size: 16px;
-    color: #fff;
-    font-weight: 700;
     padding-top: 18px;
+
+    a {
+      font-family: 'Space Grotesk';
+      font-size: 16px;
+      color: #fff;
+      font-weight: 700;
+      text-decoration: none;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 `;
 

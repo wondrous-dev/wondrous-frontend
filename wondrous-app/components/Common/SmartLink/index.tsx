@@ -7,8 +7,9 @@ interface Props {
   as?: string;
   children: ReactNode;
   asLink?: boolean;
+  preventLinkNavigation?: boolean;
   onClick?: (event: MouseEvent<HTMLElement>) => unknown;
-  onNavigate?: (url: string) => unknown;
+  onNavigate?: (event, url: string) => unknown;
 }
 
 /**
@@ -18,23 +19,35 @@ interface Props {
  *
  * NOTE: Don't add onClick prop to the inner component
  */
-export default function SmartLink({ children, href, as, onNavigate, onClick = () => null, asLink = false }: Props) {
+export default function SmartLink({
+  children,
+  href,
+  as,
+  onNavigate,
+  onClick = () => null,
+  preventLinkNavigation = false,
+  asLink = false,
+}: Props) {
   const destinationUrl = as || href;
   const router = useRouter();
 
-  const handleClick = (event: MouseEvent<HTMLElement>) => {
+  const handleClick = (event) => {
     const isCommandKeyPressed = event.metaKey || event.ctrlKey;
     onClick(event);
 
     // if click was by link with href attribute
-    if ((event.target as HTMLLinkElement).href && !isCommandKeyPressed) {
-      event.preventDefault();
-
-      if (onNavigate) {
-        onNavigate(destinationUrl);
-      } else {
-        router.push(destinationUrl);
+    if (event.target.href) {
+      if (isCommandKeyPressed || !preventLinkNavigation) {
+        return;
       }
+    }
+
+    event.preventDefault();
+
+    if (onNavigate) {
+      onNavigate(event, destinationUrl);
+    } else {
+      router.push(destinationUrl);
     }
   };
 

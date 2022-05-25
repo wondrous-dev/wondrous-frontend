@@ -77,7 +77,7 @@ import { parseUserPermissionContext } from 'utils/helpers';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { PERMISSIONS } from 'utils/constants';
 import SmartLink from 'components/Common/SmartLink';
-import {useLocation} from "utils/useLocation";
+import { useLocation } from 'utils/useLocation';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -183,15 +183,20 @@ export const TaskCard = ({
 
   return (
     <ProposalCardWrapper
-      onClick={(e) => !showPaymentModal && openModal(e)}
       onMouseEnter={() => canArchive && setDisplayActions(true)}
       onMouseLeave={() => canArchive && setDisplayActions(false)}
     >
-      <SmartLink href={viewUrl} onNavigate={(url) => {
-        location.push(url);
-        windowOffset = window.scrollY;
-        document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
-      }}>
+      <SmartLink
+        href={viewUrl}
+        preventLinkNavigation
+        onNavigate={() => {
+          if (!showPaymentModal) {
+            location.push(viewUrl);
+            windowOffset = window.scrollY;
+            document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+          }
+        }}
+      >
         {showPaymentModal && !isTaskSubmissionLoading ? (
           <MakePaymentModal
             getTaskSubmissionsForTask={getTaskSubmissionsForTask}
@@ -247,13 +252,13 @@ export const TaskCard = ({
 
         <TaskContent>
           <TaskTitle>
-            <Link href={viewUrl}>{task.title}</Link>
+            <a href={viewUrl}>{task.title}</a>
           </TaskTitle>
           {/* <TaskCardDescriptionText>
           {renderMentionString({
             content: description,
             router,
-          })}
+          })}о
         </TaskCardDescriptionText> */}
           <TaskContentFooter>
             {task?.podName && (

@@ -3,6 +3,8 @@ import { NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from 'uti
 import { SmallAvatar } from '../Common/AvatarList';
 import { HeaderNotificationsButton, StyledBadge } from '../Header/styles';
 import NotificationsIcon from '../Icons/notifications';
+import Link from 'next/link';
+
 import {
   NotificationItemBody,
   NotificationItemIcon,
@@ -61,7 +63,11 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
   const getNotificationText = (notification) => {
     const userName = notification.actorUsername;
     const userId = notification.actorId;
-    const actor = <NotificationsLink href={`/profile/${userId}/about`}>{userName}</NotificationsLink>;
+    const actor = (
+      <NotificationsLink>
+        <Link href={`/profile/${userId}/about`}>{userName}</Link>
+      </NotificationsLink>
+    );
 
     const verb = NOTIFICATION_VERBS[notification.type];
     const objectType = NOTIFICATION_OBJECT_TYPES[notification.objectType];
@@ -69,9 +75,7 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
 
     const object = (
       <span>
-        <NotificationsLink href={`/${snakeToCamel(notification.objectType)}/${objectId}`}>
-          {objectType}
-        </NotificationsLink>
+        <NotificationsLink styled={{ display: 'block' }}>{objectType}</NotificationsLink>
         <NotificationItemTimeline>{calculateTimeLapse(notification.timestamp)}</NotificationItemTimeline>
       </span>
     );
