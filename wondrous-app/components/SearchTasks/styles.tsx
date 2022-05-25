@@ -6,7 +6,7 @@ import { HighlightBlue } from '../../theme/colors';
 
 export const Autocomplete = styled(AutocompleteComp)`
   width: 100%;
-  
+  transition: width 0.3s;
   && .MuiAutocomplete-inputRoot {
     padding: 0;
   }
@@ -61,7 +61,7 @@ export const Option = styled.li`
     height: 18px;
     margin-right: 12px;
   }
-  
+
   img {
     margin-right: 12px;
   }

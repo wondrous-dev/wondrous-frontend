@@ -1,5 +1,6 @@
 import { NextRouter } from 'next/router';
 import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction } from 'react';
+import apollo from 'services/apollo';
 
 import {
   ColumnsContext,
@@ -156,4 +157,24 @@ export const useTokenGating = (orgId) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId]);
   return [data, loading];
+};
+
+export const useFilterQuery = (query, variables = {}, shouldFetch = true) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState(null);
+  const getData = async () => {
+    const { data } = await apollo.query({
+      query,
+      variables,
+    });
+    setData(Object.values(data).flat());
+    setIsLoading(false);
+  };
+  useEffect(() => {
+    if (query && shouldFetch) {
+      setIsLoading(true);
+      getData();
+    }
+  }, [query, variables, shouldFetch]);
+  return { isLoading, data };
 };

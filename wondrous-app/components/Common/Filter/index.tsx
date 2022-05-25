@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import FilterIcon from '../../Icons/filter';
 import { Chevron } from '../../Icons/sections';
 import Tabs from './Tabs';
@@ -28,7 +28,7 @@ import {
   FilterCheckbox,
 } from './styles';
 import { Blue200, Grey250 } from '../../../theme/colors';
-import { useOutsideAlerter } from 'utils/hooks';
+import { useOutsideAlerter, useFilterQuery } from 'utils/hooks';
 import { TaskFilter } from 'types/task';
 
 interface IFilterProps {
@@ -36,10 +36,26 @@ interface IFilterProps {
   onChange: ({}: TaskFilter) => void;
   statuses: String[];
   podIds: String[];
+  currentIdx?: number;
+  schemaLength?: number;
+  query?: any;
+  variables?: any;
+  icon?: any;
 }
 
+//TODO refactor this
 const Filter = (props: IFilterProps) => {
-  const { filterSchema = [], onChange, statuses = [], podIds = [] } = props;
+  const {
+    filterSchema = [],
+    onChange,
+    statuses = [],
+    podIds = [],
+    currentIdx,
+    schemaLength,
+    query,
+    variables,
+    icon,
+  } = props;
   const [selected, setSelected] = useState(filterSchema[0]);
   const [selectedTabItems, setSelectedTabItems] = useState({});
   const [selectedNames, setSelectedNames] = useState([]);
@@ -47,12 +63,19 @@ const Filter = (props: IFilterProps) => {
   const [multiChoice, setMultichoice] = useState(true);
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef(null);
-
+  const { isLoading, data } = useFilterQuery(query, variables, open);
   const toggleOpen = () => {
     setOpen(!open);
   };
 
   useOutsideAlerter(wrapperRef, () => setOpen(false));
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      const queriedItems = [...data, ...items].map((item) => (icon ? { ...item, icon } : item));
+      setItems(queriedItems);
+    }
+  }, [isLoading]);
 
   // Changes the display list.
   const displayList = (tab) => {
@@ -142,6 +165,7 @@ const Filter = (props: IFilterProps) => {
     setSelectedNames(selectedNames);
   }, [statuses, podIds, filterSchema]);
 
+  const portalDirection = currentIdx === schemaLength - 1 ? 'right' : 'left';
   return (
     <FilterHandle ref={wrapperRef} open={open}>
       <FilterHandleInner open={open} onClick={toggleOpen}>
@@ -165,13 +189,13 @@ const Filter = (props: IFilterProps) => {
       </FilterHandleInner>
       {open && (
         <FilterBoxPortal container={wrapperRef.current}>
-          <FilterBox>
+          <FilterBox renderDirection={portalDirection}>
             <FilterBoxInner>
               <Tabs tabs={filterSchema} selected={selected?.name} onSelect={(tab) => displayList(tab)} />
 
               <FilterItemsContainer>
                 <FilterItemList>
-                  {selected.renderList
+                  {selected?.renderList
                     ? selected.renderList({ selectedTab: selected, selectedTabItems, toggleInFilter, items })
                     : items.map((item) => {
                         const isSelected = (selectedTabItems[selected?.name] || []).includes(item.id);
@@ -190,7 +214,6 @@ const Filter = (props: IFilterProps) => {
                             ) : (
                               ''
                             )}
-                            {/*<FilterItemCount>{item.count}</FilterItemCount>*/}
                             <FilterCheckbox checked={isSelected} />
                           </FilterItem>
                         );

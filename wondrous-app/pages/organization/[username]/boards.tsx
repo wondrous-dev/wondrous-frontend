@@ -342,7 +342,6 @@ const BoardsPage = () => {
     fetchPolicy: 'cache-and-network',
   });
   const [orgTaskHasMore, setOrgTaskHasMore] = useState(true);
-  const [getOrgPods, { data: { getOrgPods: orgPods = [] } = {} }] = useLazyQuery(GET_ORG_PODS);
 
   const { fetchMore } = useGetOrgTaskBoard({
     view: activeView,
@@ -446,12 +445,6 @@ const BoardsPage = () => {
   useEffect(() => {
     if (orgId || orgData?.id) {
       const id = orgId || orgData?.id;
-
-      getOrgPods({
-        variables: {
-          orgId: id,
-        },
-      });
 
       if (search) {
         if (!firstTimeFetch) {
@@ -610,7 +603,6 @@ const BoardsPage = () => {
       }}
     >
       <Boards
-        orgPods={orgPods}
         columns={columns}
         searchString={searchString}
         onLoadMore={fetchMore}

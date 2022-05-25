@@ -27,11 +27,12 @@ const TaskTypeIcons = {
 
 type Props = {
   onSearch: (searchString: string) => Promise<{ users: Array<any>; tasks: TaskFragment[]; proposals: TaskFragment[] }>;
+  isExpandable?: boolean;
 };
 
 let timeout;
 
-export default function SearchTasks({ onSearch }: Props) {
+export default function SearchTasks({ onSearch, isExpandable }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isPreviewModalOpen, setPreviewModalOpen] = useState(false);
@@ -40,6 +41,7 @@ export default function SearchTasks({ onSearch }: Props) {
   const [inputValue, setInputValue] = useState(router.query.search);
   const [options, setOptions] = useState([]);
   const [hasMore, setHasMore] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const LIMIT = 5;
 
   React.useEffect(() => {
@@ -93,6 +95,10 @@ export default function SearchTasks({ onSearch }: Props) {
     });
   }
 
+  const autocompleteWidth = isExpandable ? (isExpanded ? '100%' : '20%') : '100%';
+
+  const handleBlur = (e) => setIsExpanded(false);
+  const handleFocus = () => setIsExpanded(true);
   return (
     <>
       <TaskViewModal
@@ -108,6 +114,8 @@ export default function SearchTasks({ onSearch }: Props) {
       <Autocomplete
         open={open}
         onOpen={() => setOpen(true)}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
         onClose={() => setOpen(false)}
         onInputChange={(event, searchString) => {
           handleInputChange(event, searchString);
@@ -117,6 +125,7 @@ export default function SearchTasks({ onSearch }: Props) {
             setInputValue(searchString || '');
           }
         }}
+        style={{ width: autocompleteWidth }}
         disableClearable
         freeSolo={!inputValue || isLoading}
         getOptionLabel={(takOrUser) => takOrUser.username || takOrUser.title || inputValue}
@@ -175,12 +184,12 @@ export default function SearchTasks({ onSearch }: Props) {
           return (
             <Input
               {...params}
-              placeholder="Search tasks or people..."
+              placeholder={`${isExpanded || !isExpandable ? 'Search tasks or people...' : 'Search'}`}
               InputProps={{
                 ...params.InputProps,
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchIcon />
+                    <SearchIcon color="white" />
                   </InputAdornment>
                 ),
                 endAdornment: (

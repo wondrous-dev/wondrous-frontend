@@ -362,7 +362,6 @@ export const TaskCard = ({
           <TaskActionMenu right="true">
             <DropDown DropdownHandler={TaskMenuIcon}>
               <DropDownItem
-                key={'task-menu-edit-' + id}
                 onClick={() => {
                   setEditTask(true);
                 }}
@@ -371,7 +370,6 @@ export const TaskCard = ({
                 Edit {type}
               </DropDownItem>
               <DropDownItem
-                key={'task-menu-edit-' + id}
                 onClick={() => {
                   setArchiveTask(true);
                 }}
@@ -381,7 +379,6 @@ export const TaskCard = ({
               </DropDownItem>
               {canDelete && (
                 <DropDownItem
-                  key={'task-menu-delete-' + id}
                   onClick={() => {
                     setDeleteTask(true);
                   }}

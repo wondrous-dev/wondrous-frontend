@@ -1,4 +1,4 @@
-import { BoardsActivityWrapper } from './styles';
+import { BoardsActivityWrapper, BoardsActivityInlineViewWrapper } from './styles';
 import SearchTasks from 'components/SearchTasks';
 import Filter from 'components/Common/Filter';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
@@ -9,6 +9,36 @@ import { ToggleViewButton } from 'components/Common/ToggleViewButton';
 import { delQuery, insertUrlParam } from 'utils';
 import { GridViewIcon } from 'components/Icons/ViewIcons/gridView';
 import { ListViewIcon } from 'components/Icons/ViewIcons/listView';
+import BoardFilters, { FiltersTriggerButton } from 'components/Common/BoardFilters';
+import { useState } from 'react';
+
+export const BoardsActivityInlineView = ({
+  onSearch,
+  filterSchema,
+  onChange,
+  statuses,
+  podIds,
+  view,
+  searchQuery,
+  isAdmin,
+  listViewOptions,
+}) => {
+  const [displayFilters, setDisplayFilters] = useState(false);
+
+  const handleFilterDisplay = () => setDisplayFilters(!displayFilters);
+  return (
+    <>
+      <BoardsActivityInlineViewWrapper>
+        <SearchTasks isExpandable onSearch={onSearch} />
+        {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
+        <FiltersTriggerButton onClick={handleFilterDisplay} />
+      </BoardsActivityInlineViewWrapper>
+      {displayFilters && (
+        <BoardFilters filterSchema={filterSchema} onChange={onChange} statuses={statuses} podIds={podIds} />
+      )}
+    </>
+  );
+};
 
 export default function BoardsActivity(props) {
   const orgBoard = useOrgBoard();
@@ -55,6 +85,22 @@ export default function BoardsActivity(props) {
       },
     },
   ];
+
+  if (board) {
+    return (
+      <BoardsActivityInlineView
+        onSearch={onSearch}
+        filterSchema={filterSchema}
+        onChange={onFilterChange}
+        statuses={statuses}
+        podIds={podIds}
+        view={view}
+        searchQuery={searchQuery}
+        isAdmin={isAdmin}
+        listViewOptions={listViewOptions}
+      />
+    );
+  }
 
   return (
     <>

@@ -1,11 +1,8 @@
 import React from 'react';
 
 import Wrapper from '../wrapper/wrapper';
-import CreatePodIcon from '../../Icons/createPod';
 import Boards from '../../Common/Boards';
-import { OrgPod } from 'types/pod';
 import { FILTER_STATUSES, ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
-import BoardsActivity from 'components/Common/BoardsActivity';
 import { ENTITIES_TYPES } from 'utils/constants';
 import MilestoneBoard from 'components/Common/MilestoneBoard';
 import BountyBoard from 'components/Common/BountyBoard';
@@ -20,7 +17,6 @@ const BOARDS_MAP = {
 };
 
 type Props = {
-  orgPods: OrgPod[];
   onSearch: (searchString: string) => Promise<any>;
   onFilterChange: ({}) => any;
   columns: Array<any>;
@@ -43,7 +39,6 @@ const OrgBoards = (props: Props) => {
     onLoadMore,
     hasMore,
     orgData,
-    orgPods,
     onSearch,
     onFilterChange,
     statuses,
@@ -55,33 +50,21 @@ const OrgBoards = (props: Props) => {
     activeView,
   } = props;
 
-  const entityTypeFilters = ENTITIES_TYPES_FILTER_STATUSES[entityType] || FILTER_STATUSES;
-  const filterSchema: any = [
-    { ...entityTypeFilters },
-    {
-      name: 'podIds',
-      label: 'Pods',
-      multiChoice: true,
-      items: orgPods.map((pod) => ({
-        ...pod,
-        icon: <CreatePodIcon />,
-        count: pod.contributorCount,
-      })),
-    },
-  ];
-
+  const filters = ENTITIES_TYPES_FILTER_STATUSES(orgData);
+  const entityTypeFilters = filters[entityType]?.filters || FILTER_STATUSES;
+  const filterSchema: any = entityTypeFilters;
   const ActiveBoard = BOARDS_MAP[entityType];
 
   return (
-    <Wrapper orgData={orgData}>
-      <BoardsActivity
-        onSearch={onSearch}
-        filterSchema={filterSchema}
-        onFilterChange={onFilterChange}
-        statuses={statuses}
-        podIds={podIds}
-        userId={userId}
-      />
+    <Wrapper
+      orgData={orgData}
+      onSearch={onSearch}
+      filterSchema={filterSchema}
+      onFilterChange={onFilterChange}
+      statuses={statuses}
+      podIds={podIds}
+      userId={userId}
+    >
       <ColumnsContext.Provider value={{ columns, setColumns }}>
         {!loading && (
           <ActiveBoard

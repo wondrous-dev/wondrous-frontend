@@ -1,4 +1,4 @@
-import { Button, Portal } from '@mui/material';
+import { Button, Portal, Popper } from '@mui/material';
 import styled from 'styled-components';
 import { color } from 'styled-system';
 import {
@@ -26,8 +26,7 @@ export const FilterHandle = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-
-  min-width: 323px;
+  width: 100%;
   height: 40px;
   padding: 1px;
   background: ${Grey75};
@@ -46,7 +45,7 @@ export const FilterHandleInner = styled.div`
   align-items: center;
   justify-content: flex-start;
 
-  width: 321px;
+  width: 100%;
   height: 38px;
   padding: 15px;
 
@@ -88,10 +87,9 @@ export const FilterBoxPortal = styled(Portal)``;
 
 export const FilterBox = styled.div`
   position: absolute;
-  top: 40px;
-  left: 0;
-
+  top: 120%;
   display: flex;
+  ${({ renderDirection }) => (renderDirection === 'right' ? 'right: 0' : 'left: 0')};
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
