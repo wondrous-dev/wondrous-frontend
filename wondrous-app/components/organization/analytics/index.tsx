@@ -357,8 +357,23 @@ const Analytics = (props) => {
   const [getCompletedTasksBetweenPeriods, { data, loading }] = useLazyQuery(GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD, {
     fetchPolicy: 'network-only',
   });
-  const contributorTaskData = data?.getCompletedTasksBetweenPeriods;
-
+  const preFilteredcontributorTaskData = data?.getCompletedTasksBetweenPeriods || [];
+  const noAssigneeIndex = preFilteredcontributorTaskData?.findIndex((element) => !element?.assigneeId);
+  var tmp = preFilteredcontributorTaskData[noAssigneeIndex];
+  preFilteredcontributorTaskData[noAssigneeIndex] =
+    preFilteredcontributorTaskData[preFilteredcontributorTaskData?.length - 1];
+  preFilteredcontributorTaskData[preFilteredcontributorTaskData?.length - 1] = tmp;
+  let contributorTaskData = preFilteredcontributorTaskData.slice(0, preFilteredcontributorTaskData?.length - 1);
+  contributorTaskData.sort((a, b) => {
+    if (a?.tasks?.length > b?.tasks?.length) {
+      return -1;
+    } else if (a?.tasks?.length < b?.tasks?.length) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+  contributorTaskData = [...contributorTaskData, tmp];
   useEffect(() => {
     if (orgId && fromTime && toTime) {
       getCompletedTasksBetweenPeriods({
