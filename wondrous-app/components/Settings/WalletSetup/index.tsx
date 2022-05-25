@@ -42,6 +42,10 @@ const SUPPORTED_PAYMENT_CHAINS = [
     label: 'Harmony Mainnet',
     value: 'harmony',
   },
+  {
+    label: 'Boba Mainnet',
+    value: 'boba',
+  },
 ];
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {
   SUPPORTED_PAYMENT_CHAINS.push({
