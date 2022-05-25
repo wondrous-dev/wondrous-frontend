@@ -57,6 +57,9 @@ export const exportContributorTaskCSV = ({ contributorTaskData, paymentMethod, f
     headers = ['username', 'Address/ENS', 'taskTitle', 'taskLink', 'points', 'Amount', 'Token Address/Token Symbol'];
   }
   const rows = [[headers]];
+  if (!contributorTaskData) {
+    return;
+  }
   contributorTaskData.forEach((contributorTask) => {
     const assigneeUsername = contributorTask?.assigneeUsername || '';
     const wallet = contributorTask?.assigneeWallet;
@@ -112,6 +115,9 @@ const CaretStyle = {
 
 export const calculatePoints = (tasks) => {
   let points = 0;
+  if (!tasks) {
+    return points;
+  }
   tasks.forEach((task) => {
     if (task?.points) {
       points = points + Number(task?.points);
