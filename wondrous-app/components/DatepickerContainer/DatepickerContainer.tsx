@@ -14,5 +14,4 @@ const DatepickerContainer = ({ }) => (
   </LocalizationProvider>
 );
 
-
 export default DatepickerContainer;

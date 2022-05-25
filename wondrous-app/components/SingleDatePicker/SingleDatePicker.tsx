@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { DayPickerSingleDateController } from 'react-dates';
 import moment from 'moment';
 import 'react-dates/initialize';
@@ -24,7 +24,13 @@ import CalendarDay from 'components/CalendarDay';
 import styles from './SingleDatePickerStyles';
 import Image from 'next/image';
 
-const SingleDatePicker = ({ sx }) => {
+interface SingleDatePickerProps {
+  sx?: object;
+  setValue?: Function;
+  value?: any;
+}
+
+const SingleDatePicker = ({ sx, setValue, value }: SingleDatePickerProps) => {
   const [date, setDate] = useState(DEFAULT_SINGLE_DATEPICKER_VALUE);
   const [focusedInput, setFocusedInput] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
@@ -33,11 +39,21 @@ const SingleDatePicker = ({ sx }) => {
   const [weekDaysSelected, setWeekDaysSelected] = useState(WEEK_DAYS);
   const [monthInView, setMonthInView] = useState();
 
+  useEffect(() => {
+    value && setDate(moment(value));
+  }, []);
+
   moment.updateLocale('en', {
     week: {
       dow: 1,
     },
   });
+
+  const handleDateChange = (newDate) => {
+    console.log(newDate);
+    setDate(newDate);
+    setValue(moment(newDate).toDate());
+  };
 
   const todayMoment = moment();
 
@@ -84,14 +100,14 @@ const SingleDatePicker = ({ sx }) => {
   };
 
   const reset = () => {
-    setDate(DEFAULT_SINGLE_DATEPICKER_VALUE);
+    handleDateChange(DEFAULT_SINGLE_DATEPICKER_VALUE);
     setRepeatType(null);
     setRepeatValue(null);
     setShowOptions(null);
   };
 
   return (
-    <Box mt={4} display="flex" flexDirection="column" maxWidth={300}>
+    <Box mt={4} display="flex" flexDirection="column" maxWidth={300} width={focusedInput ? 300 : 'default'}>
       <TextField
         placeholder="Choose date"
         InputProps={{
@@ -117,12 +133,12 @@ const SingleDatePicker = ({ sx }) => {
         }}
         value={displayValue}
         onClick={() => setFocusedInput(true)}
-        sx={styles.mainTextfield}
+        sx={focusedInput ? styles.mainTextfield : styles.mainTextfieldInactive}
       />
 
       {focusedInput && (
         <Box sx={styles.mainContainer}>
-          <Box sx={{ ...sx }}>
+          <Box sx={{ ...styles.root, ...sx }}>
             <Box sx={styles.inputContainer}>
               <TextField
                 value={startDateString}
@@ -145,7 +161,7 @@ const SingleDatePicker = ({ sx }) => {
               date={date}
               initialDate={date}
               id="your_unique_id"
-              onDateChange={(date) => setDate(date)}
+              onDateChange={(date) => handleDateChange(date)}
               focusedInput={focusedInput}
               onFocusChange={() => {}}
               numberOfMonths={1}
@@ -171,10 +187,11 @@ const SingleDatePicker = ({ sx }) => {
                   monthInView={monthInView}
                   showOptions={showOptions}
                   setShowOptions={setShowOptions}
-                  setDate={setDate}
+                  setDate={handleDateChange}
                   setRepeatType={setRepeatType}
                   repeatType={repeatType}
                   setRepeatValue={setRepeatValue}
+                  repeatValue={repeatValue}
                   date={date}
                   todayMoment={todayMoment}
                   onWeekDaysChange={handleWeekDaysChange}

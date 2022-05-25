@@ -1,30 +1,18 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
-import { CircularProgress, Popper, styled, Switch, TextField } from '@material-ui/core';
-import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import Autocomplete from '@mui/material/Autocomplete';
+import { CircularProgress, styled, Switch, TextField } from '@material-ui/core';
 
-import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
 import {
   ENTITIES_TYPES,
-  IMAGE_FILE_EXTENSIONS_TYPE_MAPPING,
   MEDIA_TYPES,
-  PERMISSIONS,
-  VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
   PRIVACY_LEVEL,
-  STATUS_OPEN,
-  STATUS_APPROVED,
-  STATUS_CHANGE_REQUESTED,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_DONE,
 } from 'utils/constants';
 import CircleIcon from '../Icons/circleIcon';
 import CodeIcon from '../Icons/MediaTypesIcons/code';
 import AudioIcon from '../Icons/MediaTypesIcons/audio';
-import WonderTokenIcon from '../Icons/wonderToken';
 import PriorityIcon from '../Icons/priority';
 import CloseModalIcon from '../Icons/closeModal';
 import CreateDaoIcon from '../Icons/createDao';
@@ -40,7 +28,6 @@ import HeaderImage from './HeaderImage/headerImage';
 import {
   CreateFormAddDetailsAppearBlock,
   CreateFormAddDetailsAppearBlockContainer,
-  CreateFormAddDetailsButton,
   CreateFormAddDetailsInputBlock,
   CreateFormAddDetailsInputLabel,
   CreateFormAddDetailsInputs,
@@ -56,7 +43,6 @@ import {
   CreateFormFooterButtons,
   CreateFormLinkAttachmentBlock,
   CreateFormLinkAttachmentLabel,
-  CreateFormMainDescriptionInput,
   CreateFormMainDescriptionInputSymbolCounter,
   CreateFormMainInputBlock,
   CreateFormMainSection,
@@ -65,53 +51,37 @@ import {
   CreateFormMembersBlockTitle,
   CreateFormMembersSection,
   CreateFormPreviewButton,
-  CreateFormTaskRequirements,
-  CreateFormTaskRequirementsContainer,
-  CreateFormTaskRequirementsItem,
-  CreateFormTaskRequirementsItemText,
-  CreateFormTaskRequirementsTitle,
-  CreateLayoutDaoMenuItemIcon,
   CreateFormMainBlockTitle,
   CreateRewardAmountDiv,
-  CreateFormAddDetailsButtonText,
   MultiMediaUploadButton,
   MultiMediaUploadButtonText,
   MediaUploadDiv,
   TextInputDiv,
-  StyledAutocomplete,
-  AutocompleteList,
   StyledAutocompletePopper,
   OptionDiv,
   OptionTypography,
   StyledChip,
   CreateFormRewardCurrency,
-  CreateFormAddDetailsTabLabel,
   CreateFormAddDetailsLocalizationProvider,
   CreateFormAddTagsSection,
 } from './styles';
-import SelectDownIcon from '../Icons/selectDownIcon';
+
 import UploadImageIcon from '../Icons/uploadImage';
-import { getFilenameAndType, handleAddFile, uploadMedia } from 'utils/media';
-import DatePicker from '../Common/DatePicker';
+import { handleAddFile } from 'utils/media';
+
 import { MediaItem } from './MediaItem';
 import { AddFileUpload } from '../Icons/addFileUpload';
 import { TextInput } from '../TextInput';
 import { White } from '../../theme/colors';
 import { TextInputContext } from 'utils/contexts';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_AUTOCOMPLETE_USERS, GET_ORG_LABELS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GET_ORG_LABELS, GET_USER_ORGS } from 'graphql/queries';
 import { SafeImage } from '../Common/Image';
-import { GET_USER_AVAILABLE_PODS, GET_USER_PODS, GET_POD_USERS } from 'graphql/queries/pod';
-import {
-  getMentionArray,
-  parseUserPermissionContext,
-  transformTaskProposalToTaskProposalCard,
-  transformTaskToTaskCard,
-} from 'utils/helpers';
+import { GET_USER_AVAILABLE_PODS, GET_POD_USERS } from 'graphql/queries/pod';
+import { getMentionArray, transformTaskProposalToTaskProposalCard, transformTaskToTaskCard } from 'utils/helpers';
 import { GET_ORG_USERS } from 'graphql/queries/org';
 import {
   ATTACH_MEDIA_TO_TASK,
-  CREATE_TASK,
   REMOVE_MEDIA_FROM_TASK,
   UPDATE_TASK,
   UPDATE_MILESTONE,
@@ -120,7 +90,6 @@ import {
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   ATTACH_MEDIA_TO_TASK_PROPOSAL,
-  CREATE_TASK_PROPOSAL,
   REMOVE_MEDIA_FROM_TASK_PROPOSAL,
   UPDATE_TASK_PROPOSAL,
 } from 'graphql/mutations/taskProposal';
@@ -139,6 +108,7 @@ import { GET_MILESTONES, GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_
 import { TabsVisibilityCreateEntity } from 'components/Common/TabsVisibilityCreateEntity';
 import Tags, { Option as Label } from '../Tags';
 import { CREATE_LABEL } from 'graphql/mutations/org';
+import SingleDatePicker from 'components/SingleDatePicker';
 
 const filterUserOptions = (options) => {
   if (!options) return [];
@@ -1435,9 +1405,7 @@ const EditLayoutBaseModal = (props) => {
               {showDueDateSection && (
                 <CreateFormAddDetailsSelects>
                   <CreateFormAddDetailsLocalizationProvider>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
-                    </LocalizationProvider>
+                    <SingleDatePicker setValue={setDueDate} value={dueDate} />
                   </CreateFormAddDetailsLocalizationProvider>
                 </CreateFormAddDetailsSelects>
 

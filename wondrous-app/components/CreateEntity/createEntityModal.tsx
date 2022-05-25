@@ -1,8 +1,7 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { TabsVisibilityCreateEntity } from 'components/Common/TabsVisibilityCreateEntity';
-import { CircularProgress, styled, Switch, TextField } from '@material-ui/core';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { CircularProgress, styled, Switch, TextField } from '@mui/material';
+
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CREATE_POD } from 'graphql/mutations/pod';
@@ -24,6 +23,7 @@ import { Grey700, White } from '../../theme/colors';
 import { addProposalItem } from 'utils/board';
 import {
   CHAIN_TO_CHAIN_DIPLAY_NAME,
+  DEFAULT_SINGLE_DATEPICKER_VALUE,
   ENTITIES_TYPES,
   MEDIA_TYPES,
   PERMISSIONS,
@@ -41,7 +41,6 @@ import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import { useMe } from '../Auth/withAuth';
 import { ErrorText } from '../Common';
-import DatePicker from '../Common/DatePicker';
 import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
 import { SafeImage } from '../Common/Image';
@@ -62,6 +61,8 @@ import HeaderImage from './HeaderImage/headerImage';
 import { MediaItem } from './MediaItem';
 import Tags, { Option as Label } from '../Tags';
 import MembersRow from './MembersRow/membersRow';
+import SingleDatePicker from 'components/SingleDatePicker';
+
 import { CreateFormMembersList } from './MembersRow/styles';
 import {
   CreateFormAddDetailsAppearBlock,
@@ -73,7 +74,6 @@ import {
   CreateFormAddDetailsSection,
   CreateFormAddDetailsSelects,
   CreateFormAddDetailsTab,
-  CreateFormAddDetailsTabLabel,
   CreateFormBaseModal,
   CreateFormBaseModalCloseBtn,
   CreateFormBaseModalHeader,
@@ -93,7 +93,6 @@ import {
   CreateFormMembersSection,
   CreateFormPreviewButton,
   CreateFormRewardCurrency,
-  CreateFormSetPodPrivacy,
   CreateRewardAmountDiv,
   MediaUploadDiv,
   MultiMediaUploadButton,
@@ -340,7 +339,7 @@ const CreateLayoutBaseModal = (props) => {
   const [pod, setPod] = useState(null);
   const selectedPodPrivacyLevel = pods?.filter((i) => i.id === pod)[0]?.privacyLevel;
   const isPodPublic = !selectedPodPrivacyLevel || selectedPodPrivacyLevel === 'public';
-  const [dueDate, setDueDate] = useState(null);
+  const [dueDate, setDueDate] = useState(DEFAULT_SINGLE_DATEPICKER_VALUE);
   const [isPrivate, setIsPrivate] = useState(false);
   const [isPublicEntity, setIsPublicEntity] = useState(false);
   const {
@@ -508,6 +507,8 @@ const CreateLayoutBaseModal = (props) => {
   });
 
   const [createMilestone, { loading: createMilestoneLoading }] = useMutation(CREATE_MILESTONE);
+
+  console.log(dueDate);
 
   const submitMutation = useCallback(() => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -1501,9 +1502,13 @@ const CreateLayoutBaseModal = (props) => {
               <CreateFormAddDetailsAppearBlockContainer>
                 <CreateFormAddDetailsSelects>
                   <CreateFormAddDetailsLocalizationProvider>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <CreateFormAddDetailsInputLabel>Due Date</CreateFormAddDetailsInputLabel>
+
+                    <SingleDatePicker setValue={setDueDate} />
+
+                    {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
                       <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
-                    </LocalizationProvider>
+                    </LocalizationProvider> */}
                   </CreateFormAddDetailsLocalizationProvider>
                 </CreateFormAddDetailsSelects>
                 {/* <CreateFormAddDetailsSelects> */}{' '}
