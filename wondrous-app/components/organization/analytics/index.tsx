@@ -155,7 +155,7 @@ const UserRow = ({ contributorTask }) => {
           {clicked ? <BottomArrowCaret style={CaretStyle} /> : <RightArrowCaret style={CaretStyle} />}
           {contributorTask?.assigneeId ? (
             <>
-              {contributorTask?.profilePicture ? (
+              {contributorTask?.assigneeProfilePicture ? (
                 <SafeImage src={contributorTask?.assigneeProfilePicture} style={UserRowPictureStyles} />
               ) : (
                 <DefaultUserImage style={UserRowPictureStyles} />
