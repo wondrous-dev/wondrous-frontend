@@ -65,7 +65,7 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
     const userId = notification.actorId;
     const actor = (
       <NotificationsLink>
-        <Link href={`/profile/${userId}/about`}>{userName}</Link>
+        <Link href={`/profile/${userName}/about`}>{userName}</Link>
       </NotificationsLink>
     );
 
@@ -75,7 +75,9 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
 
     const object = (
       <span>
-        <NotificationsLink styled={{ display: 'block' }}>{objectType}</NotificationsLink>
+        <NotificationsLink styled={{ display: 'block' }}>
+          <Link href={`/${snakeToCamel(notification.objectType)}/${notification.objectId}`}>{objectType}</Link>
+        </NotificationsLink>
         <NotificationItemTimeline>{calculateTimeLapse(notification.timestamp)}</NotificationItemTimeline>
       </span>
     );

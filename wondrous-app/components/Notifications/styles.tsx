@@ -173,6 +173,11 @@ export const NotificationsLink = styled.span`
   a {
     color: ${HighlightBlue};
     font-weight: 700;
+    text-decoration: none; 
+    
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `;
 export const NotificationItemInner = styled.div`
