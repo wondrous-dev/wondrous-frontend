@@ -65,12 +65,27 @@ const createTasksFromColumns = (columns) => {
     const newColumnTasks = column?.tasks?.map((task) => {
       return {
         ...task,
-        status: task?.status || column?.status,
+        status: column?.status || task?.status,
       };
     });
     acc = [...acc, ...newColumnTasks];
     if (column?.section?.tasks) {
-      acc = [...acc, ...column?.section?.tasks];
+      const newColumnSectionTasks = column?.section?.tasks?.map((task) => {
+        if (column?.status === Constants.TASK_STATUS_TODO) {
+          return {
+            ...task,
+            status: TASK_STATUS_PROPOSAL_REQUEST,
+          };
+        } else if (column?.status === Constants.TASK_STATUS_IN_PROGRESS) {
+          return {
+            ...task,
+            status: TASK_STATUS_SUBMISSION_REQUEST,
+          };
+        }
+        return task;
+      });
+
+      acc = [...acc, ...newColumnSectionTasks];
     }
     return acc;
   }, []);

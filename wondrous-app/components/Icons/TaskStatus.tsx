@@ -22,8 +22,14 @@ import {
 } from './index';
 import { ProposalsRemainingIcon } from './statusIcons';
 
+type StyleProps = {
+  width: string;
+  height: string;
+  marginRight?: string;
+};
 type Props = {
   status: string;
+  style?: StyleProps;
 };
 
 export default function TaskStatus({ status, ...rest }: Props) {

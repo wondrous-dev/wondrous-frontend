@@ -106,7 +106,6 @@ export default function TableBody({
           task?.__typename === 'TaskSubmissionCard' || task?.__typename === 'TaskProposalCard'
             ? task?.creatorProfilePicture
             : task.assigneeProfilePicture;
-
         return (
           <StyledTableRow key={task.id}>
             <StyledTableCell align="center">

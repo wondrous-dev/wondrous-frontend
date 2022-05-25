@@ -91,6 +91,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {} }) {
                   {bounty?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
                 </BoardsPrivacyLabel>
               </BoardsCardSubheader>
+              {bounty?.status === TASK_STATUS_DONE && !bounty?.rewards && <CompletedIcon />}
               {bounty?.rewards && bounty?.rewards?.length > 0 && (
                 <BoardsRewardLabel>
                   <Compensation rewards={bounty?.rewards} taskIcon={<BountyStatusIcon />} />

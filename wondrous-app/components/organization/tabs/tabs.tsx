@@ -26,10 +26,10 @@ const Tabs = (props) => {
         href: `/${page}/${user}/activities`,
         label: 'Activity',
       },
-      // {
-      //   href: `/${page}/${user}/about`,
-      //   label: 'About',
-      // },
+      {
+        href: `/${page}/${user}/analytics`,
+        label: 'Analytics',
+      },
     ];
   } else if (page === 'pod') {
     tabsLinks = [
@@ -41,10 +41,10 @@ const Tabs = (props) => {
         href: `/${page}/${user}/activities`,
         label: 'Activity',
       },
-      // {
-      //   href: `/${page}/${user}/about`,
-      //   label: 'About',
-      // },
+      {
+        href: `/${page}/${user}/analytics`,
+        label: 'Analytics',
+      },
     ];
   }
 

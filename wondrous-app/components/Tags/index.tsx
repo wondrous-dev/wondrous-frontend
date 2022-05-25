@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextField } from '@material-ui/core';
 import { createFilterOptions } from '@material-ui/lab';
 import _ from 'lodash';
@@ -35,18 +35,23 @@ const filter = createFilterOptions({
   stringify: (option: Option) => option.name || '',
 });
 
-const colors = _.shuffle(Object.values(ColorTypes));
+const colors = Object.values(ColorTypes);
+const randomColors = _.shuffle(colors);
 
 function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
-  const getRandomColor = (): string => {
-    return options.length <= colors.length
+  const [openTags, setOpenTags] = useState(false);
+  const [randomColor, setRandomColor] = useState(randomColors[0]);
+
+  const generateRandomColor = () => {
+    return options.length < colors.length
       ? // pick random color that doesn't exist in the option
         colors.find((color) => !options.some((option) => option.color === color))
-      : colors[0];
+      : _.shuffle(colors)[0];
   };
 
-  const [openTags, setOpenTags] = useState(false);
-  const [randomColor, setRandomColor] = useState(getRandomColor());
+  useEffect(() => {
+    setRandomColor(generateRandomColor());
+  }, [options]);
 
   return (
     <StyledAutocomplete
@@ -64,21 +69,33 @@ function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
 
         const tagOrNewTagName = tags[tags.length - 1];
 
-        if (tagOrNewTagName) {
-          if (typeof tagOrNewTagName === 'string') {
+        if (!tagOrNewTagName) {
+          onChange([]);
+
+          return;
+        }
+
+        if (typeof tagOrNewTagName === 'string') {
+          const option = options.find((option) => option.name === tagOrNewTagName);
+
+          if (option) {
+            const selected = ids.find((id) => option.id === id);
+
+            if (!selected) {
+              tags[tags.length - 1] = option;
+              onChange(tags.map((tag) => tag.id));
+            }
+          } else {
             onCreate({
               name: tagOrNewTagName,
               color: randomColor,
             } as Option);
-            return setRandomColor(randomColor);
-          } else if (!tagOrNewTagName.id) {
-            onCreate(tagOrNewTagName);
-
-            return setRandomColor(getRandomColor());
           }
+        } else if (tagOrNewTagName.id) {
+          onChange(tags.map((tag) => tag.id));
+        } else {
+          onCreate(tagOrNewTagName);
         }
-
-        onChange(tags.map((tag) => tag.id));
       }}
       getOptionLabel={(option) => option.name}
       filterOptions={(options, params) => {
@@ -121,7 +138,7 @@ function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
               icon={<span>&times;</span>}
               onClick={props.onDelete}
               label={option.name}
-              bgColor={option.color}
+              background={option.color}
               variant="outlined"
             />
           );
