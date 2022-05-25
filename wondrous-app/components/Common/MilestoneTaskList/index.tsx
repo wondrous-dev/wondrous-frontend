@@ -22,7 +22,6 @@ import {
   TaskTitle,
   StyledMilestoneEmpty,
 } from './styles';
-import { skipForCommandKey } from 'utils/links';
 import SmartLink from 'components/Common/SmartLink';
 
 export const TASK_ICONS = {
