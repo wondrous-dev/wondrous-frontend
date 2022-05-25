@@ -78,6 +78,7 @@ const DatePickerRecurringUtilities = ({
                   if (type === DATEPICKER_OPTIONS.DAILY) setRepeatValue(1);
                   setRepeatType(type);
                 }}
+                defaultValue={repeatType}
               >
                 {DATEPICKER_OPTIONS_ARR.map((option) => (
                   <MenuItem key={option} value={option}>

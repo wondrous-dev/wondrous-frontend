@@ -313,6 +313,7 @@ const EditLayoutBaseModal = (props) => {
   const initialRewards = existingTask?.rewards && existingTask?.rewards[0];
   const initialCurrency = initialRewards?.paymentMethodId;
   const initialAmount = initialRewards?.rewardAmount;
+
   const [rewardsCurrency, setRewardsCurrency] = useState(initialCurrency);
   const [rewardsAmount, setRewardsAmount] = useState(initialAmount);
   // const [maxSubmissionCount, setMaxSubmissionCount] = useState(existingTask?.maxSubmissionCount);
@@ -372,7 +373,23 @@ const EditLayoutBaseModal = (props) => {
   const selectedPodPrivacyLevel = pods?.filter((i) => i.id === pod)[0]?.privacyLevel;
   const isPodPublic = !selectedPodPrivacyLevel || selectedPodPrivacyLevel === 'public';
   const [dueDate, setDueDate] = useState(existingTask?.dueDate);
+
+  const initialRecurrenceValue =
+    existingTask?.recurringSchema?.daily ||
+    existingTask?.recurringSchema?.weekly ||
+    existingTask?.recurringSchema?.monthly ||
+    existingTask?.recurringSchema?.periodic;
+
+  const initialRecurrenceType =
+    existingTask?.recurringSchema &&
+    Object.keys(existingTask.recurringSchema)[
+      Object?.values(existingTask?.recurringSchema).indexOf(initialRecurrenceValue)
+    ];
+
+  const [recurrenceValue, setRecurrenceValue] = useState(initialRecurrenceValue);
+  const [recurrenceType, setRecurrenceType] = useState(initialRecurrenceType);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
+
   const isBounty = entityType === ENTITIES_TYPES.BOUNTY;
   const isTask = entityType === ENTITIES_TYPES.TASK;
   const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
@@ -613,6 +630,12 @@ const EditLayoutBaseModal = (props) => {
           milestoneId: milestone?.id ?? milestone,
           podId: pod?.id ?? pod,
           dueDate,
+          ...(recurrenceType &&
+            recurrenceValue && {
+              recurringSchema: {
+                [recurrenceType]: recurrenceValue,
+              },
+            }),
           ...(rewardsAmount &&
             rewardsCurrency && {
               rewards: [
@@ -705,6 +728,12 @@ const EditLayoutBaseModal = (props) => {
               labelIds,
               description: descriptionText,
               dueDate,
+              ...(recurrenceType &&
+                recurrenceValue && {
+                  recurringSchema: {
+                    [recurrenceType]: recurrenceValue,
+                  },
+                }),
               orgId: org?.id,
               podId: pod?.id,
               userMentions: getMentionArray(descriptionText),
@@ -783,6 +812,8 @@ const EditLayoutBaseModal = (props) => {
     assignee?.value,
     publicTask,
     selectedReviewers,
+    recurrenceType,
+    recurrenceValue,
     mediaUploads,
     existingTask?.parentTaskId,
     existingTask?.id,
@@ -1405,7 +1436,14 @@ const EditLayoutBaseModal = (props) => {
               {showDueDateSection && (
                 <CreateFormAddDetailsSelects>
                   <CreateFormAddDetailsLocalizationProvider>
-                    <SingleDatePicker setValue={setDueDate} value={dueDate} />
+                    <SingleDatePicker
+                      setValue={setDueDate}
+                      value={dueDate}
+                      setRecurrenceValue={setRecurrenceValue}
+                      recurrenceValue={recurrenceValue}
+                      setRecurrenceType={setRecurrenceType}
+                      recurrenceType={recurrenceType}
+                    />
                   </CreateFormAddDetailsLocalizationProvider>
                 </CreateFormAddDetailsSelects>
 

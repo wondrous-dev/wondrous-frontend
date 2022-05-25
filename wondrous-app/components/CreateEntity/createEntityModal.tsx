@@ -340,6 +340,8 @@ const CreateLayoutBaseModal = (props) => {
   const selectedPodPrivacyLevel = pods?.filter((i) => i.id === pod)[0]?.privacyLevel;
   const isPodPublic = !selectedPodPrivacyLevel || selectedPodPrivacyLevel === 'public';
   const [dueDate, setDueDate] = useState(DEFAULT_SINGLE_DATEPICKER_VALUE);
+  const [recurrenceType, setRecurrenceType] = useState(null);
+  const [recurrenceValue, setRecurrenceValue] = useState(null);
   const [isPrivate, setIsPrivate] = useState(false);
   const [isPublicEntity, setIsPublicEntity] = useState(false);
   const {
@@ -508,8 +510,6 @@ const CreateLayoutBaseModal = (props) => {
 
   const [createMilestone, { loading: createMilestoneLoading }] = useMutation(CREATE_MILESTONE);
 
-  console.log(dueDate);
-
   const submitMutation = useCallback(() => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -522,6 +522,12 @@ const CreateLayoutBaseModal = (props) => {
       parentTaskId,
       podId: pod,
       dueDate,
+      ...(recurrenceType &&
+        recurrenceValue && {
+          recurringSchema: {
+            [recurrenceType]: recurrenceValue,
+          },
+        }),
       ...(rewardsAmount &&
         rewardsCurrency && {
           rewards: [
@@ -897,6 +903,8 @@ const CreateLayoutBaseModal = (props) => {
     parentTaskId,
     pod,
     dueDate,
+    recurrenceType,
+    recurrenceValue,
     rewardsAmount,
     rewardsCurrency,
     canCreateTask,
@@ -1504,11 +1512,11 @@ const CreateLayoutBaseModal = (props) => {
                   <CreateFormAddDetailsLocalizationProvider>
                     <CreateFormAddDetailsInputLabel>Due Date</CreateFormAddDetailsInputLabel>
 
-                    <SingleDatePicker setValue={setDueDate} />
-
-                    {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
-                    </LocalizationProvider> */}
+                    <SingleDatePicker
+                      setValue={setDueDate}
+                      setRecurrenceType={setRecurrenceType}
+                      setRecurrenceValue={setRecurrenceValue}
+                    />
                   </CreateFormAddDetailsLocalizationProvider>
                 </CreateFormAddDetailsSelects>
                 {/* <CreateFormAddDetailsSelects> */}{' '}

@@ -1,6 +1,8 @@
 import { useMemo, useState, useEffect } from 'react';
 import { DayPickerSingleDateController } from 'react-dates';
 import moment from 'moment';
+import { isEmpty } from 'lodash';
+
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 
@@ -27,21 +29,62 @@ import Image from 'next/image';
 interface SingleDatePickerProps {
   sx?: object;
   setValue?: Function;
+  setRecurrenceType?: Function;
+  setRecurrenceValue?: Function;
+  recurrenceType?: any;
+  recurrenceValue?: any;
   value?: any;
 }
 
-const SingleDatePicker = ({ sx, setValue, value }: SingleDatePickerProps) => {
+const SingleDatePicker = ({
+  sx,
+  setValue,
+  value,
+  setRecurrenceType,
+  recurrenceType,
+  recurrenceValue,
+  setRecurrenceValue,
+}: SingleDatePickerProps) => {
   const [date, setDate] = useState(DEFAULT_SINGLE_DATEPICKER_VALUE);
   const [focusedInput, setFocusedInput] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const [repeatType, setRepeatType] = useState();
   const [repeatValue, setRepeatValue] = useState();
-  const [weekDaysSelected, setWeekDaysSelected] = useState(WEEK_DAYS);
+  const [weekDaysSelected, setWeekDaysSelected] = useState<Object>(WEEK_DAYS);
   const [monthInView, setMonthInView] = useState();
+
+  const parseWeekDaysToPosition = (weekDays) => {
+    const booleanDayList = Object.keys(weekDays).map((_, idx) => Object.values(weekDays)[idx]);
+    const dayPositionList = booleanDayList.map((elm, idx) => elm && idx).filter((elm) => elm || elm === 0);
+    return dayPositionList;
+  };
+  const parsePositionToWeekDays = (values) => {
+    const listOfDays = Object.keys(WEEK_DAYS).map((day, idx) =>
+      values.includes(idx) ? { [day]: true } : { [day]: false }
+    );
+    const weekDays = listOfDays.reduce((map, newValue) => ({ ...map, ...newValue }));
+
+    return weekDays;
+  };
 
   useEffect(() => {
     value && setDate(moment(value));
+    recurrenceType && setRepeatType(recurrenceType);
+
+    if (recurrenceType === DATEPICKER_OPTIONS.WEEKLY) {
+      const parsedWeekDays = parsePositionToWeekDays(recurrenceValue);
+      setWeekDaysSelected(parsedWeekDays);
+      return;
+    }
+    recurrenceValue && setRepeatValue(recurrenceValue);
   }, []);
+
+  useEffect(() => {
+    if (repeatType === DATEPICKER_OPTIONS.WEEKLY) {
+      const parsedWeekDays = parseWeekDaysToPosition(weekDaysSelected);
+      !isEmpty(parsedWeekDays) && setRecurrenceValue(parsedWeekDays);
+    }
+  }, [weekDaysSelected, repeatType]);
 
   moment.updateLocale('en', {
     week: {
@@ -50,9 +93,18 @@ const SingleDatePicker = ({ sx, setValue, value }: SingleDatePickerProps) => {
   });
 
   const handleDateChange = (newDate) => {
-    console.log(newDate);
     setDate(newDate);
     setValue(moment(newDate).toDate());
+  };
+
+  const handleSetRepeatType = (newType) => {
+    setRepeatType(newType);
+    setRecurrenceType(newType);
+  };
+
+  const handleSetRepeatValue = (newValue) => {
+    setRepeatValue(newValue);
+    setRecurrenceValue(newValue);
   };
 
   const todayMoment = moment();
@@ -101,8 +153,8 @@ const SingleDatePicker = ({ sx, setValue, value }: SingleDatePickerProps) => {
 
   const reset = () => {
     handleDateChange(DEFAULT_SINGLE_DATEPICKER_VALUE);
-    setRepeatType(null);
-    setRepeatValue(null);
+    handleSetRepeatType(null);
+    handleSetRepeatValue(null);
     setShowOptions(null);
   };
 
@@ -188,9 +240,9 @@ const SingleDatePicker = ({ sx, setValue, value }: SingleDatePickerProps) => {
                   showOptions={showOptions}
                   setShowOptions={setShowOptions}
                   setDate={handleDateChange}
-                  setRepeatType={setRepeatType}
+                  setRepeatType={handleSetRepeatType}
                   repeatType={repeatType}
-                  setRepeatValue={setRepeatValue}
+                  setRepeatValue={handleSetRepeatValue}
                   repeatValue={repeatValue}
                   date={date}
                   todayMoment={todayMoment}
