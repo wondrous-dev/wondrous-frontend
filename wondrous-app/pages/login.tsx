@@ -17,6 +17,7 @@ import { DiscordIcon } from 'components/Icons/discord';
 import { useWonderWeb3 } from 'services/web3';
 import { emailSignin, getUserSigningMessage, walletSignin } from 'components/Auth/withAuth';
 import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
+import WalletConnectConnector from 'components/WalletConnectors/WalletConnect';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import styled from 'styled-components';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
@@ -175,6 +176,9 @@ const Login = ({ csrfToken }) => {
               }}
             >
               <MetaMaskConnector />
+            </WalletLoginContainer>
+            <WalletLoginContainer>
+              <WalletConnectConnector />
             </WalletLoginContainer>
             <WalletLoginContainer>
               <CoinbaseConnector />
