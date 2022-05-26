@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Image from "next/image";
+import Image from 'next/image';
 
 import { Card, CardBody, CardFooter } from 'components/Common/auth';
 import { Button } from 'components/Common/button';
@@ -21,6 +21,7 @@ import { SupportedChainType } from 'utils/web3Constants';
 import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
+import WalletConnectConnector from 'components/WalletConnectors/WalletConnect';
 
 const Signup = () => {
   const wonderWeb3 = useWonderWeb3();
@@ -90,12 +91,12 @@ const Signup = () => {
     <AuthLayout>
       <LoginWrapper>
         <Image
-            alt="Background"
-            className="auth-background"
-            src="/images/login/background.png"
-            layout="fill"
-            objectFit="cover"
-            quality={80}
+          alt="Background"
+          className="auth-background"
+          src="/images/login/background.png"
+          layout="fill"
+          objectFit="cover"
+          quality={80}
         />
         <Image alt="Background" src="/images/login/background-blur.png" layout="fill" objectFit="cover" quality={80} />
         <Card>
@@ -146,6 +147,7 @@ const Signup = () => {
             )}
 
             <MetaMaskConnector text="Sign up with MetaMask" />
+            <WalletConnectConnector text="Sign up with Wallet Connect" />
             <CoinbaseConnector text="Sign up with Coinbase Wallet" />
           </CardBody>
           {/* <CardFooter>

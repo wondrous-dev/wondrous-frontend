@@ -28,18 +28,12 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
 import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME } from 'utils/web3Constants';
+import { constructGnosisRedirectUrl } from './SingleWalletPayment';
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {
     return address.substring(0, 4) + '...' + address.substring(address.length - 3);
   }
-};
-
-export const constructGnosisRedirectUrl = (chain, safeAddress, safeTxHash) => {
-  if (chain === 'harmony') {
-    return `https://multisig.harmony.one/#/safes/${safeAddress}/transactions/`;
-  }
-  return `https://gnosis-safe.io/app/${CHAIN_TO_GNOSIS_URL_ABBR[chain]}:${safeAddress}/transactions/${safeTxHash}`;
 };
 
 interface SubmissionPaymentInfo {
