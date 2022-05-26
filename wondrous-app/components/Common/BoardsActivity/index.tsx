@@ -16,8 +16,6 @@ export const BoardsActivityInlineView = ({
   onSearch,
   filterSchema,
   onChange,
-  statuses,
-  podIds,
   view,
   searchQuery,
   isAdmin,
@@ -33,9 +31,7 @@ export const BoardsActivityInlineView = ({
         {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
         <FiltersTriggerButton onClick={handleFilterDisplay} />
       </BoardsActivityInlineViewWrapper>
-      {displayFilters && (
-        <BoardFilters filterSchema={filterSchema} onChange={onChange} statuses={statuses} podIds={podIds} />
-      )}
+      {displayFilters && <BoardFilters showAppliedFilters filterSchema={filterSchema} onChange={onChange} />}
     </>
   );
 };
@@ -92,8 +88,6 @@ export default function BoardsActivity(props) {
         onSearch={onSearch}
         filterSchema={filterSchema}
         onChange={onFilterChange}
-        statuses={statuses}
-        podIds={podIds}
         view={view}
         searchQuery={searchQuery}
         isAdmin={isAdmin}
@@ -106,7 +100,7 @@ export default function BoardsActivity(props) {
     <>
       <BoardsActivityWrapper>
         <SearchTasks onSearch={onSearch} />
-        <Filter filterSchema={filterSchema} onChange={onFilterChange} statuses={statuses} podIds={podIds} />
+        <BoardFilters filterSchema={filterSchema} onChange={onFilterChange} />
         {orgBoard && <SelectMenuBoardType router={router} view={view} />}
         {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
       </BoardsActivityWrapper>

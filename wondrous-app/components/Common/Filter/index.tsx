@@ -9,16 +9,11 @@ import {
   FilterChevronContainer,
   FilterBox,
   FilterBoxInner,
-  FilterStatus,
-  FilterCount,
-  FilterClear,
   FilterItemsContainer,
   FilterItemList,
   FilterItem,
   FilterItemIcon,
   FilterItemName,
-  FilterItemCount,
-  FilterItemListShade,
   FilterItemOrgIcon,
   InlineText,
   FilterValues,
@@ -30,112 +25,106 @@ import {
 import { Blue200, Grey250 } from '../../../theme/colors';
 import { useOutsideAlerter, useFilterQuery } from 'utils/hooks';
 import { TaskFilter } from 'types/task';
-
+import _ from 'lodash';
 interface IFilterProps {
   filterSchema: any;
   onChange: ({}: TaskFilter) => void;
-  statuses: String[];
-  podIds: String[];
   currentIdx?: number;
   schemaLength?: number;
-  query?: any;
-  variables?: any;
-  icon?: any;
+  onRemove?: ({}: TaskFilter) => void;
+  selected?: any;
+  applyFilter?: any;
+  key?: number;
 }
 
-//TODO refactor this
 const Filter = (props: IFilterProps) => {
-  const {
-    filterSchema = [],
-    onChange,
-    statuses = [],
-    podIds = [],
-    currentIdx,
-    schemaLength,
-    query,
-    variables,
-    icon,
-  } = props;
-  const [selected, setSelected] = useState(filterSchema[0]);
-  const [selectedTabItems, setSelectedTabItems] = useState({});
-  const [selectedNames, setSelectedNames] = useState([]);
-  const [items, setItems] = useState([]);
-  const [multiChoice, setMultichoice] = useState(true);
+  const { filterSchema = {}, onChange, currentIdx, schemaLength, onRemove, selected, applyFilter } = props;
+  const { query, variables, icon } = filterSchema;
+  const [items, setItems] = useState(filterSchema?.items || []);
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef(null);
   const { isLoading, data } = useFilterQuery(query, variables, open);
+
   const toggleOpen = () => {
     setOpen(!open);
   };
+
+  useEffect(() => {
+    console.log(selected, 'appliedFilter');
+  }, [selected]);
 
   useOutsideAlerter(wrapperRef, () => setOpen(false));
 
   useEffect(() => {
     if (!isLoading && data) {
       const queriedItems = [...data, ...items].map((item) => (icon ? { ...item, icon } : item));
-      setItems(queriedItems);
+      setItems(_.uniqBy(queriedItems, 'id'));
     }
   }, [isLoading]);
 
-  // Changes the display list.
-  const displayList = (tab) => {
-    if (tab) {
-      setItems(tab.items);
-      setMultichoice(tab.multiChoice);
+  const filterItems = (item, selected) => {
+    if (selected.find((i) => i.id === item.id)) {
+      return selected.filter((i) => i.id !== item.id);
     }
-    setSelected(tab);
+    return [...selected, item];
   };
 
-  // adds / removes an item from the filter
-  const toggleInFilter = (itemId) => {
-    const selectedItems = [...(selectedTabItems[selected.name] || [])];
-    const newItems = [...items];
-    newItems.forEach((it) => {
-      const deselect = () => {
-        const index = selectedItems.indexOf(it.id);
-        const nameIndex = selectedNames.indexOf(it.name);
-
-        if (index > -1) {
-          selectedItems.splice(index, 1);
-        }
-
-        if (nameIndex > -1) {
-          selectedNames.splice(index, 1);
-        }
-      };
-
-      if (it.id === itemId) {
-        const selected = selectedItems.includes(itemId);
-
-        if (!selected) {
-          selectedNames.push(it.name);
-          selectedItems.push(itemId);
-        } else {
-          deselect();
-        }
-      } else if (!multiChoice) {
-        deselect();
-      }
-    });
-
-    const newSelectedTabItems = { ...selectedTabItems, [selected.name]: selectedItems };
-    setItems(newItems);
-    setSelectedTabItems(newSelectedTabItems);
-    setSelectedNames(selectedNames);
+  const toggleOption = (item) => {
+    if (filterSchema?.multiChoice) {
+      const selectedItems = selected ? filterItems(item, selected) : [item];
+      handleChange(selectedItems, false);
+      return;
+    }
+    if (item.id === selected?.id) {
+      handleChange(null);
+      return;
+    }
+    handleChange(item);
   };
 
-  const clearItems = () => {
-    const newItems = [...items];
-    setItems(newItems);
-    setSelectedTabItems({});
-    setSelectedNames([]);
-    onChange({
-      statuses: [],
-      podIds: [],
-    });
+  const filterExists = typeof selected !== 'undefined';
+
+  const handleChange = (filter, shouldCloseModal = true) => {
+    onChange({ [filterSchema.name]: filter });
+    if (open) {
+      setOpen(!shouldCloseModal);
+    }
   };
 
-  const applyFilters = () => onChange(selectedTabItems);
+  const handleRemove = (filter, shouldCloseModal = true) => {
+    onRemove(filter);
+    if (open) {
+      setOpen(!shouldCloseModal);
+    }
+  };
+
+  const removeFilterFromMultiChoice = (selected) => {
+    if (!selected && filterExists) {
+      handleRemove(filterSchema.name, false);
+      return;
+    }
+    if (selected) {
+      handleChange(selected, false);
+      return;
+    }
+  };
+
+  useEffect(() => {
+    if (filterSchema?.multiChoice) {
+      removeFilterFromMultiChoice(selected);
+      return;
+    }
+    if (selected) {
+      handleChange(selected);
+      return;
+    }
+    if (!selected && filterExists) {
+      handleRemove(filterSchema.name);
+      return;
+    }
+  }, [selected]);
+
+  const clearItems = () => onRemove(filterSchema.name);
 
   const FILTER_BUTTONS_CONFIG = [
     {
@@ -146,34 +135,30 @@ const Filter = (props: IFilterProps) => {
     },
     {
       label: 'Apply Filter',
-      action: applyFilters,
+      action: applyFilter,
     },
   ];
 
-  useEffect(() => {
-    displayList(filterSchema[0]);
-  }, [open]);
-
-  useEffect(() => {
-    setSelectedTabItems({
-      statuses,
-      podIds,
-    });
-    const selectedNames = filterSchema
-      .flatMap((item) => item.items.filter((it) => [...podIds, ...statuses].includes(it.id)))
-      .map((i) => i.name);
-    setSelectedNames(selectedNames);
-  }, [statuses, podIds, filterSchema]);
+  const checkIsSelected = (itemId) => {
+    debugger;
+    if (filterSchema?.multiChoice) {
+      return !!selected?.find((item) => item.id === itemId);
+    }
+    return selected?.id === itemId;
+  };
 
   const portalDirection = currentIdx === schemaLength - 1 ? 'right' : 'left';
+
+  const displayNames =
+    selected && (Array.isArray(selected) ? selected.map((item) => item.name).join(', ') : selected.name);
   return (
     <FilterHandle ref={wrapperRef} open={open}>
       <FilterHandleInner open={open} onClick={toggleOpen}>
         <FilterHandleContainer>
-          {selectedNames.length ? (
+          {selected ? (
             <FilterValues>
               <InlineText color={Grey250}>Filter:&nbsp;</InlineText>
-              <InlineText color={Blue200}>{selectedNames.join(', ')}</InlineText>
+              <InlineText color={Blue200}>{displayNames}</InlineText>
             </FilterValues>
           ) : open ? (
             `<Filter>`
@@ -191,19 +176,17 @@ const Filter = (props: IFilterProps) => {
         <FilterBoxPortal container={wrapperRef.current}>
           <FilterBox renderDirection={portalDirection}>
             <FilterBoxInner>
-              <Tabs tabs={filterSchema} selected={selected?.name} onSelect={(tab) => displayList(tab)} />
-
               <FilterItemsContainer>
                 <FilterItemList>
-                  {selected?.renderList
-                    ? selected.renderList({ selectedTab: selected, selectedTabItems, toggleInFilter, items })
+                  {filterSchema.renderList
+                    ? filterSchema.renderList({ schema: filterSchema, selected, toggleOption, checkIsSelected })
                     : items.map((item) => {
-                        const isSelected = (selectedTabItems[selected?.name] || []).includes(item.id);
+                        const isSelected = checkIsSelected(item.id);
 
                         return (
                           <FilterItem
                             gradient={item?.gradient}
-                            onClick={() => toggleInFilter(item.id)}
+                            onClick={() => toggleOption({ ...item, filterType: filterSchema.name })}
                             selected={isSelected}
                             key={item.id}
                           >

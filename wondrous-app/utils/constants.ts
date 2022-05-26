@@ -12,6 +12,11 @@ export const TASK_STATUS_PAID = 'paid';
 export const TASK_STATUS_PROPOSAL_REQUEST = 'proposal_request';
 export const TASK_STATUS_SUBMISSION_REQUEST = 'submission_request';
 
+//Task date types
+export const TASK_DATE_OVERDUE = 'overdue';
+export const TASK_DATE_DUE_NEXT_WEEK = 'due_next_week';
+export const TASK_DATE_DUE_THIS_WEEK = 'due_this_week';
+
 export const ORG_MEMBERSHIP_REQUESTS = 'org_membership_request';
 export const TASK_STATUSES = [
   TASK_STATUS_TODO,

@@ -13,6 +13,9 @@ import {
   STATUS_APPROVED,
   STATUS_CHANGE_REQUESTED,
   ENTITIES_TYPES,
+  TASK_DATE_OVERDUE,
+  TASK_DATE_DUE_THIS_WEEK,
+  TASK_DATE_DUE_NEXT_WEEK,
 } from 'utils/constants';
 import { Archived, InReview, Requested } from 'components/Icons/sections';
 import { Proposal } from 'components/Icons';
@@ -23,6 +26,7 @@ import { BountyIcon, MilestoneIcon, TaskIcon } from 'components/Icons/Search/typ
 import { delQuery } from 'utils';
 import { GET_ORG_PODS } from 'graphql/queries/org';
 import CreatePodIcon from 'components/Icons/createPod';
+import { GET_ORG_LABELS } from 'graphql/queries';
 
 const TO_DO = (withSection: boolean = true) => {
   let config = { status: TASK_STATUS_TODO, tasks: [] };
@@ -177,31 +181,33 @@ export const ENTITIES_TYPES_FILTER_STATUSES = (orgData) => {
           query: GET_ORG_PODS,
           variables: { orgId: orgData?.id },
           icon: <CreatePodIcon />,
+          multiChoice: true,
         },
         {
-          name: 'tags',
+          name: 'labelId',
           label: 'Tags',
-          //WIP
           items: [],
+          query: GET_ORG_LABELS,
+          variables: { orgId: orgData?.id },
         },
         {
-          name: 'dates',
+          name: 'date',
           label: 'Dates',
           items: [
             {
-              id: TASK_STATUS_TODO,
+              id: TASK_DATE_OVERDUE,
               name: 'Overdue',
               icon: <TaskStatus status={TASK_STATUS_TODO} />,
               gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
             },
             {
-              id: TASK_STATUS_IN_PROGRESS,
+              id: TASK_DATE_DUE_THIS_WEEK,
               name: 'Due this week',
               icon: <TaskStatus status={TASK_STATUS_IN_PROGRESS} />,
               gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
             },
             {
-              id: TASK_STATUS_IN_REVIEW,
+              id: TASK_DATE_DUE_NEXT_WEEK,
               name: 'Due next week',
               icon: <TaskStatus status={TASK_STATUS_IN_REVIEW} />,
               gradient: 'linear-gradient(180deg, #FFFFFF 0%, #00BAFF 100%)',

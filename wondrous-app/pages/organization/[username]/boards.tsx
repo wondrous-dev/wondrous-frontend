@@ -46,14 +46,13 @@ const useGetOrgTaskBoardTasks = ({
   columns,
   setColumns,
   setOrgTaskHasMore,
-  statuses,
   orgId,
   boardType,
-  podIds,
   userId,
   entityType,
   setIsLoading,
   search,
+  filters,
 }) => {
   const [getOrgTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
@@ -93,18 +92,20 @@ const useGetOrgTaskBoardTasks = ({
   useEffect(() => {
     if (!userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search) {
       const taskBoardStatuses =
-        statuses.length > 0
-          ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
+        filters?.statuses?.length > 0
+          ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
           : //double check in case we add new stuff and have no valid entityType.
             STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
       const taskBoardLimit = taskBoardStatuses.length > 0 ? LIMIT : 0;
       getOrgTaskBoardTasks({
         variables: {
           orgId,
-          podIds,
+          podIds: filters?.podIds,
           offset: 0,
           statuses: taskBoardStatuses,
           limit: taskBoardLimit,
+          labelId: filters?.labelId,
+          date: filters?.date,
           types: [entityType],
           ...(boardType === PRIVACY_LEVEL.public && {
             onlyPublic: true,
@@ -113,21 +114,23 @@ const useGetOrgTaskBoardTasks = ({
       });
       setOrgTaskHasMore(true);
     }
-  }, [boardType, getOrgTaskBoardTasks, orgId, statuses, podIds, setOrgTaskHasMore, userId, entityType]);
+  }, [boardType, getOrgTaskBoardTasks, orgId, filters, setOrgTaskHasMore, userId, entityType]);
   return { fetchMore: getOrgTaskBoardTasksFetchMore };
 };
 
 const useGetTaskRelatedToUser = ({
-  podIds,
+  // podIds,
   userId,
   orgId,
-  statuses,
+  // statuses,
   setColumns,
   columns,
   setOrgTaskHasMore,
   entityType,
   setIsLoading,
   search,
+  filters,
+  // labelId,
 }) => {
   const [getTasksRelatedToUserInOrg, { fetchMore }] = useLazyQuery(GET_TASKS_RELATED_TO_USER_IN_ORG, {
     fetchPolicy: 'cache-and-network',
@@ -172,24 +175,25 @@ const useGetTaskRelatedToUser = ({
   useEffect(() => {
     if (userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search) {
       const taskBoardStatuses =
-        statuses.length > 0
-          ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
+        filters?.statuses.length > 0
+          ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
           : STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
       const taskBoardLimit = taskBoardStatuses.length > 0 ? LIMIT : 0;
       getTasksRelatedToUserInOrg({
         variables: {
-          podIds: podIds || [],
+          podIds: filters?.podIds,
           userId,
           orgId,
           statuses: taskBoardStatuses,
           limit: taskBoardLimit,
           offset: 0,
+          labelId: filters?.labelId,
           types: [entityType],
         },
       });
       setOrgTaskHasMore(true);
     }
-  }, [getTasksRelatedToUserInOrg, orgId, podIds, statuses, userId, setOrgTaskHasMore, entityType]);
+  }, [getTasksRelatedToUserInOrg, orgId, userId, setOrgTaskHasMore, entityType, filters]);
   return { fetchMore: getTasksRelatedToUserFetchMore };
 };
 
@@ -199,12 +203,11 @@ const useGetOrgTaskBoardProposals = ({
   columns,
   setColumns,
   orgId,
-  statuses,
-  podIds,
   entityType,
   setIsLoading,
   setOrgTaskHasMore,
   search,
+  filters,
 }) => {
   const [getOrgTaskProposals, { data, fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
@@ -243,21 +246,22 @@ const useGetOrgTaskBoardProposals = ({
   useEffect(() => {
     if (entityType === ENTITIES_TYPES.PROPOSAL && !search) {
       const proposalBoardStatuses =
-        statuses.length > 0
-          ? statuses?.filter((status) => PROPOSAL_STATUS_LIST.includes(status))
+        filters?.statuses.length > 0
+          ? filters?.statuses?.filter((status) => PROPOSAL_STATUS_LIST.includes(status))
           : [STATUS_OPEN, STATUS_CHANGE_REQUESTED, STATUS_APPROVED];
 
       getOrgTaskProposals({
         variables: {
-          podIds,
+          podIds: filters?.podIds,
           orgId,
           statuses: proposalBoardStatuses,
           offset: 0,
-          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
+          labelId: filters?.labelId,
+          limit: filters?.statuses.length === 0 || filters?.statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
         },
       });
     }
-  }, [getOrgTaskProposals, orgId, statuses, podIds, setOrgTaskHasMore, entityType]);
+  }, [getOrgTaskProposals, orgId, setOrgTaskHasMore, entityType, filters]);
   return { fetchMore: getProposalsFetchMore };
 };
 
@@ -268,13 +272,16 @@ const useGetOrgTaskBoard = ({
   setOrgTaskHasMore,
   boardType,
   orgId,
-  statuses,
-  podIds,
+  // statuses,
+  // podIds,
   userId,
   view,
   entityType,
   setIsLoading,
   search,
+  filters,
+  // labelId,
+  // date,
 }) => {
   const listView = view === ViewType.List;
 
@@ -283,13 +290,15 @@ const useGetOrgTaskBoard = ({
       columns,
       setColumns,
       setOrgTaskHasMore,
-      podIds,
+      // podIds,
       userId,
       orgId,
-      statuses,
+      filters,
+      // statuses,
       entityType,
       setIsLoading,
       search,
+      // labelId,
     }),
     withoutUserId: useGetOrgTaskBoardTasks({
       columns,
@@ -297,12 +306,15 @@ const useGetOrgTaskBoard = ({
       setOrgTaskHasMore,
       boardType,
       orgId,
-      statuses,
-      podIds,
+      // statuses,
+      // podIds,
       userId,
       entityType,
       setIsLoading,
       search,
+      filters,
+      // labelId,
+      // date,
     }),
     proposals: useGetOrgTaskBoardProposals({
       listView,
@@ -311,11 +323,13 @@ const useGetOrgTaskBoard = ({
       setColumns,
       setOrgTaskHasMore,
       orgId,
-      statuses,
-      podIds,
+      // statuses,
+      // podIds,
       entityType,
       setIsLoading,
       search,
+      filters,
+      // labelId,
     }),
   };
   const { fetchMore } =
@@ -329,8 +343,11 @@ const BoardsPage = () => {
   const { username, orgId, search, userId, boardType, view = ViewType.Grid, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
-  const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
-  const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
+  // const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
+  // const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
+  // const [date, setDate] = useState(null);
+  // const [labelId, setLabelId] = useState(null);
+  const [filters, setFilters] = useState({ podIds: [], statuses: [], date: null, labelId: null });
   const [orgData, setOrgData] = useState(null);
   const [searchString, setSearchString] = useState('');
   const [entityType, setEntityType] = useState(activeEntityFromQuery);
@@ -338,6 +355,7 @@ const BoardsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [activeView, setActiveView] = useState(view);
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
+
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -351,12 +369,11 @@ const BoardsPage = () => {
     setOrgTaskHasMore,
     boardType,
     orgId: orgId ?? orgData?.id,
-    statuses,
-    podIds,
     userId,
     entityType,
     setIsLoading,
     search,
+    filters,
   });
 
   const handleEntityTypeChange = (type) => {
@@ -385,7 +402,7 @@ const BoardsPage = () => {
 
   const searchOrgTaskProposalsArgs = {
     variables: {
-      podIds,
+      podIds: filters?.podIds,
       orgId: orgId || orgData?.id,
       statuses: [STATUS_OPEN],
       offset: 0,
@@ -452,7 +469,7 @@ const BoardsPage = () => {
 
           const searchOrgTasksArgs = {
             variables: {
-              podIds,
+              podIds: filters?.podIds,
               orgId: id,
               limit: 100,
               offset: 0,
@@ -482,7 +499,7 @@ const BoardsPage = () => {
     const id = orgId || orgData?.id;
     const searchOrgTasksArgs = {
       variables: {
-        podIds,
+        podIds: filters?.podIds,
         orgId: id,
         limit: LIMIT,
         offset: 0,
@@ -523,23 +540,23 @@ const BoardsPage = () => {
     }));
   }
 
-  const handleFilterChange: any = ({ statuses = [], podIds = [] }: TaskFilter) => {
-    setStatuses(statuses);
-    setPodIds(podIds);
+  const handleFilterChange: any = (filtersToApply = { statuses: [], podIds: [], labelId: null, date: null }) => {
+    setFilters(filtersToApply);
 
     if (search) {
       const id = orgId || orgData?.id;
-      const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
+      const taskStatuses = filtersToApply?.statuses.filter((status) => TASK_STATUSES.includes(status));
       const searchProposals =
-        statuses.length !== taskStatuses.length ||
-        statuses === (STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT);
-      const searchTasks = !(searchProposals && statuses.length === 1);
+        filtersToApply?.statuses.length !== taskStatuses.length ||
+        filtersToApply?.statuses === (STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT);
+      const searchTasks = !(searchProposals && filtersToApply?.statuses.length === 1);
 
       const searchOrgTasksArgs = {
         variables: {
-          podIds,
+          podIds: filtersToApply?.podIds,
           orgId: id,
           limit: 100,
+          labelId: filtersToApply?.labelId,
           offset: 0,
           // Needed to exclude proposals
           statuses: taskStatuses,
@@ -565,7 +582,7 @@ const BoardsPage = () => {
       if (searchProposals) {
         const proposalArgs = {
           ...searchOrgTaskProposalsArgs,
-          podIds,
+          podIds: filters?.podIds,
         };
         searchOrgTaskProposals(proposalArgs);
         setIsLoading(false);
@@ -584,9 +601,8 @@ const BoardsPage = () => {
   return (
     <OrgBoardContext.Provider
       value={{
-        statuses,
-        setStatuses,
         columns,
+        statuses: filters?.statuses,
         setColumns,
         orgId: orgData?.id,
         taskCount: orgTaskCountData?.getPerStatusTaskCountForOrgBoard,
@@ -610,8 +626,8 @@ const BoardsPage = () => {
         onFilterChange={handleFilterChange}
         hasMore={orgTaskHasMore}
         orgData={orgData}
-        statuses={statuses}
-        podIds={podIds}
+        statuses={filters?.statuses}
+        podIds={filters?.podIds}
         setColumns={setColumns}
         loading={isLoading}
         entityType={entityType}
