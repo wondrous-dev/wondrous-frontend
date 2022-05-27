@@ -1516,6 +1516,7 @@ const CreateLayoutBaseModal = (props) => {
                       setValue={setDueDate}
                       setRecurrenceType={setRecurrenceType}
                       setRecurrenceValue={setRecurrenceValue}
+                      hideRecurring={isBounty || isMilestone}
                     />
                   </CreateFormAddDetailsLocalizationProvider>
                 </CreateFormAddDetailsSelects>

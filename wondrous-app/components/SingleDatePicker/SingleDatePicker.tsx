@@ -1,7 +1,8 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { DayPickerSingleDateController } from 'react-dates';
 import moment from 'moment';
 import { isEmpty } from 'lodash';
+import Image from 'next/image';
 
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
@@ -18,13 +19,13 @@ import {
   DAY_STRING_MONTH_SHORT_YEAR,
   MONTH_DAY_FULL_YEAR,
 } from 'utils/constants';
+import useOnClickOutside from 'hooks/useOnClickOutside';
 
 import DatePickerRecurringUtilities from 'components/DatePickerRecurringUtilities';
 import DatePickerNavButton from 'components/DatePickerNavButton';
 import CalendarDay from 'components/CalendarDay';
 
 import styles from './SingleDatePickerStyles';
-import Image from 'next/image';
 
 interface SingleDatePickerProps {
   sx?: object;
@@ -34,6 +35,7 @@ interface SingleDatePickerProps {
   recurrenceType?: any;
   recurrenceValue?: any;
   value?: any;
+  hideRecurring?: boolean;
 }
 
 const SingleDatePicker = ({
@@ -44,6 +46,7 @@ const SingleDatePicker = ({
   recurrenceType,
   recurrenceValue,
   setRecurrenceValue,
+  hideRecurring,
 }: SingleDatePickerProps) => {
   const [date, setDate] = useState(DEFAULT_SINGLE_DATEPICKER_VALUE);
   const [focusedInput, setFocusedInput] = useState(null);
@@ -52,6 +55,10 @@ const SingleDatePicker = ({
   const [repeatValue, setRepeatValue] = useState();
   const [weekDaysSelected, setWeekDaysSelected] = useState<Object>(WEEK_DAYS);
   const [monthInView, setMonthInView] = useState();
+
+  console.log('hideRecurring', hideRecurring);
+
+  const datePickerRef = useRef();
 
   const parseWeekDaysToPosition = (weekDays) => {
     const booleanDayList = Object.keys(weekDays).map((_, idx) => Object.values(weekDays)[idx]);
@@ -158,8 +165,17 @@ const SingleDatePicker = ({
     setShowOptions(null);
   };
 
+  useOnClickOutside(datePickerRef, () => setFocusedInput(false));
+
   return (
-    <Box mt={4} display="flex" flexDirection="column" maxWidth={300} width={focusedInput ? 300 : 'default'}>
+    <Box
+      mt={4}
+      display="flex"
+      flexDirection="column"
+      maxWidth={300}
+      width={focusedInput ? 300 : 'default'}
+      ref={datePickerRef}
+    >
       <TextField
         placeholder="Choose date"
         InputProps={{
@@ -234,22 +250,24 @@ const SingleDatePicker = ({
               isDayBlocked={(day) => day.isBefore(todayMoment)}
               renderCalendarDay={(props) => <CalendarDay {...props} />}
               hideKeyboardShortcutsPanel
-              renderCalendarInfo={() => (
-                <DatePickerRecurringUtilities
-                  monthInView={monthInView}
-                  showOptions={showOptions}
-                  setShowOptions={setShowOptions}
-                  setDate={handleDateChange}
-                  setRepeatType={handleSetRepeatType}
-                  repeatType={repeatType}
-                  setRepeatValue={handleSetRepeatValue}
-                  repeatValue={repeatValue}
-                  date={date}
-                  todayMoment={todayMoment}
-                  onWeekDaysChange={handleWeekDaysChange}
-                  weekDaysSelected={weekDaysSelected}
-                />
-              )}
+              renderCalendarInfo={() =>
+                !hideRecurring && (
+                  <DatePickerRecurringUtilities
+                    monthInView={monthInView}
+                    showOptions={showOptions}
+                    setShowOptions={setShowOptions}
+                    setDate={handleDateChange}
+                    setRepeatType={handleSetRepeatType}
+                    repeatType={repeatType}
+                    setRepeatValue={handleSetRepeatValue}
+                    repeatValue={repeatValue}
+                    date={date}
+                    todayMoment={todayMoment}
+                    onWeekDaysChange={handleWeekDaysChange}
+                    weekDaysSelected={weekDaysSelected}
+                  />
+                )
+              }
             />
           </Box>
         </Box>

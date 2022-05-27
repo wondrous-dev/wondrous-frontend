@@ -1443,6 +1443,7 @@ const EditLayoutBaseModal = (props) => {
                       recurrenceValue={recurrenceValue}
                       setRecurrenceType={setRecurrenceType}
                       recurrenceType={recurrenceType}
+                      hideRecurring={isBounty || isMilestone}
                     />
                   </CreateFormAddDetailsLocalizationProvider>
                 </CreateFormAddDetailsSelects>
