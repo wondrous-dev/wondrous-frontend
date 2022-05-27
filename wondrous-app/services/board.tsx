@@ -29,6 +29,8 @@ import { GET_ORG_PODS } from 'graphql/queries/org';
 import CreatePodIcon from 'components/Icons/createPod';
 import { GET_ORG_LABELS } from 'graphql/queries';
 import TagsIcon from 'components/Icons/tagsIcon';
+import CalendarIcon from 'components/Icons/calendar';
+import { PublicEyeIcon } from 'components/Icons/userpass';
 
 const TO_DO = (withSection: boolean = true) => {
   let config = { status: TASK_STATUS_TODO, tasks: [] };
@@ -192,6 +194,7 @@ export const ENTITIES_TYPES_FILTER_STATUSES = (orgData) => {
     {
       name: 'date',
       label: 'Dates',
+      icon: ({ style, ...rest }) => <CalendarIcon {...rest} style={{ ...style, padding: '5px' }} />,
       items: [
         {
           id: TASK_DATE_OVERDUE,
@@ -216,6 +219,7 @@ export const ENTITIES_TYPES_FILTER_STATUSES = (orgData) => {
     {
       name: 'privacy',
       label: 'Privacy level',
+      icon: ({ style, ...rest }) => <PublicEyeIcon {...rest} style={{ ...style, padding: '4px' }} />,
       items: [
         {
           id: 'public',
