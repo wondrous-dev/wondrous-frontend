@@ -19,7 +19,7 @@ import {
   DAY_STRING_MONTH_SHORT_YEAR,
   MONTH_DAY_FULL_YEAR,
 } from 'utils/constants';
-import useOnClickOutside from 'hooks/useOnClickOutside';
+import { useOutsideAlerter } from 'utils/hooks';
 
 import DatePickerRecurringUtilities from 'components/DatePickerRecurringUtilities';
 import DatePickerNavButton from 'components/DatePickerNavButton';
@@ -165,7 +165,7 @@ const SingleDatePicker = ({
     setShowOptions(null);
   };
 
-  useOnClickOutside(datePickerRef, () => setFocusedInput(false));
+  // useOutsideAlerter(datePickerRef, () => setFocusedInput(false));
 
   return (
     <Box
