@@ -353,10 +353,10 @@ export const LINK = process.env.NEXT_PUBLIC_PRODUCTION
   : 'https://wondrous-app-git-staging-wonderverse.vercel.app';
 
 export const DATEPICKER_OPTIONS = {
-  DAILY: 'Daily',
-  WEEKLY: 'Weekly',
-  MONTHLY: 'Monthly',
-  PERIODICALLY: 'Periodically',
+  DAILY: 'daily',
+  WEEKLY: 'weekly',
+  MONTHLY: 'monthly',
+  PERIODICALLY: 'periodic',
 };
 export const DATEPICKER_OPTIONS_ARR = Object.values(DATEPICKER_OPTIONS);
 

@@ -68,6 +68,12 @@ export const TaskFragment = gql`
       tokenName
       chain
     }
+    recurringSchema {
+      daily
+      weekly
+      monthly
+      periodic
+    }
     maxSubmissionCount
   }
   ${MediaFragment}

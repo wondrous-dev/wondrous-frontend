@@ -27,6 +27,7 @@ interface DatePickerRecurringUtilitiesProps {
   setRepeatType: any;
   repeatType: any;
   setRepeatValue: any;
+  repeatValue: any;
   todayMoment: any;
   onWeekDaysChange: any;
   weekDaysSelected: any;
@@ -42,6 +43,7 @@ const DatePickerRecurringUtilities = ({
   setShowOptions,
   setRepeatType,
   repeatType,
+  repeatValue,
   setRepeatValue,
   todayMoment,
   monthInView,
@@ -71,12 +73,12 @@ const DatePickerRecurringUtilities = ({
               <DatePickerSelect
                 id="repeat-id"
                 select
-                sx={{ width: 130 }}
                 onChange={(e) => {
                   const type = e.target.value;
                   if (type === DATEPICKER_OPTIONS.DAILY) setRepeatValue(1);
                   setRepeatType(type);
                 }}
+                defaultValue={repeatType}
               >
                 {DATEPICKER_OPTIONS_ARR.map((option) => (
                   <MenuItem key={option} value={option}>
@@ -98,6 +100,7 @@ const DatePickerRecurringUtilities = ({
                     monthInView={monthInView}
                     todayMoment={todayMoment}
                     onChange={handleDayChange}
+                    repeatValue={repeatValue}
                   />
                 </Box>
               </Box>
@@ -113,6 +116,7 @@ const DatePickerRecurringUtilities = ({
                     monthInView={monthInView}
                     todayMoment={todayMoment}
                     onChange={handleDayChange}
+                    repeatValue={repeatValue}
                   />
                 </Box>
               </Box>
