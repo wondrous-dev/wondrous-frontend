@@ -119,10 +119,8 @@ const useGetOrgTaskBoardTasks = ({
 };
 
 const useGetTaskRelatedToUser = ({
-  // podIds,
   userId,
   orgId,
-  // statuses,
   setColumns,
   columns,
   setOrgTaskHasMore,
@@ -130,7 +128,6 @@ const useGetTaskRelatedToUser = ({
   setIsLoading,
   search,
   filters,
-  // labelId,
 }) => {
   const [getTasksRelatedToUserInOrg, { fetchMore }] = useLazyQuery(GET_TASKS_RELATED_TO_USER_IN_ORG, {
     fetchPolicy: 'cache-and-network',
@@ -175,7 +172,7 @@ const useGetTaskRelatedToUser = ({
   useEffect(() => {
     if (userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search) {
       const taskBoardStatuses =
-        filters?.statuses.length > 0
+        filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
           : STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
       const taskBoardLimit = taskBoardStatuses.length > 0 ? LIMIT : 0;
@@ -246,7 +243,7 @@ const useGetOrgTaskBoardProposals = ({
   useEffect(() => {
     if (entityType === ENTITIES_TYPES.PROPOSAL && !search) {
       const proposalBoardStatuses =
-        filters?.statuses.length > 0
+        filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => PROPOSAL_STATUS_LIST.includes(status))
           : [STATUS_OPEN, STATUS_CHANGE_REQUESTED, STATUS_APPROVED];
 
@@ -257,7 +254,7 @@ const useGetOrgTaskBoardProposals = ({
           statuses: proposalBoardStatuses,
           offset: 0,
           labelId: filters?.labelId,
-          limit: filters?.statuses.length === 0 || filters?.statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
+          limit: filters?.statuses?.length === 0 || filters?.statuses?.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
         },
       });
     }
@@ -272,16 +269,12 @@ const useGetOrgTaskBoard = ({
   setOrgTaskHasMore,
   boardType,
   orgId,
-  // statuses,
-  // podIds,
   userId,
   view,
   entityType,
   setIsLoading,
   search,
   filters,
-  // labelId,
-  // date,
 }) => {
   const listView = view === ViewType.List;
 
@@ -343,11 +336,13 @@ const BoardsPage = () => {
   const { username, orgId, search, userId, boardType, view = ViewType.Grid, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
-  // const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
-  // const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
-  // const [date, setDate] = useState(null);
-  // const [labelId, setLabelId] = useState(null);
-  const [filters, setFilters] = useState({ podIds: [], statuses: [], date: null, labelId: null });
+  const [filters, setFilters] = useState<TaskFilter>({
+    podIds: [],
+    statuses: [],
+    labelId: null,
+    date: null,
+    onlyPublic: null,
+  });
   const [orgData, setOrgData] = useState(null);
   const [searchString, setSearchString] = useState('');
   const [entityType, setEntityType] = useState(activeEntityFromQuery);
@@ -602,7 +597,6 @@ const BoardsPage = () => {
     <OrgBoardContext.Provider
       value={{
         columns,
-        statuses: filters?.statuses,
         setColumns,
         orgId: orgData?.id,
         taskCount: orgTaskCountData?.getPerStatusTaskCountForOrgBoard,

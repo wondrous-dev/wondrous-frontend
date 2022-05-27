@@ -25,3 +25,21 @@ export const AppliedFiltersWrapper = styled.div`
 export const AppliedFiltersItem = styled.div`
   color: white;
 `;
+
+export const Button = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0px;
+  gap: 11px;
+  padding: 10px 12px;
+  background: #1b1b1b;
+  border-radius: 6px;
+  color: white;
+  height: 40px;
+  cursor: pointer;
+  &.active {
+    background: #4000b3;
+    border: 1px solid #7427ff;
+  }
+`;

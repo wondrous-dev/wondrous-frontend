@@ -1,54 +1,29 @@
 import styled from 'styled-components';
-import { Grey250, White } from '../../../theme/colors';
 
 export const ToggleViewWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: stretch;
-  justify-content: stretch;
-
-  & > *:first-child {
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-  }
-
-  & > *:last-child {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
-  }
-
-  & > *:last-child {
-    border-right: 0.5px solid #363636;
-  }
-
-  & > *:last-child.active {
-    border-right: 0.5px solid #363636;
-  }
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  padding: 4px 5px;
+  background: #1b1b1b;
+  height: 40px;
+  width: fit-content;
+  gap: 3px;
 `;
 
 export const ToggleViewOption = styled.div`
+  height: 100%;
   display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  min-height: 40px;
-  min-width: 40px;
-  padding: 0 12px;
-
-  color: ${White};
-
-  border: 0.5px solid #363636;
-  border-right: 0;
-
-  opacity: 0.6;
-
-  cursor: pointer;
-
+  align-items: center;
   &.active {
+    background: #0f0f0f;
     opacity: 1;
-
-    background: linear-gradient(90.93deg, #1e1e1e 3.85%, #141414 101.76%);
-    border: 0.5px solid #363636;
   }
+  padding: 8.5px;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0.4;
 `;

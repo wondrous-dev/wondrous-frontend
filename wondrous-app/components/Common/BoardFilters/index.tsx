@@ -1,16 +1,21 @@
 import { HeaderButton } from 'components/organization/wrapper/styles';
 import FilterIcon from 'components/Icons/filter';
 import FilterItem from 'components/Common/Filter';
-import { BoardFiltersWrapper, BoardFiltersContainer, AppliedFiltersWrapper, AppliedFiltersItem } from './styles';
+import {
+  BoardFiltersWrapper,
+  BoardFiltersContainer,
+  AppliedFiltersWrapper,
+  AppliedFiltersItem,
+  Button,
+} from './styles';
 import { useState } from 'react';
 import _ from 'lodash';
-
-export const FiltersTriggerButton = ({ onClick }) => {
+export const FiltersTriggerButton = ({ onClick, isOpen }) => {
   return (
-    <HeaderButton reversed onClick={onClick}>
+    <Button className={isOpen ? 'active' : ''} reversed onClick={onClick}>
       <FilterIcon stroke="white" />
-      Filters
-    </HeaderButton>
+      Add filters
+    </Button>
   );
 };
 
@@ -18,8 +23,9 @@ export default function BoardFilters({ filterSchema, onChange, showAppliedFilter
   const [appliedFilters, setAppliedFilters] = useState({});
 
   const applyFilter = (filters) => {
+    setAppliedFilters(filters);
     const newFilters: any = Object.keys(filters).reduce((acc, next) => {
-      let value = Array.isArray(filters[next]) ? filters[next].map((item) => item.id) : filters[next].id;
+      let value = Array.isArray(filters[next]) ? filters[next].map((item) => item.id) : filters[next]?.id;
       acc[next] = value;
       return acc;
     }, {});
@@ -28,13 +34,12 @@ export default function BoardFilters({ filterSchema, onChange, showAppliedFilter
 
   const handleFilterChange = (filter) => {
     const newFilters = { ...appliedFilters, ...filter };
-    setAppliedFilters(newFilters);
     applyFilter(newFilters);
   };
 
   const removeAppliedFilter = (filter) => {
     const newFilters = _.omit(appliedFilters, filter);
-    setAppliedFilters(newFilters);
+    applyFilter(newFilters);
   };
 
   const appliedFiltersMap = Object.keys(appliedFilters).reduce((acc, next) => {
@@ -50,7 +55,6 @@ export default function BoardFilters({ filterSchema, onChange, showAppliedFilter
     if (Array.isArray(appliedFilters[filter.filterType])) {
       const newItems = appliedFilters[filter.filterType].filter((item) => item.id !== filter.id);
       const newFilters = { ...appliedFilters, [filter.filterType]: newItems };
-      setAppliedFilters(newFilters);
       return applyFilter(newFilters);
     }
     removeAppliedFilter(filter.filterType);
@@ -76,11 +80,14 @@ export default function BoardFilters({ filterSchema, onChange, showAppliedFilter
       </BoardFiltersWrapper>
       {!!appliedFiltersMap.length && showAppliedFilters && (
         <AppliedFiltersWrapper>
-          {appliedFiltersMap.map((filter, idx) => (
-            <AppliedFiltersItem onClick={() => handleFilterPill(filter)} key={idx}>
-              {filter.name}
-            </AppliedFiltersItem>
-          ))}
+          {appliedFiltersMap.map(
+            (filter, idx) =>
+              filter && (
+                <AppliedFiltersItem onClick={() => handleFilterPill(filter)} key={idx}>
+                  {filter.name}
+                </AppliedFiltersItem>
+              )
+          )}
         </AppliedFiltersWrapper>
       )}
     </BoardFiltersContainer>

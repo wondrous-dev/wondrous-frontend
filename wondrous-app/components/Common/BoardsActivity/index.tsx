@@ -11,7 +11,7 @@ import { GridViewIcon } from 'components/Icons/ViewIcons/gridView';
 import { ListViewIcon } from 'components/Icons/ViewIcons/listView';
 import BoardFilters, { FiltersTriggerButton } from 'components/Common/BoardFilters';
 import { useState } from 'react';
-
+import { Blue20 } from 'theme/colors';
 export const BoardsActivityInlineView = ({
   onSearch,
   filterSchema,
@@ -29,7 +29,7 @@ export const BoardsActivityInlineView = ({
       <BoardsActivityInlineViewWrapper>
         <SearchTasks isExpandable onSearch={onSearch} />
         {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
-        <FiltersTriggerButton onClick={handleFilterDisplay} />
+        <FiltersTriggerButton onClick={handleFilterDisplay} isOpen={displayFilters} />
       </BoardsActivityInlineViewWrapper>
       {displayFilters && <BoardFilters showAppliedFilters filterSchema={filterSchema} onChange={onChange} />}
     </>
@@ -51,7 +51,7 @@ export default function BoardsActivity(props) {
   const listViewOptions = [
     {
       name: 'List',
-      icon: <ListViewIcon />,
+      icon: <ListViewIcon color={view === ViewType.List ? Blue20 : 'white'} />,
       active: view === ViewType.List,
       action: () => {
         if (setActiveView) {
@@ -66,7 +66,7 @@ export default function BoardsActivity(props) {
     },
     {
       name: 'Grid',
-      icon: <GridViewIcon />,
+      icon: <GridViewIcon color={view === ViewType.Grid ? Blue20 : 'white'} />,
       active: view === ViewType.Grid,
       action: () => {
         if (setActiveView) {

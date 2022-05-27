@@ -29,37 +29,27 @@ export const FilterHandle = styled.div`
   width: 100%;
   height: 40px;
   padding: 1px;
-  background: ${Grey75};
-  ${(props) =>
-    props.open ? `background: ${Grey75};` : `background: linear-gradient(180deg, ${Black80} 0%, ${Black95} 70%);`}
-
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
+  background: #1b1b1b;
+  border-radius: 6px;
 `;
 
 export const FilterHandleInner = styled.div`
   display: flex;
   flex: 1 0 0;
-
+  gap: 10px;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
 
   width: 100%;
   height: 38px;
-  padding: 15px;
+  padding: 10px;
 
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
-  background: ${Black95};
+  background: #1b1b1b;
   cursor: pointer;
-
-  ${(props) =>
-    props.open
-      ? `background: linear-gradient(272.34deg, ${Black95} 4.36%, ${Black97} 42.75%);`
-      : `background: linear-gradient(270.93deg,  ${Black95} 3.85%, ${Black97} 101.76%);`}
-
-  color: ${(props) => (props.open ? Grey75 : Grey250)};
+  color: white;
   font-size: 14px;
 `;
 export const FilterChevronContainer = styled.div`
@@ -81,6 +71,11 @@ export const FilterHandleContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 19px;
 `;
 
 export const FilterBoxPortal = styled(Portal)``;
@@ -292,6 +287,10 @@ export const FilterValues = styled.span`
   max-width: 260px;
   white-space: nowrap;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 `;
 
 export const FilterButton = styled.button`
@@ -330,3 +329,10 @@ export const FilterCheckbox = ({ checked }) => (
     checkedIcon={<CircleChecked style={{ color: '#7427FF', width: '17px', height: '17px' }} />}
   />
 );
+
+export const FilterIconWrapper = styled.div`
+  background: #0f0f0f;
+  opacity: 1;
+  border-radius: 6px;
+  padding: 8.5px;
+`;

@@ -21,6 +21,7 @@ import {
   FilterButton,
   ButtonsWrapper,
   FilterCheckbox,
+  FilterIconWrapper,
 } from './styles';
 import { Blue200, Grey250 } from '../../../theme/colors';
 import { useOutsideAlerter, useFilterQuery } from 'utils/hooks';
@@ -48,10 +49,6 @@ const Filter = (props: IFilterProps) => {
   const toggleOpen = () => {
     setOpen(!open);
   };
-
-  useEffect(() => {
-    console.log(selected, 'appliedFilter');
-  }, [selected]);
 
   useOutsideAlerter(wrapperRef, () => setOpen(false));
 
@@ -140,7 +137,6 @@ const Filter = (props: IFilterProps) => {
   ];
 
   const checkIsSelected = (itemId) => {
-    debugger;
     if (filterSchema?.multiChoice) {
       return !!selected?.find((item) => item.id === itemId);
     }
@@ -151,25 +147,19 @@ const Filter = (props: IFilterProps) => {
 
   const displayNames =
     selected && (Array.isArray(selected) ? selected.map((item) => item.name).join(', ') : selected.name);
+
+  const Icon = filterSchema?.icon || FilterIcon;
   return (
     <FilterHandle ref={wrapperRef} open={open}>
       <FilterHandleInner open={open} onClick={toggleOpen}>
         <FilterHandleContainer>
-          {selected ? (
-            <FilterValues>
-              <InlineText color={Grey250}>Filter:&nbsp;</InlineText>
-              <InlineText color={Blue200}>{displayNames}</InlineText>
-            </FilterValues>
-          ) : open ? (
-            `<Filter>`
-          ) : (
-            <>
-              <FilterIcon /> &nbsp; Filter
-            </>
-          )}
+          <FilterValues>
+            <Icon style={{ backgroundColor: '#0f0f0f', borderRadius: '6px' }} height="26" width="26" />
+            {displayNames ? <InlineText color={Blue200}>{displayNames}</InlineText> : 'Filters'}
+          </FilterValues>
         </FilterHandleContainer>
         <FilterChevronContainer className={open ? 'active' : ''}>
-          <Chevron />
+          <Chevron stroke="white" />
         </FilterChevronContainer>
       </FilterHandleInner>
       {open && (
@@ -203,13 +193,6 @@ const Filter = (props: IFilterProps) => {
                       })}
                 </FilterItemList>
               </FilterItemsContainer>
-              <ButtonsWrapper>
-                {FILTER_BUTTONS_CONFIG.map((button, idx) => (
-                  <FilterButton type="button" key={idx} onClick={button.action} {...button}>
-                    {button.label}
-                  </FilterButton>
-                ))}
-              </ButtonsWrapper>
             </FilterBoxInner>
           </FilterBox>
         </FilterBoxPortal>

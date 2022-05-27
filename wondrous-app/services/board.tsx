@@ -18,6 +18,7 @@ import {
   TASK_DATE_DUE_NEXT_WEEK,
 } from 'utils/constants';
 import { Archived, InReview, Requested } from 'components/Icons/sections';
+import { StatusDefaultIcon } from 'components/Icons/statusIcons';
 import { Proposal } from 'components/Icons';
 import TaskStatus from 'components/Icons/TaskStatus';
 import React from 'react';
@@ -27,6 +28,7 @@ import { delQuery } from 'utils';
 import { GET_ORG_PODS } from 'graphql/queries/org';
 import CreatePodIcon from 'components/Icons/createPod';
 import { GET_ORG_LABELS } from 'graphql/queries';
+import TagsIcon from 'components/Icons/tagsIcon';
 
 const TO_DO = (withSection: boolean = true) => {
   let config = { status: TASK_STATUS_TODO, tasks: [] };
@@ -132,167 +134,133 @@ const PROPOSAL_REJECTED = {
 const SHARED_FILTER_STATUSES_DATA = {
   name: 'statuses',
   label: 'Status',
+  icon: ({ style, ...rest }) => <StatusDefaultIcon style={{ ...style, padding: '3px' }} {...rest} />,
   multiChoice: true,
+  items: [
+    {
+      id: TASK_STATUS_TODO,
+      name: 'To-Do',
+      icon: <TaskStatus status={TASK_STATUS_TODO} />,
+      gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
+    },
+    {
+      id: TASK_STATUS_IN_PROGRESS,
+      name: 'In-progress',
+      icon: <TaskStatus status={TASK_STATUS_IN_PROGRESS} />,
+      gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
+    },
+    {
+      id: TASK_STATUS_IN_REVIEW,
+      name: 'In-review',
+      icon: <TaskStatus status={TASK_STATUS_IN_REVIEW} />,
+      gradient: 'linear-gradient(180deg, #FFFFFF 0%, #00BAFF 100%)',
+    },
+    {
+      id: TASK_STATUS_DONE,
+      name: 'Completed',
+      icon: <TaskStatus status={TASK_STATUS_DONE} />,
+      gradient: 'linear-gradient(270deg, #7427FF -11.62%, #06FFA5 103.12%)',
+    },
+    {
+      id: TASK_STATUS_ARCHIVED,
+      name: 'Archived',
+      icon: <TaskStatus status={TASK_STATUS_ARCHIVED} />,
+      gradient: 'linear-gradient(169.47deg, rgba(75, 75, 75, 0.5) 7.84%, rgba(35, 35, 35, 0.5) 108.71%)',
+    },
+  ],
 };
 
 export const ENTITIES_TYPES_FILTER_STATUSES = (orgData) => {
+  const SHARED_FILTERS = [
+    {
+      name: 'podIds',
+      label: 'Pods',
+      items: [],
+      query: GET_ORG_PODS,
+      variables: { orgId: orgData?.id },
+      icon: CreatePodIcon,
+      multiChoice: true,
+    },
+    {
+      name: 'labelId',
+      label: 'Tags',
+      items: [],
+      icon: ({ style, ...rest }) => <TagsIcon {...rest} style={{ ...style, padding: '5px' }} viewBox="0 0 14 12" />,
+      query: GET_ORG_LABELS,
+      variables: { orgId: orgData?.id },
+    },
+    {
+      name: 'date',
+      label: 'Dates',
+      items: [
+        {
+          id: TASK_DATE_OVERDUE,
+          name: 'Overdue',
+          icon: <TaskStatus status={TASK_STATUS_TODO} />,
+          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
+        },
+        {
+          id: TASK_DATE_DUE_THIS_WEEK,
+          name: 'Due this week',
+          icon: <TaskStatus status={TASK_STATUS_IN_PROGRESS} />,
+          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
+        },
+        {
+          id: TASK_DATE_DUE_NEXT_WEEK,
+          name: 'Due next week',
+          icon: <TaskStatus status={TASK_STATUS_IN_REVIEW} />,
+          gradient: 'linear-gradient(180deg, #FFFFFF 0%, #00BAFF 100%)',
+        },
+      ],
+    },
+    {
+      name: 'privacy',
+      label: 'Privacy level',
+      items: [
+        {
+          id: 'public',
+          name: 'Public',
+          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
+        },
+        {
+          id: 'private',
+          name: 'Private',
+          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
+        },
+      ],
+    },
+  ];
+
   return {
     [ENTITIES_TYPES.TASK]: {
+      filters: [SHARED_FILTER_STATUSES_DATA, ...SHARED_FILTERS],
+    },
+    [ENTITIES_TYPES.MILESTONE]: {
+      filters: [SHARED_FILTER_STATUSES_DATA, ...SHARED_FILTERS],
+    },
+    [ENTITIES_TYPES.BOUNTY]: {
+      filters: [SHARED_FILTER_STATUSES_DATA, ...SHARED_FILTERS],
+    },
+    [ENTITIES_TYPES.PROPOSAL]: {
       filters: [
         {
           ...SHARED_FILTER_STATUSES_DATA,
           items: [
             {
               id: TASK_STATUS_TODO,
-              name: 'To-Do',
+              name: 'Open proposals',
               icon: <TaskStatus status={TASK_STATUS_TODO} />,
               gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
-            },
-            {
-              id: TASK_STATUS_IN_PROGRESS,
-              name: 'In-progress',
-              icon: <TaskStatus status={TASK_STATUS_IN_PROGRESS} />,
-              gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
-            },
-            {
-              id: TASK_STATUS_IN_REVIEW,
-              name: 'In-review',
-              icon: <TaskStatus status={TASK_STATUS_IN_REVIEW} />,
-              gradient: 'linear-gradient(180deg, #FFFFFF 0%, #00BAFF 100%)',
             },
             {
               id: TASK_STATUS_DONE,
-              name: 'Completed',
+              name: 'Resolved proposals',
               icon: <TaskStatus status={TASK_STATUS_DONE} />,
-              gradient: 'linear-gradient(270deg, #7427FF -11.62%, #06FFA5 103.12%)',
-            },
-            {
-              id: TASK_STATUS_ARCHIVED,
-              name: 'Archived',
-              icon: <TaskStatus status={TASK_STATUS_ARCHIVED} />,
-              gradient: 'linear-gradient(169.47deg, rgba(75, 75, 75, 0.5) 7.84%, rgba(35, 35, 35, 0.5) 108.71%)',
-            },
-          ],
-        },
-        {
-          name: 'podIds',
-          label: 'Pods',
-          items: [],
-          query: GET_ORG_PODS,
-          variables: { orgId: orgData?.id },
-          icon: <CreatePodIcon />,
-          multiChoice: true,
-        },
-        {
-          name: 'labelId',
-          label: 'Tags',
-          items: [],
-          query: GET_ORG_LABELS,
-          variables: { orgId: orgData?.id },
-        },
-        {
-          name: 'date',
-          label: 'Dates',
-          items: [
-            {
-              id: TASK_DATE_OVERDUE,
-              name: 'Overdue',
-              icon: <TaskStatus status={TASK_STATUS_TODO} />,
               gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
             },
-            {
-              id: TASK_DATE_DUE_THIS_WEEK,
-              name: 'Due this week',
-              icon: <TaskStatus status={TASK_STATUS_IN_PROGRESS} />,
-              gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
-            },
-            {
-              id: TASK_DATE_DUE_NEXT_WEEK,
-              name: 'Due next week',
-              icon: <TaskStatus status={TASK_STATUS_IN_REVIEW} />,
-              gradient: 'linear-gradient(180deg, #FFFFFF 0%, #00BAFF 100%)',
-            },
           ],
         },
-        {
-          name: 'privacy',
-          label: 'Privacy level',
-          items: [
-            {
-              id: 'public',
-              name: 'Public',
-              gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
-            },
-            {
-              id: 'private',
-              name: 'Private',
-              gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
-            },
-          ],
-        },
-      ],
-    },
-    [ENTITIES_TYPES.MILESTONE]: {
-      ...SHARED_FILTER_STATUSES_DATA,
-      items: [
-        {
-          id: TASK_STATUS_TODO,
-          name: 'Open milestones',
-          icon: <TaskStatus status={TASK_STATUS_TODO} />,
-          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
-        },
-        {
-          id: TASK_STATUS_DONE,
-          name: 'Completed milestones',
-          icon: <TaskStatus status={TASK_STATUS_DONE} />,
-          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
-        },
-        {
-          id: TASK_STATUS_ARCHIVED,
-          name: 'Archived milestones',
-          icon: <TaskStatus status={TASK_STATUS_ARCHIVED} />,
-          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
-        },
-      ],
-    },
-    [ENTITIES_TYPES.BOUNTY]: {
-      ...SHARED_FILTER_STATUSES_DATA,
-      items: [
-        {
-          id: TASK_STATUS_TODO,
-          name: 'Open bounties',
-          icon: <TaskStatus status={TASK_STATUS_TODO} />,
-          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
-        },
-        {
-          id: TASK_STATUS_DONE,
-          name: 'Completed bounties',
-          icon: <TaskStatus status={TASK_STATUS_DONE} />,
-          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
-        },
-        {
-          id: TASK_STATUS_ARCHIVED,
-          name: 'Archived bounties',
-          icon: <TaskStatus status={TASK_STATUS_ARCHIVED} />,
-          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
-        },
-      ],
-    },
-    [ENTITIES_TYPES.PROPOSAL]: {
-      ...SHARED_FILTER_STATUSES_DATA,
-      items: [
-        {
-          id: TASK_STATUS_TODO,
-          name: 'Open proposals',
-          icon: <TaskStatus status={TASK_STATUS_TODO} />,
-          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
-        },
-        {
-          id: TASK_STATUS_DONE,
-          name: 'Resolved proposals',
-          icon: <TaskStatus status={TASK_STATUS_DONE} />,
-          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
-        },
+        ...SHARED_FILTERS,
       ],
     },
   };
@@ -301,13 +269,6 @@ export const ENTITIES_TYPES_FILTER_STATUSES = (orgData) => {
 export const FILTER_STATUSES = {
   ...SHARED_FILTER_STATUSES_DATA,
   items: [
-    // Back-end doesn't support statuses below
-    // {
-    //   id: TASK_STATUS_REQUESTED,
-    //   name: 'Membership requests',
-    //   icon: <TaskStatus status={TASK_STATUS_REQUESTED} />,
-    //   count: 0,
-    // },
     {
       id: TASK_STATUS_REQUESTED,
       name: 'Proposals',
@@ -333,22 +294,6 @@ export const FILTER_STATUSES = {
       name: 'Completed',
       icon: <TaskStatus status={TASK_STATUS_DONE} />,
     },
-    // Back-end doesn't support statuses below
-    // {
-    //   id: TASK_STATUS_AWAITING_PAYMENT,
-    //   name: 'Awaiting payment',
-    //   icon: <TaskStatus status={TASK_STATUS_AWAITING_PAYMENT} />,
-    // },
-    // {
-    //   id: TASK_STATUS_PAID,
-    //   name: 'Completed and paid',
-    //   icon: <TaskStatus status={TASK_STATUS_PAID} />,
-    // },
-    // {
-    //   id: TASK_STATUS_ARCHIVED,
-    //   name: 'Archived',
-    //   icon: <TaskStatus status={TASK_STATUS_ARCHIVED} />,
-    // },
   ],
 };
 

@@ -18,6 +18,7 @@ import { useRouter } from 'next/router';
 import { TaskViewModal } from '../Common/Task/modal';
 import * as Constants from 'utils/constants';
 import { ViewType } from 'types/common';
+import { Blue20 } from '../../theme/colors';
 
 const TaskTypeIcons = {
   [TASK_TYPE]: <TaskIcon />,
@@ -95,7 +96,7 @@ export default function SearchTasks({ onSearch, isExpandable }: Props) {
     });
   }
 
-  const autocompleteWidth = isExpandable ? (isExpanded ? '100%' : '20%') : '100%';
+  const autocompleteWidth = isExpandable ? (isExpanded ? '100%' : '17%') : '100%';
 
   const handleBlur = (e) => setIsExpanded(false);
   const handleFocus = () => setIsExpanded(true);
@@ -116,6 +117,7 @@ export default function SearchTasks({ onSearch, isExpandable }: Props) {
         onOpen={() => setOpen(true)}
         onBlur={handleBlur}
         onFocus={handleFocus}
+        isExpanded={isExpanded}
         onClose={() => setOpen(false)}
         onInputChange={(event, searchString) => {
           handleInputChange(event, searchString);
@@ -189,7 +191,7 @@ export default function SearchTasks({ onSearch, isExpandable }: Props) {
                 ...params.InputProps,
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchIcon color="white" />
+                    <SearchIcon color={Blue20} />
                   </InputAdornment>
                 ),
                 endAdornment: (
