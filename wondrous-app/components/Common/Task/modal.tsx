@@ -154,6 +154,7 @@ import { DeleteTaskModal } from '../DeleteTaskModal';
 import { Share } from '../Share';
 import { CompleteModal } from '../CompleteModal';
 import { GET_ORG_LABELS } from 'graphql/queries';
+import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -1356,6 +1357,12 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     <SubtaskDarkIcon />
                   </SubtaskIconWrapper>
                 </>
+              )}
+              {fetchedTask?.privacyLevel === PRIVACY_LEVEL.public && (
+                <ToggleBoardPrivacyIcon
+                  isPrivate={fetchedTask?.privacyLevel !== PRIVACY_LEVEL.public}
+                  tooltipTitle={fetchedTask?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
+                />
               )}
               {back && (
                 <>
