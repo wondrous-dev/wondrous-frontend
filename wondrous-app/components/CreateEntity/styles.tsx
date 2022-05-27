@@ -569,6 +569,30 @@ export const CreateFormCancelButton = styled(Button)`
   }
 `;
 
+export const EditSubmissionButton = styled(Button)`
+  && {
+    padding: 8px 12px;
+    height: 40px;
+    background: #0f0f0f;
+    margin-left: 25px;
+    
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 150%;
+    color: #ffffff;
+
+    .MuiCircularProgress-root {
+      margin-right: 10px;
+    }
+
+    &:disabled {
+      color: #7a7a7a;
+      border-color: #7a7a7a;
+      cursor: not-allowed;
+    }
+  }
+`;
+
 export const CreateFormPreviewButton = styled(Button)`
   && {
     padding: 8px 12px;

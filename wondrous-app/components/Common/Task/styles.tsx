@@ -313,9 +313,25 @@ export const TaskDescriptionText = styled(Typography)`
   }
 `;
 
+export const SubmissionHeaderWrapper = styled.div`
+  border-bottom: 1px solid #363636;
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+`;
+
+export const SubmissionHeader = styled(Typography)`
+  && {
+    font-family: Space Grotesk;
+    color: ${White};
+    font-size: 18px;
+    font-weight: bold;
+    text-align: left;
+  }
+`;
+
 export const TaskSectionDisplayDiv = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 12px;
   & > *:not:first-child {
     margin-top: -8px;
@@ -394,12 +410,12 @@ export const TaskTabText = styled(Typography)`
 
 export const TaskSectionContent = styled.div`
   text-align: center;
-  padding-top: 16px;
+  padding-top: 48px;
   padding-bottom: 20px;
   max-width: 630px;
 `;
 export const MakeSubmissionDiv = styled.div`
-  background: #0f0f0f;
+  background: #212121;
   border-radius: 8px;
   padding: 12px;
   display: flex;
@@ -415,20 +431,18 @@ export const MakePaymentDiv = styled.div`
 `;
 
 export const TaskSubmissionItemDiv = styled.div`
-  padding: 30px;
-  &:not(:last-child) {
-    border-bottom: 1px solid #363636;
-  }
-
-  & > :last-child {
-    margin-bottom: 32px;
-  }
+  padding: 14px;
+  margin: 12px 0;
+  border-radius: 6px;
+  background-color: #212121;
 `;
 
 export const TaskSubmissionHeader = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #363636;
+  padding-bottom: 14px;
 `;
 
 export const TaskSubmissionHeaderTextDiv = styled.div``;
@@ -436,7 +450,7 @@ export const TaskSubmissionHeaderTextDiv = styled.div``;
 export const TaskSubmissionHeaderCreatorText = styled(Typography)`
   && {
     color: ${White};
-    font-size: 13px;
+    font-size: 15px;
     line-height: 20px;
     font-weight: bold;
     margin-right: 8px;
@@ -444,8 +458,9 @@ export const TaskSubmissionHeaderCreatorText = styled(Typography)`
 `;
 export const TaskSubmissionHeaderTimeText = styled(Typography)`
   && {
+    margin-left: 8px;
     color: #828282;
-    font-size: 13px;
+    font-size: 15px;
     line-height: 20px;
   }
 `;
@@ -453,7 +468,7 @@ export const TaskSubmissionHeaderTimeText = styled(Typography)`
 export const TaskStatusHeaderText = styled(Typography)`
   && {
     color: #c4c4c4;
-    font-size: 14px;
+    font-size: 15px;
   }
 `;
 
@@ -671,5 +686,15 @@ export const Tag = styled.div`
 
   &:not(:last-child) {
     margin-right: 10px;
+  }
+`;
+
+export const MediaLinkWrapper = styled.div`
+  display: flex;
+  margin-bottom: 10px;
+
+  div {
+    color: #00baff;
+    margin-right: 4px;
   }
 `;
