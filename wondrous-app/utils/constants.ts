@@ -114,6 +114,7 @@ export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
   harmony: 'https://multisig.t.hmny.io',
   arbitrum: 'https://safe-transaction.arbitrum.gnosis.io',
   bsc: 'https://safe-transaction.bsc.gnosis.io',
+  boba: 'https://safe-transaction.mainnet.boba.network',
 };
 
 export const HARMONY_MULTI_SEND_ADDR = '0x998739BFdAAdde7C933B942a68053933098f9EDa';
@@ -359,10 +360,10 @@ export const LINK = process.env.NEXT_PUBLIC_PRODUCTION
   : 'https://wondrous-app-git-staging-wonderverse.vercel.app';
 
 export const DATEPICKER_OPTIONS = {
-  DAILY: 'Daily',
-  WEEKLY: 'Weekly',
-  MONTHLY: 'Monthly',
-  PERIODICALLY: 'Periodically',
+  DAILY: 'daily',
+  WEEKLY: 'weekly',
+  MONTHLY: 'monthly',
+  PERIODICALLY: 'periodic',
 };
 export const DATEPICKER_OPTIONS_ARR = Object.values(DATEPICKER_OPTIONS);
 

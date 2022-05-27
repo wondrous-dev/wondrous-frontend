@@ -50,6 +50,7 @@ import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import EditLayoutBaseModal from 'components/CreateEntity/editEntityModal';
 import { DeleteTaskModal } from '../DeleteTaskModal';
 import { REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { getBoardType } from '../KanbanBoard/kanbanBoard';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -105,6 +106,7 @@ export const Task = (props) => {
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
   const board = orgBoard || podBoard || userBoard;
+
   const user = useMe();
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
@@ -369,6 +371,11 @@ export const Task = (props) => {
         canDelete={canDelete}
         setDeleteTask={setDeleteTask}
         proposalRequestChange={proposalRequestChange}
+        boardType={getBoardType({
+          orgBoard,
+          podBoard,
+          userBoard,
+        })}
       />
     </span>
   );

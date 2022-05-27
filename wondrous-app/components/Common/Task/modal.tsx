@@ -1,8 +1,12 @@
-import React, { createContext, useContext, useCallback, useEffect, useRef, useState } from 'react';
+import React, { useContext, useCallback, useEffect, useState } from 'react';
 import Modal from '@mui/material/Modal';
 import { format, formatDistance } from 'date-fns';
 import { useInView } from 'react-intersection-observer';
-import { isEqual } from 'lodash';
+import { isEmpty } from 'lodash';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+
+import Box from '@mui/material/Box';
 
 import {
   PodNameTypography,
@@ -29,9 +33,7 @@ import {
   TaskStatusHeaderText,
   ArchivedTaskUndo,
   TaskIconWrapper,
-  TaskIconLabel,
   SubtaskIconWrapper,
-  SubtaskIconLabel,
   RightArrow,
   RightArrowWrapper,
   TaskUserDiv,
@@ -39,34 +41,29 @@ import {
   TaskListModalContentWrapper,
   Tag,
 } from './styles';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
 import { SafeImage } from '../Image';
 import {
   parseUserPermissionContext,
   transformTaskProposalToTaskProposalCard,
-  transformTaskSubmissionToTaskSubmissionCard,
   transformTaskToTaskCard,
 } from 'utils/helpers';
-import { RightCaret } from '../Image/RightCaret';
-import CreatePodIcon from '../../Icons/createPod';
 import TagsIcon from '../../Icons/tagsIcon';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   BOUNTY_TYPE,
   ENTITIES_TYPES,
-  IMAGE_FILE_EXTENSIONS_TYPE_MAPPING,
   PERMISSIONS,
   STATUS_OPEN,
   TASK_STATUS_ARCHIVED,
-  TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
+  TASK_STATUS_DONE,
   MILESTONE_TYPE,
   TASK_TYPE,
   TASK_STATUS_TODO,
-  PAYMENT_STATUS,
   PRIVACY_LEVEL,
   STATUS_APPROVED,
   LINK,
@@ -76,12 +73,12 @@ import { TaskMenuIcon } from '../../Icons/taskMenu';
 import { Red400, Red800, White } from '../../../theme/colors';
 import { useMe } from '../../Auth/withAuth';
 import { GetStatusIcon, renderMentionString } from 'utils/common';
+
+import Tooltip from 'components/Tooltip';
 import {
   AssigneeIcon,
   ImageIcon,
-  LinkIcon,
   MilestoneIcon,
-  NotesIcon,
   ProposerIcon,
   RejectIcon,
   ReviewerIcon,
@@ -99,7 +96,6 @@ import {
   CreateModalOverlay,
   TakeTaskButton,
 } from '../../CreateEntity/styles';
-import { useRouter } from 'next/router';
 import {
   UPDATE_TASK_STATUS,
   UPDATE_TASK_ASSIGNEE,
@@ -123,7 +119,7 @@ import {
   GET_USER_TASK_BOARD_SUBMISSIONS,
   GET_USER_TASK_BOARD_TASKS,
 } from 'graphql/queries/taskBoard';
-import { AvatarList } from '../AvatarList';
+
 import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import {
   addTaskItem,
@@ -151,13 +147,14 @@ import { CompensationAmount, CompensationPill, IconContainer } from '../Compensa
 import { MakePaymentModal } from '../Payment/PaymentModal';
 import { ApprovedSubmissionContext } from 'utils/contexts';
 import { TaskSubtasks } from '../TaskSubtask';
-import { SubtaskDarkIcon, SubtaskLightIcon } from '../../Icons/subtask';
+import { SubtaskDarkIcon } from '../../Icons/subtask';
 import { CheckedBoxIcon } from '../../Icons/checkedBox';
-import RightArrowIcon from '../../Icons/rightArrow';
+
 import { DeleteTaskModal } from '../DeleteTaskModal';
 import { Share } from '../Share';
 import { CompleteModal } from '../CompleteModal';
 import { GET_ORG_LABELS } from 'graphql/queries';
+import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -1361,6 +1358,12 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   </SubtaskIconWrapper>
                 </>
               )}
+              {fetchedTask?.privacyLevel === PRIVACY_LEVEL.public && (
+                <ToggleBoardPrivacyIcon
+                  isPrivate={fetchedTask?.privacyLevel !== PRIVACY_LEVEL.public}
+                  tooltipTitle={fetchedTask?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
+                />
+              )}
               {back && (
                 <>
                   <PodNameTypography style={BackToListStyle} onClick={handleClose}>
@@ -1657,14 +1660,23 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 <AssigneeIcon />
                 <TaskSectionDisplayText>Due date</TaskSectionDisplayText>
               </TaskSectionDisplayLabel>
-              <TaskSectionInfoText
-                style={{
-                  marginTop: '8px',
-                  marginLeft: '16px',
-                }}
-              >
-                {fetchedTask?.dueDate ? format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy') : 'None'}
-              </TaskSectionInfoText>
+              <Box display="flex" alignItems="center">
+                <TaskSectionInfoText
+                  style={{
+                    marginTop: '8px',
+                    marginLeft: '16px',
+                  }}
+                >
+                  {fetchedTask?.dueDate ? format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy') : 'None'}
+                </TaskSectionInfoText>
+                {!isEmpty(fetchedTask?.recurringSchema) && (
+                  <Tooltip title="Recurring" placement="right">
+                    <Box mt={1.5} ml={1}>
+                      <Image src="/images/icons/recurring.svg" width={14} height={16} alt="Recurring button" />
+                    </Box>
+                  </Tooltip>
+                )}
+              </Box>
             </TaskSectionDisplayDiv>
             <TaskSectionDisplayDiv>
               <TaskSectionDisplayLabel>

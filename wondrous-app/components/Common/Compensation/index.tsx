@@ -8,11 +8,11 @@ import { Matic } from '../../Icons/matic';
 import { USDCoin } from '../../Icons/USDCoin';
 
 export const Compensation = (props) => {
-  const { rewards, taskIcon } = props;
+  const { rewards, taskIcon, style } = props;
   const { icon, rewardAmount, symbol } = rewards[0] || {};
 
   return (
-    <CompensationWrapper key={props.id}>
+    <CompensationWrapper key={props.id} style={style}>
       <CompensationPill>
         {rewardAmount && (
           <>

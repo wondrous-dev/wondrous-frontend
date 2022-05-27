@@ -22,6 +22,7 @@ import { ErrorText } from '../Common';
 import { SupportedChainType } from 'utils/web3Constants';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
+import WalletConnectConnector from 'components/WalletConnectors/WalletConnect';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 import { getDiscordUrl } from 'utils';
 import { DiscordIcon } from 'components/Icons/discord';
@@ -233,6 +234,7 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink, podInfo, redeem
         {contributingSentence}
       </InviteWelcomeBoxParagraph>
       <MetaMaskConnector text="Connect with MetaMask" style={buttonStyles} />
+      <WalletConnectConnector text="Connect with Wallet Connect" style={buttonStyles} />
       <CoinbaseConnector text="Connect with Coinbase Wallet" style={buttonStyles} />
       <Button
         style={buttonStyles}

@@ -50,7 +50,7 @@ const statusCardsBase = [
   },
   {
     Icon: InReviewIcon,
-    label: 'tasks to review',
+    label: 'submissions to review',
     color: 'linear-gradient(180deg, #FFFFFF 0%, #00BAFF 100%)',
     panelPosition: 3,
     panel: panels.admin,
