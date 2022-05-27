@@ -17,7 +17,7 @@ import {
 import UtopiaIcon from 'components/Icons/utopiaIcon';
 import ParcelIcon from 'components/Icons/parcelIcon';
 
-export const PAYMENT_OPTIONS = {
+export const EXPORT_PAYMENT_CSV_TYPE = {
   UTOPIA: 'utopia',
   PARCEL: 'parcel',
 };
@@ -41,7 +41,7 @@ export const ENTITIES_UI_ELEMENTS = {
 };
 
 const CSVModal = (props) => {
-  const { handleClose, fromTime, toTime, exportContributorTaskCSV, contributorTaskData, isPod } = props;
+  const { handleClose, fromTime, toTime, exportPaymentCSV, paymentsData, isPod } = props;
 
   return (
     <CreateLayoutsModal>
@@ -60,18 +60,18 @@ const CSVModal = (props) => {
             }}
             key={key}
             onClick={() => {
-              if (key === PAYMENT_OPTIONS.UTOPIA) {
-                exportContributorTaskCSV({
-                  contributorTaskData,
-                  paymentMethod: PAYMENT_OPTIONS.UTOPIA,
+              if (key === EXPORT_PAYMENT_CSV_TYPE.UTOPIA) {
+                exportPaymentCSV({
+                  paymentsData,
+                  exportCSVType: EXPORT_PAYMENT_CSV_TYPE.UTOPIA,
                   fromTime,
                   toTime,
                   isPod,
                 });
               } else {
-                exportContributorTaskCSV({
-                  contributorTaskData,
-                  paymentMethod: PAYMENT_OPTIONS.PARCEL,
+                exportPaymentCSV({
+                  paymentsData,
+                  exportCSVType: EXPORT_PAYMENT_CSV_TYPE.PARCEL,
                   fromTime,
                   toTime,
                   isPod,

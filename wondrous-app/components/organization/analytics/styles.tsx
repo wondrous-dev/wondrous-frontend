@@ -159,3 +159,29 @@ export const FormRewardCurrency = styled(CreateFormRewardCurrency)`
     margin-top: 0;
   }
 `;
+
+export const PayContributorButton = styled(Button)`
+  && {
+    padding: 8px 12px;
+    height: 40px;
+    background: #0f0f0f;
+    border: 1px solid deepskyblue;
+    margin-left: 25px;
+
+    //text
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 150%;
+    color: #ffffff;
+
+    .MuiCircularProgress-root {
+      margin-right: 10px;
+    }
+
+    &:disabled {
+      color: #7a7a7a;
+      border-color: #7a7a7a;
+      cursor: not-allowed;
+    }
+  }
+`;

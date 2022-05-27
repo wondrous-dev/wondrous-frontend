@@ -15,13 +15,14 @@ import {
   WarningTypography,
 } from '../../Common/Payment/styles';
 import { CompensationAmount, CompensationPill, IconContainer } from '../../Common/Compensation/styles';
-
+import CSVModal, { EXPORT_PAYMENT_CSV_TYPE } from './CSVModal';
 import {
   ContributorRowText,
   ContributorTaskModalRow,
   PayoutPaymentModal,
   TaskCountText,
   TaskCountWrapper,
+  PayContributorButton,
 } from './styles';
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
@@ -49,6 +50,7 @@ import {
   CreateFormMainBlockTitle,
   CreateFormRewardCurrency,
   CreateRewardAmountDiv,
+  CreateModalOverlay,
 } from 'components/CreateEntity/styles';
 import InputForm from 'components/Common/InputForm/inputForm';
 import CloseModalIcon from 'components/Icons/closeModal';
@@ -66,10 +68,104 @@ const imageStyle = {
   marginRight: '8px',
 };
 
+interface PaymentData {
+  // tokenAddress: string;
+  // isEthTransfer: Boolean;
+  // amount: string;
+  // recepientAddress: string;
+  // chain: string;
+  // decimal: number;
+}
+
+export const exportPaymentCSV = ({ paymentsData, exportCSVType, fromTime, toTime, isPod = false }) => {
+  let headers = [];
+  if (exportCSVType === EXPORT_PAYMENT_CSV_TYPE.UTOPIA) {
+    headers = ['Name', 'Wallet', 'Amount', 'Pay-out Token', 'Chain'];
+  } else if (exportCSVType === EXPORT_PAYMENT_CSV_TYPE.PARCEL) {
+    headers = ['Name(Optional)', 'Address/ENS', 'Amount', 'Token Address/Token Symbol', 'Chain'];
+  }
+  const rows = [[headers]];
+  if (!paymentsData?.contributorTaskData) {
+    return;
+  }
+  const { contributorTaskData, userToPaymentMethod, userToRewardAmount } = paymentsData;
+
+  contributorTaskData.forEach((contributor) => {
+    const assigneeId = contributor?.assigneeId
+    const assigneeUsername = contributor?.assigneeUsername || '';
+    const wallet = contributor?.assigneeWallet;
+    const paymentMethod = userToPaymentMethod[assigneeId];
+    const paymentAmount = userToRewardAmount[assigneeId] || 0;
+    if (!assigneeId || !paymentMethod) {
+      return
+    }
+    console.log(paymentMethod)
+    console.log(paymentAmount)
+
+    let tokenOrSymbol;
+    if (paymentMethod.tokenAddress === '0x0000000000000000000000000000000000000000') {
+      tokenOrSymbol = paymentMethod.symbol
+    }
+    let newRow = [
+      assigneeUsername,
+      wallet,
+      paymentAmount,
+      tokenOrSymbol,
+    ];
+    rows.push(newRow);
+
+  });
+  let csvContent = 'data:text/csv;charset=utf-8,';
+  rows.forEach(function (rowArray) {
+    let row = rowArray.join(',');
+    csvContent += row + '\r\n';
+  });
+  var encodedUri = encodeURI(csvContent);
+  var link = document.createElement('a');
+  link.setAttribute('href', encodedUri);
+  link.setAttribute(
+    'download',
+    `wonderverse_contributor_data_${format(new Date(fromTime), 'MM/dd/yyyy')}_to_${format(
+      new Date(toTime),
+      'MM/dd/yyyy'
+    )}.csv`
+  );
+  document.body.appendChild(link); // Required for FF
+  link.click();
+};
+
 const ContributorTaskRowElement = (props) => {
-  const { index, contributorTask, paymentMethods } = props;
-  const [rewardsCurrency, setRewardsCurrency] = useState(null);
-  const [rewardsAmount, setRewardsAmount] = useState(null);
+  const {
+    index,
+    contributorTask,
+    paymentMethods,
+    setUserToPaymentMethod,
+    setUserToRewardAmount,
+    userToPaymentMethod,
+    userToRewardAmount,
+  } = props;
+  const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState(null);
+  const [rewardAmount, setRewardAmount] = useState(null);
+  useEffect(() => {
+    if (rewardAmount) {
+      delete userToRewardAmount[contributorTask?.assigneeId];
+      setUserToRewardAmount({ [contributorTask?.assigneeId]: rewardAmount, ...userToRewardAmount });
+    }
+  }, [rewardAmount]);
+
+  useEffect(() => {
+    if (selectedPaymentMethodId) {
+      delete userToPaymentMethod[contributorTask?.assigneeId];
+      const selectedPaymentMethod = paymentMethods.find((paymentMethod) => {
+        return paymentMethod.id === selectedPaymentMethodId;
+      });
+      setUserToPaymentMethod({ [contributorTask?.assigneeId]: selectedPaymentMethod, ...userToPaymentMethod });
+    }
+  }, [selectedPaymentMethodId]);
+
+  const handleRewardAmountChange = (value) => {
+    setRewardAmount(value);
+  };
   return (
     <ContributorTaskModalRow key={index}>
       <>
@@ -136,8 +232,8 @@ const ContributorTaskRowElement = (props) => {
             marginTop: '-4px',
           }}
           name="reward-currency"
-          setValue={setRewardsCurrency}
-          value={rewardsCurrency}
+          setValue={setSelectedPaymentMethodId}
+          value={selectedPaymentMethodId}
           hideLabel={true}
           innerStyle={{
             marginTop: '15px',
@@ -157,8 +253,8 @@ const ContributorTaskRowElement = (props) => {
           min="0"
           placeholder="Enter reward amount"
           search={false}
-          value={rewardsAmount}
-          onChange={(e) => setRewardsAmount(e.target.value)}
+          value={rewardAmount}
+          onChange={(e) => handleRewardAmountChange(e.target.value)}
           endAdornment={
             <CloseModalIcon
               style={{
@@ -166,8 +262,8 @@ const ContributorTaskRowElement = (props) => {
                 cursor: 'pointer',
               }}
               onClick={() => {
-                setRewardsCurrency('');
-                setRewardsAmount(0);
+                setSelectedPaymentMethodId('');
+                setRewardAmount(0);
               }}
             />
           }
@@ -177,10 +273,17 @@ const ContributorTaskRowElement = (props) => {
   );
 };
 export const PayoutModal = (props) => {
-  const { podId, orgId, open, handleClose, unpaidSubmissions, chain, fromTime, toTime, contributorTaskData } = props;
+  const { podId, orgId, open, handleClose, chain, fromTime, toTime, contributorTaskData } = props;
   const [wallets, setWallets] = useState([]);
-  const [submissionsPaymentInfo, setSubmissionsPaymentInfo] = useState(null);
   const [fetchPaymentMethod, setFetchPaymentMethod] = useState(false);
+  const [userToPaymentMethod, setUserToPaymentMethod] = useState({});
+  const [userToRewardAmount, setUserToRewardAmount] = useState({});
+  const [csvModal, setCSVModal] = useState(false);
+  const paymentsData = {
+    contributorTaskData,
+    userToPaymentMethod,
+    userToRewardAmount,
+  };
   const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG, {
     onCompleted: () => {
       setFetchPaymentMethod(true);
@@ -260,6 +363,23 @@ export const PayoutModal = (props) => {
   return (
     <Modal open={open} onClose={handleClose}>
       <PayoutPaymentModal>
+        <CreateModalOverlay
+          open={csvModal}
+          onClose={() => setCSVModal(false)}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <CSVModal
+            open={csvModal}
+            handleClose={() => setCSVModal(false)}
+            fromTime={fromTime}
+            toTime={toTime}
+            exportPaymentCSV={exportPaymentCSV}
+            paymentsData={paymentsData}
+            isPod={false}
+          />
+        </CreateModalOverlay>
+
         <PaymentTitleDiv>
           <PaymentTitleTextDiv>
             <PaymentTitleText>Pay Contributors</PaymentTitleText>
@@ -273,6 +393,10 @@ export const PayoutModal = (props) => {
             return (
               <ContributorTaskRowElement
                 index={index}
+                userToPaymentMethod={userToPaymentMethod}
+                userToRewardAmount={userToRewardAmount}
+                setUserToPaymentMethod={setUserToPaymentMethod}
+                setUserToRewardAmount={setUserToRewardAmount}
                 contributorTask={contributorTask}
                 paymentMethods={paymentMethods}
               />
@@ -280,15 +404,27 @@ export const PayoutModal = (props) => {
           }
         })}
         <PaymentMethodWrapper>
-          <BatchWalletPayment
-            orgId={orgId}
-            podId={podId}
-            unpaidSubmissions={unpaidSubmissions}
-            submissionIds={[]}
-            wallets={wallets}
-            chain={chain}
-            submissionsPaymentInfo={[]}
-          />
+          <div
+            style={{
+              marginTop: '16px',
+            }}
+          >
+            <PayContributorButton
+              style={{
+                marginLeft: 0,
+              }}
+            >
+              Create Payments
+            </PayContributorButton>
+            <PayContributorButton
+              style={{
+                marginLeft: 0,
+              }}
+              onClick={() => setCSVModal(true)}
+            >
+              Export CSV
+            </PayContributorButton>
+          </div>
         </PaymentMethodWrapper>
       </PayoutPaymentModal>
     </Modal>
