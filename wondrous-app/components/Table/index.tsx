@@ -311,7 +311,7 @@ export const Table = (props) => {
               <StyledTableCell align="center" width="77px">
                 Status
               </StyledTableCell>
-              <StyledTableCell width="383px">Task</StyledTableCell>
+              <StyledTableCell width="383px"> {isAdmin ? 'Submission' : 'Task'}</StyledTableCell>
               {/*<StyledTableCell width="190px">Deliverables</StyledTableCell>*/}
               <StyledTableCell align="center" width="88px">
                 Reward
