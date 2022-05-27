@@ -26,7 +26,15 @@ import { useMe } from '../../Auth/withAuth';
 import { useMutation } from '@apollo/client';
 import { dedupeColumns, delQuery } from 'utils';
 import DndErrorModal from './DndErrorModal';
-
+export const getBoardType = ({ orgBoard, podBoard, userBoard }) => {
+  if (orgBoard) {
+    return BOARD_TYPE.org;
+  } else if (podBoard) {
+    return BOARD_TYPE.pod;
+  } else if (userBoard) {
+    return BOARD_TYPE.assignee;
+  }
+};
 const populateOrder = (index, tasks, field) => {
   let aboveOrder = null,
     belowOrder = null;
@@ -109,7 +117,7 @@ const KanbanBoard = (props) => {
             newStatus: taskToBeUpdated.status,
             board: currentBoard,
             aboveOrder,
-            belowOrder
+            belowOrder,
           },
         },
         refetchQueries: () => [
