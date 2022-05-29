@@ -1362,12 +1362,10 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   </SubtaskIconWrapper>
                 </>
               )}
-              {fetchedTask?.privacyLevel === PRIVACY_LEVEL.public && (
-                <ToggleBoardPrivacyIcon
-                  isPrivate={fetchedTask?.privacyLevel !== PRIVACY_LEVEL.public}
-                  tooltipTitle={fetchedTask?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
-                />
-              )}
+              <ToggleBoardPrivacyIcon
+                isPrivate={fetchedTask?.privacyLevel !== PRIVACY_LEVEL.public}
+                tooltipTitle={fetchedTask?.privacyLevel !== PRIVACY_LEVEL.public ? 'Members only' : 'Public'}
+              />
               {back && (
                 <>
                   <PodNameTypography style={BackToListStyle} onClick={handleClose}>
