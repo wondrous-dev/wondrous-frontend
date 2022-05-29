@@ -55,6 +55,7 @@ import {
 import InputForm from 'components/Common/InputForm/inputForm';
 import CloseModalIcon from 'components/Icons/closeModal';
 import TaskStatus from 'components/Icons/TaskStatus';
+import { ErrorText } from '../../Common';
 
 enum ViewType {
   Paid = 'paid',
@@ -91,29 +92,26 @@ export const exportPaymentCSV = ({ paymentsData, exportCSVType, fromTime, toTime
   const { contributorTaskData, userToPaymentMethod, userToRewardAmount } = paymentsData;
 
   contributorTaskData.forEach((contributor) => {
-    const assigneeId = contributor?.assigneeId
+    const assigneeId = contributor?.assigneeId;
     const assigneeUsername = contributor?.assigneeUsername || '';
-    const wallet = contributor?.assigneeWallet;
+    const wallet = contributor?.assigneeWallet || '';
     const paymentMethod = userToPaymentMethod[assigneeId];
     const paymentAmount = userToRewardAmount[assigneeId] || 0;
-    if (!assigneeId || !paymentMethod) {
-      return
+    if (!assigneeId) {
+      return;
     }
-    console.log(paymentMethod)
-    console.log(paymentAmount)
 
     let tokenOrSymbol;
-    if (paymentMethod.tokenAddress === '0x0000000000000000000000000000000000000000') {
-      tokenOrSymbol = paymentMethod.symbol
+    if (
+      paymentMethod?.tokenAddress === '0x0000000000000000000000000000000000000000' ||
+      paymentMethod?.symbol === 'USDC'
+    ) {
+      tokenOrSymbol = paymentMethod?.symbol;
+    } else {
+      tokenOrSymbol = paymentMethod?.tokenAddress || '';
     }
-    let newRow = [
-      assigneeUsername,
-      wallet,
-      paymentAmount,
-      tokenOrSymbol,
-    ];
+    let newRow = [assigneeUsername, wallet, paymentAmount, tokenOrSymbol, paymentMethod?.chain];
     rows.push(newRow);
-
   });
   let csvContent = 'data:text/csv;charset=utf-8,';
   rows.forEach(function (rowArray) {
@@ -224,66 +222,76 @@ const ContributorTaskRowElement = (props) => {
             flex: 1,
           }}
         />
-        <CreateFormRewardCurrency
-          labelText="Choose token"
-          options={paymentMethods}
-          labelStyle={{
-            paddingTop: '0',
-            marginTop: '-4px',
-          }}
-          name="reward-currency"
-          setValue={setSelectedPaymentMethodId}
-          value={selectedPaymentMethodId}
-          hideLabel={true}
-          innerStyle={{
-            marginTop: '15px',
-            background: '#171717',
-          }}
-          formSelectStyle={{
-            marginRight: '12px',
-          }}
-        />
-
-        <InputForm
-          type={'number'}
-          style={{
-            width: 'auto',
-            background: '#171717',
-          }}
-          min="0"
-          placeholder="Enter reward amount"
-          search={false}
-          value={rewardAmount}
-          onChange={(e) => handleRewardAmountChange(e.target.value)}
-          endAdornment={
-            <CloseModalIcon
-              style={{
-                marginRight: '8px',
-                cursor: 'pointer',
+        {!contributorTask?.assigneeWallet && <ErrorText>No associated wallet</ErrorText>}
+        {contributorTask?.assigneeWallet && (
+          <>
+            <CreateFormRewardCurrency
+              labelText="Choose token"
+              options={paymentMethods}
+              labelStyle={{
+                paddingTop: '0',
+                marginTop: '-4px',
               }}
-              onClick={() => {
-                setSelectedPaymentMethodId('');
-                setRewardAmount(0);
+              name="reward-currency"
+              setValue={setSelectedPaymentMethodId}
+              value={selectedPaymentMethodId}
+              hideLabel={true}
+              innerStyle={{
+                marginTop: '15px',
+                background: '#171717',
+              }}
+              formSelectStyle={{
+                marginRight: '12px',
               }}
             />
-          }
-        />
+
+            <InputForm
+              type={'number'}
+              style={{
+                width: 'auto',
+                background: '#171717',
+              }}
+              min="0"
+              placeholder="Enter reward amount"
+              search={false}
+              value={rewardAmount}
+              onChange={(e) => handleRewardAmountChange(e.target.value)}
+              endAdornment={
+                <CloseModalIcon
+                  style={{
+                    marginRight: '8px',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => {
+                    setSelectedPaymentMethodId('');
+                    setRewardAmount(0);
+                  }}
+                />
+              }
+            />
+          </>
+        )}
       </>
     </ContributorTaskModalRow>
   );
 };
+
 export const PayoutModal = (props) => {
   const { podId, orgId, open, handleClose, chain, fromTime, toTime, contributorTaskData } = props;
   const [wallets, setWallets] = useState([]);
   const [fetchPaymentMethod, setFetchPaymentMethod] = useState(false);
   const [userToPaymentMethod, setUserToPaymentMethod] = useState({});
   const [userToRewardAmount, setUserToRewardAmount] = useState({});
+  const [errorMessage, setErrorMessage] = useState(null);
   const [csvModal, setCSVModal] = useState(false);
   const paymentsData = {
     contributorTaskData,
     userToPaymentMethod,
     userToRewardAmount,
   };
+  useEffect(()=> {
+    setErrorMessage(null)
+  }, [userToPaymentMethod, userToRewardAmount])
   const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG, {
     onCompleted: () => {
       setFetchPaymentMethod(true);
@@ -360,6 +368,42 @@ export const PayoutModal = (props) => {
     }
   }, [open]);
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
+
+  const handleExportCSVButton = () => {
+    for (let i = 0; i < contributorTaskData.length; i++) {
+      const contributor = contributorTaskData[i];
+      if (!contributor?.assigneeId || !contributor?.assigneeWallet) {
+        // if this you can't set reward for this user, skip
+        continue;
+      }
+      if (!userToPaymentMethod[contributor?.assigneeId] || !userToRewardAmount[contributor?.assigneeId]) {
+        // if reward not selected then show error message
+        setErrorMessage('Must enter reward amount for all users');
+        return;
+      }
+    }
+
+    // todo make sure each user had payment method
+    setCSVModal(true);
+  };
+
+  const handleCreatePaymentButton = () => {
+    for (let i = 0; i < contributorTaskData.length; i++) {
+      const contributor = contributorTaskData[i];
+      if (!contributor?.assigneeId || !contributor?.assigneeWallet) {
+        // if this you can't set reward for this user, skip
+        continue;
+      }
+      if (!userToPaymentMethod[contributor?.assigneeId] || !userToRewardAmount[contributor?.assigneeId]) {
+        // if reward not selected then show error message
+        setErrorMessage('Must enter reward amount for all users');
+        return;
+      }
+    }
+
+    // todo make sure each user had payment method
+    setCSVModal(true);
+  };
   return (
     <Modal open={open} onClose={handleClose}>
       <PayoutPaymentModal>
@@ -403,6 +447,7 @@ export const PayoutModal = (props) => {
             );
           }
         })}
+        {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
         <PaymentMethodWrapper>
           <div
             style={{
@@ -420,7 +465,7 @@ export const PayoutModal = (props) => {
               style={{
                 marginLeft: 0,
               }}
-              onClick={() => setCSVModal(true)}
+              onClick={handleExportCSVButton}
             >
               Export CSV
             </PayContributorButton>
