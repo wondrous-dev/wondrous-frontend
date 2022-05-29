@@ -1,6 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { DayPickerSingleDateController } from 'react-dates';
 import moment from 'moment';
+import { isEmpty } from 'lodash';
+import Image from 'next/image';
+
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 
@@ -16,28 +19,100 @@ import {
   DAY_STRING_MONTH_SHORT_YEAR,
   MONTH_DAY_FULL_YEAR,
 } from 'utils/constants';
+import { useOutsideAlerter } from 'utils/hooks';
 
 import DatePickerRecurringUtilities from 'components/DatePickerRecurringUtilities';
 import DatePickerNavButton from 'components/DatePickerNavButton';
 import CalendarDay from 'components/CalendarDay';
 
 import styles from './SingleDatePickerStyles';
-import Image from 'next/image';
 
-const SingleDatePicker = ({ sx }) => {
+interface SingleDatePickerProps {
+  sx?: object;
+  setValue?: Function;
+  setRecurrenceType?: Function;
+  setRecurrenceValue?: Function;
+  recurrenceType?: any;
+  recurrenceValue?: any;
+  value?: any;
+  hideRecurring?: boolean;
+}
+
+const SingleDatePicker = ({
+  sx,
+  setValue,
+  value,
+  setRecurrenceType,
+  recurrenceType,
+  recurrenceValue,
+  setRecurrenceValue,
+  hideRecurring,
+}: SingleDatePickerProps) => {
   const [date, setDate] = useState(DEFAULT_SINGLE_DATEPICKER_VALUE);
   const [focusedInput, setFocusedInput] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const [repeatType, setRepeatType] = useState();
   const [repeatValue, setRepeatValue] = useState();
-  const [weekDaysSelected, setWeekDaysSelected] = useState(WEEK_DAYS);
+  const [weekDaysSelected, setWeekDaysSelected] = useState<Object>(WEEK_DAYS);
   const [monthInView, setMonthInView] = useState();
+
+  console.log('hideRecurring', hideRecurring);
+
+  const datePickerRef = useRef();
+
+  const parseWeekDaysToPosition = (weekDays) => {
+    const booleanDayList = Object.keys(weekDays).map((_, idx) => Object.values(weekDays)[idx]);
+    const dayPositionList = booleanDayList.map((elm, idx) => elm && idx).filter((elm) => elm || elm === 0);
+    return dayPositionList;
+  };
+  const parsePositionToWeekDays = (values) => {
+    const listOfDays = Object.keys(WEEK_DAYS).map((day, idx) =>
+      values.includes(idx) ? { [day]: true } : { [day]: false }
+    );
+    const weekDays = listOfDays.reduce((map, newValue) => ({ ...map, ...newValue }));
+
+    return weekDays;
+  };
+
+  useEffect(() => {
+    value && setDate(moment(value));
+    recurrenceType && setRepeatType(recurrenceType);
+
+    if (recurrenceType === DATEPICKER_OPTIONS.WEEKLY) {
+      const parsedWeekDays = parsePositionToWeekDays(recurrenceValue);
+      setWeekDaysSelected(parsedWeekDays);
+      return;
+    }
+    recurrenceValue && setRepeatValue(recurrenceValue);
+  }, []);
+
+  useEffect(() => {
+    if (repeatType === DATEPICKER_OPTIONS.WEEKLY) {
+      const parsedWeekDays = parseWeekDaysToPosition(weekDaysSelected);
+      !isEmpty(parsedWeekDays) && setRecurrenceValue(parsedWeekDays);
+    }
+  }, [weekDaysSelected, repeatType]);
 
   moment.updateLocale('en', {
     week: {
       dow: 1,
     },
   });
+
+  const handleDateChange = (newDate) => {
+    setDate(newDate);
+    setValue(moment(newDate).toDate());
+  };
+
+  const handleSetRepeatType = (newType) => {
+    setRepeatType(newType);
+    setRecurrenceType(newType);
+  };
+
+  const handleSetRepeatValue = (newValue) => {
+    setRepeatValue(newValue);
+    setRecurrenceValue(newValue);
+  };
 
   const todayMoment = moment();
 
@@ -84,14 +159,23 @@ const SingleDatePicker = ({ sx }) => {
   };
 
   const reset = () => {
-    setDate(DEFAULT_SINGLE_DATEPICKER_VALUE);
-    setRepeatType(null);
-    setRepeatValue(null);
+    handleDateChange(DEFAULT_SINGLE_DATEPICKER_VALUE);
+    handleSetRepeatType(null);
+    handleSetRepeatValue(null);
     setShowOptions(null);
   };
 
+  // useOutsideAlerter(datePickerRef, () => setFocusedInput(false));
+
   return (
-    <Box mt={4} display="flex" flexDirection="column" maxWidth={300}>
+    <Box
+      mt={4}
+      display="flex"
+      flexDirection="column"
+      maxWidth={300}
+      width={focusedInput ? 300 : 'default'}
+      ref={datePickerRef}
+    >
       <TextField
         placeholder="Choose date"
         InputProps={{
@@ -117,12 +201,12 @@ const SingleDatePicker = ({ sx }) => {
         }}
         value={displayValue}
         onClick={() => setFocusedInput(true)}
-        sx={styles.mainTextfield}
+        sx={focusedInput ? styles.mainTextfield : styles.mainTextfieldInactive}
       />
 
       {focusedInput && (
         <Box sx={styles.mainContainer}>
-          <Box sx={{ ...sx }}>
+          <Box sx={{ ...styles.root, ...sx }}>
             <Box sx={styles.inputContainer}>
               <TextField
                 value={startDateString}
@@ -145,7 +229,7 @@ const SingleDatePicker = ({ sx }) => {
               date={date}
               initialDate={date}
               id="your_unique_id"
-              onDateChange={(date) => setDate(date)}
+              onDateChange={(date) => handleDateChange(date)}
               focusedInput={focusedInput}
               onFocusChange={() => {}}
               numberOfMonths={1}
@@ -166,21 +250,24 @@ const SingleDatePicker = ({ sx }) => {
               isDayBlocked={(day) => day.isBefore(todayMoment)}
               renderCalendarDay={(props) => <CalendarDay {...props} />}
               hideKeyboardShortcutsPanel
-              renderCalendarInfo={() => (
-                <DatePickerRecurringUtilities
-                  monthInView={monthInView}
-                  showOptions={showOptions}
-                  setShowOptions={setShowOptions}
-                  setDate={setDate}
-                  setRepeatType={setRepeatType}
-                  repeatType={repeatType}
-                  setRepeatValue={setRepeatValue}
-                  date={date}
-                  todayMoment={todayMoment}
-                  onWeekDaysChange={handleWeekDaysChange}
-                  weekDaysSelected={weekDaysSelected}
-                />
-              )}
+              renderCalendarInfo={() =>
+                !hideRecurring && (
+                  <DatePickerRecurringUtilities
+                    monthInView={monthInView}
+                    showOptions={showOptions}
+                    setShowOptions={setShowOptions}
+                    setDate={handleDateChange}
+                    setRepeatType={handleSetRepeatType}
+                    repeatType={repeatType}
+                    setRepeatValue={handleSetRepeatValue}
+                    repeatValue={repeatValue}
+                    date={date}
+                    todayMoment={todayMoment}
+                    onWeekDaysChange={handleWeekDaysChange}
+                    weekDaysSelected={weekDaysSelected}
+                  />
+                )
+              }
             />
           </Box>
         </Box>

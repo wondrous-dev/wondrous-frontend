@@ -14,9 +14,10 @@ interface DaySelectorProps {
   onChange: any;
   todayMoment: any;
   monthInView: any;
+  repeatValue: any;
 }
 
-const DaySelector = ({ dateRange, todayMoment, onChange, date, monthInView }: DaySelectorProps) => {
+const DaySelector = ({ dateRange, todayMoment, onChange, date, monthInView, repeatValue }: DaySelectorProps) => {
   const [lastSelected, setLastSelected] = useState(false);
 
   const daysInMonth = Array.from(
@@ -43,7 +44,7 @@ const DaySelector = ({ dateRange, todayMoment, onChange, date, monthInView }: Da
   }, [monthInView]);
 
   return (
-    <DatePickerSelect select onChange={handleOnChange} value={lastSelected ? lastDay : 'undefined'}>
+    <DatePickerSelect select onChange={handleOnChange} value={lastSelected ? lastDay : repeatValue}>
       {daysInMonth?.map((day) => (
         <MenuItem key={day} value={day} sx={styles.menuItem}>
           {day === lastDay ? 'Last' : day}

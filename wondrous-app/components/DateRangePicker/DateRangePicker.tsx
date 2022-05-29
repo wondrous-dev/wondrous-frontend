@@ -176,6 +176,7 @@ const DateRangePicker = ({ sx }) => {
               renderCalendarDay={(props) => <CalendarDay {...props} />}
               renderCalendarInfo={() => (
                 <DatePickerRecurringUtilities
+                  repeatValue={repeatValue}
                   showOptions={showOptions}
                   setShowOptions={setShowOptions}
                   setDateRange={setDateRange}
