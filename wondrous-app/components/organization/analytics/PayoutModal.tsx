@@ -15,7 +15,7 @@ import {
   WarningTypography,
 } from '../../Common/Payment/styles';
 import { CompensationAmount, CompensationPill, IconContainer } from '../../Common/Compensation/styles';
-import CSVModal, { EXPORT_PAYMENT_CSV_TYPE } from './CSVModal';
+import CSVModal from './CSVModal';
 import {
   ContributorRowText,
   ContributorTaskModalRow,
@@ -56,6 +56,7 @@ import InputForm from 'components/Common/InputForm/inputForm';
 import CloseModalIcon from 'components/Icons/closeModal';
 import TaskStatus from 'components/Icons/TaskStatus';
 import { ErrorText } from '../../Common';
+import { exportPaymentCSV } from './exportPaymentCsv';
 
 enum ViewType {
   Paid = 'paid',
@@ -69,68 +70,6 @@ const imageStyle = {
   marginRight: '8px',
 };
 
-interface PaymentData {
-  // tokenAddress: string;
-  // isEthTransfer: Boolean;
-  // amount: string;
-  // recepientAddress: string;
-  // chain: string;
-  // decimal: number;
-}
-
-export const exportPaymentCSV = ({ paymentsData, exportCSVType, fromTime, toTime, isPod = false }) => {
-  let headers = [];
-  if (exportCSVType === EXPORT_PAYMENT_CSV_TYPE.UTOPIA) {
-    headers = ['Name', 'Wallet', 'Amount', 'Pay-out Token', 'Chain'];
-  } else if (exportCSVType === EXPORT_PAYMENT_CSV_TYPE.PARCEL) {
-    headers = ['Name(Optional)', 'Address/ENS', 'Amount', 'Token Address/Token Symbol', 'Chain'];
-  }
-  const rows = [[headers]];
-  if (!paymentsData?.contributorTaskData) {
-    return;
-  }
-  const { contributorTaskData, userToPaymentMethod, userToRewardAmount } = paymentsData;
-
-  contributorTaskData.forEach((contributor) => {
-    const assigneeId = contributor?.assigneeId;
-    const assigneeUsername = contributor?.assigneeUsername || '';
-    const wallet = contributor?.assigneeWallet || '';
-    const paymentMethod = userToPaymentMethod[assigneeId];
-    const paymentAmount = userToRewardAmount[assigneeId] || 0;
-    if (!assigneeId) {
-      return;
-    }
-
-    let tokenOrSymbol;
-    if (
-      paymentMethod?.tokenAddress === '0x0000000000000000000000000000000000000000' ||
-      paymentMethod?.symbol === 'USDC'
-    ) {
-      tokenOrSymbol = paymentMethod?.symbol;
-    } else {
-      tokenOrSymbol = paymentMethod?.tokenAddress || '';
-    }
-    let newRow = [assigneeUsername, wallet, paymentAmount, tokenOrSymbol, paymentMethod?.chain];
-    rows.push(newRow);
-  });
-  let csvContent = 'data:text/csv;charset=utf-8,';
-  rows.forEach(function (rowArray) {
-    let row = rowArray.join(',');
-    csvContent += row + '\r\n';
-  });
-  var encodedUri = encodeURI(csvContent);
-  var link = document.createElement('a');
-  link.setAttribute('href', encodedUri);
-  link.setAttribute(
-    'download',
-    `wonderverse_contributor_data_${format(new Date(fromTime), 'MM/dd/yyyy')}_to_${format(
-      new Date(toTime),
-      'MM/dd/yyyy'
-    )}.csv`
-  );
-  document.body.appendChild(link); // Required for FF
-  link.click();
-};
 
 const ContributorTaskRowElement = (props) => {
   const {
@@ -278,7 +217,6 @@ const ContributorTaskRowElement = (props) => {
 
 export const PayoutModal = (props) => {
   const { podId, orgId, open, handleClose, chain, fromTime, toTime, contributorTaskData } = props;
-  const [wallets, setWallets] = useState([]);
   const [fetchPaymentMethod, setFetchPaymentMethod] = useState(false);
   const [userToPaymentMethod, setUserToPaymentMethod] = useState({});
   const [userToRewardAmount, setUserToRewardAmount] = useState({});
@@ -297,63 +235,9 @@ export const PayoutModal = (props) => {
       setFetchPaymentMethod(true);
     },
   });
-  const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
-    fetchPolicy: 'cache-and-network',
-  });
-  const [getOrgWallet, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_WALLET, {
-    onCompleted: (data) => {
-      setWallets(data?.getOrgWallet);
-    },
-    fetchPolicy: 'network-only',
-  });
-  const [getPodWallet] = useLazyQuery(GET_POD_WALLET, {
-    fetchPolicy: 'network-only',
-  });
-
-  const [getPodById] = useLazyQuery(GET_POD_BY_ID);
-  const getWallets = useCallback(
-    async (podId, orgId) => {
-      if (podId) {
-        try {
-          const result = await getPodWallet({
-            variables: {
-              podId,
-            },
-          });
-          const wallets = result?.data?.getPodWallet;
-          if (!wallets || wallets?.length === 0) {
-            const podResult = await getPodById({
-              variables: {
-                podId: podId,
-              },
-            });
-            const pod = podResult?.data?.getPodById;
-            getOrgWallet({
-              variables: {
-                orgId: pod?.orgId,
-              },
-            });
-          } else {
-            setWallets(wallets);
-          }
-        } catch (err) {
-          console.error('failed to fetch wallet: ' + err?.message);
-        }
-      } else if (orgId) {
-        getOrgWallet({
-          variables: {
-            orgId,
-          },
-        });
-      }
-    },
-    [podId, orgId]
-  );
-
-  useEffect(() => {
-    getWallets(podId, orgId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [podId, orgId]);
+  // const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
+  //   fetchPolicy: 'cache-and-network',
+  // });
 
   useEffect(() => {
     if (open) {
@@ -367,6 +251,7 @@ export const PayoutModal = (props) => {
       }
     }
   }, [open]);
+
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
 
   const handleExportCSVButton = () => {
