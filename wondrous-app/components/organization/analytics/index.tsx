@@ -45,6 +45,7 @@ import { White } from 'theme/colors';
 import { filterOrgUsers } from 'components/CreateEntity/createEntityModal';
 import CSVModal, { PAYMENT_OPTIONS } from './CSVModal';
 import { PayoutModal } from './PayoutModal';
+import { PRIVATE_TASK_TITLE } from 'utils/constants';
 
 export const exportTaskCSV = () => {};
 
@@ -75,7 +76,7 @@ export const exportContributorTaskCSV = ({ contributorTaskData, paymentMethod, f
       let newRow = [
         assigneeUsername,
         wallet,
-        task?.title,
+        task?.title === PRIVATE_TASK_TITLE ? 'Private Task' : task?.title,
         finalLink,
         task?.points || '',
         reward ? reward?.rewardAmount : '',
@@ -227,8 +228,10 @@ const UserRow = ({ contributorTask }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setOpenModal(true);
-                  setTaskOpened(task?.id);
+                  if (task?.title !== PRIVATE_TASK_TITLE) {
+                    setOpenModal(true);
+                    setTaskOpened(task?.id);
+                  }
                 }}
               >
                 <TaskTitle
@@ -236,7 +239,7 @@ const UserRow = ({ contributorTask }) => {
                     marginRight: '24px',
                   }}
                 >
-                  {cutString(task.title)}
+                  {cutString(task.title === PRIVATE_TASK_TITLE ? 'Private Task' : task.title)}
                 </TaskTitle>
                 <div
                   style={{
