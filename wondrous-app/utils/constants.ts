@@ -401,3 +401,5 @@ export enum ColorTypes {
   Grey = '#B8B8B8',
   OkeniteSepia = '#CCAC93',
 }
+
+export const PRIVATE_TASK_TITLE = '_private_task';

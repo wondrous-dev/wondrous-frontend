@@ -48,7 +48,7 @@ const HeaderComponent = (props) => {
   };
 
   const router = useRouter();
-  const urlsWithCreateButton = ['/boards', '/dashboard', '/activities'];
+  const urlsWithCreateButton = ['/boards', '/dashboard', '/activities', '/docs', '/analytics'];
   const showCreateButton = urlsWithCreateButton.some((url) => router.pathname?.includes(url));
   return (
     <Header>
