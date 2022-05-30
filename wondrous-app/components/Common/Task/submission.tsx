@@ -510,6 +510,7 @@ const SubmissionItem = (props) => {
                               height: '28px',
                               marginLeft: '6px',
                             }}
+                            noStroke
                           />
                         }
                       </ActionButton>
@@ -524,6 +525,7 @@ const SubmissionItem = (props) => {
                               height: '28px',
                               marginLeft: '6px',
                             }}
+                            noStroke
                           />
                         }
                       </ActionButton>
@@ -898,6 +900,7 @@ const TaskSubmissionForm = (props) => {
                   height: '28px',
                   marginLeft: '6px',
                 }}
+                noStroke
               />
             )}
           </ActionButton>
@@ -957,11 +960,14 @@ const MakeSubmissionBlock = (props) => {
             />
             <ActionButton style={{height: '40px'}} onClick={() => setMakeSubmission(true)}>
               {prompt}
-              <InReviewIcon style={{
-                width: '28px',
-                height: '28px',
-                marginLeft: '10px',
-              }} />
+              <InReviewIcon
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  marginLeft: '10px',
+                }}
+                none={'none'}
+              />
             </ActionButton>
           </>
         )}
