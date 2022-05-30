@@ -253,7 +253,7 @@ const Analytics = (props) => {
   const { id: podId, orgId } = podData;
   const [ref, inView] = useInView({});
   const [csvModal, setCSVModal] = useState(false);
-  n;
+
   const [assignee, setAssignee] = useState(null);
   const [assigneeString, setAssigneeString] = useState('');
   const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
