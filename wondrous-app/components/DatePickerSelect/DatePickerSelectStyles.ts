@@ -5,6 +5,7 @@ const styles = {
       borderRadius: '6px',
       border: 0,
       outline: 'none',
+      textTransform: 'capitalize',
     },
     '& .MuiOutlinedInput-root': {
       outline: 'none',
@@ -22,6 +23,7 @@ const styles = {
   },
   menuList: {
     background: '#474747',
+    textTransform: 'capitalize',
     '&.MuiList-root': {
       padding: 1,
     },

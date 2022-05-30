@@ -13,7 +13,12 @@ export const PrivateBoardIconBackground = styled.div`
   height: 40px;
 `;
 
-export const PrivateBoardIconPopper = styled(Popper)``;
+export const PrivateBoardIconPopper = styled(Popper)`
+  && {
+    position: absolute;
+    z-index: 10000;
+  }
+`;
 
 export const PrivateBoardIconPopperWrapper = styled(Box)`
   width: 78px;

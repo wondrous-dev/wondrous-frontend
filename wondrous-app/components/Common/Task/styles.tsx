@@ -698,3 +698,12 @@ export const MediaLinkWrapper = styled.div`
     margin-right: 4px;
   }
 `;
+
+export const DueDateText = styled(Typography)`
+  && {
+    font-family: Space Grotesk;
+    color: #c4c4c4;
+    font-size: 13px;
+    margin-right: 4px;
+  }
+`;

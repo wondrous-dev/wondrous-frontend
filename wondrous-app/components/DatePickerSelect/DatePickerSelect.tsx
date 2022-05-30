@@ -12,7 +12,7 @@ const DatePickerSelect = (props) => {
           PaperProps: {
             style: {
               maxHeight: 200,
-              width: 100,
+              width: 140,
             },
           },
           MenuListProps: { sx: { ...styles.menuList } },

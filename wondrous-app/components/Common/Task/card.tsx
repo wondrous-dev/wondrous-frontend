@@ -24,6 +24,7 @@ import {
   ActionButton,
   TaskCardDescriptionText,
   CheckedIconWrapper,
+  DueDateText,
 } from './styles';
 import { transformTaskToTaskCard } from 'utils/helpers';
 import { White, Red800 } from '../../../theme/colors';
@@ -74,6 +75,8 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { PERMISSIONS } from 'utils/constants';
+import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
+import { format } from 'date-fns';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -110,6 +113,7 @@ export const TaskCard = ({
   setArchiveTask,
   canDelete,
   setDeleteTask,
+  boardType,
 }) => {
   let TaskIcon = TASK_ICONS[task.status];
 
@@ -173,6 +177,9 @@ export const TaskCard = ({
       },
     });
   };
+  const isUser = boardType === Constants.BOARD_TYPE.assignee;
+  const isPod = boardType === Constants.BOARD_TYPE.pod;
+  const isOrg = boardType === Constants.BOARD_TYPE.org;
 
   return (
     <ProposalCardWrapper
@@ -192,46 +199,115 @@ export const TaskCard = ({
       ) : null}
       <TaskHeader>
         <TaskHeaderIconWrapper>
-          <SafeImage
-            src={task?.orgProfilePicture}
-            style={{
-              width: '29px',
-              height: '28px',
-              borderRadius: '4px',
-              marginRight: '8px',
-            }}
-          />
-          {isMilestone && <MilestoneIcon />}
-          <AvatarList users={userList} id={'task-' + task?.id} />
-          {isSubtask && <SubtaskLightIcon stroke="white" />}
-          {!isSubtask && !isMilestone && totalSubtask > 0 && (
-            <CheckedIconWrapper>
-              {' '}
-              <CheckedBoxIcon stroke="white" pathFill="none" />
-            </CheckedIconWrapper>
-          )}
-
-          {task?.privacyLevel === Constants.PRIVACY_LEVEL.public && (
-            <PodWrapper
+          {isUser && (
+            <SafeImage
+              src={task?.orgProfilePicture}
               style={{
-                marginTop: '0',
+                width: '29px',
+                height: '28px',
+                borderRadius: '4px',
+                marginRight: '8px',
+              }}
+            />
+          )}
+          {!assigneeId && !isBounty && !isMilestone && (
+            <>
+              {claimed ? (
+                <ActionButton
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
+                  Claimed
+                </ActionButton>
+              ) : (
+                <ActionButton
+                  style={{
+                    marginRight: '8px',
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    updateTaskAssignee({
+                      variables: {
+                        taskId: id,
+                        assigneeId: user?.id,
+                      },
+                      onCompleted: (data) => {
+                        setClaimed(true);
+                        const task = data?.updateTaskAssignee;
+                        const transformedTask = transformTaskToTaskCard(task, {});
+                        if (boardColumns?.setColumns) {
+                          let columns = [...boardColumns?.columns];
+                          if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
+                            columns = updateInProgressTask(transformedTask, columns);
+                          } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
+                            columns = updateTaskItem(transformedTask, columns);
+                          }
+                          boardColumns.setColumns(columns);
+                        }
+                      },
+                    });
+                  }}
+                >
+                  <Claim />
+                  <span
+                    style={{
+                      marginLeft: '4px',
+                    }}
+                  >
+                    Claim
+                  </span>
+                </ActionButton>
+              )}
+            </>
+          )}
+          {!isBounty && !isMilestone && task?.status === Constants.TASK_STATUS_IN_REVIEW && (
+            <ActionButton onClick={openModal}>Review</ActionButton>
+          )}
+          {displayPayButton && (
+            <ActionButton
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePaymentModal();
               }}
             >
-              <PodName
-                style={{
-                  borderRadius: '8px',
-                  marginLeft: '4px',
-                }}
-              >
-                Public
-              </PodName>
-            </PodWrapper>
+              Pay
+            </ActionButton>
           )}
+          {isMilestone && <MilestoneIcon />}
+          <AvatarList users={userList} id={'task-' + task?.id} />
         </TaskHeaderIconWrapper>
-        {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
+        {task?.privacyLevel === PRIVACY_LEVEL.public && (
+          <ToggleBoardPrivacyIcon
+            style={{
+              width: task?.assigneeId ? '40px' : 'auto',
+            }}
+            isPrivate={task?.privacyLevel !== PRIVACY_LEVEL.public}
+            tooltipTitle={task?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
+          />
+        )}
+
+        <div
+          style={{
+            flex: 1,
+          }}
+        />
+        {task?.dueDate && <DueDateText>{format(new Date(task?.dueDate), 'MMM d')}</DueDateText>}
+        {rewards && rewards?.length > 0 && (
+          <Compensation
+            style={{
+              flexGrow: '0',
+              marginLeft: '8px',
+              alignSelf: 'center',
+            }}
+            rewards={rewards}
+            taskIcon={<TaskIcon />}
+          />
+        )}
       </TaskHeader>
       <TaskCreatedBy type={type} router={router} createdBy={createdBy} />
-      {(isMilestone || isBounty) && <TaskDivider />}
 
       <TaskContent>
         <TaskTitle>{title}</TaskTitle>
@@ -241,27 +317,7 @@ export const TaskCard = ({
             router,
           })}
         </TaskCardDescriptionText> */}
-        <TaskContentFooter>
-          {task?.podName && (
-            <PodWrapper
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                goToPod(task?.podId);
-              }}
-            >
-              <PodIcon
-                color={task?.podColor}
-                style={{
-                  width: '26px',
-                  height: '26px',
-                  marginRight: '8px',
-                }}
-              />
-              <PodName>{task?.podName}</PodName>
-            </PodWrapper>
-          )}
-        </TaskContentFooter>
+
         {isBounty && (
           <TaskBountyOverview
             totalSubmissionsCount={task?.totalSubmissionsCount}
@@ -283,84 +339,83 @@ export const TaskCard = ({
         ) : null}
       </TaskContent>
       <BoardsCardFooter style={{ paddingBottom: '0' }}>
-        {!assigneeId && !isBounty && !isMilestone && (
-          <>
-            {claimed ? (
-              <ActionButton
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-              >
-                Claimed
-              </ActionButton>
-            ) : (
-              <ActionButton
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  updateTaskAssignee({
-                    variables: {
-                      taskId: id,
-                      assigneeId: user?.id,
-                    },
-                    onCompleted: (data) => {
-                      setClaimed(true);
-                      const task = data?.updateTaskAssignee;
-                      const transformedTask = transformTaskToTaskCard(task, {});
-                      if (boardColumns?.setColumns) {
-                        let columns = [...boardColumns?.columns];
-                        if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
-                          columns = updateInProgressTask(transformedTask, columns);
-                        } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
-                          columns = updateTaskItem(transformedTask, columns);
-                        }
-                        boardColumns.setColumns(columns);
-                      }
-                    },
-                  });
-                }}
-              >
-                <Claim />
-                <span
-                  style={{
-                    marginLeft: '4px',
-                  }}
-                >
-                  Claim
-                </span>
-              </ActionButton>
-            )}
-          </>
-        )}
-        {!isBounty && !isMilestone && task?.status === Constants.TASK_STATUS_IN_REVIEW && (
-          <ActionButton onClick={openModal}>Review</ActionButton>
-        )}
-        {displayPayButton && (
-          <ActionButton
+        {task?.podName && !isPod && (
+          <PodWrapper
             onClick={(e) => {
+              e.preventDefault();
               e.stopPropagation();
-              handlePaymentModal();
+              goToPod(task?.podId);
+            }}
+            style={{
+              marginTop: '0',
             }}
           >
-            Pay
-          </ActionButton>
+            <PodIcon
+              color={task?.podColor}
+              style={{
+                width: '26px',
+                height: '26px',
+                marginRight: '8px',
+              }}
+            />
+            <PodName
+              style={{
+                whiteSpace: 'nowrap',
+                maxWidth: '155px',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+              }}
+            >
+              {task?.podName}
+            </PodName>
+          </PodWrapper>
         )}
-        {!isMilestone && (
-          <TaskAction key={'task-comment-' + id}>
+        {isSubtask && <SubtaskLightIcon stroke="white" />}
+
+        <div
+          style={{
+            flex: 1,
+          }}
+        />
+        {!isMilestone && commentCount > 0 && (
+          <TaskAction
+            key={'task-comment-' + id}
+            style={{
+              marginRight: !isSubtask && !isMilestone && totalSubtask > 0 ? '0' : '18px',
+            }}
+          >
             <TaskCommentIcon />
             <TaskActionAmount>{commentCount}</TaskActionAmount>
           </TaskAction>
         )}
         {!isSubtask && !isMilestone && totalSubtask > 0 && (
-          <SubtaskCountWrapper>
+          <SubtaskCountWrapper
+            style={{
+              marginRight: '12px',
+              paddingLeft: '0',
+            }}
+          >
             <SubtaskLightIcon fill="none" stroke={Grey57} />
             <SubtaskCount>{totalSubtask}</SubtaskCount>
           </SubtaskCountWrapper>
         )}
-        {canArchive && displayActions && (
-          <TaskActionMenu right="true">
-            <DropDown DropdownHandler={TaskMenuIcon}>
+        {canArchive && (
+          <TaskActionMenu
+            right="true"
+            style={{
+              flexGrow: '0',
+              position: 'absolute',
+              right: '4px',
+              visibility: displayActions ? 'visible' : 'hidden',
+            }}
+          >
+            <DropDown
+              DropdownHandler={TaskMenuIcon}
+              divStyle={{
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
               <DropDownItem
                 key={'task-menu-edit-' + id}
                 onClick={() => {
@@ -484,7 +539,7 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
                 marginRight: '8px',
               }}
             />
-            <PodName>{task?.podName}</PodName>
+            <PodName style={{}}>{task?.podName}</PodName>
           </PodWrapper>
         )}
       </BoardsCardBody>

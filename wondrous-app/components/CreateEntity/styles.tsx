@@ -469,7 +469,7 @@ export const CreateFormAddDetailsSelects = styled(CreateFormMainSelects)`
 `;
 
 export const CreateFormAddDetailsLocalizationProvider = styled.div`
-  width: 40%;
+  width: 262px;
 `;
 
 export const CreateFormAddDetailsTab = styled.div`
