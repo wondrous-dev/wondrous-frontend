@@ -534,7 +534,6 @@ const Analytics = (props) => {
           onClick={() =>
             exportContributorTaskCSV({
               contributorTaskData,
-              paymentMethod: null,
               fromTime,
               toTime,
               isPod: false,
