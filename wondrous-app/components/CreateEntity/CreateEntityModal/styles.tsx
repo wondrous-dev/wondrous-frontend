@@ -1,5 +1,5 @@
 import { ButtonUnstyled, OptionUnstyled, PopperUnstyled, SelectUnstyled, TextareaAutosize } from '@mui/base';
-import { Autocomplete, Card, Input, InputAdornment, TextField, Typography } from '@mui/material';
+import { Autocomplete, Input, InputAdornment, TextField, Typography } from '@mui/material';
 import { Button } from 'components/Common/button';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import AttachFileIcon from 'components/Icons/attachFile.svg';
@@ -7,6 +7,7 @@ import CloseModalIcon from 'components/Icons/closeModal';
 import PlusIcon from 'components/Icons/plus';
 import PointsIcon from 'components/Icons/pointsIcon.svg';
 import { TextInput } from 'components/TextInput';
+import { UserSuggestionTypography, UserSuggestionWrapper } from 'components/TextInput/styles';
 import React from 'react';
 import styled from 'styled-components';
 import { Red400, White } from 'theme/colors';
@@ -14,15 +15,13 @@ import Arrow from '../../Icons/arrow.svg';
 import PrivacyMembersIcon from '../../Icons/privacyMembers.svg';
 import PrivacyPublicIcon from '../../Icons/privacyPublic.svg';
 
-export const CreateEntityBaseCard = styled(Card)`
+export const CreateEntityForm = styled.form`
   min-height: 50%;
   max-height: 90%;
   width: 561px;
   border-radius: 6px;
   overflow-y: auto;
-  &.MuiPaper-root {
-    background: #1d1d1d;
-  }
+  background: #1d1d1d;
 `;
 
 export const CreateEntityHeader = styled.div`
@@ -169,21 +168,63 @@ export const CreateEntityTitle = styled(TextareaAutosize)`
 `;
 
 export const CreateEntityDescription = styled((props) => {
-  return <TextInput className={props.className} placeholder="Description" style={{}} />;
-})`
-  height: 100px;
-  textarea {
-    background: transparent;
+  return <TextInput className={props.className} placeholder="Description" overrideStyle={true} />;
+})``;
+
+export const CreateEntityDescriptionWrapper = styled.div`
+  // This to override the default style of TextInput
+  // This is a temporary solution until there's a standard design is created
+  ${UserSuggestionWrapper} {
+    background-color: #1f1f1f;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    border-radius: 0 !important;
+    top: 0;
+  }
+  ${UserSuggestionTypography} {
+    margin: 0;
+    color: ${White};
     font-family: 'Space Grotesk';
-    border: none;
-    font-weight: 400;
-    line-height: 24px;
-    color: #c4c4c4;
+    background-color: #1f1f1f;
+    font-size: 13px;
+    font-weight: 500;
+    height: 34px;
     width: 100%;
-    height: 100px;
-    resize: none;
-    :focus {
-      outline: none;
+    padding: 6px;
+    :hover {
+      cursor: pointer;
+      background-color: #474747;
+    }
+  }
+  ${CreateEntityDescription} {
+    > ${CreateEntityDescription}__control {
+      min-height: 50px;
+      max-height: 100px;
+      overflow: auto;
+      > ${CreateEntityDescription}__input {
+        background: transparent;
+        font-family: 'Space Grotesk';
+        border: none;
+        font-weight: 400;
+        line-height: 24px;
+        color: #c4c4c4;
+        width: 100%;
+        resize: none;
+        :focus {
+          outline: none;
+        }
+      }
+    }
+    > ${CreateEntityDescription}__suggestions {
+      background-color: #1f1f1f;
+      border-radius: 4px;
+      > ${CreateEntityDescription}__suggestions__list {
+        border-radius: 4px;
+        background-color: #1f1f1f;
+        border: 1px solid #7a7a7a;
+      }
     }
   }
 `;
@@ -551,11 +592,12 @@ export const CreateEntityCreateTaskButton = styled(Button)`
   && {
     min-height: 0;
     height: 34px;
-    width: 143px;
+    min-width: 143px;
     ${GradientHighlightHorizontal}
     opacity: ${({ disabled }) => (disabled ? '0.5' : '1')};
     background: ${({ disabled }) => disabled && '#454545'};
     button {
+      text-transform: capitalize;
       min-height: 0;
       font-size: 15px;
       font-weight: 600;

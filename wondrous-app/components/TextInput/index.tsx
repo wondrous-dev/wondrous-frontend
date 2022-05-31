@@ -6,6 +6,7 @@ import { SafeImage } from '../Common/Image';
 import { Blue400, White } from '../../theme/colors';
 
 export const TextInput = (props) => {
+  const { overrideStyle, ...rest } = props;
   const [name, setName] = useState('');
   const inputProps = useTextInput();
 
@@ -27,27 +28,29 @@ export const TextInput = (props) => {
     return inputProps?.list.filter((user) => user?.username?.startsWith(query));
   };
 
-  const style = props.style ?? {
-    textarea: {
-      outline: 'none',
-    },
-    '&multiLine': {
-      input: {
+  const style = !overrideStyle && {
+    ...{
+      textarea: {
         outline: 'none',
-        background: '#0F0F0F',
-        border: 'none',
       },
-    },
-    suggestions: {
-      top: '16px',
-      borderRadius: '8px',
-      border: 'none !important',
-      list: {
+      '&multiLine': {
+        input: {
+          outline: 'none',
+          background: '#0F0F0F',
+          border: 'none',
+        },
+      },
+      suggestions: {
+        top: '16px',
         borderRadius: '8px',
-        background: 'linear-gradient(180deg, #1e1e1e 0%, #141414 100%)',
-        boxShadow: '0px 34px 84px rgba(0, 0, 0, 0.55)',
+        border: 'none !important',
+        list: {
+          borderRadius: '8px',
+          background: 'linear-gradient(180deg, #1e1e1e 0%, #141414 100%)',
+          boxShadow: '0px 34px 84px rgba(0, 0, 0, 0.55)',
+        },
+        item: {},
       },
-      item: {},
     },
     ...{
       input: {
@@ -59,12 +62,12 @@ export const TextInput = (props) => {
         padding: '12px',
       },
     },
-    ...props?.style,
+    ...rest?.style,
   };
 
   return (
     <MentionsInput
-      {...props}
+      {...rest}
       style={style}
       value={inputProps?.content}
       onChange={handleChange}
