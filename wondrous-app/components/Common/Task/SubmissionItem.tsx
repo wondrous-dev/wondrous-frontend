@@ -37,6 +37,7 @@ import {
 import { MediaLink } from 'components/Common/Task/modal';
 import { CompletedIcon, InProgressIcon } from 'components/Icons/statusIcons';
 import { PaymentButton } from 'components/Common/Task/paymentButton';
+import SubmissionDetails from 'components/Common/Task/SubmissionDetals';
 
 const SubmissionItem = (props) => {
   const {
@@ -201,94 +202,18 @@ const SubmissionItem = (props) => {
                 </TaskSubmissionHeaderTimeText>
               )}
             </div>
+
+            {/* TODO: Use real data */}
+            <SubmissionDetails
+              description={submission?.description}
+              links={submission?.links}
+              media={submission?.media}
+              hideEmpty
+            />
           </TaskSubmissionHeaderTextDiv>
         </TaskSubmissionHeader>
-        <TaskSectionDisplayDiv
-          style={{
-            alignItems: 'flex-start',
-            flexWrap: 'nowrap',
-            textAlign: 'left',
-          }}
-        >
-          <TaskSectionDisplayLabel
-            style={{
-              marginRight: '8px',
-            }}
-          >
-            <NotesIcon />
-            <TaskSectionDisplayText>Notes </TaskSectionDisplayText>
-          </TaskSectionDisplayLabel>
-          <TaskDescriptionText
-            style={{
-              marginTop: '12px',
-              ...textStyle,
-            }}
-          >
-            {renderMentionString({
-              content: submission?.description,
-              router,
-            })}
-          </TaskDescriptionText>
-        </TaskSectionDisplayDiv>
-        <TaskSectionDisplayDiv>
-          <TaskSectionDisplayLabel
-            style={{
-              marginRight: '20px',
-            }}
-          >
-            <LinkIcon />
-            <TaskSectionDisplayText>Link </TaskSectionDisplayText>
-          </TaskSectionDisplayLabel>
-          {submission?.links && submission?.links[0]?.url ? (
-            <TaskSubmissionLink href={submission?.links[0]?.url} target="_blank">
-              {submission?.links[0]?.url}
-            </TaskSubmissionLink>
-          ) : (
-            <>
-              <TaskDescriptionText
-                style={{
-                  marginTop: '13px',
-                }}
-              >
-                None
-              </TaskDescriptionText>
-            </>
-          )}
-        </TaskSectionDisplayDiv>
-        <TaskSectionDisplayDiv>
-          <TaskSectionDisplayLabel
-            style={{
-              marginRight: '4px',
-            }}
-          >
-            <FileIcon />
-            <TaskSectionDisplayText>Files</TaskSectionDisplayText>
-          </TaskSectionDisplayLabel>
-          <TaskSectionInfoDiv>
-            {mediaUploads?.length > 0 ? (
-              <MediaUploadDiv>
-                {mediaUploads.map((mediaItem, index) => (
-                  <div key={mediaItem?.slug}>
-                    <MediaLinkWrapper>
-                      <div>{index + 1}.</div>
-                      <MediaLink style={textStyle} media={mediaItem} />
-                    </MediaLinkWrapper>
-                    <SafeImage
-                      style={{
-                        width: '100%',
-                        borderRadius: '6px',
-                        border: '0.5px solid #B8B8B8',
-                      }}
-                      src={mediaItem?.slug}
-                    />
-                  </div>
-                ))}
-              </MediaUploadDiv>
-            ) : (
-              <TaskDescriptionText style={{ marginTop: '5px' }}>None</TaskDescriptionText>
-            )}
-          </TaskSectionInfoDiv>
-        </TaskSectionDisplayDiv>
+
+        <SubmissionDetails description={submission?.description} links={submission?.links} media={submission?.media} />
 
         {(isCreator || canReview) && (
           <>
