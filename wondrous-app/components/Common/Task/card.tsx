@@ -283,6 +283,7 @@ export const TaskCard = ({
           <ToggleBoardPrivacyIcon
             style={{
               width: task?.assigneeId ? '40px' : 'auto',
+              marginRight: '0',
             }}
             isPrivate={task?.privacyLevel !== PRIVACY_LEVEL.public}
             tooltipTitle={task?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}

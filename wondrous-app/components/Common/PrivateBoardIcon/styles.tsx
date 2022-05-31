@@ -21,7 +21,9 @@ export const PrivateBoardIconPopper = styled(Popper)`
 `;
 
 export const PrivateBoardIconPopperWrapper = styled(Box)`
-  width: 78px;
+  width: auto;
+  padding-left: 4px;
+  padding-right: 4px;
   height: 28px;
   border-radius: 4px;
   background: #363636;
