@@ -96,8 +96,8 @@ const ContributorTaskRowElement = (props) => {
   return (
     <ContributorTaskModalRow key={index}>
       <>
-        {contributorTask?.profilePicture ? (
-          <SafeImage src={contributorTask?.profilePicture} style={UserRowPictureStyles} />
+        {contributorTask?.assigneeProfilePicture ? (
+          <SafeImage src={contributorTask?.assigneeProfilePicture} style={UserRowPictureStyles} />
         ) : (
           <DefaultUserImage style={UserRowPictureStyles} />
         )}
