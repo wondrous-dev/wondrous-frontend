@@ -40,6 +40,11 @@ export const CreateModalOverlay = styled(Modal)`
   scrollbar-width: none; /* Firefox */
 `;
 
+export const CreateFormModalOverlay = styled(CreateModalOverlay)`
+  height: 99%;
+  z-index: 1;
+`;
+
 export const CreateLayoutsModal = styled(BaseCard)`
   && {
     display: flex;
@@ -645,7 +650,7 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
     height: 30px;
 
     &::placeholder {
-      color: #C4C4C4;
+      color: #c4c4c4;
       opacity: 1;
     }
   }

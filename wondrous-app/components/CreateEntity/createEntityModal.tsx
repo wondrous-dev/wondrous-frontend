@@ -962,7 +962,7 @@ const CreateLayoutBaseModal = (props) => {
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const creating =
     createTaskLoading || createTaskProposalLoading || createMilestoneLoading || createBountyLoading || createPodLoading;
-
+  console.log('pods ->', pods);
   return (
     <CreateFormBaseModal isPod={isPod}>
       <CreateFormBaseModalHeaderWrapper>

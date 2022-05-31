@@ -175,9 +175,13 @@ const SingleDatePicker = ({
       maxWidth={300}
       width={focusedInput ? 300 : 'default'}
       ref={datePickerRef}
+      sx={{
+        margin: 0,
+      }}
     >
       <TextField
         placeholder="Choose date"
+        fullWidth={true}
         InputProps={{
           readOnly: true,
           startAdornment: (
@@ -205,7 +209,7 @@ const SingleDatePicker = ({
       />
 
       {focusedInput && (
-        <Box sx={styles.mainContainer}>
+        <Box sx={{ ...styles.mainContainer, zIndex: 9999 }}>
           <Box sx={{ ...styles.root, ...sx }}>
             <Box sx={styles.inputContainer}>
               <TextField

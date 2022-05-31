@@ -4,77 +4,74 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Chip from '@mui/material/Chip';
 
 import { White } from '../../theme/colors';
-import {getContrastYIQ} from "utils/colors";
+import { InputAdornment, TextField } from '@mui/material';
 
 export const StyledAutocomplete = styled(Autocomplete).attrs(() => ({
   className: 'MuiAutocomplete-root',
 }))`
   display: flex;
   align-items: center;
-  background: #0f0f0f;
+  background: #141414;
   border-radius: 6px;
-  min-height: 40px;
+  min-height: 32px;
   color: ${White};
+`;
 
-  input {
-    color: #c4c4c4;
-    top: -10px;
-    left: 8px;
+export const TagAutocompletePopper = styled(({ className, ...props }) => {
+  return <StyledAutocomplete {...props} classes={{ paper: className }} />;
+})`
+  .MuiAutocomplete-listbox {
+    border-color: #7a7a7a;
+    max-height: 200px;
+  }
+  .MuiAutocomplete-noOptions {
+    background: #1f1f1f !important;
+    font-family: 'Space Grotesk';
     font-size: 14px;
-    height: 30px;
-
-    &::placeholder {
-      color: #c4c4c4;
-      opacity: 1;
-    }
-  }
-
-  svg {
-    color: #c4c4c4;
-  }
-
-  .MuiAutocomplete-inputRoot {
-    padding: 0 40px;
-  }
-
-  .MuiAutocomplete-popper {
-    background: #0f0f0f;
-  }
-
-  .MuiAutocomplete-endAdornment {
-    top: auto;
+    color: ${White};
+    font-weight: 500;
+    border-color: #7a7a7a;
   }
 `;
 
 export const OptionItem = styled.li`
-  position: relative;
+  && {
+    height: 36px;
+    background: #1f1f1f;
+    font-family: 'Space Grotesk';
+    font-size: 14px;
+    padding: 12px;
+    font-weight: 500;
+  }
 
-  &:before {
+  /* &:before {
     content: '';
     position: absolute;
     left: 0;
     width: 4px;
     height: 100%;
-    background: ${props => props.color || 'transparent'};
-  }
+    background: ${(props) => props.color || 'transparent'};
+  } */
 `;
-
 
 export const StyledChipTag = styled(Chip)`
   &&& {
-    color: ${props => getContrastYIQ(props.background)};
-    background: ${props => props.background};
+    background: #4000b5;
     border: 0;
-    border-radius: 6px;
-    height: 25px;
-    margin-right: 6px;
-    
+    border-radius: 4px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+
     > span {
-      color: ${props => getContrastYIQ(props.background)};
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 13px;
+      font-family: 'Space Grotesk';
     }
-    
+
     &:hover {
-      background: ${props => props.background};
+      background: ${(props) => props.background};
       opacity: 0.8;
     }
   }
@@ -85,20 +82,50 @@ export const StyledChipTag = styled(Chip)`
     padding: 0 10px;
   }
 
-  .MuiChip-icon {
+  .MuiChip-deleteIcon {
     color: #ffffff;
-    font-weight: bold;
+    font-size: 13px;
+    font-weight: 400;
+    :hover {
+      color: #ffffff;
+    }
   }
 `;
 
-export const LeftInputAdornment = styled.div`
-  left: 16px;
-  position: absolute;
-  display: flex;
+export const TagsTextField = styled(TextField)`
+  && {
+    .MuiOutlinedInput-root {
+      padding: 6px;
+      color: White;
+      font-family: 'Space Grotesk';
+      font-size: 13px;
+      font-weight: 500;
+      color: #c4c4c4;
+      background: inherit;
+      gap: 6px;
+
+      .MuiOutlinedInput-notchedOutline {
+        border: none;
+      }
+      .MuiOutlinedInput-input {
+        min-width: 100px;
+        padding: 0;
+        margin: 0;
+
+        display: ${({ disabled }) => disabled && `none`};
+      }
+    }
+    .MuiAutocomplete-hasPopupIcon {
+      padding: 0;
+    }
+  }
 `;
 
-export const RightInputAdornment = styled.div`
-  right: 16px;
-  position: absolute;
-  display: flex;
+export const TagsChipWrapper = styled.div`
+  display: ${(props) => (props.children ? 'flex' : 'none')};
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
 `;
+
+export const TagsInputAdornment = styled(InputAdornment)``;

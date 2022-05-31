@@ -27,7 +27,7 @@ export const TextInput = (props) => {
     return inputProps?.list.filter((user) => user?.username?.startsWith(query));
   };
 
-  const style = {
+  const style = props.style ?? {
     textarea: {
       outline: 'none',
     },
@@ -49,31 +49,31 @@ export const TextInput = (props) => {
       },
       item: {},
     },
+    ...{
+      input: {
+        overflow: 'auto',
+        color: White,
+        height: '100px',
+        marginBottom: '16px',
+        borderRadius: '6px',
+        padding: '12px',
+      },
+    },
+    ...props?.style,
   };
 
   return (
     <MentionsInput
+      {...props}
+      style={style}
       value={inputProps?.content}
       onChange={handleChange}
-      {...props}
-      style={{
-        ...props?.style,
-        ...style,
-        ...{
-          input: {
-            overflow: 'auto',
-            color: White,
-            height: '100px',
-            marginBottom: '16px',
-            borderRadius: '6px',
-            padding: '12px',
-          },
-        },
-      }}
       onKeyDown={inputProps?.keyDownHandler}
+      minRows={inputProps?.minRows}
     >
       <Mention
         trigger="@"
+        open={true}
         data={fetchData}
         displayTransform={(id, display) => `@${display}`}
         regex={/@\[(.*?)]\((.*?)\)/}

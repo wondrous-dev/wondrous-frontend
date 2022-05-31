@@ -663,8 +663,8 @@ export const ProposalCardFooter = styled.div`
 `;
 
 export const Tag = styled.div`
-  color: ${(props) => getContrastYIQ(props.color)};
-  background: ${(props) => props.color};
+  /* color: ${(props) => getContrastYIQ(props.color)};
+  background: ${(props) => props.color}; */
   border-radius: 4px;
   padding: 2px 6px;
   margin: 5px 0;
