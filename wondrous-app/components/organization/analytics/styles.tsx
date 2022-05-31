@@ -3,7 +3,7 @@ import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 
 import { GradientMidnightDiagonal, GradientMidnightVertical } from 'components/Common/gradients';
 import { TextField, Typography } from '@material-ui/core';
-import { White } from 'theme/colors';
+import { White, Grey250 } from 'theme/colors';
 import { StyledDatePicker } from 'components/Common/DatePicker/styles';
 import { Button } from 'components/Common/button';
 import { PaymentModal } from 'components/Common/Payment/styles';
@@ -184,4 +184,35 @@ export const PayContributorButton = styled(Button)`
       cursor: not-allowed;
     }
   }
+`;
+
+export const TableCellText = styled(Typography)`
+  && {
+    color: ${White};
+    font-size: 14px;
+    text-align: center;
+  }
+`;
+
+export const PaymentPendingTypography = styled(Typography)`
+  && {
+    font-family: Space Grotesk;
+    color: #ffff;
+    font-size: 16px;
+  }
+`;
+
+export const ExplainerText = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 14px;
+    font-weight: 400;
+    color: ${Grey250};
+    margin-top: 12px;
+  }
+`;
+
+export const PayOptionButtonWrapper = styled.div`
+  margin-top: 32px;
+  display: flex;
 `;

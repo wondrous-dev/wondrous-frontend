@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ethers, utils } from 'ethers';
-import DropdownSelect from '../DropdownSelect/dropdownSelect';
+import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
 import { CircularProgress } from '@material-ui/core';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
@@ -17,18 +17,12 @@ import {
 import { SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk';
 import { SafeMultisigTransactionEstimateResponse } from '@gnosis.pm/safe-service-client';
 import { useWonderWeb3 } from 'services/web3';
-import { ErrorText } from '..';
+import { ErrorText } from '../../Common';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PaymentPendingTypography } from './styles';
 import { usePaymentModal } from 'utils/hooks';
-import {
-  GET_PAYMENTS_FOR_ORG,
-  GET_PAYMENTS_FOR_POD,
-  GET_UNPAID_SUBMISSIONS_FOR_ORG,
-  GET_UNPAID_SUBMISSIONS_FOR_POD,
-} from 'graphql/queries/payment';
 import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME } from 'utils/web3Constants';
-import { constructGnosisRedirectUrl } from './SingleWalletPayment';
+import { constructGnosisRedirectUrl } from 'components/Common/Payment/SingleWalletPayment';
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {

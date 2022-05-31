@@ -20,6 +20,7 @@ import ParcelIcon from 'components/Icons/parcelIcon';
 export const EXPORT_PAYMENT_CSV_TYPE = {
   UTOPIA: 'utopia',
   PARCEL: 'parcel',
+  PLAIN: 'plain'
 };
 
 export const ENTITIES_UI_ELEMENTS = {
@@ -33,10 +34,10 @@ export const ENTITIES_UI_ELEMENTS = {
     color: 'white',
     label: 'Parcel',
   },
-  other: {
+  plain: {
     icon: <></>,
     color: 'white',
-    label: 'Other',
+    label: 'Plain (Full info)',
   },
 };
 
@@ -68,10 +69,18 @@ const CSVModal = (props) => {
                   toTime,
                   isPod,
                 });
-              } else {
+              } else if (key === EXPORT_PAYMENT_CSV_TYPE.PARCEL) {
                 exportPaymentCSV({
                   paymentsData,
                   exportCSVType: EXPORT_PAYMENT_CSV_TYPE.PARCEL,
+                  fromTime,
+                  toTime,
+                  isPod,
+                });
+              } else if (key === EXPORT_PAYMENT_CSV_TYPE.PLAIN) {
+                exportPaymentCSV({
+                  paymentsData,
+                  exportCSVType: EXPORT_PAYMENT_CSV_TYPE.PLAIN,
                   fromTime,
                   toTime,
                   isPod,

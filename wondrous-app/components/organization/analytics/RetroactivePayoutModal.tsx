@@ -25,8 +25,7 @@ import {
 } from '../../Table/styles';
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
-import { StyledCheckbox, TableCellText } from './styles';
-import { White, Grey800 } from '../../../theme/colors';
+import { TableCellText } from './styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
 import { GET_SUBMISSIONS_PAYMENT_INFO } from 'graphql/queries/payment';
@@ -38,7 +37,7 @@ import { useRouter } from 'next/router';
 import { DAOIcon } from '../../Icons/dao';
 import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { OfflinePayment } from '../../Common/Payment/OfflinePayment/OfflinePayment';
-import { BatchWalletPayment } from '../../Common/Payment/BatchWalletPayment';
+import { BatchRetroactivePayment } from './BatchRetroactivePayment';
 import Link from 'next/link';
 import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { cutString } from 'utils/helpers';
@@ -56,10 +55,13 @@ const imageStyle = {
   marginRight: '8px',
 };
 
-export const BatchPayModal = (props) => {
-  const { podId, orgId, open, handleClose, payoutData, chain } = props;
+export const RetroactivePayoutModal = (props) => {
+  const { podId, orgId, open, handleClose, paymentsData, chain } = props;
   const router = useRouter();
   const [wallets, setWallets] = useState([]);
+
+  const { contributorTaskData, userToPaymentMethod, userToRewardAmount } = paymentsData;
+  const contributorData = contributorTaskData?.filter((contributor) => !!contributor?.assigneeId && contributor?.assigneeWallet);
   const [getOrgWallet, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_WALLET, {
     onCompleted: (data) => {
       setWallets(data?.getOrgWallet);
@@ -120,43 +122,42 @@ export const BatchPayModal = (props) => {
         <PaymentTitleDiv>
           <PaymentTitleTextDiv>
             <PaymentTitleText>Batch pay</PaymentTitleText>
-            <PaymentDescriptionText>Pay the following submissions</PaymentDescriptionText>
+            <PaymentDescriptionText>Pay the following contributors</PaymentDescriptionText>
           </PaymentTitleTextDiv>
         </PaymentTitleDiv>
         <StyledTableContainer
           style={{
-            marginLeft: '-3%',
-            width: '110%',
+            width: '100%',
           }}
         >
           <StyledTable>
             <StyledTableHead>
               <StyledTableRow>
-                <StyledTableCell align="center" width={'20%'}>
+              <StyledTableCell align="center" width={'33%'}>
                   Receipient
                 </StyledTableCell>
-                <StyledTableCell align="center" width={'20%'}>
-                  Payout
+                <StyledTableCell align="center" width={'33%'}>
+                  Address
                 </StyledTableCell>
-                <StyledTableCell align="center" width="20%">
-                  Deliverable
+                <StyledTableCell align="center" width={'33%'}>
+                  Payout
                 </StyledTableCell>
               </StyledTableRow>
             </StyledTableHead>
             <StyledTableBody>
-              {unpaidSubmissions &&
-                Object.keys(unpaidSubmissions).map((key, index) => {
-                  const submission = unpaidSubmissions[key];
-                  const taskHref = orgId
-                    ? `/organization/${orgId}/boards?task=${submission.taskId}`
-                    : `/pod/${podId}/boards?task=${submission.taskId}`;
-
+              {contributorData &&
+                Object.keys(contributorData).map((key, index) => {
+                  const contributor = contributorData[key];
+                  const assigneeId = contributor?.assigneeId;
+                  const paymentMethod = userToPaymentMethod[assigneeId];
+                  const paymentAmount = userToRewardAmount[assigneeId] || 0;     
+       
                   return (
                     <StyledTableRow
                       style={{
                         width: '150%',
                       }}
-                      key={submission?.id}
+                      key={contributor?.assigneeId}
                     >
                       <StyledTableCell>
                         <div
@@ -166,12 +167,23 @@ export const BatchPayModal = (props) => {
                             marginLeft: '8px',
                           }}
                         >
-                          {submission?.payeeProfilePicture ? (
-                            <SafeImage src={submission?.payeeProfilePicture} style={imageStyle} />
+                          {contributor?.assigneeProfilePicture ? (
+                            <SafeImage src={contributor?.assigneeProfilePicture} style={imageStyle} />
                           ) : (
                             <DefaultUserImage style={imageStyle} />
                           )}
-                          <TableCellText>{submission?.payeeUsername}</TableCellText>
+                          <TableCellText>{contributor?.assigneeUsername}</TableCellText>
+                        </div>
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            marginLeft: '8px',
+                          }}
+                        >
+                          <TableCellText>{contributor?.assigneeWallet?.substring(0, 10)}...</TableCellText>
                         </div>
                       </StyledTableCell>
                       <StyledTableCell
@@ -187,7 +199,7 @@ export const BatchPayModal = (props) => {
                           <IconContainer>
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <SafeImage
-                              src={submission?.icon}
+                              src={contributor?.icon}
                               style={{
                                 width: '24px',
                                 height: '24px',
@@ -195,22 +207,9 @@ export const BatchPayModal = (props) => {
                             />
                           </IconContainer>
                           <CompensationAmount>
-                            {submission?.amount} {submission?.symbol}
+                            {paymentAmount} {paymentMethod?.symbol}
                           </CompensationAmount>
                         </CompensationPill>
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        <Link href={taskHref}>
-                          <a
-                            target="_blank"
-                            rel="noreferrer"
-                            style={{
-                              color: White,
-                            }}
-                          >
-                            {cutString(submission?.taskTitle, 30)}
-                          </a>
-                        </Link>
                       </StyledTableCell>
                     </StyledTableRow>
                   );
@@ -220,14 +219,12 @@ export const BatchPayModal = (props) => {
         </StyledTableContainer>
 
         <PaymentMethodWrapper>
-          <BatchWalletPayment
+          <BatchRetroactivePayment
             orgId={orgId}
             podId={podId}
-            unpaidSubmissions={unpaidSubmissions}
-            submissionIds={submissionIds}
+            payoutData={paymentsData}
             wallets={wallets}
             chain={chain}
-            submissionsPaymentInfo={submissionsPaymentInfo}
           />
         </PaymentMethodWrapper>
       </PaymentModal>
