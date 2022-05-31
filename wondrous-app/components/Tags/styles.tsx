@@ -71,8 +71,17 @@ export const StyledChipTag = styled(Chip)`
     }
 
     &:hover {
-      background: ${(props) => props.background};
       opacity: 0.8;
+      background: #4000b5;
+    }
+
+    .MuiChip-deleteIcon {
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 400;
+      :hover {
+        color: #ffffff;
+      }
     }
   }
 
@@ -80,15 +89,6 @@ export const StyledChipTag = styled(Chip)`
     color: #ffffff;
     font-size: 15px;
     padding: 0 10px;
-  }
-
-  .MuiChip-deleteIcon {
-    color: #ffffff;
-    font-size: 13px;
-    font-weight: 400;
-    :hover {
-      color: #ffffff;
-    }
   }
 `;
 
