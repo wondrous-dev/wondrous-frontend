@@ -107,7 +107,7 @@ import {
 import { UPDATE_TASK_PROPOSAL_ASSIGNEE } from 'graphql/mutations/taskProposal';
 import { GET_PREVIEW_FILE } from 'graphql/queries/media';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
-import { TaskSubmissionContent } from './submission';
+import { TaskSubmissionContent } from './TaskSubmissionContent';
 import {
   GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_SUBMISSIONS,

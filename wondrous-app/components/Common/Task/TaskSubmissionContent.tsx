@@ -42,7 +42,7 @@ export const TaskSubmissionContent = (props) => {
 
   const router = useRouter();
   const [submissionToEdit, setSubmissionToEdit] = useState(null);
-  const [sendRequest, setSendRequest] = useState(null);
+  const [requestChanges, setRequestChanges] = useState(null);
   const [moveProgressButton, setMoveProgressButton] = useState(true);
   const taskStatus = fetchedTask?.status;
   const fetchedTaskSubmissionsLength = fetchedTaskSubmissions?.length;
@@ -154,18 +154,20 @@ export const TaskSubmissionContent = (props) => {
       />
     );
   }
-  if (makeSubmission && sendRequest) {
+  if (requestChanges) {
     return (
       <TaskSubmissionForm
         setFetchedTaskSubmissions={setFetchedTaskSubmissions}
         cancelSubmissionForm={() => {
           setMakeSubmission(false);
-          setSendRequest(null);
+          setRequestChanges(null);
         }}
         fetchedTaskSubmissions={fetchedTaskSubmissions}
         orgId={orgId}
+        fetchedTask={fetchedTask}
         taskId={fetchedTask?.id}
-        sendRequest={sendRequest}
+        submission={requestChanges}
+        requestChanges
       />
     );
   }
@@ -203,7 +205,7 @@ export const TaskSubmissionContent = (props) => {
             {fetchedTaskSubmissions?.map((taskSubmission) => {
               return (
                 <SubmissionItem
-                  setSendRequest={setSendRequest}
+                  setRequestChanges={setRequestChanges}
                   setMakeSubmission={setMakeSubmission}
                   setSubmissionToEdit={setSubmissionToEdit}
                   key={taskSubmission?.id}

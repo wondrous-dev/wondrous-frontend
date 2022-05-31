@@ -42,7 +42,7 @@ const SubmissionItem = (props) => {
   const {
     submission,
     setMakeSubmission,
-    setSendRequest,
+    setRequestChanges,
     setSubmissionToEdit,
     canReview,
     fetchedTask,
@@ -162,30 +162,7 @@ const SubmissionItem = (props) => {
       }
     },
   });
-  const [requestChangeTaskSubmission] = useMutation(REQUEST_CHANGE_SUBMISSION, {
-    variables: {
-      submissionId: submission?.id,
-    },
-    onCompleted: () => {
-      // Change status of submission
-      // Change status of submission
-      const newFetchedTaskSubmissions = fetchedTaskSubmissions.map((taskSubmission) => {
-        if (taskSubmission?.id === submission?.id) {
-          return {
-            ...taskSubmission,
-            changeRequestedAt: new Date(),
-          };
-        }
-      });
-      setFetchedTaskSubmissions(newFetchedTaskSubmissions);
-      if (fetchedTask?.type === BOUNTY_TYPE && (orgBoard || podBoard)) {
-        const columns = board?.columns.map((col) =>
-          col.id === submission.taskId ? { ...col, approvedSubmissionsCount: col.approvedSubmissionsCount + 1 } : col
-        );
-        board?.setColumns(columns);
-      }
-    },
-  });
+
   const textStyle = {
     marginLeft: '0',
     maxWidth: '500px',
@@ -344,8 +321,8 @@ const SubmissionItem = (props) => {
                       <ActionButton
                         style={styleActionButton}
                         onClick={() => {
-                          setMakeSubmission(true);
-                          setSendRequest(submission);
+                          // setMakeSubmission(true);
+                          setRequestChanges(submission);
                         }}
                       >
                         Request changes

@@ -6,10 +6,11 @@ import {
   ATTACH_SUBMISSION_MEDIA,
   CREATE_TASK_SUBMISSION,
   REMOVE_SUBMISSION_MEDIA,
+  REQUEST_CHANGE_SUBMISSION,
   UPDATE_TASK_SUBMISSION,
 } from 'graphql/mutations';
 import { transformTaskSubmissionToTaskSubmissionCard } from 'utils/helpers';
-import { ENTITIES_TYPES, TASK_STATUS_IN_PROGRESS, TASK_STATUS_IN_REVIEW } from 'utils/constants';
+import { BOUNTY_TYPE, ENTITIES_TYPES, TASK_STATUS_IN_PROGRESS, TASK_STATUS_IN_REVIEW } from 'utils/constants';
 import { addInReviewItem, removeInProgressTask } from 'utils/board';
 import { GET_ORG_USERS } from 'graphql/queries';
 import {
@@ -51,8 +52,10 @@ const TaskSubmissionForm = (props) => {
     fetchedTaskSubmissions,
     orgId,
     taskId,
+    fetchedTask,
     submissionToEdit,
-    sendRequest,
+    submission,
+    requestChanges,
   } = props;
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
@@ -62,6 +65,24 @@ const TaskSubmissionForm = (props) => {
   const board = orgBoard || podBoard || userBoard;
   const [mediaUploads, setMediaUploads] = useState(transformMediaFormat(submissionToEdit?.media) || []);
   const [descriptionText, setDescriptionText] = useState(submissionToEdit?.description || '');
+  let text = {
+    title: 'Edit submission',
+    submitText: 'Submit edits',
+  };
+
+  if (!submissionToEdit) {
+    if (requestChanges) {
+      text = {
+        title: 'Request changes',
+        submitText: 'Send request',
+      };
+    } else {
+      text = {
+        title: 'Make a submission',
+        submitText: 'Submit for approval',
+      };
+    }
+  }
 
   const [link, setLink] = useState((submissionToEdit?.links && submissionToEdit?.links[0]?.url) || '');
 
@@ -132,6 +153,35 @@ const TaskSubmissionForm = (props) => {
       }
     },
   });
+
+  const [requestChangeTaskSubmission] = useMutation(REQUEST_CHANGE_SUBMISSION, {
+    variables: {
+      submissionId: submission?.id,
+    },
+    onCompleted: () => {
+      // Change status of submission
+      const newFetchedTaskSubmissions = fetchedTaskSubmissions.map((taskSubmission) => {
+        if (taskSubmission?.id === submission?.id) {
+          return {
+            ...taskSubmission,
+            changeRequestedAt: new Date(),
+          };
+        }
+      });
+      setFetchedTaskSubmissions(newFetchedTaskSubmissions);
+      if (fetchedTask?.type === BOUNTY_TYPE && (orgBoard || podBoard)) {
+        const columns = board?.columns.map((col) =>
+          col.id === submission.taskId ? { ...col, approvedSubmissionsCount: col.approvedSubmissionsCount + 1 } : col
+        );
+        board?.setColumns(columns);
+      }
+
+      if (cancelSubmissionForm) {
+        cancelSubmissionForm();
+      }
+    },
+  });
+
   const [attachTaskSubmissionMedia] = useMutation(ATTACH_SUBMISSION_MEDIA);
   const [removeTaskSubmissionMedia] = useMutation(REMOVE_SUBMISSION_MEDIA);
 
@@ -146,9 +196,7 @@ const TaskSubmissionForm = (props) => {
   return (
     <>
       <SubmissionHeaderWrapper>
-        <SubmissionHeader>
-          {submissionToEdit ? 'Edit submission' : sendRequest ? 'Request changes' : 'Make a submission'}
-        </SubmissionHeader>
+        <SubmissionHeader>{text.title}</SubmissionHeader>
       </SubmissionHeaderWrapper>
       <TaskSectionDisplayDiv>
         <TaskSectionDisplayLabel
@@ -357,6 +405,8 @@ const TaskSubmissionForm = (props) => {
                     },
                   },
                 });
+              } else if (requestChanges) {
+                requestChangeTaskSubmission();
               } else {
                 createTaskSubmission({
                   variables: {
@@ -376,8 +426,8 @@ const TaskSubmissionForm = (props) => {
               }
             }}
           >
-            {submissionToEdit ? 'Submit edits' : sendRequest ? 'Send request' : 'Submit for approval'}
-            {sendRequest && (
+            {text.submitText}
+            {requestChanges && (
               <InProgressIcon
                 style={{
                   width: '28px',
