@@ -36,6 +36,7 @@ import {
   CreateEntityBody,
   CreateEntityCancelButton,
   CreateEntityCreateTaskButton,
+  CreateEntityDefaultDaoImage,
   CreateEntityDefaultUserImage,
   CreateEntityDescription,
   CreateEntityDescriptionWrapper,
@@ -51,6 +52,8 @@ import {
   CreateEntityLabelSelectWrapper,
   CreateEntityLabelWrapper,
   CreateEntityOption,
+  CreateEntityOptionImageWrapper,
+  CreateEntityOptionLabel,
   CreateEntityPaymentMethodLabel,
   CreateEntityPaymentMethodOption,
   CreateEntityPaymentMethodSelect,
@@ -449,7 +452,10 @@ const CreateEntityDropdown = (props) => {
         const { imageUrl, label, value } = i;
         return (
           <CreateEntityOption key={value} value={i.value}>
-            {imageUrl ? <SafeImage src={imageUrl} /> : <div />} {label}
+            <CreateEntityOptionImageWrapper>
+              {imageUrl ? <SafeImage src={imageUrl} /> : <CreateEntityDefaultDaoImage />}
+            </CreateEntityOptionImageWrapper>
+            <CreateEntityOptionLabel>{label}</CreateEntityOptionLabel>
           </CreateEntityOption>
         );
       })}

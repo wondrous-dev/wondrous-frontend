@@ -5,6 +5,7 @@ import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import AttachFileIcon from 'components/Icons/attachFile.svg';
 import CloseModalIcon from 'components/Icons/closeModal';
+import { DAOIcon } from 'components/Icons/dao';
 import PlusIcon from 'components/Icons/plus';
 import PointsIcon from 'components/Icons/pointsIcon.svg';
 import SingleDatePicker from 'components/SingleDatePicker';
@@ -112,22 +113,10 @@ export const CreateEntitySelect = (props) => {
 
 export const CreateEntityOption = styled(OptionUnstyled)`
   list-style: none;
-  font-family: 'Space Grotesk';
-  font-size: 13px;
-  font-weight: 500;
   height: 34px;
   padding: 6px;
   display: flex;
   align-items: center;
-
-  img,
-  div {
-    margin-right: 6px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50px;
-  }
-
   &:last-of-type {
     border-bottom: none;
   }
@@ -135,6 +124,31 @@ export const CreateEntityOption = styled(OptionUnstyled)`
   :hover {
     cursor: pointer;
     background: rgba(122, 122, 122, 0.2);
+  }
+`;
+
+export const CreateEntityOptionImageWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  img {
+    width: 20px;
+    height: 20px;
+  }
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+export const CreateEntityDefaultDaoImage = styled(DAOIcon)``;
+
+export const CreateEntityOptionLabel = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 13px;
+    font-weight: 500;
+    color: ${White};
+    margin-left: 6px;
   }
 `;
 
@@ -156,13 +170,6 @@ export const CreateEntitySelectRootValueWrapper = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  img,
-  div {
-    margin-right: 6px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50px;
-  }
 `;
 
 export const CreateEntityHeaderWrapper = styled.div`
