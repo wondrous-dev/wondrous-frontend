@@ -80,6 +80,7 @@ import {
   CreateEntityTextfieldPoints,
   CreateEntityTitle,
   MediaUploadDiv,
+  CreateEntityOpenInFullIcon,
 } from './styles';
 
 const formValidationSchema = Yup.object().shape({
@@ -667,8 +668,9 @@ export const CreateEntityModal = (props) => {
   const filteredEligibleReviewers = eligibleReviewers.filter(
     (reviewer) => !form.values.reviewerIds.includes(reviewer.id)
   );
+  const [fullScreen, setFullScreen] = useState(false);
   return (
-    <CreateEntityForm onSubmit={form.handleSubmit}>
+    <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
       <CreateEntityHeader>
         <CreateEntityHeaderWrapper>
           <CreateEntityDropdown
@@ -719,6 +721,9 @@ export const CreateEntityModal = (props) => {
             </>
           )}
         </CreateEntityHeaderWrapper>
+        <CreateEntityHeaderWrapper>
+          <CreateEntityOpenInFullIcon onClick={() => setFullScreen(!fullScreen)} />
+        </CreateEntityHeaderWrapper>
       </CreateEntityHeader>
       <CreateEntityBody>
         <CreateEntityTitle
@@ -728,6 +733,7 @@ export const CreateEntityModal = (props) => {
           name="title"
           placeholder="Enter a title"
           minRows={1}
+          maxRows={3}
           error={form.errors?.title}
         />
         <CreateEntityError>{form.errors?.title}</CreateEntityError>

@@ -18,6 +18,7 @@ import { Red400, White } from 'theme/colors';
 import Arrow from '../../Icons/arrow.svg';
 import PrivacyMembersIcon from '../../Icons/privacyMembers.svg';
 import PrivacyPublicIcon from '../../Icons/privacyPublic.svg';
+import OpenInFullIcon from '../../Icons/openInFull.svg';
 
 export const scrollBarStyles = css`
   :hover {
@@ -48,9 +49,19 @@ export const scrollBarStyles = css`
   }
 `;
 
+const fullScreenStyle = css`
+  max-height: 100vh;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  > :last-child {
+    margin-top: auto;
+  }
+`;
+
 export const CreateEntityForm = styled.form`
-  min-height: 50%;
-  max-height: 90%;
+  max-height: 95vh;
   width: 561px;
   border-radius: 6px;
   overflow-y: auto;
@@ -58,6 +69,12 @@ export const CreateEntityForm = styled.form`
   &::-webkit-scrollbar {
     display: none;
   }
+  ${({ fullScreen }) => {
+    if (fullScreen) {
+      return fullScreenStyle;
+    }
+  }}
+  transition: all 0.1s linear;
 `;
 
 export const CreateEntityHeader = styled.div`
@@ -193,8 +210,24 @@ export const CreateEntitySelectRootValueWrapper = styled.div`
 export const CreateEntityHeaderWrapper = styled.div`
   display: flex;
   align-items: center;
-  > * {
-    margin-right: 12px;
+  gap: 12px;
+`;
+
+export const CreateEntityOpenInFullIcon = styled((props) => (
+  <div {...props}>
+    <OpenInFullIcon />
+  </div>
+))`
+  width: 32px;
+  height: 32px;
+  background: rgba(49, 49, 49, 0.3);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  :hover {
+    background: rgba(49, 49, 49, 1);
+    cursor: pointer;
   }
 `;
 
@@ -226,6 +259,7 @@ export const CreateEntityTitle = styled(TextareaAutosize)`
   :focus {
     outline: none;
   }
+  ${scrollBarStyles}
 `;
 
 export const CreateEntityDescription = styled((props) => {
@@ -234,7 +268,7 @@ export const CreateEntityDescription = styled((props) => {
 
 export const CreateEntityDescriptionWrapper = styled.div`
   // This to override the default style of TextInput
-  // This is a temporary solution until there's a standard design is created
+  // This is a temporary solution until a standard design is created
   ${UserSuggestionWrapper} {
     background-color: #1f1f1f;
     box-shadow: none;
@@ -264,6 +298,9 @@ export const CreateEntityDescriptionWrapper = styled.div`
       min-height: 50px;
       max-height: 100px;
       overflow: auto;
+      ::-webkit-scrollbar {
+        display: none;
+      }
       > ${CreateEntityDescription}__input {
         background: transparent;
         font-family: 'Space Grotesk';
