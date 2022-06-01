@@ -40,6 +40,7 @@ import {
   CreateEntityDescription,
   CreateEntityDescriptionWrapper,
   CreateEntityDivider,
+  CreateEntityDueDate,
   CreateEntityError,
   CreateEntityForm,
   CreateEntityHeader,
@@ -924,11 +925,12 @@ export const CreateEntityModal = (props) => {
           </CreateEntityLabelWrapper>
           <CreateEntitySelectWrapper>
             {form.values.dueDate !== null && (
-              <SingleDatePicker
+              <CreateEntityDueDate
                 setValue={(date) => form.setFieldValue('dueDate', date)}
                 setRecurrenceType={setRecurrenceType}
                 setRecurrenceValue={setRecurrenceValue}
                 hideRecurring={true}
+                handleClose={() => form.setFieldValue('dueDate', null)}
               />
             )}
             {form.values.dueDate === null && (

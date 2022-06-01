@@ -1,6 +1,5 @@
 const styles = {
   root: {
-    position: 'absolute',
     '& .DayPicker': {
       background: '#1D1D1D',
     },
@@ -38,7 +37,6 @@ const styles = {
     },
   },
   inputContainer: {
-    position: 'relative',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -71,7 +69,6 @@ const styles = {
       borderRadius: '6px',
     },
     '& .MuiOutlinedInput-root': {
-      height: '32px',
       border: '1px solid #4B4B4B',
       paddingLeft: 0,
 
@@ -110,7 +107,6 @@ const styles = {
       borderRadius: '6px',
     },
     '& .MuiOutlinedInput-root': {
-      height: '32px',
       backgroundColor: '#0F0F0F',
       paddingLeft: 0,
       '&.Mui-focused fieldset': {

@@ -6,6 +6,7 @@ import AttachFileIcon from 'components/Icons/attachFile.svg';
 import CloseModalIcon from 'components/Icons/closeModal';
 import PlusIcon from 'components/Icons/plus';
 import PointsIcon from 'components/Icons/pointsIcon.svg';
+import SingleDatePicker from 'components/SingleDatePicker';
 import { TextInput } from 'components/TextInput';
 import { UserSuggestionTypography, UserSuggestionWrapper } from 'components/TextInput/styles';
 import React from 'react';
@@ -797,5 +798,47 @@ export const CreateEntityError = styled(Typography)`
     font-size: 13px;
     font-family: 'Space Grotesk';
     font-weight: 400;
+  }
+`;
+
+export const CreateEntityDueDate = styled(({ className, ...props }) => (
+  <SingleDatePicker {...props} className={className} />
+))`
+  // This is to override the default styles of the SingleDatePicker
+  && {
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    > .MuiFormControl-root {
+      width: 100%;
+      > .MuiOutlinedInput-root {
+        height: 32px;
+        font-size: 13px;
+        border: none;
+        outline: none;
+      }
+    }
+    + div {
+      // Popper
+      width: 370px;
+      z-index: 999;
+      > .MuiBox-root {
+        > .MuiBox-root {
+          background: #1d1d1d;
+          > .MuiBox-root {
+            > .MuiFormControl-root {
+              > .MuiOutlinedInput-root {
+                height: 32px;
+                font-size: 13px;
+              }
+            }
+          }
+          > .DayPicker {
+            width: inherit;
+            margin: 0 auto;
+          }
+        }
+      }
+    }
   }
 `;

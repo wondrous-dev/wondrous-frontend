@@ -26,6 +26,7 @@ import DatePickerNavButton from 'components/DatePickerNavButton';
 import CalendarDay from 'components/CalendarDay';
 
 import styles from './SingleDatePickerStyles';
+import { Popper } from '@mui/material';
 
 interface SingleDatePickerProps {
   sx?: object;
@@ -36,6 +37,8 @@ interface SingleDatePickerProps {
   recurrenceValue?: any;
   value?: any;
   hideRecurring?: boolean;
+  className?: string;
+  handleClose?(): void;
 }
 
 const SingleDatePicker = ({
@@ -47,9 +50,10 @@ const SingleDatePicker = ({
   recurrenceValue,
   setRecurrenceValue,
   hideRecurring,
+  className,
+  handleClose,
 }: SingleDatePickerProps) => {
   const [date, setDate] = useState(DEFAULT_SINGLE_DATEPICKER_VALUE);
-  const [focusedInput, setFocusedInput] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const [repeatType, setRepeatType] = useState();
   const [repeatValue, setRepeatValue] = useState();
@@ -161,9 +165,27 @@ const SingleDatePicker = ({
     setShowOptions(null);
   };
 
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClickAway = () => {
+    setAnchorEl(null);
+  };
+
+  const handleClick = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+  const open = Boolean(anchorEl);
+
   return (
-    <ClickAwayListener onClickAway={() => setFocusedInput(false)} mouseEvent={'onMouseDown'}>
-      <Box mt={4} display="flex" flexDirection="column" maxWidth={300} width={focusedInput ? 300 : 'default'}>
+    <>
+      <Box
+        className={className}
+        mt={4}
+        display="flex"
+        flexDirection="column"
+        maxWidth={300}
+        width={open ? 300 : 'default'}
+      >
         <TextField
           placeholder="Choose date"
           InputProps={{
@@ -179,7 +201,8 @@ const SingleDatePicker = ({
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    setFocusedInput(false);
+                    setAnchorEl(null);
+                    handleClose?.();
                   }}
                 >
                   <Image src="/images/icons/cancel.svg" width={9} height={9} alt="calendar icon" />
@@ -188,11 +211,12 @@ const SingleDatePicker = ({
             ),
           }}
           value={displayValue}
-          onClick={() => setFocusedInput(true)}
-          sx={focusedInput ? styles.mainTextfield : styles.mainTextfieldInactive}
+          onClick={handleClick}
+          sx={open ? styles.mainTextfield : styles.mainTextfieldInactive}
         />
-
-        {focusedInput && (
+      </Box>
+      <ClickAwayListener onClickAway={handleClickAway} mouseEvent={'onMouseDown'}>
+        <Popper open={open} anchorEl={anchorEl} placement="bottom" disablePortal={true}>
           <Box sx={styles.mainContainer}>
             <Box sx={{ ...styles.root, ...sx }}>
               <Box sx={styles.inputContainer}>
@@ -218,7 +242,7 @@ const SingleDatePicker = ({
                 initialDate={date}
                 id="your_unique_id"
                 onDateChange={(date) => handleDateChange(date)}
-                focusedInput={focusedInput}
+                focusedInput={open}
                 onFocusChange={() => {}}
                 numberOfMonths={1}
                 displayFormat="MM/DD/yyyy"
@@ -259,9 +283,9 @@ const SingleDatePicker = ({
               />
             </Box>
           </Box>
-        )}
-      </Box>
-    </ClickAwayListener>
+        </Popper>
+      </ClickAwayListener>
+    </>
   );
 };
 
