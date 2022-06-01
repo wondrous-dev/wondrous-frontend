@@ -2,6 +2,7 @@ import { ButtonUnstyled, OptionUnstyled, PopperUnstyled, SelectUnstyled, Textare
 import { Autocomplete, Input, InputAdornment, TextField, Typography } from '@mui/material';
 import { Button } from 'components/Common/button';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
+import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import AttachFileIcon from 'components/Icons/attachFile.svg';
 import CloseModalIcon from 'components/Icons/closeModal';
 import PlusIcon from 'components/Icons/plus';
@@ -458,8 +459,7 @@ export const CreateEntityAutocompletePopperRenderInputAdornment = styled(InputAd
     cursor: pointer;
   }
 
-  img,
-  div {
+  img {
     width: 24px;
     height: 24px;
     border-radius: 50px;
@@ -487,12 +487,6 @@ export const CreateEntityAutocompleteOption = styled.li`
   }
 
   img {
-    width: 24px;
-    height: 24px;
-    border-radius: 50px;
-  }
-
-  div {
     width: 24px;
     height: 24px;
     border-radius: 50px;
@@ -840,5 +834,13 @@ export const CreateEntityDueDate = styled(({ className, ...props }) => (
         }
       }
     }
+  }
+`;
+
+export const CreateEntityDefaultUserImage = styled(DefaultUserImage)`
+  && {
+    width: 24px;
+    height: 24px;
+    margin: 0;
   }
 `;

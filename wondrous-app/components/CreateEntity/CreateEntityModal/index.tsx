@@ -1,7 +1,6 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
-import SingleDatePicker from 'components/SingleDatePicker';
 import Tooltip from 'components/Tooltip';
 import { useFormik } from 'formik';
 import { CREATE_LABEL } from 'graphql/mutations/org';
@@ -37,6 +36,7 @@ import {
   CreateEntityBody,
   CreateEntityCancelButton,
   CreateEntityCreateTaskButton,
+  CreateEntityDefaultUserImage,
   CreateEntityDescription,
   CreateEntityDescriptionWrapper,
   CreateEntityDivider,
@@ -787,7 +787,11 @@ export const CreateEntityModal = (props) => {
                           placeholder="Enter username..."
                           startAdornment={
                             <CreateEntityAutocompletePopperRenderInputAdornment position="start">
-                              {reviewer?.profilePicture ? <SafeImage src={reviewer.profilePicture} /> : <div />}
+                              {reviewer?.profilePicture ? (
+                                <SafeImage src={reviewer.profilePicture} />
+                              ) : (
+                                <CreateEntityDefaultUserImage />
+                              )}
                             </CreateEntityAutocompletePopperRenderInputAdornment>
                           }
                           endAdornment={
@@ -819,7 +823,11 @@ export const CreateEntityModal = (props) => {
                           }
                         }}
                       >
-                        {option?.profilePicture ? <SafeImage src={option?.profilePicture} /> : <div />}
+                        {option?.profilePicture ? (
+                          <SafeImage src={option?.profilePicture} />
+                        ) : (
+                          <CreateEntityDefaultUserImage />
+                        )}
                         <CreateEntityAutocompleteOptionTypography>
                           {option?.label}
                         </CreateEntityAutocompleteOptionTypography>
@@ -872,7 +880,11 @@ export const CreateEntityModal = (props) => {
                       placeholder="Enter username..."
                       startAdornment={
                         <CreateEntityAutocompletePopperRenderInputAdornment position="start">
-                          {assignee?.profilePicture ? <SafeImage src={assignee.profilePicture} /> : <div />}
+                          {assignee?.profilePicture ? (
+                            <SafeImage src={assignee.profilePicture} />
+                          ) : (
+                            <CreateEntityDefaultUserImage />
+                          )}
                         </CreateEntityAutocompletePopperRenderInputAdornment>
                       }
                       endAdornment={
@@ -897,7 +909,11 @@ export const CreateEntityModal = (props) => {
                         }
                       }}
                     >
-                      {option?.profilePicture ? <SafeImage src={option?.profilePicture} /> : <div />}
+                      {option?.profilePicture ? (
+                        <SafeImage src={option?.profilePicture} />
+                      ) : (
+                        <CreateEntityDefaultUserImage />
+                      )}
                       <CreateEntityAutocompleteOptionTypography>
                         {option?.label}
                       </CreateEntityAutocompleteOptionTypography>
