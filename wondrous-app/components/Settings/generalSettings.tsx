@@ -408,22 +408,30 @@ export const PodGeneralSettings = () => {
     });
   }
   const handleArchivePodClick = async () => {
+    const confirmed = confirm('Are you sure you want to archive this pod?')
+    if (!confirmed) {
+      return
+    }
     await apollo.mutate({
       mutation: ARCHIVE_POD,
       variables: {
         podId,
       },
+      refetchQueries: [GET_POD_BY_ID]
     });
-    router.reload()
   };
   const handleUnarchivePodClick = async () => {
+    const confirmed = confirm('Are you sure you want to unarchive this pod?')
+    if (!confirmed) {
+      return
+    }
     await apollo.mutate({
       mutation: UNARCHIVE_POD,
       variables: {
         podId,
       },
+      refetchQueries: [GET_POD_BY_ID]
     });
-    router.reload()
   };
   return (
     <GeneralSettingsComponent
