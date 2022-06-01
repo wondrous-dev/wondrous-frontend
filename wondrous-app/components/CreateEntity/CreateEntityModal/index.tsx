@@ -631,6 +631,9 @@ export const CreateEntityModal = (props) => {
   const { podId: routerPodId } = router.query;
   useEffect(() => {
     if (open) {
+      if (router?.pathname.includes('/dashboard') && !form.values.orgId) {
+        form.setFieldValue('orgId', filteredDaoOptions[0].value);
+      }
       if (
         fetchedUserPermissionsContext &&
         board?.orgId in fetchedUserPermissionsContext?.orgPermissions &&
@@ -639,7 +642,7 @@ export const CreateEntityModal = (props) => {
         // If you're only part of one dao then just set that as default
         // TODO: if you are part of the org and you're on that page it should be create on that org
 
-        form.setFieldValue('orgId', board?.orgId || filteredDaoOptions[0].id);
+        form.setFieldValue('orgId', board?.orgId);
       }
 
       if (board?.podId && !form.values.podId) {
@@ -658,6 +661,7 @@ export const CreateEntityModal = (props) => {
     routerPodId,
     form,
     filteredDaoOptions,
+    router,
   ]);
   const permissions = parseUserPermissionContext({
     userPermissionsContext: fetchedUserPermissionsContext,
