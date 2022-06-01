@@ -133,7 +133,7 @@ export const CreateEntityOption = styled(OptionUnstyled)`
   list-style: none;
   height: 34px;
   padding: 6px;
-  display: flex;
+  display: ${({ hide }) => (hide ? 'none' : 'flex')};
   align-items: center;
   &:last-of-type {
     border-bottom: none;

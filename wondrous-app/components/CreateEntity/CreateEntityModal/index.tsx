@@ -450,14 +450,21 @@ const CreateEntityDropdown = (props) => {
     renderValue = CreateEntityDropdownRenderOptions,
     DefaultImageComponent,
   } = props;
+  const dropdownValue = value === null ? 'placeholder' : value;
   return (
     <CreateEntitySelect
       name={name}
       renderValue={renderValue}
       onChange={onChange}
       disabled={options.length == 0}
-      value={value}
+      value={dropdownValue}
     >
+      <CreateEntityOption key={'placeholder'} value={'placeholder'} hide={true}>
+        <CreateEntityOptionImageWrapper>
+          <DefaultImageComponent color={'#474747'} />
+        </CreateEntityOptionImageWrapper>
+        <CreateEntityOptionLabel>Select a pod</CreateEntityOptionLabel>
+      </CreateEntityOption>
       {options.map((i) => {
         const { imageUrl, label, value, color = '' } = i;
         return (
@@ -753,7 +760,6 @@ export const CreateEntityModal = (props) => {
             list: filterOrgUsersForAutocomplete(orgUsersData),
           }}
         >
-          {' '}
           <CreateEntityDescriptionWrapper>
             <CreateEntityDescription placeholder="Enter a description" minRows={4} />
           </CreateEntityDescriptionWrapper>
