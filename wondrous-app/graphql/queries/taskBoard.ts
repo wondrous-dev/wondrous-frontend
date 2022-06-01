@@ -4,9 +4,16 @@ import { TaskCardFragment, TaskProposalCardFragment, TaskSubmissionCardFragment 
 import { PerStatusTaskCountFragment } from '../fragments/taskBoard';
 
 export const GET_ORG_TASK_BOARD_PROPOSALS = gql`
-  query GetOrgTaskBoardProposals($orgId: ID!, $statuses: [String], $podIds: [String], $limit: Int, $offset: Int) {
+  query GetOrgTaskBoardProposals(
+    $orgId: ID!
+    $statuses: [String]
+    $podIds: [String]
+    $limit: Int
+    $offset: Int
+    $labelId: String
+  ) {
     getOrgTaskBoardProposals(
-      input: { orgId: $orgId, statuses: $statuses, podIds: $podIds, limit: $limit, offset: $offset }
+      input: { orgId: $orgId, statuses: $statuses, podIds: $podIds, limit: $limit, offset: $offset, labelId: $labelId }
     ) {
       ...TaskProposalCardFragment
     }

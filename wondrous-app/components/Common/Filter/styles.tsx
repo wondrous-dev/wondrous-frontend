@@ -31,6 +31,7 @@ export const FilterHandle = styled.div`
   padding: 1px;
   background: #1b1b1b;
   border-radius: 6px;
+  border: 0.5px solid #4b4b4b;
 `;
 
 export const FilterHandleInner = styled.div`
@@ -44,13 +45,13 @@ export const FilterHandleInner = styled.div`
   width: 100%;
   height: 38px;
   padding: 10px;
-
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-  background: #1b1b1b;
   cursor: pointer;
   color: white;
   font-size: 14px;
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+  }
 `;
 export const FilterChevronContainer = styled.div`
   display: flex;
@@ -93,9 +94,8 @@ export const FilterBox = styled.div`
   height: fit-content;
 
   padding: 0px 1px 1px 1px;
-
-  background: linear-gradient(180deg, ${Grey75} 3.85%, ${Black97} 101.76%);
-
+  border-radius: 6px;
+  background: #1d1d1d;
   z-index: 100;
 `;
 
@@ -193,20 +193,20 @@ export const FilterItem = styled.div`
   position: relative;
   cursor: pointer;
 
-  ${({ selected, gradient }) =>
-    selected
-      ? `&::before {
+  ${({ selected, gradient }) => `&::before {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: 4px;
-    background: ${gradient || HighlightBlue};
+    background: ${selected ? gradient : ''};
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    padding: 0.8px;
-  }`
-      : ''};
+    padding: 0.3px;
+  }`}
+  &:hover {
+    ${({ selected }) => !selected && '&::before { background: linear-gradient(270deg, #474747 1.17%, #7a7a7a 101%)}'}
+  }
 `;
 
 export const FilterItemIcon = styled.div`

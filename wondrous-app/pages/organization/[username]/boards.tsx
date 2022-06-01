@@ -102,6 +102,7 @@ const useGetOrgTaskBoardTasks = ({
           orgId,
           podIds: filters?.podIds,
           offset: 0,
+          onlyPublic: filters?.onlyPublic === PRIVACY_LEVEL.public,
           statuses: taskBoardStatuses,
           limit: taskBoardLimit,
           labelId: filters?.labelId,
@@ -246,7 +247,6 @@ const useGetOrgTaskBoardProposals = ({
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => PROPOSAL_STATUS_LIST.includes(status))
           : [STATUS_OPEN, STATUS_CHANGE_REQUESTED, STATUS_APPROVED];
-
       getOrgTaskProposals({
         variables: {
           podIds: filters?.podIds,
@@ -254,7 +254,7 @@ const useGetOrgTaskBoardProposals = ({
           statuses: proposalBoardStatuses,
           offset: 0,
           labelId: filters?.labelId,
-          limit: filters?.statuses?.length === 0 || filters?.statuses?.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
+          limit: filters?.statuses?.length === 0 || !filters?.statuses ? LIMIT : 0,
         },
       });
     }
@@ -283,15 +283,12 @@ const useGetOrgTaskBoard = ({
       columns,
       setColumns,
       setOrgTaskHasMore,
-      // podIds,
       userId,
       orgId,
       filters,
-      // statuses,
       entityType,
       setIsLoading,
       search,
-      // labelId,
     }),
     withoutUserId: useGetOrgTaskBoardTasks({
       columns,
@@ -299,15 +296,12 @@ const useGetOrgTaskBoard = ({
       setOrgTaskHasMore,
       boardType,
       orgId,
-      // statuses,
-      // podIds,
+
       userId,
       entityType,
       setIsLoading,
       search,
       filters,
-      // labelId,
-      // date,
     }),
     proposals: useGetOrgTaskBoardProposals({
       listView,
@@ -316,13 +310,11 @@ const useGetOrgTaskBoard = ({
       setColumns,
       setOrgTaskHasMore,
       orgId,
-      // statuses,
-      // podIds,
+
       entityType,
       setIsLoading,
       search,
       filters,
-      // labelId,
     }),
   };
   const { fetchMore } =

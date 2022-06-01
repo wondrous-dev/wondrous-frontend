@@ -149,13 +149,13 @@ const SHARED_FILTER_STATUSES_DATA = {
       id: TASK_STATUS_IN_PROGRESS,
       name: 'In-progress',
       icon: <TaskStatus status={TASK_STATUS_IN_PROGRESS} />,
-      gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
+      gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FFD653 103.12%)',
     },
     {
       id: TASK_STATUS_IN_REVIEW,
       name: 'In-review',
       icon: <TaskStatus status={TASK_STATUS_IN_REVIEW} />,
-      gradient: 'linear-gradient(180deg, #FFFFFF 0%, #00BAFF 100%)',
+      gradient: 'linear-gradient(270deg, #7427FF -11.62%, #00BAFF 103.12%)',
     },
     {
       id: TASK_STATUS_DONE,
@@ -167,29 +167,56 @@ const SHARED_FILTER_STATUSES_DATA = {
       id: TASK_STATUS_ARCHIVED,
       name: 'Archived',
       icon: <TaskStatus status={TASK_STATUS_ARCHIVED} />,
-      gradient: 'linear-gradient(169.47deg, rgba(75, 75, 75, 0.5) 7.84%, rgba(35, 35, 35, 0.5) 108.71%)',
+      gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FFFFFF 103.12%)',
     },
   ],
 };
 
-export const ENTITIES_TYPES_FILTER_STATUSES = (orgData) => {
-  const SHARED_FILTERS = [
-    {
-      name: 'podIds',
-      label: 'Pods',
-      items: [],
-      query: GET_ORG_PODS,
-      variables: { orgId: orgData?.id },
-      icon: CreatePodIcon,
-      multiChoice: true,
+const addPodFilter = (orgId) => [
+  {
+    name: 'podIds',
+    label: 'Pods',
+    items: [],
+    query: GET_ORG_PODS,
+    variables: { orgId },
+    icon: CreatePodIcon,
+    multiChoice: true,
+    mutate: (items) => {
+      return items.map((pod) => ({
+        ...pod,
+        gradient: `linear-gradient(270deg, #7427FF -11.62%, ${pod?.color || 'white'} 103.12%)`,
+        icon: (
+          <CreatePodIcon
+            style={{
+              width: '26px',
+              height: '26px',
+              marginRight: '8px',
+              background: pod?.color,
+              borderRadius: '100%',
+            }}
+          />
+        ),
+      }));
     },
+  },
+];
+
+export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false }) => {
+  const SHARED_FILTERS = [
+    ...(enablePodFilter ? addPodFilter(orgId) : []),
     {
       name: 'labelId',
       label: 'Tags',
       items: [],
       icon: ({ style, ...rest }) => <TagsIcon {...rest} style={{ ...style, padding: '5px' }} viewBox="0 0 14 12" />,
       query: GET_ORG_LABELS,
-      variables: { orgId: orgData?.id },
+      variables: { orgId },
+      mutate: (items) => {
+        return items.map((tag) => ({
+          ...tag,
+          gradient: `linear-gradient(270deg, #7427FF -11.62%, ${tag?.color} 103.12%)`,
+        }));
+      },
     },
     {
       name: 'date',
@@ -217,7 +244,7 @@ export const ENTITIES_TYPES_FILTER_STATUSES = (orgData) => {
       ],
     },
     {
-      name: 'privacy',
+      name: 'onlyPublic',
       label: 'Privacy level',
       icon: ({ style, ...rest }) => <PublicEyeIcon {...rest} style={{ ...style, padding: '4px' }} />,
       items: [
@@ -264,7 +291,48 @@ export const ENTITIES_TYPES_FILTER_STATUSES = (orgData) => {
             },
           ],
         },
-        ...SHARED_FILTERS,
+        ...(enablePodFilter ? addPodFilter(orgId) : []),
+        {
+          name: 'labelId',
+          label: 'Tags',
+          items: [],
+          icon: ({ style, ...rest }) => <TagsIcon {...rest} style={{ ...style, padding: '5px' }} viewBox="0 0 14 12" />,
+          query: GET_ORG_LABELS,
+          variables: { orgId },
+          disabled: true,
+          mutate: (items) => {
+            return items.map((tag) => ({
+              ...tag,
+              gradient: `linear-gradient(270deg, #7427FF -11.62%, ${tag?.color} 103.12%)`,
+            }));
+          },
+        },
+        {
+          name: 'date',
+          label: 'Dates',
+          disabled: true,
+          icon: ({ style, ...rest }) => <CalendarIcon {...rest} style={{ ...style, padding: '5px' }} />,
+          items: [
+            {
+              id: TASK_DATE_OVERDUE,
+              name: 'Overdue',
+              icon: <TaskStatus status={TASK_STATUS_TODO} />,
+              gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
+            },
+            {
+              id: TASK_DATE_DUE_THIS_WEEK,
+              name: 'Due this week',
+              icon: <TaskStatus status={TASK_STATUS_IN_PROGRESS} />,
+              gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
+            },
+            {
+              id: TASK_DATE_DUE_NEXT_WEEK,
+              name: 'Due next week',
+              icon: <TaskStatus status={TASK_STATUS_IN_REVIEW} />,
+              gradient: 'linear-gradient(180deg, #FFFFFF 0%, #00BAFF 100%)',
+            },
+          ],
+        },
       ],
     },
   };

@@ -11,7 +11,6 @@ import { GET_POD_BY_ID } from 'graphql/queries/pod';
 import {
   GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD,
   GET_POD_TASK_BOARD_PROPOSALS,
-  GET_POD_TASK_BOARD_SUBMISSIONS,
   GET_POD_TASK_BOARD_TASKS,
   GET_TASKS_RELATED_TO_USER_IN_POD,
   SEARCH_POD_TASK_BOARD_PROPOSALS,
@@ -20,7 +19,6 @@ import {
 import apollo from 'services/apollo';
 import {
   ORG_POD_COLUMNS,
-  FILTER_STATUSES,
   LIMIT,
   populateTaskColumns,
   ORG_POD_PROPOSAL_COLUMNS,
@@ -32,10 +30,12 @@ import {
   PRIVACY_LEVEL,
   STATUS_OPEN,
   TASK_STATUSES,
-  TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
   ENTITIES_TYPES,
   STATUSES_ON_ENTITY_TYPES,
+  STATUS_CHANGE_REQUESTED,
+  STATUS_APPROVED,
+  PROPOSAL_STATUS_LIST,
 } from 'utils/constants';
 import { PodBoardContext } from 'utils/contexts';
 import _ from 'lodash';
@@ -51,6 +51,9 @@ const useGetPodTaskBoardTasks = ({
   entityType,
   setIsLoading,
   search,
+  labelId,
+  date,
+  onlyPublic,
 }) => {
   const [getPodTaskBoardTasks, { variables, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
@@ -131,6 +134,9 @@ const useGetPodTaskProposals = ({
   setIsLoading,
   setPodTaskHasMore,
   search,
+  labelId,
+  date,
+  onlyPublic,
 }) => {
   const [getPodTaskProposals, { data, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
@@ -167,14 +173,18 @@ const useGetPodTaskProposals = ({
   }, [columns, fetchMore, setPodTaskHasMore]);
 
   useEffect(() => {
+    const proposalBoardStatuses =
+      statuses?.length > 0
+        ? statuses?.filter((status) => PROPOSAL_STATUS_LIST.includes(status))
+        : [STATUS_OPEN, STATUS_CHANGE_REQUESTED, STATUS_APPROVED];
     if (entityType === ENTITIES_TYPES.PROPOSAL && !search)
       getPodTaskProposals({
         variables: {
           input: {
             podId,
-            statuses: [STATUS_OPEN],
+            statuses: proposalBoardStatuses,
             offset: 0,
-            limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
+            limit: statuses.length === 0 || !statuses ? LIMIT : 0,
           },
         },
       });
@@ -189,11 +199,14 @@ const useGetPodTaskBoard = ({
   setColumns,
   setPodTaskHasMore,
   podId,
-  statuses,
   boardType,
   entityType,
   setIsLoading,
   search,
+  statuses,
+  labelId,
+  date,
+  onlyPublic,
 }) => {
   const listView = view === ViewType.List;
   const board = {
@@ -207,6 +220,9 @@ const useGetPodTaskBoard = ({
       entityType,
       setIsLoading,
       search,
+      labelId,
+      date,
+      onlyPublic,
     }),
     proposals: useGetPodTaskProposals({
       listView,
@@ -219,6 +235,9 @@ const useGetPodTaskBoard = ({
       setIsLoading,
       setPodTaskHasMore,
       search,
+      labelId,
+      date,
+      onlyPublic,
     }),
   };
   const { fetchMore } = entityType === ENTITIES_TYPES.PROPOSAL ? board.proposals : board.tasks;
@@ -227,11 +246,10 @@ const useGetPodTaskBoard = ({
 
 const BoardsPage = () => {
   const router = useRouter();
-  const { username, podId, search, userId, view = ViewType.Grid, boardType, entity } = router.query;
+  const { podId, search, userId, view = ViewType.Grid, boardType, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
   const [entityType, setEntityType] = useState(activeEntityFromQuery);
-  const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
   const [searchString, setSearchString] = useState('');
   const [activeView, setActiveView] = useState(view);
@@ -240,10 +258,20 @@ const BoardsPage = () => {
     fetchPolicy: 'cache-and-network',
   });
 
+  const [filters, setFilters] = useState<TaskFilter>({
+    statuses: [],
+    labelId: null,
+    date: null,
+    onlyPublic: null,
+  });
+
   const [podTaskHasMore, setPodTaskHasMore] = useState(true);
   const [getPod, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
   const pod = podData?.getPodById;
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
+
+  const { statuses, labelId, date, onlyPublic } = filters;
+
   const { fetchMore } = useGetPodTaskBoard({
     section,
     view: activeView,
@@ -256,6 +284,9 @@ const BoardsPage = () => {
     entityType,
     setIsLoading,
     search,
+    labelId,
+    date,
+    onlyPublic,
   });
 
   const handleEntityTypeChange = (type) => {
@@ -426,9 +457,10 @@ const BoardsPage = () => {
     }));
   }
 
-  const handleFilterChange: any = ({ statuses = [] }: TaskFilter) => {
-    setStatuses(statuses);
+  const handleFilterChange: any = (filtersToApply = { statuses: [], labelId: null, date: null }) => {
+    setFilters(filtersToApply);
 
+    const { statuses, labelId } = filtersToApply;
     const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
     const searchProposals =
       statuses.length !== taskStatuses.length ||
@@ -440,6 +472,7 @@ const BoardsPage = () => {
           podId,
           userId,
           statuses: taskStatuses,
+          labelId: labelId,
           limit: 1000,
           offset: 0,
         },
@@ -466,6 +499,7 @@ const BoardsPage = () => {
             offset: 0,
             // Needed to exclude proposals
             statuses: taskStatuses,
+            labelId: labelId,
             searchString: search,
             ...(boardType === PRIVACY_LEVEL.public && {
               onlyPublic: true,
@@ -496,7 +530,6 @@ const BoardsPage = () => {
       value={{
         setSection,
         statuses,
-        setStatuses,
         columns,
         setColumns,
         orgId: pod?.orgId,
@@ -517,11 +550,12 @@ const BoardsPage = () => {
         onSearch={handleSearch}
         searchString={searchString}
         onFilterChange={handleFilterChange}
-        statuses={statuses}
         setColumns={setColumns}
         loading={isLoading}
         entityType={entityType}
         userId={userId?.toString()}
+        orgId={pod?.orgId}
+        statuses={statuses}
         activeView={activeView}
       />
     </PodBoardContext.Provider>

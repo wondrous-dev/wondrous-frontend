@@ -34,28 +34,28 @@ interface IFilterProps {
   schemaLength?: number;
   onRemove?: ({}: TaskFilter) => void;
   selected?: any;
-  applyFilter?: any;
   key?: number;
 }
 
 const Filter = (props: IFilterProps) => {
-  const { filterSchema = {}, onChange, currentIdx, schemaLength, onRemove, selected, applyFilter } = props;
-  const { query, variables, icon } = filterSchema;
+  const { filterSchema = {}, onChange, currentIdx, schemaLength, onRemove, selected } = props;
+  const { query, variables } = filterSchema;
   const [items, setItems] = useState(filterSchema?.items || []);
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef(null);
   const { isLoading, data } = useFilterQuery(query, variables, open);
 
   const toggleOpen = () => {
-    setOpen(!open);
+    if (!filterSchema?.disabled) setOpen(!open);
   };
 
   useOutsideAlerter(wrapperRef, () => setOpen(false));
 
   useEffect(() => {
     if (!isLoading && data) {
-      const queriedItems = [...data, ...items].map((item) => (icon ? { ...item, icon } : item));
-      setItems(_.uniqBy(queriedItems, 'id'));
+      const queriedItems = [...data, ...items];
+      let mutatedItems = filterSchema?.mutate ? filterSchema.mutate(queriedItems) : queriedItems;
+      setItems(_.uniqBy(mutatedItems, 'id'));
     }
   }, [isLoading]);
 
@@ -123,19 +123,6 @@ const Filter = (props: IFilterProps) => {
 
   const clearItems = () => onRemove(filterSchema.name);
 
-  const FILTER_BUTTONS_CONFIG = [
-    {
-      label: 'Reset',
-      action: () => clearItems(),
-      color: Grey250,
-      bgColor: '#313131',
-    },
-    {
-      label: 'Apply Filter',
-      action: applyFilter,
-    },
-  ];
-
   const checkIsSelected = (itemId) => {
     if (filterSchema?.multiChoice) {
       return !!selected?.find((item) => item.id === itemId);
@@ -146,16 +133,20 @@ const Filter = (props: IFilterProps) => {
   const portalDirection = currentIdx === schemaLength - 1 ? 'right' : 'left';
 
   const displayNames =
-    selected && (Array.isArray(selected) ? selected.map((item) => item.name).join(', ') : selected.name);
+    selected && (Array.isArray(selected) ? (selected?.length ? `${selected.length} selected` : null) : selected.name);
 
   const Icon = filterSchema?.icon || FilterIcon;
   return (
     <FilterHandle ref={wrapperRef} open={open}>
-      <FilterHandleInner open={open} onClick={toggleOpen}>
+      <FilterHandleInner open={open} className={filterSchema?.disabled ? 'disabled' : ''} onClick={toggleOpen}>
         <FilterHandleContainer>
           <FilterValues>
             <Icon style={{ backgroundColor: '#0f0f0f', borderRadius: '6px' }} height="26" width="26" />
-            {displayNames ? <InlineText color={Blue200}>{displayNames}</InlineText> : 'Filters'}
+            {displayNames ? (
+              <InlineText>{`${filterSchema?.label}: ${displayNames}`}</InlineText>
+            ) : (
+              filterSchema?.label || 'Filters'
+            )}
           </FilterValues>
         </FilterHandleContainer>
         <FilterChevronContainer className={open ? 'active' : ''}>

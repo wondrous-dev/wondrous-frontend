@@ -50,7 +50,7 @@ const OrgBoards = (props: Props) => {
     activeView,
   } = props;
 
-  const filters = ENTITIES_TYPES_FILTER_STATUSES(orgData);
+  const filters = ENTITIES_TYPES_FILTER_STATUSES({ orgId: orgData?.id, enablePodFilter: true });
   const entityTypeFilters = filters[entityType]?.filters || FILTER_STATUSES;
   const filterSchema: any = entityTypeFilters;
   const ActiveBoard = BOARDS_MAP[entityType];

@@ -38,6 +38,7 @@ export const Button = styled.div`
   color: white;
   height: 40px;
   cursor: pointer;
+  min-width: 20%;
   &.active {
     background: #4000b3;
     border: 1px solid #7427ff;
