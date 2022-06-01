@@ -41,8 +41,10 @@ export const CreateModalOverlay = styled(Modal)`
 `;
 
 export const CreateFormModalOverlay = styled(CreateModalOverlay)`
-  height: 99%;
   z-index: 1;
+  padding-top: 0;
+  height: max-content;
+  margin: auto;
 `;
 
 export const CreateLayoutsModal = styled(BaseCard)`
@@ -192,7 +194,7 @@ export const CreateLayoutsModalItemTitle = styled(Typography)`
 
 export const CreateFormBaseModal = styled(BaseCard)`
   width: 680px;
-  height: 100%;
+  max-height: 95vh;
   overflow-y: scroll;
   &::-webkit-scrollbar {
     display: none;
