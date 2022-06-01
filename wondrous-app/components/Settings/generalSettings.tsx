@@ -1,8 +1,9 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
+import apollo from 'services/apollo';
 import React, { useEffect, useState } from 'react';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
-import { UPDATE_POD } from '../../graphql/mutations/pod';
+import { UPDATE_POD, ARCHIVE_POD, UNARCHIVE_POD } from '../../graphql/mutations/pod';
 import { GET_ORG_BY_ID } from '../../graphql/queries/org';
 import { GET_POD_BY_ID } from '../../graphql/queries/pod';
 import { filteredColorOptions, PRIVACY_LEVEL } from '../../utils/constants';
@@ -19,6 +20,7 @@ import { ImageUpload } from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
 import { SettingsWrapper } from './settingsWrapper';
+import { DeleteButton } from 'components/Settings/Roles/styles';
 import {
   GeneralSettingsButtonsBlock,
   GeneralSettingsContainer,
@@ -37,6 +39,7 @@ import {
   GeneralSettingsSocialsBlockWrapper,
   LabelBlock,
   Snackbar,
+  SettingsHeaderText,
 } from './styles';
 
 const LIMIT = 200;
@@ -90,6 +93,9 @@ const GeneralSettingsComponent = (props) => {
     setDiscordWebhookLink,
     headerImage,
     handleImageChange,
+    isArchivedPod,
+    handleArchivePodClick,
+    handleUnarchivePodClick,
   } = props;
 
   const [newLink, setNewLink] = useState({
@@ -244,6 +250,44 @@ const GeneralSettingsComponent = (props) => {
             Save changes
           </GeneralSettingsSaveChangesButton>
         </GeneralSettingsButtonsBlock>
+        {isArchivedPod && isPod && (
+          <>
+            <DeleteButton
+              style={{
+                marginTop: '32px',
+              }}
+              onClick={handleUnarchivePodClick}
+            >
+              Unarchive Pod
+            </DeleteButton>
+            <SettingsHeaderText
+              style={{
+                marginTop: '10px',
+              }}
+            >
+              Unarchiving pod reenables you to create task under this pod
+            </SettingsHeaderText>
+          </>
+        )}
+        {!isArchivedPod && isPod && (
+          <>
+            <DeleteButton
+              style={{
+                marginTop: '32px',
+              }}
+              onClick={handleArchivePodClick}
+            >
+              Archive Pod
+            </DeleteButton>
+            <SettingsHeaderText
+              style={{
+                marginTop: '10px',
+              }}
+            >
+              You can still access tasks from archived pods, but no new tasks can be created{' '}
+            </SettingsHeaderText>
+          </>
+        )}
       </GeneralSettingsContainer>
     </SettingsWrapper>
   );
@@ -280,6 +324,7 @@ export const PodGeneralSettings = () => {
   const { podId } = router.query;
   const [podProfile, setPodProfile] = useState(null);
   const [isPrivate, setIsPrivate] = useState(null);
+  const [isArchivedPod, setIsArchivedPod] = useState(false);
   const [originalPodProfile, setOriginalPodProfile] = useState(null);
   const [logoImage, setLogoImage] = useState('');
   const [color, setColor] = useState(null);
@@ -300,6 +345,7 @@ export const PodGeneralSettings = () => {
     setDescriptionText(pod.description);
     setIsPrivate(pod?.privacyLevel === PRIVACY_LEVEL.private);
     setOriginalPodProfile(pod);
+    setIsArchivedPod(!!pod?.archivedAt);
   }
 
   useEffect(() => {
@@ -361,7 +407,24 @@ export const PodGeneralSettings = () => {
       },
     });
   }
-
+  const handleArchivePodClick = async () => {
+    await apollo.mutate({
+      mutation: ARCHIVE_POD,
+      variables: {
+        podId,
+      },
+    });
+    router.reload()
+  };
+  const handleUnarchivePodClick = async () => {
+    await apollo.mutate({
+      mutation: UNARCHIVE_POD,
+      variables: {
+        podId,
+      },
+    });
+    router.reload()
+  };
   return (
     <GeneralSettingsComponent
       toast={toast}
@@ -381,6 +444,9 @@ export const PodGeneralSettings = () => {
       setIsPrivate={setIsPrivate}
       color={color}
       setColor={setColor}
+      isArchivedPod={isArchivedPod}
+      handleArchivePodClick={handleArchivePodClick}
+      handleUnarchivePodClick={handleUnarchivePodClick}
     />
   );
 };

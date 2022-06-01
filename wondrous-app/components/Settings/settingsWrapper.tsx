@@ -39,6 +39,7 @@ import {
   SettingsSidebarTabsListItemText,
   SettingsSidebarTabsSection,
   SettingsSidebarTabsSectionLabel,
+  ArchivedPodIndicatorText
 } from './styles';
 
 const SIDEBAR_LIST_ITEMS = [
@@ -258,7 +259,7 @@ export const SettingsWrapper = (props) => {
     },
   };
   const activeSettingsPage = settingsPageConfig?.[String(podId ?? orgId ?? '')];
-
+  const podIsArchived = !!podData?.getPodById?.archivedAt;
   return (
     <>
       <SettingsBoardContext.Provider
@@ -325,6 +326,9 @@ export const SettingsWrapper = (props) => {
                   <PodIcon />
                 </SettingsDaoPodIndicatorIconWrapper>
                 <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
+                {podIsArchived && (
+                  <ArchivedPodIndicatorText>ARCHIVED</ArchivedPodIndicatorText>
+                )}
               </SettingsDaoPodIndicator>
             ) : null}
             {children}

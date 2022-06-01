@@ -19,6 +19,22 @@ export const UPDATE_POD = gql`
   ${PodFragment}
 `;
 
+export const ARCHIVE_POD = gql`
+  mutation archivePod($podId: ID!) {
+    archivePod(podId: $podId) {
+      success
+    }
+  }
+`;
+
+export const UNARCHIVE_POD = gql`
+  mutation unarchivePod($podId: ID!) {
+    unarchivePod(podId: $podId) {
+      success
+    }
+  }
+`;
+
 export const CREATE_POD_INVITE_LINK = gql`
   mutation createPodInviteLink($input: PodInviteLinkInput) {
     createPodInviteLink(input: $input) {
