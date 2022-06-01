@@ -463,7 +463,7 @@ const CreateEntityDropdown = (props) => {
         <CreateEntityOptionImageWrapper>
           <DefaultImageComponent color={'#474747'} />
         </CreateEntityOptionImageWrapper>
-        <CreateEntityOptionLabel>Select a pod</CreateEntityOptionLabel>
+        <CreateEntityOptionLabel>Select pod</CreateEntityOptionLabel>
       </CreateEntityOption>
       {options.map((i) => {
         const { imageUrl, label, value, color = '' } = i;
