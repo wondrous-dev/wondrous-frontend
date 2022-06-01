@@ -35,7 +35,6 @@ import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
 import { TextField } from '@material-ui/core';
 import {
-  CreateModalOverlay,
   OptionDiv,
   OptionTypography,
   StyledAutocompletePopper,
@@ -43,20 +42,13 @@ import {
 } from 'components/CreateEntity/styles';
 import { White } from 'theme/colors';
 import { filterOrgUsers } from 'components/CreateEntity/createEntityModal';
-import CSVModal, { PAYMENT_OPTIONS } from './CSVModal';
 import { PayoutModal } from './PayoutModal';
 import { PRIVATE_TASK_TITLE } from 'utils/constants';
 
-export const exportTaskCSV = () => {};
 
-export const exportContributorTaskCSV = ({ contributorTaskData, paymentMethod, fromTime, toTime, isPod = false }) => {
-  let headers = [];
+export const exportContributorTaskCSV = ({ contributorTaskData, fromTime, toTime, isPod = false }) => {
+  let  headers = ['username', 'Address/ENS', 'taskTitle', 'taskLink', 'points', 'Amount', 'Token Address/Token Symbol'];
 
-  if (paymentMethod === PAYMENT_OPTIONS.UTOPIA) {
-    headers = ['username', 'Wallet', 'taskTitle', 'taskLink', 'points', 'Amount', 'Pay-out Token'];
-  } else {
-    headers = ['username', 'Address/ENS', 'taskTitle', 'taskLink', 'points', 'Amount', 'Token Address/Token Symbol'];
-  }
   const rows = [[headers]];
   if (!contributorTaskData) {
     return;
@@ -400,22 +392,6 @@ const Analytics = (props) => {
 
   return (
     <Wrapper orgData={orgData}>
-      <CreateModalOverlay
-        open={csvModal}
-        onClose={() => setCSVModal(false)}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <CSVModal
-          open={csvModal}
-          handleClose={() => setCSVModal(false)}
-          fromTime={fromTime}
-          toTime={toTime}
-          exportContributorTaskCSV={exportContributorTaskCSV}
-          contributorTaskData={contributorTaskData}
-          isPod={false}
-        />
-      </CreateModalOverlay>
       <PayoutModal
         open={payoutModal}
         handleClose={() => setPayoutModal(false)}
@@ -561,7 +537,6 @@ const Analytics = (props) => {
           onClick={() =>
             exportContributorTaskCSV({
               contributorTaskData,
-              paymentMethod: null,
               fromTime,
               toTime,
               isPod: false,
@@ -570,7 +545,7 @@ const Analytics = (props) => {
         >
           <ExportCSVButtonText>Export Tasks</ExportCSVButtonText>
         </ExportCSVButton>
-        {/* <ExportCSVButton
+        <ExportCSVButton
           style={{
             borderRadius: '8px',
             height: '40px',
@@ -586,7 +561,7 @@ const Analytics = (props) => {
           }}
         >
           <ExportCSVButtonText>Pay out</ExportCSVButtonText>
-        </ExportCSVButton> */}
+        </ExportCSVButton>
       </HeaderWrapper>
       {contributorTaskData?.length === 0 && (
         <HeaderText
