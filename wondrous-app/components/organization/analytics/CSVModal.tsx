@@ -17,9 +17,10 @@ import {
 import UtopiaIcon from 'components/Icons/utopiaIcon';
 import ParcelIcon from 'components/Icons/parcelIcon';
 
-export const PAYMENT_OPTIONS = {
+export const EXPORT_PAYMENT_CSV_TYPE = {
   UTOPIA: 'utopia',
   PARCEL: 'parcel',
+  PLAIN: 'plain'
 };
 
 export const ENTITIES_UI_ELEMENTS = {
@@ -33,15 +34,15 @@ export const ENTITIES_UI_ELEMENTS = {
     color: 'white',
     label: 'Parcel',
   },
-  other: {
+  plain: {
     icon: <></>,
     color: 'white',
-    label: 'Other',
+    label: 'Plain (Full info)',
   },
 };
 
 const CSVModal = (props) => {
-  const { handleClose, fromTime, toTime, exportContributorTaskCSV, contributorTaskData, isPod } = props;
+  const { handleClose, fromTime, toTime, exportPaymentCSV, paymentsData, isPod } = props;
 
   return (
     <CreateLayoutsModal>
@@ -60,18 +61,26 @@ const CSVModal = (props) => {
             }}
             key={key}
             onClick={() => {
-              if (key === PAYMENT_OPTIONS.UTOPIA) {
-                exportContributorTaskCSV({
-                  contributorTaskData,
-                  paymentMethod: PAYMENT_OPTIONS.UTOPIA,
+              if (key === EXPORT_PAYMENT_CSV_TYPE.UTOPIA) {
+                exportPaymentCSV({
+                  paymentsData,
+                  exportCSVType: EXPORT_PAYMENT_CSV_TYPE.UTOPIA,
                   fromTime,
                   toTime,
                   isPod,
                 });
-              } else {
-                exportContributorTaskCSV({
-                  contributorTaskData,
-                  paymentMethod: PAYMENT_OPTIONS.PARCEL,
+              } else if (key === EXPORT_PAYMENT_CSV_TYPE.PARCEL) {
+                exportPaymentCSV({
+                  paymentsData,
+                  exportCSVType: EXPORT_PAYMENT_CSV_TYPE.PARCEL,
+                  fromTime,
+                  toTime,
+                  isPod,
+                });
+              } else if (key === EXPORT_PAYMENT_CSV_TYPE.PLAIN) {
+                exportPaymentCSV({
+                  paymentsData,
+                  exportCSVType: EXPORT_PAYMENT_CSV_TYPE.PLAIN,
                   fromTime,
                   toTime,
                   isPod,

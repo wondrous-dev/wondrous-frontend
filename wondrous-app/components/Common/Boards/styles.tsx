@@ -181,8 +181,6 @@ export const BoardsCardFooter = styled.div`
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding-top: 10px;
-  border-top: 1px solid ${Grey85};
   padding-bottom: 15px;
 `;
 

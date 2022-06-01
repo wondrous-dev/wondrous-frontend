@@ -167,7 +167,7 @@ const useGetPodTaskProposals = ({
   }, [columns, fetchMore, setPodTaskHasMore]);
 
   useEffect(() => {
-    if (entityType === ENTITIES_TYPES.PROPOSAL && !search)
+    if (entityType === ENTITIES_TYPES.PROPOSAL && !search && podId)
       getPodTaskProposals({
         variables: {
           input: {

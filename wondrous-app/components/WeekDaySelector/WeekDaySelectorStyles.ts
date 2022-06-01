@@ -2,6 +2,9 @@ const styles = {
   formControlLabel: {
     ml: 0,
     mr: 0,
+    '& .MuiTypography-root': {
+      color: 'white',
+    },
   },
   formGroup: {
     flexDirection: 'row',
@@ -14,24 +17,29 @@ const styles = {
     },
   },
   label: {
-    color: 'white',
-    fontFamily: 'Space Grotesk',
-    fontWeight: 400,
-    fontSize: ' 14px',
-    lineHeight: '16px',
-    '&.Mui-focused': {
+    '&.MuiFormLabel-root': {
       color: 'white',
+      fontFamily: 'Space Grotesk',
+      fontWeight: 400,
+      fontSize: ' 14px',
+      lineHeight: '16px',
+      marginBottom: 2,
+      '&.Mui-focused': {
+        color: 'white',
+      },
     },
   },
   checkbox: {
-    color: '#7427FF',
-    fill: 'white',
-
-    '&.Mui-checked': {
+    '&.MuiCheckbox-root': {
       color: '#7427FF',
-    },
-    ':hover': {
-      backgroundColor: 'rgba(116, 39, 255, 0.04)',
+      fill: 'white',
+
+      '&.Mui-checked': {
+        color: '#7427FF',
+      },
+      ':hover': {
+        backgroundColor: 'rgba(116, 39, 255, 0.04)',
+      },
     },
   },
   icon: {
