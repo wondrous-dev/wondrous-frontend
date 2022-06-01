@@ -578,6 +578,8 @@ const entityTypeData = {
   },
 };
 
+const TEXT_LIMIT = 900;
+
 export const CreateEntityModal = (props) => {
   const { entityType, handleClose, resetEntityType, open, parentTaskId } = props;
   const user = useMe();
@@ -588,7 +590,6 @@ export const CreateEntityModal = (props) => {
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
   const board = orgBoard || podBoard || userBoard;
-  const textLimit = 900;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
   });
@@ -741,7 +742,7 @@ export const CreateEntityModal = (props) => {
           value={{
             content: form.values.description,
             onChange: (e) => {
-              if (e.target.value.length < textLimit) {
+              if (e.target.value.length < TEXT_LIMIT) {
                 form.setFieldValue('description', e.target.value);
               }
             },
