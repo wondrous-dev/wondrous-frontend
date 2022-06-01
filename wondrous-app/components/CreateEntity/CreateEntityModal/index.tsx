@@ -680,6 +680,9 @@ export const CreateEntityModal = (props) => {
                 ...form.initialValues,
                 points: form.values.points,
                 dueDate: form.values.dueDate,
+                title: form.values.title,
+                description: form.values.description,
+                mediaUploads: form.values.mediaUploads,
                 orgId,
               });
               form.setErrors({});
@@ -702,6 +705,9 @@ export const CreateEntityModal = (props) => {
                     orgId: form.values.orgId,
                     points: form.values.points,
                     dueDate: form.values.dueDate,
+                    title: form.values.title,
+                    description: form.values.description,
+                    mediaUploads: form.values.mediaUploads,
                     privacyLevel,
                     podId,
                   });
