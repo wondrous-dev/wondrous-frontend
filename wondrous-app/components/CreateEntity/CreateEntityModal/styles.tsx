@@ -7,6 +7,7 @@ import AttachFileIcon from 'components/Icons/attachFile.svg';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { DAOIcon } from 'components/Icons/dao';
 import PlusIcon from 'components/Icons/plus';
+import PodIcon from 'components/Icons/podIcon';
 import PointsIcon from 'components/Icons/pointsIcon.svg';
 import SingleDatePicker from 'components/SingleDatePicker';
 import { TextInput } from 'components/TextInput';
@@ -141,6 +142,23 @@ export const CreateEntityOptionImageWrapper = styled.div`
 `;
 
 export const CreateEntityDefaultDaoImage = styled(DAOIcon)``;
+
+export const CreateEntityDefaultPodImage = styled((props) => (
+  <div {...props}>
+    <PodIcon />
+  </div>
+))`
+  display: flex;
+  align-items: center;
+  background: ${({ color }) => color};
+  border-radius: 50px;
+  width: 20px;
+  height: 20px;
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+`;
 
 export const CreateEntityOptionLabel = styled(Typography)`
   && {

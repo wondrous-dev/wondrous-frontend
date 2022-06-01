@@ -37,6 +37,7 @@ import {
   CreateEntityCancelButton,
   CreateEntityCreateTaskButton,
   CreateEntityDefaultDaoImage,
+  CreateEntityDefaultPodImage,
   CreateEntityDefaultUserImage,
   CreateEntityDescription,
   CreateEntityDescriptionWrapper,
@@ -170,6 +171,7 @@ const filterDAOptions = (orgs) => {
     imageUrl: org?.profilePicture,
     label: org?.name,
     value: org?.id,
+    color: org?.color,
   }));
 };
 
@@ -439,7 +441,14 @@ const CreateEntityDropdownRenderOptions = (value) => {
 };
 
 const CreateEntityDropdown = (props) => {
-  const { value, options, onChange, name, renderValue = CreateEntityDropdownRenderOptions } = props;
+  const {
+    value,
+    options,
+    onChange,
+    name,
+    renderValue = CreateEntityDropdownRenderOptions,
+    DefaultImageComponent,
+  } = props;
   return (
     <CreateEntitySelect
       name={name}
@@ -449,11 +458,11 @@ const CreateEntityDropdown = (props) => {
       value={value}
     >
       {options.map((i) => {
-        const { imageUrl, label, value } = i;
+        const { imageUrl, label, value, color = '' } = i;
         return (
           <CreateEntityOption key={value} value={i.value}>
             <CreateEntityOptionImageWrapper>
-              {imageUrl ? <SafeImage src={imageUrl} /> : <CreateEntityDefaultDaoImage />}
+              {imageUrl ? <SafeImage src={imageUrl} /> : <DefaultImageComponent color={color} />}
             </CreateEntityOptionImageWrapper>
             <CreateEntityOptionLabel>{label}</CreateEntityOptionLabel>
           </CreateEntityOption>
@@ -676,6 +685,7 @@ export const CreateEntityModal = (props) => {
               form.setErrors({});
             }}
             value={form.values.orgId}
+            DefaultImageComponent={CreateEntityDefaultDaoImage}
           />
           {form.values.orgId !== null && (
             <>
@@ -698,6 +708,7 @@ export const CreateEntityModal = (props) => {
                   form.setErrors({});
                 }}
                 value={form.values.podId}
+                DefaultImageComponent={CreateEntityDefaultPodImage}
               />
             </>
           )}
