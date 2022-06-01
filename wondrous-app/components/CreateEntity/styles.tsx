@@ -43,7 +43,7 @@ export const CreateModalOverlay = styled(Modal)`
 export const CreateFormModalOverlay = styled(CreateModalOverlay)`
   z-index: 1;
   padding-top: 0;
-  height: max-content;
+  height: 100vh;
   margin: auto;
 `;
 

@@ -900,6 +900,7 @@ export const CreateEntityDueDate = styled(({ className, ...props }) => (
       width: 370px;
       z-index: 999;
       > .MuiBox-root {
+        margin-bottom: 12px;
         > .MuiBox-root {
           background: #1d1d1d;
           > .MuiBox-root {
