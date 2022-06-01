@@ -867,11 +867,32 @@ export const CreateEntityDueDate = styled(({ className, ...props }) => (
     max-width: 100%;
     > .MuiFormControl-root {
       width: 100%;
+      border-radius: 4px;
+      padding: 0;
+      :focus-within {
+        outline: 1px solid #7a7a7a;
+      }
+      .MuiInputBase-input {
+        padding: 0;
+      }
       > .MuiOutlinedInput-root {
+        background: #141414;
         height: 32px;
         font-size: 13px;
+        font-weight: 500;
         border: none;
         outline: none;
+        padding: 0 6px;
+        .MuiOutlinedInput-notchedOutline {
+          border: none;
+        }
+        .MuiInputAdornment-root {
+          margin: 0;
+          background: transparent;
+          .MuiIconButton-root {
+            padding: 0;
+          }
+        }
       }
     }
     + div {
@@ -883,9 +904,33 @@ export const CreateEntityDueDate = styled(({ className, ...props }) => (
           background: #1d1d1d;
           > .MuiBox-root {
             > .MuiFormControl-root {
+              width: 100%;
+              border-radius: 4px;
+              padding: 0;
+              :focus-within {
+                outline: 1px solid #7a7a7a;
+              }
+              .MuiInputBase-input {
+                padding: 0;
+              }
               > .MuiOutlinedInput-root {
+                background: #141414;
                 height: 32px;
                 font-size: 13px;
+                font-weight: 500;
+                border: none;
+                outline: none;
+                padding: 0 6px;
+                .MuiOutlinedInput-notchedOutline {
+                  border: none;
+                }
+                .MuiInputAdornment-root {
+                  margin: 0;
+                  background: transparent;
+                  .MuiIconButton-root {
+                    padding: 0;
+                  }
+                }
               }
             }
           }

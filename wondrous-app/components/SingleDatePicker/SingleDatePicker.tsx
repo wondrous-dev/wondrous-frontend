@@ -27,6 +27,7 @@ import CalendarDay from 'components/CalendarDay';
 
 import styles from './SingleDatePickerStyles';
 import { Popper } from '@mui/material';
+import CloseModalIcon from 'components/Icons/closeModal';
 
 interface SingleDatePickerProps {
   sx?: object;
@@ -205,7 +206,7 @@ const SingleDatePicker = ({
                     handleClose?.();
                   }}
                 >
-                  <Image src="/images/icons/cancel.svg" width={9} height={9} alt="calendar icon" />
+                  <CloseModalIcon />
                 </IconButton>
               </InputAdornment>
             ),
@@ -227,7 +228,7 @@ const SingleDatePicker = ({
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton onClick={reset}>
-                          <Image src="/images/icons/cancel.svg" width={9} height={9} alt="calendar icon" />
+                          <CloseModalIcon />
                         </IconButton>
                       </InputAdornment>
                     ),
