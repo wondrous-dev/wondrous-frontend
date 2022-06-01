@@ -853,6 +853,7 @@ export const CreateEntityModal = (props) => {
                 options={filteredOrgUsersData}
                 disableCloseOnSelect={true}
                 openOnFocus={true}
+                value={form.values.assigneeId}
                 renderInput={(params) => {
                   const assignee = filteredOrgUsersData.find((user) => user.value === params.inputProps.value);
                   return (
@@ -886,7 +887,6 @@ export const CreateEntityModal = (props) => {
                     />
                   );
                 }}
-                value={form.values.assigneeId}
                 renderOption={(props, option, state) => {
                   return (
                     <CreateEntityAutocompleteOption

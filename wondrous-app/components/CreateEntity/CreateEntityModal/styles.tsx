@@ -9,11 +9,40 @@ import PointsIcon from 'components/Icons/pointsIcon.svg';
 import { TextInput } from 'components/TextInput';
 import { UserSuggestionTypography, UserSuggestionWrapper } from 'components/TextInput/styles';
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Red400, White } from 'theme/colors';
 import Arrow from '../../Icons/arrow.svg';
 import PrivacyMembersIcon from '../../Icons/privacyMembers.svg';
 import PrivacyPublicIcon from '../../Icons/privacyPublic.svg';
+
+export const scrollBarStyles = css`
+  :hover {
+    &::-webkit-scrollbar {
+      display: block;
+    }
+  }
+  &::-webkit-scrollbar {
+    display: none;
+    position: absolute;
+    z-index: 999;
+    width: 20px;
+    background: #1f1f1f;
+    border-radius: 0 4px 4px 0;
+    outline: none;
+  }
+  &::-webkit-scrollbar-track {
+    background: #606060;
+    background-clip: padding-box;
+    border: 8px solid rgba(0, 0, 0, 0);
+    border-radius: 50px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    border: 8px solid rgba(0, 0, 0, 0);
+    background: #c4c4c4;
+    background-clip: padding-box;
+  }
+`;
 
 export const CreateEntityForm = styled.form`
   min-height: 50%;
@@ -22,6 +51,9 @@ export const CreateEntityForm = styled.form`
   border-radius: 6px;
   overflow-y: auto;
   background: #1d1d1d;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const CreateEntityHeader = styled.div`
@@ -57,10 +89,12 @@ export const CreateEntitySelectListbox = styled.ul`
 export const CreateEntitySelectPopper = styled(PopperUnstyled)`
   width: 250px;
   max-height: 222px;
+  overflow-y: auto;
   border-radius: 4px;
   background-color: #1f1f1f;
   border: 1px solid #7a7a7a;
   z-index: 100;
+  ${scrollBarStyles}
 `;
 
 export const CreateEntitySelect = (props) => {
@@ -387,7 +421,9 @@ export const CreateEntityAutocompletePopper = styled(({ className, ...props }) =
 })`
   .MuiAutocomplete-listbox {
     border-color: #7a7a7a;
+    scroll-padding-right: 0;
     max-height: 200px;
+    ${scrollBarStyles}
   }
   .MuiAutocomplete-noOptions {
     background: #1f1f1f !important;
@@ -441,10 +477,10 @@ export const CreateEntityAutocompleteOption = styled.li`
   display: flex;
   align-items: center;
   cursor: pointer;
+  width: 100%;
   background: #1f1f1f;
   min-height: 36px;
   padding: 6px 12px;
-
   &:hover {
     background-color: #474747;
   }
