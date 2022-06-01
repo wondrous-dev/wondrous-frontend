@@ -11,7 +11,7 @@ import {
 import SnackbarComp from '@mui/material/Snackbar';
 import { SafeImage } from 'components/Common/Image';
 import styled from 'styled-components';
-import { White } from '../../theme/colors';
+import { White, Red200 } from '../../theme/colors';
 import { Button } from '../Common/button';
 import { Discord } from '../Icons/discord';
 
@@ -168,6 +168,15 @@ export const SettingsDaoPodIndicatorText = styled(Typography)`
     color: #ffffff;
   }
 `;
+export const ArchivedPodIndicatorText = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 16px;
+    font-weight: 400;
+    color: ${Red200};
+  }
+`;
+
 
 export const SettingsDaoPodIndicatorIconWrapper = styled.div`
   display: flex;
