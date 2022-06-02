@@ -665,7 +665,7 @@ export const CreateEntityModal = (props) => {
   useEffect(() => {
     if (open) {
       if (router?.pathname.includes('/dashboard') && !form.values.orgId) {
-        form.setFieldValue('orgId', filteredDaoOptions[0].value);
+        form.setFieldValue('orgId', filteredDaoOptions[0]?.value);
       }
       if (
         fetchedUserPermissionsContext &&

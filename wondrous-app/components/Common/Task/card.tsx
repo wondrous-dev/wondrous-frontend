@@ -210,7 +210,7 @@ export const TaskCard = ({
               }}
             />
           )}
-          {!assigneeId && !isBounty && !isMilestone && (
+          {!assigneeId && !isBounty && !isMilestone && task?.status !== Constants.TASK_STATUS_DONE && (
             <>
               {claimed ? (
                 <ActionButton

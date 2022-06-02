@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
 import CreateLayoutBaseModal from './createEntityModal';
-import { CreateEntityModal } from './CreateEntityModal';
+import { CreateEntityModal } from './CreateEntityModal/index';
 import { CreateFormModalOverlay } from './styles';
 
 const CreateFormModal = (props) => {
@@ -14,13 +14,13 @@ const CreateFormModal = (props) => {
     if (entityType === '') {
       return <ChooseEntityToCreateModal {...props} />;
     }
-    if (
-      entityType === ENTITIES_TYPES.TASK ||
-      entityType === ENTITIES_TYPES.MILESTONE ||
-      entityType === ENTITIES_TYPES.BOUNTY
-    ) {
-      return <CreateEntityModal {...props} />;
-    }
+    // if (
+    //   entityType === ENTITIES_TYPES.TASK ||
+    //   entityType === ENTITIES_TYPES.MILESTONE ||
+    //   entityType === ENTITIES_TYPES.BOUNTY
+    // ) {
+    //   return <CreateEntityModal {...props} />;
+    // }
     return <CreateLayoutBaseModal {...props} />;
   };
 
