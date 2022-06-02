@@ -887,6 +887,7 @@ export const CreateEntityModal = (props) => {
                 <CreateEntityAddButtonIcon />
                 {form.values.reviewerIds.length === 0 && <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>}
               </CreateEntityLabelAddButton>
+            </Tooltip>
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
 
