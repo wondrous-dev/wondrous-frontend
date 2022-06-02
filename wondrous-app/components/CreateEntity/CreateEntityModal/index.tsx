@@ -11,7 +11,7 @@ import { GET_USER_AVAILABLE_PODS } from 'graphql/queries/pod';
 import { GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_FOR_POD, GET_MILESTONES } from 'graphql/queries/task';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CHAIN_TO_CHAIN_DIPLAY_NAME, ENTITIES_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { TextInputContext } from 'utils/contexts';
 import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
@@ -641,8 +641,24 @@ export const CreateEntityModal = (props) => {
   );
   const [getMilestones, { data: milestonesData }] = useLazyQuery(GET_MILESTONES);
   const pods = useGetAvailableUserPods(form.values.orgId);
-  const selectedPodPrivacyLevel =
-    pods?.filter((i) => i.id === form.values.podId)[0]?.privacyLevel ?? privacyOptions.public.value;
+
+  const handleOnchangePodId = useCallback(
+    (podId) => {
+      const selectedPodPrivacyLevel = pods?.filter((i) => i.id === podId)[0]?.privacyLevel;
+      const privacyLevel = privacyOptions[selectedPodPrivacyLevel]?.value ?? privacyOptions.public.value;
+      form.setValues({
+        ...form.values,
+        reviewerIds: form.initialValues.reviewerIds,
+        assigneeId: form.initialValues.assigneeId,
+        rewards: form.initialValues.rewards,
+        milestoneId: form.initialValues.milestoneId,
+        privacyLevel,
+        podId,
+      });
+      form.setErrors({});
+    },
+    [form, pods]
+  );
 
   const router = useRouter();
   const { podId: routerPodId } = router.query;
@@ -663,13 +679,15 @@ export const CreateEntityModal = (props) => {
       }
 
       if (
+        form.values.orgId &&
+        pods &&
         fetchedUserPermissionsContext &&
         board?.podId in fetchedUserPermissionsContext?.podPermissions &&
         !form.values.podId
       ) {
         // If you're only part of one dao then just set that as default
         // TODO: if you are part of the org and you're on that page it should be create on that org
-        form.setFieldValue('podId', board?.podId || routerPodId);
+        handleOnchangePodId(board?.podId || routerPodId);
       }
     }
   }, [
@@ -683,6 +701,8 @@ export const CreateEntityModal = (props) => {
     form,
     filteredDaoOptions,
     router,
+    handleOnchangePodId,
+    pods,
   ]);
   const eligibleReviewers = useGetEligibleReviewers(form.values.orgId, form.values.podId);
   const filteredEligibleReviewers = eligibleReviewers.filter(
@@ -718,23 +738,7 @@ export const CreateEntityModal = (props) => {
               <CreateEntityDropdown
                 name="podId"
                 options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext)}
-                onChange={(podId) => {
-                  // NOTE: This will reset the data that depends on the podId
-                  const selectedPodPrivacyLevel = pods?.filter((i) => i.id === podId)[0]?.privacyLevel;
-                  const privacyLevel = privacyOptions[selectedPodPrivacyLevel]?.value ?? privacyOptions.public.value;
-                  form.setValues({
-                    ...form.initialValues,
-                    orgId: form.values.orgId,
-                    points: form.values.points,
-                    dueDate: form.values.dueDate,
-                    title: form.values.title,
-                    description: form.values.description,
-                    mediaUploads: form.values.mediaUploads,
-                    privacyLevel,
-                    podId,
-                  });
-                  form.setErrors({});
-                }}
+                onChange={handleOnchangePodId}
                 value={form.values.podId}
                 DefaultImageComponent={CreateEntityDefaultPodImage}
               />
@@ -1239,7 +1243,7 @@ export const CreateEntityModal = (props) => {
       <CreateEntityHeader>
         <CreateEntityHeaderWrapper>
           <CreateEntityPrivacySelect
-            disabled={selectedPodPrivacyLevel !== privacyOptions.public.value}
+            disabled={form.values.privacyLevel !== privacyOptions.public.value}
             name="privacyLevel"
             value={form.values.privacyLevel}
             onChange={form.handleChange('privacyLevel')}
@@ -1247,7 +1251,7 @@ export const CreateEntityModal = (props) => {
               return (
                 <Tooltip
                   title={
-                    selectedPodPrivacyLevel !== privacyOptions.public.value && 'The selected pod is for members only'
+                    form.values.privacyLevel !== privacyOptions.public.value && 'The selected pod is for members only'
                   }
                   placement="top"
                 >
