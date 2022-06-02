@@ -916,6 +916,9 @@ export const CreateEntityModal = (props) => {
                 options={filteredOrgUsersData}
                 openOnFocus={true}
                 value={form.values.assigneeId}
+                isOptionEqualToValue={(option, value) => {
+                  return option.value === value;
+                }}
                 renderInput={(params) => {
                   const assignee = filteredOrgUsersData.find((user) => user.value === params.inputProps.value);
                   return (

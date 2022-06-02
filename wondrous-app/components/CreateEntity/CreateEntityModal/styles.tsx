@@ -489,6 +489,7 @@ export const CreateEntityAutocompletePopper = styled(({ className, ...props }) =
     max-height: 200px;
     ${scrollBarStyles}
   }
+
   .MuiAutocomplete-noOptions {
     background: #1f1f1f !important;
     font-family: 'Space Grotesk';
@@ -537,21 +538,26 @@ export const CreateEntityAutocompletePopperRenderInputIcon = styled(CloseModalIc
 `;
 
 export const CreateEntityAutocompleteOption = styled.li`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  width: 100%;
-  background: #1f1f1f;
-  min-height: 36px;
-  padding: 6px 12px;
-  &:hover {
-    background-color: #474747;
-  }
+  && {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    width: 100%;
+    background: #1f1f1f;
+    min-height: 36px;
+    padding: 6px 12px;
 
-  img {
-    width: 24px;
-    height: 24px;
-    border-radius: 50px;
+    &&[aria-selected='true'],
+    &&[aria-selected='true'].Mui-focused,
+    &&.Mui-focused {
+      background: #474747;
+    }
+
+    img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50px;
+    }
   }
 `;
 
