@@ -75,8 +75,11 @@ const Docs = (props) => {
   const openMenu = Boolean(menuAnchor);
 
   const handleItemClick = (event, doc) => {
-    setMenuAnchor(event.currentTarget);
-    setSelectedDoc(doc);
+    // Don't show menu if link is clicked
+    if (!event.target.href) {
+      setMenuAnchor(event.currentTarget);
+      setSelectedDoc(doc);
+    }
   };
   const handleMenuClose = () => {
     setMenuAnchor(null);

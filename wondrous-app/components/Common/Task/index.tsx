@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
+import { LogoButton } from '../logo';
+import Link from 'next/link';
+
 import {
   TodoWithBorder,
   InProgressWithBorder,
@@ -77,7 +80,6 @@ const useGetReviewers = (editTask, task) => {
   return reviewerData?.getTaskReviewers;
 };
 
-let windowOffset = 0;
 export const Task = (props) => {
   const { task, setTask, className } = props;
   const {
@@ -129,7 +131,6 @@ export const Task = (props) => {
   const isMilestone = type === Constants.ENTITIES_TYPES.MILESTONE;
   const isSubtask = task?.parentTaskId !== null;
   const isBounty = type === Constants.ENTITIES_TYPES.BOUNTY;
-  const location = useLocation();
   const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
 
   const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
@@ -259,16 +260,11 @@ export const Task = (props) => {
   const canDelete =
     canArchive && (task?.type === Constants.ENTITIES_TYPES.TASK || task?.type === Constants.ENTITIES_TYPES.MILESTONE);
 
-  const openModal = (e) => {
-    const type = task?.isProposal ? 'taskProposal' : 'task';
-    let newUrl = `${delQuery(router.asPath)}?${type}=${task?.id}&view=${router.query.view || 'grid'}`;
-    if (board?.entityType) {
-      newUrl = newUrl + `&entity=${board?.entityType}`;
-    }
-    location.push(newUrl);
-    windowOffset = window.scrollY;
-    document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
-  };
+  const taskType = task?.isProposal ? 'taskProposal' : 'task';
+  let viewUrl = `${delQuery(router.asPath)}?${taskType}=${task?.id}&view=${router.query.view || 'grid'}`;
+  if (board?.entityType) {
+    viewUrl = viewUrl + `&entity=${board?.entityType}`;
+  }
 
   const goToPod = (podId) => {
     // Filter or go to Pod Page
@@ -343,7 +339,7 @@ export const Task = (props) => {
         }}
       />
       <Card
-        openModal={openModal}
+        viewUrl={viewUrl}
         id={id}
         task={task}
         isMilestone={isMilestone}
