@@ -945,7 +945,7 @@ export const TaskSubmissionContent = (props) => {
       //   alignItems: 'center',
       // }}
       >
-        <TaskTabText>To submit tasask submissions please first move this to in progress</TaskTabText>
+        <TaskTabText>To submit task submissions please first move this to in progress</TaskTabText>
         <CreateFormPreviewButton
           style={{
             marginTop: '16px',

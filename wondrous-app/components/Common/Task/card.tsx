@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
+
 import { TaskCommentIcon } from '../../Icons/taskComment';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
 import { DropDown, DropDownItem } from '../dropdown';
@@ -75,6 +77,8 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { PERMISSIONS } from 'utils/constants';
+import SmartLink from 'components/Common/SmartLink';
+import { useLocation } from 'utils/useLocation';
 import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
 import { format } from 'date-fns';
 
@@ -101,6 +105,7 @@ export const TaskCard = ({
   createdBy,
   isBounty,
   title,
+  viewUrl,
   description,
   goToPod,
   media,
@@ -115,7 +120,9 @@ export const TaskCard = ({
   setDeleteTask,
   boardType,
 }) => {
+  const location = useLocation();
   let TaskIcon = TASK_ICONS[task.status];
+  let windowOffset = 0;
 
   const boardColumns = useColumns();
   const [claimed, setClaimed] = useState(false);
@@ -183,10 +190,20 @@ export const TaskCard = ({
 
   return (
     <ProposalCardWrapper
-      onClick={() => !showPaymentModal && openModal()}
       onMouseEnter={() => canArchive && setDisplayActions(true)}
       onMouseLeave={() => canArchive && setDisplayActions(false)}
     >
+            <SmartLink
+        href={viewUrl}
+        preventLinkNavigation
+        onNavigate={() => {
+          if (!showPaymentModal) {
+            location.push(viewUrl);
+            windowOffset = window.scrollY;
+            document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+          }
+        }}
+      >
       {showPaymentModal && !isTaskSubmissionLoading ? (
         <MakePaymentModal
           getTaskSubmissionsForTask={getTaskSubmissionsForTask}
@@ -210,7 +227,7 @@ export const TaskCard = ({
               }}
             />
           )}
-          {!assigneeId && !isBounty && !isMilestone && (
+          {!assigneeId && !isBounty && !isMilestone && task?.status !== Constants.TASK_STATUS_DONE && (
             <>
               {claimed ? (
                 <ActionButton
@@ -310,13 +327,15 @@ export const TaskCard = ({
       </TaskHeader>
       <TaskCreatedBy type={type} router={router} createdBy={createdBy} />
 
-      <TaskContent>
-        <TaskTitle>{title}</TaskTitle>
-        {/* <TaskCardDescriptionText>
+        <TaskContent>
+          <TaskTitle>
+            <a href={viewUrl}>{task.title}</a>
+          </TaskTitle>
+          {/* <TaskCardDescriptionText>
           {renderMentionString({
             content: description,
             router,
-          })}
+          })}о
         </TaskCardDescriptionText> */}
 
         {isBounty && (
@@ -435,21 +454,23 @@ export const TaskCard = ({
               >
                 Archive {type}
               </DropDownItem>
-              {canDelete && (
-                <DropDownItem
-                  key={'task-menu-delete-' + id}
-                  onClick={() => {
-                    setDeleteTask(true);
-                  }}
-                  color={Red800}
-                >
-                  Delete {type}
-                </DropDownItem>
-              )}
-            </DropDown>
-          </TaskActionMenu>
-        )}
-      </BoardsCardFooter>
+
+                {canDelete && (
+                  <DropDownItem
+                    key={'task-menu-delete-' + id}
+                    onClick={() => {
+                      setDeleteTask(true);
+                    }}
+                    color={Red800}
+                  >
+                    Delete {type}
+                  </DropDownItem>
+                )}
+              </DropDown>
+            </TaskActionMenu>
+          )}
+        </BoardsCardFooter>
+      </SmartLink>
     </ProposalCardWrapper>
   );
 };
