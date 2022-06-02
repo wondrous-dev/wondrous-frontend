@@ -1002,7 +1002,7 @@ export const CreateEntityModal = (props) => {
                 setValue={(date) => form.setFieldValue('dueDate', date)}
                 setRecurrenceType={setRecurrenceType}
                 setRecurrenceValue={setRecurrenceValue}
-                hideRecurring={true}
+                hideRecurring={false}
                 handleClose={() => form.setFieldValue('dueDate', null)}
               />
             )}
