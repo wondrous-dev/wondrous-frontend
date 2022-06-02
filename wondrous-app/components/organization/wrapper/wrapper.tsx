@@ -412,14 +412,16 @@ const Wrapper = (props) => {
                   {orgBoard?.setEntityType && !search && (
                     <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
                   )}
-                  <BoardsActivity
-                    onSearch={onSearch}
-                    filterSchema={filterSchema}
-                    onFilterChange={onFilterChange}
-                    statuses={statuses}
-                    podIds={podIds}
-                    userId={userId}
-                  />
+                  {!!filterSchema && (
+                    <BoardsActivity
+                      onSearch={onSearch}
+                      filterSchema={filterSchema}
+                      onFilterChange={onFilterChange}
+                      statuses={statuses}
+                      podIds={podIds}
+                      userId={userId}
+                    />
+                  )}
                 </BoardsSubheaderWrapper>
 
                 {children}
