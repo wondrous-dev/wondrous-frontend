@@ -564,7 +564,13 @@ const CreateLayoutBaseModal = (props) => {
           setErrors(newErrors);
         } else {
           if (canCreateTask) {
-            const refetchQueries = [];
+            const refetchQueries = [
+              'getPerStatusTaskCountForMilestone',
+              'getUserTaskBoardTasks',
+              'getPerStatusTaskCountForUserBoard',
+              'getSubtasksForTask',
+              'getSubtaskCountForTask',
+            ];
             if (orgBoard) {
               refetchQueries.push('getPerTypeTaskCountForOrgBoard');
             }
