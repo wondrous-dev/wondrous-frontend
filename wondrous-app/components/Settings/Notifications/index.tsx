@@ -257,7 +257,7 @@ const Notifications = ({ orgId }) => {
         title="Notifications"
         description="Manage notifications"
       />
-      <GeneralSettingsContainer></GeneralSettingsContainer>
+
       <GeneralSettingsIntegrationsBlock
         style={{
           borderBottom: 'none',
