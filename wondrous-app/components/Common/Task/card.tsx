@@ -223,6 +223,9 @@ export const TaskCard = ({
                 </ActionButton>
               ) : (
                 <ActionButton
+                  style={{
+                    marginRight: '8px',
+                  }}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -278,6 +281,10 @@ export const TaskCard = ({
         </TaskHeaderIconWrapper>
         {task?.privacyLevel === PRIVACY_LEVEL.public && (
           <ToggleBoardPrivacyIcon
+            style={{
+              width: task?.assigneeId ? '40px' : 'auto',
+              marginRight: '0',
+            }}
             isPrivate={task?.privacyLevel !== PRIVACY_LEVEL.public}
             tooltipTitle={task?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
           />

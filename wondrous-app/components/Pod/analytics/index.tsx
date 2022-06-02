@@ -45,6 +45,7 @@ import { White } from 'theme/colors';
 import { filterOrgUsers } from 'components/CreateEntity/createEntityModal';
 import CSVModal from 'components/organization/analytics/CSVModal';
 import { exportContributorTaskCSV } from 'components/organization/analytics';
+import { PRIVATE_TASK_TITLE } from 'utils/constants';
 
 const UserRowPictureStyles = {
   width: '30px',
@@ -166,8 +167,10 @@ const UserRow = ({ contributorTask }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setOpenModal(true);
-                  setTaskOpened(task?.id);
+                  if (task.title !== PRIVATE_TASK_TITLE) {
+                    setOpenModal(true);
+                    setTaskOpened(task?.id);
+                  }
                 }}
               >
                 <TaskTitle
@@ -175,7 +178,7 @@ const UserRow = ({ contributorTask }) => {
                     marginRight: '24px',
                   }}
                 >
-                  {cutString(task.title)}
+                  {cutString(task?.title === PRIVATE_TASK_TITLE ? 'Private Task' : task?.title)}
                 </TaskTitle>
                 <div
                   style={{
@@ -250,6 +253,7 @@ const Analytics = (props) => {
   const { id: podId, orgId } = podData;
   const [ref, inView] = useInView({});
   const [csvModal, setCSVModal] = useState(false);
+
   const [assignee, setAssignee] = useState(null);
   const [assigneeString, setAssigneeString] = useState('');
   const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
@@ -266,7 +270,23 @@ const Analytics = (props) => {
   const [getCompletedTasksBetweenPeriods, { data, loading }] = useLazyQuery(GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD, {
     fetchPolicy: 'network-only',
   });
-  const contributorTaskData = data?.getCompletedTasksBetweenPeriods;
+
+  const preFilteredcontributorTaskData = data?.getCompletedTasksBetweenPeriods || [];
+  const noAssigneeIndex = preFilteredcontributorTaskData?.findIndex((element) => !element?.assigneeId);
+  var tmp = preFilteredcontributorTaskData[noAssigneeIndex];
+  preFilteredcontributorTaskData[noAssigneeIndex] =
+    preFilteredcontributorTaskData[preFilteredcontributorTaskData?.length - 1];
+  preFilteredcontributorTaskData[preFilteredcontributorTaskData?.length - 1] = tmp;
+  let contributorTaskData = preFilteredcontributorTaskData.slice(0, preFilteredcontributorTaskData?.length - 1);
+  contributorTaskData.sort((a, b) => {
+    if (a?.tasks?.length > b?.tasks?.length) {
+      return -1;
+    } else if (a?.tasks?.length < b?.tasks?.length) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
   useEffect(() => {
     if (podId && fromTime && toTime) {
       getCompletedTasksBetweenPeriods({
@@ -432,7 +452,6 @@ const Analytics = (props) => {
           onClick={() =>
             exportContributorTaskCSV({
               contributorTaskData,
-              paymentMethod: null,
               fromTime,
               toTime,
               isPod: true,

@@ -180,7 +180,7 @@ const useGetPodTaskProposals = ({
       statuses?.length > 0
         ? statuses?.filter((status) => PROPOSAL_STATUS_LIST.includes(status))
         : [STATUS_OPEN, STATUS_CHANGE_REQUESTED, STATUS_APPROVED];
-    if (entityType === ENTITIES_TYPES.PROPOSAL && !search)
+    if (entityType === ENTITIES_TYPES.PROPOSAL && !search && podId)
       getPodTaskProposals({
         variables: {
           input: {
