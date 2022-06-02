@@ -22,7 +22,7 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
-import { CHAIN_TO_GNOSIS_URL_ABBR } from 'utils/web3Constants';
+import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME} from 'utils/web3Constants';
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {
@@ -31,13 +31,13 @@ const generateReadablePreviewForAddress = (address: String) => {
 };
 
 export const constructGnosisRedirectUrl = (chain, safeAddress, safeTxHash) => {
+  if (chain === 'harmony') {
+    return `https://multisig.harmony.one/#/safes/${safeAddress}/transactions/`;
+  }
+  if (chain === 'boba') {
+    return `https://multisig.boba.network/boba:${safeAddress}/transactions/${safeTxHash}`
+  }
   return `https://gnosis-safe.io/app/${CHAIN_TO_GNOSIS_URL_ABBR[chain]}:${safeAddress}/transactions/${safeTxHash}`;
-};
-
-const CHAIN_ID_TO_CHAIN_NAME = {
-  1: 'eth_mainnet',
-  4: 'rinkeby',
-  137: 'polygon_mainnet',
 };
 
 interface SubmissionPaymentInfo {
@@ -200,7 +200,10 @@ export const SingleWalletPayment = (props) => {
     console.log(`getting calldata took ${t2 - t1} milliseconds`);
     t1 = performance.now();
     const gnosisClient = wonderGnosis?.safeServiceClient;
+    console.log('safeServiceClient, ', gnosisClient)
     const gnosisSdk = wonderGnosis?.safeSdk;
+    console.log('gnosisSdk, ', gnosisSdk)
+
     const nextNonce = await gnosisClient?.getNextNonce(selectedWallet?.address);
     t2 = performance.now();
     console.log(`getting next nonce took ${t2 - t1} milliseconds`);
@@ -230,7 +233,7 @@ export const SingleWalletPayment = (props) => {
       data: transactionData.data,
       value: transactionData.value,
       nonce: nextNonce,
-      safeTxGas: Number(safeTxGas),
+      safeTxGas: safeTxGas ? Number(safeTxGas): 0,
     };
     const safeTransaction = await gnosisSdk.createTransaction(transaction);
     const safeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);

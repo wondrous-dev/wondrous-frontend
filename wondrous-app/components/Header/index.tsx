@@ -1,9 +1,11 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { InputAdornment, Typography } from '@material-ui/core';
 import Wallet from 'components/Common/Wallet';
+import { useMe } from '../Auth/withAuth';
 import CreateBtnIcon from 'components/Icons/createBtn';
 import HomeIcon from 'components/Icons/home';
 import SearchIcon from 'components/Icons/search';
+import { Button } from 'components/Common/button';
 import NotificationsBoard from 'components/Notifications';
 import Tooltip from 'components/Tooltip';
 import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
@@ -25,6 +27,7 @@ import {
 } from './styles';
 
 const HeaderComponent = (props) => {
+  const user = useMe();
   // Grab Notifications from Backend
   const { data: notifications, refetch } = useQuery(GET_NOTIFICATIONS);
   const [markAllNotificationsRead] = useMutation(MARK_ALL_NOTIFICATIONS_READ);
@@ -44,9 +47,9 @@ const HeaderComponent = (props) => {
     refetch();
   };
 
-  const { pathname } = useRouter();
-  const urlsWithCreateButton = ['/boards', '/dashboard', '/activities'];
-  const showCreateButton = urlsWithCreateButton.some((url) => pathname.includes(url));
+  const router = useRouter();
+  const urlsWithCreateButton = ['/boards', '/dashboard', '/activities', '/docs', '/analytics'];
+  const showCreateButton = urlsWithCreateButton.some((url) => router.pathname?.includes(url));
   return (
     <Header>
       <HeaderContainer>
@@ -96,13 +99,30 @@ const HeaderComponent = (props) => {
               <TutorialText>Wonder Tutorials</TutorialText>
             </TutorialButton>
           </a>
-          <Wallet />
-
-          <NotificationsBoard notifications={notifications || []} setNofications={setNotifications} />
-          <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
-            <span style={{ padding: '0px 8px' }}>Create</span>
-            <CreateBtnIcon />
-          </HeaderCreateButton>
+          {user && (
+            <>
+              <Wallet />
+              <NotificationsBoard notifications={notifications || []} setNofications={setNotifications} />
+              <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
+                <span style={{ padding: '0px 8px' }}>Create</span>
+                <CreateBtnIcon />
+              </HeaderCreateButton>
+            </>
+          )}
+          {!user && (
+            <Button
+              highlighted
+              type="submit"
+              style={{
+                width: '100px',
+              }}
+              onClick={() => {
+                router.push('/login');
+              }}
+            >
+              Sign in
+            </Button>
+          )}
         </HeaderRightBlock>
       </HeaderContainer>
     </Header>

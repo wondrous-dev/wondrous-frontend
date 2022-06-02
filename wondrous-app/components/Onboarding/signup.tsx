@@ -22,6 +22,7 @@ import { ErrorText } from '../Common';
 import { SupportedChainType } from 'utils/web3Constants';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
+import WalletConnectConnector from 'components/WalletConnectors/WalletConnect';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 import { getDiscordUrl } from 'utils';
 import { DiscordIcon } from 'components/Icons/discord';
@@ -42,7 +43,7 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink, podInfo, redeem
 
   const [unsuportedChain, setUnsuportedChain] = useState(false);
   const router = useRouter();
-  const { token, type } = router.query;
+  const { token, type, discordConnectError } = router.query;
   // Two stage process as wallet connection takes
   // time.
   const connectWallet = async (event) => {
@@ -178,6 +179,11 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink, podInfo, redeem
     }
   };
   useEffect(() => {
+    if (discordConnectError) {
+      setErrorMessage('Error connecting your Discord. Please try again or connect with Metamask instead.');
+    }
+  }, [discordConnectError]);
+  useEffect(() => {
     if (wonderWeb3.address && wonderWeb3.active && wonderWeb3.web3Provider) {
       signupWithWallet();
     }
@@ -228,6 +234,7 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink, podInfo, redeem
         {contributingSentence}
       </InviteWelcomeBoxParagraph>
       <MetaMaskConnector text="Connect with MetaMask" style={buttonStyles} />
+      <WalletConnectConnector text="Connect with Wallet Connect" style={buttonStyles} />
       <CoinbaseConnector text="Connect with Coinbase Wallet" style={buttonStyles} />
       <Button
         style={buttonStyles}

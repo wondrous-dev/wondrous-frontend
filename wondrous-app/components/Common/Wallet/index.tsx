@@ -1,5 +1,5 @@
 import { Button } from '../button';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { useWonderWeb3 } from 'services/web3';
 import Ethereum from '../../Icons/ethereum';
 import { Metamask } from '../../Icons/metamask';
@@ -19,17 +19,26 @@ import {
 import { getUserSigningMessage, linkWallet, logout, useMe } from '../../Auth/withAuth';
 import { DropDown, DropDownItem } from '../dropdown';
 import { Matic } from '../../Icons/matic';
-import { CURRENCY_KEYS } from 'utils/constants';
 import { USDCoin } from '../../Icons/USDCoin';
+import Arbitrum from '../../Icons/arbitrum';
+import Harmony from '../../Icons/harmony';
+import Binance from '../../Icons/binace';
+import Boba from '../../Icons/Boba';
 import { SupportedChainType } from 'utils/web3Constants';
 import { ErrorText } from '..';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import WalletModal from './WalletModal';
 import useEagerConnect from 'services/web3/hooks/useEagerConnect';
+import { WonderWeb3Context } from 'services/web3/context/WonderWeb3Context';
 
 const CHAIN_LOGO = {
   '1': <Ethereum />,
+  '4': <Ethereum />,
   '137': <Matic />,
+  '1666600000': <Harmony />,
+  '42161': <Arbitrum />,
+  '56': <Binance />,
+  '288': <Boba />,
 };
 
 const CURRENCY_SYMBOL = {
@@ -37,6 +46,9 @@ const CURRENCY_SYMBOL = {
   WONDER: <WonderCoin />,
   MATIC: <Matic />,
   USDC: <USDCoin />,
+  ONE: <Harmony />,
+  AETH: <Arbitrum />,
+  BNB: <Binance />,
 };
 
 const CURRENCY_UI_ELEMENTS = {
@@ -44,10 +56,14 @@ const CURRENCY_UI_ELEMENTS = {
   WONDER: { icon: <WonderCoin />, label: 'WONDER' },
   MATIC: { icon: <Matic />, label: 'MATIC' },
   USDC: { icon: <USDCoin />, label: 'USDC' },
+  ONE: { icon: <Harmony />, label: 'ONE' },
+  AETH: { icon: <Arbitrum />, label: 'AETH' },
+  BNB: { icon: <Binance />, label: 'BNB' },
 };
 
 const Wallet = () => {
   const wonderWeb3 = useWonderWeb3();
+  const { provider } = useContext(WonderWeb3Context);
   useEagerConnect();
   const [connected, setConnected] = useState(false);
   const [firstConnect, setFirstConnect] = useState(true);
@@ -71,12 +87,7 @@ const Wallet = () => {
       if (messageToSign) {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
         if (signedMessageIsString(signedMessage)) {
-          const result = await linkWallet(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
-          if (!result) {
-            // Error with wallet link. Disconnect wallet
-            await wonderWeb3.disconnect();
-            setConnected(false);
-          }
+          await linkWallet(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
         }
       }
     }
@@ -126,7 +137,7 @@ const Wallet = () => {
           // TODO should show a small message indicating that
           setDifferentAccountError(true);
         }
-        if (user && !user.activeEthAddress) {
+        if (user && !user.activeEthAddress && provider) {
           // Link the wallet to the user.
           linkUserWithWallet();
         }
@@ -144,7 +155,7 @@ const Wallet = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wonderWeb3.address]);
+  }, [wonderWeb3.address, provider]);
 
   const Balance = () => {
     return (
@@ -207,9 +218,9 @@ const Wallet = () => {
         <ChainWrapper>{CHAIN_LOGO[wonderWeb3.wallet.chain]}</ChainWrapper>
         <WalletDisplay>
           <DropDown DropdownHandler={Balance}>
-            <CurrencyDropdownItem currency={CURRENCY_KEYS.WONDER} />
-            <CurrencyDropdownItem currency={CURRENCY_KEYS.USDC} />
-            {wonderWeb3.chainName && <CurrencyDropdownItem currency={wonderWeb3.chainName} />}
+            <CurrencyDropdownItem currency={'WONDER'} />
+            <CurrencyDropdownItem currency={'USDC'} />
+            {wonderWeb3.nativeTokenSymbol && <CurrencyDropdownItem currency={wonderWeb3.nativeTokenSymbol} />}
           </DropDown>
           <WalletAddress>{wonderWeb3.wallet.addressTag || 'loading...'}</WalletAddress>
           {differentAccountError && (

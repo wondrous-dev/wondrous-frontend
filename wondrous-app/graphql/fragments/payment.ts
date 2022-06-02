@@ -48,6 +48,7 @@ export const UnpaidSubmissionFragment = gql`
     payeeId
     payeeUsername
     payeeProfilePicture
+    payeeActiveEthAddress
     submissionApprovedAt
     paymentStatus
     chain

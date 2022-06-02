@@ -39,7 +39,7 @@ export default function useWeb3() {
       if (error) {
         setIsActivating(null);
         console.log('Error while activating web3 connector', error);
-        showError('Error while activating web3 connector');
+        showError("Can't activate web3 connector, Check that you're logged in on metamask/coinbase wallet, or refresh the page");
       }
     }).then(() => {
       done && done();

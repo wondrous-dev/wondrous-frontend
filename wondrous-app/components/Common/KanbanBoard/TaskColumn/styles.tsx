@@ -1,6 +1,14 @@
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { White } from '../../../../theme/colors';
+import { ENTITIES_TYPES } from 'utils/constants';
+
+export const entityStyling = {
+  [ENTITIES_TYPES.PROPOSAL]: {
+    style: 'min-width: 31%',
+  },
+};
+
 export const DropMeHere = styled.div`
   margin: 1em 0 0 0;
 
@@ -30,13 +38,16 @@ export const TaskColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  max-width: 325px;
-  width: 100%;
-  margin-right: 12px;
-  &:last-child {
-    margin-right: 0;
+  border-right: 1px solid #1b1b1b;
+  padding: 0px 6px 0px 6px;
+  &:first-child {
+    padding-left: 0px;
   }
+  &:last-child {
+    padding-right: 0px;
+    border-right: 0;
+  }
+  ${({ activeEntityType }) => activeEntityType && entityStyling[activeEntityType]?.style}
 `;
 
 export const TaskColumnContainerHeader = styled.div`
@@ -52,6 +63,7 @@ export const TaskColumnContainerHeaderTitle = styled(Typography)({
     fontSize: 14,
     textAlign: 'left',
     color: '#FFF',
+    marginLeft: '10px',
   },
 });
 

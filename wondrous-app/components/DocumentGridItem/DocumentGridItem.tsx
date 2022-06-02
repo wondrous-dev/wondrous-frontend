@@ -48,7 +48,6 @@ const DocumentGridItem = ({ title, description, media, url, icon, permission, on
               alt={`media for ${title}`}
               layout="fill"
               objectFit="cover"
-              style={{ borderRadius: '3px' }}
             />
           )}
         </Box>

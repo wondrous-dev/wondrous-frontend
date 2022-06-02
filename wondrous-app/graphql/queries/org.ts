@@ -182,3 +182,36 @@ export const GET_USER_JOIN_ORG_REQUEST = gql`
     }
   }
 `;
+
+export const GET_TASKS_PER_TYPE = gql`
+  query getPerTypeTaskCountForOrgBoard($orgId: ID!) {
+    getPerTypeTaskCountForOrgBoard(orgId: $orgId) {
+      bountyCount
+      taskCount
+      proposalCount
+      milestoneCount
+    }
+  }
+`;
+
+export const GET_TASKS_PER_TYPE_FOR_POD = gql`
+  query getPerTypeTaskCountForPodBoard($podId: ID!) {
+    getPerTypeTaskCountForPodBoard(podId: $podId) {
+      bountyCount
+      taskCount
+      proposalCount
+      milestoneCount
+    }
+  }
+`;
+
+
+export const GET_ORG_LABELS = gql`
+    query getOrgLabels($orgId: ID!) {
+        getOrgLabels(orgId: $orgId) {
+            id
+            name
+            color
+        }
+    }
+`;

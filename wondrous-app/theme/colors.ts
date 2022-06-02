@@ -48,6 +48,7 @@ export const Green200 = '#7fff31';
 export const Green400 = '#6ADAAB';
 export const Green600 = '#00bf9c';
 export const Green700 = '#219653';
+export const Green800 = '#06FFA5';
 export const Yellow200 = '#FFD78C';
 export const Yellow400 = '#FCCD3F';
 export const Yellow700 = '#F8A811';

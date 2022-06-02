@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 
 import ErrorFieldIcon from 'components/Icons/errorField.svg';
 import Ethereum from 'components/Icons/ethereum';
+import Harmony from 'components/Icons/harmony';
 import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
 import React, { useEffect, useState } from 'react';
 import Modal from '@mui/material/Modal';
@@ -39,7 +40,7 @@ import {
   UPDATE_TOKEN_GATING_CONDITION,
 } from '../../../graphql/mutations/tokenGating';
 import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG, GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
-import { NFT_LIST } from '../../../utils/tokenList';
+import { NFT_LIST, HARMONY_TOKEN_LIST } from '../../../utils/tokenList';
 
 const chainOptions = [
   {
@@ -47,11 +48,12 @@ const chainOptions = [
     icon: <Ethereum />,
     value: 'ethereum',
   },
-  // {
-  //   label: 'Polygon',
-  //   icon: <PolygonIcon />,
-  //   value: 'polygon',
-  // },
+
+  {
+    label: 'Harmony',
+    icon: <Harmony />,
+    value: 'harmony',
+  },
 ];
 
 const SUPPORTED_ACCESS_CONDITION_TYPES = [
@@ -155,13 +157,12 @@ const TokenGatingConfigForm = (props) => {
           icon: data?.getNFTInfo.logoUrl,
         };
         setSelectedToken(formattedOption);
-        console.log('formattedOption', formattedOption);
         setNftList((oldArray) => [...oldArray, formattedOption]);
       }
     },
     fetchPolicy: 'network-only',
   });
-  console.log(nftList);
+
   const searchSelectedTokenInList = (contractAddress, tokenList, chain) => {
     contractAddress = contractAddress.toLowerCase();
     for (const tokenInfo of tokenList) {
@@ -324,6 +325,17 @@ const TokenGatingConfigForm = (props) => {
     });
   };
   const getTokenList = async () => {
+    if (chain === 'harmony') {
+      const formatted = HARMONY_TOKEN_LIST.map((token) => {
+        return {
+          label: token.name,
+          value: token.address,
+          icon: token.logoURI,
+        };
+      });
+      setTokenList(formatted);
+      return formatted;
+    }
     const erc20Url = 'https://tokens.coingecko.com/uniswap/all.json';
     const erc20Promise = fetch(erc20Url).then((r2) => r2.json());
     const [erc20s] = await Promise.all([erc20Promise]);
@@ -354,16 +366,16 @@ const TokenGatingConfigForm = (props) => {
 
   useEffect(() => {
     if (accessConditionType === 'ERC20') {
-      if (tokenList && tokenList.length === 0) {
-        getTokenList();
-      }
+      getTokenList();
+      // if (tokenList && tokenList.length === 0) {
+      // }
     }
     if (accessConditionType === 'ERC721') {
       if (nftList && nftList.length === 0) {
         getNFTList();
       }
     }
-  }, [accessConditionType]);
+  }, [accessConditionType, chain]);
 
   return (
     <Modal
@@ -381,7 +393,7 @@ const TokenGatingConfigForm = (props) => {
             <TokenGatingFormHeaderSecondary as="span">{org?.username || ''}</TokenGatingFormHeaderSecondary>
           </TokenGatingFormHeader>
           <TokenGatingAutocompleteLabel>Chain</TokenGatingAutocompleteLabel>
-          <TokenGatingAutocomplete
+          {/* <TokenGatingAutocomplete
             options={chainOptions}
             value={chain}
             open={openChainSelection}
@@ -403,7 +415,10 @@ const TokenGatingConfigForm = (props) => {
               );
             }}
             renderOption={(props, option) => (
-              <TokenGatingAutocompleteListItem value={option.value} {...props}>
+              <TokenGatingAutocompleteListItem
+                value={option.value}
+                {...props}
+              >
                 {option?.icon}
                 {option.label}
               </TokenGatingAutocompleteListItem>
@@ -411,6 +426,18 @@ const TokenGatingConfigForm = (props) => {
             ListboxComponent={TokenGatingAutocompleteList}
             PopperComponent={TokenGatingAutocompletePopper}
             openOnFocus
+          /> */}
+          <DropdownSelect
+            value={chain}
+            setValue={setChain}
+            innerStyle={{
+              marginTop: 0,
+            }}
+            formSelectStyle={{
+              height: 'auto',
+            }}
+            options={chainOptions}
+            name="chain"
           />
           <TokenGatingAutocompleteLabel>Token Type</TokenGatingAutocompleteLabel>
           <DropdownSelect

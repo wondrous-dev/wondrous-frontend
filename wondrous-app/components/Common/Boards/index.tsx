@@ -6,18 +6,13 @@ import { splitColsByType } from 'services/board';
 import { ViewType } from 'types/common';
 import { delQuery } from 'utils';
 import { useOrgBoard, useSelectMembership } from 'utils/hooks';
-import Filter from '../../Common/Filter';
 import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard';
-import { ToggleViewButton } from '../../Common/ToggleViewButton';
 import { Chevron } from '../../Icons/sections';
 import { GridViewIcon } from '../../Icons/ViewIcons/gridView';
 import { ListViewIcon } from '../../Icons/ViewIcons/listView';
-import SearchTasks from '../../SearchTasks';
 import { Table } from '../../Table';
 import { MembershipRequestTable } from '../../Table/MembershipRequests';
-import SelectMenuBoardType from '../SelectMenuBoardType';
 import {
-  BoardsActivity,
   BoardsContainer,
   ResultsCount,
   ResultsCountRight,
@@ -27,76 +22,37 @@ import {
 } from './styles';
 
 type Props = {
-  filterSchema: any;
-  onSearch: (searchString: string) => Promise<any>;
-  onFilterChange: ({}) => void;
   columns: Array<any>;
   onLoadMore: any;
   hasMore: any;
   isAdmin?: boolean;
-  statuses: string[];
-  podIds?: string[];
-  userId?: string;
   setColumns: React.Dispatch<React.SetStateAction<{}>>;
+  activeView?: string;
+  onSearch?: any;
+  onFilterChange?: any;
+  statuses?: any;
+  filterSchema?: any;
+  userId?: string;
 };
 
 const Boards = (props: Props) => {
-  const {
-    columns,
-    onLoadMore,
-    hasMore,
-    filterSchema,
-    onSearch,
-    onFilterChange,
-    isAdmin,
-    statuses,
-    podIds = [],
-    setColumns,
-    userId,
-  } = props;
+  const { columns, onLoadMore, hasMore, isAdmin, setColumns, activeView } = props;
   const router = useRouter();
-  const orgBoard = useOrgBoard();
   const [totalCount, setTotalCount] = useState(0);
   const [searchResults, setSearchResults] = useState({});
   const { search: searchQuery } = router.query;
   const selectMembershipHook = useSelectMembership();
-  const { boardType } = router.query;
   const selectMembershipRequests = selectMembershipHook?.selectMembershipRequests;
-  const view = String(router.query.view ?? ViewType.Grid);
+  const view = activeView || String(router.query.view ?? ViewType.Grid);
 
   useEffect(() => {
     if (!searchQuery) {
       return;
     }
-
     const { splitCols, totalCount } = splitColsByType(columns);
-
     setTotalCount(totalCount);
     setSearchResults(splitCols);
   }, [columns]);
-
-  const statusesQuery = statuses?.length ? `&statuses=${statuses.join(',')}` : '';
-  const podIdsQuery = podIds?.length ? `&podIds=${podIds.join(',')}` : '';
-  const userIdQuery = userId ? `&userId=${userId}` : '';
-
-  const listViewOptions = [
-    {
-      name: 'List',
-      icon: <ListViewIcon />,
-      active: view === ViewType.List,
-      action: () => {
-        router.replace(`${delQuery(router.asPath)}?view=${ViewType.List}${statusesQuery}${podIdsQuery}${userIdQuery}`);
-      },
-    },
-    {
-      name: 'Grid',
-      icon: <GridViewIcon />,
-      active: view === ViewType.Grid,
-      action: () => {
-        router.replace(`${delQuery(router.asPath)}?view=${ViewType.Grid}${statusesQuery}${podIdsQuery}${userIdQuery}`);
-      },
-    },
-  ];
 
   function renderBoard() {
     if (isAdmin) {
@@ -169,12 +125,6 @@ const Boards = (props: Props) => {
   return (
     <ColumnsContext.Provider value={{ columns, setColumns }}>
       <BoardsContainer>
-        <BoardsActivity>
-          <SearchTasks onSearch={onSearch} />
-          <Filter filterSchema={filterSchema} onChange={onFilterChange} statuses={statuses} podIds={podIds} />
-          {orgBoard && <SelectMenuBoardType router={router} view={view} />}
-          {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
-        </BoardsActivity>
         {selectMembershipRequests && (
           <MembershipRequestTable isAdmin={isAdmin} requests={selectMembershipHook?.requests} />
         )}

@@ -1,21 +1,34 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { TabsVisibilityCreateEntity } from 'components/Common/TabsVisibilityCreateEntity';
-import { CircularProgress, styled, Switch, TextField } from '@material-ui/core';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { CircularProgress, styled, Switch, TextField } from '@mui/material';
+
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CREATE_POD } from 'graphql/mutations/pod';
 import { CREATE_MILESTONE, CREATE_TASK, CREATE_BOUNTY } from 'graphql/mutations/task';
 import { CREATE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { GET_AUTOCOMPLETE_USERS, GET_TASK_BY_ID, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { CREATE_LABEL } from 'graphql/mutations/org';
+import {
+  GET_AUTOCOMPLETE_USERS,
+  GET_ORG_LABELS,
+  GET_TASK_BY_ID,
+  GET_USER_ORGS,
+  GET_USER_PERMISSION_CONTEXT,
+} from 'graphql/queries';
 import { GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_POD_USERS, GET_USER_AVAILABLE_PODS } from 'graphql/queries/pod';
 import { GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_FOR_POD, GET_MILESTONES } from 'graphql/queries/task';
 import { Grey700, White } from '../../theme/colors';
 import { addProposalItem } from 'utils/board';
-import { CHAIN_TO_CHAIN_DIPLAY_NAME, ENTITIES_TYPES, MEDIA_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
+import {
+  CHAIN_TO_CHAIN_DIPLAY_NAME,
+  DEFAULT_SINGLE_DATEPICKER_VALUE,
+  ENTITIES_TYPES,
+  MEDIA_TYPES,
+  PERMISSIONS,
+  PRIVACY_LEVEL,
+} from 'utils/constants';
 import { TextInputContext } from 'utils/contexts';
 
 import {
@@ -28,7 +41,6 @@ import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import { useMe } from '../Auth/withAuth';
 import { ErrorText } from '../Common';
-import DatePicker from '../Common/DatePicker';
 import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
 import { SafeImage } from '../Common/Image';
@@ -47,7 +59,10 @@ import { TextInput } from '../TextInput';
 import { ENTITIES_UI_ELEMENTS } from './chooseEntityToCreateModal';
 import HeaderImage from './HeaderImage/headerImage';
 import { MediaItem } from './MediaItem';
+import Tags, { Option as Label } from '../Tags';
 import MembersRow from './MembersRow/membersRow';
+import SingleDatePicker from 'components/SingleDatePicker';
+
 import { CreateFormMembersList } from './MembersRow/styles';
 import {
   CreateFormAddDetailsAppearBlock,
@@ -59,7 +74,6 @@ import {
   CreateFormAddDetailsSection,
   CreateFormAddDetailsSelects,
   CreateFormAddDetailsTab,
-  CreateFormAddDetailsTabLabel,
   CreateFormBaseModal,
   CreateFormBaseModalCloseBtn,
   CreateFormBaseModalHeader,
@@ -79,7 +93,6 @@ import {
   CreateFormMembersSection,
   CreateFormPreviewButton,
   CreateFormRewardCurrency,
-  CreateFormSetPodPrivacy,
   CreateRewardAmountDiv,
   MediaUploadDiv,
   MultiMediaUploadButton,
@@ -87,8 +100,10 @@ import {
   OptionDiv,
   OptionTypography,
   StyledAutocompletePopper,
+  CreateFormAddTagsSection,
   StyledChip,
   TextInputDiv,
+  CreateFormBaseModalHeaderWrapper,
 } from './styles';
 
 const filterUserOptions = (options) => {
@@ -247,6 +262,7 @@ const CreateLayoutBaseModal = (props) => {
   const [milestoneString, setMilestoneString] = useState('');
   const [assignee, setAssignee] = useState(null);
   const [selectedReviewers, setSelectedReviewers] = useState([]);
+  const [labelIds, setLabelIds] = useState([]);
   const [link, setLink] = useState('');
   const [rewardsCurrency, setRewardsCurrency] = useState(null);
   const [rewardsAmount, setRewardsAmount] = useState(null);
@@ -264,6 +280,7 @@ const CreateLayoutBaseModal = (props) => {
   const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
   const isSubtask = parentTaskId !== undefined;
   const textLimit = isPod ? 200 : 900;
+
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
   });
@@ -281,6 +298,14 @@ const CreateLayoutBaseModal = (props) => {
     onCompleted: () => {
       setOrgUserFetched(true);
     },
+  });
+
+  const [getOrgLabels, { data: orgLabelsData }] = useLazyQuery(GET_ORG_LABELS, {
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [createLabel] = useMutation(CREATE_LABEL, {
+    refetchQueries: () => ['getOrgLabels'],
   });
 
   const [getEligibleReviewersForOrg, { data: eligibleReviewersForOrgData }] =
@@ -314,7 +339,9 @@ const CreateLayoutBaseModal = (props) => {
   const [pod, setPod] = useState(null);
   const selectedPodPrivacyLevel = pods?.filter((i) => i.id === pod)[0]?.privacyLevel;
   const isPodPublic = !selectedPodPrivacyLevel || selectedPodPrivacyLevel === 'public';
-  const [dueDate, setDueDate] = useState(null);
+  const [dueDate, setDueDate] = useState(DEFAULT_SINGLE_DATEPICKER_VALUE);
+  const [recurrenceType, setRecurrenceType] = useState(null);
+  const [recurrenceValue, setRecurrenceValue] = useState(null);
   const [isPrivate, setIsPrivate] = useState(false);
   const [isPublicEntity, setIsPublicEntity] = useState(false);
   const {
@@ -484,16 +511,23 @@ const CreateLayoutBaseModal = (props) => {
   const [createMilestone, { loading: createMilestoneLoading }] = useMutation(CREATE_MILESTONE);
 
   const submitMutation = useCallback(() => {
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     const taskInput = {
       title,
+      labelIds,
       description: descriptionText,
       orgId: org,
       milestoneId: milestone?.id,
       parentTaskId,
       podId: pod,
       dueDate,
+      ...(recurrenceType &&
+        recurrenceValue && {
+          recurringSchema: {
+            [recurrenceType]: recurrenceValue,
+          },
+        }),
       ...(rewardsAmount &&
         rewardsCurrency && {
           rewards: [
@@ -514,7 +548,7 @@ const CreateLayoutBaseModal = (props) => {
       reviewerIds: selectedReviewers.map(({ id }) => id),
       userMentions: getMentionArray(descriptionText),
       mediaUploads,
-      timezone
+      timezone,
     };
     const taskPodPrivacyError = !isPodPublic ? isPublicEntity : false;
     switch (entityType) {
@@ -530,56 +564,83 @@ const CreateLayoutBaseModal = (props) => {
           setErrors(newErrors);
         } else {
           if (canCreateTask) {
+            const refetchQueries = [];
+            if (orgBoard) {
+              refetchQueries.push('getPerTypeTaskCountForOrgBoard');
+            }
+            if (podBoard) {
+              refetchQueries.push('getPerTypeTaskCountForPodBoard');
+            }
+
             createTask({
               variables: {
                 input: taskInput,
               },
+              refetchQueries,
             }).then((result) => {
-              const task = result?.data?.createTask;
-              const justCreatedPod = getPodObject();
-              if (
-                board?.setColumns &&
-                ((task?.orgId === board?.orgId && !board?.podId) ||
-                  task?.podId === board?.podId ||
-                  pod === board?.podId)
-              ) {
-                const transformedTask = transformTaskToTaskCard(task, {
-                  orgName: board?.org?.name,
-                  orgProfilePicture: board?.org?.profilePicture,
-                  podName: justCreatedPod?.name,
-                });
+              //checking if it's pod or org to use pod/org entity type else we assume it's the userBoard and we use the normal flow
+              if (board?.entityType === ENTITIES_TYPES.TASK || !board?.entityType) {
+                const task = result?.data?.createTask;
+                const justCreatedPod = getPodObject();
+                if (
+                  board?.setColumns &&
+                  ((task?.orgId === board?.orgId && !board?.podId) ||
+                    task?.podId === board?.podId ||
+                    pod === board?.podId)
+                ) {
+                  const transformedTask = transformTaskToTaskCard(task, {
+                    orgName: board?.org?.name,
+                    orgProfilePicture: board?.org?.profilePicture,
+                    podName: justCreatedPod?.name,
+                  });
 
-                const columns = [...board?.columns];
-                columns[0].tasks = [transformedTask, ...columns[0].tasks];
-                board.setColumns(columns);
+                  const columns = [...board?.columns];
+                  columns[0].tasks = [transformedTask, ...columns[0].tasks];
+                  board.setColumns(columns);
+                }
+              } else {
+                board?.setEntityType(ENTITIES_TYPES.TASK);
               }
               handleClose();
             });
           } else {
+            const refetchQueries = [];
+            if (orgBoard) {
+              refetchQueries.push('getPerTypeTaskCountForOrgBoard');
+            }
+            if (podBoard) {
+              refetchQueries.push('getPerTypeTaskCountForPodBoard');
+            }
             createTaskProposal({
               variables: {
                 input: taskInput,
               },
+              refetchQueries,
             }).then((result) => {
-              const taskProposal = result?.data?.createTaskProposal;
-              const justCreatedPod = getPodObject();
-              if (
-                board?.setColumns &&
-                ((taskProposal?.orgId === board?.orgId && !board?.podId) ||
-                  taskProposal?.podId === board?.podId ||
-                  pod === board?.podId)
-              ) {
-                const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
-                  userProfilePicture: user?.profilePicture,
-                  username: user?.username,
-                  orgName: board?.org?.name,
-                  orgProfilePicture: board?.org?.profilePicture,
-                  podName: justCreatedPod?.name,
-                });
+              if (board?.entityType === ENTITIES_TYPES.TASK || !board?.entityType) {
+                const taskProposal = result?.data?.createTaskProposal;
+                const justCreatedPod = getPodObject();
+                // TODO: refactor this condition
+                if (
+                  board?.setColumns &&
+                  ((taskProposal?.orgId === board?.orgId && !board?.podId) ||
+                    taskProposal?.podId === board?.podId ||
+                    pod === board?.podId)
+                ) {
+                  const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
+                    userProfilePicture: user?.profilePicture,
+                    username: user?.username,
+                    orgName: board?.org?.name,
+                    orgProfilePicture: board?.org?.profilePicture,
+                    podName: justCreatedPod?.name,
+                  });
 
-                let columns = [...board?.columns];
-                columns = addProposalItem(transformedTaskProposal, columns);
-                board.setColumns(columns);
+                  let columns = [...board?.columns];
+                  columns = addProposalItem(transformedTaskProposal, columns);
+                  board?.setColumns(columns);
+                }
+              } else {
+                board?.setEntityType(ENTITIES_TYPES.PROPOSAL);
               }
               handleClose();
             });
@@ -599,10 +660,10 @@ const CreateLayoutBaseModal = (props) => {
         } else {
           const refetchQueries = ['getPerStatusTaskCountForUserBoard'];
           if (orgBoard) {
-            refetchQueries.push('getPerStatusTaskCountForOrgBoard');
+            refetchQueries.push('getPerStatusTaskCountForOrgBoard', 'getPerTypeTaskCountForOrgBoard');
           }
           if (podBoard) {
-            refetchQueries.push('getPerStatusTaskCountForPodBoard');
+            refetchQueries.push('getPerTypeTaskCountForPodBoard');
           }
           createTaskProposal({
             variables: {
@@ -610,25 +671,28 @@ const CreateLayoutBaseModal = (props) => {
             },
             refetchQueries,
           }).then((result) => {
-            const taskProposal = result?.data?.createTaskProposal;
-            const justCreatedPod = getPodObject();
-            if (
-              board?.setColumns &&
-              ((taskProposal?.orgId === board?.orgId && !board?.podId) ||
-                taskProposal?.podId === board?.podId ||
-                pod === board?.podId)
-            ) {
-              const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
-                userProfilePicture: user?.profilePicture,
-                username: user?.username,
-                orgName: board?.org?.name,
-                orgProfilePicture: board?.org?.profilePicture,
-                podName: justCreatedPod?.name,
-              });
-
-              let columns = [...board?.columns];
-              columns = addProposalItem(transformedTaskProposal, columns);
-              board.setColumns(columns);
+            if (board?.entityType === ENTITIES_TYPES.PROPOSAL || !board?.entityType) {
+              const taskProposal = result?.data?.createTaskProposal;
+              const justCreatedPod = getPodObject();
+              if (
+                board?.setColumns &&
+                ((taskProposal?.orgId === board?.orgId && !board?.podId) ||
+                  taskProposal?.podId === board?.podId ||
+                  pod === board?.podId)
+              ) {
+                const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
+                  userProfilePicture: user?.profilePicture,
+                  username: user?.username,
+                  orgName: board?.org?.name,
+                  orgProfilePicture: board?.org?.profilePicture,
+                  podName: justCreatedPod?.name,
+                });
+                let columns = [...board?.columns];
+                columns = addProposalItem(transformedTaskProposal, columns);
+                board?.setColumns(columns);
+              }
+            } else {
+              board?.setEntityType(ENTITIES_TYPES.PROPOSAL);
             }
             handleClose();
           });
@@ -673,6 +737,7 @@ const CreateLayoutBaseModal = (props) => {
       case ENTITIES_TYPES.MILESTONE:
         const milestoneInput = {
           title,
+          labelIds,
           description: descriptionText,
           orgId: org,
           podId: pod,
@@ -681,26 +746,45 @@ const CreateLayoutBaseModal = (props) => {
           timezone,
         };
         if (canCreateTask) {
+          const refetchQueries = [];
+          if (orgBoard) {
+            refetchQueries.push('getPerTypeTaskCountForOrgBoard');
+          }
+
+          if (podBoard) {
+            refetchQueries.push('getPerTypeTaskCountForPodBoard');
+          }
           createMilestone({
             variables: {
               input: milestoneInput,
             },
+            refetchQueries,
           }).then((result) => {
-            const task = result?.data?.createMilestone;
-            const justCreatedPod = getPodObject();
-            if (
-              board?.setColumns &&
-              ((task?.orgId === board?.orgId && !board?.podId) || task?.podId === board?.podId || pod === board?.podId)
-            ) {
-              const transformedTask = transformTaskToTaskCard(task, {
-                orgName: board?.org?.name,
-                orgProfilePicture: board?.org?.profilePicture,
-                podName: justCreatedPod?.name,
-              });
+            if (board?.entityType === ENTITIES_TYPES.MILESTONE || !board?.entityType) {
+              const task = result?.data?.createMilestone;
+              const justCreatedPod = getPodObject();
+              if (
+                board?.setColumns &&
+                ((task?.orgId === board?.orgId && !board?.podId) ||
+                  task?.podId === board?.podId ||
+                  pod === board?.podId)
+              ) {
+                const transformedTask = transformTaskToTaskCard(task, {
+                  orgName: board?.org?.name,
+                  orgProfilePicture: board?.org?.profilePicture,
+                  podName: justCreatedPod?.name,
+                });
 
-              const columns = [...board?.columns];
-              columns[0].tasks = [transformedTask, ...columns[0].tasks];
-              board.setColumns(columns);
+                let columns = [...board?.columns];
+                if (columns[0]?.tasks) {
+                  columns[0].tasks = [transformedTask, ...columns[0].tasks];
+                } else {
+                  columns = [transformedTask, ...columns];
+                }
+                board.setColumns(columns);
+              }
+            } else {
+              board?.setEntityType(ENTITIES_TYPES.MILESTONE);
             }
             handleClose();
           });
@@ -709,6 +793,7 @@ const CreateLayoutBaseModal = (props) => {
       case ENTITIES_TYPES.BOUNTY:
         const bountyInput = {
           title,
+          labelIds,
           description: descriptionText,
           orgId: org,
           milestoneId: milestone?.id,
@@ -739,7 +824,7 @@ const CreateLayoutBaseModal = (props) => {
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
-          timezone
+          timezone,
         };
         // const isErrorMaxSubmissionCount =
         //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
@@ -759,29 +844,46 @@ const CreateLayoutBaseModal = (props) => {
           setErrors(newErrors);
         } else {
           if (canCreateTask) {
+            const refetchQueries = [];
+            if (orgBoard) {
+              refetchQueries.push('getPerTypeTaskCountForOrgBoard');
+            }
+            if (podBoard) {
+              refetchQueries.push('getPerTypeTaskCountForPodBoard');
+            }
+
             createBounty({
               variables: {
                 input: bountyInput,
               },
+              refetchQueries,
             })
               .then((result) => {
-                const task = result?.data?.createBounty;
-                const justCreatedPod = getPodObject();
-                if (
-                  board?.setColumns &&
-                  ((task?.orgId === board?.orgId && !board?.podId) ||
-                    task?.podId === board?.podId ||
-                    pod === board?.podId)
-                ) {
-                  const transformedTask = transformTaskToTaskCard(task, {
-                    orgName: board?.org?.name,
-                    orgProfilePicture: board?.org?.profilePicture,
-                    podName: justCreatedPod?.name,
-                  });
+                if (board?.entityType === ENTITIES_TYPES.BOUNTY || !board?.entityType) {
+                  const task = result?.data?.createBounty;
+                  const justCreatedPod = getPodObject();
+                  if (
+                    board?.setColumns &&
+                    ((task?.orgId === board?.orgId && !board?.podId) ||
+                      task?.podId === board?.podId ||
+                      pod === board?.podId)
+                  ) {
+                    const transformedTask = transformTaskToTaskCard(task, {
+                      orgName: board?.org?.name,
+                      orgProfilePicture: board?.org?.profilePicture,
+                      podName: justCreatedPod?.name,
+                    });
 
-                  const columns = [...board?.columns];
-                  columns[0].tasks = [transformedTask, ...columns[0].tasks];
-                  board.setColumns(columns);
+                    let columns = [...board?.columns];
+                    if (columns[0]?.tasks) {
+                      columns = [transformedTask, ...columns[0].tasks];
+                    } else {
+                      columns = [transformedTask, ...columns];
+                    }
+                    board?.setColumns(columns);
+                  }
+                } else {
+                  board?.setEntityType(ENTITIES_TYPES.BOUNTY);
                 }
                 handleClose();
               })
@@ -801,6 +903,8 @@ const CreateLayoutBaseModal = (props) => {
     parentTaskId,
     pod,
     dueDate,
+    recurrenceType,
+    recurrenceValue,
     rewardsAmount,
     rewardsCurrency,
     canCreateTask,
@@ -824,26 +928,56 @@ const CreateLayoutBaseModal = (props) => {
     createBounty,
     isPodPublic,
     isPublicEntity,
+    labelIds,
   ]);
+
+  useEffect(() => {
+    if (org) {
+      getOrgLabels({
+        variables: {
+          orgId: org,
+        },
+      });
+    } else {
+      setLabelIds([]);
+    }
+  }, [org]);
+
+  const handleCreateLabel = async (label: Label) => {
+    const {
+      data: { createLabel: newLabel },
+    } = await createLabel({
+      variables: {
+        input: {
+          orgId: org,
+          name: label.name,
+          color: label.color,
+        },
+      },
+    });
+
+    setLabelIds([...labelIds, newLabel.id]);
+  };
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const creating =
     createTaskLoading || createTaskProposalLoading || createMilestoneLoading || createBountyLoading || createPodLoading;
-
+  console.log('pods ->', pods);
   return (
     <CreateFormBaseModal isPod={isPod}>
-      <CreateFormBaseModalCloseBtn onClick={handleClose}>
-        <CloseModalIcon />
-      </CreateFormBaseModalCloseBtn>
-      <CreateFormBaseModalHeader
-        style={{
-          marginBottom: '0',
-        }}
-      >
-        <TitleIcon circle />
-        <CreateFormBaseModalTitle>Create a {titleText.toLowerCase()}</CreateFormBaseModalTitle>
-      </CreateFormBaseModalHeader>
-
+      <CreateFormBaseModalHeaderWrapper>
+        <CreateFormBaseModalHeader
+          style={{
+            marginBottom: '0',
+          }}
+        >
+          <TitleIcon circle />
+          <CreateFormBaseModalTitle>Create a {titleText.toLowerCase()}</CreateFormBaseModalTitle>
+        </CreateFormBaseModalHeader>
+        <CreateFormBaseModalCloseBtn onClick={handleClose}>
+          <CloseModalIcon />
+        </CreateFormBaseModalCloseBtn>
+      </CreateFormBaseModalHeaderWrapper>
       <CreateFormMainSection>
         <CreateFormMainSelects>
           <DropdownSelect
@@ -1312,6 +1446,21 @@ const CreateLayoutBaseModal = (props) => {
         )}
       </CreateFormMainSection>
 
+      {org ? (
+        <CreateFormAddTagsSection>
+          <CreateFormMainInputBlock>
+            <CreateFormMainBlockTitle>Add tags</CreateFormMainBlockTitle>
+
+            <Tags
+              options={orgLabelsData?.getOrgLabels || []}
+              ids={labelIds}
+              onChange={setLabelIds}
+              onCreate={handleCreateLabel}
+              limit={4}
+            />
+          </CreateFormMainInputBlock>
+        </CreateFormAddTagsSection>
+      ) : null}
       {/* {showDeliverableRequirementsSection && (
 				<CreateFormTaskRequirements>
 					<CreateFormTaskRequirementsTitle>
@@ -1331,7 +1480,6 @@ const CreateLayoutBaseModal = (props) => {
 					</CreateFormTaskRequirementsContainer>
 				</CreateFormTaskRequirements>
 			)} */}
-
       <CreateFormAddDetailsSection>
         {/* <CreateFormAddDetailsButton onClick={() => addDetailsHandleClick()}>
           {!addDetails ? (
@@ -1362,9 +1510,14 @@ const CreateLayoutBaseModal = (props) => {
               <CreateFormAddDetailsAppearBlockContainer>
                 <CreateFormAddDetailsSelects>
                   <CreateFormAddDetailsLocalizationProvider>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
-                    </LocalizationProvider>
+                    <CreateFormAddDetailsInputLabel>Due Date</CreateFormAddDetailsInputLabel>
+
+                    <SingleDatePicker
+                      setValue={setDueDate}
+                      setRecurrenceType={setRecurrenceType}
+                      setRecurrenceValue={setRecurrenceValue}
+                      hideRecurring={isBounty || isMilestone}
+                    />
                   </CreateFormAddDetailsLocalizationProvider>
                 </CreateFormAddDetailsSelects>
                 {/* <CreateFormAddDetailsSelects> */}{' '}
@@ -1439,7 +1592,6 @@ const CreateLayoutBaseModal = (props) => {
           </CreateFormAddDetailsAppearBlock>
         )}
       </CreateFormAddDetailsSection>
-
       <CreateFormFooterButtons>
         {errors.general && <ErrorText>{errors.general}</ErrorText>}
         <CreateFormButtonsBlock>
@@ -1457,7 +1609,7 @@ const CreateLayoutBaseModal = (props) => {
             onClick={submitMutation}
           >
             {creating ? <CircularProgress size={20} /> : null}
-            {canCreateTask ? 'Create' : isProposal ? 'Create': 'Propose'} {titleText}
+            {canCreateTask ? 'Create' : isProposal ? 'Create' : 'Propose'} {titleText}
           </CreateFormPreviewButton>
         </CreateFormButtonsBlock>
       </CreateFormFooterButtons>

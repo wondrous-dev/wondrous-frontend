@@ -31,7 +31,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
 import { GET_SUBMISSIONS_PAYMENT_INFO } from 'graphql/queries/payment';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import usePrevious, { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { PERMISSIONS } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { useRouter } from 'next/router';
@@ -42,6 +42,7 @@ import { BatchWalletPayment } from '../../Common/Payment/BatchWalletPayment';
 import Link from 'next/link';
 import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { cutString } from 'utils/helpers';
+import { isEqual } from 'lodash';
 
 enum ViewType {
   Paid = 'paid',
@@ -121,12 +122,14 @@ export const BatchPayModal = (props) => {
   });
   const submissionIds = unpaidSubmissions && Object.keys(unpaidSubmissions);
 
+  const prevSubmissionIds = usePrevious(submissionIds);
   useEffect(() => {
     getWallets(podId, orgId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [podId, orgId]);
   useEffect(() => {
-    if (submissionIds) {
+    if (!submissionIds || submissionIds.length === 0) return;
+    if (!isEqual(submissionIds, prevSubmissionIds)) {
       getSubmissionsPaymentInfo({
         variables: {
           submissionIds,
@@ -134,7 +137,8 @@ export const BatchPayModal = (props) => {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unpaidSubmissions, submissionIds]);
+  }, [submissionIds, prevSubmissionIds]);
+
   return (
     <Modal open={open} onClose={handleClose}>
       <PaymentModal>

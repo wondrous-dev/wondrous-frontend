@@ -33,7 +33,7 @@ export const MakePaymentBlock = (props) => {
   const canPay = permissions.includes(PERMISSIONS.APPROVE_PAYMENT) || permissions.includes(PERMISSIONS.FULL_ACCESS);
   useEffect(() => {
     taskSubmissions?.map((taskSubmission) => {
-      if (taskSubmission.approvedAt) {
+      if (taskSubmission?.approvedAt) {
         setApprovedSubmission(taskSubmission);
         approvedSubmissionContext?.setApprovedSubmission(taskSubmission);
       }

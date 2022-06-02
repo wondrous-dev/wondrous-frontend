@@ -11,7 +11,7 @@ import {
 import SnackbarComp from '@mui/material/Snackbar';
 import { SafeImage } from 'components/Common/Image';
 import styled from 'styled-components';
-import { White } from '../../theme/colors';
+import { White, Red200 } from '../../theme/colors';
 import { Button } from '../Common/button';
 import { Discord } from '../Icons/discord';
 
@@ -168,6 +168,15 @@ export const SettingsDaoPodIndicatorText = styled(Typography)`
     color: #ffffff;
   }
 `;
+export const ArchivedPodIndicatorText = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 16px;
+    font-weight: 400;
+    color: ${Red200};
+  }
+`;
+
 
 export const SettingsDaoPodIndicatorIconWrapper = styled.div`
   display: flex;
@@ -258,7 +267,7 @@ export const GeneralSettingsDAONameInput = styled(InputBase)`
     font-size: 14px;
     line-height: 21px;
     letter-spacing: 0.01em;
-    color: #c4c4c4;
+    color: ${White};
     padding: 10px 15px;
   }
 `;
@@ -279,7 +288,7 @@ export const GeneralSettingsDAODescriptionInput = styled(GeneralSettingsDAONameI
     font-size: 14px;
     line-height: 21px;
     letter-spacing: 0.01em;
-    color: #c4c4c4;
+    color: ${White};
     padding: 10px 15px;
     border: none;
   }
@@ -412,7 +421,7 @@ export const ImageUploadRecommendText = styled(Typography)`
   && {
     font-size: 12px;
     line-height: 15px;
-    color: #c4c4c4;
+    color: ${White};
     margin-bottom: 6px;
   }
 `;

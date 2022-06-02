@@ -1,7 +1,6 @@
 import { Box, Popper, Typography } from '@mui/material';
 import styled from 'styled-components';
 import { Black90, Black97 } from '../../../theme/colors';
-import { LockIconOutline } from '../../Icons/userpass';
 
 export const PrivateBoardIconBackground = styled.div`
   background: linear-gradient(196.76deg, ${Black90} -48.71%, ${Black97} 90.48%);
@@ -9,17 +8,22 @@ export const PrivateBoardIconBackground = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 28px;
-  height: 28px;
-  ${({ isPrivate }) => !isPrivate && `display: none;`}
+  width: 40px;
+  margin-right: 10px;
+  height: 40px;
 `;
 
-export const PrivateBoardIconLockIcon = styled(() => <LockIconOutline color="#CCBBFF" viewBox="-6 -4 24 24" />)``;
-
-export const PrivateBoardIconPopper = styled(Popper)``;
+export const PrivateBoardIconPopper = styled(Popper)`
+  && {
+    position: absolute;
+    z-index: 10000;
+  }
+`;
 
 export const PrivateBoardIconPopperWrapper = styled(Box)`
-  width: 78px;
+  width: auto;
+  padding-left: 4px;
+  padding-right: 4px;
   height: 28px;
   border-radius: 4px;
   background: #363636;

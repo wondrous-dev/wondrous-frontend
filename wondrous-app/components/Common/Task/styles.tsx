@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients';
-import { Grey80, Grey250, White } from '../../../theme/colors';
+import { Grey80, Grey250, White, Blue20, Background, Grey85 } from '../../../theme/colors';
 import { Typography } from '@material-ui/core';
 import { BaseCard } from '../card';
 import RightArrowIcon from '../../Icons/rightArrow';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
-
+import ProposalIcon from 'components/Icons/proposalIcon';
+import { getContrastYIQ } from 'utils/colors';
 export const TaskInner = styled.div`
   display: flex;
   flex: 1 1 auto;
@@ -14,9 +15,7 @@ export const TaskInner = styled.div`
   align-items: stretch;
 
   border-radius: 5px;
-  padding: 14px;
-
-  padding-bottom: 18px;
+  padding: 4px;
   width: 100%;
   overflow: clip;
 
@@ -45,12 +44,14 @@ export const TaskHeader = styled.div`
   display: flex;
   width: 100%;
   text-align: left;
-
-  margin: 0 0 17px 0;
+  justify-content: flex-start;
+  align-items: center;
 `;
 
 export const TaskHeaderIconWrapper = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
   & > * {
     margin-right: 4px;
   }
@@ -114,7 +115,7 @@ export const TaskFooter = styled.div`
   display: flex;
   align-self: flex-end;
   align-items: center;
-
+  z-index: 100;
   margin-top: 22px;
 
   width: 100%;
@@ -127,9 +128,9 @@ export const TaskFooter = styled.div`
 export const TaskAction = styled.div`
   display: flex;
   flex-direction: row;
-  flext-content: flex-start;
+  justify-content: flex-start;
   align-content: space-between;
-  margin-right: 30px;
+  align-items: center;
 `;
 
 export const TaskActionMenu = styled.div`
@@ -138,6 +139,11 @@ export const TaskActionMenu = styled.div`
   flex-grow: 1;
   justify-content: flex-end;
   height: 24px;
+  z-index: 100;
+  align-items: center;
+  > * {
+    margin-left: 12px;
+  }
 `;
 
 export const TaskActionAmount = styled.div`
@@ -158,7 +164,7 @@ export const PodWrapper = styled.div`
   display: flex;
   align-items: flex-start;
   margin-right: 6px;
-  margin-top: 24px;
+  margin-top: 12px;
 `;
 
 export const PodName = styled(Typography)`
@@ -172,7 +178,6 @@ export const PodName = styled(Typography)`
 `;
 
 export const SubtaskCountWrapper = styled.div`
-  background: #0f0f0f;
   display: flex;
   align-items: center;
   padding: 2px 6px;
@@ -513,16 +518,27 @@ export const ArchivedTaskUndo = styled.span`
   }
 `;
 
-export const ClaimButton = styled(CreateFormPreviewButton)`
+export const ActionButton = styled(CreateFormPreviewButton)`
   && {
-    padding: 4px 8px;
+    padding: 4px 16px;
     margin-left: 0;
     margin-right: 12px;
     height: auto;
-
+    z-index: 10;
+    border: 1px solid transparent;
     :hover {
       background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
-      border: 1px solid #7427ff;
+    }
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      padding: 1px;
+      border-radius: 180px;
     }
   }
 `;
@@ -530,4 +546,139 @@ export const ClaimButton = styled(CreateFormPreviewButton)`
 export const TaskUserDiv = styled.div`
   display: flex;
   align-items: center;
+`;
+
+export const ProposalCardWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  color: ${White};
+  padding: 14px;
+  margin: ${(props) => (props.wrapped ? '0' : '1em 0 0 0')};
+  border-radius: 3px;
+  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
+  gap: 14px;
+  border: 0px solid transparent;
+  border-radius: 5px;
+  position: relative;
+  height: fit-content;
+  align-items: flex-start;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 5px;
+    background: linear-gradient(169.47deg, rgba(75, 75, 75, 0.6) 7.84%, rgba(35, 35, 35, 0.6) 108.71%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 1px;
+  }
+`;
+
+export const ProposalCardType = styled.div`
+  color: ${Blue20};
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 17px;
+`;
+
+export const ProposalIconBackground = styled.div`
+  background: ${Background};
+  padding: 5px;
+  border-radius: 180px;
+`;
+
+export const CheckedIconWrapper = styled.div`
+  display: flex;
+  background: ${Grey85};
+  border-radius: 6px;
+`;
+const IconWrapper = styled.div`
+  border-radius: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+  background: linear-gradient(196.76deg, #474747 -48.71%, #181818 90.48%);
+`;
+export const ProposalCardIcon = () => (
+  <ProposalIconBackground>
+    <IconWrapper>
+      <ProposalIcon />
+    </IconWrapper>
+  </ProposalIconBackground>
+);
+
+export const ProposalFooterButton = styled.div`
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 7px 16px;
+  position: relative;
+  border-radius: 180px;
+  ${({ isAction, borderColor, color }) => {
+    if (isAction) {
+      return `
+      cursor: pointer;
+      z-index: 100;
+      background:#363636;
+      `;
+    } else {
+      return `border: 1px solid ${borderColor || 'transparent'};
+    color: ${color || White};
+     ${
+       !borderColor &&
+       `&::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          padding: 1px;
+          border-radius: 180px;
+      }`
+     }`;
+    }
+  }};
+`;
+
+export const ProposalCardFooter = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding-top: 10px;
+  border-top: 1px solid ${Grey85};
+  padding-bottom: 15px;
+`;
+
+export const Tag = styled.div`
+  /* color: ${(props) => getContrastYIQ(props.color)};
+  background: ${(props) => props.color}; */
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin: 5px 0;
+
+  &:not(:last-child) {
+    margin-right: 10px;
+  }
+`;
+
+export const DueDateText = styled(Typography)`
+  && {
+    font-family: Space Grotesk;
+    color: #c4c4c4;
+    font-size: 13px;
+    margin-right: 4px;
+  }
 `;

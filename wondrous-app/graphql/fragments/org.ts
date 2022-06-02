@@ -50,3 +50,14 @@ export const OrgRoleFragment = gql`
     name
   }
 `;
+
+// TODO: Move to another folder
+export const LabelFragment = gql`
+  fragment LabelFragment on Label {
+    id
+    createdAt
+    orgId
+    name
+    color
+  }
+`;

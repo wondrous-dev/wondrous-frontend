@@ -1,10 +1,19 @@
 /* Styles for the mui autocomplete */
-.MuiAutocomplete-loading,
-.MuiAutocomplete-listbox {
-  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
-  box-shadow: 0px 34px 84px rgb(0 0 0 / 55%);
-  border-radius: 3px;
-  color: #ffffff;
+.MuiAutocomplete-paper {
+  background: transparent !important;
+}
+
+.MuiAutocomplete-paper .MuiAutocomplete-noOptions,
+.MuiAutocomplete-paper .MuiAutocomplete-listbox {
+  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%) !important;
+  border-radius: 6px;
   border: 1px solid #4b4b4b;
+  color: #ffffff;
   padding: 0;
+}
+
+.MuiAutocomplete-paper .MuiAutocomplete-noOptions {
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #c4c4c4;
 }

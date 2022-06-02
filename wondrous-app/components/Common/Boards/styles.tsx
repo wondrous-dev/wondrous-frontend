@@ -1,26 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, MenuItem, TextField } from '@material-ui/core';
-import { Black92 } from '../../../theme/colors';
-
+import { Black92, White, Grey85 } from '../../../theme/colors';
+import { Typography } from '@material-ui/core';
+import { Masonry } from '@mui/lab';
 export const BoardsContainer = styled.div`
   width: 100%;
   height: 100%;
   margin-top: 22px;
-`;
-
-export const BoardsActivity = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1038px;
-  margin: 0 auto;
-  & > div {
-    margin-left: 18px;
-    :first-child {
-      margin: 0;
-    }
-  }
 `;
 
 export const BoardsActivityInput = styled(TextField)({
@@ -129,3 +116,123 @@ export const ShowAllButton = styled(Button)`
     }
   }
 `;
+
+export const BoardsCardMedia = styled.div`
+  border: 1px solid transparent;
+  border-radius: 4px;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  margin-top: 12px;
+`;
+// BOARDS CARD SHARED UI COMPONENTS
+
+export const BoardsCardSubheader = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+`;
+
+export const BoardsCardHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+`;
+
+export const BoardsCardBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 10px;
+`;
+
+export const BoardsRewardLabel = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const BoardsPrivacyLabel = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 8px;
+  gap: 10px;
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 12px;
+  display: flex;
+  align-items: center;
+  background: #363636;
+  border-radius: 4px;
+  color: ${White};
+`;
+
+export const BoardsCardFooter = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding-bottom: 15px;
+`;
+
+export const BoardsCardBodyTitle = styled(Typography)`
+  && {
+    color: ${White};
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 23px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+`;
+
+export const BoardsCardBodyDescription = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 20px;
+    letter-spacing: 0.01em;
+    color: #828282;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+`;
+
+const CardsContainerInnerWrapper = styled.div`
+  margin-top: 32px;
+`;
+
+export const CardsContainer = ({ isFullWidth, numberOfColumns, children }) => {
+  return (
+    <CardsContainerInnerWrapper>
+      {isFullWidth ? (
+        <div>{children}</div>
+      ) : (
+        <Masonry
+          style={{ alignContent: 'flex-start' }}
+          spacing={2}
+          columns={{ xs: 1, sm: 2, md: 3, lg: numberOfColumns }}
+        >
+          {children}
+        </Masonry>
+      )}
+    </CardsContainerInnerWrapper>
+  );
+};

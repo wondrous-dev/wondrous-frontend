@@ -19,14 +19,6 @@ export const GET_POD_INVITE_ORG_INFO = gql`
   ${PodInviteFragment}
 `;
 
-export const GET_POD_ORG_ID = gql`
-  query getPodById($podId: ID!) {
-    getPodById(podId: $podId) {
-      orgId
-    }
-  }
-`;
-
 export const GET_USER_PODS = gql`
   query getUserPods($userId: String) {
     getUserPods(userId: $userId) {
@@ -57,6 +49,7 @@ export const GET_USER_AVAILABLE_PODS = gql`
       name
       profilePicture
       privacyLevel
+      color
     }
   }
 `;
@@ -132,7 +125,6 @@ export const GET_POD_ROLES_WITH_TOKEN_GATE = gql`
     }
   }
 `;
-
 
 export const GET_USER_JOIN_POD_REQUEST = gql`
   query getUserJoinPodRequest($podId: ID!) {

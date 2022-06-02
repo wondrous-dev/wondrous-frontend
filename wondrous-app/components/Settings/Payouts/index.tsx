@@ -40,6 +40,7 @@ import { PaymentModalContext } from 'utils/contexts';
 import { SeeMoreText } from '../Members/styles';
 import { PERMISSIONS } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
+import { ErrorText } from '../../Common';
 
 enum ViewType {
   Paid = 'paid',
@@ -88,8 +89,8 @@ const PaymentItem = (props) => {
   }
 
   const disabled =
-    chain && item?.chain !== chain && (item?.paymentStatus === 'processing' || item?.paymentStatus === 'paid');
-
+    (chain && item?.chain !== chain) || (item?.paymentStatus === 'processing' || item?.paymentStatus === 'paid');
+  console.log('item', item)
   return (
     <>
       <PaymentModalContext.Provider
@@ -117,6 +118,7 @@ const PaymentItem = (props) => {
       >
         {item.paymentStatus !== 'paid' && (
           <StyledTableCell>
+            {item.payeeActiveEthAddress?
             <div
               style={{
                 display: 'flex',
@@ -168,7 +170,7 @@ const PaymentItem = (props) => {
                   )}
                 </>
               )}
-            </div>
+            </div>: <ErrorText>User has no web3 address</ErrorText>}
           </StyledTableCell>
         )}
         <StyledTableCell>
@@ -274,6 +276,13 @@ const Payouts = (props) => {
   const [enableBatchPay, setEnableBatchPay] = useState(null);
   const [paymentSelected, setPaymentsSelected] = useState(null);
   const [openBatchPayModal, setOpenBatchPayModal] = useState(false);
+
+  useEffect(()=>{
+    if (!paymentSelected || Object.keys(paymentSelected).length === 0) {
+      setChainSelected(null)
+    }
+  }, [paymentSelected])
+
   const listViewOptions = [
     {
       name: 'Unpaid',

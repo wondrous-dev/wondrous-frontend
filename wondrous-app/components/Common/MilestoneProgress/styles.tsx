@@ -2,7 +2,7 @@ import { Box, Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { ProgressBar } from '../ProgressBar';
 import { ProgressBarWrapper } from '../ProgressBar/styles';
-
+import { White } from 'theme/colors';
 export const StyledBox = styled(Box)`
   background: #0f0f0f;
   border-radius: 6px;
@@ -19,7 +19,11 @@ export const StyledTextWrapper = styled.div`
 export const StyledTasksLabel = styled(Typography)`
   && {
     font-weight: 500;
-    color: #c4c4c4;
+    color: ${White};
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-size: 13px;
+    line-height: 17px;
   }
 `;
 

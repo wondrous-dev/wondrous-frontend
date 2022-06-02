@@ -8,7 +8,7 @@ import { LogoSquare } from '../Common/ci';
 import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
 import BountyIcon from '../Icons/createBounty.svg';
 import CreateDaoIcon from '../Icons/createDao';
-import CreateMilestoneIcon from '../Icons/createMilestone.svg';
+import CreateMilestoneIcon from '../Icons/createMilestone';
 import CreatePodIcon from '../Icons/createPod.svg';
 import CreateProposalIcon from '../Icons/createProposal.svg';
 import CreateTaskIcon from '../Icons/createTask.svg';
@@ -38,6 +38,13 @@ export const CreateModalOverlay = styled(Modal)`
   /* Hide scrollbar for IE, Edge and Firefox */
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+`;
+
+export const CreateFormModalOverlay = styled(CreateModalOverlay)`
+  z-index: 1;
+  padding-top: 0;
+  height: 100vh;
+  margin: auto;
 `;
 
 export const CreateLayoutsModal = styled(BaseCard)`
@@ -187,7 +194,7 @@ export const CreateLayoutsModalItemTitle = styled(Typography)`
 
 export const CreateFormBaseModal = styled(BaseCard)`
   width: 680px;
-  height: 100%;
+  max-height: 95vh;
   overflow-y: scroll;
   &::-webkit-scrollbar {
     display: none;
@@ -206,6 +213,13 @@ export const CreateFormBaseModal = styled(BaseCard)`
   }
 `;
 
+export const CreateFormBaseModalHeaderWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px 25px;
+`;
+
 export const CreateFormBaseModalHeader = styled.div`
   display: flex;
   align-items: center;
@@ -220,9 +234,9 @@ export const CreateFormBaseModalHeader = styled.div`
 
 export const CreateFormBaseModalCloseBtn = styled(IconButton)`
   && {
-    position: absolute;
+    /* position: absolute;
     right: 20px;
-    top: 20px;
+    top: 20px; */
     width: 35px;
     height: 35px;
     background: #0f0f0f;
@@ -464,7 +478,7 @@ export const CreateFormAddDetailsSelects = styled(CreateFormMainSelects)`
 `;
 
 export const CreateFormAddDetailsLocalizationProvider = styled.div`
-  width: 40%;
+  width: 262px;
 `;
 
 export const CreateFormAddDetailsTab = styled.div`
@@ -639,8 +653,9 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
     font-size: 14px;
     height: 30px;
 
-    ::placeholder {
-      color: white;
+    &::placeholder {
+      color: #c4c4c4;
+      opacity: 1;
     }
   }
 
@@ -648,11 +663,6 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
     right: 10px;
     height: 11px;
     position: absolute;
-  }
-
-  .roles-icon2 {
-    position: absolute;
-    left: 10px;
   }
 
   svg {
@@ -797,4 +807,13 @@ export const SnapshotButton = styled(CreateFormPreviewButton)`
       height: 100%;
     }
   }
+`
+
+export const CreateFormAddTagsSection = styled.div`
+  position: relative;
+  width: 100%;
+  border-bottom: 1px solid #363636;
+  align-items: center;
+  margin: 0 auto;
+  padding: 30px 40px 10px;
 `;
