@@ -815,12 +815,15 @@ export const CreateEntityModal = (props) => {
               return (
                 <CreateEntityAutocompletePopper
                   key={reviewerId}
-                  options={filteredEligibleReviewers}
+                  options={eligibleReviewers}
                   openOnFocus={true}
-                  renderInput={(params) => {
+                  value={reviewerId}
+                  isOptionEqualToValue={(option, value) => {
+                    return option.id === value;
+                  }}
+                  renderInput={(params, props) => {
                     const reviewer = eligibleReviewers.find((reviewer) => reviewer.id === reviewerId);
                     return (
-                      <>
                         <CreateEntityAutocompletePopperRenderInput
                           {...params}
                           inputProps={{
@@ -856,15 +859,15 @@ export const CreateEntityModal = (props) => {
                             </CreateEntityAutocompletePopperRenderInputAdornment>
                           }
                         />
-                      </>
                     );
                   }}
-                  value={form.values.reviewerIds[index]}
-                  renderOption={(props, option, state) => {
+                  renderOption={(props, option) => {
+                    if (form.values.reviewerIds.includes(option.id)) return null;
                     return (
                       <CreateEntityAutocompleteOption
+                        {...props}
                         onClick={() => {
-                          if (!form.values.reviewerIds.map((reviewer) => reviewer.id).includes(option.id)) {
+                          if (!form.values.reviewerIds.includes(option.id)) {
                             const reviewerIds = _.cloneDeep(form.values.reviewerIds);
                             reviewerIds[index] = option.id;
                             form.setFieldValue('reviewerIds', reviewerIds);
