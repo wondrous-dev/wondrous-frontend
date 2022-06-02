@@ -877,17 +877,16 @@ export const CreateEntityModal = (props) => {
                 />
               );
             })}
-            <CreateEntityLabelAddButton
-              disabled={
-                form.values.reviewerIds.map((i) => i.id).includes(null) || filteredEligibleReviewers.length === 0
-              }
-              onClick={() => {
-                form.setFieldValue('reviewerIds', [...form.values.reviewerIds, filteredEligibleReviewers[0].id]);
-              }}
-            >
-              <CreateEntityAddButtonIcon />
-              {form.values.reviewerIds.length === 0 && <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>}
-            </CreateEntityLabelAddButton>
+            <Tooltip title={filteredEligibleReviewers.length === 0 && 'No available reviewer'} placement="top">
+              <CreateEntityLabelAddButton
+                disabled={filteredEligibleReviewers.length === 0}
+                onClick={() => {
+                  form.setFieldValue('reviewerIds', [...form.values.reviewerIds, filteredEligibleReviewers[0].id]);
+                }}
+              >
+                <CreateEntityAddButtonIcon />
+                {form.values.reviewerIds.length === 0 && <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>}
+              </CreateEntityLabelAddButton>
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
 
