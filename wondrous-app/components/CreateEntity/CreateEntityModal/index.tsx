@@ -664,7 +664,7 @@ export const CreateEntityModal = (props) => {
   const { podId: routerPodId } = router.query;
   useEffect(() => {
     if (open) {
-      if (router?.pathname.includes('/dashboard') && !form.values.orgId) {
+      if (router?.pathname.includes('/dashboard') && !form.values.orgId && filteredDaoOptions[0]?.value) {
         form.setFieldValue('orgId', filteredDaoOptions[0]?.value);
       }
       if (
