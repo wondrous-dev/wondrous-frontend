@@ -53,6 +53,11 @@ const chainOptions = [
     label: 'Arbitrum One',
     icon: <Arbitrum />,
     value: 'arbitrum',
+  },  
+  {
+    label: 'BSC',
+    icon: <Binance />,
+    value: 'bsc',
   },
   {
     label: 'Boba',
@@ -93,7 +98,7 @@ const HarmonyPresetTokens = [
   {
     label: 'One',
     icon: <Harmony />,
-    value: 'one',
+    value: 'ONE',
   },
 ];
 
@@ -108,7 +113,26 @@ const BobaPresetTokens = [
     icon: <DaiIcon />,
     value: 'DAI',
   },
+  {
+    label: 'Boba Token',
+    icon: <Boba />,
+    value: 'BOBA',
+  },
 ];
+
+const BscPresetTokens = [
+  {
+    label: 'USDC',
+    icon: <USDCoin />,
+    value: 'USDC',
+  },
+  {
+    label: 'DAI',
+    icon: <DaiIcon />,
+    value: 'DAI',
+  },
+];
+
 
 const PresetTokenPerChain = {
   ethereum: PresetTokens,
@@ -116,6 +140,7 @@ const PresetTokenPerChain = {
   arbitrum: PresetTokens,
   boba: BobaPresetTokens,
   harmony: HarmonyPresetTokens,
+  bsc: BscPresetTokens,
 }
 const CHAIN_TO_USDC_ADDR = {
   ethereum: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -202,7 +227,11 @@ const ConfigPaymentMethodModal = (props) => {
       tokenAddress = '0x0000000000000000000000000000000000000000';
       tokenName = 'One';
       symbol = 'ONE';
-    } else if (selectedToken === 'custom') {
+     }else if (selectedToken === 'BOBA') {
+      tokenAddress = '0xa18bF3994C0Cc6E3b63ac420308E5383f53120D7';
+      tokenName = 'Boba Token';
+      symbol = 'BOBA';
+    }  else if (selectedToken === 'custom') {
       tokenAddress = customToken?.contractAddress;
       tokenName = customToken?.name;
       symbol = customToken?.symbol;
