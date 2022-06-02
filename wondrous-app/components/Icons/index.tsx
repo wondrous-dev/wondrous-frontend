@@ -329,7 +329,7 @@ export const Archived = (props) => (
     <circle cx="12" cy="12" r="11.5714" fill="#0F0F0F" stroke="#474747" strokeWidth="0.857143" />
     <path
       fillRule="evenodd"
-      clip-rule="evenodd"
+      clipRule="evenodd"
       d="M6.73633 17.748V10.1447H5.56445V7.21973H18.4343V10.1447H17.2662V17.748H6.73633Z"
       fill="url(#paint0_linear_10461_243640)"
     />
