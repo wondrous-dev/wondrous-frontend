@@ -1,7 +1,10 @@
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import apollo from 'services/apollo';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import palette from 'theme/palette';
 import { useMe } from '../../Auth/withAuth';
 import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from 'utils/constants';
 import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
@@ -47,7 +50,6 @@ import { MoreInfoModal } from '../../profile/modals';
 import SideBarComponent from '../../SideBar';
 import PlusIcon from '../../Icons/plus';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
-import { useLazyQuery, useMutation } from '@apollo/client';
 import {
   GET_USER_JOIN_POD_REQUEST,
   GET_TOKEN_GATED_ROLES_FOR_POD,
@@ -63,8 +65,6 @@ import TypeSelector from 'components/TypeSelector';
 import { SafeImage } from 'components/Common/Image';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { LogoWrapper, OrgLogoWrapper } from './styles';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import { Grey58 } from 'theme/colors';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { RichTextViewer } from 'components/RichText';
 
@@ -300,7 +300,7 @@ const Wrapper = (props) => {
                       )}
                     </OrgLogoWrapper>
 
-                    <ArrowForwardIosIcon style={{ color: Grey58, marginLeft: '5px' }} />
+                    <ArrowForwardIosIcon style={{ color: palette.grey58, marginLeft: 5 }} />
                     <PodIcon
                       color={podProfile?.color}
                       style={{

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import FlagIcon from 'components/Icons/flag';
-import { HighlightBlue, white, background } from 'theme/colors';
+import { highlightBlue, white, background } from 'theme/colors';
 
 const IconWrapper = styled.div`
   border-radius: 180px;
@@ -9,7 +9,7 @@ const IconWrapper = styled.div`
   justify-content: center;
   align-items: center;
   padding: 4px;
-  border: 1px solid ${HighlightBlue};
+  border: 1px solid ${highlightBlue};
   background: ${background};
 `;
 

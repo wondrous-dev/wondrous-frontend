@@ -3,7 +3,7 @@ import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 
 import { GradientMidnightDiagonal, GradientMidnightVertical } from 'components/Common/gradients';
 import { TextField, Typography } from '@material-ui/core';
-import { white, Grey250 } from 'theme/colors';
+import { white, greyColors } from 'theme/colors';
 import { StyledDatePicker } from 'components/Common/DatePicker/styles';
 import { Button } from 'components/Common/button';
 import { PaymentModal } from 'components/Common/Payment/styles';
@@ -207,7 +207,7 @@ export const ExplainerText = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 14px;
     font-weight: 400;
-    color: ${Grey250};
+    color: ${greyColors.grey250};
     margin-top: 12px;
   }
 `;

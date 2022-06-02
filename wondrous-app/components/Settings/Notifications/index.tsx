@@ -37,7 +37,7 @@ import {
   LabelBlockText,
 } from '../styles';
 import Link from 'next/link';
-import { greyColors 0, highlightBlue, white } from 'theme/colors';
+import { greyColors, highlightBlue, white } from 'theme/colors';
 import { ErrorText } from '../../Common';
 import InputForm from 'components/Common/InputForm/inputForm';
 import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';

@@ -65,6 +65,7 @@ export const greenColors = {
   green400: '#6ADAAB',
   green600: '#00bf9c',
   green700: '#219653',
+  green800: '#06FFA5',
 };
 
 export const yellowColors = {

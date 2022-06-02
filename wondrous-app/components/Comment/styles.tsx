@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import styled from 'styled-components';
-import { white } from 'theme/colors';
+import { white, greyColors } from 'theme/colors';
 import { SafeImage } from '../Common/Image';
 import DefaultUserImage from '../Common/Image/DefaultUserImage';
 import { CreateFormPreviewButton } from '../CreateEntity/styles';
@@ -22,7 +22,7 @@ export const CommentItemContainer = styled.div`
     `
     @keyframes highlightComment {
     from {
-      background: ${Grey250};
+      background: ${greyColors.grey250};
    }
     to {
       background: transparent;

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, MenuItem, TextField, Typography } from '@mui/material';
 import { blackColors, white } from 'theme/colors';
+import Masonry from '@mui/lab/Masonry';
 
 export const BoardsContainer = styled.div`
   width: 100%;

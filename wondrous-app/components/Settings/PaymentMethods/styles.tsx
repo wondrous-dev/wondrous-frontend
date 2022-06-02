@@ -46,7 +46,7 @@ export const PaymentMethodDescription = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 14px;
     font-weight: 400;
-    color: ${Grey250};
+    color: ${greyColors.grey250};
     margin-top: 12px;
   }
 `;
@@ -61,7 +61,7 @@ export const PaymentMethodFormWrapper = styled(Box)`
 
 export const PaymentMethodDisplayWrapper = styled(Box)`
   && {
-    background: ${Black90};
+    background: ${blackColors.black90};
     border-radius: 6px;
     padding: 24px;
     margin-top: 24px;

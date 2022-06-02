@@ -126,7 +126,6 @@ import {
 import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import {
   addTaskItem,
-  removeProposalItem,
   updateInProgressTask,
   updateProposalItem,
   updateTaskItem,
@@ -160,6 +159,7 @@ import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
 import { CreateEntity } from 'components/CreateEntity';
 import { useSnapshot } from 'services/snapshot';
 import { GithubButton } from 'components/Settings/Github/styles';
+import { getProposalStatus, updateInReviewItem } from 'utils/board';
 
 export const MediaLink = (props) => {
   const { media, style } = props;

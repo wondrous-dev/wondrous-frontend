@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { HighlightBlue, HighlightPurple, white } from 'theme/colors';
+import { highlightBlue, highlightPurple, white } from 'theme/colors';
 export const Wrapper = styled.div`
   display: flex;
 `;
@@ -47,7 +47,7 @@ export const IconWrapper = styled.div`
   align-items: center;
   padding: 0px;
   margin-right: 6px;
-  background: ${({ isActive }) => (isActive ? HighlightBlue : HighlightPurple)};
+  background: ${({ isActive }) => (isActive ? highlightBlue : highlightPurple)};
 `;
 
 export const StatTitle = styled.span`

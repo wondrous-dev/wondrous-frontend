@@ -5,7 +5,7 @@ const typography = {
     fontSize: '16px',
     lineHeight: '23px',
     letterSpacing: '0.75%',
-    textTransform: 'none',
+    textTransform: 'none' as const, // https://github.com/mui/material-ui/issues/16307
   },
   // Maintenance pages
   h1: {
