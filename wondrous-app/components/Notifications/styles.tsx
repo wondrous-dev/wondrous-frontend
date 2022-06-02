@@ -134,21 +134,21 @@ export const NotificationsBoardHeader = styled.div`
 `;
 
 export const NotificationsMarkRead = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
 
-    line-height 32px;
-    cursor: pointer;
-    ${(props) =>
-      props.enabled
-        ? `
+  line-height: 32px;
+  cursor: pointer;
+  ${(props) =>
+    props.enabled
+      ? `
         color: #d0b9ff;
         text-decoration: underline;
         font-weight: 500;
         `
-        : `
+      : `
         color: ${Grey75};
         text-decoration: none;
         pointer-events: none;
@@ -166,9 +166,19 @@ export const NotificationsOverlay = styled.div`
   background: transparent;
   z-index: 97;
 `;
-export const NotificationsLink = styled.a`
+export const NotificationsLink = styled.span`
   color: ${HighlightBlue};
   font-weight: 700;
+  
+  a {
+    color: ${HighlightBlue};
+    font-weight: 700;
+    text-decoration: none; 
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 `;
 export const NotificationItemInner = styled.div`
   padding-top: 2px;
