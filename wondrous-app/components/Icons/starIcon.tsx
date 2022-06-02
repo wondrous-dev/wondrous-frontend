@@ -15,8 +15,8 @@ export default function StarIcon({ stroke = 'url(#open)', ...rest }) {
           <stop offset="1" stopColor="#00BAFF" />
         </linearGradient>
         <linearGradient id="completed" x1="7" y1="1" x2="7" y2="13" gradientUnits="userSpaceOnUse">
-          <stop stop-color="white" />
-          <stop offset="1" stop-color="#06FFA5" />
+          <stop stopColor="white" />
+          <stop offset="1" stopColor="#06FFA5" />
         </linearGradient>
       </defs>
     </svg>

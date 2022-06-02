@@ -25,7 +25,9 @@ export const FiltersTriggerButton = ({ onClick, isOpen }) => {
 
 export default function BoardFilters({ filterSchema, onChange, showAppliedFilters = false }) {
   const [appliedFilters, setAppliedFilters] = useState<any>({});
-  const board = useOrgBoard() || usePodBoard();
+  const orgBoard = useOrgBoard();
+  const podBoard = usePodBoard();
+  const board = orgBoard || podBoard;
 
   const entityType = board?.entityType;
 

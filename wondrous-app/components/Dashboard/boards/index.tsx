@@ -349,7 +349,6 @@ const useFilterSchema = (loggedInUser, isAdmin) => {
           >
             {schema.orgPods[orgName].map((item) => {
               const isSelected = checkIsSelected(item.id);
-              console.log(isSelected, 'actually selected', item);
               return (
                 <FilterItem
                   onClick={() => toggleOption({ ...item, filterType: schema.name })}
