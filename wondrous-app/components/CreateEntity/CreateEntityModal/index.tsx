@@ -821,48 +821,47 @@ export const CreateEntityModal = (props) => {
                   isOptionEqualToValue={(option, value) => {
                     return option.id === value;
                   }}
-                  renderInput={(params, props) => {
-                    const reviewer = eligibleReviewers.find((reviewer) => reviewer.id === reviewerId);
+                  renderInput={(params) => {
+                    const reviewer = eligibleReviewers.find((reviewer) => reviewer.id === params.inputProps.value);
                     return (
-                        <CreateEntityAutocompletePopperRenderInput
-                          {...params}
-                          inputProps={{
-                            ...params.inputProps,
-                            value: reviewer?.label,
-                          }}
-                          autoFocus={true}
-                          ref={params.InputProps.ref}
-                          disableUnderline={true}
-                          fullWidth={true}
-                          name="reviewerIds"
-                          placeholder="Enter username..."
-                          startAdornment={
-                            <CreateEntityAutocompletePopperRenderInputAdornment position="start">
-                              {reviewer?.profilePicture ? (
-                                <SafeImage src={reviewer.profilePicture} />
-                              ) : (
-                                <CreateEntityDefaultUserImage />
-                              )}
-                            </CreateEntityAutocompletePopperRenderInputAdornment>
-                          }
-                          endAdornment={
-                            <CreateEntityAutocompletePopperRenderInputAdornment
-                              position="end"
-                              onClick={() => {
-                                const newReviewers = _.cloneDeep(form.values.reviewerIds).filter(
-                                  (id) => id !== reviewerId
-                                );
-                                form.setFieldValue('reviewerIds', newReviewers);
-                              }}
-                            >
-                              <CreateEntityAutocompletePopperRenderInputIcon />
-                            </CreateEntityAutocompletePopperRenderInputAdornment>
-                          }
-                        />
+                      <CreateEntityAutocompletePopperRenderInput
+                        {...params}
+                        inputProps={{
+                          ...params.inputProps,
+                          value: reviewer?.label,
+                        }}
+                        autoFocus={true}
+                        ref={params.InputProps.ref}
+                        disableUnderline={true}
+                        fullWidth={true}
+                        placeholder="Enter username..."
+                        startAdornment={
+                          <CreateEntityAutocompletePopperRenderInputAdornment position="start">
+                            {reviewer?.profilePicture ? (
+                              <SafeImage src={reviewer.profilePicture} />
+                            ) : (
+                              <CreateEntityDefaultUserImage />
+                            )}
+                          </CreateEntityAutocompletePopperRenderInputAdornment>
+                        }
+                        endAdornment={
+                          <CreateEntityAutocompletePopperRenderInputAdornment
+                            position="end"
+                            onClick={() => {
+                              const newReviewers = _.cloneDeep(form.values.reviewerIds).filter(
+                                (id) => id !== reviewerId
+                              );
+                              form.setFieldValue('reviewerIds', newReviewers);
+                            }}
+                          >
+                            <CreateEntityAutocompletePopperRenderInputIcon />
+                          </CreateEntityAutocompletePopperRenderInputAdornment>
+                        }
+                      />
                     );
                   }}
                   renderOption={(props, option) => {
-                    if (form.values.reviewerIds.includes(option.id)) return null;
+                    if (form.values.reviewerIds.includes(option.id) && option.id !== reviewerId) return null;
                     return (
                       <CreateEntityAutocompleteOption
                         {...props}
@@ -911,7 +910,6 @@ export const CreateEntityModal = (props) => {
             {form.values.assigneeId !== null && (
               <CreateEntityAutocompletePopper
                 options={filteredOrgUsersData}
-                disableCloseOnSelect={true}
                 openOnFocus={true}
                 value={form.values.assigneeId}
                 renderInput={(params) => {
@@ -951,9 +949,10 @@ export const CreateEntityModal = (props) => {
                     />
                   );
                 }}
-                renderOption={(props, option, state) => {
+                renderOption={(props, option) => {
                   return (
                     <CreateEntityAutocompleteOption
+                      {...props}
                       onClick={() => {
                         if (form.values.assigneeId !== option.value) {
                           form.setFieldValue('assigneeId', option.value);

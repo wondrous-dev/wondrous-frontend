@@ -395,7 +395,7 @@ export const CreateEntitySelectWrapper = styled.div`
   flex-wrap: wrap;
   width: 100%;
   gap: 6px;
-  > *:nth-child(3n) {
+  > *:nth-child(odd) {
     flex-grow: 0;
   }
 `;
