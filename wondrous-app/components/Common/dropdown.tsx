@@ -72,7 +72,7 @@ export const DropdownOverlay = styled.div`
 `;
 
 export const DropDown = (props) => {
-  const { DropdownHandler, children } = props;
+  const { DropdownHandler, children, divStyle } = props;
   const [isOpen, setIsOpen] = useState(false);
   const DropdownWrapperRef = useRef(null);
 
@@ -89,7 +89,7 @@ export const DropDown = (props) => {
   return (
     <>
       <DropdownOverlay onClick={toggleDropDown} style={{ display: display }} />
-      <div onClick={toggleDropDown}>
+      <div onClick={toggleDropDown} style={divStyle}>
         <DropdownHandler {...props} />
         <DropDownWrapper ref={DropdownWrapperRef} style={{ display: display }}>
           {children}

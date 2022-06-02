@@ -29,6 +29,7 @@ export const PodFragment = gql`
     orgId
     tags
     color
+    archivedAt
     contributorCount
     tasksCompletedCount
     tasksIncompleteCount

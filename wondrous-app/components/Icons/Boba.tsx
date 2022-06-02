@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Boba() {
   return (
-	<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	<svg width="20" height="22"  version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 		 viewBox="0 0 192.21 260.71" enableBackground="new 0 0 192.21 260.71;" xmlSpace="preserve">
 	<style type="text/css">
 	</style>

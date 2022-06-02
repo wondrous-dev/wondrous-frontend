@@ -31,8 +31,11 @@ const generateReadablePreviewForAddress = (address: String) => {
 };
 
 export const constructGnosisRedirectUrl = (chain, safeAddress, safeTxHash) => {
-  if (chain=== 'harmony') {
-    return `https://multisig.harmony.one/#/safes/${safeAddress}/transactions/`
+  if (chain === 'harmony') {
+    return `https://multisig.harmony.one/#/safes/${safeAddress}/transactions/`;
+  }
+  if (chain === 'boba') {
+    return `https://multisig.boba.network/boba:${safeAddress}/transactions/${safeTxHash}`
   }
   return `https://gnosis-safe.io/app/${CHAIN_TO_GNOSIS_URL_ABBR[chain]}:${safeAddress}/transactions/${safeTxHash}`;
 };
@@ -197,7 +200,10 @@ export const SingleWalletPayment = (props) => {
     console.log(`getting calldata took ${t2 - t1} milliseconds`);
     t1 = performance.now();
     const gnosisClient = wonderGnosis?.safeServiceClient;
+    console.log('safeServiceClient, ', gnosisClient)
     const gnosisSdk = wonderGnosis?.safeSdk;
+    console.log('gnosisSdk, ', gnosisSdk)
+
     const nextNonce = await gnosisClient?.getNextNonce(selectedWallet?.address);
     t2 = performance.now();
     console.log(`getting next nonce took ${t2 - t1} milliseconds`);

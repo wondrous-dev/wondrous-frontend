@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ArrowDropDownIcon from '../../Icons/arrowDropDown';
 import { DropDownPopper } from '../DropDownPopper/MembershipRequest';
-import { StyledDropDownButton, StyledDropDownButtonWrapper } from './styles';
+import { StyledClickAwayListener, StyledDropDownButton, StyledDropDownButtonWrapper } from './styles';
 
 export const DropDownButtonDecision = (props) => {
   const { userId, orgId, podId, status } = props;
@@ -11,32 +11,38 @@ export const DropDownButtonDecision = (props) => {
     setAnchorEl(event.currentTarget);
     setOpen((previousOpen) => !previousOpen);
   };
+  const handleOnClickAway = () => {
+    setOpen(false);
+    setAnchorEl(null);
+  };
   const id = open ? 'simple-Popper' : undefined;
   return (
-    <StyledDropDownButtonWrapper>
-      <StyledDropDownButton aria-describedby={id} onClick={handleClick} className={open ? 'active' : ''} {...props}>
-        <ArrowDropDownIcon />
-      </StyledDropDownButton>
-      <DropDownPopper
-        onClose={() => setOpen(false)}
-        id={id}
-        open={open}
-        userId={userId}
-        orgId={orgId}
-        podId={podId}
-        anchorEl={anchorEl}
-        placement="bottom-start"
-        disablePortal={true}
-        modifiers={{
-          flip: {
-            enabled: false,
-          },
-          preventOverflow: {
-            enabled: false,
-            boundariesElement: 'scrollParent',
-          },
-        }}
-      />
-    </StyledDropDownButtonWrapper>
+    <StyledClickAwayListener onClickAway={handleOnClickAway}>
+      <StyledDropDownButtonWrapper>
+        <StyledDropDownButton aria-describedby={id} onClick={handleClick} className={open ? 'active' : ''} {...props}>
+          <ArrowDropDownIcon style={{ height: '7px', width: '7px' }} />
+        </StyledDropDownButton>
+        <DropDownPopper
+          onClose={() => setOpen(false)}
+          id={id}
+          open={open}
+          userId={userId}
+          orgId={orgId}
+          podId={podId}
+          anchorEl={anchorEl}
+          placement="bottom-start"
+          disablePortal={true}
+          modifiers={{
+            flip: {
+              enabled: false,
+            },
+            preventOverflow: {
+              enabled: false,
+              boundariesElement: 'scrollParent',
+            },
+          }}
+        />
+      </StyledDropDownButtonWrapper>
+    </StyledClickAwayListener>
   );
 };

@@ -42,6 +42,14 @@ const SUPPORTED_PAYMENT_CHAINS = [
     label: 'Harmony Mainnet',
     value: 'harmony',
   },
+  {
+    label: 'Boba Mainnet',
+    value: 'boba',
+  },
+  {
+    label: 'Arbitrum Mainnet',
+    value: 'arbitrum',
+  },
 ];
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {
   SUPPORTED_PAYMENT_CHAINS.push({
@@ -95,7 +103,7 @@ const Wallets = (props) => {
     onError: (e) => {
       console.error(e);
     },
-    refetchQueries: ['getOrgWallet']
+    refetchQueries: ['getOrgWallet'],
   });
 
   const [createPodWallet] = useMutation(CREATE_POD_WALLET, {
@@ -109,7 +117,7 @@ const Wallets = (props) => {
     onError: (e) => {
       console.error(e);
     },
-    refetchQueries: ['getPodWallet']
+    refetchQueries: ['getPodWallet'],
   });
 
   const handleCreateWalletClick = async () => {

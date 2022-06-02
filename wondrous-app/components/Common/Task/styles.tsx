@@ -673,13 +673,22 @@ export const ProposalCardFooter = styled.div`
 `;
 
 export const Tag = styled.div`
-  color: ${(props) => getContrastYIQ(props.color)};
-  background: ${(props) => props.color};
+  /* color: ${(props) => getContrastYIQ(props.color)};
+  background: ${(props) => props.color}; */
   border-radius: 4px;
   padding: 2px 6px;
   margin: 5px 0;
 
   &:not(:last-child) {
     margin-right: 10px;
+  }
+`;
+
+export const DueDateText = styled(Typography)`
+  && {
+    font-family: Space Grotesk;
+    color: #c4c4c4;
+    font-size: 13px;
+    margin-right: 4px;
   }
 `;

@@ -26,6 +26,7 @@ import {
   ActionButton,
   TaskCardDescriptionText,
   CheckedIconWrapper,
+  DueDateText,
 } from './styles';
 import { transformTaskToTaskCard } from 'utils/helpers';
 import { White, Red800 } from '../../../theme/colors';
@@ -78,6 +79,8 @@ import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { PERMISSIONS } from 'utils/constants';
 import SmartLink from 'components/Common/SmartLink';
 import { useLocation } from 'utils/useLocation';
+import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
+import { format } from 'date-fns';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -115,6 +118,7 @@ export const TaskCard = ({
   setArchiveTask,
   canDelete,
   setDeleteTask,
+  boardType,
 }) => {
   const location = useLocation();
   let TaskIcon = TASK_ICONS[task.status];
@@ -180,13 +184,16 @@ export const TaskCard = ({
       },
     });
   };
+  const isUser = boardType === Constants.BOARD_TYPE.assignee;
+  const isPod = boardType === Constants.BOARD_TYPE.pod;
+  const isOrg = boardType === Constants.BOARD_TYPE.org;
 
   return (
     <ProposalCardWrapper
       onMouseEnter={() => canArchive && setDisplayActions(true)}
       onMouseLeave={() => canArchive && setDisplayActions(false)}
     >
-      <SmartLink
+            <SmartLink
         href={viewUrl}
         preventLinkNavigation
         onNavigate={() => {
@@ -197,18 +204,19 @@ export const TaskCard = ({
           }
         }}
       >
-        {showPaymentModal && !isTaskSubmissionLoading ? (
-          <MakePaymentModal
-            getTaskSubmissionsForTask={getTaskSubmissionsForTask}
-            open={showPaymentModal}
-            approvedSubmission={approvedSubmission}
-            handleClose={() => {}}
-            setShowPaymentModal={setShowPaymentModal}
-            fetchedTask={task}
-          />
-        ) : null}
-        <TaskHeader>
-          <TaskHeaderIconWrapper>
+      {showPaymentModal && !isTaskSubmissionLoading ? (
+        <MakePaymentModal
+          getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+          open={showPaymentModal}
+          approvedSubmission={approvedSubmission}
+          handleClose={() => {}}
+          setShowPaymentModal={setShowPaymentModal}
+          fetchedTask={task}
+        />
+      ) : null}
+      <TaskHeader>
+        <TaskHeaderIconWrapper>
+          {isUser && (
             <SafeImage
               src={task?.orgProfilePicture}
               style={{
@@ -218,91 +226,8 @@ export const TaskCard = ({
                 marginRight: '8px',
               }}
             />
-            {isMilestone && <MilestoneIcon />}
-            <AvatarList users={userList} id={'task-' + task?.id} />
-            {isSubtask && <SubtaskLightIcon stroke="white" />}
-            {!isSubtask && !isMilestone && totalSubtask > 0 && (
-              <CheckedIconWrapper>
-                {' '}
-                <CheckedBoxIcon stroke="white" pathFill="none" />
-              </CheckedIconWrapper>
-            )}
-
-            {task?.privacyLevel === Constants.PRIVACY_LEVEL.public && (
-              <PodWrapper
-                style={{
-                  marginTop: '0',
-                }}
-              >
-                <PodName
-                  style={{
-                    borderRadius: '8px',
-                    marginLeft: '4px',
-                  }}
-                >
-                  Public
-                </PodName>
-              </PodWrapper>
-            )}
-          </TaskHeaderIconWrapper>
-          {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
-        </TaskHeader>
-        <TaskCreatedBy type={type} router={router} createdBy={createdBy} />
-        {(isMilestone || isBounty) && <TaskDivider />}
-
-        <TaskContent>
-          <TaskTitle>
-            <a href={viewUrl}>{task.title}</a>
-          </TaskTitle>
-          {/* <TaskCardDescriptionText>
-          {renderMentionString({
-            content: description,
-            router,
-          })}о
-        </TaskCardDescriptionText> */}
-          <TaskContentFooter>
-            {task?.podName && (
-              <PodWrapper
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  goToPod(task?.podId);
-                }}
-              >
-                <PodIcon
-                  color={task?.podColor}
-                  style={{
-                    width: '26px',
-                    height: '26px',
-                    marginRight: '8px',
-                  }}
-                />
-                <PodName>{task?.podName}</PodName>
-              </PodWrapper>
-            )}
-          </TaskContentFooter>
-          {isBounty && (
-            <TaskBountyOverview
-              totalSubmissionsCount={task?.totalSubmissionsCount}
-              approvedSubmissionsCount={task?.approvedSubmissionsCount}
-            />
           )}
-          {isMilestone && (
-            <MilestoneProgressWrapper>
-              <MilestoneProgress milestoneId={id} />
-            </MilestoneProgressWrapper>
-          )}
-          {coverMedia ? (
-            <BoardsCardMedia>
-              <SafeImage
-                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
-                src={coverMedia.slug}
-              />
-            </BoardsCardMedia>
-          ) : null}
-        </TaskContent>
-        <BoardsCardFooter style={{ paddingBottom: '0' }}>
-          {!assigneeId && !isBounty && !isMilestone && (
+          {!assigneeId && !isBounty && !isMilestone && task?.status !== Constants.TASK_STATUS_DONE && (
             <>
               {claimed ? (
                 <ActionButton
@@ -315,6 +240,9 @@ export const TaskCard = ({
                 </ActionButton>
               ) : (
                 <ActionButton
+                  style={{
+                    marginRight: '8px',
+                  }}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -365,39 +293,168 @@ export const TaskCard = ({
               Pay
             </ActionButton>
           )}
-          {!isMilestone && (
-            <TaskAction key={'task-comment-' + id}>
-              <TaskCommentIcon />
-              <TaskActionAmount>{commentCount}</TaskActionAmount>
-            </TaskAction>
-          )}
-          {!isSubtask && !isMilestone && totalSubtask > 0 && (
-            <SubtaskCountWrapper>
-              <SubtaskLightIcon fill="none" stroke={Grey57} />
-              <SubtaskCount>{totalSubtask}</SubtaskCount>
-            </SubtaskCountWrapper>
-          )}
-          {canArchive && displayActions && (
-            <TaskActionMenu right="true">
-              <DropDown DropdownHandler={TaskMenuIcon}>
-                <DropDownItem
-                  key={'task-menu-edit-' + id}
-                  onClick={() => {
-                    setEditTask(true);
-                  }}
-                  color={White}
-                >
-                  Edit {type}
-                </DropDownItem>
-                <DropDownItem
-                  key={'task-menu-edit-' + id}
-                  onClick={() => {
-                    setArchiveTask(true);
-                  }}
-                  color={White}
-                >
-                  Archive {type}
-                </DropDownItem>
+          {isMilestone && <MilestoneIcon />}
+          <AvatarList users={userList} id={'task-' + task?.id} />
+        </TaskHeaderIconWrapper>
+        {task?.privacyLevel === PRIVACY_LEVEL.public && (
+          <ToggleBoardPrivacyIcon
+            style={{
+              width: task?.assigneeId ? '40px' : 'auto',
+              marginRight: '0',
+            }}
+            isPrivate={task?.privacyLevel !== PRIVACY_LEVEL.public}
+            tooltipTitle={task?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
+          />
+        )}
+
+        <div
+          style={{
+            flex: 1,
+          }}
+        />
+        {task?.dueDate && <DueDateText>{format(new Date(task?.dueDate), 'MMM d')}</DueDateText>}
+        {rewards && rewards?.length > 0 && (
+          <Compensation
+            style={{
+              flexGrow: '0',
+              marginLeft: '8px',
+              alignSelf: 'center',
+            }}
+            rewards={rewards}
+            taskIcon={<TaskIcon />}
+          />
+        )}
+      </TaskHeader>
+      <TaskCreatedBy type={type} router={router} createdBy={createdBy} />
+
+        <TaskContent>
+          <TaskTitle>
+            <a href={viewUrl}>{task.title}</a>
+          </TaskTitle>
+          {/* <TaskCardDescriptionText>
+          {renderMentionString({
+            content: description,
+            router,
+          })}о
+        </TaskCardDescriptionText> */}
+
+        {isBounty && (
+          <TaskBountyOverview
+            totalSubmissionsCount={task?.totalSubmissionsCount}
+            approvedSubmissionsCount={task?.approvedSubmissionsCount}
+          />
+        )}
+        {isMilestone && (
+          <MilestoneProgressWrapper>
+            <MilestoneProgress milestoneId={id} />
+          </MilestoneProgressWrapper>
+        )}
+        {coverMedia ? (
+          <BoardsCardMedia>
+            <SafeImage
+              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+              src={coverMedia.slug}
+            />
+          </BoardsCardMedia>
+        ) : null}
+      </TaskContent>
+      <BoardsCardFooter style={{ paddingBottom: '0' }}>
+        {task?.podName && !isPod && (
+          <PodWrapper
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              goToPod(task?.podId);
+            }}
+            style={{
+              marginTop: '0',
+            }}
+          >
+            <PodIcon
+              color={task?.podColor}
+              style={{
+                width: '26px',
+                height: '26px',
+                marginRight: '8px',
+              }}
+            />
+            <PodName
+              style={{
+                whiteSpace: 'nowrap',
+                maxWidth: '155px',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+              }}
+            >
+              {task?.podName}
+            </PodName>
+          </PodWrapper>
+        )}
+        {isSubtask && <SubtaskLightIcon stroke="white" />}
+
+        <div
+          style={{
+            flex: 1,
+          }}
+        />
+        {!isMilestone && commentCount > 0 && (
+          <TaskAction
+            key={'task-comment-' + id}
+            style={{
+              marginRight: !isSubtask && !isMilestone && totalSubtask > 0 ? '0' : '18px',
+            }}
+          >
+            <TaskCommentIcon />
+            <TaskActionAmount>{commentCount}</TaskActionAmount>
+          </TaskAction>
+        )}
+        {!isSubtask && !isMilestone && totalSubtask > 0 && (
+          <SubtaskCountWrapper
+            style={{
+              marginRight: '12px',
+              paddingLeft: '0',
+            }}
+          >
+            <SubtaskLightIcon fill="none" stroke={Grey57} />
+            <SubtaskCount>{totalSubtask}</SubtaskCount>
+          </SubtaskCountWrapper>
+        )}
+        {canArchive && (
+          <TaskActionMenu
+            right="true"
+            style={{
+              flexGrow: '0',
+              position: 'absolute',
+              right: '4px',
+              visibility: displayActions ? 'visible' : 'hidden',
+            }}
+          >
+            <DropDown
+              DropdownHandler={TaskMenuIcon}
+              divStyle={{
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <DropDownItem
+                key={'task-menu-edit-' + id}
+                onClick={() => {
+                  setEditTask(true);
+                }}
+                color={White}
+              >
+                Edit {type}
+              </DropDownItem>
+              <DropDownItem
+                key={'task-menu-edit-' + id}
+                onClick={() => {
+                  setArchiveTask(true);
+                }}
+                color={White}
+              >
+                Archive {type}
+              </DropDownItem>
+
                 {canDelete && (
                   <DropDownItem
                     key={'task-menu-delete-' + id}
@@ -504,7 +561,7 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
                 marginRight: '8px',
               }}
             />
-            <PodName>{task?.podName}</PodName>
+            <PodName style={{}}>{task?.podName}</PodName>
           </PodWrapper>
         )}
       </BoardsCardBody>

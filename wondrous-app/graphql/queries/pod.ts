@@ -48,6 +48,7 @@ export const GET_USER_AVAILABLE_PODS = gql`
       name
       profilePicture
       privacyLevel
+      color
     }
   }
 `;
@@ -123,7 +124,6 @@ export const GET_POD_ROLES_WITH_TOKEN_GATE = gql`
     }
   }
 `;
-
 
 export const GET_USER_JOIN_POD_REQUEST = gql`
   query getUserJoinPodRequest($podId: ID!) {

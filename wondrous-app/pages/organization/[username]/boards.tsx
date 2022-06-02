@@ -90,7 +90,7 @@ const useGetOrgTaskBoardTasks = ({
     });
   }, [columns, fetchMore, setOrgTaskHasMore]);
   useEffect(() => {
-    if (!userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search) {
+    if (!userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search && orgId) {
       const taskBoardStatuses =
         statuses.length > 0
           ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))

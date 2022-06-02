@@ -40,6 +40,13 @@ export const CreateModalOverlay = styled(Modal)`
   scrollbar-width: none; /* Firefox */
 `;
 
+export const CreateFormModalOverlay = styled(CreateModalOverlay)`
+  z-index: 1;
+  padding-top: 0;
+  height: 100vh;
+  margin: auto;
+`;
+
 export const CreateLayoutsModal = styled(BaseCard)`
   && {
     display: flex;
@@ -187,7 +194,7 @@ export const CreateLayoutsModalItemTitle = styled(Typography)`
 
 export const CreateFormBaseModal = styled(BaseCard)`
   width: 680px;
-  height: 100%;
+  max-height: 95vh;
   overflow-y: scroll;
   &::-webkit-scrollbar {
     display: none;
@@ -469,7 +476,7 @@ export const CreateFormAddDetailsSelects = styled(CreateFormMainSelects)`
 `;
 
 export const CreateFormAddDetailsLocalizationProvider = styled.div`
-  width: 40%;
+  width: 262px;
 `;
 
 export const CreateFormAddDetailsTab = styled.div`
@@ -645,7 +652,7 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
     height: 30px;
 
     &::placeholder {
-      color: #C4C4C4;
+      color: #c4c4c4;
       opacity: 1;
     }
   }

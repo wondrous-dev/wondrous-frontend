@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ethers, utils } from 'ethers';
-import DropdownSelect from '../DropdownSelect/dropdownSelect';
+import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
 import { CircularProgress } from '@material-ui/core';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
@@ -17,18 +17,12 @@ import {
 import { SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk';
 import { SafeMultisigTransactionEstimateResponse } from '@gnosis.pm/safe-service-client';
 import { useWonderWeb3 } from 'services/web3';
-import { ErrorText } from '..';
+import { ErrorText } from '../../Common';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PaymentPendingTypography } from './styles';
 import { usePaymentModal } from 'utils/hooks';
-import {
-  GET_PAYMENTS_FOR_ORG,
-  GET_PAYMENTS_FOR_POD,
-  GET_UNPAID_SUBMISSIONS_FOR_ORG,
-  GET_UNPAID_SUBMISSIONS_FOR_POD,
-} from 'graphql/queries/payment';
 import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME } from 'utils/web3Constants';
-import { constructGnosisRedirectUrl } from './SingleWalletPayment';
+import { constructGnosisRedirectUrl } from 'components/Common/Payment/SingleWalletPayment';
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {
@@ -48,9 +42,17 @@ interface PaymentData {
   recepientAddress: string;
   chain: string;
 }
+interface Props {
+  payoutData: PaymentData[];
+  orgId: any;
+  podId: any;
+  chain: any;
+  wallets: any
+}
 
-export const BatchWalletPayment = (props) => {
-  const { open, handleClose, podId, orgId, unpaidSubmissions, submissionIds, wallets, submissionsPaymentInfo, chain } =
+
+export const BatchRetroactivePayment = (props: Props) => {
+  const { podId, orgId, payoutData, wallets, chain } =
     props;
   const [currentChainId, setCurrentChainId] = useState(null); // chain id current user is on
   const [walletOptions, setWalletOptions] = useState([]); // chain associated with submission
@@ -125,23 +127,7 @@ export const BatchWalletPayment = (props) => {
     }
   }, [selectedWalletId, selectedWallet?.chain, selectedWallet?.address, currentChainId]);
 
-  const [proposeGnosisMultisendForSubmissions] = useMutation(PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS, {
-    onCompleted: (data) => {
-      setPaymentPending(true);
-      if (paymentModal?.onPaymentComplete) {
-        paymentModal?.onPaymentComplete();
-      }
-    },
-    onError: (e) => {
-      console.error(e);
-    },
-    refetchQueries: [
-      GET_UNPAID_SUBMISSIONS_FOR_POD,
-      GET_UNPAID_SUBMISSIONS_FOR_ORG,
-      GET_PAYMENTS_FOR_POD,
-      GET_PAYMENTS_FOR_ORG,
-    ],
-  });
+
   useEffect(() => {
     const url = constructGnosisRedirectUrl(selectedWallet?.chain, selectedWallet?.address, safeTxHash);
     setGnosisSafeTxRedirectLink(url);
@@ -152,27 +138,26 @@ export const BatchWalletPayment = (props) => {
     setGnosisTransactionLoading(true);
     let iface = new ethers.utils.Interface(ERC20abi);
     const transactions: MetaTransactionData[] = [];
-    submissionsPaymentInfo?.map((submissionPaymentInfo) => {
-      const paymentsData = submissionPaymentInfo.paymentData;
-      // assume one payment per submission for now
-      const paymentData = paymentsData[0];
-      let transactionData: MetaTransactionData;
-      if (paymentData?.isEthTransfer) {
-        transactionData = {
-          to: paymentData.recepientAddress,
-          data: '0x00',
-          value: paymentData.amount,
-        };
-      } else {
-        const callData = iface.encodeFunctionData('transfer', [paymentData.recepientAddress, paymentData.amount]);
-        transactionData = {
-          to: paymentData.tokenAddress,
-          data: callData,
-          value: '0',
-        };
-      }
-      transactions.push(transactionData);
+    payoutData?.map((paymentData) => {
+      console.log(paymentData)
+      // let transactionData: MetaTransactionData;
+      // if (paymentData?.isEthTransfer) {
+      //   transactionData = {
+      //     to: paymentData.recepientAddress,
+      //     data: '0x00',
+      //     value: paymentData.amount,
+      //   };
+      // } else {
+      //   const callData = iface.encodeFunctionData('transfer', [paymentData.recepientAddress, paymentData.amount]);
+      //   transactionData = {
+      //     to: paymentData.tokenAddress,
+      //     data: callData,
+      //     value: '0',
+      //   };
+      // }
+      // transactions.push(transactionData);
     });
+    return
     // includes the pending nonce, better than keeping it empty which would ignore pending txs
     const gnosisClient = wonderGnosis?.safeServiceClient;
     const gnosisSdk = wonderGnosis?.safeSdk;
@@ -234,16 +219,16 @@ export const BatchWalletPayment = (props) => {
       sender,
       signature,
     };
-    proposeGnosisMultisendForSubmissions({
-      variables: {
-        input: {
-          submissionIds,
-          walletId: selectedWalletId,
-          chain,
-          transactionData: txData,
-        },
-      },
-    });
+    // proposeGnosisMultisendForSubmissions({
+    //   variables: {
+    //     input: {
+    //       submissionIds,
+    //       walletId: selectedWalletId,
+    //       chain,
+    //       transactionData: txData,
+    //     },
+    //   },
+    // });
   };
   const handleCreateNewWalletClick = () => {
     if (podId) {
