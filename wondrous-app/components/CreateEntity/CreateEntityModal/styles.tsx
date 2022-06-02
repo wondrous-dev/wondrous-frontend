@@ -687,8 +687,6 @@ export const CreateEntityCreateTaskButton = styled(Button)`
     height: 34px;
     min-width: 143px;
     ${GradientHighlightHorizontal}
-    opacity: ${({ disabled }) => (disabled ? '0.5' : '1')};
-    background: ${({ disabled }) => disabled && '#454545'};
     button {
       text-transform: capitalize;
       min-height: 0;

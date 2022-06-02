@@ -52,6 +52,7 @@ import {
   CreateEntityLabelAddButton,
   CreateEntityLabelSelectWrapper,
   CreateEntityLabelWrapper,
+  CreateEntityOpenInFullIcon,
   CreateEntityOption,
   CreateEntityOptionImageWrapper,
   CreateEntityOptionLabel,
@@ -80,7 +81,6 @@ import {
   CreateEntityTextfieldPoints,
   CreateEntityTitle,
   MediaUploadDiv,
-  CreateEntityOpenInFullIcon,
 } from './styles';
 
 const formValidationSchema = Yup.object().shape({
@@ -164,16 +164,25 @@ const filterOrgUsers = (orgUsers) => {
   }));
 };
 
-const filterDAOptions = (orgs) => {
-  if (!orgs) {
+const filterOptionsWithPermission = (options, userPermissionsContext) => {
+  if (!options) {
     return [];
   }
-  return orgs.map((org) => ({
-    imageUrl: org?.profilePicture,
-    label: org?.name,
-    value: org?.id,
-    color: org?.color,
-  }));
+  return options
+    .filter(({ id }) => {
+      const permissions = parseUserPermissionContext({
+        userPermissionsContext,
+        orgId: id,
+        podId: id,
+      });
+      return permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK);
+    })
+    .map(({ profilePicture, name, id, color }) => ({
+      imageUrl: profilePicture,
+      label: name,
+      value: id,
+      color: color,
+    }));
 };
 
 const getPodObject = (pods, podId) => {
@@ -600,8 +609,12 @@ export const CreateEntityModal = (props) => {
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
   });
+  const inputRef: any = useRef();
+  const fetchedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
+    ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+    : null;
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
-  const filteredDaoOptions = filterDAOptions(userOrgs?.getUserOrgs);
+  const filteredDaoOptions = filterOptionsWithPermission(userOrgs?.getUserOrgs, fetchedUserPermissionsContext);
   const { handleMutation, loading } = entityTypeData[entityType]?.mutation();
   const form = useFormik({
     initialValues: entityTypeData[entityType]?.initialValues,
@@ -630,10 +643,7 @@ export const CreateEntityModal = (props) => {
   const pods = useGetAvailableUserPods(form.values.orgId);
   const selectedPodPrivacyLevel =
     pods?.filter((i) => i.id === form.values.podId)[0]?.privacyLevel ?? privacyOptions.public.value;
-  const inputRef: any = useRef();
-  const fetchedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
-    ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
-    : null;
+
   const router = useRouter();
   const { podId: routerPodId } = router.query;
   useEffect(() => {
@@ -670,12 +680,6 @@ export const CreateEntityModal = (props) => {
     filteredDaoOptions,
     router,
   ]);
-  const permissions = parseUserPermissionContext({
-    userPermissionsContext: fetchedUserPermissionsContext,
-    orgId: form.values.orgId,
-    podId: form.values.podId,
-  });
-  const canCreateTask = permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK);
   const eligibleReviewers = useGetEligibleReviewers(form.values.orgId, form.values.podId);
   const filteredEligibleReviewers = eligibleReviewers.filter(
     (reviewer) => !form.values.reviewerIds.includes(reviewer.id)
@@ -709,7 +713,7 @@ export const CreateEntityModal = (props) => {
               <CreateEntityHeaderArrowIcon />
               <CreateEntityDropdown
                 name="podId"
-                options={filterDAOptions(pods)}
+                options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext)}
                 onChange={(podId) => {
                   // NOTE: This will reset the data that depends on the podId
                   const selectedPodPrivacyLevel = pods?.filter((i) => i.id === podId)[0]?.privacyLevel;
@@ -1266,13 +1270,7 @@ export const CreateEntityModal = (props) => {
           ) : (
             <>
               <CreateEntityCancelButton onClick={resetEntityType}>Cancel</CreateEntityCancelButton>
-              <Tooltip title={!canCreateTask && `You need permission to create a ${entityType}.`} placement="top">
-                <span>
-                  <CreateEntityCreateTaskButton disabled={!canCreateTask} type="submit">
-                    Create {entityType}
-                  </CreateEntityCreateTaskButton>
-                </span>
-              </Tooltip>
+              <CreateEntityCreateTaskButton type="submit">Create {entityType}</CreateEntityCreateTaskButton>
             </>
           )}
         </CreateEntityHeaderWrapper>
