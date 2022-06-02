@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import FilterIcon from '../../Icons/filter';
-import { Chevron } from '../../Icons/sections';
-import Tabs from './Tabs';
+import { ChevronFilled } from '../../Icons/sections';
 import {
   FilterHandle,
   FilterHandleInner,
@@ -18,12 +17,8 @@ import {
   InlineText,
   FilterValues,
   FilterBoxPortal,
-  FilterButton,
-  ButtonsWrapper,
   FilterCheckbox,
-  FilterIconWrapper,
 } from './styles';
-import { Blue200, Grey250 } from '../../../theme/colors';
 import { useOutsideAlerter, useFilterQuery } from 'utils/hooks';
 import { TaskFilter } from 'types/task';
 import _ from 'lodash';
@@ -50,6 +45,10 @@ const Filter = (props: IFilterProps) => {
   };
 
   useOutsideAlerter(wrapperRef, () => setOpen(false));
+
+  useEffect(() => {
+    setItems(filterSchema?.items);
+  }, [filterSchema]);
 
   useEffect(() => {
     if (!isLoading && data) {
@@ -136,6 +135,7 @@ const Filter = (props: IFilterProps) => {
     selected && (Array.isArray(selected) ? (selected?.length ? `${selected.length} selected` : null) : selected.name);
 
   const Icon = filterSchema?.icon || FilterIcon;
+
   return (
     <FilterHandle ref={wrapperRef} open={open}>
       <FilterHandleInner open={open} className={filterSchema?.disabled ? 'disabled' : ''} onClick={toggleOpen}>
@@ -150,7 +150,7 @@ const Filter = (props: IFilterProps) => {
           </FilterValues>
         </FilterHandleContainer>
         <FilterChevronContainer className={open ? 'active' : ''}>
-          <Chevron stroke="white" />
+          <ChevronFilled stroke="#4B4B4B" />
         </FilterChevronContainer>
       </FilterHandleInner>
       {open && (

@@ -7,9 +7,13 @@ import {
   AppliedFiltersWrapper,
   AppliedFiltersItem,
   Button,
+  ClearButton,
+  CloseIcon,
+  AppliedFiltersIconWrapper,
 } from './styles';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
+import { useOrgBoard, usePodBoard } from 'utils/hooks';
 export const FiltersTriggerButton = ({ onClick, isOpen }) => {
   return (
     <Button className={isOpen ? 'active' : ''} reversed onClick={onClick}>
@@ -20,7 +24,10 @@ export const FiltersTriggerButton = ({ onClick, isOpen }) => {
 };
 
 export default function BoardFilters({ filterSchema, onChange, showAppliedFilters = false }) {
-  const [appliedFilters, setAppliedFilters] = useState({});
+  const [appliedFilters, setAppliedFilters] = useState<any>({});
+  const board = useOrgBoard() || usePodBoard();
+
+  const entityType = board?.entityType;
 
   const applyFilter = (filters) => {
     setAppliedFilters(filters);
@@ -31,6 +38,10 @@ export default function BoardFilters({ filterSchema, onChange, showAppliedFilter
     }, {});
     onChange(newFilters);
   };
+
+  useEffect(() => {
+    if (Object.keys(appliedFilters)) setAppliedFilters({});
+  }, [entityType]);
 
   const handleFilterChange = (filter) => {
     const newFilters = { ...appliedFilters, ...filter };
@@ -60,6 +71,11 @@ export default function BoardFilters({ filterSchema, onChange, showAppliedFilter
     removeAppliedFilter(filter.filterType);
   };
 
+  const clearAll = () => {
+    setAppliedFilters({});
+    onChange({});
+  };
+
   return (
     <BoardFiltersContainer>
       <BoardFiltersWrapper>
@@ -73,21 +89,27 @@ export default function BoardFilters({ filterSchema, onChange, showAppliedFilter
               filterSchema={filter}
               onChange={handleFilterChange}
               onRemove={removeAppliedFilter}
-              applyFilter={applyFilter}
             />
           );
         })}
       </BoardFiltersWrapper>
       {!!appliedFiltersMap.length && showAppliedFilters && (
         <AppliedFiltersWrapper>
-          {appliedFiltersMap.map(
-            (filter, idx) =>
+          {appliedFiltersMap.map((filter, idx) => {
+            const Icon = filter?.pillIcon;
+            return (
               filter && (
-                <AppliedFiltersItem onClick={() => handleFilterPill(filter)} key={idx}>
+                <AppliedFiltersItem key={idx}>
+                  <AppliedFiltersIconWrapper>
+                    <Icon style={{ margin: 0 }} width="100%" height="100%" />
+                  </AppliedFiltersIconWrapper>
                   {filter.name}
+                  <CloseIcon onClick={() => handleFilterPill(filter)} />
                 </AppliedFiltersItem>
               )
-          )}
+            );
+          })}
+          <ClearButton onClick={clearAll}>Clear all</ClearButton>
         </AppliedFiltersWrapper>
       )}
     </BoardFiltersContainer>

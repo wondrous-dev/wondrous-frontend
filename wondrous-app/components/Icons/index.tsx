@@ -85,7 +85,7 @@ export const ToDo = (props) => (
 );
 
 export const TodoWithBorder = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="none" viewBox="0 0 29 29">
+  <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="none" viewBox="0 0 29 29" {...props}>
     <circle cx="14.711" cy="14.633" r="13.5" fill="#0F0F0F" stroke="#474747"></circle>
     <circle cx="14.714" cy="14.633" r="2.949" fill="url(#paint0_linear_2348_556)"></circle>
     <circle
@@ -349,7 +349,7 @@ export const Archived = (props) => (
 );
 
 export const InProgressWithBorder = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="none" viewBox="0 0 29 29">
+  <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="none" viewBox="0 0 29 29" {...props}>
     <circle cx="14.695" cy="14.681" r="13.5" fill="#0F0F0F" stroke="#474747"></circle>
     <circle cx="14.695" cy="14.68" r="2.949" fill="url(#paint0_linear_4216_52108)"></circle>
     <path
@@ -384,7 +384,7 @@ export const InProgressWithBorder = (props) => (
 );
 
 export const InReview = (props) => (
-  <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <circle cx="14.2542" cy="14.1227" r="13.5" fill="#0F0F0F" stroke="#474747" />
     <circle cx="11.1464" cy="14.1227" r="0.990845" fill="url(#paint0_linear_509_3000)" />
     <circle cx="14.2548" cy="14.1227" r="0.990845" fill="url(#paint1_linear_509_3000)" />
@@ -491,7 +491,7 @@ export const DoneWithBorder = (props) => (
     height={props?.style?.height || '29'}
     fill="none"
     viewBox="0 0 29 29"
-    style={props?.style}
+    {...props}
   >
     <path
       fill="#0F0F0F"

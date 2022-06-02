@@ -3,8 +3,7 @@ import { InputAdornment } from '@material-ui/core';
 import last from 'lodash/last';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import SearchIcon from '../Icons/search';
-import { Autocomplete, Input, LoadMore, Option } from './styles';
+import { Autocomplete, Input, LoadMore, Option, SearchIconWrapped } from './styles';
 import TaskIcon from '../Icons/TaskTypes/task';
 import MilestoneIcon from '../Icons/TaskTypes/milestone';
 import BountyIcon from '../Icons/TaskTypes/bounty';
@@ -191,7 +190,7 @@ export default function SearchTasks({ onSearch, isExpandable }: Props) {
                 ...params.InputProps,
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchIcon color={Blue20} />
+                    <SearchIconWrapped />
                   </InputAdornment>
                 ),
                 endAdornment: (

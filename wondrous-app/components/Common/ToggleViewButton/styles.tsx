@@ -21,9 +21,15 @@ export const ToggleViewOption = styled.div`
   &.active {
     background: #0f0f0f;
     opacity: 1;
+    &:hover {
+      background: #0f0f0f;
+    }
   }
   padding: 8.5px;
   border-radius: 6px;
   cursor: pointer;
   opacity: 0.4;
+  &:hover {
+    background: #232323;
+  }
 `;

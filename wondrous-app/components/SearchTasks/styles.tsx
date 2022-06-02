@@ -3,6 +3,13 @@ import TextField from '@mui/material/TextField';
 import AutocompleteComp from '@mui/material/Autocomplete';
 
 import { HighlightBlue, Blue20 } from '../../theme/colors';
+import SearchIcon from 'components/Icons/search';
+
+export const SearchIconWrapped = styled(SearchIcon)`
+  path {
+    stroke: ${Blue20};
+  }
+`;
 
 export const Autocomplete = styled(AutocompleteComp)`
   width: 100%;
@@ -10,19 +17,29 @@ export const Autocomplete = styled(AutocompleteComp)`
   && .MuiAutocomplete-inputRoot {
     position: relative;
     padding: 0;
-    ${({ isExpanded }) =>
-      isExpanded &&
-      `    &::after {
+    &::after {
       content: '';
       position: absolute;
       inset: 0;
       border-radius: 5px;
-      background: linear-gradient(90deg, #ccbbff 1.14%, #7427ff 100.09%);
+      background: ${({ isExpanded }) => (isExpanded ? 'linear-gradient(90deg, #ccbbff 1.14%, #7427ff 100.09%)' : '')};
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
       padding: 1px;
-    }`}
+    }
+
+    &:hover {
+      &::after {
+        background: linear-gradient(264.14deg, #7427ff 3.71%, #363636 92.81%);
+        cursor: pointer;
+      }
+    }
+    &:hover ${SearchIconWrapped} {
+      path {
+        stroke: url(#linear);
+      }
+    }
   }
 `;
 

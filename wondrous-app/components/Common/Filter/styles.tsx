@@ -92,8 +92,6 @@ export const FilterBox = styled.div`
 
   max-width: 323px;
   height: fit-content;
-
-  padding: 0px 1px 1px 1px;
   border-radius: 6px;
   background: #1d1d1d;
   z-index: 100;
@@ -106,7 +104,7 @@ export const FilterBoxInner = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-
+  border-radius: 6px;
   padding: 12px 12px 16px;
   width: 321px;
   height: fit-content;
@@ -309,7 +307,7 @@ export const FilterButton = styled.button`
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
-  line-height: 15px;
+  line-height: 18px;
   margin-right: 10px;
 `;
 

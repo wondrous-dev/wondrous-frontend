@@ -254,7 +254,7 @@ const useGetOrgTaskBoardProposals = ({
           statuses: proposalBoardStatuses,
           offset: 0,
           labelId: filters?.labelId,
-          limit: filters?.statuses?.length === 0 || !filters?.statuses ? LIMIT : 0,
+          limit: LIMIT,
         },
       });
     }
@@ -369,6 +369,7 @@ const BoardsPage = () => {
     }
     insertUrlParam('entity', type);
     setEntityType(type);
+    setFilters({});
   };
 
   const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {

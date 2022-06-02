@@ -97,12 +97,12 @@ const useGetPodTaskBoardTasks = ({
   useEffect(() => {
     if (entityType !== ENTITIES_TYPES.PROPOSAL && podId && !search) {
       const taskBoardStatuses =
-        statuses.length > 0
+        statuses?.length > 0
           ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))
           : //double check in case we add new stuff and have no valid entityType.
             STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
 
-      const taskBoardStatusesIsNotEmpty = taskBoardStatuses.length > 0;
+      const taskBoardStatusesIsNotEmpty = taskBoardStatuses?.length > 0;
       getPodTaskBoardTasks({
         variables: {
           input: {
@@ -110,6 +110,9 @@ const useGetPodTaskBoardTasks = ({
             statuses: taskBoardStatuses,
             limit: taskBoardStatusesIsNotEmpty ? LIMIT : 0,
             offset: 0,
+            labelId,
+            date,
+            onlyPublic: onlyPublic === PRIVACY_LEVEL.public,
             types: [entityType],
             ...(boardType === PRIVACY_LEVEL.public && {
               onlyPublic: true,
@@ -119,7 +122,7 @@ const useGetPodTaskBoardTasks = ({
       });
       setPodTaskHasMore(true);
     }
-  }, [getPodTaskBoardTasks, podId, statuses, boardType, setPodTaskHasMore, entityType]);
+  }, [getPodTaskBoardTasks, podId, statuses, boardType, setPodTaskHasMore, entityType, labelId, date, onlyPublic]);
   return { fetchMore: getPodTaskBoardTasksFetchMore };
 };
 
@@ -184,11 +187,12 @@ const useGetPodTaskProposals = ({
             podId,
             statuses: proposalBoardStatuses,
             offset: 0,
-            limit: statuses.length === 0 || !statuses ? LIMIT : 0,
+            labelId,
+            limit: LIMIT,
           },
         },
       });
-  }, [getPodTaskProposals, podId, statuses, entityType]);
+  }, [getPodTaskProposals, podId, statuses, entityType, labelId]);
   return { fetchMore: getProposalsFetchMore };
 };
 
@@ -295,6 +299,7 @@ const BoardsPage = () => {
     }
     insertUrlParam('entity', type);
     setEntityType(type);
+    setFilters({});
   };
 
   const [searchPodTaskProposals] = useLazyQuery(SEARCH_POD_TASK_BOARD_PROPOSALS, {
@@ -333,6 +338,7 @@ const BoardsPage = () => {
         offset: 0,
         limit: 100,
         searchString: search,
+        labelId,
       },
     },
   };
@@ -365,6 +371,9 @@ const BoardsPage = () => {
                 podId,
                 limit: 100,
                 offset: 0,
+                labelId,
+                date,
+                onlyPublic,
                 // Needed to exclude proposals
                 statuses: STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
                 searchString: search,
@@ -377,7 +386,7 @@ const BoardsPage = () => {
           setSearchString(search as string);
         }
       } else if (userId) {
-        const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
+        const taskStatuses = statuses?.filter((status) => TASK_STATUSES.includes(status));
 
         getTasksRelatedToUser({
           variables: {
@@ -386,6 +395,9 @@ const BoardsPage = () => {
             limit: 1000,
             offset: 0,
             statuses: taskStatuses,
+            labelId,
+            date,
+            onlyPublic,
           },
         });
       } else {
@@ -398,7 +410,7 @@ const BoardsPage = () => {
         });
       }
     }
-  }, [podId, getPodBoardTaskCount, getPod, boardType]);
+  }, [podId, getPodBoardTaskCount, getPod, boardType, labelId, date, onlyPublic]);
 
   function handleSearch(searchString: string) {
     const searchPodTaskProposalsArgs = {
@@ -461,11 +473,11 @@ const BoardsPage = () => {
     setFilters(filtersToApply);
 
     const { statuses, labelId } = filtersToApply;
-    const taskStatuses = statuses.filter((status) => TASK_STATUSES.includes(status));
+    const taskStatuses = statuses?.filter((status) => TASK_STATUSES.includes(status));
     const searchProposals =
-      statuses.length !== taskStatuses.length ||
+      statuses?.length !== taskStatuses?.length ||
       statuses === (STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT);
-    const searchTasks = !(searchProposals && statuses.length === 1);
+    const searchTasks = !(searchProposals && statuses?.length === 1);
     if (userId) {
       getTasksRelatedToUser({
         variables: {
