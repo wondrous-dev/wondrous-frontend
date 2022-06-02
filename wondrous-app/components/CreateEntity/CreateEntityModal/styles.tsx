@@ -343,9 +343,9 @@ export const CreateEntityLabel = styled.div`
 `;
 
 export const CreateEntityLabelAddButton = styled(ButtonUnstyled)`
-  width: fit-content;
   height: 32px;
-  max-width: 60px;
+  max-width: max-content;
+  width: max-content;
   background: #282828;
   border-radius: 4px;
   padding: 4px 8px;
@@ -395,8 +395,8 @@ export const CreateEntitySelectWrapper = styled.div`
   flex-wrap: wrap;
   width: 100%;
   gap: 6px;
-  > *:nth-child(odd) {
-    flex-grow: 0;
+  > div:nth-of-type(n + 3) {
+    max-width: calc(50% - 3px);
   }
 `;
 
