@@ -662,7 +662,11 @@ export const CreateEntityModal = (props) => {
         form.setFieldValue('orgId', board?.orgId);
       }
 
-      if (board?.podId && !form.values.podId) {
+      if (
+        fetchedUserPermissionsContext &&
+        board?.podId in fetchedUserPermissionsContext?.podPermissions &&
+        !form.values.podId
+      ) {
         // If you're only part of one dao then just set that as default
         // TODO: if you are part of the org and you're on that page it should be create on that org
         form.setFieldValue('podId', board?.podId || routerPodId);
