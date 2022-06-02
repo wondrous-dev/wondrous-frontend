@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconButton } from '@material-ui/core';
+import { IconButton } from '@mui/material';
 
 import CloseModalIcon from 'components/Icons/closeModal';
 import RightArrowIcon from 'components/Icons/rightArrow';
@@ -20,7 +20,7 @@ import ParcelIcon from 'components/Icons/parcelIcon';
 export const EXPORT_PAYMENT_CSV_TYPE = {
   UTOPIA: 'utopia',
   PARCEL: 'parcel',
-  PLAIN: 'plain'
+  PLAIN: 'plain',
 };
 
 export const ENTITIES_UI_ELEMENTS = {

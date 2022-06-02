@@ -31,7 +31,7 @@ import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
 import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
-import { TextField } from '@material-ui/core';
+import { TextField } from '@mui/material';
 import { OptionDiv, OptionTypography, StyledAutocompletePopper, StyledChip } from 'components/CreateEntity/styles';
 import { white } from 'theme/colors';
 import { filterOrgUsers } from 'components/CreateEntity/createEntityModal';

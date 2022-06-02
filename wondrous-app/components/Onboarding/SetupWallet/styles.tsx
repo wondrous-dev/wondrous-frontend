@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { White } from "../../../theme/colors";
-import {Typography} from "@material-ui/core";
+import {Typography} from "@mui/material";
 
 export const Wallet = styled.div`
   padding: 25px 0;

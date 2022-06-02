@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
-import { CircularProgress, styled, Switch, TextField } from '@material-ui/core';
+import { CircularProgress, styled, Switch, TextField } from '@mui/material';
 import { ReactEditor } from 'slate-react';
 
 import { ENTITIES_TYPES } from 'utils/constants';

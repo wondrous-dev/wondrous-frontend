@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { White } from "../../../theme/colors";
-import {Typography} from "@material-ui/core";
+import {Typography} from "@mui/material";
 
 export const Layout = styled.div`
   background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);

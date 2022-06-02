@@ -3,7 +3,7 @@ import { useQuery, useMutation } from '@apollo/client';
 
 import { HeaderBlock } from '../headerBlock';
 
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import UserCheckIcon from '../../Icons/userCheckIcon';
 import { DropDown, DropDownItem } from '../../Common/dropdown';
 import { useRouter } from 'next/router';

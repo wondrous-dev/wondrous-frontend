@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import apollo from 'services/apollo';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import Image from 'next/image';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import palette from 'theme/palette';
 import { useMe } from '../../Auth/withAuth';
 import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from 'utils/constants';
 import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
 import useSideBar from 'hooks/useSideBar';
-import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from 'utils/helpers';
+import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
 import { usePodBoard, useTokenGating } from 'utils/hooks';
 import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
 import ChooseEntityToCreate from '../../CreateEntity';
@@ -27,19 +26,12 @@ import {
   HeaderContributors,
   HeaderContributorsAmount,
   HeaderContributorsText,
-  HeaderFollowButton,
-  HeaderFollowButtonIcon,
-  HeaderFollowButtonText,
   HeaderImageDefault,
   HeaderMainBlock,
-  HeaderManageSettingsButton,
-  HeaderSettingsLockedButton,
   HeaderText,
   HeaderTitle,
   OverviewComponent,
   TokenHeader,
-  HeaderInviteButton,
-  PlusIconWrapper,
   HeaderTitleIcon,
   HeaderImageWrapper,
   TokenEmptyLogo,
@@ -48,7 +40,6 @@ import {
 } from '../../organization/wrapper/styles';
 import { MoreInfoModal } from '../../profile/modals';
 import SideBarComponent from '../../SideBar';
-import PlusIcon from '../../Icons/plus';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import {
   GET_USER_JOIN_POD_REQUEST,

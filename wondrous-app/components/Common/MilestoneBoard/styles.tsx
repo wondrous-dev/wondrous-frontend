@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import FlagIcon from 'components/Icons/flag';
 import { highlightBlue, white, background } from 'theme/colors';
 

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { blueColors, background, white } from 'theme/colors';
 import StarIcon from 'components/Icons/starIcon';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 export const IconWrapper = styled.div`
   border-radius: 180px;

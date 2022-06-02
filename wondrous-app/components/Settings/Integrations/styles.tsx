@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { White } from '../../../theme/colors';
-import { Button as MuiButton, InputBase, ListItemIcon, Typography } from '@material-ui/core';
+import { Button as MuiButton, InputBase, ListItemIcon, Typography } from '@mui/material';
 
 export const IntegrationsContainer = styled.div`
   height: 100vh;

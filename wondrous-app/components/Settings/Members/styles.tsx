@@ -3,9 +3,9 @@ import { DropDown, DropDownItem } from 'components/Common/dropdown';
 import styled from 'styled-components';
 import { white } from 'theme/colors';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
-import TableCell from '@material-ui/core/TableCell';
-import TableBody from '@material-ui/core/TableBody';
-import Table from '@material-ui/core/Table';
+import TableCell from '@mui/material/TableCell';
+import TableBody from '@mui/material/TableBody';
+import Table from '@mui/material/Table';
 
 import { newDropdownStyles } from 'components/Common/DropdownSelect/styles';
 

@@ -4,7 +4,8 @@ import { greenColors, greyColors, purpleColors, redColors, white, yellowColors }
 import { createSpacingUnit } from 'utils';
 import { device } from 'utils/device';
 
-import ClearIcon from '@material-ui/icons/Clear';
+import ClearIcon from '@mui/icons-material/Clear';
+
 import { CenteredFlexRow } from '../../Common';
 
 export const BlurredDiv = styled.div`

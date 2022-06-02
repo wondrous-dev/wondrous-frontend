@@ -19,7 +19,7 @@ import {
   StyledTableBody,
   StyledTableHeaderCell,
 } from './styles';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import { white } from 'theme/colors';
 import { SafeImage } from '../../Common/Image';
 import InviteMember from './InviteMember';

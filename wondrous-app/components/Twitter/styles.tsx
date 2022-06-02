@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { TextField, Typography } from '@material-ui/core';
+import { TextField, Typography } from '@mui/material';
 import Image from 'next/image';
 import { Grey250, Grey85, Red400, White, Background } from '../../theme/colors';
 import { Button } from '../Common/button';

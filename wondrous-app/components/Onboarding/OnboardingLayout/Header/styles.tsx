@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 import { White } from '../../../../theme/colors';
 

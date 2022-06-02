@@ -19,7 +19,7 @@ import {
   OptionTypography,
   StyledAutocomplete,
 } from 'components/CreateEntity/styles';
-import { InputAdornment, TextField } from '@material-ui/core';
+import { InputAdornment, TextField } from '@mui/material';
 import { white } from 'theme/colors';
 import { SafeImage } from 'components/Common/Image';
 import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';

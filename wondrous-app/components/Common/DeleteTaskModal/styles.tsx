@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, Divider, Typography } from '@material-ui/core';
+import { Box, Button, Dialog, Divider, Typography } from '@mui/material';
 import styled from 'styled-components';
 import { Button as ButtonComponent } from '../button';
 import { redColors } from 'theme/colors';

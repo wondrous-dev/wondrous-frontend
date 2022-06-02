@@ -1,12 +1,11 @@
-import { Button, Portal, Popper } from '@mui/material';
+import { Button, Portal } from '@mui/material';
 import styled from 'styled-components';
 import { color } from 'styled-system';
 
-import { blackColors, greyColors, highlightPurple, white } from '../../../theme/colors';
-import Checkbox from '@material-ui/core/Checkbox';
-import CircleChecked from '@material-ui/icons/CheckCircleOutline';
-import CircleCheckedFilled from '@material-ui/icons/CheckCircle';
-import CircleUnchecked from '@material-ui/icons/RadioButtonUnchecked';
+import { blackColors, greyColors, highlightPurple, white } from 'theme/colors';
+import Checkbox from '@mui/material/Checkbox';
+import CircleChecked from '@mui/icons-material/CheckCircleOutline';
+import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 
 export const FilterHandle = styled.div`
   display: flex;

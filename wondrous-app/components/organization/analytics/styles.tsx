@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 
 import { GradientMidnightDiagonal, GradientMidnightVertical } from 'components/Common/gradients';
-import { TextField, Typography } from '@material-ui/core';
+import { TextField, Typography } from '@mui/material';
 import { white, greyColors } from 'theme/colors';
 import { StyledDatePicker } from 'components/Common/DatePicker/styles';
 import { Button } from 'components/Common/button';

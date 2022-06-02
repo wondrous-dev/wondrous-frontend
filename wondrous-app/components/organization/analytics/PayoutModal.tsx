@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
 import Modal from '@mui/material/Modal';
 import { Typography } from '@mui/material';
-import { Tab } from '@material-ui/core';
+import { Tab } from '@mui/material';
 import {
   PodNameTypography,
   PaymentModal,

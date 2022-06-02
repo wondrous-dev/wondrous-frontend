@@ -18,7 +18,7 @@ import {
   StyledGridItemContainer,
 } from './styles';
 import { SafeImage } from '../Common/Image';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useIsMobile } from 'utils/hooks';
 import { White } from 'theme/colors';
