@@ -1,35 +1,27 @@
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 
 import { TaskCommentIcon } from '../../Icons/taskComment';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
 import { DropDown, DropDownItem } from '../dropdown';
 import MilestoneIcon from '../../Icons/milestone';
 import {
-  TaskInner,
   TaskHeader,
   TaskContent,
   TaskTitle,
-  TaskSeparator,
-  TaskFooter,
   TaskAction,
   TaskActionAmount,
   TaskActionMenu,
   PodWrapper,
   PodName,
-  TaskDivider,
   MilestoneProgressWrapper,
   TaskHeaderIconWrapper,
   SubtaskCountWrapper,
   SubtaskCount,
-  TaskContentFooter,
   ActionButton,
-  TaskCardDescriptionText,
-  CheckedIconWrapper,
   DueDateText,
 } from './styles';
 import { transformTaskToTaskCard } from 'utils/helpers';
-import { White, Red800 } from '../../../theme/colors';
+import palette from 'theme/palette';
 import { TaskCreatedBy } from '../TaskCreatedBy';
 import { MilestoneProgress } from '../MilestoneProgress';
 import PodIcon from '../../Icons/podIcon';
@@ -55,7 +47,6 @@ import {
   Rejected,
 } from '../../Icons';
 import { Archived } from '../../Icons/sections';
-import { TaskMedia } from '../MediaPlayer';
 import { useColumns, useUserProfile } from 'utils/hooks';
 import {
   BoardsCardSubheader,
@@ -69,7 +60,7 @@ import {
 } from 'components/Common/Boards/styles';
 import { ProposalCardWrapper, ProposalCardType, ProposalCardIcon, ProposalFooterButton } from './styles';
 import { PRIVACY_LEVEL } from 'utils/constants';
-import { Red300, Green800, Grey57 } from 'theme/colors';
+
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
 import { useLazyQuery, useQuery } from '@apollo/client';
@@ -458,7 +449,7 @@ export const TaskCard = ({
                       onClick={() => {
                         setEditTask(true);
                       }}
-                      color={White}
+                      color={palette.white}
                     >
                       Edit {type}
                     </DropDownItem>
@@ -467,7 +458,7 @@ export const TaskCard = ({
                       onClick={() => {
                         setArchiveTask(true);
                       }}
-                      color={White}
+                      color={palette.white}
                     >
                       Archive {type}
                     </DropDownItem>
@@ -478,7 +469,7 @@ export const TaskCard = ({
                         onClick={() => {
                           setDeleteTask(true);
                         }}
-                        color={Red800}
+                        color={palette.red800}
                       >
                         Delete {type}
                       </DropDownItem>
@@ -509,8 +500,8 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
       labelsAndActions: [
         {
           title: 'Approved',
-          borderColor: Green800,
-          color: Green800,
+          borderColor: palette.green700,
+          color: palette.green700,
         },
       ],
     },
@@ -530,8 +521,8 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
       labelsAndActions: [
         {
           title: 'Rejected',
-          borderColor: Red300,
-          color: Red300,
+          borderColor: palette.red300,
+          color: palette.red300,
         },
       ],
     },

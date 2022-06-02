@@ -1,5 +1,5 @@
-import { Snackbar } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
+import { Snackbar } from '@mui/material';
+import Alert from '@mui/material/Alert';
 import styled from 'styled-components';
 
 export const StyledAlert = styled(Alert)`

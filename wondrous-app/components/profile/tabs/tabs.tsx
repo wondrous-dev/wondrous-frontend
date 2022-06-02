@@ -1,4 +1,4 @@
-import { Tab } from '@material-ui/core';
+import { Tab } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';

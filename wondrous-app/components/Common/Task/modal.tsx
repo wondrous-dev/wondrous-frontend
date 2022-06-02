@@ -73,7 +73,7 @@ import {
 } from 'utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
-import { Red400, Red800, White } from '../../../theme/colors';
+import { redColors, white } from 'theme/colors';
 import { useMe } from '../../Auth/withAuth';
 import { GetStatusIcon, renderMentionString } from 'utils/common';
 
@@ -130,8 +130,6 @@ import {
   updateInProgressTask,
   updateProposalItem,
   updateTaskItem,
-  getProposalStatus,
-  updateInReviewItem,
   updateCompletedItem,
 } from 'utils/board';
 import { RichTextViewer } from 'components/RichText';
@@ -715,7 +713,7 @@ const CreatorBlock = ({ profilePicture, username, createdAt, isTaskProposal, han
           <TaskSectionInfoText
             style={{
               fontSize: '14px',
-              color: White,
+              color: white,
               fontWeight: 'regular',
             }}
           >
@@ -1087,7 +1085,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   };
 
   const BackToListStyle = {
-    color: White,
+    color: white,
     width: '100%',
     textAlign: 'right',
     marginRight: '8px',
@@ -1975,7 +1973,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   style={{
                     marginTop: '-8px',
                     marginBottom: '16px',
-                    color: Red400,
+                    color: redColors.red400,
                   }}
                 >
                   Your wallet is not connected. Please link your wallet to receive payment for completing tasks and

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Blue20, Background, White } from 'theme/colors';
+import { blueColors, background, white } from 'theme/colors';
 import StarIcon from 'components/Icons/starIcon';
 import { Typography } from '@material-ui/core';
 
@@ -9,7 +9,7 @@ export const IconWrapper = styled.div`
   justify-content: center;
   align-items: center;
   padding: 8px;
-  background: ${Background};
+  background: ${background};
 `;
 
 const SUB_BACKGROUND_MAP = {
@@ -37,7 +37,7 @@ export const BountyContainer = styled.div`
 export const BountyCardWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  color: ${White};
+  color: ${white};
   padding: 10px;
   cursor: pointer;
   border-radius: 3px;
@@ -63,7 +63,7 @@ export const BountyCardWrapper = styled.div`
 `;
 
 export const BountyCardType = styled.div`
-  color: ${Blue20};
+  color: ${blueColors.blue20};
   font-family: 'Space Grotesk';
   font-style: normal;
   font-weight: 700;
@@ -72,8 +72,8 @@ export const BountyCardType = styled.div`
 `;
 
 export const BountyCardSubmissionsCount = styled.div`
-  background: ${Background};
-  color: ${White};
+  background: ${background};
+  color: ${white};
   width: 45%;
   border-radius: 6px;
   padding: 8px;

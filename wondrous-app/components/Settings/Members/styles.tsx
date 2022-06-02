@@ -1,7 +1,7 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { DropDown, DropDownItem } from 'components/Common/dropdown';
 import styled from 'styled-components';
-import { White } from '../../../theme/colors';
+import { white } from 'theme/colors';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
@@ -37,7 +37,7 @@ export const UsernameText = styled(Typography)`
 
 export const SeeMoreText = styled(Typography)`
   && {
-    color: ${White};
+    color: ${white};
     text-decoration: underline;
     cursor: pointer;
     font-size: 14px;

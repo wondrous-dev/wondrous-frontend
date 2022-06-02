@@ -41,7 +41,7 @@ import {
   StyledAutocompletePopper,
   StyledChip,
 } from 'components/CreateEntity/styles';
-import { White } from 'theme/colors';
+import { white } from 'theme/colors';
 import { filterOrgUsers } from 'components/CreateEntity/createEntityModal';
 import CSVModal from 'components/organization/analytics/CSVModal';
 import { exportContributorTaskCSV } from 'components/organization/analytics';
@@ -373,7 +373,7 @@ const Analytics = (props) => {
               <TextField
                 {...params}
                 style={{
-                  color: White,
+                  color: white,
                   fontFamily: 'Space Grotesk',
                   fontSize: '16px',
                   paddingLeft: '4px',

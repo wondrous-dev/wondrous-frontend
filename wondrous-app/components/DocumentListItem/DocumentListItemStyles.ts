@@ -1,4 +1,4 @@
-import { Blue800 } from 'theme/colors';
+import { blueColors } from 'theme/colors';
 import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 
@@ -39,7 +39,7 @@ export const DescriptionTypography = styled(Typography)`
 
     &:after: {
       content: ' ';
-      background: ${Blue800};
+      background: ${blueColors.blue800};
       position: absolute;
       right: 0;
       width: 1em;
@@ -52,7 +52,7 @@ export const DescriptionTypography = styled(Typography)`
 const styles = {
   listItem: {
     padding: 1.5,
-    backgroundColor: Blue800,
+    backgroundColor: blueColors.blue800,
     borderRadius: '3px',
     display: 'flex',
     ':hover': {

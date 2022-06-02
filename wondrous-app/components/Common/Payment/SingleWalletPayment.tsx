@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import { useRouter } from 'next/router';
 import { ethers, utils } from 'ethers';
 import { BigNumber } from 'bignumber.js';

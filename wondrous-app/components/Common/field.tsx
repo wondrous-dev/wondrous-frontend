@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Background, Grey50 } from '../../theme/colors';
+import { background, greyColors } from 'theme/colors';
 
 export const FieldWrapper = styled.div`
   position: relative;
@@ -27,10 +27,10 @@ export const FieldInput = styled.input`
     margin: 5px 0;
     border-radius: 8px;
     border: 0px;
-    color: ${Grey50};
+    color: ${greyColors.grey50};
     outline: none;
     font-size: 14px;
-    background: ${Background};
+    background: ${background};
     width: 100%;
 
     ${(props) =>

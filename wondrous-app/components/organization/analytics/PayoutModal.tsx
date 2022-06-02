@@ -26,7 +26,6 @@ import {
 } from './styles';
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
-import { White, Grey800 } from '../../../theme/colors';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
 import { GET_PAYMENT_METHODS_FOR_ORG, GET_SUBMISSIONS_PAYMENT_INFO } from 'graphql/queries/payment';
@@ -350,7 +349,7 @@ export const PayoutModal = (props) => {
         })}
         {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
         <PayOptionButtonWrapper>
-            {/* <PayContributorButton
+          {/* <PayContributorButton
               style={{
                 marginLeft: 0,
               }}
@@ -358,7 +357,7 @@ export const PayoutModal = (props) => {
             >
               Create Payments
             </PayContributorButton> */}
-            <div>
+          <div>
             <PayContributorButton
               style={{
                 marginLeft: 10,
@@ -368,7 +367,7 @@ export const PayoutModal = (props) => {
               Export CSV
             </PayContributorButton>
             <ExplainerText>Export the above form as a Utopia/Parcel compatible CSV</ExplainerText>
-            </div>
+          </div>
         </PayOptionButtonWrapper>
       </PayoutPaymentModal>
     </Modal>

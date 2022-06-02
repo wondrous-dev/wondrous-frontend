@@ -1,4 +1,4 @@
-import { Button, IconButton, Typography } from '@material-ui/core';
+import { Button, IconButton, Typography } from '@mui/material';
 import styled from 'styled-components';
 import { BaseCard } from '../Common/card';
 import { LinkIcon } from '../Icons/linkIcon';

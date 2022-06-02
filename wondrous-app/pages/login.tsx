@@ -1,41 +1,31 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 
-import { Card, CardBody, CardFooter } from 'components/Common/auth';
-import AuthLayout from 'components/Common/Layout/Auth';
 import { useIsMobile } from 'utils/hooks';
-import { LineWithText, Line } from 'components/Common/lines';
+import { LineWithText } from 'components/Common/lines';
 import { Form } from 'components/Common/form';
 import { Field } from 'components/Common/field';
-import { PaddedParagraph, StyledLink } from 'components/Common/text';
-import { SmallLogo, LoginWrapper, TopBubble, LoginError } from 'components/Pages/login';
+import { PaddedParagraph } from 'components/Common/text';
+import { LoginError } from 'components/Pages/login';
 import { useState } from 'react';
-import { Grey50, White } from '../theme/colors';
+import palette from 'theme/palette';
 import { EmailIcon, LockIcon } from 'components/Icons/userpass';
 import { DiscordIcon } from 'components/Icons/discord';
 import { useWonderWeb3 } from 'services/web3';
-import { emailSignin, getUserSigningMessage, walletSignin, walletSignup } from 'components/Auth/withAuth';
+import { emailSignin, getUserSigningMessage, walletSignin } from 'components/Auth/withAuth';
 import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
 import WalletConnectConnector from 'components/WalletConnectors/WalletConnect';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
-import styled from 'styled-components';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 import { getDiscordUrl } from 'utils';
 import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS , SUPPORTED_CHAINS} from 'utils/constants';
 import OnboardingHeader from 'components/Onboarding/OnboardingLayout/Header';
 import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';
-import { ContinueButton } from 'components/Onboarding/OnboardingLayout/Footer/styles';
 import { Connectors, MainWrapper } from 'components/Onboarding/styles';
 import { Button } from 'components/Button';
-import { SupportedChainType } from 'utils/web3Constants';
 import { handleUserOnboardingRedirect } from 'components/Onboarding/utils';
 
-const prod = process.env.NEXT_PUBLIC_PRODUCTION;
 
-const WalletLoginContainer = styled.div`
-  padding: 10px 0;
-`;
 const discordUrlWithoutState = getDiscordUrl();
 const state = JSON.stringify({
   callbackType: DISCORD_CONNECT_TYPES.login,
@@ -192,7 +182,7 @@ const Login = ({ csrfToken }) => {
             </Button>
           </Form>
           <LineWithText width="45%" borderBottom="1px dashed #4b4b4b">
-            <PaddedParagraph padding="0 10px" color={White} style={{ fontWeight: 500 }}>
+            <PaddedParagraph padding="0 10px" color={palette.white} style={{ fontWeight: 500 }}>
               or
             </PaddedParagraph>
           </LineWithText>

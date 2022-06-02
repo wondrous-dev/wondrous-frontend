@@ -1,10 +1,10 @@
-import { Checkbox, Typography } from '@material-ui/core';
+import { Checkbox, Typography } from '@mui/material';
 import styled from 'styled-components';
-import { White } from '../../../theme/colors';
+import { white } from 'theme/colors';
 
 export const TableCellText = styled(Typography)`
   && {
-    color: ${White};
+    color: ${white};
     font-size: 14px;
     text-align: center;
   }

@@ -1,6 +1,6 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import styled from 'styled-components';
-import { Grey250, White } from '../../theme/colors';
+import { white } from 'theme/colors';
 import { SafeImage } from '../Common/Image';
 import DefaultUserImage from '../Common/Image/DefaultUserImage';
 import { CreateFormPreviewButton } from '../CreateEntity/styles';
@@ -67,7 +67,7 @@ export const CommentText = styled(Typography)`
   && {
     font-size: 13px;
     line-height: 20px;
-    color: ${White};
+    color: ${white};
     text-align: left;
     white-space: pre-line;
   }

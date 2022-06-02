@@ -1,6 +1,6 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import styled from 'styled-components';
-import { White } from '../../../theme/colors';
+import { white } from 'theme/colors';
 import PlusIcon from '../../Icons/plus';
 import { Button } from '../button';
 
@@ -33,7 +33,7 @@ export const Label = styled(Typography)`
     font-size: 13px;
     font-style: normal;
     font-weight: 400;
-    color: ${White};
+    color: ${white};
     margin-left: 8px;
   }
 `;

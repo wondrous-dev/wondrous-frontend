@@ -1,6 +1,6 @@
-import { IconButton } from '@material-ui/core';
+import { IconButton } from '@mui/material';
 import styled from 'styled-components';
-import { Background, Black95 } from '../../../theme/colors';
+import { background, blackColors } from 'theme/colors';
 
 export const WalletWrapper = styled.div`
   display: flex;
@@ -43,7 +43,7 @@ export const WalletDisplay = styled.div`
 
   padding: 0 4px;
 
-  background: ${Black95};
+  background: ${blackColors.black95};
 `;
 
 export const WonderBalance = styled.div`
@@ -92,7 +92,7 @@ export const WalletAddress = styled.div`
 
   border-radius: 3px;
 
-  background: ${Background};
+  background: ${background};
 
   font-size: 14px;
   font-weight: 600;

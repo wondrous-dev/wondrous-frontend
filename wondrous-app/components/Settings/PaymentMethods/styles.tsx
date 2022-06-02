@@ -13,7 +13,7 @@ import {
 import { Button } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
 import styled from 'styled-components';
-import { Background, Black92, Blue20, Grey100, Grey250, Grey57, Grey85, Grey90, White, Black90 } from 'theme/colors';
+import { background, blackColors, blueColors, greyColors, white } from 'theme/colors';
 import { BaseCard } from 'components/Common/card';
 
 export const PaymentMethodSettingWrapper = styled.div`
@@ -26,7 +26,7 @@ export const PaymentMethodSubHeader = styled(InputLabel)`
     font-family: 'Space Grotesk';
     font-size: 20px;
     font-weight: 500;
-    color: ${Blue20};
+    color: ${blueColors.blue20};
     margin-left: 8px;
     margin-top: 28px;
   }
@@ -34,7 +34,7 @@ export const PaymentMethodSubHeader = styled(InputLabel)`
 
 export const PaymentMethodNameHeader = styled(Typography)`
   && {
-    color: ${White};
+    color: ${white};
     font-family: 'Space Grotesk';
     font-weight: 500;
     font-size: 15px;
@@ -77,7 +77,7 @@ export const PaymentMethodFormHeader = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 18px;
     font-weight: 700;
-    color: ${White};
+    color: ${white};
   }
 `;
 
@@ -96,7 +96,7 @@ export const CustomAddressInput = styled(InputBase)`
     margin-top: 16px;
     margin-right: 16px;
     font-size: 16px;
-    font-color: ${White};
+    font-color: ${white};
     line-height: 21px;
     letter-spacing: 0.01em;
     color: #c4c4c4;
@@ -104,14 +104,13 @@ export const CustomAddressInput = styled(InputBase)`
   }
 `;
 
-
 export const AddPaymetMethodButton = styled(Button)`
   && {
     width: 100%;
     margin-top: 28px;
     background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
     button {
-      background: ${Background};
+      background: ${background};
       font-family: 'Space Grotesk';
       font-size: 16px;
       font-weight: 500;
@@ -125,7 +124,7 @@ export const NewPaymentMethodButton = styled(Button)`
     margin-top: 20px;
     background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
     button {
-      background: ${Background};
+      background: ${background};
       font-family: 'Space Grotesk';
       font-size: 16px;
       font-weight: 500;

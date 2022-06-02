@@ -1,7 +1,7 @@
-import InputBase from '@material-ui/core/InputBase';
+import InputBase from '@mui/material/InputBase';
 import { Typography } from '@mui/material';
 import styled from 'styled-components';
-import { Background, Blue20, Grey20, Grey250 } from 'theme/colors';
+import { background, blueColors, greyColors } from 'theme/colors';
 import { Button } from '../../button';
 import DropdownSelect from '../../DropdownSelect/dropdownSelect';
 
@@ -38,7 +38,7 @@ export const OfflinePaymentWarningTypography = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
     font-size: 12px;
-    color: ${Grey20};
+    color: ${greyColors.grey20};
   }
 `;
 
@@ -47,7 +47,7 @@ export const OfflinePaymentInputLabel = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 14px;
     font-weight: 500;
-    color: ${Blue20};
+    color: ${blueColors.blue20};
     margin-top: 20px;
   }
 `;
@@ -61,14 +61,14 @@ export const OfflinePaymentWalletWrapper = styled.div`
 export const OfflinePaymentWallet = styled(InputBase)`
   width: 165px;
   height: 40px;
-  background: ${Background};
+  background: ${background};
   border-radius: 6px;
 
   .MuiInputBase-input {
     font-family: 'Space Grotesk';
     font-size: 14px;
     font-weight: 400;
-    color: ${Grey250};
+    color: ${greyColors.grey250};
     padding: 10px 12px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -82,7 +82,7 @@ export const OfflinePaymentWalletButton = styled(Button)`
     margin-left: 12px;
   }
   & > button {
-    background: ${Background};
+    background: ${background};
     display: flex;
     align-items: center;
   }
@@ -93,7 +93,7 @@ export const OfflinePaymentWalletButtonText = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 16px;
     font-weight: 400;
-    color: ${Grey20};
+    color: ${greyColors.grey20};
     margin-right: 8px;
   }
 `;
@@ -108,9 +108,9 @@ export const OfflinePaymentLinkInput = styled(InputBase)`
     font-size: 14px;
     line-height: 21px;
     letter-spacing: 0.01em;
-    color: ${Grey250};
+    color: ${greyColors.grey250};
     padding: 10px 15px;
-    background: ${Background};
+    background: ${background};
   }
 `;
 

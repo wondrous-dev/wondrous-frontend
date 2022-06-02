@@ -1,6 +1,5 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import styled from 'styled-components';
-import { White } from '../../../../theme/colors';
 import { ENTITIES_TYPES } from 'utils/constants';
 
 export const entityStyling = {
@@ -8,6 +7,8 @@ export const entityStyling = {
     style: 'min-width: 31%',
   },
 };
+
+import { white } from 'theme/colors';
 
 export const DropMeHere = styled.div`
   margin: 1em 0 0 0;
@@ -26,7 +27,7 @@ export const DropMeHere = styled.div`
   border-radius: 6px;
   border: 1px dashed #4b4b4b;
 
-  color: ${White};
+  color: ${white};
 `;
 
 export const TaskListContainer = styled.div`

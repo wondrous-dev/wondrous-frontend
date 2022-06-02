@@ -9,7 +9,7 @@ import {
   CreateFormSelectBlock,
   CreateFormSelectBlockTitle,
 } from 'components/Common/DropdownSelect/styles';
-import { FormControl } from '@material-ui/core';
+import { FormControl } from '@mui/material';
 
 const MenuProps = {
   PaperProps: {

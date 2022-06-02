@@ -1,7 +1,7 @@
 import React from 'react';
 import regexifyString from 'regexify-string';
-import { Typography } from '@material-ui/core';
-import { HighlightBlue } from '../theme/colors';
+import { Typography } from '@mui/material';
+import { highlightBlue } from 'theme/colors';
 import { TodoIcon, ArchivedIcon, CompletedIcon, InProgressIcon, InReviewIcon } from 'components/Icons/statusIcons';
 
 export const renderMentionString = (props) => {
@@ -23,7 +23,7 @@ export const renderMentionString = (props) => {
           <span
             key={id}
             style={{
-              color: HighlightBlue,
+              color: highlightBlue,
               marginRight: '4px',
               cursor: 'pointer',
               ...textStyle,
@@ -44,7 +44,7 @@ export const renderMentionString = (props) => {
             target="_blank"
             rel="noreferrer"
             style={{
-              color: HighlightBlue,
+              color: highlightBlue,
               marginRight: '4px',
               ...textStyle,
             }}

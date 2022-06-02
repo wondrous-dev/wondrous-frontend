@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { HighlightBlue, HighlightPurple, White } from 'theme/colors';
+import { HighlightBlue, HighlightPurple, white } from 'theme/colors';
 export const Wrapper = styled.div`
   display: flex;
 `;
@@ -56,5 +56,5 @@ export const StatTitle = styled.span`
 `;
 
 export const StatValue = styled.span`
-  color: ${White};
+  color: ${white};
 `;

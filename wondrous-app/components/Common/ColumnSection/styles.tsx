@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Collapse } from '@material-ui/core';
+import { Collapse } from '@mui/material';
 
-import { Background, Black92, Grey250 } from '../../../theme/colors';
+import { background, blackColors, greyColors } from 'theme/colors';
 
 export const SectionWrapper = styled.div`
   display: flex;
@@ -12,7 +12,7 @@ export const SectionWrapper = styled.div`
   margin-top: 1em;
   width: 100%;
   background: #1b1b1b;
-  border: 1px solid ${Black92}3C;
+  border: 1px solid ${blackColors.black92}3C;
 
   border-radius: 3px;
 `;
@@ -25,10 +25,10 @@ export const SectionHeaderContainer = styled.div`
   cursor: pointer;
 
   padding: 7px 15px;
-  background: ${Black92}3C;
+  background: ${blackColors.black92}3C;
 
   font-weight: 400;
-  color: ${Grey250};
+  color: ${greyColors.grey250};
 `;
 
 export const SectionHeader = styled.div`
@@ -47,7 +47,7 @@ export const SectionCount = styled.div`
   font-size: 11px;
   font-weight: bold;
 
-  background: ${Background};
+  background: ${background};
 `;
 
 export const SectionContainer = styled(Collapse)`

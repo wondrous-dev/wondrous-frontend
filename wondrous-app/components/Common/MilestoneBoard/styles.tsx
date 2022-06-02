@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import FlagIcon from 'components/Icons/flag';
-import { HighlightBlue, White, Background } from 'theme/colors';
+import { HighlightBlue, white, background } from 'theme/colors';
 
 const IconWrapper = styled.div`
   border-radius: 180px;
@@ -10,7 +10,7 @@ const IconWrapper = styled.div`
   align-items: center;
   padding: 4px;
   border: 1px solid ${HighlightBlue};
-  background: ${Background};
+  background: ${background};
 `;
 
 export const MilestoneIcon = () => (
@@ -36,7 +36,7 @@ export const MilestoneCard = styled.div`
   align-items: flex-start;
   gap: 18px;
   flex-grow: 0;
-  color: ${White};
+  color: ${white};
   cursor: pointer;
   padding: 14px;
   height: fit-content;

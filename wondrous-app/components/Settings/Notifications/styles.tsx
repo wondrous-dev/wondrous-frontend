@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Checkbox from '@mui/material/Checkbox';
 import { Button } from '../../Common/button';
-import { Grey250, White, HighlightPurple, Blue20, HighlightBlue } from '../../../theme/colors';
+import { greyColors, white, highlightPurple, blueColors, highlightBlue } from 'theme/colors';
 
 export const ConnectDiscordButton = styled(Button)`
   && {
@@ -37,7 +37,7 @@ export const DiscordCardElementDiv = styled.div`
 export const DiscordCardText = styled(Typography)`
   && {
     font-family: Space Grotesk;
-    color: ${White};
+    color: ${white};
     font-size: 14px;
     margin-bottom: 8px;
   }
@@ -57,7 +57,7 @@ export const UserDiscordNotificationSettingsDiv = styled.div`
 export const UserDiscordNotificationSettingsText = styled(Typography)`
   && {
     font-family: Space Grotesk;
-    color: ${White};
+    color: ${white};
     font-size: 20px;
     font-weight: bold;
   }
@@ -66,7 +66,7 @@ export const UserDiscordNotificationSettingsText = styled(Typography)`
 export const NotificationSettingsHeader = styled(Typography)`
   && {
     font-family: Space Grotesk;
-    color: ${White};
+    color: ${white};
     font-size: 28px;
     font-weight: bold;
   }
@@ -75,7 +75,7 @@ export const NotificationSettingsHeader = styled(Typography)`
 export const NotificationSettingsHeaderText = styled(Typography)`
   && {
     font-family: Space Grotesk;
-    color: ${Grey250};
+    color: ${greyColors.grey250};
     font-size: 14px;
     font-weight: 400;
     margin-top: 20px;
@@ -84,14 +84,14 @@ export const NotificationSettingsHeaderText = styled(Typography)`
 
 export const LoggedInDiscordUserText = styled(Typography)`
   && {
-    color: ${White};
+    color: ${white};
     font-size: 16px;
     font-family: Space Grotesk;
   }
 `;
 
 export const DiscordLink = styled.a`
-  color: ${HighlightBlue};
+  color: ${highlightBlue};
   text-decoration: none;
   :hover {
     text-decoration: underline;
@@ -108,7 +108,7 @@ export const ExplanationText = styled(Typography)`
 `;
 
 export const StyledCheckbox = styled((props) => (
-  <Checkbox style={{ color: HighlightPurple, background: props.checked ? White : 'transparent' }} {...props} />
+  <Checkbox style={{ color: highlightPurple, background: props.checked ? white : 'transparent' }} {...props} />
 ))`
   height: 16px;
   width: 16px;
@@ -126,12 +126,12 @@ export const NotificationSettingsHeaderWrapper = styled.div`
 `;
 
 export const NotificationSettingsCategoryLabel = styled.h3`
-  color: ${Blue20};
+  color: ${blueColors.blue20};
   font-weight: 700;
 `;
 
 export const NotificationSettingLabel = styled.h4`
-  color: ${White};
+  color: ${white};
   font-weight: 500;
   padding-left: 10px;
   display: inline-block;

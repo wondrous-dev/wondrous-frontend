@@ -1,4 +1,4 @@
-import { Blue800 } from 'theme/colors';
+import { blueColors } from 'theme/colors';
 import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 

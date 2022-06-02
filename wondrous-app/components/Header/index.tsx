@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { InputAdornment, Typography } from '@material-ui/core';
+import { InputAdornment } from '@mui/material';
 import Wallet from 'components/Common/Wallet';
 import { useMe } from '../Auth/withAuth';
 import { CreateIconOutlined } from 'components/Icons/createBtn';

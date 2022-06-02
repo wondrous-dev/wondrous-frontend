@@ -26,13 +26,13 @@ import {
 } from 'graphql/queries/payment';
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
-import { StyledCheckbox, TableCellText } from './styles';
+import { TableCellText } from './styles';
 import { CompensationAmount, CompensationPill, IconContainer } from '../../Common/Compensation/styles';
 import { GET_ORG_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import Link from 'next/link';
 import { cutString, parseUserPermissionContext } from 'utils/helpers';
 import { constructGnosisRedirectUrl } from '../../Common/Payment/SingleWalletPayment';
-import { White, Grey800 } from '../../../theme/colors';
+import { white, greyColors } from 'theme/colors';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PayModal } from './modal';
 import { BatchPayModal } from './BatchPayModal';
@@ -129,10 +129,10 @@ const PaymentItem = (props) => {
                 <TableCellText>
                   <Checkbox
                     style={{
-                      border: disabled ? `1px solid ${Grey800}` : `none`,
+                      border: disabled ? `1px solid ${greyColors.grey800}` : `none`,
                       width: '24px',
                       height: '24px',
-                      color: disabled ? Grey800 : White,
+                      color: disabled ? greyColors.grey800 : white,
                     }}
                     checked={checked}
                     disabled={disabled}
@@ -221,7 +221,7 @@ const PaymentItem = (props) => {
               target="_blank"
               rel="noreferrer"
               style={{
-                color: White,
+                color: white,
               }}
             >
               {cutString(item?.taskTitle, 30)}
@@ -232,7 +232,7 @@ const PaymentItem = (props) => {
           {(canViewPaymentLink || viewingUser?.id === item?.payeeId) && (
             <a
               style={{
-                color: White,
+                color: white,
               }}
               target={'_blank'}
               rel="noreferrer"

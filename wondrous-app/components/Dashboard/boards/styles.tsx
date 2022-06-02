@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { MenuItem, TextField } from '@material-ui/core';
+import { MenuItem, TextField } from '@mui/material';
 import Accordion from '../../Common/Accordion';
 import { BoardFiltersContainer } from 'components/Common/BoardFilters/styles';
 

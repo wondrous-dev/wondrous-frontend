@@ -14,7 +14,7 @@ import {
   BoldSpan,
   SmallerTopParagraph,
 } from 'components/Discord/styles';
-import { HighlightBlue, White } from '../../theme/colors';
+import { highlightBlue, white } from 'theme/colors';
 import Link from 'next/link';
 
 const DiscordNotificationSetupPage = () => {

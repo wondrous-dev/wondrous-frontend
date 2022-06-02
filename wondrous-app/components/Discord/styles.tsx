@@ -1,6 +1,6 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import styled from 'styled-components';
-import { White } from '../../theme/colors';
+import { white } from 'theme/colors';
 
 export const ListType = styled.ul`
   color: white;
@@ -9,7 +9,7 @@ export const ListType = styled.ul`
 export const DiscordTitle = styled(Typography)`
   && {
     font-size: 24px;
-    color: ${White};
+    color: ${white};
     font-weight: bolder;
   }
 `;
@@ -17,7 +17,7 @@ export const DiscordTitle = styled(Typography)`
 export const DiscordParagraph = styled(Typography)`
   && {
     font-size: 16px;
-    color: ${White};
+    color: ${white};
     margin-top: 20px;
     max-width: 1020px;
   }

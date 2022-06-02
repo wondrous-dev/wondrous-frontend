@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 import apollo from 'services/apollo';
 
-import { Button, CircularProgress } from '@material-ui/core';
+import { Button, CircularProgress } from '@mui/material';
 import CheckMarkIcon from '../../Icons/checkMark';
 import RedXIcon from '../../Icons/redx';
 import { useRouter } from 'next/router';
@@ -26,7 +26,7 @@ import {
   ClaimRoleLabel,
   RoleActionWrapper,
 } from './styles';
-import { White } from 'theme/colors';
+import { white } from 'theme/colors';
 import { useEditTokenGatingCondition } from 'utils/hooks';
 import { GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
 import { CLAIM_POD_ROLE, CLAIM_ORG_ROLE } from 'graphql/mutations/tokenGating';

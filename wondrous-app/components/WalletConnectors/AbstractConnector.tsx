@@ -1,5 +1,5 @@
 import { Button } from 'components/Common/button';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import { useWonderWeb3 } from 'services/web3';
 import { PaddedParagraph } from 'components/Common/text';
 import connectors, { ConnectorName } from 'services/web3/connectors';

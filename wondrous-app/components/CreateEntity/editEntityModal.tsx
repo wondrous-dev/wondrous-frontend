@@ -41,12 +41,11 @@ import { handleAddFile } from 'utils/media';
 
 import { MediaItem } from './MediaItem';
 import { AddFileUpload } from '../Icons/addFileUpload';
-import { White } from '../../theme/colors';
 import apollo from 'services/apollo';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_LABELS, GET_USER_ORGS } from 'graphql/queries';
-import { GET_USER_AVAILABLE_PODS, GET_POD_USERS } from 'graphql/queries/pod';
-import { transformTaskProposalToTaskProposalCard, transformTaskToTaskCard } from 'utils/helpers';
+import { GET_USER_ORGS } from 'graphql/queries';
+import { GET_USER_AVAILABLE_PODS } from 'graphql/queries/pod';
+import { transformTaskProposalToTaskProposalCard } from 'utils/helpers';
 import { GET_ORG_USERS } from 'graphql/queries/org';
 import { ATTACH_MEDIA_TO_TASK, REMOVE_MEDIA_FROM_TASK } from 'graphql/mutations/task';
 import { LINKE_PROPOSAL_TO_SNAPSHOT, UNLINKE_PROPOSAL_FROM_SNAPSHOT } from 'graphql/mutations/integration';
@@ -57,24 +56,17 @@ import {
   UPDATE_TASK_PROPOSAL,
 } from 'graphql/mutations/taskProposal';
 import { useMe } from '../Auth/withAuth';
-import { getProposalStatus, updateCompletedItem, updateInReviewItem } from 'utils/board';
+import { getProposalStatus, } from 'utils/board';
 import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './createEntityModal';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { ErrorText } from '../Common';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
-import { updateInProgressTask, updateTaskItem, updateTaskItemOnEntityType } from 'utils/board';
-import { GET_MILESTONES, GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_FOR_POD } from 'graphql/queries/task';
-import { TabsVisibilityCreateEntity } from 'components/Common/TabsVisibilityCreateEntity';
-import Tags, { Option as Label } from '../Tags';
-import { CREATE_LABEL } from 'graphql/mutations/org';
-import SingleDatePicker from 'components/SingleDatePicker';
 import {
   RichTextEditor,
   useEditor,
   countCharacters,
   deserializeRichText,
   extractMentions,
-  isBlankValue,
 } from 'components/RichText';
 import { useSnapshot } from 'services/snapshot';
 

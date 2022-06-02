@@ -5,7 +5,6 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { format } from 'date-fns';
 import { GET_AUTOCOMPLETE_USERS, GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD, GET_ORG_USERS } from 'graphql/queries';
-import { Post } from '../../Common/Post';
 import Wrapper from '../wrapper/wrapper';
 import {
   ContributorRow,
@@ -23,7 +22,6 @@ import {
   ExportCSVButtonText,
 } from './styles';
 import { SafeImage } from 'components/Common/Image';
-import { DefaultProfilePicture, UserProfilePicture } from 'components/profile/modals/styles';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import BottomArrowCaret from 'components/Icons/BottomArrowCaret';
 import RightArrowCaret from 'components/Icons/RightArrowCaret';
@@ -35,7 +33,7 @@ import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
 import { TextField } from '@material-ui/core';
 import { OptionDiv, OptionTypography, StyledAutocompletePopper, StyledChip } from 'components/CreateEntity/styles';
-import { White } from 'theme/colors';
+import { white } from 'theme/colors';
 import { filterOrgUsers } from 'components/CreateEntity/createEntityModal';
 import { PayoutModal } from './PayoutModal';
 import { PRIVATE_TASK_TITLE } from 'utils/constants';
@@ -437,7 +435,7 @@ const Analytics = (props) => {
               <TextField
                 {...params}
                 style={{
-                  color: White,
+                  color: white,
                   fontFamily: 'Space Grotesk',
                   fontSize: '16px',
                   paddingLeft: '4px',

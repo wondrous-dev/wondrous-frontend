@@ -1,7 +1,7 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import styled from 'styled-components';
-import { MentionsInput, Mention } from 'react-mentions';
-import { White } from '../../theme/colors';
+import { Mention } from 'react-mentions';
+import { white } from 'theme/colors';
 
 export const UserSuggestionWrapper = styled.div`
   background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
@@ -18,7 +18,7 @@ export const UserSuggestionWrapper = styled.div`
 
 export const UserSuggestionTypography = styled(Typography)`
   && {
-    color: ${White};
+    color: ${white};
     margin-left: 4px;
   }
 `;

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Black30, Grey75, White, Grey40, Black92, HighlightBlue, Black97 } from '../../theme/colors';
+import { white, greyColors, highlightBlue, blackColors } from 'theme/colors';
 
 export const NotificationsBoardWrapper = styled.div`
   position: absolute;
@@ -12,7 +12,7 @@ export const NotificationsBoardWrapper = styled.div`
   margin-top: 20px;
   top: 100%;
   border-radius: 5px;
-  background: ${Black92};
+  background: ${blackColors.black92};
   transition: 0.2s display;
   z-index: 100;
   border-radius: 3px;
@@ -31,7 +31,7 @@ export const NotificationsBoardArrow = styled.div`
   left: 13%;
   /* drop shadow */
   box-shadow: 0px 34px 84px rgba(0, 0, 0, 0.55);
-  background: ${Black92};
+  background: ${blackColors.black92};
   border-radius: 4px;
   transform: rotate(45deg);
 
@@ -51,7 +51,7 @@ export const NotificationsBoardOverArrow = styled.div`
 
   /* drop shadow */
   box-shadow: 0px 34px 84px rgba(0, 0, 0, 0.55);
-  background:${Black92}
+  background:${blackColors.black92}
   border-radius: 4px;
   transform: rotate(45deg);
 
@@ -78,9 +78,10 @@ export const NotificationsItem = styled.div`
   pointer-events: ${(props) => (props.emptyNotifications ? 'none' : '')};
 
   :hover {
-    background: ${(props) => (props.isNotificationViewed ? Black92 : Black97)};
+    background: ${(props) => (props.isNotificationViewed ? blackColors.black92 : blackColors.black97)};
   }
-  background: ${(props) => (props.isNotificationViewed || props.emptyNotifications ? Black97 : Black92)};
+  background: ${(props) =>
+    props.isNotificationViewed || props.emptyNotifications ? blackColors.black97 : blackColors.black92};
 `;
 
 export const NotificationItemIcon = styled.div`
@@ -111,7 +112,7 @@ export const NotificationItemBody = styled.div`
 
 export const NotificationItemTimeline = styled.span`
   padding: 2px 0px 0px 4px;
-  color: ${Black30};
+  color: ${blackColors.black30};
   line-height: 14px;
   font-weight: 300;
 `;
@@ -128,7 +129,7 @@ export const NotificationsBoardHeader = styled.div`
   height: 50px;
   line-height: 46px;
 
-  background: ${Black92};
+  background: ${blackColors.black92};
   border-bottom: 1px solid black;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
@@ -150,7 +151,7 @@ export const NotificationsMarkRead = styled.div`
         font-weight: 500;
         `
       : `
-        color: ${Grey75};
+        color: ${greyColors.grey75};
         text-decoration: none;
         pointer-events: none;
         `}
@@ -167,12 +168,12 @@ export const NotificationsOverlay = styled.div`
   background: transparent;
   z-index: 97;
 `;
-export const NotificationsLink = styled.span`
-  color: ${HighlightBlue};
+export const NotificationsLink = styled.a`
+  color: ${highlightBlue};
   font-weight: 700;
 
   a {
-    color: ${HighlightBlue};
+    color: ${highlightBlue};
     font-weight: 700;
     text-decoration: none;
 
@@ -183,7 +184,7 @@ export const NotificationsLink = styled.span`
 `;
 export const NotificationItemInner = styled.div`
   padding-top: 2px;
-  color: ${White};
+  color: ${white};
 `;
 
 export const NotificationWrapper = styled.div`
@@ -191,7 +192,7 @@ export const NotificationWrapper = styled.div`
 `;
 
 export const NotificationsContentPreview = styled.div`
-  color: ${Grey40};
+  color: ${greyColors.grey40};
   margin-top: 7px;
 `;
 

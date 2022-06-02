@@ -11,7 +11,7 @@ import {
 import SnackbarComp from '@mui/material/Snackbar';
 import { SafeImage } from 'components/Common/Image';
 import styled from 'styled-components';
-import { White, Red200 } from '../../theme/colors';
+import { white, redColors } from 'theme/colors';
 import { Button } from '../Common/button';
 import { Discord } from '../Icons/discord';
 import { Twitter } from '../Icons/twitter';
@@ -117,7 +117,7 @@ export const SettingsSidebarTabsListItemIcon = styled(ListItemIcon)`
 export const SettingsSidebarTabsListItemText = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
-    color: ${White};
+    color: ${white};
     text-decoration: none;
     font-size: 15px;
     font-weight: ${(props) => (props.active ? '600' : '400')};
@@ -174,7 +174,7 @@ export const ArchivedPodIndicatorText = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 16px;
     font-weight: 400;
-    color: ${Red200};
+    color: ${redColors.red200};
   }
 `;
 
@@ -267,7 +267,7 @@ export const GeneralSettingsDAONameInput = styled(InputBase)`
     font-size: 14px;
     line-height: 21px;
     letter-spacing: 0.01em;
-    color: ${White};
+    color: ${white};
     padding: 10px 15px;
   }
 `;
@@ -288,7 +288,7 @@ export const GeneralSettingsDAODescriptionInput = styled(GeneralSettingsDAONameI
     font-size: 14px;
     line-height: 21px;
     letter-spacing: 0.01em;
-    color: ${White};
+    color: ${white};
     padding: 10px 15px;
     border: none;
   }
@@ -431,7 +431,7 @@ export const ImageUploadRecommendText = styled(Typography)`
   && {
     font-size: 12px;
     line-height: 15px;
-    color: ${White};
+    color: ${white};
     margin-bottom: 6px;
   }
 `;
@@ -519,14 +519,14 @@ export const Snackbar = styled(SnackbarComp)`
 export const DiscordText = styled(Typography)`
   && {
     font-size: 14px;
-    color: ${White};
+    color: ${white};
     margin-bottom: 8px;
   }
 `;
 
 export const LabelBlockText = styled(Typography)`
   && {
-    color: ${White};
+    color: ${white};
     font-family: Space Grotesk;
     font-size: 14px;
     margin-bottom: 12px;

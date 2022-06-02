@@ -1,6 +1,5 @@
-import React from 'react';
 import styled from 'styled-components';
-import { Button, FormControl, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
+import { Button, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 
 export const MultiSelectForm = styled(FormControl)`
   &.MuiFormControl-root {

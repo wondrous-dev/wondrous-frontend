@@ -1,19 +1,17 @@
 import styled from 'styled-components';
-import { White, HighlightBlue } from '../../theme/colors';
-import Link from 'next/link';
+import { white, highlightBlue } from 'theme/colors';
 
 export const PaddedParagraph = styled.p`
   && {
     padding: ${(props) => props.padding || 0};
-    color: ${(props) => props.color || White};
+    color: ${(props) => props.color || white};
     margin: 0;
-    font-family: Space Grotesk;
   }
 `;
 
 export const StyledLink = styled.a`
   && {
-    color: ${HighlightBlue};
+    color: ${highlightBlue};
   }
 `;
 
@@ -24,7 +22,7 @@ export const StyledNextLink = styled.span`
   font-weight: 500;
   margin-top: 18px;
   text-decoration: none;
-  color: ${HighlightBlue};
+  color: ${highlightBlue};
 
   &:hover {
     text-decoration: underline;

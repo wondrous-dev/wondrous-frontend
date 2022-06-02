@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import CopyIcon from 'components/Icons/copy';
 import { LINK_OFF_PLATFORM_PAYMENT } from 'graphql/mutations/payment';
 import {
@@ -10,7 +10,7 @@ import {
 } from 'graphql/queries/payment';
 import React, { useContext, useState } from 'react';
 import { ErrorText } from '../..';
-import { White } from '../../../../theme/colors';
+import { white } from 'theme/colors';
 import { CreateFormPreviewButton } from '../../../CreateEntity/styles';
 import { SnackbarAlertContext } from '../../SnackbarAlert';
 import {
@@ -73,7 +73,7 @@ export const OfflinePayment = (props) => {
         <Typography
           variant="body1"
           style={{
-            color: White,
+            color: white,
           }}
         >
           Payment linked

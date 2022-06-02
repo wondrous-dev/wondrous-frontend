@@ -1,27 +1,22 @@
-import styled from 'styled-components'
-import {
-	GradientHighlightHorizontal,
-	GradientMidnightVertical,
-} from '../gradients'
-import { Grey80 } from '../../../theme/colors'
+import styled from 'styled-components';
+import { GradientHighlightHorizontal, GradientMidnightVertical } from '../gradients';
+import { greyColors } from 'theme/colors';
 
 export const StyledButton = styled.button`
-	display: flex;
-	flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-	margin: 0em 2em;
+  margin: 0em 2em;
 
-	line-height: 3em;
-	height: 3em;
-	width: 3em;
-	padding: 0;
+  line-height: 3em;
+  height: 3em;
+  width: 3em;
+  padding: 0;
 
-	${GradientHighlightHorizontal}
+  ${GradientHighlightHorizontal}
 
-	background: ${Grey80};
-	border-radius: 6px;
-`
+  background: ${greyColors.grey80};
+  border-radius: 6px;
+`;
 
-export const HomeButton = (className) => (
-	<StyledButton className={className}>H</StyledButton>
-)
+export const HomeButton = (className) => <StyledButton className={className}>H</StyledButton>;

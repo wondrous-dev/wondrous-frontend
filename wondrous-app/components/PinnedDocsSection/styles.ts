@@ -3,7 +3,7 @@ import { styled } from '@mui/system';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
-import { Blue20, Blue800 } from 'theme/colors';
+import { blueColors } from 'theme/colors';
 
 export const SectionTitleTypography = styled(Typography)(
   `
@@ -14,7 +14,7 @@ export const SectionTitleTypography = styled(Typography)(
     font-size: 16px;
     line-height: 14px;
 
-    color: ${Blue20};
+    color: ${blueColors.blue20};
   }
 `
 );
@@ -26,8 +26,8 @@ export const DocsButton = styled(Button)`
     justify-content: center;
     align-items: center;
     padding: 8px 10px 8px 10px;
-    background-color: ${Blue800};
-    color: ${Blue20};
+    background-color: ${blueColors.blue800};
+    color: ${blueColors.blue20};
     text-transform: capitalize;
   }
 `;

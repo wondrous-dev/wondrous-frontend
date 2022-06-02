@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Background, Blue800, Violet300, Grey250 } from '../../../theme/colors';
+import { background, blueColors, violetColors, greyColors } from 'theme/colors';
 import { CreateFormButtonsBlock, CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { SafeImage } from '../Image';
 import SmartLink from 'components/Common/SmartLink';
@@ -13,7 +13,7 @@ export const TaskSummaryWrapper = styled(SmartLink)`
   padding: 1px;
   background: #515151;
 
-  background: ${Background};
+  background: ${background};
 
   border-radius: 6px;
 
@@ -21,7 +21,7 @@ export const TaskSummaryWrapper = styled(SmartLink)`
   min-height: 170px;
   width: 296px;
   overflow: hidden;
-  color: ${Grey250};
+  color: ${greyColors.grey250};
 `;
 
 export const TaskSummaryInner = styled.div`
@@ -49,7 +49,7 @@ export const TaskSummaryMedia = styled.div`
   border-radius: 3px;
   margin-right: 12px;
 
-  background-color: ${Blue800};
+  background-color: ${blueColors.blue800};
 `;
 
 export const TaskSummaryFooter = styled.div`
@@ -72,7 +72,7 @@ export const TaskSummaryAction = styled.div`
   cursor: pointer;
 
   font-size: 16px;
-  color: ${Violet300};
+  color: ${violetColors.violet300};
 `;
 
 export const OrgProfilePicture = (props) => (

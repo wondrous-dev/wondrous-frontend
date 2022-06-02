@@ -1,4 +1,4 @@
-import { Switch } from '@material-ui/core';
+import { Switch } from '@mui/material';
 import styled from 'styled-components';
 
 export default styled(Switch)(({ theme }) => ({

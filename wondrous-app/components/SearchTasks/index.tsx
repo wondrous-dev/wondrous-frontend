@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { InputAdornment } from '@material-ui/core';
+import { InputAdornment } from '@mui/material';
 import last from 'lodash/last';
 import CircularProgress from '@mui/material/CircularProgress';
 

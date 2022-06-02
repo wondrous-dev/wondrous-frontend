@@ -3,7 +3,7 @@ import { useQuery, useMutation } from '@apollo/client';
 
 import { HeaderBlock } from '../headerBlock';
 
-import { Button, CircularProgress } from '@material-ui/core';
+import { Button, CircularProgress } from '@mui/material';
 import UserCheckIcon from '../../Icons/userCheckIcon';
 import { useRouter } from 'next/router';
 import { useLazyQuery } from '@apollo/client';
@@ -25,7 +25,7 @@ import {
   TokenGatingHeaderLabel,
   TokenLogoDisplay,
 } from './styles';
-import { White } from 'theme/colors';
+import { white } from 'theme/colors';
 import { useEditTokenGatingCondition } from 'utils/hooks';
 import { GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
 import apollo from 'services/apollo';
@@ -65,7 +65,7 @@ const TokenGatingConditionDisplay = (props) => {
   const { tokenGatingCondition } = props;
   const dropdownItemStyle = {
     marginRight: '12px',
-    color: White,
+    color: white,
   };
   const [getTokenInfo, { loading: getTokenInfoLoading }] = useLazyQuery(GET_TOKEN_INFO, {
     onCompleted: (data) => {

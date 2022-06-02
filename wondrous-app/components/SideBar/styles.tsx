@@ -1,7 +1,6 @@
-import React from 'react';
 import styled from 'styled-components';
-import { Divider, Drawer, IconButton, List, ListItem, Typography } from '@material-ui/core';
-import { Black99, White } from '../../theme/colors';
+import { Divider, Drawer, IconButton, List, ListItem, Typography } from '@mui/material';
+import { blackColors, white } from 'theme/colors';
 import { SIDEBAR_WIDTH } from 'utils/constants';
 import SettingsIcon from 'components/Icons/settings';
 import { TutorialsIcon, PodsIcon, ExplorePageIcon } from 'components/Icons/sidebar';
@@ -17,7 +16,7 @@ export const DrawerComponent = styled(Drawer)`
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
     & .MuiDrawer-paperAnchorDockedLeft {
-      background-color: ${Black99};
+      background-color: ${blackColors.black90};
       z-index: 199;
       margin-top: 50px;
       transition: 0.3s;
@@ -210,7 +209,7 @@ export const PodModalFooterInfoWrapper = styled.div`
 
 export const PodModalFooterInfoWrapperText = styled(Typography)`
   && {
-    color: ${White};
+    color: ${white};
     font-size: 13px;
   }
 `;

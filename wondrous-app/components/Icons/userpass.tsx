@@ -1,6 +1,6 @@
 import { SvgIcon } from '@mui/material';
 import React from 'react';
-import { White } from '../../theme/colors';
+import { white } from 'theme/colors';
 
 export const EmailIcon = (props) => (
   <svg viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>

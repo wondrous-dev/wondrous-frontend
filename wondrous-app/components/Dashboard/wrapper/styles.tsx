@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Background } from '../../../theme/colors';
+import { background } from 'theme/colors';
 
 export const OverviewComponent = styled.section`
   width: 100vw;

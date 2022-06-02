@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-import { TextField, Typography } from '@material-ui/core';
-import Image from 'next/image';
-import { Grey250, Grey85, Red400, White, Background, HighlightBlue } from '../../theme/colors';
+import { TextField, Typography } from '@mui/material';
+import { greyColors, redColors, white, background, highlightBlue } from 'theme/colors';
 import { Button } from '../Common/button';
 import { SafeImage } from '../Common/Image';
 
@@ -9,7 +8,7 @@ export const MainWrapper = styled.div`
   width: 100%;
   min-height: 100vh;
   height: 100%;
-  background: url('/images/onboarding/background.png') no-repeat center center ${Background};
+  background: url('/images/onboarding/background.png') no-repeat center center ${background};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,14 +61,14 @@ export const InviteWelcomeBoxTitle = styled(Typography)`
   && {
     font-size: 24px;
     font-weight: bold;
-    color: ${White};
+    color: ${white};
     margin-bottom: 20px;
   }
 `;
 
 export const InviteWelcomeBoxParagraph = styled(Typography)`
   && {
-    color: ${White};
+    color: ${white};
     font-size: 16px;
     font-weight: normal;
   }
@@ -77,7 +76,7 @@ export const InviteWelcomeBoxParagraph = styled(Typography)`
 
 export const DataProtectBoxParagraph = styled(Typography)`
   && {
-    color: ${White};
+    color: ${white};
     font-size: 14px;
     font-weight: normal;
     margin-top: 30px;
@@ -91,8 +90,8 @@ export const MetamaskButton = styled(Button)`
 `;
 
 export const StyledHr = styled.hr`
-  background: ${Grey85};
   height: 1px;
+  border: 1px solid ${greyColors.grey85};
   width: 100%;
   border: 0;
 `;
@@ -106,7 +105,7 @@ export const ProgressBar = styled.img`
 export const OnboardingTitle = styled(Typography)`
   && {
     font-size: 28px;
-    color: ${White};
+    color: ${white};
     margin-top: 18px;
     margin-bottom: 18px;
     font-weight: 500;
@@ -136,7 +135,7 @@ export const UsernameTitle = styled(Typography)`
 
 export const UsernameDescription = styled(UsernameTitle)`
   && {
-    color: ${Grey250};
+    color: ${greyColors.grey250};
     margin-top: 8px;
     margin-bottom: 26px;
     font-weight: 400;
@@ -173,7 +172,7 @@ export const ProfilePictureDiv = styled.div`
 
 export const ErrorText = styled(Typography)`
   && {
-    color: ${Red400};
+    color: ${redColors.red400};
     font-size: 14px;
   }
 `;
@@ -193,7 +192,7 @@ export const Label = styled(Typography)`
     font-size: 14px;
     font-style: normal;
     font-weight: 500;
-    color: ${White};
+    color: ${white};
     margin-left: 2px;
   }
 `;
@@ -280,7 +279,7 @@ export const LogoText = styled.div`
 `;
 
 export const DataLink = styled.a`
-  color: ${HighlightBlue};
+  color: ${highlightBlue};
   text-decoration: underline;
   font-weight: 500;
 `;
