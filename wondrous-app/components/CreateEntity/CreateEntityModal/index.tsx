@@ -89,6 +89,7 @@ const formValidationSchema = Yup.object().shape({
   podId: Yup.string().optional().nullable(),
   title: Yup.string().required('Title is required'),
   reviewerIds: Yup.array().of(Yup.string().required('Please select a reviewer')).nullable(),
+  assigneeId: Yup.string().defined('Please select an assignee').nullable(),
   points: Yup.number()
     .typeError('Points must be a number')
     .integer('Points must be whole number')
@@ -895,9 +896,7 @@ export const CreateEntityModal = (props) => {
                   }}
                     error={hasError}
                 />
-                  {form.errors?.reviewerIds?.[index] && (
-                    <CreateEntityError>{hasError && form.errors?.reviewerIds[index]}</CreateEntityError>
-                  )}
+                  {hasError && <CreateEntityError>{hasError}</CreateEntityError>}
                 </CreateEntitySelectErrorWrapper>
               );
             })}
@@ -926,9 +925,11 @@ export const CreateEntityModal = (props) => {
 
           <CreateEntitySelectWrapper>
             {form.values.assigneeId !== null && (
+              <CreateEntitySelectErrorWrapper>
               <CreateEntityAutocompletePopper
+                  onFocus={() => form.setFieldError('assigneeId', undefined)}
+                  openOnFocus={true}
                 options={filteredOrgUsersData}
-                openOnFocus={true}
                 value={form.values.assigneeId}
                 isOptionEqualToValue={(option, value) => {
                   return option.value === value;
@@ -946,7 +947,6 @@ export const CreateEntityModal = (props) => {
                       ref={params.InputProps.ref}
                       disableUnderline={true}
                       fullWidth={true}
-                      name="assigneeId"
                       placeholder="Enter username..."
                       startAdornment={
                         <CreateEntityAutocompletePopperRenderInputAdornment position="start">
@@ -978,6 +978,7 @@ export const CreateEntityModal = (props) => {
                         if (form.values.assigneeId !== option.value) {
                           form.setFieldValue('assigneeId', option.value);
                         }
+                          form.setFieldError('assigneeId', undefined);
                       }}
                     >
                       {option?.profilePicture ? (
@@ -991,12 +992,15 @@ export const CreateEntityModal = (props) => {
                     </CreateEntityAutocompleteOption>
                   );
                 }}
+                  error={form.errors?.assigneeId}
               />
+                {form.errors?.assigneeId && <CreateEntityError>{form.errors?.assigneeId}</CreateEntityError>}
+              </CreateEntitySelectErrorWrapper>
             )}
-            {!form.values.assigneeId && (
+            {form.values.assigneeId === null && (
               <CreateEntityLabelAddButton
                 onClick={() => {
-                  form.setFieldValue('assigneeId', filteredOrgUsersData[0].value);
+                  form.setFieldValue('assigneeId', '');
                 }}
               >
                 <CreateEntityAddButtonIcon />
