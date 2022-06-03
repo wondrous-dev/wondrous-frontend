@@ -1193,7 +1193,12 @@ export const CreateEntityModal = (props) => {
             {form.values.milestoneId !== null && (
               <CreateEntitySelectErrorWrapper>
                 <CreateEntityAutocompletePopper
+                  openOnFocus={true}
                   options={filterUserOptions(milestonesData?.getMilestones)}
+                  value={form.values.milestoneId}
+                  isOptionEqualToValue={(option, value) => {
+                    return option.id === value;
+                  }}
                   onOpen={() =>
                     getMilestones({
                       variables: {
@@ -1232,10 +1237,10 @@ export const CreateEntityModal = (props) => {
                       />
                     );
                   }}
-                  value={form.values.milestoneId}
                   renderOption={(props, option, state) => {
                     return (
                       <CreateEntityAutocompleteOption
+                        {...props}
                         onClick={() => {
                           if (form.values.milestoneId?.id !== option.id) {
                             form.setFieldValue('milestoneId', option.id);

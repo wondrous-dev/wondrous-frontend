@@ -776,7 +776,7 @@ export const CreateEntityRewardWrapper = styled.div`
 
 export const CreateEntityPaymentMethodRoot = styled.button`
   padding: 0;
-  width: 50%;
+  max-width: fit-content;
   height: 32px;
   border-radius: 4px;
   background: #141414;
@@ -866,6 +866,7 @@ export const CreateEntityPaymentMethodOptionIcon = styled.div`
 `;
 
 export const CreateEntityPaymentMethodSelectRender = styled.div`
+  max-width: fit-content;
   padding: 0 8px;
   display: flex;
   gap: 6px;
