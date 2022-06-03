@@ -38,6 +38,7 @@ import {
   GeneralSettingsSocialsBlockWrapper,
   LabelBlock,
 } from './styles';
+import Tooltip from "components/Tooltip";
 
 const discordUrl = getDiscordUrl();
 
@@ -355,10 +356,14 @@ const ProfileSettings = (props) => {
               }
             }}
           >
-            <GeneralSettingsIntegrationsBlockButtonIcon />
-            {loggedInUser?.userInfo?.discordUsername
-              ? `Connected to ${loggedInUser?.userInfo?.discordUsername}`
-              : 'Connect discord'}
+            <Tooltip title="This integration enables Discord notifications" placement="top">
+              <div>
+                <GeneralSettingsIntegrationsBlockButtonIcon />
+                {loggedInUser?.userInfo?.discordUsername
+                  ? `Connected to ${loggedInUser?.userInfo?.discordUsername}`
+                  : 'Connect discord'}
+              </div>
+            </Tooltip>
           </GeneralSettingsIntegrationsBlockButton>
         </GeneralSettingsInputsBlock>
 

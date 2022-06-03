@@ -44,16 +44,19 @@ const LIMIT = 200;
 const SOCIALS_DATA = [
   {
     icon: <TwitterPurpleIcon />,
+    title: 'Twitter',
     link: 'https://twitter.com/',
     type: 'twitter',
   },
   {
     icon: <DiscordIcon />,
+    title: 'Discord',
     link: 'https://discord.gg/',
     type: 'discord',
   },
   {
     icon: <OpenSeaIcon />,
+    title: 'OpenSea',
     link: 'https://opensea.io/',
     type: 'opensea',
   },
@@ -186,7 +189,7 @@ const GeneralSettingsComponent = (props) => {
 
               return (
                 <GeneralSettingsSocialsBlockRow key={item.type}>
-                  <LinkSquareIcon icon={item.icon} />
+                  <LinkSquareIcon icon={item.icon} title={item.title} />
                   <InputField value={value} onChange={(e) => handleLinkChange(e, item)} />
                 </GeneralSettingsSocialsBlockRow>
               );

@@ -324,7 +324,7 @@ const Wrapper = (props) => {
                     )}
                     <ToggleBoardPrivacyIcon
                       isPrivate={podBoard?.pod?.privacyLevel !== PRIVACY_LEVEL.public}
-                      tooltipTitle={podBoard?.pod?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
+                      tooltipTitle={podBoard?.pod?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private organization' : 'Public'}
                     />
 
                     {permissions === null && (

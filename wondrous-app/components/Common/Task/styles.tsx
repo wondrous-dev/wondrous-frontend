@@ -572,6 +572,7 @@ export const ProposalCardWrapper = styled.div`
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     padding: 1px;
+    pointer-events: none;
   }
 `;
 

@@ -27,6 +27,7 @@ import { useMutation } from '@apollo/client';
 import { GET_NOTIFICATIONS } from 'graphql/queries';
 import calculateTimeLapse from 'utils/calculateTimeLapse';
 import Link from 'next/link';
+import Tooltip from "components/Tooltip";
 
 const NotificationsBoard = ({ notifications, setNofications }) => {
   const unreadCount = useMemo(() => {
@@ -101,9 +102,11 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
       <NotificationsOverlay onClick={toggleNotifications} style={{ display: display }} />
       <div>
         <StyledBadge color="primary" badgeContent={unreadCount} onClick={toggleNotifications}>
-          <HeaderNotificationsButton>
-            <NotificationsIcon />
-          </HeaderNotificationsButton>
+          <Tooltip title="Notifications">
+            <HeaderNotificationsButton>
+              <NotificationsIcon />
+            </HeaderNotificationsButton>
+          </Tooltip>
         </StyledBadge>
         <NotificationsBoardWrapper style={{ display: display }}>
           <NotificationsBoardHeader>

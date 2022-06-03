@@ -1578,6 +1578,7 @@ const CreateLayoutBaseModal = (props) => {
                       Who can see this {titleText.toLowerCase()}?
                     </CreateFormAddDetailsInputLabel>
                     <TabsVisibilityCreateEntity
+                      type={titleText.toLowerCase()}
                       isPod={isPod}
                       isPublic={isPublicEntity}
                       setIsPublic={setIsPublicEntity}

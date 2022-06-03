@@ -34,6 +34,7 @@ import {
 
 import { Red800 } from 'theme/colors';
 import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
+import Tooltip from 'components/Tooltip';
 
 export default function TableBody({
   tasks,
@@ -232,47 +233,51 @@ export default function TableBody({
             )}
             <StyledTableCell align="center">
               <MoreOptions disabled={!canManageTask}>
-                <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
-                  <DropDownItem
-                    key={'task-menu-edit-' + task.id}
-                    onClick={() => editTask(task, status)}
-                    color="#C4C4C4"
-                    fontSize="13px"
-                    fontWeight="normal"
-                    textAlign="left"
-                  >
-                    Edit {dropdownItemLabel}
-                  </DropDownItem>
-                  <DropDownItem
-                    key={'task-menu-report-' + task.id}
-                    onClick={() => {
-                      setSelectedTask(task);
-                      setArchiveModalOpen(true);
-                    }}
-                    color="#C4C4C4"
-                    fontSize="13px"
-                    fontWeight="normal"
-                    textAlign="left"
-                  >
-                    Archive {dropdownItemLabel}
-                  </DropDownItem>
-                  {(task?.type === Constants.TASK_TYPE || task?.type === Constants.MILESTONE_TYPE) &&
-                    !task?.isProposal && (
+                <Tooltip title="More actions" placement="top">
+                  <div>
+                    <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
                       <DropDownItem
-                        key={'task-menu-delete-' + task.id}
-                        onClick={() => {
-                          setSelectedTask(task);
-                          setDeleteModalOpen(true);
-                        }}
-                        color={Red800}
+                        key={'task-menu-edit-table-' + task.id}
+                        onClick={() => editTask(task, status)}
+                        color="#C4C4C4"
                         fontSize="13px"
                         fontWeight="normal"
                         textAlign="left"
                       >
-                        Delete {dropdownItemLabel}
+                        Edit {dropdownItemLabel}
                       </DropDownItem>
-                    )}
-                </DropDown>
+                      <DropDownItem
+                        key={'task-menu-report-' + task.id}
+                        onClick={() => {
+                          setSelectedTask(task);
+                          setArchiveModalOpen(true);
+                        }}
+                        color="#C4C4C4"
+                        fontSize="13px"
+                        fontWeight="normal"
+                        textAlign="left"
+                      >
+                        Archive {dropdownItemLabel}
+                      </DropDownItem>
+                      {(task?.type === Constants.TASK_TYPE || task?.type === Constants.MILESTONE_TYPE) &&
+                        !task?.isProposal && (
+                          <DropDownItem
+                            key={'task-menu-delete-' + task.id}
+                            onClick={() => {
+                              setSelectedTask(task);
+                              setDeleteModalOpen(true);
+                            }}
+                            color={Red800}
+                            fontSize="13px"
+                            fontWeight="normal"
+                            textAlign="left"
+                          >
+                            Delete {dropdownItemLabel}
+                          </DropDownItem>
+                        )}
+                    </DropDown>
+                  </div>
+                </Tooltip>
               </MoreOptions>
             </StyledTableCell>
           </StyledTableRow>

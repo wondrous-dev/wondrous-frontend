@@ -77,6 +77,7 @@ import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { PERMISSIONS } from 'utils/constants';
 import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
 import { format } from 'date-fns';
+import Tooltip from 'components/Tooltip';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -371,7 +372,13 @@ export const TaskCard = ({
             </PodName>
           </PodWrapper>
         )}
-        {isSubtask && <SubtaskLightIcon stroke="white" />}
+        {isSubtask && (
+          <Tooltip title="Subtask" placement="top">
+            <div>
+              <SubtaskLightIcon stroke="white" />
+            </div>
+          </Tooltip>
+        )}
 
         <div
           style={{
@@ -379,26 +386,30 @@ export const TaskCard = ({
           }}
         />
         {!isMilestone && commentCount > 0 && (
-          <TaskAction
-            key={'task-comment-' + id}
-            style={{
-              marginRight: !isSubtask && !isMilestone && totalSubtask > 0 ? '0' : '18px',
-            }}
-          >
-            <TaskCommentIcon />
-            <TaskActionAmount>{commentCount}</TaskActionAmount>
-          </TaskAction>
+          <Tooltip title="View comments" placement="top">
+            <TaskAction
+              key={'task-comment-' + id}
+              style={{
+                marginRight: !isSubtask && !isMilestone && totalSubtask > 0 ? '0' : '18px',
+              }}
+            >
+              <TaskCommentIcon />
+              <TaskActionAmount>{commentCount}</TaskActionAmount>
+            </TaskAction>
+          </Tooltip>
         )}
         {!isSubtask && !isMilestone && totalSubtask > 0 && (
-          <SubtaskCountWrapper
-            style={{
-              marginRight: '12px',
-              paddingLeft: '0',
-            }}
-          >
-            <SubtaskLightIcon fill="none" stroke={Grey57} />
-            <SubtaskCount>{totalSubtask}</SubtaskCount>
-          </SubtaskCountWrapper>
+          <Tooltip title="Subtasks" placement="top">
+            <SubtaskCountWrapper
+              style={{
+                marginRight: '12px',
+                paddingLeft: '0',
+              }}
+            >
+              <SubtaskLightIcon fill="none" stroke={Grey57} />
+              <SubtaskCount>{totalSubtask}</SubtaskCount>
+            </SubtaskCountWrapper>
+          </Tooltip>
         )}
         {canArchive && (
           <TaskActionMenu
@@ -410,43 +421,47 @@ export const TaskCard = ({
               visibility: displayActions ? 'visible' : 'hidden',
             }}
           >
-            <DropDown
-              DropdownHandler={TaskMenuIcon}
-              divStyle={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <DropDownItem
-                key={'task-menu-edit-' + id}
-                onClick={() => {
-                  setEditTask(true);
-                }}
-                color={White}
-              >
-                Edit {type}
-              </DropDownItem>
-              <DropDownItem
-                key={'task-menu-edit-' + id}
-                onClick={() => {
-                  setArchiveTask(true);
-                }}
-                color={White}
-              >
-                Archive {type}
-              </DropDownItem>
-              {canDelete && (
-                <DropDownItem
-                  key={'task-menu-delete-' + id}
-                  onClick={() => {
-                    setDeleteTask(true);
+            <Tooltip title="More actions" placement="top">
+              <div>
+                <DropDown
+                  DropdownHandler={TaskMenuIcon}
+                  divStyle={{
+                    display: 'flex',
+                    alignItems: 'center',
                   }}
-                  color={Red800}
                 >
-                  Delete {type}
-                </DropDownItem>
-              )}
-            </DropDown>
+                  <DropDownItem
+                    key={'task-menu-edit-card-' + id}
+                    onClick={() => {
+                      setEditTask(true);
+                    }}
+                    color={White}
+                  >
+                    Edit {type}
+                  </DropDownItem>
+                  <DropDownItem
+                    key={'task-menu-edit-card' + id}
+                    onClick={() => {
+                      setArchiveTask(true);
+                    }}
+                    color={White}
+                  >
+                    Archive {type}
+                  </DropDownItem>
+                  {canDelete && (
+                    <DropDownItem
+                      key={'task-menu-delete-' + id}
+                      onClick={() => {
+                        setDeleteTask(true);
+                      }}
+                      color={Red800}
+                    >
+                      Delete {type}
+                    </DropDownItem>
+                  )}
+                </DropDown>
+              </div>
+            </Tooltip>
           </TaskActionMenu>
         )}
       </BoardsCardFooter>
