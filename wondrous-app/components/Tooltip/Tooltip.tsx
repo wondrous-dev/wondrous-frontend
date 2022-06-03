@@ -31,7 +31,7 @@ const Tooltip = ({ title, description, children, placement }: Props) => {
   );
 
   return (
-    <MuiTooltip arrow title={tooltipTitle} placement={placement} enterDelay={700}>
+    <MuiTooltip arrow title={tooltipTitle} placement={placement} enterDelay={500}>
       {children}
     </MuiTooltip>
   );
