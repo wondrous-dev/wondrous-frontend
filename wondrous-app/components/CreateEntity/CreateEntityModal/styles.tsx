@@ -78,10 +78,10 @@ export const CreateEntityForm = styled.form`
 `;
 
 export const CreateEntityHeader = styled.div`
-  height: 56px;
+  height: fit-content;
   background-color: #171717;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   padding: 12px 24px;
   justify-content: space-between;
 `;
@@ -95,6 +95,7 @@ export const CreateEntitySelectRoot = styled.button`
   border-radius: 4px;
   background: #1f1f1f;
   border: 1px solid ${(props) => (props['aria-expanded'] ? `#7a7a7a` : `transparent`)};
+  outline: 1px solid ${({ error }) => (error ? Red400 : 'transparent')};
   :hover {
     cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   }
@@ -209,7 +210,6 @@ export const CreateEntitySelectRootValueWrapper = styled.div`
 
 export const CreateEntityHeaderWrapper = styled.div`
   display: flex;
-  align-items: center;
   gap: 12px;
 `;
 
@@ -238,7 +238,20 @@ export const CreateEntitySelectArrowIcon = styled(Arrow)`
   }
 `;
 
-export const CreateEntityHeaderArrowIcon = styled(Arrow)``;
+export const CreateEntityHeaderArrowIcon = styled((props) => {
+  return (
+    <div {...props}>
+      <Arrow />
+    </div>
+  );
+})`
+  && {
+    display: flex;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+  }
+`;
 
 export const CreateEntityBody = styled.div`
   padding: 24px;
@@ -393,6 +406,9 @@ export const CreateEntitySelectErrorWrapper = styled.div`
   width: 100%;
   flex-basis: 49%;
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 `;
 
 export const CreateEntitySelectWrapper = styled.div`
@@ -885,6 +901,8 @@ export const CreateEntityError = styled(Typography)`
     font-size: 13px;
     font-family: 'Space Grotesk';
     font-weight: 400;
+    display: flex;
+    align-items: center;
   }
 `;
 

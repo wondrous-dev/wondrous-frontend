@@ -87,11 +87,11 @@ import {
 } from './styles';
 
 const formValidationSchema = Yup.object().shape({
-  orgId: Yup.string().required(),
+  orgId: Yup.string().required('Organization is required'),
   podId: Yup.string().optional().nullable(),
   title: Yup.string().required('Title is required'),
-  reviewerIds: Yup.array().of(Yup.string().required('Please select a reviewer')).nullable(),
-  assigneeId: Yup.string().defined('Please select an assignee').nullable(),
+  reviewerIds: Yup.array().of(Yup.string().nullable()).nullable(),
+  assigneeId: Yup.string().nullable(),
   points: Yup.number()
     .typeError('Points must be a number')
     .integer('Points must be whole number')
@@ -109,6 +109,8 @@ const formValidationSchema = Yup.object().shape({
     )
     .optional()
     .nullable(),
+  milestoneId: Yup.string().nullable(),
+  description: Yup.string().nullable(),
 });
 
 const privacyOptions = {
@@ -463,8 +465,11 @@ const CreateEntityDropdown = (props) => {
     name,
     renderValue = CreateEntityDropdownRenderOptions,
     DefaultImageComponent,
+    error,
+    onFocus,
   } = props;
   const dropdownValue = value === null ? 'placeholder' : value;
+  const placeholderText = { podId: 'Select Pod', orgId: 'Select Org' };
   return (
     <CreateEntitySelect
       name={name}
@@ -472,12 +477,14 @@ const CreateEntityDropdown = (props) => {
       onChange={onChange}
       disabled={options.length == 0}
       value={dropdownValue}
+      error={error}
+      onFocus={onFocus}
     >
       <CreateEntityOption key={'placeholder'} value={'placeholder'} hide={true}>
         <CreateEntityOptionImageWrapper>
           <DefaultImageComponent color={'#474747'} />
         </CreateEntityOptionImageWrapper>
-        <CreateEntityOptionLabel>Select pod</CreateEntityOptionLabel>
+        <CreateEntityOptionLabel>{placeholderText[name]}</CreateEntityOptionLabel>
       </CreateEntityOption>
       {options.map((i) => {
         const { imageUrl, label, value, color = '' } = i;
@@ -554,7 +561,7 @@ const entityTypeData = {
       podId: null,
       title: '',
       description: '',
-      reviewerIds: [],
+      reviewerIds: null,
       assigneeId: null,
       dueDate: null,
       rewards: null,
@@ -573,7 +580,7 @@ const entityTypeData = {
       podId: null,
       title: '',
       description: '',
-      reviewerIds: [],
+      reviewerIds: null,
       dueDate: null,
       points: null,
       labelIds: null,
@@ -589,7 +596,7 @@ const entityTypeData = {
       podId: null,
       title: '',
       description: '',
-      reviewerIds: [],
+      reviewerIds: null,
       dueDate: null,
       points: null,
       labelIds: null,
@@ -627,13 +634,14 @@ export const CreateEntityModal = (props) => {
     validateOnBlur: false,
     validationSchema: formValidationSchema,
     onSubmit: (values) => {
+      const reviewerIds = values?.reviewerIds?.filter((i) => i !== null);
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const userMentions = getMentionArray(values.description);
       const points = parseInt(values.points);
       const rewards = values.rewards && [
         { ...values.rewards[0], rewardAmount: parseFloat(values.rewards[0].rewardAmount) },
       ];
-      const input = { ...values, points, rewards, timezone, userMentions };
+      const input = { ...values, reviewerIds, points, rewards, timezone, userMentions };
       handleMutation(input, board, pods, form, handleClose);
     },
   });
@@ -711,32 +719,37 @@ export const CreateEntityModal = (props) => {
   ]);
   const eligibleReviewers = useGetEligibleReviewers(form.values.orgId, form.values.podId);
   const filteredEligibleReviewers = eligibleReviewers.filter(
-    (reviewer) => !form.values.reviewerIds.includes(reviewer.id)
+    (reviewer) => !form.values.reviewerIds?.includes(reviewer.id)
   );
   const [fullScreen, setFullScreen] = useState(false);
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
       <CreateEntityHeader>
         <CreateEntityHeaderWrapper>
-          <CreateEntityDropdown
-            name="orgId"
-            options={filteredDaoOptions}
-            onChange={(orgId) => {
-              // NOTE: This will reset the data that depends on the orgId
-              form.setValues({
-                ...form.initialValues,
-                points: form.values.points,
-                dueDate: form.values.dueDate,
-                title: form.values.title,
-                description: form.values.description,
-                mediaUploads: form.values.mediaUploads,
-                orgId,
-              });
-              form.setErrors({});
-            }}
-            value={form.values.orgId}
-            DefaultImageComponent={CreateEntityDefaultDaoImage}
-          />
+          <CreateEntitySelectErrorWrapper>
+            <CreateEntityDropdown
+              name="orgId"
+              options={filteredDaoOptions}
+              onChange={(orgId) => {
+                // NOTE: This will reset the data that depends on the orgId
+                form.setValues({
+                  ...form.initialValues,
+                  points: form.values.points,
+                  dueDate: form.values.dueDate,
+                  title: form.values.title,
+                  description: form.values.description,
+                  mediaUploads: form.values.mediaUploads,
+                  orgId,
+                });
+                form.setErrors({});
+              }}
+              value={form.values.orgId}
+              DefaultImageComponent={CreateEntityDefaultDaoImage}
+              error={form.errors.orgId}
+              onFocus={() => form.setFieldError('orgId', undefined)}
+            />
+            {form.errors.orgId && <CreateEntityError>{form.errors.orgId}</CreateEntityError>}
+          </CreateEntitySelectErrorWrapper>
           {form.values.orgId !== null && (
             <>
               <CreateEntityHeaderArrowIcon />
@@ -821,7 +834,7 @@ export const CreateEntityModal = (props) => {
           </CreateEntityLabelWrapper>
 
           <CreateEntitySelectWrapper>
-            {form.values.reviewerIds.map((reviewerId, index) => {
+            {form.values?.reviewerIds?.map((reviewerId, index) => {
               const hasError = form.errors?.reviewerIds?.[index];
               return (
                 <CreateEntitySelectErrorWrapper key={reviewerId}>
@@ -902,19 +915,25 @@ export const CreateEntityModal = (props) => {
                 </CreateEntitySelectErrorWrapper>
               );
             })}
-            <Tooltip title={filteredEligibleReviewers.length === 0 && 'No available reviewer'} placement="top">
+            <Tooltip
+              title={
+                form.values.reviewerIds?.length >= filteredEligibleReviewers.length &&
+                'You reached the maximum no. of available reviewers'
+              }
+              placement="top"
+            >
               <CreateEntityLabelAddButton
-                disabled={filteredEligibleReviewers.length === 0}
+                disabled={form.values.reviewerIds?.length >= filteredEligibleReviewers.length}
                 onClick={() => {
-                  if (form.values.reviewerIds !== null && form.values.reviewerIds.includes('')) {
-                    form.validateField('reviewerIds');
+                  if (form.values.reviewerIds === null) {
+                    form.setFieldValue('reviewerIds', [null]);
                     return;
                   }
-                  form.setFieldValue('reviewerIds', form.values.reviewerIds.concat(''));
+                  form.setFieldValue('reviewerIds', form.values.reviewerIds.concat(null));
                 }}
               >
                 <CreateEntityAddButtonIcon />
-                {form.values.reviewerIds.length === 0 && <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>}
+                {form.values.reviewerIds === null && <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>}
               </CreateEntityLabelAddButton>
             </Tooltip>
           </CreateEntitySelectWrapper>
@@ -1173,64 +1192,64 @@ export const CreateEntityModal = (props) => {
           <CreateEntitySelectWrapper>
             {form.values.milestoneId !== null && (
               <CreateEntitySelectErrorWrapper>
-              <CreateEntityAutocompletePopper
-                options={filterUserOptions(milestonesData?.getMilestones)}
-                onOpen={() =>
-                  getMilestones({
-                    variables: {
-                      orgId: form.values.orgId,
-                      podId: form.values.podId,
-                    },
-                  })
-                }
-                renderInput={(params) => {
-                  const milestone = filterUserOptions(milestonesData?.getMilestones).find(
-                    (milestone) => milestone.id === form.values.milestoneId
-                  );
-                  return (
-                    <CreateEntityAutocompletePopperRenderInput
-                      {...params}
-                      inputProps={{
-                        ...params.inputProps,
-                        value: milestone?.label,
-                      }}
-                      autoFocus={true}
-                      ref={params.InputProps.ref}
-                      disableUnderline={true}
-                      fullWidth={true}
-                      name="milestone"
-                      placeholder="Enter milestone..."
-                      endAdornment={
-                        <CreateEntityAutocompletePopperRenderInputAdornment
-                          position="end"
-                          onClick={() => {
-                            form.setFieldValue('milestoneId', null);
-                          }}
-                        >
-                          <CreateEntityAutocompletePopperRenderInputIcon />
-                        </CreateEntityAutocompletePopperRenderInputAdornment>
-                      }
-                    />
-                  );
-                }}
-                value={form.values.milestoneId}
-                renderOption={(props, option, state) => {
-                  return (
-                    <CreateEntityAutocompleteOption
-                      onClick={() => {
-                        if (form.values.milestoneId?.id !== option.id) {
-                          form.setFieldValue('milestoneId', option.id);
+                <CreateEntityAutocompletePopper
+                  options={filterUserOptions(milestonesData?.getMilestones)}
+                  onOpen={() =>
+                    getMilestones({
+                      variables: {
+                        orgId: form.values.orgId,
+                        podId: form.values.podId,
+                      },
+                    })
+                  }
+                  renderInput={(params) => {
+                    const milestone = filterUserOptions(milestonesData?.getMilestones).find(
+                      (milestone) => milestone.id === form.values.milestoneId
+                    );
+                    return (
+                      <CreateEntityAutocompletePopperRenderInput
+                        {...params}
+                        inputProps={{
+                          ...params.inputProps,
+                          value: milestone?.label,
+                        }}
+                        autoFocus={true}
+                        ref={params.InputProps.ref}
+                        disableUnderline={true}
+                        fullWidth={true}
+                        name="milestone"
+                        placeholder="Enter milestone..."
+                        endAdornment={
+                          <CreateEntityAutocompletePopperRenderInputAdornment
+                            position="end"
+                            onClick={() => {
+                              form.setFieldValue('milestoneId', null);
+                            }}
+                          >
+                            <CreateEntityAutocompletePopperRenderInputIcon />
+                          </CreateEntityAutocompletePopperRenderInputAdornment>
                         }
-                      }}
-                    >
-                      {option?.profilePicture ? <SafeImage src={option?.profilePicture} /> : <div />}
-                      <CreateEntityAutocompleteOptionTypography>
-                        {option?.label}
-                      </CreateEntityAutocompleteOptionTypography>
-                    </CreateEntityAutocompleteOption>
-                  );
-                }}
-              />
+                      />
+                    );
+                  }}
+                  value={form.values.milestoneId}
+                  renderOption={(props, option, state) => {
+                    return (
+                      <CreateEntityAutocompleteOption
+                        onClick={() => {
+                          if (form.values.milestoneId?.id !== option.id) {
+                            form.setFieldValue('milestoneId', option.id);
+                          }
+                        }}
+                      >
+                        {option?.profilePicture ? <SafeImage src={option?.profilePicture} /> : <div />}
+                        <CreateEntityAutocompleteOptionTypography>
+                          {option?.label}
+                        </CreateEntityAutocompleteOptionTypography>
+                      </CreateEntityAutocompleteOption>
+                    );
+                  }}
+                />
               </CreateEntitySelectErrorWrapper>
             )}
             {form.values.milestoneId === null && (
@@ -1315,7 +1334,10 @@ export const CreateEntityModal = (props) => {
           ) : (
             <>
               <CreateEntityCancelButton onClick={resetEntityType}>Cancel</CreateEntityCancelButton>
-              <CreateEntityCreateTaskButton type="submit">Create {entityType}</CreateEntityCreateTaskButton>
+              <CreateEntitySelectErrorWrapper>
+                <CreateEntityCreateTaskButton type="submit">Create {entityType}</CreateEntityCreateTaskButton>
+                {!_.isEmpty(form.errors) && <CreateEntityError>Something went wrong</CreateEntityError>}
+              </CreateEntitySelectErrorWrapper>
             </>
           )}
         </CreateEntityHeaderWrapper>
