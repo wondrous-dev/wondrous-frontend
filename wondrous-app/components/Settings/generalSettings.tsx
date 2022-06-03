@@ -114,7 +114,17 @@ const GeneralSettingsComponent = (props) => {
     }
   });
   const isPod = typeText === 'Pod';
-  const tabsVisibilityOptions = { [PRIVACY_LEVEL.public]: 'Public', [PRIVACY_LEVEL.private]: 'Pod Members Only' };
+  const tabsVisibilityOptions = {
+    [PRIVACY_LEVEL.public]: {
+      title: 'Public',
+      tooltip: `Public means anyone can see this ${typeText.toLowerCase()}`,
+    },
+    [PRIVACY_LEVEL.private]: {
+      title: 'Pod Members Only',
+      tooltip: `Private means only those with the proper permissions can see this ${typeText.toLowerCase()}`,
+    },
+  };
+
   const tabsVisibilitySelected = isPrivate
     ? tabsVisibilityOptions[PRIVACY_LEVEL.private]
     : tabsVisibilityOptions[PRIVACY_LEVEL.public];
@@ -208,14 +218,14 @@ const GeneralSettingsComponent = (props) => {
             {linkTypelinks?.length > 0 ? (
               linkTypelinks.map((link) => (
                 <GeneralSettingsSocialsBlockRow key={link.type}>
-                  <LinkSquareIcon icon={<LinkBigIcon />} />
+                  <LinkSquareIcon title={link.title} icon={<LinkBigIcon />} />
                   <InputField value={link.url} onChange={(e) => handleLinkChange(e, link)} />
                 </GeneralSettingsSocialsBlockRow>
               ))
             ) : (
               <>
                 <GeneralSettingsSocialsBlockRow key={newLink.type}>
-                  <LinkSquareIcon icon={<LinkBigIcon />} />
+                  <LinkSquareIcon title="Link" icon={<LinkBigIcon />} />
                   <InputField value={newLink.url} onChange={(e) => handleLinkChange(e, newLink)} />
                 </GeneralSettingsSocialsBlockRow>
               </>
@@ -411,29 +421,29 @@ export const PodGeneralSettings = () => {
     });
   }
   const handleArchivePodClick = async () => {
-    const confirmed = confirm('Are you sure you want to archive this pod?')
+    const confirmed = confirm('Are you sure you want to archive this pod?');
     if (!confirmed) {
-      return
+      return;
     }
     await apollo.mutate({
       mutation: ARCHIVE_POD,
       variables: {
         podId,
       },
-      refetchQueries: [GET_POD_BY_ID]
+      refetchQueries: [GET_POD_BY_ID],
     });
   };
   const handleUnarchivePodClick = async () => {
-    const confirmed = confirm('Are you sure you want to unarchive this pod?')
+    const confirmed = confirm('Are you sure you want to unarchive this pod?');
     if (!confirmed) {
-      return
+      return;
     }
     await apollo.mutate({
       mutation: UNARCHIVE_POD,
       variables: {
         podId,
       },
-      refetchQueries: [GET_POD_BY_ID]
+      refetchQueries: [GET_POD_BY_ID],
     });
   };
   return (
