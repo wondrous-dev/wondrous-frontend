@@ -1133,6 +1133,7 @@ export const CreateEntityModal = (props) => {
                     ),
                   }}
                   error={form.errors.points}
+                  onFocus={() => form.setFieldError('points', undefined)}
                 />
                 {form.touched.points && form.errors.points && (
                   <CreateEntityError>{form.errors.points}</CreateEntityError>
