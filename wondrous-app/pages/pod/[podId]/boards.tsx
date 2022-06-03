@@ -8,6 +8,8 @@ import { useRouter } from 'next/router';
 import { withAuth } from 'components/Auth/withAuth';
 import { GET_USER_PERMISSION_CONTEXT, SEARCH_POD_USERS } from 'graphql/queries';
 import { GET_POD_BY_ID } from 'graphql/queries/pod';
+import { GET_USER } from 'graphql/queries/user';
+
 import {
   GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD,
   GET_POD_TASK_BOARD_PROPOSALS,
@@ -258,6 +260,7 @@ const BoardsPage = () => {
   const [searchString, setSearchString] = useState('');
   const [activeView, setActiveView] = useState(view);
   const [isLoading, setIsLoading] = useState(true);
+  const [getUser, { data: getUserData }] = useLazyQuery(GET_USER);
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -314,6 +317,19 @@ const BoardsPage = () => {
     notifyOnNetworkStatusChange: true,
   });
 
+  const deleteUserIdFilter = () => {
+    const routerQuery = { ...router.query };
+    delete routerQuery.userId;
+    return router.push(
+      {
+        pathname: location.pathname,
+        query: routerQuery,
+      },
+      undefined,
+      { shallow: true }
+    );
+  };
+
   const [getPodBoardTaskCount, { data: podTaskCountData }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD);
 
   const [getTasksRelatedToUser] = useLazyQuery(GET_TASKS_RELATED_TO_USER_IN_POD, {
@@ -355,6 +371,12 @@ const BoardsPage = () => {
     },
     fetchPolicy: 'cache-and-network',
   });
+
+  useEffect(() => {
+    if (userId) {
+      getUser({ variables: { userId } });
+    }
+  }, [userId]);
 
   useEffect(() => {
     if (podId) {
@@ -548,6 +570,8 @@ const BoardsPage = () => {
           : null,
         entityType,
         setEntityType: handleEntityTypeChange,
+        user: getUserData?.getUser,
+        deleteUserIdFilter,
       }}
     >
       <Boards

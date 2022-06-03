@@ -12,6 +12,8 @@ import { ListViewIcon } from 'components/Icons/ViewIcons/listView';
 import BoardFilters, { FiltersTriggerButton } from 'components/Common/BoardFilters';
 import { useState } from 'react';
 import { Blue20 } from 'theme/colors';
+import UserFilter from 'components/Common/BoardFilters/userFilter';
+
 export const BoardsActivityInlineView = ({
   onSearch,
   filterSchema,
@@ -32,6 +34,7 @@ export const BoardsActivityInlineView = ({
         <FiltersTriggerButton onClick={handleFilterDisplay} isOpen={displayFilters} />
       </BoardsActivityInlineViewWrapper>
       {displayFilters && <BoardFilters showAppliedFilters filterSchema={filterSchema} onChange={onChange} />}
+      <UserFilter />
     </>
   );
 };
