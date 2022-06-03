@@ -2,7 +2,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Installation
 
-First, install the dependencies:
+First configure your app by copying the `.env.example` file to `.env` and substitute the values
+for your development environment.
+
+Then, install the dependencies:
 
 ```bash
 npm install
@@ -63,4 +66,5 @@ export NODE_OPTIONS=--openssl-legacy-provider
 Then try again.
 
 OS's affected:
-* macOS Monterey (M1 Pro)
+
+- macOS Monterey (M1 Pro)

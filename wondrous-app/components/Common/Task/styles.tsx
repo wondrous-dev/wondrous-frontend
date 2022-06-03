@@ -105,6 +105,15 @@ export const TaskTitle = styled.div`
   color: white;
   font-size: 16px;
   font-weight: bold;
+  
+  a {
+    color: white;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 `;
 
 export const TaskDescription = styled.p`
@@ -664,8 +673,8 @@ export const ProposalCardFooter = styled.div`
 `;
 
 export const Tag = styled.div`
-  color: ${(props) => getContrastYIQ(props.color)};
-  background: ${(props) => props.color};
+  /* color: ${(props) => getContrastYIQ(props.color)};
+  background: ${(props) => props.color}; */
   border-radius: 4px;
   padding: 2px 6px;
   margin: 5px 0;

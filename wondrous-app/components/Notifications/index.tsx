@@ -3,6 +3,8 @@ import { NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from 'uti
 import { SmallAvatar } from '../Common/AvatarList';
 import { HeaderNotificationsButton, StyledBadge } from '../Header/styles';
 import NotificationsIcon from '../Icons/notifications';
+import Link from 'next/link';
+
 import {
   NotificationItemBody,
   NotificationItemIcon,
@@ -26,7 +28,7 @@ import { MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
 import { useMutation } from '@apollo/client';
 import { GET_NOTIFICATIONS } from 'graphql/queries';
 import calculateTimeLapse from 'utils/calculateTimeLapse';
-import Link from 'next/link';
+import SmartLink from 'components/Common/SmartLink';
 import Tooltip from "components/Tooltip";
 
 const NotificationsBoard = ({ notifications, setNofications }) => {
@@ -62,7 +64,11 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
   const getNotificationText = (notification) => {
     const userName = notification.actorUsername;
     const userId = notification.actorId;
-    const actor = <NotificationsLink href={`/profile/${userId}/about`}>{userName}</NotificationsLink>;
+    const actor = (
+      <NotificationsLink>
+        <Link href={`/profile/${userName}/about`}>{userName}</Link>
+      </NotificationsLink>
+    );
 
     const verb = NOTIFICATION_VERBS[notification.type];
     const objectType = NOTIFICATION_OBJECT_TYPES[notification.objectType];
@@ -70,8 +76,8 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
 
     const object = (
       <span>
-        <NotificationsLink href={`/${snakeToCamel(notification.objectType)}/${objectId}`}>
-          {objectType}
+        <NotificationsLink styled={{ display: 'block' }}>
+          <Link href={`/${snakeToCamel(notification.objectType)}/${notification.objectId}`}>{objectType}</Link>
         </NotificationsLink>
         <NotificationItemTimeline>{calculateTimeLapse(notification.timestamp)}</NotificationItemTimeline>
       </span>
@@ -119,22 +125,19 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
             notifications.getNotifications?.map((notification) => {
               const isNotificationViewed = notification?.viewedAt;
               return (
-                <Link
+                <SmartLink
                   key={'notifications-' + notification.id}
                   href={`/${snakeToCamel(notification.objectType)}/${notification.objectId}`}
-                  passHref
+                  onClick={() => {
+                    markNotificationRead({
+                      variables: {
+                        notificationId: notification?.id,
+                      },
+                      refetchQueries: [GET_NOTIFICATIONS],
+                    });
+                  }}
                 >
-                  <NotificationsItem
-                    isNotificationViewed={isNotificationViewed}
-                    onClick={() =>
-                      markNotificationRead({
-                        variables: {
-                          notificationId: notification?.id,
-                        },
-                        refetchQueries: [GET_NOTIFICATIONS],
-                      })
-                    }
-                  >
+                  <NotificationsItem isNotificationViewed={isNotificationViewed}>
                     <NotificationItemIcon>
                       {getNotificationActorIcon(notification)}
                       <NotificationItemStatus>{notification.status}</NotificationItemStatus>
@@ -147,7 +150,7 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
                     </NotificationWrapper>
                     {!isNotificationViewed && <NotificationsDot />}
                   </NotificationsItem>
-                </Link>
+                </SmartLink>
               );
             })
           ) : (

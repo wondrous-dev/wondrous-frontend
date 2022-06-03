@@ -10,3 +10,11 @@ export const formatLinkDisplay = (link: Link) => {
   }
   return link.displayName || link.url.replace(/https?:\/{2}(w{3}.)?/, '');
 };
+
+export const skipForCommandKey = (callback) => {
+  return function (event: KeyboardEvent) {
+    const isCommandKeyPressed = event.metaKey || event.ctrlKey;
+
+    return isCommandKeyPressed ? null : callback(event);
+  };
+};
