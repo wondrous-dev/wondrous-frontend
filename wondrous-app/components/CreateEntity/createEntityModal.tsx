@@ -564,7 +564,13 @@ const CreateLayoutBaseModal = (props) => {
           setErrors(newErrors);
         } else {
           if (canCreateTask) {
-            const refetchQueries = [];
+            const refetchQueries = [
+              'getPerStatusTaskCountForMilestone',
+              'getUserTaskBoardTasks',
+              'getPerStatusTaskCountForUserBoard',
+              'getSubtasksForTask',
+              'getSubtaskCountForTask',
+            ];
             if (orgBoard) {
               refetchQueries.push('getPerTypeTaskCountForOrgBoard');
             }
@@ -962,7 +968,7 @@ const CreateLayoutBaseModal = (props) => {
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const creating =
     createTaskLoading || createTaskProposalLoading || createMilestoneLoading || createBountyLoading || createPodLoading;
-
+  console.log('pods ->', pods);
   return (
     <CreateFormBaseModal isPod={isPod}>
       <CreateFormBaseModalHeaderWrapper>

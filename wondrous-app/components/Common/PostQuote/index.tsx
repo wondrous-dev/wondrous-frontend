@@ -11,10 +11,17 @@ import {
   ReferenceMediaWrapper,
   ReferenceTitle,
 } from './styles';
+import SmartLink from 'components/Common/SmartLink';
+import { delQuery } from 'utils/index';
+import { useRouter } from 'next/router';
 
 export const PostQuote = (props) => {
   const { post } = props;
+  const router = useRouter();
   const { referencedObject, content } = post;
+  const taskId = referencedObject?.objectId;
+  const taskViewUrl = `${delQuery(router.asPath)}?task=${taskId}`;
+
   return (
     <PostQuoteBackground>
       <PostHeader {...props} />
@@ -24,7 +31,15 @@ export const PostQuote = (props) => {
         <PostReferenceBorder>
           <PostReferenceBackground>
             <PostHeader post={referencedObject} />
-            <ReferenceTitle>{referencedObject?.title}</ReferenceTitle>
+            <ReferenceTitle>
+              <SmartLink
+                href={taskViewUrl}
+                preventLinkNavigation
+                onNavigate={() => router.replace(taskViewUrl, undefined, { shallow: true })}
+              >
+                <a href={taskViewUrl}>{referencedObject?.title}</a>
+              </SmartLink>
+            </ReferenceTitle>
             <ReferenceDescription>{referencedObject?.content}</ReferenceDescription>
             <ReferenceMediaWrapper>
               {referencedObject?.media &&
