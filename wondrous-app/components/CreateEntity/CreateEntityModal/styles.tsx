@@ -389,13 +389,19 @@ export const CreateEntityAddButtonLabel = styled(Typography)`
   }
 `;
 
+export const CreateEntitySelectErrorWrapper = styled.div`
+  width: 100%;
+  flex-basis: 49%;
+  flex-grow: 1;
+`;
+
 export const CreateEntitySelectWrapper = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: wrap;
   width: 100%;
   gap: 6px;
-  > div:nth-of-type(n + 3) {
+  div:nth-of-type(n + 3) {
     max-width: calc(50% - 3px);
   }
 `;
@@ -467,10 +473,9 @@ export const CreateEntityTextfieldInputLabel = styled(Typography)`
 `;
 
 export const CreateEntityAutocomplete = styled(Autocomplete)`
-  flex-basis: 49%;
-  flex-grow: 1;
   background: #141414;
   border-radius: 4px;
+  outline: 1px solid ${({ error }) => (error ? Red400 : 'transparent')};
   :focus-within {
     outline: 1px solid #7a7a7a;
   }

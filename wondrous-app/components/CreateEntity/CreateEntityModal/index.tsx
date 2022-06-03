@@ -71,6 +71,7 @@ import {
   CreateEntityRewardWrapper,
   CreateEntitySelect,
   CreateEntitySelectArrowIcon,
+  CreateEntitySelectErrorWrapper,
   CreateEntitySelectRootValue,
   CreateEntitySelectRootValueWrapper,
   CreateEntitySelectWrapper,
@@ -86,7 +87,7 @@ import {
 const formValidationSchema = Yup.object().shape({
   orgId: Yup.string().required(),
   podId: Yup.string().optional().nullable(),
-  title: Yup.string().required('Title is required').nullable(),
+  reviewerIds: Yup.array().of(Yup.string().required('Please select a reviewer')).nullable(),
   points: Yup.number()
     .typeError('Points must be a number')
     .integer('Points must be whole number')
@@ -816,11 +817,13 @@ export const CreateEntityModal = (props) => {
 
           <CreateEntitySelectWrapper>
             {form.values.reviewerIds.map((reviewerId, index) => {
+              const hasError = form.errors?.reviewerIds?.[index];
               return (
+                <CreateEntitySelectErrorWrapper key={reviewerId}>
                 <CreateEntityAutocompletePopper
-                  key={reviewerId}
+                    onFocus={() => form.setFieldError('reviewerIds', undefined)}
+                    openOnFocus={true}
                   options={eligibleReviewers}
-                  openOnFocus={true}
                   value={reviewerId}
                   isOptionEqualToValue={(option, value) => {
                     return option.id === value;
@@ -888,14 +891,23 @@ export const CreateEntityModal = (props) => {
                       </CreateEntityAutocompleteOption>
                     );
                   }}
+                    error={hasError}
                 />
+                  {form.errors?.reviewerIds?.[index] && (
+                    <CreateEntityError>{hasError && form.errors?.reviewerIds[index]}</CreateEntityError>
+                  )}
+                </CreateEntitySelectErrorWrapper>
               );
             })}
             <Tooltip title={filteredEligibleReviewers.length === 0 && 'No available reviewer'} placement="top">
               <CreateEntityLabelAddButton
                 disabled={filteredEligibleReviewers.length === 0}
                 onClick={() => {
-                  form.setFieldValue('reviewerIds', [...form.values.reviewerIds, filteredEligibleReviewers[0].id]);
+                  if (form.values.reviewerIds !== null && form.values.reviewerIds.includes('')) {
+                    form.validateField('reviewerIds');
+                    return;
+                  }
+                  form.setFieldValue('reviewerIds', form.values.reviewerIds.concat(''));
                 }}
               >
                 <CreateEntityAddButtonIcon />
