@@ -152,14 +152,16 @@ const useGetTaskRelatedToUser = ({
     fetchMore({
       variables: {
         offset:
-          entityType === ENTITIES_TYPES.TASK ? Math.max(...columns.map(({ tasks }) => tasks.length)) : columns.length,
+          entityType === ENTITIES_TYPES.TASK
+            ? columns.reduce((prev, next) => (prev = prev + next.tasks.length), 0)
+            : columns.length,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         setOrgTaskHasMore(fetchMoreResult?.getTasksRelatedToUserInOrg.length >= LIMIT);
-        const getTasksRelatedToUserInOrg = _.uniqBy(
-          [...prev.getTasksRelatedToUserInOrg, ...fetchMoreResult.getTasksRelatedToUserInOrg],
-          'id'
-        );
+        const getTasksRelatedToUserInOrg = [
+          ...prev.getTasksRelatedToUserInOrg,
+          ...fetchMoreResult.getTasksRelatedToUserInOrg,
+        ];
         return {
           getTasksRelatedToUserInOrg,
         };
@@ -170,7 +172,7 @@ const useGetTaskRelatedToUser = ({
   }, [columns, fetchMore, setOrgTaskHasMore]);
 
   useEffect(() => {
-    if (userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search) {
+    if (userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search && orgId) {
       const taskBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
@@ -194,7 +196,7 @@ const useGetTaskRelatedToUser = ({
       });
       setOrgTaskHasMore(true);
     }
-  }, [getTasksRelatedToUserInOrg, orgId, userId, entityType, filters]);
+  }, [orgId, userId, entityType, filters]);
   return { fetchMore: getTasksRelatedToUserFetchMore };
 };
 
@@ -297,9 +299,7 @@ const useGetOrgTaskBoard = ({
       columns,
       setColumns,
       setOrgTaskHasMore,
-
       orgId,
-
       userId,
       entityType,
       setIsLoading,
@@ -313,7 +313,6 @@ const useGetOrgTaskBoard = ({
       setColumns,
       setOrgTaskHasMore,
       orgId,
-
       entityType,
       setIsLoading,
       search,

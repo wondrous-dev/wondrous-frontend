@@ -78,7 +78,9 @@ const useGetPodTaskBoardTasks = ({
       input: {
         ...variables.input,
         offset:
-          entityType === ENTITIES_TYPES.TASK ? Math.max(...columns.map(({ tasks }) => tasks.length)) : columns.length,
+          entityType === ENTITIES_TYPES.TASK
+            ? columns.map(({ tasks }) => tasks.length).reduce((a, b) => a + b, 0)
+            : columns.length,
       },
     };
     fetchMore({
@@ -483,18 +485,6 @@ const BoardsPage = () => {
       statuses?.length !== taskStatuses?.length ||
       statuses === (STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT);
     const searchTasks = !(searchProposals && statuses?.length === 1);
-    if (userId) {
-      getTasksRelatedToUser({
-        variables: {
-          podId,
-          userId,
-          statuses: taskStatuses,
-          labelId: labelId,
-          limit: 1000,
-          offset: 0,
-        },
-      });
-    }
     if (search) {
       const searchPodTaskProposalsArgs = {
         variables: {

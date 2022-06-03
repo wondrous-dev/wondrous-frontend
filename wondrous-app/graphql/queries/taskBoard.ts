@@ -177,6 +177,7 @@ export const GET_TASKS_RELATED_TO_USER_IN_POD = gql`
     $date: String
     $onlyPublic: Boolean
     $types: [String]
+    $labelId: String
   ) {
     getTasksRelatedToUserInPod(
       input: {
@@ -189,6 +190,7 @@ export const GET_TASKS_RELATED_TO_USER_IN_POD = gql`
         date: $date
         onlyPublic: $onlyPublic
         types: $types
+        labelId: $labelId
       }
     ) {
       ...TaskCardFragment
