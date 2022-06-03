@@ -1,7 +1,8 @@
-import { AppBar, Badge, IconButton, TextField } from '@mui/material';
+import { AppBar, IconButton, TextField } from '@mui/material';
 import styled from 'styled-components';
 import { Button } from '../Common/button';
 import { Logo } from '../Common/ci';
+
 export const Header = styled(AppBar)`
   && {
     height: 70px;
