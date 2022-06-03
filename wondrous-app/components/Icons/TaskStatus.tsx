@@ -23,8 +23,8 @@ import {
 import { ProposalsRemainingIcon } from './statusIcons';
 
 type StyleProps = {
-  width: string;
-  height: string;
+  width?: string;
+  height?: string;
   marginRight?: string;
 };
 type Props = {

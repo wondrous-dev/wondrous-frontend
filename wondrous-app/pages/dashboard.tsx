@@ -7,16 +7,7 @@ import Boards from 'components/Dashboard/boards';
 import Wrapper from 'components/Dashboard/wrapper';
 import { ViewType } from 'types/common';
 import { SelectMembershipContext } from 'utils/contexts';
-
-const DashboardPanelWrapper = styled.div`
-  margin-top: -140px;
-  width: 100%;
-`;
-
-const BoardsWrapper = styled.div`
-  width: 1037px;
-  margin: 0 auto;
-`;
+import { DashboardPanelWrapper, BoardsWrapper } from 'components/Dashboard/boards/styles';
 
 const Dashboard = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);

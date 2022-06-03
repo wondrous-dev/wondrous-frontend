@@ -1,4 +1,4 @@
-import { BoardsActivityWrapper } from './styles';
+import { BoardsActivityWrapper, BoardsActivityInlineViewWrapper } from './styles';
 import SearchTasks from 'components/SearchTasks';
 import Filter from 'components/Common/Filter';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
@@ -9,6 +9,32 @@ import { ToggleViewButton } from 'components/Common/ToggleViewButton';
 import { delQuery, insertUrlParam } from 'utils';
 import { GridViewIcon } from 'components/Icons/ViewIcons/gridView';
 import { ListViewIcon } from 'components/Icons/ViewIcons/listView';
+import BoardFilters, { FiltersTriggerButton } from 'components/Common/BoardFilters';
+import { useState } from 'react';
+import { Blue20 } from 'theme/colors';
+export const BoardsActivityInlineView = ({
+  onSearch,
+  filterSchema,
+  onChange,
+  view,
+  searchQuery,
+  isAdmin,
+  listViewOptions,
+}) => {
+  const [displayFilters, setDisplayFilters] = useState(false);
+
+  const handleFilterDisplay = () => setDisplayFilters(!displayFilters);
+  return (
+    <>
+      <BoardsActivityInlineViewWrapper>
+        <SearchTasks isExpandable onSearch={onSearch} />
+        {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
+        <FiltersTriggerButton onClick={handleFilterDisplay} isOpen={displayFilters} />
+      </BoardsActivityInlineViewWrapper>
+      {displayFilters && <BoardFilters showAppliedFilters filterSchema={filterSchema} onChange={onChange} />}
+    </>
+  );
+};
 
 export default function BoardsActivity(props) {
   const orgBoard = useOrgBoard();
@@ -25,7 +51,7 @@ export default function BoardsActivity(props) {
   const listViewOptions = [
     {
       name: 'List',
-      icon: <ListViewIcon />,
+      icon: <ListViewIcon color={view === ViewType.List ? Blue20 : 'white'} />,
       active: view === ViewType.List,
       action: () => {
         if (setActiveView) {
@@ -40,7 +66,7 @@ export default function BoardsActivity(props) {
     },
     {
       name: 'Grid',
-      icon: <GridViewIcon />,
+      icon: <GridViewIcon color={view === ViewType.Grid ? Blue20 : 'white'} />,
       active: view === ViewType.Grid,
       action: () => {
         if (setActiveView) {
@@ -56,11 +82,25 @@ export default function BoardsActivity(props) {
     },
   ];
 
+  if (board) {
+    return (
+      <BoardsActivityInlineView
+        onSearch={onSearch}
+        filterSchema={filterSchema}
+        onChange={onFilterChange}
+        view={view}
+        searchQuery={searchQuery}
+        isAdmin={isAdmin}
+        listViewOptions={listViewOptions}
+      />
+    );
+  }
+
   return (
     <>
       <BoardsActivityWrapper>
         <SearchTasks onSearch={onSearch} />
-        <Filter filterSchema={filterSchema} onChange={onFilterChange} statuses={statuses} podIds={podIds} />
+        <BoardFilters filterSchema={filterSchema} onChange={onFilterChange} />
         {orgBoard && <SelectMenuBoardType router={router} view={view} />}
         {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
       </BoardsActivityWrapper>

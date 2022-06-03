@@ -85,7 +85,7 @@ export const ToDo = (props) => (
 );
 
 export const TodoWithBorder = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="none" viewBox="0 0 29 29">
+  <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="none" viewBox="0 0 29 29" {...props}>
     <circle cx="14.711" cy="14.633" r="13.5" fill="#0F0F0F" stroke="#474747"></circle>
     <circle cx="14.714" cy="14.633" r="2.949" fill="url(#paint0_linear_2348_556)"></circle>
     <circle
@@ -325,31 +325,50 @@ export const Proposal = (props) => (
 );
 
 export const Archived = (props) => (
-  <svg width={29} height={29} fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <circle cx={14.57} cy={14.27} r={13.5} fill="#0F0F0F" stroke="#474747" />
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <circle cx="12" cy="12" r="11.5714" fill="#0F0F0F" stroke="#474747" strokeWidth="0.857143" />
     <path
       fillRule="evenodd"
       clipRule="evenodd"
-      d="M8.43 20.975v-8.87H7.063V8.692h15.014v3.413h-1.363v8.87H8.43Z"
-      fill="url(#a)"
+      d="M6.73633 17.748V10.1447H5.56445V7.21973H18.4343V10.1447H17.2662V17.748H6.73633Z"
+      fill="url(#paint0_linear_10461_243640)"
     />
-    <path d="M20.715 12.102v8.872H8.43v-8.872" stroke="#7A7A7A" strokeLinecap="round" strokeLinejoin="round" />
     <path
-      d="M16.738 14.36a.622.622 0 0 0-.428.187l-2.67 2.67-.804-.804a.622.622 0 1 0-.88.88l1.245 1.243a.622.622 0 0 0 .879 0l3.11-3.11a.621.621 0 0 0-.453-1.067Z"
+      d="M17.2662 10.1421V17.747H6.73633V10.1421"
+      stroke="#7A7A7A"
+      strokeWidth="0.857143"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M13.8573 12.0769C13.7188 12.081 13.5874 12.1389 13.4908 12.2383L11.2025 14.5266L10.5133 13.8374C10.4642 13.7862 10.4054 13.7454 10.3403 13.7172C10.2752 13.6891 10.2051 13.6742 10.1342 13.6735C10.0633 13.6728 9.99295 13.6862 9.9273 13.713C9.86164 13.7398 9.80199 13.7795 9.75184 13.8296C9.70169 13.8798 9.66206 13.9394 9.63525 14.0051C9.60844 14.0707 9.59501 14.1411 9.59573 14.212C9.59645 14.2829 9.61132 14.353 9.63945 14.4181C9.66759 14.4832 9.70843 14.542 9.75959 14.5911L10.8257 15.6572C10.9256 15.7571 11.0612 15.8133 11.2025 15.8133C11.3439 15.8133 11.4794 15.7571 11.5794 15.6572L14.2446 12.992C14.3216 12.9171 14.3742 12.8207 14.3955 12.7155C14.4168 12.6102 14.4058 12.5009 14.364 12.402C14.3221 12.3031 14.2513 12.2191 14.1609 12.1611C14.0705 12.1031 13.9647 12.0737 13.8573 12.0769Z"
       fill="#7A7A7A"
     />
-    <path d="M22.077 8.691H7.062v3.413h15.015V8.69Z" stroke="#7A7A7A" strokeLinecap="round" strokeLinejoin="round" />
+    <path
+      d="M18.4343 7.21875H5.56445V10.1437H18.4343V7.21875Z"
+      stroke="#7A7A7A"
+      strokeWidth="0.857143"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
     <defs>
-      <linearGradient id="a" x1={21.292} y1={6.476} x2={20.872} y2={12.627} gradientUnits="userSpaceOnUse">
+      <linearGradient
+        id="paint0_linear_10461_243640"
+        x1="17.7615"
+        y1="5.3201"
+        x2="17.4007"
+        y2="10.5925"
+        gradientUnits="userSpaceOnUse"
+      >
         <stop stopColor="#474747" />
-        <stop offset={1} stopColor="#181818" />
+        <stop offset="1" stopColor="#181818" />
       </linearGradient>
     </defs>
   </svg>
 );
 
 export const InProgressWithBorder = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="none" viewBox="0 0 29 29">
+  <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="none" viewBox="0 0 29 29" {...props}>
     <circle cx="14.695" cy="14.681" r="13.5" fill="#0F0F0F" stroke="#474747"></circle>
     <circle cx="14.695" cy="14.68" r="2.949" fill="url(#paint0_linear_4216_52108)"></circle>
     <path
@@ -384,7 +403,7 @@ export const InProgressWithBorder = (props) => (
 );
 
 export const InReview = (props) => (
-  <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <circle cx="14.2542" cy="14.1227" r="13.5" fill="#0F0F0F" stroke="#474747" />
     <circle cx="11.1464" cy="14.1227" r="0.990845" fill="url(#paint0_linear_509_3000)" />
     <circle cx="14.2548" cy="14.1227" r="0.990845" fill="url(#paint1_linear_509_3000)" />
@@ -491,7 +510,7 @@ export const DoneWithBorder = (props) => (
     height={props?.style?.height || '29'}
     fill="none"
     viewBox="0 0 29 29"
-    style={props?.style}
+    {...props}
   >
     <path
       fill="#0F0F0F"

@@ -41,6 +41,7 @@ import {
   HeaderImageWrapper,
   TokenEmptyLogo,
   HeaderButton,
+  BoardsSubheaderWrapper,
 } from '../../organization/wrapper/styles';
 import { MoreInfoModal } from '../../profile/modals';
 import SideBarComponent from '../../SideBar';
@@ -64,11 +65,13 @@ import { DAOEmptyIcon } from '../../Icons/dao';
 import { LogoWrapper, OrgLogoWrapper } from './styles';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { Grey58 } from 'theme/colors';
+import BoardsActivity from 'components/Common/BoardsActivity';
+
 const Wrapper = (props) => {
   const router = useRouter();
   const loggedInUser = useMe();
   const wonderWeb3 = useWonderWeb3();
-  const { children } = props;
+  const { children, onSearch, filterSchema, onFilterChange, statuses, userId } = props;
   const [minimized, setMinimized] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const [showPods, setShowPods] = useState(false);
@@ -379,17 +382,23 @@ const Wrapper = (props) => {
                       {podProfile?.contributorCount === 1 ? 'Contributor' : 'Contributors'}
                     </HeaderContributorsText>
                   </HeaderContributors>
-                  {/* <HeaderPods>
-                    <HeaderPodsAmount>{podProfile?.podCount}</HeaderPodsAmount>
-                    <HeaderPodsText>Pods</HeaderPodsText>
-                  </HeaderPods> */}
                 </HeaderActivity>
               </TokenHeader>
 
               <Tabs page="pod">
-                {!search && !!podBoard?.setEntityType && (
-                  <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForPodBoard} />
-                )}
+                <BoardsSubheaderWrapper>
+                  {podBoard?.setEntityType && !search && (
+                    <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForPodBoard} />
+                  )}
+                  <BoardsActivity
+                    onSearch={onSearch}
+                    filterSchema={filterSchema}
+                    onFilterChange={onFilterChange}
+                    statuses={statuses}
+                    userId={userId}
+                  />
+                </BoardsSubheaderWrapper>
+
                 {children}
               </Tabs>
             </ContentContainer>
