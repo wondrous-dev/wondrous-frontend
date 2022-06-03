@@ -1164,6 +1164,7 @@ export const CreateEntityModal = (props) => {
 
           <CreateEntitySelectWrapper>
             {form.values.milestoneId !== null && (
+              <CreateEntitySelectErrorWrapper>
               <CreateEntityAutocompletePopper
                 options={filterUserOptions(milestonesData?.getMilestones)}
                 onOpen={() =>
@@ -1222,6 +1223,7 @@ export const CreateEntityModal = (props) => {
                   );
                 }}
               />
+              </CreateEntitySelectErrorWrapper>
             )}
             {form.values.milestoneId === null && (
               <CreateEntityLabelAddButton
