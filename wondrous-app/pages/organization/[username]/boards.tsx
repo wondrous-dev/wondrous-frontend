@@ -11,6 +11,7 @@ import {
   SEARCH_ORG_TASK_BOARD_PROPOSALS,
   SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
 } from 'graphql/queries/taskBoard';
+import { GET_USER } from 'graphql/queries/user';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
@@ -39,7 +40,6 @@ import {
   PROPOSAL_STATUS_LIST,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
-import { useRouterQuery } from 'utils/hooks';
 import { insertUrlParam } from 'utils';
 
 const useGetOrgTaskBoardTasks = ({
@@ -114,7 +114,7 @@ const useGetOrgTaskBoardTasks = ({
       });
       setOrgTaskHasMore(true);
     }
-  }, [, getOrgTaskBoardTasks, orgId, filters, setOrgTaskHasMore, userId, entityType]);
+  }, [getOrgTaskBoardTasks, orgId, filters, setOrgTaskHasMore, userId, entityType]);
   return { fetchMore: getOrgTaskBoardTasksFetchMore };
 };
 
@@ -282,7 +282,6 @@ const useGetOrgTaskBoard = ({
   filters,
 }) => {
   const listView = view === ViewType.List;
-
   const board = {
     [userId]: useGetTaskRelatedToUser({
       columns,
@@ -327,7 +326,7 @@ const useGetOrgTaskBoard = ({
 
 const BoardsPage = () => {
   const router = useRouter();
-  const { username, orgId, search, userId, view = ViewType.Grid, entity } = router.query;
+  const { username, orgId, search, view = ViewType.Grid, userId, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
   const [filters, setFilters] = useState<TaskFilter>({
@@ -344,6 +343,7 @@ const BoardsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [activeView, setActiveView] = useState(view);
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
+  const [getUser, { data: getUserData }] = useLazyQuery(GET_USER);
 
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
@@ -364,6 +364,25 @@ const BoardsPage = () => {
     search,
     filters,
   });
+
+  useEffect(() => {
+    if (userId) {
+      getUser({ variables: { userId } });
+    }
+  }, [userId]);
+
+  const deleteUserIdFilter = () => {
+    const routerQuery = { ...router.query };
+    delete routerQuery.userId;
+    return router.push(
+      {
+        pathname: location.pathname,
+        query: routerQuery,
+      },
+      undefined,
+      { shallow: true }
+    );
+  };
 
   const handleEntityTypeChange = (type) => {
     if (type !== entityType) {
@@ -604,6 +623,8 @@ const BoardsPage = () => {
         setEntityType: handleEntityTypeChange,
         activeView,
         setActiveView,
+        user: getUserData?.getUser,
+        deleteUserIdFilter,
       }}
     >
       <Boards
