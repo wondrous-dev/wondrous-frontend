@@ -15,9 +15,7 @@ import { TASK_TYPE, BOUNTY_TYPE, MILESTONE_TYPE } from 'utils/constants';
 import { delQuery } from 'utils';
 import { useRouter } from 'next/router';
 import { TaskViewModal } from '../Common/Task/modal';
-import * as Constants from 'utils/constants';
 import { ViewType } from 'types/common';
-import { Blue20 } from '../../theme/colors';
 
 const TaskTypeIcons = {
   [TASK_TYPE]: <TaskIcon />,

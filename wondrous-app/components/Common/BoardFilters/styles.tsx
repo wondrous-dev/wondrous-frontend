@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import CloseModalIcon from 'components/Icons/closeModal';
-import { HighlightBlue } from 'theme/colors';
+import { highlightBlue } from 'theme/colors';
 export const BoardFiltersWrapper = styled.div`
   display: flex;
   width: 100%;
@@ -49,7 +49,7 @@ export const AppliedFiltersItem = styled.div`
       position: absolute;
       inset: 0;
       border-radius: 66px;
-      background: linear-gradient(89.86deg, #707070 49.58%, ${HighlightBlue} 100.28%);
+      background: linear-gradient(89.86deg, #707070 49.58%, ${highlightBlue} 100.28%);
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
@@ -109,7 +109,7 @@ export const ClearButton = styled.button`
       position: absolute;
       inset: 0;
       border-radius: 66px;
-      background: linear-gradient(89.86deg, #707070 49.58%, ${HighlightBlue} 100.28%);
+      background: linear-gradient(89.86deg, #707070 49.58%, ${highlightBlue} 100.28%);
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
@@ -125,7 +125,7 @@ export const CloseIcon = styled(CloseModalIcon)`
     background: #353535;
     border-radius: 90px;
     path {
-      stroke: ${HighlightBlue};
+      stroke: ${highlightBlue};
     }
   }
 `;
