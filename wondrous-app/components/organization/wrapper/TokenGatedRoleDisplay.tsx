@@ -26,7 +26,7 @@ import {
   ClaimRoleLabel,
   RoleActionWrapper,
 } from './styles';
-import { white } from 'theme/colors';
+import palette from 'theme/palette';
 import { useEditTokenGatingCondition } from 'utils/hooks';
 import { GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
 import { CLAIM_POD_ROLE, CLAIM_ORG_ROLE } from 'graphql/mutations/tokenGating';

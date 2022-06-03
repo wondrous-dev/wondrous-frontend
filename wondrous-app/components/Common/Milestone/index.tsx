@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { purpleColors, white } from 'theme/colors';
+import palette from 'theme/palette';
 import { GradientHighlightVertical } from '../gradients';
 
 export const MilestoneWrapper = styled.div`
@@ -18,9 +18,9 @@ export const MilestoneHeader = styled.div`
   height: 32px;
   line-height: 36px;
   margin-top: 1em;
-  color: ${white};
+  color: ${palette.white};
   font-weight: 600;
-  background: ${purpleColors.purple800};
+  background: ${palette.purple800};
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
 `;

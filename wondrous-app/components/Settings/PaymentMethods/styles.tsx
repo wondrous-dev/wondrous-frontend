@@ -13,7 +13,7 @@ import {
 import { Button } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
 import styled from 'styled-components';
-import { background, blackColors, blueColors, greyColors, white } from 'theme/colors';
+import palette from 'theme/palette';
 import { BaseCard } from 'components/Common/card';
 
 export const PaymentMethodSettingWrapper = styled.div`
@@ -26,7 +26,7 @@ export const PaymentMethodSubHeader = styled(InputLabel)`
     font-family: 'Space Grotesk';
     font-size: 20px;
     font-weight: 500;
-    color: ${blueColors.blue20};
+    color: ${palette.blue20};
     margin-left: 8px;
     margin-top: 28px;
   }
@@ -34,7 +34,7 @@ export const PaymentMethodSubHeader = styled(InputLabel)`
 
 export const PaymentMethodNameHeader = styled(Typography)`
   && {
-    color: ${white};
+    color: ${palette.white};
     font-family: 'Space Grotesk';
     font-weight: 500;
     font-size: 15px;
@@ -46,7 +46,7 @@ export const PaymentMethodDescription = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 14px;
     font-weight: 400;
-    color: ${greyColors.grey250};
+    color: ${palette.grey250};
     margin-top: 12px;
   }
 `;
@@ -61,7 +61,7 @@ export const PaymentMethodFormWrapper = styled(Box)`
 
 export const PaymentMethodDisplayWrapper = styled(Box)`
   && {
-    background: ${blackColors.black90};
+    background: ${palette.black90};
     border-radius: 6px;
     padding: 24px;
     margin-top: 24px;
@@ -77,7 +77,7 @@ export const PaymentMethodFormHeader = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 18px;
     font-weight: 700;
-    color: ${white};
+    color: ${palette.white};
   }
 `;
 
@@ -96,7 +96,7 @@ export const CustomAddressInput = styled(InputBase)`
     margin-top: 16px;
     margin-right: 16px;
     font-size: 16px;
-    font-color: ${white};
+    font-color: ${palette.white};
     line-height: 21px;
     letter-spacing: 0.01em;
     color: #c4c4c4;
@@ -110,7 +110,7 @@ export const AddPaymetMethodButton = styled(Button)`
     margin-top: 28px;
     background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
     button {
-      background: ${background};
+      background: ${palette.background.default};
       font-family: 'Space Grotesk';
       font-size: 16px;
       font-weight: 500;
@@ -124,7 +124,7 @@ export const NewPaymentMethodButton = styled(Button)`
     margin-top: 20px;
     background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
     button {
-      background: ${background};
+      background: ${palette.background.default};
       font-family: 'Space Grotesk';
       font-size: 16px;
       font-weight: 500;

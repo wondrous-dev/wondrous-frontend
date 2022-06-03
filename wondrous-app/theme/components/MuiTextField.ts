@@ -1,9 +1,9 @@
-import { greyColors } from 'theme/colors';
+import palette from 'theme/palette';
 
 const MuiTextField = {
   styleOverrides: {
     root: {
-      color: greyColors.grey700,
+      color: palette.grey700,
     },
   },
 };

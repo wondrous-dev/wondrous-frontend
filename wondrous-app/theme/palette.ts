@@ -1,4 +1,6 @@
 import {
+  background,
+  black,
   white,
   greyColors,
   redColors,
@@ -9,6 +11,9 @@ import {
   orangeColors,
   purpleColors,
   blackColors,
+  midnight,
+  highlightBlue,
+  highlightPurple,
 } from 'theme/colors';
 
 const palette = {
@@ -25,9 +30,13 @@ const palette = {
     contrastText: white,
   },
   background: {
-    default: white,
+    default: background,
   },
   white,
+  black,
+  midnight,
+  highlightBlue,
+  highlightPurple,
   ...greyColors,
   ...redColors,
   ...blueColors,

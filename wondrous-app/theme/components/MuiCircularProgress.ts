@@ -1,8 +1,8 @@
-import { orangeColors } from 'theme/colors';
+import palette from 'theme/palette';
 
 const MuiCircularProgress = {
   styleOverrides: {
-    circle: { color: orangeColors.orange },
+    circle: { color: palette.orange },
   },
 };
 

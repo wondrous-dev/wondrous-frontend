@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { blueColors, background, white } from 'theme/colors';
 import StarIcon from 'components/Icons/starIcon';
+import palette from 'theme/palette';
+
 import { Typography } from '@mui/material';
 
 export const IconWrapper = styled.div`
@@ -9,7 +10,7 @@ export const IconWrapper = styled.div`
   justify-content: center;
   align-items: center;
   padding: 8px;
-  background: ${background};
+  background: ${palette.background.default};
 `;
 
 const SUB_BACKGROUND_MAP = {
@@ -37,7 +38,7 @@ export const BountyContainer = styled.div`
 export const BountyCardWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  color: ${white};
+  color: ${palette.white};
   padding: 10px;
   cursor: pointer;
   border-radius: 3px;
@@ -63,7 +64,7 @@ export const BountyCardWrapper = styled.div`
 `;
 
 export const BountyCardType = styled.div`
-  color: ${blueColors.blue20};
+  color: ${palette.blue20};
   font-family: 'Space Grotesk';
   font-style: normal;
   font-weight: 700;
@@ -72,8 +73,8 @@ export const BountyCardType = styled.div`
 `;
 
 export const BountyCardSubmissionsCount = styled.div`
-  background: ${background};
-  color: ${white};
+  background: ${palette.background.default};
+  color: ${palette.white};
   width: 45%;
   border-radius: 6px;
   padding: 8px;

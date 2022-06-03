@@ -1,17 +1,17 @@
 import styled from 'styled-components';
-import { white, highlightBlue } from 'theme/colors';
+import palette from 'theme/palette';
 
 export const PaddedParagraph = styled.p`
   && {
     padding: ${(props) => props.padding || 0};
-    color: ${(props) => props.color || white};
+    color: ${(props) => props.color || palette.white};
     margin: 0;
   }
 `;
 
 export const StyledLink = styled.a`
   && {
-    color: ${highlightBlue};
+    color: ${palette.highlightBlue};
   }
 `;
 

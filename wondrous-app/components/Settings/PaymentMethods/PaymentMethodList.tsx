@@ -9,12 +9,12 @@ import { DropDown, DropDownItem } from '../../Common/dropdown';
 import { useRouter } from 'next/router';
 import { PaymentMethodDisplayWrapper, PaymentMethodNameHeader, PaymentMethodActionMenu } from './styles';
 import { TokenLogoDisplay } from 'components/Settings/TokenGating/styles';
-import { white } from 'theme/colors';
+import palette from 'theme/palette';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
 
 const dropdownItemStyle = {
   marginRight: '12px',
-  color: white,
+  color: palette.white,
 };
 
 const PaymentMethodDisplay = (props) => {

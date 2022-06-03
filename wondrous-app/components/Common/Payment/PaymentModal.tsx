@@ -35,14 +35,14 @@ import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { OfflinePayment } from './OfflinePayment/OfflinePayment';
 import { SingleWalletPayment } from './SingleWalletPayment';
 import Link from 'next/link';
-import { white, blueColors } from 'theme/colors';
+import palette from 'theme/palette';
 import { CreateFormPreviewButton, CreateFormRewardCurrency } from '../../CreateEntity/styles';
 import InputForm from '../InputForm/inputForm';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { ErrorText } from 'components/Onboarding/styles';
 
 const GoBackStyle = {
-  color: white,
+  color: palette.white,
   width: '100%',
   textAlign: 'right',
   marginRight: '8px',
@@ -210,7 +210,7 @@ export const MakePaymentModal = (props) => {
             <PaymentTitleTextDiv>
               <PaymentTitleText>
                 Payout
-                <span style={{ color: blueColors.blue20 }}>
+                <span style={{ color: palette.blue20 }}>
                   {' '}
                   {rewardAmount} {tokenName?.toUpperCase()}{' '}
                 </span>

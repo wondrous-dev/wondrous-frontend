@@ -1,18 +1,18 @@
-import { white, greyColors } from 'theme/colors';
+import palette from 'theme/palette';
 
 const MuiTooltip = {
   styleOverrides: {
     popper: {
       '& p': {
-        color: white,
+        color: palette.white,
       },
     },
     tooltip: {
-      backgroundColor: greyColors.grey800,
+      backgroundColor: palette.grey800,
     },
     arrow: {
       '&:before': {
-        backgroundColor: greyColors.grey800,
+        backgroundColor: palette.grey800,
       },
     },
   },

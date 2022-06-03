@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, MenuItem, TextField, Typography } from '@mui/material';
-import { blackColors, white } from 'theme/colors';
+import palette from 'theme/palette';
+
 import Masonry from '@mui/lab/Masonry';
 
 export const BoardsContainer = styled.div`
@@ -48,7 +49,7 @@ export const ResultsCount = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 20px 0;
-  border-bottom: 1px solid ${blackColors.black92};
+  border-bottom: 1px solid ${palette.black92};
 
   span {
     color: white;
@@ -169,7 +170,7 @@ export const BoardsPrivacyLabel = styled.div`
   align-items: center;
   background: #363636;
   border-radius: 4px;
-  color: ${white};
+  color: ${palette.white};
 `;
 
 export const BoardsCardFooter = styled.div`
@@ -183,7 +184,7 @@ export const BoardsCardFooter = styled.div`
 
 export const BoardsCardBodyTitle = styled(Typography)`
   && {
-    color: ${white};
+    color: ${palette.white};
     font-family: 'Space Grotesk';
     font-style: normal;
     font-weight: 700;

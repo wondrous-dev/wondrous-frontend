@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients';
-import { greyColors, white, blueColors, background } from 'theme/colors';
+import palette from 'theme/palette';
 import { Typography } from '@mui/material';
 import { BaseCard } from '../card';
 import RightArrowIcon from '../../Icons/rightArrow';
@@ -69,7 +69,7 @@ export const TaskContent = styled.div`
   width: 100%;
   font-size: 16px;
   font-weight: 400;
-  color: ${white};
+  color: ${palette.white};
   white-space: pre-line;
   cursor: pointer;
   overflow-x: hidden;
@@ -77,7 +77,7 @@ export const TaskContent = styled.div`
 
 export const TaskSeparator = styled.div`
   display: flex;
-  border-bottom: 1px solid ${greyColors.grey80};
+  border-bottom: 1px solid ${palette.grey80};
   margin-top: 5px;
 `;
 
@@ -160,7 +160,7 @@ export const TaskActionAmount = styled.div`
   flex-grow: 1;
   justify-content: flex-start;
   padding-left: 10px;
-  color: ${greyColors.grey250};
+  color: ${palette.grey250};
 `;
 
 export const TaskContentFooter = styled.div`
@@ -180,7 +180,7 @@ export const PodName = styled(Typography)`
   && {
     background: #363636;
     font-size: 13px;
-    color: ${white};
+    color: ${palette.white};
     padding: 1px 8px;
     border-radius: 190px;
   }
@@ -258,7 +258,7 @@ export const PodNameTypography = styled(Typography)`
     font-weight: 500;
     font-size: 13px;
     line-height: 17px;
-    color: ${white};
+    color: ${palette.white};
   }
 `;
 
@@ -292,7 +292,7 @@ export const TaskTitleTextDiv = styled.div``;
 
 export const TaskTitleText = styled(Typography)`
   && {
-    color: ${white};
+    color: ${palette.white};
     font-style: normal;
     font-weight: bold;
     font-size: 24px;
@@ -397,7 +397,7 @@ export const TaskTabText = styled(Typography)`
     font-weight: ${(props) => (props.isActive ? '500' : '400')};
     font-size: 16px;
     line-height: 24px;
-    color: ${white};
+    color: ${palette.white};
   }
 `;
 
@@ -444,7 +444,7 @@ export const TaskSubmissionHeaderTextDiv = styled.div``;
 
 export const TaskSubmissionHeaderCreatorText = styled(Typography)`
   && {
-    color: ${white};
+    color: ${palette.white};
     font-size: 13px;
     line-height: 20px;
     font-weight: bold;
@@ -505,7 +505,7 @@ export const TaskListModalHeader = styled(Typography)`
     font-size: 18px;
     line-height: 26px;
     margin-bottom: 20px;
-    color: ${white};
+    color: ${palette.white};
   }
 `;
 
@@ -560,7 +560,7 @@ export const TaskUserDiv = styled.div`
 export const ProposalCardWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  color: ${white};
+  color: ${palette.white};
   padding: 14px;
   margin: ${(props) => (props.wrapped ? '0' : '1em 0 0 0')};
   border-radius: 3px;
@@ -586,7 +586,7 @@ export const ProposalCardWrapper = styled.div`
 `;
 
 export const ProposalCardType = styled.div`
-  color: ${blueColors.blue20};
+  color: ${palette.blue20};
   font-family: 'Space Grotesk';
   font-style: normal;
   font-weight: 700;
@@ -595,14 +595,14 @@ export const ProposalCardType = styled.div`
 `;
 
 export const ProposalIconBackground = styled.div`
-  background: ${background};
+  background: ${palette.background.default};
   padding: 5px;
   border-radius: 180px;
 `;
 
 export const CheckedIconWrapper = styled.div`
   display: flex;
-  background: ${greyColors.grey85};
+  background: ${palette.grey85};
   border-radius: 6px;
 `;
 const IconWrapper = styled.div`
@@ -642,7 +642,7 @@ export const ProposalFooterButton = styled.div`
       `;
     } else {
       return `border: 1px solid ${borderColor || 'transparent'};
-    color: ${color || white};
+    color: ${color || palette.white};
      ${
        !borderColor &&
        `&::before {
@@ -668,7 +668,7 @@ export const ProposalCardFooter = styled.div`
   gap: 10px;
   width: 100%;
   padding-top: 10px;
-  border-top: 1px solid ${greyColors.grey85};
+  border-top: 1px solid ${palette.grey85};
   padding-bottom: 15px;
 `;
 

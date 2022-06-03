@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
-import { blueColors } from 'theme/colors';
+import palette from 'theme/palette';
 
 export const StyledLink = styled.a`
   && {
@@ -12,7 +12,7 @@ export const StyledLink = styled.a`
     font-weight: 500;
     font-size: 12px;
     line-height: 16px;
-    color: ${blueColors.blue20};
+    color: ${palette.blue20};
     position: relative;
     z-index: 5;
   }

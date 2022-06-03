@@ -1,7 +1,7 @@
 import { Button, IconButton, Typography } from '@mui/material';
 import Image from 'next/image';
 import styled from 'styled-components';
-import { background } from 'theme/colors';
+import palette from 'theme/palette';
 import { Button as ButtonComponent } from '../../Common/button';
 import { BaseCard } from '../../Common/card';
 import { ProfileImage } from '../../Common/profile';
@@ -11,7 +11,7 @@ export const OverviewComponent = styled.section`
   width: 100vw;
   height: 100%;
   min-height: 100vh;
-  background-color: ${background};
+  //background-color: ${palette.background.default};
   background-color: #0f0f0f;
   transition: 0.15s all ease;
   padding-bottom: 40px;

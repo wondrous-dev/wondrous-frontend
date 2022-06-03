@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import styled from 'styled-components';
-import { redColors } from 'theme/colors';
+import palette from 'theme/palette';
 
 export const Flex = styled.div`
   flex: 1;
@@ -27,7 +27,7 @@ export const NewCanvas = styled.canvas`
 
 export const ErrorText = styled(Typography)`
   && {
-    color: ${redColors.red400};
+    color: ${palette.red400};
     font-size: 13px;
   }
 `;

@@ -295,9 +295,9 @@ const Wrapper = (props) => {
                     <PodIcon
                       color={podProfile?.color}
                       style={{
-                        width: '60px',
-                        height: '60px',
-                        borderRadius: '50px',
+                        width: 60,
+                        height: 60,
+                        borderRadius: 50,
                       }}
                     />
                   </LogoWrapper>

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Typography } from '@mui/material';
 import FlagIcon from 'components/Icons/flag';
-import { highlightBlue, white, background } from 'theme/colors';
+import palette from 'theme/palette';
 
 const IconWrapper = styled.div`
   border-radius: 180px;
@@ -9,8 +9,8 @@ const IconWrapper = styled.div`
   justify-content: center;
   align-items: center;
   padding: 4px;
-  border: 1px solid ${highlightBlue};
-  background: ${background};
+  border: 1px solid ${palette.highlightBlue};
+  background: ${palette.background.default};
 `;
 
 export const MilestoneIcon = () => (
@@ -36,7 +36,7 @@ export const MilestoneCard = styled.div`
   align-items: flex-start;
   gap: 18px;
   flex-grow: 0;
-  color: ${white};
+  color: ${palette.white};
   cursor: pointer;
   padding: 14px;
   height: fit-content;

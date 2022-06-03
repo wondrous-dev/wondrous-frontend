@@ -2,12 +2,12 @@ import styled from 'styled-components';
 import TextField from '@mui/material/TextField';
 import AutocompleteComp from '@mui/material/Autocomplete';
 
-import { highlightBlue, blueColors } from 'theme/colors';
+import palette from 'theme/palette';
 import SearchIcon from 'components/Icons/search';
 
 export const SearchIconWrapped = styled(SearchIcon)`
   path {
-    stroke: ${blueColors.blue20};
+    stroke: ${palette.blue20};
   }
 `;
 
@@ -105,5 +105,5 @@ export const Option = styled.li`
 export const LoadMore = styled.a`
   margin-top: 10px;
   cursor: pointer;
-  color: ${highlightBlue};
+  color: ${palette.highlightBlue};
 `;

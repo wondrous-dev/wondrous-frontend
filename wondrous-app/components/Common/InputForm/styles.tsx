@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { IconButton, InputAdornment, InputBase } from '@mui/material';
-import { white } from 'theme/colors';
+import palette from 'theme/palette';
 
 export const SearchInputBlock = styled.div`
   width: 100%;
@@ -25,7 +25,7 @@ export const SearchInput = styled(InputBase)`
     font-size: 14px;
     line-height: 19px;
     letter-spacing: 0.01em;
-    color: ${white};
+    color: ${palette.white};
   }
 `;
 

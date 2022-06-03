@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 import { DropDown, DropDownItem } from 'components/Common/dropdown';
 import styled from 'styled-components';
-import { white } from 'theme/colors';
+import palette from 'theme/palette';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
@@ -37,7 +37,7 @@ export const UsernameText = styled(Typography)`
 
 export const SeeMoreText = styled(Typography)`
   && {
-    color: ${white};
+    color: ${palette.white};
     text-decoration: underline;
     cursor: pointer;
     font-size: 14px;

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { background, blackColors, blueColors, greenColors, greyColors } from 'theme/colors';
+import palette from 'theme/palette';
 
 export const MetricsPanelWrapper = styled.div`
   display: flex;
@@ -9,7 +9,7 @@ export const MetricsPanelWrapper = styled.div`
 
   width: 100%;
 
-  background: linear-gradient(267.93deg, ${greenColors.green20} 24.5%, ${greyColors.grey58} 100.14%);
+  background: linear-gradient(267.93deg, ${palette.green20} 24.5%, ${palette.grey58} 100.14%);
   border-radius: 3px;
 `;
 
@@ -21,7 +21,7 @@ export const MetricsPannelInner = styled.div`
   align-items: center;
   justify-content: space-evenly;
 
-  background: linear-gradient(180deg, ${blackColors.black95} 0%, ${blackColors.black97} 100%);
+  background: linear-gradient(180deg, ${palette.black95} 0%, ${palette.black97} 100%);
   border-radius: 3px;
 
   padding: 0px;
@@ -44,8 +44,8 @@ export const FullMetricBlock = styled.div`
   border-top-right-radius: 3px;
   border-bottom-right-radius: 3px;
 
-  background: ${background};
-  background: linear-gradient(45deg, ${blueColors.blue300}, ${blackColors.black100});
+  background: ${palette.background.default};
+  background: linear-gradient(45deg, ${palette.blue300}, ${palette.black100});
 `;
 
 export const MetricsBlock = styled.div`
@@ -60,7 +60,7 @@ export const MetricsBlock = styled.div`
   margin: 20px 10px;
   padding: 17px;
 
-  background: ${background};
+  background: ${palette.background.default};
 
   border-radius: 3px;
 `;
@@ -78,7 +78,7 @@ export const MetricSubtitle = styled.div`
   display: flex;
   width: 100%;
 
-  color: ${greyColors.grey250};
+  color: ${palette.grey250};
 `;
 
 export const MetricProgressBar = styled.div`

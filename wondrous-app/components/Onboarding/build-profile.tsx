@@ -19,7 +19,7 @@ import { useRouter } from 'next/router';
 
 import { SecondStep } from 'components/Common/Image/OnboardingProgressBar';
 import { useMe } from '../Auth/withAuth';
-import { highlightBlue } from 'theme/colors';
+import palette from 'theme/palette';
 import { getFilenameAndType, uploadMedia } from 'utils/media';
 import { SafeImage } from '../Common/Image';
 import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
@@ -170,7 +170,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
         <>
           <UsernameDescription
             style={{
-              color: highlightBlue,
+              color: palette.highlightBlue,
               textDecoration: 'underline',
               cursor: 'pointer',
               marginTop: '0',

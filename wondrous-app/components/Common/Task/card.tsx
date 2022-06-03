@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { TaskCommentIcon } from '../../Icons/taskComment';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
@@ -34,7 +34,6 @@ import { SafeImage } from '../Image';
 import * as Constants from 'utils/constants';
 import { AvatarList } from '../AvatarList';
 import { useRouter } from 'next/router';
-import { renderMentionString } from 'utils/common';
 import {
   TodoWithBorder,
   InProgressWithBorder,
@@ -327,12 +326,6 @@ export const TaskCard = ({
           <TaskTitle>
             <a href={viewUrl}>{task.title}</a>
           </TaskTitle>
-          {/* <TaskCardDescriptionText>
-          {renderMentionString({
-            content: description,
-            router,
-          })}о
-        </TaskCardDescriptionText> */}
 
           {isBounty && (
             <TaskBountyOverview
@@ -420,7 +413,7 @@ export const TaskCard = ({
                   paddingLeft: '0',
                 }}
               >
-                <SubtaskLightIcon fill="none" stroke={Grey57} />
+                <SubtaskLightIcon fill="none" stroke={palette.grey57} />
                 <SubtaskCount>{totalSubtask}</SubtaskCount>
               </SubtaskCountWrapper>
             </Tooltip>
@@ -500,8 +493,8 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
       labelsAndActions: [
         {
           title: 'Approved',
-          borderColor: palette.green700,
-          color: palette.green700,
+          borderColor: palette.green800,
+          color: palette.green800,
         },
       ],
     },

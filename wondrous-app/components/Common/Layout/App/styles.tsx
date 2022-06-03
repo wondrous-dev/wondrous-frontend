@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { midnight, background, white } from 'theme/colors';
+import palette from 'theme/palette';
 
 const MainBgShape = styled.div``;
 
@@ -20,8 +20,8 @@ export const MainWrapper = styled.main`
   padding-top: 95px;
   padding-bottom: 200px;
 
-  color: ${white};
-  background: ${background};
+  color: ${palette.white};
+  background: ${palette.background.default};
 
   /* Fallback Shape Blur using Radial Gradients
      Use RGBAs because of Webkit Gradient Issues 
@@ -33,7 +33,7 @@ export const MainWrapper = styled.main`
       rgba(154, 29, 235, 0) 90%
     ),
     radial-gradient(40vh at 85% 60%, rgba(20, 0, 255, 0.2) 0, rgba(20, 0, 255, 0.1) 30%, rgba(20, 0, 255, 0) 90%),
-    ${background};
+    ${palette.background.default};
 
   overflow-x: hidden;
   overflow-y: auto;
@@ -43,7 +43,7 @@ export const MainWrapper = styled.main`
   }
 
   @supports (filter: blur(1px)) {
-    background: ${background};
+    background: ${palette.background.default};
 
     & > ${MainBgShape} {
       display: block;
@@ -115,5 +115,5 @@ export const Container = styled.div`
 `;
 
 export const Footer = styled.footer`
-  background: ${midnight};
+  background: ${palette.midnight};
 `;

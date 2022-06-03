@@ -20,7 +20,7 @@ import {
   StyledTableHeaderCell,
 } from './styles';
 import { CircularProgress } from '@mui/material';
-import { white } from 'theme/colors';
+import palette from 'theme/palette';
 import { SafeImage } from '../../Common/Image';
 import InviteMember from './InviteMember';
 import MemberRoleDropdown from './MemberRoleDropdown';
@@ -291,7 +291,7 @@ const Members = (props) => {
                           <DropDownItem
                             onClick={() => setUserToRemove(user)}
                             style={{
-                              color: white,
+                              color: palette.white,
                             }}
                           >
                             Remove Member

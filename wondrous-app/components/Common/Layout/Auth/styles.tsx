@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { white, midnight, highlightPurple, highlightBlue, background } from 'theme/colors';
+import palette from 'theme/palette';
 import { createSpacingUnit } from 'utils';
 import { Discord } from '../../../Icons/discord';
 import { Twitter } from '../../../Icons/twitter';
@@ -20,8 +20,8 @@ export const MainWrapper = styled.main`
     min-height: calc(100vh - 160px);
   }
 
-  color: ${white};
-  background: ${background};
+  color: ${palette.white};
+  background: ${palette.background.default};
 
   overflow-x: hidden;
   overflow-y: auto;
@@ -50,11 +50,11 @@ const FooterWrapper = styled.footer`
   height: 160px;
   width: 100%;
 
-  background: ${midnight};
+  background: ${palette.midnight};
 `;
 
 const FooterContactEmail = styled.a`
-  color: ${highlightBlue};
+  color: ${palette.highlightBlue};
   text-decoration: underline;
   margin-bottom: ${createSpacingUnit(1)};
 `;
@@ -65,7 +65,7 @@ const socialLinkAttrs = (props) => ({
 });
 
 const FooterSocialLink = styled.a.attrs(socialLinkAttrs)`
-  color: ${highlightPurple};
+  color: ${palette.highlightPurple};
 
   & > svg {
     height: ${createSpacingUnit(4)};

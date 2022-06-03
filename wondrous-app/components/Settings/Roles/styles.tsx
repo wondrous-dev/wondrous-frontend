@@ -7,7 +7,7 @@ import SnackbarComp from '@mui/material/Snackbar';
 import { Button } from '../../Common/button';
 import { BaseCard } from '../../Common/card';
 import { newDropdownStyles } from 'components/Common/DropdownSelect/styles';
-import { redColors, white } from 'theme/colors';
+import palette from 'theme/palette';
 
 export const RolesContainer = styled.div`
   width: 100%;
@@ -140,7 +140,7 @@ export const Snackbar = styled(SnackbarComp)`
 `;
 
 export const Error = styled.h3`
-  color: ${redColors.red800};
+  color: ${palette.red800};
   margin: 30px 0;
 `;
 
@@ -156,7 +156,7 @@ export const TokenGatingButtonText = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 15px;
     font-weight: 600;
-    color: ${white};
+    color: ${palette.white};
   }
 `;
 

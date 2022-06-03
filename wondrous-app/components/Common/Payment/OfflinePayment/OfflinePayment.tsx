@@ -10,7 +10,7 @@ import {
 } from 'graphql/queries/payment';
 import React, { useContext, useState } from 'react';
 import { ErrorText } from '../..';
-import { white } from 'theme/colors';
+import palette from 'theme/palette';
 import { CreateFormPreviewButton } from '../../../CreateEntity/styles';
 import { SnackbarAlertContext } from '../../SnackbarAlert';
 import {
@@ -73,7 +73,7 @@ export const OfflinePayment = (props) => {
         <Typography
           variant="body1"
           style={{
-            color: white,
+            color: palette.white,
           }}
         >
           Payment linked

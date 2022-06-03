@@ -1,7 +1,7 @@
 import InputBase from '@mui/material/InputBase';
 import { Typography } from '@mui/material';
 import styled from 'styled-components';
-import { background, blueColors, greyColors } from 'theme/colors';
+import palette from 'theme/palette';
 import { Button } from '../../button';
 import DropdownSelect from '../../DropdownSelect/dropdownSelect';
 
@@ -38,7 +38,7 @@ export const OfflinePaymentWarningTypography = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
     font-size: 12px;
-    color: ${greyColors.grey20};
+    color: ${palette.grey20};
   }
 `;
 
@@ -47,7 +47,7 @@ export const OfflinePaymentInputLabel = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 14px;
     font-weight: 500;
-    color: ${blueColors.blue20};
+    color: ${palette.blue20};
     margin-top: 20px;
   }
 `;
@@ -61,14 +61,14 @@ export const OfflinePaymentWalletWrapper = styled.div`
 export const OfflinePaymentWallet = styled(InputBase)`
   width: 165px;
   height: 40px;
-  background: ${background};
+  background: ${palette.background.default};
   border-radius: 6px;
 
   .MuiInputBase-input {
     font-family: 'Space Grotesk';
     font-size: 14px;
     font-weight: 400;
-    color: ${greyColors.grey250};
+    color: ${palette.grey250};
     padding: 10px 12px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -82,7 +82,7 @@ export const OfflinePaymentWalletButton = styled(Button)`
     margin-left: 12px;
   }
   & > button {
-    background: ${background};
+    background: ${palette.background.default};
     display: flex;
     align-items: center;
   }
@@ -93,7 +93,7 @@ export const OfflinePaymentWalletButtonText = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 16px;
     font-weight: 400;
-    color: ${greyColors.grey20};
+    color: ${palette.grey20};
     margin-right: 8px;
   }
 `;
@@ -108,9 +108,9 @@ export const OfflinePaymentLinkInput = styled(InputBase)`
     font-size: 14px;
     line-height: 21px;
     letter-spacing: 0.01em;
-    color: ${greyColors.grey250};
+    color: ${palette.grey250};
     padding: 10px 15px;
-    background: ${background};
+    background: ${palette.background.default};
   }
 `;
 

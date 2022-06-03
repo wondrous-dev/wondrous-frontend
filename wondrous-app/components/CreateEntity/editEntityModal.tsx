@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
-import { CircularProgress, styled, Switch, TextField } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import { ReactEditor } from 'slate-react';
 
 import { ENTITIES_TYPES } from 'utils/constants';
@@ -56,18 +56,12 @@ import {
   UPDATE_TASK_PROPOSAL,
 } from 'graphql/mutations/taskProposal';
 import { useMe } from '../Auth/withAuth';
-import { getProposalStatus, } from 'utils/board';
+import { getProposalStatus } from 'utils/board';
 import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './createEntityModal';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { ErrorText } from '../Common';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
-import {
-  RichTextEditor,
-  useEditor,
-  countCharacters,
-  deserializeRichText,
-  extractMentions,
-} from 'components/RichText';
+import { RichTextEditor, useEditor, countCharacters, deserializeRichText, extractMentions } from 'components/RichText';
 import { useSnapshot } from 'services/snapshot';
 
 export const transformMediaFormat = (media) => {

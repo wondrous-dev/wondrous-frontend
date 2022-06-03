@@ -20,7 +20,7 @@ import {
   StyledAutocomplete,
 } from 'components/CreateEntity/styles';
 import { InputAdornment, TextField } from '@mui/material';
-import { white } from 'theme/colors';
+import palette from 'theme/palette';
 import { SafeImage } from 'components/Common/Image';
 import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
 import { filterRoles } from './helpers';
@@ -118,7 +118,7 @@ const InviteMember = (props) => {
             <>
               <TextField
                 style={{
-                  color: white,
+                  color: palette.white,
                   fontFamily: 'Space Grotesk',
                   fontSize: '14px',
                   paddingLeft: '10px',

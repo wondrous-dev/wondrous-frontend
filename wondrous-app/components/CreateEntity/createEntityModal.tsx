@@ -20,7 +20,7 @@ import { GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_POD_USERS, GET_USER_AVAILABLE_PODS } from 'graphql/queries/pod';
 import { GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_FOR_POD, GET_MILESTONES } from 'graphql/queries/task';
-import { greyColors, white } from 'theme/colors';
+import palette from 'theme/palette';
 import { addProposalItem } from 'utils/board';
 import {
   CHAIN_TO_CHAIN_DIPLAY_NAME,
@@ -1273,7 +1273,7 @@ const CreateLayoutBaseModal = (props) => {
                       <TextField
                         {...params}
                         style={{
-                          color: white,
+                          color: palette.white,
                           fontFamily: 'Space Grotesk',
                           fontSize: '1px',
                           paddingLeft: '4px',
@@ -1362,7 +1362,7 @@ const CreateLayoutBaseModal = (props) => {
                 renderInput={(params) => (
                   <TextField
                     style={{
-                      color: white,
+                      color: palette.white,
                       fontFamily: 'Space Grotesk',
                       fontSize: '14px',
                       paddingLeft: '4px',
@@ -1437,7 +1437,7 @@ const CreateLayoutBaseModal = (props) => {
                 renderInput={(params) => (
                   <TextField
                     style={{
-                      color: white,
+                      color: palette.white,
                       fontFamily: 'Space Grotesk',
                       fontSize: '14px',
                       paddingLeft: '4px',
@@ -1630,8 +1630,8 @@ const CreateLayoutBaseModal = (props) => {
             style={{
               ...(isPod &&
                 !canCreatePod && {
-                  background: greyColors.grey700,
-                  border: `1px solid ${greyColors.grey700}`,
+                  background: palette.grey700,
+                  border: `1px solid ${palette.grey700}`,
                   cursor: 'default',
                 }),
             }}

@@ -12,7 +12,7 @@ import {
   BoldSpan,
   SmallerTopParagraph,
 } from 'components/Discord/styles';
-import { highlightBlue, white } from 'theme/colors';
+import palette from 'theme/palette';
 import Link from 'next/link';
 
 export const BOT_URL = `https://discord.com/api/oauth2/authorize?client_id=917630803314352208&permissions=8&scope=bot`;
@@ -52,7 +52,7 @@ const DiscordNotificationSetup = (props) => {
         To add our bot to your discord server and to send the notifications from the bot, click{' '}
         <a
           style={{
-            color: highlightBlue,
+            color: palette.highlightBlue,
           }}
           href={BOT_URL}
           target="_blank"
@@ -78,7 +78,7 @@ const DiscordNotificationSetup = (props) => {
           <a
             target="_blank"
             style={{
-              color: highlightBlue,
+              color: palette.highlightBlue,
               marginLeft: '4px',
             }}
           >

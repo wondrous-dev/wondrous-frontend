@@ -8,7 +8,7 @@ export const entityStyling = {
   },
 };
 
-import { white } from 'theme/colors';
+import palette from 'theme/palette';
 
 export const DropMeHere = styled.div`
   margin: 1em 0 0 0;
@@ -27,7 +27,7 @@ export const DropMeHere = styled.div`
   border-radius: 6px;
   border: 1px dashed #4b4b4b;
 
-  color: ${white};
+  color: ${palette.white};
 `;
 
 export const TaskListContainer = styled.div`

@@ -12,7 +12,7 @@ import { PaddedParagraph, StyledLink } from 'components/Common/text';
 import { SmallLogo, LoginWrapper, TopBubble, LoginError } from 'components/Pages/login';
 import { useState } from 'react';
 import { CenteredFlexRow } from 'components/Common/index';
-import { greyColors } from 'theme/colors';
+import palette from 'theme/palette';
 import { Metamask } from 'components/Icons/metamask';
 import { EmailIcon, LockIcon } from 'components/Icons/userpass';
 import { useWonderWeb3 } from 'services/web3';
@@ -139,7 +139,7 @@ const Signup = () => {
                   </Button>
                 </Form>
                 <LineWithText>
-                  <PaddedParagraph padding="0 10px" color={greyColors.grey50}>
+                  <PaddedParagraph padding="0 10px" color={palette.grey50}>
                     or
                   </PaddedParagraph>
                 </LineWithText>

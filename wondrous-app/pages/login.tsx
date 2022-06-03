@@ -18,13 +18,12 @@ import WalletConnectConnector from 'components/WalletConnectors/WalletConnect';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 import { getDiscordUrl } from 'utils';
-import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS , SUPPORTED_CHAINS} from 'utils/constants';
+import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS, SUPPORTED_CHAINS } from 'utils/constants';
 import OnboardingHeader from 'components/Onboarding/OnboardingLayout/Header';
 import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';
 import { Connectors, MainWrapper } from 'components/Onboarding/styles';
 import { Button } from 'components/Button';
 import { handleUserOnboardingRedirect } from 'components/Onboarding/utils';
-
 
 const discordUrlWithoutState = getDiscordUrl();
 const state = JSON.stringify({
@@ -78,9 +77,9 @@ const Login = ({ csrfToken }) => {
                   shallow: true,
                 });
               }
-            } 
+            }
           } catch (err) {
-            console.log('err?.graphQLErrors', err?.graphQLErrors)
+            console.log('err?.graphQLErrors', err?.graphQLErrors);
             if (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.NO_WEB3_ADDRESS_FOUND) {
               setErrorMessage('Address not found, check you are connected to the correct address');
             } else {
@@ -121,7 +120,6 @@ const Login = ({ csrfToken }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wonderWeb3.wallet.chain]);
 
-
   const buttonStyles = {
     width: '40px',
     height: '40px',
@@ -146,8 +144,10 @@ const Login = ({ csrfToken }) => {
         </OnboardingTitle>
 
         <div style={{ width: '100%' }}>
-          {(!notSupportedChain&& errorMessage )? <LoginError>{errorMessage}</LoginError> : ''}
-          {notSupportedChain && <LoginError>{'Unsupported network, changed to mainnet or a supported network'}</LoginError> }
+          {!notSupportedChain && errorMessage ? <LoginError>{errorMessage}</LoginError> : ''}
+          {notSupportedChain && (
+            <LoginError>{'Unsupported network, changed to mainnet or a supported network'}</LoginError>
+          )}
           <Form onSubmit={handleSubmit} style={{ marginBottom: '37px' }}>
             <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
             <Field

@@ -1,9 +1,9 @@
-import { white } from 'theme/colors';
+import palette from 'theme/palette';
 
 const MuiDivider = {
   styleOverrides: {
     root: {
-      backgroundColor: white,
+      backgroundColor: palette.white,
     },
   },
 };

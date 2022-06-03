@@ -25,7 +25,7 @@ import {
   TokenGatingHeaderLabel,
   TokenLogoDisplay,
 } from './styles';
-import { white } from 'theme/colors';
+import palette from 'theme/palette';
 import { useEditTokenGatingCondition } from 'utils/hooks';
 import { GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
 import apollo from 'services/apollo';
@@ -65,7 +65,7 @@ const TokenGatingConditionDisplay = (props) => {
   const { tokenGatingCondition } = props;
   const dropdownItemStyle = {
     marginRight: '12px',
-    color: white,
+    color: palette.white,
   };
   const [getTokenInfo, { loading: getTokenInfoLoading }] = useLazyQuery(GET_TOKEN_INFO, {
     onCompleted: (data) => {

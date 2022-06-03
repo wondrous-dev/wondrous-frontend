@@ -44,7 +44,7 @@ import {
 } from 'components/Settings/TokenGating/styles';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
 import { DropDown, DropDownItem } from '../../Common/dropdown';
-import { white } from 'theme/colors';
+import palette from 'theme/palette';
 
 import { Role } from 'types/common';
 import RoleLockIcon from '../../Icons/rolesLock.svg';
@@ -419,7 +419,7 @@ const TokenGatingModalElement = (props) => {
   const contractAddress = tokenGatingCondition?.accessCondition[0].contractAddress;
   const dropdownItemStyle = {
     marginRight: '12px',
-    color: white,
+    color: palette.white,
   };
 
   useEffect(() => {

@@ -33,7 +33,7 @@ import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
 import { TextField } from '@mui/material';
 import { OptionDiv, OptionTypography, StyledAutocompletePopper, StyledChip } from 'components/CreateEntity/styles';
-import { white } from 'theme/colors';
+import palette from 'theme/palette';
 import { filterOrgUsers } from 'components/CreateEntity/createEntityModal';
 import { PayoutModal } from './PayoutModal';
 import { PRIVATE_TASK_TITLE } from 'utils/constants';
@@ -435,7 +435,7 @@ const Analytics = (props) => {
               <TextField
                 {...params}
                 style={{
-                  color: white,
+                  color: palette.white,
                   fontFamily: 'Space Grotesk',
                   fontSize: '16px',
                   paddingLeft: '4px',

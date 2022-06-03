@@ -2,7 +2,7 @@ import { Button, ButtonBase, Chip, Grid, IconButton, Modal, Popper, TextField, T
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import React from 'react';
 import styled from 'styled-components';
-import { white } from 'theme/colors';
+import palette from 'theme/palette';
 import { BaseCard } from '../Common/card';
 import { LogoSquare } from '../Common/ci';
 import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
@@ -174,7 +174,7 @@ export const MultiMediaUploadButton = styled(ButtonBase)`
 
 export const MultiMediaUploadButtonText = styled(Typography)`
   && {
-    color: ${white};
+    color: ${palette.white};
     font-size: 14px;
     line-height: 22px;
   }
@@ -631,14 +631,14 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
   background: #0f0f0f;
   border-radius: 6px;
   min-height: 40px;
-  color: ${white};
+  color: ${palette.white};
   position: relative;
   padding-right: 0;
 
   .MuiInputBase-adornedStart {
     padding-right: 10px !important;
   }
-  color: ${white};
+  color: ${palette.white};
 
   input {
     color: #c4c4c4;
@@ -684,7 +684,7 @@ export const AutocompleteList = styled(Popper).attrs((props) => ({
   li {
     font-family: Space Grotesk;
     font-size: 14px;
-    color: ${white};
+    color: ${palette.white};
     display: flex;
     align-items: center;
   }
@@ -692,7 +692,7 @@ export const AutocompleteList = styled(Popper).attrs((props) => ({
   .MuiAutocomplete-noOptions {
     font-family: Space Grotesk;
     font-size: 14px;
-    color: ${white};
+    color: ${palette.white};
   }
 `;
 
@@ -705,7 +705,7 @@ export const StyledAutocompletePopper = styled(({ className, ...props }) => {
 
   & .MuiAutocomplete-noOptions {
     font-family: 'Space Grotesk';
-    color: ${white};
+    color: ${palette.white};
     font-size: 14px;
   }
 `;
@@ -730,7 +730,7 @@ export const OptionTypography = styled(Typography)`
   && {
     font-family: Space Grotesk;
     font-size: 14px;
-    color: ${white};
+    color: ${palette.white};
     margin-left: 6px;
 
     span {
@@ -748,7 +748,7 @@ export const StyledChip = styled(Chip)`
 
     & .MuiSvgIcon-root {
       :hover {
-        color: ${white};
+        color: ${palette.white};
       }
     }
   }

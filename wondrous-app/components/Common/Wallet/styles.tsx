@@ -1,6 +1,6 @@
 import { IconButton } from '@mui/material';
 import styled from 'styled-components';
-import { background, blackColors } from 'theme/colors';
+import palette from 'theme/palette';
 
 export const WalletWrapper = styled.div`
   display: flex;
@@ -43,7 +43,7 @@ export const WalletDisplay = styled.div`
 
   padding: 0 4px;
 
-  background: ${blackColors.black95};
+  background: ${palette.black95};
 `;
 
 export const WonderBalance = styled.div`
@@ -92,7 +92,7 @@ export const WalletAddress = styled.div`
 
   border-radius: 3px;
 
-  background: ${background};
+  background: ${palette.background.default};
 
   font-size: 14px;
   font-weight: 600;

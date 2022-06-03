@@ -43,7 +43,6 @@ import {
   StyledTableBody,
   StyledTableCell,
   StyledTableRow,
-  TaskDescription,
   TaskTitle,
 } from './styles';
 

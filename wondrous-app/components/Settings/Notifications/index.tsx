@@ -37,7 +37,7 @@ import {
   LabelBlockText,
 } from '../styles';
 import Link from 'next/link';
-import { greyColors, highlightBlue, white } from 'theme/colors';
+import palette from 'theme/palette';
 import { ErrorText } from '../../Common';
 import InputForm from 'components/Common/InputForm/inputForm';
 import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
@@ -296,7 +296,7 @@ const Notifications = ({ orgId }) => {
                       >
                         <DiscordText
                           style={{
-                            color: white,
+                            color: palette.white,
                             fontSize: '14px',
                             marginBottom: '0',
                           }}

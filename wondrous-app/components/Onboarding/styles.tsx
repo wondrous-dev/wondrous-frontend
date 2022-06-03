@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { TextField, Typography } from '@mui/material';
-import { greyColors, redColors, white, background, highlightBlue } from 'theme/colors';
+import palette from 'theme/palette';
 import { Button } from '../Common/button';
 import { SafeImage } from '../Common/Image';
 
@@ -8,7 +8,7 @@ export const MainWrapper = styled.div`
   width: 100%;
   min-height: 100vh;
   height: 100%;
-  background: url('/images/onboarding/background.png') no-repeat center center ${background};
+  background: url('/images/onboarding/background.png') no-repeat center center ${palette.background.default};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,14 +61,14 @@ export const InviteWelcomeBoxTitle = styled(Typography)`
   && {
     font-size: 24px;
     font-weight: bold;
-    color: ${white};
+    color: ${palette.white};
     margin-bottom: 20px;
   }
 `;
 
 export const InviteWelcomeBoxParagraph = styled(Typography)`
   && {
-    color: ${white};
+    color: ${palette.white};
     font-size: 16px;
     font-weight: normal;
   }
@@ -76,7 +76,7 @@ export const InviteWelcomeBoxParagraph = styled(Typography)`
 
 export const DataProtectBoxParagraph = styled(Typography)`
   && {
-    color: ${white};
+    color: ${palette.white};
     font-size: 14px;
     font-weight: normal;
     margin-top: 30px;
@@ -91,7 +91,7 @@ export const MetamaskButton = styled(Button)`
 
 export const StyledHr = styled.hr`
   height: 1px;
-  border: 1px solid ${greyColors.grey85};
+  border: 1px solid ${palette.grey85};
   width: 100%;
   border: 0;
 `;
@@ -105,7 +105,7 @@ export const ProgressBar = styled.img`
 export const OnboardingTitle = styled(Typography)`
   && {
     font-size: 28px;
-    color: ${white};
+    color: ${palette.white};
     margin-top: 18px;
     margin-bottom: 18px;
     font-weight: 500;
@@ -135,7 +135,7 @@ export const UsernameTitle = styled(Typography)`
 
 export const UsernameDescription = styled(UsernameTitle)`
   && {
-    color: ${greyColors.grey250};
+    color: ${palette.grey250};
     margin-top: 8px;
     margin-bottom: 26px;
     font-weight: 400;
@@ -172,7 +172,7 @@ export const ProfilePictureDiv = styled.div`
 
 export const ErrorText = styled(Typography)`
   && {
-    color: ${redColors.red400};
+    color: ${palette.red400};
     font-size: 14px;
   }
 `;
@@ -192,7 +192,7 @@ export const Label = styled(Typography)`
     font-size: 14px;
     font-style: normal;
     font-weight: 500;
-    color: ${white};
+    color: ${palette.white};
     margin-left: 2px;
   }
 `;
@@ -244,23 +244,23 @@ export const Connectors = styled.div`
     justify-content: unset;
     font-weight: 500;
   }
-  
+
   div:nth-child(1) {
-    background: linear-gradient(270deg, #7427FF,  #F5841F);
+    background: linear-gradient(270deg, #7427ff, #f5841f);
   }
   div:nth-child(2) {
-    background: linear-gradient(270deg, #7427FF,  #0052FF);
+    background: linear-gradient(270deg, #7427ff, #0052ff);
   }
   div:nth-child(3) {
-    background: linear-gradient(270deg, #7427FF,  #3B99FC);
+    background: linear-gradient(270deg, #7427ff, #3b99fc);
   }
   div:nth-child(4) {
-    background: linear-gradient(270deg, #7427FF,  #7E89FF);
+    background: linear-gradient(270deg, #7427ff, #7e89ff);
   }
   div:nth-child(5) {
-    background: linear-gradient(270deg, #7427FF,  #06FFA5);
+    background: linear-gradient(270deg, #7427ff, #06ffa5);
   }
-  
+
   div > button {
     padding: 8px 0;
   }
@@ -279,7 +279,7 @@ export const LogoText = styled.div`
 `;
 
 export const DataLink = styled.a`
-  color: ${highlightBlue};
+  color: ${palette.highlightBlue};
   text-decoration: underline;
   font-weight: 500;
 `;

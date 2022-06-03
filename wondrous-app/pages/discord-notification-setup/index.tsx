@@ -4,18 +4,6 @@ import SideBarComponent from 'components/SideBar';
 import HeaderComponent from 'components/Header';
 import { SettingsContainer } from 'components/Settings/styles';
 import DiscordNotificationSetup from 'components/DiscordNotificationSetup';
-import { HeaderBlock } from 'components/Settings/headerBlock';
-import {
-  ListType,
-  DiscordParagraph,
-  DiscordTitle,
-  BoldParagraph,
-  ListItem,
-  BoldSpan,
-  SmallerTopParagraph,
-} from 'components/Discord/styles';
-import { highlightBlue, white } from 'theme/colors';
-import Link from 'next/link';
 
 const DiscordNotificationSetupPage = () => {
   const router = useRouter();

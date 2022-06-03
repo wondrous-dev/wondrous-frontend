@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { GradientHighlightHorizontal, GradientMidnightVertical } from '../gradients';
-import { greyColors } from 'theme/colors';
+import palette from 'theme/palette';
 
 export const StyledButton = styled.button`
   display: flex;
@@ -15,7 +15,7 @@ export const StyledButton = styled.button`
 
   ${GradientHighlightHorizontal}
 
-  background: ${greyColors.grey80};
+  background: ${palette.grey80};
   border-radius: 6px;
 `;
 

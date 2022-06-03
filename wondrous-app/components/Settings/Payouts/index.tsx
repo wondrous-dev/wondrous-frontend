@@ -32,7 +32,7 @@ import { GET_ORG_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import Link from 'next/link';
 import { cutString, parseUserPermissionContext } from 'utils/helpers';
 import { constructGnosisRedirectUrl } from '../../Common/Payment/SingleWalletPayment';
-import { white, greyColors } from 'theme/colors';
+import palette from 'theme/palette';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PayModal } from './modal';
 import { BatchPayModal } from './BatchPayModal';
@@ -41,7 +41,7 @@ import { SeeMoreText } from '../Members/styles';
 import { PERMISSIONS } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { ErrorText } from '../../Common';
-import Tooltip from "components/Tooltip";
+import Tooltip from 'components/Tooltip';
 
 enum ViewType {
   Paid = 'paid',
@@ -90,8 +90,8 @@ const PaymentItem = (props) => {
   }
 
   const disabled =
-    (chain && item?.chain !== chain) || (item?.paymentStatus === 'processing' || item?.paymentStatus === 'paid');
-  console.log('item', item)
+    (chain && item?.chain !== chain) || item?.paymentStatus === 'processing' || item?.paymentStatus === 'paid';
+  console.log('item', item);
   return (
     <>
       <PaymentModalContext.Provider
@@ -119,7 +119,7 @@ const PaymentItem = (props) => {
       >
         {item.paymentStatus !== 'paid' && (
           <StyledTableCell>
-            {item.payeeActiveEthAddress?
+            {item.payeeActiveEthAddress ? (
               <div
                 style={{
                   display: 'flex',
@@ -129,10 +129,10 @@ const PaymentItem = (props) => {
                 <TableCellText>
                   <Checkbox
                     style={{
-                      border: disabled ? `1px solid ${greyColors.grey800}` : `none`,
-                      width: '24px',
-                      height: '24px',
-                      color: disabled ? greyColors.grey800 : white,
+                      border: disabled ? `1px solid ${palette.grey800}` : `none`,
+                      width: 24,
+                      height: 24,
+                      color: disabled ? palette.grey800 : palette.white,
                     }}
                     checked={checked}
                     disabled={disabled}
@@ -171,7 +171,10 @@ const PaymentItem = (props) => {
                     )}
                   </>
                 )}
-              </div>: <ErrorText>User has no web3 address</ErrorText>}
+              </div>
+            ) : (
+              <ErrorText>User has no web3 address</ErrorText>
+            )}
           </StyledTableCell>
         )}
         <StyledTableCell>
@@ -221,7 +224,7 @@ const PaymentItem = (props) => {
               target="_blank"
               rel="noreferrer"
               style={{
-                color: white,
+                color: palette.white,
               }}
             >
               {cutString(item?.taskTitle, 30)}
@@ -232,7 +235,7 @@ const PaymentItem = (props) => {
           {(canViewPaymentLink || viewingUser?.id === item?.payeeId) && (
             <a
               style={{
-                color: white,
+                color: palette.white,
               }}
               target={'_blank'}
               rel="noreferrer"
@@ -278,11 +281,11 @@ const Payouts = (props) => {
   const [paymentSelected, setPaymentsSelected] = useState(null);
   const [openBatchPayModal, setOpenBatchPayModal] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (!paymentSelected || Object.keys(paymentSelected).length === 0) {
-      setChainSelected(null)
+      setChainSelected(null);
     }
-  }, [paymentSelected])
+  }, [paymentSelected]);
 
   const listViewOptions = [
     {
@@ -513,11 +516,13 @@ const Payouts = (props) => {
                   <div>Link</div>
                 </Tooltip>
               </StyledTableCell>
-              {view === ViewType.Unpaid && <StyledTableCell width="10%">
-                <Tooltip title="Payment status" placement="top">
-                  <div>Status</div>
-                </Tooltip>
-              </StyledTableCell>}
+              {view === ViewType.Unpaid && (
+                <StyledTableCell width="10%">
+                  <Tooltip title="Payment status" placement="top">
+                    <div>Status</div>
+                  </Tooltip>
+                </StyledTableCell>
+              )}
               <StyledTableCell>
                 <Tooltip title="Payment network" placement="top">
                   <div>Chain</div>

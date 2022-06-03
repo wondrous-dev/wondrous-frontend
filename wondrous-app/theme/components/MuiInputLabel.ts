@@ -1,9 +1,9 @@
-import { blueColors } from 'theme/colors';
+import palette from 'theme/palette';
 
 const MuiInputLabel = {
   styleOverrides: {
     shrink: {
-      color: `${blueColors.blue400} !important`,
+      color: `${palette.blue400} !important`,
     },
   },
 };

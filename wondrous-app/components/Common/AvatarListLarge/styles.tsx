@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { highlightBlue } from 'theme/colors';
+import palette from 'theme/palette';
 
 export const AvatarWrapper = styled.div`
   display: flex;
@@ -10,8 +10,8 @@ export const AvatarWrapper = styled.div`
   width: 106px;
   height: 106px;
   border-radius: 106px;
-  border: ${(props) => (props.isOwnerOfPod ? '10px solid ' + highlightBlue : '10px solid black')};
-  background-color: ${(props) => props.randomColor || highlightBlue};
+  border: ${(props) => (props.isOwnerOfPod ? '10px solid ' + palette.highlightBlue : '10px solid black')};
+  background-color: ${(props) => props.randomColor || palette.highlightBlue};
   ${(props) => (props.avatarURL ? 'background: url(' + props.avatarURL + ');' : '')}
   background-position: center;
   background-size: cover;

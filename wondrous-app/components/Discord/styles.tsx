@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import styled from 'styled-components';
-import { white } from 'theme/colors';
+import palette from 'theme/palette';
 
 export const ListType = styled.ul`
   color: white;
@@ -9,7 +9,7 @@ export const ListType = styled.ul`
 export const DiscordTitle = styled(Typography)`
   && {
     font-size: 24px;
-    color: ${white};
+    color: ${palette.white};
     font-weight: bolder;
   }
 `;
@@ -17,7 +17,7 @@ export const DiscordTitle = styled(Typography)`
 export const DiscordParagraph = styled(Typography)`
   && {
     font-size: 16px;
-    color: ${white};
+    color: ${palette.white};
     margin-top: 20px;
     max-width: 1020px;
   }

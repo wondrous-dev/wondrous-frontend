@@ -3,7 +3,7 @@ import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 
 import { GradientMidnightDiagonal, GradientMidnightVertical } from 'components/Common/gradients';
 import { TextField, Typography } from '@mui/material';
-import { white, greyColors } from 'theme/colors';
+import palette from 'theme/palette';
 import { StyledDatePicker } from 'components/Common/DatePicker/styles';
 import { Button } from 'components/Common/button';
 import { PaymentModal } from 'components/Common/Payment/styles';
@@ -32,7 +32,7 @@ export const HeaderWrapper = styled.div`
 export const HeaderText = styled(Typography)`
   && {
     font-size: 16px;
-    color: ${white};
+    color: ${palette.white};
     font-weight: bolder;
   }
 `;
@@ -101,7 +101,7 @@ export const ContributorRow = styled.div`
 
 export const ContributorRowText = styled(Typography)`
   && {
-    color: ${white};
+    color: ${palette.white};
   }
 `;
 
@@ -115,7 +115,7 @@ export const TaskCountWrapper = styled.div`
 
 export const TaskCountText = styled(Typography)`
   && {
-    color: ${white};
+    color: ${palette.white};
     font-size: 13px;
   }
 `;
@@ -136,7 +136,7 @@ export const ExportCSVButton = styled(Button)``;
 
 export const ExportCSVButtonText = styled(Typography)`
   && {
-    color: ${white};
+    color: ${palette.white};
   }
 `;
 
@@ -188,7 +188,7 @@ export const PayContributorButton = styled(Button)`
 
 export const TableCellText = styled(Typography)`
   && {
-    color: ${white};
+    color: ${palette.white};
     font-size: 14px;
     text-align: center;
   }
@@ -207,7 +207,7 @@ export const ExplainerText = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 14px;
     font-weight: 400;
-    color: ${greyColors.grey250};
+    color: ${palette.grey250};
     margin-top: 12px;
   }
 `;

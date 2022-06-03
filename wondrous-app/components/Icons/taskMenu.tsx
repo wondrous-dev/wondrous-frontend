@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import { background, greyColors, white } from 'theme/colors';
+import palette from 'theme/palette';
 
 export const TaskMenuIcon = (props) => {
-  const { fill = background } = props;
+  const { fill = palette.background.default } = props;
 
   const [colorFill, setColorFill] = useState(fill);
-  const [strokeColor, setStrokeColor] = useState(greyColors.grey400);
+  const [strokeColor, setStrokeColor] = useState(palette.grey400);
 
   const handlePointerEnter = (event) => {
-    setColorFill(greyColors.grey400);
-    setStrokeColor(white);
+    setColorFill(palette.grey400);
+    setStrokeColor(palette.white);
   };
 
   const handlePointerLeave = (event) => {
     setColorFill(fill);
-    setStrokeColor(greyColors.grey400);
+    setStrokeColor(palette.grey400);
   };
 
   return (

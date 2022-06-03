@@ -1,5 +1,5 @@
 import { css } from 'styled-components';
-import { greyColors, blackColors } from 'theme/colors';
+import palette from 'theme/palette';
 
 export const GradientHighlightHorizontal = css`
   background: rgb(204, 187, 255);
@@ -17,11 +17,11 @@ export const GradientMidnightVertical = css`
 `;
 
 export const GradientMidnightDiagonal = css`
-  background: ${blackColors.black90};
-  background: linear-gradient(250deg, ${greyColors.grey75}80, ${blackColors.black90}80);
+  background: ${palette.black90};
+  background: linear-gradient(250deg, ${palette.grey75}80, ${palette.black90}80);
 `;
 
 export const GradientMidnightDiagonalOposite = css`
-  background: ${blackColors.black90};
-  background: linear-gradient(170deg, ${greyColors.grey75}FF, ${blackColors.black90}FF);
+  background: ${palette.black90};
+  background: linear-gradient(170deg, ${palette.grey75}FF, ${palette.black90}FF);
 `;

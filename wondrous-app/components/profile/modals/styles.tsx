@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import styled from 'styled-components';
-import { white } from 'theme/colors';
+import palette from 'theme/palette';
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 
@@ -44,13 +44,13 @@ export const TabContainerText = styled(Typography)`
   && {
     font-size: 16px;
     line-height: 19px;
-    color: ${white};
+    color: ${palette.white};
   }
 `;
 export const Tab = styled.div`
   text-align: center;
   flex: 1;
-  border-bottom: 2px solid ${(props) => (props.selected ? '#7427FF' : white)};
+  border-bottom: 2px solid ${(props) => (props.selected ? '#7427FF' : palette.white)};
   padding-bottom: 12px;
   margin-right: 24px;
   cursor: pointer;
@@ -71,6 +71,6 @@ export const Title = styled(Typography)`
     font-size: 20px;
     font-weight: bold;
     text-align: center;
-    color: ${white};
+    color: ${palette.white};
   }
 `;

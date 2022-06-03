@@ -3,7 +3,7 @@ import { Button, IconButton, Typography, Box } from '@mui/material';
 import Image from 'next/image';
 import React from 'react';
 import styled from 'styled-components';
-import { white, highlightPurple, background, black, greyColors } from 'theme/colors';
+import palette from 'theme/palette';
 import { Button as BorderButton } from '../../Common/button';
 import { BaseCard } from '../../Common/card';
 import { LogoCircle } from '../../Common/ci';
@@ -14,7 +14,7 @@ export const OverviewComponent = styled.section`
   width: 100vw;
   min-height: 100vh;
   height: 100%;
-  //background-color: ${background};
+  //background-color: ${palette.background.default};
   background-color: #0f0f0f;
   transition: 0.15s all ease;
   padding-bottom: 40px;
@@ -69,7 +69,7 @@ export const TokenEmptyLogo = styled.div`
 
   border-radius: 50px;
 
-  background: ${black};
+  background: ${palette.black};
 `;
 
 export const Content = styled.div`
@@ -124,7 +124,7 @@ export const HeaderTitle = styled(Typography)`
 
 export const HeaderTag = styled(Typography)`
   && {
-    color: ${greyColors.grey250};
+    color: ${palette.grey250};
     font-family: 'Space Grotesk';
     font-style: normal;
     font-weight: 400;
@@ -247,10 +247,10 @@ export const HeaderButton = styled.button`
   align-items: center;
   padding: 10px;
   width: max-content;
-  ${({ reversed }) => (reversed ? `background: ${highlightPurple}` : `background: transparent`)};
-  border: 1px solid ${highlightPurple};
+  ${({ reversed }) => (reversed ? `background: ${palette.highlightPurple}` : `background: transparent`)};
+  border: 1px solid ${palette.highlightPurple};
   cursor: pointer;
-  color: ${white};
+  color: ${palette.white};
   font-family: 'Space Grotesk';
   font-style: normal;
   font-weight: 600;

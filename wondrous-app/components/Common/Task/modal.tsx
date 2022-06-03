@@ -73,7 +73,7 @@ import {
 } from 'utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
-import { redColors, white } from 'theme/colors';
+import palette from 'theme/palette';
 import { useMe } from '../../Auth/withAuth';
 import { GetStatusIcon, renderMentionString } from 'utils/common';
 
@@ -713,7 +713,7 @@ const CreatorBlock = ({ profilePicture, username, createdAt, isTaskProposal, han
           <TaskSectionInfoText
             style={{
               fontSize: '14px',
-              color: white,
+              color: palette.white,
               fontWeight: 'regular',
             }}
           >
@@ -1085,7 +1085,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   };
 
   const BackToListStyle = {
-    color: white,
+    color: palette.white,
     width: '100%',
     textAlign: 'right',
     marginRight: '8px',
@@ -1973,7 +1973,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   style={{
                     marginTop: '-8px',
                     marginBottom: '16px',
-                    color: redColors.red400,
+                    color: palette.red400,
                   }}
                 >
                   Your wallet is not connected. Please link your wallet to receive payment for completing tasks and
