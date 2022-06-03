@@ -122,7 +122,7 @@ export const GET_USER_TASK_BOARD_PROPOSALS = gql`
         podIds: $podIds
         limit: $limit
         offset: $offset
-        labelid: $labelId
+        labelId: $labelId
       }
     ) {
       ...TaskProposalCardFragment
@@ -142,6 +142,8 @@ export const GET_TASKS_RELATED_TO_USER_IN_ORG = gql`
     $offset: Int
     $types: [String]
     $labelId: String
+    $onlyPublic: Boolean
+    $date: String
   ) {
     getTasksRelatedToUserInOrg(
       input: {
@@ -154,6 +156,8 @@ export const GET_TASKS_RELATED_TO_USER_IN_ORG = gql`
         offset: $offset
         types: $types
         labelId: $labelId
+        onlyPublic: $onlyPublic
+        date: $date
       }
     ) {
       ...TaskCardFragment
@@ -170,6 +174,9 @@ export const GET_TASKS_RELATED_TO_USER_IN_POD = gql`
     $userId: String
     $limit: Int
     $offset: Int
+    $date: String
+    $onlyPublic: Boolean
+    $types: [String]
   ) {
     getTasksRelatedToUserInPod(
       input: {
@@ -179,6 +186,9 @@ export const GET_TASKS_RELATED_TO_USER_IN_POD = gql`
         userId: $userId
         limit: $limit
         offset: $offset
+        date: $date
+        onlyPublic: $onlyPublic
+        types: $types
       }
     ) {
       ...TaskCardFragment

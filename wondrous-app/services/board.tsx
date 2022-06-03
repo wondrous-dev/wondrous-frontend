@@ -219,7 +219,7 @@ export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false 
       ],
     },
     {
-      name: 'onlyPublic',
+      name: 'privacyLevel',
       label: 'Privacy level',
       icon: ({ style, ...rest }) => <PublicEyeIcon {...rest} style={{ ...style, padding: '4px' }} />,
       items: [
@@ -231,7 +231,7 @@ export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false 
         },
         {
           id: 'private',
-          name: 'Private',
+          name: 'All',
           gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
           pillIcon: (props) => <PublicEyeIcon viewBox="0 0 18 13" {...props} />,
         },

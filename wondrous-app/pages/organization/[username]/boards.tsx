@@ -47,7 +47,7 @@ const useGetOrgTaskBoardTasks = ({
   setColumns,
   setOrgTaskHasMore,
   orgId,
-  boardType,
+
   userId,
   entityType,
   setIsLoading,
@@ -102,20 +102,19 @@ const useGetOrgTaskBoardTasks = ({
           orgId,
           podIds: filters?.podIds,
           offset: 0,
-          onlyPublic: filters?.onlyPublic === PRIVACY_LEVEL.public,
           statuses: taskBoardStatuses,
           limit: taskBoardLimit,
           labelId: filters?.labelId,
           date: filters?.date,
           types: [entityType],
-          ...(boardType === PRIVACY_LEVEL.public && {
+          ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
             onlyPublic: true,
           }),
         },
       });
       setOrgTaskHasMore(true);
     }
-  }, [boardType, getOrgTaskBoardTasks, orgId, filters, setOrgTaskHasMore, userId, entityType]);
+  }, [, getOrgTaskBoardTasks, orgId, filters, setOrgTaskHasMore, userId, entityType]);
   return { fetchMore: getOrgTaskBoardTasksFetchMore };
 };
 
@@ -186,12 +185,16 @@ const useGetTaskRelatedToUser = ({
           limit: taskBoardLimit,
           offset: 0,
           labelId: filters?.labelId,
+          date: filters?.date,
           types: [entityType],
+          ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
+            onlyPublic: true,
+          }),
         },
       });
       setOrgTaskHasMore(true);
     }
-  }, [getTasksRelatedToUserInOrg, orgId, userId, setOrgTaskHasMore, entityType, filters]);
+  }, [getTasksRelatedToUserInOrg, orgId, userId, entityType, filters]);
   return { fetchMore: getTasksRelatedToUserFetchMore };
 };
 
@@ -267,7 +270,7 @@ const useGetOrgTaskBoard = ({
   columns,
   setColumns,
   setOrgTaskHasMore,
-  boardType,
+
   orgId,
   userId,
   view,
@@ -294,7 +297,7 @@ const useGetOrgTaskBoard = ({
       columns,
       setColumns,
       setOrgTaskHasMore,
-      boardType,
+
       orgId,
 
       userId,
@@ -325,7 +328,7 @@ const useGetOrgTaskBoard = ({
 
 const BoardsPage = () => {
   const router = useRouter();
-  const { username, orgId, search, userId, boardType, view = ViewType.Grid, entity } = router.query;
+  const { username, orgId, search, userId, view = ViewType.Grid, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
   const [filters, setFilters] = useState<TaskFilter>({
@@ -333,7 +336,7 @@ const BoardsPage = () => {
     statuses: [],
     labelId: null,
     date: null,
-    onlyPublic: null,
+    privacyLevel: null,
   });
   const [orgData, setOrgData] = useState(null);
   const [searchString, setSearchString] = useState('');
@@ -354,7 +357,7 @@ const BoardsPage = () => {
     columns,
     setColumns,
     setOrgTaskHasMore,
-    boardType,
+
     orgId: orgId ?? orgData?.id,
     userId,
     entityType,
@@ -454,7 +457,6 @@ const BoardsPage = () => {
       if (search) {
         if (!firstTimeFetch) {
           const id = orgId || orgData?.id;
-
           const searchOrgTasksArgs = {
             variables: {
               podIds: filters?.podIds,
@@ -464,7 +466,7 @@ const BoardsPage = () => {
               // Needed to exclude proposals
               statuses: STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
               searchString: search,
-              ...(boardType === PRIVACY_LEVEL.public && {
+              ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
                 onlyPublic: true,
               }),
             },
@@ -481,7 +483,7 @@ const BoardsPage = () => {
         });
       }
     }
-  }, [orgData, orgId, getOrgBoardTaskCount, boardType]);
+  }, [orgData, orgId, getOrgBoardTaskCount, , filters]);
 
   function handleSearch(searchString: string) {
     const id = orgId || orgData?.id;
@@ -494,7 +496,7 @@ const BoardsPage = () => {
         // Needed to exclude proposals
         statuses: STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
         searchString,
-        ...(boardType === PRIVACY_LEVEL.public && {
+        ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
           onlyPublic: true,
         }),
       },
@@ -549,7 +551,7 @@ const BoardsPage = () => {
           // Needed to exclude proposals
           statuses: taskStatuses,
           search,
-          ...(boardType === PRIVACY_LEVEL.public && {
+          ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
             onlyPublic: true,
           }),
         },

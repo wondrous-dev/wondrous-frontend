@@ -30,7 +30,6 @@ import {
   PRIVACY_LEVEL,
   STATUS_OPEN,
   TASK_STATUSES,
-  TASK_STATUS_REQUESTED,
   ENTITIES_TYPES,
   STATUSES_ON_ENTITY_TYPES,
   STATUS_CHANGE_REQUESTED,
@@ -47,13 +46,13 @@ const useGetPodTaskBoardTasks = ({
   setPodTaskHasMore,
   podId,
   statuses,
-  boardType,
   entityType,
   setIsLoading,
   search,
   labelId,
   date,
-  onlyPublic,
+  privacyLevel,
+  userId,
 }) => {
   const [getPodTaskBoardTasks, { variables, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
@@ -95,7 +94,7 @@ const useGetPodTaskBoardTasks = ({
     });
   }, [columns, fetchMore, setPodTaskHasMore, variables]);
   useEffect(() => {
-    if (entityType !== ENTITIES_TYPES.PROPOSAL && podId && !search) {
+    if (entityType !== ENTITIES_TYPES.PROPOSAL && podId && !search && !userId) {
       const taskBoardStatuses =
         statuses?.length > 0
           ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))
@@ -112,9 +111,8 @@ const useGetPodTaskBoardTasks = ({
             offset: 0,
             labelId,
             date,
-            onlyPublic: onlyPublic === PRIVACY_LEVEL.public,
             types: [entityType],
-            ...(boardType === PRIVACY_LEVEL.public && {
+            ...(privacyLevel === PRIVACY_LEVEL.public && {
               onlyPublic: true,
             }),
           },
@@ -122,7 +120,7 @@ const useGetPodTaskBoardTasks = ({
       });
       setPodTaskHasMore(true);
     }
-  }, [getPodTaskBoardTasks, podId, statuses, boardType, setPodTaskHasMore, entityType, labelId, date, onlyPublic]);
+  }, [getPodTaskBoardTasks, podId, statuses, setPodTaskHasMore, entityType, labelId, date, privacyLevel]);
   return { fetchMore: getPodTaskBoardTasksFetchMore };
 };
 
@@ -139,7 +137,7 @@ const useGetPodTaskProposals = ({
   search,
   labelId,
   date,
-  onlyPublic,
+  privacyLevel,
 }) => {
   const [getPodTaskProposals, { data, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
@@ -203,14 +201,14 @@ const useGetPodTaskBoard = ({
   setColumns,
   setPodTaskHasMore,
   podId,
-  boardType,
   entityType,
   setIsLoading,
   search,
   statuses,
   labelId,
   date,
-  onlyPublic,
+  privacyLevel,
+  userId,
 }) => {
   const listView = view === ViewType.List;
   const board = {
@@ -220,13 +218,13 @@ const useGetPodTaskBoard = ({
       setPodTaskHasMore,
       podId,
       statuses,
-      boardType,
       entityType,
       setIsLoading,
       search,
       labelId,
       date,
-      onlyPublic,
+      privacyLevel,
+      userId,
     }),
     proposals: useGetPodTaskProposals({
       listView,
@@ -241,7 +239,7 @@ const useGetPodTaskBoard = ({
       search,
       labelId,
       date,
-      onlyPublic,
+      privacyLevel,
     }),
   };
   const { fetchMore } = entityType === ENTITIES_TYPES.PROPOSAL ? board.proposals : board.tasks;
@@ -250,7 +248,7 @@ const useGetPodTaskBoard = ({
 
 const BoardsPage = () => {
   const router = useRouter();
-  const { podId, search, userId, view = ViewType.Grid, boardType, entity } = router.query;
+  const { podId, search, userId, view = ViewType.Grid, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
   const [entityType, setEntityType] = useState(activeEntityFromQuery);
@@ -266,7 +264,7 @@ const BoardsPage = () => {
     statuses: [],
     labelId: null,
     date: null,
-    onlyPublic: null,
+    privacyLevel: null,
   });
 
   const [podTaskHasMore, setPodTaskHasMore] = useState(true);
@@ -274,7 +272,7 @@ const BoardsPage = () => {
   const pod = podData?.getPodById;
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
 
-  const { statuses, labelId, date, onlyPublic } = filters;
+  const { statuses, labelId, date, privacyLevel } = filters;
 
   const { fetchMore } = useGetPodTaskBoard({
     section,
@@ -284,13 +282,13 @@ const BoardsPage = () => {
     setPodTaskHasMore,
     podId,
     statuses,
-    boardType,
+    userId,
     entityType,
     setIsLoading,
     search,
     labelId,
     date,
-    onlyPublic,
+    privacyLevel,
   });
 
   const handleEntityTypeChange = (type) => {
@@ -358,11 +356,12 @@ const BoardsPage = () => {
 
   useEffect(() => {
     if (podId) {
-      getPod({
-        variables: {
-          podId,
-        },
-      });
+      getPod({ variables: { podId } });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (podId) {
       if (search) {
         if (!firstTimeFetch) {
           const searchPodTasksArgs = {
@@ -373,10 +372,13 @@ const BoardsPage = () => {
                 offset: 0,
                 labelId,
                 date,
-                onlyPublic,
+
                 // Needed to exclude proposals
                 statuses: STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
                 searchString: search,
+                ...(privacyLevel === PRIVACY_LEVEL.public && {
+                  onlyPublic: true,
+                }),
               },
             },
           };
@@ -385,7 +387,7 @@ const BoardsPage = () => {
           setFirstTimeFetch(true);
           setSearchString(search as string);
         }
-      } else if (userId) {
+      } else if (userId && entityType !== ENTITIES_TYPES.PROPOSAL) {
         const taskStatuses = statuses?.filter((status) => TASK_STATUSES.includes(status));
 
         getTasksRelatedToUser({
@@ -396,8 +398,11 @@ const BoardsPage = () => {
             offset: 0,
             statuses: taskStatuses,
             labelId,
+            types: [entityType],
             date,
-            onlyPublic,
+            ...(privacyLevel === PRIVACY_LEVEL.public && {
+              onlyPublic: true,
+            }),
           },
         });
       } else {
@@ -410,7 +415,7 @@ const BoardsPage = () => {
         });
       }
     }
-  }, [podId, getPodBoardTaskCount, getPod, boardType, labelId, date, onlyPublic]);
+  }, [podId, getPodBoardTaskCount, getPod, labelId, date, privacyLevel, entityType]);
 
   function handleSearch(searchString: string) {
     const searchPodTaskProposalsArgs = {
@@ -434,7 +439,7 @@ const BoardsPage = () => {
           // Needed to exclude proposals
           statuses: STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
           searchString,
-          ...(boardType === PRIVACY_LEVEL.public && {
+          ...(privacyLevel === PRIVACY_LEVEL.public && {
             onlyPublic: true,
           }),
         },
@@ -513,7 +518,7 @@ const BoardsPage = () => {
             statuses: taskStatuses,
             labelId: labelId,
             searchString: search,
-            ...(boardType === PRIVACY_LEVEL.public && {
+            ...(privacyLevel === PRIVACY_LEVEL.public && {
               onlyPublic: true,
             }),
           },

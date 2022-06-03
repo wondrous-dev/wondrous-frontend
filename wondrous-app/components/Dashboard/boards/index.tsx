@@ -367,7 +367,6 @@ const useFilterSchema = (loggedInUser, isAdmin) => {
       },
       items: [],
     },
-    FILTER_STATUSES,
   ]);
   const [getUserPods] = useLazyQuery(GET_USER_PODS, {
     fetchPolicy: 'network-only',
