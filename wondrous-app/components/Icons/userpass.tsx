@@ -49,7 +49,7 @@ export const LockIconOutline = (props) => (
 );
 
 export const PublicEyeIcon = (props) => (
-  <svg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       d="M0.5 6.22083C0.5 6.22083 3.22727 0.720825 8 0.720825C12.7727 0.720825 15.5 6.22083 15.5 6.22083C15.5 6.22083 12.7727 11.7208 8 11.7208C3.22727 11.7208 0.5 6.22083 0.5 6.22083Z"
       stroke="#CCBBFF"

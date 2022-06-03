@@ -261,7 +261,7 @@ export default function TableBody({
                   <div>
                     <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
                       <DropDownItem
-                        key={'task-menu-edit-table-' + task.id}
+                        key={'task-menu-edit-' + task.id + index}
                         onClick={() => editTask(task, status)}
                         color="#C4C4C4"
                         fontSize="13px"

@@ -96,7 +96,7 @@ export const PodInviteLinkModal = (props) => {
   };
 
   useEffect(() => {
-    if (!role) {
+    if (!role && podId) {
       getPodRoles({
         variables: {
           podId: podId,

@@ -429,3 +429,28 @@ export const AwaitingPaymentIcon = (props) => {
     </svg>
   );
 };
+
+export const StatusDefaultIcon = ({ stroke = '#CCBBFF', style = {}, width = '18', height = '18' }) => {
+  return (
+    <svg style={style} width={width} height={height} viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M9.00355 16.6306C13.2178 16.6306 16.6341 13.2143 16.6341 9.00013C16.6341 4.78592 13.2178 1.36963 9.00355 1.36963C4.78934 1.36963 1.37305 4.78592 1.37305 9.00013C1.37305 13.2143 4.78934 16.6306 9.00355 16.6306Z"
+        stroke={stroke}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9.00018 13.5782C11.5287 13.5782 13.5785 11.5285 13.5785 8.99993C13.5785 6.47141 11.5287 4.42163 9.00018 4.42163C6.47165 4.42163 4.42188 6.47141 4.42188 8.99993C4.42188 11.5285 6.47165 13.5782 9.00018 13.5782Z"
+        stroke={stroke}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9.00266 10.5261C9.8455 10.5261 10.5288 9.84282 10.5288 8.99998C10.5288 8.15714 9.8455 7.47388 9.00266 7.47388C8.15982 7.47388 7.47656 8.15714 7.47656 8.99998C7.47656 9.84282 8.15982 10.5261 9.00266 10.5261Z"
+        stroke={stroke}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
