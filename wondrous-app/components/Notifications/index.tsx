@@ -29,7 +29,7 @@ import { useMutation } from '@apollo/client';
 import { GET_NOTIFICATIONS } from 'graphql/queries';
 import calculateTimeLapse from 'utils/calculateTimeLapse';
 import SmartLink from 'components/Common/SmartLink';
-import Tooltip from "components/Tooltip";
+import Tooltip from 'components/Tooltip';
 
 const NotificationsBoard = ({ notifications, setNofications }) => {
   const unreadCount = useMemo(() => {
