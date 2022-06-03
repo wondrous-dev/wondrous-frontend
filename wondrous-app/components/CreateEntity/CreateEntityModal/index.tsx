@@ -87,6 +87,7 @@ import {
 const formValidationSchema = Yup.object().shape({
   orgId: Yup.string().required(),
   podId: Yup.string().optional().nullable(),
+  title: Yup.string().required('Title is required'),
   reviewerIds: Yup.array().of(Yup.string().required('Please select a reviewer')).nullable(),
   points: Yup.number()
     .typeError('Points must be a number')
@@ -760,6 +761,7 @@ export const CreateEntityModal = (props) => {
           minRows={1}
           maxRows={3}
           error={form.errors?.title}
+          onFocus={() => form.setFieldError('title', undefined)}
         />
         <CreateEntityError>{form.errors?.title}</CreateEntityError>
         <TextInputContext.Provider
