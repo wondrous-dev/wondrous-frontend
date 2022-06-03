@@ -87,7 +87,7 @@ import {
 } from './styles';
 
 const formValidationSchema = Yup.object().shape({
-  orgId: Yup.string().required('Organization is required'),
+  orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
   podId: Yup.string().optional().nullable(),
   title: Yup.string().required('Title is required'),
   reviewerIds: Yup.array().of(Yup.string().nullable()).nullable(),
