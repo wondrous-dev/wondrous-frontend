@@ -408,6 +408,7 @@ export const CreateEntitySelectWrapper = styled.div`
 
 export const CreateEntityTextfield = styled(TextField)`
   && {
+    min-width: 50%;
     height: 32px;
     background: #141414;
     border-radius: 4px;
@@ -754,14 +755,12 @@ export const CreateEntityRewardWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  > :last-child {
-    margin-left: 12px;
-  }
+  gap: 6px;
 `;
 
 export const CreateEntityPaymentMethodRoot = styled.button`
   padding: 0;
-  min-width: 110px;
+  width: 50%;
   height: 32px;
   border-radius: 4px;
   background: #141414;
@@ -800,7 +799,7 @@ export const CreateEntityPaymentMethodList = styled.ul`
 
 export const CreateEntityPaymentMethodPopper = styled(PopperUnstyled)`
   max-height: 222px;
-  width: 110px;
+  width: 200px;
   border-radius: 4px;
   background-color: #1f1f1f;
   border: 1px solid #7a7a7a;
@@ -827,6 +826,7 @@ export const CreateEntityPaymentMethodOption = styled(OptionUnstyled)`
   padding: 8px;
   display: flex;
   align-items: center;
+  gap: 6px;
 
   &:last-of-type {
     border-bottom: none;
@@ -838,9 +838,21 @@ export const CreateEntityPaymentMethodOption = styled(OptionUnstyled)`
   }
 `;
 
+export const CreateEntityPaymentMethodOptionIcon = styled.div`
+  && {
+    width: 24px;
+    height: 24px;
+    img[style] {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  }
+`;
+
 export const CreateEntityPaymentMethodSelectRender = styled.div`
   padding: 0 8px;
   display: flex;
+  gap: 6px;
   align-items: center;
   font-family: 'Space Grotesk';
   font-size: 13px;
@@ -850,10 +862,20 @@ export const CreateEntityPaymentMethodSelectRender = styled.div`
 
 export const CreateEntityPaymentMethodLabel = styled(Typography)`
   && {
+    display: flex;
+    align-items: center;
     color: #ffffff;
     font-family: 'Space Grotesk';
     font-size: 13px;
     font-weight: 500;
+    gap: 6px;
+  }
+`;
+
+export const CreateEntityPaymentMethodLabelChain = styled.div`
+  && {
+    color: #7a7a7a;
+    font-weight: 400;
   }
 `;
 

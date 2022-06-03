@@ -57,7 +57,9 @@ import {
   CreateEntityOptionImageWrapper,
   CreateEntityOptionLabel,
   CreateEntityPaymentMethodLabel,
+  CreateEntityPaymentMethodLabelChain,
   CreateEntityPaymentMethodOption,
+  CreateEntityPaymentMethodOptionIcon,
   CreateEntityPaymentMethodSelect,
   CreateEntityPaymentMethodSelectRender,
   CreateEntityPrivacyIconWrapper,
@@ -651,10 +653,10 @@ export const CreateEntityModal = (props) => {
       const privacyLevel = privacyOptions[selectedPodPrivacyLevel]?.value ?? privacyOptions.public.value;
       form.setValues({
         ...form.values,
-        reviewerIds: form.initialValues.reviewerIds,
-        assigneeId: form.initialValues.assigneeId,
-        rewards: form.initialValues.rewards,
-        milestoneId: form.initialValues.milestoneId,
+        reviewerIds: form.initialValues?.reviewerIds,
+        assigneeId: form.initialValues?.assigneeId,
+        rewards: form.initialValues?.rewards,
+        milestoneId: form.initialValues?.milestoneId,
         privacyLevel,
         podId,
       });
@@ -1047,6 +1049,9 @@ export const CreateEntityModal = (props) => {
                 <CreateEntityPaymentMethodSelect
                   name="rewards-payment-method"
                   value={form.values?.rewards?.[0].paymentMethodId}
+                  onChange={(value) => {
+                    form.setFieldValue('rewards', [{ ...form.values?.rewards?.[0], paymentMethodId: value }]);
+                  }}
                   renderValue={(value) => {
                     return (
                       <CreateEntityPaymentMethodSelectRender>
@@ -1055,11 +1060,14 @@ export const CreateEntityModal = (props) => {
                     );
                   }}
                 >
-                  {paymentMethods.map(({ symbol, icon, id }) => {
+                  {paymentMethods.map(({ symbol, icon, id, chain }) => {
                     return (
                       <CreateEntityPaymentMethodOption key={id} value={id}>
-                        {icon}
-                        <CreateEntityPaymentMethodLabel>{symbol}</CreateEntityPaymentMethodLabel>
+                        <CreateEntityPaymentMethodOptionIcon>{icon ?? <></>}</CreateEntityPaymentMethodOptionIcon>
+                        <CreateEntityPaymentMethodLabel>
+                          {symbol}
+                          <CreateEntityPaymentMethodLabelChain>{chain}</CreateEntityPaymentMethodLabelChain>
+                        </CreateEntityPaymentMethodLabel>
                       </CreateEntityPaymentMethodOption>
                     );
                   })}
