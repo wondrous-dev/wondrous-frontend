@@ -1,3 +1,4 @@
+import React from 'react';
 import { ButtonUnstyled, OptionUnstyled, PopperUnstyled, SelectUnstyled, TextareaAutosize } from '@mui/base';
 import { Autocomplete, Input, InputAdornment, TextField, Typography } from '@mui/material';
 import { Button } from 'components/Common/button';
@@ -13,9 +14,8 @@ import PointsIcon from 'components/Icons/pointsIcon.svg';
 import SingleDatePicker from 'components/SingleDatePicker';
 import { TextInput } from 'components/TextInput';
 import { UserSuggestionTypography, UserSuggestionWrapper } from 'components/TextInput/styles';
-import React from 'react';
 import styled, { css } from 'styled-components';
-import { Red400, White } from 'theme/colors';
+import palette from 'theme/palette';
 import Arrow from '../../Icons/arrow.svg';
 import OpenInFullIcon from '../../Icons/openInFull.svg';
 import PrivacyMembersIcon from '../../Icons/privacyMembers.svg';
@@ -110,7 +110,7 @@ export const CreateEntitySelectRoot = styled.button`
 
 export const CreateEntitySelectListbox = styled.ul`
   font-family: 'Space Grotesk';
-  color: ${White};
+  color: ${palette.white};
   margin: 0;
   padding: 0;
 `;
@@ -190,7 +190,7 @@ export const CreateEntityOptionLabel = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 13px;
     font-weight: 500;
-    color: ${White};
+    color: ${palette.white};
     margin-left: 6px;
   }
 `;
@@ -202,7 +202,7 @@ export const CreateEntitySelectRootValue = styled.div`
 `;
 
 export const CreateEntitySelectRootValueWrapper = styled.div`
-  color: ${White};
+  color: ${palette.white};
   justify-content: flex-start;
   text-align: left;
   font-weight: 500;
@@ -269,13 +269,13 @@ export const CreateEntityTitle = styled(TextareaAutosize)`
   width: 100%;
   font-family: 'Space Grotesk';
   font-size: 24px;
-  color: ${White};
+  color: ${palette.white};
   background: transparent;
   border: none;
   border-radius: 4px;
   font-weight: 700;
   resize: none;
-  outline: 1px solid ${({ error }) => (error ? Red400 : 'transparent')};
+  outline: 1px solid ${({ error }) => (error ? palette.red400 : 'transparent')};
   :focus {
     outline: none;
   }
@@ -312,7 +312,7 @@ export const CreateEntityLabelAddButton = styled(ButtonUnstyled)`
     !disabled &&
     `:hover {
     cursor: pointer;
-    color: ${White};
+    color: ${palette.white};
     background: #454545;
     svg {
     path {
@@ -373,7 +373,7 @@ export const CreateEntityTextfield = styled(TextField)`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    outline: 1px solid ${({ error }) => (error ? Red400 : 'transparent')};
+    outline: 1px solid ${({ error }) => (error ? palette.red400 : 'transparent')};
     > .MuiInputBase-root {
       padding-right: 0;
       padding: 0 6px;
@@ -458,7 +458,7 @@ export const CreateEntityAutocompletePopper = styled(({ className, ...props }) =
     background: #1f1f1f !important;
     font-family: 'Space Grotesk';
     font-size: 14px;
-    color: ${White};
+    color: ${palette.white};
     font-weight: 500;
     border-color: #7a7a7a;
   }
@@ -529,7 +529,7 @@ export const CreateEntityAutocompleteOptionTypography = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
     font-size: 14px;
-    color: ${White};
+    color: ${palette.white};
     margin-left: 6px;
     font-weight: 500;
 
@@ -559,7 +559,7 @@ export const CreateEntityPrivacyRoot = styled.button`
 
 export const CreateEntityPrivacyList = styled.ul`
   font-family: 'Space Grotesk';
-  color: ${White};
+  color: ${palette.white};
   margin: 0;
   padding: 0;
 `;
@@ -608,7 +608,7 @@ export const CreateEntityPrivacyLabel = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
     font-weight: 400;
-    color: ${White};
+    color: ${palette.white};
     font-size: 13px;
     text-align: left;
     margin-left: 10px;
@@ -639,7 +639,7 @@ export const CreateEntityCancelButton = styled(ButtonUnstyled)`
   width: 107px;
   height: 34px;
   background: #232323;
-  color: ${White};
+  color: ${palette.white};
   border: none;
   border-radius: 50px;
   font-family: 'Space Grotesk';
@@ -674,7 +674,7 @@ export const CreateEntityAttachment = styled(ButtonUnstyled)`
   font-size: 14px;
   font-weight: 500;
   text-align: left;
-  color: ${White};
+  color: ${palette.white};
   border: none;
   border-radius: 4px;
   padding: 8px;
@@ -750,7 +750,7 @@ export const CreateEntityTextfieldInputReward = styled(TextField)`
 
 export const CreateEntityPaymentMethodList = styled.ul`
   font-family: 'Space Grotesk';
-  color: ${White};
+  color: ${palette.white};
   margin: 0;
   padding: 0;
 `;
@@ -842,7 +842,7 @@ export const CreateEntityPaymentMethodLabelChain = styled.div`
 
 export const CreateEntityError = styled(Typography)`
   && {
-    color: ${Red400};
+    color: ${palette.red400};
     font-size: 13px;
     font-family: 'Space Grotesk';
     font-weight: 400;

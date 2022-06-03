@@ -173,7 +173,7 @@ export const NotificationsLink = styled.a`
   font-weight: 700;
 
   a {
-    color: ${highlightBlue};
+    color: ${palette.highlightBlue};
     font-weight: 700;
     text-decoration: none;
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { format } from 'date-fns';
 
 import { TaskCommentIcon } from '../../Icons/taskComment';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
@@ -59,7 +60,6 @@ import {
 } from 'components/Common/Boards/styles';
 import { ProposalCardWrapper, ProposalCardType, ProposalCardIcon, ProposalFooterButton } from './styles';
 import { PRIVACY_LEVEL } from 'utils/constants';
-
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
 import { useLazyQuery, useQuery } from '@apollo/client';
@@ -69,7 +69,6 @@ import { PERMISSIONS } from 'utils/constants';
 import SmartLink from 'components/Common/SmartLink';
 import { useLocation } from 'utils/useLocation';
 import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
-import { format } from 'date-fns';
 import Tooltip from 'components/Tooltip';
 import { RichTextViewer } from 'components/RichText';
 import { DAOIcon } from 'components/Icons/dao';
