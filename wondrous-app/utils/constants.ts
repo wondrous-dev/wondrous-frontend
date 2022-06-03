@@ -122,6 +122,13 @@ export const HARMONY_SAFE_MASTER_COPY = '0x69f4D1788e39c87893C980c06EdF4b7f686e2
 export const HARMONY_SAFE_MASTER_COPY2 = '0xfb1bffC9d739B8D520DaF37dF666da4C687191EA';
 export const HARMONY_PROXY_FACTORY = '0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC';
 
+export const DISCORD_CONNECT_TYPES = {
+  signup: 'signup',
+  login: 'login',
+  connectSettings: 'connectSettings',
+  connectOnboarding: 'connectOnboarding',
+};
+
 export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId));
 
 export const CHAIN_IDS = {
@@ -353,6 +360,7 @@ export const GRAPHQL_ERRORS = {
   NO_RECIPIENT_WEB_3_ADDRESS: 'recipient has no web3 address',
   NO_WEB3_ADDRESS_FOUND: 'no_web3_address_found',
   PAYMENT_METHOD_EXIST: 'payment_method_exist',
+  DISCORD_USER_ALREADY_EXISTS: 'Existing discord user exists',
 };
 
 export const LINK = process.env.NEXT_PUBLIC_PRODUCTION

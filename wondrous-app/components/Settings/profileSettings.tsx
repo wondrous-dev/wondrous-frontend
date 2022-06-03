@@ -9,7 +9,7 @@ import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { UPDATE_USER } from 'graphql/mutations';
 import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
 import { getDiscordUrl } from 'utils';
-import { CHAR_LIMIT_PROFILE_BIO, USERNAME_REGEX, validateEmail } from 'utils/constants';
+import { CHAR_LIMIT_PROFILE_BIO, DISCORD_CONNECT_TYPES, USERNAME_REGEX, validateEmail } from 'utils/constants';
 import { getFilenameAndType, uploadMedia } from 'utils/media';
 import { ErrorText } from '../Common';
 import { SafeImage } from '../Common/Image';
@@ -38,7 +38,8 @@ import {
   GeneralSettingsSocialsBlockWrapper,
   LabelBlock,
 } from './styles';
-import Tooltip from "components/Tooltip";
+import Tooltip from 'components/Tooltip';
+import { useRouter } from 'next/router';
 
 const discordUrl = getDiscordUrl();
 
@@ -136,6 +137,8 @@ const SettingsLinks = ({ links, setLinks }) => {
 
 const ProfileSettings = (props) => {
   const { loggedInUser } = props;
+  const router = useRouter();
+  const { discordUserExists, discordError } = router.query;
   const [username, setUsername] = useState(loggedInUser?.username);
   const [email, setEmail] = useState(loggedInUser?.userInfo?.email);
   const [profilePictureUrl, setProfilePictureUrl] = useState(loggedInUser?.profilePicture);
@@ -213,10 +216,8 @@ const ProfileSettings = (props) => {
         if (profilePicture) {
           const file = profilePicture;
           const fileName = profilePicture.name;
-          console.log('filename', fileName)
           // get image preview
           const { fileType, filename } = getFilenameAndType(fileName);
-          console.log(fileType, filename)
 
           const imagePrefix = `tmp/${loggedInUser?.id}/`;
           const imageUrl = imagePrefix + filename;
@@ -352,7 +353,10 @@ const ProfileSettings = (props) => {
             highlighted
             onClick={() => {
               if (!loggedInUser?.userInfo?.discordUsername) {
-                window.location.href = discordUrl;
+                const state = JSON.stringify({
+                  callbackType: DISCORD_CONNECT_TYPES.connectSettings,
+                });
+                window.location.href = `${discordUrl}&state=${state}`;
               }
             }}
           >
@@ -365,6 +369,8 @@ const ProfileSettings = (props) => {
               </div>
             </Tooltip>
           </GeneralSettingsIntegrationsBlockButton>
+          {discordUserExists && <ErrorText>Discord user already connected to another account</ErrorText>}
+          {discordError && <ErrorText>Error connecting to Discord. Please try again or contact support.</ErrorText>}
         </GeneralSettingsInputsBlock>
 
         {/* <GeneralSettingsInputsBlock>
