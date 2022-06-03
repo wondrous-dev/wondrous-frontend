@@ -303,7 +303,9 @@ const Wrapper = (props) => {
                     )}
                     <ToggleBoardPrivacyIcon
                       isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
-                      tooltipTitle={orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private organization' : 'Public'}
+                      tooltipTitle={
+                        orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private organization' : 'Public organization'
+                      }
                     />
                     {permissions === null && (
                       <>
