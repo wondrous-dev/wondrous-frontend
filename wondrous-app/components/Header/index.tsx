@@ -54,17 +54,22 @@ const HeaderComponent = (props) => {
     <Header>
       <HeaderContainer>
         <HeaderLeftBlock>
-          <Link passHref href="/dashboard">
-            <HeaderLogo />
-          </Link>
-          <Tooltip title="Dashboard">
-            <Link passHref href="/dashboard">
-              <HeaderHomeButton>
-                <HomeIcon />
-              </HeaderHomeButton>
-            </Link>
+          <Tooltip title="Explore page">
+            <div style={{display: 'flex'}}>
+              <Link passHref href="/dashboard">
+                <HeaderLogo />
+              </Link>
+            </div>
           </Tooltip>
-
+          <Tooltip title="Dashboard">
+            <div>
+              <Link passHref href="/dashboard">
+                <HeaderHomeButton>
+                  <HomeIcon />
+                </HeaderHomeButton>
+              </Link>
+            </div>
+          </Tooltip>
           <HeaderInput
             placeholder="Search wonder..."
             InputProps={{

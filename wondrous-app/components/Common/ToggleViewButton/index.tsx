@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ToggleViewWrapper, ToggleViewOption } from './styles';
+import Tooltip from "components/Tooltip";
 
 interface IToggleViewButtonProps {
   options: {
@@ -35,16 +36,18 @@ export const ToggleViewButton = (props: IToggleViewButtonProps) => {
   return (
     <ToggleViewWrapper {...props}>
       {options.map((opt, key) => (
-        <ToggleViewOption
-          key={'toggle-option-' + opt.name}
-          className={key == active ? 'active' : ''}
-          onClick={() => {
-            activateOption(key);
-            opt.action();
-          }}
-        >
-          {opt?.icon ?? opt.name}
-        </ToggleViewOption>
+        <Tooltip key={'toggle-option-' + opt.name} title={opt.name + ' view'} placement="top">
+          <ToggleViewOption
+            key={'toggle-option-' + opt.name}
+            className={key == active ? 'active' : ''}
+            onClick={() => {
+              activateOption(key);
+              opt.action();
+            }}
+          >
+            {opt?.icon ?? opt.name}
+          </ToggleViewOption>
+        </Tooltip>
       ))}
     </ToggleViewWrapper>
   );
