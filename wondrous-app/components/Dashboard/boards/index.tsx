@@ -337,8 +337,8 @@ const useFilterSchema = (loggedInUser, isAdmin) => {
       label: 'Orgs',
       multiChoice: true,
       orgPods: {},
-      renderList: ({ selectedTab, selectedTabItems, toggleInFilter, items }) => {
-        return Object.keys(selectedTab.orgPods).map((orgName) => (
+      renderList: ({ schema, toggleOption, checkIsSelected }) => {
+        return Object.keys(schema.orgPods).map((orgName) => (
           <FilterOrg
             key={orgName}
             title={
@@ -347,11 +347,14 @@ const useFilterSchema = (loggedInUser, isAdmin) => {
               </FilterItemOrgIcon>
             }
           >
-            {selectedTab.orgPods[orgName].map((item) => {
-              const isSelected = (selectedTabItems[selectedTab?.name] || []).includes(item.id);
-
+            {schema.orgPods[orgName].map((item) => {
+              const isSelected = checkIsSelected(item.id);
               return (
-                <FilterItem onClick={() => toggleInFilter(item.id)} selected={isSelected} key={item.id}>
+                <FilterItem
+                  onClick={() => toggleOption({ ...item, filterType: schema.name })}
+                  selected={isSelected}
+                  key={item.id}
+                >
                   <FilterItemIcon>
                     <CreatePodIcon />
                   </FilterItemIcon>
@@ -364,7 +367,6 @@ const useFilterSchema = (loggedInUser, isAdmin) => {
       },
       items: [],
     },
-    FILTER_STATUSES,
   ]);
   const [getUserPods] = useLazyQuery(GET_USER_PODS, {
     fetchPolicy: 'network-only',

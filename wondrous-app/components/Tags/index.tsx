@@ -152,7 +152,6 @@ function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
         return (
           <TagsTextField
             {...params}
-            autoFocus={true}
             fullWidth={true}
             placeholder={ids.length !== limit ? `Add tags (max ${limit})` : ''}
             InputProps={{

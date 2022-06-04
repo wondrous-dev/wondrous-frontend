@@ -30,6 +30,9 @@ import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import WalletModal from './WalletModal';
 import useEagerConnect from 'services/web3/hooks/useEagerConnect';
 import { WonderWeb3Context } from 'services/web3/context/WonderWeb3Context';
+import Tooltip from "components/Tooltip";
+import Link from "next/link";
+import {HeaderLogo} from "components/Header/styles";
 
 const CHAIN_LOGO = {
   '1': <Ethereum />,
@@ -39,6 +42,16 @@ const CHAIN_LOGO = {
   '42161': <Arbitrum />,
   '56': <Binance />,
   '288': <Boba />,
+};
+
+const CHAIN_TOOLTIP = {
+  '1': 'Ethereum',
+  '4': 'Ethereum',
+  '137': 'Matic',
+  '1666600000': 'Harmony',
+  '42161': 'Arbitrum',
+  '56': 'Binance',
+  '288': 'Boba',
 };
 
 const CURRENCY_SYMBOL = {
@@ -63,6 +76,7 @@ const CURRENCY_UI_ELEMENTS = {
 
 const Wallet = () => {
   const wonderWeb3 = useWonderWeb3();
+
   const { provider } = useContext(WonderWeb3Context);
   useEagerConnect();
   const [connected, setConnected] = useState(false);
@@ -215,7 +229,9 @@ const Wallet = () => {
   } else {
     return (
       <WalletWrapper>
-        <ChainWrapper>{CHAIN_LOGO[wonderWeb3.wallet.chain]}</ChainWrapper>
+        <Tooltip title={CHAIN_TOOLTIP[wonderWeb3.wallet.chain]}>
+          <ChainWrapper>{CHAIN_LOGO[wonderWeb3.wallet.chain]}</ChainWrapper>
+        </Tooltip>
         <WalletDisplay>
           <DropDown DropdownHandler={Balance}>
             <CurrencyDropdownItem currency={'WONDER'} />

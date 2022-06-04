@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import FilterIcon from '../../Icons/filter';
-import { Chevron } from '../../Icons/sections';
-import Tabs from '../Tabs';
+import { ChevronFilled } from '../../Icons/sections';
 import {
   FilterHandle,
   FilterHandleInner,
@@ -9,170 +8,177 @@ import {
   FilterChevronContainer,
   FilterBox,
   FilterBoxInner,
-  FilterStatus,
-  FilterCount,
-  FilterClear,
   FilterItemsContainer,
   FilterItemList,
   FilterItem,
   FilterItemIcon,
   FilterItemName,
-  FilterItemCount,
-  FilterItemListShade,
   FilterItemOrgIcon,
   InlineText,
   FilterValues,
   FilterBoxPortal,
+  FilterCheckbox,
 } from './styles';
-import { Blue200, Grey250 } from '../../../theme/colors';
-import { useOutsideAlerter } from 'utils/hooks';
+import { useOutsideAlerter, useFilterQuery } from 'utils/hooks';
 import { TaskFilter } from 'types/task';
-
+import _ from 'lodash';
 interface IFilterProps {
   filterSchema: any;
   onChange: ({}: TaskFilter) => void;
-  statuses: String[];
-  podIds: String[];
+  currentIdx?: number;
+  schemaLength?: number;
+  onRemove?: ({}: TaskFilter) => void;
+  selected?: any;
+  key?: number;
 }
 
 const Filter = (props: IFilterProps) => {
-  const { filterSchema = [], onChange, statuses = [], podIds = [] } = props;
-  const [selected, setSelected] = useState(filterSchema[0]);
-  const [selectedTabItems, setSelectedTabItems] = useState({});
-  const [selectedNames, setSelectedNames] = useState([]);
-  const [items, setItems] = useState([]);
-  const [multiChoice, setMultichoice] = useState(true);
+  const { filterSchema = {}, onChange, currentIdx, schemaLength, onRemove, selected } = props;
+  const { query, variables } = filterSchema;
+  const [items, setItems] = useState(filterSchema?.items || []);
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef(null);
+  const { isLoading, data } = useFilterQuery(query, variables, open);
 
   const toggleOpen = () => {
-    setOpen(!open);
+    if (!filterSchema?.disabled) setOpen(!open);
   };
 
   useOutsideAlerter(wrapperRef, () => setOpen(false));
 
-  // Changes the display list.
-  const displayList = (tab) => {
-    if (tab) {
-      setItems(tab.items);
-      setMultichoice(tab.multiChoice);
+  useEffect(() => {
+    setItems(filterSchema?.items);
+  }, [filterSchema]);
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      const queriedItems = [...data, ...items];
+      let mutatedItems = filterSchema?.mutate ? filterSchema.mutate(queriedItems) : queriedItems;
+      setItems(_.uniqBy(mutatedItems, 'id'));
     }
-    setSelected(tab);
+  }, [isLoading]);
+
+  const filterItems = (item, selected) => {
+    if (selected.find((i) => i.id === item.id)) {
+      return selected.filter((i) => i.id !== item.id);
+    }
+    return [...selected, item];
   };
 
-  // adds / removes an item from the filter
-  const toggleInFilter = (itemId) => {
-    const selectedItems = [...(selectedTabItems[selected.name] || [])];
-
-    const newItems = [...items];
-    newItems.forEach((it) => {
-      const deselect = () => {
-        const index = selectedItems.indexOf(it.id);
-        const nameIndex = selectedNames.indexOf(it.name);
-
-        if (index > -1) {
-          selectedItems.splice(index, 1);
-        }
-
-        if (nameIndex > -1) {
-          selectedNames.splice(index, 1);
-        }
-      };
-
-      if (it.id === itemId) {
-        const selected = selectedItems.includes(itemId);
-
-        if (!selected) {
-          selectedNames.push(it.name);
-          selectedItems.push(itemId);
-        } else {
-          deselect();
-        }
-      } else if (!multiChoice) {
-        deselect();
-      }
-    });
-
-    const newSelectedTabItems = { ...selectedTabItems, [selected.name]: selectedItems };
-    setItems(newItems);
-    setSelectedTabItems(newSelectedTabItems);
-    setSelectedNames(selectedNames);
-    onChange(newSelectedTabItems);
+  const toggleOption = (item) => {
+    if (filterSchema?.multiChoice) {
+      const selectedItems = selected ? filterItems(item, selected) : [item];
+      handleChange(selectedItems, false);
+      return;
+    }
+    if (item.id === selected?.id) {
+      handleChange(null);
+      return;
+    }
+    handleChange(item);
   };
 
-  const clearItems = () => {
-    const newItems = [...items];
-    setItems(newItems);
-    setSelectedTabItems({});
-    setSelectedNames([]);
-    onChange({
-      statuses: [],
-      podIds: [],
-    });
+  const filterExists = typeof selected !== 'undefined';
+
+  const handleChange = (filter, shouldCloseModal = true) => {
+    onChange({ [filterSchema.name]: filter });
+    if (open) {
+      setOpen(!shouldCloseModal);
+    }
+  };
+
+  const handleRemove = (filter, shouldCloseModal = true) => {
+    onRemove(filter);
+    if (open) {
+      setOpen(!shouldCloseModal);
+    }
+  };
+
+  const removeFilterFromMultiChoice = (selected) => {
+    if (!selected && filterExists) {
+      handleRemove(filterSchema.name, false);
+      return;
+    }
+    if (selected) {
+      handleChange(selected, false);
+      return;
+    }
   };
 
   useEffect(() => {
-    displayList(filterSchema[0]);
-  }, [open]);
+    if (filterSchema?.multiChoice) {
+      removeFilterFromMultiChoice(selected);
+      return;
+    }
+    if (selected) {
+      handleChange(selected);
+      return;
+    }
+    if (!selected && filterExists) {
+      handleRemove(filterSchema.name);
+      return;
+    }
+  }, [selected]);
 
-  useEffect(() => {
-    setSelectedTabItems({
-      statuses,
-      podIds,
-    });
-    const selectedNames = filterSchema
-      .flatMap((item) => item.items.filter((it) => [...podIds, ...statuses].includes(it.id)))
-      .map((i) => i.name);
-    setSelectedNames(selectedNames);
-  }, [statuses, podIds, filterSchema]);
+  const clearItems = () => onRemove(filterSchema.name);
+
+  const checkIsSelected = (itemId) => {
+    if (filterSchema?.multiChoice) {
+      return !!selected?.find((item) => item.id === itemId);
+    }
+    return selected?.id === itemId;
+  };
+
+  const portalDirection = currentIdx === schemaLength - 1 ? 'right' : 'left';
+
+  const displayNames =
+    selected && (Array.isArray(selected) ? (selected?.length ? `${selected.length} selected` : null) : selected.name);
+
+  const Icon = filterSchema?.icon || FilterIcon;
 
   return (
     <FilterHandle ref={wrapperRef} open={open}>
-      <FilterHandleInner open={open} onClick={toggleOpen}>
+      <FilterHandleInner open={open} className={filterSchema?.disabled ? 'disabled' : ''} onClick={toggleOpen}>
         <FilterHandleContainer>
-          {selectedNames.length ? (
-            <FilterValues>
-              <InlineText color={Grey250}>Filter:&nbsp;</InlineText>
-              <InlineText color={Blue200}>{selectedNames.join(', ')}</InlineText>
-            </FilterValues>
-          ) : open ? (
-            `<Filter>`
-          ) : (
-            <>
-              <FilterIcon /> &nbsp; Filter
-            </>
-          )}
+          <FilterValues>
+            <Icon style={{ backgroundColor: '#0f0f0f', borderRadius: '6px' }} height="26" width="26" />
+            {displayNames ? (
+              <InlineText>{`${filterSchema?.label}: ${displayNames}`}</InlineText>
+            ) : (
+              filterSchema?.label || 'Filters'
+            )}
+          </FilterValues>
         </FilterHandleContainer>
         <FilterChevronContainer className={open ? 'active' : ''}>
-          <Chevron />
+          <ChevronFilled stroke="#4B4B4B" />
         </FilterChevronContainer>
       </FilterHandleInner>
       {open && (
         <FilterBoxPortal container={wrapperRef.current}>
-          <FilterBox>
+          <FilterBox renderDirection={portalDirection}>
             <FilterBoxInner>
-              <Tabs tabs={filterSchema} selected={selected?.name} onSelect={(tab) => displayList(tab)} />
-              <FilterStatus>
-                <FilterCount>{selectedTabItems[selected?.name]?.length || 0} selected</FilterCount>
-                <FilterClear onClick={clearItems}>Clear</FilterClear>
-              </FilterStatus>
               <FilterItemsContainer>
                 <FilterItemList>
-                  {selected.renderList
-                    ? selected.renderList({ selectedTab: selected, selectedTabItems, toggleInFilter, items })
+                  {filterSchema.renderList
+                    ? filterSchema.renderList({ schema: filterSchema, selected, toggleOption, checkIsSelected })
                     : items.map((item) => {
-                        const isSelected = (selectedTabItems[selected?.name] || []).includes(item.id);
+                        const isSelected = checkIsSelected(item.id);
 
                         return (
-                          <FilterItem onClick={() => toggleInFilter(item.id)} selected={isSelected} key={item.id}>
+                          <FilterItem
+                            gradient={item?.gradient}
+                            onClick={() => toggleOption({ ...item, filterType: filterSchema.name })}
+                            selected={isSelected}
+                            key={item.id}
+                          >
                             <FilterItemIcon>{item.icon}</FilterItemIcon>
-                            <FilterItemName>{item.name}</FilterItemName>
+                            <FilterItemName isSelected={isSelected}>{item.name}</FilterItemName>
                             {item.organization ? (
                               <FilterItemOrgIcon>{item.organization.profilePicture}</FilterItemOrgIcon>
                             ) : (
                               ''
                             )}
-                            {/*<FilterItemCount>{item.count}</FilterItemCount>*/}
+                            <FilterCheckbox checked={isSelected} />
                           </FilterItem>
                         );
                       })}
