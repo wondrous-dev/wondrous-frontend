@@ -14,9 +14,9 @@ const CreateFormModal = (props) => {
     if (entityType === '') {
       return <ChooseEntityToCreateModal {...props} />;
     }
-    if ([ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType)) {
-      return <CreateEntityModal {...props} />;
-    }
+    // if ([ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType)) {
+    //   return <CreateEntityModal {...props} />;
+    // }
     return <CreateLayoutBaseModal {...props} />;
   };
 
