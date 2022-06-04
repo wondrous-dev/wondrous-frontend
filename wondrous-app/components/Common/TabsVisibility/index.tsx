@@ -1,8 +1,9 @@
 import { TabsVisibilityButton, TabsVisibilityWrapper } from './styles';
+import Tooltip from 'components/Tooltip';
 
 interface ITabsVisibilityProps {
-  selected: string;
-  options: {};
+  selected: { title: string; tooltip: string };
+  options: { [key: string]: { title: string; tooltip: string } };
   onChange: (e) => any;
   variant?: boolean;
 }
@@ -12,9 +13,16 @@ export const TabsVisibility = (props: ITabsVisibilityProps) => {
   return (
     <TabsVisibilityWrapper variant={variant}>
       {Object.keys(options).map((option) => (
-        <TabsVisibilityButton key={option} value={option} isSelected={selected === options[option]} onClick={onChange}>
-          {options[option]}
-        </TabsVisibilityButton>
+        <Tooltip key={option} title={options[option].tooltip} placement="top">
+          <TabsVisibilityButton
+            key={option}
+            value={option}
+            isSelected={selected === options[option]}
+            onClick={onChange}
+          >
+            {options[option].title}
+          </TabsVisibilityButton>
+        </Tooltip>
       ))}
     </TabsVisibilityWrapper>
   );

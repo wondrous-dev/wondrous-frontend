@@ -13,7 +13,7 @@ import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
 import { useWonderWeb3 } from 'services/web3';
 import { getUserSigningMessage, walletSignup, walletSignin } from '../Auth/withAuth';
 import { useRouter } from 'next/router';
-import { GRAPHQL_ERRORS, SUPPORTED_CHAINS } from 'utils/constants';
+import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS, SUPPORTED_CHAINS } from 'utils/constants';
 import { Button } from '../Common/button';
 import { PaddedParagraph } from '../Common/text';
 import { Metamask } from '../Icons/metamask';
@@ -247,6 +247,7 @@ export const InviteWelcomeBox = ({ orgInfo, redeemOrgInviteLink, podInfo, redeem
             type = 'pod';
           }
           const state = JSON.stringify({
+            callbackType: DISCORD_CONNECT_TYPES.signup,
             token,
             type,
           });

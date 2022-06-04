@@ -23,7 +23,7 @@ import { UPDATE_USER } from 'graphql/mutations';
 import { getFilenameAndType, uploadMedia } from 'utils/media';
 import { ProfilePictureDiv } from '../../Onboarding/styles';
 import { SafeImage } from '../../Common/Image';
-import { CHAR_LIMIT_PROFILE_BIO, USERNAME_REGEX, validateEmail } from 'utils/constants';
+import { CHAR_LIMIT_PROFILE_BIO, DISCORD_CONNECT_TYPES, USERNAME_REGEX, validateEmail } from 'utils/constants';
 import { ErrorText } from '../../Common';
 import Switch from '../../Common/Switch';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
@@ -50,8 +50,13 @@ import {
   UserDiscordNotificationSettingsContainer,
   NotificationSettingsButtonsBlock,
 } from './styles';
-const discordUrl = getDiscordUrl();
 import { isEqual } from 'lodash';
+
+const discordUrlWithoutState = getDiscordUrl();
+const state = JSON.stringify({
+  callbackType: DISCORD_CONNECT_TYPES.connectSettings,
+});
+const discordUrl = `${discordUrlWithoutState}&state=${state}`;
 
 const notificationsConfig = [
   {

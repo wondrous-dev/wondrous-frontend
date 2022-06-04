@@ -1,11 +1,8 @@
-import { useState } from 'react';
 import {
   PrivateBoardIconBackground,
-  PrivateBoardIconPopper,
-  PrivateBoardIconPopperWrapper,
-  PrivateBoardIconPopperText,
 } from './styles';
 import { PublicEyeIcon, PrivateEyeIcon, LockIconOutline, LockedIconOutline } from '../../Icons/userpass';
+import Tooltip from "components/Tooltip";
 
 interface IPrivateBoardIconProps {
   isPrivate: boolean;
@@ -15,42 +12,26 @@ interface IPrivateBoardIconProps {
 
 export const TokenGatedBoard = (props: IPrivateBoardIconProps) => {
   const { isPrivate, tooltipTitle } = props;
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const handleOnMouseEnter = (e) => setAnchorEl(e.currentTarget);
-  const handleOnMouseLeave = () => setAnchorEl(null);
   return (
     <>
-      <PrivateBoardIconBackground onMouseEnter={handleOnMouseEnter} onMouseLeave={handleOnMouseLeave}>
-        {isPrivate ? <LockIconOutline /> : <LockedIconOutline />}
-      </PrivateBoardIconBackground>
-      <PrivateBoardIconPopper placement="top" open={open} anchorEl={anchorEl}>
-        <PrivateBoardIconPopperWrapper>
-          <PrivateBoardIconPopperText>{tooltipTitle}</PrivateBoardIconPopperText>
-        </PrivateBoardIconPopperWrapper>
-      </PrivateBoardIconPopper>
+      <Tooltip title={tooltipTitle} placement="top">
+        <PrivateBoardIconBackground>
+          {isPrivate ? <LockIconOutline /> : <LockedIconOutline />}
+        </PrivateBoardIconBackground>
+      </Tooltip>
     </>
   );
 };
 
 export const ToggleBoardPrivacyIcon = (props: IPrivateBoardIconProps) => {
   const { isPrivate, tooltipTitle, style } = props;
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const handleOnMouseEnter = (e) => {
-    setAnchorEl(e.currentTarget);
-  };
-  const handleOnMouseLeave = () => setAnchorEl(null);
   return (
     <>
-      <PrivateBoardIconBackground style={style} onMouseEnter={handleOnMouseEnter} onMouseLeave={handleOnMouseLeave}>
-        {isPrivate ? <PrivateEyeIcon /> : <PublicEyeIcon />}
-      </PrivateBoardIconBackground>
-      <PrivateBoardIconPopper placement="top" open={open} anchorEl={anchorEl}>
-        <PrivateBoardIconPopperWrapper>
-          <PrivateBoardIconPopperText>{tooltipTitle}</PrivateBoardIconPopperText>
-        </PrivateBoardIconPopperWrapper>
-      </PrivateBoardIconPopper>
+      <Tooltip title={tooltipTitle} placement="top">
+        <PrivateBoardIconBackground style={style}>
+          {isPrivate ? <PrivateEyeIcon /> : <PublicEyeIcon />}
+        </PrivateBoardIconBackground>
+      </Tooltip>
     </>
   );
 };
