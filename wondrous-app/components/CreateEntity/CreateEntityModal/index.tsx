@@ -171,7 +171,7 @@ const filterOrgUsers = (orgUsers) => {
   }));
 };
 
-const filterOptionsWithPermission = (options, userPermissionsContext, idKey) => {
+const filterOptionsWithPermission = (options, userPermissionsContext, orgId = undefined) => {
   if (!options) {
     return [];
   }
@@ -179,7 +179,8 @@ const filterOptionsWithPermission = (options, userPermissionsContext, idKey) => 
     .filter(({ id }) => {
       const permissions = parseUserPermissionContext({
         userPermissionsContext,
-        [idKey]: id,
+        orgId: orgId ?? id,
+        podId: orgId ? id : undefined,
       });
       return permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK);
     })
@@ -625,7 +626,7 @@ export const CreateEntityModal = (props) => {
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
-  const filteredDaoOptions = filterOptionsWithPermission(userOrgs?.getUserOrgs, fetchedUserPermissionsContext, 'orgId');
+  const filteredDaoOptions = filterOptionsWithPermission(userOrgs?.getUserOrgs, fetchedUserPermissionsContext);
   const { handleMutation, loading } = entityTypeData[entityType]?.mutation();
   const form = useFormik({
     initialValues: entityTypeData[entityType]?.initialValues,
@@ -754,7 +755,7 @@ export const CreateEntityModal = (props) => {
               <CreateEntityHeaderArrowIcon />
               <CreateEntityDropdown
                 name="podId"
-                options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext, 'podId')}
+                options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext, form.values.orgId)}
                 onChange={handleOnchangePodId}
                 value={form.values.podId}
                 DefaultImageComponent={CreateEntityDefaultPodImage}
