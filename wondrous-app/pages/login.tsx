@@ -22,14 +22,18 @@ import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import styled from 'styled-components';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 import { getDiscordUrl } from 'utils';
-import { GRAPHQL_ERRORS } from 'utils/constants';
+import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from 'utils/constants';
 
 const prod = process.env.NEXT_PUBLIC_PRODUCTION;
 
 const WalletLoginContainer = styled.div`
   padding: 10px 0;
 `;
-const DISCORD_OAUTH_URL = getDiscordUrl();
+const discordUrlWithoutState = getDiscordUrl();
+const state = JSON.stringify({
+  callbackType: DISCORD_CONNECT_TYPES.login,
+});
+const discordUrl = `${discordUrlWithoutState}&state=${state}`;
 
 const Login = ({ csrfToken }) => {
   const wonderWeb3 = useWonderWeb3();
@@ -184,7 +188,7 @@ const Login = ({ csrfToken }) => {
               <CoinbaseConnector />
             </WalletLoginContainer>
             <WalletLoginContainer>
-              <Button onClick={() => (window.location.href = DISCORD_OAUTH_URL)}>
+              <Button onClick={() => (window.location.href = discordUrl)}>
                 <DiscordIcon />
                 <PaddedParagraph
                   style={{

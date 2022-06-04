@@ -1,7 +1,7 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
 import { useRouter } from 'next/router';
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { storeAuthHeader, useMe, withAuth } from 'components/Auth/withAuth';
 import { InviteWelcomeBoxWrapper } from 'components/Onboarding/styles';
 import {
@@ -10,7 +10,7 @@ import {
   REDEEM_POD_INVITE_LINK,
   USER_DISOCRD_SIGNUP_LOGIN,
 } from 'graphql/mutations';
-import { GRAPHQL_ERRORS } from 'utils/constants';
+import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from 'utils/constants';
 
 const Callback = () => {
   const user = useMe();
@@ -19,7 +19,7 @@ const Callback = () => {
   const state = router?.query?.state as string;
   const [connectUserDiscord] = useMutation(CONNECT_USER_DISCORD);
   const [discordSignupLogin] = useMutation(USER_DISOCRD_SIGNUP_LOGIN);
-
+  const [connectUserDiscordTried, setConnectUserDiscordTried] = useState(false);
   const [redeemOrgInviteLink] = useMutation(REDEEM_ORG_INVITE_LINK);
   const [redeemPodInviteLink] = useMutation(REDEEM_POD_INVITE_LINK);
 
@@ -122,96 +122,98 @@ const Callback = () => {
       });
   };
   useEffect(() => {
-    const token = localStorage.getItem('wonderToken') || null;
-    setTimeout(() => {
-      const token = localStorage.getItem('wonderToken') || null;
-      if (token) {
-        router.push('/onboarding/email-setup', undefined, {
-          shallow: true,
-        });
-      } else {
-        if (user) {
-          router.push('/dashboard', undefined, {
-            shallow: true,
-          });
-        } else {
-          returnToPage();
-        }
-      }
-    }, 4000);
-    if (code && token) {
-      connectUserDiscord({
-        variables: {
-          discordAuthCode: code,
-        },
-      })
-        .then((result) => {
-          if (user && user?.signupCompleted) {
-            // Only place to change this is in settings
-            window.location.href = `/profile/settings`;
-          } else if (user && !user?.signupCompleted) {
-            router.push('/onboarding/email-setup', undefined, {
-              shallow: true,
-            });
-          }
+    if (code && state) {
+      const parsedState = JSON.parse(state);
+
+      if (
+        parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboarding ||
+        parsedState.callbackType === DISCORD_CONNECT_TYPES.connectSettings
+      ) {
+        connectUserDiscord({
+          variables: {
+            discordAuthCode: code,
+          },
         })
-        .catch((err) => {
-          console.log('Error updating discord', err);
-          router.push('/onboarding/email-setup', undefined, {
-            shallow: true,
-          });
-        });
-    } else if (code && !token) {
-      // Sign them up or log them in
-      discordSignupLogin({
-        variables: {
-          discordAuthCode: code,
-        },
-      })
-        .then(async (result) => {
-          const response = result?.data?.discordSignupLogin;
-          const token = response?.token;
-          const discordUser = response?.user;
-          let inviteToken,
-            inviteType = null;
-          if (state) {
-            const parsedState = JSON.parse(state);
-            inviteToken = parsedState?.token;
-            inviteType = parsedState?.type;
-          }
-          await storeAuthHeader(token, discordUser);
-          if (inviteToken) {
-            // Either redeem pod invite or org invite
-            if (inviteType === 'pod') {
-              redeemPodInvite(inviteToken, user);
-            } else {
-              redeemOrgInvite(inviteToken, user);
-            }
-          } else {
-            if (discordUser && discordUser?.signupCompleted) {
+          .then((result) => {
+            if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectSettings) {
               // Only place to change this is in settings
-              router.push('/dashboard', undefined, {
+              window.location.href = `/profile/settings`;
+            } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboarding) {
+              router.push('/onboarding/email-setup', undefined, {
                 shallow: true,
               });
-            } else if (discordUser && !discordUser?.signupCompleted) {
-              if (!discordUser?.username) {
-                router.push('/onboarding/welcome', undefined, {
-                  shallow: true,
-                });
+            }
+          })
+          .catch((err) => {
+            console.log('Error updating discord', err?.graphQLErrors[0]?.extensions.errorCode);
+            if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectSettings) {
+              // Only place to change this is in settings
+              if (
+                err?.graphQLErrors &&
+                err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.DISCORD_USER_ALREADY_EXISTS
+              ) {
+                window.location.href = `/profile/settings?discordUserExists=true`;
               } else {
-                router.push('/onboarding/build-profile', undefined, {
+                window.location.href = `/profile/settings?discordError=true`;
+              }
+            } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboarding) {
+              router.push('/onboarding/email-setup', undefined, {
+                shallow: true,
+              });
+            }
+          });
+      } else if (
+        parsedState.callbackType === DISCORD_CONNECT_TYPES.signup ||
+        parsedState.callbackType === DISCORD_CONNECT_TYPES.login
+      ) {
+        // Sign them up or log them in
+        discordSignupLogin({
+          variables: {
+            discordAuthCode: code,
+          },
+        })
+          .then(async (result) => {
+            const response = result?.data?.discordSignupLogin;
+            const token = response?.token;
+            const discordUser = response?.user;
+            let inviteToken,
+              inviteType = null;
+            inviteToken = parsedState?.token;
+            inviteType = parsedState?.type;
+            await storeAuthHeader(token, discordUser);
+            if (inviteToken) {
+              // Either redeem pod invite or org invite
+              if (inviteType === 'pod') {
+                redeemPodInvite(inviteToken, discordUser);
+              } else {
+                redeemOrgInvite(inviteToken, discordUser);
+              }
+            } else {
+              if (parsedState.callbackType === DISCORD_CONNECT_TYPES.login) {
+                // Only place to change this is in settings
+                router.push('/dashboard', undefined, {
                   shallow: true,
                 });
+              } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.signup) {
+                if (!discordUser?.username) {
+                  router.push('/onboarding/welcome', undefined, {
+                    shallow: true,
+                  });
+                } else {
+                  router.push('/onboarding/build-profile', undefined, {
+                    shallow: true,
+                  });
+                }
               }
             }
-          }
-        })
-        .catch((err) => {
-          console.log('Error signing in discord user', err);
-          returnToPage();
-        });
+          })
+          .catch((err) => {
+            console.log('Error signing in discord user', err);
+            returnToPage();
+          });
+      }
     }
-  }, [user, user?.signupCompleted, code, state]);
+  }, [code, state]);
   return (
     <InviteWelcomeBoxWrapper
       style={{
