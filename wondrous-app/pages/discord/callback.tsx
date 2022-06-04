@@ -146,10 +146,6 @@ const Callback = () => {
           })
           .catch((err) => {
             console.log('Error updating discord', err?.graphQLErrors[0]?.extensions.errorCode);
-            console.log(
-              'is it true',
-              err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.DISCORD_USER_ALREADY_EXISTS
-            );
             if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectSettings) {
               // Only place to change this is in settings
               if (
