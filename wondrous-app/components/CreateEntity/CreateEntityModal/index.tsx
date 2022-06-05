@@ -37,11 +37,11 @@ import {
   CreateEntityCancelButton,
   CreateEntityCreateTaskButton,
   CreateEntityDefaultDaoImage,
-  CreateEntityDefaultPodImage,
   CreateEntityDefaultUserImage,
   CreateEntityDescription,
   CreateEntityDescriptionWrapper,
   CreateEntityDivider,
+  CreateEntityPodSearch,
   CreateEntityDueDate,
   CreateEntityError,
   CreateEntityForm,
@@ -753,12 +753,10 @@ export const CreateEntityModal = (props) => {
           {form.values.orgId !== null && (
             <>
               <CreateEntityHeaderArrowIcon />
-              <CreateEntityDropdown
-                name="podId"
+              <CreateEntityPodSearch
                 options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext, form.values.orgId)}
-                onChange={handleOnchangePodId}
                 value={form.values.podId}
-                DefaultImageComponent={CreateEntityDefaultPodImage}
+                onChange={handleOnchangePodId}
               />
             </>
           )}

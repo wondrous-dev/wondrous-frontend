@@ -1,0 +1,213 @@
+import { ButtonUnstyled, PopperUnstyled } from '@mui/base';
+import { Autocomplete, ClickAwayListener, InputAdornment, TextField, Typography } from '@mui/material';
+import PodIcon from 'components/Icons/podIcon';
+import SearchIcon from 'components/Icons/search';
+import styled, { css } from 'styled-components';
+import { White } from 'theme/colors';
+import Arrow from '../../../Icons/arrow.svg';
+
+export const scrollBarStyles = css`
+  :hover {
+    &::-webkit-scrollbar {
+      display: block;
+    }
+  }
+  &::-webkit-scrollbar {
+    display: none;
+    position: absolute;
+    z-index: 999;
+    width: 20px;
+    background: transparent;
+    border-radius: 0 4px 4px 0;
+    outline: none;
+  }
+  &::-webkit-scrollbar-track {
+    background: #606060;
+    background-clip: padding-box;
+    border: 8px solid rgba(0, 0, 0, 0);
+    border-radius: 50px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    border: 8px solid rgba(0, 0, 0, 0);
+    background: #c4c4c4;
+    background-clip: padding-box;
+  }
+`;
+
+export const PodSearchWrapper = styled.div``;
+
+export const PodSearchButton = styled(ButtonUnstyled)`
+  font-family: 'Space Grotesk';
+  font-weight: 500;
+  font-size: 13px;
+  width: 129px;
+  height: 32px;
+  border-radius: 4px;
+  background: #1f1f1f;
+  border: 1px solid ${(props) => (props.open ? `#7a7a7a` : `transparent`)};
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  :hover {
+    cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
+  }
+`;
+
+export const PodSearchImageLabelWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const PodSearchPopper = styled(PopperUnstyled)`
+  width: 250px;
+  border-radius: 4px;
+  background-color: #1f1f1f;
+  border: 1px solid #7a7a7a;
+  z-index: 9999;
+  position: relative;
+  z-index: 9999;
+`;
+
+export const PodSearchAutocomplete = styled(Autocomplete)``;
+
+export const PodSearchClickAway = styled(ClickAwayListener)``;
+
+export const PopperSearchInputList = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const PodSearchInput = styled(TextField)`
+  && {
+    width: 100%;
+    padding: 10px;
+    .MuiOutlinedInput-root {
+      background: #313131;
+      width: 100%;
+      display: flex;
+      padding: 0 8px;
+    }
+    .MuiOutlinedInput-input {
+      height: 32px;
+      padding: 0;
+      font-family: 'Space Grotesk';
+      font-weight: 400;
+      font-size: 14px;
+      color: ${White};
+    }
+  }
+  .MuiOutlinedInput-notchedOutline {
+    border: none;
+  }
+`;
+
+export const PodSearchInputAdornment = styled(InputAdornment)`
+  && {
+    height: 13px;
+    width: 13px;
+  }
+`;
+
+export const PodSearchInputIcon = styled(SearchIcon)`
+  path {
+    stroke: ${White};
+  }
+`;
+
+export const PodSearchAutocompletePopper = styled.div`
+  position: relative;
+  .MuiAutocomplete-noOptions {
+    font-family: 'Space Grotesk';
+    color: ${White};
+    margin: 0;
+    padding: 0;
+    background-image: none;
+    background: #1f1f1f !important;
+    border: none;
+    border-radius: 0;
+    padding: 12px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+`;
+
+export const PodSearchPaper = styled.div`
+  && {
+    padding: 0;
+    margin: 0;
+    border-radius: 0 0 4px 4px;
+  }
+`;
+
+export const PodSearchList = styled.ul`
+  && {
+    color: ${White};
+    margin: 0;
+    padding: 0;
+    background-image: none;
+    background: #1f1f1f !important;
+    border: none;
+    border-radius: 0;
+    max-height: 170px;
+    ${scrollBarStyles}
+  }
+`;
+
+export const PodSearchListItem = styled.li`
+  && {
+    list-style: none;
+    height: 34px;
+    padding: 6px 12px;
+    display: ${({ hide }) => (hide ? 'none' : 'flex')};
+    align-items: center;
+    font-family: 'Space Grotesk';
+    font-size: 13px;
+    font-weight: 500;
+    color: ${White};
+    :last-of-type {
+      border-radius: 0 0 4px 4px;
+    }
+
+    &&[aria-selected='true'],
+    &&[aria-selected='true'].Mui-focused,
+    &&.Mui-focused {
+      background: rgba(122, 122, 122, 0.2);
+    }
+  }
+`;
+
+export const PodSearchDefaultImage = styled((props) => (
+  <div {...props}>
+    <PodIcon />
+  </div>
+))`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: ${({ color }) => color};
+  border-radius: 50px;
+  width: 20px;
+  height: 20px;
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+export const PodSearchLabel = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 13px;
+    font-weight: 500;
+    color: ${White};
+    margin-left: 6px;
+  }
+`;
+
+export const PodSearchButtonArrowIcon = styled(Arrow)`
+  transform: rotate(90deg);
+  path {
+    fill: #7a7a7a;
+  }
+`;
