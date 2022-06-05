@@ -73,6 +73,7 @@ const OrgBoards = (props: Props) => {
             onLoadMore={onLoadMore}
             hasMore={hasMore}
             setColumns={setColumns}
+            entityType={entityType}
           />
         )}
       </ColumnsContext.Provider>

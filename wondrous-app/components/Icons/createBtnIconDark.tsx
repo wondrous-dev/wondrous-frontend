@@ -11,7 +11,7 @@ export default function CreateBtnIconDark(props) {
       style={props?.style}
       onClick={props?.onClick || null}
     >
-      <circle cx="15.6816" cy="15.4521" r="15" fill="url(#paint0_linear_9265_141384)" />
+      <circle cx="15.6816" cy="15.4521" r="15" fill="#1B1B1B" />
       <path d="M21.4316 15.3271H15.524L9.68164 15.3271" stroke="#CCBBFF" strokeWidth="1.4" strokeLinecap="round" />
       <path d="M15.5566 9.45215V15.3271V21.2021" stroke="#CCBBFF" strokeWidth="1.4" strokeLinecap="round" />
       <defs>
