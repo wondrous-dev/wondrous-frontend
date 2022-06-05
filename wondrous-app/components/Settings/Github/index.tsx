@@ -1,24 +1,48 @@
 import { HeaderBlock } from '../headerBlock';
 import { SettingsWrapper } from '../settingsWrapper';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import { White } from 'theme/colors';
+import { Green400, White } from 'theme/colors';
 import { GithubButton, GithubButtonDiv } from './styles';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { HAS_ORG_GITHUB_INTEGRATION } from 'graphql/queries';
+import CloseModalIcon from 'components/Icons/closeModal';
+import { DELETE_ORG_GITHUB } from 'graphql/mutations/org';
 
 const GITHUB_BASE_URL = `https://github.com/apps/wonderverse-integration/installations/new`;
 const GITHUB_APP_CLIENT_ID = 'Iv1.64f7faecf13dacf2';
 const GITHUB_REDIRECT_URI = 'http://localhost:3000/github/callback';
 export const GithubIntegration = ({ orgId }) => {
   const router = useRouter();
-  console.log('router', router);
+  const [githubConnected, setGithubConnected] = useState(false);
+  const [hasGithubIntegration, { data: hasGithubIntegrationData }] = useLazyQuery(HAS_ORG_GITHUB_INTEGRATION);
+  const [deleteOrgGithubIntegration] = useMutation(DELETE_ORG_GITHUB);
   const [githubUrl, setGithubUrl] = useState(null);
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setGithubUrl(`${GITHUB_BASE_URL}?state=${window.location.href}`);
+      const state = JSON.stringify({
+        redirectUrl: encodeURIComponent(window.location.href),
+        orgId,
+      });
+      setGithubUrl(`${GITHUB_BASE_URL}?state=${state}`);
     }
   }, []);
 
+  useEffect(() => {
+    if (orgId) {
+      hasGithubIntegration({
+        variables: {
+          orgId,
+        },
+      }).then((result) => {
+        if (result?.data?.hasGithubOrgIntegration.exist) {
+          setGithubConnected(true);
+        }
+      });
+    }
+  }, [orgId]);
+  console.log('hasGithubIntegrationData', hasGithubIntegrationData);
   return (
     <SettingsWrapper>
       <HeaderBlock
@@ -35,16 +59,51 @@ export const GithubIntegration = ({ orgId }) => {
         title="Github Integration"
         description="Manage Github Integration"
       />
-      <GithubButtonDiv>
-        <GithubButton href={githubUrl}>
-          <GitHubIcon
+      {githubConnected ? (
+        <GithubButtonDiv>
+          <GithubButton
             style={{
-              marginRight: '8px',
+              backgroundColor: Green400,
+              cursor: 'auto',
             }}
-          />
-          <span>Connect Github Organization</span>
-        </GithubButton>
-      </GithubButtonDiv>
+          >
+            <span
+              style={{
+                color: White,
+              }}
+            >
+              Github organization connected
+            </span>
+            <CloseModalIcon
+              style={{
+                marginLeft: '16px',
+                cursor: 'pointer',
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setGithubConnected(false);
+                deleteOrgGithubIntegration({
+                  variables: {
+                    orgId,
+                  },
+                });
+              }}
+            />
+          </GithubButton>
+        </GithubButtonDiv>
+      ) : (
+        <GithubButtonDiv>
+          <GithubButton href={githubUrl}>
+            <GitHubIcon
+              style={{
+                marginRight: '8px',
+              }}
+            />
+            <span>Connect Github Organization</span>
+          </GithubButton>
+        </GithubButtonDiv>
+      )}
     </SettingsWrapper>
   );
 };

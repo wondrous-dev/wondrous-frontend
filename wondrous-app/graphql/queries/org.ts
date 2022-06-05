@@ -215,3 +215,11 @@ export const GET_ORG_LABELS = gql`
     }
   }
 `;
+
+export const HAS_ORG_GITHUB_INTEGRATION = gql`
+  query hasGithubOrgIntegration($orgId: ID!) {
+    hasGithubOrgIntegration(orgId: $orgId) {
+      exist
+    }
+  }
+`;
