@@ -241,7 +241,7 @@ const SingleDatePicker = ({
                     ),
                   }}
                   fullWidth
-                  placeholder="Dude Date"
+                  placeholder="Due Date"
                   sx={styles.darkTextfield}
                 />
               </Box>
