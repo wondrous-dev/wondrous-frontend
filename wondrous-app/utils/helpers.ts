@@ -83,6 +83,8 @@ export const transformTaskToTaskCard = (task, extraData) => {
     orgUsername: extraData?.orgUsername || task?.org?.username,
     podName: extraData?.podName || task?.pod?.name,
     podColor: extraData?.podColor || task?.pod?.color,
+    creatorUsername: task?.creator?.username,
+    creatorProfilePicture: task?.creator?.profilePicture,
   };
 };
 
@@ -96,6 +98,7 @@ export const transformTaskProposalToTaskProposalCard = (taskProposal, extraData)
     orgUsername: extraData?.orgUsername || taskProposal?.org?.username,
     podName: extraData?.podName || taskProposal?.pod?.name,
     podColor: extraData?.podColor || taskProposal?.pod?.color,
+    isProposal: true,
   };
 };
 

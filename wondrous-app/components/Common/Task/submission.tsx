@@ -30,10 +30,10 @@ import {
   transformTaskProposalToTaskProposalCard,
   transformTaskSubmissionToTaskSubmissionCard,
   transformTaskToTaskCard,
-} from '../../../utils/helpers';
+} from 'utils/helpers';
 import { RightCaret } from '../Image/RightCaret';
 import CreatePodIcon from '../../Icons/createPod';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   BOUNTY_TYPE,
   ENTITIES_TYPES,
@@ -46,10 +46,11 @@ import {
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
   PAYMENT_STATUS,
   TASK_TYPE,
-} from '../../../utils/constants';
+  TASK_STATUS_IN_REVIEW,
+} from 'utils/constants';
 import { White } from '../../../theme/colors';
 import { useMe } from '../../Auth/withAuth';
-import { GetStatusIcon, renderMentionString } from '../../../utils/common';
+import { GetStatusIcon, renderMentionString } from 'utils/common';
 import { ImageIcon, LinkIcon, NotesIcon } from '../../Icons/taskModalIcons';
 import DefaultUserImage from '../Image/DefaultUserImage';
 import {
@@ -72,25 +73,28 @@ import {
   REQUEST_CHANGE_SUBMISSION,
   UPDATE_TASK_SUBMISSION,
   APPROVE_BOUNTY_SUBMISSION,
-} from '../../../graphql/mutations/taskSubmission';
+} from 'graphql/mutations/taskSubmission';
 import UploadImageIcon from '../../Icons/uploadImage';
-import { handleAddFile } from '../../../utils/media';
+import { handleAddFile } from 'utils/media';
 import { MediaItem } from '../../CreateEntity/MediaItem';
 import { AddFileUpload } from '../../Icons/addFileUpload';
-import { TextInputContext } from '../../../utils/contexts';
+import { TextInputContext } from 'utils/contexts';
 import { TextInput } from '../../TextInput';
 import { filterOrgUsersForAutocomplete } from '../../CreateEntity/createEntityModal';
-import { GET_ORG_USERS } from '../../../graphql/queries/org';
+import { GET_ORG_USERS } from 'graphql/queries/org';
 import InputForm from '../InputForm/inputForm';
 import { CompletedIcon, InReviewIcon } from '../../Icons/statusIcons';
 import { RejectIcon } from '../../Icons/decisionIcons';
 import { transformMediaFormat } from '../../CreateEntity/editEntityModal';
 import { MediaLink } from './modal';
-import { delQuery } from '../../../utils';
+import { delQuery } from 'utils';
 import { FileLoading } from '../FileUpload/FileUpload';
 import { MakePaymentBlock } from './payment';
 import { KudosForm } from '../KudosForm';
 import { PaymentButton } from './paymentButton';
+import FileIcon from 'components/Icons/files.svg';
+import { GET_TASK_BY_ID } from 'graphql/queries';
+import { addInReviewItem, removeInProgressTask } from 'utils/board';
 
 const SubmissionStatusIcon = (props) => {
   const { submission } = props;
@@ -205,16 +209,27 @@ const SubmissionItem = (props) => {
       status: TASK_STATUS_DONE,
     };
     const transformedTask = transformTaskToTaskCard(newTask, {});
+
+    //TODO refactor this
     if (boardColumns) {
       const columns = [...boardColumns?.columns];
       const newInProgress = columns[1].tasks.filter((task) => task.id !== fetchedTask.id);
       const newDone = [transformedTask, ...columns[2].tasks];
-      const newInReview = (columns[1].section.tasks = columns[1].section.tasks.filter(
-        (taskSubmission) => taskSubmission.id !== submission?.id
-      ));
-      columns[1].tasks = newInProgress;
-      columns[1].section.tasks = newInReview;
-      columns[2].tasks = newDone;
+      if (columns[1].section) {
+        const newInReview = (columns[1].section.tasks = columns[1].section.tasks.filter(
+          (taskSubmission) => taskSubmission.id !== submission?.id
+        ));
+        columns[1].tasks = newInProgress;
+        columns[1].section.tasks = newInReview;
+        columns[2].tasks = newDone;
+      } else {
+        const newInReview = (columns[2].tasks = columns[2].tasks.filter(
+          (taskSubmission) => taskSubmission.id !== submission?.id
+        ));
+        columns[1].tasks = newInProgress;
+        columns[2].tasks = newInReview;
+        columns[3].tasks = newDone;
+      }
       boardColumns?.setColumns(columns);
     }
     //TODO: add pod board and user board
@@ -240,7 +255,12 @@ const SubmissionItem = (props) => {
         setIsKudosForm(true);
       }
     },
-    refetchQueries: ['getOrgTaskBoardSubmissions', 'getPerStatusTaskCountForOrgBoard'],
+    refetchQueries: [
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      GET_TASK_BY_ID,
+    ],
   });
   const [approveBountySubmission] = useMutation(APPROVE_BOUNTY_SUBMISSION, {
     variables: {
@@ -261,8 +281,19 @@ const SubmissionItem = (props) => {
         completeTask();
         setIsKudosForm(true);
       }
+      if (fetchedTask?.type === BOUNTY_TYPE && (orgBoard || podBoard)) {
+        const columns = board?.columns.map((col) =>
+          col.id === submission.taskId
+            ? {
+                ...col,
+                approvedSubmissionsCount:
+                  (Number.isInteger(col.approvedSubmissionsCount) ? col.approvedSubmissionsCount : 0) + 1,
+              }
+            : col
+        );
+        board?.setColumns(columns);
+      }
     },
-    refetchQueries: ['getOrgTaskBoardSubmissions', 'getPerStatusTaskCountForOrgBoard'],
   });
   const [requestChangeTaskSubmission] = useMutation(REQUEST_CHANGE_SUBMISSION, {
     variables: {
@@ -280,13 +311,20 @@ const SubmissionItem = (props) => {
         }
       });
       setFetchedTaskSubmissions(newFetchedTaskSubmissions);
+      if (fetchedTask?.type === BOUNTY_TYPE && (orgBoard || podBoard)) {
+        const columns = board?.columns.map((col) =>
+          col.id === submission.taskId ? { ...col, approvedSubmissionsCount: col.approvedSubmissionsCount + 1 } : col
+        );
+        board?.setColumns(columns);
+      }
     },
-    refetchQueries: ['getOrgTaskBoardSubmissions'],
   });
   const textStyle = {
     marginLeft: '0',
     maxWidth: '500px',
+    textAlign: 'left',
   };
+
   return (
     <>
       <KudosForm onClose={handleClose} open={isKudosModalOpen} submission={submission} />
@@ -322,7 +360,7 @@ const SubmissionItem = (props) => {
               marginRight: '4px',
             }}
           >
-            <ImageIcon />
+            <FileIcon />
             <TaskSectionDisplayText>Files</TaskSectionDisplayText>
           </TaskSectionDisplayLabel>
           <TaskSectionInfoDiv>
@@ -347,7 +385,9 @@ const SubmissionItem = (props) => {
             <TaskSectionDisplayText>Link </TaskSectionDisplayText>
           </TaskSectionDisplayLabel>
           {submission?.links && submission?.links[0]?.url ? (
-            <TaskSubmissionLink href={submission?.links[0]?.url}>{submission?.links[0]?.url}</TaskSubmissionLink>
+            <TaskSubmissionLink href={submission?.links[0]?.url} target="_blank">
+              {submission?.links[0]?.url}
+            </TaskSubmissionLink>
           ) : (
             <>
               <TaskDescriptionText
@@ -432,6 +472,7 @@ const SubmissionItem = (props) => {
                     taskSubmissions={fetchedTaskSubmissions}
                     handleClose={handleClose}
                     getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+                    submission={submission}
                   />
                 )}
             </CreateFormFooterButtons>
@@ -455,25 +496,57 @@ const TaskSubmissionForm = (props) => {
   const [descriptionText, setDescriptionText] = useState(submissionToEdit?.description || '');
 
   const [link, setLink] = useState((submissionToEdit?.links && submissionToEdit?.links[0]?.url) || '');
+
+  const isValidIndex = (index) => {
+    if (index >= 0) return index;
+    return false;
+  };
+
   const [createTaskSubmission] = useMutation(CREATE_TASK_SUBMISSION, {
     onCompleted: (data) => {
       const taskSubmission = data?.createTaskSubmission;
       const transformedTaskSubmission = transformTaskSubmissionToTaskSubmissionCard(taskSubmission, {});
       setFetchedTaskSubmissions([transformedTaskSubmission, ...fetchedTaskSubmissions]);
-      if (boardColumns) {
+      if (boardColumns && (!board?.entityType || board?.entityType !== ENTITIES_TYPES.BOUNTY)) {
         const columns = boardColumns?.columns;
-        const newColumns = [...columns];
-        newColumns[1].section.tasks = [transformedTaskSubmission, ...newColumns[1].section.tasks];
+        let newColumns = [...columns];
+
+        const inProgressColumnIndex =
+          isValidIndex(newColumns.findIndex((column) => column.status === TASK_STATUS_IN_PROGRESS)) ||
+          isValidIndex(newColumns.findIndex((column) => column.section?.filter?.taskType === TASK_STATUS_IN_PROGRESS));
+
+        const inProgressColumn = newColumns[inProgressColumnIndex];
+
+        const taskSubmissionTask = inProgressColumn?.tasks.find((element) => element?.id === taskSubmission?.taskId);
+        newColumns = addInReviewItem(
+          {
+            ...taskSubmissionTask,
+            status: TASK_STATUS_IN_REVIEW,
+          },
+          columns
+        );
+        newColumns = removeInProgressTask(taskSubmissionTask?.id, columns);
         if (boardColumns?.setColumns) {
           boardColumns?.setColumns(newColumns);
         }
       }
-
+      if (boardColumns && board?.entityType === ENTITIES_TYPES.BOUNTY) {
+        const newColumns = board?.columns.map((col) =>
+          col.id === transformedTaskSubmission.taskId
+            ? {
+                ...col,
+                totalSubmissionsCount:
+                  (Number.isInteger(col.totalSubmissionsCount) ? col.totalSubmissionsCount : 0) + 1,
+              }
+            : col
+        );
+        boardColumns?.setColumns(newColumns);
+      }
       if (cancelSubmissionForm) {
         cancelSubmissionForm();
       }
     },
-    refetchQueries: ['getPerStatusTaskCountForOrgBoard'],
+    refetchQueries: ['getPerStatusTaskCountForOrgBoard', 'getOrgTaskBoardTasks', 'getPodTaskBoardTasks'],
   });
   const [updateTaskSubmission] = useMutation(UPDATE_TASK_SUBMISSION, {
     onCompleted: (data) => {
@@ -510,7 +583,7 @@ const TaskSubmissionForm = (props) => {
             marginRight: '4px',
           }}
         >
-          <ImageIcon />
+          <FileIcon />
           <TaskSectionDisplayText>Files</TaskSectionDisplayText>
         </TaskSectionDisplayLabel>
         <TaskSectionInfoDiv>
@@ -812,6 +885,7 @@ export const TaskSubmissionContent = (props) => {
     handleClose,
     setShowPaymentModal,
     getTaskSubmissionsForTask,
+    isBounty,
   } = props;
 
   const router = useRouter();
@@ -820,10 +894,50 @@ export const TaskSubmissionContent = (props) => {
   const taskStatus = fetchedTask?.status;
   const fetchedTaskSubmissionsLength = fetchedTaskSubmissions?.length;
   const loggedInUser = useMe();
+
+  const handleTaskProgressStatus = () => {
+    setMoveProgressButton(false);
+    router.push(`${delQuery(router.asPath)}`, undefined, {
+      shallow: true,
+    });
+    handleClose();
+    updateTaskStatus({
+      variables: {
+        taskId: fetchedTask?.id,
+        input: {
+          newStatus: TASK_STATUS_IN_PROGRESS,
+        },
+      },
+      onCompleted: (data) => {
+        const task = data?.updateTaskStatus;
+        handleClose();
+        if (boardColumns?.setColumns) {
+          const transformedTask = transformTaskToTaskCard(task, {});
+          if (board?.entityType && board?.entityType === ENTITIES_TYPES.BOUNTY) {
+            const newColumns = boardColumns?.columns.map((col) =>
+              col.id === transformedTask.id ? transformedTask : col
+            );
+            boardColumns?.setColumns(newColumns);
+            return;
+          }
+          const columns = [...boardColumns?.columns];
+          columns[0].tasks = columns[0].tasks.filter((existingTask) => {
+            if (transformedTask?.id !== existingTask?.id) {
+              return true;
+            }
+            return false;
+          });
+          columns[1].tasks = [transformedTask, ...columns[1].tasks];
+          boardColumns?.setColumns(columns);
+        }
+      },
+    });
+  };
+
   if (taskSubmissionLoading) {
     return <CircularProgress />;
   }
-  if ((canSubmit || canMoveProgress) && fetchedTask?.status === TASK_STATUS_TODO && moveProgressButton) {
+  if ((canSubmit || canMoveProgress) && fetchedTask?.status === TASK_STATUS_TODO && moveProgressButton && !isBounty) {
     return (
       <div
       // style={{
@@ -836,43 +950,7 @@ export const TaskSubmissionContent = (props) => {
           style={{
             marginTop: '16px',
           }}
-          onClick={() => {
-            setMoveProgressButton(false);
-            router.push(`${delQuery(router.asPath)}`, undefined, {
-              shallow: true,
-            });
-            handleClose();
-            updateTaskStatus({
-              variables: {
-                taskId: fetchedTask?.id,
-                input: {
-                  newStatus: TASK_STATUS_IN_PROGRESS,
-                },
-              },
-              onCompleted: (data) => {
-                const task = data?.updateTaskStatus;
-                handleClose();
-                if (
-                  boardColumns?.setColumns &&
-                  ((task?.orgId === board?.orgId && !board?.podId) ||
-                    task?.podId === board?.podId ||
-                    task?.assigneeId === board?.userId)
-                ) {
-                  const transformedTask = transformTaskToTaskCard(task, {});
-
-                  const columns = [...boardColumns?.columns];
-                  columns[0].tasks = columns[0].tasks.filter((existingTask) => {
-                    if (transformedTask?.id !== existingTask?.id) {
-                      return true;
-                    }
-                    return false;
-                  });
-                  columns[1].tasks = [transformedTask, ...columns[1].tasks];
-                  boardColumns.setColumns(columns);
-                }
-              },
-            });
-          }}
+          onClick={handleTaskProgressStatus}
         >
           Set to in progress
         </CreateFormPreviewButton>

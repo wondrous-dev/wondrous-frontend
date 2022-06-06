@@ -1,6 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import { GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE } from '../../../graphql/queries';
+import { GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE } from 'graphql/queries';
 import {
   StyledBox,
   StyledProgressBar,
@@ -41,16 +41,22 @@ export const MilestoneProgress = (props) => {
     }
   }, [getPerStatusTaskCountForMilestone, milestoneId, data]);
 
+  const calculateProgress = (completed, total) => {
+    return Math.floor((parseInt(completed, 10) / parseInt(total, 10)) * 100);
+  };
+
+  if (!tasksTotal) return <StyledTasksCount>No tasks</StyledTasksCount>;
+
+  const progress = calculateProgress(tasksCompleted, tasksTotal);
+
   return (
     <StyledBox>
       <StyledTextWrapper>
-        <StyledTasksLabel>Tasks</StyledTasksLabel>
-        <StyledTasksCount>
-          {tasksCompleted}/{tasksTotal}
-        </StyledTasksCount>
+        <StyledTasksLabel>Task progress</StyledTasksLabel>
+        <StyledTasksCount>{progress}%</StyledTasksCount>
       </StyledTextWrapper>
       <StyledProgressBarWrapper>
-        <StyledProgressBar value={tasksCompleted} total={tasksTotal} color={color} />
+        <StyledProgressBar value={tasksCompleted} total={tasksTotal} />
       </StyledProgressBarWrapper>
     </StyledBox>
   );

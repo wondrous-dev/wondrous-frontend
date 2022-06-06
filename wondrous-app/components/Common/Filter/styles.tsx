@@ -1,13 +1,12 @@
+import { Button, Portal, Popper } from '@mui/material';
 import styled from 'styled-components';
 import { color } from 'styled-system';
-import { Button } from '@material-ui/core';
 import {
   Black70,
   Black80,
   Black95,
   Black97,
   Black98,
-  Blue20,
   Grey250,
   Grey57,
   Grey65,
@@ -16,6 +15,10 @@ import {
   HighlightPurple,
   White,
 } from '../../../theme/colors';
+import Checkbox from '@material-ui/core/Checkbox';
+import CircleChecked from '@material-ui/icons/CheckCircleOutline';
+import CircleCheckedFilled from '@material-ui/icons/CheckCircle';
+import CircleUnchecked from '@material-ui/icons/RadioButtonUnchecked';
 
 export const FilterHandle = styled.div`
   display: flex;
@@ -23,44 +26,32 @@ export const FilterHandle = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-
-  min-width: 323px;
+  width: 100%;
   height: 40px;
   padding: 1px;
-
-  margin: 0 0 0 23px;
-
-  ${(props) =>
-    props.open ? `background: ${Grey75};` : `background: linear-gradient(180deg, ${Black80} 0%, ${Black95} 70%);`}
-
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
+  background: #1b1b1b;
+  border-radius: 6px;
+  border: 0.5px solid #4b4b4b;
 `;
 
 export const FilterHandleInner = styled.div`
   display: flex;
   flex: 1 0 0;
-
+  gap: 10px;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
 
-  width: 321px;
+  width: 100%;
   height: 38px;
-  padding: 15px;
-
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-
+  padding: 10px;
   cursor: pointer;
-
-  ${(props) =>
-    props.open
-      ? `background: linear-gradient(272.34deg, ${Black95} 4.36%, ${Black97} 42.75%);`
-      : `background: linear-gradient(270.93deg,  ${Black95} 3.85%, ${Black97} 101.76%);`}
-
-  color: ${(props) => (props.open ? Grey75 : Grey250)};
+  color: white;
   font-size: 14px;
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+  }
 `;
 export const FilterChevronContainer = styled.div`
   display: flex;
@@ -81,43 +72,45 @@ export const FilterHandleContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 19px;
 `;
+
+export const FilterBoxPortal = styled(Portal)``;
 
 export const FilterBox = styled.div`
   position: absolute;
-  top: 40px;
-  left: 0;
-
-  display: ${(props) => (props.open ? 'flex' : 'none')};
+  top: 120%;
+  display: flex;
+  ${({ renderDirection }) => (renderDirection === 'right' ? 'right: 0' : 'left: 0')};
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
 
   max-width: 323px;
-  height: 420px;
-
-  padding: 0px 1px 1px 1px;
-
-  background: linear-gradient(180deg, ${Grey75} 3.85%, ${Black97} 101.76%);
-
+  height: fit-content;
+  border-radius: 6px;
+  background: #1d1d1d;
   z-index: 100;
 `;
 
 export const FilterBoxInner = styled.div`
   position: relative;
-
+  gap: 16px;
   display: flex;
-  flex: 1 0 0;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-
-  padding: 15px;
+  border-radius: 6px;
+  padding: 12px 12px 16px;
   width: 321px;
-  height: 400px;
+  height: fit-content;
   overflow: hidden;
 
-  background: linear-gradient(270.93deg, ${Black95} 3.85%, ${Black97} 101.76%);
+  background: ${Black95};
 `;
 
 export const FilterStatus = styled.div`
@@ -174,13 +167,11 @@ export const FilterItemList = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-
+  gap: 6px;
   width: 100%;
   max-height: 286px;
 
   overflow-y: auto;
-  padding-right: 15px;
-
   scrollbar-color: ${HighlightPurple};
 `;
 
@@ -191,16 +182,29 @@ export const FilterItem = styled.div`
   justify-content: flex-start;
 
   width: 100%;
-  height: 35px;
+  height: 40px;
 
   background: ${Black98};
   border-radius: 4px;
   margin: 4px 0;
-  padding: 7px;
-
+  padding: 8px;
+  position: relative;
   cursor: pointer;
 
-  ${(props) => (props.selected ? `border: 1px solid ${HighlightBlue};` : `border: 1px solid transparent;`)}
+  ${({ selected, gradient }) => `&::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 4px;
+    background: ${selected ? gradient : ''};
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 0.3px;
+  }`}
+  &:hover {
+    ${({ selected }) => !selected && '&::before { background: linear-gradient(270deg, #474747 1.17%, #7a7a7a 101%)}'}
+  }
 `;
 
 export const FilterItemIcon = styled.div`
@@ -212,10 +216,8 @@ export const FilterItemIcon = styled.div`
   margin-right: 7px;
 
   & svg {
-    border-radius: 20px;
-    width: 19px;
-    height: 19px;
-    border: 1px solid #474747;
+    width: 24px;
+    height: 24px;
   }
 `;
 
@@ -240,7 +242,13 @@ export const FilterItemName = styled.div`
   align-items: center;
   justify-content: flex-start;
 
-  color: ${White};
+  color: ${({ isSelected }) => (isSelected ? White : '#C4C4C4')};
+
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: ${({ isSelected }) => (isSelected ? '500' : '400')};
+  font-size: 14px;
+  line-height: 18px;
 `;
 
 export const FilterItemCount = styled.div`
@@ -277,4 +285,52 @@ export const FilterValues = styled.span`
   max-width: 260px;
   white-space: nowrap;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+`;
+
+export const FilterButton = styled.button`
+  border-radius: 6px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  width: max-content;
+  background: ${({ bgColor }) => bgColor || HighlightPurple};
+  border: 1px solid ${({ bgColor }) => bgColor || HighlightPurple};
+  cursor: pointer;
+  color: ${({ color }) => color || White};
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  margin-right: 10px;
+`;
+
+export const ButtonsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border-top: 0.5px dashed #4b4b4b;
+  padding-top: 12px;
+`;
+
+export const FilterCheckbox = ({ checked }) => (
+  <Checkbox
+    checked={checked}
+    icon={<CircleUnchecked style={{ width: '17px', height: '17px', color: '#474747' }} />}
+    checkedIcon={<CircleChecked style={{ color: '#7427FF', width: '17px', height: '17px' }} />}
+  />
+);
+
+export const FilterIconWrapper = styled.div`
+  background: #0f0f0f;
+  opacity: 1;
+  border-radius: 6px;
+  padding: 8.5px;
 `;

@@ -1,10 +1,10 @@
 import { useMutation } from '@apollo/client';
 import { useState } from 'react';
-import { CLOSE_TASK_PROPOSAL } from '../../../graphql/mutations';
-import { GET_ORG_TASK_BOARD_TASKS, GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries';
-import { removeProposalItem } from '../../../utils/board';
-import { CHAR_LIMIT_PROFILE_BIO } from '../../../utils/constants';
-import { useOrgBoard } from '../../../utils/hooks';
+import { CLOSE_TASK_PROPOSAL } from 'graphql/mutations';
+import { GET_ORG_TASK_BOARD_TASKS, GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from 'graphql/queries';
+import { removeProposalItem } from 'utils/board';
+import { CHAR_LIMIT_PROFILE_BIO } from 'utils/constants';
+import { useOrgBoard } from 'utils/hooks';
 import CloseModalIcon from '../../Icons/closeModal';
 import { ArchivedIcon } from '../../Icons/statusIcons';
 import {
@@ -18,11 +18,12 @@ import {
   StyledDialog,
   StyledDivider,
   StyledHeader,
+  StyledWarningMessage,
 } from '../../Common/ArchiveTaskModal/styles';
 import { GeneralSettingsDAODescriptionInput } from '../../Settings/styles';
 
 export const MembershipRequestModal = (props) => {
-  const { open, onClose, sendRequest, orgId, setJoinRequestSent } = props;
+  const { open, onClose, sendRequest, orgId, podId, setJoinRequestSent, notLinkedWalletError, linkedWallet } = props;
   const board = useOrgBoard();
   const [requestMessage, setRequestMessage] = useState('');
   return (
@@ -40,6 +41,13 @@ export const MembershipRequestModal = (props) => {
             padding: '20px',
           }}
         >
+         {notLinkedWalletError && <StyledWarningMessage
+            style={{
+              marginLeft: 0,
+            }}
+          >
+            {`To join via token gated role, switch to linked wallet ${linkedWallet?.slice(0,7)}...`}
+          </StyledWarningMessage>}
           <StyledCloseButton onClick={onClose}>
             <CloseModalIcon />
           </StyledCloseButton>
@@ -48,7 +56,7 @@ export const MembershipRequestModal = (props) => {
               marginLeft: 0,
             }}
           >
-            DAO membership request{' '}
+            {orgId ? 'DAO' : 'Pod'} membership request{' '}
           </StyledHeader>
           <StyledBody
             style={{
@@ -83,14 +91,25 @@ export const MembershipRequestModal = (props) => {
               <ArchivedIcon />
               <StyledArchivedLabel
                 onClick={() => {
-                  sendRequest({
-                    variables: {
-                      orgId,
-                      ...(requestMessage && {
-                        message: requestMessage,
-                      }),
-                    },
-                  });
+                  if (orgId) {
+                    sendRequest({
+                      variables: {
+                        orgId,
+                        ...(requestMessage && {
+                          message: requestMessage,
+                        }),
+                      },
+                    });
+                  } else if (podId) {
+                    sendRequest({
+                      variables: {
+                        podId,
+                        ...(requestMessage && {
+                          message: requestMessage,
+                        }),
+                      },
+                    });
+                  }
                   setJoinRequestSent(true);
                   onClose();
                 }}

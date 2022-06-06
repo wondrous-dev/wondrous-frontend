@@ -1,8 +1,8 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import { GET_TASK_BY_ID, GET_TASK_COMMENT_BY_ID } from '../../graphql/queries/task';
-import AppLayout from '../../components/Common/Layout/App';
+import { GET_TASK_BY_ID, GET_TASK_COMMENT_BY_ID } from 'graphql/queries/task';
+import AppLayout from 'components/Common/Layout/App';
 import { CircularProgress } from '@material-ui/core';
 
 const TaskRedirect = () => {
@@ -29,14 +29,18 @@ const TaskRedirect = () => {
         },
       });
     }
-  }, [taskCommentId]);
+  }, [getTaskCommentById, taskCommentId]);
 
   const task = taskData?.getTaskById;
 
   if (task?.org?.username) {
-    router.push(`/organization/${task?.org?.username}/boards?task=${task?.id}`, undefined, {
-      shallow: true,
-    });
+    router.push(
+      `/organization/${task?.org?.username}/boards?task=${task?.id}&taskCommentId=${taskCommentId}`,
+      undefined,
+      {
+        shallow: true,
+      }
+    );
   }
   return (
     <AppLayout banner={null}>

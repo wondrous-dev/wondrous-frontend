@@ -1,4 +1,4 @@
-import TaskStatus from '@components/Icons/TaskStatus';
+import TaskStatus from 'components/Icons/TaskStatus';
 import { Button, Typography } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -79,6 +79,15 @@ export const TaskTitle = styled(Typography)`
     font-weight: bold;
     font-size: 16px;
     color: #ffffff;
+
+    a {
+      color: white;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 `;
 

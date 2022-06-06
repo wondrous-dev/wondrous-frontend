@@ -1,67 +1,65 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
-
-import { SettingsWrapper } from './settingsWrapper';
+import apollo from 'services/apollo';
+import React, { useEffect, useState } from 'react';
+import { UPDATE_ORG } from '../../graphql/mutations/org';
+import { UPDATE_POD, ARCHIVE_POD, UNARCHIVE_POD } from '../../graphql/mutations/pod';
+import { GET_ORG_BY_ID } from '../../graphql/queries/org';
+import { GET_POD_BY_ID } from '../../graphql/queries/pod';
+import { filteredColorOptions, PRIVACY_LEVEL } from '../../utils/constants';
+import { getFilenameAndType, uploadMedia } from '../../utils/media';
+import { TabsVisibility } from '../Common/TabsVisibility';
+import { CreateFormAddDetailsInputLabel, CreateFormAddDetailsTab } from '../CreateEntity/styles';
+import { DiscordIcon } from '../Icons/discord';
+import LinkBigIcon from '../Icons/link';
+import OpenSeaIcon from '../Icons/openSea';
+import TwitterPurpleIcon from '../Icons/twitterPurple';
+import ColorSettings from './ColorDropdown';
 import { HeaderBlock } from './headerBlock';
 import { ImageUpload } from './imageUpload';
-import { LinkSquareIcon } from './linkSquareIcon';
 import { InputField } from './inputField';
+import { LinkSquareIcon } from './linkSquareIcon';
+import { SettingsWrapper } from './settingsWrapper';
+import { DeleteButton } from 'components/Settings/Roles/styles';
 import {
   GeneralSettingsButtonsBlock,
   GeneralSettingsContainer,
   GeneralSettingsDAODescriptionBlock,
   GeneralSettingsDAODescriptionInput,
   GeneralSettingsDAODescriptionInputCounter,
+  GeneralSettingsDAOHeaderImage,
   GeneralSettingsDAONameBlock,
   GeneralSettingsDAONameInput,
+  GeneralSettingsDAOProfileImage,
   GeneralSettingsInputsBlock,
-  GeneralSettingsIntegrationsBlock,
-  GeneralSettingsIntegrationsBlockButton,
-  GeneralSettingsIntegrationsBlockButtonIcon,
   GeneralSettingsResetButton,
   GeneralSettingsSaveChangesButton,
   GeneralSettingsSocialsBlock,
   GeneralSettingsSocialsBlockRow,
-  GeneralSettingsSocialsBlockRowLabel,
   GeneralSettingsSocialsBlockWrapper,
   LabelBlock,
   Snackbar,
-  LabelBlockText,
+  SettingsHeaderText,
 } from './styles';
-import TwitterPurpleIcon from '../Icons/twitterPurple';
-import LinkedInIcon from '../Icons/linkedIn';
-import OpenSeaIcon from '../Icons/openSea';
-import LinkBigIcon from '../Icons/link';
-import { DiscordIcon } from '../Icons/discord';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_BY_ID, GET_DISCORD_WEBHOOK_INFO_FOR_ORG } from '../../graphql/queries/org';
-import { UPDATE_ORG } from '../../graphql/mutations/org';
-import { getFilenameAndType, uploadMedia } from '../../utils/media';
-import { SafeImage } from '../Common/Image';
-import { GET_POD_BY_ID } from '../../graphql/queries/pod';
-import { UPDATE_POD } from '../../graphql/mutations/pod';
-import { CreateFormAddDetailsInputLabel, CreateFormAddDetailsSwitch } from '../CreateEntity/styles';
-import { AndroidSwitch } from '../CreateEntity/createEntityModal';
-import { filteredColorOptions, POD_COLOR, PRIVACY_LEVEL } from '../../utils/constants';
-import ColorSettings from './ColorDropdown';
-import { White, HighlightBlue } from '../../theme/colors';
 
 const LIMIT = 200;
 
 const SOCIALS_DATA = [
   {
     icon: <TwitterPurpleIcon />,
+    title: 'Twitter',
     link: 'https://twitter.com/',
     type: 'twitter',
   },
   {
     icon: <DiscordIcon />,
+    title: 'Discord',
     link: 'https://discord.gg/',
     type: 'discord',
   },
   {
     icon: <OpenSeaIcon />,
+    title: 'OpenSea',
     link: 'https://opensea.io/',
     type: 'opensea',
   },
@@ -89,7 +87,6 @@ const GeneralSettingsComponent = (props) => {
     descriptionText,
     handleDescriptionChange,
     links,
-    handleLogoChange,
     handleLinkChange,
     resetChanges,
     saveChanges,
@@ -97,6 +94,11 @@ const GeneralSettingsComponent = (props) => {
     setIsPrivate,
     discordWebhookLink,
     setDiscordWebhookLink,
+    headerImage,
+    handleImageChange,
+    isArchivedPod,
+    handleArchivePodClick,
+    handleUnarchivePodClick,
   } = props;
 
   const [newLink, setNewLink] = useState({
@@ -112,6 +114,21 @@ const GeneralSettingsComponent = (props) => {
     }
   });
   const isPod = typeText === 'Pod';
+  const tabsVisibilityOptions = {
+    [PRIVACY_LEVEL.public]: {
+      title: 'Public',
+      tooltip: `Public means anyone can see this ${typeText.toLowerCase()}`,
+    },
+    [PRIVACY_LEVEL.private]: {
+      title: 'Pod Members Only',
+      tooltip: `Private means only those with the proper permissions can see this ${typeText.toLowerCase()}`,
+    },
+  };
+
+  const tabsVisibilitySelected = isPrivate
+    ? tabsVisibilityOptions[PRIVACY_LEVEL.private]
+    : tabsVisibilityOptions[PRIVACY_LEVEL.public];
+  const tabsVisibilityHandleOnChange = (e) => setIsPrivate(e.target.getAttribute('value') === PRIVACY_LEVEL.private);
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
@@ -146,14 +163,7 @@ const GeneralSettingsComponent = (props) => {
           </GeneralSettingsDAODescriptionBlock>
         </GeneralSettingsInputsBlock>
         {newProfile?.profilePicture && !logoImage ? (
-          <SafeImage
-            src={newProfile?.profilePicture}
-            style={{
-              width: '52px',
-              height: '52px',
-              marginTop: '30px',
-            }}
-          />
+          <GeneralSettingsDAOProfileImage src={newProfile?.profilePicture} />
         ) : null}
         {!isPod && (
           <ImageUpload
@@ -161,16 +171,19 @@ const GeneralSettingsComponent = (props) => {
             imageWidth={52}
             imageHeight={52}
             imageName="Logo"
-            updateFilesCb={handleLogoChange}
+            updateFilesCb={(file) => handleImageChange(file, 'profile')}
           />
         )}
-        {/* <ImageUpload
-      image={bannerImage}
-      imageWidth={1350}
-      imageHeight={259}
-      imageName="Banner"
-      updateFilesCb={setBannerImage}
-    /> */}
+        {newProfile?.headerPicture && !headerImage && <GeneralSettingsDAOHeaderImage src={newProfile?.headerPicture} />}
+        {!isPod && (
+          <ImageUpload
+            image={headerImage}
+            imageWidth="1350"
+            imageHeight="200"
+            imageName="Header"
+            updateFilesCb={(file) => handleImageChange(file, 'header')}
+          />
+        )}
         {isPod && (
           <GeneralSettingsInputsBlock>
             <GeneralSettingsDAONameBlock>
@@ -192,7 +205,7 @@ const GeneralSettingsComponent = (props) => {
 
               return (
                 <GeneralSettingsSocialsBlockRow key={item.type}>
-                  <LinkSquareIcon icon={item.icon} />
+                  <LinkSquareIcon icon={item.icon} title={item.title} />
                   <InputField value={value} onChange={(e) => handleLinkChange(e, item)} />
                 </GeneralSettingsSocialsBlockRow>
               );
@@ -205,58 +218,20 @@ const GeneralSettingsComponent = (props) => {
             {linkTypelinks?.length > 0 ? (
               linkTypelinks.map((link) => (
                 <GeneralSettingsSocialsBlockRow key={link.type}>
-                  <LinkSquareIcon icon={<LinkBigIcon />} />
+                  <LinkSquareIcon title={link.title} icon={<LinkBigIcon />} />
                   <InputField value={link.url} onChange={(e) => handleLinkChange(e, link)} />
                 </GeneralSettingsSocialsBlockRow>
               ))
             ) : (
               <>
                 <GeneralSettingsSocialsBlockRow key={newLink.type}>
-                  <LinkSquareIcon icon={<LinkBigIcon />} />
+                  <LinkSquareIcon title="Link" icon={<LinkBigIcon />} />
                   <InputField value={newLink.url} onChange={(e) => handleLinkChange(e, newLink)} />
                 </GeneralSettingsSocialsBlockRow>
               </>
             )}
           </GeneralSettingsSocialsBlockWrapper>
         </GeneralSettingsSocialsBlock>
-        {/* {!isPod && (
-          <GeneralSettingsIntegrationsBlock>
-            <LabelBlock>Integrations</LabelBlock>
-            <LabelBlockText>
-              To post notifications in your Discord server, follow
-              <Link href="/discord-notification-setup">
-                <a
-                  target="_blank"
-                  style={{
-                    color: HighlightBlue,
-                    marginLeft: '4px',
-                  }}
-                >
-                  these instructions
-                </a>
-              </Link>
-            </LabelBlockText>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <GeneralSettingsIntegrationsBlockButtonIcon />
-              <InputField
-                placeholder="Discord webhook link"
-                value={discordWebhookLink}
-                onChange={(e) => setDiscordWebhookLink(e.target.value)}
-                style={{
-                  textDecoration: 'none',
-                  color: White,
-                  paddingRight: '8px',
-                  paddingLeft: '12px',
-                }}
-              />
-            </div>
-          </GeneralSettingsIntegrationsBlock>
-        )} */}
 
         {isPod && (
           <div
@@ -264,20 +239,19 @@ const GeneralSettingsComponent = (props) => {
               marginTop: '32px',
             }}
           >
-            <CreateFormAddDetailsSwitch>
-              <CreateFormAddDetailsInputLabel>Private Pod</CreateFormAddDetailsInputLabel>
-              <AndroidSwitch
-                checked={isPrivate}
-                onChange={(e) => {
-                  setIsPrivate(e.target.checked);
-                }}
+            <CreateFormAddDetailsTab>
+              <CreateFormAddDetailsInputLabel>Visibility</CreateFormAddDetailsInputLabel>
+              <TabsVisibility
+                options={tabsVisibilityOptions}
+                selected={tabsVisibilitySelected}
+                onChange={tabsVisibilityHandleOnChange}
               />
-            </CreateFormAddDetailsSwitch>
+            </CreateFormAddDetailsTab>
           </div>
         )}
 
         <GeneralSettingsButtonsBlock>
-          <GeneralSettingsResetButton onClick={resetChanges}>Reset changes</GeneralSettingsResetButton>
+          <GeneralSettingsResetButton onClick={resetChanges}>Cancel changes</GeneralSettingsResetButton>
           <GeneralSettingsSaveChangesButton
             buttonInnerStyle={{
               fontFamily: 'Space Grotesk',
@@ -289,6 +263,44 @@ const GeneralSettingsComponent = (props) => {
             Save changes
           </GeneralSettingsSaveChangesButton>
         </GeneralSettingsButtonsBlock>
+        {isArchivedPod && isPod && (
+          <>
+            <DeleteButton
+              style={{
+                marginTop: '32px',
+              }}
+              onClick={handleUnarchivePodClick}
+            >
+              Unarchive Pod
+            </DeleteButton>
+            <SettingsHeaderText
+              style={{
+                marginTop: '10px',
+              }}
+            >
+              Unarchiving pod reenables you to create task under this pod
+            </SettingsHeaderText>
+          </>
+        )}
+        {!isArchivedPod && isPod && (
+          <>
+            <DeleteButton
+              style={{
+                marginTop: '32px',
+              }}
+              onClick={handleArchivePodClick}
+            >
+              Archive Pod
+            </DeleteButton>
+            <SettingsHeaderText
+              style={{
+                marginTop: '10px',
+              }}
+            >
+              You can still access tasks from archived pods, but no new tasks can be created{' '}
+            </SettingsHeaderText>
+          </>
+        )}
       </GeneralSettingsContainer>
     </SettingsWrapper>
   );
@@ -325,6 +337,7 @@ export const PodGeneralSettings = () => {
   const { podId } = router.query;
   const [podProfile, setPodProfile] = useState(null);
   const [isPrivate, setIsPrivate] = useState(null);
+  const [isArchivedPod, setIsArchivedPod] = useState(false);
   const [originalPodProfile, setOriginalPodProfile] = useState(null);
   const [logoImage, setLogoImage] = useState('');
   const [color, setColor] = useState(null);
@@ -345,6 +358,7 @@ export const PodGeneralSettings = () => {
     setDescriptionText(pod.description);
     setIsPrivate(pod?.privacyLevel === PRIVACY_LEVEL.private);
     setOriginalPodProfile(pod);
+    setIsArchivedPod(!!pod?.archivedAt);
   }
 
   useEffect(() => {
@@ -406,7 +420,32 @@ export const PodGeneralSettings = () => {
       },
     });
   }
-
+  const handleArchivePodClick = async () => {
+    const confirmed = confirm('Are you sure you want to archive this pod?');
+    if (!confirmed) {
+      return;
+    }
+    await apollo.mutate({
+      mutation: ARCHIVE_POD,
+      variables: {
+        podId,
+      },
+      refetchQueries: [GET_POD_BY_ID],
+    });
+  };
+  const handleUnarchivePodClick = async () => {
+    const confirmed = confirm('Are you sure you want to unarchive this pod?');
+    if (!confirmed) {
+      return;
+    }
+    await apollo.mutate({
+      mutation: UNARCHIVE_POD,
+      variables: {
+        podId,
+      },
+      refetchQueries: [GET_POD_BY_ID],
+    });
+  };
   return (
     <GeneralSettingsComponent
       toast={toast}
@@ -426,6 +465,9 @@ export const PodGeneralSettings = () => {
       setIsPrivate={setIsPrivate}
       color={color}
       setColor={setColor}
+      isArchivedPod={isArchivedPod}
+      handleArchivePodClick={handleArchivePodClick}
+      handleUnarchivePodClick={handleUnarchivePodClick}
     />
   );
 };
@@ -433,17 +475,14 @@ export const PodGeneralSettings = () => {
 const GeneralSettings = () => {
   const [logoImage, setLogoImage] = useState('');
   const [orgProfile, setOrgProfile] = useState(null);
-  const [originalOrgProfile, setOriginalOrgProfile] = useState(null);
-  const [bannerImage, setBannerImage] = useState('');
+  const [headerImage, setHeaderImage] = useState('');
   const [orgLinks, setOrgLinks] = useState([]);
   const [descriptionText, setDescriptionText] = useState('');
   const [toast, setToast] = useState({ show: false, message: '' });
   const router = useRouter();
   const { orgId } = router.query;
-  const [discordWebhookLink, setDiscordWebhookLink] = useState('');
 
   function setOrganization(organization) {
-    setOriginalOrgProfile(organization);
     setLogoImage('');
     const links = reduceLinks(organization.links);
 
@@ -453,22 +492,14 @@ const GeneralSettings = () => {
     setOrgProfile(organization);
   }
 
-  const [getOrganization] = useLazyQuery(GET_ORG_BY_ID, {
+  const [getOrgById, { data: getOrgByIdData }] = useLazyQuery(GET_ORG_BY_ID, {
     onCompleted: ({ getOrgById }) => setOrganization(getOrgById),
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const [getOrgDiscordWebhookInfo] = useLazyQuery(GET_DISCORD_WEBHOOK_INFO_FOR_ORG, {
-    onCompleted: ({ getDiscordWebhookInfoForOrg }) => {
-      setDiscordWebhookLink(getDiscordWebhookInfoForOrg.webhookUrl);
-    },
     fetchPolicy: 'cache-and-network',
   });
 
   useEffect(() => {
     if (orgId) {
-      getOrganization({ variables: { orgId } });
-      getOrgDiscordWebhookInfo({ variables: { orgId } });
+      getOrgById({ variables: { orgId } });
     }
   }, [orgId]);
 
@@ -479,19 +510,34 @@ const GeneralSettings = () => {
     },
   });
 
-  async function handleLogoChange(file) {
-    setLogoImage(file);
+  function handleImageFile(file) {
+    if (!file) return { filename: null, fileType: null, file: null };
+    const fileName = file?.name;
+    // get image preview
+    const { fileType, filename } = getFilenameAndType(fileName);
+    const imageFile = `tmp/${orgId}/` + filename;
+    return { filename: imageFile, fileType, file };
+  }
 
-    if (file) {
-      const fileName = file?.name;
-      // get image preview
-      const { fileType, filename } = getFilenameAndType(fileName);
-      const imagePrefix = `tmp/${orgId}/`;
-      const profilePicture = imagePrefix + filename;
-      await uploadMedia({ filename: profilePicture, fileType, file });
-
-      setOrgProfile({ ...orgProfile, profilePicture });
-    }
+  async function handleImageChange(file, imageType) {
+    const type = {
+      header: {
+        setState: (file) => setHeaderImage(file),
+        orgProfileKey: 'headerPicture',
+      },
+      profile: {
+        setState: (file) => setLogoImage(file),
+        orgProfileKey: 'profilePicture',
+      },
+    };
+    const { setState, orgProfileKey } = type[imageType];
+    setState(file);
+    const imageFile = handleImageFile(file);
+    setOrgProfile({
+      ...orgProfile,
+      [orgProfileKey]: imageFile.filename ?? getOrgByIdData?.getOrgById[orgProfileKey],
+    });
+    imageFile.filename && (await uploadMedia(imageFile));
   }
 
   function handleDescriptionChange(e) {
@@ -504,7 +550,7 @@ const GeneralSettings = () => {
   }
 
   function resetChanges() {
-    setOrganization(originalOrgProfile);
+    setOrganization(getOrgByIdData?.getOrgById);
   }
 
   function saveChanges() {
@@ -520,9 +566,6 @@ const GeneralSettings = () => {
           privacyLevel: orgProfile.privacyLevel,
           headerPicture: orgProfile.headerPicture,
           profilePicture: orgProfile.profilePicture,
-          ...(discordWebhookLink && {
-            discordWebhookLink,
-          }),
         },
       },
     });
@@ -546,15 +589,14 @@ const GeneralSettings = () => {
       handleDescriptionChange={handleDescriptionChange}
       handleLinkChange={(event, item) => handleLinkChange(event, item, { ...orgLinks }, setOrgLinks)}
       links={orgLinks}
-      handleLogoChange={handleLogoChange}
       logoImage={logoImage}
       newProfile={orgProfile}
       resetChanges={resetChanges}
       saveChanges={saveChanges}
       typeText="DAO"
       setProfile={setOrgProfile}
-      setDiscordWebhookLink={setDiscordWebhookLink}
-      discordWebhookLink={discordWebhookLink}
+      headerImage={headerImage}
+      handleImageChange={handleImageChange}
     />
   );
 };

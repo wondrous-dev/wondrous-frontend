@@ -5,8 +5,8 @@ import {
   SOCIAL_MEDIA_LINKEDIN,
   SOCIAL_MEDIA_TWITTER,
   SOCIAL_OPENSEA,
-} from '../../../utils/constants';
-import { formatLinkDisplay } from '../../../utils/links';
+} from 'utils/constants';
+import { formatLinkDisplay } from 'utils/links';
 import { DiscordIcon } from '../../Icons/discord';
 import FacebookIcon from '../../Icons/facebook';
 import githubIcon from '../../Icons/githubIcon';

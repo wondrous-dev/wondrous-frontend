@@ -1,46 +1,46 @@
-import React, { useEffect, useState } from 'react';
-import { parseUserPermissionContext, toggleHtmlOverflow } from '../../utils/helpers';
-import { useRouter } from 'next/router';
-import { List } from '@mui/material';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import LeftArrowIcon from 'components/Icons/leftArrow';
+import PodIcon from 'components/Icons/podIcon';
+import RolesIcon from 'components/Icons/roles';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GET_ORG_BY_ID } from 'graphql/queries/org';
+import { GET_POD_BY_ID } from 'graphql/queries/pod';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import { SettingsPage } from 'types/common';
+import { PERMISSIONS } from 'utils/constants';
+import { SettingsBoardContext } from 'utils/contexts';
+import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
+import { logout, useMe } from '../Auth/withAuth';
+import CreateFormModal from '../CreateEntity';
+import HeaderComponent from '../Header';
+import ExitIcon from 'components/Icons/exit';
+import CardIcon from '../Icons/card';
+import GeneralSettingsIcon from '../Icons/generalSettings';
+import MembersIcon from '../Icons/members';
+import { NotificationOutlineSettings } from '../Icons/notifications';
+import TokenGatingIcon from '../Icons/tokenGating.svg';
+import WrenchIcon from '../Icons/wrench';
+import SideBarComponent from '../SideBar';
 import {
   SettingsContainer,
   SettingsContentBlock,
+  SettingsDaoPodIndicator,
+  SettingsDaoPodIndicatorIconWrapper,
+  SettingsDaoPodIndicatorOrgProfile,
+  SettingsDaoPodIndicatorText,
   SettingsSidebar,
-  SettingsSidebarContainer, SettingsSidebarHeader,
-  SettingsSidebarHeaderLogo,
-  SettingsSidebarHeaderTitle,
-  SettingsSidebarLogoutButton,
-  SettingsSidebarLogoutButtonIcon,
-  SettingsSidebarLogoutButtonText,
+  SettingsSidebarContainer,
+  SettingsSidebarHeader,
   SettingsSidebarTabsListContainer,
-  SettingsSidebarTabsListItemButton,
-  SettingsSidebarTabsListItemButtonWrapper,
+  SettingsSidebarTabsListItem,
   SettingsSidebarTabsListItemIcon,
   SettingsSidebarTabsListItemText,
   SettingsSidebarTabsSection,
   SettingsSidebarTabsSectionLabel,
+  ArchivedPodIndicatorText
 } from './styles';
-import SideBarComponent from '../SideBar';
-import HeaderComponent from '../Header';
-import CreateFormModal from '../CreateEntity';
-import GeneralSettingsIcon from '../Icons/generalSettings';
-import ConfigurePaymentsIcon from '../Icons/configurePayments';
-import CreatePodIcon from '../Icons/createPod';
-import MembersIcon from '../Icons/members';
-import { useQuery, useLazyQuery } from '@apollo/client';
-import { GET_ORG_BY_ID } from '../../graphql/queries/org';
-import { SafeImage } from '../Common/Image';
-import { GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
-import { SettingsBoardContext } from '../../utils/contexts';
-import { GET_POD_BY_ID } from '../../graphql/queries/pod';
-import { PERMISSIONS } from '../../utils/constants';
-import { useMe } from '../Auth/withAuth';
-import SettingsIcon from '../Icons/settings';
-import WrenchIcon from '../Icons/wrench';
-import CardIcon from '../Icons/card';
-import { pathToArray } from 'graphql/jsutils/Path';
-import NotificationsIcon, { NotificationOutlineSettings } from '../Icons/notifications';
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -95,7 +95,7 @@ const SIDEBAR_LIST_ITEMS = [
 // ]
 
 export const SettingsWrapper = (props) => {
-  const { children } = props;
+  const { children, showPodIcon = true } = props;
 
   const router = useRouter();
   const user = useMe();
@@ -111,33 +111,41 @@ export const SettingsWrapper = (props) => {
     toggleHtmlOverflow();
     setCreateFormModal((prevState) => !prevState);
   };
+
   const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
   const [getPodById, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
 
-  const org = orgData?.getOrgById || podData?.getPodById?.orgId;
+  const org = orgData?.getOrgById;
   const pod = podData?.getPodById;
 
-  const PROFILE_SIDEBAR_LIST_ITEMS = [
+  const SETTINGS_SIDEBAR_LIST_ITEMS = [
     {
       icon: <GeneralSettingsIcon width={40} height={40} />,
       label: 'Profile Page Settings',
       value: 'general',
       href: `/profile/settings`,
+      page: [SettingsPage.Profile],
     },
-  ];
-
-  let SETTINGS_SIDEBAR_LIST_ITEMS = [
     {
       icon: <GeneralSettingsIcon width={40} height={40} />,
-      label: 'General settings',
+      label: 'General Settings',
       value: 'general',
       href: orgId ? `/organization/settings/${orgId}/general` : `/pod/settings/${podId}/general`,
+      page: [SettingsPage.Org, SettingsPage.Pod],
     },
     {
       icon: <WrenchIcon width={40} height={40} />,
       label: 'Configure Wallet',
       value: 'wallet',
       href: orgId ? `/organization/settings/${orgId}/wallet` : `/pod/settings/${podId}/wallet`,
+      page: [SettingsPage.Org, SettingsPage.Pod],
+    },
+    {
+      icon: <TokenGatingIcon />,
+      label: 'Token Gating',
+      value: 'token-gating',
+      href: `/organization/settings/${orgId}/token-gating`,
+      page: [SettingsPage.Org],
     },
     {
       icon: <WrenchIcon width={40} height={40} />,
@@ -150,38 +158,54 @@ export const SettingsWrapper = (props) => {
       label: 'Payments Ledger',
       value: 'payouts',
       href: orgId ? `/organization/settings/${orgId}/payouts` : `/pod/settings/${podId}/payouts`,
+      page: [SettingsPage.Org, SettingsPage.Pod],
     },
     {
-      icon: <MembersIcon width={40} height={40} />,
+      icon: <CardIcon width={40} height={40} />,
+      label: 'Payment Method',
+      value: 'payment-method',
+      href: `/organization/settings/${orgId}/payment-method`,
+      page: [SettingsPage.Org],
+    },
+    {
+      icon: <MembersIcon />,
       label: 'Members',
       value: 'members',
       href: orgId ? `/organization/settings/${orgId}/members` : `/pod/settings/${podId}/members`,
+      page: [SettingsPage.Org, SettingsPage.Pod],
     },
     {
-      icon: <MembersIcon width={40} height={40} />,
+      icon: <RolesIcon />,
       label: 'Roles',
       value: 'roles',
       href: orgId ? `/organization/settings/${orgId}/roles` : `/pod/settings/${podId}/roles`,
+      page: [SettingsPage.Org, SettingsPage.Pod],
     },
-  ];
-
-  if (orgId && !podId) {
-    SETTINGS_SIDEBAR_LIST_ITEMS.push({
+    {
       icon: <NotificationOutlineSettings />,
       label: 'Notifications',
       value: 'notifications',
       href: `/organization/settings/${orgId}/notifications`,
-    });
-  }
+      page: [SettingsPage.Org],
+    },
+    {
+      icon: <NotificationOutlineSettings />,
+      label: 'Notifications',
+      value: 'notifications',
+      href: `/profile/notifications`,
+      page: [SettingsPage.Profile],
+    },
+  ];
+
   const parsedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
 
   useEffect(() => {
-    if (orgId) {
+    if (orgId || org) {
       getOrgById({
         variables: {
-          orgId,
+          orgId: orgId ?? org,
         },
       });
     }
@@ -192,7 +216,11 @@ export const SettingsWrapper = (props) => {
         },
       });
     }
-  }, [orgId, podId]);
+  }, [getOrgById, getPodById, org, orgId, podId]);
+
+  const signOut = () => {
+    logout();
+  };
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext: parsedUserPermissionsContext,
@@ -219,6 +247,25 @@ export const SettingsWrapper = (props) => {
     }
   }
 
+  const settingsPageConfig = {
+    [String(orgId)]: {
+      page: SettingsPage.Org,
+      path: `/organization/${org?.username}/boards`,
+      label: 'DAO',
+    },
+    [String(podId)]: {
+      page: SettingsPage.Pod,
+      path: `/pod/${podId}/boards`,
+      label: 'Pod',
+    },
+    ['']: {
+      page: SettingsPage.Profile,
+      path: `/profile/${user?.username}/about`,
+      label: 'Profile',
+    },
+  };
+  const activeSettingsPage = settingsPageConfig?.[String(podId ?? orgId ?? '')];
+  const podIsArchived = !!podData?.getPodById?.archivedAt;
   return (
     <>
       <SettingsBoardContext.Provider
@@ -235,71 +282,63 @@ export const SettingsWrapper = (props) => {
           <SettingsSidebar>
             <SettingsSidebarContainer>
               <SettingsSidebarHeader>
-                {org && (
-                  <SafeImage
-                    src={org?.profilePicture}
-                    style={{
-                      width: '44px',
-                      height: '44px',
-                      borderRadius: '4px',
-                      marginRight: '14px',
-                    }}
-                  />
-                )}
-                <SettingsSidebarHeaderTitle>{pod?.name || org?.name}</SettingsSidebarHeaderTitle>
+                <Link href={activeSettingsPage?.path} passHref>
+                  <SettingsSidebarTabsListItem>
+                    <SettingsSidebarTabsListItemIcon>
+                      <LeftArrowIcon />
+                    </SettingsSidebarTabsListItemIcon>
+                    <SettingsSidebarTabsListItemText>
+                      Back to {activeSettingsPage.label}
+                    </SettingsSidebarTabsListItemText>
+                  </SettingsSidebarTabsListItem>
+                </Link>
               </SettingsSidebarHeader>
               <SettingsSidebarTabsSection>
-                <SettingsSidebarTabsSectionLabel>Settings Overview</SettingsSidebarTabsSectionLabel>
+                <SettingsSidebarTabsSectionLabel>{activeSettingsPage.label} Settings</SettingsSidebarTabsSectionLabel>
                 <SettingsSidebarTabsListContainer>
-                  <List>
-                    {(orgData || podData) &&
-                      SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
-                        const { href, icon, label } = item;
-                        const pathnameSplit = pathname.split('/');
-                        const hrefSplit = href.split('/');
-                        const endPathName = pathnameSplit[pathnameSplit.length - 1];
-                        const endHref = hrefSplit[hrefSplit.length - 1];
-                        const active = endHref === endPathName;
-
-                        return (
-                          <Link key={href} href={href}>
-                            <SettingsSidebarTabsListItemButtonWrapper active={active}>
-                              <SettingsSidebarTabsListItemButton selected={active}>
-                                <SettingsSidebarTabsListItemIcon>{icon}</SettingsSidebarTabsListItemIcon>
-                                <SettingsSidebarTabsListItemText>{label}</SettingsSidebarTabsListItemText>
-                              </SettingsSidebarTabsListItemButton>
-                            </SettingsSidebarTabsListItemButtonWrapper>
-                          </Link>
-                        );
-                      })}
-                    {!orgData &&
-                      !podData &&
-                      PROFILE_SIDEBAR_LIST_ITEMS.map((item) => {
-                        const { href, icon, label } = item;
-
-                        const active = pathname === href;
-
-                        return (
-                          <Link key={href} href={href}>
-                            <SettingsSidebarTabsListItemButtonWrapper active={active}>
-                              <SettingsSidebarTabsListItemButton selected={active}>
-                                <SettingsSidebarTabsListItemIcon>{icon}</SettingsSidebarTabsListItemIcon>
-                                <SettingsSidebarTabsListItemText>{label}</SettingsSidebarTabsListItemText>
-                              </SettingsSidebarTabsListItemButton>
-                            </SettingsSidebarTabsListItemButtonWrapper>
-                          </Link>
-                        );
-                      })}
-                  </List>
-                  {/* <SettingsSidebarLogoutButton>
-                    <SettingsSidebarLogoutButtonIcon />
-                    <SettingsSidebarLogoutButtonText>Log out</SettingsSidebarLogoutButtonText>
-                  </SettingsSidebarLogoutButton> */}
+                  {SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
+                    if (!item.page.includes(activeSettingsPage.page)) return null;
+                    const { href, icon, label } = item;
+                    const pathnameSplit = pathname.split('/');
+                    const hrefSplit = href.split('/');
+                    const endPathName = pathnameSplit[pathnameSplit.length - 1];
+                    const endHref = hrefSplit[hrefSplit.length - 1];
+                    const active = endHref === endPathName;
+                    return (
+                      <Link key={href} href={href} passHref>
+                        <SettingsSidebarTabsListItem active={active}>
+                          <SettingsSidebarTabsListItemIcon active={active}>{icon}</SettingsSidebarTabsListItemIcon>
+                          <SettingsSidebarTabsListItemText active={active}>{label}</SettingsSidebarTabsListItemText>
+                        </SettingsSidebarTabsListItem>
+                      </Link>
+                    );
+                  })}
+                  <SettingsSidebarTabsListItem onClick={signOut}>
+                    <SettingsSidebarTabsListItemIcon>
+                      <ExitIcon />
+                    </SettingsSidebarTabsListItemIcon>
+                    <SettingsSidebarTabsListItemText>Log out</SettingsSidebarTabsListItemText>
+                  </SettingsSidebarTabsListItem>
                 </SettingsSidebarTabsListContainer>
               </SettingsSidebarTabsSection>
             </SettingsSidebarContainer>
           </SettingsSidebar>
-          <SettingsContentBlock>{children}</SettingsContentBlock>
+
+          <SettingsContentBlock>
+            {showPodIcon ? (
+              <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>
+                <SettingsDaoPodIndicatorOrgProfile src={orgData?.getOrgById?.profilePicture} />
+                <SettingsDaoPodIndicatorIconWrapper color={podData?.getPodById.color}>
+                  <PodIcon />
+                </SettingsDaoPodIndicatorIconWrapper>
+                <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
+                {podIsArchived && (
+                  <ArchivedPodIndicatorText>ARCHIVED</ArchivedPodIndicatorText>
+                )}
+              </SettingsDaoPodIndicator>
+            ) : null}
+            {children}
+          </SettingsContentBlock>
         </SettingsContainer>
       </SettingsBoardContext.Provider>
     </>

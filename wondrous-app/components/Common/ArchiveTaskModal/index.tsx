@@ -1,9 +1,9 @@
 import { useMutation } from '@apollo/client';
-import { CLOSE_TASK_PROPOSAL } from '../../../graphql/mutations';
-import { GET_ORG_TASK_BOARD_TASKS, GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries';
-import { removeProposalItem } from '../../../utils/board';
-import * as Constants from '../../../utils/constants';
-import { useOrgBoard } from '../../../utils/hooks';
+import { CLOSE_TASK_PROPOSAL } from 'graphql/mutations';
+import { GET_ORG_TASK_BOARD_TASKS, GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from 'graphql/queries';
+import { removeProposalItem } from 'utils/board';
+import * as Constants from 'utils/constants';
+import { useOrgBoard } from 'utils/hooks';
 import CloseModalIcon from '../../Icons/closeModal';
 import { ArchivedIcon } from '../../Icons/statusIcons';
 import {
@@ -19,26 +19,46 @@ import {
   StyledHeader,
 } from './styles';
 
-export const ArchiveTaskModal = (props) => {
+interface IArchiveTaskModalProps {
+  open: boolean;
+  onClose: () => void;
+  onArchive: () => void;
+  taskType: string;
+  taskId: string;
+}
+
+export const ArchiveTaskModal = (props: IArchiveTaskModalProps) => {
   const { open, onClose, onArchive, taskType, taskId = '' } = props;
   const board = useOrgBoard();
-  const [archiveTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL, {
-    refetchQueries: () => ['getOrgTaskBoardTasks', 'getPerStatusTaskCountForOrgBoard'],
-  });
+  const [archiveTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
 
-  const isTaskOrMilestone =
+  const isTaskOrMilestoneOrBounty =
     taskType === Constants.TASK_TYPE || taskType === Constants.MILESTONE_TYPE || taskType === Constants.BOUNTY_TYPE;
   const isTaskProposal = taskType === 'task proposal';
 
   const handleArchive = () => {
-    if (isTaskOrMilestone) {
-      onArchive(Constants.TASK_STATUS_ARCHIVED);
+    if (isTaskOrMilestoneOrBounty) {
+      onArchive();
     }
     if (isTaskProposal) {
       board?.setFirstTimeFetch(false);
       archiveTaskProposal({
         variables: { proposalId: taskId },
-        refetchQueries: () => ['getProposalsUserCanReview', 'getWorkFlowBoardReviewableItemsCount'],
+        refetchQueries: () => [
+          'getProposalsUserCanReview',
+          'getWorkFlowBoardReviewableItemsCount',
+          'getUserTaskBoardProposals',
+          'getOrgTaskBoardProposals',
+          'getPodTaskBoardProposals',
+          'getUserTaskBoardSubmissions',
+          'getOrgTaskBoardSubmissions',
+          'getPodTaskBoardSubmissions',
+          'getPerStatusTaskCountForUserBoard',
+          'getPerStatusTaskCountForOrgBoard',
+          'getPerStatusTaskCountForPodBoard',
+          'getPerTypeTaskCountForOrgBoard',
+          'getPerTypeTaskCountForPodBoard',
+        ],
       })
         .then(() => {
           const updatedColumn = removeProposalItem(taskId, board.columns);

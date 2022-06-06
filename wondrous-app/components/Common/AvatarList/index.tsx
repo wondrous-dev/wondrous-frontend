@@ -1,7 +1,8 @@
 import React from 'react';
 import * as Colors from '../../../theme/colors';
 import { SmallAvatarWrapper, SmallAvatarContainer, AvatarListWrapper } from './styles';
-import { AVATAR_LIST_OVERFLOW_MAX } from '../../../utils/constants';
+import { AVATAR_LIST_OVERFLOW_MAX } from 'utils/constants';
+import Tooltip from 'components/Tooltip';
 import { SafeImage } from '../Image';
 import { useRouter } from 'next/router';
 
@@ -72,15 +73,19 @@ export const AvatarList = (props) => {
   return (
     <AvatarListWrapper key={id + '-list'} align={align} style={style}>
       {usersSieged.map((user, index) => (
-        <SmallAvatar
-          id={user.id}
-          username={user.username || user?.name}
-          key={'avatar-' + user.id}
-          avatar={user.avatar}
-          initials={user.initials}
-          style={{ zIndex: index }}
-          goTo={goToUser}
-        />
+        <Tooltip key={'user-tooltip-' + user.id} title={user.name || user.initials} placement="top">
+          <div>
+            <SmallAvatar
+              id={user.id}
+              username={user.username || user?.name}
+              key={'avatar-' + user.id}
+              avatar={user.avatar}
+              initials={user.initials}
+              style={{ zIndex: index }}
+              goTo={goToUser}
+            />
+          </div>
+        </Tooltip>
       ))}
       {overflow > 0 && users.length > AVATAR_LIST_OVERFLOW_MAX ? (
         <SmallAvatarOverflow id={'avatar-overflow-' + id} overflow={overflow} />

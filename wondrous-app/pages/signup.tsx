@@ -1,24 +1,27 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Card, CardBody, CardFooter } from '../components/Common/auth';
-import { Button } from '../components/Common/button';
-import AuthLayout from '../components/Common/Layout/Auth';
-import { LineWithText, Line } from '../components/Common/lines';
-import { Form } from '../components/Common/form';
-import { Field } from '../components/Common/field';
-import { PaddedParagraph, StyledLink } from '../components/Common/text';
-import { SmallLogo, LoginWrapper, TopBubble, LoginError } from '../components/Pages/login';
+import Image from 'next/image';
+
+import { Card, CardBody, CardFooter } from 'components/Common/auth';
+import { Button } from 'components/Common/button';
+import AuthLayout from 'components/Common/Layout/Auth';
+import { LineWithText, Line } from 'components/Common/lines';
+import { Form } from 'components/Common/form';
+import { Field } from 'components/Common/field';
+import { PaddedParagraph, StyledLink } from 'components/Common/text';
+import { SmallLogo, LoginWrapper, TopBubble, LoginError } from 'components/Pages/login';
 import { useState } from 'react';
-import { CenteredFlexRow } from '../components/Common/index';
+import { CenteredFlexRow } from 'components/Common/index';
 import { Grey50 } from '../theme/colors';
-import { Metamask } from '../components/Icons/metamask';
-import { EmailIcon, LockIcon } from '../components/Icons/userpass';
-import { useWonderWeb3 } from '../services/web3';
-import { emailSignup, getUserSigningMessage, walletSignup } from '../components/Auth/withAuth';
-import { SupportedChainType } from '../utils/web3Constants';
-import MetaMaskConnector from '@components/WalletConnectors/MetaMask';
-import signedMessageIsString from '@services/web3/utils/signedMessageIsString';
-import CoinbaseConnector from '@components/WalletConnectors/Coinbase';
+import { Metamask } from 'components/Icons/metamask';
+import { EmailIcon, LockIcon } from 'components/Icons/userpass';
+import { useWonderWeb3 } from 'services/web3';
+import { emailSignup, getUserSigningMessage, walletSignup } from 'components/Auth/withAuth';
+import { SupportedChainType } from 'utils/web3Constants';
+import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
+import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
+import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
+import WalletConnectConnector from 'components/WalletConnectors/WalletConnect';
 
 const Signup = () => {
   const wonderWeb3 = useWonderWeb3();
@@ -57,7 +60,7 @@ const Signup = () => {
 
         if (signedMessageIsString(signedMessage)) {
           // Sign with Wallet
-          const result = await walletSignup(wonderWeb3.address, signedMessage, wonderWeb3.chainName.toLowerCase());
+          const result = await walletSignup(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
           if (result === true) {
             router.push(`/onboarding/welcome`, undefined, {
               shallow: true,
@@ -87,7 +90,15 @@ const Signup = () => {
   return (
     <AuthLayout>
       <LoginWrapper>
-        <TopBubble src="/images/login/top-floater-bubble.png" alt="" />
+        <Image
+          alt="Background"
+          className="auth-background"
+          src="/images/login/background.png"
+          layout="fill"
+          objectFit="cover"
+          quality={80}
+        />
+        <Image alt="Background" src="/images/login/background-blur.png" layout="fill" objectFit="cover" quality={80} />
         <Card>
           <CardBody>
             <SmallLogo />
@@ -136,6 +147,7 @@ const Signup = () => {
             )}
 
             <MetaMaskConnector text="Sign up with MetaMask" />
+            <WalletConnectConnector text="Sign up with Wallet Connect" />
             <CoinbaseConnector text="Sign up with Coinbase Wallet" />
           </CardBody>
           {/* <CardFooter>

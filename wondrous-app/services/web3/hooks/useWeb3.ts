@@ -4,6 +4,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { useContext, useEffect, useState } from 'react';
 import useInjectedProviderListener from './useInjectedProviderListener';
 import { WonderWeb3Context } from '../context/WonderWeb3Context';
+import useAlerts from 'hooks/useAlerts';
 
 /**
  * Hook that adds additional low-level functionality to web3-react useWeb3React.
@@ -12,6 +13,8 @@ export default function useWeb3() {
   const context = useWeb3React<Web3Provider>();
   const { connector, library, chainId, account, activate, deactivate, active, error } = context;
   const { provider, setProvider, isActivating, setIsActivating } = useContext(WonderWeb3Context);
+
+  const { showError } = useAlerts();
 
   useEffect(() => {
     if (isActivating && !!connector) {
@@ -36,6 +39,7 @@ export default function useWeb3() {
       if (error) {
         setIsActivating(null);
         console.log('Error while activating web3 connector', error);
+        showError("Can't activate web3 connector, Check that you're logged in on metamask/coinbase wallet, or refresh the page");
       }
     }).then(() => {
       done && done();

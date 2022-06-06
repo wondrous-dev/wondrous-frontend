@@ -1,10 +1,10 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import SideBarComponent from '../../components/SideBar';
-import HeaderComponent from '../../components/Header';
-import { SettingsContainer } from '../../components/Settings/styles';
-import DiscordNotificationSetup from '../../components/DiscordNotificationSetup';
-import { HeaderBlock } from '../../components/Settings/headerBlock';
+import SideBarComponent from 'components/SideBar';
+import HeaderComponent from 'components/Header';
+import { SettingsContainer } from 'components/Settings/styles';
+import DiscordNotificationSetup from 'components/DiscordNotificationSetup';
+import { HeaderBlock } from 'components/Settings/headerBlock';
 import {
   ListType,
   DiscordParagraph,
@@ -13,7 +13,7 @@ import {
   ListItem,
   BoldSpan,
   SmallerTopParagraph,
-} from '../../components/Discord/styles';
+} from 'components/Discord/styles';
 import { HighlightBlue, White } from '../../theme/colors';
 import Link from 'next/link';
 

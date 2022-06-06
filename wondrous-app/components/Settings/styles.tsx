@@ -1,14 +1,19 @@
-import React from 'react';
-import styled from 'styled-components';
+import {
+  Box,
+  Button as MuiButton,
+  ButtonBase,
+  InputBase,
+  List,
+  ListItem,
+  ListItemIcon,
+  Typography,
+} from '@mui/material';
 import SnackbarComp from '@mui/material/Snackbar';
-import { Button as MuiButton, InputBase, ListItemIcon, Typography } from '@material-ui/core';
-import { ListItemButton } from '@mui/material';
+import { SafeImage } from 'components/Common/Image';
+import styled from 'styled-components';
+import { White, Red200 } from '../../theme/colors';
 import { Button } from '../Common/button';
-import { LogoSquare } from '../Common/ci';
-import LogoutIcon from '../Icons/logout';
-import { GradientHighlightHorizontal } from '../Common/gradients';
 import { Discord } from '../Icons/discord';
-import { Black, White } from '../../theme/colors';
 
 export const SettingsContainer = styled.div`
   position: relative;
@@ -39,23 +44,6 @@ export const SettingsSidebarHeader = styled.div`
   align-items: center;
 `;
 
-export const SettingsSidebarHeaderLogo = styled(LogoSquare)`
-  && {
-    width: 44px;
-    height: 44px;
-    margin-right: 15px;
-  }
-`;
-
-export const SettingsSidebarHeaderTitle = styled(Typography)`
-  && {
-    font-weight: bold;
-    font-size: 18px;
-    line-height: 23px;
-    color: #ffffff;
-  }
-`;
-
 export const SettingsSidebarTabsSection = styled.div`
   height: 100%;
   padding-top: 50px;
@@ -68,80 +56,70 @@ export const SettingsSidebarTabsSectionLabel = styled(Typography)`
     line-height: 18px;
     letter-spacing: 0.01em;
     color: #ccbbff;
-    margin-bottom: 25px;
   }
 `;
 
-export const SettingsSidebarTabsListContainer = styled.div`
-  height: 100%;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
+export const SettingsSidebarTabsListContainer = styled(List)`
+  && {
+    margin-top: 20px;
+  }
+  & > li {
+    margin-top: 2px;
+  }
 `;
 
-export const SettingsSidebarTabsListItemButtonWrapper = styled.div`
-  width: 100%;
-  padding: 2px;
-  border-radius: 2px;
-  background: ${(props) => (props.active ? GradientHighlightHorizontal : 'transparent')};
+export const SettingsSidebarTabsListItem = styled(ListItem)`
+  && {
+    background: ${(props) => props.active && '#313131'};
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 4px;
+    width: 100%;
+    height: 40px;
+    padding: 4px;
+    :hover {
+      cursor: pointer;
+      background: linear-gradient(270deg, #262626 0%, #1c1c1c 100%);
+      outline: 1px solid #313131;
+    }
+    > * {
+      margin-left: 10px;
+    }
+    > :first-child {
+      margin-left: 0;
+    }
+  }
 `;
-
-export const SettingsSidebarTabsListItemButton = styled(ListItemButton)({
-  '&.MuiListItemButton-root': {
-    width: '100%',
-    height: 45,
-    borderRadius: 2,
-    padding: 10,
-    justifyContent: 'left',
-  },
-
-  '&.Mui-selected': {
-    background: '#101010 !important',
-
-    '&:hover': {
-      background: '#101010 !impotrant',
-    },
-  },
-});
 
 export const SettingsSidebarTabsListItemIcon = styled(ListItemIcon)`
   && {
-    width: 10px;
+    min-width: 0;
+    width: 32px;
+    height: 32px;
+    background: #0f0f0f;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  & path {
+    stroke: ${(props) => props.active && '#30c7ff'};
+  }
+  ${SettingsSidebarTabsListItem}:hover & {
+    path {
+      stroke: #30c7ff;
+    }
   }
 `;
 
 export const SettingsSidebarTabsListItemText = styled(Typography)`
   && {
+    font-family: 'Space Grotesk';
+    color: ${White};
+    text-decoration: none;
     font-size: 15px;
-    line-height: 19px;
-    letter-spacing: 0.01em;
-    color: #ffffff;
-  }
-`;
-
-export const SettingsSidebarLogoutButton = styled(MuiButton)`
-  && {
-    width: 100%;
-    height: 45px;
-    border-radius: 2px;
-    padding: 0;
-    justify-content: left;
-
-    &:hover {
-      background: #101010;
-    }
-  }
-`;
-
-export const SettingsSidebarLogoutButtonIcon = styled(LogoutIcon)`
-  && {
-    margin-right: 15px;
-  }
-`;
-
-export const SettingsSidebarLogoutButtonText = styled(SettingsSidebarTabsListItemText)`
-  && {
-    margin-left: 15px;
+    font-weight: ${(props) => (props.active ? '600' : '400')};
   }
 `;
 
@@ -152,6 +130,62 @@ export const SettingsContentBlock = styled.div`
   background-color: #0f0f0f;
   overflow-y: auto;
   min-height: 100vh;
+`;
+
+export const SettingsDaoPodIndicator = styled(Box)`
+  && {
+    display: ${({ pod }) => (pod ? 'flex' : 'none')};
+    background: #1c1c1c;
+    max-width: fit-content;
+    align-items: center;
+    padding: 8px;
+    border-radius: 4px;
+    > * {
+      margin-left: 12px;
+    }
+    > :first-child {
+      margin-left: 0;
+    }
+    margin-bottom: 32px;
+  }
+`;
+
+export const SettingsDaoPodIndicatorOrgProfile = styled((props) => (
+  <SafeImage
+    style={{
+      width: '24px',
+      height: '24px',
+    }}
+    {...props}
+  />
+))``;
+
+export const SettingsDaoPodIndicatorText = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 16px;
+    font-weight: 400;
+    color: #ffffff;
+  }
+`;
+export const ArchivedPodIndicatorText = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 16px;
+    font-weight: 400;
+    color: ${Red200};
+  }
+`;
+
+
+export const SettingsDaoPodIndicatorIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: ${({ color }) => (color ? color : '#0f0f0f')};
+  width: 24px;
+  height: 24px;
 `;
 
 //headerBlock.tsx styles
@@ -172,15 +206,13 @@ export const SettingsHeaderContent = styled.div`
   margin-left: 27px;
 `;
 
-export const SettingsHeaderTitle = styled(Typography)`
-  && {
-    font-weight: 500;
-    font-size: 28px;
-    line-height: 36px;
-    display: flex;
-    align-items: center;
-    color: #ffffff;
-  }
+export const SettingsHeaderTitle = styled.div`
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 36px;
+  display: flex;
+  align-items: center;
+  color: #ffffff;
 `;
 
 export const SettingsHeaderText = styled(Typography)`
@@ -214,7 +246,6 @@ export const GeneralSettingsDAONameBlock = styled.div`
   justify-content: space-between;
   margin-bottom: 28px;
 `;
-
 export const LabelBlock = styled(Typography)`
   && {
     font-weight: 500;
@@ -236,7 +267,7 @@ export const GeneralSettingsDAONameInput = styled(InputBase)`
     font-size: 14px;
     line-height: 21px;
     letter-spacing: 0.01em;
-    color: #c4c4c4;
+    color: ${White};
     padding: 10px 15px;
   }
 `;
@@ -245,29 +276,56 @@ export const GeneralSettingsDAODescriptionBlock = styled.div`
   position: relative;
 `;
 
+export const GeneralSettingsDAODescriptionInputWrapper = styled.div`
+  border: 1px solid pink;
+  border: 1px solid #4b4b4b;
+  border-radius: 6px;
+`;
+
 export const GeneralSettingsDAODescriptionInput = styled(GeneralSettingsDAONameInput)`
   && {
     height: 80px;
     font-size: 14px;
     line-height: 21px;
     letter-spacing: 0.01em;
-    color: #c4c4c4;
+    color: ${White};
     padding: 10px 15px;
+    border: none;
   }
 `;
 
 export const GeneralSettingsDAODescriptionInputCounter = styled(Typography)`
   && {
-    position: absolute;
-    bottom: 10px;
-    right: 20px;
-
     font-size: 12px;
-    line-height: 19px;
-    letter-spacing: 0.01em;
     color: #7a7a7a;
+    width: 100%;
+    text-align: right;
+    padding: 8px;
   }
 `;
+
+export const GeneralSettingsDAOProfileImage = styled((props) => (
+  <SafeImage
+    {...props}
+    style={{
+      width: '52px',
+      height: '52px',
+      marginTop: '30px',
+    }}
+  />
+))``;
+
+export const GeneralSettingsDAOHeaderImage = styled((props) => (
+  <SafeImage
+    {...props}
+    style={{
+      width: '100%',
+      height: 'auto',
+      objectFit: 'contain',
+      marginTop: '30px',
+    }}
+  />
+))``;
 
 //socials block
 export const GeneralSettingsSocialsBlock = styled.div`
@@ -327,9 +385,8 @@ export const GeneralSettingsButtonsBlock = styled.div`
 
 export const GeneralSettingsResetButton = styled(MuiButton)`
   && {
-    width: 177px;
-    //height: 40px;
-    height: 50px;
+    width: 191px;
+    height: 40px;
     background: #232323;
     border-radius: 234px;
 
@@ -338,13 +395,18 @@ export const GeneralSettingsResetButton = styled(MuiButton)`
     font-size: 16px;
     line-height: 150%;
     color: #ffffff;
+    text-transform: none;
+    font-family: Space Grotesk;
   }
 `;
 
 export const GeneralSettingsSaveChangesButton = styled(Button)`
   && {
-    width: 160px;
+    width: 191px;
     margin-left: 22px;
+    height: 40px;
+    font-family: Space Grotesk;
+    min-height: 40px;
   }
 `;
 
@@ -359,7 +421,7 @@ export const ImageUploadRecommendText = styled(Typography)`
   && {
     font-size: 12px;
     line-height: 15px;
-    color: #c4c4c4;
+    color: ${White};
     margin-bottom: 6px;
   }
 `;
@@ -393,6 +455,7 @@ export const ImageUploadBlockInputLabel = styled.label`
 export const ImageUploadBlockUploadedImg = styled.img`
   margin: 20px 0 10px;
   border-radius: 4px;
+  object-fit: contain;
 `;
 
 export const ImageUploadBlockRemoveButton = styled(MuiButton)`
@@ -445,8 +508,9 @@ export const Snackbar = styled(SnackbarComp)`
 
 export const DiscordText = styled(Typography)`
   && {
-    font-size: 16px;
+    font-size: 14px;
     color: ${White};
+    margin-bottom: 8px;
   }
 `;
 
@@ -456,5 +520,17 @@ export const LabelBlockText = styled(Typography)`
     font-family: Space Grotesk;
     font-size: 14px;
     margin-bottom: 12px;
+  }
+`;
+
+export const AddGuildButton = styled(ButtonBase)`
+  && {
+    background: #4b4b51;
+    border-radius: 8px;
+    width: 100%;
+    padding: 8px;
+    height: 40px;
+    display: flex;
+    align-items: center;
   }
 `;

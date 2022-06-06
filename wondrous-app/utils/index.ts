@@ -21,6 +21,16 @@ export function createSpacingUnit(multiplier = 1) {
   };
 }
 
+export function insertUrlParam(key, value) {
+  if (history.pushState) {
+    let searchParams = new URLSearchParams(window.location.search);
+    searchParams.set(key, value);
+    let newurl =
+      window.location.protocol + '//' + window.location.host + window.location.pathname + '?' + searchParams.toString();
+    window.history.pushState({ path: newurl }, '', newurl);
+  }
+}
+
 export const delQuery = (asPath) => {
   return asPath.split('?')[0];
 };
@@ -29,7 +39,7 @@ export const dedupeColumns = (columns) => {
   const taskMap = {};
   if (!columns) return [];
   const newColumns = columns.map((column) => {
-    column.tasks = column.tasks.filter((task) => {
+    column.tasks = column?.tasks?.filter((task) => {
       if (!(task?.id in taskMap)) {
         taskMap[task?.id] = true;
         return true;

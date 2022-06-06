@@ -30,15 +30,11 @@ import {
 import PersonAddIcon from '../../Icons/personAdd';
 import { CopyIcon, CopySuccessIcon } from '../../Icons/copy';
 import { useMutation, useLazyQuery } from '@apollo/client';
-import { CREATE_ORG_INVITE_LINK } from '../../../graphql/mutations/org';
-import { GET_ORG_ROLES } from '../../../graphql/queries/org';
-import { useOrgBoard, usePodBoard } from '../../../utils/hooks';
-import { parseUserPermissionContext } from '../../../utils/helpers';
-import { PERMISSIONS } from '../../../utils/constants';
-
-const link = process.env.NEXT_PUBLIC_PRODUCTION
-  ? `https://app.wonderverse.xyz/invite/`
-  : 'https://wondrous-app-git-staging-wonderverse.vercel.app/invite/';
+import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
+import { GET_ORG_ROLES } from 'graphql/queries/org';
+import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { LINK, PERMISSIONS } from 'utils/constants';
 
 export const putDefaultRoleOnTop = (roles, permissions) => {
   if (!roles) return [];
@@ -83,7 +79,7 @@ export const OrgInviteLinkModal = (props) => {
 
   const [createOrgInviteLink] = useMutation(CREATE_ORG_INVITE_LINK, {
     onCompleted: (data) => {
-      setInviteLink(`${link}${data?.createOrgInviteLink.token}`);
+      setInviteLink(`${LINK}/invite/${data?.createOrgInviteLink.token}`);
     },
     onError: (e) => {
       console.error(e);

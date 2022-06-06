@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache, HttpLink, split, defaultDataIdFromObject } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { getMainDefinition, offsetLimitPagination } from '@apollo/client/utilities';
-import { getAuthHeader, getWaitlistAuthHeader } from '../components/Auth/withAuth';
+import { getAuthHeader, getWaitlistAuthHeader } from 'components/Auth/withAuth';
 
 // Staging is http://34.135.9.199/graphql
 const graphqlUri = process.env.NEXT_PUBLIC_GRAPHQL_SERVER_URL || 'https://apistaging.wonderapp.co/graphql';

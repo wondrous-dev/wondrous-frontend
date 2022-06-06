@@ -1,22 +1,13 @@
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { withAuth } from '../components/Auth/withAuth';
-import DashboardPanel from '../components/Common/DashboardPanel';
-import Boards from '../components/Dashboard/boards';
-import Wrapper from '../components/Dashboard/wrapper';
-import { ViewType } from '../types/common';
-import { SelectMembershipContext } from '../utils/contexts';
-
-const DashboardPanelWrapper = styled.div`
-  margin-top: -140px;
-  width: 100%;
-`;
-
-const BoardsWrapper = styled.div`
-  width: 1037px;
-  margin: 0 auto;
-`;
+import { withAuth } from 'components/Auth/withAuth';
+import DashboardPanel from 'components/Common/DashboardPanel';
+import Boards from 'components/Dashboard/boards';
+import Wrapper from 'components/Dashboard/wrapper';
+import { ViewType } from 'types/common';
+import { SelectMembershipContext } from 'utils/contexts';
+import { DashboardPanelWrapper, BoardsWrapper } from 'components/Dashboard/boards/styles';
 
 const Dashboard = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
@@ -43,6 +34,7 @@ const Dashboard = () => {
           <Boards
             isAdmin={isAdmin}
             selectedStatus={selectedStatus}
+            setSelectedStatus={setSelectedStatus}
             selectMembershipRequests={selectMembershipRequests}
           />
         </BoardsWrapper>

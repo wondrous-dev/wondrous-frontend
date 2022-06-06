@@ -1,4 +1,6 @@
-import { useContext, useState, useEffect, useRef } from 'react';
+import { NextRouter } from 'next/router';
+import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction } from 'react';
+import apollo from 'services/apollo';
 
 import {
   ColumnsContext,
@@ -12,7 +14,10 @@ import {
   ApprovedSubmissionContext,
   PaymentModalContext,
   SelectMembershipContext,
+  EditTokenGatingConditionContext,
 } from './contexts';
+import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries';
+import { useLazyQuery } from '@apollo/client';
 
 export const useIsMobile = () => useContext(IsMobileContext);
 
@@ -71,13 +76,21 @@ export const useBoard = () => {
 
 export const useSettings = () => useContext(SettingsBoardContext);
 
-export const useColumns = () => useContext(ColumnsContext);
+export const useColumns = () => {
+  const context = useContext(ColumnsContext);
+  if (!context) {
+    console.log('useColumns must be used within a ColumnsContext Provider');
+  }
+  return context;
+};
 
 export const useApprovedSubmission = () => useContext(ApprovedSubmissionContext); // for payment, i think it's hacky
 
 export const usePaymentModal = () => useContext(PaymentModalContext);
 
 export const useSelectMembership = () => useContext(SelectMembershipContext);
+
+export const useEditTokenGatingCondition = () => useContext(EditTokenGatingConditionContext);
 /**
  * Hook that alerts clicks outside of the passed ref
  */
@@ -87,7 +100,7 @@ export const useOutsideAlerter = (ref, callback) => {
      * Alert if clicked on outside of element
      */
     function handleClickOutside(event) {
-      if (ref.current && !ref.current.contains(event.target)) {
+      if (ref?.current && !ref.current.contains(event.target)) {
         callback(event);
       }
     }
@@ -109,3 +122,59 @@ function usePrevious(value) {
   return ref.current; //in the end, return the current ref value.
 }
 export default usePrevious;
+
+export const useRouterQuery = ({
+  router,
+  query,
+  defaultValue = [],
+}: {
+  router: NextRouter;
+  query: string;
+  defaultValue?: string[];
+}): [string[], Dispatch<SetStateAction<string[]>>] => {
+  const [state, setState] = useState(defaultValue);
+  const routerQuery = router?.query?.[query];
+  useEffect(() => {
+    if (routerQuery) {
+      setState(routerQuery?.toString().split(','));
+    }
+  }, [routerQuery]);
+  return [state, setState];
+};
+
+export const useTokenGating = (orgId) => {
+  const [getTokenGatingConditionsForOrg, { data, loading }] = useLazyQuery(GET_TOKEN_GATING_CONDITIONS_FOR_ORG, {
+    fetchPolicy: 'network-only',
+  });
+  useEffect(() => {
+    if (orgId) {
+      getTokenGatingConditionsForOrg({
+        variables: {
+          orgId,
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orgId]);
+  return [data, loading];
+};
+
+export const useFilterQuery = (query, variables = {}, shouldFetch = true) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState(null);
+  const getData = async () => {
+    const { data } = await apollo.query({
+      query,
+      variables,
+    });
+    setData(Object.values(data).flat());
+    setIsLoading(false);
+  };
+  useEffect(() => {
+    if (query && shouldFetch) {
+      setIsLoading(true);
+      getData();
+    }
+  }, [query, variables, shouldFetch]);
+  return { isLoading, data };
+};

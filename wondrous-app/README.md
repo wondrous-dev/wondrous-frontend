@@ -1,8 +1,21 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Installation
+
+First configure your app by copying the `.env.example` file to `.env` and substitute the values
+for your development environment.
+
+Then, install the dependencies:
+
+```bash
+npm install
+# or
+yarn
+```
+
 ## Getting Started
 
-First, run the development server:
+Then, run the development server:
 
 ```bash
 npm run dev
@@ -53,4 +66,5 @@ export NODE_OPTIONS=--openssl-legacy-provider
 Then try again.
 
 OS's affected:
-* macOS Monterey (M1 Pro)
+
+- macOS Monterey (M1 Pro)

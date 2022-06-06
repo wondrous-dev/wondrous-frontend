@@ -1,6 +1,6 @@
-import { PaddedParagraph } from '@components/Common/text';
+import { PaddedParagraph } from 'components/Common/text';
 import WonderAbstractConnector from './AbstractConnector';
-import { Coinbase } from '@components/Icons/coinbase';
+import { Coinbase } from 'components/Icons/coinbase';
 
 export default function CoinbaseConnector({
   text = 'Log in with Coinbase Wallet',

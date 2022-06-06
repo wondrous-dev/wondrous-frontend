@@ -4,7 +4,7 @@ import { IconButton } from '@material-ui/core';
 import CloseModalIcon from '../Icons/closeModal';
 import RightArrowIcon from '../Icons/rightArrow';
 
-import { ENTITIES_TYPES, PERMISSIONS } from '../../utils/constants';
+import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
 
 import {
   CreateLayoutDaoIcon,
@@ -20,12 +20,13 @@ import {
   CreateLayoutsModalTitle,
   CreateLayoutTaskIcon,
   CreateLayoutBountyIcon,
+  CreateLayoutProposalIcon,
 } from './styles';
 import { useRouter } from 'next/router';
-import { GET_USER_PERMISSION_CONTEXT } from '../../graphql/queries';
-import { parseUserPermissionContext } from '../../utils/helpers';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { parseUserPermissionContext } from 'utils/helpers';
 import { useQuery } from '@apollo/client';
-import { useOrgBoard, usePodBoard } from '../../utils/hooks';
+import { useOrgBoard, usePodBoard } from 'utils/hooks';
 
 export const ENTITIES_UI_ELEMENTS = {
   [ENTITIES_TYPES.TASK]: {
@@ -49,7 +50,7 @@ export const ENTITIES_UI_ELEMENTS = {
     label: 'Bounty',
   },
   [ENTITIES_TYPES.PROPOSAL]: {
-    icon: CreateLayoutTaskIcon,
+    icon: CreateLayoutProposalIcon,
     label: 'Proposal',
   },
 };
@@ -81,6 +82,13 @@ const ChooseEntityToCreateModal = (props) => {
       !permissions.includes(PERMISSIONS.FULL_ACCESS) &&
       !permissions.includes(PERMISSIONS.MANAGE_POD) &&
       key === ENTITIES_TYPES.POD
+    ) {
+      return false;
+    }
+    if (
+      !permissions.includes(PERMISSIONS.FULL_ACCESS) &&
+      !permissions.includes(PERMISSIONS.CREATE_TASK) &&
+      key === ENTITIES_TYPES.MILESTONE
     ) {
       return false;
     }

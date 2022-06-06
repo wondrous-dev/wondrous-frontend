@@ -10,7 +10,7 @@ export const UserAboutInfoContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: left;
+  justify-content: space-between;
 `;
 
 export const UserAboutInfoBlock = styled.div`
@@ -24,8 +24,12 @@ export const UserAboutInfoBlock = styled.div`
     display: flex;
     flex-direction: column;
     padding: 18px 14px;
-    margin-left: 30px;
+    margin-left: 24px;
     height: max-content;
+  }
+
+  &:first-child {
+    margin-left: 0;
   }
 
   & > * {
@@ -192,6 +196,11 @@ export const UserAboutInfoPodsCardFooterCount = styled(Typography)`
 export const UserAboutInfoSeeAllDialog = styled(Dialog)`
   && .MuiPaper-root {
     background-color: transparent;
+    ::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
   }
 `;
 

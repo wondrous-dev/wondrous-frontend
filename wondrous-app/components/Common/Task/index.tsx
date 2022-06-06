@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { LogoButton } from '../logo';
+import Link from 'next/link';
+
 import {
   TodoWithBorder,
   InProgressWithBorder,
@@ -10,74 +12,48 @@ import {
   AwaitingPayment,
   Paid,
 } from '../../Icons';
-import { TaskLikeIcon } from '../../Icons/taskLike';
-import { TaskCommentIcon } from '../../Icons/taskComment';
-import { TaskShareIcon } from '../../Icons/taskShare';
-import { TaskMenuIcon } from '../../Icons/taskMenu';
-
-import { AvatarList, SmallAvatar } from '../AvatarList';
+import Card from './card';
+import { AvatarList } from '../AvatarList';
 import { Compensation } from '../Compensation';
 import { TaskMedia } from '../MediaPlayer';
-import { DropDown, DropDownItem } from '../dropdown';
 import { CompletedIcon } from '../../Icons/statusIcons';
 import { RejectIcon } from '../../Icons/taskModalIcons';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import { ArchiveTaskModal } from '../ArchiveTaskModal';
-import { GET_ORG_TASK_BOARD_TASKS } from '../../../graphql/queries/taskBoard';
-import MilestoneIcon from '../../Icons/milestone';
 
-import * as Constants from '../../../utils/constants';
+import * as Constants from 'utils/constants';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
 import {
-  TaskWrapper,
-  TaskInner,
   TaskHeader,
   TaskContent,
   TaskTitle,
   TaskSeparator,
   TaskFooter,
-  TaskAction,
-  TaskActionAmount,
-  TaskActionMenu,
   PodWrapper,
   PodName,
   TaskListCardWrapper,
   TaskStatusHeaderText,
   ArchivedTaskUndo,
-  TaskDivider,
-  MilestoneProgressWrapper,
-  TaskHeaderIconWrapper,
-  SubtaskCountWrapper,
-  SubtaskCount,
-  TaskContentFooter,
-  ClaimButton,
   TaskCardDescriptionText,
 } from './styles';
-import { renderMentionString } from '../../../utils/common';
+import { renderMentionString } from 'utils/common';
 import { useRouter } from 'next/router';
-import { Typography } from '@material-ui/core';
 import { SafeImage } from '../Image';
-import { parseUserPermissionContext, cutString, transformTaskToTaskCard } from '../../../utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
-import { White } from '../../../theme/colors';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useLocation } from 'utils/useLocation';
 import { TaskViewModal } from './modal';
 import { useMe } from '../../Auth/withAuth';
-import { delQuery } from '../../../utils';
+import { delQuery } from 'utils';
 import { TaskSummaryAction } from '../TaskSummary/styles';
 import { Arrow, Archived } from '../../Icons/sections';
-import { UPDATE_TASK_STATUS, UPDATE_TASK_ASSIGNEE } from '../../../graphql/mutations/task';
-import { GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD } from '../../../graphql/queries';
-import { OrgBoardContext } from '../../../utils/contexts';
-import { TaskCreatedBy } from '../TaskCreatedBy';
-import { MilestoneProgress } from '../MilestoneProgress';
-import { MilestoneWrapper } from '../Milestone';
-import PodIcon from '../../Icons/podIcon';
-import { SubtaskDarkIcon } from '../../Icons/subtask';
-import { CheckedBoxIcon } from '../../Icons/checkedBox';
-
-import { Claim } from '../../Icons/claimTask';
-import { updateInProgressTask, updateTaskItem } from '../../../utils/board';
-import { TaskBountyOverview } from '../TaskBountyOverview';
+import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
+import { GET_TASK_REVIEWERS } from 'graphql/queries';
+import { CreateModalOverlay } from 'components/CreateEntity/styles';
+import EditLayoutBaseModal from 'components/CreateEntity/editEntityModal';
+import { DeleteTaskModal } from '../DeleteTaskModal';
+import { REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { getBoardType } from '../KanbanBoard/kanbanBoard';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -90,9 +66,22 @@ export const TASK_ICONS = {
   [Constants.TASK_STATUS_PAID]: Paid,
 };
 
-let windowOffset = 0;
+const useGetReviewers = (editTask, task) => {
+  const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
+  useEffect(() => {
+    if (editTask && !reviewerData?.getTaskReviewers?.length) {
+      getReviewers({
+        variables: {
+          taskId: task?.id,
+        },
+      });
+    }
+  }, [editTask, getReviewers, reviewerData?.getTaskReviewers?.length, task?.id]);
+  return reviewerData?.getTaskReviewers;
+};
+
 export const Task = (props) => {
-  const { task, setTask, onOpen = (task) => null, className } = props;
+  const { task, setTask, className } = props;
   const {
     actions = {},
     description = '',
@@ -110,6 +99,7 @@ export const Task = (props) => {
     createdBy,
     commentCount,
   } = task;
+
   const router = useRouter();
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
   let { likes = 0, comments = 0, shares = 0, iLiked = false, iCommented = false, iShared = false } = actions || {};
@@ -117,14 +107,17 @@ export const Task = (props) => {
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
-  const boardColumns = useColumns();
+  const board = orgBoard || podBoard || userBoard;
+
   const user = useMe();
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
   const [userList, setUserList] = useState([]);
   const [liked, setLiked] = useState(iLiked);
   const [archiveTask, setArchiveTask] = useState(false);
+  const [deleteTask, setDeleteTask] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
+  const [editTask, setEditTask] = useState(false);
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
@@ -138,69 +131,106 @@ export const Task = (props) => {
   const isMilestone = type === Constants.ENTITIES_TYPES.MILESTONE;
   const isSubtask = task?.parentTaskId !== null;
   const isBounty = type === Constants.ENTITIES_TYPES.BOUNTY;
+  const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
 
-  const [updateTaskStatusMutation, { data: updateTaskStatusMutationData }] = useMutation(UPDATE_TASK_STATUS, {
-    refetchQueries: () => [
+  const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
+    refetchQueries: [
+      'getTaskById',
       'getUserTaskBoardTasks',
-      'getOrgTaskBoardTasks',
-      'getPodTaskBoardTasks',
       'getPerStatusTaskCountForUserBoard',
+      'getOrgTaskBoardTasks',
       'getPerStatusTaskCountForOrgBoard',
+      'getPodTaskBoardTasks',
       'getPerStatusTaskCountForPodBoard',
-      'getSubtasksForTask',
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
     ],
+    onError: () => {
+      console.error('Something went wrong with archiving tasks');
+    },
+    onCompleted: () => {
+      // TODO: Move columns
+      // let columns = [...boardColumns?.columns]
+    },
   });
+  const [unarchiveTaskMutation, { data: unarchiveTaskData }] = useMutation(UNARCHIVE_TASK, {
+    refetchQueries: [
+      'getTaskById',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getOrgTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+    onError: () => {
+      console.error('Something went wrong unarchiving tasks');
+    },
+    onCompleted: () => {
+      // TODO: Move columns
+      // let columns = [...boardColumns?.columns]
+    },
+  });
+
+  const reviewerData = useGetReviewers(editTask, task);
+
+  const proposalRequestChange = (id, status) => {
+    requestChangeTaskProposal({
+      variables: {
+        proposalId: id,
+      },
+      onCompleted: () => {
+        let columns = [...board?.columns];
+        const columnToChange = columns.findIndex((column) => column.status === status);
+        if (Number.isInteger(columnToChange)) {
+          columns[columnToChange].tasks = columns[columnToChange].tasks.filter((task) => task.id !== id);
+          columns[columns.length - 1].tasks = [
+            { ...task, changeRequestedAt: new Date() },
+            ...columns[columns.length - 1].tasks,
+          ];
+        }
+        board?.setColumns(columns);
+      },
+      refetchQueries: ['getPerStatusTaskCountForOrgBoard'],
+    });
+  };
 
   const totalSubtask = task?.totalSubtaskCount;
   const completedSubtask = task?.completedSubtaskCount;
   const [claimed, setClaimed] = useState(false);
-  const handleNewStatus = useCallback(
-    (newStatus) => {
-      orgBoard?.setFirstTimeFetch(false);
-      updateTaskStatusMutation({
-        variables: {
-          taskId: id,
-          input: {
-            newStatus,
-          },
-        },
-      });
-    },
-    [id, updateTaskStatusMutation, orgBoard]
-  );
-
-  useEffect(() => {
-    if (!initialStatus) {
-      setInitialStatus(status);
-    }
-
-    if (updateTaskStatusMutationData?.updateTaskStatus.status === Constants.TASK_STATUS_ARCHIVED) {
+  const handleOnArchive = useCallback(() => {
+    orgBoard?.setFirstTimeFetch(false);
+    archiveTaskMutation({
+      variables: {
+        taskId: id,
+      },
+    }).then((result) => {
       setSnackbarAlertOpen(true);
       setSnackbarAlertMessage(
         <>
           Task archived successfully!{' '}
           <ArchivedTaskUndo
             onClick={() => {
-              handleNewStatus(initialStatus);
               setSnackbarAlertOpen(false);
+              unarchiveTaskMutation({
+                variables: {
+                  taskId: id,
+                },
+              });
             }}
           >
             Undo
           </ArchivedTaskUndo>
         </>
       );
+    });
+  }, [id, orgBoard, archiveTaskMutation, setSnackbarAlertMessage, setSnackbarAlertOpen, unarchiveTaskMutation]);
+
+  useEffect(() => {
+    if (!initialStatus) {
+      setInitialStatus(status);
     }
-  }, [
-    initialStatus,
-    setInitialStatus,
-    status,
-    updateTaskStatusMutationData,
-    setSnackbarAlertOpen,
-    setSnackbarAlertMessage,
-    handleNewStatus,
-    isSubtask,
-    id,
-  ]);
+  }, [initialStatus, setInitialStatus, status]);
 
   const toggleLike = () => {
     setLiked(!liked);
@@ -227,14 +257,14 @@ export const Task = (props) => {
     permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
     task?.createdBy === user?.id;
 
-  const openModal = () => {
-    onOpen(task);
-    router.push(`${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}`);
-    // document.body.style.overflow = 'hidden'
-    // document.body.scroll = false
-    windowOffset = window.scrollY;
-    document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
-  };
+  const canDelete =
+    canArchive && (task?.type === Constants.ENTITIES_TYPES.TASK || task?.type === Constants.ENTITIES_TYPES.MILESTONE);
+
+  const taskType = task?.isProposal ? 'taskProposal' : 'task';
+  let viewUrl = `${delQuery(router.asPath)}?${taskType}=${task?.id}&view=${router.query.view || 'grid'}`;
+  if (board?.entityType) {
+    viewUrl = viewUrl + `&entity=${board?.entityType}`;
+  }
 
   const goToPod = (podId) => {
     // Filter or go to Pod Page
@@ -267,191 +297,82 @@ export const Task = (props) => {
 
   return (
     <span className={className}>
+      <CreateModalOverlay
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        open={editTask}
+        onClose={() => {
+          setEditTask(false);
+        }}
+      >
+        <EditLayoutBaseModal
+          open={open}
+          entityType={task?.type}
+          handleClose={() => {
+            setEditTask(false);
+          }}
+          cancelEdit={() => setEditTask(false)}
+          existingTask={{
+            ...task,
+            reviewers: reviewerData || [],
+          }}
+          isTaskProposal={false}
+        />
+      </CreateModalOverlay>
       <ArchiveTaskModal
         open={archiveTask}
         onClose={() => setArchiveTask(false)}
-        onArchive={handleNewStatus}
+        onArchive={handleOnArchive}
         taskType={type}
+        taskId={task?.id}
       />
-      <TaskWrapper key={id} onClick={openModal}>
-        <TaskInner>
-          <TaskHeader>
-            <TaskHeaderIconWrapper>
-              <SafeImage
-                src={task?.orgProfilePicture}
-                style={{
-                  width: '29px',
-                  height: '28px',
-                  borderRadius: '4px',
-                  marginRight: '8px',
-                }}
-              />
-              {isMilestone && <MilestoneIcon />}
-              <AvatarList users={userList} id={'task-' + task?.id} />
-              {isSubtask && <SubtaskDarkIcon />}
-              {!isSubtask && !isMilestone && totalSubtask > 0 && <CheckedBoxIcon />}
-              {task?.privacyLevel === Constants.PRIVACY_LEVEL.public && (
-                <PodWrapper
-                  style={{
-                    marginTop: '0',
-                  }}
-                >
-                  <PodName
-                    style={{
-                      borderRadius: '8px',
-                      marginLeft: '4px',
-                    }}
-                  >
-                    Public
-                  </PodName>
-                </PodWrapper>
-              )}
-            </TaskHeaderIconWrapper>
-            {rewards && rewards?.length > 0 && <Compensation rewards={rewards} taskIcon={<TaskIcon />} />}
-          </TaskHeader>
-          <TaskCreatedBy type={type} router={router} createdBy={createdBy} />
-          {(isMilestone || isBounty) && <TaskDivider />}
-
-          <TaskContent>
-            <TaskTitle>{title}</TaskTitle>
-            <TaskCardDescriptionText>
-              {renderMentionString({
-                content: description,
-                router,
-              })}
-            </TaskCardDescriptionText>
-            <TaskContentFooter>
-              {task?.podName && (
-                <PodWrapper
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    goToPod(task?.podId);
-                  }}
-                >
-                  <PodIcon
-                    color={task?.podColor}
-                    style={{
-                      width: '26px',
-                      height: '26px',
-                      marginRight: '8px',
-                    }}
-                  />
-                  <PodName>{task?.podName}</PodName>
-                </PodWrapper>
-              )}
-              {!isSubtask && !isMilestone && totalSubtask > 0 && (
-                <SubtaskCountWrapper
-                  style={{
-                    marginTop: '24px',
-                  }}
-                >
-                  <SubtaskDarkIcon />
-                  <SubtaskCount>
-                    {completedSubtask}/{totalSubtask}
-                  </SubtaskCount>
-                </SubtaskCountWrapper>
-              )}
-            </TaskContentFooter>
-            {isBounty && (
-              <TaskBountyOverview
-                totalSubmissionsCount={task?.totalSubmissionsCount}
-                approvedSubmissionsCount={task?.approvedSubmissionsCount}
-              />
-            )}
-            <MilestoneProgressWrapper>{isMilestone && <MilestoneProgress milestoneId={id} />}</MilestoneProgressWrapper>
-            {media?.length > 0 ? <TaskMedia media={media[0]} /> : <TaskSeparator />}
-          </TaskContent>
-          <TaskFooter>
-            {/* <TaskAction key={'task-like-' + id} onClick={toggleLike}>
-						<TaskLikeIcon liked={liked} />
-						<TaskActionAmount>{likes}</TaskActionAmount>
-					</TaskAction> */}
-            {!assigneeId && !isBounty && !isMilestone && (
-              <>
-                {claimed ? (
-                  <ClaimButton
-                    style={{
-                      background: 'linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%)',
-                      border: '1px solid #7427ff',
-                    }}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                  >
-                    Claimed
-                  </ClaimButton>
-                ) : (
-                  <ClaimButton
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      updateTaskAssignee({
-                        variables: {
-                          taskId: id,
-                          assigneeId: user?.id,
-                        },
-                        onCompleted: (data) => {
-                          setClaimed(true);
-                          const task = data?.updateTaskAssignee;
-                          const transformedTask = transformTaskToTaskCard(task, {});
-                          if (boardColumns?.setColumns) {
-                            let columns = [...boardColumns?.columns];
-                            if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
-                              columns = updateInProgressTask(transformedTask, columns);
-                            } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
-                              columns = updateTaskItem(transformedTask, columns);
-                            }
-                            boardColumns.setColumns(columns);
-                          }
-                        },
-                      });
-                    }}
-                  >
-                    <Claim />
-                    <span
-                      style={{
-                        marginLeft: '4px',
-                      }}
-                    >
-                      Claim
-                    </span>
-                  </ClaimButton>
-                )}
-              </>
-            )}
-            {!isMilestone && (
-              <TaskAction key={'task-comment-' + id}>
-                <TaskCommentIcon />
-                <TaskActionAmount>{commentCount}</TaskActionAmount>
-              </TaskAction>
-            )}
-            {/* <TaskAction key={'task-share-' + id}>
-              <TaskShareIcon />
-              <TaskActionAmount>{shares}</TaskActionAmount>
-            </TaskAction> */}
-
-            {canArchive && (
-              <TaskActionMenu right="true">
-                <DropDown DropdownHandler={TaskMenuIcon}>
-                  <DropDownItem
-                    key={'task-menu-edit-' + id}
-                    onClick={() => {
-                      setArchiveTask(true);
-                    }}
-                    style={{
-                      color: White,
-                    }}
-                  >
-                    Archive {type}
-                  </DropDownItem>
-                </DropDown>
-              </TaskActionMenu>
-            )}
-          </TaskFooter>
-        </TaskInner>
-      </TaskWrapper>
+      <DeleteTaskModal
+        open={deleteTask}
+        onClose={() => {
+          setDeleteTask(false);
+        }}
+        taskType={type}
+        taskId={task?.id}
+        onDelete={() => {
+          setSnackbarAlertOpen(true);
+          setSnackbarAlertMessage(`Deleted successfully!`);
+        }}
+      />
+      <Card
+        viewUrl={viewUrl}
+        id={id}
+        task={task}
+        isMilestone={isMilestone}
+        userList={userList}
+        isSubtask={isSubtask}
+        totalSubtask={totalSubtask}
+        rewards={rewards}
+        type={type}
+        createdBy={createdBy}
+        isBounty={isBounty}
+        title={title}
+        description={description}
+        goToPod={goToPod}
+        completedSubtask={completedSubtask}
+        media={media}
+        assigneeId={assigneeId}
+        claimed={claimed}
+        updateTaskAssignee={updateTaskAssignee}
+        setClaimed={setClaimed}
+        user={user}
+        commentCount={commentCount}
+        canArchive={canArchive}
+        setEditTask={setEditTask}
+        setArchiveTask={setArchiveTask}
+        canDelete={canDelete}
+        setDeleteTask={setDeleteTask}
+        proposalRequestChange={proposalRequestChange}
+        boardType={getBoardType({
+          orgBoard,
+          podBoard,
+          userBoard,
+        })}
+      />
     </span>
   );
 };
@@ -507,7 +428,11 @@ export const TaskListCard = (props) => {
         isTaskProposal={taskType === Constants.TASK_STATUS_REQUESTED}
         back={true}
       />
-      <TaskListCardWrapper onClick={() => setViewDetails(true)}>
+      <TaskListCardWrapper
+        onClick={() => {
+          setViewDetails(true);
+        }}
+      >
         <TaskHeader>
           <SafeImage
             src={task?.orgProfilePicture}
@@ -550,9 +475,8 @@ export const TaskListCard = (props) => {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                router.push(`/pod/${task?.podId}/boards`, undefined, {
-                  shallow: true,
-                });
+                const newUrl = `/pod/${task?.podId}/boards`;
+                window.location.href = newUrl;
               }}
             >
               <PodName>{task?.podName.slice(0, 15)}</PodName>

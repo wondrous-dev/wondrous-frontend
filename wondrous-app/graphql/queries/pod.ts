@@ -47,6 +47,8 @@ export const GET_USER_AVAILABLE_PODS = gql`
       username
       name
       profilePicture
+      privacyLevel
+      color
     }
   }
 `;
@@ -58,6 +60,12 @@ export const GET_POD_USERS = gql`
         id
         username
         profilePicture
+        thumbnailPicture
+        additionalInfo {
+          podCount
+        }
+        firstName
+        lastName
         bio
       }
       role {
@@ -87,6 +95,65 @@ export const GET_POD_ROLES = gql`
       name
       permissions
       default
+    }
+  }
+`;
+
+export const GET_POD_ROLES_WITH_TOKEN_GATE = gql`
+  query getPodRolesWithTokenGate($podId: ID) {
+    getPodRoles(podId: $podId) {
+      id
+      name
+      permissions
+      default
+      tokenGatingCondition {
+        id
+        orgId
+        podId
+        name
+        booleanLogic
+        accessCondition {
+          contractAddress
+          type
+          chain
+          method
+          minValue
+          tokenIds
+        }
+      }
+    }
+  }
+`;
+
+export const GET_USER_JOIN_POD_REQUEST = gql`
+  query getUserJoinPodRequest($podId: ID!) {
+    getUserJoinPodRequest(podId: $podId) {
+      id
+      podId
+      approvedAt
+      rejectedAt
+    }
+  }
+`;
+
+export const GET_JOIN_POD_REQUESTS = gql`
+  query getJoinPodRequests($limit: Int, $offset: Int) {
+    getJoinPodRequests(limit: $limit, offset: $offset) {
+      id
+      userId
+      orgId
+      podId
+      approvedAt
+      message
+      rejectedAt
+      userUsername
+      userProfilePicture
+      orgProfilePicture
+      orgName
+      orgUsername
+      podColor
+      podName
+      createdAt
     }
   }
 `;

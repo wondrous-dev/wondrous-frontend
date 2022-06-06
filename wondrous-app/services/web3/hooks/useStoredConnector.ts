@@ -1,4 +1,4 @@
-import isServerSide from '@utils/isServerSide';
+import isServerSide from 'utils/isServerSide';
 import { ConnectorName } from '../connectors';
 
 const STORAGE_KEY = 'stored_connector';

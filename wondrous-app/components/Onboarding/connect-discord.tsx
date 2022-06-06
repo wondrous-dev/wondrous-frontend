@@ -18,11 +18,12 @@ import DiscordLogo from '../../public/images/onboarding/discord.svg';
 import DiscordSmallLogo from '../../public/images/onboarding/discord-small.svg';
 import { useRouter } from 'next/router';
 
-import { SecondStep, ThirdStep } from '../../components/Common/Image/OnboardingProgressBar';
-import { useWonderWeb3 } from '../../services/web3';
+import { SecondStep, ThirdStep } from 'components/Common/Image/OnboardingProgressBar';
+import { useWonderWeb3 } from 'services/web3';
 import { Field, FieldInput } from '../Common/field';
 import { useMe } from '../Auth/withAuth';
-import { getDiscordUrl } from '../../utils';
+import { getDiscordUrl } from 'utils';
+import { DISCORD_CONNECT_TYPES } from 'utils/constants';
 
 const DISCORD_OAUTH_URL = getDiscordUrl();
 
@@ -107,7 +108,12 @@ export const InviteWelcomeBox = ({ updateUser }) => {
         </LaterButton>
         <ContinueButton
           style={buttonStyle}
-          onClick={() => (window.location.href = DISCORD_OAUTH_URL)}
+          onClick={() => {
+            const state = JSON.stringify({
+              callbackType: DISCORD_CONNECT_TYPES.connectOnboarding,
+            });
+            window.location.href = `${DISCORD_OAUTH_URL}&state=${state}`;
+          }}
           buttonInnerStyle={{
             padding: '8px 16px',
           }}

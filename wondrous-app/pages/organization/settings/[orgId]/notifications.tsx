@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import Notifications from '../../../../components/Settings/Notifications';
+import Notifications from 'components/Settings/Notifications';
+import { withAuth } from 'components/Auth/withAuth';
 
 const NotificationsPage = () => {
   const router = useRouter();
@@ -10,4 +11,4 @@ const NotificationsPage = () => {
   return <Notifications orgId={orgId} />;
 };
 
-export default NotificationsPage;
+export default withAuth(NotificationsPage);

@@ -1,28 +1,39 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Card, CardBody, CardFooter } from '../components/Common/auth';
-import { Button } from '../components/Common/button';
-import AuthLayout from '../components/Common/Layout/Auth';
-import { LineWithText, Line } from '../components/Common/lines';
-import { Form } from '../components/Common/form';
-import { Field } from '../components/Common/field';
-import { PaddedParagraph, StyledLink } from '../components/Common/text';
-import { SmallLogo, LoginWrapper, TopBubble, LoginError } from '../components/Pages/login';
+import Image from 'next/image';
+
+import { Card, CardBody, CardFooter } from 'components/Common/auth';
+import { Button } from 'components/Common/button';
+import AuthLayout from 'components/Common/Layout/Auth';
+import { LineWithText, Line } from 'components/Common/lines';
+import { Form } from 'components/Common/form';
+import { Field } from 'components/Common/field';
+import { PaddedParagraph, StyledLink } from 'components/Common/text';
+import { SmallLogo, LoginWrapper, TopBubble, LoginError } from 'components/Pages/login';
 import { useState } from 'react';
 import { Grey50 } from '../theme/colors';
-import { EmailIcon, LockIcon } from '../components/Icons/userpass';
-import { useWonderWeb3 } from '../services/web3';
-import { emailSignin, getUserSigningMessage, walletSignin } from '../components/Auth/withAuth';
-import MetaMaskConnector from '@components/WalletConnectors/MetaMask';
-import signedMessageIsString from '@services/web3/utils/signedMessageIsString';
+import { EmailIcon, LockIcon } from 'components/Icons/userpass';
+import { DiscordIcon } from 'components/Icons/discord';
+import { useWonderWeb3 } from 'services/web3';
+import { emailSignin, getUserSigningMessage, walletSignin } from 'components/Auth/withAuth';
+import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
+import WalletConnectConnector from 'components/WalletConnectors/WalletConnect';
+import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import styled from 'styled-components';
-import CoinbaseConnector from '@components/WalletConnectors/Coinbase';
+import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
+import { getDiscordUrl } from 'utils';
+import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from 'utils/constants';
 
 const prod = process.env.NEXT_PUBLIC_PRODUCTION;
 
 const WalletLoginContainer = styled.div`
   padding: 10px 0;
 `;
+const discordUrlWithoutState = getDiscordUrl();
+const state = JSON.stringify({
+  callbackType: DISCORD_CONNECT_TYPES.login,
+});
+const discordUrl = `${discordUrlWithoutState}&state=${state}`;
 
 const Login = ({ csrfToken }) => {
   const wonderWeb3 = useWonderWeb3();
@@ -32,7 +43,7 @@ const Login = ({ csrfToken }) => {
   const [notSupported, setNotSupported] = useState(false);
   const [loading, setLoading] = useState(null);
   const router = useRouter();
-
+  const { discordConnectError } = router.query;
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -49,6 +60,7 @@ const Login = ({ csrfToken }) => {
   // This happens async, so we bind it to the
   // state of the component.
   const loginWithWallet = async () => {
+    setErrorMessage(null);
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
       // Retrieve Signed Message
       const messageToSign = await getUserSigningMessage(wonderWeb3.address, 'eth');
@@ -71,14 +83,20 @@ const Login = ({ csrfToken }) => {
                 });
               }
             } else {
-              setErrorMessage(user);
+              setErrorMessage('no user found'); // this feels like it will never happen?
             }
           } catch (err) {
-            setErrorMessage(err?.message || err);
+            if (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.NO_WEB3_ADDRESS_FOUND) {
+              setErrorMessage('No account found, check if connected to the correct address');
+            } else {
+              setErrorMessage(err?.message || err);
+            }
           }
           setLoading(false);
         } else {
-          setErrorMessage('You need to sign the message on your wallet');
+          if (signedMessage !== undefined) {
+            setErrorMessage('You need to sign the message on your wallet');
+          }
         }
       } else {
         setErrorMessage('Login failed - try again.');
@@ -86,6 +104,11 @@ const Login = ({ csrfToken }) => {
     }
   };
 
+  useEffect(() => {
+    if (discordConnectError) {
+      setErrorMessage('Error connecting your Discord. Please try again or connect with Metamask instead.');
+    }
+  }, [discordConnectError]);
   useEffect(() => {
     if (wonderWeb3.wallet['address'] && !wonderWeb3.isActivating) {
       // Wallet sign in
@@ -103,6 +126,15 @@ const Login = ({ csrfToken }) => {
   return (
     <AuthLayout>
       <LoginWrapper>
+        <Image
+          alt="Background"
+          className="auth-background"
+          src="/images/login/background.png"
+          layout="fill"
+          objectFit="cover"
+          quality={80}
+        />
+        <Image alt="Background" src="/images/login/background-blur.png" layout="fill" objectFit="cover" quality={80} />
         <TopBubble src="/images/login/top-floater-bubble.png" alt="" />
         <Card>
           <CardBody>
@@ -142,11 +174,30 @@ const Login = ({ csrfToken }) => {
                 </LineWithText>
               </>
             )}
-            <WalletLoginContainer>
+            <WalletLoginContainer
+              style={{
+                marginTop: '24px',
+              }}
+            >
               <MetaMaskConnector />
             </WalletLoginContainer>
             <WalletLoginContainer>
+              <WalletConnectConnector />
+            </WalletLoginContainer>
+            <WalletLoginContainer>
               <CoinbaseConnector />
+            </WalletLoginContainer>
+            <WalletLoginContainer>
+              <Button onClick={() => (window.location.href = discordUrl)}>
+                <DiscordIcon />
+                <PaddedParagraph
+                  style={{
+                    marginLeft: '12px',
+                  }}
+                >
+                  Log in with Discord
+                </PaddedParagraph>
+              </Button>
             </WalletLoginContainer>
           </CardBody>
           {/* <CardFooter>

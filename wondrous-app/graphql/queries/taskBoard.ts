@@ -4,9 +4,16 @@ import { TaskCardFragment, TaskProposalCardFragment, TaskSubmissionCardFragment 
 import { PerStatusTaskCountFragment } from '../fragments/taskBoard';
 
 export const GET_ORG_TASK_BOARD_PROPOSALS = gql`
-  query GetOrgTaskBoardProposals($orgId: ID!, $statuses: [String], $podIds: [String], $limit: Int, $offset: Int) {
+  query GetOrgTaskBoardProposals(
+    $orgId: ID!
+    $statuses: [String]
+    $podIds: [String]
+    $limit: Int
+    $offset: Int
+    $labelId: String
+  ) {
     getOrgTaskBoardProposals(
-      input: { orgId: $orgId, statuses: $statuses, podIds: $podIds, limit: $limit, offset: $offset }
+      input: { orgId: $orgId, statuses: $statuses, podIds: $podIds, limit: $limit, offset: $offset, labelId: $labelId }
     ) {
       ...TaskProposalCardFragment
     }
@@ -73,6 +80,9 @@ export const GET_ORG_TASK_BOARD_TASKS = gql`
     $limit: Int
     $offset: Int
     $onlyPublic: Boolean
+    $types: [String]
+    $labelId: String
+    $date: String
   ) {
     getOrgTaskBoardTasks(
       input: {
@@ -83,6 +93,9 @@ export const GET_ORG_TASK_BOARD_TASKS = gql`
         limit: $limit
         offset: $offset
         onlyPublic: $onlyPublic
+        types: $types
+        labelId: $labelId
+        date: $date
       }
     ) {
       ...TaskCardFragment
@@ -99,9 +112,18 @@ export const GET_USER_TASK_BOARD_PROPOSALS = gql`
     $podIds: [String]
     $limit: Int
     $offset: Int
+    $labelId: String
   ) {
     getUserTaskBoardProposals(
-      input: { userId: $userId, statuses: $statuses, orgId: $orgId, podIds: $podIds, limit: $limit, offset: $offset }
+      input: {
+        userId: $userId
+        statuses: $statuses
+        orgId: $orgId
+        podIds: $podIds
+        limit: $limit
+        offset: $offset
+        labelId: $labelId
+      }
     ) {
       ...TaskProposalCardFragment
     }
@@ -118,6 +140,10 @@ export const GET_TASKS_RELATED_TO_USER_IN_ORG = gql`
     $userId: String
     $limit: Int
     $offset: Int
+    $types: [String]
+    $labelId: String
+    $onlyPublic: Boolean
+    $date: String
   ) {
     getTasksRelatedToUserInOrg(
       input: {
@@ -128,6 +154,10 @@ export const GET_TASKS_RELATED_TO_USER_IN_ORG = gql`
         userId: $userId
         limit: $limit
         offset: $offset
+        types: $types
+        labelId: $labelId
+        onlyPublic: $onlyPublic
+        date: $date
       }
     ) {
       ...TaskCardFragment
@@ -144,6 +174,10 @@ export const GET_TASKS_RELATED_TO_USER_IN_POD = gql`
     $userId: String
     $limit: Int
     $offset: Int
+    $date: String
+    $onlyPublic: Boolean
+    $types: [String]
+    $labelId: String
   ) {
     getTasksRelatedToUserInPod(
       input: {
@@ -153,6 +187,10 @@ export const GET_TASKS_RELATED_TO_USER_IN_POD = gql`
         userId: $userId
         limit: $limit
         offset: $offset
+        date: $date
+        onlyPublic: $onlyPublic
+        types: $types
+        labelId: $labelId
       }
     ) {
       ...TaskCardFragment
@@ -282,10 +320,10 @@ export const GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD = gql`
       created
       inProgress
       completed
-      proposal
-      submission
       inReview
-      archived
+      proposalOpen
+      proposalApproved
+      proposalChangeRequested
     }
   }
 `;
@@ -341,10 +379,10 @@ export const GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD = gql`
       created
       inProgress
       completed
-      proposal
-      submission
       inReview
-      archived
+      proposalOpen
+      proposalApproved
+      proposalChangeRequested
     }
   }
 `;

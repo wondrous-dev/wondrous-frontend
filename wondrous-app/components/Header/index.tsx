@@ -1,31 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
+import { InputAdornment, Typography } from '@material-ui/core';
+import Wallet from 'components/Common/Wallet';
+import { useMe } from '../Auth/withAuth';
+import CreateBtnIcon from 'components/Icons/createBtn';
+import HomeIcon from 'components/Icons/home';
+import SearchIcon from 'components/Icons/search';
+import { Button } from 'components/Common/button';
+import NotificationsBoard from 'components/Notifications';
+import Tooltip from 'components/Tooltip';
+import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
+import { GET_NOTIFICATIONS } from 'graphql/queries';
 import Link from 'next/link';
-import { InputAdornment } from '@material-ui/core';
-
-import HomeIcon from '../Icons/home';
-import SearchIcon from '../Icons/search';
-import { StatusArchived, StatusAssigned, StatusLiked } from '../Icons/notifications';
-import CreateBtnIcon from '../Icons/createBtn';
-
-import Wallet from '../Common/Wallet';
-
+import { useRouter } from 'next/router';
+import React from 'react';
 import {
   Header,
+  HeaderContainer,
+  HeaderCreateButton,
   HeaderHomeButton,
   HeaderInput,
   HeaderLeftBlock,
   HeaderLogo,
   HeaderRightBlock,
-  HeaderContainer,
-  HeaderCreateButton,
+  TutorialButton,
+  TutorialText,
 } from './styles';
-import NotificationsBoard from '../Notifications';
-import { GET_NOTIFICATIONS } from '../../graphql/queries';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from '../../graphql/mutations/notification';
-import { useRouter } from 'next/router';
 
 const HeaderComponent = (props) => {
+  const user = useMe();
   // Grab Notifications from Backend
   const { data: notifications, refetch } = useQuery(GET_NOTIFICATIONS);
   const [markAllNotificationsRead] = useMutation(MARK_ALL_NOTIFICATIONS_READ);
@@ -45,17 +47,29 @@ const HeaderComponent = (props) => {
     refetch();
   };
 
-  const { pathname } = useRouter();
+  const router = useRouter();
+  const urlsWithCreateButton = ['/boards', '/dashboard', '/activities', '/docs', '/analytics'];
+  const showCreateButton = urlsWithCreateButton.some((url) => router.pathname?.includes(url));
   return (
     <Header>
       <HeaderContainer>
         <HeaderLeftBlock>
-          <HeaderLogo />
-          <Link passHref href="/dashboard">
-            <HeaderHomeButton>
-              <HomeIcon />
-            </HeaderHomeButton>
-          </Link>
+          <Tooltip title="Explore page">
+            <div style={{display: 'flex'}}>
+              <Link passHref href="/dashboard">
+                <HeaderLogo />
+              </Link>
+            </div>
+          </Tooltip>
+          <Tooltip title="Dashboard">
+            <div>
+              <Link passHref href="/dashboard">
+                <HeaderHomeButton>
+                  <HomeIcon />
+                </HeaderHomeButton>
+              </Link>
+            </div>
+          </Tooltip>
           <HeaderInput
             placeholder="Search wonder..."
             InputProps={{
@@ -71,19 +85,48 @@ const HeaderComponent = (props) => {
           />
         </HeaderLeftBlock>
         <HeaderRightBlock>
-          <Wallet />
-
-          <NotificationsBoard notifications={notifications || []} setNofications={setNotifications} />
-          {pathname.includes('/boards') || pathname.includes('/dashboard') ? (
-            <HeaderCreateButton highlighted="true" onClick={openCreateFormModal}>
-              <span style={{ padding: '0px 8px' }}>Create</span>
-              <CreateBtnIcon />
-            </HeaderCreateButton>
-          ) : (
-            <HeaderCreateButton highlighted="true" style={{ visibility: 'hidden' }}>
-              <span style={{ padding: '0px 8px' }}>Create</span>
-              <CreateBtnIcon />
-            </HeaderCreateButton>
+          <a
+            style={{
+              textDecoration: 'none',
+            }}
+            href="https://linktr.ee/wonderverse"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <TutorialButton
+              style={{
+                borderRadius: '8px',
+              }}
+              buttonInnerStyle={{
+                borderRadius: '7px',
+              }}
+            >
+              <TutorialText>Wonder Tutorials</TutorialText>
+            </TutorialButton>
+          </a>
+          {user && (
+            <>
+              <Wallet />
+              <NotificationsBoard notifications={notifications || []} setNofications={setNotifications} />
+              <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
+                <span style={{ padding: '0px 8px' }}>Create</span>
+                <CreateBtnIcon />
+              </HeaderCreateButton>
+            </>
+          )}
+          {!user && (
+            <Button
+              highlighted
+              type="submit"
+              style={{
+                width: '100px',
+              }}
+              onClick={() => {
+                router.push('/login');
+              }}
+            >
+              Sign in
+            </Button>
           )}
         </HeaderRightBlock>
       </HeaderContainer>

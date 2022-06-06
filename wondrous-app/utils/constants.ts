@@ -12,6 +12,11 @@ export const TASK_STATUS_PAID = 'paid';
 export const TASK_STATUS_PROPOSAL_REQUEST = 'proposal_request';
 export const TASK_STATUS_SUBMISSION_REQUEST = 'submission_request';
 
+//Task date types
+export const TASK_DATE_OVERDUE = 'overdue';
+export const TASK_DATE_DUE_NEXT_WEEK = 'due_next_week';
+export const TASK_DATE_DUE_THIS_WEEK = 'due_this_week';
+
 export const ORG_MEMBERSHIP_REQUESTS = 'org_membership_request';
 export const TASK_STATUSES = [
   TASK_STATUS_TODO,
@@ -62,68 +67,136 @@ export const PAYMENT_STATUS = {
   FAILED: 'failed',
 };
 
+// board columns configuration
+export const COLUMNS_CONFIGURATION = {
+  ORG: 'org',
+  ASSIGNEE: 'assignee',
+};
+
 // Supported Chains (ETHEREUM, POLYGON)
 const SUPPORTED_CHAINS = {
   1: 'ETH',
   137: 'MATIC',
+  1666600000: 'HARMONY',
+  42161: 'ARBITRUM',
+  56: 'BSC',
+  288: 'BOBA',
 };
 
-export const RPC_URLS: { [chainId: number]: string } = {
-  1: process.env.NEXT_PUBLIC_RPC_URL_ETH,
-  137: process.env.NEXT_PUBLIC_RPC_URL_MATIC,
+export const NATIVE_TOKEN_SYMBOL = {
+  1: 'ETH',
+  4: 'ETH',
+  137: 'MATIC',
+  1666600000: 'ONE',
+  42161: 'AETH',
+  56: 'BNB',
+  288: 'ETH',
 };
-
-export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId));
 
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {
   SUPPORTED_CHAINS[4] = 'RINKEBY';
 }
 
+export const RPC_URLS: { [chainId: number]: string } = {
+  1: process.env.NEXT_PUBLIC_RPC_URL_ETH,
+  4: process.env.NEXT_PUBLIC_RPC_URL_RINKEBY,
+  137: process.env.NEXT_PUBLIC_RPC_URL_MATIC,
+  1666600000: process.env.NEXT_PUBLIC_RPC_URL_HARMONY,
+  42161: process.env.NEXT_PUBLIC_RPC_URL_ARBITRUM,
+  56: process.env.NEXT_PUBLIC_RPC_URL_BSC,
+  288: process.env.NEXT_PUBLIC_RPC_URL_BOBA,
+};
+
+export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
+  ethereum: 'https://safe-transaction.mainnet.gnosis.io',
+  rinkeby: 'https://safe-transaction.rinkeby.gnosis.io',
+  polygon: 'https://safe-transaction.polygon.gnosis.io',
+  harmony: 'https://multisig.t.hmny.io',
+  arbitrum: 'https://safe-transaction.arbitrum.gnosis.io',
+  bsc: 'https://safe-transaction.bsc.gnosis.io',
+  boba: 'https://safe-transaction.mainnet.boba.network',
+};
+
+export const HARMONY_MULTI_SEND_ADDR = '0x998739BFdAAdde7C933B942a68053933098f9EDa';
+export const HARMONY_SAFE_MASTER_COPY = '0x69f4D1788e39c87893C980c06EdF4b7f686e2938';
+export const HARMONY_SAFE_MASTER_COPY2 = '0xfb1bffC9d739B8D520DaF37dF666da4C687191EA';
+export const HARMONY_PROXY_FACTORY = '0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC';
+
+export const DISCORD_CONNECT_TYPES = {
+  signup: 'signup',
+  login: 'login',
+  connectSettings: 'connectSettings',
+  connectOnboarding: 'connectOnboarding',
+};
+
+export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId));
+
 export const CHAIN_IDS = {
   ETH: 1,
   MATIC: 137,
   RINKEBY: 4,
+  HARMONY: 1666600000,
+  ARBITRUM: 42161,
+  BSC: 56,
+  BOBA: 288,
 };
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
-  eth_mainnet: 'Ethereum Mainnet',
+  ethereum: 'Ethereum Mainnet',
   rinkeby: 'Rinkeby Testnet',
-  polygon_mainnet: 'Polygon Mainnet',
+  polygon: 'Polygon Mainnet',
+  harmony: 'Harmony Mainnet',
+  arbitrum: 'Arbitrum One',
+  bsc: 'BNB smart chain',
+  boba: 'Boba Mainnet',
 };
 
 export const SUPPORTED_CURRENCIES = [
   {
     symbol: 'ETH',
-    chains: [1],
+    chains: [1, 4, 288],
   },
   {
     symbol: 'MATIC',
     chains: [137],
   },
   {
+    symbol: 'ONE',
+    chains: [1666600000],
+  },
+  {
+    symbol: 'AETH',
+    chains: [42161],
+  },
+  {
+    symbol: 'BNB',
+    chains: [56],
+  },
+  {
     symbol: 'WONDER',
-    chains: [1, 137],
+    chains: [1, 137, 1666600000, 42161, 56, 288],
     contracts: {
       1: '',
       137: '',
+      1666600000: '',
+      42161: '',
+      56: '',
+      288: '',
     },
   },
   {
     symbol: 'USDC',
-    chains: [1, 137],
+    chains: [1, 137, 1666600000, 42161],
     contracts: {
       1: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       137: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
+      1666600000: '0x44cED87b9F1492Bf2DCf5c16004832569f7f6cBa',
+      42161: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
+      56: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+      288: '0x66a2A913e447d6b4BF33EFbec43aAeF87890FBbc',
     },
   },
 ];
-
-export const CURRENCY_KEYS = {
-  ETH: 'ETH',
-  WONDER: 'WONDER',
-  MATIC: 'MATIC',
-  USDC: 'USDC',
-};
 
 export const SIDEBAR_WIDTH = '80px';
 export const ENTITIES_TYPES = {
@@ -133,7 +206,7 @@ export const ENTITIES_TYPES = {
   POD: 'pod',
   ORG: 'org',
   BOUNTY: 'bounty',
-  PROPOSAL: 'proposal'
+  PROPOSAL: 'proposal',
 };
 
 export const MEDIA_TYPES = {
@@ -145,7 +218,30 @@ export const MEDIA_TYPES = {
   VIDEO: 'video',
 };
 
-export const DEFAULT_STATUS_ARR = [TASK_STATUS_TODO, TASK_STATUS_IN_PROGRESS, TASK_STATUS_DONE, TASK_STATUS_ARCHIVED];
+export const DEFAULT_STATUSES = [
+  TASK_STATUS_TODO,
+  TASK_STATUS_IN_PROGRESS,
+  TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_DONE,
+  TASK_STATUS_ARCHIVED,
+];
+
+export const TASKS_DEFAULT_STATUSES = [
+  TASK_STATUS_TODO,
+  TASK_STATUS_IN_PROGRESS,
+  TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_DONE,
+];
+
+export const STATUSES_ON_ENTITY_TYPES = {
+  [ENTITIES_TYPES.TASK]: TASKS_DEFAULT_STATUSES,
+  [ENTITIES_TYPES.MILESTONE]: TASKS_DEFAULT_STATUSES,
+  [ENTITIES_TYPES.BOUNTY]: TASKS_DEFAULT_STATUSES,
+  [ENTITIES_TYPES.PROPOSAL]: TASKS_DEFAULT_STATUSES,
+  DEFAULT: DEFAULT_STATUSES,
+};
+
+export const PROPOSAL_STATUS_LIST = [STATUS_OPEN, STATUS_CHANGE_REQUESTED, STATUS_APPROVED, TASK_STATUS_ARCHIVED];
 
 export const IMAGE_FILE_EXTENSIONS_TYPE_MAPPING = {
   gif: 'image/gif',
@@ -251,7 +347,8 @@ export const filteredColorOptions = Object.keys(POD_COLOR).map((key) => ({
 export { SUPPORTED_CHAINS };
 export const EMAIL_REGEX =
   /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
+export const URL_REGEX =
+  /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi;
 export const validateEmail = (email) => {
   return email.match(EMAIL_REGEX);
 };
@@ -260,4 +357,64 @@ export const GRAPHQL_ERRORS = {
   WEB3_ADDRESS_ALREADY_EXISTS: 'web3_address_already_exist',
   ORG_INVITE_ALREADY_EXISTS: 'org_invite_already_exist',
   POD_INVITE_ALREADY_EXISTS: 'pod_invite_already_exist',
+  NO_RECIPIENT_WEB_3_ADDRESS: 'recipient has no web3 address',
+  NO_WEB3_ADDRESS_FOUND: 'no_web3_address_found',
+  PAYMENT_METHOD_EXIST: 'payment_method_exist',
+  DISCORD_USER_ALREADY_EXISTS: 'Existing discord user exists',
 };
+
+export const LINK = process.env.NEXT_PUBLIC_PRODUCTION
+  ? `https://app.wonderverse.xyz`
+  : 'https://wondrous-app-git-staging-wonderverse.vercel.app';
+
+export const DATEPICKER_OPTIONS = {
+  DAILY: 'daily',
+  WEEKLY: 'weekly',
+  MONTHLY: 'monthly',
+  PERIODICALLY: 'periodic',
+};
+export const DATEPICKER_OPTIONS_ARR = Object.values(DATEPICKER_OPTIONS);
+
+export const DATEPICKER_FIELDS = { END_DATE: 'endDate', START_DATE: 'startDate' };
+
+export const DEFAULT_DATEPICKER_VALUE = { startDate: null, endDate: null };
+export const DEFAULT_SINGLE_DATEPICKER_VALUE = null;
+
+export const MONTH_DAY_FULL_YEAR = 'MM/DD/YYYY';
+export const DAY_STRING_MONTH_SHORT_YEAR = 'DD/MMM/YY';
+
+export const WEEK_DAYS = {
+  monday: false,
+  tuesday: false,
+  wednesday: false,
+  thursday: false,
+  friday: false,
+  saturday: false,
+  sunday: false,
+};
+
+// Taken from back-end src/constants/colors.py
+export enum ColorTypes {
+  RubyRed = '#B8255F',
+  JasperRed = '#DB4035',
+  SunstoneOrange = '#FF9933',
+  CitrineYellow = '#FAD000',
+  PeridotGreen = '#B4C424',
+  LimeGreen = '#7ECC49',
+  JadeGreen = '#00A86B',
+  Aquamarine = '#76EBCA',
+  GemstoneTeal = '#158FAD',
+  LarimarBlue = '#72C2D4',
+  LaceAgateBlue = '#96C3EB',
+  AzuriteBlue = '#4073FF',
+  AmethystPurple = '#884DFF',
+  SpiritQuartzPurple = '#AF38EB',
+  LepidolitePink = '#EB96EB',
+  Magenta = '#E05194',
+  SardonyxSalmon = '#FF8D85',
+  ShungiteGrey = '#808080',
+  Grey = '#B8B8B8',
+  OkeniteSepia = '#CCAC93',
+}
+
+export const PRIVATE_TASK_TITLE = '_private_task';

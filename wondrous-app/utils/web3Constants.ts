@@ -2,10 +2,23 @@ export enum SupportedChainType {
   ETH = 'eth' // should be evm
 }
 
+export const CHAIN_ID_TO_CHAIN_NAME = {
+  1: 'ethereum',
+  4: 'rinkeby',
+  137: 'polygon',
+  1666600000: 'harmony',
+  42161: 'arbitrum',
+  56: 'bsc',
+  288: 'boba'
+};
+
+
 export const CHAIN_TO_GNOSIS_URL_ABBR = {
-  eth_mainnet: 'eth',
+  ethereum: 'eth',
   rinkeby: 'rin',
-  polygon_mainnet: 'matic',
+  polygon: 'matic',
+  bsc: 'bnb',
+  arbitrum: 'arb1'
 };
 
 export enum SupportedETHChainId {
@@ -24,27 +37,7 @@ export enum SupportedETHChainId {
     POLYGON = 137,
     POLYGON_MUMBAI = 80001,
   }
-  
-  export const ETH_CHAIN_IDS_TO_NAMES = {
-    [SupportedETHChainId.MAINNET]: 'mainnet',
-    [SupportedETHChainId.ROPSTEN]: 'ropsten',
-    [SupportedETHChainId.RINKEBY]: 'rinkeby',
-    [SupportedETHChainId.GOERLI]: 'goerli',
-    [SupportedETHChainId.KOVAN]: 'kovan',
-    [SupportedETHChainId.POLYGON]: 'polygon',
-    [SupportedETHChainId.POLYGON_MUMBAI]: 'polygon_mumbai',
-    [SupportedETHChainId.ARBITRUM_ONE]: 'arbitrum',
-    [SupportedETHChainId.ARBITRUM_RINKEBY]: 'arbitrum_rinkeby',
-    [SupportedETHChainId.OPTIMISM]: 'optimism',
-    [SupportedETHChainId.OPTIMISTIC_KOVAN]: 'optimistic_kovan',
-  }
-  
-  export const ALL_SUPPORTED_ETH_CHAIN_IDS: SupportedETHChainId[] = Object.values(SupportedETHChainId).filter(
-    (id) => typeof id === 'number'
-  ) as SupportedETHChainId[]
-  
-  export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [SupportedETHChainId.MAINNET, SupportedETHChainId.POLYGON]
-  
+    
 
   export const INFURA_KEY = 'd828b09eb88d4a3fa4299e29b014bd28';
 
@@ -62,3 +55,4 @@ export enum SupportedETHChainId {
     [SupportedETHChainId.POLYGON_MUMBAI]: `https://polygon-mumbai.infura.io/v3/${INFURA_KEY}`,
   }
   
+  export const LIT_PROTOCOL_MESSAGE = 'signature verification to token gating'

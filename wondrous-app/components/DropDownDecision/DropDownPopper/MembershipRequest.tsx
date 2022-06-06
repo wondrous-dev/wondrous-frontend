@@ -1,13 +1,7 @@
 import { useMutation } from '@apollo/client';
-import { APPROVE_JOIN_ORG_REQUEST, REJECT_JOIN_ORG_REQUEST } from '../../../graphql/mutations/org';
-import {
-  DECISION_APPROVE_AND_PAY,
-  DECISION_APPROVE_ONLY,
-  DECISION_REJECT,
-  DECISION_SEND_INTO_REVISION,
-  TASK_STATUS_PROPOSAL_REQUEST,
-  TASK_STATUS_SUBMISSION_REQUEST,
-} from '../../../utils/constants';
+import { APPROVE_JOIN_ORG_REQUEST, REJECT_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
+import { APPROVE_JOIN_POD_REQUEST, REJECT_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
+import { DECISION_APPROVE_ONLY, DECISION_REJECT } from 'utils/constants';
 import { ApproveAndPayIcon, ApproveOnlyIcon, RejectIcon, SendIntoRevisionIcon } from '../../Icons/decisionIcons';
 import { StyledList, StyledListItem, StyledListItemIcon, StyledListItemText, StyledPopper } from './styles';
 
@@ -18,9 +12,11 @@ const DECISIONS = [
 ];
 
 export const DropDownPopper = (props) => {
-  const { onClose, userId, orgId } = props;
+  const { onClose, userId, orgId, podId } = props;
   const [approveJoinOrgRequest] = useMutation(APPROVE_JOIN_ORG_REQUEST);
   const [rejectJoinOrgRequest] = useMutation(REJECT_JOIN_ORG_REQUEST);
+  const [approveJoinPodRequest] = useMutation(APPROVE_JOIN_POD_REQUEST);
+  const [rejectJoinPodRequest] = useMutation(REJECT_JOIN_POD_REQUEST);
   const handleJoinOrgDecision = (decision) => {
     const refetchQueries = () => ['getJoinOrgRequests', 'getWorkFlowBoardReviewableItemsCount'];
 
@@ -45,8 +41,36 @@ export const DropDownPopper = (props) => {
     }
   };
 
+  const handleJoinPodDecision = (decision) => {
+    const refetchQueries = () => ['getJoinPodRequests', 'getWorkFlowBoardReviewableItemsCount'];
+
+    if (decision === DECISION_REJECT) {
+      rejectJoinPodRequest({
+        variables: {
+          podId,
+          userId,
+        },
+        refetchQueries: refetchQueries(),
+      });
+    }
+
+    if (decision === DECISION_APPROVE_ONLY) {
+      approveJoinPodRequest({
+        variables: {
+          userId,
+          podId,
+        },
+        refetchQueries: refetchQueries(),
+      });
+    }
+  };
+
   const handleOnClick = (decision) => {
-    handleJoinOrgDecision(decision);
+    if (podId) {
+      handleJoinPodDecision(decision);
+    } else if (orgId) {
+      handleJoinOrgDecision(decision);
+    }
     onClose();
   };
 

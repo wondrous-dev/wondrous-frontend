@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TaskSummary } from '../TaskSummary';
 import { Requested, Chevron } from '../../Icons/sections';
 
@@ -12,14 +12,14 @@ import {
   SectionContainer,
 } from './styles';
 import { TaskSummaryFooter } from '../TaskSummary/styles';
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../../utils/hooks';
+import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   ENTITIES_TYPES,
   TASK_STATUS_ARCHIVED,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
   PRIVACY_LEVEL,
-} from '../../../utils/constants';
+} from 'utils/constants';
 import { TaskListViewModal } from '../Task/modal';
 import { useRouter } from 'next/router';
 
@@ -54,13 +54,17 @@ export const ColumnSection = ({ section, setSection }) => {
       break;
   }
   // TODO get counts for proposals
-  const count = tasks.length;
+  const count = tasks?.length;
 
   const toggleSection = () => {
     if (!isPublic) {
       setIsOpen(!isOpen);
     }
   };
+
+  useEffect(() => {
+    board.setSection({ section, isOpen });
+  }, [board, isOpen, section]);
 
   const setTask = (task) => {
     tasks.filter((t) => t.id === task.id)[0] = task;
@@ -83,6 +87,9 @@ export const ColumnSection = ({ section, setSection }) => {
     setModalOpen(true);
   };
 
+  if (!section) {
+    return null;
+  }
   return (
     <SectionWrapper>
       <TaskListViewModal
@@ -113,10 +120,10 @@ export const ColumnSection = ({ section, setSection }) => {
         </SectionChevronContainer>
       </SectionHeaderContainer>
       <SectionContainer in={isOpen}>
-        {tasks.slice(0, 2).map((task) => (
+        {tasks?.slice(0, 2).map((task) => (
           <TaskSummary key={task.id} task={task} setTask={setTask} action={action} taskType={type} />
         ))}
-        {(tasks.length >= 2 || number >= 2) && !isPublic ? (
+        {(tasks?.length >= 2 || number >= 2) && !isPublic ? (
           <TaskSummaryFooter onClick={openModal}>See more</TaskSummaryFooter>
         ) : (
           ''

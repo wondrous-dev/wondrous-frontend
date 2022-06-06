@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { OrgFragment, OrgRoleFragment } from '../fragments/org';
+import { OrgFragment, OrgRoleFragment, LabelFragment } from '../fragments/org';
 
 export const CREATE_ORG_INVITE_LINK = gql`
   mutation createOrgInviteLink($input: OrgInviteLinkInput) {
@@ -74,4 +74,21 @@ export const REJECT_JOIN_ORG_REQUEST = gql`
       success
     }
   }
+`;
+
+export const KICK_ORG_USER = gql`
+  mutation kickOrgUser($userId: ID!, $orgId: ID!) {
+    kickOrgUser(userId: $userId, orgId: $orgId) {
+      success
+    }
+  }
+`;
+
+export const CREATE_LABEL = gql`
+  mutation createLabel($input: LabelInput) {
+    createLabel(input: $input) {
+      ...LabelFragment
+    }
+  }
+  ${LabelFragment}
 `;

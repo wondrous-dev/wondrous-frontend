@@ -1,16 +1,24 @@
-import React from 'react';
-
-import CreateLayoutBaseModal from './createEntityModal';
+import { useState } from 'react';
+import { ENTITIES_TYPES } from 'utils/constants';
 import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
-
-import { CreateModalOverlay } from './styles';
+import CreateLayoutBaseModal from './createEntityModal';
+import { CreateEntityModal } from './CreateEntityModal/index';
+import { CreateFormModalOverlay } from './styles';
 
 const CreateFormModal = (props) => {
   const { open, toggleOpen } = props;
 
-  const [entityType, setEntityType] = React.useState('');
+  const [entityType, setEntityType] = useState('');
 
-  const ModalBody = entityType ? CreateLayoutBaseModal : ChooseEntityToCreateModal;
+  const ModalBody = (props): JSX.Element => {
+    if (entityType === '') {
+      return <ChooseEntityToCreateModal {...props} />;
+    }
+    if ([ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType)) {
+      return <CreateEntityModal {...props} />;
+    }
+    return <CreateLayoutBaseModal {...props} />;
+  };
 
   const resetEntityType = () => {
     if (entityType) {
@@ -23,7 +31,7 @@ const CreateFormModal = (props) => {
   };
 
   return (
-    <CreateModalOverlay
+    <CreateFormModalOverlay
       open={open}
       onClose={handleCloseModal}
       aria-labelledby="modal-modal-title"
@@ -36,7 +44,7 @@ const CreateFormModal = (props) => {
         setEntityType={setEntityType}
         open={open}
       />
-    </CreateModalOverlay>
+    </CreateFormModalOverlay>
   );
 };
 

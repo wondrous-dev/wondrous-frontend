@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelectMembership } from '../../../utils/hooks';
+import { useSelectMembership } from 'utils/hooks';
 import { StyledBackground, Count, Status, CountIconWrapper, StyledBorder } from './styles';
 
 const DashboardPanelStatusCard = ({ status, selectedStatus, isAdmin, setSelectedStatus }) => {

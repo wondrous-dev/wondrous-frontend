@@ -9,7 +9,7 @@ import {
   TASK_STATUS_REQUESTED,
   TASK_STATUS_SUBMISSION_REQUEST,
   TASK_STATUS_TODO,
-} from '../../utils/constants';
+} from 'utils/constants';
 import {
   Archived,
   AwaitingPayment,
@@ -22,8 +22,14 @@ import {
 } from './index';
 import { ProposalsRemainingIcon } from './statusIcons';
 
+type StyleProps = {
+  width?: string;
+  height?: string;
+  marginRight?: string;
+};
 type Props = {
   status: string;
+  style?: StyleProps;
 };
 
 export default function TaskStatus({ status, ...rest }: Props) {

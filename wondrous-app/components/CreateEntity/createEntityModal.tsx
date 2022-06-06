@@ -1,47 +1,46 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { CircularProgress, styled, Switch, TextField } from '@material-ui/core';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { TabsVisibilityCreateEntity } from 'components/Common/TabsVisibilityCreateEntity';
+import { CircularProgress, styled, Switch, TextField } from '@mui/material';
+
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { CREATE_POD } from '../../graphql/mutations/pod';
-import { CREATE_MILESTONE, CREATE_TASK, CREATE_BOUNTY } from '../../graphql/mutations/task';
-import { CREATE_TASK_PROPOSAL } from '../../graphql/mutations/taskProposal';
+import { CREATE_POD } from 'graphql/mutations/pod';
+import { CREATE_MILESTONE, CREATE_TASK, CREATE_BOUNTY } from 'graphql/mutations/task';
+import { CREATE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { CREATE_LABEL } from 'graphql/mutations/org';
 import {
   GET_AUTOCOMPLETE_USERS,
+  GET_ORG_LABELS,
   GET_TASK_BY_ID,
   GET_USER_ORGS,
   GET_USER_PERMISSION_CONTEXT,
-} from '../../graphql/queries';
-import { GET_ORG_USERS } from '../../graphql/queries/org';
-import { GET_PAYMENT_METHODS_FOR_ORG } from '../../graphql/queries/payment';
-import { GET_POD_USERS, GET_USER_AVAILABLE_PODS } from '../../graphql/queries/pod';
-import {
-  GET_ELIGIBLE_REVIEWERS_FOR_ORG,
-  GET_ELIGIBLE_REVIEWERS_FOR_POD,
-  GET_MILESTONES,
-} from '../../graphql/queries/task';
+} from 'graphql/queries';
+import { GET_ORG_USERS } from 'graphql/queries/org';
+import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
+import { GET_POD_USERS, GET_USER_AVAILABLE_PODS } from 'graphql/queries/pod';
+import { GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_FOR_POD, GET_MILESTONES } from 'graphql/queries/task';
 import { Grey700, White } from '../../theme/colors';
-import { addProposalItem } from '../../utils/board';
+import { addProposalItem } from 'utils/board';
 import {
   CHAIN_TO_CHAIN_DIPLAY_NAME,
+  DEFAULT_SINGLE_DATEPICKER_VALUE,
   ENTITIES_TYPES,
   MEDIA_TYPES,
   PERMISSIONS,
   PRIVACY_LEVEL,
-} from '../../utils/constants';
-import { TextInputContext } from '../../utils/contexts';
+} from 'utils/constants';
+import { TextInputContext } from 'utils/contexts';
+
 import {
   getMentionArray,
   parseUserPermissionContext,
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
-} from '../../utils/helpers';
-import { useOrgBoard, usePodBoard, useUserBoard } from '../../utils/hooks';
-import { handleAddFile } from '../../utils/media';
+} from 'utils/helpers';
+import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { handleAddFile } from 'utils/media';
 import { useMe } from '../Auth/withAuth';
 import { ErrorText } from '../Common';
-import DatePicker from '../Common/DatePicker';
 import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
 import { SafeImage } from '../Common/Image';
@@ -60,7 +59,10 @@ import { TextInput } from '../TextInput';
 import { ENTITIES_UI_ELEMENTS } from './chooseEntityToCreateModal';
 import HeaderImage from './HeaderImage/headerImage';
 import { MediaItem } from './MediaItem';
+import Tags, { Option as Label } from '../Tags';
 import MembersRow from './MembersRow/membersRow';
+import SingleDatePicker from 'components/SingleDatePicker';
+
 import { CreateFormMembersList } from './MembersRow/styles';
 import {
   CreateFormAddDetailsAppearBlock,
@@ -71,8 +73,7 @@ import {
   CreateFormAddDetailsLocalizationProvider,
   CreateFormAddDetailsSection,
   CreateFormAddDetailsSelects,
-  CreateFormAddDetailsSwitch,
-  CreateFormAddDetailsSwitchLabel,
+  CreateFormAddDetailsTab,
   CreateFormBaseModal,
   CreateFormBaseModalCloseBtn,
   CreateFormBaseModalHeader,
@@ -99,8 +100,10 @@ import {
   OptionDiv,
   OptionTypography,
   StyledAutocompletePopper,
+  CreateFormAddTagsSection,
   StyledChip,
   TextInputDiv,
+  CreateFormBaseModalHeaderWrapper,
 } from './styles';
 
 const filterUserOptions = (options) => {
@@ -215,7 +218,7 @@ export const filterPaymentMethods = (paymentMethods) => {
     return {
       ...paymentMethod,
       icon: <SafeImage src={paymentMethod.icon} style={{ width: '30px', height: '30px', borderRadius: '15px' }} />,
-      label: `${paymentMethod.tokenName}: ${CHAIN_TO_CHAIN_DIPLAY_NAME[paymentMethod.chain]}`,
+      label: `${paymentMethod.tokenName?.toUpperCase()}: ${CHAIN_TO_CHAIN_DIPLAY_NAME[paymentMethod.chain]}`,
       value: paymentMethod.id,
     };
   });
@@ -248,6 +251,7 @@ const CreateLayoutBaseModal = (props) => {
     title: null,
     description: null,
     org: null,
+    privacy: null,
     // maxSubmissionCount: null,
   });
 
@@ -258,6 +262,7 @@ const CreateLayoutBaseModal = (props) => {
   const [milestoneString, setMilestoneString] = useState('');
   const [assignee, setAssignee] = useState(null);
   const [selectedReviewers, setSelectedReviewers] = useState([]);
+  const [labelIds, setLabelIds] = useState([]);
   const [link, setLink] = useState('');
   const [rewardsCurrency, setRewardsCurrency] = useState(null);
   const [rewardsAmount, setRewardsAmount] = useState(null);
@@ -268,16 +273,19 @@ const CreateLayoutBaseModal = (props) => {
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
   const board = orgBoard || podBoard || userBoard;
+  const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
   const isPod = entityType === ENTITIES_TYPES.POD;
   const isTask = entityType === ENTITIES_TYPES.TASK;
   const isBounty = entityType === ENTITIES_TYPES.BOUNTY;
   const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
   const isSubtask = parentTaskId !== undefined;
   const textLimit = isPod ? 200 : 900;
+
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
   });
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
+  const selectedOrgPrivacyLevel = userOrgs?.getUserOrgs?.filter((i) => i.id === org)[0]?.privacyLevel;
   const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
   const [fetchPaymentMethod, setFetchPaymentMethod] = useState(false);
   const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG, {
@@ -290,6 +298,14 @@ const CreateLayoutBaseModal = (props) => {
     onCompleted: () => {
       setOrgUserFetched(true);
     },
+  });
+
+  const [getOrgLabels, { data: orgLabelsData }] = useLazyQuery(GET_ORG_LABELS, {
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [createLabel] = useMutation(CREATE_LABEL, {
+    refetchQueries: () => ['getOrgLabels'],
   });
 
   const [getEligibleReviewersForOrg, { data: eligibleReviewersForOrgData }] =
@@ -321,9 +337,13 @@ const CreateLayoutBaseModal = (props) => {
   // const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
   const [pods, setPods] = useState([]);
   const [pod, setPod] = useState(null);
-  const [dueDate, setDueDate] = useState(null);
+  const selectedPodPrivacyLevel = pods?.filter((i) => i.id === pod)[0]?.privacyLevel;
+  const isPodPublic = !selectedPodPrivacyLevel || selectedPodPrivacyLevel === 'public';
+  const [dueDate, setDueDate] = useState(DEFAULT_SINGLE_DATEPICKER_VALUE);
+  const [recurrenceType, setRecurrenceType] = useState(null);
+  const [recurrenceValue, setRecurrenceValue] = useState(null);
   const [isPrivate, setIsPrivate] = useState(false);
-  const [publicTask, setPublicTask] = useState(false);
+  const [isPublicEntity, setIsPublicEntity] = useState(false);
   const {
     showDeliverableRequirementsSection,
     showBountySwitchSection,
@@ -333,10 +353,11 @@ const CreateLayoutBaseModal = (props) => {
     showMembersSection,
     showPrioritySelectSection,
     showDueDateSection,
+    showVisibility,
   } = useMemo(() => {
     return {
       showDeliverableRequirementsSection: isTask,
-      showBountySwitchSection: isTask || isBounty,
+      showBountySwitchSection: isTask || isBounty || isProposal,
       showAppearSection: isTask || isBounty,
       showLinkAttachmentSection: isPod,
       // TODO: add back in entityType === ENTITIES_TYPES.POD
@@ -344,7 +365,8 @@ const CreateLayoutBaseModal = (props) => {
       // TODO: add back in entityType === ENTITIES_TYPES.POD
       showMembersSection: false,
       showPrioritySelectSection: isMilestone,
-      showDueDateSection: isTask || isMilestone || isBounty,
+      showDueDateSection: isTask || isBounty || isMilestone,
+      showVisibility: isTask || isBounty || isPod,
     };
   }, [isBounty, isMilestone, isPod, isTask]);
 
@@ -376,7 +398,6 @@ const CreateLayoutBaseModal = (props) => {
         },
       })
         .then((data) => {
-          console.log({ data });
           const task = data?.data?.getTaskById;
           setOrg(task?.orgId);
           setPod(task?.podId);
@@ -393,7 +414,6 @@ const CreateLayoutBaseModal = (props) => {
         },
       })
         .then((data) => {
-          console.log({ data });
           const task = data?.data?.getTaskById;
           setOrg(task?.orgId);
           setPod(task?.podId);
@@ -491,83 +511,173 @@ const CreateLayoutBaseModal = (props) => {
   const [createMilestone, { loading: createMilestoneLoading }] = useMutation(CREATE_MILESTONE);
 
   const submitMutation = useCallback(() => {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    const taskInput = {
+      title,
+      labelIds,
+      description: descriptionText,
+      orgId: org,
+      milestoneId: milestone?.id,
+      parentTaskId,
+      podId: pod,
+      dueDate,
+      ...(recurrenceType &&
+        recurrenceValue && {
+          recurringSchema: {
+            [recurrenceType]: recurrenceValue,
+          },
+        }),
+      ...(rewardsAmount &&
+        rewardsCurrency && {
+          rewards: [
+            {
+              rewardAmount: parseFloat(rewardsAmount),
+              paymentMethodId: rewardsCurrency,
+            },
+          ],
+        }),
+      // TODO: add links?,
+      ...(canCreateTask && {
+        assigneeId: assignee?.value,
+      }),
+      ...(isPublicEntity &&
+        isPodPublic && {
+          privacyLevel: PRIVACY_LEVEL.public,
+        }),
+      reviewerIds: selectedReviewers.map(({ id }) => id),
+      userMentions: getMentionArray(descriptionText),
+      mediaUploads,
+      timezone,
+    };
+    const taskPodPrivacyError = !isPodPublic ? isPublicEntity : false;
     switch (entityType) {
       case ENTITIES_TYPES.TASK:
-        const taskInput = {
-          title,
-          description: descriptionText,
-          orgId: org,
-          milestoneId: milestone?.id,
-          parentTaskId,
-          podId: pod,
-          dueDate,
-          ...(rewardsAmount &&
-            rewardsCurrency && {
-              rewards: [
-                {
-                  rewardAmount: parseFloat(rewardsAmount),
-                  paymentMethodId: rewardsCurrency,
-                },
-              ],
-            }),
-          // TODO: add links?,
-          ...(canCreateTask && {
-            assigneeId: assignee?.value,
-          }),
-          ...(!canCreateTask && {
-            proposedAssigneeId: assignee?.value,
-          }),
-          ...(publicTask && {
-            privacyLevel: PRIVACY_LEVEL.public,
-          }),
-          reviewerIds: selectedReviewers.map(({ id }) => id),
-          userMentions: getMentionArray(descriptionText),
-          mediaUploads,
-        };
-
-        if (!title || !org) {
-          const newErrors = { ...errors };
-          if (!title) {
-            newErrors.title = 'Please enter a title';
-          }
-          if (!org) {
-            newErrors.org = 'Please select an organization';
-          }
-          newErrors.general = 'Please enter the necessary information above';
+        if (!title || !org || taskPodPrivacyError) {
+          const newErrors = {
+            ...errors,
+            title: !title ? 'Please enter a title' : errors.title,
+            org: !org ? 'Please select an organization' : errors.org,
+            privacy: taskPodPrivacyError ? 'The selected pod is for members only' : errors.privacy,
+            general: 'Please enter the necessary information above',
+          };
           setErrors(newErrors);
         } else {
           if (canCreateTask) {
+            const refetchQueries = [
+              'getPerStatusTaskCountForMilestone',
+              'getUserTaskBoardTasks',
+              'getPerStatusTaskCountForUserBoard',
+              'getSubtasksForTask',
+              'getSubtaskCountForTask',
+            ];
+            if (orgBoard) {
+              refetchQueries.push('getPerTypeTaskCountForOrgBoard');
+            }
+            if (podBoard) {
+              refetchQueries.push('getPerTypeTaskCountForPodBoard');
+            }
+
             createTask({
               variables: {
                 input: taskInput,
               },
+              refetchQueries,
             }).then((result) => {
-              const task = result?.data?.createTask;
-              const justCreatedPod = getPodObject();
-              if (
-                board?.setColumns &&
-                ((task?.orgId === board?.orgId && !board?.podId) ||
-                  task?.podId === board?.podId ||
-                  pod === board?.podId)
-              ) {
-                const transformedTask = transformTaskToTaskCard(task, {
-                  orgName: board?.org?.name,
-                  orgProfilePicture: board?.org?.profilePicture,
-                  podName: justCreatedPod?.name,
-                });
+              //checking if it's pod or org to use pod/org entity type else we assume it's the userBoard and we use the normal flow
+              if (board?.entityType === ENTITIES_TYPES.TASK || !board?.entityType) {
+                const task = result?.data?.createTask;
+                const justCreatedPod = getPodObject();
+                if (
+                  board?.setColumns &&
+                  ((task?.orgId === board?.orgId && !board?.podId) ||
+                    task?.podId === board?.podId ||
+                    pod === board?.podId)
+                ) {
+                  const transformedTask = transformTaskToTaskCard(task, {
+                    orgName: board?.org?.name,
+                    orgProfilePicture: board?.org?.profilePicture,
+                    podName: justCreatedPod?.name,
+                  });
 
-                const columns = [...board?.columns];
-                columns[0].tasks = [transformedTask, ...columns[0].tasks];
-                board.setColumns(columns);
+                  const columns = [...board?.columns];
+                  columns[0].tasks = [transformedTask, ...columns[0].tasks];
+                  board.setColumns(columns);
+                }
+              } else {
+                board?.setEntityType(ENTITIES_TYPES.TASK);
               }
               handleClose();
             });
           } else {
+            const refetchQueries = [];
+            if (orgBoard) {
+              refetchQueries.push('getPerTypeTaskCountForOrgBoard');
+            }
+            if (podBoard) {
+              refetchQueries.push('getPerTypeTaskCountForPodBoard');
+            }
             createTaskProposal({
               variables: {
                 input: taskInput,
               },
+              refetchQueries,
             }).then((result) => {
+              if (board?.entityType === ENTITIES_TYPES.TASK || !board?.entityType) {
+                const taskProposal = result?.data?.createTaskProposal;
+                const justCreatedPod = getPodObject();
+                // TODO: refactor this condition
+                if (
+                  board?.setColumns &&
+                  ((taskProposal?.orgId === board?.orgId && !board?.podId) ||
+                    taskProposal?.podId === board?.podId ||
+                    pod === board?.podId)
+                ) {
+                  const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
+                    userProfilePicture: user?.profilePicture,
+                    username: user?.username,
+                    orgName: board?.org?.name,
+                    orgProfilePicture: board?.org?.profilePicture,
+                    podName: justCreatedPod?.name,
+                  });
+
+                  let columns = [...board?.columns];
+                  columns = addProposalItem(transformedTaskProposal, columns);
+                  board?.setColumns(columns);
+                }
+              } else {
+                board?.setEntityType(ENTITIES_TYPES.PROPOSAL);
+              }
+              handleClose();
+            });
+          }
+        }
+        break;
+      case ENTITIES_TYPES.PROPOSAL:
+        if (!title || !org || taskPodPrivacyError) {
+          const newErrors = {
+            ...errors,
+            title: !title ? 'Please enter a title' : errors.title,
+            org: !org ? 'Please select an organization' : errors.org,
+            privacy: taskPodPrivacyError ? 'The selected pod is for members only' : errors.privacy,
+            general: 'Please enter the necessary information above',
+          };
+          setErrors(newErrors);
+        } else {
+          const refetchQueries = ['getPerStatusTaskCountForUserBoard'];
+          if (orgBoard) {
+            refetchQueries.push('getPerStatusTaskCountForOrgBoard', 'getPerTypeTaskCountForOrgBoard');
+          }
+          if (podBoard) {
+            refetchQueries.push('getPerTypeTaskCountForPodBoard');
+          }
+          createTaskProposal({
+            variables: {
+              input: taskInput,
+            },
+            refetchQueries,
+          }).then((result) => {
+            if (board?.entityType === ENTITIES_TYPES.PROPOSAL || !board?.entityType) {
               const taskProposal = result?.data?.createTaskProposal;
               const justCreatedPod = getPodObject();
               if (
@@ -583,14 +693,15 @@ const CreateLayoutBaseModal = (props) => {
                   orgProfilePicture: board?.org?.profilePicture,
                   podName: justCreatedPod?.name,
                 });
-
                 let columns = [...board?.columns];
                 columns = addProposalItem(transformedTaskProposal, columns);
-                board.setColumns(columns);
+                board?.setColumns(columns);
               }
-              handleClose();
-            });
-          }
+            } else {
+              board?.setEntityType(ENTITIES_TYPES.PROPOSAL);
+            }
+            handleClose();
+          });
         }
         break;
       case ENTITIES_TYPES.POD:
@@ -600,7 +711,7 @@ const CreateLayoutBaseModal = (props) => {
             username: title?.toLowerCase().split(' ').join('_'),
             description: descriptionText,
             orgId: org,
-            privacyLevel: isPrivate ? 'private' : 'public',
+            privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
             links: [
               {
                 url: link,
@@ -632,36 +743,54 @@ const CreateLayoutBaseModal = (props) => {
       case ENTITIES_TYPES.MILESTONE:
         const milestoneInput = {
           title,
+          labelIds,
           description: descriptionText,
           orgId: org,
           podId: pod,
           mediaUploads,
           dueDate,
-          ...(publicTask && {
-            privacyLevel: PRIVACY_LEVEL.public,
-          }),
+          timezone,
         };
         if (canCreateTask) {
+          const refetchQueries = [];
+          if (orgBoard) {
+            refetchQueries.push('getPerTypeTaskCountForOrgBoard');
+          }
+
+          if (podBoard) {
+            refetchQueries.push('getPerTypeTaskCountForPodBoard');
+          }
           createMilestone({
             variables: {
               input: milestoneInput,
             },
+            refetchQueries,
           }).then((result) => {
-            const task = result?.data?.createMilestone;
-            const justCreatedPod = getPodObject();
-            if (
-              board?.setColumns &&
-              ((task?.orgId === board?.orgId && !board?.podId) || task?.podId === board?.podId || pod === board?.podId)
-            ) {
-              const transformedTask = transformTaskToTaskCard(task, {
-                orgName: board?.org?.name,
-                orgProfilePicture: board?.org?.profilePicture,
-                podName: justCreatedPod?.name,
-              });
+            if (board?.entityType === ENTITIES_TYPES.MILESTONE || !board?.entityType) {
+              const task = result?.data?.createMilestone;
+              const justCreatedPod = getPodObject();
+              if (
+                board?.setColumns &&
+                ((task?.orgId === board?.orgId && !board?.podId) ||
+                  task?.podId === board?.podId ||
+                  pod === board?.podId)
+              ) {
+                const transformedTask = transformTaskToTaskCard(task, {
+                  orgName: board?.org?.name,
+                  orgProfilePicture: board?.org?.profilePicture,
+                  podName: justCreatedPod?.name,
+                });
 
-              const columns = [...board?.columns];
-              columns[0].tasks = [transformedTask, ...columns[0].tasks];
-              board.setColumns(columns);
+                let columns = [...board?.columns];
+                if (columns[0]?.tasks) {
+                  columns[0].tasks = [transformedTask, ...columns[0].tasks];
+                } else {
+                  columns = [transformedTask, ...columns];
+                }
+                board.setColumns(columns);
+              }
+            } else {
+              board?.setEntityType(ENTITIES_TYPES.MILESTONE);
             }
             handleClose();
           });
@@ -670,6 +799,7 @@ const CreateLayoutBaseModal = (props) => {
       case ENTITIES_TYPES.BOUNTY:
         const bountyInput = {
           title,
+          labelIds,
           description: descriptionText,
           orgId: org,
           milestoneId: milestone?.id,
@@ -693,58 +823,73 @@ const CreateLayoutBaseModal = (props) => {
           ...(!canCreateTask && {
             proposedAssigneeId: assignee?.value,
           }),
-          ...(publicTask && {
-            privacyLevel: PRIVACY_LEVEL.public,
-          }),
+          ...(isPublicEntity &&
+            isPodPublic && {
+              privacyLevel: PRIVACY_LEVEL.public,
+            }),
           reviewerIds: selectedReviewers.map(({ id }) => id),
           userMentions: getMentionArray(descriptionText),
           mediaUploads,
+          timezone,
         };
         // const isErrorMaxSubmissionCount =
         //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
-        if (!title || !descriptionText || !org || !canCreateTask) {
-          const newErrors = { ...errors };
-          if (!title) {
-            newErrors.title = 'Please enter a title';
-          }
-          if (!descriptionText) {
-            newErrors.description = 'Please enter a description';
-          }
-          if (!org) {
-            newErrors.org = 'Please select an organization';
-          }
+        const podPrivacyError = !isPodPublic ? isPublicEntity : false;
+        if (!title || !descriptionText || !org || !canCreateTask || podPrivacyError) {
+          const newErrors = {
+            ...errors,
+            title: !title ? 'Please enter a title' : errors.title,
+            description: !descriptionText ? 'Please enter a description' : errors.description,
+            org: !org ? 'Please select an organization' : errors.org,
+            privacy: podPrivacyError ? 'The selected pod is for members only' : errors.privacy,
+            general: !canCreateTask ? "You can't propose a bounty" : 'Please enter the necessary information above',
+          };
           // if (isErrorMaxSubmissionCount) {
           //   newErrors.maxSubmissionCount = 'The number should be from 1 to 10,000';
           // }
-          newErrors.general = !canCreateTask
-            ? "You can't propose a bounty"
-            : 'Please enter the necessary information above';
           setErrors(newErrors);
         } else {
           if (canCreateTask) {
+            const refetchQueries = [];
+            if (orgBoard) {
+              refetchQueries.push('getPerTypeTaskCountForOrgBoard');
+            }
+            if (podBoard) {
+              refetchQueries.push('getPerTypeTaskCountForPodBoard');
+            }
+
             createBounty({
               variables: {
                 input: bountyInput,
               },
+              refetchQueries,
             })
               .then((result) => {
-                const task = result?.data?.createBounty;
-                const justCreatedPod = getPodObject();
-                if (
-                  board?.setColumns &&
-                  ((task?.orgId === board?.orgId && !board?.podId) ||
-                    task?.podId === board?.podId ||
-                    pod === board?.podId)
-                ) {
-                  const transformedTask = transformTaskToTaskCard(task, {
-                    orgName: board?.org?.name,
-                    orgProfilePicture: board?.org?.profilePicture,
-                    podName: justCreatedPod?.name,
-                  });
+                if (board?.entityType === ENTITIES_TYPES.BOUNTY || !board?.entityType) {
+                  const task = result?.data?.createBounty;
+                  const justCreatedPod = getPodObject();
+                  if (
+                    board?.setColumns &&
+                    ((task?.orgId === board?.orgId && !board?.podId) ||
+                      task?.podId === board?.podId ||
+                      pod === board?.podId)
+                  ) {
+                    const transformedTask = transformTaskToTaskCard(task, {
+                      orgName: board?.org?.name,
+                      orgProfilePicture: board?.org?.profilePicture,
+                      podName: justCreatedPod?.name,
+                    });
 
-                  const columns = [...board?.columns];
-                  columns[0].tasks = [transformedTask, ...columns[0].tasks];
-                  board.setColumns(columns);
+                    let columns = [...board?.columns];
+                    if (columns[0]?.tasks) {
+                      columns = [transformedTask, ...columns[0].tasks];
+                    } else {
+                      columns = [transformedTask, ...columns];
+                    }
+                    board?.setColumns(columns);
+                  }
+                } else {
+                  board?.setEntityType(ENTITIES_TYPES.BOUNTY);
                 }
                 handleClose();
               })
@@ -764,11 +909,13 @@ const CreateLayoutBaseModal = (props) => {
     parentTaskId,
     pod,
     dueDate,
+    recurrenceType,
+    recurrenceValue,
     rewardsAmount,
     rewardsCurrency,
     canCreateTask,
     assignee?.value,
-    publicTask,
+    isPublicEntity,
     selectedReviewers,
     mediaUploads,
     canCreatePod,
@@ -785,26 +932,58 @@ const CreateLayoutBaseModal = (props) => {
     createPod,
     createMilestone,
     createBounty,
+    isPodPublic,
+    isPublicEntity,
+    labelIds,
   ]);
+
+  useEffect(() => {
+    if (org) {
+      getOrgLabels({
+        variables: {
+          orgId: org,
+        },
+      });
+    } else {
+      setLabelIds([]);
+    }
+  }, [org]);
+
+  const handleCreateLabel = async (label: Label) => {
+    const {
+      data: { createLabel: newLabel },
+    } = await createLabel({
+      variables: {
+        input: {
+          orgId: org,
+          name: label.name,
+          color: label.color,
+        },
+      },
+    });
+
+    setLabelIds([...labelIds, newLabel.id]);
+  };
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const creating =
     createTaskLoading || createTaskProposalLoading || createMilestoneLoading || createBountyLoading || createPodLoading;
-
+  console.log('pods ->', pods);
   return (
     <CreateFormBaseModal isPod={isPod}>
-      <CreateFormBaseModalCloseBtn onClick={handleClose}>
-        <CloseModalIcon />
-      </CreateFormBaseModalCloseBtn>
-      <CreateFormBaseModalHeader
-        style={{
-          marginBottom: '0',
-        }}
-      >
-        <TitleIcon circle />
-        <CreateFormBaseModalTitle>Create a {titleText.toLowerCase()}</CreateFormBaseModalTitle>
-      </CreateFormBaseModalHeader>
-
+      <CreateFormBaseModalHeaderWrapper>
+        <CreateFormBaseModalHeader
+          style={{
+            marginBottom: '0',
+          }}
+        >
+          <TitleIcon circle />
+          <CreateFormBaseModalTitle>Create a {titleText.toLowerCase()}</CreateFormBaseModalTitle>
+        </CreateFormBaseModalHeader>
+        <CreateFormBaseModalCloseBtn onClick={handleClose}>
+          <CloseModalIcon />
+        </CreateFormBaseModalCloseBtn>
+      </CreateFormBaseModalHeaderWrapper>
       <CreateFormMainSection>
         <CreateFormMainSelects>
           <DropdownSelect
@@ -956,7 +1135,9 @@ const CreateLayoutBaseModal = (props) => {
               />
             </CreateRewardAmountDiv>
             <CreateRewardAmountDiv>
-              <CreateFormMainBlockTitle>Reward amount {isBounty ? 'per submission' : ''}</CreateFormMainBlockTitle>
+              <CreateFormMainBlockTitle>
+                {isBounty ? 'Minimum reward per submission' : 'Reward amount'}
+              </CreateFormMainBlockTitle>
 
               <InputForm
                 style={{
@@ -1043,30 +1224,49 @@ const CreateLayoutBaseModal = (props) => {
               <CreateFormAddDetailsInputBlock>
                 <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
                 <StyledAutocompletePopper
-                  options={filterOrgUsers(podUsersData?.getPodUsers ?? orgUsersData?.getOrgUsers)}
+                  options={filterOrgUsers(orgUsersData?.getOrgUsers)}
                   onOpen={() => {
-                    if (pod) {
-                      getPodUsers({
-                        variables: {
-                          podId: pod?.id || pod,
-                          limit: 100, // TODO: fix autocomplete
-                        },
-                      });
-                    }
+                    // if (pod) {
+                    //   getPodUsers({
+                    //     variables: {
+                    //       podId: pod?.id || pod,
+                    //       limit: 100, // TODO: fix autocomplete
+                    //     },
+                    //   });
+                    // }
                   }}
-                  renderInput={(params) => (
-                    <TextField
-                      style={{
-                        color: White,
-                        fontFamily: 'Space Grotesk',
-                        fontSize: '14px',
-                        paddingLeft: '4px',
-                      }}
-                      placeholder="Enter username..."
-                      InputLabelProps={{ shrink: false }}
-                      {...params}
-                    />
-                  )}
+                  renderInput={(params) => {
+                    const InputProps = {
+                      ...params?.InputProps,
+                      type: 'autocomplete',
+                      startAdornment:
+                        assignee && assigneeString ? (
+                          <StyledChip label={assigneeString} onDelete={() => setAssignee(null)} />
+                        ) : (
+                          ''
+                        ),
+                    };
+                    return (
+                      <TextField
+                        {...params}
+                        style={{
+                          color: White,
+                          fontFamily: 'Space Grotesk',
+                          fontSize: '1px',
+                          paddingLeft: '4px',
+                        }}
+                        placeholder="Enter username..."
+                        InputLabelProps={{ shrink: false }}
+                        InputProps={InputProps}
+                        inputProps={{
+                          ...params?.inputProps,
+                          style: {
+                            opacity: assignee ? '0' : '1',
+                          },
+                        }}
+                      />
+                    );
+                  }}
                   value={assignee}
                   inputValue={assigneeString}
                   onInputChange={(event, newInputValue) => {
@@ -1252,6 +1452,21 @@ const CreateLayoutBaseModal = (props) => {
         )}
       </CreateFormMainSection>
 
+      {org ? (
+        <CreateFormAddTagsSection>
+          <CreateFormMainInputBlock>
+            <CreateFormMainBlockTitle>Add tags</CreateFormMainBlockTitle>
+
+            <Tags
+              options={orgLabelsData?.getOrgLabels || []}
+              ids={labelIds}
+              onChange={setLabelIds}
+              onCreate={handleCreateLabel}
+              limit={4}
+            />
+          </CreateFormMainInputBlock>
+        </CreateFormAddTagsSection>
+      ) : null}
       {/* {showDeliverableRequirementsSection && (
 				<CreateFormTaskRequirements>
 					<CreateFormTaskRequirementsTitle>
@@ -1271,7 +1486,6 @@ const CreateLayoutBaseModal = (props) => {
 					</CreateFormTaskRequirementsContainer>
 				</CreateFormTaskRequirements>
 			)} */}
-
       <CreateFormAddDetailsSection>
         {/* <CreateFormAddDetailsButton onClick={() => addDetailsHandleClick()}>
           {!addDetails ? (
@@ -1302,27 +1516,17 @@ const CreateLayoutBaseModal = (props) => {
               <CreateFormAddDetailsAppearBlockContainer>
                 <CreateFormAddDetailsSelects>
                   <CreateFormAddDetailsLocalizationProvider>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DatePicker title="Due date" inputFormat="MM/dd/yyyy" value={dueDate} setValue={setDueDate} />
-                    </LocalizationProvider>
-                  </CreateFormAddDetailsLocalizationProvider>
-                  <CreateFormAddDetailsSwitch
-                    style={{
-                      width: '100%',
-                      marginLeft: '20px',
-                    }}
-                  >
-                    <CreateFormAddDetailsSwitchLabel>Show task as public</CreateFormAddDetailsSwitchLabel>
-                    <AndroidSwitch
-                      checked={publicTask}
-                      onChange={(e) => {
-                        setPublicTask(e.target.checked);
-                      }}
-                    />
-                  </CreateFormAddDetailsSwitch>
-                </CreateFormAddDetailsSelects>
+                    <CreateFormAddDetailsInputLabel>Due Date</CreateFormAddDetailsInputLabel>
 
-                {/* <CreateFormAddDetailsSelects> */}
+                    <SingleDatePicker
+                      setValue={setDueDate}
+                      setRecurrenceType={setRecurrenceType}
+                      setRecurrenceValue={setRecurrenceValue}
+                      hideRecurring={isBounty || isMilestone}
+                    />
+                  </CreateFormAddDetailsLocalizationProvider>
+                </CreateFormAddDetailsSelects>
+                {/* <CreateFormAddDetailsSelects> */}{' '}
                 {/* {isPod && (
                   <CreateFormAddDetailsSwitch>
                     <CreateFormAddDetailsInputLabel>
@@ -1336,15 +1540,13 @@ const CreateLayoutBaseModal = (props) => {
                     />
                   </CreateFormAddDetailsSwitch>
                 )} */}
-
-                {/*if Suggest a task opened */}
+                {/*if Suggest a task opened */}{' '}
                 {/* {showBountySwitchSection && canCreateTask && (
                   <CreateFormAddDetailsSwitch>
                     <CreateFormAddDetailsInputLabel>This is a bounty</CreateFormAddDetailsInputLabel>
                     <AndroidSwitch />
                   </CreateFormAddDetailsSwitch>
                 )} */}
-
                 {/*if Create a milestone opened*/}
                 {/* {showPrioritySelectSection && (
                     <DropdownSelect
@@ -1358,40 +1560,45 @@ const CreateLayoutBaseModal = (props) => {
               </CreateFormAddDetailsAppearBlockContainer>
             )}
 
-            {showLinkAttachmentSection && (
-              <CreateFormLinkAttachmentBlock
-                style={{
-                  borderBottom: 'none',
-                  paddingTop: '16px',
-                }}
-              >
-                <CreateFormLinkAttachmentLabel>Link</CreateFormLinkAttachmentLabel>
-                <InputForm
-                  value={link}
-                  onChange={(e) => setLink(e.target.value)}
-                  margin
-                  placeholder="Enter link URL"
-                  search={false}
-                />
-              </CreateFormLinkAttachmentBlock>
-            )}
-            {isPod && (
-              <div>
-                <CreateFormAddDetailsSwitch>
-                  <CreateFormAddDetailsInputLabel>Private {titleText.toLowerCase()}</CreateFormAddDetailsInputLabel>
-                  <AndroidSwitch
-                    checked={isPrivate}
-                    onChange={(e) => {
-                      setIsPrivate(e.target.checked);
+            {(showLinkAttachmentSection || showVisibility) && (
+              <CreateFormAddDetailsAppearBlockContainer>
+                {showLinkAttachmentSection && (
+                  <CreateFormLinkAttachmentBlock
+                    style={{
+                      borderBottom: 'none',
                     }}
-                  />
-                </CreateFormAddDetailsSwitch>
-              </div>
+                  >
+                    <CreateFormLinkAttachmentLabel>Link</CreateFormLinkAttachmentLabel>
+                    <InputForm
+                      value={link}
+                      onChange={(e) => setLink(e.target.value)}
+                      margin
+                      placeholder="Enter link URL"
+                      search={false}
+                    />
+                  </CreateFormLinkAttachmentBlock>
+                )}
+                {showVisibility && (
+                  <CreateFormAddDetailsTab>
+                    <CreateFormAddDetailsInputLabel>
+                      Who can see this {titleText.toLowerCase()}?
+                    </CreateFormAddDetailsInputLabel>
+                    <TabsVisibilityCreateEntity
+                      type={titleText.toLowerCase()}
+                      isPod={isPod}
+                      isPublic={isPublicEntity}
+                      setIsPublic={setIsPublicEntity}
+                      orgPrivacyLevel={selectedOrgPrivacyLevel}
+                      podPrivacyLevel={selectedPodPrivacyLevel}
+                    />
+                    {errors.privacy && <ErrorText>{errors.privacy}</ErrorText>}
+                  </CreateFormAddDetailsTab>
+                )}
+              </CreateFormAddDetailsAppearBlockContainer>
             )}
           </CreateFormAddDetailsAppearBlock>
         )}
       </CreateFormAddDetailsSection>
-
       <CreateFormFooterButtons>
         {errors.general && <ErrorText>{errors.general}</ErrorText>}
         <CreateFormButtonsBlock>
@@ -1409,7 +1616,7 @@ const CreateLayoutBaseModal = (props) => {
             onClick={submitMutation}
           >
             {creating ? <CircularProgress size={20} /> : null}
-            {canCreateTask ? 'Create' : 'Propose'} {titleText}
+            {canCreateTask ? 'Create' : isProposal ? 'Create' : 'Propose'} {titleText}
           </CreateFormPreviewButton>
         </CreateFormButtonsBlock>
       </CreateFormFooterButtons>

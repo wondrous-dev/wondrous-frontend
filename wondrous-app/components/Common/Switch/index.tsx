@@ -1,4 +1,4 @@
-import { Switch } from '@material-ui/core'
+import { Switch } from '@material-ui/core';
 import styled from 'styled-components';
 
 export default styled(Switch)(({ theme }) => ({
@@ -30,5 +30,10 @@ export default styled(Switch)(({ theme }) => ({
 
   '& .MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track': {
     background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
+    opacity: 1,
+  },
+  '& .MuiSwitch-colorSecondary.Mui-disabled + .MuiSwitch-track': {
+    background: 'white',
+    opacity: 0.5,
   },
 }));

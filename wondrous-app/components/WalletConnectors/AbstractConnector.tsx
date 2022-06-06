@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Button } from '@components/Common/button';
+import { Button } from 'components/Common/button';
 import { CircularProgress } from '@material-ui/core';
-import { useWonderWeb3 } from '@services/web3';
-import { PaddedParagraph } from '@components/Common/text';
-import connectors, { ConnectorName } from '@services/web3/connectors';
+import { useWonderWeb3 } from 'services/web3';
+import { PaddedParagraph } from 'components/Common/text';
+import connectors, { ConnectorName } from 'services/web3/connectors';
 
 export interface WonderAbstractConnectorProps {
   connectorName: ConnectorName;
@@ -47,7 +47,7 @@ export default function WonderAbstractConnector({
   };
 
   return (
-    <Button style={style} disabled={disabled} onClick={() => activateAndStore(connectorName)}>
+    <Button style={style} onClick={() => activateAndStore(connectorName)}>
       {isActivating ? <CircularProgress /> : <>{content()}</>}
     </Button>
   );

@@ -15,7 +15,7 @@ import {
   StyledTableHead,
   StyledTableRow,
 } from '../../Table/styles';
-import { delQuery } from '../../../utils';
+import { delQuery } from 'utils';
 import { ToggleViewButton } from '../../Common/ToggleViewButton';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import {
@@ -23,23 +23,25 @@ import {
   GET_PAYMENTS_FOR_POD,
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
-} from '../../../graphql/queries/payment';
+} from 'graphql/queries/payment';
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import { StyledCheckbox, TableCellText } from './styles';
 import { CompensationAmount, CompensationPill, IconContainer } from '../../Common/Compensation/styles';
-import { GET_ORG_BY_ID, GET_USER_PERMISSION_CONTEXT } from '../../../graphql/queries';
+import { GET_ORG_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import Link from 'next/link';
-import { cutString, parseUserPermissionContext } from '../../../utils/helpers';
+import { cutString, parseUserPermissionContext } from 'utils/helpers';
 import { constructGnosisRedirectUrl } from '../../Common/Payment/SingleWalletPayment';
 import { White, Grey800 } from '../../../theme/colors';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PayModal } from './modal';
 import { BatchPayModal } from './BatchPayModal';
-import { PaymentModalContext } from '../../../utils/contexts';
+import { PaymentModalContext } from 'utils/contexts';
 import { SeeMoreText } from '../Members/styles';
-import { PERMISSIONS } from '../../../utils/constants';
+import { PERMISSIONS } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
+import { ErrorText } from '../../Common';
+import Tooltip from "components/Tooltip";
 
 enum ViewType {
   Paid = 'paid',
@@ -86,9 +88,10 @@ const PaymentItem = (props) => {
     link = constructGnosisRedirectUrl(item.chain, item.safeAddress, item.safeTxHash);
     linkText = item.safeTxHash;
   }
-  const disabled =
-    chain && item?.chain !== chain && (item?.paymentStatus === 'processing' || item?.paymentStatus === 'paid');
 
+  const disabled =
+    (chain && item?.chain !== chain) || (item?.paymentStatus === 'processing' || item?.paymentStatus === 'paid');
+  console.log('item', item)
   return (
     <>
       <PaymentModalContext.Provider
@@ -96,16 +99,18 @@ const PaymentItem = (props) => {
           onPaymentComplete: () => {},
         }}
       >
-        <PayModal
-          podId={podId}
-          orgId={org?.id}
-          open={openModal}
-          handleClose={() => setOpenModal(false)}
-          assigneeId={item.payeeId}
-          assigneeUsername={item.payeeUsername}
-          taskTitle={item.taskTitle}
-          submissionId={item.submissionId}
-        />
+        {openModal && (
+          <PayModal
+            podId={podId}
+            orgId={org?.id}
+            open={openModal}
+            handleClose={() => setOpenModal(false)}
+            assigneeId={item.payeeId}
+            assigneeUsername={item.payeeUsername}
+            taskTitle={item.taskTitle}
+            submissionId={item.submissionId}
+          />
+        )}
       </PaymentModalContext.Provider>
       <StyledTableRow
         style={{
@@ -114,58 +119,59 @@ const PaymentItem = (props) => {
       >
         {item.paymentStatus !== 'paid' && (
           <StyledTableCell>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <TableCellText>
-                <Checkbox
-                  style={{
-                    border: disabled ? `1px solid ${Grey800}` : `none`,
-                    width: '24px',
-                    height: '24px',
-                    color: disabled ? Grey800 : White,
-                  }}
-                  checked={checked}
-                  disabled={disabled}
-                  onChange={() => {
-                    if (checked) {
-                      const newObj = { ...paymentSelected };
-                      delete newObj[item.submissionId];
-                      setPaymentsSelected(newObj);
-                    } else if (!checked) {
-                      const newObj = {
-                        ...paymentSelected,
-                        [item.submissionId]: item,
-                      };
-                      setPaymentsSelected(newObj);
-                    }
-                    setChecked(!checked);
-                    setChainSelected(item.chain);
+            {item.payeeActiveEthAddress?
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <TableCellText>
+                  <Checkbox
+                    style={{
+                      border: disabled ? `1px solid ${Grey800}` : `none`,
+                      width: '24px',
+                      height: '24px',
+                      color: disabled ? Grey800 : White,
+                    }}
+                    checked={checked}
+                    disabled={disabled}
+                    onChange={() => {
+                      if (checked) {
+                        const newObj = { ...paymentSelected };
+                        delete newObj[item.submissionId];
+                        setPaymentsSelected(newObj);
+                      } else if (!checked) {
+                        const newObj = {
+                          ...paymentSelected,
+                          [item.submissionId]: item,
+                        };
+                        setPaymentsSelected(newObj);
+                      }
+                      setChecked(!checked);
+                      setChainSelected(item.chain);
 
-                    setEnableBatchPay(true);
-                  }}
-                  inputProps={{ 'aria-label': 'controlled' }}
-                />
-              </TableCellText>
-              {item.paymentStatus !== 'paid' && (
-                <>
-                  {item.paymentStatus !== 'processing' && (
-                    <CreateFormPreviewButton
-                      style={{
-                        marginLeft: '12px',
-                      }}
-                      onClick={() => setOpenModal(true)}
-                    >
-                      {' '}
-                      Pay{' '}
-                    </CreateFormPreviewButton>
-                  )}
-                </>
-              )}
-            </div>
+                      setEnableBatchPay(true);
+                    }}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                  />
+                </TableCellText>
+                {item.paymentStatus !== 'paid' && (
+                  <>
+                    {item.paymentStatus !== 'processing' && (
+                      <CreateFormPreviewButton
+                        style={{
+                          marginLeft: '12px',
+                        }}
+                        onClick={() => setOpenModal(true)}
+                      >
+                        {' '}
+                        Pay{' '}
+                      </CreateFormPreviewButton>
+                    )}
+                  </>
+                )}
+              </div>: <ErrorText>User has no web3 address</ErrorText>}
           </StyledTableCell>
         )}
         <StyledTableCell>
@@ -223,7 +229,7 @@ const PaymentItem = (props) => {
           </Link>
         </StyledTableCell>
         <StyledTableCell>
-          {canViewPaymentLink && viewingUser?.id === item?.payeeId && (
+          {(canViewPaymentLink || viewingUser?.id === item?.payeeId) && (
             <a
               style={{
                 color: White,
@@ -271,6 +277,13 @@ const Payouts = (props) => {
   const [enableBatchPay, setEnableBatchPay] = useState(null);
   const [paymentSelected, setPaymentsSelected] = useState(null);
   const [openBatchPayModal, setOpenBatchPayModal] = useState(false);
+
+  useEffect(()=>{
+    if (!paymentSelected || Object.keys(paymentSelected).length === 0) {
+      setChainSelected(null)
+    }
+  }, [paymentSelected])
+
   const listViewOptions = [
     {
       name: 'Unpaid',
@@ -329,7 +342,10 @@ const Payouts = (props) => {
     if (orgId && view === ViewType.Unpaid) {
       getUnpaidSubmissionsForOrg({
         variables: {
-          orgId,
+          input: {
+            orgId,
+            orgOnly: false,
+          },
         },
       }).then((result) => {
         const submissions = result?.data?.getUnpaidSubmissionsForOrg;
@@ -338,7 +354,9 @@ const Payouts = (props) => {
     } else if (podId && view === ViewType.Unpaid) {
       getUnpaidSubmissionsForPod({
         variables: {
-          podId,
+          input: {
+            podId,
+          },
         },
       }).then((result) => {
         const submissions = result?.data?.getUnpaidSubmissionsForPod;
@@ -349,6 +367,7 @@ const Payouts = (props) => {
         variables: {
           input: {
             orgId,
+            orgOnly: false, // TODO add toggle to see pod payments, default to false
             limit: LIMIT,
           },
         },
@@ -477,19 +496,33 @@ const Payouts = (props) => {
                 </StyledTableCell>
               )}
               <StyledTableCell align="center" width={paid ? '20%' : '16%'}>
-                Assignee
+                <Tooltip title="Person assigned to task" placement="top">
+                  <div>Assignee</div>
+                </Tooltip>
               </StyledTableCell>
               <StyledTableCell align="center" width={paid ? '20%' : '16%'}>
-                Payout
+                <Tooltip title={paid ? 'Amount paid' : 'Amount owed'} placement="top">
+                  <div>Payout</div>
+                </Tooltip>
               </StyledTableCell>
               <StyledTableCell align="center" width="20%">
                 Deliverable
               </StyledTableCell>
               <StyledTableCell align="center" width={paid ? '20%' : '16%'}>
-                Link
+                <Tooltip title="Proof of payment" placement="top">
+                  <div>Link</div>
+                </Tooltip>
               </StyledTableCell>
-              {view === ViewType.Unpaid && <StyledTableCell width="10%">Status</StyledTableCell>}
-              <StyledTableCell>Chain</StyledTableCell>
+              {view === ViewType.Unpaid && <StyledTableCell width="10%">
+                <Tooltip title="Payment status" placement="top">
+                  <div>Status</div>
+                </Tooltip>
+              </StyledTableCell>}
+              <StyledTableCell>
+                <Tooltip title="Payment network" placement="top">
+                  <div>Chain</div>
+                </Tooltip>
+              </StyledTableCell>
               <StyledTableCell align="center" width="25%">
                 {view === ViewType.Paid ? 'Paid at' : 'Approved at'}
               </StyledTableCell>
