@@ -148,6 +148,12 @@ export const SettingsWrapper = (props) => {
       page: [SettingsPage.Org],
     },
     {
+      icon: <WrenchIcon width={40} height={40} />,
+      label: 'Integrations',
+      value: 'integrations',
+      href: orgId ? `/organization/settings/${orgId}/integrations` : `/pod/settings/${podId}/integrations`,
+    },
+    {
       icon: <CardIcon width={40} height={40} />,
       label: 'Payments Ledger',
       value: 'payouts',
