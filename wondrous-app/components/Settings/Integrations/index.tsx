@@ -36,6 +36,7 @@ import WrenchIcon from '../../Icons/wrench';
 import SafeServiceClient from '@gnosis.pm/safe-service-client';
 import { useWonderWeb3 } from '../../../services/web3';
 import { ErrorText } from '../../Common';
+import { GET_SPACE } from 'services/snapshot/gql';
 
 import { ethers } from 'ethers';
 import snapshot from '@snapshot-labs/snapshot.js';
@@ -58,63 +59,6 @@ const snapshotClient = new ApolloClient({
   uri: snapshotAPI
 });
 
-const GET_SPACE = gql`
-  query Space($id: String!) {
-    space(id: $id) {
-      id
-      name
-      about
-      network
-      symbol
-      strategies {
-        name
-        network
-        params
-      }
-      admins
-      members
-      filters {
-        minScore
-        onlyMembers
-      }
-      plugins
-    }
-  }
-`
-
-const SUPPORTED_PAYMENT_CHAINS = [
-  {
-    label: 'Ethereum Mainnet',
-    value: 'eth_mainnet',
-  },
-  {
-    label: 'Polygon Mainnet',
-    value: 'polygon_mainnet',
-  },
-];
-if (!process.env.NEXT_PUBLIC_PRODUCTION) {
-  SUPPORTED_PAYMENT_CHAINS.push({
-    label: 'Ethereum Rinkeby',
-    value: 'rinkeby',
-  });
-}
-
-interface ISnapshotSpace {
-  name: string;
-  skin?: string;
-  about?: string;
-  admins?: string[];
-  avatar?: string;
-  github?: string;
-  symbol?: string;
-  filters?: any;
-  members?: string[];
-  network?: string;
-  plugins?: any;
-  twitter?: string;
-  strategies?: any[];
-  validation?: any;
-}
 
 const useSnapshot = () => {
   const [snapshotChecked, setSnapshotChecked] = useState(false)
@@ -132,19 +76,10 @@ const useSnapshot = () => {
 }
 
 
-const CHAIN_VALUE_TO_GNOSIS_CHAIN_VALUE = {
-  eth_mainnet: 'mainnet',
-  polygon_mainnet: 'polygon',
-  rinkeby: 'rinkeby',
-};
 const Integrations = (props) => {
   const router = useRouter();
   const wonderWeb3 = useWonderWeb3();
   const { orgId, podId } = router.query;
-  const [wallets, setWallets] = useState([]);
-  const [selectedChain, setSelectedChain] = useState('eth_mainnet');
-  const [walletName, setWalletName] = useState('');
-  const [safeAddress, setSafeAddress] = useState('');
   const [userAddress, setUserAddress] = useState('');
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -154,9 +89,9 @@ const Integrations = (props) => {
     snapshotChecked,
     setSnapshotChecked,
     snapshotConnected,
-    setSnapshotConnected,
     snapshotSpace,
-    setSnapshotSpace
+    setSnapshotSpace,
+    // connectSnapshotSpace,
   } = useSnapshot()
 
   // snapshot api to retrieve space data
@@ -173,7 +108,7 @@ const Integrations = (props) => {
           setSnapshotChecked(true)
           setErrorMessage('')
         } else {
-          setErrorMessage(`User is not an admin of '${data.space.id}'`)
+          setErrorMessage(`User is not an admin of '${data.space.id}' Please update ENS text record or enter administered Snapshot`)
         }
       } else {
         setErrorMessage(`'${snapshotSpace.name}' not found. Please enter a valid Snapshot Space ENS.`)
@@ -185,10 +120,6 @@ const Integrations = (props) => {
     fetchPolicy: 'cache-and-network'
   })
 
-  const emptyError = {
-    safeAddressError: null,
-  };
-  const [errors, setErrors] = useState(emptyError);
 
   useEffect(() => {
     if (wonderWeb3?.onConnect) {
@@ -197,48 +128,23 @@ const Integrations = (props) => {
     setUserAddress(wonderWeb3.address);
   }, []);
 
-  const [getOrgWallet] = useLazyQuery(GET_ORG_WALLET, {
-    onCompleted: (data) => {
-      setWallets(data?.getOrgWallet);
-    },
-    fetchPolicy: 'network-only',
-  });
-  const [getPodWallet] = useLazyQuery(GET_POD_WALLET, {
-    onCompleted: (data) => {
-      setWallets(data?.getPodWallet);
-    },
-    fetchPolicy: 'network-only',
-  });
-
-  const handleConnectSnapshotClick = () => {
-    console.log(snapshotSpace)
+  const handleConnectSnapshotSpace = () => {
+    // await connectSnapshotSpace({ variables: {
+    //   orgId,
+    //   key: snapshotSpace.id,
+    //   url: getSnapshotUrl(snapshotName),
+    //   displayName: snapshotSpace.name,
+    // }});
   }
 
   const handleCheckSnapshotClick = async () => {
     const wallet = wonderWeb3.wallet
     const provider = new ethers.providers.Web3Provider(wonderWeb3.web3Provider)
     console.log(snapshotSpace.name)
-    console.log(wonderWeb3.wallet)
     console.log(await provider.resolveName(snapshotSpace.name))
     await getSpace({ variables: { id: snapshotSpace.name }})
   }
 
-  useEffect(() => {
-    if (orgId) {
-      getOrgWallet({
-        variables: {
-          orgId,
-        },
-      });
-    } else if (podId) {
-      getPodWallet({
-        variables: {
-          podId,
-        },
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, podId]);
 
   return (
     <SettingsWrapper>
@@ -273,7 +179,7 @@ const Integrations = (props) => {
                     </IntegrationsSnapshotSubBlock>
                   </>
                 : <IntegrationsSnapshotButton
-                    onClick={handleConnectSnapshotClick}
+                    onClick={handleConnectSnapshotSpace}
                   >
                     Connect Snapshot
                   </IntegrationsSnapshotButton>
