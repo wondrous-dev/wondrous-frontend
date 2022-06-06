@@ -99,7 +99,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
             padding: '8px',
           }}
           onClick={() =>
-            router.push('/onboarding/email-setup', undefined, {
+            router.push('/onboarding/connect-twitter', undefined, {
               shallow: true,
             })
           }
