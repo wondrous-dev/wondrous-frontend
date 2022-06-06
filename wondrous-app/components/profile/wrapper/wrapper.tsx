@@ -6,7 +6,7 @@ import router from 'next/router';
 import Image from 'next/image';
 import React, { useState } from 'react';
 import { SIDEBAR_WIDTH, SOCIAL_MEDIA_DISCORD, SOCIAL_MEDIA_TWITTER, SOCIAL_OPENSEA } from 'utils/constants';
-import { SideBarContext } from 'utils/contexts';
+import useSideBar from 'hooks/useSideBar';
 import { formatLinkDisplay } from 'utils/links';
 import { useMe } from '../../Auth/withAuth';
 import { SafeImage } from '../../Common/Image';
@@ -52,7 +52,7 @@ interface IWrapperProps {
 }
 
 const Wrapper = (props: IWrapperProps) => {
-  const [minimized, setMinimized] = useState(false);
+  const { minimized } = useSideBar();
   const loggedInUser = useMe();
   const { children, userProfileData = {} } = props;
   const { links } = userProfileData;
@@ -69,6 +69,10 @@ const Wrapper = (props: IWrapperProps) => {
     top: '-50px',
     border: '10px solid #0f0f0f',
   };
+
+  console.log('loggedInUser', loggedInUser);
+  console.log('userProfileData', userProfileData);
+
   const profileImageComponent = profilePicture ? (
     <SafeImage src={profilePicture} style={style} />
   ) : (
@@ -77,75 +81,69 @@ const Wrapper = (props: IWrapperProps) => {
   return (
     <>
       <Header />
-      <SideBarContext.Provider
-        value={{
-          minimized,
-          setMinimized,
+
+      <SideBarComponent />
+      <OverviewComponent
+        style={{
+          paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
         }}
       >
-        <SideBarComponent />
-        <OverviewComponent
-          style={{
-            paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
-          }}
-        >
-          <HeaderImageWrapper>
-            <HeaderImageDefault />
-          </HeaderImageWrapper>
-          <Content>
-            <ContentContainer>
-              <TokenHeader>
-                {profileImageComponent}
-                <HeaderMainBlock>
-                  <HeaderTitle>{fullName}</HeaderTitle>
-                  {viewingSelf && (
-                    <HeaderButtons>
-                      <HeaderEditProfileButton
-                        onClick={() =>
-                          router.push(`/profile/settings`, undefined, {
-                            shallow: true,
-                          })
-                        }
-                      >
-                        Edit my profile
-                      </HeaderEditProfileButton>
-                    </HeaderButtons>
-                  )}
-                </HeaderMainBlock>
-                <HeaderUserName>@{username}</HeaderUserName>
-                {bio && <HeaderText>{bio}</HeaderText>}
-                <HeaderActivity>
-                  <HeaderOrgPodCount>
-                    <HeaderPodCount>{podCount}</HeaderPodCount>
-                    <HeaderPodCountText>Pods</HeaderPodCountText>
-                  </HeaderOrgPodCount>
-                  <HeaderOrgPodCount>
-                    <HeaderOrgCount>{orgCount}</HeaderOrgCount>
-                    <HeaderOrgCountText>DAOs</HeaderOrgCountText>
-                  </HeaderOrgPodCount>
-                  {mainLink?.url && (
-                    <HeaderActivityLink href={mainLink.url} target="_blank">
-                      <HeaderActivityLinkIcon />
-                      <HeaderActivityLinkText>{formatLinkDisplay(mainLink)}</HeaderActivityLinkText>
-                    </HeaderActivityLink>
-                  )}
-                  {social.map(({ url, type }) => {
-                    if (!url) return null;
-                    const SocialIcon = socialIcons[type];
-                    return (
-                      <HeaderActivityLink key={url} href={url} target="_blank">
-                        <HeaderActivitySocialIcon Component={SocialIcon} />
-                      </HeaderActivityLink>
-                    );
-                  })}
-                </HeaderActivity>
-              </TokenHeader>
+        <HeaderImageWrapper>
+          <HeaderImageDefault />
+        </HeaderImageWrapper>
 
-              {children}
-            </ContentContainer>
-          </Content>
-        </OverviewComponent>
-      </SideBarContext.Provider>
+        <Content>
+          <ContentContainer>
+            <TokenHeader>
+              {profileImageComponent}
+              <HeaderMainBlock>
+                <HeaderTitle>{fullName}</HeaderTitle>
+                {viewingSelf && (
+                  <HeaderButtons>
+                    <HeaderEditProfileButton
+                      onClick={() =>
+                        router.push(`/profile/settings`, undefined, {
+                          shallow: true,
+                        })
+                      }
+                    >
+                      Edit my profile
+                    </HeaderEditProfileButton>
+                  </HeaderButtons>
+                )}
+              </HeaderMainBlock>
+              <HeaderUserName>@{username}</HeaderUserName>
+              {bio && <HeaderText>{bio}</HeaderText>}
+              <HeaderActivity>
+                <HeaderOrgPodCount>
+                  <HeaderPodCount>{podCount}</HeaderPodCount>
+                  <HeaderPodCountText>Pods</HeaderPodCountText>
+                </HeaderOrgPodCount>
+                <HeaderOrgPodCount>
+                  <HeaderOrgCount>{orgCount}</HeaderOrgCount>
+                  <HeaderOrgCountText>DAOs</HeaderOrgCountText>
+                </HeaderOrgPodCount>
+                {mainLink?.url && (
+                  <HeaderActivityLink href={mainLink.url} target="_blank">
+                    <HeaderActivityLinkIcon />
+                    <HeaderActivityLinkText>{formatLinkDisplay(mainLink)}</HeaderActivityLinkText>
+                  </HeaderActivityLink>
+                )}
+                {social.map(({ url, type }) => {
+                  if (!url) return null;
+                  const SocialIcon = socialIcons[type];
+                  return (
+                    <HeaderActivityLink key={url} href={url} target="_blank">
+                      <HeaderActivitySocialIcon Component={SocialIcon} />
+                    </HeaderActivityLink>
+                  );
+                })}
+              </HeaderActivity>
+            </TokenHeader>
+            {children}
+          </ContentContainer>
+        </Content>
+      </OverviewComponent>
     </>
   );
 };

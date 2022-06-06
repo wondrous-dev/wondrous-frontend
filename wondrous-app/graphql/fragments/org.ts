@@ -25,6 +25,7 @@ export const OrgFragment = gql`
     tags
     contributorCount
     podCount
+    tasksCompletedCount
     links {
       url
       displayName

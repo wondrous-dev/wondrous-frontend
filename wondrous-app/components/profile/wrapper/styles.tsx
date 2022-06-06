@@ -11,8 +11,7 @@ export const OverviewComponent = styled.section`
   width: 100vw;
   height: 100%;
   min-height: 100vh;
-  //background-color: ${Background};
-  background-color: #0f0f0f;
+  background-color: ${Background};
   transition: 0.15s all ease;
   padding-bottom: 40px;
 `;

@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from 'utils/constants';
-import { SideBarContext } from 'utils/contexts';
+import useSideBar from 'hooks/useSideBar';
 import apollo from 'services/apollo';
 import { useMe } from '../../Auth/withAuth';
-import Image from 'next/image';
 
 import Header from '../../Header';
 import SideBarComponent from '../../SideBar';
@@ -82,7 +81,7 @@ const Wrapper = (props) => {
   const wonderWeb3 = useWonderWeb3();
   const loggedInUser = useMe();
   const [open, setOpen] = useState(false);
-  const [minimized, setMinimized] = useState(false);
+  const { minimized } = useSideBar();
   const [showUsers, setShowUsers] = useState(false);
   const [showPods, setShowPods] = useState(false);
   const orgBoard = useOrgBoard();
@@ -270,181 +269,161 @@ const Wrapper = (props) => {
         orgId={orgBoard?.orgId}
       />
       <Header openCreateFormModal={toggleCreateFormModal} />
-      <SideBarContext.Provider
-        value={{
-          minimized,
-          setMinimized,
+
+      <SideBarComponent />
+      <CreateFormModal open={createFormModal} toggleOpen={toggleCreateFormModal} />
+      <OverviewComponent
+        style={{
+          paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
         }}
       >
-        <SideBarComponent />
         <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
-        <OverviewComponent
-          style={{
-            paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
-          }}
-        >
-          <HeaderImageWrapper>
-            {orgProfile?.headerPicture ? <HeaderImage src={orgProfile?.headerPicture} /> : <HeaderImageDefault />}
-          </HeaderImageWrapper>
+        <HeaderImageWrapper>
+          {orgProfile?.headerPicture ? <HeaderImage src={orgProfile?.headerPicture} /> : <HeaderImageDefault />}
+        </HeaderImageWrapper>
 
-          <Content>
-            <ContentContainer>
-              <TokenHeader>
-                <HeaderMainBlock>
-                  {orgProfile?.profilePicture ? (
-                    <SafeImage
-                      src={orgProfile?.profilePicture}
-                      style={{
-                        width: '60px',
-                        height: '60px',
-                        borderRadius: '6px',
-                      }}
+        <Content>
+          <ContentContainer>
+            <TokenHeader>
+              <HeaderMainBlock>
+                {orgProfile?.profilePicture ? (
+                  <SafeImage
+                    src={orgProfile?.profilePicture}
+                    style={{
+                      width: '60px',
+                      height: '60px',
+                      borderRadius: '6px',
+                    }}
+                  />
+                ) : (
+                  <TokenEmptyLogo>
+                    <DAOEmptyIcon />
+                  </TokenEmptyLogo>
+                )}
+                <HeaderTitleIcon>
+                  <HeaderTitle>{orgProfile?.name}</HeaderTitle>
+                  <HeaderTag>@{orgProfile?.username}</HeaderTag>
+                </HeaderTitleIcon>
+                <HeaderButtons>
+                  {!isLoading && (
+                    <TokenGatedBoard
+                      isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
+                      tooltipTitle={'Token gating'}
                     />
-                  ) : (
-                    <TokenEmptyLogo>
-                      <DAOEmptyIcon />
-                    </TokenEmptyLogo>
                   )}
-                  <HeaderTitleIcon>
-                    <HeaderTitle>{orgProfile?.name}</HeaderTitle>
-                    <HeaderTag>@{orgProfile?.username}</HeaderTag>
-                  </HeaderTitleIcon>
-                  <HeaderButtons>
-                    {!isLoading && (
-                      <TokenGatedBoard
-                        isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
-                        tooltipTitle={'Token gating'}
-                      />
-                    )}
-                    <ToggleBoardPrivacyIcon
-                      isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
-                      tooltipTitle={
-                        orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private organization' : 'Public organization'
-                      }
-                    />
-                    {permissions === null && (
-                      <>
-                        {joinRequestSent || userJoinRequest?.id ? (
-                          <HeaderButton style={{ pointerEvents: 'none' }}>Request sent</HeaderButton>
-                        ) : (
-                          <HeaderButton reversed onClick={handleJoinOrgButtonClick}>
-                            Join org
-                          </HeaderButton>
-                        )}
-                      </>
-                    )}
-                    {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
-                      <>
-                        <HeaderButton
-                          onClick={() => {
-                            router.push(`/organization/settings/${orgBoard?.orgId}/general`, undefined, {
-                              shallow: true,
-                            });
-                          }}
-                        >
-                          Settings
+                  <ToggleBoardPrivacyIcon
+                    isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
+                    tooltipTitle={orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
+                  />
+                  {permissions === null && (
+                    <>
+                      {joinRequestSent || userJoinRequest?.id ? (
+                        <HeaderButton style={{ pointerEvents: 'none' }}>Request sent</HeaderButton>
+                      ) : (
+                        <HeaderButton reversed onClick={handleJoinOrgButtonClick}>
+                          Join org
                         </HeaderButton>
-                        <HeaderButton reversed onClick={() => setOpenInvite(true)}>
-                          Invite{' '}
-                        </HeaderButton>
-                      </>
-                    )}
-                  </HeaderButtons>
-                </HeaderMainBlock>
-                <HeaderText>{orgProfile?.description}</HeaderText>
-                <HeaderActivity>
-                  <HeaderContributors
-                    onClick={() => {
-                      setOpen(true);
-                      setShowUsers(true);
-                    }}
-                  >
-                    <HeaderContributorsAmount>{orgProfile?.contributorCount}</HeaderContributorsAmount>
-                    <HeaderContributorsText>Contributors</HeaderContributorsText>
-                  </HeaderContributors>
-                  <HeaderPods
-                    onClick={() => {
-                      setOpen(true);
-                      setShowPods(true);
-                    }}
-                  >
-                    <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
-                    <HeaderPodsText>Pods</HeaderPodsText>
-                  </HeaderPods>
+                      )}
+                    </>
+                  )}
+                  {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
+                    <>
+                      <HeaderButton
+                        onClick={() => {
+                          router.push(`/organization/settings/${orgBoard?.orgId}/general`, undefined, {
+                            shallow: true,
+                          });
+                        }}
+                      >
+                        Settings
+                      </HeaderButton>
+                      <HeaderButton reversed onClick={() => setOpenInvite(true)}>
+                        Invite{' '}
+                      </HeaderButton>
+                    </>
+                  )}
+                </HeaderButtons>
+              </HeaderMainBlock>
+              <HeaderText>{orgProfile?.description}</HeaderText>
+              <HeaderActivity>
+                <HeaderContributors
+                  onClick={() => {
+                    setOpen(true);
+                    setShowUsers(true);
+                  }}
+                >
+                  <HeaderContributorsAmount>{orgProfile?.contributorCount}</HeaderContributorsAmount>
+                  <HeaderContributorsText>Contributors</HeaderContributorsText>
+                </HeaderContributors>
+                <HeaderPods
+                  onClick={() => {
+                    setOpen(true);
+                    setShowPods(true);
+                  }}
+                >
+                  <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
+                  <HeaderPodsText>Pods</HeaderPodsText>
+                </HeaderPods>
+                {links?.map((link, index) => {
+                  if (link.type === 'link') {
+                    return (
+                      <HeaderActivityLink href={link?.url} key={index} target="_blank">
+                        <HeaderActivityLinkIcon />
+                        {link?.name || link?.url}
+                      </HeaderActivityLink>
+                    );
+                  }
+                })}
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
                   {links?.map((link, index) => {
-                    if (link.type === 'link') {
-                      return (
-                        <HeaderActivityLink href={link?.url} key={index} target="_blank">
-                          <HeaderActivityLinkIcon />
-                          {link?.name || link?.url}
-                        </HeaderActivityLink>
-                      );
+                    if (link.type !== 'link') {
+                      let SocialIcon = null;
+                      switch (link.type) {
+                        case SOCIAL_MEDIA_DISCORD:
+                          SocialIcon = DiscordIcon;
+                          break;
+                        case SOCIAL_MEDIA_TWITTER:
+                          SocialIcon = TwitterPurpleIcon;
+                          break;
+                        case SOCIAL_MEDIA_LINKEDIN:
+                          SocialIcon = LinkedInIcon;
+                          break;
+                        case SOCIAL_OPENSEA:
+                          SocialIcon = OpenSeaIcon;
+                          break;
+                      }
+                      if (SocialIcon) {
+                        return (
+                          <HeaderActivityLink href={link?.url} key={index} target="_blank">
+                            <SocialIcon
+                              style={{
+                                width: '20px',
+                                height: '20px',
+                              }}
+                            />
+                          </HeaderActivityLink>
+                        );
+                      }
+                      return null;
                     }
                   })}
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    {links?.map((link, index) => {
-                      if (link.type !== 'link') {
-                        let SocialIcon = null;
-                        switch (link.type) {
-                          case SOCIAL_MEDIA_DISCORD:
-                            SocialIcon = DiscordIcon;
-                            break;
-                          case SOCIAL_MEDIA_TWITTER:
-                            SocialIcon = TwitterPurpleIcon;
-                            break;
-                          case SOCIAL_MEDIA_LINKEDIN:
-                            SocialIcon = LinkedInIcon;
-                            break;
-                          case SOCIAL_OPENSEA:
-                            SocialIcon = OpenSeaIcon;
-                            break;
-                        }
-                        if (SocialIcon) {
-                          return (
-                            <HeaderActivityLink href={link?.url} key={index} target="_blank">
-                              <SocialIcon
-                                style={{
-                                  width: '20px',
-                                  height: '20px',
-                                }}
-                              />
-                            </HeaderActivityLink>
-                          );
-                        }
-                        return null;
-                      }
-                    })}
-                  </div>
-                </HeaderActivity>
-              </TokenHeader>
-              <Tabs>
-                <BoardsSubheaderWrapper className={search ? 'searchView' : ''}>
-                  {orgBoard?.setEntityType && !search && (
-                    <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
-                  )}
-                  {!!filterSchema && (
-                    <BoardsActivity
-                      onSearch={onSearch}
-                      filterSchema={filterSchema}
-                      onFilterChange={onFilterChange}
-                      statuses={statuses}
-                      podIds={podIds}
-                      userId={userId}
-                    />
-                  )}
-                </BoardsSubheaderWrapper>
-
-                {children}
-              </Tabs>
-            </ContentContainer>
-          </Content>
-        </OverviewComponent>
-      </SideBarContext.Provider>
+                </div>
+              </HeaderActivity>
+            </TokenHeader>
+            <Tabs>
+              {orgBoard?.setEntityType && !search && (
+                <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
+              )}
+              {children}
+            </Tabs>
+          </ContentContainer>
+        </Content>
+      </OverviewComponent>
     </>
   );
 };
