@@ -40,9 +40,9 @@ const CreateFormModal = (props) => {
       <ModalBody
         entityType={entityType}
         handleClose={handleCloseModal}
-        resetEntityType={resetEntityType}
         setEntityType={setEntityType}
         open={open}
+        cancel={resetEntityType}
       />
     </CreateFormModalOverlay>
   );
