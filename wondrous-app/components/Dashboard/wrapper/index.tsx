@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { SIDEBAR_WIDTH } from 'utils/constants';
 import { SideBarContext } from 'utils/contexts';
 import { toggleHtmlOverflow } from 'utils/helpers';
-import CreateFormModal from '../../CreateEntity';
+import ChooseEntityToCreate from '../../CreateEntity';
 import HeaderComponent from '../../Header';
 import SideBarComponent from '../../SideBar';
 import { Banner, Content, ContentContainer, OverviewComponent } from './styles';
@@ -29,7 +29,7 @@ const Wrapper = (props) => {
         }}
       >
         <SideBarComponent />
-        <CreateFormModal open={createFormModal} toggleOpen={toggleCreateFormModal} />
+        <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
         <OverviewComponent
           style={{
             paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,

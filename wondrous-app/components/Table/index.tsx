@@ -59,6 +59,7 @@ const DELIVERABLES_ICONS = {
   video: <PlayIcon />,
 };
 import TableBody from './TableBody';
+import { CreateEntity } from 'components/CreateEntity';
 
 const createTasksFromColumns = (columns) => {
   return columns.reduce((acc, column) => {
@@ -263,25 +264,19 @@ export const Table = (props) => {
           }}
         />
       ) : null}
-      {editableTask ? (
-        <CreateModalOverlay
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-          open={open}
-          onClose={() => {
+      {editableTask && (
+        <CreateEntity
+          open={Boolean(open)}
+          handleCloseModal={() => {
             setEditableTask(false);
           }}
-        >
-          <EditLayoutBaseModal
-            open={open}
-            entityType={editableTask?.isProposal ? ENTITIES_TYPES.PROPOSAL : editableTask?.type || ENTITIES_TYPES.TASK}
-            handleClose={() => setEditableTask(false)}
-            cancelEdit={() => setEditableTask(false)}
-            existingTask={editableTask}
-            isTaskProposal={editableTask.type === Constants.TASK_STATUS_REQUESTED}
-          />
-        </CreateModalOverlay>
-      ) : null}
+          entityType={editableTask?.isProposal ? ENTITIES_TYPES.PROPOSAL : editableTask?.type || ENTITIES_TYPES.TASK}
+          handleClose={() => setEditableTask(false)}
+          cancel={() => setEditableTask(false)}
+          existingTask={editableTask}
+          isTaskProposal={editableTask.type === Constants.TASK_STATUS_REQUESTED}
+        />
+      )}
       <KudosForm onClose={handleKudosFormOnClose} open={isKudosModalOpen} submission={kudosTask} />
 
       <StyledTableContainer>

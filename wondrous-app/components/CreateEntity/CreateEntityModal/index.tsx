@@ -745,7 +745,7 @@ const useContextValue = (condition, callback) => {
 };
 
 const initialValues = (entityType, existingTask) => {
-  const defaultValues = entityTypeData[entityType].initialValues;
+  const defaultValues = _.cloneDeep(entityTypeData[entityType].initialValues);
   if (!existingTask) return defaultValues;
   const defaultValuesKeys = Object.keys(defaultValues);
   const existingTaskValues = _.pick(

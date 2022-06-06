@@ -155,6 +155,7 @@ import { Share } from '../Share';
 import { CompleteModal } from '../CompleteModal';
 import { GET_ORG_LABELS } from 'graphql/queries';
 import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
+import { CreateEntity } from 'components/CreateEntity';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -1061,36 +1062,31 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     cursor: 'pointer',
   };
   if (editTask) {
+    const newModal = [ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType);
     return (
       <>
-        <CreateModalOverlay
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
+        <CreateEntity
           open={open}
-          onClose={() => {
+          handleCloseModal={() => {
             setEditTask(false);
             setFetchedTask(null);
             handleClose();
           }}
-        >
-          <EditLayoutBaseModal
-            open={open}
-            entityType={entityType}
-            handleClose={() => {
-              setEditTask(false);
-              setFetchedTask(null);
-              handleClose();
-            }}
-            cancelEdit={() => setEditTask(false)}
-            existingTask={
-              fetchedTask && {
-                ...fetchedTask,
-                reviewers: reviewerData?.getTaskReviewers || [],
-              }
+          entityType={entityType}
+          handleClose={() => {
+            setEditTask(false);
+            setFetchedTask(null);
+            handleClose();
+          }}
+          cancel={() => setEditTask(false)}
+          existingTask={
+            fetchedTask && {
+              ...fetchedTask,
+              reviewers: reviewerData?.getTaskReviewers || [],
             }
-            isTaskProposal={isTaskProposal}
-          />
-        </CreateModalOverlay>
+          }
+          isTaskProposal={isTaskProposal}
+        />
       </>
     );
   }
@@ -1345,8 +1341,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     <Tooltip title="Task" placement="top">
                       <span>
                         <TaskIconWrapper>
-                        <CheckedBoxIcon />
-                      </TaskIconWrapper>
+                          <CheckedBoxIcon />
+                        </TaskIconWrapper>
                       </span>
                     </Tooltip>
                   </Link>
