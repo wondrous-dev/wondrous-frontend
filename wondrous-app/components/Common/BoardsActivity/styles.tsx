@@ -15,3 +15,12 @@ export const BoardsActivityWrapper = styled.div`
     }
   }
 `;
+
+export const BoardsActivityInlineViewWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 18px;
+  height: 34px;
+`;

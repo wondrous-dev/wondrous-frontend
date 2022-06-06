@@ -12,6 +12,11 @@ export const TASK_STATUS_PAID = 'paid';
 export const TASK_STATUS_PROPOSAL_REQUEST = 'proposal_request';
 export const TASK_STATUS_SUBMISSION_REQUEST = 'submission_request';
 
+//Task date types
+export const TASK_DATE_OVERDUE = 'overdue';
+export const TASK_DATE_DUE_NEXT_WEEK = 'due_next_week';
+export const TASK_DATE_DUE_THIS_WEEK = 'due_this_week';
+
 export const ORG_MEMBERSHIP_REQUESTS = 'org_membership_request';
 export const TASK_STATUSES = [
   TASK_STATUS_TODO,
@@ -116,6 +121,13 @@ export const HARMONY_MULTI_SEND_ADDR = '0x998739BFdAAdde7C933B942a68053933098f9E
 export const HARMONY_SAFE_MASTER_COPY = '0x69f4D1788e39c87893C980c06EdF4b7f686e2938';
 export const HARMONY_SAFE_MASTER_COPY2 = '0xfb1bffC9d739B8D520DaF37dF666da4C687191EA';
 export const HARMONY_PROXY_FACTORY = '0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC';
+
+export const DISCORD_CONNECT_TYPES = {
+  signup: 'signup',
+  login: 'login',
+  connectSettings: 'connectSettings',
+  connectOnboarding: 'connectOnboarding',
+};
 
 export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId));
 
@@ -228,6 +240,8 @@ export const STATUSES_ON_ENTITY_TYPES = {
   [ENTITIES_TYPES.PROPOSAL]: TASKS_DEFAULT_STATUSES,
   DEFAULT: DEFAULT_STATUSES,
 };
+
+export const PROPOSAL_STATUS_LIST = [STATUS_OPEN, STATUS_CHANGE_REQUESTED, STATUS_APPROVED, TASK_STATUS_ARCHIVED];
 
 export const IMAGE_FILE_EXTENSIONS_TYPE_MAPPING = {
   gif: 'image/gif',
@@ -346,6 +360,7 @@ export const GRAPHQL_ERRORS = {
   NO_RECIPIENT_WEB_3_ADDRESS: 'recipient has no web3 address',
   NO_WEB3_ADDRESS_FOUND: 'no_web3_address_found',
   PAYMENT_METHOD_EXIST: 'payment_method_exist',
+  DISCORD_USER_ALREADY_EXISTS: 'Existing discord user exists',
 };
 
 export const LINK = process.env.NEXT_PUBLIC_PRODUCTION

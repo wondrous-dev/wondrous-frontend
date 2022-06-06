@@ -76,6 +76,13 @@ const SingleDatePicker = ({
   };
 
   useEffect(() => {
+    if(repeatType && !date) {
+      // if there are no day selected but repeat value set, default to today
+     setDate(moment());   
+    }
+  }, [repeatType, date]);
+
+  useEffect(() => {
     value && setDate(moment(value));
     recurrenceType && setRepeatType(recurrenceType);
 
@@ -234,7 +241,7 @@ const SingleDatePicker = ({
                     ),
                   }}
                   fullWidth
-                  placeholder="Start Date"
+                  placeholder="Due Date"
                   sx={styles.darkTextfield}
                 />
               </Box>

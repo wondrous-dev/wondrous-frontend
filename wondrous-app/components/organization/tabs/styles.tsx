@@ -8,12 +8,12 @@ export const Container = styled.div`
 export const StyledTabs = styled(Tabs)`
   && {
     color: #fff;
-    margin: 30px auto;
+    ${({ withMargin = true }) => withMargin && 'margin: 30px auto;'};
     width: 100%;
   }
   .MuiTabs-flexContainer {
     justify-content: start;
-    border-bottom: 2px solid #4b4b4b;
+    ${({ withBorder = true }) => withBorder && 'border-bottom: 2px solid #4b4b4b;'};
   }
   .MuiTab-textColorInherit {
     opacity: 1;
@@ -31,7 +31,7 @@ export const StyledTab = styled(Tab)`
     min-width: fit-content;
     padding: 3px;
     margin-right: 20px;
-    color: ${({ isActive }) => (isActive ? 'white' : '#828282')};
+    // color: ${({ isActive }) => (isActive ? 'white' : '#828282')};
   }
 `;
 

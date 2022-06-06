@@ -3,8 +3,9 @@ import styled from 'styled-components';
 import { Background, Blue800, Violet300, Grey250 } from '../../../theme/colors';
 import { CreateFormButtonsBlock, CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { SafeImage } from '../Image';
+import SmartLink from 'components/Common/SmartLink';
 
-export const TaskSummaryWrapper = styled.div`
+export const TaskSummaryWrapper = styled(SmartLink)`
   display: flex;
   margin: 1em auto;
   align-self: center;

@@ -11,6 +11,7 @@ import Tabs from '../tabs/tabs';
 import TypeSelector from 'components/TypeSelector';
 import CreateFormModal from '../../CreateEntity';
 import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from 'utils/helpers';
+import BoardsActivity from 'components/Common/BoardsActivity';
 
 import {
   Content,
@@ -45,6 +46,7 @@ import {
   HeaderImage,
   HeaderImageWrapper,
   HeaderTag,
+  BoardsSubheaderWrapper,
 } from './styles';
 import { useOrgBoard, useTokenGating } from 'utils/hooks';
 import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
@@ -76,7 +78,7 @@ const MOCK_ORGANIZATION_DATA = {
 };
 
 const Wrapper = (props) => {
-  const { children, orgData } = props;
+  const { children, orgData, onSearch, filterSchema, onFilterChange, statuses, podIds, userId } = props;
   const wonderWeb3 = useWonderWeb3();
   const loggedInUser = useMe();
   const [open, setOpen] = useState(false);
@@ -303,7 +305,9 @@ const Wrapper = (props) => {
                     )}
                     <ToggleBoardPrivacyIcon
                       isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
-                      tooltipTitle={orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
+                      tooltipTitle={
+                        orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private organization' : 'Public organization'
+                      }
                     />
                     {permissions === null && (
                       <>
@@ -406,9 +410,22 @@ const Wrapper = (props) => {
                 </HeaderActivity>
               </TokenHeader>
               <Tabs>
-                {orgBoard?.setEntityType && !search && (
-                  <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
-                )}
+                <BoardsSubheaderWrapper>
+                  {orgBoard?.setEntityType && !search && (
+                    <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
+                  )}
+                  {!!filterSchema && (
+                    <BoardsActivity
+                      onSearch={onSearch}
+                      filterSchema={filterSchema}
+                      onFilterChange={onFilterChange}
+                      statuses={statuses}
+                      podIds={podIds}
+                      userId={userId}
+                    />
+                  )}
+                </BoardsSubheaderWrapper>
+
                 {children}
               </Tabs>
             </ContentContainer>

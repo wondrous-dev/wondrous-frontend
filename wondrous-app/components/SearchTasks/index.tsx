@@ -3,8 +3,7 @@ import { InputAdornment } from '@material-ui/core';
 import last from 'lodash/last';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import SearchIcon from '../Icons/search';
-import { Autocomplete, Input, LoadMore, Option } from './styles';
+import { Autocomplete, Input, LoadMore, Option, SearchIconWrapped } from './styles';
 import TaskIcon from '../Icons/TaskTypes/task';
 import MilestoneIcon from '../Icons/TaskTypes/milestone';
 import BountyIcon from '../Icons/TaskTypes/bounty';
@@ -18,6 +17,7 @@ import { useRouter } from 'next/router';
 import { TaskViewModal } from '../Common/Task/modal';
 import * as Constants from 'utils/constants';
 import { ViewType } from 'types/common';
+import { Blue20 } from '../../theme/colors';
 
 const TaskTypeIcons = {
   [TASK_TYPE]: <TaskIcon />,
@@ -27,11 +27,12 @@ const TaskTypeIcons = {
 
 type Props = {
   onSearch: (searchString: string) => Promise<{ users: Array<any>; tasks: TaskFragment[]; proposals: TaskFragment[] }>;
+  isExpandable?: boolean;
 };
 
 let timeout;
 
-export default function SearchTasks({ onSearch }: Props) {
+export default function SearchTasks({ onSearch, isExpandable }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isPreviewModalOpen, setPreviewModalOpen] = useState(false);
@@ -40,6 +41,7 @@ export default function SearchTasks({ onSearch }: Props) {
   const [inputValue, setInputValue] = useState(router.query.search);
   const [options, setOptions] = useState([]);
   const [hasMore, setHasMore] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const LIMIT = 5;
 
   React.useEffect(() => {
@@ -93,6 +95,10 @@ export default function SearchTasks({ onSearch }: Props) {
     });
   }
 
+  const autocompleteWidth = isExpandable ? (isExpanded ? '100%' : '17%') : '100%';
+
+  const handleBlur = (e) => setIsExpanded(false);
+  const handleFocus = () => setIsExpanded(true);
   return (
     <>
       <TaskViewModal
@@ -108,6 +114,9 @@ export default function SearchTasks({ onSearch }: Props) {
       <Autocomplete
         open={open}
         onOpen={() => setOpen(true)}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
+        isExpanded={isExpanded}
         onClose={() => setOpen(false)}
         onInputChange={(event, searchString) => {
           handleInputChange(event, searchString);
@@ -117,6 +126,7 @@ export default function SearchTasks({ onSearch }: Props) {
             setInputValue(searchString || '');
           }
         }}
+        style={{ width: autocompleteWidth }}
         disableClearable
         freeSolo={!inputValue || isLoading}
         getOptionLabel={(takOrUser) => takOrUser.username || takOrUser.title || inputValue}
@@ -175,12 +185,12 @@ export default function SearchTasks({ onSearch }: Props) {
           return (
             <Input
               {...params}
-              placeholder="Search tasks or people..."
+              placeholder={`${isExpanded || !isExpandable ? 'Search tasks or people...' : 'Search'}`}
               InputProps={{
                 ...params.InputProps,
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchIcon />
+                    <SearchIconWrapped />
                   </InputAdornment>
                 ),
                 endAdornment: (

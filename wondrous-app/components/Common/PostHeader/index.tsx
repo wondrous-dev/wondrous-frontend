@@ -1,5 +1,6 @@
 import { ClickAwayListener } from '@material-ui/core';
 import { delQuery } from 'utils';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { ObjectType, PostVerbType } from 'types/post';
@@ -20,43 +21,11 @@ import {
   PostHeaderUsername,
   PostHeaderWrapper,
 } from './styles';
+import SmartLink from 'components/Common/SmartLink';
 
 const objectTypeText = {
   [ObjectType.TASK_SUBMISSION]: 'task',
   [ObjectType.TASK]: 'task',
-};
-
-const createHeaderText = (verbOrStatus, objectType, referencedUser, onClick) => {
-  const objectTypeHeaderText = objectTypeText[objectType];
-  switch (verbOrStatus) {
-    case PostVerbType.KUDOS:
-      return (
-        <>
-          awarded a kudos {referencedUser && `to ${referencedUser}`} for a completed{' '}
-          <PostHeaderLink onClick={onClick} as="span">
-            {objectTypeHeaderText}
-          </PostHeaderLink>
-        </>
-      );
-    case Constants.TASK_STATUS_DONE:
-      return (
-        <>
-          completed a{' '}
-          <PostHeaderLink onClick={onClick} as="span">
-            {objectTypeHeaderText}
-          </PostHeaderLink>
-        </>
-      );
-    default:
-      return (
-        <>
-          is doing a{' '}
-          <PostHeaderLink onClick={onClick} as="span">
-            {objectTypeHeaderText}
-          </PostHeaderLink>
-        </>
-      );
-  }
 };
 
 export const PostHeader = (props) => {
@@ -80,16 +49,62 @@ export const PostHeader = (props) => {
   const handleTaskViewModalClose = () => {
     router.replace(`${delQuery(router.asPath)}`, undefined, { shallow: true });
   };
-  const handleTaskViewModalOpen = () => {
-    router.replace(`${delQuery(router.asPath)}?task=${taskId}`, undefined, { shallow: true });
-  };
+  const taskViewUrl = `${delQuery(router.asPath)}?task=${taskId}`;
   const verbOrStatus = verb ?? taskStatus;
-  const headerText = createHeaderText(
-    verbOrStatus,
-    postObjectType,
-    referencedObject?.actor?.username,
-    handleTaskViewModalOpen
-  );
+
+  const createHeaderText = (verbOrStatus, objectType, referencedUser) => {
+    const objectTypeHeaderText = objectTypeText[objectType];
+
+    switch (verbOrStatus) {
+      case PostVerbType.KUDOS:
+        return (
+          <>
+            awarded a kudos {referencedUser && `to ${referencedUser}`} for a completed{' '}
+            <PostHeaderLink as="span">
+              <SmartLink
+                href={taskViewUrl}
+                preventLinkNavigation
+                onNavigate={() => router.replace(taskViewUrl, undefined, { shallow: true })}
+              >
+                <a href={taskViewUrl}>{objectTypeHeaderText}</a>
+              </SmartLink>
+            </PostHeaderLink>
+          </>
+        );
+      case Constants.TASK_STATUS_DONE:
+        return (
+          <>
+            completed a{' '}
+            <PostHeaderLink as="span">
+              <SmartLink
+                href={taskViewUrl}
+                preventLinkNavigation
+                onNavigate={() => router.replace(taskViewUrl, undefined, { shallow: true })}
+              >
+                <a href={taskViewUrl}>{objectTypeHeaderText}</a>
+              </SmartLink>
+            </PostHeaderLink>
+          </>
+        );
+      default:
+        return (
+          <>
+            is doing a{' '}
+            <PostHeaderLink as="span">
+              <SmartLink
+                href={taskViewUrl}
+                preventLinkNavigation
+                onNavigate={() => router.replace(taskViewUrl, undefined, { shallow: true })}
+              >
+                <a href={taskViewUrl}>{objectTypeHeaderText}</a>
+              </SmartLink>
+            </PostHeaderLink>
+          </>
+        );
+    }
+  };
+
+  const headerText = createHeaderText(verbOrStatus, postObjectType, referencedObject?.actor?.username);
 
   useEffect(() => {
     if (router?.query?.task) {
@@ -105,15 +120,12 @@ export const PostHeader = (props) => {
       <TaskViewModal open={taskViewModal} taskId={taskId} handleClose={handleTaskViewModalClose} />
       <PostHeaderWrapper>
         <PostHeaderImageTextWrapper
-          onClick={() => {
-            router.push(`/profile/${actor?.username}/about`, undefined, {
-              shallow: true,
-            });
-          }}
         >
           {actor?.profilePicture ? <PostHeaderImage src={actor?.profilePicture} /> : <PostHeaderDefaultUserImage />}
           <PostHeaderText>
-            <PostHeaderUsername as="span">{actor?.username} </PostHeaderUsername>
+            <PostHeaderUsername as="span">
+              <Link href={`/profile/${actor?.username}/about`}>{actor?.username}</Link>
+            </PostHeaderUsername>{' '}
             {headerText}
           </PostHeaderText>
         </PostHeaderImageTextWrapper>

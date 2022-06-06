@@ -78,10 +78,10 @@ export const CreateEntityForm = styled.form`
 `;
 
 export const CreateEntityHeader = styled.div`
-  height: 56px;
+  height: fit-content;
   background-color: #171717;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   padding: 12px 24px;
   justify-content: space-between;
 `;
@@ -95,6 +95,7 @@ export const CreateEntitySelectRoot = styled.button`
   border-radius: 4px;
   background: #1f1f1f;
   border: 1px solid ${(props) => (props['aria-expanded'] ? `#7a7a7a` : `transparent`)};
+  outline: 1px solid ${({ error }) => (error ? Red400 : 'transparent')};
   :hover {
     cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   }
@@ -209,7 +210,6 @@ export const CreateEntitySelectRootValueWrapper = styled.div`
 
 export const CreateEntityHeaderWrapper = styled.div`
   display: flex;
-  align-items: center;
   gap: 12px;
 `;
 
@@ -238,7 +238,20 @@ export const CreateEntitySelectArrowIcon = styled(Arrow)`
   }
 `;
 
-export const CreateEntityHeaderArrowIcon = styled(Arrow)``;
+export const CreateEntityHeaderArrowIcon = styled((props) => {
+  return (
+    <div {...props}>
+      <Arrow />
+    </div>
+  );
+})`
+  && {
+    display: flex;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+  }
+`;
 
 export const CreateEntityBody = styled.div`
   padding: 24px;
@@ -389,19 +402,29 @@ export const CreateEntityAddButtonLabel = styled(Typography)`
   }
 `;
 
+export const CreateEntitySelectErrorWrapper = styled.div`
+  width: 100%;
+  flex-basis: 49%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+`;
+
 export const CreateEntitySelectWrapper = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: wrap;
   width: 100%;
   gap: 6px;
-  > div:nth-of-type(n + 3) {
+  div:nth-of-type(n + 3) {
     max-width: calc(50% - 3px);
   }
 `;
 
 export const CreateEntityTextfield = styled(TextField)`
   && {
+    min-width: 50%;
     height: 32px;
     background: #141414;
     border-radius: 4px;
@@ -467,10 +490,9 @@ export const CreateEntityTextfieldInputLabel = styled(Typography)`
 `;
 
 export const CreateEntityAutocomplete = styled(Autocomplete)`
-  flex-basis: 49%;
-  flex-grow: 1;
   background: #141414;
   border-radius: 4px;
+  outline: 1px solid ${({ error }) => (error ? Red400 : 'transparent')};
   :focus-within {
     outline: 1px solid #7a7a7a;
   }
@@ -749,14 +771,12 @@ export const CreateEntityRewardWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  > :last-child {
-    margin-left: 12px;
-  }
+  gap: 6px;
 `;
 
 export const CreateEntityPaymentMethodRoot = styled.button`
   padding: 0;
-  min-width: 110px;
+  max-width: fit-content;
   height: 32px;
   border-radius: 4px;
   background: #141414;
@@ -795,7 +815,7 @@ export const CreateEntityPaymentMethodList = styled.ul`
 
 export const CreateEntityPaymentMethodPopper = styled(PopperUnstyled)`
   max-height: 222px;
-  width: 110px;
+  width: 200px;
   border-radius: 4px;
   background-color: #1f1f1f;
   border: 1px solid #7a7a7a;
@@ -822,6 +842,7 @@ export const CreateEntityPaymentMethodOption = styled(OptionUnstyled)`
   padding: 8px;
   display: flex;
   align-items: center;
+  gap: 6px;
 
   &:last-of-type {
     border-bottom: none;
@@ -833,9 +854,22 @@ export const CreateEntityPaymentMethodOption = styled(OptionUnstyled)`
   }
 `;
 
+export const CreateEntityPaymentMethodOptionIcon = styled.div`
+  && {
+    width: 24px;
+    height: 24px;
+    img[style] {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  }
+`;
+
 export const CreateEntityPaymentMethodSelectRender = styled.div`
+  max-width: fit-content;
   padding: 0 8px;
   display: flex;
+  gap: 6px;
   align-items: center;
   font-family: 'Space Grotesk';
   font-size: 13px;
@@ -845,10 +879,20 @@ export const CreateEntityPaymentMethodSelectRender = styled.div`
 
 export const CreateEntityPaymentMethodLabel = styled(Typography)`
   && {
+    display: flex;
+    align-items: center;
     color: #ffffff;
     font-family: 'Space Grotesk';
     font-size: 13px;
     font-weight: 500;
+    gap: 6px;
+  }
+`;
+
+export const CreateEntityPaymentMethodLabelChain = styled.div`
+  && {
+    color: #7a7a7a;
+    font-weight: 400;
   }
 `;
 
@@ -858,6 +902,8 @@ export const CreateEntityError = styled(Typography)`
     font-size: 13px;
     font-family: 'Space Grotesk';
     font-weight: 400;
+    display: flex;
+    align-items: center;
   }
 `;
 

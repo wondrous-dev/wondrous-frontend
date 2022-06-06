@@ -1402,9 +1402,13 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     }`}
                     passHref={true}
                   >
-                    <TaskIconWrapper>
-                      <CheckedBoxIcon />
-                    </TaskIconWrapper>
+                    <Tooltip title="Task" placement="top">
+                      <span>
+                        <TaskIconWrapper>
+                        <CheckedBoxIcon />
+                      </TaskIconWrapper>
+                      </span>
+                    </Tooltip>
                   </Link>
                 </>
               )}
@@ -1436,45 +1440,49 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   }`}
                 />
                 {canEdit && (
-                  <DropDown DropdownHandler={TaskMenuIcon}>
-                    {canEdit && (isMilestone || isBounty) && (
-                      <DropDownItem style={dropdownItemStyle} onClick={() => setCompleteModal(true)}>
-                        Complete {taskType}
-                      </DropDownItem>
-                    )}
-                    {canEdit && (
-                      <DropDownItem
-                        key={'task-menu-edit-' + fetchedTask?.id}
-                        onClick={() => setEditTask(true)}
-                        style={dropdownItemStyle}
-                      >
-                        Edit {taskType}
-                      </DropDownItem>
-                    )}
-                    {canArchive && !isTaskProposal && (
-                      <DropDownItem
-                        key={'task-menu-archive-' + fetchedTask?.id}
-                        onClick={() => {
-                          setArchiveTask(true);
-                        }}
-                        style={dropdownItemStyle}
-                      >
-                        Archive {taskType}
-                      </DropDownItem>
-                    )}
-                    {canDelete && (
-                      <DropDownItem
-                        key={'task-menu-delete-' + fetchedTask?.id}
-                        onClick={() => {
-                          setDeleteTask(true);
-                        }}
-                        style={dropdownItemStyle}
-                        color={Red800}
-                      >
-                        Delete {taskType}
-                      </DropDownItem>
-                    )}
-                  </DropDown>
+                  <Tooltip title="More actions" placement="top">
+                    <div>
+                      <DropDown DropdownHandler={TaskMenuIcon}>
+                        {canEdit && (isMilestone || isBounty) && (
+                          <DropDownItem style={dropdownItemStyle} onClick={() => setCompleteModal(true)}>
+                            Complete {taskType}
+                          </DropDownItem>
+                        )}
+                        {canEdit && (
+                          <DropDownItem
+                            key={'task-menu-edit-modal-' + fetchedTask?.id}
+                            onClick={() => setEditTask(true)}
+                            style={dropdownItemStyle}
+                          >
+                            Edit {taskType}
+                          </DropDownItem>
+                        )}
+                        {canArchive && !isTaskProposal && (
+                          <DropDownItem
+                            key={'task-menu-archive-' + fetchedTask?.id}
+                            onClick={() => {
+                              setArchiveTask(true);
+                            }}
+                            style={dropdownItemStyle}
+                          >
+                            Archive {taskType}
+                          </DropDownItem>
+                        )}
+                        {canDelete && (
+                          <DropDownItem
+                            key={'task-menu-delete-' + fetchedTask?.id}
+                            onClick={() => {
+                              setDeleteTask(true);
+                            }}
+                            style={dropdownItemStyle}
+                            color={Red800}
+                          >
+                            Delete {taskType}
+                          </DropDownItem>
+                        )}
+                      </DropDown>
+                    </div>
+                  </Tooltip>
                 )}
               </TaskActionMenu>
             </TaskModalHeader>

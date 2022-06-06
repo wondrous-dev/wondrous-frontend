@@ -1698,6 +1698,7 @@ const EditLayoutBaseModal = (props) => {
                       Who can see this {titleText.toLowerCase()}?
                     </CreateFormAddDetailsInputLabel>
                     <TabsVisibilityCreateEntity
+                      type={titleText.toLowerCase()}
                       isPod={isPod}
                       isPublic={publicTask}
                       setIsPublic={setPublicTask}

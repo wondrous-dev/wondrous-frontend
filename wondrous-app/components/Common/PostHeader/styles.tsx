@@ -13,7 +13,6 @@ export const PostHeaderWrapper = styled.div`
 export const PostHeaderImageTextWrapper = styled.div`
   display: flex;
   z-index: 2;
-  cursor: pointer;
 `;
 
 export const PostHeaderImage = (props) => (
@@ -47,20 +46,29 @@ export const PostHeaderText = styled(Typography)`
 
 export const PostHeaderLink = styled(Typography)`
   && {
-    color: #00baff;
-    text-decoration: underline;
-    font-weight: 700;
+    a {
+      color: #00baff;
+      text-decoration: none;
+      font-weight: 700;
 
-    :hover {
-      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 `;
 
 export const PostHeaderUsername = styled(Typography)`
   && {
-    color: #fff;
-    font-weight: 700;
+    a {
+      color: #fff;
+      font-weight: 700;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 `;
 

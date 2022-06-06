@@ -105,6 +105,15 @@ export const TaskTitle = styled.div`
   color: white;
   font-size: 16px;
   font-weight: bold;
+  
+  a {
+    color: white;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 `;
 
 export const TaskDescription = styled.p`
@@ -572,6 +581,7 @@ export const ProposalCardWrapper = styled.div`
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     padding: 1px;
+    pointer-events: none;
   }
 `;
 

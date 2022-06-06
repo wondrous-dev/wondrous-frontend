@@ -18,18 +18,20 @@ const Tooltip = ({ title, description, children, placement }: Props) => {
 
   const tooltipTitle = description ? (
     <>
-      <Typography variant="body2" style={{ fontWeight: 600 }}>
+      <Typography variant="body2" style={{ fontWeight: 600, fontStyle: 'italic' }}>
         {title}
       </Typography>
       <Divider />
-      <Typography variant="body2">{description}</Typography>
+      <Typography variant="body2" style={{ fontStyle: 'italic' }}>{description}</Typography>
     </>
   ) : (
-    title
+    <Typography variant="body2" style={{ fontStyle: 'italic' }}>
+      {title}
+    </Typography>
   );
 
   return (
-    <MuiTooltip arrow title={tooltipTitle} placement={placement}>
+    <MuiTooltip arrow title={tooltipTitle} placement={placement} enterDelay={500}>
       {children}
     </MuiTooltip>
   );
