@@ -1,31 +1,12 @@
-import { useState, useContext } from 'react';
-import { Chevron } from 'components/Icons/sections';
+import { useState, useContext, useEffect } from 'react';
 import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  ListViewItemHeader,
-  ListViewItemCount,
-  ListViewItemStatus,
-  IconWrapper,
   ListViewItemBodyWrapper,
   ListViewItemDataContainer,
   ListViewItemIconsWrapper,
   ListViewItemActions,
 } from './styles';
-import {
-  TASK_STATUS_TODO,
-  TASK_STATUS_IN_PROGRESS,
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_DONE,
-  ENTITIES_TYPES,
-  PERMISSIONS,
-  PAYMENT_STATUS,
-} from 'utils/constants';
-import { ToDo, InProgress, Done, InReview } from 'components/Icons';
+import { TASK_STATUS_IN_REVIEW, TASK_STATUS_DONE, ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import CreateLayoutBaseModal from 'components/CreateEntity/createEntityModal';
-import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { SubtaskLightIcon } from 'components/Icons/subtask';
@@ -33,14 +14,15 @@ import { Grey57 } from 'theme/colors';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
 import { Compensation } from 'components/Common/Compensation';
 import { format } from 'date-fns';
-import { DueDateText, ActionButton } from 'components/Common/Task/styles';
+import { DueDateText, ActionButton, ArchivedTaskUndo } from 'components/Common/Task/styles';
+import Tooltip from 'components/Tooltip';
+
 import { Claim } from 'components/Icons/claimTask';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
 import { useMutation } from '@apollo/client';
-import { updateInProgressTask, updateTaskItem } from 'utils/board';
 import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
 import { transformTaskToTaskCard } from 'utils/helpers';
 import { useMe } from 'components/Auth/withAuth';
@@ -53,6 +35,10 @@ import EditLayoutBaseModal from 'components/CreateEntity/editEntityModal';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { DropDown, DropDownItem } from 'components/Common/dropdown';
+import { Red800 } from 'theme/colors';
+import { TaskMenuIcon } from 'components/Icons/taskMenu';
+import { MoreOptions } from 'components/Table/styles';
 
 export default function ListViewItem({ task, entityType }) {
   let windowOffset = 0;
@@ -86,9 +72,28 @@ export default function ListViewItem({ task, entityType }) {
     assigneeId,
     isProposal,
     status,
-  } = data;
+    type,
+    createdBy,
+  } = data || {};
 
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
+
+  const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
+    refetchQueries: [
+      'getPerStatusTaskCountForUserBoard',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
+    ],
+    onError: () => {
+      console.error('Something went wrong with archiving tasks');
+    },
+    onCompleted: () => {
+      // TODO: Move columns
+      // let columns = [...boardColumns?.columns]
+    },
+  });
 
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
@@ -148,7 +153,13 @@ export default function ListViewItem({ task, entityType }) {
     });
   };
 
-  console.log(status);
+  const canArchive =
+    permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
+    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    createdBy === user?.id;
+
+  const canDelete = canArchive && (type === ENTITIES_TYPES.TASK || type === ENTITIES_TYPES.MILESTONE);
+
   const displayPayButton =
     !!approvedSubmissionsCount &&
     task?.status === TASK_STATUS_DONE &&
@@ -164,22 +175,81 @@ export default function ListViewItem({ task, entityType }) {
     viewUrl = viewUrl + `&entity=${entityType}`;
   }
 
+  const handleEditTask = () => {
+    setEditTask(false);
+    setData(task);
+  };
+
+  const handleArchiveTask = () => {
+    setArchiveTask(false);
+    setData(null);
+  };
+
+  const handleDeleteTask = () => {
+    setDeleteTask(false);
+    setData(null);
+  };
+
+  const [unarchiveTaskMutation, { data: unarchiveTaskData }] = useMutation(UNARCHIVE_TASK, {
+    refetchQueries: [
+      'getTaskById',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getOrgTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+    onError: () => {
+      console.error('Something went wrong unarchiving tasks');
+    },
+    onCompleted: (data) => {
+      // TODO: Move columns
+      setData(data?.unarchiveTask);
+    },
+  });
+
+  const handleOnArchive = () => {
+    archiveTaskMutation({
+      variables: {
+        taskId: id,
+      },
+    }).then((result) => {
+      setData(null);
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage(
+        <>
+          Task archived successfully!{' '}
+          <ArchivedTaskUndo
+            onClick={() => {
+              setSnackbarAlertOpen(false);
+              unarchiveTaskMutation({
+                variables: {
+                  taskId: id,
+                },
+              });
+            }}
+          >
+            Undo
+          </ArchivedTaskUndo>
+        </>
+      );
+    });
+  };
+
+  if (!data) return null;
   return (
     <>
       <CreateModalOverlay
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         open={editTask}
-        onClose={() => {
-          setEditTask(false);
-        }}
+        onClose={handleEditTask}
       >
         <EditLayoutBaseModal
           open={open}
-          entityType={data?.type}
-          handleClose={() => {
-            setEditTask(false);
-          }}
+          entityType={type}
+          handleClose={handleEditTask}
           cancelEdit={() => setEditTask(false)}
           existingTask={{
             ...data,
@@ -189,16 +259,14 @@ export default function ListViewItem({ task, entityType }) {
       </CreateModalOverlay>
       <ArchiveTaskModal
         open={archiveTask}
-        onClose={() => setArchiveTask(false)}
-        onArchive={() => {}}
-        taskType={data?.type}
+        onClose={handleArchiveTask}
+        onArchive={handleOnArchive}
+        taskType={type}
         taskId={task?.id}
       />
       <DeleteTaskModal
         open={deleteTask}
-        onClose={() => {
-          setDeleteTask(false);
-        }}
+        onClose={handleDeleteTask}
         taskType={task?.type}
         taskId={task?.id}
         onDelete={() => {
@@ -314,6 +382,52 @@ export default function ListViewItem({ task, entityType }) {
               </>
             )}
             {status === TASK_STATUS_IN_REVIEW && <ActionButton type="button">Review</ActionButton>}
+            {canArchive && (
+              <MoreOptions>
+                <Tooltip title="More actions" placement="top">
+                  <div>
+                    <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
+                      <DropDownItem
+                        onClick={() => {
+                          setEditTask(true);
+                        }}
+                        color="#C4C4C4"
+                        fontSize="13px"
+                        fontWeight="normal"
+                        textAlign="left"
+                      >
+                        Edit task
+                      </DropDownItem>
+                      <DropDownItem
+                        onClick={() => {
+                          setArchiveTask(true);
+                        }}
+                        color="#C4C4C4"
+                        fontSize="13px"
+                        fontWeight="normal"
+                        textAlign="left"
+                      >
+                        Archive task
+                      </DropDownItem>
+                      {canDelete && (
+                        <DropDownItem
+                          key={'task-menu-delete-' + task.id}
+                          onClick={() => {
+                            setDeleteTask(true);
+                          }}
+                          color={Red800}
+                          fontSize="13px"
+                          fontWeight="normal"
+                          textAlign="left"
+                        >
+                          Delete task
+                        </DropDownItem>
+                      )}
+                    </DropDown>
+                  </div>
+                </Tooltip>
+              </MoreOptions>
+            )}
           </ListViewItemActions>
         </ListViewItemBodyWrapper>
       </SmartLink>

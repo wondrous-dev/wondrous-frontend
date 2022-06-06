@@ -33,7 +33,7 @@ type Props = {
   statuses?: string[];
 };
 
-const OrgBoards = (props: Props) => {
+const PodBoards = (props: Props) => {
   const {
     columns,
     onLoadMore,
@@ -65,6 +65,7 @@ const OrgBoards = (props: Props) => {
             onLoadMore={onLoadMore}
             hasMore={hasMore}
             setColumns={setColumns}
+            entityType={entityType}
           />
         )}
       </ColumnsContext.Provider>
@@ -72,4 +73,4 @@ const OrgBoards = (props: Props) => {
   );
 };
 
-export default OrgBoards;
+export default PodBoards;

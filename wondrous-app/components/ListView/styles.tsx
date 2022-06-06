@@ -9,7 +9,6 @@ export const Accordion = styled(MuiAccordion)`
   && {
     margin-top: 0;
     background: transparent;
-    margin-bottom: 28px;
     color: ${White};
     width: 100%;
     box-shadow: none;
@@ -32,8 +31,12 @@ export const AccordionDetails = styled(MuiAccordionDetails)`
   && {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 8px;
     margin-top: 8px;
+    padding: 8px 0px 8px;
+    border-bottom: 0.5px dashed #2b2b2b;
+    border-radius: 6px;
+    border-top: 0.5px dashed #2b2b2b;
   }
 `;
 
@@ -42,8 +45,6 @@ export const ListViewItemHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   display: flex;
-  border-bottom: 0.5px dashed #2b2b2b;
-  border-radius: 6px;
   padding-top: 28px;
   padding-bottom: 14px;
 `;
@@ -60,7 +61,12 @@ export const ListViewItemStatus = styled.div`
   line-height: 18px;
   color: ${White};
   width: fit-content;
+  .accordion-expansion-icon {
+    transition: transform 0.2s ease-out;
+    ${({ isExpanded }) => (isExpanded ? 'transform: rotate(180deg)' : 'transform: rotate(0deg)')}
+  }
 `;
+
 export const ListViewItemCount = styled(Typography)`
   && {
     color: #828282;
@@ -79,6 +85,12 @@ export const ListViewItemBodyWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  cursor: pointer;
+  padding: 8px 8px;
+  border-radius: 6px;
+  &:hover {
+    background: #151515;
+  }
 `;
 
 export const ListViewItemDataContainer = styled.div`
@@ -108,4 +120,20 @@ export const ListViewItemActions = styled.div`
   justify-content: center;
   align-items: center;
   gap: 16px;
+`;
+
+export const ShowMoreButton = styled.button`
+  color: white;
+  padding: 10px;
+  background: #7427ff;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 0;
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 15px;
+  letter-spacing: 0.01em;
+  margin-top: 8px;
 `;

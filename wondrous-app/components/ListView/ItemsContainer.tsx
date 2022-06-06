@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import {
   Accordion,
-  AccordionSummary,
   AccordionDetails,
   ListViewItemHeader,
   ListViewItemCount,
@@ -15,11 +14,16 @@ import {
   TASK_STATUS_DONE,
   ENTITIES_TYPES,
 } from 'utils/constants';
+import { ChevronFilled } from 'components/Icons/sections';
+
 import { ToDo, InProgress, Done, InReview } from 'components/Icons';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateLayoutBaseModal from 'components/CreateEntity/createEntityModal';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
 import Item from './Item';
+import { Draggable } from 'react-beautiful-dnd';
+import { LIMIT } from 'services/board';
+import { ShowMoreButton } from './styles';
 
 const HEADER_ICONS = {
   [TASK_STATUS_TODO]: ToDo,
@@ -35,9 +39,9 @@ const LABELS_MAP = {
   [TASK_STATUS_DONE]: 'Done',
 };
 
-export default function ItemsContainer({ data, taskCount, fetchPerStatus, entityType, ...props }) {
+export default function ItemsContainer({ data, taskCount, fetchPerStatus, entityType, handleShowAll, ...props }) {
   const { status, tasks } = data;
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(tasks?.length > 0);
   const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
 
   const handleExpansion = () => setIsExpanded(!isExpanded);
@@ -65,7 +69,8 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
 
       <Accordion expanded={isExpanded}>
         <ListViewItemHeader>
-          <ListViewItemStatus onClick={() => handleExpansion()}>
+          <ListViewItemStatus isExpanded={isExpanded} onClick={() => handleExpansion()}>
+            <ChevronFilled fill="white" className="accordion-expansion-icon" />
             <Icon />
             {itemTitle}
             <ListViewItemCount>{taskCount}</ListViewItemCount>
@@ -86,9 +91,30 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
         </ListViewItemHeader>
         <AccordionDetails>
           {tasks.map((task, idx) => {
-            return <Item entityType={entityType} task={task} key={idx} />;
+            return (
+              <Draggable key={task.id} draggableId={task.id} index={idx}>
+                {(provided, snapshot) => (
+                  <div
+                    style={{
+                      width: '100%',
+                    }}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    ref={provided.innerRef}
+                    isDragging={snapshot.isDragging}
+                  >
+                    <Item entityType={entityType} task={task} />
+                  </div>
+                )}
+              </Draggable>
+            );
           })}
         </AccordionDetails>
+        {taskCount > LIMIT && tasks.length <= LIMIT && (
+          <ShowMoreButton type="button" onClick={() => handleShowAll(status, taskCount)}>
+            Show all
+          </ShowMoreButton>
+        )}
       </Accordion>
     </>
   );

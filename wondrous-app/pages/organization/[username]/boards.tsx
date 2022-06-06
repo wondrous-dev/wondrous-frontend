@@ -117,7 +117,7 @@ const useGetOrgTaskBoardTasks = ({
     }
   }, [getOrgTaskBoardTasks, orgId, filters, setOrgTaskHasMore, userId, entityType]);
 
-  const fetchPerStatus = () => async (status, limit) => {
+  const fetchPerStatus = async (status, limit) => {
     const columnIdx = columns?.findIndex((column) => column.status === status);
     fetchMore({
       variables: {
@@ -135,7 +135,7 @@ const useGetOrgTaskBoardTasks = ({
     });
   };
 
-  return { fetchMore: getOrgTaskBoardTasksFetchMore, fetchPerStatus: fetchPerStatus() };
+  return { fetchMore: getOrgTaskBoardTasksFetchMore, fetchPerStatus: fetchPerStatus };
 };
 
 const useGetTaskRelatedToUser = ({
