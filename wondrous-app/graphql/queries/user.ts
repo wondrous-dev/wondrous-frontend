@@ -114,3 +114,11 @@ export const GET_USER = gql`
   }
   ${ProfileUserFragment}
 `;
+
+export const GET_USER_INTERESTS = gql`
+  query getUserInterests($userId: ID!) {
+    getUserInterests(userId: $userId) {
+      interests
+    }
+  }
+`;

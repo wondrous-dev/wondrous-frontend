@@ -69,6 +69,7 @@
     "react-mentions": "^4.3.0",
     "react-player": "^2.9.0",
     "react-popper": "^2.3.0",
+    "react-virtualized-auto-sizer": "^1.0.6",
     "react-window": "^1.8.6",
     "regexify-string": "^1.0.17",
     "slate": "^0.80.0",

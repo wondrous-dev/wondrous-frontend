@@ -4,10 +4,8 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { withAuth } from 'components/Auth/withAuth';
 import { UserAboutInfo } from 'components/Common/UserAboutInfo';
-import { UserLinksTable } from 'components/Common/UserLinksTable';
 import Wrapper from 'components/profile/wrapper/wrapper';
 import { GET_USER_FROM_USERNAME, GET_USER_PROFILE } from 'graphql/queries';
-import { parseLinks } from 'utils/common';
 
 export const AboutSection = styled.div`
   margin-top: 32px;

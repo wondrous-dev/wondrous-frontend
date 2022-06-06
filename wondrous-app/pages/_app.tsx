@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ThemeProvider as StyledComponentProvider } from 'styled-components';
 import Head from 'next/head';
@@ -13,7 +13,7 @@ import '../theme/stylesheets/globals.css';
 
 import apollo from 'services/apollo';
 import theme from '../theme/theme';
-import { IsMobileContext } from 'utils/contexts';
+import { IsMobileContext, SideBarContext } from 'utils/contexts';
 import { initHotjar } from 'utils/hotjar';
 import { Web3ReactProvider } from '@web3-react/core';
 import { WonderWeb3Provider } from 'services/web3/context/WonderWeb3Context';
@@ -42,6 +42,7 @@ const MyApp = ({ Component, context, isAuthenticated, user, pageProps: { session
   // be server-side rendered.
   const router = useRouter();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const [minimized, setMinimized] = useState(false);
 
   useEffect(() => {
     initHotjar();
@@ -69,6 +70,7 @@ const MyApp = ({ Component, context, isAuthenticated, user, pageProps: { session
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
         <link rel="shortcut icon" href="/images/favicon.ico" />
       </Head>
+
       <IsMobileContext.Provider value={isMobile}>
         <StyledComponentProvider theme={theme}>
           <ThemeProvider theme={theme}>
@@ -77,13 +79,20 @@ const MyApp = ({ Component, context, isAuthenticated, user, pageProps: { session
               <SnackbarAlertProvider>
                 <Web3ReactProvider getLibrary={getLibrary}>
                   <WonderWeb3Provider>
-                    <Component
-                      {...pageProps}
-                      query={context?.query}
-                      user={user}
-                      isAuthenticated={isAuthenticated}
-                      key={router.asPath}
-                    />
+                    <SideBarContext.Provider
+                      value={{
+                        minimized,
+                        setMinimized,
+                      }}
+                    >
+                      <Component
+                        {...pageProps}
+                        query={context?.query}
+                        user={user}
+                        isAuthenticated={isAuthenticated}
+                        key={router.asPath}
+                      />
+                    </SideBarContext.Provider>
                   </WonderWeb3Provider>
                 </Web3ReactProvider>
               </SnackbarAlertProvider>
