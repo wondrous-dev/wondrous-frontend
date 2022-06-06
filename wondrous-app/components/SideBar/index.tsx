@@ -107,7 +107,7 @@ const SideBarComponent = (props) => {
           <DrawerList>
             {listItems &&
               listItems.map((item) => (
-                <Tooltip key={item.id} title={`${item?.username} of DAO`}>
+                <Tooltip key={item.id} title={`${item?.name}`}>
                   <div>
                     <Link
                       key={item.id}
