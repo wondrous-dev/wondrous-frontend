@@ -85,7 +85,6 @@ import {
   TokenIcon,
 } from '../../Icons/taskModalIcons';
 import DefaultUserImage from '../Image/DefaultUserImage';
-import EditLayoutBaseModal from '../../CreateEntity/editEntityModal';
 import { ArchiveTaskModal } from '../ArchiveTaskModal';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import {
@@ -1062,32 +1061,29 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     cursor: 'pointer',
   };
   if (editTask) {
-    const newModal = [ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType);
     return (
-      <>
-        <CreateEntity
-          open={open}
-          handleCloseModal={() => {
-            setEditTask(false);
-            setFetchedTask(null);
-            handleClose();
-          }}
-          entityType={entityType}
-          handleClose={() => {
-            setEditTask(false);
-            setFetchedTask(null);
-            handleClose();
-          }}
-          cancel={() => setEditTask(false)}
-          existingTask={
-            fetchedTask && {
-              ...fetchedTask,
-              reviewers: reviewerData?.getTaskReviewers || [],
-            }
+      <CreateEntity
+        open={open}
+        handleCloseModal={() => {
+          setEditTask(false);
+          setFetchedTask(null);
+          handleClose();
+        }}
+        entityType={entityType}
+        handleClose={() => {
+          setEditTask(false);
+          setFetchedTask(null);
+          handleClose();
+        }}
+        cancel={() => setEditTask(false)}
+        existingTask={
+          fetchedTask && {
+            ...fetchedTask,
+            reviewers: reviewerData?.getTaskReviewers || [],
           }
-          isTaskProposal={isTaskProposal}
-        />
-      </>
+        }
+        isTaskProposal={isTaskProposal}
+      />
     );
   }
 

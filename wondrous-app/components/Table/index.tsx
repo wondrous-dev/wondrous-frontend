@@ -23,7 +23,6 @@ import { KudosForm } from '../Common/KudosForm';
 import { SnackbarAlertContext } from '../Common/SnackbarAlert';
 import { TaskViewModal } from '../Common/Task/modal';
 import { ArchivedTaskUndo } from '../Common/Task/styles';
-import EditLayoutBaseModal from '../CreateEntity/editEntityModal';
 import { CreateModalOverlay } from '../CreateEntity/styles';
 import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton';
 import { Claim } from '../Icons/claimTask';

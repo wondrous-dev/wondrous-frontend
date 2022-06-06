@@ -755,9 +755,10 @@ const initialValues = (entityType, existingTask) => {
         return { name, type, uploadSlug: slug };
       }),
       reviewerIds: _.isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
-      rewards: existingTask.rewards.map(({ rewardAmount, paymentMethodId }) => {
+      rewards: existingTask?.rewards?.map(({ rewardAmount, paymentMethodId }) => {
         return { rewardAmount, paymentMethodId };
       }),
+      labelIds: _.isEmpty(existingTask?.labels) ? null : existingTask.labels.map((i) => i.id),
     },
     defaultValuesKeys
   );
@@ -776,7 +777,6 @@ interface ICreateEntityModal {
 
 export const CreateEntityModal = (props: ICreateEntityModal) => {
   const { entityType, handleClose, cancel, existingTask } = props;
-  const user = useMe();
   const [recurrenceType, setRecurrenceType] = useState(null);
   const [recurrenceValue, setRecurrenceValue] = useState(null);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
@@ -864,6 +864,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       pods &&
       hasCreateTaskPermission({
         userPermissionsContext: fetchedUserPermissionsContext,
+        orgId: form.values.orgId,
         podId: board?.podId,
       }),
     () => handleOnchangePodId(board?.podId || routerPodId)
