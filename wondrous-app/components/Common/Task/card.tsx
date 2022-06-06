@@ -33,8 +33,7 @@ import { White, Red800 } from '../../../theme/colors';
 import { TaskCreatedBy } from '../TaskCreatedBy';
 import { MilestoneProgress } from '../MilestoneProgress';
 import PodIcon from '../../Icons/podIcon';
-import { SubtaskDarkIcon, SubtaskLightIcon } from '../../Icons/subtask';
-import { CheckedBoxIcon } from '../../Icons/checkedBox';
+import { SubtaskLightIcon } from '../../Icons/subtask';
 import { Compensation } from '../Compensation';
 import { Claim } from '../../Icons/claimTask';
 import { updateInProgressTask, updateTaskItem, getProposalStatus } from 'utils/board';
@@ -94,6 +93,8 @@ export const TASK_ICONS = {
   [Constants.TASK_STATUS_PAID]: Paid,
 };
 
+let windowOffset = 0;
+
 export const TaskCard = ({
   openModal,
   id,
@@ -123,7 +124,6 @@ export const TaskCard = ({
 }) => {
   const location = useLocation();
   let TaskIcon = TASK_ICONS[task.status];
-  let windowOffset = 0;
 
   const boardColumns = useColumns();
   const [claimed, setClaimed] = useState(false);
@@ -495,7 +495,7 @@ const STATUS_ICONS = {
   [Constants.STATUS_CHANGE_REQUESTED]: Rejected,
 };
 
-export function ProposalCard({ openModal, title, description, task, goToPod, proposalRequestChange }) {
+export function ProposalCard({ openModal, title, description, task, goToPod, proposalRequestChange, viewUrl }) {
   const router = useRouter();
   const coverMedia = task?.media?.find((media) => media.type === 'image');
 
@@ -534,69 +534,82 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
   };
   const labelsAndActions = PROPOSAL_STATUS_MAP[proposalStatus]?.labelsAndActions;
   const HeaderIcon = STATUS_ICONS[proposalStatus];
+  const location = useLocation();
   return (
-    <ProposalCardWrapper onClick={openModal}>
-      <BoardsCardHeader>
-        <BoardsCardSubheader>
-          <ProposalCardIcon />
-          <ProposalCardType>Proposal</ProposalCardType>
-          <BoardsPrivacyLabel>{task?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}</BoardsPrivacyLabel>
-        </BoardsCardSubheader>
-        {HeaderIcon ? <HeaderIcon /> : null}
-      </BoardsCardHeader>
-      <BoardsCardBody>
-        <BoardsCardBodyTitle>{title}</BoardsCardBodyTitle>
-        <BoardsCardBodyDescription>
-          {renderMentionString({
-            content: description,
-            router,
-          })}
-        </BoardsCardBodyDescription>
-        {coverMedia ? (
-          <BoardsCardMedia>
-            <SafeImage
-              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
-              src={coverMedia.slug}
-            />
-          </BoardsCardMedia>
-        ) : null}
-        {task?.podName && (
-          <PodWrapper
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              goToPod(task?.podId);
-            }}
-          >
-            <PodIcon
-              color={task?.podColor}
-              style={{
-                width: '26px',
-                height: '26px',
-                marginRight: '8px',
+    <SmartLink
+      href={viewUrl}
+      preventLinkNavigation
+      onNavigate={() => {
+        location.push(viewUrl);
+        windowOffset = window.scrollY;
+        document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+      }}
+    >
+      <ProposalCardWrapper>
+        <BoardsCardHeader>
+          <BoardsCardSubheader>
+            <ProposalCardIcon />
+            <ProposalCardType>Proposal</ProposalCardType>
+            <BoardsPrivacyLabel>
+              {task?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
+            </BoardsPrivacyLabel>
+          </BoardsCardSubheader>
+          {HeaderIcon ? <HeaderIcon /> : null}
+        </BoardsCardHeader>
+        <BoardsCardBody>
+          <BoardsCardBodyTitle>{title}</BoardsCardBodyTitle>
+          <BoardsCardBodyDescription>
+            {renderMentionString({
+              content: description,
+              router,
+            })}
+          </BoardsCardBodyDescription>
+          {coverMedia ? (
+            <BoardsCardMedia>
+              <SafeImage
+                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+                src={coverMedia.slug}
+              />
+            </BoardsCardMedia>
+          ) : null}
+          {task?.podName && (
+            <PodWrapper
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                goToPod(task?.podId);
               }}
-            />
-            <PodName style={{}}>{task?.podName}</PodName>
-          </PodWrapper>
-        )}
-      </BoardsCardBody>
-      <BoardsCardFooter style={{ paddingBottom: '7px' }}>
-        {labelsAndActions?.map((label, idx) => (
-          <ProposalFooterButton
-            isAction={!!label.action}
-            onClick={(e) => {
-              e.stopPropagation();
-              label.action && label.action();
-            }}
-            borderColor={label?.borderColor}
-            key={idx}
-            color={label?.color}
-          >
-            {label?.title}
-          </ProposalFooterButton>
-        ))}
-      </BoardsCardFooter>
-    </ProposalCardWrapper>
+            >
+              <PodIcon
+                color={task?.podColor}
+                style={{
+                  width: '26px',
+                  height: '26px',
+                  marginRight: '8px',
+                }}
+              />
+              <PodName style={{}}>{task?.podName}</PodName>
+            </PodWrapper>
+          )}
+        </BoardsCardBody>
+        <BoardsCardFooter style={{ paddingBottom: '7px' }}>
+          {labelsAndActions?.map((label, idx) => (
+            <ProposalFooterButton
+              isAction={!!label.action}
+              onClick={(e) => {
+                e.stopPropagation();
+                label.action && label.action();
+              }}
+              borderColor={label?.borderColor}
+              key={idx}
+              color={label?.color}
+            >
+              {label?.title}
+            </ProposalFooterButton>
+          ))}
+        </BoardsCardFooter>
+      </ProposalCardWrapper>
+    </SmartLink>
   );
 }
 export default function Card(props) {

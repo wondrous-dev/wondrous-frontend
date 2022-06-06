@@ -12,6 +12,7 @@ export const Accordion = styled(MuiAccordion)`
     margin-bottom: 28px;
     color: ${White};
     width: 100%;
+    box-shadow: none;
   }
 `;
 
@@ -84,4 +85,27 @@ export const ListViewItemDataContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 16px;
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 28px;
+`;
+
+export const ListViewItemIconsWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 17px;
+`;
+
+export const ListViewItemActions = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
 `;

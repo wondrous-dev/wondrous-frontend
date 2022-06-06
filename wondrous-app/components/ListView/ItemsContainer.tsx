@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Chevron } from 'components/Icons/sections';
 import {
   Accordion,
   AccordionSummary,
@@ -8,8 +7,6 @@ import {
   ListViewItemCount,
   ListViewItemStatus,
   IconWrapper,
-  ListViewItemBodyWrapper,
-  ListViewItemDataContainer,
 } from './styles';
 import {
   TASK_STATUS_TODO,
@@ -22,8 +19,7 @@ import { ToDo, InProgress, Done, InReview } from 'components/Icons';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateLayoutBaseModal from 'components/CreateEntity/createEntityModal';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
-import { SafeImage } from 'components/Common/Image';
-import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import Item from './Item';
 
 const HEADER_ICONS = {
   [TASK_STATUS_TODO]: ToDo,
@@ -39,11 +35,10 @@ const LABELS_MAP = {
   [TASK_STATUS_DONE]: 'Done',
 };
 
-export default function ListViewItem({ data, taskCount, fetchPerStatus, ...props }) {
+export default function ItemsContainer({ data, taskCount, fetchPerStatus, entityType, ...props }) {
   const { status, tasks } = data;
   const [isExpanded, setIsExpanded] = useState(true);
   const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
-  //TODO we can get rid of this state in the future, probably needs a BE improvement
 
   const handleExpansion = () => setIsExpanded(!isExpanded);
 
@@ -90,37 +85,9 @@ export default function ListViewItem({ data, taskCount, fetchPerStatus, ...props
           )}
         </ListViewItemHeader>
         <AccordionDetails>
-          {tasks.map(({ assigneeProfilePicture, title, totalSubmissionsCount, commentCount, id }, idx) => (
-            <ListViewItemBodyWrapper key={idx}>
-              <ListViewItemDataContainer>
-                {assigneeProfilePicture ? (
-                  <SafeImage
-                    style={{
-                      width: '26px',
-                      height: '26px',
-                      borderRadius: '13px',
-                      marginRight: '4px',
-                    }}
-                    src={assigneeProfilePicture}
-                  />
-                ) : (
-                  <DefaultUserImage
-                    style={{
-                      width: '26px',
-                      height: '26px',
-                      borderRadius: '13px',
-                      marginRight: '4px',
-                    }}
-                  />
-                )}
-
-                {title}
-                {totalSubmissionsCount}
-                {commentCount}
-              </ListViewItemDataContainer>
-              <div>claim btn actions dropdown</div>
-            </ListViewItemBodyWrapper>
-          ))}
+          {tasks.map((task, idx) => {
+            return <Item entityType={entityType} task={task} key={idx} />;
+          })}
         </AccordionDetails>
       </Accordion>
     </>
