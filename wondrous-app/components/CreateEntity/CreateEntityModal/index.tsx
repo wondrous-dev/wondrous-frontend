@@ -350,6 +350,19 @@ const useGetOrgUsers = (orgId) => {
   return data?.getOrgUsers;
 };
 
+const useGetMilestones = (orgId, podId) => {
+  const [getMilestones, { data }] = useLazyQuery(GET_MILESTONES);
+  useEffect(() => {
+    getMilestones({
+      variables: {
+        orgId,
+        podId,
+      },
+    });
+  }, []);
+  return data?.getMilestones;
+};
+
 const useCreateTask = () => {
   const [createTask, { loading }] = useMutation(CREATE_TASK, {
     refetchQueries: () => [
@@ -822,7 +835,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const handleCreateLabel = useCreateLabel(form.values.orgId, (newLabelId) =>
     form.setFieldValue('labelIds', [...form.values.labelIds, newLabelId])
   );
-  const [getMilestones, { data: milestonesData }] = useLazyQuery(GET_MILESTONES);
+  const milestonesData = useGetMilestones(form.values.orgId, form.values.podId);
   const pods = useGetAvailableUserPods(form.values.orgId);
   const handleOnchangePodId = useCallback(
     (podId) => {
@@ -1339,21 +1352,13 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               <CreateEntitySelectErrorWrapper>
                 <CreateEntityAutocompletePopper
                   openOnFocus={true}
-                  options={filterUserOptions(milestonesData?.getMilestones)}
+                  options={filterUserOptions(milestonesData)}
                   value={form.values.milestoneId}
                   isOptionEqualToValue={(option, value) => {
                     return option.id === value;
                   }}
-                  onOpen={() =>
-                    getMilestones({
-                      variables: {
-                        orgId: form.values.orgId,
-                        podId: form.values.podId,
-                      },
-                    })
-                  }
                   renderInput={(params) => {
-                    const milestone = filterUserOptions(milestonesData?.getMilestones).find(
+                    const milestone = filterUserOptions(milestonesData).find(
                       (milestone) => milestone.id === form.values.milestoneId
                     );
                     return (
@@ -1404,7 +1409,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
             {form.values.milestoneId === null && (
               <CreateEntityLabelAddButton
                 onClick={() => {
-                  form.setFieldValue('milestoneId', filterUserOptions(milestonesData?.getMilestones)?.[0]?.id);
+                  form.setFieldValue('milestoneId', filterUserOptions(milestonesData)?.[0]?.id);
                 }}
               >
                 <CreateEntityAddButtonIcon />
