@@ -16,3 +16,23 @@ export const VERIFY_USER_TWEET = gql`
     }
   }
 `;
+
+
+export const CONNECT_SNAPSHOT_TO_ORG = gql`
+  mutation connectSnapshotToOrg($orgId: ID, $input: SnapshotConnectInput) {
+    connectSnapshotToOrg(orgId: $orgId, input: $input) {
+      snapshotEns
+      name
+      symbol
+    }
+  }
+`;
+
+
+export const DISCONNECT_SNAPSHOT_TO_ORG = gql`
+  mutation disconnectSnapshotToOrg($orgId: ID) {
+    disconnectSnapshotToOrg(orgId: $orgId) {
+      success
+    }
+  }
+`;

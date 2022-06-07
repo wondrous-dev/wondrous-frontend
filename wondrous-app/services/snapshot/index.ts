@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useLazyQuery, useMutation, gql, ApolloClient, InMemoryCache } from '@apollo/client';
 import { Categories, Filters, Onboarding, ProposalType, Proposal, Space, Strategy, Validation, Vote } from './types';
 import { GET_SPACE } from './gql';
+import { CONNECT_SNAPSHOT_TO_ORG, DISCONNECT_SNAPSHOT_TO_ORG } from 'graphql/mutations';
+import { GET_ORG_SNAPSHOT_INFO } from 'graphql/queries';
 import { isValidSpace } from './helpers';
 import Snapshot from '@snapshot-labs/snapshot.js';
 import ENS, { getEnsAddress } from '@ensdomains/ensjs';
@@ -22,7 +23,7 @@ const SNAPSHOT_DOCS = 'https://docs.snapshot.org/spaces/create';
 // set to configure which snapshot API to use
 // true = testnet
 // false = hub
-const isTestSnapshot = false;
+const isTestSnapshot = true;
 
 const hub = isTestSnapshot ? 'https://testnet.snapshot.org' : 'https://hub.snapshot.org';
 const snapshotClient = new Snapshot.Client712(hub);
@@ -36,8 +37,8 @@ const snapshotClientGQL = new ApolloClient({
   uri: snapshotAPI,
 });
 
-export const getSnapshotUrl = (name: string): string =>
-  `https://${isTestSnapshot ? `testnet` : `hub`}.snapshot.org/api/spaces/${name}/`;
+export const getSnapshotUrl = (id: string): string =>
+  `https://${isTestSnapshot ? `testnet` : `hub`}.snapshot.org/api/spaces/${id}/`;
 
 /**
  * useSnapshot -- state hooks to interact with Snapshot & Wonder's snapshot-related APIs
@@ -50,17 +51,16 @@ export const useSnapshot = () => {
     network: '',
     symbol: '',
     strategies: [],
+    admins: []
   };
 
   const isTest = isTestSnapshot;
-  // an object representing the 'integrations' field of Wonder 'Org'
-  const [snapshot, setSnapshot] = useState(null);
+  // an object representing the org snapshot from db
+  const [orgSnapshot, setOrgSnapshot] = useState(null);
   // a boolean value representing whether snapshot is valid, to be used in validation
-  const [snapshotValid, setSnapshotValid] = useState(false);
+  const [isSnapshotAdmin, setIsSnapshotAdmin] = useState(false);
   // a boolean value representing whether the snapshot space has been connected to Wonder Org in db
   const [snapshotConnected, setSnapshotConnected] = useState(false);
-  // cached snapshot name, can be used in input field to store value to query
-  const [snapshotName, setSnapshotName] = useState(''); // used to cache names
   // an object representing a Snapshot 'Space', as returned by Snapshot's API
   const [snapshotSpace, setSnapshotSpace] = useState(EMPTY_SPACE);
   // loading state for all Snapshot & Wonder API queries
@@ -69,6 +69,7 @@ export const useSnapshot = () => {
   const [snapshotErrorElement, setSnapshotErrorElement] = useState(null);
   // loading state for proposal submission
   const [submittingProposal, setSubmittingProposal] = useState(false);
+  const [getSnapshotSpaceError, setGetSnapshotSpaceError] = useState(null);
   // wonder's web3 hook
   const wonderWeb3 = useWonderWeb3();
 
@@ -78,11 +79,17 @@ export const useSnapshot = () => {
     onError: (error) => {
       console.error(`Error getSnapshotSpace(): ${error}`);
     },
+    onCompleted: (data) => {
+      if (data.space) {
+        setSnapshotSpace(data.space);
+      } else {
+        setGetSnapshotSpaceError(`'${snapshotSpace.name}' not found. Please enter a valid Snapshot Space ENS.`);
+      }
+    },
     fetchPolicy: 'cache-and-network',
   });
 
-  // checks snapshot space via Snapshot API & updates state to reflect db
-  const [validateSnapshotSpace, { loading: validateSnapshotSpaceLoading }] = useLazyQuery(GET_SPACE, {
+  const [getSnapshotSpaceAndValidateAdmin] = useLazyQuery(GET_SPACE, {
     client: snapshotClientGQL,
     onCompleted: (data) => {
       if (data.space !== null) {
@@ -90,12 +97,14 @@ export const useSnapshot = () => {
         if (data.space.admins.includes(wonderWeb3.address)) {
           // if included, update state & clear for connection
           setSnapshotSpace(data.space);
-          setSnapshotValid(true);
+          setIsSnapshotAdmin(true);
         } else {
-          setSnapshotValid(false);
+          setIsSnapshotAdmin(false);
+          setGetSnapshotSpaceError(`User is not an admin of '${data.space.id}' Please update ENS text record or enter administered Snapshot`);
         }
       } else {
-        setSnapshotValid(false);
+        setIsSnapshotAdmin(false);
+        setGetSnapshotSpaceError(`Snapshot Space not found. Please enter a valid Snapshot Space ENS.`);
       }
     },
     onError: (error) => {
@@ -104,29 +113,30 @@ export const useSnapshot = () => {
     fetchPolicy: 'cache-and-network',
   });
 
+
   // checks for Snapshot stored in Wonder Org via Wonder API & updates state to reflect db
-  const [validateSnapshot, { loading: validateSnapshotLoading }] = useLazyQuery(GET_SNAPSHOT, {
+  const [getOrgSnapshotInfo, { loading: getOrgSnapshotInfoLoading }] = useLazyQuery(GET_ORG_SNAPSHOT_INFO, {
     onCompleted: (data) => {
-      // returns 'null' if there no data is in the integrations column of 'org' table
-      const snapshot = data.getOrgById.integrations ? data.getOrgById.integrations[0] : null;
-      // sets local state of integrations field from 'org' table, or null if nonexistent
-      setSnapshot(snapshot);
-      // sets cached name, to ensure persistence
-      setSnapshotName(snapshot.key);
-      // updates snapshot connection state
-      setSnapshotConnected(snapshot.key ? true : false);
+      console.log('dataa', data)
+      if (data?.getOrgSnapshotInfo) {
+        const { snapshotEns, name, symbol, network, url } = data?.getOrgSnapshotInfo;
+        // sets local state of integrations field from 'org' table, or null if nonexistent
+        setOrgSnapshot({ snapshotEns, name, symbol, network, url });
+        // updates snapshot connection state
+        setSnapshotConnected(snapshotEns ? true : false);  
+      }
     },
     onError: (error) => {
-      console.error(`Error validateSnapshot(): ${error}`);
+      console.error(`No snapshot currently connected to org: ${error}`);
     },
     fetchPolicy: 'network-only',
   });
 
   // updates Wonder db & local state w/ snapshot integrations data
-  const [connectSnapshotSpace, { loading: connectSnapshotSpaceLoading }] = useMutation(SET_SPACE, {
+  const [connectSnapshotToOrg, { loading: connectSnapshotSpaceLoading }] = useMutation(CONNECT_SNAPSHOT_TO_ORG, {
     onCompleted: (data) => {
-      const [integrations] = data.updateOrg.integrations;
-      setSnapshot(integrations);
+      const { snapshotEns, name, symbol, url, network } = data.connectSnapshotToOrg;
+      setOrgSnapshot({ snapshotEns, name, symbol, url, network});
       setSnapshotConnected(true);
     },
     onError: (error) => {
@@ -134,25 +144,26 @@ export const useSnapshot = () => {
     },
   });
 
-  // disconnects snapshot space in Wonder db & local state
-  // (same as connectSnapshotSpace, except updates snapshotConnection to false)
-  const [disconnectSnapshotSpace, { loading: disconnectSnapshotSpaceLoading }] = useMutation(SET_SPACE, {
+
+  const [disconnectSnapshotToOrg] = useMutation(DISCONNECT_SNAPSHOT_TO_ORG, {
     onCompleted: (data) => {
-      const [integrations] = data.updateOrg.integrations;
-      setSnapshot(integrations);
-      setSnapshotConnected(false);
+      if(data?.disconnectSnapshotToOrg?.success) {
+        setOrgSnapshot(null)
+        setSnapshotConnected(false);
+        setIsSnapshotAdmin(null);
+      }
     },
     onError: (error) => {
-      console.error(`Error disconnectSnapshot(): ${error}`);
+      console.error(`Error connectSnapshot(): ${error}`);
     },
   });
 
   // update Task Proposal's snapshot_proposal field
-  const [updateSnapshotProposal, { loading: updateSnapshotProposalLoading }] = useMutation(SET_SNAPSHOT_PROPOSAL, {
-    onError: (error) => {
-      console.error(`error updateSnapshotProposal(): ${error}`);
-    },
-  });
+  // const [updateSnapshotProposal, { loading: updateSnapshotProposalLoading }] = useMutation(SET_SNAPSHOT_PROPOSAL, {
+  //   onError: (error) => {
+  //     console.error(`error updateSnapshotProposal(): ${error}`);
+  //   },
+  // });
 
   // creates transaction to export proposal to snapshot, throws error if exporter doesn't have credentials or invalid proposal
   const exportTaskProposal = async (proposal: any): Promise<any> => {
@@ -160,7 +171,7 @@ export const useSnapshot = () => {
     //const web3 = wonderWeb3.web3Provider;
     const provider = new Web3Provider(wonderWeb3.web3Provider);
     const account = ethers.utils.getAddress(wonderWeb3.address);
-    const { data } = await getSnapshotSpace({ variables: { id: snapshot.key } });
+    const { data } = await getSnapshotSpace({ variables: { id: orgSnapshot.key } });
 
     // deconstruct strategies if typed
     const strategies = data.space.strategies.map((strat) => ({
@@ -192,7 +203,7 @@ export const useSnapshot = () => {
     let weekLater = new Date();
     weekLater.setDate(weekLater.getDate() + numWeeks * 7);
     const proposalToSubmit = {
-      space: snapshot.key,
+      space: orgSnapshot.snapshotENS,
       title: proposal.title,
       body: proposal.description,
       choices: ['For', 'Against', 'Abstain'],
@@ -235,7 +246,7 @@ export const useSnapshot = () => {
     const account = ethers.utils.getAddress(wonderWeb3.address);
 
     return await snapshotClient.cancelProposal(provider, account, {
-      space: snapshot.key,
+      space: orgSnapshot.key,
       proposal: proposalId,
     });
   };
@@ -250,7 +261,6 @@ export const useSnapshot = () => {
         errors.push(`${field}: ${message}`);
       });
       console.log(errors);
-      handleProposalError(errors);
       return false;
     } else {
       setSnapshotErrorElement(null);
@@ -258,21 +268,11 @@ export const useSnapshot = () => {
     }
   };
 
-
-  const handleProposalError = (errors: string[]) => {
-    const elements = [<span>Proposal invalid.</span>];
-    // more in-depth error logging for proposal validation: CSS issues prevent proper formatting.
-    elements.push(<Link href={SNAPSHOT_DOCS}>See Snapshot proposal guidelines.</Link>);
-    setSnapshotErrorElement(elements);
-  };
-
   const loading =
     getSnapshotSpaceLoading ||
-    validateSnapshotLoading ||
-    validateSnapshotLoading ||
+    getOrgSnapshotInfoLoading ||
     connectSnapshotSpaceLoading ||
-    disconnectSnapshotSpaceLoading ||
-    updateSnapshotProposalLoading ||
+    // updateSnapshotProposalLoading ||
     submittingProposal;
 
   useEffect(() => {
@@ -283,32 +283,21 @@ export const useSnapshot = () => {
   return {
     EMPTY_SPACE,
     snapshotClient,
-    snapshotName,
-    setSnapshotName,
-    snapshotValid,
-    setSnapshotValid,
+    isSnapshotAdmin,
     snapshotConnected,
-    setSnapshotConnected,
     snapshotSpace,
-    setSnapshotSpace,
     snapshotErrorElement,
-    setSnapshotErrorElement,
     getSnapshotSpace,
-    getSnapshot,
-    validateSnapshotSpace,
-    snapshot,
-    setSnapshot,
-    validateSnapshot,
-    connectSnapshotSpace,
-    disconnectSnapshotSpace,
-    updateSnapshotProposal,
+    getSnapshotSpaceError,
+    getSnapshotSpaceAndValidateAdmin,
+    orgSnapshot,
+    getOrgSnapshotInfo,
+    connectSnapshotToOrg,
+    disconnectSnapshotToOrg,
+    // updateSnapshotProposal,
     exportTaskProposal,
     cancelProposal,
     snapshotLoading,
     isTest, // for testing purposes
   };
 };
-
-const Link = styled.a`
-  color: cyan;
-`;
