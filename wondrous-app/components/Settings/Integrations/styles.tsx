@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { White } from '../../../theme/colors';
-import { Button as MuiButton, InputBase, ListItemIcon, Typography } from '@mui/material';
+import palette from 'theme/palette';
+import { Button as MuiButton, Typography, InputBase } from '@mui/material';
 
 export const IntegrationsContainer = styled.div`
   height: 100vh;
@@ -43,7 +43,6 @@ export const IntegrationsSnapshotBlock = styled.div`
   flex-direction: column;
 `;
 
-
 export const IntegrationsSnapshotSubBlock = styled.div`
   width: 100%;
   display: flex;
@@ -51,7 +50,7 @@ export const IntegrationsSnapshotSubBlock = styled.div`
   flex-wrap: wrap;
   overflow-wrap: wrap;
   justify-content: space-between;
-`
+`;
 
 export const IntegrationsSnapshotInputSubBlock = styled.div`
   width: calc(100% - 220px);
@@ -61,7 +60,7 @@ export const IntegrationsSnapshotInputSubBlock = styled.div`
   @media (max-width: 1096px) {
     width: 100%;
   }
-`
+`;
 
 export const IntegrationsSnapshotENSInput = styled(InputBase)`
   && {
@@ -113,7 +112,6 @@ export const IntegrationsSnapshotButton = styled(MuiButton)`
   }
 `;
 
-
 export const LabelBlock = styled(Typography)`
   && {
     font-weight: 500;
@@ -127,10 +125,9 @@ export const LabelBlock = styled(Typography)`
 
 export const LabelBlockText = styled(Typography)`
   && {
-    color: ${White};
+    color: ${palette.white};
     font-family: Space Grotesk;
     font-size: 14px;
     margin-bottom: 12px;
   }
 `;
-
