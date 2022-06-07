@@ -49,7 +49,6 @@ import { TaskSummaryAction } from '../TaskSummary/styles';
 import { Arrow, Archived } from '../../Icons/sections';
 import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
 import { GET_TASK_REVIEWERS } from 'graphql/queries';
-import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import { DeleteTaskModal } from '../DeleteTaskModal';
 import { REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { getBoardType } from '../KanbanBoard/kanbanBoard';

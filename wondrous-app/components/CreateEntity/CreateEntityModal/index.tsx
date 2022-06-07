@@ -74,6 +74,7 @@ import {
   CreateEntityLabelAddButton,
   CreateEntityLabelSelectWrapper,
   CreateEntityLabelWrapper,
+  CreateEntityMilestoneSearch,
   CreateEntityOpenInFullIcon,
   CreateEntityOption,
   CreateEntityOptionImageWrapper,
@@ -411,7 +412,7 @@ const useCreateTask = () => {
 
 const useCreateMilestone = () => {
   const [createMilestone, { loading }] = useMutation(CREATE_MILESTONE, {
-    refetchQueries: () => ['getPerTypeTaskCountForOrgBoard', 'getPerTypeTaskCountForPodBoard'],
+    refetchQueries: () => ['getPerTypeTaskCountForOrgBoard', 'getPerTypeTaskCountForPodBoard', 'getMilestones'],
   });
   const handleMutation = ({ input, board, pods, form, handleClose }) => {
     createMilestone({
@@ -445,7 +446,7 @@ const useCreateMilestone = () => {
       } else {
         board?.setEntityType(ENTITIES_TYPES.MILESTONE);
       }
-      handleClose();
+      handleClose(result);
     });
   };
   return { handleMutation, loading };
@@ -1351,62 +1352,16 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
 
           <CreateEntitySelectWrapper>
             {form.values.milestoneId !== null && (
-              <CreateEntitySelectErrorWrapper>
-                <CreateEntityAutocompletePopper
-                  openOnFocus={true}
-                  options={filterUserOptions(milestonesData)}
-                  value={form.values.milestoneId}
-                  isOptionEqualToValue={(option, value) => {
-                    return option.id === value;
-                  }}
-                  renderInput={(params) => {
-                    const milestone = filterUserOptions(milestonesData).find(
-                      (milestone) => milestone.id === form.values.milestoneId
-                    );
-                    return (
-                      <CreateEntityAutocompletePopperRenderInput
-                        {...params}
-                        inputProps={{
-                          ...params.inputProps,
-                          value: milestone?.label,
-                        }}
-                        ref={params.InputProps.ref}
-                        disableUnderline={true}
-                        fullWidth={true}
-                        name="milestone"
-                        placeholder="Enter milestone..."
-                        endAdornment={
-                          <CreateEntityAutocompletePopperRenderInputAdornment
-                            position="end"
-                            onClick={() => {
-                              form.setFieldValue('milestoneId', null);
-                            }}
-                          >
-                            <CreateEntityAutocompletePopperRenderInputIcon />
-                          </CreateEntityAutocompletePopperRenderInputAdornment>
-                        }
-                      />
-                    );
-                  }}
-                  renderOption={(props, option, state) => {
-                    return (
-                      <CreateEntityAutocompleteOption
-                        {...props}
-                        onClick={() => {
-                          if (form.values.milestoneId?.id !== option.id) {
-                            form.setFieldValue('milestoneId', option.id);
-                          }
-                        }}
-                      >
-                        {option?.profilePicture ? <SafeImage src={option?.profilePicture} /> : <div />}
-                        <CreateEntityAutocompleteOptionTypography>
-                          {option?.label}
-                        </CreateEntityAutocompleteOptionTypography>
-                      </CreateEntityAutocompleteOption>
-                    );
-                  }}
-                />
-              </CreateEntitySelectErrorWrapper>
+              <CreateEntityMilestoneSearch
+                options={filterUserOptions(milestonesData)}
+                value={form.values.milestoneId}
+                onChange={(milestoneId) => {
+                  form.setFieldValue('milestoneId', milestoneId);
+                }}
+                handleClose={() => {
+                  form.setFieldValue('milestoneId', null);
+                }}
+              />
             )}
             {form.values.milestoneId === null && (
               <CreateEntityLabelAddButton

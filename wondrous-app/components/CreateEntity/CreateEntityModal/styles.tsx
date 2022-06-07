@@ -20,6 +20,7 @@ import Arrow from '../../Icons/arrow.svg';
 import OpenInFullIcon from '../../Icons/openInFull.svg';
 import PrivacyMembersIcon from '../../Icons/privacyMembers.svg';
 import PrivacyPublicIcon from '../../Icons/privacyPublic.svg';
+import MilestoneSearch from './MilestoneSearch';
 
 export const scrollBarStyles = css`
   :hover {
@@ -88,6 +89,8 @@ export const CreateEntityHeader = styled.div`
 `;
 
 export const CreateEntityPodSearch = styled(PodSearch)``;
+
+export const CreateEntityMilestoneSearch = styled(MilestoneSearch)``;
 
 export const CreateEntitySelectRoot = styled.button`
   font-family: 'Space Grotesk';
