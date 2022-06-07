@@ -1081,8 +1081,8 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               placement="top"
             >
               <CreateEntityLabelAddButton
-                disabled={form.values.reviewerIds?.length > filteredEligibleReviewers.length}
                 onClick={() => {
+                  if (form.values.reviewerIds?.length >= filteredEligibleReviewers.length) return;
                   if (form.values.reviewerIds === null) {
                     form.setFieldValue('reviewerIds', [null]);
                     return;
