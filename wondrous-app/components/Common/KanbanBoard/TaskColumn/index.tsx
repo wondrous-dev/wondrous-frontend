@@ -139,6 +139,7 @@ const TaskColumn = (props: ITaskColumn) => {
           handleClose={() => setOpenTaskModal(false)}
           resetEntityType={() => {}}
           setEntityType={() => {}}
+          cancel={() => setOpenTaskModal(false)}
         />
       </CreateModalOverlay>
 

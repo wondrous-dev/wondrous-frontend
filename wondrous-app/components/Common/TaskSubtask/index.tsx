@@ -19,9 +19,9 @@ export const TaskSubtasks = ({ taskId, permissions }) => {
       <CreateModalOverlay open={createFormModal} onClose={toggleCreateFormModal}>
         <CreateEntityModal
           entityType={ENTITIES_TYPES.TASK}
-          open={createFormModal}
           handleClose={toggleCreateFormModal}
           parentTaskId={taskId}
+          cancel={toggleCreateFormModal}
         />
       </CreateModalOverlay>
       <Subtask>
