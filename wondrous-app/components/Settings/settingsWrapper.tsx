@@ -208,8 +208,8 @@ export const SettingsWrapper = (props) => {
       ),
       label: 'Github',
       value: 'github',
-      href: `/organization/settings/${orgId}/github`,
-      page: [SettingsPage.Org],
+      href: orgId ? `/organization/settings/${orgId}/github` : `/pod/settings/${podId}/github`,
+      page: [SettingsPage.Org, SettingsPage.Pod],
     },
   ];
 

@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material';
 import styled from 'styled-components';
 import { White } from 'theme/colors';
 
@@ -16,4 +17,22 @@ export const GithubButton = styled.a`
   width: fit-content;
   align-items: center;
   cursor: pointer;
+`;
+
+export const PodGithubReposDiv = styled.div``;
+
+export const PodGithubExplainerText = styled(Typography)`
+  && {
+    font-family: Space Grotesk;
+    font-size: 14px;
+    line-height: 24px;
+    margin-top: -16px;
+    color: ${White};
+  }
+`;
+
+export const AddRepoDiv = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
 `;

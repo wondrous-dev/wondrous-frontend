@@ -223,3 +223,12 @@ export const HAS_ORG_GITHUB_INTEGRATION = gql`
     }
   }
 `;
+
+export const GET_ORG_AVAILABLE_REPOSITORIES = gql`
+  query getOrgAvailableRepositories($orgId: ID!) {
+    getOrgAvailableRepositories(orgId: $orgId) {
+      id
+      fullName
+    }
+  }
+`;

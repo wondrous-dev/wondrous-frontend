@@ -11,8 +11,7 @@ import CloseModalIcon from 'components/Icons/closeModal';
 import { DELETE_ORG_GITHUB } from 'graphql/mutations/org';
 
 const GITHUB_BASE_URL = `https://github.com/apps/wonderverse-integration/installations/new`;
-const GITHUB_APP_CLIENT_ID = 'Iv1.64f7faecf13dacf2';
-const GITHUB_REDIRECT_URI = 'http://localhost:3000/github/callback';
+
 export const GithubIntegration = ({ orgId }) => {
   const router = useRouter();
   const [githubConnected, setGithubConnected] = useState(false);
@@ -42,7 +41,7 @@ export const GithubIntegration = ({ orgId }) => {
       });
     }
   }, [orgId]);
-  console.log('hasGithubIntegrationData', hasGithubIntegrationData);
+
   return (
     <SettingsWrapper>
       <HeaderBlock

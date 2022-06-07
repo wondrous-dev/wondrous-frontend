@@ -35,7 +35,7 @@ function MemberRoles({ roleList = [], users = [], isDAO }: Props) {
           </div>
           <PodIconWithoutBg />
 
-          <Avatars style={{ width: `${containerWidth}px` }}>
+          <Avatars style={{ width: `fit-content` }}>
             {users.map(({ user }, index) => {
               return user?.thumbnailPicture ? (
                 <SafeImage
