@@ -872,6 +872,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   );
   useContextValue(
     !form.values.podId &&
+      (board?.podId || routerPodId) &&
       form.values.orgId &&
       !existingTask &&
       pods &&
