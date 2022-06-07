@@ -1411,7 +1411,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
             {form.values.milestoneId === null && (
               <CreateEntityLabelAddButton
                 onClick={() => {
-                  form.setFieldValue('milestoneId', filterUserOptions(milestonesData)?.[0]?.id);
+                  form.setFieldValue('milestoneId', '');
                 }}
               >
                 <CreateEntityAddButtonIcon />
