@@ -996,7 +996,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
             {form.values?.reviewerIds?.map((reviewerId, index) => {
               const hasError = form.errors?.reviewerIds?.[index];
               return (
-                <CreateEntitySelectErrorWrapper key={reviewerId}>
+                <CreateEntitySelectErrorWrapper key={index}>
                   <CreateEntityAutocompletePopper
                     onFocus={() => form.setFieldError('reviewerIds', undefined)}
                     openOnFocus={true}
@@ -1075,14 +1075,14 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
             })}
             <Tooltip
               title={
-                form.values.reviewerIds?.length > filteredEligibleReviewers.length &&
+                form.values.reviewerIds?.length >= filteredEligibleReviewers.length &&
                 'You reached the maximum no. of available reviewers'
               }
               placement="top"
             >
               <CreateEntityLabelAddButton
                 onClick={() => {
-                  if (form.values.reviewerIds?.length > filteredEligibleReviewers.length) return;
+                  if (form.values.reviewerIds?.length >= filteredEligibleReviewers.length) return;
                   if (form.values.reviewerIds === null) {
                     form.setFieldValue('reviewerIds', [null]);
                     return;
