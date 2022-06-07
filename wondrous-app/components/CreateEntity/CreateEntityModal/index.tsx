@@ -390,6 +390,8 @@ const useCreateTask = () => {
       'getPerStatusTaskCountForUserBoard',
       'getSubtasksForTask',
       'getSubtaskCountForTask',
+      'getTaskById',
+      'getSubtasksForTask',
     ],
   });
   const handleMutation = ({ input, board, pods, form, handleClose }) =>
@@ -522,6 +524,8 @@ const useUpdateTask = () => {
       'getPerStatusTaskCountForMilestone',
       'getUserTaskBoardTasks',
       'getPerStatusTaskCountForUserBoard',
+      'getTaskById',
+      'getSubtasksForTask',
     ],
   });
   const handleMutation = ({ input, board, handleClose, existingTask }) => {
