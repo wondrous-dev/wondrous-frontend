@@ -787,6 +787,9 @@ interface ICreateEntityModal {
   handleClose: Function;
   cancel: Function;
   existingTask?: {};
+  parentTaskId?: string;
+  resetEntityType?: Function;
+  setEntityType?: Function;
 }
 
 export const CreateEntityModal = (props: ICreateEntityModal) => {
