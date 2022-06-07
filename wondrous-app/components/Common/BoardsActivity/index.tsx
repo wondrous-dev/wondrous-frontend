@@ -13,7 +13,7 @@ import BoardFilters, { FiltersTriggerButton } from 'components/Common/BoardFilte
 import { useState } from 'react';
 import { Blue20 } from 'theme/colors';
 import UserFilter from 'components/Common/BoardFilters/userFilter';
-
+import { ENTITIES_TYPES } from 'utils/constants';
 export const BoardsActivityInlineView = ({
   onSearch,
   filterSchema,
@@ -56,6 +56,7 @@ export default function BoardsActivity(props) {
       name: 'List',
       icon: <ListViewIcon color={view === ViewType.List ? Blue20 : 'white'} />,
       active: view === ViewType.List,
+      disabled: board?.entityType === ENTITIES_TYPES.PROPOSAL,
       action: () => {
         if (setActiveView) {
           setActiveView(ViewType.List);

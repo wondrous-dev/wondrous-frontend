@@ -27,6 +27,10 @@ export const ToggleViewOption = styled.div`
       background: #0f0f0f;
     }
   }
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+  }
   padding: 8.5px;
   border-radius: 6px;
   cursor: pointer;

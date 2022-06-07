@@ -411,6 +411,10 @@ const BoardsPage = () => {
     insertUrlParam('entity', type);
     setEntityType(type);
     setFilters({});
+    if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
+      setActiveView(ViewType.Grid);
+      insertUrlParam('view', ViewType.Grid);
+    }
   };
 
   const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {

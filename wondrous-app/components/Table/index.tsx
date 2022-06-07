@@ -92,7 +92,7 @@ const createTasksFromColumns = (columns) => {
 };
 
 export const Table = (props) => {
-  const { columns, onLoadMore, hasMore, allTasks, limit, isAdmin, tasks } = props;
+  const { columns, onLoadMore, hasMore, allTasks, limit, isAdmin, tasks, entityType } = props;
   const router = useRouter();
   const apolloClient = useApolloClient();
   const [editableTask, setEditableTask] = useState(null);
@@ -291,9 +291,11 @@ export const Table = (props) => {
               <StyledTableCell align="center" width="56px">
                 DAO
               </StyledTableCell>
-              <StyledTableCell align="center" width="105px">
-                {isAdmin ? 'Created by' : 'Assigned'}
-              </StyledTableCell>
+              {entityType === ENTITIES_TYPES.TASK || isAdmin ? (
+                <StyledTableCell align="center" width="105px">
+                  {isAdmin ? 'Created by' : 'Assigned'}
+                </StyledTableCell>
+              ) : null}
               <StyledTableCell align="center" width="77px">
                 Status
               </StyledTableCell>
