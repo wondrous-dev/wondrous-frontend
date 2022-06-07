@@ -64,7 +64,6 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
           handleClose={() => setCreateTaskModalOpen(false)}
           resetEntityType={() => {}}
           setEntityType={() => {}}
-          open={isCreateTaskModalOpen}
         />
       </CreateModalOverlay>
 
