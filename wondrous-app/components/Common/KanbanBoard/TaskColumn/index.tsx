@@ -37,7 +37,7 @@ import { parseUserPermissionContext } from 'utils/helpers';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
 import CreateLayoutBaseModal from 'components/CreateEntity/createEntityModal';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal';
+import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
 
 interface ITaskColumn {
   cardsList: Array<any>;

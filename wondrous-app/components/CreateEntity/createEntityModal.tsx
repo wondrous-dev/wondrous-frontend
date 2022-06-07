@@ -407,22 +407,6 @@ const CreateLayoutBaseModal = (props) => {
   }, [parentTaskId, getTaskById, isSubtask]);
 
   useEffect(() => {
-    if (isSubtask) {
-      getTaskById({
-        variables: {
-          taskId: parentTaskId,
-        },
-      })
-        .then((data) => {
-          const task = data?.data?.getTaskById;
-          setOrg(task?.orgId);
-          setPod(task?.podId);
-        })
-        .catch((e) => console.error(e));
-    }
-  }, [parentTaskId, getTaskById, isSubtask]);
-
-  useEffect(() => {
     if (open) {
       if (fetchedUserPermissionsContext && board?.orgId in fetchedUserPermissionsContext?.orgPermissions && !org) {
         // If you're only part of one dao then just set that as default
